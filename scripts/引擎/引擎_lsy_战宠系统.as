@@ -73,6 +73,55 @@ _root.战宠UI函数.统计当前出战数 = function(){
 	return count;
 }
 
+// 装备型战宠统一销毁入口：先执行 Dressup 生命周期显式 teardown，再交给
+// removeMovieClip/onUnload 完成 StaticDeinitializer、dispatcher 与 task 清理。
+_root.战宠UI函数.安全移除装备单位 = function(单位对象):Boolean{
+	if(!单位对象) return true;
+	org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.teardownLifeCycles(单位对象);
+	单位对象.removeMovieClip();
+	return true;
+}
+
+// 独立战宠 UI XFL 不直接依赖 asLoader 的包类路径；由主注入层提供失败关闭门面。
+_root.战宠UI函数.预检托管长枪取回 = function(宠物信息):Object{
+	return org.flashNight.arki.merc.ManagedLongGunService.preflightWithdrawal(宠物信息);
+}
+
+_root.战宠UI函数.取回托管长枪 = function(宠物信息):Object{
+	return org.flashNight.arki.merc.ManagedLongGunService.withdraw(宠物信息);
+}
+
+// 托管装备变化必须整只重建，不能只走 宠物升级加载（后者不会重跑换装/lifecycle）。
+_root.战宠UI函数.重建宠物单位 = function(id:Number):Boolean{
+	var 当前宠物信息 = _root.宠物信息[id];
+	if(!当前宠物信息 || 当前宠物信息.length < 5 || 当前宠物信息[4] != 1) return false;
+	var 地点X:Number = 500;
+	var 地点Y:Number = 300;
+	var found:Number = -1;
+	for(var i:Number = 0; i < _root.宠物mc库.length; i++){
+		var unit = _root.宠物mc库[i];
+		if(unit && unit.宠物属性 && unit.宠物属性.宠物信息数组号 == id){
+			found = i;
+			地点X = unit._x;
+			地点Y = unit._y;
+			break;
+		}
+	}
+	if(found >= 0){
+		var oldUnit = _root.宠物mc库[found];
+		_root.宠物mc库.splice(found, 1);
+		_root.出战宠物id库.splice(found, 1);
+		_root.战宠UI函数.安全移除装备单位(oldUnit);
+	}else{
+		var hero:MovieClip = TargetCacheManager.findHero();
+		if(hero){
+			地点X = hero._x;
+			地点Y = hero._y;
+		}
+	}
+	return _root.战宠UI函数.设置宠物出战(id, true, 地点X, 地点Y);
+}
+
 _root.战宠UI函数.出战按钮函数 = function(是否出战:Boolean){
 	if(_root.当前为战斗地图) return;
 	var success = false;
@@ -160,7 +209,7 @@ _root.战宠UI函数.设置宠物出战 = function(id:Number, 是否出战:Boole
 		var 宠物对象 = _root.宠物mc库[i];
 		_root.出战宠物id库.splice(i,1);
 		_root.宠物mc库.splice(i,1);
-		宠物对象.removeMovieClip();
+		_root.战宠UI函数.安全移除装备单位(宠物对象);
 		return true;
 	}
 }
@@ -184,7 +233,7 @@ _root.删除场景宠物 = function(){
 	// 清理所有宠物MC实例
 	for (var i = 0; i < _root.宠物mc库.length; i++){
 		if (_root.宠物mc库[i]){
-			_root.宠物mc库[i].removeMovieClip();
+			_root.战宠UI函数.安全移除装备单位(_root.宠物mc库[i]);
 		}
 	}
 	// 清空数组，确保计数归零

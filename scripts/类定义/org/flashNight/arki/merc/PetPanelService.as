@@ -12,6 +12,9 @@
  *     petExpandSlot     — 扩充宠物格子
  *     petRename         — 重命名宠物
  *     petTooltip        — 获取进阶方案 tooltip 详情
+ *     petWeaponTooltip  — 获取托管/预设/背包候选长枪的实例级完整注释
+ *     petEquipWeapon    — 将背包长枪交付给支持托管武器的战宠
+ *     petWithdrawWeapon — 原样取回战宠托管长枪
  *     petPanelOpen      — 面板打开时准备数据
  *     petPanelClose     — 面板关闭时刷新 UI
  *
@@ -22,6 +25,9 @@
  */
 import LiteJSON;
 import org.flashNight.arki.item.PlayerAssetTransaction;
+import org.flashNight.arki.item.InventoryPanelService;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.merc.ManagedLongGunService;
 
 class org.flashNight.arki.merc.PetPanelService {
     private static var _json:LiteJSON;
@@ -58,8 +64,17 @@ class org.flashNight.arki.merc.PetPanelService {
         _root.gameCommands["petTooltip"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleTooltip(params);
         };
+        _root.gameCommands["petWeaponTooltip"] = function(params) {
+            org.flashNight.arki.merc.PetPanelService.handleWeaponTooltip(params);
+        };
         _root.gameCommands["petRestoreStamina"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleRestoreStamina(params);
+        };
+        _root.gameCommands["petEquipWeapon"] = function(params) {
+            org.flashNight.arki.merc.PetPanelService.handleEquipWeapon(params);
+        };
+        _root.gameCommands["petWithdrawWeapon"] = function(params) {
+            org.flashNight.arki.merc.PetPanelService.handleWithdrawWeapon(params);
         };
         _root.gameCommands["petLevelUp"] = function(params) {
             org.flashNight.arki.merc.PetPanelService.handleLevelUp(params);
@@ -90,6 +105,11 @@ class org.flashNight.arki.merc.PetPanelService {
         var callId = params.callId;
         var pets:Array = [];
         var 宠物信息:Array = _root.宠物信息;
+        // 同一轮只签发一次背包 lease。若每只 T800 各取一次快照，后一个会令前一个候选
+        // 的 source lease 立即过期，多 T800 存档会出现“看得见但无法交付”。
+        var weaponBagSnapshot:Object = ManagedLongGunService.hasSupportedPet(宠物信息)
+            && _root.物品栏 != undefined && _root.物品栏.背包 != null
+            ? InventoryPanelService.buildExternalSnapshot("背包", 0, 50) : null;
 
         for (var i:Number = 0; i < 宠物信息.length; i++) {
             var info:Array = 宠物信息[i];
@@ -119,6 +139,9 @@ class org.flashNight.arki.merc.PetPanelService {
                 xpNeededFromAttr = Number(attrs.宠物升级所需经验) || 0;
                 var promos:Array = [];
                 for (var key:String in attrs) {
+                    // 托管快照是 AS2/存档权威，Web 只能读 managedLongGun 安全投影。
+                    // 不得经通用进阶属性分支泄漏完整 item.value/mods/lastUpdate。
+                    if (key == "托管长枪") continue;
                     var val:Object = attrs[key];
                     if (val != undefined && typeof val == "object") {
                         var promoEntry:Object = { scheme: key };
@@ -181,6 +204,9 @@ class org.flashNight.arki.merc.PetPanelService {
                 }
             }
             petEntry.schemeStatus = statusMap;
+
+            var managedWeapon:Object = ManagedLongGunService.buildPanelState(info, weaponBagSnapshot);
+            if (managedWeapon != null) petEntry.managedLongGun = managedWeapon;
 
             pets.push(petEntry);
         }
@@ -491,6 +517,60 @@ class org.flashNight.arki.merc.PetPanelService {
     }
 
     // ═══════════════════════════════════════════════════════════
+    // 托管长枪 — 背包完整快照交付 / 原样取回
+    // ═══════════════════════════════════════════════════════════
+    public static function handleEquipWeapon(params:Object):Void {
+        var callId = params.callId;
+        var slotIndex:Number = Number(params.slotIndex);
+        if (!validPetSlot(slotIndex)) {
+            sendResponse({task:"pet_response", callId:callId,
+                success:false, error:"invalid_slot"});
+            return;
+        }
+        var petInfo:Array = _root.宠物信息[slotIndex];
+        var result:Object = ManagedLongGunService.handoff(petInfo, params.source);
+        sendManagedWeaponResult(callId, slotIndex, petInfo, result);
+    }
+
+    public static function handleWithdrawWeapon(params:Object):Void {
+        var callId = params.callId;
+        var slotIndex:Number = Number(params.slotIndex);
+        if (!validPetSlot(slotIndex)) {
+            sendResponse({task:"pet_response", callId:callId,
+                success:false, error:"invalid_slot"});
+            return;
+        }
+        var petInfo:Array = _root.宠物信息[slotIndex];
+        var result:Object = ManagedLongGunService.withdraw(petInfo);
+        sendManagedWeaponResult(callId, slotIndex, petInfo, result);
+    }
+
+    private static function sendManagedWeaponResult(callId, slotIndex:Number,
+                                                      petInfo:Array, result:Object):Void {
+        var bagSnapshot:Object = _root.物品栏 != undefined && _root.物品栏.背包 != null
+            ? InventoryPanelService.buildExternalSnapshot("背包", 0, 50) : null;
+        var response:Object = {
+            task:"pet_response",
+            callId:callId,
+            success:result != null && result.success === true,
+            slotIndex:slotIndex,
+            inventorySnapshot:bagSnapshot,
+            managedLongGun:ManagedLongGunService.buildPanelState(petInfo, bagSnapshot)
+        };
+        if (response.success) {
+            response.operation = result.operation;
+            response.sourceSlot = result.sourceSlot;
+            response.targetSlot = result.targetSlot;
+            response.weapon = result.weapon;
+            response.rebuilt = rebuildManagedPetIfDeployed(slotIndex, petInfo);
+            response.refreshDeferred = petInfo[4] == 1 && response.rebuilt !== true;
+        } else {
+            response.error = result == null ? "operation_failed" : String(result.error);
+        }
+        sendResponse(response);
+    }
+
+    // ═══════════════════════════════════════════════════════════
     // handleAdvance — 执行进阶方案
     // ═══════════════════════════════════════════════════════════
     public static function handleAdvance(params:Object):Void {
@@ -527,9 +607,14 @@ class org.flashNight.arki.merc.PetPanelService {
             return;
         }
 
+        var advanceAttrs:Object = _root.宠物信息[slotIndex][5];
+        if (advanceAttrs == undefined || typeof advanceAttrs != "object") {
+            advanceAttrs = {};
+            _root.宠物信息[slotIndex][5] = advanceAttrs;
+        }
         var ctx:Object = {
             当前宠物信息: _root.宠物信息[slotIndex],
-            当前宠物属性: _root.宠物信息[slotIndex][5],
+            当前宠物属性: advanceAttrs,
             进阶方案: petSchemeSet
         };
 
@@ -800,6 +885,40 @@ class org.flashNight.arki.merc.PetPanelService {
     }
 
     // ═══════════════════════════════════════════════════════════
+    // handleWeaponTooltip — 托管/预设/候选长枪的 canonical 物品注释
+    // ═══════════════════════════════════════════════════════════
+    public static function handleWeaponTooltip(params:Object):Void {
+        var callId = params.callId;
+        var slotIndex:Number = Number(params.slotIndex);
+        if (!validPetSlot(slotIndex)) {
+            sendResponse({task:"pet_response", callId:callId,
+                success:false, error:"invalid_slot"});
+            return;
+        }
+
+        var petInfo:Array = _root.宠物信息[slotIndex];
+        var tooltip:Object = ManagedLongGunService.buildWeaponTooltip(
+            petInfo, params.source == undefined ? null : params.source);
+        if (tooltip == null || tooltip.success !== true) {
+            sendResponse({task:"pet_response", callId:callId, success:false,
+                error:tooltip == null ? "tooltip_failed" : String(tooltip.error)});
+            return;
+        }
+        sendResponse({
+            task:"pet_response",
+            callId:callId,
+            success:true,
+            v:Number(tooltip.v),
+            itemName:String(tooltip.itemName),
+            displayname:String(tooltip.displayname),
+            iconName:String(tooltip.iconName),
+            itemType:String(tooltip.itemType),
+            descHTML:String(tooltip.descHTML),
+            introHTML:String(tooltip.introHTML)
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════
     // handleRestoreStamina — 消耗金币恢复宠物体力
     // ═══════════════════════════════════════════════════════════
     public static function handleRestoreStamina(params:Object):Void {
@@ -978,6 +1097,11 @@ class org.flashNight.arki.merc.PetPanelService {
             sendResponse({ task: "pet_response", callId: callId, success: false, error: "empty_slot" });
             return;
         }
+        if (_root.当前为战斗地图 == true) {
+            sendResponse({task:"pet_response", callId:callId,
+                success:false, error:"combat_locked"});
+            return;
+        }
 
         var currentLevel:Number = Number(petInfo[1]);
 
@@ -990,9 +1114,18 @@ class org.flashNight.arki.merc.PetPanelService {
         var stoneRefund:Number = Math.floor(Math.sqrt(currentLevel) * 0.8 * xpNeeded / 10000);
         if (isNaN(stoneRefund) || stoneRefund < 0) stoneRefund = 0;
 
-        // 清理场上所有宠物 MC
-        if (_root.删除场景宠物 != undefined) {
-            _root.删除场景宠物();
+        // 先完成全部无副作用预检。托管武器需要一个真实背包空位；若塞不下，宠物、
+        // 场景实例与灵石均保持不变。灵石虽通常进材料栏，仍需防数量上限/异常存档。
+        var weaponPreflight:Object = ManagedLongGunService.preflightWithdrawal(petInfo);
+        if (weaponPreflight.success !== true) {
+            sendResponse({task:"pet_response", callId:callId,
+                success:false, error:String(weaponPreflight.error)});
+            return;
+        }
+        if (stoneRefund > 0 && ItemUtil.singleRequire("战宠灵石", stoneRefund) == null) {
+            sendResponse({task:"pet_response", callId:callId,
+                success:false, error:"inventory_full", refund:stoneRefund});
+            return;
         }
 
         // 返还灵石与清空宠物槽属于同一个领域提交；singleAcquire 在外层事务内
@@ -1002,11 +1135,23 @@ class org.flashNight.arki.merc.PetPanelService {
         };
         var deleteTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(deleteContext);
+        var weaponReturned:Boolean = false;
+        if (weaponPreflight.required === true) {
+            var weaponReturn:Object = ManagedLongGunService.withdraw(petInfo);
+            if (weaponReturn.success !== true) {
+                org.flashNight.arki.item.PlayerAssetTransaction.rollback(deleteTransaction);
+                sendResponse({task:"pet_response", callId:callId,
+                    success:false, error:String(weaponReturn.error)});
+                return;
+            }
+            weaponReturned = true;
+        }
         if (stoneRefund > 0) {
             if (!_root.singleAcquire("战宠灵石", stoneRefund, deleteContext)) {
                 org.flashNight.arki.item.PlayerAssetTransaction.rollback(deleteTransaction);
                 sendResponse({task:"pet_response", callId:callId,
-                    success:false, error:"inventory_full", refund:stoneRefund});
+                    success:false, error:"inventory_full", refund:stoneRefund,
+                    weaponReturned:weaponReturned});
                 return;
             }
         }
@@ -1016,6 +1161,11 @@ class org.flashNight.arki.merc.PetPanelService {
         // 删除宠物 + 返还灵石均存档字段；返还为 0 时 singleAcquire 不触发标脏，故此处独立标脏
         _root.存档系统.dirtyMark = true;
         org.flashNight.arki.item.PlayerAssetTransaction.commit(deleteTransaction);
+
+        // 所有权写入成功后才触碰场景。删除路径统一走显式 lifecycle teardown。
+        if (_root.删除场景宠物 != undefined) {
+            _root.删除场景宠物();
+        }
 
         // 重建场上其他出战宠物
         var hasDeployed:Boolean = false;
@@ -1053,7 +1203,8 @@ class org.flashNight.arki.merc.PetPanelService {
             success: true,
             slotIndex: slotIndex,
             deleted: true,
-            stoneRefund: stoneRefund
+            stoneRefund: stoneRefund,
+            weaponReturned: weaponReturned
         });
     }
 
@@ -1175,6 +1326,20 @@ class org.flashNight.arki.merc.PetPanelService {
 
     private static function sendResponse(resp:Object):Void {
         _root.server.sendSocketMessage(_json.stringifySafe(resp));
+    }
+
+    private static function validPetSlot(slotIndex:Number):Boolean {
+        if (isNaN(slotIndex) || Math.floor(slotIndex) != slotIndex
+                || slotIndex < 0 || slotIndex >= _root.宠物信息.length) return false;
+        var info:Array = _root.宠物信息[slotIndex];
+        return info != undefined && info.length >= 5;
+    }
+
+    private static function rebuildManagedPetIfDeployed(slotIndex:Number, petInfo:Array):Boolean {
+        if (petInfo == undefined || petInfo[4] != 1) return true;
+        if (_root.战宠UI函数 == undefined
+                || typeof _root.战宠UI函数.重建宠物单位 != "function") return false;
+        return _root.战宠UI函数.重建宠物单位(slotIndex) === true;
     }
 
     // ── 宠物购买涨价（持久）─────────────────────────────────────────────
@@ -1416,7 +1581,7 @@ class org.flashNight.arki.merc.PetPanelService {
     // 判定方案锁定原因（细分等级锁/前置锁，供 JS 区分文案）。
     //   ""      = 未锁
     //   "level" = 等级未达 解锁等级
-    //   "prereq"= 前置累进未达（次数条件 = 需要的 基础训练.次数；三件套链 基础训练→强化药剂→超级血清）
+    //   "prereq"= 显式前置方案或前置累进未达（三件套链 基础训练→强化药剂→超级血清）
     // 等级优先：若等级也不够则先报 level（升级是更靠前的硬门槛）。
     //
     // petSchemeSet = 本宠物自己的方案子集（按 Promotion 过滤的全局表）。还原原始设计：
@@ -1426,6 +1591,12 @@ class org.flashNight.arki.merc.PetPanelService {
     private static function schemeLockReason(sc:Object, attrs:Object, petLevel:Number, petSchemeSet:Object):String {
         if (sc == undefined) return "level";
         if (petLevel < (Number(sc.解锁等级) || 0)) return "level";
+        if (sc.前置方案 != undefined && String(sc.前置方案) != "") {
+            var prerequisite:String = String(sc.前置方案);
+            var prerequisiteValue:Object = attrs == undefined ? undefined : attrs[prerequisite];
+            if (prerequisiteValue == undefined || prerequisiteValue === false
+                    || prerequisiteValue === 0 || prerequisiteValue === "") return "prereq";
+        }
         var req:Number = Number(sc.次数条件);
         if (sc.次数条件 != undefined && req > 0) {
             // 本宠链里是否有产出"次数<req"的更低阶前置：基础训练产出次数1，强化药剂产出次数2。

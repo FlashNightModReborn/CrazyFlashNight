@@ -14,7 +14,7 @@ namespace CF7Launcher.Tasks
     /// 战宠面板 WebView ↔ Flash 双层 callId 桥接。
     /// 与 ArenaTask / ShopTask 同构：
     ///   Web → C#   {type:"panel", panel:"pets", cmd, callId, ...}
-    ///   C# → Flash {task:"cmd", action:"petSnapshot/petAdopt/...", callId:fid, ...}
+    ///   C# → Flash {task:"cmd", action:"petSnapshot/petAdopt/petEquipWeapon/...", callId:fid, ...}
     ///   Flash → C# {task:"pet_response", callId:fid, success, ...}
     ///   C# → Web   {type:"panel_resp", panel:"pets", cmd, callId, success, ...}
     ///
@@ -142,8 +142,17 @@ namespace CF7Launcher.Tasks
                 case "pet_tooltip":
                     action = "petTooltip";
                     break;
+                case "weapon_tooltip":
+                    action = "petWeaponTooltip";
+                    break;
                 case "restore_stamina":
                     action = "petRestoreStamina";
+                    break;
+                case "equip_weapon":
+                    action = "petEquipWeapon";
+                    break;
+                case "withdraw_weapon":
+                    action = "petWithdrawWeapon";
                     break;
                 case "level_up":
                     action = "petLevelUp";

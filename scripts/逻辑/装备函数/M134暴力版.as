@@ -3,6 +3,7 @@
 	if (!反射对象.是否为主角)
 	{
 		var 自机 = 反射对象.自机;
+		反射对象.允许自动抡枪 = !(自机.装备能力 && 自机.装备能力.自动抡枪 === false);
 		反射对象.间隔 = 参数对象.interval ? 参数对象.interval : 5000;
     	反射对象.标签 = 参数对象.label ? 参数对象.label :"自动抡枪";
 		反射对象.X轴 = 参数对象.x_range ? 参数对象.x_range : 180;
@@ -29,13 +30,14 @@ _root.装备生命周期函数.M134暴力版周期 = function(反射对象, 参�
 {
 	EquipmentTick.cleanup(反射对象);
 	
-	if (!反射对象.是否为主角)
+	if (!反射对象.是否为主角 && 反射对象.允许自动抡枪)
 	{
 		_root.更新并执行时间间隔动作(反射对象,反射对象.标签,反射对象.自动抡枪,反射对象.间隔,true,反射对象);
 	}
 
 	var target:MovieClip = 反射对象.自机;
-	var laser:MovieClip = target.长枪_引用.激光模组;
+	var gun:MovieClip = target.长枪_引用;
+	var laser:MovieClip = gun ? gun.激光模组 : null;
 
-	laser._visible = (反射对象.自机.攻击模式 === "长枪");
+	if (laser) laser._visible = (反射对象.自机.攻击模式 === "长枪");
 };

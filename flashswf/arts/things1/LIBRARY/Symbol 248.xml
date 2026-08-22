@@ -37,7 +37,7 @@
             <DOMFrame index="32" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" name="换弹夹" labelType="name" keyMode="9728">
+            <DOMFrame index="37" name="换弹匣" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -49,210 +49,14 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 射击()
-{
-	if (_parent.长枪射击次数 >= 弹夹容量)
-	{
-		delete this.onEnterFrame;
-		换弹夹();
-	}
-	else
-	{
-		_parent.长枪射击次数 = _parent.长枪射击次数 + 1;
-		if (_root.控制目标 == _parent._name)
-		{
-			_root.玩家必要信息界面.子弹数 = 弹夹容量 - _parent.长枪射击次数;
-		}
-		_root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._name,shootX,shootY,_parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-		if (长枪是否单发 == true)
-		{
-			_parent.单发枪计时();
-		}
-		if (_root.控制目标全自动 == false and _root.控制目标 == _parent._name)
-		{
-			if (Key.isDown(_root.下键))
-			{
-				gotoAndStop("下射击");
-				play();
-			}
-			else if (Key.isDown(_root.上键))
-			{
-				gotoAndStop("上射击");
-				play();
-			}
-			else
-			{
-				gotoAndStop("射击");
-				play();
-			}
-		}
-	}
-}
-function 换弹夹()
-{
-	delete this.onEnterFrame;
-	clearInterval(keepshooting);
-	if (_root.控制目标 == _parent._name)
-	{
-		i2 = 0;
-		while (i2 < _root.物品栏总数)
-		{
-			if (_root.物品栏[i2][0] == 使用弹夹名称)
-			{
-				if (_root.物品栏[i2][1] >= 1)
-				{
-					_root.物品栏[i2][1]--;
-					_root.排列物品图标();
-					_parent.长枪射击次数 = 0;
-					gotoAndStop("换弹夹");
-					play();
-					break;
-				}
-				_root.发布消息("弹夹耗尽！");
-				_root.物品栏[i2] = ["空", 0, 0];
-				_root.排列物品图标();
-				if (_parent.长枪射击次数 >= 弹夹容量)
-				{
-					gotoAndStop("结束");
-				}
-				break;
-			}
-			i2++;
-		}
-	}
-	else
-	{
-		_parent.长枪射击次数 = 0;
-		gotoAndStop("换弹夹");
-		play();
-	}
-}
-function 检查下是否有弹夹()
-{
-	i = 0;
-	while (i < _root.物品栏总数)
-	{
-		if (_root.物品栏[i][0] == 使用弹夹名称)
-		{
-			return _root.物品栏[i][1];
-		}
-		i++;
-	}
-	return 0;
-}
-// 适配新的装备系统
-
-// 新系统：从长枪属性对象读取
-射击速度 = _parent.长枪属性.interval;
-长枪是否单发 = false; // 没翻到属性在哪
-弹夹容量 = _parent.长枪属性.capacity;
-使用弹夹名称 = _parent.长枪属性.clipname;
-声音 = _parent.长枪属性.sound;
-霰弹值 = _parent.长枪属性.split;
-子弹散射度 = _parent.长枪属性.diffusion;
-发射效果 = _parent.长枪属性.muzzle;
-子弹种类 = _parent.长枪属性.bullet;
-子弹威力 = _parent.长枪属性.power;
-子弹速度 = _parent.长枪属性.velocity;
-击中地图效果 = _parent.长枪属性.bullethit;
-Z轴攻击范围 = _parent.长枪属性.bulletsize;
-击倒率 = _parent.长枪属性.impact;
-击中后子弹的效果 = _parent.长枪属性.effect ? _parent.长枪属性.effect : undefined;
-
-if (_parent.是否为敌人 == true)
-{
-	子弹敌我属性 = false;
-}
-else
-{
-	子弹敌我属性 = true;
-}
-var myPoint = {x:this.枪.枪.装扮.枪口位置._x, y:this.枪.枪.装扮.枪口位置._y};
-this.枪.枪.装扮.localToGlobal(myPoint);
-if (myPoint.y == this.枪.枪.装扮.枪口位置._y)
-{
-	_parent.动画完毕();
-}
-_root.gameworld.globalToLocal(myPoint);
-shootX = myPoint.x;
-shootY = myPoint.y;
-剩余弹夹数 = 检查下是否有弹夹();
-if (_parent.强制换弹夹 == true and 剩余弹夹数 >= 0 and _parent.长枪射击次数 > 0)
-{
-	换弹夹();
-}
-else
-{
-	_parent.强制换弹夹 = false;
-}
-if (剩余弹夹数 <= 0 and _parent.长枪射击次数 >= 弹夹容量 and _parent.强制换弹夹 != true)
-{
-	delete this.onEnterFrame;
-	clearInterval(keepshooting);
-	gotoAndStop("空枪");
-	play();
-}
-else if (剩余弹夹数 >= 0 and _parent.长枪射击次数 < 弹夹容量 and _parent.强制换弹夹 != true)
-{
-	if (长枪是否单发 == true)
-	{
-		if (_parent.单发枪计时_时间结束 == true)
-		{
-			射击();
-		}
-		else
-		{
-			gotoAndStop("结束");
-		}
-	}
-	else
-	{
-		射击();
-	}
-	keepshooting = setInterval(射击, 射击速度);
-}
-结束攻击计数 = 0;
-结束攻击数 = random(200);
-this.onEnterFrame = function()
-{
-	if (_parent.长枪射击次数 >= 弹夹容量)
-	{
-		换弹夹();
-		delete this.onEnterFrame;
-	}
-	if (_root.控制目标全自动 == false and _root.控制目标 == _parent._name and Key.isDown(_root.A键) == false)
-	{
-		clearInterval(keepshooting);
-		_parent.动画完毕();
-	}
-	结束攻击计数++;
-	if (结束攻击数 < 结束攻击计数)
-	{
-		_parent.动画完毕();
-	}
-};
-this.onUnload = function()
-{
-	clearInterval(keepshooting);
-	delete this.onEnterFrame;
-};
-stop();]]></script>
+<script><![CDATA[this.射击许可标签 = this;
+初始化并开始射击 = _root.敌人函数.初始化并开始射击;
+初始化并开始射击();
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[var myPoint = {x:this.枪.枪.装扮.枪口位置._x,y:this.枪.枪.装扮.枪口位置._y};
-this.枪.枪.装扮.localToGlobal(myPoint);
-if(myPoint.y == this.枪.枪.装扮.枪口位置._y)
-{
-   _parent.动画完毕();
-}
-_root.gameworld.globalToLocal(myPoint);
-shootX = myPoint.x;
-shootY = myPoint.y;
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="3" duration="5" keyMode="9728">
@@ -261,24 +65,11 @@ shootY = myPoint.y;
             <DOMFrame index="8" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-_parent.动画完毕();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[var myPoint = {x:this.枪.枪.装扮.枪口位置._x,y:this.枪.枪.装扮.枪口位置._y};
-this.枪.枪.装扮.localToGlobal(myPoint);
-if(myPoint.y == this.枪.枪.装扮.枪口位置._y)
-{
-   _parent.动画完毕();
-}
-_root.gameworld.globalToLocal(myPoint);
-shootX = myPoint.x;
-shootY = myPoint.y;
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="6" keyMode="9728">
@@ -287,24 +78,11 @@ shootY = myPoint.y;
             <DOMFrame index="16" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-_parent.动画完毕();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="17" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[var myPoint = {x:this.枪.枪.装扮.枪口位置._x,y:this.枪.枪.装扮.枪口位置._y};
-this.枪.枪.装扮.localToGlobal(myPoint);
-if(myPoint.y == this.枪.枪.装扮.枪口位置._y)
-{
-   _parent.动画完毕();
-}
-_root.gameworld.globalToLocal(myPoint);
-shootX = myPoint.x;
-shootY = myPoint.y;
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="18" duration="6" keyMode="9728">
@@ -313,7 +91,6 @@ shootY = myPoint.y;
             <DOMFrame index="24" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-_parent.动画完毕();
 ]]></script>
               </Actionscript>
               <elements/>
@@ -352,13 +129,19 @@ _parent.动画完毕();
             <DOMFrame index="37" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[delete this.onEnterFrame;
-_parent.强制换弹夹 = false;
 play();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="38" duration="45" keyMode="9728">
+            <DOMFrame index="38" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[换弹匣();
+]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="83" keyMode="9728">

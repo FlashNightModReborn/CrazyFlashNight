@@ -39,7 +39,7 @@ asLoader.swf
 ## 2. 新增 / 修改一个装备脚本
 
 1. **建文件**：复制现有 `.as` 改名（保 UTF-8 **with BOM**；禁止从零新建——丢 BOM 会被编译器静默跳过）。
-2. **写函数**：`_root.装备生命周期函数.XXX初始化 = function(ref, param){…}` + `.XXX周期 = function(ref, param){…}`。
+2. **写函数**：常规装备注册 `_root.装备生命周期函数.XXX初始化 = function(ref, param){…}` + `.XXX周期 = function(ref, param){…}`；纯初始化装备可以只写 init。
    周期函数**首行**必须 `if (!EquipmentTick.open(ref)) return;`（或 `EquipmentTick.cleanup(ref);`）。
    范例：最简看 `M249.as`，射击动画看 `M134.as`，含弹容/换弹状态的完整范例看 `追月连弩.as`。
 3. **绑物品**：在 `data/items/武器_*.xml`（或对应物品文件）该 `<item>` 内、与 `<data>` 同级加：
@@ -69,9 +69,11 @@ asLoader.swf
 
 1. 构造 **`ref`（反射对象）**（见 §5 字段表），含 `自机`/`装备类型`/`装备名称`/`标签名`/`子弹配置` 等。
 2. 有 `<skill>` → `装载主动战技`；有 `<bullet>` → 逐 `bullet_N` 经 `子弹属性初始化` 建 `ref.子弹配置[...]`；有 `<data>` → 存 `ref.data`。
-3. 调 `_root.装备生命周期函数[initRoutines](ref, initParam || {})`。
-4. 把 `_root.装备生命周期函数[cycleRoutines]` 经 `帧计时器.taskManager.addLifecycleTask` 注册为每帧任务，传 `[ref, cycleParam || {}]`。
-5. 注册卸载回调进 `自机.生命周期函数列表`——**装备切换/版本变更时自动卸载，无需手工清理**（`EquipmentTick.open/cleanup` 内含 `移除异常周期函数` 检测）。
+3. 有 `<init>` 时，调 `_root.装备生命周期函数[initRoutines](ref, initParam || {})`。
+4. 有 `<cycle>` 时，把 `_root.装备生命周期函数[cycleRoutines]` 经 `帧计时器.taskManager.addLifecycleTask` 注册为每帧任务，传 `[ref, cycleParam || {}]`。
+5. 周期任务注册卸载回调进 `自机.生命周期函数列表`——装备切换/版本变更时自动卸载（`EquipmentTick.open/cleanup` 内含 `移除异常周期函数` 检测）。整只单位被主动重建或移除时，调用方应先执行 `DressupInitializer.teardownLifeCycles(unit)`，再 `removeMovieClip()`；二次清理安全。
+
+`<init>` 与 `<cycle>` 独立可选，但一个 `attr_N` 至少应声明其中之一。loader 对既有 init-only 节点使用空 routine 名生成稳定标签，不再访问缺失的 `cycle.cycleRoutines`。
 
 函数签名：
 ```actionscript
@@ -91,11 +93,11 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 <lifecycle>
   <attr_0>
     <init>
-      <initRoutines>函数名初始化</initRoutines>   <!-- 必填，精确匹配 _root.装备生命周期函数 上的键 -->
+      <initRoutines>函数名初始化</initRoutines>   <!-- init 存在时必填，精确匹配注册键 -->
       <initParam> … 任意键，原样传入 init 的 param … </initParam>
     </init>
     <cycle>
-      <cycleRoutines>函数名周期</cycleRoutines>     <!-- 必填 -->
+      <cycleRoutines>函数名周期</cycleRoutines>     <!-- cycle 存在时必填；init-only 可省略整个 cycle -->
       <cycleParam> … 任意键，原样传入 周期 的 param … </cycleParam>
     </cycle>
     <bullet>                                       <!-- 可选；无射击机制可省 -->
@@ -181,7 +183,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 - `通用装备函数.as` — 通用行为 helper 库（初期特效 / 通用变形 / 通用刀光 / 通用拖影 / 通用特效刀口 / 自机状态检测 系列）+ `移除周期函数`/`解析刀口`/`获得身高修正比` 等框架函数。
 
 ### A. 加特林连射族（转轴/转盘连续旋转）
-- `M134.as` — M134加特林 · 连射计数+旋转控制器驱动转轴动画，射击加速/停射衰减
+- `M134.as` — M134加特林 · 成功 `processShot`/旧射击事件产生主长枪旋转意图，旋转控制器驱动当前活动 `man` 的规范装扮引用，射击加速/停射衰减；副武器隔离
 - `M134暴力版.as` — M134加特林（NPC自动版） · 非玩家单位按时间间隔自动射击 + 距离判定
 - `XM214-CageFrame.as` — XM214 笼式框架加特林 · 霰弹值驱动转速，自动衰减 + 双环抖动反馈
 - `XM556_Microgun.as` — XM556 微型加特林 · 转盘连续旋转，射击加速/停射减速的视觉惯性

@@ -1,0 +1,9 @@
+﻿trace("FocusedTestRunId managed-longgun Start: __FOCUSED_RUN_ID__");
+import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
+
+if (_root.装备生命周期函数 == undefined) _root.装备生命周期函数 = {};
+#include "逻辑/装备函数/M134.as"
+
+org.flashNight.arki.merc.ManagedLongGunServiceTest.runAllTests();
+org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest.runAllTests();
+trace("FocusedTestRunId managed-longgun Complete: __FOCUSED_RUN_ID__");

@@ -45,6 +45,8 @@
             var setId:String = "";
             var effectId:String = "";
             var componentId:String = "";
+            var initRoutineName:String = init ? String(init.initRoutines || "") : "";
+            var cycleRoutineName:String = cycle ? String(cycle.cycleRoutines || "") : "";
 
             if(isGated)
             {
@@ -57,13 +59,13 @@
 
             var 标签名 = isGated
                 ? "set:" + setId + ":" + effectId + ":" + 装备类型 + ":" + componentId
-                : 装备名称 + "_" + 装备类型 +  "_" + cycle.cycleRoutines + each; // 构建标签名，用于周期性任务的唯一标识
+                : 装备名称 + "_" + 装备类型 +  "_" + cycleRoutineName + each; // init-only 生命周期也生成确定标签
 
             var 反射对象 = {标签名:标签名,
-                           初始化函数:init.initRoutines,
-                           初始化参数:init.initParam, 
-                           生命周期函数:cycle.cycleRoutines, 
-                           生命周期参数:cycle.cycleParam, 
+                           初始化函数:initRoutineName,
+                           初始化参数:init ? init.initParam : undefined,
+                           生命周期函数:cycleRoutineName,
+                           生命周期参数:cycle ? cycle.cycleParam : undefined,
                            装备类型:装备类型, 
                            装备名称:装备名称,
                            装备种类:装备种类, 

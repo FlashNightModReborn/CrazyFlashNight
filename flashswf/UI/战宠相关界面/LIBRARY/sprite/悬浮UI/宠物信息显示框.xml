@@ -99,6 +99,30 @@ function 宠物升级(该宠物信息, 格子位置号, 强化石数量)
 }
 function 删除宠物(该宠物信息, 格子位置号)
 {
+	// 旧 Flash 入口仍须遵守托管武器所有权约束；不能绕过 Web 面板直接吞掉装备。
+	if (!_root.战宠UI函数 || typeof _root.战宠UI函数.预检托管长枪取回 != "function" || typeof _root.战宠UI函数.取回托管长枪 != "function")
+	{
+		_root.最上层发布文字提示(_root.获得翻译("托管武器服务不可用，已取消删除！"));
+		return;
+	}
+	var 武器预检 = _root.战宠UI函数.预检托管长枪取回(该宠物信息);
+	if (武器预检.success !== true)
+	{
+		var 删除失败原因 = 武器预检.error == "inventory_full"
+			? "背包没有空位，无法返还托管武器！"
+			: "托管武器无法安全返还，已取消删除！";
+		_root.最上层发布文字提示(_root.获得翻译(删除失败原因));
+		return;
+	}
+	if (武器预检.required === true)
+	{
+		var 武器返还结果 = _root.战宠UI函数.取回托管长枪(该宠物信息);
+		if (武器返还结果.success !== true)
+		{
+			_root.最上层发布文字提示(_root.获得翻译("托管武器返还失败，已取消删除！"));
+			return;
+		}
+	}
 	_root.最上层发布文字提示(_root.获得翻译("删除成功！"));
 	_root.删除场景宠物();
 	计算返还战宠灵石 = 0;

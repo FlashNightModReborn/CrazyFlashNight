@@ -21,6 +21,7 @@ html,body { margin:0; background:#080807; color:#ddd; font-family:"Microsoft YaH
 </div>
 <div id="qa">running</div>
 <script>
+window.__TEAM_PET_CONFIG__ = { requestTimeoutMs: 100 };
 var PanelTooltip = {
   hide:function(){}, showAtMouse:function(){}, followMouse:function(){}, isVisible:function(){return false;},
   updateContent:function(){}, buildItemRichHtml:function(){return '';},
@@ -59,7 +60,10 @@ var PanelTooltip = {
 var Toast = { added:[], add:function(m){ this.added.push(String(m)); } };
 // 命中烘焙图标的真技能名映射（指向仓库内真实产物，<base> 已指到 web 根）；
 // 其余名字 resolve null → 占位回退路径
-var ICON_BAKED = { '小跳':'icons/0cabdeba_1.webp', '闪现':'icons/03b529e4_1.webp' };
+var ICON_BAKED = {
+  '小跳':'icons/0cabdeba_1.webp', '闪现':'icons/03b529e4_1.webp',
+  'L85A1':'icons/0cabdeba_1.webp', '测试UZI':'icons/03b529e4_1.webp'
+};
 var Icons = {
   load:function(cb){ if(cb)cb(); },
   resolve:function(name){ return ICON_BAKED[name] || null; },
@@ -78,10 +82,29 @@ function emit(type, data){ (listeners[type] || []).forEach(function(cb){ cb(data
 var PET_LIB = [
   {id:1,identifier:'敌人-李小龙',rosterType:'partner',promotions:['淬毒']},
   {id:2,identifier:'敌人-武装JK',rosterType:'pet',promotions:[]},
-  {id:3,identifier:'敌人-二足型机器人',rosterType:'mechanical',promotions:[]}
+  {id:66,identifier:'敌人-终结者T800',rosterType:'mechanical',promotions:['终结者武器扩展','终结者全武装']}
 ];
-function pet(id,name,slot,lv,dep){ return {petId:id,name:name,slotIndex:slot,level:lv,deployed:!!dep,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{},
-  combat:{hp:{start:520,cur:3500,max:13000},attack:{start:12,cur:90,max:270},defense:{start:150,cur:550,max:900},speed:{start:8,cur:9,max:10},startLevel:1,maxLevel:100,difficulty:1}}; }
+function pet(id,name,slot,lv,dep){
+  var out={petId:id,name:name,slotIndex:slot,level:lv,deployed:!!dep,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{},
+    combat:{hp:{start:520,cur:3500,max:13000},attack:{start:12,cur:90,max:270},defense:{start:150,cur:550,max:900},speed:{start:8,cur:9,max:10},startLevel:1,maxLevel:100,difficulty:1}};
+  if(id===66){
+    var gunCandidates=[
+      {source:{containerId:'背包',slot:7,expectedLease:'lease-t800-7'},eligible:true,lockReason:'',requirementLevel:8,levelLimit:10,
+        item:{name:'测试UZI',displayName:'测试UZI',icon:'小跳',weaponType:'冲锋枪',enhancementLevel:6,modSlotUsed:1}},
+      {source:{containerId:'背包',slot:8,expectedLease:'lease-t800-8'},eligible:false,lockReason:'weapon_type_locked',requirementLevel:8,levelLimit:10,
+        item:{name:'测试战斗步枪',displayName:'测试战斗步枪',icon:'闪现',weaponType:'战斗步枪',enhancementLevel:1,modSlotUsed:0}}
+    ];
+    for(var gunSlot=9;gunSlot<25;gunSlot++) gunCandidates.push({
+      source:{containerId:'背包',slot:gunSlot,expectedLease:'lease-t800-'+gunSlot},eligible:true,lockReason:'',requirementLevel:8,levelLimit:10,
+      item:{name:'测试冲锋枪'+gunSlot,displayName:'测试冲锋枪 '+gunSlot,icon:'小跳',weaponType:'冲锋枪',enhancementLevel:gunSlot%14,modSlotUsed:gunSlot%3}
+    });
+    out.managedLongGun={supported:true,rank:0,rankLabel:'初始',levelLimit:10,defaultWeapon:'L85A1',
+      defaultWeaponView:{name:'L85A1',displayName:'L85A1',icon:'L85A1',enhancementLevel:1},combatLocked:false,custodyCorrupt:false,
+      weapon:MockHost.t800Managed?{name:'测试UZI',displayName:'测试UZI',weaponType:'冲锋枪',enhancementLevel:6,modSlotUsed:1,frozenShot:7}:null,
+      candidates:MockHost.t800Managed?[]:gunCandidates};
+  }
+  return out;
+}
 function equips(){ var out=[]; for(var i=6;i<=16;i++) out.push({slot:i,name:'装备'+i,displayname:'装备'+i,level:1}); return out; }
 function midnightEquips(){ return [
   {slot:6,name:'锐刻幻影夜视仪',displayname:'锐刻幻影夜视仪',level:8},
@@ -128,6 +151,11 @@ var MockHost = {
   failSnapshot:false,     // R：pets snapshot 回 {success:false, error}（roster error 空态注入）
   failMercSnapshot:false, // 外审二轮：mercs snapshot 回 {success:false, error}（merc roster error 空态注入）
   dualBadge:false,        // R：伙伴乙（出战中）体力归零 →「出战中」+「体力耗尽」双字牌共存样例
+  t800Managed:false,
+  dropNextEquipWeapon:false,
+  lastEquipWeapon:null,
+  lastWithdrawWeapon:null,
+  lastWeaponTooltip:null,
   handle:function(msg){
     if(msg.cmd === 'close'){ this.closeCount++; return; }
     var resp={type:'panel_resp',panel:msg.panel,cmd:msg.cmd,callId:msg.callId,success:true};
@@ -135,21 +163,35 @@ var MockHost = {
       emit('panel_resp',{type:'panel_resp',panel:'mercs',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{hiredMercs:[]}});
       if(this.failSnapshot){ resp.success=false; resp.error='模拟快照故障'; }
       else{
-      resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,false),pet(1,'伙伴乙',3,5,true),pet(2,'战宠甲',1,20,false),pet(3,'机械甲',2,10,false)],
+      resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,false),pet(1,'伙伴乙',3,5,true),pet(2,'战宠甲',1,20,false),pet(66,'终结者-x',2,10,false)],
         gold:999999,kpoint:999,currentDeployCount:1,maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:this.playerTask,
-        schemes:{'淬毒':{gold:500,desc:'攻击附带毒素',type:'开关',unlockLevel:1,buttonText:'进阶'}},priceOverrides:{}};
+        schemes:{'淬毒':{gold:500,desc:'攻击附带毒素',type:'开关',unlockLevel:1,buttonText:'进阶'},
+          '终结者武器扩展':{gold:100000,desc:'开放全部长枪',type:'',unlockLevel:30,buttonText:'扩展武器接口'},
+          '终结者全武装':{gold:300000,desc:'移除固定等级上限',type:'',unlockLevel:50,buttonText:'完成全武装'}},priceOverrides:{}};
       if(this.dualBadge && resp.snapshot.pets.length>1) resp.snapshot.pets[1].stamina=0;
       }
     }
     if(msg.panel === 'pets' && msg.cmd === 'pet_lib') resp.petLib=PET_LIB;
     if(msg.panel === 'pets' && msg.cmd === 'adopt_list'){
       this.lastAdoptRequest=msg;
-      resp.categories=[{index:0,name:'基础',count:2},{index:1,name:'空分类',count:0}];
-      resp.selectedCategoryIndex=msg.categoryIndex;
-      resp.adoptable=(msg.categoryIndex===1)?[]:[
-        {petId:10,identifier:'敌人-方舟妖姬',name:'测试宠',price:1000,kprice:0,unique:false,unlockLevel:1,unlockTask:0},
-        {petId:11,identifier:'敌人-Lady',name:'天价宠',price:99999999,kprice:0,unique:true,unlockLevel:1,unlockTask:this.lockSecondStore?130:0}
-      ];
+      if(msg.rosterType==='mechanical'){
+        // 真实 PetCatalogLoader 保留 pets.xml 的原始分类索引；机械目录的首个可用分类并非 0。
+        resp.categories=[{index:2,name:'???/彩蛋',count:1},{index:8,name:'诺亚',count:2}];
+        resp.selectedCategoryIndex=(msg.categoryIndex===8)?8:2;
+        resp.adoptable=(resp.selectedCategoryIndex===2)?[
+          {petId:66,identifier:'敌人-终结者T800',name:'终结者-x',price:300000,kprice:0,unique:true,unlockLevel:1,unlockTask:0,rosterType:'mechanical'}
+        ]:[
+          {petId:51,identifier:'敌人-二足机器人',name:'二足机器人',price:100000,kprice:0,unique:false,unlockLevel:1,unlockTask:0,rosterType:'mechanical'},
+          {petId:90,identifier:'敌人-二足机器人改',name:'二足机器人改',price:200000,kprice:0,unique:false,unlockLevel:1,unlockTask:0,rosterType:'mechanical'}
+        ];
+      }else{
+        resp.categories=[{index:0,name:'基础',count:2},{index:1,name:'空分类',count:0}];
+        resp.selectedCategoryIndex=msg.categoryIndex;
+        resp.adoptable=(msg.categoryIndex===1)?[]:[
+          {petId:10,identifier:'敌人-方舟妖姬',name:'测试宠',price:1000,kprice:0,unique:false,unlockLevel:1,unlockTask:0},
+          {petId:11,identifier:'敌人-Lady',name:'天价宠',price:99999999,kprice:0,unique:true,unlockLevel:1,unlockTask:this.lockSecondStore?130:0}
+        ];
+      }
     }
     if(msg.panel === 'pets' && msg.cmd === 'deploy'){
       this.lastDeploy=msg;
@@ -161,6 +203,20 @@ var MockHost = {
     if(msg.panel === 'pets' && msg.cmd === 'level_up'){ resp.stoneCost=21; }
     if(msg.panel === 'pets' && msg.cmd === 'delete'){ this.lastDelete=msg; resp.stoneRefund=3; }
     if(msg.panel === 'pets' && msg.cmd === 'advance'){ resp.gold=998999; resp.kpoint=999; }
+    if(msg.panel === 'pets' && msg.cmd === 'equip_weapon'){
+      this.lastEquipWeapon=msg;
+      if(this.dropNextEquipWeapon){ this.dropNextEquipWeapon=false; return; }
+      this.t800Managed=true; resp.operation='handoff'; resp.rebuilt=true;
+    }
+    if(msg.panel === 'pets' && msg.cmd === 'withdraw_weapon'){
+      this.lastWithdrawWeapon=msg; this.t800Managed=false; resp.operation='withdraw'; resp.rebuilt=true;
+    }
+    if(msg.panel === 'pets' && msg.cmd === 'weapon_tooltip'){
+      this.lastWeaponTooltip=msg;
+      resp.v=1; resp.itemName=msg.source?'测试UZI':(this.t800Managed?'测试UZI':'L85A1');
+      resp.displayname=resp.itemName; resp.iconName=resp.itemName; resp.itemType='武器';
+      resp.introHTML='<b>实例属性</b>'; resp.descHTML='强化、插件与弹量完整说明';
+    }
     if(msg.panel === 'pets' && msg.cmd === 'adopt'){
       this.lastAdopt=msg;
       if(this.failAdopt){ resp.success=false; resp.reason='模拟领养失败原因'; }
@@ -692,6 +748,97 @@ var MockHost = {
     assert('team-p28','机械 tab：标题 + 单卡',
       petWorkbench().querySelector('.workbench-title').textContent==='机械管理' &&
       petCards().length===1 && petWorkbench().getAttribute('data-team-roster')==='mechanical');
+    var t800RosterCard=petCards()[0];
+    var t800DetailReadout=document.querySelector('.team-pet-detail .team-managed-gun-readout');
+    assert('team-t800-0','T800 名册卡保持原排版，武器图标与名称只在右侧详情展示',
+      !t800RosterCard.querySelector('.team-managed-gun-card-band') &&
+      t800DetailReadout && !!t800DetailReadout.querySelector('.team-managed-gun-icon-cell img') &&
+      t800DetailReadout.textContent.indexOf('预设 · L85A1')>=0 &&
+      !t800DetailReadout.hasAttribute('title') &&
+      PanelTooltip.__bindingsFor(t800DetailReadout).some(function(r){return r.scope==='team-pet-items';}) &&
+      (t800RosterCard.getAttribute('aria-label')||'').indexOf('L85A1')>=0);
+    document.querySelector('.team-goto-store').click();
+    await waitFor(function(){ return !!document.querySelector('.team-store-card[data-pet-id="66"]'); },2000);
+    assert('team-p28a','机械领养目录：非零原始分类索引仍能直达 66 号终结者',
+      MockHost.lastAdoptRequest && MockHost.lastAdoptRequest.rosterType==='mechanical' &&
+      !!document.querySelector('.team-store-tab[data-index="2"]') &&
+      !!document.querySelector('.team-store-card[data-pet-id="66"]'));
+    document.querySelector('.team-back-roster').click(); await wait(20);
+    petCards()[0].click(); await wait(10);
+    document.querySelector('.team-pet-detail .team-act-advance').click(); await wait(30);
+    var t800Page=document.querySelector('.workbench-secondary-page.team-advance');
+    var managedSection=t800Page&&t800Page.querySelector('.team-managed-gun-section');
+    var managedCandidates=managedSection?managedSection.querySelectorAll('.team-managed-gun-candidate'):[];
+    var scopeCompatible=managedSection&&managedSection.querySelector('[data-choice="compatible"]');
+    var scopeBackpack=managedSection&&managedSection.querySelector('[data-choice="backpack"]');
+    var equipManaged=managedSection&&managedSection.querySelector('.team-managed-gun-commit');
+    assert('team-t800-1','T800 托管长枪位于右栏；默认兼容筛选 + 单选确认交付',
+      managedSection && managedSection.querySelector('.team-managed-gun-name').textContent.indexOf('L85A1')>=0 &&
+      managedSection.parentElement.classList.contains('team-pet-advance-right') &&
+      !t800Page.querySelector('.team-pet-advance-left .team-managed-gun-section') &&
+      managedCandidates.length===17 && scopeCompatible.getAttribute('aria-pressed')==='true' &&
+      scopeBackpack && equipManaged && !equipManaged.getAttribute('aria-disabled') &&
+      PanelTooltip.__bindingsFor(managedSection.querySelector('.team-managed-gun-current .team-managed-gun-candidate-info'))
+        .some(function(r){return r.scope==='team-pet-items';}) &&
+      managedSection.querySelector('.team-managed-gun-count').textContent==='17 项',
+      'candidates='+managedCandidates.length);
+    scopeBackpack.click(); await wait(10);
+    managedCandidates=managedSection.querySelectorAll('.team-managed-gun-candidate');
+    var lockedCandidate=managedSection.querySelector('.team-managed-gun-locked');
+    assert('team-t800-2','T800 背包筛选：展示全部长枪、图标与锁定原因',
+      managedCandidates.length===18 && lockedCandidate &&
+      managedSection.querySelectorAll('.team-managed-gun-icon-image').length===18 &&
+      lockedCandidate.textContent.indexOf('初阶仅支持冲锋枪与突击步枪')>=0 &&
+      managedSection.querySelector('.team-managed-gun-count').textContent==='18 项' &&
+      managedSection.querySelector('.team-managed-gun-candidates').getAttribute('data-scroll-region')==='managed-long-gun-candidates');
+    var candidateBinding=PanelTooltip.__bindingsFor(managedCandidates[0]).filter(function(r){return r.scope==='team-pet-items';})[0];
+    var tooltipResponse=null;
+    candidateBinding.opts.fetch(candidateBinding.opts.item,function(data){tooltipResponse=data;});
+    await wait(20);
+    var compactMode=document.querySelector('.team-pet-child .item-grid-mode-option[data-layout-mode="compact"]');
+    compactMode.click(); await wait(10);
+    assert('team-t800-2a','T800 候选复用完整物品注释与完整/紧凑密度，长列表有独立滚动区',
+      MockHost.lastWeaponTooltip && MockHost.lastWeaponTooltip.source &&
+      MockHost.lastWeaponTooltip.source.expectedLease==='lease-t800-7' &&
+      tooltipResponse && tooltipResponse.descHTML.indexOf('完整说明')>=0 &&
+      managedSection.querySelector('.team-managed-gun-candidates').classList.contains('team-grid-compact') &&
+      !managedCandidates[0].hasAttribute('title') && !lockedCandidate.hasAttribute('title'),
+      'lease='+(MockHost.lastWeaponTooltip&&MockHost.lastWeaponTooltip.source&&MockHost.lastWeaponTooltip.source.expectedLease)
+        +', rich='+(tooltipResponse&&tooltipResponse.descHTML)
+        +', compact='+managedSection.querySelector('.team-managed-gun-candidates').className
+        +', titles='+managedCandidates[0].hasAttribute('title')+'/'+lockedCandidate.hasAttribute('title'));
+    document.querySelector('.team-pet-child .item-grid-mode-option[data-layout-mode="full"]').click(); await wait(10);
+    scopeCompatible.click(); await wait(10);
+    MockHost.dropNextEquipWeapon=true;
+    managedSection.querySelector('.team-managed-gun-commit').click();
+    await wait(145);
+    var t800Workbench=petWorkbench();
+    managedSection=t800Page.querySelector('.team-managed-gun-section');
+    assert('team-t800-3','T800 交付超时：自动解除处理中并回拉权威快照',
+      !t800Workbench.hasAttribute('data-team-busy') && !MockHost.t800Managed &&
+      toastHas('请求超时') && managedSection.querySelector('.team-managed-gun-commit'));
+    managedSection.querySelector('.team-managed-gun-commit').click(); await wait(80);
+    managedSection=t800Page.querySelector('.team-managed-gun-section');
+    var withdrawManaged=managedSection&&managedSection.querySelector('.team-managed-gun-current .team-managed-gun-action');
+    assert('team-t800-4','T800 交付：发送 lease-bound source + 冻结状态回显',
+      MockHost.lastEquipWeapon && MockHost.lastEquipWeapon.slotIndex===2 &&
+      MockHost.lastEquipWeapon.source && MockHost.lastEquipWeapon.source.containerId==='背包' &&
+      MockHost.lastEquipWeapon.source.slot===7 && MockHost.lastEquipWeapon.source.expectedLease==='lease-t800-7' &&
+      managedSection.querySelector('.team-managed-gun-name').textContent==='测试UZI' &&
+      managedSection.textContent.indexOf('交付弹耗 7')>=0 && !!withdrawManaged &&
+      !document.querySelector('.team-pet-grid .team-managed-gun-card-band') &&
+      document.querySelector('.team-pet-detail .team-managed-gun-readout').textContent.indexOf('托管 · 测试UZI')>=0 &&
+      !!document.querySelector('.team-pet-detail .team-managed-gun-icon-cell img'));
+    withdrawManaged.click(); await wait(80);
+    managedSection=t800Page.querySelector('.team-managed-gun-section');
+    assert('team-t800-5','T800 取回：发送专用命令并恢复预设武器态',
+      MockHost.lastWithdrawWeapon && MockHost.lastWithdrawWeapon.slotIndex===2 &&
+      managedSection.querySelector('.team-managed-gun-name').textContent.indexOf('L85A1')>=0 &&
+      !document.querySelector('.team-pet-grid .team-managed-gun-card-band') &&
+      document.querySelector('.team-pet-detail .team-managed-gun-readout').textContent.indexOf('预设 · L85A1')>=0 &&
+      t800Page.scrollWidth<=t800Page.clientWidth,
+      t800Page.scrollWidth+'<='+t800Page.clientWidth);
+    t800Page.querySelector('.team-advance-back').click(); await wait(20);
     // ═══════════════════════════════════════════════════════════
     // 佣兵 tab（Phase C 双栏工作台形态）
     // ═══════════════════════════════════════════════════════════

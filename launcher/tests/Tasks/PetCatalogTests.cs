@@ -204,5 +204,67 @@ namespace CF7Launcher.Tests.Tasks
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("petAdoptList", (string)msg["action"]);
         }
+
+        [Fact]
+        public void RepositoryCatalog_T800_IsReachableFromMechanicalAdoptionStore()
+        {
+            string projectRoot = FindProjectRoot();
+            PetCatalog catalog = PetCatalogLoader.Load(projectRoot);
+            PetDef t800;
+            Assert.True(catalog.PetsById.TryGetValue(66, out t800));
+            Assert.Equal("mechanical", t800.RosterType);
+
+            int categoryIndex = -1;
+            for (int c = 0; c < catalog.Categories.Count && categoryIndex < 0; c++)
+            {
+                foreach (var row in catalog.Categories[c].Rows)
+                {
+                    if (row.Contains(66))
+                    {
+                        categoryIndex = c;
+                        break;
+                    }
+                }
+            }
+            Assert.True(categoryIndex >= 0, "petId 66 must be referenced by a PetStore category");
+
+            string posted = null;
+            var task = new PetTask(delegate { return false; }, delegate(string p) { }, projectRoot);
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+            task.HandleWebRequest("adopt_list", JObject.Parse(
+                "{\"callId\":\"web-t800\",\"rosterType\":\"mechanical\",\"categoryIndex\":0}"));
+
+            var resp = JObject.Parse(posted);
+            Assert.True((bool)resp["success"]);
+            Assert.Equal(categoryIndex, (int)resp["selectedCategoryIndex"]);
+            bool found = false;
+            foreach (JToken item in (JArray)resp["adoptable"])
+            {
+                if ((int)item["petId"] == 66)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            Assert.True(found, "mechanical adopt_list must project petId 66");
+        }
+
+        private static string FindProjectRoot()
+        {
+            foreach (string start in new[] { Environment.CurrentDirectory, AppContext.BaseDirectory })
+            {
+                DirectoryInfo directory = new DirectoryInfo(start);
+                while (directory != null)
+                {
+                    if (File.Exists(Path.Combine(directory.FullName, "data", "merc", "pets.xml"))
+                            && File.Exists(Path.Combine(directory.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                    {
+                        return directory.FullName;
+                    }
+                    directory = directory.Parent;
+                }
+            }
+            throw new DirectoryNotFoundException("Cannot locate CF7 project root for pet catalog tests.");
+        }
     }
 }

@@ -124,6 +124,9 @@
 - **帧脚本**：`scripts/逻辑/装备函数/`（每个 `.as` 注册 `_root.装备生命周期函数.XXX初始化/周期`，物品 XML `<lifecycle>` 节点按装备绑定，战斗中驱动动画/特效/子弹/buff）
 - **用途索引 + API 快查 + 新增 7 步流程**：`scripts/逻辑/装备函数/README.md`（就近 hub）
 - **编译真源**：`scripts/asLoaderManifest/frame37.as`（f37_N chunk，**非**旧 `装备函数列表.as`，后者已退役删除）；三方一致性门 `tools/validate-equip-fn-coverage.js`
+- **装载/销毁边界**：`attr_N` 的 init/cycle 可独立存在；init-only 不创建帧任务。主动整只重建/移除装备单位时先 `DressupInitializer.teardownLifeCycles(unit)`，再 `removeMovieClip()`，不能只依赖迟到的周期自清理
+- **视觉引用换分支**：单位整体替换 `man` 时，当前活动 `unit.man` 下的新 holder 应接管同基础引用/实例的规范注册；旧 `man` 即使仍有 parent 也不得继续占用可见武器的生命周期引用。同一活动 `man` 内真实并存 holder 仍使用 `#N` 隔离
+- **非人形换装桥**：调用 `DressupInitializer` 的普通敌人模板若没有人形模板的 `装载主动战技/装载副武器控制槽/装载生命周期函数/完成生命周期函数装载`，会在基础装备与射击初始化之后提前中断，使白板枪能开火但 lifecycle 动画、特效与变速全不运行。应在明确采用换装核心的单位服务边界按缺失项挂接成熟函数，不要扩大修改全局敌人模板，也不要覆盖素材已有实现
 - ⚠ 与 `org.flashNight.arki.item.equipment`（class 化装备**数值计算**系统）是两套平行系统，勿混
 
 ## 14. 套装效果系统（一期实现与实机复核中）

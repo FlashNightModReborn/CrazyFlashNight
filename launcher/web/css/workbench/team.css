@@ -1806,17 +1806,20 @@
     min-width: 0;
     min-height: 0;
 }
-/* J2：右栏进阶方案区整体卡化——section 撑满列高（少方案不再「半张卡挂天上」） */
+/* J2：右栏承载托管长枪与进阶方案；只有进阶方案独占时才撑满列高。 */
 .team-workbench .team-pet-advance-right {
     display: flex;
     flex-direction: column;
 }
 .team-workbench .team-pet-advance-right .team-promo-section {
     display: flex;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     flex-direction: column;
     min-height: 0;
     margin-bottom: 0;
+}
+.team-workbench .team-pet-advance-right .team-promo-section:only-child {
+    flex: 1 1 auto;
 }
 .team-workbench .team-promo-section .team-promos {
     flex: 0 0 auto;
@@ -1886,6 +1889,209 @@
 .team-workbench .team-growth-ends {
     display: flex;
     justify-content: space-between;
+}
+
+/* ── T800 / 后续非主角通用托管长枪投影 ── */
+.team-workbench .team-managed-gun-section {
+    display: grid;
+    flex: 0 0 auto;
+    gap: 7px;
+}
+.team-workbench .team-managed-gun-policy,
+.team-workbench .team-managed-gun-meta,
+.team-workbench .team-managed-gun-empty {
+    min-width: 0;
+    color: var(--wb-muted);
+    font-size: 10px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+.team-workbench .team-managed-gun-current,
+.team-workbench .team-managed-gun-selection {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    background: var(--wb-surface-2);
+    border: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-managed-gun-error,
+.team-workbench .team-managed-gun-locked {
+    border-color: color-mix(in srgb, var(--wb-semantic-warning) 42%, var(--wb-line-soft));
+}
+.team-workbench .team-managed-gun-name,
+.team-workbench .team-managed-gun-candidate-name {
+    min-width: 0;
+    color: var(--wb-text);
+    font-size: 11px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+.team-workbench .team-managed-gun-candidates {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    max-height: 202px;
+    gap: 5px;
+    padding: 0 3px 0 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.team-workbench .team-managed-gun-candidate-info {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+.team-workbench .team-managed-gun-action {
+    min-width: 54px;
+}
+.team-workbench .team-managed-gun-browser {
+    display: grid;
+    gap: 6px;
+}
+.team-workbench .team-managed-gun-context {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+.team-workbench .team-managed-gun-scope-label {
+    flex: 0 0 auto;
+    color: var(--wb-muted);
+    font-size: 10px;
+}
+.team-workbench .team-managed-gun-scope-mount {
+    flex: 0 0 auto;
+}
+.team-workbench .team-managed-gun-scope .workbench-choice-option {
+    min-height: 27px;
+    padding: 0 8px;
+}
+.team-workbench .team-managed-gun-count {
+    margin-left: auto;
+    padding: 2px 6px;
+    color: var(--wb-accent);
+    background: var(--wb-accent-soft);
+    border: 1px solid color-mix(in srgb, var(--wb-accent) 38%, transparent);
+    font: 700 10px/1.2 "Consolas", "Microsoft YaHei", monospace;
+    white-space: nowrap;
+}
+.team-workbench .team-managed-gun-selection {
+    border-left: 2px solid var(--wb-focus);
+}
+.team-workbench .team-managed-gun-commit {
+    min-width: 92px;
+}
+.team-workbench .team-managed-gun-candidate {
+    appearance: none;
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-rows: minmax(36px, auto) auto;
+    align-items: center;
+    gap: 3px 7px;
+    min-width: 0;
+    min-height: 58px;
+    padding: 6px;
+    color: inherit;
+    text-align: left;
+    background: var(--wb-surface-2);
+    border: 1px solid var(--wb-line-soft);
+    cursor: pointer;
+}
+.team-workbench .team-managed-gun-candidates.team-grid-compact {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    gap: var(--workbench-compact-gap, 4px);
+    max-height: 160px;
+    padding: 4px 3px 4px 0;
+}
+.team-workbench .team-managed-gun-candidates.team-grid-compact .team-managed-gun-candidate {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    place-items: center;
+    flex: 0 0 var(--workbench-compact-tile-size, 48px);
+    width: var(--workbench-compact-tile-size, 48px);
+    min-width: var(--workbench-compact-tile-size, 48px);
+    max-width: var(--workbench-compact-tile-size, 48px);
+    height: var(--workbench-compact-tile-size, 48px);
+    min-height: var(--workbench-compact-tile-size, 48px);
+    padding: 2px;
+}
+.team-workbench .team-managed-gun-candidates.team-grid-compact .team-managed-gun-candidate-info,
+.team-workbench .team-managed-gun-candidates.team-grid-compact .team-managed-gun-lock {
+    display: none;
+}
+.team-workbench .team-managed-gun-candidates.team-grid-compact .team-managed-gun-icon {
+    grid-row: 1;
+    width: 42px;
+    height: 42px;
+    border: 0;
+}
+.team-workbench .team-managed-gun-candidates.team-grid-compact .team-managed-gun-icon-image {
+    max-width: 40px;
+    max-height: 40px;
+}
+.team-workbench .team-managed-gun-candidates.team-grid-compact .team-managed-gun-locked::after {
+    content: '锁';
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    z-index: 4;
+    min-width: 13px;
+    height: 13px;
+    color: var(--wb-bg);
+    background: var(--wb-semantic-warning);
+    font: 700 10px/13px "Microsoft YaHei", sans-serif;
+    text-align: center;
+}
+.team-workbench .team-managed-gun-candidate:hover {
+    border-color: var(--wb-line);
+    box-shadow: var(--wb-inner-highlight);
+}
+.team-workbench .team-managed-gun-candidate.team-managed-gun-selected,
+.team-workbench .team-managed-gun-candidate[aria-pressed="true"] {
+    border-color: var(--wb-focus);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wb-focus) 42%, transparent),
+        0 0 8px color-mix(in srgb, var(--wb-accent) 18%, transparent);
+}
+.team-workbench .team-managed-gun-icon {
+    display: grid;
+    grid-row: 1;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    overflow: hidden;
+    color: var(--wb-muted);
+    background: var(--wb-bg);
+    border: 1px solid var(--wb-line-soft);
+    font-size: 18px;
+}
+.team-workbench .team-managed-gun-icon-image {
+    display: block;
+    max-width: 32px;
+    max-height: 32px;
+    object-fit: contain;
+}
+.team-workbench .team-managed-gun-lock {
+    grid-column: 1 / -1;
+    color: var(--wb-semantic-warning);
+    font-size: 10px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+.team-workbench .team-managed-gun-candidates > .team-managed-gun-empty {
+    grid-column: 1 / -1;
+    padding: 9px;
+    text-align: center;
+    background: var(--wb-bg);
+    border: 1px dashed var(--wb-line-soft);
+}
+.team-workbench .team-managed-gun-note {
+    margin-top: 0;
 }
 
 /* ── advance：进阶方案卡 ── */
@@ -2691,4 +2897,41 @@
 #panel-container[data-panel="team"] ~ #panel-tooltip .merc-tt-rich .kshop-tt-header b,
 #panel-container[data-panel="team"] ~ #panel-tooltip .merc-tt-basic .kshop-tt-header b {
     color: var(--dls-energetic);
+}
+
+/* ── 机械托管长枪：名册保持原信息密度，图标与名称只在右侧详情承载。 ── */
+.team-workbench .team-managed-gun-icon-cell {
+    width: 22px;
+    height: 22px;
+    box-sizing: border-box;
+    cursor: default;
+}
+.team-workbench .team-managed-gun-readout[data-managed-gun-tone="managed"] {
+    border-color: color-mix(in srgb, var(--wb-accent) 58%, var(--wb-line-soft));
+}
+.team-workbench .team-managed-gun-readout[data-managed-gun-tone="danger"] {
+    color: var(--wb-semantic-danger);
+    border-color: color-mix(in srgb, var(--wb-semantic-danger) 58%, var(--wb-line-soft));
+}
+.team-workbench .team-managed-gun-readout {
+    cursor: default;
+}
+.team-workbench .team-managed-gun-readout .team-managed-gun-icon-cell {
+    flex: 0 0 22px;
+}
+.team-workbench .team-managed-gun-readout .team-qadv-value {
+    max-width: 190px;
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#panel-container[data-panel="team"] ~ #panel-tooltip .team-managed-gun-tt-warning {
+    margin-top: 6px;
+    padding: 5px 7px;
+    color: var(--wb-semantic-warning);
+    background: color-mix(in srgb, var(--wb-semantic-warning) 14%, var(--wb-bg));
+    border: 1px solid color-mix(in srgb, var(--wb-semantic-warning) 38%, transparent);
+    font-size: 10px;
+    line-height: 1.35;
 }

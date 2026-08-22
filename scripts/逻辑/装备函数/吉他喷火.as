@@ -99,14 +99,16 @@
     }
 
     // ===== 刀枪复用初始化 =====
-    // 如果没有配置刀，则将吉他同时作为刀使用
-    if (target.刀 == null || target.刀 == undefined) {
+    // 非主角必须显式声明复合枪械能力；纯长枪宿主只保留喷火/机枪主体。
+    ref.支持复合枪械 = ref.是否为主角
+        || (target.装备能力 && target.装备能力.复合枪械 === true);
+    if (ref.支持复合枪械 && (target.刀 == null || target.刀 == undefined)) {
         _root.刀配置(target._name, "桔色电子吉他", 1);
         target.刀 = target.长枪;
         target.刀_装扮 = target.长枪_装扮;
         target.刀属性.power = ref.baseGunProps.power * ref.刀威力系数;
     }
-    ref.是否刀枪复用 = (target.刀 == target.长枪);
+    ref.是否刀枪复用 = ref.支持复合枪械 && (target.刀 == target.长枪);
 
     // ===== 订阅引用同步事件 =====
     // 长枪引用就位：仅读 placement 子级 gun.动画 / gun.枪口位置 的内置属性
@@ -190,8 +192,8 @@
         return ref.skill_0;
     };
 
-    // 初始装载战技
-    ref.装载战技(ref.获取目标战技());
+    // 初始装载战技；纯长枪 AI 不触碰兵器槽。
+    if (ref.支持复合枪械) ref.装载战技(ref.获取目标战技());
 };
 
 // ===== 周期函数 =====
@@ -202,7 +204,8 @@ _root.装备生命周期函数.吉他喷火周期 = function(ref:Object, param:O
     var target:MovieClip = ref.自机;
 
     // 武器形态切换检测（仅在长枪模式下；edge-trigger）
-    if (target.攻击模式 == "长枪" && KeyEdgeTrigger.onRise(ref, target, _root.武器变形键, "wasTransformKeyDown")) {
+    if (ref.是否为主角 && target.攻击模式 == "长枪"
+            && KeyEdgeTrigger.onRise(ref, target, _root.武器变形键, "wasTransformKeyDown")) {
         _root.装备生命周期函数.吉他喷火触发形态切换(ref);
     }
 

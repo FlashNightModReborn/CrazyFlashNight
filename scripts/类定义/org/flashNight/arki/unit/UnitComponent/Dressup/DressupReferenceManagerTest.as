@@ -12,6 +12,7 @@ import org.flashNight.arki.unit.UnitComponent.Dressup.SkinReadyClass;
  * - deferred 路径 initObject 注入（含 fallback 路径）
  * - attach 数字后缀 regKey/actualRefName 生成
  * - attach 失效 MC regKey 复用
+ * - unit.man 整体替换时活动分支接管规范引用，同分支真实并存仍溢出
  * - refreshAll 标记设置/清除 + 组级事件
  * - refreshAll 边遍历边删除 dead entry 同时执行 live entry
  *
@@ -114,6 +115,12 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
     // 让 attach() 内 movieClip._parent._parent._parent 能拿到 unit
     private static function wireParentChain(mc, unit):Void {
         mc._parent = { _parent: { _parent: unit } };
+    }
+
+    // holder → man → unit；同时满足 attach 的三级父链与活动 unit.man 判定。
+    private static function wireManParentChain(mc, man, unit):Void {
+        mc._parent = { _parent: man };
+        man._parent = unit;
     }
 
     // ====================================================================
@@ -297,6 +304,53 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         assertNotNull("regKey 复用，刀_引用@装扮 entry 仍存在", unit.dressupRegistry["刀_引用@装扮"]);
         assertNull("没有生成 刀1_引用@装扮", unit.dressupRegistry["刀1_引用@装扮"]);
         assertEquals("entry.mc 是新的 mc2", mc2, unit.dressupRegistry["刀_引用@装扮"].mc);
+    }
+
+    private static function test_attach_活动man接管旧分支规范引用():Void {
+        trace("--- attach: 新活动 man 接管旧分支仍存活的规范引用 ---");
+        var unit = makeMockUnit("正常", "男");
+        var oldMan = {};
+        var newMan = {};
+        unit.man = oldMan;
+
+        var oldMC = makeMockMC();
+        wireManParentChain(oldMC, oldMan, unit);
+        DressupReferenceManager.attach(oldMC, "old_skin", "装扮", "长枪_引用");
+        var oldSkin = unit["长枪_引用"];
+
+        // 模拟 Flash 换动作帧：unit.man 已指向新分支，但旧 holder 的 _parent
+        // 在同一 load flush 中仍非 null，旧实现会把新视觉错误命名为 #1。
+        unit.man = newMan;
+        var newMC = makeMockMC();
+        wireManParentChain(newMC, newMan, unit);
+        DressupReferenceManager.attach(newMC, "new_skin", "装扮", "长枪_引用");
+
+        var canonical = unit.dressupRegistry["长枪_引用@装扮"];
+        assertNotNull("规范 regKey 仍存在", canonical);
+        assertEquals("规范 regKey 已由新活动分支接管", newMC, canonical.mc);
+        assertNull("未生成错误的 长枪_引用#1", unit.dressupRegistry["长枪_引用#1@装扮"]);
+        assertTrue("unit.长枪_引用 已切到新皮肤", unit["长枪_引用"] !== oldSkin
+            && unit["长枪_引用"]._parent === newMC);
+        assertNotNull("旧 holder 即使尚未 detach 也能被识别为旧分支", oldMC._parent);
+    }
+
+    private static function test_attach_活动man同分支真实并存仍溢出():Void {
+        trace("--- attach: 同一活动 man 内不同 holder 仍保留 #N ---");
+        var unit = makeMockUnit("正常", "男");
+        var man = {};
+        unit.man = man;
+        var mc1 = makeMockMC();
+        var mc2 = makeMockMC();
+        wireManParentChain(mc1, man, unit);
+        wireManParentChain(mc2, man, unit);
+
+        DressupReferenceManager.attach(mc1, "skin1", "装扮", "长枪_引用");
+        DressupReferenceManager.attach(mc2, "skin2", "装扮", "长枪_引用");
+
+        assertEquals("同分支规范引用不被第二 holder 抢占", mc1,
+            unit.dressupRegistry["长枪_引用@装扮"].mc);
+        assertEquals("同分支第二 holder 使用 #1", mc2,
+            unit.dressupRegistry["长枪_引用#1@装扮"].mc);
     }
 
     private static function test_attach_skinKeyOverrides武器走装扮后缀():Void {
@@ -575,6 +629,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         test_attach_不同mc同refName_溢出命名空间();
         test_attach_同mc重入_复用regKey();
         test_attach_失效MC复用regKey();
+        test_attach_活动man接管旧分支规范引用();
+        test_attach_活动man同分支真实并存仍溢出();
         test_attach_skinKeyOverrides武器走装扮后缀();
         test_refreshAll_标记与组级事件();
         test_refreshAll_dead_entry清理与live同处理();
@@ -589,5 +645,10 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest
         trace("================================================================");
         trace("Result: " + passedTests + "/" + testCount + " passed, " + failedTests + " failed  (" + dt + " ms)");
         trace("================================================================");
+    }
+
+    /** focused TestLoader runner 的统一入口别名。 */
+    public static function runAllTests():Void {
+        runAll();
     }
 }

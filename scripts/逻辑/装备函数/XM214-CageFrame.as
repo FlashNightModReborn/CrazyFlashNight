@@ -55,7 +55,9 @@ _root.装备生命周期函数.XM214初始化 = function(ref:Object, param:Objec
         var prop:Object = target.man.子弹属性;
         var bulletCount:Number = target.长枪.value.shot;
         var bulletDisplay:Number = target.长枪.value.shot = Math.min(ref.maxBulletCapacity, bulletCount + prop.霰弹值 - 1);
-        _root.玩家信息界面.玩家必要信息界面["子弹数"] = ref.maxBulletCapacity - bulletDisplay;
+        if (ref.是否为主角) {
+            _root.玩家信息界面.玩家必要信息界面["子弹数"] = ref.maxBulletCapacity - bulletDisplay;
+        }
 
         // _root.服务器.发布服务器消息("bulletCount:" + bulletDisplay);
     });

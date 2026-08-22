@@ -92,7 +92,9 @@ _root.装备生命周期函数.G1111初始化 = function (ref, param)
                 var focusSnap = (param.focusSnap == "true" || param.focusSnap === true) ? true : false;
                 var focusEaseSpeed = param.focusEaseSpeed || 5;
                 var focusMinZoom = param.focusMinZoom || 3.0;
-                HorizontalScroller.pushFocus(autoTarget, focusFrames, focusSnap, focusEaseSpeed, 0, 0, 0, focusMinZoom);
+                if (ref.是否为主角) {
+                    HorizontalScroller.pushFocus(autoTarget, focusFrames, focusSnap, focusEaseSpeed, 0, 0, 0, focusMinZoom);
+                }
 
                 // 充能狙击：使用聚束射线（ray bullet），贯穿路径上所有目标
                 prop.子弹种类 = param.chargedRifleRayType || "铁枪聚束射线";
@@ -342,7 +344,7 @@ _root.装备生命周期函数.G1111周期 = function (ref)
                         targetRotation = calculatedAngle;
                         
                         // 渲染锁定视觉效果
-                        if (ref.autoTarget.aabbCollider) {
+                        if (ref.是否为主角 && ref.autoTarget.aabbCollider) {
                             AABBRenderer.renderAABB(ref.autoTarget.aabbCollider, 0, ref.isRocketMode ? "scan4" : "scan1");
                         }
                     }

@@ -65,6 +65,18 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
     }
 
     /**
+     * 弹匣库存只属于主角。AI/佣兵/战宠以正哨兵驱动标准换弹动画，实际换弹由
+     * ReloadManager 的非主角分支直接复位 shot，不读取或扣除主角背包。
+     */
+    public static function resolveMagazineStock(parentRef:Object, magazineName:String):Number {
+        var hero:MovieClip = TargetCacheManager.findHero();
+        var isHero:Boolean = hero != undefined
+            ? parentRef === hero
+            : (parentRef != null && _root.控制目标 == parentRef._name);
+        return isHero ? ItemUtil.getTotal(magazineName) : 1;
+    }
+
+    /**
      * 绑定核心函数到目标对象
      * 直接使用各功能类的方法，不再依赖_root.主角函数
      * 
@@ -205,7 +217,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         target[speedProp] = config.weaponData.interval;
         target[magNameProp] = config.weaponData.clipname;
         target[singleShotProp] = config.weaponData.singleshoot;
-        target[remainingMagProp] = ItemUtil.getTotal(target[magNameProp]);
+        target[remainingMagProp] = resolveMagazineStock(parentRef, target[magNameProp]);
 
         // 处理消音策略：使用新的工厂类创建并挂到 parentRef
         var sv:Object = (config.extraParams.消音 !== undefined) ? config.extraParams.消音 : parentRef[weaponType + "消音"];
@@ -401,7 +413,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         target.射击速度      = weaponData.interval;
         target.使用弹匣名称  = weaponData.clipname;
         target.是否单发      = weaponData.singleshoot;
-        target.剩余弹匣数    = ItemUtil.getTotal(target.使用弹匣名称);
+        target.剩余弹匣数    = resolveMagazineStock(parentRef, target.使用弹匣名称);
 
         // 更新弹药UI显示
         target.刷新弹匣数显示();

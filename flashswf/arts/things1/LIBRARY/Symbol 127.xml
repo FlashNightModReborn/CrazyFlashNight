@@ -16,9 +16,12 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
    this.基本款._visible = 0;
-   if(_parent._parent._parent.长枪_装扮 != undefined)
+   var 长枪 = _parent._parent._parent.长枪_装扮;
+   if(长枪 != undefined)
    {
-      this.attachMovie(_parent._parent._parent.长枪_装扮,"装扮",this.getNextHighestDepth());
+      // 与人形怪/二足机器人共用标准 placement 注册，使生命周期
+      // 稳定获得 unit.长枪_引用，并在换装重建时正确发布就绪事件。
+      _root.装备引用配置.配置装扮(this,长枪,"装扮","长枪_引用");
    }
 }
 ]]></script>

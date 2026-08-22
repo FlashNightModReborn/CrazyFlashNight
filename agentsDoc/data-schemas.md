@@ -559,6 +559,26 @@ if (loader.isLoaded()) {
 
 `PetCatalogLoader` 将 `rosterType` 投影到 `pet_lib` 和 `adopt_list`。类型化 `adopt_list` 请求可带 `rosterType` 与原始 `categoryIndex`，回包分类形状为 `{index,name,count}` 并带 `selectedCategoryIndex`；未传 `rosterType` 时保留旧兼容形状。
 
+`RosterType` 只决定战队名册与商店筛选类型，不会让宠物自动进入领养目录。需要由玩家领养获得的宠物，还必须被 `/Pets/PetStore/Category/List` 至少引用一次；否则定义虽能进入 `pet_lib`，但未拥有的玩家在 Web 战队界面没有获得入口。类型筛选后若请求的原始分类索引不可用，Host 必须回退到该类型第一个非空分类，并通过 `selectedCategoryIndex` 告知 Web；不得假定任一类型都从索引 `0` 开始。真实目录关键宠物应以仓库数据回归同时锁定“定义存在、商店可达、默认分类回退后可投影”。
+
+#### `宠物信息[i][5].托管长枪` 运行态存档扩展
+
+T800（`petId=66`）的玩家供枪不写回 `pets.xml`，而作为单只战宠的持久属性保存：
+
+```text
+{
+  version: 1,
+  item: <BaseItem.toObject() 的完整深克隆>
+}
+```
+
+- `item` 是交付时权威，包含弹耗、强化、插件、tier 与 `lastUpdate`；出战单位只能使用它的再克隆副本。
+- 取回不合并战斗期 `item.value` 变化；返还的始终是交付快照，因此 AI 免费换弹不能成为玩家免费补弹通道。
+- 未知 `version`、缺 `item` 或无法重建 `BaseItem` 时必须 fail-closed：禁止新交付覆盖，禁止取回和删除该宠物。
+- Web `petSnapshot.promotions` 不得序列化该对象；对外只提供 `managedLongGun` 的白名单安全投影。
+- `managedLongGun.candidates` 可以投影背包中的全部 `use=长枪`，但每行必须携带 Host/AS2 计算后的 `eligible/lockReason`。Web 默认“兼容”过滤不可交付项，显式“背包”只负责展示完整集合与原因，不得把不可交付行改成可提交。
+- 当前托管/预设武器的完整注释必须从冻结权威或默认物品实例重建；候选注释必须重新复证 `{containerId,slot,expectedLease}` 且只接受背包 `use=长枪`。Web 不得根据快照摘要自行拼装备属性，也不得以名称回查替代 exact lease。
+
 1. 确认数据类型对应的目录
 2. 参照该类型现有文件的 XML 结构
 3. 使用 UTF-8 编码，添加中文注释说明用途

@@ -5644,9 +5644,12 @@ namespace CF7Launcher.Guardian
                 case "expand_slot":
                 case "rename":
                 case "pet_tooltip":
+                case "weapon_tooltip":
                 case "restore_stamina":
                 case "level_up":
                 case "delete":
+                case "equip_weapon":
+                case "withdraw_weapon":
                 case "hire_list":
                 case "hire":
                 case "dismiss":

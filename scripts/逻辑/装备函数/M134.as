@@ -12,10 +12,16 @@
     ref.fireCount = 0;             // 当前连射计数
     ref.isFiring = false;          // 是否正在射击 
 
-    // 订阅射击事件
+    // 兼容旧时间轴预射击事件；同时接受 WeaponFireCore 的成功发射事件，
+    // 让非人形单位和后续佣兵不依赖某一套动作帧，并排除长枪副武器。
     target.dispatcher.subscribe("长枪射击", function() {
-        ref.isFiring = true; // 标记本帧正在射击
-    });
+        ref.isFiring = true;
+    }, ref);
+    target.dispatcher.subscribe("processShot", function(owner:MovieClip, weaponType:String) {
+        if (EquipmentFireIntent.isMainLongGunProcessShot(target, weaponType)) {
+            ref.isFiring = true;
+        }
+    }, ref);
 
     PlacementVisual.hookVisualUpdate(target, "长枪_引用", ref, _root.装备生命周期函数.M134视觉更新);
 };
@@ -24,7 +30,6 @@ _root.装备生命周期函数.M134周期 = function(ref:Object, param:Object) {
     if (!EquipmentTick.open(ref)) return;
 
     BladeFireSpinController.tick(ref, ref.自机.长枪_引用.动画);
-
     _root.装备生命周期函数.M134视觉更新(ref);
 };
 

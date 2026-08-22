@@ -7,22 +7,22 @@
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="8" name="空手站立" labelType="name" keyMode="9728">
+            <DOMFrame index="1" duration="8" name="长枪站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" name="空手行走" labelType="name" keyMode="9728">
+            <DOMFrame index="9" duration="10" name="长枪行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="10" name="空手跑" labelType="name" keyMode="9728">
+            <DOMFrame index="19" duration="10" name="长枪跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" duration="12" name="空手跳" labelType="name" keyMode="9728">
+            <DOMFrame index="29" duration="12" name="长枪跳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="41" duration="9" name="近战" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="50" duration="11" name="空手攻击" labelType="name" keyMode="9728">
+            <DOMFrame index="50" duration="11" name="长枪攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="61" duration="10" name="拾取" labelType="name" keyMode="9728">
@@ -51,120 +51,46 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="Empty Hand Labels" color="#8FC5FF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="12" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="89" name="空手攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="130" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Script Layer" color="#945EAD">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 非主角外观刷新()
-{
-   _root.长枪配置(this._name,this.长枪);
-   _root.手枪配置(this._name,this.手枪);
-   _root.手枪2配置(this._name,this.手枪2);
-   _root.手雷配置(this._name,this.手雷);
-   _root.刀配置(this._name,this.刀);
-   this.脸型 = 脸型;
-   tmp_aaa = _root.根据物品名查找属性(头部装备,14);
-   if(tmp_aaa[0] == true)
-   {
-      this.发型 = "";
-   }
-   else
-   {
-      this.发型 = 发型;
-   }
-   this.面具 = _root.根据物品名查找属性(头部装备,15);
-   this.身体 = _root.根据物品名查找属性(上装装备,15) + "身体";
-   this.上臂 = _root.根据物品名查找属性(上装装备,15) + "上臂";
-   this.左下臂 = _root.根据物品名查找属性(上装装备,15) + "左下臂";
-   this.右下臂 = _root.根据物品名查找属性(上装装备,15) + "右下臂";
-   this.左手 = _root.根据物品名查找属性(手部装备,15) + "左手";
-   this.右手 = _root.根据物品名查找属性(手部装备,15) + "右手";
-   this.屁股 = _root.根据物品名查找属性(下装装备,15) + "屁股";
-   this.左大腿 = _root.根据物品名查找属性(下装装备,15) + "左大腿";
-   this.右大腿 = _root.根据物品名查找属性(下装装备,15) + "右大腿";
-   this.小腿 = _root.根据物品名查找属性(下装装备,15) + "小腿";
-   this.脚 = _root.根据物品名查找属性(脚部装备,15);
-   this.刀_装扮 = _root.根据物品名查找属性(刀,15);
-   this.长枪_装扮 = _root.根据物品名查找属性(长枪,15);
-   this.手枪_装扮 = _root.根据物品名查找属性(手枪,15);
-   this.手枪2_装扮 = _root.根据物品名查找属性(手枪2,15);
-   this.手雷_装扮 = _root.根据物品名查找属性(手雷,15);
-   this.gotoAndPlay("刷新装扮");
-   f1 = _root.根据物品名查找属性(头部装备,8);
-   f2 = _root.根据物品名查找属性(上装装备,8);
-   f3 = _root.根据物品名查找属性(手部装备,8);
-   f4 = _root.根据物品名查找属性(下装装备,8);
-   f5 = _root.根据物品名查找属性(脚部装备,8);
-   装备防御力 = 0;
-   if(f1 != undefined)
-   {
-      装备防御力 += f1;
-   }
-   if(f2 != undefined)
-   {
-      装备防御力 += f2;
-   }
-   if(f3 != undefined)
-   {
-      装备防御力 += f3;
-   }
-   if(f4 != undefined)
-   {
-      装备防御力 += f4;
-   }
-   if(f5 != undefined)
-   {
-      装备防御力 += f5;
-   }
-   防御力 = 基本防御力 + 装备防御力;
-   if(防御力 > 90000)
-   {
-      防御力 = 90000;
-   }
-}
+<script><![CDATA[hasDressup = true;
 
-/*function 单发枪计时()
-{
-   单发枪计时_时间结束 = false;
-   单发枪间隔 = setInterval(单发枪可以射击,单发枪射击速度);
-}*/
-/*function 单发枪可以射击()
-{
-   单发枪计时_时间结束 = true;
-   clearInterval(单发枪间隔);
-}*/
-function 单发枪计时_2()
-{
-   单发枪计时_时间结束_2 = false;
-   单发枪间隔_2 = setInterval(单发枪可以射击_2,单发枪射击速度);
-}
-function 单发枪可以射击_2()
-{
-   单发枪计时_时间结束_2 = true;
-   clearInterval(单发枪间隔_2);
-}
-
-if(_root.控制目标 == this._name)
-{
-   等级 = _root.等级;
-   是否为敌人 = false;
-   名字 = _root.角色名;
-   身高 = _root.身高;
-   _root.刷新人物装扮(this._name);
-}
-else
-{
-   非主角外观刷新();
-}
-
+// 宠物托管快照在此克隆为单位运行态；战宠无托管数据时回退 L85A1，
+// 普通 T800 仅在外部明确配置长枪时射击，否则保持空手近战。
+// 运行态射击/换弹不会写回冻结权威。
+org.flashNight.arki.merc.ManagedLongGunService.prepareUnit(this);
 
 x轴攻击范围 = 500;
 y轴攻击范围 = 20;
 x轴保持距离 = 100;
-
 击中效果 = "击中金属";
-
-单发枪计时_时间结束 = true;
 
 初始化敌人模板 = _root.初始化敌人模板;
 初始化敌人模板();

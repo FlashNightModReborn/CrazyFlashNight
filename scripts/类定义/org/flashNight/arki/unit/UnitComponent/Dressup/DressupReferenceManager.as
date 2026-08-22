@@ -38,6 +38,13 @@
  *
  * 时序依据：agentsDoc/as2-load-timing.md
  *
+ * 【活动 man 分支接管】
+ *   某些非人形单位会在动作切换时整只替换 unit.man。Flash 可能在旧 holder 的
+ *   _parent 尚未清空时先执行新 holder 的 load；若只用 _parent 判活，新视觉会被
+ *   错分配到 referenceName#N，而生命周期仍驱动隐藏的旧规范引用。attach 会在确认
+ *   新 holder 属于当前 unit.man 后清理同引用的旧 man 分支 entry。当前 man 内真实
+ *   并存的多个 holder 仍按 #N 溢出，不改变双持/多肢体语义。
+ *
  * ============================================================================
  * 性能基线 (2026-05-09) — DressupReferenceManagerTest.runBench()
  * ============================================================================
@@ -182,6 +189,28 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
     // 注：FLA 肢体素材通过 _root.装备引用配置.配置装扮 调用，shim 直接桥接到此
     // ====================================================================
 
+    private static function pruneInactiveManBranchEntries(unit:MovieClip,
+            movieClip:MovieClip, referenceName:String, instanceName:String):Void {
+        var activeMan:MovieClip = unit.man;
+        if (!activeMan || !movieClip || !movieClip._parent
+                || movieClip._parent._parent !== activeMan) return;
+
+        var registry:Object = unit.dressupRegistry;
+        for (var key:String in registry) {
+            var entry:Object = registry[key];
+            if (!entry || entry.baseReferenceName != referenceName
+                    || entry.instanceName != instanceName || entry.mc === movieClip) continue;
+
+            var oldMc:MovieClip = entry.mc;
+            // _parent 仍存在但已不属于 unit.man：这是动作时间轴替换产生的旧视觉分支，
+            // 不能继续占用规范引用，否则所有按 unit[referenceName] 驱动的生命周期都会
+            // 更新隐藏武器。dead entry 仍交给下方既有判活路径回收。
+            if (oldMc && oldMc._parent && oldMc._parent._parent !== activeMan) {
+                delete registry[key];
+            }
+        }
+    }
+
     public static function attach(movieClip:MovieClip, skinConfig:String,
             instanceName:String, referenceName:String):MovieClip {
 
@@ -190,6 +219,8 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager {
         if (!unit.dressupRegistry) {
             unit.dressupRegistry = {};
         }
+
+        pruneInactiveManBranchEntries(unit, movieClip, referenceName, instanceName);
 
         // 生成唯一的 regKey + actualRefName。三种情况：
         //   (1) 现 regKey 空闲 → 直接用

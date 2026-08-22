@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using CF7Launcher.Tasks;
@@ -90,6 +92,76 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_EquipWeapon_ForwardsLeaseBoundSource()
+        {
+            string sent = null;
+            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("equip_weapon", JObject.Parse(
+                "{\"callId\":\"web-equip\",\"slotIndex\":4,\"source\":{\"containerId\":\"背包\",\"slot\":7,\"expectedLease\":\"lease-7\"}}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("petEquipWeapon", (string)msg["action"]);
+            Assert.Equal(4, (int)msg["slotIndex"]);
+            Assert.Equal("背包", (string)msg["source"]["containerId"]);
+            Assert.Equal(7, (int)msg["source"]["slot"]);
+            Assert.Equal("lease-7", (string)msg["source"]["expectedLease"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_WithdrawWeapon_ForwardsPetSlot()
+        {
+            string sent = null;
+            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("withdraw_weapon",
+                JObject.Parse("{\"callId\":\"web-withdraw\",\"slotIndex\":4}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("petWithdrawWeapon", (string)msg["action"]);
+            Assert.Equal(4, (int)msg["slotIndex"]);
+        }
+
+        [Fact]
+        public void HandleWebRequest_WeaponTooltip_ForwardsPetSlotAndLeaseBoundSource()
+        {
+            string sent = null;
+            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+
+            task.HandleWebRequest("weapon_tooltip", JObject.Parse(
+                "{\"callId\":\"web-weapon-tip\",\"slotIndex\":4,\"source\":{\"containerId\":\"背包\",\"slot\":7,\"expectedLease\":\"lease-7\"}}"));
+
+            var msg = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.Equal("petWeaponTooltip", (string)msg["action"]);
+            Assert.Equal(4, (int)msg["slotIndex"]);
+            Assert.Equal("背包", (string)msg["source"]["containerId"]);
+            Assert.Equal(7, (int)msg["source"]["slot"]);
+            Assert.Equal("lease-7", (string)msg["source"]["expectedLease"]);
+        }
+
+        [Theory]
+        [InlineData("equip_weapon")]
+        [InlineData("withdraw_weapon")]
+        [InlineData("weapon_tooltip")]
+        public void WebOverlayRoute_ManagedWeaponCommandsReachPetTask(string command)
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            const string allowlistStart = "case \"snapshot\":";
+            const string allowlistEnd = "string panel = parsed.Value<string>(\"panel\") ?? \"\";";
+            int start = source.IndexOf(allowlistStart, StringComparison.Ordinal);
+            int end = source.IndexOf(allowlistEnd, start, StringComparison.Ordinal);
+
+            Assert.True(start >= 0, "Unable to locate WebOverlay panel command allowlist.");
+            Assert.True(end > start, "Unable to locate end of WebOverlay panel command allowlist.");
+            string allowlist = source.Substring(start, end - start);
+            Assert.Contains("case \"" + command + "\":", allowlist);
+
+            string petsRoute = source.Substring(end);
+            Assert.Contains("else if (panel == \"pets\")", petsRoute);
+            Assert.Contains("_petTask.HandleWebRequest(cmd, parsed)", petsRoute);
+        }
+
+        [Fact]
         public void HandleWebRequest_UnsupportedCmd_ReturnsError()
         {
             string posted = null;
@@ -127,6 +199,35 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True((bool)resp["success"]);
             Assert.True((bool)resp["deployed"]);
             Assert.Null(resp["task"]);
+        }
+
+        private static string FindWebOverlaySource()
+        {
+            DirectoryInfo current = new DirectoryInfo(AppContext.BaseDirectory);
+            while (current != null)
+            {
+                string fromRepository = Path.Combine(
+                    current.FullName,
+                    "launcher",
+                    "src",
+                    "Guardian",
+                    "WebOverlayForm.cs");
+                if (File.Exists(fromRepository))
+                    return fromRepository;
+
+                string fromLauncher = Path.Combine(
+                    current.FullName,
+                    "src",
+                    "Guardian",
+                    "WebOverlayForm.cs");
+                if (File.Exists(fromLauncher))
+                    return fromLauncher;
+
+                current = current.Parent;
+            }
+
+            throw new FileNotFoundException(
+                "Unable to locate launcher/src/Guardian/WebOverlayForm.cs.");
         }
     }
 }
