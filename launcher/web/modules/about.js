@@ -13,7 +13,7 @@
     if (!window.BootstrapAudio) sfxOn = true;
     var ambOn = !!(window.BootstrapAudio && window.BootstrapAudio.isAmbientEnabled && window.BootstrapAudio.isAmbientEnabled());
     _container.innerHTML =
-      '<div class="modal-header">' +
+      '<div class="modal-header term-heading-rule">' +
         '<h2>ABOUT · 说明 / 版权</h2>' +
         '<button class="modal-close" id="about-close">×</button>' +
       '</div>' +

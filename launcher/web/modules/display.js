@@ -30,7 +30,7 @@
       ? window.BootstrapApp.getUiFontScale() : 1.35;
 
     _container.innerHTML =
-      '<div class="modal-header">' +
+      '<div class="modal-header term-heading-rule">' +
         '<h2>DISPLAY · 显示</h2>' +
         '<button class="modal-close" id="display-close">×</button>' +
       '</div>' +

@@ -65,9 +65,10 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
   margin-left: auto; padding: 4px 10px; font-size: var(--fs-base);
   border: 1px solid #555; border-radius: 3px; background: #222;
 }
-.state-badge.ready   { border-color: #7ed07e; color: #7ed07e; }
-.state-badge.error   { border-color: #e06e6e; color: #e06e6e; }
-.state-badge.running { border-color: #f0a860; color: #f0a860; }
+/* 与 welcome.css 同步收敛到跨面板语义 token, 避免双份维护漂移 */
+.state-badge.ready   { border-color: var(--wb-semantic-success); color: var(--wb-semantic-success); }
+.state-badge.error   { border-color: var(--wb-semantic-danger); color: var(--wb-semantic-danger); }
+.state-badge.running { border-color: var(--wb-semantic-warning); color: var(--wb-semantic-warning); }
 
 .cards { flex: 1; overflow-y: auto; display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; align-content: start; }

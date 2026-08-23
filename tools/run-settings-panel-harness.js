@@ -190,11 +190,11 @@ test("panel keeps cheat bridge internal and exposes only agreed rescue controls"
   const settingsCss = fs.readFileSync(path.join(root, "launcher/web/css/settings-panel.css"), "utf8");
   assert(tokens.includes("--launcher-rust:") && tokens.includes("--launcher-bone:"));
   assert(welcome.includes("--rust: var(--launcher-rust)"));
-  assert(settingsCss.includes("--settings-rust:var(--launcher-rust)"));
+  assert(/--settings-rust\s*:\s*var\(--launcher-rust\)/.test(settingsCss));
   assert(settingsCss.includes(".settings-key-board"));
   assert(settingsCss.includes(".settings-camera-simulator-body"));
   assert(settingsCss.includes(".settings-camera-simulator-viewport img"));
-  assert(settingsCss.includes("object-fit:cover"));
+  assert(/object-fit\s*:\s*cover/.test(settingsCss));
 });
 
 test("three setting pages share the launcher header and annotations use PanelTooltip", () => {
@@ -205,7 +205,7 @@ test("three setting pages share the launcher header and annotations use PanelToo
   assert(!build.includes("'tools'"));
   assert(/header\.appendChild\(tabs\)[\s\S]*header\.appendChild\(_status\)/.test(build));
   assert(!build.includes("_root.appendChild(tabs)"));
-  assert(css.includes("grid-template-rows:62px minmax(0,1fr) 52px"));
+  assert(/grid-template-rows\s*:\s*62px\s+minmax\(0\s*,\s*1fr\)\s+52px/.test(css));
   assert(panel.includes("PanelTooltip.createScope('settings', {profile:'simple-tooltip'})"));
   assert(panel.includes("_tooltipScope.bindAsync"));
   assert(panel.includes("target.removeAttribute('title')"));

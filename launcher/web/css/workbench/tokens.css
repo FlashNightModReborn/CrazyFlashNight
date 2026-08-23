@@ -82,4 +82,19 @@
     --wb-card-surface-hover: linear-gradient(145deg,
         color-mix(in srgb,var(--wb-surface) 88%,var(--wb-text) 6%),
         color-mix(in srgb,var(--wb-bg) 68%,var(--wb-surface)));
+
+    /* ── 黑铁终端族：表面层级 / 墨色阶梯 / 控件度量。
+       全部由既有 launcher 色板 color-mix 派生，不引入新色相；
+       供 bootstrap 外壳与复用终端语言的面板（settings 等）消费，
+       收敛各页面历史上一次性硬编码的近黑底与灰阶字面量。 */
+    --term-surface-veil: color-mix(in srgb,var(--launcher-bg-0) 72%,transparent);
+    --term-surface-inset: color-mix(in srgb,var(--launcher-bg-0) 38%,transparent);
+    --term-surface-card: linear-gradient(160deg,
+        color-mix(in srgb,var(--launcher-bg-1) 96%,transparent),
+        color-mix(in srgb,var(--launcher-bg-0) 94%,transparent));
+    --term-ink-hi: color-mix(in srgb,var(--launcher-copy) 74%,white);
+    --term-ink-md: color-mix(in srgb,var(--launcher-copy) 84%,var(--launcher-bg-1));
+    --term-ink-lo: color-mix(in srgb,var(--launcher-copy) 62%,var(--launcher-bg-1));
+    --term-ink-faint: color-mix(in srgb,var(--launcher-copy) 45%,var(--launcher-bg-1));
+    --term-control-h: 28px;
 }

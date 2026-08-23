@@ -35,7 +35,7 @@
 
     var summaryHtml = renderSummaryHeader(summary);
     _container.innerHTML =
-      '<div class="modal-header">' +
+      '<div class="modal-header term-heading-rule">' +
         '<h2>存档异常 · 修复向导</h2>' +
         '<button class="modal-close" id="rc-close" title="返回引导器">×</button>' +
       '</div>' +

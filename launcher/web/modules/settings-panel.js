@@ -45,6 +45,8 @@
     }
     function button(text, className, action) {
         var el = node('button', className || 'settings-button', text);
+        /* 终端按钮族结构由 css/terminal.css .term-btn 承载；本行只做类接入，不改变语义类名。 */
+        if (/\bsettings-(?:button|key-button|copy-command)\b/.test(el.className)) el.classList.add('term-btn');
         el.type = 'button';
         if (action) el.addEventListener('click', action);
         return el;
@@ -142,10 +144,10 @@
             ? PanelTooltip.createScope('settings', {profile:'simple-tooltip'}) : null;
         _root = node('section', 'settings-terminal-shell settings-panel');
         _root.setAttribute('aria-labelledby', 'settings-title');
-        var header = node('header', 'settings-terminal-header settings-header');
-        header.appendChild(node('span', 'settings-brand-seal', 'CF7:ME'));
+        var header = node('header', 'settings-terminal-header settings-header term-heading-rule');
+        header.appendChild(node('span', 'settings-brand-seal term-brand-seal', 'CF7:ME'));
         var heading = node('div', 'settings-heading');
-        heading.appendChild(node('span', 'settings-kicker', 'θ-FLOOD / CONFIGURATION LINK'));
+        heading.appendChild(node('span', 'settings-kicker term-kicker', 'θ-FLOOD / CONFIGURATION LINK'));
         var title = node('h1', 'settings-title', '游戏设置'); title.id = 'settings-title';
         heading.appendChild(title);
         header.appendChild(heading);
@@ -262,8 +264,8 @@
     }
 
     function section(title, note) {
-        var el = node('section', 'settings-section');
-        var heading = node('div', 'settings-section-heading');
+        var el = node('section', 'settings-section term-card term-corner-tick');
+        var heading = node('div', 'settings-section-heading term-heading-rule');
         var identity = node('div', 'settings-section-identity');
         identity.appendChild(node('span', 'settings-section-code', SECTION_CODES[title] || 'SYSTEM BLOCK'));
         identity.appendChild(node('h2', '', title));
@@ -361,7 +363,7 @@
 
     function renderRescueControls() {
         var controls=node('div','settings-rescue-grid');
-        var revive=button('尝试复活', 'settings-button warning', function() {
+        var revive=button('尝试复活', 'settings-button primary', function() {
             sendTool('try_revive',{v:1},true);
         });
         revive.disabled=_snapshot.forceControls.tryReviveAvailable!==true;

@@ -1,856 +1,965 @@
+/* 设置面板 —— Launcher 黑铁终端语言。
+   共享组件真源: css/terminal.css (terminal-shell 的铭牌/kicker/分隔线/角标/卡片/按钮族);
+   色值真源: css/workbench/tokens.css (本文件不新增硬编码色值, 灰阶/表面层一律消费 --term-*)。
+   本文件只保留: 布局、组件旋钮覆盖、控件外观与页面特异状态。 */
+
 .settings-scale-shell {
-    position:absolute;
-    inset:0;
-    width:1024px;
-    height:576px;
-    transform-origin:0 0;
-    color:var(--launcher-copy);
+    position: absolute;
+    inset: 0;
+    width: 1024px;
+    height: 576px;
+    transform-origin: 0 0;
+    color: var(--launcher-copy);
 }
 
 /* 设置面板明确复用 Launcher 启动页的“黑铁终端”语言，不属于双栏 Workbench 家族。 */
 .settings-terminal-shell {
-    --settings-dls:var(--dls-crystal);
-    --settings-dls-deep:var(--dls-crystal-deep);
-    --settings-dls-dim:var(--dls-crystal-dim);
-    --settings-rust:var(--launcher-rust);
-    --settings-rust-deep:var(--launcher-rust-deep);
-    --settings-rust-dim:var(--launcher-rust-dim);
-    --settings-bone:var(--launcher-bone);
-    --settings-dust:var(--launcher-dust);
-    position:absolute;
-    inset:0;
-    display:grid;
-    grid-template-rows:62px minmax(0,1fr) 52px;
-    overflow:hidden;
-    box-sizing:border-box;
-    color:var(--launcher-copy);
-    border-left:1px solid var(--settings-dls-dim);
-    border-right:1px solid var(--settings-rust-dim);
+    /* 本地语义别名: 全部指向 tokens.css 真源 */
+    --settings-dls: var(--dls-crystal);
+    --settings-dls-deep: var(--dls-crystal-deep);
+    --settings-dls-dim: var(--dls-crystal-dim);
+    --settings-rust: var(--launcher-rust);
+    --settings-rust-deep: var(--launcher-rust-deep);
+    --settings-rust-dim: var(--launcher-rust-dim);
+    --settings-bone: var(--launcher-bone);
+    --settings-dust: var(--launcher-dust);
+    /* 派生角色 (color-mix 自既有色板) */
+    --settings-on-accent: color-mix(in srgb, var(--launcher-bg-0) 78%, var(--dls-crystal-dim));
+    --settings-line-dim: color-mix(in srgb, var(--launcher-copy) 22%, transparent);
+    --settings-surface-scrim: color-mix(in srgb, var(--launcher-bg-0) 86%, transparent);
+    --settings-surface-modal: linear-gradient(165deg,
+        color-mix(in srgb, var(--launcher-bg-1) 97%, transparent),
+        color-mix(in srgb, var(--launcher-bg-0) 98%, transparent));
+    /* 字号阶梯: 代号/注脚 8 · 辅助 9 · 控件 10 · 标签 11 · 正文 12 · 区块题 14 · 面板题 20 */
+    --settings-fs-micro: 8px;
+    --settings-fs-note: 9px;
+    --settings-fs-ui: 10px;
+    --settings-fs-label: 11px;
+    --settings-fs-body: 12px;
+    --settings-fs-h2: 14px;
+    --settings-fs-h1: 20px;
+    /* 间距阶梯 */
+    --settings-sp-1: 4px;
+    --settings-sp-2: 6px;
+    --settings-sp-3: 8px;
+    --settings-sp-4: 10px;
+    --settings-sp-5: 12px;
+    --settings-sp-6: 16px;
+    --settings-sp-7: 20px;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: 62px minmax(0, 1fr) 52px;
+    overflow: hidden;
+    box-sizing: border-box;
+    color: var(--launcher-copy);
+    border-left: 1px solid var(--settings-dls-dim);
+    border-right: 1px solid var(--settings-rust-dim);
     background:
-        radial-gradient(ellipse at 50% 110%,rgba(var(--dls-crystal-rgb),.1),transparent 48%),
-        radial-gradient(ellipse at 50% -10%,rgba(var(--launcher-rust-rgb),.07),transparent 56%),
-        linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.018) 1px,transparent 1px),
-        linear-gradient(180deg,rgba(var(--dls-crystal-rgb),.014) 1px,transparent 1px),
+        radial-gradient(ellipse at 50% 110%, rgba(var(--dls-crystal-rgb), .1), transparent 48%),
+        radial-gradient(ellipse at 50% -10%, rgba(var(--launcher-rust-rgb), .07), transparent 56%),
+        linear-gradient(90deg, rgba(var(--dls-crystal-rgb), .018) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(var(--dls-crystal-rgb), .014) 1px, transparent 1px),
         var(--launcher-bg-0);
-    background-size:auto,auto,28px 28px,28px 28px,auto;
-    font-family:"Segoe UI","Microsoft YaHei",sans-serif;
+    background-size: auto, auto, 28px 28px, 28px 28px, auto;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    animation: termBoot var(--wb-motion-structural) var(--wb-ease-emphasized);
 }
+/* 扫描线 (共享 .term-scanlines 的伪元素形态) */
 .settings-terminal-shell::before {
-    content:"";
-    position:absolute;
-    inset:0;
-    z-index:0;
-    pointer-events:none;
-    opacity:.1;
-    background-image:repeating-linear-gradient(0deg,rgba(var(--dls-crystal-rgb),.12) 0,rgba(var(--dls-crystal-rgb),.12) 1px,transparent 1px,transparent 3px);
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: .1;
+    background-image: repeating-linear-gradient(0deg,
+        rgba(var(--dls-crystal-rgb), .12) 0, rgba(var(--dls-crystal-rgb), .12) 1px,
+        transparent 1px, transparent 3px);
 }
+/* 左右内框导轨 */
 .settings-terminal-shell::after {
-    content:"";
-    position:absolute;
-    z-index:0;
-    top:16px;
-    bottom:16px;
-    left:12px;
-    right:12px;
-    pointer-events:none;
-    border-left:1px solid rgba(var(--dls-crystal-rgb),.24);
-    border-right:1px solid rgba(var(--launcher-rust-rgb),.22);
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 16px;
+    bottom: 16px;
+    left: 12px;
+    right: 12px;
+    pointer-events: none;
+    border-left: 1px solid rgba(var(--dls-crystal-rgb), .24);
+    border-right: 1px solid rgba(var(--launcher-rust-rgb), .22);
 }
-.settings-terminal-shell > * { position:relative; z-index:1; min-width:0; }
+.settings-terminal-shell > * { position: relative; z-index: 1; min-width: 0; }
 
+/* ── 顶栏 ── */
 .settings-terminal-header {
-    display:flex;
-    align-items:center;
-    gap:7px;
-    padding:7px 13px 7px 18px;
-    box-sizing:border-box;
-    border-bottom:1px solid var(--settings-rust-dim);
-    background:linear-gradient(180deg,rgba(0,0,0,.93),rgba(5,7,10,.86));
+    --term-rule-seg-left: 18px;
+    --term-rule-seg-w: 94px;
+    display: flex;
+    align-items: center;
+    gap: var(--settings-sp-3);
+    padding: 7px 13px 7px 18px;
+    box-sizing: border-box;
+    background: linear-gradient(180deg,
+        color-mix(in srgb, var(--launcher-bg-0) 93%, transparent),
+        var(--term-surface-veil));
 }
-.settings-terminal-header::after {
-    content:"";
-    position:absolute;
-    left:18px;
-    bottom:-1px;
-    width:94px;
-    height:1px;
-    background:var(--settings-dls);
-    box-shadow:0 0 7px rgba(var(--dls-crystal-rgb),.72);
-}
-.settings-brand-seal {
-    display:flex;
-    align-items:center;
-    gap:7px;
-    flex:0 0 auto;
-    padding:7px 15px 7px 12px;
-    color:var(--settings-bone);
-    border:1px solid var(--settings-rust);
-    background:var(--settings-rust-deep);
-    clip-path:polygon(9px 0,100% 0,calc(100% - 9px) 100%,0 100%);
-    box-shadow:0 0 12px rgba(var(--launcher-rust-rgb),.25);
-    font:15px/1 Consolas,var(--cf7-font-web-overlay-mono),monospace;
-    letter-spacing:3px;
-}
-.settings-brand-seal::before {
-    content:"◉";
-    color:var(--settings-dls);
-    text-shadow:0 0 6px var(--settings-dls);
-}
-.settings-heading { flex:1 1 176px; min-width:150px; max-width:220px; }
-.settings-kicker {
-    display:block;
-    overflow:hidden;
-    color:var(--settings-dust);
-    font:8px/1.1 Consolas,var(--cf7-font-web-overlay-mono),monospace;
-    letter-spacing:3px;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
+/* 铭牌/kicker 结构与配色由 terminal.css 承载, 默认旋钮即设置面板规格 */
+.settings-heading { flex: 1 1 176px; min-width: 150px; max-width: 220px; }
 .settings-title {
-    display:inline-block;
-    margin:2px 10px 0 0;
-    color:#fff;
-    font-size:20px;
-    line-height:1;
-    letter-spacing:1px;
-    text-shadow:0 0 12px rgba(var(--dls-crystal-rgb),.2);
+    display: inline-block;
+    margin: 2px 10px 0 0;
+    color: var(--term-ink-hi);
+    font-size: var(--settings-fs-h1);
+    line-height: 1;
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(var(--dls-crystal-rgb), .2);
 }
+
+/* 状态灯牌: 语义态颜色 (ready=晶体青 / loading=骨金 / warning=琥珀 / error=语义红) */
 .settings-status {
-    position:relative;
-    max-width:205px;
-    min-width:176px;
-    overflow:hidden;
-    margin:0 0 0 auto;
-    padding:7px 11px 7px 26px;
-    box-sizing:border-box;
-    color:#aeb4b9;
-    border:1px solid #30343a;
-    background:rgba(3,5,8,.72);
-    font:9px/1.25 "Microsoft YaHei","Segoe UI",sans-serif;
-    text-align:right;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    position: relative;
+    max-width: 212px;
+    min-width: 176px;
+    overflow: hidden;
+    margin: 0 0 0 auto;
+    padding: 7px 11px 7px 24px;
+    box-sizing: border-box;
+    color: var(--term-ink-md);
+    border: 1px solid var(--settings-line-dim);
+    background: var(--term-surface-veil);
+    font: var(--settings-fs-note)/1.25 "Microsoft YaHei", "Segoe UI", sans-serif;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-status::before {
-    content:"";
-    position:absolute;
-    top:50%;
-    left:11px;
-    width:5px;
-    height:5px;
-    border-radius:50%;
-    background:var(--settings-dust);
-    transform:translateY(-50%);
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 11px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--settings-dust);
+    transform: translateY(-50%);
 }
-.settings-status[data-state="ready"] { color:var(--settings-dls); border-color:var(--settings-dls-dim); }
-.settings-status[data-state="ready"]::before { background:var(--settings-dls); box-shadow:0 0 6px var(--settings-dls); }
-.settings-status[data-state="loading"] { color:var(--settings-bone); }
-.settings-status[data-state="loading"]::before { background:var(--settings-bone); }
-.settings-status[data-state="warning"] { color:var(--wb-semantic-warning); border-color:rgba(var(--launcher-bone-rgb),.36); }
-.settings-status[data-state="warning"]::before { background:var(--wb-semantic-warning); }
-.settings-status[data-state="error"] { color:var(--settings-rust); border-color:rgba(var(--launcher-rust-rgb),.48); }
-.settings-status[data-state="error"]::before { background:var(--settings-rust); box-shadow:0 0 6px var(--settings-rust); }
+.settings-status[data-state="ready"] { color: var(--settings-dls); border-color: var(--settings-dls-dim); }
+.settings-status[data-state="ready"]::before { background: var(--settings-dls); box-shadow: 0 0 6px var(--settings-dls); }
+.settings-status[data-state="loading"] { color: var(--settings-bone); }
+.settings-status[data-state="loading"]::before { background: var(--settings-bone); }
+.settings-status[data-state="warning"] { color: var(--wb-semantic-warning); border-color: rgba(var(--launcher-bone-rgb), .36); }
+.settings-status[data-state="warning"]::before { background: var(--wb-semantic-warning); }
+.settings-status[data-state="error"] { color: var(--wb-semantic-danger); border-color: rgba(var(--launcher-rust-rgb), .48); }
+.settings-status[data-state="error"]::before { background: var(--wb-semantic-danger); box-shadow: 0 0 6px var(--wb-semantic-danger); }
 
+/* 关闭钮: 锈红幽灵态, hover 实心反白 */
 .settings-terminal-close {
-    flex:0 0 37px;
-    width:37px;
-    height:34px;
-    padding:0;
-    color:var(--settings-rust);
-    border:1px solid rgba(var(--launcher-rust-rgb),.38);
-    border-radius:0;
-    background:transparent;
-    clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);
-    font:20px/1 Consolas,monospace;
-    cursor:pointer;
+    flex: 0 0 37px;
+    width: 37px;
+    height: 34px;
+    padding: 0;
+    color: var(--settings-rust);
+    border: 1px solid rgba(var(--launcher-rust-rgb), .38);
+    border-radius: 0;
+    background: transparent;
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    font: 20px/1 Consolas, monospace;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-terminal-close:hover,
 .settings-terminal-close:focus-visible {
-    color:#fff;
-    border-color:var(--settings-rust);
-    outline:none;
-    background:var(--settings-rust);
-    box-shadow:0 0 10px rgba(var(--launcher-rust-rgb),.38);
+    color: #fff;
+    border-color: var(--settings-rust);
+    outline: none;
+    background: var(--settings-rust);
+    box-shadow: 0 0 10px rgba(var(--launcher-rust-rgb), .38);
 }
 
+/* 页签: 无底盒, 下划线指示; active = 青字 + 青线辉光 */
 .settings-tabs {
-    display:flex;
-    flex:0 0 auto;
-    align-items:center;
-    gap:3px;
-    height:42px;
-    margin-left:0;
-    padding:0;
-    border:1px solid rgba(var(--dls-crystal-rgb),.12);
-    background:rgba(3,5,8,.52);
+    display: flex;
+    flex: 0 0 auto;
+    align-items: stretch;
+    align-self: stretch;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
 }
 .settings-tab {
-    position:relative;
-    min-width:76px;
-    height:40px;
-    padding:0 11px;
-    color:var(--settings-dust);
-    border:0;
-    border-left:1px solid transparent;
-    border-right:1px solid transparent;
-    background:transparent;
-    font:600 10px/40px "Microsoft YaHei","Segoe UI",sans-serif;
-    letter-spacing:.5px;
-    cursor:pointer;
+    position: relative;
+    min-width: 78px;
+    padding: 0 14px;
+    color: var(--settings-dust);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    font: 600 var(--settings-fs-label)/1 "Microsoft YaHei", "Segoe UI", sans-serif;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        text-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-tab:hover,
 .settings-tab:focus-visible {
-    color:var(--settings-dls);
-    border-color:rgba(var(--dls-crystal-rgb),.18);
-    outline:none;
-    background:rgba(var(--dls-crystal-rgb),.04);
+    color: var(--term-ink-hi);
+    outline: none;
+    background: rgba(var(--dls-crystal-rgb), .05);
 }
 .settings-tab.active {
-    color:var(--settings-dls);
-    border-left-color:var(--settings-dls-dim);
-    border-right-color:var(--settings-dls-dim);
-    background:rgba(var(--dls-crystal-rgb),.07);
-    text-shadow:0 0 6px rgba(var(--dls-crystal-rgb),.42);
-}
-.settings-tab.active::after {
-    content:"";
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:-1px;
-    height:1px;
-    background:var(--settings-dls);
-    box-shadow:0 0 7px var(--settings-dls);
+    color: var(--settings-dls);
+    border-bottom-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .06);
+    text-shadow: 0 0 6px rgba(var(--dls-crystal-rgb), .42);
+    box-shadow: 0 1px 7px -2px rgba(var(--dls-crystal-rgb), .55);
 }
 
+/* ── 内容区 ── */
 .settings-content {
-    min-height:0;
-    overflow:auto;
-    padding:6px 18px 12px;
-    box-sizing:border-box;
-    scrollbar-gutter:stable;
-    scrollbar-width:thin;
-    scrollbar-color:var(--settings-dls-dim) rgba(0,0,0,.34);
+    min-height: 0;
+    overflow: auto;
+    padding: var(--settings-sp-3) 18px var(--settings-sp-5);
+    box-sizing: border-box;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
 }
-.settings-content::-webkit-scrollbar { width:6px; }
-.settings-content::-webkit-scrollbar-track { background:rgba(0,0,0,.34); }
-.settings-content::-webkit-scrollbar-thumb { background:var(--settings-dls-dim); }
-.settings-content::-webkit-scrollbar-thumb:hover { background:var(--settings-dls-deep); }
-.settings-content[data-active-tab="keys"] { overflow:hidden; padding-bottom:0; }
+.settings-content::-webkit-scrollbar { width: 6px; }
+.settings-content::-webkit-scrollbar-track { background: var(--wb-scrollbar-track); }
+.settings-content::-webkit-scrollbar-thumb { background: var(--wb-scrollbar-thumb); }
+.settings-content::-webkit-scrollbar-thumb:hover { background: var(--wb-scrollbar-thumb-hover); }
+.settings-content[data-active-tab="keys"] { overflow: hidden; padding-bottom: 0; }
 
+/* ── 区块卡 (term-card: 锈红左边条 + dls 细边 + 右下切角 + term-corner-tick) ── */
 .settings-section {
-    position:relative;
-    margin:0 0 8px;
-    padding:10px 12px 11px;
-    box-sizing:border-box;
-    color:var(--launcher-copy);
-    border:1px solid var(--settings-dls-dim);
-    border-left:3px solid var(--settings-rust-dim);
-    background:linear-gradient(160deg,rgba(12,14,18,.96),rgba(4,7,10,.94));
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
-}
-.settings-section::after {
-    content:"";
-    position:absolute;
-    right:3px;
-    bottom:3px;
-    width:10px;
-    height:10px;
-    border-right:1px solid rgba(var(--dls-crystal-rgb),.48);
-    border-bottom:1px solid rgba(var(--dls-crystal-rgb),.48);
-    pointer-events:none;
+    margin: 0 0 var(--settings-sp-4);
+    padding: var(--settings-sp-4) 14px var(--settings-sp-5);
 }
 .settings-section-heading {
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    gap:18px;
-    margin-bottom:8px;
-    padding-bottom:6px;
-    border-bottom:1px solid var(--settings-rust-dim);
+    --term-rule-seg-left: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: var(--settings-sp-3);
+    padding-bottom: var(--settings-sp-2);
 }
-.settings-section-heading::after {
-    content:"";
-    position:absolute;
-    left:12px;
-    margin-bottom:-7px;
-    width:62px;
-    height:1px;
-    background:var(--settings-dls);
-    box-shadow:0 0 5px rgba(var(--dls-crystal-rgb),.58);
-}
-.settings-section-identity { min-width:0; }
+.settings-section-identity { min-width: 0; }
 .settings-section-code {
-    display:block;
-    color:var(--settings-rust);
-    font:7px/1 Consolas,var(--cf7-font-web-overlay-mono),monospace;
-    letter-spacing:2px;
+    display: block;
+    color: var(--settings-rust);
+    font: var(--settings-fs-micro)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    letter-spacing: 1.8px;
 }
 .settings-section-heading h2 {
-    margin:2px 0 0;
-    color:#f2f2f0;
-    font-size:14px;
-    line-height:1.1;
-    letter-spacing:.4px;
+    margin: 3px 0 0;
+    color: var(--term-ink-hi);
+    font-size: var(--settings-fs-h2);
+    line-height: 1.1;
+    letter-spacing: .4px;
 }
 .settings-section-heading h2::before {
-    content:"◇";
-    margin-right:7px;
-    color:var(--settings-dls);
-    font:10px/1 Consolas,monospace;
-    text-shadow:0 0 5px var(--settings-dls);
+    content: "◇";
+    margin-right: 7px;
+    color: var(--settings-dls);
+    font: var(--settings-fs-ui)/1 Consolas, monospace;
+    text-shadow: 0 0 5px var(--settings-dls);
 }
 .settings-hint-trigger {
-    display:grid;
-    width:22px;
-    height:22px;
-    flex:0 0 22px;
-    place-items:center;
-    padding:0;
-    color:var(--settings-dust);
-    border:1px solid rgba(var(--dls-crystal-rgb),.26);
-    border-radius:0;
-    background:rgba(0,0,0,.36);
-    font:700 11px/1 Consolas,monospace;
-    cursor:help;
+    display: grid;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    place-items: center;
+    padding: 0;
+    color: var(--settings-dust);
+    border: 1px solid rgba(var(--dls-crystal-rgb), .26);
+    border-radius: 0;
+    background: var(--term-surface-inset);
+    font: 700 var(--settings-fs-label)/1 Consolas, monospace;
+    cursor: help;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-hint-trigger:hover,
 .settings-hint-trigger:focus-visible {
-    color:var(--settings-dls);
-    border-color:var(--settings-dls);
-    outline:none;
-    background:rgba(var(--dls-crystal-rgb),.08);
-    box-shadow:0 0 8px rgba(var(--dls-crystal-rgb),.24);
+    color: var(--settings-dls);
+    border-color: var(--settings-dls);
+    outline: none;
+    background: rgba(var(--dls-crystal-rgb), .08);
+    box-shadow: 0 0 8px rgba(var(--dls-crystal-rgb), .24);
 }
 .settings-simple-tooltip {
-    max-width:300px;
-    color:var(--launcher-copy);
-    font:11px/1.5 "Microsoft YaHei","Segoe UI",sans-serif;
-    overflow-wrap:anywhere;
+    max-width: 300px;
+    color: var(--launcher-copy);
+    font: var(--settings-fs-label)/1.5 "Microsoft YaHei", "Segoe UI", sans-serif;
+    overflow-wrap: anywhere;
 }
 
-.settings-grid { display:grid; gap:6px 8px; }
-.settings-grid.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
-.settings-grid.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+/* ── 字段行与控件 ── */
+.settings-grid { display: grid; gap: var(--settings-sp-2) var(--settings-sp-3); }
+.settings-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.settings-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .settings-field {
-    min-height:36px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:5px 8px 5px 10px;
-    box-sizing:border-box;
-    border-left:2px solid var(--settings-dls-dim);
-    background:rgba(0,0,0,.36);
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--settings-sp-4);
+    padding: var(--settings-sp-1) var(--settings-sp-3) var(--settings-sp-1) var(--settings-sp-4);
+    box-sizing: border-box;
+    border-left: 2px solid var(--settings-dls-dim);
+    background: var(--term-surface-inset);
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard);
 }
-.settings-field:hover { border-left-color:var(--settings-dls); background:rgba(var(--dls-crystal-rgb),.035); }
-.settings-field-copy { display:flex; min-width:0; flex-direction:column; gap:2px; }
-.settings-field-copy b { color:#d9dcdf; font-size:10px; font-weight:600; }
+.settings-field:hover {
+    border-left-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .04);
+}
+.settings-field-copy { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.settings-field-copy b { color: var(--term-ink-hi); font-size: var(--settings-fs-label); font-weight: 600; }
 .settings-field-copy small {
-    max-width:390px;
-    overflow:hidden;
-    color:#656c72;
-    font:8px/1.2 Consolas,"Microsoft YaHei",monospace;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    max-width: 390px;
+    overflow: hidden;
+    color: var(--term-ink-faint);
+    font: var(--settings-fs-note)/1.2 Consolas, "Microsoft YaHei", monospace;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
+
+/* 复选框: 自绘方块 + 对勾, 状态切换走 micro 过渡 */
 .settings-field input[type="checkbox"] {
-    appearance:none;
-    width:16px;
-    height:16px;
-    flex:0 0 16px;
-    border:1px solid var(--settings-dust);
-    background:rgba(0,0,0,.44);
-    cursor:pointer;
+    appearance: none;
+    position: relative;
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    margin: 0;
+    border: 1px solid var(--settings-dust);
+    background: var(--term-surface-inset);
+    cursor: pointer;
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
+.settings-field input[type="checkbox"]:hover { border-color: var(--settings-dls-deep); }
 .settings-field input[type="checkbox"]:checked {
-    border-color:var(--settings-dls);
-    background:var(--settings-dls);
-    box-shadow:0 0 7px rgba(var(--dls-crystal-rgb),.44);
+    border-color: var(--settings-dls);
+    background: var(--settings-dls);
+    box-shadow: 0 0 7px rgba(var(--dls-crystal-rgb), .44);
 }
 .settings-field input[type="checkbox"]:checked::after {
-    content:"";
-    display:block;
-    width:8px;
-    height:4px;
-    margin:3px 0 0 3px;
-    border-left:2px solid var(--launcher-bg-0);
-    border-bottom:2px solid var(--launcher-bg-0);
-    transform:rotate(-45deg);
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 4px;
+    width: 8px;
+    height: 4px;
+    border-left: 2px solid var(--launcher-bg-0);
+    border-bottom: 2px solid var(--launcher-bg-0);
+    transform: rotate(-45deg);
 }
+.settings-field input[type="checkbox"]:focus-visible {
+    outline: none;
+    border-color: var(--dls-crystal-bright);
+    box-shadow: 0 0 0 1px var(--dls-crystal-bright), 0 0 8px rgba(var(--dls-crystal-rgb), .3);
+}
+
+/* 下拉: 自绘 chevron, 统一控件高度 */
 .settings-select,
 .settings-cheat-form input {
-    min-width:136px;
-    padding:6px 9px;
-    color:var(--launcher-copy);
-    border:1px solid var(--settings-dls-dim);
-    border-radius:0;
-    background:rgba(0,0,0,.42);
-    font:10px/1.2 Consolas,"Microsoft YaHei",monospace;
+    min-width: 136px;
+    min-height: var(--term-control-h);
+    padding: 5px 9px;
+    box-sizing: border-box;
+    color: var(--launcher-copy);
+    border: 1px solid var(--settings-dls-dim);
+    border-radius: 0;
+    background: var(--term-surface-inset);
+    font: var(--settings-fs-ui)/1.2 Consolas, "Microsoft YaHei", monospace;
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
+.settings-select {
+    appearance: none;
+    padding-right: 24px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0,0 L10,0 L5,6 Z' fill='%233dd5ff'/></svg>");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 9px) center;
+    cursor: pointer;
+}
+.settings-select:hover { border-color: var(--settings-dls-deep); }
 .settings-select:focus-visible,
 .settings-cheat-form input:focus-visible {
-    border-color:var(--settings-dls);
-    outline:1px solid var(--settings-dls);
-    box-shadow:0 0 7px rgba(var(--dls-crystal-rgb),.26);
+    border-color: var(--settings-dls);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--settings-dls), 0 0 8px rgba(var(--dls-crystal-rgb), .26);
 }
-.settings-select option { color:var(--launcher-copy); background:var(--launcher-bg-1); }
-.settings-range-wrap { display:grid; grid-template-columns:minmax(100px,1fr) 45px; align-items:center; gap:7px; min-width:185px; }
-.settings-range-wrap input { width:100%; accent-color:var(--settings-dls); }
-.settings-range-wrap output { color:var(--settings-dls); font:11px/1 Consolas,monospace; text-align:right; }
+.settings-select option { color: var(--launcher-copy); background: var(--launcher-bg-1); }
 
-.settings-button,
-.settings-key-button,
-.settings-copy-command {
-    min-height:29px;
-    padding:6px 11px;
-    color:var(--settings-bone);
-    border:1px solid var(--settings-dust);
-    border-radius:0;
-    background:rgba(0,0,0,.28);
-    clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);
-    font:600 10px/1.2 "Microsoft YaHei","Segoe UI",sans-serif;
-    cursor:pointer;
+/* 滑杆: 自绘轨道与切角滑块, 读数等宽数字靠右 */
+.settings-range-wrap {
+    display: grid;
+    grid-template-columns: minmax(100px, 1fr) 44px;
+    align-items: center;
+    gap: var(--settings-sp-3);
+    min-width: 185px;
 }
-.settings-button:hover:not(:disabled),
-.settings-button:focus-visible,
-.settings-key-button:hover:not(:disabled),
-.settings-key-button:focus-visible,
-.settings-copy-command:hover,
-.settings-copy-command:focus-visible {
-    color:var(--settings-dls);
-    border-color:var(--settings-dls);
-    outline:none;
-    background:rgba(var(--dls-crystal-rgb),.07);
-    text-shadow:0 0 5px rgba(var(--dls-crystal-rgb),.45);
+.settings-range-wrap input[type="range"] {
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
 }
-.settings-button:disabled,
-.settings-key-button:disabled { opacity:.3; cursor:not-allowed; }
-.settings-button.primary {
-    color:#041015;
-    border-color:var(--settings-dls);
-    background:var(--settings-dls);
-    box-shadow:0 0 10px rgba(var(--dls-crystal-rgb),.2);
+.settings-range-wrap input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--term-surface-inset);
+    border: 1px solid rgba(var(--dls-crystal-rgb), .22);
 }
-.settings-button.primary:hover:not(:disabled),
-.settings-button.primary:focus-visible { color:#000; background:var(--dls-crystal-bright); }
-.settings-button.secondary { border-color:rgba(var(--launcher-bone-rgb),.45); background:rgba(var(--launcher-bone-rgb),.035); }
-.settings-button.warning { color:var(--wb-semantic-warning); border-color:rgba(var(--launcher-bone-rgb),.42); }
-.settings-button.danger { color:var(--settings-rust); border-color:rgba(var(--launcher-rust-rgb),.48); }
-.settings-button.danger:hover:not(:disabled),
-.settings-button.danger:focus-visible { color:#fff; border-color:var(--settings-rust); background:var(--settings-rust); text-shadow:none; }
-.settings-button.audition { margin-top:8px; }
-.settings-inline-actions { display:flex; align-items:center; justify-content:flex-end; }
+.settings-range-wrap input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 10px;
+    height: 12px;
+    margin-top: -5px;
+    background: var(--settings-dls);
+    clip-path: polygon(2px 0, 100% 0, calc(100% - 2px) 100%, 0 100%);
+    box-shadow: 0 0 6px rgba(var(--dls-crystal-rgb), .5);
+}
+.settings-range-wrap input[type="range"]:focus-visible { outline: none; }
+.settings-range-wrap input[type="range"]:focus-visible::-webkit-slider-thumb {
+    background: var(--dls-crystal-bright);
+    box-shadow: 0 0 10px rgba(var(--dls-crystal-rgb), .7);
+}
+.settings-range-wrap output {
+    color: var(--settings-dls);
+    font: var(--settings-fs-label)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
 
-.settings-game-common { padding:7px 10px 9px; }
-.settings-game-common > .settings-section-heading { margin-bottom:4px; padding-bottom:5px; }
+/* ── 按钮: 结构与变体色由 terminal.css .term-btn 承载, 这里只留页面度量 ── */
+.settings-button.audition { margin: 0; }
+.settings-inline-actions { display: flex; align-items: center; justify-content: flex-end; }
+
+/* ── 游戏 tab: 常用设置聚合卡 ── */
+.settings-game-common { padding: var(--settings-sp-3) var(--settings-sp-5) var(--settings-sp-4); }
+.settings-game-common > .settings-section-heading { margin-bottom: 2px; padding-bottom: 5px; }
 .settings-game-band {
-    display:grid;
-    grid-template-columns:82px minmax(0,1fr);
-    align-items:start;
-    gap:7px;
-    padding:5px 0;
-    border-top:1px solid rgba(var(--dls-crystal-rgb),.1);
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    align-items: start;
+    gap: var(--settings-sp-4);
+    padding: var(--settings-sp-2) 0;
+    border-top: 1px solid rgba(var(--dls-crystal-rgb), .08);
 }
-.settings-game-band:first-of-type { border-top:0; padding-top:0; }
-.settings-game-band-label { padding:4px 0 0 3px; }
+.settings-game-band:first-of-type { border-top: 0; padding-top: 0; }
+.settings-game-band-label {
+    padding: 1px 0 0 var(--settings-sp-3);
+    border-left: 2px solid var(--settings-rust-dim);
+}
 .settings-game-band-label span {
-    display:block;
-    color:var(--settings-rust);
-    font:6px/1 Consolas,var(--cf7-font-web-overlay-mono),monospace;
-    letter-spacing:1.4px;
+    display: block;
+    color: var(--settings-rust);
+    font: var(--settings-fs-micro)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    letter-spacing: 1.6px;
 }
-.settings-game-band-label h3 { margin:3px 0 0; color:var(--settings-bone); font-size:11px; line-height:1.15; }
-.settings-game-common .settings-field { min-height:32px; gap:5px; padding:3px 6px 3px 8px; }
-.settings-game-common .settings-field-copy b { font-size:11px; }
-.settings-game-common .settings-select { min-width:112px; padding:5px 7px; font-size:10px; }
-.settings-audio-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)) 132px; gap:6px; }
-.settings-audition-tile { min-height:32px; margin:0 !important; }
-.settings-common-display-grid { gap:5px 6px; }
+.settings-game-band-label h3 {
+    margin: 3px 0 0;
+    color: var(--settings-bone);
+    font-size: var(--settings-fs-label);
+    line-height: 1.15;
+}
+.settings-game-common .settings-field { min-height: 34px; }
+.settings-game-common .settings-select { min-width: 120px; }
+.settings-audio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 136px;
+    gap: var(--settings-sp-3);
+    align-items: stretch;
+}
+.settings-audition-tile { min-height: 34px; white-space: nowrap; }
+.settings-common-display-grid { gap: var(--settings-sp-2); }
 .settings-home-cheat {
-    grid-template-columns:minmax(0,1fr) 84px 116px;
-    gap:5px;
+    grid-template-columns: minmax(0, 1fr) 88px 112px;
+    gap: var(--settings-sp-2);
 }
-.settings-home-cheat input {
-    min-height:31px;
-    padding:5px 8px;
-    box-sizing:border-box;
-    font-size:10px;
-}
-.settings-home-cheat .settings-button {
-    min-height:31px;
-    padding:5px 7px;
-    white-space:nowrap;
-}
+.settings-home-cheat input { min-width: 0; }
+.settings-home-cheat .settings-button { min-height: 30px; white-space: nowrap; }
 
-.settings-rescue-strip { border-left:2px solid var(--settings-rust); }
-.settings-rescue-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+/* 流程救援: 主行动(复活=青) / 逃离行动(返回基地=锈红) 两级动作层级 */
+.settings-rescue-strip { border-left: 2px solid var(--settings-rust); }
+.settings-rescue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--settings-sp-3); }
 .settings-rescue-card {
-    display:grid;
-    grid-template-columns:minmax(0,1fr) auto;
-    align-items:center;
-    gap:7px;
-    min-height:38px;
-    padding:3px 5px 3px 8px;
-    border-left:2px solid var(--settings-rust-dim);
-    background:linear-gradient(90deg,rgba(var(--launcher-rust-rgb),.07),rgba(0,0,0,.34));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--settings-sp-4);
+    min-height: 42px;
+    padding: 5px var(--settings-sp-2) 5px var(--settings-sp-5);
+    border-left: 2px solid var(--settings-rust-dim);
+    background: linear-gradient(90deg, rgba(var(--launcher-rust-rgb), .06), var(--term-surface-inset));
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard);
 }
-.settings-rescue-card h3 { margin:0; color:var(--settings-bone); font-size:11px; }
-.settings-rescue-card .settings-button { min-width:86px; }
+.settings-rescue-card:hover { border-left-color: var(--settings-rust); }
+.settings-rescue-card h3 { margin: 0; color: var(--settings-bone); font-size: var(--settings-fs-label); }
+.settings-rescue-card .settings-button { min-width: 92px; }
 
-.settings-camera-entry { margin-bottom:0; padding-top:8px; padding-bottom:9px; }
-.settings-camera-entry .settings-section-heading { margin-bottom:5px; padding-bottom:5px; }
-.settings-camera-entry-row { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:37px; }
-.settings-camera-entry-copy { display:flex; min-width:0; flex-direction:column; gap:2px; }
-.settings-camera-entry-copy strong { color:var(--settings-dls); font:11px/1.2 Consolas,"Microsoft YaHei",monospace; }
-.settings-camera-entry-copy span { color:#858c92; font-size:9px; line-height:1.3; }
-.settings-camera-open { flex:0 0 auto; min-width:142px; }
+/* ── 镜头缩放入口卡 ── */
+.settings-camera-entry { margin-bottom: 0; }
+.settings-camera-entry .settings-section-heading { margin-bottom: 5px; padding-bottom: 5px; }
+.settings-camera-entry-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--settings-sp-5);
+    min-height: 40px;
+}
+.settings-camera-entry-copy { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.settings-camera-entry-copy strong {
+    align-self: flex-start;
+    padding: 2px 8px;
+    color: var(--settings-dls);
+    border: 1px solid var(--settings-dls-dim);
+    background: rgba(var(--dls-crystal-rgb), .06);
+    font: var(--settings-fs-label)/1.2 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    letter-spacing: .5px;
+}
+.settings-camera-entry-copy span { color: var(--term-ink-lo); font-size: var(--settings-fs-note); line-height: 1.3; }
+.settings-camera-open { flex: 0 0 auto; min-width: 142px; }
 
-.settings-graphics-layout { display:grid; grid-template-columns:minmax(0,1fr) 318px; gap:9px; align-items:start; }
+/* ── 镜头预览模态 ── */
 .settings-camera-preview {
-    position:relative;
-    margin:0;
-    padding:6px;
-    border:1px solid var(--settings-dls-dim);
-    background:rgba(0,0,0,.52);
-    clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+    position: relative;
+    margin: 0;
+    padding: var(--settings-sp-2);
+    border: 1px solid var(--settings-dls-dim);
+    background: var(--term-surface-inset);
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 }
 .settings-camera-preview::before {
-    content:"ENTRY FRAME";
-    position:absolute;
-    z-index:2;
-    top:9px;
-    left:11px;
-    padding:2px 5px;
-    color:var(--settings-rust);
-    background:rgba(5,7,10,.86);
-    font:7px/1 Consolas,monospace;
-    letter-spacing:2px;
+    content: "ENTRY FRAME";
+    position: absolute;
+    z-index: 2;
+    top: 9px;
+    left: 11px;
+    padding: 2px 5px;
+    color: var(--settings-rust);
+    background: var(--settings-surface-scrim);
+    font: var(--settings-fs-micro)/1 Consolas, monospace;
+    letter-spacing: 2px;
 }
 .settings-camera-viewport {
-    position:relative;
-    display:grid;
-    place-items:center;
-    width:304px;
-    height:171px;
-    overflow:hidden;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 304px;
+    height: 171px;
+    overflow: hidden;
     background:
-        linear-gradient(45deg,rgba(var(--dls-crystal-rgb),.06) 25%,transparent 25%,transparent 75%,rgba(var(--dls-crystal-rgb),.06) 75%),
-        linear-gradient(45deg,rgba(var(--dls-crystal-rgb),.06) 25%,rgba(4,7,10,.98) 25%,rgba(4,7,10,.98) 75%,rgba(var(--dls-crystal-rgb),.06) 75%);
-    background-position:0 0,7px 7px;
-    background-size:14px 14px;
-    box-shadow:inset 0 0 0 1px rgba(0,0,0,.78);
+        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .06) 25%, transparent 25%, transparent 75%, rgba(var(--dls-crystal-rgb), .06) 75%),
+        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .06) 25%, var(--launcher-bg-0) 25%, var(--launcher-bg-0) 75%, rgba(var(--dls-crystal-rgb), .06) 75%);
+    background-position: 0 0, 7px 7px;
+    background-size: 14px 14px;
+    box-shadow: inset 0 0 0 1px rgba(var(--launcher-bg-0-rgb, 5, 7, 10), .78);
 }
 .settings-camera-viewport::after {
-    content:"";
-    position:absolute;
-    inset:50% auto auto 50%;
-    width:14px;
-    height:14px;
-    border-left:1px solid rgba(var(--dls-crystal-rgb),.72);
-    border-top:1px solid rgba(var(--dls-crystal-rgb),.72);
-    transform:translate(-50%,-50%) rotate(45deg);
-    pointer-events:none;
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 14px;
+    height: 14px;
+    border-left: 1px solid rgba(var(--dls-crystal-rgb), .72);
+    border-top: 1px solid rgba(var(--dls-crystal-rgb), .72);
+    transform: translate(-50%, -50%) rotate(45deg);
+    pointer-events: none;
 }
 .settings-camera-viewport img {
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    transform-origin:50% 50%;
-    transition:transform 90ms linear;
-    user-select:none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: 50% 50%;
+    transition: transform 90ms linear;
+    user-select: none;
 }
-.settings-camera-unavailable { margin:0; color:#70777d; font:9px/1.3 Consolas,"Microsoft YaHei",monospace; }
-.settings-camera-preview figcaption { margin-top:5px; color:#6c7379; font-size:8px; text-align:center; }
+.settings-camera-unavailable { margin: 0; color: var(--term-ink-faint); font: var(--settings-fs-note)/1.3 Consolas, "Microsoft YaHei", monospace; }
+.settings-camera-preview figcaption { margin-top: 5px; color: var(--term-ink-faint); font-size: var(--settings-fs-micro); text-align: center; }
 
-.settings-modal-layer.settings-camera-modal-layer { z-index:70; padding:10px; background:rgba(0,0,0,.9); }
+.settings-modal-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 26px;
+    box-sizing: border-box;
+    background: var(--settings-surface-scrim);
+    animation: settingsLayerIn var(--wb-motion-standard) var(--wb-ease-standard);
+}
+@keyframes settingsLayerIn { from { opacity: 0; } to { opacity: 1; } }
+.settings-modal-layer.settings-camera-modal-layer { z-index: 70; padding: 10px; }
 .settings-camera-modal {
-    display:grid;
-    grid-template-rows:49px minmax(0,1fr) 38px;
-    width:100%;
-    height:100%;
-    min-width:0;
-    min-height:0;
-    overflow:hidden;
-    color:var(--launcher-copy);
-    border:1px solid var(--settings-dls-dim);
+    display: grid;
+    grid-template-rows: 49px minmax(0, 1fr) 38px;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    color: var(--launcher-copy);
+    border: 1px solid var(--settings-dls-dim);
     background:
-        radial-gradient(ellipse at 38% 45%,rgba(var(--dls-crystal-rgb),.07),transparent 55%),
-        linear-gradient(165deg,rgba(8,12,16,.995),rgba(3,5,8,.995));
-    clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
-    box-shadow:0 20px 72px rgba(0,0,0,.8),0 0 28px rgba(var(--dls-crystal-rgb),.09);
+        radial-gradient(ellipse at 38% 45%, rgba(var(--dls-crystal-rgb), .07), transparent 55%),
+        var(--settings-surface-modal);
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+    box-shadow: 0 20px 72px rgba(0, 0, 0, .8), 0 0 28px rgba(var(--dls-crystal-rgb), .09);
+    animation: termBoot var(--wb-motion-structural) var(--wb-ease-emphasized);
 }
 .settings-camera-modal-header {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:6px 11px 6px 17px;
-    box-sizing:border-box;
-    border-bottom:1px solid var(--settings-rust-dim);
-    background:linear-gradient(90deg,rgba(var(--launcher-rust-rgb),.1),rgba(var(--dls-crystal-rgb),.025));
+    display: flex;
+    align-items: center;
+    gap: var(--settings-sp-5);
+    padding: 6px 11px 6px 17px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--settings-rust-dim);
+    background: linear-gradient(90deg, rgba(var(--launcher-rust-rgb), .1), rgba(var(--dls-crystal-rgb), .025));
 }
-.settings-camera-modal-identity { flex:1 1 auto; min-width:0; }
-.settings-camera-modal-identity h2 { margin:2px 0 0; color:#fff; font-size:17px; line-height:1; }
+.settings-camera-modal-identity { flex: 1 1 auto; min-width: 0; }
+.settings-camera-modal-identity h2 { margin: 2px 0 0; color: var(--term-ink-hi); font-size: 17px; line-height: 1; }
 .settings-camera-simulator-body {
-    display:grid;
-    grid-template-columns:minmax(0,1fr) 252px;
-    gap:10px;
-    min-height:0;
-    padding:10px;
-    box-sizing:border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 252px;
+    gap: var(--settings-sp-4);
+    min-height: 0;
+    padding: var(--settings-sp-4);
+    box-sizing: border-box;
 }
 .settings-camera-simulator-stage {
-    display:grid;
-    grid-template-rows:minmax(0,1fr) auto;
-    place-items:center;
-    min-width:0;
-    min-height:0;
-    height:100%;
-    padding:8px;
-    box-sizing:border-box;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    place-items: center;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    padding: var(--settings-sp-3);
+    box-sizing: border-box;
 }
-.settings-camera-simulator-stage::before { content:"ENTRY FRAME / RELATIVE SCALE"; }
+.settings-camera-simulator-stage::before {
+    content: "ENTRY FRAME / RELATIVE SCALE";
+    color: var(--settings-dust);
+    font: var(--settings-fs-micro)/1 Consolas, monospace;
+    letter-spacing: 2px;
+}
 .settings-camera-simulator-viewport {
-    width:100%;
-    max-width:none;
-    height:auto;
-    max-height:100%;
-    aspect-ratio:16/9;
-    place-self:center;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    max-height: 100%;
+    aspect-ratio: 16/9;
+    place-self: center;
     background:
-        linear-gradient(45deg,rgba(var(--dls-crystal-rgb),.11) 25%,transparent 25%,transparent 75%,rgba(var(--dls-crystal-rgb),.11) 75%),
-        linear-gradient(45deg,rgba(var(--dls-crystal-rgb),.11) 25%,rgba(4,7,10,.98) 25%,rgba(4,7,10,.98) 75%,rgba(var(--dls-crystal-rgb),.11) 75%);
-    background-position:0 0,10px 10px;
-    background-size:20px 20px;
-    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.2),0 0 24px rgba(0,0,0,.48);
+        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .11) 25%, transparent 25%, transparent 75%, rgba(var(--dls-crystal-rgb), .11) 75%),
+        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .11) 25%, var(--launcher-bg-0) 25%, var(--launcher-bg-0) 75%, rgba(var(--dls-crystal-rgb), .11) 75%);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+    box-shadow: inset 0 0 0 1px rgba(var(--dls-crystal-rgb), .2), 0 0 24px rgba(0, 0, 0, .48);
 }
 .settings-camera-simulator-viewport img {
-    width:100%;
-    height:100%;
-    max-width:none;
-    object-fit:cover;
-    image-rendering:auto;
-    will-change:transform;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    image-rendering: auto;
+    will-change: transform;
 }
 .settings-camera-hud-scale {
-    position:absolute;
-    z-index:3;
-    top:12px;
-    right:12px;
-    padding:5px 8px;
-    color:#001016;
-    border:1px solid var(--settings-dls);
-    background:var(--settings-dls);
-    font:700 13px/1 Consolas,monospace;
-    box-shadow:0 0 12px rgba(var(--dls-crystal-rgb),.3);
+    position: absolute;
+    z-index: 3;
+    top: 12px;
+    right: 12px;
+    padding: 5px 8px;
+    color: var(--settings-on-accent);
+    border: 1px solid var(--settings-dls);
+    background: var(--settings-dls);
+    font: 700 13px/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    box-shadow: 0 0 12px rgba(var(--dls-crystal-rgb), .3);
 }
 .settings-camera-safe-frame {
-    position:absolute;
-    z-index:2;
-    inset:8%;
-    pointer-events:none;
-    border:1px solid rgba(var(--dls-crystal-rgb),.28);
-    box-shadow:inset 0 0 18px rgba(var(--dls-crystal-rgb),.035);
+    position: absolute;
+    z-index: 2;
+    inset: 8%;
+    pointer-events: none;
+    border: 1px solid rgba(var(--dls-crystal-rgb), .28);
+    box-shadow: inset 0 0 18px rgba(var(--dls-crystal-rgb), .035);
 }
 .settings-camera-safe-frame::before,
 .settings-camera-safe-frame::after {
-    content:"";
-    position:absolute;
-    background:rgba(var(--dls-crystal-rgb),.24);
+    content: "";
+    position: absolute;
+    background: rgba(var(--dls-crystal-rgb), .24);
 }
-.settings-camera-safe-frame::before { top:50%; left:0; right:0; height:1px; }
-.settings-camera-safe-frame::after { top:0; bottom:0; left:50%; width:1px; }
-.settings-camera-simulator-stage figcaption { margin-top:7px; color:#818990; font-size:9px; line-height:1.3; }
+.settings-camera-safe-frame::before { top: 50%; left: 0; right: 0; height: 1px; }
+.settings-camera-safe-frame::after { top: 0; bottom: 0; left: 50%; width: 1px; }
+.settings-camera-simulator-stage figcaption { margin-top: 7px; color: var(--term-ink-lo); font-size: var(--settings-fs-note); line-height: 1.3; }
 .settings-camera-controls {
-    display:flex;
-    min-height:0;
-    flex-direction:column;
-    gap:8px;
-    padding:9px;
-    box-sizing:border-box;
-    border-left:2px solid var(--settings-rust-dim);
-    background:rgba(0,0,0,.38);
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: var(--settings-sp-3);
+    padding: var(--settings-sp-4);
+    box-sizing: border-box;
+    border-left: 2px solid var(--settings-rust-dim);
+    background: var(--term-surface-inset);
 }
 .settings-camera-control-field {
-    position:relative;
-    min-height:58px;
-    align-items:flex-start;
-    flex-direction:column;
-    justify-content:center;
-    gap:6px;
-    padding:8px 9px;
+    position: relative;
+    min-height: 58px;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--settings-sp-2);
+    padding: var(--settings-sp-3) var(--settings-sp-4);
 }
-.settings-camera-control-field .settings-field-copy { width:100%; }
-.settings-camera-control-field .settings-field-copy b { font-size:12px; }
-.settings-camera-control-field .settings-field-copy small { max-width:none; font-size:9px; white-space:normal; }
-.settings-camera-control-field .settings-range-wrap { width:100%; min-width:0; }
-.settings-camera-control-field input[type="checkbox"] { position:absolute; right:10px; top:10px; }
+.settings-camera-control-field .settings-field-copy { width: 100%; }
+.settings-camera-control-field .settings-field-copy b { font-size: var(--settings-fs-body); }
+.settings-camera-control-field .settings-field-copy small { max-width: none; font-size: var(--settings-fs-note); white-space: normal; }
+.settings-camera-control-field .settings-range-wrap { width: 100%; min-width: 0; }
+.settings-camera-control-field input[type="checkbox"] { position: absolute; right: 10px; top: 10px; }
 .settings-camera-mode-hud {
-    margin:0;
-    padding:7px 9px;
-    color:var(--settings-bone);
-    border-left:2px solid var(--settings-rust);
-    background:rgba(var(--launcher-rust-rgb),.07);
-    font-size:9px;
-    line-height:1.35;
+    margin: 0;
+    padding: 7px 9px;
+    color: var(--settings-bone);
+    border-left: 2px solid var(--settings-rust);
+    background: rgba(var(--launcher-rust-rgb), .07);
+    font-size: var(--settings-fs-note);
+    line-height: 1.35;
 }
-.settings-camera-mode-hud[data-dynamic="on"] { color:var(--settings-dls); border-left-color:var(--settings-dls); background:rgba(var(--dls-crystal-rgb),.05); }
-.settings-camera-control-actions { display:flex; justify-content:flex-end; margin-top:auto; }
+.settings-camera-mode-hud[data-dynamic="on"] {
+    color: var(--settings-dls);
+    border-left-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .05);
+}
+.settings-camera-control-actions { display: flex; justify-content: flex-end; margin-top: auto; }
 .settings-camera-modal-footer {
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-    gap:12px;
-    padding:5px 11px 5px 16px;
-    box-sizing:border-box;
-    border-top:1px solid var(--settings-rust-dim);
-    background:rgba(0,0,0,.42);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--settings-sp-5);
+    padding: 5px 11px 5px 16px;
+    box-sizing: border-box;
+    border-top: 1px solid var(--settings-rust-dim);
+    background: var(--term-surface-inset);
 }
-.settings-camera-done { min-width:104px; }
+.settings-camera-done { min-width: 104px; }
 
-/* 35 键位在 1024×576 中两列分组一次呈现；组内再按 2/3 列压缩。 */
+/* ── 键位 tab: 35 键两列分组一次呈现, 组内再按 2/3 列压缩 ── */
 .settings-key-summary {
-    display:grid;
-    grid-template-columns:minmax(0,1fr) auto;
-    align-items:center;
-    gap:12px;
-    min-height:40px;
-    margin-bottom:3px;
-    padding-top:3px;
-    padding-bottom:3px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--settings-sp-5);
+    min-height: 40px;
+    margin-bottom: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
-.settings-key-summary .settings-section-heading { margin:0; padding:0; border:0; }
-.settings-key-summary .settings-section-heading::after { display:none; }
-.settings-key-summary .settings-section-heading p { max-width:600px; }
-.settings-key-board { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; align-items:start; }
-.settings-key-column { display:grid; gap:4px; align-content:start; min-width:0; }
-.settings-key-section { margin:0; padding:5px 6px 6px; }
-.settings-key-section .settings-section-heading { margin-bottom:4px; padding-bottom:3px; }
-.settings-key-section .settings-section-heading::after { left:6px; margin-bottom:-4px; width:42px; }
-.settings-key-section .settings-section-code { font-size:7px; letter-spacing:1.4px; }
-.settings-key-section .settings-section-heading h2 { margin-top:1px; font-size:13px; }
-.settings-key-section .settings-section-heading h2::before { margin-right:5px; font-size:9px; }
-.settings-key-grid { display:grid; gap:3px; }
-.settings-key-section[data-key-columns="2"] .settings-key-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-.settings-key-section[data-key-columns="3"] .settings-key-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.settings-key-summary .settings-section-heading { margin: 0; padding: 0; border-bottom: 0; }
+.settings-key-summary .settings-section-heading::after { display: none; }
+.settings-key-summary .settings-section-heading p { max-width: 600px; }
+.settings-key-board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; align-items: start; }
+.settings-key-column { display: grid; gap: var(--settings-sp-1); align-content: start; min-width: 0; }
+.settings-key-section { margin: 0; padding: 5px var(--settings-sp-2) var(--settings-sp-2); --term-rule-seg-w: 42px; }
+.settings-key-section .settings-section-heading { margin-bottom: var(--settings-sp-1); padding-bottom: 3px; }
+.settings-key-section .settings-section-code { font-size: var(--settings-fs-micro); letter-spacing: 1.4px; }
+.settings-key-section .settings-section-heading h2 { margin-top: 1px; font-size: 13px; }
+.settings-key-section .settings-section-heading h2::before { margin-right: 5px; font-size: var(--settings-fs-note); }
+.settings-key-grid { display: grid; gap: 3px; }
+.settings-key-section[data-key-columns="2"] .settings-key-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.settings-key-section[data-key-columns="3"] .settings-key-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .settings-key-row {
-    display:grid;
-    grid-template-columns:max-content 72px;
-    justify-content:start;
-    align-items:center;
-    gap:3px;
-    min-height:24px;
-    padding:1px 2px 1px 4px;
-    box-sizing:border-box;
-    border-left:1px solid var(--settings-dls-dim);
-    background:rgba(0,0,0,.34);
+    display: grid;
+    grid-template-columns: max-content 72px;
+    justify-content: start;
+    align-items: center;
+    gap: 3px;
+    min-height: 24px;
+    padding: 1px 2px 1px var(--settings-sp-1);
+    box-sizing: border-box;
+    border-left: 1px solid var(--settings-dls-dim);
+    background: var(--term-surface-inset);
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard);
 }
-.settings-key-section[data-key-columns="3"] .settings-key-row {
-    grid-template-columns:max-content 68px;
+.settings-key-section[data-key-columns="3"] .settings-key-row { grid-template-columns: max-content 68px; }
+.settings-key-row:hover { border-left-color: var(--settings-dls); }
+.settings-key-row.invalid { border-left-color: var(--settings-rust); background: rgba(var(--launcher-rust-rgb), .12); }
+.settings-key-row.invalid .settings-key-label { color: color-mix(in srgb, var(--launcher-rust) 48%, white); }
+.settings-key-label {
+    overflow: hidden;
+    color: var(--launcher-copy);
+    font-size: var(--settings-fs-body);
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.settings-key-row:hover { border-left-color:var(--settings-dls); }
-.settings-key-row.invalid { border-left-color:var(--settings-rust); background:rgba(var(--launcher-rust-rgb),.12); }
-.settings-key-row.invalid .settings-key-label { color:#efada7; }
-.settings-key-label { overflow:hidden; color:#d7dadd; font-size:12px; line-height:1; text-overflow:ellipsis; white-space:nowrap; }
 .settings-key-button {
-    min-width:0;
-    min-height:21px;
-    overflow:hidden;
-    padding:3px 5px;
-    color:var(--settings-bone);
-    border-color:rgba(var(--launcher-bone-rgb),.34);
-    font:12px/1 Consolas,var(--cf7-font-web-overlay-mono),monospace;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    min-width: 0;
+    min-height: 22px;
+    overflow: hidden;
+    padding: 3px 5px;
+    color: var(--settings-bone);
+    border-color: rgba(var(--launcher-bone-rgb), .34);
+    font: var(--settings-fs-body)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.settings-key-button.capturing { color:#001014; border-color:var(--settings-dls); background:var(--settings-dls); text-shadow:none; }
+.settings-key-button.capturing,
+.settings-key-button.capturing:hover {
+    color: var(--settings-on-accent);
+    border-color: var(--settings-dls);
+    background: var(--settings-dls);
+    text-shadow: none;
+}
 
-.settings-local-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px 8px; }
-.settings-cheat-form { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:7px; }
-.settings-cheat-form input { min-width:0; }
-.settings-modal-layer {
-    position:absolute;
-    inset:0;
-    z-index:60;
-    display:grid;
-    place-items:center;
-    padding:26px;
-    box-sizing:border-box;
-    background:rgba(0,0,0,.82);
-}
+/* ── 本机与 Web tab ── */
+.settings-local-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--settings-sp-2) var(--settings-sp-3); }
+.settings-cheat-form { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 7px; }
+.settings-cheat-form input { min-width: 0; }
+
+/* ── 作弊码帮助模态 ── */
 .settings-cheat-modal {
-    display:grid;
-    grid-template-rows:50px minmax(0,1fr) 34px;
-    width:min(910px,100%);
-    height:min(506px,100%);
-    overflow:hidden;
-    color:var(--launcher-copy);
-    border:1px solid var(--settings-dls-dim);
-    background:linear-gradient(165deg,rgba(10,14,18,.99),rgba(4,6,9,.99));
-    clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px);
-    box-shadow:0 18px 64px rgba(0,0,0,.76),0 0 26px rgba(var(--dls-crystal-rgb),.08);
+    display: grid;
+    grid-template-rows: 50px minmax(0, 1fr) 34px;
+    width: min(910px, 100%);
+    height: min(506px, 100%);
+    overflow: hidden;
+    color: var(--launcher-copy);
+    border: 1px solid var(--settings-dls-dim);
+    background: var(--settings-surface-modal);
+    clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+    box-shadow: 0 18px 64px rgba(0, 0, 0, .76), 0 0 26px rgba(var(--dls-crystal-rgb), .08);
+    animation: termBoot var(--wb-motion-structural) var(--wb-ease-emphasized);
 }
 .settings-cheat-modal-header {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:7px 10px 7px 17px;
-    border-bottom:1px solid var(--settings-rust-dim);
-    background:linear-gradient(90deg,rgba(var(--launcher-rust-rgb),.08),rgba(var(--dls-crystal-rgb),.035));
+    display: flex;
+    align-items: center;
+    gap: var(--settings-sp-5);
+    padding: 7px 10px 7px 17px;
+    border-bottom: 1px solid var(--settings-rust-dim);
+    background: linear-gradient(90deg, rgba(var(--launcher-rust-rgb), .08), rgba(var(--dls-crystal-rgb), .035));
 }
-.settings-cheat-modal-identity { flex:1 1 auto; min-width:0; }
-.settings-modal-kicker { display:block; color:var(--settings-rust); font:7px/1 Consolas,monospace; letter-spacing:2px; }
-.settings-cheat-modal-header h2 { margin:2px 0 0; color:#fff; font-size:16px; }
-.settings-cheat-doc { overflow:auto; padding:13px 18px 21px; scrollbar-width:thin; scrollbar-color:var(--settings-dls-dim) rgba(0,0,0,.32); }
-.settings-cheat-doc h1 { margin:0 0 6px; color:#fff; font-size:19px; }
-.settings-cheat-doc h2 { margin:17px 0 7px; padding-bottom:5px; color:var(--settings-bone); border-bottom:1px solid var(--settings-rust-dim); font-size:12px; }
-.settings-cheat-doc p { color:#8d949a; font-size:9px; line-height:1.55; }
-.settings-cheat-doc ul { display:grid; gap:5px; margin:0; padding:0; list-style:none; }
+.settings-cheat-modal-identity { flex: 1 1 auto; min-width: 0; }
+.settings-modal-kicker {
+    display: block;
+    color: var(--settings-rust);
+    font: var(--settings-fs-micro)/1 Consolas, monospace;
+    letter-spacing: 2px;
+}
+.settings-cheat-modal-header h2 { margin: 2px 0 0; color: var(--term-ink-hi); font-size: 16px; }
+.settings-cheat-doc {
+    overflow: auto;
+    padding: 13px 18px 21px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+}
+.settings-cheat-doc h1 { margin: 0 0 6px; color: var(--term-ink-hi); font-size: 19px; }
+.settings-cheat-doc h2 {
+    margin: 17px 0 7px;
+    padding-bottom: 5px;
+    color: var(--settings-bone);
+    border-bottom: 1px solid var(--settings-rust-dim);
+    font-size: var(--settings-fs-body);
+}
+.settings-cheat-doc p { color: var(--term-ink-lo); font-size: var(--settings-fs-note); line-height: 1.55; }
+.settings-cheat-doc ul { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .settings-cheat-doc li {
-    display:grid;
-    grid-template-columns:minmax(250px,.75fr) minmax(0,1.25fr) 56px;
-    align-items:center;
-    gap:10px;
-    min-height:33px;
-    padding:4px 6px 4px 10px;
-    box-sizing:border-box;
-    color:#959ca2;
-    border-left:2px solid var(--settings-dls-dim);
-    background:rgba(0,0,0,.34);
-    font-size:9px;
+    display: grid;
+    grid-template-columns: minmax(250px, .75fr) minmax(0, 1.25fr) 56px;
+    align-items: center;
+    gap: var(--settings-sp-4);
+    min-height: 33px;
+    padding: 4px 6px 4px var(--settings-sp-4);
+    box-sizing: border-box;
+    color: var(--term-ink-lo);
+    border-left: 2px solid var(--settings-dls-dim);
+    background: var(--term-surface-inset);
+    font-size: var(--settings-fs-note);
 }
-.settings-cheat-doc code { color:var(--settings-dls); font:9px/1.35 Consolas,"Microsoft YaHei",monospace; overflow-wrap:anywhere; }
-.settings-copy-command { min-width:52px; min-height:24px; padding:4px 7px; font-size:9px; }
+.settings-cheat-doc code {
+    color: var(--settings-dls);
+    font: var(--settings-fs-note)/1.35 Consolas, "Microsoft YaHei", monospace;
+    overflow-wrap: anywhere;
+}
+.settings-copy-command { min-width: 52px; min-height: 24px; padding: 4px 7px; --term-btn-fs: var(--settings-fs-note); }
 .settings-help-loading,
-.settings-help-error { display:grid; place-items:center; min-height:240px; text-align:center; }
-.settings-help-error { color:var(--settings-rust) !important; }
-.settings-cheat-fallback-list li span { color:#959ca2; }
-.settings-cheat-modal-footnote { margin:0; padding:8px 14px; color:#6f767c; border-top:1px solid var(--settings-dls-dim); background:rgba(0,0,0,.28); font-size:8px; }
+.settings-help-error { display: grid; place-items: center; min-height: 240px; text-align: center; }
+.settings-help-error { color: var(--settings-rust) !important; }
+.settings-cheat-fallback-list li span { color: var(--term-ink-lo); }
+.settings-cheat-modal-footnote {
+    margin: 0;
+    padding: 8px 14px;
+    color: var(--term-ink-faint);
+    border-top: 1px solid var(--settings-dls-dim);
+    background: var(--term-surface-inset);
+    font-size: var(--settings-fs-micro);
+}
 
-.settings-empty { display:grid; place-items:center; min-height:290px; align-content:center; gap:10px; color:#8d949a; text-align:center; }
+/* ── 空态 / 页脚 ── */
+.settings-empty {
+    display: grid;
+    place-items: center;
+    min-height: 290px;
+    align-content: center;
+    gap: var(--settings-sp-4);
+    color: var(--term-ink-lo);
+    text-align: center;
+}
 .settings-empty h2,
-.settings-empty p { margin:0; }
+.settings-empty p { margin: 0; }
 .settings-footer {
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-    gap:18px;
-    padding:7px 15px 7px 18px;
-    box-sizing:border-box;
-    border-top:1px solid var(--settings-rust-dim);
-    background:linear-gradient(0deg,rgba(0,0,0,.96),rgba(5,7,10,.9));
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    padding: 7px 15px 7px 18px;
+    box-sizing: border-box;
+    border-top: 1px solid var(--settings-rust-dim);
+    background: linear-gradient(0deg,
+        color-mix(in srgb, var(--launcher-bg-0) 96%, transparent),
+        color-mix(in srgb, var(--launcher-bg-0) 90%, transparent));
 }
 .settings-footer::before {
-    content:"DLS LINK  /  CONFIG BUFFER";
-    position:absolute;
-    top:5px;
-    left:18px;
-    color:var(--settings-rust);
-    font:6px/1 Consolas,monospace;
-    letter-spacing:2px;
+    content: "DLS LINK  /  CONFIG BUFFER";
+    position: absolute;
+    top: 5px;
+    left: 18px;
+    color: var(--settings-rust);
+    font: var(--settings-fs-micro)/1 Consolas, monospace;
+    letter-spacing: 2px;
 }
-.settings-footer-actions { display:flex; gap:7px; }
+.settings-footer-actions { display: flex; gap: 7px; }
+.settings-footer-actions .settings-button { min-height: 32px; padding: 6px 16px; }
+.settings-footer-actions .settings-button.primary { min-width: 132px; --term-btn-fs: var(--settings-fs-body); }
 
-@media (prefers-reduced-motion:reduce) {
-    .settings-camera-viewport img { transition:none; }
+/* ── reduced-motion: 面板范围内关停全部动画/过渡 ── */
+@media (prefers-reduced-motion: reduce) {
+    .settings-panel,
+    .settings-panel *,
+    .settings-panel *::before,
+    .settings-panel *::after {
+        animation: none !important;
+        transition: none !important;
+    }
 }

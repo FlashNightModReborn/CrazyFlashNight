@@ -1,0 +1,267 @@
+/* ── 黑铁终端共享组件层 ─────────────────────────────────────────────
+   消费方: bootstrap 启动外壳 (bootstrap.html) 与复用终端语言的面板
+   (settings-panel 等, overlay.html)。两页历史上各自手工复刻同一套
+   模式 (品牌铭牌 / kicker / 标题分隔线 / 状态点 / 角标 / 扫描线 /
+   切角按钮), 本文件收敛为单一真源。
+
+   依赖: css/workbench/tokens.css —— 本文件不定义色值, 只组合既有
+   --dls-* / --launcher-* / --term-* / --wb-* token; 新色值一律进 tokens.css。
+
+   约定:
+   - 组件结构在此定义, 页面通过组件上的 --term-* 旋钮变量调度量,
+     不改组件结构;
+   - JS 状态钩子 class (active / lit / capturing / kb-focus 等)
+     仍归各页面所有, 本层只提供静态结构与语义态 [data-state]。 */
+
+/* ── 品牌铭牌 (◉ CF7:ME 切角牌) ── */
+.term-brand-seal {
+    --term-seal-chamfer: 9px;
+    --term-seal-fs: 15px;
+    --term-seal-ls: 3px;
+    --term-seal-pad: 7px 15px 7px 12px;
+    --term-seal-font: Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex: 0 0 auto;
+    padding: var(--term-seal-pad);
+    color: var(--launcher-bone);
+    border: 1px solid var(--launcher-rust);
+    background: var(--launcher-rust-deep);
+    clip-path: polygon(var(--term-seal-chamfer) 0, 100% 0, calc(100% - var(--term-seal-chamfer)) 100%, 0 100%);
+    box-shadow: 0 0 12px rgba(var(--launcher-rust-rgb), .25);
+    font: var(--term-seal-fs)/1 var(--term-seal-font);
+    letter-spacing: var(--term-seal-ls);
+}
+.term-brand-seal::before {
+    content: "◉";
+    color: var(--dls-crystal);
+    text-shadow: 0 0 6px var(--dls-crystal);
+}
+
+/* ── kicker 微型标签 (等宽 + 大字母间距英文代号) ── */
+.term-kicker {
+    --term-kicker-fs: 8px;
+    --term-kicker-ls: 3px;
+    --term-kicker-color: var(--launcher-dust);
+    display: block;
+    overflow: hidden;
+    color: var(--term-kicker-color);
+    font: var(--term-kicker-fs)/1.1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    letter-spacing: var(--term-kicker-ls);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── 标题分隔线: 1px 全线 + 左端 dls 辉光短段 ──
+   宿主须为带 border-bottom 的标题元素; ::after 画辉光短段。 */
+.term-heading-rule {
+    --term-rule-line: var(--launcher-rust-dim);
+    --term-rule-seg-color: var(--dls-crystal);
+    --term-rule-seg-w: 62px;
+    --term-rule-seg-left: 12px;
+    position: relative;
+    border-bottom: 1px solid var(--term-rule-line);
+}
+.term-heading-rule::after {
+    content: "";
+    position: absolute;
+    left: var(--term-rule-seg-left);
+    bottom: -1px;
+    width: var(--term-rule-seg-w);
+    height: 1px;
+    background: var(--term-rule-seg-color);
+    box-shadow: 0 0 5px rgba(var(--dls-crystal-rgb), .58);
+    pointer-events: none;
+}
+
+/* ── 语义状态点: [data-state] 驱动变色 ── */
+.term-status-dot {
+    --term-dot-size: 5px;
+    --term-dot-color: var(--launcher-dust);
+    display: inline-block;
+    width: var(--term-dot-size);
+    height: var(--term-dot-size);
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--term-dot-color);
+}
+.term-status-dot[data-state="ready"] {
+    background: var(--dls-crystal);
+    box-shadow: 0 0 6px var(--dls-crystal);
+}
+.term-status-dot[data-state="loading"] { background: var(--launcher-bone); }
+.term-status-dot[data-state="warning"] { background: var(--wb-semantic-warning); }
+.term-status-dot[data-state="error"] {
+    background: var(--launcher-rust);
+    box-shadow: 0 0 6px var(--launcher-rust);
+}
+
+/* ── 四方位 L 角标 (HUD 括号语言, 纯 CSS 单 ::after 8 层 gradient) ──
+   常态低透明, hover 提亮; --cb-tl/tr/bl/br 声明各角切角深度,
+   臂沿切角端点贴边 (0 = 方角, 臂贴边原点)。宿主须 position:relative。 */
+.corner-brackets {
+    --cb-color: var(--dls-crystal);
+    --cb-size: 12px;
+    --cb-thick: 2px;
+    --cb-gap: 3px;
+    --cb-tl: 0px;
+    --cb-tr: 0px;
+    --cb-bl: 0px;
+    --cb-br: 0px;
+}
+.corner-brackets::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-image:
+        linear-gradient(var(--cb-color), var(--cb-color)), linear-gradient(var(--cb-color), var(--cb-color)),
+        linear-gradient(var(--cb-color), var(--cb-color)), linear-gradient(var(--cb-color), var(--cb-color)),
+        linear-gradient(var(--cb-color), var(--cb-color)), linear-gradient(var(--cb-color), var(--cb-color)),
+        linear-gradient(var(--cb-color), var(--cb-color)), linear-gradient(var(--cb-color), var(--cb-color)));
+    background-repeat: no-repeat;
+    background-position:
+        left calc(var(--cb-gap) + var(--cb-tl)) top var(--cb-gap),
+        left var(--cb-gap) top calc(var(--cb-gap) + var(--cb-tl)),
+        right calc(var(--cb-gap) + var(--cb-tr)) top var(--cb-gap),
+        right var(--cb-gap) top calc(var(--cb-gap) + var(--cb-tr)),
+        left calc(var(--cb-gap) + var(--cb-bl)) bottom var(--cb-gap),
+        left var(--cb-gap) bottom calc(var(--cb-gap) + var(--cb-bl)),
+        right calc(var(--cb-gap) + var(--cb-br)) bottom var(--cb-gap),
+        right var(--cb-gap) bottom calc(var(--cb-gap) + var(--cb-br));
+    background-size:
+        var(--cb-size) var(--cb-thick), var(--cb-thick) var(--cb-size),
+        var(--cb-size) var(--cb-thick), var(--cb-thick) var(--cb-size),
+        var(--cb-size) var(--cb-thick), var(--cb-thick) var(--cb-size),
+        var(--cb-size) var(--cb-thick), var(--cb-thick) var(--cb-size);
+    opacity: .38;
+    filter: drop-shadow(0 0 3px rgba(var(--dls-crystal-rgb), .35));
+    transition: opacity var(--wb-motion-standard) var(--wb-ease-standard);
+}
+.corner-brackets:hover::after { opacity: .9; }
+
+/* ── 单角 tick (右下角 L 形小角标, corner-brackets 的轻量版) ──
+   宿主须 position:relative, 且 ::after 未被占用。 */
+.term-corner-tick {
+    --term-tick-color: rgba(var(--dls-crystal-rgb), .48);
+    --term-tick-size: 10px;
+    --term-tick-offset: 3px;
+}
+.term-corner-tick::after {
+    content: "";
+    position: absolute;
+    right: var(--term-tick-offset);
+    bottom: var(--term-tick-offset);
+    width: var(--term-tick-size);
+    height: var(--term-tick-size);
+    border-right: 1px solid var(--term-tick-color);
+    border-bottom: 1px solid var(--term-tick-color);
+    pointer-events: none;
+}
+
+/* ── 扫描线覆盖层 ──
+   默认 absolute 铺满宿主 (宿主须 position:relative);
+   全视口使用时页面自行改 position:fixed。 */
+.term-scanlines {
+    --term-scan-alpha: .12;
+    --term-scan-opacity: .1;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--term-scan-opacity);
+    background-image: repeating-linear-gradient(0deg,
+        rgba(var(--dls-crystal-rgb), var(--term-scan-alpha)) 0,
+        rgba(var(--dls-crystal-rgb), var(--term-scan-alpha)) 1px,
+        transparent 1px, transparent 3px);
+}
+
+/* ── 切角按钮族 ──
+   基础态: 骨金字 + 尘灰描边 + 微底; hover/focus 提 dls;
+   变体: primary (dls 实心) / secondary (骨金描边) / warning (琥珀) / danger (锈红)。 */
+.term-btn {
+    --term-btn-chamfer: 5px;
+    --term-btn-fs: 10px;
+    --term-btn-font: "Segoe UI", "Microsoft YaHei", sans-serif;
+    --term-btn-ls: normal;
+    min-height: var(--term-control-h);
+    padding: 6px 11px;
+    color: var(--launcher-bone);
+    border: 1px solid var(--launcher-dust);
+    border-radius: 0;
+    background: var(--term-surface-inset);
+    clip-path: polygon(var(--term-btn-chamfer) 0, 100% 0, calc(100% - var(--term-btn-chamfer)) 100%, 0 100%);
+    font: 600 var(--term-btn-fs)/1.2 var(--term-btn-font);
+    letter-spacing: var(--term-btn-ls);
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard),
+        text-shadow var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.term-btn:hover:not(:disabled),
+.term-btn:focus-visible {
+    color: var(--dls-crystal);
+    border-color: var(--dls-crystal);
+    outline: none;
+    background: rgba(var(--dls-crystal-rgb), .07);
+    text-shadow: 0 0 5px rgba(var(--dls-crystal-rgb), .45);
+}
+.term-btn:disabled { opacity: .3; cursor: not-allowed; }
+.term-btn.primary {
+    color: color-mix(in srgb, var(--launcher-bg-0) 78%, var(--dls-crystal-dim));
+    border-color: var(--dls-crystal);
+    background: var(--dls-crystal);
+    box-shadow: 0 0 10px rgba(var(--dls-crystal-rgb), .2);
+}
+.term-btn.primary:hover:not(:disabled),
+.term-btn.primary:focus-visible {
+    color: var(--launcher-bg-0);
+    background: var(--dls-crystal-bright);
+    text-shadow: none;
+}
+.term-btn.secondary {
+    border-color: rgba(var(--launcher-bone-rgb), .45);
+    background: rgba(var(--launcher-bone-rgb), .035);
+}
+.term-btn.warning {
+    color: var(--wb-semantic-warning);
+    border-color: rgba(var(--launcher-bone-rgb), .42);
+}
+.term-btn.danger {
+    color: var(--launcher-rust);
+    border-color: rgba(var(--launcher-rust-rgb), .48);
+}
+.term-btn.danger:hover:not(:disabled),
+.term-btn.danger:focus-visible {
+    color: #fff;
+    border-color: var(--launcher-rust);
+    background: var(--launcher-rust);
+    text-shadow: none;
+}
+
+/* ── 终端卡片基座: 锈红左边条 + dls 细边 + 右下角切角 + 表面层级 ── */
+.term-card {
+    --term-card-chamfer: 12px;
+    position: relative;
+    box-sizing: border-box;
+    color: var(--launcher-copy);
+    border: 1px solid var(--dls-crystal-dim);
+    border-left: 3px solid var(--launcher-rust-dim);
+    background: var(--term-surface-card);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--term-card-chamfer)),
+        calc(100% - var(--term-card-chamfer)) 100%, 0 100%);
+}
+
+/* ── 面板/区块入场: 上浮 + 淡入 (structural 档, ease-emphasized) ── */
+@keyframes termBoot {
+    from { opacity: 0; transform: translateY(6px) scale(.995); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .term-btn,
+    .corner-brackets::after { transition: none; }
+}

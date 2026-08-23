@@ -94,6 +94,26 @@
 
 > 当前 `crafting` 使用 `#78bc73` 表示可合成，`equipment-tuning` 使用 `#d08b80` 表示卸下，`kshop` 使用 `#c8ff4c` 作为普通交互。建议把 `success/warning/danger/info` 抽成 `--wb-semantic-*`，在皮肤层只覆盖暗部色板，不覆盖语义色。
 
+### 6.1 Launcher 黑铁终端族（`--launcher-*` / `--term-*`）
+
+启动外壳（bootstrap/welcome）与复用终端语言的面板（settings 等）共享一套独立于 DLS 面板映射的黑铁色板，真源在 `css/workbench/tokens.css`：
+
+| 角色 | token | 基值 |
+|---|---|---|
+| 锈红（品牌 / 危险 / 区块身份） | `--launcher-rust` 族 | `#b83a2e` |
+| 骨金（标题与主文案） | `--launcher-bone` | `#c8b28a` |
+| 尘灰（次要文案） | `--launcher-dust` | `#6a6258` |
+| 背景 | `--launcher-bg-0/1` | `#05070a` / `#0c0e12` |
+| 正文 | `--launcher-copy` | `#d4d8dc` |
+
+终端族派生 token（2026-08-23 新增，全部 color-mix 自既有色板，不引入新色相）：
+
+- 表面层级：`--term-surface-veil`（薄纱覆盖）、`--term-surface-inset`（控件/凹槽底）、`--term-surface-card`（卡片渐变）——收敛各页面一次性硬编码的近黑底。
+- 墨色阶梯：`--term-ink-hi/md/lo/faint`——收敛一次性硬编码的灰阶字面量。
+- 控件度量：`--term-control-h`（统一控件高度）。
+
+共享组件层 `css/terminal.css`（bootstrap.html 与 overlay.html 均直接 link）：品牌铭牌 `.term-brand-seal`、kicker `.term-kicker`、标题分隔线 `.term-heading-rule`、语义状态点 `.term-status-dot[data-state]`、四角 L 角标 `.corner-brackets` 与单角 `.term-corner-tick`、扫描线 `.term-scanlines`、切角按钮族 `.term-btn`、终端卡片 `.term-card`。组件只组合 token、不定义色值；页面通过组件上的 `--term-*` 旋钮变量调度量。
+
 ---
 
 ## 7. 面板 → 强调色映射（canonical）

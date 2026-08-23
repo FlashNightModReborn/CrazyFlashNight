@@ -14,7 +14,7 @@
     _autoTimer = null;
 
     _container.innerHTML =
-      '<div class="modal-header">' +
+      '<div class="modal-header term-heading-rule">' +
         '<h2>诊断日志</h2>' +
         '<button class="modal-close" id="diag-close">×</button>' +
       '</div>' +

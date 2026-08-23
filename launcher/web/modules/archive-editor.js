@@ -78,7 +78,7 @@
     if (m) displayName = '存档 ' + (m[1] === '' ? 1 : parseInt(m[1], 10) + 1);
 
     _container.innerHTML =
-      '<div class="modal-header">' +
+      '<div class="modal-header term-heading-rule">' +
         '<h2>存档编辑: ' + escHtml(displayName) + ' <small class="ed-dim">(' + escHtml(_slot) + ')</small></h2>' +
         '<button class="modal-close" id="ed-close">×</button>' +
       '</div>' +

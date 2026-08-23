@@ -6,6 +6,7 @@
 <!-- 设计 token canonical 源: 纯 :root 变量声明, 无 @font-face / 选择器副作用, 直接引入保持数值同步 -->
 <link rel="stylesheet" href="generated/font-catalog.css">
 <link rel="stylesheet" href="css/workbench/tokens.css">
+<link rel="stylesheet" href="css/terminal.css">
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/welcome.css">
 </head>
@@ -16,14 +17,14 @@
 <canvas id="bg-gl" aria-hidden="true"></canvas>
 <div class="bg-tint"></div>
 <div class="bg-rune"></div>
-<div class="bg-scan"></div>
+<div class="bg-scan term-scanlines"></div>
 <div class="bg-grain"></div>
 <div class="bg-crack"></div>
 
 <!-- 公共 topbar -->
 <div class="topbar">
-  <span class="brand-seal">CF7:ME</span>
-  <span class="brand-sub">&theta;-FLOOD / AUDIT-DAY +13Y / STANDALONE 2023</span>
+  <span class="brand-seal term-brand-seal">CF7:ME</span>
+  <span class="brand-sub term-kicker">&theta;-FLOOD / AUDIT-DAY +13Y / STANDALONE 2023</span>
   <span class="spacer"></span>
   <span id="state-badge" class="state-badge">Idle</span>
   <button id="btn-cancel-launch" class="danger" style="display:none">取消启动</button>
@@ -44,7 +45,7 @@
         <div class="lbl">TRANSMISSION</div>
         <div class="val">
           <!-- dls-sync-val: 首个 list_resp 后由 bootstrap-main.js 填健康存档比例; trans-node ◎ 随启动事件逐个点亮 -->
-          <span class="pulse-dot"></span> DLS SYNC <span class="m mono-num" id="dls-sync-val">&mdash;</span><br>
+          <span class="pulse-dot term-status-dot" data-state="ready"></span> DLS SYNC <span class="m mono-num" id="dls-sync-val">&mdash;</span><br>
           <span class="n trans-node" id="trans-node-1">&#9678;</span> &theta;-FLOOD HUM<br>
           <span class="n trans-node" id="trans-node-2">&#9678;</span> 黑铁网络接入<br>
           <span class="n trans-node" id="trans-node-3">&#9678;</span> 诺亚终端握手
@@ -132,7 +133,7 @@
   <!-- B 期: 随机通缉令海报装饰 (bootstrap-main.js loadSlotsPoster 填充; 元素在 #view-slots 内, welcome 视图随 hidden 自动不显示) -->
   <div class="slots-poster" id="slots-poster" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="slots-header">
+    <div class="slots-header term-heading-rule">
       <button class="btn-back" id="btn-back-welcome">&larr; 返回</button>
       <h1>选择存档</h1>
     </div>

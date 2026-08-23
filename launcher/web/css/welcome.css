@@ -37,28 +37,30 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
   radial-gradient(ellipse at 50% 0%,rgba(184,58,46,.05) 0%,transparent 60%),
   linear-gradient(180deg,rgba(5,7,10,.35) 0%,rgba(0,0,0,.72) 100%);pointer-events:none}
 .bg-rune{position:fixed;inset:0;z-index:2;opacity:.07;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><g stroke='%233dd5ff' stroke-width='.8' fill='none'><circle cx='110' cy='110' r='50'/><circle cx='110' cy='110' r='80'/><path d='M 30 110 L 190 110 M 110 30 L 110 190'/><path d='M 50 50 L 170 170 M 170 50 L 50 170'/><text x='110' y='116' text-anchor='middle' fill='%233dd5ff' font-family='serif' font-size='22'>道</text></g></svg>");background-size:220px 220px}
-.bg-scan{position:fixed;inset:0;z-index:3;pointer-events:none;background-image:repeating-linear-gradient(0deg,rgba(61,213,255,.018) 0,rgba(61,213,255,.018) 1px,transparent 1px,transparent 3px)}
-@keyframes scan{from{background-position:0 0}to{background-position:0 60px}}
+/* 扫描线收敛到 terminal.css .term-scanlines (DOM 已挂 term-scanlines); 组件默认 absolute, 此处改 fixed 全视口 + 低强度旋钮;
+   顺带删除从未接线的 @keyframes scan */
+.bg-scan{position:fixed;z-index:3;--term-scan-alpha:.018;--term-scan-opacity:1}
 .bg-grain{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:.08;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='1' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='.3'/></svg>")}
 .bg-crack{position:fixed;bottom:-30px;left:0;right:0;height:80px;z-index:5;pointer-events:none;background:radial-gradient(ellipse at 50% 100%,rgba(61,213,255,.18) 0%,rgba(61,213,255,.05) 30%,transparent 60%);opacity:.72}
-@keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
 
 /* ── 公共 topbar ── */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;padding:14px 22px;gap:12px;background:linear-gradient(180deg,rgba(0,0,0,.9),transparent);font-family:"Segoe UI","Microsoft YaHei",sans-serif}
-.topbar .brand-seal{display:flex;align-items:center;gap:8px;padding:6px 14px;background:var(--rust-deep);color:var(--bone);font-size:var(--fs-base);letter-spacing:calc(4px * var(--ls-scale));clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);border:1px solid var(--rust);box-shadow:0 0 12px rgba(184,58,46,.25);flex-shrink:0}
-.topbar .brand-seal::before{content:"◉";color:var(--dls);margin-right:2px;text-shadow:0 0 6px var(--dls)}
+/* 品牌铭牌收敛到 css/terminal.css .term-brand-seal (DOM 已挂 term-brand-seal), 此处只调 --term-seal-* 旋钮 */
+.topbar .brand-seal{--term-seal-chamfer:10px;--term-seal-fs:var(--fs-base);--term-seal-ls:calc(4px * var(--ls-scale));--term-seal-pad:6px 14px;--term-seal-font:inherit;gap:8px;flex-shrink:0}
 /* brand-sub 长文本 "θ-FLOOD / AUDIT-DAY +13Y / STANDALONE 2023" 在超大档位会撑爆 topbar.
    letter-spacing 跟 --ls-scale 收紧 + min-width:0 允许 flex 压缩 + nowrap/ellipsis 兜底 */
-.topbar .brand-sub{color:var(--dust);font-size:var(--fs-sm);letter-spacing:calc(4px * var(--ls-scale));font-family:Consolas,monospace;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* kicker 收敛到 terminal.css .term-kicker (DOM 已挂 term-kicker), 旋钮接管字号/字距; min-width:0 保留 flex 压缩兜底 */
+.topbar .brand-sub{--term-kicker-fs:var(--fs-sm);--term-kicker-ls:calc(4px * var(--ls-scale));min-width:0}
 .topbar .spacer{flex:1}
 .topbar button{background:transparent;border:1px solid rgba(255,255,255,.1);color:#9aa2a9;padding:7px 14px;font-size:var(--fs-base);cursor:pointer;letter-spacing:calc(2px * var(--ls-scale));font-family:inherit;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);flex-shrink:0;white-space:nowrap}
 .topbar button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.05);text-shadow:0 0 6px var(--dls)}
 .topbar button.danger{color:var(--rust);border-color:rgba(184,58,46,.3)}
 .topbar button.danger:hover{background:rgba(184,58,46,.1);border-color:var(--rust);color:#fff;text-shadow:0 0 6px var(--rust)}
 .topbar .state-badge{margin:0;padding:5px 10px;font-size:var(--fs-sm);letter-spacing:calc(2px * var(--ls-scale));background:transparent;border:1px solid #444;color:#bbb;font-family:Consolas,monospace;flex-shrink:0;white-space:nowrap}
-.topbar .state-badge.ready{border-color:#7ed07e;color:#7ed07e}
-.topbar .state-badge.error{border-color:var(--rust);color:var(--rust)}
-.topbar .state-badge.running{border-color:#f0a860;color:#f0a860}
+/* 状态徽章色收敛到跨面板语义 token (success/warning/danger), 不再自造绿/橙 */
+.topbar .state-badge.ready{border-color:var(--wb-semantic-success);color:var(--wb-semantic-success)}
+.topbar .state-badge.error{border-color:var(--wb-semantic-danger);color:var(--wb-semantic-danger)}
+.topbar .state-badge.running{border-color:var(--wb-semantic-warning);color:var(--wb-semantic-warning)}
 
 /* ── 公共 bottom ── */
 .bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:10px 22px;font-size:var(--fs-xs);color:var(--dust);letter-spacing:calc(3px * var(--ls-scale));font-family:Consolas,monospace;background:linear-gradient(0deg,rgba(0,0,0,.8),transparent)}
@@ -82,37 +84,8 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 .view.view-enter{animation:viewEnter var(--wb-motion-structural) var(--wb-ease-emphasized)}
 .view.view-leave{position:fixed;inset:0;z-index:9;pointer-events:none;animation:viewLeave var(--wb-motion-standard) var(--wb-ease-emphasized) forwards}
 
-/* ── B 期: 四方位 L 角标 (抄 features.css:1567 .map-stage-corner 的 HUD 括号语言) ──
-   纯 CSS: 单个 ::after 用 8 层 background 画四角横竖短臂, 不占额外 DOM / 不碰载体现有 ::before;
-   常态低透明, hover / kb-focus 提亮 (opacity 走 token).
-   切角协调: --cb-tl/tr/bl/br 声明各角切角深度, 臂沿切角端点贴边 (0 = 方角, 臂贴边原点). */
-.corner-brackets{--cb-color:var(--dls);--cb-size:12px;--cb-thick:2px;--cb-gap:3px;--cb-tl:0px;--cb-tr:0px;--cb-bl:0px;--cb-br:0px}
-.corner-brackets::after{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
-  background-image:
-    linear-gradient(var(--cb-color),var(--cb-color)),linear-gradient(var(--cb-color),var(--cb-color)),
-    linear-gradient(var(--cb-color),var(--cb-color)),linear-gradient(var(--cb-color),var(--cb-color)),
-    linear-gradient(var(--cb-color),var(--cb-color)),linear-gradient(var(--cb-color),var(--cb-color)),
-    linear-gradient(var(--cb-color),var(--cb-color)),linear-gradient(var(--cb-color),var(--cb-color));
-  background-repeat:no-repeat;
-  background-position:
-    left calc(var(--cb-gap) + var(--cb-tl)) top var(--cb-gap),
-    left var(--cb-gap) top calc(var(--cb-gap) + var(--cb-tl)),
-    right calc(var(--cb-gap) + var(--cb-tr)) top var(--cb-gap),
-    right var(--cb-gap) top calc(var(--cb-gap) + var(--cb-tr)),
-    left calc(var(--cb-gap) + var(--cb-bl)) bottom var(--cb-gap),
-    left var(--cb-gap) bottom calc(var(--cb-gap) + var(--cb-bl)),
-    right calc(var(--cb-gap) + var(--cb-br)) bottom var(--cb-gap),
-    right var(--cb-gap) bottom calc(var(--cb-gap) + var(--cb-br));
-  background-size:
-    var(--cb-size) var(--cb-thick),var(--cb-thick) var(--cb-size),
-    var(--cb-size) var(--cb-thick),var(--cb-thick) var(--cb-size),
-    var(--cb-size) var(--cb-thick),var(--cb-thick) var(--cb-size),
-    var(--cb-size) var(--cb-thick),var(--cb-thick) var(--cb-size);
-  opacity:.38;filter:drop-shadow(0 0 3px rgba(61,213,255,.35));
-  transition:opacity var(--wb-motion-standard) var(--wb-ease-standard);
-}
-.corner-brackets:hover::after{opacity:.9}
+/* ── B 期: 四方位 L 角标组件已收敛至 css/terminal.css .corner-brackets (同名同类名同 --cb-* 旋钮,
+   唯一真源, 设置面板等同语言面板共享); 本文件只保留各宿主的旋钮设置 (.welcome-card / #view-slots .card)。 */
 
 /* ── 欢迎视图布局 ──
    侧栏基准 230px (匹配默认 1.35 字号), 超过默认后走 --geom-scale 软增长 (67% 字号增速),
@@ -140,8 +113,9 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 /* TRANSMISSION ◎ 节点: 默认熄灭 (--dust), 启动事件推进时由 bootstrap-main.js 逐个点亮 (.lit → --dls + 微辉光) */
 .side-l .val .n.trans-node{color:var(--dust);transition:color var(--wb-motion-standard) var(--wb-ease-standard),text-shadow var(--wb-motion-standard) var(--wb-ease-standard)}
 .side-l .val .n.trans-node.lit{color:var(--dls);text-shadow:0 0 6px var(--dls)}
-.side-l .pulse-dot{display:inline-block;width:6px;height:6px;background:var(--dls);border-radius:50%;margin-right:6px;opacity:.85;box-shadow:0 0 6px var(--dls);vertical-align:middle}
-@keyframes pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+/* TRANSMISSION 状态点收敛到 terminal.css .term-status-dot (DOM 已挂 term-status-dot[data-state=ready]);
+   顺带删除从未接线的 @keyframes pulse */
+.side-l .pulse-dot{--term-dot-size:6px;margin-right:6px;vertical-align:middle;opacity:.85}
 
 /* 中央卡片 */
 .welcome-card{position:relative;padding:24px 38px 20px;background:linear-gradient(180deg,rgba(10,14,18,.88) 0%,rgba(4,6,9,.92) 100%);clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px);min-width:0}
@@ -155,7 +129,6 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 .title-logo-wrap{position:relative;display:flex;justify-content:center;padding:0 0 6px}
 .title-logo-wrap img{max-width:160px;filter:drop-shadow(0 0 8px rgba(61,213,255,.35)) drop-shadow(0 0 18px rgba(184,58,46,.15))}
 .title-logo-wrap::before{content:"";position:absolute;left:50%;top:50%;width:240px;height:240px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(61,213,255,.12) 0%,transparent 55%);opacity:.72;pointer-events:none;z-index:-1}
-@keyframes hum{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(.92)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}}
 
 .eyebrow{text-align:center;color:var(--rust);font-size:var(--fs-xs);letter-spacing:calc(8px * var(--ls-scale));margin-bottom:2px;font-family:Consolas,monospace;text-shadow:0 0 4px rgba(184,58,46,.4)}
 /* welcome-sub 曾 letter-spacing:4px 拆散 "佣 兵 帝 国" 4 个中文字成 4 个独立符号。
@@ -261,7 +234,7 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
    或用户手动缩小时收紧布局，避免欢迎页三栏被硬裁。 */
 @media (max-width: 1480px), (max-height: 780px){
   .topbar{padding:10px 18px;gap:8px}
-  .topbar .brand-seal{padding:5px 12px;letter-spacing:calc(3px * var(--ls-scale))}
+  .topbar .brand-seal{--term-seal-pad:5px 12px;--term-seal-ls:calc(3px * var(--ls-scale))}
   .topbar button{padding:6px 12px}
   .view{padding:50px 0 32px}
   .stage-welcome{grid-template-columns:minmax(190px,calc(218px * var(--geom-scale))) minmax(0,1fr) minmax(205px,calc(218px * var(--geom-scale)));gap:18px;padding:0 20px}
@@ -286,9 +259,9 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 
 @media (max-width: 1300px), (max-height: 700px){
   .topbar{padding:8px 14px;gap:7px}
-  .topbar .brand-seal{padding:5px 10px}
+  .topbar .brand-seal{--term-seal-pad:5px 10px}
   .topbar button{padding:5px 10px}
-  .topbar .brand-sub{letter-spacing:calc(2px * var(--ls-scale))}
+  .topbar .brand-sub{--term-kicker-ls:calc(2px * var(--ls-scale))}
   .view{padding:46px 0 28px}
   .stage-welcome{grid-template-columns:180px minmax(0,1fr) 190px;gap:12px;padding:0 14px}
   .side-l,.side-r{padding-top:10px;padding-bottom:10px}
@@ -329,8 +302,8 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
    低透明侧贴右缘, 微倾角 + 降饱和压进背景; pointer-events:none 不影响卡片命中;
    元素在 #view-slots 内, view-enter 动画与 welcome 隐藏都随视图天然协调. */
 #view-slots .slots-poster{position:absolute;right:26px;top:50%;transform:translateY(-50%) rotate(1.5deg);width:min(220px,20vw);aspect-ratio:3/4;background-color:rgba(5,7,10,.5);background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid rgba(61,213,255,.22);box-shadow:0 6px 28px rgba(0,0,0,.65);opacity:.2;filter:saturate(.75);pointer-events:none;z-index:0}
-#view-slots .slots-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rust-dim);position:relative}
-#view-slots .slots-header::before{content:"";position:absolute;bottom:-1px;left:0;width:80px;height:1px;background:var(--dls);box-shadow:0 0 6px var(--dls)}
+/* 标题分隔线收敛到 terminal.css .term-heading-rule (DOM 已挂 term-heading-rule), 旋钮: 左端 80px 辉光短段 */
+#view-slots .slots-header{--term-rule-seg-left:0;--term-rule-seg-w:80px;display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:12px}
 /* "选择存档" 4 个中文字原 letter-spacing:8px 严重拉散, 降到 4px 保留仪式感又不失连读性 */
 #view-slots .slots-header h1{margin:0;color:var(--bone);font-size:var(--fs-h1);letter-spacing:calc(4px * var(--ls-scale));font-family:"Microsoft YaHei",sans-serif;text-shadow:0 0 8px rgba(200,178,138,.25);flex:1}
 #view-slots .slots-header h1::before{content:"\25B8 ";color:var(--rust)}
@@ -536,8 +509,8 @@ body.intro-playing #log{display:none !important}
 .modal-content::-webkit-scrollbar-thumb:hover{background:var(--dls-deep)}
 
 /* 标题栏 */
-.modal-content .modal-header{display:flex;align-items:center;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--rust-dim);position:relative}
-.modal-content .modal-header::after{content:"";position:absolute;bottom:-1px;left:0;width:80px;height:1px;background:var(--dls);box-shadow:0 0 6px var(--dls)}
+/* 模态标题栏分隔线收敛到 terminal.css .term-heading-rule (5 个 modal 模块 DOM 已挂 term-heading-rule) */
+.modal-content .modal-header{--term-rule-seg-left:0;--term-rule-seg-w:80px;display:flex;align-items:center;margin-bottom:18px;padding-bottom:12px}
 /* modal-header h2 原 letter-spacing:6px 对中文标题过散, 降到 3px 保留装饰感 */
 .modal-content .modal-header h2{margin:0;color:var(--bone);font-size:var(--fs-xl);letter-spacing:calc(3px * var(--ls-scale));font-family:"Microsoft YaHei",sans-serif;font-weight:600;flex:1;text-shadow:0 0 6px rgba(200,178,138,.2)}
 .modal-content .modal-header h2::before{content:"\25B8 ";color:var(--rust);margin-right:4px}
@@ -636,7 +609,7 @@ body.intro-playing #log{display:none !important}
   transition:opacity var(--wb-motion-standard) var(--wb-ease-standard),visibility 0s linear 0s}
 
 /* ── reduced-motion 兜底 (对齐 workbench/motion.css 的统一范式) ──
-   关掉本页全部 keyframes (scan/breathe/pulse/hum/spin/ellipsis/ready-pulse + 视图进出场)
+   关掉本页全部 keyframes (spin/ellipsis/ready-pulse + 视图进出场)
    与所有 transition; 选择器作用于同一文档, bootstrap.css 的元素同样被覆盖.
    视图切换由 bootstrap-main.js 检测 matchMedia('(prefers-reduced-motion: reduce)') 同步退化为硬切. */
 @media (prefers-reduced-motion: reduce){
