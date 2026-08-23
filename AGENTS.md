@@ -5,13 +5,12 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：commit `416c4441947d40bc27ae3854178e87e2c5cf1ac9`（2026-08-23；implementation `8e785dd7cbeb52996e2ba2c531a536b0e927238e`、tag `runtime-build-v2/20260823-pet-lifecycle-transaction-panel-hardening-v2`、tree `71d5955735150e811407c742b3ed3d657c779ac2`、request `4A445F1F94DB33E017FAE14FCBC499982F80D305B6F9AD4CFD879864AEB6EF6D`、deployment `df060eac491c7251b261a3f5626960a8ea18911a`）。
-本地 X509 `builder-local-b` / `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `32644169141`）已对 identity `036502C3E92B0AC3CF5309E747F0CC1B4B4BCD468443B3BFB2F9F8DB183F3925`、closure `9432302F90D34F5AF9282FBF8ACF173B191CCFC80B0D1AE1A7C2CD46AEEFD133` 达成 v2 双 signer / 双故障域共识；正式 Core DLL SHA-256 为 `165FB29FE8CB45C43148A0873218273DF2D55839E3D3044122C7E17804EC7E5E`，38/38 production receipt SHA-256 为 `936320F55201296D542EEA87414A64BB8B3AD0127A4B8013C7C1A039384BE287`；deployment commit `df060eac491c7251b261a3f5626960a8ea18911a` 与首次 post-promotion audit run `32644777181` 已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
+**最后核对代码基线**：commit `d720b0e433fe4de1df2ab2c12ba2a8e21e6c2ce8`（2026-08-24；implementation `b994d87b0545c9f0a102c0b3c7989e3b20e4cf8a`、tag `runtime-build-v2/20260824-merc-loadout-v1`、tree `61b33e4d6b0d823a94a591a72a85c84266ff7e0f`、request `EB68084CAE7A514BCFBEEB7DA85818BEA0D9CB6F70B26DE7980215E63028250F`、deployment `f1e7a187a67747dca3cc96a52e67c49bd92af3ad`）。
+本地 X509 `builder-local-b` / `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `32672992628`）已对 identity `8D595FFA45590BB19D7FDD2BDB52CA3CB669BC64C380FD55B1E399F43A92E57E`、closure `94665B231247953BC8486B0BB7A72146EA16DF60003317EC2B41F25E5E6CD43B` 达成 v2 双 signer / 双故障域共识；正式 Core DLL SHA-256 为 `100B8B387F3133B2F95E5F3128061D6D52C08B1DA723E2BC26331839F231AB12`，38/38 production receipt SHA-256 为 `8594028416A001FEF45B802175A1FD84997618DA704776CED8083E9CC3345BB1`；deployment commit `f1e7a187a67747dca3cc96a52e67c49bd92af3ad` 与首次 post-promotion audit run `32673700808` 已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
 
-**状态边界**：本列车收口 HP/MP 换装语义、MISS/冲击衰减、击溃与护盾结算、EventBus/托管长枪异常恢复、玩家物资事务、设置、字体、T800/M134 与黑市匿名边界。
-fresh 门包括 Launcher `4047 pass + 3 explicit opt-in skip / 4050 total`、Team 三视口各 `199/199`、panel contracts `68/68`、ManagedLongGun `126/126`、Combat HP/Impact `153/153`、PlayerAssetTransaction `113/113`、黑市 `22/22` 与装备预览 `44/44`；对应 Flash focused trace 均为 Compiler `0/0`、32K retry `0`。
-部署后无 candidate selector 的正式入口取得 fresh `bootstrap_reveal_ready`、前后两次 `session.status=verified`、同 lifecycle、同 identity/closure、严格 shutdown receipt、Flash/Guardian exit 0 与零进程残留。
-维护者在 promotion 前已确认战宠点击休息后卡片切回休息、当前图消失且下一图不再出战；部署后的正式 smoke 只证明正式身份/生命周期可用，没有重跑该战宠业务旅程，也没有重跑玩家受击换装、黑市真实经济、设置写入重启、字体观感或 T800 武器命令，故不得将任一专项冒称新的 `standard_entry_verified`。Audio H2 继续为独立 `pending`。
+**状态边界**：本列车收口佣兵装备托管一期（背包装备冻结托管覆盖佣兵预设）。
+fresh 门包括 AS2 focused `97/97`、ManagedLongGun 回归 `126/126`、Launcher 全量 `4054 pass + 3 explicit opt-in skip / 4060 total`、Team harness 三视口各 `207/207`、workbench audit `0/0` 与 doc governance；asLoader.swf 已发布含新代码。
+部署后未执行无 candidate selector 的正式入口 smoke，也没有重跑佣兵托管、玩家受击换装、黑市真实经济、设置写入重启、字体观感或 T800 武器命令业务旅程，故本列车只称 `promoted`，不得将任一专项冒称新的 `standard_entry_verified`。Audio H2 继续为独立 `pending`。
 
 ---
 
@@ -38,7 +37,7 @@ fresh 门包括 Launcher `4047 pass + 3 explicit opt-in skip / 4050 total`、Tea
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `416c4441947d40bc27ae3854178e87e2c5cf1ac9`）
+## Context Packs（按任务最小加载，最后核对 commit `d720b0e433fe4de1df2ab2c12ba2a8e21e6c2ce8`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 
