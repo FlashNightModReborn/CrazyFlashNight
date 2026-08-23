@@ -8,7 +8,7 @@
 > 不允许通配 `githubusercontent.com` 子域。
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `0b7d5ec1880bfdbbcf252070d219c47af1811dac`（2026-08-23，审计加固汇总 release source；promotion `19f57d0fe6383f0ec9cae4d73646cf8197bd6ee5`）。
+**最后核对代码基线**：commit `416c4441947d40bc27ae3854178e87e2c5cf1ac9`（2026-08-23，战宠生命周期、事务与跨栈面板加固 release source；deployment `df060eac491c7251b261a3f5626960a8ea18911a`）。
 
 当前正式 runtime 的身份、发布状态和专项验收只读 [runtime release consensus](../config/build/runtime-release-consensus.json)、[runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime build reproducibility](../docs/runtime-build-reproducibility.md)与[测试矩阵](testing-guide.md)。本架构文档不复制发布收据或历史测试数字；Audio H2 继续作为独立专项，不由通用 promotion 代签。
 

@@ -2,7 +2,7 @@
 
 **状态**：`SHADOW_MINIGAME_V1 / PRIVACY_HARDENING_PROMOTED / ANONYMOUS_PRODUCT_FIXTURE / EXACT_ORACLE_NODE_ONLY / NOT_PRODUCTION_STATEFUL / NOT_E2E_VERIFIED`
 
-2026-08-23 的匿名产品夹具、Node-only exact oracle 隔离与双币种账本修复已随 release source `0b7d5ec1880bfdbbcf252070d219c47af1811dac` 和 promotion `19f57d0fe6383f0ec9cae4d73646cf8197bd6ee5` 进入正式 runtime；post-promotion audit run `32613483455` 已确认 `state=promoted / deploymentChanged=true`。
+2026-08-23 的匿名产品夹具、Node-only exact oracle 隔离与双币种账本修复已随 release source `416c4441947d40bc27ae3854178e87e2c5cf1ac9` 和 deployment `df060eac491c7251b261a3f5626960a8ea18911a` 进入正式 runtime；post-promotion audit run `32644777181` 已确认 `state=promoted / deploymentChanged=true`。
 这只证明隐私加固字节已部署，不表示黑市生产经济、存档、掉落、NPC 入口、真实目录鉴定信号、物理 WebView2 或业务 E2E 已实现。普通安全表面继续是明确的匿名 shadow 降级。
 
 普通 Launcher `BLACKMARKET_TEST` 现在只运行匿名合成状态机：三舱、购买、TP/K、提取/回售、覆泥安全表面和放大检视仍可操作，但 Web 不再请求或持有全量物品目录，不在购买前或购买后处理真实物品名、ID、资源 URI、精确回售价或真实类别。公开 `category/subclass/counterPrice` 使用与真实目录不相交的匿名分类和独立合成价格，不能再拿全目录价格反查候选。
