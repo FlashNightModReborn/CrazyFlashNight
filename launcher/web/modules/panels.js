@@ -45,7 +45,7 @@ var Panels = (function() {
         var closeMessage = {type:'panel', cmd:'close', panel:id};
         if (id === 'skills' || id === 'crafting' || id === 'kshop'
                 || id === 'settings'
-                || id === 'npcshop') {
+                || id === 'npcshop' || id === 'blackmarket' || id === 'team') {
             closeMessage.panelInstanceId = readPanelInstanceId(initData);
             if (id === 'npcshop' && isNpcShopOuterCloseReason(reason)) {
                 closeMessage.reason = reason;
@@ -62,7 +62,8 @@ var Panels = (function() {
     function hostOwnsPanelMount(id, initData) {
         return id === 'loot' || id === 'workbench' || id === 'skills'
             || id === 'settings'
-            || id === 'crafting' || id === 'kshop' || id === 'npcshop';
+            || id === 'crafting' || id === 'kshop' || id === 'npcshop'
+            || id === 'blackmarket' || id === 'team';
     }
 
     function safeBridgeSend(message, context) {

@@ -1,5 +1,7 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
 
+import org.flashNight.neur.Event.EventBus;
+
 /**
  * 玩家资产已提交回执基座。
  *
@@ -33,8 +35,10 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
             mergeScope:mergeScope,
             effects:[],
             effectIndex:{},
+            authorityWriteObserved:false,
             strongSaveRequested:false,
             strongSaveFlushed:false,
+            recoverDispatch:EventBus.getInstance().createDispatchRecoveryToken(),
             startedAt:nowMilliseconds()
         };
         _stack.push(transaction);
@@ -44,6 +48,32 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
     public static function current():Object {
         if (_stack.length == 0) return null;
         return _stack[_stack.length - 1];
+    }
+
+    /** ItemUtil 用于标记回执外的真实写（经验/技能点也属于资产事实）。 */
+    public static function markAuthorityWrite(transaction:Object):Void {
+        if (transaction != null) transaction.authorityWriteObserved = true;
+    }
+
+    public static function hasAuthorityWrite(transaction:Object):Boolean {
+        return transaction != null && transaction.authorityWriteObserved === true;
+    }
+
+    /**
+     * 玩家物资领域首写前的强制存档脏标记。
+     *
+     * AVM1 对 undefined owner 的成员赋值可能静默跳过，调用方不能再用
+     * `_root.存档系统.dirtyMark = true` 充当 fail-fast。这里先验证 owner，
+     * 再写入并读回确认；任一失败都必须发生在玩家资产首写之前。
+     */
+    public static function markDirtyRequired(saveOwner:Object):Void {
+        if (saveOwner == undefined || saveOwner == null) {
+            throw new Error("player_asset_save_owner_missing");
+        }
+        saveOwner.dirtyMark = true;
+        if (saveOwner.dirtyMark !== true) {
+            throw new Error("player_asset_dirty_mark_failed");
+        }
     }
 
     /**
@@ -172,6 +202,7 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         if (!isTopOpen(transaction)) return null;
         _stack.pop();
         transaction.state = "committed";
+        transaction.recoverDispatch = null;
         transaction.committedAt = nowMilliseconds();
         delete transaction.effectIndex;
 
@@ -179,6 +210,9 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         if (parent != null && parent.state == "open") {
             for (var i:Number = 0; i < transaction.effects.length; i++) {
                 mergeDetachedEffect(parent, transaction.effects[i]);
+            }
+            if (transaction.authorityWriteObserved === true) {
+                parent.authorityWriteObserved = true;
             }
             if (transaction.strongSaveRequested === true) {
                 parent.strongSaveRequested = true;
@@ -207,10 +241,72 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         if (!isTopOpen(transaction)) return false;
         _stack.pop();
         transaction.state = "rolled_back";
+        transaction.recoverDispatch = null;
         transaction.effects = [];
         transaction.effectIndex = {};
         transaction.strongSaveRequested = false;
         return true;
+    }
+
+    /**
+     * 显式领域边界捕获异常后的唯一清栈入口。
+     *
+     * 本方法只结算 PlayerAssetTransaction 的可选消费者 frame，绝不恢复或改写
+     * 玩家资产。调用方必须先按领域权威决定：
+     * - preserveCommittedEffects=true：真实写入无法/不应恢复，合并异常期间已经
+     *   记录的 effect，并按当前事实提交；事务内强存盘请求也随最终提交执行。
+     * - preserveCommittedEffects=false：领域已经用自己的 exact snapshot 恢复，
+     *   丢弃尚未发布的 effect 与强存盘请求。
+     *
+     * 若异常路径意外留下了本事务的子 frame，本方法会一并结算，避免后续隐式
+     * record 方法/requestStrongSave 被旧栈顶污染。它不会越过 transaction 去处置更早
+     * 的外层 frame。
+     */
+    public static function settleAfterException(transaction:Object,
+                                                 preserveCommittedEffects:Boolean):Object {
+        var transactionIndex:Number = findOpenTransactionIndex(transaction);
+        if (transactionIndex < 0) return null;
+
+        // begin 时捕获的 token 只回退本领域进入后的 EventBus depth，不清空
+        // 更早的外层 publish。无事件异常时 depth 不变，调用仍为安全 no-op。
+        if (transaction.recoverDispatch != null) {
+            transaction.recoverDispatch();
+            transaction.recoverDispatch = null;
+        }
+
+        if (preserveCommittedEffects) {
+            // 子 frame 都产生于本显式领域调用期间。异常让它们失去独立 finality，
+            // 但其中已经记录的真实 effect 仍需并入领域 frame 后统一提交。
+            for (var mergeIndex:Number = transactionIndex + 1;
+                    mergeIndex < _stack.length; mergeIndex++) {
+                var child:Object = _stack[mergeIndex];
+                if (child == null || child.state != "open") continue;
+                for (var effectIndex:Number = 0;
+                        effectIndex < child.effects.length; effectIndex++) {
+                    mergeDetachedEffect(transaction, child.effects[effectIndex]);
+                }
+                if (child.strongSaveRequested === true) {
+                    transaction.strongSaveRequested = true;
+                }
+                if (child.authorityWriteObserved === true) {
+                    transaction.authorityWriteObserved = true;
+                }
+            }
+        }
+
+        while (_stack.length - 1 > transactionIndex) {
+            var abandonedChild:Object = _stack.pop();
+            abandonedChild.state = preserveCommittedEffects
+                ? "exception_merged" : "exception_discarded";
+            abandonedChild.effects = [];
+            abandonedChild.effectIndex = {};
+            abandonedChild.strongSaveRequested = false;
+            abandonedChild.recoverDispatch = null;
+        }
+
+        if (preserveCommittedEffects) return commit(transaction);
+        rollback(transaction);
+        return null;
     }
 
     private static function addEffect(transaction:Object, direction:String,
@@ -361,6 +457,14 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
     private static function isTopOpen(transaction:Object):Boolean {
         return transaction != null && transaction.state == "open"
             && _stack.length > 0 && _stack[_stack.length - 1] === transaction;
+    }
+
+    private static function findOpenTransactionIndex(transaction:Object):Number {
+        if (transaction == null || transaction.state != "open") return -1;
+        for (var i:Number = _stack.length - 1; i >= 0; i--) {
+            if (_stack[i] === transaction) return i;
+        }
+        return -1;
     }
 
     private static function nextOperationId():String {

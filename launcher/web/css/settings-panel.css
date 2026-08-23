@@ -176,7 +176,7 @@
 }
 .settings-terminal-close:hover,
 .settings-terminal-close:focus-visible {
-    color: #fff;
+    color: var(--term-ink-hi);
     border-color: var(--settings-rust);
     outline: none;
     background: var(--settings-rust);
@@ -805,7 +805,7 @@
 .settings-key-section[data-key-columns="3"] .settings-key-row { grid-template-columns: max-content 68px; }
 .settings-key-row:hover { border-left-color: var(--settings-dls); }
 .settings-key-row.invalid { border-left-color: var(--settings-rust); background: rgba(var(--launcher-rust-rgb), .12); }
-.settings-key-row.invalid .settings-key-label { color: color-mix(in srgb, var(--launcher-rust) 48%, white); }
+.settings-key-row.invalid .settings-key-label { color: color-mix(in srgb, var(--launcher-rust) 48%, var(--term-ink-hi)); }
 .settings-key-label {
     overflow: hidden;
     color: var(--launcher-copy);

@@ -345,7 +345,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
      *   - 霰弹值正整数化（联弹取 floor 正值、非联弹恒 1，与 createBulletInstance 一致）
      *   - initializeNanoToxicfunction（须在 getDamageManager 之前——nanoToxic 影响 canHandle 命中位）
      *   - additionalEffectDamage = 0（对齐 BulletLifecycle）
-     *   - damageManager = DamageManagerFactory.Basic.getDamageManager（单一真源、按 bitmask 缓存）
+     *   - damageManager = DamageManagerFactory.resolveForBullet（按声明式能力选择缓存工厂）
      *
      * @param Obj     子弹配置对象（就地 mutate 后即作为结算载体返回）
      * @param shooter 发射者对象
@@ -371,7 +371,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         // 3) 对齐 BulletLifecycle：附加效果伤害计数器清零 + 伤害管理器（按 bitmask 缓存）
         Obj.additionalEffectDamage = 0;
-        Obj.damageManager = DamageManagerFactory.Basic.getDamageManager(Obj);
+        Obj.damageManager = DamageManagerFactory.resolveForBullet(Obj);
 
         return Obj;
     }

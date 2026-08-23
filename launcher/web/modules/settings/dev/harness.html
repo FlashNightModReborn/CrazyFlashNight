@@ -45,6 +45,7 @@
   keyNames[191]='/?';
   var allowed=Object.keys(keyNames).map(function(code){return{code:Number(code),name:keyNames[code]}});
   var handlers={},sent=[],durable=true,previewBaseline=null;
+  var dropNextResponseFor='',failNextSnapshot=false,holdNextSnapshotForReconcile=false;
   function buildEntryPreview(){
     var canvas=document.createElement('canvas');canvas.width=1024;canvas.height=576;
     var ctx=canvas.getContext('2d');ctx.scale(2,2);
@@ -108,6 +109,7 @@
     output.textContent=(text+'\n'+output.textContent).slice(0,7000)
   }
   function emit(message,response){
+    if(dropNextResponseFor===message.cmd){dropNextResponseFor='';return}
     var data=Object.assign({type:'panel_resp',panel:'settings',domain:'settings',
       cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId},response);
     setTimeout(function(){(handlers.panel_resp||[]).slice().forEach(function(handler){handler(data)})},35)
@@ -122,7 +124,11 @@
       if(message.cmd==='close')return true;
       if(message.domain!=='settings')return false;
       var payload=message.payload||{};
-      if(message.cmd==='snapshot')emit(message,snapshot());
+      if(message.cmd==='snapshot'){
+        if(failNextSnapshot){failNextSnapshot=false;emit(message,{success:false,v:1,error:'settings_unavailable'});}
+        else if(holdNextSnapshotForReconcile){holdNextSnapshotForReconcile=false;emit(message,Object.assign(snapshot(),{requiresReconcile:true}));}
+        else emit(message,snapshot());
+      }
       else if(message.cmd==='preview'){
         if(previewBaseline===null)previewBaseline={global:model.settings.setGlobalVolume,bgm:model.settings.setBGMVolume};
         emit(message,{success:true,v:1,operation:'preview',previewActive:true,
@@ -166,7 +172,10 @@
       getActive:function(){return active},_specs:specs
     }
   })();
-  window.__settingsHarness={model:model,sent:sent,reopen:function(){Panels.open('settings')}};
+  window.__settingsHarness={model:model,sent:sent,reopen:function(){Panels.open('settings')},
+    dropNextResponse:function(cmd){dropNextResponseFor=String(cmd||'')},
+    failNextSnapshot:function(){failNextSnapshot=true},
+    holdNextSnapshotForReconcile:function(){holdNextSnapshotForReconcile=true}};
   document.getElementById('toggle-mode').onclick=function(){model.challengeMode=!model.challengeMode;this.textContent=model.challengeMode?'切到普通模式':'切到挑战模式';Panels.open('settings')};
   document.getElementById('toggle-save').onclick=function(){durable=!durable;this.textContent=durable?'模拟保存失败':'恢复保存成功'};
   document.getElementById('toggle-revive').onclick=function(){model.reviveAvailable=!model.reviveAvailable;this.textContent='复活入口：'+(model.reviveAvailable?'可用':'不可用');Panels.open('settings')};

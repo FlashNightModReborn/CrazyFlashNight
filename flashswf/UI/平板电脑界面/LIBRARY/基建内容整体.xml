@@ -70,24 +70,91 @@ function 基建升级(){
 		source:"base_upgrade", reason:"infrastructure_upgrade",
 		mergeScope:"operation"
 	};
+	var assetSnapshot = _root.捕获玩家物资快照();
+	var infrastructure = _root.基建系统.infrastructure;
+	var infrastructureHadLevel = infrastructure.hasOwnProperty(this.currentName);
+	var infrastructureLevelBefore = infrastructure[this.currentName];
+	var restoreUpgradeSnapshot = function(){
+		var failureHadLevel = infrastructure.hasOwnProperty(this.currentName);
+		var failureLevel = infrastructure[this.currentName];
+		var infrastructureRestored = false;
+		// 先恢复领域等级；若该权威字段无法精确复原，玩家资产保持已提交事实，
+		// settle(true) 的 loss receipt 才不会与已返还材料/金币矛盾。
+		try {
+			if(infrastructureHadLevel) {
+				infrastructure[this.currentName] = infrastructureLevelBefore;
+			} else {
+				delete infrastructure[this.currentName];
+			}
+			infrastructureRestored = infrastructureHadLevel
+				? infrastructure[this.currentName] === infrastructureLevelBefore
+				: !infrastructure.hasOwnProperty(this.currentName);
+		} catch(infrastructureRestoreError) {
+			trace("[基建内容整体] level restore failed: "
+				+ infrastructureRestoreError);
+		}
+		if(!infrastructureRestored) return false;
+
+		var assetsRestored = false;
+		try {
+			assetsRestored = _root.恢复玩家物资快照(assetSnapshot) === true;
+		} catch(assetRestoreError) {
+			trace("[基建内容整体] asset restore failed: " + assetRestoreError);
+		}
+		if(assetsRestored) return true;
+
+		// 玩家资产未能 exact 返还时，领域等级也回到失败事实，使 preserve
+		// receipt 与可见升级状态保持同一终局，避免“资产返了一半、等级却回退”。
+		try {
+			if(failureHadLevel) infrastructure[this.currentName] = failureLevel;
+			else delete infrastructure[this.currentName];
+		} catch(infrastructureFailureStateError) {
+			trace("[基建内容整体] failure-state restore failed: "
+				+ infrastructureFailureStateError);
+		}
+		return false;
+	};
 	var assetTransaction = _root.开始玩家物资事务(assetContext);
+	try {
+	// 材料、金币与基建等级共享存档权威；缺少存档系统时保持零写。
+	_root.标记玩家物资存档脏();
 	if(当前等级数据.Material.length > 0){
 		var itemArr = _root.getRequirementFromTask(this.材料需求数组);
 		if(!_root.itemSubmit(itemArr, assetContext)){
-			_root.回滚玩家物资事务(assetTransaction);
+			var submitRestored = restoreUpgradeSnapshot.call(this);
+			_root.结算玩家物资事务异常(assetTransaction,!submitRestored);
 			_root.发布消息("材料不足！");
 			return;
 		}
 	}
 	if(当前等级数据.Price > 0){
-		_root.金钱 -= Number(当前等级数据.Price);
-		_root.记录玩家货币变化(
-			-Number(当前等级数据.Price), 0, assetContext);
+		var moneyBefore = Number(_root.金钱);
+		try {
+			_root.金钱 -= Number(当前等级数据.Price);
+		} finally {
+			var committedMoney = moneyBefore - Number(_root.金钱);
+			if(committedMoney > Number(当前等级数据.Price)) {
+				committedMoney = Number(当前等级数据.Price);
+			}
+			if(committedMoney > 0 && !isNaN(committedMoney)) {
+				_root.记录玩家货币变化(
+					-committedMoney, 0, assetContext);
+			}
+		}
 	}
 	_root.基建系统.infrastructure[this.currentName]++;
-	if(_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 	_root.提交玩家物资事务(assetTransaction);
-	this.刷新基建数据(this.currentName);
+	} catch(assetError) {
+		var upgradeRestored = restoreUpgradeSnapshot.call(this);
+		_root.结算玩家物资事务异常(assetTransaction,!upgradeRestored);
+		throw assetError;
+	}
+	try {
+		this.刷新基建数据(this.currentName);
+	} catch(refreshError) {
+		// 等级、材料和金币已经提交；可选界面刷新失败不得把升级变成可重放的未知结果。
+		trace("[基建内容整体] post-commit refresh failed: " + refreshError);
+	}
 }
 
 ]]></script>

@@ -140,6 +140,41 @@ test("request mux binds exact instance and correlates one response", () => {
   mux.destroy();
 });
 
+test("request mux marks only dispatched non-preview client timeouts for reconcile", () => {
+  const timers = [];
+  const callbacks = [];
+  let sendResult = true;
+  const mux = new runtime.RequestMux({
+    send() { return sendResult; },
+    setTimer(fn) { timers.push(fn); return timers.length; },
+    clearTimer() {}
+  });
+  assert.strictEqual(mux.openSession("settings.instance.timeout"), true);
+  ["apply", "cancel", "save", "cheat", "return_base", "try_revive", "host_set"].forEach(cmd => {
+    const timerIndex = timers.length;
+    assert(mux.request(cmd, {v:1}, {kind:"timeout." + cmd}, response => callbacks.push(response)));
+    timers[timerIndex]();
+    const response = callbacks[callbacks.length - 1];
+    assert.strictEqual(response.error, "client_timeout");
+    assert.strictEqual(response.requiresReconcile, true, cmd);
+  });
+  ["snapshot", "preview"].forEach(cmd => {
+    const timerIndex = timers.length;
+    assert(mux.request(cmd, {v:1}, {kind:"timeout." + cmd}, response => callbacks.push(response)));
+    timers[timerIndex]();
+    const response = callbacks[callbacks.length - 1];
+    assert.strictEqual(response.error, "client_timeout");
+    assert.strictEqual(response.requiresReconcile, undefined, cmd);
+  });
+  sendResult = false;
+  assert(mux.request("apply", {v:1}, {kind:"not-sent"}, response => callbacks.push(response)));
+  const notSent = callbacks[callbacks.length - 1];
+  assert.strictEqual(notSent.error, "not_sent");
+  assert.strictEqual(notSent.requiresReconcile, undefined);
+  assert.strictEqual(mux.debugState().pendingCount, 0);
+  mux.destroy();
+});
+
 test("central Web preferences reuse shipped storage keys and reject unknown values", () => {
   const state = Object.create(null);
   const storage = {
@@ -185,6 +220,16 @@ test("panel keeps cheat bridge internal and exposes only agreed rescue controls"
   assert(!panel.includes("confirmThen('return_base'"));
   assert(!panel.includes("Panels.close()"));
   assert(panel.includes("正在等待 Host 确认关闭"));
+  assert(panel.includes("function reconcileUnknownWrite(message)"));
+  assert(panel.includes("_requiresReconcile = true"));
+  assert(panel.includes("写入状态等待权威核对"));
+  assert(panel.includes("权威状态读取失败，写入仍保持锁定"));
+  assert(panel.includes("该权威快照早于未决写入终态，写入仍保持锁定；请重新读取。"));
+  assert(panel.includes("_mux.closeSession()"));
+  assert(!panel.includes("_generation"));
+  assert(panel.includes("保存结果未知，正在重新读取游戏权威状态；不会自动重试。"));
+  assert(panel.includes("关闭前试听恢复结果未知，正在重新读取权威状态；面板保持打开。"));
+  assert(panel.includes("本机偏好结果未知，正在重新读取权威状态；不会自动重试。"));
   const tokens = fs.readFileSync(path.join(root, "launcher/web/css/workbench/tokens.css"), "utf8");
   const welcome = fs.readFileSync(path.join(root, "launcher/web/css/welcome.css"), "utf8");
   const settingsCss = fs.readFileSync(path.join(root, "launcher/web/css/settings-panel.css"), "utf8");

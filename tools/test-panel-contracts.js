@@ -109,9 +109,20 @@ function run() {
     const committed = craftingCommit.indexOf("PlayerAssetTransaction.commit(assetTransaction)");
     assert(rollbackCatch >= 0 && committed > rollbackCatch,
       "Crafting commit must isolate rollback-capable writes from the final receipt commit");
-    assert(craftingCommit.indexOf("restoreState(backup)", rollbackCatch) >= 0
-      && craftingCommit.indexOf("PlayerAssetTransaction.rollback(assetTransaction)", rollbackCatch) >= 0,
-      "Crafting pre-commit exception path must restore assets and roll back the receipt");
+    assert(craftingCommit.indexOf("var commitRestored:Boolean = false", rollbackCatch) >= 0
+      && craftingCommit.indexOf("restoreState(backup)", rollbackCatch) >= 0
+      && craftingCommit.indexOf("commitRestored = true", rollbackCatch) >= 0
+      && /PlayerAssetTransaction\.settleAfterException\(\s*assetTransaction,\s*!commitRestored\s*\)/
+        .test(craftingCommit.slice(rollbackCatch))
+      && craftingCommit.indexOf(
+        "PlayerAssetTransaction.rollback(assetTransaction)", rollbackCatch) < 0,
+      "Crafting pre-commit exception path must settle from the exact-restore outcome");
+    assert(craftingCommit.includes("procurementPlansExists:procurementPlansExists")
+      && craftingCommit.includes("ObjectUtil.clone(saveExt.procurementPlans)")
+      && crafting.includes(
+        "_root._saveExt.procurementPlans = ObjectUtil.clone(backup.procurementPlans);")
+      && crafting.includes("delete _root._saveExt.procurementPlans;"),
+      "Crafting exact snapshot must restore procurement plan existence and content");
     const afterCommit = craftingCommit.slice(committed);
     assert(/try\s*\{[\s\S]*playSound\([\s\S]*catch\s*\(soundError\)/.test(afterCommit)
       && afterCommit.indexOf("restoreState(backup)") < 0,
@@ -131,6 +142,70 @@ function run() {
       assert(/_json\.stringifySafe\(/.test(source),
         file + " must retain an explicit safe serialization exit");
     });
+  });
+
+  test("pet committed writes surface deferred scene projection without inviting replay", function () {
+    const web = read("launcher/web/modules/pet-panel.js");
+    const level = sectionBetween(web,
+      "function onLevelUp(", "function onEquipManagedWeapon(", "pet onLevelUp");
+    const deletion = sectionBetween(web,
+      "function doDelete(", "function onAdvance(", "pet doDelete");
+    const advance = sectionBetween(web,
+      "function onAdvance(", "function onWorldAdopt(", "pet onAdvance");
+    const worldAdopt = sectionBetween(web,
+      "function onWorldAdopt(", "function onExpandSlot(", "pet onWorldAdopt");
+    assert(level.includes("data.refreshDeferred")
+      && level.includes("下次重建时更新等级"),
+      "level-up success must disclose deferred live-unit projection");
+    assert(deletion.includes("data.refreshDeferred")
+      && deletion.includes("其余出战实体将在下次换场时同步"),
+      "delete success must disclose deferred remaining-pet projection");
+    assert(advance.includes("data.refreshDeferred")
+      && advance.includes("下次重建时更新进阶属性"),
+      "advance success must disclose deferred live-unit projection");
+    const deferredToast = worldAdopt.indexOf("场景战宠将在下次换场时同步");
+    const close = worldAdopt.indexOf("requestClose()", deferredToast);
+    assert(worldAdopt.includes("data.refreshDeferred")
+      && deferredToast >= 0 && close > deferredToast,
+      "world adopt must show committed/deferred feedback before exact close");
+  });
+
+  test("pet unknown mutations stay locked until an exact fresh snapshot reconciles", function () {
+    const web = read("launcher/web/modules/pet-panel.js");
+    const mutationBlock = sectionBetween(web,
+      "var MUTATION_COMMANDS = {", "// ── 状态 ──", "pet mutation allow-list");
+    const mutationNames = Array.from(mutationBlock.matchAll(/^\s*([a-z_]+): true,?$/gm))
+      .map(function (match) { return match[1]; }).sort();
+    assert(JSON.stringify(mutationNames) === JSON.stringify([
+      "adopt", "advance", "delete", "deploy", "equip_weapon", "expand_slot",
+      "level_up", "rename", "restore_stamina", "withdraw_weapon", "world_adopt"
+    ]), "pet reconcile guard must cover the exact production mutation set");
+
+    const unknown = sectionBetween(web,
+      "function isUnknownMutationResponse(", "function projectReconcileState(",
+      "pet unknown mutation classifier");
+    assert(unknown.includes("data.error === 'timeout'")
+      && unknown.includes("data.error === 'delivery_unknown'")
+      && unknown.includes("data.error === 'client_timeout'")
+      && !unknown.includes("not_sent")
+      && !unknown.includes("panel_instance_expired")
+      && !unknown.includes("disconnected"),
+      "only already-sent unknown outcomes may establish the pet reconcile latch");
+
+    const snapshot = sectionBetween(web,
+      "function requestSnapshot(", "function renderAfterDataReady(",
+      "pet snapshot reconciliation");
+    assert(snapshot.includes("snapSession !== _session")
+      && snapshot.includes("snapInstance !== _panelInstanceId")
+      && snapshot.includes("snapRequest !== _latestSnapshotRequest")
+      && snapshot.includes("expectedReconcileEpoch === _reconcileEpoch")
+      && snapshot.includes("clearReconcile(expectedReconcileEpoch)"),
+      "only latest exact-session/instance same-epoch snapshots may clear pet reconcile");
+    assert(web.includes("if (isMutationCommand(cmd) && _reconcileRequired)")
+      && web.includes("requestSnapshot(_reconcileRequired ? _reconcileEpoch : 0)")
+      && web.includes("if (finishMutationOp(btn, data)) return;")
+      && web.includes("if (finishMutationOp(null, data)) return;"),
+      "pet writes must fail closed while reconcile survives close/rebind and callbacks must not report a definitive failure");
   });
 
   test("NPC ordinary sell remains fully retired while trade commit stays governed", function () {

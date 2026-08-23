@@ -6,6 +6,7 @@ import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.neur.Event.EventBus;
 
 import org.flashNight.naki.Sort.QuickSort;
 
@@ -351,8 +352,10 @@ class org.flashNight.arki.item.ItemUtil{
             if(source == null || source.name == undefined) return null;
             var name:String = String(source.name);
             var value:Number = Number(source.value);
+            if(name.length == 0 || isNaN(value) || !isFinite(value)
+                    || value <= 0 || value != Math.floor(value)
+                    || value > MAX_SAFE_COLLECTION_QUANTITY) return null;
             if(isInformation(name)){
-                if(isNaN(value) || value <= 0 || value != Math.floor(value)) return null;
                 var remaining:Number;
                 if(reservedRemaining[name] == undefined) remaining = getInformationRemaining(name);
                 else remaining = Number(reservedRemaining[name]);
@@ -423,6 +426,76 @@ class org.flashNight.arki.item.ItemUtil{
         plan.success = acquire(plan.items, context);
         if(!plan.success) plan.error = "inventory_full";
         return plan;
+    }
+
+    /**
+     * 多资源领域调用者的 exact compensation 快照。
+     *
+     * PlayerAssetTransaction 只管理 receipt/finality frame，不伪装资产回滚；NPC/KShop
+     * 等先入包再扣款（或先移除再结算）的同步 listener fault 必须由领域调用者恢复
+     * 真实容器。这里仅集中快照通用玩家物资，宠物、任务、购物车等领域字段仍由
+     * 各调用者自己加入快照并恢复。
+     */
+    public static function capturePlayerAssetSnapshot():Object {
+        return {
+            bag:captureCollectionSnapshot(
+                _root.物品栏 == undefined ? null : _root.物品栏.背包),
+            drugs:captureCollectionSnapshot(
+                _root.物品栏 == undefined ? null : _root.物品栏.药剂栏),
+            equipment:captureCollectionSnapshot(
+                _root.物品栏 == undefined ? null : _root.物品栏.装备栏),
+            materials:captureCollectionSnapshot(
+                _root.收集品栏 == undefined ? null : _root.收集品栏.材料),
+            intelligence:captureCollectionSnapshot(
+                _root.收集品栏 == undefined ? null : _root.收集品栏.情报),
+            money:Number(_root.金钱),
+            kpoints:Number(_root.虚拟币),
+            save:_root.存档系统,
+            dirty:_root.存档系统 == undefined
+                ? undefined : _root.存档系统.dirtyMark
+        };
+    }
+
+    /**
+     * 恢复 capturePlayerAssetSnapshot() 的通用权威内容。setItems 不派发容器事件，
+     * 因而可在原 listener 的 dispatch depth 尚待 PAT settle 时安全执行。只有全部
+     * 容器和标量都恢复后才还原 dirty；失败保持 dirty=true 并让调用者 preserve
+     * 当前事实，绝不声称虚假的 exact rollback。
+     */
+    public static function restorePlayerAssetSnapshot(snapshot:Object):Boolean {
+        if(snapshot == null) return false;
+        try {
+            restoreCollectionSnapshot(snapshot.bag);
+            restoreCollectionSnapshot(snapshot.drugs);
+            restoreCollectionSnapshot(snapshot.equipment);
+            restoreCollectionSnapshot(snapshot.materials);
+            restoreCollectionSnapshot(snapshot.intelligence);
+            _root.金钱 = Number(snapshot.money);
+            _root.虚拟币 = Number(snapshot.kpoints);
+            if(snapshot.save != undefined) {
+                snapshot.save.dirtyMark = snapshot.dirty;
+            }
+            return true;
+        } catch(snapshotRestoreError) {
+            trace("[ItemUtil] exact asset snapshot restore failed: "
+                + snapshotRestoreError);
+            return false;
+        }
+    }
+
+    private static function captureCollectionSnapshot(collection:Object):Object {
+        if(collection == null || collection == undefined
+                || collection.toObject == undefined) return null;
+        return {ref:collection, items:collection.toObject()};
+    }
+
+    private static function restoreCollectionSnapshot(snapshot:Object):Void {
+        if(snapshot == null || snapshot == undefined) return;
+        if(snapshot.ref == null || snapshot.ref == undefined
+                || snapshot.ref.setItems == undefined) {
+            throw "asset_snapshot_collection_missing";
+        }
+        snapshot.ref.setItems(snapshot.items);
     }
     /*
      * 辅助函数，判断装备物品是否存在进阶数据
@@ -753,6 +826,10 @@ class org.flashNight.arki.item.ItemUtil{
     public static function acquire(itemArray:Array, context:Object):Boolean {
         var list = ItemUtil.require(itemArray);
         if(list == null) return false;
+        // 物理写入量与所有权变化量不是同一概念。复合交易会把已出售装备中的
+        // 配件迁回材料栏，并用 ownershipDelta=0 明示“不新增所有权”。逐写
+        // before/after 仍负责证明真实提交量，但回执最多只能消费原请求的所有权预算。
+        var acquisitionOwnership:Object = buildAcquisitionOwnershipBudgets(itemArray);
 
         var acquireLastUpdate = new Date().getTime(); // 获取本次获得物品的时间戳
 
@@ -773,132 +850,343 @@ class org.flashNight.arki.item.ItemUtil{
         if(implicitAssetTransaction) assetTransaction = PlayerAssetTransaction.begin(context);
 
         var acquireCompleted:Boolean = false;
+        var acquireWrote:Boolean = false;
+        // require() 只证明写入前的容量与路由；同步生命周期监听器可以在
+        // 前一项写入后重入并占用后一项预留槽。逐项核验实际 delta/身份，
+        // 让拥有 exact snapshot 的复合领域在少发或错槽时恢复整批事实。
+        var acquireExact:Boolean = true;
+        var recoverAcquireDispatch:Function =
+            EventBus.getInstance().createDispatchRecoveryToken();
         try {
-        // acquire 从下一行开始可能发生部分权威写；dirty 必须先于首写置位。
-        // 若存档系统本身不可用，本行会在任何资产变化前失败并由 finally 清理隐式 frame。
-        _root.存档系统.dirtyMark = true;
+            // acquire 从下一行开始可能发生部分权威写；dirtiness 必须
+            // 先于首写可见。存档系统本身不可用时，资产仍未变化。
+            PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
 
-        //获取
-        if(list.金币 > 0) _root.金钱 += list.金币;
-        if(list.K点 > 0) _root.虚拟币 += list.K点;
-        if(list.经验值 > 0) {
-            _root.经验值 += list.经验值;
-            _root.主角是否升级(_root.等级,_root.经验值);
-        }
-        if(list.技能点 > 0) _root.技能点数 += list.技能点;
-
-        // 已装备同名手雷的数量补充。保留原对象引用，并同步最后更新时间。
-        for(var equipmentKey:String in list.装备栏){
-            var equipmentReq:Object = list.装备栏[equipmentKey];
-            装备栏.addValue(equipmentKey, Number(equipmentReq.value));
-            装备栏.getItem(equipmentKey).update(acquireLastUpdate);
-        }
-
-        //材料
-        var 材料 = _root.收集品栏.材料;
-        for(var name in list.材料){
-            var value = list.材料[name];
-            if(材料.isEmpty(name)) 材料.add(name,value);
-            else 材料.addValue(name,value);
-        }
-
-        //情报
-        var 情报 = _root.收集品栏.情报;
-        for(var name in list.情报){
-            var value = list.情报[name];
-            if(情报.isEmpty(name)) 情报.add(name,value);
-            else 情报.addValue(name,value);
-        }
-
-        // 药剂栏
-        var 药剂栏:Object = _root.物品栏.药剂栏; // DrugInventory 实例
-        for(var key:String in list.药剂栏){
-            var req:Object = list.药剂栏[key];
-            var drugIndex:Number = Number(key);
-
-            // 对于已有项，直接增加数量
-            if(药剂栏.isEmpty(drugIndex)){
-                // 格子为空的情况原则上不会触发
-                var newDrugItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
-                药剂栏.add(drugIndex, newDrugItem);
-            } else {
-                // 已有物品更新数量和时间戳
-                药剂栏.addValue(drugIndex, req.value);
-                药剂栏.getItem(drugIndex).update(acquireLastUpdate); // 更新时间戳
-            }
-        }
-
-        // 处理背包部分
-        var 背包:Object = _root.物品栏.背包; // ArrayInventory 实例
-        for(var key:String in list.背包){
-            var req:Object = list.背包[key];
-            // 如果 key 表示已有堆，则 key 是数字字符串；
-            // 如果是新建 mergeable 物品，则 key 可设为 "-mergeable-" 开头
-            if(key.indexOf("-mergeable-") == 0) {
-                // 尝试查找是否已有同名物品
-                var indexFoundStr:String = 背包.searchFirstKey(req.name);
-                if(indexFoundStr != undefined) {
-                    // 找到同名物品，合并到该位置
-                    var indexFound:Number = Number(indexFoundStr);
-                    背包.addValue(indexFound, req.value);
-                    背包.getItem(indexFound).update(acquireLastUpdate); // 更新时间戳
-                } else {
-                    // 没有同名物品，创建新物品并添加到空格子
-                    var newItem:BaseItem;
-                    if(req.tier != undefined && ItemUtil.isEquipment(req.name)){
-                        // 有进阶信息，使用 createFromString 保留 tier
-                        var itemStr:String = req.name + "#" + req.value + "#" + req.tier;
-                        newItem = BaseItem.createFromString(itemStr);
-                        // createFromString 不会设置 lastUpdate，需要手动设置
-                        if(newItem != null){
-                            newItem.lastUpdate = acquireLastUpdate;
+            // 标量货币也以 before/after 为权威；setter 在写后抛错时不得
+            // 按请求量虚报。经验/技能点属进度聚合，只用于判定实写。
+            if(list.金币 > 0) {
+                var moneyBefore:Number = Number(_root.金钱);
+                try {
+                    _root.金钱 += list.金币;
+                } finally {
+                    var rawCommittedMoney:Number = Number(_root.金钱) - moneyBefore;
+                    var committedMoney:Number = rawCommittedMoney;
+                    if(committedMoney > list.金币) committedMoney = Number(list.金币);
+                    if(rawCommittedMoney != Number(list.金币)) acquireExact = false;
+                    if(committedMoney > 0 && !isNaN(committedMoney)) {
+                        acquireWrote = true;
+                        var moneyEffect:Object = claimAcquisitionEffect(
+                            acquisitionOwnership, "金钱", "money", "", committedMoney);
+                        if(moneyEffect.count > 0) {
+                            PlayerAssetTransaction.recordEffect(
+                                "gain", moneyEffect.kind, "金钱", moneyEffect.count, context);
                         }
-                    } else {
-                        newItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
                     }
-                    背包.add(-1, newItem);
-                }
-            } else {
-                // 对于已有项，直接增加数量
-                var bagIndex:Number = Number(key);
-
-                if(背包.isEmpty(bagIndex)){
-                    // 如果该格子为空，添加新物品
-                    var newItem:BaseItem;
-                    if(req.tier != undefined && ItemUtil.isEquipment(req.name)){
-                        // 有进阶信息，使用 createFromString 保留 tier
-                        var itemStr:String = req.name + "#" + req.value + "#" + req.tier;
-                        newItem = BaseItem.createFromString(itemStr);
-                        // createFromString 不会设置 lastUpdate，需要手动设置
-                        if(newItem != null){
-                            newItem.lastUpdate = acquireLastUpdate;
-                        }
-                    } else {
-                        newItem = BaseItem.create(req.name, req.value, acquireLastUpdate);
-                    }
-                    背包.add(bagIndex, newItem);
-                } else {
-                    // 已有物品更新数量和时间戳
-                    背包.addValue(bagIndex, req.value);
-                    背包.getItem(bagIndex).update(acquireLastUpdate); // 更新时间戳
                 }
             }
-        }
+            if(list.K点 > 0) {
+                var kpointBefore:Number = Number(_root.虚拟币);
+                try {
+                    _root.虚拟币 += list.K点;
+                } finally {
+                    var rawCommittedKpoint:Number = Number(_root.虚拟币) - kpointBefore;
+                    var committedKpoint:Number = rawCommittedKpoint;
+                    if(committedKpoint > list.K点) committedKpoint = Number(list.K点);
+                    if(rawCommittedKpoint != Number(list.K点)) acquireExact = false;
+                    if(committedKpoint > 0 && !isNaN(committedKpoint)) {
+                        acquireWrote = true;
+                        var kpointEffect:Object = claimAcquisitionEffect(
+                            acquisitionOwnership, "K点", "kpoint", "", committedKpoint);
+                        if(kpointEffect.count > 0) {
+                            PlayerAssetTransaction.recordEffect(
+                                "gain", kpointEffect.kind, "K点", kpointEffect.count, context);
+                        }
+                    }
+                }
+            }
+            if(list.经验值 > 0) {
+                var experienceBefore:Number = Number(_root.经验值);
+                try {
+                    _root.经验值 += list.经验值;
+                } finally {
+                    var committedExperience:Number =
+                        Number(_root.经验值) - experienceBefore;
+                    if(committedExperience != Number(list.经验值)) acquireExact = false;
+                    if(committedExperience != 0 && !isNaN(committedExperience)) {
+                        acquireWrote = true;
+                    }
+                }
+                _root.主角是否升级(_root.等级,_root.经验值);
+            }
+            if(list.技能点 > 0) {
+                var skillPointBefore:Number = Number(_root.技能点数);
+                try {
+                    _root.技能点数 += list.技能点;
+                } finally {
+                    var committedSkillPoint:Number =
+                        Number(_root.技能点数) - skillPointBefore;
+                    if(committedSkillPoint != Number(list.技能点)) acquireExact = false;
+                    if(committedSkillPoint != 0 && !isNaN(committedSkillPoint)) {
+                        acquireWrote = true;
+                    }
+                }
+            }
 
-        // 可选消费者只看已完成写入后的 detached receipt；显式领域事务存在时先缓冲，
-        // 由最外层 commit 决定是否发布，避免制作/交易回滚产生幽灵播报。
-        PlayerAssetTransaction.recordItems("gain", itemArray, context);
-        if(implicitAssetTransaction) PlayerAssetTransaction.commit(assetTransaction);
-        acquireCompleted = true;
+            // 已装备同名手雷的数量补充。同步 publish 可在实写后抛错，
+            // finally 仍用原对象的数量差记录真实增量。
+            for(var equipmentKey:String in list.装备栏){
+                var equipmentReq:Object = list.装备栏[equipmentKey];
+                var equippedBefore:Object = 装备栏.getItem(equipmentKey);
+                var equippedValueBefore:Number = equippedBefore == null
+                    ? 0 : Number(equippedBefore.value);
+                try {
+                    if(equippedBefore == null
+                            || String(equippedBefore.name)
+                                != String(equipmentReq.name)) {
+                        acquireExact = false;
+                    } else {
+                        装备栏.addValue(equipmentKey, Number(equipmentReq.value));
+                        装备栏.getItem(equipmentKey).update(acquireLastUpdate);
+                    }
+                } finally {
+                    var equippedAfter:Object = 装备栏.getItem(equipmentKey);
+                    var rawCommittedEquipped:Number = equippedAfter == null
+                        || String(equippedAfter.name) != String(equipmentReq.name)
+                        ? 0 : Number(equippedAfter.value) - equippedValueBefore;
+                    var committedEquipped:Number = rawCommittedEquipped;
+                    if(committedEquipped > Number(equipmentReq.value)) {
+                        committedEquipped = Number(equipmentReq.value);
+                    }
+                    if(rawCommittedEquipped != Number(equipmentReq.value)) {
+                        acquireExact = false;
+                    }
+                    if(committedEquipped > 0 && !isNaN(committedEquipped)) {
+                        acquireWrote = true;
+                        var equippedName:String = String(equipmentReq.name);
+                        var equippedEffect:Object = claimAcquisitionEffect(
+                            acquisitionOwnership, equippedName,
+                            inferAssetEffectKind(equippedName), "", committedEquipped);
+                        if(equippedEffect.count > 0) {
+                            PlayerAssetTransaction.recordEffect(
+                                "gain", equippedEffect.kind, equippedName,
+                                equippedEffect.count, context);
+                        }
+                    }
+                }
+            }
+
+            // 材料
+            var 材料 = _root.收集品栏.材料;
+            for(var materialName:String in list.材料){
+                var materialRequested:Number = Number(list.材料[materialName]);
+                var materialBefore:Number = Number(材料.getValue(materialName));
+                try {
+                    if(材料.isEmpty(materialName)) 材料.add(materialName, materialRequested);
+                    else 材料.addValue(materialName, materialRequested);
+                } finally {
+                    var rawCommittedMaterial:Number =
+                        Number(材料.getValue(materialName)) - materialBefore;
+                    var committedMaterial:Number = rawCommittedMaterial;
+                    if(committedMaterial > materialRequested) committedMaterial = materialRequested;
+                    if(rawCommittedMaterial != materialRequested) acquireExact = false;
+                    if(committedMaterial > 0 && !isNaN(committedMaterial)) {
+                        acquireWrote = true;
+                        var materialEffect:Object = claimAcquisitionEffect(
+                            acquisitionOwnership, materialName,
+                            "material", "", committedMaterial);
+                        if(materialEffect.count > 0) {
+                            PlayerAssetTransaction.recordEffect(
+                                "gain", materialEffect.kind, materialName,
+                                materialEffect.count, context);
+                        }
+                    }
+                }
+            }
+
+            // 情报
+            var 情报 = _root.收集品栏.情报;
+            for(var informationName:String in list.情报){
+                var informationRequested:Number = Number(list.情报[informationName]);
+                var informationBefore:Number = Number(情报.getValue(informationName));
+                try {
+                    if(情报.isEmpty(informationName)) 情报.add(informationName, informationRequested);
+                    else 情报.addValue(informationName, informationRequested);
+                } finally {
+                    // InformationCollection.addValue 在同步 publish 后才执行上限钳制；
+                    // listener fault 也必须先恢复既有上限不变量，再计算真实净增量。
+                    if(情报.checkValues != undefined) 情报.checkValues();
+                    var rawCommittedInformation:Number =
+                        Number(情报.getValue(informationName)) - informationBefore;
+                    var committedInformation:Number = rawCommittedInformation;
+                    if(committedInformation > informationRequested) {
+                        committedInformation = informationRequested;
+                    }
+                    if(rawCommittedInformation != informationRequested) acquireExact = false;
+                    if(committedInformation > 0 && !isNaN(committedInformation)) {
+                        acquireWrote = true;
+                        var informationEffect:Object = claimAcquisitionEffect(
+                            acquisitionOwnership, informationName,
+                            "intel", "", committedInformation);
+                        if(informationEffect.count > 0) {
+                            PlayerAssetTransaction.recordEffect(
+                                "gain", informationEffect.kind, informationName,
+                                informationEffect.count, context);
+                        }
+                    }
+                }
+            }
+
+            // 药剂栏
+            var 药剂栏:Object = _root.物品栏.药剂栏; // DrugInventory 实例
+            for(var drugKey:String in list.药剂栏){
+                var drugReq:Object = list.药剂栏[drugKey];
+                var drugIndex:Number = Number(drugKey);
+                var drugBefore:Object = 药剂栏.getItem(drugIndex);
+                var drugValueBefore:Number = drugBefore == null ? 0 : Number(drugBefore.value);
+                try {
+                    if(drugBefore != null
+                            && String(drugBefore.name) != String(drugReq.name)) {
+                        // require 时预留的药剂槽已被前序监听器占用；绝不向异名堆加值。
+                        acquireExact = false;
+                    } else if(药剂栏.isEmpty(drugIndex)){
+                        var newDrugItem = BaseItem.create(
+                            drugReq.name, drugReq.value, acquireLastUpdate);
+                        药剂栏.add(drugIndex, newDrugItem);
+                    } else {
+                        药剂栏.addValue(drugIndex, drugReq.value);
+                        药剂栏.getItem(drugIndex).update(acquireLastUpdate);
+                    }
+                } finally {
+                    var drugAfter:Object = 药剂栏.getItem(drugIndex);
+                    var rawCommittedDrug:Number = drugAfter == null
+                        || String(drugAfter.name) != String(drugReq.name)
+                        ? 0 : Number(drugAfter.value) - drugValueBefore;
+                    var committedDrug:Number = rawCommittedDrug;
+                    if(committedDrug > Number(drugReq.value)) committedDrug = Number(drugReq.value);
+                    if(rawCommittedDrug != Number(drugReq.value)) acquireExact = false;
+                    if(committedDrug > 0 && !isNaN(committedDrug)) {
+                        acquireWrote = true;
+                        var drugName:String = String(drugReq.name);
+                        var drugEffect:Object = claimAcquisitionEffect(
+                            acquisitionOwnership, drugName,
+                            inferAssetEffectKind(drugName), "", committedDrug);
+                        if(drugEffect.count > 0) {
+                            PlayerAssetTransaction.recordEffect(
+                                "gain", drugEffect.kind, drugName,
+                                drugEffect.count, context);
+                        }
+                    }
+                }
+            }
+
+            // 处理背包部分。对 add(-1) 先解析空位，这样 ItemAdded 在
+            // 写后抛错时仍能用确定槽位证明实际所有权变化。
+            var 背包:Object = _root.物品栏.背包; // ArrayInventory 实例
+            for(var bagKey:String in list.背包){
+                var bagReq:Object = list.背包[bagKey];
+                var targetIndex:Number;
+                if(bagKey.indexOf("-mergeable-") == 0) {
+                    var indexFoundStr:String = 背包.searchFirstKey(bagReq.name);
+                    targetIndex = indexFoundStr == undefined
+                        ? Number(背包.getFirstVacancy()) : Number(indexFoundStr);
+                } else {
+                    targetIndex = Number(bagKey);
+                }
+
+                var bagBefore:Object = isNaN(targetIndex)
+                    ? null : 背包.getItem(targetIndex);
+                var bagValueBefore:Number = bagBefore == null ? 0 : Number(bagBefore.value);
+                var bagIsEquipment:Boolean = ItemUtil.isEquipment(bagReq.name);
+                try {
+                    if(isNaN(targetIndex)
+                            || (bagBefore != null
+                                && (String(bagBefore.name) != String(bagReq.name)
+                                    || bagIsEquipment))) {
+                        // 预留槽已被异名物或另一件装备占用；绝不覆盖/错堆。
+                        acquireExact = false;
+                    } else if(bagBefore == null){
+                        var newItem:BaseItem;
+                        if(bagReq.tier != undefined && bagIsEquipment){
+                            var itemStr:String = bagReq.name + "#" + bagReq.value + "#" + bagReq.tier;
+                            newItem = BaseItem.createFromString(itemStr);
+                            if(newItem != null) newItem.lastUpdate = acquireLastUpdate;
+                        } else {
+                            newItem = BaseItem.create(
+                                bagReq.name, bagReq.value, acquireLastUpdate);
+                        }
+                        背包.add(targetIndex, newItem);
+                    } else {
+                        背包.addValue(targetIndex, bagReq.value);
+                        背包.getItem(targetIndex).update(acquireLastUpdate);
+                    }
+                } finally {
+                    var bagAfter:Object = isNaN(targetIndex)
+                        ? null : 背包.getItem(targetIndex);
+                    var rawCommittedBag:Number = 0;
+                    if(bagAfter != null && String(bagAfter.name) == String(bagReq.name)) {
+                        if(bagIsEquipment) {
+                            if(bagBefore == null || bagAfter !== bagBefore) rawCommittedBag = 1;
+                        } else {
+                            rawCommittedBag = Number(bagAfter.value) - bagValueBefore;
+                        }
+                    }
+                    var expectedBagCommit:Number = bagIsEquipment
+                        ? 1 : Number(bagReq.value);
+                    var committedBag:Number = rawCommittedBag;
+                    if(committedBag > expectedBagCommit) {
+                        committedBag = expectedBagCommit;
+                    }
+                    if(rawCommittedBag != expectedBagCommit) acquireExact = false;
+                    if(committedBag > 0 && !isNaN(committedBag)) {
+                        acquireWrote = true;
+                        var bagName:String = String(bagReq.name);
+                        var bagTier:String = bagReq.tier == undefined
+                            || bagReq.tier == null ? "" : String(bagReq.tier);
+                        var bagEffect:Object = claimAcquisitionEffect(
+                            acquisitionOwnership, bagName,
+                            bagIsEquipment ? "equip" : "item", bagTier, committedBag);
+                        if(bagEffect.count > 0) {
+                            PlayerAssetTransaction.recordEffect(
+                                "gain", bagEffect.kind, bagName, bagEffect.count,
+                                buildAssetEffectContext(context, bagTier));
+                        }
+                    }
+                }
+            }
+
+            if(implicitAssetTransaction) PlayerAssetTransaction.commit(assetTransaction);
+            acquireCompleted = true;
+        } catch (acquireError) {
+            // Inventory 生命周期事件保持 let-it-crash；只恢复本次调用
+            // 进入后增长的 EventBus depth，领域真实写入不被伪回滚。
+            recoverAcquireDispatch();
+            // ArrayInventory.add 先写 items、后更新索引树；ItemAdded
+            // 监听器抛错会中断后半段。无事件重建索引只恢复容器
+            // 派生结构，不改写已入包的权威对象。
+            try {
+                if(背包 != undefined && 背包.setIndexes != undefined) {
+                    背包.setIndexes(null);
+                }
+                if(药剂栏 != undefined && 药剂栏.setIndexes != undefined) {
+                    药剂栏.setIndexes(null);
+                }
+            } catch (indexRepairError) {
+                trace("[ItemUtil.acquire] inventory index repair failed: " + indexRepairError);
+            }
+            throw acquireError;
         } finally {
-            // finally 不吞异常：原始容器/升级/记录异常继续向调用方传播。
-            // 只清理 acquire 自己建立且仍为栈顶的隐式 frame；显式领域事务不越权。
+            if(acquireWrote) {
+                PlayerAssetTransaction.markAuthorityWrite(assetTransaction);
+            }
             if(implicitAssetTransaction && !acquireCompleted
                     && PlayerAssetTransaction.current() === assetTransaction) {
-                PlayerAssetTransaction.rollback(assetTransaction);
+                // 隐式调用没有可用的领域快照：已发生写入时提交精确
+                // partial receipt；首写前失败才丢弃空 frame。
+                if(acquireWrote) PlayerAssetTransaction.commit(assetTransaction);
+                else PlayerAssetTransaction.rollback(assetTransaction);
             }
         }
-        return true;
+        return acquireExact;
     }
 
 
@@ -1027,15 +1315,69 @@ class org.flashNight.arki.item.ItemUtil{
     public static function submit(itemArray:Array, context:Object):Boolean{
         var list = ItemUtil.contain(itemArray);
         if(list == null) return false;
+
+        // contain() 的槽位计划可能被前一项同步 listener 重入改写。首写前冻结
+        // 目标身份，执行时若槽已异名/装备对象已替换则跳过该槽并返回 false，
+        // 绝不按旧数量对新的玩家物品执行扣除。
+        var expectedBagItems:Object = {};
+        var preflightBag:Object = _root.物品栏.背包;
+        for(var expectedBagKey:String in list.背包) {
+            var expectedBagItem:Object = preflightBag.getItem(expectedBagKey);
+            if(expectedBagItem == null) return false;
+            expectedBagItems[expectedBagKey] = {
+                ref:expectedBagItem,
+                name:String(expectedBagItem.name),
+                equipment:isEquipment(String(expectedBagItem.name))
+            };
+        }
+        var expectedDrugItems:Object = {};
+        var preflightDrugs:Object = _root.物品栏.药剂栏;
+        for(var expectedDrugKey:String in list.药剂栏) {
+            var expectedDrugItem:Object = preflightDrugs.getItem(expectedDrugKey);
+            if(expectedDrugItem == null) return false;
+            expectedDrugItems[expectedDrugKey] = {
+                ref:expectedDrugItem, name:String(expectedDrugItem.name)
+            };
+        }
+
+        // submit 与 acquire 对称：没有显式领域 frame 时自己持有短事务；已有
+        // 外层时只记录已实际发生的扣除，由领域调用方决定最终提交或恢复。
+        var assetTransaction:Object = PlayerAssetTransaction.current();
+        var implicitAssetTransaction:Boolean = assetTransaction == null;
+        if(implicitAssetTransaction) assetTransaction = PlayerAssetTransaction.begin(context);
+
         var wrote:Boolean = false;
-        var committedLosses:Array = [];
+        var dirtyMarked:Boolean = false;
+        var submitCompleted:Boolean = false;
+        var submitExact:Boolean = true;
+        var recoverSubmitDispatch:Function =
+            EventBus.getInstance().createDispatchRecoveryToken();
+        try {
         //材料
         var 材料 = _root.收集品栏.材料;
         for(var name in list.材料){
             var value = list.材料[name];
-            材料.addValue(name,-value);
-            committedLosses.push({name:name, value:value, kind:"material"});
-            wrote = true;
+            var materialBefore:Number = Number(材料.getValue(name));
+            if(!dirtyMarked){
+                PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+                dirtyMarked = true;
+            }
+            try {
+                材料.addValue(name,-value);
+            } finally {
+                // DictCollection 先写后同步 publish；即使监听器抛错，也按真实
+                // before/after 记录本次已经提交的净扣除，不按原请求虚报。
+                var materialAfter:Number = Number(材料.getValue(name));
+                var rawCommittedMaterial:Number = materialBefore - materialAfter;
+                var committedMaterial:Number = rawCommittedMaterial;
+                if(committedMaterial > value) committedMaterial = Number(value);
+                if(rawCommittedMaterial != Number(value)) submitExact = false;
+                if(committedMaterial > 0 && !isNaN(committedMaterial)){
+                    wrote = true;
+                    PlayerAssetTransaction.recordEffect(
+                        "loss", "material", String(name), committedMaterial, context);
+                }
+            }
         }
         //情报不需要提交
         // var 情报 = _root.收集品栏.情报;
@@ -1053,45 +1395,222 @@ class org.flashNight.arki.item.ItemUtil{
 
         for(var i in list.背包){
             var item = 背包.getItem(i);
+            var expectedBag:Object = expectedBagItems[i];
+            if(item == null || expectedBag == null
+                    || String(item.name) != String(expectedBag.name)
+                    || (expectedBag.equipment === true
+                        && item !== expectedBag.ref)) {
+                submitExact = false;
+                continue;
+            }
             var originalReq = itemMap[item.name];
             var removedName:String = String(item.name);
             var removedValue:Number = Number(list.背包[i]);
             var removedEquipment:Boolean = isEquipment(removedName);
+            var removedTier:String = "";
+            if(removedEquipment && item.value != null && item.value.tier != undefined){
+                removedTier = String(item.value.tier);
+            }
+            var bagBeforeItem:Object = item;
+            var bagBeforeValue:Number = Number(item.value);
 
             // 如果是装备且使用##语法（数量模式），或者是装备但list中记录的是1（数量模式的标记）
-            if(isNaN(item.value) || (isEquipment(item.name) && list.背包[i] == 1 && originalReq && originalReq.isQuantity)){
-                背包.remove(i);  // 移除整个装备
-            } else {
-                背包.addValue(i, -list.背包[i]);  // 减少数量
+            if(!dirtyMarked){
+                PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+                dirtyMarked = true;
             }
-            var lossEntry:Object = {
-                name:removedName,
-                value:removedEquipment ? 1 : removedValue
-            };
-            if (removedEquipment) {
-                lossEntry.kind = "equip";
-                lossEntry.isQuantity = true;
-                if (item.value != null && item.value.tier != undefined) {
-                    lossEntry.tier = item.value.tier;
+            try {
+                if(isNaN(item.value) || (isEquipment(item.name) && list.背包[i] == 1 && originalReq && originalReq.isQuantity)){
+                    背包.remove(i);  // 移除整个装备
+                } else {
+                    背包.addValue(i, -list.背包[i]);  // 减少数量
+                }
+            } finally {
+                var bagAfterItem:Object = 背包.getItem(i);
+                var rawCommittedBag:Number = 0;
+                if(removedEquipment){
+                    if(bagAfterItem !== bagBeforeItem) rawCommittedBag = 1;
+                } else if(!isNaN(bagBeforeValue)){
+                    var bagAfterValue:Number = bagAfterItem == null
+                        ? 0 : Number(bagAfterItem.value);
+                    if(!isNaN(bagAfterValue)) rawCommittedBag = bagBeforeValue - bagAfterValue;
+                } else if(bagAfterItem !== bagBeforeItem){
+                    rawCommittedBag = removedValue;
+                }
+                var expectedBagRemoval:Number = removedEquipment ? 1 : removedValue;
+                var committedBag:Number = rawCommittedBag;
+                if(committedBag > expectedBagRemoval) committedBag = expectedBagRemoval;
+                if(rawCommittedBag != expectedBagRemoval) submitExact = false;
+                if(committedBag > 0 && !isNaN(committedBag)){
+                    wrote = true;
+                    PlayerAssetTransaction.recordEffect(
+                        "loss", removedEquipment ? "equip" : "item", removedName,
+                        committedBag, removedTier == "" ? context : {
+                            source:context == null ? undefined : context.source,
+                            reason:context == null ? undefined : context.reason,
+                            mergeScope:context == null ? undefined : context.mergeScope,
+                            tier:removedTier
+                        });
                 }
             }
-            committedLosses.push(lossEntry);
-            wrote = true;
         }
         //药剂栏
         var 药剂栏 = _root.物品栏.药剂栏;
         for(var i in list.药剂栏){
             var item = 药剂栏.getItem(i);
+            var expectedDrug:Object = expectedDrugItems[i];
+            if(item == null || expectedDrug == null
+                    || String(item.name) != String(expectedDrug.name)) {
+                submitExact = false;
+                continue;
+            }
             var removedDrugName:String = String(item.name);
             var removedDrugValue:Number = Number(list.药剂栏[i]);
-            if(isNaN(item.value)) 药剂栏.remove(i);
-            else 药剂栏.addValue(i, -list.药剂栏[i]);
-            committedLosses.push({name:removedDrugName, value:removedDrugValue});
-            wrote = true;
+            var drugBeforeItem:Object = item;
+            var drugBeforeValue:Number = Number(item.value);
+            if(!dirtyMarked){
+                PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+                dirtyMarked = true;
+            }
+            try {
+                if(isNaN(item.value)) 药剂栏.remove(i);
+                else 药剂栏.addValue(i, -list.药剂栏[i]);
+            } finally {
+                var drugAfterItem:Object = 药剂栏.getItem(i);
+                var rawCommittedDrug:Number = 0;
+                if(!isNaN(drugBeforeValue)){
+                    var drugAfterValue:Number = drugAfterItem == null
+                        ? 0 : Number(drugAfterItem.value);
+                    if(!isNaN(drugAfterValue)) rawCommittedDrug = drugBeforeValue - drugAfterValue;
+                } else if(drugAfterItem !== drugBeforeItem){
+                    rawCommittedDrug = removedDrugValue;
+                }
+                var committedDrug:Number = rawCommittedDrug;
+                if(committedDrug > removedDrugValue) committedDrug = removedDrugValue;
+                if(rawCommittedDrug != removedDrugValue) submitExact = false;
+                if(committedDrug > 0 && !isNaN(committedDrug)){
+                    wrote = true;
+                    PlayerAssetTransaction.recordEffect(
+                        "loss", "item", removedDrugName, committedDrug, context);
+                }
+            }
         }
-        if(wrote && _root.存档系统) _root.存档系统.dirtyMark = true;
-        if(wrote) PlayerAssetTransaction.recordItems("loss", committedLosses, context);
-        return true;
+        if(implicitAssetTransaction) PlayerAssetTransaction.commit(assetTransaction);
+        submitCompleted = true;
+        return submitExact;
+        } catch (submitError) {
+            // 保留 EventBus 的 let-it-crash 语义，同时只恢复本次调用进入后增长的
+            // dispatch depth。真实资产与已记录 effect 由下方 finally/外层领域结算。
+            recoverSubmitDispatch();
+            // ArrayInventory.remove 在同步 ItemRemoved 之后才维护索引树；
+            // 监听器抛错时立即从权威 items 重建，避免把延迟自愈留给下一调用者。
+            try {
+                if(背包 != undefined && 背包.setIndexes != undefined) {
+                    背包.setIndexes(null);
+                }
+                if(药剂栏 != undefined && 药剂栏.setIndexes != undefined) {
+                    药剂栏.setIndexes(null);
+                }
+            } catch (indexRepairError) {
+                trace("[ItemUtil.submit] inventory index repair failed: " + indexRepairError);
+            }
+            throw submitError;
+        } finally {
+            if(wrote) PlayerAssetTransaction.markAuthorityWrite(assetTransaction);
+            if(implicitAssetTransaction && !submitCompleted
+                    && PlayerAssetTransaction.current() === assetTransaction){
+                // 没有外层领域快照时不能伪造资产回滚：有真实扣除就提交精确
+                // partial receipt；首写前失败则只丢弃空 frame。异常继续向外传播。
+                if(wrote) PlayerAssetTransaction.commit(assetTransaction);
+                else PlayerAssetTransaction.rollback(assetTransaction);
+            }
+        }
+    }
+
+    /**
+     * tier 只是 effect 维度，不允许修改调用方共享的 context 对象。
+     */
+    private static function buildAssetEffectContext(context:Object, tier):Object {
+        if(tier == undefined || tier == null || String(tier).length == 0) return context;
+        return {
+            source:context == null ? undefined : context.source,
+            reason:context == null ? undefined : context.reason,
+            mergeScope:context == null ? undefined : context.mergeScope,
+            tier:String(tier)
+        };
+    }
+
+    /**
+     * 按 PlayerAssetTransaction.recordItems 的既有口径冻结原请求所有权预算。
+     * 预算与物理 before/after 分离，确保迁移写入不会被播成新获得；listener fault
+     * 时又只会消费已经实际发生的那一部分。
+     */
+    private static function buildAcquisitionOwnershipBudgets(itemArray:Array):Object {
+        var budgets:Object = {};
+        for(var i:Number = 0; i < itemArray.length; i++){
+            var entry:Object = itemArray[i];
+            if(entry == null || entry.name == undefined) continue;
+            var rawName:String = String(entry.name);
+            if(rawName == "经验值" || rawName == "技能点") continue;
+            var normalizedName:String = normalizeAssetEffectName(rawName);
+            var kind:String = entry.kind == undefined
+                ? inferAssetEffectKind(normalizedName) : String(entry.kind);
+            var count:Number;
+            if(entry.ownershipDelta != undefined) count = Number(entry.ownershipDelta);
+            else if(kind == "equip" && entry.isQuantity !== true) count = 1;
+            else if(entry.count != undefined) count = Number(entry.count);
+            else count = Number(entry.value);
+            if(isNaN(count) || !isFinite(count) || count <= 0
+                    || Math.floor(count) != count) continue;
+            var rawTier = entry.tier;
+            if((rawTier == undefined || rawTier == null)
+                    && typeof entry.value == "object" && entry.value != null){
+                rawTier = entry.value.tier;
+            }
+            var tier:String = rawTier == undefined || rawTier == null
+                ? "" : String(rawTier);
+            var key:String = acquisitionOwnershipKey(normalizedName, tier);
+            var budget:Object = budgets[key];
+            if(budget == undefined){
+                budget = {remaining:0, kind:kind};
+                budgets[key] = budget;
+            }
+            budget.remaining = Number(budget.remaining) + count;
+        }
+        return budgets;
+    }
+
+    private static function claimAcquisitionEffect(budgets:Object, name:String,
+            defaultKind:String, tier:String, committedCount:Number):Object {
+        var key:String = acquisitionOwnershipKey(
+            normalizeAssetEffectName(name), tier == null ? "" : String(tier));
+        var budget:Object = budgets[key];
+        if(budget == undefined) return {kind:defaultKind, count:0};
+        var remaining:Number = Number(budget.remaining);
+        if(isNaN(remaining) || remaining <= 0) return {
+            kind:String(budget.kind || defaultKind), count:0
+        };
+        var count:Number = Math.min(Number(committedCount), remaining);
+        if(isNaN(count) || count <= 0) count = 0;
+        budget.remaining = remaining - count;
+        return {kind:String(budget.kind || defaultKind), count:count};
+    }
+
+    private static function acquisitionOwnershipKey(name:String, tier:String):String {
+        return "$" + name + "|" + tier;
+    }
+
+    private static function normalizeAssetEffectName(name:String):String {
+        return name == "金币" ? "金钱" : name;
+    }
+
+    private static function inferAssetEffectKind(name:String):String {
+        if(name == "金钱" || name == "金币") return "money";
+        if(name == "K点") return "kpoint";
+        if(isInformation(name)) return "intel";
+        if(isMaterial(name)) return "material";
+        if(isEquipment(name)) return "equip";
+        return "item";
     }
 
     //检索是否能放入单个物品

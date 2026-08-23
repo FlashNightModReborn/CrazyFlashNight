@@ -57,6 +57,21 @@
         { value: 'resting',     label: '仅休息' },
         { value: 'low_stamina', label: '体力不足' }
     ];
+    // 只有这些命令可能改变 AS2 权威。读请求在对账期仍可发出；
+    // 写请求则必须等 fresh snapshot 收敛，不能猜测首次请求是否已提交。
+    var MUTATION_COMMANDS = {
+        adopt: true,
+        world_adopt: true,
+        deploy: true,
+        advance: true,
+        expand_slot: true,
+        rename: true,
+        restore_stamina: true,
+        equip_weapon: true,
+        withdraw_weapon: true,
+        level_up: true,
+        delete: true
+    };
 
     // ── 状态 ──
     var _el = null, _scaleEl = null, _scaleHandle = null;
@@ -71,6 +86,16 @@
     var _pendingReq = {};
     var _reqSeq = 0;
     var _session = 0;
+    var _panelInstanceId = '';
+    var _snapshotRequestSeq = 0;
+    var _latestSnapshotRequest = 0;
+    // 未知写的因果锁跨 close/rebind 保留；replacement 不能把“未知”当作“未执行”。
+    // epoch 只由新的未知写推进，同 epoch 且当前 session/instance 发出的 fresh snapshot 才能解锁。
+    var _reconcileRequired = false;
+    var _reconcileEpoch = 0;
+    var _reconcileOriginInstanceId = '';
+    var _reconcileMutationCmd = '';
+    var _reconcileHireCandidate = null;
     var _busy = false;
     var _rosterType = 'partner';
     var _hireCandidate = null;      // 世界内招募候选（NPC 处，置顶在 roster 顶部的卡；null=普通管理）
@@ -122,6 +147,7 @@
     function onOpen(el, initData) {
         initData = initData || {};
         _session++;
+        _panelInstanceId = String(initData.panelInstanceId || '');
         _rosterType = initData.rosterType || _rosterType;
         _hireCandidate = initData.hireCandidate || null;
         clearPendingRequests();
@@ -149,10 +175,11 @@
         _shell.mountInitial(_rosterL, _rosterR);
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         _scaleHandle = PanelScale.attach(_scaleEl, DESIGN_W, DESIGN_H);
-        _shell.setStatus('读取中', Workbench.WorkbenchState.LOADING);
+        if (_reconcileRequired) projectReconcileState();
+        else _shell.setStatus('读取中', Workbench.WorkbenchState.LOADING);
         renderRosterGrid();
         renderDetail();
-        requestSnapshot();
+        requestSnapshot(_reconcileRequired ? _reconcileEpoch : 0);
         if (!_petLib) requestPetLib();
     }
 
@@ -162,6 +189,7 @@
         _snapshot = null;
         _pets = [];
         _selectedSlot = -1;
+        _panelInstanceId = '';
         teardownView(true);
     }
 
@@ -171,8 +199,9 @@
             TeamPanelHost.requestClose();
             return;
         }
-        Panels.close();
-        Bridge.send({ type: 'panel', panel: 'pets', cmd: 'close' });
+        // 战宠只是 team 的嵌套视图；旧文档若缺少外层关闭能力，保持
+        // fail-closed，不能只在 Web 本地消失而让 Host 继续持有 team。
+        TeamShared.toast('关闭通道不可用，请重新打开战队面板。', 'error');
     }
 
     // 视图 teardown：销毁壳 / 组件 / tooltip 域，清空 DOM 引用；幂等。
@@ -399,9 +428,13 @@
     // 通信（协议零改动：panel='pets' + callId 请求-响应 + session 守卫）
     // ═══════════════════════════════════════════════════════════
     Bridge.on('panel_resp', function(data) {
-        if (!data || data.panel !== 'pets') return;
+        if (!data || data.type !== 'panel_resp' || data.panel !== 'pets'
+                || !_panelInstanceId
+                || data.panelInstanceId !== _panelInstanceId) return;
         var pending = _pendingReq[data.callId];
-        if (pending) {
+        if (pending && pending.session === _session
+                && pending.panelInstanceId === _panelInstanceId
+                && data.cmd === pending.cmd) {
             delete _pendingReq[data.callId];
             if (pending.timer) clearTimeout(pending.timer);
             pending.callback(data);
@@ -423,27 +456,151 @@
         return isFinite(configured) && configured >= 50 ? configured : 12000;
     }
 
+    function isMutationCommand(cmd) {
+        return MUTATION_COMMANDS[String(cmd || '')] === true;
+    }
+
+    function isUnknownMutationResponse(data) {
+        if (!data || data.success === true) return false;
+        return data.error === 'timeout'
+            || data.error === 'delivery_unknown'
+            || data.error === 'client_timeout';
+    }
+
+    function projectReconcileState() {
+        if (!_shell || !_reconcileRequired) return;
+        var root = _shell.getRoot && _shell.getRoot();
+        if (root) root.setAttribute('data-team-reconcile', 'true');
+        _shell.setStatus('上一次操作结果未知，正在核对；写入已锁定',
+            Workbench.WorkbenchState.WARNING);
+    }
+
+    function enterReconcile(instance, requestSession, cmd) {
+        if (requestSession !== _session || _panelInstanceId !== instance) return 0;
+        _reconcileRequired = true;
+        _reconcileEpoch++;
+        _reconcileOriginInstanceId = instance;
+        _reconcileMutationCmd = cmd;
+        _reconcileHireCandidate = cmd === 'world_adopt' ? _hireCandidate : null;
+        projectReconcileState();
+        TeamShared.toast('上一次操作可能已生效，正在重新读取权威状态；不会自动重试。', 'error');
+        return _reconcileEpoch;
+    }
+
+    function clearReconcile(epoch) {
+        if (!_reconcileRequired || epoch !== _reconcileEpoch) return false;
+        var reconciledCmd = _reconcileMutationCmd;
+        var reconciledHireCandidate = _reconcileHireCandidate;
+        _reconcileRequired = false;
+        _reconcileOriginInstanceId = '';
+        _reconcileMutationCmd = '';
+        _reconcileHireCandidate = null;
+        if (_shell && _shell.getRoot) {
+            var root = _shell.getRoot();
+            if (root) root.removeAttribute('data-team-reconcile');
+        }
+        // fresh snapshot 已确认权威名册；未知 world_adopt 使用过的世界候选不再有效。
+        // controller 与 Team 外层都只消费触发该 epoch 的 exact 引用，避免误清 replacement 新候选。
+        if (reconciledCmd === 'world_adopt' && reconciledHireCandidate) {
+            if (_hireCandidate === reconciledHireCandidate) {
+                _hireCandidate = null;
+                if (_selectedSlot === CANDIDATE_SLOT) _selectedSlot = defaultSelectSlot();
+            }
+            if (window.TeamPanelHost
+                    && typeof TeamPanelHost.consumeHireCandidate === 'function') {
+                TeamPanelHost.consumeHireCandidate(reconciledHireCandidate);
+            }
+        }
+        return true;
+    }
+
+    function mutationCallback(cmd, instance, requestSession, cb) {
+        return function(data) {
+            var reconcileEpoch = 0;
+            if (isMutationCommand(cmd) && isUnknownMutationResponse(data)) {
+                reconcileEpoch = enterReconcile(instance, requestSession, cmd);
+                if (reconcileEpoch && data) data.petReconcileRequired = true;
+            }
+            try {
+                cb(data);
+            } finally {
+                if (reconcileEpoch && _reconcileRequired
+                        && reconcileEpoch === _reconcileEpoch
+                        && requestSession === _session
+                        && _panelInstanceId === instance) {
+                    requestSnapshot(reconcileEpoch);
+                }
+            }
+        };
+    }
+
     function sendPanelMsg(cmd, extra, cb) {
         var callId = 'pet_' + (++_reqSeq) + '_' + Date.now();
+        var instance = _panelInstanceId;
+        var requestSession = _session;
+        var deliver = cb ? mutationCallback(cmd, instance, requestSession, cb) : null;
+        if (isMutationCommand(cmd) && _reconcileRequired) {
+            if (deliver) setTimeout(function() {
+                if (requestSession !== _session || _panelInstanceId !== instance) return;
+                deliver({ type:'panel_resp', panel:'pets', cmd:cmd, callId:callId,
+                    panelInstanceId:instance, success:false,
+                    error:'reconcile_required', clientSynthetic:true });
+            }, 0);
+            projectReconcileState();
+            return '';
+        }
+        if (!/^[A-Za-z0-9._~-]{1,160}$/.test(instance)) {
+            if (deliver) setTimeout(function() {
+                if (requestSession !== _session || _panelInstanceId !== instance) return;
+                deliver({ type:'panel_resp', panel:'pets', cmd:cmd, callId:callId,
+                    panelInstanceId:instance, success:false,
+                    error:'panel_instance_expired', clientSynthetic:true });
+            }, 0);
+            return '';
+        }
         if (cb) {
-            var requestSession = _session;
             _pendingReq[callId] = {
-                callback: cb,
+                cmd: cmd,
+                panelInstanceId: instance,
+                session: requestSession,
+                callback: deliver,
                 timer: setTimeout(function() {
                     var pending = _pendingReq[callId];
                     if (!pending) return;
                     delete _pendingReq[callId];
-                    if (requestSession !== _session) return;
+                    if (requestSession !== _session || _panelInstanceId !== instance) return;
                     pending.callback({
                         type: 'panel_resp', panel: 'pets', cmd: cmd, callId: callId,
+                        panelInstanceId: instance,
                         success: false, error: 'client_timeout', clientSynthetic: true
                     });
                 }, requestTimeoutMs())
             };
         }
-        var msg = { type: 'panel', panel: 'pets', cmd: cmd, callId: callId };
-        if (extra) { for (var k in extra) { if (extra.hasOwnProperty(k)) msg[k] = extra[k]; } }
-        Bridge.send(msg);
+        var msg = { type: 'panel', panel: 'pets', cmd: cmd, callId: callId,
+            panelInstanceId: instance };
+        if (extra) {
+            for (var k in extra) {
+                if (extra.hasOwnProperty(k) && k !== 'type' && k !== 'panel'
+                        && k !== 'cmd' && k !== 'callId' && k !== 'panelInstanceId') {
+                    msg[k] = extra[k];
+                }
+            }
+        }
+        var accepted = true;
+        try { accepted = Bridge.send(msg) !== false; } catch (error) { accepted = false; }
+        if (!accepted) {
+            var rejected = _pendingReq[callId];
+            delete _pendingReq[callId];
+            if (rejected && rejected.timer) clearTimeout(rejected.timer);
+            if (deliver) setTimeout(function() {
+                if (requestSession !== _session || _panelInstanceId !== instance) return;
+                deliver({ type:'panel_resp', panel:'pets', cmd:cmd, callId:callId,
+                    panelInstanceId:instance, success:false,
+                    error:'not_sent', clientSynthetic:true });
+            }, 0);
+            return '';
+        }
         return callId;
     }
 
@@ -461,12 +618,27 @@
         });
     }
 
-    function requestSnapshot() {
+    function isValidSnapshotResponse(data) {
+        return !!(data && data.success === true && data.snapshot
+            && typeof data.snapshot === 'object'
+            && Array.isArray(data.snapshot.pets));
+    }
+
+    function requestSnapshot(reconcileEpoch) {
         var snapSession = _session;
+        var snapInstance = _panelInstanceId;
+        var snapRequest = ++_snapshotRequestSeq;
+        _latestSnapshotRequest = snapRequest;
+        var expectedReconcileEpoch = Number(reconcileEpoch) > 0
+            ? Number(reconcileEpoch) : (_reconcileRequired ? _reconcileEpoch : 0);
         sendPanelMsg('snapshot', null, function(data) {
-            if (snapSession !== _session) return;
-            if (!data.success) {
-                _loadError = '获取' + meta().noun + '数据失败：' + (data.error || '未知错误');
+            if (snapSession !== _session || snapInstance !== _panelInstanceId
+                    || snapRequest !== _latestSnapshotRequest) return;
+            if (!isValidSnapshotResponse(data)) {
+                var reconcilePrefix = _reconcileRequired
+                    ? '写入状态仍锁定；' : '';
+                _loadError = reconcilePrefix + '获取' + meta().noun + '数据失败：'
+                    + (data && data.error || '响应格式无效');
                 if (_shell) _shell.setStatus('读取失败', Workbench.WorkbenchState.ERROR);
                 TeamShared.toast(_loadError, 'error');
                 renderRosterGrid();
@@ -474,6 +646,10 @@
             }
             _snapshot = data.snapshot;
             _pets = data.snapshot.pets || [];
+            // 旧 snapshot 的 expectedReconcileEpoch=0，或者属于旧 epoch，因而永远不能解开新的未知写。
+            if (_reconcileRequired && expectedReconcileEpoch === _reconcileEpoch) {
+                clearReconcile(expectedReconcileEpoch);
+            }
             // 当前托管物与背包 lease 都可能随权威快照变化；富注释只在同一快照内复用。
             _itemTooltipCache = {};
             // 领养失败的对账回包：此刻数据才真的重新同步，给保留中的 CommitBar error 补后缀
@@ -1495,7 +1671,7 @@
     // CommitBar 唯一主 CTA：busy 到回包；成功 → 刷新 snapshot 并回名册；
     // 失败 → status error 保留到用户改选 / 重新提交 + 重拉 snapshot 对账，绝不自动重放。
     function onCommitAdopt() {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         if (_adoptPetId == null) return;
         _commitError = null;   // 重新提交：旧失败 error 投影失效
         var item = findStoreItem(_adoptPetId);
@@ -1505,7 +1681,7 @@
         beginOp(null);   // 与其他操作同锁：data-team-busy 投影同样覆盖领养 commit 飞行期
         _commitBar.update({ busy: true, status: '领养确认中', state: 'busy' });
         sendPanelMsg('adopt', { petId: _adoptPetId }, function(data) {
-            endOp(null);
+            if (finishMutationOp(null, data)) return;
             if (data.success) {
                 if (_snapshot) { _snapshot.gold = data.gold; _snapshot.kpoint = data.kpoint; }
                 _storeCache = {};   // 领养改变拥有态 / 价格，失效缓存
@@ -2217,12 +2393,12 @@
     // 操作处理（协议与现役逐条一致；按钮 pending + blocked 可读原因）
     // ═══════════════════════════════════════════════════════════
     function onToggleDeploy(slotIndex, btn) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         var pet = findPetBySlot(slotIndex);
         if (!pet) return;
         beginOp(btn);
         sendPanelMsg('deploy', { slotIndex: slotIndex }, function(data) {
-            endOp(btn);
+            if (finishMutationOp(btn, data)) return;
             if (data.success) {
                 pet.deployed = data.deployed;
                 if (_snapshot) _snapshot.currentDeployCount = data.currentDeployCount;
@@ -2239,13 +2415,13 @@
     }
 
     function onRestoreStamina(slotIndex, btn) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         var pet = findPetBySlot(slotIndex);
         if (!pet) return;
         if (pet.stamina >= (pet.maxStamina || 200)) return;
         beginOp(btn);
         sendPanelMsg('restore_stamina', { slotIndex: slotIndex }, function(data) {
-            endOp(btn);
+            if (finishMutationOp(btn, data)) return;
             if (data.success) {
                 pet.stamina = data.stamina;
                 if (_snapshot) _snapshot.gold = data.gold;
@@ -2266,15 +2442,16 @@
     }
 
     function onLevelUp(btn) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         var pet = findPetBySlot(_advanceSlot);
         if (!pet) return;
         beginOp(btn);
         sendPanelMsg('level_up', { slotIndex: pet.slotIndex }, function(data) {
-            endOp(btn);
+            if (finishMutationOp(btn, data)) return;
             if (data.success) {
                 requestSnapshot();   // 等级变化牵动门槛，需重拉
-                TeamShared.toast(meta().noun + '升级！战宠灵石 -' + data.stoneCost, 'success');
+                var levelSuffix = data.refreshDeferred ? '；出战实体将在下次重建时更新等级' : '';
+                TeamShared.toast(meta().noun + '升级！战宠灵石 -' + data.stoneCost + levelSuffix, 'success');
             } else {
                 var msg = '升级失败';
                 if (data.error === 'level_maxed') msg = '已达等级上限';
@@ -2286,13 +2463,13 @@
     }
 
     function onEquipManagedWeapon(pet, candidate, btn) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         beginOp(btn);
         sendPanelMsg('equip_weapon', {
             slotIndex: pet.slotIndex,
             source: candidate.source
         }, function(data) {
-            endOp(btn);
+            if (finishMutationOp(btn, data)) return;
             if (data.success) {
                 var suffix = data.refreshDeferred ? '；出战实体将在下次重建时生效' : '';
                 TeamShared.toast('武器已交付，弹量、强化与插件已冻结' + suffix, 'success');
@@ -2305,10 +2482,10 @@
     }
 
     function onWithdrawManagedWeapon(pet, btn) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         beginOp(btn);
         sendPanelMsg('withdraw_weapon', { slotIndex: pet.slotIndex }, function(data) {
-            endOp(btn);
+            if (finishMutationOp(btn, data)) return;
             if (data.success) {
                 var suffix = data.refreshDeferred ? '；出战实体将在下次重建时切回预设武器' : '';
                 TeamShared.toast('托管武器已按交付状态放回背包' + suffix, 'success');
@@ -2336,13 +2513,15 @@
             commit_failed: '库存提交失败，未改变所有权',
             rollback_failed: '库存回滚异常，已失败关闭，请保留存档并反馈',
             busy: '上一项武器操作尚未结束',
-            client_timeout: '请求超时，界面已自动解锁并重新同步'
+            timeout: '请求结果未知，正在重新同步',
+            delivery_unknown: '请求投递结果未知，正在重新同步',
+            client_timeout: '等待响应超时，正在重新同步'
         };
         return map[code] || code || '未知错误';
     }
 
     function confirmDelete(pet) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         if (!_shell) return;
         var xpNeeded = pet.xpNeeded || 0;
         var refund = Math.floor(Math.sqrt(pet.level) * 0.8 * xpNeeded / 10000);
@@ -2369,15 +2548,16 @@
     }
 
     function doDelete(slotIndex) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         beginOp(null);
         sendPanelMsg('delete', { slotIndex: slotIndex }, function(data) {
-            endOp(null);
+            if (finishMutationOp(null, data)) return;
             if (data.success) {
                 var refundText = data.stoneRefund > 0 ? '，返还战宠灵石 ' + data.stoneRefund + ' 个' : '';
+                var deleteSuffix = data.refreshDeferred ? '；被删除战宠的场景残影将在下次换场时清理' : '';
                 if (_advancePage && _advancePage.isActive()) _advancePage.close('deleted');
                 _selectedSlot = -1;
-                TeamShared.toast('已删除' + meta().noun + refundText, 'success');
+                TeamShared.toast('已删除' + meta().noun + refundText + deleteSuffix, 'success');
                 requestSnapshot();
             } else {
                 TeamShared.toast('删除失败：' + managedGunErrorText(data), 'error');
@@ -2388,18 +2568,19 @@
 
     // slotIndex 省略时取培养页当前宠；右栏快捷开关显式传选中 slot
     function onAdvance(schemeName, btn, slotIndex, okMsg) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         var slot = (slotIndex != null) ? slotIndex : _advanceSlot;
         var pet = findPetBySlot(slot);
         if (!pet) return;
         beginOp(btn);
         sendPanelMsg('advance', { slotIndex: pet.slotIndex, scheme: schemeName }, function(data) {
-            endOp(btn);
+            if (finishMutationOp(btn, data)) return;
             if (data.success) {
                 if (_snapshot) { _snapshot.gold = data.gold; _snapshot.kpoint = data.kpoint; }
                 updateHeaderMetrics();
                 requestSnapshot();
-                TeamShared.toast(okMsg || '进阶成功！', 'success');
+                var advanceSuffix = data.refreshDeferred ? '；出战实体将在下次重建时更新进阶属性' : '';
+                TeamShared.toast((okMsg || '进阶成功！') + advanceSuffix, 'success');
             } else {
                 TeamShared.toast('进阶失败：' + (data.reason || data.error || '未知错误'), 'error');
             }
@@ -2409,12 +2590,16 @@
     // 世界内招募（NPC 处，旧 Symbol 2035 宠物分支的 web 等价）：world_adopt 走 pets 通道，
     // AS2 用 _pendingHireNpc 读权威、扣费、写 宠物信息、加载宠物 + 删 NPC。回 hired:true → 关面板。
     function onWorldAdopt(btn) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         beginOp(btn);
         sendPanelMsg('world_adopt', {}, function(data) {
-            endOp(btn);
+            if (finishMutationOp(btn, data)) return;
             if (data && data.success && data.hired) {
-                requestClose();   // 已加载宠物 + 删 NPC，关面板交还 Flash
+                if (data.refreshDeferred) {
+                    TeamShared.toast('招募已完成；场景战宠将在下次换场时同步', 'success');
+                }
+                // 所有权已经提交；即使场景投影延后也不重放招募，关面板交还 Flash。
+                requestClose();
                 return;
             }
             var err = (data && data.error) || 'unknown';
@@ -2428,10 +2613,10 @@
     }
 
     function onExpandSlot(btn) {
-        if (guardBusy()) return;
+        if (guardMutation()) return;
         beginOp(btn);
         sendPanelMsg('expand_slot', null, function(data) {
-            endOp(btn);
+            if (finishMutationOp(btn, data)) return;
             if (data.success) {
                 if (_snapshot) { _snapshot.gold = data.gold; _snapshot.maxSlots = data.maxSlots; }
                 updateHeaderMetrics();
@@ -2463,11 +2648,34 @@
         if (btn) TeamShared.setPending(btn, false);
         if (_shell) {
             _shell.getRoot().removeAttribute('data-team-busy');
+            if (_reconcileRequired) {
+                projectReconcileState();
+                return;
+            }
             if (!_loadError) {
                 _shell.setStatus(_snapshot ? '就绪' : '读取中',
                     _snapshot ? Workbench.WorkbenchState.READY : Workbench.WorkbenchState.LOADING);
             }
         }
+    }
+
+    function finishMutationOp(btn, data) {
+        endOp(btn);
+        if (!data || data.petReconcileRequired !== true) return false;
+        if (_commitBar && _view === 'store') {
+            _commitBar.update({ busy: false, state: 'error',
+                status: '上次领养结果未知，写入已锁定，正在重新同步' });
+        }
+        projectReconcileState();
+        return true;
+    }
+
+    function guardMutation() {
+        if (guardBusy()) return true;
+        if (!_reconcileRequired) return false;
+        projectReconcileState();
+        TeamShared.toast('权威状态尚未核对完成，本次写入未发出。');
+        return true;
     }
 
     // busy 守卫反馈（设计 §4：操作锁期间的用户动作不允许可点外观 + silent no-op）：
@@ -2831,6 +3039,10 @@
                     pets: _pets.length,
                     selected: _selectedSlot,
                     busy: _busy,
+                    reconcileRequired: _reconcileRequired,
+                    reconcileEpoch: _reconcileEpoch,
+                    reconcileOriginInstanceId: _reconcileOriginInstanceId,
+                    panelInstanceId: _panelInstanceId,
                     sort: _sortMode,
                     filter: _filterMode
                 };

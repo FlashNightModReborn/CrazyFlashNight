@@ -71,13 +71,13 @@ $suiteConfigs = @{
             '(?m)^EquipmentInventoryTest Tests Failed: 0\r?$'
             '(?m)^InventoryPanelServiceTest Tests Passed: 147\r?$'
             '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
-            '(?m)^CraftingPanelServiceTest Tests Passed: 151\r?$'
+            '(?m)^CraftingPanelServiceTest Tests Passed: 155\r?$'
             '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
             '(?m)^--- SynthesisIndexTest: 18/18 passed, 0 failed ---\r?$'
-            '(?m)^NpcShopPanelServiceTest Tests Passed: 53\r?$'
+            '(?m)^NpcShopPanelServiceTest Tests Passed: 60\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'EquipmentInventory 28/28, Inventory 147/147, Crafting 151/151, Synthesis 18/18, NPC 53/53'
+        Summary = 'EquipmentInventory 28/28, Inventory 147/147, Crafting 155/155, Synthesis 18/18, NPC 60/60'
     }
     Shared = @{
         DomainId = 'item-panels-shared'
@@ -112,11 +112,11 @@ $suiteConfigs = @{
         )
         Additional = @('scripts\逻辑系统分区\商店系统_兼容.as')
         Patterns = @(
-            '(?m)^CraftingPanelServiceTest Tests Passed: 151\r?$'
+            '(?m)^CraftingPanelServiceTest Tests Passed: 155\r?$'
             '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
             '(?m)^--- SynthesisIndexTest: 18/18 passed, 0 failed ---\r?$'
         )
-        Summary = 'Crafting 151/151, Synthesis 18/18'
+        Summary = 'Crafting 155/155, Synthesis 18/18'
     }
     Npc = @{
         DomainId = 'item-panels-npc'
@@ -125,10 +125,10 @@ $suiteConfigs = @{
         Fqns = @('org.flashNight.arki.item.NpcShopPanelServiceTest')
         Additional = @('scripts\逻辑系统分区\商店系统_兼容.as')
         Patterns = @(
-            '(?m)^NpcShopPanelServiceTest Tests Passed: 53\r?$'
+            '(?m)^NpcShopPanelServiceTest Tests Passed: 60\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'NPC 53/53'
+        Summary = 'NPC 60/60'
     }
 }
 $selected = $suiteConfigs[$Suite]

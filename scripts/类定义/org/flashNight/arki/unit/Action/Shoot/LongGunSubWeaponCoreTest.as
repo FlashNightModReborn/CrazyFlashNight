@@ -348,7 +348,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(result.startSharedCooldown === false, "subweapon control does not start shared active-skill cooldown");
         assert(unit.releaseCount == 0, "subweapon control no longer delegates to direct unit skill release");
         assert(UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 100), "subweapon control queues generic combat intent");
-        assert(unit.__subweaponManualReloadIntent == undefined, "subweapon control creates no dedicated reload mailbox");
+        assert(unit.__subweaponManualReloadIntent == undefined
+                && _root.存档系统.dirtyMark === false,
+            "subweapon control creates no reload mailbox or persistence write");
         restoreMockInventory();
     }
 
@@ -698,7 +700,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 200, false) == null, "subweapon reload intent cannot be consumed twice");
         assert(WeaponSkillInputService.requestSubweaponControl(unit, 200), "clearUnit fixture queues another generic reload intent");
         LongGunSubWeaponCore.clearUnit(unit);
-        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 200), "clearUnit removes queued generic reload intent");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT,
+                UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 200)
+                && _root.存档系统.dirtyMark === false,
+            "clearUnit removes queued reload intent without marking persistence dirty");
 
         restoreMockInventory();
     }
@@ -712,7 +717,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         assert(WeaponSkillInputService.requestSubweaponControl(unit, 210), "simultaneous R/F fixture queues F combat intent");
         assert(UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 210, true) == null, "primary R reload suppresses same-frame F reload intent");
-        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 210), "R priority clears the losing F combat intent");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT,
+                UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 210)
+                && _root.存档系统.dirtyMark === false,
+            "R priority clears the losing F intent without marking persistence dirty");
 
         restoreMockInventory();
     }
@@ -733,7 +741,10 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         unit.man.换弹标签 = true;
         var intent:Object = UnitActionIntentService.take(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 224, false);
         assert(intent != null && !LongGunSubWeaponCore.canReloadManual(unit), "state-machine consumption revalidates current-man reload availability outside generic mailbox");
-        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT, UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 224), "failed business revalidation still consumes one-shot generic intent");
+        assert(!UnitActionIntentService.has(unit, UnitActionIntentService.CHANNEL_COMBAT,
+                UnitActionIntentService.KIND_SUBWEAPON_RELOAD, 224)
+                && _root.存档系统.dirtyMark === false,
+            "failed business revalidation consumes intent without marking persistence dirty");
 
         restoreMockInventory();
     }
@@ -985,7 +996,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         var reloadStarted:Boolean = staleMan.开始副武器换弹();
         assert(reloadStarted, "initialized man subweapon reload entry starts reload on current unit.man");
-        assert(currentMan.换弹标签 === true && currentMan.playFrame == "换弹匣", "explicit subweapon reload entry owns the current man timeline");
+        assert(currentMan.换弹标签 === true && currentMan.playFrame == "换弹匣"
+                && _root.存档系统.dirtyMark === false,
+            "reload entry owns current man timeline without committing persistence early");
 
         _root.子弹区域shoot传递 = oldShoot;
         _root.控制目标 = oldControlTarget;
@@ -1211,7 +1224,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(shot == null, "deferred subweapon fire aborts without shooting when refreshed man has no muzzle");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "deferred abort does not consume loaded round");
         assert(unit.mp == 500, "deferred abort does not consume mp");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "deferred abort does not consume onFire reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
+                && _root.存档系统.dirtyMark === false,
+            "deferred abort neither consumes onFire reserve nor marks persistence dirty");
         assert(unit.长枪副武器状态.nextFireTime == 0, "deferred abort clears tentative cooldown");
         assert(unit.__subweaponPendingFireCdUntil == undefined, "deferred abort clears pending fire lock");
 
@@ -1224,7 +1239,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(retryOk, "subweapon can fire again after deferred abort");
         assert(shot != null && shot.shootX == 103, "retry after deferred abort emits bullet from valid muzzle");
         assert(unit.mp == 400, "successful retry commits mp cost");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "successful retry commits onFire reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0
+                && _root.存档系统.dirtyMark === true,
+            "successful retry commits onFire reserve and marks persistence dirty");
 
         _root.子弹区域shoot传递 = oldShoot;
         _root.gameworld = previousGameworld;
@@ -1270,7 +1287,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(shot == null, "deferred subweapon fire aborts when attack mode changes before commit");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "invalidated deferred fire keeps loaded round");
         assert(unit.mp == 500, "invalidated deferred fire does not consume mp");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "invalidated deferred fire does not consume onFire reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
+                && _root.存档系统.dirtyMark === false,
+            "invalidated deferred fire neither consumes reserve nor marks persistence dirty");
         assert(unit.长枪副武器状态.nextFireTime == 0, "invalidated deferred fire clears tentative cooldown");
         assert(unit.__subweaponPendingFireCdUntil == undefined, "invalidated deferred fire clears pending lock");
 
@@ -1311,7 +1330,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.__subweaponDeferredReloadRetries == undefined, "synchronous manual reload creates no deferred retry state");
         assert(!LongGunSubWeaponCore.hasSubweapon(unit), "clearUnit removes subweapon after synchronous reload rejection");
         assert(readyMan.playFrame == undefined, "rejected manual reload schedules no delayed mutation after clearUnit");
-        assert(readyMan.换弹标签 !== true, "rejected manual reload cannot revive on a later current man");
+        assert(readyMan.换弹标签 !== true && _root.存档系统.dirtyMark === false,
+            "rejected manual reload cannot revive or mark persistence on a later current man");
 
         EnhancedCooldownWheel.I().reset();
         restoreMockInventory();
@@ -1327,7 +1347,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(ok, "manual reload succeeds when reserve is available");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "manual reload refills loaded state");
         assert(unit.长枪副武器状态.groupPaid == true, "manual reload marks group paid on commit");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "manual reload consumes one reserve clip on commit");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
+                && _root.存档系统.dirtyMark === true,
+            "manual reload consumes one reserve clip and marks persistence dirty on commit");
         assert(unit.当前弹夹副武器已发射数 == 0, "manual reload resets fired count");
         assert(unit.长枪.value.subweaponShot == 0, "manual reload resets stored fired count");
         assertSubweaponSnapshots(unit, 0, "manual reload keeps ammo snapshots consistent");
@@ -1367,7 +1389,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.__subweaponManualReloadLock == undefined, "subweapon manual reload does not create unit-level movement lock");
         assert(unit.__subweaponDeferredReloadRetries == undefined, "subweapon manual reload does not create deferred retry state");
         assert(!LongGunSubWeaponCore.canReloadManual(unit), "current man reload request rejects duplicate manual reload");
-        assert(unit.man.playFrame == "换弹匣", "subweapon manual reload enters reload animation");
+        assert(unit.man.playFrame == "换弹匣" && _root.存档系统.dirtyMark === false,
+            "subweapon manual reload enters animation without committing persistence early");
         restoreMockInventory();
     }
 
@@ -1386,7 +1409,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         ReloadManager.finishReload(unit.man);
         assert(LongGunSubWeaponCore.getReloadRequest(unit.man) == null, "finish reload clears current man reload request");
-        assert(unit.man.换弹标签 == false, "finish reload clears current man reload tag");
+        assert(unit.man.换弹标签 == false && _root.存档系统.dirtyMark === false,
+            "finish without commit clears current man reload tag and leaves persistence clean");
         restoreMockInventory();
     }
 
@@ -1409,7 +1433,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.__subweaponDeferredReloadRetries == undefined, "interrupted manual reload leaves no deferred retry state");
 
         unit.状态 = "长枪站立";
-        assert(LongGunSubWeaponCore.canReloadManual(unit), "unit can start a fresh subweapon reload after interrupted man is replaced");
+        assert(LongGunSubWeaponCore.canReloadManual(unit)
+                && _root.存档系统.dirtyMark === false,
+            "interrupted man can start a fresh reload without a phantom persistence write");
         restoreMockInventory();
     }
 
@@ -1438,7 +1464,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "subweapon animation commit refills loaded state");
         assert(unit.长枪副武器状态.groupPaid == true, "subweapon animation commit marks group paid");
         assert(unit.长枪.value.subweaponShot == 0, "subweapon animation commit resets stored fired count");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "subweapon animation commit consumes one reserve clip");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
+                && _root.存档系统.dirtyMark === true,
+            "subweapon animation commit consumes one reserve clip and marks persistence dirty");
         assertSubweaponSnapshots(unit, 0, "subweapon animation commit keeps ammo snapshots consistent");
 
         ReloadManager.finishReload(unit.man);
@@ -1460,7 +1488,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "linked reload refills loaded state");
         assert(unit.长枪副武器状态.groupPaid == true, "linked reload marks group paid on commit");
         assert(unit.长枪.value.subweaponShot == 0, "linked reload resets stored fired count");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "linked reload consumes reserve on commit");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0
+                && _root.存档系统.dirtyMark === true,
+            "linked reload consumes reserve and marks persistence dirty on commit");
         assertSubweaponSnapshots(unit, 0, "linked reload keeps ammo snapshots consistent");
         restoreMockInventory();
     }
@@ -1479,7 +1509,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器.value.reloadCount == 3, "subweapon tactical recovery stores recovered partial magazine");
         assert(unit.长枪副武器状态.reloadCount == 3, "subweapon tactical recovery mirrors recovered count to state");
         assert(unit.长枪.value.subweaponReloadCount == 3, "subweapon tactical recovery mirrors recovered count to long gun value");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "paid tactical recovery still consumes reserve when pool is short");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0
+                && _root.存档系统.dirtyMark === true,
+            "paid tactical recovery consumes reserve and marks persistence dirty when pool is short");
         assertSubweaponSnapshots(unit, 0, "subweapon paid tactical recovery reload keeps snapshots consistent");
 
         LongGunSubWeaponCore.configureUnit(unit, {weapontype: "突击步枪", subweapon: makeSubweapon(false)});
@@ -1507,7 +1539,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪副武器.value.reloadCount == 0, "subweapon tactical free reload spends recovered pool");
         assert(unit.长枪副武器状态.reloadCount == 0, "subweapon tactical free reload syncs spent pool to state");
         assert(unit.长枪.value.subweaponReloadCount == 0, "subweapon tactical free reload syncs spent pool to long gun value");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "subweapon tactical free reload does not consume missing reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0
+                && _root.存档系统.dirtyMark === false,
+            "subweapon tactical free reload neither consumes reserve nor marks persistence dirty");
         assertSubweaponSnapshots(unit, 0, "subweapon tactical free reload keeps snapshots consistent");
 
         restoreMockHero();
@@ -1523,7 +1557,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         var ok:Boolean = LongGunSubWeaponCore.reloadLinked(unit);
         assert(!ok, "linked reload fails when reserve is unavailable");
         assert(unit.长枪副武器状态.loaded == 0, "linked reload does not refill without reserve");
-        assert(unit.长枪副武器状态.groupPaid == true, "failed linked reload keeps previous payment state");
+        assert(unit.长枪副武器状态.groupPaid == true
+                && _root.存档系统.dirtyMark === false,
+            "failed linked reload keeps previous payment state without marking persistence dirty");
         restoreMockInventory();
     }
 
@@ -1553,15 +1589,16 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             "failed main reload submit keeps fired-count authority unchanged");
         assert(unit.长枪.value.reloadCount == 7,
             "failed main reload submit restores tactical recovery pool");
-        assert(receipts.length == 0,
-            "failed main reload submit emits no phantom loss receipt");
+        assert(receipts.length == 0 && _root.存档系统.dirtyMark === false,
+            "failed main reload submit emits no phantom loss receipt or dirty mark");
 
         _root.物品栏.背包.items[0] = {name:"主武器弹匣", value:1};
         ReloadManager.reloadMagazine(unit.man, unit, _root);
         assert(unit.长枪.value.shot == 0,
             "successful retry refills only after authoritative reserve submit");
-        assert(ItemUtil.getTotal("主武器弹匣") == 0,
-            "successful retry consumes exactly one reserve magazine");
+        assert(ItemUtil.getTotal("主武器弹匣") == 0
+                && _root.存档系统.dirtyMark === true,
+            "successful retry consumes exactly one reserve magazine and marks persistence dirty");
         assert(receipts.length == 1 && receipts[0].effects.length == 1
                 && receipts[0].effects[0].direction == "loss"
                 && receipts[0].effects[0].source == "reload"
@@ -1595,8 +1632,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         ReloadManager.handleReloadGate(unit.man);
         assert(unit.长枪.value.shot == 1 && unit.长枪.value.reloadCount == 4,
             "tube reload first cycle injects one round from committed pool");
-        assert(ItemUtil.getTotal("主武器弹匣") == 0,
-            "tube reload acquires its pool by consuming one reserve magazine");
+        assert(ItemUtil.getTotal("主武器弹匣") == 0
+                && _root.存档系统.dirtyMark === true,
+            "tube reload acquires its pool by consuming one reserve magazine and marks persistence dirty");
         assert(receipts.length == 1 && receipts[0].effects.length == 1
                 && receipts[0].effects[0].direction == "loss"
                 && receipts[0].effects[0].count == 1,
@@ -1635,7 +1673,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪.value.shot == 0, "combined R reload refills main weapon");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "combined R reload refills subweapon");
         assert(ItemUtil.getTotal("主武器弹匣") == 0, "combined R reload consumes main reserve");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "combined R reload consumes subweapon reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
+                && _root.存档系统.dirtyMark === true,
+            "combined R reload consumes subweapon reserve and marks persistence dirty");
         assertSubweaponSnapshots(unit, 0, "combined R reload keeps ammo snapshots consistent");
 
         restoreMockHero();
@@ -1659,7 +1699,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         ReloadManager.reloadMagazine(unit.man, unit, _root);
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "gunslinger level 9 linked reload refills partial subweapon");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "gunslinger level 9 linked reload consumes subweapon reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
+                && _root.存档系统.dirtyMark === true,
+            "gunslinger level 9 linked reload consumes reserve and marks persistence dirty");
         assertSubweaponSnapshots(unit, 0, "gunslinger level 9 linked reload keeps snapshots consistent");
 
         restoreMockHero();
@@ -1685,7 +1727,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         ReloadManager.reloadMagazine(unit.man, unit, _root);
         assert(unit.长枪.value.shot == 0, "gunslinger level 10 reload refills main weapon");
         assert(unit.长枪副武器状态.loaded == 3, "gunslinger level 10 keeps existing subweapon loaded rounds");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 2, "gunslinger level 10 does not consume subweapon reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 2
+                && _root.存档系统.dirtyMark === true,
+            "gunslinger level 10 preserves subweapon reserve while main reload marks persistence dirty");
         assertSubweaponSnapshots(unit, 2, "gunslinger level 10 keeps subweapon snapshots unchanged");
 
         restoreMockHero();
@@ -1711,7 +1755,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
 
         ReloadManager.reloadMagazine(unit.man, unit, _root);
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "R subweapon reload refills loaded state");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1, "R subweapon reload consumes reserve on commit");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 1
+                && _root.存档系统.dirtyMark === true,
+            "R subweapon reload consumes reserve and marks persistence dirty on commit");
         assertSubweaponSnapshots(unit, 0, "R subweapon reload keeps ammo snapshots consistent");
 
         restoreMockHero();
@@ -1755,7 +1801,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.手枪2.value.shot == 0, "non-hero roll reload refills second pistol");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "non-hero roll reload refills subweapon without reserve");
         assert(unit.长枪副武器状态.groupPaid == true, "non-hero roll reload marks free subweapon group paid");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "non-hero roll reload does not consume player reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0
+                && _root.存档系统.dirtyMark === false,
+            "non-hero roll reload neither consumes player reserve nor marks persistence dirty");
         assertSubweaponSnapshots(unit, 0, "non-hero roll reload keeps ammo snapshots consistent");
         _root.控制目标 = previousControlTarget;
         restoreMockInventory();
@@ -1780,7 +1828,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         assert(unit.长枪.value.shot == 0, "hero roll reload keeps full long gun");
         assert(unit.长枪副武器状态.loaded == unit.长枪副武器状态.capacity, "hero roll reload refills subweapon when main is full");
         assert(unit.长枪副武器状态.groupPaid == true, "hero roll reload marks linked subweapon group paid");
-        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0, "hero roll reload consumes one subweapon reserve");
+        assert(ItemUtil.getTotal("火焰喷射器燃料罐") == 0
+                && _root.存档系统.dirtyMark === true,
+            "hero roll reload consumes one subweapon reserve and marks persistence dirty");
         assertSubweaponSnapshots(unit, 0, "hero roll reload keeps ammo snapshots consistent");
         restoreMockHero();
         restoreMockInventory();
@@ -1960,6 +2010,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     private static var oldEquipmentDict:Object;
     private static var oldMaterialDict:Object;
     private static var oldInformationDict:Object;
+    private static var oldSaveSystem:Object;
+    private static var oldSaveSystemWasPresent:Boolean;
     private static var oldGameworld:Object;
     private static var oldControlTarget:String;
 
@@ -1969,10 +2021,15 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         oldEquipmentDict = ItemUtil.equipmentDict;
         oldMaterialDict = ItemUtil.materialDict;
         oldInformationDict = ItemUtil.informationMaxValueDict;
+        oldSaveSystemWasPresent = _root.hasOwnProperty("存档系统");
+        oldSaveSystem = _root.存档系统;
 
         ItemUtil.equipmentDict = {};
         ItemUtil.materialDict = {};
         ItemUtil.informationMaxValueDict = {};
+        // ItemUtil 的提交路径以真实 `_root.存档系统` 为权威；测试库存只在自身
+        // fixture 生命周期内提供 owner，避免依赖 TestLoader 是否装载完整存档系统。
+        _root.存档系统 = {dirtyMark:false};
 
         var backpack:Object = {items: []};
         backpack.items[0] = {name: itemName, value: count};
@@ -2017,6 +2074,13 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         ItemUtil.equipmentDict = oldEquipmentDict;
         ItemUtil.materialDict = oldMaterialDict;
         ItemUtil.informationMaxValueDict = oldInformationDict;
+        if (oldSaveSystemWasPresent) {
+            _root.存档系统 = oldSaveSystem;
+        } else {
+            delete _root.存档系统;
+        }
+        oldSaveSystem = undefined;
+        oldSaveSystemWasPresent = false;
     }
 
     private static function installMockHero(unit:Object):Void {

@@ -25,6 +25,9 @@
     var _tabsEl = null;
     var _activeTab = null;
     var _activeController = null;
+    var _panelInstanceId = '';
+    var _closePending = false;
+    var _closeTimer = null;
     var _lastTab = 'partner';
     var _views = {};
     // 世界内雇佣候选（NPC 处，旧 Symbol 2035 的 web 等价）：「置顶在 roster 顶部的真·战队卡」
@@ -35,6 +38,7 @@
     Panels.register('team', {
         create: createDOM,
         onOpen: onOpen,
+        onRebind: onRebind,
         onRequestClose: requestClose,
         onClose: onClose
     });
@@ -71,7 +75,16 @@
     }
 
     function onOpen(el, initData) {
-        window.TeamPanelHost = { requestClose: requestClose };
+        clearCloseTimer();
+        var configuredInstance = window.__TEAM_PET_CONFIG__
+            && window.__TEAM_PET_CONFIG__.panelInstanceId;
+        _panelInstanceId = String(initData && initData.panelInstanceId
+            || configuredInstance || '');
+        _closePending = false;
+        window.TeamPanelHost = {
+            requestClose: requestClose,
+            consumeHireCandidate: consumeHireCandidate
+        };
         // 世界内雇佣：携 {view:'hire', kind, detail} → 切到 kind 对应 tab，候选置顶进 roster
         // （非独立浮层；玩家可与现役比较、满员先解雇）。控制器据 hireCandidate 渲染置顶候选卡。
         if (initData && initData.view === 'hire' && initData.detail) {
@@ -80,6 +93,12 @@
             return;
         }
         switchTab(initData && initData.initialTab ? initData.initialTab : _lastTab, true);
+    }
+
+    function onRebind(el, initData) {
+        onClose();
+        onOpen(el, initData);
+        return true;
     }
 
     function controllerFor(tab) {
@@ -118,8 +137,8 @@
         // 候选只投给 kind 匹配的 tab（merc 候选→佣兵 tab；pet 候选→宠物各 tab），切走再切回不丢；
         // tabNav 必须是子壳 header 的第一个 action
         var cand = candidateFor(tab);
-        if (PET_TABS[tab]) _activeController.onOpen(_views.pets.firstChild, { rosterType: tab, embedded: true, hireCandidate: cand, tabNav: _tabsEl });
-        else _activeController.onOpen(_views.mercenary.firstChild, { embedded: true, hireCandidate: cand, tabNav: _tabsEl });
+        if (PET_TABS[tab]) _activeController.onOpen(_views.pets.firstChild, { rosterType: tab, embedded: true, hireCandidate: cand, tabNav: _tabsEl, panelInstanceId: _panelInstanceId });
+        else _activeController.onOpen(_views.mercenary.firstChild, { embedded: true, hireCandidate: cand, tabNav: _tabsEl, panelInstanceId: _panelInstanceId });
 
         if (refocusTab) {
             var refocusEl = _tabsEl.querySelector('.team-tab[data-tab="' + tab + '"]');
@@ -134,21 +153,74 @@
         return (isPetTab === isPetCand) ? _hireCandidate : null;
     }
 
+    // 未知 world_hire/world_adopt 只能在 fresh snapshot 对账后消费候选。
+    // exact reference 防止旧 controller epoch 清掉 replacement 带来的新候选。
+    function consumeHireCandidate(expectedCandidate) {
+        if (!expectedCandidate || _hireCandidate !== expectedCandidate) return false;
+        _hireCandidate = null;
+        return true;
+    }
+
     function requestClose() {
         if (_activeController && _activeController.isBusy && _activeController.isBusy()) {
             // 关闭被操作锁拦下时同样给反馈，不再静默
             TeamShared.toast('操作进行中，请稍候…');
-            return;
+            return false;
         }
-        Panels.close();
-        Bridge.send({ type: 'panel', panel: 'team', cmd: 'close' });
+        if (_closePending) return true;
+        var instance = _panelInstanceId;
+        if (!instance || typeof Bridge === 'undefined'
+                || !Bridge || typeof Bridge.send !== 'function') {
+            TeamShared.toast('Launcher 连接不可用，战队面板保持打开。');
+            return false;
+        }
+        _closePending = true;
+        var accepted = false;
+        try {
+            accepted = Bridge.send({ type: 'panel', panel: 'team', cmd: 'close',
+                panelInstanceId: _panelInstanceId }) === true;
+        } catch (error) {
+            accepted = false;
+        }
+        if (!accepted) {
+            if (_panelInstanceId === instance) _closePending = false;
+            TeamShared.toast('Launcher 连接不可用，战队面板保持打开。');
+            return false;
+        }
+        // Host exact close 是唯一确认。若信封已投递但确认丢失，3 秒后只恢复重试权，
+        // 不本地关闭，也不允许旧 timer 解锁 replacement。
+        if (_closePending && _panelInstanceId === instance) {
+            _closeTimer = setTimeout(function() {
+                _closeTimer = null;
+                if (!_closePending || _panelInstanceId !== instance) return;
+                _closePending = false;
+                TeamShared.toast('Launcher 尚未确认关闭，可再次尝试。');
+            }, closeAckTimeoutMs());
+        }
+        return true;
     }
 
     function onClose() {
+        clearCloseTimer();
         if (_activeController) _activeController.onClose();
         _activeController = null;
         _activeTab = null;
         _hireCandidate = null;
+        _panelInstanceId = '';
+        _closePending = false;
         window.TeamPanelHost = null;
+    }
+
+    function closeAckTimeoutMs() {
+        var configured = Number(window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__
+            || window.__TEAM_PET_CONFIG__
+                && window.__TEAM_PET_CONFIG__.closeAckTimeoutMs);
+        return isFinite(configured) && configured >= 50
+            ? Math.min(configured, 3000) : 3000;
+    }
+
+    function clearCloseTimer() {
+        if (_closeTimer !== null) clearTimeout(_closeTimer);
+        _closeTimer = null;
     }
 })();

@@ -913,7 +913,7 @@ test('workbench lazy load and registration failures retain exact Host identity',
 });
 
 test('all Host-owned surfaces reject generic, missing, and stale close after exact replacement', () => {
-    ['workbench', 'loot', 'skills', 'crafting', 'kshop', 'npcshop'].forEach(panelId => {
+    ['workbench', 'loot', 'skills', 'crafting', 'kshop', 'npcshop', 'blackmarket', 'team'].forEach(panelId => {
         const fixture = createPanelsFixture();
         let closes = 0;
         let forceCloses = 0;

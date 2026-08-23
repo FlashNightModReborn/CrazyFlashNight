@@ -224,6 +224,12 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 </Pickups>
 ```
 
+### 实际命中终结 `<actualTerminal>`
+
+`data/items/bullets_cases.xml` 的 `<attribute><actualTerminal>true</actualTerminal>` 是极少数“完成实际命中分类后立即终结目标”的声明式能力。`AttributeLoader` 会在 MovieClip 创建前把它投影为子弹的 `实际命中强制击杀`，因此普通显示子弹、透明弹和无 MovieClip 的 settlement bullet 使用同一权威；素材时间轴不得再重复声明该能力或用通用 `击中时触发函数` 模拟。
+
+该能力仍执行暴击、通用分类、闪避/格挡与联弹分段判定，因此会消费这些分类器原本使用的随机数；这是从旧“伤害计算前无条件置零”迁移到 actual-only 合同的显式兼容边界。全段 MISS 只生成伤害数字；无敌、`man.无敌标签` 与 NPC 仍返回 `DamageResult.NULL`，均不得终结。至少一段真实命中才置目标 HP 为 0，并在护盾、纳米毒性、吸血、击溃、斩杀及普通扣血前结束。结果保留 actual 身份与空数字列表，使既有 `hit → kill/death → enemyKilled` 和命中后特效继续成立。
+
 ### 射线子弹 `<rayConfig>`
 
 `data/items/bullets_cases.xml` 的 `<attribute><rayConfig>` 会由 `TeslaRayConfig.fromXML()` 解析，并自动把子弹标记为射线类型。`rayMode` 现支持 `single | chain | pierce | fork | flame`；`flame` 是连续喷火模式：每帧重扫沿线目标，以第 `pierceLimit` 个有效目标作为阻挡长度，`flameGrowSpeed/flameRetractSpeed` 控制当前长度追随目标长度，`flameTickInterval` 控制伤害脉冲帧间隔，`flameLifetime` 控制单发喷火束存活帧数。喷火常用的段数/预算字段：`flamePulseCount`（单发伤害脉冲段数）、`flameHotPulseStart/flameHotPulseCount`（热属性段窗口）、`flameHotDamageType/flameHotMagicType`（热段临时覆盖伤害属性）、`flameTotalHitBudget`（单发总伤害结算预算，0 为不限）、`flameMaxHitsPerTarget`（同一目标单发内最多吃几段，0 为不限）。`flameUseWeaponVelocity=true` 时，喷火束会按发射武器 `<velocity>` 缩放 `flameGrowSpeed/flameRetractSpeed`；`flameVelocityBase` 是基准速度，`flameVelocityMinScale/flameVelocityMaxScale` 是钳制范围，用于避免低速配置让火束完全爬不出去或高速配置退化为瞬时射线。`flameReuseMaxOriginDist` 控制同喷口连续火束视觉复用允许的起点偏移半径（默认 32px），只影响显示对象复用与淡出刷新，不改变命中扫描或伤害结算。

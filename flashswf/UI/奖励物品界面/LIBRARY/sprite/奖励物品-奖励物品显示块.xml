@@ -56,38 +56,8 @@ on (rollOut) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if (_parent.物品名 == "经验")
-	{
-		_root.经验值 += _parent.数量;
-		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-		_parent._visible = 0;
-		_parent._parent.奖励品[_parent.数组id] = [];
-		_parent._parent.刷新();
-	}
-	else if (_parent.物品名 == "金钱")
-	{
-		_root.金钱 += _parent.数量;
-		_root.记录玩家货币变化(
-			Number(_parent.数量), 0,
-			{source:"level_reward", reason:"single_claim", mergeScope:"operation"});
-		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-		_parent._visible = 0;
-		_parent._parent.奖励品[_parent.数组id] = [];
-		_parent._parent.刷新();
-	}
-	else if (_root.itemAcquire([{
-		name:_parent.物品名, value:_parent.数量, tier:_parent.阶数
-	}], {source:"level_reward", reason:"single_claim", mergeScope:"operation"}))
-	{
-		_root.播放音效("ammopickup1.wav");
-		_parent._visible = 0;
-		_parent._parent.奖励品[_parent.数组id] = [];
-		_parent._parent.刷新();
-	}
-	else
-	{
-		_root.发布消息(_root.获得翻译("背包已满，无法领取！"));
-	}
+	// 所有玩家资产权威都归父时间轴的共享事务；按钮只传稳定数组槽位。
+	_parent._parent.领取单项(_parent.数组id);
 }
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("领取");

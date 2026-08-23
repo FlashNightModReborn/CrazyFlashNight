@@ -14,6 +14,7 @@ import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.equipment.EquipmentStatProjector;
+import org.flashNight.neur.Event.EventBus;
 
 /** 装备调制唯一权威写服务；Web 只提交不可信意图。 */
 class org.flashNight.arki.item.EquipmentTuningService {
@@ -273,13 +274,46 @@ class org.flashNight.arki.item.EquipmentTuningService {
         markDirty();
         publishCommittedMaterialEffects(
             fresh, materialCommit, transactionId);
-        if (fresh.achievementMetric != "") AchievementMetrics.record(fresh.achievementMetric, 1);
-        for (i = 0; i < fresh.affectedSlots.length; i++) {
-            InventoryPanelService.invalidateExternalSlot("背包", Number(fresh.affectedSlots[i]));
+        try {
+            if (fresh.achievementMetric != "") {
+                AchievementMetrics.record(fresh.achievementMetric, 1);
+            }
+        } catch (achievementMetricError) {
+            // 装备/材料权威与 receipt 已提交；可选统计失败不得阻断失效广播和回包。
+            trace("[EquipmentTuningService] post-commit achievement metric failed: "
+                + achievementMetricError);
         }
-        materials.publishTransactionChanges(materialCommit.changes);
         for (i = 0; i < fresh.affectedSlots.length; i++) {
-            bag.publishTransactionChange(Number(fresh.affectedSlots[i]), "value");
+            try {
+                InventoryPanelService.invalidateExternalSlot(
+                    "背包", Number(fresh.affectedSlots[i]));
+            } catch (bagInvalidationError) {
+                // 领域提交和 receipt 均已闭合；可选失效通知失败不阻断其余观察者与回包。
+                trace("[EquipmentTuningService] post-commit invalidation failed: "
+                    + bagInvalidationError);
+            }
+        }
+        var recoverMaterialDispatch:Function = null;
+        try {
+            recoverMaterialDispatch =
+                EventBus.getInstance().createDispatchRecoveryToken();
+            materials.publishTransactionChanges(materialCommit.changes);
+        } catch (materialPublishError) {
+            recoverCommittedDispatch(recoverMaterialDispatch);
+            trace("[EquipmentTuningService] post-commit material publish failed: "
+                + materialPublishError);
+        }
+        for (i = 0; i < fresh.affectedSlots.length; i++) {
+            var recoverBagDispatch:Function = null;
+            try {
+                recoverBagDispatch =
+                    EventBus.getInstance().createDispatchRecoveryToken();
+                bag.publishTransactionChange(Number(fresh.affectedSlots[i]), "value");
+            } catch (bagPublishError) {
+                recoverCommittedDispatch(recoverBagDispatch);
+                trace("[EquipmentTuningService] post-commit bag publish failed: "
+                    + bagPublishError);
+            }
         }
 
         var inventorySnapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
@@ -691,16 +725,24 @@ class org.flashNight.arki.item.EquipmentTuningService {
         } catch (dirtyError) {
             // authority 已提交；保存异常由后续 reconcile/保存策略收敛。
         }
+        var recoverBagValueDispatch:Function = null;
         try {
+            recoverBagValueDispatch =
+                EventBus.getInstance().createDispatchRecoveryToken();
             bag.publishValueTransaction(bagCommit);
         } catch (bagPublishError) {
             // 监听器异常不能反向改变已提交 authority。
+            recoverCommittedDispatch(recoverBagValueDispatch);
         }
+        var recoverWornConversionDispatch:Function = null;
         try {
+            recoverWornConversionDispatch =
+                EventBus.getInstance().createDispatchRecoveryToken();
             equipment.publishWornValueTransaction(
                 equipmentCommit);
         } catch (equipmentPublishError) {
             // 同上。
+            recoverCommittedDispatch(recoverWornConversionDispatch);
         }
     }
 
@@ -733,17 +775,35 @@ class org.flashNight.arki.item.EquipmentTuningService {
         } catch (achievementError) {
             // 权威已提交；统计失败不能回滚玩法状态。
         }
+        var recoverWornMaterialDispatch:Function = null;
         try {
+            recoverWornMaterialDispatch =
+                EventBus.getInstance().createDispatchRecoveryToken();
             materials.publishTransactionChanges(
                 materialCommit.changes);
         } catch (materialPublishError) {
             // 监听器只能观察完整最终状态，派发异常不改变 authority。
+            recoverCommittedDispatch(recoverWornMaterialDispatch);
         }
+        var recoverWornEquipmentDispatch:Function = null;
         try {
+            recoverWornEquipmentDispatch =
+                EventBus.getInstance().createDispatchRecoveryToken();
             equipment.publishWornValueTransaction(
                 equipmentCommit);
         } catch (equipmentPublishError) {
             // 同上；未知响应通过 snapshot reconcile 收敛。
+            recoverCommittedDispatch(recoverWornEquipmentDispatch);
+        }
+    }
+
+    /** 已提交 authority 的可选事件失败只恢复本次同步派发深度。 */
+    private static function recoverCommittedDispatch(recoverDispatch:Function):Void {
+        if (recoverDispatch == null) return;
+        try {
+            recoverDispatch();
+        } catch (recoveryError) {
+            // 清理令牌本身不得取代原可选通知边界，也不得阻断权威回包。
         }
     }
 
@@ -763,15 +823,22 @@ class org.flashNight.arki.item.EquipmentTuningService {
             operationId:String(transactionId), mergeScope:"operation"
         };
         var assetTransaction:Object = PlayerAssetTransaction.begin(context);
-        for (var i:Number = 0; i < materialCommit.changes.length; i++) {
-            var change:Object = materialCommit.changes[i];
-            var delta:Number = Number(change.delta);
-            if (delta == 0 || isNaN(delta)) continue;
-            PlayerAssetTransaction.recordEffect(
-                delta > 0 ? "gain" : "loss", "material", String(change.key),
-                Math.abs(delta), context);
+        try {
+            for (var i:Number = 0; i < materialCommit.changes.length; i++) {
+                var change:Object = materialCommit.changes[i];
+                var delta:Number = Number(change.delta);
+                if (delta == 0 || isNaN(delta)) continue;
+                PlayerAssetTransaction.recordEffect(
+                    delta > 0 ? "gain" : "loss", "material", String(change.key),
+                    Math.abs(delta), context);
+            }
+            PlayerAssetTransaction.commit(assetTransaction);
+        } catch (effectProjectionError) {
+            // 到达这里前领域权威已经提交；异常只允许丢弃尚未发布的投影 frame，
+            // 不得伪造材料/装备回滚，也不得污染后续隐式物资事务。
+            PlayerAssetTransaction.settleAfterException(assetTransaction, false);
+            throw effectProjectionError;
         }
-        PlayerAssetTransaction.commit(assetTransaction);
     }
 
     private static function rollbackWornRawCommit(

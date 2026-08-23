@@ -391,6 +391,7 @@ function validateCatalog(catalog) {
                 const parsed = new URL(download.url);
                 if (parsed.protocol !== 'https:') add('URL_SCHEME', `下载地址必须使用 HTTPS：${download.url}`, download, { id: asset.id, url: download.url });
                 if (parsed.username || parsed.password || parsed.hash) add('URL_UNSAFE', `下载地址不得含认证信息或 fragment：${download.url}`, download, { id: asset.id, url: download.url });
+                if (parsed.port) add('URL_PORT', `下载地址只能使用默认 HTTPS 端口：${download.url}`, download, { id: asset.id, url: download.url });
                 if (!allowedHostNames.has(parsed.hostname.toLowerCase())) add('HOST_NOT_ALLOWED', `下载主机未进入白名单：${parsed.hostname}`, download, { id: asset.id, host: parsed.hostname });
             } catch {
                 add('URL_INVALID', `下载地址非法：${download.url}`, download, { id: asset.id, url: download.url });

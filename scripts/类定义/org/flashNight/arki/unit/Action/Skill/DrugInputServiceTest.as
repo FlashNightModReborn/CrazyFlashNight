@@ -2,6 +2,10 @@
 
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.arki.item.PlayerAssetTransaction;
+import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
 class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
 
@@ -18,9 +22,12 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         testHeldInputDeadUnitZeroValueAndCooldownWait();
         testRendererOptionalSimultaneousSlotsAndFourSlotBoundary();
         testEffectFailureKeepsLegacyConsumptionOrder();
+        testMissingSaveSystemFailsBeforeAnyAuthorityWrite();
+        testItemRemovedListenerFaultRecoversIndexesAndNextTransaction();
         testLiveKeyLabelAndCleanup();
 
         ManualCooldownService.resetForTests();
+        PlayerAssetTransaction.resetForTests();
         trace("--- DrugInputServiceTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
 
@@ -137,6 +144,111 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
             "input transaction still consumes and marks dirty after the legacy void drug-effect entry");
         assert(inventory.getItem("0").value == 1 && !ManualCooldownService.isReady(ManualCooldownService.drugKey(0)),
             "void effect rejection preserves existing deduct-and-cooldown behavior");
+    }
+
+    private static function testMissingSaveSystemFailsBeforeAnyAuthorityWrite():Void {
+        resetFixture();
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var root:Object = makeRoot();
+        delete root.存档系统;
+        var unit:Object = {hp:100};
+        var inventory:Object = makeInventory([{name:"无存档药剂", value:1}]);
+
+        try {
+            var missingSaveError = null;
+            try {
+                DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
+            } catch (useError) {
+                missingSaveError = useError;
+            }
+            assert(missingSaveError != null,
+                "missing save system fails the drug transaction before authority work");
+            assert(root.effectCalls == 0 && inventory.getItem("0").value == 1
+                    && ManualCooldownService.isReady(ManualCooldownService.drugKey(0)),
+                "missing persistence performs no effect, cooldown or inventory write");
+            assert(PlayerAssetTransaction.current() == null && receipts.length == 0,
+                "missing persistence settles the empty explicit frame without a ghost receipt");
+
+            root.存档系统 = {dirtyMark:false};
+            DrugInputService.updateSlot(unit, 0, false, true, inventory, root, null);
+            var recovered:Object = DrugInputService.updateSlot(
+                unit, 0, true, true, inventory, root, null);
+            assert(recovered.used && recovered.depleted && root.存档系统.dirtyMark === true
+                    && receipts.length == 1 && receipts[0].effects.length == 1
+                    && receipts[0].effects[0].name == "无存档药剂",
+                "the next released input opens an independent transaction after persistence recovers");
+        } finally {
+            PlayerAssetTransaction.resetForTests();
+        }
+    }
+
+    private static function testItemRemovedListenerFaultRecoversIndexesAndNextTransaction():Void {
+        resetFixture();
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var root:Object = makeRoot();
+        var unit:Object = {hp:100};
+        var inventory:ArrayInventory = new ArrayInventory({}, 4);
+        inventory.add(0, new BaseItem("监听故障药剂", 1, 1));
+        inventory.add(1, new BaseItem("后续独立药剂", 1, 1));
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__drugInputListenerFault", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        inventory.setDispatcher(dispatcher);
+        dispatcher.subscribe("ItemRemoved", function():Void {
+            throw "drug_removed_listener_failed";
+        });
+
+        try {
+            var originalError = null;
+            try {
+                DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
+            } catch (useError) {
+                originalError = useError;
+            }
+            assert(originalError == "drug_removed_listener_failed",
+                "drug removal preserves the synchronous listener exception");
+            var repairedIndexes:Array = inventory.getIndexes();
+            assert(inventory.getItem("0") == null && root.存档系统.dirtyMark === true
+                    && repairedIndexes.length == 1 && repairedIndexes[0] == 1,
+                "listener fault keeps the committed dose loss, marks dirty first and repairs indexes");
+            assert(PlayerAssetTransaction.current() == null && receipts.length == 1
+                    && receipts[0].effects.length == 1
+                    && receipts[0].effects[0].direction == "loss"
+                    && receipts[0].effects[0].name == "监听故障药剂"
+                    && receipts[0].effects[0].count == 1,
+                "listener fault settles one exact loss receipt without leaking a transaction frame");
+
+            inventory.setDispatcher(null);
+            dispatcher = new LifecycleEventDispatcher(holder);
+            inventory.setDispatcher(dispatcher);
+            var observedNextRemoval:Number = 0;
+            dispatcher.subscribe("ItemRemoved", function():Void {
+                observedNextRemoval++;
+            });
+            root.存档系统.dirtyMark = false;
+            var next:Object = DrugInputService.updateSlot(
+                unit, 1, true, true, inventory, root, null);
+            assert(next.used && next.depleted && inventory.getItem("1") == null
+                    && observedNextRemoval == 1 && root.存档系统.dirtyMark === true
+                    && PlayerAssetTransaction.current() == null,
+                "the next slot dispatch and asset transaction complete independently after the fault");
+            assert(receipts.length == 2 && receipts[1].effects.length == 1
+                    && receipts[1].effects[0].name == "后续独立药剂"
+                    && receipts[1].effects[0].count == 1,
+                "the next receipt does not inherit the failed transaction effects");
+        } finally {
+            inventory.setDispatcher(null);
+            holder.removeMovieClip();
+            PlayerAssetTransaction.resetForTests();
+        }
     }
 
     private static function testLiveKeyLabelAndCleanup():Void {

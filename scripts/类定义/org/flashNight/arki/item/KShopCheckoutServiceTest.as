@@ -4,6 +4,9 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.arki.item.PlayerAssetTransaction;
+import org.flashNight.neur.Event.EventBus;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
 class org.flashNight.arki.item.KShopCheckoutServiceTest {
     private static var passed:Number = 0;
@@ -31,6 +34,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         testPriceChangeRejectsCommit();
         testTokenReplayRejected();
         testMalformedPreviewInvalidatesToken();
+        testCheckoutListenerFaultRestoresExactSnapshot();
+        testClaimListenerFaultRestoresExactSnapshot();
         trace("KShopCheckoutServiceTest Tests Passed: " + passed);
         trace("KShopCheckoutServiceTest Tests Failed: " + failed);
     }
@@ -453,6 +458,99 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         check(!malformed.success && malformed.error == "invalid_payload"
             && !commit.success && commit.error == "stale_state" && _root.虚拟币 == 1000,
             "a malformed new preview invalidates the previous checkout token");
+    }
+
+    private static function testCheckoutListenerFaultRestoresExactSnapshot():Void {
+        resetState();
+        _root.存档系统.dirtyMark = false;
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var preview:Object = requestPreview([{idx:0, qty:1}]);
+        var bag:ArrayInventory = _root.物品栏.背包;
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__kshopCheckoutListenerFault", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        bag.setDispatcher(dispatcher);
+        dispatcher.subscribe("ItemAdded", function():Void {
+            throw "kshop_checkout_added_listener_failed";
+        });
+
+        var fault = null;
+        try {
+            requestCommit(preview.checkoutToken);
+        } catch (error) {
+            fault = error;
+        }
+        check(fault == "kshop_checkout_added_listener_failed"
+                && bag.getItem("0") == null && _root.虚拟币 == 1000
+                && _root.商城购物车.length == 1
+                && _root.存档系统.dirtyMark === false
+                && receipts.length == 0
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "KShop checkout listener fault restores delivery/payment/cart/dirty and discards receipt");
+
+        bag.setDispatcher(null);
+        var recoveredPreview:Object = requestPreview([{idx:0, qty:1}]);
+        var recovered:Object = requestCommit(recoveredPreview.checkoutToken);
+        check(recovered.success === true && bag.getItem("0").value == 1
+                && _root.虚拟币 == 960 && receipts.length == 1
+                && PlayerAssetTransaction.current() == null,
+            "KShop checkout listener fault leaves the next independent checkout healthy");
+        holder.removeMovieClip();
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimListenerFaultRestoresExactSnapshot():Void {
+        resetState();
+        _root.存档系统.dirtyMark = false;
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var tokenBefore:String = String(_root.UI系统.商城WebView.purchasedToken);
+        var bag:ArrayInventory = _root.物品栏.背包;
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__kshopClaimListenerFault", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        bag.setDispatcher(dispatcher);
+        dispatcher.subscribe("ItemAdded", function():Void {
+            throw "kshop_claim_added_listener_failed";
+        });
+        var params:Object = {
+            callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
+        };
+        var fault = null;
+        try {
+            _root.gameCommands["shopClaim"](params);
+        } catch (error) {
+            fault = error;
+        }
+        check(fault == "kshop_claim_added_listener_failed"
+                && bag.getItem("0") == null
+                && _root.商城已购买物品.length == 1
+                && String(_root.UI系统.商城WebView.purchasedToken) == tokenBefore
+                && _root.存档系统.dirtyMark === false
+                && receipts.length == 0
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "KShop claim listener fault restores item/pending/token/dirty and discards receipt");
+
+        bag.setDispatcher(null);
+        params.callId = ++callSeq;
+        _root.gameCommands["shopClaim"](params);
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(response.success === true && bag.getItem("0").value == 1
+                && _root.商城已购买物品.length == 0
+                && receipts.length == 1
+                && PlayerAssetTransaction.current() == null,
+            "KShop claim listener fault permits one exact retry without duplication");
+        holder.removeMovieClip();
+        PlayerAssetTransaction.resetForTests();
     }
 
     private static function requestPreview(cart:Array):Object {

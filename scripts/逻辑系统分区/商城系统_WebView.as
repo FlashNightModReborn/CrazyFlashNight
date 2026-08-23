@@ -418,29 +418,67 @@ _root.UI系统.商城WebView.finalizeCheckout = function(preview:Object, resp:Ob
     var assetContext:Object = {
         source:"kshop_purchase", reason:"checkout", mergeScope:"operation"
     };
+    var checkoutAssetSnapshot:Object =
+        org.flashNight.arki.item.ItemUtil.capturePlayerAssetSnapshot();
+    var checkoutCartBefore:Array = _root.商城购物车.slice();
     var assetTransaction:Object =
         org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
-    if (!org.flashNight.arki.item.ItemUtil.acquire(
-            this.buildCheckoutAcquireItems(preview.purchaseLines), assetContext)) {
-        org.flashNight.arki.item.PlayerAssetTransaction.rollback(assetTransaction);
-        resp.success = false;
-        resp.error = String(preview.blockingError || "inventory_full");
-        return resp;
+    try {
+        // 交付、扣 K 点与清购物车之前直接标脏；存档系统缺失时保持零写。
+        org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+            _root.存档系统);
+        if (!org.flashNight.arki.item.ItemUtil.acquire(
+                this.buildCheckoutAcquireItems(preview.purchaseLines), assetContext)) {
+            org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                checkoutAssetSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.rollback(assetTransaction);
+            resp.success = false;
+            resp.error = String(preview.blockingError || "inventory_full");
+            return resp;
+        }
+        var kpointBeforeCheckout:Number = Number(_root.虚拟币);
+        try {
+            _root.虚拟币 = Number(preview.balance) - Number(preview.total);
+        } finally {
+            var committedKpointLoss:Number =
+                kpointBeforeCheckout - Number(_root.虚拟币);
+            if (committedKpointLoss > Number(preview.total)) {
+                committedKpointLoss = Number(preview.total);
+            }
+            if (committedKpointLoss > 0 && !isNaN(committedKpointLoss)) {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(
+                    "loss", "kpoint", "K点", committedKpointLoss, assetContext);
+            }
+        }
+        _root.商城购物车 = [];
+        // durability 请求属于本次领域 finality；commit 会隔离存盘异常并保留 dirty，
+        // 不能让已扣款/已交付的成功回包被 post-commit 存盘异常截断后重放。
+        org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+    } catch (checkoutAssetError) {
+        var checkoutRestored:Boolean =
+            org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                checkoutAssetSnapshot);
+        if (checkoutRestored) _root.商城购物车 = checkoutCartBefore;
+        org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+            assetTransaction, !checkoutRestored);
+        throw checkoutAssetError;
     }
-    _root.虚拟币 = Number(preview.balance) - Number(preview.total);
-    if (Number(preview.total) > 0) {
-        org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(
-            "loss", "kpoint", "K点", Number(preview.total), assetContext);
+    try {
+        if (_root.soundEffectManager != undefined) {
+            _root.soundEffectManager.playSound("收银机.mp3");
+        }
+    } catch (checkoutSoundError) {
+        trace("[KShop] post-commit checkout sound failed: " + checkoutSoundError);
     }
-    _root.商城购物车 = [];
-    if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-    org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
-    _root.soundEffectManager.playSound("收银机.mp3");
-    if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-        org.flashNight.arki.achievement.AchievementMetrics.record("商城结账次数", 1);
-        org.flashNight.arki.achievement.AchievementMetrics.record("商城花费K点", Number(preview.total));
+    try {
+        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+            org.flashNight.arki.achievement.AchievementMetrics.record("商城结账次数", 1);
+            org.flashNight.arki.achievement.AchievementMetrics.record("商城花费K点", Number(preview.total));
+        }
+    } catch (checkoutMetricError) {
+        trace("[KShop] post-commit checkout metric failed: " + checkoutMetricError);
     }
-    _root.强制存盘();
     resp.success = true;
     resp.v = 1;
     resp.newBalance = _root.虚拟币;
@@ -450,7 +488,13 @@ _root.UI系统.商城WebView.finalizeCheckout = function(preview:Object, resp:Ob
     resp.purchasedView = purchasedSnapshot.purchasedView;
     resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
     // 动态 maxQuantity 依赖本次交付后的情报剩余容量，成功回包必须同步刷新目录。
-    resp.catalog = this.buildCatalog();
+    try {
+        resp.catalog = this.buildCatalog();
+    } catch (checkoutCatalogError) {
+        // 目录只是提交后投影；失败时保留 success 并要求 Web 重新拉 snapshot。
+        resp.refreshDeferred = true;
+        trace("[KShop] post-commit checkout catalog failed: " + checkoutCatalogError);
+    }
     return resp;
 };
 
@@ -573,41 +617,76 @@ _root.gameCommands["shopClaim"] = function(params) {
         var claimContext:Object = {
             source:"kshop_claim", reason:"legacy_claim", mergeScope:"operation"
         };
+        var claimAssetSnapshot:Object =
+            org.flashNight.arki.item.ItemUtil.capturePlayerAssetSnapshot();
+        var claimPurchasedBefore:Array = _root.商城已购买物品.slice();
+        var claimTokenBefore:String =
+            String(_root.UI系统.商城WebView.purchasedToken);
         var claimTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(claimContext);
-        if (org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, qty, claimContext)) {
-            _root.商城已购买物品.splice(claimIdx, 1);
-            // 入包与移除待领取记录共同构成领域 finality；升级强存盘也延迟到
-            // 这两项权威状态均完成后，receipt 不再领先于待领取列表。
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
-            org.flashNight.arki.item.PlayerAssetTransaction.commit(claimTransaction);
-            purchasedSnapshot.purchased.splice(claimIdx, 1);
-            purchasedSnapshot.purchasedView.splice(claimIdx, 1);
-            for (var purchasedIndex:Number = claimIdx;
-                    purchasedIndex < purchasedSnapshot.purchasedView.length; purchasedIndex++) {
-                purchasedSnapshot.purchasedView[purchasedIndex].purchasedIdx = purchasedIndex;
+        var claimSucceeded:Boolean = false;
+        var claimAttemptToken:String = String(_root.UI系统.商城WebView.purchasedToken);
+        try {
+            // 入包与待领取记录移除共享存档权威；缺少存档系统时不得开始交付。
+            org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+                _root.存档系统);
+            // claimIdx 是可变数组下标；在任何可能部分入包的调用前轮换 one-shot token，
+            // listener fault/未知响应后旧请求只能 stale，不能误领下一项或重复获得。
+            claimAttemptToken = _root.UI系统.商城WebView.rotatePurchasedToken();
+            if (org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, qty, claimContext)) {
+                _root.商城已购买物品.splice(claimIdx, 1);
+                // 入包与移除待领取记录共同构成领域 finality；升级强存盘也延迟到
+                // 这两项权威状态均完成后，receipt 不再领先于待领取列表。
+                org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
+                org.flashNight.arki.item.PlayerAssetTransaction.commit(claimTransaction);
+                claimSucceeded = true;
+            } else {
+                org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                    claimAssetSnapshot);
+                org.flashNight.arki.item.PlayerAssetTransaction.rollback(claimTransaction);
+                resp.success = false;
+                resp.error = org.flashNight.arki.item.ItemUtil.isInformation(itemName)
+                    ? "destination_full" : "inventory_full";
+                resp.purchasedToken = claimAttemptToken;
             }
+        } catch (claimAssetError) {
+            var claimRestored:Boolean =
+                org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                    claimAssetSnapshot);
+            if (claimRestored) {
+                _root.商城已购买物品 = claimPurchasedBefore;
+                _root.UI系统.商城WebView.purchasedToken = claimTokenBefore;
+            }
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                claimTransaction, !claimRestored);
+            throw claimAssetError;
+        }
+        if (claimSucceeded) {
+            // 可选投影与埋点必须晚于资产 finality，不纳入异常结算 catch。
             resp.success = true;
-            resp.purchased = purchasedSnapshot.purchased;
-            resp.purchasedView = purchasedSnapshot.purchasedView;
-            resp.purchasedToken = _root.UI系统.商城WebView.rotatePurchasedToken();
-            resp.catalog = _root.UI系统.商城WebView.buildCatalog();
-            // Plan A: 商城 claim 真实从已购列表移除 + 物品入背包，必达。
-            // 删除原本的 _root.存盘商城已购买物品() 子层 flush：
-            // 子层 SOL 写入与下方 mydata 顶层 flushNow 之间存在崩溃窗口
-            // （子层已移除已购但 mydata 没存背包）。改由上方事务在领域 finality 后
-            // requestStrongSave，一次写完整 mydata。
-            // 成就记账（埋点 #2，acquire true 后；领取=入包计数，与 #1 结账两段式口径不双计「购买」）
-            if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-                org.flashNight.arki.achievement.AchievementMetrics.record("商城领取次数", 1);
+            resp.purchasedToken = claimAttemptToken;
+            try {
+                purchasedSnapshot.purchased.splice(claimIdx, 1);
+                purchasedSnapshot.purchasedView.splice(claimIdx, 1);
+                for (var purchasedIndex:Number = claimIdx;
+                        purchasedIndex < purchasedSnapshot.purchasedView.length; purchasedIndex++) {
+                    purchasedSnapshot.purchasedView[purchasedIndex].purchasedIdx = purchasedIndex;
+                }
+                resp.purchased = purchasedSnapshot.purchased;
+                resp.purchasedView = purchasedSnapshot.purchasedView;
+                resp.catalog = _root.UI系统.商城WebView.buildCatalog();
+            } catch (claimProjectionError) {
+                resp.refreshDeferred = true;
+                trace("[KShop] post-commit claim projection failed: "
+                    + claimProjectionError);
             }
-        } else {
-            org.flashNight.arki.item.PlayerAssetTransaction.rollback(claimTransaction);
-            resp.success = false;
-            resp.error = org.flashNight.arki.item.ItemUtil.isInformation(itemName)
-                ? "destination_full" : "inventory_full";
-            resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
+            try {
+                if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                    org.flashNight.arki.achievement.AchievementMetrics.record("商城领取次数", 1);
+                }
+            } catch (claimMetricError) {
+                trace("[KShop] post-commit claim metric failed: " + claimMetricError);
+            }
         }
     }
     _root.UI系统.商城WebView.sendResponse(resp);

@@ -359,6 +359,16 @@ test('下载主机必须进入 XML 白名单', () => withTempDirectory((director
     assert.ok(result.json.errors.some((item) => item.code === 'HOST_NOT_ALLOWED'));
 }));
 
+test('声明下载地址只允许默认 HTTPS 端口', () => withTempDirectory((directory) => {
+    const file = path.join(directory, 'fonts.xml');
+    const source = fs.readFileSync(validFixture, 'utf8')
+        .replace('https://example.invalid/', 'https://example.invalid:444/');
+    fs.writeFileSync(file, source, 'utf8');
+    const result = run(['validate', '--catalog', file]);
+    assert.equal(result.status, 2);
+    assert.ok(result.json.errors.some((item) => item.code === 'URL_PORT'));
+}));
+
 test('role fallback cycle 被确定性拒绝', () => withTempDirectory((directory) => {
     const file = path.join(directory, 'fonts.xml');
     const source = fs.readFileSync(validFixture, 'utf8').replace(
@@ -708,9 +718,11 @@ test('sync 只发布通过 bytes/hash/glyph 结构门的唯一 staging，并保�
 test('sync 对 requested 与 redirect URL 共用 HTTPS host allowlist', () => {
     const allowed = new Set(['example.invalid']);
     assert.equal(validateDownloadUrl('https://example.invalid/font.ttf', allowed).hostname, 'example.invalid');
+    assert.equal(validateDownloadUrl('https://example.invalid:443/font.ttf', allowed).hostname, 'example.invalid');
     assert.throws(() => validateDownloadUrl('http://example.invalid/font.ttf', allowed), /url_scheme/);
     assert.throws(() => validateDownloadUrl('https://evil.invalid/font.ttf', allowed), /host_not_allowed/);
     assert.throws(() => validateDownloadUrl('https://user@example.invalid/font.ttf', allowed), /url_unsafe/);
+    assert.throws(() => validateDownloadUrl('https://example.invalid:444/font.ttf', allowed), /url_port/);
 });
 
 test('audit-usage 覆盖 C#/Web/runtime data 并保持 Flash 边界', () => {

@@ -1,4 +1,10 @@
 ﻿// 玩家资产事务 focused runner；BOM 必须保留。
+// 任务系统生产编译单元由 frame3 的 task/LoadJson 通配 import 提供这些短类名；
+// focused 根帧必须显式复制同一解析边界，测试类自己的 import 不会作用于 #include。
+import org.flashNight.arki.task.TaskUtil;
+import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
+import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
 trace("FocusedTestRunId player-asset-transaction Start: __FOCUSED_RUN_ID__");
+#include "通信/通信_鸡蛋_任务系统.as"
 org.flashNight.arki.item.PlayerAssetTransactionTest.runAllTests();
 trace("FocusedTestRunId player-asset-transaction Complete: __FOCUSED_RUN_ID__");

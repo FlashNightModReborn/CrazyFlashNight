@@ -22,22 +22,27 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (!this.击中时触发函数)
+                <script><![CDATA[if (!this.命中前伤害参数函数)
 {
-	this.击中时触发函数 = function()
+	this.命中前伤害参数函数 = function(目标)
 	{
-		if (!this.已爆炸)
-		{
-			this.已爆炸 = true;
-			this.xmov = 0;
-			this.ymov = 0;
-			this.霰弹值 = 3;
-			gotoAndPlay("爆炸");
-		}else{
-			this.击中时触发函数 = false;
-		}
+		if (this.已爆炸) return null;
+		return {霰弹值:3};
 	};
 }
+if (!this.触发命中爆炸)
+{
+	this.触发命中爆炸 = function()
+	{
+		if (this.已爆炸) return;
+		this.已爆炸 = true;
+		this.xmov = 0;
+		this.ymov = 0;
+		gotoAndPlay("爆炸");
+	};
+}
+if (!this.击中时触发函数) this.击中时触发函数 = this.触发命中爆炸;
+if (!this.击中地图时触发函数) this.击中地图时触发函数 = this.触发命中爆炸;
 this.已爆炸 = false;
 this.霰弹值 = 1;]]></script>
               </Actionscript>

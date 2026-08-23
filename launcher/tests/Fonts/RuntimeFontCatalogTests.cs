@@ -52,8 +52,90 @@ namespace CF7Launcher.Tests.Fonts
             Assert.Contains("web.intelligence.title", roles);
             Assert.Contains("web.overlay.mono", roles);
             Assert.True(RuntimeFontCatalog.IsAllowedDownloadHost("github.com"));
+            Assert.True(RuntimeFontCatalog.IsAllowedDownloadHost(
+                "RELEASE-ASSETS.GITHUBUSERCONTENT.COM"));
+            Assert.True(RuntimeFontCatalog.IsAllowedDownloadHost(
+                "RAW.GITHUBUSERCONTENT.COM"));
             Assert.True(RuntimeFontCatalog.IsAllowedDownloadHost("CDN.JSDELIVR.NET"));
+            Assert.False(RuntimeFontCatalog.IsAllowedDownloadHost(
+                "evil.release-assets.githubusercontent.com"));
             Assert.False(RuntimeFontCatalog.IsAllowedDownloadHost("evil.invalid"));
+        }
+
+        [Fact]
+        public void GitHubReleaseRedirect_AllowsExactProductionAssetHostAndRevalidatesEveryHop()
+        {
+            string root = CreateCatalogRoot();
+            RuntimeFontCatalog.ConfigureForTest(root);
+            const string release =
+                "https://github.com/lxgw/LxgwWenKai-Screen/releases/download/v1.522/LXGWWenKaiScreen.ttf";
+            const string productionAsset =
+                "https://release-assets.githubusercontent.com/github-production-release-asset/211252834/5f7448d2-5cad-4a5d-90b4-5d230952a1c1?sp=r&sv=2018-11-09&sr=b&sig=fixture";
+            string resolved;
+            string error;
+
+            Assert.True(FontPackTask.TryResolveRedirectForTest(
+                release, productionAsset, out resolved, out error), error);
+            Assert.Equal(productionAsset, resolved);
+
+            Assert.False(FontPackTask.TryResolveRedirectForTest(
+                resolved,
+                "https://objects.githubusercontent.com/github-production-release-asset/211252834/next",
+                out resolved,
+                out error));
+            Assert.Equal("host_not_allowed:objects.githubusercontent.com", error);
+
+            Assert.False(FontPackTask.TryResolveRedirectForTest(
+                release,
+                "https://evil.release-assets.githubusercontent.com/github-production-release-asset/211252834/next",
+                out resolved,
+                out error));
+            Assert.Equal("host_not_allowed:evil.release-assets.githubusercontent.com", error);
+
+            Assert.False(FontPackTask.TryResolveRedirectForTest(
+                release,
+                "https://release-assets.githubusercontent.com:444/github-production-release-asset/211252834/next",
+                out resolved,
+                out error));
+            Assert.Equal("url_port", error);
+
+            Assert.True(FontPackTask.TryResolveRedirectForTest(
+                release,
+                "https://release-assets.githubusercontent.com:443/github-production-release-asset/211252834/next",
+                out resolved,
+                out error), error);
+            Assert.True(new Uri(resolved).IsDefaultPort);
+        }
+
+        [Fact]
+        public void GitHubRawRedirect_AllowsExactRawHostAndRejectsSiblingOrForeignNextHop()
+        {
+            string root = CreateCatalogRoot();
+            RuntimeFontCatalog.ConfigureForTest(root);
+            const string declared =
+                "https://github.com/google/fonts/raw/main/ofl/kleeone/KleeOne-Regular.ttf";
+            const string raw =
+                "https://raw.githubusercontent.com/google/fonts/main/ofl/kleeone/KleeOne-Regular.ttf";
+            string resolved;
+            string error;
+
+            Assert.True(FontPackTask.TryResolveRedirectForTest(
+                declared, raw, out resolved, out error), error);
+            Assert.Equal(raw, resolved);
+
+            Assert.False(FontPackTask.TryResolveRedirectForTest(
+                resolved,
+                "https://media.githubusercontent.com/media/google/fonts/main/ofl/kleeone/KleeOne-Regular.ttf",
+                out resolved,
+                out error));
+            Assert.Equal("host_not_allowed:media.githubusercontent.com", error);
+
+            Assert.False(FontPackTask.TryResolveRedirectForTest(
+                declared,
+                "https://evil.raw.githubusercontent.com/google/fonts/main/ofl/kleeone/KleeOne-Regular.ttf",
+                out resolved,
+                out error));
+            Assert.Equal("host_not_allowed:evil.raw.githubusercontent.com", error);
         }
 
         [Fact]

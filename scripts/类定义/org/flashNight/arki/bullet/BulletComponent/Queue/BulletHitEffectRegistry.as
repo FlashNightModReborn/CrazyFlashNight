@@ -33,7 +33,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
 
         // DamageManager 在生成时按字段裁剪处理器；动态配给后仅灰蛊子弹重选缓存组合。
         if (DamageManagerFactory.Basic != null) {
-            bullet.damageManager = DamageManagerFactory.Basic.getDamageManager(bullet);
+            bullet.damageManager = DamageManagerFactory.resolveForBullet(bullet);
         }
     }
 

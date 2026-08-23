@@ -17,6 +17,8 @@ var BlackMarketPanel = (function() {
     var _drawer = null;
     var _drawerOpenerKey = null;
     var _panelOpen = false;
+    var _closePending = false;
+    var _closeTimer = null;
     var _openGeneration = 0;
     var _callSequence = 0;
     var _surfaceRenderer = null;
@@ -46,6 +48,7 @@ var BlackMarketPanel = (function() {
         Panels.register("blackmarket", {
             create: createDOM,
             onOpen: onOpen,
+            onRebind: onRebind,
             onRequestClose: closePanel,
             onClose: cleanup,
             onForceClose: cleanup
@@ -66,8 +69,10 @@ var BlackMarketPanel = (function() {
     }
 
     function onOpen(el, initData) {
+        clearCloseTimer();
         var generation = ++_openGeneration;
         _panelOpen = true;
+        _closePending = false;
         _init = sanitizeInit(initData);
         _session = null;
         _snapshot = null;
@@ -106,6 +111,12 @@ var BlackMarketPanel = (function() {
             _busy = false;
             failBoot(error && error.message ? error.message : String(error));
         }
+    }
+
+    function onRebind(el, initData) {
+        cleanup();
+        onOpen(el, initData);
+        return true;
     }
 
     function resolveUrl(path) {
@@ -795,18 +806,57 @@ var BlackMarketPanel = (function() {
     }
 
     function closePanel() {
-        notifyHost("close", sessionTelemetry());
-        cleanup();
-        if (typeof Panels !== "undefined" && Panels.close) Panels.close();
-        if (typeof Bridge !== "undefined" && Bridge.send) {
-            Bridge.send({ type: "panel", cmd: "close", panel: "blackmarket" });
+        if (_closePending) return true;
+        var panelInstanceId = _init && _init.panelInstanceId;
+        if (!panelInstanceId || typeof Bridge === "undefined" || !Bridge.send) {
+            _error = "测试面板实例已失效，关闭请求未发送。";
+            render();
+            return false;
         }
+        var generation = _openGeneration;
+        _closePending = true;
+        _busy = true;
+        _error = "正在等待 Launcher 确认关闭当前测试实例…";
+        render();
+        var accepted = false;
+        try {
+            accepted = Bridge.send({ type: "panel", cmd: "close", panel: "blackmarket",
+                panelInstanceId: panelInstanceId }) === true;
+        } catch (error) {
+            accepted = false;
+        }
+        if (!accepted) {
+            if (_panelOpen && _openGeneration === generation
+                    && _init && _init.panelInstanceId === panelInstanceId) {
+                _closePending = false;
+                _busy = false;
+                _error = "Launcher 连接不可用，测试面板保持打开。";
+                render();
+            }
+            return false;
+        }
+        if (_panelOpen && _closePending && _openGeneration === generation
+                && _init && _init.panelInstanceId === panelInstanceId) {
+            _closeTimer = setTimeout(function() {
+                _closeTimer = null;
+                if (!_panelOpen || !_closePending
+                        || _openGeneration !== generation
+                        || !_init || _init.panelInstanceId !== panelInstanceId) return;
+                _closePending = false;
+                _busy = false;
+                _error = "Launcher 尚未确认关闭，可再次尝试。";
+                render();
+            }, closeAckTimeoutMs());
+        }
+        return true;
     }
 
     function cleanup() {
+        clearCloseTimer();
         _openGeneration += 1;
         _surfaceGeneration += 1;
         _panelOpen = false;
+        _closePending = false;
         _session = null;
         _snapshot = null;
         _selectedPairId = null;
@@ -825,6 +875,17 @@ var BlackMarketPanel = (function() {
         _surfaceRenderer = null;
         _busy = false;
         _error = null;
+    }
+
+    function closeAckTimeoutMs() {
+        var configured = Number(window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__);
+        return isFinite(configured) && configured >= 50
+            ? Math.min(configured, 3000) : 3000;
+    }
+
+    function clearCloseTimer() {
+        if (_closeTimer !== null) clearTimeout(_closeTimer);
+        _closeTimer = null;
     }
 
     function notifyHost(kind, data) {
@@ -900,7 +961,9 @@ var BlackMarketPanel = (function() {
             mode: typeof input.mode === "string" ? input.mode : DEFAULT_INIT.mode,
             source: typeof input.source === "string" ? input.source : DEFAULT_INIT.source,
             shadowOnly: input.shadowOnly === true,
-            debug: input.debug === true
+            debug: input.debug === true,
+            panelInstanceId: typeof input.panelInstanceId === "string"
+                ? input.panelInstanceId : ""
         };
     }
     function escapeHtml(value) {

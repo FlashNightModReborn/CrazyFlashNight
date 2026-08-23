@@ -212,6 +212,16 @@ class org.flashNight.arki.component.Damage.DamageResult {
     }
 
     /**
+     * 判定一次已经完成伤害结算的结果是否明确为 MISS。
+     *
+     * DamageResult.NULL 还承担无敌目标、UnitBullet 等“几何命中但不走伤害”旧合同，
+     * 不能与普通闪避混为一谈；只有非 NULL 且没有任何真实命中段的结果才属于 MISS。
+     */
+    public static function isResolvedMiss(result:Object):Boolean {
+        return result != null && result !== DamageResult.NULL && !hasActualHit(result);
+    }
+
+    /**
      * 获取可复用的 IMPACT 实例（用于计算复用，避免频繁创建对象）
      */
     public static function getIMPACT():DamageResult {
@@ -224,6 +234,11 @@ class org.flashNight.arki.component.Damage.DamageResult {
         r.dodgeStatus = "";
         r.actualScatterUsed = 1;
         r.displayCount = 1;
+
+        // IMPACT 也可能被自定义 DamageHandle 临时切入联弹模型；静态单例复用前
+        // 必须清掉这两个判定开关，否则上一发全段 MISS 会污染下一发普通命中。
+        r.deferChainDodgeState = false;
+        r.scatterModelEnabled = false;
 
         // 延迟 HTML 构建：仅需重置位掩码和颜色 ID（槽值由 _efFlags 守护，无需重置）
         r._efFlags = 0;

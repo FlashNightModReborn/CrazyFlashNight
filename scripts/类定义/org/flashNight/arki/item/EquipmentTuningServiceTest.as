@@ -5,6 +5,7 @@ import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.EquipmentInventory;
 import org.flashNight.arki.item.itemCollection.DrugInventory;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
+import org.flashNight.neur.Event.EventBus;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.EquipmentUtil;
@@ -46,6 +47,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testWebInstallModAndTooltip();
         testDetachPolicySemantics();
         testFinalStateEventsAndBusyGuard();
+        testFinalStateListenerFaultRecovery();
         testStrictSourceKindsAndWornStaleFences();
         testWornCommitAndLiveDirtyBoundary();
         testWornConversionAcrossBackpack();
@@ -1234,6 +1236,61 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         _root.收集品栏.材料.setDispatcher(null);
         bagHolder.removeMovieClip();
         materialHolder.removeMovieClip();
+    }
+
+    private static function testFinalStateListenerFaultRecovery():Void {
+        resetFixture();
+        EventBus.getInstance().forceResetDispatchDepth();
+        var item:BaseItem = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.add("强化石", 100);
+        var bagHolder:MovieClip = _root.createEmptyMovieClip(
+            "__tuningBagFaultTest", _root.getNextHighestDepth());
+        var materialHolder:MovieClip = _root.createEmptyMovieClip(
+            "__tuningMaterialFaultTest", _root.getNextHighestDepth());
+        var bagDispatcher:LifecycleEventDispatcher =
+            new LifecycleEventDispatcher(bagHolder);
+        var materialDispatcher:LifecycleEventDispatcher =
+            new LifecycleEventDispatcher(materialHolder);
+        _root.物品栏.背包.setDispatcher(bagDispatcher);
+        _root.收集品栏.材料.setDispatcher(materialDispatcher);
+        var bagPublishes:Number = 0;
+        var materialPublishes:Number = 0;
+        bagDispatcher.subscribe("ItemValueChanged", function():Void {
+            bagPublishes++;
+        });
+        materialDispatcher.subscribe("ItemValueChanged", function():Void {
+            materialPublishes++;
+            if (materialPublishes == 1) {
+                throw "tuning_material_listener_failed";
+            }
+        });
+
+        try {
+            var first:Object = webCommit(
+                "event-fault-first", "enhance", 0, -1, "", 2, "");
+            assertTrue(first.commit.success
+                    && item.value.level == 2
+                    && _root.收集品栏.材料.getValue("强化石") == 99
+                    && materialPublishes == 1 && bagPublishes == 1
+                    && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+                "材料监听器抛错不逆转 authority，先恢复 EventBus depth 并继续背包事件/成功回包");
+
+            var second:Object = webCommit(
+                "event-fault-next", "enhance", 0, -1, "", 3, "");
+            assertTrue(second.commit.success
+                    && item.value.level == 3
+                    && _root.收集品栏.材料.getValue("强化石") == 97
+                    && materialPublishes == 2 && bagPublishes == 2
+                    && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+                "listener-fault 后下一调制事务拥有独立事件快照并正常完成");
+        } finally {
+            _root.物品栏.背包.setDispatcher(null);
+            _root.收集品栏.材料.setDispatcher(null);
+            bagHolder.removeMovieClip();
+            materialHolder.removeMovieClip();
+            EventBus.getInstance().forceResetDispatchDepth();
+        }
     }
 
     private static function installWornFixture(

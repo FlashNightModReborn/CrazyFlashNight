@@ -39,7 +39,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
 
         // === 第3步：初始化伤害系统组件 ===
         target.additionalEffectDamage = 0;  // 重置附加效果伤害计数器
-        target.damageManager = DamageManagerFactory.Basic.getDamageManager(target);  // 创建伤害管理器实例
+        target.damageManager = DamageManagerFactory.resolveForBullet(target);  // 创建伤害管理器实例
 
         // === 第4步：绑定帧事件处理器 ===
         // 建立每帧更新机制，支持子弹的运动、碰撞检测和生命周期管理

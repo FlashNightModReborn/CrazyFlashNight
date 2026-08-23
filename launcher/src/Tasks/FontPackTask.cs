@@ -554,11 +554,9 @@ namespace CF7Launcher.Tasks
                     {
                         if (redirect >= MAX_REDIRECTS) { err = "redirect_limit"; return false; }
                         string location = resp.Headers[HttpResponseHeader.Location];
-                        Uri next;
                         Uri validatedNext;
-                        if (string.IsNullOrEmpty(location)
-                            || !Uri.TryCreate(current, location, out next)
-                            || !TryValidateDownloadUri(next.AbsoluteUri, out validatedNext, out err)) return false;
+                        if (!TryResolveRedirect(current, location, out validatedNext, out err))
+                            return false;
                         resp.Close();
                         resp = null;
                         current = validatedNext;
@@ -762,6 +760,11 @@ namespace CF7Launcher.Tasks
                 err = "url_unsafe";
                 return false;
             }
+            if (!uri.IsDefaultPort)
+            {
+                err = "url_port";
+                return false;
+            }
             string host = uri.Host.ToLowerInvariant();
             if (!RuntimeFontCatalog.IsAllowedDownloadHost(host))
             {
@@ -769,6 +772,24 @@ namespace CF7Launcher.Tasks
                 return false;
             }
             return true;
+        }
+
+        private static bool TryResolveRedirect(
+            Uri current,
+            string location,
+            out Uri validatedNext,
+            out string err)
+        {
+            validatedNext = null;
+            err = null;
+            Uri next;
+            if (current == null || string.IsNullOrEmpty(location)
+                || !Uri.TryCreate(current, location, out next))
+            {
+                err = "redirect_location";
+                return false;
+            }
+            return TryValidateDownloadUri(next.AbsoluteUri, out validatedNext, out err);
         }
 
         // ================================================================
@@ -848,6 +869,21 @@ namespace CF7Launcher.Tasks
                 expectedHex,
                 expectedBytes,
                 out validationState);
+        }
+
+        internal static bool TryResolveRedirectForTest(
+            string currentValue,
+            string location,
+            out string resolved,
+            out string err)
+        {
+            resolved = null;
+            Uri current;
+            if (!TryValidateDownloadUri(currentValue, out current, out err)) return false;
+            Uri validatedNext;
+            if (!TryResolveRedirect(current, location, out validatedNext, out err)) return false;
+            resolved = validatedNext.AbsoluteUri;
+            return true;
         }
 
         private static bool IsSafeFontFileName(string name)

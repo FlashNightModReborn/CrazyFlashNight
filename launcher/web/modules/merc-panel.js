@@ -63,7 +63,17 @@
     var _pendingReq = {};
     var _reqSeq = 0;
     var _session = 0;
+    var _panelInstanceId = '';
     var _busy = false;
+    // 写结果未知时只保留一个 instance-bound 对账锁。Merc 的 deploy 是 toggle，
+    // 因而 timeout 后绝不能让玩家凭旧 UI 重放；锁跨 controller close/rebind 保留，
+    // replacement 只迁移 capability、不会清锁。epoch 用来拒绝未知写之前已发出的旧 snapshot。
+    // _busy 只表示短时在飞操作；对账锁不得复用它，否则 snapshot 持续失败时会连 close/tab
+    // 一起锁死。所有写入口显式同时检查 _busy 与 _reconcileLatch。
+    var _reconcileLatch = null;
+    var _reconcileEpochSeq = 0;
+    var _reconcileSnapshotInFlight = null;
+    var _reconcileRetryTimer = null;
     var _hireCandidate = null;      // 世界内雇佣候选（NPC 处，置顶在 roster 顶部的卡；null=普通管理）
     var _firstSnapshot = true;
     var _loadError = '';
@@ -117,8 +127,17 @@
     function onOpen(el, initData) {
         initData = initData || {};
         _session++;
+        _panelInstanceId = String(initData.panelInstanceId || '');
+        if (_reconcileLatch && _panelInstanceId
+                && _reconcileLatch.panelInstanceId !== _panelInstanceId) {
+            // replacement 只替换 Web capability，不改变 AS2 权威状态；未知写锁随
+            // 当前 owner 迁移，直到 replacement 自己发出的 fresh snapshot 完成对账。
+            _reconcileLatch.panelInstanceId = _panelInstanceId;
+        }
         _hireCandidate = initData.hireCandidate || null;
-        _pendingReq = {};
+        clearPendingRequests();
+        clearReconcileRetry();
+        _reconcileSnapshotInFlight = null;
         _busy = false;
         _snapshot = null;
         _hiredMercs = [];
@@ -146,6 +165,7 @@
         if (_scaleHandle) { _scaleHandle.detach(); _scaleHandle = null; }
         _scaleHandle = PanelScale.attach(_scaleEl, DESIGN_W, DESIGN_H);
         _shell.setStatus('读取中', Workbench.WorkbenchState.LOADING);
+        projectReconcileLock();
         renderRosterGrid();
         renderDetail();
         requestSnapshot();
@@ -155,7 +175,10 @@
 
     function onClose() {
         _session++;
-        _pendingReq = {};
+        _panelInstanceId = '';
+        clearPendingRequests();
+        clearReconcileRetry();
+        _reconcileSnapshotInFlight = null;
         _busy = false;
         _snapshot = null;
         _hiredMercs = [];
@@ -176,8 +199,10 @@
             TeamPanelHost.requestClose();
             return;
         }
-        Panels.close();     // 先触发 onClose 清理 JS 状态（tooltip/缓存/pendingReq），再通知 C#
-        Bridge.send({ type: 'panel', panel: 'mercs', cmd: 'close' });
+        // 佣兵只是 team 的嵌套视图，不拥有外层面板关闭能力。旧文档缺少
+        // TeamPanelHost 时必须保持可见并等待重新挂载，不能本地关闭后让 Host
+        // 继续持有一个用户看不到的 team 实例。
+        TeamShared.toast('关闭通道不可用，请重新打开战队面板。', 'error');
     }
 
     // 视图 teardown：销毁壳 / 组件 / tooltip 域 / 纸娃娃 live canvas，清空 DOM 引用；幂等。
@@ -393,36 +418,153 @@
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 通信（协议零改动：panel='mercs' + callId 请求-响应 + session 守卫）
+    // 通信（team panelInstanceId capability + callId 请求-响应 + session 守卫）
     // ═══════════════════════════════════════════════════════════
     Bridge.on('panel_resp', function(data) {
-        if (!data || data.panel !== 'mercs') return;
-        var handler = _pendingReq[data.callId];
-        if (handler) {
+        if (!data || data.type !== 'panel_resp' || data.panel !== 'mercs'
+                || !_panelInstanceId
+                || data.panelInstanceId !== _panelInstanceId) return;
+        var pending = _pendingReq[data.callId];
+        if (pending && pending.session === _session
+                && pending.panelInstanceId === _panelInstanceId
+                && data.cmd === pending.cmd) {
             delete _pendingReq[data.callId];
-            if (typeof handler === 'function') handler(data);
+            if (pending.timer) clearTimeout(pending.timer);
+            deliverPanelResponse(pending, data);
         }
     });
 
+    var MUTATION_COMMANDS = {
+        hire: true,
+        deploy: true,
+        dismiss: true,
+        revive: true,
+        world_hire: true
+    };
+
+    function clearPendingRequests() {
+        for (var callId in _pendingReq) {
+            if (_pendingReq.hasOwnProperty(callId) && _pendingReq[callId].timer) {
+                clearTimeout(_pendingReq[callId].timer);
+            }
+        }
+        _pendingReq = {};
+    }
+
+    function requestTimeoutMs() {
+        var cfg = window.__TEAM_MERC_CONFIG__ || window.__TEAM_PET_CONFIG__ || {};
+        var configured = Number(cfg.requestTimeoutMs);
+        // Host 的权威 timeout 是 10s；Web 默认多留 2s，只在 Host/Web 回包真正丢失时兜底。
+        return isFinite(configured) && configured >= 50 ? configured : 12000;
+    }
+
+    function isAmbiguousMutationResponse(cmd, data) {
+        if (!MUTATION_COMMANDS[cmd] || !data || data.success) return false;
+        return data.error === 'client_timeout'
+            || data.error === 'timeout'
+            || data.error === 'delivery_unknown';
+    }
+
+    function deliverPanelResponse(pending, data) {
+        var epoch = 0;
+        if (isAmbiguousMutationResponse(pending.cmd, data)) {
+            epoch = latchReconcile(pending.cmd, data.error);
+        }
+        if (typeof pending.callback === 'function') pending.callback(data);
+        if (epoch) ensureReconcileSnapshot(epoch);
+    }
+
     function sendPanelMsg(cmd, extra, cb) {
         var callId = 'merc_' + (++_reqSeq) + '_' + Date.now();
-        if (cb) _pendingReq[callId] = cb;
-        var msg = { type: 'panel', panel: 'mercs', cmd: cmd, callId: callId };
-        if (extra) {
-            Object.keys(extra).forEach(function(k) { msg[k] = extra[k]; });
+        var instance = _panelInstanceId;
+        var requestSession = _session;
+        if (!/^[A-Za-z0-9._~-]{1,160}$/.test(instance)) {
+            if (cb) setTimeout(function() {
+                if (requestSession !== _session || _panelInstanceId !== instance) return;
+                cb({ type:'panel_resp', panel:'mercs', cmd:cmd, callId:callId,
+                    panelInstanceId:instance, success:false,
+                    error:'panel_instance_expired', clientSynthetic:true });
+            }, 0);
+            return '';
         }
-        Bridge.send(msg);
+        if (cb) {
+            _pendingReq[callId] = {
+                cmd: cmd,
+                panelInstanceId: instance,
+                session: requestSession,
+                callback: cb,
+                timer: setTimeout(function() {
+                    var pending = _pendingReq[callId];
+                    if (!pending) return;
+                    delete _pendingReq[callId];
+                    if (requestSession !== _session || _panelInstanceId !== instance) return;
+                    deliverPanelResponse(pending, {
+                        type:'panel_resp', panel:'mercs', cmd:cmd, callId:callId,
+                        panelInstanceId:instance, success:false,
+                        error:'client_timeout', clientSynthetic:true
+                    });
+                }, requestTimeoutMs())
+            };
+        }
+        var msg = { type: 'panel', panel: 'mercs', cmd: cmd, callId: callId,
+            panelInstanceId: instance };
+        if (extra) {
+            Object.keys(extra).forEach(function(k) {
+                if (k !== 'type' && k !== 'panel' && k !== 'cmd'
+                        && k !== 'callId' && k !== 'panelInstanceId') msg[k] = extra[k];
+            });
+        }
+        var accepted = false;
+        try { accepted = Bridge.send(msg) === true; } catch (error) { accepted = false; }
+        if (!accepted) {
+            var rejected = _pendingReq[callId];
+            delete _pendingReq[callId];
+            if (rejected && rejected.timer) clearTimeout(rejected.timer);
+            if (cb) setTimeout(function() {
+                if (requestSession !== _session || _panelInstanceId !== instance) return;
+                cb({ type:'panel_resp', panel:'mercs', cmd:cmd, callId:callId,
+                    panelInstanceId:instance, success:false,
+                    error:'not_sent', clientSynthetic:true });
+            }, 0);
+            return '';
+        }
         return callId;
+    }
+
+    function isValidSnapshotResponse(data) {
+        return !!(data && data.success === true && data.snapshot
+            && typeof data.snapshot === 'object'
+            && !Array.isArray(data.snapshot)
+            && Array.isArray(data.snapshot.hiredMercs));
     }
 
     function requestSnapshot() {
         var snapSession = _session;
-        sendPanelMsg('snapshot', null, function(data) {
-            if (snapSession !== _session) return;
-            if (!data.success) {
-                _loadError = '获取佣兵数据失败：' + (data.error || '未知错误');
-                if (_shell) _shell.setStatus('读取失败', Workbench.WorkbenchState.ERROR);
-                TeamShared.toast(_loadError, 'error');
+        var snapInstance = _panelInstanceId;
+        var reconcileTicket = hasActiveReconcile() ? {
+            epoch: _reconcileLatch.epoch,
+            panelInstanceId: snapInstance,
+            session: snapSession
+        } : null;
+        if (reconcileTicket) _reconcileSnapshotInFlight = reconcileTicket;
+        var snapshotCallId = sendPanelMsg('snapshot', null, function(data) {
+            if (snapSession !== _session || snapInstance !== _panelInstanceId) return;
+            if (sameReconcileTicket(_reconcileSnapshotInFlight, reconcileTicket)) {
+                _reconcileSnapshotInFlight = null;
+            }
+            if (!isValidSnapshotResponse(data)) {
+                _loadError = '获取佣兵数据失败：'
+                    + (data && data.success === true
+                        ? '响应格式无效' : data && data.error || '未知错误');
+                if (hasActiveReconcile()) {
+                    projectReconcileLock();
+                    if (reconcileTicket && isCurrentReconcileTicket(reconcileTicket)) {
+                        scheduleReconcileRetry(reconcileTicket);
+                    }
+                } else {
+                    if (_shell) _shell.setStatus('读取失败', Workbench.WorkbenchState.ERROR);
+                    TeamShared.toast(_loadError, 'error');
+                }
                 renderRosterGrid();
                 return;
             }
@@ -430,18 +572,132 @@
             _hiredMercs = _snapshot.hiredMercs || [];
             _firstSnapshot = false;
             _loadError = '';
+            if (reconcileTicket && isCurrentReconcileTicket(reconcileTicket)) {
+                releaseReconcile(reconcileTicket);
+            }
             // 默认选中：保留旧选中（若仍在），否则候选优先、再次首个佣兵
             if (_selectedSlot !== CANDIDATE_SLOT && !findMercBySlot(_selectedSlot)) {
                 _selectedSlot = _hireCandidate ? CANDIDATE_SLOT : defaultSelectSlot();
             }
             updateHeaderMetrics();
-            if (_shell) _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
+            if (_shell) {
+                if (hasActiveReconcile()) projectReconcileLock();
+                else _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
+            }
             renderRosterGrid();
             renderDetail();
             renderDetailPage();
             // 雇佣失败对账重拉后，hire 右栏余额 / 门控显示值同步刷新
             if (_view === 'hire') renderHirePreview();
         });
+        if (reconcileTicket && !snapshotCallId
+                && isCurrentReconcileTicket(reconcileTicket)) {
+            _reconcileSnapshotInFlight = null;
+        }
+    }
+
+    function hasActiveReconcile() {
+        return !!(_reconcileLatch && _panelInstanceId
+            && _reconcileLatch.panelInstanceId === _panelInstanceId);
+    }
+
+    function sameReconcileTicket(left, right) {
+        if (!left || !right) return false;
+        return left.epoch === right.epoch
+            && left.panelInstanceId === right.panelInstanceId
+            && left.session === right.session;
+    }
+
+    function isCurrentReconcileTicket(ticket) {
+        return !!(ticket && hasActiveReconcile()
+            && ticket.epoch === _reconcileLatch.epoch
+            && ticket.panelInstanceId === _panelInstanceId
+            && ticket.session === _session);
+    }
+
+    function latchReconcile(cmd, error) {
+        if (!_panelInstanceId) return 0;
+        if (!_reconcileLatch || _reconcileLatch.panelInstanceId !== _panelInstanceId) {
+            _reconcileLatch = {
+                panelInstanceId: _panelInstanceId,
+                epoch: ++_reconcileEpochSeq,
+                cmd: cmd,
+                error: error,
+                hireCandidate: cmd === 'world_hire' ? _hireCandidate : null
+            };
+        }
+        projectReconcileLock();
+        cue('unknown');
+        TeamShared.toast('佣兵操作结果待确认，已锁定写入并重新同步。');
+        return _reconcileLatch.epoch;
+    }
+
+    function projectReconcileLock() {
+        if (!_shell || !hasActiveReconcile()) return;
+        _shell.getRoot().setAttribute('data-team-reconcile', 'true');
+        _shell.setStatus('结果待确认，正在重新同步', Workbench.WorkbenchState.PENDING);
+    }
+
+    function releaseReconcile(ticket) {
+        if (!isCurrentReconcileTicket(ticket)) return false;
+        var reconciledCmd = _reconcileLatch.cmd;
+        var reconciledHireCandidate = _reconcileLatch.hireCandidate;
+        _reconcileLatch = null;
+        _reconcileSnapshotInFlight = null;
+        clearReconcileRetry();
+        if (_shell) {
+            _shell.getRoot().removeAttribute('data-team-reconcile');
+        }
+        // snapshot 只确认现役名册；未知 hire 写之前的 poolIndex 与世界候选都已过期，
+        // 解锁时丢弃它们，避免玩家在旧候选上下文中再次提交同一笔权威写入。
+        if (reconciledCmd === 'hire') {
+            _selectedPoolIdx = -1;
+            _hireData = [];
+            _hireLoaded = false;
+            _hirePage = 1;
+            _hireTotalPages = 1;
+            _hireTotalCount = 0;
+            _hireMinLevel = 0;
+            _hireMaxLevel = 0;
+            _hireError = '';
+            backToRoster();
+        } else if (reconciledCmd === 'world_hire') {
+            // 只消费触发未知写的 exact 候选引用；replacement 若已带来新的候选，
+            // 不能被旧 epoch 的对账收尾误清。Team 外层同样用该引用做一次性清退，
+            // 防止切 tab 后 candidateFor() 把旧候选重新注入 controller。
+            if (reconciledHireCandidate && _hireCandidate === reconciledHireCandidate) {
+                _hireCandidate = null;
+                if (_selectedSlot === CANDIDATE_SLOT) _selectedSlot = defaultSelectSlot();
+            }
+            if (reconciledHireCandidate && window.TeamPanelHost
+                    && typeof TeamPanelHost.consumeHireCandidate === 'function') {
+                TeamPanelHost.consumeHireCandidate(reconciledHireCandidate);
+            }
+        }
+        return true;
+    }
+
+    function ensureReconcileSnapshot(epoch) {
+        if (!hasActiveReconcile() || _reconcileLatch.epoch !== epoch) return;
+        if (_reconcileSnapshotInFlight
+                && isCurrentReconcileTicket(_reconcileSnapshotInFlight)) return;
+        requestSnapshot();
+    }
+
+    function scheduleReconcileRetry(ticket) {
+        if (!isCurrentReconcileTicket(ticket) || _reconcileRetryTimer !== null) return;
+        var cfg = window.__TEAM_MERC_CONFIG__ || window.__TEAM_PET_CONFIG__ || {};
+        var configured = Number(cfg.reconcileRetryMs);
+        var delay = isFinite(configured) && configured >= 50 ? configured : 1500;
+        _reconcileRetryTimer = setTimeout(function() {
+            _reconcileRetryTimer = null;
+            if (isCurrentReconcileTicket(ticket)) ensureReconcileSnapshot(ticket.epoch);
+        }, delay);
+    }
+
+    function clearReconcileRetry() {
+        if (_reconcileRetryTimer !== null) clearTimeout(_reconcileRetryTimer);
+        _reconcileRetryTimer = null;
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -1342,7 +1598,7 @@
     // 带 mercId 让 AS2 做身份校验：列表刷新前的快速连点会携带已位移的
     // stale poolIndex（hire splice / 解雇回池重排），只靠索引会雇错人。
     function onCommitHire() {
-        if (_busy) { notifyBusy(); return; }
+        if (guardMutation()) return;
         if (_selectedPoolIdx < 0) return;
         var item = findHireByPoolIdx(_selectedPoolIdx);
         if (!item) return;
@@ -1375,9 +1631,15 @@
             } else {
                 var msg = '雇佣失败：' + (data.error || '未知错误');
                 TeamShared.toast(msg, 'error');
-                if (_commitBar) _commitBar.update({ busy: false, state: 'error', status: msg + ' · 数据已重新同步，请重新确认' });
+                if (_commitBar) _commitBar.update({ busy: false, state: 'error',
+                    status: hasActiveReconcile()
+                        ? '雇佣结果待确认 · 正在重新同步'
+                        : msg + ' · 数据已重新同步，请重新确认' });
                 requestSnapshot();   // 对账重拉
-                if (_shell) _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
+                if (_shell) {
+                    if (hasActiveReconcile()) projectReconcileLock();
+                    else _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
+                }
             }
         });
     }
@@ -1700,7 +1962,7 @@
 
     // 解雇：共享 modal（danger 主按钮），替代自绘 confirm overlay
     function confirmDismiss(merc) {
-        if (_busy) { notifyBusy(); return; }
+        if (guardMutation()) return;
         if (!_shell) return;
         _shell.openModal({
             kind: 'confirm',
@@ -1718,7 +1980,7 @@
     }
 
     function doDismiss(slotIndex) {
-        if (_busy) { notifyBusy(); return; }
+        if (guardMutation()) return;
         beginOp(null);
         sendPanelMsg('dismiss', { mercIndex: slotIndex }, function(data) {
             endOp(null);
@@ -1737,7 +1999,7 @@
     // 操作处理（协议与现役逐条一致；按钮 pending + blocked 可读原因）
     // ═══════════════════════════════════════════════════════════
     function onDeploy(slotIndex, btn) {
-        if (_busy) { notifyBusy(); return; }
+        if (guardMutation()) return;
         var merc = findMercBySlot(slotIndex);
         if (!merc) return;
         beginOp(btn);
@@ -1758,7 +2020,7 @@
 
     // 阵亡佣兵复活：消耗 1 枚复活币；no_revive_coin 映射「复活币不足」（与现役一致）
     function onRevive(slotIndex, btn) {
-        if (_busy) { notifyBusy(); return; }
+        if (guardMutation()) return;
         var merc = findMercBySlot(slotIndex);
         if (!merc) return;
         beginOp(btn);
@@ -1785,7 +2047,7 @@
     // 世界内雇佣（NPC 处确认）：旧 Symbol 2035 的 web 等价。world_hire 走 mercs 通道，
     // AS2 用 _pendingHireNpc 读权威、扣费、写入、spawn 于 NPC 位 + 删 NPC。回 hired:true → 关面板。
     function onWorldHire(btn) {
-        if (_busy) { notifyBusy(); return; }
+        if (guardMutation()) return;
         beginOp(btn);
         sendPanelMsg('world_hire', {}, function(data) {
             endOp(btn);
@@ -1815,12 +2077,27 @@
     function endOp(btn) {
         _busy = false;
         // onClose / teardown 后 shell 可能已销毁（_shell 置空），必须判空
-        if (_shell) _shell.getRoot().removeAttribute('data-team-busy');
         if (btn) TeamShared.setPending(btn, false);
-        if (_shell && !_loadError) {
-            _shell.setStatus(_snapshot ? '就绪' : '读取中',
-                _snapshot ? Workbench.WorkbenchState.READY : Workbench.WorkbenchState.LOADING);
+        if (_shell) {
+            _shell.getRoot().removeAttribute('data-team-busy');
+            if (hasActiveReconcile()) {
+                projectReconcileLock();
+            } else {
+                _shell.getRoot().removeAttribute('data-team-reconcile');
+                if (!_loadError) {
+                    _shell.setStatus(_snapshot ? '就绪' : '读取中',
+                        _snapshot ? Workbench.WorkbenchState.READY : Workbench.WorkbenchState.LOADING);
+                }
+            }
         }
+    }
+
+    function guardMutation() {
+        if (_busy) { notifyBusy(); return true; }
+        if (!hasActiveReconcile()) return false;
+        projectReconcileLock();
+        TeamShared.toast('权威状态尚未核对完成，本次写入未发出。');
+        return true;
     }
 
     // busy 守卫的可读反馈（设计 §4：blocked 给可读原因，不允许可点外观 + silent no-op）。
@@ -1881,8 +2158,10 @@
 
     // 消息格式与现役逐字一致；失败不落缓存、不自动重试（hover 语义原样）
     function requestEquipTooltip(item, callback) {
-        var reqId = 'merc_tt_' + (++_reqSeq) + '_' + _session;
-        _pendingReq[reqId] = function(resp) {
+        sendPanelMsg('equip_tooltip', {
+            raw: item.raw,
+            level: item.level
+        }, function(resp) {
             if (!resp || !resp.success) return;
             callback({
                 success: true,
@@ -1891,14 +2170,6 @@
                 displayname: resp.displayname || '',
                 itemName: resp.itemName || item.raw
             });
-        };
-        Bridge.send({
-            type: 'panel',
-            panel: 'mercs',
-            cmd: 'equip_tooltip',
-            callId: reqId,
-            raw: item.raw,
-            level: item.level
         });
     }
 

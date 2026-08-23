@@ -4,12 +4,15 @@ import org.flashNight.arki.item.ProcurementPlanService;
 import org.flashNight.arki.item.MaterialArchiveProjector;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.EquipmentInventory;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.arki.task.TaskUtil;
+import org.flashNight.neur.Event.EventBus;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
 
 /** CraftingPanelService C0-C3 回归测试。 */
@@ -36,6 +39,8 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testProcurementOwnedScope();
         testProcurementPlanAndTaskDemand();
         testProcurementMutationAndConsumption();
+        testProcurementFaultRestoresExactSnapshot();
+        testSubmitReentryRestoresExactSnapshot();
         testPreviewAuthority();
         testStoragePlanProjection();
         testMergeReceiptAuthority();
@@ -2051,6 +2056,109 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && committed.procurement.plannedCrafts == 0
                 && ProcurementPlanService.getPlannedCrafts("craft.weapon.001") == 0,
             "successful crafting consumes the exact saved plan and removes its zero remainder");
+    }
+
+    private static function testProcurementFaultRestoresExactSnapshot():Void {
+        resetOwned();
+        var marked:Object = ProcurementPlanService.setPlan({
+            v:1, recipeId:"craft.weapon.001", plannedCrafts:1, expectedRevision:0
+        });
+        _root.存档系统.dirtyMark = false;
+        var markDirtyCalls:Number = 0;
+        _root.存档系统.markDirty = function():Void {
+            markDirtyCalls++;
+            throw "mock procurement dirty failure";
+        };
+        var preview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1
+        });
+        var failed:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:preview.craftToken
+        });
+        var restoredGun:Object = _root.物品栏.背包.getItem(0);
+        check(marked.success && !failed.success && failed.error == "commit_failed"
+                && markDirtyCalls == 1
+                && _root.收集品栏.材料.getValue("测试矿石") == 5
+                && _root.收集品栏.情报.getValue("测试图纸") == 1
+                && restoredGun != null && restoredGun.name == "旧测试枪"
+                && _root.金钱 == 1000 && _root.虚拟币 == 100
+                && _root.存档系统.dirtyMark === false
+                && ProcurementPlanService.getRevision() == 1
+                && ProcurementPlanService.getPlannedCrafts("craft.weapon.001") == 1
+                && org.flashNight.arki.item.PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "procurement markDirty fault restores plan/assets/dirty and clears PAT/EventBus state");
+
+        _root.存档系统.markDirty = function():Void {};
+        var nextPreview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1
+        });
+        var recovered:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:nextPreview.craftToken
+        });
+        check(recovered.success && recovered.procurement.changed
+                && ProcurementPlanService.getRevision() == 2
+                && ProcurementPlanService.getPlannedCrafts("craft.weapon.001") == 0
+                && _root.金钱 == 910 && _root.虚拟币 == 82
+                && org.flashNight.arki.item.PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "crafting fault settlement leaves the next independent crafting transaction healthy");
+    }
+
+    private static function testSubmitReentryRestoresExactSnapshot():Void {
+        resetOwned();
+        var marked:Object = ProcurementPlanService.setPlan({
+            v:1, recipeId:"craft.weapon.001", plannedCrafts:1, expectedRevision:0
+        });
+        _root.存档系统.dirtyMark = false;
+        var materials:DictCollection = _root.收集品栏.材料;
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__craftSubmitReentry", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher =
+            new LifecycleEventDispatcher(holder);
+        materials.setDispatcher(dispatcher);
+        var overRemoved:Boolean = false;
+        dispatcher.subscribe("ItemValueChanged",
+            function(collection:Object, key:String):Void {
+                if(overRemoved || key != "测试矿石") return;
+                overRemoved = true;
+                materials.addValue("测试矿石", -1);
+            });
+
+        var preview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1
+        });
+        var failed:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:preview.craftToken
+        });
+        check(marked.success && overRemoved
+                && !failed.success && failed.error == "material_missing"
+                && materials.getValue("测试矿石") == 5
+                && _root.物品栏.背包.getItem(0) != null
+                && _root.物品栏.背包.getItem(0).name == "旧测试枪"
+                && _root.金钱 == 1000 && _root.虚拟币 == 100
+                && _root.存档系统.dirtyMark === false
+                && ProcurementPlanService.getRevision() == 1
+                && ProcurementPlanService.getPlannedCrafts("craft.weapon.001") == 1
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "crafting submit over-remove reentry returns false and restores all assets/dirty/frame");
+
+        materials.setDispatcher(null);
+        var nextPreview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1
+        });
+        var recovered:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:nextPreview.craftToken
+        });
+        check(recovered.success && materials.getValue("测试矿石") == 3
+                && _root.金钱 == 910 && _root.虚拟币 == 82
+                && ProcurementPlanService.getRevision() == 2
+                && ProcurementPlanService.getPlannedCrafts("craft.weapon.001") == 0
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "crafting submit reentry failure leaves the next independent craft healthy");
+        holder.removeMovieClip();
     }
 
     private static function testPreviewAuthority():Void {

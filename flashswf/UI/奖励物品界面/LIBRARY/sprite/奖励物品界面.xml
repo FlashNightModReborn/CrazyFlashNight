@@ -69,67 +69,222 @@ function 生成关卡随机奖励品()
       _loc2_ += 1;
    }
 }
-function 一键领取全部()
+function 创建奖励领取状态(reason)
 {
-   var 已领取数量 = 0;
-   var 领取失败 = false;
-   var assetContext = {source:"level_reward", reason:"claim_all", mergeScope:"operation"};
-   var assetTransaction = _root.开始玩家物资事务(assetContext);
-   var i = 0;
-   while(i < 奖励品.length)
+   var assetContext = {
+      source:"level_reward", reason:reason, mergeScope:"operation"
+   };
+   return {
+      context:assetContext,
+      assetSnapshot:_root.捕获玩家物资快照(),
+      experienceBefore:Number(_root.经验值),
+      rewardsBefore:_root.深拷贝数组(奖励品),
+      transaction:_root.开始玩家物资事务(assetContext),
+      claimedCount:0,
+      settled:false
+   };
+}
+
+function 恢复奖励领取状态(state)
+{
+   var failedExperience = Number(_root.经验值);
+   var failedRewards = _root.深拷贝数组(奖励品);
+   var domainRestored = false;
+   try
    {
-      if(奖励品[i][0] == undefined)
-      {
-         i++;
-         continue;
-      }
-      var 物品名 = 奖励品[i][0];
-      var 数量 = 奖励品[i][1];
+      _root.经验值 = Number(state.experienceBefore);
+      奖励品 = _root.深拷贝数组(state.rewardsBefore);
+      domainRestored = Number(_root.经验值) == Number(state.experienceBefore)
+         && 奖励品.length == state.rewardsBefore.length;
+   }
+   catch(rewardDomainRestoreError)
+   {
+      trace("[奖励物品界面] reward domain restore failed: "
+         + rewardDomainRestoreError);
+   }
+   if(!domainRestored) return false;
+
+   var assetsRestored = false;
+   try
+   {
+      assetsRestored = _root.恢复玩家物资快照(state.assetSnapshot) === true;
+   }
+   catch(rewardAssetRestoreError)
+   {
+      trace("[奖励物品界面] asset restore failed: "
+         + rewardAssetRestoreError);
+   }
+   if(assetsRestored)
+   {
+      state.claimedCount = 0;
+      return true;
+   }
+
+   // 通用资产没能 exact 复原时，奖励列表/经验也回到失败事实；这样重试
+   // 不会把已发生的 partial gain 再领一次，settle(true) 仍对应当前事实。
+   try
+   {
+      _root.经验值 = failedExperience;
+      奖励品 = failedRewards;
+   }
+   catch(rewardFailureStateError)
+   {
+      trace("[奖励物品界面] failure-state restore failed: "
+         + rewardFailureStateError);
+   }
+   return false;
+}
+
+function 投影奖励领取失败()
+{
+   try
+   {
+      _root.发布消息(_root.获得翻译("背包已满，无法领取！"));
+   }
+   catch(rewardMessageError)
+   {
+      trace("[奖励物品界面] post-settle message failed: " + rewardMessageError);
+   }
+   try
+   {
+      刷新();
+   }
+   catch(rewardRefreshError)
+   {
+      trace("[奖励物品界面] post-settle refresh failed: " + rewardRefreshError);
+   }
+}
+
+// 单项按钮与一键领取共享唯一 authority。传入 batchState 时只写入外层 frame；
+// 不传时本函数完整持有 snapshot/dirty/transaction/one-shot/投影生命周期。
+function 领取单项(index, batchState)
+{
+   var 当前奖励 = 奖励品[index];
+   if(当前奖励 == undefined || 当前奖励[0] == undefined) return false;
+   var ownsTransaction = batchState == undefined || batchState == null;
+   var state = ownsTransaction ? 创建奖励领取状态("single_claim") : batchState;
+   var accepted = false;
+   var playPickupSound = false;
+   try
+   {
+      // 缺少存档系统时在清 one-shot/首个资产写前失败。
+      _root.标记玩家物资存档脏();
+      奖励品[index] = [];
+      var 物品名 = 当前奖励[0];
+      var 数量 = Number(当前奖励[1]);
       if(物品名 == "经验")
       {
+         var experienceWriteBefore = Number(_root.经验值);
          _root.经验值 += 数量;
-         if(_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-         奖励品[i] = [];
-         已领取数量++;
+         accepted = Number(_root.经验值) - experienceWriteBefore == 数量;
       }
       else if(物品名 == "金钱")
       {
-         _root.金钱 += 数量;
-         _root.记录玩家货币变化(
-            Number(数量), 0, assetContext);
-         if(_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-         奖励品[i] = [];
-         已领取数量++;
-      }
-      else if(_root.itemAcquire([{
-         name:物品名, value:数量, tier:奖励品[i][2]
-      }], assetContext))
-      {
-         奖励品[i] = [];
-         已领取数量++;
+         var moneyBefore = Number(_root.金钱);
+         try
+         {
+            _root.金钱 += 数量;
+         }
+         finally
+         {
+            var rawCommittedMoney = Number(_root.金钱) - moneyBefore;
+            var effectMoney = rawCommittedMoney;
+            if(effectMoney > 数量) effectMoney = 数量;
+            if(effectMoney > 0 && !isNaN(effectMoney))
+            {
+               _root.记录玩家货币变化(effectMoney, 0, state.context);
+            }
+            accepted = rawCommittedMoney == 数量;
+         }
       }
       else
+      {
+         accepted = _root.itemAcquire([{
+            name:物品名, value:数量, tier:当前奖励[2]
+         }], state.context) === true;
+         playPickupSound = accepted;
+      }
+   }
+   catch(assetError)
+   {
+      var exceptionRestored = 恢复奖励领取状态(state);
+      _root.结算玩家物资事务异常(state.transaction,!exceptionRestored);
+      state.settled = true;
+      throw assetError;
+   }
+
+   if(!accepted)
+   {
+      var rewardRestored = 恢复奖励领取状态(state);
+      _root.结算玩家物资事务异常(state.transaction,!rewardRestored);
+      state.settled = true;
+      if(ownsTransaction) 投影奖励领取失败();
+      return false;
+   }
+
+   state.claimedCount++;
+   if(!ownsTransaction) return true;
+   _root.提交玩家物资事务(state.transaction);
+   state.settled = true;
+   if(playPickupSound)
+   {
+      try
+      {
+         _root.播放音效("ammopickup1.wav");
+      }
+      catch(rewardSoundError)
+      {
+         trace("[奖励物品界面] post-commit sound failed: " + rewardSoundError);
+      }
+   }
+   try
+   {
+      刷新();
+   }
+   catch(singleRewardRefreshError)
+   {
+      trace("[奖励物品界面] post-commit refresh failed: "
+         + singleRewardRefreshError);
+   }
+   return true;
+}
+
+function 一键领取全部()
+{
+   var state = 创建奖励领取状态("claim_all");
+   var 领取失败 = false;
+   var i = 0;
+   while(i < 奖励品.length)
+   {
+      if(奖励品[i][0] != undefined && !领取单项(i,state))
       {
          领取失败 = true;
          break;
       }
       i++;
    }
-   _root.提交玩家物资事务(assetTransaction);
-   if(已领取数量 > 0)
+   if(!state.settled)
    {
-      _root.播放音效("ammopickup1.wav");
+      _root.提交玩家物资事务(state.transaction);
+      state.settled = true;
    }
    if(领取失败)
    {
-      _root.发布消息(_root.获得翻译("背包已满，剩余物品无法领取！"));
-      刷新();
+      投影奖励领取失败();
+      return false;
    }
-   else
+   if(state.claimedCount > 0)
    {
-      return true;
+      try
+      {
+         _root.播放音效("ammopickup1.wav");
+      }
+      catch(rewardSoundError)
+      {
+         trace("[奖励物品界面] post-commit sound failed: " + rewardSoundError);
+      }
    }
-   return false;
+   return true;
 }
 _root.全部翻译(this);
 ]]></script>

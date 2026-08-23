@@ -21,10 +21,10 @@ $focusedRun = @{
         'scripts\逻辑系统分区\商城系统_WebView.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^KShopCheckoutServiceTest Tests Passed: 28\r?$'
+        '(?m)^KShopCheckoutServiceTest Tests Passed: 32\r?$'
         '(?m)^KShopCheckoutServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'KShopCheckoutServiceTest 28/28'
+    SuccessSummary = 'KShopCheckoutServiceTest 32/32'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

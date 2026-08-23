@@ -28,6 +28,7 @@ import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.merc.ManagedLongGunService;
+import org.flashNight.gesh.object.ObjectUtil;
 
 class org.flashNight.arki.merc.PetPanelService {
     private static var _json:LiteJSON;
@@ -120,7 +121,9 @@ class org.flashNight.arki.merc.PetPanelService {
             var petEntry:Object = {
                 slotIndex: i,
                 petId: Number(info[0]),
-                name: String(petDef.Name),
+                name: _root.战宠UI函数 != undefined
+                    && typeof _root.战宠UI函数.获取宠物显示名 == "function"
+                    ? _root.战宠UI函数.获取宠物显示名(i) : String(petDef.Name),
                 identifier: String(petDef.Identifier),
                 level: Number(info[1]),
                 stamina: Number(info[2]),
@@ -359,14 +362,24 @@ class org.flashNight.arki.merc.PetPanelService {
         var assetContext:Object = {
             source:"pet_service", reason:"adopt", mergeScope:"operation"
         };
+        var adoptSnapshot:Object = capturePetTransactionState();
         var assetTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
         var moneyBeforeAdopt:Number = Number(_root.金钱);
         var kpointsBeforeAdopt:Number = Number(_root.虚拟币);
         try {
-            // 执行购买
-            if (price > 0) _root.金钱 -= price;
-            if (kprice > 0) _root.虚拟币 -= kprice;
+            // 领养全部权威写前直接标脏；货币写 finally 固化真实 delta，
+            // 后续涨价/落槽异常时 catch 可以先结算 frame。
+            org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+                _root.存档系统);
+            try {
+                if (price > 0) _root.金钱 -= price;
+                if (kprice > 0) _root.虚拟币 -= kprice;
+            } finally {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                    Number(_root.金钱) - moneyBeforeAdopt,
+                    Number(_root.虚拟币) - kpointsBeforeAdopt, assetContext);
+            }
 
             // 创建宠物信息并填入空位
             var initialLevel:Number = Number(petDef.InitialLevel) || 1;
@@ -380,34 +393,27 @@ class org.flashNight.arki.merc.PetPanelService {
             }
 
             _root.宠物信息[emptySlot] = newPet;
-            // Plan A audit: handleBuy 写 金钱/虚拟币/宠物信息/购买次数，必须标脏
-            _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeAdopt,
-                Number(_root.虚拟币) - kpointsBeforeAdopt, assetContext);
         } catch (adoptError) {
-            // 宠物领域没有通用逆操作；异常时按当前权威余额提交已发生的损失，
-            // 绝不能把事务栈与真实扣款一起留在半开状态。
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeAdopt,
-                Number(_root.虚拟币) - kpointsBeforeAdopt, assetContext);
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            var adoptRestored:Boolean = restorePetTransactionState(adoptSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !adoptRestored);
             throw adoptError;
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         // 成就记账（埋点 #9，领养成功无条件计数；口径=web 面板领养，关卡内 NPC 雇宠帧脚本不计。
         // 不复用上方 宠物购买次数——那是 IncreasePrice>0 才记的涨价口径，两口径隔离）
-        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养次数", 1);
-            org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养花费金币", price);
+        try {
+            if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养次数", 1);
+                org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养花费金币", price);
+            }
+        } catch (adoptMetricError) {
+            trace("[PetPanelService] post-commit adopt metric failed: " + adoptMetricError);
         }
 
         // 刷新宠物UI
-        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
-            _root.宠物信息界面.排列宠物图标();
-        }
+        refreshPetIconsSafely("adopt");
 
         sendResponse({
             task: "pet_response",
@@ -456,54 +462,36 @@ class org.flashNight.arki.merc.PetPanelService {
             return;
         }
 
-        // 执行出战/休息（由现有引擎函数处理）
-        // 使用 _parent._parent 路径说明：原 Flash UI 的按钮函数依赖 _parent 作用域。
-        // 从 Web 面板调用时，我们直接修改 _root 状态并调用引擎函数。
-        var prevState:Number = petInfo[4];
-        petInfo[4] = (prevState == 1) ? 0 : 1;
-
-        var success:Boolean = false;
-        if (petInfo[4] == 1) {
-            // 出战：需要创建宠物单位
-            var hero:MovieClip = undefined;
-            if (typeof _root.gameworld != "undefined") {
-                // 尝试通过 TargetCacheManager 获取主角位置
-                var heroX:Number = 500;
-                var heroY:Number = 300;
-                if (typeof org != "undefined" && org.flashNight != undefined
-                    && org.flashNight.arki != undefined && org.flashNight.arki.unit != undefined
-                    && org.flashNight.arki.unit.UnitComponent != undefined
-                    && org.flashNight.arki.unit.UnitComponent.Targetcache != undefined
-                    && org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager != undefined) {
-                    hero = org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager.findHero();
-                    if (hero != undefined) {
-                        heroX = hero._x;
-                        heroY = hero._y;
-                    }
+        // Web 与旧 Flash UI 共用同一个同步原子入口：helper 负责 dirty-first、
+        // provisional flag、场景创建/移除及失败回滚，调用方不再维护第二套状态机。
+        var desiredDeploy:Boolean = !wasDeployed;
+        var heroX:Number = 500;
+        var heroY:Number = 300;
+        if (desiredDeploy) {
+            try {
+                var hero:MovieClip = org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager.findHero();
+                if (hero != undefined) {
+                    heroX = hero._x;
+                    heroY = hero._y;
                 }
-                success = _root.战宠UI函数.设置宠物出战(slotIndex, true, heroX, heroY);
+            } catch (deployHeroLookupError) {
+                trace("[PetPanelService] deploy hero lookup failed, using fallback: "
+                    + deployHeroLookupError);
             }
-        } else {
-            // 休息：移除宠物单位
-            success = _root.战宠UI函数.设置宠物出战(slotIndex, false);
         }
+        var deployToggle:Function = _root.战宠UI函数 == undefined
+            ? null : _root.战宠UI函数.尝试切换宠物出战状态;
+        var success:Boolean = typeof deployToggle == "function"
+            && deployToggle(
+                slotIndex, desiredDeploy, heroX, heroY) === true;
 
         if (!success) {
-            // 引擎拒绝（体力不足 / 宠物mc库已存在该 id / 找不到待移除 mc，或无 gameworld）：
-            // 回滚出战标志，保持存档与场上 mc 一致，避免"出战中却无宠物"或反之的错位坏档。
-            // 对齐引擎 出战按钮函数 的 success 回滚契约。
-            petInfo[4] = prevState;
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "deploy_failed", deployed: prevState == 1, currentDeployCount: countDeployed(), maxDeploy: maxDeploy });
+            sendResponse({ task: "pet_response", callId: callId, success: false, error: "deploy_failed", deployed: wasDeployed, currentDeployCount: countDeployed(), maxDeploy: maxDeploy });
             return;
         }
 
-        // 出战标志（petInfo[4]）属存档字段，写入成功后标脏
-        _root.存档系统.dirtyMark = true;
-
         // 刷新UI
-        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
-            _root.宠物信息界面.排列宠物图标();
-        }
+        refreshPetIconsSafely("deploy");
 
         sendResponse({
             task: "pet_response",
@@ -562,7 +550,8 @@ class org.flashNight.arki.merc.PetPanelService {
             response.sourceSlot = result.sourceSlot;
             response.targetSlot = result.targetSlot;
             response.weapon = result.weapon;
-            response.rebuilt = rebuildManagedPetIfDeployed(slotIndex, petInfo);
+            response.rebuilt = rebuildPetIfDeployed(
+                slotIndex, petInfo, false, null, "managed_weapon");
             response.refreshDeferred = petInfo[4] == 1 && response.rebuilt !== true;
         } else {
             response.error = result == null ? "operation_failed" : String(result.error);
@@ -608,10 +597,9 @@ class org.flashNight.arki.merc.PetPanelService {
         }
 
         var advanceAttrs:Object = _root.宠物信息[slotIndex][5];
-        if (advanceAttrs == undefined || typeof advanceAttrs != "object") {
-            advanceAttrs = {};
-            _root.宠物信息[slotIndex][5] = advanceAttrs;
-        }
+        var mustInitializeAdvanceAttrs:Boolean = advanceAttrs == undefined
+            || typeof advanceAttrs != "object";
+        if (mustInitializeAdvanceAttrs) advanceAttrs = {};
         var ctx:Object = {
             当前宠物信息: _root.宠物信息[slotIndex],
             当前宠物属性: advanceAttrs,
@@ -644,44 +632,58 @@ class org.flashNight.arki.merc.PetPanelService {
             source:"pet_service", reason:"advance_" + schemeName,
             mergeScope:"operation"
         };
+        var advanceSnapshot:Object = capturePetTransactionState();
         var assetTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
         var execFn:Function = scheme.执行;
         try {
-            if (typeof execFn == "function") execFn.call(ctx);
+            // 方案脚本可同时写货币与宠物属性；缺少存档系统时不得进入脚本。
+            org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+                _root.存档系统);
+            // 旧档缺少 attrs 时，条件预检只使用局部空对象；只有进入已受 snapshot
+            // 保护的事务后才落盘，condition_failed 不得偷偷迁移玩家存档。
+            if (mustInitializeAdvanceAttrs) {
+                _root.宠物信息[slotIndex][5] = advanceAttrs;
+            }
+            try {
+                if (typeof execFn == "function") execFn.call(ctx);
+            } finally {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                    Number(_root.金钱) - moneyBeforeAdvance,
+                    Number(_root.虚拟币) - kpointsBeforeAdvance,
+                    assetContext);
+            }
         } catch (advanceError) {
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeAdvance,
-                Number(_root.虚拟币) - kpointsBeforeAdvance,
-                assetContext);
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            var advanceRestored:Boolean = restorePetTransactionState(
+                advanceSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !advanceRestored);
             throw advanceError;
         }
 
-        // 进阶 执行 写入 金钱 / 宠物属性（均存档字段），标脏
-        _root.存档系统.dirtyMark = true;
-        org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-            Number(_root.金钱) - moneyBeforeAdvance,
-            Number(_root.虚拟币) - kpointsBeforeAdvance,
-            assetContext);
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         // 成就记账（埋点 #10，仅非反复型方案——开关型(影子刺客发色/常驻淬毒)可反复切换，计数会被刷；
         // 金额不顺带：影子刺客二次免费会失真）。消费者回执先闭合，避免可选埋点异常泄漏事务栈。
-        if (!isSchemeRepeatable(schemeName, scheme) && org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("宠物进阶次数", 1);
+        try {
+            if (!isSchemeRepeatable(schemeName, scheme)
+                    && org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                org.flashNight.arki.achievement.AchievementMetrics.record("宠物进阶次数", 1);
+            }
+        } catch (advanceMetricError) {
+            // 可选埋点不得阻断已提交进阶后的重建与 success response，
+            // 否则调用方重放会再次扣费/进阶。
+            trace("[PetPanelService] post-commit advance metric failed: " + advanceMetricError);
         }
 
-        // 刷新宠物单位（如果已出战）
-        if (ctx.当前宠物信息[4] == 1) {
-            _root.宠物升级加载(slotIndex);
-        }
+        // slotIndex 是存档槽，不是宠物 mc 库索引；进阶只改变属性投影，必须保留
+        // 受伤后的绝对 HP/MP。尤其反复型方案可免费切换，绝不能借重建回满血。
+        // 失败时进阶资产已权威提交，但旧战斗单位保持可用并明确要求稍后刷新。
+        var advanceRebuilt:Boolean = rebuildPetIfDeployed(
+            slotIndex, ctx.当前宠物信息, false, "升级动画2", "advance");
 
         // 刷新UI
-        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
-            _root.宠物信息界面.排列宠物图标();
-        }
+        refreshPetIconsSafely("advance");
 
         sendResponse({
             task: "pet_response",
@@ -690,7 +692,9 @@ class org.flashNight.arki.merc.PetPanelService {
             slotIndex: slotIndex,
             scheme: schemeName,
             gold: Number(_root.金钱) || 0,
-            kpoint: Number(_root.虚拟币) || 0
+            kpoint: Number(_root.虚拟币) || 0,
+            rebuilt: advanceRebuilt,
+            refreshDeferred: ctx.当前宠物信息[4] == 1 && advanceRebuilt !== true
         });
     }
 
@@ -771,20 +775,24 @@ class org.flashNight.arki.merc.PetPanelService {
         var assetContext:Object = {
             source:"pet_service", reason:"expand_slot", mergeScope:"operation"
         };
+        var expandSnapshot:Object = capturePetTransactionState();
         var assetTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
         var moneyBeforeExpand:Number = Number(_root.金钱);
         try {
-            _root.金钱 -= expandCost;
+            org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+                _root.存档系统);
+            try {
+                _root.金钱 -= expandCost;
+            } finally {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                    Number(_root.金钱) - moneyBeforeExpand, 0, assetContext);
+            }
             _root.开宠物格子();
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeExpand, 0, assetContext);
         } catch (expandError) {
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeExpand, 0, assetContext);
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            var expandRestored:Boolean = restorePetTransactionState(expandSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !expandRestored);
             throw expandError;
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
@@ -805,39 +813,45 @@ class org.flashNight.arki.merc.PetPanelService {
         var callId = params.callId;
         var slotIndex:Number = Number(params.slotIndex);
         var newName:String = String(params.name || "");
+        var result:Object = renamePetSlot(slotIndex, newName);
+        if (result.success === true) refreshPetIconsSafely("rename");
+        result.task = "pet_response";
+        result.callId = callId;
+        sendResponse(result);
+    }
 
-        if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_slot" });
-            return;
+    /** customName 是唯一显示名覆盖字段；写入后，已出战单位统一整只重建。 */
+    public static function renamePetSlot(slotIndex:Number, newName:String):Object {
+        if (isNaN(slotIndex) || Math.floor(slotIndex) != slotIndex
+                || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
+            return {success:false, error:"invalid_slot"};
         }
         if (newName == "" || newName.length > 10) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_name" });
-            return;
+            return {success:false, error:"invalid_name"};
         }
 
-        // 宠物重命名：在 宠物属性 中存储自定义名称
+        // 宠物重命名：先进入存档队列，再正规化旧档属性并提交名称。
         var petInfo:Array = _root.宠物信息[slotIndex];
+        if (petInfo == undefined || petInfo.length < 5) {
+            return {success:false, error:"invalid_pet"};
+        }
+        _root.存档系统.dirtyMark = true;
         var attrs:Object = petInfo[5];
-        if (attrs == undefined) {
+        if (attrs == undefined || typeof attrs != "object") {
             attrs = {};
             petInfo[5] = attrs;
         }
         attrs.customName = newName;
-        // customName 存于 宠物属性[5]（随 宠物信息 落盘），标脏
-        _root.存档系统.dirtyMark = true;
 
-        // 刷新UI
-        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
-            _root.宠物信息界面.排列宠物图标();
-        }
-
-        sendResponse({
-            task: "pet_response",
-            callId: callId,
-            success: true,
-            slotIndex: slotIndex,
-            name: newName
-        });
+        var renameRebuilt:Boolean = rebuildPetIfDeployed(
+            slotIndex, petInfo, false, null, "rename");
+        return {
+            success:true,
+            slotIndex:slotIndex,
+            name:newName,
+            rebuilt:renameRebuilt,
+            refreshDeferred:petInfo[4] == 1 && renameRebuilt !== true
+        };
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -924,59 +938,66 @@ class org.flashNight.arki.merc.PetPanelService {
     public static function handleRestoreStamina(params:Object):Void {
         var callId = params.callId;
         var slotIndex:Number = Number(params.slotIndex);
-        if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_slot" });
-            return;
-        }
+        var result:Object = restoreStaminaSlot(slotIndex);
+        result.task = "pet_response";
+        result.callId = callId;
+        sendResponse(result);
+    }
 
+    /** Web 与旧 Flash UI 共用的体力恢复资产核心；权威费用固定为 1000 金币。 */
+    public static function restoreStaminaSlot(slotIndex:Number):Object {
+        if (isNaN(slotIndex) || Math.floor(slotIndex) != slotIndex
+                || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
+            return {success:false, error:"invalid_slot"};
+        }
         var petInfo:Array = _root.宠物信息[slotIndex];
         if (petInfo == undefined || petInfo.length < 5) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_pet" });
-            return;
+            return {success:false, error:"invalid_pet"};
         }
 
         var currentStamina:Number = Number(petInfo[2]);
         if (currentStamina >= 200) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "stamina_full" });
-            return;
+            return {success:false, error:"stamina_full"};
         }
 
         var cost:Number = 1000;
         if (_root.金钱 < cost) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_gold", cost: cost });
-            return;
+            return {success:false, error:"insufficient_gold", cost:cost};
         }
 
         var assetContext:Object = {
             source:"pet_service", reason:"restore_stamina", mergeScope:"operation"
         };
+        var restoreSnapshot:Object = capturePetTransactionState();
         var assetTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
         var moneyBeforeRestore:Number = Number(_root.金钱);
         try {
-            _root.金钱 -= cost;
+            org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+                _root.存档系统);
+            try {
+                _root.金钱 -= cost;
+            } finally {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                    Number(_root.金钱) - moneyBeforeRestore, 0, assetContext);
+            }
             petInfo[2] = 200;
-            // 金钱 / 宠物体力(petInfo[2]) 均存档字段，标脏
-            _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeRestore, 0, assetContext);
         } catch (restoreError) {
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeRestore, 0, assetContext);
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            var staminaRestored:Boolean = restorePetTransactionState(
+                restoreSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !staminaRestored);
             throw restoreError;
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
-        sendResponse({
-            task: "pet_response",
-            callId: callId,
-            success: true,
-            slotIndex: slotIndex,
-            stamina: 200,
-            gold: Number(_root.金钱) || 0
-        });
+        return {
+            success:true,
+            slotIndex:slotIndex,
+            stamina:200,
+            cost:cost,
+            gold:Number(_root.金钱) || 0
+        };
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -985,100 +1006,148 @@ class org.flashNight.arki.merc.PetPanelService {
     public static function handleLevelUp(params:Object):Void {
         var callId = params.callId;
         var slotIndex:Number = Number(params.slotIndex);
-        if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_slot" });
-            return;
+        var result:Object = levelUpSlot(slotIndex);
+        if (result.success === true) refreshPetIconsSafely("level_up");
+        result.task = "pet_response";
+        result.callId = callId;
+        sendResponse(result);
+    }
+
+    /**
+     * Web 与旧 Flash UI 共用的同步升级核心。
+     *
+     * 所有只读校验与费用计算先完成；显式玩家物资事务再把 singleSubmit 的 loss
+     * 与等级/下一档阈值写绑定为同一个提交点。dirtyMark 必须先于第一项权威写，
+     * 而重建、动画、埋点均在提交后隔离，因此失败重建只返回 refreshDeferred，
+     * 不会把已扣灵石且已升级的操作伪装成可重试失败。
+     */
+    public static function levelUpSlot(slotIndex:Number):Object {
+        if (isNaN(slotIndex) || Math.floor(slotIndex) != slotIndex
+                || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
+            return {success:false, error:"invalid_slot"};
         }
 
         var petInfo:Array = _root.宠物信息[slotIndex];
         if (petInfo == undefined || petInfo.length < 5) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_pet" });
-            return;
+            return {success:false, error:"invalid_pet"};
         }
 
         var currentLevel:Number = Number(petInfo[1]);
         var levelLimit:Number = Number(_root.等级限制) || 100;
+        if (!isFinite(currentLevel) || currentLevel < 0) {
+            return {success:false, error:"invalid_pet"};
+        }
         if (currentLevel >= levelLimit) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "level_maxed" });
-            return;
+            return {success:false, error:"level_maxed", levelLimit:levelLimit};
         }
 
         var petId:Number = Number(petInfo[0]);
         var petDef:Object = _root.宠物库[petId];
-        if (petDef == undefined) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "pet_not_found" });
-            return;
-        }
+        if (petDef == undefined) return {success:false, error:"pet_not_found"};
         var identifier:String = String(petDef.Identifier);
 
-        // 确保经验值已初始化
-        var attrs:Object = petInfo[5];
-        if (attrs == undefined || typeof attrs != "object") {
-            attrs = {};
-            petInfo[5] = attrs;
+        // 不为旧档补对象/阈值，直到灵石提交成功；insufficient 必须是零宠物写。
+        var oldAttrs:Object = petInfo[5];
+        var hasObjectAttrs:Boolean = oldAttrs != undefined && typeof oldAttrs == "object";
+        var xpNeeded:Number = hasObjectAttrs
+            ? Number(oldAttrs.宠物升级所需经验) : 0;
+        if (!isFinite(xpNeeded) || xpNeeded <= 0) {
+            xpNeeded = 0;
+            if (_root.战宠UI函数 != undefined
+                    && typeof _root.战宠UI函数.计算战宠升级所需经验 == "function") {
+                xpNeeded = Number(_root.战宠UI函数.计算战宠升级所需经验(
+                    identifier, currentLevel));
+                if (!isFinite(xpNeeded) || xpNeeded < 0) xpNeeded = 0;
+            }
         }
-        if (Number(attrs.宠物升级所需经验) <= 0 && _root.战宠UI函数 != undefined
-            && _root.战宠UI函数.计算战宠升级所需经验 != undefined) {
-            attrs.宠物升级所需经验 = _root.战宠UI函数.计算战宠升级所需经验(identifier, currentLevel);
-        }
-        var xpNeeded:Number = Number(attrs.宠物升级所需经验) || 0;
         var stoneCost:Number = currentLevel * 2 + Math.floor(xpNeeded / 10000);
-        if (stoneCost <= 0) stoneCost = 1;
+        if (!isFinite(stoneCost) || stoneCost <= 0) stoneCost = 1;
 
-        // 扣除灵石
-        if (!_root.singleSubmit("战宠灵石", stoneCost, {
-                source:"pet_service", reason:"level_up"
-            })) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "insufficient_stones", cost: stoneCost });
-            return;
-        }
-
-        // 升级
-        petInfo[1] = currentLevel + 1;
-        var newLevel:Number = petInfo[1];
-
-        // 重新计算下一级经验需求
+        // 阈值计算会调用旧 UI 的可注入函数，必须在扣灵石/写等级前完成。
+        // 一旦进入显式资产 frame，成功扣除后的路径只允许本地权威赋值，
+        // 避免可选计算异常截断 success response 并让同一升级被重放。
+        var newLevel:Number = currentLevel + 1;
         var newXpNeeded:Number = 0;
-        if (_root.战宠UI函数 != undefined && _root.战宠UI函数.计算战宠升级所需经验 != undefined) {
-            newXpNeeded = Number(_root.战宠UI函数.计算战宠升级所需经验(identifier, newLevel));
+        if (_root.战宠UI函数 != undefined
+                && typeof _root.战宠UI函数.计算战宠升级所需经验 == "function") {
+            newXpNeeded = Number(_root.战宠UI函数.计算战宠升级所需经验(
+                identifier, newLevel));
+            if (!isFinite(newXpNeeded) || newXpNeeded < 0) newXpNeeded = 0;
         }
-        attrs.宠物升级所需经验 = newXpNeeded;
-        // 成就记账（埋点 #11，灵石培养升级成功分支）
-        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("宠物培养次数", 1);
-        }
-        // 等级(petInfo[1]) / 宠物升级所需经验 均存档字段，标脏（singleSubmit 已扣灵石，但等级写入需独立保证落盘）
-        _root.存档系统.dirtyMark = true;
 
-        // 刷新出战宠物单位（注意：宠物升级加载 的参数是 mc库索引）
-        if (petInfo[4] == 1 && _root.出战宠物id库 != undefined) {
-            var mcIdx:Number = -1;
-            for (var m:Number = 0; m < _root.出战宠物id库.length; m++) {
-                if (_root.出战宠物id库[m] == slotIndex) {
-                    mcIdx = m;
-                    break;
+        var levelContext:Object = {
+            source:"pet_service", reason:"level_up", mergeScope:"operation"
+        };
+        var levelSnapshot:Object = capturePetTransactionState();
+        var levelTransaction:Object =
+            org.flashNight.arki.item.PlayerAssetTransaction.begin(levelContext);
+        var levelDirtyMarked:Boolean = false;
+        var levelPetWriteStarted:Boolean = false;
+        var levelTransactionSettled:Boolean = false;
+        try {
+            // 存档队列不可用时在 singleSubmit 与宠物字段写之前同步失败关闭。
+            org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+                _root.存档系统);
+            levelDirtyMarked = true;
+            if (!_root.singleSubmit("战宠灵石", stoneCost, levelContext)) {
+                // singleSubmit=false 尚未触碰宠物权威；只恢复通用资产/dirty，避免
+                // 全量宠物快照克隆把确定零写伪装成对象替换。
+                var levelAssetsRestored:Boolean = ItemUtil.restorePlayerAssetSnapshot(
+                    levelSnapshot.assets);
+                if (!levelAssetsRestored) {
+                    org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                        levelTransaction, true);
+                    levelTransactionSettled = true;
+                    throw new Error("pet_level_asset_restore_failed");
                 }
+                org.flashNight.arki.item.PlayerAssetTransaction.rollback(levelTransaction);
+                levelTransactionSettled = true;
+                return {success:false, error:"insufficient_stones", cost:stoneCost};
             }
-            if (mcIdx >= 0 && _root.宠物升级加载 != undefined) {
-                _root.宠物升级加载(mcIdx);
+
+            var attrs:Object = hasObjectAttrs ? oldAttrs : {};
+            levelPetWriteStarted = true;
+            if (!hasObjectAttrs) petInfo[5] = attrs;
+            petInfo[1] = newLevel;
+            attrs.宠物升级所需经验 = newXpNeeded;
+        } catch (levelError) {
+            if (!levelTransactionSettled) {
+                // dirty 首写自身失败时还没有任何可恢复的领域写；不要二次触碰同一
+                // 故障 setter。扣石阶段异常只需恢复通用资产，宠物首写后才恢复全域。
+                var levelRestored:Boolean = true;
+                if (levelDirtyMarked) {
+                    levelRestored = levelPetWriteStarted
+                        ? restorePetTransactionState(levelSnapshot)
+                        : ItemUtil.restorePlayerAssetSnapshot(levelSnapshot.assets);
+                }
+                org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                    levelTransaction, !levelRestored);
+                levelTransactionSettled = true;
             }
+            throw levelError;
+        }
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(levelTransaction);
+
+        try {
+            if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                org.flashNight.arki.achievement.AchievementMetrics.record("宠物培养次数", 1);
+            }
+        } catch (levelMetricError) {
+            trace("[PetPanelService] post-commit level metric failed: " + levelMetricError);
         }
 
-        // 刷新 Flash UI
-        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
-            _root.宠物信息界面.排列宠物图标();
-        }
-
-        sendResponse({
-            task: "pet_response",
-            callId: callId,
-            success: true,
-            slotIndex: slotIndex,
-            newLevel: newLevel,
-            stoneCost: stoneCost,
-            newXpNeeded: newXpNeeded,
-            levelLimit: levelLimit
-        });
+        var levelRebuilt:Boolean = rebuildPetIfDeployed(
+            slotIndex, petInfo, true, "升级动画2", "level_up");
+        return {
+            success:true,
+            slotIndex:slotIndex,
+            newLevel:newLevel,
+            stoneCost:stoneCost,
+            newXpNeeded:newXpNeeded,
+            levelLimit:levelLimit,
+            rebuilt:levelRebuilt,
+            refreshDeferred:petInfo[4] == 1 && levelRebuilt !== true
+        };
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -1087,20 +1156,29 @@ class org.flashNight.arki.merc.PetPanelService {
     public static function handleDelete(params:Object):Void {
         var callId = params.callId;
         var slotIndex:Number = Number(params.slotIndex);
-        if (isNaN(slotIndex) || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "invalid_slot" });
-            return;
+        var result:Object = deletePetSlot(slotIndex);
+        if (result.success === true) refreshPetIconsSafely("delete");
+        result.task = "pet_response";
+        result.callId = callId;
+        sendResponse(result);
+    }
+
+    /**
+     * Web 与旧 Flash UI 共用的解散核心。托管武器取回、灵石返还与清槽共用
+     * 同一玩家物资 frame；只有所有权已经提交后才定点撤销该 slot 的场景投影。
+     */
+    public static function deletePetSlot(slotIndex:Number):Object {
+        if (isNaN(slotIndex) || Math.floor(slotIndex) != slotIndex
+                || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
+            return {success:false, error:"invalid_slot"};
         }
 
         var petInfo:Array = _root.宠物信息[slotIndex];
         if (petInfo == undefined || petInfo.length == 0) {
-            sendResponse({ task: "pet_response", callId: callId, success: false, error: "empty_slot" });
-            return;
+            return {success:false, error:"empty_slot"};
         }
         if (_root.当前为战斗地图 == true) {
-            sendResponse({task:"pet_response", callId:callId,
-                success:false, error:"combat_locked"});
-            return;
+            return {success:false, error:"combat_locked"};
         }
 
         var currentLevel:Number = Number(petInfo[1]);
@@ -1118,14 +1196,10 @@ class org.flashNight.arki.merc.PetPanelService {
         // 场景实例与灵石均保持不变。灵石虽通常进材料栏，仍需防数量上限/异常存档。
         var weaponPreflight:Object = ManagedLongGunService.preflightWithdrawal(petInfo);
         if (weaponPreflight.success !== true) {
-            sendResponse({task:"pet_response", callId:callId,
-                success:false, error:String(weaponPreflight.error)});
-            return;
+            return {success:false, error:String(weaponPreflight.error)};
         }
         if (stoneRefund > 0 && ItemUtil.singleRequire("战宠灵石", stoneRefund) == null) {
-            sendResponse({task:"pet_response", callId:callId,
-                success:false, error:"inventory_full", refund:stoneRefund});
-            return;
+            return {success:false, error:"inventory_full", refund:stoneRefund};
         }
 
         // 返还灵石与清空宠物槽属于同一个领域提交；singleAcquire 在外层事务内
@@ -1133,79 +1207,66 @@ class org.flashNight.arki.merc.PetPanelService {
         var deleteContext:Object = {
             source:"pet_service", reason:"delete_refund", mergeScope:"operation"
         };
+        var deleteSnapshot:Object = capturePetTransactionState();
         var deleteTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(deleteContext);
         var weaponReturned:Boolean = false;
-        if (weaponPreflight.required === true) {
-            var weaponReturn:Object = ManagedLongGunService.withdraw(petInfo);
-            if (weaponReturn.success !== true) {
-                org.flashNight.arki.item.PlayerAssetTransaction.rollback(deleteTransaction);
-                sendResponse({task:"pet_response", callId:callId,
-                    success:false, error:String(weaponReturn.error)});
-                return;
+        try {
+            // 托管取回、灵石返还与清槽之前统一 fail-fast 标脏。
+            org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+                _root.存档系统);
+            if (weaponPreflight.required === true) {
+                var weaponReturn:Object = ManagedLongGunService.withdraw(petInfo);
+                if (weaponReturn.success !== true) {
+                    restorePetTransactionState(deleteSnapshot);
+                    org.flashNight.arki.item.PlayerAssetTransaction.rollback(deleteTransaction);
+                    return {success:false, error:String(weaponReturn.error)};
+                }
+                weaponReturned = true;
             }
-            weaponReturned = true;
-        }
-        if (stoneRefund > 0) {
-            if (!_root.singleAcquire("战宠灵石", stoneRefund, deleteContext)) {
-                org.flashNight.arki.item.PlayerAssetTransaction.rollback(deleteTransaction);
-                sendResponse({task:"pet_response", callId:callId,
-                    success:false, error:"inventory_full", refund:stoneRefund,
-                    weaponReturned:weaponReturned});
-                return;
-            }
-        }
-
-        // 清空槽位
-        _root.宠物信息[slotIndex] = [];
-        // 删除宠物 + 返还灵石均存档字段；返还为 0 时 singleAcquire 不触发标脏，故此处独立标脏
-        _root.存档系统.dirtyMark = true;
-        org.flashNight.arki.item.PlayerAssetTransaction.commit(deleteTransaction);
-
-        // 所有权写入成功后才触碰场景。删除路径统一走显式 lifecycle teardown。
-        if (_root.删除场景宠物 != undefined) {
-            _root.删除场景宠物();
-        }
-
-        // 重建场上其他出战宠物
-        var hasDeployed:Boolean = false;
-        for (var k:Number = 0; k < _root.宠物信息.length; k++) {
-            if (_root.宠物信息[k] != undefined && _root.宠物信息[k].length > 0 && _root.宠物信息[k][4] == 1) {
-                hasDeployed = true;
-                break;
-            }
-        }
-        if (hasDeployed && _root.加载宠物 != undefined) {
-            var heroX:Number = 500;
-            var heroY:Number = 300;
-            if (typeof org != "undefined" && org.flashNight != undefined
-                && org.flashNight.arki != undefined && org.flashNight.arki.unit != undefined
-                && org.flashNight.arki.unit.UnitComponent != undefined
-                && org.flashNight.arki.unit.UnitComponent.Targetcache != undefined
-                && org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager != undefined) {
-                var hero:MovieClip = org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager.findHero();
-                if (hero != undefined) {
-                    heroX = hero._x;
-                    heroY = hero._y;
+            if (stoneRefund > 0) {
+                if (!_root.singleAcquire("战宠灵石", stoneRefund, deleteContext)) {
+                    restorePetTransactionState(deleteSnapshot);
+                    org.flashNight.arki.item.PlayerAssetTransaction.rollback(deleteTransaction);
+                    return {success:false, error:"inventory_full", refund:stoneRefund,
+                        weaponReturned:weaponReturned};
                 }
             }
-            _root.加载宠物(heroX, heroY);
+
+            // 清空槽位
+            _root.宠物信息[slotIndex] = [];
+            org.flashNight.arki.item.PlayerAssetTransaction.commit(deleteTransaction);
+        } catch (deleteAssetError) {
+            var deleteRestored:Boolean = restorePetTransactionState(deleteSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                deleteTransaction, !deleteRestored);
+            throw deleteAssetError;
         }
 
-        // 刷新 Flash UI
-        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
-            _root.宠物信息界面.排列宠物图标();
+        // 所有权写入成功后只撤掉被删 slot 的运行态投影。既有其他战宠保持原实例，
+        // 避免 bare remove 已提交但 canonical 名仍等待 phase flush 时同栈全量重载。
+        var deleteSceneProjected:Boolean = false;
+        try {
+            if (_root.战宠UI函数 != undefined
+                    && typeof _root.战宠UI函数.移除场景宠物槽 == "function") {
+                deleteSceneProjected = _root.战宠UI函数.移除场景宠物槽(
+                    slotIndex) === true;
+            }
+        } catch (deleteSceneRefreshError) {
+            trace("[PetPanelService] post-commit delete slot projection failed: "
+                + deleteSceneRefreshError);
+            deleteSceneProjected = false;
         }
-
-        sendResponse({
-            task: "pet_response",
-            callId: callId,
-            success: true,
-            slotIndex: slotIndex,
-            deleted: true,
-            stoneRefund: stoneRefund,
-            weaponReturned: weaponReturned
-        });
+        var deleteRefreshDeferred:Boolean = deleteSceneProjected !== true;
+        recordPetRefreshSafely(slotIndex, !deleteRefreshDeferred, "delete");
+        return {
+            success:true,
+            slotIndex:slotIndex,
+            deleted:true,
+            stoneRefund:stoneRefund,
+            weaponReturned:weaponReturned,
+            refreshDeferred:deleteRefreshDeferred
+        };
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -1226,9 +1287,7 @@ class org.flashNight.arki.merc.PetPanelService {
     // ═══════════════════════════════════════════════════════════
     public static function handlePanelClose(params:Object):Void {
         // 关闭时刷新宠物图标
-        if (_root.宠物信息界面 != undefined && _root.宠物信息界面.排列宠物图标 != undefined) {
-            _root.宠物信息界面.排列宠物图标();
-        }
+        refreshPetIconsSafely("panel_close");
         var callId = params.callId;
         sendResponse({
             task: "pet_response",
@@ -1279,11 +1338,19 @@ class org.flashNight.arki.merc.PetPanelService {
         var assetContext:Object = {
             source:"pet_service", reason:"world_adopt", mergeScope:"operation"
         };
+        var worldAdoptSnapshot:Object = capturePetTransactionState();
         var assetTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
         var moneyBeforeWorldAdopt:Number = Number(_root.金钱);
         try {
-            _root.金钱 -= goldPrice;   // ← 顺手修：原版 雇佣宠物 漏此行（gate-but-no-charge）
+            org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+                _root.存档系统);
+            try {
+                _root.金钱 -= goldPrice;   // ← 顺手修：原版 雇佣宠物 漏此行（gate-but-no-charge）
+            } finally {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                    Number(_root.金钱) - moneyBeforeWorldAdopt, 0, assetContext);
+            }
 
             // 写入 + 出战上限处理（复刻 雇佣宠物:250-262）。petData = NPC.宠物数据 直接落槽（已是 宠物信息 格式）
             _root.宠物信息[slot] = petData;
@@ -1291,33 +1358,66 @@ class org.flashNight.arki.merc.PetPanelService {
             if (_root.isChallengeMode() == true) _root.最大宠物出战数 = _root.等级 / 35;
             if (_root.isEasyMode() == true) _root.最大宠物出战数 = 5 + _root.等级 / 5;
             if (_root.出战宠物id库.length >= _root.最大宠物出战数) _root.宠物信息[slot][4] = 0;
-            // 扣 金钱 + 写 宠物信息 全 save-relevant，必须标脏
-            _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeWorldAdopt, 0, assetContext);
         } catch (worldAdoptError) {
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeWorldAdopt, 0, assetContext);
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            var worldAdoptRestored:Boolean = restorePetTransactionState(
+                worldAdoptSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !worldAdoptRestored);
             throw worldAdoptError;
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         // 成就记账（对齐 handleAdopt 埋点 #9）
-        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养次数", 1);
-            org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养花费金币", goldPrice);
+        try {
+            if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养次数", 1);
+                org.flashNight.arki.achievement.AchievementMetrics.record("宠物领养花费金币", goldPrice);
+            }
+        } catch (worldAdoptMetricError) {
+            trace("[PetPanelService] post-commit world adopt metric failed: "
+                + worldAdoptMetricError);
         }
 
-        // 世界：删 NPC（还在才删，超时离场则跳过）+ 重载场景宠物（复刻 雇佣宠物:248-266；AS2 独占）
-        var npc:Object = (stash.npcId != undefined) ? _root.gameworld[stash.npcId] : undefined;
-        if (npc != undefined && npc._x != undefined) _root.gameworld[stash.npcId].removeMovieClip();
-        _root.删除场景宠物();
-        _root.加载宠物(_root.gameworld[_root.控制目标]._x, _root.gameworld[_root.控制目标]._y);
+        // 权威招募已经提交；先清 one-shot stash，任何 post-commit 场景回调失败
+        // 都不能让同一 NPC 请求再次扣款/落槽。
         _root._pendingHire = undefined;
 
-        sendResponse({ task: "pet_response", callId: callId, success: true, hired: true, slotIndex: slot, gold: Number(_root.金钱) || 0 });
+        // 世界：删 NPC（还在才删，超时离场则跳过）+ 定点部署新宠（AS2 独占）。
+        try {
+            var npc:Object = stash.npcId != undefined && _root.gameworld != undefined
+                ? _root.gameworld[stash.npcId] : undefined;
+            if (npc != undefined && npc._x != undefined) {
+                _root.gameworld[stash.npcId].removeMovieClip();
+            }
+        } catch (worldNpcCleanupError) {
+            trace("[PetPanelService] post-commit world NPC cleanup failed: "
+                + worldNpcCleanupError);
+        }
+        // 新宠权威 flag=1 时只部署新 slot；既有单位不清场、不重建，因此其同图
+        // 已结算效果与 canonical 实例都原样保留。flag=0 无需场景写，视为已收敛。
+        var worldSceneProjected:Boolean = _root.宠物信息[slot][4] != 1;
+        if (!worldSceneProjected) {
+            try {
+                var controlledHero:Object = _root.gameworld != undefined
+                    ? _root.gameworld[_root.控制目标] : undefined;
+                worldSceneProjected = controlledHero != undefined
+                    && _root.战宠UI函数 != undefined
+                    && typeof _root.战宠UI函数.设置宠物出战 == "function"
+                    && _root.战宠UI函数.设置宠物出战(
+                        slot, true, controlledHero._x, controlledHero._y) === true;
+            } catch (worldSceneDeployError) {
+                trace("[PetPanelService] post-commit world pet deploy failed: "
+                    + worldSceneDeployError);
+                worldSceneProjected = false;
+            }
+        }
+        var worldRefreshDeferred:Boolean = worldSceneProjected !== true;
+        recordPetRefreshSafely(slot, !worldRefreshDeferred, "world_adopt");
+        refreshPetIconsSafely("world_adopt");
+
+        sendResponse({ task: "pet_response", callId: callId, success: true,
+            hired: true, slotIndex: slot, gold: Number(_root.金钱) || 0,
+            refreshDeferred: worldRefreshDeferred });
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -1328,6 +1428,22 @@ class org.flashNight.arki.merc.PetPanelService {
         _root.server.sendSocketMessage(_json.stringifySafe(resp));
     }
 
+    /**
+     * Flash 宠物图标只是权威状态的可选投影。帧脚本异常不能截断 Web 成功回包，
+     * 否则领养、进阶、升级或删除会被误判成未知结果并被客户端重放。
+     */
+    private static function refreshPetIconsSafely(reason:String):Void {
+        try {
+            if (_root.宠物信息界面 != undefined
+                    && _root.宠物信息界面.排列宠物图标 != undefined) {
+                _root.宠物信息界面.排列宠物图标();
+            }
+        } catch (petIconRefreshError) {
+            trace("[PetPanelService] post-commit icon refresh failed reason="
+                + reason + " error=" + petIconRefreshError);
+        }
+    }
+
     private static function validPetSlot(slotIndex:Number):Boolean {
         if (isNaN(slotIndex) || Math.floor(slotIndex) != slotIndex
                 || slotIndex < 0 || slotIndex >= _root.宠物信息.length) return false;
@@ -1335,11 +1451,86 @@ class org.flashNight.arki.merc.PetPanelService {
         return info != undefined && info.length >= 5;
     }
 
-    private static function rebuildManagedPetIfDeployed(slotIndex:Number, petInfo:Array):Boolean {
+    private static function rebuildPetIfDeployed(slotIndex:Number, petInfo:Array,
+                                                  upgradeRebuild:Boolean,
+                                                  effectName:String,
+                                                  refreshReason:String):Boolean {
         if (petInfo == undefined || petInfo[4] != 1) return true;
         if (_root.战宠UI函数 == undefined
-                || typeof _root.战宠UI函数.重建宠物单位 != "function") return false;
-        return _root.战宠UI函数.重建宠物单位(slotIndex) === true;
+                || typeof _root.战宠UI函数.重建宠物单位 != "function") {
+            recordPetRefreshSafely(slotIndex, false, refreshReason);
+            return false;
+        }
+        var rebuildSuccess:Boolean = false;
+        try {
+            rebuildSuccess = _root.战宠UI函数.重建宠物单位(
+                slotIndex, upgradeRebuild === true, effectName) === true;
+        } catch (rebuildError) {
+            // 资产/等级/进阶均已提交；重建失败只要求后续刷新，不得截断 success 回包。
+            trace("[PetPanelService] post-commit pet rebuild failed slot="
+                + slotIndex + " error=" + rebuildError);
+        }
+        recordPetRefreshSafely(slotIndex, rebuildSuccess, refreshReason);
+        return rebuildSuccess;
+    }
+
+    /** refresh-deferred 本身也是 post-commit 可观测性，记录器异常不能改写领域结果。 */
+    private static function recordPetRefreshSafely(slotIndex:Number, success:Boolean,
+                                                    reason:String):Void {
+        try {
+            if (_root.战宠UI函数 != undefined
+                    && typeof _root.战宠UI函数.记录宠物刷新结果 == "function") {
+                _root.战宠UI函数.记录宠物刷新结果(slotIndex, success, reason);
+            }
+        } catch (refreshRecordError) {
+            trace("[PetPanelService] refresh-deferred marker failed slot="
+                + slotIndex + " reason=" + reason + " error=" + refreshRecordError);
+        }
+    }
+
+    /**
+     * 七个宠物资产操作的 exact 领域快照。通用容器/货币由 ItemUtil 负责；
+     * 宠物槽、涨价计数与出战/格子标量由本服务恢复。所有恢复均发生在 PAT
+     * settle(false) 之前，只有完整成功才丢弃 partial receipt。
+     */
+    private static function capturePetTransactionState():Object {
+        var ext:Object = _root._saveExt;
+        var purchaseCountsExists:Boolean = ext != undefined && ext != null
+            && ext.hasOwnProperty("宠物购买次数");
+        return {
+            assets:ItemUtil.capturePlayerAssetSnapshot(),
+            petInfo:ObjectUtil.clone(_root.宠物信息),
+            purchaseCountsExists:purchaseCountsExists,
+            purchaseCounts:purchaseCountsExists
+                ? ObjectUtil.clone(ext.宠物购买次数) : null,
+            petSlotLimit:_root.宠物领养限制,
+            maxDeploy:_root.最大宠物出战数,
+            deployedIds:ObjectUtil.clone(_root.出战宠物id库)
+        };
+    }
+
+    private static function restorePetTransactionState(snapshot:Object):Boolean {
+        if (snapshot == null) return false;
+        try {
+            _root.宠物信息 = ObjectUtil.clone(snapshot.petInfo);
+            _root.宠物领养限制 = snapshot.petSlotLimit;
+            _root.最大宠物出战数 = snapshot.maxDeploy;
+            _root.出战宠物id库 = ObjectUtil.clone(snapshot.deployedIds);
+            if (snapshot.purchaseCountsExists === true) {
+                if (_root._saveExt == undefined || _root._saveExt == null) {
+                    _root._saveExt = {};
+                }
+                _root._saveExt.宠物购买次数 = ObjectUtil.clone(
+                    snapshot.purchaseCounts);
+            } else if (_root._saveExt != undefined && _root._saveExt != null) {
+                delete _root._saveExt.宠物购买次数;
+            }
+        } catch (petRestoreError) {
+            trace("[PetPanelService] pet authority snapshot restore failed: "
+                + petRestoreError);
+            return false;
+        }
+        return ItemUtil.restorePlayerAssetSnapshot(snapshot.assets);
     }
 
     // ── 宠物购买涨价（持久）─────────────────────────────────────────────

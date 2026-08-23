@@ -18,6 +18,9 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     // 默认的基础工厂，预置了常用的伤害处理器
     public static var Basic:DamageManagerFactory;
 
+    // 实际命中即终结的冷路径工厂：只做分类，不装载会改资源/护盾的附加处理器。
+    public static var ActualTerminal:DamageManagerFactory;
+
     /**
      * 创建一个默认的基础伤害工厂，内置常用处理器。
      * 该工厂包含以下处理器：
@@ -53,12 +56,35 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         return factory;
     }
 
+    /** 创建“分类后终结”专用工厂；顺序必须与 Basic 的前四个分类处理器一致。 */
+    public static function createActualTerminal():DamageManagerFactory {
+        var handles:Array = [
+            CritDamageHandle.getInstance(),
+            UniversalDamageHandle.getInstance(),
+            DodgeStateDamageHandle.getInstance(),
+            MultiShotDamageHandle.getInstance(),
+            ActualTerminalDamageHandle.getInstance()
+        ];
+        var factory:DamageManagerFactory = new DamageManagerFactory(handles, 16);
+        registerExistingFactory("ActualTerminal", factory);
+        return factory;
+    }
+
     /**
      * 初始化默认的基础工厂。
      * 调用此方法后，可以通过 DamageManagerFactory.Basic 访问默认工厂。
      */
     public static function init():Void {
         Basic = createBasic();
+        ActualTerminal = createActualTerminal();
+    }
+
+    /** 子弹创建期唯一 manager 选择点；实际命中强制终结只付一次冷路径分支。 */
+    public static function resolveForBullet(bullet:Object):DamageManager {
+        if (bullet != null && bullet.实际命中强制击杀 === true && ActualTerminal != null) {
+            return ActualTerminal.getDamageManager(bullet);
+        }
+        return Basic.getDamageManager(bullet);
     }
 
     /**

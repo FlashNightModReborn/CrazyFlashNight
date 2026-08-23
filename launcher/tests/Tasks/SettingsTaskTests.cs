@@ -30,6 +30,7 @@ namespace CF7Launcher.Tests.Tasks
             public readonly UserPrefs Prefs;
             public readonly SettingsTask Task;
             public bool SaveResult = true;
+            public string PanelInstance = "settings.instance.1";
 
             public Harness(int timeoutMs = 10000, bool sendResult = true)
             {
@@ -41,7 +42,7 @@ namespace CF7Launcher.Tests.Tasks
                     delegate { return SaveResult; },
                     timeoutMs);
                 Task.SetPostToWeb(delegate(string json) { Web.Add(JObject.Parse(json)); });
-                Assert.True(Task.BindPanelInstance("settings.instance.1"));
+                Assert.True(Task.BindPanelInstance(PanelInstance));
             }
 
             public JObject Send(string cmd, JObject payload, string callId = "web.settings.1")
@@ -51,11 +52,16 @@ namespace CF7Launcher.Tests.Tasks
                     ["domain"] = "settings",
                     ["cmd"] = cmd,
                     ["callId"] = callId,
-                    ["panelInstanceId"] = "settings.instance.1",
+                    ["panelInstanceId"] = PanelInstance,
                     ["payload"] = payload
                 });
                 if (Flash.Count == 0) return null;
                 return JObject.Parse(Flash[Flash.Count - 1].TrimEnd('\0'));
+            }
+
+            public void CaptureWebPosts()
+            {
+                Task.SetPostToWeb(delegate(string json) { Web.Add(JObject.Parse(json)); });
             }
 
             public void Dispose() { Task.Dispose(); }
@@ -225,6 +231,55 @@ namespace CF7Launcher.Tests.Tasks
                 JObject web = Assert.Single(h.Web);
                 Assert.False(web.Value<bool>("success"));
                 Assert.Equal("malformed_response", web.Value<string>("error"));
+                Assert.True(web.Value<bool>("requiresReconcile"));
+            }
+        }
+
+        [Fact]
+        public void DeliveryUnknownWrite_RequiresAuthorityReconcileWhilePreviewDoesNot()
+        {
+            using (var write = new Harness(10000, false))
+            {
+                Assert.NotNull(write.Send("save", new JObject { ["v"] = 1 }));
+                JObject response = Assert.Single(write.Web);
+                Assert.Equal("delivery_unknown", response.Value<string>("error"));
+                Assert.True(response.Value<bool>("requiresReconcile"));
+            }
+
+            using (var preview = new Harness(10000, false))
+            {
+                Assert.NotNull(preview.Send("preview", new JObject
+                {
+                    ["v"] = 1,
+                    ["globalVolume"] = 80,
+                    ["bgmVolume"] = 60,
+                    ["sample"] = "none"
+                }));
+                JObject response = Assert.Single(preview.Web);
+                Assert.Equal("delivery_unknown", response.Value<string>("error"));
+                Assert.Null(response["requiresReconcile"]);
+            }
+        }
+
+        [Fact]
+        public void MalformedSuccessfulCancel_PreservesPartialRestoreAsUnknownWrite()
+        {
+            using (var h = new Harness())
+            {
+                JObject sent = h.Send("cancel", new JObject { ["v"] = 1 });
+                h.Task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "settings_response",
+                    ["callId"] = sent.Value<int>("callId"),
+                    ["success"] = true,
+                    ["v"] = 1,
+                    ["operation"] = "cancel",
+                    ["previewRestored"] = false,
+                    ["previewActive"] = true
+                }, delegate { });
+                JObject response = Assert.Single(h.Web);
+                Assert.Equal("malformed_response", response.Value<string>("error"));
+                Assert.True(response.Value<bool>("requiresReconcile"));
             }
         }
 
@@ -264,17 +319,153 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void TimedOutWrite_ReportsUnknownOutcomeAndReleasesSingleWriterGate()
+        public void TimedOutWrite_BlocksFurtherWritesUntilAuthoritativeSnapshot()
         {
-            using (var h = new Harness(25))
+            using (var h = new Harness(100))
             {
                 Assert.NotNull(h.Send("apply", ApplyPayload(), "web.settings.timeout"));
                 Assert.True(SpinWait.SpinUntil(delegate { return h.Web.Count == 1; }, 2000));
                 Assert.Equal("timeout", h.Web[0].Value<string>("error"));
                 Assert.True(h.Web[0].Value<bool>("requiresReconcile"));
 
-                Assert.NotNull(h.Send("save", new JObject { ["v"] = 1 }, "web.settings.after-timeout"));
+                int flashCount = h.Flash.Count;
+                h.Send("save", new JObject { ["v"] = 1 }, "web.settings.after-timeout");
+                Assert.Equal(flashCount, h.Flash.Count);
+                Assert.Equal("reconcile_required", h.Web[1].Value<string>("error"));
+                Assert.True(h.Web[1].Value<bool>("requiresReconcile"));
+
+                JObject snapshot = h.Send("snapshot", new JObject { ["v"] = 1 },
+                    "web.settings.reconcile");
                 Assert.Equal(2, h.Flash.Count);
+                h.Task.HandleFlashResponse(
+                    SnapshotResponse(snapshot.Value<int>("callId")), delegate { });
+                Assert.True(h.Web[2].Value<bool>("success"));
+
+                h.Send("save", new JObject { ["v"] = 1 }, "web.settings.after-reconcile");
+                Assert.Equal(3, h.Flash.Count);
+            }
+        }
+
+        [Fact]
+        public void UnknownWriteLatch_SurvivesCloseAndRebindUntilValidSnapshot()
+        {
+            using (var h = new Harness())
+            {
+                JObject apply = h.Send("apply", ApplyPayload(), "web.settings.ambiguous");
+                h.Task.SetPostToWeb(null);
+                h.Task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "settings_response",
+                    ["callId"] = apply.Value<int>("callId"),
+                    ["success"] = false,
+                    ["v"] = 1,
+                    ["operation"] = "apply",
+                    ["error"] = "apply_ambiguous",
+                    ["requiresReconcile"] = true
+                }, delegate { });
+                Assert.Empty(h.Web);
+
+                Assert.True(h.Task.HandleAuthoritativePanelClosed(h.PanelInstance));
+                h.PanelInstance = "settings.instance.2";
+                Assert.True(h.Task.BindPanelInstance(h.PanelInstance));
+                h.CaptureWebPosts();
+                int flashCount = h.Flash.Count;
+
+                h.Send("save", new JObject { ["v"] = 1 }, "web.settings.after-rebind");
+                Assert.Equal(flashCount, h.Flash.Count);
+                Assert.Equal("reconcile_required", h.Web[0].Value<string>("error"));
+                Assert.Equal(h.PanelInstance, h.Web[0].Value<string>("panelInstanceId"));
+
+                JObject snapshot = h.Send("snapshot", new JObject { ["v"] = 1 },
+                    "web.settings.rebind-snapshot");
+                h.Task.HandleFlashResponse(
+                    SnapshotResponse(snapshot.Value<int>("callId")), delegate { });
+                Assert.True(h.Web[1].Value<bool>("success"));
+                Assert.Equal(h.PanelInstance, h.Web[1].Value<string>("panelInstanceId"));
+
+                h.Send("save", new JObject { ["v"] = 1 },
+                    "web.settings.after-rebind-reconcile");
+                Assert.Equal(flashCount + 2, h.Flash.Count);
+            }
+        }
+
+        [Fact]
+        public void InFlightWriteClearedByDetach_RequiresSnapshotAfterRebind()
+        {
+            using (var h = new Harness())
+            {
+                Assert.NotNull(h.Send("apply", ApplyPayload(),
+                    "web.settings.in-flight"));
+                Assert.Single(h.Flash);
+
+                h.Task.ClearPending();
+                h.PanelInstance = "settings.instance.after-detach";
+                Assert.True(h.Task.BindPanelInstance(h.PanelInstance));
+                int flashCount = h.Flash.Count;
+
+                h.Send("save", new JObject { ["v"] = 1 },
+                    "web.settings.after-detach");
+                Assert.Equal(flashCount, h.Flash.Count);
+                JObject rejected = Assert.Single(h.Web);
+                Assert.Equal("reconcile_required", rejected.Value<string>("error"));
+                Assert.True(rejected.Value<bool>("requiresReconcile"));
+                Assert.Equal(h.PanelInstance,
+                    rejected.Value<string>("panelInstanceId"));
+
+                JObject snapshot = h.Send("snapshot", new JObject { ["v"] = 1 },
+                    "web.settings.detach-snapshot");
+                h.Task.HandleFlashResponse(
+                    SnapshotResponse(snapshot.Value<int>("callId")), delegate { });
+                Assert.True(h.Web[1].Value<bool>("success"));
+
+                h.Send("save", new JObject { ["v"] = 1 },
+                    "web.settings.after-detach-reconcile");
+                Assert.Equal(flashCount + 2, h.Flash.Count);
+            }
+        }
+
+        [Fact]
+        public void SnapshotIssuedBeforeAmbiguousWrite_CannotClearNewReconcileEpoch()
+        {
+            using (var h = new Harness())
+            {
+                JObject oldSnapshot = h.Send("snapshot", new JObject { ["v"] = 1 },
+                    "web.settings.old-snapshot");
+                JObject apply = h.Send("apply", ApplyPayload(),
+                    "web.settings.epoch-write");
+                Assert.Equal(2, h.Flash.Count);
+
+                h.Task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "settings_response",
+                    ["callId"] = apply.Value<int>("callId"),
+                    ["success"] = false,
+                    ["v"] = 1,
+                    ["operation"] = "apply",
+                    ["error"] = "apply_ambiguous",
+                    ["requiresReconcile"] = true
+                }, delegate { });
+                Assert.True(h.Web[0].Value<bool>("requiresReconcile"));
+
+                h.Task.HandleFlashResponse(
+                    SnapshotResponse(oldSnapshot.Value<int>("callId")), delegate { });
+                Assert.True(h.Web[1].Value<bool>("success"));
+                Assert.True(h.Web[1].Value<bool>("requiresReconcile"));
+                int flashCount = h.Flash.Count;
+
+                h.Send("save", new JObject { ["v"] = 1 },
+                    "web.settings.after-old-snapshot");
+                Assert.Equal(flashCount, h.Flash.Count);
+                Assert.Equal("reconcile_required", h.Web[2].Value<string>("error"));
+
+                JObject newSnapshot = h.Send("snapshot", new JObject { ["v"] = 1 },
+                    "web.settings.new-snapshot");
+                h.Task.HandleFlashResponse(
+                    SnapshotResponse(newSnapshot.Value<int>("callId")), delegate { });
+                Assert.Null(h.Web[3]["requiresReconcile"]);
+                h.Send("save", new JObject { ["v"] = 1 },
+                    "web.settings.after-new-snapshot");
+                Assert.Equal(flashCount + 2, h.Flash.Count);
             }
         }
 

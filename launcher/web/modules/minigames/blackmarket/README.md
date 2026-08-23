@@ -42,6 +42,12 @@ Launcher 内从“其他 → 测试 → 黑市鉴定测试”打开。Host 仍�
 
 面板拒绝非 `dev + shadowOnly`。`debug:true` 不创建调试 API；`seed`、旧 bootstrap marker 或旧 `allowExactIdentityLab` 字符串即使由同页代码伪造，也不会改变匿名产品 core 或面板能力。`blackmarket` 仍没有普通游戏命令、NPC opener 或正式 domain contract。
 
+close 仍属于 Host-owned panel lifecycle。Web 必须发送当前 `panelInstanceId`，并等待 Host 返回 exact
+`panel_cmd close` 后才 retire；Bridge 投递成功不等于 Host 已接受。Host 只关闭当前 active
+name/instance；确认在 3 秒内丢失时 Web 只解除 pending 以允许重试，不本地关闭，也不允许旧 timer
+解锁 replacement。迟到实例 A 的 close 不能关闭 replacement B。该约束不改变 `dev + shadowOnly`、
+匿名表面、影子余额或 `productionWrites=false`。
+
 浏览器夹具：
 
 ```text
@@ -61,7 +67,7 @@ node tools/test-panel-contracts.js
 
 当前 Node 逻辑门为 22/22：其中 `bm22` 锁定产品 core 拒绝 exact catalog，并证明所有公开 `category/subclass/counterPrice` 三元组在真实目录中命中 0 项；`bm20` 锁定 K 提取/回售双币种账本；`bm21` 用只存在于 CommonJS 的私有熵注入 seam 证明调用方 seed 不能重放产品状态。装备/检视专项当前为 44/44，并锁定旧 marker 预置后浏览器产品 core 仍无 exact API、普通 lazy closure 不含 exact/dressup 依赖、Web 根没有 exact catalog/oracle 文件，且两个历史 HTTP 路径均返回 404。
 
-浏览器 harness 现有 7 个场景：匿名三舱、DOM/新请求与历史 URL 负例、购买回售、旧 marker/capability 失效、固定布局、匿名放大检视和 PanelScale。浏览器用例已编写不等于已执行；本轮没有物理 WebView2 结果，仍保持 `NOT_RUN`，Node 门不代替像素观感、正式 runtime 或业务 E2E。
+浏览器 harness 现有 8 个场景：匿名三舱、DOM/新请求与历史 URL 负例、购买回售、旧 marker/capability 失效、固定布局、匿名放大检视、PanelScale，以及 close acknowledgment 丢失后保持打开并以同一 exact instance 重试。浏览器用例已编写不等于物理 WebView2 已执行；Node 门不代替像素观感、正式 runtime 或业务 E2E。
 
 ## 下一阶段
 

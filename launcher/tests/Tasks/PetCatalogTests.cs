@@ -12,6 +12,7 @@ namespace CF7Launcher.Tests.Tasks
     // 覆盖 PetCatalogLoader 解析 + PetTask.adopt_list web 直答（不经 Flash、不需 client ready）。
     public class PetCatalogTests : IDisposable
     {
+        private const string PanelInstanceId = "panel.team.pet-catalog-tests";
         private readonly string _root;
 
         public PetCatalogTests()
@@ -85,8 +86,9 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             var task = new PetTask(delegate { return false; }, delegate(string p) { }, _root);
             task.SetPostToWeb(delegate(string json) { posted = json; });
+            Bind(task);
 
-            task.HandleWebRequest("pet_lib", JObject.Parse("{\"callId\":\"web-9\"}"));
+            task.HandleWebRequest("pet_lib", PetRequest("{\"callId\":\"web-9\"}"));
 
             var resp = JObject.Parse(posted);
             Assert.Equal("pet_lib", (string)resp["cmd"]);
@@ -112,8 +114,9 @@ namespace CF7Launcher.Tests.Tasks
             // isClientReady = false：web 直答不依赖 Flash 连接
             var task = new PetTask(delegate { return false; }, delegate(string p) { }, _root);
             task.SetPostToWeb(delegate(string json) { posted = json; });
+            Bind(task);
 
-            task.HandleWebRequest("adopt_list", JObject.Parse("{\"callId\":\"web-1\"}"));
+            task.HandleWebRequest("adopt_list", PetRequest("{\"callId\":\"web-1\"}"));
 
             var resp = JObject.Parse(posted);
             Assert.Equal("panel_resp", (string)resp["type"]);
@@ -142,8 +145,9 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             var task = new PetTask(delegate { return true; }, delegate(string p) { }, _root);
             task.SetPostToWeb(delegate(string json) { posted = json; });
+            Bind(task);
 
-            task.HandleWebRequest("adopt_list", JObject.Parse("{\"callId\":\"web-2\",\"categoryIndex\":1}"));
+            task.HandleWebRequest("adopt_list", PetRequest("{\"callId\":\"web-2\",\"categoryIndex\":1}"));
 
             var resp = JObject.Parse(posted);
             Assert.True((bool)resp["success"]);
@@ -160,8 +164,9 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             var task = new PetTask(delegate { return false; }, delegate(string p) { }, _root);
             task.SetPostToWeb(delegate(string json) { posted = json; });
+            Bind(task);
 
-            task.HandleWebRequest("adopt_list", JObject.Parse(
+            task.HandleWebRequest("adopt_list", PetRequest(
                 "{\"callId\":\"web-r\",\"rosterType\":\"mechanical\",\"categoryIndex\":0}"));
 
             var resp = JObject.Parse(posted);
@@ -183,8 +188,9 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             var task = new PetTask(delegate { return false; }, delegate(string p) { }, _root);
             task.SetPostToWeb(delegate(string json) { posted = json; });
+            Bind(task);
 
-            task.HandleWebRequest("adopt_list", JObject.Parse("{\"callId\":\"web-r2\",\"rosterType\":\"robot\"}"));
+            task.HandleWebRequest("adopt_list", PetRequest("{\"callId\":\"web-r2\",\"rosterType\":\"robot\"}"));
 
             var resp = JObject.Parse(posted);
             Assert.False((bool)resp["success"]);
@@ -197,8 +203,9 @@ namespace CF7Launcher.Tests.Tasks
             string sent = null;
             // 无 projectRoot → 退回 Flash 透传（保留 legacy 行为）
             var task = new PetTask(delegate { return true; }, delegate(string p) { sent = p; });
+            Bind(task);
 
-            task.HandleWebRequest("adopt_list", JObject.Parse("{\"callId\":\"web-3\",\"categoryIndex\":0}"));
+            task.HandleWebRequest("adopt_list", PetRequest("{\"callId\":\"web-3\",\"categoryIndex\":0}"));
 
             Assert.NotNull(sent);
             var msg = JObject.Parse(sent.TrimEnd('\0'));
@@ -237,7 +244,8 @@ namespace CF7Launcher.Tests.Tasks
             string posted = null;
             var task = new PetTask(delegate { return false; }, delegate(string p) { }, projectRoot);
             task.SetPostToWeb(delegate(string json) { posted = json; });
-            task.HandleWebRequest("adopt_list", JObject.Parse(
+            Bind(task);
+            task.HandleWebRequest("adopt_list", PetRequest(
                 "{\"callId\":\"web-t800\",\"rosterType\":\"mechanical\",\"categoryIndex\":0}"));
 
             var resp = JObject.Parse(posted);
@@ -258,6 +266,19 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True((bool)projectedT800["unique"]);
             Assert.Equal(620000, (int)projectedT800["price"]);
             Assert.Equal(0, (int)projectedT800["kprice"]);
+        }
+
+        private static void Bind(PetTask task)
+        {
+            Assert.True(task.BindPanelInstance(PanelInstanceId));
+        }
+
+        private static JObject PetRequest(string json)
+        {
+            JObject request = JObject.Parse(json);
+            request["panel"] = "pets";
+            request["panelInstanceId"] = PanelInstanceId;
+            return request;
         }
 
         private static string FindProjectRoot()

@@ -2234,6 +2234,8 @@ class Program
             craftingTask.Dispose();
             hairdresserTask.Dispose();
             settingsTask.Dispose();
+            petTask.Dispose();
+            mercTask.Dispose();
             equipmentTuningTask.Dispose();
             characterBuildTask.Dispose();
             mapTask.Dispose();
@@ -2300,6 +2302,8 @@ class Program
             try { craftingTask.Dispose(); } catch { }
             try { hairdresserTask.Dispose(); } catch { }
             try { settingsTask.Dispose(); } catch { }
+            try { petTask.Dispose(); } catch { }
+            try { mercTask.Dispose(); } catch { }
             try { lootPanelCoordinator.Dispose(); } catch { }
             try { equipmentTuningTask.Dispose(); } catch { }
             try { characterBuildTask.Dispose(); } catch { }
@@ -3155,6 +3159,8 @@ class Program
         try { craftingTask.Dispose(); } catch { }
         try { hairdresserTask.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }
+        try { petTask.Dispose(); } catch { }
+        try { mercTask.Dispose(); } catch { }
         try { lootPanelCoordinator.Dispose(); } catch { }
         try { equipmentTuningTask.Dispose(); } catch { }
         try { characterBuildTask.Dispose(); } catch { }

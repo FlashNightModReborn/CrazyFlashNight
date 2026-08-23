@@ -48,6 +48,12 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
                 attributeInfo.hitMark = String(attributeNode.hitMark);
             }
 
+            // 实际命中终结是子弹类型的静态结算能力，必须在 attachMovie / 首帧脚本前
+            // 进入 Obj；这样普通 MC、透明弹与无 MC settlement bullet 共用同一权威。
+            if(attributeNode.actualTerminal != undefined && Boolean(attributeNode.actualTerminal)) {
+                attributeInfo.实际命中强制击杀 = true;
+            }
+
             // === 射线配置解析 ===
             // 通过 <rayConfig> 节点存在性判定射线类型，同时设置 FLAG_RAY
             // 使用 additionalFlags 存储，由 BulletInitializer.initializeBulletProperties 位或合并到 Obj.flags

@@ -1,5 +1,7 @@
 ﻿_root.战宠进阶函数 = new Object();
 
+// 现役 Web 入口由 PetPanelService 统一提交事务、重建单位并返回结果。
+// 各方案的 执行 函数只允许修改权威货币/宠物属性；旧 Flash 提示、换色和刷新不得混入提交窗口。
 var 无条件 = function(){
 	return true;
 }
@@ -69,7 +71,6 @@ _root.战宠进阶函数.基础训练 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成基础训练！");
 		_root.金钱 -= this.进阶方案.基础训练.消耗金币;
 		if(!this.当前宠物属性.基础训练){
 			this.当前宠物属性.基础训练 = {
@@ -81,8 +82,7 @@ _root.战宠进阶函数.基础训练 = {
 			this.当前宠物属性.基础训练.次数 = 1;
 			this.当前宠物属性.基础训练.基础训练 = true;
 		}
-		// _root.宠物信息界面.排列宠物图标();
-		刷新当前宠物();
+		// 单位刷新由调用边界统一执行；方案函数只提交进阶数据与货币写。
 	},
 	单位进阶执行:function(){
 		if(this.宠物属性.基础训练 && this.宠物属性.基础训练.启用){
@@ -174,7 +174,6 @@ _root.战宠进阶函数.强化药剂 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成强化药剂注射与适应性训练！");
 		_root.金钱 -= this.进阶方案.强化药剂.消耗金币;
 		if(!this.当前宠物属性.基础训练){
 			this.当前宠物属性.基础训练 = {
@@ -188,8 +187,7 @@ _root.战宠进阶函数.强化药剂 = {
 			}
 			this.当前宠物属性.基础训练.强化药剂 = true;
 		} 
-		// _root.宠物信息界面.排列宠物图标();
-		刷新当前宠物();
+		// 单位刷新由调用边界统一执行；方案函数只提交进阶数据与货币写。
 	},
 	单位进阶执行:_root.战宠进阶函数.基础训练.单位进阶执行
 }
@@ -248,7 +246,6 @@ _root.战宠进阶函数.超级血清 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成超级血清注射与适应性训练！");
 		_root.金钱 -= this.进阶方案.超级血清.消耗金币;
 		if(!this.当前宠物属性.基础训练){
 			this.当前宠物属性.基础训练 = {
@@ -262,8 +259,6 @@ _root.战宠进阶函数.超级血清 = {
 			}
 			this.当前宠物属性.基础训练.超级血清 = true;
 		} 
-		//_root.宠物信息界面["宠物信息显示框"+this.宠物信息数组号].宠物名 = "";
-		// _root.宠物信息界面.排列宠物图标();
 	},
 	单位进阶执行:_root.战宠进阶函数.基础训练.单位进阶执行
 }
@@ -312,7 +307,6 @@ _root.战宠进阶函数.弹射弧光斩 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成武器升级！");
 		_root.金钱 -= this.进阶方案.弹射弧光斩.消耗金币;
 		this.当前宠物属性.弹射弧光斩 = true;
 	},
@@ -367,7 +361,6 @@ _root.战宠进阶函数.广域裂空斩 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成武器升级！");
 		_root.金钱 -= this.进阶方案.广域裂空斩.消耗金币;
 		this.当前宠物属性.广域裂空斩 = true;
 	},
@@ -426,7 +419,6 @@ _root.战宠进阶函数.导弹烈炎炮 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成武器升级！");
 		_root.金钱 -= this.进阶方案.导弹烈炎炮.消耗金币;
 		this.当前宠物属性.导弹烈炎炮 = true;
 	},
@@ -474,15 +466,6 @@ _root.战宠进阶函数.切换发型 = {
 			this.当前宠物属性.发色="橙";
 		}else{
 			this.当前宠物属性.发色="白";
-		}
-		//this.JK.gotoAndStop(this.当前宠物属性.发色);
-		_root.宠物信息界面["宠物信息显示框"+this.宠物信息数组号].宠物头像.JK.gotoAndStop(this.当前宠物属性.发色);
-		// 查找战宠是否在场
-		for(i=0; i<_root.宠物mc库.length; i++){
-			if(_root.宠物mc库[i].宠物属性.宠物信息数组号 == this.宠物信息数组号){
-				_root.宠物mc库[i].发色 = this.当前宠物属性.发色;
-				break;
-			}
 		}
 	}
 }
@@ -533,22 +516,122 @@ _root.战宠进阶函数.常驻淬毒 = {
 		}
 	},
 	单位进阶执行:function(){
+		// 战宠创建采用同步两阶段候选：候选通过 readiness 且正式进入活动数组前，
+		// 不得扣除每图费用。正式采用后由战宠系统以同一函数补做一次结算。
+		if(this.延迟常驻淬毒结算 === true) return;
 		if(!this.已常驻淬毒 && _root.当前为战斗地图 && this.宠物属性.常驻淬毒 && this.宠物属性.常驻淬毒.启用){
 			if(this.宠物属性.常驻淬毒.来源 == "玩家"){
 				if(_root.金钱 >= _root.战宠进阶函数.常驻淬毒.消耗金币){
 					var poisonCost:Number = Number(_root.战宠进阶函数.常驻淬毒.消耗金币);
-					_root.金钱 -= poisonCost;
-					org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-						-poisonCost, 0,
-						{source:"pet_service", reason:"persistent_poison"});
-					if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-					_root.发布消息("战宠"+this.名字+"消耗金币"+_root.战宠进阶函数.常驻淬毒.消耗金币+"淬毒");
-					if(this.淬毒){
-						this.淬毒 += _root.战宠进阶函数.常驻淬毒.效果;
-					}else{
-						this.淬毒 = _root.战宠进阶函数.常驻淬毒.效果;
+					var poisonContext:Object = {
+						source:"pet_service", reason:"persistent_poison",
+						mergeScope:"operation"
+					};
+					var poisonMoneyBefore:Number = Number(_root.金钱);
+					var poisonSave:Object = _root.存档系统;
+					var poisonDirtyBefore:Object = poisonSave == undefined
+						? undefined : poisonSave.dirtyMark;
+					var poisonHadValue:Boolean = this.hasOwnProperty("淬毒");
+					var poisonValueBefore:Object = this.淬毒;
+					var poisonHadMarker:Boolean = this.hasOwnProperty("已常驻淬毒");
+					var poisonMarkerBefore:Object = this.已常驻淬毒;
+					var poisonUnit:Object = this;
+					var restorePoisonSnapshot:Function = function():Object{
+						var moneyRestored:Boolean = false;
+						var unitRestored:Boolean = false;
+						var dirtyRestored:Boolean = poisonSave == undefined;
+						try{
+							if(poisonHadValue) poisonUnit.淬毒 = poisonValueBefore;
+							else delete poisonUnit.淬毒;
+						}catch(poisonValueRestoreError){
+							trace("[战宠淬毒] poison restore failed: " + poisonValueRestoreError);
+						}
+						try{
+							if(poisonHadMarker) poisonUnit.已常驻淬毒 = poisonMarkerBefore;
+							else delete poisonUnit.已常驻淬毒;
+						}catch(poisonMarkerRestoreError){
+							trace("[战宠淬毒] marker restore failed: " + poisonMarkerRestoreError);
+						}
+						// setter 可能“先写后抛”；以最终字段和值而非 catch 与否判 exact。
+						try{
+							var poisonValueMatches:Boolean = poisonHadValue
+								? poisonUnit.hasOwnProperty("淬毒")
+									&& poisonUnit.淬毒 === poisonValueBefore
+								: !poisonUnit.hasOwnProperty("淬毒");
+							var poisonMarkerMatches:Boolean = poisonHadMarker
+								? poisonUnit.hasOwnProperty("已常驻淬毒")
+									&& poisonUnit.已常驻淬毒 === poisonMarkerBefore
+								: !poisonUnit.hasOwnProperty("已常驻淬毒");
+							unitRestored = poisonValueMatches && poisonMarkerMatches;
+						}catch(poisonVerifyError){
+							unitRestored = false;
+							trace("[战宠淬毒] unit restore verification failed: "
+								+ poisonVerifyError);
+						}
+						// 先 exact 恢复单位字段；只有成功后才返还金币与 dirty。
+						// unit 恢复失败时保留真实扣款，使 preserve 的 loss receipt 与余额一致。
+						if(unitRestored){
+							try{
+								_root.金钱 = poisonMoneyBefore;
+							}catch(poisonMoneyRestoreError){
+								trace("[战宠淬毒] money restore failed: " + poisonMoneyRestoreError);
+							}
+							moneyRestored = Number(_root.金钱) == poisonMoneyBefore;
+							if(moneyRestored){
+								try{
+									if(poisonSave != undefined) {
+										poisonSave.dirtyMark = poisonDirtyBefore;
+										dirtyRestored = poisonSave.dirtyMark === poisonDirtyBefore;
+									}
+								}catch(poisonDirtyRestoreError){
+									trace("[战宠淬毒] dirty restore failed: " + poisonDirtyRestoreError);
+								}
+								if(!dirtyRestored){
+									// dirty 无法恢复时不能假装 rollback：重新落回真实扣款。
+									try{
+										_root.金钱 = poisonMoneyBefore - poisonCost;
+									}catch(poisonMoneyReapplyError){
+										trace("[战宠淬毒] money reapply failed: "
+											+ poisonMoneyReapplyError);
+									}
+									moneyRestored = Number(_root.金钱) == poisonMoneyBefore;
+								}
+							}
+						}
+						var preserveLoss:Boolean = Number(_root.金钱)
+							== poisonMoneyBefore - poisonCost;
+						return {money:moneyRestored,
+							full:unitRestored && moneyRestored && dirtyRestored,
+							preserve:preserveLoss};
+					};
+					var poisonTransaction:Object =
+						org.flashNight.arki.item.PlayerAssetTransaction.begin(poisonContext);
+					try{
+						// 每图收费与实际淬毒/marker 是一个领域提交：首写前 fail-fast 标脏，
+						// 回执先缓冲，直到三项权威状态都已落定。
+						org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+							_root.存档系统);
+						_root.金钱 -= poisonCost;
+						org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+							-poisonCost, 0, poisonContext);
+						if(this.淬毒){
+							this.淬毒 += _root.战宠进阶函数.常驻淬毒.效果;
+						}else{
+							this.淬毒 = _root.战宠进阶函数.常驻淬毒.效果;
+						}
+						this.已常驻淬毒 = true;
+					}catch (poisonCommitError){
+						var poisonRestoreResult:Object = restorePoisonSnapshot();
+						org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+							poisonTransaction, poisonRestoreResult.preserve === true);
+						throw poisonCommitError;
 					}
-					this.已常驻淬毒 = true;
+					org.flashNight.arki.item.PlayerAssetTransaction.commit(poisonTransaction);
+					try{
+						_root.发布消息("战宠"+this.名字+"消耗金币"+_root.战宠进阶函数.常驻淬毒.消耗金币+"淬毒");
+					}catch(淬毒提示错误){
+						trace("[战宠淬毒] 提示失败: " + 淬毒提示错误);
+					}
 				}
 			}else{
 				if(this.淬毒){
@@ -607,7 +690,6 @@ _root.战宠进阶函数.冲腿龙息 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已领悟招式！");
 		_root.金钱 -= this.进阶方案.冲腿龙息.消耗金币;
 		this.当前宠物属性.冲腿龙息 = true;
 	},
@@ -662,7 +744,6 @@ _root.战宠进阶函数.晶能者 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已领悟招式！");
 		_root.金钱 -= this.进阶方案.晶能者.消耗金币;
 		this.当前宠物属性.晶能者 = true;
 	},
@@ -719,7 +800,6 @@ _root.战宠进阶函数.复仇者 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已领悟招式！");
 		_root.金钱 -= this.进阶方案.复仇者.消耗金币;
 		this.当前宠物属性.复仇者 = true;
 	},
@@ -776,7 +856,6 @@ _root.战宠进阶函数.抱头嘲讽 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已领悟招式！");
 		_root.金钱 -= this.进阶方案.抱头嘲讽.消耗金币;
 		this.当前宠物属性.抱头嘲讽 = true;
 	},
@@ -834,7 +913,6 @@ _root.战宠进阶函数.涅槃重生 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已进阶！");
 		_root.金钱 -= this.进阶方案.涅槃重生.消耗金币;
 		this.当前宠物属性.涅槃重生 = true;
 	},
@@ -893,14 +971,11 @@ _root.战宠进阶函数.影子刺客 = {
 	},
 	执行:function(){
 		if(!this.当前宠物属性.影子刺客){
-			_root.最上层发布文字提示("已进阶！");
 			_root.金钱 -= this.进阶方案.影子刺客.消耗金币;
 			this.当前宠物属性.影子刺客 = true;
 			this.当前宠物属性.影子单位 = true;
 		}else{
 			this.当前宠物属性.影子单位 = !this.当前宠物属性.影子单位;
-			_root.最上层发布文字提示("影子状态已" + (this.当前宠物属性.影子单位?"启用":"停用"));
-			_root.敌人函数.应用影子色彩(this);
 		}
 	},
 	单位进阶执行:function(){
@@ -962,7 +1037,6 @@ _root.战宠进阶函数.追踪飞弹 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成飞弹升级！");
 		_root.金钱 -= this.进阶方案.追踪飞弹.消耗金币;
 		this.当前宠物属性.追踪飞弹 = true;
 	},
@@ -1022,7 +1096,6 @@ _root.战宠进阶函数.驯鹰者 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成进阶！");
 		_root.金钱 -= this.进阶方案.驯鹰者.消耗金币;
 		this.当前宠物属性.驯鹰者 = true;
 	},
@@ -1086,11 +1159,9 @@ _root.战宠进阶函数.美洲狮 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成进化！");
 		_root.金钱 -= this.进阶方案.美洲狮.消耗金币;
 		this.当前宠物信息[0] = 103;
 		this.当前宠物属性.美洲狮 = true;
-		// _root.宠物信息界面.排列宠物图标();
 	},
 	单位进阶执行:function(){
 		if(this.宠物属性.美洲狮){
@@ -1141,7 +1212,6 @@ _root.战宠进阶函数.追猎 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成进阶！");
 		_root.金钱 -= this.进阶方案.追猎.消耗金币;
 		this.当前宠物属性.追猎 = true;
 	},
@@ -1207,7 +1277,6 @@ _root.战宠进阶函数.战马血清 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已完成进阶！");
 		_root.金钱 -= this.进阶方案.战马血清.消耗金币;
 		this.当前宠物属性.战马血清 = true;
 	},
@@ -1264,7 +1333,6 @@ _root.战宠进阶函数.钙化 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已进阶！");
 		_root.金钱 -= this.进阶方案.钙化.消耗金币;
 		this.当前宠物属性.钙化 = true;
 	},
@@ -1345,7 +1413,6 @@ _root.战宠进阶函数.终结者武器扩展 = {
 	执行:function(){
 		_root.金钱 -= this.进阶方案.终结者武器扩展.消耗金币;
 		this.当前宠物属性.终结者武器扩展 = true;
-		_root.最上层发布文字提示("终结者武器接口已扩展！");
 	},
 	单位进阶执行:null
 }
@@ -1384,7 +1451,6 @@ _root.战宠进阶函数.终结者全武装 = {
 	执行:function(){
 		_root.金钱 -= this.进阶方案.终结者全武装.消耗金币;
 		this.当前宠物属性.终结者全武装 = true;
-		_root.最上层发布文字提示("终结者已完成全武装！");
 	},
 	单位进阶执行:null
 }
@@ -1434,7 +1500,6 @@ _root.战宠进阶函数.净化治疗 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已解锁能力！");
 		_root.金钱 -= this.进阶方案.净化治疗.消耗金币;
 		this.当前宠物属性.净化治疗 = true;
 	},
@@ -1495,7 +1560,6 @@ _root.战宠进阶函数.溢出治疗 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已解锁能力！");
 		_root.金钱 -= this.进阶方案.溢出治疗.消耗金币;
 		this.当前宠物属性.溢出治疗 = true;
 	},
@@ -1561,7 +1625,6 @@ _root.战宠进阶函数.能量子弹 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已解锁子弹！");
 		_root.金钱 -= this.进阶方案.能量子弹.消耗金币;
 		this.当前宠物属性.能量子弹 = true;
 	},
@@ -1622,7 +1685,6 @@ _root.战宠进阶函数.剧毒子弹 = {
 		return true;
 	},
 	执行:function(){
-		_root.最上层发布文字提示("已解锁子弹！");
 		_root.金钱 -= this.进阶方案.剧毒子弹.消耗金币;
 		this.当前宠物属性.剧毒子弹 = true;
 	},

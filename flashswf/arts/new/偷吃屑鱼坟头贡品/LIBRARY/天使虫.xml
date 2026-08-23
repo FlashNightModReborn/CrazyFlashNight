@@ -19,19 +19,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (!this.击中时触发函数)
-{
-	this.击中时触发函数 = function()
-	{
-		var 暂存敌人 = this.命中对象;
-		if(暂存敌人.hp >= 1){
-            暂存敌人.hp = 0;
-            this.伤害类型 = "死";
-		}
-	};
-}
-
-stop();]]></script>
+                <script><![CDATA[stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

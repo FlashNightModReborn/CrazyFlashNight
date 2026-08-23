@@ -165,6 +165,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      */
     private static var _injectCtx:Object = {};
 
+    /** 稀有旧弹允许影响本次 DamageCalculator 的纯参数白名单（冷路径）。 */
+    private static var _preHitTransformKeys:Array = [
+        "伤害类型", "魔法伤害属性", "子弹威力", "固伤",
+        "百分比伤害", "霰弹值", "击溃", "斩杀"
+    ];
+
     // ========================================================================
     // 子弹终止控制标志位（位运算优化）
     // 说明：REASON_* 位用于统计/诊断；实际终止分支仅依据 MODE_* 位（见收尾处理）
@@ -520,12 +526,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * @param hitY      命中点 Y
      * @param dmgMult   伤害乘数（穿透衰减/折射衰减等）
      * @param tEntry    射线参数 t（chain/fork 传 -1）
-     * @return damageResult 对象（调用方可能需要读取 actualScatterUsed）
+     * @param fireLegacyHitHook 本节点是否仍持有“首个真实命中”钩子资格
+     * @return damageResult 对象；真实命中分类同步写入 ctx.actualHit，调用方不得重复解析结果。
      */
     private static function settleRayHit(
             ctx:Object, hitTarget:MovieClip,
             hitX:Number, hitY:Number,
-            dmgMult:Number, tEntry:Number):Object {
+            dmgMult:Number, tEntry:Number, fireLegacyHitHook:Boolean):Object {
 
         var bullet:Object = ctx.bullet;
         var shooter:MovieClip = ctx.shooter;
@@ -549,10 +556,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         //   命中对象同步(幂等) → calculateDamage → hitCount+= → publish("hit")
         //   → kill/death(带 _killed 守卫，D1：修复射线原缺守卫导致的潜在重复击杀 / killStats 按 _name 膨胀)
         //   → triggerDisplay。FX 仍由本函数在下方逐命中点处理（D3）。
-        var damageResult:Object = settleHit(ctx, hitTarget, finalResult, dmgMult, dodgeState);
+        var damageResult:Object = settleHit(
+            ctx, hitTarget, finalResult, dmgMult, dodgeState, fireLegacyHitHook);
 
-        // 命中特效
-        if (bullet.shouldGeneratePostHitEffect) {
+        // MISS 仍显示伤害数字，但绝不能播放单位命中特效；不要永久改写 bullet 标志，
+        // 否则同一穿透/持久射线后续的真实命中也会被错误静音。
+        if ((ctx.actualHit || damageResult === DamageResult.NULL)
+                && bullet.shouldGeneratePostHitEffect) {
             ctx.FX.Effect(bullet.击中后子弹的效果, hitX, hitY, shooter._xscale);
         }
 
@@ -560,29 +570,86 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     }
 
     /**
-     * 统一伤害结算（子弹命中-伤害双管线拆分 §4.0 (a) 决策态）。
-     *
-     * 职责仅：同步命中引用(幂等) → calculateDamage → hitCount+= → publish("hit")
-     *        → kill/death(带 _killed 守卫，D1) → triggerDisplay。
-     * **不**内算闪避、**不**调 击中时触发函数、**不**做 附加层重置——这三件由各 caller 在原位执行
-     * （main: 闪避→触发→本函数；ray: 触发→闪避→本函数），故两侧 byte-order 不变。
+     * 只允许命中前参数函数返回这些 scoped 字段；函数本身不得写目标、Buff、计时器、
+     * MovieClip 或全局状态。返回值在 MISS/NULL 时回滚，真实命中时保留，因而既能让
+     * 稀有旧弹保持“参数先于本次伤害”的数值合同，也不会把副作用泄漏到 MISS。
+     */
+    private static function applyPreHitDamageTransform(bullet:Object, hitTarget:MovieClip):Object {
+        var transform:Function = bullet.命中前伤害参数函数;
+        if (typeof transform != "function") return null;
+
+        var overrides:Object = transform.call(bullet, hitTarget);
+        if (!overrides) return null;
+
+        var keys:Array = [];
+        var previous:Object = {};
+        for (var i:Number = 0; i < _preHitTransformKeys.length; i++) {
+            var key:String = _preHitTransformKeys[i];
+            if (overrides[key] !== undefined) {
+                // FLAG_CHAIN 会把霰弹值编码成负数作为延迟消费账本；窗口内只允许
+                // MultiShotDamageHandle 与 __commitDeferScatter 写入。稀有弹参数投影
+                // 若覆盖该值，会同时破坏本次判定和最终提交，因此联弹窗口内忽略此项。
+                if (key == "霰弹值" && Number(bullet.霰弹值) < -65535) continue;
+                keys[keys.length] = key;
+                previous[key] = bullet[key];
+                bullet[key] = overrides[key];
+            }
+        }
+        return keys.length > 0 ? {keys:keys, previous:previous} : null;
+    }
+
+    private static function restorePreHitDamageTransform(bullet:Object, receipt:Object):Void {
+        if (!receipt) return;
+        var keys:Array = receipt.keys;
+        for (var i:Number = 0; i < keys.length; i++) {
+            var key:String = keys[i];
+            bullet[key] = receipt.previous[key];
+        }
+    }
+
+    /**
+     * 地图碰撞与单位真实命中使用不同能力。进入地图钩子前清掉最后一次单位几何
+     * 引用，避免“单位 MISS 后同帧撞墙”把 target-dependent 旧钩子施加到闪避者。
+     * 地图钩子只负责爆炸/消弹等弹体生命周期，异常不得截断统一终止收尾。
+     */
+    private static function fireMapHitHook(bullet:Object):Void {
+        if (!bullet) return;
+        bullet.hitTarget = null;
+        bullet.命中对象 = null;
+        var hook:Function = bullet.击中地图时触发函数;
+        if (typeof hook != "function") return;
+        try {
+            hook.call(bullet);
+        } catch (mapHookError) {
+            trace("[BulletQueueProcessor] map hit hook failed: " + mapHookError);
+        }
+    }
+
+    /**
+     * 统一伤害结算。闪避仍由 caller 计算，附加层重置仍由 caller 决定；旧式
+     * 击中时触发函数则在 DamageResult 证明至少一段真实命中后、hitBehavior/hit/kill
+     * 之前执行。这样普通 MISS 与联弹全段 MISS 只留下数字，不再加 Buff、倒地、
+     * 停弹、爆炸或修改后续目标。
      *
      * @param ctx              per-bullet 不变量容器（读 bullet/shooter/Damage/flags/meleeMask）
      * @param hitTarget        命中目标
      * @param collisionResult  已成形的命中几何，hit 事件透传（订阅者只读 overlapCenter）
      * @param dmgMult          独立伤害乘数：AABB=1 / polygon=overlapRatio / ray=衰减乘积
      * @param dodgeState       caller 已算好的闪避态（不在此重算）
+     * @param fireLegacyHitHook 当前节点是否允许消费旧式 actual-hit 钩子
      *   注：tEntry 不入参——caller 形成 collisionResult 时已写入，本函数不读。
      */
     private static function settleHit(
             ctx:Object, hitTarget:MovieClip,
-            collisionResult:Object, dmgMult:Number, dodgeState:String):Object {
+            collisionResult:Object, dmgMult:Number, dodgeState:String,
+            fireLegacyHitHook:Boolean):Object {
 
         var bullet:Object = ctx.bullet;
         var shooter:MovieClip = ctx.shooter;
 
         // no-death 等价测试探针：生产恒 null 零开销；非 null 时录命中并短路（纯比对 selection）
         if (_raySettleProbe != null) {
+            ctx.actualHit = false;
             _raySettleProbe(hitTarget, dmgMult);
             return null;
         }
@@ -591,29 +658,76 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         bullet.hitTarget = hitTarget;
         bullet.命中对象 = hitTarget;
 
-        // 灰蛊的节点击溃/满层斩杀属于当前命中的动态属性，必须在 DamageManager 执行前配给。
-        // 普通子弹无 hitBehavior，不进入注册表。
-        if (bullet.hitBehavior != undefined) {
-            BulletHitEffectRegistry.prepare(bullet, shooter, hitTarget);
+        // 只有 caller 仍持有旧式钩子资格时才应用纯参数投影；MISS/NULL 会在下方精确恢复。
+        var transformReceipt:Object = null;
+        if (fireLegacyHitHook && bullet.命中前伤害参数函数 != undefined) {
+            transformReceipt = applyPreHitDamageTransform(bullet, hitTarget);
         }
 
-        // 伤害计算
-        var damageResult:Object = ctx.Damage.calculateDamage(
-            bullet, shooter, hitTarget, dmgMult, dodgeState
-        );
+        var damageResult:Object;
+        if (!transformReceipt) {
+            // 绝大多数子弹没有 scoped transform；保持 AVM1 命中热路不生成 ActionTry。
+            if (bullet.hitBehavior != undefined) {
+                BulletHitEffectRegistry.prepare(bullet, shooter, hitTarget);
+            }
+            damageResult = ctx.Damage.calculateDamage(
+                bullet, shooter, hitTarget, dmgMult, dodgeState
+            );
+        } else {
+            try {
+                // 灰蛊的节点击溃/满层斩杀属于当前命中的动态属性，必须在 DamageManager 执行前配给。
+                // 普通子弹无 hitBehavior，不进入注册表。
+                if (bullet.hitBehavior != undefined) {
+                    BulletHitEffectRegistry.prepare(bullet, shooter, hitTarget);
+                }
+
+                // 伤害计算
+                damageResult = ctx.Damage.calculateDamage(
+                    bullet, shooter, hitTarget, dmgMult, dodgeState
+                );
+            } catch (damageError) {
+                // 参数投影是本次同步结算的局部事务；下游异常不能把半投影状态
+                // 留给同一 MovieClip 的下一目标或下一帧。
+                restorePreHitDamageTransform(bullet, transformReceipt);
+                throw damageError;
+            }
+        }
         bullet.hitCount += damageResult.actualScatterUsed;
+
+        // AVM1 热路刻意内联一次分类：不要改回 DamageResult.hasActualHit，也不要在下游
+        // 重复解析。普通命中只付顺序属性比较；稀有普通/全段 MISS 立刻走冷分支返回。
+        var actualHit:Boolean = damageResult !== DamageResult.NULL
+            && damageResult.dodgeStatus != "MISS"
+            && (damageResult.scatterModelEnabled !== true
+                || damageResult.actualScatterUsed <= 0
+                || damageResult.scatterMissCount < damageResult.actualScatterUsed);
+        ctx.actualHit = actualHit;
+        if (!actualHit) {
+            restorePreHitDamageTransform(bullet, transformReceipt);
+            if (damageResult !== DamageResult.NULL) {
+                damageResult.triggerDisplay(hitTarget._x, hitTarget._y, hitTarget._name);
+                return damageResult;
+            }
+        } else if (fireLegacyHitHook && bullet.击中时触发函数) {
+            // 旧钩子的目标写、Buff、动画和状态提交只允许发生在真实命中；仍早于
+            // hitBehavior.apply / hit / kill / display，保持消费者看到完整命中后状态。
+            bullet.击中时触发函数();
+        }
 
         // 有效命中在伤害结算后沉积层数；随后 HitUpdater 发布的 ToughnessBroken
         // 可为同一候选追加一次枪种等价命中。
         // 普通子弹没有该字段，不进入注册表，保持热路径成本接近零。
-        if (bullet.hitBehavior != undefined) {
+        if (actualHit && bullet.hitBehavior != undefined) {
             BulletHitEffectRegistry.apply(bullet, shooter, hitTarget, damageResult);
         }
 
         // 死亡类型在 hit 事件前取快照；injectHit 未来若误重入也不污染本次 kill/death 判定。
         var isNormalKill:Boolean = (ctx.flags & ctx.meleeMask) == 0;
 
-        // 事件发布（collisionResult 透传，订阅者只读 overlapCenter）
+        // 事件发布（collisionResult 透传，订阅者只读 overlapCenter）。
+        // 稀有 resolved MISS 已在上方冷分支返回；这里仅剩真实命中与 NULL 几何命中。
+        // HitUpdater/ImpactStateHandler 不再重复防守，旁路 producer 不得发布 resolved MISS。
+        // DamageResult.NULL 仍承载无敌/UnitBullet 的旧几何命中合同。
         var targetDispatcher:Object = hitTarget.dispatcher;
         targetDispatcher.publish("hit", hitTarget, shooter, bullet, collisionResult, damageResult);
 
@@ -654,12 +768,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * @param target   注入命中的目标（须含 hp/dispatcher/_x/_y/_name/_killed）。
      * @param hitX,hitY 命中点（写入 hit 事件 collisionResult.overlapCenter）。
      * @param dmgMult  伤害乘数（直伤通常 1；锁定可传衰减乘数）。
+     * @param fireLegacyHitHook 是否允许本次真实命中消费旧式单位命中钩子；外部省略时为 false。
      * @return DamageResult；目标非法（自身 / 已死 / 防止无限飞）时返回 null，不结算。
      */
     public static function injectHit(bullet:Object, shooter:MovieClip, target:MovieClip,
-                                     hitX:Number, hitY:Number, dmgMult:Number):Object {
+                                     hitX:Number, hitY:Number, dmgMult:Number,
+                                     fireLegacyHitHook:Boolean):Object {
         // 合法性兜底（§5.6：外部注入须自排自身，此处再守一道——hp>0 / 防止无限飞 / 非自身）
         if (target == bullet || !(target.hp > 0) || target.防止无限飞 == true) {
+            _injectCtx.actualHit = false;
             return null;
         }
 
@@ -690,7 +807,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 bullet
             );
 
-        return settleHit(ctx, target, cr, dmgMult, dodgeState);
+        return settleHit(ctx, target, cr, dmgMult, dodgeState, fireLegacyHitHook);
     }
 
     // ========================================================================
@@ -1001,12 +1118,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 }
 
                 if (comboAllHits != null && comboAllLen > 0) {
-                    // 首命中特殊处理（击中时触发函数 仅首命中调用）
-                    var firstNodeHit:Object = comboAllHits[0];
                     bullet.附加层伤害计算 = 0;
-                    bullet.hitTarget = firstNodeHit.target;
-                    bullet.命中对象 = firstNodeHit.target;
-                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+                    var pnLegacyHookDone:Boolean = false;
 
                     var pnFalloff:Number = config.damageFalloff;
                     var pnDmgMult:Number = 1.0;
@@ -1027,7 +1140,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         budget--;
 
                         settleRayHit(ctx, nodeHit.target,
-                            nodeHit.hitX, nodeHit.hitY, pnDmgMult, nodeHit.tEntry);
+                            nodeHit.hitX, nodeHit.hitY, pnDmgMult, nodeHit.tEntry,
+                            !pnLegacyHookDone);
+                        if (!pnLegacyHookDone && ctx.actualHit) {
+                            pnLegacyHookDone = true;
+                        }
                         pnHitPoints.push({x: nodeHit.hitX, y: nodeHit.hitY});
                         pnDmgMult *= pnFalloff;
 
@@ -1077,7 +1194,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 budget--;
 
                                 settleRayHit(ctx, ccBestTarget,
-                                    ccBestX, ccBestY, ccDmgMult, -1);
+                                    ccBestX, ccBestY, ccDmgMult, -1, !pnLegacyHookDone);
+                                if (!pnLegacyHookDone && ctx.actualHit) {
+                                    pnLegacyHookDone = true;
+                                }
 
                                 var ccMeta:Object = {
                                     segmentKind: "chain",
@@ -1163,7 +1283,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 budget--;
 
                                 settleRayHit(ctx, cfhTarget,
-                                    cfh.centerX, cfh.centerY, pnDmgMult, -1);
+                                    cfh.centerX, cfh.centerY, pnDmgMult, -1, !pnLegacyHookDone);
+                                if (!pnLegacyHookDone && ctx.actualHit) {
+                                    pnLegacyHookDone = true;
+                                }
 
                                 var cfMeta:Object = {
                                     segmentKind: "fork",
@@ -1274,12 +1397,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     globalVisited[comboNearestTarget._name] = true;
 
                     bullet.附加层伤害计算 = 0;
-                    bullet.hitTarget = comboNearestTarget;
-                    bullet.命中对象 = comboNearestTarget;
-                    if (bullet.击中时触发函数) bullet.击中时触发函数();
-
+                    var comboLegacyHookDone:Boolean = false;
                     settleRayHit(ctx, comboNearestTarget,
-                        comboNearestHitX, comboNearestHitY, 1, comboNearestTEntry);
+                        comboNearestHitX, comboNearestHitY, 1, comboNearestTEntry, true);
+                    if (ctx.actualHit) comboLegacyHookDone = true;
 
                     var comboMainMeta:Object = {
                         segmentKind: "main",
@@ -1339,7 +1460,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             budget--;
 
                             settleRayHit(ctx, ccBestTarget,
-                                ccBestX, ccBestY, ccDmgMult, -1);
+                                ccBestX, ccBestY, ccDmgMult, -1, !comboLegacyHookDone);
+                            if (!comboLegacyHookDone && ctx.actualHit) {
+                                comboLegacyHookDone = true;
+                            }
 
                             var ccMeta:Object = {
                                 segmentKind: "chain",
@@ -1425,7 +1549,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             budget--;
 
                             settleRayHit(ctx, cfhTarget,
-                                cfh.centerX, cfh.centerY, cfFalloff, -1);
+                                cfh.centerX, cfh.centerY, cfFalloff, -1, !comboLegacyHookDone);
+                            if (!comboLegacyHookDone && ctx.actualHit) {
+                                comboLegacyHookDone = true;
+                            }
 
                             var cfMeta:Object = {
                                 segmentKind: "fork",
@@ -1560,20 +1687,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                 if (pLen > 0) {
                     var pDmgMult:Number = 1.0;
-
-                    // 处理第一个命中（含击中触发函数）
-                    var firstHit:Object = pierceHits[0];
-                    hitTarget = firstHit.target;
-
-                    bullet.hitTarget = hitTarget;
                     // 【设计决策】附加层伤害计算 仅在首命中前重置，副命中不重置。
                     // 当前该字段未被下游消费，若未来启用需评估是否每次命中都重置。
                     bullet.附加层伤害计算 = 0;
-                    bullet.命中对象 = hitTarget;
-
-                    // 【设计决策】击中时触发函数 仅在首命中时调用，副命中（穿透）不调用。
-                    // 平衡性考虑：避免连锁 Buff/效果过于强力。若需改变，在下方循环内添加调用即可。
-                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+                    var pierceLegacyHookDone:Boolean = false;
 
                     // 逐个处理所有穿透命中
                     for (var pk:Number = 0; pk < pLen; pk++) {
@@ -1581,7 +1698,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         hitTarget = ph.target;
 
                         settleRayHit(ctx, hitTarget,
-                            ph.hitX, ph.hitY, pDmgMult, ph.tEntry);
+                            ph.hitX, ph.hitY, pDmgMult, ph.tEntry, !pierceLegacyHookDone);
+                        if (!pierceLegacyHookDone && ctx.actualHit) {
+                            pierceLegacyHookDone = true;
+                        }
 
                         if (debugMode) {
                             unitArea = hitTarget.aabbCollider;
@@ -1696,17 +1816,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // 【设计决策】附加层伤害计算 仅在主命中前重置，chain/fork 副命中不重置。
                     // 当前该字段未被下游消费，若未来启用需评估是否每次命中都重置。
                     bullet.附加层伤害计算 = 0;
-
-                    // 【设计决策】击中时触发函数 仅在主命中时调用，chain/fork 副命中不调用。
-                    // 平衡性考虑：避免连锁 Buff/效果过于强力。若需改变，在 chain/fork 循环内添加调用即可。
-                    // 注意：hitTarget/命中对象 在此处提前赋值供 击中时触发函数 读取，
-                    // settleRayHit 内部会再次赋值（值相同），这是有意为之的冗余。
-                    bullet.hitTarget = hitTarget;
-                    bullet.命中对象 = hitTarget;
-                    if (bullet.击中时触发函数) bullet.击中时触发函数();
-
+                    var singleLegacyHookDone:Boolean = false;
                     settleRayHit(ctx, hitTarget,
-                        rayNearestHitX, rayNearestHitY, lockonDmgMult, rayNearestTEntry);
+                        rayNearestHitX, rayNearestHitY, lockonDmgMult, rayNearestTEntry, true);
+                    if (ctx.actualHit) singleLegacyHookDone = true;
                     // 构建主命中 SegmentMeta
                     var mainMeta:Object = {
                         segmentKind: "main",
@@ -1795,7 +1908,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                             // 对链式目标应用伤害
                             settleRayHit(ctx, chainBestTarget,
-                                chainBestX, chainBestY, chainDmgMult, -1);
+                                chainBestX, chainBestY, chainDmgMult, -1, !singleLegacyHookDone);
+                            if (!singleLegacyHookDone && ctx.actualHit) {
+                                singleLegacyHookDone = true;
+                            }
                             // 构建 chain 弹跳 SegmentMeta (hitIndex 从 1 开始，0 是主命中)
                             var chainMeta:Object = {
                                 segmentKind: "chain",
@@ -1900,7 +2016,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             var fhTarget:MovieClip = fh.target;
 
                             settleRayHit(ctx, fhTarget,
-                                fh.centerX, fh.centerY, forkFalloff, -1);
+                                fh.centerX, fh.centerY, forkFalloff, -1, !singleLegacyHookDone);
+                            if (!singleLegacyHookDone && ctx.actualHit) {
+                                singleLegacyHookDone = true;
+                            }
                             // 折射电弧：从主命中点定向射向折射目标
                             var forkMeta:Object = {
                                 segmentKind: "fork",
@@ -2096,15 +2215,21 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 (lastTick == undefined || age - Number(lastTick) >= tickInterval)) {
                 if (!bullet._flameFirstHitDone) {
                     bullet.附加层伤害计算 = 0;
-                    bullet.hitTarget = h.target;
-                    bullet.命中对象 = h.target;
-                    if (bullet.击中时触发函数) bullet.击中时触发函数();
+                }
+                var flameHookPending:Boolean = !bullet._flameFirstHitDone;
+                var damageResult:Object = injectHit(
+                    bullet, shooter, h.target, h.hitX, h.hitY, dmgMult, flameHookPending);
+                var flameActualHit:Boolean = _injectCtx.actualHit;
+                if (flameHookPending && flameActualHit) {
                     bullet._flameFirstHitDone = true;
                 }
-                var damageResult:Object = injectHit(bullet, shooter, h.target, h.hitX, h.hitY, dmgMult);
                 if (damageResult != null) {
-                    if (damageHitPoints == null) damageHitPoints = [];
-                    damageHitPoints[damageHitPoints.length] = {x: h.hitX, y: h.hitY};
+                    // 几何相交仍消耗喷火脉冲预算，但 MISS 不得进入 renderer 的
+                    // 单位命中纹理点集。
+                    if (flameActualHit || damageResult === DamageResult.NULL) {
+                        if (damageHitPoints == null) damageHitPoints = [];
+                        damageHitPoints[damageHitPoints.length] = {x: h.hitX, y: h.hitY};
+                    }
                     bullet._flameHitFrameByTarget[h.target._name] = age;
                     bullet._flameHitCountByTarget[h.target._name] = targetHitCount + 1;
                     bullet._flameTotalHitsDone++;
@@ -2220,7 +2345,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * 几何冻结于首帧（之后不再 re-aim）。
      *
      * 持久 state 挂在 bullet 上：_rayInited / _rayBudget / _rayVisited / _rayCursorX/Y/Z /
-     * _rayLastTEntry / _rayFirstHitDone / _rayDmgMult / _rayPrevVfxX/Y / _rayEndX/Y / _rayHitPoints /
+     * _rayLastTEntry / _rayFirstHitDone / _rayFirstActualHookDone / _rayDmgMult /
+     * _rayPrevVfxX/Y / _rayEndX/Y / _rayHitPoints /
      * _rayCombo（combo 迭代游标 RayComboCursor 实例）。
      *
      * @param ctx 已打包的每帧上下文（bullet/shooter/几何/窗口/config/rayMode/pierceLimit/FX 等）
@@ -2248,6 +2374,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet._rayVisited = {};
             bullet._rayDmgMult = 1;
             bullet._rayFirstHitDone = false;
+            bullet._rayFirstActualHookDone = false;
             bullet._rayLastTEntry = -1;
             bullet._rayCursorX = ctx.rayOriginX;
             bullet._rayCursorY = ctx.rayOriginY;
@@ -2276,11 +2403,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     areaAABB["setRayFast"](ctx.rayOriginX, ctx.rayOriginY, ldx, ldy, rayLength);
                     bullet._rayEndX = ctx.rayOriginX + (ldx / lockonDist) * rayLength;
                     bullet._rayEndY = ctx.rayOriginY + (ldy / lockonDist) * rayLength;
-                    // 首发直伤 = 锁定目标（首命中触发函数在此触发一次）
-                    bullet.hitTarget = lockonTarget;
-                    bullet.命中对象 = lockonTarget;
-                    if (bullet.击中时触发函数) bullet.击中时触发函数();
-                    injectHit(bullet, shooter, lockonTarget, lhx, lhy, lockonDmgMult);
+                    // 首发直伤 = 锁定目标；几何游标与 actual-only 旧钩子资格分开推进。
+                    injectHit(
+                        bullet, shooter, lockonTarget, lhx, lhy, lockonDmgMult,
+                        !bullet._rayFirstActualHookDone);
+                    if (_injectCtx.actualHit) {
+                        bullet._rayFirstActualHookDone = true;
+                    }
                     spawnPersistentRaySeg(ctx, bullet, lhx, lhy, lockonDmgMult, false);
                     if (rayMode == "pierce") {
                         bullet._rayHitPoints[bullet._rayHitPoints.length] = {x: lhx, y: lhy};
@@ -2320,17 +2449,19 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             }
             if (next == null) break;   // 本帧找不到下一命中 → 结束
 
-            // 首命中：重置附加层 + 触发"击中时触发函数"一次（对齐批量路语义）
+            // 首个几何命中只负责原有游标/附加层语义；旧钩子另等首个真实命中。
             if (!bullet._rayFirstHitDone) {
                 bullet.附加层伤害计算 = 0;
-                bullet.hitTarget = next.target;
-                bullet.命中对象 = next.target;
-                if (bullet.击中时触发函数) bullet.击中时触发函数();
             }
 
             // combo：dmgMult 由迭代器按 phase 算好放在 next.dmgMult；pierce/chain：统一累乘 _rayDmgMult。
             var dm:Number = (isCombo ? next.dmgMult : bullet._rayDmgMult) * lockonDmgMult;
-            injectHit(bullet, shooter, next.target, next.hitX, next.hitY, dm);
+            injectHit(
+                bullet, shooter, next.target, next.hitX, next.hitY, dm,
+                !bullet._rayFirstActualHookDone);
+            if (!bullet._rayFirstActualHookDone && _injectCtx.actualHit) {
+                bullet._rayFirstActualHookDone = true;
+            }
             spawnPersistentRaySeg(ctx, bullet, next.hitX, next.hitY, dm, bullet._rayFirstHitDone);
             if (rayMode == "pierce") {
                 bullet._rayHitPoints[bullet._rayHitPoints.length] = {x: next.hitX, y: next.hitY};
@@ -2762,6 +2893,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var shouldStun:Boolean;             // 是否应该硬直
         var isPierce:Boolean;               // 是否穿透
         var dodgeState:String;              // 闪避状态
+        var hasUnitHitFx:Boolean;            // 当前弹体本轮是否至少有 actual/NULL 单位命中 FX
+        var settlementResult:Object;         // 当前几何节点的伤害结算结果（NULL 仍保留命中 FX）
 
         // ---- 射弹预警变量（Phase 2+ 尾循环）----
         var hasTZ:Boolean;              // 全局门控：是否有单位订阅 bulletThreat
@@ -3042,6 +3175,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
                     // ---- 击中后效果标志：确保命中时能正确触发效果 ----
                     bullet.shouldGeneratePostHitEffect = true;
+                    hasUnitHitFx = false;
 
                     // ---- 子弹类型预计算：直接使用位运算结果作为条件判断 ----
                     // ---- 命中上下文：per-bullet 不变量打包，供统一 settleHit（§4.0 (a)；对齐 _rayHitCtx）----
@@ -3182,16 +3316,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                     bullet
                                 );
 
-                            // --- 击中时触发函数（内联条件判断） ---
-                            if (bullet.击中时触发函数) bullet.击中时触发函数();
-
                             // --- 统一伤害结算（§4.0 (a)）---
-                            // 闪避(上方)→触发(上方)→本调用，顺序与原内联一致（byte-equivalent）。
+                            // 闪避(上方)→伤害→actual-only 旧钩子→事件；MISS 只保留数字。
                             // dmgMult = collisionResult.overlapRatio（AABB 命中恒为 1，polygon 为真实重叠比，§1.4）。
                             // settleHit 内含：命中对象同步(幂等) → calculateDamage → hitCount+= → publish("hit")
                             //                → kill/death(_killed 守卫) → triggerDisplay。
-                            // 返回值(DamageResult)按设计不被循环控制读取，直接丢弃（避免与 DamageResult 类型局部赋值不匹配）。
-                            settleHit(_hitCtx, hitTarget, collisionResult, collisionResult.overlapRatio, dodgeState);
+                            settlementResult = settleHit(_hitCtx, hitTarget, collisionResult,
+                                collisionResult.overlapRatio, dodgeState, true);
+                            if (_hitCtx.actualHit || settlementResult === DamageResult.NULL) {
+                                hasUnitHitFx = true;
+                            }
 
                             // --- 终止意图：近战硬直 或 非穿刺 命中即"消失" ---
                             if (!isPierce) {  // 非穿透
@@ -3213,7 +3347,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
                     
                     // 命中后效果（一次性）
-                    if (bullet.hitCount > 0 && bullet.shouldGeneratePostHitEffect) {
+                    if (hasUnitHitFx && bullet.shouldGeneratePostHitEffect) {
                         FX.Effect(bullet.击中后子弹的效果, bullet._x, bullet._y, shooter._xscale);
                     }
                     // ---- 影子记账提交：仅对已初始化的联弹子弹 ----
@@ -3344,7 +3478,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // 已在前面设置击中地图标志的情况下，此处统一处理表现
                     if (hitMapFinal) {
                         FX.Effect(bullet.击中地图效果, bullet._x, bullet._y);
-                        if (bullet.击中时触发函数) bullet.击中时触发函数();
+                        fireMapHitHook(bullet);
                     }
 
                     // 子弹终止优先级处理表：

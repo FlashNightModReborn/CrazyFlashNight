@@ -17,7 +17,8 @@
  *   - scanTick 必须用 帧计时器.添加循环任务（添加或更新任务 = 单次任务陷阱，跑一次即死）。
  *   - ext 引用每次现场解引用，禁缓存跨帧（loadAll 整体替换 _root._saveExt）。
  *   - unl 锁存位图只加不减（棘轮，防 itemOwned 卖出回退）；对外 unlocked = 锁存 ‖ 现算。
- *   - claimed 置位必须在 acquire 成功【之后】（反面教材：任务 appendQuestRewards 先写后发）。
+ *   - claimed 在首个可能实写奖励前锁存；listener-fault 的 partial 写保留 one-shot，
+ *     后续同 achievementId 重试以幂等 success 收敛，绝不重复发奖。
  *   - progressOf 永不返 null、cur 封顶 target（HeroUtil.getNextTitleInfo 满档返 null 教训）。
  *   - hidden 硬门控：未解锁 hidden 条目不回 progress（防探测）；明文仅经 hiddenReveals 回传。
  */
@@ -326,38 +327,152 @@ class org.flashNight.arki.achievement.AchievementService {
         }
         // ④ 领取幂等位图
         if (Number(a.claimed[idStr]) > 0) {
-            sendResponse(claimResp(callId, false, "already_claimed", null));
+            try {
+                sendResponse(claimResp(callId, false, "already_claimed", null));
+            } catch (alreadyClaimedResponseError) {
+                // 已有 claimed 是稳定终局；Web 会把携带 overlay 的 already_claimed
+                // 静默采纳为幂等成功，桥接异常只等待下一 callId 重试。
+                trace("[AchievementService] idempotent claim response failed: "
+                    + alreadyClaimedResponseError);
+            }
             return;
         }
         // ⑤ 奖励发放（acquire 全有或全无）；背包满 → 不置 claimed，保持 unlocked 可重试
         //   （D3：天然化解旧档批量补发雪崩；不应用任务挑战折扣——任务域行为，有意分叉）
         var rewardsArr:Array = (def.rewards != undefined) ? def.rewards : [];
+        // 解析配置可能抛错，必须在 one-shot 领取位写入前完成；此时仍是零资产写。
+        var rewardItems:Array = rewardsArr.length > 0
+            ? ItemUtil.getRequirementFromTask(rewardsArr) : [];
+        // plan/require 都是只读预检。未知物品、非法数量、容量或资产 authority
+        // 不可用时必须在 begin/dirty/claimed 之前失败，不能走 normal false 后留下脏档。
+        var rewardPreflight:Object = ItemUtil.planRewardAcquire(rewardItems);
+        if (rewardPreflight == null) {
+            sendResponse(claimResp(callId, false, "inventory_full", null));
+            return;
+        }
+        if (rewardPreflight.items.length > 0) {
+            var rewardInventory:Object = _root.物品栏;
+            var rewardEquipment:Object = rewardInventory == null
+                ? null : rewardInventory.装备栏;
+            var rewardDrugs:Object = rewardInventory == null
+                ? null : rewardInventory.药剂栏;
+            var rewardBag:Object = rewardInventory == null
+                ? null : rewardInventory.背包;
+            if (rewardInventory == null || rewardEquipment == null
+                    || typeof rewardEquipment.getItem != "function"
+                    || rewardDrugs == null
+                    || typeof rewardDrugs.getIndexes != "function"
+                    || typeof rewardDrugs.getItemArray != "function"
+                    || typeof rewardDrugs.getItem != "function"
+                    || typeof rewardDrugs.add != "function"
+                    || typeof rewardDrugs.addValue != "function"
+                    || rewardBag == null
+                    || typeof rewardBag.getIndexes != "function"
+                    || typeof rewardBag.getItemArray != "function"
+                    || typeof rewardBag.getVacancies != "function"
+                    || typeof rewardBag.getItem != "function"
+                    || typeof rewardBag.add != "function"
+                    || typeof rewardBag.addValue != "function") {
+                throw new Error("achievement_asset_authority_missing");
+            }
+            if (ItemUtil.require(rewardPreflight.items) == null) {
+                sendResponse(claimResp(callId, false, "inventory_full", null));
+                return;
+            }
+        }
         var ok:Boolean = true;
         var rewardSettlement:Object = null;
+        var claimedHadOwnValue:Boolean = a.claimed.hasOwnProperty(idStr);
+        var claimedBefore = a.claimed[idStr];
+        var claimDirtyBefore = _root.存档系统 == undefined
+            ? undefined : _root.存档系统.dirtyMark;
         var assetContext:Object = {
             source:"achievement_reward", reason:"achievement_claim",
             mergeScope:"operation"
         };
         var assetTransaction:Object = PlayerAssetTransaction.begin(assetContext);
-        if (rewardsArr.length > 0) {
-            rewardSettlement =
-                ItemUtil.acquireReward(ItemUtil.getRequirementFromTask(rewardsArr), assetContext);
-            ok = rewardSettlement.success === true;
+        try {
+            // 领取位图与奖励同属存档权威；存档系统缺失时必须在首写前失败。
+            PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+            // 在可能部分入包前先锁存 one-shot。acquireReward 正常 false 是已证明
+            // 零写的容量/配置失败，可以精确恢复；异常则可能发生任意 partial write，
+            // 必须保留 claimed=1，避免客户端重试复制已经提交的奖励。
+            a.claimed[idStr] = 1;
+            if (rewardsArr.length > 0) {
+                rewardSettlement = ItemUtil.acquireReward(rewardItems, assetContext);
+                ok = rewardSettlement.success === true;
+            }
+            if (!ok) {
+                if (claimedHadOwnValue) a.claimed[idStr] = claimedBefore;
+                else delete a.claimed[idStr];
+                PlayerAssetTransaction.rollback(assetTransaction);
+                try {
+                    sendResponse(claimResp(callId, false, "inventory_full", null));
+                } catch (claimRejectedResponseError) {
+                    trace("[AchievementService] rejected claim response failed: "
+                        + claimRejectedResponseError);
+                }
+                return;
+            }
+            // ⑥ 正常成功补齐 unlocked；claimed 已在可能写入奖励之前锁存。
+            a.unl[idStr] = 1;
+            PlayerAssetTransaction.commit(assetTransaction);
+        } catch (claimAssetError) {
+            // ItemUtil 明示是否已经发生真实资产写（含不进 receipt 的经验/技能点）。
+            // 首写前异常精确撤销 one-shot；一旦写入事实出现则保留 claimed，避免重试复制。
+            var claimWrote:Boolean = PlayerAssetTransaction.hasAuthorityWrite(
+                assetTransaction);
+            PlayerAssetTransaction.settleAfterException(
+                assetTransaction, claimWrote);
+            if (!claimWrote) {
+                try {
+                    if (claimedHadOwnValue) a.claimed[idStr] = claimedBefore;
+                    else delete a.claimed[idStr];
+                    if (_root.存档系统 != undefined) {
+                        _root.存档系统.dirtyMark = claimDirtyBefore;
+                    }
+                } catch (claimRestoreError) {
+                    trace("[AchievementService] pre-write claim restore failed: "
+                        + claimRestoreError);
+                }
+            }
+            throw claimAssetError;
         }
-        if (!ok) {
-            PlayerAssetTransaction.rollback(assetTransaction);
-            sendResponse(claimResp(callId, false, "inventory_full", null));
-            return;
-        }
-        // ⑥ 成功置位：必须在 acquire true 之后（claimed ⊇ unlocked 不变量 + 锁存写入沿）
-        a.claimed[idStr] = 1;
-        a.unl[idStr] = 1;
-        _root.存档系统.dirtyMark = true;
-        PlayerAssetTransaction.commit(assetTransaction);
-        sendResponse(claimResp(callId, true, undefined,
-            rewardSettlement == null
+        var deliveredRewards:Array = null;
+        try {
+            deliveredRewards = rewardSettlement == null
                 ? parseRewards(def)
-                : projectDeliveredRewards(rewardSettlement.items)));
+                : projectDeliveredRewards(rewardSettlement.items);
+        } catch (claimProjectionError) {
+            // 奖励与 claimed 已提交；可选展示投影失败只降级为无 rewards 回包。
+            trace("[AchievementService] committed reward projection failed: "
+                + claimProjectionError);
+        }
+        sendCommittedClaimResponse(callId, deliveredRewards);
+    }
+
+    /**
+     * 已提交领取的回包不得反向影响 claimed/奖励最终性。完整 overlay 构造失败时
+     * 降级到最小 success；JSON/socket 抛错时保持静默并由下一 callId 的幂等重试收敛。
+     */
+    private static function sendCommittedClaimResponse(callId,
+                                                        rewards:Array):Void {
+        var resp:Object;
+        try {
+            resp = claimResp(callId, true, undefined, rewards);
+        } catch (claimOverlayError) {
+            trace("[AchievementService] committed claim overlay failed: "
+                + claimOverlayError);
+            resp = {task:"task_response", callId:callId,
+                cmd:"achievementClaim", success:true, dataReady:_dataReady};
+            if (rewards != null) resp.rewards = rewards;
+        }
+        try {
+            sendResponse(resp);
+        } catch (claimResponseError) {
+            trace("[AchievementService] committed claim response failed: "
+                + claimResponseError);
+        }
     }
 
     // claim 回包：每分支并入完整 state overlay（单一口径），web 原子重渲零额外往返
@@ -383,5 +498,19 @@ class org.flashNight.arki.achievement.AchievementService {
     // ═══════════════════════════════════════════════════════════
     private static function sendResponse(resp:Object):Void {
         _root.server.sendSocketMessage(_json.stringifySafe(resp));
+    }
+
+    // ==================== TestLoader 专用钩子 ====================
+
+    public static function testOnlySetCatalog(raw:Array):Void {
+        if (_json == null) _json = new LiteJSON();
+        onData(raw);
+    }
+
+    public static function testOnlyResetCatalog():Void {
+        _dataReady = false;
+        _dataFailed = false;
+        defs = null;
+        defIds = null;
     }
 }

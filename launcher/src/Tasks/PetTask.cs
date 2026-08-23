@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
@@ -18,26 +18,27 @@ namespace CF7Launcher.Tasks
     ///   Flash → C# {task:"pet_response", callId:fid, success, ...}
     ///   C# → Web   {type:"panel_resp", panel:"pets", cmd, callId, success, ...}
     ///
-    /// 注意：close 不走本桥。Web 关闭面板时 WebOverlayForm.HandlePanelMessage 直接
-    /// 切 _activePanel = null + ClosePanel()。
+    /// 注意：close 不走本桥。Team 外层只发送携 active panelInstanceId 的 exact close，
+    /// 并等待 Host 确认；旧 panel:"pets" close 必须 fail-closed，不能关闭 replacement。
     /// </summary>
     public sealed class PetTask : IDisposable
     {
         private sealed class PendingRequest
         {
-            public string WebCallId;
             public string WebCmd;
+            public string PanelInstanceId;
         }
 
-        private readonly Func<bool> _isClientReady;
-        private readonly Action<string> _send;
+        private const int DefaultTimeoutMs = 10000;
+        private static readonly Regex ValidOpaque =
+            new Regex("^[A-Za-z0-9._~-]{1,160}$", RegexOptions.Compiled);
+
+        private readonly PanelPendingCallTracker<PendingRequest> _pendingCalls;
         private Action<string> _postToWeb;
         private Action<Action> _invokeOnUI;
-        private readonly Dictionary<int, PendingRequest> _pending;
-        private readonly Dictionary<int, Timer> _timers;
-        private int _seq;
         private readonly object _lock = new object();
-        private volatile bool _disposed;
+        private string _panelInstanceId;
+        private bool _disposed;
 
         // 商城静态目录（pets.xml）的 C# 直答缓存。projectRoot 为 null 时退化为纯 Flash 透传。
         private readonly string _projectRoot;
@@ -52,8 +53,12 @@ namespace CF7Launcher.Tasks
         public PetTask(XmlSocketServer socket, string projectRoot)
             : this(
                 delegate { return socket != null && socket.IsClientReady; },
-                delegate(string payload) { if (socket != null) socket.Send(payload); },
-                projectRoot)
+                delegate(string payload)
+                {
+                    return socket != null && socket.TrySend(payload);
+                },
+                projectRoot,
+                DefaultTimeoutMs)
         {
         }
 
@@ -63,21 +68,68 @@ namespace CF7Launcher.Tasks
         }
 
         public PetTask(Func<bool> isClientReady, Action<string> send, string projectRoot)
+            : this(
+                isClientReady,
+                AdaptSend(send),
+                projectRoot,
+                DefaultTimeoutMs)
         {
-            _isClientReady = isClientReady ?? delegate { return false; };
-            _send = send ?? delegate { };
-            _pending = new Dictionary<int, PendingRequest>();
-            _timers = new Dictionary<int, Timer>();
+        }
+
+        internal PetTask(
+            Func<bool> isClientReady,
+            Func<string, bool> trySend,
+            string projectRoot,
+            int timeoutMs)
+        {
+            _pendingCalls = new PanelPendingCallTracker<PendingRequest>(
+                isClientReady,
+                trySend,
+                timeoutMs,
+                HandlePendingEnded);
             _projectRoot = projectRoot;
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
 
+        public string PanelInstanceId
+        {
+            get { lock (_lock) return _panelInstanceId; }
+        }
+
+        public bool BindPanelInstance(string panelInstanceId)
+        {
+            if (!IsOpaque(panelInstanceId)) return false;
+            lock (_lock)
+            {
+                if (_disposed) return false;
+                if (string.Equals(_panelInstanceId, panelInstanceId, StringComparison.Ordinal))
+                    return true;
+                _pendingCalls.Clear();
+                _panelInstanceId = panelInstanceId;
+                return true;
+            }
+        }
+
+        public void ClearPanelInstance()
+        {
+            lock (_lock)
+            {
+                _pendingCalls.Clear();
+                _panelInstanceId = null;
+            }
+        }
+
         public void Dispose()
         {
-            _disposed = true;
-            ClearPending();
+            lock (_lock)
+            {
+                if (_disposed) return;
+                _disposed = true;
+                _panelInstanceId = null;
+                _pendingCalls.Dispose();
+            }
         }
 
         /// <summary>
@@ -86,10 +138,20 @@ namespace CF7Launcher.Tasks
         public void HandleWebRequest(string cmd, JObject parsed)
         {
             LogManager.Log("[PetTask] HandleWebRequest: cmd=" + cmd);
-            string webCallId = parsed.Value<string>("callId");
-            if (string.IsNullOrEmpty(webCallId))
+            string webCallId = parsed != null ? parsed.Value<string>("callId") : null;
+            string requestedInstance = parsed != null
+                ? parsed.Value<string>("panelInstanceId") : null;
+            if (!IsOpaque(webCallId))
             {
                 LogManager.Log("[PetTask] webCallId is empty");
+                return;
+            }
+            string boundInstance;
+            lock (_lock) boundInstance = _disposed ? null : _panelInstanceId;
+            if (!IsOpaque(boundInstance)
+                || !string.Equals(boundInstance, requestedInstance, StringComparison.Ordinal))
+            {
+                RespondError(webCallId, cmd, requestedInstance, "panel_instance_expired");
                 return;
             }
 
@@ -97,13 +159,13 @@ namespace CF7Launcher.Tasks
             // adopt_list 顺带消除"进店早于 snapshot 返回时分类页签空白"竞态。projectRoot 缺省时退回 Flash 透传。
             if (_projectRoot != null)
             {
-                if (cmd == "adopt_list") { RespondAdoptList(webCallId, parsed); return; }
-                if (cmd == "pet_lib") { RespondPetLib(webCallId); return; }
+                if (cmd == "adopt_list") { RespondAdoptList(webCallId, requestedInstance, parsed); return; }
+                if (cmd == "pet_lib") { RespondPetLib(webCallId, requestedInstance); return; }
             }
 
-            if (!_isClientReady())
+            if (!_pendingCalls.IsReady())
             {
-                RespondError(webCallId, cmd, "disconnected");
+                RespondError(webCallId, cmd, requestedInstance, "disconnected");
                 return;
             }
 
@@ -161,44 +223,46 @@ namespace CF7Launcher.Tasks
                     action = "petDelete";
                     break;
                 default:
-                    RespondError(webCallId, cmd, "unsupported_cmd");
+                    RespondError(webCallId, cmd, requestedInstance, "unsupported_cmd");
                     return;
             }
 
             int fid;
+            string flashJson;
+            bool ownerExpired;
             lock (_lock)
             {
-                fid = ++_seq;
-                _pending[fid] = new PendingRequest
+                ownerExpired = _disposed
+                    || !string.Equals(
+                        _panelInstanceId,
+                        requestedInstance,
+                        StringComparison.Ordinal);
+                if (ownerExpired)
                 {
-                    WebCallId = webCallId,
-                    WebCmd = cmd
-                };
-            }
-
-            var timer = new Timer(delegate
-            {
-                if (_disposed) return;
-
-                PendingRequest entry;
-                lock (_lock)
-                {
-                    if (!_pending.TryGetValue(fid, out entry)) return;
-                    _pending.Remove(fid);
-                    _timers.Remove(fid);
+                    fid = 0;
+                    flashJson = null;
                 }
-
-                RespondError(entry.WebCallId, entry.WebCmd, "timeout");
-            }, null, 10000, Timeout.Infinite);
-
-            lock (_lock) { _timers[fid] = timer; }
-
-            // 信封构造 + 安全参数透传统一走 PanelBridge（含 action/task 保留键守卫，杜绝各桥漏抄）。
-            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);
-
-            string flashJson = flashMsg.ToString(Formatting.None);
-            LogManager.Log("[PetTask] -> Flash: " + flashJson);
-            _send(flashJson + "\0");
+                else if (!_pendingCalls.TryBegin(
+                    webCallId,
+                    new PendingRequest
+                    {
+                        WebCmd = cmd,
+                        PanelInstanceId = requestedInstance
+                    },
+                    out fid)) return;
+                else
+                {
+                    // 信封构造 + 安全参数透传统一走 PanelBridge（含 action/task
+                    // 保留键守卫，杜绝各桥漏抄）。登记和本地发送都在 owner 锁内，
+                    // replacement 不能夹在二者之间把旧实例写入送往 Flash。
+                    JObject flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);
+                    flashJson = flashMsg.ToString(Formatting.None);
+                    LogManager.Log("[PetTask] -> Flash: " + flashJson);
+                    _pendingCalls.Send(fid, flashJson + "\0");
+                }
+            }
+            if (ownerExpired)
+                RespondError(webCallId, cmd, requestedInstance, "panel_instance_expired");
         }
 
         /// <summary>
@@ -208,42 +272,34 @@ namespace CF7Launcher.Tasks
         {
             LogManager.Log("[PetTask] <- Flash response received");
             int fid = msg.Value<int>("callId");
-            PendingRequest entry;
-            lock (_lock)
+            PanelPendingCall<PendingRequest> pendingCall;
+            if (!_pendingCalls.TryComplete(fid, out pendingCall))
             {
-                if (!_pending.TryGetValue(fid, out entry))
-                {
-                    respond(null);
-                    return;
-                }
-                _pending.Remove(fid);
-                Timer t;
-                if (_timers.TryGetValue(fid, out t))
-                {
-                    t.Dispose();
-                    _timers.Remove(fid);
-                }
+                if (respond != null) respond(null);
+                return;
             }
+            PendingRequest entry = pendingCall.Context;
 
             msg.Remove("task");
             msg["type"] = "panel_resp";
             msg["panel"] = "pets";
             msg["cmd"] = entry.WebCmd;
-            msg["callId"] = entry.WebCallId;
+            msg["callId"] = pendingCall.WebCallId;
+            msg["panelInstanceId"] = entry.PanelInstanceId;
 
             string json = msg.ToString(Formatting.None);
             PostToWeb(json);
-            respond(null);
+            if (respond != null) respond(null);
         }
 
         public void ClearPending()
         {
-            lock (_lock)
-            {
-                foreach (var t in _timers.Values) t.Dispose();
-                _timers.Clear();
-                _pending.Clear();
-            }
+            lock (_lock) _pendingCalls.Clear();
+        }
+
+        internal int PendingCountForTest
+        {
+            get { return _pendingCalls.PendingCount; }
         }
 
         // ── 商城目录 C# 直答（pets.xml 静态投影，等价于 AS2 handleAdoptList + snapshot.categories）──
@@ -252,13 +308,14 @@ namespace CF7Launcher.Tasks
         /// 直答可领养列表。兼容请求返回全量 categories:[{name}]；带 rosterType 时返回
         /// 非空 categories:[{index,name,count}] 与 selectedCategoryIndex。categoryIndex 使用原始索引。
         /// </summary>
-        private void RespondAdoptList(string webCallId, JObject parsed)
+        private void RespondAdoptList(
+            string webCallId, string panelInstanceId, JObject parsed)
         {
             PetCatalog catalog;
             string err;
             if (!EnsureCatalogLoaded(out catalog, out err))
             {
-                RespondError(webCallId, "adopt_list", err);
+                RespondError(webCallId, "adopt_list", panelInstanceId, err);
                 return;
             }
 
@@ -267,7 +324,7 @@ namespace CF7Launcher.Tasks
             bool filteredByRoster = !string.IsNullOrEmpty(rosterType);
             if (filteredByRoster && !PetCatalogLoader.IsValidRosterType(rosterType))
             {
-                RespondError(webCallId, "adopt_list", "invalid_roster_type");
+                RespondError(webCallId, "adopt_list", panelInstanceId, "invalid_roster_type");
                 return;
             }
             JToken ciTok = parsed["categoryIndex"];
@@ -328,6 +385,7 @@ namespace CF7Launcher.Tasks
             resp["panel"] = "pets";
             resp["cmd"] = "adopt_list";
             resp["callId"] = webCallId;
+            resp["panelInstanceId"] = panelInstanceId;
             resp["success"] = true;
             resp["categories"] = categories;
             resp["adoptable"] = adoptable;
@@ -357,13 +415,13 @@ namespace CF7Launcher.Tasks
         /// initialLevel,unlockLevel,unlockTask,unique,price,kprice,increasePrice,promotions}] }，按 id 升序。
         /// Web 用于进阶页查方案列表（getPetLibDef）。注：price 为 XML 基础价，会话内涨价以 AS2 为准（迁移方案 §9）。
         /// </summary>
-        private void RespondPetLib(string webCallId)
+        private void RespondPetLib(string webCallId, string panelInstanceId)
         {
             PetCatalog catalog;
             string err;
             if (!EnsureCatalogLoaded(out catalog, out err))
             {
-                RespondError(webCallId, "pet_lib", err);
+                RespondError(webCallId, "pet_lib", panelInstanceId, err);
                 return;
             }
 
@@ -377,6 +435,7 @@ namespace CF7Launcher.Tasks
             resp["panel"] = "pets";
             resp["cmd"] = "pet_lib";
             resp["callId"] = webCallId;
+            resp["panelInstanceId"] = panelInstanceId;
             resp["success"] = true;
             resp["petLib"] = petLib;
             PostToWeb(resp.ToString(Formatting.None));
@@ -406,13 +465,15 @@ namespace CF7Launcher.Tasks
             }
         }
 
-        private void RespondError(string webCallId, string cmd, string error)
+        private void RespondError(
+            string webCallId, string cmd, string panelInstanceId, string error)
         {
             var resp = new JObject();
             resp["type"] = "panel_resp";
             resp["panel"] = "pets";
             resp["cmd"] = cmd;
             resp["callId"] = webCallId;
+            resp["panelInstanceId"] = panelInstanceId ?? "";
             resp["success"] = false;
             resp["error"] = error;
             PostToWeb(resp.ToString(Formatting.None));
@@ -424,6 +485,36 @@ namespace CF7Launcher.Tasks
                 _invokeOnUI(delegate { if (_postToWeb != null) _postToWeb(json); });
             else if (_postToWeb != null)
                 _postToWeb(json);
+        }
+
+        private void HandlePendingEnded(
+            PanelPendingCall<PendingRequest> pendingCall,
+            PanelPendingCallEndReason reason)
+        {
+            if (reason == PanelPendingCallEndReason.Cleared) return;
+            PendingRequest entry = pendingCall.Context;
+            RespondError(
+                pendingCall.WebCallId,
+                entry.WebCmd,
+                entry.PanelInstanceId,
+                reason == PanelPendingCallEndReason.Timeout
+                    ? "timeout"
+                    : "delivery_unknown");
+        }
+
+        private static Func<string, bool> AdaptSend(Action<string> send)
+        {
+            return delegate(string payload)
+            {
+                if (send == null) return false;
+                send(payload);
+                return true;
+            };
+        }
+
+        private static bool IsOpaque(string value)
+        {
+            return !string.IsNullOrEmpty(value) && ValidOpaque.IsMatch(value);
         }
     }
 }

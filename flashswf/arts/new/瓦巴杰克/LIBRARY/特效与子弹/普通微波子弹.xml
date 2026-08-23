@@ -16,16 +16,18 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (!this.击中时触发函数)
+                <script><![CDATA[if (!this.命中前伤害参数函数)
 {
-	this.击中时触发函数 = function()
+	this.命中前伤害参数函数 = function(目标)
 	{
-		var 暂存敌人 = this.命中对象;
-		if(暂存敌人.防御力 <= 400){
-			子弹威力 = 子弹威力 * 30;
-			this.伤害类型 = "魔法";
-			this.魔法伤害属性 = "波";
+		if(目标.防御力 <= 400){
+			return {
+				子弹威力:this.子弹威力 * 30,
+				伤害类型:"魔法",
+				魔法伤害属性:"波"
+			};
 		}
+		return null;
 	};
 }
 stop();]]></script>

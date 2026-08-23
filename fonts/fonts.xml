@@ -2,6 +2,8 @@
 <fontCatalog version="1" gate="E" runtimeAuthority="true">
   <downloadPolicy>
     <allowedHost name="github.com"/>
+    <allowedHost name="release-assets.githubusercontent.com"/>
+    <allowedHost name="raw.githubusercontent.com"/>
     <allowedHost name="cdn.jsdelivr.net"/>
   </downloadPolicy>
   <exclusions>

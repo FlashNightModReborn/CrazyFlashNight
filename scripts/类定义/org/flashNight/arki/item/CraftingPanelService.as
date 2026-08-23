@@ -459,19 +459,38 @@ class org.flashNight.arki.item.CraftingPanelService {
         var drugs:Object = _root.物品栏.药剂栏;
         var materials:Object = _root.收集品栏.材料;
         var intelligence:Object = _root.收集品栏.情报;
+        var saveExt:Object = _root._saveExt;
+        var procurementPlansExists:Boolean = saveExt != undefined && saveExt != null
+            && saveExt.hasOwnProperty("procurementPlans");
         var backup:Object = {bag:bag.toObject(), drugs:drugs.toObject(),
             materials:materials.toObject(), intelligence:intelligence.toObject(),
             money:Number(_root.金钱), kpoints:Number(_root.虚拟币),
-            dirty:_root.存档系统 == undefined ? undefined : _root.存档系统.dirtyMark};
+            dirty:_root.存档系统 == undefined ? undefined : _root.存档系统.dirtyMark,
+            procurementPlansExists:procurementPlansExists,
+            procurementPlans:procurementPlansExists
+                ? ObjectUtil.clone(saveExt.procurementPlans) : null};
 
         var assetContext:Object = {
             source:"crafting", reason:"craft_commit", mergeScope:"operation"
         };
         var assetTransaction:Object = PlayerAssetTransaction.begin(assetContext);
         try {
+            // 制作的材料、产物、货币与采购进度共享同一存档权威；缺失时零写失败。
+            PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
             if (!ItemUtil.submit(current.requirements, assetContext)) {
-                PlayerAssetTransaction.rollback(assetTransaction);
-                return fail("material_missing");
+                // submit=false 也可能是同步 listener 重入后的少扣/多扣，不能再
+                // 当作零写直接 rollback receipt；只有完整快照恢复后才丢弃 frame。
+                var submitRestored:Boolean = false;
+                try {
+                    restoreState(backup);
+                    submitRestored = true;
+                } catch (submitRestoreError) {
+                    trace("[CraftingPanelService] submit=false restore failed: "
+                        + submitRestoreError);
+                }
+                PlayerAssetTransaction.settleAfterException(
+                    assetTransaction, !submitRestored);
+                return fail(submitRestored ? "material_missing" : "commit_failed");
             }
             var actualRequire:Object = ItemUtil.singleRequire(current.output.name, current.output.value);
             var actualDelivery:Object = projectOutputDelivery(
@@ -517,7 +536,6 @@ class org.flashNight.arki.item.CraftingPanelService {
                 PlayerAssetTransaction.recordEffect("loss", "kpoint", "K点",
                     Number(current.cost.kpoints), assetContext);
             }
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
             var procurement:Object = ProcurementPlanService.consumeCompleted(
                 String(resolved.recipe.recipeId || ""), Number(current.craftCount));
             var successResponse:Object = {success:true, v:1, operation:"commit", category:category,
@@ -525,8 +543,18 @@ class org.flashNight.arki.item.CraftingPanelService {
                 crafted:current.output, acceptedPlan:plan.acceptedPlan,
                 outputReceipt:outputReceipt, balance:buildBalance(), procurement:procurement};
         } catch (commitError) {
-            restoreState(backup);
-            PlayerAssetTransaction.rollback(assetTransaction);
+            // 只有完整恢复成功才能丢弃回执；恢复自身失败时保留当前事实，
+            // 但无论如何都先结清 frame，且继续抛原始 commitError。
+            var commitRestored:Boolean = false;
+            try {
+                restoreState(backup);
+                commitRestored = true;
+            } catch (commitRestoreError) {
+                trace("[CraftingPanelService] exact snapshot restore failed: "
+                    + commitRestoreError);
+            }
+            PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !commitRestored);
             trace("[CraftingPanelService] asset commit failed: " + commitError);
             return fail("commit_failed");
         }
@@ -549,6 +577,14 @@ class org.flashNight.arki.item.CraftingPanelService {
         _root.收集品栏.情报.setItems(backup.intelligence);
         _root.金钱 = Number(backup.money);
         _root.虚拟币 = Number(backup.kpoints);
+        // consumeCompleted 先替换采购计划、再触发可扩展的 markDirty；后者
+        // 抛错时必须把这份领域权威也恢复，才能兑现 executeCommit 的 exact snapshot。
+        if (backup.procurementPlansExists === true) {
+            if (_root._saveExt == undefined || _root._saveExt == null) _root._saveExt = {};
+            _root._saveExt.procurementPlans = ObjectUtil.clone(backup.procurementPlans);
+        } else if (_root._saveExt != undefined && _root._saveExt != null) {
+            delete _root._saveExt.procurementPlans;
+        }
         if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = backup.dirty;
     }
 

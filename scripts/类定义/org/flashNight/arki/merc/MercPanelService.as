@@ -20,6 +20,7 @@ import org.flashNight.arki.item.*;
 import org.flashNight.arki.merc.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.gesh.tooltip.*;
+import org.flashNight.gesh.object.ObjectUtil;
 
 class org.flashNight.arki.merc.MercPanelService {
     private static var _json:LiteJSON;
@@ -326,12 +327,15 @@ class org.flashNight.arki.merc.MercPanelService {
         // （旧版解雇用 [] 占位且不压缩 → 同伴数据.length 已达上限、中段是墓碑）下，push 会把
         // 新佣兵写到读窗口之外 → 扣钱但不入可用列表。改为复用 [0,佣兵个数限制) 内首个空槽
         // （对齐老版 Symbol 2035 雇佣语义），保证落点恒在读窗口内。
-        if (_root.同伴数据 == undefined) _root.同伴数据 = [];
+        // 旧档缺少数组时先用局部空表完成 slots_full 预检；持久初始化必须和
+        // 扣款/落槽一起进入 snapshot 保护的事务，失败请求保持零写。
+        var companionData:Array = _root.同伴数据;
+        if (companionData == undefined) companionData = [];
         var maxSlots:Number = Number(_root.佣兵个数限制) || 0;
         var currentCount:Number = countCompanions();
         var targetSlot:Number = -1;
         for (var s:Number = 0; s < maxSlots; s++) {
-            var occ:Array = _root.同伴数据[s];
+            var occ:Array = companionData[s];
             if (occ == undefined || occ[0] == undefined) { targetSlot = s; break; }
         }
         if (targetSlot == -1) {
@@ -373,15 +377,26 @@ class org.flashNight.arki.merc.MercPanelService {
         var assetContext:Object = {
             source:"mercenary_service", reason:"recruit", mergeScope:"operation"
         };
+        var hireSnapshot:Object = captureMercTransactionState();
         var assetTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
         var moneyBeforeHire:Number = Number(_root.金钱);
         var kpointsBeforeHire:Number = Number(_root.虚拟币);
         try {
-            // 扣款
-            _root.金钱 -= goldPrice;
-            if (kPrice > 0) {
-                _root.虚拟币 -= kPrice;
+            // 全部招募权威写之前 fail-fast 标脏；货币 finally 立即固化真实 delta，
+            // 后续池/槽位回调抛错时 catch 可以先安全结算 frame。
+            PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+            if (_root.同伴数据 == undefined) _root.同伴数据 = companionData;
+            if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
+            try {
+                _root.金钱 -= goldPrice;
+                if (kPrice > 0) {
+                    _root.虚拟币 -= kPrice;
+                }
+            } finally {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                    Number(_root.金钱) - moneyBeforeHire,
+                    Number(_root.虚拟币) - kpointsBeforeHire, assetContext);
             }
 
             // 从可雇佣兵池移除
@@ -396,25 +411,22 @@ class org.flashNight.arki.merc.MercPanelService {
 
             // 同伴数 以实际有效项重算，杜绝与 同伴数据 发散（issue #7 bug1 根因之一）
             _root.同伴数 = countCompanions();
-            // Plan A audit: handleRecruit 写 金钱/虚拟币/同伴数据/同伴数/佣兵是否出战信息，全部 save-relevant，必须标脏
-            _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeHire,
-                Number(_root.虚拟币) - kpointsBeforeHire, assetContext);
         } catch (hireError) {
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeHire,
-                Number(_root.虚拟币) - kpointsBeforeHire, assetContext);
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            var hireRestored:Boolean = restoreMercTransactionState(hireSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !hireRestored);
             throw hireError;
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         // 成就记账（埋点 #12，雇佣成功分支=扣款后）
-        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣次数", 1);
-            org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣花费金币", goldPrice);
+        try {
+            if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣次数", 1);
+                org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣花费金币", goldPrice);
+            }
+        } catch (hireMetricError) {
+            trace("[MercPanelService] post-commit hire metric failed: " + hireMetricError);
         }
 
         var mercName:String = String(merc[1]);
@@ -899,12 +911,14 @@ class org.flashNight.arki.merc.MercPanelService {
         }
 
         // 选空槽 [0,佣兵个数限制)（复刻 雇佣佣兵:187-198 的空槽语义，用 countCompanions 同源的健壮判空）
-        if (_root.同伴数据 == undefined) _root.同伴数据 = [];
-        if (_root.佣兵是否出战信息 == undefined) _root.佣兵是否出战信息 = [];
+        var worldCompanionData:Array = _root.同伴数据;
+        if (worldCompanionData == undefined) worldCompanionData = [];
+        var worldDeployData:Array = _root.佣兵是否出战信息;
+        if (worldDeployData == undefined) worldDeployData = [];
         var maxSlots:Number = Number(_root.佣兵个数限制) || 0;
         var slot:Number = -1;
         for (var s:Number = 0; s < maxSlots; s++) {
-            var occ:Array = _root.同伴数据[s];
+            var occ:Array = worldCompanionData[s];
             if (occ == undefined || occ[0] == undefined) { slot = s; break; }
         }
         if (slot == -1) {
@@ -917,13 +931,25 @@ class org.flashNight.arki.merc.MercPanelService {
         var assetContext:Object = {
             source:"mercenary_service", reason:"world_hire", mergeScope:"operation"
         };
+        var worldHireSnapshot:Object = captureMercTransactionState();
         var assetTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(assetContext);
         var moneyBeforeWorldHire:Number = Number(_root.金钱);
         try {
-            // 扣费 + 写入（复刻 雇佣佣兵:183-198）
-            _root.金钱 -= goldPrice;
-            _root.买佣兵(merc[2], Math.floor(goldPrice * 0.8));
+            // 存档不可用时必须在扣费/写槽前失败；扣费 finally 固化精确 loss。
+            PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+            if (_root.同伴数据 == undefined) _root.同伴数据 = worldCompanionData;
+            if (_root.佣兵是否出战信息 == undefined) {
+                _root.佣兵是否出战信息 = worldDeployData;
+            }
+            try {
+                _root.金钱 -= goldPrice;
+            } finally {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                    Number(_root.金钱) - moneyBeforeWorldHire, 0, assetContext);
+            }
+            // standalone 生产闭包没有 `_root.买佣兵` producer；roster/deploy/pool
+            // authority 均由下方显式写完成，故不在扣款 finality 窗口调用孤儿 hook。
             _root.同伴数据[slot] = merc;
             _root.佣兵是否出战信息[slot] = 1;   // ⚠ 世界内雇佣默认出战（=1），与 roster handleHire(=0) 不同
             _root.同伴数 = countCompanions();
@@ -938,42 +964,104 @@ class org.flashNight.arki.merc.MercPanelService {
                 if (merc[19].隐藏) spliceFromPool(_root.隐藏的可雇佣兵, merc);
             }
 
-            // 扣 金钱 + 写 同伴数据/佣兵是否出战信息/同伴数，全 save-relevant，必须标脏
-            _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeWorldHire, 0, assetContext);
         } catch (worldHireError) {
-            org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-                Number(_root.金钱) - moneyBeforeWorldHire, 0, assetContext);
-            if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
-            org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+            var worldHireRestored:Boolean = restoreMercTransactionState(
+                worldHireSnapshot);
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !worldHireRestored);
             throw worldHireError;
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
         // 成就记账（对齐 handleHire 埋点 #12）
-        if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-            org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣次数", 1);
-            org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣花费金币", goldPrice);
+        try {
+            if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣次数", 1);
+                org.flashNight.arki.achievement.AchievementMetrics.record("佣兵雇佣花费金币", goldPrice);
+            }
+        } catch (worldHireMetricError) {
+            trace("[MercPanelService] post-commit world hire metric failed: "
+                + worldHireMetricError);
         }
+
+        // 权威招募已提交；先清 one-shot stash，任何场景投影异常都不能重放扣款/落槽。
+        _root._pendingHire = undefined;
 
         // 世界 spawn + 删 NPC（复刻 雇佣佣兵:199-237；AS2 独占，web 做不到）。
         // ⚠ 字段名须与 Symbol 2035:234 attachMovie 逐一对齐，漏字段 = 单位渲染缺件。
         // NPC 还在 → 落其位 + removeMovieClip；已超时离场 → 落玩家位、跳过 remove（复刻 雇佣佣兵:199-208 兜底）。
-        var npc:Object = (stash.npcId != undefined) ? _root.gameworld[stash.npcId] : undefined;
-        var npcAlive:Boolean = (npc != undefined && npc._x != undefined);
-        var posX:Number = npcAlive ? npc._x : _root.gameworld[_root.控制目标]._x;
-        var posY:Number = npcAlive ? npc._y : _root.gameworld[_root.控制目标]._y;
-        _root.gameworld.attachMovie("主角-男", "同伴" + slot, _root.gameworld.getNextHighestDepth(), {
-            _x: posX, _y: posY, 用户ID: merc[2], 是否为敌人: false, 身高: merc[3], 名字: merc[1], 等级: merc[0],
-            脸型: merc[4], 发型: merc[5], 头部装备: merc[6], 上装装备: merc[7], 手部装备: merc[8], 下装装备: merc[9],
-            脚部装备: merc[10], 颈部装备: merc[11], 长枪: merc[12], 手枪: merc[13], 手枪2: merc[14], 刀: merc[15],
-            手雷: merc[16], 性别: merc[17], 是否为佣兵: true
-        });
-        if (npcAlive) _root.gameworld[stash.npcId].removeMovieClip();
-        _root._pendingHire = undefined;
+        var npc:Object = undefined;
+        var npcAlive:Boolean = false;
+        var worldHireRefreshDeferred:Boolean = false;
+        try {
+            npc = stash.npcId != undefined && _root.gameworld != undefined
+                ? _root.gameworld[stash.npcId] : undefined;
+            npcAlive = npc != undefined && npc._x != undefined;
+            var fallbackHero:Object = _root.gameworld[_root.控制目标];
+            var posX:Number = npcAlive ? npc._x : fallbackHero._x;
+            var posY:Number = npcAlive ? npc._y : fallbackHero._y;
+            var spawnedMerc:Object = _root.gameworld.attachMovie(
+                "主角-男", "同伴" + slot, _root.gameworld.getNextHighestDepth(), {
+                _x: posX, _y: posY, 用户ID: merc[2], 是否为敌人: false,
+                身高: merc[3], 名字: merc[1], 等级: merc[0], 脸型: merc[4],
+                发型: merc[5], 头部装备: merc[6], 上装装备: merc[7],
+                手部装备: merc[8], 下装装备: merc[9], 脚部装备: merc[10],
+                颈部装备: merc[11], 长枪: merc[12], 手枪: merc[13],
+                手枪2: merc[14], 刀: merc[15], 手雷: merc[16],
+                性别: merc[17], 是否为佣兵: true
+            });
+            if (spawnedMerc == undefined) worldHireRefreshDeferred = true;
+        } catch (worldHireSpawnError) {
+            worldHireRefreshDeferred = true;
+            trace("[MercPanelService] post-commit world hire spawn failed: "
+                + worldHireSpawnError);
+        }
+        try {
+            if (npcAlive) _root.gameworld[stash.npcId].removeMovieClip();
+        } catch (worldHireNpcCleanupError) {
+            worldHireRefreshDeferred = true;
+            trace("[MercPanelService] post-commit world hire NPC cleanup failed: "
+                + worldHireNpcCleanupError);
+        }
 
-        sendResponse({ task: "merc_response", callId: callId, success: true, hired: true, mercName: String(merc[1]), goldRemaining: Number(_root.金钱) });
+        sendResponse({ task: "merc_response", callId: callId, success: true,
+            hired: true, mercName: String(merc[1]), goldRemaining: Number(_root.金钱),
+            refreshDeferred: worldHireRefreshDeferred });
+    }
+
+    /** 两个招募入口共享的 exact 领域快照；场景 spawn/NPC 清理均在 commit 后。 */
+    private static function captureMercTransactionState():Object {
+        var pending:Object = _root._pendingHire;
+        return {
+            assets:ItemUtil.capturePlayerAssetSnapshot(),
+            companions:ObjectUtil.clone(_root.同伴数据),
+            deployed:ObjectUtil.clone(_root.佣兵是否出战信息),
+            companionCount:_root.同伴数,
+            hirePool:ObjectUtil.clone(_root.可雇佣兵),
+            hiddenHirePool:ObjectUtil.clone(_root.隐藏的可雇佣兵),
+            pendingMerc:pending != undefined && pending != null
+                ? ObjectUtil.clone(pending.merc) : undefined
+        };
+    }
+
+    private static function restoreMercTransactionState(snapshot:Object):Boolean {
+        if (snapshot == null) return false;
+        try {
+            _root.同伴数据 = ObjectUtil.clone(snapshot.companions);
+            _root.佣兵是否出战信息 = ObjectUtil.clone(snapshot.deployed);
+            _root.同伴数 = snapshot.companionCount;
+            _root.可雇佣兵 = ObjectUtil.clone(snapshot.hirePool);
+            _root.隐藏的可雇佣兵 = ObjectUtil.clone(snapshot.hiddenHirePool);
+            if (_root._pendingHire != undefined && _root._pendingHire != null
+                    && snapshot.pendingMerc != undefined) {
+                _root._pendingHire.merc = ObjectUtil.clone(snapshot.pendingMerc);
+            }
+        } catch (mercRestoreError) {
+            trace("[MercPanelService] merc authority snapshot restore failed: "
+                + mercRestoreError);
+            return false;
+        }
+        return ItemUtil.restorePlayerAssetSnapshot(snapshot.assets);
     }
 
     // 可雇佣兵池移除：按 名字[1]+用户ID[2] 匹配（复刻 雇佣佣兵:218-220 / 225-227）

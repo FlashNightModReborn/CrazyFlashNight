@@ -38,6 +38,7 @@ function validateDownloadUrl(value, allowedHosts) {
     const parsed = new URL(value);
     if (parsed.protocol !== 'https:') throw new Error('url_scheme');
     if (parsed.username || parsed.password || parsed.hash) throw new Error('url_unsafe');
+    if (parsed.port) throw new Error('url_port');
     if (!allowedHosts.has(parsed.hostname.toLowerCase())) throw new Error(`host_not_allowed:${parsed.hostname}`);
     return parsed;
 }

@@ -308,10 +308,43 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   });
   assert.deepStrictEqual(rescuePayload, {v:1});
 
+  await page.click('.settings-tab[data-tab="local"]');
+  await page.evaluate(() => {
+    window.__settingsHarness.dropNextResponse('host_set');
+    window.__settingsHarness.failNextSnapshot();
+  });
+  await page.locator('[data-host-key="introEnabled"]').click();
+  await page.waitForFunction(() => {
+    const status = document.querySelector('.settings-status');
+    return status && status.textContent.includes('写入仍保持锁定');
+  }, {timeout:4000});
+  assert((await page.locator('.settings-status').textContent()).includes('权威状态读取失败'));
+  assert.strictEqual(await page.locator('.settings-empty h2').textContent(), '写入状态等待权威核对');
+  assert.strictEqual(await page.locator('.settings-empty button').isEnabled(), true);
+  await page.locator('.settings-empty button').click();
+  await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  assert.strictEqual(await page.locator('.settings-empty').count(), 0);
+
+  await page.click('.settings-tab[data-tab="local"]');
+  await page.evaluate(() => {
+    window.__settingsHarness.dropNextResponse('host_set');
+    window.__settingsHarness.holdNextSnapshotForReconcile();
+  });
+  await page.locator('[data-host-key="introEnabled"]').click();
+  await page.waitForFunction(() => {
+    const status = document.querySelector('.settings-status');
+    return status && status.textContent.includes('该权威快照早于未决写入终态');
+  }, {timeout:4000});
+  assert.strictEqual(await page.locator('.settings-empty h2').textContent(), '写入状态等待权威核对');
+  assert.strictEqual(await page.locator('.settings-empty button').isEnabled(), true);
+  await page.locator('.settings-empty button').click();
+  await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  assert.strictEqual(await page.locator('.settings-empty').count(), 0);
+
   assert.deepStrictEqual(pageErrors, []);
   assert.deepStrictEqual(failedRequests, []);
   await page.close();
-  return 50;
+  return 58;
 }
 
 async function main() {
@@ -330,7 +363,7 @@ async function main() {
   try {
     for (const viewport of [{width:1024,height:576},{width:1600,height:900}]) {
       passed += await runViewport(browser, url, viewport, screenshotDir);
-      process.stdout.write('[PASS] settings Edge ' + viewport.width + 'x' + viewport.height + ' (50/50)\n');
+      process.stdout.write('[PASS] settings Edge ' + viewport.width + 'x' + viewport.height + ' (58/58)\n');
     }
   } finally {
     await browser.close();

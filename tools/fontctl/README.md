@@ -25,7 +25,14 @@ node tools/fontctl/cli.js generate --check
 - `scan`：只读扫描 `temporary/custom`、`temporary/cache`、`permanent/runtime`，计算 observed bytes/SHA-256，并读取 TTF/OTF/WOFF 的 glyph 目录、outline、name、OS/2、cmap；WOFF 展开受声明长度与 256 MiB 总量双重约束，cmap format 4 先校验 segment 严格有序/不重叠并受总工作预算约束，CFF/CFF2 至少闭合 header、INDEX、Top DICT、CharStrings 与 `maxp` 数量。WOFF2 只做容器识别并报告 metadata partial。这里的 `validFont` 只表示通过 Node 结构/元数据门，发现不等于运行时启用。
 - `resolve`：按 runtime 的 face-major 顺序输出候选：先取 role/preset 的第一个 face，并在该 face 内依次检查 `custom → cache → permanent`；只有该 face 无可用项才进入下一个 face，最后才是 system/generic。较晚 face 的 cache 不得越过较早 face 的 permanent。Node 零依赖路径不能代签 Launcher 的 Skia/Native 实际解析，因此，只有出现在静态首选之前的 TTF/OTF/WOFF custom `runtime-probe-required` 才会把 `selected` 降为 `provisional-node-fallback`；首选之后的未决 custom 不影响本次静态结论。Node 也不探测本机 system family，选到 system fallback 时固定为 `provisional-system-availability`。输出给出 `candidateOrder=face-major`、有界 `parityScope` 和恒为 false 的 `hostExactSelection`；其中 `authoritative=true` 只表示没有上述未决项的 Node 静态来源模型，绝不表示 Host parser/render exact selection。local custom WOFF2 固定 `unsupported-custom-font`；cache/permanent 必须匹配声明完整性。
 - `audit-usage`：扫描生产 C#、CSS、JS、HTML、JSON、SVG 和 tooltip 数据。未知 family 为 error；由 `CF7FontCatalog` 控制的动态表达式单列为 catalog-bound，不算迁移债。
-- `sync`：只从 XML 白名单 HTTPS 主机下载；requested 和每次 redirect 都重新校验。使用唯一 staging、256 MiB 上限、exact length/bytes/hash/glyph 结构门和可恢复原子替换，只写 `fonts/temporary/cache`。它不声称执行了 Launcher 实际 parser；`--check` 只检查所选下载集是否已经完整落入 cache，不访问网络。干净仓库故意不提交 cache，因此检查全量 asset 时会报告 missing 并返回 `2`，这不是仓库源码门失败。
+- `sync`：只从 XML 白名单 HTTPS 主机下载；requested 和每次 redirect 都重新校验。
+  当前只接受默认 HTTPS 端口；exact host 为 `github.com`、`release-assets.githubusercontent.com`、
+  `raw.githubusercontent.com` 与 `cdn.jsdelivr.net`，不接受 `githubusercontent.com` 通配子域。
+  GitHub Release 与 `/raw/` 分别只能逐跳收敛到上述两个专用 content host；任一后续 foreign hop 都拒绝。
+  使用唯一 staging、256 MiB 上限、exact length/bytes/hash/glyph 结构门和可恢复原子替换，
+  只写 `fonts/temporary/cache`。它不声称执行了 Launcher 实际 parser；`--check` 只检查所选下载集
+  是否已经完整落入 cache，不访问网络。干净仓库故意不提交 cache，因此检查全量 asset 时会报告
+  missing 并返回 `2`，这不是仓库源码门失败。
 - `generate`：确定性生成 `launcher/web/generated/font-catalog.{json,css,js}` 与 `launcher/web/assets/fonts/font-pack-manifest.json`。`--check` 不写文件，任一投影漂移都返回错误；使用 `--output-root` 时四项生成物写入隔离输出根。
 
 `sync` 可用 `--asset id1,id2` 或 `--group group1,group2` 缩小范围。所有命令支持 `--json`、`--catalog PATH`、`--schema PATH`、`--project-root PATH` 和 `--font-root PATH`；`generate` 另支持 `--output-root PATH`。

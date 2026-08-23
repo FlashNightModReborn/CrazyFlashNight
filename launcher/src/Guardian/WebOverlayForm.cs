@@ -115,7 +115,7 @@ namespace CF7Launcher.Guardian
             if (panel == "tasks") return "taskPanelClose";
             // team / arena / pets / mercs 故意留 null：普通关闭没有需要 AS2 清理的状态，
             // team 内宠物视图关闭不能调用 petPanelClose，否则会重建旧 Flash 战宠图标。
-            // 关闭 panel 时直接走 PanelHost.ClosePanel() 即可。
+            // team 仍须走 exact Host-owned close；旧 pets / mercs close 信封在路由入口 fail-closed。
             // arena 的定制赛结算页例外：由 close 消息携带 returnBase=true，
             // 走 ShouldReturnBaseOnPanelClose() 的专用回基地命令，不污染普通 close 语义。
             return null;
@@ -466,6 +466,59 @@ namespace CF7Launcher.Guardian
         internal static bool IsActiveStageSelectPanel(string activePanel, string activePanelInstanceId)
         {
             return activePanel == "stage-select" && !string.IsNullOrEmpty(activePanelInstanceId);
+        }
+
+        internal static bool IsActivePetPanelOwner(string activePanel,
+            string activePanelInstanceId, JObject request)
+        {
+            return IsActiveTeamPanelOwner(
+                "pets", activePanel, activePanelInstanceId, request);
+        }
+
+        internal static bool IsActiveMercPanelOwner(string activePanel,
+            string activePanelInstanceId, JObject request)
+        {
+            return IsActiveTeamPanelOwner(
+                "mercs", activePanel, activePanelInstanceId, request);
+        }
+
+        private static bool IsActiveTeamPanelOwner(string requestPanel,
+            string activePanel, string activePanelInstanceId, JObject request)
+        {
+            return activePanel == "team"
+                && !string.IsNullOrEmpty(activePanelInstanceId)
+                && request != null
+                && request.Value<string>("panel") == requestPanel
+                && request.Value<string>("panelInstanceId") == activePanelInstanceId;
+        }
+
+        internal static bool ShouldRejectLegacyPetsClose(JObject parsed)
+        {
+            return parsed != null
+                && HasExactStringValue(parsed["cmd"], "close")
+                && HasExactStringValue(parsed["panel"], "pets");
+        }
+
+        internal static bool ShouldRejectLegacyMercsClose(JObject parsed)
+        {
+            return parsed != null
+                && HasExactStringValue(parsed["cmd"], "close")
+                && HasExactStringValue(parsed["panel"], "mercs");
+        }
+
+        internal static bool IsValidExactPanelCloseEnvelope(JObject parsed,
+            string expectedPanel, string activePanel, string activePanelInstanceId)
+        {
+            return !string.IsNullOrEmpty(expectedPanel)
+                && HasOnlyObjectKeys(
+                    parsed, "type", "panel", "cmd", "panelInstanceId")
+                && string.Equals(activePanel, expectedPanel, StringComparison.Ordinal)
+                && !string.IsNullOrEmpty(activePanelInstanceId)
+                && HasExactStringValue(parsed["type"], "panel")
+                && HasExactStringValue(parsed["panel"], expectedPanel)
+                && HasExactStringValue(parsed["cmd"], "close")
+                && HasExactStringValue(
+                    parsed["panelInstanceId"], activePanelInstanceId);
         }
 
         internal static bool IsActiveEquipmentTuningPanel(string activePanel,
@@ -3410,6 +3463,21 @@ namespace CF7Launcher.Guardian
             BindMaterialShopNavigationOwners(
                 panelName,
                 panelInstanceId);
+            BindTeamPanelOwners(panelName, panelInstanceId);
+        }
+
+        private void BindTeamPanelOwners(string panelName, string panelInstanceId)
+        {
+            bool hasOwner = panelName == "team"
+                && !string.IsNullOrEmpty(panelInstanceId);
+            if (_petTask != null && hasOwner)
+                _petTask.BindPanelInstance(panelInstanceId);
+            else if (_petTask != null)
+                _petTask.ClearPanelInstance();
+            if (_mercTask != null && hasOwner)
+                _mercTask.BindPanelInstance(panelInstanceId);
+            else if (_mercTask != null)
+                _mercTask.ClearPanelInstance();
         }
 
         private void RetirePanelRequestOwner(string panelName)
@@ -3634,6 +3702,9 @@ namespace CF7Launcher.Guardian
             _petTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            BindTeamPanelOwners(
+                _panelHost != null ? _panelHost.ActivePanelName : null,
+                _panelHost != null ? _panelHost.ActivePanelInstanceId : null);
         }
 
         public void SetMercTask(MercTask task)
@@ -3641,6 +3712,9 @@ namespace CF7Launcher.Guardian
             _mercTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            BindTeamPanelOwners(
+                _panelHost != null ? _panelHost.ActivePanelName : null,
+                _panelHost != null ? _panelHost.ActivePanelInstanceId : null);
         }
 
         public void SetTaskTask(TaskTask task)
@@ -4425,6 +4499,40 @@ namespace CF7Launcher.Guardian
                     "[SettingsTask] exact Host close was not queued");
         }
 
+        private void TryHandleExactPanelClose(
+            JObject parsed, string panelName, string logScope)
+        {
+            string activeName = _panelHost != null
+                ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId : null;
+            if (_panelHost == null
+                || !IsValidExactPanelCloseEnvelope(
+                    parsed, panelName, activeName, activeInstance))
+            {
+                LogManager.Log(
+                    "[" + logScope
+                    + "] rejected stale/malformed exact close envelope");
+                return;
+            }
+            bool closeQueued = _panelHost.TryClosePanelExact(
+                panelName, activeInstance, false,
+                delegate(bool closed)
+                {
+                    if (!closed)
+                    {
+                        LogManager.Log(
+                            "[" + logScope
+                            + "] stale exact close ignored after replacement");
+                        return;
+                    }
+                    CommitAcceptedPanelCloseEffects(panelName, false, false);
+                });
+            if (!closeQueued)
+                LogManager.Log(
+                    "[" + logScope + "] exact Host close was not queued");
+        }
+
         private void HandlePanelMessage(string json)
         {
             JObject parsed;
@@ -4472,6 +4580,13 @@ namespace CF7Launcher.Guardian
             if (cmd == "close" && parsed.Value<string>("panel") == "loot")
             {
                 HandleLootVisualClose(parsed);
+                return;
+            }
+            if (ShouldRejectLegacyPetsClose(parsed)
+                || ShouldRejectLegacyMercsClose(parsed))
+            {
+                LogManager.Log(
+                    "[Team] rejected legacy child close; team exact owner required");
                 return;
             }
             string hostActivePanel = _panelHost != null
@@ -4886,6 +5001,17 @@ namespace CF7Launcher.Guardian
                         if (panel == "settings")
                         {
                             TryHandleSettingsPanelClose(parsed);
+                            return;
+                        }
+                        if (panel == "blackmarket")
+                        {
+                            TryHandleExactPanelClose(
+                                parsed, "blackmarket", "BlackMarket");
+                            return;
+                        }
+                        if (panel == "team")
+                        {
+                            TryHandleExactPanelClose(parsed, "team", "Team");
                             return;
                         }
                         bool characterBuildPauseReleaseHandled = false;
@@ -5706,12 +5832,36 @@ namespace CF7Launcher.Guardian
                         else if (panel == "pets")
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to PetTask, _petTask=" + (_petTask != null ? "ok" : "NULL"));
-                            if (_petTask != null) _petTask.HandleWebRequest(cmd, parsed);
+                            string activeName = _panelHost != null
+                                ? _panelHost.ActivePanelName : null;
+                            string activeInstance = _panelHost != null
+                                ? _panelHost.ActivePanelInstanceId : null;
+                            if (!IsActivePetPanelOwner(activeName, activeInstance, parsed))
+                            {
+                                RespondPanelDomainError(parsed, "panel_instance_expired");
+                            }
+                            else if (_petTask != null)
+                            {
+                                _petTask.HandleWebRequest(cmd, parsed);
+                            }
+                            else RespondPanelDomainError(parsed, "pets_unavailable");
                         }
                         else if (panel == "mercs")
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to MercTask, _mercTask=" + (_mercTask != null ? "ok" : "NULL"));
-                            if (_mercTask != null) _mercTask.HandleWebRequest(cmd, parsed);
+                            string activeName = _panelHost != null
+                                ? _panelHost.ActivePanelName : null;
+                            string activeInstance = _panelHost != null
+                                ? _panelHost.ActivePanelInstanceId : null;
+                            if (!IsActiveMercPanelOwner(activeName, activeInstance, parsed))
+                            {
+                                RespondPanelDomainError(parsed, "panel_instance_expired");
+                            }
+                            else if (_mercTask != null)
+                            {
+                                _mercTask.HandleWebRequest(cmd, parsed);
+                            }
+                            else RespondPanelDomainError(parsed, "mercs_unavailable");
                         }
                         else if (panel == "tasks")
                         {

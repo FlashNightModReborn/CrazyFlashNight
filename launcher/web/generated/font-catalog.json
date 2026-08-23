@@ -3,10 +3,12 @@
   "catalogVersion": "1",
   "gate": "E",
   "runtimeAuthority": true,
-  "sourceSha256": "3e422d97556a8e050adab7ffb79b16537bba45295482c4afb429e30691464c74",
+  "sourceSha256": "3501a756e911d7052366a7d73688401662acfe7fb8fdedd2105ea6a93e25132a",
   "virtualFontOrigin": "https://cfn-fonts.local/",
   "allowedHosts": [
     "github.com",
+    "release-assets.githubusercontent.com",
+    "raw.githubusercontent.com",
     "cdn.jsdelivr.net"
   ],
   "groups": {

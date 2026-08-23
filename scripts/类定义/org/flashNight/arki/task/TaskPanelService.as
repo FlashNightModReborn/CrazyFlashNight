@@ -208,7 +208,17 @@ class org.flashNight.arki.task.TaskPanelService {
     // ═══════════════════════════════════════════════════════════
     public static function handleSnapshot(params:Object):Void {
         var callId = params.callId;
-        sendResponse({ task: "task_response", callId: callId, success: true, tasks: buildTaskList() });
+        var successResponse:Object = {
+            task:"task_response", callId:callId, success:true
+        };
+        try {
+            successResponse.tasks = buildTaskList();
+        } catch (snapshotProjectionError) {
+            successResponse.refreshDeferred = true;
+            trace("[TaskPanelService] snapshot projection failed: "
+                + snapshotProjectionError);
+        }
+        sendResponse(successResponse);
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -374,7 +384,19 @@ class org.flashNight.arki.task.TaskPanelService {
             return;
         }
 
-        sendResponse({ task: "task_response", callId: callId, success: true, tasks: buildTaskList() });
+        // FinishTask 已完成任务/奖励权威提交；刷新列表只是可选投影。投影异常时仍须
+        // 闭合成功回包，避免 Web 永久 busy 或玩家把未知结果当失败重放。
+        var finishResponse:Object = {
+            task:"task_response", callId:callId, success:true
+        };
+        try {
+            finishResponse.tasks = buildTaskList();
+        } catch (finishProjectionError) {
+            finishResponse.refreshDeferred = true;
+            trace("[TaskPanelService] post-commit finish projection failed: "
+                + finishProjectionError);
+        }
+        sendResponse(finishResponse);
     }
 
     // ═══════════════════════════════════════════════════════════

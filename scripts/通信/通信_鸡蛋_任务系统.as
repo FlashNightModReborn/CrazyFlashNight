@@ -281,9 +281,8 @@ _root.FinishTask = function(index) {
             itemArray[i].value = Math.floor(itemValue * 0.5);
         // if(_root.isEasyMode()) itemArray[i].value = Math.floor(itemValue * 1.5);
     }
-    // 两阶段预检：奖励写入只会增加持有量，因此先锁定交付物存在性后，
-    // 后续 acquireReward 不可能让 submit 从“足够”变成“不足”。这样既不先扣
-    // 任务物，也不允许配置错误走成“领奖但未交付”。
+    // 交付物预检只是写前快速拒绝；事务内 submit 仍逐项核验实际扣除，
+    // 防止同步监听器重入让后续交付物在 contain 后失效。
     var submitItems = taskData.finish_submit_items;
     var submitItemArray:Array = submitItems
         ? org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems) : null;
@@ -292,72 +291,247 @@ _root.FinishTask = function(index) {
         _root.发布消息("任务交付物品不足，无法完成任务！");
         return false;
     }
+    // 先冻结情报溢出折算后的实际奖励计划。经验/技能点拆成最后写入的标量，
+    // 其余货币/容器奖励与任务交付物都受通用 exact snapshot 保护。
+    var rewardPlan:Object =
+        org.flashNight.arki.item.ItemUtil.planRewardAcquire(itemArray);
+    if (rewardPlan == null) {
+        _root.发布消息("奖励配置无效，无法交付任务！");
+        return false;
+    }
+    var reversibleRewardItems:Array = [];
+    var progressRewardItems:Array = [];
+    for (var rewardIndex:Number = 0;
+            rewardIndex < rewardPlan.items.length; rewardIndex++) {
+        var plannedReward:Object = rewardPlan.items[rewardIndex];
+        if (plannedReward.name == "经验值"
+                || plannedReward.name == "技能点") {
+            progressRewardItems.push(plannedReward);
+        } else {
+            reversibleRewardItems.push(plannedReward);
+        }
+    }
+    // split 后仍复用 require 的标量聚合/finite/安全整数/当前值上限校验，
+    // 禁止重复 XP/SP 奖励相加溢出后被静默少发。
+    var progressRewardPlan:Object = progressRewardItems.length > 0
+        ? org.flashNight.arki.item.ItemUtil.require(progressRewardItems)
+        : {经验值:0, 技能点:0};
+    if (progressRewardPlan == null) {
+        _root.发布消息("奖励进度配置无效，无法交付任务！");
+        return false;
+    }
+    var experienceReward:Number = Number(progressRewardPlan.经验值);
+    var skillPointReward:Number = Number(progressRewardPlan.技能点);
+    if (reversibleRewardItems.length > 0
+            && org.flashNight.arki.item.ItemUtil.require(reversibleRewardItems) == null) {
+        _root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
+        return false;
+    }
+    var tasksFinishedExists:Boolean = _root.tasks_finished != undefined;
+    var chainProgressExists:Boolean = _root.task_chains_progress != undefined;
+    var taskStateBackup:Object = {
+        tasksFinished:tasksFinishedExists
+            ? org.flashNight.gesh.object.ObjectUtil.clone(_root.tasks_finished) : null,
+        chainProgress:chainProgressExists
+            ? org.flashNight.gesh.object.ObjectUtil.clone(_root.task_chains_progress) : null,
+        tasksToDo:org.flashNight.gesh.object.ObjectUtil.clone(_root.tasks_to_do),
+        assets:org.flashNight.arki.item.ItemUtil.capturePlayerAssetSnapshot(),
+        experience:Number(_root.经验值),
+        skillPoints:Number(_root.技能点数),
+        dirty:_root.存档系统 == undefined
+            ? undefined : _root.存档系统.dirtyMark
+    };
+    var restoreTaskClaimState:Function = function():Boolean {
+        var fullyRestored:Boolean = true;
+        try {
+            _root.经验值 = Number(taskStateBackup.experience);
+            _root.技能点数 = Number(taskStateBackup.skillPoints);
+        } catch (taskProgressRestoreError) {
+            fullyRestored = false;
+            trace("[FinishTask] progress snapshot restore failed: "
+                + taskProgressRestoreError);
+        }
+        try {
+            if (tasksFinishedExists) {
+                _root.tasks_finished = org.flashNight.gesh.object.ObjectUtil.clone(
+                    taskStateBackup.tasksFinished);
+            } else {
+                delete _root.tasks_finished;
+            }
+            if (chainProgressExists) {
+                _root.task_chains_progress = org.flashNight.gesh.object.ObjectUtil.clone(
+                    taskStateBackup.chainProgress);
+            } else {
+                delete _root.task_chains_progress;
+            }
+            _root.tasks_to_do = org.flashNight.gesh.object.ObjectUtil.clone(
+                taskStateBackup.tasksToDo);
+        } catch (taskClaimRestoreError) {
+            fullyRestored = false;
+            trace("[FinishTask] task snapshot restore failed: "
+                + taskClaimRestoreError);
+        }
+        // 任务/进度领域字段精确复原后才返还带 receipt 的通用资产；若领域
+        // restore 已失败则保留资产事实，避免 settle(true) 发布幽灵 loss/gain。
+        if (fullyRestored) {
+            fullyRestored =
+                org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                    taskStateBackup.assets);
+        }
+        try {
+            if (fullyRestored && _root.存档系统 != undefined) {
+                _root.存档系统.dirtyMark = taskStateBackup.dirty;
+            }
+        } catch (taskDirtyRestoreError) {
+            fullyRestored = false;
+            trace("[FinishTask] dirty snapshot restore failed: "
+                + taskDirtyRestoreError);
+        }
+        return fullyRestored;
+    };
     // 奖励入账、任务物品交付与任务完成属于同一个玩家资产操作。外层事务
     // 延迟消费者回执，避免奖励刚入包、任务尚未完成时提前播报；失败预检不留卡片。
     var assetTransaction:Object =
         org.flashNight.arki.item.PlayerAssetTransaction.begin({
             source:"quest_reward", reason:"quest_complete", mergeScope:"operation"
         });
-    // 获得奖励：情报按逐物品 maxvalue 截断，同批超出量按 price 折算为金币。
-    var rewardSettlement:Object =
-        org.flashNight.arki.item.ItemUtil.acquireReward(itemArray, {
-            source:"quest_reward", reason:"quest_complete"
-        });
-    if (!rewardSettlement.success) {
-        org.flashNight.arki.item.PlayerAssetTransaction.rollback(assetTransaction);
-        _root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
-        return false;
-    }
-    //消耗任务物品
-    if (submitItemArray != null) {
-        var result = org.flashNight.arki.item.ItemUtil.submit(submitItemArray, {
-            source:"quest_turn_in", reason:"quest_complete"
-        });
-        if (!result) {
-            // 已通过同步 contain 预检，正常执行不应抵达；保留可观测错误，
-            // 但资产回执仍按已经发生的奖励事实提交，避免泄漏事务栈。
-            _root.发布消息("交付任务物品异常，请重新进入场景后检查任务状态！");
+    var rewardSettlement:Object = rewardPlan;
+    try {
+        // 任务状态、奖励与交付物都是存档权威；缺少存档系统时首写失败，
+        // catch 用同一快照恢复。先交付再发奖，避免奖励 listener 重入改变交付前提。
+        org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+            _root.存档系统);
+        if (submitItemArray != null && submitItemArray.length > 0) {
+            var result:Boolean = org.flashNight.arki.item.ItemUtil.submit(
+                submitItemArray, {
+                    source:"quest_turn_in", reason:"quest_complete"
+                });
+            if (!result) {
+                var turnInRestored:Boolean = restoreTaskClaimState();
+                org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                    assetTransaction, !turnInRestored);
+                if (!turnInRestored) throw "quest_turn_in_restore_failed";
+                try {
+                    _root.发布消息("交付任务物品状态已变化，请重试任务完成！");
+                } catch (turnInMessageError) {
+                    trace("[FinishTask] turn-in warning failed: " + turnInMessageError);
+                }
+                return false;
+            }
         }
+
+        // 情报按计划截断，溢出已折算进 reversibleRewardItems 的金币。
+        if (reversibleRewardItems.length > 0
+                && !org.flashNight.arki.item.ItemUtil.acquire(
+                    reversibleRewardItems, {
+                        source:"quest_reward", reason:"quest_complete"
+                    })) {
+            var rewardRestored:Boolean = restoreTaskClaimState();
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !rewardRestored);
+            if (!rewardRestored) throw "quest_reward_restore_failed";
+            try {
+                _root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
+            } catch (rewardFailureMessageError) {
+                trace("[FinishTask] reward warning failed: "
+                    + rewardFailureMessageError);
+            }
+            return false;
+        }
+
+        // 无 EventBus 的进度标量最后写；升级联动移到 commit 后 guarded 投影，
+        // 不允许旧回调把任务完成变成可重放的未知结果。
+        if (experienceReward > 0) {
+            _root.经验值 += experienceReward;
+            org.flashNight.arki.item.PlayerAssetTransaction.markAuthorityWrite(
+                assetTransaction);
+        }
+        if (skillPointReward > 0) {
+            _root.技能点数 += skillPointReward;
+            org.flashNight.arki.item.PlayerAssetTransaction.markAuthorityWrite(
+                assetTransaction);
+        }
+
+        _root.提交任务完成状态(taskID, taskData.chain);
+        _root.tasks_to_do.splice(index, 1);
+        rewardSettlement.success = true;
+    } catch (finishTaskAssetError) {
+        var finishTaskRestored:Boolean = restoreTaskClaimState();
+        org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+            assetTransaction, !finishTaskRestored);
+        trace("[FinishTask] asset boundary failed: " + finishTaskAssetError);
+        throw finishTaskAssetError;
     }
-    // 先完成任务幂等状态，再提交资产回执与事务内延迟的升级强存盘。
-    // 这里只写权威任务状态；UI 投影和对话等任意回调全部移到事务提交之后。
-    _root.提交任务完成状态(taskID, taskData.chain);
-    _root.tasks_to_do.splice(index, 1);
-    // Plan A audit: FinishTask 写 tasks_to_do + 通过 acquire/UpdateTaskProgress 已标脏；
-    // 此处显式补标确保 splice 后状态被标脏（UpdateTaskProgress 标脏路径见其内补标）
-    _root.存档系统.dirtyMark = true;
     org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+    if (experienceReward > 0) {
+        try {
+            _root.主角是否升级(_root.等级, _root.经验值);
+        } catch (levelProjectionError) {
+            trace("[FinishTask] post-commit level reconciliation failed: "
+                + levelProjectionError);
+        }
+    }
     // 奖励弹窗已退役：音效与提示都是可选投影，必须晚于权威状态和资产回执提交。
-    if (rewardSettlement.items.length >= 1)
-        _root.播放音效("levelup-2.wav");
-    if (rewardSettlement.hasOverflow) {
-        _root.发布消息(rewardSettlement.overflowMoney > 0
-            ? "超出情报持有上限的奖励已折算为金币" + rewardSettlement.overflowMoney + "。"
-            : "已达持有上限的情报奖励不再重复计入。");
-    }
-    _root.UpdateTaskProgress();
-    _root.SetDialogue(TaskUtil.getTaskText(taskData.finish_conversation));
-    //检索是否可以接取任务链的下一个任务
-    var isTaskInChain = false;
-    var chainDict = TaskUtil.task_chains[taskData.chain[0]];
-    var chainArray = TaskUtil.task_in_chains_by_sequence[taskData.chain[0]];
-    var i = 0;
-    while (i < chainArray.length) {
-        if (chainDict[chainArray[i]] == taskData.id) {
-            isTaskInChain = true;
-            break;
+    try {
+        if (rewardSettlement.items.length >= 1) {
+            _root.播放音效("levelup-2.wav");
         }
-        i++;
+    } catch (rewardSoundError) {
+        trace("[FinishTask] post-commit reward sound failed: " + rewardSoundError);
     }
-    if (isTaskInChain) {
-        var nextTaskID = chainDict[chainArray[i + 1]];
-        var nextTaskData:Object = TaskUtil.getTaskData(nextTaskID);
-        // 检查上个任务的交付NPC与下个任务的接取NPC是否为同一地点的同一NPC
-        if (TaskUtil.canAutoAcceptNextAtFinishNpc(taskData, nextTaskData) && _root.taskAvailable(nextTaskID)) {
-            _root.GetTask(nextTaskID);
+    try {
+        if (rewardSettlement.hasOverflow) {
+            _root.发布消息(rewardSettlement.overflowMoney > 0
+                ? "超出情报持有上限的奖励已折算为金币" + rewardSettlement.overflowMoney + "。"
+                : "已达持有上限的情报奖励不再重复计入。");
         }
+    } catch (overflowMessageError) {
+        trace("[FinishTask] post-commit overflow message failed: " + overflowMessageError);
     }
-    _root.是否达成任务检测();
+    try {
+        _root.UpdateTaskProgress();
+    } catch (taskProjectionError) {
+        trace("[FinishTask] post-commit task projection failed: " + taskProjectionError);
+    }
+    try {
+        _root.SetDialogue(TaskUtil.getTaskText(taskData.finish_conversation));
+    } catch (dialogueProjectionError) {
+        trace("[FinishTask] post-commit dialogue projection failed: "
+            + dialogueProjectionError);
+    }
+    // 自动接链与完成检测都是提交后可选投影；任何旧回调异常都不得把已经完成
+    // 的任务伪装成失败并阻断调用者 success finality。
+    try {
+        var isTaskInChain = false;
+        var chainDict = TaskUtil.task_chains[taskData.chain[0]];
+        var chainArray = TaskUtil.task_in_chains_by_sequence[taskData.chain[0]];
+        var i = 0;
+        while (i < chainArray.length) {
+            if (chainDict[chainArray[i]] == taskData.id) {
+                isTaskInChain = true;
+                break;
+            }
+            i++;
+        }
+        if (isTaskInChain) {
+            var nextTaskID = chainDict[chainArray[i + 1]];
+            var nextTaskData:Object = TaskUtil.getTaskData(nextTaskID);
+            // 检查上个任务的交付NPC与下个任务的接取NPC是否为同一地点的同一NPC
+            if (TaskUtil.canAutoAcceptNextAtFinishNpc(taskData, nextTaskData)
+                    && _root.taskAvailable(nextTaskID)) {
+                _root.GetTask(nextTaskID);
+            }
+        }
+    } catch (nextTaskProjectionError) {
+        trace("[FinishTask] post-commit next-task projection failed: "
+            + nextTaskProjectionError);
+    }
+    try {
+        _root.是否达成任务检测();
+    } catch (taskCompletionProjectionError) {
+        trace("[FinishTask] post-commit completion projection failed: "
+            + taskCompletionProjectionError);
+    }
     return true;
 }
 

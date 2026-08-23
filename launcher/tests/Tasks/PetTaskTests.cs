@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Tests.Tasks
@@ -10,20 +13,23 @@ namespace CF7Launcher.Tests.Tasks
     // 断线/未知命令错误回包。注意：进阶完成度等业务逻辑在 AS2(PetPanelService) 侧，本套不覆盖。
     public class PetTaskTests
     {
+        private const string PanelInstance = "panel.team.pet.1";
+
         [Fact]
         public void HandleWebRequest_Disconnected_ReturnsPanelError()
         {
             string posted = null;
-            var task = new PetTask(delegate { return false; }, delegate(string payload) { });
+            var task = Bind(new PetTask(delegate { return false; }, delegate(string payload) { }));
             task.SetPostToWeb(delegate(string json) { posted = json; });
 
-            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"web-1\"}"));
+            task.HandleWebRequest("snapshot", Request("{\"callId\":\"web-1\"}"));
 
             var resp = JObject.Parse(posted);
             Assert.Equal("panel_resp", (string)resp["type"]);
             Assert.Equal("pets", (string)resp["panel"]);
             Assert.Equal("snapshot", (string)resp["cmd"]);
             Assert.Equal("web-1", (string)resp["callId"]);
+            Assert.Equal(PanelInstance, (string)resp["panelInstanceId"]);
             Assert.False((bool)resp["success"]);
             Assert.Equal("disconnected", (string)resp["error"]);
         }
@@ -32,9 +38,9 @@ namespace CF7Launcher.Tests.Tasks
         public void HandleWebRequest_Snapshot_ForwardsPetSnapshotAction()
         {
             string sent = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
 
-            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"web-2\"}"));
+            task.HandleWebRequest("snapshot", Request("{\"callId\":\"web-2\"}"));
 
             Assert.EndsWith("\0", sent);
             var msg = JObject.Parse(sent.TrimEnd('\0'));
@@ -52,9 +58,9 @@ namespace CF7Launcher.Tests.Tasks
         {
             // 世界内招募（NPC 处确认）：cmd world_adopt → action petWorldAdopt，且夹带 action/task 不得覆盖。
             string sent = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
 
-            task.HandleWebRequest("world_adopt", JObject.Parse("{\"callId\":\"web-wa\",\"action\":\"evil\",\"task\":\"evil\"}"));
+            task.HandleWebRequest("world_adopt", Request("{\"callId\":\"web-wa\",\"action\":\"evil\",\"task\":\"evil\"}"));
 
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("cmd", (string)msg["task"]);
@@ -67,10 +73,10 @@ namespace CF7Launcher.Tests.Tasks
             // 安全反向用例：Web 夹带 action/task 不得覆盖 C# 由 cmd 派生的可信 action/信封
             // （AS2 裸分发 _root.gameCommands[action]，无白名单，否则可绕过 cmd→action 映射）。
             string sent = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
 
             task.HandleWebRequest("snapshot",
-                JObject.Parse("{\"callId\":\"web-evil\",\"action\":\"petAdvance\",\"task\":\"evil\"}"));
+                Request("{\"callId\":\"web-evil\",\"action\":\"petAdvance\",\"task\":\"evil\"}"));
 
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("cmd", (string)msg["task"]);
@@ -81,9 +87,9 @@ namespace CF7Launcher.Tests.Tasks
         public void HandleWebRequest_Advance_ForwardsExtraParams()
         {
             string sent = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
 
-            task.HandleWebRequest("advance", JObject.Parse("{\"callId\":\"web-3\",\"slotIndex\":2,\"scheme\":\"影子刺客\"}"));
+            task.HandleWebRequest("advance", Request("{\"callId\":\"web-3\",\"slotIndex\":2,\"scheme\":\"影子刺客\"}"));
 
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("petAdvance", (string)msg["action"]);
@@ -95,9 +101,9 @@ namespace CF7Launcher.Tests.Tasks
         public void HandleWebRequest_EquipWeapon_ForwardsLeaseBoundSource()
         {
             string sent = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
 
-            task.HandleWebRequest("equip_weapon", JObject.Parse(
+            task.HandleWebRequest("equip_weapon", Request(
                 "{\"callId\":\"web-equip\",\"slotIndex\":4,\"source\":{\"containerId\":\"背包\",\"slot\":7,\"expectedLease\":\"lease-7\"}}"));
 
             var msg = JObject.Parse(sent.TrimEnd('\0'));
@@ -112,10 +118,10 @@ namespace CF7Launcher.Tests.Tasks
         public void HandleWebRequest_WithdrawWeapon_ForwardsPetSlot()
         {
             string sent = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
 
             task.HandleWebRequest("withdraw_weapon",
-                JObject.Parse("{\"callId\":\"web-withdraw\",\"slotIndex\":4}"));
+                Request("{\"callId\":\"web-withdraw\",\"slotIndex\":4}"));
 
             var msg = JObject.Parse(sent.TrimEnd('\0'));
             Assert.Equal("petWithdrawWeapon", (string)msg["action"]);
@@ -126,9 +132,9 @@ namespace CF7Launcher.Tests.Tasks
         public void HandleWebRequest_WeaponTooltip_ForwardsPetSlotAndLeaseBoundSource()
         {
             string sent = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
 
-            task.HandleWebRequest("weapon_tooltip", JObject.Parse(
+            task.HandleWebRequest("weapon_tooltip", Request(
                 "{\"callId\":\"web-weapon-tip\",\"slotIndex\":4,\"source\":{\"containerId\":\"背包\",\"slot\":7,\"expectedLease\":\"lease-7\"}}"));
 
             var msg = JObject.Parse(sent.TrimEnd('\0'));
@@ -158,17 +164,55 @@ namespace CF7Launcher.Tests.Tasks
 
             string petsRoute = source.Substring(end);
             Assert.Contains("else if (panel == \"pets\")", petsRoute);
+            Assert.Contains("IsActivePetPanelOwner(activeName, activeInstance, parsed)", petsRoute);
             Assert.Contains("_petTask.HandleWebRequest(cmd, parsed)", petsRoute);
+        }
+
+        [Fact]
+        public void ExactTeamOwner_RejectsInactiveForeignAndRetiredReplacement()
+        {
+            string sent = null;
+            string posted = null;
+            var task = Bind(new PetTask(
+                delegate { return true; },
+                delegate(string payload) { sent = payload; }));
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            JObject foreign = Request("{\"callId\":\"web-stale\",\"slotIndex\":4}");
+            foreign["panelInstanceId"] = "panel.team.pet.stale";
+            task.HandleWebRequest("withdraw_weapon", foreign);
+            Assert.Null(sent);
+            Assert.Equal("panel_instance_expired", JObject.Parse(posted).Value<string>("error"));
+
+            Assert.True(task.BindPanelInstance("panel.team.pet.2"));
+            posted = null;
+            task.HandleWebRequest("equip_weapon", Request(
+                "{\"callId\":\"web-retired\",\"slotIndex\":4,\"source\":{\"containerId\":\"背包\",\"slot\":7,\"expectedLease\":\"lease-7\"}}"));
+            Assert.Null(sent);
+            Assert.Equal("panel_instance_expired", JObject.Parse(posted).Value<string>("error"));
+
+            JObject active = Request("{\"callId\":\"web-active\",\"slotIndex\":4}");
+            active["panelInstanceId"] = "panel.team.pet.2";
+            task.HandleWebRequest("withdraw_weapon", active);
+            Assert.Equal("petWithdrawWeapon",
+                JObject.Parse(sent.TrimEnd('\0')).Value<string>("action"));
+
+            Assert.True(WebOverlayForm.IsActivePetPanelOwner(
+                "team", "panel.team.pet.2", active));
+            Assert.False(WebOverlayForm.IsActivePetPanelOwner(
+                "pets", "panel.team.pet.2", active));
+            Assert.False(WebOverlayForm.IsActivePetPanelOwner(
+                "team", "panel.team.pet.other", active));
         }
 
         [Fact]
         public void HandleWebRequest_UnsupportedCmd_ReturnsError()
         {
             string posted = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { }));
             task.SetPostToWeb(delegate(string json) { posted = json; });
 
-            task.HandleWebRequest("bogus", JObject.Parse("{\"callId\":\"web-4\"}"));
+            task.HandleWebRequest("bogus", Request("{\"callId\":\"web-4\"}"));
 
             var resp = JObject.Parse(posted);
             Assert.Equal("pets", (string)resp["panel"]);
@@ -182,10 +226,10 @@ namespace CF7Launcher.Tests.Tasks
         {
             string sent = null;
             string posted = null;
-            var task = new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; });
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
             task.SetPostToWeb(delegate(string json) { posted = json; });
 
-            task.HandleWebRequest("deploy", JObject.Parse("{\"callId\":\"web-5\",\"slotIndex\":0}"));
+            task.HandleWebRequest("deploy", Request("{\"callId\":\"web-5\",\"slotIndex\":0}"));
             int fid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
 
             var flash = JObject.Parse("{\"task\":\"pet_response\",\"callId\":" + fid + ",\"success\":true,\"deployed\":true}");
@@ -196,9 +240,88 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("pets", (string)resp["panel"]);
             Assert.Equal("deploy", (string)resp["cmd"]);
             Assert.Equal("web-5", (string)resp["callId"]);
+            Assert.Equal(PanelInstance, (string)resp["panelInstanceId"]);
             Assert.True((bool)resp["success"]);
             Assert.True((bool)resp["deployed"]);
             Assert.Null(resp["task"]);
+        }
+
+        [Fact]
+        public void ReentrantFlashResponseDuringSend_DoesNotLeavePendingOrTimeout()
+        {
+            PetTask task = null;
+            var posted = new List<JObject>();
+            try
+            {
+                task = new PetTask(
+                    delegate { return true; },
+                    delegate(string payload)
+                    {
+                        JObject sent = JObject.Parse(payload.TrimEnd('\0'));
+                        task.HandleFlashResponse(
+                            new JObject
+                            {
+                                ["task"] = "pet_response",
+                                ["callId"] = sent.Value<int>("callId"),
+                                ["success"] = true,
+                                ["deployed"] = true
+                            },
+                            delegate(string ignored) { });
+                        return true;
+                    },
+                    null,
+                    30);
+                Bind(task);
+                task.SetPostToWeb(delegate(string json)
+                {
+                    posted.Add(JObject.Parse(json));
+                });
+
+                task.HandleWebRequest(
+                    "deploy",
+                    Request("{\"callId\":\"web-reentrant\",\"slotIndex\":0}"));
+
+                Assert.Equal(0, task.PendingCountForTest);
+                Assert.Single(posted);
+                Assert.Equal("web-reentrant", posted[0].Value<string>("callId"));
+                Assert.True(posted[0].Value<bool>("success"));
+
+                Thread.Sleep(100);
+                Assert.Single(posted);
+            }
+            finally
+            {
+                if (task != null) task.Dispose();
+            }
+        }
+
+        [Fact]
+        public void DeliveryUnknown_ClearsPendingAndSuppressesDuplicateCallId()
+        {
+            var posted = new List<JObject>();
+            using (var task = new PetTask(
+                delegate { return true; },
+                delegate(string payload) { return false; },
+                null,
+                100))
+            {
+                Bind(task);
+                task.SetPostToWeb(delegate(string json)
+                {
+                    posted.Add(JObject.Parse(json));
+                });
+
+                JObject request = Request(
+                    "{\"callId\":\"web-unknown\",\"slotIndex\":0}");
+                task.HandleWebRequest("deploy", request);
+
+                Assert.Equal(0, task.PendingCountForTest);
+                Assert.Single(posted);
+                Assert.Equal("delivery_unknown", posted[0].Value<string>("error"));
+
+                task.HandleWebRequest("deploy", request);
+                Assert.Single(posted);
+            }
         }
 
         private static string FindWebOverlaySource()
@@ -228,6 +351,20 @@ namespace CF7Launcher.Tests.Tasks
 
             throw new FileNotFoundException(
                 "Unable to locate launcher/src/Guardian/WebOverlayForm.cs.");
+        }
+
+        private static PetTask Bind(PetTask task)
+        {
+            Assert.True(task.BindPanelInstance(PanelInstance));
+            return task;
+        }
+
+        private static JObject Request(string json)
+        {
+            JObject request = JObject.Parse(json);
+            request["panel"] = "pets";
+            request["panelInstanceId"] = PanelInstance;
+            return request;
         }
     }
 }

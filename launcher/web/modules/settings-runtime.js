@@ -22,6 +22,7 @@
 
     function copy(value) { return JSON.parse(JSON.stringify(value)); }
     function validOpaque(value) { return /^[A-Za-z0-9._~-]{1,160}$/.test(String(value || '')); }
+    function requiresAuthorityReconcile(cmd) { return cmd !== 'snapshot' && cmd !== 'preview'; }
     function integer(value, min, max) {
         return typeof value === 'number' && isFinite(value) && Math.floor(value) === value
             && value >= min && value <= max;
@@ -89,10 +90,15 @@
                     success:false, error:'malformed_response', clientSynthetic:true};
             },
             createSynthetic:function(context) {
-                return {type:'panel_resp', panel:'settings', domain:'settings',
+                var response = {type:'panel_resp', panel:'settings', domain:'settings',
                     cmd:context.entry.cmd, callId:context.entry.callId,
                     panelInstanceId:context.session.panelInstanceId,
                     success:false, error:context.error, clientSynthetic:true};
+                if (context.error === 'client_timeout'
+                    && requiresAuthorityReconcile(context.entry.cmd)) {
+                    response.requiresReconcile = true;
+                }
+                return response;
             }
         });
     }
@@ -108,7 +114,7 @@
             kind:options.kind || cmd,
             latestWins:options.latestWins === true,
             singleFlight:options.singleFlight !== false,
-            write:cmd !== 'snapshot',
+            write:requiresAuthorityReconcile(cmd),
             sendError:'not_sent'
         }, callback);
     };

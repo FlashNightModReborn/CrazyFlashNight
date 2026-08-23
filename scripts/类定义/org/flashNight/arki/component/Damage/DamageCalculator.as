@@ -185,6 +185,10 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         // 执行伤害计算，通过 DamageManager 处理，更新目标的损伤值等信息
         manager.execute(bullet, shooter, hitTarget, damageResult);
 
+        // 显式终结弹的专用 manager 只会在 actual 后提交 hp=0。先判 HP 可让绝大多数
+        // 普通命中短路，避免为极少数终结弹在 DamageResult 热复用槽增加每发清零写入。
+        if (hitTarget.hp <= 0 && bullet.实际命中强制击杀 === true) return damageResult;
+
         // 将目标的损伤值存入局部变量 damageNumber，以便后续使用
         var damageNumber:Number = hitTarget.损伤值;
 
@@ -195,7 +199,10 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         // - absorbDamage 返回穿透护盾后的剩余伤害
         var shield:IShield = hitTarget.shield;
 
-        // 调用护盾吸收：返回穿透伤害，原伤害被护盾部分或全部吸收
+        // 调用护盾吸收：返回穿透伤害，原伤害被护盾部分或全部吸收。
+        // 性能边界：不在 Calculator 再次分类极少发生的 resolved MISS，否则所有真实命中
+        // 都要重复支付字符串/分段比较。MISS 的 damageNumber 为 0，仍可能触发旧盾 onHit(0)
+        // 并重置回充；这是明确接受的稀有兼容误差，事件/视觉/冲击由 BQP 冷分支继续截断。
         // hitCount 使用实际消耗的霰弹值，而非子弹原始霰弹值
         var actualScatterUsed:Number = damageResult.actualScatterUsed;
 

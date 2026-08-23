@@ -18,6 +18,7 @@
 <script>
 window.__minigameOverlayRoot = "../../../../";
 window.__BLACKMARKET_REQUEST_URLS__ = [];
+window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
 (function(originalFetch) {
     window.fetch = function(input, init) {
         var url = input && input.url ? input.url : input;
@@ -54,7 +55,8 @@ window.__BLACKMARKET_REQUEST_URLS__ = [];
             mode: "dev",
             source: "browser-harness",
             shadowOnly: true,
-            debug: true
+            debug: true,
+            panelInstanceId: "panel.blackmarket.harness.1"
         };
         overrides = overrides || {};
         Object.keys(overrides).forEach(function(key) { out[key] = overrides[key]; });
@@ -260,6 +262,53 @@ window.__BLACKMARKET_REQUEST_URLS__ = [];
                             window.dispatchEvent(new Event("resize"));
                             return "1024x576 layout retained at 0.75 scale";
                         });
+                    });
+                }
+            },
+            {
+                id: "bm-ui8",
+                title: "exact close 确认丢失后恢复可重试",
+                run: function(api) {
+                    var originalSend = Bridge.send;
+                    var closeMessages = [];
+                    Bridge.send = function(payload) {
+                        if (payload && payload.type === "panel" && payload.cmd === "close"
+                                && payload.panel === "blackmarket") {
+                            closeMessages.push(payload);
+                            return true;
+                        }
+                        return originalSend.apply(this, arguments);
+                    };
+                    function restore() { Bridge.send = originalSend; }
+                    var flow = bootSession(api, {
+                        panelInstanceId: "panel.blackmarket.harness.close-retry"
+                    }).then(function() {
+                        var close = document.querySelector('[data-bm-action="close"]');
+                        api.assert(!!close, "close control missing");
+                        close.click();
+                        api.assert(Panels.isOpen(), "panel closed before Host confirmation");
+                        api.assertEqual(closeMessages.length, 1, "first close request count");
+                        return api.waitFor(function() {
+                            var status = document.querySelector(".blackmarket-error span");
+                            return status && status.textContent.indexOf("尚未确认关闭，可再次尝试") >= 0
+                                ? status : null;
+                        }, 2000, "close retry unlocked");
+                    }).then(function() {
+                        api.assert(Panels.isOpen(), "panel closed after lost confirmation timeout");
+                        document.querySelector('[data-bm-action="close"]').click();
+                        api.assertEqual(closeMessages.length, 2, "retried close request count");
+                        api.assert(closeMessages.every(function(message) {
+                            return message.panelInstanceId === "panel.blackmarket.harness.close-retry";
+                        }), "close retry changed panel instance capability");
+                        Panels.close();
+                        return "lost ack kept panel open; retry emitted the same exact instance";
+                    });
+                    return flow.then(function(detail) {
+                        restore();
+                        return detail;
+                    }, function(error) {
+                        restore();
+                        throw error;
                     });
                 }
             }

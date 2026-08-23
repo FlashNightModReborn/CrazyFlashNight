@@ -236,7 +236,7 @@
 }
 .term-btn.danger:hover:not(:disabled),
 .term-btn.danger:focus-visible {
-    color: #fff;
+    color: var(--term-ink-hi);
     border-color: var(--launcher-rust);
     background: var(--launcher-rust);
     text-shadow: none;

@@ -26,6 +26,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 排除从非gameworld召唤出的单位
         if(target._parent !== _root.gameworld) return;
 
+        // 版本绑定的完成闩锁：任一后续初始化器或 UnitInitialized 订阅者抛错时标记
+        // 都保持为空。真实 attachMovie 返回栈不会等待本闩锁；它只供完成态诊断及
+        // 已同步执行 frame 初始化的兼容工厂做严格验收。
+        target.__unitInitializedVersion = null;
+
         // 出生 seed：立即注册进深度管理器，将创建暂存深度替换为 Twip 深度
         DepthManager.instance.updateDepth(target, target._y);
 
@@ -59,7 +64,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         ExtraPropertyInitializer.initialize(target);
         BuffManagerInitializer.initialize(target);
 
+        // 战宠 attachMovie 返回栈只完成 placement；直到这里 Dressup/属性最大值才稳定。
+        // 一次性消费 initObject 携带的资源计划，使 UnitInitialized 订阅者观察到最终 HP/MP。
+        StaticInitializer.settlePendingPetResources(target);
+
         target.dispatcher.publish("UnitInitialized", target);
+        target.__unitInitializedVersion = target.version;
 
         // _root.发布消息("单位初始化完成: " + target._name);
         /*
@@ -68,6 +78,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         var wtfunc:Function = WeatherUpdater.getUpdater();
         wtfunc.call(target);
         */
+    }
+
+    /** 单独公开这个一次性冷路，供真实初始化入口与 focused deferred-phase 夹具共用。 */
+    public static function settlePendingPetResources(target:Object):Void {
+        if(!target || target.__petResourceSettlement == undefined) return;
+        DressupInitializer.settleSpawnResources(target, target.__petResourceSettlement);
+        delete target.__petResourceSettlement;
     }
 
     /**

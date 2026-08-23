@@ -289,6 +289,158 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void BlackMarketClose_IsExactAndCannotRetireReplacement()
+        {
+            const string activeInstance = "panel.blackmarket.replacement";
+            var exact = new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "blackmarket",
+                ["cmd"] = "close",
+                ["panelInstanceId"] = activeInstance
+            };
+            Assert.True(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "blackmarket", "blackmarket", activeInstance));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "blackmarket", "blackmarket", "panel.blackmarket.old"));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "blackmarket", "help", activeInstance));
+            exact["extra"] = true;
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "blackmarket", "blackmarket", activeInstance));
+
+            string panel = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "modules", "minigames", "blackmarket",
+                "blackmarket-panel.js"));
+            Assert.Contains("panelInstanceId: panelInstanceId", panel);
+            Assert.DoesNotContain(
+                "Bridge.send({ type: \"panel\", cmd: \"close\", panel: \"blackmarket\" });",
+                panel);
+            Assert.DoesNotContain("Panels.close()", Slice(
+                panel, "function closePanel()", "function cleanup()"));
+            Assert.Contains("_closeTimer = setTimeout", panel);
+            Assert.Contains("Launcher 尚未确认关闭，可再次尝试。", panel);
+            Assert.Contains("_openGeneration !== generation", panel);
+            Assert.Contains("clearCloseTimer();", Slice(
+                panel, "function cleanup()", "function notifyHost("));
+        }
+
+        [Fact]
+        public void TeamClose_IsExactAndCannotRetireReplacement()
+        {
+            const string activeInstance = "panel.team.replacement";
+            var exact = new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "team",
+                ["cmd"] = "close",
+                ["panelInstanceId"] = activeInstance
+            };
+            Assert.True(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "team", "team", activeInstance));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "team", "team", "panel.team.old"));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "team", "pets", activeInstance));
+            exact["extra"] = true;
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "team", "team", activeInstance));
+
+            string panel = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "modules", "team", "team-panel.js"));
+            string close = Slice(
+                panel, "function requestClose()", "function onClose()");
+            Assert.Contains("panelInstanceId: _panelInstanceId", close);
+            Assert.DoesNotContain("Panels.close()", close);
+            Assert.Contains("_closeTimer = setTimeout", close);
+            Assert.Contains("Launcher 尚未确认关闭，可再次尝试。", close);
+            Assert.Contains("_panelInstanceId !== instance", close);
+            Assert.Contains("clearCloseTimer();", Slice(
+                panel, "function onClose()", "function closeAckTimeoutMs()"));
+
+            string lifecycle = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "modules", "panels.js"));
+            Assert.Contains("id === 'blackmarket' || id === 'team'", lifecycle);
+        }
+
+        [Fact]
+        public void LegacyPetsClose_IsRejectedBeforeGenericCloseAndCannotRetireTeamReplacement()
+        {
+            var legacy = new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "pets",
+                ["cmd"] = "close",
+                ["panelInstanceId"] = "panel.team.old"
+            };
+            Assert.True(WebOverlayForm.ShouldRejectLegacyPetsClose(legacy));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                legacy, "team", "team", "panel.team.replacement"));
+
+            legacy["panelInstanceId"] = "panel.team.replacement";
+            Assert.True(WebOverlayForm.ShouldRejectLegacyPetsClose(legacy));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                legacy, "team", "team", "panel.team.replacement"));
+
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string handler = Slice(
+                source,
+                "private void HandlePanelMessage(string json)",
+                "private void RespondPanelDomainError(");
+            int rejection = handler.IndexOf(
+                "ShouldRejectLegacyPetsClose(parsed)",
+                StringComparison.Ordinal);
+            int genericClose = handler.IndexOf(
+                "_panelHost.ClosePanel();",
+                StringComparison.Ordinal);
+            Assert.True(rejection >= 0);
+            Assert.True(genericClose > rejection);
+        }
+
+        [Fact]
+        public void LegacyMercsClose_IsRejectedBeforeGenericCloseAndWebChildCannotCloseLocally()
+        {
+            var legacy = new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "mercs",
+                ["cmd"] = "close",
+                ["panelInstanceId"] = "panel.team.old"
+            };
+            Assert.True(WebOverlayForm.ShouldRejectLegacyMercsClose(legacy));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                legacy, "team", "team", "panel.team.replacement"));
+
+            string hostSource = File.ReadAllText(FindWebOverlaySource());
+            string handler = Slice(
+                hostSource,
+                "private void HandlePanelMessage(string json)",
+                "private void RespondPanelDomainError(");
+            int rejection = handler.IndexOf(
+                "ShouldRejectLegacyMercsClose(parsed)",
+                StringComparison.Ordinal);
+            int genericClose = handler.IndexOf(
+                "_panelHost.ClosePanel();",
+                StringComparison.Ordinal);
+            Assert.True(rejection >= 0);
+            Assert.True(genericClose > rejection);
+
+            string mercPanel = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "modules", "merc-panel.js"));
+            string close = Slice(
+                mercPanel, "function requestClose()", "function teardownView(");
+            Assert.DoesNotContain("Panels.close()", close);
+            Assert.DoesNotContain("Bridge.send", close);
+
+            string tooltip = Slice(
+                mercPanel,
+                "function requestEquipTooltip(",
+                "function ensureDressupManifest(");
+            Assert.Contains("sendPanelMsg('equip_tooltip'", tooltip);
+            Assert.DoesNotContain("Bridge.send", tooltip);
+        }
+
+        [Fact]
         public void WorkbenchMountFailureEmitterMatchesExactHostCloseContract()
         {
             string panelsSource = File.ReadAllText(

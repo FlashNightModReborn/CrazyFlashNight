@@ -142,15 +142,8 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
                                              damageResult:DamageResult, 
                                              hitDirection:String, 
                                              bloodEnabled:Boolean):Void {
-        // 普通 MISS 与联弹全段 MISS 不是受击：不得推挤、硬直、改垂直速度或消费冲击槽。
-        if (!DamageResult.hasActualHit(damageResult)) {
-            if (shouldTrackCombatDiagnostics(hitTarget)) {
-                stashImpactSnapshot(hitTarget, bullet, damageResult, hitDirection, "MISS",
-                    hitTarget.remainingImpactForce, hitTarget.韧性上限,
-                    hitTarget.impactStaggerBoundary);
-            }
-            return;
-        }
+        // resolved MISS 已由 BulletQueueProcessor 在发布 hit 前截断。这里不做重复防守，
+        // 保持每次真实命中的冲击热路无额外 DamageResult 函数调用。
 
         var trackDiag:Boolean = shouldTrackCombatDiagnostics(hitTarget);
         var isRigid:Boolean = hitTarget.刚体 || hitTarget.man.刚体标签;

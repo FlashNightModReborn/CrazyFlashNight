@@ -30,6 +30,8 @@ namespace Launcher.Tests.Tasks
             Assert.Equal(3, CountOccurrences(source, "npcShopTask.Dispose();"));
             Assert.Equal(3, CountOccurrences(source, "craftingTask.Dispose();"));
             Assert.Equal(3, CountOccurrences(source, "hairdresserTask.Dispose();"));
+            Assert.Equal(3, CountOccurrences(source, "petTask.Dispose();"));
+            Assert.Equal(3, CountOccurrences(source, "mercTask.Dispose();"));
             Assert.Equal(3, CountOccurrences(source, "characterBuildTask.Dispose();"));
         }
 
@@ -472,26 +474,38 @@ namespace Launcher.Tests.Tasks
             const string npcShopDispose = "npcShopTask.Dispose();";
             const string craftingDispose = "craftingTask.Dispose();";
             const string hairdresserDispose = "hairdresserTask.Dispose();";
+            const string petDispose = "petTask.Dispose();";
+            const string mercDispose = "mercTask.Dispose();";
             const string characterBuildDispose =
                 "characterBuildTask.Dispose();";
             int npcShopIndex = block.IndexOf(npcShopDispose, StringComparison.Ordinal);
             int craftingIndex = block.IndexOf(craftingDispose, StringComparison.Ordinal);
             int hairdresserIndex = block.IndexOf(hairdresserDispose, StringComparison.Ordinal);
+            int petIndex = block.IndexOf(petDispose, StringComparison.Ordinal);
+            int mercIndex = block.IndexOf(mercDispose, StringComparison.Ordinal);
             int characterBuildIndex =
                 block.IndexOf(characterBuildDispose, StringComparison.Ordinal);
 
             Assert.True(npcShopIndex >= 0, "NpcShopTask must be disposed in this shutdown path.");
             Assert.True(craftingIndex >= 0, "CraftingTask must be disposed in this shutdown path.");
             Assert.True(hairdresserIndex >= 0, "HairdresserTask must be disposed in this shutdown path.");
+            Assert.True(petIndex >= 0, "PetTask must be disposed in this shutdown path.");
+            Assert.True(mercIndex >= 0, "MercTask must be disposed in this shutdown path.");
             Assert.True(
                 characterBuildIndex >= 0,
                 "CharacterBuildTask must be disposed in this shutdown path.");
             Assert.True(
                 npcShopIndex < craftingIndex && craftingIndex < hairdresserIndex,
                 "Transaction panel tasks must keep their declared shutdown order.");
+            Assert.True(
+                hairdresserIndex < petIndex && petIndex < mercIndex
+                    && mercIndex < characterBuildIndex,
+                "Team panel trackers must retire before CharacterBuildTask.");
             Assert.Equal(1, CountOccurrences(block, npcShopDispose));
             Assert.Equal(1, CountOccurrences(block, craftingDispose));
             Assert.Equal(1, CountOccurrences(block, hairdresserDispose));
+            Assert.Equal(1, CountOccurrences(block, petDispose));
+            Assert.Equal(1, CountOccurrences(block, mercDispose));
             Assert.Equal(1, CountOccurrences(block, characterBuildDispose));
         }
 

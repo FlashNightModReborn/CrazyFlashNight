@@ -103,41 +103,40 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         var assetTransaction:Object = PlayerAssetTransaction.begin(assetContext);
         var quantityBefore:Number = Number(item.value);
         var remaining:Object;
-        var lossRecorded:Boolean = false;
         try {
+            // 药效、冷却与扣药组成既有领域顺序；存档系统缺失时在任何一步前失败。
+            PlayerAssetTransaction.markDirtyRequired(root.存档系统);
             if (root && root.使用药剂) root.使用药剂(itemName);
             result.cooldownStarted = ManualCooldownService.start(cooldownKey, Number(root.吃药冷却时间));
-            inventory.addValue(String(slotIndex), -1);
-            result.used = true;
-            remaining = inventory.getItem(String(slotIndex));
-            var quantityAfter:Number = remaining == null ? 0 : Number(remaining.value);
-            var committedLoss:Number = quantityBefore - quantityAfter;
-            if (committedLoss > 0 && Math.floor(committedLoss) == committedLoss) {
-                PlayerAssetTransaction.recordEffect(
-                    "loss", "item", itemName, committedLoss, assetContext);
-                lossRecorded = true;
-            }
-            if ((remaining !== item || Number(remaining.value) != quantityBefore)
-                    && root && root.存档系统) {
-                root.存档系统.dirtyMark = true;
+            // addValue 会在数量写入后同步发布 ItemValueChanged/ItemRemoved；
+            // dirty 必须先于监听器可见，异常路径再按 before/after 记录真实扣除。
+            try {
+                inventory.addValue(String(slotIndex), -1);
+                result.used = true;
+            } finally {
+                // receipt 在权威写 finally 内按 before/after 固化；catch 因而可以先
+                // 清 frame，再做索引修复，任何清理异常都不会吞掉真实 loss。
+                remaining = inventory.getItem(String(slotIndex));
+                var quantityAfter:Number = remaining == null ? 0 : Number(remaining.value);
+                var committedLoss:Number = quantityBefore - quantityAfter;
+                if (committedLoss > 0 && Math.floor(committedLoss) == committedLoss) {
+                    PlayerAssetTransaction.recordEffect(
+                        "loss", "item", itemName, committedLoss, assetContext);
+                }
             }
             PlayerAssetTransaction.commit(assetTransaction);
         } catch (useError) {
-            // 领域效果没有通用逆操作；异常时必须按当前权威库存提交已经发生的事实，
-            // 不能 rollback 回执后留下“真实扣药但零播报”或泄漏全局事务栈。
-            remaining = inventory.getItem(String(slotIndex));
-            var failedQuantityAfter:Number = remaining == null ? 0 : Number(remaining.value);
-            var failedCommittedLoss:Number = quantityBefore - failedQuantityAfter;
-            if (!lossRecorded && failedCommittedLoss > 0
-                    && Math.floor(failedCommittedLoss) == failedCommittedLoss) {
-                PlayerAssetTransaction.recordEffect(
-                    "loss", "item", itemName, failedCommittedLoss, assetContext);
+            // 领域效果没有通用逆操作；finally 已固化真实扣药，先恢复 EventBus/
+            // frame，再做派生索引修复，始终保留原始异常。
+            PlayerAssetTransaction.settleAfterException(assetTransaction, true);
+            // ArrayInventory.remove 先删除权威 item、同步发布 ItemRemoved，随后才
+            // 维护索引树；listener fault 会跳过后半段。这里无事件重建派生索引，
+            // 同时保留原异常与已经发生的扣药事实。
+            try {
+                if (inventory.setIndexes != undefined) inventory.setIndexes(null);
+            } catch (indexRepairError) {
+                trace("[DrugInputService] inventory index repair failed: " + indexRepairError);
             }
-            if ((remaining !== item || Number(remaining.value) != quantityBefore)
-                    && root && root.存档系统) {
-                root.存档系统.dirtyMark = true;
-            }
-            PlayerAssetTransaction.commit(assetTransaction);
             throw useError;
         }
 
@@ -179,8 +178,13 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
 
     private static function clearExhaustedMirror(root:Object, slotIndex:Number, itemName:String):Void {
         if (!root) return;
-        if (root.发布消息 && itemName != null && itemName != "" && itemName != "undefined") {
-            root.发布消息(itemName + "耗尽！");
+        try {
+            if (root.发布消息 && itemName != null && itemName != "" && itemName != "undefined") {
+                root.发布消息(itemName + "耗尽！");
+            }
+        } catch (exhaustedMessageError) {
+            // 扣药已经提交；可选提示失败也必须清掉快捷栏镜像，避免下一按键重放。
+            trace("[DrugInputService] exhausted message failed: " + exhaustedMessageError);
         }
         root["快捷物品栏" + slotIndex] = "";
     }

@@ -16,6 +16,7 @@
 - ★ **enterFrame phase 内多 handler 间 load flush 不 interleave**（T9 实测）—— 高 depth handler 内 attachMovie 后，低 depth handler 跑时其 onLoad 还没派发。整个 phase 的 load flush 排到所有 handler 完成后才统一进行
 - ★ **onUnload 派发同构于 load flush**（T17，2026-05-13）：enterFrame phase 末尾批 flush，handler 间不 interleave；setInterval phase 内 remove **永久丢失** onUnload（T16-A/C + T18，跨帧也救不回）
 - 装扮 publish 通道选择：默认 **onPlacement (sync)**；仅当订阅方需要 onLoad-deferred 字段且能容忍 1 帧滞后（或自带门控）才用 onReady (deferred)
+- 战宠 `_root.加载游戏世界人物` 直接返回 `gameworld.attachMovie`：返回栈只准验 parent/name/注册引用/initObject 身份，禁止用 dispatcher、HP/MP、Dressup 或 `StaticInitializer` 闩锁拒绝候选；出生/重建资源以一次性计划在 Dressup 后结算。非人形宠物可完全没有 MP 字段，hasDressup 人形范围既有的 `0/0` MP 也属合法形状
 
 ## 1. 当帧 dispatch 顺序
 
@@ -314,6 +315,8 @@ resolve 内置二级回落：① saber chain live → 精确算 / ② stale → 
 ```
 
 `removeMovieClip` 一返回，detached MC 的 `localToGlobal` 立刻退化为 (0,0)，无延迟窗口。**cache 不可撤**。
+
+T10 只证明坐标链在该夹具中已经退化，不授权把任一显示树字段当作通用删除回执。复杂时间轴、`onUnload` 与 `XMLSocket.onData` 所处相位可能让 `mc._parent` 和 `parent[旧实例名]` 都保留到 phase flush；同一调用栈内不得据此回滚已经发出的删除。对于已经由调用前不变量确认是动态 `attachMovie` 目标的对象，一次 bare `removeMovieClip(mc)` 请求就是应用层提交边界，后续数组/持久状态应按请求已受理收口。反面同样成立：提交删除不代表旧 canonical 实例名已能在本栈复用；同图变更应优先保留无关实例，只对目标 slot 做定点增删，禁止“全场 remove 后立即按原名 attach”的同步重载。
 
 #### 2.6.2 onUnload 派发的 phase 边界（T11/T13/T14/T16/T17/T18，2026-05-12+13）
 

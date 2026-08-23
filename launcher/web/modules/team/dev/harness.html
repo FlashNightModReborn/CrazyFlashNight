@@ -21,7 +21,12 @@ html,body { margin:0; background:#080807; color:#ddd; font-family:"Microsoft YaH
 </div>
 <div id="qa">running</div>
 <script>
-window.__TEAM_PET_CONFIG__ = { requestTimeoutMs: 100 };
+window.__TEAM_PET_CONFIG__ = {
+  requestTimeoutMs: 100,
+  reconcileRetryMs: 100,
+  panelInstanceId: 'panel.team.harness.1',
+  closeAckTimeoutMs: 80
+};
 var PanelTooltip = {
   hide:function(){}, showAtMouse:function(){}, followMouse:function(){}, isVisible:function(){return false;},
   updateContent:function(){}, buildItemRichHtml:function(){return '';},
@@ -74,9 +79,10 @@ var Icons = {
 };
 var Notch = { reportRect:function(){} };
 var listeners = {};
+var TEAM_PANEL_INSTANCE = 'panel.team.harness.1';
 var Bridge = {
   on:function(type, cb){ (listeners[type] || (listeners[type]=[])).push(cb); },
-  send:function(msg){ MockHost.handle(msg); }
+  send:function(msg){ return MockHost.handle(msg); }
 };
 function emit(type, data){ (listeners[type] || []).forEach(function(cb){ cb(data); }); }
 var PET_LIB = [
@@ -140,6 +146,27 @@ var HIRE_POOL=(function(){
 })();
 var MockHost = {
   closeCount:0,
+  lastTeamClose:null,
+  dropNextTeamCloseAck:false,
+  lastMercSnapshot:null,
+  lastMercEquipTooltip:null,
+  foreignMercResponseInjected:0,
+  wrongMercResponseInjected:0,
+  mercRequestCounts:{},
+  mercSendFalseCmd:'',
+  mercDropResponseCmd:'',
+  lastDroppedMercResponse:null,
+  mercResponseError:'',
+  mercMalformedSnapshotQueue:[],
+  holdMercSnapshotCount:0,
+  heldMercSnapshots:[],
+  releaseMercSnapshot:function(){
+    var held=this.heldMercSnapshots.shift();
+    if(held) emit('panel_resp',held);
+    return held;
+  },
+  lastPetSnapshot:null,
+  wrongPetResponseInjected:0,
   lastAdoptRequest:null,
   deployState:{3:true},   // 与初始 snapshot 的出战态一致（伙伴乙 slot 3 出战中）
   mercDeploy:{0:true},    // 佣兵出战态（slotIndex → bool）：snapshot 与 deploy 回包共用
@@ -156,15 +183,51 @@ var MockHost = {
   lastEquipWeapon:null,
   lastWithdrawWeapon:null,
   lastWeaponTooltip:null,
+  petRequestCounts:{},
+  petSendFalseCmd:'',
+  petDropResponseCmd:'',
+  lastDroppedPetResponse:null,
+  petUnknownResponseCmd:'',
+  petUnknownResponseError:'delivery_unknown',
+  snapshotUsesPetDeployState:false,
+  holdPetSnapshotCount:0,
+  heldPetSnapshots:[],
+  releasePetSnapshot:function(){
+    var held=this.heldPetSnapshots.shift();
+    if(held) emit('panel_resp',held);
+    return held;
+  },
   handle:function(msg){
-    if(msg.cmd === 'close'){ this.closeCount++; return; }
-    var resp={type:'panel_resp',panel:msg.panel,cmd:msg.cmd,callId:msg.callId,success:true};
+    if(msg.cmd === 'close'){
+      this.closeCount++;
+      this.lastTeamClose=msg;
+      if(this.dropNextTeamCloseAck){ this.dropNextTeamCloseAck=false; return true; }
+      setTimeout(function(){ emit('panel_cmd',{type:'panel_cmd',cmd:'close',
+        panel:msg.panel,panelInstanceId:msg.panelInstanceId}); },0);
+      return true;
+    }
+    if(msg.panel === 'pets'){
+      this.petRequestCounts[msg.cmd]=(this.petRequestCounts[msg.cmd]||0)+1;
+      if(this.petSendFalseCmd===msg.cmd){ this.petSendFalseCmd=''; return false; }
+    }
+    if(msg.panel === 'mercs'){
+      this.mercRequestCounts[msg.cmd]=(this.mercRequestCounts[msg.cmd]||0)+1;
+      if(this.mercSendFalseCmd===msg.cmd){ this.mercSendFalseCmd=''; return false; }
+    }
+    var resp={type:'panel_resp',panel:msg.panel,cmd:msg.cmd,callId:msg.callId,
+      panelInstanceId:msg.panelInstanceId,success:true};
     if(msg.panel === 'pets' && msg.cmd === 'snapshot'){
+      this.lastPetSnapshot=msg;
+      this.wrongPetResponseInjected++;
+      emit('panel_resp',{type:'panel_resp',panel:'pets',cmd:'deploy',
+        callId:msg.callId,panelInstanceId:msg.panelInstanceId,success:true,
+        snapshot:{pets:[],gold:0,kpoint:0,currentDeployCount:0,maxDeploy:5,maxSlots:8}});
       emit('panel_resp',{type:'panel_resp',panel:'mercs',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{hiredMercs:[]}});
       if(this.failSnapshot){ resp.success=false; resp.error='模拟快照故障'; }
       else{
-      resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,false),pet(1,'伙伴乙',3,5,true),pet(2,'战宠甲',1,20,false),pet(66,'终结者-x',2,10,false)],
-        gold:999999,kpoint:999,currentDeployCount:1,maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:this.playerTask,
+      var snapshotPartnerDeployed=this.snapshotUsesPetDeployState?!!this.deployState[3]:true;
+      resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,false),pet(1,'伙伴乙',3,5,snapshotPartnerDeployed),pet(2,'战宠甲',1,20,false),pet(66,'终结者-x',2,10,false)],
+        gold:999999,kpoint:999,currentDeployCount:snapshotPartnerDeployed?1:0,maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:this.playerTask,
         schemes:{'淬毒':{gold:500,desc:'攻击附带毒素',type:'开关',unlockLevel:1,buttonText:'进阶'},
           '终结者武器扩展':{gold:100000,desc:'开放全部长枪',type:'',unlockLevel:30,buttonText:'扩展武器接口'},
           '终结者全武装':{gold:300000,desc:'移除固定等级上限',type:'',unlockLevel:50,buttonText:'完成全武装'}},priceOverrides:{}};
@@ -200,12 +263,18 @@ var MockHost = {
       resp.currentDeployCount=resp.deployed?2:1;
     }
     if(msg.panel === 'pets' && msg.cmd === 'restore_stamina'){ this.lastRestore=msg; resp.stamina=200; resp.gold=998999; }
-    if(msg.panel === 'pets' && msg.cmd === 'level_up'){ resp.stoneCost=21; }
-    if(msg.panel === 'pets' && msg.cmd === 'delete'){ this.lastDelete=msg; resp.stoneRefund=3; }
-    if(msg.panel === 'pets' && msg.cmd === 'advance'){ resp.gold=998999; resp.kpoint=999; }
+    if(msg.panel === 'pets' && msg.cmd === 'level_up'){
+      this.lastLevelUp=msg; resp.stoneCost=21; resp.refreshDeferred=true;
+    }
+    if(msg.panel === 'pets' && msg.cmd === 'delete'){
+      this.lastDelete=msg; resp.stoneRefund=3; resp.refreshDeferred=true;
+    }
+    if(msg.panel === 'pets' && msg.cmd === 'advance'){
+      this.lastAdvance=msg; resp.gold=998999; resp.kpoint=999; resp.refreshDeferred=true;
+    }
     if(msg.panel === 'pets' && msg.cmd === 'equip_weapon'){
       this.lastEquipWeapon=msg;
-      if(this.dropNextEquipWeapon){ this.dropNextEquipWeapon=false; return; }
+      if(this.dropNextEquipWeapon){ this.dropNextEquipWeapon=false; return true; }
       this.t800Managed=true; resp.operation='handoff'; resp.rebuilt=true;
     }
     if(msg.panel === 'pets' && msg.cmd === 'withdraw_weapon'){
@@ -224,6 +293,15 @@ var MockHost = {
     }
     if(msg.panel === 'pets' && msg.cmd === 'expand_slot'){ resp.gold=998999; resp.maxSlots=9; }
     if(msg.panel === 'mercs' && msg.cmd === 'snapshot'){
+      this.lastMercSnapshot=msg;
+      this.foreignMercResponseInjected++;
+      this.wrongMercResponseInjected++;
+      emit('panel_resp',{type:'panel_resp',panel:'mercs',cmd:'deploy',
+        callId:msg.callId,panelInstanceId:msg.panelInstanceId,success:true,
+        snapshot:{gold:0,kpoint:0,reviveCoins:0,maxSlots:8,hiredMercs:[]}});
+      emit('panel_resp',{type:'panel_resp',panel:'mercs',cmd:msg.cmd,
+        callId:msg.callId,panelInstanceId:'panel.team.harness.foreign',success:true,
+        snapshot:{gold:0,kpoint:0,reviveCoins:0,maxSlots:8,hiredMercs:[]}});
       emit('panel_resp',{type:'panel_resp',panel:'pets',cmd:msg.cmd,callId:msg.callId,success:true,snapshot:{pets:[]}});
       var mercList=this.emptyMercs?[]:[
         {slotIndex:0,name:'佣兵甲',level:12,gender:'男',height:175,face:'男变装-基本脸型',hair:'发型-男式-黑韩式头',deployed:!this.mercDead[0]&&!!this.mercDeploy[0],dead:!!this.mercDead[0],equips:midnightEquips(),skills:skills(13),personality:personality()},
@@ -238,11 +316,33 @@ var MockHost = {
       resp.snapshot={gold:999999,kpoint:999,reviveCoins:this.mercCoins,maxSlots:8,hiredMercs:mercList};
       // 外审二轮 P2-4 QA：佣兵 snapshot 失败注入（roster 错误空态覆盖；成功字段保留但 success=false 走失败分支）
       if(this.failMercSnapshot){ resp.success=false; resp.error='模拟佣兵快照故障'; }
+      var malformedMercSnapshot=this.mercMalformedSnapshotQueue.shift();
+      if(malformedMercSnapshot==='missing'){
+        resp.success=true; delete resp.error; delete resp.snapshot;
+      }else if(malformedMercSnapshot==='empty'){
+        resp.success=true; delete resp.error; resp.snapshot={};
+      }
+    }
+    if(msg.panel === 'mercs' && msg.cmd === 'equip_tooltip'){
+      this.lastMercEquipTooltip=msg;
+      resp.descHTML='佣兵装备完整说明'; resp.introHTML='<b>佣兵装备</b>';
+      resp.displayname=msg.raw; resp.itemName=msg.raw;
     }
     if(msg.panel === 'mercs' && msg.cmd === 'deploy'){
       this.lastMercDeploy=msg;
-      this.mercDeploy[msg.mercIndex]=!this.mercDeploy[msg.mercIndex];
-      resp.deployed=this.mercDeploy[msg.mercIndex];
+      var mercError=this.mercResponseError;
+      this.mercResponseError='';
+      // timeout / delivery_unknown 代表写可能已送达：fixture 先应用 toggle 再回未知。
+      // 明确业务失败 / panel_instance_expired 则保持零写。
+      if(mercError){
+        if(mercError==='timeout' || mercError==='delivery_unknown'){
+          this.mercDeploy[msg.mercIndex]=!this.mercDeploy[msg.mercIndex];
+        }
+        resp.success=false; resp.error=mercError;
+      }else{
+        this.mercDeploy[msg.mercIndex]=!this.mercDeploy[msg.mercIndex];
+        resp.deployed=this.mercDeploy[msg.mercIndex];
+      }
     }
     if(msg.panel === 'mercs' && msg.cmd === 'revive'){
       this.lastRevive=msg;
@@ -278,10 +378,39 @@ var MockHost = {
       }
     }
     // 世界内雇佣确认：world_hire(panel=mercs)/world_adopt(panel=pets) → hired:true（镜像 AS2 handleWorldHire/Adopt）
-    if(msg.cmd === 'world_hire' || msg.cmd === 'world_adopt'){ this.lastWorldHire=msg; resp.hired=true; }
+    if(msg.cmd === 'world_hire' || msg.cmd === 'world_adopt'){
+      this.lastWorldHire=msg; resp.hired=true;
+      if(msg.cmd === 'world_adopt') resp.refreshDeferred=true;
+    }
+    if(msg.panel==='pets' && this.petUnknownResponseCmd===msg.cmd){
+      this.petUnknownResponseCmd='';
+      resp.success=false;
+      resp.error=this.petUnknownResponseError||'delivery_unknown';
+    }
+    if(msg.panel==='pets' && this.petDropResponseCmd===msg.cmd){
+      this.petDropResponseCmd='';
+      this.lastDroppedPetResponse=resp;
+      return true;
+    }
+    if(msg.panel==='pets' && msg.cmd==='snapshot' && this.holdPetSnapshotCount>0){
+      this.holdPetSnapshotCount--;
+      this.heldPetSnapshots.push(resp);
+      return true;
+    }
+    if(msg.panel==='mercs' && this.mercDropResponseCmd===msg.cmd){
+      this.mercDropResponseCmd='';
+      this.lastDroppedMercResponse=resp;
+      return true;
+    }
+    if(msg.panel==='mercs' && msg.cmd==='snapshot' && this.holdMercSnapshotCount>0){
+      this.holdMercSnapshotCount--;
+      this.heldMercSnapshots.push(resp);
+      return true;
+    }
     // pet_lib 首次请求刻意放慢：给 QA 留出「数据未就绪」的确定性断言窗口
     var delay=(msg.panel==='pets' && msg.cmd==='pet_lib')?60:5;
     setTimeout(function(){ emit('panel_resp',resp); },delay);
+    return true;
   }
 };
 </script>
@@ -306,6 +435,17 @@ var MockHost = {
 <script>
 (function(){
   Panels.init();
+  var openPanel = Panels.open;
+  Panels.open = function(panel, initData) {
+    if (panel === 'team') {
+      var exact = {};
+      initData = initData || {};
+      Object.keys(initData).forEach(function(key) { exact[key] = initData[key]; });
+      if (!exact.panelInstanceId) exact.panelInstanceId = TEAM_PANEL_INSTANCE;
+      initData = exact;
+    }
+    return openPanel(panel, initData);
+  };
   var results=[];
   function assert(id,title,pass,detail){ results.push({id:id,title:title,pass:!!pass,detail:detail||''}); }
   function click(tab){ document.querySelector('.team-tab[data-tab="'+tab+'"]').click(); }
@@ -329,6 +469,10 @@ var MockHost = {
   function petWorkbench(){ return document.querySelector('.team-pet-child .workbench-shell'); }
   function petCards(){ return document.querySelectorAll('.team-pet-grid .team-pet-card'); }
   function mercWorkbench(){ return document.querySelector('.team-merc-child .workbench-shell'); }
+  function mercReconcileActive(){
+    var wb=mercWorkbench();
+    return !!(wb && wb.getAttribute('data-team-reconcile')==='true');
+  }
   function mercCards(){ return document.querySelectorAll('.team-merc-child .team-merc-grid .team-merc-card'); }
   function mercCardName(card){ var n=card && card.querySelector('.team-entity-name'); return n?n.textContent:''; }
   function ttBindings(node){ return PanelTooltip.__bindingsFor(node); }
@@ -355,6 +499,11 @@ var MockHost = {
     assert('team-p1','右栏未选中空态（empty）',
       emptyReady && !!document.querySelector('.team-pet-detail .workbench-empty-state[data-empty-kind="empty"]'));
     await wait(150);
+    assert('team-p0','pet 请求携 active team capability，错 cmd 同 call 回包不写入当前文档',
+      MockHost.lastPetSnapshot && MockHost.lastPetSnapshot.panelInstanceId===TEAM_PANEL_INSTANCE &&
+      MockHost.wrongPetResponseInjected>0 && petCards().length===2,
+      'instance='+(MockHost.lastPetSnapshot&&MockHost.lastPetSnapshot.panelInstanceId)
+        +', injected='+MockHost.wrongPetResponseInjected+', cards='+petCards().length);
     assert('team-ui1','首次打开默认伙伴',active()==='partner',active());
     assert('team-ui2','四标签顺序',Array.from(document.querySelectorAll('.team-tab')).map(function(x){return x.dataset.tab;}).join(',')==='mercenary,partner,pet,mechanical');
     // ── Shell 结构 ──
@@ -604,6 +753,11 @@ var MockHost = {
       jMoreHint.getBoundingClientRect().bottom<=jRightColRect.bottom+1,
       'secH='+(jRightSec&&jRightSec.offsetHeight)+'/'+pRightCol.clientHeight+', hintGap='+jHintGap.toFixed(1));
     assert('team-p17','advance 零横向溢出',secPage.scrollWidth<=secPage.clientWidth,secPage.scrollWidth+'<='+secPage.clientWidth);
+    var deferredPromo=secPage.querySelector('.team-promo .team-promo-btn');
+    deferredPromo.click(); await wait(80);
+    assert('team-p17b','进阶成功但场景重建延后时，toast 明示属性稍后同步且不诱导重放',
+      MockHost.lastAdvance && MockHost.lastAdvance.cmd==='advance' &&
+      toastHas('下次重建时更新进阶属性'));
     // 删除 modal：取消 → 确认 两条路
     secPage.querySelector('.team-act-delete').click(); await wait(10);
     var modal=document.querySelector('.workbench-modal');
@@ -616,7 +770,8 @@ var MockHost = {
     await wait(30);
     assert('team-p19','删除确认：发对协议 + 关闭培养页 + toast',
       MockHost.lastDelete && MockHost.lastDelete.cmd==='delete' && MockHost.lastDelete.slotIndex===0 &&
-      secPage.getAttribute('aria-hidden')==='true' && toastHas('已删除'));
+      secPage.getAttribute('aria-hidden')==='true' && toastHas('已删除') &&
+      toastHas('被删除战宠的场景残影将在下次换场时清理'));
     // ── J2：0 方案空态（战宠甲无进阶方案 → 居中版空态复用 H2-5 版式）──
     click('pet'); await wait(60);
     await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===1; },2000);
@@ -814,14 +969,16 @@ var MockHost = {
     await wait(145);
     var t800Workbench=petWorkbench();
     managedSection=t800Page.querySelector('.team-managed-gun-section');
-    assert('team-t800-3','T800 交付超时：自动解除处理中并回拉权威快照',
+    assert('team-t800-3','T800 交付超时：不重放写入，fresh snapshot 对账后才恢复操作',
       !t800Workbench.hasAttribute('data-team-busy') && !MockHost.t800Managed &&
-      toastHas('请求超时') && managedSection.querySelector('.team-managed-gun-commit'));
+      window.PetPanel.getState().reconcileRequired===false &&
+      toastHas('上一次操作可能已生效') && managedSection.querySelector('.team-managed-gun-commit'));
     managedSection.querySelector('.team-managed-gun-commit').click(); await wait(80);
     managedSection=t800Page.querySelector('.team-managed-gun-section');
     var withdrawManaged=managedSection&&managedSection.querySelector('.team-managed-gun-current .team-managed-gun-action');
     assert('team-t800-4','T800 交付：发送 lease-bound source + 冻结状态回显',
       MockHost.lastEquipWeapon && MockHost.lastEquipWeapon.slotIndex===2 &&
+      MockHost.lastEquipWeapon.panelInstanceId===TEAM_PANEL_INSTANCE &&
       MockHost.lastEquipWeapon.source && MockHost.lastEquipWeapon.source.containerId==='背包' &&
       MockHost.lastEquipWeapon.source.slot===7 && MockHost.lastEquipWeapon.source.expectedLease==='lease-t800-7' &&
       managedSection.querySelector('.team-managed-gun-name').textContent==='测试UZI' &&
@@ -833,6 +990,7 @@ var MockHost = {
     managedSection=t800Page.querySelector('.team-managed-gun-section');
     assert('team-t800-5','T800 取回：发送专用命令并恢复预设武器态',
       MockHost.lastWithdrawWeapon && MockHost.lastWithdrawWeapon.slotIndex===2 &&
+      MockHost.lastWithdrawWeapon.panelInstanceId===TEAM_PANEL_INSTANCE &&
       managedSection.querySelector('.team-managed-gun-name').textContent.indexOf('L85A1')>=0 &&
       !document.querySelector('.team-pet-grid .team-managed-gun-card-band') &&
       document.querySelector('.team-pet-detail .team-managed-gun-readout').textContent.indexOf('预设 · L85A1')>=0 &&
@@ -846,6 +1004,13 @@ var MockHost = {
     await waitFor(function(){ return document.querySelectorAll('.team-merc-child .team-merc-grid .team-merc-card').length===3; },3000);
     var mwb=mercWorkbench();
     var mHeaderActions=mwb && mwb.querySelector('.workbench-header-actions');
+    assert('team-m0','merc 请求携 active team capability，foreign-instance 同 call 回包不写入当前文档',
+      MockHost.lastMercSnapshot && MockHost.lastMercSnapshot.panelInstanceId===TEAM_PANEL_INSTANCE &&
+      MockHost.foreignMercResponseInjected>0 && MockHost.wrongMercResponseInjected>0 &&
+      mercCards().length===3,
+      'instance='+(MockHost.lastMercSnapshot&&MockHost.lastMercSnapshot.panelInstanceId)
+        +', injected='+MockHost.foreignMercResponseInjected+'/'+MockHost.wrongMercResponseInjected
+        +', cards='+mercCards().length);
     assert('team-m1','Shell：profile/skin/roster/双栏 slot/tabNav 为 header 第一个 action',
       mwb && mwb.getAttribute('data-profile')==='catalog-decision' &&
       mwb.getAttribute('data-workbench-skin')==='team' &&
@@ -1177,7 +1342,9 @@ var MockHost = {
     await waitFor(function(){return MockHost.closeCount>mWBefore;},2000);
     assert('team-m29','候选「确认雇佣」发 world_hire(panel=mercs) 且 hired→关面板',
       MockHost.lastWorldHire && MockHost.lastWorldHire.cmd==='world_hire' && MockHost.lastWorldHire.panel==='mercs' &&
-      MockHost.closeCount>mWBefore);
+      MockHost.closeCount>mWBefore && MockHost.lastTeamClose &&
+      MockHost.lastTeamClose.panel==='team' &&
+      MockHost.lastTeamClose.panelInstanceId===TEAM_PANEL_INSTANCE);
     Panels.close(); await wait(30);
     Panels.open('team',{view:'hire',kind:'merc',initialTab:'mercenary',detail:{
       kind:'merc',slotIndex:-1,name:'高级佣兵',level:80,gender:'男',height:180,
@@ -1208,7 +1375,11 @@ var MockHost = {
     document.querySelector('.team-pet-detail .team-act-recruit').click();
     await waitFor(function(){return MockHost.closeCount>pbefore;},2000);
     assert('team-ui33','候选「确认招募」发 world_adopt(panel=pets) 且 hired→关面板',
-      MockHost.lastWorldHire && MockHost.lastWorldHire.cmd==='world_adopt' && MockHost.lastWorldHire.panel==='pets' && MockHost.closeCount>pbefore);
+      MockHost.lastWorldHire && MockHost.lastWorldHire.cmd==='world_adopt' && MockHost.lastWorldHire.panel==='pets' &&
+      MockHost.closeCount>pbefore && MockHost.lastTeamClose &&
+      MockHost.lastTeamClose.panel==='team' &&
+      MockHost.lastTeamClose.panelInstanceId===TEAM_PANEL_INSTANCE &&
+      toastHas('招募已完成；场景战宠将在下次换场时同步'));
     Panels.close(); await wait(30);
     var worldHireBefore=MockHost.lastWorldHire;
     Panels.open('team',{view:'hire',kind:'pet',initialTab:'partner',detail:{
@@ -1479,6 +1650,12 @@ var MockHost = {
       // offsetLeft/top 非 0（不贴左上）且中心落在容器中部区域
       return r.left>h.left && r.top>h.top && dx<=h.width*0.12 && dy<=h.height*0.2;
     }
+    function hasSourceHanSerif(ff){
+      ff=String(ff||'');
+      return ff.indexOf('思源宋体')>=0 || ff.indexOf('Source Han Serif')>=0 ||
+        ff.indexOf('CF7Face--source-han-serif-cn-heavy-900')>=0 ||
+        ff.indexOf('CF7Face--source-han-serif-cn-regular-400')>=0;
+    }
     // ── H2-1 / H2-2 / H2-3（pet 侧，先确保 full 密度——G2 段落把 pet 网格留在 compact）──
     Panels.close(); await wait(30);
     Panels.open('team',{initialTab:'partner'});
@@ -1527,7 +1704,7 @@ var MockHost = {
     var kbScroll=document.querySelector('.team-pet-roster-scroll');
     assert('team-kb1','Phase J/K：full 卡名 serif 13px + 名内 inline Lv（名字 .team-pet-name-text 可缩 / Lv 不缩；暖橙 / 满级 MAX 行）+ meter 行「label+8px track+数值」（体力整数 · 经验 %）+ 角标退役 + 直操钮单行不裁字 + 首屏零纵溢',
       kbMetaNodes.length===0 &&
-      (kbNameCs.fontFamily.indexOf('思源宋体')>=0 || kbNameCs.fontFamily.indexOf('Source Han Serif')>=0) &&
+      hasSourceHanSerif(kbNameCs.fontFamily) &&
       kbNameCs.fontSize==='13px' &&
       !!kbNameText && kbNameText.parentNode===kbName && kbNameText.textContent.length>0 &&
       !!kbLv && kbLv.parentNode===kbName && kbLv.previousSibling===kbNameText && kbLv.textContent==='Lv.5' &&
@@ -1729,7 +1906,7 @@ var MockHost = {
       !iMCards[0].querySelector('.team-merc-card-skills') &&
       iMCards[0].querySelectorAll('.merc-skill-cell').length===0 &&
       !iMCards[1].querySelector('.team-merc-card-skills') &&
-      (iNameCs.fontFamily.indexOf('思源宋体')>=0 || iNameCs.fontFamily.indexOf('Source Han Serif')>=0) &&
+      hasSourceHanSerif(iNameCs.fontFamily) &&
       iNameCs.fontSize==='13px' &&
       iGridCols===1 &&
       iMCards[0].classList.contains('team-merc-rowcard') &&
@@ -1779,12 +1956,20 @@ var MockHost = {
     var kaSkHtml=kaSkBs.length && kaSkBs[0].opts.renderBasic ? kaSkBs[0].opts.renderBasic(kaSkBs[0].opts.item) : '';
     var kaMiniCell=kaCard0.querySelector('.team-entity-ministrip .merc-equip-cell:not(.merc-equip-empty)');
     var kaMiniBs=ttBindings(kaMiniCell);
+    var kaMercTooltip=null;
+    kaMiniBs[0].opts.fetch(kaMiniBs[0].opts.item,function(data){kaMercTooltip=data;});
+    await wait(20);
     assert('team-ka2','K-A：名册卡 tooltip 绑定（装备格 rich=fetch/renderRich/key raw|level/cache + 迷你行同 rich + 卡级 tip 共存；技能格 basic 迁右栏技能流，Phase J 技能带下卡）',
       kaEqCells.length===10 && kaEqBound &&
       kaSkBs.length===1 && kaSkHtml.indexOf('小跳')>=0 && kaSkHtml.indexOf('Lv.')>=0 &&
       kaMiniBs.length===1 && typeof kaMiniBs[0].opts.fetch==='function' &&
+      MockHost.lastMercEquipTooltip &&
+      MockHost.lastMercEquipTooltip.panelInstanceId===TEAM_PANEL_INSTANCE &&
+      kaMercTooltip && kaMercTooltip.descHTML.indexOf('完整说明')>=0 &&
       ttBindings(kaCard0).length===1,
-      'eqBound='+kaEqBound+', sk="'+kaSkHtml.slice(0,36)+'", mini='+kaMiniBs.length+', cardTip='+ttBindings(kaCard0).length);
+      'eqBound='+kaEqBound+', sk="'+kaSkHtml.slice(0,36)+'", mini='+kaMiniBs.length
+        +', tooltipInstance='+(MockHost.lastMercEquipTooltip&&MockHost.lastMercEquipTooltip.panelInstanceId)
+        +', cardTip='+ttBindings(kaCard0).length);
     // ── I2：pet 卡内直操 deploy（未选中卡零选中副作用）+ I3 徽标对样例（伙伴甲 满级+出战）──
     click('partner');
     await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },3000);
@@ -1994,8 +2179,8 @@ var MockHost = {
       'surface='+(jSurface?jSurface.map(function(x){return x.toFixed(3);}).join('/'):'?'));
     // ── Phase J 视觉气质对齐轮（2026-08-04）：tab serif 化 + accent 回橘窄域锁定 ──
     var jTabCs=getComputedStyle(document.querySelector('.team-tab'));
-    assert('team-j6a','Phase J：tab 回归思源宋体（font-family 含 思源宋体/Source Han Serif + 13px + 字距 2px，min-height 27px 结构不动）',
-      (jTabCs.fontFamily.indexOf('思源宋体')>=0 || jTabCs.fontFamily.indexOf('Source Han Serif')>=0) &&
+    assert('team-j6a','Phase J：tab 回归思源宋体（font-family 含生成目录别名或思源宋体兼容名 + 13px + 字距 2px，min-height 27px 结构不动）',
+      hasSourceHanSerif(jTabCs.fontFamily) &&
       jTabCs.fontSize==='13px' && jTabCs.letterSpacing==='2px' && jTabCs.minHeight==='27px',
       'font='+jTabCs.fontFamily.slice(0,40)+', size='+jTabCs.fontSize+', ls='+jTabCs.letterSpacing);
     // j5a 的宽域（20~48°）保留不删；本条窄域（26~32°）锁本轮回橘成果（对齐旧 #ef9442 的 28.4°）
@@ -2004,11 +2189,17 @@ var MockHost = {
       'accent hue='+jAccentHue.toFixed(1));
     // ── 外审二轮 P2-3：字体链补 bundled 家族（未装系统思源宋体的机器不再直接掉雅黑）──
     function jFontChainOk(ff){
-      var iHeavy=ff.indexOf('思源宋体 CN Heavy'), iBundled=ff.indexOf('Source Han Serif CN'), iYahei=ff.indexOf('Microsoft YaHei');
+      var iAliasHeavy=ff.indexOf('CF7Face--source-han-serif-cn-heavy-900');
+      var iAliasRegular=ff.indexOf('CF7Face--source-han-serif-cn-regular-400');
+      var iYahei=ff.indexOf('Microsoft YaHei');
+      if(iAliasHeavy>=0 || iAliasRegular>=0){
+        return iAliasHeavy>=0 && iAliasRegular>iAliasHeavy && iYahei>iAliasRegular;
+      }
+      var iHeavy=ff.indexOf('思源宋体 CN Heavy'), iBundled=ff.indexOf('Source Han Serif CN');
       return iHeavy>=0 && iBundled>iHeavy && iYahei>iBundled;
     }
     var j6NameFf=getComputedStyle(document.querySelector('.team-pet-grid .team-pet-card .team-entity-name')).fontFamily;
-    assert('team-j6c','外审二轮 P2-3：tab/卡名字体链含 bundled Source Han Serif CN（思源宋体 CN Heavy 之后、Microsoft YaHei 之前）',
+    assert('team-j6c','外审二轮 P2-3：tab/卡名字体链含生成目录 Heavy→Regular 别名（兼容旧命名，且位于 Microsoft YaHei 之前）',
       jFontChainOk(jTabCs.fontFamily) && jFontChainOk(j6NameFf),
       'tab='+jTabCs.fontFamily.slice(0,70)+' | name='+j6NameFf.slice(0,70));
     Panels.close(); await wait(20);
@@ -2287,6 +2478,328 @@ var MockHost = {
       !!aMercRetry && aMercRetry.tagName==='BUTTON');
     MockHost.failMercSnapshot=false;
     Panels.close(); await wait(20);
+    // ── Pet 写后未知对账：不重放、旧 snapshot 不解新 epoch、replacement 继承因果锁 ──
+    MockHost.snapshotUsesPetDeployState=true;
+    Panels.open('team',{initialTab:'partner',panelInstanceId:'panel.team.harness.pet-reconcile-a'});
+    await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },3000);
+
+    // 先造一个普通业务失败触发的旧 snapshot。失败本身不得建 latch；旧请求故意押到后面回包。
+    MockHost.failAdopt=true;
+    MockHost.holdPetSnapshotCount=1;
+    document.querySelector('.team-goto-store').click();
+    await waitFor(function(){ return document.querySelectorAll('.team-store-card').length===2; },2000);
+    document.querySelectorAll('.team-store-card')[0].click(); await wait(10);
+    document.querySelector('.workbench-commit-primary').click();
+    await waitFor(function(){ return MockHost.heldPetSnapshots.length===1; },2000);
+    var petOrdinaryFailureUnlocked=window.PetPanel.getState().reconcileRequired===false;
+    assert('team-pet-reconcile-ordinary','Pet 普通业务失败不误建 reconcile latch',
+      petOrdinaryFailureUnlocked && MockHost.failAdopt===true);
+    MockHost.failAdopt=false;
+    document.querySelector('.team-back-roster').click(); await wait(20);
+
+    // deploy 是 toggle：首次已在 Host 模拟端生效但丢回包。client_timeout 后必须锁写，
+    // 用户再点不得发第二次 toggle；自动 fresh snapshot 也先扣住以观察 latch。
+    var petDeployBefore=MockHost.petRequestCounts.deploy||0;
+    MockHost.petDropResponseCmd='deploy';
+    MockHost.holdPetSnapshotCount=1;
+    var petDeployButton=document.querySelector('.team-pet-detail .team-act-deploy');
+    petDeployButton.click();
+    await wait(140);
+    var petTimedOutState=window.PetPanel.getState();
+    var petDeployAfterTimeout=MockHost.petRequestCounts.deploy||0;
+    var petReconcileRoot=document.querySelector('.team-pet-child .workbench-shell');
+    petDeployButton.click(); await wait(20);
+    var petReplayBlocked=(MockHost.petRequestCounts.deploy||0)===petDeployAfterTimeout;
+    assert('team-pet-reconcile-timeout','Pet client_timeout 锁定写入，deploy 旧态不可二次 toggle',
+      petTimedOutState.reconcileRequired===true &&
+      petDeployAfterTimeout===petDeployBefore+1 && petReplayBlocked &&
+      petReconcileRoot.getAttribute('data-team-reconcile')==='true',
+      'epoch='+petTimedOutState.reconcileEpoch+', deployDelta='+(petDeployAfterTimeout-petDeployBefore));
+
+    // 先放行未知写之前的旧 snapshot：它既不可解锁，也不可覆盖更新的对账请求。
+    MockHost.releasePetSnapshot(); await wait(30);
+    var petOldSnapshotStayedLocked=window.PetPanel.getState().reconcileRequired===true;
+    MockHost.releasePetSnapshot();
+    await waitFor(function(){ return window.PetPanel.getState().reconcileRequired===false; },2000);
+    var petFreshUnlocked=window.PetPanel.getState().reconcileRequired===false &&
+      !document.querySelector('.team-pet-child .workbench-shell').hasAttribute('data-team-reconcile');
+    assert('team-pet-reconcile-epoch','Pet 旧 snapshot 不解新 epoch；同 epoch fresh snapshot 成功后才解锁',
+      petOldSnapshotStayedLocked && petFreshUnlocked);
+
+    // 迟到的原 mutation 回包已无 pending callId，不得重新采用或改写已对账状态。
+    var latePetResponse=Object.assign({},MockHost.lastDroppedPetResponse||{},
+      {deployed:true,currentDeployCount:99});
+    emit('panel_resp',latePetResponse); await wait(20);
+    assert('team-pet-reconcile-late','Pet 迟到原 mutation 回包不能跨已结束 pending 重新写入',
+      window.PetPanel.getState().reconcileRequired===false &&
+      document.querySelector('.workbench-subtitle').textContent.indexOf('99')<0);
+
+    // Bridge 明确 false 表示未发出，不得误锁。
+    MockHost.petSendFalseCmd='deploy';
+    document.querySelector('.team-pet-detail .team-act-deploy').click(); await wait(30);
+    assert('team-pet-reconcile-not-sent','Pet not_sent 不建 reconcile latch',
+      window.PetPanel.getState().reconcileRequired===false);
+
+    // Host delivery_unknown 同样建 latch。旧实例的自动 snapshot 与 replacement 首个 snapshot
+    // 都手动扣住：旧 instance 回包不解锁，replacement 的失败 snapshot 也不解锁。
+    MockHost.petUnknownResponseCmd='deploy';
+    MockHost.petUnknownResponseError='delivery_unknown';
+    MockHost.holdPetSnapshotCount=1;
+    document.querySelector('.team-pet-detail .team-act-deploy').click();
+    await waitFor(function(){ return window.PetPanel.getState().reconcileRequired===true && MockHost.heldPetSnapshots.length===1; },2000);
+    var petDeliveryEpoch=window.PetPanel.getState().reconcileEpoch;
+    MockHost.failSnapshot=true;
+    MockHost.holdPetSnapshotCount=1;
+    Panels.open('team',{initialTab:'partner',panelInstanceId:'panel.team.harness.pet-reconcile-b'});
+    await waitFor(function(){ return MockHost.heldPetSnapshots.length===2; },2000);
+    var petReplacementState=window.PetPanel.getState();
+    MockHost.releasePetSnapshot(); await wait(30); // 旧 instance snapshot：Bridge exact-instance 拒绝
+    var petOldInstanceStayedLocked=window.PetPanel.getState().reconcileRequired===true;
+    MockHost.releasePetSnapshot();
+    await waitFor(function(){ return document.querySelector('.team-pet-grid .workbench-empty-state[data-empty-kind="error"]'); },2000);
+    var petFailedSnapshotStayedLocked=window.PetPanel.getState().reconcileRequired===true;
+    MockHost.failSnapshot=false;
+    document.querySelector('.team-pet-grid .team-empty-retry').click();
+    await waitFor(function(){ return window.PetPanel.getState().reconcileRequired===false; },2000);
+    assert('team-pet-reconcile-rebind','Pet reconcile 跨 replacement 保留；旧实例/失败 snapshot 不解锁，新实例 fresh snapshot 解锁',
+      petReplacementState.reconcileRequired===true &&
+      petReplacementState.reconcileEpoch===petDeliveryEpoch &&
+      petReplacementState.panelInstanceId==='panel.team.harness.pet-reconcile-b' &&
+      petOldInstanceStayedLocked && petFailedSnapshotStayedLocked &&
+      window.PetPanel.getState().reconcileRequired===false);
+    MockHost.snapshotUsesPetDeployState=false;
+    Panels.close(); await wait(20);
+
+    // ── Merc 写后未知对账：toggle 不重放，旧 epoch/旧 instance 不解锁 ──
+    Panels.open('team',{initialTab:'mercenary',panelInstanceId:'panel.team.harness.merc-reconcile-a'});
+    await waitFor(function(){ return document.querySelectorAll('.team-merc-child .team-merc-card').length===3; },3000);
+
+    // 明确业务失败、owner 过期与 Bridge false 都是“确定未提交/不可采用”，不得误建锁。
+    MockHost.mercResponseError='merc_not_found';
+    document.querySelector('.team-merc-detail .team-merc-act-deploy').click(); await wait(30);
+    var mercOrdinaryUnlocked=!MercTeamController.isBusy() &&
+      !document.querySelector('.team-merc-child .workbench-shell').hasAttribute('data-team-reconcile');
+    MockHost.mercResponseError='panel_instance_expired';
+    document.querySelector('.team-merc-detail .team-merc-act-deploy').click(); await wait(30);
+    var mercExpiredUnlocked=!MercTeamController.isBusy();
+    MockHost.mercSendFalseCmd='deploy';
+    document.querySelector('.team-merc-detail .team-merc-act-deploy').click(); await wait(30);
+    assert('team-merc-reconcile-definite','Merc 普通业务失败 / panel_instance_expired / not_sent 均不建 reconcile latch',
+      mercOrdinaryUnlocked && mercExpiredUnlocked && !MercTeamController.isBusy());
+
+    // 先发一个旧 snapshot 并扣住；deploy 已在 Host fixture toggle，但原回包丢失。
+    // client_timeout 后应额外发 fresh snapshot，且旧按钮不可再次触发 toggle。
+    MockHost.holdMercSnapshotCount=2;
+    MercTeamController.resetToList();
+    await waitFor(function(){ return MockHost.heldMercSnapshots.length===1; },2000);
+    var mercDeployBefore=MockHost.mercRequestCounts.deploy||0;
+    MockHost.mercDropResponseCmd='deploy';
+    var mercDeployButton=document.querySelector('.team-merc-detail .team-merc-act-deploy');
+    mercDeployButton.click();
+    await waitFor(function(){ return !MercTeamController.isBusy() && mercReconcileActive() && MockHost.heldMercSnapshots.length===2; },2000);
+    var mercDeployAfterTimeout=MockHost.mercRequestCounts.deploy||0;
+    var mercToggledSlot=MockHost.lastMercDeploy && MockHost.lastMercDeploy.mercIndex;
+    mercDeployButton.click(); await wait(20);
+    var mercReplayBlocked=(MockHost.mercRequestCounts.deploy||0)===mercDeployAfterTimeout;
+    var mercReconcileRoot=document.querySelector('.team-merc-child .workbench-shell');
+    assert('team-merc-reconcile-timeout','Merc client_timeout 锁定写入，deploy 旧态不可二次 toggle',
+      mercDeployAfterTimeout===mercDeployBefore+1 && mercReplayBlocked &&
+      !MercTeamController.isBusy() && mercReconcileRoot.getAttribute('data-team-reconcile')==='true',
+      'deployDelta='+(mercDeployAfterTimeout-mercDeployBefore));
+
+    // 未知写之前发出的旧 snapshot 即使同 instance 回包也不能解锁。
+    MockHost.releaseMercSnapshot(); await wait(30);
+    var mercOldEpochStayedLocked=mercReconcileActive();
+
+    // replacement 继承同一因果锁。先放旧 instance 的自动 snapshot（必须拒绝），
+    // 再放 replacement 自己发出的 fresh snapshot，才允许恢复写入。
+    MockHost.holdMercSnapshotCount=1;
+    Panels.open('team',{initialTab:'mercenary',panelInstanceId:'panel.team.harness.merc-reconcile-b'});
+    await waitFor(function(){ return MockHost.heldMercSnapshots.length===2; },2000);
+    var mercHeldProjection=MockHost.heldMercSnapshots.map(function(x){
+      return x.panelInstanceId+':'+(x.snapshot&&x.snapshot.hiredMercs&&x.snapshot.hiredMercs[0]&&x.snapshot.hiredMercs[0].deployed);
+    }).join('|');
+    var mercReplacementLocked=!MercTeamController.isBusy() && mercReconcileActive();
+    MockHost.releaseMercSnapshot(); await wait(30);
+    var mercOldInstanceStayedLocked=mercReconcileActive();
+    MockHost.releaseMercSnapshot();
+    await waitFor(function(){ return !mercReconcileActive(); },2000);
+    var mercToggledCard=document.querySelector('.team-merc-card[data-slot="'+mercToggledSlot+'"]');
+    if(mercToggledCard) mercToggledCard.click();
+    var mercFreshButton=document.querySelector('.team-merc-detail .team-merc-act-deploy');
+    var mercAuthorityProjected=mercFreshButton && mercFreshButton.textContent===
+      (MockHost.mercDeploy[mercToggledSlot]?'休息':'出战');
+    assert('team-merc-reconcile-epoch','Merc 旧 snapshot / 旧 instance 不解锁；replacement fresh snapshot 后才恢复并投影权威 toggle',
+      mercOldEpochStayedLocked && mercReplacementLocked && mercOldInstanceStayedLocked &&
+      !MercTeamController.isBusy() && !mercReconcileActive() && mercAuthorityProjected,
+      'oldEpoch='+mercOldEpochStayedLocked+', replacement='+mercReplacementLocked+
+      ', oldInstance='+mercOldInstanceStayedLocked+', unlocked='+(!MercTeamController.isBusy())+
+      ', projected='+mercAuthorityProjected+', label='+(mercFreshButton&&mercFreshButton.textContent)+
+      ', slot='+mercToggledSlot+', authority='+MockHost.mercDeploy[mercToggledSlot]+', held='+mercHeldProjection);
+
+    // 原 mutation 迟到回包既无 pending callId，又属于旧 instance，不能污染已对账文档。
+    var mercLateButtonText=mercFreshButton && mercFreshButton.textContent;
+    emit('panel_resp',Object.assign({},MockHost.lastDroppedMercResponse||{},
+      {success:true,deployed:!MockHost.mercDeploy[mercToggledSlot]}));
+    await wait(20);
+    assert('team-merc-reconcile-late','Merc 迟到原 mutation 回包不能跨 pending/instance fence 改写权威快照',
+      !MercTeamController.isBusy() && !mercReconcileActive() &&
+      document.querySelector('.team-merc-detail .team-merc-act-deploy').textContent===mercLateButtonText);
+
+    // Host 的两类可能已送达终态都必须锁；同 epoch fresh snapshot 解锁，期间不重放。
+    async function exerciseMercHostUnknown(error,id){
+      MockHost.mercResponseError=error;
+      MockHost.holdMercSnapshotCount=1;
+      var before=MockHost.mercRequestCounts.deploy||0;
+      document.querySelector('.team-merc-detail .team-merc-act-deploy').click();
+      await waitFor(function(){ return !MercTeamController.isBusy() && mercReconcileActive() && MockHost.heldMercSnapshots.length===1; },2000);
+      var after=MockHost.mercRequestCounts.deploy||0;
+      document.querySelector('.team-merc-detail .team-merc-act-deploy').click(); await wait(20);
+      var replayBlocked=(MockHost.mercRequestCounts.deploy||0)===after;
+      MockHost.releaseMercSnapshot();
+      await waitFor(function(){ return !mercReconcileActive(); },2000);
+      assert(id,'Merc '+error+' 锁存后只读 fresh snapshot，不自动重放 toggle',
+        after===before+1 && replayBlocked && !MercTeamController.isBusy() && !mercReconcileActive());
+    }
+    await exerciseMercHostUnknown('delivery_unknown','team-merc-reconcile-delivery');
+    await exerciseMercHostUnknown('timeout','team-merc-reconcile-host-timeout');
+
+    // success=true 仍不等于有效快照：缺 snapshot 与空对象都必须保持 latch，
+    // 继续沿既有只读重试，直到 hiredMercs Array 的 fresh snapshot 到达。
+    MockHost.mercResponseError='delivery_unknown';
+    MockHost.mercMalformedSnapshotQueue=['missing','empty'];
+    MockHost.holdMercSnapshotCount=3;
+    var mercMalformedWriteBefore=MockHost.mercRequestCounts.deploy||0;
+    document.querySelector('.team-merc-detail .team-merc-act-deploy').click();
+    await waitFor(function(){ return mercReconcileActive() && MockHost.heldMercSnapshots.length===1; },2000);
+    var mercMissingSnapshot=MockHost.releaseMercSnapshot();
+    await wait(20);
+    var mercMissingStayedLocked=mercReconcileActive();
+    await waitFor(function(){ return MockHost.heldMercSnapshots.length===1; },2000);
+    var mercEmptySnapshot=MockHost.releaseMercSnapshot();
+    await wait(20);
+    var mercEmptyStayedLocked=mercReconcileActive();
+    await waitFor(function(){ return MockHost.heldMercSnapshots.length===1; },2000);
+    var mercValidSnapshot=MockHost.releaseMercSnapshot();
+    await waitFor(function(){ return !mercReconcileActive(); },2000);
+    assert('team-merc-reconcile-malformed','Merc 对账拒绝 missing snapshot / 空对象；保持锁并只读重试至 hiredMercs Array 的 fresh snapshot',
+      mercMissingSnapshot && mercMissingSnapshot.success===true &&
+      !Object.prototype.hasOwnProperty.call(mercMissingSnapshot,'snapshot') &&
+      mercEmptySnapshot && mercEmptySnapshot.success===true && mercEmptySnapshot.snapshot &&
+      !Object.prototype.hasOwnProperty.call(mercEmptySnapshot.snapshot,'hiredMercs') &&
+      mercValidSnapshot && mercValidSnapshot.snapshot && Array.isArray(mercValidSnapshot.snapshot.hiredMercs) &&
+      mercMissingStayedLocked && mercEmptyStayedLocked && !mercReconcileActive() &&
+      (MockHost.mercRequestCounts.deploy||0)===mercMalformedWriteBefore+1);
+
+    // 对账 snapshot 若持续失败，锁只约束写入，不能复用 operation busy 把 close/tab 一并锁死。
+    // close 后 latch 保留；replacement 自己的有效 snapshot 才能解开。
+    MockHost.mercResponseError='delivery_unknown';
+    MockHost.failMercSnapshot=true;
+    var mercFailCloseWriteBefore=MockHost.mercRequestCounts.deploy||0;
+    var mercFailCloseButton=document.querySelector('.team-merc-detail .team-merc-act-deploy');
+    mercFailCloseButton.click();
+    await waitFor(function(){
+      return !MercTeamController.isBusy() && mercReconcileActive() &&
+        !!document.querySelector('.team-merc-grid .workbench-empty-state[data-empty-kind="error"]');
+    },2000);
+    var mercFailCloseWriteAfter=MockHost.mercRequestCounts.deploy||0;
+    mercFailCloseButton.click(); await wait(20);
+    var mercFailCloseReplayBlocked=(MockHost.mercRequestCounts.deploy||0)===mercFailCloseWriteAfter;
+    var mercFailCloseCountBefore=MockHost.closeCount;
+    var mercFailCloseAccepted=TeamPanelHost.requestClose();
+    await waitFor(function(){ return !Panels.isOpen(); },2000);
+    var mercFailClosed=!Panels.isOpen() && MockHost.closeCount===mercFailCloseCountBefore+1;
+    MockHost.failMercSnapshot=false;
+    Panels.open('team',{initialTab:'mercenary',panelInstanceId:'panel.team.harness.merc-reconcile-c'});
+    await waitFor(function(){
+      return document.querySelectorAll('.team-merc-child .team-merc-card').length===3 &&
+        !mercReconcileActive();
+    },3000);
+    assert('team-merc-reconcile-close','Merc 对账 snapshot 持续失败仍可 exact close；replacement fresh snapshot 解锁且不重放写',
+      mercFailCloseWriteAfter===mercFailCloseWriteBefore+1 && mercFailCloseReplayBlocked &&
+      mercFailCloseAccepted===true && mercFailClosed && !MercTeamController.isBusy() &&
+      !mercReconcileActive(),
+      'writeDelta='+(mercFailCloseWriteAfter-mercFailCloseWriteBefore)+
+      ', closeDelta='+(MockHost.closeCount-mercFailCloseCountBefore));
+    Panels.close(); await wait(20);
+
+    // 未知世界雇佣完成 fresh 对账后，触发该 epoch 的候选在 controller 与 Team 外层都失效；
+    // 切 tab 不得由 candidateFor() 再注入，也不得重放权威写。
+    Panels.open('team',{view:'hire',kind:'merc',initialTab:'mercenary',
+      panelInstanceId:'panel.team.harness.merc-world-reconcile',detail:{
+        kind:'merc',slotIndex:-1,name:'待对账佣兵',level:14,gender:'男',height:175,
+        face:'男变装-基本脸型',hair:'发型-男式-黑韩式头',equips:equips(),skills:skills(4),
+        personality:personality(),goldPrice:8000,kPrice:0,levelGap:false}});
+    await waitFor(function(){
+      return !!document.querySelector('.team-merc-card-candidate') &&
+        !!document.querySelector('.team-merc-detail .team-merc-act-recruit');
+    },2000);
+    var mercWorldWriteBefore=MockHost.mercRequestCounts.world_hire||0;
+    MockHost.mercDropResponseCmd='world_hire';
+    MockHost.holdMercSnapshotCount=1;
+    document.querySelector('.team-merc-detail .team-merc-act-recruit').click();
+    await waitFor(function(){ return !MercTeamController.isBusy() && mercReconcileActive() && MockHost.heldMercSnapshots.length===1; },2000);
+    var mercWorldWriteAfter=MockHost.mercRequestCounts.world_hire||0;
+    MockHost.releaseMercSnapshot();
+    await waitFor(function(){ return !mercReconcileActive() && !document.querySelector('.team-merc-card-candidate'); },2000);
+    var mercWorldControllerConsumed=!document.querySelector('.team-merc-card-candidate');
+    click('partner');
+    await waitFor(function(){ return !!document.querySelector('.team-pet-child .team-pet-card'); },2000);
+    click('mercenary');
+    await waitFor(function(){ return !!document.querySelector('.team-merc-child .team-merc-card'); },2000);
+    var mercWorldOuterConsumed=!document.querySelector('.team-merc-card-candidate');
+    assert('team-merc-world-reconcile-candidate','Merc unknown world_hire fresh 对账后 exact 消费 controller/Team 候选，切 tab 不复活且写只发一次',
+      mercWorldWriteAfter===mercWorldWriteBefore+1 && mercWorldControllerConsumed &&
+      mercWorldOuterConsumed && (MockHost.mercRequestCounts.world_hire||0)===mercWorldWriteAfter);
+    Panels.close(); await wait(20);
+
+    // Pet 使用同一 Team exact-reference helper；world_adopt 的旧候选也只在 fresh snapshot 后消费。
+    Panels.open('team',{view:'hire',kind:'pet',initialTab:'partner',
+      panelInstanceId:'panel.team.harness.pet-world-reconcile',detail:{
+        kind:'pet',petId:1,name:'待对账战宠',level:8,goldPrice:3000}});
+    await waitFor(function(){
+      return !!document.querySelector('.team-pet-card-candidate') &&
+        !!document.querySelector('.team-pet-detail .team-act-recruit');
+    },2000);
+    var petWorldWriteBefore=MockHost.petRequestCounts.world_adopt||0;
+    MockHost.petDropResponseCmd='world_adopt';
+    MockHost.holdPetSnapshotCount=1;
+    document.querySelector('.team-pet-detail .team-act-recruit').click();
+    await waitFor(function(){ return window.PetPanel.getState().reconcileRequired===true && MockHost.heldPetSnapshots.length===1; },2000);
+    var petWorldWriteAfter=MockHost.petRequestCounts.world_adopt||0;
+    MockHost.releasePetSnapshot();
+    await waitFor(function(){
+      return window.PetPanel.getState().reconcileRequired===false &&
+        !document.querySelector('.team-pet-card-candidate');
+    },2000);
+    var petWorldControllerConsumed=!document.querySelector('.team-pet-card-candidate');
+    click('mercenary');
+    await waitFor(function(){ return !!document.querySelector('.team-merc-child .team-merc-card'); },2000);
+    click('partner');
+    await waitFor(function(){ return !!document.querySelector('.team-pet-child .team-pet-card'); },2000);
+    var petWorldOuterConsumed=!document.querySelector('.team-pet-card-candidate');
+    assert('team-pet-world-reconcile-candidate','Pet unknown world_adopt fresh 对账后复用 exact helper 清退外层候选，切 tab 不复活且写只发一次',
+      petWorldWriteAfter===petWorldWriteBefore+1 && petWorldControllerConsumed &&
+      petWorldOuterConsumed && (MockHost.petRequestCounts.world_adopt||0)===petWorldWriteAfter);
+    Panels.close(); await wait(20);
+
+    // exact close 已投递但 Host ack 丢失时不能永久锁死：短化生产 3s 门后恢复重试，
+    // 第二次同实例 exact close 由 Host 确认；期间绝不本地关闭。
+    Panels.open('team',{initialTab:'partner',panelInstanceId:'panel.team.harness.close-retry'});
+    await wait(60);
+    MockHost.dropNextTeamCloseAck=true;
+    var closeBefore=MockHost.closeCount;
+    var firstCloseAccepted=TeamPanelHost.requestClose();
+    await wait(120);
+    var remainedOpen=Panels.isOpen() && Panels.getActive()==='team';
+    var retryUnlocked=toastHas('尚未确认关闭，可再次尝试');
+    var secondCloseAccepted=TeamPanelHost.requestClose();
+    await wait(40);
+    assert('team-close-retry','Team exact close ack 丢失：超时只恢复可重试，第二次确认后关闭',
+      firstCloseAccepted===true && remainedOpen && retryUnlocked && secondCloseAccepted===true &&
+      MockHost.closeCount===closeBefore+2 && MockHost.lastTeamClose &&
+      MockHost.lastTeamClose.panelInstanceId==='panel.team.harness.close-retry' && !Panels.isOpen(),
+      'openAfterTimeout='+remainedOpen+', closeDelta='+(MockHost.closeCount-closeBefore));
     var failed=results.filter(function(x){return !x.pass;}).length;
     window.__qaResult={qa:{total:results.length,passed:results.length-failed,failed:failed,results:results}};
     document.getElementById('qa').textContent=(results.length-failed)+'/'+results.length+' passed';

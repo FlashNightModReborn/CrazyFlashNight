@@ -43,6 +43,11 @@ then: system/generic fallback
 
 custom 必须通过有界结构检查和 Launcher 实际字体解析探针；仅识别 magic/header、metadata 或 glyph 目录不构成可用。Node `fontctl` 只延后静态首选之前的 custom，生产 resolver 则以单次读取的已验证字节同时完成 Skia/Native 探针和后续 Web/内存字体消费，禁止验真后再按路径打开。成功解析按 asset 在进程内缓存；Web 响应使用内容 SHA-256 ETag 与 `private, max-age=0, must-revalidate`，条件请求可返回 304。未命中不缓存，因而后台下载仍可在同一进程变为可见；FontPack 状态检查刻意重新读盘，不复用该成功项缓存，以便继续检测替换或损坏。当前 local custom WOFF2 会 fail-closed 并继续 cache/permanent；cache 与 permanent 必须精确匹配 XML 的 bytes 和 SHA-256。Node `fontctl sync` 只证明有界结构、bytes 与 hash；Launcher FontPack 对同一下载快照再次绑定 catalog，并让 TTF/OTF/WOFF 通过实际 parser，Native TTF/OTF 再通过 GDI。WOFF2 因当前无共同 decoder，仅可在 Web-only asset 上显式记录 `pinned-web-structure-only`，Native 必须拒绝。下载只写唯一 staging，全部门通过后再原子发布到 cache；网络、损坏文件或缺字都不能阻断游戏启动。
 
+下载器对 requested URL 和每一跳 redirect 都重复校验 HTTPS、默认端口与 exact host。当前 allowlist 仅为
+`github.com`、`release-assets.githubusercontent.com`、`raw.githubusercontent.com`、`cdn.jsdelivr.net`：
+前两项闭合 GitHub Release，`github.com/.../raw/...` 则只允许跳到 `raw.githubusercontent.com`。
+不得允许任意 `githubusercontent.com` 子域；后续跳到未列出的 sibling host 必须 fail-closed。
+
 ## 常驻与按需集合
 
 当前只把两项高频、离线价值明确的字体设为 `residency="permanent"`：

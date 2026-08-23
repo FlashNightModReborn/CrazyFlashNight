@@ -477,6 +477,43 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         org.flashNight.arki.unit.PlayerInfoProvider.invalidateDpsCache(target);
     }
 
+    /**
+     * 新 MovieClip 在最终属性投影后的资源结算。
+     *
+     * 敌人模板先按等级写 current HP，宠物进阶/Dressup 随后才重建最大值；调用方必须
+     * 位于这两段之后。settlement 是随 initObject 进入单位的一次性计划：spawn 满资源，
+     * preserve 保留重建前绝对值，upgrade 仅把 HP 回满。若最终投影没有 MP 字段，本入口
+     * 不会凭空创建；hasDressup 人形范围既有的 0/0 MP 投影则继续保持合法 0/0。
+     */
+    public static function settleSpawnResources(target:Object, settlement:Object):Void {
+        if (!target) return;
+        var mode:String = settlement && settlement.mode != undefined
+            ? String(settlement.mode) : "spawn";
+        var maxHp:Number = Number(target.hp满血值);
+        if (isFinite(maxHp) && maxHp > 0) {
+            if (mode == "preserve") {
+                target.hp = org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleHpAfterMaxChange(
+                    Number(settlement.currentHp), Number(settlement.previousMaxHp), maxHp);
+            } else {
+                target.hp = maxHp;
+            }
+        }
+
+        // 非人形敌人模板通常没有通用 MP；只有最终 max 字段真实存在且有限时才结算。
+        // 本入口不制造缺失字段；hasDressup 先前已投影出的 0/0 仍按既有合同保留。
+        if (target.mp满血值 != undefined) {
+            var maxMp:Number = Number(target.mp满血值);
+            if (isFinite(maxMp) && maxMp >= 0) {
+                if (mode == "preserve" || mode == "upgrade") {
+                    target.mp = org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleMpAfterMaxChange(
+                        Number(settlement.currentMp), maxMp);
+                } else {
+                    target.mp = maxMp;
+                }
+            }
+        }
+    }
+
     private static function updateProperty(__target:MovieClip, key:String, __data:Object){
         var target:MovieClip = __target;
         var data:Object = __data;
@@ -715,7 +752,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         for (var i:Number = target.生命周期函数列表.length - 1; i >= 0; --i) {
             var 卸载对象:Object = target.生命周期函数列表[i];
             if (卸载对象 && 卸载对象.动作) {
-                卸载对象.动作(卸载对象.额外参数);
+                try {
+                    卸载对象.动作(卸载对象.额外参数);
+                } catch (lifecycleUnloadError) {
+                    // teardown 是资源回收边界：一个装备脚本故障不能阻止其余
+                    // 生命周期逆序卸载，也不能让单位重建/移除留下外部订阅。
+                    trace("[DressupInitializer] 生命周期函数卸载失败: " + lifecycleUnloadError);
+                }
             }
         }
         target.生命周期函数列表.length = 0;

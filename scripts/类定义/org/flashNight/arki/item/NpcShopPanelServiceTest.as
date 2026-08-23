@@ -3,9 +3,12 @@
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.ui.PanelRequestEnvelope;
+import org.flashNight.neur.Event.EventBus;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
 class org.flashNight.arki.item.NpcShopPanelServiceTest {
     private static var passed:Number = 0;
@@ -35,6 +38,9 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         testMultipleEquipmentPurchaseAndBounds();
         testPurchaseBoundsAtConfiguredLimit();
         testTradeRejectsStaleAndReplay();
+        testBuyListenerFaultRestoresExactSnapshot();
+        testBatchSellListenerFaultRecovery();
+        testRollbackTradeSalesFailureKeepsPostSaleFact();
         trace("NpcShopPanelServiceTest Tests Passed: " + passed);
         trace("NpcShopPanelServiceTest Tests Failed: " + failed);
     }
@@ -486,6 +492,11 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
 
     private static function testReturnedModsAreAggregated():Void {
         resetOwned();
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
         var first:Object = BaseItem.create("测试手枪",1);
         var second:Object = BaseItem.create("测试手枪",1);
         first.value.mods = ["测试插件"];
@@ -502,8 +513,20 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
             ]
         });
         var commit:Object = service().execute("tradeCommit",{shopId:"测试商店",expectedTradeToken:preview.tradeToken});
-        check(commit.success && _root.收集品栏.材料.getValue("测试插件") == 2,
-            "trade commit aggregates identical returned mods without loss");
+        var falsePluginGain:Boolean = false;
+        for (var receiptIndex:Number = 0; receiptIndex < receipts.length; receiptIndex++) {
+            var effects:Array = receipts[receiptIndex].effects;
+            for (var effectIndex:Number = 0; effectIndex < effects.length; effectIndex++) {
+                var effect:Object = effects[effectIndex];
+                if (effect.direction == "gain" && effect.name == "测试插件") {
+                    falsePluginGain = true;
+                }
+            }
+        }
+        check(commit.success && _root.收集品栏.材料.getValue("测试插件") == 2
+                && !falsePluginGain,
+            "trade commit aggregates returned mods without inventing an ownership gain");
+        PlayerAssetTransaction.resetForTests();
     }
 
     private static function testMultipleEquipmentPurchaseAndBounds():Void {
@@ -570,6 +593,136 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         var replay:Object = service().execute("tradeCommit",{shopId:"测试商店",expectedTradeToken:preview.tradeToken});
         check(!replay.success && replay.error == "stale_state" && _root.testNpcShopSaveCount == 0,
             "stale and replayed trade tokens never flush a save");
+    }
+
+    private static function testBatchSellListenerFaultRecovery():Void {
+        resetOwned();
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var bag:ArrayInventory = _root.物品栏.背包;
+        bag.add(0, BaseItem.create("药剂", 2));
+        var preview:Object = service().execute("batchPreview", {itemNames:["药剂"]});
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__npcShopBatchListenerFault", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        bag.setDispatcher(dispatcher);
+        dispatcher.subscribe("ItemRemoved", function():Void {
+            throw "npc_batch_removed_listener_failed";
+        });
+        var fault = null;
+        try {
+            service().execute("batchSell", {
+                shopId:"测试商店", expectedBatchToken:preview.batchToken
+            });
+        } catch (error) {
+            fault = error;
+        }
+        var indexes:Array = bag.getIndexes();
+        check(fault == "npc_batch_removed_listener_failed"
+                && bag.getItem("0") != null && bag.getItem("0").value == 2
+                && indexes.length == 1 && indexes[0] == 0
+                && _root.金钱 == 5000
+                && _root.存档系统.dirtyMark === false
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0
+                && service().busy === false,
+            "batch sell listener fault restores item/money/dirty and repairs PAT/EventBus/busy state");
+        check(receipts.length == 0,
+            "exactly restored batch sale discards the partial loss receipt");
+
+        bag.setDispatcher(null);
+        var recoveredPreview:Object = service().execute(
+            "batchPreview", {itemNames:["药剂"]});
+        var recovered:Object = service().execute("batchSell", {
+            shopId:"测试商店", expectedBatchToken:recoveredPreview.batchToken
+        });
+        check(recovered.success === true && bag.getItem("0") == null
+                && _root.金钱 == 5050
+                && PlayerAssetTransaction.current() == null
+                && receipts.length == 1,
+            "batch sell listener fault does not contaminate the next transaction");
+
+        bag.setDispatcher(null);
+        holder.removeMovieClip();
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testBuyListenerFaultRestoresExactSnapshot():Void {
+        resetOwned();
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        service().execute("snapshot", {shopId:"测试商店"});
+        var bag:ArrayInventory = _root.物品栏.背包;
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__npcShopBuyListenerFault", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        bag.setDispatcher(dispatcher);
+        dispatcher.subscribe("ItemAdded", function():Void {
+            throw "npc_buy_added_listener_failed";
+        });
+
+        var fault = null;
+        try {
+            service().execute("buy", {
+                shopId:"测试商店", catalogIndex:0, quantity:1
+            });
+        } catch (error) {
+            fault = error;
+        }
+        check(fault == "npc_buy_added_listener_failed"
+                && bag.getItem("0") == null && _root.金钱 == 5000
+                && _root.存档系统.dirtyMark === false
+                && receipts.length == 0
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "NPC buy listener fault restores delivery/payment/dirty and discards receipt");
+
+        bag.setDispatcher(null);
+        var recovered:Object = service().execute("buy", {
+            shopId:"测试商店", catalogIndex:0, quantity:1
+        });
+        check(recovered.success === true && bag.getItem("0") != null
+                && bag.getItem("0").value == 1 && _root.金钱 == 4900
+                && receipts.length == 1 && receipts[0].effects.length == 2
+                && PlayerAssetTransaction.current() == null,
+            "NPC buy listener fault leaves the next independent purchase healthy");
+
+        bag.setDispatcher(null);
+        holder.removeMovieClip();
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testRollbackTradeSalesFailureKeepsPostSaleFact():Void {
+        resetOwned();
+        var bag:ArrayInventory = _root.物品栏.背包;
+        var item:Object = BaseItem.create("药剂", 2);
+        bag.add(0, item);
+        var revisionBefore:Number = bag.getMutationRevision();
+        var plan:Object = {sales:[{
+            kind:"bag", collection:bag, key:0, ref:item,
+            full:false, oldCount:4
+        }]};
+        bag._setTransactionWriteFaultHookForTests(function(phase:String):Void {
+            if (phase == "mutation") throw "rollback_write_failed";
+        });
+        var failed:Boolean = service().rollbackTradeSales(plan);
+        bag._setTransactionWriteFaultHookForTests(null);
+        check(failed === false && bag.getItem("0") === item
+                && Number(item.value) == 2
+                && bag.getMutationRevision() == revisionBefore,
+            "failed trade compensation restores the post-sale fact instead of faking success");
+
+        var restored:Boolean = service().rollbackTradeSales(plan);
+        check(restored === true && bag.getItem("0") === item
+                && Number(item.value) == 4
+                && bag.getMutationRevision() > revisionBefore,
+            "retrying trade compensation restores the exact object/count and advances revision");
     }
 
     private static function service():Object { return _root.UI系统.NPC商店WebView; }

@@ -23,9 +23,9 @@ $focusedRun = @{
     ExpectedTracePatterns = @(
         '(?m)^--- LongGunSubWeaponCoreTest: 486/486 passed, 0 failed ---\r?$'
         '(?m)^--- ManualCooldownServiceTest: 50/50 passed, 0 failed ---\r?$'
-        '(?m)^--- DrugInputServiceTest: 19/19 passed, 0 failed ---\r?$'
+        '(?m)^--- DrugInputServiceTest: 28/28 passed, 0 failed ---\r?$'
     )
-    SuccessSummary = 'LongGun 486/486, ManualCooldown 50/50, DrugInput 19/19'
+    SuccessSummary = 'LongGun 486/486, ManualCooldown 50/50, DrugInput 28/28'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

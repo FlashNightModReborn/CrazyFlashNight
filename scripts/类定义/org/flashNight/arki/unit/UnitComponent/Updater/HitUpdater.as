@@ -25,12 +25,16 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         hitTarget._lastHitDistance = (shooter == null || isNaN(shooter._x)) ? -1 : Math.round(Math.abs(hitTarget._x - shooter._x));
     }
 
-    // 私有方法：核心受击处理逻辑（不包含主角专供的hp刷新）
+    // 私有方法：核心受击处理逻辑（不包含主角专供的hp刷新）。
     private static function doHitUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
         // === 宏展开：实例状态标志位 ===
         #include "../macros/STATE_REVERSE_KNOCKBACK.as"
 
         // ────────────── 调试与预处理 ──────────────
+
+        // BulletQueueProcessor 是单位 DamageResult hit 的唯一生产入口，并已在 settlement
+        // 冷分支吞掉 resolved MISS。这里故意不重复判定，避免每次真实命中支付函数税；
+        // 新旁路 producer 若绕过该边界，必须自行保证不发布 resolved MISS。
 
         // 播报仇恨转锁 - 使用消音策略判断（无策略时走原逻辑）
         var distance:Number = Math.abs(hitTarget._x - shooter._x);

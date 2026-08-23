@@ -337,13 +337,10 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `repair_apply_manual` | repair 人工应用 |
 | `repair_force_continue` | repair 明示继续 |
 <!-- launcher-bootstrap-command-registry:end -->
-
-`config_set` 只写允许偏好；Overlay 音频由 Host 经 `audioPrefs` 推送；`list → ready → prewarm → reveal` 与 Flash title receipt 分栅栏。FontPack 的 `runtime-parser-*` 才表示同字节实际探针；Web-only WOFF2 的 `pinned-web-structure-only` 只是 hash 固定容器门，Native 拒绝 WOFF/WOFF2。RuntimeFontCatalog 复用成功项的已验证 byte snapshot 和 hash ETag；未命中不缓存，FontPack 状态仍重新读盘。
-
+`config_set` 只写白名单；启动按 `list → ready → prewarm → reveal` 与 title receipt 分栅栏。FontPack 的 `runtime-parser-*` 才表示实际探针；requested/redirect 每跳仅允许默认端口 exact HTTPS `github.com`、`release-assets.githubusercontent.com`、`raw.githubusercontent.com`、`cdn.jsdelivr.net`，禁止通配子域。字节快照/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
 ## Panel 与 minigame 注册表
 
 **最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。
-
 `Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。
 
 <!-- launcher-panel-registry:start -->
@@ -375,22 +372,25 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 Panel 的共同边界：
 
 - Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。
-- 业务写入经过领域命令白名单、revision/lease/token 和 AS2/Host 最终裁决；未知结果进入对账，不得假定成功。T800 的 `equip_weapon` / `withdraw_weapon` 写命令与 lease-bound `weapon_tooltip` 查询都须同时进入总允许表和 `PetTask`；Web 写请求以 12 秒有界等待恢复 busy，物品属性统一复用项目 `PanelTooltip`，不得退回浏览器原生 `title`。权威、筛选和返还契约见 [托管长枪施工记录](../docs/终结者T800-托管长枪与射击核心-施工-2026-08-22.md)。
+- Team 内嵌 `pets` / `mercs` 的全部请求（含 T800 武器命令与佣兵装备 tooltip）携 active `panelInstanceId`；Web 回包精确匹配 instance/callId/cmd，Host 拒绝 inactive/foreign/stale owner，replacement 清退旧 pending，迟到响应不可跨实例采用。业务写仍由白名单、revision/lease/token 与 AS2/Host 裁决，未知结果进入对账；T800 详见[施工记录](../docs/终结者T800-托管长枪与射击核心-施工-2026-08-22.md)。
 - `workbench view=build` 的 loadout `candidates` 有三种 exact target 形状：`slotKey`、`drugSlot`，或无 selector 且 `candidateScope=backpack`。无 selector 响应必须为 exact `target:{kind:"backpack"}`，Host 独立校验每行 `equipmentEligibility`与装备/药剂/不可装配分类；任何多余键、双 selector、无目标 `compatible` 或误分类行都拒绝整份回包。
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
-- close、Esc、backdrop、导航和 recovery 必须经过同一 lifecycle fence；迟到旧实例不得复活。
+- close、Esc、backdrop、导航和 recovery 经过同一 lifecycle fence。Team/blackmarket close 携当前实例并等待 Host exact `panel_cmd close`；Bridge 投递成功不等于接受，确认丢失 3 秒后只恢复同实例重试权，不本地关闭；迟到 A 不得关闭 replacement B，旧 `panel:"pets"|"mercs"` child close 一律拒绝。
 - Workbench 的布局、密度、focus、tooltip、interaction broker 和 CSS 边界以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。
-- `settings` 在 `1024×576` anchor 内全屏复用游戏启动前 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页过去手工复刻的终端模式（铭牌/kicker/标题分隔线/状态点/角标/扫描线/切角按钮/终端卡片）已收敛为共享组件层 [terminal.css](web/css/terminal.css)（bootstrap.html 与 overlay.html 均直接 link），新增表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的 `--term-*` 派生 token。顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不再为页签另起一行或保留重复“作弊码”页；玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
+- `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。
+  新表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的 `--term-*` 派生 token；顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不保留重复“作弊码”页，玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
   默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。
+  非 preview 写的 timeout、`DeliveryUnknown` 或 malformed success 均建立 reconcile latch；它跨 owner close、同名 rebind 与 pending cleanup 保留，只由锁存后发出、格式有效且成功的 Flash snapshot 清除，早期迟到 snapshot 不得解锁。
+  latch 存在时后续写 fail-closed；Web 不显示“确定未执行”也不自动重放。cancel 半恢复保持面板与首次基线，先以权威 snapshot 对账再允许继续写。
   35 键双列同屏，标签紧邻控件，键名/键值至少 12px。Host 打开设置时将已有 16:9 Flash 进入帧按原裁切像素、JPEG 90 编成实例内静态图；上限 `4096×2304 / 8 MiB`，拒绝均匀近黑，不降采样至 `512×288`。Flash SA 为 DPI Unaware 且显示器 DPI 更高时，输出保持 `GetClientRect` 物理尺寸，GDI 源按 `windowDpi/monitorDpi` 换算并 `StretchBlt`；其他 awareness 1:1。日志同时记录 source/output，`BitBlt/StretchBlt` false 必须显式失败。
   镜头倍率使用全屏二级模拟器，入口基线按 16:9 填满舞台并保留自然像素；动态镜头关闭时仍按基础倍率预览。点歌器规则与 Web 主题集中在“本机与 Web”。Agent Runtime 仅允许 exact `settings` 与 `settings_camera_preview`；后者固定映射到 `settings + initialView:"camera_preview"`。闭环先用 Flash metadata-only grant + `window.list` 等待 surface 稳定，再用 fresh WebOverlay WGC 验证；它不授予 Flash pixels/input，也不应用或保存设置。
 - AS2/Host/Web 三层迁移、数据权威与旧 Flash UI 退役边界以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
 Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)和[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)。
-其中 `blackmarket` 只允许 `dev + shadowOnly` 测试入口，不是正式经济 Panel。普通 Launcher `BLACKMARKET_TEST` 不发送 seed；产品 core 只生成与真实目录无关的匿名合成货物，公开分类固定为 `anonymous / 匿名影子货舱`，surface 端口返回身份无关 `data:` 安全表面。普通 lazy closure 不请求或持有全量 catalog，不加载 exact/dressup/equipment-preview 依赖，也没有 marker、字符串 capability、Lab/debug API 或 catalog 注入钩子。
+其中 `blackmarket` 只允许 `dev + shadowOnly`，不是正式经济 Panel。普通 `BLACKMARKET_TEST` 不发送 seed；产品 core 只生成与真实目录不相交的 `anonymous / 匿名影子货舱` 与身份无关 `data:` 表面。lazy closure 不持有全量 catalog，不加载 exact/dressup/equipment-preview，也没有 marker、字符串 capability、Lab/debug API 或 catalog 注入钩子。
+其 close 发送当前 `panelInstanceId` 后等待 Host 确认，不能本地先 retire；Host 只关闭 exact active owner，迟到 A 不影响 replacement B。该加固不改变 `shadowOnly`、匿名表面或 `productionWrites=false`。
 全目录 oracle 与目录夹具已移到 Web 静态根外的 `tools/fixtures/blackmarket/`，仅供 Node QA；历史 catalog/exact-core URL 无文件可读，伪造旧 bootstrap/`allowExactIdentityLab` 仍只得到匿名面。面板固定 `1024×576` 并仅由 `PanelScale` 缩放；K 账本分记 `deltaTp/deltaK`，以 `deltaV=deltaTp+50×deltaK` 复核。测试见 [testing guide](../agentsDoc/testing-guide.md)。
-
 ## 存档编辑与诊断
 
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。

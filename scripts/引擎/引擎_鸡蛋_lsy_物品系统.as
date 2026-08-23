@@ -290,6 +290,24 @@ _root.回滚玩家物资事务 = function(transaction:Object):Boolean {
 	return org.flashNight.arki.item.PlayerAssetTransaction.rollback(transaction);
 }
 
+_root.结算玩家物资事务异常 = function(transaction:Object,
+		preserveCommittedEffects:Boolean):Object {
+	return org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+		transaction, preserveCommittedEffects);
+}
+
+_root.标记玩家物资存档脏 = function():Void {
+	org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+}
+
+_root.捕获玩家物资快照 = function():Object {
+	return org.flashNight.arki.item.ItemUtil.capturePlayerAssetSnapshot();
+}
+
+_root.恢复玩家物资快照 = function(snapshot:Object):Boolean {
+	return org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(snapshot);
+}
+
 _root.记录玩家物资变化 = function(direction:String, kind:String, name:String,
 		count:Number, context:Object):Void {
 	org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(

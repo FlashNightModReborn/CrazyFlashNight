@@ -68,6 +68,10 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
      * @param result  伤害结果对象
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
+        // Dodge/MultiShot 已在本处理器之前完成；普通 MISS 与联弹全段 MISS 不得累加
+        // additionalEffectDamage、消耗淬毒或触发毒返，否则穿刺后的下一目标会被污染。
+        if (!DamageResult.hasActualHit(result)) return;
+
         // 护盾强度检查：子弹威力必须超过护盾强度才能触发纳米毒素
         var shield:IShield = target.shield;
         if (shield && bullet.子弹威力 <= shield.getStrength()) {

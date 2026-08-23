@@ -4,8 +4,9 @@
     var DESIGN_W = 1024, DESIGN_H = 576;
     var _config = window.__SETTINGS_CONFIG__ || {};
     var _shell, _root, _content, _status, _apply, _discard, _saveRetry;
-    var _init, _instance = '', _snapshot, _draft, _scale, _generation = 0;
-    var _busy = false, _previewActive = false, _previewTimer = null, _closeTimer = null;
+    var _init, _instance = '', _snapshot, _draft, _scale;
+    var _busy = false, _requiresReconcile = false;
+    var _previewActive = false, _previewTimer = null, _closeTimer = null;
     var _capturing = -1, _activeTab = 'game', _confirmAction = '', _confirmTimer = null;
     var _flashPreview = null, _cameraPreviewImage = null, _entryCameraScale = null;
     var _cameraModal = null, _cameraReturnFocus = null;
@@ -80,7 +81,6 @@
     }
 
     function onOpen(el, initData) {
-        _generation++;
         _init = initData || {};
         _instance = String(_init.panelInstanceId || '');
         _flashPreview = SettingsRuntime.normalizeFlashPreview(_init.flashPreview);
@@ -88,6 +88,7 @@
         _snapshot = null;
         _draft = null;
         _busy = false;
+        _requiresReconcile = false;
         _previewActive = false;
         _capturing = -1;
         _activeTab = 'game';
@@ -112,7 +113,6 @@
     }
 
     function cleanup() {
-        _generation++;
         _mux.closeSession();
         window.removeEventListener('keydown', onCaptureKey, true);
         if (_previewTimer) clearTimeout(_previewTimer);
@@ -129,6 +129,7 @@
         _draft = null;
         _capturing = -1;
         _busy = false;
+        _requiresReconcile = false;
         _flashPreview = null;
         _entryCameraScale = null;
         _cameraPreviewImage = null;
@@ -188,21 +189,29 @@
         refreshFooter();
     }
 
-    function requestSnapshot() {
+    function requestSnapshot(reconcileMessage) {
         _busy = true;
         refreshFooter();
-        var generation = _generation;
-        setStatus('正在读取游戏权威状态…', 'loading');
+        setStatus(reconcileMessage || '正在读取游戏权威状态…', 'loading');
         var id = _mux.request('snapshot', {v:1}, {}, function(response) {
-            if (generation !== _generation) return;
             _busy = false;
-            var model = SettingsRuntime.normalizeSnapshot(response);
-            if (!model) {
-                setStatus('读取失败：' + errorText(response && response.error), 'error');
+            if (response && response.requiresReconcile === true) {
+                _requiresReconcile = true;
+                setStatus('该权威快照早于未决写入终态，写入仍保持锁定；请重新读取。', 'warning');
                 renderCurrentTab();
                 refreshFooter();
                 return;
             }
+            var model = SettingsRuntime.normalizeSnapshot(response);
+            if (!model) {
+                setStatus(_requiresReconcile
+                    ? '权威状态读取失败，写入仍保持锁定：' + errorText(response && response.error)
+                    : '读取失败：' + errorText(response && response.error), 'error');
+                renderCurrentTab();
+                refreshFooter();
+                return;
+            }
+            _requiresReconcile = false;
             _snapshot = model;
             _draft = SettingsRuntime.gameDraft(model);
             if (_entryCameraScale === null) {
@@ -229,9 +238,19 @@
         });
         if (!id) {
             _busy = false;
-            setStatus('设置会话尚未就绪。', 'error');
+            setStatus(_requiresReconcile
+                ? '权威状态请求未发出，写入仍保持锁定。'
+                : '设置会话尚未就绪。', 'error');
+            renderCurrentTab();
             refreshFooter();
         }
+    }
+
+    function reconcileUnknownWrite(message) {
+        _requiresReconcile = true;
+        cue('unknown');
+        renderCurrentTab();
+        requestSnapshot(message || '写入结果未知，正在重新读取游戏权威状态；不会自动重放。');
     }
 
     function showTab(tab) {
@@ -250,6 +269,18 @@
         if (!_content) return;
         if (_tooltipScope && _tooltipScope.releaseTree) _tooltipScope.releaseTree(_content);
         clear(_content);
+        if (_requiresReconcile) {
+            var reconcile = node('div', 'settings-empty');
+            reconcile.appendChild(node('h2', '', '写入状态等待权威核对'));
+            reconcile.appendChild(node('p', '', '上一次请求可能已经生效；在游戏状态重新读取成功前，所有设置写入均保持锁定。'));
+            var retry = button('重新读取权威状态', 'settings-button primary', function() {
+                requestSnapshot('正在重新核对游戏权威状态；不会自动重放写入。');
+            });
+            retry.disabled = _busy;
+            reconcile.appendChild(retry);
+            _content.appendChild(reconcile);
+            return;
+        }
         if (!_snapshot || !_draft) {
             var empty = node('div', 'settings-empty');
             empty.appendChild(node('h2', '', '设置暂不可用'));
@@ -610,16 +641,23 @@
         return field('启动页字号倍率',wrap,'下次启动完整生效');
     }
     function setHostPreference(key, value, control) {
+        if (_requiresReconcile) {
+            applyHostControlValue(control, key, _snapshot.hostPrefs[key]);
+            setStatus('写入结果尚未核对，本机偏好保持锁定。', 'warning');
+            return;
+        }
         var previous = _snapshot.hostPrefs[key];
         control.disabled = true;
-        var generation = _generation;
         var id = _mux.request('host_set', {v:1,key:key,value:value}, {kind:'host.'+key}, function(response) {
-            if (generation !== _generation) return;
-            control.disabled = false;
             var hasAuthority = response && response.currentValue !== undefined;
             var authoritative = hasAuthority ? response.currentValue : previous;
             _snapshot.hostPrefs[key] = authoritative;
             applyHostControlValue(control, key, authoritative);
+            if (response && response.requiresReconcile === true) {
+                reconcileUnknownWrite('本机偏好结果未知，正在重新读取权威状态；不会自动重试。');
+                return;
+            }
+            control.disabled = false;
             var ok = response && response.success === true && hasAuthority;
             setStatus(ok ? '本机偏好已保存。'
                 : '本机偏好未保存：' + errorText(response && response.error || 'malformed_response'),
@@ -956,10 +994,9 @@
         _confirmTimer=null; _confirmAction='';
     }
     function sendTool(cmd,payload,closeOnSuccess) {
-        if (_busy) return; _busy=true; refreshFooter();
-        var generation=_generation;
+        if (_busy || _requiresReconcile) return; _busy=true; refreshFooter();
         _mux.request(cmd,payload,{},function(response){
-            if(generation!==_generation)return; _busy=false; refreshFooter();
+            _busy=false; refreshFooter();
             if(response&&response.success===true){
                 cue('success'); setStatus(response.message||'操作已由游戏端接受。','ready');
                 if(response.cheatHelp)_snapshot.cheatHelp=SettingsRuntime.copy(response.cheatHelp);
@@ -967,7 +1004,8 @@
                 if(_cheatModal&&_cheatHelpText!==null)renderCheatHelpDocument();
                 if(closeOnSuccess||response.closePanel===true) closeExact(); else renderCurrentTab();
             }else if(response&&response.requiresReconcile===true){
-                cue('unknown'); setStatus('游戏端结果未知，请先观察当前流程，不要立即重复执行。','warning');
+                reconcileUnknownWrite('游戏端结果未知，正在重新读取权威状态；不会自动重复执行。');
+                return;
             }else{ cue('rejected'); setStatus('操作未执行：'+errorText(response&&response.error),'error'); }
         });
     }
@@ -977,25 +1015,22 @@
         _previewTimer=setTimeout(function(){previewAudio('none');},120);
     }
     function previewAudio(sample) {
-        if (!_draft || _busy) return;
-        var generation=_generation;
+        if (!_draft || _busy || _requiresReconcile) return;
         _mux.request('preview',{v:1,globalVolume:_draft.settings.setGlobalVolume,
             bgmVolume:_draft.settings.setBGMVolume,sample:sample},
             {kind:'preview',latestWins:true,singleFlight:false},function(response){
-                if(generation!==_generation)return;
                 if(response&&response.success===true){_previewActive=true;if(sample==='sfx')setStatus('已播放试听音效。','ready');}
                 else setStatus('试听失败：'+errorText(response&&response.error),'error');
             });
     }
     function changed() { refreshFooter(); }
     function applyGameDraft() {
-        if (!_snapshot || !_draft || _busy) return;
+        if (!_snapshot || !_draft || _busy || _requiresReconcile) return;
         var validation=SettingsRuntime.validateKeyDraft(_draft.keys,_snapshot.allowedKeyCodes);
         if(!validation.valid){showTab('keys');setStatus(validation.error==='key_conflict'?'仍有键位冲突。':'键位包含保留或无效按键。','error');return;}
         _busy=true; refreshFooter(); setStatus('正在应用并同步保存…','loading');
-        var generation=_generation;
         _mux.request('apply',SettingsRuntime.applyPayload(_snapshot,_draft),{},function(response){
-            if(generation!==_generation)return; _busy=false;
+            _busy=false;
             if(response&&response.applied===true){
                 _snapshot.revision=Number(response.revision);
                 _snapshot.settings=SettingsRuntime.copy(response.settings||_draft.settings);
@@ -1008,43 +1043,50 @@
             }else if(response&&response.error==='stale_state'){
                 setStatus('状态已在别处变化，正在重新同步。','warning'); requestSnapshot(); return;
             }else if(response&&(response.error==='apply_ambiguous'||response.requiresReconcile===true)){
-                setStatus('应用结果未知，正在重新读取游戏权威状态；不会自动重放写入。','warning');
-                requestSnapshot(); return;
+                reconcileUnknownWrite('应用结果未知，正在重新读取游戏权威状态；不会自动重放写入。'); return;
             }else setStatus('设置未应用：'+errorText(response&&response.error),'error');
             renderCurrentTab(); refreshFooter();
         });
     }
     function discardGameDraft() {
-        if(!_snapshot||_busy)return;
+        if(!_snapshot||_busy||_requiresReconcile)return;
         _busy=true; refreshFooter();
-        var generation=_generation;
         _mux.request('cancel',{v:1},{},function(response){
-            if(generation!==_generation)return; _busy=false;
+            _busy=false;
             if(response&&response.success===true){_draft=SettingsRuntime.gameDraft(_snapshot);_previewActive=false;_capturing=-1;setStatus('已放弃未应用改动并恢复试听音量。','ready');}
+            else if(response&&response.requiresReconcile===true){
+                reconcileUnknownWrite('试听恢复结果未知，正在重新读取游戏权威状态；面板保持打开。'); return;
+            }
             else setStatus('恢复试听音量失败：'+errorText(response&&response.error),'error');
             renderCurrentTab();refreshFooter();
         });
     }
     function retrySave() {
-        if(_busy)return; _busy=true;refreshFooter();
-        var generation=_generation;
+        if(_busy||_requiresReconcile)return; _busy=true;refreshFooter();
         _mux.request('save',{v:1},{},function(response){
-            if(generation!==_generation)return;_busy=false;
+            _busy=false;
             var ok=response&&response.success===true&&response.durable===true;
             if(ok)_snapshot.migrationPending=response.migrationPending===true;
+            if(!ok&&response&&response.requiresReconcile===true){
+                reconcileUnknownWrite('保存结果未知，正在重新读取游戏权威状态；不会自动重试。'); return;
+            }
             _saveRetry.hidden=ok;setStatus(ok?'设置已成功持久化。':'保存仍失败，请稍后重试。',ok?'ready':'error');refreshFooter();
         });
     }
     function requestClose() {
         if(_busy){setStatus('当前操作尚未结束，请稍候。','warning');return false;}
+        if(_requiresReconcile){closeExact();return true;}
         var dirty=_snapshot&&_draft&&(SettingsRuntime.hasGameChanges(_snapshot,_draft)
             || _snapshot.migrationPending===true);
         if(dirty&&!window.confirm('有未应用的游戏设置或键位改动。放弃并关闭吗？'))return false;
         if(dirty||_previewActive){
-            _busy=true;refreshFooter();var generation=_generation;
+            _busy=true;refreshFooter();
             _mux.request('cancel',{v:1},{},function(response){
-                if(generation!==_generation)return;_busy=false;
+                _busy=false;
                 if(response&&response.success===true){_previewActive=false;closeExact();}
+                else if(response&&response.requiresReconcile===true){
+                    reconcileUnknownWrite('关闭前试听恢复结果未知，正在重新读取权威状态；面板保持打开。');
+                }
                 else{setStatus('关闭前恢复试听失败：'+errorText(response&&response.error),'error');refreshFooter();}
             });
             return true;
@@ -1057,9 +1099,7 @@
         var sent=Bridge.send({type:'panel',cmd:'close',panel:'settings',panelInstanceId:instance});
         if(sent!==true){_busy=false;setStatus('关闭请求未发出，面板仍保持打开。','error');refreshFooter();return;}
         _busy=true;setStatus('正在等待 Host 确认关闭…','loading');refreshFooter();
-        var generation=_generation;
         _closeTimer=setTimeout(function(){
-            if(generation!==_generation)return;
             _closeTimer=null;_busy=false;
             setStatus('Host 尚未确认关闭，可再次尝试。','warning');refreshFooter();
         },3000);
@@ -1068,9 +1108,10 @@
         if(!_apply)return;
         var changed=_snapshot&&_draft&&(SettingsRuntime.hasGameChanges(_snapshot,_draft)
             || _snapshot.migrationPending===true);
-        _apply.disabled=_busy||!changed;
+        _apply.disabled=_busy||_requiresReconcile||!changed;
         var manualChanged=_snapshot&&_draft&&SettingsRuntime.hasGameChanges(_snapshot,_draft);
-        _discard.disabled=_busy||(!manualChanged&&!_previewActive);
+        _discard.disabled=_busy||_requiresReconcile||(!manualChanged&&!_previewActive);
+        _saveRetry.disabled=_busy||_requiresReconcile;
     }
     function setStatus(text,state) {
         if(!_status)return;_status.textContent=text;_status.setAttribute('data-state',state||'ready');
@@ -1080,8 +1121,8 @@
             full:'完整',compact:'紧凑','0':'开启','1':'静音'}[value]||value;
     }
     function errorText(error) {
-        return {disconnected:'游戏连接已断开',timeout:'等待游戏响应超时',client_timeout:'等待响应超时',
-            not_sent:'请求未发出',invalid_payload:'请求格式无效',invalid_settings:'设置值无效',invalid_keys:'键位表无效',
+        return {reconcile_required:'必须先重新读取游戏权威状态',disconnected:'游戏连接已断开',timeout:'等待游戏响应超时',client_timeout:'等待响应超时',
+            not_sent:'请求未发出',delivery_unknown:'请求投递结果未知',invalid_payload:'请求格式无效',invalid_settings:'设置值无效',invalid_keys:'键位表无效',
             key_conflict:'键位冲突',reserved_key:'按键被保留',stale_state:'状态已变化',save_failed:'保存失败',
             save_unavailable:'当前不可保存',settings_unavailable:'设置尚未初始化',revive_unavailable:'当前没有可恢复的复活流程',
             actor_alive:'角色尚未死亡',return_base_unavailable:'返回基地入口不可用',unknown_command:'无法识别该作弊码',

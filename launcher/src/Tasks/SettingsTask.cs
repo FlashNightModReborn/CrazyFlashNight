@@ -20,6 +20,7 @@ namespace CF7Launcher.Tasks
             public string WebCmd;
             public string PanelInstanceId;
             public bool IsWrite;
+            public int ReconcileEpoch;
         }
 
         private const int DefaultTimeoutMs = 10000;
@@ -47,6 +48,8 @@ namespace CF7Launcher.Tasks
         private string _panelInstanceId;
         private string _lastClosedPanelInstanceId;
         private bool _nonPreviewWritePending;
+        private bool _requiresReconcile;
+        private int _reconcileEpoch;
         private bool _disposed;
 
         public SettingsTask(XmlSocketServer socket, UserPrefs userPrefs)
@@ -178,6 +181,15 @@ namespace CF7Launcher.Tasks
             lock (_lock)
             {
                 if (_pendingCalls.IsKnownWebCallId(callId)) return;
+                if (isWrite && cmd != "preview" && _requiresReconcile)
+                {
+                    if (!_pendingCalls.TryRememberRejected(callId)) return;
+                    JObject response = BuildError(callId, cmd, requestedInstance,
+                        "reconcile_required");
+                    response["requiresReconcile"] = true;
+                    PostToWeb(response.ToString(Formatting.None));
+                    return;
+                }
                 if (isWrite && cmd != "preview" && _nonPreviewWritePending)
                 {
                     if (!_pendingCalls.TryRememberRejected(callId)) return;
@@ -190,7 +202,8 @@ namespace CF7Launcher.Tasks
                     {
                         WebCmd = cmd,
                         PanelInstanceId = requestedInstance,
-                        IsWrite = isWrite
+                        IsWrite = isWrite,
+                        ReconcileEpoch = _reconcileEpoch
                     },
                     out fid)) return;
                 if (isWrite && cmd != "preview")
@@ -210,6 +223,9 @@ namespace CF7Launcher.Tasks
             int fid = ReadPositiveInt(msg != null ? msg["callId"] : null);
             PanelPendingCall<PendingRequest> pendingCall;
             PendingRequest entry;
+            bool malformed;
+            bool authoritativeRequiresReconcile;
+            bool snapshotStillRequiresReconcile;
             lock (_lock)
             {
                 if (!_pendingCalls.TryComplete(fid, out pendingCall))
@@ -220,13 +236,31 @@ namespace CF7Launcher.Tasks
                 entry = pendingCall.Context;
                 if (entry.IsWrite && entry.WebCmd != "preview")
                     _nonPreviewWritePending = false;
+                malformed = IsMalformedFlashResponse(msg, entry.WebCmd);
+                authoritativeRequiresReconcile = !malformed
+                    && IsReconcileRequiredWrite(entry)
+                    && msg.Value<bool?>("requiresReconcile") == true;
+                if ((malformed || authoritativeRequiresReconcile)
+                    && IsReconcileRequiredWrite(entry))
+                    EnterRequiresReconcileLocked();
+                else if (!malformed && entry.WebCmd == "snapshot"
+                    && entry.ReconcileEpoch == _reconcileEpoch
+                    && msg.Value<bool?>("success") == true
+                    && _requiresReconcile)
+                    _requiresReconcile = false;
+                snapshotStillRequiresReconcile = entry.WebCmd == "snapshot"
+                    && _requiresReconcile;
             }
 
             JObject web;
-            if (IsMalformedFlashResponse(msg, entry.WebCmd))
+            if (malformed)
             {
                 web = BuildError(pendingCall.WebCallId, entry.WebCmd,
                     entry.PanelInstanceId, "malformed_response");
+                if (IsReconcileRequiredWrite(entry))
+                {
+                    web["requiresReconcile"] = true;
+                }
             }
             else
             {
@@ -239,8 +273,16 @@ namespace CF7Launcher.Tasks
                 web["callId"] = pendingCall.WebCallId;
                 web["panelInstanceId"] = entry.PanelInstanceId;
                 if (entry.WebCmd == "snapshot" && web.Value<bool?>("success") == true)
+                {
                     web["hostPrefs"] = BuildHostPrefs();
+                }
             }
+            // A snapshot issued before the current unknown-write epoch is useful only as
+            // diagnostics.  Tell the current/replacement Web document that it must not
+            // unlock or present the write controls until a later snapshot crosses the
+            // Host epoch gate.
+            if (snapshotStillRequiresReconcile)
+                web["requiresReconcile"] = true;
             PostToWeb(web.ToString(Formatting.None));
             if (respond != null) respond(null);
         }
@@ -264,6 +306,8 @@ namespace CF7Launcher.Tasks
                 _pendingCalls.Dispose();
                 _panelInstanceId = null;
                 _nonPreviewWritePending = false;
+                _requiresReconcile = false;
+                _reconcileEpoch = 0;
             }
         }
 
@@ -788,6 +832,13 @@ namespace CF7Launcher.Tasks
             {
                 if (entry.IsWrite && entry.WebCmd != "preview")
                     _nonPreviewWritePending = false;
+                // A lifecycle clear can race a write already accepted by Flash just as
+                // readily as a timeout or a transport-level unknown delivery.  Keep the
+                // process-wide reconcile latch until a valid authoritative snapshot; a
+                // close/rebind or socket detach must never turn that write into replayable
+                // work for the replacement panel.
+                if (IsReconcileRequiredWrite(entry))
+                    EnterRequiresReconcileLocked();
             }
             if (reason == PanelPendingCallEndReason.Cleared || _disposed) return;
 
@@ -795,13 +846,28 @@ namespace CF7Launcher.Tasks
                 pendingCall.WebCallId,
                 entry.WebCmd,
                 entry.PanelInstanceId,
-                reason == PanelPendingCallEndReason.Timeout ? "timeout" : "not_sent");
-            if (reason == PanelPendingCallEndReason.Timeout
-                && entry.IsWrite && entry.WebCmd != "preview")
+                reason == PanelPendingCallEndReason.Timeout
+                    ? "timeout"
+                    : "delivery_unknown");
+            if ((reason == PanelPendingCallEndReason.Timeout
+                    || reason == PanelPendingCallEndReason.DeliveryUnknown)
+                && IsReconcileRequiredWrite(entry))
             {
                 response["requiresReconcile"] = true;
             }
             PostToWeb(response.ToString(Formatting.None));
+        }
+
+        private static bool IsReconcileRequiredWrite(PendingRequest entry)
+        {
+            return entry != null && entry.IsWrite
+                && !string.Equals(entry.WebCmd, "preview", StringComparison.Ordinal);
+        }
+
+        private void EnterRequiresReconcileLocked()
+        {
+            _requiresReconcile = true;
+            _reconcileEpoch++;
         }
 
         private void SendPanelClosedToFlash()
