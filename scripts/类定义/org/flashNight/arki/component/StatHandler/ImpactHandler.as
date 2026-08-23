@@ -77,15 +77,70 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
         }
     }
 
-    private static function applyImpactDecay(target:Object, intervalFrames:Number):Void {
-        if (!(intervalFrames > IMPACT_DECAY_FRAME)) return;
+    /**
+     * 把当前冲击残量冻结为本次真实命中的衰减基线。
+     */
+    private static function captureImpactDecayBaseline(target:Object):Void {
+        var remaining:Number = Number(target.remainingImpactForce);
+        if (!isFinite(remaining) || remaining < 0) remaining = 0;
+        target.remainingImpactForce = remaining;
+        target.impactDecayBaseForce = remaining;
+    }
 
-        if (intervalFrames >= IMPACT_DECAY_DFRAME) {
+    /** 结算真实冲击后同时开启新窗口，保证新增冲击不会沿用旧命中的时间锚点。 */
+    private static function beginImpactDecayWindow(target:Object):Void {
+        var currentFrame:Number = Number(_root.帧计时器.当前帧数);
+        if (isFinite(currentFrame)) target.lastHitTime = currentFrame;
+        captureImpactDecayBaseline(target);
+    }
+
+    /**
+     * 从窗口基线计算当前帧的绝对投影，而不是继续乘上一次投影。
+     * 这样四帧 updater 的同帧重复调用保持幂等，MISS 热路径无需参与衰减。
+     */
+    private static function applyImpactDecay(target:Object, intervalFrames:Number):Void {
+        var remaining:Number = Number(target.remainingImpactForce);
+        if (!isFinite(remaining) || remaining < 0) remaining = 0;
+        if (!(remaining > 0)) {
+            // 破韧/倒地只会把残量归零；同步清掉唯一基线，旧冲击不会复活。
             target.remainingImpactForce = 0;
-        } else {
-            var decayFactor:Number = (IMPACT_DECAY_DFRAME - intervalFrames) / IMPACT_DECAY_DFRAME;
-            target.remainingImpactForce *= decayFactor;
+            target.impactDecayBaseForce = 0;
+            return;
         }
+
+        var baseline:Number = Number(target.impactDecayBaseForce);
+        if (!(baseline > 0) || !isFinite(baseline)) {
+            // 首次接管旧单位；之后只有真实命中会建立新基线。
+            baseline = remaining;
+            target.impactDecayBaseForce = baseline;
+        }
+
+        var projected:Number = baseline;
+        if (intervalFrames > IMPACT_DECAY_FRAME) {
+            if (intervalFrames >= IMPACT_DECAY_DFRAME) {
+                projected = 0;
+            } else {
+                // 保留既有平衡语义：150 帧前不衰减，随后按 (300-t)/300 线性投影至 0。
+                projected = baseline * (IMPACT_DECAY_DFRAME - intervalFrames)
+                    / IMPACT_DECAY_DFRAME;
+            }
+        }
+
+        target.remainingImpactForce = projected;
+    }
+
+    /** 把旧命中窗口绝对投影到当前帧，并返回当前帧。 */
+    private static function projectImpactDecayToCurrentFrame(target:Object):Number {
+        var currentFrame:Number = Number(_root.帧计时器.当前帧数);
+        var lastHitTime:Number = Number(target.lastHitTime);
+        if (!isFinite(lastHitTime) || !isFinite(currentFrame) || lastHitTime > currentFrame) {
+            if (isFinite(currentFrame)) target.lastHitTime = currentFrame;
+            captureImpactDecayBaseline(target);
+            return currentFrame;
+        }
+
+        applyImpactDecay(target, currentFrame - lastHitTime);
+        return currentFrame;
     }
 
     /**
@@ -107,19 +162,24 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
      *        - 韧性上限（目标的冲击韧性上限）
      */
     public static function settleImpactForce(damage:Number, knockRate:Number, target:Object):Void {
+        // HitUpdater 不再做预刷新；真实命中在这里先投影旧窗口，再只派生一次。
+        projectImpactDecayToCurrentFrame(target);
         var remaining:Number = Number(target.remainingImpactForce);
         if (!isFinite(remaining) || remaining < 0) remaining = 0;
 
         // 若击倒率为0或无效，直接设置冲击力超出韧性上限
         if (!(knockRate > 0) || !isFinite(knockRate)) {
-            var cap:Number = Number(target.韧性上限);
-            if (!isFinite(cap) || cap < 0) cap = calculateImpactCap(target);
+            var cap:Number = calculateImpactCap(target);
             target.remainingImpactForce = cap + 1;
+            beginImpactDecayWindow(target);
+            refreshImpactDerived(target);
             return;
         }
 
         if (!(damage > 0) || !isFinite(damage)) {
             target.remainingImpactForce = remaining;
+            beginImpactDecayWindow(target);
+            refreshImpactDerived(target);
             return;
         }
 
@@ -128,14 +188,15 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
         if (isFinite(impactForce)) {
             target.remainingImpactForce = remaining + impactForce;
         } else {
-            var overflowCap:Number = Number(target.韧性上限);
-            if (!isFinite(overflowCap) || overflowCap < 0) overflowCap = calculateImpactCap(target);
+            var overflowCap:Number = calculateImpactCap(target);
             target.remainingImpactForce = overflowCap + 1;
         }
+        beginImpactDecayWindow(target);
+        refreshImpactDerived(target);
     }
 
     /**
-     * 刷新命中对象的冲击力状态
+     * 兼容旧测试/只读调用的冲击状态刷新；生产命中由 settleImpactForce 一次完成。
      * -----------------------------
      * 根据目标的受击时间以及属性，计算当前的韧性上限，同时在必要时对
      * 剩余冲击力进行衰减更新。
@@ -144,10 +205,10 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
      * 1. 获取当前游戏帧数（currentFrame），计算与上次受击的间隔帧数（intervalFrames）。
      * 2. 当间隔帧数大于衰减起始帧（IMPACT_DECAY_FRAME）时，
      *    - 若 intervalFrames >= IMPACT_DECAY_DFRAME，则直接将 remainingImpactForce = 0；
-     *    - 否则按线性衰减公式计算：
-     *        remainingImpactForce *= (IMPACT_DECAY_DFRAME - intervalFrames) / IMPACT_DECAY_DFRAME
+     *    - 否则从本次命中窗口的基线按线性衰减公式做绝对投影：
+     *        projected = baseline × (IMPACT_DECAY_DFRAME - intervalFrames) / IMPACT_DECAY_DFRAME
      *      由于此时 intervalFrames < IMPACT_DECAY_DFRAME，因此系数必然在 (0,1) 区间，保证衰减结果大于 0。
-     * 3. 更新目标的 lastHitTime。
+     * 3. 真实命中才更新 lastHitTime，并冻结新的窗口基线。
      *
      * 同时，韧性上限的计算公式为：
      *    韧性上限 = 韧性系数 × 生命值 ÷ 防御伤害比率
@@ -161,19 +222,16 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
      *        - 防御力
      */
     public static function refreshImpactForce(target:Object, actualHit:Boolean):Void {
-        // 获取当前帧数（假设全局有帧计时器）
-        var currentFrame:Number = _root.帧计时器.当前帧数;
+        projectImpactDecayToCurrentFrame(target);
 
-        // 计算自上次受击以来的帧数间隔
-        var intervalFrames:Number = currentFrame - target.lastHitTime;
-        applyImpactDecay(target, intervalFrames);
-
-        // HitUpdater 在伤害结算后调用本方法，因此本次命中使用扣血后的 HP 上限。
+        // 使用当前 HP/防御/韧性重建派生上限。
         refreshImpactDerived(target);
 
         // 只有真实命中才开启新的冲击残留窗口。MISS 只允许把既有残量衰减到当前帧，
         // 不得靠连续擦碰无限延后衰减。
-        if (actualHit !== false) target.lastHitTime = currentFrame;
+        if (actualHit !== false) {
+            beginImpactDecayWindow(target);
+        }
     }
 
     /**
@@ -186,17 +244,14 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
      * 1. 计算当前帧与上次受击帧的间隔 intervalFrames。
      * 2. 若 intervalFrames > IMPACT_DECAY_FRAME：
      *    - 若 intervalFrames >= IMPACT_DECAY_DFRAME，则直接剩余冲击力归零；
-     *    - 否则按照线性衰减公式更新冲击力。
+     *    - 否则从窗口基线按照线性衰减公式绝对投影冲击力。
      *
      * @param target Object 需要衰减的目标对象，需具备属性：
      *        - remainingImpactForce
      *        - lastHitTime
      */
     public static function decayImpactForce(target:Object):Void {
-        // 获取当前帧数
-        var currentFrame:Number = _root.帧计时器.当前帧数;
-        var intervalFrames:Number = currentFrame - target.lastHitTime;
-        applyImpactDecay(target, intervalFrames);
+        projectImpactDecayToCurrentFrame(target);
         // 先衰减再更新派生显示，避免头顶韧性条永远慢一帧。
         refreshImpactDerived(target);
     }

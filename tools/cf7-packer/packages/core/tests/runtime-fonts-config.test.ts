@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { loadConfig } from "../src/config-loader.js";
 import { filterFiles } from "../src/filter.js";
+import { pack } from "../src/packer.js";
 
 const PACKER_ROOT = path.resolve(import.meta.dirname, "../../..");
 const CONFIG_PATH = path.join(PACKER_ROOT, "pack.config.yaml");
@@ -33,5 +36,43 @@ describe("runtime-fonts pack config", () => {
     expect(result.included.map((entry) => entry.path)).not.toContain("fonts/temporary/custom/player.ttf");
     expect(result.included.map((entry) => entry.path)).not.toContain("fonts/temporary/cache/download.ttf");
     expect(result.included.map((entry) => entry.path)).not.toContain("闪7重置版字体/legacy.ttf");
+  });
+
+  it("filters and packages every generated Web font projection into the launcher closure", async () => {
+    const config = loadConfig(CONFIG_PATH);
+    const generatedClosure = [
+      "launcher/web/generated/font-catalog.json",
+      "launcher/web/generated/font-catalog.css",
+      "launcher/web/generated/font-catalog.js",
+      "launcher/web/assets/fonts/font-pack-manifest.json"
+    ];
+    const filtered = filterFiles(generatedClosure, config);
+
+    expect(filtered.unmatchedCount).toBe(0);
+    expect(filtered.excluded).toEqual([]);
+    expect(filtered.included.map((entry) => [entry.path, entry.layer])).toEqual(
+      generatedClosure.map((file) => [file, "launcher-web"])
+    );
+
+    const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-packer-font-closure-"));
+    try {
+      const result = await pack(filtered, config, {
+        dryRun: false,
+        outputDir,
+        clean: false
+      });
+      expect(result.errors).toEqual([]);
+      expect(result.copiedFiles).toBe(generatedClosure.length);
+      for (const file of generatedClosure) {
+        expect(fs.statSync(path.join(outputDir, file)).isFile()).toBe(true);
+      }
+      const manifest = JSON.parse(fs.readFileSync(
+        path.join(outputDir, "launcher/web/assets/fonts/font-pack-manifest.json"),
+        "utf8"
+      ));
+      expect(manifest.generatedBy).toBe("tools/fontctl");
+    } finally {
+      fs.rmSync(outputDir, { recursive: true, force: true });
+    }
   });
 });

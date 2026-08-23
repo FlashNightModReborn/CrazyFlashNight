@@ -7,6 +7,9 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function() {
     "use strict";
 
+    var ExactCore = typeof require === "function"
+        ? require("../../../../../../tools/fixtures/blackmarket/exact-oracle-core.js") : null;
+
     function ok(detail) { return { pass: true, detail: detail || "" }; }
     function fail(detail) { return { pass: false, detail: detail || "" }; }
 
@@ -16,6 +19,28 @@
         } catch (error) {
             var message = error && error.message ? error.message : String(error);
             return !includes || message.indexOf(includes) >= 0;
+        }
+        return false;
+    }
+
+    function containsCatalogIdentity(value, catalog, key) {
+        var forbiddenKeys = {
+            seed: true, surfaceSeed: true, itemId: true, itemName: true,
+            iconKey: true, iconName: true, assetUri: true, iconUri: true
+        };
+        if (forbiddenKeys[key]) return true;
+        if (typeof value === "string") {
+            for (var entryIndex = 0; entryIndex < catalog.entries.length; entryIndex += 1) {
+                var entry = catalog.entries[entryIndex];
+                if (value === entry.id || value === entry.name || value === entry.displayName
+                        || value === entry.source || value === entry.iconKey || value === entry.iconUri) return true;
+            }
+            return /^icons\/[A-Za-z0-9._-]+$/.test(value) || /^data\/items\//.test(value);
+        }
+        if (!value || typeof value !== "object") return false;
+        var keys = Object.keys(value);
+        for (var index = 0; index < keys.length; index += 1) {
+            if (containsCatalogIdentity(value[keys[index]], catalog, keys[index])) return true;
         }
         return false;
     }
@@ -153,15 +178,31 @@
     }
 
     function bm7_publicSnapshotHidesIdentity(Core, catalog) {
-        var session = Core.createShadowSession(catalog, { seed: "qa-secrets" });
+        var session = Core.createShadowSession({ seed: "qa-secrets" });
         var snapshot = session.product.open();
-        if (Core.publicSnapshotContainsIdentity(snapshot, catalog)) return fail("pre-purchase snapshot contains item identity");
+        if (containsCatalogIdentity(snapshot, catalog, "")) return fail("pre-purchase snapshot contains item identity");
         if (JSON.stringify(snapshot).indexOf("data/items/") >= 0) return fail("pre-purchase snapshot contains source path");
-        return ok("pre-purchase public snapshot omits names and source paths");
+        var text = JSON.stringify(snapshot);
+        if (/"(?:seed|surfaceSeed|assetUri|iconUri|itemId|iconKey)"\s*:/.test(text)) {
+            return fail("pre-purchase snapshot contains forbidden identity/replay field");
+        }
+        var handles = [];
+        snapshot.pairs.forEach(function(pair) {
+            pair.offers.forEach(function(offer) {
+                if (!/^opaque-visual-[a-f0-9]{40}$/.test(offer.visualHandle)) {
+                    throw new Error("visual handle is not opaque");
+                }
+                handles.push(offer.visualHandle);
+            });
+        });
+        if (handles.filter(function(value, index) { return handles.indexOf(value) === index; }).length !== 6) {
+            return fail("visual handles are not unique");
+        }
+        return ok("pre-purchase snapshot omits seed/URI/ID/icon keys and exposes six opaque handles");
     }
 
     function bm8_transactionLifecycle(Core, catalog) {
-        var session = Core.createShadowSession(catalog, { seed: "qa-lifecycle" });
+        var session = Core.createShadowSession({ seed: "qa-lifecycle" });
         var opened = session.product.open();
         var pair = opened.pairs[0];
         var offer = pair.offers[0];
@@ -187,7 +228,7 @@
     }
 
     function bm9_insufficientFundsDoNotMutate(Core, catalog) {
-        var session = Core.createShadowSession(catalog, { seed: "qa-poor", tradePoints: 0, kPoints: 0 });
+        var session = Core.createShadowSession({ seed: "qa-poor", tradePoints: 0, kPoints: 0 });
         var before = session.product.open();
         var pair = before.pairs[0];
         if (!expectThrow(function() {
@@ -202,7 +243,14 @@
     }
 
     function bm10_productAndLabPortsStaySplit(Core, catalog) {
-        var session = Core.createShadowSession(catalog, { seed: "qa-port-split" });
+        var regular = Core.createShadowSession({ seed: "ignored-runtime-seed" });
+        if (regular.lab || regular.visual || regular.debug || typeof regular.surface.resolveSurface !== "function") {
+            return fail("regular product session exposes exact identity capability");
+        }
+        if (!ExactCore || typeof ExactCore.createDevelopmentSession !== "function") {
+            return fail("independent exact lab core missing");
+        }
+        var session = ExactCore.createDevelopmentSession(catalog, { seed: "qa-port-split" });
         if (typeof session.product.setDecryptLevel !== "undefined") return fail("lab method leaked into product port");
         if (typeof session.product.reroll !== "undefined") return fail("reroll leaked into product port");
         if (typeof session.product.listCatalog !== "undefined" || typeof session.product.focusItem !== "undefined") {
@@ -239,10 +287,141 @@
                 return pair.offers.some(function(offer) { return offer.item.id === target.id; });
             });
             if (!present || focused.focus.itemId !== target.id) return fail("lab focus did not place requested item");
-            if (Core.publicSnapshotContainsIdentity(focused.snapshot, catalog)) return fail("focused public snapshot leaked identity");
+            if (ExactCore.publicSnapshotContainsIdentity(focused.snapshot, catalog)) return fail("focused public snapshot leaked identity");
             focusedCount += 1;
         }
         return ok("product/lab split + " + all.length + " indexed / " + focusedCount + " focused samples");
+    }
+
+    function bm20_kLedgerUsesExplicitUnits(Core, catalog) {
+        function settle(action, suffix) {
+            var session = typeof Core.createTestProductSession === "function"
+                ? Core.createTestProductSession({
+                seed: "qa-k-ledger-" + suffix, tradePoints: 500000, kPoints: 10000
+                }, "qa-k-ledger-" + suffix)
+                : Core.createShadowSession({ tradePoints: 500000, kPoints: 10000 });
+            var opened = session.product.open();
+            var pair = opened.pairs[0];
+            var offer = pair.offers[0];
+            var before = opened.balances;
+            var preview = session.product.purchasePreview({
+                pairId: pair.pairId, offerId: offer.offerId, payment: "k"
+            });
+            var committed = session.product.purchaseCommit(preview.token, "qa-k-purchase-" + suffix);
+            var revealed = committed.pairs[0].offers.filter(function(candidate) {
+                return candidate.offerId === offer.offerId;
+            })[0].revealed;
+            if (revealed.payment !== "k" || revealed.paidAmount !== pair.kCost
+                    || revealed.deltaTp !== revealed.resellValue || revealed.deltaK !== -pair.kCost
+                    || revealed.deltaV !== revealed.deltaTp + revealed.deltaK * 50) {
+                throw new Error(action + " reveal ledger breakdown drifted");
+            }
+            var settled = session.product.settle(action, "qa-k-settle-" + suffix);
+            var row = session.audit.exportAnonymous().history[0];
+            var expectedTp = action === "resell" ? revealed.resellValue : 0;
+            var expectedK = -pair.kCost;
+            if (row.deltaTp !== expectedTp || row.deltaK !== expectedK
+                    || row.deltaV !== expectedTp + expectedK * 50) {
+                throw new Error(action + " ledger unit mismatch: " + JSON.stringify(row));
+            }
+            if (settled.balances.tradePoints - before.tradePoints !== expectedTp
+                    || settled.balances.kPoints - before.kPoints !== expectedK) {
+                throw new Error(action + " balance delta does not match ledger");
+            }
+            return row;
+        }
+        var extracted = settle("extract", "extract");
+        var resold = settle("resell", "resell");
+        if (extracted.deltaTp !== 0 || extracted.deltaK >= 0 || resold.deltaK >= 0) {
+            return fail("K settlement was recorded in the TP column");
+        }
+        return ok("K extract/resell record explicit deltaTp/deltaK and ΔV=deltaTp+50*deltaK");
+    }
+
+    function bm21_publicInputsCannotReplayIdentity(Core, catalog) {
+        if (typeof Core.createTestProductSession !== "function") {
+            return ok("browser product core correctly omits the deterministic entropy injection seam; Node gate owns replay proof");
+        }
+        function inspect(entropyLabel, callerSeed, suffix) {
+            var session = Core.createTestProductSession({ seed: callerSeed }, entropyLabel);
+            if (session.lab || session.visual || session.debug) return fail("regular session exposes exact port");
+            var opened = session.product.open();
+            var allHandles = [];
+            opened.pairs.forEach(function(candidatePair) {
+                candidatePair.offers.forEach(function(candidateOffer) {
+                    allHandles.push(candidateOffer.visualHandle);
+                });
+            });
+            if (allHandles.filter(function(value, index) { return allHandles.indexOf(value) === index; }).length !== 6) {
+                throw new Error("injected entropy did not produce six unique opaque handles");
+            }
+            var pair = opened.pairs[0];
+            var offer = pair.offers[0];
+            var safeSurface = session.surface.resolveSurface(offer.visualHandle);
+            if (!/^data:image\/svg\+xml/.test(safeSurface.assetUrl)) throw new Error("public surface requested a catalog URI");
+            for (var entryIndex = 0; entryIndex < catalog.entries.length; entryIndex += 1) {
+                if (safeSurface.assetUrl.indexOf(catalog.entries[entryIndex].iconUri) >= 0) {
+                    throw new Error("safe surface embeds a catalog URI");
+                }
+            }
+            var preview = session.product.purchasePreview({
+                pairId: pair.pairId, offerId: offer.offerId, payment: "tp"
+            });
+            var committed = session.product.purchaseCommit(preview.token, "qa-entropy-purchase-" + suffix);
+            var revealed = committed.pairs[0].offers.filter(function(candidate) {
+                return candidate.offerId === offer.offerId;
+            })[0].revealed;
+            return { opened: opened, revealedName: revealed.displayName,
+                safeSurfaceSeed: safeSurface.seed };
+        }
+
+        var first = inspect("fixed-private-entropy", "caller-seed-A", "same-a");
+        var second = inspect("fixed-private-entropy", "caller-seed-B", "same-b");
+        if (first.opened.page.id !== second.opened.page.id
+                || first.opened.pairs[0].offers[0].visualHandle !== second.opened.pairs[0].offers[0].visualHandle
+                || first.revealedName !== second.revealedName
+                || first.safeSurfaceSeed !== second.safeSurfaceSeed) {
+            return fail("caller-controlled seed changed a session driven by identical injected private entropy");
+        }
+        var different = null;
+        for (var i = 0; i < 32 && !different; i += 1) {
+            var candidate = inspect("different-private-entropy-" + i, "caller-seed-A", "different-" + i);
+            if (candidate.opened.page.id !== first.opened.page.id
+                    && candidate.opened.pairs[0].offers[0].visualHandle
+                        !== first.opened.pairs[0].offers[0].visualHandle
+                    && candidate.revealedName !== first.revealedName
+                    && candidate.safeSurfaceSeed !== first.safeSurfaceSeed) different = candidate;
+        }
+        if (!different) return fail("different injected private entropy did not change hidden identity/handles");
+        return ok("deterministic test entropy proves caller seed ignored; independent private streams control identity/handles/surface");
+    }
+
+    function bm22_productRejectsExactDirectoryAndInference(Core, catalog) {
+        if (!expectThrow(function() { Core.createShadowSession(catalog); }, "does not accept an exact directory")) {
+            return fail("product core accepted the exact catalog object");
+        }
+        if (typeof Core.createDevelopmentSession === "function" || typeof Core.validateCatalog === "function"
+                || typeof Core.buildPage === "function") {
+            return fail("product core still exports an exact catalog or Lab capability");
+        }
+        var snapshot = Core.createShadowSession({ decryptLevel: 3 }).product.open();
+        if (snapshot.catalog.kind !== "anonymous-synthetic"
+                || snapshot.identityBoundary !== "anonymous-synthetic-no-catalog.v2") {
+            return fail("product snapshot is not bound to the anonymous fixture contract");
+        }
+        for (var pairIndex = 0; pairIndex < snapshot.pairs.length; pairIndex += 1) {
+            var pair = snapshot.pairs[pairIndex];
+            var possible = catalog.entries.filter(function(entry) {
+                return entry.mechanicallyRenderable && entry.category === pair.category
+                    && entry.subclass === pair.subclass
+                    && (entry.saleValue < pair.counterPriceTp
+                        || entry.saleValue >= pair.counterPriceTp + 50);
+            });
+            if (possible.length !== 0) {
+                return fail("public category/subclass/price tuple still maps into the exact catalog");
+            }
+        }
+        return ok("product rejects exact input; anonymous taxonomy/price tuples map to zero real catalog entries");
     }
 
     function makeSynthetic(width, height, painter, opaqueBackground) {
@@ -352,7 +531,7 @@
         var image = syntheticRifle(false);
         var rendered = Surface.renderSurfaceImageData(image, { seed: "dormant-material", coverage: 0.84 });
         var metrics = rendered.metrics;
-        var snapshot = Core.createShadowSession(catalog, { seed: "dormant-material-contract" }).product.open();
+        var snapshot = Core.createShadowSession({ seed: "dormant-material-contract" }).product.open();
         if (snapshot.algorithmVersion !== Surface.VERSION
                 || snapshot.pairs[0].offers[0].surface.algorithmVersion !== Surface.VERSION) {
             return fail("core/surface nanobot algorithm version drift");
@@ -382,9 +561,9 @@
             return entry.displayName === "黄金骑士牙狼胸甲";
         })[0];
         if (!target) return fail("牙狼胸甲 catalog entry missing");
-        var session = Core.createShadowSession(catalog, { seed: "qa-paperdoll-source" });
+        var session = Core.createDevelopmentSession(catalog, { seed: "qa-paperdoll-source" });
         var focused = session.lab.focusItem(target.id);
-        var source = session.visual.resolveOfferSource(focused.focus.offerId);
+        var source = session.visual.resolveOfferSource(focused.focus.visualHandle);
         if (source.kind !== "dressup-paperdoll" || source.slot !== "body"
                 || source.itemName !== target.name) {
             return fail("牙狼胸甲 did not resolve to its private paper-doll source");
@@ -401,7 +580,10 @@
         var pair = focused.snapshot.pairs.filter(function(candidate) {
             return candidate.pairId === focused.focus.pairId;
         })[0];
-        if (!pair || pair.offers[0].surface.previewGender !== pair.offers[1].surface.previewGender) {
+        var pairSources = pair && pair.offers.map(function(offer) {
+            return session.visual.resolveOfferSource(offer.visualHandle);
+        });
+        if (!pairSources || pairSources[0].previewGender !== pairSources[1].previewGender) {
             return fail("paired armor previews did not share one deterministic gender branch");
         }
         return ok("牙狼胸甲 -> equipment-inspector focused paper doll; identity remains outside public snapshot");
@@ -466,9 +648,9 @@
             return entry.displayName === "剧毒蛇矛";
         })[0];
         if (!target) return fail("剧毒蛇矛 catalog entry missing");
-        var session = Core.createShadowSession(catalog, { seed: "qa-weapon-source" });
+        var session = Core.createDevelopmentSession(catalog, { seed: "qa-weapon-source" });
         var focused = session.lab.focusItem(target.id);
-        var source = session.visual.resolveOfferSource(focused.focus.offerId);
+        var source = session.visual.resolveOfferSource(focused.focus.visualHandle);
         if (source.kind !== "dressup-weapon" || source.itemName !== target.name
                 || source.actionType !== target.actionType) {
             return fail("weapon did not resolve to its private dressup source");
@@ -503,14 +685,21 @@
         { id: "bm16", title: "非颈部防具局部纸娃娃闭包", run: bm16_armorDressupCoverage },
         { id: "bm17", title: "休眠军用纳米污泥材质", run: bm17_dormantNanobotMaterial },
         { id: "bm18", title: "低清代理保 Alpha 锐化", run: bm18_alphaSafeProxySharpening },
-        { id: "bm19", title: "武器私有完整素材端口", run: bm19_weaponUsesPrivateDressupPort }
+        { id: "bm19", title: "武器私有完整素材端口", run: bm19_weaponUsesPrivateDressupPort },
+        { id: "bm20", title: "K 点结算账本显式单位与价值守恒", run: bm20_kLedgerUsesExplicitUnits },
+        { id: "bm21", title: "公开输入不能离线重放精确身份", run: bm21_publicInputsCannotReplayIdentity },
+        { id: "bm22", title: "产品 core 拒绝精确目录与三元组反查", run: bm22_productRejectsExactDirectoryAndInference }
     ];
 
     function runOne(Core, catalog, Surface, EquipmentPreview, DressupManifest, id) {
         var item = SUITE.filter(function(candidate) { return candidate.id === id; })[0];
         if (!item) return { id: id, title: "unknown", pass: false, detail: "case not found" };
         try {
-            var result = item.run(Core, catalog, Surface, EquipmentPreview, DressupManifest);
+            var exactCases = { bm1: true, bm2: true, bm3: true, bm4: true, bm5: true, bm6: true,
+                bm15: true, bm16: true, bm19: true };
+            var selectedCore = exactCases[id] ? ExactCore : Core;
+            if (!selectedCore) throw new Error("required core module missing for " + id);
+            var result = item.run(selectedCore, catalog, Surface, EquipmentPreview, DressupManifest);
             return { id: item.id, title: item.title, pass: !!result.pass, detail: result.detail || "" };
         } catch (error) {
             return { id: item.id, title: item.title, pass: false,

@@ -130,13 +130,14 @@ Docs/                              # 设计文档
 - 循环展开初始化（8倍展开）
 - 参数传递展开至15个（避免apply开销）
 - funcToID映射防止重复订阅
-- **移除 try/finally，let-it-crash 策略**（v2.3）
+- **let-it-crash + 冷边界局部恢复**（v3.1）：五个 publish 入口保持无 `try/catch/finally`；明确捕获并继续的冷业务边界用进入前创建的一次性 recovery token 只回退本次内层 depth/复用槽
 - **unsubscribe 兼容模式缓存前缀、使用并行数组**（v2.3.2）
 
 **关键API（v2.3.2）：**
 - `subscribe(eventName, callback, scope):Boolean` - 订阅事件，**返回是否成功**
 - `unsubscribe(eventName, callback, scope?):Boolean` - 退订事件，**可选 scope 精确匹配**
 - `publish(eventName, ...args):Void` - 发布事件
+- `createDispatchRecoveryToken():Function` - 为捕获发布异常的冷业务边界创建一次性、只向下恢复的令牌
 - `subscribeOnce(eventName, callback, scope, owner?):Boolean` - 一次性订阅，**返回是否成功**
 - `destroy():Boolean` - 销毁，**返回是否实际执行了清理**
 
@@ -153,7 +154,7 @@ Docs/                              # 设计文档
 - [CRITICAL] 去重键改为 (callback, scope) 组合，同callback不同scope可共存
 - [CRITICAL] subscribe/subscribeOnce 返回 Boolean
 - [CRITICAL] unsubscribe 添加可选 scope 参数
-- [PERF] publish/publishWithParam 移除 try/finally
+- [PERF/SAFETY] v2.3 移除发布层 try/finally；v3.1 保留热路径并新增冷业务边界局部 recovery token
 - [PERF] >15参数时直接使用复用数组，移除 slice()
 
 **v2.2 修复：**
@@ -277,7 +278,7 @@ EventCoordinator
 | CRITICAL | 去重键改为 (callback, scope) 组合 |
 | CRITICAL | subscribe/subscribeOnce 返回 Boolean |
 | CRITICAL | unsubscribe 添加可选 scope 参数 |
-| PERF | publish 移除 try/finally |
+| PERF/SAFETY | 发布层保持无 try/finally；v3.1 由明确捕获异常的冷业务边界使用局部 recovery token |
 | PERF | >15参数直接使用数组 |
 
 ### v2.2
@@ -316,12 +317,12 @@ EventCoordinator
 6. **onceCallbackMap多事件覆盖** - v2.1 修复（按事件分桶）
 7. **Dictionary跨实例破坏** - v2.2 修复（实例级 _uidToKey）
 8. **批量退订 O(n²) 复杂度** - v2.3.1 修复（eventName 参数）
-9. **EventBus每次回调try/catch开销** - v2.3 移除（let-it-crash）
+9. **EventBus每次回调try/catch开销** - 既无逐回调 catch，也无发布层 finally；v3.1 只让明确捕获异常的冷业务边界按需创建并调用局部 recovery token
 
 ### 可能仍需关注的问题
 
 1. **回调执行顺序不稳定** - for..in 枚举 Object key 顺序在 AS2 中不稳定（已记录为契约）
-2. **let-it-crash 策略影响** - 回调异常时 _dispatchDepth 不递减，需要 forceResetDispatchDepth()
+2. **let-it-crash 策略影响** - 异常会中止本事件的后续回调并向上抛出；发布层不自动恢复。决定捕获并继续的冷业务边界必须在发布前创建 recovery token，并在自己的 `catch` 中只恢复到进入 depth；不得全局 reset 或清空外层快照
 
 ---
 
@@ -406,7 +407,7 @@ EventCoordinator
 3. trace语句不是性能问题，无需建议移除
 4. 理解契约化设计的必要性——某些安全检查由调用方负责
 5. 事件系统是高频调用的热路径，性能至关重要
-6. let-it-crash 是有意的设计选择，不要建议恢复 try/catch
+6. let-it-crash 的“异常传播”是有意设计；不得给五个 publish 热入口添加 `try/catch/finally`。冷业务边界只能用进入前创建的局部 recovery token，不能用 `forceResetDispatchDepth()` 掩盖局部异常或清空外层发布
 
 ---
 

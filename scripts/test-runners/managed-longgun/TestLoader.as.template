@@ -6,4 +6,5 @@ if (_root.装备生命周期函数 == undefined) _root.装备生命周期函数 
 
 org.flashNight.arki.merc.ManagedLongGunServiceTest.runAllTests();
 org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManagerTest.runAllTests();
+org.flashNight.neur.Event.EventBusTest.runAllTests();
 trace("FocusedTestRunId managed-longgun Complete: __FOCUSED_RUN_ID__");

@@ -80,7 +80,7 @@ Bootstrap 使用纯 Win32/CRT，在启动 Core 前验证正式 runtime manifest�
 
 ```text
 bootstrap preflight
-  → Core runtime 自校验、字体 catalog / XML-hash projection 校验与 custom/cache/permanent 来源解析
+  → Core runtime 自校验、字体 catalog / XML-hash projection 校验与 face-major 的 custom/cache/permanent 来源解析
   → WebView2 fail-closed 预检 → GuardianForm / BootstrapPanel
   → Steam、Flash trust、Audio、Bus、Task registry
   → save list / ready / prewarm
@@ -137,7 +137,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [CRAZYFLASHER7MercenaryEmpire.csproj](CRAZYFLASHER7MercenaryEmpire.csproj) | Host 编译边界、依赖、嵌入资源和确定性构建设置 |
 | [src/Program.cs](src/Program.cs) | Core 入口、运行模式、依赖装配和启动顺序 |
 | [src/Guardian](src/Guardian/) | 窗口、启动 UI、WebView2、Native HUD、Panel、焦点和命令路由 |
-| [src/Fonts](src/Fonts/) | XML-hash runtime 投影、字体来源解析、Native role 创建与 WebView2 exact-set 资源处理 |
+| [src/Fonts](src/Fonts/) | XML-hash runtime 投影、face-major 来源解析、已验证字节快照缓存、Native role 创建与 WebView2 exact-set/ETag 资源处理 |
 | [src/Tasks](src/Tasks/) | Flash/Host 任务实现与领域消息处理 |
 | [src/Bus](src/Bus/) | HTTP、XMLSocket、V8 和消息总线 |
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
@@ -330,15 +330,15 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `diagnostic` | 导出诊断包 |
 | `audio_preview` | 音频预览 |
 | `config_set` | 用户偏好写入 |
-| `fontpack_status` | 字体包状态 |
-| `fontpack_install` | 字体包安装 |
+| `fontpack_status` | 字体包状态；逐文件返回 `verificationState` |
+| `fontpack_install` | 字体包安装；成功项返回同字节验证状态 |
 | `fontpack_cancel` | 字体包取消 |
 | `repair_detect` | repair 检测 |
 | `repair_apply_manual` | repair 人工应用 |
 | `repair_force_continue` | repair 明示继续 |
 <!-- launcher-bootstrap-command-registry:end -->
 
-`config_set` 只写允许的用户偏好；运行态 Overlay 的音频偏好由 Host 通过 `audioPrefs` 推送。启动阶段的 `list → ready → prewarm → reveal` 与 Flash title receipt 是不同栅栏，前端不得自行跳过。
+`config_set` 只写允许偏好；Overlay 音频由 Host 经 `audioPrefs` 推送；`list → ready → prewarm → reveal` 与 Flash title receipt 分栅栏。FontPack 的 `runtime-parser-*` 才表示同字节实际探针；Web-only WOFF2 的 `pinned-web-structure-only` 只是 hash 固定容器门，Native 拒绝 WOFF/WOFF2。RuntimeFontCatalog 复用成功项的已验证 byte snapshot 和 hash ETag；未命中不缓存，FontPack 状态仍重新读盘。
 
 ## Panel 与 minigame 注册表
 
@@ -381,15 +381,15 @@ Panel 的共同边界：
 - close、Esc、backdrop、导航和 recovery 必须经过同一 lifecycle fence；迟到旧实例不得复活。
 - Workbench 的布局、密度、focus、tooltip、interaction broker 和 CSS 边界以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。
 - `settings` 在 `1024×576` anchor 内全屏复用游戏启动前 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不再为页签另起一行或保留重复“作弊码”页；玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
-  默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。35 键使用双列分区板和紧邻标签的控件，键名/键值至少 12px 且全部落在基准画布同屏。Host 只在打开设置时把已有 16:9 Flash 进入帧以原始裁切像素、JPEG quality 90 编成实例内静态图，最大 `4096×2304 / 8 MiB`，拒绝均匀近黑帧并保留暗色结构化画面；不再降采样为 `512×288`。
-  Flash SA 为 DPI Unaware 且显示器 DPI 高于窗口 DPI 时，输出仍保持 `GetClientRect` 的物理尺寸，但 GDI 源缓冲按 `windowDpi/monitorDpi` 换算并用 `StretchBlt` 还原到物理输出；其他 awareness 保持 1:1。捕获日志同时记录 source/output，`BitBlt/StretchBlt` 返回 false 必须显式失败，不能交付带静默黑边的位图。
+  默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。
+  35 键双列同屏，标签紧邻控件，键名/键值至少 12px。Host 打开设置时将已有 16:9 Flash 进入帧按原裁切像素、JPEG 90 编成实例内静态图；上限 `4096×2304 / 8 MiB`，拒绝均匀近黑，不降采样至 `512×288`。Flash SA 为 DPI Unaware 且显示器 DPI 更高时，输出保持 `GetClientRect` 物理尺寸，GDI 源按 `windowDpi/monitorDpi` 换算并 `StretchBlt`；其他 awareness 1:1。日志同时记录 source/output，`BitBlt/StretchBlt` false 必须显式失败。
   镜头倍率使用全屏二级模拟器，入口基线按 16:9 填满舞台并保留自然像素；动态镜头关闭时仍按基础倍率预览。点歌器规则与 Web 主题集中在“本机与 Web”。Agent Runtime 仅允许 exact `settings` 与 `settings_camera_preview`；后者固定映射到 `settings + initialView:"camera_preview"`。闭环先用 Flash metadata-only grant + `window.list` 等待 surface 稳定，再用 fresh WebOverlay WGC 验证；它不授予 Flash pixels/input，也不应用或保存设置。
 - AS2/Host/Web 三层迁移、数据权威与旧 Flash UI 退役边界以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
 Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)和[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)。
-其中 `blackmarket` 只允许 `dev + shadowOnly` 测试入口，不是正式经济 Panel；lazy closure 在 core 后加载 dressup、共享 inspection viewport、`EquipmentInspector`、merc portrait、equipment preview、inspection focus 与 item surface。五类非颈部防具复用 `fieldsByGender → fit/draw` 局部取景，武器优先复用完整/复合 dressup 商品图；缺失装备素材仅以保 Alpha 锐化图标作影子回退。
-面板与主 SWF 共用固定 `1024×576` 逻辑画布，仅由 `PanelScale` 整体缩放；检视按旋转后物品包围盒与污泥外扩自动聚焦，变换不重跑污泥或改变购买选择。切组、无共同性别或失败时封存且不显示原图，像素按能力走独立 worker。统一 QA 入口见 [testing guide](../agentsDoc/testing-guide.md)；Panel 或 lazy closure 变更必须同步本表并通过 exact-set 治理。
+其中 `blackmarket` 只允许 `dev + shadowOnly` 测试入口，不是正式经济 Panel。普通 Launcher `BLACKMARKET_TEST` 不发送 seed；产品 core 只生成与真实目录无关的匿名合成货物，公开分类固定为 `anonymous / 匿名影子货舱`，surface 端口返回身份无关 `data:` 安全表面。普通 lazy closure 不请求或持有全量 catalog，不加载 exact/dressup/equipment-preview 依赖，也没有 marker、字符串 capability、Lab/debug API 或 catalog 注入钩子。
+全目录 oracle 与目录夹具已移到 Web 静态根外的 `tools/fixtures/blackmarket/`，仅供 Node QA；历史 catalog/exact-core URL 无文件可读，伪造旧 bootstrap/`allowExactIdentityLab` 仍只得到匿名面。面板固定 `1024×576` 并仅由 `PanelScale` 缩放；K 账本分记 `deltaTp/deltaK`，以 `deltaV=deltaTp+50×deltaK` 复核。测试见 [testing guide](../agentsDoc/testing-guide.md)。
 
 ## 存档编辑与诊断
 

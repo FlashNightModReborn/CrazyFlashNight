@@ -1193,6 +1193,11 @@
         <KPrice>0</KPrice>
         <IncreasePrice>0</IncreasePrice>
     </Pet>
+    <!--
+        66 号按高阶彩蛋战宠的“同时唯一在队”金币领养策略公开：主线/价格锚定同分类
+        97 号诺艾尔，等级门再对齐高阶机械战宠 90 号。该组数值用于关闭旧隐藏
+        定义的 Lv.1 / Task 1 / 免费 / 可重复占位状态，不代表全局宠物经济终版。
+    -->
     <Pet>
         <id>66</id>
         <Name>终结者-x</Name>
@@ -1200,10 +1205,10 @@
         <RosterType>mechanical</RosterType>
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
-        <UnlockLevel>1</UnlockLevel>
-        <UnlockTask>1</UnlockTask>
-        <Unique>false</Unique>
-        <Price>0</Price>
+        <UnlockLevel>20</UnlockLevel>
+        <UnlockTask>100</UnlockTask>
+        <Unique>true</Unique>
+        <Price>620000</Price>
         <KPrice>0</KPrice>
         <IncreasePrice>0</IncreasePrice>
         <Promotion>

@@ -20,7 +20,7 @@ namespace CF7Launcher.Tasks
     ///
     /// 协议（async via MessageRouter）：
     ///   { task:"font_pack", payload:{ op:"status" } }
-    ///       → { success, task:"font_pack", op:"status", fontsDir, groups:[ { name, label, allInstalled, files:[ {name,bytes,installed,verified} ] } ] }
+    ///       → { success, task:"font_pack", op:"status", fontsDir, groups:[ { name, label, allInstalled, files:[ {name,bytes,installed,verificationState} ] } ] }
     ///   { task:"font_pack", payload:{ op:"download_group", group:"essential" } }
     ///       → 启动后台下载，progress 通过 notch + 完成 toast 报告，end 回 success/failed 列表
     ///   { task:"font_pack", payload:{ op:"download_file", name:"xxx.ttf" } }
@@ -168,15 +168,18 @@ namespace CF7Launcher.Tasks
                             totalBytes += bytes;
 
                             string resolvedPath;
-                            bool installed = TryResolveExisting(f, out resolvedPath);
+                            string verificationState;
+                            bool installed = TryResolveExisting(f, out resolvedPath, out verificationState);
                             LogManager.Log("[FontPack] status check " + name
                                 + ": installed=" + installed
+                                + " verification=" + verificationState
                                 + " path=" + (resolvedPath ?? "(none)"));
                             JObject fileEntry = new JObject();
                             fileEntry["name"] = name;
                             fileEntry["label"] = f.Value<string>("label");
                             fileEntry["bytes"] = bytes;
                             fileEntry["installed"] = installed;
+                            fileEntry["verificationState"] = verificationState;
                             fileEntry["resolvedPath"] = installed ? resolvedPath : null;
                             fileArr.Add(fileEntry);
                             if (!installed) allInstalled = false;
@@ -243,8 +246,10 @@ namespace CF7Launcher.Tasks
                     if (f == null) continue;
                     string name = f.Value<string>("name");
                     string resolved;
-                    bool exists = TryResolveExisting(f, out resolved);
+                    string verificationState;
+                    bool exists = TryResolveExisting(f, out resolved, out verificationState);
                     LogManager.Log("[FontPack] resolve " + name + ": exists=" + exists
+                        + " verification=" + verificationState
                         + " path=" + (resolved ?? "(none)"));
                     if (!exists) filesToDownload.Add(f);
                 }
@@ -332,13 +337,15 @@ namespace CF7Launcher.Tasks
                     EmitProgress(ctx, 0, true);
 
                     string fileErr;
-                    bool ok = DownloadFile(f, ctx, out fileErr);
+                    string verificationState;
+                    bool ok = DownloadFile(f, ctx, out fileErr, out verificationState);
                     if (IsCancelled()) { cancelled = true; }
 
                     if (ok)
                     {
                         JObject okEntry = new JObject();
                         okEntry["name"] = name;
+                        okEntry["verificationState"] = verificationState;
                         successArr.Add(okEntry);
                         LogManager.Log("[FontPack] downloaded " + idx + "/" + total + ": " + name);
                         EmitProgress(ctx, fileExpectedBytes, true);
@@ -441,12 +448,17 @@ namespace CF7Launcher.Tasks
         }
 
         // ================================================================
-        // 单文件下载：urls 顺序尝试 → SHA256 校验 → atomic move
+        // 单文件下载：urls 顺序尝试 → SHA256 + runtime probe → atomic move
         // ================================================================
 
-        private bool DownloadFile(JObject fileEntry, DownloadCtx ctx, out string err)
+        private bool DownloadFile(
+            JObject fileEntry,
+            DownloadCtx ctx,
+            out string err,
+            out string verificationState)
         {
             err = null;
+            verificationState = "not-verified";
             string name = fileEntry.Value<string>("name");
             string expectedSha = (fileEntry.Value<string>("sha256") ?? "").ToLowerInvariant();
             long expectedBytes = fileEntry.Value<long?>("bytes") ?? 0L;
@@ -471,7 +483,7 @@ namespace CF7Launcher.Tasks
             string targetPath = Path.Combine(_cacheFontsDir, name);
 
             // 已存在且校验通过：跳过
-            if (VerifyFile(targetPath, expectedSha, expectedBytes))
+            if (VerifyFile(targetPath, name, expectedSha, expectedBytes, out verificationState))
                 return true;
 
             List<string> attemptedErrors = new List<string>();
@@ -491,9 +503,9 @@ namespace CF7Launcher.Tasks
                     if (TryDownloadUrl(url, tmpPath, expectedBytes, ctx, out downloadErr))
                     {
                         if (IsCancelled()) { err = "cancelled"; try { File.Delete(tmpPath); } catch { } return false; }
-                        if (!VerifyFile(tmpPath, expectedSha, expectedBytes))
+                        if (!VerifyFile(tmpPath, name, expectedSha, expectedBytes, out verificationState))
                         {
-                            attemptedErrors.Add(url + " :: integrity_mismatch");
+                            attemptedErrors.Add(url + " :: verification_failed:" + verificationState);
                             try { File.Delete(tmpPath); } catch { }
                             continue;
                         }
@@ -640,24 +652,89 @@ namespace CF7Launcher.Tasks
             }
         }
 
-        private static bool VerifyFile(string filePath, string expectedHex, long expectedBytes)
+        private static bool VerifyBytes(
+            string assetName,
+            byte[] bytes,
+            string expectedHex,
+            long expectedBytes,
+            out string validationState)
         {
+            validationState = "invalid-integrity-contract";
             if (!IsSha256(expectedHex) || expectedBytes < 1 || expectedBytes > RuntimeFontCatalog.MaxFontBytes)
                 return false;
+            if (bytes == null || bytes.LongLength != expectedBytes)
+            {
+                validationState = "length-mismatch";
+                return false;
+            }
             try
             {
-                FileInfo info = new FileInfo(filePath);
-                if (!info.Exists || info.Length != expectedBytes) return false;
-                using (FileStream fs = File.OpenRead(filePath))
                 using (SHA256 sha = SHA256.Create())
                 {
-                    byte[] hash = sha.ComputeHash(fs);
+                    byte[] hash = sha.ComputeHash(bytes);
                     StringBuilder sb = new StringBuilder(hash.Length * 2);
                     for (int i = 0; i < hash.Length; i++) sb.Append(hash[i].ToString("x2"));
-                    return string.Equals(sb.ToString(), expectedHex, StringComparison.OrdinalIgnoreCase);
+                    if (!string.Equals(sb.ToString(), expectedHex, StringComparison.OrdinalIgnoreCase))
+                    {
+                        validationState = "hash-mismatch";
+                        return false;
+                    }
                 }
+                return RuntimeFontCatalog.ValidatePackCandidate(assetName, bytes, out validationState);
             }
-            catch { return false; }
+            catch
+            {
+                validationState = "verification-exception";
+                return false;
+            }
+        }
+
+        private static bool VerifyFile(
+            string filePath,
+            string assetName,
+            string expectedHex,
+            long expectedBytes,
+            out string validationState)
+        {
+            validationState = "read-failed";
+            if (!IsSha256(expectedHex) || expectedBytes < 1
+                || expectedBytes > RuntimeFontCatalog.MaxFontBytes
+                || expectedBytes > int.MaxValue)
+            {
+                validationState = "invalid-integrity-contract";
+                return false;
+            }
+            try
+            {
+                byte[] bytes = new byte[(int)expectedBytes];
+                using (FileStream stream = new FileStream(
+                    filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    if (stream.Length != expectedBytes)
+                    {
+                        validationState = "length-mismatch";
+                        return false;
+                    }
+                    int readTotal = 0;
+                    while (readTotal < bytes.Length)
+                    {
+                        int read = stream.Read(bytes, readTotal, bytes.Length - readTotal);
+                        if (read == 0) break;
+                        readTotal += read;
+                    }
+                    if (readTotal != bytes.Length || stream.ReadByte() != -1)
+                    {
+                        validationState = "length-mismatch";
+                        return false;
+                    }
+                }
+                return VerifyBytes(assetName, bytes, expectedHex, expectedBytes, out validationState);
+            }
+            catch
+            {
+                validationState = "read-failed";
+                return false;
+            }
         }
 
         private static bool IsSha256(string value)
@@ -701,9 +778,13 @@ namespace CF7Launcher.Tasks
         /// <summary>
         /// 解析字体文件实际位置。与 Web/native 共用 catalog 来源优先级和完整性判断。
         /// </summary>
-        private bool TryResolveExisting(JObject fileEntry, out string resolved)
+        private bool TryResolveExisting(
+            JObject fileEntry,
+            out string resolved,
+            out string verificationState)
         {
             resolved = null;
+            verificationState = "not-installed";
             if (fileEntry == null) return false;
             string name = fileEntry.Value<string>("name");
             if (string.IsNullOrEmpty(name)) return false;
@@ -718,14 +799,33 @@ namespace CF7Launcher.Tasks
             RuntimeFontCatalog.ResolvedAsset catalogResolved = RuntimeFontCatalog.ResolveFile(name);
             if (catalogResolved != null)
             {
-                resolved = catalogResolved.Path;
-                return true;
+                if (string.Equals(catalogResolved.Source, "temporary/custom", StringComparison.Ordinal))
+                {
+                    resolved = catalogResolved.Path;
+                    verificationState = "custom-runtime-parser-verified";
+                    return true;
+                }
+                if (VerifyBytes(
+                    name,
+                    catalogResolved.Bytes,
+                    expectedSha,
+                    expectedBytes,
+                    out verificationState))
+                {
+                    resolved = catalogResolved.Path;
+                    return true;
+                }
             }
 
             string cachePath = Path.Combine(_cacheFontsDir, name);
             if (File.Exists(cachePath))
             {
-                if (VerifyFile(cachePath, expectedSha, expectedBytes))
+                if (VerifyFile(
+                    cachePath,
+                    name,
+                    expectedSha,
+                    expectedBytes,
+                    out verificationState))
                 {
                     resolved = cachePath;
                     return true;
@@ -733,6 +833,21 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[FontPack] existing cache font sha mismatch: " + cachePath);
             }
             return false;
+        }
+
+        internal static bool VerifyDownloadedFileForTest(
+            string filePath,
+            string assetName,
+            string expectedHex,
+            long expectedBytes,
+            out string validationState)
+        {
+            return VerifyFile(
+                filePath,
+                assetName,
+                expectedHex,
+                expectedBytes,
+                out validationState);
         }
 
         private static bool IsSafeFontFileName(string name)

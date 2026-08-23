@@ -56,39 +56,47 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         var transaction:Object = current();
         var implicit:Boolean = transaction == null;
         if (implicit) transaction = begin(context);
+        var completed:Boolean = false;
+        try {
+            for (var i:Number = 0; i < itemArray.length; i++) {
+                var entry:Object = itemArray[i];
+                if (entry == null || entry.name == undefined) continue;
+                var name:String = String(entry.name);
+                if (name == "经验值" || name == "技能点") continue;
 
-        for (var i:Number = 0; i < itemArray.length; i++) {
-            var entry:Object = itemArray[i];
-            if (entry == null || entry.name == undefined) continue;
-            var name:String = String(entry.name);
-            if (name == "经验值" || name == "技能点") continue;
-
-            var kind:String = entry.kind == undefined
-                ? inferKind(name) : String(entry.kind);
-            var count:Number;
-            // ownershipDelta 允许复合领域把“实际写入数量”与“所有权变化数量”分开。
-            // 例如出售装备时拆下的配件只是从装备迁回材料栏，不应伪装成新获得。
-            if (entry.ownershipDelta != undefined) {
-                count = Number(entry.ownershipDelta);
-            } else if (kind == "equip" && entry.isQuantity !== true) {
-                count = 1;
-            } else if (entry.count != undefined) {
-                count = Number(entry.count);
-            } else {
-                count = Number(entry.value);
+                var kind:String = entry.kind == undefined
+                    ? inferKind(name) : String(entry.kind);
+                var count:Number;
+                // ownershipDelta 允许复合领域把“实际写入数量”与“所有权变化数量”分开。
+                // 例如出售装备时拆下的配件只是从装备迁回材料栏，不应伪装成新获得。
+                if (entry.ownershipDelta != undefined) {
+                    count = Number(entry.ownershipDelta);
+                } else if (kind == "equip" && entry.isQuantity !== true) {
+                    count = 1;
+                } else if (entry.count != undefined) {
+                    count = Number(entry.count);
+                } else {
+                    count = Number(entry.value);
+                }
+                var rawTier = entry.tier;
+                if ((rawTier == undefined || rawTier == null)
+                        && typeof entry.value == "object" && entry.value != null) {
+                    rawTier = entry.value.tier;
+                }
+                var tier:String = rawTier == undefined || rawTier == null
+                    ? "" : String(rawTier);
+                addEffect(transaction, direction, kind, normalizeName(name, kind),
+                    count, tier, context);
             }
-            var rawTier = entry.tier;
-            if ((rawTier == undefined || rawTier == null)
-                    && typeof entry.value == "object" && entry.value != null) {
-                rawTier = entry.value.tier;
+            completed = true;
+        } finally {
+            // 显式事务由领域调用方决定 commit/rollback；只有本方法创建的短事务
+            // 才在异常时立即丢弃，避免一条坏输入永久占住全局栈顶。
+            if (implicit) {
+                if (completed) commit(transaction);
+                else rollback(transaction);
             }
-            var tier:String = rawTier == undefined || rawTier == null
-                ? "" : String(rawTier);
-            addEffect(transaction, direction, kind, normalizeName(name, kind),
-                count, tier, context);
         }
-
-        if (implicit) commit(transaction);
     }
 
     /** 记录单个已提交变化；count 永远是正数，方向由 direction 表达。 */
@@ -98,9 +106,17 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         var transaction:Object = current();
         var implicit:Boolean = transaction == null;
         if (implicit) transaction = begin(context);
-        addEffect(transaction, direction, kind, normalizeName(name, kind),
-            count, context == null ? "" : String(context.tier || ""), context);
-        if (implicit) commit(transaction);
+        var completed:Boolean = false;
+        try {
+            addEffect(transaction, direction, kind, normalizeName(name, kind),
+                count, context == null ? "" : String(context.tier || ""), context);
+            completed = true;
+        } finally {
+            if (implicit) {
+                if (completed) commit(transaction);
+                else rollback(transaction);
+            }
+        }
     }
 
     /**
@@ -113,9 +129,17 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         var transaction:Object = current();
         var implicit:Boolean = transaction == null;
         if (implicit) transaction = begin(context);
-        addSignedCurrency(transaction, "money", "金钱", moneyDelta, context);
-        addSignedCurrency(transaction, "kpoint", "K点", kpointDelta, context);
-        if (implicit) commit(transaction);
+        var completed:Boolean = false;
+        try {
+            addSignedCurrency(transaction, "money", "金钱", moneyDelta, context);
+            addSignedCurrency(transaction, "kpoint", "K点", kpointDelta, context);
+            completed = true;
+        } finally {
+            if (implicit) {
+                if (completed) commit(transaction);
+                else rollback(transaction);
+            }
+        }
     }
 
     /**

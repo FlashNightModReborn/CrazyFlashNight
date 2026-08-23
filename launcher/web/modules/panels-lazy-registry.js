@@ -262,17 +262,11 @@
          'modules/settings-panel.js'],
         noop);
 
-    // ── blackmarket（全量目录影子测试；防具复用 battle-rig 纸娃娃，仍无正式写入）──
+    // ── blackmarket（匿名合成影子测试；普通 Web 不加载真实物品目录）──
     Panels.registerLazy('blackmarket',
         ['modules/minigames/shared/host-bridge.js',
          'modules/minigames/blackmarket/core/index.js',
-         'modules/asset-timeline.js',
-         'modules/dressup-doll-renderer.js',
          'modules/workbench-inspection-viewport.js',
-         'modules/equipment-inspector.js',
-         'modules/merc-data.js',
-         'modules/merc-portrait-renderer.js',
-         'modules/minigames/blackmarket/visual/equipment-preview.js',
          'modules/minigames/blackmarket/visual/inspection-focus.js',
          'modules/minigames/blackmarket/visual/item-surface.js',
          'modules/minigames/blackmarket/blackmarket-panel.js'],

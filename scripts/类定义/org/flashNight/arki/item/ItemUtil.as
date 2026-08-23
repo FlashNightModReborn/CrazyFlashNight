@@ -772,6 +772,12 @@ class org.flashNight.arki.item.ItemUtil{
         var implicitAssetTransaction:Boolean = assetTransaction == null;
         if(implicitAssetTransaction) assetTransaction = PlayerAssetTransaction.begin(context);
 
+        var acquireCompleted:Boolean = false;
+        try {
+        // acquire 从下一行开始可能发生部分权威写；dirty 必须先于首写置位。
+        // 若存档系统本身不可用，本行会在任何资产变化前失败并由 finally 清理隐式 frame。
+        _root.存档系统.dirtyMark = true;
+
         //获取
         if(list.金币 > 0) _root.金钱 += list.金币;
         if(list.K点 > 0) _root.虚拟币 += list.K点;
@@ -879,13 +885,19 @@ class org.flashNight.arki.item.ItemUtil{
             }
         }
 
-        // Plan A audit: acquire() 改 金币/K点/经验/技能点/材料/情报/装备栏/药剂栏/背包 全部 save-relevant
-        // 字段，必须设 dirtyMark 让 SaveManager 知道需要落盘
-        _root.存档系统.dirtyMark = true;
         // 可选消费者只看已完成写入后的 detached receipt；显式领域事务存在时先缓冲，
         // 由最外层 commit 决定是否发布，避免制作/交易回滚产生幽灵播报。
         PlayerAssetTransaction.recordItems("gain", itemArray, context);
         if(implicitAssetTransaction) PlayerAssetTransaction.commit(assetTransaction);
+        acquireCompleted = true;
+        } finally {
+            // finally 不吞异常：原始容器/升级/记录异常继续向调用方传播。
+            // 只清理 acquire 自己建立且仍为栈顶的隐式 frame；显式领域事务不越权。
+            if(implicitAssetTransaction && !acquireCompleted
+                    && PlayerAssetTransaction.current() === assetTransaction) {
+                PlayerAssetTransaction.rollback(assetTransaction);
+            }
+        }
         return true;
     }
 

@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.PlayerAssetWireProjector;
+import org.flashNight.arki.item.ItemUtil;
 
 /**
  * PlayerAssetTransaction 的提交回执契约测试。
@@ -31,6 +32,8 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
         suite.testWireProjection();
         suite.testStrongSaveFinality();
         suite.testConsumerFailureIsolated();
+        suite.testImplicitExceptionDoesNotPoisonStack();
+        suite.testAcquireExceptionOwnsOnlyImplicitFrame();
         PlayerAssetTransaction.resetForTests();
         trace("PlayerAssetTransactionTest Tests Passed: " + suite.testPassed);
         trace("PlayerAssetTransactionTest Tests Failed: " + suite.testFailed);
@@ -354,6 +357,139 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
             "消费者异常不撤销已提交回执");
         assert(committed.effects[0].name == "急救包",
             "消费者故障时仍保留权威变化事实");
+    }
+
+    private function testImplicitExceptionDoesNotPoisonStack():Void {
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(captureInto(receipts));
+
+        var poison:Object = {};
+        poison.addProperty("name", function() {
+            throw "bad_asset_name";
+        }, null);
+        var threw:Boolean = false;
+        try {
+            PlayerAssetTransaction.recordItems("gain", [poison],
+                {source:"pickup", reason:"bad_fixture"});
+        } catch (error) {
+            threw = true;
+        }
+
+        assert(threw, "隐式事务保留原始输入异常，不静默伪装成功");
+        assert(PlayerAssetTransaction.current() == null,
+            "隐式事务中途异常会立即清理自身栈帧");
+        assert(receipts.length == 0, "失败的隐式事务不发布部分回执");
+
+        PlayerAssetTransaction.recordEffect("gain", "item", "后续急救包", 1,
+            {source:"pickup", reason:"recovery"});
+        assert(receipts.length == 1
+                && receipts[0].effects[0].name == "后续急救包",
+            "异常后的下一条隐式事务仍可独立提交");
+    }
+
+    private function testAcquireExceptionOwnsOnlyImplicitFrame():Void {
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(captureInto(receipts));
+
+        var oldInventory:Object = _root.物品栏;
+        var oldCollections:Object = _root.收集品栏;
+        var oldSave:Object = _root.存档系统;
+        var oldMoney = _root.金钱;
+        var oldKpoint = _root.虚拟币;
+        var emptyInventory:Object = {
+            getIndexes:function():Array { return []; },
+            getItemArray:function():Array { return []; },
+            getVacancies:function(count:Number):Array { return []; }
+        };
+        var throwKpointSetter:Function = function(value:Number):Void {
+            throw "acquire_kpoint_write_failed";
+        };
+        var fixedKpointGetter:Function = function():Number { return 50; };
+
+        try {
+            _root.物品栏 = {
+                装备栏:{getItem:function(key:String) { return null; }},
+                药剂栏:emptyInventory,
+                背包:emptyInventory
+            };
+            _root.收集品栏 = {材料:{}, 情报:{}};
+            _root.存档系统 = {dirtyMark:false};
+            _root.金钱 = 100;
+            delete _root.虚拟币;
+            _root.addProperty("虚拟币", fixedKpointGetter, throwKpointSetter);
+
+            var implicitError = null;
+            try {
+                ItemUtil.acquire([
+                    {name:"金币", value:5},
+                    {name:"K点", value:1}
+                ], {source:"pickup", reason:"implicit_acquire_failure"});
+            } catch (error) {
+                implicitError = error;
+            }
+            assert(implicitError == "acquire_kpoint_write_failed",
+                "acquire 隐式事务原样传播首个权威写后异常");
+            assert(PlayerAssetTransaction.current() == null,
+                "acquire 中途异常只清理自身隐式事务栈帧");
+            assert(_root.金钱 == 105 && _root.存档系统.dirtyMark === true,
+                "acquire 在首写前标脏，后续异常不会留下未标脏的部分权威状态");
+            assert(receipts.length == 0,
+                "acquire 中途异常不按原请求发布虚假全量获得回执");
+
+            delete _root.虚拟币;
+            _root.虚拟币 = 50;
+            _root.存档系统.dirtyMark = false;
+            var outer:Object = PlayerAssetTransaction.begin(
+                {source:"crafting", reason:"explicit_outer"});
+            PlayerAssetTransaction.recordEffect("loss", "material", "外层既有材料", 1,
+                {source:"crafting", reason:"explicit_outer"});
+            delete _root.虚拟币;
+            _root.addProperty("虚拟币", fixedKpointGetter, throwKpointSetter);
+            var explicitError = null;
+            try {
+                ItemUtil.acquire([
+                    {name:"金币", value:5},
+                    {name:"K点", value:1}
+                ], {source:"crafting", reason:"explicit_acquire_failure"});
+            } catch (outerError) {
+                explicitError = outerError;
+            }
+            assert(explicitError == "acquire_kpoint_write_failed"
+                    && PlayerAssetTransaction.current() === outer
+                    && outer.state == "open",
+                "acquire 异常不越权回滚调用方显式外层事务");
+            assert(outer.effects.length == 1
+                    && outer.effects[0].name == "外层既有材料"
+                    && receipts.length == 0
+                    && _root.金钱 == 110 && _root.存档系统.dirtyMark === true,
+                "显式外层保留既有 effect 与部分写 dirty，但 acquire 不注入虚假完整 effects");
+            assert(PlayerAssetTransaction.rollback(outer)
+                    && PlayerAssetTransaction.current() == null,
+                "显式领域调用方仍拥有外层事务的恢复与回滚决定权");
+
+            delete _root.虚拟币;
+            _root.虚拟币 = 50;
+            _root.存档系统.dirtyMark = false;
+            var recovered:Boolean = ItemUtil.acquire(
+                [{name:"金币", value:1}],
+                {source:"pickup", reason:"post_failure_recovery"});
+            assert(recovered && PlayerAssetTransaction.current() == null
+                    && receipts.length == 1
+                    && receipts[0].effects.length == 1
+                    && receipts[0].effects[0].name == "金钱"
+                    && receipts[0].effects[0].count == 1,
+                "异常后的下一次 acquire 仍能建立、提交并清空独立隐式事务");
+        } finally {
+            PlayerAssetTransaction.resetForTests();
+            delete _root.虚拟币;
+            _root.虚拟币 = oldKpoint;
+            _root.金钱 = oldMoney;
+            _root.物品栏 = oldInventory;
+            _root.收集品栏 = oldCollections;
+            _root.存档系统 = oldSave;
+        }
     }
 
     /**

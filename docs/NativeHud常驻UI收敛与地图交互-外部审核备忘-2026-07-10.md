@@ -44,7 +44,7 @@
 - 新增 `AudioHudState`，Native HUD 的 BGM peak history 只有一份；100ms 峰值采样、250ms 播放态轮询，低透明度包络位于 FPS 折线之后。
 - 点歌机、地图开关、修改器、帮助迁入 Notch 展开区“辅助”行；游戏入口、辅助入口、系统入口分为三行。“系统 → 其他”进一步按“控制 / 测试 / 工具”分页，叶子命令执行或刘海开始收起时同步关闭，不再保留 16 项悬挂长列。绘制硬裁切在刘海矩形内，顶部统计和系统按钮不再横向溢出侵入右栏。右侧 jukebox titlebar 和它的独立采样/暂停状态已删除。BGM 暂停保留在正式 Jukebox Panel，避免与右侧游戏暂停混淆。
 - 新增 `NativeHudTheme`，把常驻原生 UI 收敛到与下方 Flash 物品/技能槽相容的高密度黑底、1 device-pixel 直角发丝外框、与外框分离的内侧明暗压边和左上/右下角标；取消外层圆角/切角，hover/pressed 不再整圈提亮。常见 1.0～1.875 倍 viewport scale 不再膨胀成 2px 粗框。刘海折叠行与右侧动作行统一为 32px，展开按钮统一为 24px。地图、任务状态、SafeExit 与 Combo 外框共同复用主题，语义色只表达交互/危险/完成，不再用大圆角半透明卡片模拟毛玻璃。
-- 刘海外框单独降为低权重 frame，避免居中大容器比右侧槽位更硬。新增 `NativeHudFonts`，通过 `PrivateFontCollection` 复用 FontPack 的 AppData 思源宋体 OTF；常用中文 UI 改用思源宋体，FPS/数字/系统图标/Combo 保持原字体。字体缺失时安全回退，运行中刚下载字体包需重启生效；不向仅供 Flash CS6/FLa 编辑的 `闪7重置版字体` 复制第二份字体。
+- 刘海外框单独降为低权重 frame，避免居中大容器比右侧槽位更硬。该轮历史实现曾由 `PrivateFontCollection` 复用 FontPack 的 AppData 思源宋体 OTF；Gate E 后现役入口已迁到项目根 `fonts/`，旧 AppData 文件即使仍在磁盘也不再读取。常用中文 UI 使用语义 role，FPS/数字/系统图标/Combo 保持各自 role；字体缺失时安全回退，不向仅供 Flash CS6/FLA 编辑的 `闪7重置版字体` 复制第二份字体。
 - 未加入 350～500ms hover-intent 地图艺术预览；完整地图直达和显式 compact/expanded 已满足本期目标。未拆 Native HUD surface；先保留已验证的单 surface 稳定 bounds 方案，surface 拆分继续要求真实 A/B 数据后再裁决。
 
 ---
@@ -236,7 +236,7 @@
 - 刘海折叠行、右侧动作行共享 32px 设计高度；刘海展开按钮为 24px，文字基线和分隔线使用统一 token。
 - 金/青/红/绿只分别承担货币、交互、危险、成功等语义；普通分组不得各自发明主题色和边框透明度。
 - `NativeHudTheme` 是主题 token 与基础 path/draw primitive 的唯一入口；RightContext、Notch、SafeExit、Combo 新增外框必须复用它。
-- `NativeHudFonts` 是 Native HUD 中文字体入口；只从 FontPack AppData / shipped fallback 或系统字体链加载，不读取 `闪7重置版字体`。
+- `RuntimeFontCatalog` 是现役 Native HUD 字体入口，只从项目根 `fonts/temporary/custom → temporary/cache → permanent/runtime` 的已验证 byte snapshot 或系统 fallback 加载；此处原 `NativeHudFonts + FontPack AppData` 叙述仅为历史，不再构成当前合同。仍不读取 `闪7重置版字体`。
 - 结构线绘制时关闭抗锯齿；1.0～1.875 倍 viewport scale 固定 1px，超高缩放才进入 2px。外框与内侧压边至少隔开 1px，hover/pressed 只提亮内部角标、底色和文字，不整圈加粗。100/125/150/175% 人工矩阵必须检查发丝框清晰、直角稳定、文本不碰线；这部分不以状态机单测替代真机截图。
 
 ---

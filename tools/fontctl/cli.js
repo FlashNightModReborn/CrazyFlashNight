@@ -219,8 +219,19 @@ async function main() {
             preset: options.preset || null,
             candidates: resolution.candidates,
             selected: resolution.selected,
+            candidateOrder: resolution.candidateOrder,
+            selectionAuthority: resolution.selectionAuthority,
+            parityScope: resolution.parityScope,
+            authoritative: resolution.authoritative,
+            hostExactSelection: resolution.hostExactSelection,
+            runtimeProbePending: resolution.runtimeProbePending,
+            systemAvailabilityPending: resolution.systemAvailabilityPending,
             summary: resolution.selected
-                ? `${options.role} 首个可用候选：${resolution.selected.source}`
+                ? (!resolution.authoritative
+                    ? resolution.runtimeProbePending
+                        ? `${options.role} Node 暂定 fallback：${resolution.selected.source}；Host 仍须裁决 custom`
+                        : `${options.role} Node 暂定 system fallback；未探测本机 family 可用性`
+                    : `${options.role} Node face-major 静态首个可用候选：${resolution.selected.source}`)
                 : `${options.role} 没有可用候选`,
         };
     } else if (command === 'audit-usage') {

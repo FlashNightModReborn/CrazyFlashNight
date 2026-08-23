@@ -1,20 +1,37 @@
 'use strict';
 
 const { diagnostic, sortDiagnostics } = require('./catalog');
-const { SOURCE_DIRECTORIES, scanFontDirectories } = require('./scan');
+const {
+    SOURCE_DIRECTORIES,
+    isCustomOverrideFormatSupported,
+    scanFontDirectories,
+} = require('./scan');
 
 function resolveRole(catalog, maps, fontRoot, roleId, presetId = null) {
     const diagnostics = [];
-    const add = (code, message, detail = {}) => diagnostics.push(diagnostic(
+    const add = (code, message, detail = {}, severity = 'error') => diagnostics.push(diagnostic(
         code,
         message,
         catalog.file,
         { line: 0, column: 0, ...detail },
+        severity,
     ));
     const role = maps.rolesById.get(roleId);
     if (!role) {
         add('UNKNOWN_ROLE', `未知 role：${roleId || '(未提供)'}`, { role: roleId });
-        return { candidates: [], selected: null, diagnostics: sortDiagnostics(diagnostics), scan: null };
+        return {
+            candidates: [],
+            selected: null,
+            candidateOrder: 'face-major',
+            selectionAuthority: 'none',
+            parityScope: 'none',
+            authoritative: false,
+            hostExactSelection: false,
+            runtimeProbePending: false,
+            systemAvailabilityPending: false,
+            diagnostics: sortDiagnostics(diagnostics),
+            scan: null,
+        };
     }
 
     let preset = null;
@@ -55,14 +72,18 @@ function resolveRole(catalog, maps, fontRoot, roleId, presetId = null) {
     for (const file of scan.files) filesBySource.get(file.source).push(file);
     const candidates = [];
 
-    for (const source of SOURCE_DIRECTORIES.map((entry) => entry.source)) {
-        for (const faceEntry of faceOrder) {
-            const face = maps.facesById.get(faceEntry.face);
-            const asset = maps.faceOwners.get(faceEntry.face);
-            if (!face || !asset) {
-                add('BROKEN_FACE_REF', `role ${roleId} 的候选 face 不存在：${faceEntry.face}`, { role: roleId, ref: faceEntry.face });
-                continue;
-            }
+    // RuntimeFontCatalog/CSS fallback is face-major: exhaust custom/cache/permanent
+    // for the first declared face before considering the next face. A source-major
+    // traversal would incorrectly let a later face's cache override an earlier
+    // face's permanent asset.
+    for (const faceEntry of faceOrder) {
+        const face = maps.facesById.get(faceEntry.face);
+        const asset = maps.faceOwners.get(faceEntry.face);
+        if (!face || !asset) {
+            add('BROKEN_FACE_REF', `role ${roleId} 的候选 face 不存在：${faceEntry.face}`, { role: roleId, ref: faceEntry.face });
+            continue;
+        }
+        for (const source of SOURCE_DIRECTORIES.map((entry) => entry.source)) {
             const matches = (filesBySource.get(source) || []).filter((file) => file.file.toLowerCase() === asset.file.toLowerCase());
             if (matches.length > 1) {
                 add('AMBIGUOUS_LOCAL_FONT', `${source} 中有多个 ${asset.file}，无法确定候选`, { role: roleId, face: face.id, source });
@@ -74,8 +95,26 @@ function resolveRole(catalog, maps, fontRoot, roleId, presetId = null) {
                 if (!local.validFont) {
                     integrity = 'invalid-font';
                 } else if (source === 'temporary/custom') {
-                    integrity = 'custom-override';
-                    eligible = true;
+                    if (!isCustomOverrideFormatSupported(asset.format)) {
+                        integrity = 'unsupported-custom-font';
+                        add(
+                            'CUSTOM_WOFF2_OVERRIDE_UNSUPPORTED',
+                            `local custom WOFF2 当前没有运行时覆盖权，将继续解析 cache/permanent：${local.relative}`,
+                            { role: roleId, face: face.id, source, format: asset.format },
+                            'warning',
+                        );
+                    } else {
+                        // Node 的零依赖 parser 只证明容器、glyph 表与 metadata 结构；
+                        // 它不能代签 Launcher 的 Skia/PrivateFontCollection 实际解析。
+                        // 因此 CLI 永不把 custom 自行判为可覆盖，生产选择只由 Host 探针裁决。
+                        integrity = 'runtime-probe-required';
+                        add(
+                            'CUSTOM_RUNTIME_PROBE_REQUIRED',
+                            `local custom 必须由 Launcher 实际解析探针裁决，Node 不授予覆盖权：${local.relative}`,
+                            { role: roleId, face: face.id, source, format: asset.format },
+                            'warning',
+                        );
+                    }
                 } else {
                     const expected = asset.integrity || asset.downloads[0] || null;
                     if (!expected) {
@@ -120,10 +159,50 @@ function resolveRole(catalog, maps, fontRoot, roleId, presetId = null) {
     }
 
     candidates.push(...fallbackCandidates);
+    const selectedIndex = candidates.findIndex((item) => item.eligible);
+    const candidatesBeforeSelection = selectedIndex < 0
+        ? candidates
+        : candidates.slice(0, selectedIndex);
+    const runtimeProbePending = candidatesBeforeSelection.some((item) => (
+        item.source === 'temporary/custom' && item.integrity === 'runtime-probe-required'
+    ));
+    const selectedCandidate = selectedIndex < 0 ? null : candidates[selectedIndex];
+    const systemAvailabilityPending = Boolean(selectedCandidate
+        && selectedCandidate.source === 'system-fallback'
+        && selectedCandidate.available === null);
+    const provisional = runtimeProbePending || systemAvailabilityPending;
+    const selectionAuthority = runtimeProbePending
+        ? 'provisional-node-fallback'
+        : systemAvailabilityPending
+            ? 'provisional-system-availability'
+            : selectedCandidate
+                ? 'node-static'
+                : 'none';
+    const parityScope = runtimeProbePending
+        ? 'face-major-order-only-host-probe-pending'
+        : systemAvailabilityPending
+            ? 'face-major-order-only-system-availability-unprobed'
+            : selectedCandidate
+                ? 'face-major-static-selection'
+                : 'none';
+    const selected = selectedCandidate ? {
+        ...selectedCandidate,
+        provisional,
+        authoritative: !provisional,
+        hostExactSelection: false,
+        selectionAuthority,
+    } : null;
 
     return {
         candidates,
-        selected: candidates.find((item) => item.eligible) || null,
+        selected,
+        candidateOrder: 'face-major',
+        selectionAuthority,
+        parityScope,
+        authoritative: !provisional,
+        hostExactSelection: false,
+        runtimeProbePending,
+        systemAvailabilityPending,
         diagnostics: sortDiagnostics(diagnostics),
         scan: { fileCount: scan.files.length },
     };

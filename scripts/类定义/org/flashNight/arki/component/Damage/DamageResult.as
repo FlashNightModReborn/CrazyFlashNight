@@ -129,6 +129,15 @@ class org.flashNight.arki.component.Damage.DamageResult {
     /** 每弹盾吸收量，仅 EF_SHIELD 置位时有效 */
     public var _efShieldAbsorb:Number;
 
+    /**
+     * 本次已通过护盾强度门槛的击溃配对伤害。
+     *
+     * CrumbleDamageHandle 会同步降低 hp满血值；DamageCalculator 必须用本槽把
+     * 对应的当前 HP 损失从普通可吸收伤害中拆出，避免护盾只挡住 HP 损失、
+     * 却仍永久扣掉同一份上限。该槽只服务结算，不参与效果文案。
+     */
+    public var _crumbleDamage:Number;
+
     /** 颜色枚举 ID（0-10，索引 HitNumberBatchProcessor.COLOR_TABLE），由 Handle 直写 */
     public var _dmgColorId:Number;
 
@@ -183,6 +192,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
         this._efEmoji = null;
         this._efLifeSteal = 0;
         this._efShieldAbsorb = 0;
+        this._crumbleDamage = 0;
     }
 
     /**
@@ -218,6 +228,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
         // 延迟 HTML 构建：仅需重置位掩码和颜色 ID（槽值由 _efFlags 守护，无需重置）
         r._efFlags = 0;
         r._dmgColorId = 0;
+        r._crumbleDamage = 0;
 
         return r;
     }
@@ -243,6 +254,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
         // 延迟 HTML 构建：仅需重置位掩码和颜色 ID
         r._efFlags = 0;
         r._dmgColorId = 0;
+        r._crumbleDamage = 0;
 
         return r;
     }

@@ -3,6 +3,7 @@ import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.neur.Event.EventBus;
 
 /**
  * 非主角托管长枪领域服务。
@@ -219,8 +220,12 @@ class org.flashNight.arki.merc.ManagedLongGunService {
     public static function handoff(petInfo:Array, source:Object):Object {
         if (_busy) return fail("busy");
         _busy = true;
-        var result:Object = handoffInternal(petInfo, source);
-        _busy = false;
+        var result:Object;
+        try {
+            result = handoffInternal(petInfo, source);
+        } finally {
+            _busy = false;
+        }
         return result;
     }
 
@@ -247,12 +252,12 @@ class org.flashNight.arki.merc.ManagedLongGunService {
         // 写失败时撤销未生效的托管记录，不会发布任何中间态事件。
         var attrs:Object = ensureAttrs(petInfo);
         attrs[CUSTODY_KEY] = {version:1, item:frozen};
-        if (!inventory.transactionWrite(slot, null)) {
+        if (!tryTransactionWrite(inventory, slot, null)) {
             delete attrs[CUSTODY_KEY];
             return fail("commit_failed");
         }
         if (inventory.getItem(String(slot)) != null) {
-            var rollbackComplete:Boolean = inventory.transactionWrite(slot, original)
+            var rollbackComplete:Boolean = tryTransactionWrite(inventory, slot, original)
                 && inventory.getItem(String(slot)) === original;
             if (rollbackComplete) delete attrs[CUSTODY_KEY];
             return fail(rollbackComplete ? "commit_failed" : "rollback_failed");
@@ -284,8 +289,12 @@ class org.flashNight.arki.merc.ManagedLongGunService {
     public static function withdraw(petInfo:Array):Object {
         if (_busy) return fail("busy");
         _busy = true;
-        var result:Object = withdrawInternal(petInfo);
-        _busy = false;
+        var result:Object;
+        try {
+            result = withdrawInternal(petInfo);
+        } finally {
+            _busy = false;
+        }
         return result;
     }
 
@@ -306,9 +315,9 @@ class org.flashNight.arki.merc.ManagedLongGunService {
         if (weaponProjection == null) return fail("custody_corrupt");
         var bag:ArrayInventory = _root.物品栏.背包;
         var slot:Number = Number(preflight.slot);
-        if (!bag.transactionWrite(slot, restored)) return fail("commit_failed");
+        if (!tryTransactionWrite(bag, slot, restored)) return fail("commit_failed");
         if (bag.getItem(String(slot)) !== restored) {
-            var rollbackComplete:Boolean = bag.transactionWrite(slot, null)
+            var rollbackComplete:Boolean = tryTransactionWrite(bag, slot, null)
                 && bag.getItem(String(slot)) == null;
             return fail(rollbackComplete ? "commit_failed" : "rollback_failed");
         }
@@ -451,8 +460,35 @@ class org.flashNight.arki.merc.ManagedLongGunService {
     private static function publishCommittedSlot(inventory:ArrayInventory,
                                                   slot:Number,
                                                   changeKind:String):Void {
-        InventoryPanelService.invalidateExternalSlot("背包", slot);
-        inventory.publishTransactionChange(slot, changeKind);
+        try {
+            InventoryPanelService.invalidateExternalSlot("背包", slot);
+        } catch (invalidationError) {
+            // authority 已提交；下一次 snapshot 会按 inventory revision 重建缓存。
+        }
+        var recoverDispatch:Function = EventBus.getInstance().createDispatchRecoveryToken();
+        try {
+            inventory.publishTransactionChange(slot, changeKind);
+        } catch (publishError) {
+            // authority 已提交；只回退本次通知留下的内层 dispatch 槽。
+            // 令牌不会抬高 depth，也不会清空可能存在的外层事件快照。
+            recoverDispatch();
+        }
+    }
+
+    /**
+     * ArrayInventory 会把提交内部异常原子回滚并返回 false；
+     * 此边界再隔离一次未来实现可能逸出的异常，确保交付可撤销
+     * custody，取回则继续保留 custody，不暴露半份所有权转移。
+     */
+    private static function tryTransactionWrite(inventory:ArrayInventory,
+                                                slot:Number,
+                                                item:Object):Boolean {
+        if (inventory == null) return false;
+        try {
+            return inventory.transactionWrite(slot, item) === true;
+        } catch (commitError) {
+            return false;
+        }
     }
 
     private static function fail(code:String):Object {

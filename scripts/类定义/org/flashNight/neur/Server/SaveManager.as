@@ -907,6 +907,12 @@ class org.flashNight.neur.Server.SaveManager {
 
         sm.sendServerMessage("[SaveManager.loadAll] version=" + _root.mydata.version + " 角色名=" + _root.mydata[0][0] + " 等级=" + _root.mydata[0][3]);
 
+        // SOL 分支没有经过 _applyCore；切换角色时必须在解包当前存档前清掉
+        // 上一角色留下的设置/键位迁移 latch。当前存档若确需迁移，下面的
+        // migrate / unpackGameState 会按本档内容重新置位。
+        _settingsMigrationPending = false;
+        KeyManager.clearPendingKeySettingsMigration();
+
         // 迁移
         var changed:Boolean = migrate(_root.mydata, soData);
         if (changed) {

@@ -418,14 +418,7 @@
     content: "SHARP PROXY";
 }
 
-/* 原始 icon 只承担解码预取，任何状态都不得直接成为可见回退。 */
-.blackmarket-offer.state-available .blackmarket-asset.color-monochrome .blackmarket-item-fallback,
-.blackmarket-offer.state-available .blackmarket-asset.color-proxy .blackmarket-item-fallback {
-    filter: brightness(0) invert(72%);
-}
-
 .blackmarket-item-surface,
-.blackmarket-item-fallback,
 .blackmarket-surface-guard {
     grid-area: 1 / 1;
     width: 92%;
@@ -444,16 +437,6 @@
 
 .blackmarket-item-surface[data-surface-state="loading"] {
     background: radial-gradient(circle, rgba(112,216,192,0.06), transparent 55%);
-}
-
-.blackmarket-item-fallback {
-    z-index: 1;
-    object-fit: contain;
-    image-rendering: auto;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7));
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none;
 }
 
 .blackmarket-surface-guard {

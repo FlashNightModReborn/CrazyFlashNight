@@ -113,18 +113,36 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         }
         if (_root.soundEffectManager == undefined) return fail("audio_unavailable");
         if (_previewBaseline == undefined) {
-            _previewBaseline = {
-                globalVolume:Number(_root.soundEffectManager.getGlobalVolume()),
-                bgmVolume:Number(_root.soundEffectManager.getBGMVolume())
-            };
+            try {
+                _previewBaseline = {
+                    globalVolume:Number(_root.soundEffectManager.getGlobalVolume()),
+                    bgmVolume:Number(_root.soundEffectManager.getBGMVolume())
+                };
+            } catch (baselineError) {
+                _previewBaseline = undefined;
+                return fail("audio_unavailable");
+            }
         }
-        _root.soundEffectManager.setGlobalVolume(globalVolume);
-        _root.soundEffectManager.setBGMVolume(bgmVolume);
-        armPreviewRestoreTimer();
         var played:Boolean = false;
-        if (sample == "sfx" && typeof _root.soundEffectManager.playSound == "function") {
-            _root.soundEffectManager.playSound("Button9.wav");
-            played = true;
+        try {
+            // 先建立恢复租约，再执行任一可能留下部分副作用的 setter。
+            armPreviewRestoreTimer();
+            _root.soundEffectManager.setGlobalVolume(globalVolume);
+            _root.soundEffectManager.setBGMVolume(bgmVolume);
+            if (sample == "sfx" && typeof _root.soundEffectManager.playSound == "function") {
+                _root.soundEffectManager.playSound("Button9.wav");
+                played = true;
+            }
+        } catch (previewError) {
+            var restored:Boolean = restoreAudioPreview();
+            return {
+                success:false,
+                v:1,
+                operation:"preview",
+                error:"audio_preview_failed",
+                previewRestored:restored,
+                previewActive:_previewBaseline != undefined
+            };
         }
         return {
             success:true,
@@ -144,7 +162,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             v:1,
             operation:"cancel",
             previewRestored:restored,
-            previewActive:false
+            previewActive:_previewBaseline != undefined
         };
     }
 
@@ -264,12 +282,28 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         if (typeof _root.cheatCode != "function") return fail("cheat_unavailable");
         var classification:Object = classifyCheat(command);
         if (classification == null) return fail("unknown_command");
+        var mayWriteSave:Boolean = classification.effectScope == "save";
+        // 作弊后端里有多条“先改权威字段、后刷新 UI/发布事件”的路径。
+        // 后段一旦抛错，调用方无法证明前段没有生效；必须在进入后端前先置脏，
+        // 并把异常报告为需对账的未知写，不能把部分写伪装成确定未执行。
+        if (mayWriteSave) markDirty();
         try {
             _root.cheatCode(command);
         } catch (cheatError) {
+            if (mayWriteSave) {
+                return {
+                    success:false,
+                    v:1,
+                    operation:"cheat",
+                    error:"command_ambiguous",
+                    command:command,
+                    effectScope:"save",
+                    dirty:_root.存档系统 != undefined && _root.存档系统.dirtyMark === true,
+                    requiresReconcile:true
+                };
+            }
             return fail("command_failed");
         }
-        if (classification.effectScope == "save") markDirty();
         return {
             success:true,
             v:1,
@@ -493,8 +527,20 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
                 return fail("invalid_keys");
             }
             var code:Number = Number(binding.keyCode);
-            if (!isIntegerInRange(code, 0, 255) || !KeyManager.hasKeyName(code)
-                    || isReservedKey(code)) return fail("reserved_key");
+            if (!isIntegerInRange(code, 0, 255) || !KeyManager.hasKeyName(code)) {
+                return fail("reserved_key");
+            }
+            if (isReservedKey(code)) {
+                // 历史存档可能早于面板保留键规则，已经持有 F1-F12/Esc。
+                // 完整 apply 必须允许原样携带该旧绑定，否则只改音量也会被卡死；
+                // 但任何新分配到保留键的请求仍然拒绝。
+                var current:Array = _root.键值设定[i];
+                var unchangedLegacy:Boolean = current instanceof Array
+                    && current.length >= 3
+                    && String(current[1]) == String(binding.id)
+                    && Number(current[2]) == code;
+                if (!unchangedLegacy) return fail("reserved_key");
+            }
             if (seen[code] === true) return fail("key_conflict");
             seen[code] = true;
             normalized.push([authority[0], String(authority[1]), code]);
@@ -503,15 +549,33 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     }
 
     private static function restoreAudioPreview():Boolean {
-        clearPreviewRestoreTimer();
-        if (_previewBaseline == undefined || _root.soundEffectManager == undefined) {
-            _previewBaseline = undefined;
+        if (_previewBaseline == undefined) {
+            clearPreviewRestoreTimer();
             return false;
         }
-        _root.soundEffectManager.setGlobalVolume(Number(_previewBaseline.globalVolume));
-        _root.soundEffectManager.setBGMVolume(Number(_previewBaseline.bgmVolume));
-        _previewBaseline = undefined;
-        return true;
+        if (_root.soundEffectManager == undefined) {
+            armPreviewRestoreTimer();
+            return false;
+        }
+        var globalRestored:Boolean = false;
+        var bgmRestored:Boolean = false;
+        try {
+            _root.soundEffectManager.setGlobalVolume(Number(_previewBaseline.globalVolume));
+            globalRestored = true;
+        } catch (globalRestoreError) {}
+        try {
+            _root.soundEffectManager.setBGMVolume(Number(_previewBaseline.bgmVolume));
+            bgmRestored = true;
+        } catch (bgmRestoreError) {}
+        if (globalRestored && bgmRestored) {
+            clearPreviewRestoreTimer();
+            _previewBaseline = undefined;
+            return true;
+        }
+        // 任一 setter 失败都保留原始基线并重新挂恢复租约；下一次 timer、cancel
+        // 或 panel_closed 仍可继续恢复，不能把部分污染永久化。
+        armPreviewRestoreTimer();
+        return false;
     }
 
     private static function armPreviewRestoreTimer():Void {
@@ -519,6 +583,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         var timerId:Number;
         timerId = setInterval(function():Void {
             clearInterval(timerId);
+            _previewRestoreTimer = undefined;
             org.flashNight.arki.ui.GameSettingsPanelService.execute("panel_closed", {v:1});
         }, 30000);
         _previewRestoreTimer = timerId;
@@ -601,8 +666,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             {command:"#give:物品名,数量", description:"给予物品", effectScope:"save"},
             {command:"#task:链名,进度", description:"修改任务链进度", effectScope:"save"},
             {command:"#spawn:兵种,等级 / #tp:x,y", description:"召唤或传送（当前场景）", effectScope:"session"},
-            {command:"#get:路径 / #eval:表达式", description:"高级只读诊断", effectScope:"read"},
-            {command:"#set / #_root / #func", description:"高级原始控制，影响范围未知", effectScope:"unknown"}
+            {command:"#get / #eval / #set / #_root / #func / #code", description:"高级表达式与原始控制，保守按存档写入处理", effectScope:"save"}
         ]);
     }
 
@@ -616,7 +680,11 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
                     || command == "arenakills") return {effectScope:"save"};
             return {effectScope:"session"};
         }
-        if (startsWith(command, "#get:") || startsWith(command, "#eval:")) return {effectScope:"read"};
+        if (startsWith(command, "#get:") || startsWith(command, "#eval:")) {
+            // 两种求值器都允许属性路径中的函数调用，读取语法并不等于无副作用；
+            // 无法证明表达式纯读时必须按 save 处理，避免 splice 等调用静默改存档。
+            return {effectScope:"save"};
+        }
         if (startsWith(command, "#level:") || startsWith(command, "#gold:")
                 || startsWith(command, "#sp:") || startsWith(command, "#give:")
                 || startsWith(command, "#task:") || (startsWith(command, "..")
@@ -625,7 +693,9 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
                 || startsWith(command, "#change:")) return {effectScope:"session"};
         if (startsWith(command, "#set:") || startsWith(command, "#_root.")
                 || startsWith(command, "#func:_root.") || startsWith(command, "#code:")) {
-            return {effectScope:"unknown"};
+            // raw 控制可直接写 _root 或调用任意根函数，无法可靠证明只影响会话态；
+            // 一律按 save 分类，宁可多一次持久化，也不能让已接受的存档写静默丢失。
+            return {effectScope:"save"};
         }
         return null;
     }

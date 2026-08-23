@@ -140,6 +140,27 @@ try {
         @([regex]::Matches(
             $repositoryAttributes,
             '(?m)^launcher/THIRD-PARTY-NOTICES\.txt text eol=lf whitespace=-blank-at-eol$')).Count
+    $canonicalGeneratedLfFiles = @(
+        'launcher/scripts/dist/hit-number-bundle.js',
+        'launcher/web/modules/arena-custom-presets.js',
+        'launcher/web/modules/arena-unit-catalog.js',
+        'launcher/web/modules/arena-unit-param-presets.js'
+    )
+    foreach ($canonicalGeneratedLfFile in $canonicalGeneratedLfFiles) {
+        Assert-Equal "canonical generated output has one explicit LF checkout rule: $canonicalGeneratedLfFile" 1 `
+            @([regex]::Matches(
+                $repositoryAttributes,
+                ('(?m)^' + [regex]::Escape($canonicalGeneratedLfFile) + ' text eol=lf$'))).Count
+        $effectiveAttributes = [string]::Join("`n", @(
+            & git -C $ProjectRoot check-attr text eol -- $canonicalGeneratedLfFile
+        ))
+        if ($LASTEXITCODE -ne 0) { throw "Cannot inspect generated-output attributes: $canonicalGeneratedLfFile" }
+        Assert-Equal "canonical generated output resolves effective eol=lf: $canonicalGeneratedLfFile" $true `
+            ($effectiveAttributes -match '(?m): text: set$' -and $effectiveAttributes -match '(?m): eol: lf$')
+        $canonicalGeneratedBytes = [IO.File]::ReadAllBytes((Join-Path $ProjectRoot ($canonicalGeneratedLfFile -replace '/', '\')))
+        Assert-Equal "canonical generated output worktree contains no CR bytes: $canonicalGeneratedLfFile" 0 `
+            @($canonicalGeneratedBytes | Where-Object { $_ -eq 13 }).Count
+    }
     $repositoryNoticeBytes = [IO.File]::ReadAllBytes(
         (Join-Path $ProjectRoot 'launcher\THIRD-PARTY-NOTICES.txt'))
     Assert-Equal 'third-party notice worktree contains no CR bytes' 0 `
@@ -390,6 +411,7 @@ try {
     Write-TestText (Join-Path $testRoot 'runtime\cf7-runtime-manifest.tsv') 'manifest-v1'
     Write-TestText (Join-Path $testRoot 'runtime\runtime-build-attestation.json') 'attestation-v1'
     Write-TestText (Join-Path $testRoot 'runtime\attestations\old.json') 'old-attestation'
+    Write-TestText (Join-Path $testRoot '.gitattributes') "*.cs text eol=lf`n"
 
     & git -C $testRoot init --quiet
     if ($LASTEXITCODE -ne 0) { throw 'Cannot initialize runtime v2 Git fixture.' }
@@ -403,6 +425,25 @@ try {
     foreach ($field in @('artifactSourceHash','producerRecipeHash','toolchainLockHash','policyHash','buildIdentityHash')) {
         Assert-Equal "Worktree/Index baseline $field" $baseWorktree.$field $baseIndex.$field
     }
+
+    # A clean Windows checkout may physically contain CRLF even when its Git identity is the
+    # canonical LF blob. Pin the real-byte case: both worktree identity implementations must
+    # apply the path's clean filter exactly like the index instead of hashing raw disk bytes.
+    $crlfAppPath = Join-Path $testRoot 'src\app.cs'
+    Write-TestText $crlfAppPath "class App {}`r`n"
+    $crlfAppBytes = [IO.File]::ReadAllBytes($crlfAppPath)
+    Assert-Equal 'CRLF identity fixture contains one physical CR byte' 1 `
+        @($crlfAppBytes | Where-Object { $_ -eq 13 }).Count
+    & git -C $testRoot diff --quiet --no-ext-diff -- src/app.cs
+    Assert-Equal 'CRLF identity fixture remains Git-clean through eol=lf' 0 $LASTEXITCODE
+    $crlfIndexOid = Get-Cf7RuntimeV2GitObjectId -ProjectRoot $testRoot -RelativePath 'src/app.cs' -Mode Index
+    $crlfSingleOid = Get-Cf7RuntimeV2GitObjectId -ProjectRoot $testRoot -RelativePath 'src/app.cs' -Mode Worktree
+    $crlfBatchOid = [string](@(
+        Get-Cf7RuntimeV2WorktreeObjectIds -ProjectRoot $testRoot -RelativePaths @('src/app.cs')
+    )[0])
+    Assert-Equal 'single-file worktree identity cleans physical CRLF to index blob' $crlfIndexOid $crlfSingleOid
+    Assert-Equal 'batched worktree identity cleans physical CRLF to index blob' $crlfIndexOid $crlfBatchOid
+    Write-TestText $crlfAppPath "class App {}`n"
 
     # P1 regression: batched domain identity resolution must stay byte-identical to the
     # single-file reference implementation, in both modes, for every domain.

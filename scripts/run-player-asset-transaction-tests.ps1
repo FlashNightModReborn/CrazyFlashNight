@@ -50,11 +50,14 @@ $focusedRun = @{
     SuiteFqns = @(
         'org.flashNight.arki.item.PlayerAssetTransactionTest'
     )
+    AdditionalAsRelativePaths = @(
+        'scripts\类定义\org\flashNight\arki\item\ItemUtil.as'
+    )
     ExpectedTracePatterns = @(
-        '(?m)^PlayerAssetTransactionTest Tests Passed: 61\r?$'
+        '(?m)^PlayerAssetTransactionTest Tests Passed: 73\r?$'
         '(?m)^PlayerAssetTransactionTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'PlayerAssetTransactionTest 61/61'
+    SuccessSummary = 'PlayerAssetTransactionTest 73/73'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

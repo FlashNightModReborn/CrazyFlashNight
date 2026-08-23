@@ -2,8 +2,8 @@
  * DamageCalculator 计算伤害的核心类
  *
  * 本类包含静态方法 calculateDamage，用于计算子弹击中目标后的伤害值，
- * 并更新目标血量及相关状态。代码中通过隐式转换和位运算实现高效的数值处理，
- * 同时在保证性能的前提下兼顾了异常防护和精度处理。
+ * 并更新目标血量及相关状态。血量结算使用 Number 域，不把合法的大血量压入
+ * signed-int32；只有显示等明确的 32 位字段仍可使用位运算取整。
  *
  * 详细说明：
  * 1. 参数说明：
@@ -54,24 +54,63 @@
  *         • absorbDamage 返回穿透护盾后的剩余伤害，并更新 hitTarget.损伤值
  *    - 调用 damageResult.calculateScatterDamage() 方法对散射伤害进行进一步计算，
  *      参数为 damageNumber（已经过护盾吸收处理）。
- *    - 更新目标血量 (hitTarget.hp)：
- *         • 通过 (hp - damageNumber) | 0 利用按位或操作符将计算结果转换为整数，
- *           该操作既截断了小数部分，也提升了计算效率。
- *         • 通过 (hp >> 31) 右移31位获取符号位：若 hp 为负数，则结果为全1（即 -1）；若 hp 为正，则为 0。
- *         • ~(hp >> 31) 取反，保证若 hp 为负则结果为 0，从而最终用位运算确保血量不会变成负数。
+ *    - 更新目标血量 (hitTarget.hp)：在 Number 域做减法与向下取整，再把非正结果夹到 0；
+ *      这样 hp 超过 2^31-1 时不会因 signed-int32 回绕而瞬间归零。
  *
  * 3. 性能与代码技巧说明：
  *    - 通过局部变量缓存常用属性（例如 damageNumber）可以减少对象属性查找次数，提高运行效率。
- *    - 隐式转换与按位运算（如 (变量 | 0) 和 (变量 >> 31)）被巧妙利用，
- *      在保证高效执行的同时处理了非数值或异常情况，减少了不必要的函数调用（如 Math.floor 或 Math.max）。
- *    - 此代码虽然运用了较多的位运算技巧来优化性能，但也增加了阅读与维护的复杂度，
- *      需要在详细了解其工作原理后才能正确修改或扩展功能。
+ *    - 常规正数且结果不超过 signed-int32 上限时继续用位运算快路取整；
+ *      超大调试 HP 与异常值才进入 Number 安全慢路，不能发生 signed-int32 回绕。
  *
  */
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.Shield.*;
 import org.flashNight.naki.RandomNumberEngine.*;
 class org.flashNight.arki.component.Damage.DamageCalculator {
+
+    /**
+     * 在 Number 域结算扣血，保留超过 2^31-1 的合法 HP。
+     * 非正/NaN 伤害按 0 处理；正无穷伤害仍视为致死，异常当前 HP 则安全归零。
+     */
+    public static function calculateRemainingHp(currentHp:Number, damage:Number):Number {
+        if (!(currentHp > 0)) return 0;
+
+        if (damage > 0) {
+            var remainingHp:Number = currentHp - damage;
+            if (!(remainingHp > 0)) return 0;
+
+            // 绝大多数命中留在原有 signed-int32 安全快路。
+            if (remainingHp <= 2147483647) return remainingHp | 0;
+
+            // 超大调试 HP 才付 Number 域校验与取整成本。
+            if (!isFinite(remainingHp)) return 0;
+            return Math.floor(remainingHp);
+        }
+
+        // 非正/NaN 伤害不扣血；同样优先走常规整数快路。
+        if (currentHp <= 2147483647) return currentHp | 0;
+        if (!isFinite(currentHp)) return 0;
+        return Math.floor(currentHp);
+    }
+
+    /**
+     * 击溃降低 live 满血值后，HP 比例不得越过受击前已经合法持有的比例。
+     * 该门只在本次确有击溃时启用；普通伤害、吸血与其他治疗仍完全由
+     * HealApplier 的溢出曲线管理，不做全局 HP clamp。
+     */
+    private static function enforceCrumbleHpInvariant(remainingHp:Number,
+                                                       liveMaxHp:Number,
+                                                       preHitHpRatio:Number,
+                                                       crumbleDamage:Number):Number {
+        if (!(crumbleDamage > 0) || !isFinite(crumbleDamage)) return remainingHp;
+        if (!(liveMaxHp > 0) || !isFinite(liveMaxHp)) return 0;
+        if (!(preHitHpRatio > 0) || !isFinite(preHitHpRatio)) return 0;
+
+        var allowedHp:Number = liveMaxHp * preHitHpRatio;
+        if (!(allowedHp > 0) || !isFinite(allowedHp)) return 0;
+        if (remainingHp > allowedHp) return Math.floor(allowedHp);
+        return remainingHp;
+    }
 
     /**
      * 计算伤害值并更新目标状态的静态方法。
@@ -159,10 +198,36 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         // 调用护盾吸收：返回穿透伤害，原伤害被护盾部分或全部吸收
         // hitCount 使用实际消耗的霰弹值，而非子弹原始霰弹值
         var actualScatterUsed:Number = damageResult.actualScatterUsed;
-        var penetratingDamage:Number = shield.absorbDamage(damageNumber, bullet.伤害类型 === "真伤", actualScatterUsed);
+
+        var crumbleDamage:Number = Number(damageResult._crumbleDamage);
+        if (!(crumbleDamage > 0) || !isFinite(crumbleDamage)
+                || !(damageNumber > 0) || !isFinite(damageNumber)) {
+            // 无击溃热路径保持原有顺序，不计算比例、不拆分伤害。
+            var normalPenetratingDamage:Number = shield.absorbDamage(
+                damageNumber, bullet.伤害类型 === "真伤", actualScatterUsed);
+            var normalAbsorbedDamage:Number = damageNumber - normalPenetratingDamage;
+            if (normalAbsorbedDamage > 0) {
+                damageResult._efFlags |= 256; // EF_SHIELD
+                damageResult._efShieldAbsorb = (normalAbsorbedDamage / actualScatterUsed) | 0;
+            }
+
+            hitTarget.损伤值 = normalPenetratingDamage;
+            damageResult.calculateScatterDamage(normalPenetratingDamage);
+            hitTarget.hp = calculateRemainingHp(hp, normalPenetratingDamage);
+            return damageResult;
+        }
+
+        // 击溃已经用 bullet.子弹威力 > shield.getStrength() 完成盾强门控。
+        // 只把其余普通伤害交给容量盾；否则容量盾可以吸收击溃配对的当前 HP
+        // 损失，却无法回滚已经发生的 hp满血值扣减。
+        if (crumbleDamage > damageNumber) crumbleDamage = damageNumber;
+        var shieldableDamage:Number = damageNumber - crumbleDamage;
+        if (!(shieldableDamage > 0) || !isFinite(shieldableDamage)) shieldableDamage = 0;
+        var shieldPenetratingDamage:Number = shield.absorbDamage(
+            shieldableDamage, bullet.伤害类型 === "真伤", actualScatterUsed);
 
         // 如果护盾吸收了伤害，添加视觉反馈
-        var absorbedDamage:Number = damageNumber - penetratingDamage;
+        var absorbedDamage:Number = shieldableDamage - shieldPenetratingDamage;
         if (absorbedDamage > 0) {
             // 延迟 HTML 构建：护盾效果位标记 + 吸收量槽
             damageResult._efFlags |= 256; // EF_SHIELD
@@ -170,18 +235,24 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         }
 
         // 更新损伤值以反映护盾吸收后的实际伤害
-        damageNumber = penetratingDamage;
+        damageNumber = shieldPenetratingDamage + crumbleDamage;
         hitTarget.损伤值 = damageNumber;
         // ==================== 护盾伤害吸收结束 ====================
 
         // 计算并应用散射伤害，传入目标的损伤值
         damageResult.calculateScatterDamage(damageNumber);
 
-        // 更新目标血量，使用位运算确保：
-        // 1. (hp - damageNumber) | 0 将计算结果转换为整数，截断小数部分
-        // 2. (hp >> 31) 右移 31 位获取符号位（若 hp 为负则为全1，否则为0）
-        // 3. ~(hp >> 31) 取反，确保若 hp 为负则结果为0，从而修正血量不为负
-        hitTarget.hp = (hp = (hp - damageNumber) | 0) & ~(hp >> 31);
+        // 先单独结算与 max-loss 配对的当前 HP 损失并维持受击前比例边界，
+        // 再独立扣除普通穿透伤害；不能把两者合并后 clamp，否则会吞掉普通伤害。
+        var liveMaxHp:Number = Number(hitTarget.hp满血值);
+        var preHitMaxHp:Number = liveMaxHp + crumbleDamage;
+        var preHitHpRatio:Number =
+            org.flashNight.arki.unit.Action.Regeneration.HealApplier.calculateSafeHpRatio(
+                hp, preHitMaxHp);
+        var crumbleRemainingHp:Number = calculateRemainingHp(hp, crumbleDamage);
+        var constrainedCrumbleHp:Number = enforceCrumbleHpInvariant(
+            crumbleRemainingHp, liveMaxHp, preHitHpRatio, crumbleDamage);
+        hitTarget.hp = calculateRemainingHp(constrainedCrumbleHp, shieldPenetratingDamage);
 
         // 返回本次伤害计算的结果对象
         return damageResult;

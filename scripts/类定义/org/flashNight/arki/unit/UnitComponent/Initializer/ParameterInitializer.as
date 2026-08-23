@@ -34,9 +34,6 @@
 
         if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;
         if (isNaN(target.lastHitTime)) target.lastHitTime = currentFrame;
-        if (!isFinite(Number(target.hp满血值战斗损伤)) || target.hp满血值战斗损伤 < 0) {
-            target.hp满血值战斗损伤 = 0;
-        }
 
         if(isNaN(target.threat)) target.threat = 10;
         if(isNaN(target.threatThreshold)) target.threatThreshold = 5;

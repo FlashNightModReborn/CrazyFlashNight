@@ -14,6 +14,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     private var indexesDirty:Boolean; //索引树是否需要重建（索引树异常时标记，避免空位判断误判）
     private var occupiedCount:Number; //当前占用格子数（与 items 对齐，用于快速校验 indexes 完整性）
     private var mutationRevision:Number; //每次成功写入后单调递增，供只读投影缓存做 O(1) 失效判断
+    private var transactionWriteFaultHookForTests:Function; //仅供 focused TestLoader 注入同步提交异常
 
     public function ArrayInventory(_items:Object,_capacity:Number) {
         super(_items);
@@ -118,6 +119,16 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         return isNaN(current) || current < 0 ? 0 : current;
     }
 
+    /** focused TestLoader 故障注入；正式运行时默认永远为 null。 */
+    public function _setTransactionWriteFaultHookForTests(hook:Function):Void {
+        transactionWriteFaultHookForTests = hook;
+    }
+
+    private function invokeTransactionWriteFaultHookForTests(phase:String):Void {
+        var hook:Function = transactionWriteFaultHookForTests;
+        if (hook != null) hook(phase);
+    }
+
     private function bumpMutationRevision():Void {
         var current:Number = Number(mutationRevision);
         if (isNaN(current) || current < 0) current = 0;
@@ -138,13 +149,41 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             if (typeof item.value == "number" && (isNaN(item.value) || item.value <= 0)) return false;
         }
 
-        if (item == null) delete items[key];
-        else items[key] = item;
+        // 保留进入态的真实对象引用：成功时继续原位更新 items，
+        // 失败时则把槽位、TreeSet、索引标志与 raw revision 全部还原。
+        // rebuildIndexesFromItems 只会构造并替换新 TreeSet，不会改写旧树，
+        // 因此保留旧树引用即可精确回到提交前状态。
+        var previousItems:Object = this.items;
+        var slotKey:String = String(key);
+        var hadOwnSlot:Boolean = previousItems.hasOwnProperty(slotKey);
+        var previousItem:Object = previousItems[key];
+        var previousIndexes:TreeSet = this.indexes;
+        var previousIndexesDirty:Boolean = this.indexesDirty;
+        var previousOccupiedCount:Number = this.occupiedCount;
+        var previousRevision:Number = this.mutationRevision;
 
-        indexesDirty = true;
-        rebuildIndexesFromItems();
-        bumpMutationRevision();
-        return true;
+        try {
+            if (item == null) delete previousItems[key];
+            else previousItems[key] = item;
+            invokeTransactionWriteFaultHookForTests("mutation");
+
+            this.indexesDirty = true;
+            rebuildIndexesFromItems();
+            invokeTransactionWriteFaultHookForTests("rebuildIndexes");
+
+            bumpMutationRevision();
+            invokeTransactionWriteFaultHookForTests("bumpRevision");
+            return true;
+        } catch (writeError) {
+            this.items = previousItems;
+            if (hadOwnSlot) previousItems[key] = previousItem;
+            else delete previousItems[key];
+            this.indexes = previousIndexes;
+            this.indexesDirty = previousIndexesDirty;
+            this.occupiedCount = previousOccupiedCount;
+            this.mutationRevision = previousRevision;
+            return false;
+        }
     }
 
     /**

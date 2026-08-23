@@ -15,6 +15,8 @@ const WIDTH_TO_STRETCH = new Map([
     [9, 'ultra-expanded'],
 ]);
 const MAX_EXPANDED_TABLE_BYTES = 256 * 1024 * 1024;
+const MAX_CMAP_FORMAT4_CODEPOINT_WORK = 0x10000;
+const MAX_CFF_INDEX_OBJECTS = 0x10000;
 
 function ensureRange(buffer, offset, length, label) {
     if (!Number.isSafeInteger(offset) || !Number.isSafeInteger(length)
@@ -66,7 +68,14 @@ function woffTables(buffer) {
         }
         ensureRange(buffer, offset, compressedLength, `WOFF table ${tag}`);
         const stored = buffer.subarray(offset, offset + compressedLength);
-        const table = compressedLength < originalLength ? zlib.inflateSync(stored) : stored;
+        let table = stored;
+        if (compressedLength < originalLength) {
+            try {
+                table = zlib.inflateSync(stored, { maxOutputLength: originalLength });
+            } catch (error) {
+                throw new Error(`WOFF table ${tag} 解压失败或超过声明长度`);
+            }
+        }
         if (table.length !== originalLength) throw new Error(`WOFF table ${tag} 解压长度不匹配`);
         if (tables.has(tag)) throw new Error(`重复 WOFF table：${tag}`);
         tables.set(tag, table);
@@ -197,9 +206,9 @@ function summarizeFormat4(table, offset) {
     const deltas = startCodes + segmentCount * 2;
     const rangeOffsets = deltas + segmentCount * 2;
     ensureRange(table, rangeOffsets, segmentCount * 2, 'cmap format 4 arrays');
-    let count = 0;
-    let first = null;
-    let last = null;
+    const segments = [];
+    let previousEnd = -1;
+    let work = 0;
     for (let segment = 0; segment < segmentCount; segment += 1) {
         const start = table.readUInt16BE(startCodes + segment * 2);
         const end = table.readUInt16BE(endCodes + segment * 2);
@@ -207,12 +216,32 @@ function summarizeFormat4(table, offset) {
         const rangeOffsetLocation = rangeOffsets + segment * 2;
         const rangeOffset = table.readUInt16BE(rangeOffsetLocation);
         if (end < start) throw new Error('cmap format 4 segment 非法');
+        if (end <= previousEnd || start <= previousEnd) {
+            throw new Error('cmap format 4 segment 必须严格有序且不得重叠');
+        }
+        const segmentWork = end === 0xffff ? Math.max(0, end - start) : end - start + 1;
+        work += segmentWork;
+        if (work > MAX_CMAP_FORMAT4_CODEPOINT_WORK) {
+            throw new Error('cmap format 4 codepoint 工作量超过上限');
+        }
+        segments.push({ start, end, delta, rangeOffsetLocation, rangeOffset });
+        previousEnd = end;
+    }
+    if (segments[segments.length - 1].end !== 0xffff) {
+        throw new Error('cmap format 4 缺少终止 segment');
+    }
+
+    let count = 0;
+    let first = null;
+    let last = null;
+    for (const segment of segments) {
+        const { start, end, delta, rangeOffsetLocation, rangeOffset } = segment;
         for (let codePoint = start; codePoint <= end && codePoint !== 0xffff; codePoint += 1) {
             let glyph;
             if (rangeOffset === 0) glyph = (codePoint + delta) & 0xffff;
             else {
                 const glyphOffset = rangeOffsetLocation + rangeOffset + (codePoint - start) * 2;
-                if (glyphOffset + 2 > offset + length) continue;
+                if (glyphOffset + 2 > offset + length) throw new Error('cmap format 4 glyphIdArray 越界');
                 glyph = table.readUInt16BE(glyphOffset);
                 if (glyph !== 0) glyph = (glyph + delta) & 0xffff;
             }
@@ -224,6 +253,164 @@ function summarizeFormat4(table, offset) {
         }
     }
     return { format: 4, codePointCount: count, firstCodePoint: first, lastCodePoint: last, groupCount: segmentCount };
+}
+
+function readCffOffset(buffer, offset, size, label) {
+    ensureRange(buffer, offset, size, label);
+    let value = 0;
+    for (let index = 0; index < size; index += 1) value = value * 256 + buffer[offset + index];
+    return value;
+}
+
+function readCffIndex(buffer, offset, countBytes, label, options = {}) {
+    ensureRange(buffer, offset, countBytes, `${label} count`);
+    const count = countBytes === 2 ? buffer.readUInt16BE(offset) : buffer.readUInt32BE(offset);
+    if (count > MAX_CFF_INDEX_OBJECTS) throw new Error(`${label} object 数量超过上限`);
+    if (count === 0) return { count, objects: [], nextOffset: offset + countBytes };
+
+    const offSizeLocation = offset + countBytes;
+    ensureRange(buffer, offSizeLocation, 1, `${label} offSize`);
+    const offSize = buffer[offSizeLocation];
+    if (offSize < 1 || offSize > 4) throw new Error(`${label} offSize 非法`);
+    const offsetsLocation = offSizeLocation + 1;
+    ensureRange(buffer, offsetsLocation, (count + 1) * offSize, `${label} offsets`);
+
+    const offsets = options.collectObjects ? [] : null;
+    let previous = readCffOffset(buffer, offsetsLocation, offSize, `${label} offset 0`);
+    if (previous !== 1) throw new Error(`${label} 首 offset 必须为 1`);
+    if (offsets) offsets.push(previous);
+    for (let index = 1; index <= count; index += 1) {
+        const current = readCffOffset(
+            buffer,
+            offsetsLocation + index * offSize,
+            offSize,
+            `${label} offset ${index}`,
+        );
+        if (current < previous || (options.requireNonEmpty && current === previous)) {
+            throw new Error(`${label} offset 非法或对象为空`);
+        }
+        previous = current;
+        if (offsets) offsets.push(current);
+    }
+
+    const dataStart = offsetsLocation + (count + 1) * offSize;
+    ensureRange(buffer, dataStart, previous - 1, `${label} data`);
+    const objects = [];
+    if (offsets) {
+        for (let index = 0; index < count; index += 1) {
+            objects.push(buffer.subarray(dataStart + offsets[index] - 1, dataStart + offsets[index + 1] - 1));
+        }
+    }
+    return { count, objects, nextOffset: dataStart + previous - 1 };
+}
+
+function readCffDictNumber(buffer, offset, label) {
+    const value = buffer[offset];
+    if (value >= 32 && value <= 246) return { value: value - 139, nextOffset: offset + 1 };
+    if (value >= 247 && value <= 250) {
+        ensureRange(buffer, offset + 1, 1, label);
+        return { value: (value - 247) * 256 + buffer[offset + 1] + 108, nextOffset: offset + 2 };
+    }
+    if (value >= 251 && value <= 254) {
+        ensureRange(buffer, offset + 1, 1, label);
+        return { value: -(value - 251) * 256 - buffer[offset + 1] - 108, nextOffset: offset + 2 };
+    }
+    if (value === 28) {
+        ensureRange(buffer, offset + 1, 2, label);
+        return { value: buffer.readInt16BE(offset + 1), nextOffset: offset + 3 };
+    }
+    if (value === 29) {
+        ensureRange(buffer, offset + 1, 4, label);
+        return { value: buffer.readInt32BE(offset + 1), nextOffset: offset + 5 };
+    }
+    if (value === 30) {
+        let cursor = offset + 1;
+        let terminated = false;
+        while (cursor < buffer.length && !terminated) {
+            const packed = buffer[cursor];
+            cursor += 1;
+            terminated = (packed >> 4) === 0x0f || (packed & 0x0f) === 0x0f;
+        }
+        if (!terminated) throw new Error(`${label} real number 未终止`);
+        return { value: Number.NaN, nextOffset: cursor };
+    }
+    if (value === 255) {
+        ensureRange(buffer, offset + 1, 4, label);
+        return { value: buffer.readInt32BE(offset + 1) / 65536, nextOffset: offset + 5 };
+    }
+    throw new Error(`${label} operand 非法`);
+}
+
+function findCffDictInteger(dict, operator, label) {
+    let operands = [];
+    for (let offset = 0; offset < dict.length;) {
+        const value = dict[offset];
+        if (value <= 27 && value !== 28) {
+            let currentOperator = String(value);
+            offset += 1;
+            if (value === 12) {
+                ensureRange(dict, offset, 1, `${label} escaped operator`);
+                currentOperator = `12 ${dict[offset]}`;
+                offset += 1;
+            }
+            if (currentOperator === operator) {
+                const result = operands[operands.length - 1];
+                if (!Number.isSafeInteger(result) || result <= 0) throw new Error(`${label} ${operator} offset 非法`);
+                return result;
+            }
+            operands = [];
+            continue;
+        }
+        const operand = readCffDictNumber(dict, offset, label);
+        operands.push(operand.value);
+        offset = operand.nextOffset;
+    }
+    throw new Error(`${label} 缺少 ${operator} operator`);
+}
+
+function validateCffTable(buffer, glyphCount, cff2) {
+    const label = cff2 ? 'CFF2' : 'CFF';
+    const minimumHeader = cff2 ? 5 : 4;
+    ensureRange(buffer, 0, minimumHeader, `${label} header`);
+    if ((!cff2 && buffer[0] !== 1) || (cff2 && buffer[0] !== 2)) {
+        throw new Error(`${label} major version 非法`);
+    }
+    const headerSize = buffer[2];
+    if (headerSize < minimumHeader || headerSize > buffer.length) throw new Error(`${label} header size 非法`);
+
+    let topDict;
+    if (cff2) {
+        const topDictLength = buffer.readUInt16BE(3);
+        if (topDictLength < 1) throw new Error('CFF2 Top DICT 为空');
+        ensureRange(buffer, headerSize, topDictLength, 'CFF2 Top DICT');
+        topDict = buffer.subarray(headerSize, headerSize + topDictLength);
+        readCffIndex(buffer, headerSize + topDictLength, 4, 'CFF2 Global Subr INDEX');
+    } else {
+        if (buffer[3] < 1 || buffer[3] > 4) throw new Error('CFF header offSize 非法');
+        const names = readCffIndex(buffer, headerSize, 2, 'CFF Name INDEX', { requireNonEmpty: true });
+        if (names.count !== 1) throw new Error('OpenType CFF 必须恰好包含一个 Name');
+        const top = readCffIndex(buffer, names.nextOffset, 2, 'CFF Top DICT INDEX', {
+            collectObjects: true,
+            requireNonEmpty: true,
+        });
+        if (top.count !== 1) throw new Error('OpenType CFF 必须恰好包含一个 Top DICT');
+        topDict = top.objects[0];
+        const strings = readCffIndex(buffer, top.nextOffset, 2, 'CFF String INDEX');
+        readCffIndex(buffer, strings.nextOffset, 2, 'CFF Global Subr INDEX');
+    }
+
+    const charStringsOffset = findCffDictInteger(topDict, '17', `${label} Top DICT`);
+    if (charStringsOffset >= buffer.length) throw new Error(`${label} CharStrings offset 越界`);
+    const charStrings = readCffIndex(
+        buffer,
+        charStringsOffset,
+        cff2 ? 4 : 2,
+        `${label} CharStrings INDEX`,
+        { requireNonEmpty: true },
+    );
+    if (charStrings.count !== glyphCount) {
+        throw new Error(`${label} CharStrings 数量与 maxp glyphCount 不一致`);
+    }
 }
 
 function readCmap(table) {
@@ -252,6 +439,56 @@ function readCmap(table) {
         ? summarizeFormat4(table, selected.offset)
         : summarizeFormat12(table, selected.offset, selected.format);
     return { ...summary, platformId: selected.platformId, encodingId: selected.encodingId };
+}
+
+function validateGlyphTables(tables) {
+    const maxp = tables.get('maxp');
+    const head = tables.get('head');
+    const hhea = tables.get('hhea');
+    const hmtx = tables.get('hmtx');
+    if (!maxp || maxp.length < 6) throw new Error('缺少有效 maxp glyph 目录');
+    if (!head || head.length < 54) throw new Error('缺少有效 head table');
+    if (!hhea || hhea.length < 36) throw new Error('缺少有效 hhea table');
+    if (!hmtx) throw new Error('缺少 hmtx table');
+
+    const glyphCount = maxp.readUInt16BE(4);
+    const metricCount = hhea.readUInt16BE(34);
+    if (glyphCount < 1) throw new Error('maxp glyphCount 必须大于 0');
+    if (metricCount < 1 || metricCount > glyphCount) throw new Error('hhea metricCount 非法');
+    const minimumHmtxBytes = metricCount * 4 + (glyphCount - metricCount) * 2;
+    if (hmtx.length < minimumHmtxBytes) throw new Error('hmtx 短于 glyph 目录声明');
+
+    const glyf = tables.get('glyf');
+    const loca = tables.get('loca');
+    const cff = tables.get('CFF ');
+    const cff2 = tables.get('CFF2');
+    if (cff && cff2) throw new Error('字体不能同时声明 CFF 与 CFF2 outline');
+    if (cff) {
+        validateCffTable(cff, glyphCount, false);
+        return glyphCount;
+    }
+    if (cff2) {
+        validateCffTable(cff2, glyphCount, true);
+        return glyphCount;
+    }
+    if (!glyf || !loca) throw new Error('缺少 glyf/loca 或 CFF/CFF2 outline');
+
+    const locaFormat = head.readInt16BE(50);
+    if (locaFormat !== 0 && locaFormat !== 1) throw new Error('head indexToLocFormat 非法');
+    const entryBytes = locaFormat === 0 ? 2 : 4;
+    ensureRange(loca, 0, (glyphCount + 1) * entryBytes, 'loca glyph offsets');
+    let previous = 0;
+    let hasOutline = false;
+    for (let index = 0; index <= glyphCount; index += 1) {
+        const raw = locaFormat === 0
+            ? loca.readUInt16BE(index * entryBytes) * 2
+            : loca.readUInt32BE(index * entryBytes);
+        if (raw < previous || raw > glyf.length) throw new Error('loca glyph offset 非法');
+        if (raw > previous) hasOutline = true;
+        previous = raw;
+    }
+    if (!hasOutline) throw new Error('glyf 不含任何 glyph outline');
+    return glyphCount;
 }
 
 function inspectFont(fileName, buffer) {
@@ -288,14 +525,18 @@ function inspectFont(fileName, buffer) {
             cmap: null,
         };
     }
+    const glyphCount = validateGlyphTables(tables);
     const names = readNames(tables.get('name'));
     const metrics = readMetrics(tables);
+    const cmap = readCmap(tables.get('cmap'));
+    if (!cmap || cmap.codePointCount < 1) throw new Error('cmap 不含可映射字符');
     return {
         format: detectedFormat,
         metadataStatus: 'parsed',
         ...names,
         ...metrics,
-        cmap: readCmap(tables.get('cmap')),
+        glyphCount,
+        cmap,
     };
 }
 

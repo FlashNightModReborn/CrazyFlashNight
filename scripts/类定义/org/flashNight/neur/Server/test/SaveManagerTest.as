@@ -97,6 +97,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadAll_json_overlays_sol_pets();
         test_loadAll_sol_empty_top_level_keeps_nested_pets();
         test_loadAll_sol_empty_top_level_keeps_nested_shop();
+        test_loadAll_sol_resets_previous_settings_migration_latch();
         test_loadAll_rejects_stale_json();
         test_loadAll_clearPrefetch_blocks_late_callback();
         test_loadAll_recovers_from_missing_sol();
@@ -1215,6 +1216,27 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
     }
 
     // ── Phase 3: loadAll 测试用例 ──
+
+    private static function test_loadAll_sol_resets_previous_settings_migration_latch():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath = _root.savePath;
+
+        seedTestSO("2026-01-01 00:00:00", undefined);
+        _root.savePath = TEST_SLOT;
+        sm.markSettingsMigrationPending();
+        assert(sm.hasPendingSettingsMigration(),
+            "loadAll_sol_resets_settings_latch: fixture starts with previous-save latch");
+
+        var ok:Boolean = sm.loadAll();
+        assert(ok == true,
+            "loadAll_sol_resets_settings_latch: native SOL load succeeds");
+        assert(!sm.hasPendingSettingsMigration(),
+            "loadAll_sol_resets_settings_latch: clean SOL does not inherit previous-save latch");
+
+        cleanTestSO();
+        _root.savePath = oldPath;
+    }
 
     private static function test_loadAll_prefers_json_when_newer():Void {
         setUpForLoadTest();

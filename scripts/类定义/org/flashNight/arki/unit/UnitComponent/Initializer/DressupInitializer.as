@@ -271,8 +271,72 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     }
 
 
+    /**
+     * 装备投影需要一个稳定的未装备基底。标准主角模板会显式提供 hp/mp基本满血值，
+     * 但普通敌人模板只提供已经按等级和难度计算完毕的 live 满值。首次遇到这类模板时
+     * 捕获 live 满值；再后续刷新始终复用稳定字段，避免把上一轮装备加层或友军倍率叠回基底。
+     */
+    private static function resolveStableBaseStat(target:Object, baseKey:String,
+                                                   liveKey:String, minKey:String,
+                                                   maxKey:String):Number {
+        var value:Number = Number(target[baseKey]);
+        if (isFinite(value)) return value;
+
+        value = Number(target[liveKey]);
+        if (!isFinite(value)) {
+            var minValue:Number = Number(target[minKey]);
+            var maxValue:Number = Number(target[maxKey]);
+            if (isFinite(minValue) && isFinite(maxValue)) {
+                value = _root.根据等级计算值(minValue, maxValue, target.等级);
+            }
+        }
+        if (!isFinite(value)) value = 0;
+        target[baseKey] = value;
+        return value;
+    }
+
+    /**
+     * 敌人模板在进入 DressupInitializer 前已根据兵种 XML 补齐权威抗性。
+     * 首次投影做浅值快照，之后每次从该快照重建，既保留机械/装甲等模板语义，
+     * 又不让装备 magicdefence 在重复换装时累计。
+     */
+    private static function resolveTemplateMagicResistance(target:Object):Object {
+        // 人形/玩家即使在首次刷新前已有一张 level-derived 抗性表，也不能把它误认成
+        // 模板权威并永久冻结；当前权威边界由敌人数据的明确“非生物”标签承担。
+        var nonBiological:Object = target.label ? target.label.非生物 : undefined;
+        var hasAuthoritativeTemplate:Boolean = nonBiological === true || nonBiological === "true";
+        if (!hasAuthoritativeTemplate) {
+            delete target.装备投影基础魔法抗性;
+            target.装备投影含模板魔法抗性 = false;
+            return {};
+        }
+
+        var cached:Object = target.装备投影基础魔法抗性;
+        if (cached != undefined) return cached;
+
+        cached = {};
+        var source:Object = target.魔法抗性;
+        var hasTemplateValue:Boolean = false;
+        if (source) {
+            for (var key:String in source) {
+                var value:Number = Number(source[key]);
+                if (isFinite(value)) {
+                    cached[key] = value;
+                    hasTemplateValue = true;
+                }
+            }
+        }
+        target.装备投影基础魔法抗性 = cached;
+        target.装备投影含模板魔法抗性 = hasTemplateValue;
+        return cached;
+    }
+
+
     public static function updateProperties(__target:MovieClip):Void{
         var target:MovieClip = __target;
+
+        resolveStableBaseStat(target, "hp基本满血值", "hp满血值", "hp_min", "hp_max");
+        resolveStableBaseStat(target, "mp基本满血值", "mp满血值", "mp_min", "mp_max");
 
         target.hp满血值装备加层 = 0;
         target.mp满血值装备加层 = 0;
@@ -280,7 +344,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.懒闪避 = 0; //equipped.lazymiss
 
         target.伤害加成 = 0; //equipped.damage
-        target.空手攻击力 = _root.根据等级计算值(target.空手攻击力_min, target.空手攻击力_max, target.等级); //equipped.punch
+        // 敌人模板的基本空手攻击力已经包含难度倍率；主角模板没有该字段时仍走原等级公式。
+        var 基础空手攻击力:Number = Number(target.基本空手攻击力);
+        target.空手攻击力 = isFinite(基础空手攻击力)
+            ? 基础空手攻击力
+            : _root.根据等级计算值(target.空手攻击力_min, target.空手攻击力_max, target.等级); //equipped.punch
         target.内力 = 65 + Math.floor(target.等级 * 0.56); //equipped.force
         target.装备刀锋利度加成 = 0; //equipped.knifepower
         target.装备枪械威力加成 = 0; //equipped.gunpower
@@ -290,9 +358,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.击溃 = 0; //equipped.rout
         target.伤害类型 = "物理"; //equipped.damagetype
         target.魔法伤害属性 = undefined; //equipped.magictype
+        var 模板魔法抗性:Object = resolveTemplateMagicResistance(target);
         var 抗性基础 = 10 + target.等级 * 0.1;
         target.魔法抗性 = {全属性: 0, 基础: 抗性基础, 电: 抗性基础, 热: 抗性基础, 冷: 抗性基础, 波: 抗性基础, 蚀: 抗性基础, 毒: 抗性基础, 冲: Math.min(20 + target.等级 * 0.5 , 60)}; //equipped.magicdefence
-        target.魔法抗性.人类 = target.等级;
+        if (!target.装备投影含模板魔法抗性) target.魔法抗性.人类 = target.等级;
+        for (var 模板抗性键:String in 模板魔法抗性) {
+            target.魔法抗性[模板抗性键] = Number(模板魔法抗性[模板抗性键]);
+        }
 
         var areaHeight:Number = target.area._height * target._yscale;
         areaHeight = !isNaN(areaHeight) ? areaHeight : 136;

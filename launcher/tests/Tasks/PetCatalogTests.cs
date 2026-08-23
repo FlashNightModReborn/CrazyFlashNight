@@ -206,13 +206,19 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void RepositoryCatalog_T800_IsReachableFromMechanicalAdoptionStore()
+        public void RepositoryCatalog_T800_IsReachableWithHighTierUniqueAtATimeEconomyPolicy()
         {
             string projectRoot = FindProjectRoot();
             PetCatalog catalog = PetCatalogLoader.Load(projectRoot);
             PetDef t800;
             Assert.True(catalog.PetsById.TryGetValue(66, out t800));
             Assert.Equal("mechanical", t800.RosterType);
+            Assert.Equal(20, t800.UnlockLevel);
+            Assert.Equal(100, t800.UnlockTask);
+            Assert.True(t800.Unique);
+            Assert.Equal(620000, t800.Price);
+            Assert.Equal(0, t800.KPrice);
+            Assert.Equal(0, t800.IncreasePrice);
 
             int categoryIndex = -1;
             for (int c = 0; c < catalog.Categories.Count && categoryIndex < 0; c++)
@@ -237,16 +243,21 @@ namespace CF7Launcher.Tests.Tasks
             var resp = JObject.Parse(posted);
             Assert.True((bool)resp["success"]);
             Assert.Equal(categoryIndex, (int)resp["selectedCategoryIndex"]);
-            bool found = false;
+            JObject projectedT800 = null;
             foreach (JToken item in (JArray)resp["adoptable"])
             {
                 if ((int)item["petId"] == 66)
                 {
-                    found = true;
+                    projectedT800 = (JObject)item;
                     break;
                 }
             }
-            Assert.True(found, "mechanical adopt_list must project petId 66");
+            Assert.NotNull(projectedT800);
+            Assert.Equal(20, (int)projectedT800["unlockLevel"]);
+            Assert.Equal(100, (int)projectedT800["unlockTask"]);
+            Assert.True((bool)projectedT800["unique"]);
+            Assert.Equal(620000, (int)projectedT800["price"]);
+            Assert.Equal(0, (int)projectedT800["kprice"]);
         }
 
         private static string FindProjectRoot()

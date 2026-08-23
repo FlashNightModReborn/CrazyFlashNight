@@ -158,23 +158,11 @@ _root.刷新人物装扮 = function(目标) {
     目标人物.hasDressup = true;
     目标人物.enableShoot = true;
 
-    // 全量重建会有意替换 dispatcher / BuffManager；这里只携带不应被装备刷新治愈或重置的
-    // 小型运行态包。HP/MP 保存比例而非绝对值，防止反复换装凭空补血，同时保留合法溢出。
+    // 装备刷新重建最大值，但当前资源遵循绝对值语义：升上限不回血，降上限不制造溢出。
+    // 旧治疗上界内已有的临时生命保留绝对点数并受新治疗上界约束；越界污染回退普通满血。
     var 旧hp:Number = Number(目标人物.hp);
     var 旧hp满血值:Number = Number(目标人物.hp满血值);
-    var 保留hp比例:Boolean = isFinite(旧hp) && isFinite(旧hp满血值) && 旧hp满血值 > 0;
-    var hp比例:Number = 保留hp比例 ? Math.max(旧hp, 0) / 旧hp满血值 : 0;
     var 旧mp:Number = Number(目标人物.mp);
-    var 旧mp满血值:Number = Number(目标人物.mp满血值);
-    var 保留mp比例:Boolean = isFinite(旧mp) && isFinite(旧mp满血值) && 旧mp满血值 > 0;
-    var mp比例:Number = 保留mp比例 ? Math.max(旧mp, 0) / 旧mp满血值 : 0;
-
-    var 战斗损伤:Number = Number(目标人物.hp满血值战斗损伤);
-    if (!isFinite(战斗损伤) || 战斗损伤 < 0) 战斗损伤 = 0;
-    var 旧剩余冲击力:Number = Number(目标人物.remainingImpactForce);
-    var 保留剩余冲击力:Boolean = isFinite(旧剩余冲击力) && 旧剩余冲击力 >= 0;
-    var 旧受击时间:Number = Number(目标人物.lastHitTime);
-    var 保留受击时间:Boolean = isFinite(旧受击时间);
 
     if (!目标人物.新版人物文字信息) {
         目标人物.新版人物文字信息 = 目标人物.人物文字信息;
@@ -191,24 +179,13 @@ _root.刷新人物装扮 = function(目标) {
     目标人物.buff.初始();
     目标人物.buff.更新();
 
-    // 击溃是战斗运行态损伤：先完成装备、角色系数、被动与 legacy buff 的最大值重建，
-    // 再扣除累计绝对损伤。低 HP 装备触底时不吞掉损伤，未来换回高 HP 装备仍需承担。
-    目标人物.hp满血值战斗损伤 = 战斗损伤;
-    if (战斗损伤 > 0 && isFinite(Number(目标人物.hp满血值))) {
-        目标人物.hp满血值 = Math.max(
-            org.flashNight.arki.component.Damage.CrumbleDamageHandle.MIN_MAX_HP,
-            目标人物.hp满血值 - 战斗损伤
-        );
-    }
+    目标人物.hp = org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleHpAfterMaxChange(
+        旧hp, 旧hp满血值, Number(目标人物.hp满血值));
+    目标人物.mp = org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleMpAfterMaxChange(
+        旧mp, Number(目标人物.mp满血值));
 
-    if (保留hp比例 && isFinite(Number(目标人物.hp满血值)) && 目标人物.hp满血值 > 0) {
-        目标人物.hp = 目标人物.hp满血值 * hp比例;
-    }
-    if (保留mp比例 && isFinite(Number(目标人物.mp满血值)) && 目标人物.mp满血值 > 0) {
-        目标人物.mp = 目标人物.mp满血值 * mp比例;
-    }
-    if (保留剩余冲击力) 目标人物.remainingImpactForce = 旧剩余冲击力;
-    if (保留受击时间) 目标人物.lastHitTime = 旧受击时间;
+    // remainingImpactForce / lastHitTime / 绝对衰减基线都留在同一个 MovieClip 上，
+    // 无需重投影；装备属性变化后只重建依赖当前 HP/防御/韧性的派生显示。
     org.flashNight.arki.component.StatHandler.ImpactHandler.refreshImpactDerived(目标人物);
 
     if (目标人物.变形手枪) {

@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, "..");
 const ITEM_LIST = path.join(ROOT, "data", "items", "list.xml");
 const ICON_MANIFEST = path.join(ROOT, "launcher", "web", "icons", "manifest.json");
 const ICON_ROOT = path.dirname(ICON_MANIFEST);
-const OUTPUT = path.join(ROOT, "launcher", "web", "data", "black-market-shadow-catalog.v1.json");
+const OUTPUT = path.join(ROOT, "tools", "fixtures", "blackmarket", "black-market-shadow-catalog.v1.json");
 const CHECK = process.argv.indexOf("--check") >= 0;
 
 function fail(message) {

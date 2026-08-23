@@ -129,6 +129,8 @@ _root.UI系统.初始化玩家信息界面 = function()
 {
     this.刷新hp显示 = function() 
     {
+        // 直接刷新也会消费治疗路径留下的待刷新位，避免同帧受击后重复绘制。
+        this._pendingHpDisplayRefresh = false;
         主角hp显示界面.刷新显示();
         主角韧性显示界面.刷新显示();
     };
@@ -178,6 +180,10 @@ _root.UI系统.初始化玩家信息界面 = function()
 
     this.onEnterFrame = function() 
     {
+        // 吸血/治疗可能在同一帧触发多次；布尔待刷新位确保每帧最多重绘一次，
+        // 若本帧消费后又发生治疗，则标记会保留到下一帧，不会永久漏刷。
+        if (this._pendingHpDisplayRefresh) this.刷新hp显示();
+
         // 将所有需要做插帧动画的剪辑放到数组里
         var clips:Array = [
             主角hp显示界面, 

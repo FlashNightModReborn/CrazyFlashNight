@@ -142,22 +142,28 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
                                              damageResult:DamageResult, 
                                              hitDirection:String, 
                                              bloodEnabled:Boolean):Void {
+        // 普通 MISS 与联弹全段 MISS 不是受击：不得推挤、硬直、改垂直速度或消费冲击槽。
+        if (!DamageResult.hasActualHit(damageResult)) {
+            if (shouldTrackCombatDiagnostics(hitTarget)) {
+                stashImpactSnapshot(hitTarget, bullet, damageResult, hitDirection, "MISS",
+                    hitTarget.remainingImpactForce, hitTarget.韧性上限,
+                    hitTarget.impactStaggerBoundary);
+            }
+            return;
+        }
+
         var trackDiag:Boolean = shouldTrackCombatDiagnostics(hitTarget);
         var isRigid:Boolean = hitTarget.刚体 || hitTarget.man.刚体标签;
         var impactReason:String = "MOVE";
         var impactForceSnapshot:Number = hitTarget.remainingImpactForce;
         var impactCapSnapshot:Number = hitTarget.韧性上限;
         var impactStaggerSnapshot:Number = hitTarget.impactStaggerBoundary;
-        var actualHit:Boolean = DamageResult.hasActualHit(damageResult);
 
         // 若目标既不处于浮空也不处于倒地状态，执行常规冲击处理
         if (!(hitTarget.浮空 || hitTarget.倒地)) {
         // if (hitTarget.状态 !== "击倒" || hitTarget.状态 !== "倒地") {
-            // 普通 MISS 与联弹全段 MISS 都不能消费旧的损伤值并累计冲击。
             // 零伤害但真实命中的击倒率 0 仍保留“必破韧”语义。
-            if (actualHit) {
-                ImpactHandler.settleImpactForce(hitTarget.损伤值, bullet.击倒率, hitTarget);
-            }
+            ImpactHandler.settleImpactForce(hitTarget.损伤值, bullet.击倒率, hitTarget);
             impactForceSnapshot = hitTarget.remainingImpactForce;
             impactCapSnapshot = hitTarget.韧性上限;
             impactStaggerSnapshot = hitTarget.impactStaggerBoundary;
@@ -170,10 +176,6 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
                 if (!bloodEnabled) {
                     queueKnockdownDiagnostic(hitTarget, bullet, damageResult, hitDirection, isRigid, impactReason);
                 }
-            } else if (!actualHit) {
-                // 目标成功躲闪，执行被击移动效果
-                impactReason = "DODGE";
-                hitTarget.被击移动(hitDirection, bullet.水平击退速度, 3);
             } else if (hitTarget.remainingImpactForce > hitTarget.韧性上限) {
                 // 冲击力超过韧性上限，如非刚体则设为击倒状态，并重置冲击力
                 impactReason = "TOUGH_BREAK";

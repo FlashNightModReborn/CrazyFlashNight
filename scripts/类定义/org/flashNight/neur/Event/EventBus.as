@@ -5,6 +5,11 @@
  * 采用饿汉式单例模式，确保在类加载时实例化。
  *
  * 版本历史:
+ * v3.1 (2026-08) - 冷路径局部恢复
+ *   [API] createDispatchRecoveryToken() 为明确捕获监听器异常的业务边界
+ *     提供一次性、只向内层回退的 dispatch 栈恢复能力
+ *   [PERF] 五个 publish 热路径继续保持无 try/catch/finally
+ *
  * v3.0 (2026-03) - 结构性性能重构
  *   [PERF] listeners 从 Object{comboUID:poolIndex} 改为并行数组 fns[]/scopes[]
  *     消除 publish 中的 for..in 枚举（H16: 2200~7800ns/iter → while(i--) ~35ns/iter）
@@ -761,6 +766,61 @@ class org.flashNight.neur.Event.EventBus {
      */
     public function reset():Void {
         destroy();
+    }
+
+    /**
+     * 为明确捕获监听器异常的冷业务边界创建一次性恢复令牌。
+     *
+     * 令牌只允许把 dispatch depth 从调用后的更深层级恢复到捕获时层级，
+     * 并只清理该区间占用的快照槽；不会抬高 depth，也不会清空外层发布快照。
+     * 五个 publish 入口故意不承担 try/catch/finally 开销，调用方必须仅在
+     * 自己捕获 publish 异常后调用本令牌。
+     *
+     * @return Function 一次性恢复函数，成功恢复返回 true，否则返回 false
+     */
+    public function createDispatchRecoveryToken():Function {
+        var bus:EventBus = this;
+        var entryDepth:Number = this._dispatchDepth;
+        var active:Boolean = true;
+
+        return function():Boolean {
+            if (!active) {
+                return false;
+            }
+            active = false;
+            return bus.recoverDispatchDepth(entryDepth);
+        };
+    }
+
+    /** 仅供 createDispatchRecoveryToken 生成的闭包调用。 */
+    private function recoverDispatchDepth(entryDepth:Number):Boolean {
+        var currentDepth:Number = this._dispatchDepth;
+        if (currentDepth < entryDepth) {
+            return false;
+        }
+
+        var depth:Number = currentDepth;
+        while (depth > entryDepth) {
+            depth--;
+
+            var localCb:Array = this._cbStack[depth];
+            if (localCb != undefined) {
+                localCb.length = 0;
+            }
+
+            var localSc:Array = this._scStack[depth];
+            if (localSc != undefined) {
+                localSc.length = 0;
+            }
+
+            var localArgs:Array = this._argsStack[depth];
+            if (localArgs != undefined) {
+                localArgs.length = 0;
+            }
+        }
+
+        this._dispatchDepth = entryDepth;
+        return true;
     }
 
     /**

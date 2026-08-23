@@ -6,8 +6,11 @@ import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.unit.Action.Shoot.ShootInitCore;
 import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BladeFireSpinController;
+import org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.neur.Event.EventDispatcher;
+import org.flashNight.neur.Event.EventBus;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
 /** T800 托管长枪 policy 与冻结边界的纯 AS2 回归。 */
 class org.flashNight.arki.merc.ManagedLongGunServiceTest {
@@ -27,8 +30,12 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
             testCorruptCustodyFailsClosed();
             testUnsupportedCustodyFailsClosed();
             testLeaseBoundHandoffAndFrozenWithdrawal();
+            testTransactionCommitFailureAtomicity();
+            testPostCommitNotificationIsolationAndBusyRecovery();
+            testNestedEventBusNotificationIsolation();
             testUnitPreparationAndNonHeroAmmoSentinel();
             testUnitPreparationInstallsDressupLifecycleBridge();
+            testT800DressupProjectionPreservesEnemyAuthority();
             testM134SuccessfulShotIntent();
         } finally {
             restoreCatalogFixture(catalogReceipt);
@@ -292,6 +299,287 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
         }
     }
 
+    /**
+     * transactionWrite 的三个可见提交阶段均注入同步异常。
+     * 每个阶段都要同时证明交付/取回失败时所有权唯一，
+     * 且清除故障后原请求可直接重试，不需要额外对账。
+     */
+    private static function testTransactionCommitFailureAtomicity():Void {
+        var oldInventory:Object = _root.物品栏;
+        var oldCombat:Object = _root.当前为战斗地图;
+        var oldSave:Object = _root.存档系统;
+        try {
+            _root.当前为战斗地图 = false;
+            var phases:Array = ["mutation", "rebuildIndexes", "bumpRevision"];
+            for (var i:Number = 0; i < phases.length; i++) {
+                testHandoffCommitFailurePhase(String(phases[i]));
+                testWithdrawCommitFailurePhase(String(phases[i]));
+            }
+        } finally {
+            _root.物品栏 = oldInventory;
+            _root.当前为战斗地图 = oldCombat;
+            _root.存档系统 = oldSave;
+        }
+    }
+
+    private static function testHandoffCommitFailurePhase(phase:String):Void {
+        var bag:ArrayInventory = new ArrayInventory(null, 2);
+        _root.物品栏 = {背包:bag};
+        _root.存档系统 = {dirtyMark:false};
+        var original:BaseItem = new BaseItem("L85A1", {
+            level:6, shot:7, mods:["交付提交故障"]
+        }, 410000);
+        bag.add(0, original);
+
+        var t800:Array = pet(10, {});
+        var snapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 2);
+        var source:Object = {
+            containerId:"背包",
+            slot:0,
+            expectedLease:String(snapshot.slots[0].slotLease)
+        };
+        var beforeItems:Object = bag.getItems();
+        var beforeTree:Object = bag.getTreeSet();
+        var beforeIndexes:String = String(bag.getIndexes());
+        var beforeRevision:Number = bag.getMutationRevision();
+
+        bag._setTransactionWriteFaultHookForTests(makeTransactionWriteFault(phase));
+        var failed:Object;
+        try {
+            failed = ManagedLongGunService.handoff(t800, source);
+        } finally {
+            bag._setTransactionWriteFaultHookForTests(null);
+        }
+        check(failed != null && failed.success !== true && failed.error == "commit_failed"
+                && bag.getItem("0") === original && bag.getItems() === beforeItems
+                && bag.getTreeSet() === beforeTree
+                && String(bag.getIndexes()) == beforeIndexes
+                && bag.size() == 1 && bag.getFirstVacancy() == 1
+                && bag.getMutationRevision() == beforeRevision
+                && !ManagedLongGunService.hasCustody(t800)
+                && _root.存档系统.dirtyMark === false,
+            "交付在 " + phase + " 异常时恢复物品/索引/revision 且撤销 custody");
+
+        var retried:Object = ManagedLongGunService.handoff(t800, source);
+        check(retried != null && retried.success === true
+                && bag.getItem("0") == null && bag.size() == 0
+                && ManagedLongGunService.hasCustody(t800),
+            "交付在 " + phase + " 故障清除后原 lease 可重试且所有权唯一");
+    }
+
+    private static function testWithdrawCommitFailurePhase(phase:String):Void {
+        var bag:ArrayInventory = new ArrayInventory(null, 2);
+        _root.物品栏 = {背包:bag};
+        _root.存档系统 = {dirtyMark:false};
+        var original:BaseItem = new BaseItem("L85A1", {
+            level:6, shot:5, mods:["取回提交故障"]
+        }, 420000);
+        bag.add(0, original);
+
+        var t800:Array = pet(10, {});
+        var snapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 2);
+        var source:Object = {
+            containerId:"背包",
+            slot:0,
+            expectedLease:String(snapshot.slots[0].slotLease)
+        };
+        var seeded:Object = ManagedLongGunService.handoff(t800, source);
+        var beforeCustody:Object = t800[5].托管长枪;
+        var beforeItems:Object = bag.getItems();
+        var beforeTree:Object = bag.getTreeSet();
+        var beforeIndexes:String = String(bag.getIndexes());
+        var beforeRevision:Number = bag.getMutationRevision();
+        _root.存档系统.dirtyMark = false;
+
+        bag._setTransactionWriteFaultHookForTests(makeTransactionWriteFault(phase));
+        var failed:Object;
+        try {
+            failed = ManagedLongGunService.withdraw(t800);
+        } finally {
+            bag._setTransactionWriteFaultHookForTests(null);
+        }
+        check(seeded != null && seeded.success === true
+                && failed != null && failed.success !== true && failed.error == "commit_failed"
+                && bag.getItem("0") == null && bag.getItems() === beforeItems
+                && !bag.getItems().hasOwnProperty("0")
+                && bag.getTreeSet() === beforeTree
+                && String(bag.getIndexes()) == beforeIndexes
+                && bag.size() == 0 && bag.getFirstVacancy() == 0
+                && bag.getMutationRevision() == beforeRevision
+                && t800[5].托管长枪 === beforeCustody
+                && ManagedLongGunService.hasCustody(t800)
+                && _root.存档系统.dirtyMark === false,
+            "取回在 " + phase + " 异常时恢复空背包/索引/revision 且保留 custody");
+
+        var retried:Object = ManagedLongGunService.withdraw(t800);
+        var restored:Object = bag.getItem("0");
+        check(retried != null && retried.success === true
+                && restored != null && restored.name == "L85A1"
+                && bag.size() == 1 && String(bag.getIndexes()) == "0"
+                && !ManagedLongGunService.hasCustody(t800),
+            "取回在 " + phase + " 故障清除后可重试且只恢复一份武器");
+    }
+
+    private static function makeTransactionWriteFault(expectedPhase:String):Function {
+        return function(actualPhase:String):Void {
+            if (actualPhase == expectedPhase) {
+                throw new Error("transactionWrite injected failure: " + expectedPhase);
+            }
+        };
+    }
+
+    private static function testPostCommitNotificationIsolationAndBusyRecovery():Void {
+        var oldInventory:Object = _root.物品栏;
+        var oldCombat:Object = _root.当前为战斗地图;
+        var oldSave:Object = _root.存档系统;
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__managedLongGunThrowingEvents", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        try {
+            var bag:ArrayInventory = new ArrayInventory(null, 2);
+            _root.物品栏 = {背包:bag};
+            _root.当前为战斗地图 = false;
+            _root.存档系统 = {dirtyMark:false};
+            var original:BaseItem = new BaseItem("L85A1", {
+                level:6, shot:7, mods:["异常边界测试"]
+            }, 123456);
+            bag.add(0, original);
+            bag.setDispatcher(dispatcher);
+
+            var throwRemoved:Function = function():Void {
+                throw new Error("managed-longgun ItemRemoved listener");
+            };
+            var throwAdded:Function = function():Void {
+                throw new Error("managed-longgun ItemAdded listener");
+            };
+            dispatcher.subscribe("ItemRemoved", throwRemoved);
+            dispatcher.subscribe("ItemAdded", throwAdded);
+
+            var t800:Array = pet(10, {});
+            var snapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 2);
+            var source:Object = {
+                containerId:"背包",
+                slot:0,
+                expectedLease:String(snapshot.slots[0].slotLease)
+            };
+            var handoff:Object = ManagedLongGunService.handoff(t800, source);
+            check(handoff.success === true && bag.getItem("0") == null
+                    && ManagedLongGunService.hasCustody(t800)
+                    && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+                "交付提交后的 ItemRemoved 监听器异常不改写成功结果且恢复事件总线");
+
+            var withdrawn:Object = ManagedLongGunService.withdraw(t800);
+            check(withdrawn.success === true && bag.getItem("0") != null
+                    && !ManagedLongGunService.hasCustody(t800)
+                    && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+                "取回提交后的 ItemAdded 监听器异常不改写成功结果并恢复事件总线/busy");
+
+            // 再验证通知层之外的意外异常也会经过 finally 释放服务锁。
+            bag.setDispatcher(null);
+            var second:BaseItem = new BaseItem("L85A1", {
+                level:6, shot:3, mods:[]
+            }, 234567);
+            bag.transactionWrite(0, second);
+            var secondPet:Array = pet(10, {});
+            snapshot = InventoryPanelService.buildExternalSnapshot("背包", 0, 2);
+            source = {
+                containerId:"背包",
+                slot:0,
+                expectedLease:String(snapshot.slots[0].slotLease)
+            };
+            var dirtyTrap:Object = {};
+            dirtyTrap.addProperty("dirtyMark",
+                function():Boolean { return false; },
+                function(value:Boolean):Void {
+                    throw new Error("managed-longgun dirty setter");
+                });
+            _root.存档系统 = dirtyTrap;
+            var escaped:Boolean = false;
+            try {
+                ManagedLongGunService.handoff(secondPet, source);
+            } catch (unexpectedError) {
+                escaped = true;
+            }
+            _root.存档系统 = {dirtyMark:false};
+            var recovered:Object = ManagedLongGunService.withdraw(secondPet);
+            check(escaped && recovered.success === true
+                    && !ManagedLongGunService.hasCustody(secondPet),
+                "非通知型意外异常向外传播后 finally 仍释放 busy，允许按权威状态取回");
+        } finally {
+            dispatcher.destroy();
+            holder.removeMovieClip();
+            _root.物品栏 = oldInventory;
+            _root.当前为战斗地图 = oldCombat;
+            _root.存档系统 = oldSave;
+        }
+    }
+
+    /**
+     * 托管写可能从其他全局事件回调进入。库存通知监听器抛错时，
+     * 服务的冷边界令牌只能恢复内层通知槽；绝不能清空外层快照并吞掉后续监听器。
+     */
+    private static function testNestedEventBusNotificationIsolation():Void {
+        var oldInventory:Object = _root.物品栏;
+        var oldCombat:Object = _root.当前为战斗地图;
+        var oldSave:Object = _root.存档系统;
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__managedLongGunNestedEvents", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        var bus:EventBus = EventBus.getInstance();
+        var outerEvent:String = "ManagedLongGunNestedOuter";
+        var outerScope:Object = {};
+        var handoffResult:Object = null;
+        var outerTailRan:Boolean = false;
+        var petInfo:Array = pet(10, {});
+
+        var outerTail:Function = function():Void {
+            outerTailRan = true;
+        };
+        var invokeHandoff:Function = function():Void {
+            var snapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 2);
+            handoffResult = ManagedLongGunService.handoff(petInfo, {
+                containerId:"背包",
+                slot:0,
+                expectedLease:String(snapshot.slots[0].slotLease)
+            });
+        };
+        var throwRemoved:Function = function():Void {
+            throw new Error("managed-longgun nested ItemRemoved listener");
+        };
+
+        try {
+            var bag:ArrayInventory = new ArrayInventory(null, 2);
+            bag.add(0, new BaseItem("L85A1", {
+                level:6, shot:7, mods:["嵌套异常测试"]
+            }, 345678));
+            bag.setDispatcher(dispatcher);
+            dispatcher.subscribe("ItemRemoved", throwRemoved);
+            _root.物品栏 = {背包:bag};
+            _root.当前为战斗地图 = false;
+            _root.存档系统 = {dirtyMark:false};
+
+            // EventBus 倒序派发：先订阅 tail，再订阅托管入口，确保托管先执行。
+            bus.subscribe(outerEvent, outerTail, outerScope);
+            bus.subscribe(outerEvent, invokeHandoff, outerScope);
+            bus.publish0(outerEvent);
+
+            check(handoffResult != null && handoffResult.success === true
+                    && bag.getItem("0") == null && ManagedLongGunService.hasCustody(petInfo)
+                    && outerTailRan,
+                "嵌套库存监听器抛错后外层后续监听器仍继续执行");
+            check(Number(bus["_dispatchDepth"]) == 0,
+                "嵌套托管事务结束后 EventBus dispatch depth 精确恢复为 0");
+        } finally {
+            bus.unsubscribe(outerEvent, invokeHandoff, outerScope);
+            bus.unsubscribe(outerEvent, outerTail, outerScope);
+            dispatcher.destroy();
+            holder.removeMovieClip();
+            _root.物品栏 = oldInventory;
+            _root.当前为战斗地图 = oldCombat;
+            _root.存档系统 = oldSave;
+        }
+    }
+
     private static function testUnitPreparationAndNonHeroAmmoSentinel():Void {
         var target:Object = {
             是否为敌人:false,
@@ -332,6 +620,88 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
         _root.控制目标 = oldControlTarget;
     }
 
+    private static function testT800DressupProjectionPreservesEnemyAuthority():Void {
+        var oldControlTarget:String = _root.控制目标;
+        var target:MovieClip = _root.createEmptyMovieClip(
+            "__managedT800DressupProjection", _root.getNextHighestDepth());
+        target.等级 = 60;
+        target.是否为敌人 = false;
+        target.hp满血值 = 6000; // 敌人模板已完成等级插值 × 难度2
+        target.hp = 6000;
+        target.空手攻击力_min = 10;
+        target.空手攻击力_max = 120;
+        target.基本空手攻击力 = 240; // 敌人模板已完成难度2
+        target.基本防御力 = 800;
+        target.基础命中率 = 10;
+        target.基础韧性系数 = 1;
+        target.基础躲闪率 = 100;
+        target.体重 = 130;
+        target.攻击模式 = "空手";
+        target.area = {_height:1};
+        target._yscale = 100;
+        target.label = {非生物:true, 机械:true};
+        target.魔法抗性 = {
+            基础:50, 电:-100, 热:50, 冷:50, 波:0, 蚀:50, 毒:50, 冲:50,
+            装甲:25, 机械:20, 凡俗:10
+        };
+        target.根据模式重新读取武器加成 = function(mode:String):Void {};
+
+        var dataKeys:Array = [
+            "头部装备数据", "上装装备数据", "手部装备数据", "下装装备数据",
+            "脚部装备数据", "颈部装备数据", "长枪数据", "手枪数据",
+            "手枪2数据", "刀数据", "手雷数据"
+        ];
+        for (var i:Number = 0; i < dataKeys.length; i++) {
+            target[dataKeys[i]] = {data:{}};
+        }
+
+        _root.控制目标 = "__managedDifferentHero";
+        DressupInitializer.updateProperties(target);
+        check(target.hp基本满血值 == 6000 && target.hp满血值 == 18000
+                && isFinite(Number(target.hp满血值))
+                && target.mp基本满血值 == 0 && target.mp满血值 == 0
+                && isFinite(Number(target.mp满血值)),
+            "T800 缺失 hp/mp 基本满值时从敌人模板 live HP 安全建基，友军倍率不产生 NaN");
+        check(target.空手攻击力 == 240
+                && target.魔法抗性.基础 == 50 && target.魔法抗性.电 == -100
+                && target.魔法抗性.波 == 0 && target.魔法抗性.装甲 == 25
+                && target.魔法抗性.机械 == 20 && target.魔法抗性.凡俗 == 10
+                && target.魔法抗性.人类 == undefined,
+            "T800 装备投影保留敌人难度空攻及电/装甲/机械权威抗性，不注入人类模板标签");
+
+        DressupInitializer.updateProperties(target);
+        check(target.hp满血值 == 18000 && target.mp满血值 == 0
+                && target.空手攻击力 == 240 && target.魔法抗性.电 == -100
+                && target.魔法抗性.装甲 == 25 && target.魔法抗性.机械 == 20,
+            "T800 重复换装从稳定 HP/MP/空攻/抗性基底重建，不重复倍率或累计装备投影");
+
+        var human:MovieClip = _root.createEmptyMovieClip(
+            "__managedHumanDressupProjection", _root.getNextHighestDepth());
+        human.等级 = 60;
+        human.是否为敌人 = true;
+        human.hp基本满血值 = 1000;
+        human.mp基本满血值 = 100;
+        human.基本空手攻击力 = 20;
+        human.体重 = 60;
+        human.area = {_height:1};
+        human._yscale = 100;
+        human.label = {};
+        human.魔法抗性 = {基础:999, 电:999}; // 首次已有表也不是非生物模板权威
+        human.根据模式重新读取武器加成 = function(mode:String):Void {};
+        for (i = 0; i < dataKeys.length; i++) human[dataKeys[i]] = {data:{}};
+        DressupInitializer.updateProperties(human);
+        human.等级 = 70;
+        DressupInitializer.updateProperties(human);
+        check(human.魔法抗性.基础 == 17 && human.魔法抗性.电 == 17
+                && human.魔法抗性.人类 == 70
+                && human.装备投影含模板魔法抗性 === false,
+            "人形首次已有抗性表也不冻结为模板权威，升级与重复换装继续按当前等级投影");
+
+        _root.控制目标 = oldControlTarget;
+        human.removeMovieClip();
+        target.removeMovieClip();
+    }
+
     private static function testM134SuccessfulShotIntent():Void {
         var unit:Object = {
             攻击模式:"长枪",
@@ -341,7 +711,7 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
         var gunAnim:Object = {_totalFrames:8, _currentFrame:1};
         gunAnim.gotoAndStop = function(frame:Number):Void { this._currentFrame = frame; };
         unit.长枪_引用 = {动画:gunAnim};
-        var ref:Object = {自机:unit};
+        var ref:Object = {自机:unit, 生命周期函数列表:[]};
         var init:Function = _root.装备生命周期函数.M134初始化;
         check(init != undefined,
             "聚焦测试已装载 M134 生命周期脚本");
@@ -369,6 +739,41 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
         unit.dispatcher.publish("长枪射击");
         check(ref.isFiring === true,
             "M134 继续兼容旧时间轴长枪射击事件");
+
+        check(ref.生命周期函数列表.length == 1
+                && Number(unit.dispatcher["_subCount"]) == 3,
+            "M134 初始化把两个射击订阅和 placement 订阅登记为同一卸载资源");
+        init(ref, {
+            maxSpinCount:29,
+            spinUpAmount:5,
+            spinSpeedFactor:1,
+            spinDownRate:0.33
+        });
+        check(ref.生命周期函数列表.length == 1
+                && Number(unit.dispatcher["_subCount"]) == 3,
+            "M134 同一 lifecycle ref 防御性重入仍只保留三条当前订阅和一个卸载资源");
+        var unload:Object = ref.生命周期函数列表[0];
+        unload.动作(unload.额外参数);
+        ref.isFiring = false;
+        unit.dispatcher.publish("processShot", unit, "长枪", null, {});
+        unit.dispatcher.publish("长枪射击");
+        check(ref.isFiring === false && Number(unit.dispatcher["_subCount"]) == 0,
+            "M134 生命周期卸载后旧 processShot/长枪射击/placement 回调全部移除");
+
+        var replacement:Object = {自机:unit, 生命周期函数列表:[]};
+        init(replacement, {
+            maxSpinCount:29,
+            spinUpAmount:5,
+            spinSpeedFactor:1,
+            spinDownRate:0.33
+        });
+        unit.dispatcher.publish("processShot", unit, "长枪", null, {});
+        check(replacement.isFiring === true && ref.isFiring === false
+                && Number(unit.dispatcher["_subCount"]) == 3,
+            "M134 换装后只有当前 lifecycle ref 接收成功射击，不累积旧匿名订阅");
+        replacement.生命周期函数列表[0].动作(
+            replacement.生命周期函数列表[0].额外参数);
+        unit.dispatcher.destroy();
     }
 
     private static function testUnitPreparationInstallsDressupLifecycleBridge():Void {

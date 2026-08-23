@@ -14,7 +14,7 @@
  *   - TickComponent（仅周期框架，回调应调用本类）
  *
  * 调用方约定：
- *   - 返回真实回复量；UI 刷新 / 浮字 / 音效由调用方根据返回值决定
+ *   - 返回真实回复量；主角 HP 成功变化后由本类请求主 HUD 合并刷新，浮字 / 音效仍由调用方决定
  *   - target 死亡（hp <= 0）一律返回 0，不修改任何属性（MP 路径同样以 hp 判存活）
  *   - amount <= 0 或 NaN 一律返回 0
  *
@@ -60,6 +60,77 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
     public static var OVERFLOW_CAP_RATIO:Number = 0.5;
 
     /**
+     * 返回治疗系统允许的安全 HP 比例。只用于本次结算的边界判断，
+     * 不得拿来把当前 HP 按新装备上限做比例投影。超过溢出上界或非有限
+     * 表示来源不可信，回退到 1.0 而不是替污染值补发临时生命资格。
+     */
+    public static function calculateSafeHpRatio(currentHp:Number, currentMaxHp:Number):Number {
+        if (!(currentMaxHp > 0) || !isFinite(currentMaxHp)) return 0;
+
+        var overflowRatio:Number = Number(OVERFLOW_CAP_RATIO);
+        if (!(overflowRatio > 0) || !isFinite(overflowRatio)) overflowRatio = 0;
+        var maximumRatio:Number = 1 + overflowRatio;
+
+        if (!(currentHp > 0)) return 0;
+        // 非有限或超过治疗系统上界的值没有合法 provenance；不得在击溃边界
+        // 被重新认证为临时生命，保守回退到普通满血比例。
+        if (!isFinite(currentHp)) return 1;
+
+        var ratio:Number = currentHp / currentMaxHp;
+        if (!(ratio > 0)) return 0;
+        return ratio > maximumRatio ? 1 : ratio;
+    }
+
+    /**
+     * 最大值重建后结算绝对 HP：不按比例回血，也不因降低上限制造临时生命。
+     * 旧 HP 位于旧治疗溢出上界内时视为已存在的合法临时生命，只保留其绝对值，
+     * 并夹到新治疗溢出上界；超过旧上界或非有限的污染值回退为新满血值。
+     */
+    public static function settleHpAfterMaxChange(currentHp:Number,
+                                                   previousMaxHp:Number,
+                                                   rebuiltMaxHp:Number):Number {
+        if (!(rebuiltMaxHp > 0) || !isFinite(rebuiltMaxHp)) return 0;
+        if (!isFinite(currentHp)) return rebuiltMaxHp;
+        if (!(currentHp > 0)) return 0;
+        if (!(previousMaxHp > 0) || !isFinite(previousMaxHp)) return rebuiltMaxHp;
+
+        // 普通当前值只能受新 live 上限约束，降上限不能把它变成临时生命。
+        if (currentHp <= previousMaxHp) return Math.min(currentHp, rebuiltMaxHp);
+
+        var overflowRatio:Number = Number(OVERFLOW_CAP_RATIO);
+        if (!(overflowRatio > 0) || !isFinite(overflowRatio)) overflowRatio = 0;
+        var maximumRatio:Number = 1 + overflowRatio;
+        var previousOverflowCap:Number = previousMaxHp * maximumRatio;
+        if (!isFinite(previousOverflowCap) || currentHp > previousOverflowCap) {
+            return rebuiltMaxHp;
+        }
+
+        // 合法临时生命保留绝对点数，不按 old/new max 比例复制。
+        var rebuiltOverflowCap:Number = rebuiltMaxHp * maximumRatio;
+        if (!isFinite(rebuiltOverflowCap)) return currentHp;
+        return Math.min(currentHp, rebuiltOverflowCap);
+    }
+
+    /** MP 没有通用临时资源契约；最大值重建只保留受新上限约束的绝对当前值。 */
+    public static function settleMpAfterMaxChange(currentMp:Number, rebuiltMaxMp:Number):Number {
+        if (!(rebuiltMaxMp > 0) || !isFinite(rebuiltMaxMp)) return 0;
+        if (!isFinite(currentMp)) return rebuiltMaxMp;
+        if (!(currentMp > 0)) return 0;
+        return Math.min(currentMp, rebuiltMaxMp);
+    }
+
+    /**
+     * 成功治疗主角后只设置 HUD 待刷新位；玩家信息界面每帧至多消费一次。
+     * 非玩家单位不承担 UI 写入，同帧后续治疗继续保持 pending，不会漏掉最终状态。
+     */
+    private static function requestHeroHpDisplayRefresh(target:Object):Void {
+        var controlTarget = _root.控制目标;
+        if (controlTarget == undefined || target._name !== controlTarget) return;
+        var playerInfo:Object = _root.玩家信息界面;
+        if (playerInfo) playerInfo._pendingHpDisplayRefresh = true;
+    }
+
+    /**
      * HP 硬封顶治疗。把 target.hp 向上推到 capValue，超过的部分丢弃。
      *
      * 典型场景：
@@ -86,6 +157,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         if (actual <= 0) return 0;
 
         target.hp = newValue;
+        requestHeroHpDisplayRefresh(target);
         return actual;
     }
 
@@ -130,6 +202,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         if (healed <= 0) return 0;
 
         target.hp = current + healed;
+        requestHeroHpDisplayRefresh(target);
         return healed;
     }
 

@@ -114,7 +114,7 @@ function 虚拟币支付(amount, 商品编号, 训练毫秒, 增加经验, 挂�
 	if (_root.虚拟币 >= amount)
 	{
 		_root.虚拟币 -= amount;
-		org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+		_root.记录玩家货币变化(
 			0, -Number(amount),
 			{source:"gym_training", reason:"experience_training", mergeScope:"operation"});
 		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
@@ -136,7 +136,7 @@ function 虚拟币支付2(amount, 商品编号, 训练毫秒, 增加技能点, �
 	if (_root.虚拟币 >= amount)
 	{
 		_root.虚拟币 -= amount;
-		org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+		_root.记录玩家货币变化(
 			0, -Number(amount),
 			{source:"gym_training", reason:"skill_training", mergeScope:"operation"});
 		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;

@@ -78,9 +78,11 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
         // if (bullet.击溃 > 0) {
         // 外部已经防御击溃为正，且当前无动态击溃的需求
 
-        if (target.hp满血值 > MIN_MAX_HP) {
+        var currentMaxHp:Number = Number(target.hp满血值);
+        if (currentMaxHp > MIN_MAX_HP && isFinite(currentMaxHp)) {
             // 计算击溃伤害值（基于目标的满血值和子弹的击溃比例）
-            var crumbleAmount:Number = (target.hp满血值 * bullet.击溃 / 100) >> 0;
+            // hp满血值可能超过 signed-int32，不能用 >> 0 取整。
+            var crumbleAmount:Number = Math.floor(currentMaxHp * bullet.击溃 / 100);
 
             // 如果计算出的伤害小于1，则没有效果，直接返回
             if (crumbleAmount < 1) {
@@ -89,7 +91,7 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
 
             // 确保扣减后的满血值不会低于下限
             // 能扣减的最大量是 "当前满血值 - 下限"
-            var maxCrumble:Number = target.hp满血值 - MIN_MAX_HP;
+            var maxCrumble:Number = currentMaxHp - MIN_MAX_HP;
             if (crumbleAmount > maxCrumble) {
                 crumbleAmount = maxCrumble;
             }
@@ -97,11 +99,12 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
             // 将击溃伤害添加到子弹的额外效果伤害中
             bullet.additionalEffectDamage += crumbleAmount;
 
-            // 记录本次实际生效的绝对损伤，供装备全量重建后重新投影。
-            // 该字段只在战斗运行态携带；触底时不丢弃累计值，避免换低 HP 装备洗掉击溃。
-            var carriedLoss:Number = Number(target.hp满血值战斗损伤);
-            if (!isFinite(carriedLoss) || carriedLoss < 0) carriedLoss = 0;
-            target.hp满血值战斗损伤 = carriedLoss + crumbleAmount;
+            // 击溃已通过上方盾强门槛，降低上限的同时必须保留同额的当前 HP
+            // 配对伤害。DamageCalculator 会在容量盾结算时把本槽从普通伤害中
+            // 拆出，防止“上限照扣、对应 HP 损失却被盾吸收”的长血条状态。
+            var pairedDamage:Number = Number(result._crumbleDamage);
+            if (!(pairedDamage >= 0) || !isFinite(pairedDamage)) pairedDamage = 0;
+            result._crumbleDamage = pairedDamage + crumbleAmount;
 
             // 减少满血值并增加损伤值
             target.hp满血值 -= crumbleAmount;

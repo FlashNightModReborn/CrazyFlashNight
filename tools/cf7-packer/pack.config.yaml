@@ -244,6 +244,9 @@ layers:
       - "overlay.html"
       - "config/**"
       - "css/**"
+      # fonts.xml 的三项 Web runtime 投影位于 launcher/web/generated/；
+      # panels.css 会直接 import 其中的 CSS，Host 也会读取 JSON，不能只依赖仓库中存在。
+      - "generated/**"
       # 运行时资产：字体 / 地图头像 / stage-select 预览 / dialogue & dressup 产物 / dungeon posters
       # 审计报告和开发脚本在 exclude 中剔除，避免 assets/** 把烘焙中间产物带进每日包。
       - "assets/**"

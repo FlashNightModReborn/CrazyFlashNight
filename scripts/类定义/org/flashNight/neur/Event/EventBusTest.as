@@ -35,7 +35,12 @@ class org.flashNight.neur.Event.EventBusTest {
         this.eventBus = EventBus.initialize();
 
         // 运行所有测试用例
-        this.runAllTests();
+        this.runTests();
+    }
+
+    /** 供 focused TestLoader 以统一 suite 入口运行本类。 */
+    public static function runAllTests():Void {
+        new org.flashNight.neur.Event.EventBusTest();
     }
 
     /**
@@ -72,7 +77,7 @@ class org.flashNight.neur.Event.EventBusTest {
     /**
      * 运行所有测试用例。
      */
-    private function runAllTests():Void {
+    private function runTests():Void {
         this.testEventBusSubscribePublish();
         this.testEventBusUnsubscribe();
         this.testEventBusSubscribeOnce();
@@ -103,8 +108,6 @@ class org.flashNight.neur.Event.EventBusTest {
         this.testDestroyDuringDispatchGuard();
 
         // [v2.3] 新增回归测试 - 三方交叉审查综合修复
-        // 注意：testDestroyReturnBoolean 必须在 testLetItCrashStrategy 之前运行
-        // 因为 let-it-crash 测试会故意抛出错误，在移除 try/finally 后会导致 _dispatchDepth 残留
         this.testScopeDeduplication();
         this.testSubscribeReturnBoolean();
         this.testDestroyReturnBoolean();
@@ -118,12 +121,14 @@ class org.flashNight.neur.Event.EventBusTest {
 
         // [v3.0] 新增回归测试 - 结构性重构验证
         this.testPublishSpecialized();
+        this.testScopedDispatchRecoveryAllEntrypoints();
+        this.testDispatchRecoveryRejectsUpwardRestore();
         this.testDirectScopeBinding();
         this.testSwapAndPopUnsubscribe();
         this.testOnceResubscribeAfterUnsubscribe();
         this.testSwapAndPopWithOnceElement();
 
-        // [v2.2] let-it-crash 测试放在最后，因为它可能导致 _dispatchDepth 状态不一致
+        // 异常仍需传播；测试在冷边界显式使用局部恢复令牌后继续。
         this.testLetItCrashStrategy();
 
         // 运行性能测试
@@ -197,10 +202,13 @@ class org.flashNight.neur.Event.EventBusTest {
         // [v2.2] 用 try/catch 包裹以防止测试套件被中断
         // let-it-crash 策略意味着错误会传播，但测试需要继续
         var errorCaught:Boolean = false;
+        var recovered:Boolean = false;
+        var recoverDispatch:Function = this.eventBus.createDispatchRecoveryToken();
         try {
             this.eventBus.publish("ERROR_EVENT");
         } catch (e:Error) {
             errorCaught = true;
+            recovered = recoverDispatch();
         }
 
         // [v2.2] 验证：错误回调被调用，且在 AS2 中后续回调通常仍会执行
@@ -214,9 +222,9 @@ class org.flashNight.neur.Event.EventBusTest {
         this.eventBus.unsubscribe("ERROR_EVENT", Delegate.create(this, this.callbackWithError));
         this.eventBus.unsubscribe("ERROR_EVENT", Delegate.create(this, this.callback1));
 
-        // [v2.3.1 FIX] 由于 let-it-crash 策略移除了 try/finally，错误抛出后 _dispatchDepth 可能残留
-        // 重置状态以确保后续测试（如 Test 6 destroy）能正常运行
-        this.eventBus.forceResetDispatchDepth();
+        this.assert(errorCaught, "Test 5: EventBus callback error propagates to caller");
+        this.assert(recovered && Number(this.eventBus["_dispatchDepth"]) == 0,
+            "Test 5: cold boundary token restores dispatch depth without global reset");
     }
 
     /**
@@ -1182,10 +1190,13 @@ class org.flashNight.neur.Event.EventBusTest {
         // 触发事件
         // [v2.2] 用 try/catch 包裹以防止测试套件被中断
         var errorPropagated:Boolean = false;
+        var recovered:Boolean = false;
+        var recoverDispatch:Function = this.eventBus.createDispatchRecoveryToken();
         try {
             this.eventBus.publish("CRASH_TEST");
         } catch (e:Error) {
             errorPropagated = true;
+            recovered = recoverDispatch();
         }
 
         // 验证错误回调被调用
@@ -1197,12 +1208,9 @@ class org.flashNight.neur.Event.EventBusTest {
         this.eventBus.unsubscribe("CRASH_TEST", errorCallback);
         this.eventBus.unsubscribe("CRASH_TEST", normalCallback);
 
-        // [v2.3] 重要：由于移除了 try/finally，错误抛出后 _dispatchDepth 可能残留
-        // 重新初始化 EventBus 以重置状态，确保后续测试（如性能测试）能正常运行
-        this.eventBus = EventBus.initialize();
-        // 注意：initialize() 返回单例，但我们需要调用 forceResetDispatchDepth 来重置状态
-        // 如果 EventBus 没有提供这个方法，需要添加一个
-        this.eventBus.forceResetDispatchDepth();
+        this.assert(errorPropagated, "[v3.1] let-it-crash - error propagated to caller");
+        this.assert(recovered && Number(this.eventBus["_dispatchDepth"]) == 0,
+            "[v3.1] let-it-crash - explicit cold-boundary token restored dispatch depth");
     }
 
     // -----------------------
@@ -1308,10 +1316,7 @@ class org.flashNight.neur.Event.EventBusTest {
     private function testDestroyReturnBoolean():Void {
         this.resetFlags();
 
-        // [v2.3.1 FIX] 确保 _dispatchDepth 为 0，避免被之前测试的残留状态影响
-        // EventBus 是单例，之前的测试可能导致 _dispatchDepth 残留
         var testBus:EventBus = EventBus.initialize();
-        testBus.forceResetDispatchDepth();
 
         // 添加一些订阅
         var callback:Function = function():Void {};
@@ -1563,6 +1568,99 @@ class org.flashNight.neur.Event.EventBusTest {
         this.eventBus.unsubscribe("PUB0_TEST", cb0, scope0);
         this.eventBus.unsubscribe("PUB1_TEST", cb1, scope1);
         this.eventBus.unsubscribe("PUB2_TEST", cb2, scope2);
+    }
+
+    /** [v3.1] 冷业务边界可为五个 publish 入口精确恢复残留内层栈。 */
+    private function testScopedDispatchRecoveryAllEntrypoints():Void {
+        this.eventBus = EventBus.initialize();
+        var scope:Object = {};
+        var names:Array = [
+            "PUB_THROW_0", "PUB_THROW_1", "PUB_THROW_2",
+            "PUB_THROW_GENERIC", "PUB_THROW_ARRAY"
+        ];
+        var throwingCallback:Function = function():Void {
+            throw new Error("EventBus publish cleanup probe");
+        };
+        for (var i:Number = 0; i < names.length; i++) {
+            this.eventBus.subscribe(String(names[i]), throwingCallback, scope);
+        }
+
+        var propagated:Number = 0;
+        var recovered:Number = 0;
+        var recoverDispatch:Function = this.eventBus.createDispatchRecoveryToken();
+        try { this.eventBus.publish0(String(names[0])); }
+        catch (error0:Error) {
+            propagated++;
+            if (recoverDispatch()) recovered++;
+        }
+
+        recoverDispatch = this.eventBus.createDispatchRecoveryToken();
+        try { this.eventBus.publish1(String(names[1]), 1); }
+        catch (error1:Error) {
+            propagated++;
+            if (recoverDispatch()) recovered++;
+        }
+
+        recoverDispatch = this.eventBus.createDispatchRecoveryToken();
+        try { this.eventBus.publish2(String(names[2]), 1, 2); }
+        catch (error2:Error) {
+            propagated++;
+            if (recoverDispatch()) recovered++;
+        }
+
+        recoverDispatch = this.eventBus.createDispatchRecoveryToken();
+        try { this.eventBus.publish(String(names[3]), 1, 2, 3); }
+        catch (errorGeneric:Error) {
+            propagated++;
+            if (recoverDispatch()) recovered++;
+        }
+
+        recoverDispatch = this.eventBus.createDispatchRecoveryToken();
+        try { this.eventBus.publishWithParam(String(names[4]), [1, 2, 3]); }
+        catch (errorArray:Error) {
+            propagated++;
+            if (recoverDispatch()) recovered++;
+        }
+
+        var stacksCleared:Boolean = Number(this.eventBus["_dispatchDepth"]) == 0;
+        var cbStack:Array = this.eventBus["_cbStack"];
+        var scStack:Array = this.eventBus["_scStack"];
+        var argsStack:Array = this.eventBus["_argsStack"];
+        var stackLength:Number = cbStack.length;
+        for (i = 0; i < stackLength && stacksCleared; i++) {
+            if ((cbStack[i] != undefined && cbStack[i].length > 0)
+                    || (scStack[i] != undefined && scStack[i].length > 0)
+                    || (argsStack[i] != undefined && argsStack[i].length > 0)) {
+                stacksCleared = false;
+            }
+        }
+        this.assert(propagated == names.length,
+            "[v3.1] scoped recovery - all entrypoints preserve let-it-crash propagation");
+        this.assert(recovered == names.length && stacksCleared,
+            "[v3.1] scoped recovery - tokens restore depth and only occupied local stack slots");
+
+        for (i = 0; i < names.length; i++) {
+            this.eventBus.unsubscribe(String(names[i]), throwingCallback, scope);
+        }
+    }
+
+    /** [v3.1] 捕获于更深层的令牌不得把已回落的总线重新抬高。 */
+    private function testDispatchRecoveryRejectsUpwardRestore():Void {
+        this.eventBus = EventBus.initialize();
+        var bus:EventBus = this.eventBus;
+        var lateRecovery:Function = null;
+        var callback:Function = function():Void {
+            lateRecovery = bus.createDispatchRecoveryToken();
+        };
+
+        this.eventBus.subscribe("RECOVERY_UPWARD_REJECT", callback, this);
+        this.eventBus.publish0("RECOVERY_UPWARD_REJECT");
+
+        var rejected:Boolean = lateRecovery != null && !lateRecovery();
+        this.assert(rejected && Number(this.eventBus["_dispatchDepth"]) == 0,
+            "[v3.1] scoped recovery - token refuses to raise depth after normal unwind");
+
+        this.eventBus.unsubscribe("RECOVERY_UPWARD_REJECT", callback, this);
     }
 
     /**

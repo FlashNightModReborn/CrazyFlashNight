@@ -18,9 +18,17 @@ import org.flashNight.arki.unit.UnitComponent.Dressup.DressupSubscriber;
 
 class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.PlacementVisual {
 
-    public static function hookVisualUpdate(target:MovieClip, refName:String, ref:Object, updateFn):Void {
-        DressupSubscriber.onPlacement(target, refName, function() {
+    /**
+     * @param scope 可选；默认沿用 target。需要随装备 lifecycle 精确退订时传入 ref。
+     * @return 实际登记的 handler，供调用方以同一 callback + scope 退订。
+     */
+    public static function hookVisualUpdate(target:MovieClip, refName:String, ref:Object,
+                                            updateFn, scope:Object):Function {
+        var handler:Function = function() {
             updateFn(ref);
-        });
+        };
+        DressupSubscriber.onPlacement(target, refName, handler,
+            scope != undefined ? scope : target);
+        return handler;
     }
 }

@@ -4,7 +4,7 @@
 
 ## 最省事的试用流程
 
-1. 把 TTF / OTF / WOFF / WOFF2 放进 `temporary/custom/`。文件名要与 `fonts.xml` 中目标 asset 的 `file` 相同；整个 `temporary/` 都不会进入 Git。
+1. 把 TTF / OTF / WOFF 放进 `temporary/custom/`。文件名要与 `fonts.xml` 中目标 asset 的 `file` 相同；整个 `temporary/` 都不会进入 Git。当前 local custom WOFF2 因 Launcher 解析器不支持而没有覆盖权，但 cache/permanent 中 hash 固定的 WOFF2 仍受支持。
 2. 若是新字体，在 `fonts.xml` 增加 asset、face 和下载信息；业务处只改 role 或 preset 的 `<use face="..."/>`，不要修改 CSS/C# 字体族名。
 3. 运行：
 
@@ -15,7 +15,7 @@
    node tools/fontctl/cli.js resolve --role web.intelligence.title --explain
    ```
 
-4. Web 页面重开即可重新取字体；Native 字体选择按进程冻结，修改后重启游戏。
+4. `fontctl resolve` 对首选之前的 custom 会显示 `runtime-probe-required`，并把当前下层 `selected` 标成 `provisional / non-authoritative`；system fallback 因 Node 不探测本机 family 也保持 provisional。`hostExactSelection` 恒为 false，不会用 Node 元数据解析冒充 Host exact selection。Launcher 对成功解析的字体按进程复用同一已验证字节；修改已命中的 custom 后需重启 Launcher。此前未命中的按需字体由 FontPack 下载完成后仍可在同一进程首次命中。
 
 文案可以直接维护 XML/JSON，不需要 Electron 工具、编译 C# 或理解物理 family。普通映射变化只改 XML并重生成投影。
 
@@ -33,13 +33,15 @@ fonts/
     generated/                 # 可删除的本地报告（预留）
 ```
 
-运行时来源顺序固定为：
+运行时顺序固定为 face-major；对 role/preset 的每个 face 依次穷尽来源：
 
 ```text
-temporary/custom → temporary/cache → permanent/runtime → system/generic fallback
+face 1: temporary/custom → temporary/cache → permanent/runtime
+face 2..N: temporary/custom → temporary/cache → permanent/runtime
+then: system/generic fallback
 ```
 
-custom 仍要通过格式/容器探针；cache 与 permanent 必须精确匹配 XML 的 bytes 和 SHA-256。下载只写唯一 staging，验证后再原子发布到 cache；网络、损坏文件或缺字都不能阻断游戏启动。
+custom 必须通过有界结构检查和 Launcher 实际字体解析探针；仅识别 magic/header、metadata 或 glyph 目录不构成可用。Node `fontctl` 只延后静态首选之前的 custom，生产 resolver 则以单次读取的已验证字节同时完成 Skia/Native 探针和后续 Web/内存字体消费，禁止验真后再按路径打开。成功解析按 asset 在进程内缓存；Web 响应使用内容 SHA-256 ETag 与 `private, max-age=0, must-revalidate`，条件请求可返回 304。未命中不缓存，因而后台下载仍可在同一进程变为可见；FontPack 状态检查刻意重新读盘，不复用该成功项缓存，以便继续检测替换或损坏。当前 local custom WOFF2 会 fail-closed 并继续 cache/permanent；cache 与 permanent 必须精确匹配 XML 的 bytes 和 SHA-256。Node `fontctl sync` 只证明有界结构、bytes 与 hash；Launcher FontPack 对同一下载快照再次绑定 catalog，并让 TTF/OTF/WOFF 通过实际 parser，Native TTF/OTF 再通过 GDI。WOFF2 因当前无共同 decoder，仅可在 Web-only asset 上显式记录 `pinned-web-structure-only`，Native 必须拒绝。下载只写唯一 staging，全部门通过后再原子发布到 cache；网络、损坏文件或缺字都不能阻断游戏启动。
 
 ## 常驻与按需集合
 
@@ -79,6 +81,6 @@ raw family 只允许作为以下显式边界留存：
 ## 边界
 
 - `launcher/web/assets/fonts/` 只容纳由 `fontctl generate` 维护的兼容 manifest，不得再放字体二进制或手写第二份 inventory。
-- 旧 `%LOCALAPPDATA%/CF7FlashNight/fonts/` 导入路径已退役；运行时只解析根目录的 `custom → cache → permanent`。
-- `runtime-fonts` 打包层收录 XML/XSD、许可证、README 和 `permanent/runtime/`，严格排除 `temporary/**`。正式部署状态只以 runtime consensus 与标准入口证据为准。
+- 旧 `%LOCALAPPDATA%/CF7FlashNight/fonts/` 导入路径已退役；目录中的既有文件不会被自动删除，但 RuntimeFontCatalog、FontPack、fontctl 与 Edge harness 都不读取它。运行时只解析项目根 `fonts/`。
+- `runtime-fonts` 打包层收录 XML/XSD、许可证、README 和 `permanent/runtime/`，严格排除 `temporary/**`；`launcher-web` 层另须真实收录 `launcher/web/generated/font-catalog.{json,css,js}` 与兼容 manifest。正式部署状态只以 runtime consensus 与标准入口证据为准。
 - `闪7重置版字体/`、Flash、AS2、FLA、XFL 明确不扫描、不迁移、不新增工具投资。

@@ -40,7 +40,7 @@ function getSuites() {
             suite: require("../web/modules/minigames/blackmarket/dev/qa-suite.js"),
             args: [
                 require("../web/modules/minigames/blackmarket/core/index.js"),
-                require("../web/data/black-market-shadow-catalog.v1.json"),
+                require("../../tools/fixtures/blackmarket/black-market-shadow-catalog.v1.json"),
                 require("../web/modules/minigames/blackmarket/visual/item-surface.js"),
                 require("../web/modules/minigames/blackmarket/visual/equipment-preview.js"),
                 require("../web/assets/dressup/manifest.json")

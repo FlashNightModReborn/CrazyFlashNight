@@ -331,6 +331,15 @@ function validateCatalog(catalog) {
         if (assetsByFile.has(fileKey)) add('DUPLICATE_FILE', `字体文件名大小写冲突或重复：${asset.file}`, asset, { id: asset.id, ref: assetsByFile.get(fileKey).id });
         else assetsByFile.set(fileKey, asset);
         if (!FORMATS.has(asset.format)) add('FORMAT_INVALID', `未知字体格式：${asset.format}`, asset, { id: asset.id });
+        if (asset.format === 'woff2') {
+            add(
+                'CUSTOM_WOFF2_OVERRIDE_UNSUPPORTED',
+                `asset ${asset.id} 的 hash 固定 cache/permanent WOFF2 仍受支持，但 local custom WOFF2 当前没有覆盖权`,
+                asset,
+                { id: asset.id, format: asset.format },
+                'warning',
+            );
+        }
         const extension = path.extname(asset.file).slice(1).toLowerCase();
         if (asset.format && extension !== asset.format) add('FORMAT_EXTENSION_MISMATCH', `${asset.file} 与 format=${asset.format} 不一致`, asset, { id: asset.id });
         if (!asset.license.trim()) add('LICENSE_MISSING', `asset ${asset.id} 缺少许可证标识`, asset, { id: asset.id });

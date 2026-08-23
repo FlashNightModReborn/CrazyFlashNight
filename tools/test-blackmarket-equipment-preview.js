@@ -3,13 +3,64 @@
 
 var assert = require("assert");
 var fs = require("fs");
+var http = require("http");
 var path = require("path");
 var vm = require("vm");
-var Core = require("../launcher/web/modules/minigames/blackmarket/core/index.js");
+var ProductCore = require("../launcher/web/modules/minigames/blackmarket/core/index.js");
+var Core = require("./fixtures/blackmarket/exact-oracle-core.js");
 var Preview = require("../launcher/web/modules/minigames/blackmarket/visual/equipment-preview.js");
 var InspectionFocus = require("../launcher/web/modules/minigames/blackmarket/visual/inspection-focus.js");
-var catalog = require("../launcher/web/data/black-market-shadow-catalog.v1.json");
+var catalog = require("./fixtures/blackmarket/black-market-shadow-catalog.v1.json");
 var manifest = require("../launcher/web/assets/dressup/manifest.json");
+
+function walkFiles(root) {
+    var out = [];
+    fs.readdirSync(root, { withFileTypes: true }).forEach(function(entry) {
+        var full = path.join(root, entry.name);
+        if (entry.isDirectory()) out = out.concat(walkFiles(full));
+        else if (entry.isFile()) out.push(full);
+    });
+    return out;
+}
+
+function probeStaticRoot(webRoot, requestPaths) {
+    return new Promise(function(resolve, reject) {
+        var server = http.createServer(function(request, response) {
+            var pathname = decodeURIComponent(new URL(request.url, "http://127.0.0.1").pathname);
+            var target = path.resolve(webRoot, "." + pathname);
+            if (target !== webRoot && !target.startsWith(webRoot + path.sep)) {
+                response.writeHead(403);
+                response.end("forbidden");
+                return;
+            }
+            fs.stat(target, function(error, stat) {
+                if (error || !stat.isFile()) {
+                    response.writeHead(404);
+                    response.end("not found");
+                    return;
+                }
+                response.writeHead(200);
+                fs.createReadStream(target).pipe(response);
+            });
+        });
+        server.once("error", reject);
+        server.listen(0, "127.0.0.1", function() {
+            var port = server.address().port;
+            Promise.all(requestPaths.map(function(requestPath) {
+                return new Promise(function(resolveRequest, rejectRequest) {
+                    http.get({ host: "127.0.0.1", port: port, path: requestPath }, function(response) {
+                        response.resume();
+                        response.once("end", function() { resolveRequest(response.statusCode); });
+                    }).once("error", rejectRequest);
+                });
+            })).then(function(statuses) {
+                server.close(function() { resolve(statuses); });
+            }, function(error) {
+                server.close(function() { reject(error); });
+            });
+        });
+    });
+}
 
 function loadEquipmentInspector() {
     var source = fs.readFileSync(path.resolve(__dirname,
@@ -32,12 +83,14 @@ async function main() {
     })[0];
     assert(target, "牙狼胸甲 catalog entry missing");
 
-    var session = Core.createShadowSession(catalog, { seed: "equipment-preview-test" });
+    var session = Core.createDevelopmentSession(catalog, { seed: "equipment-preview-test" });
     var focused = session.lab.focusItem(target.id);
-    var source = session.visual.resolveOfferSource(focused.focus.offerId);
+    var source = session.visual.resolveOfferSource(focused.focus.visualHandle);
     assert.strictEqual(source.kind, "dressup-paperdoll");
     assert.strictEqual(source.slot, "body");
     assert.strictEqual(Core.publicSnapshotContainsIdentity(focused.snapshot, catalog), false);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(session.lab.exportAnonymous(), "seed"), false,
+        "anonymous export retained a replay seed");
 
     var calls = [];
     var portraitApi = {
@@ -79,7 +132,7 @@ async function main() {
     })[0];
     assert(handTarget, "representative hand armor missing");
     var handFocused = session.lab.focusItem(handTarget.id);
-    var handSource = session.visual.resolveOfferSource(handFocused.focus.offerId);
+    var handSource = session.visual.resolveOfferSource(handFocused.focus.visualHandle);
     await renderer.resolve(handSource, { gender: "男" });
     assert.strictEqual(calls.length, 2, "hand focus did not render exactly once");
     assert(calls[1].state.drawFields.length > 0, "hand focus has no draw fields");
@@ -96,12 +149,12 @@ async function main() {
     })[0];
     assert(femaleOnly && maleOnly, "gender-specific armor fixtures missing");
     var femaleFocused = session.lab.focusItem(femaleOnly.id);
-    var femaleSource = session.visual.resolveOfferSource(femaleFocused.focus.offerId);
+    var femaleSource = session.visual.resolveOfferSource(femaleFocused.focus.visualHandle);
     var sharedGender = await renderer.resolvePairGender([source, femaleSource], { gender: "男" });
     assert.strictEqual(sharedGender, "女",
         "pair did not select the common authored equipment-focus gender");
     var maleFocused = session.lab.focusItem(maleOnly.id);
-    var maleSource = session.visual.resolveOfferSource(maleFocused.focus.offerId);
+    var maleSource = session.visual.resolveOfferSource(maleFocused.focus.visualHandle);
     await assert.rejects(function() {
         return renderer.resolvePairGender([maleSource, femaleSource], { gender: "男" });
     }, /no common equipment-focus gender/);
@@ -116,7 +169,7 @@ async function main() {
     })[0];
     assert(weaponTarget, "representative weapon missing");
     var weaponFocused = session.lab.focusItem(weaponTarget.id);
-    var weaponSource = session.visual.resolveOfferSource(weaponFocused.focus.offerId);
+    var weaponSource = session.visual.resolveOfferSource(weaponFocused.focus.visualHandle);
     assert.strictEqual(weaponSource.kind, "dressup-weapon");
     assert.strictEqual(Core.publicSnapshotContainsIdentity(weaponFocused.snapshot, catalog), false);
     var weaponVisual = await renderer.resolve(weaponSource, { gender: "男" });
@@ -243,6 +296,44 @@ async function main() {
     broken.destroy();
 
     var root = path.resolve(__dirname, "..");
+    var webRoot = path.join(root, "launcher/web");
+    var historicalCatalogPath = path.join(webRoot, "data/black-market-shadow-catalog.v1.json");
+    var historicalExactCorePath = path.join(webRoot,
+        "modules/minigames/blackmarket/dev/exact-lab-core.js");
+    var offlineCatalogPath = path.join(root,
+        "tools/fixtures/blackmarket/black-market-shadow-catalog.v1.json");
+    var offlineExactCorePath = path.join(root,
+        "tools/fixtures/blackmarket/exact-oracle-core.js");
+    assert.strictEqual(fs.existsSync(historicalCatalogPath), false,
+        "historical exact catalog URL is still backed by the product Web static root");
+    assert.strictEqual(fs.existsSync(historicalExactCorePath), false,
+        "exact Lab implementation is still backed by the product Web static root");
+    assert.strictEqual(fs.existsSync(offlineCatalogPath), true,
+        "offline exact catalog fixture is missing");
+    assert.strictEqual(fs.existsSync(offlineExactCorePath), true,
+        "offline exact oracle implementation is missing");
+    assert(path.relative(webRoot, offlineCatalogPath).startsWith(".." + path.sep),
+        "offline exact catalog fixture remained inside the product Web static root");
+    assert(path.relative(webRoot, offlineExactCorePath).startsWith(".." + path.sep),
+        "offline exact oracle remained inside the product Web static root");
+    var webCatalogFiles = walkFiles(webRoot).filter(function(file) {
+        if (path.basename(file).toLowerCase() === "black-market-shadow-catalog.v1.json") return true;
+        if (path.extname(file).toLowerCase() !== ".json") return false;
+        var text = fs.readFileSync(file, "utf8");
+        return text.indexOf('"schemaVersion": "black-market-shadow-catalog.v1"') >= 0
+            || (text.indexOf('"entries"') >= 0 && text.indexOf('"assetUri"') >= 0
+                && text.indexOf('"saleValue"') >= 0 && text.indexOf('"iconUri"') >= 0);
+    });
+    assert.deepStrictEqual(webCatalogFiles, [],
+        "product Web static root contains an exact identity catalog");
+    var historicalStatuses = await probeStaticRoot(webRoot, [
+        "/data/black-market-shadow-catalog.v1.json",
+        "/modules/minigames/blackmarket/dev/exact-lab-core.js"
+    ]);
+    assert.deepStrictEqual(historicalStatuses, [404, 404],
+        "historical exact Web URLs remained readable from the product static root");
+    var coreSource = fs.readFileSync(path.join(root,
+        "launcher/web/modules/minigames/blackmarket/core/index.js"), "utf8");
     var panelSource = fs.readFileSync(path.join(root,
         "launcher/web/modules/minigames/blackmarket/blackmarket-panel.js"), "utf8");
     var cssSource = fs.readFileSync(path.join(root,
@@ -257,8 +348,49 @@ async function main() {
         "launcher/web/modules/merc-portrait-renderer.js"), "utf8");
     assert(panelSource.includes("blackmarket-surface-guard")
         && panelSource.includes('data-surface-state="loading"'), "fail-closed guard markup missing");
-    assert(/\.blackmarket-item-fallback\s*\{[\s\S]*?opacity:\s*0\s*!important;[\s\S]*?visibility:\s*hidden\s*!important;/.test(cssSource),
-        "raw icon fallback is not hard-hidden");
+    assert(!panelSource.includes("blackmarket-item-fallback") && !cssSource.includes("blackmarket-item-fallback"),
+        "raw icon fallback remains in public DOM/CSS");
+    assert(!panelSource.includes("allowExactIdentityLab")
+        && !panelSource.includes("createDevelopmentSession")
+        && !panelSource.includes("DEVELOPMENT_HARNESS")
+        && !panelSource.includes("session.visual")
+        && !panelSource.includes("session.lab"),
+        "product panel still contains an in-realm exact Lab elevation path");
+    assert(!panelSource.includes("black-market-shadow-catalog.v1.json")
+        && !panelSource.includes("__BLACKMARKET_CATALOG__")
+        && !panelSource.includes("loadCatalog"),
+        "product panel still fetches or accepts the exact catalog");
+    assert(panelSource.includes("revealed.deltaV") && panelSource.includes('revealed.payment === "k"')
+        && panelSource.includes('formatNumber(revealed.paidAmount) + " K"'),
+        "K reveal does not display TP-equivalent net value and explicit TP/K components");
+    var productionContext = {
+        crypto: require("crypto").webcrypto,
+        Panels: { register: function() {} },
+        __CF7_BLACKMARKET_DEV_LAB_BOOTSTRAP__: "cf7-blackmarket-dev-lab-v1"
+    };
+    productionContext.globalThis = productionContext;
+    vm.runInNewContext(coreSource, productionContext, { filename: "blackmarket-core-production.js" });
+    assert.strictEqual(typeof productionContext.BlackMarketCore.DEVELOPMENT_HARNESS, "undefined");
+    assert.strictEqual(typeof productionContext.BlackMarketCore.createDevelopmentSession, "undefined",
+        "production core exported exact development session creation");
+    assert.strictEqual(typeof productionContext.BlackMarketCore.createTestProductSession, "undefined",
+        "production core exported deterministic test entropy seam");
+    assert.strictEqual(productionContext.__CF7_BLACKMARKET_DEV_LAB_BOOTSTRAP__,
+        "cf7-blackmarket-dev-lab-v1", "product core consumed the retired Lab bootstrap marker");
+    assert(!coreSource.includes("black-market-shadow-catalog")
+        && !coreSource.includes("createDevelopmentSession")
+        && !coreSource.includes("validateCatalog")
+        && !coreSource.includes("buildPageInternal"),
+        "product core still embeds the exact catalog generator/Lab surface");
+    var product = ProductCore.createTestProductSession({ seed: "caller-visible" }, "product-static-contract");
+    var productSnapshot = product.product.open();
+    assert.strictEqual(productSnapshot.identityBoundary, "anonymous-synthetic-no-catalog.v2");
+    assert(productSnapshot.pairs.every(function(pair) {
+        return pair.category === "anonymous" && pair.subclass === "匿名影子货舱";
+    }), "product snapshot reintroduced real catalog taxonomy");
+    vm.runInNewContext(panelSource, productionContext, { filename: "blackmarket-panel-production.js" });
+    assert.deepStrictEqual(Object.keys(productionContext.BlackMarketPanel), [],
+        "production panel exported debug control methods");
     assert(surfaceSource.includes('rendered.metrics.mudOrientationDeg = plan.degrees')
         && surfaceSource.includes('surfaceSpace = "post-orientation-object-alpha"'),
         "mud/item post-orientation evidence missing");
@@ -293,17 +425,19 @@ async function main() {
         "inspection/weapon-source presentation styles missing");
     assert(mercPortraitSource.includes("renderStateDataUrl: renderStateDataUrl"),
         "shared resolved-state snapshot API missing");
-    var inspectorIndex = registrySource.indexOf("modules/equipment-inspector.js");
-    var portraitIndex = registrySource.indexOf("modules/merc-portrait-renderer.js");
-    var previewIndex = registrySource.indexOf("modules/minigames/blackmarket/visual/equipment-preview.js");
+    var productCoreIndex = registrySource.indexOf("modules/minigames/blackmarket/core/index.js");
     var focusIndex = registrySource.indexOf("modules/minigames/blackmarket/visual/inspection-focus.js");
     var panelIndex = registrySource.indexOf("modules/minigames/blackmarket/blackmarket-panel.js");
-    assert(inspectorIndex >= 0 && inspectorIndex < previewIndex
-        && portraitIndex >= 0 && portraitIndex < previewIndex
-        && previewIndex < focusIndex && focusIndex < panelIndex,
-        "blackmarket paper-doll lazy dependency order drifted");
+    assert(productCoreIndex >= 0 && productCoreIndex < focusIndex && focusIndex < panelIndex
+        && registrySource.indexOf("modules/minigames/blackmarket/dev/exact-lab-core.js") < 0
+        && registrySource.indexOf("modules/minigames/blackmarket/visual/equipment-preview.js") < 0,
+        "normal blackmarket lazy closure still includes exact Lab/equipment dependencies");
 
-    console.log("[blackmarket-equipment-preview] 30/30 passed; focused paper-doll armor="
+    console.log("[blackmarket-equipment-preview] 44/44 passed; Web exactCatalogFiles="
+        + webCatalogFiles.length + ", historicalUrlBacked=" + fs.existsSync(historicalCatalogPath)
+        + ", exactOracleWebBacked=" + fs.existsSync(historicalExactCorePath)
+        + ", historicalHttp=" + historicalStatuses.join("/")
+        + ", focused paper-doll armor="
         + coverage.covered + "/" + coverage.candidates + ", gender-specific="
         + coverage.partialGender.length + ", focusedBranches=" + focusedBranchCount
         + ", weapon=" + weaponTarget.displayName + ", sharpenedFallback=synthetic-missing-weapon");

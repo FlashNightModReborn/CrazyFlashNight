@@ -32,6 +32,14 @@ function read(relativePath) {
   return fs.readFileSync(path.join(ROOT, relativePath), "utf8");
 }
 
+function sectionBetween(source, startMarker, endMarker, label) {
+  const start = source.indexOf(startMarker);
+  assert(start >= 0, "missing section start for " + label);
+  const end = source.indexOf(endMarker, start + startMarker.length);
+  assert(end > start, "missing section end for " + label);
+  return source.slice(start, end);
+}
+
 function run() {
   const contract = JSON.parse(fs.readFileSync(CONTRACT_PATH, "utf8"));
   const tests = [];
@@ -81,8 +89,33 @@ function run() {
     assert(kshop && kshop.hostPayloadMode === "normalized-domainless-owner-rebuilt",
       "KShop must normalize each command, keep its AS2 wire domain-less, and rebuild owner metadata");
     const crafting = read("scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as");
-    assert(!/\btry\s*\{|\bcatch\s*\(/.test(crafting),
-      "CraftingPanelService production dispatch must not catch exceptions");
+    const craftingDispatch = sectionBetween(crafting,
+      "public static function handle(",
+      "public static function handleMaterialShopAuthorize(",
+      "CraftingPanelService.handle");
+    const materialShopDispatch = sectionBetween(crafting,
+      "public static function handleMaterialShopAuthorize(",
+      "private static function validMaterialShopAccessCallId(",
+      "CraftingPanelService.handleMaterialShopAuthorize");
+    assert(!/\btry\s*\{|\bcatch\s*\(/.test(craftingDispatch)
+      && !/\btry\s*\{|\bcatch\s*\(/.test(materialShopDispatch),
+      "CraftingPanelService protocol dispatch must not swallow unexpected exceptions");
+
+    const craftingCommit = sectionBetween(crafting,
+      "private static function executeCommit(",
+      "private static function restoreState(",
+      "CraftingPanelService.executeCommit");
+    const rollbackCatch = craftingCommit.indexOf("catch (commitError)");
+    const committed = craftingCommit.indexOf("PlayerAssetTransaction.commit(assetTransaction)");
+    assert(rollbackCatch >= 0 && committed > rollbackCatch,
+      "Crafting commit must isolate rollback-capable writes from the final receipt commit");
+    assert(craftingCommit.indexOf("restoreState(backup)", rollbackCatch) >= 0
+      && craftingCommit.indexOf("PlayerAssetTransaction.rollback(assetTransaction)", rollbackCatch) >= 0,
+      "Crafting pre-commit exception path must restore assets and roll back the receipt");
+    const afterCommit = craftingCommit.slice(committed);
+    assert(/try\s*\{[\s\S]*playSound\([\s\S]*catch\s*\(soundError\)/.test(afterCommit)
+      && afterCommit.indexOf("restoreState(backup)") < 0,
+      "Crafting post-commit side effects must be isolated without restoring committed assets");
 
     [
       "scripts/类定义/org/flashNight/arki/achievement/AchievementService.as",

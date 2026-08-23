@@ -2,6 +2,11 @@
 
 ## 版本历史
 
+### v3.1 (2026-08) - 冷路径局部恢复
+- **[API]** `createDispatchRecoveryToken()` 为明确捕获监听器异常的业务边界创建一次性恢复令牌
+- **[SAFETY]** 令牌只能从当前 depth 降回捕获时 depth，只清理对应内层栈槽；拒绝抬高 depth 或清空外层快照
+- **[PERF]** 五个发布入口继续保持无 `try/catch/finally`；异常仍直接向调用方传播
+
 ### v3.0 (2026-03) - 结构性性能重构
 - **[PERF]** listeners 从 `Object{comboUID:poolIndex}` 改为并行数组 `fns[]/scopes[]`
   - 消除 publish 中的 `for..in` 枚举（H16: 2200~7800ns/iter → `while(i--)` ~35ns/iter）
@@ -62,7 +67,7 @@
 - **[v3.0]** 回调执行顺序为确定性逆序（后订阅先执行），原契约声明"顺序不保证"
 - 调用方需确保 `callback` 和 `scope` 的有效性
 - **[v2.3]** `(callback, scope)` 组合唯一标识一个订阅，同 callback 不同 scope 可共存
-- **[v2.3]** 回调中的异常不再被捕获，会直接抛出（let-it-crash 策略，无 try/finally）
+- **[v3.1]** 回调异常不被捕获、会直接抛出；需要继续运行的冷业务边界须在发布前创建恢复令牌，并在自己的 `catch` 中调用
 - **[v2.3]** 不要在 publish 回调中调用 `destroy()`，会被拒绝执行并返回 false
 - **[v3.0]** EventBus 内部不再使用 Delegate.create 包装，scope 通过 `fn.call(scope)` 绑定
 
@@ -376,9 +381,11 @@ EventBus.instance.subscribeOnce("MISSION_COMPLETED", function() {
    - 如果需要同时订阅/取消订阅一批回调，可以在循环中进行统一操作；如需初始化大量事件，可优先适当增大初始容量，以减少 `expandPool` 频次。
 
 4. **异常处理（let-it-crash 策略）**
-   - **[v2.2+]** `EventBus` 采用 let-it-crash 策略：回调中的异常**不会被捕获**，会直接向上抛出
+   - **[v2.2+]** `EventBus` 采用 let-it-crash 策略：五个发布热路径不使用 `try/catch/finally`，回调异常直接向上抛出
    - 这意味着：如果某个回调抛出异常，后续回调将不会执行
-   - 设计理由：移除 try/catch 可显著提升热路径性能；异常应在业务层明确处理，而非静默忽略
+   - **[v3.1]** 若冷业务边界决定捕获发布异常并继续执行，必须在发布前调用 `createDispatchRecoveryToken()`，并在该边界的 `catch` 中调用令牌
+   - 令牌只回退捕获后残留的内层 depth；捕获发生在外层监听器中时，不会破坏外层快照，外层后续监听器仍可继续
+   - `forceResetDispatchDepth()` 仅保留作诊断性最后手段，业务服务不得用它清理一次局部通知异常
    - 建议在回调内部自行添加 try/catch 处理预期异常，避免影响其他订阅者
 
 ---
@@ -391,7 +398,7 @@ EventBus.instance.subscribeOnce("MISSION_COMPLETED", function() {
 |--------|------|
 | 订阅去重 | 同一 `(callback, scope)` 组合只能订阅一次同一事件，重复订阅返回 false |
 | 多 scope 共存 | 同一 callback 绑定不同 scope 可以分别订阅同一事件 |
-| 嵌套发布安全 | 回调中可以再次 `publish`，每层递归有独立栈 |
+| 嵌套发布安全 | 正常返回时每层递归有独立栈；捕获内层异常后须用进入前创建的局部恢复令牌 |
 | 参数展开优化 | 0-15 参数使用 `fn.call(scope, ...)` 手动展开，避免 apply 开销 |
 | eventName 验证 | null 或空字符串 eventName 被拒绝，不会导致内部状态异常 |
 | 直接 scope 绑定 | [v3.0] subscribe 时的 scope 参数在 publish 时通过 `fn.call(scope)` 绑定，无需 Delegate 包装 |
@@ -429,7 +436,7 @@ import org.flashNight.neur.Event.EventBusTest;
 var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 ```
 
-测试覆盖：订阅/退订、一次性订阅、参数传递、let-it-crash、scope 去重、expandPool 边界修复等 60+ 项测试用例。
+测试覆盖：订阅/退订、一次性订阅、参数传递、let-it-crash、局部恢复令牌、非法向上恢复拒绝、scope 去重等测试用例。
 
 
 ```output

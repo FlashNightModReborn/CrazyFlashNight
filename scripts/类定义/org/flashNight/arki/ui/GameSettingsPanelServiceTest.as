@@ -14,9 +14,12 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         setup();
         testKeyTableMigration();
         testSnapshotMigrationLatch();
+        testUnchangedLegacyReservedKeyDoesNotBlockSettingsApply();
         testSubscriptionFollowsRebind();
         testVersionAndAudioPreview();
         testCheatHelpBoundary();
+        testRawCheatsConservativelyMarkDirty();
+        testPartiallyAppliedSaveCheatRequiresReconcile();
         testForceControls();
         testOpenPanelEnvelope();
         testResponseEnvelope();
@@ -217,6 +220,47 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         KeyManager.offKeyDown("动作二键", callback);
     }
 
+    private static function testUnchangedLegacyReservedKeyDoesNotBlockSettingsApply():Void {
+        resetState();
+        _root.默认键值设定 = buildDefaults();
+        _root.键值设定 = KeyManager.copyKeySettings(_root.默认键值设定);
+        _root.键值设定[0][2] = 112; // 历史存档中的 F1；新面板已把它列为保留键。
+        _root.按键设定表 = [[0, 0, 0, 0]];
+        _root.刷新键值设定 = function():Void {
+            KeyManager.refreshKeySettings(_root.键值设定, null, _root.按键设定表[0]);
+        };
+        _root.刷新键值设定();
+        _root.帧计时器 = {性能等级上限:1};
+        _root.是否阴影 = true;
+        _root.是否视觉元素 = true;
+        _root.是否打击数字特效 = true;
+        _root.cameraZoomToggle = true;
+        _root.basicZoomScale = 1;
+        _root.立绘类型 = 1;
+
+        var snapshot:Object = GameSettingsPanelService.execute("snapshot", {v:1});
+        var keys:Array = [];
+        for (var i:Number = 0; i < snapshot.keys.length; i++) {
+            keys.push({id:snapshot.keys[i].id, keyCode:snapshot.keys[i].keyCode});
+        }
+
+        var oldAllowSave = _root.允许存档;
+        _root.允许存档 = false; // 停在 validator 之后，避免本测试真实落盘。
+        var unchanged:Object = GameSettingsPanelService.execute("apply", {
+            v:1, expectedRevision:snapshot.revision, settings:snapshot.settings, keys:keys
+        });
+        check(!unchanged.success && unchanged.error == "save_unavailable",
+            "unchanged legacy reserved binding no longer blocks an otherwise valid settings apply");
+
+        keys[1].keyCode = 113; // 新把另一个动作分配到 F2，必须继续 fail-closed。
+        var reassigned:Object = GameSettingsPanelService.execute("apply", {
+            v:1, expectedRevision:snapshot.revision, settings:snapshot.settings, keys:keys
+        });
+        check(!reassigned.success && reassigned.error == "reserved_key",
+            "new assignments to reserved function keys remain rejected");
+        _root.允许存档 = oldAllowSave;
+    }
+
     private static function testVersionAndAudioPreview():Void {
         resetState();
         var badVersion:Object = GameSettingsPanelService.execute("preview", {
@@ -258,6 +302,41 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         check(closed.previewRestored && _root.soundEffectManager.globalVolume == 60
             && _root.soundEffectManager.bgmVolume == 40,
             "panel close restores uncommitted audio preview");
+
+        var partial:Object = createSoundManager(60, 40);
+        partial.throwPreviewBgm = true;
+        partial.setBGMVolume = function(value:Number):Void {
+            if (this.throwPreviewBgm && value == 30) throw new Error("preview bgm setter");
+            this.bgmVolume = value;
+        };
+        _root.soundEffectManager = partial;
+        var failedPreview:Object = GameSettingsPanelService.execute("preview", {
+            v:1, globalVolume:20, bgmVolume:30, sample:"none"
+        });
+        check(!failedPreview.success && failedPreview.error == "audio_preview_failed"
+            && failedPreview.previewRestored && !failedPreview.previewActive
+            && partial.globalVolume == 60 && partial.bgmVolume == 40,
+            "partial preview setter failure immediately restores both baseline volumes");
+
+        var retryable:Object = createSoundManager(60, 40);
+        retryable.throwRestoreBgm = false;
+        retryable.setBGMVolume = function(value:Number):Void {
+            if (this.throwRestoreBgm && value == 40) throw new Error("restore bgm setter");
+            this.bgmVolume = value;
+        };
+        _root.soundEffectManager = retryable;
+        GameSettingsPanelService.execute("preview", {
+            v:1, globalVolume:20, bgmVolume:30, sample:"none"
+        });
+        retryable.throwRestoreBgm = true;
+        var firstRestore:Object = GameSettingsPanelService.execute("cancel", {v:1});
+        retryable.throwRestoreBgm = false;
+        var secondRestore:Object = GameSettingsPanelService.execute("panel_closed", {v:1});
+        check(!firstRestore.previewRestored && firstRestore.previewActive
+            && retryable.globalVolume == 60
+            && secondRestore.previewRestored && !secondRestore.previewActive
+            && retryable.globalVolume == 60 && retryable.bgmVolume == 40,
+            "failed restore keeps its baseline and remains retryable until both setters succeed");
     }
 
     private static function testCheatHelpBoundary():Void {
@@ -289,6 +368,48 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         });
         check(!unknown.success && unknown.error == "unknown_command",
             "unknown cheat commands never reach the backend");
+    }
+
+    private static function testRawCheatsConservativelyMarkDirty():Void {
+        resetState();
+        var commands:Array = [
+            "#get:宠物信息.splice(0,1)",
+            "#eval:_root.宠物信息.splice(0,1)",
+            "#set:等级=50",
+            "#_root.等级=50;int",
+            "#func:_root.返回基地()",
+            "#code:_root.等级=50"
+        ];
+        var allMarked:Boolean = true;
+        for (var i:Number = 0; i < commands.length; i++) {
+            _root.存档系统.dirtyMark = false;
+            var response:Object = GameSettingsPanelService.execute("cheat", {
+                v:1, command:commands[i], confirmed:true
+            });
+            if (!response.success || response.effectScope != "save"
+                    || response.dirty !== true || _root.存档系统.dirtyMark !== true) {
+                allMarked = false;
+            }
+        }
+        check(allMarked,
+            "all accepted expression and raw control prefixes conservatively mark save state dirty");
+    }
+
+    private static function testPartiallyAppliedSaveCheatRequiresReconcile():Void {
+        resetState();
+        _root.partialCheatWrite = 0;
+        _root.cheatCode = function(command:String):Void {
+            _root.partialCheatWrite = 50;
+            throw new Error("post-write UI refresh failed");
+        };
+        var response:Object = GameSettingsPanelService.execute("cheat", {
+            v:1, command:"#level:50", confirmed:true
+        });
+        check(!response.success && response.error == "command_ambiguous"
+            && response.effectScope == "save" && response.requiresReconcile
+            && response.dirty === true && _root.存档系统.dirtyMark === true
+            && _root.partialCheatWrite == 50,
+            "save cheat partial write is marked dirty and reported as requiring reconciliation");
     }
 
     private static function testForceControls():Void {

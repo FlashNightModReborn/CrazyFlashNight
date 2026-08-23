@@ -32,10 +32,6 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
         // ────────────── 调试与预处理 ──────────────
 
-        // 真实命中才刷新冲击残留窗口；MISS 仅推进既有残量的自然衰减。
-        ImpactHandler.refreshImpactForce(
-            hitTarget, DamageResult.hasActualHit(damageResult));
-
         // 播报仇恨转锁 - 使用消音策略判断（无策略时走原逻辑）
         var distance:Number = Math.abs(hitTarget._x - shooter._x);
         var shouldAggro:Boolean = bullet.消音策略 ? bullet.消音策略(shooter, hitTarget, distance) : FactionManager.areUnitsEnemies(hitTarget, shooter);

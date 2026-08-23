@@ -5,8 +5,6 @@ var BlackMarketPanel = (function() {
     var _root = null;
     var _scaleShell = null;
     var _scaleHandle = null;
-    var _catalog = null;
-    var _catalogPromise = null;
     var _session = null;
     var _snapshot = null;
     var _init = null;
@@ -18,8 +16,6 @@ var BlackMarketPanel = (function() {
     var _error = null;
     var _drawer = null;
     var _drawerOpenerKey = null;
-    var _labQuery = "";
-    var _labFocus = null;
     var _panelOpen = false;
     var _openGeneration = 0;
     var _callSequence = 0;
@@ -27,8 +23,6 @@ var BlackMarketPanel = (function() {
     var _surfaceMetrics = {};
     var _surfaceSnapshotKey = null;
     var _surfaceGeneration = 0;
-    var _labVisualDebug = false;
-    var _equipmentPreview = null;
     var _surfaceMasters = {};
     var _inspection = null;
     var _inspectionCamera = null;
@@ -42,11 +36,10 @@ var BlackMarketPanel = (function() {
     var INSPECTION_MAX_ZOOM = 4;
 
     var DEFAULT_INIT = {
-        mode: "dev",
-        source: "runtime",
-        shadowOnly: true,
-        seed: "blackmarket-shadow-default",
-        debug: true
+        mode: "",
+        source: "",
+        shadowOnly: false,
+        debug: false
     };
 
     if (typeof Panels !== "undefined") {
@@ -64,19 +57,18 @@ var BlackMarketPanel = (function() {
         _scaleShell.className = "panel-scale-shell blackmarket-scale-shell";
         _el = document.createElement("div");
         _el.className = "minigame-panel blackmarket-panel";
-        _el.innerHTML = '<div class="blackmarket-boot" data-bm-root>黑市检货台正在接入全量目录…</div>';
+        _el.innerHTML = '<div class="blackmarket-boot" data-bm-root>黑市检货台正在接入匿名影子夹具…</div>';
         _scaleShell.appendChild(_el);
         _root = _el.querySelector("[data-bm-root]");
         _el.addEventListener("click", handleClick);
         _el.addEventListener("keydown", handleKeydown);
-        _el.addEventListener("input", handleInput);
         return _scaleShell;
     }
 
     function onOpen(el, initData) {
         var generation = ++_openGeneration;
         _panelOpen = true;
-        _init = merge(DEFAULT_INIT, initData || {});
+        _init = sanitizeInit(initData);
         _session = null;
         _snapshot = null;
         _selectedPairId = null;
@@ -87,15 +79,12 @@ var BlackMarketPanel = (function() {
         _drawerOpenerKey = null;
         _busy = false;
         _error = null;
-        _labQuery = "";
-        _labFocus = null;
         _surfaceMetrics = {};
         _surfaceMasters = {};
         _surfaceSnapshotKey = null;
         _inspection = null;
         destroyInspectionCamera();
         _surfaceGeneration += 1;
-        _labVisualDebug = false;
         _callSequence = 0;
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== "undefined" && PanelScale.attach
@@ -105,42 +94,18 @@ var BlackMarketPanel = (function() {
             return;
         }
         ensureSurfaceRenderer();
-        ensureEquipmentPreview();
-        _busy = true;
-        render();
-        loadCatalog().then(function(catalog) {
-            if (!_panelOpen || generation !== _openGeneration) return;
-            _catalog = BlackMarketCore.validateCatalog(catalog);
-            _session = BlackMarketCore.createShadowSession(_catalog, {
-                seed: safeSeed(_init.seed),
-                decryptLevel: 3
-            });
+        try {
+            _session = BlackMarketCore.createShadowSession({ decryptLevel: 3 });
             _snapshot = _session.product.open();
             _busy = false;
             render();
             notifyHost("open", sessionTelemetry());
             notifyHost("ready", sessionTelemetry());
-        }).catch(function(error) {
+        } catch (error) {
             if (!_panelOpen || generation !== _openGeneration) return;
             _busy = false;
             failBoot(error && error.message ? error.message : String(error));
-        });
-    }
-
-    function loadCatalog() {
-        if (typeof window !== "undefined" && window.__BLACKMARKET_CATALOG__) {
-            return Promise.resolve(window.__BLACKMARKET_CATALOG__);
         }
-        if (_catalogPromise) return _catalogPromise;
-        var url = resolveUrl("data/black-market-shadow-catalog.v1.json");
-        _catalogPromise = fetch(url, { cache: "no-store" }).then(function(response) {
-            if (!response.ok) throw new Error("全量物品目录加载失败：HTTP " + response.status);
-            return response.json();
-        }).catch(function(error) {
-            _catalogPromise = null;
-            throw error;
-        });
-        return _catalogPromise;
     }
 
     function resolveUrl(path) {
@@ -159,12 +124,11 @@ var BlackMarketPanel = (function() {
             _root.innerHTML = _error
                 ? '<div class="blackmarket-boot-error"><b>接入失败</b><span>' + escapeHtml(_error)
                     + '</span><button type="button" data-bm-action="close" data-focus-key="boot-close">关闭测试</button></div>'
-                : '<span class="blackmarket-loader"></span><b>黑市检货台正在接入全量目录…</b>';
+                : '<span class="blackmarket-loader"></span><b>黑市检货台正在接入匿名影子夹具…</b>';
             return;
         }
         _root.className = "blackmarket-machine decrypt-" + _snapshot.decryptLevel;
-        var surfaceKey = _snapshot.page.seed + "|" + _snapshot.decryptLevel + "|"
-            + _snapshot.revision + "|" + (_labVisualDebug ? "debug" : "normal");
+        var surfaceKey = _snapshot.page.id + "|" + _snapshot.decryptLevel + "|" + _snapshot.revision;
         if (_surfaceSnapshotKey !== surfaceKey) {
             _surfaceSnapshotKey = surfaceKey;
             _surfaceMetrics = {};
@@ -193,20 +157,19 @@ var BlackMarketPanel = (function() {
             '<header class="blackmarket-header">',
                 '<div class="blackmarket-brand">',
                     '<span>FALLEN CITY / ILLEGAL APPRAISAL</span>',
-                    '<h1>盗贼黑市 · 全目录影子检货台</h1>',
+                    '<h1>盗贼黑市 · 匿名影子检货台</h1>',
                 '</div>',
                 '<div class="blackmarket-ledger">',
                     ledgerCell("TP", formatNumber(_snapshot.balances.tradePoints), "commerce"),
                     ledgerCell("K", formatNumber(_snapshot.balances.kPoints), "tech"),
                     ledgerCell("解密", "Lv." + _snapshot.decryptLevel, "tech"),
-                    ledgerCell("目录", stats.mechanicallyRenderable + " / " + stats.totalItems, ""),
+                    ledgerCell("夹具", stats.mechanicallyRenderable + " / " + stats.totalItems, ""),
                 '</div>',
                 '<div class="blackmarket-head-actions">',
                     '<button type="button" data-bm-action="open-help" data-focus-key="help">说明</button>',
-                    '<button type="button" data-bm-action="open-lab" data-focus-key="lab">实验</button>',
                     '<button class="danger" type="button" data-bm-action="close" data-focus-key="close" aria-label="关闭黑市测试">×</button>',
                 '</div>',
-                '<div class="blackmarket-shadow-banner"><b>SHADOW</b><span>全量数据在 Web 实验内存中；零正式库存、货币与主存档写入</span>',
+                '<div class="blackmarket-shadow-banner"><b>SHADOW</b><span>仅匿名合成货物；Web 不加载真实目录；零正式库存、货币与主存档写入</span>',
                     '<code>' + escapeHtml(shortDigest(stats.digest)) + '</code></div>',
             '</header>'
         ].join("");
@@ -246,7 +209,6 @@ var BlackMarketPanel = (function() {
 
     function renderOffer(pair, offer) {
         var selected = _selectedOfferId === offer.offerId && pair.status === "open";
-        var labFocused = _labFocus && _labFocus.offerId === offer.offerId;
         var disabled = _busy || pair.status !== "open" || _snapshot.pending !== null;
         var revealed = offer.revealed;
         var name = revealed ? revealed.displayName : offer.label;
@@ -256,28 +218,23 @@ var BlackMarketPanel = (function() {
         if (offer.visualState === "withdrawn") terminal = '<span class="blackmarket-shutter"><b></b><b></b><b></b><em>同舱撤回</em></span>';
         if (offer.visualState === "sealed") terminal = '<span class="blackmarket-sealed">整舱封签</span>';
         return [
-            '<button type="button" class="blackmarket-offer ', selected ? "is-selected " : "", labFocused ? "is-lab-focus " : "", 'state-', offer.visualState,
+            '<button type="button" class="blackmarket-offer ', selected ? "is-selected " : "", 'state-', offer.visualState,
                 '" data-bm-action="select" data-pair-id="', escapeAttr(pair.pairId), '" data-offer-id="', escapeAttr(offer.offerId),
                 '" data-focus-key="offer-', escapeAttr(offer.offerId), '" ', disabled ? "disabled" : "",
                 ' aria-pressed="', selected ? "true" : "false", '" aria-label="', escapeAttr(buildOfferAria(offer)), '">',
                 '<span class="blackmarket-side">', offer.side === "A" ? "左 / A" : "右 / B", '</span>',
-                '<span class="blackmarket-asset ', escapeAttr(offer.assetKind), ' color-', escapeAttr(offer.hiddenColorMode), '">',
+                '<span class="blackmarket-asset ', escapeAttr(offer.presentationKind), '">',
                     '<canvas class="blackmarket-item-surface" data-bm-surface="', escapeAttr(offer.offerId),
                         '" data-surface-state="loading" width="1" height="1" aria-hidden="true"></canvas>',
-                    '<img class="blackmarket-item-fallback" src="', escapeAttr(resolveUrl(offer.assetUri)),
-                        '" alt="" aria-hidden="true" draggable="false">',
                     '<span class="blackmarket-surface-guard" aria-hidden="true"><b>表面封存</b></span>',
                     '<span class="blackmarket-surface-readout" data-bm-surface-readout="', escapeAttr(offer.offerId), '"></span>',
-                    labFocused ? '<span class="blackmarket-lab-marker">LAB TARGET</span>' : "",
                     terminal,
                 '</span>',
                 direction,
                 '<strong class="blackmarket-offer-name">', escapeHtml(name), '</strong>',
                 '<small>', revealed
                     ? '基础价 ' + formatNumber(revealed.basePrice) + ' · 回售 ' + formatNumber(revealed.resellValue)
-                    : (offer.hint ? escapeHtml(offer.hint) : (offer.assetKind === "icon-proxy"
-                        ? "身份封存 · 装备视觉代理" : (offer.iconFrameRole === "drop-item-frame"
-                            ? "身份封存 · 无品质底色掉落帧" : "身份封存 · 单帧统一去色"))), '</small>',
+                    : (offer.hint ? escapeHtml(offer.hint) : "身份封存 · 安全表面"), '</small>',
             '</button>'
         ].join("");
     }
@@ -289,12 +246,6 @@ var BlackMarketPanel = (function() {
             cacheLimit: 42
         });
         return _surfaceRenderer;
-    }
-
-    function ensureEquipmentPreview() {
-        if (_equipmentPreview || typeof BlackMarketEquipmentPreview === "undefined") return _equipmentPreview;
-        _equipmentPreview = BlackMarketEquipmentPreview.create({ cacheLimit: 18, size: 768 });
-        return _equipmentPreview;
     }
 
     function scheduleSurfaceHydration() {
@@ -310,10 +261,8 @@ var BlackMarketPanel = (function() {
 
     function hydrateSurfaces(generation) {
         var renderer = ensureSurfaceRenderer();
-        var preview = ensureEquipmentPreview();
-        if (!renderer || !preview || !_root || !_snapshot || !_session || !_session.visual) return;
+        if (!renderer || !_root || !_snapshot || !_session || !_session.surface) return;
         var canvases = _root.querySelectorAll("[data-bm-surface]");
-        var pairGenderPromises = {};
         for (var i = 0; i < canvases.length; i += 1) {
             (function(canvas) {
                 var offerId = canvas.getAttribute("data-bm-surface");
@@ -321,64 +270,38 @@ var BlackMarketPanel = (function() {
                 if (!located) return;
                 var offer = located.offer;
                 var surface = offer.surface || {};
-                var surfaceSeed = _snapshot.page.seed + ":" + located.pair.pairId + ":"
-                    + (surface.seed || offer.offerId);
                 var source;
                 try {
-                    source = _session.visual.resolveOfferSource(offer.offerId);
+                    source = _session.surface.resolveSurface(offer.visualHandle);
                 } catch (error) {
                     failSurfaceClosed(canvas, error, generation);
                     return;
                 }
-                var pairId = located.pair.pairId;
-                if (!pairGenderPromises[pairId]) {
-                    var pairSources;
-                    try {
-                        pairSources = located.pair.offers.map(function(pairOffer) {
-                            return _session.visual.resolveOfferSource(pairOffer.offerId);
-                        });
-                    } catch (pairError) {
-                        pairGenderPromises[pairId] = Promise.reject(pairError);
-                    }
-                    if (pairSources) {
-                        pairGenderPromises[pairId] = preview.resolvePairGender(pairSources, {
-                            gender: surface.previewGender
-                        });
-                    }
-                }
-                pairGenderPromises[pairId].then(function(pairGender) {
-                    return preview.resolve(source, { gender: pairGender });
-                }).then(function(visual) {
+                Promise.resolve(source).then(function(visual) {
                     if (!_panelOpen || generation !== _surfaceGeneration || !_root
                             || !_root.contains(canvas)) return null;
-                    var asset = canvas.closest(".blackmarket-asset");
-                    if (asset && visual.sourceKind === "dressup-paperdoll") {
-                        asset.classList.add("source-dressup-paperdoll");
-                    }
-                    if (asset && visual.sourceKind === "dressup-weapon") {
-                        asset.classList.add("source-dressup-weapon");
-                    }
-                    if (asset && visual.sharpenSource) asset.classList.add("is-sharpened-proxy");
+                    var surfaceSeed = visual.seed;
                     return renderer.render(canvas, {
                         offerId: offer.offerId,
-                        assetUrl: visual.kind === "icon" ? resolveUrl(visual.assetUrl) : visual.assetUrl,
+                        assetUrl: visual.assetUrl,
                         sourceKey: visual.sourceKey,
                         sourceKind: visual.sourceKind,
                         sourceComposition: visual.sourceComposition || null,
-                        focusFitFieldCount: visual.focusFitFields ? visual.focusFitFields.length : 0,
-                        focusDrawFieldCount: visual.focusDrawFields ? visual.focusDrawFields.length : 0,
+                        focusFitFieldCount: 0,
+                        focusDrawFieldCount: 0,
                         previewGender: visual.previewGender,
                         seed: surfaceSeed,
                         coverage: Number(surface.targetCoverage === undefined ? _snapshot.mudCoverage : surface.targetCoverage),
                         mud: offer.visualState === "available",
-                        hiddenColorMode: offer.visualState === "available" ? offer.hiddenColorMode : "source",
+                        hiddenColorMode: offer.visualState === "available"
+                            ? (visual.hiddenColorMode || "source") : "source",
                         autoRotate: visual.autoRotate,
-                        paddingRatio: /^dressup-/.test(visual.sourceKind || "") ? 0.035 : 0.065,
+                        paddingRatio: 0.065,
                         renderWidth: SURFACE_MASTER_WIDTH,
                         renderHeight: SURFACE_MASTER_HEIGHT,
                         sharpenSource: visual.sharpenSource === true,
                         sharpenStrength: 0.18,
-                        debug: _drawer === "lab" && _labVisualDebug,
+                        debug: false,
                         onComplete: function(metrics, completedCanvas) {
                             if (!_panelOpen || generation !== _surfaceGeneration || !_root
                                     || !_root.contains(completedCanvas)) return;
@@ -389,7 +312,6 @@ var BlackMarketPanel = (function() {
                             if (completedAsset) completedAsset.classList.add("is-surface-ready");
                             paintSurfaceReadout(offer.offerId, metrics);
                             paintParityMetric();
-                            paintLabSurfaceMetrics();
                             paintInspectionAvailability();
                         }
                     });
@@ -405,7 +327,7 @@ var BlackMarketPanel = (function() {
         var asset = canvas.closest(".blackmarket-asset");
         if (asset) asset.classList.add("is-surface-fallback");
         canvas.setAttribute("data-surface-state", "error");
-        canvas.setAttribute("title", error && error.message ? error.message : String(error));
+        canvas.setAttribute("title", "安全表面生成失败");
     }
 
     function findSnapshotOffer(offerId) {
@@ -453,17 +375,10 @@ var BlackMarketPanel = (function() {
         var nodes = _root.querySelectorAll("[data-bm-surface-readout]");
         for (var i = 0; i < nodes.length; i += 1) {
             if (nodes[i].getAttribute("data-bm-surface-readout") !== offerId) continue;
-            nodes[i].textContent = _labVisualDebug
-                ? "旋 " + signedDegrees(metrics.orientationDeg) + " · α " + metrics.objectPixels
-                    + " · 泥 " + formatPercent(metrics.actualCoverage)
-                    + " · 锚 " + formatConfidence(metrics.anchor && metrics.anchor.confidence)
-                : "";
-            var sourceLabel = metrics.sourceKind === "dressup-paperdoll" ? "纸娃娃局部聚焦"
-                : (metrics.sourceKind === "dressup-weapon" ? "完整武器商品图"
-                    : (metrics.sourceSharpening === "alpha-safe-unsharp" ? "锐化图标代理" : "图标源"));
+            nodes[i].textContent = "";
             nodes[i].setAttribute("title", "SDF " + metrics.sdfMaxInsidePx + "px · "
-                + metrics.maskSource + " · " + metrics.materialProfile + " · " + metrics.backend + " · "
-                + sourceLabel);
+                + metrics.maskSource + " · " + metrics.materialProfile + " · " + metrics.backend
+                + " · 匿名安全表面");
         }
     }
 
@@ -508,9 +423,15 @@ var BlackMarketPanel = (function() {
             var offer = pair && findOffer(pair, pending.offerId);
             var revealed = offer && offer.revealed;
             if (revealed) {
+                var breakdown = revealed.payment === "k"
+                    ? "+" + formatNumber(revealed.resellValue) + " TP / -"
+                        + formatNumber(revealed.paidAmount) + " K"
+                    : "+" + formatNumber(revealed.resellValue) + " TP / -"
+                        + formatNumber(revealed.paidAmount) + " TP";
                 return '<footer class="blackmarket-rail reveal ' + revealed.direction + '"><div><span>货物揭晓</span><h2>'
-                    + escapeHtml(revealed.displayName) + '</h2><p>本次回售差额 <b>'
-                    + (revealed.deltaTp > 0 ? "+" : "") + formatNumber(revealed.deltaTp) + ' TP</b></p></div>'
+                    + escapeHtml(revealed.displayName) + '</h2><p>回售净价值 <b>'
+                    + (revealed.deltaV > 0 ? "+" : "") + formatNumber(revealed.deltaV)
+                    + ' TP 等值</b><small>结算构成 ' + escapeHtml(breakdown) + '</small></p></div>'
                     + '<div class="blackmarket-rail-actions"><button type="button" data-bm-action="settle" data-settle="extract" data-focus-key="settle-extract" '
                     + disabledAttr() + '>提取到影子收藏</button><button class="primary" type="button" data-bm-action="settle" data-settle="resell" '
                     + 'data-focus-key="settle-resell" ' + disabledAttr() + '>当场回售 +' + formatNumber(revealed.resellValue) + ' TP</button></div></footer>';
@@ -549,42 +470,14 @@ var BlackMarketPanel = (function() {
 
     function renderDrawer() {
         if (!_drawer) return "";
-        var body;
-        if (_drawer === "help") {
-            body = '<h2>首版接入边界</h2><ol><li>覆盖全量权威物品目录，但仅机械过滤，不授予正式资格。</li>'
-                + '<li>影子购买、回售和余额只存在于当前 Web 会话。</li><li>五类非颈部防具复用装备检视器的局部纸娃娃；武器优先使用完整 dressup 商品图，缺失时回退保 Alpha 锐化图标。</li>'
-                + '<li>材料/消耗品优先使用透明掉落帧；没有掉落帧时，隐藏态把单帧统一去色，禁止品质底色剧透。</li>'
-                + '<li>放大检视只复制同一张 512×768 覆泥母版，旋转作用于物品与污泥整体，不重新生成破局点。</li>'
-                + '<li>购买前 DOM 不显示名称，但完整目录仍位于开发态 Web 内存，因此不是生产保密边界。</li></ol>'
-                + '<p>键盘：Tab 遍历；左右键切换同舱；Enter 选择；V 放大检视；S 放过当前舱；Esc 关闭浮层。</p>';
-        } else {
-            var catalogPage = _session.lab.listCatalog({ query: _labQuery, offset: 0, limit: 12 });
-            var focusSummary = _labFocus
-                ? '<div class="blackmarket-lab-focus"><span>当前定位</span><b>' + escapeHtml(_labFocus.displayName)
-                    + '</b><small>' + escapeHtml(_labFocus.pairId + " / " + _labFocus.side) + '</small></div>'
-                : "";
-            body = '<h2>污泥算法实验台</h2><p class="warning">这些控制只属于 Lab Port，不存在于生产形状端口。</p>'
-                + '<h3>解密里程碑</h3><div class="blackmarket-presets">'
-                + [0, 3, 5, 10].map(function(level) {
-                    return '<button type="button" data-bm-action="level" data-level="' + level + '" data-focus-key="level-' + level
-                        + '" class="' + (_snapshot.decryptLevel === level ? "active" : "") + '">Lv.' + level + '</button>';
-                }).join("") + '</div><h3>视觉诊断</h3><div class="blackmarket-visual-controls"><button type="button" '
-                + 'data-bm-action="toggle-visual-debug" data-focus-key="visual-debug" class="' + (_labVisualDebug ? "active" : "")
-                + '">' + (_labVisualDebug ? "关闭" : "开启") + ' Alpha / SDF / 锚点 / 覆盖率叠层</button></div>'
-                + renderLabSurfaceMetrics()
-                + '<h3>目录采样</h3><dl><dt>权威条目</dt><dd>' + _snapshot.catalog.totalItems
-                + '</dd><dt>机械可渲染</dt><dd>' + _snapshot.catalog.mechanicallyRenderable + '</dd><dt>明确拒绝</dt><dd>'
-                + _snapshot.catalog.mechanicallyRejected + '</dd><dt>当前种子</dt><dd><code>' + escapeHtml(_snapshot.page.seed) + '</code></dd></dl>'
-                + '<h3>全目录定位</h3><label class="blackmarket-lab-search"><span>名称 / 类别</span><input type="search" value="'
-                + escapeAttr(_labQuery) + '" data-bm-lab-search data-focus-key="lab-search" maxlength="80" placeholder="输入物品名"></label>'
-                + '<p class="blackmarket-lab-count">命中 ' + catalogPage.total + '；当前列出 ' + catalogPage.items.length
-                + '。定位后目标会进入第一组并显示 LAB TARGET，但产品快照仍保持封存。</p>'
-                + focusSummary + renderLabItems(catalogPage.items)
-                + '<div class="blackmarket-drawer-actions"><button type="button" data-bm-action="reroll" data-focus-key="reroll">换一组确定性种子</button>'
-                + '<button type="button" data-bm-action="export" data-focus-key="export">导出匿名实验记录</button></div>';
-        }
+        var body = '<h2>匿名影子入口边界</h2><ol>'
+            + '<li>普通面板只生成与真实目录无关的六件匿名合成货物，不加载物品名、ID、资源地址或回售价目录。</li>'
+            + '<li>影子购买、回售和余额只存在于当前 Web 会话；所有揭晓名称与数值均为合成夹具。</li>'
+            + '<li>六件货物只消费同一身份无关安全表面；放大检视复制覆泥母版，不请求真实物品资源。</li>'
+            + '<li>全目录机械盘点与纸娃娃/武器素材验证属于独立开发测试模块，不能从本面板提权进入。</li></ol>'
+            + '<p>键盘：Tab 遍历；左右键切换同舱；Enter 选择；V 放大检视；S 放过当前舱；Esc 关闭浮层。</p>';
         return '<div class="blackmarket-overlay"><aside class="blackmarket-drawer" role="dialog" aria-modal="true" aria-label="黑市实验说明">'
-            + '<header><span>BLACK MARKET LAB</span><button type="button" data-bm-action="close-drawer" data-focus-key="close-drawer" aria-label="关闭">×</button></header>'
+            + '<header><span>BLACK MARKET SHADOW</span><button type="button" data-bm-action="close-drawer" data-focus-key="close-drawer" aria-label="关闭">×</button></header>'
             + body + '</aside></div>';
     }
 
@@ -776,48 +669,12 @@ var BlackMarketPanel = (function() {
         _inspectionCamera = null;
     }
 
-    function renderLabItems(items) {
-        if (!items.length) return '<div class="blackmarket-lab-empty">没有匹配的机械可渲染物品</div>';
-        return '<div class="blackmarket-lab-items">' + items.map(function(item) {
-            return '<button type="button" data-bm-action="focus-item" data-item-id="' + escapeAttr(item.id)
-                + '" data-focus-key="focus-item-' + escapeAttr(item.id) + '"><img src="' + escapeAttr(resolveUrl(item.iconUri))
-                + '" alt=""><span><b>' + escapeHtml(item.displayName) + '</b><small>' + escapeHtml(categoryLabel(item.category)
-                + ' · ' + item.subclass + ' · 回售 ' + item.saleValue) + '</small></span><em>定位</em></button>';
-        }).join("") + '</div>';
-    }
-
-    function renderLabSurfaceMetrics() {
-        var focused = _labFocus && _surfaceMetrics[_labFocus.offerId];
-        if (!focused) {
-            return '<div data-bm-visual-metrics><p class="blackmarket-lab-count">物品局部算法 '
-                + escapeHtml(_snapshot.algorithmVersion) + '；当前 Alpha 覆盖目标 ' + formatPercent(_snapshot.mudCoverage)
-                + '。表面生成完成后显示实测值。</p></div>';
-        }
-        return '<div data-bm-visual-metrics><dl class="blackmarket-visual-metrics"><dt>旋转</dt><dd>' + signedDegrees(focused.orientationDeg)
-            + '</dd><dt>Alpha 像素</dt><dd>' + formatNumber(focused.objectPixels)
-            + '</dd><dt>目标 / 实测</dt><dd>' + formatPercent(focused.targetCoverage) + ' / ' + formatPercent(focused.actualCoverage)
-            + '</dd><dt>锚点</dt><dd>' + escapeHtml(focused.anchor.shapeClass) + ' · '
-            + formatConfidence(focused.anchor.confidence) + ' · ' + focused.anchor.normalizedX + '/' + focused.anchor.normalizedY
-            + '</dd><dt>SDF 内径</dt><dd>' + focused.sdfMaxInsidePx + ' px</dd><dt>污泥材质</dt><dd>休眠纳米蜂群 · 接缝 '
-            + formatNumber(focused.swarmSeamPixels) + ' · 结节 ' + formatNumber(focused.dormantNodePixels)
-            + ' · 金属微粒 ' + formatNumber(focused.metallicFleckPixels) + ' · 单元 ' + focused.nanoCellPitchPx
-            + ' px</dd><dt>执行</dt><dd>'
-            + escapeHtml(focused.backend) + ' · ' + focused.elapsedMs + ' ms</dd></dl></div>';
-    }
-
-    function paintLabSurfaceMetrics() {
-        if (!_root || _drawer !== "lab") return;
-        var node = _root.querySelector("[data-bm-visual-metrics]");
-        if (node) node.outerHTML = renderLabSurfaceMetrics();
-    }
-
     function handleClick(event) {
         var actionEl = event.target.closest("[data-bm-action]");
         if (!actionEl || !_el.contains(actionEl)) return;
         var action = actionEl.getAttribute("data-bm-action");
         if (action === "close") { closePanel(); return; }
         if (action === "open-help") { openDrawer("help", actionEl); return; }
-        if (action === "open-lab") { openDrawer("lab", actionEl); return; }
         if (action === "close-drawer") { closeDrawer(); return; }
         if (action === "close-inspection") { closeInspection(); return; }
         if (action === "inspection-rotate") { rotateInspection(); return; }
@@ -826,12 +683,6 @@ var BlackMarketPanel = (function() {
             return;
         }
         if (action === "dismiss-error") { _error = null; render(); return; }
-        if (action === "toggle-visual-debug") {
-            _labVisualDebug = !_labVisualDebug;
-            _surfaceMetrics = {};
-            render();
-            return;
-        }
         if (!_session || !_snapshot || _busy) return;
         if (action === "inspect-selected") {
             openInspection(actionEl.getAttribute("data-pair-id"), actionEl.getAttribute("data-offer-id"), actionEl);
@@ -860,23 +711,6 @@ var BlackMarketPanel = (function() {
         if (action === "next-page") { runProduct(function() {
             return _session.product.nextPage(nextCallId("next-page"));
         }, true, "next-page"); return; }
-        if (action === "level") { runLab(function() {
-            return _session.lab.setDecryptLevel(Number(actionEl.getAttribute("data-level")));
-        }, true, "level"); return; }
-        if (action === "reroll") { runLab(function() {
-            _labFocus = null;
-            return _session.lab.reroll("bm-lab-" + Date.now().toString(36) + "-" + (++_callSequence));
-        }, true, "reroll"); return; }
-        if (action === "focus-item") { runLab(function() {
-            return _session.lab.focusItem(actionEl.getAttribute("data-item-id"));
-        }, true, "focus-item"); return; }
-        if (action === "export") { exportAnonymous(); }
-    }
-
-    function handleInput(event) {
-        if (!event.target || !event.target.hasAttribute || !event.target.hasAttribute("data-bm-lab-search")) return;
-        _labQuery = String(event.target.value || "").slice(0, 80);
-        render();
     }
 
     function refreshPreview() {
@@ -908,7 +742,6 @@ var BlackMarketPanel = (function() {
         Promise.resolve().then(operation).then(function(snapshot) {
             _snapshot = snapshot;
             _error = null;
-            if (eventKind === "next-page") _labFocus = null;
             if (clear) clearSelection();
             notifyHost(eventKind, sessionTelemetry());
         }).catch(function(error) {
@@ -918,41 +751,6 @@ var BlackMarketPanel = (function() {
             _busy = false;
             render();
         });
-    }
-
-    function runLab(operation, clear, eventKind) {
-        if (_busy) return;
-        _busy = true;
-        render();
-        Promise.resolve().then(operation).then(function(result) {
-            if (result && result.snapshot) {
-                _snapshot = result.snapshot;
-                _labFocus = result.focus || null;
-            } else {
-                _snapshot = result;
-            }
-            _error = null;
-            if (clear) clearSelection();
-            notifyHost("lab-" + eventKind, sessionTelemetry());
-        }).catch(function(error) {
-            _error = error && error.message ? error.message : String(error);
-        }).then(function() {
-            _busy = false;
-            render();
-        });
-    }
-
-    function exportAnonymous() {
-        var data = _session.lab.exportAnonymous();
-        notifyHost("export", sessionTelemetry());
-        if (typeof Blob === "undefined" || typeof URL === "undefined") return data;
-        var url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
-        var link = document.createElement("a");
-        link.href = url;
-        link.download = "black-market-shadow-" + Date.now() + ".json";
-        link.click();
-        URL.revokeObjectURL(url);
-        return data;
     }
 
     function handleKeydown(event) {
@@ -1016,8 +814,6 @@ var BlackMarketPanel = (function() {
         _preview = null;
         _drawer = null;
         _drawerOpenerKey = null;
-        _labQuery = "";
-        _labFocus = null;
         _surfaceMetrics = {};
         _surfaceMasters = {};
         _surfaceSnapshotKey = null;
@@ -1025,11 +821,8 @@ var BlackMarketPanel = (function() {
         destroyInspectionCamera();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = null;
-        _labVisualDebug = false;
         if (_surfaceRenderer) _surfaceRenderer.destroy();
         _surfaceRenderer = null;
-        if (_equipmentPreview) _equipmentPreview.destroy();
-        _equipmentPreview = null;
         _busy = false;
         _error = null;
     }
@@ -1051,7 +844,6 @@ var BlackMarketPanel = (function() {
             totalItems: _snapshot.catalog.totalItems,
             mechanicallyRenderable: _snapshot.catalog.mechanicallyRenderable,
             pageNumber: _snapshot.page.number,
-            seedHash: BlackMarketCore.hash32(_snapshot.page.seed).toString(16),
             revision: _snapshot.revision,
             decryptLevel: _snapshot.decryptLevel,
             pending: !!_snapshot.pending
@@ -1078,7 +870,8 @@ var BlackMarketPanel = (function() {
     }
 
     function categoryLabel(category) {
-        return category === "equipment" ? "装备" : category === "material" ? "材料" : "消耗品";
+        return category === "anonymous" ? "匿名货物"
+            : (category === "equipment" ? "装备" : category === "material" ? "材料" : "消耗品");
     }
 
     function terminalLabel(status) {
@@ -1097,20 +890,18 @@ var BlackMarketPanel = (function() {
     function finite(value) { return Number.isFinite(Number(value)) ? String(Number(value)) : "0"; }
     function formatNumber(value) { return new Intl.NumberFormat("zh-CN").format(Number(value) || 0); }
     function shortDigest(value) { return String(value || "").slice(0, 12); }
-    function safeSeed(value) {
-        var seed = String(value || "blackmarket-shadow-default");
-        return seed.length > 160 ? seed.slice(0, 160) : seed;
-    }
     function nextCallId(operation) {
         _callSequence += 1;
         return "bm-shadow-" + operation + "-" + _callSequence + "-" + (Date.now() >>> 0);
     }
-    function merge(base, extra) {
-        var out = {};
-        var key;
-        for (key in base) out[key] = base[key];
-        for (key in extra) out[key] = extra[key];
-        return out;
+    function sanitizeInit(value) {
+        var input = value && typeof value === "object" ? value : {};
+        return {
+            mode: typeof input.mode === "string" ? input.mode : DEFAULT_INIT.mode,
+            source: typeof input.source === "string" ? input.source : DEFAULT_INIT.source,
+            shadowOnly: input.shadowOnly === true,
+            debug: input.debug === true
+        };
     }
     function escapeHtml(value) {
         return String(value === null || value === undefined ? "" : value)
@@ -1190,42 +981,5 @@ var BlackMarketPanel = (function() {
         render();
     }
 
-    return {
-        _debugBoot: function(init) {
-            if (!_el && typeof Panels !== "undefined") Panels.open("blackmarket", init || {});
-            else onOpen(_el, init || {});
-        },
-        _debugGetSnapshot: function() { return _snapshot ? JSON.parse(JSON.stringify(_snapshot)) : null; },
-        _debugGetPorts: function() {
-            return _session ? { product: _session.product, lab: _session.lab, visual: _session.visual } : null;
-        },
-        _debugGetSurfaceMetrics: function() { return JSON.parse(JSON.stringify(_surfaceMetrics)); },
-        _debugGetEquipmentPreviewState: function() {
-            return _equipmentPreview ? _equipmentPreview.debugState() : null;
-        },
-        _debugGetInspectionState: function() {
-            if (!_inspection) return null;
-            var master = surfaceMaster(_inspection.offerId);
-            return {
-                pairId: _inspection.pairId,
-                offerId: _inspection.offerId,
-                rotation: _inspection.rotation,
-                sourceKind: master && master.metrics.sourceKind,
-                sourceSharpening: master && master.metrics.sourceSharpening,
-                masterWidth: master && master.canvas.width,
-                masterHeight: master && master.canvas.height,
-                designWidth: DESIGN_WIDTH,
-                designHeight: DESIGN_HEIGHT,
-                focus: _inspection.focus ? JSON.parse(JSON.stringify(_inspection.focus)) : null,
-                camera: _inspectionCamera && _inspectionCamera.debugState
-                    ? _inspectionCamera.debugState() : null
-            };
-        },
-        _debugUpdateScale: function() {
-            if (_scaleHandle && _scaleHandle.update) _scaleHandle.update();
-        },
-        _debugSetVisualDebug: function(value) { _labVisualDebug = !!value; render(); },
-        _debugSetCatalog: function(catalog) { window.__BLACKMARKET_CATALOG__ = catalog; _catalogPromise = null; },
-        _debugExport: exportAnonymous
-    };
+    return {};
 })();

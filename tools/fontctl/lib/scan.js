@@ -14,6 +14,13 @@ const SOURCE_DIRECTORIES = [
 const FONT_EXTENSION = /\.(?:ttf|otf|woff|woff2)$/i;
 const MAX_FONT_BYTES = 256 * 1024 * 1024;
 
+function isCustomOverrideFormatSupported(format) {
+    // RuntimeFontCatalog uses SkiaSharp as the actual custom-font parser.
+    // The pinned 3.119.4 backend cannot parse the repository's valid WOFF2,
+    // so Node must not advertise a custom WOFF2 candidate as runtime-eligible.
+    return String(format || '').toLowerCase() !== 'woff2';
+}
+
 function isWithin(parent, candidate) {
     const relative = path.relative(parent, candidate);
     return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
@@ -96,6 +103,16 @@ function scanFontDirectories(catalog, fontRoot) {
                         { source, relative },
                         'warning',
                     );
+                    if (source === 'temporary/custom'
+                        && !isCustomOverrideFormatSupported(metadata.format)) {
+                        add(
+                            'CUSTOM_WOFF2_OVERRIDE_UNSUPPORTED',
+                            `local custom WOFF2 当前没有运行时覆盖权，将继续解析 cache/permanent：${source}/${relative}`,
+                            absolute,
+                            { source, relative, format: metadata.format },
+                            'warning',
+                        );
+                    }
                 } else if (declared && metadata.families.length) {
                     const expectedFamilies = new Set(declared.faces.map((face) => face.family.toLocaleLowerCase('en-US')));
                     const observedFamilies = metadata.families.map((family) => family.toLocaleLowerCase('en-US'));
@@ -164,4 +181,9 @@ function scanFontDirectories(catalog, fontRoot) {
     return { files, diagnostics: sortDiagnostics(diagnostics) };
 }
 
-module.exports = { MAX_FONT_BYTES, SOURCE_DIRECTORIES, scanFontDirectories };
+module.exports = {
+    MAX_FONT_BYTES,
+    SOURCE_DIRECTORIES,
+    isCustomOverrideFormatSupported,
+    scanFontDirectories,
+};

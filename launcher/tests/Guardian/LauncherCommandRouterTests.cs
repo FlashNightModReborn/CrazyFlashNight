@@ -2261,7 +2261,8 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("\"mode\":\"dev\"", open);
             Assert.Contains("\"source\":\"runtime\"", open);
             Assert.Contains("\"shadowOnly\":true", open);
-            Assert.Contains("\"seed\":\"runtime-", open);
+            Assert.DoesNotContain("\"seed\"", open);
+            Assert.DoesNotContain("allowExactIdentityLab", open);
         }
 
         [Fact]
