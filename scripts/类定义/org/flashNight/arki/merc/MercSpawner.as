@@ -31,6 +31,13 @@ class org.flashNight.arki.merc.MercSpawner {
         if (idx == -1) {
             return undefined;
         }
+        // 装备托管守卫（佣兵装备托管一期，docs/佣兵装备托管-设计-2026-08-23.md §6）：
+        // 托管 slots 有任何记录（含损坏占位）时零写入失败关闭——否则托管物会随
+        // 「记录回池 → 池 NPC 深拷贝 → 再雇佣」通道被复制。权威守卫在此；
+        // MercPanelService.handleDismiss 的预查只是 UI 早期反馈。
+        if (MercLoadoutService.hasAnyCustody(_root.同伴数据[idx])) {
+            return {success:false, error:"custody_not_empty"};
+        }
         var meta:Object = _root.同伴数据[idx][19];
         var pushedBack:Boolean = false;
         if (meta && meta.是否杂交 == false) {
@@ -76,6 +83,7 @@ class org.flashNight.arki.merc.MercSpawner {
             // 此时 alive_after 不会直接 -1（被解雇者的 mc 是同伴 NPC=false，本就不计入 countAlive）。
             MercBudget.emit("DISMISS", "id=" + mercId + " alive_after=" + MercCensus.countAlive());
         }
+        return {success:true};
     }
 
     public static function initIndexCache():Void {

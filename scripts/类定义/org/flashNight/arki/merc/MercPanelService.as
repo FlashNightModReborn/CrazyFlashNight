@@ -59,6 +59,24 @@ class org.flashNight.arki.merc.MercPanelService {
             org.flashNight.arki.merc.MercPanelService.handlePanelClose(params);
         };
 
+        // 佣兵装备托管（一期）：薄 handler → MercLoadoutService → sendResponse。
+        // 设计见 docs/佣兵装备托管-设计-2026-08-23.md §4。
+        _root.gameCommands["mercLoadoutDeliver"] = function(params) {
+            org.flashNight.arki.merc.MercPanelService.handleLoadoutDeliver(params);
+        };
+        _root.gameCommands["mercLoadoutReplace"] = function(params) {
+            org.flashNight.arki.merc.MercPanelService.handleLoadoutReplace(params);
+        };
+        _root.gameCommands["mercLoadoutWithdraw"] = function(params) {
+            org.flashNight.arki.merc.MercPanelService.handleLoadoutWithdraw(params);
+        };
+        _root.gameCommands["mercLoadoutCandidates"] = function(params) {
+            org.flashNight.arki.merc.MercPanelService.handleLoadoutCandidates(params);
+        };
+        _root.gameCommands["mercLoadoutTooltip"] = function(params) {
+            org.flashNight.arki.merc.MercPanelService.handleLoadoutTooltip(params);
+        };
+
         // 世界内雇佣（佣兵+战宠）web 迁移：openWebHire = NPC 交互入口（判 kind 发 panel_request）；
         // mercWorldHire = 佣兵确认写回（pet 走 PetPanelService.petWorldAdopt）。设计见
         // docs/佣兵世界内雇佣-Web迁移-架构设计-2026-06-27.md。
@@ -278,7 +296,19 @@ class org.flashNight.arki.merc.MercPanelService {
         var mercId:String = String(merc[2]);
         var mercName:String = String(merc[1]);
 
-        MercSpawner.removeMerc(mercId);
+        // 装备托管守卫（一期）：UI 早期反馈；真正权威守卫在 MercSpawner.removeMerc 内
+        if (MercLoadoutService.hasAnyCustody(merc)) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: "custody_not_empty" });
+            return;
+        }
+
+        var removeResult:Object = MercSpawner.removeMerc(mercId);
+        // removeMerc 现在返回 {success, error?}；undefined = 未找到（维持旧成功路径兼容）
+        if (removeResult != undefined && removeResult.success !== true) {
+            sendResponse({ task: "merc_response", callId: callId, success: false,
+                error: String(removeResult.error) });
+            return;
+        }
 
         // Plan A audit 同口径：解雇写 同伴数据 / 同伴数 / 可雇佣兵 / 佣兵是否出战信息（全 save-relevant），必须标脏
         _root.存档系统.dirtyMark = true;
@@ -557,6 +587,125 @@ class org.flashNight.arki.merc.MercPanelService {
     }
 
     // ═══════════════════════════════════════════════════════════
+    // 佣兵装备托管（一期）—— 薄 handler → MercLoadoutService → sendResponse。
+    // 写命令成功响应带新鲜 loadout 投影 + inventorySnapshot，Web 无需二次拉取即可对账。
+    // 设计见 docs/佣兵装备托管-设计-2026-08-23.md §3/§4。
+    // ═══════════════════════════════════════════════════════════
+    public static function handleLoadoutDeliver(params:Object):Void {
+        handleLoadoutWrite("deliver", params);
+    }
+
+    public static function handleLoadoutReplace(params:Object):Void {
+        handleLoadoutWrite("replace", params);
+    }
+
+    public static function handleLoadoutWithdraw(params:Object):Void {
+        handleLoadoutWrite("withdraw", params);
+    }
+
+    private static function handleLoadoutWrite(operation:String, params:Object):Void {
+        var callId = params.callId;
+        var mercIndex:Number = Number(params.mercIndex);
+        var result:Object;
+        if (operation == "deliver") {
+            result = MercLoadoutService.deliver(mercIndex, params.mercId, params.slotKey,
+                params.expectedLoadoutRevision, params.source);
+        } else if (operation == "replace") {
+            result = MercLoadoutService.replace(mercIndex, params.mercId, params.slotKey,
+                params.expectedLoadoutRevision, params.source);
+        } else {
+            result = MercLoadoutService.withdraw(mercIndex, params.mercId, params.slotKey,
+                params.expectedLoadoutRevision);
+        }
+        if (result == null || result.success !== true) {
+            sendResponse({
+                task: "merc_response", callId: callId, success: false, operation: operation,
+                error: (result == null ? "unknown" : String(result.error))
+            });
+            return;
+        }
+        var merc:Array = _root.同伴数据[mercIndex];
+        sendResponse({
+            task: "merc_response",
+            callId: callId,
+            success: true,
+            operation: operation,
+            mercIndex: mercIndex,
+            slotKey: String(params.slotKey),
+            loadoutRevision: Number(result.loadoutRevision),
+            loadout: MercLoadoutService.buildLoadoutProjection(merc, mercIndex),
+            inventorySnapshot: InventoryPanelService.buildExternalSnapshot("背包", 0, 50)
+        });
+    }
+
+    // candidates 响应带 loadoutRevision（设计 §4）；快照按需单发，不随轮签发背包 lease。
+    public static function handleLoadoutCandidates(params:Object):Void {
+        var callId = params.callId;
+        var check:Object = resolveMercForLoadout(params);
+        if (check.success !== true) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: String(check.error) });
+            return;
+        }
+        var result:Object = MercLoadoutService.buildCandidates(check.merc, params.slotKey);
+        if (result == null || result.success !== true) {
+            sendResponse({ task: "merc_response", callId: callId, success: false,
+                error: (result == null ? "unknown" : String(result.error)) });
+            return;
+        }
+        sendResponse({
+            task: "merc_response",
+            callId: callId,
+            success: true,
+            mercIndex: check.mercIndex,
+            slotKey: String(params.slotKey),
+            loadoutRevision: Number(result.loadoutRevision),
+            candidates: result.candidates
+        });
+    }
+
+    // tooltip 响应为 buildTooltipProjection 键（itemName/displayname/iconName/itemType/descHTML/introHTML）。
+    public static function handleLoadoutTooltip(params:Object):Void {
+        var callId = params.callId;
+        var check:Object = resolveMercForLoadout(params);
+        if (check.success !== true) {
+            sendResponse({ task: "merc_response", callId: callId, success: false, error: String(check.error) });
+            return;
+        }
+        var result:Object = MercLoadoutService.buildSlotTooltip(check.merc, params.slotKey, params.source);
+        if (result == null || result.success !== true) {
+            sendResponse({ task: "merc_response", callId: callId, success: false,
+                error: (result == null ? "unknown" : String(result.error)) });
+            return;
+        }
+        sendResponse({
+            task: "merc_response",
+            callId: callId,
+            success: true,
+            mercIndex: check.mercIndex,
+            slotKey: String(params.slotKey),
+            itemName: String(result.itemName),
+            displayname: String(result.displayname),
+            iconName: String(result.iconName),
+            itemType: String(result.itemType),
+            descHTML: result.descHTML,
+            introHTML: result.introHTML
+        });
+    }
+
+    // 读命令共享的佣兵解析：invalid_index / merc_not_found / merc_id_mismatch（带 mercId 时校验）。
+    private static function resolveMercForLoadout(params:Object):Object {
+        var mercIndex:Number = Number(params.mercIndex);
+        if (isNaN(mercIndex) || mercIndex < 0) return {success:false, error:"invalid_index"};
+        var merc:Array = _root.同伴数据 == undefined ? undefined : _root.同伴数据[mercIndex];
+        if (merc == undefined || merc[0] == undefined) return {success:false, error:"merc_not_found"};
+        if (params.mercId != undefined && String(params.mercId) != ""
+                && String(merc[2]) != String(params.mercId)) {
+            return {success:false, error:"merc_id_mismatch"};
+        }
+        return {success:true, merc:merc, mercIndex:mercIndex};
+    }
+
+    // ═══════════════════════════════════════════════════════════
     // countCompanions — 统计 [0,佣兵个数限制) 内有效佣兵数（同伴数据[i][0] 非 undefined）
     // 作为 _root.同伴数 的权威重算口径，杜绝 同伴数 与 同伴数据 发散（issue #7 bug1）。
     // 与 MercCensus/removeMerc 的有效项判据一致：等级列 [0] 非 undefined。
@@ -582,22 +731,42 @@ class org.flashNight.arki.merc.MercPanelService {
         var mercName:String = String(merc[1]);
         var mercId:String = String(merc[2]);
         var defaultEquipLevel:Number = DressupInitializer.getEquipmentDefaultLevel(mercLevel, mercName);
+        // 装备托管一期：有效装备视图——托管槽为冻结克隆（BaseItem），其余槽为预设字符串；
+        // 手雷槽（16）不开放托管，维持原样。设计 §4：equips 按有效装备投影。
+        var spawnLoadout:Object = MercLoadoutService.buildSpawnLoadout(merc);
 
         var equips:Array = [];
         for (var slot:Number = 6; slot <= 16; slot++) {
             var raw = merc[slot];
-            if (raw == undefined || String(raw) == "" || String(raw) == "null") continue;
-            var item = BaseItem.createFromString(raw);
-            if (item == undefined || item == null) continue;
+            var custodyItem:BaseItem = null;
+            if (slot <= 15) {
+                var resolved = spawnLoadout[MercLoadoutService.slotUseKey(slot)];
+                if (resolved instanceof BaseItem) custodyItem = resolved;
+                else raw = resolved;
+            }
+            var item;
+            if (custodyItem != null) {
+                item = custodyItem;
+            } else {
+                if (raw == undefined || String(raw) == "" || String(raw) == "null") continue;
+                item = BaseItem.createFromString(raw);
+                if (item == undefined || item == null) continue;
+            }
 
-            var lvl:Number = (item.value != undefined && item.value.level > 1) ? Number(item.value.level) : defaultEquipLevel;
-            item.value.level = lvl;
+            // 托管克隆自带冻结强化度；预设槽维持默认强化口径
+            var lvl:Number;
+            if (custodyItem != null) {
+                lvl = (item.value != undefined && Number(item.value.level) > 1) ? Number(item.value.level) : 1;
+            } else {
+                lvl = (item.value != undefined && item.value.level > 1) ? Number(item.value.level) : defaultEquipLevel;
+                item.value.level = lvl;
+            }
             var calcData:Object = item.getData();
             var iconKey:String = (calcData && calcData.icon) ? String(calcData.icon) : String(item.name);
             var displayName:String = (calcData && calcData.displayname) ? String(calcData.displayname) : String(item.name);
             equips.push({
                 slot:        slot,
-                raw:         String(raw),
+                raw:         custodyItem != null ? String(item.name) : String(raw),
                 name:        String(item.name),
                 icon:        iconKey,
                 displayname: displayName,
@@ -623,12 +792,23 @@ class org.flashNight.arki.merc.MercPanelService {
             face:        String(merc[4] || ""),
             hair:        String(merc[5] || ""),
             equips:      equips,
+            loadout:     MercLoadoutService.buildLoadoutProjection(merc, slotIndex),
             personality: serializePersonality(personality),
-            skills:      buildSkills(mercName, mercLevel, merc, personality)
+            skills:      buildSkills(mercName, mercLevel, buildEffectiveSkillView(merc, spawnLoadout), personality)
         };
     }
 
-    // ═══════════════════════════════════════════════════════════
+    // buildSkills 装备组合预估用有效视图（设计 §4）：merc.slice() 替换 12..15 为
+    // 有效名称（托管槽用冻结克隆名，预设槽保持原字符串），保持技能估算与实战一致。
+    private static function buildEffectiveSkillView(merc:Array, spawnLoadout:Object):Array {
+        var view:Array = merc.slice();
+        for (var slot:Number = 12; slot <= 15; slot++) {
+            var resolved = spawnLoadout[MercLoadoutService.slotUseKey(slot)];
+            view[slot] = (resolved instanceof BaseItem) ? String(resolved.name) : resolved;
+        }
+        return view;
+    }
+
     // buildPersonality — 重算佣兵人格六维（仅展示用）
     // 与 单位函数_fs_aka_玩家模板迁移.as 配置人形怪AI 的 aiSeed 算法严格同构：
     // seed = 等级 起步 → 名字逐字符 seed*31+charCode → &0x7FFFFFFF，

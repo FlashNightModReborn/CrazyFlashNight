@@ -144,6 +144,38 @@ var HIRE_POOL=(function(){
   }
   return out;
 })();
+// 托管 fixture 装配（设计 §4：snapshot 每佣兵带 id + loadout 投影；equips 为有效装备投影——
+// 托管槽显示托管冻结物，损坏占位槽出战安全回退预设；deployState 与 mercDeploy/mercDead 同口径）
+function attachMercLoadout(m){
+  m.id='merc-'+m.slotIndex;
+  var custodyMap=MockHost.mercLoadoutCustody[m.slotIndex]||{};
+  var deployed=!MockHost.mercDead[m.slotIndex]&&!!MockHost.mercDeploy[m.slotIndex];
+  var dead=!!MockHost.mercDead[m.slotIndex];
+  var deployState=dead?-1:(deployed?1:0);
+  var bySlot={};
+  (m.equips||[]).forEach(function(eq){ bySlot[eq.slot]=eq; });
+  var slots={};
+  for(var s=6;s<=15;s++){
+    var rec=custodyMap[String(s)];
+    var pe=bySlot[s]||null;
+    var preset=pe?{name:pe.name,displayname:pe.displayname,icon:pe.icon||pe.name,level:pe.level,raw:pe.raw||pe.name}:null;
+    if(rec==='corrupt'){
+      slots[String(s)]={state:'custody_corrupt',preset:preset,custody:null};
+    }else if(rec){
+      slots[String(s)]={state:'custody',preset:preset,custody:{name:rec.name,displayname:rec.displayname,icon:rec.icon,level:rec.level}};
+      bySlot[s]={slot:s,name:rec.name,displayname:rec.displayname,icon:rec.icon,level:rec.level,raw:rec.name};
+    }else{
+      slots[String(s)]={state:'preset',preset:preset,custody:null};
+    }
+  }
+  var eff=[];
+  for(var s2=6;s2<=16;s2++){ if(bySlot[s2]) eff.push(bySlot[s2]); }
+  m.equips=eff;
+  m.loadout={version:1,loadoutRevision:MockHost.mercLoadoutRevision[m.slotIndex]||0,
+    canOperate:deployState===0,combatLocked:false,deployState:deployState,
+    writableSlots:[6,7,8,9,10,11,12,13,14,15],slots:slots};
+}
+
 var MockHost = {
   closeCount:0,
   lastTeamClose:null,
@@ -157,6 +189,30 @@ var MockHost = {
   mercDropResponseCmd:'',
   lastDroppedMercResponse:null,
   mercResponseError:'',
+  // ── 佣兵装备托管（一期）fixture：slotIndex → { slotKey → 托管物 | 'corrupt' 损坏占位 } ──
+  // 流年（slot 1）：slot 13 托管中 / slot 15 损坏占位；revision 随写递增（初始 7）
+  mercLoadoutCustody:{1:{'13':{name:'测试托管UZI',displayname:'测试托管UZI',icon:'测试UZI',level:7},'15':'corrupt'}},
+  mercLoadoutRevision:{1:7},
+  // 候选 fixture（loadout_candidates 按 slotKey 下发；lease 现场签发口径）
+  mercLoadoutCandidates:{
+    '6':[
+      {source:{containerId:'背包',slot:21,expectedLease:'lease-merc-21'},eligible:true,lockReason:'',requirementLevel:10,
+        item:{name:'测试佣兵头盔MK2',displayName:'测试佣兵头盔MK2',icon:'小跳',majorType:'防具',enhancementLevel:4,modSlotUsed:0}},
+      {source:{containerId:'背包',slot:22,expectedLease:'lease-merc-22'},eligible:false,lockReason:'level_locked',requirementLevel:80,
+        item:{name:'测试霸主之盔',displayName:'测试霸主之盔',icon:'闪现',majorType:'防具',enhancementLevel:9,modSlotUsed:0}},
+      {source:{containerId:'背包',slot:23,expectedLease:'lease-merc-23'},eligible:true,lockReason:'',requirementLevel:12,
+        item:{name:'测试游侠兜帽',displayName:'测试游侠兜帽',icon:'',majorType:'防具',enhancementLevel:0,modSlotUsed:1}}
+    ],
+    '13':[
+      {source:{containerId:'背包',slot:31,expectedLease:'lease-merc-31'},eligible:true,lockReason:'',requirementLevel:12,
+        item:{name:'测试佣兵沙鹰',displayName:'测试佣兵沙鹰',icon:'测试UZI',majorType:'武器',weaponType:'手枪',enhancementLevel:3,modSlotUsed:0}}
+    ]
+  },
+  lastLoadoutCandidates:null,
+  lastLoadoutDeliver:null,
+  lastLoadoutReplace:null,
+  lastLoadoutWithdraw:null,
+  lastMercLoadoutTooltip:null,
   mercMalformedSnapshotQueue:[],
   holdMercSnapshotCount:0,
   heldMercSnapshots:[],
@@ -313,6 +369,7 @@ var MockHost = {
         mercList.push({slotIndex:3,name:'佣兵丁',level:44,gender:'女',height:168,face:'女变装-基本脸型',hair:'发型-女式-白长发',deployed:false,dead:false,equips:equips(),skills:skills(3),personality:personality()});
         mercList.push({slotIndex:4,name:'佣兵戊',level:51,gender:'男',height:177,face:'男变装-基本脸型',hair:'发型-男式-黑短发',deployed:false,dead:false,equips:equips(),skills:skills(2),personality:personality()});
       }
+      mercList.forEach(attachMercLoadout);
       resp.snapshot={gold:999999,kpoint:999,reviveCoins:this.mercCoins,maxSlots:8,hiredMercs:mercList};
       // 外审二轮 P2-4 QA：佣兵 snapshot 失败注入（roster 错误空态覆盖；成功字段保留但 success=false 走失败分支）
       if(this.failMercSnapshot){ resp.success=false; resp.error='模拟佣兵快照故障'; }
@@ -327,6 +384,66 @@ var MockHost = {
       this.lastMercEquipTooltip=msg;
       resp.descHTML='佣兵装备完整说明'; resp.introHTML='<b>佣兵装备</b>';
       resp.displayname=msg.raw; resp.itemName=msg.raw;
+    }
+
+    if(msg.panel === 'mercs' && msg.cmd === 'loadout_candidates'){
+      this.lastLoadoutCandidates=msg;
+      resp.mercIndex=msg.mercIndex; resp.slotKey=msg.slotKey;
+      resp.loadoutRevision=this.mercLoadoutRevision[msg.mercIndex]||0;
+      resp.combatLocked=false;
+      resp.candidates=this.mercLoadoutCandidates[msg.slotKey]||[];
+    }
+    if(msg.panel==='mercs' && (msg.cmd==='loadout_deliver' || msg.cmd==='loadout_replace' || msg.cmd==='loadout_withdraw')){
+      if(msg.cmd==='loadout_deliver') this.lastLoadoutDeliver=msg;
+      if(msg.cmd==='loadout_replace') this.lastLoadoutReplace=msg;
+      if(msg.cmd==='loadout_withdraw') this.lastLoadoutWithdraw=msg;
+      var cust=this.mercLoadoutCustody[msg.mercIndex]||(this.mercLoadoutCustody[msg.mercIndex]={});
+      var curRev=this.mercLoadoutRevision[msg.mercIndex]||0;
+      var writeErr='';
+      if(msg.expectedLoadoutRevision!==curRev) writeErr='stale_state';
+      else if(msg.cmd==='loadout_deliver' && cust[msg.slotKey]) writeErr='custody_exists';
+      else if(msg.cmd!=='loadout_deliver' && !cust[msg.slotKey]) writeErr='no_custody';
+      else if(msg.cmd==='loadout_withdraw' && cust[msg.slotKey]==='corrupt') writeErr='custody_corrupt';
+      var picked=null;
+      if(!writeErr && msg.cmd!=='loadout_withdraw'){
+        var candList=this.mercLoadoutCandidates[msg.slotKey]||[];
+        for(var ci=0;ci<candList.length;ci++){
+          var cc=candList[ci];
+          if(cc.source && msg.source && cc.source.slot===msg.source.slot
+              && cc.source.expectedLease===msg.source.expectedLease){ picked=cc; break; }
+        }
+        if(!picked) writeErr='stale_state';
+      }
+      if(writeErr){
+        resp.success=false; resp.error=writeErr;
+      }else{
+        // 结果未知口径：drop 注入（下方 mercDropResponseCmd 通用分支）时写已应用、仅回包丢失
+        if(msg.cmd==='loadout_withdraw') delete cust[msg.slotKey];
+        else cust[msg.slotKey]={name:picked.item.name,displayname:picked.item.displayName,icon:picked.item.icon,level:picked.item.enhancementLevel||1};
+        this.mercLoadoutRevision[msg.mercIndex]=curRev+1;
+        resp.operation=msg.cmd.replace('loadout_','');
+        resp.mercIndex=msg.mercIndex; resp.slotKey=msg.slotKey;
+        // 写成功响应内嵌新鲜 loadout 投影 + 背包快照（对账，Web 无需二次拉取）
+        var proj={slotIndex:msg.mercIndex,equips:msg.mercIndex===0?midnightEquips():equips()};
+        attachMercLoadout(proj);
+        resp.loadout=proj.loadout;
+        resp.inventorySnapshot={containerId:'背包',lease:'lease-merc-rev'+(curRev+1),slots:[]};
+      }
+    }
+    if(msg.panel === 'mercs' && msg.cmd === 'loadout_tooltip'){
+      this.lastMercLoadoutTooltip=msg;
+      var tipName='装备'+msg.slotKey;
+      if(msg.source){
+        var tipCands=this.mercLoadoutCandidates[msg.slotKey]||[];
+        for(var tc=0;tc<tipCands.length;tc++){
+          if(tipCands[tc].source && tipCands[tc].source.slot===msg.source.slot) tipName=tipCands[tc].item.name;
+        }
+      }else{
+        var tipRec=(this.mercLoadoutCustody[msg.mercIndex]||{})[msg.slotKey];
+        if(tipRec && tipRec!=='corrupt') tipName=tipRec.name;
+      }
+      resp.v=1; resp.itemName=tipName; resp.displayname=tipName; resp.iconName=tipName; resp.itemType='装备';
+      resp.introHTML='<b>佣兵装备</b>'; resp.descHTML='佣兵装备完整说明';
     }
     if(msg.panel === 'mercs' && msg.cmd === 'deploy'){
       this.lastMercDeploy=msg;
@@ -351,7 +468,15 @@ var MockHost = {
       this.mercCoins=Math.max(0,this.mercCoins-1);
       resp.mercIndex=msg.mercIndex; resp.mercName='佣兵丙'; resp.reviveCoins=this.mercCoins;
     }
-    if(msg.panel === 'mercs' && msg.cmd === 'dismiss'){ this.lastDismiss=msg; resp.mercName='佣兵甲'; }
+    if(msg.panel === 'mercs' && msg.cmd === 'dismiss'){
+      this.lastDismiss=msg;
+      // 解雇守卫（设计 §6）：任何托管记录（含损坏占位）阻塞解雇
+      var dc=this.mercLoadoutCustody[msg.mercIndex];
+      var hasCustody=false;
+      if(dc){ for(var dk in dc){ if(dc.hasOwnProperty(dk)){ hasCustody=true; break; } } }
+      if(hasCustody){ resp.success=false; resp.error='custody_not_empty'; }
+      else resp.mercName='佣兵甲';
+    }
     if(msg.panel === 'mercs' && msg.cmd === 'hire'){
       this.lastHire=msg; resp.mercName='雇佣候选'; resp.goldRemaining=994999; resp.kpointRemaining=799;
     }
@@ -1218,12 +1343,23 @@ var MockHost = {
       document.querySelectorAll('.team-merc-child .team-merc-traits-grid .team-merc-trait-tag').length===1);
     assert('team-m23','战斗技能全量列表',
       document.querySelectorAll('.team-merc-child .team-merc-skill-rows .team-merc-skill-row').length===13);
-    var mSwapBtns=document.querySelectorAll('.team-merc-child .team-merc-equip-manage-grid .merc-equip-swap-btn');
-    assert('team-m24','装备调配 11 槽只读（更换禁用 + 筹备中提示）',
-      document.querySelectorAll('.team-merc-child .team-merc-equip-manage-grid .team-merc-equip-slot').length===11 &&
-      mSwapBtns.length===11 &&
-      Array.from(mSwapBtns).every(function(b){ return b.disabled; }) &&
-      document.querySelector('.team-merc-child .team-merc-section-hint').textContent.indexOf('筹备中')>=0);
+    var mEquipSlots=document.querySelectorAll('.team-merc-child .team-merc-equip-manage-grid .team-merc-equip-slot');
+    var mGrenadeCell=mEquipSlots[10];
+    var mLdAreas=document.querySelectorAll('.team-merc-child .team-merc-equip-manage-grid .team-merc-equip-slot-actions');
+    var mLdFirstDeliver=mLdAreas.length && mLdAreas[0].querySelector('.merc-loadout-deliver');
+    assert('team-m24','装备调配可写化：手雷槽只读零按钮区；可写槽预设徽章+交付钮，出战佣兵 blocked 给可读原因',
+      mEquipSlots.length===11 &&
+      mGrenadeCell && !mGrenadeCell.querySelector('.team-merc-equip-slot-actions') &&
+      mLdAreas.length===10 &&
+      Array.from(mLdAreas).every(function(a){
+        var b=a.querySelector('.team-custody-badge');
+        return b && b.textContent==='预设' && b.getAttribute('data-custody-tone')==='default' &&
+          !!a.querySelector('.merc-loadout-deliver');
+      }) &&
+      mLdFirstDeliver && mLdFirstDeliver.getAttribute('aria-disabled')==='true' &&
+      (mLdFirstDeliver.getAttribute('data-blocked-reason')||'').indexOf('出战')>=0 &&
+      document.querySelector('.team-merc-child .team-merc-section-hint').textContent.indexOf('下次出战生成时生效')>=0,
+      'slots='+mEquipSlots.length+', areas='+mLdAreas.length+', reason='+(mLdFirstDeliver&&mLdFirstDeliver.getAttribute('data-blocked-reason')));
     // ── H1：佣兵培养页两栏 + 纸娃娃 inspection 相机 ──
     var mDollViewport=document.querySelector('.team-merc-child .team-merc-doll-viewport');
     var mRightCol=document.querySelector('.team-merc-child .team-merc-detail-right');
@@ -1310,6 +1446,132 @@ var MockHost = {
     assert('team-m26b','解雇确认：发对协议 + 关闭培养页 + toast',
       MockHost.lastDismiss && MockHost.lastDismiss.cmd==='dismiss' && MockHost.lastDismiss.mercIndex===0 &&
       mSecPage.getAttribute('aria-hidden')==='true' && toastHas('已解雇'));
+
+    // ═══════════════════════════════════════════════════════════
+    // 佣兵装备托管（一期 2026-08-23）：流年（slot 1，休息中）——
+    // slot 6 预设（交付链路）、slot 13 托管（替换/取回链路）、slot 15 损坏占位、slot 16 手雷只读
+    // ═══════════════════════════════════════════════════════════
+    mercCards()[1].click(); await wait(10);
+    document.querySelector('.team-merc-child .team-merc-detail .team-merc-act-train').click();
+    await wait(30);
+    var mLdPage=document.querySelector('.team-merc-child .workbench-secondary-page.team-merc-detail-page');
+    var mLdSlot=function(k){ return mLdPage.querySelector('.team-merc-equip-slot-actions[data-loadout-slot="'+k+'"]'); };
+    var mLdName=function(k){ var a=mLdSlot(k); var w=a&&a.parentElement; var n=w&&w.querySelector('.team-merc-equip-slot-name'); return n?n.textContent:''; };
+    var mLdGrenadeCell=mLdPage.querySelectorAll('.team-merc-equip-slot')[10];
+    var mLdCorruptBtn=mLdSlot('15') && mLdSlot('15').querySelector('.merc-loadout-withdraw');
+    assert('team-merc-loadout-states','托管三态渲染：预设→交付 / 托管→替换+取回 / 托管异常→禁用取回+危险徽章；手雷只读零按钮区',
+      mLdSlot('6') && mLdSlot('6').getAttribute('data-loadout-state')==='preset' &&
+      mLdSlot('6').querySelector('.team-custody-badge').textContent==='预设' &&
+      !!mLdSlot('6').querySelector('.merc-loadout-deliver') &&
+      mLdSlot('13').getAttribute('data-loadout-state')==='custody' &&
+      mLdSlot('13').querySelector('.team-custody-badge').textContent==='托管' &&
+      mLdSlot('13').querySelector('.team-custody-badge').getAttribute('data-custody-tone')==='managed' &&
+      !!mLdSlot('13').querySelector('.merc-loadout-replace') && !!mLdSlot('13').querySelector('.merc-loadout-withdraw') &&
+      mLdName('13').indexOf('测试托管UZI')>=0 &&
+      mLdSlot('15').getAttribute('data-loadout-state')==='custody_corrupt' &&
+      mLdSlot('15').querySelector('.team-custody-badge').textContent==='托管异常' &&
+      mLdSlot('15').querySelector('.team-custody-badge').getAttribute('data-custody-tone')==='danger' &&
+      mLdCorruptBtn && mLdCorruptBtn.getAttribute('aria-disabled')==='true' &&
+      (mLdCorruptBtn.getAttribute('data-blocked-reason')||'').indexOf('托管快照异常')>=0 &&
+      mLdGrenadeCell && !mLdGrenadeCell.querySelector('.team-merc-equip-slot-actions'),
+      'slot15.reason='+(mLdCorruptBtn&&mLdCorruptBtn.getAttribute('data-blocked-reason')));
+    // ── 交付候选浏览器：loadout_candidates 参数 + 兼容/背包双视图 + 锁定原因 ──
+    mLdSlot('6').querySelector('.merc-loadout-deliver').click();
+    await waitFor(function(){ return !!mLdPage.querySelector('.team-merc-loadout-browser-host .team-managed-gun-browser'); },2000);
+    var mLdBrowser=mLdPage.querySelector('.team-merc-loadout-browser-host');
+    assert('team-merc-loadout-candidates','交付候选：请求发对 mercIndex/mercId/slotKey + 默认兼容视图 2 项 + 单选确认钮就绪',
+      MockHost.lastLoadoutCandidates && MockHost.lastLoadoutCandidates.mercIndex===1 &&
+      MockHost.lastLoadoutCandidates.mercId==='merc-1' && MockHost.lastLoadoutCandidates.slotKey==='6' &&
+      MockHost.lastLoadoutCandidates.panelInstanceId===TEAM_PANEL_INSTANCE &&
+      mLdBrowser.querySelectorAll('.team-managed-gun-candidate').length===2 &&
+      mLdBrowser.querySelector('[data-choice="compatible"]').getAttribute('aria-pressed')==='true' &&
+      mLdBrowser.querySelector('.team-managed-gun-count').textContent==='2 项' &&
+      mLdBrowser.querySelector('.team-managed-gun-commit').textContent==='确认交付' &&
+      !mLdBrowser.querySelector('.team-managed-gun-commit').getAttribute('aria-disabled'),
+      'candidates='+mLdBrowser.querySelectorAll('.team-managed-gun-candidate').length);
+    mLdBrowser.querySelector('[data-choice="backpack"]').click(); await wait(10);
+    var mLdLocked=mLdBrowser.querySelector('.team-managed-gun-locked');
+    assert('team-merc-loadout-candidates-lock','背包视图：3 项含锁定候选 + 等级门锁定原因（基准=佣兵等级）',
+      mLdBrowser.querySelectorAll('.team-managed-gun-candidate').length===3 &&
+      mLdLocked && mLdLocked.textContent.indexOf('需求 Lv.80')>=0 &&
+      mLdLocked.textContent.indexOf('超过佣兵等级 Lv.15')>=0 &&
+      mLdBrowser.querySelector('.team-managed-gun-count').textContent==='3 项' &&
+      mLdBrowser.querySelector('.team-managed-gun-candidates').getAttribute('data-scroll-region')==='merc-loadout-candidates',
+      mLdLocked?mLdLocked.textContent:'no locked');
+    // ── 交付：lease-bound source + revision 发对；响应投影对账 + snapshot 刷新有效装备 ──
+    mLdBrowser.querySelector('[data-choice="compatible"]').click(); await wait(10);
+    mLdBrowser.querySelector('.team-managed-gun-commit').click();
+    await waitFor(function(){ return mLdSlot('6') && mLdSlot('6').getAttribute('data-loadout-state')==='custody' &&
+      mLdName('6').indexOf('测试佣兵头盔MK2')>=0; },2000);
+    assert('team-merc-loadout-deliver','交付：lease-bound source + expectedLoadoutRevision 发对；成功后徽章/名称切托管',
+      MockHost.lastLoadoutDeliver && MockHost.lastLoadoutDeliver.cmd==='loadout_deliver' &&
+      MockHost.lastLoadoutDeliver.mercIndex===1 && MockHost.lastLoadoutDeliver.mercId==='merc-1' &&
+      MockHost.lastLoadoutDeliver.slotKey==='6' &&
+      MockHost.lastLoadoutDeliver.expectedLoadoutRevision===7 &&
+      MockHost.lastLoadoutDeliver.source && MockHost.lastLoadoutDeliver.source.containerId==='背包' &&
+      MockHost.lastLoadoutDeliver.source.slot===21 &&
+      MockHost.lastLoadoutDeliver.source.expectedLease==='lease-merc-21' &&
+      mLdSlot('6').getAttribute('data-loadout-state')==='custody' &&
+      !!mLdSlot('6').querySelector('.merc-loadout-replace') && !!mLdSlot('6').querySelector('.merc-loadout-withdraw') &&
+      toastHas('已交付'),
+      'rev='+(MockHost.lastLoadoutDeliver&&MockHost.lastLoadoutDeliver.expectedLoadoutRevision));
+    // ── 替换：旧托管回源格由权威事务承担；Web 发对参数并采用响应投影 ──
+    mLdSlot('13').querySelector('.merc-loadout-replace').click();
+    await waitFor(function(){ return !!mLdPage.querySelector('.team-merc-loadout-browser-host .team-managed-gun-browser'); },2000);
+    var mLdReplaceCommit=mLdPage.querySelector('.team-merc-loadout-browser-host .team-managed-gun-commit');
+    var mLdReplaceLabel=mLdReplaceCommit && mLdReplaceCommit.textContent;
+    mLdReplaceCommit.click();
+    await waitFor(function(){ return mLdName('13').indexOf('测试佣兵沙鹰')>=0; },2000);
+    assert('team-merc-loadout-replace','替换：单选确认「确认替换」+ 新候选 lease/revision 发对；托管槽显示新物',
+      MockHost.lastLoadoutReplace && MockHost.lastLoadoutReplace.cmd==='loadout_replace' &&
+      MockHost.lastLoadoutReplace.mercIndex===1 && MockHost.lastLoadoutReplace.slotKey==='13' &&
+      MockHost.lastLoadoutReplace.expectedLoadoutRevision===8 &&
+      MockHost.lastLoadoutReplace.source && MockHost.lastLoadoutReplace.source.slot===31 &&
+      MockHost.lastLoadoutReplace.source.expectedLease==='lease-merc-31' &&
+      mLdReplaceLabel==='确认替换' &&
+      mLdSlot('13').getAttribute('data-loadout-state')==='custody' &&
+      mLdName('13').indexOf('测试佣兵沙鹰')>=0 &&
+      toastHas('已替换'),
+      'rev='+(MockHost.lastLoadoutReplace&&MockHost.lastLoadoutReplace.expectedLoadoutRevision)+', label='+mLdReplaceLabel);
+    // ── 取回：无 source + 当前 revision 发对；成功回落预设 ──
+    mLdSlot('13').querySelector('.merc-loadout-withdraw').click();
+    await waitFor(function(){ return mLdSlot('13') && mLdSlot('13').getAttribute('data-loadout-state')==='preset'; },2000);
+    assert('team-merc-loadout-withdraw','取回：无 source + 当前 revision 发对；成功回落预设（徽章+按钮回交付态）',
+      MockHost.lastLoadoutWithdraw && MockHost.lastLoadoutWithdraw.cmd==='loadout_withdraw' &&
+      MockHost.lastLoadoutWithdraw.mercIndex===1 && MockHost.lastLoadoutWithdraw.slotKey==='13' &&
+      !MockHost.lastLoadoutWithdraw.source &&
+      MockHost.lastLoadoutWithdraw.expectedLoadoutRevision===9 &&
+      mLdSlot('13').querySelector('.team-custody-badge').textContent==='预设' &&
+      !!mLdSlot('13').querySelector('.merc-loadout-deliver') &&
+      toastHas('已取回'),
+      'rev='+(MockHost.lastLoadoutWithdraw&&MockHost.lastLoadoutWithdraw.expectedLoadoutRevision));
+    // ── 取回超时（drop 一次回包）：锁写不重放、不乐观改库存，fresh snapshot 对账后回落预设 ──
+    var mLdWdBefore=MockHost.mercRequestCounts.loadout_withdraw||0;
+    MockHost.mercDropResponseCmd='loadout_withdraw';
+    MockHost.holdMercSnapshotCount=1;
+    mLdSlot('6').querySelector('.merc-loadout-withdraw').click();
+    await waitFor(function(){ return !MercTeamController.isBusy() && mercReconcileActive() && MockHost.heldMercSnapshots.length===1; },2000);
+    var mLdTimeoutState=mLdSlot('6').getAttribute('data-loadout-state');
+    mLdSlot('6').querySelector('.merc-loadout-withdraw').click(); await wait(20);
+    var mLdReplayBlocked=(MockHost.mercRequestCounts.loadout_withdraw||0)===mLdWdBefore+1;
+    MockHost.releaseMercSnapshot();
+    await waitFor(function(){ return !mercReconcileActive() && mLdSlot('6') && mLdSlot('6').getAttribute('data-loadout-state')==='preset'; },2000);
+    assert('team-merc-loadout-timeout','取回超时：锁存期间不重放不乐观改库存，fresh snapshot 对账后才回落预设',
+      mLdTimeoutState==='custody' && mLdReplayBlocked &&
+      !MercTeamController.isBusy() && !mercReconcileActive() &&
+      mLdSlot('6').getAttribute('data-loadout-state')==='preset' &&
+      toastHas('已锁定写入并重新同步'),
+      'timeoutState='+mLdTimeoutState+', writeDelta='+((MockHost.mercRequestCounts.loadout_withdraw||0)-mLdWdBefore));
+    // ── 解雇守卫：slot 15 损坏占位仍在 → custody_not_empty 可读报错，佣兵保留 ──
+    mLdPage.querySelector('.team-merc-act-dismiss').click(); await wait(10);
+    document.querySelector('.team-merc-child .workbench-modal .workbench-modal-action[data-action="confirm"]').click();
+    await wait(30);
+    assert('team-merc-loadout-dismiss','解雇被托管占位阻塞：custody_not_empty →「请先取回全部托管装备」，佣兵保留',
+      MockHost.lastDismiss && MockHost.lastDismiss.mercIndex===1 &&
+      toastHas('请先取回全部托管装备') &&
+      mercCards().length===3 &&
+      mLdPage.getAttribute('aria-hidden')!=='true');
+    mLdPage.querySelector('.team-merc-detail-back').click(); await wait(20);
     // ── busy 守卫：hire 加载中禁止切 tab 与关闭 ──
     document.querySelector('.team-merc-child .team-goto-hire').click();
     click('partner');
@@ -1959,16 +2221,17 @@ var MockHost = {
     var kaMercTooltip=null;
     kaMiniBs[0].opts.fetch(kaMiniBs[0].opts.item,function(data){kaMercTooltip=data;});
     await wait(20);
-    assert('team-ka2','K-A：名册卡 tooltip 绑定（装备格 rich=fetch/renderRich/key raw|level/cache + 迷你行同 rich + 卡级 tip 共存；技能格 basic 迁右栏技能流，Phase J 技能带下卡）',
+    assert('team-ka2','K-A：名册卡 tooltip 绑定（装备格实例级 rich=fetch/renderRich/key/cache + 迷你行同 rich + 卡级 tip 共存；技能格 basic 迁右栏技能流，Phase J 技能带下卡）',
       kaEqCells.length===10 && kaEqBound &&
       kaSkBs.length===1 && kaSkHtml.indexOf('小跳')>=0 && kaSkHtml.indexOf('Lv.')>=0 &&
       kaMiniBs.length===1 && typeof kaMiniBs[0].opts.fetch==='function' &&
-      MockHost.lastMercEquipTooltip &&
-      MockHost.lastMercEquipTooltip.panelInstanceId===TEAM_PANEL_INSTANCE &&
+      MockHost.lastMercLoadoutTooltip &&
+      MockHost.lastMercLoadoutTooltip.panelInstanceId===TEAM_PANEL_INSTANCE &&
+      MockHost.lastMercLoadoutTooltip.mercIndex===0 && !!MockHost.lastMercLoadoutTooltip.slotKey &&
       kaMercTooltip && kaMercTooltip.descHTML.indexOf('完整说明')>=0 &&
       ttBindings(kaCard0).length===1,
       'eqBound='+kaEqBound+', sk="'+kaSkHtml.slice(0,36)+'", mini='+kaMiniBs.length
-        +', tooltipInstance='+(MockHost.lastMercEquipTooltip&&MockHost.lastMercEquipTooltip.panelInstanceId)
+        +', tooltipInstance='+(MockHost.lastMercLoadoutTooltip&&MockHost.lastMercLoadoutTooltip.panelInstanceId)
         +', cardTip='+ttBindings(kaCard0).length);
     // ── I2：pet 卡内直操 deploy（未选中卡零选中副作用）+ I3 徽标对样例（伙伴甲 满级+出战）──
     click('partner');

@@ -5781,6 +5781,11 @@ namespace CF7Launcher.Guardian
                 case "dismiss":
                 case "revive":
                 case "world_hire":   // 世界内雇佣佣兵（panel=="mercs" → MercTask）
+                case "loadout_deliver":   // 佣兵装备托管一期 5 命令（panel=="mercs" → MercTask，设计 §7）
+                case "loadout_replace":
+                case "loadout_withdraw":
+                case "loadout_candidates":
+                case "loadout_tooltip":
                 case "world_adopt":  // 世界内招募战宠（panel=="pets" → PetTask）
                     {
                         string panel = parsed.Value<string>("panel") ?? "";

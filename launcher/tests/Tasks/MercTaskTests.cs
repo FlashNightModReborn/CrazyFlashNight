@@ -42,6 +42,11 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("world_hire", "mercWorldHire")]
         [InlineData("revive", "mercRevive")]
         [InlineData("equip_tooltip", "mercEquipTooltip")]
+        [InlineData("loadout_deliver", "mercLoadoutDeliver")]
+        [InlineData("loadout_replace", "mercLoadoutReplace")]
+        [InlineData("loadout_withdraw", "mercLoadoutWithdraw")]
+        [InlineData("loadout_candidates", "mercLoadoutCandidates")]
+        [InlineData("loadout_tooltip", "mercLoadoutTooltip")]
         public void HandleWebRequest_KnownCommand_ForwardsTrustedAction(
             string cmd, string action)
         {
@@ -209,6 +214,34 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Contains("RespondPanelDomainError(parsed, \"panel_instance_expired\")", mercRoute);
         }
 
+        [Theory]
+        [InlineData("loadout_deliver", "mercLoadoutDeliver")]
+        [InlineData("loadout_replace", "mercLoadoutReplace")]
+        [InlineData("loadout_withdraw", "mercLoadoutWithdraw")]
+        [InlineData("loadout_candidates", "mercLoadoutCandidates")]
+        [InlineData("loadout_tooltip", "mercLoadoutTooltip")]
+        public void WebOverlayRoute_LoadoutCommandsReachMercTask(string command, string action)
+        {
+            // 防漏配回归（战宠事故教训）：5 个托管命令必须同时存在于
+            // WebOverlayForm 总允许表与 MercTask cmd→action 映射，
+            // 且 action 名拼写与 佣兵装备托管-设计-2026-08-23 §7 一致（防 typo）。
+            string source = File.ReadAllText(FindWebOverlaySource());
+            const string allowlistStart = "case \"snapshot\":";
+            const string allowlistEnd = "string panel = parsed.Value<string>(\"panel\") ?? \"\";";
+            int start = source.IndexOf(allowlistStart, StringComparison.Ordinal);
+            int end = source.IndexOf(allowlistEnd, start, StringComparison.Ordinal);
+
+            Assert.True(start >= 0, "Unable to locate WebOverlay panel command allowlist.");
+            Assert.True(end > start, "Unable to locate end of WebOverlay panel command allowlist.");
+            string allowlist = source.Substring(start, end - start);
+            Assert.Contains("case \"" + command + "\":", allowlist);
+
+            string mercTaskSource = File.ReadAllText(FindMercTaskSource());
+            Assert.Matches(
+                "case \"" + command + "\":[\\s\\S]*?action = \"" + action + "\";",
+                mercTaskSource);
+        }
+
         [Fact]
         public void ReentrantFlashResponseDuringSend_DoesNotLeavePendingOrTimeout()
         {
@@ -311,6 +344,24 @@ namespace CF7Launcher.Tests.Tasks
             }
             throw new FileNotFoundException(
                 "Unable to locate launcher/src/Guardian/WebOverlayForm.cs.");
+        }
+
+        private static string FindMercTaskSource()
+        {
+            DirectoryInfo current = new DirectoryInfo(AppContext.BaseDirectory);
+            while (current != null)
+            {
+                string fromRepository = Path.Combine(
+                    current.FullName, "launcher", "src", "Tasks", "MercTask.cs");
+                if (File.Exists(fromRepository)) return fromRepository;
+
+                string fromLauncher = Path.Combine(
+                    current.FullName, "src", "Tasks", "MercTask.cs");
+                if (File.Exists(fromLauncher)) return fromLauncher;
+                current = current.Parent;
+            }
+            throw new FileNotFoundException(
+                "Unable to locate launcher/src/Tasks/MercTask.cs.");
         }
     }
 }

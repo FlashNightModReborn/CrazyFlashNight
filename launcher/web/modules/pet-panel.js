@@ -83,7 +83,7 @@
     var _pets = [];
     var _snapshot = null;
     var _petLib = null;
-    var _pendingReq = {};
+    // _pendingReq 注册表随传输层下沉，由 TeamShared.createPanelRequester 实例内部持有
     var _reqSeq = 0;
     var _session = 0;
     var _panelInstanceId = '';
@@ -126,8 +126,9 @@
     var _advanceSlot = -1;
     var _managedGunScope = 'compatible';
     var _managedGunSelectedKey = '';
-    var _managedGunScopeGroup = null;
-    var _managedGunCandidateGrid = null;
+    // 候选浏览器实例（TeamShared.createCandidateBrowser）：ChoiceGroup 与候选网格
+    // 密度登记由组件内部持有；scope/选中 key 由上面两个变量跨重建保持
+    var _managedGunBrowser = null;
 
     function meta() { return ROSTER_META[_rosterType] || ROSTER_META.pet; }
 
@@ -211,9 +212,7 @@
         if (_density) { _density.destroy(); _density = null; }
         _densityToggle = null;
         if (_advancePage) { _advancePage.destroy(); _advancePage = null; }
-        if (_managedGunScopeGroup) { _managedGunScopeGroup.destroy(); _managedGunScopeGroup = null; }
-        if (_managedGunCandidateGrid && _density) _density.unregister(_managedGunCandidateGrid);
-        _managedGunCandidateGrid = null;
+        if (_managedGunBrowser) { _managedGunBrowser.destroy(); _managedGunBrowser = null; }
         _managedGunScope = 'compatible';
         _managedGunSelectedKey = '';
         _advanceBodyEl = null; _advanceTitleEl = null; _advanceChipsEl = null; _advanceSlot = -1;
@@ -427,34 +426,23 @@
     // ═══════════════════════════════════════════════════════════
     // 通信（协议零改动：panel='pets' + callId 请求-响应 + session 守卫）
     // ═══════════════════════════════════════════════════════════
-    Bridge.on('panel_resp', function(data) {
-        if (!data || data.type !== 'panel_resp' || data.panel !== 'pets'
-                || !_panelInstanceId
-                || data.panelInstanceId !== _panelInstanceId) return;
-        var pending = _pendingReq[data.callId];
-        if (pending && pending.session === _session
-                && pending.panelInstanceId === _panelInstanceId
-                && data.cmd === pending.cmd) {
-            delete _pendingReq[data.callId];
-            if (pending.timer) clearTimeout(pending.timer);
-            pending.callback(data);
-        }
+    // 传输层 2026-08-23 起沉为 TeamShared.createPanelRequester（__TEAM_PET_CONFIG__.requestTimeoutMs
+    // 覆盖、Bridge.send !== false 即受理、超时合成 client_timeout、迟到回包不复活，语义不变）；
+    // reconcile 对账锁仍是本 controller 私有状态机（mutationCallback / 写门），不进共享层。
+    var _requester = TeamShared.createPanelRequester({
+        panel: 'pets',
+        callIdPrefix: 'pet_',
+        configKeys: ['__TEAM_PET_CONFIG__'],
+        strictSendAccept: false,
+        getSession: function() { return _session; },
+        getInstanceId: function() { return _panelInstanceId; }
     });
 
     function clearPendingRequests() {
-        for (var callId in _pendingReq) {
-            if (_pendingReq.hasOwnProperty(callId) && _pendingReq[callId].timer) {
-                clearTimeout(_pendingReq[callId].timer);
-            }
-        }
-        _pendingReq = {};
+        _requester.clearPending();
     }
 
-    function requestTimeoutMs() {
-        var cfg = window.__TEAM_PET_CONFIG__ || {};
-        var configured = Number(cfg.requestTimeoutMs);
-        return isFinite(configured) && configured >= 50 ? configured : 12000;
-    }
+
 
     function isMutationCommand(cmd) {
         return MUTATION_COMMANDS[String(cmd || '')] === true;
@@ -539,6 +527,8 @@
         var instance = _panelInstanceId;
         var requestSession = _session;
         var deliver = cb ? mutationCallback(cmd, instance, requestSession, cb) : null;
+        // 对账锁存期间的写请求在本层短路（reconcile_required），不发给权威；
+        // 锁存状态机仍为本 controller 私有，共享传输层不参与。
         if (isMutationCommand(cmd) && _reconcileRequired) {
             if (deliver) setTimeout(function() {
                 if (requestSession !== _session || _panelInstanceId !== instance) return;
@@ -549,59 +539,7 @@
             projectReconcileState();
             return '';
         }
-        if (!/^[A-Za-z0-9._~-]{1,160}$/.test(instance)) {
-            if (deliver) setTimeout(function() {
-                if (requestSession !== _session || _panelInstanceId !== instance) return;
-                deliver({ type:'panel_resp', panel:'pets', cmd:cmd, callId:callId,
-                    panelInstanceId:instance, success:false,
-                    error:'panel_instance_expired', clientSynthetic:true });
-            }, 0);
-            return '';
-        }
-        if (cb) {
-            _pendingReq[callId] = {
-                cmd: cmd,
-                panelInstanceId: instance,
-                session: requestSession,
-                callback: deliver,
-                timer: setTimeout(function() {
-                    var pending = _pendingReq[callId];
-                    if (!pending) return;
-                    delete _pendingReq[callId];
-                    if (requestSession !== _session || _panelInstanceId !== instance) return;
-                    pending.callback({
-                        type: 'panel_resp', panel: 'pets', cmd: cmd, callId: callId,
-                        panelInstanceId: instance,
-                        success: false, error: 'client_timeout', clientSynthetic: true
-                    });
-                }, requestTimeoutMs())
-            };
-        }
-        var msg = { type: 'panel', panel: 'pets', cmd: cmd, callId: callId,
-            panelInstanceId: instance };
-        if (extra) {
-            for (var k in extra) {
-                if (extra.hasOwnProperty(k) && k !== 'type' && k !== 'panel'
-                        && k !== 'cmd' && k !== 'callId' && k !== 'panelInstanceId') {
-                    msg[k] = extra[k];
-                }
-            }
-        }
-        var accepted = true;
-        try { accepted = Bridge.send(msg) !== false; } catch (error) { accepted = false; }
-        if (!accepted) {
-            var rejected = _pendingReq[callId];
-            delete _pendingReq[callId];
-            if (rejected && rejected.timer) clearTimeout(rejected.timer);
-            if (deliver) setTimeout(function() {
-                if (requestSession !== _session || _panelInstanceId !== instance) return;
-                deliver({ type:'panel_resp', panel:'pets', cmd:cmd, callId:callId,
-                    panelInstanceId:instance, success:false,
-                    error:'not_sent', clientSynthetic:true });
-            }, 0);
-            return '';
-        }
-        return callId;
+        return _requester.send(cmd, extra, deliver);
     }
 
     function requestPetLib() {
@@ -1292,7 +1230,7 @@
         if (state.custodyCorrupt) {
             return {
                 mode: '异常', name: '托管快照', icon: '', enhancementLevel: 0,
-                tone: 'danger', title: '托管快照异常，已停止写入', item: null
+                tone: TeamShared.custodyBadgeSpec('custody_corrupt').tone, title: '托管快照异常，已停止写入', item: null
             };
         }
         var weapon = state.weapon;
@@ -1301,7 +1239,7 @@
             return {
                 mode: '托管', name: managedName, icon: weapon.icon || weapon.name || '',
                 enhancementLevel: Number(weapon.enhancementLevel) || 0,
-                tone: 'managed', title: '当前托管玩家长枪：' + managedName,
+                tone: TeamShared.custodyBadgeSpec('custody').tone, title: '当前托管玩家长枪：' + managedName,
                 item: weapon
             };
         }
@@ -1311,7 +1249,7 @@
             mode: '预设', name: defaultName,
             icon: defaultView.icon || defaultView.name || state.defaultWeapon || '',
             enhancementLevel: Number(defaultView.enhancementLevel) || 0,
-            tone: 'default', title: '未托管玩家武器，出战使用预设长枪：' + defaultName,
+            tone: TeamShared.custodyBadgeSpec('preset').tone, title: '未托管玩家武器，出战使用预设长枪：' + defaultName,
             item: defaultView
         };
     }
@@ -1727,9 +1665,9 @@
             ariaLabel: meta().noun + '培养',
             host: _shell.getRoot(),
             onClose: function() {
-                if (_managedGunScopeGroup) {
-                    _managedGunScopeGroup.destroy();
-                    _managedGunScopeGroup = null;
+                if (_managedGunBrowser) {
+                    _managedGunBrowser.destroy();
+                    _managedGunBrowser = null;
                 }
                 _managedGunScope = 'compatible';
                 _managedGunSelectedKey = '';
@@ -1844,12 +1782,10 @@
         actions.appendChild(deleteBtn);
 
         // body 两栏：左栏属性信息 / 战斗属性；右栏托管长枪候选 / 进阶方案。
-        if (_managedGunScopeGroup) {
-            _managedGunScopeGroup.destroy();
-            _managedGunScopeGroup = null;
+        if (_managedGunBrowser) {
+            _managedGunBrowser.destroy();
+            _managedGunBrowser = null;
         }
-        if (_managedGunCandidateGrid && _density) _density.unregister(_managedGunCandidateGrid);
-        _managedGunCandidateGrid = null;
         Workbench.clearElement(_advanceLeftEl);
         Workbench.clearElement(_advanceRightEl);
 
@@ -2041,151 +1977,48 @@
         }
 
         if (!weapon && !state.custodyCorrupt) {
-            var candidates = state.candidates || [];
-            var browser = document.createElement('div');
-            browser.className = 'team-managed-gun-browser';
-
-            var context = document.createElement('div');
-            context.className = 'team-managed-gun-context';
-            var scopeLabel = document.createElement('span');
-            scopeLabel.className = 'team-managed-gun-scope-label';
-            scopeLabel.textContent = '浏览方式';
-            context.appendChild(scopeLabel);
-            var scopeMount = document.createElement('div');
-            scopeMount.className = 'team-managed-gun-scope-mount';
-            context.appendChild(scopeMount);
-            var count = document.createElement('span');
-            count.className = 'team-managed-gun-count';
-            context.appendChild(count);
-            browser.appendChild(context);
-
-            var selection = document.createElement('div');
-            selection.className = 'team-managed-gun-selection';
-            var selectedInfo = document.createElement('div');
-            selectedInfo.className = 'team-managed-gun-candidate-info';
-            var selectedName = document.createElement('div');
-            selectedName.className = 'team-managed-gun-candidate-name';
-            var selectedMeta = document.createElement('div');
-            selectedMeta.className = 'team-managed-gun-meta';
-            selectedInfo.appendChild(selectedName);
-            selectedInfo.appendChild(selectedMeta);
-            selection.appendChild(selectedInfo);
-            var equipBtn = button('交付所选长枪',
-                'team-promo-btn team-managed-gun-action team-managed-gun-commit', null);
-            selection.appendChild(equipBtn);
-            browser.appendChild(selection);
-
-            var list = document.createElement('div');
-            list.className = 'team-managed-gun-candidates inventory-owned-grid';
-            list.setAttribute('role', 'listbox');
-            list.setAttribute('aria-label', '可交付长枪候选');
-            list.setAttribute('data-scroll-region', 'managed-long-gun-candidates');
-            browser.appendChild(list);
-            _managedGunCandidateGrid = list;
-            if (_density) _density.register(list);
-            section.appendChild(browser);
-
-            var visibleCandidates = [];
-            var selectedCandidate = null;
-
-            function findCandidate(key, source) {
-                for (var i = 0; i < source.length; i++) {
-                    if (managedGunCandidateKey(source[i]) === key) return source[i];
-                }
-                return null;
-            }
-
-            function updateSelection() {
-                selectedCandidate = findCandidate(_managedGunSelectedKey, visibleCandidates);
-                var cards = list.querySelectorAll('.team-managed-gun-candidate');
-                for (var i = 0; i < cards.length; i++) {
-                    var selected = cards[i].getAttribute('data-candidate-key') === _managedGunSelectedKey;
-                    cards[i].classList.toggle('team-managed-gun-selected', selected);
-                    cards[i].setAttribute('aria-pressed', selected ? 'true' : 'false');
-                    cards[i].setAttribute('aria-selected', selected ? 'true' : 'false');
-                }
-
-                equipBtn.removeAttribute('title');
-                if (!selectedCandidate) {
-                    selectedName.textContent = '未选择长枪';
-                    selectedMeta.textContent = visibleCandidates.length === 0
-                        ? '当前范围没有候选' : '从下方候选中选择一把长枪';
-                    setActionBlocked(equipBtn, '请先选择可交付长枪');
-                    return;
-                }
-
-                var item = selectedCandidate.item || {};
-                selectedName.textContent = item.displayName || item.name || '未知长枪';
-                var bits = managedGunCandidateBits(selectedCandidate);
-                if (!selectedCandidate.eligible) bits.push(managedGunLockText(selectedCandidate));
-                selectedMeta.textContent = bits.join(' · ');
-                var blocked = state.combatLocked ? '战斗地图中无法调整托管武器' : '';
-                if (!blocked && !selectedCandidate.eligible) blocked = managedGunLockText(selectedCandidate);
-                setActionBlocked(equipBtn, blocked);
-            }
-
-            function renderCandidates() {
-                Workbench.clearElement(list);
-                visibleCandidates = [];
-                for (var i = 0; i < candidates.length; i++) {
-                    if (_managedGunScope === 'backpack' || candidates[i].eligible) {
-                        visibleCandidates.push(candidates[i]);
-                    }
-                }
-                count.textContent = visibleCandidates.length + ' 项';
-
-                if (!findCandidate(_managedGunSelectedKey, visibleCandidates)) {
-                    _managedGunSelectedKey = '';
-                    for (var j = 0; j < visibleCandidates.length; j++) {
-                        if (visibleCandidates[j].eligible) {
-                            _managedGunSelectedKey = managedGunCandidateKey(visibleCandidates[j]);
-                            break;
-                        }
-                    }
-                    if (!_managedGunSelectedKey && visibleCandidates.length > 0) {
-                        _managedGunSelectedKey = managedGunCandidateKey(visibleCandidates[0]);
-                    }
-                }
-
-                if (visibleCandidates.length === 0) {
-                    var empty = document.createElement('div');
-                    empty.className = 'team-managed-gun-empty';
-                    empty.textContent = candidates.length === 0
-                        ? '背包中暂无长枪。'
-                        : '当前阶位没有可交付长枪；切换到“背包”可查看锁定原因。';
-                    list.appendChild(empty);
-                } else {
-                    for (var k = 0; k < visibleCandidates.length; k++) {
-                        list.appendChild(managedGunCandidateNode(visibleCandidates[k], function(candidate) {
-                            _managedGunSelectedKey = managedGunCandidateKey(candidate);
-                            updateSelection();
-                        }));
-                    }
-                }
-                updateSelection();
-            }
-
-            _managedGunScopeGroup = new WorkbenchComponents.ChoiceGroup({
-                document: document,
-                value: _managedGunScope,
-                ariaLabel: '托管长枪候选范围',
-                className: 'team-managed-gun-scope',
-                choices: [
-                    { value: 'compatible', label: '兼容', ariaLabel: '只显示当前阶位可交付的长枪' },
+            // 候选浏览器 2026-08-23 起沉为 TeamShared.createCandidateBrowser（与佣兵装备托管共用）：
+            // DOM 结构 / 兼容·背包双视图 / 单选确认 / 密度挂接 / 独立滚动区逐点保持；
+            // scope 与选中 key 仍由本 controller 变量跨重建保持（onScopeChange/onSelectionChange 回写）。
+            var browser = TeamShared.createCandidateBrowser({
+                candidates: state.candidates || [],
+                scope: _managedGunScope,
+                selectedKey: _managedGunSelectedKey,
+                scopeAriaLabel: '托管长枪候选范围',
+                scopeChoices: [
+                    { value: 'compatible', label: '兼容', ariaLabel: '只显示当前阶位可交付的长枪', eligibleOnly: true },
                     { value: 'backpack', label: '背包', ariaLabel: '显示背包中的全部长枪' }
                 ],
-                onChange: function(scope) {
-                    _managedGunScope = scope;
-                    renderCandidates();
-                    return true;
-                }
+                listAriaLabel: '可交付长枪候选',
+                scrollRegion: 'managed-long-gun-candidates',
+                commitLabel: '交付所选长枪',
+                combatLockedReason: state.combatLocked ? '战斗地图中无法调整托管武器' : '',
+                texts: {
+                    unknownItem: '未知长枪',
+                    noSelection: '未选择长枪',
+                    pickHint: '从下方候选中选择一把长枪',
+                    emptyScope: '当前范围没有候选',
+                    emptyNone: '背包中暂无长枪。',
+                    emptyFiltered: '当前阶位没有可交付长枪；切换到“背包”可查看锁定原因。',
+                    eligible: '可交付',
+                    selectFirst: '请先选择可交付长枪',
+                    lockFallback: '该武器当前不可托管'
+                },
+                keyOf: managedGunCandidateKey,
+                bitsOf: managedGunCandidateBits,
+                lockTextOf: managedGunLockText,
+                bindTip: function(row, candidate) {
+                    bindManagedGunTooltip(row, findPetBySlot(_advanceSlot), candidate.item || {},
+                        candidate.source, '背包候选',
+                        candidate.eligible ? '' : managedGunLockText(candidate));
+                },
+                density: _density,
+                onScopeChange: function(scope) { _managedGunScope = scope; },
+                onSelectionChange: function(key) { _managedGunSelectedKey = key; },
+                onCommit: function(candidate, btn) { onEquipManagedWeapon(pet, candidate, btn); }
             });
-            _managedGunScopeGroup.mount(scopeMount);
-            equipBtn.addEventListener('click', function() {
-                if (guardBlocked(this) || !selectedCandidate) return;
-                onEquipManagedWeapon(pet, selectedCandidate, this);
-            });
-            renderCandidates();
+            section.appendChild(browser.root);
+            _managedGunBrowser = browser;
         }
 
         var note = document.createElement('div');
@@ -2209,59 +2042,6 @@
         if ((item.enhancementLevel || 0) > 0) bits.push('强化 +' + item.enhancementLevel);
         if ((item.modSlotUsed || 0) > 0) bits.push('插件 ' + item.modSlotUsed);
         return bits;
-    }
-
-    function managedGunCandidateNode(candidate, onSelect) {
-        var row = button('', 'team-managed-gun-candidate inventory-slot-card occupied', null);
-        var key = managedGunCandidateKey(candidate);
-        row.setAttribute('data-candidate-key', key);
-        row.setAttribute('role', 'option');
-        row.setAttribute('aria-pressed', 'false');
-        row.setAttribute('aria-selected', 'false');
-        if (!candidate.eligible) {
-            row.classList.add('team-managed-gun-locked');
-        }
-
-        var icon = document.createElement('span');
-        icon.className = 'team-managed-gun-icon inventory-slot-icon-frame';
-        var item = candidate.item || {};
-        var iconHtml = typeof Icons !== 'undefined' && Icons && typeof Icons.html === 'function'
-            ? Icons.html(item.icon || item.name || '', 'team-managed-gun-icon-image inventory-owned-icon') : '';
-        if (iconHtml) icon.innerHTML = iconHtml;
-        else icon.textContent = '◇';
-        if ((item.enhancementLevel || 0) > 0) {
-            var badge = document.createElement('span');
-            badge.className = 'merc-equip-badge';
-            badge.textContent = item.enhancementLevel;
-            icon.appendChild(badge);
-        }
-        row.appendChild(icon);
-
-        var info = document.createElement('span');
-        info.className = 'team-managed-gun-candidate-info item-card-body';
-        var name = document.createElement('span');
-        name.className = 'team-managed-gun-candidate-name';
-        name.textContent = item.displayName || item.name || '未知长枪';
-        var desc = document.createElement('span');
-        desc.className = 'team-managed-gun-meta';
-        desc.textContent = managedGunCandidateBits(candidate).join(' · ');
-        info.appendChild(name);
-        info.appendChild(desc);
-        row.appendChild(info);
-
-        if (!candidate.eligible) {
-            var lock = document.createElement('span');
-            lock.className = 'team-managed-gun-lock';
-            lock.textContent = managedGunLockText(candidate);
-            row.appendChild(lock);
-        }
-        row.setAttribute('aria-label', (item.displayName || item.name || '未知长枪') + '，'
-            + managedGunCandidateBits(candidate).join('，')
-            + (candidate.eligible ? '，可交付' : '，' + managedGunLockText(candidate)));
-        row.addEventListener('click', function() { onSelect(candidate); });
-        bindManagedGunTooltip(row, findPetBySlot(_advanceSlot), item, candidate.source,
-            '背包候选', candidate.eligible ? '' : managedGunLockText(candidate));
-        return row;
     }
 
     function managedGunLockText(candidate) {

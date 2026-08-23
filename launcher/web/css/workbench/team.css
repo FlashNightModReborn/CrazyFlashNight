@@ -2848,7 +2848,7 @@
     font-size: 10px;
 }
 
-/* ── detail：装备调配只读 11 槽（「更换」禁用占位，筹备中）── */
+/* ── detail：装备调配 11 槽（托管一期起槽 6..15 可写；手雷 16 只读）── */
 .team-workbench .team-merc-equip-manage-grid {
     display: grid;
     gap: 6px;
@@ -2881,6 +2881,69 @@
 }
 .team-workbench .team-merc-equip-slot-vacant {
     color: var(--wb-muted);
+}
+
+/* ── 佣兵装备托管（一期 2026-08-23）：槽位第三列按钮区 / 三态徽章 / 候选浏览器宿主 ── */
+.team-workbench .team-merc-equip-slot-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 0;
+}
+.team-workbench .team-merc-equip-slot-actions .team-pane-btn {
+    min-width: 44px;
+}
+/* 三态徽章：复用 .team-managed-gun-readout 的 default/managed/danger 色板（托管=accent、异常=danger） */
+.team-workbench .team-custody-badge {
+    flex: 0 0 auto;
+    padding: 1px 6px;
+    color: var(--wb-muted);
+    background: var(--wb-surface-2);
+    border: 1px solid var(--wb-line-soft);
+    font-size: 10px;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+.team-workbench .team-custody-badge[data-custody-tone="managed"] {
+    color: var(--wb-accent);
+    background: var(--wb-accent-soft);
+    border-color: color-mix(in srgb, var(--wb-accent) 58%, var(--wb-line-soft));
+}
+.team-workbench .team-custody-badge[data-custody-tone="danger"] {
+    color: var(--wb-semantic-danger);
+    background: color-mix(in srgb, var(--wb-semantic-danger) 10%, var(--wb-bg));
+    border-color: color-mix(in srgb, var(--wb-semantic-danger) 58%, var(--wb-line-soft));
+}
+/* blocked（aria-disabled）pane 钮与 disabled 同灰石牌投影（双栏 §4：禁用态必须可读） */
+.team-workbench .team-pane-btn[aria-disabled="true"] {
+    color: var(--team-ink-dim, var(--wb-muted));
+    background: linear-gradient(180deg,
+        color-mix(in srgb, var(--wb-text) 66%, var(--wb-bg)),
+        color-mix(in srgb, var(--wb-text) 58%, var(--wb-bg)));
+    border-color: color-mix(in srgb, var(--wb-bg) 30%, var(--wb-line-soft));
+    text-shadow: none;
+    cursor: not-allowed;
+}
+.team-workbench .team-merc-loadout-browser-host {
+    display: grid;
+    gap: 6px;
+    margin-top: 6px;
+}
+.team-workbench .team-merc-loadout-browser-host:empty {
+    display: none;
+}
+.team-workbench .team-merc-loadout-browser-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.team-workbench .team-merc-loadout-browser-title {
+    min-width: 0;
+    color: var(--wb-muted);
+    font-size: 10px;
+    overflow-wrap: anywhere;
 }
 
 /* ── 战术文书字：详情/培养页标题与实体名回归思源宋体（旧军事文档感；

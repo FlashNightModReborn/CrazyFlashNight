@@ -159,6 +159,22 @@ namespace CF7Launcher.Tasks
                 case "equip_tooltip":
                     action = "mercEquipTooltip";
                     break;
+                // 佣兵装备托管一期（见 佣兵装备托管-设计-2026-08-23 §7）
+                case "loadout_deliver":
+                    action = "mercLoadoutDeliver";
+                    break;
+                case "loadout_replace":
+                    action = "mercLoadoutReplace";
+                    break;
+                case "loadout_withdraw":
+                    action = "mercLoadoutWithdraw";
+                    break;
+                case "loadout_candidates":
+                    action = "mercLoadoutCandidates";
+                    break;
+                case "loadout_tooltip":
+                    action = "mercLoadoutTooltip";
+                    break;
                 default:
                     RespondError(webCallId, cmd, requestedInstance, "unsupported_cmd");
                     return;
