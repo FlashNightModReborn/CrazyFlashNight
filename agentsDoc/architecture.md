@@ -5,7 +5,7 @@
 > JetBrains Mono 和 Source Han Serif CN Regular 为常驻，其余按需；旧 `%LOCALAPPDATA%/CF7FlashNight/fonts/` 可能仍有惰性文件，但导入和 Web 字体副本已退役，运行时、CLI 与 harness 均忽略。打包层收 permanent、排除 temporary，并显式收入三项 generated Web 投影。Flash/AS2/FLA/XFL 和 legacy 作者字体不在该图内。机器 Gate 与维护者人工观感已通过；正式部署状态以 runtime consensus 和标准入口证据为准。
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `04718fa57afb64836e95893f0c4ff821d25ca043`（2026-08-16）。
+**最后核对代码基线**：commit `0b7d5ec1880bfdbbcf252070d219c47af1811dac`（2026-08-23，审计加固汇总 release source；promotion `19f57d0fe6383f0ec9cae4d73646cf8197bd6ee5`）。
 
 当前正式 runtime 的身份、发布状态和专项验收只读 [runtime release consensus](../config/build/runtime-release-consensus.json)、[runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime build reproducibility](../docs/runtime-build-reproducibility.md)与[测试矩阵](testing-guide.md)。本架构文档不复制发布收据或历史测试数字；Audio H2 继续作为独立专项，不由通用 promotion 代签。
 

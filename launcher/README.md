@@ -1,8 +1,8 @@
 # CF7:ME Guardian Launcher
 
-**文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。
-
-**最后核对代码基线**：T800 托管长枪 release source `d049daed44a537ef586f9e6254fcb824b98c4ee1`、promotion `a22490867ebd03b931c3066141c0954b02be25da`（2026-08-22）；动态正式身份只读下列 manifest、consensus 与 runtime 文档。维护者已在同 Core 候选接受托管交互、M134/XM214 视觉与变速，formal identity/trusted shutdown 通过；正式入口未重跑武器命令，专项不称 `standard_entry_verified`。
+**文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
+**最后核对代码基线**：commit `0b7d5ec1880bfdbbcf252070d219c47af1811dac`（2026-08-23，审计加固汇总 release source；promotion `19f57d0fe6383f0ec9cae4d73646cf8197bd6ee5`）。正式入口已通过 fresh reveal、只读 `session.status` 与 trusted shutdown；动态 identity/closure 只读下列 manifest、consensus 与 runtime 文档。
+本次没有执行玩家受击/换装、黑市生产经济、设置写入重启、字体观感或 T800 武器命令等专项正式业务旅程，因此各专项不得仅凭总体 promotion 改写为 `standard_entry_verified`。
 
 ## 当前真值与阅读顺序
 

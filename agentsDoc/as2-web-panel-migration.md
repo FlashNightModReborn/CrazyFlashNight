@@ -1,7 +1,8 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `d6684d441f134553ec56590ed975388dff06f1bd` 是设置 Web Panel release source，已由 tag `runtime-build-v2/20260822-settings-web-panel-v1`、release tree `34b3ef11ff9d8ab6a32fed67da3ee30bf7015606`、request `9B9982BB290DF8E0132F52DD4CA842100E9003FB6ADAB71908D5797FB3C198D7` 完成 v2 promotion；正式 runtime 绑定 identity `AD4B23A7489EB011EA4FC54004DC343F4FA5AF1FCA1D3BBD9452760D18EF1D78`、closure `24747E9C71B31E1D7A82356D028A88C3D741CA7AF71D10AC2C97A920649A6051` 与 Core DLL `54A0833082AD3394E002F2E1BD512C6027E6D30CFFEC9D80AC1AEAA1C9515ECF`。部署提交 `de24f449fba0f004193392a273d09b875a4c3935`、cloud build `32512318147` 与 post-promotion audit `32513484781` 均通过；维护者已接受候选观感，无 candidate-id 的 pure-MCP 正式入口再次打开 exact `settings_camera_preview`、读取 1600×900 WebOverlay WGC 并可信退出，因此该设置诊断入口窄纵切达到 `standard_entry_verified`。它不代签真实设置 apply/save/restart、Flash pixels/input、物理键鼠、音量听感或救援业务效果；商城、竞技场等旧专题的证据边界也不因本次设置发布扩大。
+**最后核对代码基线**：commit `0b7d5ec1880bfdbbcf252070d219c47af1811dac`（2026-08-23，审计加固汇总 release source；promotion `19f57d0fe6383f0ec9cae4d73646cf8197bd6ee5`）已包含 Settings raw 命令 dirty/reconcile 与试听恢复等修复；双故障域共识、post-promotion audit 和无 candidate selector 的正式身份/可信退出均通过。
+本轮没有重跑设置 apply/save/restart 或 `settings_camera_preview` 业务旅程，因此只证明新字节已 `promoted`。2026-08-22 setting release 的单屏 `settings_camera_preview` 历史窄纵切仍保持其自身 `standard_entry_verified`，但不得替本轮增量代签真实设置写入、Flash pixels/input、物理键鼠、音量听感或救援效果。
 
 2026-07-29 的 B7 施工从 commit `c96f4c3d750561022b706c72a4d53050431e627d` 起步；2026-07-30 的历史 cut 又删除仓库、装备、NPC 商店、合成与技能教师的 legacy renderer/fallback，并收口 main XFL 可达闭包。该 cut 与 2026-08-06 A1–A6 release 的 immutable tag、双故障域 quorum、promotion、成功与失败标准入口证据全部保留，但均已被上方 2026-08-08 release supersede；旧纵切没有执行 Character、Materials、Intelligence、PlayerInfo、业务 preview/commit、普通 panel close 或持久化专项旅程，本次 Help smoke 也不补齐这些业务范围。
 
