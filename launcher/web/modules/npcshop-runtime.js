@@ -77,6 +77,12 @@
         return Number.isInteger(value) && value >= 0 && value <= SHOP_CATALOG_INDEX_MAX;
     }
 
+    function isPlainProjectedItem(item) {
+        if (!item || item.itemKind !== 'equipment') return true;
+        return Number(item.enhancementLevel || 1) <= 1
+            && !item.tierSlotUsed && Number(item.modSlotUsed || 0) <= 0;
+    }
+
     function diagnosticOutcome(event, error) {
         if (event === 'request_issued') return 'issued';
         if (event === 'client_timeout') return 'client_timeout';
@@ -504,6 +510,7 @@
         parseInitData:parseInitData,
         validateInitData:function(value) { return !!parseInitData(value); },
         isShopCatalogIndex:shopCatalogIndex,
+        isPlainProjectedItem:isPlainProjectedItem,
         isNavigationCallId:function(value) {
             return typeof value === 'string' && NAVIGATION_CALL_ID_PATTERN.test(value);
         },

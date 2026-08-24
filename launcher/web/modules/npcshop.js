@@ -712,7 +712,7 @@ var NpcShop = (function() {
                 var slots = bag && bag.slots ? bag.slots : [];
                 for (var i = 0; i < slots.length; i++) {
                     if (!slots[i].occupied || String(slots[i].item && slots[i].item.name) !== String(intent.item && intent.item.name)) continue;
-                    if ((intent.scope === 'same_name' && isPlainProjectedItem(slots[i].item))
+                    if ((intent.scope === 'same_name' && NpcShopRuntime.isPlainProjectedItem(slots[i].item))
                             || (intent.scope !== 'same_name' && Number(slots[i].physicalSlot) === Number(intent.source.slot))) {
                         slot = slots[i]; break;
                     }
@@ -735,12 +735,6 @@ var NpcShop = (function() {
         });
         _saleIntents = next;
         if (dropped) toast('有 ' + dropped + ' 项待售物品已移动，已从结算单移除。');
-    }
-
-    function isPlainProjectedItem(item) {
-        if (!item || item.itemKind !== 'equipment') return true;
-        return Number(item.enhancementLevel || 1) <= 1
-            && !item.tierSlotUsed && Number(item.modSlotUsed || 0) <= 0;
     }
 
     function removeIntent(kind, identity) {

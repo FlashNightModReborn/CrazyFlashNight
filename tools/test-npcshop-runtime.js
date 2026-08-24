@@ -54,6 +54,15 @@ test('NPCShop target catalog index accepts the exact closed interval only', () =
     }
 });
 
+test('NPCShop same-name sale projection accepts only plain equipment', () => {
+    assert.strictEqual(Runtime.isPlainProjectedItem(null), true);
+    assert.strictEqual(Runtime.isPlainProjectedItem({itemKind:'material'}), true);
+    assert.strictEqual(Runtime.isPlainProjectedItem({itemKind:'equipment'}), true);
+    assert.strictEqual(Runtime.isPlainProjectedItem({itemKind:'equipment', enhancementLevel:2}), false);
+    assert.strictEqual(Runtime.isPlainProjectedItem({itemKind:'equipment', tierSlotUsed:true}), false);
+    assert.strictEqual(Runtime.isPlainProjectedItem({itemKind:'equipment', modSlotUsed:1}), false);
+});
+
 test('NPCShop explicit material return emits the exact five-key envelope', () => {
     const input = {callId:'material-return.test-1',panelInstanceId:'npcshop.test~material'};
     assert.deepStrictEqual(Runtime.createReturnCraftingMaterialsMessage(input),{
