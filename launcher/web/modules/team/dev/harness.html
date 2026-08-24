@@ -193,9 +193,8 @@ var MockHost = {
   // 流年（slot 1）：slot 13 托管中 / slot 15 损坏占位；revision 随写递增（初始 7）
   mercLoadoutCustody:{1:{'13':{name:'测试托管UZI',displayname:'测试托管UZI',icon:'测试UZI',level:7},'15':'corrupt'}},
   mercLoadoutRevision:{1:7},
-  // 候选 fixture（loadout_candidates 按 slotKey 下发；lease 现场签发口径）
-  // 背包总览 scope fixture（二期 §4 wire：逐候选 eligibleSlots 数字槽号白名单；
-  // 空数组 = 全局不兼容仍携带以支持置灰；与 slot scope fixture 共用 source/lease）
+  // 候选 fixture（两种 scope 均携逐候选 eligibleSlots 数字槽号白名单；
+  // 背包总览的空数组候选仍携带以支持置灰；与 slot scope 共用 source/lease）
   mercLoadoutBackpack:[
     {source:{containerId:'背包',slot:21,expectedLease:'lease-merc-21'},requirementLevel:10,eligibleSlots:[6],
       item:{name:'测试佣兵头盔MK2',displayName:'测试佣兵头盔MK2',icon:'小跳',majorType:'防具',enhancementLevel:4,modSlotUsed:0}},
@@ -210,15 +209,15 @@ var MockHost = {
   ],
   mercLoadoutCandidates:{
     '6':[
-      {source:{containerId:'背包',slot:21,expectedLease:'lease-merc-21'},eligible:true,lockReason:'',requirementLevel:10,
+      {source:{containerId:'背包',slot:21,expectedLease:'lease-merc-21'},eligible:true,lockReason:'',requirementLevel:10,eligibleSlots:[6],
         item:{name:'测试佣兵头盔MK2',displayName:'测试佣兵头盔MK2',icon:'小跳',majorType:'防具',enhancementLevel:4,modSlotUsed:0}},
-      {source:{containerId:'背包',slot:22,expectedLease:'lease-merc-22'},eligible:false,lockReason:'level_locked',requirementLevel:80,
+      {source:{containerId:'背包',slot:22,expectedLease:'lease-merc-22'},eligible:false,lockReason:'level_locked',requirementLevel:80,eligibleSlots:[],
         item:{name:'测试霸主之盔',displayName:'测试霸主之盔',icon:'闪现',majorType:'防具',enhancementLevel:9,modSlotUsed:0}},
-      {source:{containerId:'背包',slot:23,expectedLease:'lease-merc-23'},eligible:true,lockReason:'',requirementLevel:12,
+      {source:{containerId:'背包',slot:23,expectedLease:'lease-merc-23'},eligible:true,lockReason:'',requirementLevel:12,eligibleSlots:[6],
         item:{name:'测试游侠兜帽',displayName:'测试游侠兜帽',icon:'',majorType:'防具',enhancementLevel:0,modSlotUsed:1}}
     ],
     '13':[
-      {source:{containerId:'背包',slot:31,expectedLease:'lease-merc-31'},eligible:true,lockReason:'',requirementLevel:12,
+      {source:{containerId:'背包',slot:31,expectedLease:'lease-merc-31'},eligible:true,lockReason:'',requirementLevel:12,eligibleSlots:[13,14],
         item:{name:'测试佣兵沙鹰',displayName:'测试佣兵沙鹰',icon:'测试UZI',majorType:'武器',weaponType:'手枪',enhancementLevel:3,modSlotUsed:0}}
     ],
     '7':[]
@@ -968,11 +967,18 @@ var MockHost = {
     var jAdvClose=jSec0.querySelector('.team-pet-advance-close');
     var jAdvCloseRect=jAdvClose?jAdvClose.getBoundingClientRect():null;
     var jAdvHeaderRect=jAdvClose?jAdvClose.parentElement.getBoundingClientRect():null;
+    var jAdvHeaderPad=jAdvClose?parseFloat(getComputedStyle(jAdvClose.parentElement).paddingRight)||0:0;
+    var jAdvHeaderScale=(jAdvClose&&jAdvClose.parentElement.offsetWidth>0)
+      ?jAdvHeaderRect.width/jAdvClose.parentElement.offsetWidth:1;
+    var jAdvRightInset=(jAdvCloseRect&&jAdvHeaderRect)?jAdvHeaderRect.right-jAdvCloseRect.right:999;
     assert('team-pet-advance-close','战宠培养页 header 投影面板级 × 且位于页头最右端（§5.5：bindClose + aria-label + 位置）',
       !!jAdvClose && jAdvClose.getAttribute('data-secondary-action')==='close'
         && jAdvClose.getAttribute('aria-label')==='关闭战队面板'
-        && jAdvCloseRect.width>0 && jAdvCloseRect.right>=jAdvHeaderRect.right-8
-        && jAdvCloseRect.left>=jAdvHeaderRect.left+jAdvHeaderRect.width*0.5);
+        && jAdvCloseRect.width>0 && Math.abs(jAdvRightInset-jAdvHeaderPad*jAdvHeaderScale)<=1.5
+        && !jAdvClose.nextElementSibling
+        && jAdvCloseRect.left>=jAdvHeaderRect.left+jAdvHeaderRect.width*0.5,
+      'rightInset='+jAdvRightInset.toFixed(1)+', paddingRight='+jAdvHeaderPad.toFixed(1)
+        +', scale='+jAdvHeaderScale.toFixed(3));
     jSec0.querySelector('.team-advance-back').click(); await wait(20);
     click('partner');
     await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },2000);
@@ -1537,6 +1543,10 @@ var MockHost = {
       var to=mLdPtrCenter(target);
       document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,cancelable:true,pointerId:pid,pointerType:'mouse',isPrimary:true,button:0,buttons:0,clientX:to.x,clientY:to.y}));
     };
+    var mLdDragCancel=function(target,pid){
+      var to=mLdPtrCenter(target);
+      document.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true,cancelable:true,pointerId:pid,pointerType:'mouse',isPrimary:true,button:0,buttons:0,clientX:to.x,clientY:to.y}));
+    };
     // ── 三态徽章 + 损坏占位 + 手雷只读行 + picker 初态（unselected 五态 + idle + scope 背包）──
     assert('team-merc-loadout-states','托管三态渲染（picker 槽位徽章）：预设 / 托管 / 托管异常（data-blocked）；手雷只读行零按钮；picker 初态 unselected 五态',
       mLdSlot('6') && mLdSlot('6').getAttribute('data-loadout-state')==='preset' &&
@@ -1629,6 +1639,37 @@ var MockHost = {
     // ── 主按钮提交 = 替换（custody 槽动词方言「确认替换」）──
     mLdSlot('13').click();
     await waitFor(function(){ return mLdList().getAttribute('data-candidate-state')==='ready'; },2000);
+    var mLdCompatibleWritesBefore=(MockHost.mercRequestCounts.loadout_deliver||0)
+      +(MockHost.mercRequestCounts.loadout_replace||0);
+    mLdDragBegin(mLdCandByText('测试佣兵沙鹰'),mLdSlot('14'),70);
+    var mLdCompatibleHint13=mLdSlot('13').classList.contains('merc-loadout-drop-hint');
+    var mLdCompatibleHint14=mLdSlot('14').classList.contains('merc-loadout-drop-hint');
+    mLdDragCancel(mLdSlot('14'),70); await wait(90);
+    assert('team-merc-loadout-compatible-cross-slot','兼容 tab 仍按 eligibleSlots 高亮手枪 13/14；取消拖拽保留槽 13 锚点且零写',
+      mLdCompatibleHint13 && mLdCompatibleHint14 &&
+      MercTeamController.loadoutPickerDebug().selectedSlotKey==='weapon:13' &&
+      MercTeamController.loadoutPickerDebug().candidateScope==='compatible' &&
+      (MockHost.mercRequestCounts.loadout_deliver||0)+(MockHost.mercRequestCounts.loadout_replace||0)
+        ===mLdCompatibleWritesBefore,
+      'hints='+mLdCompatibleHint13+'/'+mLdCompatibleHint14+', key='+MercTeamController.loadoutPickerDebug().selectedSlotKey);
+    var mLdCompatibleDeliverBefore=MockHost.mercRequestCounts.loadout_deliver||0;
+    mLdDragBegin(mLdCandByText('测试佣兵沙鹰'),mLdSlot('14'),73);
+    mLdDragEnd(mLdSlot('14'),73);
+    await waitFor(function(){ return mLdSlot('14').getAttribute('data-loadout-state')==='custody'
+      && !MercTeamController.isBusy() && mLdList().getAttribute('data-candidate-state')==='ready'; },2000);
+    assert('team-merc-loadout-compatible-cross-slot-commit','兼容槽 13 可直接拖到槽 14 交付；写后仍保留槽 13/兼容浏览锚点',
+      (MockHost.mercRequestCounts.loadout_deliver||0)===mLdCompatibleDeliverBefore+1 &&
+      MockHost.lastLoadoutDeliver && MockHost.lastLoadoutDeliver.slotKey==='14' &&
+      MockHost.lastLoadoutDeliver.expectedLoadoutRevision===8 &&
+      MockHost.lastLoadoutDeliver.source && MockHost.lastLoadoutDeliver.source.slot===31 &&
+      MercTeamController.loadoutPickerDebug().selectedSlotKey==='weapon:13' &&
+      MercTeamController.loadoutPickerDebug().candidateScope==='compatible' &&
+      mLdSlot('13').getAttribute('aria-selected')==='true' &&
+      mLdName('14').indexOf('测试佣兵沙鹰')>=0,
+      'rev='+(MockHost.lastLoadoutDeliver&&MockHost.lastLoadoutDeliver.expectedLoadoutRevision)
+        +', key='+MercTeamController.loadoutPickerDebug().selectedSlotKey);
+    // PointerDragController 会短暂吞掉拖拽结束后的合成 click，等保护窗结束再验证主按钮路径。
+    await wait(90);
     mLdCandByText('测试佣兵沙鹰').click(); await wait(10);
     var mLdReplaceLabel=mLdCommit().textContent;
     mLdCommit().click();
@@ -1637,7 +1678,7 @@ var MockHost = {
       mLdReplaceLabel==='确认替换' &&
       MockHost.lastLoadoutReplace && MockHost.lastLoadoutReplace.cmd==='loadout_replace' &&
       MockHost.lastLoadoutReplace.mercIndex===1 && MockHost.lastLoadoutReplace.slotKey==='13' &&
-      MockHost.lastLoadoutReplace.expectedLoadoutRevision===8 &&
+      MockHost.lastLoadoutReplace.expectedLoadoutRevision===9 &&
       MockHost.lastLoadoutReplace.source && MockHost.lastLoadoutReplace.source.slot===31 &&
       MockHost.lastLoadoutReplace.source.expectedLease==='lease-merc-31' &&
       mLdSlot('13').getAttribute('data-loadout-state')==='custody' &&
@@ -1680,7 +1721,7 @@ var MockHost = {
     assert('team-merc-loadout-drag-replace','跨槽拖拽提交：custody 槽落点 = 替换语义（loadout_replace 发对）',
       MockHost.lastLoadoutReplace && MockHost.lastLoadoutReplace.cmd==='loadout_replace' &&
       MockHost.lastLoadoutReplace.slotKey==='13' &&
-      MockHost.lastLoadoutReplace.expectedLoadoutRevision===9 &&
+      MockHost.lastLoadoutReplace.expectedLoadoutRevision===10 &&
       MockHost.lastLoadoutReplace.source && MockHost.lastLoadoutReplace.source.slot===31 &&
       MockHost.lastLoadoutReplace.source.expectedLease==='lease-merc-31' &&
       mLdName('13').indexOf('测试佣兵沙鹰')>=0 &&
@@ -1695,7 +1736,7 @@ var MockHost = {
       MockHost.lastLoadoutWithdraw && MockHost.lastLoadoutWithdraw.cmd==='loadout_withdraw' &&
       MockHost.lastLoadoutWithdraw.mercIndex===1 && MockHost.lastLoadoutWithdraw.slotKey==='13' &&
       !MockHost.lastLoadoutWithdraw.source &&
-      MockHost.lastLoadoutWithdraw.expectedLoadoutRevision===10 &&
+      MockHost.lastLoadoutWithdraw.expectedLoadoutRevision===11 &&
       mLdSlot('13').querySelector('.team-custody-badge').textContent==='预设' &&
       toastHas('已取回'),
       'rev='+(MockHost.lastLoadoutWithdraw&&MockHost.lastLoadoutWithdraw.expectedLoadoutRevision));
@@ -1771,11 +1812,18 @@ var MockHost = {
     var mLdClose=mLdPage.querySelector('.team-merc-detail-close');
     var mLdCloseRect=mLdClose?mLdClose.getBoundingClientRect():null;
     var mLdHeaderRect=mLdClose?mLdClose.parentElement.getBoundingClientRect():null;
+    var mLdHeaderPad=mLdClose?parseFloat(getComputedStyle(mLdClose.parentElement).paddingRight)||0:0;
+    var mLdHeaderScale=(mLdClose&&mLdClose.parentElement.offsetWidth>0)
+      ?mLdHeaderRect.width/mLdClose.parentElement.offsetWidth:1;
+    var mLdRightInset=(mLdCloseRect&&mLdHeaderRect)?mLdHeaderRect.right-mLdCloseRect.right:999;
     assert('team-merc-detail-close','佣兵培养页 header 投影面板级 × 且位于页头最右端（§5.5：bindClose + aria-label + 位置）',
       !!mLdClose && mLdClose.getAttribute('data-secondary-action')==='close'
         && mLdClose.getAttribute('aria-label')==='关闭战队面板'
-        && mLdCloseRect.width>0 && mLdCloseRect.right>=mLdHeaderRect.right-8
-        && mLdCloseRect.left>=mLdHeaderRect.left+mLdHeaderRect.width*0.5);
+        && mLdCloseRect.width>0 && Math.abs(mLdRightInset-mLdHeaderPad*mLdHeaderScale)<=1.5
+        && !mLdClose.nextElementSibling
+        && mLdCloseRect.left>=mLdHeaderRect.left+mLdHeaderRect.width*0.5,
+      'rightInset='+mLdRightInset.toFixed(1)+', paddingRight='+mLdHeaderPad.toFixed(1)
+        +', scale='+mLdHeaderScale.toFixed(3));
     mLdPage.querySelector('.team-merc-detail-back').click(); await wait(20);
     // ── busy 守卫：hire 加载中禁止切 tab 与关闭 ──
     document.querySelector('.team-merc-child .team-goto-hire').click();

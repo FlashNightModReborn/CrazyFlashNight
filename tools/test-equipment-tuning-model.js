@@ -213,6 +213,10 @@ equal(Model.statsDeltaRows(
     [{key:'weight',label:'重量',value:5}])[0].direction, 'worse',
     'lower-is-better stat rising reads as worse');
 equal(Model.statsDeltaRows(
+    [{key:'fireRate',label:'射速（发/秒）',value:10}],
+    [{key:'fireRate',label:'射速（发/秒）',value:12.9}])[0].direction, 'better',
+    'runtime fire rate rising reads as better');
+equal(Model.statsDeltaRows(
     [{key:'level',label:'等级限制',value:1}],
     [{key:'level',label:'等级限制',value:12}])[0].direction, 'neutral',
     'level requirement change stays neutral');

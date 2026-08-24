@@ -188,6 +188,8 @@ check('neutral overview derives exact equipment and drug drop targets without a 
     const slots = [
         {rovingKey:'weapon:刀',kind:'weapon',id:'刀'},
         {rovingKey:'weapon:长枪',kind:'weapon',id:'长枪'},
+        {rovingKey:'weapon:手枪',kind:'weapon',id:'手枪'},
+        {rovingKey:'weapon:手枪2',kind:'weapon',id:'手枪2'},
         {rovingKey:'drug:drug1',kind:'drug',id:'drug1'},
         {rovingKey:'drug:drug2',kind:'drug',id:'drug2'}
     ];
@@ -197,6 +199,8 @@ check('neutral overview derives exact equipment and drug drop targets without a 
         equipmentEligibility:{slots:[],blockedReason:''}}};
     const material = {blocked:true,raw:{item:{itemKind:'stack',use:'材料',quantity:2},
         equipmentEligibility:{slots:[],blockedReason:''}}};
+    const handgun = {blocked:false,raw:{item:{itemKind:'equipment',use:'手枪'},
+        equipmentEligibility:{slots:['手枪','手枪2'],blockedReason:''}}};
     assert.deepStrictEqual(
         DropTargets.resolve('backpack', '', blade, slots).slots,
         ['weapon:刀']);
@@ -206,6 +210,16 @@ check('neutral overview derives exact equipment and drug drop targets without a 
     assert.deepStrictEqual(
         DropTargets.resolve('backpack', '', material, slots).slots,
         []);
+    assert.deepStrictEqual(
+        DropTargets.resolve('compatible', 'weapon:手枪', handgun, slots).slots,
+        ['weapon:手枪','weapon:手枪2']);
+    assert.deepStrictEqual(
+        DropTargets.resolve('compatible', 'drug:drug1', drug, slots).slots,
+        ['drug:drug1','drug:drug2']);
+    assert.deepStrictEqual(
+        DropTargets.resolve('compatible', 'weapon:长枪',
+            {blocked:false,raw:{item:{itemKind:'equipment',use:'长枪'}}}, slots).slots,
+        ['weapon:长枪']);
 });
 
 process.stdout.write(

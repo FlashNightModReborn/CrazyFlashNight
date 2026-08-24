@@ -5,9 +5,9 @@
  * 本层不持有任何可变状态，不发消息、不碰 DOM。
  *
  * 协议形状（AS2 MercLoadoutService.buildCandidates(merc, slot, scope)，二期 §4）：
- * - scope 'slot'（兼容 tab）：逐候选 eligible/lockReason/requirementLevel；
- * - scope 'backpack'（背包 tab）：逐候选 eligibleSlots[数字槽号 6..15]
- *   （空数组 = 全局不兼容仍携带，供置灰）；slot 参数在 backpack 下可缺省；
+ * - 两种 scope 均逐候选携带 eligibleSlots[数字槽号 6..15]，供权威跨槽拖拽；
+ * - scope 'slot'（兼容 tab）另带相对锚点的 eligible/lockReason/requirementLevel；
+ * - scope 'backpack'（背包 tab）空数组候选仍携带供置灰，slot 参数可缺省；
  * - 非法 scope 由 AS2 fail-closed（invalid_scope）；成功响应带 scope 回声键。
  */
 (function(root, factory) {

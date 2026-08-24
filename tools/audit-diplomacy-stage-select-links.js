@@ -268,6 +268,12 @@ function audit() {
     const hasSameSceneReturnFilter = serviceText.indexOf('isAlreadyAtReturnFrame') >= 0
         && serviceText.indexOf('skippedTransition') >= 0
         && serviceText.indexOf('if (!skipTransition)') >= 0;
+    const hasCompletedStageReturnBridge = serviceText.indexOf('_root.Web选关战斗回流 = true;') >= 0
+        && sceneText.indexOf('stageCompleted && _root.Web选关战斗回流 === true') >= 0
+        && sceneText.indexOf('_root.Web选关战斗回流 = false;') >= 0
+        && sceneText.indexOf('Web选关回流待打开 === true') >= 0
+        && sceneText.indexOf('_root.奖励物品界面._visible === true') >= 0
+        && sceneText.indexOf('请求打开Web选关("as2_stage_complete_return")') >= 0;
 
     if (!hasLegacyTrap) {
         errors.push('AS2 legacy gate trap is missing in 场景转换函数.切换场景');
@@ -283,6 +289,9 @@ function audit() {
     }
     if (!hasSameSceneReturnFilter) {
         errors.push('stage-select same-scene return filter is missing');
+    }
+    if (!hasCompletedStageReturnBridge) {
+        errors.push('stage-select Web-origin completed-stage return bridge is missing');
     }
 
     const scriptScans = [];
@@ -347,6 +356,7 @@ function audit() {
         hasReturnFrameBridge,
         hasReturnFrameIsolation,
         hasSameSceneReturnFilter,
+        hasCompletedStageReturnBridge,
         ffdecScanned: !skipFfdec,
         totalLegacyGateCount: totalLegacyGates,
         totalExplicitWebGateCount: scriptScans.reduce((sum, item) => sum + item.explicitWebGateCount, 0),
@@ -371,6 +381,7 @@ if (jsonMode) {
     console.log('[diplomacy-stage-select-links] return-frame bridge: ' + (result.hasReturnFrameBridge ? 'yes' : 'no'));
     console.log('[diplomacy-stage-select-links] return-frame isolation: ' + (result.hasReturnFrameIsolation ? 'yes' : 'no'));
     console.log('[diplomacy-stage-select-links] same-scene return filter: ' + (result.hasSameSceneReturnFilter ? 'yes' : 'no'));
+    console.log('[diplomacy-stage-select-links] completed-stage Web return bridge: ' + (result.hasCompletedStageReturnBridge ? 'yes' : 'no'));
     for (const warning of result.warnings) console.warn('[warn] ' + warning);
     for (const error of result.errors) console.error('[error] ' + error);
 }

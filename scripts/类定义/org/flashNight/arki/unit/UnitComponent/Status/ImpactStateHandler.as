@@ -142,8 +142,13 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
                                              damageResult:DamageResult, 
                                              hitDirection:String, 
                                              bloodEnabled:Boolean):Void {
-        // resolved MISS 已由 BulletQueueProcessor 在发布 hit 前截断。这里不做重复防守，
-        // 保持每次真实命中的冲击热路无额外 DamageResult 函数调用。
+        // DamageResult.NULL 是无敌/NPC/UnitBullet 的旧“几何命中”合同：上游仍发布 hit
+        // 以保留碰撞 FX，但它不是一次真实受击。若继续进入 settleImpactForce，即使
+        // 损伤值为 0 也会重置 lastHitTime，让小跳/闪现期间持续碰撞无限推迟韧性恢复；
+        // 还可能消费上一发残留的 损伤值。这里用单次身份比较截断所有冲击/位移/状态副作用。
+        if (damageResult === DamageResult.NULL) return;
+
+        // resolved MISS 已由 BulletQueueProcessor 在发布 hit 前截断，无需再调用判定函数。
 
         var trackDiag:Boolean = shouldTrackCombatDiagnostics(hitTarget);
         var isRigid:Boolean = hitTarget.刚体 || hitTarget.man.刚体标签;

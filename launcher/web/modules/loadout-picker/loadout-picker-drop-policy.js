@@ -2,10 +2,9 @@
  * Loadout picker drop policy: pure candidate drop-target resolution.
  *
  * `candidate.blocked` only describes the relationship with the currently
- * selected slot; backpack rows carry the authoritative per-item slot
- * allowlist via the injected eligibility provider. This leaf derives the
- * accepted drop slots from that allowlist without touching the DOM or
- * transport.
+ * selected slot. Both browse scopes may carry an authoritative per-item slot
+ * allowlist via the injected eligibility provider. This leaf derives accepted
+ * drop slots from that allowlist without touching the DOM or transport.
  *
  * The kind vocabulary, drug-row detection, eligibility source, operation id
  * and reject copy are ports; the defaults preserve the character-build
@@ -81,10 +80,6 @@
          */
         function resolve(scope, selectedSlotKey, candidate, slots) {
             if (!candidate) return noTarget('no_target');
-            if (scope !== 'backpack') {
-                return selectedSlotKey
-                    ? pinned(selectedSlotKey, candidate) : noTarget('no_target');
-            }
             var eligibility = eligibilityProvider(candidate);
             if (eligibility && Array.isArray(eligibility.slots)
                     && eligibility.slots.length) {
@@ -108,6 +103,15 @@
                     }
                 }
                 return drugSlots.length ? {slots:drugSlots, reason:''} : noTarget('no_target');
+            }
+            if (eligibility && Array.isArray(eligibility.slots)) {
+                return noTarget(candidate.blocked === true
+                    ? 'item_blocked' : 'no_target');
+            }
+            // 未迁移的兼容作用域消费方仍退回当前槽；背包总览没有可猜测落点。
+            if (scope !== 'backpack') {
+                return selectedSlotKey
+                    ? pinned(selectedSlotKey, candidate) : noTarget('no_target');
             }
             // 其余非装备行（材料等）没有合法构筑落点，只提供查看说明。
             return noTarget(candidate.blocked === true ? 'item_blocked' : 'no_target');

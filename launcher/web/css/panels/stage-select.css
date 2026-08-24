@@ -661,14 +661,12 @@
     cursor: pointer;
 }
 
-/* P2：选中节点的标记/锁/任务脉冲不再随 hover/focus 隐藏（hover 卡已由 pinned 检查器承接），
-   未选中节点保持原行为。 */
-.stage-select-stage-button:not(.is-locked):not(.is-selected):hover > .stage-select-marker,
-.stage-select-stage-button:not(.is-locked):not(.is-selected):focus > .stage-select-marker,
+/* P2：普通未选中节点在 hover/focus 时由悬停卡承接视觉；任务节点的红色标记与黄圈
+   必须持续可见，避免鼠标一进入命中区就丢失任务目标。选中节点继续由固定检查器承接。 */
+.stage-select-stage-button:not(.is-locked):not(.is-selected):not(.is-task):hover > .stage-select-marker,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):not(.is-task):focus > .stage-select-marker,
 .stage-select-stage-button:not(.is-locked):not(.is-selected):hover > .stage-select-lock,
-.stage-select-stage-button:not(.is-locked):not(.is-selected):focus > .stage-select-lock,
-.stage-select-stage-button:not(.is-locked):not(.is-selected):hover > .stage-select-task-pulse,
-.stage-select-stage-button:not(.is-locked):not(.is-selected):focus > .stage-select-task-pulse {
+.stage-select-stage-button:not(.is-locked):not(.is-selected):focus > .stage-select-lock {
     display: none;
 }
 

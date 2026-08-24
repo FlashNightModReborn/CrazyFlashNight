@@ -12,6 +12,37 @@ EventBus.getInstance().subscribe("SceneReady", function():Void {
 			Mover.enforceScreenBounds(hero);
 		}
 	}
+
+	// Web 选关进入的关卡通关后，先完整回到来源场景。通关奖励界面关闭时会
+	// 执行任务达成检测，所以必须等玩家处理完奖励后再重开 Web；既不遮挡领奖，
+	// fresh snapshot 也能立即反映刚完成的开图任务。发送失败回退旧 Flash 关卡地图。
+	if (_root.场景转换函数 != undefined
+			&& _root.场景转换函数.Web选关回流待打开 === true) {
+		_root.场景转换函数.Web选关回流待打开 = false;
+		var reopenWebStageSelect:Function = function():Void {
+			if (_root.奖励物品界面 != undefined && _root.奖励物品界面._visible === true) {
+				if (_root.帧计时器 != undefined
+						&& typeof _root.帧计时器.添加单次任务 == "function") {
+					_root.帧计时器.添加单次任务(reopenWebStageSelect, 250);
+				} else {
+					// 极端降级：宁可保留待打开意图，也不能让 Web 遮住尚未领取的奖励。
+					_root.场景转换函数.Web选关回流待打开 = true;
+				}
+				return;
+			}
+			// 正常 enter 的 panel close 会清此门；这里再归零一次，防迟到 close
+			// 或 Host 切面板时序留下旧锁，导致只返回 true 却没有真正发送新请求。
+			_root.场景转换函数.Web选关打开中 = false;
+			if (!_root.场景转换函数.请求打开Web选关("as2_stage_complete_return")) {
+				_root.淡出动画.淡出跳转帧("关卡地图");
+			}
+		};
+		if (_root.帧计时器 != undefined && _root.帧计时器.添加单次任务 != undefined) {
+			_root.帧计时器.添加单次任务(reopenWebStageSelect, 250);
+		} else {
+			reopenWebStageSelect();
+		}
+	}
 }, null);
 
 _root.转场景记录数据 = function(){
@@ -528,6 +559,10 @@ _root.获取关卡状态 = function():String{
 }
 
 _root.返回基地 = function(){
+	var stageCompleted:Boolean = _root.关卡结束界面.关卡是否结束 == true;
+	var reopenWebStageSelect:Boolean = stageCompleted && _root.Web选关战斗回流 === true;
+	// 一次性来源标记：失败/主动撤退/死亡都不能泄漏到下一场战斗。
+	_root.Web选关战斗回流 = false;
 	_root.新出生 = true;
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
@@ -543,7 +578,18 @@ _root.返回基地 = function(){
 	if (TargetCacheManager.findHero().hp == 0){
 		_root.淡出动画.淡出跳转帧("医务室");
 	}else{
-		_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+		var returnFrame:String = String(_root.关卡地图帧值 || "基地门口");
+		if (reopenWebStageSelect) {
+			returnFrame = String(_root.Web选关返回帧值 || returnFrame || "基地门口");
+			// 历史测试入口可能把旧 UI label 留作 returnFrame；Web 正式回流必须先
+			// 落到可触发 SceneReady 的真实场景，未知来源保守回基地门口。
+			if (returnFrame == "" || returnFrame == "关卡地图") returnFrame = "基地门口";
+			_root.关卡地图帧值 = returnFrame;
+			if (_root.场景转换函数 != undefined) {
+				_root.场景转换函数.Web选关回流待打开 = true;
+			}
+		}
+		_root.淡出动画.淡出跳转帧(returnFrame);
 	}
 	// 清空限制词条
 	_root.限制系统.clearEntries();
@@ -560,6 +606,7 @@ _root.场景转换函数 = new Object();
 
 _root.场景转换函数.上次切换帧数 = 0;
 _root.场景转换函数.Web选关打开中 = false;
+_root.场景转换函数.Web选关回流待打开 = false;
 
 _root.场景转换函数.请求打开Web选关 = function(source){
 	if (_root.场景转换函数.Web选关打开中) return true;

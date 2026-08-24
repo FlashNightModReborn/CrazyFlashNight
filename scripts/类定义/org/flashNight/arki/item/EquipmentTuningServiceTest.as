@@ -87,7 +87,9 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             {name:"测试增幅插件",use:"手枪",detachPolicy:"single",stats:{flat:{vampirism:3}}}
         ]);
         ItemUtil.loadItemData([
-            {name:"测试手枪A",displayname:"测试手枪A",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:4,damage:10}},
+            {name:"测试手枪A",displayname:"测试手枪A",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",
+                data:{level:1,modslot:4,damage:10,interval:100,impact:100,bullet:"普通子弹",split:1},
+                data_2:{level:12,damage:30,interval:77,impact:25}},
             {name:"测试手枪B",displayname:"测试手枪B",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:4,damage:10}},
             {name:"测试未知槽手枪",displayname:"测试未知槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,damage:10}},
             {name:"测试负数槽手枪",displayname:"测试负数槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:-1,damage:10}},
@@ -689,6 +691,29 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         assertTrue(enhance.snapshot.success
                 && !enhance.snapshot.snapshot.equipment.hasOwnProperty("stats"),
             "snapshot 装备投影不携带 stats 字段（载荷最小化）");
+
+        resetFixture();
+        var tierGun:BaseItem = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, tierGun);
+        _root.收集品栏.材料.add("二阶复合防御组件", 1);
+        var gunTier:Object = webCommit(
+            "stats-gun-tier", "install_tier", 0, -1, "二阶复合防御组件", undefined);
+        var gunBefore:Array = gunTier.preview.success
+            ? gunTier.preview.before.source.equipment.stats : null;
+        var gunAfter:Array = gunTier.preview.success
+            ? gunTier.preview.after.source.equipment.stats : null;
+        var rateBefore:Object = statRow(gunBefore, "fireRate");
+        var rateAfter:Object = statRow(gunAfter, "fireRate");
+        assertTrue(gunTier.preview.success && gunTier.commit.success
+                && statRow(gunBefore, "interval") == null
+                && statRow(gunAfter, "interval") == null
+                && rateBefore != null && rateAfter != null
+                && String(rateBefore.label) == "射速（发/秒）"
+                && Math.abs(Number(rateBefore.value) - 10) < 0.0001
+                && Math.abs(Number(rateAfter.value) - 12.9) < 0.0001
+                && Math.abs(Number(statRow(gunBefore, "impact").value) - 5) < 0.0001
+                && Math.abs(Number(statRow(gunAfter, "impact").value) - 20) < 0.0001,
+            "枪械进阶 preview 按运行时口径显示射速与实际冲击力，不泄露 interval/impact 原始参数");
 
         resetFixture();
         var helm:BaseItem = equipment("测试头盔", 1, []);

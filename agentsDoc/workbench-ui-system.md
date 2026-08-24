@@ -134,7 +134,7 @@ Character Build 已装备装备与药剂槽使用另一条窄 `loadout/tooltip` 
 
 Character Build 候选的第一次单击、Enter 或 Space 只固定本地预览；再次单击同一候选或在同一候选上按 Space 必须取消选择并清除预览，零业务写入。只有在同一已选候选上一次明确、非 auto-repeat 的 Enter 才等价触发唯一主 CTA，并继续服从 disabled、pending、lease、revision 与写入门；重复键、pointer 取消和 Space 都不得提交。
 
-Character Build 候选区以独立 `ChoiceGroup` 提供“兼容 / 背包”范围，不挤占 PaneChrome 的主 CTA。切换保留当前目标槽与完整/紧凑密度，但清空候选预览、候选滚动归顶、失效 tooltip，并在 fresh 请求返回前禁用范围控件；背包模式的不兼容行保持可聚焦、可查看说明，但装备按钮与拖拽均禁用。候选可拖到当前精确已选槽位，成功 drop 先采用同一候选预览再调用既有主 CTA intent；错误槽、空白、blocked、busy/reconcile、lost capture、pointer cancel、窗口失焦、重绘或销毁都必须零写并清除拖拽外观。拖拽是点击/Enter 的并列输入方式，不改变首次/二次选择合同，也不猜测其他槽位。
+Character Build 候选区以独立 `ChoiceGroup` 提供“兼容 / 背包”范围，不挤占 PaneChrome 的主 CTA。显式选择槽进入该槽的兼容范围；显式选择“背包”清除浏览锚点并回到无目标总览。切换清空候选预览、候选滚动归顶、失效 tooltip，并在 fresh 请求返回前禁用范围控件；不兼容行保持可聚焦、可查看说明，但装备按钮与拖拽均禁用。浏览范围只控制候选集合，锚点只控制兼容筛选和主 CTA；装备候选在两种范围都按 AS2/Host 验证的 `equipmentEligibility.slots` 高亮全部合法槽，药剂候选按规范类型映射四个药剂槽，具体目标冷却仍在写前复验。成功 drop 调用 exact 落点 mutation，但成功、确定失败或对账后都保留写前 scope 与锚点：背包总览不自动转兼容，兼容槽 3 拖到槽 4 后仍浏览槽 3。只有玩家显式点槽或切换范围才改变浏览上下文。错误槽、空白、blocked、busy/reconcile、lost capture、pointer cancel、窗口失焦、重绘或销毁都必须零写并清除拖拽外观。拖拽是点击/Enter 的并列输入方式，不改变首次/二次选择合同，也不从实际落点反推下一次浏览目标。
 
 商城 compact 的加购动作采用 `24×24px` 透明 hitbox 包围 `16×16px` glyph；默认只保留低能量深色角标，hover / focus-visible 才点亮。按钮不得重新铺满实体格，也不得以缩小命中区换取视觉留白。空槽与有内容的 compact 卡共享同一固定宽度，禁止按内容收缩。
 

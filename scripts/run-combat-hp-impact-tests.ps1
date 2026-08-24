@@ -82,9 +82,9 @@ $focusedRun = @{
         'org.flashNight.arki.bullet.BulletComponent.Queue.ToughnessVulnerabilityPipelineTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^=== ToughnessVulnerabilityPipelineTest result: passed=153 failed=0 ===\r?$'
+        '(?m)^=== ToughnessVulnerabilityPipelineTest result: passed=159 failed=0 ===\r?$'
     )
-    SuccessSummary = 'ToughnessVulnerabilityPipelineTest 153/153 assertions'
+    SuccessSummary = 'ToughnessVulnerabilityPipelineTest 159/159 assertions'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

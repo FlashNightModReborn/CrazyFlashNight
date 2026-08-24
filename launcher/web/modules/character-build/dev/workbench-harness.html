@@ -472,7 +472,10 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                     ? dressup.scenarios.candidate.candidateItem
                     : equipmentBySlot[message.payload.slotKey] || drugNames[0];
                 var stackGrenadeCandidate = message.payload.slotKey === '手雷';
-                candidateRows = [{
+                var drugCandidate = message.payload.drugSlot != null
+                    && !message.payload.slotKey;
+                var stackCandidate = stackGrenadeCandidate || drugCandidate;
+                var compatibleRow = {
                     physicalSlot:9,
                     disabled:false,
                     blockedReason:'',
@@ -485,20 +488,30 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                         name:candidateName,
                         displayName:candidateName,
                         icon:candidateName,
-                        itemKind:stackGrenadeCandidate ? 'stack' : 'equipment',
-                        majorType:stackGrenadeCandidate ? '消耗品' : '武器',
-                        use:message.payload.slotKey || '药剂',
-                        enhancementLevel:stackGrenadeCandidate ? 0 : candidateEnhancement,
-                        quantity:stackGrenadeCandidate ? 3 : 1,
-                        tierSlotAvailable:true,
+                        itemKind:stackCandidate ? 'stack' : 'equipment',
+                        majorType:stackCandidate ? '消耗品' : '武器',
+                        use:message.payload.slotKey === '手枪2'
+                            ? '手枪' : message.payload.slotKey || '药剂',
+                        enhancementLevel:stackCandidate ? 0 : candidateEnhancement,
+                        quantity:stackGrenadeCandidate ? 3 : drugCandidate ? 2 : 1,
+                        tierSlotAvailable:!stackCandidate,
                         tierSlotUsed:false,
-                        modSlotCapacity:2,
-                        modSlotUsed:1,
-                        modSlots:[{name:'候选稳定器', displayName:'候选复合稳定器', icon:'候选稳定器图标',
+                        modSlotCapacity:stackCandidate ? 0 : 2,
+                        modSlotUsed:stackCandidate ? 0 : 1,
+                        modSlots:stackCandidate ? [] : [{name:'候选稳定器', displayName:'候选复合稳定器', icon:'候选稳定器图标',
                             grade:'medium', gradeLabel:'中级', gradeColor:'#996600', role:'utility',
                             roleLabel:'结构与功能', symbol:'square-solid', scope:'weapon'}]
                     }
-                }];
+                };
+                if (message.payload.slotKey) {
+                    compatibleRow.equipmentEligibility = {
+                        slots:message.payload.slotKey === '手枪'
+                                || message.payload.slotKey === '手枪2'
+                            ? ['手枪','手枪2'] : [message.payload.slotKey],
+                        blockedReason:''
+                    };
+                }
+                candidateRows = [compatibleRow];
                 if (message.payload.candidateScope === 'backpack') {
                     candidateRows.push({
                         physicalSlot:11,
@@ -3539,29 +3552,32 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             '[data-roving-key="' + longGunKey + '"]');
         beginPointerDrag(equipDragCandidate, equipDragTarget, 84);
         endPointerDrag(equipDragTarget, 84, 'pointerup');
-        check('successful filtered-candidate drop adopts loadout and backpack then restores focus',
+        check('successful backpack drop adopts loadout data while preserving neutral browsing and focus',
             await until(function() {
                 var state = InventoryWorkbench.debugState().build;
                 var slot = document.querySelector('[data-roving-key="' + longGunKey + '"]');
                 return state && state.session.state === 'idle'
-                    && state.view.candidateCount === 1
+                    && state.selectedSlotKey === ''
+                    && state.selectedTarget == null
+                    && state.view.selectedSlotKey === ''
+                    && state.view.candidateScope === 'backpack'
+                    && state.view.candidateCount === 7
                     && commandCount('equipEquipment') === 1
                     && slot && slot.getAttribute('data-focus-name') ===
                         CharacterBuildDressupFixture.scenarios.candidate.candidateItem
-                    && document.activeElement.getAttribute('data-roving-key') === longGunKey
+                    && document.activeElement === transactionStorageOpener
                     && window.__routeHarness.storage.externalBegins === writesBefore + 1
                     && window.__routeHarness.storage.externalCompletes === 1
                     && window.__routeHarness.storage.appliedSnapshots === 1;
             }));
-        check('successful write adopts the returned facet snapshot without disturbing restored focus',
+        check('successful write adopts the returned facet snapshot without changing neutral focus',
             longGunCountBeforeWrite !== document.querySelector(
                 '[data-roving-key="' + longGunKey
                     + '"] [data-slot-candidate-count]')
             && document.querySelector(
                 '[data-roving-key="' + longGunKey + '"]')
                 .getAttribute('data-candidate-count') === '3'
-            && document.activeElement.getAttribute('data-roving-key')
-                === longGunKey
+            && document.activeElement === transactionStorageOpener
             && document.querySelector(
                 '.character-build-candidate-scroll').scrollTop === 0);
         var firstEquip = loadoutMessages().filter(function(message) {
@@ -3572,6 +3588,21 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 v:1, sessionGeneration:17, expectedLoadoutRevision:5, slotKey:'长枪',
                 source:{containerId:'背包', slot:9, expectedLease:'lease.candidate.9'}
             }), JSON.stringify(firstEquip.payload));
+
+        var postDropCompatibleReadBase = commandCount('candidates');
+        equipDragTarget = document.querySelector(
+            '[data-roving-key="' + longGunKey + '"]');
+        equipDragTarget.focus();
+        equipDragTarget.click();
+        check('an explicit slot click after a backpack write enters compatible browsing',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return commandCount('candidates') === postDropCompatibleReadBase + 1
+                    && state && state.view.candidateScope === 'compatible'
+                    && candidateProjectionReady(state, longGunKey, 1)
+                    && document.activeElement.getAttribute('data-roving-key')
+                        === longGunKey;
+            }));
 
         window.__routeHarness.rejectNextMutation = true;
         await wait(90);
@@ -5286,7 +5317,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && trigger.getAttribute('aria-expanded') === 'false'
                     && menuPointerListeners.length === 0;
             }));
-        // 背包模式：候选可拖到该物品白名单内的任意槽位直接装备，选择跟随落点。
+        // 背包模式：候选可拖到白名单任意槽位；写入不改变背包浏览上下文。
         document.querySelector('[data-roving-key="weapon:长枪"]').click();
         check('cross-slot drop probe selects the long-gun slot first',
             await until(function() {
@@ -5317,7 +5348,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && !document.querySelector('[data-roving-key="weapon:长枪"]')
                 .classList.contains('character-build-drop-hint'));
         endPointerDrag(crossPistol2, 87, 'pointerup');
-        check('dropping a backpack candidate on its other allowed slot equips and adopts that slot',
+        check('dropping a backpack candidate equips the exact slot and preserves neutral backpack browsing',
             await until(function() {
                 var state = InventoryWorkbench.debugState().build;
                 var lastEquip = loadoutMessages().filter(function(message) {
@@ -5328,15 +5359,24 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && lastEquip && lastEquip.payload.slotKey === '手枪2'
                     && lastEquip.payload.source.slot === 13
                     && lastEquip.payload.source.expectedLease === 'lease.candidate.13'
-                    && state.selectedSlotKey === 'weapon:手枪2'
-                    && state.view.selectedSlotKey === 'weapon:手枪2'
-                    && state.view.candidateScope === 'compatible'
-                    && state.view.candidateCount === 1
-                    && document.querySelector('[data-roving-key="weapon:手枪2"]')
-                        .getAttribute('aria-selected') === 'true'
+                    && state.selectedSlotKey === ''
+                    && state.selectedTarget == null
+                    && state.view.selectedSlotKey === ''
+                    && state.view.candidateScope === 'backpack'
+                    && state.view.candidateCount === 7
+                    && document.querySelector(
+                        '[data-build-candidate-scope-mount] [data-choice="backpack"]')
+                        .getAttribute('aria-pressed') === 'true'
                     && !document.querySelector('.character-build-drop-hint')
                     && !document.querySelector('.character-build-drag-ghost');
             }), JSON.stringify(InventoryWorkbench.debugState().build));
+        document.querySelector('[data-roving-key="weapon:手枪2"]').click();
+        check('only an explicit slot click leaves backpack browsing and anchors compatible actions',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return state && state.view.candidateScope === 'compatible'
+                    && candidateProjectionReady(state, 'weapon:手枪2', 1);
+            }));
         var dblclickBase = commandCount('equipEquipment');
         var dblclickCandidate = document.querySelector('.character-build-candidate');
         dblclickCandidate.dispatchEvent(new MouseEvent('dblclick', {
@@ -5399,7 +5439,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && !document.querySelector('[data-roving-key="weapon:手枪2"]')
                 .classList.contains('character-build-drop-hint'));
         endPointerDrag(drugDropTarget, 88, 'pointerup');
-        check('dropping a potion on another drug slot loads it and adopts that slot',
+        check('dropping a backpack potion loads the exact drug slot and preserves backpack browsing',
             await until(function() {
                 var state = InventoryWorkbench.debugState().build;
                 var lastEquip = loadoutMessages().filter(function(message) {
@@ -5410,19 +5450,63 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && lastEquip && lastEquip.payload.drugSlot === 2
                     && lastEquip.payload.source.slot === 11
                     && lastEquip.payload.source.expectedLease === 'lease.incompatible.11'
-                    && state.selectedSlotKey === 'drug:drug3'
+                    && state.selectedSlotKey === ''
+                    && state.selectedTarget == null
+                    && state.view.selectedSlotKey === ''
+                    && state.view.candidateScope === 'backpack'
+                    && state.view.candidateCount === 7
                     && !document.querySelector('.character-build-drop-hint')
                     && !document.querySelector('.character-build-drag-ghost');
             }), JSON.stringify(InventoryWorkbench.debugState().build));
-        check('post-potion-drop candidate list settles on the adopted drug slot',
+        check('post-potion-drop candidate list settles back on the neutral backpack overview',
             await until(function() {
-                return candidateProjectionReady(
-                    InventoryWorkbench.debugState().build, 'drug:drug3', 1);
+                return backpackOverviewReady(
+                    InventoryWorkbench.debugState().build, 7);
             }));
+        var compatibleDrugReadBase = commandCount('candidates');
+        document.querySelector('[data-roving-key="drug:drug3"]').click();
+        check('explicitly selecting drug slot 3 enters compatible scope',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                return commandCount('candidates') === compatibleDrugReadBase + 1
+                    && state && state.view.candidateScope === 'compatible'
+                    && candidateProjectionReady(state, 'drug:drug3', 1);
+            }));
+        var compatibleDrugCandidate = document.querySelector(
+            '.character-build-candidate');
+        var compatibleDrugTarget = document.querySelector(
+            '[data-roving-key="drug:drug4"]');
+        var compatibleDrugDropBase = commandCount('equipDrug');
+        beginPointerDrag(compatibleDrugCandidate, compatibleDrugTarget, 89);
+        check('compatible potion row marks every authoritative drug drop target',
+            InventoryWorkbench.debugState().build.view.candidateDrag.active
+            && compatibleDrugTarget.classList.contains('workbench-drop-active')
+            && document.querySelectorAll(
+                '.character-build-slot.character-build-drop-hint').length === 4);
+        endPointerDrag(compatibleDrugTarget, 89, 'pointerup');
+        check('compatible slot 3 can drop to slot 4 without moving the browse anchor',
+            await until(function() {
+                var state = InventoryWorkbench.debugState().build;
+                var lastEquip = loadoutMessages().filter(function(message) {
+                    return message.cmd === 'equipDrug';
+                }).slice(-1)[0];
+                return state && state.session.state === 'idle'
+                    && commandCount('equipDrug') === compatibleDrugDropBase + 1
+                    && lastEquip && lastEquip.payload.drugSlot === 3
+                    && lastEquip.payload.source.slot === 9
+                    && lastEquip.payload.source.expectedLease
+                        === window.__routeHarness.candidateLease
+                    && state.selectedSlotKey === 'drug:drug3'
+                    && state.view.selectedSlotKey === 'drug:drug3'
+                    && state.view.candidateScope === 'compatible'
+                    && candidateProjectionReady(state, 'drug:drug3', 1)
+                    && !document.querySelector('.character-build-drop-hint')
+                    && !document.querySelector('.character-build-drag-ghost');
+            }), JSON.stringify(InventoryWorkbench.debugState().build));
         var sameCompatibleBase = commandCount('candidates');
         document.querySelector(
             '[data-build-candidate-scope-mount] [data-choice="compatible"]').click();
-        check('compatible is already active after a potion drop and emits no duplicate read',
+        check('compatible remains anchored after a cross-slot potion drop and emits no duplicate read',
             commandCount('candidates') === sameCompatibleBase
             && candidateProjectionReady(
                 InventoryWorkbench.debugState().build, 'drug:drug3', 1));

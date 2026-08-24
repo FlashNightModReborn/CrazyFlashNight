@@ -318,7 +318,7 @@ function() {
                     : texts.focusCompatibleIdle;
             return true;
         };
-        prototype._selectSlot = function(key) {
+        prototype._selectSlot = function(key, forceRefresh) {
             if (!key) return false;
             var nextKey = String(key);
             var changed = this._selectedSlotKey !== nextKey;
@@ -339,7 +339,7 @@ function() {
             this._candidateScope = 'compatible';
             this._selectedSlotKey = nextKey;
             this._syncSlotSelection();
-            if (changed || this._candidateLoadFailed) {
+            if (changed || this._candidateLoadFailed || forceRefresh === true) {
                 this.clearCandidateSelection();
                 this._activeCandidateKey = '';
                 this._candidateLoadFailed = false;
@@ -484,13 +484,13 @@ function() {
                 : texts.failureCandidates);
             return true;
         };
-        prototype.restoreSlot = function(key) {
+        prototype.restoreSlot = function(key, forceRefresh) {
             if (this._destroyed || !key) return false;
             var node = this.root.querySelector('[data-roving-key="' + String(key).replace(/"/g, '\\"') + '"]');
             if (!node) return false;
             this._activeSlotKey = String(key);
             this._candidateList.parentNode.scrollTop = 0;
-            if (!this._selectSlot(this._activeSlotKey)) return false;
+            if (!this._selectSlot(this._activeSlotKey, forceRefresh === true)) return false;
             try { node.focus({preventScroll:true}); } catch (_) { node.focus(); }
             return true;
         };

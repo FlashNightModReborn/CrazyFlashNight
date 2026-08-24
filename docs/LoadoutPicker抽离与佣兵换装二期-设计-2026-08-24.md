@@ -8,7 +8,7 @@
 
 二期范围：
 
-- 从角色构筑（character-build）交互层抽离共享组件 **LoadoutPicker**（候选五态、兼容/背包 scope、requestKey 栅栏、拖拽接线、落点策略接口、槽位网格），character-build 改为消费它且行为零变化；
+- 从角色构筑（character-build）交互层抽离共享组件 **LoadoutPicker**（候选五态、兼容/背包 scope、requestKey 栅栏、拖拽接线、落点策略接口、槽位网格）；抽离施工当时以 character-build 行为零变化为门，本日测试反馈后的契约修订见 §11.4；
 - 佣兵面板（merc-panel）装备调配区块重构：11 槽单列 → 槽位图标网格 + 常驻候选栏，接入 LoadoutPicker，支持拖拽换装（含跨槽）、双击提交、写后状态保持；
 - 协议扩建：`mercLoadoutCandidates` 增加背包总览 scope 与逐候选跨槽可写白名单（对齐 `equipmentEligibility` 契约形状）；
 - 顺手消除一期遗留滚动痛点（写后整列重建弹回顶部、快照刷新无条件关闭浏览器、候选浏览器确认即销毁）。
@@ -143,3 +143,19 @@ LoadoutPicker 演进约定：① 第三消费者（肉鸽 / 战术携行集）AD
 ### 11.3 滚动痛点根治落点（merc-panel.js）
 
 写成功后 `handleLoadoutWriteResponse` 只局部刷新装备区，不再整列重建/关闭候选栏；`renderDetailPage` 重建右栏前摘出同佣兵 picker 根（保 tooltip/拖拽/焦点绑定），重建后原样挂回 + `setMerc` 恢复选中槽/scope + scrollTop 还原；快照刷新不再有无条件关闭动作，`closeLoadoutBrowser` 与 `data-loadout-open` 死标记全删。
+
+### 11.4 测试反馈后的契约修订（2026-08-24）
+
+测试员确认了两个此前自动门未冻结的交互缺口：角色构筑从背包拖拽成功后会自动切入兼容态；兼容态只允许投递到浏览锚点，导致同类双槽（例如手枪/手枪2、药剂槽）无法直接跨槽。根因不是写权限不足，而是共享 drop-policy 在读取候选白名单前先按 scope 钉死落点，且 character-build 写回把实际 drop target 误当成新的浏览选择；同时 AS2/Host 只在 backpack scope 强制携带跨槽资格。
+
+修订后的稳定合同如下：
+
+- scope 只控制候选集合；锚点只控制 `compatible` 筛选和主 CTA 目标；候选的 drop target 由 AS2 权威白名单独立裁决。
+- character-build 装备候选在 `compatible/backpack` 都携 `equipmentEligibility`，并由 Host 在两种 scope 下逐行验证；merc 候选在 slot/backpack 都由 AS2 携 `eligibleSlots`。Web 先消费对应白名单再考虑 legacy fallback，MercTask 传输/写闸门维持原边界。
+- 合法药剂候选可投递到四个药剂槽；具体目标槽的冷却仍由 Host/AS2 写前最终裁决，不把 Web 高亮升级为写权限。
+- drop 写 exact 落点，但成功、确定失败和对账都保留写前 scope + 锚点。fresh 背包总览保持无锚点；兼容槽 A 拖到槽 B 后仍浏览 A。只有玩家显式点槽或切 scope 才改变浏览上下文。
+- merc 写回若推进 `loadoutRevision`，候选 authority 恰好重拉一次；随后同 revision 的快照只刷新投影，不重复制造 loading，也不得让连续操作沿用旧 revision。
+
+本修订新增 character-build 背包/兼容装备与药剂跨槽、写后浏览上下文保持，以及 merc 兼容态跨槽高亮/取消零写/实际交付/连续 revision 的三视口回归。旧 §11.1 数字是首轮抽离收口的历史证据，不覆盖本修订；本轮 fresh 结果以 testing guide 与当前测试输出为准。
+
+本轮自动证据：Character production **370/370×3**、standalone **218/218**、session **36/36**、projection **8/8**；Team **222/222×3**；Host CharacterBuild 定向 **228/228**、Launcher 全量 **4085 pass + 3 explicit opt-in skip / 4088 total**；Merc AS2 **113/113**，Character focused 六套合计 **580/580**（CharacterBuildService **194/194**），Compiler 均 **0/0**、32K retry **0**；合并本日其余体验修复后的 asLoader 最终 publish 刷新为 **1,139,471 bytes**。`run-character-build-tests.ps1` 的独立 writer 静态前置仍因本基线既有 DrugInputService/ItemUtil 文本合同失配而在进入 compile 前报红，本轮未越界改动；上述 Character 动态证据由该脚本定义的同一 focused template/suite 直接执行取得，不能表述为 wrapper 全绿。

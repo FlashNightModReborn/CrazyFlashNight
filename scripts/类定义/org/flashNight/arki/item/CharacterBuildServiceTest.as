@@ -1396,14 +1396,24 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             "候选过滤读取实例 getData().use，不信临时 item.use 或泄漏引用");
         check(hasOnlyKeys(heads.payload.candidates[0], {
                     physicalSlot:true, disabled:true, blockedReason:true,
-                    item:true, source:true
+                    item:true, source:true, equipmentEligibility:true
                 })
+                && hasOnlyKeys(
+                    heads.payload.candidates[0].equipmentEligibility, {
+                        slots:true, blockedReason:true
+                    })
+                && heads.payload.candidates[0]
+                    .equipmentEligibility.slots.length == 1
+                && heads.payload.candidates[0]
+                    .equipmentEligibility.slots[0] == "头部装备"
+                && heads.payload.candidates[1]
+                    .equipmentEligibility.blockedReason == "level_locked"
                 && hasOnlyKeys(heads.payload.candidates[0].source, {
                     containerId:true, slot:true, expectedLease:true
                 })
                 && hasOnlyKeys(heads.payload.candidates[0].item,
                     itemProjectionWireKeys()),
-            "候选 row/source 与 safe item projection 保持 exact 5/3/22 字段");
+            "compatible 装备候选携跨槽资格，row/资格/source/item 保持 exact 6/2/3/22 字段");
 
         var backpackParams:Object = wireParams("workbench.candidates.1",
             "character-build.candidates.backpack");
@@ -1521,8 +1531,14 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var pistols:Object = CharacterBuildService.execute(
             "candidates", pistolParams);
         check(pistols.success && pistols.payload.candidates.length == 1
-                && pistols.payload.candidates[0].physicalSlot == 3,
-            "手枪2 明确接受实例有效 use=手枪 特例");
+                && pistols.payload.candidates[0].physicalSlot == 3
+                && pistols.payload.candidates[0]
+                    .equipmentEligibility.slots.length == 2
+                && pistols.payload.candidates[0]
+                    .equipmentEligibility.slots[0] == "手枪"
+                && pistols.payload.candidates[0]
+                    .equipmentEligibility.slots[1] == "手枪2",
+            "手枪2 接受实例有效 use=手枪，并在 compatible scope 签发双手枪槽白名单");
 
         var drugParams:Object = wireParams("workbench.candidates.1",
             "character-build.candidates.drug");

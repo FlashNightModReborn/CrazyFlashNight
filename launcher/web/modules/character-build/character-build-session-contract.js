@@ -106,13 +106,12 @@
             var row = payload.candidates[i];
             if (!row || typeof row !== 'object'
                     || !Mutation.validItemIdentity(row.item)) return false;
-            var universalEquipment = scope === 'backpack'
-                && target && (target.kind === 'equipment'
-                    || target.kind === 'backpack');
+            var equipmentEligibilityRequired = target && (target.kind === 'equipment'
+                || (scope === 'backpack' && target.kind === 'backpack'));
             var hasEligibility = Object.prototype.hasOwnProperty.call(
                 row, 'equipmentEligibility');
-            if (hasEligibility !== universalEquipment) return false;
-            if (universalEquipment) {
+            if (hasEligibility !== equipmentEligibilityRequired) return false;
+            if (equipmentEligibilityRequired) {
                 var eligibility = row.equipmentEligibility;
                 if (!ownKeys(eligibility, ['slots', 'blockedReason'])
                         || !Array.isArray(eligibility.slots)

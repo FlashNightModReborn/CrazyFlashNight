@@ -608,7 +608,7 @@ test('candidate scope is closed, inherited by refresh callers, and response echo
     assert.strictEqual(fixture.errors.at(-1).response.error, 'malformed_response');
 });
 
-test('universal equipment backpack eligibility shape fails closed in Web admission', () => {
+test('equipment eligibility shape fails closed in both compatible and backpack admission', () => {
     const malformed = [
         row => { delete row.equipmentEligibility; },
         row => { row.equipmentEligibility.slots = ['未知槽位']; },
@@ -616,25 +616,25 @@ test('universal equipment backpack eligibility shape fails closed in Web admissi
         row => { row.equipmentEligibility.slots = ['手枪2','手枪']; },
         row => { row.equipmentEligibility.blockedReason = 'cooldown_active'; }
     ];
-    malformed.forEach(mutate => {
+    ['compatible','backpack'].forEach(scope => malformed.forEach(mutate => {
         const fixture = createFixture();
         openClean(fixture);
-        fixture.session.setCandidateScope('backpack');
+        fixture.session.setCandidateScope(scope);
         const target = {kind:'equipment',slotKey:'长枪'};
         let accepted = true;
         fixture.session.requestCandidates(target, (_, ok) => { accepted = ok; });
         const row = {
             physicalSlot:4,
-            disabled:true,
-            blockedReason:'incompatible_item',
+            disabled:false,
+            blockedReason:'',
             source:{containerId:'背包',slot:4,expectedLease:'lease.4'},
-            item:itemProjection({majorType:'武器',use:'手枪'}),
-            equipmentEligibility:{slots:['手枪','手枪2'],blockedReason:''}
+            item:itemProjection({majorType:'武器',use:'长枪'}),
+            equipmentEligibility:{slots:['长枪'],blockedReason:''}
         };
         mutate(row);
         fixture.mux.handleResponse(responseFor(fixture.messages[1], {payload:{
             target,
-            candidateScope:'backpack',
+            candidateScope:scope,
             candidates:[row],
             backpackVersion:8,
             stateHealth:'ok',
@@ -642,7 +642,7 @@ test('universal equipment backpack eligibility shape fails closed in Web admissi
         }}));
         assert.strictEqual(accepted, false);
         assert.strictEqual(fixture.errors.at(-1).response.error, 'malformed_response');
-    });
+    }));
 });
 
 test('candidate authority reset is centralized on candidates and snapshot admission only', () => {

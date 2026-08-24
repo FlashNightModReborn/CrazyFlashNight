@@ -1,7 +1,7 @@
 /**
  * Merc loadout drop-policy port （设计 §5）：可写槽 6..15（armor/weapon 两组）、
  * 无药剂分支、跨槽落点由 AS2 二期协议扩建的逐候选 `eligibleSlots` 数字槽号
- * 白名单裁决（`MercLoadoutService.buildCandidates(merc, slot, "backpack")`）；
+ * 白名单裁决（`MercLoadoutService.buildCandidates` 两种 scope 均签发）；
  * custody 槽落点 = 替换语义（操作动词由提交侧按槽位托管态解析，策略只管落点）。
  *
  * 纯函数策略，由共享 loadout-picker-drop-policy 工厂参数化产出；DOM / 传输 /
@@ -33,9 +33,8 @@
     };
 
     /**
-     * 逐候选跨槽白名单来源：backpack scope 候选携带 `eligibleSlots:[6..15]`
-     * （数字槽号数组；空数组 = 全局不兼容仍携带，供背包视图置灰）。
-     * slot scope 候选不带该字段 → 返回 null，策略退回 pinned（仅当前槽）语义。
+     * 逐候选跨槽白名单来源：两种 scope 均携带 `eligibleSlots:[6..15]`
+     * （数字槽号数组；空数组 = 全局不兼容）。浏览 scope 不再决定拖拽落点。
      */
     function eligibilityOf(candidate) {
         var raw = candidate && candidate.raw;

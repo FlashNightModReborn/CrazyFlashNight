@@ -2,6 +2,7 @@
 import org.flashNight.arki.item.equipment.EquipmentCalculator;
 import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 import org.flashNight.arki.item.equipment.ModRegistry;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.tooltip.ItemUseTypes;
 import org.flashNight.gesh.tooltip.TooltipConstants;
@@ -18,7 +19,8 @@ import org.flashNight.gesh.tooltip.TooltipConstants;
  *   -> 从解析后的 itemData.data 提取数值行 -> 按 TooltipConstants.PROPERTY_PRIORITIES 排序
  *
  * 输出行形状：{key:String, label:String, value:Number}
- * - key 为 data 层属性名；magicdefence 拍平为 "magicdefence.<元素>"
+ * - key 通常为 data 层属性名；interval 按运行时口径投影为 fireRate，
+ *   magicdefence 拍平为 "magicdefence.<元素>"
  * - label 为剥离 HTML 标签后的中文显示名（PROPERTY_DICT），power 按用途特化
  * - 仅供 Web 端 diff 渲染，AS2 侧不输出 HTML
  */
@@ -61,11 +63,41 @@ class org.flashNight.arki.item.equipment.EquipmentStatProjector {
             if (dict[key] == undefined) continue;
             var num:Number = Number(data[key]);
             if (isNaN(num) || !isFinite(num)) continue;
+
+            // interval 是毫秒级内部参数，玩家实际使用与枪械 tooltip 展示的都是射速。
+            // 单独在循环后按 GunStatsBuilder 的同一公式投影，避免 Web 把 100→77
+            // 显示成难以理解的“射击间隔 -23”。
+            if (key == "interval") continue;
+
+            // impact 同样是倒数生效的内部参数：运行时显示 floor(500 / raw)。
+            // 预览若透出 raw，不但数值含义错误，增减极性也会与实际效果相反。
+            if (key == "impact") {
+                if (num <= 0) continue;
+                num = Math.floor(500 / num);
+            }
             keyed.push({
                 key:key,
                 label:labelFor(key, String(itemData.use)),
                 value:num,
                 priority:Number(priorities[key])
+            });
+        }
+
+        var interval:Number = Number(data.interval);
+        if (!isNaN(interval) && isFinite(interval) && interval > 0) {
+            var shotMultiplier:Number = 1;
+            if (data.bullet != undefined && data.bullet != null
+                    && BulletTypeUtil.isVertical(String(data.bullet))) {
+                var split:Number = Number(data.split);
+                if (!isNaN(split) && isFinite(split) && split >= 1) {
+                    shotMultiplier = split;
+                }
+            }
+            keyed.push({
+                key:"fireRate",
+                label:TooltipConstants.LBL_FIRE_RATE + "（" + TooltipConstants.SUF_FIRE_RATE + "）",
+                value:Math.floor(10000 / interval) * 0.1 * shotMultiplier,
+                priority:Number(priorities.interval)
             });
         }
         keyed.sort(sortByPriority);

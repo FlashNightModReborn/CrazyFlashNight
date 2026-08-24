@@ -1536,7 +1536,9 @@ namespace CF7Launcher.Tests.Guardian
                         ["kind"] = "equipment",
                         ["slotKey"] = "手枪2"
                     },
-                    new JArray(CandidateRow(2, item, false, "")));
+                    new JArray(CandidateRow(
+                        2, item, false, "",
+                        new JArray("手枪", "手枪2"), "")));
                 Assert.True(web.Value<bool>("success"));
                 Assert.Equal(
                     "手枪",
@@ -1560,6 +1562,8 @@ namespace CF7Launcher.Tests.Guardian
                             4,
                             CandidateItem("手雷", "stack", 1.5),
                             true,
+                            "level_locked",
+                            new JArray("手雷"),
                             "level_locked")));
                 Assert.True(web.Value<bool>("success"));
             }
@@ -1995,6 +1999,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("item_icon_undefined")]
         [InlineData("mod_slot_display_undefined")]
         [InlineData("mod_meta_icon_blank")]
+        [InlineData("missing_eligibility")]
         [InlineData("health_mismatch")]
         public void CandidateProjectionRejectsMalformedOrInconsistentRows(
             string mutation)
@@ -2023,6 +2028,8 @@ namespace CF7Launcher.Tests.Guardian
                     2,
                     CandidateItem("手枪", "equipment", 1),
                     false,
+                    "",
+                    new JArray("手枪", "手枪2"),
                     "");
                 var candidates = new JArray(row);
                 payload["candidates"] = candidates;
@@ -2055,6 +2062,8 @@ namespace CF7Launcher.Tests.Guardian
                             3,
                             CandidateItem("手枪", "equipment", 1),
                             false,
+                            "",
+                            new JArray("手枪", "手枪2"),
                             ""));
                         candidates.Add((JObject)row.DeepClone());
                         break;
@@ -2117,6 +2126,9 @@ namespace CF7Launcher.Tests.Guardian
                     case "mod_meta_icon_blank":
                         row["item"]["modMeta"] = ModProjection(
                             "插件内部名", "插件展示名", "   ");
+                        break;
+                    case "missing_eligibility":
+                        row.Remove("equipmentEligibility");
                         break;
                     case "health_mismatch":
                         payload["diagnostics"] = new JArray("candidate_invalid");
@@ -5183,6 +5195,8 @@ namespace CF7Launcher.Tests.Guardian
                     2,
                     CandidateItem("手枪", "equipment", 1),
                     false,
+                    "",
+                    new JArray("手枪", "手枪2"),
                     "")));
             JObject source =
                 (JObject)web["payload"]["candidates"][0]["source"];

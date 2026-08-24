@@ -106,7 +106,7 @@ var StageSelectHarnessQA = (function() {
                     return 'live snapshot ok';
                 });
             }],
-            ['runtime-task-target-indicators', 'runtime task targets mark frame menu and stage button', function() {
+            ['runtime-task-target-indicators', 'runtime task targets stay marked while hover card remains directly actionable', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function(state) {
                     var manifest = StageSelectData.getManifest();
@@ -174,6 +174,18 @@ var StageSelectHarnessQA = (function() {
                     api.assert(!!targetButton, 'target stage button should exist after switching frame');
                     api.assert(targetButton.classList.contains('is-task'), 'target stage button should have task class');
                     api.assert(!!targetButton.querySelector('.stage-select-task-pulse'), 'target stage button should render task pulse');
+                    targetButton.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    var targetAnchor = findCardAnchor(targetButton.getAttribute('data-stage-id'));
+                    api.assert(!!targetAnchor && targetAnchor.classList.contains('is-card-open'),
+                        'task hover opens local decision card without selecting the node');
+                    api.assert(getComputedStyle(targetButton.querySelector('.stage-select-marker')).display !== 'none'
+                            && getComputedStyle(targetButton.querySelector('.stage-select-task-pulse')).display !== 'none',
+                        'task marker and pulse remain visible throughout hover');
+                    api.assert(getComputedStyle(targetAnchor.querySelector('.stage-select-card')).display !== 'none'
+                            && !!targetAnchor.querySelector('.stage-select-difficulty'),
+                        'task hover card exposes directly clickable difficulty buttons');
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen,
+                        'hover alone does not force the pinned inspector');
                     return target.stageName + ' @ ' + target.frameLabel;
                 });
             }],
@@ -585,8 +597,17 @@ var StageSelectHarnessQA = (function() {
                 return waitRuntime(api).then(function() {
                     api.events.length = 0;
                     host.enterMessages.length = 0;
-                    // P2：hover 卡难度按钮在锚点层
-                    var difficulty = document.querySelector('.stage-select-card-anchor .stage-select-difficulty');
+                    // P2：先真实走节点 hover 开卡，再从锚点层难度按钮一步提交；不依赖固定检查器。
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    api.assert(!!node, 'unlocked difficulty node exists');
+                    node.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    var anchor = findCardAnchor(node.getAttribute('data-stage-id'));
+                    api.assert(!!anchor && anchor.classList.contains('is-card-open')
+                            && getComputedStyle(anchor.querySelector('.stage-select-card')).display !== 'none',
+                        'mouse hover visibly opens the local decision card');
+                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen,
+                        'mouse hover direct path does not require pinned inspector');
+                    var difficulty = anchor.querySelector('.stage-select-difficulty');
                     api.assert(!!difficulty, 'difficulty button exists');
                     difficulty.click();
                     return api.waitFor(function() {

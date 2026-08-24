@@ -225,11 +225,10 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
             return sendRefused ? false : callId;
         };
         /**
-     * Drop-commit path. The view supplies the exact drop slot; the mutation
-     * itself carries its own target, so the write does not depend on the
-     * pre-drop selection. Only after the write is admitted do we adopt the
-     * drop slot, letting `_applySnapshot` restore selection and candidates
-     * onto it.
+     * Drop-commit path. The view supplies the exact drop slot and the mutation
+     * carries its own target, so the write does not depend on the browse anchor.
+     * A write never changes scope/anchor: `_applySnapshot` restores the explicit
+     * pre-drop browsing context, while the exact drop slot only receives data.
      */
     controller._equipDroppedCandidate = function(slotKey, candidate) {
         if (!candidate || this._session.getState() !== 'idle') return false;
@@ -256,10 +255,7 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
             candidate.blocked = false;
             candidate.blockedReason = '';
         }
-        if (!this._mutations.equip(target, candidate)) return false;
-        this._selectedSlotKey = String(slotKey);
-        this._selectedTarget = target;
-        return true;
+        return !!this._mutations.equip(target, candidate);
     };
     controller._recoverCandidateSelection = function(selection) {
             if (!this._view || !selection

@@ -2578,9 +2578,11 @@ namespace CF7Launcher.Guardian
                 return false;
             }
 
-            bool universalEquipmentBackpack =
-                candidateScope == "backpack"
-                    && (kind == "equipment" || kind == "backpack");
+            // Browse scope controls the row set only. Every equipment-oriented
+            // response carries the AS2-stamped cross-slot allowlist so Web never
+            // has to infer a drop target from item use/type.
+            bool equipmentEligibilityRequired = kind == "equipment"
+                || (candidateScope == "backpack" && kind == "backpack");
 
             int previousPhysicalSlot = -1;
             foreach (JToken token in candidates)
@@ -2588,7 +2590,7 @@ namespace CF7Launcher.Guardian
                 JObject row = token as JObject;
                 if (!IsExactObject(
                         row,
-                        universalEquipmentBackpack
+                        equipmentEligibilityRequired
                             ? Set("physicalSlot", "disabled", "blockedReason",
                                 "item", "source", "equipmentEligibility")
                             : Set("physicalSlot", "disabled", "blockedReason",
@@ -2643,7 +2645,7 @@ namespace CF7Launcher.Guardian
                     return false;
                 string eligibilityReason = null;
                 string[] eligibleEquipmentSlots = new string[0];
-                if (universalEquipmentBackpack)
+                if (equipmentEligibilityRequired)
                 {
                     JObject eligibility = row["equipmentEligibility"] as JObject;
                     JArray eligibilitySlots = eligibility != null
@@ -2689,8 +2691,9 @@ namespace CF7Launcher.Guardian
                 if (candidateScope == "compatible")
                 {
                     if (!compatible
-                        || (kind == "equipment" && disabled
-                            && blockedReason != "level_locked")
+                        || (kind == "equipment"
+                            && (disabled != (eligibilityReason.Length != 0)
+                                || blockedReason != eligibilityReason))
                         || (kind == "drug" && disabled
                             && blockedReason != "cooldown_active"
                             && blockedReason != "cooldown_unavailable"))
@@ -2710,7 +2713,7 @@ namespace CF7Launcher.Guardian
                             return false;
                         continue;
                     }
-                    if (universalEquipmentBackpack
+                    if (equipmentEligibilityRequired
                         && (compatible
                             ? (disabled != (eligibilityReason.Length != 0)
                                 || blockedReason != eligibilityReason)

@@ -992,7 +992,9 @@ class org.flashNight.arki.item.CharacterBuildService {
             }
             var useName:String = String(itemData.use);
             var equipmentEligibility:Object = null;
-            if (includeBackpack && (hasEquipment || backpackOverview)) {
+            // 浏览 scope 只决定候选集合；装备落点资格始终由 AS2 对本候选
+            // 一次性签发，兼容列表也不得把跨槽判定下沉给 Web 猜测。
+            if (hasEquipment || backpackOverview) {
                 equipmentEligibility = buildEquipmentEligibility(
                     item, itemData, playerLevel);
                 if (equipmentEligibility.success !== true) {
@@ -2281,8 +2283,9 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     /**
-     * 装备背包模式只在 AS2 权威层生成一次跨槽 eligibility。Web 只按
-     * exact slotKey 查这份盖章表，不读取 use/type/level 复制资格规则。
+     * 装备候选只在 AS2 权威层生成一次跨槽 eligibility。compatible/backpack
+     * 都携带同一盖章表；Web 只按 exact slotKey 查表，不读取 use/type/level
+     * 复制资格规则。
      */
     private static function buildEquipmentEligibility(
         item:Object, itemData:Object, playerLevel):Object {

@@ -718,6 +718,7 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
                 "候选只列 use 匹配该槽的背包物品（手枪不产生跨槽噪声）");
             var first:Object = result.candidates[0];
             check(first.eligible === true && first.lockReason == ""
+                    && sameSlots(first.eligibleSlots, [12])
                     && first.source.containerId == "背包"
                     && Number(first.source.slot) == 0
                     && String(first.source.expectedLease).length > 0
@@ -725,8 +726,9 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
                 "合格候选携带背包 lease 引用与物品投影");
             var second:Object = result.candidates[1];
             check(second.eligible === false && second.lockReason == "level_locked"
+                    && second.eligibleSlots.length == 0
                     && Number(second.requirementLevel) == 30,
-                "高需求等级候选盖章 level_locked 与需求等级");
+                "slot scope 同时盖章跨槽白名单；高需求等级候选白名单为空");
             MercLoadoutService.deliver(0, "m1", "12", 0, snapshotRef(bag, 0, 4));
             var after:Object = MercLoadoutService.buildCandidates(m, 12);
             check(Number(after.loadoutRevision) == 1 && after.candidates.length == 1
@@ -806,7 +808,7 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
                     && MercLoadoutService.buildCandidates(m, 16).error == "slot_locked",
                 "手雷槽 16 在 backpack scope 视为无选中槽，slot scope 仍 slot_locked");
 
-            // 非法 scope fail-closed；缺省/显式 slot 与旧两参调用行为一致
+            // 非法 scope fail-closed；缺省/显式 slot 均签发跨槽白名单
             check(MercLoadoutService.buildCandidates(m, 12, "背包").error == "invalid_scope",
                 "非法 scope 值 fail-closed 报 invalid_scope");
             var legacy:Object = MercLoadoutService.buildCandidates(m, 12);
@@ -814,10 +816,10 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
             check(legacy.success === true && explicitSlot.success === true
                     && legacy.candidates.length == 2 && explicitSlot.candidates.length == 2
                     && legacy.candidates[0].eligible === true
-                    && legacy.candidates[0].eligibleSlots === undefined
-                    && explicitSlot.candidates[0].eligibleSlots === undefined
+                    && sameSlots(legacy.candidates[0].eligibleSlots, [12])
+                    && sameSlots(explicitSlot.candidates[0].eligibleSlots, [12])
                     && Number(legacy.loadoutRevision) == 0,
-                "slot scope（缺省/显式）维持旧行为：单槽预过滤且无 eligibleSlots 字段");
+                "slot scope（缺省/显式）维持单槽预过滤，同时签发 eligibleSlots 支持同类跨槽");
 
             // candidates 是只读投影：不推进 loadoutRevision、不标脏
             var revisionBefore:Number = MercLoadoutService.getLoadoutRevision(m);
@@ -837,7 +839,7 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
         }
     }
 
-    /** handler 透传 scope：缺省按 slot；backpack 回带 eligibleSlots；非法 scope 透传错误码。 */
+    /** handler 透传 scope：两种 scope 都回带 eligibleSlots；非法 scope 透传错误码。 */
     private static function testCandidatesScopeHandler():Void {
         var s:Object = saveRoot();
         try {
@@ -856,8 +858,8 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
                 {callId:"s1", mercIndex:0, mercId:"m1", slotKey:"13"});
             check(sent.length == 1
                     && sent[0].indexOf("测试手枪") > -1
-                    && sent[0].indexOf("eligibleSlots") == -1,
-                "handler 缺省 scope 按 slot 语义响应（无 eligibleSlots 字段）");
+                    && sent[0].indexOf("eligibleSlots") > -1,
+                "handler 缺省 scope 按 slot 语义响应并携跨槽 eligibleSlots");
             MercPanelService.handleLoadoutCandidates(
                 {callId:"s2", mercIndex:0, mercId:"m1", slotKey:"13", scope:"backpack"});
             check(sent.length == 2

@@ -191,6 +191,7 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
             ? options.bindCandidateTooltip : null;
         this._renderGrenadeCb = typeof options.renderGrenade === 'function'
             ? options.renderGrenade : function() {};
+        this._loadoutAuthorityKey = '';
         this._onSlotSelectCb = typeof options.onSlotSelect === 'function'
             ? options.onSlotSelect : function() { return false; };
         this._onScopeChangeCb = typeof options.onCandidateScopeChange === 'function'
@@ -532,6 +533,13 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
      */
     MercLoadoutPickerView.prototype.setMerc = function(merc) {
         if (this._destroyed) return false;
+        var loadoutRevision = merc && merc.loadout
+            ? Number(merc.loadout.loadoutRevision) || 0 : 0;
+        var authorityKey = merc
+            ? text(merc.id, '') + ':' + String(merc.slotIndex) + ':' + String(loadoutRevision)
+            : '';
+        var authorityChanged = authorityKey !== this._loadoutAuthorityKey;
+        this._loadoutAuthorityKey = authorityKey;
         this._merc = merc || null;
         var reason = merc ? text(this._operateReasonOf(merc), '') : '装备托管数据不可用，请重新同步';
         this._operateReason = reason;
@@ -552,8 +560,12 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
             this._showStatusNotice('blocked', reason);
             return true;
         }
-        if (this._selectedSlotKey) this.restoreSlot(this._selectedSlotKey);
-        else if (this._candidateScope === 'backpack' && this._candidateRequestKey) {
+        // loadout authority 变化时，即使浏览锚点未变，也必须重拉候选与 revision；同一
+        // revision 的随后快照刷新不得重复发起读取，否则会在 ready 与 loading 间制造竞态。
+        if (this._selectedSlotKey) {
+            this.restoreSlot(this._selectedSlotKey, authorityChanged);
+        } else if (this._candidateScope === 'backpack' && this._candidateRequestKey
+                && (authorityChanged || this._candidateLoadFailed)) {
             this.showBackpackOverview();
         }
         return true;

@@ -131,11 +131,11 @@ class org.flashNight.arki.merc.MercLoadoutService {
     /**
      * 候选列表：现场签发背包快照。scope 缺省/"slot"：只列 use 匹配该槽的物品
      * （不产生跨槽「不兼容」噪声，同 T800 只列长枪口径），逐候选跑 §2 policy 盖
-     * eligible 章。scope="backpack"（二期 §4 背包总览）：不按单槽 use 预过滤，
-     * 背包全部占用格均为候选，逐候选对全部可写槽（6..15）跑 §2 policy 产出
-     * eligibleSlots 数字槽号白名单（契约形状对齐 cb equipmentEligibility.slots；
-     * 空数组 = 全局不兼容，仍携带该候选以支持背包视图置灰）；slot 参数有效时
-     * 仍携带该槽单槽 eligible/lockReason/requirementLevel 以兼容旧消费方。
+     * eligible 章。两种 scope 均逐候选对全部可写槽（6..15）跑 §2 policy，产出
+     * eligibleSlots 数字槽号白名单，保证兼容列表也能权威支持同类跨槽拖拽。
+     * scope="backpack"（二期 §4 背包总览）不按单槽 use 预过滤，空数组候选仍
+     * 携带以支持置灰；slot 参数有效时仍携带该槽单槽
+     * eligible/lockReason/requirementLevel 供列表相对当前锚点显示。
      * 非法 scope 值 fail-closed（invalid_scope）。
      */
     public static function buildCandidates(merc:Array, slot, scope):Object {
@@ -182,9 +182,7 @@ class org.flashNight.arki.merc.MercLoadoutService {
                 candidate.lockReason = check.success === true ? "" : String(check.error);
                 candidate.requirementLevel = Number(check.requirementLevel);
             }
-            if (backpackScope) {
-                candidate.eligibleSlots = buildEligibleSlots(merc, item);
-            }
+            candidate.eligibleSlots = buildEligibleSlots(merc, item);
             result.candidates.push(candidate);
         }
         return result;
