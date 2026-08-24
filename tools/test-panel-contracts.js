@@ -158,8 +158,8 @@ function run() {
       && level.includes("下次重建时更新等级"),
       "level-up success must disclose deferred live-unit projection");
     assert(deletion.includes("data.refreshDeferred")
-      && deletion.includes("其余出战实体将在下次换场时同步"),
-      "delete success must disclose deferred remaining-pet projection");
+      && deletion.includes("被删除战宠的场景残影将在下次换场时清理"),
+      "delete success must disclose deferred deleted-pet projection");
     assert(advance.includes("data.refreshDeferred")
       && advance.includes("下次重建时更新进阶属性"),
       "advance success must disclose deferred live-unit projection");

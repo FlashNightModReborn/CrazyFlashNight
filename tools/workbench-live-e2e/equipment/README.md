@@ -4,7 +4,7 @@
 
 本目录只提供 A3 Equipment 调制的生产写旅程工具、证据合同和离线负例。它不修改 Host、Web、AS2 或存档业务实现；截至 2026-08-04 未运行真实写旅程，也没有访问或改写真实玩家存档。
 
-2026-08-21 字体 Gate E current-tree 复核：`bootstrap.js --check` 为 `504/504`；production closure v6 精确覆盖 167 个文件，browser child 的现役三视口门为 `137/137`，闭合 331 项 module manifest、44 个实际资源与 133 次 occurrence。闭包现在同时绑定 `fonts/fonts.xml`、XML-hash catalog/compatibility projection、两项 permanent 实体及 generated CSS/JS；独立浏览器只允许其缺少 Host exact-set handler 所导致的 `cfn-fonts.local` 请求失败。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文 162-file、129/129 等旧“当前”快照保留作历史解释，均由本段取代。
+2026-08-24 合并后 current-tree 复核：`bootstrap.js --check` 为 `504/504`（20 个正例、484 个负例）；production closure v7 精确覆盖 170 个文件，browser child 的现役三视口门为 `137/137`，闭合 332 项 module manifest、45 个实际资源与 136 次 occurrence。父 manifest 为 `69cbc3be6db49ab004a46df24f1254c12a048c60c29c1aba689326957ce2b6dc`，父 journal 为 `ede3b52707992fe2812c206bf9f045ae9a334d843be5ebdcd0b6412043fd2ee4`，父回执为 `ad71511f9a8a1efd478649811d16bc08461982ecdbb2ba301975e202fa75a3da`。闭包除既有字体、catalog、permanent 实体与 generated CSS/JS 外，现精确纳入 overlay terminal/settings 样式和共享 loadout picker；Windows 临时目录先解析为真实路径再创建离线候选夹具，但生产 candidate 的防重解析校验没有放宽。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文 162-file、129/129 等旧“当前”快照保留作历史解释，均由本段取代。
 
 ## 当前门槛
 

@@ -190,7 +190,47 @@ function integerIn(value, minimum, maximum) {
   return Number.isInteger(value) && value >= minimum && value <= maximum;
 }
 
-function assertCatalog(catalog, phase, buyMultiplier) {
+function applyPermilleFloor(amount, quantity, ratePermille, phase) {
+  if (!Number.isSafeInteger(amount) || amount < 0
+      || !Number.isSafeInteger(quantity) || quantity < 0
+      || !Number.isSafeInteger(ratePermille) || ratePermille < 0 || ratePermille > 1000) {
+    fail("permille_input_invalid", phase, "NPC fixed-point input is outside the exact integer domain");
+  }
+  const subtotal = amount * quantity;
+  if (!Number.isSafeInteger(subtotal)) {
+    fail("permille_subtotal_unsafe", phase, "NPC fixed-point subtotal exceeds the exact integer domain");
+  }
+  const scaled = subtotal * ratePermille;
+  if (!Number.isSafeInteger(scaled)) {
+    fail("permille_product_unsafe", phase, "NPC fixed-point product exceeds the exact integer domain");
+  }
+  return Math.floor(scaled / 1000);
+}
+
+function addSafeIntegers(left, right, phase) {
+  if (!Number.isSafeInteger(left) || !Number.isSafeInteger(right)) {
+    fail("safe_integer_input_invalid", phase, "NPC integer projection input is not exact");
+  }
+  const result = left + right;
+  if (!Number.isSafeInteger(result)) {
+    fail("safe_integer_sum_unsafe", phase, "NPC integer projection sum exceeds the exact domain");
+  }
+  return result;
+}
+
+function subtractSafeIntegers(left, right, phase) {
+  if (!Number.isSafeInteger(left) || !Number.isSafeInteger(right)) {
+    fail("safe_integer_input_invalid", phase, "NPC integer projection input is not exact");
+  }
+  const result = left - right;
+  if (!Number.isSafeInteger(result)) {
+    fail("safe_integer_difference_unsafe", phase,
+      "NPC integer projection difference exceeds the exact domain");
+  }
+  return result;
+}
+
+function assertCatalog(catalog, phase, buyRatePermille) {
   if (!Array.isArray(catalog)) fail("catalog_missing", phase, "NPC catalog is missing");
   const byIndex = new Map();
   catalog.forEach((entry) => {
@@ -201,9 +241,9 @@ function assertCatalog(catalog, phase, buyMultiplier) {
       "maxQuantity", "requiredInfo", "locked"];
     if (!hasExactKeys(entry, required, ["balanceSummary"])
         || !Number.isInteger(index) || index < 0 || index > 10000 || byIndex.has(index)
-        || !triple || !Number.isFinite(Number(entry.unitPrice)) || Number(entry.unitPrice) < 0
-        || !Number.isFinite(Number(entry.basePrice)) || Number(entry.basePrice) < 0
-        || Number(entry.unitPrice) !== Math.floor(Number(entry.basePrice) * Number(buyMultiplier))
+        || !triple || !Number.isSafeInteger(entry.unitPrice) || entry.unitPrice < 0
+        || !Number.isSafeInteger(entry.basePrice) || entry.basePrice < 0
+        || entry.unitPrice !== applyPermilleFloor(entry.basePrice, 1, buyRatePermille, phase)
         || !integerIn(entry.setOrder, 0, 2147483647)
         || !Number.isInteger(Number(entry.maxQuantity)) || Number(entry.maxQuantity) < 0
         || Number(entry.maxQuantity) > 999999
@@ -220,18 +260,25 @@ function assertCatalog(catalog, phase, buyMultiplier) {
 
 function assertNpcState(message, expectedShopId, phase) {
   const envelope = ["type", "domain", "panel", "panelInstanceId", "cmd", "callId"];
-  const state = ["success", "v", "shopId", "balance", "buyMultiplier", "catalog", "layout", "views"];
-  const commit = message && message.operation === "tradeCommit";
+  const state = ["success", "v", "shopId", "balance", "buyRatePermille", "catalog", "layout", "views"];
+  const commitCommand = message && message.cmd === "tradeCommit";
+  const validTrade = !commitCommand || (message.operation === "tradeCommit"
+    && isPlainObject(message.trade)
+    && Number.isSafeInteger(message.trade.buyTotal) && message.trade.buyTotal >= 0
+    && Number.isSafeInteger(message.trade.sellTotal) && message.trade.sellTotal >= 0
+    && Number.isSafeInteger(message.trade.netDelta)
+    && message.trade.netDelta === subtractSafeIntegers(message.trade.sellTotal,
+      message.trade.buyTotal, phase));
   if (!isPlainObject(message) || message.success !== true || message.v !== 1
-      || !hasExactKeys(message, envelope.concat(state), commit ? ["operation", "trade"] : [])
+      || !hasExactKeys(message, envelope.concat(state), commitCommand ? ["operation", "trade"] : [])
       || message.type !== "panel_resp" || message.domain !== "npcshop" || message.panel !== "npcshop"
       || !safeText(message.panelInstanceId, 128, false) || !safeText(message.callId, 160, false)
       || !["snapshot", "tradeCommit"].includes(message.cmd)
-      || (commit && (message.cmd !== "tradeCommit" || !hasExactKeys(message.trade,
-        ["buyTotal", "sellTotal", "netDelta"])))
-      || message.shopId !== expectedShopId || !Number.isFinite(Number(message.balance))
-      || Number(message.balance) < 0 || !Number.isFinite(message.buyMultiplier)
-      || message.buyMultiplier < 0 || !isPlainObject(message.views)
+      || (commitCommand && (!hasExactKeys(message.trade,
+        ["buyTotal", "sellTotal", "netDelta"]) || !validTrade))
+      || message.shopId !== expectedShopId || !Number.isSafeInteger(message.balance)
+      || message.balance < 0 || !integerIn(message.buyRatePermille, 0, 1000)
+      || !isPlainObject(message.views)
       || !hasExactKeys(message.views, ["material", "intelligence"])
       || !hasExactKeys(message.layout, ["title", "defaultSection", "sections"])
       || !safeText(message.layout.title, 256, false)
@@ -239,7 +286,7 @@ function assertNpcState(message, expectedShopId, phase) {
       || !Array.isArray(message.layout.sections)) {
     fail("npc_state_invalid", phase, "NPC authoritative state is malformed", { expectedShopId });
   }
-  const catalog = assertCatalog(message.catalog, phase, message.buyMultiplier);
+  const catalog = assertCatalog(message.catalog, phase, message.buyRatePermille);
   ["material", "intelligence"].forEach((viewId) => {
     const view = message.views[viewId];
     if (!hasExactKeys(view, ["containerId", "capacity", "accessibleCapacity", "viewCapacity",
@@ -618,7 +665,7 @@ function canonicalAuthorityProjection(npcMessage, inventoryMessage, selection) {
         v: npcMessage.v,
         shopId: npcMessage.shopId,
         balance: npcMessage.balance,
-        buyMultiplier: npcMessage.buyMultiplier,
+        buyRatePermille: npcMessage.buyRatePermille,
         catalog: deepClone(npcMessage.catalog),
         selection: selectedCatalog,
         layout: deepClone(npcMessage.layout),
@@ -1355,6 +1402,8 @@ module.exports = {
   WRITE_COMMANDS,
   authorityProjection,
   authoritySourceFingerprint,
+  addSafeIntegers,
+  applyPermilleFloor,
   assertFreshAuthorityReadback,
   assertCatalog,
   assertHostMapping,
@@ -1388,5 +1437,6 @@ module.exports = {
   resolveHostTimeline,
   responseFor,
   stateFingerprint,
+  subtractSafeIntegers,
   verifyHostLifecycle,
 };

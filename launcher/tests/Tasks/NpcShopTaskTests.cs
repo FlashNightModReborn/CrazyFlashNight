@@ -32,7 +32,7 @@ namespace CF7Launcher.Tests.Tasks
             var response = new JObject
             {
                 ["task"] = "npcshop_response", ["callId"] = fid, ["success"] = true, ["v"] = 1,
-                ["shopId"] = "前治安官", ["balance"] = 5000, ["buyMultiplier"] = 1,
+                ["shopId"] = "前治安官", ["balance"] = 5000, ["buyRatePermille"] = 1000,
                 ["catalog"] = new JArray(new JObject
                 {
                     ["catalogIndex"] = 3, ["itemName"] = "光棱射线弹-强化",
@@ -175,6 +175,7 @@ namespace CF7Launcher.Tests.Tasks
             {
                 ["task"] = "npcshop_response", ["callId"] = fid,
                 ["success"] = true, ["v"] = 1, ["batchToken"] = "npcbatch10.1",
+                ["balance"] = 5000,
                 ["summary"] = new JArray(
                     new JObject
                     {
@@ -250,7 +251,54 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Equal("光棱射线弹-强化", (string)web["catalog"][0]["itemName"]);
                 Assert.Equal("棱镜折射阵列", (string)web["catalog"][0]["displayName"]);
                 Assert.Equal("全光谱棱镜阵列", (string)web["catalog"][0]["icon"]);
+                Assert.Equal(1000L, (long)web["buyRatePermille"]);
+                Assert.Null(web["buyMultiplier"]);
                 Assert.Null(web["injectedAuthority"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("legacy_multiplier")]
+        [InlineData("fractional_rate")]
+        [InlineData("negative_rate")]
+        [InlineData("over_npc_rate")]
+        [InlineData("fractional_balance")]
+        [InlineData("unsafe_balance")]
+        [InlineData("fractional_base_price")]
+        [InlineData("unsafe_intermediate")]
+        public void Snapshot_PermilleWireRejectsLegacyOrUnsafeNumbers(string mutation)
+        {
+            string sent = null;
+            string posted = null;
+            using (var task = new NpcShopTask(
+                () => true,
+                json => { sent = json; return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "npc.permille.invalid." + mutation));
+                JObject response = StateResponse((int)ParseSent(sent)["callId"]);
+                JObject line = (JObject)response["catalog"][0];
+                if (mutation == "legacy_multiplier") response["buyMultiplier"] = 1;
+                else if (mutation == "fractional_rate") response["buyRatePermille"] = 850.0;
+                else if (mutation == "negative_rate") response["buyRatePermille"] = -1;
+                else if (mutation == "over_npc_rate") response["buyRatePermille"] = 1001;
+                else if (mutation == "fractional_balance") response["balance"] = 5000.0;
+                else if (mutation == "unsafe_balance")
+                    response["balance"] = PermilleMath.MaxSafeInteger + 1;
+                else if (mutation == "fractional_base_price") line["basePrice"] = 1000.5;
+                else
+                {
+                    line["basePrice"] = PermilleMath.MaxSafeInteger;
+                    line["unitPrice"] = PermilleMath.MaxSafeInteger;
+                }
+
+                task.HandleFlashResponse(response, null);
+
+                JObject web = JObject.Parse(posted);
+                Assert.False((bool)web["success"]);
+                Assert.Equal("malformed_response", (string)web["error"]);
             }
         }
 
@@ -383,6 +431,7 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Equal("药剂专用图标", (string)web["summary"][0]["icon"]);
                 Assert.Equal(5, (int)web["totalQuantity"]);
                 Assert.Equal(115, (int)web["totalMoney"]);
+                Assert.Equal(5000, (int)web["balance"]);
                 Assert.Null(web["injectedAuthority"]);
             }
         }
@@ -392,6 +441,9 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("missing_display")]
         [InlineData("wrong_icon_type")]
         [InlineData("aggregate")]
+        [InlineData("fractional_balance")]
+        [InlineData("fractional_total")]
+        [InlineData("fractional_line_money")]
         public void BatchPreview_ResponseRejectsIdentitySelectorAndAggregateMismatch(string mutation)
         {
             string sent = null;
@@ -405,6 +457,9 @@ namespace CF7Launcher.Tests.Tasks
                 if (mutation == "selector") line["itemName"] = "伪造药剂";
                 else if (mutation == "missing_display") line.Remove("displayName");
                 else if (mutation == "wrong_icon_type") line["icon"] = false;
+                else if (mutation == "fractional_balance") response["balance"] = 5000.0;
+                else if (mutation == "fractional_total") response["totalMoney"] = 115.0;
+                else if (mutation == "fractional_line_money") line["money"] = 75.0;
                 else response["totalMoney"] = 114;
 
                 task.HandleFlashResponse(response, null);
@@ -722,7 +777,7 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void TradePreview_TotalUsesAuthoritativeBasePriceMultiplierFormula()
+        public void TradePreview_TotalUsesAuthoritativePermilleFormula()
         {
             string sent = null;
             string posted = null;
@@ -730,7 +785,7 @@ namespace CF7Launcher.Tests.Tasks
             {
                 task.HandleWebRequest("snapshot", Request("snapshot", "npc.price-formula.snapshot"));
                 JObject snapshot = StateResponse((int)ParseSent(sent)["callId"]);
-                snapshot["buyMultiplier"] = 0.85;
+                snapshot["buyRatePermille"] = 850;
                 snapshot["catalog"][0]["basePrice"] = 1001;
                 snapshot["catalog"][0]["unitPrice"] = 850;
                 task.HandleFlashResponse(snapshot, null);
@@ -839,6 +894,12 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("commit_capacity_state")]
         [InlineData("commit_money_state")]
         [InlineData("projected_balance")]
+        [InlineData("fractional_purchase_total")]
+        [InlineData("fractional_sale_total")]
+        [InlineData("fractional_buy_total")]
+        [InlineData("fractional_sell_total")]
+        [InlineData("fractional_net_delta")]
+        [InlineData("fractional_projected_balance")]
         [InlineData("slot_counts")]
         [InlineData("shop_selector")]
         [InlineData("destination_without_source")]
@@ -874,6 +935,15 @@ namespace CF7Launcher.Tests.Tasks
                 }
                 else if (mutation == "commit_money_state") response["projectedBalance"] = -1;
                 else if (mutation == "projected_balance") response["projectedBalance"] = 3000;
+                else if (mutation == "fractional_purchase_total")
+                    response["purchaseLines"][0]["total"] = 2000.0;
+                else if (mutation == "fractional_sale_total")
+                    response["saleLines"][0]["total"] = 100.0;
+                else if (mutation == "fractional_buy_total") response["buyTotal"] = 2000.0;
+                else if (mutation == "fractional_sell_total") response["sellTotal"] = 100.0;
+                else if (mutation == "fractional_net_delta") response["netDelta"] = -1900.0;
+                else if (mutation == "fractional_projected_balance")
+                    response["projectedBalance"] = 3100.0;
                 else if (mutation == "slot_counts")
                 {
                     response["saleLines"][0]["matchedCount"] = 2;
@@ -1358,6 +1428,7 @@ namespace CF7Launcher.Tests.Tasks
                 {
                     response["quantity"] = 5;
                     response["total"] = 115;
+                    response["balance"] = 5115;
                 }
 
                 task.HandleFlashResponse(response, null);
@@ -1391,6 +1462,7 @@ namespace CF7Launcher.Tests.Tasks
                 {
                     response["quantity"] = mutation == "batch_quantity" ? 4 : 5;
                     response["total"] = mutation == "batch_total" ? 114 : 115;
+                    response["balance"] = mutation == "batch_total" ? 5114 : 5115;
                 }
                 else if (mutation == "trade_total")
                 {

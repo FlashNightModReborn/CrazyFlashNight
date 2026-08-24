@@ -11,6 +11,7 @@ const {
   BUNDLE_SCHEMA,
   CONTROL_ACK_SCHEMA,
   CONTROL_REQUEST_SCHEMA,
+  PRICING_CONSTRAINT_SCHEMA,
   PROVIDER_RECEIPT_SCHEMA,
   atomicWriteJson,
   buildArtifactManifest,
@@ -39,7 +40,7 @@ const PURCHASE = Object.freeze({
   icon: "黄鹂短刀",
   basePrice: 100,
   unitPrice: 100,
-  buyMultiplier: 1,
+  buyRatePermille: 1000,
   maxQuantity: 1,
   itemKind: "equipment",
   destinationView: "bag",
@@ -109,7 +110,7 @@ function npcState(balance, epoch) {
     v: 1,
     shopId: SHOP_ID,
     balance,
-    buyMultiplier: 1,
+    buyRatePermille: 1000,
     catalog: catalog(),
     layout: { title: SHOP_ID, defaultSection: "", sections: [] },
     views: {
@@ -1264,6 +1265,10 @@ function buildValidFixture(runDir, options) {
     controls,
     instances: INSTANCES,
     calls,
+    pricingConstraint: {
+      schema: PRICING_CONSTRAINT_SCHEMA,
+      expectedBuyRatePermille: PURCHASE.buyRatePermille,
+    },
     purchasePolicy: PURCHASE,
     salePolicy: full ? {
       explicitAllowlist: true,

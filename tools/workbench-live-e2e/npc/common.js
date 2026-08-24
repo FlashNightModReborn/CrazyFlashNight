@@ -5,13 +5,14 @@ const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
 
-const BUNDLE_SCHEMA = "workbench-live-e2e.npc.bundle.v4";
-const RECEIPT_SCHEMA = "workbench-live-e2e.npc.receipt.v4";
+const BUNDLE_SCHEMA = "workbench-live-e2e.npc.bundle.v5";
+const RECEIPT_SCHEMA = "workbench-live-e2e.npc.receipt.v5";
 const TRANSCRIPT_SCHEMA = "workbench-live-e2e.npc.transcript.v1";
 const EVENT_SCHEMA = "workbench-live-e2e.npc.passive-event.v1";
 const CONTROL_REQUEST_SCHEMA = "workbench-live-e2e.npc.control-request.v1";
 const CONTROL_ACK_SCHEMA = "workbench-live-e2e.npc.control-ack.v2";
 const PROVIDER_RECEIPT_SCHEMA = "workbench-live-e2e.npc.provider-receipt.v4";
+const PRICING_CONSTRAINT_SCHEMA = "workbench-live-e2e.npc.pricing-constraint.v1";
 const ARTIFACT_MANIFEST_SCHEMA = "workbench-live-e2e.npc.artifact-manifest.v2";
 const EVIDENCE_ORIGIN_SCHEMA = "workbench-live-e2e.npc.evidence-origin.v1";
 const TRUSTED_TIMELINE_SCHEMA = "workbench-live-e2e.npc.trusted-timeline.v3";
@@ -720,6 +721,7 @@ module.exports = {
   LIVE_SLOT_RE,
   NpcJourneyError,
   OPAQUE_ID_RE,
+  PRICING_CONSTRAINT_SCHEMA,
   PROVIDER_RECEIPT_SCHEMA,
   RECEIPT_SCHEMA,
   SAFE_SLOT_RE,

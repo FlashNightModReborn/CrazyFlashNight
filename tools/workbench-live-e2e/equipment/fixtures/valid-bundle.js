@@ -31,7 +31,8 @@ const ProductionClosure = require("../production-closure");
 
 const REPOSITORY_ROOT = path.resolve(__dirname, "../../../..");
 
-const ROOT = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-equipment-e2e-fixture-"));
+const TEMP_ROOT = fs.realpathSync.native(os.tmpdir());
+const ROOT = fs.mkdtempSync(path.join(TEMP_ROOT, "cf7-equipment-e2e-fixture-"));
 const RUN_DIR = path.join(ROOT, "tmp", "workbench-live-e2e", "equipment", "fixture");
 const RUN_ID = "fixture-equipment-v2";
 const CAPTURE_DIR = path.join(RUN_DIR, "control", "captures");
@@ -117,7 +118,7 @@ function resetCaptureFiles() {
 }
 process.once("exit", () => {
   try {
-    if (path.dirname(ROOT) === path.resolve(os.tmpdir())
+    if (path.dirname(ROOT) === TEMP_ROOT
         && path.basename(ROOT).startsWith("cf7-equipment-e2e-fixture-")) {
       fs.rmSync(ROOT, { recursive: true, force: true });
     }

@@ -8,6 +8,7 @@ const ProductionClosure = require("./production-closure");
 const {
   BUNDLE_SCHEMA,
   EVIDENCE_ORIGIN_SCHEMA,
+  PRICING_CONSTRAINT_SCHEMA,
   RECEIPT_SCHEMA,
   SHA256_RE,
   TOKEN_REF_RE,
@@ -40,6 +41,8 @@ const {
   assertNpcState,
   assertTokenLink,
   assertUniqueMappings,
+  addSafeIntegers,
+  applyPermilleFloor,
   bagSlot,
   inboundMessages,
   inventoryWindows,
@@ -52,6 +55,7 @@ const {
   requestPairs,
   requestsFor,
   responseFor,
+  subtractSafeIntegers,
   verifyHostLifecycle,
 } = require("./protocol");
 
@@ -269,9 +273,46 @@ function assertRequestShape(pair, expectedPayload, phase) {
   }
 }
 
+function assertPricingConstraint(bundle, initialState, policy) {
+  const constraint = bundle.pricingConstraint;
+  if (!isPlainObject(constraint)
+      || !hasExactKeys(constraint, ["schema", "expectedBuyRatePermille"])
+      || constraint.schema !== PRICING_CONSTRAINT_SCHEMA) {
+    fail("pricing_constraint_invalid", "pricing",
+      "NPC evidence must seal one exact expected buy-rate constraint");
+  }
+  const expected = number(constraint.expectedBuyRatePermille,
+    "pricing_constraint_invalid", "pricing", "expectedBuyRatePermille", {
+      integer: true,
+      min: 0,
+      max: 1000,
+    });
+  if (!initialState || initialState.buyRatePermille !== expected
+      || !policy || policy.buyRatePermille !== expected) {
+    fail("pricing_constraint_mismatch", "pricing",
+      "initial authority state and sealed purchase policy must match the declared buy rate", {
+        expectedBuyRatePermille: expected,
+        initialBuyRatePermille: initialState && initialState.buyRatePermille,
+        policyBuyRatePermille: policy && policy.buyRatePermille,
+      });
+  }
+  return { schema: constraint.schema, expectedBuyRatePermille: expected };
+}
+
+function assertRestartPricingConstraint(constraint, restartState) {
+  if (!restartState
+      || restartState.buyRatePermille !== constraint.expectedBuyRatePermille) {
+    fail("pricing_constraint_mismatch", "restart",
+      "fresh-PID authority state must preserve the declared buy rate", {
+        expectedBuyRatePermille: constraint.expectedBuyRatePermille,
+        restartBuyRatePermille: restartState && restartState.buyRatePermille,
+      });
+  }
+}
+
 function assertCatalogTarget(snapshot, policy, phase) {
   if (!hasExactKeys(policy, ["catalogIndex", "itemName", "displayName", "icon", "basePrice",
-    "unitPrice", "buyMultiplier", "maxQuantity", "itemKind", "destinationView", "quantity"])) {
+    "unitPrice", "buyRatePermille", "maxQuantity", "itemKind", "destinationView", "quantity"])) {
     fail("purchase_policy_invalid", phase, "purchase policy is not the exact sealed catalog contract");
   }
   const state = assertNpcState(snapshot, snapshot.shopId, phase);
@@ -282,8 +323,9 @@ function assertCatalogTarget(snapshot, policy, phase) {
       || Number(entry.basePrice) !== Number(policy.basePrice)
       || Number(entry.unitPrice) !== Number(policy.unitPrice)
       || Number(entry.maxQuantity) !== Number(policy.maxQuantity)
-      || Number(snapshot.buyMultiplier) !== Number(policy.buyMultiplier)
-      || Number(entry.unitPrice) !== Math.floor(Number(entry.basePrice) * Number(snapshot.buyMultiplier))
+      || snapshot.buyRatePermille !== policy.buyRatePermille
+      || entry.unitPrice !== applyPermilleFloor(entry.basePrice, 1,
+        snapshot.buyRatePermille, phase)
       || policy.itemKind !== "equipment" || policy.destinationView !== "bag"
       || !["武器", "防具"].includes(entry.majorType) || Number(policy.quantity) !== 1) {
     fail("purchase_target_mismatch", phase, "purchase target does not match the authoritative catalog identity", {
@@ -343,20 +385,24 @@ function assertPurchasePreview(message, policy, beforeBalance, inventoryBefore, 
   const maximum = Math.min(limit, affordable, capacity);
   const limitingReason = maximum < limit
     ? (capacity <= affordable ? "inventory_full" : "insufficient_money") : "";
-  const expectedTotal = Math.floor(Number(policy.basePrice) * Number(policy.quantity)
-    * Number(policy.buyMultiplier));
+  const expectedTotal = applyPermilleFloor(policy.basePrice, policy.quantity,
+    policy.buyRatePermille, phase);
+  const expectedNetDelta = subtractSafeIntegers(0, expectedTotal, phase);
+  const expectedProjectedBalance = addSafeIntegers(beforeBalance, expectedNetDelta, phase);
   if (!hasExactKeys(line, lineKeys) || Number(line.catalogIndex) !== Number(policy.catalogIndex)
       || line.itemName !== policy.itemName || line.displayName !== policy.displayName
       || line.icon !== policy.icon || Number(line.quantity) !== 1
-      || Number(line.unitPrice) !== Number(policy.unitPrice)
-      || Number(line.total) !== expectedTotal
+      || !Number.isSafeInteger(line.unitPrice) || line.unitPrice !== policy.unitPrice
+      || !Number.isSafeInteger(line.total) || line.total !== expectedTotal
       || Number(line.maxQuantity) !== limit || Number(line.purchaseLimit) !== limit
       || Number(line.maxAffordable) !== affordable || Number(line.maxByCapacity) !== capacity
       || Number(line.maxPurchasable) !== maximum || line.limitingReason !== limitingReason
       || line.itemKind !== policy.itemKind || line.destinationView !== policy.destinationView
-      || Number(message.buyTotal) !== expectedTotal || Number(message.sellTotal) !== 0
-      || Number(message.netDelta) !== -expectedTotal
-      || Number(message.projectedBalance) !== Number(beforeBalance) - expectedTotal
+      || !Number.isSafeInteger(message.buyTotal) || message.buyTotal !== expectedTotal
+      || !Number.isSafeInteger(message.sellTotal) || message.sellTotal !== 0
+      || !Number.isSafeInteger(message.netDelta) || message.netDelta !== expectedNetDelta
+      || !Number.isSafeInteger(message.projectedBalance)
+      || message.projectedBalance !== expectedProjectedBalance
       || Number(message.requiredSlots) !== 1 || Number(message.availableSlots) !== available
       || Number(message.missingSlots) !== 0 || maximum < 1) {
     fail("purchase_preview_projection_mismatch", phase,
@@ -515,10 +561,12 @@ function assertSalePreview(pair, sourceSlot, policy, balance, inventoryBefore, f
       || line.displayName !== sourceSlot.item.displayName || line.icon !== sourceSlot.item.icon
       || line.itemKind !== sourceSlot.item.itemKind
       || Number(line.matchedCount) !== 1 || Number(line.eligibleCount) !== 1
-      || Number(line.protectedCount) !== 0 || Number(line.total) < 0
-      || Number(response.buyTotal) !== 0 || Number(response.sellTotal) !== Number(line.total)
-      || Number(response.netDelta) !== Number(line.total)
-      || Number(response.projectedBalance) !== Number(balance) + Number(line.total)
+      || Number(line.protectedCount) !== 0 || !Number.isSafeInteger(line.total) || line.total < 0
+      || !Number.isSafeInteger(response.buyTotal) || response.buyTotal !== 0
+      || !Number.isSafeInteger(response.sellTotal) || response.sellTotal !== line.total
+      || !Number.isSafeInteger(response.netDelta) || response.netDelta !== line.total
+      || !Number.isSafeInteger(response.projectedBalance)
+      || response.projectedBalance !== addSafeIntegers(balance, line.total, phase)
       || Number(response.requiredSlots) !== 0
       || Number(response.availableSlots) !== availableAfterPlannedSale
       || Number(response.missingSlots) !== 0) {
@@ -1557,6 +1605,7 @@ function verifyBundle(bundle, runDir, options) {
     fail("purchase_policy_invalid", "purchase", "purchase policy must identify one exact catalog item");
   }
   const purchaseCatalogEntry = assertCatalogTarget(initialState, policy, "purchase");
+  const pricingConstraint = assertPricingConstraint(bundle, initialState, policy);
   const purchasePreview = phasePair(requests, responses, byName.first.id, "tradePreview", "npcshop",
     bundle.calls.purchasePreview, "purchase_preview");
   assertRequestShape(purchasePreview, {
@@ -1698,6 +1747,7 @@ function verifyBundle(bundle, runDir, options) {
     "restart_inventory");
   assertNoSurfaceWriteInterleaving(restartInventoryState, requests, "restart_inventory");
   const restartNpcState = assertSuccess(restartNpc, "restart_snapshot");
+  assertRestartPricingConstraint(pricingConstraint, restartNpcState);
   if (restartInventoryState.firstPair.request.event.sequence >= restartNpc.request.event.sequence) {
     fail("restart_request_order_invalid", "restart",
       "Inventory snapshot request must precede NPC snapshot request after restart");
@@ -2006,6 +2056,12 @@ function verifyBundle(bundle, runDir, options) {
     candidateStableIdentity: bundle.candidate.stableIdentity,
     slot: bundle.slot,
     shopId: bundle.shopId,
+    pricingConstraint: {
+      schema: pricingConstraint.schema,
+      expectedBuyRatePermille: pricingConstraint.expectedBuyRatePermille,
+      initialBuyRatePermille: initialState.buyRatePermille,
+      restartBuyRatePermille: restartNpcState.buyRatePermille,
+    },
     transport: control.selectedTransport,
     capabilityProbe: control.capability,
     ownerInstances: phases.map((phase) => phase.id),

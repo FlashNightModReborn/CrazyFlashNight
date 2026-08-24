@@ -1184,7 +1184,7 @@ namespace CF7Launcher.Tests.Guardian
                 ["v"] = 1,
                 ["shopId"] = "迷之盔甲君",
                 ["balance"] = 5000,
-                ["buyMultiplier"] = 1,
+                ["buyRatePermille"] = 1000,
                 ["catalog"] = new JArray(new JObject
                 {
                     ["catalogIndex"] = 57,

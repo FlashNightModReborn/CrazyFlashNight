@@ -46,6 +46,79 @@
         return (isNaN(result)) ? defaultValue : result;
     }
 
+    // IEEE-754 Number 与 JSON safe integer 的共同上限。
+    public static var MAX_SAFE_NON_NEGATIVE_INTEGER:Number = 9007199254740991;
+    public static var PERMILLE_SCALE:Number = 1000;
+
+    /**
+     * 仅接受非负、有限、无小数且不超过 JSON safe integer 上限的 Number。
+     * (value - value) 对 NaN / 正负 Infinity 均为 NaN，用于避开 AS2 的 NaN 比较陷阱。
+     */
+    public static function isSafeNonNegativeInteger(value:Number):Boolean
+    {
+        if ((value - value) != 0) return false;
+        if (value < 0 || value > MAX_SAFE_NON_NEGATIVE_INTEGER) return false;
+        return Math.floor(value) == value;
+    }
+
+    public static function isSafeInteger(value:Number):Boolean
+    {
+        if ((value - value) != 0) return false;
+        if (value < -MAX_SAFE_NON_NEGATIVE_INTEGER
+                || value > MAX_SAFE_NON_NEGATIVE_INTEGER) return false;
+        return Math.floor(value) == value;
+    }
+
+    /**
+     * 安全整数乘法；任一输入或中间积不安全时显式返回 NaN。
+     */
+    public static function multiplySafeNonNegativeIntegers(left:Number, right:Number):Number
+    {
+        if (!isSafeNonNegativeInteger(left) || !isSafeNonNegativeInteger(right)) return NaN;
+        if (left != 0 && right > MAX_SAFE_NON_NEGATIVE_INTEGER / left) return NaN;
+        var product:Number = left * right;
+        return isSafeNonNegativeInteger(product) ? product : NaN;
+    }
+
+    /**
+     * 安全整数加法；任一输入或和不安全时显式返回 NaN。
+     */
+    public static function addSafeNonNegativeIntegers(left:Number, right:Number):Number
+    {
+        if (!isSafeNonNegativeInteger(left) || !isSafeNonNegativeInteger(right)) return NaN;
+        if (right > MAX_SAFE_NON_NEGATIVE_INTEGER - left) return NaN;
+        return left + right;
+    }
+
+    /**
+     * 安全有符号整数加法；输入或和越出 safe integer 时返回 NaN。
+     */
+    public static function addSafeIntegers(left:Number, right:Number):Number
+    {
+        if (!isSafeInteger(left) || !isSafeInteger(right)) return NaN;
+        if (right > 0 && left > MAX_SAFE_NON_NEGATIVE_INTEGER - right) return NaN;
+        if (right < 0 && left < -MAX_SAFE_NON_NEGATIVE_INTEGER - right) return NaN;
+        var sum:Number = left + right;
+        return isSafeInteger(sum) ? sum : NaN;
+    }
+
+    public static function subtractSafeIntegers(left:Number, right:Number):Number
+    {
+        if (!isSafeInteger(right)) return NaN;
+        return addSafeIntegers(left, -right);
+    }
+
+    /**
+     * 非负 safe integer 定点合同：floor(amount * ratePermille / 1000)。
+     * 非法输入或不安全中间积显式返回 NaN，调用方必须 fail closed。
+     */
+    public static function floorPermille(amount:Number, ratePermille:Number):Number
+    {
+        var product:Number = multiplySafeNonNegativeIntegers(amount, ratePermille);
+        if (!isSafeNonNegativeInteger(product)) return NaN;
+        return Math.floor(product / PERMILLE_SCALE);
+    }
+
     /**
      * 对两个数进行相除，如果除数为 0 或结果为 NaN，则返回 defaultValue。
      */

@@ -7,6 +7,7 @@ import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.ui.PanelRequestEnvelope;
+import org.flashNight.gesh.number.NumberUtil;
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
@@ -16,6 +17,8 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
 
     public static function runAllTests():Void {
         setup();
+        testPermillePricingContract();
+        testExactEconomicNumberContract();
         testSnapshotAndGate();
         testMaterialQuantityInvariantAndQuarantine();
         testLegacyIdentityFallbackBoundary();
@@ -138,6 +141,91 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.金钱 = 5000;
         _root.存档系统.dirtyMark = false;
         _root.testNpcShopSaveCount = 0;
+    }
+
+    private static function testPermillePricingContract():Void {
+        check(NumberUtil.floorPermille(18900, 820) == 15498
+                && NumberUtil.floorPermille(300, 820) == 246
+                && NumberUtil.floorPermille(1001, 850) == 850
+                // 有意纠正旧 AS2 二进制浮点路径的 16073 / 1889 偏差。
+                && NumberUtil.floorPermille(17100, 940) == 16074
+                && NumberUtil.floorPermille(2700, 700) == 1890,
+            "permille helper locks exact floor vectors and intentional off-by-one corrections");
+
+        var rejected:Boolean = true;
+        var invalid:Array = [
+            NumberUtil.floorPermille(NaN, 1000),
+            NumberUtil.floorPermille(Infinity, 1000),
+            NumberUtil.floorPermille(1.5, 1000),
+            NumberUtil.floorPermille(-1, 1000),
+            NumberUtil.floorPermille(1, 1.5),
+            NumberUtil.floorPermille(1, -1),
+            NumberUtil.floorPermille(9007199254740992, 1),
+            NumberUtil.floorPermille(NumberUtil.MAX_SAFE_NON_NEGATIVE_INTEGER, 1000)
+        ];
+        for (var i:Number = 0; i < invalid.length; i++) {
+            if (NumberUtil.isSafeNonNegativeInteger(Number(invalid[i]))) rejected = false;
+        }
+        check(rejected
+                && NumberUtil.floorPermille(
+                    NumberUtil.MAX_SAFE_NON_NEGATIVE_INTEGER, 1) == 9007199254740,
+            "permille helper rejects non-finite, fractional, negative, out-of-range and unsafe products");
+
+        resetOwned();
+        ItemUtil.itemDataDict["药剂"].price = 1001;
+        _root.主角被动技能.口才 = {启用:true,等级:5};
+        _root.金钱 = 10000;
+        var snapshot:Object = service().execute("snapshot", {shopId:"测试商店"});
+        var bought:Object = service().execute("buy", {
+            shopId:"测试商店", catalogIndex:0, quantity:2
+        });
+        check(snapshot.success && snapshot.v == 1
+                && snapshot.buyRatePermille == 850
+                && snapshot.buyMultiplier == undefined
+                && snapshot.catalog[0].unitPrice == 850
+                && bought.success && bought.total == 1701
+                && Number(_root.金钱) == 8299,
+            "NPC state and commit keep v1 atomic wire replacement and floor after quantity multiplication");
+        ItemUtil.itemDataDict["药剂"].price = 100;
+        _root.主角被动技能.口才 = {启用:false,等级:0};
+    }
+
+    private static function testExactEconomicNumberContract():Void {
+        resetOwned();
+        _root.金钱 = 5000.5;
+        var fractionalState:Object = service().execute("snapshot", {shopId:"测试商店"});
+        check(!fractionalState.success && fractionalState.error == "invalid_price",
+            "NPC state rejects fractional balance instead of truncating it");
+
+        resetOwned();
+        service().execute("snapshot", {shopId:"测试商店"});
+        _root.物品栏.背包.add(0, BaseItem.create("药剂", 1));
+        var originalSalePrice:Function = _root.物品UI函数.计算售卖总价;
+        _root.物品UI函数.计算售卖总价 = function(
+                item:Object, quantity:Number):Object {
+            return {总价:12.5};
+        };
+        var fractionalSale:Object = service().execute(
+            "batchPreview", {itemNames:["药剂"]});
+        _root.物品UI函数.计算售卖总价 = originalSalePrice;
+        check(!fractionalSale.success && fractionalSale.error == "invalid_price"
+                && _root.物品栏.背包.getItem("0") != null && _root.金钱 == 5000,
+            "NPC sale preview fails closed on a fractional authoritative sale result");
+
+        resetOwned();
+        _root.金钱 = 50;
+        service().execute("snapshot", {shopId:"测试商店"});
+        var blocked:Object = service().execute("tradePreview", {
+            shopId:"测试商店",
+            purchases:[{catalogIndex:0, quantity:1}],
+            sales:[]
+        });
+        check(blocked.success && !blocked.canCommit
+                && blocked.blockingError == "insufficient_money"
+                && blocked.buyTotal == 100 && blocked.sellTotal == 0
+                && blocked.netDelta == -100 && blocked.projectedBalance == -50
+                && _root.金钱 == 50,
+            "NPC preview preserves signed exact negative balance as a non-committable success");
     }
 
     private static function testSnapshotAndGate():Void {

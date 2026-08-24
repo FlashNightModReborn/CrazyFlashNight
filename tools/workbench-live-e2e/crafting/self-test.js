@@ -681,7 +681,7 @@ function runSelfTests() {
       "browser-resource-inventory.v1.json"), "utf8"));
     assert.strictEqual(resourceInventory.schema,
       "workbench-live-e2e.browser-resource-inventory.v1");
-    assert.strictEqual(resourceInventory.files.length, 59);
+    assert.strictEqual(resourceInventory.files.length, 60);
     assert.strictEqual(resourceInventory.optionalFiles.length, 30);
     assert(resourceInventory.files.includes("modules/crafting/dev/harness.html"));
     assert(resourceInventory.files.includes("modules/crafting.js"));
@@ -705,7 +705,7 @@ function runSelfTests() {
     assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
     assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
     assert.strictEqual(receipt.journalVerification, "VERIFIED");
-    assert.strictEqual(receipt.moduleEntryCount, 376);
+    assert.strictEqual(receipt.moduleEntryCount, 377);
     assert.deepStrictEqual(receipt.result.viewports, [
       {width:1024,height:576}, {width:1366,height:768}, {width:1920,height:1080},
     ]);
@@ -721,10 +721,10 @@ function runSelfTests() {
     assert.deepStrictEqual(receipt.result.scenarioNamesSha256,
       moduleInventory.expectedScenarioNamesSha256);
     assert(/^[a-f0-9]{64}$/.test(receipt.result.resultSha256));
-    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 59);
-    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 89);
-    assert(receipt.servedResourceClosure.resourceCount >= 59
-      && receipt.servedResourceClosure.resourceCount <= 89);
+    assert.strictEqual(receipt.servedResourceClosure.requiredResourceCount, 60);
+    assert.strictEqual(receipt.servedResourceClosure.allowedResourceCount, 90);
+    assert(receipt.servedResourceClosure.resourceCount >= 60
+      && receipt.servedResourceClosure.resourceCount <= 90);
     assert.strictEqual(receipt.servedResourceClosure.failureCount, 4);
     assert(receipt.browserBinary && receipt.browserBinary.locator.startsWith("external:")
       && /^[a-f0-9]{64}$/.test(receipt.browserBinary.sha256)
@@ -774,11 +774,11 @@ function runSelfTests() {
       result[entry.role] = (result[entry.role] || 0) + 1;
       return result;
     }, {});
-    assert.strictEqual(fingerprint.files.length, 257);
+    assert.strictEqual(fingerprint.files.length, 260);
     assert.deepStrictEqual(roles, { page: 1, overlay_startup_web: 18,
       overlay_startup_crafting_web: 1, lazy_registry: 1,
       crafting_lazy_web: 19, organizer_lazy_web: 6,
-      overlay_stylesheet: 8, panels_import_stylesheet: 25,
+      overlay_stylesheet: 10, panels_import_stylesheet: 26,
       font_declaration_stylesheet: 1,
       idle_prewarm_image: 15, css_conditional_asset: 6,
       font_pack_manifest: 1, font_catalog_xml: 1,
@@ -818,7 +818,7 @@ function runSelfTests() {
     assert.strictEqual(fingerprint.as2AlgorithmContract.functions.length,
       SourceContract.AS2_ALGORITHM_EXPECTATIONS.length);
     assert.strictEqual(fingerprint.as2AlgorithmContract.schema,
-      "workbench-live-e2e.crafting.as2-algorithm-contract.v4");
+      "workbench-live-e2e.crafting.as2-algorithm-contract.v5");
     const itemRequire = fingerprint.as2AlgorithmContract.functions.find((entry) =>
       entry.className === "org.flashNight.arki.item.ItemUtil"
         && entry.functionName === "require");
@@ -831,10 +831,10 @@ function runSelfTests() {
       tokenCount: itemRequire && itemRequire.tokenCount,
       normalizedTokenSha256: itemRequire && itemRequire.normalizedTokenSha256,
     }, {
-      bodyTokenCount: 1055,
-      bodyTokenSha256: "9b3fba89be011711c8a80481cf1daf45b27d778f53b48487cf15734148f0313a",
-      tokenCount: 1066,
-      normalizedTokenSha256: "be49a9398ce96a0910e69a88de4b8e552d1d068571e94ee84b31ded0133f87f4",
+      bodyTokenCount: 1354,
+      bodyTokenSha256: "5a4ee1dade54dd17acabd2f74145a53406dc3066f88cfec0768a2531d9a782bd",
+      tokenCount: 1365,
+      normalizedTokenSha256: "16403afd9e43a7a76fc78d51f986bc034290741d081ca2e6ece6a3b15378f56d",
     });
     assert.deepStrictEqual({
       bodyTokenCount: itemAcquire && itemAcquire.bodyTokenCount,
@@ -842,10 +842,10 @@ function runSelfTests() {
       tokenCount: itemAcquire && itemAcquire.tokenCount,
       normalizedTokenSha256: itemAcquire && itemAcquire.normalizedTokenSha256,
     }, {
-      bodyTokenCount: 830,
-      bodyTokenSha256: "2ddfd3de815af09e1c2b4262ef9e9ffab05db90f2726fa7b33c7b5023fd71e21",
-      tokenCount: 841,
-      normalizedTokenSha256: "400fd377f6a8545ef346c94d4e3e1bdf921ecfa50e3cc87e33ed0339276e2bbe",
+      bodyTokenCount: 2419,
+      bodyTokenSha256: "95e622b90b5bdb21f2077f186c16e1fad42a8e4df61b73cc496b7dd439450d8e",
+      tokenCount: 2434,
+      normalizedTokenSha256: "8c870420d0962d33e2c58a0ceb7df4377e2e44a2946225717bd0f695cd114402",
     });
   });
   positive("late observer listener permits child send before parent response without inventing order", () => {

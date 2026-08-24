@@ -29,8 +29,8 @@ namespace CF7Launcher.Tasks
         private sealed class CatalogAuthority
         {
             public string ShopId;
-            public double Balance;
-            public double BuyMultiplier;
+            public long Balance;
+            public long BuyRatePermille;
             public JArray Catalog;
         }
 
@@ -784,6 +784,22 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        private static bool TryComputePurchaseTotal(
+            JObject catalogLine,
+            long quantity,
+            long buyRatePermille,
+            out long total)
+        {
+            total = 0;
+            long basePrice;
+            long amount;
+            return catalogLine != null
+                && PermilleMath.TryReadSafeNonNegativeInteger(
+                    catalogLine["basePrice"], out basePrice)
+                && PermilleMath.TryMultiply(basePrice, quantity, out amount)
+                && PermilleMath.TryFloor(amount, buyRatePermille, out total);
+        }
+
         private static bool IsSafeText(string value, int max)
         {
             if (string.IsNullOrEmpty(value) || value.Length > max) return false;
@@ -829,7 +845,7 @@ namespace CF7Launcher.Tasks
                 if (!IsAuthoritativeState(msg, entry.NormalizedPayload, null,
                         null, null, null)) return false;
                 sanitized = CopyResponseKeys(msg, "success", "v", "shopId", "balance",
-                    "buyMultiplier", "catalog", "layout", "views");
+                    "buyRatePermille", "catalog", "layout", "views");
                 return true;
             }
             if (entry.WebCmd == "tradePreview")
@@ -859,15 +875,15 @@ namespace CF7Launcher.Tasks
 
             if (entry.WebCmd == "buy")
                 sanitized = CopyResponseKeys(msg, "success", "v", "shopId", "balance",
-                    "buyMultiplier", "catalog", "layout", "views", "operation",
+                    "buyRatePermille", "catalog", "layout", "views", "operation",
                     "destinationView", "itemName", "quantity", "total");
             else if (entry.WebCmd == "batchSell")
                 sanitized = CopyResponseKeys(msg, "success", "v", "shopId", "balance",
-                    "buyMultiplier", "catalog", "layout", "views", "operation",
+                    "buyRatePermille", "catalog", "layout", "views", "operation",
                     "quantity", "total");
             else
                 sanitized = CopyResponseKeys(msg, "success", "v", "shopId", "balance",
-                    "buyMultiplier", "catalog", "layout", "views", "operation", "trade");
+                    "buyRatePermille", "catalog", "layout", "views", "operation", "trade");
             return true;
         }
 
@@ -921,14 +937,24 @@ namespace CF7Launcher.Tasks
             if (string.IsNullOrEmpty(requestedShopId)
                 || msg.Value<string>("shopId") != requestedShopId)
                 return ValidationFailure("state", "$.shopId", "requested_shop_identity");
-            if (!IsNumber(msg["balance"]))
-                return ValidationFailure("state", "$.balance", "finite_number");
-            if (!IsNonNegativeNumber(msg["buyMultiplier"]))
-                return ValidationFailure("state", "$.buyMultiplier", "finite_nonnegative_number");
+            long balance;
+            if (!PermilleMath.TryReadSafeNonNegativeInteger(msg["balance"], out balance))
+                return ValidationFailure(
+                    "state", "$.balance", "safe_nonnegative_integer");
+            long buyRatePermille;
+            if (msg.Property("buyMultiplier") != null)
+                return ValidationFailure("state", "$.buyMultiplier", "removed_field");
+            if (!PermilleMath.TryReadSafeNonNegativeInteger(
+                    msg["buyRatePermille"], out buyRatePermille))
+                return ValidationFailure(
+                    "state", "$.buyRatePermille", "safe_nonnegative_integer");
+            if (buyRatePermille > PermilleMath.Scale)
+                return ValidationFailure(
+                    "state", "$.buyRatePermille", "npc_rate_0_to_1000");
 
             ResponseValidationFailure nested = DiagnoseCatalog(
                 msg["catalog"] as JArray,
-                msg.Value<double>("buyMultiplier"));
+                buyRatePermille);
             if (nested != null) return nested;
             nested = DiagnoseLayout(msg["layout"] as JObject);
             if (nested != null) return nested;
@@ -954,7 +980,7 @@ namespace CF7Launcher.Tasks
 
         private static ResponseValidationFailure DiagnoseCatalog(
             JArray catalog,
-            double buyMultiplier)
+            long buyRatePermille)
         {
             if (catalog == null)
                 return ValidationFailure("catalog", "$.catalog", "array");
@@ -995,12 +1021,20 @@ namespace CF7Launcher.Tasks
                     return ValidationFailure("catalog", path + ".setName", "safe_optional_text");
                 if (!TryReadInteger(line["setOrder"], 0, int.MaxValue, out integer))
                     return ValidationFailure("catalog", path + ".setOrder", "nonnegative_integer");
-                if (!IsNonNegativeNumber(line["basePrice"]))
-                    return ValidationFailure("catalog", path + ".basePrice", "finite_nonnegative_number");
-                if (!IsNonNegativeNumber(line["unitPrice"]))
-                    return ValidationFailure("catalog", path + ".unitPrice", "finite_nonnegative_number");
-                if (line.Value<double>("unitPrice")
-                    != Math.Floor(line.Value<double>("basePrice") * buyMultiplier))
+                long basePrice;
+                long unitPrice;
+                long expectedUnitPrice;
+                if (!PermilleMath.TryReadSafeNonNegativeInteger(
+                        line["basePrice"], out basePrice))
+                    return ValidationFailure(
+                        "catalog", path + ".basePrice", "safe_nonnegative_integer");
+                if (!PermilleMath.TryReadSafeNonNegativeInteger(
+                        line["unitPrice"], out unitPrice))
+                    return ValidationFailure(
+                        "catalog", path + ".unitPrice", "safe_nonnegative_integer");
+                if (!PermilleMath.TryFloor(
+                        basePrice, buyRatePermille, out expectedUnitPrice)
+                    || unitPrice != expectedUnitPrice)
                     return ValidationFailure("catalog", path + ".unitPrice", "derived_floor_price");
                 if (!TryReadInteger(line["maxQuantity"], 0, MaxPurchaseQuantity, out integer))
                     return ValidationFailure("catalog", path + ".maxQuantity", "purchase_quantity_bound");
@@ -1263,7 +1297,7 @@ namespace CF7Launcher.Tasks
             {
                 ["shopId"] = current.ShopId,
                 ["balance"] = current.Balance,
-                ["buyMultiplier"] = current.BuyMultiplier,
+                ["buyRatePermille"] = current.BuyRatePermille,
                 ["catalog"] = current.Catalog.DeepClone()
             };
             return true;
@@ -1281,8 +1315,8 @@ namespace CF7Launcher.Tasks
             _catalogAuthorities[entry.OwnerPanelInstanceId] = new CatalogAuthority
             {
                 ShopId = shopId,
-                Balance = state.Value<double>("balance"),
-                BuyMultiplier = state.Value<double>("buyMultiplier"),
+                Balance = state.Value<long>("balance"),
+                BuyRatePermille = state.Value<long>("buyRatePermille"),
                 Catalog = (JArray)catalog.DeepClone()
             };
         }
@@ -1327,9 +1361,14 @@ namespace CF7Launcher.Tasks
                     || !TryReadInteger(frozenLine["catalogIndex"], 0, 10000, out catalogIndex))
                     return false;
                 JObject currentLine = FindCatalogEntry(catalog, catalogIndex);
+                long currentUnitPrice;
+                long frozenUnitPrice;
                 if (!MatchesCatalogIdentity(currentLine, frozenLine)
-                    || currentLine.Value<double>("unitPrice")
-                        != frozenLine.Value<double>("unitPrice")) return false;
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        currentLine["unitPrice"], out currentUnitPrice)
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        frozenLine["unitPrice"], out frozenUnitPrice)
+                    || currentUnitPrice != frozenUnitPrice) return false;
             }
             return true;
         }
@@ -1404,12 +1443,17 @@ namespace CF7Launcher.Tasks
             JArray summary = msg != null ? msg["summary"] as JArray : null;
             string token = msg != null ? msg.Value<string>("batchToken") : null;
             long totalQuantity;
+            long balance;
+            long totalMoney;
             int skipped;
             if (msg == null || msg.Value<int?>("v") != 1 || requested == null
                 || summary == null || summary.Count > requested.Count
                 || string.IsNullOrEmpty(token) || !ValidLease.IsMatch(token)
                 || !TryReadPositiveInteger(msg["totalQuantity"], out totalQuantity)
-                || !IsNonNegativeNumber(msg["totalMoney"])
+                || !PermilleMath.TryReadSafeNonNegativeInteger(
+                    msg["balance"], out balance)
+                || !PermilleMath.TryReadSafeNonNegativeInteger(
+                    msg["totalMoney"], out totalMoney)
                 || !TryReadInteger(msg["skipped"], 0, int.MaxValue, out skipped)) return false;
             var requestedNames = new HashSet<string>(StringComparer.Ordinal);
             foreach (JToken requestedName in requested)
@@ -1417,11 +1461,12 @@ namespace CF7Launcher.Tasks
                     || !requestedNames.Add(requestedName.Value<string>())) return false;
             var seen = new HashSet<string>(StringComparer.Ordinal);
             long quantitySum = 0;
-            double moneySum = 0;
+            long moneySum = 0;
             foreach (JToken tokenValue in summary)
             {
                 JObject line = tokenValue as JObject;
                 long quantity;
+                long money;
                 string itemName = line != null ? line.Value<string>("itemName") : null;
                 if (!HasOnlyKeys(line, "itemName", "displayName", "icon", "quantity", "money")
                     || !IsIdentityString(line["itemName"], 128)
@@ -1429,13 +1474,14 @@ namespace CF7Launcher.Tasks
                     || !IsIdentityString(line["icon"], 256)
                     || !requestedNames.Contains(itemName) || !seen.Add(itemName)
                     || !TryReadPositiveInteger(line["quantity"], out quantity)
-                    || !IsNonNegativeNumber(line["money"])) return false;
-                quantitySum += quantity;
-                moneySum += line.Value<double>("money");
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        line["money"], out money)
+                    || !PermilleMath.TryAdd(quantitySum, quantity, out quantitySum)
+                    || !PermilleMath.TryAdd(moneySum, money, out moneySum)) return false;
             }
             if (summary.Count == 0 || quantitySum != totalQuantity
-                || moneySum != msg.Value<double>("totalMoney")) return false;
-            sanitized = CopyResponseKeys(msg, "success", "v", "batchToken", "summary",
+                || moneySum != totalMoney) return false;
+            sanitized = CopyResponseKeys(msg, "success", "v", "batchToken", "balance", "summary",
                 "totalQuantity", "totalMoney", "skipped");
             return true;
         }
@@ -1493,21 +1539,35 @@ namespace CF7Launcher.Tasks
             JArray requestedSales = request["sales"] as JArray;
             JArray authoritativeCatalog = catalogAuthority != null
                 ? catalogAuthority["catalog"] as JArray : null;
-            double authoritativeMultiplier = catalogAuthority != null
-                ? catalogAuthority.Value<double>("buyMultiplier") : -1;
-            double authoritativeBalance = catalogAuthority != null
-                ? catalogAuthority.Value<double>("balance") : double.NaN;
+            long authoritativeRatePermille = 0;
+            bool hasAuthoritativeRate = catalogAuthority != null
+                && PermilleMath.TryReadSafeNonNegativeInteger(
+                    catalogAuthority["buyRatePermille"],
+                    out authoritativeRatePermille)
+                && authoritativeRatePermille <= PermilleMath.Scale;
+            long authoritativeBalance = 0;
+            bool hasAuthoritativeBalance = catalogAuthority != null
+                && PermilleMath.TryReadSafeNonNegativeInteger(
+                    catalogAuthority["balance"], out authoritativeBalance);
+            long buyTotal;
+            long responseSellTotal;
+            long responseNetDelta;
+            long responseProjectedBalance;
             if (msg["tradeToken"] == null || msg["tradeToken"].Type != JTokenType.String
                 || string.IsNullOrEmpty(token) || !ValidLease.IsMatch(token)
                 || purchaseLines == null || saleLines == null
                 || requestedPurchases == null || requestedSales == null
                 || authoritativeCatalog == null
-                || authoritativeMultiplier < 0
-                || double.IsNaN(authoritativeBalance) || double.IsInfinity(authoritativeBalance)
+                || !hasAuthoritativeRate
+                || !hasAuthoritativeBalance
                 || catalogAuthority.Value<string>("shopId") != request.Value<string>("shopId")
                 || purchaseLines.Count != requestedPurchases.Count || saleLines.Count != requestedSales.Count
-                || !IsNonNegativeNumber(msg["buyTotal"]) || !IsNonNegativeNumber(msg["sellTotal"])
-                || !IsNumber(msg["netDelta"]) || !IsNumber(msg["projectedBalance"])
+                || !PermilleMath.TryReadSafeNonNegativeInteger(msg["buyTotal"], out buyTotal)
+                || !PermilleMath.TryReadSafeNonNegativeInteger(
+                    msg["sellTotal"], out responseSellTotal)
+                || !PermilleMath.TryReadSafeInteger(msg["netDelta"], out responseNetDelta)
+                || !PermilleMath.TryReadSafeInteger(
+                    msg["projectedBalance"], out responseProjectedBalance)
                 || !IsNonNegativeInteger(msg["requiredSlots"]) || !IsNonNegativeInteger(msg["availableSlots"])
                 || !IsNonNegativeInteger(msg["missingSlots"])
                 || msg["canCommit"] == null || msg["canCommit"].Type != JTokenType.Boolean
@@ -1522,7 +1582,7 @@ namespace CF7Launcher.Tasks
                 requestedPurchaseById[catalogIndex] = line;
             }
 
-            double purchaseTotal = 0;
+            long purchaseTotal = 0;
             bool hasPotentialCollectionAcquisition = false;
             var seenPurchases = new HashSet<int>();
             foreach (JToken responseToken in purchaseLines)
@@ -1532,6 +1592,10 @@ namespace CF7Launcher.Tasks
                 int maxAffordable, maxByCapacity, maxPurchasable;
                 JObject requestedLine;
                 JObject authoritativeLine;
+                long lineUnitPrice;
+                long lineTotal;
+                long authoritativeUnitPrice;
+                long expectedTotal;
                 string itemKind = line != null ? line.Value<string>("itemKind") : null;
                 string destinationView = line != null ? line.Value<string>("destinationView") : null;
                 if (!HasOnlyKeys(line, "catalogIndex", "itemName", "displayName", "icon",
@@ -1558,12 +1622,20 @@ namespace CF7Launcher.Tasks
                     || !IsOneOf(line["destinationView"], "bag", "material", "intelligence", "quickslot")
                     || (destinationView == "intelligence" && itemKind != "stack")
                     || !IsOneOf(line["limitingReason"], "", "insufficient_money", "inventory_full", "destination_full")
-                    || !IsNonNegativeNumber(line["unitPrice"]) || !IsNonNegativeNumber(line["total"])
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        line["unitPrice"], out lineUnitPrice)
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        line["total"], out lineTotal)
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        authoritativeLine["unitPrice"], out authoritativeUnitPrice)
                     || !MatchesCatalogIdentity(line, authoritativeLine)
-                    || line.Value<double>("unitPrice") != authoritativeLine.Value<double>("unitPrice")
-                    || line.Value<double>("total") != Math.Floor(
-                        authoritativeLine.Value<double>("basePrice")
-                        * quantity * authoritativeMultiplier)
+                    || lineUnitPrice != authoritativeUnitPrice
+                    || !TryComputePurchaseTotal(
+                        authoritativeLine,
+                        quantity,
+                        authoritativeRatePermille,
+                        out expectedTotal)
+                    || lineTotal != expectedTotal
                     || maxQuantity != authoritativeLine.Value<int>("maxQuantity")) return false;
                 int expectedMaximum = Math.Min(purchaseLimit, Math.Min(maxAffordable, maxByCapacity));
                 string expectedLimitingReason = expectedMaximum < purchaseLimit
@@ -1574,7 +1646,7 @@ namespace CF7Launcher.Tasks
                 if (maxPurchasable != expectedMaximum
                     || line.Value<string>("limitingReason") != expectedLimitingReason) return false;
                 if (destinationView == "intelligence") hasPotentialCollectionAcquisition = true;
-                purchaseTotal += line.Value<double>("total");
+                if (!PermilleMath.TryAdd(purchaseTotal, lineTotal, out purchaseTotal)) return false;
             }
 
             var requestedSaleByIdentity = new Dictionary<string, JObject>(StringComparer.Ordinal);
@@ -1586,13 +1658,14 @@ namespace CF7Launcher.Tasks
                 requestedSaleByIdentity[identity] = line;
             }
 
-            double saleTotal = 0;
+            long saleTotal = 0;
             var seenSales = new HashSet<string>(StringComparer.Ordinal);
             foreach (JToken responseToken in saleLines)
             {
                 JObject line = responseToken as JObject;
                 long quantity;
                 int matchedCount, eligibleCount, protectedCount;
+                long lineTotal;
                 string identity = line != null && line["sourceIdentity"] != null
                     && line["sourceIdentity"].Type == JTokenType.String ? line.Value<string>("sourceIdentity") : null;
                 string scope = line != null ? line.Value<string>("scope") : null;
@@ -1616,29 +1689,34 @@ namespace CF7Launcher.Tasks
                     || !IsIdentityString(line["icon"], 256)
                     || !IsOneOf(line["itemKind"], "equipment", "stack")
                     || !IsOneOf(line["scope"], "slot", "same_name")
-                    || !IsNonNegativeNumber(line["total"])) return false;
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        line["total"], out lineTotal)) return false;
                 if (line.Value<string>("itemKind") == "equipment") hasPotentialCollectionAcquisition = true;
-                saleTotal += line.Value<double>("total");
+                if (!PermilleMath.TryAdd(saleTotal, lineTotal, out saleTotal)) return false;
             }
 
-            double buyTotal = msg.Value<double>("buyTotal");
-            double sellTotal = msg.Value<double>("sellTotal");
             string blockingError = msg.Value<string>("blockingError");
             bool canCommit = msg.Value<bool>("canCommit");
             int requiredSlots = msg.Value<int>("requiredSlots");
             int availableSlots = msg.Value<int>("availableSlots");
             int missingSlots = msg.Value<int>("missingSlots");
-            double projectedBalance = msg.Value<double>("projectedBalance");
-            bool consistentCommitState = projectedBalance < 0
+            long expectedNetDelta;
+            long expectedProjectedBalance;
+            if (!PermilleMath.TryAdd(
+                    authoritativeBalance, responseSellTotal, out _)
+                || !PermilleMath.TrySubtract(responseSellTotal, buyTotal, out expectedNetDelta)
+                || !PermilleMath.TryAddSigned(
+                    authoritativeBalance, expectedNetDelta, out expectedProjectedBalance)) return false;
+            bool consistentCommitState = responseProjectedBalance < 0
                 ? !canCommit && blockingError == "insufficient_money"
                 : blockingError == "destination_full"
                     ? !canCommit && hasPotentialCollectionAcquisition
                     : missingSlots > 0
                         ? !canCommit && blockingError == "inventory_full"
                         : canCommit && string.IsNullOrEmpty(blockingError);
-            return buyTotal == purchaseTotal && sellTotal == saleTotal
-                && msg.Value<double>("netDelta") == sellTotal - buyTotal
-                && projectedBalance == authoritativeBalance + sellTotal - buyTotal
+            return buyTotal == purchaseTotal && responseSellTotal == saleTotal
+                && responseNetDelta == expectedNetDelta
+                && responseProjectedBalance == expectedProjectedBalance
                 && missingSlots == Math.Max(0, requiredSlots - availableSlots)
                 && IsOneOf(msg["blockingError"], "", "insufficient_money", "inventory_full", "destination_full")
                 && consistentCommitState;
@@ -1700,13 +1778,6 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool IsNonNegativeNumber(JToken token)
-        {
-            if (!IsNumber(token)) return false;
-            double candidate = token.Value<double>();
-            return !double.IsNaN(candidate) && !double.IsInfinity(candidate) && candidate >= 0;
-        }
-
         private static bool IsAuthoritativeWriteSuccess(JObject msg, string cmd)
         {
             return msg != null && msg.Value<string>("operation") == cmd;
@@ -1721,15 +1792,21 @@ namespace CF7Launcher.Tasks
             JObject tradeAuthority)
         {
             string requestedShopId = request != null ? request.Value<string>("shopId") : null;
+            long buyRatePermille;
+            long stateBalance;
             if (msg == null || msg.Value<int?>("v") != 1
                 || !IsSafeString(msg["shopId"], 80, false)
                 || string.IsNullOrEmpty(requestedShopId)
                 || msg.Value<string>("shopId") != requestedShopId
-                || !IsNumber(msg["balance"])
-                || !IsNonNegativeNumber(msg["buyMultiplier"])
+                || !PermilleMath.TryReadSafeNonNegativeInteger(
+                    msg["balance"], out stateBalance)
+                || msg.Property("buyMultiplier") != null
+                || !PermilleMath.TryReadSafeNonNegativeInteger(
+                    msg["buyRatePermille"], out buyRatePermille)
+                || buyRatePermille > PermilleMath.Scale
                 || !TryValidateCatalog(
                     msg["catalog"] as JArray,
-                    msg.Value<double>("buyMultiplier"))
+                    buyRatePermille)
                 || !TryValidateLayout(msg["layout"] as JObject)) return false;
             JObject views = msg["views"] as JObject;
             // 背包由独立 inventory domain 负责；NPC 状态只拥有材料/情报集合投影。
@@ -1747,6 +1824,13 @@ namespace CF7Launcher.Tasks
                     ? catalogAuthority["catalog"] as JArray : null;
                 JObject authoritativeLine;
                 JObject currentLine;
+                long currentUnitPrice;
+                long authoritativeUnitPrice;
+                long authoritativeRatePermille;
+                long resultTotal;
+                long expectedTotal;
+                long authoritativeBalance;
+                long expectedBalance;
                 return catalogAuthority != null
                     && catalogAuthority.Value<string>("shopId") == requestedShopId
                     && authoritativeCatalog != null
@@ -1754,9 +1838,14 @@ namespace CF7Launcher.Tasks
                     && (authoritativeLine = FindCatalogEntry(authoritativeCatalog, catalogIndex)) != null
                     && (currentLine = FindCatalogEntry(msg["catalog"] as JArray, catalogIndex)) != null
                     && MatchesCatalogIdentity(currentLine, authoritativeLine)
-                    && currentLine.Value<double>("unitPrice") == authoritativeLine.Value<double>("unitPrice")
-                    && msg.Value<double>("buyMultiplier")
-                        == catalogAuthority.Value<double>("buyMultiplier")
+                    && PermilleMath.TryReadSafeNonNegativeInteger(
+                        currentLine["unitPrice"], out currentUnitPrice)
+                    && PermilleMath.TryReadSafeNonNegativeInteger(
+                        authoritativeLine["unitPrice"], out authoritativeUnitPrice)
+                    && currentUnitPrice == authoritativeUnitPrice
+                    && PermilleMath.TryReadSafeNonNegativeInteger(
+                        catalogAuthority["buyRatePermille"], out authoritativeRatePermille)
+                    && buyRatePermille == authoritativeRatePermille
                     && TryReadInteger(request["quantity"], 1, MaxPurchaseQuantity, out requestedQuantity)
                     && requestedQuantity <= authoritativeLine.Value<int>("maxQuantity")
                     && TryReadInteger(msg["quantity"], 1, MaxPurchaseQuantity, out resultQuantity)
@@ -1764,29 +1853,54 @@ namespace CF7Launcher.Tasks
                     && IsIdentityString(msg["itemName"], 128)
                     && msg.Value<string>("itemName") == authoritativeLine.Value<string>("itemName")
                     && IsOneOf(msg["destinationView"], "bag", "material", "intelligence", "quickslot")
-                    && IsNonNegativeNumber(msg["total"])
-                    && msg.Value<double>("total")
-                        == Math.Floor(
-                            authoritativeLine.Value<double>("basePrice")
-                            * resultQuantity
-                            * catalogAuthority.Value<double>("buyMultiplier"))
-                    && msg.Value<double>("balance")
-                        == catalogAuthority.Value<double>("balance") - msg.Value<double>("total");
+                    && PermilleMath.TryReadSafeNonNegativeInteger(
+                        msg["total"], out resultTotal)
+                    && TryComputePurchaseTotal(
+                        authoritativeLine,
+                        resultQuantity,
+                        authoritativeRatePermille,
+                        out expectedTotal)
+                    && resultTotal == expectedTotal
+                    && PermilleMath.TryReadSafeNonNegativeInteger(
+                        catalogAuthority["balance"], out authoritativeBalance)
+                    && PermilleMath.TrySubtract(
+                        authoritativeBalance, resultTotal, out expectedBalance)
+                    && expectedBalance >= 0
+                    && stateBalance == expectedBalance;
             }
             if (expectedOperation == "batchSell")
             {
                 long previewQuantity;
+                long previewBalance;
+                long previewTotal;
+                long resultTotal;
+                long expectedBalance;
                 return batchAuthority != null
                     && batchAuthority.Value<string>("batchToken")
                         == request.Value<string>("expectedBatchToken")
                     && TryReadPositiveInteger(batchAuthority["totalQuantity"], out previewQuantity)
                     && TryReadInteger(msg["quantity"], 1, int.MaxValue, out resultQuantity)
                     && previewQuantity == resultQuantity
-                    && IsNonNegativeNumber(msg["total"])
-                    && IsNonNegativeNumber(batchAuthority["totalMoney"])
-                    && msg.Value<double>("total") == batchAuthority.Value<double>("totalMoney");
+                    && PermilleMath.TryReadSafeNonNegativeInteger(
+                        batchAuthority["balance"], out previewBalance)
+                    && PermilleMath.TryReadSafeNonNegativeInteger(
+                        batchAuthority["totalMoney"], out previewTotal)
+                    && PermilleMath.TryReadSafeNonNegativeInteger(
+                        msg["total"], out resultTotal)
+                    && resultTotal == previewTotal
+                    && PermilleMath.TryAdd(
+                        previewBalance, previewTotal, out expectedBalance)
+                    && stateBalance == expectedBalance;
             }
             JObject trade = msg["trade"] as JObject;
+            long committedBuyTotal;
+            long previewBuyTotal;
+            long committedSellTotal;
+            long previewSellTotal;
+            long committedNetDelta;
+            long previewNetDelta;
+            long previewProjectedBalance;
+            long expectedNetDelta;
             return expectedOperation == "tradeCommit"
                 && tradeAuthority != null
                 && tradeAuthority.Value<string>("shopId") == requestedShopId
@@ -1794,19 +1908,31 @@ namespace CF7Launcher.Tasks
                     == request.Value<string>("expectedTradeToken")
                 && tradeAuthority.Value<bool?>("canCommit") == true
                 && MatchesTradePurchaseCatalog(msg, tradeAuthority)
-                && msg.Value<double>("balance") == tradeAuthority.Value<double>("projectedBalance")
+                && PermilleMath.TryReadSafeNonNegativeInteger(
+                    tradeAuthority["projectedBalance"], out previewProjectedBalance)
+                && stateBalance == previewProjectedBalance
                 && HasOnlyKeys(trade, "buyTotal", "sellTotal", "netDelta")
-                && IsNonNegativeNumber(trade["buyTotal"])
-                && IsNonNegativeNumber(trade["sellTotal"])
-                && IsNumber(trade["netDelta"])
-                && trade.Value<double>("buyTotal") == tradeAuthority.Value<double>("buyTotal")
-                && trade.Value<double>("sellTotal") == tradeAuthority.Value<double>("sellTotal")
-                && trade.Value<double>("netDelta") == tradeAuthority.Value<double>("netDelta")
-                && trade.Value<double>("netDelta")
-                    == trade.Value<double>("sellTotal") - trade.Value<double>("buyTotal");
+                && PermilleMath.TryReadSafeNonNegativeInteger(
+                    trade["buyTotal"], out committedBuyTotal)
+                && PermilleMath.TryReadSafeNonNegativeInteger(
+                    tradeAuthority["buyTotal"], out previewBuyTotal)
+                && PermilleMath.TryReadSafeNonNegativeInteger(
+                    trade["sellTotal"], out committedSellTotal)
+                && PermilleMath.TryReadSafeNonNegativeInteger(
+                    tradeAuthority["sellTotal"], out previewSellTotal)
+                && PermilleMath.TryReadSafeInteger(
+                    trade["netDelta"], out committedNetDelta)
+                && PermilleMath.TryReadSafeInteger(
+                    tradeAuthority["netDelta"], out previewNetDelta)
+                && committedBuyTotal == previewBuyTotal
+                && committedSellTotal == previewSellTotal
+                && committedNetDelta == previewNetDelta
+                && PermilleMath.TrySubtract(
+                    committedSellTotal, committedBuyTotal, out expectedNetDelta)
+                && committedNetDelta == expectedNetDelta;
         }
 
-        private static bool TryValidateCatalog(JArray catalog, double buyMultiplier)
+        private static bool TryValidateCatalog(JArray catalog, long buyRatePermille)
         {
             if (catalog == null || catalog.Count > 10001) return false;
             var indexes = new HashSet<int>();
@@ -1816,6 +1942,9 @@ namespace CF7Launcher.Tasks
                 int catalogIndex;
                 int setOrder;
                 int maxQuantity;
+                long basePrice;
+                long unitPrice;
+                long expectedUnitPrice;
                 if (!HasOnlyKeys(line, "catalogIndex", "itemName", "displayName", "icon",
                         "majorType", "use", "actionType", "weaponType", "setId", "setName",
                         "setOrder", "basePrice", "unitPrice", "maxQuantity", "requiredInfo",
@@ -1832,10 +1961,13 @@ namespace CF7Launcher.Tasks
                     || !IsSafeString(line["setId"], 256, true)
                     || !IsSafeString(line["setName"], 256, true)
                     || !TryReadInteger(line["setOrder"], 0, int.MaxValue, out setOrder)
-                    || !IsNonNegativeNumber(line["basePrice"])
-                    || !IsNonNegativeNumber(line["unitPrice"])
-                    || line.Value<double>("unitPrice")
-                        != Math.Floor(line.Value<double>("basePrice") * buyMultiplier)
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        line["basePrice"], out basePrice)
+                    || !PermilleMath.TryReadSafeNonNegativeInteger(
+                        line["unitPrice"], out unitPrice)
+                    || !PermilleMath.TryFloor(
+                        basePrice, buyRatePermille, out expectedUnitPrice)
+                    || unitPrice != expectedUnitPrice
                     || !TryReadInteger(line["maxQuantity"], 0, MaxPurchaseQuantity, out maxQuantity)
                     || !IsSafeString(line["requiredInfo"], 256, true)
                     || line["locked"] == null || line["locked"].Type != JTokenType.Boolean

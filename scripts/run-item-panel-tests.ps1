@@ -74,10 +74,10 @@ $suiteConfigs = @{
             '(?m)^CraftingPanelServiceTest Tests Passed: 155\r?$'
             '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
             '(?m)^--- SynthesisIndexTest: 18/18 passed, 0 failed ---\r?$'
-            '(?m)^NpcShopPanelServiceTest Tests Passed: 60\r?$'
+            '(?m)^NpcShopPanelServiceTest Tests Passed: 66\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'EquipmentInventory 28/28, Inventory 147/147, Crafting 155/155, Synthesis 18/18, NPC 60/60'
+        Summary = 'EquipmentInventory 28/28, Inventory 147/147, Crafting 155/155, Synthesis 18/18, NPC 66/66'
     }
     Shared = @{
         DomainId = 'item-panels-shared'
@@ -125,10 +125,10 @@ $suiteConfigs = @{
         Fqns = @('org.flashNight.arki.item.NpcShopPanelServiceTest')
         Additional = @('scripts\逻辑系统分区\商店系统_兼容.as')
         Patterns = @(
-            '(?m)^NpcShopPanelServiceTest Tests Passed: 60\r?$'
+            '(?m)^NpcShopPanelServiceTest Tests Passed: 66\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'NPC 60/60'
+        Summary = 'NPC 66/66'
     }
 }
 $selected = $suiteConfigs[$Suite]

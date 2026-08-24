@@ -102,15 +102,20 @@ function assertSettlement(preview, commit, inbound, applicability) {
   const ownerSnapshot = snapshots[snapshots.length - 1];
   NpcProtocol.assertNpcState(ownerSnapshot.message, target.shopId,
     "material_shop_owner_snapshot");
-  const baselineBalance = Number(applicability.sourceFixture.money);
+  const baselineBalance = applicability.sourceFixture.money;
+  if (!Number.isSafeInteger(baselineBalance) || baselineBalance < 0
+      || !Number.isSafeInteger(target.basePrice) || target.basePrice < 0) {
+    Common.fail("material_shop_catalog_target_invalid", "journey_verify",
+      "fixture balance and base price must be non-negative safe integers");
+  }
   const catalog = ownerSnapshot.message.catalog.filter((entry) =>
-    Number(entry.catalogIndex) === target.catalogIndex);
+    entry.catalogIndex === target.catalogIndex);
   const catalogTarget = requireOne(catalog, "material_shop_catalog_target_invalid",
     "owner snapshot must contain one exact selected catalog row");
   if (catalogTarget.itemName !== target.itemName || catalogTarget.locked !== false
-      || Number(catalogTarget.basePrice) !== Number(target.basePrice)
+      || catalogTarget.basePrice !== target.basePrice
       || Number(catalogTarget.maxQuantity) < 1
-      || Number(ownerSnapshot.message.balance) !== baselineBalance
+      || ownerSnapshot.message.balance !== baselineBalance
       || materialQuantity(ownerSnapshot.message, target.itemName, "before") !== 0) {
     Common.fail("material_shop_catalog_target_invalid", "journey_verify",
       "authoritative owner snapshot differs from the frozen target/baseline state");
@@ -131,22 +136,30 @@ function assertSettlement(preview, commit, inbound, applicability) {
     "quantity", "unitPrice", "total", "maxQuantity", "purchaseLimit",
     "maxAffordable", "maxByCapacity", "maxPurchasable", "limitingReason",
     "itemKind", "destinationView"], "material_shop_trade_preview_invalid");
-  const unitPrice = Number(catalogTarget.unitPrice);
-  if (!Number.isFinite(unitPrice) || unitPrice < 0
-      || unitPrice !== Math.floor(Number(target.basePrice)
-        * Number(ownerSnapshot.message.buyMultiplier))
+  const unitPrice = catalogTarget.unitPrice;
+  const expectedNetDelta = NpcProtocol.subtractSafeIntegers(0, unitPrice,
+    "material_shop_settlement");
+  const expectedProjectedBalance = NpcProtocol.addSafeIntegers(baselineBalance,
+    expectedNetDelta, "material_shop_settlement");
+  if (!Number.isSafeInteger(unitPrice) || unitPrice < 0
+      || unitPrice !== NpcProtocol.applyPermilleFloor(target.basePrice, 1,
+        ownerSnapshot.message.buyRatePermille, "material_shop_settlement")
       || previewMessage.success !== true || previewMessage.v !== 1
       || previewMessage.shopId !== target.shopId
       || typeof previewMessage.tradeToken !== "string" || !previewMessage.tradeToken
       || !Array.isArray(previewMessage.saleLines) || previewMessage.saleLines.length !== 0
       || Number(line.catalogIndex) !== target.catalogIndex || line.itemName !== target.itemName
-      || Number(line.quantity) !== 1 || Number(line.unitPrice) !== unitPrice
-      || Number(line.total) !== unitPrice || line.itemKind !== "stack"
+      || Number(line.quantity) !== 1 || !Number.isSafeInteger(line.unitPrice)
+      || line.unitPrice !== unitPrice || !Number.isSafeInteger(line.total)
+      || line.total !== unitPrice || line.itemKind !== "stack"
       || line.destinationView !== "material" || Number(line.maxPurchasable) < 1
-      || Number(previewMessage.buyTotal) !== unitPrice
-      || Number(previewMessage.sellTotal) !== 0
-      || Number(previewMessage.netDelta) !== -unitPrice
-      || Number(previewMessage.projectedBalance) !== baselineBalance - unitPrice
+      || !Number.isSafeInteger(previewMessage.buyTotal)
+      || previewMessage.buyTotal !== unitPrice
+      || !Number.isSafeInteger(previewMessage.sellTotal) || previewMessage.sellTotal !== 0
+      || !Number.isSafeInteger(previewMessage.netDelta)
+      || previewMessage.netDelta !== expectedNetDelta
+      || !Number.isSafeInteger(previewMessage.projectedBalance)
+      || previewMessage.projectedBalance !== expectedProjectedBalance
       || Number(previewMessage.requiredSlots) !== 0
       || Number(previewMessage.missingSlots) !== 0
       || previewMessage.canCommit !== true || previewMessage.blockingError !== "") {
@@ -176,16 +189,16 @@ function assertSettlement(preview, commit, inbound, applicability) {
   if (commit.message.payload.v !== 1 || commit.message.payload.shopId !== target.shopId
       || commit.message.payload.expectedTradeToken !== previewMessage.tradeToken
       || commitResponse.message.operation !== "tradeCommit"
-      || Number(commitResponse.message.trade.buyTotal) !== unitPrice
-      || Number(commitResponse.message.trade.sellTotal) !== 0
-      || Number(commitResponse.message.trade.netDelta) !== -unitPrice
-      || Number(commitResponse.message.balance) !== baselineBalance - unitPrice
+      || commitResponse.message.trade.buyTotal !== unitPrice
+      || commitResponse.message.trade.sellTotal !== 0
+      || commitResponse.message.trade.netDelta !== expectedNetDelta
+      || commitResponse.message.balance !== expectedProjectedBalance
       || materialQuantity(commitResponse.message, target.itemName, "after_commit") !== 1) {
     Common.fail("material_shop_trade_commit_state_invalid", "journey_verify",
       "commit does not preserve preview token, exact totals, balance, and material quantity");
   }
   return { baselineBalance, unitPrice, buyTotal: unitPrice,
-    projectedBalance: baselineBalance - unitPrice, beforeOwned: 0, afterOwned: 1,
+    projectedBalance: expectedProjectedBalance, beforeOwned: 0, afterOwned: 1,
     previewCallId: preview.message.callId, commitCallId: commit.message.callId,
     panelInstanceId: preview.message.panelInstanceId, preview, previewResponse,
     commit, commitResponse, ownerSnapshot };

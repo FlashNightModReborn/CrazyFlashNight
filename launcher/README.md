@@ -370,8 +370,8 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `tasks` | 业务 Panel | `modules/tasks/task-panel.js` |
 <!-- launcher-panel-registry:end -->
 Panel 的共同边界：
-
 - Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。
+- NPC 商店价格 wire 使用整数 `buyRatePermille` 与 safe-integer 金额；AS2/Host 按 `floor((basePrice × quantity) × rate / 1000)` 的同一顺序复验，Web 不重算价格。旧浮点 `buyMultiplier` 不兼容，Host、asLoader、Web 与 harness 必须进入同一 immutable candidate 原子交付；完整字段与 blocked-preview 边界见 [AS2 UI → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)。
 - Team 内嵌 `pets` / `mercs` 的全部请求（含 T800 武器命令与佣兵装备 tooltip）携 active `panelInstanceId`；Web 回包精确匹配 instance/callId/cmd，Host 拒绝 inactive/foreign/stale owner，replacement 清退旧 pending，迟到响应不可跨实例采用。业务写仍由白名单、revision/lease/token 与 AS2/Host 裁决，未知结果进入对账；T800 详见[施工记录](../docs/终结者T800-托管长枪与射击核心-施工-2026-08-22.md)。
 - `workbench view=build` 的 loadout `candidates` 有三种 exact target 形状：`slotKey`、`drugSlot`，或无 selector 且 `candidateScope=backpack`。无 selector 响应必须为 exact `target:{kind:"backpack"}`，Host 独立校验每行 `equipmentEligibility`与装备/药剂/不可装配分类；任何多余键、双 selector、无目标 `compatible` 或误分类行都拒绝整份回包。
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。

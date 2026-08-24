@@ -124,7 +124,7 @@ function materialNpcState(panelInstanceId, callId, command, balance, owned, targ
       majorType: "", use: "材料", quantity: owned, enhancementLevel: 0, rarity: "" } }] : [];
   const value = { type: "panel_resp", domain: "npcshop", panel: "npcshop",
     panelInstanceId, cmd: command, callId, success: true, v: 1,
-    shopId: target.shopId, balance, buyMultiplier: 1,
+    shopId: target.shopId, balance, buyRatePermille: 1000,
     catalog: [{ catalogIndex: target.catalogIndex, itemName: target.itemName,
       displayName: target.itemName, icon: target.itemName, majorType: "", use: "材料",
       actionType: "", weaponType: "", setId: "", setName: "", setOrder: 0,

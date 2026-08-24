@@ -4,7 +4,7 @@
 
 本目录只提供 Crafting 的生产取证、复验与 fail-closed Gate，不修改 Host、AS2、Web 业务实现，也不自行批准上线。共享 `runtime-module-journal` 的既有准入结论只覆盖共享 API；Crafting consumer 仍须取得独立 live receipt，并由不同作者完成终局审阅。
 
-2026-08-21 字体 Gate E current-tree 复核：`bootstrap.js --check` 为 `266/266`；production closure v8 精确覆盖 257 个文件，browser child 闭合 376 项 module manifest、72 个实际资源与 1,477 次 occurrence。闭包现在同时绑定 `fonts/fonts.xml`、XML-hash catalog/compatibility projection、两项 permanent 实体及 generated CSS/JS；独立浏览器仅忽略自身缺少 Host exact-set handler 导致的 `cfn-fonts.local` 请求失败，不把空响应冒充字体字节。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文若仍以“当前”描述 2026-08-08 或更早的 243-file/旧资源数，只是历史合同解释，均由本段取代。
+2026-08-24 合并后 current-tree 复核：`bootstrap.js --check` 为 `266/266`（21 个正例、245 个负例）；production closure v9 精确覆盖 260 个文件，browser child 闭合 377 项 module manifest、75 个实际资源与 1,509 次 occurrence。父 manifest 为 `747bb619406029fea707aaa65641953cd6758809e8ebf124839a89f3291c437c`，父 journal 为 `dd05c44cd4510a9a20d9676e92c2863ca18dfd050a4a3176c3cdc6615a6ece58`，父回执为 `ae8280e7256edb099f639d1d8db856cb8fb2aabd2d23f829db386410813f87dd`。闭包除既有字体、catalog、permanent 实体与 generated CSS/JS 外，现精确纳入 overlay terminal/settings 样式、共享 loadout picker，以及上游资产安全修订后的 24 个 AS2 算法锚；独立浏览器仍不把缺少 Host exact-set handler 的空响应冒充字体字节。该结论仍仅为 `OFFLINE_VERIFIED / LIVE_BLOCKED / NOT_DEPLOYED`。下文若仍以“当前”描述 2026-08-08 或更早的 243-file/旧资源数，只是历史合同解释，均由本段取代。
 
 历史审计结果保留如下，均不得替代当前 Gate：
 

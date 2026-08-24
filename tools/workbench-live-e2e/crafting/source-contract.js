@@ -7,8 +7,8 @@ const Evidence = require("../lib/evidence-artifact");
 const { fail } = require("./common");
 const RuntimeProducer = require("./runtime-producer");
 
-const SOURCE_FINGERPRINT_SCHEMA = "workbench-live-e2e.crafting.source-fingerprint.v8";
-const SOURCE_CLOSURE_SCHEMA = "workbench-live-e2e.crafting.source-closure.v8";
+const SOURCE_FINGERPRINT_SCHEMA = "workbench-live-e2e.crafting.source-fingerprint.v9";
+const SOURCE_CLOSURE_SCHEMA = "workbench-live-e2e.crafting.source-closure.v9";
 const SOURCE_BINDING_SCHEMA = "workbench-live-e2e.crafting.source-binding.v2";
 const LOADED_SCHEMA = "workbench-live-e2e.crafting.loaded-production.v4";
 const FONT_ENVIRONMENT_SCHEMA = "workbench-live-e2e.crafting.font-environment.v2";
@@ -20,7 +20,7 @@ const PERMANENT_FONT_FILES = Object.freeze([
 ]);
 const ICON_PROJECTION_SCHEMA = "workbench-live-e2e.crafting.icon-resource-projection.v1";
 const AS2_ALGORITHM_CONTRACT_SCHEMA =
-  "workbench-live-e2e.crafting.as2-algorithm-contract.v4";
+  "workbench-live-e2e.crafting.as2-algorithm-contract.v5";
 const HEX64 = /^[a-f0-9]{64}$/;
 const GIT_OID = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/;
 const REQUIRED_SOURCE_PHASES = Object.freeze([
@@ -55,6 +55,8 @@ const OVERLAY_STYLE_WEB = Object.freeze([
   "launcher/web/css/game-ui-behavior.css",
   "launcher/web/css/overlay.css",
   "launcher/web/css/panels.css",
+  "launcher/web/css/terminal.css",
+  "launcher/web/css/settings-panel.css",
   "launcher/web/modules/minigames/shared/minigame-shell.css",
   "launcher/web/modules/minigames/lockbox/lockbox.css",
   "launcher/web/modules/minigames/pinalign/pinalign.css",
@@ -81,6 +83,7 @@ const PANELS_IMPORT_STYLE_WEB = Object.freeze([
   "launcher/web/css/workbench/skills.css",
   "launcher/web/css/workbench/equipment-tuning.css",
   "launcher/web/css/workbench/components.css",
+  "launcher/web/css/workbench/loadout-picker.css",
   "launcher/web/css/workbench/character-build.css",
   "launcher/web/css/workbench/character-build-stats.css",
   "launcher/web/css/workbench/team.css",
@@ -176,24 +179,25 @@ const AS2_FILES = Object.freeze([
   "scripts/逻辑系统分区/商店系统_兼容.as",
 ]);
 
-// Reviewed v4 literals. ItemUtil.require/acquire include bounded stack validation and the
-// same-name equipped-grenade acquisition path. Capture validates current bytes against
-// these constants; it never derives a replacement contract from the source being tested.
+// Reviewed v5 literals. ItemUtil require/acquire/submit and Crafting executeCommit include
+// bounded stack validation, raw-fulfillment accounting, exact snapshot recovery and PAT
+// settlement. Capture validates current bytes against these constants; it never derives a
+// replacement contract from the source being tested.
 const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "require", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 11, signatureTokenSha256: "789fd14ed13d8e749ae5a448e181a786fa1c295e6e127363aeeb2d3d6c9e455b",
     returnTokenCount: 2, returnTokenSha256: "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
-    bodyTokenCount: 1055, bodyTokenSha256: "9b3fba89be011711c8a80481cf1daf45b27d778f53b48487cf15734148f0313a",
-    tokenCount: 1066, normalizedTokenSha256: "be49a9398ce96a0910e69a88de4b8e552d1d068571e94ee84b31ded0133f87f4" },
+    bodyTokenCount: 1354, bodyTokenSha256: "5a4ee1dade54dd17acabd2f74145a53406dc3066f88cfec0768a2531d9a782bd",
+    tokenCount: 1365, normalizedTokenSha256: "16403afd9e43a7a76fc78d51f986bc034290741d081ca2e6ece6a3b15378f56d" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "acquire", classDepth: 0, memberDepth: 1,
-    signatureTokenCount: 11, signatureTokenSha256: "0a2f1ddbfa02223e41bdb15bdc60ed981c3e7178d8e96af343bbf3b22422694c",
+    signatureTokenCount: 15, signatureTokenSha256: "afc6f2b897fe3bca12ea2d1de8de03ac125350dfe4d944bf4cabc76b5fdc28ef",
     returnTokenCount: 2, returnTokenSha256: "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
-    bodyTokenCount: 830, bodyTokenSha256: "2ddfd3de815af09e1c2b4262ef9e9ffab05db90f2726fa7b33c7b5023fd71e21",
-    tokenCount: 841, normalizedTokenSha256: "400fd377f6a8545ef346c94d4e3e1bdf921ecfa50e3cc87e33ed0339276e2bbe" },
+    bodyTokenCount: 2419, bodyTokenSha256: "95e622b90b5bdb21f2077f186c16e1fad42a8e4df61b73cc496b7dd439450d8e",
+    tokenCount: 2434, normalizedTokenSha256: "8c870420d0962d33e2c58a0ceb7df4377e2e44a2946225717bd0f695cd114402" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "contain", classDepth: 0, memberDepth: 1,
@@ -204,10 +208,10 @@ const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "submit", classDepth: 0, memberDepth: 1,
-    signatureTokenCount: 11, signatureTokenSha256: "ff79483ec27e37f32f57ff59cd914422c7cb898ec8355f31d8dd41b216cea9ea",
+    signatureTokenCount: 15, signatureTokenSha256: "bc89e731db7621a35ae53ab39375a901ab82f4f034c6b8f4201391d79cccbe26",
     returnTokenCount: 2, returnTokenSha256: "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
-    bodyTokenCount: 300, bodyTokenSha256: "bbf6bc35d167bed60b013bec04cf683b231331cb45da3ad53d3a0d8c26037db0",
-    tokenCount: 311, normalizedTokenSha256: "9c93043352c7d3dfa194767760863f39f102ea436261ac17c117f9bd436926a8" },
+    bodyTokenCount: 1408, bodyTokenSha256: "fb53c4ca05446f11492a7a384d5e54bbf75076e07295469c2c78262b1d50df0e",
+    tokenCount: 1423, normalizedTokenSha256: "d68fd908ce747e9aaa1f492012359bb50d09093de75bb68463828dca1a116e5f" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "singleRequire", classDepth: 0, memberDepth: 1,
@@ -218,10 +222,10 @@ const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "singleAcquire", classDepth: 0, memberDepth: 1,
-    signatureTokenCount: 15, signatureTokenSha256: "cee8bc891d5a4ca1b90d2f5852726b5852d55e6d37cf084dcf240ba5c16f747d",
+    signatureTokenCount: 19, signatureTokenSha256: "3bb97678ab950bd4654fd948bfdbe1b07f2e3ac4da9c6f7d882b62a147a15095",
     returnTokenCount: 2, returnTokenSha256: "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
-    bodyTokenCount: 20, bodyTokenSha256: "2dd82762b29197b67669a347d14d7cb67c4dc8ca29641ee932bcd42aec8330e4",
-    tokenCount: 35, normalizedTokenSha256: "14809f1c6b0bc6bccf9c264d4ed55c7f2a011b3f04ffe608057ab02a02a6f2b5" },
+    bodyTokenCount: 22, bodyTokenSha256: "bbdba17caab464b4650ead8bccb02af960458e9b341c51f79a6b45d24c7493a8",
+    tokenCount: 41, normalizedTokenSha256: "3468f96e8a48c16337ed89de5aca80365e986f2d4b24eb059b835bb382087426" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
     className: "org.flashNight.arki.item.itemCollection.ArrayInventory", modifiers: ["public"],
     functionName: "add", classDepth: 0, memberDepth: 1,
@@ -269,8 +273,8 @@ const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
     functionName: "executeCommit", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 11, signatureTokenSha256: "f3460d8207d6a51216e63393b8296b927f3a9954d91c9a3f942a2eb3acf12dcf",
     returnTokenCount: 2, returnTokenSha256: "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
-    bodyTokenCount: 760, bodyTokenSha256: "cb1012db337f96edb8f7dd0aceed84e04f7f85d128390e96453e86ba4ff72d5e",
-    tokenCount: 771, normalizedTokenSha256: "220405bdc6c035e56aece08b2c49017e33088243134aaf3eddc19573eaf12af4" },
+    bodyTokenCount: 1087, bodyTokenSha256: "d50b2cf3ea380e1bb4e8b278714bb1107b248c9235629f5c7858bb3b90010ea3",
+    tokenCount: 1098, normalizedTokenSha256: "7ec402de67729e30e29220fe98dbc117d6ee1f1b755e6f2549dd57d7390037ef" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
     className: "org.flashNight.arki.item.CraftingPanelService", modifiers: ["private", "static"],
     functionName: "buildPlan", classDepth: 0, memberDepth: 1,

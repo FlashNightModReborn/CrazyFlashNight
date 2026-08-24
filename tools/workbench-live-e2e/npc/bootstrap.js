@@ -17,11 +17,11 @@ const BOOLEAN_LIVE_FLAGS = new Set(["--allow-read-only-live-seed", "--purchase-o
 const VALUE_LIVE_FLAGS = new Set(["--candidate-root", "--seed-slot", "--slot",
   "--ready-timeout-ms", "--evidence-timeout-ms", "--control-timeout-ms", "--poll-ms",
   "--sale-quantity", "--sale-slot", "--expected-sale-item", "--expected-sale-pre-quantity",
-  "--expected-purchase-item", "--purchase-catalog-index"]);
+  "--expected-purchase-item", "--purchase-catalog-index", "--expected-buy-rate-permille"]);
 const CONTROL_FLAGS = new Set(["--check", "--help", "-h",
   "--emit-offline-admission-fixture", "--verify-bundle", "--receipt"]);
 const REQUIRED_LIVE_FLAGS = Object.freeze(["--candidate-root", "--seed-slot", "--slot",
-  "--allow-isolated-commit", "--allow-codex-cu-fallback"]);
+  "--expected-buy-rate-permille", "--allow-isolated-commit", "--allow-codex-cu-fallback"]);
 const ABSOLUTE_PATH_RE = /^(?:[A-Za-z]:[\\/]|\\\\[^\\/]+[\\/][^\\/]+[\\/]|\/)/;
 const READ_ONLY_LIVE_SEED_RE = /^crazyflasher7_saves\d*$/;
 
@@ -93,6 +93,10 @@ function validateLiveArgs(values) {
   if (parsed["--purchase-catalog-index"] != null) {
     const value = Number(parsed["--purchase-catalog-index"]);
     if (!Number.isInteger(value) || value < 0) throw usageError("invalid --purchase-catalog-index");
+  }
+  const expectedRate = Number(parsed["--expected-buy-rate-permille"]);
+  if (!Number.isInteger(expectedRate) || expectedRate < 0 || expectedRate > 1000) {
+    throw usageError("--expected-buy-rate-permille must be an integer from 0 through 1000");
   }
   ["--expected-sale-item", "--expected-purchase-item"].forEach((flag) => {
     if (parsed[flag] != null && !String(parsed[flag]).trim()) throw usageError(flag + " must be non-empty");

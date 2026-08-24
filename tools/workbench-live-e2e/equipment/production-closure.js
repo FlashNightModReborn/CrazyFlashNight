@@ -6,7 +6,7 @@ const path = require("path");
 const Evidence = require("../lib/evidence-artifact");
 const { fail } = require("./common");
 
-const CLOSURE_SCHEMA = "workbench-live-e2e.equipment.production-closure.v6";
+const CLOSURE_SCHEMA = "workbench-live-e2e.equipment.production-closure.v7";
 const BINDING_SCHEMA = "workbench-live-e2e.equipment.production-binding.v2";
 const LOADED_SCHEMA = "workbench-live-e2e.equipment.loaded-production.v6";
 const PRODUCER_INPUTS_SCHEMA = "workbench-live-e2e.equipment.runtime-producer-inputs.v1";
@@ -77,6 +77,8 @@ const OVERLAY_STYLE_WEB = Object.freeze([
   "launcher/web/css/game-ui-behavior.css",
   "launcher/web/css/overlay.css",
   "launcher/web/css/panels.css",
+  "launcher/web/css/terminal.css",
+  "launcher/web/css/settings-panel.css",
   "launcher/web/modules/minigames/shared/minigame-shell.css",
   "launcher/web/modules/minigames/lockbox/lockbox.css",
   "launcher/web/modules/minigames/pinalign/pinalign.css",
@@ -103,6 +105,7 @@ const PANELS_IMPORT_STYLE_WEB = Object.freeze([
   "launcher/web/css/workbench/skills.css",
   "launcher/web/css/workbench/equipment-tuning.css",
   "launcher/web/css/workbench/components.css",
+  "launcher/web/css/workbench/loadout-picker.css",
   "launcher/web/css/workbench/character-build.css",
   "launcher/web/css/workbench/character-build-stats.css",
   "launcher/web/css/workbench/team.css",

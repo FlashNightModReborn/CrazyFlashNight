@@ -316,13 +316,19 @@ _root.UI系统.NPC商店WebView.pruneCollectionLeases = function(viewId:String, 
     }
 };
 
-_root.UI系统.NPC商店WebView.getBuyMultiplier = function():Number {
-    var multiplier:Number = 1;
+_root.UI系统.NPC商店WebView.getBuyRatePermille = function():Number {
+    var ratePermille:Number = 1000;
     if (_root.主角被动技能 != undefined && _root.主角被动技能.口才 != undefined
             && _root.主角被动技能.口才.启用) {
-        multiplier = 1 - Number(_root.主角被动技能.口才.等级) * 0.03;
+        var level:Number = Number(_root.主角被动技能.口才.等级);
+        var discountPermille:Number =
+            org.flashNight.gesh.number.NumberUtil.multiplySafeNonNegativeIntegers(level, 30);
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(discountPermille)) return NaN;
+        ratePermille = org.flashNight.gesh.number.NumberUtil.subtractSafeIntegers(
+            1000, discountPermille);
     }
-    return multiplier;
+    return org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(ratePermille)
+        ? ratePermille : NaN;
 };
 
 _root.UI系统.NPC商店WebView.resolveSaleEntry = function(shopId:String, catalogIndex:Number):Object {
@@ -356,10 +362,12 @@ _root.UI系统.NPC商店WebView.getPurchaseLimit = function(resolved:Object):Num
     return Math.max(0, technicalLimit);
 };
 
-_root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
+_root.UI系统.NPC商店WebView.buildCatalog = function(
+        shopId:String, buyRatePermille:Number):Array {
     var result:Array = [];
     var shop:Object = _root.shops == undefined ? null : _root.shops[shopId];
     if (shop == null) return result;
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(buyRatePermille)) return null;
     var procurementIndex:Object = org.flashNight.arki.item.ProcurementPlanService.buildDemandIndex();
     var keys:Array = [];
     for (var key in shop) {
@@ -367,7 +375,6 @@ _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
         if (!isNaN(index) && Math.floor(index) == index && index >= 0) keys.push(index);
     }
     keys.sort(Array.NUMERIC);
-    var multiplier:Number = this.getBuyMultiplier();
     for (var i:Number = 0; i < keys.length; i++) {
         var resolved:Object = this.resolveSaleEntry(shopId, keys[i]);
         if (resolved == null) continue;
@@ -380,7 +387,10 @@ _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
             && (_root.收集品栏 == undefined || _root.收集品栏.情报 == undefined
                 || _root.收集品栏.情报.getValue(requiredInfo) <= 0);
         var basePrice:Number = Number(itemData.price);
-        if (isNaN(basePrice)) basePrice = 0;
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(basePrice)) return null;
+        var unitPrice:Number = org.flashNight.gesh.number.NumberUtil.floorPermille(
+            basePrice, buyRatePermille);
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(unitPrice)) return null;
         var catalogItem:Object = {
             catalogIndex:keys[i],
             itemName:resolved.itemName,
@@ -394,7 +404,7 @@ _root.UI系统.NPC商店WebView.buildCatalog = function(shopId:String):Array {
             setName:String(itemData.setName || ""),
             setOrder:Number(itemData.setOrder || 0),
             basePrice:basePrice,
-            unitPrice:Math.floor(basePrice * multiplier),
+            unitPrice:unitPrice,
             maxQuantity:this.getPurchaseLimit(resolved),
             requiredInfo:requiredInfo,
             locked:locked
@@ -520,15 +530,24 @@ _root.UI系统.NPC商店WebView.buildState = function(shopId:String):Object {
     // 背包只由 inventory-domain 投影；NPC 域不再嵌套第二份背包快照与 lease 生命周期。
     this.beginCollectionSnapshot(shopId);
     this.logCollectionQuarantineState();
-    var catalog:Array = this.buildCatalog(shopId);
+    var balance:Number = Number(_root.金钱);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(balance)) {
+        return this.fail("invalid_price");
+    }
+    var buyRatePermille:Number = this.getBuyRatePermille();
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(buyRatePermille)) {
+        return this.fail("invalid_price");
+    }
+    var catalog:Array = this.buildCatalog(shopId, buyRatePermille);
+    if (catalog == null) return this.fail("invalid_price");
     var materialView:Object = this.buildCollectionView("material", _root.收集品栏.材料);
     var intelligenceView:Object = this.buildCollectionView("intelligence", _root.收集品栏.情报);
     return {
         success:true,
         v:1,
         shopId:shopId,
-        balance:Number(_root.金钱),
-        buyMultiplier:this.getBuyMultiplier(),
+        balance:balance,
+        buyRatePermille:buyRatePermille,
         catalog:catalog,
         layout:this.buildLayout(shopId),
         views:{
@@ -617,9 +636,23 @@ _root.UI系统.NPC商店WebView.executeBuy = function(params:Object):Object {
         ? "" : String(resolved.raw.requiredInfo);
     if (requiredInfo != "" && _root.收集品栏.情报.getValue(requiredInfo) <= 0) return this.fail("locked");
     var basePrice:Number = Number(itemData.price);
-    if (isNaN(basePrice)) basePrice = 0;
-    var total:Number = Math.floor(basePrice * quantity * this.getBuyMultiplier());
-    if (isNaN(_root.金钱) || isNaN(total) || total > Number(_root.金钱)) return this.fail("insufficient_money");
+    var baseAmount:Number = org.flashNight.gesh.number.NumberUtil.multiplySafeNonNegativeIntegers(
+        basePrice, quantity);
+    var total:Number = org.flashNight.gesh.number.NumberUtil.floorPermille(
+        baseAmount, this.getBuyRatePermille());
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(total)) {
+        return this.fail("invalid_price");
+    }
+    var balance:Number = Number(_root.金钱);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(balance)) {
+        return this.fail("invalid_price");
+    }
+    if (total > balance) return this.fail("insufficient_money");
+    var projectedBalance:Number = org.flashNight.gesh.number.NumberUtil.subtractSafeIntegers(
+        balance, total);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(projectedBalance)) {
+        return this.fail("invalid_price");
+    }
     var destination:String = this.resolvePurchaseDestination(itemName);
     var assetContext:Object = {
         source:"npc_shop_purchase", reason:"legacy_buy", mergeScope:"operation"
@@ -638,9 +671,9 @@ _root.UI系统.NPC商店WebView.executeBuy = function(params:Object):Object {
             org.flashNight.arki.item.PlayerAssetTransaction.rollback(assetTransaction);
             return this.fail(destination == "intelligence" ? "destination_full" : "inventory_full");
         }
-        var moneyBeforeBuy:Number = Number(_root.金钱);
+        var moneyBeforeBuy:Number = balance;
         try {
-            _root.金钱 -= total;
+            _root.金钱 = projectedBalance;
         } finally {
             var committedBuyLoss:Number = moneyBeforeBuy - Number(_root.金钱);
             if (committedBuyLoss > total) committedBuyLoss = total;
@@ -703,6 +736,10 @@ _root.UI系统.NPC商店WebView.executeBatchPreview = function(params:Object):Ob
     var skipped:Number = 0;
     var totalQuantity:Number = 0;
     var totalMoney:Number = 0;
+    var balance:Number = Number(_root.金钱);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(balance)) {
+        return this.fail("invalid_price");
+    }
     var bag:Object = _root.物品栏.背包;
     for (var i:Number = 0; i < names.length; i++) {
         var itemName:String = String(names[i]);
@@ -719,9 +756,20 @@ _root.UI系统.NPC商店WebView.executeBatchPreview = function(params:Object):Ob
             }
             var quantity:Number = typeof item.value == "number" ? Number(item.value) : 1;
             var price:Object = _root.物品UI函数.计算售卖总价(item, quantity);
-            entries.push({slot:slot, ref:item, name:itemName, count:quantity, money:Number(price.总价)});
-            nameQuantity += quantity;
-            nameMoney += Number(price.总价);
+            var money:Number = Number(price.总价);
+            if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(quantity)
+                    || !org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(money)) {
+                return this.fail("invalid_price");
+            }
+            entries.push({slot:slot, ref:item, name:itemName, count:quantity, money:money});
+            nameQuantity = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+                nameQuantity, quantity);
+            nameMoney = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+                nameMoney, money);
+            if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(nameQuantity)
+                    || !org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(nameMoney)) {
+                return this.fail("invalid_price");
+            }
         }
         if (nameQuantity > 0) {
             var data:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(itemName);
@@ -731,15 +779,23 @@ _root.UI系统.NPC商店WebView.executeBatchPreview = function(params:Object):Ob
                 icon:this.projectLegacyIdentityField(
                     data == null ? undefined : data.icon, itemName),
                 quantity:nameQuantity, money:nameMoney});
-            totalQuantity += nameQuantity;
-            totalMoney += nameMoney;
+            totalQuantity = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+                totalQuantity, nameQuantity);
+            totalMoney = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+                totalMoney, nameMoney);
+            if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(totalQuantity)
+                    || !org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(totalMoney)) {
+                return this.fail("invalid_price");
+            }
         }
     }
     if (entries.length == 0) return this.fail("nothing_to_sell");
     this.batchSeq++;
     var token:String = "npcbatch" + getTimer() + "." + this.batchSeq;
-    this.batchPlan = {token:token, entries:entries, totalMoney:totalMoney, totalQuantity:totalQuantity};
-    return {success:true, v:1, batchToken:token, summary:summary, totalQuantity:totalQuantity, totalMoney:totalMoney, skipped:skipped};
+    this.batchPlan = {token:token, entries:entries, totalMoney:totalMoney,
+        totalQuantity:totalQuantity, balance:balance};
+    return {success:true, v:1, batchToken:token, balance:balance,
+        summary:summary, totalQuantity:totalQuantity, totalMoney:totalMoney, skipped:skipped};
 };
 
 _root.UI系统.NPC商店WebView.executeBatchSell = function(params:Object):Object {
@@ -748,6 +804,22 @@ _root.UI系统.NPC商店WebView.executeBatchSell = function(params:Object):Objec
     if (shopId != this.activeShopId) return this.fail("stale_state");
     var plan:Object = this.batchPlan;
     if (plan == null || String(params.expectedBatchToken || "") != String(plan.token)) return this.fail("stale_state");
+    var balance:Number = Number(_root.金钱);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(balance)
+            || !org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(Number(plan.totalMoney))) {
+        this.batchPlan = null;
+        return this.fail("invalid_price");
+    }
+    if (balance != Number(plan.balance)) {
+        this.batchPlan = null;
+        return this.fail("stale_state");
+    }
+    var projectedBalance:Number = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+        balance, Number(plan.totalMoney));
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(projectedBalance)) {
+        this.batchPlan = null;
+        return this.fail("invalid_price");
+    }
     var bag:Object = _root.物品栏.背包;
     for (var i:Number = 0; i < plan.entries.length; i++) {
         var entry:Object = plan.entries[i];
@@ -795,9 +867,9 @@ _root.UI系统.NPC商店WebView.executeBatchSell = function(params:Object):Objec
                 }
             }
         }
-        var moneyBeforeBatchSale:Number = Number(_root.金钱);
+        var moneyBeforeBatchSale:Number = balance;
         try {
-            _root.金钱 += Number(plan.totalMoney);
+            _root.金钱 = projectedBalance;
         } finally {
             var committedBatchMoney:Number = Number(_root.金钱) - moneyBeforeBatchSale;
             if (committedBatchMoney > Number(plan.totalMoney)) {
@@ -876,9 +948,17 @@ _root.UI系统.NPC商店WebView.resolveTradePurchase = function(shopId:String, r
         ? "" : String(resolved.raw.requiredInfo);
     if (requiredInfo != "" && _root.收集品栏.情报.getValue(requiredInfo) <= 0) return this.fail("locked");
     var basePrice:Number = Number(itemData.price);
-    if (isNaN(basePrice)) basePrice = 0;
-    var unitPrice:Number = Math.floor(basePrice * this.getBuyMultiplier());
-    var total:Number = Math.floor(basePrice * quantity * this.getBuyMultiplier());
+    var buyRatePermille:Number = this.getBuyRatePermille();
+    var baseAmount:Number = org.flashNight.gesh.number.NumberUtil.multiplySafeNonNegativeIntegers(
+        basePrice, quantity);
+    var unitPrice:Number = org.flashNight.gesh.number.NumberUtil.floorPermille(
+        basePrice, buyRatePermille);
+    var total:Number = org.flashNight.gesh.number.NumberUtil.floorPermille(
+        baseAmount, buyRatePermille);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(unitPrice)
+            || !org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(total)) {
+        return this.fail("invalid_price");
+    }
     return {
         success:true,
         catalogIndex:catalogIndex,
@@ -938,9 +1018,14 @@ _root.UI系统.NPC商店WebView.resolveExactTradeSale = function(request:Object)
     }
     var itemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(itemName);
     if (itemData == null) return this.fail("item_not_found");
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(quantity)) {
+        return this.fail("invalid_price");
+    }
     var priceInfo:Object = _root.物品UI函数.计算售卖总价(item, quantity);
     var money:Number = Number(priceInfo.总价);
-    if (isNaN(money) || money < 0) return this.fail("invalid_price");
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(money)) {
+        return this.fail("invalid_price");
+    }
     var returnedMods:Array = [];
     if (kind == "bag" && typeof item.value == "object" && item.value.mods instanceof Array) {
         for (var modIndex:Number = 0; modIndex < item.value.mods.length; modIndex++) {
@@ -1012,9 +1097,14 @@ _root.UI系统.NPC商店WebView.resolveTradeSale = function(request:Object):Obje
             continue;
         }
         var quantity:Number = typeof current.value == "number" ? Number(current.value) : 1;
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(quantity)) {
+            return this.fail("invalid_price");
+        }
         var priceInfo:Object = _root.物品UI函数.计算售卖总价(current, quantity);
         var money:Number = Number(priceInfo.总价);
-        if (isNaN(money) || money < 0) return this.fail("invalid_price");
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(money)) {
+            return this.fail("invalid_price");
+        }
         entries.push({
             success:true,
             identity:"bag:" + slot,
@@ -1033,8 +1123,14 @@ _root.UI系统.NPC商店WebView.resolveTradeSale = function(request:Object):Obje
             plainOnly:true,
             returnedMods:[]
         });
-        totalQuantity += quantity;
-        totalMoney += money;
+        totalQuantity = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+            totalQuantity, quantity);
+        totalMoney = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+            totalMoney, money);
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(totalQuantity)
+                || !org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(totalMoney)) {
+            return this.fail("invalid_price");
+        }
     }
     if (entries.length == 0) return this.fail("nothing_to_sell");
     return {
@@ -1164,8 +1260,12 @@ _root.UI系统.NPC商店WebView.checkTradeCapacity = function(plan:Object):Boole
 };
 
 _root.UI系统.NPC商店WebView.getPurchaseBounds = function(plan:Object, target:Object):Object {
-    var otherBuyTotal:Number = Number(plan.buyTotal) - Number(target.total);
-    var budget:Number = Number(plan.balance) + Number(plan.sellTotal) - otherBuyTotal;
+    var otherBuyTotal:Number = org.flashNight.gesh.number.NumberUtil.subtractSafeIntegers(
+        Number(plan.buyTotal), Number(target.total));
+    var budget:Number = org.flashNight.gesh.number.NumberUtil.subtractSafeIntegers(
+        Number(plan.grossBalance), otherBuyTotal);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(otherBuyTotal)
+            || !org.flashNight.gesh.number.NumberUtil.isSafeInteger(budget)) return null;
     var limit:Number = Number(target.maxQuantity);
     var low:Number = 1;
     var high:Number = limit;
@@ -1230,7 +1330,12 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
     var purchases:Array = params.purchases instanceof Array ? params.purchases : [];
     var sales:Array = params.sales instanceof Array ? params.sales : [];
     if (purchases.length > 40 || sales.length > 50 || purchases.length + sales.length < 1) return this.fail("invalid_payload");
-    var plan:Object = {shopId:shopId, purchases:[], sales:[], publicSales:[], acquireItems:[], buyTotal:0, sellTotal:0, balance:Number(_root.金钱)};
+    var balance:Number = Number(_root.金钱);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(balance)) {
+        return this.fail("invalid_price");
+    }
+    var plan:Object = {shopId:shopId, purchases:[], sales:[], publicSales:[],
+        acquireItems:[], buyTotal:0, sellTotal:0, balance:balance};
     var purchaseIds:Object = {};
     var saleIds:Object = {};
     var expandedSaleIds:Object = {};
@@ -1241,7 +1346,11 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
         if (purchaseIds[purchaseKey]) return this.fail("duplicate_line");
         purchaseIds[purchaseKey] = true;
         plan.purchases.push(purchase);
-        plan.buyTotal += Number(purchase.total);
+        plan.buyTotal = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+            Number(plan.buyTotal), Number(purchase.total));
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(plan.buyTotal)) {
+            return this.fail("invalid_price");
+        }
     }
     for (var j:Number = 0; j < sales.length; j++) {
         var saleGroup:Object = this.resolveTradeSale(sales[j]);
@@ -1268,14 +1377,30 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
             eligibleCount:saleGroup.eligibleCount,
             protectedCount:saleGroup.protectedCount
         });
-        plan.sellTotal += Number(saleGroup.money);
+        plan.sellTotal = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+            Number(plan.sellTotal), Number(saleGroup.money));
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(plan.sellTotal)) {
+            return this.fail("invalid_price");
+        }
+    }
+    plan.grossBalance = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+        plan.balance, plan.sellTotal);
+    plan.netDelta = org.flashNight.gesh.number.NumberUtil.subtractSafeIntegers(
+        plan.sellTotal, plan.buyTotal);
+    plan.projectedBalance = org.flashNight.gesh.number.NumberUtil.addSafeIntegers(
+        plan.balance, plan.netDelta);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(plan.grossBalance)
+            || !org.flashNight.gesh.number.NumberUtil.isSafeInteger(plan.netDelta)
+            || !org.flashNight.gesh.number.NumberUtil.isSafeInteger(plan.projectedBalance)) {
+        return this.fail("invalid_price");
     }
     plan.acquireItems = this.buildAcquireItems(plan.purchases, plan.sales);
-    var enoughMoney:Boolean = plan.balance + plan.sellTotal >= plan.buyTotal;
+    var enoughMoney:Boolean = plan.projectedBalance >= 0;
     var capacity:Object = this.analyzeTradeCapacity(plan);
     var enoughSpace:Boolean = capacity.enough;
     for (var purchaseIndex:Number = 0; purchaseIndex < plan.purchases.length; purchaseIndex++) {
         var bounds:Object = this.getPurchaseBounds(plan, plan.purchases[purchaseIndex]);
+        if (bounds == null) return this.fail("invalid_price");
         plan.purchases[purchaseIndex].purchaseLimit = bounds.purchaseLimit;
         plan.purchases[purchaseIndex].maxAffordable = bounds.maxAffordable;
         plan.purchases[purchaseIndex].maxByCapacity = bounds.maxByCapacity;
@@ -1317,8 +1442,8 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
         saleLines:plan.publicSales,
         buyTotal:plan.buyTotal,
         sellTotal:plan.sellTotal,
-        netDelta:plan.sellTotal - plan.buyTotal,
-        projectedBalance:plan.balance + plan.sellTotal - plan.buyTotal,
+        netDelta:plan.netDelta,
+        projectedBalance:plan.projectedBalance,
         requiredSlots:capacity.requiredSlots,
         availableSlots:capacity.availableSlots,
         missingSlots:capacity.missingSlots,
@@ -1328,16 +1453,26 @@ _root.UI系统.NPC商店WebView.executeTradePreview = function(params:Object):Ob
 };
 
 _root.UI系统.NPC商店WebView.validateTradePlan = function(plan:Object):Object {
-    if (plan == null || String(plan.shopId) != this.activeShopId || Number(_root.金钱) != Number(plan.balance)) {
+    if (plan == null || String(plan.shopId) != this.activeShopId) {
         return this.fail("stale_state");
     }
+    var currentBalance:Number = Number(_root.金钱);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(currentBalance)
+            || !org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(Number(plan.balance))) {
+        return this.fail("invalid_price");
+    }
+    if (currentBalance != Number(plan.balance)) return this.fail("stale_state");
     var buyTotal:Number = 0;
     for (var i:Number = 0; i < plan.purchases.length; i++) {
         var oldPurchase:Object = plan.purchases[i];
         var purchase:Object = this.resolveTradePurchase(plan.shopId, oldPurchase);
         if (!purchase.success || purchase.itemName != oldPurchase.itemName
                 || Number(purchase.total) != Number(oldPurchase.total)) return this.fail("stale_state");
-        buyTotal += Number(purchase.total);
+        buyTotal = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+            buyTotal, Number(purchase.total));
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(buyTotal)) {
+            return this.fail("invalid_price");
+        }
     }
     var sellTotal:Number = 0;
     for (var j:Number = 0; j < plan.sales.length; j++) {
@@ -1352,11 +1487,33 @@ _root.UI系统.NPC商店WebView.validateTradePlan = function(plan:Object):Object
             return this.fail("stale_state");
         }
         var price:Object = _root.物品UI函数.计算售卖总价(sale.ref, sale.quantity);
-        if (Number(price.总价) != Number(sale.money)) return this.fail("stale_state");
-        sellTotal += Number(sale.money);
+        var saleMoney:Number = Number(price.总价);
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(saleMoney)) {
+            return this.fail("invalid_price");
+        }
+        if (saleMoney != Number(sale.money)) return this.fail("stale_state");
+        sellTotal = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+            sellTotal, Number(sale.money));
+        if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(sellTotal)) {
+            return this.fail("invalid_price");
+        }
     }
     if (buyTotal != Number(plan.buyTotal) || sellTotal != Number(plan.sellTotal)) return this.fail("stale_state");
-    if (Number(_root.金钱) + sellTotal < buyTotal) return this.fail("insufficient_money");
+    var grossBalance:Number = org.flashNight.gesh.number.NumberUtil.addSafeNonNegativeIntegers(
+        currentBalance, sellTotal);
+    var netDelta:Number = org.flashNight.gesh.number.NumberUtil.subtractSafeIntegers(
+        sellTotal, buyTotal);
+    var projectedBalance:Number = org.flashNight.gesh.number.NumberUtil.addSafeIntegers(
+        currentBalance, netDelta);
+    if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(grossBalance)
+            || !org.flashNight.gesh.number.NumberUtil.isSafeInteger(netDelta)
+            || !org.flashNight.gesh.number.NumberUtil.isSafeInteger(projectedBalance)) {
+        return this.fail("invalid_price");
+    }
+    if (grossBalance != Number(plan.grossBalance)
+            || netDelta != Number(plan.netDelta)
+            || projectedBalance != Number(plan.projectedBalance)) return this.fail("stale_state");
+    if (projectedBalance < 0) return this.fail("insufficient_money");
     var capacity:Object = this.analyzeTradeCapacity(plan);
     if (!capacity.enough) return this.fail(capacity.error);
     return {success:true};
@@ -1496,7 +1653,7 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
         }
         var moneyBeforeTrade:Number = Number(_root.金钱);
         try {
-            _root.金钱 = Number(plan.balance) + Number(plan.sellTotal) - Number(plan.buyTotal);
+            _root.金钱 = Number(plan.projectedBalance);
         } finally {
             var committedMoneyDelta:Number = Number(_root.金钱) - moneyBeforeTrade;
             if (committedMoneyDelta != 0 && !isNaN(committedMoneyDelta)) {
@@ -1561,7 +1718,8 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
         trace("[NpcShop] post-commit trade sound failed: " + tradeSoundError);
     }
     var state:Object = this.buildPostCommitState(shopId, "tradeCommit");
-    state.trade = {buyTotal:plan.buyTotal, sellTotal:plan.sellTotal, netDelta:plan.sellTotal - plan.buyTotal};
+    state.trade = {buyTotal:plan.buyTotal, sellTotal:plan.sellTotal,
+        netDelta:plan.netDelta};
     return state;
 };
 

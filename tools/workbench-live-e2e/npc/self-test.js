@@ -22,7 +22,8 @@ const Protocol = require("./protocol");
 const { createScriptContextLedger, remoteValue } = require("./passive-recorder");
 const { loadSharedAdapter, createLifecycleOwnership, startLifecycle,
   completePrecommitCleanup } = require("./shared-adapter");
-const { controlRequestOutputRecord, parseArgs, selectPurchaseTarget, selectSaleTarget,
+const { controlRequestOutputRecord, enforceBuyRateConstraint, parseArgs,
+  selectPurchaseTarget, selectSaleTarget,
   validateArgs } = require("./run-live-journey");
 const { assertInventoryPhaseAccessConsistency, assertStableRevisionLeases,
   verifyEvidenceFile } = require("./verify-evidence");
@@ -373,6 +374,12 @@ test("full same-owner purchase and sale verifies", () => withFixture({}, (fixtur
   assert.strictEqual(receipt.deployment, "NOT_DEPLOYED");
   assert.strictEqual(receipt.a3NpcClosable, false);
   assert.strictEqual(receipt.writeCount, 2);
+  assert.deepStrictEqual(receipt.pricingConstraint, {
+    schema: "workbench-live-e2e.npc.pricing-constraint.v1",
+    expectedBuyRatePermille: 1000,
+    initialBuyRatePermille: 1000,
+    restartBuyRatePermille: 1000,
+  });
   assert.deepStrictEqual(receipt.purchase.destination,
     { containerId: "背包", physicalSlot: PURCHASE_SLOT, key: "背包:" + PURCHASE_SLOT });
   assert.deepStrictEqual(receipt.ownerInstances,
@@ -640,18 +647,52 @@ test("purchase-only remains non-closable", () => withFixture({ purchaseOnly: tru
 }));
 test("runner requires explicit bounded-write flags", () => {
   const base = ["--candidate-root", path.resolve("fixture-candidate"),
+    "--expected-buy-rate-permille", "1000",
     "--allow-isolated-commit", "--allow-codex-cu-fallback"];
   assert.doesNotThrow(() => validateArgs(parseArgs(base)));
   assert.throws(() => validateArgs(parseArgs(base.slice(0, -1))), /fallback/);
+  const withoutRate = base.slice();
+  withoutRate.splice(withoutRate.indexOf("--expected-buy-rate-permille"), 2);
+  assert.throws(() => validateArgs(parseArgs(withoutRate)), /expected-buy-rate/);
+  ["-1", "819.5", "1001"].forEach((value) => assert.throws(() => validateArgs(parseArgs([
+    "--candidate-root", path.resolve("fixture-candidate"),
+    "--expected-buy-rate-permille", value,
+    "--allow-isolated-commit", "--allow-codex-cu-fallback",
+  ])), /expected-buy-rate/));
+});
+test("runner rejects a green snapshot outside the declared pricing scenario", () => {
+  assert.strictEqual(enforceBuyRateConstraint({ buyRatePermille: 820 }, 820,
+    "self_test"), 820);
+  assert.throws(() => enforceBuyRateConstraint({ buyRatePermille: 1000 }, 820,
+    "self_test"), (error) => error instanceof NpcJourneyError
+      && error.code === "buy_rate_constraint_mismatch");
 });
 test("purchase selection is affordable deterministic and differs from sale", () => {
-  const selected = selectPurchaseTarget({ balance: 50, buyMultiplier: 1, catalog: [
+  const selected = selectPurchaseTarget({ balance: 50, buyRatePermille: 1000, catalog: [
     { catalogIndex: 4, itemName: "砍刀", displayName: "砍刀", icon: "a", majorType: "武器",
       basePrice: 1, unitPrice: 1, maxQuantity: 1, locked: false },
     { catalogIndex: 2, itemName: "乙", displayName: "乙", icon: "b", majorType: "武器",
       basePrice: 20, unitPrice: 20, maxQuantity: 1, locked: false },
   ] }, { purchaseOnly: false, expectedSaleItem: "砍刀" });
   assert.strictEqual(selected.catalogIndex, 2);
+});
+test("permille prices preserve exact floor semantics across known drift vectors", () => {
+  assert.strictEqual(Protocol.applyPermilleFloor(18900, 1, 820, "self_test"), 15498);
+  assert.strictEqual(Protocol.applyPermilleFloor(300, 1, 820, "self_test"), 246);
+  assert.strictEqual(Protocol.applyPermilleFloor(1001, 1, 850, "self_test"), 850);
+  assert.strictEqual(Protocol.applyPermilleFloor(17100, 1, 940, "self_test"), 16074);
+  assert.strictEqual(Protocol.applyPermilleFloor(2700, 1, 700, "self_test"), 1890);
+  assert.strictEqual(Protocol.applyPermilleFloor(1001, 3, 850, "self_test"), 2552);
+});
+test("permille prices reject fractional, negative, and unsafe intermediates", () => {
+  assert.throws(() => Protocol.applyPermilleFloor(100, 1, 819.5, "self_test"),
+    /exact integer domain/);
+  assert.throws(() => Protocol.applyPermilleFloor(-1, 1, 820, "self_test"),
+    /exact integer domain/);
+  assert.throws(() => Protocol.applyPermilleFloor(Number.MAX_SAFE_INTEGER, 2, 1000,
+    "self_test"), /subtotal exceeds/);
+  assert.throws(() => Protocol.applyPermilleFloor(Number.MAX_SAFE_INTEGER, 1, 1000,
+    "self_test"), /product exceeds/);
 });
 test("sale selector prefers exact slot-zero machete", () => withFixture({}, (fixture) => {
   const bundle = load(fixture);
@@ -1376,7 +1417,7 @@ test("NPC browser journeys execute under an independently verified child module 
     "browser-resource-inventory.v1.json"), "utf8"));
   assert.strictEqual(resourceInventory.schema,
     "workbench-live-e2e.browser-resource-inventory.v1");
-  assert.strictEqual(resourceInventory.files.length, 41);
+  assert.strictEqual(resourceInventory.files.length, 42);
   assert(resourceInventory.files.includes("modules/npcshop/dev/harness.html"));
   assert(resourceInventory.files.includes("modules/npcshop.js"));
   assert(resourceInventory.files.includes("modules/npcshop-runtime.js"));
@@ -1384,6 +1425,7 @@ test("NPC browser journeys execute under an independently verified child module 
   assert(resourceInventory.files.includes("css/workbench/portraits.css"));
   assert(resourceInventory.files.includes("css/panels/stage-select.css"));
   assert(resourceInventory.files.includes("generated/font-catalog.css"));
+  assert(resourceInventory.files.includes("css/workbench/loadout-picker.css"));
   assert.deepStrictEqual(resourceInventory.files, resourceInventory.files.slice().sort());
   const result = childProcess.spawnSync(process.execPath,
     [bootstrapPath], {
@@ -1402,7 +1444,7 @@ test("NPC browser journeys execute under an independently verified child module 
   assert.strictEqual(receipt.status, "OFFLINE_VERIFIED");
   assert.strictEqual(receipt.moduleAdmission, "ADMITTED");
   assert.strictEqual(receipt.journalVerification, "VERIFIED");
-  assert.strictEqual(receipt.moduleEntryCount, 328);
+  assert.strictEqual(receipt.moduleEntryCount, 329);
   assert.deepStrictEqual({passed:receipt.result.passed, total:receipt.result.total,
     materialNavigationPassed:receipt.result.materialNavigationPassed,
     materialNavigationTotal:receipt.result.materialNavigationTotal,
@@ -1426,8 +1468,8 @@ test("NPC browser journeys execute under an independently verified child module 
   ]);
   assert.strictEqual(receipt.servedResourceClosure.schema,
     "workbench-live-e2e.browser-resource-closure-receipt.v1");
-  assert.strictEqual(receipt.servedResourceClosure.resourceCount, 41);
-  assert(receipt.servedResourceClosure.occurrenceCount >= 41);
+  assert.strictEqual(receipt.servedResourceClosure.resourceCount, 42);
+  assert(receipt.servedResourceClosure.occurrenceCount >= 42);
   assert.strictEqual(receipt.servedResourceClosure.failureCount, 1);
   ["inventorySha256", "resourcesSha256", "occurrencesSha256", "failuresSha256",
     "evidenceSha256"].forEach((field) =>
@@ -1528,10 +1570,12 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
   const locators = new Set(bundle.productionClosure.files.map((entry) => entry.locator));
   ["root:launcher/src/Guardian/AuthorityLogFormatter.cs",
     "root:launcher/src/Guardian/PanelHostController.cs",
+    "root:launcher/src/Tasks/PermilleMath.cs",
     "root:launcher/src/Tasks/PanelBridge.cs",
     "root:launcher/src/Tasks/PanelPendingCallTracker.cs",
     "root:launcher/src/Guardian/PanelRequestOwnerLifecycle.cs",
     "root:launcher/src/Bus/XmlSocketServer.cs",
+    "root:scripts/类定义/org/flashNight/gesh/number/NumberUtil.as",
     "root:scripts/asLoader.swf",
     "root:launcher/web/modules/npcshop.js",
     "root:launcher/web/modules/npcshop-material-navigation.js",
@@ -1540,10 +1584,10 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
     "root:launcher/web/css/workbench/core.css"].forEach((locator) => assert(locators.has(locator), locator));
   assert.strictEqual(bundle.productionClosure.declarations.bootWeb.length, 20);
   assert.strictEqual(bundle.productionClosure.declarations.npcLazyWeb.length, 14);
-  assert.strictEqual(bundle.productionClosure.declarations.styleWeb.length, 33);
+  assert.strictEqual(bundle.productionClosure.declarations.styleWeb.length, 36);
   const physicalSurface = bundle.productionClosure.semanticContracts.inventoryPhysicalSurface;
   assert.strictEqual(physicalSurface.schema,
-    "workbench-live-e2e.npc.production-inventory-surface.v11");
+    "workbench-live-e2e.npc.production-inventory-surface.v12");
   assert.strictEqual(physicalSurface.consumer.locator, "root:launcher/web/modules/npcshop.js");
   assert.strictEqual(physicalSurface.adapter.locator,
     "root:launcher/web/modules/npcshop-runtime.js");
@@ -1578,19 +1622,19 @@ test("production closure covers exact close Host and AS2 artifact", () => withFi
   assert(physicalSurface.projection.pairedCoherence.includes("exactPhysicalSlot"));
   assert(physicalSurface.projection.failureFence.includes("synchronousDuplicate"));
   assert.strictEqual(physicalSurface.sourceContract.schema,
-    "workbench-live-e2e.npc.production-inventory-source-anchors.v9");
+    "workbench-live-e2e.npc.production-inventory-source-anchors.v10");
   assert.strictEqual(physicalSurface.sourceContract.tokenCanonicalization,
     "exact-source-byte-pin-plus-js-binding-depth-active-prefix-rewrite-fence.v5");
   assert.strictEqual(physicalSurface.sourceContract.bindingGuards.length, 20);
   assert.deepStrictEqual(physicalSurface.sourceContract.closedSourceBytes, {
     policy:"exact_utf8_bytes_governance_pin",
     expected:{
-      consumer:"608b00e128225a6560ba5b256ef87d80bd292748a06fa133bbeef2c986ef963c",
+      consumer:"97aabef882a49b7c793a190b8e3c1a58e92bcf0dbaa20bb6cce52ec154c99893",
       adapter:"181d09a56c429cbb196ea8d84e3b537b2d8faded468193d91e2a14641079f487",
       provider:"b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
     },
     actual:{
-      consumer:"608b00e128225a6560ba5b256ef87d80bd292748a06fa133bbeef2c986ef963c",
+      consumer:"97aabef882a49b7c793a190b8e3c1a58e92bcf0dbaa20bb6cce52ec154c99893",
       adapter:"181d09a56c429cbb196ea8d84e3b537b2d8faded468193d91e2a14641079f487",
       provider:"b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
     },
@@ -1717,7 +1761,7 @@ negative("preview token reuse across writes fails", (fixture) => reseal(fixture,
   events.find((event) => event.kind === "bridge_send" && event.message
     && event.message.callId === fixture.bundle.calls.saleCommit).message.payload.expectedTradeToken = purchase;
 }), "trade_token_reused");
-negative("purchase price is recomputed from base price and multiplier", (fixture) => reseal(fixture, (events) => {
+negative("purchase price is recomputed from base price and permille rate", (fixture) => reseal(fixture, (events) => {
   const response = events.find((event) => event.kind === "webview_message" && event.message
     && event.message.callId === fixture.bundle.calls.purchasePreview).message;
   response.purchaseLines[0].unitPrice += 1;
@@ -1726,6 +1770,12 @@ negative("purchase price is recomputed from base price and multiplier", (fixture
   response.netDelta -= 1;
   response.projectedBalance -= 1;
 }), "purchase_preview_projection_mismatch");
+negative("trade commit requires the exact operation and trade proof", (fixture) => reseal(fixture, (events) => {
+  const response = events.find((event) => event.kind === "webview_message" && event.message
+    && event.message.callId === fixture.bundle.calls.purchaseCommit).message;
+  delete response.operation;
+  delete response.trade;
+}), "trade_commit_state_invalid");
 negative("purchase dynamic capacity maximum is exact", (fixture) => reseal(fixture, (events) => {
   const response = events.find((event) => event.kind === "webview_message" && event.message
     && event.message.callId === fixture.bundle.calls.purchasePreview).message;
@@ -1926,6 +1976,27 @@ negative("catalog must match production exact schema", (fixture) => reseal(fixtu
     && event.message.callId === fixture.bundle.calls.initialNpcSnapshot);
   delete response.message.catalog[0].use;
 }), "catalog_entry_invalid");
+negative("legacy floating buyMultiplier state is rejected", (fixture) => reseal(fixture, (events) => {
+  const response = events.find((event) => event.kind === "webview_message" && event.message
+    && event.message.callId === fixture.bundle.calls.initialNpcSnapshot);
+  delete response.message.buyRatePermille;
+  response.message.buyMultiplier = 1;
+}), "npc_state_invalid");
+negative("fractional permille state is rejected", (fixture) => reseal(fixture, (events) => {
+  const response = events.find((event) => event.kind === "webview_message" && event.message
+    && event.message.callId === fixture.bundle.calls.initialNpcSnapshot);
+  response.message.buyRatePermille = 819.5;
+}), "npc_state_invalid");
+negative("pricing evidence requires one sealed expected rate", (fixture) => {
+  const bundle = load(fixture);
+  delete bundle.pricingConstraint;
+  save(fixture, bundle);
+}, "pricing_constraint_invalid");
+negative("sealed expected rate must match the authority snapshot", (fixture) => {
+  const bundle = load(fixture);
+  bundle.pricingConstraint.expectedBuyRatePermille = 820;
+  save(fixture, bundle);
+}, "pricing_constraint_mismatch");
 negative("fake PNG magic header is rejected", (fixture) => {
   const bundle = load(fixture);
   const binding = bundle.controls.find((entry) => entry.step === "select_purchase");

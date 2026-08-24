@@ -5,11 +5,11 @@ const fs = require("fs");
 const path = require("path");
 const { canonicalJson, fail, isPlainObject, sha256Bytes, sha256Text } = require("./common");
 
-const CLOSURE_SCHEMA = "workbench-live-e2e.npc.production-closure.v13";
+const CLOSURE_SCHEMA = "workbench-live-e2e.npc.production-closure.v14";
 const INVENTORY_SURFACE_CONTRACT_SCHEMA =
-  "workbench-live-e2e.npc.production-inventory-surface.v11";
+  "workbench-live-e2e.npc.production-inventory-surface.v12";
 const INVENTORY_SURFACE_SOURCE_SCHEMA =
-  "workbench-live-e2e.npc.production-inventory-source-anchors.v9";
+  "workbench-live-e2e.npc.production-inventory-source-anchors.v10";
 const BINDING_SCHEMA = "workbench-live-e2e.npc.production-binding.v3";
 const SHOP_BINDING_SCHEMA = "workbench-live-e2e.npc.actual-shop-binding.v1";
 const LOADED_SCHEMA = "workbench-live-e2e.npc.loaded-production.v6";
@@ -340,7 +340,7 @@ const INVENTORY_SURFACE_ACTIVE_PREFIX_SHA256 = Object.freeze({
 // of the three audited production sources requires an explicit review and pin
 // refresh in the same current tree.
 const INVENTORY_SURFACE_EXACT_SOURCE_SHA256 = Object.freeze({
-  consumer: "608b00e128225a6560ba5b256ef87d80bd292748a06fa133bbeef2c986ef963c",
+  consumer: "97aabef882a49b7c793a190b8e3c1a58e92bcf0dbaa20bb6cce52ec154c99893",
   adapter: "181d09a56c429cbb196ea8d84e3b537b2d8faded468193d91e2a14641079f487",
   provider: "b2c6b06baadb3677d7434334cc06e2795d30a407c9499e5caec93df34c4a95dc",
 });
@@ -371,13 +371,14 @@ const INVENTORY_SURFACE_ORDER_GROUPS = Object.freeze([
   ]) }),
 ]);
 const EXPECTED_RUNTIME_DOMAIN_COUNTS = Object.freeze({
-  artifactSource: 775,
+  artifactSource: 777,
   producerRecipe: 10,
   toolchainLock: 3,
 });
 
 const HOST_FILES = Object.freeze([
   "launcher/src/Tasks/NpcShopTask.cs",
+  "launcher/src/Tasks/PermilleMath.cs",
   "launcher/src/Tasks/InventoryTask.cs",
   "launcher/src/Tasks/PanelBridge.cs",
   "launcher/src/Tasks/PanelPendingCallTracker.cs",
@@ -400,6 +401,7 @@ const BUILD_FILES = Object.freeze([
 
 const AS2_FILES = Object.freeze([
   "scripts/逻辑系统分区/商店系统_兼容.as",
+  "scripts/类定义/org/flashNight/gesh/number/NumberUtil.as",
   "scripts/逻辑系统分区/物品系统_WebView.as",
   "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
   "scripts/asLoaderManifest/frame10.as",

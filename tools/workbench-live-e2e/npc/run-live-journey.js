@@ -6,6 +6,7 @@ const path = require("path");
 const {
   BUNDLE_SCHEMA,
   LIVE_SLOT_RE,
+  PRICING_CONSTRAINT_SCHEMA,
   NpcJourneyError,
   assertSafeSlot,
   atomicWriteJson,
@@ -91,6 +92,11 @@ function validateArgs(args) {
   if (args.seedSlot === args.slot) usage("seed and target slot must differ");
   if (!args.allowIsolatedCommit) usage("--allow-isolated-commit is required for bounded NPC writes");
   if (!args.allowCodexCuFallback) usage("--allow-codex-cu-fallback is required when Launcher Agent admission is unavailable");
+  args.expectedBuyRatePermille = Number(args.expectedBuyRatePermille);
+  if (!Number.isInteger(args.expectedBuyRatePermille)
+      || args.expectedBuyRatePermille < 0 || args.expectedBuyRatePermille > 1000) {
+    usage("--expected-buy-rate-permille is required and must be an integer from 0 through 1000");
+  }
   if (!args.purchaseOnly) {
     if (args.saleSlot != null) args.saleSlot = Number(args.saleSlot);
     args.saleQuantity = Number(args.saleQuantity);
@@ -124,6 +130,7 @@ function printHelp() {
     "Full A3:",
     "  node tools/workbench-live-e2e/npc/run-live-journey.js --candidate-root <absolute> \\",
     "    --seed-slot cf7_agent_a3_kshop --slot cf7_agent_a3_npc_run \\",
+    "    --expected-buy-rate-permille 1000 \\",
     "    --allow-isolated-commit --allow-codex-cu-fallback",
     "",
     "Optional exact sale constraints: --sale-slot 0 --expected-sale-item 砍刀 --expected-sale-pre-quantity 1",
@@ -216,6 +223,18 @@ function ensureSuccess(pair, phase) {
   return pair.response.message;
 }
 
+function enforceBuyRateConstraint(snapshot, expectedBuyRatePermille, phase) {
+  const actual = snapshot && snapshot.buyRatePermille;
+  if (!Number.isSafeInteger(actual) || actual !== expectedBuyRatePermille) {
+    fail("buy_rate_constraint_mismatch", phase,
+      "authoritative NPC snapshot does not match the declared pricing scenario", {
+        expectedBuyRatePermille,
+        actualBuyRatePermille: actual,
+      });
+  }
+  return actual;
+}
+
 function selectPurchaseTarget(snapshot, args) {
   const catalog = Array.isArray(snapshot.catalog) ? snapshot.catalog : [];
   let candidates = catalog.filter((entry) => entry && entry.locked === false
@@ -249,7 +268,7 @@ function selectPurchaseTarget(snapshot, args) {
     icon: selected.icon,
     basePrice: Number(selected.basePrice),
     unitPrice: Number(selected.unitPrice),
-    buyMultiplier: Number(snapshot.buyMultiplier),
+    buyRatePermille: Number(snapshot.buyRatePermille),
     maxQuantity: Number(selected.maxQuantity),
     itemKind: "equipment",
     destinationView: "bag",
@@ -566,6 +585,8 @@ async function execute(args, adapterOverride, lifecycle) {
       "通过真实 NPC 对话/联系人入口打开物品商店；禁止 /console、Panels.open、Bridge.send 或内部 opener。");
     excluded.push(initialOpen.message.panelInstanceId);
     const initial = await waitInitialAuthority(state, initialOpen);
+    enforceBuyRateConstraint(initial.snapshot.response.message,
+      args.expectedBuyRatePermille, "purchase_initial_snapshot");
     const shopId = initialOpen.message.initData && initialOpen.message.initData.shopId;
     if (!shopId || initial.snapshot.response.message.shopId !== shopId) {
       fail("shop_owner_mismatch", "snapshot", "panel initData shopId differs from authority snapshot");
@@ -657,6 +678,8 @@ async function execute(args, adapterOverride, lifecycle) {
       "在 fresh PID 上通过真实 NPC 入口打开同一商店，只读核对最终持久化状态。禁止内部 opener。");
     excluded.push(restartOpen.message.panelInstanceId);
     const restartAuthority = await waitInitialAuthority(state, restartOpen);
+    enforceBuyRateConstraint(restartAuthority.snapshot.response.message,
+      args.expectedBuyRatePermille, "restart_snapshot");
     let restartLoadedProduction = null;
     await closePanel(state, "close_restart_readback", restartAuthority.id);
     await session.awaitExactClose("restart", restartAuthority.id, {
@@ -783,6 +806,10 @@ async function execute(args, adapterOverride, lifecycle) {
       controls: state.controls,
       instances: { first: initial.id, restart: restartAuthority.id },
       calls,
+      pricingConstraint: {
+        schema: PRICING_CONSTRAINT_SCHEMA,
+        expectedBuyRatePermille: args.expectedBuyRatePermille,
+      },
       purchasePolicy,
       salePolicy,
       candidate: candidateEvidence,
@@ -893,6 +920,7 @@ async function main(argv, lifecycle) {
 
 module.exports = {
   controlRequestOutputRecord,
+  enforceBuyRateConstraint,
   execute,
   main,
   parseArgs,

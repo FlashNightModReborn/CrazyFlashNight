@@ -120,7 +120,14 @@ window.Panels=(function(){var specs={},active=null,activeEl=null,openSeq=0;retur
   close:function(){if(active&&specs[active].onClose)specs[active].onClose();active=null;activeEl=null},_specs:specs
 }})();
 
-var balance=10000,materialQty=3,inventorySeq=0,inventoryRevision=1,spaceFreed=false,manualLayout=false;
+var balance=10000,buyRatePermille=1000,materialQty=3,inventorySeq=0,inventoryRevision=1,spaceFreed=false,manualLayout=false;
+function safeInteger(value,label){if(!Number.isSafeInteger(value))throw new Error(label+' must be a safe integer');return value}
+function safeNonNegativeInteger(value,label){safeInteger(value,label);if(value<0)throw new Error(label+' must be nonnegative');return value}
+function safeRatePermille(value){safeNonNegativeInteger(value,'buy rate');if(value>1000)throw new Error('buy rate must be within 0..1000');return value}
+function safeAdd(left,right,label){safeInteger(left,label+' left');safeInteger(right,label+' right');var result=left+right;return safeInteger(result,label)}
+function safeSubtract(left,right,label){safeInteger(left,label+' left');safeInteger(right,label+' right');var result=left-right;return safeInteger(result,label)}
+function safeMultiply(left,right,label){safeNonNegativeInteger(left,label+' left');safeNonNegativeInteger(right,label+' right');var result=left*right;return safeNonNegativeInteger(result,label)}
+function floorPermilleTotal(basePrice,quantity,ratePermille){safeRatePermille(ratePermille);var amount=safeMultiply(basePrice,quantity,'price amount');var scaled=safeMultiply(amount,ratePermille,'scaled price');return Math.floor(scaled/1000)}
 window.__navigationLayoutOverride=null;
 var inventorySessionNonce='inventory.harness.session',battleAccessibleCapacity=240;
 function procurementDemand(itemName,options){
@@ -201,8 +208,8 @@ function inventorySnapshot(containerId){
     filterFacets:tree.children.map(strictInventoryFacet),filterItemCount:items.length,setFacets:[],setFilterItemCount:0};
   if(spec)snapshot.filterSpec=JSON.parse(JSON.stringify(spec));if(request.scope!=null)snapshot.scope=String(request.scope);return snapshot;
 }
-function state(shopId){var resolvedShopId=typeof shopId==='string'&&shopId?shopId:'前治安官';return{
-  success:true,v:1,shopId:resolvedShopId,balance:balance,buyMultiplier:1,catalog:catalog,
+function state(shopId){var resolvedShopId=typeof shopId==='string'&&shopId?shopId:'前治安官',rate=safeRatePermille(buyRatePermille),projectedCatalog=catalog.map(function(item){var projected=Object.assign({},item);projected.unitPrice=floorPermilleTotal(item.basePrice,1,rate);return projected});return{
+  success:true,v:1,shopId:resolvedShopId,balance:safeNonNegativeInteger(balance,'balance'),buyRatePermille:rate,catalog:projectedCatalog,
   layout:window.__navigationLayoutOverride||
     (manualLayout?{title:resolvedShopId,defaultSection:'weapons',sections:[{id:'weapons',label:'制式武器',entries:[0,3,4]},{id:'supplies',label:'补给与其他',entries:[1,2,5,6]}]}:{title:resolvedShopId,defaultSection:'',sections:[]}),
   views:{
@@ -213,11 +220,11 @@ function state(shopId){var resolvedShopId=typeof shopId==='string'&&shopId?shopI
 function emit(data){(__handlers.panel_resp||[]).forEach(function(fn){fn(data)})}
 function tradePreview(payload){
   var capacityMax=spaceFreed?3:2;
-  var purchaseLines=payload.purchases.map(function(line){var item=catalog.filter(function(x){return x.catalogIndex===line.catalogIndex})[0],override=Number(window.__tradePreviewMaxOverride);var maxPurchasable=isFinite(override)&&override>0?override:Math.min(5,capacityMax),maxByCapacity=item.majorType==='武器'?capacityMax:item.maxQuantity;return{catalogIndex:item.catalogIndex,itemName:item.itemName,displayName:item.displayName,icon:item.icon,itemKind:item.majorType==='武器'?'equipment':'stack',quantity:line.quantity,unitPrice:item.unitPrice,total:item.unitPrice*line.quantity,maxQuantity:item.maxQuantity,purchaseLimit:item.maxQuantity,maxAffordable:maxPurchasable,maxByCapacity:maxByCapacity,maxPurchasable:maxPurchasable,destinationView:item.use==='材料'?'material':'bag',limitingReason:maxPurchasable<item.maxQuantity?(maxByCapacity<=maxPurchasable?'inventory_full':'insufficient_money'):''}});
-  var saleLines=payload.sales.map(function(line){var material=line.source.viewId==='material';if(material)return{itemName:'强化石',displayName:'强化石',icon:'强化石',itemKind:'stack',quantity:line.quantity,total:25*line.quantity,sourceIdentity:'material:'+line.source.key,scope:'slot',matchedCount:1,eligibleCount:1,protectedCount:0};var bulk=line.scope==='same_name';return{itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',itemKind:'equipment',quantity:bulk?2:1,total:bulk?500:250,sourceIdentity:'bag:'+line.source.slot,scope:bulk?'same_name':'slot',matchedCount:bulk?3:1,eligibleCount:bulk?2:1,protectedCount:bulk?1:0}});
-  var buyTotal=purchaseLines.reduce(function(n,x){return n+x.total},0),sellTotal=saleLines.reduce(function(n,x){return n+x.total},0);
-  var requested=purchaseLines.reduce(function(n,x){return n+(x.itemKind==='equipment'?x.quantity:0)},0),missing=Math.max(0,requested-capacityMax),moneyOk=balance+sellTotal>=buyTotal;
-  return{success:true,v:1,shopId:payload.shopId,tradeToken:'npctrade.'+(++__tradeSeq),purchaseLines:purchaseLines,saleLines:saleLines,buyTotal:buyTotal,sellTotal:sellTotal,netDelta:sellTotal-buyTotal,projectedBalance:balance+sellTotal-buyTotal,requiredSlots:requested,availableSlots:capacityMax,missingSlots:missing,canCommit:moneyOk&&missing===0,blockingError:!moneyOk?'insufficient_money':missing?'inventory_full':''};
+  var purchaseLines=payload.purchases.map(function(line){var item=catalog.filter(function(x){return x.catalogIndex===line.catalogIndex})[0],override=Number(window.__tradePreviewMaxOverride),unitPrice=floorPermilleTotal(item.basePrice,1,buyRatePermille);var maxPurchasable=isFinite(override)&&override>0?override:Math.min(5,capacityMax),maxByCapacity=item.majorType==='武器'?capacityMax:item.maxQuantity;return{catalogIndex:item.catalogIndex,itemName:item.itemName,displayName:item.displayName,icon:item.icon,itemKind:item.majorType==='武器'?'equipment':'stack',quantity:line.quantity,unitPrice:unitPrice,total:floorPermilleTotal(item.basePrice,line.quantity,buyRatePermille),maxQuantity:item.maxQuantity,purchaseLimit:item.maxQuantity,maxAffordable:maxPurchasable,maxByCapacity:maxByCapacity,maxPurchasable:maxPurchasable,destinationView:item.use==='材料'?'material':'bag',limitingReason:maxPurchasable<item.maxQuantity?(maxByCapacity<=maxPurchasable?'inventory_full':'insufficient_money'):''}});
+  var saleLines=payload.sales.map(function(line){var material=line.source.viewId==='material';if(material)return{itemName:'强化石',displayName:'强化石',icon:'强化石',itemKind:'stack',quantity:line.quantity,total:safeMultiply(25,line.quantity,'material sale total'),sourceIdentity:'material:'+line.source.key,scope:'slot',matchedCount:1,eligibleCount:1,protectedCount:0};var bulk=line.scope==='same_name';return{itemName:'训练手枪',displayName:'训练手枪',icon:'训练手枪',itemKind:'equipment',quantity:bulk?2:1,total:bulk?500:250,sourceIdentity:'bag:'+line.source.slot,scope:bulk?'same_name':'slot',matchedCount:bulk?3:1,eligibleCount:bulk?2:1,protectedCount:bulk?1:0}});
+  var buyTotal=purchaseLines.reduce(function(n,x){return safeAdd(n,x.total,'buy total')},0),sellTotal=saleLines.reduce(function(n,x){return safeAdd(n,x.total,'sell total')},0);
+  var requested=purchaseLines.reduce(function(n,x){return safeAdd(n,x.itemKind==='equipment'?x.quantity:0,'required slots')},0),missing=Math.max(0,requested-capacityMax),availableMoney=safeAdd(balance,sellTotal,'available money'),moneyOk=availableMoney>=buyTotal,netDelta=safeSubtract(sellTotal,buyTotal,'net delta'),projectedBalance=safeAdd(balance,netDelta,'projected balance');
+  return{success:true,v:1,shopId:payload.shopId,tradeToken:'npctrade.'+(++__tradeSeq),purchaseLines:purchaseLines,saleLines:saleLines,buyTotal:buyTotal,sellTotal:sellTotal,netDelta:netDelta,projectedBalance:projectedBalance,requiredSlots:requested,availableSlots:capacityMax,missingSlots:missing,canCommit:moneyOk&&missing===0,blockingError:!moneyOk?'insufficient_money':missing?'inventory_full':''};
 }
 function inventoryResponse(message){var result={type:'panel_resp',domain:'inventory',panel:message.panel,
   panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId,success:true,v:1};
