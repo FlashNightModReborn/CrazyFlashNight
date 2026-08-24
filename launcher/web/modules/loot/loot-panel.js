@@ -524,9 +524,9 @@ var LootPanel = (function() {
         else startClaimAll();
     }
 
-    function requestClose() {
+    function requestClose(reason) {
         if (_view&&_view.hasModal()) { _view.closeModal('cancel');return; }
-        if (_organizerActive) { requestOrganizerReturn();return; }
+        if (_organizerActive) { requestOrganizerReturn(reason === 'escape' ? undefined : true);return; } // 契约 §5.5：Esc 只返回战利品视图；×/backdrop/toggle 重同步后直接关面板
         var state=_model&&_model.debugState();
         if (!state||state.phase==='opening') {
             toast('正在读取箱子内容，请稍候。');

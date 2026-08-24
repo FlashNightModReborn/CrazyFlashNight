@@ -585,6 +585,7 @@
             getWindow:requirePort(options, 'getWindow'), getRequest:requirePort(options, 'getRequest'),
             setWindow:requirePort(options, 'setWindow'), autoTransfer:requirePort(options, 'autoTransfer'),
             onBack:requirePort(options, 'onBack'), onPageResult:requirePort(options, 'onPageResult'),
+            onClose:requirePort(options, 'onClose'),
             onTransferResult:requirePort(options, 'onTransferResult'),
             iconHtml:requirePort(options, 'iconHtml'), toast:requirePort(options, 'toast')
         };
@@ -592,13 +593,16 @@
         this._interaction = ownedInteraction(this._state);
         this.root = this._document.createElement('section');
         this.root.className = 'npcshop-space-page';
-        this.root.innerHTML = '<header class="npcshop-space-header"><button type="button" data-space-back data-audio-cue="back">← 返回结算</button>'
+        this.root.innerHTML = '<header class="npcshop-space-header"><div class="workbench-secondary-actions">'
+            + '<button type="button" data-space-back data-audio-cue="back">← 返回结算</button>'
+            + '<button type="button" data-space-close data-audio-cue="back" aria-label="关闭 NPC 商店">×</button></div>'
             + '<div><h2>整理购买空间</h2><p>点击物品即可在背包与战备箱之间快速转移；返回后交易会重新核算。</p></div>'
             + '<span data-space-status>同步中</span></header>'
             + '<div class="npcshop-space-columns"><section><h3>背包 <small data-space-meta="背包"></small></h3><div class="npcshop-space-grid" data-space-grid="背包"></div></section>'
             + '<section><h3>战备箱 <span data-space-pager></span><small data-space-meta="战备箱"></small></h3><div class="npcshop-space-grid battlebox" data-space-grid="战备箱"></div></section></div>';
         this.secondary = new this._components.SecondaryPage({root:this.root, role:'dialog', ariaLabel:'整理购买空间'});
         this.secondary.bindBack(this.root.querySelector('[data-space-back]'), this._ports.onBack);
+        this.secondary.bindClose(this.root.querySelector('[data-space-close]'), this._ports.onClose);
         this._grids = {
             '背包':this.root.querySelector('[data-space-grid="背包"]'),
             '战备箱':this.root.querySelector('[data-space-grid="战备箱"]')

@@ -1642,6 +1642,14 @@
         _detailActionsEl = document.createElement('div');
         _detailActionsEl.className = 'team-advance-actions';
         header.appendChild(_detailActionsEl);
+        // 契约 §5.5：培养页 × = 关闭整个战队面板（主 header × 被二级页抑制，
+        // 页内必须投影面板级关闭）；面板 teardown 统一销毁本页，故回调恒返回
+        // false 阻止 SecondaryPage 先行自动关闭，busy/通道不可用由 requestClose 自反馈。
+        var detailClose = button('×', 'workbench-close-btn team-merc-detail-close', null);
+        detailClose.setAttribute('aria-label', '关闭战队面板');
+        detailClose.setAttribute('data-audio-cue', 'back');
+        _detailPage.bindClose(detailClose, function() { requestClose(); return false; });
+        header.appendChild(detailClose);
         rootEl.appendChild(header);
 
         // H1 两栏：body 是 grid 容器（自身不滚动）；左栏 doll 整列，右栏唯一纵向滚动列

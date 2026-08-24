@@ -271,7 +271,7 @@ var LootView = (function() {
             self.scaleHandle = null;
         });
         session.listen(this.closeButton,'click',function() {
-            if (typeof self.options.onRequestClose === 'function') self.options.onRequestClose();
+            if (typeof self.options.onRequestClose === 'function') self.options.onRequestClose('header');
         });
         session.listen(this.abandonButton,'click',function() {
             if (typeof self.options.onRequestAbandon === 'function') self.options.onRequestAbandon();
@@ -285,7 +285,7 @@ var LootView = (function() {
             document:document,
             restoreFocus:false,
             onEscape:function() {
-                if (typeof self.options.onRequestClose === 'function') self.options.onRequestClose();
+                if (typeof self.options.onRequestClose === 'function') self.options.onRequestClose('escape');
                 return false;
             }
         });

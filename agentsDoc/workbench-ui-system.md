@@ -74,7 +74,7 @@ profile 只定义**可用的壳级 track 和列宽**，不根据 `transfer-pair`
 
 生产工作台通常按“`48px` 顶栏 → PaneChrome / 筛选 → 可滚内容 → 决策 footer”排列。Character Build 是受控例外：左侧“外观与配置 / 当前构筑”的 PaneChrome 以标题复制区承载当前浏览摘要，摘要位于“当前构筑”右侧、放大预览入口左侧；固定 11+4 槽与“护具/武装/药剂”分组不再重复显示 `15 / 15`、`· 6/5/4` 等可从结构直接得出的计数。未选候选时保留语义 overlay 节点但整层隐藏，选中后才显示一行“预览 · 名称”。routine 浏览/读取/恢复提示不得再占用 pane 底部空间，底部只为 blocked/write/reconcile/error 等必须持续可读的异常信息让位。Character Build 右栏 body 固定三行：PaneChrome 标题、紧凑单行候选上下文、候选网格占用全部剩余高度；范围控件与焦点摘要同处上下文行，长摘要省略但保留可访问名称，禁止说明区成为隐式弹性行或把候选网格推到底部，兼容/背包 scope 共享同一 scroll viewport 几何。右侧候选动作直接并入“背包候选 / 候选对比”同一 PaneChrome 标题行；删除无领域决策价值的通用“详情”和任何钉住动作，装备上下文最多显示“装备 / 调制 / 卸下”三项，药剂提交短标签改为“装入”。完整动作语义保留在 `aria-label`；“装备/装入”是唯一主 CTA。1024×576 下动作组必须单行、不换行、不横向溢出；删除独立动作行以扩大候选区，候选可滚区底部也不再复制 action rail 或长快捷键说明。常态状态、指标和 action group 不应因为文字变化推动标题或关闭按钮。二级页从顶栏下沿覆盖整个 workbench body，不在底层双栏上叠半透明可点击内容。
 
-> **现役实现（ADR A3、G1–G5 已完成；G6+ 仍未完成）**：共享 `SecondaryPage` 取得 FocusScope 时，以引用计数抑制底层 header action，并在自己的可访问树中投影 exact Back / Help / 普通 Close；嵌套或异常卸载只释放本 owner 的 suppression。Loot、Skills 与 NPC secondary page 已接入该合同，底层已 inert 的 Help、模式、密度和 `×` 不再保留可点击外观。KShop settlement、NPC settlement 与 NPC help 的 shell-level 结构和进退场已由 shared selector 接管；生产 DualPane 的 button、EntityTile、input、select、range 与可聚焦 scroll region 也已由最终 computed gate 证明消费 focus role。G3 已收敛既定 workbench fragments 与现役 KShop consumer 的语义 motion；G4 又删除工作台 skin/Character Build 的 `.001s/.001ms` 伪关闭及 Loot/Equipment Inspector 的重复 local reduced block，把 shell 内关闭唯一交给 shared root，并以 exact workbench `data-panel` owner 覆盖壳外 Tooltip。G5 已删除历史 feature/skin 的焦点 outline 重置并退出 G2 unlayered bridge；`@layer workbench.states` 现在唯一提供 `2px solid var(--wb-focus)`、`2px` offset 的生产基线。`.character-build-slot` 是唯一显式排除项：外层不画环，inner card 使用 exact focus token，selected 继续独立使用 `--wb-role-selected`。`WB135` 同时拒绝 bridge 回流和未登记的 unlayered focus outline。Equipment Inspector、Character renderer 与 Tuning 图标的现役有界 `matchMedia` 分支均已用真实行为门证明静态终态，因此这些批次没有引入 helper、registry 或常驻 listener。其余 structural motion 绕过与 named-layer 扩围按 G6+ 单独收敛。若后续某页确需让外露 header action 保持可用，必须把该 action 排除出 inert underlay，并补真实行为门；不能通过 feature CSS 绕过 shared owner。
+> **现役实现（ADR A3、G1–G5 已完成；G6+ 仍未完成）**：共享 `SecondaryPage` 取得 FocusScope 时，以引用计数抑制底层 header action，并在自己的可访问树中投影 exact Back / Help / 面板级 Close（二级页 `×` = 关闭整个面板，见 §5.5）；嵌套或异常卸载只释放本 owner 的 suppression。Loot、Skills 与 NPC secondary page 已接入该合同，底层已 inert 的 Help、模式、密度和 `×` 不再保留可点击外观。KShop settlement、NPC settlement 与 NPC help 的 shell-level 结构和进退场已由 shared selector 接管；生产 DualPane 的 button、EntityTile、input、select、range 与可聚焦 scroll region 也已由最终 computed gate 证明消费 focus role。G3 已收敛既定 workbench fragments 与现役 KShop consumer 的语义 motion；G4 又删除工作台 skin/Character Build 的 `.001s/.001ms` 伪关闭及 Loot/Equipment Inspector 的重复 local reduced block，把 shell 内关闭唯一交给 shared root，并以 exact workbench `data-panel` owner 覆盖壳外 Tooltip。G5 已删除历史 feature/skin 的焦点 outline 重置并退出 G2 unlayered bridge；`@layer workbench.states` 现在唯一提供 `2px solid var(--wb-focus)`、`2px` offset 的生产基线。`.character-build-slot` 是唯一显式排除项：外层不画环，inner card 使用 exact focus token，selected 继续独立使用 `--wb-role-selected`。`WB135` 同时拒绝 bridge 回流和未登记的 unlayered focus outline。Equipment Inspector、Character renderer 与 Tuning 图标的现役有界 `matchMedia` 分支均已用真实行为门证明静态终态，因此这些批次没有引入 helper、registry 或常驻 listener。其余 structural motion 绕过与 named-layer 扩围按 G6+ 单独收敛。若后续某页确需让外露 header action 保持可用，必须把该 action 排除出 inert underlay，并补真实行为门；不能通过 feature CSS 绕过 shared owner。
 
 PaneChrome 承担标题、面包屑、meta 和筛选工具；业务内容不得再造第二套局部顶栏。FlowRail 是关系提示，不是常亮主 CTA：待命时低能量，只有拖拽接收、权威 pending 或预览更新时提升亮度。
 
@@ -238,13 +238,24 @@ loadout 强化度交换仍使用同一 exact 背包 target wire。确定成功�
 
 每个决策面唯一主 CTA、提交状态和阻断原因位于非滚动 decision footer；可滚层只承载差异、材料、返还、历史和长说明。内容增长不得把确认按钮推离首屏。`availability-blocked` 仍允许查看原因，原因维持正文对比度；`interaction-disabled/busy` 只禁止控件，禁止用整卡或整条 CommitBar 的统一低 opacity 同时淡化解释文本。EntityTile 的 `inspectable` 与 `actionable` 分离：blocked 实体可由 pointer/键盘查看原因，激活只解释原因且不得发送业务 intent。
 
-异步目录至少区分 `unselected / loading / empty / error / ready`；`0 / unknown / loading / error` 的计数也不得合并。空态统一 `{kind, statement, nextStep}` 语义，不强制领域共用业务组件。视图返回目标来自显式 view/overlay stack，不能以某 controller 或 DOM 是否曾实例化推断。Host 的 `panel_esc` 明确区分 `reason="escape"|"backdrop"|"toggle"`，缺失 reason 只按 legacy `escape` 兼容；共享 modal 仍先按焦点栈处理，但只有真实 `escape` 可以继续消费材料搜索、树层级等域内 Esc 状态，`backdrop/toggle` 不得伪装成 Esc。没有更高层消费后，普通 `×`、backdrop 与 toggle 都执行 exact owner 的普通关闭。
+异步目录至少区分 `unselected / loading / empty / error / ready`；`0 / unknown / loading / error` 的计数也不得合并。空态统一 `{kind, statement, nextStep}` 语义，不强制领域共用业务组件。视图返回目标来自显式 view/overlay stack，不能以某 controller 或 DOM 是否曾实例化推断。Host 的 `panel_esc` 明确区分 `reason="escape"|"backdrop"|"toggle"`，缺失 reason 只按 legacy `escape` 兼容；共享 modal 仍先按焦点栈处理，但只有真实 `escape` 可以继续消费材料搜索、树层级等域内 Esc 状态，`backdrop/toggle` 不得伪装成 Esc。共享 modal 作为最上层 transient 仍先行解散；除此之外普通 `×`、backdrop 与 toggle 不被域内导航层级消费，守卫通过后一律执行 exact owner 的普通关闭（完整分层语义见 §5.5）。
 
 ### 5.4 Native 右侧条件槽
 
 `RightContextSlotOwner` 是封闭的 `hidden | contextHint | actionableNotice | transactionDecision`。唯一优先级仲裁位于 `NativeHudOverlay`：每次只计算一个 `transactionDecision > actionableNotice > contextHint > hidden` 结果，再把同一 owner 投影给 `RightContextWidget` 与 `SafeExitPanelWidget`；两个 widget 不得各自推断优先级，旧 `_externalStatusSlotActive` 高度布尔合同已经移除。
 
 只有 exact owner 可以绘制或命中条件槽：SafeExit transaction 出现时 RightContext 的 notice/hint 零绘制、零命中；notice 出现时 hint 零绘制、零命中；hint 只绘制说明而不产生 action hitbox；`hidden` 或缺少组合 owner 时条件槽的可见几何、像素与命中均为空。`CompositeBounds` 允许为 hover/repaint 保留透明 union，但该区域必须 click-through，不能冒充可见槽。装备入口说明固定为“打开角色构筑；其他整备功能在刘海或装备页”，不在这里复制整备导航。现役 Native top tools 没有独立键盘 focus owner；本轮由 pointer hover 与同源测试探针固定文案，不声称已经增加不存在的键盘焦点链。
+
+### 5.5 关闭语义分层（Esc / × / 返回）
+
+关闭手势按三类层级分别固定语义，任何面板不得混用：transient（下拉、菜单、草稿编辑态、确认/帮助 modal）→ navigation（SecondaryPage 二级页、同壳 view 切换）→ panel root。
+
+- Esc 逐层：一次只消费最上层，顺序固定为 transient → navigation → panel close；只有真实 `escape` reason 可以消费域内层级，`backdrop/toggle` 不得伪装成 Esc。二级页的 Esc = 返回上一级（只关闭二级页本身）。
+- 任何可见的 `×` = 关闭整个面板：无论挂在主 header 还是二级页 header，经既有 busy/reconcile/写守卫后直接执行 exact owner 的普通关闭，不得只关闭当前二级页并停留在主页面。二级页打开时底层 header action 的引用计数抑制保持不变，但二级页必须在自己的 header 用 `bindClose` 投影 `×` 到面板级关闭，不得只提供 `‹ 返回`。面板级 `requestClose` 若含层级检查，必须为二级页 `×` 提供绕过层级检查的独立 commit 路径，禁止复用会被 presenter/modal 检查拦截的入口。唯一例外是纯预览/确认类 transient 覆盖层（纸娃娃放大预览、确认 modal 等），其 `×` 只解散自身。
+- `‹ 返回` 是唯一“上一级”语义；`×` 不承担返回语义。
+- 真·确认/丢弃 modal：Esc 与自身关闭控件都只解散 modal 并把焦点还给 opener，不穿透到面板关闭。
+
+正确基线：KShop 结算页 `×`（关结算 + 关面板）、Loot 整理页 `×`（重同步后直接关面板）、合成战备箱整理 `×`（直接 completeClose）。NPC 商店二级页、战队佣兵/战宠培养页、Arena 定制赛 header `×` 的历史逐层语义按本节修订对齐；Esc 域内顺序仍以 §6 焦点合同为准。
 
 ## 6. 命中区、键盘与焦点
 
@@ -257,7 +268,7 @@ loadout 强化度交换仍使用同一 exact 背包 target wire。确定成功�
 
 > **现役实现（ADR G2/G5 已完成）**：G2 先以过渡 bridge 验证所有生产 `DualPaneShell` 的 focus role，G5 随后删除历史 feature/skin 的 `outline:none/0` 并退出该 bridge。`states.css` 的 named `@layer workbench.states` baseline 现在是生产 focus ring 的唯一来源；button、EntityTile、input、select、range、`[data-scroll-region]` 与显式 tab stop 的 `:focus-visible` 最终 outline 消费 `--wb-focus`，选择态使用 `--wb-role-selected` 边框而不覆盖 focus outline。Character Build slot 是唯一受控 inner-card 例外：外层不重复画环，内层 outline 消费 exact focus token、选中边框消费 selected token，并有 selected+focus computed gate。KShop 全控制族、Loot skinless profile、Character slot/stats scroll 和受影响领域 harness 均为现役自动证据；`WB135` 拒绝旧 bridge 或未登记 unlayered focus outline 回流。Native top tools 仍没有独立键盘 focus owner，不能由 Web 焦点门外推。
 
-模态框与二级页必须：设置可关联标题、把焦点移入、trap Tab/Shift+Tab、使背景 inert/不可聚焦、Esc 按域规则关闭、关闭后归还 opener。二级页不是普通 DOM `display` 切换；它与 modal 共用焦点栈和底层禁用语义。Character Build 的域内 Esc 顺序固定为：纸娃娃放大预览 → 调制检视 modal → 内联“调制说明” → 未提交候选 → tuning/stats/storage → 面板关闭；一次只消费最上层。特别是检视 modal 的 Esc 只能关闭 modal 并把焦点还给调制装备图标；“调制说明”的 Esc 只收起说明并回到入口，下一次 Esc 才能退出 tuning。说明保持打开时必须随当前 operation 或键盘/指针 focus 更新，不提供 pin、`aria-pressed` 或持久化主题。
+模态框与二级页必须：设置可关联标题、把焦点移入、trap Tab/Shift+Tab、使背景 inert/不可聚焦、Esc 按域规则关闭、关闭后归还 opener。二级页不是普通 DOM `display` 切换；它与 modal 共用焦点栈和底层禁用语义。Character Build 的域内 Esc 顺序固定为：纸娃娃放大预览 → 调制检视 modal → 内联“调制说明” → 未提交候选 → tuning/stats/storage → 面板关闭；一次只消费最上层。特别是检视 modal 的 Esc 只能关闭 modal 并把焦点还给调制装备图标；“调制说明”的 Esc 只收起说明并回到入口，下一次 Esc 才能退出 tuning。说明保持打开时必须随当前 operation 或键盘/指针 focus 更新，不提供 pin、`aria-pressed` 或持久化主题。本节 Esc 顺序只约束真实 `escape`；`×`、`‹ 返回` 与 backdrop/toggle 的分层语义统一见 §5.5。
 
 双栏工作台把帮助能力视为标配，而不是每个领域临时造按钮：只要存在拖拽替代路径、批量暂存、快捷键、二级结算或会随模式变化的隐含状态，就必须在关闭按钮前挂载唯一 `HelpAction`。入口固定使用共享 `?` 样式，打开共享 modal，零业务消息、零持久化打开态，并继承 inert、Esc 和 opener focus restore。帮助正文仍由领域负责：KShop 说明单击加购与结算页数量；战备箱说明精确放置、拖拽、`Ctrl+单击`、批量存取/取消/执行；材料档案说明密度、筛选、来源/用途与键盘浏览。storage/tuning/build 等同壳模式切换只更新同一入口内容和可用态，不得并存多个领域帮助按钮。
 

@@ -641,6 +641,7 @@ var NpcShop = (function() {
                 return _inventoryCoordinator.autoTransfer(source, target, done);
             },
             onBack:function() { closeSpaceOrganizer(); return false; },
+            onClose:requestPanelCloseFromSecondary,
             onPageResult:function(result) { if (!result.success) toast('战备箱翻页失败。'); },
             onTransferResult:function(result) {
                 if (result && result.success) _spaceMutated = true;
@@ -984,6 +985,11 @@ var NpcShop = (function() {
             closeSettlement(); return true;
         }
         if (_shell && _shell.hasModal()) { _shell.closeModal(reason); return true; }
+        return commitPanelClose(reason);
+    }
+    // 面板级关闭的独立 commit 路径（契约 §5.5）：二级页 × 绕过层级检查直接关整个面板，
+    // 不得复用 requestClose（会被 presenter/modal 检查拦截成只关二级页）。
+    function commitPanelClose(reason) {
         if (_materialNavigation.isReturning()) {
             toast('正在返回材料档案，请稍候。'); return false;
         }
@@ -996,8 +1002,7 @@ var NpcShop = (function() {
         return true;
     }
     function requestPanelCloseFromSecondary() {
-        requestClose('button');
-        return false;
+        return commitPanelClose('button');
     }
 
     function getView(viewId) {

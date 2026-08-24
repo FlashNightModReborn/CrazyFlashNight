@@ -59,6 +59,7 @@ var ArenaHarnessQA = (function() {
         { id: 'enter-success',        title: 'Enter 成功链路（detail 路径）' },
         { id: 'enter-fail-money',     title: '金钱不足时禁用挑战' },
         { id: 'close-btn',            title: '关闭按钮' },
+        { id: 'close-btn-layered',    title: '子层内关闭按钮直接关面板（§5.5）' },
         { id: 'esc-close',            title: 'ESC 关闭' },
         { id: 'force-close',          title: 'Force Close' },
         { id: 'card-count',           title: '卡片数据完整性' },
@@ -152,6 +153,7 @@ var ArenaHarnessQA = (function() {
             case 'enter-success':           return caseEnterSuccess(api, host);
             case 'enter-fail-money':        return caseEnterFailMoney(api, host);
             case 'close-btn':               return caseCloseBtn(api, host);
+            case 'close-btn-layered':       return caseCloseBtnLayered(api, host);
             case 'esc-close':               return caseEscClose(api, host);
             case 'force-close':             return caseForceClose(api, host);
             case 'card-count':              return caseCardCount(api, host);
@@ -638,6 +640,49 @@ var ArenaHarnessQA = (function() {
                     return m.type === 'panel' && m.cmd === 'close' && m.panel === 'arena';
                 });
                 api.assert(msgs.length >= 1, '应发送至少一条 close 消息');
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
+    }
+
+    // ── case: close-btn-layered（§5.5：子层内 header × 不逐层剥，直接关闭整个面板）──
+    function caseCloseBtnLayered(api, host) {
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.sentMessages = [];
+                if (host.resetCustomState) host.resetCustomState();
+                host.open();
+                return api.waitFor(function() {
+                    return Panels.getActive && Panels.getActive() === 'arena';
+                }, 2000, 'panel active');
+            })
+            .then(function() {
+                document.querySelector('.arena-mode-tab[data-mode="custom"]').click();
+                return api.waitFor(function() {
+                    return document.querySelector('.arena-card-custom') != null;
+                }, 2000, 'custom card rendered');
+            })
+            .then(function() {
+                document.querySelector('.arena-card-custom .arena-custom-side-red .arena-custom-side-edit').click();
+                return api.waitFor(function() {
+                    var st = window.ArenaPanel.getState();
+                    return st.customEditorPage === 'side' && st.customEditorScopeActive === true;
+                }, 2000, 'editor opened in sub-layer');
+            })
+            .then(function() {
+                var closeBtn = document.querySelector('.workbench-close-btn');
+                api.assert(!!closeBtn, '编辑器子层内壳 header 关闭按钮应存在');
+                closeBtn.click();
+                return api.waitFor(function() {
+                    return !Panels.getActive || Panels.getActive() !== 'arena';
+                }, 2000, 'panel closed directly from sub-layer');
+            })
+            .then(function() {
+                var msgs = host.sentMessages.filter(function(m) {
+                    return m.type === 'panel' && m.cmd === 'close' && m.panel === 'arena';
+                });
+                api.assert(msgs.length >= 1, '子层 × 应直接发送面板 close 消息（不逐层剥）');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });

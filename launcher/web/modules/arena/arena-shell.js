@@ -352,7 +352,18 @@
     // P3 Esc 逐层（宿主 panel_esc 通道，一次只消费最内层）：
     // 壳 modal → 参数 SecondaryPage（= 放弃返回）→ 编辑器整页（= 返回配置/上一级）→
     // 结算页（返回基地）→ 确认条（= 取消确认）→ 普通关闭。
-    function onArenaRequestClose() {
+    function onArenaRequestClose(reason) {
+        // 契约 §5.5：非 escape 手势（header × / backdrop / toggle）不逐层剥，
+        // 直接执行面板普通关闭；结算页视角保留 returnBase 关闭旗标；Esc 维持逐层。
+        if (reason !== 'escape') {
+            if ((S._customResultViewEl && !S._customResultViewEl.hidden)
+                    || S._customResultReturnBaseRequired) {
+                requestCustomResultReturnBase();
+            } else {
+                requestClose();
+            }
+            return;
+        }
         if (S._shell && S._shell.hasModal && S._shell.hasModal()) {
             S._shell.closeModal('escape');
             return;

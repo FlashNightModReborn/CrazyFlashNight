@@ -1175,6 +1175,10 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   ok('organizer remains mounted and keyboard-returnable after quick transfer',
     !!spaceBackAfterTransfer&&NpcShop.debugState().organizingSpace,
     JSON.stringify({hasBack:!!spaceBackAfterTransfer,state:NpcShop.debugState()}));
+  var spaceCloseButton=document.querySelector('[data-space-close]');
+  ok('organizer exposes a panel-level Close with exact secondary-action binding (§5.5)',
+    !!spaceCloseButton&&spaceCloseButton.getAttribute('data-secondary-action')==='close'
+      &&spaceCloseButton.getAttribute('aria-label')==='关闭 NPC 商店');
   window.__nextInventoryDelay=100;
   if(spaceBackAfterTransfer)spaceBackAfterTransfer.click();await wait(15);
   var returningCard=document.querySelector('.npcshop-space-transferable');
@@ -1493,16 +1497,12 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   var panelCloseInstance=NpcShop.debugState().panelInstanceId;
   var panelCloseBefore=__sent.filter(function(message){return message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'}).length;
   document.querySelector('[data-trade-close]').click();await wait();
-  var panelCloseMessages=__sent.filter(function(message){return message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'});
-  ok('secondary Close consumes the settlement layer without sending Host outer close',
-    Panels.getActive()==='npcshop'&&!document.querySelector('.npcshop-settlement-page.active')
-      &&panelCloseMessages.length===panelCloseBefore);
-  document.querySelector('.workbench-close-btn').click();await wait();
-  panelCloseMessages=__sent.filter(function(message){return message.type==='panel'
+  var panelCloseMessages=__sent.filter(function(message){return message.type==='panel'
     &&message.panel==='npcshop'&&message.cmd==='close'});
   var exactNpcClose=panelCloseMessages[panelCloseMessages.length-1];
-  ok('outer close button sends exact reason and waits for the explicit mock Host commit',
-    Panels.getActive()===null&&panelCloseMessages.length===panelCloseBefore+1
+  ok('secondary Close sends exact panel close and waits for the mock Host commit (§5.5)',
+    Panels.getActive()===null&&!document.querySelector('.npcshop-settlement-page.active')
+      &&panelCloseMessages.length===panelCloseBefore+1
       &&exactNpcClose.panelInstanceId===panelCloseInstance&&exactNpcClose.reason==='button'
       &&Object.keys(exactNpcClose).sort().join(',')==='cmd,panel,panelInstanceId,reason,type');
 

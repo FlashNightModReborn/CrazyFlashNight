@@ -443,7 +443,7 @@ var KShop = (function() {
         onOpen: onOpen,
         onRebind: onRebind,
         onClose: onClose,
-        onRequestClose: function() { requestClose(); },
+        onRequestClose: function(reason) { requestClose(reason); },
         onForceClose: onForceClose
     });
 
@@ -515,7 +515,7 @@ var KShop = (function() {
         _closeButton.textContent = '×';
         _closeButton.setAttribute('data-header-action', 'close');
         _closeButton.setAttribute('data-audio-cue', 'back');
-        _closeButton.addEventListener('click', function() { requestClose(); });
+        _closeButton.addEventListener('click', function() { requestClose('header'); });
         _workbenchShell.addHeaderAction(_closeButton);
 
         _catalogView = _catalogPresenter.createView(_densityController);
@@ -940,12 +940,12 @@ var KShop = (function() {
     // ══════════════════════════════════════════
     //  Close — saveCart 失败对话框
     // ══════════════════════════════════════════
-    function requestClose() {
+    function requestClose(reason) {
         if (_procurementNavigation.isReturning()) {
             toast('正在返回原合成配方，请稍候。');
             return false;
         }
-        if (_cartController.getSettlement() && _cartController.getSettlement().isActive()) {
+        if (_cartController.getSettlement() && _cartController.getSettlement().isActive() && reason === 'escape') { // 契约 §5.5：Esc 只剥结算页返回商城；×/backdrop/toggle 由整面板关闭经 onClose 统一 teardown
             _cartController.closeSettlement();
             return;
         }

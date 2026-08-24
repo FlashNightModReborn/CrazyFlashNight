@@ -1691,6 +1691,14 @@
         var actions = document.createElement('div');
         actions.className = 'team-advance-actions';
         header.appendChild(actions);
+        // 契约 §5.5：培养页 × = 关闭整个战队面板（主 header × 被二级页抑制，
+        // 页内必须投影面板级关闭）；面板 teardown 统一销毁本页，故回调恒返回
+        // false 阻止 SecondaryPage 先行自动关闭，busy/通道不可用由 requestClose 自反馈。
+        var advanceClose = button('×', 'workbench-close-btn team-pet-advance-close', null);
+        advanceClose.setAttribute('aria-label', '关闭战队面板');
+        advanceClose.setAttribute('data-audio-cue', 'back');
+        _advancePage.bindClose(advanceClose, function() { requestClose(); return false; });
+        header.appendChild(advanceClose);
         rootEl.appendChild(header);
 
         // H1 两栏：body 是 grid 容器（自身不滚动）；左右栏各自窄轨纵滚，右栏为进阶方案主滚动区
