@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：commit `d720b0e433fe4de1df2ab2c12ba2a8e21e6c2ce8`（2026-08-24；implementation `b994d87b0545c9f0a102c0b3c7989e3b20e4cf8a`、tag `runtime-build-v2/20260824-merc-loadout-v1`、tree `61b33e4d6b0d823a94a591a72a85c84266ff7e0f`、request `EB68084CAE7A514BCFBEEB7DA85818BEA0D9CB6F70B26DE7980215E63028250F`、deployment `f1e7a187a67747dca3cc96a52e67c49bd92af3ad`）。
+**最后核对代码基线**：commit `2e00432fca9974fe33346640ad02215aec821b48`（2026-08-24；佣兵换装二期与 LoadoutPicker 抽离。本列车 Host C# 与 runtime 零改动，无 build identity / promotion 语义；上一 runtime 正式部署仍为 deployment `f1e7a187a67747dca3cc96a52e67c49bd92af3ad`、tag `runtime-build-v2/20260824-merc-loadout-v1`、implementation `b994d87b0545c9f0a102c0b3c7989e3b20e4cf8a`）。
 本地 X509 `builder-local-b` / `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `32672992628`）已对 identity `8D595FFA45590BB19D7FDD2BDB52CA3CB669BC64C380FD55B1E399F43A92E57E`、closure `94665B231247953BC8486B0BB7A72146EA16DF60003317EC2B41F25E5E6CD43B` 达成 v2 双 signer / 双故障域共识；正式 Core DLL SHA-256 为 `100B8B387F3133B2F95E5F3128061D6D52C08B1DA723E2BC26331839F231AB12`，38/38 production receipt SHA-256 为 `8594028416A001FEF45B802175A1FD84997618DA704776CED8083E9CC3345BB1`；deployment commit `f1e7a187a67747dca3cc96a52e67c49bd92af3ad` 与首次 post-promotion audit run `32673700808` 已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
 
 **状态边界**：本列车收口佣兵换装二期与 LoadoutPicker 抽离（装备调配重构为槽位网格 + 常驻候选栏 + 拖拽交付/替换，协议扩建 `loadout_candidates` scope=backpack 与 eligibleSlots 跨槽白名单；设计与施工证据见 [LoadoutPicker抽离与佣兵换装二期-设计-2026-08-24.md](docs/LoadoutPicker抽离与佣兵换装二期-设计-2026-08-24.md)）。
@@ -37,7 +37,7 @@ fresh 门包括 AS2 focused `113/113`、ManagedLongGun 回归 `126/126`、Launch
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `d720b0e433fe4de1df2ab2c12ba2a8e21e6c2ce8`）
+## Context Packs（按任务最小加载，最后核对 commit `2e00432fca9974fe33346640ad02215aec821b48`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 
