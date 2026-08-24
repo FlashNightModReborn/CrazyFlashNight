@@ -5,12 +5,12 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：release source commit `0eda5137cc18caad5490c8284f3c6ab32ea23401`（2026-08-24；implementation `0270cf7a1a0bdfbd6520019e4a88d4bbfb62d1be`、发布策略收口 `25c8eb8e5599839768c195373c34db353424f157`、tag `runtime-build-v2/20260824-npcshop-permille-v2`、tree `afd1b1002c14fac3935b5cf4024eff0c68e5c232`、request `D58407438774770285C32D217BF2D2583FC12C4925DBBA71EFA8B82DC85593BC`、deployment `4274894186c1cd2bf6335e15e597efdb512b2560`）。
-本地 X509 `builder-local-a` / `physical-host-a`（keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`）与 GitHub OIDC/Sigstore builder `FB6132DB1DBA240E16283553CE816A025567D9DD4C96FD7B7FA5D085D58278EA` / `github-hosted-windows`（cloud run `32728441320`）已对 identity `4B58C7546464CA4B9B9DDB8E1D263947A4BFB9C4BC8133C95FC69CD307E043C6`、closure `45F0DF4B380A07EE62726CD92122B3104A5EDB7BDB41D7E08CCF6087DB56D271` 达成 v2 双 signer / 双故障域共识；正式 Core DLL SHA-256 为 `999932936C7E5E93D2D9D3F8E8B9C3CB5DFD998AC9C9978C19EE76EA879C9836`，38/38 production receipt SHA-256 为 `D2A2DCDCC7D7E37FA1E9D0F5475F74B8E7F0A9D30E78065C508BEF84FC683426`；deployment commit `4274894186c1cd2bf6335e15e597efdb512b2560` 与首次 post-promotion audit run `32730078012` 已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
+**最后核对代码基线**：release source commit `86de257152c23536ae4590c6e8b42585aeaca290`（2026-08-25；implementation `a50813e70c8515a4f3c1efacf9f43b99989e9e4d`、tag `runtime-build-v2/20260825-gameplay-feedback-fixes-v1`、tree `6f2bede155e864d2ab4cc5bd56250b03fb915701`、request `6028DF51C32EB96AFF5205C9FA5557DCF389480E46EF5E4370992F47F37F7D4C`、deployment `5dd6f8dfd79a81a77db9802b2125b6c318d62bb4`）。
+本地 X509 `builder-local-a` / `physical-host-a`（keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`）与 GitHub OIDC/Sigstore builder `78C145BC579E2ED7BD575ACCF8CF2F2082F6F438F26F553454969D30311AA7D7` / `github-hosted-windows`（cloud run `32788021387`）已对 identity `BA91356C398D3C7D3368587BB2DC2BAB38881A6046315F3BBC29DD57E1C01E07`、closure `02EC857A02CC090A6820D845C3BB00F66ABF74429B2CEA618202DD5654AB124B` 达成 v2 双 signer / 双故障域共识；正式 Core DLL SHA-256 为 `1FD26CEF076D0F4A4F7FDE84E7877F9476A6AB09679C3F6D24A336E3CAEAD081`，38/38 production receipt SHA-256 为 `DD68EA5EA733135CD5881C63EB0545388D165F1DE8122BB7A9C037D0E734027E`；deployment commit `5dd6f8dfd79a81a77db9802b2125b6c318d62bb4` 与首次 post-promotion audit run `32789080009` 已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
 
-**状态边界**：本列车把 NPC 商店口才折扣从跨 AS2/C#/Web 的浮点倍率改为 `0..1000` 整数千分比，并按 `floor((basePrice × quantity) × rate / 1000)` 的固定顺序、每步安全整数与越界 fail-closed 统一权威定价；Web 只投影 Host/AS2 已验证金额，不自行重算。合并上游后暴露的材料派生表、商店头像 provenance 与 NPCShop `WB112` 门面预算也已从上游真源修复，没有放宽阈值。
-fresh 门包括 NPC AS2 `66/66`、佣兵换装 `113/113`、玩家物资事务 `113/113`、Crafting `155/155 + Synthesis 18/18`，各自 Compiler `0/0`；合并后的 `scripts/asLoader.swf` 为 1,138,944 bytes / SHA-256 `CCA0422A4F19D468A52C136B077F0518B2B53325DB41CC96909A4CB9F08E2497`。Launcher 全量为 `4084 pass + 3 explicit opt-in skip / 4087 total`，Panel contracts `68/68`，NPC browser `130/130 + 23/23 + 2/2`，NPC runtime/SecondaryPage `10/10 + 14/14`，material-shop offline `277/277`，workbench ratchet `67/67`、strict audit `0/0`，production policy `38/38`，部署后 bootstrap `--verify-only`、v2 consensus 与远端 Audit 均通过。
-维护者在 promotion 前确认测试存档内现存商店均可用；但其测试档技能可能满级，且本轮未在 promotion 后通过正式入口重跑低/中等级口才报价与真实买卖，因此该人工结果不单独代签历史 binary64 边界或新的商店专项 `standard_entry_verified`。本列车准确状态为 `promoted`；佣兵托管、玩家受击换装、黑市真实经济、设置写入重启、字体观感、T800 武器命令与 Audio H2 仍保持各自既有边界。
+**状态边界**：本列车修复共享 LoadoutPicker 的 scope/anchor/drop-target 契约，使背包拖拽写后保留背包浏览、兼容槽位 A 可向权威白名单中的 B 跨槽交付；装备进阶射击间隔改投影玩家实际 `fireRate`；无伤害几何命中不再重置韧性恢复；选关任务标记、难度直达与成功回流 Web 的生命周期闭环同步收口。上游 Team 二级页 × 位置契约已在发布前 fast-forward 合并，其视口缩放断言按实际变换坐标修正。
+fresh 门包括 Character production `370/370×3`、standalone `218/218`、session `36/36`、projection `8/8`，Team `222/222×3`，Equipment model `81/81` 与 browser 三视口各 `137/137`，Stage Select Edge `53/53`，Launcher 全量 `4085 pass + 3 explicit opt-in skip / 4088 total`。Flash fresh 为佣兵 `113/113`、装备/背包 `78/78 + 147/147`、战斗 `159/159`、Character 六套合计 `580/580`，全部 Compiler `0/0`、32K retry `0`；`scripts/asLoader.swf` 为 1,139,469 bytes / SHA-256 `D501FB6F3696126EEFDF254ABA3213AFABD32271DB6D92DEC0BD36AD14BA7BB3`。production policy `38/38`、worktree/index 33-file bundle、signed consensus、正式根 bootstrap `--verify-only` 与远端 Audit 均通过。
+本轮没有在 promotion 后从无 candidate selector 的正式入口重跑背包连续换装、受击韧性、装备进阶射速显示或选关任务回流等真实业务旅程，因此准确状态为 `promoted`，不新增这些专项的 `standard_entry_verified`；黑市真实经济、设置写入重启、字体观感、T800 武器命令与 Audio H2 仍保持各自既有边界。
 
 ---
 
@@ -37,7 +37,7 @@ fresh 门包括 NPC AS2 `66/66`、佣兵换装 `113/113`、玩家物资事务 `1
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `2e00432fca9974fe33346640ad02215aec821b48`）
+## Context Packs（按任务最小加载，最后核对 commit `86de257152c23536ae4590c6e8b42585aeaca290`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 

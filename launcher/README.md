@@ -1,8 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：commit `416c4441947d40bc27ae3854178e87e2c5cf1ac9`（2026-08-23，战宠生命周期、事务与跨栈面板加固 release source；deployment `df060eac491c7251b261a3f5626960a8ea18911a`）。正式入口已通过 fresh reveal、前后两次 `session.status=verified`、同 lifecycle 与 trusted shutdown；动态 identity/closure 只读下列 manifest、consensus 与 runtime 文档。
-维护者只在 promotion 前确认战宠休息/换图闭环；部署后没有重跑该业务旅程，也没有执行玩家受击/换装、黑市生产经济、设置写入重启、字体观感或 T800 武器命令等专项正式业务旅程，因此各专项不得仅凭总体 promotion 改写为 `standard_entry_verified`。
+**最后核对代码基线**：release source commit `86de257152c23536ae4590c6e8b42585aeaca290`（2026-08-25，背包跨槽、韧性恢复、装备射速与选关回流体验修复；deployment `5dd6f8dfd79a81a77db9802b2125b6c318d62bb4`）。该部署已通过首次 post-promotion audit；动态 identity/closure 与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+部署后没有从无 candidate selector 的正式入口重跑背包连续换装、玩家受击韧性、装备进阶射速显示、选关任务回流，也没有执行黑市生产经济、设置写入重启、字体观感或 T800 武器命令等专项正式业务旅程，因此各专项不得仅凭总体 promotion 改写为 `standard_entry_verified`。
 
 ## 当前真值与阅读顺序
 

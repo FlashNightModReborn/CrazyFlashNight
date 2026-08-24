@@ -1,7 +1,7 @@
 # 闪客快打7佣兵帝国 单机版 MOD
 
 **《闪客快打7佣兵帝国》（Crazy Flasher 7: Mercenary Empire）单机版 MOD 开发工程**  
-**最后核对代码基线**：竞技场 P4/P5 与商城旧档兼容正式发布 source commit `bf9be8c43b223b84f487464a7e6aa9eb8211630b`（2026-08-08）；正式 runtime 身份与证据见 [runtime 构建复现文档](docs/runtime-build-reproducibility.md)。
+**最后核对代码基线**：测试反馈体验修复 release source commit `86de257152c23536ae4590c6e8b42585aeaca290`（2026-08-25；deployment `5dd6f8dfd79a81a77db9802b2125b6c318d62bb4`）；正式 runtime 身份、共识与证据见 [runtime 构建复现文档](docs/runtime-build-reproducibility.md)。
 
 CF7:ME 是一个 **Flash 起源、当前已演化为多栈运行时** 的单机 MOD 工程。  
 游戏核心仍运行在 **ActionScript 2.0 + Flash CS6** 上，但外围运行、启动、UI、验证和存档链路已经扩展为：
