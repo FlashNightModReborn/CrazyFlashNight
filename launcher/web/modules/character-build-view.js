@@ -7,12 +7,9 @@
     var components = typeof module !== 'undefined' && module.exports
         ? require('./workbench-components.js')
         : root && (root.WorkbenchComponents || root.CF7 && root.CF7.WorkbenchComponents);
-    var actions = typeof module !== 'undefined' && module.exports
-        ? require('./character-build/character-build-action-view.js')
-        : root && root.CharacterBuildActionView;
-    var candidateState = typeof module !== 'undefined' && module.exports
-        ? require('./character-build/character-build-candidate-state.js')
-        : root && root.CharacterBuildCandidateState;
+    var loadoutPicker = typeof module !== 'undefined' && module.exports
+        ? require('./loadout-picker/loadout-picker.js')
+        : root && root.LoadoutPicker;
     var facetCounts = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-facet-counts.js')
         : root && root.CharacterBuildFacetCounts;
@@ -28,15 +25,9 @@
     var loadoutPresenter = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-loadout-presenter.js')
         : root && root.CharacterBuildLoadoutPresenter;
-    var candidatePane = typeof module !== 'undefined' && module.exports
-        ? require('./character-build/character-build-candidate-pane.js')
-        : root && root.CharacterBuildCandidatePane;
-    var candidateDrag = typeof module !== 'undefined' && module.exports
-        ? require('./character-build/character-build-candidate-drag.js')
-        : root && root.CharacterBuildCandidateDrag;
     var api = factory(
-        focus, components, actions, candidateState, facetCounts,
-        stats, preview, template, loadoutPresenter, candidatePane, candidateDrag);
+        focus, components, facetCounts,
+        stats, preview, template, loadoutPresenter, loadoutPicker);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -44,9 +35,9 @@
         root.CharacterBuildView = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateModule,
+function(WorkbenchFocus, WorkbenchComponents,
         FacetCountsModule, StatsViewModule, DollPreviewModule, TemplateModule,
-        LoadoutPresenterModule, CandidatePaneModule, CandidateDragModule) {
+        LoadoutPresenterModule, LoadoutPickerModule) {
     'use strict';
     if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
         throw new Error('character-build-view.js requires RovingGridFocus');
@@ -55,12 +46,6 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             || typeof WorkbenchComponents.SecondaryPage !== 'function'
             || typeof WorkbenchComponents.ChoiceGroup !== 'function') {
         throw new Error('character-build-view.js requires SecondaryPage and ChoiceGroup');
-    }
-    if (!ActionViewModule || !ActionViewModule.ActionView) {
-        throw new Error('character-build-view.js requires CharacterBuildActionView');
-    }
-    if (!CandidateStateModule || !CandidateStateModule.CandidateState) {
-        throw new Error('character-build-view.js requires CharacterBuildCandidateState');
     }
     if (!FacetCountsModule || typeof FacetCountsModule.normalize !== 'function') {
         throw new Error('character-build-view.js requires CharacterBuildFacetCounts');
@@ -77,11 +62,9 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
     if (!LoadoutPresenterModule || typeof LoadoutPresenterModule.install !== 'function') {
         throw new Error('character-build-view.js requires CharacterBuildLoadoutPresenter');
     }
-    if (!CandidatePaneModule || typeof CandidatePaneModule.install !== 'function') {
-        throw new Error('character-build-view.js requires CharacterBuildCandidatePane');
-    }
-    if (!CandidateDragModule || typeof CandidateDragModule.install !== 'function') {
-        throw new Error('character-build-view.js requires CharacterBuildCandidateDrag');
+    if (!LoadoutPickerModule || typeof LoadoutPickerModule.install !== 'function'
+            || typeof LoadoutPickerModule.initState !== 'function') {
+        throw new Error('character-build-view.js requires LoadoutPicker');
     }
 
     var ARMOR_SLOTS = TemplateModule.armorSlots, WEAPON_SLOTS = TemplateModule.weaponSlots,
@@ -137,24 +120,11 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         this._onDollViewportChange = typeof options.onDollViewportChange === 'function'
             ? options.onDollViewportChange : function() {};
         this._statsReturnFocus = null;
-        this._selectedSlotKey = '';
-        this._selectedCandidateKey = '';
-        this._activeSlotKey = '';
-        this._activeCandidateKey = '';
-        this._candidateRequestKey = '';
-        this._candidateScope = CandidatePaneModule.normalizeScope(
-            options.candidateScope) || 'backpack';
-        this._candidateScopeGroup = null;
         var viewSequence = ++candidateViewSequence;
-        this._candidateFence = 'candidate-view-' + viewSequence;
-        this._candidateSequence = 0;
-        this._candidateLoadFailed = false;
-        this._candidateFailureCode = '';
-        this._candidateRecoveryPending = false;
-        this._candidateDrag = null;
-        this._candidateDragBroker = null;
-        this._candidateDragActive = false;
-        this._dragCandidate = null;
+        LoadoutPickerModule.initState(this, {
+            candidateScope:options.candidateScope,
+            viewSequence:viewSequence
+        });
         this._tooltip = options.tooltip || null;
         this._fetchLoadoutTooltip = typeof options.fetchLoadoutTooltip === 'function'
             ? options.fetchLoadoutTooltip : null;
@@ -167,23 +137,8 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             }) : null;
         this._stats = null;
         this._facetCounts = FacetCountsModule.normalize(null);
-        this._interactionState = 'opening';
-        this._lockedFocusKey = '';
         this._createDOM();
-        this._candidateScopeGroup = new WorkbenchComponents.ChoiceGroup({
-            document:this._document,
-            value:this._candidateScope,
-            ariaLabel:'背包候选范围',
-            className:'character-build-candidate-scope',
-            choices:[
-                {value:'compatible', label:'兼容',
-                    ariaLabel:'只显示与当前槽位兼容的背包候选'},
-                {value:'backpack', label:'背包',
-                    ariaLabel:'显示背包全部物品'}
-            ],
-            onChange:function(scope) { return self._changeCandidateScope(scope); }
-        });
-        this._candidateScopeGroup.mount(this._candidateScopeMount);
+        LoadoutPickerModule.createScopeGroup(this);
         this.setDensity(this._density);
         this._statsView = new StatsViewModule.StatsView({
             host:this._statsGrid,
@@ -194,24 +149,13 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         });
         this._createFocusControllers();
         this._bindInteractions();
-        this._actionView = new ActionViewModule.ActionView({
-            root:this.root, candidateList:this._candidateList, overlayCopy:this._overlayCopy,
-            getCandidate:function(key) { return self._candidateByKey(key || self._selectedCandidateKey); },
-            getCandidateKey:function() { return self._selectedCandidateKey; },
-            getSlotKey:function() { return self._selectedSlotKey; },
-            selectCandidate:function(key) { return self._selectCandidate(key); },
-            clearCandidateSelection:function() { return self.clearCandidateSelection(); },
+        LoadoutPickerModule.createActionView(this, {
             onCommit:this._onCommitCandidate,
-            onTune:typeof options.onTune === 'function' ? options.onTune : function() {},
-            onUnequip:typeof options.onUnequip === 'function' ? options.onUnequip : function() {},
-            onReconcile:typeof options.onReconcile === 'function' ? options.onReconcile : function() {}
+            onTune:options.onTune,
+            onUnequip:options.onUnequip,
+            onReconcile:options.onReconcile
         });
-        this._candidateState = new CandidateStateModule.CandidateState({
-            document:this._document,
-            host:this._candidateList,
-            countNode:this._candidateCount,
-            renderOwnedSlot:this._renderOwnedSlot,
-            iconHtml:this._iconHtml,
+        LoadoutPickerModule.createCandidateState(this, {
             bindTooltip:function(node, candidate) {
                 return typeof options.bindCandidateTooltip === 'function'
                     ? options.bindCandidateTooltip(node, candidate, function() {
@@ -296,6 +240,7 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
             columns:4,
             onActiveChange:function(key) { self._focusSlot(key); }
         });
+        this._slotRovings = [this._armorRoving, this._weaponRoving, this._drugRoving];
         this._candidateRoving = new WorkbenchFocus.RovingGridFocus({
             root:this._candidateList,
             columns:function() { return self._document.defaultView.getComputedStyle(self._candidateList).gridTemplateColumns.split(/\s+/).length; },
@@ -555,8 +500,15 @@ function(WorkbenchFocus, WorkbenchComponents, ActionViewModule, CandidateStateMo
         return true;
     };
     LoadoutPresenterModule.install(CharacterBuildView.prototype);
-    CandidateDragModule.install(CharacterBuildView.prototype);
-    CandidatePaneModule.install(CharacterBuildView.prototype);
+    LoadoutPickerModule.install(CharacterBuildView.prototype, {
+        slotGrid:LoadoutPresenterModule.slotGridHooks(),
+        pane:{
+            syncFocusSummary:function(host, key) {
+                return FacetCountsModule.syncFocusSummary(
+                    host.root, host._slotFocusSummary, host._facetCounts, key);
+            }
+        }
+    });
     return {
         CharacterBuildView:CharacterBuildView,
         equipmentSlots:ARMOR_SLOTS.concat(WEAPON_SLOTS),

@@ -10,8 +10,8 @@
     var tuning = typeof module !== 'undefined' && module.exports
         ? require('./character-build-tuning.js') : root && root.CharacterBuildTuning;
     var dropTargets = typeof module !== 'undefined' && module.exports
-        ? require('./character-build-drop-targets.js')
-        : root && root.CharacterBuildDropTargets;
+        ? require('../loadout-picker/loadout-picker-drop-policy.js')
+        : root && root.LoadoutPickerDropPolicy;
     var api = factory(session, projection, transition, tuning, dropTargets);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
@@ -35,7 +35,7 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
         throw new Error('CharacterBuildCandidateChannel requires CharacterBuildTuning');
     }
     if (!DropTargetsModule || typeof DropTargetsModule.isDrugRow !== 'function') {
-        throw new Error('CharacterBuildCandidateChannel requires CharacterBuildDropTargets');
+        throw new Error('CharacterBuildCandidateChannel requires LoadoutPickerDropPolicy');
     }
 
     function definitiveCandidateStale(response) {

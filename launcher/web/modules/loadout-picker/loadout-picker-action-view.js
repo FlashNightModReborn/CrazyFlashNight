@@ -1,8 +1,11 @@
 /**
- * Character-build CTA/unequip presentation and keyboard activation.
+ * Loadout picker CTA/unequip presentation and keyboard activation.
  *
- * This leaf owns no authority or transport state. It projects the session state
- * supplied by the view and delegates every action to injected callbacks.
+ * This leaf owns no authority or transport state. It projects the session
+ * state supplied by the view and delegates every action to injected
+ * callbacks. Commit/tune verbs and overlay copy are ports; the defaults
+ * preserve the character-build wording verbatim, and the tuning capability
+ * policy stays exported for the character-build tuning chain.
  */
 (function(root, factory) {
     'use strict';
@@ -10,8 +13,8 @@
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
-        root.CF7.CharacterBuildActionView = api;
-        root.CharacterBuildActionView = api;
+        root.CF7.LoadoutPickerActionView = api;
+        root.LoadoutPickerActionView = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis, function() {
     'use strict';
@@ -37,6 +40,30 @@
         };
         return {available:true, code:'available', reason:''};
     }
+
+    var DEFAULT_TEXTS = {
+        commitReconcile:'确认',
+        commitNoSlot:'先选栏位',
+        commitDrug:'装入',
+        commitEquip:'装备',
+        commitReconcileAria:'重新确认结果',
+        commitNoSlotAria:'先选择目标栏位',
+        commitDrugAria:'装入所选药剂',
+        commitEquipAria:'装备所选候选',
+        tuneAvailable:'调制',
+        tuneCandidate:'调制候选',
+        tuneUnavailable:'不可调制',
+        tuneAriaCurrent:'调制当前装备',
+        tuneAriaCandidatePrefix:'调制所选候选：',
+        tuneNoCandidateReason:'所选候选不能调制',
+        tuneGenericReason:'该物品不能调制',
+        tuneBlockedReason:'当前装备状态不可用',
+        overlayPreviewPrefix:'预览 · ',
+        overlaySelectedPrefix:'已选 · ',
+        overlayNameFallback:'候选',
+        unnamedCandidate:'未命名候选'
+    };
+
     function ActionView(options) {
         options = options || {};
         this._root = options.root;
@@ -54,6 +81,14 @@
         this._onTune = options.onTune;
         this._onUnequip = options.onUnequip;
         this._onReconcile = options.onReconcile;
+        this._drugSlotKeyPrefix = typeof options.drugSlotKeyPrefix === 'string'
+            && options.drugSlotKeyPrefix !== '' ? options.drugSlotKeyPrefix : 'drug:';
+        this._texts = {};
+        for (var key in DEFAULT_TEXTS) {
+            if (!Object.prototype.hasOwnProperty.call(DEFAULT_TEXTS, key)) continue;
+            this._texts[key] = options.texts && typeof options.texts[key] === 'string'
+                && options.texts[key] !== '' ? options.texts[key] : DEFAULT_TEXTS[key];
+        }
         this._state = 'opening';
         this._onClick = this._handleClick.bind(this);
         this._onKeyDown = this._handleKeyDown.bind(this);
@@ -91,43 +126,48 @@
         else this._selectCandidate(key);
     };
     ActionView.prototype.sync = function() {
+        var texts = this._texts;
         var candidate = this._getCandidate();
         var slotKey = this._getSlotKey();
         var slot = slotKey && this._root.querySelector(
             '[data-roving-key="' + String(slotKey).replace(/"/g, '\\"') + '"]');
         var reconcile = this._state === 'mutation_reconcile';
-        var drug = String(slotKey).indexOf('drug:') === 0;
-        this._commitButton.textContent = reconcile ? '确认'
-            : !slotKey ? '先选栏位' : drug ? '装入' : '装备';
-        this._commitButton.setAttribute('aria-label', reconcile ? '重新确认结果'
-            : !slotKey ? '先选择目标栏位'
-                : drug ? '装入所选药剂' : '装备所选候选');
+        var drug = String(slotKey).indexOf(this._drugSlotKeyPrefix) === 0;
+        this._commitButton.textContent = reconcile ? texts.commitReconcile
+            : !slotKey ? texts.commitNoSlot : drug ? texts.commitDrug : texts.commitEquip;
+        this._commitButton.setAttribute('aria-label', reconcile ? texts.commitReconcileAria
+            : !slotKey ? texts.commitNoSlotAria
+                : drug ? texts.commitDrugAria : texts.commitEquipAria);
         this._commitButton.disabled = reconcile ? false
             : this._state !== 'idle' || !slotKey
                 || !candidate || candidate.blocked === true;
-        var occupiedEquipment = !!slot && slot.getAttribute('data-empty') !== 'true'
-            && slot.getAttribute('data-slot-kind') !== 'drug';
-        var candidateSelected = !!candidate && !!slot;
-        var tunable = candidateSelected
-            ? candidate.tunable === true && candidate.blocked !== true
-            : occupiedEquipment && slot.getAttribute('data-tunable') === 'true'
-            && slot.getAttribute('data-blocked') !== 'true';
-        var tuningReason = candidateSelected
-            ? candidate.tuningReason || '所选候选不能调制'
-            : slot && slot.getAttribute('data-tuning-reason')
-            || (slot && slot.getAttribute('data-blocked') === 'true'
-                ? '当前装备状态不可用' : '该物品不能调制');
-        this._tuneButton.hidden = !candidateSelected && !occupiedEquipment;
-        this._tuneButton.textContent = tunable
-            ? candidateSelected ? '调制候选' : '调制' : '不可调制';
-        this._tuneButton.disabled = this._state !== 'idle' || !tunable;
-        this._tuneButton.setAttribute('aria-disabled', this._tuneButton.disabled ? 'true' : 'false');
-        this._tuneButton.setAttribute('aria-label', tunable
-            ? candidateSelected ? '调制所选候选：' + String(candidate.name || '未命名候选')
-                : '调制当前装备'
-            : tuningReason);
-        if (tunable) this._tuneButton.removeAttribute('title');
-        else this._tuneButton.setAttribute('title', tuningReason);
+        if (this._tuneButton) {
+            var occupiedEquipment = !!slot && slot.getAttribute('data-empty') !== 'true'
+                && slot.getAttribute('data-slot-kind') !== 'drug';
+            var candidateSelected = !!candidate && !!slot;
+            var tunable = candidateSelected
+                ? candidate.tunable === true && candidate.blocked !== true
+                : occupiedEquipment && slot.getAttribute('data-tunable') === 'true'
+                && slot.getAttribute('data-blocked') !== 'true';
+            var tuningReason = candidateSelected
+                ? candidate.tuningReason || texts.tuneNoCandidateReason
+                : slot && slot.getAttribute('data-tuning-reason')
+                || (slot && slot.getAttribute('data-blocked') === 'true'
+                    ? texts.tuneBlockedReason : texts.tuneGenericReason);
+            this._tuneButton.hidden = !candidateSelected && !occupiedEquipment;
+            this._tuneButton.textContent = tunable
+                ? candidateSelected ? texts.tuneCandidate : texts.tuneAvailable
+                : texts.tuneUnavailable;
+            this._tuneButton.disabled = this._state !== 'idle' || !tunable;
+            this._tuneButton.setAttribute('aria-disabled', this._tuneButton.disabled ? 'true' : 'false');
+            this._tuneButton.setAttribute('aria-label', tunable
+                ? candidateSelected
+                    ? texts.tuneAriaCandidatePrefix + String(candidate.name || texts.unnamedCandidate)
+                    : texts.tuneAriaCurrent
+                : tuningReason);
+            if (tunable) this._tuneButton.removeAttribute('title');
+            else this._tuneButton.setAttribute('title', tuningReason);
+        }
         this._unequipButton.disabled = this._state !== 'idle'
             || !slot || slot.getAttribute('data-empty') === 'true';
     };
@@ -142,8 +182,8 @@
         var candidate = this._getCandidate(key);
         this._overlayCopy.parentNode.hidden = !candidate;
         this._overlayCopy.textContent = candidate
-            ? (this._getSlotKey() ? '预览 · ' : '已选 · ')
-                + String(candidate.name || '候选') : '';
+            ? (this._getSlotKey() ? this._texts.overlayPreviewPrefix : this._texts.overlaySelectedPrefix)
+                + String(candidate.name || this._texts.overlayNameFallback) : '';
         return candidate;
     };
     ActionView.prototype.setState = function(state) {

@@ -7,7 +7,7 @@ const CandidateTuning = require(
 const CharacterBuildView = require(
     '../launcher/web/modules/character-build-view.js').CharacterBuildView;
 const CandidateState = require(
-    '../launcher/web/modules/character-build/character-build-candidate-state.js').CandidateState;
+    '../launcher/web/modules/loadout-picker/loadout-picker-candidate-state.js').CandidateState;
 
 let checks = 0;
 function check(name, callback) {

@@ -6,7 +6,7 @@
     var tuningModel = typeof module !== 'undefined' && module.exports
         ? require('../equipment-tuning-model.js') : root && root.EquipmentTuningModel;
     var actionView = typeof module !== 'undefined' && module.exports
-        ? require('./character-build-action-view.js') : root && root.CharacterBuildActionView;
+        ? require('../loadout-picker/loadout-picker-action-view.js') : root && root.LoadoutPickerActionView;
     var sourceMarker = typeof module !== 'undefined' && module.exports
         ? require('../equipment-tuning-source-marker.js') : root && root.EquipmentTuningSourceMarker;
     var tuningAdapter = typeof module !== 'undefined' && module.exports
@@ -22,14 +22,14 @@
         root.CharacterBuildTuning = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView,
+function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
         EquipmentTuningSourceMarker, TuningAdapter, TuningPorts, global) {
     'use strict';
     if (!EquipmentTuningModel || !EquipmentTuningModel.normalizeTuningSource) {
         throw new Error('CharacterBuildTuning requires EquipmentTuningModel');
     }
-    if (!CharacterBuildActionView || !CharacterBuildActionView.tuningCapability) {
-        throw new Error('CharacterBuildTuning requires CharacterBuildActionView');
+    if (!LoadoutPickerActionView || !LoadoutPickerActionView.tuningCapability) {
+        throw new Error('CharacterBuildTuning requires LoadoutPickerActionView');
     }
     if (!EquipmentTuningSourceMarker || !TuningAdapter
             || !TuningAdapter.CandidateFlow || !TuningPorts
@@ -180,7 +180,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView,
     CharacterBuildTuning.prototype._enter = function(
             slotKey, item, panelInstanceId, source, inventorySlot) {
         if (!this._tuningModule || !this._tuningModule.create || this._active
-                || !source || !CharacterBuildActionView.tuningCapability(item).available
+                || !source || !LoadoutPickerActionView.tuningCapability(item).available
                 || this._session.getState() !== 'idle' || !String(panelInstanceId || '')) return false;
         if (!inventorySlot) {
             var scroll = this._buildView.root.querySelector('.character-build-candidate-scroll');
@@ -246,7 +246,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView,
         var source = sourceFor(this._session, slotKey);
         var candidateSource = this._candidateFlow.isActive();
         if (!this._active || !this._tuningView || !this._tuningView.canClose()
-                || !source || !CharacterBuildActionView.tuningCapability(item).available) return false;
+                || !source || !LoadoutPickerActionView.tuningCapability(item).available) return false;
         if (candidateSource || this._slotKey !== String(slotKey)) {
             var previousSlotKey = this._slotKey, previousSource = this._entrySource;
             this._slotKey = String(slotKey); this._entrySource = source;
@@ -365,7 +365,7 @@ function(EquipmentTuningView, EquipmentTuningModel, CharacterBuildActionView,
     return {
         CharacterBuildTuning:CharacterBuildTuning,
         sourceFor:sourceFor,
-        tuningCapability:CharacterBuildActionView.tuningCapability,
+        tuningCapability:LoadoutPickerActionView.tuningCapability,
         findLoadoutItem:TuningAdapter.findLoadoutItem,
         findEquipment:findEquipment
     };

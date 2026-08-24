@@ -176,11 +176,28 @@ function focusOutlineStateSelector(selector) {
         .test(String(selector || ''));
 }
 
+/* LoadoutPicker 槽位焦点环契约：环画在槽内卡片上、按钮本体不出环；
+ * cb 与 merc（二期 §5 第二消费方）共用同一形状，按 (file, selector) 精确放行。 */
+var SLOT_FOCUS_RING_EXCEPTIONS = [
+    ['launcher/web/css/workbench/character-build.css', '.character-build-slot:focus-visible'],
+    ['launcher/web/css/workbench/character-build.css',
+        '.character-build-slot:focus-visible .character-build-slot-card'],
+    ['launcher/web/css/workbench/loadout-picker.css', '.character-build-slot:focus-visible'],
+    ['launcher/web/css/workbench/loadout-picker.css',
+        '.character-build-slot:focus-visible .character-build-slot-card'],
+    ['launcher/web/css/workbench/team.css',
+        '.team-workbench .merc-loadout-slot:focus-visible'],
+    ['launcher/web/css/workbench/team.css',
+        '.team-workbench .merc-loadout-slot:focus-visible .merc-loadout-slot-card']
+];
 function characterSlotFocusException(selector, rel) {
-    if (normalizeRel(rel) !== 'launcher/web/css/workbench/character-build.css') return false;
+    var file = normalizeRel(rel);
     var normalized = String(selector || '').replace(/\s+/g, ' ').trim();
-    return normalized === '.character-build-slot:focus-visible'
-        || normalized === '.character-build-slot:focus-visible .character-build-slot-card';
+    for (var i = 0; i < SLOT_FOCUS_RING_EXCEPTIONS.length; i++) {
+        if (SLOT_FOCUS_RING_EXCEPTIONS[i][0] === file
+                && SLOT_FOCUS_RING_EXCEPTIONS[i][1] === normalized) return true;
+    }
+    return false;
 }
 
 function scanUnlayeredFocusOutlineOverrides(source, rel) {

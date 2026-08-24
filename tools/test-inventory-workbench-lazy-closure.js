@@ -91,7 +91,7 @@ async function main() {
     assert(calls[1].includes('modules/character-build/character-build-session-contract.js'));
     assert(calls[1].includes('modules/character-build/character-build-candidate-eligibility.js'));
     assert(calls[1].includes('modules/character-build/character-build-loadout-presenter.js'));
-    assert(calls[1].includes('modules/character-build/character-build-candidate-pane.js'));
+    assert(calls[1].includes('modules/loadout-picker/loadout-picker-candidate-pane.js'));
     assert(calls[1].includes('modules/character-build/character-build-transport.js'));
     assert(calls[1].includes('modules/character-build/character-build-candidate-channel.js'));
     assert(calls[1].includes('modules/equipment-tuning-view.js'));

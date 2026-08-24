@@ -96,14 +96,14 @@ if ([regex]::Matches($sceneSource,
     throw 'Both merc attach blocks in 场景转换 must resolve spawn loadout and keep the grenade slot untouched.'
 }
 
-# 本 suite 现有循环会把 89 个静态 check 调用展开为 97 次运行时断言；把调用点
+# 本 suite 现有循环会把 105 个静态 check 调用展开为 113 次运行时断言；把调用点
 # 与下方 trace 期望同时锁住，避免 focused 施工只改测试却遗忘 runner 计数。
 $loadoutTestPath = Join-Path $repoRoot 'scripts\类定义\org\flashNight\arki\merc\MercLoadoutServiceTest.as'
 $loadoutTestSource = Get-Content -LiteralPath $loadoutTestPath -Raw -Encoding UTF8
 $loadoutCheckCallSites = [regex]::Matches(
     $loadoutTestSource, '(?m)^\s*check\s*\(').Count
-if ($loadoutCheckCallSites -ne 89) {
-    throw "MercLoadoutServiceTest check call-site count drifted: expected 89, actual $loadoutCheckCallSites. Recalculate the 97 runtime assertion contract."
+if ($loadoutCheckCallSites -ne 105) {
+    throw "MercLoadoutServiceTest check call-site count drifted: expected 105, actual $loadoutCheckCallSites. Recalculate the 113 runtime assertion contract."
 }
 if ($loadoutTestSource -notmatch 'class\s+org\.flashNight\.arki\.merc\.MercLoadoutServiceTest\s*\{' -or
     $loadoutTestSource -notmatch 'custody_not_empty' -or
@@ -128,10 +128,10 @@ $focusedRun = @{
         'scripts\逻辑\关卡系统\关卡系统_lsy_场景转换.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^MercLoadoutServiceTest Tests Passed: 97\r?$'
+        '(?m)^MercLoadoutServiceTest Tests Passed: 113\r?$'
         '(?m)^MercLoadoutServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MercLoadoutServiceTest 97/97 passed'
+    SuccessSummary = 'MercLoadoutServiceTest 113/113 passed'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

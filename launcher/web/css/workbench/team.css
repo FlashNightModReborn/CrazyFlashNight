@@ -2883,18 +2883,7 @@
     color: var(--wb-muted);
 }
 
-/* ── 佣兵装备托管（一期 2026-08-23）：槽位第三列按钮区 / 三态徽章 / 候选浏览器宿主 ── */
-.team-workbench .team-merc-equip-slot-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 6px;
-    min-width: 0;
-}
-.team-workbench .team-merc-equip-slot-actions .team-pane-btn {
-    min-width: 44px;
-}
-/* 三态徽章：复用 .team-managed-gun-readout 的 default/managed/danger 色板（托管=accent、异常=danger） */
+/* ── 佣兵装备托管：三态徽章（二期起经 picker decorateSlot 钩子上槽，色板不变）── */
 .team-workbench .team-custody-badge {
     flex: 0 0 auto;
     padding: 1px 6px;
@@ -2925,25 +2914,382 @@
     text-shadow: none;
     cursor: not-allowed;
 }
-.team-workbench .team-merc-loadout-browser-host {
+
+/* ── 佣兵装备托管（二期 2026-08-24）：LoadoutPicker 常驻两栏 —— 左列槽位图标网格
+   （护具 6..11 + 武装 12..15，3 列紧凑网格；手雷 16 只读行随行尾），右列常驻候选栏
+   （五态 / 兼容·背包 scope / 独立滚动区）。类名 = picker classPrefix 'merc-loadout'；
+   视觉全部沿用 --wb-* 角色 token，与 character-build 消费方同手感。── */
+.team-workbench .team-merc-loadout-picker-host {
+    min-width: 0;
+}
+.team-workbench .merc-loadout-picker {
+    display: block;
+    min-width: 0;
+}
+.team-workbench .merc-loadout-columns {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    min-width: 0;
+}
+.team-workbench .merc-loadout-slot-col {
     display: grid;
     gap: 6px;
-    margin-top: 6px;
+    justify-content: start;
+    min-width: 0;
 }
-.team-workbench .team-merc-loadout-browser-host:empty {
-    display: none;
+.team-workbench .merc-loadout-slot-focus-summary {
+    overflow: hidden;
+    color: var(--wb-muted);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.team-workbench .team-merc-loadout-browser-head {
+.team-workbench .merc-loadout-slot-section {
+    min-width: 0;
+}
+.team-workbench .merc-loadout-slot-section h3 {
+    margin: 0 0 4px;
+    color: var(--wb-muted);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+.team-workbench .merc-loadout-slot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, var(--workbench-compact-tile-size));
+    gap: 4px;
+    min-width: 0;
+}
+.team-workbench .merc-loadout-slot {
+    position: relative;
+    display: grid;
+    grid-template-rows: var(--workbench-compact-tile-size) 12px;
+    width: var(--workbench-compact-tile-size);
+    min-width: var(--workbench-compact-tile-size);
+    height: 60px;
+    min-height: 60px;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: visible;
+    color: var(--wb-text);
+    background: transparent;
+    border: 0;
+    text-align: center;
+}
+.team-workbench .merc-loadout-slot-card {
+    pointer-events: none;
+}
+.team-workbench .merc-loadout-slot .team-custody-badge {
+    position: absolute;
+    z-index: 6;
+    top: -4px;
+    right: -4px;
+    padding: 0 3px;
+    font-size: 9px;
+    line-height: 1.3;
+}
+.team-workbench .merc-loadout-slot:hover .merc-loadout-slot-card {
+    border-color: var(--wb-focus);
+}
+.team-workbench .merc-loadout-slot:focus-visible {
+    outline: 0;
+}
+.team-workbench .merc-loadout-slot:focus-visible .merc-loadout-slot-card {
+    border-color: var(--wb-focus);
+    outline: 2px solid var(--wb-focus);
+    outline-offset: -2px;
+}
+.team-workbench .merc-loadout-slot[aria-selected="true"] .merc-loadout-slot-card {
+    border-color: var(--wb-role-selected);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wb-role-selected) 55%, transparent),
+        0 0 8px color-mix(in srgb, var(--wb-role-selected) 18%, transparent);
+}
+.team-workbench .merc-loadout-slot[data-empty="true"] .merc-loadout-slot-card {
+    border-style: dashed;
+}
+.team-workbench .merc-loadout-slot[data-blocked="true"] .merc-loadout-slot-card {
+    border-color: var(--wb-danger);
+}
+/* 拖拽候选期间高亮该物品的所有兼容槽位；hover 落点由 workbench-drop-active/rejected 接管 */
+.team-workbench .merc-loadout-slot.merc-loadout-drop-hint .merc-loadout-slot-card {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--wb-focus) 55%, transparent);
+}
+.team-workbench .merc-loadout-slot.workbench-drop-active .merc-loadout-slot-card {
+    outline: 1px solid var(--wb-focus);
+    outline-offset: 1px;
+    box-shadow: 0 0 7px color-mix(in srgb, var(--wb-focus) 42%, transparent);
+}
+.team-workbench .merc-loadout-slot.workbench-drop-rejected .merc-loadout-slot-card {
+    outline: 1px dashed var(--wb-role-reject);
+    outline-offset: 1px;
+}
+.team-workbench .merc-loadout-slot-label {
+    align-self: end;
+    overflow: hidden;
+    width: 100%;
+    color: var(--wb-muted);
+    font: 600 11px/12px "Microsoft YaHei", sans-serif;
+    text-overflow: ellipsis;
+    display: block;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-slot[aria-selected="true"] .merc-loadout-slot-label {
+    color: color-mix(in srgb, var(--wb-accent) 72%, var(--wb-text));
+}
+.team-workbench .merc-loadout-grenade-row {
+    min-width: 0;
+}
+.team-workbench .merc-loadout-grenade-row .team-merc-equip-slot {
+    grid-template-columns: 32px minmax(0, 1fr);
+}
+
+/* ── 常驻候选栏 ── */
+.team-workbench .merc-loadout-candidate-pane {
+    display: grid;
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    gap: 4px;
+    min-width: 0;
+}
+.team-workbench .merc-loadout-candidate-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
+    min-width: 0;
 }
-.team-workbench .team-merc-loadout-browser-title {
+.team-workbench .merc-loadout-candidate-heading-copy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     min-width: 0;
     color: var(--wb-muted);
+    font-size: 11px;
+}
+.team-workbench .merc-loadout-candidate-count {
+    color: var(--wb-text);
+    font-size: 11px;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-candidate-scope-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+}
+.team-workbench .merc-loadout-candidate-scope-row > span {
+    color: var(--wb-muted);
+    font-size: 11px;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-candidate-scope .workbench-choice-option {
+    min-height: 24px;
+    padding: 0 8px;
+    font-size: 11px;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-candidate-focus-summary {
+    min-width: 0;
+    min-height: 26px;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--wb-muted);
+    background: var(--wb-bg);
+    border-left: 2px solid var(--wb-focus);
+    font-size: 11px;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-candidate-actions {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(52px, max-content);
+    align-items: center;
+    justify-content: start;
+    gap: 4px;
+    min-width: 0;
+}
+.team-workbench .merc-loadout-candidate-actions > button {
+    overflow: hidden;
+    min-height: 26px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    color: var(--wb-text);
+    background: var(--wb-surface);
+    border: 1px solid var(--wb-line);
+    font: 600 11px/1.2 "Microsoft YaHei", sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-candidate-actions > [data-build-action="commit"]:not(:disabled) {
+    color: var(--wb-bg);
+    background: var(--wb-focus);
+    border-color: var(--wb-focus);
+}
+.team-workbench .merc-loadout-candidate-actions > [data-build-action="unequip"]:not(:disabled) {
+    color: var(--wb-warning);
+    border-color: color-mix(in srgb, var(--wb-warning) 55%, var(--wb-line));
+}
+.team-workbench .merc-loadout-candidate-actions > button:disabled {
+    color: var(--wb-muted);
+    background: var(--wb-surface);
+    border-color: var(--wb-line);
+}
+.team-workbench .merc-loadout-candidate-scroll {
+    min-width: 0;
+    min-height: 120px;
+    max-height: 240px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+}
+.team-workbench .merc-loadout-candidate-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 5px;
+    min-width: 0;
+    padding: 0 3px 0 0;
+    overflow: visible;
+}
+.team-workbench .merc-loadout-candidate {
+    position: relative;
+    min-width: 0;
+    min-height: var(--workbench-owned-card-height);
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: left;
+}
+.team-workbench .merc-loadout-candidate:hover,
+.team-workbench .merc-loadout-candidate:focus-visible {
+    border-color: var(--wb-focus);
+}
+.team-workbench .merc-loadout-candidate[aria-selected="true"] {
+    border-color: var(--wb-accent);
+    box-shadow: inset 3px 0 0 var(--wb-accent),
+        0 0 8px color-mix(in srgb, var(--wb-accent) 18%, transparent);
+}
+.team-workbench .merc-loadout-candidate[data-blocked="true"] {
+    color: var(--wb-text);
+    border-color: color-mix(in srgb, var(--wb-danger) 66%, var(--wb-line));
+    opacity: 1;
+}
+.team-workbench .merc-loadout-card-meta {
+    display: block;
+    overflow: hidden;
+    color: var(--wb-muted);
     font-size: 10px;
-    overflow-wrap: anywhere;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-candidate-blocked-reason {
+    display: block;
+    overflow: hidden;
+    color: var(--wb-text);
+    font: 600 10px/1.35 "Microsoft YaHei", sans-serif;
+    opacity: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-candidate-delta {
+    position: absolute;
+    z-index: 5;
+    top: 5px;
+    right: 5px;
+    color: color-mix(in srgb, var(--wb-accent) 45%, transparent);
+    font: 700 10px/1.2 "Consolas", "Microsoft YaHei", monospace;
+}
+.team-workbench .merc-loadout-candidate-state {
+    grid-column: 1 / -1;
+    display: flex;
+    min-height: 96px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 18px;
+    box-sizing: border-box;
+    color: var(--wb-muted);
+    background: var(--wb-bg);
+    border: 1px dashed var(--wb-line);
+    font-size: 12px;
+    text-align: left;
+}
+.team-workbench .merc-loadout-candidate-statement {
+    color: var(--wb-text);
+    font-size: 13px;
+}
+.team-workbench .merc-loadout-candidate-next-step {
+    margin: 0;
+    color: var(--wb-muted);
+    font-size: 11px;
+    line-height: 1.45;
+}
+.team-workbench .merc-loadout-candidate-retry {
+    min-width: 112px;
+    min-height: 32px;
+    padding: 0 12px;
+    color: var(--wb-text);
+    background: var(--wb-surface);
+    border: 1px solid var(--wb-focus);
+    font: 600 11px/1.2 "Microsoft YaHei", sans-serif;
+}
+.team-workbench .merc-loadout-inline-notice {
+    display: block;
+    min-height: 24px;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--wb-muted);
+    background: var(--wb-bg);
+    border: 1px solid var(--wb-line-soft);
+    font-size: 11px;
+    line-height: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-inline-notice[data-notice-kind="blocked"] {
+    color: color-mix(in srgb, var(--wb-danger) 70%, var(--wb-text));
+    border-color: var(--wb-danger);
+}
+.team-workbench .merc-loadout-inline-notice[data-notice-kind="error"] {
+    color: color-mix(in srgb, var(--wb-danger) 70%, var(--wb-text));
+    border-color: color-mix(in srgb, var(--wb-danger) 70%, var(--wb-line));
+}
+.team-workbench .merc-loadout-inline-notice[data-notice-kind="pending"],
+.team-workbench .merc-loadout-inline-notice[data-notice-kind="write"],
+.team-workbench .merc-loadout-inline-notice[data-notice-kind="reconcile"] {
+    color: color-mix(in srgb, var(--wb-warning) 72%, var(--wb-text));
+    border-color: color-mix(in srgb, var(--wb-warning) 56%, var(--wb-line));
+}
+.team-workbench .merc-loadout-inline-notice[data-notice-kind="browsing"] {
+    display: none;
+}
+/* 预览 overlay：挂培养页纸娃娃视口（绝对定位、指针穿透） */
+.team-workbench .merc-loadout-candidate-overlay {
+    position: absolute;
+    z-index: 20;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    max-width: 88%;
+    padding: 3px 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--wb-text);
+    background: color-mix(in srgb, var(--wb-bg) 82%, transparent);
+    border: 1px solid var(--wb-line-soft);
+    font-size: 11px;
+    pointer-events: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.team-workbench .merc-loadout-candidate-overlay[hidden] {
+    display: none;
 }
 
 /* ── 战术文书字：详情/培养页标题与实体名回归思源宋体（旧军事文档感；

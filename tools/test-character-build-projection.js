@@ -4,7 +4,7 @@ const assert = require('assert');
 const Projection = require(
     '../launcher/web/modules/character-build/character-build-projection.js');
 const DropTargets = require(
-    '../launcher/web/modules/character-build/character-build-drop-targets.js');
+    '../launcher/web/modules/loadout-picker/loadout-picker-drop-policy.js');
 
 let passed = 0;
 function check(name, callback) {

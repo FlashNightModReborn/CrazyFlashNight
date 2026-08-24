@@ -1,8 +1,10 @@
 /**
- * Character-build candidate state and tile presentation.
+ * Loadout picker candidate state and tile presentation.
  *
  * This leaf owns the five-state copy and blocked inspection semantics. It has
  * no transport authority: request/session fencing remains in the parent view.
+ * Class names and copy are injectable ports; the defaults preserve the
+ * character-build `character-build-*` prefix and the original copy verbatim.
  */
 (function(root, factory) {
     'use strict';
@@ -13,14 +15,14 @@
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
-        root.CF7.CharacterBuildCandidateState = api;
-        root.CharacterBuildCandidateState = api;
+        root.CF7.LoadoutPickerCandidateState = api;
+        root.LoadoutPickerCandidateState = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis, function(WorkbenchPrimitives) {
     'use strict';
 
     if (!WorkbenchPrimitives || !WorkbenchPrimitives.EntityTile) {
-        throw new Error('character-build-candidate-state.js requires EntityTile');
+        throw new Error('loadout-picker-candidate-state.js requires EntityTile');
     }
     var COPY = {
         unselected:{
@@ -44,18 +46,38 @@
             nextStep:'浏览候选并固定预览；只有明确确认才会改动装备。'
         }
     };
+    var DEFAULT_TEXTS = {
+        blockedReasonFallback:'此候选当前不可装备；当前装备保持不变。',
+        retryLabel:'重试当前槽位',
+        retryAriaLabel:'重新读取当前槽位候选',
+        backpackLabel:'背包',
+        candidateTypeFallback:'背包候选',
+        candidateSummaryFallback:'可预览',
+        unnamedCandidate:'未命名候选',
+        neutralDelta:'±0',
+        hostReadyLabelPrefix:'装备候选。',
+        countSuffix:' 项',
+        countLoading:'读取中',
+        countError:'读取失败',
+        countUnselected:'未选择'
+    };
     function text(value, fallback) {
         return String(value == null || value === '' ? fallback || '' : value);
     }
-    function copyFor(kind) {
-        var source = COPY[kind] || COPY.unselected;
-        return {kind:COPY[kind] ? kind : 'unselected',
+    function copyFor(kind, copy) {
+        var table = copy || COPY;
+        var source = table[kind] || table.unselected;
+        return {kind:table[kind] ? kind : 'unselected',
             statement:source.statement, nextStep:source.nextStep};
     }
-    function blockedReason(candidate) {
-        return text(candidate && (
-            candidate.blockedReason || candidate.reason || candidate.summary
-        ), '此候选当前不可装备；当前装备保持不变。');
+    function resolveTexts(overrides) {
+        var texts = {};
+        for (var key in DEFAULT_TEXTS) {
+            if (!Object.prototype.hasOwnProperty.call(DEFAULT_TEXTS, key)) continue;
+            texts[key] = overrides && typeof overrides[key] === 'string'
+                && overrides[key] !== '' ? overrides[key] : DEFAULT_TEXTS[key];
+        }
+        return texts;
     }
 
     function CandidateState(options) {
@@ -75,6 +97,10 @@
                 || typeof this._renderOwnedSlot !== 'function') {
             throw new Error('CandidateState requires document, host, countNode and renderOwnedSlot');
         }
+        this._copy = options.copy || COPY;
+        this._texts = resolveTexts(options.texts);
+        this._classPrefix = typeof options.classPrefix === 'string'
+            && options.classPrefix !== '' ? options.classPrefix : 'character-build';
         this._kind = 'unselected';
         this._requestKey = '';
         this._candidates = [];
@@ -86,6 +112,14 @@
         this._onClick = this._handleClick.bind(this);
         this._host.addEventListener('click', this._onClick);
     }
+    CandidateState.prototype._cls = function(name) {
+        return this._classPrefix + '-' + name;
+    };
+    CandidateState.prototype._blockedReason = function(candidate) {
+        return text(candidate && (
+            candidate.blockedReason || candidate.reason || candidate.summary
+        ), this._texts.blockedReasonFallback);
+    };
     CandidateState.prototype._disposeBindings = function() {
         for (var i = this._bindings.length - 1; i >= 0; i--) {
             this._bindings[i].destroy();
@@ -103,26 +137,26 @@
         this._onRetry(this._requestKey);
     };
     CandidateState.prototype._stateNode = function(kind) {
-        var projection = copyFor(kind);
+        var projection = copyFor(kind, this._copy);
         var state = this._document.createElement('div');
-        state.className = 'character-build-candidate-state';
+        state.className = this._cls('candidate-state');
         state.setAttribute('data-candidate-state-card', projection.kind);
         state.setAttribute('tabindex', '-1');
         var statement = this._document.createElement('strong');
-        statement.className = 'character-build-candidate-statement';
+        statement.className = this._cls('candidate-statement');
         statement.textContent = projection.statement;
         var next = this._document.createElement('p');
-        next.className = 'character-build-candidate-next-step';
+        next.className = this._cls('candidate-next-step');
         next.textContent = projection.nextStep;
         state.appendChild(statement);
         state.appendChild(next);
         if (kind === 'error') {
             var retry = this._document.createElement('button');
             retry.type = 'button';
-            retry.className = 'character-build-candidate-retry';
+            retry.className = this._cls('candidate-retry');
             retry.setAttribute('data-candidate-retry', '');
-            retry.textContent = '重试当前槽位';
-            retry.setAttribute('aria-label', '重新读取当前槽位候选');
+            retry.textContent = this._texts.retryLabel;
+            retry.setAttribute('aria-label', this._texts.retryAriaLabel);
             state.appendChild(retry);
         }
         return state;
@@ -132,38 +166,39 @@
         var self = this;
         candidate = candidate || {};
         var key = text(candidate.key, 'candidate-' + index);
-        var node = this._renderOwnedSlot('背包', {
+        var node = this._renderOwnedSlot(this._texts.backpackLabel, {
             occupied:true,
             physicalSlot:candidate.physicalSlot == null ? index : candidate.physicalSlot,
             item:candidate.presentation || {}
         }, {iconHtml:this._iconHtml, allowDiscard:false});
-        node.classList.add('character-build-candidate');
+        node.classList.add(this._cls('candidate'));
         node.setAttribute('role', 'option');
         node.setAttribute('data-roving-key', key);
         node.setAttribute('data-candidate-key', key);
         node.setAttribute('tabindex', '-1');
         node.setAttribute('aria-selected', 'false');
         node.setAttribute('aria-label', node.getAttribute('aria-label') + '，'
-            + text(candidate.type, '背包候选') + '，' + text(candidate.summary, '可预览'));
+            + text(candidate.type, this._texts.candidateTypeFallback) + '，'
+            + text(candidate.summary, this._texts.candidateSummaryFallback));
         var delta = this._document.createElement('strong');
-        delta.className = 'character-build-candidate-delta';
+        delta.className = this._cls('candidate-delta');
         delta.setAttribute('data-badge-kind',
             candidate.badgeKind === 'preview' ? 'preview' : 'delta');
-        delta.textContent = candidate.delta || '±0';
+        delta.textContent = candidate.delta || this._texts.neutralDelta;
         node.appendChild(delta);
         if (candidate.blocked === true) {
             var reason = this._document.createElement('span');
-            reason.className = 'character-build-candidate-blocked-reason';
+            reason.className = this._cls('candidate-blocked-reason');
             node.appendChild(reason);
             node.setAttribute('data-blocked', 'true');
             this._bindings.push(WorkbenchPrimitives.EntityTile.bindActivation(node, {
                 role:'option',
                 selected:false,
-                itemName:text(candidate.name, '未命名候选'),
+                itemName:text(candidate.name, this._texts.unnamedCandidate),
                 label:node.getAttribute('aria-label'),
                 inspectable:true,
                 actionable:false,
-                reason:blockedReason(candidate),
+                reason:this._blockedReason(candidate),
                 reasonNode:reason,
                 onBlocked:function(event, context) {
                     if (event && event.preventDefault) event.preventDefault();
@@ -189,7 +224,7 @@
 
     CandidateState.prototype.render = function(kind, candidates, requestKey) {
         if (this._destroyed) return false;
-        var projection = copyFor(kind);
+        var projection = copyFor(kind, this._copy);
         kind = projection.kind;
         candidates = kind === 'ready' && Array.isArray(candidates) ? candidates.slice() : [];
         var restoreRetryFocus = this._retryIssued;
@@ -204,7 +239,8 @@
         this._host.setAttribute('aria-busy', kind === 'loading' ? 'true' : 'false');
         this._host.setAttribute('role', kind === 'ready'
             ? 'listbox' : kind === 'error' ? 'alert' : 'status');
-        this._host.setAttribute('aria-label', (kind === 'ready' ? '装备候选。' : '')
+        this._host.setAttribute('aria-label', (kind === 'ready'
+            ? this._texts.hostReadyLabelPrefix : '')
             + projection.statement + '。' + projection.nextStep);
         if (kind === 'ready') this._host.removeAttribute('aria-live');
         else this._host.setAttribute('aria-live', kind === 'error' ? 'assertive' : 'polite');
@@ -221,16 +257,16 @@
         if (restoreRetryFocus && kind !== 'loading') {
             var focusTarget = this._host.querySelector(kind === 'ready'
                 ? '[data-candidate-key]' : kind === 'error'
-                    ? '[data-candidate-retry]' : '.character-build-candidate-state');
+                    ? '[data-candidate-retry]' : '.' + this._cls('candidate-state'));
             if (focusTarget) {
                 try { focusTarget.focus({preventScroll:true}); } catch (_) { focusTarget.focus(); }
             }
         }
         this._countNode.textContent = kind === 'ready'
-            ? candidates.length + ' 项'
-            : kind === 'loading' ? '读取中'
-            : kind === 'error' ? '读取失败'
-            : kind === 'empty' ? '0 项' : '未选择';
+            ? candidates.length + this._texts.countSuffix
+            : kind === 'loading' ? this._texts.countLoading
+            : kind === 'error' ? this._texts.countError
+            : kind === 'empty' ? 0 + this._texts.countSuffix : this._texts.countUnselected;
         return true;
     };
     CandidateState.prototype.getCandidate = function(key) {

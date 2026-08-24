@@ -1,4 +1,4 @@
-/** Equipped-slot rendering and authoritative loadout tooltip presentation. */
+/** Authoritative loadout tooltip presentation and character-build slot-grid hooks. */
 (function(root, factory) {
     'use strict';
     var facets = typeof module !== 'undefined' && module.exports
@@ -112,72 +112,9 @@ function(FacetCountsModule) {
         return kind === 'drug' && drugSlot >= 0
             ? {kind:'drug', drugSlot:drugSlot} : null;
     }
-    function itemAt(collection, id) {
-        return collection && Object.prototype.hasOwnProperty.call(collection, id)
-            ? collection[id] : null;
-    }
 
     function install(prototype) {
         if (!prototype) throw new Error('CharacterBuildLoadoutPresenter.install requires a view method target');
-        prototype._renderSlotGroup = function(grid, definitions, collection, kind, roving) {
-            var activeElement = this._document.activeElement;
-            var restoreFocus = !!(activeElement && grid.contains(activeElement));
-            if (this._loadoutTooltipScope && this._loadoutTooltipScope.releaseTree) {
-                this._loadoutTooltipScope.releaseTree(grid);
-            }
-            var fragment = this._document.createDocumentFragment();
-            for (var i = 0; i < definitions.length; i++) {
-                var definition = definitions[i];
-                var item = itemAt(collection, definition.id);
-                var key = kind + ':' + definition.id;
-                var slot = this._document.createElement('button');
-                slot.type = 'button';
-                slot.className = 'character-build-slot';
-                slot.setAttribute('role', 'gridcell');
-                slot.setAttribute('data-roving-key', key);
-                slot.setAttribute('data-slot-id', definition.id);
-                slot.setAttribute('data-slot-protocol-key', definition.id);
-                slot.setAttribute('data-slot-kind', kind);
-                slot.setAttribute('data-empty', item ? 'false' : 'true');
-                slot.setAttribute('data-tunable', item && item.tunable === true ? 'true' : 'false');
-                if (item && item.tuningReason) {
-                    slot.setAttribute('data-tuning-reason', text(item.tuningReason));
-                }
-                slot.setAttribute('data-focus-label', definition.label);
-                slot.setAttribute('data-focus-name', item ? item.name : '空槽');
-                slot.setAttribute('aria-selected', key === this._selectedSlotKey ? 'true' : 'false');
-                if (item && item.blocked) slot.setAttribute('data-blocked', 'true');
-                var meta = item ? item.meta || item.type || '已装备' : '点击查看可用候选';
-                slot.setAttribute('data-focus-meta', meta);
-                var card = this._renderOwnedSlot(definition.label, {
-                    occupied:!!item,
-                    physicalSlot:i,
-                    item:item && item.presentation || {}
-                }, {iconHtml:this._iconHtml, allowDiscard:false, tagName:'span'});
-                card.classList.add('character-build-slot-card');
-                slot.setAttribute('aria-label', card.getAttribute('aria-label'));
-                card.setAttribute('aria-hidden', 'true');
-                slot.appendChild(card);
-                if (item) this._bindLoadoutTooltip(
-                    slot, key, definition.label, item.presentation || {},
-                    loadoutTarget(kind, definition.id));
-                var label = this._document.createElement('span');
-                label.className = 'character-build-slot-label';
-                label.textContent = definition.label;
-                slot.appendChild(label);
-                FacetCountsModule.decorateSlot(
-                    slot, this._facetCounts, kind, definition.id);
-                fragment.appendChild(slot);
-            }
-            grid.innerHTML = '';
-            grid.appendChild(fragment);
-            roving.refresh({
-                preferredKey:this._activeSlotKey.indexOf(kind + ':') === 0 ? this._activeSlotKey : '',
-                focus:restoreFocus
-            });
-            return true;
-        };
-
         prototype._bindLoadoutTooltip = function(
                 slot, key, slotLabel, projection, target) {
             if (!target || !this._loadoutTooltipScope
@@ -217,8 +154,34 @@ function(FacetCountsModule) {
         return prototype;
     }
 
+    /* 槽位网格钩子：角标（facet 计数）、调制标记与已装备注释保持 cb 私有，
+     * 由共享 loadout-picker slot-grid 在渲染时回调。 */
+    function slotGridHooks() {
+        return {
+            releaseGrid:function(view, grid) {
+                if (view._loadoutTooltipScope && view._loadoutTooltipScope.releaseTree) {
+                    view._loadoutTooltipScope.releaseTree(grid);
+                }
+            },
+            projectSlot:function(view, slot, item) {
+                slot.setAttribute('data-tunable', item && item.tunable === true ? 'true' : 'false');
+                if (item && item.tuningReason) {
+                    slot.setAttribute('data-tuning-reason', text(item.tuningReason));
+                }
+            },
+            bindSlotTooltip:function(view, slot, key, slotLabel, projection, kind, id) {
+                view._bindLoadoutTooltip(
+                    slot, key, slotLabel, projection, loadoutTarget(kind, id));
+            },
+            decorateSlot:function(view, slot, kind, id) {
+                FacetCountsModule.decorateSlot(slot, view._facetCounts, kind, id);
+            }
+        };
+    }
+
     return {
         install:install,
+        slotGridHooks:slotGridHooks,
         loadoutBasicTooltipHtml:loadoutBasicTooltipHtml,
         loadoutRichTooltipHtml:loadoutRichTooltipHtml,
         loadoutFailureTooltipHtml:loadoutFailureTooltipHtml,

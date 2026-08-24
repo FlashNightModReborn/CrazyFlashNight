@@ -30,7 +30,7 @@ const PRESENTATION_FILES = [
     'launcher/web/modules/character-build/character-build-projection.js',
     'launcher/web/modules/character-build/character-build-candidate-tooltip.js',
     'launcher/web/modules/character-build/character-build-loadout-presenter.js',
-    'launcher/web/modules/character-build/character-build-candidate-pane.js',
+    'launcher/web/modules/loadout-picker/loadout-picker-candidate-pane.js',
     'launcher/web/modules/loot/loot-view.js',
     'launcher/web/modules/loot/loot-organizer.js',
     'launcher/web/modules/kshop-catalog-presenter.js',

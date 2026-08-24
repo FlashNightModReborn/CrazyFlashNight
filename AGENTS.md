@@ -8,9 +8,9 @@
 **最后核对代码基线**：commit `d720b0e433fe4de1df2ab2c12ba2a8e21e6c2ce8`（2026-08-24；implementation `b994d87b0545c9f0a102c0b3c7989e3b20e4cf8a`、tag `runtime-build-v2/20260824-merc-loadout-v1`、tree `61b33e4d6b0d823a94a591a72a85c84266ff7e0f`、request `EB68084CAE7A514BCFBEEB7DA85818BEA0D9CB6F70B26DE7980215E63028250F`、deployment `f1e7a187a67747dca3cc96a52e67c49bd92af3ad`）。
 本地 X509 `builder-local-b` / `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `32672992628`）已对 identity `8D595FFA45590BB19D7FDD2BDB52CA3CB669BC64C380FD55B1E399F43A92E57E`、closure `94665B231247953BC8486B0BB7A72146EA16DF60003317EC2B41F25E5E6CD43B` 达成 v2 双 signer / 双故障域共识；正式 Core DLL SHA-256 为 `100B8B387F3133B2F95E5F3128061D6D52C08B1DA723E2BC26331839F231AB12`，38/38 production receipt SHA-256 为 `8594028416A001FEF45B802175A1FD84997618DA704776CED8083E9CC3345BB1`；deployment commit `f1e7a187a67747dca3cc96a52e67c49bd92af3ad` 与首次 post-promotion audit run `32673700808` 已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
 
-**状态边界**：本列车收口佣兵装备托管一期（背包装备冻结托管覆盖佣兵预设）。
-fresh 门包括 AS2 focused `97/97`、ManagedLongGun 回归 `126/126`、Launcher 全量 `4054 pass + 3 explicit opt-in skip / 4060 total`、Team harness 三视口各 `207/207`、workbench audit `0/0` 与 doc governance；asLoader.swf 已发布含新代码。
-部署后未执行无 candidate selector 的正式入口 smoke，也没有重跑佣兵托管、玩家受击换装、黑市真实经济、设置写入重启、字体观感或 T800 武器命令业务旅程，故本列车只称 `promoted`，不得将任一专项冒称新的 `standard_entry_verified`。Audio H2 继续为独立 `pending`。
+**状态边界**：本列车收口佣兵换装二期与 LoadoutPicker 抽离（装备调配重构为槽位网格 + 常驻候选栏 + 拖拽交付/替换，协议扩建 `loadout_candidates` scope=backpack 与 eligibleSlots 跨槽白名单；设计与施工证据见 [LoadoutPicker抽离与佣兵换装二期-设计-2026-08-24.md](docs/LoadoutPicker抽离与佣兵换装二期-设计-2026-08-24.md)）。
+fresh 门包括 AS2 focused `113/113`、ManagedLongGun 回归 `126/126`、Launcher 全量 `4057 pass + 3 explicit opt-in skip / 4060 total`、character-build harness `218/218` 与 `1095/1095` 各三视口（抽离零断言改动）、Team harness 三视口各 `218/218`、workbench audit `0/0` 与 doc governance；asLoader.swf 已发布含新代码（1,137,982 bytes）。本列车 Host C# 与 runtime 零改动，无 promotion 语义。
+佣兵连续多槽换装无卷屏、拖拽/双击/预览手感与三视口观感已经人工验收，故本列车称 picker 抽离 + merc 换装 `e2e_verified`；一期所列正式入口 smoke 与各业务旅程（佣兵托管真实经济往返、玩家受击换装、黑市、设置写入重启、字体观感、T800 武器命令）未重跑，不得冒称新的 `standard_entry_verified`。Audio H2 继续为独立 `pending`。
 
 ---
 

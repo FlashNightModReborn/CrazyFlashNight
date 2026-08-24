@@ -10,7 +10,7 @@
     var model = typeof module !== 'undefined' && module.exports
         ? require('../equipment-tuning-model.js') : root && root.EquipmentTuningModel;
     var actions = typeof module !== 'undefined' && module.exports
-        ? require('./character-build-action-view.js') : root && root.CharacterBuildActionView;
+        ? require('../loadout-picker/loadout-picker-action-view.js') : root && root.LoadoutPickerActionView;
     var api = factory(model, actions);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
@@ -19,12 +19,12 @@
         root.CharacterBuildTuningAdapter = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(EquipmentTuningModel, CharacterBuildActionView) {
+function(EquipmentTuningModel, LoadoutPickerActionView) {
     'use strict';
 
     if (!EquipmentTuningModel || !EquipmentTuningModel.normalizeTuningSource
-            || !CharacterBuildActionView
-            || !CharacterBuildActionView.tuningCapability) {
+            || !LoadoutPickerActionView
+            || !LoadoutPickerActionView.tuningCapability) {
         throw new Error('CharacterBuildTuningAdapter requires tuning model and action policy');
     }
 
@@ -39,7 +39,7 @@ function(EquipmentTuningModel, CharacterBuildActionView) {
     }
     function findEquipment(payload, slotKey) {
         var item = findLoadoutItem(payload, slotKey);
-        return CharacterBuildActionView.tuningCapability(item).available ? item : null;
+        return LoadoutPickerActionView.tuningCapability(item).available ? item : null;
     }
     function loadoutSourceFor(session, slotKey) {
         var state = session && session.debugState ? session.debugState() : null;
@@ -125,7 +125,7 @@ function(EquipmentTuningModel, CharacterBuildActionView) {
             available:false, code:'blocked', reason:blockedReason(candidate), source:null
         };
         var itemCapability =
-            CharacterBuildActionView.tuningCapability(candidate.presentation);
+            LoadoutPickerActionView.tuningCapability(candidate.presentation);
         if (!itemCapability.available) return {
             available:false,
             code:itemCapability.code,
@@ -355,7 +355,7 @@ function(EquipmentTuningModel, CharacterBuildActionView) {
     return {
         sourceFor:sourceFor,
         capability:capability,
-        tuningCapability:CharacterBuildActionView.tuningCapability,
+        tuningCapability:LoadoutPickerActionView.tuningCapability,
         slotFor:slotFor,
         returnState:returnState,
         resolveReturn:resolveReturn,

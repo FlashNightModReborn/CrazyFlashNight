@@ -1,0 +1,323 @@
+/* Loadout picker view: slot grid, candidate pane states, drop hints and action bar.
+   All values consume the shared workbench roles; class names keep the character-build
+   prefix as the default vocabulary (see modules/loadout-picker/). */
+.character-build-slot-section {
+    min-width:0;
+    margin-bottom:1px;
+}
+.character-build-slot-section h3 {
+    margin:0 0 4px;
+    color:var(--wb-muted);
+    font-size:11px;
+    font-weight:600;
+    line-height:1.2;
+}
+.character-build-slot-grid,
+.character-build-drug-grid {
+    display:grid;
+    grid-template-columns:repeat(3,var(--workbench-compact-tile-size));
+    gap:4px;
+    min-width:0;
+    justify-content:end;
+}
+.character-build-drug-grid {
+    grid-template-columns:repeat(4,var(--workbench-compact-tile-size));
+}
+.character-build-workbench .character-build-slot {
+    position:relative;
+    display:grid;
+    grid-template-rows:var(--workbench-compact-tile-size) 12px;
+    width:var(--workbench-compact-tile-size);
+    min-width:var(--workbench-compact-tile-size);
+    height:60px;
+    min-height:60px;
+    padding:0;
+    box-sizing:border-box;
+    overflow:visible;
+    color:var(--wb-text);
+    background:transparent;
+    border:0;
+    text-align:center;
+}
+.character-build-slot-card {
+    pointer-events:none;
+}
+/* 拖拽候选期间高亮该物品的所有兼容槽位；hover 落点由 workbench-drop-active/rejected 接管。 */
+.character-build-slot.character-build-drop-hint .character-build-slot-card {
+    box-shadow:0 0 0 1px color-mix(in srgb,var(--wb-focus) 55%,transparent);
+}
+.character-build-slot.workbench-drop-active .character-build-slot-card {
+    outline:1px solid var(--wb-focus);
+    outline-offset:1px;
+    box-shadow:0 0 7px color-mix(in srgb,var(--wb-focus) 42%,transparent);
+}
+.character-build-slot.workbench-drop-rejected .character-build-slot-card {
+    outline:1px dashed var(--wb-role-reject);
+    outline-offset:1px;
+}
+.character-build-workbench .inventory-icon-fallback {
+    display:grid;
+    place-items:center;
+    color:color-mix(in srgb,var(--wb-accent) 35%,var(--wb-muted));
+    font:700 18px/1 Consolas,monospace;
+}
+.character-build-slot-card.empty::after {
+    content:'—';
+    color:var(--dls-crystal-dim);
+    font:700 14px/1 Consolas,monospace;
+}
+.character-build-slot:hover .character-build-slot-card {
+    border-color:var(--wb-focus);
+}
+.character-build-slot:focus-visible .character-build-slot-card {
+    border-color:var(--wb-focus);
+    outline:2px solid var(--wb-focus);
+    outline-offset:-2px;
+}
+.character-build-slot:focus-visible { outline:0; }
+.character-build-slot[aria-selected="true"] .character-build-slot-card {
+    border-color:var(--wb-role-selected);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--wb-role-selected) 55%,transparent),
+        0 0 8px color-mix(in srgb,var(--wb-role-selected) 18%,transparent);
+}
+.character-build-slot[data-empty="true"] .character-build-slot-card {
+    border-style:dashed;
+}
+.character-build-slot[data-blocked="true"] .character-build-slot-card {
+    border-color:var(--wb-danger);
+}
+
+.character-build-slot-label {
+    align-self:end;
+    overflow:hidden;
+    width:100%;
+    color:var(--wb-muted);
+    font:600 11px/12px "Microsoft YaHei",sans-serif;
+    text-overflow:ellipsis;
+    display:block;
+    white-space:nowrap;
+}
+.character-build-slot[aria-selected="true"] .character-build-slot-label {
+    color:color-mix(in srgb,var(--wb-accent) 72%,var(--wb-text));
+}
+
+.character-build-candidate-pane {
+    display:grid;
+    grid-template-rows:auto auto minmax(0,1fr);
+}
+
+.character-build-candidate-pane > [hidden] { display:none; }
+.character-build-candidate-context-row {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    min-width:0;
+    min-height:31px;
+    margin-bottom:6px;
+}
+.character-build-candidate-pane .character-build-candidate-scope-row {
+    flex:0 0 auto;
+    min-width:max-content;
+    gap:4px;
+}
+.character-build-candidate-scope-row > span {
+    color:var(--wb-muted);
+    font-size:11px;
+    white-space:nowrap;
+}
+.character-build-candidate-scope .workbench-choice-option {
+    flex:0 0 auto;
+    min-height:27px;
+    padding:0 8px;
+    white-space:nowrap;
+}
+.character-build-candidate-focus-summary {
+    flex:1 1 auto;
+    min-width:0;
+    min-height:31px;
+    padding:5px 8px;
+    box-sizing:border-box;
+    overflow:hidden;
+    color:var(--wb-muted);
+    background:var(--wb-bg);
+    border-left:2px solid var(--wb-focus);
+    font-size:11px;
+    line-height:1.35;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.character-build-candidate-scroll {
+    min-width:0;
+    min-height:0;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+}
+.character-build-candidate-scroll::-webkit-scrollbar { width:7px; }
+.character-build-candidate-scroll::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
+.character-build-candidate-scroll::-webkit-scrollbar-thumb {
+    background:var(--wb-scrollbar-thumb);
+    border:1px solid var(--wb-scrollbar-thumb-border);
+}
+.character-build-candidate-list {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(128px,1fr));
+    gap:5px;
+    min-width:0;
+    padding:0 3px 0 0;
+    overflow:visible;
+}
+.character-build-candidate-list.item-grid-compact {
+    grid-template-columns:repeat(auto-fill,var(--workbench-compact-tile-size));
+    justify-content:start;
+    padding:4px 3px 4px 0;
+}
+.character-build-candidate-list.item-grid-compact .character-build-candidate {
+    width:var(--workbench-compact-tile-size);
+    min-width:var(--workbench-compact-tile-size);
+    max-width:var(--workbench-compact-tile-size);
+    height:var(--workbench-compact-tile-size);
+    min-height:var(--workbench-compact-tile-size);
+    padding:2px;
+}
+.character-build-candidate-list.item-grid-compact .character-build-candidate-delta {
+    /* Current projection is a neutral "preview" badge; no numeric delta is hidden. */
+    display:none;
+}
+.character-build-candidate-state {
+    grid-column:1 / -1;
+    display:flex;
+    min-height:96px;
+    align-items:flex-start;
+    justify-content:center;
+    flex-direction:column;
+    gap:6px;
+    padding:16px 18px;
+    box-sizing:border-box;
+    color:var(--wb-muted);
+    background:var(--wb-bg);
+    border:1px dashed var(--wb-line);
+    font-size:12px;
+    text-align:left;
+}
+.character-build-candidate-statement {
+    color:var(--wb-text);
+    font-size:13px;
+}
+.character-build-candidate-next-step {
+    margin:0;
+    color:var(--wb-muted);
+    font-size:11px;
+    line-height:1.45;
+}
+.character-build-candidate-retry {
+    min-width:112px;
+    min-height:44px;
+    padding:0 12px;
+    color:var(--wb-text);
+    background:var(--wb-surface);
+    border:1px solid var(--wb-focus);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+}
+.character-build-workbench .character-build-candidate {
+    position:relative;
+    min-width:0;
+    height:var(--workbench-owned-card-height);
+    min-height:var(--workbench-owned-card-height);
+    padding-right:29px;
+    box-sizing:border-box;
+    overflow:hidden;
+    text-align:left;
+}
+.character-build-candidate:hover,
+.character-build-candidate:focus-visible {
+    border-color:var(--wb-focus);
+}
+.character-build-candidate[aria-selected="true"] {
+    border-color:var(--wb-accent);
+    box-shadow:inset 3px 0 0 var(--wb-accent),
+        0 0 8px color-mix(in srgb,var(--wb-accent) 18%,transparent);
+}
+.character-build-candidate[data-blocked="true"] {
+    color:var(--wb-text);
+    border-color:color-mix(in srgb,var(--wb-danger) 66%,var(--wb-line));
+    opacity:1;
+    padding-bottom:23px;
+}
+.character-build-candidate-blocked-reason {
+    position:absolute;
+    right:4px;
+    bottom:3px;
+    left:44px;
+    overflow:hidden;
+    color:var(--wb-text);
+    background:var(--wb-surface);
+    font:600 10px/1.35 "Microsoft YaHei",sans-serif;
+    opacity:1;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    /* 视觉降噪：完整原因保留给 aria-describedby 与悬浮说明，瓦片只露短标记。 */
+    font-size:0;
+}
+.character-build-candidate-blocked-reason::after {
+    content:'不可装备';
+    color:var(--wb-muted);
+    font:600 10px/1.35 "Microsoft YaHei",sans-serif;
+}
+.character-build-candidate .inventory-slot-copy { padding-right:2px; }
+.character-build-candidate-delta {
+    position:absolute;
+    z-index:5;
+    top:5px;
+    right:5px;
+    color:var(--wb-success);
+    font:700 10px/1.2 "Consolas","Microsoft YaHei",monospace;
+}
+.character-build-candidate-delta[data-badge-kind="preview"] {
+    color:color-mix(in srgb,var(--wb-accent) 45%,transparent);
+}
+
+.character-build-candidate-actions > button {
+    min-height:29px;
+    padding:0 10px;
+    color:var(--wb-text);
+    background:var(--wb-surface);
+    border:1px solid var(--wb-line);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+}
+.character-build-candidate-actions {
+    display:grid;
+    grid-auto-flow:column;
+    grid-auto-columns:minmax(44px,max-content);
+    align-items:center;
+    flex:0 0 auto;
+    gap:4px;
+    min-width:0;
+}
+.character-build-candidate-actions > button {
+    overflow:hidden;
+    min-width:44px;
+    padding:0 5px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.character-build-candidate-actions > [data-build-action="commit"]:not(:disabled) {
+    color:var(--wb-bg);
+    background:var(--wb-focus);
+    border-color:var(--wb-focus);
+}
+.character-build-candidate-actions > [data-build-action="tune"]:not(:disabled) {
+    color:var(--wb-accent);
+    border-color:color-mix(in srgb,var(--wb-accent) 58%,var(--wb-line));
+}
+.character-build-candidate-actions > [data-build-action="unequip"]:not(:disabled) {
+    color:var(--wb-warning);
+    border-color:color-mix(in srgb,var(--wb-warning) 55%,var(--wb-line));
+}
+.character-build-candidate-actions > button:disabled {
+    color:var(--wb-muted);
+    background:var(--wb-surface);
+    border-color:var(--wb-line);
+}

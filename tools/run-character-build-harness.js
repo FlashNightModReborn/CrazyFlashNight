@@ -28,13 +28,17 @@ function staticAudit() {
         'launcher/web/modules/character-build/character-build-template.js');
     const loadoutPresenter = read(
         'launcher/web/modules/character-build/character-build-loadout-presenter.js');
+    const slotGrid = read(
+        'launcher/web/modules/loadout-picker/loadout-picker-slot-grid.js');
     const candidatePane = read(
-        'launcher/web/modules/character-build/character-build-candidate-pane.js');
-    const presentation = [view, template, loadoutPresenter, candidatePane].join('\n');
+        'launcher/web/modules/loadout-picker/loadout-picker-candidate-pane.js');
+    const loadoutPicker = read(
+        'launcher/web/modules/loadout-picker/loadout-picker.js');
+    const presentation = [view, template, loadoutPresenter, slotGrid, candidatePane, loadoutPicker].join('\n');
     const actionView = read(
-        'launcher/web/modules/character-build/character-build-action-view.js');
+        'launcher/web/modules/loadout-picker/loadout-picker-action-view.js');
     const candidateState = read(
-        'launcher/web/modules/character-build/character-build-candidate-state.js');
+        'launcher/web/modules/loadout-picker/loadout-picker-candidate-state.js');
     const facetCounts = read(
         'launcher/web/modules/character-build/character-build-facet-counts.js');
     const candidatePresentation = presentation + '\n' + candidateState;
@@ -51,7 +55,8 @@ function staticAudit() {
         'launcher/web/modules/inventory-workbench-config.js');
     const headerModule = read('launcher/web/modules/inventory-workbench-header.js');
     const cssFacade = read('launcher/web/css/panels.css');
-    const css = read('launcher/web/css/workbench/character-build.css')
+    const css = read('launcher/web/css/workbench/loadout-picker.css')
+        + read('launcher/web/css/workbench/character-build.css')
         + read('launcher/web/css/workbench/character-build-stats.css');
     const harness = read('launcher/web/modules/character-build/dev/harness.html');
     const workbenchHarness = read(
@@ -70,7 +75,7 @@ function staticAudit() {
         && view.includes('new WorkbenchComponents.SecondaryPage')
         && view.includes('new StatsViewModule.StatsView')
         && view.includes('DollPreviewModule.create')
-        && presentation.includes('character-build-slot-card')
+        && presentation.includes("classPrefix + '-slot-card'")
         && presentation.includes('this._renderOwnedSlot')
         && inventory.includes("options.tagName === 'span' ? 'span' : 'article'"),
         'character build composes shared focus, SecondaryPage and owned-item primitives');

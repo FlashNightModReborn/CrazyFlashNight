@@ -9,7 +9,8 @@ import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.neur.Event.EventBus;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
-/** 佣兵装备托管（一期）policy、事务与冻结边界的纯 AS2 回归。设计：docs/佣兵装备托管-设计-2026-08-23.md §9。 */
+/** 佣兵装备托管 policy、事务、冻结边界与二期 §4 候选 scope 协议扩建的纯 AS2 回归。
+ *  设计：docs/佣兵装备托管-设计-2026-08-23.md §9、docs/LoadoutPicker抽离与佣兵换装二期-设计-2026-08-24.md §4/§6。 */
 class org.flashNight.arki.merc.MercLoadoutServiceTest {
     private static var passed:Number = 0;
     private static var failed:Number = 0;
@@ -34,9 +35,14 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
             testCorruptSlotFailsClosed();
             testSpawnLoadout();
             testCandidates();
+            testCandidatesBackpackScope();
+            testCandidatesBackpackPerfSmoke();
             testSlotTooltip();
             testBusyReentryAndNotificationIsolation();
             testDismissGuardAndPanelCommands();
+            // 依赖上一条用例已跑过 install()：install 带 _inited 静态守卫，
+            // 重复调用跳过注册与 _json 初始化，故本用例必须排在其后。
+            testCandidatesScopeHandler();
         } finally {
             restoreCatalogFixture(catalogReceipt);
         }
@@ -731,6 +737,178 @@ class org.flashNight.arki.merc.MercLoadoutServiceTest {
         } finally {
             restoreRoot(s);
         }
+    }
+
+    /**
+     * 二期 §4 协议扩建：scope="backpack" 背包总览。逐候选 eligibleSlots 必须逐点等于
+     * 逐槽单跑 §2 policy 的并集；全局不兼容候选 eligibleSlots=[] 仍携带（置灰展示）；
+     * slot 参数有效时保留单槽 eligible/lockReason 以兼容旧消费方。
+     */
+    private static function testCandidatesBackpackScope():Void {
+        var s:Object = saveRoot();
+        try {
+            var scene:Object = setupMercScene(6);
+            var m:Array = scene.merc;
+            var bag:ArrayInventory = scene.bag;
+            bag.add(0, new BaseItem("测试头盔", {level:1}, 11));
+            bag.add(1, new BaseItem("测试长枪B", {level:6}, 22));
+            bag.add(2, new BaseItem("测试手枪", {level:2}, 33));
+            bag.add(3, new BaseItem("测试重炮", {level:1}, 44));
+            bag.add(4, new BaseItem("测试材料", 5, 55));
+
+            var result:Object = MercLoadoutService.buildCandidates(m, 12, "backpack");
+            check(result.success === true && result.scope == "backpack"
+                    && Number(result.slot) == 12 && result.useKey == "长枪"
+                    && result.candidates.length == 5,
+                "backpack scope 返回背包全部占用格候选（不按单槽 use 预过滤）");
+
+            // eligibleSlots 逐点等于逐槽单跑 §2 policy 的并集（6..15 全槽扫描）
+            var unionMatches:Boolean = true;
+            for (var i:Number = 0; i < result.candidates.length; i++) {
+                var candidate:Object = result.candidates[i];
+                var item:Object = bag.getItem(String(candidate.source.slot));
+                var expected:Array = [];
+                for (var slot:Number = 6; slot <= 15; slot++) {
+                    if (MercLoadoutService.evaluateItemForSlot(m, slot, item).success === true) {
+                        expected.push(slot);
+                    }
+                }
+                if (!sameSlots(candidate.eligibleSlots, expected)) unionMatches = false;
+            }
+            check(unionMatches,
+                "eligibleSlots 逐点等于逐槽单跑 §2 policy 的并集");
+            check(sameSlots(result.candidates[0].eligibleSlots, [6])
+                    && sameSlots(result.candidates[1].eligibleSlots, [12])
+                    && sameSlots(result.candidates[2].eligibleSlots, [13, 14]),
+                "头盔/长枪/手枪白名单槽号正确（手枪覆盖 13 与手枪2 14）");
+            check(result.candidates[3].eligibleSlots.length == 0
+                    && result.candidates[4].eligibleSlots.length == 0,
+                "等级不足与非装备候选 eligibleSlots 为空数组仍携带（置灰展示）");
+            check(result.candidates[1].eligible === true
+                    && result.candidates[1].lockReason == ""
+                    && Number(result.candidates[1].requirementLevel) == 8
+                    && result.candidates[3].eligible === false
+                    && result.candidates[3].lockReason == "level_locked"
+                    && Number(result.candidates[3].requirementLevel) == 30,
+                "slot 参数有效时 backpack scope 仍携带该槽单槽盖章字段");
+            check(result.candidates[2].eligible === false
+                    && result.candidates[2].lockReason == "slot_mismatch",
+                "backpack scope 下异 use 候选对选中槽盖章 slot_mismatch");
+
+            // slot 缺省/不可写：背包总览仍可取，但不再携带单槽语义字段
+            var noSlot:Object = MercLoadoutService.buildCandidates(m, null, "backpack");
+            check(noSlot.success === true && noSlot.slot == null && noSlot.useKey == null
+                    && noSlot.candidates.length == 5
+                    && noSlot.candidates[0].eligible === undefined
+                    && noSlot.candidates[0].eligibleSlots instanceof Array,
+                "backpack scope 缺省 slot 时仅产出跨槽白名单");
+            check(MercLoadoutService.buildCandidates(m, 16, "backpack").success === true
+                    && MercLoadoutService.buildCandidates(m, 16).error == "slot_locked",
+                "手雷槽 16 在 backpack scope 视为无选中槽，slot scope 仍 slot_locked");
+
+            // 非法 scope fail-closed；缺省/显式 slot 与旧两参调用行为一致
+            check(MercLoadoutService.buildCandidates(m, 12, "背包").error == "invalid_scope",
+                "非法 scope 值 fail-closed 报 invalid_scope");
+            var legacy:Object = MercLoadoutService.buildCandidates(m, 12);
+            var explicitSlot:Object = MercLoadoutService.buildCandidates(m, 12, "slot");
+            check(legacy.success === true && explicitSlot.success === true
+                    && legacy.candidates.length == 2 && explicitSlot.candidates.length == 2
+                    && legacy.candidates[0].eligible === true
+                    && legacy.candidates[0].eligibleSlots === undefined
+                    && explicitSlot.candidates[0].eligibleSlots === undefined
+                    && Number(legacy.loadoutRevision) == 0,
+                "slot scope（缺省/显式）维持旧行为：单槽预过滤且无 eligibleSlots 字段");
+
+            // candidates 是只读投影：不推进 loadoutRevision、不标脏
+            var revisionBefore:Number = MercLoadoutService.getLoadoutRevision(m);
+            MercLoadoutService.buildCandidates(m, 12, "backpack");
+            MercLoadoutService.buildCandidates(m, 13, "slot");
+            check(MercLoadoutService.getLoadoutRevision(m) == revisionBefore
+                    && _root.存档系统.dirtyMark === false,
+                "candidates 调用不推进 loadoutRevision 也不标脏");
+
+            var emptyScene:Object = setupMercScene(2);
+            var emptyResult:Object = MercLoadoutService.buildCandidates(
+                emptyScene.merc, 12, "backpack");
+            check(emptyResult.success === true && emptyResult.candidates.length == 0,
+                "空背包 backpack scope 返回空候选列表");
+        } finally {
+            restoreRoot(s);
+        }
+    }
+
+    /** handler 透传 scope：缺省按 slot；backpack 回带 eligibleSlots；非法 scope 透传错误码。 */
+    private static function testCandidatesScopeHandler():Void {
+        var s:Object = saveRoot();
+        try {
+            var scene:Object = setupMercScene(3);
+            var m:Array = scene.merc;
+            var bag:ArrayInventory = scene.bag;
+            bag.add(0, new BaseItem("测试手枪", {level:2}, 222));
+            var sent:Array = [];
+            _root.server = {sendSocketMessage:function(msg:String):Void { sent.push(String(msg)); }};
+            _root.gameCommands = undefined;
+            // install 带 _inited 静态守卫：此处调用为 no-op，仅显式声明对
+            // testDismissGuardAndPanelCommands 已初始化 _json（sendResponse 依赖）的顺序依赖。
+            MercPanelService.install();
+
+            MercPanelService.handleLoadoutCandidates(
+                {callId:"s1", mercIndex:0, mercId:"m1", slotKey:"13"});
+            check(sent.length == 1
+                    && sent[0].indexOf("测试手枪") > -1
+                    && sent[0].indexOf("eligibleSlots") == -1,
+                "handler 缺省 scope 按 slot 语义响应（无 eligibleSlots 字段）");
+            MercPanelService.handleLoadoutCandidates(
+                {callId:"s2", mercIndex:0, mercId:"m1", slotKey:"13", scope:"backpack"});
+            check(sent.length == 2
+                    && sent[1].indexOf("eligibleSlots") > -1
+                    && sent[1].indexOf("测试手枪") > -1,
+                "handler 透传 backpack scope 且响应携带 eligibleSlots");
+            MercPanelService.handleLoadoutCandidates(
+                {callId:"s3", mercIndex:0, mercId:"m1", slotKey:"13", scope:"背包"});
+            check(sent.length == 3 && sent[2].indexOf("invalid_scope") > -1,
+                "handler 透传非法 scope 并回送 invalid_scope");
+        } finally {
+            restoreRoot(s);
+        }
+    }
+
+    /** 50 格背包 × 10 可写槽 = 500 次 policy 评估性能冒烟：断言完成且记录耗时。 */
+    private static function testCandidatesBackpackPerfSmoke():Void {
+        var s:Object = saveRoot();
+        try {
+            var scene:Object = setupMercScene(50);
+            var m:Array = scene.merc;
+            var bag:ArrayInventory = scene.bag;
+            for (var i:Number = 0; i < 50; i++) {
+                bag.add(i, new BaseItem(i % 2 == 0 ? "测试长枪A" : "测试手枪", {level:2}, i));
+            }
+            var started:Number = getTimer();
+            var result:Object = MercLoadoutService.buildCandidates(m, 12, "backpack");
+            var elapsed:Number = getTimer() - started;
+            trace("[PERF] buildCandidates backpack scope 50 件 x 10 槽耗时: " + elapsed + "ms");
+            var allCorrect:Boolean = result.success === true && result.candidates.length == 50;
+            for (var k:Number = 0; k < result.candidates.length; k++) {
+                if (!sameSlots(result.candidates[k].eligibleSlots,
+                        k % 2 == 0 ? [12] : [13, 14])) {
+                    allCorrect = false;
+                }
+            }
+            check(allCorrect,
+                "50 件装备 backpack scope 单帧内完成且 eligibleSlots 全部正确（耗时 "
+                    + elapsed + "ms）");
+        } finally {
+            restoreRoot(s);
+        }
+    }
+
+    /** 数字槽号数组逐点相等（顺序敏感；eligibleSlots 按 6..15 升序产出）。 */
+    private static function sameSlots(actual, expected:Array):Boolean {
+        if (!(actual instanceof Array) || actual.length != expected.length) return false;
+        for (var i:Number = 0; i < expected.length; i++) {
+            if (Number(actual[i]) != Number(expected[i])) return false;
+        }
+        return true;
     }
 
     private static function testSlotTooltip():Void {

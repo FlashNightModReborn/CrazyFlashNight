@@ -1,36 +1,38 @@
 /**
- * Character-build candidate pointer-drag interaction.
+ * Loadout picker candidate pointer-drag interaction.
  *
  * Owns the PointerDragController wiring, drop-hint presentation and the
  * drop-commit orchestration. Pure target/policy resolution lives in the
- * drop-targets leaf; authority and transport stay in the controller.
+ * drop-policy leaf; authority and transport stay in the controller.
+ * Subject kind, instance keys, class prefix and ghost copy are ports; the
+ * defaults preserve the character-build vocabulary verbatim.
  */
 (function(root, factory) {
     'use strict';
     var primitives = typeof module !== 'undefined' && module.exports
         ? require('../workbench-primitives.js')
         : root && root.WorkbenchPrimitives;
-    var dropTargets = typeof module !== 'undefined' && module.exports
-        ? require('./character-build-drop-targets.js')
-        : root && root.CharacterBuildDropTargets;
-    var api = factory(primitives, dropTargets);
+    var dropPolicy = typeof module !== 'undefined' && module.exports
+        ? require('./loadout-picker-drop-policy.js')
+        : root && root.LoadoutPickerDropPolicy;
+    var api = factory(primitives, dropPolicy);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
-        root.CF7.CharacterBuildCandidateDrag = api;
-        root.CharacterBuildCandidateDrag = api;
+        root.CF7.LoadoutPickerCandidateDrag = api;
+        root.LoadoutPickerCandidateDrag = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(WorkbenchPrimitives, DropTargetsModule) {
+function(WorkbenchPrimitives, DropPolicyModule) {
     'use strict';
     if (!WorkbenchPrimitives
             || typeof WorkbenchPrimitives.InteractionBroker !== 'function'
             || typeof WorkbenchPrimitives.PointerDragController !== 'function') {
-        throw new Error('CharacterBuildCandidateDrag requires workbench pointer primitives');
+        throw new Error('LoadoutPickerCandidateDrag requires workbench pointer primitives');
     }
-    if (!DropTargetsModule || typeof DropTargetsModule.resolve !== 'function'
-            || typeof DropTargetsModule.decide !== 'function') {
-        throw new Error('CharacterBuildCandidateDrag requires CharacterBuildDropTargets');
+    if (!DropPolicyModule || typeof DropPolicyModule.resolve !== 'function'
+            || typeof DropPolicyModule.decide !== 'function') {
+        throw new Error('LoadoutPickerCandidateDrag requires LoadoutPickerDropPolicy');
     }
 
     function escapeHtml(value) {
@@ -44,13 +46,32 @@ function(WorkbenchPrimitives, DropTargetsModule) {
         return match && (!root || root.contains(match)) ? match : null;
     }
 
-    function install(prototype) {
-        if (!prototype) throw new Error('CharacterBuildCandidateDrag.install requires a view method target');
+    function install(prototype, options) {
+        if (!prototype) throw new Error('LoadoutPickerCandidateDrag.install requires a view method target');
+        options = options || {};
+        var policy = options.policy && typeof options.policy.resolve === 'function'
+            ? options.policy : DropPolicyModule;
+        var classPrefix = typeof options.classPrefix === 'string'
+            && options.classPrefix !== '' ? options.classPrefix : 'character-build';
+        var subjectKind = typeof options.subjectKind === 'string'
+            && options.subjectKind !== '' ? options.subjectKind : 'character-build-candidate';
+        var sourceInstanceKey = typeof options.sourceInstanceKey === 'string'
+            && options.sourceInstanceKey !== ''
+            ? options.sourceInstanceKey : 'character-build:filtered-candidates';
+        var targetInstanceKey = typeof options.targetInstanceKey === 'string'
+            && options.targetInstanceKey !== ''
+            ? options.targetInstanceKey : 'character-build:selected-slot';
+        var ghostFallback = options.texts && typeof options.texts.ghostFallback === 'string'
+            && options.texts.ghostFallback !== '' ? options.texts.ghostFallback : '装备候选';
+        var slotSelector = '.' + classPrefix + '-slot';
+        var dropHintClass = classPrefix + '-drop-hint';
+        var draggingClass = classPrefix + '-candidate-dragging';
+        var dragSourceClass = classPrefix + '-drag-source';
 
-        /* Pure resolution lives in the drop-targets leaf; this shim only
+        /* Pure resolution lives in the drop-policy leaf; this shim only
          * gathers live slot descriptors (scope-aware drop target model). */
         prototype._candidateDropTargets = function(candidate) {
-            var nodes = this.root.querySelectorAll('.character-build-slot');
+            var nodes = this.root.querySelectorAll(slotSelector);
             var slots = [];
             for (var i = 0; i < nodes.length; i++) {
                 slots.push({
@@ -59,19 +80,19 @@ function(WorkbenchPrimitives, DropTargetsModule) {
                     id:nodes[i].getAttribute('data-slot-id')
                 });
             }
-            return DropTargetsModule.resolve(
+            return policy.resolve(
                 this._candidateScope, this._selectedSlotKey, candidate, slots);
         };
 
         prototype._candidateDropDecision = function(hit, candidate) {
-            return DropTargetsModule.decide({
+            return policy.decide({
                 interactionState:this._interactionState,
                 snapshotBlocked:!this._snapshot || this._snapshot.blocked
             }, hit, candidate, this._candidateDropTargets(candidate));
         };
 
         prototype._commitDraggedCandidate = function(candidate, intent) {
-            if (!candidate || !intent || intent.operationId !== 'character-build.equip-candidate'
+            if (!candidate || !intent || intent.operationId !== policy.operationId
                     || !intent.targetRef
                     || this._candidateState.debugState().kind !== 'ready') return false;
             var slotKey = String(intent.targetRef.slotKey || '');
@@ -90,9 +111,9 @@ function(WorkbenchPrimitives, DropTargetsModule) {
         };
 
         prototype._markDropHints = function(candidate, active) {
-            var hinted = this.root.querySelectorAll('.character-build-drop-hint');
+            var hinted = this.root.querySelectorAll('.' + dropHintClass);
             for (var i = 0; i < hinted.length; i++) {
-                hinted[i].classList.remove('character-build-drop-hint');
+                hinted[i].classList.remove(dropHintClass);
             }
             var targets = active && candidate
                 ? this._candidateDropTargets(candidate) : {slots:[]};
@@ -100,7 +121,7 @@ function(WorkbenchPrimitives, DropTargetsModule) {
                 var node = this.root.querySelector('[data-roving-key="'
                     + String(targets.slots[i]).replace(/"/g, '\\"') + '"]');
                 if (node && !node.disabled && node.getAttribute('data-blocked') !== 'true') {
-                    node.classList.add('character-build-drop-hint');
+                    node.classList.add(dropHintClass);
                 }
             }
             return targets.slots.length > 0;
@@ -108,9 +129,9 @@ function(WorkbenchPrimitives, DropTargetsModule) {
 
         prototype._setCandidateDragActive = function(active, source) {
             this._candidateDragActive = active === true;
-            this.root.classList.toggle('character-build-candidate-dragging', this._candidateDragActive);
+            this.root.classList.toggle(draggingClass, this._candidateDragActive);
             if (source && source.node) {
-                source.node.classList.toggle('character-build-drag-source', this._candidateDragActive);
+                source.node.classList.toggle(dragSourceClass, this._candidateDragActive);
             }
             if (this._candidateDragActive && this._tooltip
                     && typeof this._tooltip.hide === 'function') this._tooltip.hide();
@@ -119,22 +140,22 @@ function(WorkbenchPrimitives, DropTargetsModule) {
         prototype._installCandidateDrag = function() {
             var self = this;
             var sourceView = {
-                instanceKey:'character-build:filtered-candidates',
+                instanceKey:sourceInstanceKey,
                 exportOffer:function(candidate) {
                     if (!candidate || self._interactionState !== 'idle'
                             || !self._snapshot || self._snapshot.blocked
                             || self._candidateState.debugState().kind !== 'ready') return null;
                     return {
-                        subjectKind:'character-build-candidate',
+                        subjectKind:subjectKind,
                         sourceRef:{candidateKey:String(candidate.key || ''),
                             requestKey:self._candidateRequestKey}
                     };
                 }
             };
             var targetView = {
-                instanceKey:'character-build:selected-slot',
+                instanceKey:targetInstanceKey,
                 probeAccept:function(offer, hit) {
-                    var candidate = offer && offer.subjectKind === 'character-build-candidate'
+                    var candidate = offer && offer.subjectKind === subjectKind
                             && offer.sourceRef
                             && offer.sourceRef.requestKey === self._candidateRequestKey
                         ? self._candidateByKey(offer.sourceRef.candidateKey) : null;
@@ -149,7 +170,7 @@ function(WorkbenchPrimitives, DropTargetsModule) {
                 onReject:function(result) {
                     if (!result || result.origin !== 'drag') return;
                     self._showStatusNotice('blocked',
-                        DropTargetsModule.rejectCopy(result.reason));
+                        policy.rejectCopy(result.reason));
                 }
             });
             var brokerPort = {
@@ -173,7 +194,7 @@ function(WorkbenchPrimitives, DropTargetsModule) {
                 },
                 resolveTarget:function(clientX, clientY) {
                     var target = self._document.elementFromPoint(clientX, clientY);
-                    var node = closest(target, '.character-build-slot', self.root);
+                    var node = closest(target, slotSelector, self.root);
                     if (!node) return null;
                     var hit = {slotKey:node.getAttribute('data-roving-key'), node:node};
                     return {view:targetView, hit:hit, node:node,
@@ -182,9 +203,10 @@ function(WorkbenchPrimitives, DropTargetsModule) {
                 renderGhost:function(source) {
                     var item = source.item && source.item.presentation || {};
                     var ghost = self._document.createElement('div');
-                    ghost.className = 'workbench-drag-ghost inventory-drag-ghost character-build-drag-ghost';
+                    ghost.className = 'workbench-drag-ghost inventory-drag-ghost '
+                        + classPrefix + '-drag-ghost';
                     ghost.innerHTML = self._iconHtml(item.icon || '', 'inventory-owned-icon')
-                        + '<span>' + escapeHtml(item.displayName || source.item.name || '装备候选')
+                        + '<span>' + escapeHtml(item.displayName || source.item.name || ghostFallback)
                         + '</span>';
                     return ghost;
                 },

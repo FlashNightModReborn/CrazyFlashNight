@@ -8,7 +8,7 @@
     .workbench-commit-status[data-state="busy"] { color:var(--wb-role-pending); }
 
     .workbench-shell :where(button,input,select,[role="button"],[role="option"],
-        [data-scroll-region],[tabindex="0"]):not(.character-build-slot):focus-visible {
+        [data-scroll-region],[tabindex="0"]):not(.character-build-slot):not(.merc-loadout-slot):focus-visible {
         outline:2px solid var(--wb-focus);
         outline-offset:2px;
         box-shadow:0 0 0 1px var(--wb-bg),0 0 0 3px color-mix(in srgb,var(--wb-focus) 38%,transparent);

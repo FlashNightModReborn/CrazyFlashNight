@@ -87,6 +87,7 @@ var REQUIRED_FILES = [
     'launcher/web/css/workbench/skills.css',
     'launcher/web/css/workbench/equipment-tuning.css',
     'launcher/web/css/workbench/components.css',
+    'launcher/web/css/workbench/loadout-picker.css',
     'launcher/web/css/workbench/character-build.css',
     'launcher/web/css/workbench/character-build-stats.css',
     'launcher/web/css/workbench/states.css',
@@ -103,18 +104,25 @@ var REQUIRED_FILES = [
     'launcher/web/modules/workbench.js',
     'launcher/web/modules/character-build/character-build-mutation.js',
     'launcher/web/modules/character-build/character-build-session-contract.js',
-    'launcher/web/modules/character-build/character-build-action-view.js',
+    'launcher/web/modules/loadout-picker/loadout-picker-action-view.js',
     'launcher/web/modules/character-build/character-build-tuning-adapter.js',
     'launcher/web/modules/character-build/character-build-tuning-ports.js',
     'launcher/web/modules/character-build/character-build-candidate-eligibility.js',
     'launcher/web/modules/character-build/character-build-candidate-tooltip.js',
-    'launcher/web/modules/character-build/character-build-candidate-state.js',
+    'launcher/web/modules/loadout-picker/loadout-picker-candidate-state.js',
     'launcher/web/modules/character-build/character-build-facet-counts.js',
     'launcher/web/modules/character-build/character-build-stats-view.js',
     'launcher/web/modules/character-build/character-build-doll-preview.js',
     'launcher/web/modules/character-build/character-build-template.js',
     'launcher/web/modules/character-build/character-build-loadout-presenter.js',
-    'launcher/web/modules/character-build/character-build-candidate-pane.js',
+    'launcher/web/modules/loadout-picker/loadout-picker-slot-grid.js',
+    'launcher/web/modules/loadout-picker/loadout-picker-drop-policy.js',
+    'launcher/web/modules/loadout-picker/loadout-picker-candidate-drag.js',
+    'launcher/web/modules/loadout-picker/loadout-picker-candidate-pane.js',
+    'launcher/web/modules/loadout-picker/loadout-picker.js',
+    'launcher/web/modules/merc/merc-loadout-drop-policy.js',
+    'launcher/web/modules/merc/merc-loadout-channel.js',
+    'launcher/web/modules/merc/merc-loadout-picker.js',
     'launcher/web/modules/character-build/character-build-tuning.js',
     'launcher/web/modules/character-build/character-build-slot-transition.js',
     'launcher/web/modules/character-build/character-build-pose.js',
@@ -820,6 +828,7 @@ layoutProfiles.forEach(function (profile) {
     'launcher/web/css/workbench/inventory.css',
     'launcher/web/css/workbench/skills.css',
     'launcher/web/css/workbench/skins.css',
+    'launcher/web/css/workbench/loadout-picker.css',
     'launcher/web/css/workbench/character-build.css',
     'launcher/web/css/workbench/equipment-tuning.css'
 ].forEach(function (rel) {
@@ -857,18 +866,25 @@ var moduleThresholds = {
     'launcher/web/modules/workbench-inspection-viewport.js':420,
     'launcher/web/modules/character-build/character-build-mutation.js':260,
     'launcher/web/modules/character-build/character-build-session-contract.js':220,
-    'launcher/web/modules/character-build/character-build-action-view.js':180,
+    'launcher/web/modules/loadout-picker/loadout-picker-action-view.js':240,
     'launcher/web/modules/character-build/character-build-tuning-adapter.js':380,
     'launcher/web/modules/character-build/character-build-tuning-ports.js':140,
     'launcher/web/modules/character-build/character-build-candidate-eligibility.js':120,
     'launcher/web/modules/character-build/character-build-candidate-tooltip.js':320,
-    'launcher/web/modules/character-build/character-build-candidate-state.js':280,
+    'launcher/web/modules/loadout-picker/loadout-picker-candidate-state.js':340,
     'launcher/web/modules/character-build/character-build-facet-counts.js':220,
     'launcher/web/modules/character-build/character-build-stats-view.js':360,
     'launcher/web/modules/character-build/character-build-doll-preview.js':340,
     'launcher/web/modules/character-build/character-build-template.js':100,
     'launcher/web/modules/character-build/character-build-loadout-presenter.js':260,
-    'launcher/web/modules/character-build/character-build-candidate-pane.js':600,
+    'launcher/web/modules/loadout-picker/loadout-picker-slot-grid.js':140,
+    'launcher/web/modules/loadout-picker/loadout-picker-drop-policy.js':200,
+    'launcher/web/modules/loadout-picker/loadout-picker-candidate-drag.js':260,
+    'launcher/web/modules/loadout-picker/loadout-picker-candidate-pane.js':560,
+    'launcher/web/modules/loadout-picker/loadout-picker.js':240,
+    'launcher/web/modules/merc/merc-loadout-drop-policy.js':80,
+    'launcher/web/modules/merc/merc-loadout-channel.js':185,
+    'launcher/web/modules/merc/merc-loadout-picker.js':720,
     'launcher/web/modules/character-build/character-build-tuning.js':380,
     'launcher/web/modules/character-build/character-build-slot-transition.js':100,
     'launcher/web/modules/character-build/character-build-pose.js':90,
@@ -895,11 +911,11 @@ Object.keys(moduleThresholds).forEach(function (rel) {
     if (count > moduleThresholds[rel]) finding('warning', 'WB112', 'workbench module exceeds its split threshold', rel, null, {lines:count, threshold:moduleThresholds[rel]});
 });
 
-var candidateStateRel = 'launcher/web/modules/character-build/character-build-candidate-state.js';
+var candidateStateRel = 'launcher/web/modules/loadout-picker/loadout-picker-candidate-state.js';
 if (exists(candidateStateRel)) {
     var candidateStateSource = read(candidateStateRel);
-    var candidateViewSource = read('launcher/web/modules/character-build-view.js');
-    var candidateCssSource = read('launcher/web/css/workbench/character-build.css');
+    var candidateViewSource = read('launcher/web/modules/loadout-picker/loadout-picker.js');
+    var candidateCssSource = read('launcher/web/css/workbench/loadout-picker.css');
     var candidateCopies = ['unselected','loading','empty','error','ready']
         .map(function(kind) {
             var match = new RegExp(kind
@@ -913,7 +929,7 @@ if (exists(candidateStateRel)) {
         'WB041', 'Character Build candidate states need distinct statement and next-step copy',
         candidateStateRel);
     expect(candidateViewSource.indexOf('new CandidateStateModule.CandidateState') !== -1
-            && candidateViewSource.indexOf("this._candidateFence = 'candidate-view-'") !== -1
+            && candidateViewSource.indexOf("_candidateFence = 'candidate-view-'") !== -1
             && candidateStateSource.indexOf('WorkbenchPrimitives.EntityTile.bindActivation') !== -1
             && candidateStateSource.indexOf('inspectable:true') !== -1
             && candidateStateSource.indexOf('actionable:false') !== -1
@@ -929,7 +945,7 @@ if (exists(candidateStateRel)) {
             && !!blockedReasonRule && /opacity\s*:\s*1\b/.test(blockedReasonRule[1])
             && /color\s*:\s*var\(--wb-text\)/.test(blockedReasonRule[1]),
         'WB043', 'Character Build blocked reason must keep normal body contrast and card opacity',
-        'launcher/web/css/workbench/character-build.css');
+        'launcher/web/css/workbench/loadout-picker.css');
 }
 
 var candidateFacetRel =
@@ -1027,7 +1043,7 @@ collectFiles('launcher/web/css/workbench', '.css').forEach(function(rel) {
     focusOutlineOverrides = focusOutlineOverrides.concat(
         uiRatchet.scanUnlayeredFocusOutlineOverrides(read(rel), rel));
 });
-expect(/@layer\s+workbench\.states\s*\{[\s\S]*?\.workbench-shell\s+:where\([^}]*\):not\(\.character-build-slot\):focus-visible\s*\{[\s\S]*?outline:2px solid var\(--wb-focus\);[\s\S]*?outline-offset:2px;/
+expect(/@layer\s+workbench\.states\s*\{[\s\S]*?\.workbench-shell\s+:where\([^}]*\):not\(\.character-build-slot\)(:not\(\.merc-loadout-slot\))?:focus-visible\s*\{[\s\S]*?outline:2px solid var\(--wb-focus\);[\s\S]*?outline-offset:2px;/
         .test(focusStatesSource)
         && !/\.workbench-shell\[data-profile\][\s\S]*?:focus-visible\s*\{/
             .test(focusStatesSource),
@@ -1112,17 +1128,21 @@ if (exists(registryRel)) {
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-session-contract.js',
         'modules/character-build-session.js',
-        'modules/character-build/character-build-action-view.js',
+        'modules/loadout-picker/loadout-picker-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
         'modules/character-build/character-build-tuning-ports.js',
         'modules/character-build/character-build-candidate-tooltip.js',
-        'modules/character-build/character-build-candidate-state.js',
+        'modules/loadout-picker/loadout-picker-candidate-state.js',
         'modules/character-build/character-build-facet-counts.js',
         'modules/character-build/character-build-stats-view.js',
         'modules/character-build/character-build-doll-preview.js',
         'modules/character-build/character-build-template.js',
         'modules/character-build/character-build-loadout-presenter.js',
-        'modules/character-build/character-build-candidate-pane.js',
+        'modules/loadout-picker/loadout-picker-slot-grid.js',
+        'modules/loadout-picker/loadout-picker-drop-policy.js',
+        'modules/loadout-picker/loadout-picker-candidate-drag.js',
+        'modules/loadout-picker/loadout-picker-candidate-pane.js',
+        'modules/loadout-picker/loadout-picker.js',
         'modules/character-build-view.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',

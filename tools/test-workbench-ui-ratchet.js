@@ -95,6 +95,13 @@ check('G5 focus scanner ignores named-layer/state/slot contracts but catches unl
     && focusOutlineFindings[0].property === 'outline'
     && focusOutlineFindings[1].property === 'outline');
 
+var mercFocusOutlineFindings = ratchet.scanUnlayeredFocusOutlineOverrides([
+    '.team-workbench .merc-loadout-slot:focus-visible { outline:0; }',
+    '.team-workbench .merc-loadout-slot:focus-visible .merc-loadout-slot-card { outline:2px solid var(--wb-focus); }'
+].join('\n'), 'launcher/web/css/workbench/team.css');
+check('G5 focus scanner covers the merc loadout slot ring contract in team.css',
+    mercFocusOutlineFindings.length === 0);
+
 var type = ratchet.scanCss(
     '.help-copy { font-size:9px; }\n'
     + '.corner-badge { font-size:9px; }\n'
@@ -222,16 +229,15 @@ g5FocusFiles.forEach(function(relative) {
         ratchet.scanUnlayeredFocusOutlineOverrides(readRepo(relative), relative));
 });
 var statesSource = readRepo('launcher/web/css/workbench/states.css');
-var characterFocusSource = g3WorkbenchSources[
-    'launcher/web/css/workbench/character-build.css'];
-check('G5 layered focus baseline explicitly excludes only the Character slot and has no bridge',
-    /@layer\s+workbench\.states\s*\{[\s\S]*?\.workbench-shell\s+:where\([^}]*\):not\(\.character-build-slot\):focus-visible\s*\{[\s\S]*?outline:2px solid var\(--wb-focus\);[\s\S]*?outline-offset:2px;/
+var characterFocusSource = readRepo('launcher/web/css/workbench/loadout-picker.css');
+check('G5 layered focus baseline explicitly excludes only the picker slot rings and has no bridge',
+    /@layer\s+workbench\.states\s*\{[\s\S]*?\.workbench-shell\s+:where\([^}]*\):not\(\.character-build-slot\)(:not\(\.merc-loadout-slot\))?:focus-visible\s*\{[\s\S]*?outline:2px solid var\(--wb-focus\);[\s\S]*?outline-offset:2px;/
         .test(statesSource)
     && !/\.workbench-shell\[data-profile\][\s\S]*?:focus-visible\s*\{/
         .test(statesSource));
 check('G5 production workbench CSS has no unlayered focus outline override beyond the slot/state contracts',
     g5FocusFindings.length === 0);
-check('G5 Character slot is the sole outer-ring exception with an exact inner token ring',
+check('G5 picker slot ring keeps the exact inner token ring contract (loadout-picker.css 居所)',
     /\.character-build-slot:focus-visible\s*\{\s*outline:0;\s*\}/
         .test(characterFocusSource)
     && /\.character-build-slot:focus-visible\s+\.character-build-slot-card\s*\{[^}]*outline:2px solid var\(--wb-focus\);[^}]*outline-offset:-2px;[^}]*\}/

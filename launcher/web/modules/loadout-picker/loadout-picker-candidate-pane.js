@@ -1,22 +1,30 @@
-/** Candidate-pane scope, selection, recovery and browse-summary presentation. */
+/**
+ * Loadout picker candidate-pane scope, selection, recovery and browse-summary
+ * presentation.
+ *
+ * The pane's implicit host contract is formalized as ports at install time:
+ * - syncFocusSummary(host, key) — required; projects the slot focus summary
+ *   and returns the new active slot key (character-build: facet counts).
+ * - texts — every notice/summary copy, defaults preserve character-build
+ *   wording verbatim.
+ * - classPrefix — DOM class namespace, default 'character-build'.
+ * - candidateTitleSelector — tuning-restore focus target.
+ * The host instance carries the picker state fields (initialized by
+ * LoadoutPicker.initState) including the `_slotRovings` array that replaces
+ * the former hardcoded armor/weapon/drug roving triple.
+ */
 (function(root, factory) {
     'use strict';
-    var facets = typeof module !== 'undefined' && module.exports
-        ? require('./character-build-facet-counts.js')
-        : root && root.CharacterBuildFacetCounts;
-    var api = factory(facets);
+    var api = factory();
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
-        root.CF7.CharacterBuildCandidatePane = api;
-        root.CharacterBuildCandidatePane = api;
+        root.CF7.LoadoutPickerCandidatePane = api;
+        root.LoadoutPickerCandidatePane = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(FacetCountsModule) {
+function() {
     'use strict';
-    if (!FacetCountsModule || typeof FacetCountsModule.syncFocusSummary !== 'function') {
-        throw new Error('CharacterBuildCandidatePane requires CharacterBuildFacetCounts');
-    }
 
     function text(value, fallback) {
         return String(value == null || value === '' ? fallback || '' : value);
@@ -32,8 +40,63 @@ function(FacetCountsModule) {
         return match && (!root || root.contains(match)) ? match : null;
     }
 
-    function install(prototype) {
-        if (!prototype) throw new Error('CharacterBuildCandidatePane.install requires a view method target');
+    var DEFAULT_TEXTS = {
+        scopeBackpackReading:'正在读取背包总览；可把物品拖到高亮的兼容槽位…',
+        scopeCompatibleReading:'正在读取与当前槽位兼容的背包候选…',
+        scopeChangeFailed:'候选范围切换未完成；当前候选保持不变。',
+        writePending:'正在写入构筑；槽位、候选与页面切换暂时锁定。',
+        mutationReconcile:'写入结果未知；仅可重新确认结果，不会重复提交。',
+        interactionRestored:'交互已恢复；可继续选择槽位或候选。',
+        focusBrowsePrefix:'浏览：',
+        focusUnnamedCandidate:'未命名候选',
+        focusBlockedSuffix:' · 不可装备 · 点击查看原因',
+        focusOverviewSelected:'已选择 · 拖到高亮栏位 / Space 取消',
+        focusOverviewUnselected:'Enter 选择 · 可拖到高亮栏位',
+        focusPinnedSelected:'已固定预览 · Enter 装备 / Space 取消',
+        focusPinnedUnselected:'Enter 固定预览 · 双击直接装备',
+        focusOverviewIdle:'背包总览 · 拖到高亮槽位，或选择栏位进入筛选',
+        focusCompatibleIdle:'单击预览 · 双击直接装备 · 可拖到高亮槽位',
+        slotReading:'正在读取当前槽位的背包候选…',
+        slotDeferredPending:'正在退出当前调制；完成后将打开目标槽位。',
+        slotChangeFailed:'槽位切换未完成；当前选择与候选保持不变。',
+        slotDeferCandidates:'已切换调制目标；返回候选后将读取当前槽位。',
+        blockedFallback:'此候选当前不可装备。',
+        blockedSuffix:' 当前装备保持不变。',
+        selectionCleared:'候选预览已清除，当前装备保持不变。',
+        snapshotBlockedFallback:'部分角色数据不可用；请检查候选阻断原因。',
+        readyBackpack:'背包总览已就绪；可拖到高亮槽位，选择栏位则进入兼容筛选。',
+        readyCompatible:'已读取当前槽位候选；选择候选只会更新临时预览。',
+        emptyBackpack:'当前背包没有可显示的物品。',
+        emptyCompatible:'当前背包没有可用于该槽位的候选。',
+        recoveryPending:'装备状态已更新；正在刷新当前槽位与可用候选…',
+        failureSnapshot:'装备状态刷新失败；可安全重试当前槽位，不会改动装备。',
+        failureCandidates:'候选读取失败；可安全重试当前槽位，不会改动装备。',
+        tuningAdjacent:'原候选已移动或不再可用，已转到相邻候选。',
+        tuningReturned:'已返回调制后的同一候选。',
+        tuningLost:'原候选已移动或不再可用，当前槽位已没有可恢复的候选。'
+    };
+
+    function install(prototype, ports) {
+        if (!prototype) throw new Error('LoadoutPickerCandidatePane.install requires a view method target');
+        ports = ports || {};
+        if (typeof ports.syncFocusSummary !== 'function') {
+            throw new Error('LoadoutPickerCandidatePane.install requires a syncFocusSummary port');
+        }
+        var syncFocusSummary = ports.syncFocusSummary;
+        var classPrefix = typeof ports.classPrefix === 'string'
+            && ports.classPrefix !== '' ? ports.classPrefix : 'character-build';
+        var candidateTitleSelector = typeof ports.candidateTitleSelector === 'string'
+            && ports.candidateTitleSelector !== ''
+            ? ports.candidateTitleSelector : '#character-build-candidate-title';
+        var slotSelector = '.' + classPrefix + '-slot';
+        var slotCardSelector = '.' + classPrefix + '-slot-card';
+        var candidateScrollSelector = '.' + classPrefix + '-candidate-scroll';
+        var texts = {};
+        for (var key in DEFAULT_TEXTS) {
+            if (!Object.prototype.hasOwnProperty.call(DEFAULT_TEXTS, key)) continue;
+            texts[key] = ports.texts && typeof ports.texts[key] === 'string'
+                && ports.texts[key] !== '' ? ports.texts[key] : DEFAULT_TEXTS[key];
+        }
 
         prototype._candidateScopePending = function() {
             return !!this._candidateState
@@ -99,8 +162,8 @@ function(FacetCountsModule) {
                 + ':' + scope + ':' + (++this._candidateSequence);
             this._setCandidateState('loading', [], this._candidateRequestKey);
             this._showBrowsingNotice(scope === 'backpack'
-                ? '正在读取背包总览；可把物品拖到高亮的兼容槽位…'
-                : '正在读取与当前槽位兼容的背包候选…');
+                ? texts.scopeBackpackReading
+                : texts.scopeCompatibleReading);
             var parts = scope === 'backpack'
                 ? [] : this._selectedSlotKey.split(':');
             var selection = scope === 'backpack' ? {
@@ -140,7 +203,7 @@ function(FacetCountsModule) {
                 }
                 this._syncCandidateScopeControl();
                 this._showStatusNotice(
-                    'error', '候选范围切换未完成；当前候选保持不变。');
+                    'error', texts.scopeChangeFailed);
                 return false;
             }
             if (Array.isArray(result)) this.setCandidates(selection.requestKey, result);
@@ -172,11 +235,11 @@ function(FacetCountsModule) {
         };
 
         prototype._syncSlotSelection = function() {
-            var slots = this.root.querySelectorAll('.character-build-slot');
+            var slots = this.root.querySelectorAll(slotSelector);
             for (var i = 0; i < slots.length; i++) {
                 var selected = slots[i].getAttribute('data-roving-key') === this._selectedSlotKey;
                 slots[i].setAttribute('aria-selected', selected ? 'true' : 'false');
-                var card = slots[i].querySelector('.character-build-slot-card');
+                var card = slots[i].querySelector(slotCardSelector);
                 if (card) {
                     card.classList.toggle('workbench-source-selected', selected);
                 }
@@ -202,24 +265,25 @@ function(FacetCountsModule) {
             this._actionView.setState(state);
             this.root.setAttribute('aria-busy',
                 state !== 'idle' && state !== 'flush_failed' ? 'true' : 'false');
-            this._armorRoving.refresh({preferredKey:this._activeSlotKey});
-            this._weaponRoving.refresh({preferredKey:this._activeSlotKey});
-            this._drugRoving.refresh({preferredKey:this._activeSlotKey});
+            var slotRovings = this._slotRovings || [];
+            for (var i = 0; i < slotRovings.length; i++) {
+                slotRovings[i].refresh({preferredKey:this._activeSlotKey});
+            }
             this._candidateRoving.refresh({preferredKey:this._activeCandidateKey});
             this._syncCandidateScopeControl();
             if (state === 'write_pending') {
                 this._showStatusNotice(
                     'write',
-                    '正在写入构筑；槽位、候选与页面切换暂时锁定。');
+                    texts.writePending);
             } else if (state === 'mutation_reconcile') {
                 this._showStatusNotice(
                     'reconcile',
-                    '写入结果未知；仅可重新确认结果，不会重复提交。');
+                    texts.mutationReconcile);
             } else if (state === 'idle' && previous !== 'idle') {
                 var node = this._lockedFocusKey && this.root.querySelector(
                     '[data-roving-key="' + this._lockedFocusKey.replace(/"/g, '\\"') + '"]');
                 this._lockedFocusKey = '';
-                this._showBrowsingNotice('交互已恢复；可继续选择槽位或候选。');
+                this._showBrowsingNotice(texts.interactionRestored);
                 if (node && !node.disabled) {
                     try { node.focus({preventScroll:true}); } catch (_) { node.focus(); }
                 }
@@ -227,8 +291,7 @@ function(FacetCountsModule) {
             return true;
         };
         prototype._focusSlot = function(key) {
-            this._activeSlotKey = FacetCountsModule.syncFocusSummary(
-                this.root, this._slotFocusSummary, this._facetCounts, key);
+            this._activeSlotKey = syncFocusSummary(this, key);
             return true;
         };
         prototype._focusCandidate = function(key) {
@@ -239,20 +302,20 @@ function(FacetCountsModule) {
                 && !this._selectedSlotKey;
             this._candidateFocusSummary.textContent = candidate
                 ? candidate.blocked === true
-                    ? '浏览：' + text(candidate.name, '未命名候选')
-                        + ' · 不可装备 · 点击查看原因'
-                    : '浏览：' + text(candidate.name, '未命名候选') + ' · '
+                    ? texts.focusBrowsePrefix + text(candidate.name, texts.focusUnnamedCandidate)
+                        + texts.focusBlockedSuffix
+                    : texts.focusBrowsePrefix + text(candidate.name, texts.focusUnnamedCandidate) + ' · '
                         + (overview
                             ? this._activeCandidateKey === this._selectedCandidateKey
-                                ? '已选择 · 拖到高亮栏位 / Space 取消'
-                                : 'Enter 选择 · 可拖到高亮栏位'
+                                ? texts.focusOverviewSelected
+                                : texts.focusOverviewUnselected
                             : text(candidate.summary,
                                 this._activeCandidateKey === this._selectedCandidateKey
-                                    ? '已固定预览 · Enter 装备 / Space 取消'
-                                    : 'Enter 固定预览 · 双击直接装备'))
+                                    ? texts.focusPinnedSelected
+                                    : texts.focusPinnedUnselected))
                 : overview
-                    ? '背包总览 · 拖到高亮槽位，或选择栏位进入筛选'
-                    : '单击预览 · 双击直接装备 · 可拖到高亮槽位';
+                    ? texts.focusOverviewIdle
+                    : texts.focusCompatibleIdle;
             return true;
         };
         prototype._selectSlot = function(key) {
@@ -286,7 +349,7 @@ function(FacetCountsModule) {
                     + this._selectedSlotKey + ':' + this._candidateScope
                     + ':' + (++this._candidateSequence);
                 this._setCandidateState('loading', [], this._candidateRequestKey);
-                this._showBrowsingNotice('正在读取当前槽位的背包候选…');
+                this._showBrowsingNotice(texts.slotReading);
                 var parts = this._selectedSlotKey.split(':');
                 var selection = {
                     key:this._selectedSlotKey,
@@ -316,13 +379,13 @@ function(FacetCountsModule) {
                     }
                     this._showStatusNotice(
                         deferredSelection ? 'pending' : 'error',
-                        deferredSelection ? '正在退出当前调制；完成后将打开目标槽位。' : '槽位切换未完成；当前选择与候选保持不变。');
+                        deferredSelection ? texts.slotDeferredPending : texts.slotChangeFailed);
                     return deferredSelection;
                 }
                 if (result && result.deferCandidates === true) {
                     this._candidateLoadFailed = true;
                     this._showBrowsingNotice(
-                        '已切换调制目标；返回候选后将读取当前槽位。');
+                        texts.slotDeferCandidates);
                 }
                 if (Array.isArray(result)) this.setCandidates(selection.requestKey, result);
             }
@@ -341,8 +404,8 @@ function(FacetCountsModule) {
             // 唯一出口是底部状态栏（aria-live）；摘要行与悬浮说明不再复读同一句。
             var reason = text(context && context.reason || candidate && (
                 candidate.blockedReason || candidate.reason || candidate.summary
-            ), '此候选当前不可装备。');
-            this._showStatusNotice('blocked', reason + ' 当前装备保持不变。');
+            ), texts.blockedFallback);
+            this._showStatusNotice('blocked', reason + texts.blockedSuffix);
             return true;
         };
         prototype._selectCandidate = function(key) {
@@ -365,7 +428,7 @@ function(FacetCountsModule) {
                 slotKey:this._selectedSlotKey,
                 requestKey:this._candidateRequestKey
             });
-            this._showBrowsingNotice('候选预览已清除，当前装备保持不变。');
+            this._showBrowsingNotice(texts.selectionCleared);
             return true;
         };
 
@@ -383,16 +446,16 @@ function(FacetCountsModule) {
                 candidates, requestKey);
             if (this._snapshot && this._snapshot.blocked) {
                 this._notice.textContent = text(
-                    this._snapshot.blockedReason, '部分角色数据不可用；请检查候选阻断原因。');
+                    this._snapshot.blockedReason, texts.snapshotBlockedFallback);
                 this._notice.setAttribute('data-notice-kind', 'blocked');
             } else {
                 this._showBrowsingNotice(candidates.length
                     ? this._candidateScope === 'backpack'
-                        ? '背包总览已就绪；可拖到高亮槽位，选择栏位则进入兼容筛选。'
-                        : '已读取当前槽位候选；选择候选只会更新临时预览。'
+                        ? texts.readyBackpack
+                        : texts.readyCompatible
                     : this._candidateScope === 'backpack'
-                        ? '当前背包没有可显示的物品。'
-                        : '当前背包没有可用于该槽位的候选。');
+                        ? texts.emptyBackpack
+                        : texts.emptyCompatible);
             }
             return true;
         };
@@ -405,7 +468,7 @@ function(FacetCountsModule) {
             this._candidateRecoveryPending = true;
             this._setCandidateState('loading', [], requestKey);
             this._showStatusNotice(
-                'pending', '装备状态已更新；正在刷新当前槽位与可用候选…');
+                'pending', texts.recoveryPending);
             return true;
         };
         prototype.setCandidateFailure = function(requestKey, error) {
@@ -417,8 +480,8 @@ function(FacetCountsModule) {
             this._candidateRecoveryPending = false;
             this._setCandidateState('error', [], requestKey);
             this._showStatusNotice('error', this._candidateFailureCode === 'snapshot_refresh_failed'
-                ? '装备状态刷新失败；可安全重试当前槽位，不会改动装备。'
-                : '候选读取失败；可安全重试当前槽位，不会改动装备。');
+                ? texts.failureSnapshot
+                : texts.failureCandidates);
             return true;
         };
         prototype.restoreSlot = function(key) {
@@ -436,7 +499,7 @@ function(FacetCountsModule) {
         };
         prototype.restoreCandidateTuning = function(plan, state) {
             if (this._destroyed || !plan || !state || !this.restoreSlot(state.slotKey)) return false;
-            var scroll = this.root.querySelector('.character-build-candidate-scroll');
+            var scroll = this.root.querySelector(candidateScrollSelector);
             if (scroll) scroll.scrollTop = Number(state.scrollTop) || 0;
             var candidate = plan.candidate;
             if (candidate) {
@@ -445,16 +508,16 @@ function(FacetCountsModule) {
                 this._candidateRoving.refresh({preferredKey:this._activeCandidateKey});
                 this._candidateState.focusCandidate(this._activeCandidateKey, scroll);
                 if (plan.kind === 'adjacent') this._showStatusNotice(
-                    'changed', '原候选已移动或不再可用，已转到相邻候选。');
-                else this._showBrowsingNotice('已返回调制后的同一候选。');
+                    'changed', texts.tuningAdjacent);
+                else this._showBrowsingNotice(texts.tuningReturned);
             } else {
-                var heading = this.root.querySelector('#character-build-candidate-title');
+                var heading = this.root.querySelector(candidateTitleSelector);
                 if (heading) {
                     heading.setAttribute('tabindex', '-1');
                     try { heading.focus({preventScroll:true}); } catch (_) { heading.focus(); }
                 }
                 this._showStatusNotice(
-                    'changed', '原候选已移动或不再可用，当前槽位已没有可恢复的候选。');
+                    'changed', texts.tuningLost);
             }
             return true;
         };

@@ -3,7 +3,7 @@
 
 const assert = require('assert');
 const ActionModule = require(
-    '../launcher/web/modules/character-build/character-build-action-view.js');
+    '../launcher/web/modules/loadout-picker/loadout-picker-action-view.js');
 const TuningModule = require(
     '../launcher/web/modules/character-build/character-build-tuning.js');
 

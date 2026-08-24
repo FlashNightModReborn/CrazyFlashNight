@@ -129,13 +129,25 @@ class org.flashNight.arki.merc.MercLoadoutService {
     }
 
     /**
-     * 候选列表：现场签发背包快照，只列 use 匹配该槽的物品（不产生跨槽
-     * 「不兼容」噪声，同 T800 只列长枪口径）；逐候选跑 §2 policy 盖 eligible 章。
+     * 候选列表：现场签发背包快照。scope 缺省/"slot"：只列 use 匹配该槽的物品
+     * （不产生跨槽「不兼容」噪声，同 T800 只列长枪口径），逐候选跑 §2 policy 盖
+     * eligible 章。scope="backpack"（二期 §4 背包总览）：不按单槽 use 预过滤，
+     * 背包全部占用格均为候选，逐候选对全部可写槽（6..15）跑 §2 policy 产出
+     * eligibleSlots 数字槽号白名单（契约形状对齐 cb equipmentEligibility.slots；
+     * 空数组 = 全局不兼容，仍携带该候选以支持背包视图置灰）；slot 参数有效时
+     * 仍携带该槽单槽 eligible/lockReason/requirementLevel 以兼容旧消费方。
+     * 非法 scope 值 fail-closed（invalid_scope）。
      */
-    public static function buildCandidates(merc:Array, slot):Object {
-        if (!isWritableSlot(slot)) return fail("slot_locked");
-        var slotNum:Number = Number(slot);
-        var useKey:String = slotUseKey(slotNum);
+    public static function buildCandidates(merc:Array, slot, scope):Object {
+        var scopeKey:String = scope == undefined || String(scope) == ""
+            ? "slot" : String(scope);
+        if (scopeKey != "slot" && scopeKey != "backpack") return fail("invalid_scope");
+        var backpackScope:Boolean = scopeKey == "backpack";
+        // slot scope 维持旧 fail-closed；backpack scope 下 slot 可缺省（总览无选中槽）。
+        var slotValid:Boolean = isWritableSlot(slot);
+        if (!slotValid && !backpackScope) return fail("slot_locked");
+        var slotNum:Number = slotValid ? Number(slot) : NaN;
+        var useKey:String = slotValid ? slotUseKey(slotNum) : null;
         var snapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
         if (snapshot == null || !(snapshot.slots instanceof Array)) {
             return fail("inventory_unavailable");
@@ -144,7 +156,8 @@ class org.flashNight.arki.merc.MercLoadoutService {
         if (bag == null) return fail("inventory_unavailable");
         var result:Object = {
             success:true,
-            slot:slotNum,
+            scope:scopeKey,
+            slot:(slotValid ? slotNum : null),
             useKey:useKey,
             loadoutRevision:getLoadoutRevision(merc),
             candidates:[]
@@ -153,22 +166,42 @@ class org.flashNight.arki.merc.MercLoadoutService {
             var slotView:Object = snapshot.slots[i];
             if (slotView == null || !slotView.occupied || slotView.item == null) continue;
             var itemUse:String = slotView.item.use == undefined ? "" : String(slotView.item.use);
-            if (!useMatchesSlot(itemUse, useKey)) continue;
+            if (!backpackScope && !useMatchesSlot(itemUse, useKey)) continue;
             var item:Object = bag.getItem(String(slotView.physicalSlot));
-            var check:Object = evaluateItemForSlot(merc, slotNum, item);
-            result.candidates.push({
+            var candidate:Object = {
                 source:{
                     containerId:"背包",
                     slot:Number(slotView.physicalSlot),
                     expectedLease:String(slotView.slotLease)
                 },
-                item:slotView.item,
-                eligible:check.success === true,
-                lockReason:check.success === true ? "" : String(check.error),
-                requirementLevel:Number(check.requirementLevel)
-            });
+                item:slotView.item
+            };
+            if (slotValid) {
+                var check:Object = evaluateItemForSlot(merc, slotNum, item);
+                candidate.eligible = check.success === true;
+                candidate.lockReason = check.success === true ? "" : String(check.error);
+                candidate.requirementLevel = Number(check.requirementLevel);
+            }
+            if (backpackScope) {
+                candidate.eligibleSlots = buildEligibleSlots(merc, item);
+            }
+            result.candidates.push(candidate);
         }
         return result;
+    }
+
+    /**
+     * 背包总览跨槽白名单（二期 §4）：逐可写槽（6..15）单跑 §2 policy，
+     * 收集通过的数字槽号；空数组 = 全局不兼容（等级不足/非装备/无匹配槽）。
+     */
+    private static function buildEligibleSlots(merc:Array, item:Object):Array {
+        var slots:Array = [];
+        for (var slot:Number = SLOT_MIN; slot <= SLOT_MAX; slot++) {
+            if (evaluateItemForSlot(merc, slot, item).success === true) {
+                slots.push(slot);
+            }
+        }
+        return slots;
     }
 
     /**

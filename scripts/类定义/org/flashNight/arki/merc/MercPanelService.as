@@ -646,7 +646,7 @@ class org.flashNight.arki.merc.MercPanelService {
             sendResponse({ task: "merc_response", callId: callId, success: false, error: String(check.error) });
             return;
         }
-        var result:Object = MercLoadoutService.buildCandidates(check.merc, params.slotKey);
+        var result:Object = MercLoadoutService.buildCandidates(check.merc, params.slotKey, params.scope);
         if (result == null || result.success !== true) {
             sendResponse({ task: "merc_response", callId: callId, success: false,
                 error: (result == null ? "unknown" : String(result.error)) });
@@ -658,6 +658,7 @@ class org.flashNight.arki.merc.MercPanelService {
             success: true,
             mercIndex: check.mercIndex,
             slotKey: String(params.slotKey),
+            scope: String(result.scope),
             loadoutRevision: Number(result.loadoutRevision),
             candidates: result.candidates
         });

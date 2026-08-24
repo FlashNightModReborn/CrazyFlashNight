@@ -82,10 +82,13 @@
     var _selectedSlot = -1;         // -1 未选中；CANDIDATE_SLOT 候选；否则 slotIndex
     var _ttCache = {};              // (raw|level) → {descHTML, introHTML, displayname, itemName}（协议缓存原样）
 
-    // ── 佣兵装备托管（一期）：候选浏览器宿主 / 实例 / 候选请求序号 / 最近一次写响应的背包快照对账 ──
-    var _loadoutBrowserHost = null;
-    var _loadoutBrowserInstance = null;
+    // ── 佣兵装备托管（二期 2026-08-24 起 LoadoutPicker 常驻接入）：picker 视图实例 /
+    // picker 绑定的佣兵 slotIndex / 候选请求序号栅栏 / 最近一次候选响应的权威 revision /
+    // 最近一次写响应的背包快照对账（写在飞投影由 picker setWritePending 承担）──
+    var _loadoutPicker = null;
+    var _loadoutPickerMerc = -1;
     var _loadoutCandidatesSeq = 0;
+    var _loadoutCandidatesRevision = 0;
     var _lastLoadoutInventory = null;
 
     // 雇佣市场（无缝下滑分页）
@@ -1529,7 +1532,7 @@
         var equipSection = detailSection('装备');
         var equipGrid = document.createElement('div');
         equipGrid.className = 'team-merc-equip-manage-grid';
-        renderEquipManage(item, equipGrid, true);
+        renderEquipManage(item, equipGrid);
         equipSection.appendChild(equipGrid);
         _hirePreviewEl.appendChild(equipSection);
 
@@ -1690,8 +1693,6 @@
 
     function renderDetailPage() {
         if (!_detailPage || !_detailBodyEl) return;
-        // 托管候选浏览器随本页重建：销毁旧实例（密度登记/监听器不残留）并作废在飞候选响应
-        closeLoadoutBrowser();
         // 未激活早退：培养页关闭时不重建 DOM / 不发 manifest promise（onDeploy / onRevive /
         // requestSnapshot 的例行刷新在页面关闭时是纯浪费）；「佣兵消失 → 关页」只需在激活时
         // 判断，并入下方分支后语义不变
@@ -1746,13 +1747,26 @@
         dismissBtn.title = '解雇后将回到雇佣市场';
         _detailActionsEl.appendChild(dismissBtn);
 
-        // body：左栏 doll host 重建（相机随 canvas 挂接）；右栏滚动列依次 特质 → 技能 → 装备（只读）
+        // body：左栏 doll host 重建（相机随 canvas 挂接）；右栏滚动列依次 特质 → 技能 → 装备
         destroyDetailDressup();   // 先毁旧相机 / 渲染器再清 viewport，监听器不残留
         Workbench.clearElement(_detailDollViewport);
         _detailDressupHost = document.createElement('div');
         _detailDressupHost.className = 'team-merc-dressup-host';
         _detailDollViewport.appendChild(_detailDressupHost);
+        // picker 预览 overlay 挂在 doll 视口：随视口清列摘下后原样挂回（绝对定位叠放顶层）
+        if (_loadoutPicker && _loadoutPickerMerc === _detailSlot
+                && _loadoutPicker.getOverlayNode()) {
+            _detailDollViewport.appendChild(_loadoutPicker.getOverlayNode());
+        }
 
+        // 滚动痛点根治（二期 §5，与组件选型无关的确定收益）：picker 根节点先摘出
+        // （保住 tooltip/拖拽/焦点绑定与候选五态），右栏列重建后原样挂回并 setMerc
+        // 局部恢复 picker 状态（选中槽/scope/候选）；scrollTop 全程保持，不再弹回顶部。
+        var rightScrollTop = _detailRightEl.scrollTop;
+        var pickerRoot = (_loadoutPicker && _loadoutPickerMerc === _detailSlot)
+            ? _loadoutPicker.root : null;
+        if (!pickerRoot) destroyLoadoutPicker();
+        else if (pickerRoot.parentNode) pickerRoot.parentNode.removeChild(pickerRoot);
         Workbench.clearElement(_detailRightEl);
         var traitSection = detailSection('性格特质');
         var traitsGrid = document.createElement('div');
@@ -1773,16 +1787,16 @@
         hint.className = 'team-merc-section-hint';
         hint.textContent = '交付背包装备覆盖该槽预设，下次出战生成时生效；取回后自动回落预设。手雷为消耗品，不参与托管。';
         equipSection.appendChild(hint);
-        var manageGrid = document.createElement('div');
-        manageGrid.className = 'team-merc-equip-manage-grid';
-        renderEquipManage(merc, manageGrid);
-        equipSection.appendChild(manageGrid);
-        // 托管候选浏览器宿主：交付/替换点开后内嵌于装备区下方；随本页重建销毁
-        var loadoutHost = document.createElement('div');
-        loadoutHost.className = 'team-merc-loadout-browser-host';
-        equipSection.appendChild(loadoutHost);
-        _loadoutBrowserHost = loadoutHost;
+        // LoadoutPicker 常驻两栏（槽位网格 + 候选栏同区同屏）：快照/写后局部刷新不销毁，
+        // picker 状态（选中槽/scope/选中候选）经 setMerc 恢复，活跃候选随新 revision 重拉
+        var pickerHost = document.createElement('div');
+        pickerHost.className = 'team-merc-loadout-picker-host';
+        equipSection.appendChild(pickerHost);
         _detailRightEl.appendChild(equipSection);
+        if (pickerRoot) pickerHost.appendChild(pickerRoot);
+        else createLoadoutPicker(pickerHost);
+        _loadoutPicker.setMerc(merc);
+        _detailRightEl.scrollTop = rightScrollTop;
 
         renderDetailDressup(merc);
     }
@@ -1874,22 +1888,15 @@
         }
     }
 
-    // 装备调配（2026-08-23 佣兵装备托管一期起可写）：槽 16 手雷为纯经济消耗、只读无按钮；
-    // 槽 6..15 按 merc.loadout 投影渲染三态徽章（TeamShared.buildCustodyBadge）与写按钮——
-    // preset→「交付」；custody→「替换 / 取回」；custody_corrupt→禁用态取回尝试
-    //（徽章「托管异常」，写入由 AS2 fail-closed 权威拒绝，UI 只解释原因，一期无游戏内逃生门）。
-    // readonly=true（hire 右栏 / 世界候选）保持纯展示：零徽章零按钮。
-    function renderEquipManage(merc, gridEl, readonly) {
+    // 装备格只读行式渲染（hire 右栏 / 世界内候选专用）：11 槽纯展示，零徽章零按钮。
+    // 培养页可写装备调配自二期（2026-08-24）起由 LoadoutPicker 常驻两栏承担
+    //（createLoadoutPicker；三态徽章经 decorateSlot 钩子挂接，语义不变）。
+    function renderEquipManage(merc, gridEl) {
         var SLOTS = MercData.SLOTS;
-        var SLOT_NAMES = MercData.SLOT_NAMES;
         var equipBySlot = {};
         if (merc.equips) {
             for (var e = 0; e < merc.equips.length; e++) equipBySlot[merc.equips[e].slot] = merc.equips[e];
         }
-        var loadoutSlots = merc.loadout && merc.loadout.slots ? merc.loadout.slots : {};
-        // 锁存期间整区禁用并给可读原因（双栏 §4：blocked 必须可读，不允许可点外观 + silent no-op）
-        var operateReason = readonly ? '' : loadoutOperateReason(merc);
-        if (!readonly && !operateReason && hasActiveReconcile()) operateReason = '权威状态核对中，暂时无法调整装备';
         for (var i = 0; i < SLOTS.length; i++) {
             var slot = SLOTS[i];
             var eq = equipBySlot[slot];
@@ -1900,35 +1907,54 @@
             } else {
                 var emptyCell = document.createElement('div');
                 emptyCell.className = 'merc-equip-cell merc-equip-empty';
-                emptyCell.title = SLOT_NAMES[slot] || '';
+                emptyCell.title = MercData.SLOT_NAMES[slot] || '';
                 cellWrap.appendChild(emptyCell);
             }
-            var info = document.createElement('div');
-            info.className = 'team-merc-equip-slot-info';
-            var label = document.createElement('span');
-            label.className = 'team-merc-equip-slot-label';
-            label.textContent = SLOT_NAMES[slot] || '';
-            var nameEl = document.createElement('span');
-            nameEl.className = 'team-merc-equip-slot-name' + (eq ? '' : ' team-merc-equip-slot-vacant');
-            nameEl.textContent = eq ? ((eq.displayname || eq.name) + ' +' + eq.level) : '空';
-            info.appendChild(label);
-            info.appendChild(nameEl);
-            cellWrap.appendChild(info);
-            // 手雷槽（16）不进入托管写通道：只读，连按钮区也不渲染
-            if (!readonly && isWritableLoadoutSlot(slot)) {
-                var slotKey = String(slot);
-                var slotInfo = loadoutSlots[slotKey];
-                var slotState = slotInfo && slotInfo.state || 'preset';
-                var actions = document.createElement('div');
-                actions.className = 'team-merc-equip-slot-actions';
-                actions.setAttribute('data-loadout-slot', slotKey);
-                actions.setAttribute('data-loadout-state', slotState);
-                actions.appendChild(TeamShared.buildCustodyBadge(slotState));
-                appendLoadoutActions(actions, merc, slotKey, slotState, operateReason);
-                cellWrap.appendChild(actions);
-            }
+            cellWrap.appendChild(buildEquipSlotInfo(slot, eq));
             gridEl.appendChild(cellWrap);
         }
+    }
+
+    // 槽位标签 + 装备名两段信息（只读行与手雷行共用）
+    function buildEquipSlotInfo(slot, eq) {
+        var info = document.createElement('div');
+        info.className = 'team-merc-equip-slot-info';
+        var label = document.createElement('span');
+        label.className = 'team-merc-equip-slot-label';
+        label.textContent = MercData.SLOT_NAMES[slot] || '';
+        var nameEl = document.createElement('span');
+        nameEl.className = 'team-merc-equip-slot-name' + (eq ? '' : ' team-merc-equip-slot-vacant');
+        nameEl.textContent = eq ? ((eq.displayname || eq.name) + ' +' + eq.level) : '空';
+        info.appendChild(label);
+        info.appendChild(nameEl);
+        return info;
+    }
+
+    // 手雷槽（16）只读行：随行尾于 picker 槽位列，不进 picker 网格（纯经济消耗、出托管范围）。
+    // 挂在 picker 根内（随其 detach 跳过右栏 clearElement 的绑定释放），故自管 tooltip 生命周期。
+    function renderGrenadeReadonlyRow(mount, merc) {
+        if (!mount) return;
+        Workbench.clearElement(mount);
+        if (!merc) return;
+        var eq = null;
+        if (merc.equips) {
+            for (var e = 0; e < merc.equips.length; e++) {
+                if (merc.equips[e].slot === 16) { eq = merc.equips[e]; break; }
+            }
+        }
+        var row = document.createElement('div');
+        row.className = 'team-merc-equip-slot team-merc-equip-slot-readonly';
+        row.setAttribute('data-loadout-slot', '16');
+        if (eq) {
+            row.appendChild(buildEquipCell(eq, merc, 16));
+        } else {
+            var emptyCell = document.createElement('div');
+            emptyCell.className = 'merc-equip-cell merc-equip-empty';
+            emptyCell.title = MercData.SLOT_NAMES[16] || '';
+            row.appendChild(emptyCell);
+        }
+        row.appendChild(buildEquipSlotInfo(16, eq));
+        mount.appendChild(row);
     }
 
     // ── 佣兵装备托管（一期）：写通道 ──
@@ -1949,185 +1975,207 @@
         return '当前无法调整托管装备';
     }
 
-    // 槽位第三列按钮区：按 state 出按钮；operateReason 非空时全部 blocked 给可读原因
-    function appendLoadoutActions(actions, merc, slotKey, slotState, operateReason) {
-        var slotName = MercData.SLOT_NAMES[slotKey] || slotKey;
-        if (slotState === 'custody_corrupt') {
-            // 损坏占位 fail-closed：仅禁用态取回尝试（点击只解释原因，零协议）
-            var corruptBtn = button('取回', 'team-pane-btn merc-loadout-btn merc-loadout-withdraw', null);
-            corruptBtn.setAttribute('aria-label', '取回 ' + merc.name + ' ' + slotName + ' 托管装备');
-            setActionBlocked(corruptBtn, operateReason || '托管快照异常，已失败关闭；请保留存档并反馈');
-            corruptBtn.addEventListener('click', function() { guardBlocked(this); });
-            actions.appendChild(corruptBtn);
-            return;
-        }
-        if (slotState === 'custody') {
-            var replaceBtn = button('替换', 'team-pane-btn merc-loadout-btn merc-loadout-replace', null);
-            replaceBtn.setAttribute('aria-label', '替换 ' + merc.name + ' ' + slotName + ' 托管装备');
-            setActionBlocked(replaceBtn, operateReason);
-            replaceBtn.addEventListener('click', function() {
-                if (guardBlocked(this)) return;
-                openLoadoutBrowser(merc, slotKey, 'replace', this);
-            });
-            actions.appendChild(replaceBtn);
-            var withdrawBtn = button('取回', 'team-pane-btn merc-loadout-btn merc-loadout-withdraw', null);
-            withdrawBtn.setAttribute('aria-label', '取回 ' + merc.name + ' ' + slotName + ' 托管装备');
-            setActionBlocked(withdrawBtn, operateReason);
-            withdrawBtn.addEventListener('click', function() {
-                if (guardBlocked(this)) return;
-                onLoadoutWithdraw(merc, slotKey, this);
-            });
-            actions.appendChild(withdrawBtn);
-            return;
-        }
-        var deliverBtn = button('交付', 'team-pane-btn merc-loadout-btn merc-loadout-deliver', null);
-        deliverBtn.setAttribute('aria-label', '交付背包装备到 ' + merc.name + ' ' + slotName + ' 槽');
-        setActionBlocked(deliverBtn, operateReason);
-        deliverBtn.addEventListener('click', function() {
-            if (guardBlocked(this)) return;
-            openLoadoutBrowser(merc, slotKey, 'deliver', this);
-        });
-        actions.appendChild(deliverBtn);
-    }
-
-    // 交付/替换候选浏览器：loadout_candidates 按需拉取（现场签发的背包 lease 随响应下发），
-    // 共享候选浏览器组件渲染（兼容/背包双视图、锁定原因、单选确认、密度挂接、独立滚动）。
-    function openLoadoutBrowser(merc, slotKey, operation, btn) {
-        if (guardMutation()) return;
+    // 可操作门（含对账锁；旧 renderEquipManage 锁存语义平移）：'' 可写，否则可读原因
+    function loadoutOperateReasonFull(merc) {
         var reason = loadoutOperateReason(merc);
-        if (reason) { cue('illegal'); TeamShared.toast(reason); return; }
+        if (!reason && hasActiveReconcile()) reason = '权威状态核对中，暂时无法调整装备';
+        return reason;
+    }
+
+    // 槽位托管态读取（picker 动词解析共用）：preset / custody / custody_corrupt
+    function loadoutSlotState(merc, slotId) {
+        var info = merc && merc.loadout && merc.loadout.slots
+            ? merc.loadout.slots[String(slotId)] : null;
+        return info && info.state || 'preset';
+    }
+
+    // ── 佣兵装备托管（二期 2026-08-24）：LoadoutPicker 常驻接入 ──
+    // 布局 = 槽位图标网格（护具 6..11 / 武装 12..15，3 列紧凑网格；手雷 16 只读随行尾）
+    // + 常驻候选栏（五态 / 兼容·背包 scope / 独立滚动区）。点槽联动（requestKey 栅栏 +
+    // 乐观切换回滚）、单击纸娃娃预览、双击/主按钮/拖拽提交、custody 槽落点 = 替换语义。
+    // AS2 wire 命令名与载荷形状不变（panel='mercs'，loadout_candidates 增 scope 字段，
+    // deliver/replace/withdraw 原样）；候选读取经 _loadoutCandidatesSeq + picker requestKey
+    // 双栅栏（迟到回包不复活）。
+    function createLoadoutPicker(host) {
+        destroyLoadoutPicker();
+        _loadoutPicker = MercLoadoutPicker.createView({
+            document: document,
+            overlayHost: _detailDollViewport,
+            badgeOf: function(state) { return TeamShared.buildCustodyBadge(state); },
+            slotNameOf: function(id) { return MercData.SLOT_NAMES[id] || String(id); },
+            operateReasonOf: loadoutOperateReasonFull,
+            iconHtml: function(name, className) {
+                var html = (typeof Icons !== 'undefined' && Icons.html)
+                    ? Icons.html(name, className || 'inventory-owned-icon',
+                        ' onerror="this.style.display=\'none\'"') : '';
+                return html || '<span class="' + (className || 'inventory-owned-icon')
+                    + ' inventory-icon-fallback" aria-hidden="true">◇</span>';
+            },
+            releaseGrid: function(grid) {
+                if (_tooltipScope && _tooltipScope.releaseTree) _tooltipScope.releaseTree(grid);
+            },
+            bindSlotTooltip: function(slot, presentation, slotId) {
+                var merc = findMercBySlot(_detailSlot);
+                if (merc) bindLoadoutTip(slot, presentation, merc, String(slotId), null);
+            },
+            bindCandidateTooltip: function(node, candidate, isSuppressed) {
+                var merc = findMercBySlot(_detailSlot);
+                if (!merc || !candidate || !candidate.raw) return null;
+                return bindLoadoutTip(node, candidate.raw.item || {}, merc,
+                    loadoutTooltipSlotId(candidate), candidate.raw.source || null);
+            },
+            renderGrenade: renderGrenadeReadonlyRow,
+            onSlotSelect: function(selection) { return requestLoadoutCandidates(selection); },
+            onCandidateScopeChange: function(scope, selection) {
+                return requestLoadoutCandidates(selection);
+            },
+            onCandidateSelect: function(candidate) { previewLoadoutCandidate(candidate); },
+            onCommit: function(candidate, slotKey) { commitLoadoutCandidate(slotKey, candidate); },
+            onSlotDropEquip: function(slotKey, candidate) {
+                return dropLoadoutCandidate(slotKey, candidate);
+            },
+            onWithdraw: function(slotId, btn) {
+                var merc = findMercBySlot(_detailSlot);
+                if (merc) onLoadoutWithdraw(merc, slotId, btn);
+            }
+        });
+        _loadoutPickerMerc = _detailSlot;
+        _loadoutPicker.mount(host);
+    }
+
+    function destroyLoadoutPicker() {
+        _loadoutCandidatesSeq++;   // 作废在飞候选响应（picker 销毁后迟到回包不复活）
+        if (_loadoutPicker) {
+            _loadoutPicker.destroy();
+            _loadoutPicker = null;
+        }
+        _loadoutPickerMerc = -1;
+    }
+
+    // 候选 tooltip / 预览的落点槽位：选中槽优先，背包总览取白名单首个兼容槽
+    //（lease 复证走 source，slotKey 仅定位佣兵槽位）
+    function loadoutTooltipSlotId(candidate) {
+        var selected = _loadoutPicker && _loadoutPicker.getSelectedSlotKey();
+        var id = MercLoadoutChannel.slotIdFromKey(selected);
+        if (id) return id;
+        var slots = candidate && candidate.raw && candidate.raw.eligibleSlots;
+        return Array.isArray(slots) && slots.length ? String(slots[0]) : '6';
+    }
+
+    // 候选读取通道：兼容 tab = slot scope（单槽 use 预过滤），背包 tab = backpack scope
+    //（背包全部占用格逐候选带 eligibleSlots 白名单）；loadoutRevision 随响应锁存供写通道。
+    // 返回 callId（异步，回包经双栅栏投递 setCandidates/setCandidateFailure）或
+    // false（准入门拒 → picker 乐观切换回滚）。
+    function requestLoadoutCandidates(selection) {
+        var merc = findMercBySlot(_detailSlot);
+        if (!merc || !_loadoutPicker) return false;
+        if (guardMutation()) return false;
+        if (loadoutOperateReasonFull(merc)) return false;
+        var scope = selection && selection.candidateScope === 'backpack' ? 'backpack' : 'slot';
+        var slotId = MercLoadoutChannel.slotIdFromKey(selection && selection.key);
         var seq = ++_loadoutCandidatesSeq;
-        beginOp(btn);
-        sendPanelMsg('loadout_candidates', {
-            mercIndex: merc.slotIndex,
-            mercId: merc.id || '',
-            slotKey: slotKey
-        }, function(data) {
-            endOp(btn);
-            if (seq !== _loadoutCandidatesSeq) return;   // 已有更新的候选请求 / 宿主已随重建销毁
-            if (!data || !data.success) {
-                TeamShared.toast('获取候选装备失败：' + loadoutErrorText(data), 'error');
-                return;
+        var requestKey = selection && selection.requestKey;
+        return sendPanelMsg('loadout_candidates',
+            MercLoadoutChannel.requestPayload(merc, slotId, scope),
+            function(data) {
+                if (seq !== _loadoutCandidatesSeq) return;
+                if (!_loadoutPicker || _loadoutPickerMerc !== _detailSlot) return;
+                if (!data || !data.success) {
+                    _loadoutPicker.setCandidateFailure(requestKey, data && data.error);
+                    return;
+                }
+                _loadoutCandidatesRevision = MercLoadoutChannel.revisionOf(data, merc);
+                _loadoutPicker.setCandidates(requestKey,
+                    MercLoadoutChannel.projectCandidates(merc, data, scope));
+            }) || false;
+    }
+
+    // 提交（主按钮 / 双击）：动词由落点槽位托管态解析（preset→deliver，custody→replace，
+    // 损坏占位 fail-closed）；expectedLoadoutRevision 以候选响应为准（拉取时刻权威 revision）
+    function commitLoadoutCandidate(slotKey, candidate) {
+        var merc = findMercBySlot(_detailSlot);
+        var slotId = MercLoadoutChannel.slotIdFromKey(slotKey);
+        var operation = merc && MercLoadoutChannel.operationForState(
+            loadoutSlotState(merc, slotId));
+        if (!merc || !candidate || !slotId || !operation) return false;
+        onLoadoutWrite(merc, slotId, operation, candidate, _loadoutCandidatesRevision, null);
+        return true;
+    }
+
+    // 拖拽落点提交：与主按钮同通道（custody 落点 = 替换语义）
+    function dropLoadoutCandidate(slotKey, candidate) {
+        return commitLoadoutCandidate(slotKey, candidate);
+    }
+
+    // 候选单击 = 纸娃娃预览联动（设计 §3.2 preview port）：经 MercPortraits 把候选临时
+    // 并入渲染态（选中槽优先，背包总览取白名单首槽）；取消/提交后恢复权威投影。
+    function previewLoadoutCandidate(candidate) {
+        if (!_dressupDetailRenderer || !_detailPage || !_detailPage.isActive()) return;
+        var merc = findMercBySlot(_detailSlot);
+        if (!merc) return;
+        var previewMerc = merc;
+        var item = candidate && candidate.raw && candidate.raw.item;
+        if (item) {
+            var slotId = loadoutTooltipSlotId(candidate);
+            var equips = (merc.equips || []).slice();
+            var entry = {
+                slot: Number(slotId),
+                name: item.name || item.raw || item.displayName || '',
+                displayname: item.displayName || item.name || '',
+                icon: item.icon || item.name || '',
+                level: Number(item.enhancementLevel) || 0
+            };
+            var replaced = false;
+            for (var i = 0; i < equips.length; i++) {
+                if (equips[i].slot === Number(slotId)) { equips[i] = entry; replaced = true; break; }
             }
-            renderLoadoutBrowser(merc, slotKey, operation, data);
-        });
-    }
-
-    function renderLoadoutBrowser(merc, slotKey, operation, data) {
-        var host = _loadoutBrowserHost;
-        if (!host) return;
-        if (_loadoutBrowserInstance) {
-            _loadoutBrowserInstance.destroy();
-            _loadoutBrowserInstance = null;
-        }
-        Workbench.clearElement(host);
-        var slotName = MercData.SLOT_NAMES[slotKey] || slotKey;
-        var head = document.createElement('div');
-        head.className = 'team-merc-loadout-browser-head';
-        var title = document.createElement('span');
-        title.className = 'team-merc-loadout-browser-title';
-        title.textContent = (operation === 'replace' ? '替换' : '交付') + '到「' + slotName + '」· 选择背包装备';
-        head.appendChild(title);
-        var cancelBtn = button('取消', 'team-pane-btn team-merc-loadout-browser-cancel', function() {
-            closeLoadoutBrowser();
-        });
-        cancelBtn.setAttribute('aria-label', '取消选择装备');
-        cancelBtn.setAttribute('data-audio-cue', 'back');
-        head.appendChild(cancelBtn);
-        host.appendChild(head);
-
-        // 写操作的 expectedLoadoutRevision 以候选响应为准（拉取时刻的权威 revision）
-        var revision = Number(data.loadoutRevision);
-        if (!isFinite(revision) || revision < 0) {
-            revision = merc.loadout ? Number(merc.loadout.loadoutRevision) || 0 : 0;
-        }
-        var browser = TeamShared.createCandidateBrowser({
-            candidates: data.candidates || [],
-            scopeAriaLabel: '装备候选范围',
-            scopeChoices: [
-                { value: 'compatible', label: '兼容', ariaLabel: '只显示该槽位可装备的候选', eligibleOnly: true },
-                { value: 'backpack', label: '背包', ariaLabel: '显示背包中该槽位的全部候选' }
-            ],
-            listAriaLabel: '可交付装备候选',
-            scrollRegion: 'merc-loadout-candidates',
-            commitLabel: operation === 'replace' ? '确认替换' : '确认交付',
-            combatLockedReason: data.combatLocked ? '战斗地图中无法调整托管装备' : '',
-            texts: {
-                unknownItem: '未知装备',
-                noSelection: '未选择装备',
-                pickHint: '从下方候选中选择一件装备',
-                emptyScope: '当前范围没有候选',
-                emptyNone: '背包中暂无该槽位装备。',
-                emptyFiltered: '当前没有可交付装备；切换到“背包”可查看锁定原因。',
-                eligible: '可交付',
-                selectFirst: '请先选择可交付装备',
-                lockFallback: '该装备当前不可交付'
-            },
-            bitsOf: loadoutCandidateBits,
-            lockTextOf: function(candidate) { return loadoutCandidateLockText(merc, candidate); },
-            bindTip: function(row, candidate) {
-                bindLoadoutTip(row, candidate.item || {}, merc, slotKey, candidate.source);
-            },
-            density: _density,
-            onCommit: function(candidate, commitBtn) {
-                onLoadoutWrite(merc, slotKey, operation, candidate, revision, commitBtn);
+            if (!replaced) equips.push(entry);
+            previewMerc = {};
+            for (var key in merc) {
+                if (Object.prototype.hasOwnProperty.call(merc, key)) previewMerc[key] = merc[key];
             }
-        });
-        host.appendChild(browser.root);
-        host.setAttribute('data-loadout-open', slotKey);
-        _loadoutBrowserInstance = browser;
+            previewMerc.equips = equips;
+        }
+        var state = buildMercDressupState(previewMerc, DRESSUP_BODY_FIT_FIELDS, 0.92, 16,
+            null, 'battle', DRESSUP_BATTLE_STATE);
+        if (state) _dressupDetailRenderer.render(state);
     }
 
-    function closeLoadoutBrowser() {
-        _loadoutCandidatesSeq++;   // 作废在飞候选响应（宿主销毁后迟到回包不复活）
-        if (_loadoutBrowserInstance) {
-            _loadoutBrowserInstance.destroy();
-            _loadoutBrowserInstance = null;
-        }
-        if (_loadoutBrowserHost) {
-            Workbench.clearElement(_loadoutBrowserHost);
-            _loadoutBrowserHost.removeAttribute('data-loadout-open');
-            _loadoutBrowserHost = null;
-        }
-    }
-
-    // 交付 / 替换（source 为候选响应里 lease-bound 的背包格引用）
+    // 交付 / 替换（source 为候选响应里 lease-bound 的背包格引用；载荷形状经 channel 装配，
+    // 命令名 / 字段与一期逐字一致）；picker 写在飞投影 write_pending（槽位/候选/scope 锁定）
     function onLoadoutWrite(merc, slotKey, operation, candidate, revision, btn) {
         if (guardMutation()) return;
         beginOp(btn);
-        sendPanelMsg(operation === 'replace' ? 'loadout_replace' : 'loadout_deliver', {
-            mercIndex: merc.slotIndex,
-            mercId: merc.id || '',
-            slotKey: slotKey,
-            expectedLoadoutRevision: revision,
-            source: candidate.source
-        }, function(data) {
-            handleLoadoutWriteResponse(merc, slotKey, operation, btn, data);
-        });
+        if (_loadoutPicker) _loadoutPicker.setWritePending(true);
+        sendPanelMsg(MercLoadoutChannel.writeCommand(operation),
+            MercLoadoutChannel.writePayload(merc, slotKey, operation, candidate, revision),
+            function(data) {
+                handleLoadoutWriteResponse(merc, slotKey, operation, btn, data);
+            });
     }
 
-    // 取回（无 source；revision 取当前投影，AS2 复查）
+    // 取回（无 source；revision 取当前投影，AS2 复查；直接 loadout_withdraw 不走候选）
     function onLoadoutWithdraw(merc, slotKey, btn) {
         if (guardMutation()) return;
         var revision = merc.loadout ? Number(merc.loadout.loadoutRevision) || 0 : 0;
         beginOp(btn);
-        sendPanelMsg('loadout_withdraw', {
-            mercIndex: merc.slotIndex,
-            mercId: merc.id || '',
-            slotKey: slotKey,
-            expectedLoadoutRevision: revision
-        }, function(data) {
-            handleLoadoutWriteResponse(merc, slotKey, 'withdraw', btn, data);
-        });
+        if (_loadoutPicker) _loadoutPicker.setWritePending(true);
+        sendPanelMsg('loadout_withdraw',
+            MercLoadoutChannel.writePayload(merc, slotKey, 'withdraw', null, revision),
+            function(data) {
+                handleLoadoutWriteResponse(merc, slotKey, 'withdraw', btn, data);
+            });
     }
 
     // 托管写统一响应：成功用响应里的 loadout + inventorySnapshot 对账（投影即刻生效、
     // 背包快照留存供核对），再重拉权威快照刷新有效装备投影；确定失败按错误码给可读原因；
     // 可疑失败（client_timeout/timeout/delivery_unknown）由锁存合同接管，不乐观改库存。
+    // 二期 §5 滚动痛点根治：写成功后只局部刷新装备调配区（picker 常驻不销毁、
+    // 右栏 scrollTop 保持、活跃候选随新 revision 重拉），不再整列重建/关闭候选栏。
     function handleLoadoutWriteResponse(merc, slotKey, operation, btn, data) {
         endOp(btn);
+        if (_loadoutPicker) _loadoutPicker.setWritePending(false);
         var slotName = MercData.SLOT_NAMES[slotKey] || slotKey;
-        closeLoadoutBrowser();
         if (data && data.success) {
             if (data.loadout) merc.loadout = data.loadout;
             if (data.inventorySnapshot) _lastLoadoutInventory = data.inventorySnapshot;
@@ -2144,7 +2192,10 @@
         var opLabel = operation === 'deliver' ? '交付' : operation === 'replace' ? '替换' : '取回';
         TeamShared.toast(opLabel + '失败：' + loadoutErrorText(data), 'error');
         // stale_state 等确定失败同样刷新本地投影；锁存期间由对账链负责重拉
-        if (!hasActiveReconcile()) requestSnapshot();
+        if (hasActiveReconcile()) {
+            // 锁存接管：picker 整区转 locked（对账锁可读原因），候选栏不销毁
+            if (_loadoutPicker && _loadoutPickerMerc === _detailSlot) _loadoutPicker.setMerc(merc);
+        } else requestSnapshot();
     }
 
     // 错误码 → 可读文案（与 AS2/Host 契约逐字对齐，含锁存三件套）
@@ -2176,28 +2227,6 @@
             client_timeout: '等待响应超时，正在重新同步'
         };
         return map[code] || code || '未知错误';
-    }
-
-    // 候选卡元信息（与 T800 同构：类型 / 需求等级 / 强化 / 插件）
-    function loadoutCandidateBits(candidate) {
-        var item = candidate.item || {};
-        var bits = [];
-        if (item.weaponType) bits.push(item.weaponType);
-        else if (item.majorType) bits.push(item.majorType);
-        if (candidate.requirementLevel > 0) bits.push('需求 Lv.' + candidate.requirementLevel);
-        if ((item.enhancementLevel || 0) > 0) bits.push('强化 +' + item.enhancementLevel);
-        if ((item.modSlotUsed || 0) > 0) bits.push('插件 ' + item.modSlotUsed);
-        return bits;
-    }
-
-    // 锁定原因映射（等级门基准 = 佣兵自身等级，设计 §2）
-    function loadoutCandidateLockText(merc, candidate) {
-        if (candidate.lockReason === 'level_locked') {
-            return '需求 Lv.' + (candidate.requirementLevel || '?')
-                + '，超过佣兵等级 Lv.' + (merc ? merc.level : '?');
-        }
-        if (candidate.lockReason === 'item_incompatible') return '装备与槽位不匹配';
-        return '该装备当前不可交付';
     }
 
     // 解雇：共享 modal（danger 主按钮），替代自绘 confirm overlay
@@ -2380,9 +2409,9 @@
     // 实例级富注释：slotKey 定位佣兵槽位（托管有效→冻结克隆，否则→预设默认强化口径）；
     // source 非空时按背包候选格复证（lease-bound）。缓存 key 绑 revision/lease，快照到达即整册失效。
     function bindLoadoutTip(cell, eq, merc, slotKey, source) {
-        if (!_tooltipScope) return;
+        if (!_tooltipScope) return null;
         var raw = eq.raw || eq.name;
-        if (!raw) return;
+        if (!raw) return null;
         var revision = merc.loadout ? Number(merc.loadout.loadoutRevision) || 0 : 0;
         var sourceKey = source
             ? String(source.containerId || '') + ':' + String(source.slot) + ':'
@@ -2394,7 +2423,7 @@
             iconKey: eq.icon || eq.name,
             displayname: eq.displayname || eq.displayName || eq.name
         };
-        _tooltipScope.bindAsync(cell, {
+        return _tooltipScope.bindAsync(cell, {
             profile:'dense-inspect',
             key: 'L|' + merc.slotIndex + '|' + slotKey + '|' + revision + '|' + sourceKey + '|' + raw,
             item: item,
@@ -2812,6 +2841,8 @@
         onClose: onClose,
         requestClose: requestClose,
         resetToList: resetToList,
-        isBusy: function() { return _busy; }
+        isBusy: function() { return _busy; },
+        // QA/harness 观测口：picker 交互态只读投影（不改任何行为）
+        loadoutPickerDebug: function() { return _loadoutPicker ? _loadoutPicker.debugState() : null; }
     };
 })();
