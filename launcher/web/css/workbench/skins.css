@@ -856,6 +856,14 @@
 .npcshop-space-header h2 { margin:0; font-size:18px; }
 .npcshop-space-header p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
 .npcshop-space-header [data-space-status] { margin-left:auto; color:var(--wb-accent); font-size:10px; }
+/* §5.5 位置契约：二级页面板级 × 恒为页头最右端动作（与壳 × 同角落），
+   不进 ‹ 返回/帮助的左侧导航条；space/loot 页头借 status 的 margin-left:auto
+   把尾部组推右，× 紧随其后即落最右端，不再自增 auto 边距平分自由空间。 */
+.npcshop-settlement-header [data-trade-close],
+.npcshop-help-header [data-help-close],
+.kshop-settlement-header [data-kshop-settlement-close] { margin-left:auto; flex:0 0 auto; }
+.npcshop-space-header [data-space-close],
+.npcshop-space-header [data-loot-organizer-close] { flex:0 0 auto; }
 .npcshop-space-columns { display:grid; grid-template-columns:1fr 1fr; gap:10px; min-height:0; padding-top:9px; }
 .npcshop-space-columns > section { display:grid; grid-template-rows:auto minmax(0,1fr); min-height:0; border:1px solid #292e35; background:#0d1014; }
 .npcshop-space-columns h3 { display:flex; align-items:center; gap:8px; min-height:29px; margin:0; padding:4px 8px; box-sizing:border-box; color:#b8bdc4; border-bottom:1px solid #292e35; font-size:11px; }

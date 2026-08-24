@@ -966,9 +966,13 @@ var MockHost = {
       jCx0<=jSecRect0.width*0.12 && jCy0<=jSecRect0.height*0.25,
       'cx='+jCx0.toFixed(1)+', cy='+jCy0.toFixed(1));
     var jAdvClose=jSec0.querySelector('.team-pet-advance-close');
-    assert('team-pet-advance-close','战宠培养页 header 投影面板级 ×（§5.5：bindClose + aria-label）',
+    var jAdvCloseRect=jAdvClose?jAdvClose.getBoundingClientRect():null;
+    var jAdvHeaderRect=jAdvClose?jAdvClose.parentElement.getBoundingClientRect():null;
+    assert('team-pet-advance-close','战宠培养页 header 投影面板级 × 且位于页头最右端（§5.5：bindClose + aria-label + 位置）',
       !!jAdvClose && jAdvClose.getAttribute('data-secondary-action')==='close'
-        && jAdvClose.getAttribute('aria-label')==='关闭战队面板');
+        && jAdvClose.getAttribute('aria-label')==='关闭战队面板'
+        && jAdvCloseRect.width>0 && jAdvCloseRect.right>=jAdvHeaderRect.right-8
+        && jAdvCloseRect.left>=jAdvHeaderRect.left+jAdvHeaderRect.width*0.5);
     jSec0.querySelector('.team-advance-back').click(); await wait(20);
     click('partner');
     await waitFor(function(){ return document.querySelectorAll('.team-pet-child .team-pet-card').length===2; },2000);
@@ -1765,9 +1769,13 @@ var MockHost = {
       mLdList().getAttribute('data-candidate-state')==='empty',
       'staleIgnored='+mLdStaleIgnored);
     var mLdClose=mLdPage.querySelector('.team-merc-detail-close');
-    assert('team-merc-detail-close','佣兵培养页 header 投影面板级 ×（§5.5：bindClose + aria-label）',
+    var mLdCloseRect=mLdClose?mLdClose.getBoundingClientRect():null;
+    var mLdHeaderRect=mLdClose?mLdClose.parentElement.getBoundingClientRect():null;
+    assert('team-merc-detail-close','佣兵培养页 header 投影面板级 × 且位于页头最右端（§5.5：bindClose + aria-label + 位置）',
       !!mLdClose && mLdClose.getAttribute('data-secondary-action')==='close'
-        && mLdClose.getAttribute('aria-label')==='关闭战队面板');
+        && mLdClose.getAttribute('aria-label')==='关闭战队面板'
+        && mLdCloseRect.width>0 && mLdCloseRect.right>=mLdHeaderRect.right-8
+        && mLdCloseRect.left>=mLdHeaderRect.left+mLdHeaderRect.width*0.5);
     mLdPage.querySelector('.team-merc-detail-back').click(); await wait(20);
     // ── busy 守卫：hire 加载中禁止切 tab 与关闭 ──
     document.querySelector('.team-merc-child .team-goto-hire').click();

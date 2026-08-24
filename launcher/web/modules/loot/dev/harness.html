@@ -479,6 +479,13 @@ function respond(message){
     var semanticCloseSnapshots=tasks('snapshot').length;
     var semanticCloseClaims=tasks('claim').length;
     var semanticCloseWrites=tasks('close').length;
+    var organizerCloseButton=document.querySelector('[data-loot-organizer-close]');
+    var organizerCloseRect=organizerCloseButton.getBoundingClientRect();
+    var organizerHeaderRect=organizerCloseButton.parentElement.getBoundingClientRect();
+    ok('organizer Close sits at the header right end apart from the back strip (§5.5 position)',
+      organizerCloseButton.parentElement.classList.contains('npcshop-space-header')
+      &&organizerCloseRect.width>0&&organizerCloseRect.right>=organizerHeaderRect.right-8
+      &&organizerCloseRect.left>=organizerHeaderRect.left+organizerHeaderRect.width*0.5);
     document.querySelector('[data-loot-organizer-close]').click();
     await waitFor(function(){return Panels.getActive()===null},900);
     ok('organizer Close is distinct from Back and safely exits the tracked loot panel',

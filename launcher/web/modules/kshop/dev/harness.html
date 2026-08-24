@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -2109,6 +2109,13 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var settlementCloseBefore=Host.closeCount;
         settlementOpener.click();
         await waitFor(function(){return document.querySelector('.kshop-settlement-page.active');},300);
+        var ksettleCloseBtn=document.querySelector('[data-kshop-settlement-close]');
+        var ksettleCloseRect=ksettleCloseBtn.getBoundingClientRect();
+        var ksettleHeaderRect=ksettleCloseBtn.parentElement.getBoundingClientRect();
+        assert('kshop-ui8a-close-position','结算 × 位于页头最右端、与返回条分端（§5.5 位置契约）',
+            ksettleCloseBtn.parentElement.classList.contains('kshop-settlement-header')
+                &&ksettleCloseRect.width>0&&ksettleCloseRect.right>=ksettleHeaderRect.right-8
+                &&ksettleCloseRect.left>=ksettleHeaderRect.left+ksettleHeaderRect.width*0.5);
         document.querySelector('[data-kshop-settlement-close]').click();
         await waitFor(function(){
             return Host.closeCount===settlementCloseBefore+1&&!Panels.isOpen();

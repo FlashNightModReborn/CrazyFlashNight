@@ -997,6 +997,14 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
     lowerHeader.inert&&lowerHeaderActions.hidden&&getComputedStyle(lowerHeaderActions).display==='none'
       &&lowerHeaderRect.width===0&&lowerHeaderRect.height===0&&document.activeElement!==lowerHelp
       &&Array.from(helpPage.querySelectorAll('[data-secondary-action]')).map(function(node){return node.getAttribute('data-secondary-action')}).join(',')==='back,close');
+  var helpCloseButton=helpPage.querySelector('[data-help-close]');
+  var helpCloseRect=helpCloseButton.getBoundingClientRect();
+  var helpHeaderRect=helpCloseButton.parentElement.getBoundingClientRect();
+  ok('help Close sits at the header right end apart from the back strip (§5.5 position)',
+    helpCloseButton.parentElement.classList.contains('npcshop-help-header')
+      &&helpCloseRect.width>0&&helpCloseRect.right>=helpHeaderRect.right-8
+      &&helpCloseRect.left>=helpHeaderRect.left+helpHeaderRect.width*0.5,
+    JSON.stringify({closeRight:helpCloseRect.right,headerRight:helpHeaderRect.right,closeLeft:helpCloseRect.left,headerWidth:helpHeaderRect.width}));
   ok('opening help preserves intents and sends no authority request',__sent.length===sentBeforeHelp&&NpcShop.debugState().purchaseCount===1&&NpcShop.debugState().saleCount===1);
   document.querySelector('[data-help-back]').click();
   await nextFrame();
@@ -1186,6 +1194,13 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   ok('organizer exposes a panel-level Close with exact secondary-action binding (§5.5)',
     !!spaceCloseButton&&spaceCloseButton.getAttribute('data-secondary-action')==='close'
       &&spaceCloseButton.getAttribute('aria-label')==='关闭 NPC 商店');
+  var spaceCloseRect=spaceCloseButton.getBoundingClientRect();
+  var spaceHeaderRect=spaceCloseButton.parentElement.getBoundingClientRect();
+  ok('organizer Close sits at the header right end apart from the back strip (§5.5 position)',
+    spaceCloseButton.parentElement.classList.contains('npcshop-space-header')
+      &&spaceCloseRect.width>0&&spaceCloseRect.right>=spaceHeaderRect.right-8
+      &&spaceCloseRect.left>=spaceHeaderRect.left+spaceHeaderRect.width*0.5,
+    JSON.stringify({closeRight:spaceCloseRect.right,headerRight:spaceHeaderRect.right,closeLeft:spaceCloseRect.left,headerWidth:spaceHeaderRect.width}));
   window.__nextInventoryDelay=100;
   if(spaceBackAfterTransfer)spaceBackAfterTransfer.click();await wait(15);
   var returningCard=document.querySelector('.npcshop-space-transferable');
@@ -1503,6 +1518,14 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   await reopenPurchaseSettlement('.npcshop-catalog-card');
   var panelCloseInstance=NpcShop.debugState().panelInstanceId;
   var panelCloseBefore=__sent.filter(function(message){return message.type==='panel'&&message.panel==='npcshop'&&message.cmd==='close'}).length;
+  var tradeCloseButton=document.querySelector('[data-trade-close]');
+  var tradeCloseRect=tradeCloseButton.getBoundingClientRect();
+  var tradeHeaderRect=tradeCloseButton.parentElement.getBoundingClientRect();
+  ok('settlement Close sits at the header right end apart from the back strip (§5.5 position)',
+    tradeCloseButton.parentElement.classList.contains('npcshop-settlement-header')
+      &&tradeCloseRect.width>0&&tradeCloseRect.right>=tradeHeaderRect.right-8
+      &&tradeCloseRect.left>=tradeHeaderRect.left+tradeHeaderRect.width*0.5,
+    JSON.stringify({closeRight:tradeCloseRect.right,headerRight:tradeHeaderRect.right,closeLeft:tradeCloseRect.left,headerWidth:tradeHeaderRect.width}));
   document.querySelector('[data-trade-close]').click();await wait();
   var panelCloseMessages=__sent.filter(function(message){return message.type==='panel'
     &&message.panel==='npcshop'&&message.cmd==='close'});
