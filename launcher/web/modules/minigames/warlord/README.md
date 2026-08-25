@@ -1,14 +1,14 @@
 # 军阀战术演习 3D 沙盘（Phase C）
 
-本目录是军阀战术演习的 Launcher Web 候选模块。它保留原 Web Demo v0.1 的确定性规则、战斗、AI、录像和模拟层，彻底替换旧验证 UI，并以 Three.js 正交沙盘承接九节点地图、路线、语义地标、一体化战术徽章、节点拾取和移动过渡。
+本目录是军阀战术演习的 Launcher Web 正式模块。它保留原 Web Demo v0.1 的确定性规则、战斗、AI、录像和模拟层，彻底替换旧验证 UI，并以 Three.js 正交沙盘承接九节点地图、路线、语义地标、一体化战术徽章、节点拾取和移动过渡。
 
 ## 当前状态
 
-`PHASE_B_2_UI_HUMAN_ACCEPTED / PHASE_C_HUMAN_ACCEPTANCE_PASSED / PET_IDENTITY_AND_ECONOMY_OBSERVATION_CONNECTED / RESUME_FIX_PHYSICAL_E2E_PASSED / UPSTREAM_INTEGRATED / MERGED_FLASH_PUBLISH_AND_TESTS_PASSED / PRODUCTION_WRITES_FALSE / RELEASE_PENDING / NOT_DEPLOYED`
+`PHASE_B_2_UI_HUMAN_ACCEPTED / PHASE_C_HUMAN_ACCEPTANCE_PASSED / PET_IDENTITY_AND_ECONOMY_OBSERVATION_CONNECTED / RESUME_FIX_PHYSICAL_E2E_PASSED / UPSTREAM_INTEGRATED / MERGED_FLASH_PUBLISH_AND_TESTS_PASSED / PRODUCTION_WRITES_FALSE / FORMAL_RUNTIME_PROMOTED / POST_PROMOTION_AUDIT_PASSED / FORMAL_IDENTITY_LIFECYCLE_SMOKE_PASSED`
 
-Phase B.2 的全屏布局、相机/规划避让、高节点滚动与固定结束按钮已经维护者明确验收。Phase C 在该 UI 上加入 AS2 战斗权威的源码候选：产品入口固定 `battleAuthority=as2`，战斗命令先冻结，不执行 JS resolver；Host 精确关闭沙盘并释放暂停租约后，串行调用竞技场，再以受校验 receipt 重开同一战略态。当前改动涉及 AS2 源码，但不写玩家存档、金币、K 点或玩家战宠，`productionWrites` 恒为 `false`。
+Phase B.2 的全屏布局、相机/规划避让、高节点滚动与固定结束按钮已经维护者明确验收。Phase C 在该 UI 上接入 AS2 战斗权威：产品入口固定 `battleAuthority=as2`，战斗命令先冻结，不执行 JS resolver；Host 精确关闭沙盘并释放暂停租约后，串行调用竞技场，再以受校验 receipt 重开同一战略态。该链不写玩家存档、金币、K 点或玩家战宠，`productionWrites` 恒为 `false`。
 
-2026-08-25 首次真实候选旅程已实际进入并完成 AS2 战斗，但没有回到战旗页面。结果文件证明 AS2 在约 17 秒内返回 `finished / winner=blue / errors=[]`；同一时刻 Host 日志明确记录 `[Router] RequestOpenPanel unsupported panel=warlord`。因此旧 `warlord-c3-0825` 只保留为失败证据。恢复动作现改走仅供 `WarlordBattleTask` 使用的 `TryOpenWarlordResumePanel` 内部能力：它校验只读/AS2 权威、请求摘要、session/request 身份、冻结状态/命令和客户端上下文，再经统一 `PanelHost` 打开；通用 `panel_request` 仍拒绝 `warlord`。替代候选 `warlord-c4-resume-0825` 已由维护者确认战斗结束会自动回到战旗页且体验有效，达到候选 `HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`。随后整合上游 7 个提交并重新发布合并 AS2 源；合并树 Launcher `4099 passed + 3 explicit opt-in skipped / 4102 total`、Node `75/75`、Edge/CDP `16/16`、共享 Minigame `57/57` 均通过。候选验收仍不代签 promotion、正式入口或 `standard_entry_verified`。
+2026-08-25 首次真实候选旅程已实际进入并完成 AS2 战斗，但没有回到战旗页面。结果文件证明 AS2 在约 17 秒内返回 `finished / winner=blue / errors=[]`；同一时刻 Host 日志明确记录 `[Router] RequestOpenPanel unsupported panel=warlord`。因此旧 `warlord-c3-0825` 只保留为失败证据。恢复动作现改走仅供 `WarlordBattleTask` 使用的 `TryOpenWarlordResumePanel` 内部能力：它校验只读/AS2 权威、请求摘要、session/request 身份、冻结状态/命令和客户端上下文，再经统一 `PanelHost` 打开；通用 `panel_request` 仍拒绝 `warlord`。替代候选 `warlord-c4-resume-0825` 已由维护者确认战斗结束会自动回到战旗页且体验有效。随后整合上游 7 个提交并重新发布合并 AS2 源；合并树 Launcher `4099 passed + 3 explicit opt-in skipped / 4102 total`、Node `75/75`、Edge/CDP `16/16`、共享 Minigame `57/57` 均通过。最终 release source `248cca7be212219655319c666304407b0568e658` 已完成双构建共识、promotion 和远端 audit，当前为 `HUMAN_ACCEPTANCE_PASSED / promoted`；部署后的 formal smoke 只覆盖身份和生命周期，不代签军阀专项 `standard_entry_verified`。
 
 ## 权威边界
 
@@ -145,7 +145,7 @@ npm run serve
 
 2026-08-24 Phase B.2 fresh 源码门为：包内 build/verifier/Node 继续 `68 + 4 / 71 / 69/69`；Edge/CDP 增至 `16/16`，新增压力场景注入 `14` 个额外行动节点，证明正文产生真实滚动而“结束红方行动”的屏幕位置不变，并在展开相机后证明相机卡与规划条矩形零交叠、右上锚定不漂移。三视口继续无 overflow，console/runtime/network/external failure 均为 `0`；共享 Minigame QA `57/57`、minigame final-state 通过；Launcher 全量 `4060 passed + 3 explicit opt-in skipped / 4063 total`。这些结果证明源码与普通 Edge 候选的布局合同，不代签真实 WebView2 人类观感、AS2 战斗、candidate、promotion 或部署。
 
-2026-08-25 上游整合后的 Phase C fresh 门为：包内 runtime `70`、vendor `4`、closure `73`、Node `75/75`；本机 Node `20.12.2` 低于包声明 `>=22`，只记兼容性实跑。Edge/CDP `16/16`、共享 Minigame QA `57/57`、Warlord `3/3` 与 minigame final-state 均通过。Arena calibration checks `14` 项与 Agent entry contract 通过。仓库 resolver `7/7`，精确 .NET SDK `10.0.300`；Launcher Release/xUnit 为 `4099 passed + 3 explicit opt-in skipped / 4102 total`，testhost 串行。Flash CS6 从合并 AS2 源重新 publish：`225` 份 `.as` BOM 门、fresh Compiler `0/0`，`asLoader.swf` 为 `1,141,507` bytes / SHA-256 `690C1C871FFF915BCEFC17158146B79F805D70A69793014095343019F0454539`；publish-only 未刷新 `flashlog.txt`，不构成新增行为 trace。人类行为证据绑定替代候选 `warlord-c4-resume-0825`（identity `1044015BB54FA8BD989E812F8C7C381A84EF2E5007D53419C26DFE89D2FED4C7` / closure `BDB6E561A330841B923C37F2AA9EDAA39D61CB601DFEE6BC9B4E644EDB62B8E5`），正式 runtime 仍未改变。
+2026-08-25 上游整合后的 Phase C fresh 门为：包内 runtime `70`、vendor `4`、closure `73`、Node `75/75`；本机 Node `20.12.2` 低于包声明 `>=22`，只记兼容性实跑。Edge/CDP `16/16`、共享 Minigame QA `57/57`、Warlord `3/3` 与 minigame final-state 均通过。Arena calibration checks `14` 项与 Agent entry contract 通过。仓库 resolver `7/7`，精确 .NET SDK `10.0.300`；Launcher Release/xUnit 为 `4099 passed + 3 explicit opt-in skipped / 4102 total`，testhost 串行。Flash CS6 从合并 AS2 源重新 publish：`225` 份 `.as` BOM 门、fresh Compiler `0/0`，`asLoader.swf` 为 `1,141,507` bytes / SHA-256 `690C1C871FFF915BCEFC17158146B79F805D70A69793014095343019F0454539`；publish-only 未刷新 `flashlog.txt`，不构成新增行为 trace。人类行为证据绑定替代候选 `warlord-c4-resume-0825`（identity `1044015BB54FA8BD989E812F8C7C381A84EF2E5007D53419C26DFE89D2FED4C7` / closure `BDB6E561A330841B923C37F2AA9EDAA39D61CB601DFEE6BC9B4E644EDB62B8E5`）。正式 runtime 现绑定 tag `runtime-build-v2/20260825-warlord-as2-battle-v2`、identity `6482B71F2811065A5537F5CDCB0E338D44C23C2BECDC13987D9924B289EC8C59` 与 closure `4B46C47478DAC64E038F574F2636AFDFF9E0E6EA16F807171FF5F31E21237062`；双构建、38/38 policy、promotion、远端 audit 及正式身份/生命周期 smoke 均通过。
 
 ## 验收层级
 
@@ -155,6 +155,6 @@ npm run serve
 4. Launcher 候选：实际 `https://overlay.local` 动态 import/MIME、WebView2 键鼠、关闭/重开与 GPU 资源释放。
 5. AS2 源码：冻结 request/receipt、petId+Identifier、隔离升阶、暂停交接、`not_started/unknown`、只读经济观测与 receipt 回放的静态/单元合同。
 6. AS2 物理链：Flash CS6 fresh 发布、真实竞技场 runner、逐单位结果和战后自动恢复已完成；二次交战、最终返回基地以及玩家存档/货币/战宠无污染仍是更宽的后续旅程。
-7. 人类感知：沙盘 UI 与 AS2 战斗结束自动返回均已获维护者验收，且体验评价有效；该候选感知不自动迁移为正式部署证据。
+7. 人类感知：沙盘 UI 与 AS2 战斗结束自动返回均已获维护者验收，且体验评价有效；该候选感知与随后 formal runtime 身份/生命周期 smoke 分属不同证据层，不能拼接成部署后的军阀业务 E2E。
 
-当前已完成第 3 层、第 4 层 Warlord 面板主旅程、Phase B.2 UI 人类验收、第 5 层源码合同及第 6 层 AS2 战斗和恢复主闭环，候选状态为 `HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`。战宠经济当前只有 observe-only 双刻度标定，不授权任何正式玩家状态结算；二次交战/最终回基地/持久状态无污染未由本次最窄验收覆盖，部署也尚未发生。
+当前已完成第 3 层、第 4 层 Warlord 面板主旅程、Phase B.2 UI 人类验收、第 5 层源码合同、第 6 层 AS2 战斗和恢复主闭环，以及正式 runtime 的双构建共识、promotion、post-promotion audit 与身份/生命周期 smoke，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`。战宠经济当前只有 observe-only 双刻度标定，不授权任何正式玩家状态结算；二次交战、最终回基地、持久状态无污染和部署后军阀业务标准入口未由本次最窄证据覆盖。

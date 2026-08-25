@@ -1,8 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `86de257152c23536ae4590c6e8b42585aeaca290`（2026-08-25，背包跨槽、韧性恢复、装备射速与选关回流体验修复；deployment `5dd6f8dfd79a81a77db9802b2125b6c318d62bb4`）。该部署已通过首次 post-promotion audit；动态 identity/closure 与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-部署后没有从无 candidate selector 的正式入口重跑背包连续换装、玩家受击韧性、装备进阶射速显示、选关任务回流，也没有执行黑市生产经济、设置写入重启、字体观感或 T800 武器命令等专项正式业务旅程，因此各专项不得仅凭总体 promotion 改写为 `standard_entry_verified`。
+**最后核对代码基线**：release source commit `248cca7be212219655319c666304407b0568e658`（2026-08-25，军阀战术演习 3D 沙盘、AS2 战斗权威与专用恢复路由；deployment `126c10a3d5bf46b66a973e8b68ad27c00ef9257d`）。该部署已通过首次 post-promotion audit；动态 identity/closure 与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+无 candidate selector 的正式入口已通过身份/生命周期 smoke，但没有重跑军阀沙盘到 AS2 战斗再返回的业务旅程，也没有执行黑市生产经济、设置写入重启、字体观感或 T800 武器命令等专项正式业务旅程，因此各专项不得仅凭总体 promotion 改写为 `standard_entry_verified`。军阀战宠经济观测继续固定 `writesPlayerState=false`。
 
 ## 当前真值与阅读顺序
 
@@ -390,7 +390,7 @@ Panel 的共同边界：
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
 Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)、[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)和[军阀战术演习](web/modules/minigames/warlord/README.md)。
 `blackmarket` 仅允许 `dev + shadowOnly`；产品不接调用方 seed，只生成不命中真实目录的匿名货物与 `data:` 表面。lazy closure 不含 exact oracle、dressup/preview 或 debug API，close 绑定 exact 实例；Web 根外夹具仅供 Node QA。面板固定 `1024×576`/`PanelScale`，K 账本按 `deltaV=deltaTp+50×deltaK` 复核；测试见 [testing guide](../agentsDoc/testing-guide.md)。
-`warlord` 为 `1024×576`/`PanelScale` 全锚、`productionWrites=false / battleAuthority=as2`；卡牌映射隔离战宠，JS resolver 仅供 fixture。AS2 恢复只走内部 `WarlordBattleTask → TryOpenWarlordResumePanel → PanelHost`，通用路由继续拒绝。旧 c3 的恢复失败已由 c4 修复取代，维护者已确认战后自动返回且体验有效；上游整合后的 Flash/自动门通过，正式发布待完成。详见[军阀演习 ADR](../docs/军阀战术演习-3D沙盘UI-ADR-2026-08-24.md)。
+`warlord` 为 `1024×576` 全锚、`productionWrites=false / battleAuthority=as2`；卡牌隔离战宠，JS resolver 仅供 fixture，恢复只走 Host 内部专用路由。维护者已确认 c4 战后返回；正式列车已 promotion/audit/identity smoke，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`，未重跑部署后军阀业务。详见[军阀演习 ADR](../docs/军阀战术演习-3D沙盘UI-ADR-2026-08-24.md)。
 ## 存档编辑与诊断
 
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。

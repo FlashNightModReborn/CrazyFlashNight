@@ -1,7 +1,7 @@
 # 闪客快打7佣兵帝国 单机版 MOD
 
 **《闪客快打7佣兵帝国》（Crazy Flasher 7: Mercenary Empire）单机版 MOD 开发工程**  
-**最后核对代码基线**：测试反馈体验修复 release source commit `86de257152c23536ae4590c6e8b42585aeaca290`（2026-08-25；deployment `5dd6f8dfd79a81a77db9802b2125b6c318d62bb4`）；正式 runtime 身份、共识与证据见 [runtime 构建复现文档](docs/runtime-build-reproducibility.md)。
+**最后核对代码基线**：军阀战术演习 AS2 战斗 release source commit `248cca7be212219655319c666304407b0568e658`（2026-08-25；deployment `126c10a3d5bf46b66a973e8b68ad27c00ef9257d`）；正式 runtime 身份、共识与证据见 [runtime 构建复现文档](docs/runtime-build-reproducibility.md)。
 
 CF7:ME 是一个 **Flash 起源、当前已演化为多栈运行时** 的单机 MOD 工程。  
 游戏核心仍运行在 **ActionScript 2.0 + Flash CS6** 上，但外围运行、启动、UI、验证和存档链路已经扩展为：
@@ -17,7 +17,7 @@ CF7:ME 是一个 **Flash 起源、当前已演化为多栈运行时** 的单机 
 | 子栈 | 当前角色 | 说明 |
 |------|----------|------|
 | AS2 / Flash CS6 | 核心游戏逻辑与资产编译 | 无替代编译链，仍是项目物理约束 |
-| C# / .NET Framework 4.6.2 | Guardian Launcher Host | 启动、总线、音频、overlay、存档决议 |
+| C# / .NET 10 | Guardian Launcher Host | 启动、总线、音频、overlay、存档决议 |
 | WebView2 / Web | 运行态 UI | Bootstrap、overlay、Panel、minigames |
 | TypeScript / ClearScript V8 | Launcher 内嵌脚本 | 构建产物由 `launcher/scripts/` 管理 |
 | Rust | `sol_parser.dll` | 专用 native 解析边界件 |

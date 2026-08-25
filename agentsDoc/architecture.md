@@ -8,7 +8,7 @@
 > 不允许通配 `githubusercontent.com` 子域。
 
 **文档角色**：系统拓扑 canonical doc。  
-**最后核对代码基线**：commit `416c4441947d40bc27ae3854178e87e2c5cf1ac9`（2026-08-23，战宠生命周期、事务与跨栈面板加固 release source；deployment `df060eac491c7251b261a3f5626960a8ea18911a`）。
+**最后核对代码基线**：commit `248cca7be212219655319c666304407b0568e658`（2026-08-25，军阀战术演习 AS2 战斗 release source；deployment `126c10a3d5bf46b66a973e8b68ad27c00ef9257d`）。
 
 当前正式 runtime 的身份、发布状态和专项验收只读 [runtime release consensus](../config/build/runtime-release-consensus.json)、[runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime build reproducibility](../docs/runtime-build-reproducibility.md)与[测试矩阵](testing-guide.md)。本架构文档不复制发布收据或历史测试数字；Audio H2 继续作为独立专项，不由通用 promotion 代签。
 
@@ -90,7 +90,7 @@
   - 共享结构类：`minigame-*`
   - 共享宿主上报：`minigame_session`
   - 浏览器 harness + Node QA + 静态验证三层回归
-- `warlord` 军阀战术演习已作为 `1024×576` Three ESM 测试 Panel 接入 lazy registry、全锚 Web 布局、Host 生命周期与 exact close；当前 `productionWrites=false`。Phase C 采用 `Web 冻结 exact 战略请求 → WarlordBattleTask 复验 → 精确关闭并释放 pause → ArenaCalibrationTask/AS2 专用场景 → 绑定 digest 的 receipt → 重开同一战略态并单次应用`。八张卡的 `cardId` 即正式战宠 `petId`，产品身份由 `petId + Identifier` 联合裁决；等级与合法体质升阶前缀投影到隔离宠物属性副本，不读取或写入玩家战宠。`warlord.pet-economy-observation.v1` 只分开记录宠物目录基础价与战旗战略造价，不结算玩家金币/K 点。确定未投递返回 `not_started` 并允许重试；可能已投递的异常进入 `unknown` 并冻结。JS resolver 只留显式 fixture，产品 AS2 不可用时 fail closed。AS2 终态恢复是 Host 内部能力，不加入 AS2/Web 可达的通用 panel allowlist：`WarlordBattleTask` 只能调用 `LauncherCommandRouter.TryOpenWarlordResumePanel`，由后者复验只读权威、digest、session/request、冻结 state/command 和 client context，再经统一 `PanelHost` 打开；`RequestOpenPanel("warlord", ...)` 必须保持 unsupported。旧 c3 的恢复失败已由 c4 专用路由修复取代，维护者已确认 AS2 战斗结束自动回到战旗页且体验有效；该结论为候选 `HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`，正式身份仍须经双构建共识和 promotion。
+- `warlord` 军阀战术演习已作为 `1024×576` Three ESM 正式 Panel 接入 lazy registry、全锚 Web 布局、Host 生命周期与 exact close；当前 `productionWrites=false`。Phase C 采用 `Web 冻结 exact 战略请求 → WarlordBattleTask 复验 → 精确关闭并释放 pause → ArenaCalibrationTask/AS2 专用场景 → 绑定 digest 的 receipt → 重开同一战略态并单次应用`。八张卡的 `cardId` 即正式战宠 `petId`，产品身份由 `petId + Identifier` 联合裁决；等级与合法体质升阶前缀投影到隔离宠物属性副本，不读取或写入玩家战宠。`warlord.pet-economy-observation.v1` 只分开记录宠物目录基础价与战旗战略造价，不结算玩家金币/K 点。确定未投递返回 `not_started` 并允许重试；可能已投递的异常进入 `unknown` 并冻结。JS resolver 只留显式 fixture，产品 AS2 不可用时 fail closed。AS2 终态恢复是 Host 内部能力，不加入 AS2/Web 可达的通用 panel allowlist：`WarlordBattleTask` 只能调用 `LauncherCommandRouter.TryOpenWarlordResumePanel`，由后者复验只读权威、digest、session/request、冻结 state/command 和 client context，再经统一 `PanelHost` 打开；`RequestOpenPanel("warlord", ...)` 必须保持 unsupported。旧 c3 的恢复失败已由 c4 专用路由修复取代，维护者已确认 AS2 战斗结束自动回到战旗页且体验有效；合并树已完成双构建共识、promotion 与 post-promotion audit，当前为 `HUMAN_ACCEPTANCE_PASSED / promoted`。无 candidate selector 的 formal smoke 只证明身份和生命周期，未把军阀业务提升为 `standard_entry_verified`。
 - 这条链与 AS2 游戏核心并存，但职责不同：它是运行态 UI 层，不是替代游戏主逻辑的重写
 
 ### E. Native & Build 链
