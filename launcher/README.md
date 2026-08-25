@@ -390,7 +390,7 @@ Panel 的共同边界：
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
 Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)、[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)和[军阀战术演习](web/modules/minigames/warlord/README.md)。
 `blackmarket` 仅允许 `dev + shadowOnly`；产品不接调用方 seed，只生成不命中真实目录的匿名货物与 `data:` 表面。lazy closure 不含 exact oracle、dressup/preview 或 debug API，close 绑定 exact 实例；Web 根外夹具仅供 Node QA。面板固定 `1024×576`/`PanelScale`，K 账本按 `deltaV=deltaTp+50×deltaK` 复核；测试见 [testing guide](../agentsDoc/testing-guide.md)。
-`warlord` 为 `1024×576`/`PanelScale` 全锚、`productionWrites=false / battleAuthority=as2`；卡牌映射隔离战宠，JS resolver 仅供 fixture。AS2 恢复只走内部 `WarlordBattleTask → TryOpenWarlordResumePanel → PanelHost`，通用路由继续拒绝。旧 c3 已返回战果，却因误走通用路由无法回到战旗，故 E2E 重开；修复门通过，待新候选人类复验，未部署。详见[军阀演习 ADR](../docs/军阀战术演习-3D沙盘UI-ADR-2026-08-24.md)。
+`warlord` 为 `1024×576`/`PanelScale` 全锚、`productionWrites=false / battleAuthority=as2`；卡牌映射隔离战宠，JS resolver 仅供 fixture。AS2 恢复只走内部 `WarlordBattleTask → TryOpenWarlordResumePanel → PanelHost`，通用路由继续拒绝。旧 c3 的恢复失败已由 c4 修复取代，维护者已确认战后自动返回且体验有效；上游整合后的 Flash/自动门通过，正式发布待完成。详见[军阀演习 ADR](../docs/军阀战术演习-3D沙盘UI-ADR-2026-08-24.md)。
 ## 存档编辑与诊断
 
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。

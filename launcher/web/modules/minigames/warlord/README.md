@@ -4,11 +4,11 @@
 
 ## 当前状态
 
-`PHASE_B_2_UI_HUMAN_ACCEPTED / PHASE_C_SOURCE_FLASH_PUBLISH_AND_LAUNCHER_XUNIT_PASSED / PET_IDENTITY_AND_ECONOMY_OBSERVATION_CONNECTED / PHYSICAL_E2E_REOPENED_AFTER_HOST_RESUME_ROUTE_FAILURE / RESUME_FIX_SOURCE_VERIFIED / HUMAN_RETEST_PENDING / PRODUCTION_WRITES_FALSE / NOT_DEPLOYED / UNCOMMITTED_FOR_MERGE_COMPETITION`
+`PHASE_B_2_UI_HUMAN_ACCEPTED / PHASE_C_HUMAN_ACCEPTANCE_PASSED / PET_IDENTITY_AND_ECONOMY_OBSERVATION_CONNECTED / RESUME_FIX_PHYSICAL_E2E_PASSED / UPSTREAM_INTEGRATED / MERGED_FLASH_PUBLISH_AND_TESTS_PASSED / PRODUCTION_WRITES_FALSE / RELEASE_PENDING / NOT_DEPLOYED`
 
 Phase B.2 的全屏布局、相机/规划避让、高节点滚动与固定结束按钮已经维护者明确验收。Phase C 在该 UI 上加入 AS2 战斗权威的源码候选：产品入口固定 `battleAuthority=as2`，战斗命令先冻结，不执行 JS resolver；Host 精确关闭沙盘并释放暂停租约后，串行调用竞技场，再以受校验 receipt 重开同一战略态。当前改动涉及 AS2 源码，但不写玩家存档、金币、K 点或玩家战宠，`productionWrites` 恒为 `false`。
 
-2026-08-25 首次真实候选旅程已实际进入并完成 AS2 战斗，但没有回到战旗页面。结果文件证明 AS2 在约 17 秒内返回 `finished / winner=blue / errors=[]`；同一时刻 Host 日志明确记录 `[Router] RequestOpenPanel unsupported panel=warlord`。因此旧 `warlord-c3-0825` 只保留为失败证据并被后续修复取代，不能升级为 `e2e_verified`。恢复动作现改走仅供 `WarlordBattleTask` 使用的 `TryOpenWarlordResumePanel` 内部能力：它校验只读/AS2 权威、请求摘要、session/request 身份、冻结状态/命令和客户端上下文，再经统一 `PanelHost` 打开；通用 `panel_request` 仍拒绝 `warlord`。修复后 Warlord focused `14/14`、Launcher 全量 `4098 passed + 3 explicit opt-in skipped / 4101 total`、Node `75/75`、Edge/CDP `16/16`、共享 Minigame `57/57` 均通过；新候选的人类回跳复验仍是下一道门，不能称 AS2 战斗已验收、已部署或 `standard_entry_verified`。
+2026-08-25 首次真实候选旅程已实际进入并完成 AS2 战斗，但没有回到战旗页面。结果文件证明 AS2 在约 17 秒内返回 `finished / winner=blue / errors=[]`；同一时刻 Host 日志明确记录 `[Router] RequestOpenPanel unsupported panel=warlord`。因此旧 `warlord-c3-0825` 只保留为失败证据。恢复动作现改走仅供 `WarlordBattleTask` 使用的 `TryOpenWarlordResumePanel` 内部能力：它校验只读/AS2 权威、请求摘要、session/request 身份、冻结状态/命令和客户端上下文，再经统一 `PanelHost` 打开；通用 `panel_request` 仍拒绝 `warlord`。替代候选 `warlord-c4-resume-0825` 已由维护者确认战斗结束会自动回到战旗页且体验有效，达到候选 `HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`。随后整合上游 7 个提交并重新发布合并 AS2 源；合并树 Launcher `4099 passed + 3 explicit opt-in skipped / 4102 total`、Node `75/75`、Edge/CDP `16/16`、共享 Minigame `57/57` 均通过。候选验收仍不代签 promotion、正式入口或 `standard_entry_verified`。
 
 ## 权威边界
 
@@ -145,7 +145,7 @@ npm run serve
 
 2026-08-24 Phase B.2 fresh 源码门为：包内 build/verifier/Node 继续 `68 + 4 / 71 / 69/69`；Edge/CDP 增至 `16/16`，新增压力场景注入 `14` 个额外行动节点，证明正文产生真实滚动而“结束红方行动”的屏幕位置不变，并在展开相机后证明相机卡与规划条矩形零交叠、右上锚定不漂移。三视口继续无 overflow，console/runtime/network/external failure 均为 `0`；共享 Minigame QA `57/57`、minigame final-state 通过；Launcher 全量 `4060 passed + 3 explicit opt-in skipped / 4063 total`。这些结果证明源码与普通 Edge 候选的布局合同，不代签真实 WebView2 人类观感、AS2 战斗、candidate、promotion 或部署。
 
-2026-08-24 Phase C fresh 源码门为：包内 runtime `70`、vendor `4`、closure `73`、Node `75/75`；本机 Node `20.12.2` 低于包声明 `>=22`，只记兼容性实跑。Edge/CDP `16/16`、共享 Minigame QA `57/57`、Warlord `3/3` 与 minigame final-state 均通过。仓库 resolver 合同 `7/7`，从用户级安装解析到精确 .NET SDK `10.0.300`；`launcher/tests/run_tests.ps1` 完成 Release 编译与正式 xUnit：`4094 passed + 3 explicit opt-in skipped / 4097 total`，并确认 testhost 串行策略。该门同时锁定 AS2 整值浮点 `frames` 的安全接收，以及 legacy case 缺省 `authorityContext` 时 manifest hash 不漂移。AS2 已通过 Flash CS6 publish-only：`225` 份 `.as` BOM 预检通过，fresh Compiler `0/0`，新 `asLoader.swf` 为 `1,140,975` bytes / SHA-256 `83344780099A03C1E1B704C7FB3AEF04724CA01DACDD875F6B08B00DA49A5CB2`，FFDec 可检出战宠投影 marker；publish-only 未刷新 `flashlog.txt`，不构成行为 trace。隔离候选 `warlord-c3-0825` 已完成构建、完整性验证与启动，绑定 identity `513EAE9B5EE57071CABDD7A05F30EA60E1899245E8864961A93F5DC17CAB89F3`、payload `340B0422F424AD59C407C031AA500D536B1286F0F1938F25629AB5D412F0B661`、Core SHA-256 `823116037B5E2D0DF7F52894B15757B17B52C872262D73A605A2942DF390D0A8`，正式 runtime 未变。Windows 控制 native pipe 不可用，所以尚未自动打开 Warlord；上述结果不证明真实 WebView2→AS2 战斗、玩家状态无污染、promotion 或部署。全部改动因跨机器 merge 竞争保持未提交。
+2026-08-25 上游整合后的 Phase C fresh 门为：包内 runtime `70`、vendor `4`、closure `73`、Node `75/75`；本机 Node `20.12.2` 低于包声明 `>=22`，只记兼容性实跑。Edge/CDP `16/16`、共享 Minigame QA `57/57`、Warlord `3/3` 与 minigame final-state 均通过。Arena calibration checks `14` 项与 Agent entry contract 通过。仓库 resolver `7/7`，精确 .NET SDK `10.0.300`；Launcher Release/xUnit 为 `4099 passed + 3 explicit opt-in skipped / 4102 total`，testhost 串行。Flash CS6 从合并 AS2 源重新 publish：`225` 份 `.as` BOM 门、fresh Compiler `0/0`，`asLoader.swf` 为 `1,141,507` bytes / SHA-256 `690C1C871FFF915BCEFC17158146B79F805D70A69793014095343019F0454539`；publish-only 未刷新 `flashlog.txt`，不构成新增行为 trace。人类行为证据绑定替代候选 `warlord-c4-resume-0825`（identity `1044015BB54FA8BD989E812F8C7C381A84EF2E5007D53419C26DFE89D2FED4C7` / closure `BDB6E561A330841B923C37F2AA9EDAA39D61CB601DFEE6BC9B4E644EDB62B8E5`），正式 runtime 仍未改变。
 
 ## 验收层级
 
@@ -154,7 +154,7 @@ npm run serve
 3. Launcher 源码：共享 lazy registry、Overlay CSS、Host 精确关闭、测试菜单、focused tests 与 minigame QA 总入口。
 4. Launcher 候选：实际 `https://overlay.local` 动态 import/MIME、WebView2 键鼠、关闭/重开与 GPU 资源释放。
 5. AS2 源码：冻结 request/receipt、petId+Identifier、隔离升阶、暂停交接、`not_started/unknown`、只读经济观测与 receipt 回放的静态/单元合同。
-6. AS2 物理链：Flash CS6 fresh 发布已完成；仍须验证真实竞技场 runner、逐单位结果、恢复/二次交战、最终返回基地以及玩家存档/货币/战宠无污染。
-7. 人类感知：沙盘 UI 已获维护者验收；真实战斗的可读性、结算节奏和沙漠指挥氛围须在第 6 层候选上另验。
+6. AS2 物理链：Flash CS6 fresh 发布、真实竞技场 runner、逐单位结果和战后自动恢复已完成；二次交战、最终返回基地以及玩家存档/货币/战宠无污染仍是更宽的后续旅程。
+7. 人类感知：沙盘 UI 与 AS2 战斗结束自动返回均已获维护者验收，且体验评价有效；该候选感知不自动迁移为正式部署证据。
 
-当前已完成第 3 层、Phase B.2 UI 人类验收、第 5 层源码候选、第 6 层 Flash 发布子门，并把完整隔离候选推进到 `candidate_executed`；第 4 层 Warlord 面板操作与第 6 层 AS2 运行旅程仍缺物理证据。战宠经济当前只有 observe-only 双刻度标定，不授权任何正式玩家状态结算；部署也未发生。
+当前已完成第 3 层、第 4 层 Warlord 面板主旅程、Phase B.2 UI 人类验收、第 5 层源码合同及第 6 层 AS2 战斗和恢复主闭环，候选状态为 `HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`。战宠经济当前只有 observe-only 双刻度标定，不授权任何正式玩家状态结算；二次交战/最终回基地/持久状态无污染未由本次最窄验收覆盖，部署也尚未发生。
