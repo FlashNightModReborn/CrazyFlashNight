@@ -1,8 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `248cca7be212219655319c666304407b0568e658`（2026-08-25，军阀战术演习 3D 沙盘、AS2 战斗权威与专用恢复路由；deployment `126c10a3d5bf46b66a973e8b68ad27c00ef9257d`）。该部署已通过首次 post-promotion audit；动态 identity/closure 与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-无 candidate selector 的正式入口已通过身份/生命周期 smoke，但没有重跑军阀沙盘到 AS2 战斗再返回的业务旅程，也没有执行黑市生产经济、设置写入重启、字体观感或 T800 武器命令等专项正式业务旅程，因此各专项不得仅凭总体 promotion 改写为 `standard_entry_verified`。军阀战宠经济观测继续固定 `writesPlayerState=false`。
+**最后核对代码基线**：release source commit `a4a85dbdcb266f66677eef28875e0862892e48ad`（2026-08-25，GameStage 会话级 TimePool、AS2 权威失败裁决与 Launcher keyed HUD 投影；deployment `9f68a3ee5fbd6db9447118da12fa0fa0a00d1829`）。该部署已通过首次 post-promotion audit；动态 identity/closure 与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+无 candidate selector 的正式入口已通过身份/生命周期窄纵切，但没有在部署后重跑 JK 救援、核电站或断壁残垣限时业务，也没有执行黑市生产经济、设置写入重启、字体观感、军阀战斗或 T800 武器命令等专项正式业务旅程。维护者确认限时行为有效且 runtime 已 promotion，因此限时关卡状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`，不得仅凭总体正式入口把其改写为业务 `standard_entry_verified`。
 
 ## 当前真值与阅读顺序
 
