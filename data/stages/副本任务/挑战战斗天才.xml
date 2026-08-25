@@ -2,16 +2,7 @@
 <GameStage>
     <Rewards>
     </Rewards>
-    <TimePools>
-        <TimePool>
-            <Id>jk_challenge</Id>
-            <DurationSeconds>300</DurationSeconds>
-            <DisplayName>挑战战斗天才</DisplayName>
-            <TimeoutResult>FailStage</TimeoutResult>
-        </TimePool>
-    </TimePools>
     <SubStage id="0">
-        <TimePoolRef>jk_challenge</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/gk5_1_BG.swf</Background>
             <BGM>
