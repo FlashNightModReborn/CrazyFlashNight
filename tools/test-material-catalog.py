@@ -140,10 +140,12 @@ def main():
 
     infrastructure_ui_raw = producer.read_bytes(producer.INFRASTRUCTURE_UI_PATH)
     transaction_evidence = (
+        "var assetSnapshot = _root.捕获玩家物资快照()",
         "var assetTransaction = _root.开始玩家物资事务(assetContext)",
         "_root.itemSubmit(itemArr, assetContext)",
         "_root.提交玩家物资事务(assetTransaction)",
-        "_root.回滚玩家物资事务(assetTransaction)",
+        "_root.恢复玩家物资快照(assetSnapshot)",
+        "_root.结算玩家物资事务异常(assetTransaction,",
     )
     original_read_bytes = producer.read_bytes
     try:
@@ -156,7 +158,7 @@ def main():
 
             def read_without_evidence(path: Path, missing=snippet_bytes) -> bytes:
                 if path == producer.INFRASTRUCTURE_UI_PATH:
-                    return infrastructure_ui_raw.replace(missing, b"", 1)
+                    return infrastructure_ui_raw.replace(missing, b"")
                 return original_read_bytes(path)
 
             producer.read_bytes = read_without_evidence
