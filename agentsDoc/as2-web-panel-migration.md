@@ -454,6 +454,12 @@ AS2 smoke 的成功边界按 [testing-guide.md](testing-guide.md) 与 [FlashCS6�
 
 经验规则：像 `kshop` 这类会暂停 / 恢复 Flash 状态的面板可以有 open/close gameCommand；像 `arena`、`team` 这类纯 Web 展示 / 操作面板，close 默认不通知 Flash。`arena` 的定制赛 `custom_result` 结算页是例外：Flash 背后已停在竞技场战斗场景，关闭结算页必须由 Web close 携带 `returnBase:true`，Host 下发 `arenaReturnBase` 并让 AS2 调 `_root.返回基地()`，不能只隐藏 Web panel。`team` 内宠物子视图尤其不能在 close 时调用 `petPanelClose`，该旧命令会重建 Flash 战宠图标。
 
+`warlord` 入口恒为 `productionWrites=false`；其 Web resolver 只是验证战棋循环的 fixture，不是产品候选规则、AS2 平衡基线或正式 fallback。Phase C 源码候选已经采用显式 handoff：Web 以 active instance 冻结战略 snapshot、命令和 input digest → `WarlordBattleTask` 复验邻接/AP/攻宽/棋子归属和目录身份 → Host 回 prepared ACK 后精确关闭沙盘并释放 `_webPanelPauseLease` → `ArenaCalibrationTask` 驱动 AS2 专用场景 → Host 复验 authority context、request/session/input digest 和逐单位 receipt → 重开同一战略态并单次应用。确定未投递用 `not_started` 恢复冻结态并允许重试；一旦可能投递，timeout、断线、非法 receipt 或 owner replacement 都进入 `unknown`，不得自动重跑非确定性战斗，也不得由 Web 和 AS2 各写一次结果。产品 AS2 不可用必须 fail closed，JS resolver 仅在显式 `battleAuthority=fixture` 的离线 harness 可达。
+
+该链的“重开同一战略态”不得走通用 `panel_request`。2026-08-25 首次真实旅程中，AS2 已返回 `finished / winner=blue / errors=[]`，但 Host 随后记录 `RequestOpenPanel unsupported panel=warlord`，证明旧实现把内部恢复误接到了刻意不支持 Warlord 的公开路由。现役合同固定为 `WarlordBattleTask → LauncherCommandRouter.TryOpenWarlordResumePanel → PanelHost`：专用入口校验 `phase-c-as2 / as2_battle_resume / productionWrites=false / battleAuthority=as2 / as2BattleSession=true`，并复验 request digest、session/request identity、冻结 state/command 与 client context；通用 `RequestOpenPanel("warlord", ...)` 继续 fail closed。UI invoker、缺失 handler、router 不可用、恢复包拒绝与 Host gate 失败都必须留下具名日志，不得再次静默丢失。旧候选因此只作失败证据，修复仍需新候选人类复验。
+
+八张卡是 `data/merc/pets.xml` 的真实战宠 id `12/13/14/15/82/83/84/85`，`cardId=petId`，产品身份必须同时匹配 `petId + Identifier`；旧 `unitTypeId` 仅供 Demo 审计。Host 只从冻结战略态推导等级、HP 比例和已购升阶，AS2 用 `_root.宠物库` 再次复核目录并为每枚棋子构造隔离 `宠物属性` 副本。升阶仅接受该宠物正式 `Promotion` 中“基础训练 / 强化药剂 / 超级血清”的合法前缀，禁止读取玩家宠物快照、托管装备或把“常驻淬毒”等经济副作用带入演习。`warlord.pet-economy-observation.v1` 只分开记录 `pets.xml` 目录基础 Gold/K/IncreasePrice 与 `piece.productionGoldValue` 战旗战略造价，固定 `observe_only/settlementPolicy=none/writesPlayerState=false/currentAs2SessionPriceSampled=false`。若以后让战旗承担真实战宠经济结算，必须另立版本化价格采样、写入、存档与对账协议，不得扩大本观测回执的权限。配套 `asLoader.swf` 已取得 Flash CS6 fresh publish 与 Compiler `0/0`；当前源树的 Warlord focused `14/14`、Launcher 全量 `4098 passed + 3 explicit opt-in skipped / 4101 total` 已通过。首次候选运行只证明 AS2 战果返回，恢复失败使 E2E 重开；替代候选完成完整回跳前，以上仍只称源码、Flash 发布、Host 自动门与历史候选执行证据。
+
 ## 7. 数据权威与转录
 
 禁止裸手工转录以下数据：

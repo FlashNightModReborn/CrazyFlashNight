@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 
+var childProcess = require("child_process");
+var path = require("path");
 var runner = require("../web/modules/minigames/shared/dev/node-qa-runner.js");
 
 var args = process.argv.slice(2);
@@ -45,8 +47,41 @@ function getSuites() {
                 require("../web/modules/minigames/blackmarket/visual/equipment-preview.js"),
                 require("../web/assets/dressup/manifest.json")
             ]
+        },
+        warlord: {
+            external: path.resolve(__dirname,
+                "../web/modules/minigames/warlord/dev/node-qa.mjs")
         }
     };
+}
+
+function runExternalSuite(name, suite, selectedCase) {
+    var externalArgs = [suite.external];
+    if (selectedCase) externalArgs.push("--case", selectedCase);
+    var result = childProcess.spawnSync(process.execPath, externalArgs, {
+        cwd: path.dirname(suite.external),
+        encoding: "utf8",
+        windowsHide: true
+    });
+    var lines = String(result.stdout || "").trim().split(/\r?\n/).filter(Boolean);
+    try {
+        var bundle = JSON.parse(lines[lines.length - 1] || "");
+        if (result.status !== 0 && !bundle.failed) throw new Error("external suite exited " + result.status);
+        return bundle;
+    } catch (error) {
+        return {
+            results: [{
+                id: selectedCase || "external-suite",
+                title: "external " + name + " suite",
+                pass: false,
+                detail: (error && error.message ? error.message : String(error))
+                    + (result.stderr ? " :: " + result.stderr.trim() : "")
+            }],
+            passed: 0,
+            failed: 1,
+            total: 1
+        };
+    }
 }
 
 function main() {
@@ -60,7 +95,9 @@ function main() {
             process.exitCode = 1;
             return;
         }
-        var bundle = runner.runGameSuite(names[i], suites[names[i]].suite, suites[names[i]].args, caseId || null);
+        var bundle = suites[names[i]].external
+            ? runExternalSuite(names[i], suites[names[i]], caseId || null)
+            : runner.runGameSuite(names[i], suites[names[i]].suite, suites[names[i]].args, caseId || null);
         console.log(runner.formatBundle(names[i], bundle));
         if (bundle.failed) overallFailed = true;
     }

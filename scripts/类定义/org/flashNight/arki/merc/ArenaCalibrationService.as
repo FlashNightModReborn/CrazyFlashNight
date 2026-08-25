@@ -5,15 +5,16 @@
  * C# 下发：
  *   {task:"cmd", action:"arenaCalibrationRun", callId, batchId, caseId, caseHash,
  *    runId, repeatIndex, timeoutFrames, spawnDistance?,
- *    blueFormation?, redFormation?, formationSpacing?,
- *    blueRoster:[{兵种,等级,Parameters}], redRoster:[{兵种,等级,Parameters}]}
+ *    blueFormation?, redFormation?, formationSpacing?, authorityContext?,
+ *    blueRoster:[{兵种,等级,Parameters}|{petId,identifier,rosterType,sourceId,等级,hpPermille,strategicPromotions}],
+ *    redRoster:[...]}
  *   {task:"cmd", action:"arenaCalibrationAbort", callId, batchId, reason}
  *
  * AS2 回包：
  *   {task:"arena_calibration_response", callId, success, status, winner, frames,
  *    durationMs, spawnDistance, blueFormation, redFormation, formationSpacing,
  *    phaseSpawnCount, spawnedUnits, blueX, redX, blueSpawnPositions, redSpawnPositions,
- *    formationAudit, blue, red, errors}
+ *    formationAudit, authorityContext, blue, red, blueUnitResults, redUnitResults, errors}
  *
  * 本服务不走普通角斗场押金/奖金/FinishStage 链；若当前不在专用斗兽标定竞技场，
  * 先请求 StageManager 通过正常跳关进入 no-player host，再继续同一轮 run。
@@ -199,8 +200,12 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 blueSpawnPositions: captureSpawnPositions(blueUnits),
                 redSpawnPositions: captureSpawnPositions(redUnits),
                 formationAudit: buildFormationAudit(blueUnits, redUnits),
+                authorityContext: params.authorityContext != undefined
+                    ? ObjectUtil.clone(params.authorityContext) : {},
                 blue: summarizeSide(blueUnits),
                 red: summarizeSide(redUnits),
+                blueUnitResults: summarizeUnitResults(blueUnits),
+                redUnitResults: summarizeUnitResults(redUnits),
                 errors: errors
             };
             cleanupUnits(blueUnits);
@@ -220,6 +225,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             caseId: String(params.caseId || ""),
             caseHash: String(params.caseHash || ""),
             runId: String(params.runId || runKey),
+            authorityContext: params.authorityContext != undefined
+                ? ObjectUtil.clone(params.authorityContext) : {},
             repeatIndex: Number(params.repeatIndex),
             timeoutFrames: timeoutFrames,
             frames: 0,
@@ -451,19 +458,70 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
         for (var i:Number = 0; i < input.length; i++) {
             var raw:Object = input[i];
-            var type:String = String(raw.兵种 != undefined ? raw.兵种 : raw.type);
             var level:Number = Number(raw.等级 != undefined ? raw.等级 : raw.level);
-
-            if (type == "" || type == "undefined" || _root.兵种库[type] == undefined) {
-                errors.push({code: "spawn_failed", side: side, unit: type, message: "unknown unit type"});
-                continue;
-            }
             if (isNaN(level) || level < 1) {
-                errors.push({code: "invalid_case", side: side, unit: type, message: "invalid level"});
+                errors.push({code: "invalid_case", side: side, message: "invalid level"});
                 continue;
             }
 
-            var normalized:Object = {兵种: type, 等级: Math.floor(level)};
+            var normalized:Object = {等级: Math.floor(level)};
+            if (raw.petId != undefined) {
+                var petId:Number = Number(raw.petId);
+                var identifier:String = String(raw.identifier || "");
+                var petDef:Object = resolvePetDefinition(petId);
+                if (isNaN(petId) || petId < 0 || Math.floor(petId) != petId
+                        || petDef == undefined || identifier == ""
+                        || String(petDef.Identifier) != identifier) {
+                    errors.push({
+                        code: "invalid_pet_identity",
+                        side: side,
+                        petId: petId,
+                        identifier: identifier,
+                        message: "petId and identifier do not match the AS2 pet catalog"
+                    });
+                    continue;
+                }
+                var rosterType:String = String(raw.rosterType || petDef.RosterType || "pet");
+                if (rosterType != "partner" && rosterType != "pet" && rosterType != "mechanical") {
+                    errors.push({code: "invalid_pet_identity", side: side, petId: petId, message: "invalid rosterType"});
+                    continue;
+                }
+                var catalogRosterType:String = String(petDef.RosterType || "pet");
+                if (rosterType != catalogRosterType) {
+                    errors.push({code: "invalid_pet_identity", side: side, petId: petId,
+                        message: "rosterType does not match the AS2 pet catalog"});
+                    continue;
+                }
+                normalized.petId = petId;
+                normalized.identifier = identifier;
+                normalized.rosterType = rosterType;
+                normalized.height = Number(petDef.Height);
+                var strategicPromotions:Array = normalizeStrategicPromotions(
+                    raw.strategicPromotions,
+                    petDef,
+                    side,
+                    petId,
+                    level,
+                    errors);
+                if (strategicPromotions == undefined) continue;
+                normalized.strategicPromotions = strategicPromotions;
+            } else {
+                var type:String = String(raw.兵种 != undefined ? raw.兵种 : raw.type);
+                if (type == "" || type == "undefined" || _root.兵种库[type] == undefined) {
+                    errors.push({code: "spawn_failed", side: side, unit: type, message: "unknown unit type"});
+                    continue;
+                }
+                normalized.兵种 = type;
+            }
+            var sourceId:String = String(raw.sourceId != undefined ? raw.sourceId : (raw.unitId || ""));
+            if (sourceId != "" && sourceId != "undefined") normalized.sourceId = sourceId;
+            var hpPermille:Number = Number(raw.hpPermille);
+            if (isNaN(hpPermille)) hpPermille = 1000;
+            if (hpPermille < 1 || hpPermille > 1000 || Math.floor(hpPermille) != hpPermille) {
+                errors.push({code: "invalid_case", side: side, unit: sourceId, message: "invalid hpPermille"});
+                continue;
+            }
+            normalized.hpPermille = hpPermille;
             var rawParams:Object = raw.Parameters != undefined ? raw.Parameters
                 : (raw.parameters != undefined ? raw.parameters : raw.参数);
             if (rawParams != undefined) normalized.Parameters = ObjectUtil.clone(rawParams);
@@ -476,20 +534,129 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         return out;
     }
 
+    private static function resolvePetDefinition(petId:Number):Object {
+        if (_root.宠物库 == undefined || isNaN(petId) || petId < 0) return undefined;
+        var direct:Object = _root.宠物库[petId];
+        if (direct != undefined && (direct.id == undefined || Number(direct.id) == petId)) return direct;
+        for (var i:Number = 0; i < _root.宠物库.length; i++) {
+            var candidate:Object = _root.宠物库[i];
+            if (candidate != undefined && Number(candidate.id) == petId) return candidate;
+        }
+        return undefined;
+    }
+
+    // 战旗卡牌的升阶只投影 pets.xml 中属于三段体质链的前缀。这里不接收任意宠物
+    // 属性，也不读取玩家战宠存档；常驻淬毒等带经济副作用的方案不会进入演习副本。
+    private static function normalizeStrategicPromotions(raw:Object, petDef:Object,
+            side:String, petId:Number, level:Number, errors:Array):Array {
+        if (raw == undefined) return [];
+        if (!(raw instanceof Array) || raw.length > 3) {
+            errors.push({code:"invalid_pet_progression", side:side, petId:petId,
+                message:"strategicPromotions must be an array with at most 3 entries"});
+            return undefined;
+        }
+        var sourceNames:Array = extractPromotionNames(petDef.Promotion);
+        var expected:Array = [];
+        for (var i:Number = 0; i < sourceNames.length; i++) {
+            var sourceName:String = String(sourceNames[i]);
+            if (isStrategicPromotion(sourceName)) expected.push(sourceName);
+        }
+        if (raw.length > expected.length) {
+            errors.push({code:"invalid_pet_progression", side:side, petId:petId,
+                message:"strategic progression exceeds the pets.xml chain"});
+            return undefined;
+        }
+        var normalized:Array = [];
+        for (var j:Number = 0; j < raw.length; j++) {
+            var name:String = String(raw[j]);
+            if (!isStrategicPromotion(name) || name != String(expected[j])) {
+                errors.push({code:"invalid_pet_progression", side:side, petId:petId,
+                    message:"strategic progression is not a pets.xml prefix"});
+                return undefined;
+            }
+            if (level < strategicPromotionLevel(name)) {
+                errors.push({code:"invalid_pet_progression", side:side, petId:petId,
+                    message:"strategic progression exceeds the projected pet level"});
+                return undefined;
+            }
+            normalized.push(name);
+        }
+        return normalized;
+    }
+
+    private static function extractPromotionNames(promo:Object):Array {
+        if (promo == undefined) return [];
+        if (promo instanceof Array) return promo.slice();
+        var items:Object = promo.Item;
+        if (items == undefined) return [];
+        var out:Array = [];
+        if (items instanceof Array) {
+            for (var i:Number = 0; i < items.length; i++) out.push(String(items[i]));
+        } else {
+            out.push(String(items));
+        }
+        return out;
+    }
+
+    private static function isStrategicPromotion(name:String):Boolean {
+        return name == "基础训练" || name == "强化药剂" || name == "超级血清";
+    }
+
+    private static function strategicPromotionLevel(name:String):Number {
+        if (name == "基础训练") return 10;
+        if (name == "强化药剂") return 25;
+        if (name == "超级血清") return 50;
+        return Number.POSITIVE_INFINITY;
+    }
+
+    private static function buildProjectedPetAttributes(unit:Object):Object {
+        var attrs:Object = {
+            宠物库数组号: unit.petId,
+            战术演习隔离副本: true,
+            战旗战略投影: true,
+            战旗投影契约: "catalog_identifier+strategic_progression_v1"
+        };
+        var promotions:Array = unit.strategicPromotions instanceof Array
+            ? unit.strategicPromotions : [];
+        if (promotions.length == 0) return attrs;
+
+        var training:Object = {次数:0, 启用:true};
+        for (var i:Number = 0; i < promotions.length; i++) {
+            var name:String = String(promotions[i]);
+            if (name == "基础训练") {
+                training.基础训练 = true;
+                if (training.次数 < 1) training.次数 = 1;
+            } else if (name == "强化药剂") {
+                training.强化药剂 = true;
+                if (training.次数 < 2) training.次数 = 2;
+            } else if (name == "超级血清") {
+                training.超级血清 = true;
+                if (training.次数 < 3) training.次数 = 3;
+            }
+        }
+        attrs.基础训练 = training;
+        return attrs;
+    }
+
     private static function spawnSide(roster:Array, side:String, isEnemy:Boolean, x:Number, y:Number, runKey:String, formation:String, spacing:Number, errors:Array):Array {
         var out:Array = [];
         for (var i:Number = 0; i < roster.length; i++) {
             var unit:Object = roster[i];
-            var attr:Object = _root.兵种库[unit.兵种];
-            if (attr == undefined) {
+            var isPetProjection:Boolean = unit.petId != undefined;
+            var attr:Object = isPetProjection ? undefined : _root.兵种库[unit.兵种];
+            if (!isPetProjection && attr == undefined) {
                 errors.push({code: "spawn_failed", side: side, unit: unit.兵种, message: "unit attr missing"});
                 continue;
             }
 
-            var init:Object = cloneObject(attr);
-            init.兵种名 = null;
+            var init:Object = isPetProjection ? {} : cloneObject(attr);
+            if (!isPetProjection) init.兵种名 = null;
             init.等级 = unit.等级;
             if (unit.Parameters != undefined) ObjectUtil.cloneParameters(init, unit.Parameters);
+            if (isPetProjection) {
+                init.宠物属性 = buildProjectedPetAttributes(unit);
+                if (!isNaN(Number(unit.height)) && Number(unit.height) > 0) init.身高 = Number(unit.height);
+            }
             init.是否为敌人 = isEnemy;
             init.产生源 = "斗兽标定源";
             init.掉落物 = [];
@@ -509,9 +676,10 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             }
 
             var name:String = "斗兽标定_" + side + "_" + runKey + "_" + i;
-            var mc:MovieClip = _root.加载游戏世界人物(attr.兵种名, name, _root.gameworld.getNextHighestDepth(), init);
+            var spawnIdentifier:String = isPetProjection ? unit.identifier : attr.兵种名;
+            var mc:MovieClip = _root.加载游戏世界人物(spawnIdentifier, name, _root.gameworld.getNextHighestDepth(), init);
             if (mc == undefined) {
-                errors.push({code: "spawn_failed", side: side, unit: unit.兵种, message: "attachMovie failed"});
+                errors.push({code: "spawn_failed", side: side, unit: spawnIdentifier, message: "attachMovie failed"});
                 if (isEnemy) {
                     _root.gameworld.斗兽标定源.僵尸型敌人场上实际人数--;
                     _root.gameworld.斗兽标定源.僵尸型敌人总个数--;
@@ -528,14 +696,23 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 mc.攻击目标 = "无";
                 installCalibrationDeathHooks(mc);
 
-                var estimatedMaxHp:Number = estimateStartMaxHp(init, unit.等级, isEnemy);
+                var estimatedMaxHp:Number = isPetProjection ? 0 : estimateStartMaxHp(init, unit.等级, isEnemy);
                 var startMaxHp:Number = readUnitMaxHp(mc);
                 out.push({
                     mc: mc,
                     startMaxHp: startMaxHp,
                     estimatedStartMaxHp: estimatedMaxHp,
                     startSnapshotReady: (startMaxHp > 0),
-                    unitType: unit.兵种,
+                    unitType: isPetProjection ? ("pet:" + unit.petId) : unit.兵种,
+                    resolvedType: spawnIdentifier,
+                    sourceId: String(unit.sourceId || ""),
+                    petId: isPetProjection ? Number(unit.petId) : -1,
+                    identifier: isPetProjection ? String(unit.identifier) : String(spawnIdentifier),
+                    rosterType: isPetProjection ? String(unit.rosterType) : "unit",
+                    strategicPromotions: isPetProjection && unit.strategicPromotions instanceof Array
+                        ? unit.strategicPromotions.slice() : [],
+                    hpPermille: Number(unit.hpPermille || 1000),
+                    initialHpApplied: false,
                     level: unit.等级,
                     side: side,
                     isEnemy: isEnemy,
@@ -670,12 +847,14 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         for (var i:Number = 0; i < units.length; i++) {
             var record:Object = units[i];
             if (record == undefined) continue;
-            if (record.startSnapshotReady == true) continue;
+            if (record.startSnapshotReady == true && record.initialHpApplied == true) continue;
 
-            var unitMax:Number = readUnitMaxHp(record.mc);
+            var unitMax:Number = Number(record.startMaxHp);
+            if (isNaN(unitMax) || unitMax <= 0) unitMax = readUnitMaxHp(record.mc);
             if (unitMax > 0) {
                 record.startMaxHp = unitMax;
                 record.startSnapshotReady = true;
+                applyInitialHp(record, unitMax);
                 continue;
             }
 
@@ -684,6 +863,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 if (!isNaN(unitMax) && unitMax > 0) {
                     record.startMaxHp = unitMax;
                     record.startSnapshotReady = true;
+                    applyInitialHp(record, unitMax);
                     if (record.startSnapshotWarned != true) {
                         errors.push({
                             code: "hp_snapshot_estimated",
@@ -696,6 +876,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 } else {
                     record.startMaxHp = 0;
                     record.startSnapshotReady = true;
+                    record.initialHpApplied = true;
                     if (record.startSnapshotWarned != true) {
                         errors.push({
                             code: "hp_snapshot_missing",
@@ -711,6 +892,19 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             }
         }
         return ready;
+    }
+
+    private static function applyInitialHp(record:Object, unitMax:Number):Void {
+        if (record == undefined || record.initialHpApplied == true) return;
+        var mc:MovieClip = record.mc;
+        if (mc == undefined || mc._parent == undefined || isNaN(unitMax) || unitMax <= 0) return;
+        var hpPermille:Number = Number(record.hpPermille);
+        if (isNaN(hpPermille) || hpPermille < 1 || hpPermille > 1000) hpPermille = 1000;
+        var initialHp:Number = Math.max(1, Math.round(unitMax * hpPermille / 1000));
+        if (initialHp > unitMax) initialHp = unitMax;
+        mc.hp = initialHp;
+        record.startHp = initialHp;
+        record.initialHpApplied = true;
     }
 
     private static function primeTargets(blueUnits:Array, redUnits:Array):Void {
@@ -1103,8 +1297,11 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             blueSpawnPositions: captureSpawnPositions(_active.blueUnits),
             redSpawnPositions: captureSpawnPositions(_active.redUnits),
             formationAudit: buildFormationAudit(_active.blueUnits, _active.redUnits),
+            authorityContext: _active.authorityContext != undefined ? _active.authorityContext : {},
             blue: blue,
             red: red,
+            blueUnitResults: summarizeUnitResults(_active.blueUnits),
+            redUnitResults: summarizeUnitResults(_active.redUnits),
             errors: errors
         };
 
@@ -1164,6 +1361,46 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             startMaxHp: Math.round(maxHp),
             startCount: units.length
         };
+    }
+
+    private static function summarizeUnitResults(units:Array):Array {
+        var out:Array = [];
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            if (record == undefined || record.phaseSpawned == true) continue;
+            var sourceId:String = String(record.sourceId || "");
+            if (sourceId == "") continue;
+
+            var unitMax:Number = Number(record.startMaxHp);
+            if (isNaN(unitMax) || unitMax <= 0) unitMax = Number(record.estimatedStartMaxHp);
+            if (isNaN(unitMax) || unitMax < 0) unitMax = 0;
+            var unitHp:Number = 0;
+            var mc:MovieClip = record.mc;
+            if (mc != undefined && mc._parent != undefined) {
+                unitHp = Number(mc.hp);
+                if (isNaN(unitHp) || unitHp < 0) unitHp = 0;
+            }
+            if (unitHp > unitMax && unitMax > 0) unitHp = unitMax;
+            var hpPermille:Number = unitMax > 0
+                ? Math.round(unitHp * 1000 / unitMax) : 0;
+            if (unitHp > 0 && hpPermille < 1) hpPermille = 1;
+            if (hpPermille < 0) hpPermille = 0;
+            if (hpPermille > 1000) hpPermille = 1000;
+            out.push({
+                sourceId: sourceId,
+                petId: Number(record.petId),
+                identifier: String(record.identifier || ""),
+                resolvedType: String(record.resolvedType || record.unitType || ""),
+                level: Number(record.level),
+                strategicPromotions: record.strategicPromotions instanceof Array
+                    ? record.strategicPromotions.slice() : [],
+                startMaxHp: Math.round(unitMax),
+                remainHp: Math.round(unitHp),
+                hpPermille: hpPermille,
+                alive: unitHp > 0
+            });
+        }
+        return out;
     }
 
     private static function captureSpawnPositions(units:Array):Array {

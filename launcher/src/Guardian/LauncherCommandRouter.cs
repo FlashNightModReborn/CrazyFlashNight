@@ -338,6 +338,258 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        /// <summary>
+        /// WarlordBattleTask 完成 AS2 战斗后的专用恢复能力。
+        /// 该入口不暴露给通用 panel_request；只接受 Host 生成的 v1 恢复包，
+        /// 重建外层白名单字段后再经统一 PanelHost 打开军阀演习。
+        /// </summary>
+        internal bool TryOpenWarlordResumePanel(JObject initData)
+        {
+            JObject safeInitData;
+            string rejectionReason;
+            if (!TryBuildWarlordResumeInitData(
+                    initData,
+                    out safeInitData,
+                    out rejectionReason))
+            {
+                LogManager.Log(
+                    "event=warlord_resume_open_rejected reason="
+                    + rejectionReason);
+                return false;
+            }
+
+            bool opened = OpenPanel(
+                "warlord",
+                safeInitData.ToString(Formatting.None));
+            LogManager.Log(
+                "event=warlord_resume_open_result result="
+                + (opened ? "opened" : "host_gate"));
+            return opened;
+        }
+
+        private static bool TryBuildWarlordResumeInitData(
+            JObject input,
+            out JObject output,
+            out string rejectionReason)
+        {
+            output = null;
+            rejectionReason = "invalid_envelope";
+            if (input == null || input.Count != 12)
+                return false;
+            if (!HasExactWarlordResumeRootProperties(input))
+                return false;
+            if (!IsExactString(input["mode"], "phase-c-as2")
+                || !IsExactString(input["source"], "as2_battle_resume")
+                || !IsExactString(input["battleAuthority"], "as2")
+                || !IsExactBoolean(input["productionWrites"], false)
+                || !IsExactBoolean(input["as2BattleSession"], true))
+            {
+                rejectionReason = "authority_contract";
+                return false;
+            }
+
+            string seed = ReadBoundedWarlordString(input["seed"], 160);
+            string preset = ReadBoundedWarlordString(input["preset"], 32);
+            string difficulty = ReadBoundedWarlordString(input["difficulty"], 32);
+            string mapTheme = ReadBoundedWarlordString(input["mapTheme"], 32);
+            if (seed == null
+                || (preset != "standard" && preset != "all-units")
+                || (difficulty != "easy" && difficulty != "normal"
+                    && difficulty != "hard" && difficulty != "extreme")
+                || (mapTheme != "desert" && mapTheme != "tundra")
+                || input["forceWebglFailure"].Type != JTokenType.Boolean)
+            {
+                rejectionReason = "client_context_contract";
+                return false;
+            }
+
+            JArray transitions = input["aiSeenTransitions"] as JArray;
+            if (transitions == null || transitions.Count > 256)
+            {
+                rejectionReason = "client_context_contract";
+                return false;
+            }
+            foreach (JToken transition in transitions)
+            {
+                if (ReadBoundedWarlordString(transition, 256, true) == null)
+                {
+                    rejectionReason = "client_context_contract";
+                    return false;
+                }
+            }
+
+            JObject resume = input["resume"] as JObject;
+            bool hasHandoffError = resume != null
+                && resume.Property("handoffError") != null;
+            if (resume == null
+                || resume.Count != (hasHandoffError ? 8 : 7)
+                || !HasRequiredWarlordResumeProperties(resume)
+                || !IsExactString(
+                    resume["schema"],
+                    "warlord.as2-resume.v1"))
+            {
+                rejectionReason = "resume_shape";
+                return false;
+            }
+
+            JObject request = resume["request"] as JObject;
+            JObject state = resume["state"] as JObject;
+            JObject command = resume["command"] as JObject;
+            JObject receipt = resume["receipt"] as JObject;
+            JObject resumeClientContext = resume["clientContext"] as JObject;
+            string digest = ReadBoundedWarlordString(
+                resume["inputDigest"],
+                71);
+            string receiptStatus = receipt != null
+                ? receipt.Value<string>("status")
+                : null;
+            if (request == null || state == null || command == null
+                || receipt == null || resumeClientContext == null
+                || !IsExactString(
+                    request["schema"],
+                    "warlord.as2-battle-request.v1")
+                || !IsExactString(
+                    receipt["schema"],
+                    "warlord.as2-battle-receipt.v1")
+                || digest == null
+                || !digest.StartsWith("sha256:", StringComparison.Ordinal)
+                || digest.Length != 71
+                || !string.Equals(
+                    WarlordBattleTask.Sha256OfToken(request),
+                    digest,
+                    StringComparison.Ordinal)
+                || !JToken.DeepEquals(request["state"], state)
+                || !JToken.DeepEquals(request["command"], command)
+                || !string.Equals(
+                    request.Value<string>("sessionId"),
+                    receipt.Value<string>("sessionId"),
+                    StringComparison.Ordinal)
+                || !string.Equals(
+                    request.Value<string>("requestId"),
+                    receipt.Value<string>("requestId"),
+                    StringComparison.Ordinal)
+                || !string.Equals(
+                    digest,
+                    receipt.Value<string>("inputDigest"),
+                    StringComparison.Ordinal)
+                || (receiptStatus != "accepted"
+                    && receiptStatus != "unknown"
+                    && receiptStatus != "not_started")
+                || (receiptStatus == "accepted" && hasHandoffError)
+                || (receiptStatus != "accepted" && !hasHandoffError))
+            {
+                rejectionReason = "resume_authority_contract";
+                return false;
+            }
+            if (hasHandoffError
+                && ReadBoundedWarlordString(
+                    resume["handoffError"],
+                    160) == null)
+            {
+                rejectionReason = "resume_authority_contract";
+                return false;
+            }
+
+            JObject normalizedClientContext = new JObject
+            {
+                ["seed"] = seed,
+                ["preset"] = preset,
+                ["difficulty"] = difficulty,
+                ["mapTheme"] = mapTheme,
+                ["forceWebglFailure"] = input.Value<bool>(
+                    "forceWebglFailure"),
+                ["aiSeenTransitions"] = transitions.DeepClone()
+            };
+            if (!JToken.DeepEquals(
+                    normalizedClientContext,
+                    resumeClientContext))
+            {
+                rejectionReason = "client_context_mismatch";
+                return false;
+            }
+
+            output = new JObject
+            {
+                ["seed"] = seed,
+                ["preset"] = preset,
+                ["difficulty"] = difficulty,
+                ["mapTheme"] = mapTheme,
+                ["forceWebglFailure"] = input.Value<bool>(
+                    "forceWebglFailure"),
+                ["aiSeenTransitions"] = transitions.DeepClone(),
+                ["mode"] = "phase-c-as2",
+                ["source"] = "as2_battle_resume",
+                ["productionWrites"] = false,
+                ["battleAuthority"] = "as2",
+                ["as2BattleSession"] = true,
+                ["resume"] = resume.DeepClone()
+            };
+            rejectionReason = null;
+            return true;
+        }
+
+        private static bool HasExactWarlordResumeRootProperties(
+            JObject input)
+        {
+            string[] names =
+            {
+                "seed", "preset", "difficulty", "mapTheme",
+                "forceWebglFailure", "aiSeenTransitions", "mode",
+                "source", "productionWrites", "battleAuthority",
+                "as2BattleSession", "resume"
+            };
+            for (int i = 0; i < names.Length; i++)
+                if (input.Property(names[i]) == null) return false;
+            return true;
+        }
+
+        private static bool HasRequiredWarlordResumeProperties(
+            JObject resume)
+        {
+            string[] names =
+            {
+                "schema", "request", "state", "command", "inputDigest",
+                "receipt", "clientContext"
+            };
+            for (int i = 0; i < names.Length; i++)
+                if (resume.Property(names[i]) == null) return false;
+            return true;
+        }
+
+        private static bool IsExactString(JToken token, string expected)
+        {
+            return token != null
+                && token.Type == JTokenType.String
+                && string.Equals(
+                    token.Value<string>(),
+                    expected,
+                    StringComparison.Ordinal);
+        }
+
+        private static bool IsExactBoolean(JToken token, bool expected)
+        {
+            return token != null
+                && token.Type == JTokenType.Boolean
+                && token.Value<bool>() == expected;
+        }
+
+        private static string ReadBoundedWarlordString(
+            JToken token,
+            int maximumLength,
+            bool allowEmpty = false)
+        {
+            if (token == null || token.Type != JTokenType.String)
+                return null;
+            string value = token.Value<string>();
+            if (value == null || value.Length > maximumLength
+                || (!allowEmpty && value.Length == 0))
+                return null;
+            for (int i = 0; i < value.Length; i++)
+                if (char.IsControl(value[i]))
+                    return null;
+            return value;
+        }
+
         internal string PendingCharacterBuildSkillsNavigationInstance
         {
             get
@@ -2481,6 +2733,9 @@ namespace CF7Launcher.Guardian
                     break;
                 case "BLACKMARKET_TEST":
                     OpenPanel("blackmarket", "{\"mode\":\"dev\",\"source\":\"runtime\",\"shadowOnly\":true,\"debug\":true}");
+                    break;
+                case "WARLORD_TEST":
+                    OpenPanel("warlord", "{\"mode\":\"phase-c-as2\",\"source\":\"runtime\",\"seed\":\"warlord-demo-seed-001\",\"preset\":\"standard\",\"difficulty\":\"normal\",\"mapTheme\":\"desert\",\"battleAuthority\":\"as2\",\"productionWrites\":false}");
                     break;
                 case "INTELLIGENCE_TEST":
                     OpenPanel("intelligence", "{\"mode\":\"dev\",\"source\":\"runtime\",\"itemName\":\"资料\",\"value\":99,\"decryptLevel\":10,\"pcName\":\"测试玩家\",\"debug\":true}");

@@ -96,6 +96,68 @@ namespace CF7Launcher.Tests.Guardian
             return router;
         }
 
+        private static JObject BuildWarlordResumeInitDataForRouterTest()
+        {
+            JObject state = new JObject
+            {
+                ["schemaVersion"] = 1,
+                ["phase"] = "SECOND_FACTION_ACTION"
+            };
+            JObject command = new JObject
+            {
+                ["type"] = "MOVE_OR_ATTACK",
+                ["factionId"] = "blue",
+                ["pieceIds"] = new JArray("b-12-7"),
+                ["originNodeId"] = "Center-Command",
+                ["targetNodeId"] = "R-Supply"
+            };
+            JObject clientContext = new JObject
+            {
+                ["seed"] = "warlord-router-test",
+                ["preset"] = "standard",
+                ["difficulty"] = "normal",
+                ["mapTheme"] = "desert",
+                ["forceWebglFailure"] = false,
+                ["aiSeenTransitions"] = new JArray("b-12-7:B-HQ->B-Economy")
+            };
+            JObject request = new JObject
+            {
+                ["schema"] = "warlord.as2-battle-request.v1",
+                ["sessionId"] = "warlord.router.session.1",
+                ["requestId"] = "warlord.router.request.1",
+                ["state"] = state.DeepClone(),
+                ["command"] = command.DeepClone(),
+                ["clientContext"] = clientContext.DeepClone()
+            };
+            string digest = WarlordBattleTask.Sha256OfToken(request);
+            JObject receipt = new JObject
+            {
+                ["schema"] = "warlord.as2-battle-receipt.v1",
+                ["status"] = "accepted",
+                ["sessionId"] = "warlord.router.session.1",
+                ["requestId"] = "warlord.router.request.1",
+                ["inputDigest"] = digest
+            };
+            JObject resume = new JObject
+            {
+                ["schema"] = "warlord.as2-resume.v1",
+                ["request"] = request,
+                ["state"] = state,
+                ["command"] = command,
+                ["inputDigest"] = digest,
+                ["receipt"] = receipt,
+                ["clientContext"] = clientContext.DeepClone()
+            };
+            JObject initData = (JObject)clientContext.DeepClone();
+            initData["mode"] = "phase-c-as2";
+            initData["source"] = "as2_battle_resume";
+            initData["productionWrites"] = false;
+            initData["battleAuthority"] = "as2";
+            initData["as2BattleSession"] = true;
+            initData["resume"] = resume;
+            return initData;
+        }
+
         [Fact]
         public void KeyDispatch_QWRPO_ForwardedAsKeys()
         {
@@ -2263,6 +2325,93 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("\"shadowOnly\":true", open);
             Assert.DoesNotContain("\"seed\"", open);
             Assert.DoesNotContain("allowExactIdentityLab", open);
+        }
+
+        [Fact]
+        public void WARLORD_TEST_OpenPanel_IsDeterministicAndReadOnly()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            r.Dispatch("WARLORD_TEST");
+            JObject open = harnessR.LastOpenPayload;
+            Assert.Equal("warlord", (string)open["panel"]);
+            JObject initData = open["initData"] as JObject;
+            Assert.NotNull(initData);
+            Assert.Equal("phase-c-as2", (string)initData["mode"]);
+            Assert.Equal("runtime", (string)initData["source"]);
+            Assert.Equal("warlord-demo-seed-001", (string)initData["seed"]);
+            Assert.Equal("standard", (string)initData["preset"]);
+            Assert.Equal("normal", (string)initData["difficulty"]);
+            Assert.Equal("desert", (string)initData["mapTheme"]);
+            Assert.Equal("as2", (string)initData["battleAuthority"]);
+            Assert.False((bool)initData["productionWrites"]);
+        }
+
+        [Fact]
+        public void WarlordResume_DedicatedCapabilityReopensValidatedHostEnvelope()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            JObject resume = BuildWarlordResumeInitDataForRouterTest();
+
+            Assert.True(r.TryOpenWarlordResumePanel(resume));
+
+            Assert.Equal("warlord", harnessR.Host.ActivePanelName);
+            JObject open = harnessR.LastOpenPayload;
+            JObject initData = open["initData"] as JObject;
+            Assert.NotNull(initData);
+            Assert.Equal("as2_battle_resume", (string)initData["source"]);
+            Assert.True((bool)initData["as2BattleSession"]);
+            Assert.Equal("accepted", (string)initData["resume"]["receipt"]["status"]);
+            Assert.Equal(
+                (string)resume["resume"]["inputDigest"],
+                (string)initData["resume"]["inputDigest"]);
+        }
+
+        [Fact]
+        public void WarlordResume_GenericPanelRequestRemainsUnsupported()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            JObject resume = BuildWarlordResumeInitDataForRouterTest();
+
+            r.RequestOpenPanel(
+                "warlord",
+                "as2_battle_resume",
+                null,
+                null,
+                null,
+                null,
+                null,
+                resume.ToString(Newtonsoft.Json.Formatting.None));
+
+            Assert.False(harnessR.Host.IsPanelOpen);
+        }
+
+        [Fact]
+        public void WarlordResume_DedicatedCapabilityRejectsAuthorityDrift()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+
+            JObject wrongSource = BuildWarlordResumeInitDataForRouterTest();
+            wrongSource["source"] = "as2_request";
+            Assert.False(r.TryOpenWarlordResumePanel(wrongSource));
+
+            JObject extraRoot = BuildWarlordResumeInitDataForRouterTest();
+            extraRoot["debug"] = true;
+            Assert.False(r.TryOpenWarlordResumePanel(extraRoot));
+
+            JObject mismatchedDigest = BuildWarlordResumeInitDataForRouterTest();
+            mismatchedDigest["resume"]["receipt"]["inputDigest"] =
+                "sha256:" + new string('0', 64);
+            Assert.False(r.TryOpenWarlordResumePanel(mismatchedDigest));
+
+            Assert.False(harnessR.Host.IsPanelOpen);
         }
 
         [Fact]

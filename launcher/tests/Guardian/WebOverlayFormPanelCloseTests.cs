@@ -326,6 +326,60 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void WarlordClose_IsExactAndCannotRetireReplacement()
+        {
+            const string activeInstance = "panel.warlord.replacement";
+            var exact = new JObject
+            {
+                ["type"] = "panel",
+                ["panel"] = "warlord",
+                ["cmd"] = "close",
+                ["panelInstanceId"] = activeInstance
+            };
+            Assert.True(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "warlord", "warlord", activeInstance));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "warlord", "warlord", "panel.warlord.old"));
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "warlord", "help", activeInstance));
+            exact["extra"] = true;
+            Assert.False(WebOverlayForm.IsValidExactPanelCloseEnvelope(
+                exact, "warlord", "warlord", activeInstance));
+
+            string panel = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "modules", "minigames", "warlord",
+                "warlord-panel.js"));
+            string close = Slice(
+                panel, "function onRequestClose(reason)", "function onClose()");
+            Assert.Contains("panelInstanceId: panelInstanceId", close);
+            Assert.DoesNotContain("Panels.close()", close);
+            Assert.Contains("closeTimer = setTimeout", close);
+            Assert.Contains("Launcher 尚未确认关闭，可再次尝试。", close);
+            Assert.Contains("generation !== localGeneration", close);
+            Assert.Contains("clearCloseTimer();", Slice(
+                panel, "function onClose()", "function notifyHost("));
+        }
+
+        [Fact]
+        public void WarlordResume_UsesDedicatedHostCapabilityInsteadOfGenericPanelRequest()
+        {
+            string source = File.ReadAllText(FindRepositoryFile(
+                "launcher", "src", "Guardian", "WebOverlayForm.cs"));
+            string wiring = Slice(
+                source,
+                "public void SetWarlordBattleTask(WarlordBattleTask task)",
+                "public void SetPetTask(PetTask task)");
+
+            Assert.Contains(
+                "router.TryOpenWarlordResumePanel(initData);",
+                wiring);
+            Assert.DoesNotContain("RequestOpenPanel(", wiring);
+            Assert.Contains(
+                "event=warlord_resume_dispatch_failed reason=ui_invoke",
+                wiring);
+        }
+
+        [Fact]
         public void TeamClose_IsExactAndCannotRetireReplacement()
         {
             const string activeInstance = "panel.team.replacement";

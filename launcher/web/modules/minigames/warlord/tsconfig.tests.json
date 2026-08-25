@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.runtime.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": ".test-dist"
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["runtime", ".test-dist", "node_modules"]
+}

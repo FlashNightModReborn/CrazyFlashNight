@@ -1,0 +1,381 @@
+{
+  "schema": "cf7.warlord-sandtable-runtime.v1",
+  "rulesVersion": "wargame-demo-v0.1.1",
+  "nodeEngine": ">=22.0.0",
+  "compiler": {
+    "name": "typescript",
+    "version": "5.8.3"
+  },
+  "renderer": {
+    "name": "three",
+    "version": "0.185.1",
+    "license": "MIT"
+  },
+  "files": [
+    {
+      "path": "runtime/ai/heuristic.js",
+      "bytes": 14275,
+      "sha256": "4693520C0F3C8FC4DCB00E9C79036122948BBD0A63193432ED731A2C60838F08"
+    },
+    {
+      "path": "runtime/ai/heuristic.js.map",
+      "bytes": 15334,
+      "sha256": "AE52C55D410B9B705AF2A4AE3D12E5CABBB24EC72721B078C9755D515CE246A0"
+    },
+    {
+      "path": "runtime/app/lifecycle.js",
+      "bytes": 1881,
+      "sha256": "EBD6C3442B27FD6A7A25F720CDDEBFD0BB5288C1CB4369DE41055FF6412EF8EF"
+    },
+    {
+      "path": "runtime/app/lifecycle.js.map",
+      "bytes": 1840,
+      "sha256": "F3D416E9271D29B7E53D3E74769D3EF09755C034FECCAD3C559091C4F04527AE"
+    },
+    {
+      "path": "runtime/app/node-navigator.js",
+      "bytes": 2802,
+      "sha256": "6E793E3A4A5031993CF18F87E2D04018A7A9FBAA40BBCFD0957644CAF5F44CA7"
+    },
+    {
+      "path": "runtime/app/node-navigator.js.map",
+      "bytes": 3506,
+      "sha256": "A74533F20BE1F4AC6B7839799515D86FD360FBB88FF0C60D601E70823E98CD16"
+    },
+    {
+      "path": "runtime/app/presenter.js",
+      "bytes": 7089,
+      "sha256": "44B877156289B5AFA263AC3CE5EFCFA5304312386A1885E213CA5CB0577C1951"
+    },
+    {
+      "path": "runtime/app/presenter.js.map",
+      "bytes": 7255,
+      "sha256": "8D69477577A3DA96CEF96ECBA5E5D6A7AAA3021D30E3D5A3ACA8A9E959E578AF"
+    },
+    {
+      "path": "runtime/app/production-presenter.js",
+      "bytes": 8897,
+      "sha256": "14ECAC3AD81C5FCFFC492044B310D077DC3F1E26CCD98B549CF20DF3C5345B04"
+    },
+    {
+      "path": "runtime/app/production-presenter.js.map",
+      "bytes": 9944,
+      "sha256": "5463472F8122B12189A1E66C2A2A9FAE39027D1721C34C5500BD676585C73BBB"
+    },
+    {
+      "path": "runtime/app/selection-policy.js",
+      "bytes": 2600,
+      "sha256": "1CAEABF7F7A96402C3B2ACB40D0A62955023F975722CA85C952F165F9ABE7081"
+    },
+    {
+      "path": "runtime/app/selection-policy.js.map",
+      "bytes": 3136,
+      "sha256": "7641DC9D03075AB89C5215C3885DB9CE0A07A3B0312EEDC704901ED26C02A5FB"
+    },
+    {
+      "path": "runtime/app/warlord-session.js",
+      "bytes": 84151,
+      "sha256": "AEF8C482FDCA332EADF56426D988CA5480F275F920DB37BB61E8F3E255B0FC80"
+    },
+    {
+      "path": "runtime/app/warlord-session.js.map",
+      "bytes": 72256,
+      "sha256": "CF7846AC26D7E1788D1E731E2953B279B162AB7D639557DB10F92D726A125D2B"
+    },
+    {
+      "path": "runtime/assets/portrait-texture-source.js",
+      "bytes": 1702,
+      "sha256": "C701EB9B0315E992F101E39A2CCCB1E7CE30498F89231588ED7733437EF01743"
+    },
+    {
+      "path": "runtime/assets/portrait-texture-source.js.map",
+      "bytes": 1841,
+      "sha256": "62C14A792B70901CD209FE7DC8E4EB74586D31C9A91FE6181E675D88D7A8E3C0"
+    },
+    {
+      "path": "runtime/battle/as2-authority.js",
+      "bytes": 23825,
+      "sha256": "EBA132A3BECBB733F598E89B3157EF0EC2510A16CE976C27F3B90A22ACAF3796"
+    },
+    {
+      "path": "runtime/battle/as2-authority.js.map",
+      "bytes": 22080,
+      "sha256": "A42FAA0B25604212160735B366100A9E1B5B6BB81E4C0FE6AF5FADCD242B2304"
+    },
+    {
+      "path": "runtime/battle/playback.js",
+      "bytes": 615,
+      "sha256": "A5D2DD632026BEDA594AFC2B9D98F2D51791A7BCC954893EE548CA4854A46C9A"
+    },
+    {
+      "path": "runtime/battle/playback.js.map",
+      "bytes": 599,
+      "sha256": "5D7028BF184D51E088336A41A211D76F6351BC38949B39912163B84A45917631"
+    },
+    {
+      "path": "runtime/battle/resolver.js",
+      "bytes": 17370,
+      "sha256": "D98EAEAAEB4C1978D97CB9133DCE00C35DC3FAC8302F5F17867C019F3A528A94"
+    },
+    {
+      "path": "runtime/battle/resolver.js.map",
+      "bytes": 15852,
+      "sha256": "1AB6BD4C854F138269D49CD721662F51A1A24524E4653CD10F39A195FD1AF6C8"
+    },
+    {
+      "path": "runtime/battle/types.js",
+      "bytes": 44,
+      "sha256": "01AE2A5B120382F9A648CED7EE8507493A134F216D100FC61600C6C9738235D2"
+    },
+    {
+      "path": "runtime/battle/types.js.map",
+      "bytes": 112,
+      "sha256": "01358F761E7B75286B074B965ED2886C7A8AAD5D3F5FD787692BACB96FBF9C1F"
+    },
+    {
+      "path": "runtime/core/engine.js",
+      "bytes": 13421,
+      "sha256": "DDCB85BD41C127EC2634DCCCDE4B231DC450979CEBABC4306E872E6EB696558E"
+    },
+    {
+      "path": "runtime/core/engine.js.map",
+      "bytes": 12663,
+      "sha256": "9E9288944ABED6013A9475D87A96A5E65DEAE1EB5E9837C56D02DBFD680A3A02"
+    },
+    {
+      "path": "runtime/core/events.js",
+      "bytes": 347,
+      "sha256": "6B487E436EE3DEA10C275394F29AC9C410F4631FAABC8717D3164AAB723A2ABB"
+    },
+    {
+      "path": "runtime/core/events.js.map",
+      "bytes": 426,
+      "sha256": "81119A59817EB0319525ED1F1922ED40D852AC12FD29F4E3C82D6DD348E4554F"
+    },
+    {
+      "path": "runtime/core/lifecycle.js",
+      "bytes": 14964,
+      "sha256": "6D6C662ACB239DA25054F3A637224CD73025080ED37804E140B5685CB773DC0B"
+    },
+    {
+      "path": "runtime/core/lifecycle.js.map",
+      "bytes": 15715,
+      "sha256": "04AA445D1BC06FFCC94991A99CD6396A5A43E5E52141DC0B5746699043D19817"
+    },
+    {
+      "path": "runtime/core/math.js",
+      "bytes": 2027,
+      "sha256": "10934135C72F0E8BA43971011239D086361BFD4B01D6F29A095C179AA8D0692C"
+    },
+    {
+      "path": "runtime/core/math.js.map",
+      "bytes": 2547,
+      "sha256": "D8C76D79F25BABB0FB83A8663449ADEABB619DD031344D5111740DDC49CF380E"
+    },
+    {
+      "path": "runtime/core/pieces.js",
+      "bytes": 2726,
+      "sha256": "A38EE1DE7F05586C92C85D304B778EFB12B5B48E90B4EF645A544728D989939F"
+    },
+    {
+      "path": "runtime/core/pieces.js.map",
+      "bytes": 3331,
+      "sha256": "302F2B2B199E4569F842E974FEC46322211652C3C381DEAD9CB48CDCF0D440A7"
+    },
+    {
+      "path": "runtime/core/rng.js",
+      "bytes": 1083,
+      "sha256": "832E0BCEC61731DA2F393747E7A4CB657A3D655ACE78D4BC10DBD37ED315282A"
+    },
+    {
+      "path": "runtime/core/rng.js.map",
+      "bytes": 1501,
+      "sha256": "E27BC3E976E9BD7951D32C1C12FA7952E689FEF6889615A9A0EA28C16FF11852"
+    },
+    {
+      "path": "runtime/core/selectors.js",
+      "bytes": 3213,
+      "sha256": "AE5E6599EF50F45B37C95CFD75252E311116F1DBBDD90600AB427976A861E9C1"
+    },
+    {
+      "path": "runtime/core/selectors.js.map",
+      "bytes": 3882,
+      "sha256": "6FB48C9D0AFBD8605E0F25849615EC36F04842A4357F4A518556919875F2D974"
+    },
+    {
+      "path": "runtime/core/state.js",
+      "bytes": 5194,
+      "sha256": "85E770339324ED21C838CE710C9E5236D60A8435C5A46228114E3EC43FB220C5"
+    },
+    {
+      "path": "runtime/core/state.js.map",
+      "bytes": 5389,
+      "sha256": "32EE2126CDBAC97E04DD4A49D59DF59EF2EFED216A71A8AE3F00F36756E007F1"
+    },
+    {
+      "path": "runtime/core/types.js",
+      "bytes": 44,
+      "sha256": "01AE2A5B120382F9A648CED7EE8507493A134F216D100FC61600C6C9738235D2"
+    },
+    {
+      "path": "runtime/core/types.js.map",
+      "bytes": 110,
+      "sha256": "B983B4B425E50DA613E8903A38B843E3C88824DA62E9F3ED2A7AE7FC96C1F8EE"
+    },
+    {
+      "path": "runtime/core/validator.js",
+      "bytes": 9333,
+      "sha256": "6BB6499FC3AD3C3CCBE6C5785042BB36B0BE462A342FFA4C19EF48EE98B5F628"
+    },
+    {
+      "path": "runtime/core/validator.js.map",
+      "bytes": 8112,
+      "sha256": "61D0FF66258403506D87EF8F671C1D80CD57B57C1CA0FA7CDED560396FB99FD0"
+    },
+    {
+      "path": "runtime/data/cards.js",
+      "bytes": 582,
+      "sha256": "7A5192991B0D5A54757B94AE9FE0AE27962860D11BE5A772B298AC7DE2FFCDC8"
+    },
+    {
+      "path": "runtime/data/cards.js.map",
+      "bytes": 822,
+      "sha256": "68097821B1752E00C61BC02EB634B3B1FF8D67C79A913C79C5A2AC10FF645005"
+    },
+    {
+      "path": "runtime/data/config.js",
+      "bytes": 1010,
+      "sha256": "B0229DB94D91995606612025F02E9160634F978131D595E7F4E0671DF55A9875"
+    },
+    {
+      "path": "runtime/data/config.js.map",
+      "bytes": 1153,
+      "sha256": "AC5FC282E0E7AEF13945160C60B4A5161BA5F01565C9FD25A7492C4AC56175FD"
+    },
+    {
+      "path": "runtime/data/map.js",
+      "bytes": 3286,
+      "sha256": "2A6D127EB7337FC8F72C89110DFF9E928B181DEFF787E50817A586B6D894A883"
+    },
+    {
+      "path": "runtime/data/map.js.map",
+      "bytes": 3839,
+      "sha256": "B8BF065F3AB5C4FBDC6D5DC02267492F8D691321A6CCC146AC037F5C12B1400B"
+    },
+    {
+      "path": "runtime/data/warlord-cards.snapshot.js",
+      "bytes": 15020,
+      "sha256": "5EB334F4EFBC66F53A8A4EEF779AFEE576941D37925666BE382FA75767333DF3"
+    },
+    {
+      "path": "runtime/data/warlord-cards.snapshot.js.map",
+      "bytes": 10092,
+      "sha256": "FE8373FB271152E66240D5104C5D8BC5DF0D83CFA22B0555A8C000FA716B1239"
+    },
+    {
+      "path": "runtime/dev/quickBattle.js",
+      "bytes": 4359,
+      "sha256": "449B357BD1C531D6025F88F2116C33775DA6F0CD84E5D636B71124B1E758CE1E"
+    },
+    {
+      "path": "runtime/dev/quickBattle.js.map",
+      "bytes": 4439,
+      "sha256": "9748F8627EA5AA9C7DE913ACFF77281344F9D13B446A00278117887AA9228CA5"
+    },
+    {
+      "path": "runtime/main.js",
+      "bytes": 364,
+      "sha256": "6251866B2AE68ECEA894EA313537A02A30193BD68891E07B8F5384FE126F9D67"
+    },
+    {
+      "path": "runtime/main.js.map",
+      "bytes": 374,
+      "sha256": "B40BC4B5B417221FD1D0D4F3B6B9B16544F7DA6D60B7D54FF6B8B625B6AA9399"
+    },
+    {
+      "path": "runtime/replay/replay.js",
+      "bytes": 2130,
+      "sha256": "E95E08E2750C678F319F848D30EF2444A131DA3F3C9877BF60F239F379D8F6B1"
+    },
+    {
+      "path": "runtime/replay/replay.js.map",
+      "bytes": 2181,
+      "sha256": "B6ED2BBDDD3A24CD1153C32DE78844D1D7B43997F9891E05DCA718DA53CDAEA0"
+    },
+    {
+      "path": "runtime/scene/camera-policy.js",
+      "bytes": 4292,
+      "sha256": "610C4345BD0F7C4C3FD3A6FB7499D77C079CB8194B5DE979D7886B1603EDFABF"
+    },
+    {
+      "path": "runtime/scene/camera-policy.js.map",
+      "bytes": 5073,
+      "sha256": "0B12A566A299F4DB2B4232224741AFD8A82D61D7A291BF282ED59725601AC3F7"
+    },
+    {
+      "path": "runtime/scene/map-theme.js",
+      "bytes": 1712,
+      "sha256": "17E17880C5FD6AA11B1E543F446110F05C648D7339E80BE0A5F0971303520C41"
+    },
+    {
+      "path": "runtime/scene/map-theme.js.map",
+      "bytes": 1463,
+      "sha256": "011C56E28493833E5BADDAA35947ADB69FFF9FDF53BC4F60C30D98753E50FB35"
+    },
+    {
+      "path": "runtime/scene/sandtable-scene.js",
+      "bytes": 62116,
+      "sha256": "0BF384497F4D0E9A428922F1B933C89ABCE649F74C3CDA3C057D304B8915B74A"
+    },
+    {
+      "path": "runtime/scene/sandtable-scene.js.map",
+      "bytes": 69367,
+      "sha256": "09EDB2B01B89A1F6CC7322140FE5E62C427DF4EDB634A33ADD0320DC4F902235"
+    },
+    {
+      "path": "runtime/simulation/cli.js",
+      "bytes": 880,
+      "sha256": "EAE303BB9EB839F245E7F788200E45CAC3B1929C9A10749CC8EA79549B3A404F"
+    },
+    {
+      "path": "runtime/simulation/cli.js.map",
+      "bytes": 1197,
+      "sha256": "6B85DF9859E90A4D4FB2385E426207C09B33B5A1B73355429EBD34D08D72D05A"
+    },
+    {
+      "path": "runtime/simulation/run.js",
+      "bytes": 9053,
+      "sha256": "124362F9E316C87CEFC01279EDFD829266FB766F3A4BBF937788F310DCA452E8"
+    },
+    {
+      "path": "runtime/simulation/run.js.map",
+      "bytes": 9353,
+      "sha256": "D5E3FA6FA80E3B11B4EF03C69C4C67F766A0E2FDA8223ABD2CEAA622DF7B48AE"
+    },
+    {
+      "path": "runtime/vendor/three-runtime.js",
+      "bytes": 478,
+      "sha256": "59239B687CB26662B700022BD52830863D6B7BFCCED982111880024644C7D39B"
+    },
+    {
+      "path": "runtime/vendor/three-runtime.js.map",
+      "bytes": 268,
+      "sha256": "F552F1082C3B4CA060A001E9969C767B5F49C742A24DD98B95D399C287D1958B"
+    },
+    {
+      "path": "vendor/three-LICENSE.txt",
+      "bytes": 1081,
+      "sha256": "8B378EBE60E2FE500158CB0AC71CB5E8B7D92953C2ABCC63A0EB90499653B5BC"
+    },
+    {
+      "path": "vendor/three.core.min.js",
+      "bytes": 385386,
+      "sha256": "05B2609338C76CD65DAF74F3AC515BC9A5045E1B3B33EDC07D8C9BD55250FA90"
+    },
+    {
+      "path": "vendor/three.module.min.js",
+      "bytes": 365552,
+      "sha256": "86BCEE248B64F44BCFC23C331AE74619061957D59CAB040171DCB6FB5900BEB6"
+    }
+  ]
+}

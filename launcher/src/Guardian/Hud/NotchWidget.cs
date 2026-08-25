@@ -171,6 +171,7 @@ namespace CF7Launcher.Guardian.Hud
             new NotchButtonDef("锁芯校准测试", "PINALIGN_TEST", Keys.None, false, false),
             new NotchButtonDef("铁枪会入侵测试", "GOBANG_TEST", Keys.None, false, false),
             new NotchButtonDef("黑市鉴定测试", "BLACKMARKET_TEST", Keys.None, false, false),
+            new NotchButtonDef("军阀演习测试", "WARLORD_TEST", Keys.None, false, false),
             new NotchButtonDef("情报测试", "INTELLIGENCE_TEST", Keys.None, false, false),
             new NotchButtonDef("选关测试", "STAGE_SELECT_TEST", Keys.None, false, false),
             new NotchButtonDef("角斗场测试", "ARENA_TEST", Keys.None, false, false),

@@ -1,4 +1,6 @@
+using System;
 using System.Drawing;
+using System.IO;
 using CF7Launcher.Guardian;
 using Xunit;
 
@@ -18,7 +20,7 @@ namespace CF7Launcher.Tests.Guardian
         public void AllRuntimePanels_ReturnFullAnchor()
         {
             // 沉浸全屏化后 jukebox / arena 也回全 anchor（原 Centered 子矩形已退役）
-            string[] names = { "map", "kshop", "workbench", "crafting", "help", "lockbox", "pinalign", "gobang", "blackmarket", "team", "arena",
+            string[] names = { "map", "kshop", "workbench", "crafting", "help", "lockbox", "pinalign", "gobang", "blackmarket", "warlord", "team", "arena",
                                "jukebox", "intelligence", "stage-select", "tasks", "unknown", null };
             foreach (string n in names)
             {
@@ -32,6 +34,20 @@ namespace CF7Launcher.Tests.Guardian
         {
             Rectangle r = PanelLayoutCatalog.GetRect("JUKEBOX", Anchor1080p);
             Assert.Equal(Anchor1080p, r);
+        }
+
+        [Fact]
+        public void Warlord_WebCss_UsesFullAnchorInsteadOfGenericInset()
+        {
+            string css = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "css", "panels", "foundation-rest.css"));
+            const string selector = "#panel-container[data-panel=\"warlord\"] #panel-content";
+            int selectorIndex = css.IndexOf(selector, StringComparison.Ordinal);
+            Assert.True(selectorIndex >= 0);
+            int blockStart = css.IndexOf('{', selectorIndex);
+            int blockEnd = css.IndexOf('}', blockStart);
+            Assert.True(blockStart > selectorIndex && blockEnd > blockStart);
+            Assert.Contains("inset: 0;", css.Substring(blockStart, blockEnd - blockStart));
         }
 
         [Fact]
@@ -54,6 +70,21 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(720, r.Height);
             Assert.Equal(100 + (1920 - 1024) / 2, r.X);
             Assert.Equal(50 + (1080 - 720) / 2, r.Y);
+        }
+
+        private static string FindRepositoryFile(params string[] relativeParts)
+        {
+            DirectoryInfo current = new DirectoryInfo(AppContext.BaseDirectory);
+            while (current != null)
+            {
+                string repositoryPath = current.FullName;
+                foreach (string part in relativeParts)
+                    repositoryPath = Path.Combine(repositoryPath, part);
+                if (File.Exists(repositoryPath)) return repositoryPath;
+                current = current.Parent;
+            }
+            throw new FileNotFoundException(
+                "Unable to locate repository file: " + string.Join("/", relativeParts));
         }
     }
 }

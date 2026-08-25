@@ -364,6 +364,7 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `pinalign` | minigame | `modules/minigames/pinalign/pinalign-panel.js` |
 | `gobang` | minigame | `modules/minigames/gobang/gobang-panel.js` |
 | `blackmarket` | minigame | `modules/minigames/blackmarket/blackmarket-panel.js` |
+| `warlord` | minigame | `modules/minigames/warlord/warlord-panel.js` |
 | `intelligence` | 业务 Panel | `modules/intelligence-panel.js` |
 | `arena` | 工作台 | `modules/arena-panel.js` |
 | `team` | 工作台 | `modules/team/team-panel.js` |
@@ -375,7 +376,7 @@ Panel 的共同边界：
 - Team 内嵌 `pets` / `mercs` 的全部请求（含 T800 武器命令与佣兵装备 tooltip）携 active `panelInstanceId`；Web 回包精确匹配 instance/callId/cmd，Host 拒绝 inactive/foreign/stale owner，replacement 清退旧 pending，迟到响应不可跨实例采用。业务写仍由白名单、revision/lease/token 与 AS2/Host 裁决，未知结果进入对账；T800 详见[施工记录](../docs/终结者T800-托管长枪与射击核心-施工-2026-08-22.md)。
 - LoadoutPicker 候选只接受装备槽、药剂槽或无 selector 背包总览三种 target。Character `equipmentEligibility` 在两种 scope 由 Host 复验；Merc `eligibleSlots` 由 AS2 两种 scope 签发。scope 只筛候选，白名单裁决 drop target，写后保留原 scope/anchor；Merc 按新 revision 恰好刷新一次 authority。详见[迁移护栏](../agentsDoc/as2-web-panel-migration.md)。
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
-- close、Esc、backdrop、导航和 recovery 经过同一 lifecycle fence。Team/blackmarket close 携当前实例并等待 Host exact `panel_cmd close`；Bridge 投递成功不等于接受，确认丢失 3 秒后只恢复同实例重试权，不本地关闭；迟到 A 不得关闭 replacement B，旧 `panel:"pets"|"mercs"` child close 一律拒绝。
+- close、Esc、backdrop、导航和 recovery 经过同一 lifecycle fence。Team/blackmarket/warlord close 携当前实例并等待 Host exact `panel_cmd close`；Bridge 投递成功不等于接受，确认丢失 3 秒后只恢复同实例重试权，不本地关闭；迟到 A 不得关闭 replacement B，旧 `panel:"pets"|"mercs"` child close 一律拒绝。
 - Workbench 的布局、密度、focus、tooltip、interaction broker 和 CSS 边界以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。
 - `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。
   新表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的 `--term-*` 派生 token；顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不保留重复“作弊码”页，玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
@@ -387,10 +388,9 @@ Panel 的共同边界：
 - AS2/Host/Web 三层迁移、数据权威与旧 Flash UI 退役边界以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
-Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)和[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)。
-其中 `blackmarket` 只允许 `dev + shadowOnly`，不是正式经济 Panel。普通 `BLACKMARKET_TEST` 不发送 seed；产品 core 只生成与真实目录不相交的 `anonymous / 匿名影子货舱` 与身份无关 `data:` 表面。lazy closure 不持有全量 catalog，不加载 exact/dressup/equipment-preview，也没有 marker、字符串 capability、Lab/debug API 或 catalog 注入钩子。
-其 close 发送当前 `panelInstanceId` 后等待 Host 确认，不能本地先 retire；Host 只关闭 exact active owner，迟到 A 不影响 replacement B。该加固不改变 `shadowOnly`、匿名表面或 `productionWrites=false`。
-全目录 oracle 与目录夹具已移到 Web 静态根外的 `tools/fixtures/blackmarket/`，仅供 Node QA；历史 catalog/exact-core URL 无文件可读，伪造旧 bootstrap/`allowExactIdentityLab` 仍只得到匿名面。面板固定 `1024×576` 并仅由 `PanelScale` 缩放；K 账本分记 `deltaTp/deltaK`，以 `deltaV=deltaTp+50×deltaK` 复核。测试见 [testing guide](../agentsDoc/testing-guide.md)。
+Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)、[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)和[军阀战术演习](web/modules/minigames/warlord/README.md)。
+`blackmarket` 仅允许 `dev + shadowOnly`；产品不接调用方 seed，只生成不命中真实目录的匿名货物与 `data:` 表面。lazy closure 不含 exact oracle、dressup/preview 或 debug API，close 绑定 exact 实例；Web 根外夹具仅供 Node QA。面板固定 `1024×576`/`PanelScale`，K 账本按 `deltaV=deltaTp+50×deltaK` 复核；测试见 [testing guide](../agentsDoc/testing-guide.md)。
+`warlord` 为 `1024×576`/`PanelScale` 全锚、`productionWrites=false / battleAuthority=as2`；卡牌映射隔离战宠，JS resolver 仅供 fixture。AS2 恢复只走内部 `WarlordBattleTask → TryOpenWarlordResumePanel → PanelHost`，通用路由继续拒绝。旧 c3 已返回战果，却因误走通用路由无法回到战旗，故 E2E 重开；修复门通过，待新候选人类复验，未部署。详见[军阀演习 ADR](../docs/军阀战术演习-3D沙盘UI-ADR-2026-08-24.md)。
 ## 存档编辑与诊断
 
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。

@@ -1,0 +1,22 @@
+{
+  "name": "@cf7/warlord-sandtable",
+  "private": true,
+  "version": "0.1.0-phase-c.as2",
+  "type": "module",
+  "description": "Deterministic warlord tactical exercise with a Three.js sandtable presentation layer",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "node tools/build-runtime.mjs",
+    "test": "node tools/build-runtime.mjs && node tools/verify-runtime.mjs && node tools/run-tests.mjs",
+    "test:browser": "node --experimental-websocket tools/run-browser-qa.mjs",
+    "verify:runtime": "node tools/verify-runtime.mjs",
+    "simulate": "node tools/build-runtime.mjs && node runtime/simulation/cli.js",
+    "serve": "node dev/server.mjs"
+  },
+  "devDependencies": {
+    "three": "0.185.1",
+    "typescript": "5.8.3"
+  }
+}

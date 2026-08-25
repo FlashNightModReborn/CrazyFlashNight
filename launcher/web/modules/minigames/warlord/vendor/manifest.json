@@ -1,0 +1,23 @@
+{
+  "schema": "cf7.warlord-three-vendor.v1",
+  "package": "three",
+  "version": "0.185.1",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "vendor/three-LICENSE.txt",
+      "bytes": 1081,
+      "sha256": "8B378EBE60E2FE500158CB0AC71CB5E8B7D92953C2ABCC63A0EB90499653B5BC"
+    },
+    {
+      "path": "vendor/three.core.min.js",
+      "bytes": 385386,
+      "sha256": "05B2609338C76CD65DAF74F3AC515BC9A5045E1B3B33EDC07D8C9BD55250FA90"
+    },
+    {
+      "path": "vendor/three.module.min.js",
+      "bytes": 365552,
+      "sha256": "86BCEE248B64F44BCFC23C331AE74619061957D59CAB040171DCB6FB5900BEB6"
+    }
+  ]
+}

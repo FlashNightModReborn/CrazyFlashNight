@@ -107,7 +107,7 @@ namespace CF7Launcher.Tests.Tasks
                 ["manifestPath"] = "tmp/arena-calibration/batches/pilot-ok/case_manifest.json"
             }));
 
-            Assert.True((bool)start["success"]);
+            Assert.True((bool)start["success"], "Unexpected start response: " + start);
             Assert.Equal("running", (string)start["state"]);
             Assert.True(sentEvent.Wait(3000), "Flash command was not dispatched");
 
@@ -503,7 +503,7 @@ namespace CF7Launcher.Tests.Tasks
                 ["manifestPath"] = "tmp/arena-calibration/batches/pilot-hashed/case_manifest.json"
             }));
 
-            Assert.True((bool)start["success"]);
+            Assert.True((bool)start["success"], "Unexpected start response: " + start);
             Assert.Equal("sha256:bd3dd8741578878071671d3c65688451f5e22ae40330646abd312b0fa8213ce0",
                 (string)start["manifestHash"]);
             Assert.True(sentEvent.Wait(3000), "Flash command was not dispatched");

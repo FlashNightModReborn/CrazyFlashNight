@@ -8,6 +8,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
+using CF7Launcher.Data;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Tasks
@@ -25,6 +26,13 @@ namespace CF7Launcher.Tasks
             "shield",
             "grid"
         };
+        private static readonly HashSet<string> AllowedStrategicPetPromotions =
+            new HashSet<string>(StringComparer.Ordinal)
+            {
+                "基础训练",
+                "强化药剂",
+                "超级血清"
+            };
 
         private sealed class CalibrationCase
         {
@@ -38,6 +46,7 @@ namespace CF7Launcher.Tasks
             public string BlueFormation;
             public string RedFormation;
             public int FormationSpacing;
+            public JObject AuthorityContext;
         }
 
         private sealed class BatchManifest
@@ -67,6 +76,7 @@ namespace CF7Launcher.Tasks
         private readonly object _lock = new object();
         private readonly Dictionary<int, PendingRun> _pending = new Dictionary<int, PendingRun>();
         private static readonly Regex BatchIdPattern = new Regex("^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", RegexOptions.Compiled);
+        private static readonly Regex SourceIdPattern = new Regex("^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$", RegexOptions.Compiled);
         private Action<JObject> _batchCompleted;
 
         private int _seq;
@@ -165,7 +175,7 @@ namespace CF7Launcher.Tasks
             string manifestPath = ResolveManifestPath(msg.Value<string>("manifestPath"));
             BatchManifest manifest = LoadAndNormalizeManifest(manifestPath);
             Action startWorker;
-            JObject result = StartNormalizedBatch(manifest, manifestPath, null, out startWorker);
+            JObject result = StartNormalizedBatch(manifest, manifestPath, null, null, out startWorker);
             if (startWorker != null)
                 startWorker();
             return result;
@@ -182,6 +192,15 @@ namespace CF7Launcher.Tasks
 
         public JObject StartSingleDeferred(JObject msg, Action<JObject> beforeWorkerStart, out Action startWorker)
         {
+            return StartSingleDeferred(msg, beforeWorkerStart, null, out startWorker);
+        }
+
+        public JObject StartSingleDeferred(
+            JObject msg,
+            Action<JObject> beforeWorkerStart,
+            Action<JObject> batchCompleted,
+            out Action startWorker)
+        {
             try
             {
                 startWorker = null;
@@ -189,7 +208,12 @@ namespace CF7Launcher.Tasks
                     return BuildError("disconnected", "Flash socket client is not ready");
 
                 BatchManifest manifest = BuildInlineSingleManifest(msg);
-                return StartNormalizedBatch(manifest, null, beforeWorkerStart, out startWorker);
+                return StartNormalizedBatch(
+                    manifest,
+                    null,
+                    beforeWorkerStart,
+                    batchCompleted,
+                    out startWorker);
             }
             catch (Exception ex)
             {
@@ -203,6 +227,7 @@ namespace CF7Launcher.Tasks
             BatchManifest manifest,
             string manifestPath,
             Action<JObject> beforeWorkerStart,
+            Action<JObject> batchCompleted,
             out Action startWorker)
         {
             startWorker = null;
@@ -246,7 +271,13 @@ namespace CF7Launcher.Tasks
                 }
             }
 
-            startWorker = delegate { ThreadPool.QueueUserWorkItem(delegate { RunBatch(manifest); }); };
+            startWorker = delegate
+            {
+                ThreadPool.QueueUserWorkItem(delegate
+                {
+                    RunBatch(manifest, batchCompleted);
+                });
+            };
             return started;
         }
 
@@ -279,7 +310,7 @@ namespace CF7Launcher.Tasks
             return BuildStatus(true, "abort_requested");
         }
 
-        private void RunBatch(BatchManifest manifest)
+        private void RunBatch(BatchManifest manifest, Action<JObject> batchCompleted)
         {
             try
             {
@@ -318,23 +349,32 @@ namespace CF7Launcher.Tasks
             }
             finally
             {
-                NotifyBatchCompleted();
+                NotifyBatchCompleted(batchCompleted);
             }
         }
 
-        private void NotifyBatchCompleted()
+        private void NotifyBatchCompleted(Action<JObject> batchCompleted)
         {
-            Action<JObject> handler = _batchCompleted;
-            if (handler == null)
-                return;
+            JObject status = BuildStatus(true, "terminal");
+            InvokeBatchCompleted(_batchCompleted, status, "shared");
+            if (batchCompleted != null && batchCompleted != _batchCompleted)
+                InvokeBatchCompleted(batchCompleted, status, "request");
+        }
 
+        private static void InvokeBatchCompleted(
+            Action<JObject> handler,
+            JObject status,
+            string scope)
+        {
+            if (handler == null) return;
             try
             {
-                handler(BuildStatus(true, "terminal"));
+                handler((JObject)status.DeepClone());
             }
             catch (Exception ex)
             {
-                LogManager.Log("[ArenaCalibrationTask] batch completion handler exception: " + ex);
+                LogManager.Log("[ArenaCalibrationTask] " + scope
+                    + " batch completion handler exception: " + ex);
             }
         }
 
@@ -413,6 +453,9 @@ namespace CF7Launcher.Tasks
             command["blueFormation"] = testCase.BlueFormation;
             command["redFormation"] = testCase.RedFormation;
             command["formationSpacing"] = testCase.FormationSpacing;
+            command["authorityContext"] = testCase.AuthorityContext != null
+                ? testCase.AuthorityContext.DeepClone()
+                : new JObject();
             command["blueRoster"] = ToFlashRoster(testCase.BlueRoster);
             command["redRoster"] = ToFlashRoster(testCase.RedRoster);
             return command;
@@ -486,6 +529,8 @@ namespace CF7Launcher.Tasks
             row["formationAudit"] = CloneObjectOrEmpty(result["formationAudit"]);
             row["blue"] = NormalizeSideSummary(result.Value<JObject>("blue"));
             row["red"] = NormalizeSideSummary(result.Value<JObject>("red"));
+            row["blueUnitResults"] = NormalizeUnitResults(result["blueUnitResults"]);
+            row["redUnitResults"] = NormalizeUnitResults(result["redUnitResults"]);
             row["errors"] = NormalizeErrors(result["errors"]);
             return row;
         }
@@ -505,6 +550,8 @@ namespace CF7Launcher.Tasks
             row["durationMs"] = null;
             row["blue"] = NormalizeSideSummary(null);
             row["red"] = NormalizeSideSummary(null);
+            row["blueUnitResults"] = new JArray();
+            row["redUnitResults"] = new JArray();
             JArray errors = new JArray();
             JObject error = new JObject();
             error["code"] = status;
@@ -544,6 +591,11 @@ namespace CF7Launcher.Tasks
             row["blueSpawnPositions"] = new JArray();
             row["redSpawnPositions"] = new JArray();
             row["formationAudit"] = new JObject();
+            row["authorityContext"] = testCase.AuthorityContext != null
+                ? testCase.AuthorityContext.DeepClone()
+                : new JObject();
+            row["blueUnitResults"] = new JArray();
+            row["redUnitResults"] = new JArray();
             return row;
         }
 
@@ -753,6 +805,18 @@ namespace CF7Launcher.Tasks
                 frozenCase["formationSpacing"] = caseFormationSpacing;
                 frozenCase["tags"] = sourceCase["tags"] != null ? sourceCase["tags"].DeepClone() : new JArray();
                 frozenCase["plannerReason"] = sourceCase.Value<string>("plannerReason") ?? "";
+                JToken authorityContextToken = sourceCase["authorityContext"];
+                bool hasAuthorityContext = authorityContextToken != null
+                    && authorityContextToken.Type != JTokenType.Null;
+                JObject authorityContext = authorityContextToken as JObject;
+                if (hasAuthorityContext && authorityContext == null)
+                    throw new InvalidOperationException(
+                        "cases[" + i + "].authorityContext must be an object");
+                authorityContext = authorityContext != null
+                    ? (JObject)authorityContext.DeepClone()
+                    : new JObject();
+                if (hasAuthorityContext)
+                    frozenCase["authorityContext"] = authorityContext.DeepClone();
 
                 JObject hashInput = new JObject();
                 hashInput["caseId"] = caseId;
@@ -764,6 +828,8 @@ namespace CF7Launcher.Tasks
                 hashInput["blueFormation"] = caseBlueFormation;
                 hashInput["redFormation"] = caseRedFormation;
                 hashInput["formationSpacing"] = caseFormationSpacing;
+                if (hasAuthorityContext)
+                    hashInput["authorityContext"] = authorityContext.DeepClone();
                 string caseHash = Sha256OfToken(hashInput);
                 frozenCase["caseHash"] = caseHash;
 
@@ -783,7 +849,8 @@ namespace CF7Launcher.Tasks
                     SpawnDistance = caseSpawnDistance,
                     BlueFormation = caseBlueFormation,
                     RedFormation = caseRedFormation,
-                    FormationSpacing = caseFormationSpacing
+                    FormationSpacing = caseFormationSpacing,
+                    AuthorityContext = authorityContext
                 });
             }
 
@@ -831,15 +898,59 @@ namespace CF7Launcher.Tasks
                 if (entry == null)
                     throw new InvalidOperationException(fieldName + "[" + i + "] must be an object");
 
-                string type = entry.Value<string>("type") ?? entry.Value<string>("兵种");
-                if (string.IsNullOrEmpty(type) || !Regex.IsMatch(type, "^兵种[0-9]+$"))
-                    throw new InvalidOperationException(fieldName + "[" + i + "].type must use 兵种N");
-
                 JToken levelToken = entry["level"] ?? entry["等级"];
                 int level = PositiveInt(levelToken, fieldName + "[" + i + "].level", 0);
                 JObject normalizedEntry = new JObject();
-                normalizedEntry["type"] = type;
                 normalizedEntry["level"] = level;
+
+                JToken petIdToken = entry["petId"];
+                string type = entry.Value<string>("type") ?? entry.Value<string>("兵种");
+                if (petIdToken != null && petIdToken.Type != JTokenType.Null)
+                {
+                    if (!string.IsNullOrEmpty(type))
+                        throw new InvalidOperationException(fieldName + "[" + i + "] cannot mix petId with type");
+                    int petId = BoundedInt(petIdToken, fieldName + "[" + i + "].petId", 0, 1000000);
+                    string identifier = RequiredSafeString(
+                        entry,
+                        "identifier",
+                        fieldName + "[" + i + "].identifier",
+                        160);
+                    string rosterType = entry.Value<string>("rosterType") ?? PetDef.DefaultRosterType;
+                    if (!PetCatalogLoader.IsValidRosterType(rosterType))
+                        throw new InvalidOperationException(fieldName + "[" + i + "].rosterType is invalid");
+                    normalizedEntry["petId"] = petId;
+                    normalizedEntry["identifier"] = identifier;
+                    normalizedEntry["rosterType"] = rosterType;
+                    normalizedEntry["strategicPromotions"] = NormalizeStrategicPetPromotions(
+                        entry["strategicPromotions"],
+                        fieldName + "[" + i + "].strategicPromotions");
+                }
+                else
+                {
+                    if (entry["strategicPromotions"] != null
+                        && entry["strategicPromotions"].Type != JTokenType.Null)
+                        throw new InvalidOperationException(
+                            fieldName + "[" + i + "] strategicPromotions requires petId authority");
+                    if (string.IsNullOrEmpty(type) || !Regex.IsMatch(type, "^兵种[0-9]+$"))
+                        throw new InvalidOperationException(fieldName + "[" + i + "].type must use 兵种N");
+                    normalizedEntry["type"] = type;
+                }
+
+                string sourceId = entry.Value<string>("sourceId") ?? entry.Value<string>("unitId");
+                if (!string.IsNullOrEmpty(sourceId))
+                {
+                    if (!SourceIdPattern.IsMatch(sourceId))
+                        throw new InvalidOperationException(fieldName + "[" + i + "].sourceId is invalid");
+                    normalizedEntry["sourceId"] = sourceId;
+                }
+                if (entry["hpPermille"] != null && entry["hpPermille"].Type != JTokenType.Null)
+                {
+                    normalizedEntry["hpPermille"] = BoundedInt(
+                        entry["hpPermille"],
+                        fieldName + "[" + i + "].hpPermille",
+                        1,
+                        1000);
+                }
                 JToken parameters = entry["parameters"] ?? entry["Parameters"] ?? entry["参数"];
                 if (parameters != null && parameters.Type != JTokenType.Null)
                     normalizedEntry["parameters"] = parameters.DeepClone();
@@ -854,13 +965,98 @@ namespace CF7Launcher.Tasks
             foreach (JObject entry in roster)
             {
                 JObject normalized = new JObject();
-                normalized["兵种"] = entry.Value<string>("type");
                 normalized["等级"] = entry.Value<int>("level");
+                if (entry["petId"] != null)
+                {
+                    normalized["petId"] = entry.Value<int>("petId");
+                    normalized["identifier"] = entry.Value<string>("identifier");
+                    normalized["rosterType"] = entry.Value<string>("rosterType");
+                    normalized["strategicPromotions"] = entry["strategicPromotions"].DeepClone();
+                }
+                else
+                {
+                    normalized["兵种"] = entry.Value<string>("type");
+                }
+                if (entry["sourceId"] != null)
+                    normalized["sourceId"] = entry.Value<string>("sourceId");
+                if (entry["hpPermille"] != null)
+                    normalized["hpPermille"] = entry.Value<int>("hpPermille");
                 if (entry["parameters"] != null && entry["parameters"].Type != JTokenType.Null)
                     normalized["Parameters"] = entry["parameters"].DeepClone();
                 result.Add(normalized);
             }
             return result;
+        }
+
+        private static JArray NormalizeUnitResults(JToken token)
+        {
+            JArray input = token as JArray;
+            if (input == null) return new JArray();
+
+            JArray output = new JArray();
+            foreach (JToken item in input)
+            {
+                JObject source = item as JObject;
+                if (source == null) continue;
+                string sourceId = source.Value<string>("sourceId")
+                    ?? source.Value<string>("unitId")
+                    ?? "";
+                if (!SourceIdPattern.IsMatch(sourceId)) continue;
+
+                JObject row = new JObject();
+                row["sourceId"] = sourceId;
+                row["petId"] = BoundedIntOrDefault(source["petId"], 0, 1000000, -1);
+                row["identifier"] = SafeStringOrEmpty(source.Value<string>("identifier"), 160);
+                row["resolvedType"] = SafeStringOrEmpty(source.Value<string>("resolvedType"), 160);
+                row["level"] = BoundedIntOrDefault(source["level"], 1, 1000000, 1);
+                bool strategicPromotionsValid;
+                row["strategicPromotions"] = NormalizeStrategicPetPromotionsOrEmpty(
+                    source["strategicPromotions"],
+                    out strategicPromotionsValid);
+                row["strategicPromotionsValid"] = strategicPromotionsValid;
+                row["startMaxHp"] = NonNegativeNumber(source["startMaxHp"]);
+                row["remainHp"] = NonNegativeNumber(source["remainHp"]);
+                row["hpPermille"] = BoundedIntOrDefault(source["hpPermille"], 0, 1000, 0);
+                row["alive"] = source.Value<bool?>("alive") == true;
+                output.Add(row);
+            }
+            return output;
+        }
+
+        private static JArray NormalizeStrategicPetPromotions(
+            JToken token,
+            string fieldName)
+        {
+            if (token == null || token.Type == JTokenType.Null) return new JArray();
+            JArray input = token as JArray;
+            if (input == null || input.Count > 3)
+                throw new InvalidOperationException(fieldName + " must be an array with at most 3 entries");
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+            JArray output = new JArray();
+            foreach (JToken item in input)
+            {
+                string name = item.Type == JTokenType.String ? item.Value<string>() : null;
+                if (name == null || !AllowedStrategicPetPromotions.Contains(name) || !seen.Add(name))
+                    throw new InvalidOperationException(fieldName + " contains an invalid or duplicate promotion");
+                output.Add(name);
+            }
+            return output;
+        }
+
+        private static JArray NormalizeStrategicPetPromotionsOrEmpty(
+            JToken token,
+            out bool valid)
+        {
+            try
+            {
+                valid = true;
+                return NormalizeStrategicPetPromotions(token, "strategicPromotions");
+            }
+            catch
+            {
+                valid = false;
+                return new JArray();
+            }
         }
 
         private static JObject NormalizeSideSummary(JObject input)
@@ -931,6 +1127,65 @@ namespace CF7Launcher.Tasks
             int value;
             if (!int.TryParse(token.ToString(), out value) || value <= 0)
                 throw new InvalidOperationException(fieldName + " must be a positive integer");
+            return value;
+        }
+
+        private static int BoundedInt(
+            JToken token,
+            string fieldName,
+            int minimum,
+            int maximum)
+        {
+            int value;
+            if (token == null
+                || token.Type == JTokenType.Null
+                || !int.TryParse(token.ToString(), out value)
+                || value < minimum
+                || value > maximum)
+            {
+                throw new InvalidOperationException(fieldName + " must be an integer in ["
+                    + minimum + "," + maximum + "]");
+            }
+            return value;
+        }
+
+        private static int BoundedIntOrDefault(
+            JToken token,
+            int minimum,
+            int maximum,
+            int defaultValue)
+        {
+            int value;
+            if (token == null
+                || token.Type == JTokenType.Null
+                || !int.TryParse(token.ToString(), out value)
+                || value < minimum
+                || value > maximum)
+                return defaultValue;
+            return value;
+        }
+
+        private static string RequiredSafeString(
+            JObject source,
+            string propertyName,
+            string fieldName,
+            int maximumLength)
+        {
+            string value = source.Value<string>(propertyName);
+            value = SafeStringOrEmpty(value, maximumLength);
+            if (value.Length == 0)
+                throw new InvalidOperationException(fieldName + " is required");
+            return value;
+        }
+
+        private static string SafeStringOrEmpty(string value, int maximumLength)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length > maximumLength)
+                return "";
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (char.IsControl(value[i])) return "";
+            }
             return value;
         }
 

@@ -6,7 +6,7 @@
  * 加载完成后调 registerFn() —— 由于各 panel.js 是顶层 IIFE 自注册风格，registerFn 通常空函数即可。
  *
  * 共享依赖：
- *  - minigames/shared/host-bridge.js 被 lockbox / pinalign / gobang / blackmarket 共用，
+ *  - minigames/shared/host-bridge.js 被 lockbox / pinalign / gobang / blackmarket / warlord 共用，
  *    LazyLoader 内置 url 去重，列多次只会真正加载一次。
  *
  * 不在这里管：
@@ -270,6 +270,15 @@
          'modules/minigames/blackmarket/visual/inspection-focus.js',
          'modules/minigames/blackmarket/visual/item-surface.js',
          'modules/minigames/blackmarket/blackmarket-panel.js'],
+        noop);
+
+    // ── warlord（军阀战术演习；确定性 Web 规则候选，不写正式游戏状态）──
+    // classic facade 在 onOpen 内动态导入版本化 ESM runtime；头像继续走正式 resolver，
+    // 不把 Three/vendor 或单位头像复制进 boot 闭包。
+    Panels.registerLazy('warlord',
+        ['modules/minigames/shared/host-bridge.js',
+         'modules/portrait-resolver.js',
+         'modules/minigames/warlord/warlord-panel.js'],
         noop);
 
     // ── intelligence ──

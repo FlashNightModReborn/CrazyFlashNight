@@ -90,6 +90,7 @@
   - 共享结构类：`minigame-*`
   - 共享宿主上报：`minigame_session`
   - 浏览器 harness + Node QA + 静态验证三层回归
+- `warlord` 军阀战术演习已作为 `1024×576` Three ESM 测试 Panel 接入 lazy registry、全锚 Web 布局、Host 生命周期与 exact close；当前 `productionWrites=false`。Phase C 源码候选采用 `Web 冻结 exact 战略请求 → WarlordBattleTask 复验 → 精确关闭并释放 pause → ArenaCalibrationTask/AS2 专用场景 → 绑定 digest 的 receipt → 重开同一战略态并单次应用`。八张卡的 `cardId` 即正式战宠 `petId`，产品身份由 `petId + Identifier` 联合裁决；等级与合法体质升阶前缀投影到隔离宠物属性副本，不读取或写入玩家战宠。`warlord.pet-economy-observation.v1` 只分开记录宠物目录基础价与战旗战略造价，不结算玩家金币/K 点。确定未投递返回 `not_started` 并允许重试；可能已投递的异常进入 `unknown` 并冻结。JS resolver 只留显式 fixture，产品 AS2 不可用时 fail closed。AS2 终态恢复是 Host 内部能力，不加入 AS2/Web 可达的通用 panel allowlist：`WarlordBattleTask` 只能调用 `LauncherCommandRouter.TryOpenWarlordResumePanel`，由后者复验只读权威、digest、session/request、冻结 state/command 和 client context，再经统一 `PanelHost` 打开；`RequestOpenPanel("warlord", ...)` 必须保持 unsupported。首次真实候选旅程已完成 AS2 战斗并取得无错误战果，但旧恢复实现误走通用路由而无法回到战旗，因此 E2E 已重新打开；修复源码门通过，仍待替代候选的人类复验，不得写成业务已验收或已部署。
 - 这条链与 AS2 游戏核心并存，但职责不同：它是运行态 UI 层，不是替代游戏主逻辑的重写
 
 ### E. Native & Build 链

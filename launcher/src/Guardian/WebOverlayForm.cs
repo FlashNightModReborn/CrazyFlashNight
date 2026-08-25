@@ -976,6 +976,7 @@ namespace CF7Launcher.Guardian
         private MapTask _mapTask;
         private StageSelectTask _stageSelectTask;
         private ArenaTask _arenaTask;
+        private WarlordBattleTask _warlordBattleTask;
         private PetTask _petTask;
         private MercTask _mercTask;
         private TaskTask _taskTask;
@@ -3697,6 +3698,55 @@ namespace CF7Launcher.Guardian
             });
         }
 
+        public void SetWarlordBattleTask(WarlordBattleTask task)
+        {
+            _warlordBattleTask = task;
+            if (task == null) return;
+            task.SetInvoker(delegate(Action action)
+            {
+                try
+                {
+                    if (action == null)
+                    {
+                        LogManager.Log(
+                            "event=warlord_resume_dispatch_failed reason=missing_action");
+                        return;
+                    }
+                    if (this.IsDisposed || this.Disposing)
+                    {
+                        LogManager.Log(
+                            "event=warlord_resume_dispatch_failed reason=form_disposed");
+                        return;
+                    }
+                    if (!this.IsHandleCreated)
+                    {
+                        LogManager.Log(
+                            "event=warlord_resume_dispatch_failed reason=handle_unavailable");
+                        return;
+                    }
+                    if (this.InvokeRequired) this.BeginInvoke(action);
+                    else action();
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "event=warlord_resume_dispatch_failed reason=ui_invoke exception="
+                        + ex.GetType().Name);
+                }
+            });
+            task.SetResumeOpenHandler(delegate(JObject initData)
+            {
+                LauncherCommandRouter router = _commandRouter;
+                if (router == null)
+                {
+                    LogManager.Log(
+                        "event=warlord_resume_open_rejected reason=router_unavailable");
+                    return;
+                }
+                router.TryOpenWarlordResumePanel(initData);
+            });
+        }
+
         public void SetPetTask(PetTask task)
         {
             _petTask = task;
@@ -4533,6 +4583,133 @@ namespace CF7Launcher.Guardian
                     "[" + logScope + "] exact Host close was not queued");
         }
 
+        private void TryHandleWarlordPanelClose(JObject parsed)
+        {
+            string activeName = _panelHost != null
+                ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId : null;
+            if (_panelHost == null
+                || !IsValidExactPanelCloseEnvelope(
+                    parsed, "warlord", activeName, activeInstance))
+            {
+                LogManager.Log(
+                    "[Warlord] rejected stale/malformed exact close envelope");
+                return;
+            }
+            bool closeQueued = _panelHost.TryClosePanelExact(
+                "warlord", activeInstance, false,
+                delegate(bool closed)
+                {
+                    if (!closed)
+                    {
+                        LogManager.Log(
+                            "[Warlord] stale exact close ignored after replacement");
+                        return;
+                    }
+                    bool returnBase = _warlordBattleTask != null
+                        && _warlordBattleTask.ConsumeReturnBaseOnFinalClose();
+                    CommitAcceptedPanelCloseEffects(
+                        "warlord", returnBase, false);
+                });
+            if (!closeQueued)
+                LogManager.Log(
+                    "[Warlord] exact Host close was not queued");
+        }
+
+        private void HandleWarlordBattleStart(JObject parsed)
+        {
+            string activeName = _panelHost != null
+                ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId : null;
+            if (_panelHost == null || activeName != "warlord"
+                || string.IsNullOrEmpty(activeInstance)
+                || !string.Equals(
+                    parsed.Value<string>("panelInstanceId"),
+                    activeInstance,
+                    StringComparison.Ordinal))
+            {
+                RespondPanelDomainError(parsed, "panel_instance_expired");
+                return;
+            }
+            if (_warlordBattleTask == null)
+            {
+                RespondPanelDomainError(parsed, "warlord_as2_unavailable");
+                return;
+            }
+
+            WarlordBattleTask.PreparedBattle prepared;
+            JObject response = _warlordBattleTask.Prepare(
+                parsed,
+                activeInstance,
+                out prepared);
+            PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
+            if (response.Value<bool?>("success") != true || prepared == null) return;
+
+            bool closeQueued = _panelHost.TryClosePanelExact(
+                "warlord",
+                activeInstance,
+                false,
+                delegate(bool closed)
+                {
+                    if (!closed)
+                    {
+                        if (_warlordBattleTask.CancelPrepared(
+                            prepared, "exact_visual_close_superseded"))
+                        {
+                            PostToWeb(new JObject
+                            {
+                                ["success"] = false,
+                                ["ok"] = false,
+                                ["type"] = "panel_resp",
+                                ["panel"] = "warlord",
+                                ["cmd"] = "battle_start",
+                                ["callId"] = prepared.WebCallId,
+                                ["error"] = "exact_visual_close_superseded",
+                                ["message"] = "军阀演习实例已被替换；真实战斗未启动。"
+                            }.ToString(Newtonsoft.Json.Formatting.None));
+                        }
+                        return;
+                    }
+
+                    bool pauseReleased = TryReleaseGenericWebPanelPause();
+                    CommitAcceptedPanelCloseEffects(
+                        "warlord",
+                        false,
+                        true);
+                    if (!pauseReleased)
+                    {
+                        _warlordBattleTask.CancelAndResume(
+                            prepared,
+                            "pause_release_failed",
+                            "Host 无法释放 Web 面板暂停租约；真实战斗未启动。");
+                        return;
+                    }
+                    _warlordBattleTask.StartPrepared(prepared);
+                });
+            if (!closeQueued)
+            {
+                if (_warlordBattleTask.CancelPrepared(
+                    prepared, "exact_visual_close_not_queued"))
+                {
+                    PostToWeb(new JObject
+                    {
+                        ["success"] = false,
+                        ["ok"] = false,
+                        ["type"] = "panel_resp",
+                        ["panel"] = "warlord",
+                        ["cmd"] = "battle_start",
+                        ["callId"] = prepared.WebCallId,
+                        ["error"] = "exact_visual_close_not_queued",
+                        ["message"] = "Host 无法关闭当前军阀演习实例；真实战斗未启动。"
+                    }.ToString(Newtonsoft.Json.Formatting.None));
+                }
+                LogManager.Log(
+                    "[Warlord] AS2 handoff exact close was not queued");
+            }
+        }
+
         private void HandlePanelMessage(string json)
         {
             JObject parsed;
@@ -5007,6 +5184,11 @@ namespace CF7Launcher.Guardian
                         {
                             TryHandleExactPanelClose(
                                 parsed, "blackmarket", "BlackMarket");
+                            return;
+                        }
+                        if (panel == "warlord")
+                        {
+                            TryHandleWarlordPanelClose(parsed);
                             return;
                         }
                         if (panel == "team")
@@ -5884,6 +6066,19 @@ namespace CF7Launcher.Guardian
                         }
                     }
                     break;
+                case "battle_start":
+                    if (string.Equals(
+                        parsed.Value<string>("panel"),
+                        "warlord",
+                        StringComparison.Ordinal))
+                    {
+                        HandleWarlordBattleStart(parsed);
+                    }
+                    else
+                    {
+                        RespondPanelDomainError(parsed, "unsupported_panel");
+                    }
+                    break;
                 case "gomoku_eval":
                     LogManager.Log("[Panel] Routing cmd=gomoku_eval to GomokuTask, _gomokuTask=" + (_gomokuTask != null ? "ok" : "NULL"));
                     HandleGobangEvalRequest(parsed);
@@ -5904,6 +6099,11 @@ namespace CF7Launcher.Guardian
                         else if (string.Equals(game, "blackmarket", StringComparison.OrdinalIgnoreCase))
                         {
                             LogManager.Log("[BlackMarket] minigame_session payload=redacted");
+                            break;
+                        }
+                        else if (string.Equals(game, "warlord", StringComparison.OrdinalIgnoreCase))
+                        {
+                            LogManager.Log("[Warlord] minigame_session payload=redacted");
                             break;
                         }
                         else if (string.Equals(game, "pinalign", StringComparison.OrdinalIgnoreCase)) prefix = "PinAlign";

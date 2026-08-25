@@ -1969,6 +1969,9 @@ class Program
         ArenaTask arenaTask = new ArenaTask(socketServer, projectRoot);
         ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
+        WarlordBattleTask warlordBattleTask = new WarlordBattleTask(
+            arenaCalibrationTask,
+            projectRoot);
         agentControlTask = new AgentControlTask(
             delegate { return socketServer.HasClient; },
             delegate
@@ -2103,6 +2106,7 @@ class Program
         webOverlay.SetMapTask(mapTask);
         webOverlay.SetStageSelectTask(stageSelectTask);
         webOverlay.SetArenaTask(arenaTask);
+        webOverlay.SetWarlordBattleTask(warlordBattleTask);
         webOverlay.SetPetTask(petTask);
         webOverlay.SetMercTask(mercTask);
         webOverlay.SetTaskTask(taskTask);
