@@ -55,7 +55,7 @@
     <TimePools>
         <TimePool>
             <Id>find_keyboard</Id>
-            <DurationSeconds>600</DurationSeconds>
+            <DurationSeconds>80</DurationSeconds>
             <DisplayName>找到键盘</DisplayName>
             <TimeoutResult>FailStage</TimeoutResult>
         </TimePool>

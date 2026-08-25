@@ -57,7 +57,16 @@
             <QuantityMax>1</QuantityMax>
         </Reward>
     </Rewards>
+    <TimePools>
+        <TimePool>
+            <Id>find_soldiers</Id>
+            <DurationSeconds>150</DurationSeconds>
+            <DisplayName>找到A兵团士兵</DisplayName>
+            <TimeoutResult>FailStage</TimeoutResult>
+        </TimePool>
+    </TimePools>
     <SubStage id="0">
+        <TimePoolRef>find_soldiers</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/gk10_1_BG.swf</Background>
             <PlayerX>84</PlayerX>
@@ -155,6 +164,7 @@
         </Wave>
     </SubStage>
     <SubStage id="1">
+        <TimePoolRef>find_soldiers</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/gk10_2_BG.swf</Background>
             <PlayerX>84</PlayerX>
@@ -217,6 +227,7 @@
         </Wave>
     </SubStage>
     <SubStage id="2">
+        <TimePoolRef>find_soldiers</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/gk10_3_BG.swf</Background>
             <PlayerX>90</PlayerX>
