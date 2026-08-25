@@ -2,7 +2,16 @@
 <GameStage>
     <Rewards>
     </Rewards>
+    <TimePools>
+        <TimePool>
+            <Id>nuclear_escape</Id>
+            <DurationSeconds>600</DurationSeconds>
+            <DisplayName>撤离核电站</DisplayName>
+            <TimeoutResult>FailStage</TimeoutResult>
+        </TimePool>
+    </TimePools>
     <SubStage id="0">
+        <TimePoolRef>nuclear_escape</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/核电站通路1.swf</Background>
         </BasicInformation>
@@ -15,6 +24,7 @@
         </Wave>
     </SubStage>
     <SubStage id="1">
+        <TimePoolRef>nuclear_escape</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/核电站通路2.swf</Background>
         </BasicInformation>
@@ -27,6 +37,7 @@
         </Wave>
     </SubStage>
     <SubStage id="2">
+        <TimePoolRef>nuclear_escape</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/核电站通路3.swf</Background>
         </BasicInformation>
@@ -49,6 +60,7 @@
         </Wave>
     </SubStage>
     <SubStage id="3">
+        <TimePoolRef>nuclear_escape</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/核电站反应室冷却池.swf</Background>
         </BasicInformation>

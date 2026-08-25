@@ -179,6 +179,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
         _root.帧计时器.unitUpdateWheel.tick(); // 单位的 update 事件发布后于调度器执行
         SceneManager.instance.update(); // 场景管理器 update 函数
         WaveSpawner.instance.tick(); // 暂时把刷怪挂在这边
+        StageManager.instance.tick(); // 波次结算后推进跨子图计时池，同帧通关优先
         // _root.服务器.发布服务器消息("frameUpdate")
         // _root.服务器.发布服务器消息(_root.场景进入位置名)
         // Mover.getWalkableDirections(TargetCacheManager.findHero());

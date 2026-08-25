@@ -52,7 +52,16 @@
             <QuantityMax>1</QuantityMax>
         </Reward>
     </Rewards>
+    <TimePools>
+        <TimePool>
+            <Id>find_keyboard</Id>
+            <DurationSeconds>600</DurationSeconds>
+            <DisplayName>找到键盘</DisplayName>
+            <TimeoutResult>FailStage</TimeoutResult>
+        </TimePool>
+    </TimePools>
     <SubStage id="0">
+        <TimePoolRef>find_keyboard</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/gk19_1_BG.swf</Background>
             <PlayerX>200</PlayerX>
@@ -137,6 +146,7 @@
         </Wave>
     </SubStage>
     <SubStage id="1">
+        <TimePoolRef>find_keyboard</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/gk19_2_BG.swf</Background>
             <PlayerX>193</PlayerX>

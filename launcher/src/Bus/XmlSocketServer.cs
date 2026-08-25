@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -16,6 +18,7 @@ namespace CF7Launcher.Bus
     /// 消息分发采用双通道：
     ///   1. 快车道（前缀协议）：首字节 'F' → FrameTask.HandleRaw（每帧，绕过 JSON 解析）
     ///                         首字节 'R' → FrameTask.HandleReset（场景切换）
+    ///                         首字节 'T' → GameStage 计时池 HUD 投影
     ///   2. 通用路由（JSON）：其余消息 → MessageRouter.ProcessMessage（JObject.Parse）
     ///
     /// 快车道在 HandleMessage 最前端判断，零 GC 分配，不经过 MessageRouter。
@@ -41,6 +44,8 @@ namespace CF7Launcher.Bus
         // 快车道处理器（由 Program.cs 在构造后注入）
         private CF7Launcher.Tasks.FrameTask _frameTask;
         private CF7Launcher.Guardian.INotchSink _notchOverlay;
+        private readonly HashSet<string> _stageTimerStatusIds =
+            new HashSet<string>(StringComparer.Ordinal);
         private Action<string> _uiDataHandler; // U 前缀：UI 数据透传
 
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换。
@@ -91,6 +96,7 @@ namespace CF7Launcher.Bus
             _peerAuthority = peerAuthority
                 ?? throw new ArgumentNullException(
                     nameof(peerAuthority));
+            OnClientDisconnected += ClearStageTimerStatusItems;
         }
 
         public int CurrentGeneration { get { return _generation; } }
@@ -131,6 +137,7 @@ namespace CF7Launcher.Bus
 
         public void SetNotchHandler(CF7Launcher.Guardian.INotchSink notch)
         {
+            ClearStageTimerStatusItems();
             _notchOverlay = notch;
         }
 
@@ -659,6 +666,14 @@ namespace CF7Launcher.Bus
                     return;
                 }
 
+                if (prefix == 'T')
+                {
+                    PerfTrace.Counter("socket.fastlane.T");
+                    if (!HandleStageTimerFastLane(message))
+                        PerfTrace.Counter("socket.fastlane.T_rejected");
+                    return;
+                }
+
                 if (prefix == 'U')
                 {
                     PerfTrace.Counter("socket.fastlane.U");
@@ -716,6 +731,98 @@ namespace CF7Launcher.Bus
 
             if (response != null)
                 TrySendIfGen(response + "\0", respGen);
+        }
+
+        /// <summary>
+        /// GameStage 计时池快车道。AS2 是倒计时和失败裁决的唯一权威，Host 只投影：
+        /// T+|id|remainingSeconds|displayName、T-|id、T!。
+        /// </summary>
+        internal bool HandleStageTimerFastLane(string message)
+        {
+            if (message == "T!")
+            {
+                ClearStageTimerStatusItems();
+                return true;
+            }
+
+            if (message == null || message.Length < 4 || message[0] != 'T')
+                return false;
+
+            if (message.StartsWith("T-|", StringComparison.Ordinal))
+            {
+                string id = message.Substring(3);
+                if (!IsValidStageTimerId(id)) return false;
+                string statusId = "stage_timer:" + id;
+                _stageTimerStatusIds.Remove(statusId);
+                if (_notchOverlay != null)
+                    _notchOverlay.ClearStatusItem(statusId);
+                return true;
+            }
+
+            if (!message.StartsWith("T+|", StringComparison.Ordinal)) return false;
+            string[] parts = message.Split('|');
+            if (parts.Length != 4 || parts[0] != "T+") return false;
+
+            string poolId = parts[1];
+            int remainingSeconds;
+            if (!IsValidStageTimerId(poolId)
+                || !int.TryParse(parts[2], NumberStyles.None,
+                    CultureInfo.InvariantCulture, out remainingSeconds)
+                || parts[2] != remainingSeconds.ToString(CultureInfo.InvariantCulture)
+                || remainingSeconds < 0 || remainingSeconds > 3600
+                || !IsValidStageTimerLabel(parts[3])) return false;
+
+            string timerStatusId = "stage_timer:" + poolId;
+            _stageTimerStatusIds.Add(timerStatusId);
+            if (_notchOverlay != null)
+            {
+                int minutes = remainingSeconds / 60;
+                int seconds = remainingSeconds % 60;
+                string text = "⏱ " + parts[3] + " · 剩余 "
+                    + minutes.ToString("00", CultureInfo.InvariantCulture) + ":"
+                    + seconds.ToString("00", CultureInfo.InvariantCulture);
+                System.Drawing.Color accent = remainingSeconds <= 10
+                    ? System.Drawing.Color.FromArgb(255, 96, 96)
+                    : remainingSeconds <= 60
+                        ? System.Drawing.Color.FromArgb(255, 200, 80)
+                        : System.Drawing.Color.FromArgb(100, 200, 255);
+                _notchOverlay.SetStatusItem(timerStatusId, text, "", accent);
+            }
+            return true;
+        }
+
+        private void ClearStageTimerStatusItems()
+        {
+            if (_notchOverlay != null)
+            {
+                foreach (string statusId in _stageTimerStatusIds)
+                    _notchOverlay.ClearStatusItem(statusId);
+            }
+            _stageTimerStatusIds.Clear();
+        }
+
+        private static bool IsValidStageTimerId(string value)
+        {
+            if (String.IsNullOrEmpty(value) || value.Length > 32
+                || value[0] < 'a' || value[0] > 'z') return false;
+            for (int i = 1; i < value.Length; i++)
+            {
+                char c = value[i];
+                if ((c < 'a' || c > 'z') && (c < '0' || c > '9')
+                    && c != '_' && c != '-') return false;
+            }
+            return true;
+        }
+
+        private static bool IsValidStageTimerLabel(string value)
+        {
+            if (String.IsNullOrEmpty(value) || value.Length > 32
+                || value[0] < 33 || value[value.Length - 1] < 33) return false;
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (value[i] < 32 || value[i] == '|') return false;
+            }
+            return true;
         }
 
         private void LogFrameUiSample(string uiState)

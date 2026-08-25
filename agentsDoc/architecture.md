@@ -111,6 +111,7 @@
 ### Flash ↔ Launcher
 
 - 主通道：XMLSocket（快车道前缀 + JSON 路由）。standard normal 在 accepted loopback tuple 上解析 owner，并只接受 GameLaunchFlow 当前 exact Flash PID/start-time/path；校验先于旧连接替换、generation/ready 与 dispatch。显式 legacy/`--bus-only` 才使用 loopback compatibility authority。
+- GameStage 计时池沿独立 `T` 快车道投影：`T+|id|remainingSeconds|displayName` 更新 keyed NativeHud 状态、`T-|id` 清单条、`T!` 清全部，断连也清理。AS2 `StageTimePoolController` 独占倒计时与失败裁决，Host 严格校验 wire 后只展示，且不复用 `W/wave_timer`。
 - 辅助通道：HTTP。standard normal 只保留 Flash 窄 probe/log/crossdomain，privileged legacy 路由为 `DenyAll`；只有显式 `--legacy-http-automation` / `--bus-only` 签发进程生命周期 credential，同时不创建 Agent Runtime/rendezvous/Wings。
 - 注册中心：`launcher/src/Bus/TaskRegistry.cs`
 - loot feed（左下玩家物资双向流动/击杀播报）：AS2 领域服务在真实资产与领域状态提交后，将 gain/loss 写入 `PlayerAssetTransaction` detached receipt；独立 UI/关卡/素材 XFL 没有稳定类路径，只允许调用 asLoader 注入的六个 `_root` 玩家物资门面，不直接链接 `PlayerAssetTransaction/ItemUtil`。根时间轴只做 authority item key → tier/display/icon 投影，经 `{"task":"loot","payload":{v:1,direction,kind,itemKey,name,count,source,operationId,...}}` fire-and-forget 到严格 `LootFeedTask` → NativeHud `LootFeedWidget`。事务基座不是 mutation engine：预检、写入、dirty、领域回滚仍归各服务，消费者异常不得反向回滚资产；位置移动、经验/SP 与状态池明确不算所有权变化。完整边界、source 与渠道矩阵见[玩家物资事务与双向播报 ADR](../docs/玩家物资事务与双向播报-ADR-2026-08-22.md)。地图战利品箱 `loot_response` 仍是另一域；native 单渲染端，无 Web fallback。击杀继续由 `enemyKilled`/killStats 同链经旧 façade 发 neutral legacy event，`eliteLevel` 仍只承载 `UnitUtil.getEliteLevel` 的 `0/1/2`。

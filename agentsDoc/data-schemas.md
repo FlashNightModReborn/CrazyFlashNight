@@ -86,6 +86,34 @@ data/arena/arena_factions.json → 势力 benchLevel/scale/enabled/units 手作�
 data/arena/meta_teams.json    → 从 data/stages/** 派生的 roster/merc 生成物
 ```
 
+### GameStage 跨 SubStage 计时池
+
+`data/stages/**/*.xml` 可在一个 `GameStage` 内声明会话级 `TimePools`，并由任意 `SubStage` 直接引用零到多个池。未声明 `TimePools` 的旧关卡保持原行为；计时状态不写存档或 `tasks_to_do`，离开、失败、完成、重开或返回基地时清空。
+
+```xml
+<GameStage>
+    <TimePools>
+        <TimePool>
+            <Id>route_a</Id>
+            <DurationSeconds>600</DurationSeconds>
+            <DisplayName>章节 A</DisplayName>
+            <TimeoutResult>FailStage</TimeoutResult>
+        </TimePool>
+    </TimePools>
+    <SubStage id="0">
+        <TimePoolRef>route_a</TimePoolRef>
+        <!-- 其余关卡数据 -->
+    </SubStage>
+</GameStage>
+```
+
+- `Id` 必须匹配 `[a-z][a-z0-9_-]{0,31}`；每个 `GameStage` 最多 16 个池，每个 `SubStage` 最多同时引用 4 个池，定义必须至少被引用一次，引用必须已定义且同图不得重复。
+- `DurationSeconds` 是 `1..3600` 的整数；`DisplayName` 为 1..32 字符，禁止首尾空白、控制符和 `|`；v1 的 `TimeoutResult` 只允许 `FailStage`。计时域禁止 `CaseSwitch`，避免运行时条件投影造成池身份漂移。
+- 相邻或不相邻子图引用同一池都会延续剩余时间；未引用的中间图暂停该池。一个子图引用 A+B 时两池独立扣时、独立展示，任一到期即按 `FailStage` 裁决。
+- 只在有效战斗帧按 30 FPS 扣时；暂停、对话和转场不计入。同帧先执行 `WaveSpawner.tick()`，已完成关卡时通关优先于到期。
+- AS2 `StageTimePoolController` 是时间与失败裁决权威；Launcher 的 `T` 快车道只显示 keyed HUD。静态门为 `powershell -File tools/validate-stage-time-pools.ps1`，行为门为 `powershell -File scripts/run-stage-time-pool-tests.ps1`。
+- 首批配置：`残垣断壁`前两图共享 600 秒、遇到键盘后停止；`核电站`四图共享 600 秒；`挑战战斗天才`单图 300 秒。
+
 ### 关卡敌人屏外尸体保留参数
 
 `data/stages/**/*.xml` 的 `SubStage/Wave/SubWave/EnemyGroup/Enemy/Parameters` 支持实例级参数 `保留屏外尸体:true`。该参数由 `ObjectUtil.cloneParameters()` 解析为严格布尔值，并随当前敌人实例的初始化对象传入；不要在 `DeathEffectRenderer` 中硬编码兵种 ID、名称或素材名。

@@ -101,7 +101,7 @@ bootstrap preflight
 | 通道 | 用途 | 约束 |
 |---|---|---|
 | WebView2 message | Bootstrap、Overlay、Panel 控制与展示 | Host 校验命令和 payload；Web 不拥有业务写权限 |
-| XMLSocket | Flash ↔ Host 任务消息 | 连接、握手和业务回包分别判定，裸 socket 不能代签 Flash 建连 |
+| XMLSocket | Flash ↔ Host 任务消息 | 连接、握手和业务回包分别判定，裸 socket 不能代签 Flash 建连；GameStage `T+|id|seconds|label` / `T-|id` / `T!` 仅投影 keyed 计时 HUD，AS2 独占倒计时和失败裁决，断连清理 |
 | HTTP | 兼容查询、资源与受限控制面 | legacy automation 不是 Agent Runtime 的信任边界 |
 | V8 | 本地脚本总线和计算模块 | 模块源与加载闭包必须可复验 |
 | named pipe / MCP | CF7 Agent Runtime | 观察 grant 与 write lease 分离，绑定 peer/session/frame/generation |

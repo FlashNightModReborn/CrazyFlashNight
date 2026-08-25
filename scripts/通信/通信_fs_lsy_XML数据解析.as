@@ -119,7 +119,16 @@ _root.载入关卡数据 = function(stageType, url, onLoaded, onLoadError){
 
 		if(stageType == "无限过图"){
 			// _root.rogue敌人集合表 = _root.解析rogue敌人集合(data.Unions);
-			org.flashNight.arki.scene.StageManager.instance.initialize(data.SubStage);
+			var stageManager:org.flashNight.arki.scene.StageManager =
+				org.flashNight.arki.scene.StageManager.instance;
+			var timePoolData = data.TimePools == null
+				? null : data.TimePools.TimePool;
+			if (!stageManager.initialize(data.SubStage, timePoolData)) {
+				_root.发布调试消息("invalid stage time pools: "
+					+ stageManager.getTimePoolValidationError());
+				if (typeof onLoadError == "function") onLoadError();
+				return;
+			}
 		}
 		if (typeof onLoaded == "function") onLoaded(data);
 	}, function():Void {

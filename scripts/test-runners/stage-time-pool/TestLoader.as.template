@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId stage-time-pool Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.StageTimePoolControllerTest.runAllTests();
+trace("FocusedTestRunId stage-time-pool Complete: __FOCUSED_RUN_ID__");

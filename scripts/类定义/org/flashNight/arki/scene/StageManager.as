@@ -17,6 +17,7 @@ class org.flashNight.arki.scene.StageManager {
     private var sceneManager:SceneManager; // SceneManager单例
     public var spawner:WaveSpawner; // 当前使用的刷怪器单例引用
     private var stageEventHandler:StageEventHandler; // StageEventHandler单例
+    private var timePoolController:StageTimePoolController; // GameStage 会话级跨图计时池
 
     public var gameworld:MovieClip; // 当前gameworld
     public var environment;
@@ -46,7 +47,11 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     
-    public function initialize(data):Void{
+    public function initialize(data, timePoolData):Boolean{
+        if (timePoolController != null) {
+            timePoolController.clear();
+            flushTimePoolUi();
+        }
         sceneManager = SceneManager.instance;
         spawner = WaveSpawner.instance;
         stageEventHandler = StageEventHandler.instance;
@@ -56,10 +61,25 @@ class org.flashNight.arki.scene.StageManager {
         for(var i = 0; i < data.length; i++){
             stageInfoList[i] = new StageInfo(data[i]);
         }
+
+        var refsByStage:Array = new Array(stageInfoList.length);
+        for (var j:Number = 0; j < stageInfoList.length; j++) {
+            refsByStage[j] = stageInfoList[j].timePoolRefs;
+        }
+        timePoolController = new StageTimePoolController();
+        if (!timePoolController.initialize(timePoolData, refsByStage)) {
+            trace("[StageTimePool] invalid config: "
+                + timePoolController.getValidationError());
+            stageInfoList = null;
+            currentStage = -1;
+            isActive = false;
+            return false;
+        }
         currentStage = -1;
         isActive = true;
         isFinished = false;
         isFailed = false;
+        return true;
     }
     
     public function initStage():Void{
@@ -236,6 +256,9 @@ class org.flashNight.arki.scene.StageManager {
             initCalibrationHostStage(basicInfo);
             return;
         }
+
+        timePoolController.enterStage(currentStage);
+        flushTimePoolUi();
         
 
         // 加载进图动画
@@ -294,9 +317,28 @@ class org.flashNight.arki.scene.StageManager {
         if(currentStageInfo.waveInfo != null) spawner.init(currentStageInfo);
     }
 
+    /** 每帧在 WaveSpawner.tick() 之后调用，使同帧通关优先于超时。 */
+    public function tick():Void {
+        if (!isActive || isCleared || isFinished || isFailed
+                || gameworld == null || timePoolController == null
+                || _root.暂停 === true) {
+            return;
+        }
+
+        var expiredPoolId:String = timePoolController.tick(true);
+        flushTimePoolUi();
+        if (expiredPoolId != null && !isCleared && !isFinished && !isFailed) {
+            trace("[StageTimePool] expired: " + expiredPoolId);
+            failStage();
+        }
+    }
+
     public function clearStage():Void{
         if(isFinished || isFailed) return;
         isCleared = true;
+
+        timePoolController.leaveStage();
+        flushTimePoolUi();
 
         gameworld.关卡结束 = true;
         // 快车道隐藏刘海计时器
@@ -323,6 +365,8 @@ class org.flashNight.arki.scene.StageManager {
     public function finishStage():Void{
         if(isFinished || isFailed) return;
         isFinished = true;
+        timePoolController.clear();
+        flushTimePoolUi();
         _root.关卡结束();
         //设置返回地图帧值
         if(currentStageInfo.basicInfo.EndFrame) _root.关卡地图帧值 = currentStageInfo.basicInfo.EndFrame;
@@ -331,6 +375,9 @@ class org.flashNight.arki.scene.StageManager {
     public function failStage():Void{
         if(isFinished || isFailed) return;
         isFailed = true;
+
+        timePoolController.clear();
+        flushTimePoolUi();
 
         gameworld.允许通行 = false;
         gameworld.关卡结束 = false;
@@ -356,6 +403,10 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function closeStage():Void{
+        if (timePoolController != null) {
+            timePoolController.leaveStage();
+            flushTimePoolUi();
+        }
         gameworld = null;
         environment = null;
         currentStageInfo = null;
@@ -367,10 +418,39 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function clear():Void{
+        if (timePoolController != null) {
+            timePoolController.clear();
+            flushTimePoolUi();
+        }
         _root.当前为战斗地图 = false;
         isActive = false;
         stageInfoList = null;
         currentStage = -1;
+    }
+
+    public function getTimePoolValidationError():String {
+        return timePoolController == null
+            ? "计时池控制器未初始化" : timePoolController.getValidationError();
+    }
+
+    private function flushTimePoolUi():Void {
+        if (timePoolController == null) return;
+        var commands:Array = timePoolController.drainUiCommands();
+        if (commands.length == 0) return;
+
+        var sm:Object = _root.server;
+        if (sm == null || sm.isSocketConnected !== true) return;
+        for (var i:Number = 0; i < commands.length; i++) {
+            var command:Object = commands[i];
+            if (command.type == "set") {
+                sm.sendSocketMessage("T+|" + command.id + "|"
+                    + command.remainingSeconds + "|" + command.label);
+            } else if (command.type == "clear") {
+                sm.sendSocketMessage("T-|" + command.id);
+            } else if (command.type == "clearAll") {
+                sm.sendSocketMessage("T!");
+            }
+        }
     }
 
     /**

@@ -15,6 +15,7 @@ class org.flashNight.arki.scene.StageInfo {
     public var waveInfo:Array; // 波次信息
     public var eventInfo:Array; // 关卡事件
     public var triggerInfo:Array // 压力板信息
+    public var timePoolRefs:Array; // 当前子图引用的 GameStage 计时池
 
     // ————————————————————————
     // 构造函数
@@ -27,6 +28,7 @@ class org.flashNight.arki.scene.StageInfo {
         waveInfo = parseWaveInfo(data);
         eventInfo = parseEventInfo(data);
         triggerInfo = parseTriggerInfo(data);
+        timePoolRefs = parseTimePoolRefs(data);
     }
 
     public static function parseBasicInfo(data):Object{
@@ -40,6 +42,15 @@ class org.flashNight.arki.scene.StageInfo {
     public static function parseInstanceInfo(data):Array{
 		if(data.Instances == null) return null;
         return ObjectUtil.toArray(data.Instances.Instance);
+    }
+
+    public static function parseTimePoolRefs(data):Array{
+        var refs:Array = ObjectUtil.toArray(data.TimePoolRef);
+        var result:Array = new Array(refs.length);
+        for (var i:Number = 0; i < refs.length; i++) {
+            result[i] = String(refs[i]);
+        }
+        return result;
     }
 
     public static function parseSpawnPointInfo(data):Array{

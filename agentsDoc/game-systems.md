@@ -117,6 +117,8 @@
 ## 12. 关卡系统
 - **帧脚本**：`scripts/逻辑/关卡系统/`
 - **数据**：`data/stages/`
+- **跨图限时**：`StageManager` 持有单次 `GameStage` 会话的 `StageTimePoolController`；`SubStage/TimePoolRef` 可表达连续、A-B-A 续算和 A+B 重叠池。`WaveSpawner.tick()` 后才推进有效帧，保证同帧通关优先；暂停、对话、转场与未引用子图不扣时，结束/失败/退出/重开清空且不持久化。
+- **展示边界**：AS2 独占剩余帧和 `FailStage` 裁决；Launcher XMLSocket `T+|id|seconds|label` / `T-|id` / `T!` 仅向 keyed NativeHud 状态行投影，不能复用按波次重置的 `WaveInformation.Duration`、Buff `TimeLimitComponent` 或 `W/wave_timer`。
 - **碰撞层权威与重绘**：`SceneCollisionManager` 持有边界之外的 polygon 追加快照与 MC 矩形；`ObstacleRenderer` 在普通障碍初绘成功后把同一 MC / 矩形直接登记进该权威集合（AVM1 不保证 `for..in gameworld` 枚举时间轴子实例），`redraw()` 在 `clearAll()` 后只回放全部追加来源与存活登记 MC，不得因任一 MC 卸载丢失普通障碍。`SceneManager.removeGameWorld()` 必须先通过 loot authority barrier；成功后才停帧更新，再在 dispatcher/gameworld 存活时 `dispose()` 精确旧层和 MC/矩形强引用，最后才销毁 dispatcher 与 gameworld；本轮静态门 **35/35**，2026-07-25 最终 helper/marker 代码冻结后的 fresh CS6 回归为 **21/21、4/4 cases、0 failed、Compiler Errors 0/0、32K retry=0**；专项门见 [testing-guide.md](testing-guide.md) §2。
 - **关卡事件音效**：`StageEvent` 消费 XML 解析后已归一化的 `Sound[]`，只逐项播放有效非空音效名；不得再保留永远不可达的字符串分支。本轮静态回归 **11/11**。
 
