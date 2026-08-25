@@ -253,6 +253,7 @@ PlayerInfo B0 的 historical v1 与 F2/r2 source freeze/tag/request、双 builde
 
 本列车还暴露过两类 portability/tooling debt。其一，历史隐藏 PowerShell worker 未显式初始化 UTF-8，中文 bundle path 被错误代码页解码并对同一 request fail-closed；显式 UTF-8 wrapper 才成功，不能据此宣称所有未来 worker 已天然跨代码页可移植。其二，四个生成物曾只有 `text=auto`，在 `core.autocrlf=true` 的 clean clone 中可物化 CRLF 并让 raw-byte `--check` 误报 stale。
 2026-08-23 修复已为四文件声明 `text eol=lf`，并把真实 CRLF、Git-clean、batch/single/index OID 等价性纳入 `tools/test-runtime-build-v2.ps1`；fresh checkout 为 LF、raw/index/batch OID 相同，156 项 runtime-build 回归通过。该字节已进入本次 immutable request 与双构建/promotion，不再是 source-ahead；UTF-8 worker portability 仍是独立债务。
+2026-08-25 限时关卡 v1 preflight 又暴露材料与 ShopPortraits sidecar 的两个 raw-byte 输入仍是 `text=auto`；该 v1 在 36/38 policy 后停止且未触发云构建或 promotion。现已把 `EquipmentTuningService.as`、`bake-dialogue-portraits.py` 与缺失的 ShopPortraits receipt 固定为 LF，并将完整材料/ShopPortraits raw-byte 集合纳入 versioned EOL 回归（181/181）；正式列车必须改用新的 immutable tag/request。
 
 Arena meta-team 传递派生问题同样只属于 historical PlayerInfo v1 F 当时的邻接债务：该冻结点的 `tools/derive-arena-meta-teams.js --check` 尚未比较 tracked 字节，也未进入 release prepare，因此旧 F 的双 builder/`-VerifyOnly` 从未代证该 Web 链新鲜。后续 P5 实现 commit `970a85dfdba` 已让 `--check` 精确比较 `meta_teams.json` 与 `arena-meta-rosters.js`、把 meta-team/faction generator 纳入 prepare，并将相关真源、脚本与输出纳入 runtime policy；当前 `derive-arena-meta-teams.js --check`、`derive-arena-factions.js --check` 与 `derive-arena-custom-presets.js --check` 均通过。旧约 5.8 MiB 漂移仍是 v1 F 的历史审计输入，不是当前未修复状态，也不覆盖其后 P4/P5 列车各自的 release/E2E 边界。
 

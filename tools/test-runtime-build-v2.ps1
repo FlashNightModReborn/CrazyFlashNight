@@ -140,26 +140,39 @@ try {
         @([regex]::Matches(
             $repositoryAttributes,
             '(?m)^launcher/THIRD-PARTY-NOTICES\.txt text eol=lf whitespace=-blank-at-eol$')).Count
-    $canonicalGeneratedLfFiles = @(
+    $equipmentTuningServiceLfFiles = @(
+        & git -c core.quotepath=false -C $ProjectRoot ls-files -- ':(glob)scripts/**/EquipmentTuningService.as'
+    )
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot locate EquipmentTuningService.as for the LF contract.' }
+    Assert-Equal 'EquipmentTuningService LF contract has one tracked target' 1 $equipmentTuningServiceLfFiles.Count
+    $canonicalLfFiles = @(
         'launcher/scripts/dist/hit-number-bundle.js',
         'launcher/web/modules/arena-custom-presets.js',
         'launcher/web/modules/arena-unit-catalog.js',
-        'launcher/web/modules/arena-unit-param-presets.js'
+        'launcher/web/modules/arena-unit-param-presets.js',
+        'tools/derive-material-catalog.py',
+        'data/dictionaries/material_dictionary.generated.json',
+        [string]$equipmentTuningServiceLfFiles[0],
+        'tools/bake-dialogue-portraits.py',
+        'tools/bake-shop-portraits.py',
+        'launcher/web/assets/shop-portraits/provenance.json',
+        'launcher/web/assets/shop-portraits/promotion-receipt.json',
+        'launcher/web/assets/shop-portraits/manifest.json'
     )
-    foreach ($canonicalGeneratedLfFile in $canonicalGeneratedLfFiles) {
-        Assert-Equal "canonical generated output has one explicit LF checkout rule: $canonicalGeneratedLfFile" 1 `
+    foreach ($canonicalLfFile in $canonicalLfFiles) {
+        Assert-Equal "canonical raw-byte input/output has one explicit LF checkout rule: $canonicalLfFile" 1 `
             @([regex]::Matches(
                 $repositoryAttributes,
-                ('(?m)^' + [regex]::Escape($canonicalGeneratedLfFile) + ' text eol=lf$'))).Count
+                ('(?m)^/?' + [regex]::Escape($canonicalLfFile) + ' text eol=lf$'))).Count
         $effectiveAttributes = [string]::Join("`n", @(
-            & git -C $ProjectRoot check-attr text eol -- $canonicalGeneratedLfFile
+            & git -C $ProjectRoot check-attr text eol -- $canonicalLfFile
         ))
-        if ($LASTEXITCODE -ne 0) { throw "Cannot inspect generated-output attributes: $canonicalGeneratedLfFile" }
-        Assert-Equal "canonical generated output resolves effective eol=lf: $canonicalGeneratedLfFile" $true `
+        if ($LASTEXITCODE -ne 0) { throw "Cannot inspect raw-byte input/output attributes: $canonicalLfFile" }
+        Assert-Equal "canonical raw-byte input/output resolves effective eol=lf: $canonicalLfFile" $true `
             ($effectiveAttributes -match '(?m): text: set$' -and $effectiveAttributes -match '(?m): eol: lf$')
-        $canonicalGeneratedBytes = [IO.File]::ReadAllBytes((Join-Path $ProjectRoot ($canonicalGeneratedLfFile -replace '/', '\')))
-        Assert-Equal "canonical generated output worktree contains no CR bytes: $canonicalGeneratedLfFile" 0 `
-            @($canonicalGeneratedBytes | Where-Object { $_ -eq 13 }).Count
+        $canonicalLfBytes = [IO.File]::ReadAllBytes((Join-Path $ProjectRoot ($canonicalLfFile -replace '/', '\')))
+        Assert-Equal "canonical raw-byte input/output worktree contains no CR bytes: $canonicalLfFile" 0 `
+            @($canonicalLfBytes | Where-Object { $_ -eq 13 }).Count
     }
     $repositoryNoticeBytes = [IO.File]::ReadAllBytes(
         (Join-Path $ProjectRoot 'launcher\THIRD-PARTY-NOTICES.txt'))
