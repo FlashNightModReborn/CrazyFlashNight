@@ -268,7 +268,7 @@ class org.flashNight.boot.BootSequencerTest {
         this.assert(inst.state == BootSequencer.S_FANOUT, "(S7) 完成后进入 S_FANOUT");
     }
 
-    // ====== Finding 1：S9 合成表 + 材料档案目录双门成功 ======
+    // ====== Finding 1：S9 合成表 + 材料档案 + 竞技场掉落三门成功 ======
     private function test_crafting_emitsEvent():Void {
         var host = this.freshEnv();
         var inst:BootSequencer = new BootSequencer(host);
@@ -277,30 +277,35 @@ class org.flashNight.boot.BootSequencerTest {
         var recipe:Object = {name:"测试配方"};
         var crafting:Object = {testCategory:[recipe]};
         var materialCatalog:Object = {schemaVersion:1, DirectPurpose:[], Material:[]};
-        // 两个目录允许 authored 空集合，但必须等兼容 loader 的成功完成信号，不能凭形状猜 ready。
+        var arenaDropCatalog:Object = {schemaVersion:1, sources:[]};
+        // 三个目录允许测试桩给 authored 空集合，但必须等 loader 成功信号，不能凭形状猜 ready。
         var shops:Object = {};
         var kshop:Array = [];
         var oldCrafting = _root.改装清单;
         var oldCraftingDict = _root.改装清单对象;
         var oldCraftingOrder = _root.改装分类顺序;
         var oldMaterialCatalog = _root.材料档案目录;
+        var oldArenaDropCatalog = _root.竞技场掉落规则;
         var oldShops = _root.shops;
         var oldKshop = _root.kshop_list;
         _root.shops = shops;
         _root.kshop_list = kshop;
 
-        // 把三个真单例换成可控成功/记录桩；用后还原，避免单例状态污染后续 suite。
+        // 把四个真单例换成可控成功/记录桩；用后还原，避免单例状态污染后续 suite。
         var loader:Object = org.flashNight.gesh.json.LoadJson.CraftingListLoader.getInstance();
         var catalogLoader:Object = org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoader.getInstance();
+        var arenaLoader:Object = org.flashNight.gesh.xml.LoadXml.ArenaDropRulesLoader.getInstance();
         var obtainIndex:Object = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
         var originalLoad:Function = loader.loadCraftingList;
         var originalGetCategoryOrder:Function = loader.getCategoryOrder;
         var originalCatalogLoad:Function = catalogLoader.loadMaterialCatalog;
+        var originalArenaLoad:Function = arenaLoader.loadArenaDropRules;
         var originalBuildIndex:Function = obtainIndex.buildIndex;
         var originalRehydrate:Function = obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig;
         var t:BootSequencerTest = this;
         var craftOk:Function;
         var catalogOk:Function;
+        var arenaOk:Function;
         loader.loadCraftingList = function(ok:Function, fail:Function):Void {
             craftOk = ok;
             t._calls.craftStarted = true;
@@ -310,10 +315,16 @@ class org.flashNight.boot.BootSequencerTest {
             catalogOk = ok;
             t._calls.catalogStarted = true;
         };
-        obtainIndex.buildIndex = function(craftingArg:Object, shopsArg:Object, kshopArg:Object):Void {
+        arenaLoader.loadArenaDropRules = function(ok:Function, fail:Function):Void {
+            arenaOk = ok;
+            t._calls.arenaStarted = true;
+        };
+        obtainIndex.buildIndex = function(craftingArg:Object, shopsArg:Object,
+                                          kshopArg:Object, arenaArg:Object):Void {
             t._calls.indexCrafting = craftingArg;
             t._calls.indexShops = shopsArg;
             t._calls.indexKshop = kshopArg;
+            t._calls.indexArena = arenaArg;
         };
         obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig = function():Void {
             t._calls.rehydrate = t.inc(t._calls.rehydrate);
@@ -323,11 +334,14 @@ class org.flashNight.boot.BootSequencerTest {
         var installedDict;
         var installedOrder;
         var installedMaterialCatalog;
+        var installedArenaDropCatalog;
         try {
             inst.step();
-            this.assert(this._calls.craftStarted == true && this._calls.catalogStarted == true &&
+            this.assert(this._calls.craftStarted == true
+                && this._calls.catalogStarted == true
+                && this._calls.arenaStarted == true &&
                 inst.state == BootSequencer.S_CRAFTING,
-                "(S9) 同 tick 发起合成表/材料目录两个加载，未就绪不 handoff");
+                "(S9) 同 tick 发起合成表/材料目录/竞技场掉落三个加载，未就绪不 handoff");
             catalogOk(materialCatalog);
             inst.step();
             this.assert(inst.state == BootSequencer.S_CRAFTING,
@@ -336,7 +350,8 @@ class org.flashNight.boot.BootSequencerTest {
             inst.step();
             this.assert(inst.state == BootSequencer.S_CRAFTING
                     && this._calls.indexCrafting == undefined,
-                "(S9) catalog 双门就绪但 S8 权威依赖未齐，不得提前建索引或 handoff");
+                "(S9) craft/catalog 就绪但 arena 门未齐，不得提前建索引或 handoff");
+            arenaOk(arenaDropCatalog);
             _root.__boot.itemDataReady = true;
             _root.__boot.enemyPropertiesReady = true;
             _root.__boot.legacyMaterialDictionaryReady = true;
@@ -356,31 +371,39 @@ class org.flashNight.boot.BootSequencerTest {
             installedDict = _root.改装清单对象;
             installedOrder = _root.改装分类顺序;
             installedMaterialCatalog = _root.材料档案目录;
+            installedArenaDropCatalog = _root.竞技场掉落规则;
         } finally {
             loader.loadCraftingList = originalLoad;
             loader.getCategoryOrder = originalGetCategoryOrder;
             catalogLoader.loadMaterialCatalog = originalCatalogLoad;
+            arenaLoader.loadArenaDropRules = originalArenaLoad;
             obtainIndex.buildIndex = originalBuildIndex;
             obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig = originalRehydrate;
             _root.改装清单 = oldCrafting;
             _root.改装清单对象 = oldCraftingDict;
             _root.改装分类顺序 = oldCraftingOrder;
             _root.材料档案目录 = oldMaterialCatalog;
+            _root.竞技场掉落规则 = oldArenaDropCatalog;
             _root.shops = oldShops;
             _root.kshop_list = oldKshop;
         }
         this.assert(installedCrafting == crafting && installedDict != undefined &&
             installedDict["测试配方"] == recipe,
             "(S9) 合成表与 name→recipe 字典按原引用落地");
-        this.assert(installedOrder.join("|") == "testCategory" && installedMaterialCatalog == materialCatalog,
-            "(S9) list.xml 分类顺序与 authored 材料档案目录落地");
+        this.assert(installedOrder.join("|") == "testCategory"
+            && installedMaterialCatalog == materialCatalog
+            && installedArenaDropCatalog == arenaDropCatalog,
+            "(S9) 分类顺序、材料档案与竞技场掉落 catalog 按原引用落地");
         this.assert(recipe.value == 1, "(S9) 缺省 recipe.value 保持旧语义补为 1");
         this.assert(this._calls.indexCrafting == crafting && this._calls.indexShops == shops &&
-            this._calls.indexKshop == kshop, "(S9) ItemObtainIndex 收到 crafting/shop/kshop 原引用");
+            this._calls.indexKshop == kshop && this._calls.indexArena == arenaDropCatalog,
+            "(S9) ItemObtainIndex 收到 crafting/shop/kshop/arena 原引用");
         this.assert(this._calls.rehydrate == 1,
             "(S9) 静态索引完成后只幂等恢复一次 enemy/base/challenge 已发现来源");
-        this.assert(this.msgHas("合成表数据加载完毕") && this.msgHas("材料档案目录加载完毕"),
-            "(S9) 两个成功回调均发可观测事件");
+        this.assert(this.msgHas("合成表数据加载完毕")
+            && this.msgHas("材料档案目录加载完毕")
+            && this.msgHas("竞技场掉落规则加载完毕"),
+            "(S9) 三个成功回调均发可观测事件");
         this.assert(inst.state == BootSequencer.S_HANDOFF,
             "(S9) 显式 v2 停用店空 catalog 仍提供 identity；其余依赖 ready 后进入 S_HANDOFF");
     }
@@ -392,7 +415,8 @@ class org.flashNight.boot.BootSequencerTest {
             {flag:"legacyMaterialDictionaryFailed", ready:"legacyMaterialDictionaryReady", reason:"material_dictionary_failed"},
             {flag:"equipmentModFailed", ready:"equipmentModReady", reason:"equipment_mod_data_failed"},
             {flag:"shopCatalogFailed", ready:"shopCatalogReady", reason:"shop_catalog_failed"},
-            {flag:"kshopCatalogFailed", ready:"kshopCatalogReady", reason:"kshop_catalog_failed"}
+            {flag:"kshopCatalogFailed", ready:"kshopCatalogReady", reason:"kshop_catalog_failed"},
+            {flag:"arenaDropRulesFailed", ready:"arenaDropRulesReady", reason:"arena_drop_rules_failed"}
         ];
         for (var i:Number = 0; i < cases.length; i++) {
             var host = this.freshEnv();
@@ -425,6 +449,7 @@ class org.flashNight.boot.BootSequencerTest {
             _root.__boot.craftFired = true;
             _root.__boot.craftReady = true;
             _root.__boot.materialCatalogReady = true;
+            _root.__boot.arenaDropRulesReady = true;
             _root.__boot.itemDataReady = true;
             _root.__boot.enemyPropertiesReady = true;
             _root.__boot.legacyMaterialDictionaryReady = true;
@@ -445,41 +470,56 @@ class org.flashNight.boot.BootSequencerTest {
     }
 
     private function test_crafting_catalogLoaderFailureHalts():Void {
-        var modes:Array = ["craft", "catalog"];
+        var modes:Array = ["craft", "catalog", "arena"];
         for (var i:Number = 0; i < modes.length; i++) {
             var host = this.freshEnv();
             var inst:BootSequencer = new BootSequencer(host);
             inst.state = BootSequencer.S_CRAFTING;
             var loader:Object = org.flashNight.gesh.json.LoadJson.CraftingListLoader.getInstance();
             var catalogLoader:Object = org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoader.getInstance();
+            var arenaLoader:Object = org.flashNight.gesh.xml.LoadXml.ArenaDropRulesLoader.getInstance();
             var originalLoad:Function = loader.loadCraftingList;
             var originalCatalogLoad:Function = catalogLoader.loadMaterialCatalog;
+            var originalArenaLoad:Function = arenaLoader.loadArenaDropRules;
             var craftOk:Function;
             var craftFail:Function;
             var catalogOk:Function;
             var catalogFail:Function;
+            var arenaOk:Function;
+            var arenaFail:Function;
             loader.loadCraftingList = function(ok:Function, fail:Function):Void {
                 craftOk = ok; craftFail = fail;
             };
             catalogLoader.loadMaterialCatalog = function(ok:Function, fail:Function):Void {
                 catalogOk = ok; catalogFail = fail;
             };
+            arenaLoader.loadArenaDropRules = function(ok:Function, fail:Function):Void {
+                arenaOk = ok; arenaFail = fail;
+            };
             try {
                 inst.step();
                 if (modes[i] == "craft") {
                     craftFail();
                     catalogOk({schemaVersion:1, DirectPurpose:[], Material:[]});
-                } else {
+                    arenaOk({schemaVersion:1, sources:[]});
+                } else if (modes[i] == "catalog") {
                     catalogFail();
                     craftOk({testCategory:[]});
+                    arenaOk({schemaVersion:1, sources:[]});
+                } else {
+                    arenaFail();
+                    craftOk({testCategory:[]});
+                    catalogOk({schemaVersion:1, DirectPurpose:[], Material:[]});
                 }
                 inst.step();
             } finally {
                 loader.loadCraftingList = originalLoad;
                 catalogLoader.loadMaterialCatalog = originalCatalogLoad;
+                arenaLoader.loadArenaDropRules = originalArenaLoad;
             }
-            var expected:String = modes[i] == "craft"
-                ? "crafting_catalog_failed" : "material_catalog_failed";
+            var expected:String = modes[i] == "craft" ? "crafting_catalog_failed"
+                : (modes[i] == "catalog" ? "material_catalog_failed"
+                    : "arena_drop_rules_failed");
             this.assert(inst.state == BootSequencer.S_HALT
                     && _root.__boot.bootFailed == expected,
                 "(S9) " + modes[i] + " loader failure + peer late success remains halted");

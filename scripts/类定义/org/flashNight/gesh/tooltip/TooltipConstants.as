@@ -40,6 +40,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var COL_KSHOP:String = "#FFCC99";        // K点商店（淡橙）
   public static var COL_DROP_STAGE:String = "#FFFF99";   // 关卡掉落（淡黄）
   public static var COL_DROP_ENEMY:String = "#FF99CC";   // 敌人掉落（淡粉）
+  public static var COL_DROP_ARENA:String = "#FFCC66";   // 竞技场掉落（金黄）
   public static var COL_QUEST:String = "#CC99FF";        // 任务奖励（淡紫）
 
   // ══════════════════════════════════════════════════════════════
@@ -184,6 +185,9 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TIP_OBTAIN_KSHOP:String = "K点商城：";
   public static var TIP_OBTAIN_STAGE:String = "关卡：";
   public static var TIP_OBTAIN_ENEMY:String = "掉落：";
+  public static var TIP_OBTAIN_ARENA:String = "竞技场：";
+  public static var TIP_OBTAIN_ARENA_CARRIER:String = "携带该装备的佣兵";
+  public static var TIP_OBTAIN_ARENA_SPECIFIC_CARRIER:String = "携带该装备的特定佣兵";
   public static var TIP_OBTAIN_QUEST:String = "任务：";
 
   // ══════════════════════════════════════════════════════════════
@@ -273,6 +277,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var OBTAIN_MAX_KSHOPS:Number = 2;    // K点商店最多显示条数
   public static var OBTAIN_MAX_STAGES:Number = 4;    // 关卡掉落最多显示个数
   public static var OBTAIN_MAX_ENEMIES:Number = 4;   // 敌人掉落最多显示个数
+  public static var OBTAIN_MAX_ARENAS:Number = 2;    // 竞技场来源最多显示条数
   public static var OBTAIN_MAX_QUESTS:Number = 3;    // 任务奖励最多显示条数
 
   // ══════════════════════════════════════════════════════════════

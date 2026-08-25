@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ArenaDropRules schemaVersion="1">
+    <!--
+        只覆盖 _root.加载敌方人物 生成的标准佣兵对手。
+        roster / mixed / escalation 仍由角斗场安全覆盖明确清空掉落。
+        Rule 物理顺序就是优先级；stopOnMatch=true 保留旧 if / else-if 短路。
+        carrierScope=carrier 表示任意携带者；specific_carrier 表示还须满足 Rule/Trigger，
+        具体名单与概率由竞技场界面读取结构化规则解释，不塞进物品简介。
+    -->
+    <Profile id="standard_merc"
+             arenaId="death_match"
+             arenaLabel="DEATH MATCH"
+             modeLabel="标准佣兵对战">
+        <Rule id="zhanmadao_guaranteed"
+              stopOnMatch="true"
+              carrierScope="carrier">
+            <Trigger slot="刀" item="斩马刀"/>
+            <Drop slot="刀"
+                  chancePercent="100"/>
+            <EligibleItem name="斩马刀" slot="刀"/>
+        </Rule>
+
+        <Rule id="gladiator_equipment"
+              stopOnMatch="true"
+              carrierScope="specific_carrier">
+            <Trigger slot="颈部装备" item="角斗高手项链"/>
+            <Trigger slot="颈部装备" item="角斗王者项链"/>
+
+            <!-- 两个武器槽分别进入现役 DropLuckRoller，名义概率均为 25%。 -->
+            <Drop slot="长枪"
+                  chancePercent="25"/>
+            <Drop slot="刀"
+                  chancePercent="25"/>
+
+            <!-- 旧 random(7)：五个防具槽各占 1 份，两个空结果合并为 weight=2。 -->
+            <SlotLottery dropChancePercent="100">
+                <Choice slot="头部装备" weight="1"/>
+                <Choice slot="上装装备" weight="1"/>
+                <Choice slot="下装装备" weight="1"/>
+                <Choice slot="手部装备" weight="1"/>
+                <Choice slot="脚部装备" weight="1"/>
+                <Choice empty="true" weight="2"/>
+            </SlotLottery>
+
+            <EligibleItem name="巴雷特" slot="长枪"/>
+            <EligibleItem name="巨兽" slot="长枪"/>
+            <EligibleItem name="烈焰枪A100" slot="长枪"/>
+            <EligibleItem name="烈焰枪B100" slot="长枪"/>
+
+            <EligibleItem name="冰魄斩" slot="刀"/>
+            <EligibleItem name="烈焰斩" slot="刀"/>
+            <EligibleItem name="异形毒刺" slot="刀"/>
+
+            <EligibleItem name="次品蓝晶面具" slot="头部装备"/>
+            <EligibleItem name="方舟武士盔" slot="头部装备"/>
+            <EligibleItem name="合金盔" slot="头部装备"/>
+            <EligibleItem name="异形骨盔" slot="头部装备"/>
+
+            <EligibleItem name="次品蓝晶战斗服" slot="上装装备"/>
+            <EligibleItem name="方舟武士甲" slot="上装装备"/>
+            <EligibleItem name="合金甲" slot="上装装备"/>
+            <EligibleItem name="异形骨甲" slot="上装装备"/>
+
+            <EligibleItem name="次品蓝晶下装" slot="下装装备"/>
+            <EligibleItem name="方舟武士腿甲" slot="下装装备"/>
+            <EligibleItem name="合金腿甲" slot="下装装备"/>
+            <EligibleItem name="异形骨腿甲" slot="下装装备"/>
+
+            <EligibleItem name="次品蓝晶手套" slot="手部装备"/>
+            <EligibleItem name="方舟武士手套" slot="手部装备"/>
+            <EligibleItem name="合金手套" slot="手部装备"/>
+            <EligibleItem name="异形骨手套" slot="手部装备"/>
+
+            <EligibleItem name="次品蓝晶鞋" slot="脚部装备"/>
+            <EligibleItem name="方舟武士鞋" slot="脚部装备"/>
+            <EligibleItem name="合金鞋" slot="脚部装备"/>
+            <EligibleItem name="异形骨鞋" slot="脚部装备"/>
+        </Rule>
+    </Profile>
+</ArenaDropRules>

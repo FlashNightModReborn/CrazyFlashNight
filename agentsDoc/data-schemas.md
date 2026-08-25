@@ -65,7 +65,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 | `data/intelligence/` | 情报详情 legacy txt 文本；保留为 AS2 旧界面和 H5 迁移来源 |
 | `data/intelligence_h5/` | Launcher Web 情报面板 H5 JSON 组件树正文 |
 | `data/shops/` | NPC 金币商店清单、逐 NPC 商品目录与开发者分组 |
-| `data/arena/` | 竞技场标准/隐藏卡 XML 真源、势力元数据 JSON 真源与关卡派生 roster |
+| `data/arena/` | 竞技场标准/隐藏卡与标准佣兵装备掉落 XML 真源、势力元数据 JSON 真源与关卡派生 roster |
 | `config/` | 系统配置 |
 
 大多数采用 **list.xml 主从模式**：
@@ -81,6 +81,7 @@ data/intelligence/            → 按情报名称存放的 legacy txt 正文
 data/intelligence_h5/         → 按情报名称存放的 H5 JSON 组件树正文
 data/shops/list.xml           → 引用 data/shops/npcs/*.json（每个 NPC 一个文件）
 data/arena/arena_config.xml   → 标准/隐藏挑战卡运行时真源
+data/arena/arena_drop_rules.xml → 标准佣兵装备掉落、概率与玩家可见来源分类真源
 data/arena/arena_factions.json → 势力 benchLevel/scale/enabled/units 手作真源
 data/arena/meta_teams.json    → 从 data/stages/** 派生的 roster/merc 生成物
 ```
@@ -110,6 +111,18 @@ data/arena/meta_teams.json    → 从 data/stages/** 派生的 roster/merc 生�
 - `arena_factions.json` 是势力卡手作元数据真源，schemaVersion 固定为 1；每个 faction 必须命中 meta roster，`benchLevel` 只能为正整数或 null，`scale` 只能为 `small|large|coalition`，`enabled` 为布尔，`units` 为 null 或不重复的 `兵种N` 白名单。`launcher/web/modules/arena-factions.js` 由 `tools/derive-arena-factions.js` 生成，禁止手改。
 - `meta_teams.json` 与 `launcher/web/modules/arena-meta-rosters.js` 由 `tools/derive-arena-meta-teams.js` 从 `data/stages/**` 同步派生；`--check` 会 exact 比较 tracked 字节。release prepare 会先重建 meta/faction 投影，再重建 custom presets、unit catalog 和 parameter presets；任何 stale 输出必须非零失败。
 - 运行时 snapshot 的 `arenaAuthority.sourceDigest` 覆盖上述 XML、meta-team JSON 与 faction JSON 的原始字节。Web 只回传 session `cardId/cardIndex/roster`；C# 重建经济、表达式与爬升池，AS2 在写入前独立复算。完整协议与验证入口见 [Launcher README](../launcher/README.md) 和 [testing-guide](testing-guide.md)。
+
+### 竞技场标准佣兵装备掉落
+
+`data/arena/arena_drop_rules.xml` 是 `_root.加载敌方人物` 标准佣兵分支的装备掉落与玩家可见来源分类真源；它不属于 `arena_config.xml` 的卡片、赛程与经济权威。`ArenaDropRulesLoader` 在启动 S9 严格解析后写入 `_root.竞技场掉落规则`，缺文件、未知字段、重复 ID、非法概率、槽位覆盖不完整或来源投影不完整都会终止启动，不回退代码内默认值。
+
+- `Profile/Rule` 的物理顺序就是裁决顺序；命中 `stopOnMatch=true` 后停止后续规则。触发器与装备名单均按物品名称 exact 匹配，不做前缀、后缀或品类模糊扩张。
+- `Drop` 表达逐件独立概率；`SlotLottery` 先按 `Choice.weight` 选槽位，再在该槽位的 `EligibleItem` 中按当前穿戴名称判定是否掉落。现役角斗规则冻结头/上装/下装/手/脚各权重 1、空结果权重 2，并保持武器 25%、被选中防具 100% 的旧语义。
+- 仅 `standard_merc` 使用该目录。roster、自定义 PvE、mixed 与爬升模式继续显式清空掉落，不得因目录存在而获得标准佣兵奖励。
+- 加载成功时，`ItemObtainIndex` 把每个可达装备投影为静态 `dropType="arena"` 来源记录，并保留规则级 `carrierScope`。共享 `TooltipComposer` 只显示两类稳定入口：`carrier` →“竞技场：携带该装备的佣兵”，`specific_carrier` →“竞技场：携带该装备的特定佣兵”。
+- 物品 tooltip 不显示佣兵名单、项链条件或掉率；`arenaId/ruleId/triggers/chanceModel/conditionalChancePercent` 等结构化字段继续保留，供竞技场界面以后解释“特定佣兵”和概率明细，避免两处维护自由文本。
+
+修改该文件、解析器、场景消费或来源提示时，固定运行 `node tools/validate-arena-drop-rules.js`、`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-arena-drop-rule-tests.ps1 -TimeoutSeconds 240` 与 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-boot-sequencer-tests.ps1 -TimeoutSeconds 240`；发布注入层时再运行 `scripts/compile_test.ps1 -Target publish -VerifySwf scripts/asLoader.swf`。Launcher release policy 同时把 XML 列为 required asset 并执行同一 validator，打包范围由 `tools/cf7-packer/pack.config.yaml` 的 `data/**` 覆盖。
 
 ### 关卡地图资源箱声明
 
@@ -183,6 +196,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 | 加载器 | 数据路径 | 说明 |
 |--------|---------|------|
 | `ItemDataLoader` | `data/items/list.xml` | 并行加载 52 个物品分类文件与 `item_sets.xml`；合并数组附带中心套装元数据 |
+| `ArenaDropRulesLoader` | `data/arena/arena_drop_rules.xml` | 严格加载标准佣兵装备掉落规则，并为 `ItemObtainIndex` 提供静态竞技场来源投影 |
 | `EnemyPropertiesLoader` | `data/enemy_properties/list.xml` | 敌人属性（14 文件合并，按名称索引） |
 | `NpcDialogueLoader` | `data/dialogues/list.xml` | NPC 对话数据 |
 | `BulletsCasesLoader` | `data/items/bullets_cases.xml` | 弹药数据；联弹支持「模板×单元体」双层配置（`<chainTemplate>` + `<chainUnit>`，加载期由 `ChainBulletConfigResolver` 派生合并，显式条目优先） |

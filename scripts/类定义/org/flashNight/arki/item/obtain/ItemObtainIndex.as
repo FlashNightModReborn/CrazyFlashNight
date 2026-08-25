@@ -6,14 +6,14 @@
  * 职责：
  * - 在游戏启动时构建反向索引，将物品名映射到其所有获取方式
  * - 提供O(1)复杂度的查询接口
- * - 支持合成、NPC商店、K点商店三种获取来源（可扩展）
+ * - 支持合成、NPC商店、K点商店与竞技场 authored 掉落四种静态来源
  * - 支持动态来源：关卡掉落、敌人掉落、任务奖励（运行时增量发现）
  * - 保留完整语义信息（如商店的解锁条件）
  *
  * 数据模型：
  * - 统一使用 ObtainRecord 格式，每条记录带 kind 标识类型
- * - 静态来源（craft/shop/kshop）：启动时一次性构建
- * - 动态来源（drop/quest）：运行时增量发现，存档持久化
+ * - 静态来源（craft/shop/kshop/drop:arena）：启动时一次性构建
+ * - 动态来源（drop:stage/drop:enemy/quest）：运行时增量发现，存档持久化
  *
  * ===== 动态来源存档策略（v2重构） =====
  * 存档只保存"发现集合"（关卡名/兵种/任务ID），不保存具体掉落明细。
@@ -43,10 +43,13 @@
  *   type: String,           // [kshop] K点商店分类
  *   priceK: Number,         // [kshop] K点价格
  *   id: String,             // [kshop] 商品ID
- *   // ===== 动态来源字段 =====
- *   dropType: String,       // [drop] "stage" | "enemy"
+ *   // ===== 掉落来源字段 =====
+ *   dropType: String,       // [drop] "stage" | "enemy" | "arena"
  *   stageName: String,      // [drop:stage] 关卡名称
  *   enemyType: String,      // [drop:enemy] 敌人兵种
+ *   arenaId: String,        // [drop:arena] 竞技场稳定 ID
+ *   ruleId: String,         // [drop:arena] authored 规则 ID
+ *   carrierScope: String,   // [drop:arena] "carrier" | "specific_carrier"
  *   probability: Number,    // [drop] v1 兼容 scalar，镜像首个 variant
  *   quantityMax: Number,    // [drop:stage] v1 兼容 scalar
  *   minLevel: Number,       // [drop:enemy] v1 兼容 scalar（无下界时 0）
@@ -60,7 +63,8 @@
  * 使用示例：
  * ```actionscript
  * var index:ItemObtainIndex = ItemObtainIndex.getInstance();
- * index.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
+ * index.buildIndex(_root.改装清单, _root.shops, _root.kshop_list,
+ *     _root.竞技场掉落规则);
  * index.loadFromSave(mysave.data.obtainCache); // 加载发现集合并从最新数据重建
  * var records:Array = index.getObtainRecords("SAPS12");
  * // records = [{kind:"craft", category:"武器合成", price:10000, kprice:0}]
@@ -87,6 +91,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
     // ===== 掉落子类型常量 =====
     public static var DROP_TYPE_STAGE:String = "stage";
     public static var DROP_TYPE_ENEMY:String = "enemy";
+    public static var DROP_TYPE_ARENA:String = "arena";
 
     // ===== 存档版本 =====
     private static var CACHE_VERSION:Number = 2;  // v2: 只存发现集合，运行时重建明细
@@ -191,8 +196,10 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
      * @param craftingData   合成数据 (_root.改装清单)，结构为 {分类名: [{name, title, price, kprice, materials}, ...]}
      * @param shopData       商店数据 (_root.shops)，结构为 {NPC名: {序号: 物品名或{name:物品名, requiredInfo:...}}}
      * @param kshopData      K点商店数据 (_root.kshop_list)，结构为 [{id, item, type, price}, ...]
+     * @param arenaDropCatalog ArenaDropRuleCatalog.parse() 的归一化结果（可选）
      */
-    public function buildIndex(craftingData:Object, shopData:Object, kshopData:Array):Void {
+    public function buildIndex(craftingData:Object, shopData:Object, kshopData:Array,
+                               arenaDropCatalog:Object):Void {
         if (this._isBuilt) {
             trace("[ItemObtainIndex] 索引已构建，跳过重复构建");
             return;
@@ -203,11 +210,63 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         this.buildCraftingRecords(craftingData);
         this.buildShopRecords(shopData);
         this.buildKShopRecords(kshopData);
+        this.buildArenaDropRecords(arenaDropCatalog);
 
         this._isBuilt = true;
 
         var endTime:Number = getTimer();
         trace("[ItemObtainIndex] 索引构建完成，耗时 " + (endTime - startTime) + "ms");
+    }
+
+    /**
+     * 从 authored arena catalog 登记静态来源。来源项与运行时 EligibleItem
+     * 同源生成，因此 tooltip 不维护第二份装备名单或概率文案。
+     */
+    private function buildArenaDropRecords(catalog:Object):Void {
+        if (catalog == null) {
+            trace("[ItemObtainIndex] 竞技场掉落目录为空，跳过");
+            return;
+        }
+        var sources:Array = catalog.sources;
+        if (catalog.schemaVersion !== 1 || !(sources instanceof Array)) {
+            trace("[ItemObtainIndex] 竞技场掉落目录非法，跳过");
+            return;
+        }
+
+        var count:Number = 0;
+        for (var i:Number = 0; i < sources.length; i++) {
+            var source:Object = sources[i];
+            if (source == null || typeof source.itemName != "string"
+                    || typeof source.arenaId != "string"
+                    || typeof source.arenaLabel != "string"
+                    || typeof source.profileId != "string"
+                    || typeof source.ruleId != "string"
+                    || (source.carrierScope != "carrier"
+                        && source.carrierScope != "specific_carrier")) continue;
+            var itemName:String = source.itemName;
+            if (!this.obtainIndex[itemName]) this.obtainIndex[itemName] = [];
+            this.obtainIndex[itemName].push({
+                kind:KIND_DROP,
+                dropType:DROP_TYPE_ARENA,
+                arenaId:source.arenaId,
+                arenaLabel:source.arenaLabel,
+                mode:source.profileId,
+                modeLabel:source.modeLabel,
+                ruleId:source.ruleId,
+                carrierScope:source.carrierScope,
+                equipmentSlot:source.slot,
+                chanceModel:source.chanceModel,
+                probability:Number(source.conditionalChancePercent),
+                conditionalChancePercent:Number(source.conditionalChancePercent),
+                selectionWeight:source.selectionWeight,
+                totalWeight:source.totalWeight,
+                selectedDropChancePercent:source.selectedDropChancePercent,
+                quantityMin:1,
+                quantityMax:1
+            });
+            count++;
+        }
+        trace("[ItemObtainIndex] 竞技场掉落来源记录构建完成，共 " + count + " 条");
     }
 
     /**
@@ -478,7 +537,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
 
     /**
      * 清空动态发现集合（用于新建角色）
-     * 保留静态索引（craft/shop/kshop），只清空动态来源（drop/quest）
+     * 保留静态索引（craft/shop/kshop/drop:arena），只清空发现制来源
      * 这是新建角色时应该调用的方法，而非 reset()
      */
     public function clearDynamicDiscoveries():Void {
@@ -491,7 +550,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
         this.stageDropCache = {};
         this.enemyDropCache = {};
         this.questRewardCache = {};
-        // 清理 obtainIndex 中的动态来源记录，保留静态来源
+        // 清理 obtainIndex 中的发现制来源，保留 authored 竞技场来源
         this.clearDynamicRecordsFromIndex();
         trace("[ItemObtainIndex] 动态发现集合已清空（静态索引保留）");
     }
@@ -1470,7 +1529,7 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
 
     /**
      * 清理 obtainIndex 中的所有动态来源记录
-     * 保留静态来源（craft/shop/kshop），移除动态来源（drop/quest）
+     * 保留静态来源（craft/shop/kshop/drop:arena），移除发现制来源
      * @private
      */
     private function clearDynamicRecordsFromIndex():Void {
@@ -1483,11 +1542,13 @@ class org.flashNight.arki.item.obtain.ItemObtainIndex {
             var records:Array = this.obtainIndex[itemName];
             if (!records || records.length == 0) continue;
 
-            // 过滤掉动态来源记录，只保留静态来源
+            // stage/enemy/quest 依赖发现集合；arena 是启动期 authored 静态来源。
             var filtered:Array = [];
             for (var i:Number = 0; i < records.length; i++) {
                 var record:Object = records[i];
-                if (record.kind !== KIND_DROP && record.kind !== KIND_QUEST) {
+                var isDynamicDrop:Boolean = record.kind === KIND_DROP
+                    && record.dropType !== DROP_TYPE_ARENA;
+                if (!isDynamicDrop && record.kind !== KIND_QUEST) {
                     filtered.push(record);
                 } else {
                     recordsRemoved++;

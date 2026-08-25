@@ -18,6 +18,7 @@ import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
 import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
 import org.flashNight.gesh.json.LoadJson.CraftingListLoader;
 import org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoader;
+import org.flashNight.gesh.xml.LoadXml.ArenaDropRulesLoader;
 
 class org.flashNight.boot.BootSequencer {
     static var S_INIT:Number = 0;
@@ -261,6 +262,17 @@ class org.flashNight.boot.BootSequencer {
                     self.host.打印加载内容("材料档案目录加载失败");
                     self.halt("material_catalog_failed");
                 });
+            ArenaDropRulesLoader.getInstance().loadArenaDropRules(
+                function(data:Object):Void {
+                    _root.竞技场掉落规则 = data;
+                    self.bslog("竞技场掉落规则加载完毕");
+                    self.b.arenaDropRulesReady = true;
+                },
+                function():Void {
+                    self.b.arenaDropRulesFailed = true;
+                    self.host.打印加载内容("竞技场掉落规则加载失败");
+                    self.halt("arena_drop_rules_failed");
+                });
         }
         if (this.b.itemDataLoaded == true && this.b.equipmentConfigSettled == true
                 && this.b.itemDataReady != true && this.b.itemDataFailed != true) {
@@ -303,7 +315,13 @@ class org.flashNight.boot.BootSequencer {
             this.halt("kshop_catalog_failed");
             return;
         }
+        if (this.b.arenaDropRulesFailed == true) {
+            this.host.打印加载内容("竞技场掉落规则加载失败");
+            this.halt("arena_drop_rules_failed");
+            return;
+        }
         if (this.b.craftReady == true && this.b.materialCatalogReady == true
+                && this.b.arenaDropRulesReady == true
                 && this.b.itemDataReady == true
                 && this.b.enemyPropertiesReady == true
                 && this.b.legacyMaterialDictionaryReady == true
@@ -329,7 +347,8 @@ class org.flashNight.boot.BootSequencer {
             }
             if (this.b.materialSourceIndexReady != true) {
                 var obtainIndex = org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance();
-                obtainIndex.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
+                obtainIndex.buildIndex(_root.改装清单, _root.shops,
+                    _root.kshop_list, _root.竞技场掉落规则);
                 obtainIndex.rehydrateDiscoveredRecordsFromCurrentConfig();
                 this.b.materialSourceIndexReady = true;
             }

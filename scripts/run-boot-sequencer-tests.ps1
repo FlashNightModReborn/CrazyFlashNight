@@ -68,10 +68,10 @@ $focusedRun = @{
         'org.flashNight.neur.Server.test.BootstrapHandshakeTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^=== BootSequencerTest: 86 passed, 0 failed ===\r?$'
+        '(?m)^=== BootSequencerTest: 89 passed, 0 failed ===\r?$'
         '(?m)^========== BootstrapHandshakeTest END: 12/12 passed, 0 failed ==========\r?$'
     )
-    SuccessSummary = 'BootSequencerTest 86/86 + BootstrapHandshakeTest 12/12'
+    SuccessSummary = 'BootSequencerTest 89/89 + BootstrapHandshakeTest 12/12'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

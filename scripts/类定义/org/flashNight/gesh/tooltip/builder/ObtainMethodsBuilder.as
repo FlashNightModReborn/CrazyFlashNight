@@ -30,6 +30,7 @@ class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
         var kshops:Array = [];
         var stageDrops:Array = [];
         var enemyDrops:Array = [];
+        var arenaDrops:Array = [];
         var quests:Array = [];
 
         for (var i:Number = 0; i < records.length; i++) {
@@ -47,8 +48,10 @@ class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
                 case ItemObtainIndex.KIND_DROP:
                     if (rec.dropType === ItemObtainIndex.DROP_TYPE_STAGE) {
                         stageDrops.push(rec);
-                    } else {
+                    } else if (rec.dropType === ItemObtainIndex.DROP_TYPE_ENEMY) {
                         enemyDrops.push(rec);
+                    } else if (rec.dropType === ItemObtainIndex.DROP_TYPE_ARENA) {
+                        arenaDrops.push(rec);
                     }
                     break;
                 case ItemObtainIndex.KIND_QUEST:
@@ -58,7 +61,8 @@ class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
         }
 
         if (crafts.length == 0 && shops.length == 0 && kshops.length == 0 &&
-            stageDrops.length == 0 && enemyDrops.length == 0 && quests.length == 0) {
+            stageDrops.length == 0 && enemyDrops.length == 0
+            && arenaDrops.length == 0 && quests.length == 0) {
             return result;
         }
 
@@ -161,6 +165,33 @@ class org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder {
             if (enemyDrops.length > maxEnemies) {
                 result.push(TooltipConstants.TIP_ETC + (enemyDrops.length - maxEnemies) + TooltipConstants.TIP_OBTAIN_MORE);
             }
+            result.push(TooltipFormatter.br());
+        }
+
+        var maxArenas:Number = TooltipConstants.OBTAIN_MAX_ARENAS;
+        var arenaCount:Number = Math.min(arenaDrops.length, maxArenas);
+        for (var a:Number = 0; a < arenaCount; a++) {
+            var arena:Object = arenaDrops[a];
+            var carrierLabel:String;
+            if (arena.carrierScope == "specific_carrier") {
+                carrierLabel = TooltipConstants.TIP_OBTAIN_ARENA_SPECIFIC_CARRIER;
+            } else if (arena.carrierScope == "carrier") {
+                carrierLabel = TooltipConstants.TIP_OBTAIN_ARENA_CARRIER;
+            } else {
+                continue;
+            }
+            result.push("  <FONT COLOR='" + TooltipConstants.COL_DROP_ARENA + "'>");
+            result.push(TooltipConstants.TIP_OBTAIN_ARENA);
+            result.push("</FONT>");
+            result.push(carrierLabel);
+            result.push(TooltipFormatter.br());
+        }
+        if (arenaDrops.length > maxArenas) {
+            result.push("  <FONT COLOR='" + TooltipConstants.COL_DROP_ARENA + "'>");
+            result.push(TooltipConstants.TIP_OBTAIN_ARENA);
+            result.push("</FONT>");
+            result.push(TooltipConstants.TIP_ETC
+                + (arenaDrops.length - maxArenas) + TooltipConstants.TIP_OBTAIN_MORE);
             result.push(TooltipFormatter.br());
         }
 
