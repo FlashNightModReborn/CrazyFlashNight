@@ -14,6 +14,7 @@
     <div id="panel-backdrop"></div>
     <div id="panel-content"></div>
 </div>
+<div id="panel-tooltip"></div>
 
 <script>
 window.__minigameOverlayRoot = "../../../../";
@@ -32,6 +33,8 @@ window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
 <script src="../../../panel-scale.js"></script>
 <script src="../../shared/host-bridge.js"></script>
 <script src="../../shared/dev/harness-base.js"></script>
+<script src="../../../tooltip.js"></script>
+<script src="../visual/visual-pool-manifest.js"></script>
 <script src="../core/index.js"></script>
 <script src="../../../workbench-inspection-viewport.js"></script>
 <script src="../visual/inspection-focus.js"></script>
@@ -168,8 +171,10 @@ window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
                         requests.forEach(function(url) {
                             api.assert(!/black-market-shadow-catalog\.v1\.json/i.test(url),
                                 "product boot requested the exact catalog " + url);
-                            api.assert(!/(?:^|\/)icons\/[^?#]+(?:[?#]|$)/i.test(url),
-                                "product boot requested an item icon " + url);
+                            // 2026-08-26 设计确认：覆泥像素允许被认出（图标请求合法），
+                            // 封死的是机器可读价格/目录答案钥匙（XML、items 数据、目录 JSON）
+                            api.assert(!/(?:data\/items\/|\.xml(?:[?#]|$)|\/data\/)/i.test(url),
+                                "product boot requested a catalog/price resource " + url);
                         });
                         api.assert(!/(?:assetUri|iconUri|itemId|iconKey|saleValue|data\/items\/|icons\/)/.test(domHtml),
                             "product DOM contains an exact catalog field or asset path");
@@ -248,17 +253,27 @@ window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
                     return bootSession(api).then(function() {
                         var shell = document.querySelector(".blackmarket-scale-shell");
                         var deck = document.querySelector(".blackmarket-deck");
-                        var container = document.getElementById("panel-container");
-                        container.style.width = "768px";
-                        container.style.height = "432px";
+                        // #panel-container/#panel-content 都是 inset 定位（过约束下 width/height 被忽略），
+                        // 模拟宿主缩小必须把 #panel-content 改成左上锚定后显式设宽高。
+                        var content = document.getElementById("panel-content");
+                        content.style.inset = "0 auto auto 0";
+                        content.style.width = "768px";
+                        content.style.height = "432px";
                         window.dispatchEvent(new Event("resize"));
                         return api.waitFor(function() {
-                            return shell && shell.style.transform.indexOf("scale(0.75") >= 0 ? shell : null;
+                            // PanelScale 契约：内联只写 --panel-scale 自定义属性，transform 由
+                            // .panel-scale-shell 类经 var() 生效，shell.style.transform 恒为空。
+                            var value = shell && shell.style.getPropertyValue("--panel-scale");
+                            return value && Math.abs(parseFloat(value) - 0.75) < 0.01 ? shell : null;
                         }, 2500, "PanelScale 0.75").then(function() {
                             api.assertEqual(deck.querySelectorAll(".blackmarket-bay").length, 3,
                                 "scaled surface lost a bay");
-                            container.style.width = "";
-                            container.style.height = "";
+                            var matrix = getComputedStyle(shell).transform;
+                            api.assert(matrix && matrix.indexOf("matrix") === 0,
+                                "scaled shell missing computed transform matrix");
+                            content.style.inset = "";
+                            content.style.width = "";
+                            content.style.height = "";
                             window.dispatchEvent(new Event("resize"));
                             return "1024x576 layout retained at 0.75 scale";
                         });
@@ -266,7 +281,110 @@ window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
                 }
             },
             {
-                id: "bm-ui8",
+                id: "bm-ui10",
+                title: "揭晓表面保留源半透边缘",
+                run: function(api) {
+                    return bootSession(api).then(function() { return waitForSurfaceReady(api, 6); }).then(function() {
+                        document.querySelector('[data-bm-action="select"]').click();
+                        document.querySelector('[data-bm-action="confirm"]').click();
+                        return api.waitFor(function() {
+                            var canvas = document.querySelector('.blackmarket-offer.state-revealed .blackmarket-item-surface');
+                            return canvas && canvas.getAttribute('data-surface-state') === 'ready'
+                                && canvas.width > 8 ? canvas : null;
+                        }, 8000, "revealed surface rehydrated");
+                    }).then(function(canvas) {
+                        var ctx = canvas.getContext('2d');
+                        var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                        var semi = 0;
+                        var opaque = 0;
+                        for (var i = 3; i < pixels.length; i += 4) {
+                            if (pixels[i] === 255) opaque += 1;
+                            else if (pixels[i] > 0) semi += 1;
+                        }
+                        api.assert(opaque > 1000, "revealed surface unexpectedly empty");
+                        api.assert(semi > 40,
+                            "revealed surface lost source antialiasing (semi-alpha edges=" + semi + ")");
+                        return "revealed keeps semi-alpha edges: semi=" + semi + " opaque=" + opaque;
+                    });
+                }
+            },
+            {
+                id: "bm-ui11",
+                title: "调试抽屉重开影子会话参数",
+                run: function(api) {
+                    return bootSession(api).then(function() {
+                        document.querySelector('[data-bm-action="open-debug"]').click();
+                        var drawer = document.querySelector(".blackmarket-drawer");
+                        api.assert(!!drawer, "debug drawer missing");
+                        var tp = drawer.querySelector('[data-bm-field="tradePoints"]');
+                        var level = drawer.querySelector('[data-bm-field="decryptLevel"]');
+                        tp.value = "12345";
+                        level.value = "10";
+                        drawer.querySelector('[data-bm-action="debug-apply"]').click();
+                        return api.waitFor(function() {
+                            var machine = document.querySelector(".blackmarket-machine");
+                            return machine && machine.className.indexOf("decrypt-10") >= 0 ? machine : null;
+                        }, 2500, "session restarted at Lv.10");
+                    }).then(function() {
+                        var ledgerText = document.querySelector(".blackmarket-ledger").textContent;
+                        api.assert(ledgerText.indexOf("12,345") >= 0, "debug TP not applied");
+                        var rail = document.querySelector(".blackmarket-rail").textContent;
+                        api.assert(rail.indexOf("18%") >= 0, "Lv.10 coverage target not shown");
+                        api.assert(document.querySelectorAll(".blackmarket-bay").length === 3,
+                            "session restart lost bays");
+                        return "debug drawer restarted shadow session (TP=12,345 / Lv.10 / 18% coverage)";
+                    });
+                }
+            },
+            {
+                id: "bm-ui9",
+                title: "hover 注释卡与揭晓释放边界",
+                run: function(api) {
+                    var poolEntries = (typeof BlackMarketVisualPool !== "undefined"
+                        && BlackMarketVisualPool.entries) || [];
+                    var offer;
+                    return bootSession(api).then(function() { return waitForSurfaceReady(api, 6); }).then(function() {
+                        offer = document.querySelector('[data-bm-action="select"]');
+                        // 揭晓前 hover：匿名分类卡，不得含任何清单真实名称
+                        offer.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+                        var tipEl = document.getElementById("panel-tooltip");
+                        api.assert(tipEl && tipEl.style.display !== "none", "hover tooltip missing");
+                        var anonText = tipEl.textContent || "";
+                        api.assert(anonText.indexOf("未鉴定货物") >= 0, "pre-reveal tooltip is not anonymous");
+                        poolEntries.slice(0, 400).forEach(function(entry) {
+                            api.assert(anonText.indexOf(entry.n) < 0,
+                                "pre-reveal tooltip leaked identity " + entry.n);
+                        });
+                        offer.dispatchEvent(new MouseEvent("mouseout", { bubbles: true }));
+                        // 成交一件：揭晓后 hover 出真实基础卡（harness 无 AS2，注释全文降级缺省）
+                        offer.click();
+                        document.querySelector('[data-bm-action="confirm"]').click();
+                        return api.waitFor(function() {
+                            return document.querySelector(".blackmarket-rail.reveal") ? true : null;
+                        }, 2500, "pending reveal");
+                    }).then(function() {
+                        var revealedOffer = document.querySelector(".blackmarket-offer.state-revealed");
+                        api.assert(!!revealedOffer, "revealed offer missing");
+                        var nameNode = revealedOffer.querySelector(".blackmarket-offer-name");
+                        var realName = nameNode ? nameNode.textContent.trim() : "";
+                        revealedOffer.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+                        var tipEl = document.getElementById("panel-tooltip");
+                        api.assert(tipEl && tipEl.style.display !== "none", "revealed tooltip missing");
+                        var text = tipEl.textContent || "";
+                        api.assert(text.indexOf("目录价") >= 0 || text.indexOf("未收录黑货") >= 0,
+                            "revealed tooltip missing catalog reference or banned fallback");
+                        if (realName && realName.indexOf("未鉴定") < 0) {
+                            api.assert(text.indexOf(realName) >= 0 || text.indexOf("未收录黑货") >= 0,
+                                "revealed tooltip shows neither the real name nor the banned fallback");
+                        }
+                        revealedOffer.dispatchEvent(new MouseEvent("mouseout", { bubbles: true }));
+                        // 收尾别留浮层，避免影响后续场景
+                        if (typeof PanelTooltip !== "undefined" && PanelTooltip.hide) PanelTooltip.hide();
+                        return "hover annotation card: anonymous pre-reveal / real annotation post-reveal";
+                    });
+                }
+            },
+            {
                 title: "exact close 确认丢失后恢复可重试",
                 run: function(api) {
                     var originalSend = Bridge.send;

@@ -28,6 +28,16 @@ var BlackMarketPanel = (function() {
     var _surfaceMasters = {};
     var _inspection = null;
     var _inspectionCamera = null;
+    // P2 编舞状态：_fxRevealKey 记录已播过揭晓 FX 的 pending 键（防重放），
+    // _fxBoot 只在本轮打开的首次 render 输出通电过场。FX 全部 pointer-events:none，
+    // 不拦截任何操作，逻辑时序不变。
+    var _fxRevealKey = null;
+    var _fxBoot = false;
+    var _fxActiveRevealKey = null;
+    // 撤回闸门动画门禁：innerHTML 每次渲染都会重建 DOM，不设门禁就会随无关操作重放。
+    // 按页记录已播过的舱位，同页同舱只播一次。
+    var _fxShutterPage = null;
+    var _fxShutterPlayed = {};
 
     // 与主 SWF / FlashCoordinateMapper / 既有 Web Panel 共用同一逻辑画布；
     // 物理窗口只由 PanelScale 整体等比缩放，禁止在本面板内按 viewport 重排。
@@ -65,6 +75,9 @@ var BlackMarketPanel = (function() {
         _root = _el.querySelector("[data-bm-root]");
         _el.addEventListener("click", handleClick);
         _el.addEventListener("keydown", handleKeydown);
+        _el.addEventListener("mouseover", handleTipOver);
+        _el.addEventListener("mouseout", handleTipOut);
+        // 备注：tooltip 本体是全局面板组件 PanelTooltip（#panel-tooltip），不在本面板 DOM 内
         return _scaleShell;
     }
 
@@ -88,6 +101,13 @@ var BlackMarketPanel = (function() {
         _surfaceMasters = {};
         _surfaceSnapshotKey = null;
         _inspection = null;
+        _fxRevealKey = null;
+        _fxBoot = true;
+        _fxActiveRevealKey = null;
+        _fxShutterPage = null;
+        _fxShutterPlayed = {};
+        _poolByUri = null;
+        _tipRequests = {};
         destroyInspectionCamera();
         _surfaceGeneration += 1;
         _callSequence = 0;
@@ -106,6 +126,7 @@ var BlackMarketPanel = (function() {
             render();
             notifyHost("open", sessionTelemetry());
             notifyHost("ready", sessionTelemetry());
+            notifyFx("fx-poweron");
         } catch (error) {
             if (!_panelOpen || generation !== _openGeneration) return;
             _busy = false;
@@ -124,6 +145,17 @@ var BlackMarketPanel = (function() {
             return MinigameHostBridge.resolveUrl(path);
         }
         return path;
+    }
+
+    // 表面渲染可能发生在 worker 内（fetch 以 worker 脚本为 base 解析相对路径），
+    // 非 data: 的资产 URL 一律转成页面绝对 URL 再交给渲染器。
+    function resolveAssetUrl(url) {
+        if (typeof url !== "string" || url.indexOf("data:") === 0) return url;
+        var resolved = resolveUrl(url);
+        if (typeof location !== "undefined" && typeof URL === "function") {
+            try { return new URL(resolved, location.href).href; } catch (error) { return resolved; }
+        }
+        return resolved;
     }
 
     function render() {
@@ -146,20 +178,34 @@ var BlackMarketPanel = (function() {
             _surfaceMasters = {};
             _inspection = null;
         }
+        if (_fxShutterPage !== _snapshot.page.id) {
+            _fxShutterPage = _snapshot.page.id;
+            _fxShutterPlayed = {};
+        }
+        var pendingFxKey = _snapshot.pending
+            ? _snapshot.pending.pairId + "|" + _snapshot.revision : null;
+        _fxActiveRevealKey = pendingFxKey && pendingFxKey !== _fxRevealKey ? pendingFxKey : null;
         _root.innerHTML = [
             renderHeader(),
             '<main class="blackmarket-deck">',
+                '<canvas class="blackmarket-bubbles" data-bm-bubbles aria-hidden="true"></canvas>',
                 _snapshot.pairs.map(renderPair).join(""),
             '</main>',
             renderBottomRail(),
             _error ? '<div class="blackmarket-error" role="alert"><b>操作被拒绝</b><span>'
                 + escapeHtml(_error) + '</span><button type="button" data-bm-action="dismiss-error" data-focus-key="dismiss-error">×</button></div>' : "",
             renderDrawer(),
-            renderInspection()
+            renderInspection(),
+            _fxBoot ? '<div class="blackmarket-poweron" aria-hidden="true"><i></i><i></i></div>' : ""
         ].join("");
+        hideOfferTip();
+        if (pendingFxKey) _fxRevealKey = pendingFxKey;
+        _fxActiveRevealKey = null;
+        _fxBoot = false;
         restoreFocus(focusKey);
         mountInspection();
         scheduleSurfaceHydration();
+        ensureBubbles();
     }
 
     function renderHeader() {
@@ -167,16 +213,21 @@ var BlackMarketPanel = (function() {
         return [
             '<header class="blackmarket-header">',
                 '<div class="blackmarket-brand">',
-                    '<span>FALLEN CITY / ILLEGAL APPRAISAL</span>',
-                    '<h1>盗贼黑市 · 匿名影子检货台</h1>',
+                    '<span>TERMINATOR SYNTHESIZER / APPRAISAL UNIT</span>',
+                    '<h1>终结者合成台 · 匿名鉴定舱</h1>',
                 '</div>',
                 '<div class="blackmarket-ledger">',
-                    ledgerCell("TP", formatNumber(_snapshot.balances.tradePoints), "commerce"),
-                    ledgerCell("K", formatNumber(_snapshot.balances.kPoints), "tech"),
-                    ledgerCell("解密", "Lv." + _snapshot.decryptLevel, "tech"),
-                    ledgerCell("夹具", stats.mechanicallyRenderable + " / " + stats.totalItems, ""),
+                    ledgerCell("TP", formatNumber(_snapshot.balances.tradePoints), "vial-green",
+                        logFill(_snapshot.balances.tradePoints, 7), !!_selectedOfferId && _payment === "tp"),
+                    ledgerCell("K", formatNumber(_snapshot.balances.kPoints), "vial-cyan",
+                        logFill(_snapshot.balances.kPoints, 5), !!_selectedOfferId && _payment === "k"),
+                    ledgerCell("解密", "Lv." + _snapshot.decryptLevel, "vial-purple",
+                        Math.min(1, _snapshot.decryptLevel / 5), false),
+                    ledgerCell("夹具", stats.mechanicallyRenderable + " / " + stats.totalItems, "vial-red",
+                        stats.totalItems ? stats.mechanicallyRenderable / stats.totalItems : 0, false),
                 '</div>',
                 '<div class="blackmarket-head-actions">',
+                    '<button type="button" data-bm-action="open-debug" data-focus-key="debug">调试</button>',
                     '<button type="button" data-bm-action="open-help" data-focus-key="help">说明</button>',
                     '<button class="danger" type="button" data-bm-action="close" data-focus-key="close" aria-label="关闭黑市测试">×</button>',
                 '</div>',
@@ -186,9 +237,18 @@ var BlackMarketPanel = (function() {
         ].join("");
     }
 
-    function ledgerCell(label, value, tone) {
-        return '<div class="blackmarket-ledger-cell ' + tone + '"><span>' + escapeHtml(label)
-            + '</span><strong>' + escapeHtml(value) + '</strong></div>';
+    // 货币类无硬上限，液面用对数刻度（decades=满管数量级）；解密/夹具用真实比例
+    function logFill(value, decades) {
+        var numeric = Math.max(1, Number(value) || 0);
+        return Math.max(0.08, Math.min(1, Math.log(numeric) / Math.LN10 / decades));
+    }
+
+    function ledgerCell(label, value, vial, fill, armed) {
+        var pct = Math.round(Math.max(0, Math.min(1, Number(fill) || 0)) * 100);
+        return '<div class="blackmarket-ledger-cell ' + vial + (armed ? ' is-armed' : '') + '">'
+            + '<span class="blackmarket-vial-tube" aria-hidden="true"><i style="height:' + pct + '%"></i></span>'
+            + '<div class="blackmarket-ledger-text"><span>' + escapeHtml(label)
+            + '</span><strong>' + escapeHtml(value) + '</strong></div></div>';
     }
 
     function renderPair(pair) {
@@ -226,8 +286,20 @@ var BlackMarketPanel = (function() {
         var direction = offer.direction ? '<span class="blackmarket-direction ' + offer.direction + '">'
             + (offer.direction === "profit" ? "回售盈利" : "回售亏损") + '</span>' : "";
         var terminal = "";
-        if (offer.visualState === "withdrawn") terminal = '<span class="blackmarket-shutter"><b></b><b></b><b></b><em>同舱撤回</em></span>';
+        if (offer.visualState === "withdrawn") {
+            var shutterFresh = !_fxShutterPlayed[pair.pairId];
+            _fxShutterPlayed[pair.pairId] = true;
+            terminal = '<span class="blackmarket-shutter' + (shutterFresh ? ' is-fresh' : '')
+                + '"><b></b><b></b><b></b><em>同舱撤回</em></span>';
+        }
         if (offer.visualState === "sealed") terminal = '<span class="blackmarket-sealed">整舱封签</span>';
+        // 揭晓三段式 FX（爪落→扫描→盈/亏闪光）：纯装饰覆盖层，只在 pending 首次渲染出现一次
+        var revealFx = "";
+        if (offer.revealed && _fxActiveRevealKey && _snapshot.pending
+                && _snapshot.pending.pairId === pair.pairId) {
+            revealFx = '<span class="bm-fx-reveal tone-' + escapeAttr(offer.revealed.direction || "loss")
+                + '" aria-hidden="true"><i class="bm-fx-claw"></i><i class="bm-fx-scan"></i><i class="bm-fx-flash"></i></span>';
+        }
         return [
             '<button type="button" class="blackmarket-offer ', selected ? "is-selected " : "", 'state-', offer.visualState,
                 '" data-bm-action="select" data-pair-id="', escapeAttr(pair.pairId), '" data-offer-id="', escapeAttr(offer.offerId),
@@ -240,11 +312,15 @@ var BlackMarketPanel = (function() {
                     '<span class="blackmarket-surface-guard" aria-hidden="true"><b>表面封存</b></span>',
                     '<span class="blackmarket-surface-readout" data-bm-surface-readout="', escapeAttr(offer.offerId), '"></span>',
                     terminal,
+                    revealFx,
                 '</span>',
                 direction,
                 '<strong class="blackmarket-offer-name">', escapeHtml(name), '</strong>',
                 '<small>', revealed
-                    ? '基础价 ' + formatNumber(revealed.basePrice) + ' · 回售 ' + formatNumber(revealed.resellValue)
+                    ? (revealed.realInfo
+                        ? '目录价 ' + formatNumber(revealed.realInfo.catalogPrice)
+                            + ' TP · 回售 ' + formatNumber(revealed.realInfo.saleValue) + ' TP'
+                        : '基础价 ' + formatNumber(revealed.basePrice) + ' · 回售 ' + formatNumber(revealed.resellValue))
                     : (offer.hint ? escapeHtml(offer.hint) : "身份封存 · 安全表面"), '</small>',
             '</button>'
         ].join("");
@@ -294,7 +370,7 @@ var BlackMarketPanel = (function() {
                     var surfaceSeed = visual.seed;
                     return renderer.render(canvas, {
                         offerId: offer.offerId,
-                        assetUrl: visual.assetUrl,
+                        assetUrl: resolveAssetUrl(visual.assetUrl),
                         sourceKey: visual.sourceKey,
                         sourceKind: visual.sourceKind,
                         sourceComposition: visual.sourceComposition || null,
@@ -310,7 +386,9 @@ var BlackMarketPanel = (function() {
                         paddingRatio: 0.065,
                         renderWidth: SURFACE_MASTER_WIDTH,
                         renderHeight: SURFACE_MASTER_HEIGHT,
-                        sharpenSource: visual.sharpenSource === true,
+                        // 揭晓后的干净展示：保留源半透边缘（不修边锯齿），且不再叠加低清锐化
+                        preserveSourceAlpha: offer.visualState === "revealed",
+                        sharpenSource: offer.visualState === "revealed" ? false : visual.sharpenSource === true,
                         sharpenStrength: 0.18,
                         debug: false,
                         onComplete: function(metrics, completedCanvas) {
@@ -481,6 +559,7 @@ var BlackMarketPanel = (function() {
 
     function renderDrawer() {
         if (!_drawer) return "";
+        if (_drawer === "debug") return renderDebugDrawer();
         var body = '<h2>匿名影子入口边界</h2><ol>'
             + '<li>普通面板只生成与真实目录无关的六件匿名合成货物，不加载物品名、ID、资源地址或回售价目录。</li>'
             + '<li>影子购买、回售和余额只存在于当前 Web 会话；所有揭晓名称与数值均为合成夹具。</li>'
@@ -490,6 +569,73 @@ var BlackMarketPanel = (function() {
         return '<div class="blackmarket-overlay"><aside class="blackmarket-drawer" role="dialog" aria-modal="true" aria-label="黑市实验说明">'
             + '<header><span>BLACK MARKET SHADOW</span><button type="button" data-bm-action="close-drawer" data-focus-key="close-drawer" aria-label="关闭">×</button></header>'
             + body + '</aside></div>';
+    }
+
+    // 调试抽屉：只调整匿名影子会话的四个白名单数值参数（core validateOptions 只允许
+    // tradePoints/kPoints/supplyCredits/decryptLevel/seed），不碰目录、身份或视觉池；
+    // 面板本身就锁定在 dev + shadowOnly，此抽屉是给测试员覆盖覆盖率/经济分支的工具。
+    function renderDebugDrawer() {
+        var b = _snapshot.balances;
+        var levels = [0, 3, 5, 10].map(function(level) {
+            return '<option value="' + level + '"'
+                + (_snapshot.decryptLevel === level ? ' selected' : '') + '>Lv.' + level
+                + '（覆盖 ' + Math.round((({ 0: 0.97, 3: 0.84, 5: 0.54, 10: 0.18 })[level]) * 100) + '%）</option>';
+        }).join("");
+        return '<div class="blackmarket-overlay"><aside class="blackmarket-drawer" role="dialog" aria-modal="true" aria-label="黑市调试抽屉">'
+            + '<header><span>SHADOW DEBUG</span><button type="button" data-bm-action="close-drawer" data-focus-key="close-drawer" aria-label="关闭">×</button></header>'
+            + '<h2>会话参数（影子重开）</h2>'
+            + '<div class="blackmarket-debug-grid">'
+            + '<label>解密等级<select data-bm-field="decryptLevel">' + levels + '</select></label>'
+            + '<label>TP 余额<input type="number" min="0" step="1000" data-bm-field="tradePoints" value="' + b.tradePoints + '"></label>'
+            + '<label>K 余额<input type="number" min="0" step="100" data-bm-field="kPoints" value="' + b.kPoints + '"></label>'
+            + '<label>补货信用<input type="number" min="0" step="1" data-bm-field="supplyCredits" value="' + b.supplyCredits + '"></label>'
+            + '</div>'
+            + '<p class="blackmarket-debug-note">应用 = 以新参数重开匿名影子会话（当前页进度丢弃）。'
+            + '只影响本测试会话，不写正式存档；目录/身份/视觉池不在可调范围。</p>'
+            + '<div class="blackmarket-drawer-actions">'
+            + '<button type="button" data-bm-action="debug-apply" data-focus-key="debug-apply">应用并重开</button>'
+            + '<button type="button" data-bm-action="debug-reset" data-focus-key="debug-reset">恢复默认</button>'
+            + '</div></aside></div>';
+    }
+
+    function readDebugOptions(defaults) {
+        var options = defaults || {};
+        var fields = _root.querySelectorAll("[data-bm-field]");
+        for (var index = 0; index < fields.length; index += 1) {
+            var field = fields[index];
+            var key = field.getAttribute("data-bm-field");
+            var value = Number(field.value);
+            if (!isFinite(value) || value < 0) throw new Error("调试参数非法：" + key);
+            if (key === "decryptLevel" && [0, 3, 5, 10].indexOf(value) < 0) {
+                throw new Error("解密等级非法");
+            }
+            options[key] = Math.floor(value);
+        }
+        return options;
+    }
+
+    function restartSession(options) {
+        _session = BlackMarketCore.createShadowSession(options);
+        _snapshot = _session.product.open();
+        _selectedPairId = null;
+        _selectedOfferId = null;
+        _payment = "tp";
+        _preview = null;
+        _busy = false;
+        _error = null;
+        _fxRevealKey = null;
+        _fxShutterPlayed = {};
+        notifyHost("debug-restart", sessionTelemetry());
+        render();
+    }
+
+    function applyDebugOptions(options) {
+        try {
+            restartSession(readDebugOptions(options || {}));
+        } catch (error) {
+            _error = error && error.message ? error.message : String(error);
+            render();
+        }
     }
 
     function renderInspection() {
@@ -520,7 +666,9 @@ var BlackMarketPanel = (function() {
             + '<div class="blackmarket-inspection-viewport" data-bm-inspection-viewport tabindex="0" '
             + 'aria-label="' + escapeAttr(title + "覆泥证据，可拖拽与滚轮缩放") + '">'
             + '<div class="blackmarket-inspection-stage" data-bm-inspection-stage>'
-            + '<canvas data-bm-inspection-canvas width="1" height="1" aria-hidden="true"></canvas></div></div>'
+            + '<canvas data-bm-inspection-canvas width="1" height="1" aria-hidden="true"></canvas></div>'
+            + '<span class="bm-scan-hud" aria-hidden="true"><i class="bm-hud-v"></i><i class="bm-hud-h"></i>'
+            + '<i class="bm-hud-corners"></i><i class="bm-hud-sweep"></i></span></div>'
             + '<footer><div class="blackmarket-inspection-evidence"><b>' + escapeHtml(sourceLabel)
             + '</b><span>只放大同一份覆泥证据；不会降低覆盖或重新生成破局点。</span></div>'
             + '<div class="blackmarket-inspection-toolbar"><div data-bm-inspection-controls></div>'
@@ -624,6 +772,19 @@ var BlackMarketPanel = (function() {
         target.setAttribute("data-inspection-rotation", String(rotation));
     }
 
+    function mergeTelemetry(base, extra) {
+        var merged = {};
+        var source = base || {};
+        var patch = extra || {};
+        for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) merged[key] = source[key];
+        }
+        for (var extraKey in patch) {
+            if (Object.prototype.hasOwnProperty.call(patch, extraKey)) merged[extraKey] = patch[extraKey];
+        }
+        return merged;
+    }
+
     function openInspection(pairId, offerId, opener) {
         var pair = findPair(pairId);
         var offer = pair && findOffer(pair, offerId);
@@ -637,7 +798,8 @@ var BlackMarketPanel = (function() {
             rotation: 0,
             openerKey: opener && opener.getAttribute ? opener.getAttribute("data-focus-key") : null
         };
-        notifyHost("inspection-open", merge(sessionTelemetry(), {
+        notifyFx("fx-scan-open");
+        notifyHost("inspection-open", mergeTelemetry(sessionTelemetry(), {
             pairIndex: pair.index,
             side: offer.side,
             sourceKind: surfaceMaster(offerId).metrics.sourceKind || "icon"
@@ -669,8 +831,16 @@ var BlackMarketPanel = (function() {
         var canvas = _root.querySelector("[data-bm-inspection-canvas]");
         if (!master || !canvas) return;
         _inspection.rotation = ((_inspection.rotation || 0) + 90) % 360;
+        notifyFx("fx-scan-rotate");
         destroyInspectionCamera();
         mountInspection();
+        // 机械卡位顿挫：重启动画类（移除→强制 reflow→加回）
+        var viewport = _root.querySelector("[data-bm-inspection-viewport]");
+        if (viewport) {
+            viewport.classList.remove("is-detent");
+            void viewport.offsetWidth;
+            viewport.classList.add("is-detent");
+        }
         var output = _root.querySelector("[data-bm-inspection-rotation]");
         if (output) output.textContent = "当前旋转 " + _inspection.rotation + "°";
     }
@@ -680,12 +850,244 @@ var BlackMarketPanel = (function() {
         _inspectionCamera = null;
     }
 
+    // ── P3 舱液气泡环境层 ────────────────────────────────────────
+    // 极轻 canvas 循环：只画圆形 alpha 点；复用全局 perf-frame-limiter 接管后的 rAF；
+    // reduced-motion / 隐藏标签页 / 面板关闭时完全停止；innerHTML 重建后自动重挂。
+    var _bubbles = null;
+
+    function ensureBubbles() {
+        if (_bubbles && _bubbles.canvas && _bubbles.canvas.isConnected) return;
+        startBubbles();
+    }
+
+    function startBubbles() {
+        stopBubbles();
+        if (typeof document === "undefined") return;
+        if (typeof matchMedia === "function"
+                && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        var canvas = _root && _root.querySelector("[data-bm-bubbles]");
+        if (!canvas || !canvas.getContext) return;
+        var deck = canvas.parentElement;
+        var width = deck.clientWidth || 0;
+        var height = deck.clientHeight || 0;
+        if (!width || !height) return;
+        var dpr = Math.min(1.5, (typeof devicePixelRatio === "number" && devicePixelRatio) || 1);
+        canvas.width = Math.max(1, Math.round(width * dpr));
+        canvas.height = Math.max(1, Math.round(height * dpr));
+        var context = canvas.getContext("2d");
+        if (!context) return;
+        context.scale(dpr, dpr);
+        // 本地确定性 LCG：环境粒子不需要密码学熵，也不消费会话私有熵流
+        var rngState = 0x9e3779b9;
+        var rand = function() {
+            rngState = (Math.imul(rngState, 1664525) + 1013904223) >>> 0;
+            return rngState / 4294967296;
+        };
+        var bubbles = [];
+        var count = Math.max(14, Math.min(30, Math.round(width / 34)));
+        for (var index = 0; index < count; index += 1) {
+            bubbles.push({
+                x: rand() * width,
+                y: rand() * height,
+                r: 1.2 + rand() * 3.4,
+                speed: 9 + rand() * 20,
+                phase: rand() * 6.2832,
+                wobble: 0.4 + rand() * 1.2
+            });
+        }
+        var running = true;
+        var last = 0;
+        var frame = function(now) {
+            if (!running) return;
+            if (document.hidden) { last = now; schedule(); return; }
+            var dt = Math.min(0.1, last ? (now - last) / 1000 : 0.016);
+            last = now;
+            context.clearRect(0, 0, width, height);
+            for (var b = 0; b < bubbles.length; b += 1) {
+                var bubble = bubbles[b];
+                bubble.y -= bubble.speed * dt;
+                bubble.phase += bubble.wobble * dt;
+                if (bubble.y < -8) { bubble.y = height + 8; bubble.x = rand() * width; }
+                var x = bubble.x + Math.sin(bubble.phase) * 3;
+                context.beginPath();
+                context.arc(x, bubble.y, bubble.r, 0, 6.2832);
+                context.fillStyle = "rgba(178, 240, 232, 0.10)";
+                context.fill();
+                context.beginPath();
+                context.arc(x - bubble.r * 0.35, bubble.y - bubble.r * 0.35, bubble.r * 0.32, 0, 6.2832);
+                context.fillStyle = "rgba(255, 255, 255, 0.22)";
+                context.fill();
+            }
+            schedule();
+        };
+        var schedule = function() {
+            if (running && typeof requestAnimationFrame === "function") requestAnimationFrame(frame);
+        };
+        _bubbles = { canvas: canvas, stop: function() { running = false; } };
+        schedule();
+    }
+
+    function stopBubbles() {
+        if (_bubbles) { _bubbles.stop(); _bubbles = null; }
+    }
+
+    // ── hover 属性预览（注释释放）────────────────────────────────
+    // 允许物品（e!=="banned"）揭晓后悬停给出完整真实属性；未揭晓时只给同组分类注释，
+    // 不泄名称/价格（盲盒猜测层保留）。tooltip 纯展示、pointer-events:none。
+
+    var _poolByUri = null;
+
+    function poolEntryByUri() {
+        if (_poolByUri) return _poolByUri;
+        _poolByUri = {};
+        var manifest = typeof globalThis !== "undefined" ? globalThis.BlackMarketVisualPool : null;
+        var entries = manifest && Array.isArray(manifest.entries) ? manifest.entries : [];
+        for (var index = 0; index < entries.length; index += 1) {
+            if (entries[index] && entries[index].u) _poolByUri[entries[index].u] = entries[index];
+        }
+        return _poolByUri;
+    }
+
+    function tipEntryForOffer(offer) {
+        if (!_session || !_session.surface || !offer) return null;
+        try {
+            var visual = _session.surface.resolveSurface(offer.visualHandle);
+            return poolEntryByUri()[visual.assetUrl] || null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    // 注释层统一走全局 PanelTooltip + buildItemRichHtml（与商店/装备等面板同一套）；
+    // 注释全文运行时经 Host → AS2 blackmarketTooltip 问游戏权威数据源（零派生副本，
+    // 平衡性调整改 data/items XML 即生效）；Host/AS2 缺席（harness）时降级为基础卡。
+    var TIP_OWNER = "blackmarket-offer-tip";
+    var _tipOfferId = null;
+    var _tipReqSeq = 0;
+    var _tipRequests = {};
+    var _tipBridgeBound = false;
+
+    function buildAnonTipHtml(entry) {
+        return '<div class="bm-ann bm-ann-anon"><b>未鉴定货物</b><br>'
+            + (entry ? '<span class="bm-ann-tax">特征分类 · ' + escapeHtml((entry.t || "物品")
+                + (entry.sc ? " / " + entry.sc : "")) + '</span><br>' : "")
+            + '<span class="bm-ann-note">覆泥下可见特征点；成交后释放完整注释</span></div>';
+    }
+
+    function buildRevealTipHtml(entry, info, rich) {
+        var metaHTML = '<div class="bm-ann-name">' + escapeHtml(info.name) + '</div>'
+            + '<div class="bm-ann-tax">' + escapeHtml((info.type || "物品")
+                + (info.subclass ? " · " + info.subclass : "")) + '</div>'
+            + '<div class="bm-ann-price">目录价 ' + formatNumber(info.catalogPrice)
+            + ' TP · 回售 ' + formatNumber(info.saleValue) + ' TP</div>';
+        var introWebHTML = "";
+        var descHTML = "";
+        if (rich) {
+            // AS2 权威注释：introHTML/descHTML 直接走 buildItemRichHtml 的 AS2 转换链
+            introWebHTML = typeof rich.introWebHTML === "string" ? rich.introWebHTML : "";
+            descHTML = typeof rich.descHTML === "string" ? rich.descHTML : "";
+        }
+        var richOpts = {
+            iconUrl: resolveAssetUrl(entry.u),
+            metaHTML: metaHTML,
+            introWebHTML: introWebHTML,
+            descHTML: descHTML
+        };
+        if (rich && typeof rich.introHTML === "string") richOpts.introHTML = rich.introHTML;
+        return PanelTooltip.buildItemRichHtml(richOpts);
+    }
+
+    // 面板→Host→AS2 注释请求；harness/无 webview 环境 Bridge.send 返回 false，静默降级
+    function requestAs2Annotation(entry, offer) {
+        if (typeof Bridge === "undefined" || !Bridge.send) return;
+        if (typeof Bridge.on === "function") bindTipBridge();
+        var panelInstanceId = _init && _init.panelInstanceId;
+        var callId = "bm-tip-" + (++_tipReqSeq);
+        _tipRequests[callId] = { offerId: offer.offerId, entry: entry, info: offer.revealed.realInfo };
+        var sent = Bridge.send({
+            type: "panel",
+            panel: "blackmarket",
+            cmd: "tooltip",
+            callId: callId,
+            panelInstanceId: panelInstanceId || "",
+            itemName: entry.k || entry.n
+        });
+        if (sent !== true) delete _tipRequests[callId];
+    }
+
+    function bindTipBridge() {
+        if (_tipBridgeBound || typeof Bridge === "undefined" || !Bridge.on) return;
+        _tipBridgeBound = true;
+        Bridge.on("panel_resp", function(data) {
+            if (!data || data.panel !== "blackmarket" || data.cmd !== "tooltip") return;
+            var pending = _tipRequests[data.callId];
+            if (!pending) return;
+            delete _tipRequests[data.callId];
+            if (!_panelOpen || _tipOfferId !== pending.offerId) return;
+            if (!data.success || typeof PanelTooltip === "undefined"
+                    || !PanelTooltip.isVisible(TIP_OWNER)) return;
+            PanelTooltip.updateContent(buildRevealTipHtml(pending.entry, pending.info, {
+                introHTML: typeof data.introHTML === "string" ? data.introHTML : "",
+                descHTML: typeof data.descHTML === "string" ? data.descHTML : ""
+            }), TIP_OWNER);
+        });
+    }
+
+    function showOfferTip(offerEl) {
+        if (typeof PanelTooltip === "undefined" || !_snapshot || !_session) return;
+        var located = findSnapshotOffer(offerEl.getAttribute("data-offer-id"));
+        if (!located) return;
+        var offer = located.offer;
+        var entry = tipEntryForOffer(offer);
+        var revealed = offer.revealed;
+        _tipOfferId = offer.offerId;
+        var anchorOpts = { owner: TIP_OWNER, autoClose: 0, outsideClick: false, placement: "right" };
+        if (revealed && revealed.realInfo && entry) {
+            PanelTooltip.showAnchored(buildRevealTipHtml(entry, revealed.realInfo, null), offerEl, anchorOpts);
+            requestAs2Annotation(entry, offer);
+        } else if (revealed) {
+            PanelTooltip.showAnchored('<div class="bm-ann bm-ann-anon"><b>未收录黑货</b><br>'
+                + '<span class="bm-ann-note">该货物不在允许清单，注释不予释放</span></div>',
+                offerEl, anchorOpts);
+        } else {
+            PanelTooltip.showAnchored(buildAnonTipHtml(entry), offerEl, anchorOpts);
+        }
+    }
+
+    function hideOfferTip() {
+        _tipOfferId = null;
+        if (typeof PanelTooltip !== "undefined" && PanelTooltip.hide) PanelTooltip.hide(TIP_OWNER);
+    }
+
+    function handleTipOver(event) {
+        var offerEl = event.target.closest ? event.target.closest(".blackmarket-offer") : null;
+        if (!offerEl || !_el.contains(offerEl)) return;
+        showOfferTip(offerEl);
+    }
+
+    function handleTipOut(event) {
+        var offerEl = event.target.closest ? event.target.closest(".blackmarket-offer") : null;
+        if (!offerEl) return;
+        var related = event.relatedTarget;
+        if (related && offerEl.contains(related)) return;
+        if (typeof PanelTooltip !== "undefined" && PanelTooltip.hideHover) PanelTooltip.hideHover(TIP_OWNER);
+    }
+
     function handleClick(event) {
         var actionEl = event.target.closest("[data-bm-action]");
         if (!actionEl || !_el.contains(actionEl)) return;
         var action = actionEl.getAttribute("data-bm-action");
         if (action === "close") { closePanel(); return; }
         if (action === "open-help") { openDrawer("help", actionEl); return; }
+        if (action === "open-debug") { openDrawer("debug", actionEl); return; }
+        if (action === "debug-apply") { applyDebugOptions(); return; }
+        if (action === "debug-reset") {
+            try { restartSession({}); } catch (error) {
+                _error = error && error.message ? error.message : String(error);
+                render();
+            }
+            return;
+        }
         if (action === "close-drawer") { closeDrawer(); return; }
         if (action === "close-inspection") { closeInspection(); return; }
         if (action === "inspection-rotate") { rotateInspection(); return; }
@@ -703,6 +1105,7 @@ var BlackMarketPanel = (function() {
             _selectedPairId = actionEl.getAttribute("data-pair-id");
             _selectedOfferId = actionEl.getAttribute("data-offer-id");
             _payment = "tp";
+            notifyFx("fx-select");
             refreshPreview();
             return;
         }
@@ -755,8 +1158,16 @@ var BlackMarketPanel = (function() {
             _error = null;
             if (clear) clearSelection();
             notifyHost(eventKind, sessionTelemetry());
+            if (eventKind === "purchase" && snapshot.pending) {
+                var pendingPair = findPair(snapshot.pending.pairId);
+                var pendingOffer = pendingPair && findOffer(pendingPair, snapshot.pending.offerId);
+                notifyFx("fx-reveal-" + (pendingOffer && pendingOffer.revealed
+                    ? pendingOffer.revealed.direction : "loss"));
+            }
+            if (eventKind === "skip") notifyFx("fx-drain");
         }).catch(function(error) {
             _error = error && error.message ? error.message : String(error);
+            notifyFx("fx-error");
             if (_session) _snapshot = _session.product.open();
         }).then(function() {
             _busy = false;
@@ -806,6 +1217,7 @@ var BlackMarketPanel = (function() {
     }
 
     function closePanel() {
+        if (_scaleShell) _scaleShell.classList.add("is-powering-off");
         if (_closePending) return true;
         var panelInstanceId = _init && _init.panelInstanceId;
         if (!panelInstanceId || typeof Bridge === "undefined" || !Bridge.send) {
@@ -869,6 +1281,8 @@ var BlackMarketPanel = (function() {
         _surfaceSnapshotKey = null;
         _inspection = null;
         destroyInspectionCamera();
+        hideOfferTip();
+        stopBubbles();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = null;
         if (_surfaceRenderer) _surfaceRenderer.destroy();
@@ -892,6 +1306,17 @@ var BlackMarketPanel = (function() {
         if (!_panelOpen && kind !== "close") return false;
         if (typeof MinigameHostBridge !== "undefined" && MinigameHostBridge.sendSession) {
             return MinigameHostBridge.sendSession("blackmarket", kind, data || {});
+        }
+        return false;
+    }
+
+    // P2 演出钩子：给 Host/未来的音效系统暴露机器演出时刻。纯通知、无状态依赖，
+    // Host 缺席时静默为 no-op。kind 全集：fx-select / fx-reveal-profit / fx-reveal-loss /
+    // fx-error / fx-scan-open / fx-scan-rotate / fx-drain / fx-poweron。
+    function notifyFx(name) {
+        if (!_panelOpen) return false;
+        if (typeof MinigameHostBridge !== "undefined" && MinigameHostBridge.sendSession) {
+            return MinigameHostBridge.sendSession("blackmarket", "fx", { fx: name });
         }
         return false;
     }

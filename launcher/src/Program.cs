@@ -2035,6 +2035,8 @@ class Program
         MercTask mercTask = new MercTask(socketServer);
         TaskTask taskTask = new TaskTask(socketServer);
         IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot, socketServer);
+        // 黑市鉴定（匿名影子测试）：AS2 权威注释通道，仅 tooltip 一跳
+        BlackMarketTask blackMarketTask = new BlackMarketTask(socketServer);
         ArchiveTask archiveTask;
         using (PerfTrace.Scope("task.archive_init"))
         {
@@ -2092,7 +2094,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2122,6 +2124,7 @@ class Program
         webOverlay.SetMercTask(mercTask);
         webOverlay.SetTaskTask(taskTask);
         webOverlay.SetIntelligenceTask(intelligenceTask);
+        webOverlay.SetBlackMarketTask(blackMarketTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);
         socketServer.OnClientDisconnectedForGeneration += webOverlay.OnSocketDisconnected;
@@ -2256,6 +2259,7 @@ class Program
             mapTask.Dispose();
             stageSelectTask.Dispose();
             intelligenceTask.Dispose();
+            blackMarketTask.Dispose();
             socketServer.SetFrameHandler(null);
             socketServer.SetNotchHandler(null);
         };
@@ -3182,6 +3186,7 @@ class Program
         try { mapTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }
         try { intelligenceTask.Dispose(); } catch { }
+        try { blackMarketTask.Dispose(); } catch { }
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }
         try { if (panelHost != null) panelHost.Dispose(); } catch { }

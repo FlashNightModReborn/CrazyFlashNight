@@ -34,8 +34,11 @@
     var COVERAGE_BY_LEVEL = { 0: 0.97, 3: 0.84, 5: 0.54, 10: 0.18 };
     var PRICE_POINTS = [5000, 7500, 10000, 15000, 20000, 30000];
     var MAX_RECEIPTS = 64;
+    // 匿名视觉池：visual/visual-pool-manifest.js（tools/bake-black-market-visual-pool.js
+    // 生成，--check 可复验）提供全目录渲染资格清单（仅 u/h 渲染字段，零身份字段）。
+    // 覆泥像素允许被认出（设计意图：能猜、猜不准价）；清单缺失时回退固定安全 SVG。
     var SAFE_SURFACE_DATA_URL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent([
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 192">',
+        '<svg xmlns="http://www.w3.org/2000/svg" width="128" height="192" viewBox="0 0 128 192">',
         '<path fill="#87908b" d="M25 35h78l13 25-9 98-43 22-43-22-9-98z"/>',
         '<path fill="#59635f" d="M25 35l39 20 39-20 13 25-52 25-52-25z"/>',
         '<path fill="#a7afa9" d="M58 55h12v113H58z"/>',
@@ -76,6 +79,69 @@
             hash = Math.imul(hash, 16777619) >>> 0;
         }
         return hash >>> 0;
+    }
+
+    // 同组配对分配：同一货舱左右两件来自同一分组（g 键），同页六件互不重复；
+    // 分组不足三对时退化为全池不重复抽取（视觉多样性优先，约束让位）；空池返回 []。
+    function shuffleInPlace(list, rng) {
+        for (var cursor = list.length - 1; cursor > 0; cursor -= 1) {
+            var target = rng.int(cursor + 1);
+            var tmp = list[cursor];
+            list[cursor] = list[target];
+            list[target] = tmp;
+        }
+    }
+
+    function planVisualAssignments(rng, entries) {
+        if (!entries.length) return [];
+        var groups = {};
+        var groupOrder = [];
+        var index;
+        for (index = 0; index < entries.length; index += 1) {
+            var key = String(entries[index].g || "?");
+            if (!groups[key]) {
+                groups[key] = [];
+                groupOrder.push(key);
+            }
+            groups[key].push(index);
+        }
+        shuffleInPlace(groupOrder, rng);
+        var picked = [];
+        for (var groupCursor = 0; groupCursor < groupOrder.length && picked.length < 6; groupCursor += 1) {
+            var members = groups[groupOrder[groupCursor]];
+            if (members.length < 2) continue;
+            shuffleInPlace(members, rng);
+            picked.push(members[0], members[1]);
+        }
+        if (picked.length < 6) {
+            var flat = [];
+            for (index = 0; index < entries.length; index += 1) flat.push(index);
+            shuffleInPlace(flat, rng);
+            picked = flat.slice(0, 6);
+        }
+        return picked;
+    }
+
+    var visualPoolCache = null;
+
+    // 读取生成的视觉池清单；浏览器走 UMD 全局，Node 走相对 require，双通道同一文件。
+    function visualPoolEntries() {
+        if (visualPoolCache) return visualPoolCache;
+        var manifest = null;
+        if (typeof globalThis !== "undefined" && globalThis.BlackMarketVisualPool) {
+            manifest = globalThis.BlackMarketVisualPool;
+        } else if (environment.commonJs) {
+            try {
+                manifest = require("../visual/visual-pool-manifest.js");
+            } catch (error) {
+                manifest = null;
+            }
+        }
+        var entries = manifest && Array.isArray(manifest.entries) ? manifest.entries : [];
+        visualPoolCache = entries.filter(function(entry) {
+            return entry && typeof entry.u === "string" && /^icons\/[0-9a-f]+_\d+\.webp$/.test(entry.u);
+        });
+        return visualPoolCache;
     }
 
     function deterministicHex(label, sequence, byteLength) {
@@ -193,6 +259,12 @@
             var rng = createByteRng(nextBytes);
             var pairs = [];
             var pairIndex;
+            // 同组配对约束（对齐 exact oracle 的 same-subclass-price-strata）：同一货舱左右
+            // 两件必为同组物品（subclass 粗分类），同页六件零撞车；视觉只是像素，分组键是
+            // 粗分类法，不构成身份/价格泄漏。纯内部字段，不进公开快照。
+            var poolEntries = visualPoolEntries();
+            var visualPlan = planVisualAssignments(rng, poolEntries);
+            var poolAssignCursor = 0;
             for (pairIndex = 1; pairIndex <= 3; pairIndex += 1) {
                 var pairId = "P" + pageNumber + "-" + pairIndex;
                 var counterPriceTp = PRICE_POINTS[rng.int(PRICE_POINTS.length)];
@@ -206,14 +278,17 @@
 
                 function makeOffer(side, high, handle, surfaceSeed) {
                     var settlementTp = high ? highSettlementTp : lowSettlementTp;
-                    return {
+                    var offer = {
                         offerId: pairId + "-" + side,
                         side: side,
                         visualHandle: handle,
                         settlementTp: settlementTp,
                         syntheticTier: high ? "high" : "low",
-                        surfaceSeed: surfaceSeed
+                        surfaceSeed: surfaceSeed,
+                        visualPool: visualPlan.length ? visualPlan[poolAssignCursor % visualPlan.length] : -1
                     };
+                    poolAssignCursor += 1;
+                    return offer;
                 }
 
                 pairs.push({
@@ -439,13 +514,21 @@
                 }
                 var valueDelta = offer.settlementTp
                     - (preview.payment === "tp" ? preview.cost : preview.cost * 50);
+                // 揭晓释放：允许物品（e !== "banned"）给出真实身份与目录参考价；
+                // 购买前快照仍然零身份字段（bm22/bm-ui2 不变），释放只发生在成交之后。
+                var poolEntries = visualPoolEntries();
+                var poolEntry = (typeof offer.visualPool === "number" && offer.visualPool >= 0
+                    && poolEntries.length)
+                    ? poolEntries[offer.visualPool % poolEntries.length] : null;
+                var releasable = poolEntry && poolEntry.e !== "banned";
                 progress[pair.pairId] = {
                     status: "pending",
                     selectedOfferId: offer.offerId,
                     payment: preview.payment,
                     paidAmount: preview.cost,
                     revealed: {
-                        displayName: "匿名影子货物 · " + (offer.syntheticTier === "high" ? "高值" : "低值"),
+                        displayName: releasable ? poolEntry.n
+                            : "匿名影子货物 · " + (offer.syntheticTier === "high" ? "高值" : "低值"),
                         quantity: 1,
                         basePrice: offer.settlementTp * 4,
                         resellValue: offer.settlementTp,
@@ -455,7 +538,15 @@
                         deltaK: preview.payment === "k" ? -preview.cost : 0,
                         deltaV: valueDelta,
                         direction: valueDelta > 0 ? "profit" : "loss",
-                        wasWinner: valueDelta > 0
+                        wasWinner: valueDelta > 0,
+                        realInfo: releasable ? {
+                            name: poolEntry.n,
+                            type: poolEntry.t,
+                            subclass: poolEntry.sc,
+                            catalogPrice: poolEntry.p,
+                            saleValue: poolEntry.s,
+                            actionType: poolEntry.at
+                        } : null
                     },
                     settlement: null
                 };
@@ -543,17 +634,38 @@
         var surfacePort = {
             resolveSurface: function(visualHandle) {
                 var offer = currentOfferByHandle(visualHandle);
+                // 匿名视觉池：每页私有熵洗牌分配（preparePage 的 visualPool），指向
+                // visual-pool-manifest.js 里全目录渲染资格清单的某一格。Web 层只拿到
+                // 覆泥像素（图标文件名本是内容哈希），拿不到名称/价格/目录映射——
+                // 认出物品是设计允许的玩法，价格答案钥匙始终留在 Web 根外。
+                // 正式接入后由 Host 私有且不可逆的视觉字节端口替代（README「下一阶段」）。
+                var poolEntries = visualPoolEntries();
+                if (!poolEntries.length || typeof offer.visualPool !== "number" || offer.visualPool < 0) {
+                    return {
+                        kind: "sealed-abstract",
+                        assetUrl: SAFE_SURFACE_DATA_URL,
+                        sourceKey: "sealed-abstract-surface.v1",
+                        sourceKind: "sealed-abstract",
+                        sourceComposition: "identity-independent-safe-surface",
+                        previewGender: "neutral",
+                        seed: offer.surfaceSeed,
+                        autoRotate: false,
+                        sharpenSource: false,
+                        hiddenColorMode: "source"
+                    };
+                }
+                var poolEntry = poolEntries[offer.visualPool % poolEntries.length];
                 return {
                     kind: "sealed-abstract",
-                    assetUrl: SAFE_SURFACE_DATA_URL,
-                    sourceKey: "sealed-abstract-surface.v1",
-                    sourceKind: "sealed-abstract",
-                    sourceComposition: "identity-independent-safe-surface",
+                    assetUrl: poolEntry.u,
+                    sourceKey: "anonymous-visual-pool.v2#" + (offer.visualPool % poolEntries.length),
+                    sourceKind: "icon",
+                    sourceComposition: "anonymous-visual-pool",
                     previewGender: "neutral",
                     seed: offer.surfaceSeed,
-                    autoRotate: false,
-                    sharpenSource: false,
-                    hiddenColorMode: "source"
+                    autoRotate: true,
+                    sharpenSource: true,
+                    hiddenColorMode: poolEntry.h || "proxy"
                 };
             }
         };

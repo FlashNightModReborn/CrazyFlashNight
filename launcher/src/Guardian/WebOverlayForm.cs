@@ -981,6 +981,7 @@ namespace CF7Launcher.Guardian
         private MercTask _mercTask;
         private TaskTask _taskTask;
         private IntelligenceTask _intelligenceTask;
+        private BlackMarketTask _blackMarketTask;
         private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
         private readonly PanelRequestOwnerLifecycle
@@ -3781,6 +3782,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetBlackMarketTask(BlackMarketTask task)
+        {
+            _blackMarketTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetPanelStateCallback(Action<bool> cb) { _onPanelStateChanged = cb; }
 
         #region PanelHost 集成（Phase 2 应急版）
@@ -5891,6 +5899,18 @@ namespace CF7Launcher.Guardian
                         {
                             LogManager.Log("[Panel] Routing cmd=tooltip to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
                             if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
+                        }
+                        else if (panel == "blackmarket")
+                        {
+                            // 黑市鉴定：仅允许当前 active panel 实例持有者问注释（与 close 同级的实例绑定）
+                            if (!HasExactActivePanelOwnerBinding(parsed, "blackmarket"))
+                            {
+                                LogManager.Log("[BlackMarketTask] rejected expired/foreign tooltip envelope");
+                                RespondPanelDomainError(parsed, "panel_instance_expired");
+                                break;
+                            }
+                            LogManager.Log("[Panel] Routing cmd=tooltip to BlackMarketTask, _blackMarketTask=" + (_blackMarketTask != null ? "ok" : "NULL"));
+                            if (_blackMarketTask != null) _blackMarketTask.HandleWebRequest(cmd, parsed);
                         }
                         else if (panel == "tasks")
                         {

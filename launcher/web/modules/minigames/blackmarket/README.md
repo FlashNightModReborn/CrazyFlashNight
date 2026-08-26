@@ -14,20 +14,23 @@
 | 能力 | 当前实现 | 结论 |
 | --- | --- | --- |
 | 普通产品数据 | 每页 3 组、6 件匿名合成货物；分类固定为 `anonymous / 匿名影子货舱`，价格从独立夹具生成 | 不读取 `black-market-shadow-catalog.v1.json`，不能声称全目录玩法或真实平衡 |
-| 安全表面 | 不透明 `visualHandle` 只解析到固定身份无关 `data:` SVG；纹理 seed 与真实目录不存在映射 | DOM、ARIA、遥测和请求不含真实物品 URI；抽象形状不构成 exact 视觉验收 |
-| 交易 | 会话内 TP/K 影子余额、幂等 receipt、提取/回售；历史显式记录 `deltaTp`、`deltaK`、`deltaV=deltaTp+50×deltaK` | `productionWrites=false`；退出即丢弃；揭晓名称和数值仍是匿名合成夹具 |
+| 安全表面 | 不透明 `visualHandle` 绑定到生成清单 `visual/visual-pool-manifest.js`（`tools/bake-black-market-visual-pool.js` 生成、`--check` 可复验）中全目录渲染资格条目（仅 `u`/`h` 渲染字段，零名称/价格/ID）；每页会话用私有熵洗牌分配，同页六件零撞车 | 设计意图：覆泥像素允许被认出（能猜、猜不准价），封死的是机器可读价格目录；bm21 逐字段反扫名称/ID 不出现在表面 URL，bm-ui2 继续封死目录 JSON 与 `data/`/XML 请求；正式接入由 Host 私有视觉字节端口替代 |
+| 交易 | 会话内 TP/K 影子余额、幂等 receipt、提取/回售；历史显式记录 `deltaTp`、`deltaK`、`deltaV=deltaTp+50×deltaK` | `productionWrites=false`；退出即丢弃；成交结算数值仍是匿名合成夹具 |
+| 注释释放（2026-08-26 产品决策） | 成交揭晓后释放真实物品身份与目录参考价（`realInfo`）；hover 预览走全局 PanelTooltip + buildItemRichHtml（与商店/情报同一套）：已揭晓给完整注释（描述/属性/获取方式由 **AS2 权威数据源**经 `blackmarketTooltip` 一跳提供，零派生副本、不随平衡调整漂移；Host/AS2 缺席时降级为基础卡），未揭晓只给同组分类注释；`productionEligibility` 为 `banned` 的条目扣下注释 | 购买前快照与 offer 投影仍零身份字段（bm24 锁定）；名称/价格只随"已成交易"释放，不构成预购答案钥匙 |
 | exact 开发测试 | `tools/fixtures/blackmarket/exact-oracle-core.js` 与同目录 catalog 可验证全目录生成和私有视觉 source；Web 内 `visual/equipment-preview.js` 只被 Node 测试读取 | 只属于离线 Node QA；产品 panel 无法通过 initData、global marker、历史 URL 或 Web 自开升级到该能力 |
 | 放大检视 | 卡片与检视窗共享固定 `512×768` 匿名覆泥母版，可拖拽、缩放、整体旋转和切换 A/B | 不调用读取真实标题/原图的 `EquipmentInspector.open()` |
 | 存档 | 无 localStorage、无文件写入 | AS2 page object、flush、reconcile 均未实现 |
 
 ## 结构
 
-- `core/index.js`：普通产品唯一 core。只生成匿名货物、私有 CSPRNG 句柄/表面 seed 与影子交易状态；浏览器导出仅 `createShadowSession` 等匿名 API。
+- `core/index.js`：普通产品唯一 core。只生成匿名货物、私有 CSPRNG 句柄/表面 seed 与影子交易状态；表面端口把每页洗牌分配的池序号解析为视觉池清单中的真实物品图标（像素可见、名称/价格不可见），清单缺失时回退固定安全 SVG；浏览器导出仅 `createShadowSession` 等匿名 API。
 - `blackmarket-panel.js`：普通 `Panels.register("blackmarket")` UI；固定 `1024×576` 并由 `PanelScale` 整体缩放，只消费 `product + surface + audit` 匿名端口。
 - `visual/item-surface.js`：Alpha/SDF、自动锚点、正交旋转和休眠纳米污泥算法；普通产品只以固定安全 SVG 为输入。
 - `visual/inspection-focus.js`：只消费匿名覆泥母版的 bounds/外扩半径，计算检视相机。
 - `../../../../../tools/fixtures/blackmarket/exact-oracle-core.js`：Web 静态根外的 Node-only 全目录开发 oracle。
 - `visual/equipment-preview.js`：仅供独立开发测试验证纸娃娃/武器 source，不在普通 lazy closure 中。
+- `visual/visual-pool-manifest.js`：`tools/bake-black-market-visual-pool.js` 生成的全目录渲染资格 + 身份绑定清单（u/h/g/n/t/sc/p/s/at/e/k，零注释全文）。
+- `launcher/web/assets/minigames/blackmarket/`：面板美术资产——`tank-interior.webp`（舱液背景，AI 精致化后人工验收）、`device-frame.webp`（合成台机体淡影，backdrop 用）。
 - `dev/qa-suite.js`：Node 逻辑门同时验证离线 exact oracle 和匿名产品契约，但明确选择不同 core。
 - `dev/harness.html`：只含普通产品 UI/browser QA；不加载 exact 目录、oracle 或装备预览，并直接负测两个历史 Web URL 不可读。
 - `../../../../../tools/fixtures/blackmarket/black-market-shadow-catalog.v1.json`：Web 静态根外的 Node-only 派生目录，不是 authored eligibility 真源。
@@ -42,11 +45,21 @@ Launcher 内从“其他 → 测试 → 黑市鉴定测试”打开。Host 仍�
 
 面板拒绝非 `dev + shadowOnly`。`debug:true` 不创建调试 API；`seed`、旧 bootstrap marker 或旧 `allowExactIdentityLab` 字符串即使由同页代码伪造，也不会改变匿名产品 core 或面板能力。`blackmarket` 仍没有普通游戏命令、NPC opener 或正式 domain contract。
 
+调试抽屉（header「调试」按钮）：只调整匿名影子会话的四个白名单数值参数
+（tradePoints/kPoints/supplyCredits/decryptLevel，core `validateOptions` 强制），应用即以新参数
+重开会话；目录、身份、视觉池不在可调范围（bm25/bm-ui11 锁定）。该抽屉不是历史 exact Lab，
+不能从它提权到真实目录或生产写入。
+
 close 仍属于 Host-owned panel lifecycle。Web 必须发送当前 `panelInstanceId`，并等待 Host 返回 exact
 `panel_cmd close` 后才 retire；Bridge 投递成功不等于 Host 已接受。Host 只关闭当前 active
 name/instance；确认在 3 秒内丢失时 Web 只解除 pending 以允许重试，不本地关闭，也不允许旧 timer
 解锁 replacement。迟到实例 A 的 close 不能关闭 replacement B。该约束不改变 `dev + shadowOnly`、
 匿名表面、影子余额或 `productionWrites=false`。
+
+P2 演出钩子：面板通过 `minigame_session` 的 `kind="fx"` 上报机器演出时刻（`fx` 字段取值
+`fx-poweron / fx-select / fx-reveal-profit / fx-reveal-loss / fx-error / fx-scan-open /
+fx-scan-rotate / fx-drain`），供 Host 或未来音效系统消费；纯通知、无状态依赖，Host 缺席即 no-op。
+所有演出 FX 均为 `pointer-events:none` 纯装饰层，不拦截输入、不改变任何逻辑时序。
 
 浏览器夹具：
 
@@ -59,6 +72,7 @@ launcher/web/modules/minigames/blackmarket/dev/harness.html?qa=1
 ```powershell
 chcp.com 65001 | Out-Null
 node tools/derive-black-market-shadow-catalog.js --check
+node tools/bake-black-market-visual-pool.js --check
 node launcher/tools/run-minigame-qa.js --game blackmarket
 node tools/test-blackmarket-equipment-preview.js
 node launcher/tools/validate-minigame-final-state.js

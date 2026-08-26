@@ -262,9 +262,10 @@
          'modules/settings-panel.js'],
         noop);
 
-    // ── blackmarket（匿名合成影子测试；普通 Web 不加载真实物品目录）──
+    // ── blackmarket（匿名合成影子测试；Web 不加载价格/名称目录，覆泥像素走生成的视觉池清单）──
     Panels.registerLazy('blackmarket',
         ['modules/minigames/shared/host-bridge.js',
+         'modules/minigames/blackmarket/visual/visual-pool-manifest.js',
          'modules/minigames/blackmarket/core/index.js',
          'modules/workbench-inspection-viewport.js',
          'modules/minigames/blackmarket/visual/inspection-focus.js',

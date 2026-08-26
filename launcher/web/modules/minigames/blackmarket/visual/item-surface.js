@@ -1539,12 +1539,17 @@
         sourceContext.drawImage(bitmap, 0, 0, sourceWidth, sourceHeight);
         var sourceData = sourceContext.getImageData(0, 0, sourceWidth, sourceHeight);
         var plan = planOrientation(sourceData, targetWidth, targetHeight, options);
-        var maskedData = new Uint8ClampedArray(sourceData.data);
-        for (var i = 0; i < plan.sourceAnalysis.mask.length; i += 1) {
-            if (!plan.sourceAnalysis.mask[i]) maskedData[i * 4 + 3] = 0;
+        // preserveSourceAlpha（揭晓后的干净展示）跳过遮罩量化：遮罩仍驱动几何（bounds/anchor/
+        // SDF/污泥），但绘图层保留原始半透边缘，不再二值化出锯齿
+        var preserveAlpha = options.preserveSourceAlpha === true;
+        if (!preserveAlpha) {
+            var maskedData = new Uint8ClampedArray(sourceData.data);
+            for (var i = 0; i < plan.sourceAnalysis.mask.length; i += 1) {
+                if (!plan.sourceAnalysis.mask[i]) maskedData[i * 4 + 3] = 0;
+            }
+            sourceContext.clearRect(0, 0, sourceWidth, sourceHeight);
+            sourceContext.putImageData(createImageDataOn(sourceContext, sourceWidth, sourceHeight, maskedData), 0, 0);
         }
-        sourceContext.clearRect(0, 0, sourceWidth, sourceHeight);
-        sourceContext.putImageData(createImageDataOn(sourceContext, sourceWidth, sourceHeight, maskedData), 0, 0);
 
         var targetCanvas = makeCanvas(targetWidth, targetHeight);
         var targetContext = targetCanvas.getContext("2d", { willReadFrequently: true });
@@ -1594,6 +1599,7 @@
             shapeClass: plan.anchor.shapeClass,
             elongation: plan.anchor.elongation
         };
+        rendered.metrics.sourceAlpha = preserveAlpha ? "preserved" : "segmented";
         rendered.metrics.sourceSharpening = sharpeningStrength > 0 ? "alpha-safe-unsharp" : "none";
         rendered.metrics.sourceSharpeningStrength = round(sharpeningStrength, 2);
         return { canvas: targetCanvas, metrics: rendered.metrics };
@@ -1648,8 +1654,7 @@
             return blobPromises[url];
         }
 
-        function blobToDrawable(blob) {
-            if (typeof createImageBitmap === "function") return createImageBitmap(blob);
+        function decodeBlobAsImage(blob) {
             if (typeof Image === "undefined" || typeof URL === "undefined") {
                 return Promise.reject(new Error("image decode API unavailable"));
             }
@@ -1660,6 +1665,35 @@
                 image.onerror = function() { URL.revokeObjectURL(objectUrl); reject(new Error("surface image decode failed")); };
                 image.src = objectUrl;
             });
+        }
+
+        function rasterizeImageToBitmap(image) {
+            var width = Math.max(1, image.naturalWidth || image.width || 1);
+            var height = Math.max(1, image.naturalHeight || image.height || 1);
+            if (typeof OffscreenCanvas === "undefined") {
+                return Promise.reject(new Error("image decode API unavailable"));
+            }
+            var canvas = new OffscreenCanvas(width, height);
+            canvas.getContext("2d").drawImage(image, 0, 0);
+            return Promise.resolve(canvas.transferToImageBitmap());
+        }
+
+        function imageToBitmap(image) {
+            if (typeof createImageBitmap === "function") {
+                return createImageBitmap(image).catch(function() { return rasterizeImageToBitmap(image); });
+            }
+            return rasterizeImageToBitmap(image);
+        }
+
+        // Chromium/WebView2 的 createImageBitmap 没有 SVG blob 解码器；拒绝时退回
+        // HTMLImageElement 解码，再统一转成 ImageBitmap，保证 worker 转移路径可用。
+        function blobToDrawable(blob) {
+            if (typeof createImageBitmap === "function") {
+                return createImageBitmap(blob).catch(function() {
+                    return decodeBlobAsImage(blob).then(imageToBitmap);
+                });
+            }
+            return decodeBlobAsImage(blob);
         }
 
         function canvasSize(canvas, spec) {
@@ -1682,7 +1716,8 @@
                 spec.mud === false ? 0 : 1, spec.hiddenColorMode || "source", spec.debug ? 1 : 0,
                 spec.autoRotate === false ? 0 : 1, round(spec.paddingRatio === undefined ? 0.075 : spec.paddingRatio),
                 spec.sharpenSource === true ? 1 : 0,
-                round(spec.sharpenStrength === undefined ? 0.18 : spec.sharpenStrength)].join("|");
+                round(spec.sharpenStrength === undefined ? 0.18 : spec.sharpenStrength),
+                spec.preserveSourceAlpha === true ? 1 : 0].join("|");
         }
 
         function drawBitmap(canvas, bitmap) {

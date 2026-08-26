@@ -471,6 +471,7 @@ namespace CF7Launcher.Bus
             MercTask mercTask,
             TaskTask taskTask,
             IntelligenceTask intelligenceTask,
+            BlackMarketTask blackMarketTask,
             ArchiveTask archiveTask,
             BenchTask benchTask,
             FontPackTask fontPackTask,
@@ -586,6 +587,10 @@ namespace CF7Launcher.Bus
             // 情报面板 runtime 回包路由
             if (intelligenceTask != null)
                 router.RegisterAsync("intelligence_response", intelligenceTask.HandleFlashResponse);
+
+            // 黑市鉴定（匿名影子测试）domain 回包路由
+            if (blackMarketTask != null)
+                router.RegisterAsync("blackmarket_response", blackMarketTask.HandleFlashResponse);
 
             // AS2 → C# 面板打开请求 (旧 Flash 地图界面按钮 / openTaskMap / stage-select 命令接入 WebView)
             if (webOverlay != null)

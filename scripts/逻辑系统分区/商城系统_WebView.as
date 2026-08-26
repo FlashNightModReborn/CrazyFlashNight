@@ -806,3 +806,24 @@ _root.gameCommands["intelligenceTooltip"] = function(params) {
         introHTML: tt.introHTML
     });
 };
+
+// 黑市鉴定（匿名影子测试）：揭晓/注释释放复用同一权威注释源 Web物品注释HTML。
+// 与 intelligenceTooltip 同构，只换 response task 标签以保持 C# 侧域路由干净。
+_root.gameCommands["blackmarketTooltip"] = function(params) {
+    var callId = params.callId;
+    var itemName = String(params.itemName || "");
+    var tt = _root.Web物品注释HTML(itemName);
+    if (tt == null) {
+        _root.UI系统.商城WebView.sendResponse({ task: "blackmarket_response", callId: callId, success: false, itemName: itemName, error: "item_not_found" });
+        return;
+    }
+    _root.UI系统.商城WebView.sendResponse({
+        task: "blackmarket_response",
+        callId: callId,
+        success: true,
+        itemName: itemName,
+        displayname: tt.displayname,
+        descHTML: tt.descHTML,
+        introHTML: tt.introHTML
+    });
+};
