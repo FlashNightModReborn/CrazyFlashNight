@@ -1,13 +1,13 @@
 # 选关界面 AS2 入口替换交接
 
 **文档角色**：Stage Select Web Panel 从刘海屏测试入口推进到正式替换 Flash `关卡地图` 入口的施工交接。  
-**当前状态**：Stage 2 Step 2 工程实现已落地；2026-08-24 已补齐 Web 来源普通关卡的通关回流与任务节点悬停契约。本文保留为正式入口替换的落地记录与后续验收清单。
+**当前状态**：Stage 2 Step 2 工程实现已落地；2026-08-26 已将普通关卡结算恢复为按既有目的地返回并停留在 Flash，Web 选关只由玩家显式入口打开；任务节点悬停契约保持不变。本文保留为正式入口替换的落地记录与后续验收清单。
 
 **边界提醒**：本文只规划正式入口替换，不扩大到委托任务界面迁移，也不做 Stage 3 现代化视觉改造。
 
 **2026-08-16 勘误（P0 真值闭环）**：本文「委托任务入口仍打开原 Flash 委托详情」「不要迁移委托任务界面」等表述均为历史计划；现役代码中 `entryKind:"task"` 已由 `StageSelectPanelService.handleEnter` 改发 `openWebDungeon` 重定向 Web `tasks` 面板副本 tab，旧 Flash `委托任务界面` 已退役删除（现行表述见 `launcher/README.md` stage-select 节）。计数基线以 `launcher/web/modules/stage-select/dev/stage-select-golden.js` 为单一真值（2026-08-16：166 渲染实例 / 14 直达入口 / 10 外交地图 / `stageNames` 164）。
 
-**2026-08-24 回流勘误**：Web `stage-select` 发起的普通难度关卡在真实通关后，先回入口保存的 `returnFrameLabel`，待 `SceneReady` 且玩家处理完通关奖励后重开 Web 选关；死亡、失败与主动撤退仍按原路径返回，不自动开面板。任务节点 hover 时红色标记与黄色脉冲必须持续可见，hover 卡难度按钮保持一步直达；Web/Socket 发送失败继续回落旧 Flash `关卡地图`。
+**2026-08-26 通关返回纠偏（取代 2026-08-24 自动回流合同）**：Web `stage-select` 只负责显式选关入口和进关。普通关卡成功结算继续由 `_root.关卡地图帧值` 决定返回场景，并停留在 Flash；有奖励时先正常领取，没有奖励时直接看到该返回场景，均不得因本场由 Web 发起而自动重开 panel。任务完成与解锁状态在玩家下一次显式进入选关时通过 fresh snapshot 刷新。死亡、失败、主动撤退和角斗场返回保持既有语义；任务节点 hover 期间的红色标记、黄色脉冲和一步直达难度按钮保持不变。Web/Socket 发送失败仍回落旧 Flash `关卡地图`。
 
 ## 0. 本轮落地摘要
 
@@ -15,7 +15,7 @@
 - C# `TaskRegistry` / `LauncherCommandRouter` / `WebOverlayForm` 已支持 `stage-select` panel request、`frameLabel/returnFrameLabel` 初始化、runtime mode 固化、`jump_frame` / `return_frame` 转发与 close 回调
 - Web runtime 已隐藏 fixture/dev 控件与测试标题；16 个 frame tab 收进可展开区域菜单，`localFrame` 先切 Web 页面再同步 AS2 frame，`return` / `return-garage` 先请求 AS2 淡出回对应基地帧，再关闭 panel
 - 场景门替换已覆盖 `基地门口`、`车库`、`地下 2 层`、`停机坪`、`地图-联合大学` 左右出口；只带 SWF 的外交地图若仍调用旧 `切换场景("", "关卡地图", ...)`，由公共 AS2 门函数捕获并转入 Web 选关；旧 Flash `关卡地图` 保留为发送失败 fallback
-- Web 选关发起的普通关卡已补齐“真实通关 → 来源场景 → 重开 Web 选关”回流；死亡/失败/主动撤退保持原语义。角斗场返回仍不纳入本阶段；副本任务入口重定向 Web `tasks` 面板
+- Web 选关发起的普通关卡结算不再携带来源状态：成功时按 `_root.关卡地图帧值` 返回并停留在 Flash，下一次显式进入选关才打开 Web；死亡/失败/主动撤退保持原语义。角斗场返回仍不纳入本阶段；副本任务入口重定向 Web `tasks` 面板
 
 ## 1. 已完成基线
 
@@ -69,7 +69,7 @@
 需要单独判断的路径：
 
 - `CRAZYFLASHER7MercenaryEmpire/LIBRARY/角斗场选择界面.xml`：返回按钮关闭决斗场后跳 `关卡地图`
-- `scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as`：`_root.返回基地` 仍以 `_root.关卡地图帧值`/`Web选关返回帧值` 完成真实场景转换；只有 Web 来源且真实通关时才设置一次性待打开标记，并在 `SceneReady` 后等待奖励界面关闭再重开 panel。不得把所有返回路径直接替换为打开 panel，否则会破坏领奖与死亡/撤退语义
+- `scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as`：`_root.返回基地` 的成功路径只按 `_root.关卡地图帧值` 完成真实场景转换；不记录 Web 来源，不在 `SceneReady` 或奖励关闭后重开 panel。显式 Web return nav 使用的 `Web选关返回帧值` 属于面板内返回命令，不参与战斗结算
 - `CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml`：主时间轴 `关卡地图` label 上挂载 `关卡地图MC`，这是旧 UI 最终承载点，保留作 fallback
 
 ## 4. 施工路径与当前实现
@@ -206,8 +206,9 @@ node tools/validate-doc-governance.js
 - 基地门口 → 选关 Web panel → 关闭 → 仍在基地门口，HUD/鼠标正常
 - 基地门口 → 选关 Web panel → 返回 nav → 淡出回基地门口，HUD/鼠标正常
 - 基地门口 → 选关 Web panel → 新手练习场 / 简单 → 成功进关
-- Web panel → 新手练习场 / 简单 → 真实通关 → 回来源场景 → 先正常领取/关闭通关奖励 → 自动重开 Web panel；新 snapshot 应立即反映已完成任务/新解锁状态，不遮挡奖励，也不露出旧 Flash 选关 UI
-- 同一 Web 来源关卡死亡、失败或主动撤退时不自动重开 panel，分别保持医务室/原返回路径
+- Web panel → 新手练习场 / 简单 → 真实通关且有奖励 → 按 `_root.关卡地图帧值` 回到 Flash 场景 → 正常领取/关闭奖励后仍停留在该场景；再次显式进入选关入口后，fresh snapshot 反映已完成任务/新解锁状态
+- Web panel → 普通关卡 → 真实通关且没有奖励 → 直接回到并停留在 `_root.关卡地图帧值` 指向的 Flash 场景，不闪开 Web panel
+- 同一 Web 来源关卡死亡、失败或主动撤退时也不得因来源打开 panel，分别保持医务室/原返回路径
 - 车库 / 地下 2 层 / 停机坪 / 联合大学左右出口分别打开对应 `frameLabel`
 - 从第一防线防区等外交地图沿旧“返回选关”路径返回时，应打开 Web `stage-select` 而不是进入 Flash `关卡地图` 帧；随后点 Web `返回` nav 应回 `基地门口` / 对应基地帧，而不是露出外交地图
 - Web 页内跳转后关闭 / 重开，当前 frame 同步符合预期
@@ -225,8 +226,8 @@ node tools/validate-doc-governance.js
 ## 7. 给后续施工者的提示词
 
 ```text
-Stage Select Stage 2 Step 2 已完成工程落地，并补齐 Web 来源普通关卡的真实通关回流。
-后续优先做 Flash CS6 smoke 与人工验收；只允许真实通关消费一次性来源标记，死亡/失败/主动撤退不得自动打开 panel，角斗场返回仍保持既有路径。
+Stage Select Stage 2 Step 2 已完成工程落地；普通关卡结算已恢复为目的地驱动，不再按 Web 来源自动重开 panel。
+后续优先做 Flash CS6 smoke 与人工验收；成功结算按 _root.关卡地图帧值 返回并停留在 Flash，奖励有无都不得自动打开 panel，下一次显式进入选关时再读取 fresh snapshot；死亡/失败/主动撤退与角斗场返回仍保持既有路径。
 继续保留旧 Flash 关卡地图 fallback；外交地图旧门统一由公共门函数兜住，不手动编辑 SWF；副本任务继续重定向 Web tasks，不删除关卡地图MC。
 改动协议或测试入口后继续跑 Edge harness、launcher build/tests、Flash compile smoke、doc governance。
 ```

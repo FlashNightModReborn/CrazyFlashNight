@@ -403,9 +403,6 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
             _root.soundEffectManager.stopBGMForTransition();
         }
-        // 只在所有进关准备均完成、即将发起淡出时标记 Web 来源。返回基地时仅在
-        // 真实通关情况消费这一位；主动撤退/死亡或前置配置异常都不能留下脏标记。
-        _root.Web选关战斗回流 = true;
         _root.淡出动画.淡出跳转帧(context.淡出跳转帧);
     }
 

@@ -16,7 +16,7 @@
 - `launcher/web/assets/stage-select/`：Web 运行时背景与预览图派生资产。
 - `tools/export-stage-select-manifest.js`：XFL/XML 到 manifest / assets / data module 的导出工具。
 - `tools/audit-stage-select-layout.js`：Stage Select 静态布局审计工具。
-- `tools/audit-diplomacy-stage-select-links.js`：外交地图 SWF 旧 `关卡地图` 返回门与 Web 选关回流审计工具。
+- `tools/audit-diplomacy-stage-select-links.js`：外交地图 SWF 旧 `关卡地图` 返回门、return-frame 隔离与普通通关目的地审计工具。
 - `tools/run-stage-select-visual-audit.ps1`：FFDec 原帧与 Web 舞台截图的视觉对照工具，输出 `tmp/stage-select-visual-audit/sheets/*-compare.png`。
 
 ## 注意事项

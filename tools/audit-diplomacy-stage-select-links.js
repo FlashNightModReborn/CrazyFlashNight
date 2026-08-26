@@ -268,12 +268,15 @@ function audit() {
     const hasSameSceneReturnFilter = serviceText.indexOf('isAlreadyAtReturnFrame') >= 0
         && serviceText.indexOf('skippedTransition') >= 0
         && serviceText.indexOf('if (!skipTransition)') >= 0;
-    const hasCompletedStageReturnBridge = serviceText.indexOf('_root.Web选关战斗回流 = true;') >= 0
-        && sceneText.indexOf('stageCompleted && _root.Web选关战斗回流 === true') >= 0
-        && sceneText.indexOf('_root.Web选关战斗回流 = false;') >= 0
-        && sceneText.indexOf('Web选关回流待打开 === true') >= 0
-        && sceneText.indexOf('_root.奖励物品界面._visible === true') >= 0
-        && sceneText.indexOf('请求打开Web选关("as2_stage_complete_return")') >= 0;
+    const hasDestinationDrivenStageReturn = sceneText.indexOf('_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);') >= 0;
+    const completedStageAutoReturnMarkers = [
+        '_root.Web选关战斗回流',
+        'Web选关回流待打开',
+        'as2_stage_complete_return'
+    ];
+    const completedStageAutoReturnResidue = completedStageAutoReturnMarkers.filter(marker =>
+        serviceText.indexOf(marker) >= 0 || sceneText.indexOf(marker) >= 0
+    );
 
     if (!hasLegacyTrap) {
         errors.push('AS2 legacy gate trap is missing in 场景转换函数.切换场景');
@@ -290,8 +293,11 @@ function audit() {
     if (!hasSameSceneReturnFilter) {
         errors.push('stage-select same-scene return filter is missing');
     }
-    if (!hasCompletedStageReturnBridge) {
-        errors.push('stage-select Web-origin completed-stage return bridge is missing');
+    if (!hasDestinationDrivenStageReturn) {
+        errors.push('completed-stage return no longer follows _root.关卡地图帧值');
+    }
+    if (completedStageAutoReturnResidue.length > 0) {
+        errors.push('completed-stage Web auto-return residue remains: ' + completedStageAutoReturnResidue.join(', '));
     }
 
     const scriptScans = [];
@@ -356,7 +362,8 @@ function audit() {
         hasReturnFrameBridge,
         hasReturnFrameIsolation,
         hasSameSceneReturnFilter,
-        hasCompletedStageReturnBridge,
+        hasDestinationDrivenStageReturn,
+        completedStageAutoReturnResidue,
         ffdecScanned: !skipFfdec,
         totalLegacyGateCount: totalLegacyGates,
         totalExplicitWebGateCount: scriptScans.reduce((sum, item) => sum + item.explicitWebGateCount, 0),
@@ -381,7 +388,9 @@ if (jsonMode) {
     console.log('[diplomacy-stage-select-links] return-frame bridge: ' + (result.hasReturnFrameBridge ? 'yes' : 'no'));
     console.log('[diplomacy-stage-select-links] return-frame isolation: ' + (result.hasReturnFrameIsolation ? 'yes' : 'no'));
     console.log('[diplomacy-stage-select-links] same-scene return filter: ' + (result.hasSameSceneReturnFilter ? 'yes' : 'no'));
-    console.log('[diplomacy-stage-select-links] completed-stage Web return bridge: ' + (result.hasCompletedStageReturnBridge ? 'yes' : 'no'));
+    console.log('[diplomacy-stage-select-links] destination-driven completed-stage return: ' + (result.hasDestinationDrivenStageReturn ? 'yes' : 'no'));
+    console.log('[diplomacy-stage-select-links] completed-stage Web auto-return residue: '
+        + (result.completedStageAutoReturnResidue.length > 0 ? result.completedStageAutoReturnResidue.join(', ') : 'none'));
     for (const warning of result.warnings) console.warn('[warn] ' + warning);
     for (const error of result.errors) console.error('[error] ' + error);
 }

@@ -1,7 +1,7 @@
 # 选关界面 WebView 迁移路线图
 
 **文档角色**：`flashswf/UI/选关界面` 到 Launcher WebView panel 的 canonical migration doc。  
-**当前阶段**：Stage 2 Step 2 工程实现已落地；正式入口及其普通关卡通关回流走 Web `stage-select`，旧 Flash `关卡地图` 保留为 fallback。Stage 3 已完成路线评估，获准进入单战区门控原型，不代表承诺 16 页全量 3D 化。
+**当前阶段**：Stage 2 Step 2 工程实现已落地；正式选关入口走 Web `stage-select`，普通关卡结算按既有目的地返回并停留在 Flash，旧 Flash `关卡地图` 保留为通信失败 fallback。Stage 3 已完成路线评估，获准进入单战区门控原型，不代表承诺 16 页全量 3D 化。
 
 > **`.fla` 退役（2026-06）**：地图/选关界面已完全迁移至 web。`flashswf/UI/选关界面` 不再作为可再生 SOT，
 > 仅保留为冻结历史参照。`launcher/web/modules/stage-select-data.js` 现为**唯一权威 SOT，允许直接手改**
@@ -27,14 +27,14 @@ Stage 2 在此基础上完成 live bridge 与正式入口替换：
 - AS2 `openWebStageSelect` 通过 `panel_request` 请求 `panel:"stage-select"`，并携带 `source`、`frameLabel`、`returnFrameLabel`；C# 打开正式入口时固定初始化 `mode:"runtime"`
 - 场景门 helper 复用旧 `切换场景` 的方向键、hitTest、15 帧节流、出生点与转场记录语义；Web 打开成功时留在原场景，失败时回落旧 Flash `关卡地图`
 - Web runtime 下隐藏 fixture/dev 控件与测试标题，16 个 frame tab 收进可展开区域菜单，`localFrame` 页内跳转只同步 Web 当前选关页，不覆盖 AS2 `_root.关卡地图帧值`；`return` / `return-garage` 会先通过独立 `returnFrameLabel` + `return_frame` 回到对应基地帧再关闭 panel；若返回目标已经等于 `MapHotspotResolver` 从真实场景源解析出的当前热点，AS2 会跳过重复淡出
-- Web 来源普通关卡在真实通关后先回 `returnFrameLabel` 对应场景，`SceneReady` 后等待通关奖励界面关闭，再重开 Web 选关并读取 fresh snapshot；死亡、失败与主动撤退不消费此回流。任务节点 hover 期间红色标记/黄色脉冲保持可见，局部卡片难度按钮保持直接可点
+- 普通关卡结算不携带 Web 来源状态：成功时按 `_root.关卡地图帧值` 返回并停留在 Flash，奖励有无都不自动重开 Web；玩家下一次显式进入选关时再读取 fresh snapshot。死亡、失败与主动撤退保持既有返回语义。任务节点 hover 期间红色标记/黄色脉冲保持可见，局部卡片难度按钮保持直接可点
 - Web 地图面板复用 `stage-select-data.js` 中的 `RootFadeTransitionFrame` 索引，为已解锁且有选关页签的地图热点提供二级“选关”动作；地图热点主点击仍保持直接导航。
 
 Stage 2 明确不做：
 
 - 不迁移委托任务界面（历史范围注记；2026-08 起副本任务入口已改为重定向 Web `tasks` 面板副本 tab，旧 Flash `委托任务界面` 已退役——现行表述见 `launcher/README.md` stage-select 节）
 - 不迁移外交地图场景本体（场景本体至今未迁移；原「/ 委托任务详情界面」半句已随上条注记失效）
-- 不处理角斗场返回路径；战斗结束仅处理 Web 来源普通关卡的真实通关回流，不接管死亡、失败或主动撤退
+- 不处理角斗场返回路径，也不接管普通战斗结束、死亡、失败或主动撤退的既有返回目的地
 - 不手动编辑 SWF
 
 ## 2. 真相源
@@ -94,11 +94,11 @@ Stage 2 bridge 当前状态：
   - C# `TaskRegistry` / `LauncherCommandRouter` 支持 `panel_request stage-select` 与 `frameLabel/returnFrameLabel` 初始化，正式入口 `mode` 固化为 `runtime`，未知 panel 仍只记 unsupported
   - Web runtime 模式隐藏 fixture/dev 控件与测试标题，右侧空信息栏不占布局；16 个 frame tab 收进可展开区域菜单；`localFrame` 先切 Web 页面再发 `jump_frame`，C# 转为 AS2 `stageSelectJumpFrame`，只记录 `Web选关当前帧值`
   - `return` / `return-garage` 在 runtime 下发送 `return_frame`，C# 转为 AS2 `stageSelectReturnFrame`，使用入口保存的 `returnFrameLabel` 淡出回 `_root.关卡地图帧值` 对应基地帧；同场景返回仅关闭 Web panel，不做重复淡出；C# 关闭时通知 AS2 `stageSelectPanelClose` 清理门入口防重复打开状态
-  - `stageSelectEnter` 真正开始普通关卡淡出前记录一次性 Web 来源；`_root.返回基地` 仅在真实通关时将其转换为 `SceneReady` 后的重开请求，并等待奖励界面关闭（该关闭动作完成任务达成检测）再发送。死亡、失败、主动撤退清除来源但不重开，Socket 失败回落旧 Flash `关卡地图`
+  - `stageSelectEnter` 只执行普通关卡进关副作用，不记录战斗来源；`_root.返回基地` 的成功路径只按 `_root.关卡地图帧值` 返回并停留在 Flash，不在 `SceneReady` 或奖励关闭后自动重开 Web。玩家下一次显式进入选关时读取 fresh snapshot；Socket 失败仍回落旧 Flash `关卡地图`
   - 外交地图入口按原版绿色点直达；副本 / 委托入口已改为 `entryKind:"task"` → `openWebDungeon` 重定向 Web `tasks` 面板副本 tab（旧 Flash 委托详情已退役，本条取代此前「继续打开旧 Flash 委托详情」表述）；Web 地图面板可通过 `open_stage_select` 二级动作直接打开对应选关页签
   - 已替换 `基地门口`、车库、地下 2 层、停机坪、联合大学左右出口
   - 保留旧 Flash `关卡地图MC` 与 `切换场景("", "关卡地图", ...)` fallback
-- 后续：角斗场返回路径仍按既有 Flash/Host 链承载；普通关卡回流需继续完成真实游戏人工验收
+- 后续：角斗场返回路径仍按既有 Flash/Host 链承载；普通关卡“有奖励/无奖励均回到并停留在 Flash、再次显式进门才开 Web”需完成真实游戏人工验收
 
 Stage 3 只按战区 opt-in 做现代化改造，优先选择 1 个 hero 页面验证构成主义三维沙盘、节点式导航、SWF 派生视觉资产和 DOM 热点 UI 分层，不承诺 16 页一次性重做。技术路线、成本假设与放行门槛见第 5 节。
 
