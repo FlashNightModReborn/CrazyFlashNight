@@ -35,7 +35,21 @@
     --wl-success: var(--wb-semantic-success, #78bc73);
     --wl-warning: var(--wb-semantic-warning, #e5a64d);
     --wl-danger: var(--wb-semantic-danger, #df665b);
-    --wl-line: color-mix(in srgb, var(--wl-sand) 24%, transparent);
+    /* 装饰性琥珀：计数 / 读数 / 角括线等纯装饰用途；语义警告只用 --wl-warning */
+    --wl-accent: var(--wb-semantic-warning, #e5a64d);
+    /* 次级信息文本：深底对比度 ≥4.5:1；--wl-muted 只留装饰分隔 / 图标 */
+    --wl-ink-lo: color-mix(in srgb, var(--wl-copy) 58%, var(--wl-bg));
+    /* 历史青色别名：滚动条等青色件统一锚定焦点青 */
+    --wl-cyan: var(--wl-focus);
+    /* 线条三档：细分隔 / 常规描边 / 强调边框 */
+    --wl-line-soft: color-mix(in srgb, var(--wl-sand) 16%, transparent);
+    --wl-line-mid: color-mix(in srgb, var(--wl-sand) 24%, transparent);
+    --wl-line-strong: color-mix(in srgb, var(--wl-sand) 34%, transparent);
+    /* 面板分级：L1 操作栏 / L2 监视环境描边 */
+    --wl-panel-l1-border: color-mix(in srgb, var(--wl-sand) 20%, transparent);
+    --wl-panel-l2-border: color-mix(in srgb, var(--wl-sand) 13%, transparent);
+    /* 桥接 --wb-shadow-*：本面板不加载 workbench core/skins，--wb-bg 就地锚定 --wl-bg */
+    --wb-bg: var(--wl-bg);
     --wl-glass: color-mix(in srgb, var(--wl-bg) 82%, transparent);
     background: var(--wl-bg);
 }
@@ -50,8 +64,8 @@
     background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--wl-sand) 14%, transparent), transparent 40%), var(--wl-bg);
 }
 
-.warlord-boot b { color: var(--wl-sand); font-size: 28px; letter-spacing: .18em; }
-.warlord-boot span { color: color-mix(in srgb, var(--wl-copy) 66%, var(--wl-bg)); font-size: 13px; }
+.warlord-boot b { color: var(--wl-sand); font-size: 25px; letter-spacing: .18em; }
+.warlord-boot span { color: color-mix(in srgb, var(--wl-copy) 66%, var(--wl-bg)); font-size: 12px; }
 .warlord-boot-error b { color: var(--wl-danger); }
 .warlord-boot button { justify-self: center; }
 
@@ -62,7 +76,7 @@
     grid-template-rows: 58px 382px 136px;
     overflow: hidden;
     background:
-        radial-gradient(ellipse at 52% 34%, color-mix(in srgb, var(--wl-warning) 7%, transparent), transparent 44%),
+        radial-gradient(ellipse at 52% 34%, color-mix(in srgb, var(--wl-accent) 7%, transparent), transparent 44%),
         linear-gradient(90deg, color-mix(in srgb, var(--wl-rust) 9%, transparent), transparent 20%, transparent 80%, color-mix(in srgb, var(--wl-blue) 8%, transparent)),
         var(--wl-bg);
     color: var(--wl-copy);
@@ -75,20 +89,26 @@
     --wl-copy: #d7e1e2;
     --wl-muted: #66787b;
     --wl-sand: #b7cbca;
-    --wl-warning: #79c8c8;
+    /* 冻原保留琥珀系警告 / 装饰色，与焦点青 #8be0f1 拉开 ≥40° 色相 */
+    --wl-warning: #d9a55a;
+    --wl-accent: #d9a55a;
     --wl-success: #74b6a4;
+    --wb-bg: var(--wl-bg);
     background:
-        radial-gradient(ellipse at 52% 34%, color-mix(in srgb, var(--wl-warning) 9%, transparent), transparent 44%),
+        radial-gradient(ellipse at 52% 34%, color-mix(in srgb, var(--wl-accent) 9%, transparent), transparent 44%),
         linear-gradient(90deg, color-mix(in srgb, var(--wl-rust) 8%, transparent), transparent 20%, transparent 80%, color-mix(in srgb, var(--wl-blue) 10%, transparent)),
         var(--wl-bg);
 }
+
+/* 冻原下沙盘宿主底色随主题迁移，避免画布初始化前露出沙漠暖色 */
+.warlord-app[data-map-theme="tundra"] .warlord-scene-host { background: radial-gradient(ellipse at 50% 48%, color-mix(in srgb, var(--wl-surface) 90%, var(--wl-sand)), color-mix(in srgb, var(--wl-bg) 92%, var(--wl-surface)) 76%); }
 
 .warlord-command-bar {
     z-index: 8;
     display: grid;
     grid-template-columns: 190px 166px 1fr 58px 42px;
     align-items: stretch;
-    border-bottom: 1px solid color-mix(in srgb, var(--wl-sand) 32%, transparent);
+    border-bottom: 1px solid var(--wl-line-strong);
     background:
         linear-gradient(90deg, color-mix(in srgb, var(--wl-rust) 8%, transparent), transparent 34%, transparent 66%, color-mix(in srgb, var(--wl-blue) 7%, transparent)),
         linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 92%, var(--wl-sand) 5%), var(--wl-bg));
@@ -101,35 +121,35 @@
 
 .warlord-brand {
     padding: 10px 14px;
-    border-right: 1px solid color-mix(in srgb, var(--wl-sand) 22%, transparent);
+    border-right: 1px solid var(--wl-line-mid);
 }
 
 .warlord-brand b { display: block; color: var(--wl-sand); font-size: 17px; letter-spacing: .08em; }
-.warlord-brand span { display: block; margin-top: 2px; color: color-mix(in srgb, var(--wl-copy) 62%, var(--wl-bg)); font-size: 9px; letter-spacing: .12em; }
+.warlord-brand span { display: block; margin-top: 2px; color: color-mix(in srgb, var(--wl-copy) 62%, var(--wl-bg)); font-size: 8px; letter-spacing: .12em; }
 
 .warlord-round {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 7px 10px;
-    border-right: 1px solid color-mix(in srgb, var(--wl-sand) 22%, transparent);
+    border-right: 1px solid var(--wl-line-mid);
 }
 
-.warlord-round > b { color: var(--wl-warning); font-size: 25px; line-height: 1; }
-.warlord-round > b small { font-size: 10px; color: var(--wl-muted); }
-.warlord-round > span { min-width: 0; color: color-mix(in srgb, var(--wl-copy) 76%, var(--wl-bg)); font-size: 9px; line-height: 1.3; white-space: nowrap; }
+.warlord-round > b { color: var(--wl-accent); font-size: 25px; line-height: 1; font-family: "Consolas", "Cascadia Mono", monospace; }
+.warlord-round > b small { font-size: 10px; color: var(--wl-ink-lo); }
+.warlord-round > span { min-width: 0; color: color-mix(in srgb, var(--wl-copy) 76%, var(--wl-bg)); font-size: 8px; line-height: 1.3; white-space: nowrap; }
 
 .warlord-factions { display: grid; grid-template-columns: 1fr 1fr; }
-.warlord-faction { display: grid; grid-template-columns: 34px 1fr; align-items: center; padding: 6px 12px; border-right: 1px solid color-mix(in srgb, var(--wl-sand) 18%, transparent); }
+.warlord-faction { display: grid; grid-template-columns: 34px 1fr; align-items: center; padding: 6px 12px; border-right: 1px solid var(--wl-line-soft); }
 .warlord-faction > b { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid currentColor; clip-path: polygon(15% 0, 85% 0, 100% 25%, 100% 75%, 85% 100%, 15% 100%, 0 75%, 0 25%); }
 .warlord-faction.red > b { color: var(--wl-rust); }
 .warlord-faction.blue > b { color: var(--wl-blue); }
 .warlord-faction > span { display: flex; flex-wrap: wrap; gap: 3px 9px; }
-.warlord-faction em { color: color-mix(in srgb, var(--wl-copy) 80%, var(--wl-bg)); font-size: 10px; font-style: normal; }
+.warlord-faction em { color: color-mix(in srgb, var(--wl-copy) 80%, var(--wl-bg)); font-size: 10px; font-style: normal; font-family: "Consolas", "Cascadia Mono", monospace; }
 
 .warlord-icon-button,
-.warlord-panel button {
-    border: 1px solid color-mix(in srgb, var(--wl-sand) 34%, transparent);
+:where(.warlord-panel button) {
+    border: 1px solid var(--wl-line-strong);
     border-radius: 2px;
     background: color-mix(in srgb, var(--wl-surface) 88%, var(--wl-sand) 5%);
     color: var(--wl-copy);
@@ -137,15 +157,15 @@
     transition: border-color var(--wb-motion-micro, 100ms), background var(--wb-motion-micro, 100ms), transform var(--wb-motion-micro, 100ms);
 }
 
-.warlord-panel button:hover:not(:disabled) { border-color: var(--wl-sand); background: color-mix(in srgb, var(--wl-surface) 72%, var(--wl-sand) 16%); }
-.warlord-panel button:active:not(:disabled) { transform: translateY(1px); }
+:where(.warlord-panel button):hover:not(:disabled) { border-color: var(--wl-sand); background: color-mix(in srgb, var(--wl-surface) 72%, var(--wl-sand) 16%); }
+:where(.warlord-panel button):active:not(:disabled) { transform: translateY(1px); }
 .warlord-panel button:focus-visible,
 .warlord-panel input:focus-visible,
 .warlord-panel select:focus-visible { outline: 2px solid var(--wl-focus); outline-offset: 1px; }
-.warlord-panel button:disabled { cursor: not-allowed; opacity: .38; }
+:where(.warlord-panel button):disabled { cursor: not-allowed; opacity: .38; }
 
 .warlord-icon-button { border-width: 0 0 0 1px; border-radius: 0; font-size: 10px; letter-spacing: .08em; }
-.warlord-panel-close { font-size: 20px; line-height: 1; letter-spacing: 0; }
+.warlord-panel-close { font-size: 17px; line-height: 1; letter-spacing: 0; }
 
 .warlord-main {
     min-height: 0;
@@ -159,18 +179,17 @@
 .warlord-action-rail {
     min-height: 0;
     overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--wl-sand) 27%, transparent);
+    border: 1px solid var(--wl-panel-l1-border);
     background:
         linear-gradient(145deg, color-mix(in srgb, var(--wl-sand) 4%, transparent), transparent 30%),
         linear-gradient(150deg, color-mix(in srgb, var(--wl-surface) 92%, transparent), color-mix(in srgb, var(--wl-bg) 96%, transparent));
-    box-shadow: inset 0 0 24px color-mix(in srgb, var(--wl-bg) 76%, transparent);
 }
 
 .warlord-action-rail { display: flex; flex-direction: column; }
 .warlord-action-rail > header,
 .warlord-production-console,
 .warlord-action-footer { flex: none; }
-.warlord-action-rail[data-mode="production"] > header { box-shadow: inset 3px 0 0 var(--wl-warning); }
+.warlord-action-rail[data-mode="production"] > header { box-shadow: inset 3px 0 0 var(--wl-accent); }
 
 .warlord-action-scroll {
     min-height: 0;
@@ -190,7 +209,7 @@
 .warlord-action-footer {
     z-index: 2;
     padding: 6px;
-    border-top: 1px solid color-mix(in srgb, var(--wl-sand) 24%, transparent);
+    border-top: 1px solid var(--wl-line-mid);
     background: linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 94%, transparent), var(--wl-bg));
     box-shadow: 0 -8px 18px color-mix(in srgb, var(--wl-bg) 68%, transparent);
 }
@@ -200,18 +219,18 @@
     display: grid;
     gap: 2px;
     padding: 9px 10px 8px;
-    border-bottom: 1px solid color-mix(in srgb, var(--wl-sand) 21%, transparent);
+    border-bottom: 1px solid var(--wl-line-mid);
     background: color-mix(in srgb, var(--wl-surface) 84%, var(--wl-sand) 4%);
 }
 
 .warlord-force-rail > header span,
-.warlord-action-rail > header span { color: var(--wl-muted); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+.warlord-action-rail > header span { color: var(--wl-ink-lo); font-size: 8px; letter-spacing: .12em; text-transform: uppercase; }
 .warlord-force-rail > header b,
-.warlord-action-rail > header b { color: var(--wl-sand); font-size: 14px; }
-.warlord-force-rail > header small { color: color-mix(in srgb, var(--wl-copy) 64%, var(--wl-bg)); font-size: 9px; }
+.warlord-action-rail > header b { color: var(--wl-sand); font-size: 12px; }
+.warlord-force-rail > header small { color: color-mix(in srgb, var(--wl-copy) 64%, var(--wl-bg)); font-size: 8px; }
 
-.warlord-force-list { height: 273px; overflow-y: auto; padding: 6px; scrollbar-width: thin; scrollbar-color: var(--wb-scrollbar-thumb, #386474) var(--wb-scrollbar-track, #0b1115); }
-.warlord-empty { color: var(--wl-muted); text-align: center; margin: 36px 0; }
+.warlord-force-list { height: 273px; overflow-y: auto; padding: 6px; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--wl-cyan) 52%, var(--wl-surface)) var(--wl-bg); }
+.warlord-empty { color: var(--wl-ink-lo); text-align: center; margin: 36px 0; }
 
 .warlord-piece {
     position: relative;
@@ -228,7 +247,7 @@
 .warlord-piece.blue { border-left-color: var(--wl-blue); }
 .warlord-piece.selected { background: color-mix(in srgb, var(--wl-surface) 78%, var(--wl-focus) 12%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-focus) 42%, transparent); }
 .warlord-piece input { margin: 0; accent-color: var(--wl-focus); }
-.warlord-mini-portrait { width: 34px; height: 42px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--wl-sand) 35%, transparent); background: var(--wl-bg); }
+.warlord-mini-portrait { width: 34px; height: 42px; overflow: hidden; border: 1px solid var(--wl-line-strong); background: var(--wl-bg); }
 .warlord-mini-portrait img,
 .warlord-card-portrait img,
 .warlord-battle-portrait img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 25%; }
@@ -236,14 +255,14 @@
 .warlord-piece b,
 .warlord-piece small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .warlord-piece b { font-size: 10px; }
-.warlord-piece small { color: var(--wl-muted); font-size: 8px; }
+.warlord-piece small { color: var(--wl-ink-lo); font-size: 8px; }
 .warlord-piece i,
 .warlord-battle-dialog article i { display: block; height: 3px; margin-top: 4px; background: color-mix(in srgb, var(--wl-bg) 70%, var(--wl-copy)); overflow: hidden; }
 .warlord-piece i em,
 .warlord-battle-dialog article i em { display: block; height: 100%; background: var(--wl-success); }
 
-.warlord-node-facts { height: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border-top: 1px solid color-mix(in srgb, var(--wl-sand) 18%, transparent); }
-.warlord-node-facts span { display: grid; place-items: center; color: var(--wl-muted); font-size: 8px; background: color-mix(in srgb, var(--wl-surface) 88%, transparent); }
+.warlord-node-facts { height: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border-top: 1px solid var(--wl-line-soft); }
+.warlord-node-facts span { display: grid; place-items: center; color: var(--wl-ink-lo); font-size: 8px; background: color-mix(in srgb, var(--wl-surface) 88%, transparent); }
 
 .warlord-map-stage {
     position: relative;
@@ -256,7 +275,7 @@
     box-shadow:
         inset 0 0 0 1px color-mix(in srgb, var(--wl-bg) 72%, transparent),
         inset 0 0 42px color-mix(in srgb, var(--wl-bg) 42%, transparent),
-        0 0 18px color-mix(in srgb, var(--wl-warning) 6%, transparent);
+        0 0 18px color-mix(in srgb, var(--wl-accent) 6%, transparent);
 }
 
 .warlord-map-stage::before,
@@ -278,14 +297,14 @@
 .warlord-map-stage::after {
     inset: 7px 7px 71px;
     background:
-        linear-gradient(var(--wl-warning), var(--wl-warning)) left top / 22px 1px no-repeat,
-        linear-gradient(var(--wl-warning), var(--wl-warning)) left top / 1px 16px no-repeat,
-        linear-gradient(var(--wl-warning), var(--wl-warning)) right top / 22px 1px no-repeat,
-        linear-gradient(var(--wl-warning), var(--wl-warning)) right top / 1px 16px no-repeat,
-        linear-gradient(var(--wl-warning), var(--wl-warning)) left bottom / 22px 1px no-repeat,
-        linear-gradient(var(--wl-warning), var(--wl-warning)) left bottom / 1px 16px no-repeat,
-        linear-gradient(var(--wl-warning), var(--wl-warning)) right bottom / 22px 1px no-repeat,
-        linear-gradient(var(--wl-warning), var(--wl-warning)) right bottom / 1px 16px no-repeat;
+        linear-gradient(var(--wl-accent), var(--wl-accent)) left top / 22px 1px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) left top / 1px 16px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) right top / 22px 1px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) right top / 1px 16px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) left bottom / 22px 1px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) left bottom / 1px 16px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) right bottom / 22px 1px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) right bottom / 1px 16px no-repeat;
     opacity: .34;
 }
 
@@ -307,7 +326,7 @@
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--wl-bg) 68%, transparent), inset 0 0 12px color-mix(in srgb, var(--wl-focus) 12%, transparent);
 }
 .warlord-selection-marquee[hidden] { display: none; }
-.warlord-map-caption { position: absolute; top: 9px; left: 11px; right: 11px; z-index: 5; display: flex; justify-content: space-between; pointer-events: none; color: color-mix(in srgb, var(--wl-copy) 70%, transparent); font-size: 7px; letter-spacing: .1em; text-shadow: 0 1px 4px var(--wl-bg); }
+.warlord-map-caption { position: absolute; top: 9px; left: 11px; right: 11px; z-index: 5; display: flex; justify-content: space-between; pointer-events: none; color: color-mix(in srgb, var(--wl-copy) 70%, transparent); font-size: 6px; letter-spacing: .1em; text-shadow: 0 1px 4px var(--wl-bg); }
 .warlord-map-caption span:first-child { color: color-mix(in srgb, var(--wl-sand) 92%, white); }
 
 .warlord-compass {
@@ -319,17 +338,17 @@
     height: 31px;
     display: grid;
     place-items: center;
-    border: 1px solid color-mix(in srgb, var(--wl-sand) 38%, transparent);
+    border: 1px solid var(--wl-line-strong);
     border-radius: 50%;
     background: var(--wl-glass);
-    box-shadow: 0 5px 14px color-mix(in srgb, var(--wl-bg) 62%, transparent);
+    box-shadow: var(--wb-shadow-raised);
 }
 .warlord-compass::before,
-.warlord-compass::after { content: ""; position: absolute; background: color-mix(in srgb, var(--wl-sand) 42%, transparent); }
+.warlord-compass::after { content: ""; position: absolute; background: var(--wl-line-strong); }
 .warlord-compass::before { width: 1px; height: 21px; }
 .warlord-compass::after { width: 21px; height: 1px; }
-.warlord-compass i { position: absolute; top: 1px; z-index: 1; color: var(--wl-warning); font-size: 6px; font-style: normal; }
-.warlord-compass span { position: relative; z-index: 1; width: 0; height: 0; margin-top: -9px; border-right: 3px solid transparent; border-bottom: 8px solid var(--wl-warning); border-left: 3px solid transparent; }
+.warlord-compass i { position: absolute; top: 1px; z-index: 1; color: var(--wl-accent); font-size: 6px; font-style: normal; }
+.warlord-compass span { position: relative; z-index: 1; width: 0; height: 0; margin-top: -9px; border-right: 3px solid transparent; border-bottom: 8px solid var(--wl-accent); border-left: 3px solid transparent; }
 
 .warlord-camera-hud {
     position: absolute;
@@ -338,30 +357,30 @@
     z-index: 7;
     width: 108px;
     overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--wl-sand) 34%, transparent);
+    border: 1px solid var(--wl-line-strong);
     background: linear-gradient(135deg, color-mix(in srgb, var(--wl-surface) 90%, transparent), var(--wl-glass));
-    box-shadow: 0 8px 22px color-mix(in srgb, var(--wl-bg) 68%, transparent);
+    box-shadow: var(--wb-shadow-overlay);
     backdrop-filter: blur(4px);
-    transition: border-color 120ms ease, box-shadow 120ms ease;
+    transition: width 160ms var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1)), border-color var(--wb-motion-micro, 100ms) ease, box-shadow var(--wb-motion-micro, 100ms) ease;
 }
 .warlord-camera-hud[data-expanded="true"],
 .warlord-camera-hud:hover,
-.warlord-camera-hud:focus-within { width: 148px; border-color: color-mix(in srgb, var(--wl-sand) 48%, transparent); box-shadow: 0 9px 25px color-mix(in srgb, var(--wl-bg) 74%, transparent); }
-.warlord-camera-readout { position: relative; max-height: 0; overflow: hidden; display: grid; grid-template-columns: 1fr auto; gap: 1px 5px; align-content: center; padding: 0 7px; border-bottom: 1px solid transparent; opacity: 0; transform: translateY(-3px); pointer-events: none; }
+.warlord-camera-hud:focus-within { width: 148px; border-color: color-mix(in srgb, var(--wl-sand) 48%, transparent); box-shadow: 0 9px 25px color-mix(in srgb, var(--wl-bg) 74%, transparent); transition-duration: 140ms; }
+.warlord-camera-readout { position: relative; max-height: 0; overflow: hidden; display: grid; grid-template-columns: 1fr auto; gap: 1px 5px; align-content: center; padding: 0 7px; border-bottom: 1px solid transparent; opacity: 0; transform: translateY(-3px); pointer-events: none; font-family: "Consolas", "Cascadia Mono", monospace; transition: max-height 160ms var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1)), padding 160ms ease, opacity 140ms ease, transform 160ms var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1)), border-color 140ms ease; }
 .warlord-camera-hud[data-expanded="true"] .warlord-camera-readout,
 .warlord-camera-hud:hover .warlord-camera-readout,
-.warlord-camera-hud:focus-within .warlord-camera-readout { max-height: 35px; padding: 5px 7px 4px; border-bottom-color: color-mix(in srgb, var(--wl-sand) 19%, transparent); opacity: 1; transform: translateY(0); }
-.warlord-camera-readout::before { content: "CAM"; position: absolute; top: 3px; right: 46px; color: color-mix(in srgb, var(--wl-warning) 30%, transparent); font-size: 5px; letter-spacing: .16em; }
-.warlord-camera-readout span { color: var(--wl-sand); font-size: 8px; letter-spacing: .08em; }
-.warlord-camera-readout b { grid-row: 1 / 3; grid-column: 2; align-self: center; color: var(--wl-warning); font-size: 14px; font-variant-numeric: tabular-nums; }
-.warlord-camera-readout small { color: color-mix(in srgb, var(--wl-copy) 56%, var(--wl-bg)); font-size: 6px; font-variant-numeric: tabular-nums; }
+.warlord-camera-hud:focus-within .warlord-camera-readout { max-height: 35px; padding: 5px 7px 4px; border-bottom-color: var(--wl-line-soft); opacity: 1; transform: translateY(0); transition-duration: 140ms; }
+.warlord-camera-readout::before { content: "CAM"; position: absolute; top: 3px; right: 46px; color: color-mix(in srgb, var(--wl-accent) 30%, transparent); font-size: 6px; letter-spacing: .16em; }
+.warlord-camera-readout span { color: var(--wl-sand); font-size: 8px; letter-spacing: .08em; line-height: 1.4; }
+.warlord-camera-readout b { grid-row: 1 / 3; grid-column: 2; align-self: center; color: var(--wl-accent); font-size: 12px; font-variant-numeric: tabular-nums; }
+.warlord-camera-readout small { color: color-mix(in srgb, var(--wl-copy) 56%, var(--wl-bg)); font-size: 6px; font-variant-numeric: tabular-nums; line-height: 1.4; }
 .warlord-camera-controls { display: flex; gap: 2px; padding: 3px; }
-.warlord-camera-controls button { min-width: 0; height: 22px; padding: 0 3px; overflow: hidden; border-color: color-mix(in srgb, var(--wl-sand) 22%, transparent); font-size: 7px; white-space: nowrap; }
+.warlord-camera-controls button { min-width: 0; height: 22px; padding: 0 3px; overflow: hidden; border-color: var(--wl-line-mid); font-size: 8px; white-space: nowrap; }
 .warlord-camera-controls button[data-camera-role="primary"] { flex: 1 1 0; }
-.warlord-camera-controls button[data-camera-role="detail"] { width: 0; flex: 0 0 0; padding: 0; border-width: 0; color: var(--wl-warning); font-size: 13px; opacity: 0; visibility: hidden; transform: scaleX(.7); }
+.warlord-camera-controls button[data-camera-role="detail"] { width: 0; flex: 0 0 0; padding: 0; border-width: 0; color: var(--wl-accent); font-size: 12px; opacity: 0; visibility: hidden; transform: scaleX(.7); transition: width 160ms var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1)), flex-basis 160ms var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1)), padding 160ms ease, opacity 140ms ease, transform 160ms var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1)); }
 .warlord-camera-hud[data-expanded="true"] .warlord-camera-controls button[data-camera-role="detail"],
 .warlord-camera-hud:hover .warlord-camera-controls button[data-camera-role="detail"],
-.warlord-camera-hud:focus-within .warlord-camera-controls button[data-camera-role="detail"] { width: 24px; flex-basis: 24px; padding: 0 3px; border-width: 1px; opacity: 1; visibility: visible; transform: scaleX(1); }
+.warlord-camera-hud:focus-within .warlord-camera-controls button[data-camera-role="detail"] { width: 24px; flex-basis: 24px; padding: 0 3px; border-width: 1px; opacity: 1; visibility: visible; transform: scaleX(1); transition-duration: 140ms; }
 .warlord-camera-hud[data-at-fit="false"] .warlord-camera-readout { box-shadow: inset 2px 0 0 var(--wl-warning); }
 
 .warlord-command-intent {
@@ -380,13 +399,13 @@
     border: 1px solid color-mix(in srgb, var(--wl-success) 56%, transparent);
     border-left: 3px solid var(--wl-success);
     background: color-mix(in srgb, var(--wl-bg) 88%, var(--wl-success) 7%);
-    box-shadow: 0 7px 18px color-mix(in srgb, var(--wl-bg) 70%, transparent);
+    box-shadow: var(--wb-shadow-raised);
     pointer-events: none;
 }
 .warlord-command-intent[hidden] { display: none; }
 .warlord-command-intent b { color: color-mix(in srgb, var(--wl-success) 80%, white); font-size: 8px; letter-spacing: .08em; }
-.warlord-command-intent span { min-width: 0; overflow: hidden; color: color-mix(in srgb, var(--wl-copy) 76%, var(--wl-bg)); font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
-.warlord-command-intent small { color: var(--wl-muted); font-size: 6px; white-space: nowrap; }
+.warlord-command-intent span { min-width: 0; overflow: hidden; color: color-mix(in srgb, var(--wl-copy) 76%, var(--wl-bg)); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-command-intent small { color: var(--wl-ink-lo); font-size: 6px; white-space: nowrap; }
 
 .warlord-node-strip {
     position: absolute;
@@ -402,7 +421,7 @@
     background:
         linear-gradient(180deg, color-mix(in srgb, var(--wl-sand) 4%, transparent), transparent 28%),
         color-mix(in srgb, var(--wl-bg) 94%, transparent);
-    border-top: 1px solid color-mix(in srgb, var(--wl-sand) 25%, transparent);
+    border-top: 1px solid var(--wl-line-mid);
     box-shadow: 0 -8px 18px color-mix(in srgb, var(--wl-bg) 52%, transparent);
 }
 
@@ -412,25 +431,25 @@
     grid-template-rows: minmax(0, 1fr) 14px;
     gap: 1px;
     padding-right: 2px;
-    border-right: 1px solid color-mix(in srgb, var(--wl-sand) 18%, transparent);
+    border-right: 1px solid var(--wl-line-soft);
 }
 .warlord-node-strip[data-mode="context"] .warlord-node-index { grid-template-rows: 1fr; }
 .warlord-node-index > button { min-width: 0; display: grid; align-content: center; gap: 0; padding: 1px; color: var(--wl-sand); }
-.warlord-node-index > button b { font-size: 7px; line-height: 1.15; letter-spacing: .08em; }
-.warlord-node-index > button span { color: var(--wl-muted); font-size: 6px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.warlord-node-index > button b { font-size: 8px; line-height: 1.15; letter-spacing: .08em; }
+.warlord-node-index > button span { color: var(--wl-ink-lo); font-size: 6px; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .warlord-node-pager { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; }
 .warlord-node-pager[hidden] { display: none; }
-.warlord-node-pager button { min-width: 0; padding: 0; color: var(--wl-warning); font-size: 11px; line-height: 1; }
+.warlord-node-pager button { min-width: 0; padding: 0; color: var(--wl-accent); font-size: 12px; line-height: 1; }
 .warlord-node-window { min-width: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; }
-.warlord-node-card { position: relative; min-width: 0; min-height: 40px; padding: 3px 4px 2px; display: grid; align-content: center; gap: 2px; border-color: color-mix(in srgb, var(--wl-muted) 42%, transparent); }
+.warlord-node-card { position: relative; min-width: 0; min-height: 40px; padding: 3px 4px 2px; display: grid; align-content: center; gap: 2px; border-color: color-mix(in srgb, var(--wl-muted) 42%, transparent); transition: background 120ms ease, box-shadow 120ms ease, border-color 120ms ease; }
 .warlord-node-card b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 8px; line-height: 1.15; }
-.warlord-node-meta { min-width: 0; display: flex; justify-content: center; gap: 5px; overflow: hidden; color: var(--wl-muted); font-size: 6px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.warlord-node-meta { min-width: 0; display: flex; justify-content: center; gap: 5px; overflow: hidden; color: var(--wl-ink-lo); font-size: 8px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; font-family: "Consolas", "Cascadia Mono", monospace; }
 .warlord-node-meta em,
 .warlord-node-meta i { overflow: hidden; text-overflow: ellipsis; font-style: normal; }
 .warlord-node-card.owner-red { border-top: 2px solid var(--wl-rust); }
 .warlord-node-card.owner-blue { border-top: 2px solid var(--wl-blue); }
 .warlord-node-card.owner-neutral { border-top: 2px dashed var(--wl-sand); }
-.warlord-node-card.selected { background: linear-gradient(180deg, color-mix(in srgb, var(--wl-warning) 24%, var(--wl-surface)), color-mix(in srgb, var(--wl-warning) 8%, var(--wl-surface))); box-shadow: inset 0 0 0 1px var(--wl-warning), 0 0 10px color-mix(in srgb, var(--wl-warning) 14%, transparent); }
+.warlord-node-card.selected { background: linear-gradient(180deg, color-mix(in srgb, var(--wl-focus) 22%, var(--wl-surface)), color-mix(in srgb, var(--wl-focus) 8%, var(--wl-surface))); box-shadow: inset 0 0 0 1px var(--wl-focus), 0 0 10px color-mix(in srgb, var(--wl-focus) 14%, transparent); }
 .warlord-node-card.command-move:not(.selected) { background: color-mix(in srgb, var(--wl-surface) 84%, var(--wl-success) 16%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-success) 72%, transparent), 0 0 8px color-mix(in srgb, var(--wl-success) 12%, transparent); }
 .warlord-node-card.command-attack:not(.selected) { background: color-mix(in srgb, var(--wl-surface) 82%, var(--wl-danger) 18%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-danger) 78%, transparent), 0 0 8px color-mix(in srgb, var(--wl-danger) 13%, transparent); }
 .warlord-node-card.command-partial:not(.selected) { background: color-mix(in srgb, var(--wl-surface) 82%, var(--wl-warning) 18%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-warning) 76%, transparent); }
@@ -439,7 +458,7 @@
 .warlord-node-card.command-attack .warlord-node-meta i { color: var(--wl-danger); }
 .warlord-node-card.command-partial .warlord-node-meta i { color: var(--wl-warning); }
 .warlord-node-card.command-invalid .warlord-node-meta i { color: color-mix(in srgb, var(--wl-danger) 70%, var(--wl-muted)); }
-.warlord-node-card.contested::after { content: "!"; position: absolute; top: 2px; right: 3px; color: var(--wl-danger); font-size: 7px; font-weight: 700; }
+.warlord-node-card.contested::after { content: "!"; position: absolute; top: 2px; right: 3px; color: var(--wl-danger); font-size: 8px; font-weight: 700; }
 
 .warlord-planning-layer {
     position: absolute;
@@ -453,20 +472,20 @@
     justify-content: space-between;
     gap: 10px;
     padding: 9px 10px;
-    border: 1px solid var(--wl-warning);
-    background: color-mix(in srgb, var(--wl-bg) 88%, var(--wl-warning) 12%);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--wl-bg) 75%, transparent);
+    border: 1px solid var(--wl-accent);
+    background: color-mix(in srgb, var(--wl-bg) 88%, var(--wl-accent) 12%);
+    box-shadow: var(--wb-shadow-overlay);
 }
 .warlord-planning-layer[hidden] { display: none; }
 .warlord-planning-layer div { display: grid; gap: 2px; }
-.warlord-planning-layer b { color: var(--wl-warning); }
+.warlord-planning-layer b { color: var(--wl-accent); }
 .warlord-planning-layer span { font-size: 8px; color: color-mix(in srgb, var(--wl-copy) 70%, var(--wl-bg)); }
 .warlord-planning-layer button { padding: 6px 9px; }
 
 .warlord-route-actions { display: grid; gap: 4px; padding: 6px; }
 .warlord-route-actions button { min-height: 40px; display: grid; gap: 2px; padding: 5px 7px; text-align: left; border-left: 3px solid var(--wl-sand); }
 .warlord-route-actions button b { font-size: 10px; }
-.warlord-route-actions button span { color: var(--wl-muted); font-size: 8px; line-height: 1.25; }
+.warlord-route-actions button span { color: var(--wl-ink-lo); font-size: 8px; line-height: 1.25; }
 .warlord-route-actions button.is-move:not(:disabled) { border-left-color: var(--wl-success); }
 .warlord-route-actions button.is-attack:not(:disabled) { border-left-color: var(--wl-danger); }
 .warlord-route-actions button.is-partial:not(:disabled) { border-left-color: var(--wl-warning); }
@@ -475,20 +494,20 @@
     min-height: 0;
     margin: 0 6px 5px;
     overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--wl-sand) 20%, transparent);
+    border: 1px solid var(--wl-panel-l1-border);
     background:
-        linear-gradient(130deg, color-mix(in srgb, var(--wl-warning) 5%, transparent), transparent 48%),
+        linear-gradient(130deg, color-mix(in srgb, var(--wl-accent) 5%, transparent), transparent 48%),
         color-mix(in srgb, var(--wl-bg) 92%, var(--wl-surface));
 }
-.warlord-production-console.is-empty { display: grid; gap: 3px; padding: 8px; color: var(--wl-muted); font-size: 8px; }
-.warlord-production-console.is-empty b { color: var(--wl-warning); font-size: 10px; }
-.warlord-production-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) 62px; gap: 4px; padding: 5px; border-bottom: 1px solid color-mix(in srgb, var(--wl-sand) 16%, transparent); }
+.warlord-production-console.is-empty { display: grid; gap: 3px; padding: 8px; color: var(--wl-ink-lo); font-size: 8px; }
+.warlord-production-console.is-empty b { color: var(--wl-accent); font-size: 10px; }
+.warlord-production-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) 62px; gap: 4px; padding: 5px; border-bottom: 1px solid var(--wl-line-soft); }
 .warlord-production-toolbar label { min-width: 0; display: grid; gap: 2px; }
-.warlord-production-toolbar label > span { color: var(--wl-muted); font-size: 7px; letter-spacing: .07em; }
-.warlord-production-toolbar select { min-width: 0; height: 22px; padding: 1px 3px; border: 1px solid color-mix(in srgb, var(--wl-sand) 26%, transparent); border-radius: 2px; background: var(--wl-bg); color: var(--wl-copy); font-size: 8px; }
+.warlord-production-toolbar label > span { color: var(--wl-ink-lo); font-size: 8px; letter-spacing: .07em; }
+.warlord-production-toolbar select { min-width: 0; height: 22px; padding: 1px 3px; border: 1px solid var(--wl-line-mid); border-radius: 2px; background: var(--wl-bg); color: var(--wl-copy); font-size: 8px; }
 .warlord-production-toolbar > button { min-width: 0; display: grid; place-content: center; gap: 0; padding: 2px; }
-.warlord-production-toolbar > button b { color: var(--wl-warning); font-size: 8px; letter-spacing: .08em; }
-.warlord-production-toolbar > button span { color: var(--wl-muted); font-size: 6px; }
+.warlord-production-toolbar > button b { color: var(--wl-accent); font-size: 8px; letter-spacing: .08em; }
+.warlord-production-toolbar > button span { color: var(--wl-ink-lo); font-size: 6px; }
 .warlord-production-toolbar > button.mode-exact { border-color: var(--wl-focus); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-focus) 28%, transparent); }
 .warlord-production-toolbar > button.mode-exact b { color: var(--wl-focus); }
 .warlord-production-network {
@@ -496,12 +515,12 @@
     display: grid;
     gap: 3px;
     padding: 4px 5px 5px;
-    border-bottom: 1px solid color-mix(in srgb, var(--wl-sand) 14%, transparent);
+    border-bottom: 1px solid var(--wl-line-soft);
     background: color-mix(in srgb, var(--wl-bg) 82%, transparent);
 }
 .warlord-production-network-heading { min-width: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
-.warlord-production-network-heading b { color: var(--wl-sand); font-size: 7px; letter-spacing: .08em; }
-.warlord-production-network-heading small { color: var(--wl-muted); font-size: 6px; }
+.warlord-production-network-heading b { color: var(--wl-sand); font-size: 8px; letter-spacing: .08em; }
+.warlord-production-network-heading small { color: var(--wl-ink-lo); font-size: 6px; }
 .warlord-production-network-orders { min-width: 0; min-height: 42px; display: flex; align-items: stretch; gap: 3px; overflow: hidden; }
 .warlord-production-network-order {
     position: relative;
@@ -513,22 +532,22 @@
     grid-template-rows: 25px 10px 2px;
     gap: 1px;
     overflow: hidden;
-    padding: 2px !important;
-    border-color: color-mix(in srgb, var(--wl-sand) 22%, transparent) !important;
-    background: linear-gradient(160deg, color-mix(in srgb, var(--wl-sand) 7%, var(--wl-surface)), var(--wl-bg)) !important;
+    padding: 2px;
+    border-color: var(--wl-line-mid);
+    background: linear-gradient(160deg, color-mix(in srgb, var(--wl-sand) 7%, var(--wl-surface)), var(--wl-bg));
     text-align: left;
 }
-.warlord-production-network-order.is-focused { border-color: var(--wl-focus) !important; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-focus) 48%, transparent), 0 0 7px color-mix(in srgb, var(--wl-focus) 13%, transparent); }
-.warlord-production-network-order.is-blocked { border-color: color-mix(in srgb, var(--wl-danger) 62%, transparent) !important; }
+.warlord-production-network-order.is-focused { border-color: var(--wl-focus); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-focus) 48%, transparent), 0 0 7px color-mix(in srgb, var(--wl-focus) 13%, transparent); }
+.warlord-production-network-order.is-blocked { border-color: color-mix(in srgb, var(--wl-danger) 62%, transparent); }
 .warlord-production-network-portrait { position: relative; min-width: 0; overflow: hidden; background: color-mix(in srgb, var(--wl-bg) 86%, var(--wl-sand)); clip-path: polygon(8% 0, 92% 0, 100% 10%, 94% 84%, 50% 100%, 6% 84%, 0 10%); }
 .warlord-production-network-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: saturate(.88) contrast(1.04); }
 .warlord-production-network-copy { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 1px; }
 .warlord-production-network-copy b,
-.warlord-production-network-copy small { min-width: 0; overflow: hidden; color: color-mix(in srgb, var(--wl-copy) 75%, var(--wl-bg)); font-size: 5px; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-production-network-copy small { min-width: 0; overflow: hidden; color: color-mix(in srgb, var(--wl-copy) 75%, var(--wl-bg)); font-size: 6px; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
 .warlord-production-network-copy b { flex: 1; }
-.warlord-production-network-copy small { flex: none; color: var(--wl-warning); font-variant-numeric: tabular-nums; }
+.warlord-production-network-copy small { flex: none; color: var(--wl-accent); font-variant-numeric: tabular-nums; }
 .warlord-production-network-progress { display: block; overflow: hidden; background: color-mix(in srgb, var(--wl-muted) 20%, transparent); }
-.warlord-production-network-progress em { display: block; height: 100%; background: linear-gradient(90deg, var(--wl-warning), var(--wl-success)); }
+.warlord-production-network-progress em { display: block; height: 100%; background: linear-gradient(90deg, var(--wl-accent), var(--wl-success)); }
 .warlord-production-network-order mark {
     position: absolute;
     top: 1px;
@@ -541,37 +560,37 @@
     border: 1px solid color-mix(in srgb, var(--wl-muted) 42%, transparent);
     border-radius: 50%;
     background: color-mix(in srgb, var(--wl-bg) 88%, transparent);
-    color: var(--wl-muted);
+    color: var(--wl-ink-lo);
     font-size: 6px;
     line-height: 1;
 }
 .warlord-production-network-order.is-cancellable mark { border-color: color-mix(in srgb, var(--wl-warning) 72%, transparent); color: var(--wl-warning); }
 .warlord-production-network-order.is-blocked mark { border-color: var(--wl-danger); color: var(--wl-danger); }
-.warlord-production-network-overflow { flex: 0 0 32px; display: grid; place-items: center; border: 1px dashed color-mix(in srgb, var(--wl-sand) 28%, transparent); color: var(--wl-warning); font-size: 8px; font-style: normal; }
-.warlord-production-network-empty { align-self: stretch; flex: 1; display: grid; place-items: center; border: 1px dashed color-mix(in srgb, var(--wl-sand) 16%, transparent); color: var(--wl-muted); font-size: 7px; font-style: normal; }
-.warlord-production-mode-note { min-height: 24px; display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 4px 5px; color: color-mix(in srgb, var(--wl-copy) 62%, var(--wl-bg)); font-size: 7px; line-height: 1.25; }
+.warlord-production-network-overflow { flex: 0 0 32px; display: grid; place-items: center; border: 1px dashed var(--wl-line-mid); color: var(--wl-accent); font-size: 8px; font-style: normal; }
+.warlord-production-network-empty { align-self: stretch; flex: 1; display: grid; place-items: center; border: 1px dashed var(--wl-line-soft); color: var(--wl-ink-lo); font-size: 8px; font-style: normal; }
+.warlord-production-mode-note { min-height: 24px; display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 4px 5px; color: color-mix(in srgb, var(--wl-copy) 62%, var(--wl-bg)); font-size: 8px; line-height: 1.25; }
 .warlord-production-mode-note span { min-width: 0; }
-.warlord-production-mode-note button { flex: none; padding: 2px 4px; color: var(--wl-warning); font-size: 6px; }
+.warlord-production-mode-note button { flex: none; padding: 2px 4px; color: var(--wl-accent); font-size: 8px; }
 .warlord-production-lanes { display: grid; gap: 3px; padding: 0 5px 5px; }
-.warlord-production-lanes > p { margin: 3px 0; color: var(--wl-muted); font-size: 8px; }
-.warlord-production-lane {
+.warlord-production-lanes > p { margin: 3px 0; color: var(--wl-ink-lo); font-size: 8px; }
+.warlord-production-lanes .warlord-production-lane {
     position: relative;
     min-width: 0;
     min-height: 62px;
     display: grid;
     grid-template-rows: minmax(42px, 1fr) 16px;
     overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--wl-sand) 20%, transparent);
+    border: 1px solid var(--wl-line-mid);
     text-align: left;
-    border-left: 3px solid color-mix(in srgb, var(--wl-sand) 42%, transparent) !important;
-    background: color-mix(in srgb, var(--wl-surface) 88%, transparent) !important;
+    border-left: 3px solid var(--wl-line-strong);
+    background: color-mix(in srgb, var(--wl-surface) 88%, transparent);
 }
-.warlord-production-lane:hover { background: color-mix(in srgb, var(--wl-surface) 76%, var(--wl-sand) 10%) !important; }
-.warlord-production-lane.is-recommended { border-color: var(--wl-warning) !important; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-warning) 34%, transparent), 0 0 9px color-mix(in srgb, var(--wl-warning) 10%, transparent); }
-.warlord-production-lane.is-exact { border-color: var(--wl-focus) !important; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-focus) 35%, transparent); }
-.warlord-production-lane.state-waiting_deployment { border-left-color: var(--wl-danger) !important; }
-.warlord-production-lane.state-paused { border-left-color: var(--wl-muted) !important; }
-.warlord-production-lane-select {
+.warlord-production-lane:hover { background: color-mix(in srgb, var(--wl-surface) 76%, var(--wl-sand) 10%); }
+.warlord-production-lane.is-recommended { border-color: var(--wl-accent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-accent) 34%, transparent), 0 0 9px color-mix(in srgb, var(--wl-accent) 10%, transparent); }
+.warlord-production-lane.is-exact { border-color: var(--wl-focus); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-focus) 35%, transparent); }
+.warlord-production-lane.state-waiting_deployment { border-left-color: var(--wl-danger); }
+.warlord-production-lane.state-paused { border-left-color: var(--wl-muted); }
+.warlord-production-lane .warlord-production-lane-select {
     min-width: 0;
     width: 100%;
     display: grid;
@@ -583,41 +602,41 @@
     column-gap: 5px;
     row-gap: 2px;
     padding: 4px 5px 2px;
-    border: 0 !important;
-    background: transparent !important;
+    border: 0;
+    background: transparent;
     text-align: left;
 }
 .warlord-production-lane-select:focus-visible { outline-offset: -2px; }
-.warlord-lane-index { grid-area: index; align-self: stretch; display: grid; place-content: center; gap: 2px; border-right: 1px solid color-mix(in srgb, var(--wl-sand) 16%, transparent); text-align: center; }
-.warlord-lane-index b { color: var(--wl-sand); font-size: 15px; font-variant-numeric: tabular-nums; line-height: 1; }
-.warlord-lane-index i { color: var(--wl-muted); font-size: 5px; font-style: normal; letter-spacing: .06em; }
-.warlord-production-lane.is-recommended .warlord-lane-index i { color: var(--wl-warning); }
+.warlord-lane-index { grid-area: index; align-self: stretch; display: grid; place-content: center; gap: 2px; border-right: 1px solid var(--wl-line-soft); text-align: center; }
+.warlord-lane-index b { color: var(--wl-sand); font-size: 12px; font-variant-numeric: tabular-nums; line-height: 1; }
+.warlord-lane-index i { color: var(--wl-ink-lo); font-size: 6px; font-style: normal; letter-spacing: .06em; }
+.warlord-production-lane.is-recommended .warlord-lane-index i { color: var(--wl-accent); }
 .warlord-production-lane.is-exact .warlord-lane-index i { color: var(--wl-focus); }
-.warlord-queue-portrait { grid-area: portrait; position: relative; width: 28px; height: 30px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--wl-sand) 18%, transparent); background: var(--wl-bg); }
+.warlord-queue-portrait { grid-area: portrait; position: relative; width: 28px; height: 30px; overflow: hidden; border: 1px solid var(--wl-line-soft); background: var(--wl-bg); }
 .warlord-queue-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; }
-.warlord-queue-empty { grid-area: portrait; display: grid; place-items: center; width: 28px; height: 30px; border: 1px dashed color-mix(in srgb, var(--wl-sand) 26%, transparent); color: var(--wl-muted); font-size: 15px; }
+.warlord-queue-empty { grid-area: portrait; display: grid; place-items: center; width: 28px; height: 30px; border: 1px dashed var(--wl-line-mid); color: var(--wl-muted); font-size: 12px; }
 .warlord-production-order { grid-area: order; min-width: 0; display: grid; align-content: center; gap: 2px; }
 .warlord-production-order b,
 .warlord-production-order small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.warlord-production-order b { color: color-mix(in srgb, var(--wl-copy) 88%, var(--wl-bg)); font-size: 9px; }
-.warlord-production-order small { color: var(--wl-muted); font-size: 7px; }
+.warlord-production-order b { color: color-mix(in srgb, var(--wl-copy) 88%, var(--wl-bg)); font-size: 10px; }
+.warlord-production-order small { color: var(--wl-ink-lo); font-size: 8px; }
 .warlord-production-lane.has-cancellable-head .warlord-production-order { padding-right: 32px; }
 .warlord-production-lane.state-waiting_deployment .warlord-production-order small { color: var(--wl-danger); }
 .warlord-lane-progress { grid-area: progress; overflow: hidden; border-radius: 2px; background: color-mix(in srgb, var(--wl-muted) 18%, transparent); }
-.warlord-lane-progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--wl-warning), color-mix(in srgb, var(--wl-warning) 45%, var(--wl-success))); }
+.warlord-lane-progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--wl-accent), color-mix(in srgb, var(--wl-accent) 45%, var(--wl-success))); }
 .warlord-production-lane.state-waiting_deployment .warlord-lane-progress i { background: var(--wl-danger); }
-.warlord-production-cancel {
+.warlord-production-lane .warlord-production-cancel {
     position: absolute;
     z-index: 2;
     top: 7px;
     right: 5px;
     width: 29px;
     height: 19px;
-    padding: 0 !important;
-    border-color: color-mix(in srgb, var(--wl-warning) 52%, transparent) !important;
-    background: color-mix(in srgb, var(--wl-bg) 88%, var(--wl-warning) 8%) !important;
+    padding: 0;
+    border-color: color-mix(in srgb, var(--wl-warning) 52%, transparent);
+    background: color-mix(in srgb, var(--wl-bg) 88%, var(--wl-warning) 8%);
     color: var(--wl-warning);
-    font-size: 6px;
+    font-size: 8px;
 }
 .warlord-lane-tail {
     min-width: 0;
@@ -627,32 +646,32 @@
     overflow: hidden;
     padding: 0 4px 2px 39px;
     color: var(--wl-muted);
-    font-size: 6px;
+    font-size: 8px;
     line-height: 14px;
     white-space: nowrap;
 }
-.warlord-tail-order {
+.warlord-lane-tail .warlord-tail-order {
     min-width: 0;
     max-width: 88px;
     height: 14px;
     display: inline-flex;
     align-items: center;
     gap: 2px;
-    padding: 0 2px !important;
-    border-color: color-mix(in srgb, var(--wl-warning) 32%, transparent) !important;
+    padding: 0 2px;
+    border-color: color-mix(in srgb, var(--wl-accent) 32%, transparent);
     border-radius: 1px;
-    background: color-mix(in srgb, var(--wl-warning) 7%, var(--wl-bg)) !important;
+    background: color-mix(in srgb, var(--wl-accent) 7%, var(--wl-bg));
     color: color-mix(in srgb, var(--wl-copy) 72%, var(--wl-bg));
-    font-size: 6px;
+    font-size: 8px;
     line-height: 12px;
 }
 .warlord-tail-order > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .warlord-tail-order > .warlord-tail-order-portrait { flex: 0 0 11px; width: 11px; height: 12px; background: var(--wl-bg); clip-path: polygon(8% 0, 92% 0, 100% 12%, 92% 84%, 50% 100%, 8% 84%, 0 12%); }
 .warlord-tail-order-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
-.warlord-tail-order > i { flex: none; color: var(--wl-warning); font-size: 8px; font-style: normal; }
+.warlord-tail-order > i { flex: none; color: var(--wl-accent); font-size: 8px; font-style: normal; }
 .warlord-tail-order.is-locked { opacity: .56; }
 .warlord-tail-order.is-locked > i { color: var(--wl-muted); }
-.warlord-production-undo { border-color: color-mix(in srgb, var(--wl-warning) 52%, transparent) !important; background: color-mix(in srgb, var(--wl-warning) 8%, var(--wl-bg)) !important; }
+.warlord-production-console .warlord-production-undo { border-color: color-mix(in srgb, var(--wl-warning) 52%, transparent); background: color-mix(in srgb, var(--wl-warning) 8%, var(--wl-bg)); }
 
 .warlord-production-console.is-monitoring .warlord-production-toolbar { grid-template-columns: minmax(0, 1fr) 54px; padding: 3px 4px; }
 .warlord-production-console.is-monitoring .warlord-production-toolbar label > span,
@@ -661,12 +680,12 @@
 .warlord-production-console.is-monitoring .warlord-production-network { grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 3px; padding: 3px 4px; }
 .warlord-production-console.is-monitoring .warlord-production-network-heading { display: grid; justify-content: stretch; gap: 1px; }
 .warlord-production-console.is-monitoring .warlord-production-network-heading b { font-size: 6px; }
-.warlord-production-console.is-monitoring .warlord-production-network-heading small { font-size: 5px; }
+.warlord-production-console.is-monitoring .warlord-production-network-heading small { font-size: 6px; }
 .warlord-production-console.is-monitoring .warlord-production-network-orders { min-height: 27px; gap: 2px; }
-.warlord-production-console.is-monitoring .warlord-production-network-order { flex-basis: 25px; width: 25px; height: 27px; grid-template-rows: 17px 6px 1px; gap: 0; padding: 1px !important; }
-.warlord-production-console.is-monitoring .warlord-production-network-copy b { font-size: 4px; }
+.warlord-production-console.is-monitoring .warlord-production-network-order { flex-basis: 25px; width: 25px; height: 27px; grid-template-rows: 17px 6px 1px; gap: 0; padding: 1px; }
+.warlord-production-console.is-monitoring .warlord-production-network-copy b { font-size: 6px; }
 .warlord-production-console.is-monitoring .warlord-production-network-copy small { display: none; }
-.warlord-production-console.is-monitoring .warlord-production-network-order mark { min-width: 7px; height: 7px; font-size: 5px; }
+.warlord-production-console.is-monitoring .warlord-production-network-order mark { min-width: 7px; height: 7px; font-size: 6px; }
 .warlord-production-console.is-monitoring .warlord-production-network-overflow { flex-basis: 25px; font-size: 6px; }
 .warlord-production-console.is-monitoring .warlord-production-network-empty { font-size: 6px; }
 .warlord-production-console.is-monitoring .warlord-production-lanes { gap: 2px; padding: 3px 4px 4px; }
@@ -679,13 +698,13 @@
 .warlord-production-console.is-monitoring .warlord-production-cancel { display: none; }
 .warlord-production-console.is-monitoring .warlord-lane-index b { font-size: 12px; }
 
-.warlord-end-action { width: 100%; margin: 0; padding: 7px; border-color: var(--wl-rust) !important; color: color-mix(in srgb, var(--wl-copy) 86%, white); }
-.warlord-panel kbd { padding: 1px 4px; border: 1px solid color-mix(in srgb, var(--wl-sand) 25%, transparent); color: var(--wl-muted); font-size: 8px; }
+.warlord-action-footer .warlord-end-action { width: 100%; margin: 0; padding: 7px; border-color: var(--wl-rust); color: color-mix(in srgb, var(--wl-copy) 86%, white); }
+.warlord-panel kbd { padding: 1px 4px; border: 1px solid var(--wl-line-mid); color: var(--wl-ink-lo); font-size: 8px; }
 
-.warlord-event-feed { min-height: 0; flex: 1; overflow: hidden; margin-top: 2px; padding: 5px 7px; border-top: 1px solid color-mix(in srgb, var(--wl-sand) 18%, transparent); }
-.warlord-event-feed h3 { margin: 0 0 4px; color: var(--wl-sand); font-size: 9px; letter-spacing: .08em; }
+.warlord-event-feed { min-height: 0; flex: 1; overflow: hidden; margin-top: 2px; padding: 5px 7px; border-top: 1px solid var(--wl-panel-l2-border); }
+.warlord-event-feed h3 { margin: 0 0 4px; color: var(--wl-sand); font-size: 10px; letter-spacing: .08em; }
 .warlord-event-feed p { display: grid; grid-template-columns: 24px 1fr; gap: 4px; margin: 0 0 4px; color: color-mix(in srgb, var(--wl-copy) 67%, var(--wl-bg)); font-size: 8px; line-height: 1.25; }
-.warlord-event-feed time { color: var(--wl-warning); }
+.warlord-event-feed time { color: var(--wl-accent); font-family: "Consolas", "Cascadia Mono", monospace; }
 
 .warlord-roster {
     min-width: 0;
@@ -693,84 +712,103 @@
     grid-template-columns: 84px 1fr;
     gap: 5px;
     padding: 5px 6px 6px;
-    border-top: 1px solid color-mix(in srgb, var(--wl-sand) 28%, transparent);
-    background: linear-gradient(0deg, color-mix(in srgb, var(--wl-bg) 96%, transparent), var(--wl-surface));
+    border-top: 1px solid var(--wl-panel-l2-border);
+    background: color-mix(in srgb, var(--wl-bg) 94%, var(--wl-surface));
 }
 
-.warlord-roster-label { display: grid; align-content: center; gap: 4px; padding: 6px; border-right: 1px solid color-mix(in srgb, var(--wl-sand) 20%, transparent); }
-.warlord-roster-label b { color: var(--wl-sand); font-size: 14px; }
-.warlord-roster-label span { color: var(--wl-muted); font-size: 8px; line-height: 1.4; }
+.warlord-roster-label { display: grid; align-content: center; gap: 4px; padding: 6px; border-right: 1px solid var(--wl-line-soft); }
+.warlord-roster-label b { color: var(--wl-sand); font-size: 12px; }
+.warlord-roster-label span { color: var(--wl-ink-lo); font-size: 8px; line-height: 1.4; }
 .warlord-card-track { min-width: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; }
-.warlord-card { min-width: 0; display: grid; grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 67px 28px; gap: 3px 4px; padding: 3px; border: 1px solid color-mix(in srgb, var(--wl-sand) 22%, transparent); border-top: 3px solid var(--wl-sand); background: color-mix(in srgb, var(--wl-surface) 91%, transparent); overflow: hidden; }
+.warlord-card { min-width: 0; display: grid; grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 67px 28px; gap: 3px 4px; padding: 3px; border: 1px solid var(--wl-line-mid); border-top: 3px solid var(--wl-sand); background: color-mix(in srgb, var(--wl-surface) 91%, transparent); overflow: hidden; }
 .warlord-card { transition: border-color var(--wb-motion-micro, 100ms), background var(--wb-motion-micro, 100ms); }
 .warlord-card:hover { border-color: color-mix(in srgb, var(--wl-sand) 48%, transparent); background: color-mix(in srgb, var(--wl-surface) 84%, var(--wl-sand) 7%); }
-.warlord-card.tier-2 { border-top-color: var(--wl-warning); }
+.warlord-card.tier-2 { border-top-color: var(--wl-accent); }
 .warlord-card.tier-3 { border-top-color: var(--wl-danger); }
-.warlord-card-portrait { position: relative; width: 36px; height: 64px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--wl-sand) 18%, transparent); background: radial-gradient(circle at 50% 25%, color-mix(in srgb, var(--wl-sand) 12%, transparent), var(--wl-bg)); }
-.warlord-card-portrait i { position: absolute; left: 0; right: 0; bottom: 0; padding: 1px; background: color-mix(in srgb, var(--wl-bg) 78%, transparent); color: var(--wl-sand); text-align: center; font-size: 6px; font-style: normal; }
+.warlord-card-portrait { position: relative; width: 36px; height: 64px; overflow: hidden; border: 1px solid var(--wl-line-soft); background: radial-gradient(circle at 50% 25%, color-mix(in srgb, var(--wl-sand) 12%, transparent), var(--wl-bg)); }
+.warlord-card-portrait i { position: absolute; left: 0; right: 0; bottom: 0; padding: 1px; background: color-mix(in srgb, var(--wl-bg) 78%, transparent); color: var(--wl-sand); text-align: center; font-size: 8px; font-style: normal; }
 .warlord-card-copy { min-width: 0; display: grid; align-content: start; gap: 3px; }
 .warlord-card-copy b,
 .warlord-card-copy small { overflow: hidden; text-overflow: ellipsis; }
 .warlord-card-copy b { font-size: 10px; line-height: 1.2; white-space: nowrap; }
-.warlord-card-copy small { color: var(--wl-muted); font-size: 8px; line-height: 1.25; }
+.warlord-card-copy small { color: var(--wl-ink-lo); font-size: 8px; line-height: 1.25; }
 .warlord-card-stats { display: flex; gap: 3px; white-space: nowrap; }
 .warlord-card-stats strong { color: color-mix(in srgb, var(--wl-copy) 86%, var(--wl-bg)); font-weight: 500; }
 .warlord-card-stats em { font-style: normal; }
 .warlord-card-actions { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-.warlord-card-actions button { min-width: 0; padding: 2px 0; font-size: 7px; }
-.warlord-scale-shell[data-phase="SETTLEMENT_PLANNING"] .warlord-card-production:not(:disabled) { border-color: var(--wl-warning); background: color-mix(in srgb, var(--wl-warning) 14%, var(--wl-surface)); color: color-mix(in srgb, var(--wl-copy) 90%, white); }
+.warlord-card-actions button { min-width: 0; padding: 2px 0; font-size: 8px; }
+.warlord-scale-shell[data-phase="SETTLEMENT_PLANNING"] .warlord-card-production:not(:disabled) { border-color: var(--wl-accent); background: color-mix(in srgb, var(--wl-accent) 14%, var(--wl-surface)); color: color-mix(in srgb, var(--wl-copy) 90%, white); }
 
 .warlord-map-fallback { z-index: 4; padding: 38px 12px 10px; background: color-mix(in srgb, var(--wl-bg) 96%, var(--wl-danger) 4%); }
 .warlord-fallback-notice { display: grid; gap: 3px; margin-bottom: 12px; text-align: center; }
-.warlord-fallback-notice b { color: var(--wl-danger); font-size: 16px; }
+.warlord-fallback-notice b { color: var(--wl-danger); font-size: 17px; }
 .warlord-fallback-notice span,
-.warlord-fallback-notice small { color: var(--wl-muted); font-size: 9px; }
+.warlord-fallback-notice small { color: var(--wl-ink-lo); font-size: 10px; }
 .warlord-fallback-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .warlord-fallback-grid button { min-height: 58px; display: grid; place-content: center; gap: 4px; }
 .warlord-fallback-grid button.owner-red { border-left: 4px solid var(--wl-rust); }
 .warlord-fallback-grid button.owner-blue { border-left: 4px solid var(--wl-blue); }
 .warlord-fallback-grid button.owner-neutral { border-left: 4px dashed var(--wl-sand); }
-.warlord-fallback-grid button.selected { box-shadow: inset 0 0 0 1px var(--wl-warning); }
-.warlord-fallback-grid span { color: var(--wl-muted); font-size: 8px; }
+.warlord-fallback-grid button.selected { box-shadow: inset 0 0 0 1px var(--wl-focus); }
+.warlord-fallback-grid span { color: var(--wl-ink-lo); font-size: 8px; }
 
 .warlord-battle-layer,
 .warlord-config-layer { position: absolute; inset: 0; z-index: 30; display: grid; place-items: center; background: color-mix(in srgb, var(--wl-bg) 78%, transparent); backdrop-filter: blur(3px); }
 .warlord-battle-layer[hidden],
 .warlord-config-layer[hidden] { display: none; }
-.warlord-battle-dialog { width: 790px; max-height: 510px; overflow: hidden; border: 1px solid var(--wl-sand); background: var(--wl-bg); box-shadow: 0 18px 60px color-mix(in srgb, var(--wl-bg) 90%, transparent); }
-.warlord-battle-dialog > header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid color-mix(in srgb, var(--wl-sand) 26%, transparent); background: var(--wl-surface); }
+.warlord-battle-dialog { position: relative; width: 790px; max-height: 510px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--wl-sand) 58%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 58%, transparent), transparent 42%), var(--wl-glass); box-shadow: 0 18px 60px color-mix(in srgb, var(--wl-bg) 90%, transparent), inset 0 0 28px color-mix(in srgb, var(--wl-sand) 7%, transparent); }
+.warlord-battle-dialog > header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--wl-line-mid); background: linear-gradient(90deg, color-mix(in srgb, var(--wl-rust) 8%, transparent), transparent 34%, transparent 66%, color-mix(in srgb, var(--wl-blue) 7%, transparent)), linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 92%, var(--wl-sand) 5%), color-mix(in srgb, var(--wl-bg) 88%, transparent)); }
 .warlord-battle-dialog > header span { display: grid; gap: 2px; }
-.warlord-battle-dialog > header b { color: var(--wl-sand); font-size: 15px; }
-.warlord-battle-dialog > header small { color: var(--wl-muted); font-size: 8px; }
-.warlord-battle-dialog > header strong { color: var(--wl-warning); font-size: 18px; }
+.warlord-battle-dialog > header b { color: var(--wl-sand); font-size: 17px; }
+.warlord-battle-dialog > header small { color: var(--wl-ink-lo); font-size: 8px; }
+.warlord-battle-dialog > header strong { color: var(--wl-accent); font-size: 17px; }
 .warlord-battle-formations { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
-.warlord-battle-formations section > h3 { margin: 0 0 6px; color: var(--wl-muted); font-size: 9px; letter-spacing: .12em; }
+.warlord-battle-formations section > h3 { margin: 0 0 6px; color: var(--wl-ink-lo); font-size: 10px; letter-spacing: .12em; }
 .warlord-battle-dialog article { display: grid; grid-template-columns: 42px 1fr; gap: 6px; min-height: 60px; margin-bottom: 4px; padding: 4px; border-left: 3px solid var(--wl-rust); background: var(--wl-surface); }
 .warlord-battle-dialog article.blue { border-left-color: var(--wl-blue); }
 .warlord-battle-dialog article.dead { opacity: .45; filter: grayscale(.8); }
-.warlord-battle-dialog article.acting { box-shadow: inset 0 0 0 1px var(--wl-warning); }
+.warlord-battle-dialog article.acting { box-shadow: inset 0 0 0 1px var(--wl-accent); }
 .warlord-battle-dialog article.targeted { background: color-mix(in srgb, var(--wl-surface) 80%, var(--wl-danger) 20%); }
 .warlord-battle-portrait { width: 42px; height: 52px; overflow: hidden; }
 .warlord-battle-dialog article > span:last-child { display: grid; align-content: center; gap: 2px; }
-.warlord-battle-dialog article small { color: var(--wl-muted); font-size: 8px; }
-.warlord-battle-event { margin: 0 10px; padding: 8px 10px; border: 1px solid color-mix(in srgb, var(--wl-warning) 42%, transparent); background: color-mix(in srgb, var(--wl-warning) 8%, var(--wl-surface)); }
-.warlord-battle-event b { color: var(--wl-warning); }
+.warlord-battle-dialog article small { color: var(--wl-ink-lo); font-size: 8px; }
+.warlord-battle-event { margin: 0 10px; padding: 8px 10px; border: 1px solid color-mix(in srgb, var(--wl-accent) 42%, transparent); background: color-mix(in srgb, var(--wl-accent) 8%, var(--wl-surface)); }
+.warlord-battle-event b { color: var(--wl-accent); }
 .warlord-battle-event p { margin: 3px 0 0; color: color-mix(in srgb, var(--wl-copy) 78%, var(--wl-bg)); font-size: 10px; }
 .warlord-battle-controls { display: flex; justify-content: flex-end; gap: 5px; padding: 9px 10px; }
 .warlord-battle-controls button { padding: 5px 9px; }
 .warlord-battle-log { max-height: 105px; overflow-y: auto; margin: 0 10px 10px; padding: 5px; background: var(--wl-surface); }
 .warlord-battle-log p { display: grid; grid-template-columns: 28px 1fr; margin: 0 0 3px; font-size: 8px; }
-.warlord-battle-log span { color: var(--wl-warning); }
+.warlord-battle-log span { color: var(--wl-accent); }
 
-.warlord-config-dialog { width: 360px; padding: 12px; border: 1px solid var(--wl-sand); background: var(--wl-bg); box-shadow: 0 18px 60px color-mix(in srgb, var(--wl-bg) 90%, transparent); }
+.warlord-config-dialog { position: relative; width: 360px; padding: 12px; border: 1px solid color-mix(in srgb, var(--wl-sand) 58%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 58%, transparent), transparent 42%), var(--wl-glass); box-shadow: 0 18px 60px color-mix(in srgb, var(--wl-bg) 90%, transparent), inset 0 0 28px color-mix(in srgb, var(--wl-sand) 7%, transparent); }
 .warlord-config-dialog header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.warlord-config-dialog header b { color: var(--wl-sand); font-size: 16px; }
+.warlord-config-dialog header b { color: var(--wl-sand); font-size: 17px; }
 .warlord-config-dialog header button { width: 28px; height: 28px; }
-.warlord-config-dialog label { display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--wl-muted); }
+.warlord-config-dialog label { display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--wl-ink-lo); }
 .warlord-config-dialog input,
-.warlord-config-dialog select { width: 100%; padding: 5px 7px; border: 1px solid color-mix(in srgb, var(--wl-sand) 30%, transparent); background: var(--wl-surface); color: var(--wl-copy); }
-.warlord-config-dialog p { color: var(--wl-muted); font-size: 9px; line-height: 1.5; }
-.warlord-config-dialog > button { width: 100%; padding: 7px; color: var(--wl-warning); }
+.warlord-config-dialog select { width: 100%; padding: 5px 7px; border: 1px solid var(--wl-line-strong); background: var(--wl-surface); color: var(--wl-copy); }
+.warlord-config-dialog p { color: var(--wl-ink-lo); font-size: 10px; line-height: 1.5; }
+.warlord-config-dialog > button { width: 100%; padding: 7px; color: var(--wl-accent); }
+
+/* 对话框角落括线：与地图区战术语言一致，低透明度纯装饰 */
+.warlord-battle-dialog::after,
+.warlord-config-dialog::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    pointer-events: none;
+    background:
+        linear-gradient(var(--wl-accent), var(--wl-accent)) left top / 22px 1px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) left top / 1px 16px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) right top / 22px 1px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) right top / 1px 16px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) left bottom / 22px 1px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) left bottom / 1px 16px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) right bottom / 22px 1px no-repeat,
+        linear-gradient(var(--wl-accent), var(--wl-accent)) right bottom / 1px 16px no-repeat;
+    opacity: .3;
+}
 
 .warlord-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 
@@ -784,3 +822,132 @@
         animation-iteration-count: 1 !important;
     }
 }
+
+/* ===== Phase 打磨: 反馈与交互（CSS-B 收尾精修） ===== */
+
+/* 可见 toast：与 sr-only live 区域同源，停在命令意图条上方，到时由 timer 加淡出 class */
+.warlord-toast {
+    position: absolute;
+    left: 50px;
+    bottom: 92px;
+    z-index: 6;
+    max-width: calc(100% - 206px);
+    padding: 4px 9px;
+    border: 1px solid color-mix(in srgb, var(--wl-copy) 26%, transparent);
+    border-left: 3px solid var(--wl-copy);
+    background: color-mix(in srgb, var(--wl-bg) 90%, var(--wl-copy) 5%);
+    box-shadow: var(--wb-shadow-raised);
+    color: color-mix(in srgb, var(--wl-copy) 88%, var(--wl-bg));
+    font-size: 8px;
+    line-height: 1.5;
+    pointer-events: none;
+    transition: opacity var(--wb-motion-reject, 250ms) var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1)), transform var(--wb-motion-reject, 250ms) var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1));
+}
+.warlord-toast[hidden] { display: none; }
+.warlord-toast.is-error {
+    border-color: color-mix(in srgb, var(--wl-warning) 52%, transparent);
+    border-left-color: var(--wl-warning);
+    background: color-mix(in srgb, var(--wl-bg) 88%, var(--wl-warning) 8%);
+    color: color-mix(in srgb, var(--wl-warning) 82%, white);
+}
+.warlord-toast.is-fading { opacity: 0; transform: translateY(-4px); }
+
+/* handoff / blocked 可见横幅：居中于沙盘顶部，pointer-events 关闭，不遮挡 × 与相机操作岛 */
+.warlord-authority-banner {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    z-index: 7;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    max-width: min(430px, 62%);
+    padding: 6px 12px;
+    transform: translateX(-50%);
+    border: 1px solid color-mix(in srgb, var(--wl-focus) 45%, transparent);
+    background: color-mix(in srgb, var(--wl-bg) 84%, var(--wl-focus) 8%);
+    box-shadow: var(--wb-shadow-overlay);
+    pointer-events: none;
+}
+.warlord-authority-banner[hidden] { display: none; }
+.warlord-authority-banner b { flex: none; color: var(--wl-focus); font-size: 10px; white-space: nowrap; }
+.warlord-authority-banner span { min-width: 0; color: color-mix(in srgb, var(--wl-copy) 78%, var(--wl-bg)); font-size: 8px; line-height: 1.5; }
+.warlord-authority-banner[data-state="blocked"] {
+    border-color: color-mix(in srgb, var(--wl-danger) 55%, transparent);
+    background: color-mix(in srgb, var(--wl-bg) 86%, var(--wl-danger) 10%);
+}
+.warlord-authority-banner[data-state="blocked"] b { color: var(--wl-danger); }
+.warlord-authority-spinner {
+    width: 12px;
+    height: 12px;
+    flex: none;
+    border: 2px solid color-mix(in srgb, var(--wl-focus) 26%, transparent);
+    border-top-color: var(--wl-focus);
+    border-radius: 50%;
+    animation: warlord-authority-spin var(--wb-motion-busy, 1000ms) linear infinite;
+}
+@keyframes warlord-authority-spin { to { transform: rotate(360deg); } }
+
+/* 3D 悬停信息芯片：跟随 anchor，由 session 钳制在沙盘内 */
+.warlord-hover-chip {
+    position: absolute;
+    z-index: 8;
+    display: grid;
+    gap: 1px;
+    max-width: 190px;
+    padding: 4px 7px;
+    border: 1px solid var(--wl-line-strong);
+    background: color-mix(in srgb, var(--wl-bg) 88%, var(--wl-sand) 6%);
+    box-shadow: var(--wb-shadow-raised);
+    pointer-events: none;
+}
+.warlord-hover-chip[hidden] { display: none; }
+.warlord-hover-chip b { color: var(--wl-sand); font-size: 10px; white-space: nowrap; }
+.warlord-hover-chip span { color: color-mix(in srgb, var(--wl-copy) 76%, var(--wl-bg)); font-size: 8px; white-space: nowrap; }
+
+/* 首次引导教练点：左上固定；意图条脉冲同动画；reduced-motion 由全局规则降级 */
+.warlord-coach-tip {
+    position: absolute;
+    top: 30px;
+    left: 50px;
+    z-index: 6;
+    padding: 4px 9px;
+    border: 1px solid color-mix(in srgb, var(--wl-focus) 48%, transparent);
+    border-left: 3px solid var(--wl-focus);
+    background: color-mix(in srgb, var(--wl-bg) 86%, var(--wl-focus) 8%);
+    color: color-mix(in srgb, var(--wl-focus) 84%, white);
+    font-size: 8px;
+    letter-spacing: .04em;
+    pointer-events: none;
+    animation: warlord-coach-pulse var(--wb-motion-ambient, 1800ms) ease-in-out infinite;
+}
+.warlord-coach-tip[hidden] { display: none; }
+.warlord-command-intent.is-coach { animation: warlord-coach-pulse var(--wb-motion-ambient, 1800ms) ease-in-out infinite; }
+@keyframes warlord-coach-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--wl-focus) 34%, transparent); }
+    50% { box-shadow: 0 0 0 5px transparent; }
+}
+
+/* 进攻二次确认：意图条转红色警示 */
+.warlord-command-intent.is-armed {
+    border-color: color-mix(in srgb, var(--wl-danger) 62%, transparent);
+    border-left-color: var(--wl-danger);
+    background: color-mix(in srgb, var(--wl-bg) 88%, var(--wl-danger) 9%);
+}
+.warlord-command-intent.is-armed b { color: color-mix(in srgb, var(--wl-danger) 84%, white); }
+
+/* 驻军栏"全选本据点"：独立工具条行，40px 命中；列表让出对应高度 */
+.warlord-force-toolbar { display: flex; padding: 3px 6px 0; }
+.warlord-select-all { flex: 1; min-height: 40px; color: var(--wl-focus); font-size: 10px; letter-spacing: .08em; }
+.warlord-force-list { height: 229px; }
+
+/* 排产阶段微文案：行动阶段提示排产/升阶在统一结算开放 */
+.warlord-roster-hint { color: var(--wl-warning); font-size: 8px; line-height: 1.4; }
+
+/* HP 条分色与宽度过渡：<50% 警示、<25% 危急 */
+.warlord-piece i em,
+.warlord-battle-dialog article i em { transition: width var(--wb-motion-micro, 100ms) ease; }
+.warlord-piece i.is-low em,
+.warlord-battle-dialog article i.is-low em { background: var(--wl-warning); }
+.warlord-piece i.is-critical em,
+.warlord-battle-dialog article i.is-critical em { background: var(--wl-danger); }

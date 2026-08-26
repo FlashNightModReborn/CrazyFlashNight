@@ -31,6 +31,16 @@ const DEFAULT_CAMERA_SNAPSHOT = {
 };
 const CAMERA_HUD_REVEAL_MS = 1400;
 const MAX_NETWORK_ORDER_TILES = 6;
+// 可见 toast：停留时长 + 淡出过渡（淡出曲线在 CSS 追加分区）
+const TOAST_VISIBLE_MS = 2800;
+const TOAST_FADE_MS = 320;
+// 进攻二次确认的有效窗口；超时、Esc 或点击他处都会解除武装
+const ATTACK_ARM_WINDOW_MS = 3000;
+// AI 行动重放节奏：不小于棋子 420ms 移动补间，避免补间被下一条命令重启
+const AI_REPLAY_INTERVAL_MS = 460;
+const AI_AS2_INTERVAL_MS = 450;
+// AI 重放中一场战斗播完后留给玩家看清结果的停留时间
+const AI_BATTLE_DWELL_MS = 900;
 function escapeHtml(value) {
     return String(value ?? '')
         .replaceAll('&', '&amp;')
@@ -50,6 +60,11 @@ function selected(value) {
 }
 function hpPercent(hp, maxHp) {
     return maxHp > 0 ? Math.max(0, Math.min(100, (hp / maxHp) * 100)) : 0;
+}
+// HP 条分色：低于 50% 警示、低于 25% 危急；颜色在 CSS 追加分区按 class 着色
+function hpBarClass(hp, maxHp) {
+    const percent = hpPercent(hp, maxHp);
+    return percent < 25 ? ' class="is-critical"' : percent < 50 ? ' class="is-low"' : '';
 }
 function compactProductionNodeName(displayName) {
     return displayName.replace('红方', 'R·').replace('蓝方', 'B·').replace('中央', '中·');
@@ -99,7 +114,19 @@ export class WarlordSession {
     productionNodeId;
     selectedSlotId;
     productionControlMode = 'auto';
-    notice = '点击己方棋子或按住 Shift 框选，再点击高亮据点直接下令。';
+    // notice 通过 setter 同步可见 toast 的序号；错误/阻断类用 setNotice(..., 'error') 区分色调
+    noticeText = '点击己方棋子或按住 Shift 框选，再点击高亮据点直接下令。';
+    noticeTone = 'info';
+    toastSerial = 0;
+    toastFadeTimer = null;
+    toastHideTimer = null;
+    armedTargetNodeId = null;
+    attackArmTimer = null;
+    // fixture 模式 AI 回合重放队列：公开 applyCommand 逐条投影中间态
+    aiReplay = null;
+    // 首次引导（仅会话内记忆，不落盘）：发过一轮命令 / 完成过一轮行动后不再提示
+    coachCommandIssued = false;
+    coachDone = false;
     playback = null;
     automationTimer = null;
     portraitGeneration = new GenerationFence();
@@ -125,6 +152,17 @@ export class WarlordSession {
     authorityAckTimer = null;
     consumedResumeDigest = null;
     aiSeenTransitions = new Set();
+    get notice() {
+        return this.noticeText;
+    }
+    set notice(value) {
+        this.setNotice(value);
+    }
+    setNotice(value, tone = 'info') {
+        this.noticeText = value;
+        this.noticeTone = tone;
+        this.toastSerial += 1;
+    }
     constructor(root, initData) {
         this.root = root;
         this.init = normalizeInit(initData);
@@ -181,6 +219,10 @@ export class WarlordSession {
           <div class="warlord-map-caption"><span>TACTICAL TABLE / 正交战术沙盘</span><span>拖拽平移 · Shift 框选 · 双击棋子编组</span></div>
           <div class="warlord-compass" aria-hidden="true"><i>N</i><span></span></div>
           <div class="warlord-camera-hud" data-region="camera" aria-label="沙盘相机控制"></div>
+          <div class="warlord-toast" data-region="toast" hidden></div>
+          <div class="warlord-authority-banner" data-region="authority" hidden></div>
+          <div class="warlord-hover-chip" data-region="hover" hidden></div>
+          <div class="warlord-coach-tip" data-region="coach" hidden></div>
           <div class="warlord-command-intent" data-region="command-intent" hidden></div>
           <nav class="warlord-node-strip" data-region="nodes" aria-label="节点上下文导航"></nav>
           <div class="warlord-planning-layer" data-region="planning"></div>
@@ -208,6 +250,7 @@ export class WarlordSession {
                 onNodeDoublePicked: (nodeId) => this.selectAllAtNode(nodeId),
                 onMarqueeSelected: (selection) => this.applyMarqueeSelection(selection),
                 onEmptyPicked: () => this.clearPieceSelection('已取消当前编组；可继续浏览沙盘。'),
+                onHoverInfo: (info, anchor) => this.renderHoverChip(info, anchor),
                 onCameraChanged: (snapshot) => {
                     this.cameraSnapshot = snapshot;
                     this.renderCameraHud();
@@ -290,7 +333,7 @@ export class WarlordSession {
         const bridgeSend = this.init.bridgeSend;
         if (!bridgeSend) {
             this.handoffPending = false;
-            this.notice = 'Launcher 战斗桥不可用；产品模式不会回退到 JS 模拟。';
+            this.setNotice('Launcher 战斗桥不可用；产品模式不会回退到 JS 模拟。', 'error');
             this.render();
             return;
         }
@@ -317,7 +360,7 @@ export class WarlordSession {
             if (bridgeSend(envelope) !== true) {
                 this.pendingBattleCallId = null;
                 this.handoffPending = false;
-                this.notice = 'Launcher 未接收 AS2 战斗请求；战略态未改变，也不会运行 JS 战斗。';
+                this.setNotice('Launcher 未接收 AS2 战斗请求；战略态未改变，也不会运行 JS 战斗。', 'error');
                 this.render();
                 return;
             }
@@ -329,7 +372,7 @@ export class WarlordSession {
                 this.pendingBattleCallId = null;
                 this.handoffPending = false;
                 this.authorityBlocked = true;
-                this.notice = 'Launcher 未及时确认交接；结果按未知处理，战略态已冻结。';
+                this.setNotice('Launcher 未及时确认交接；结果按未知处理，战略态已冻结。', 'error');
                 this.render();
             }, 5000);
         }
@@ -338,7 +381,7 @@ export class WarlordSession {
                 return;
             this.pendingBattleCallId = null;
             this.handoffPending = false;
-            this.notice = error instanceof Error ? error.message : String(error);
+            this.setNotice(error instanceof Error ? error.message : String(error), 'error');
             this.render();
         }
     }
@@ -358,7 +401,7 @@ export class WarlordSession {
             if (result.state)
                 this.game = result.state;
             this.authorityBlocked = result.resultUnknown;
-            this.notice = `${result.error ?? 'AS2 战斗回执无法验收。'}${result.resultUnknown ? ' 不能重试或继续战略结算。' : ''}`;
+            this.setNotice(`${result.error ?? 'AS2 战斗回执无法验收。'}${result.resultUnknown ? ' 不能重试或继续战略结算。' : ''}`, 'error');
             this.render();
             return;
         }
@@ -398,8 +441,8 @@ export class WarlordSession {
         this.pendingBattleCallId = null;
         this.handoffPending = false;
         this.authorityBlocked = false;
-        this.notice = typeof data.message === 'string'
-            ? data.message : `AS2 战斗交接被拒绝：${String(data.error ?? 'unknown')}`;
+        this.setNotice(typeof data.message === 'string'
+            ? data.message : `AS2 战斗交接被拒绝：${String(data.error ?? 'unknown')}`, 'error');
         this.render();
         return true;
     }
@@ -409,7 +452,8 @@ export class WarlordSession {
             return;
         const record = this.playbackRecord;
         if (this.playback && record) {
-            if (!this.playback.paused && this.playback.index < record.result.eventLog.length) {
+            const total = record.result.eventLog.length;
+            if (!this.playback.paused && this.playback.index < total) {
                 const delay = this.playback.speed === 4 ? 80 : 320;
                 this.automationTimer = window.setTimeout(() => {
                     if (!this.playback || this.disposed)
@@ -417,7 +461,23 @@ export class WarlordSession {
                     this.playback = { ...this.playback, index: this.playback.index + 1 };
                     this.render();
                 }, delay);
+                return;
             }
+            // AI 重放排队的战斗：播完后停留一拍再自动关闭，继续重放下一条命令
+            if (this.playback.index >= total && this.aiReplay
+                && this.aiReplay.index < this.aiReplay.commands.length) {
+                this.automationTimer = window.setTimeout(() => {
+                    if (this.disposed || !this.playback)
+                        return;
+                    this.playback = null;
+                    this.render();
+                }, AI_BATTLE_DWELL_MS);
+            }
+            return;
+        }
+        if (this.aiReplay) {
+            // 每条 AI 命令间隔不小于棋子补间时长，逐条投影中间态
+            this.automationTimer = window.setTimeout(() => this.stepAiReplay(), AI_REPLAY_INTERVAL_MS);
             return;
         }
         if (this.game.phase === 'GAME_OVER')
@@ -439,20 +499,13 @@ export class WarlordSession {
                         && !isBattle) {
                         this.rememberAppliedTransitions(command);
                     }
-                }, 180);
+                }, AI_AS2_INTERVAL_MS);
                 return;
             }
             this.automationTimer = window.setTimeout(() => {
-                if (this.disposed)
+                if (this.disposed || this.aiReplay)
                     return;
-                const battleCount = this.game.battles.length;
-                const ai = runAiActionPhase(this.game, 'blue');
-                this.game = ai.state;
-                this.notice = `蓝方 AI 完成行动：${ai.commands.length} 条合法命令。`;
-                const latest = this.game.battles.slice(battleCount).at(-1);
-                if (latest)
-                    this.openBattle(latest);
-                this.render();
+                this.beginAiReplay();
             }, 180);
             return;
         }
@@ -467,22 +520,60 @@ export class WarlordSession {
             }, 150);
         }
     }
+    // fixture 模式：先在行动前状态上跑出整回合命令，再按节奏逐条重放到真实状态
+    beginAiReplay() {
+        const run = runAiActionPhase(this.game, 'blue');
+        if (run.commands.length === 0)
+            return;
+        this.aiReplay = { commands: run.commands, index: 0 };
+        this.scheduleAutomation();
+    }
+    stepAiReplay() {
+        const replay = this.aiReplay;
+        if (!replay || this.disposed)
+            return;
+        const command = replay.commands[replay.index];
+        if (!command) {
+            this.aiReplay = null;
+            this.render();
+            return;
+        }
+        replay.index += 1;
+        const isLast = replay.index >= replay.commands.length;
+        const label = command.type === 'END_ACTION'
+            ? '蓝方 AI 结束行动。'
+            : isLast
+                ? `蓝方 AI 完成行动：${replay.commands.length} 条合法命令。`
+                : `蓝方 AI 行动 ${replay.index}/${replay.commands.length}。`;
+        const succeeded = this.dispatch(command, label);
+        // 防御：重放命令与实时状态不一致时放弃本次队列；下个渲染周期会按实时状态重建
+        if (!succeeded) {
+            this.aiReplay = null;
+            return;
+        }
+        // AI 重放中的战斗以 4× 播完并排队依次呈现，不阻塞后续命令节奏
+        if (this.playback && this.playback.speed !== 4) {
+            this.playback = { ...this.playback, speed: 4 };
+        }
+        if (isLast)
+            this.aiReplay = null;
+    }
     dispatch(command, successNotice, deferSuccessRender = false) {
         if (this.handoffPending || this.authorityBlocked) {
-            this.notice = this.handoffPending
+            this.setNotice(this.handoffPending
                 ? 'AS2 战斗交接尚未完成。'
-                : 'AS2 战斗结果未知，战略态已冻结。';
+                : 'AS2 战斗结果未知，战略态已冻结。', 'error');
             this.render();
             return false;
         }
         if (this.playback) {
-            this.notice = '战斗播放期间不能提交战略命令。';
+            this.setNotice('战斗播放期间不能提交战略命令。', 'error');
             this.render();
             return false;
         }
         const validation = validateCommand(this.game, command);
         if (!validation.ok) {
-            this.notice = validation.error ?? '命令非法。';
+            this.setNotice(validation.error ?? '命令非法。', 'error');
             this.render();
             return false;
         }
@@ -494,7 +585,7 @@ export class WarlordSession {
         }
         const result = applyCommand(this.game, command);
         if (!result.ok) {
-            this.notice = result.error ?? '命令非法。';
+            this.setNotice(result.error ?? '命令非法。', 'error');
             this.render();
             return false;
         }
@@ -531,10 +622,22 @@ export class WarlordSession {
         this.notice = `已查看${this.game.map.nodes[nodeId].displayName}。`;
         this.render();
     }
+    // 门禁文案按真实原因分流：播放 / AS2 移交 / 结果未知 / 非红方行动阶段
+    selectionBlockReason() {
+        if (this.playback)
+            return '战斗播放期间不能建立编组或框选。';
+        if (this.handoffPending)
+            return '正在移交 AS2 战斗，请稍候。';
+        if (this.authorityBlocked)
+            return '战斗结果未知，战略态已冻结。';
+        if (this.game.activeFactionId !== 'red'
+            || (this.game.phase !== 'FIRST_FACTION_ACTION' && this.game.phase !== 'SECOND_FACTION_ACTION')) {
+            return '只有红方行动阶段可以建立命令编组。';
+        }
+        return null;
+    }
     canSelectPieces() {
-        return this.game.activeFactionId === 'red'
-            && (this.game.phase === 'FIRST_FACTION_ACTION' || this.game.phase === 'SECOND_FACTION_ACTION')
-            && !this.playback && !this.handoffPending && !this.authorityBlocked;
+        return this.selectionBlockReason() === null;
     }
     selectionOrigin() {
         const first = this.selectedPieceIds
@@ -549,11 +652,15 @@ export class WarlordSession {
         this.selectedPieceIds = origin
             ? existing.filter((pieceId) => this.game.pieces[pieceId]?.nodeId === origin)
             : [];
+        // 编组被状态变化清空时，未确认的进攻武装一并解除
+        if (!origin)
+            this.disarmAttack();
         if (origin)
             this.inspectNode(origin);
     }
     commandPreviews() {
-        if (this.handoffPending || this.authorityBlocked)
+        // 战斗播放期间不做 3D 高亮与命令预览，点击降级为只读查看
+        if (this.playback || this.handoffPending || this.authorityBlocked)
             return [];
         const origin = this.selectionOrigin();
         if (!origin || this.selectedPieceIds.length === 0)
@@ -564,6 +671,8 @@ export class WarlordSession {
         const piece = this.game.pieces[pieceId];
         if (!piece)
             return;
+        // 选择变化意味着进攻确认的目标上下文已改变
+        this.disarmAttack();
         if (piece.factionId !== 'red') {
             if (this.selectedPieceIds.length > 0) {
                 this.handleNodeIntent(piece.nodeId);
@@ -575,9 +684,10 @@ export class WarlordSession {
             this.render();
             return;
         }
-        if (!this.canSelectPieces()) {
+        const blockReason = this.selectionBlockReason();
+        if (blockReason) {
             this.inspectNode(piece.nodeId);
-            this.notice = '只有红方行动阶段可以建立命令编组。';
+            this.setNotice(blockReason, 'error');
             this.render();
             return;
         }
@@ -604,6 +714,7 @@ export class WarlordSession {
         const piece = this.game.pieces[pieceId];
         if (!piece || piece.factionId !== 'red' || !this.canSelectPieces())
             return;
+        this.disarmAttack();
         if (!checkedState) {
             this.selectedPieceIds = this.selectedPieceIds.filter((id) => id !== pieceId);
         }
@@ -620,6 +731,7 @@ export class WarlordSession {
         this.render();
     }
     selectAllAtNode(nodeId) {
+        this.disarmAttack();
         if (!this.canSelectPieces()) {
             this.selectNode(nodeId);
             return;
@@ -633,8 +745,10 @@ export class WarlordSession {
         this.render();
     }
     applyMarqueeSelection(selection) {
-        if (!this.canSelectPieces()) {
-            this.notice = '只有红方行动阶段可以框选命令编组。';
+        this.disarmAttack();
+        const marqueeBlockReason = this.selectionBlockReason();
+        if (marqueeBlockReason) {
+            this.setNotice(marqueeBlockReason, 'error');
             this.render();
             return;
         }
@@ -654,6 +768,7 @@ export class WarlordSession {
         this.render();
     }
     clearPieceSelection(notice) {
+        this.disarmAttack();
         if (this.selectedPieceIds.length === 0)
             return;
         this.selectedPieceIds = [];
@@ -661,6 +776,11 @@ export class WarlordSession {
         this.render();
     }
     handleNodeIntent(nodeId) {
+        // 战斗播放期间节点点击降级为只读查看，不报"不相邻"等命令态文案
+        if (this.playback) {
+            this.selectNode(nodeId);
+            return;
+        }
         if (this.selectedPieceIds.length === 0) {
             this.selectNode(nodeId);
             return;
@@ -672,22 +792,55 @@ export class WarlordSession {
             return;
         }
         if (nodeId === originNodeId) {
-            this.notice = `${this.game.map.nodes[nodeId].displayName}是当前编组起点；请选择高亮相邻据点。`;
+            this.setNotice(`${this.game.map.nodes[nodeId].displayName}是当前编组起点；请选择高亮相邻据点。`, 'error');
             this.render();
             return;
         }
         const preview = this.commandPreviews().find((candidate) => candidate.targetNodeId === nodeId);
         if (!preview) {
-            this.notice = `${this.game.map.nodes[nodeId].displayName}与当前编组起点不相邻；按 Esc 取消编组后可改为查看。`;
+            this.disarmAttack();
+            this.setNotice(`${this.game.map.nodes[nodeId].displayName}与当前编组起点不相邻；按 Esc 取消编组后可改为查看。`, 'error');
             this.render();
             return;
         }
         if (!preview.ok) {
-            this.notice = `无法向${preview.targetName}下令：${preview.error ?? '命令非法。'}`;
+            this.disarmAttack();
+            this.setNotice(`无法向${preview.targetName}下令：${preview.error ?? '命令非法。'}`, 'error');
             this.render();
             return;
         }
+        // 进攻目标采用 arm-then-confirm：首次点击只武装，3 秒内二次点击同目标才执行
+        if (preview.isBattle && this.armedTargetNodeId !== nodeId) {
+            this.armAttack(nodeId, preview.targetName);
+            return;
+        }
+        this.disarmAttack();
         this.executeSelectedCommand(originNodeId, preview);
+    }
+    armAttack(nodeId, targetName) {
+        this.clearAttackArmTimer();
+        this.armedTargetNodeId = nodeId;
+        this.setNotice(`再次点击确认进攻${targetName}；3 秒内有效，点击他处或 Esc 解除。`, 'error');
+        this.attackArmTimer = window.setTimeout(() => {
+            this.attackArmTimer = null;
+            if (this.disposed || this.armedTargetNodeId !== nodeId)
+                return;
+            this.armedTargetNodeId = null;
+            this.notice = `已解除对${targetName}的进攻确认。`;
+            this.render();
+        }, ATTACK_ARM_WINDOW_MS);
+        this.render();
+    }
+    disarmAttack() {
+        if (this.armedTargetNodeId === null)
+            return;
+        this.armedTargetNodeId = null;
+        this.clearAttackArmTimer();
+    }
+    clearAttackArmTimer() {
+        if (this.attackArmTimer !== null)
+            window.clearTimeout(this.attackArmTimer);
+        this.attackArmTimer = null;
     }
     executeSelectedCommand(originNodeId, preview) {
         const requestedCount = this.selectedPieceIds.length;
@@ -700,6 +853,8 @@ export class WarlordSession {
         };
         if (!this.dispatch(command, undefined, true))
             return;
+        // 首次命令成功：引导从"下令"推进到"结束行动"
+        this.coachCommandIssued = true;
         if (preview.isBattle && this.init.battleAuthority === 'as2') {
             this.selectedPieceIds = [];
             this.notice = '进攻命令已冻结；正在移交 AS2 真实战斗，战略态尚未结算。';
@@ -720,6 +875,9 @@ export class WarlordSession {
     startNewGame() {
         this.clearAutomation();
         this.clearAuthorityAckTimer();
+        this.clearAttackArmTimer();
+        this.aiReplay = null;
+        this.armedTargetNodeId = null;
         this.handoffPending = false;
         this.authorityBlocked = false;
         this.pendingBattleCallId = null;
@@ -787,17 +945,19 @@ export class WarlordSession {
             return;
         const action = target.dataset.action;
         if (this.handoffPending) {
-            this.notice = '正在等待 Launcher 完成 AS2 战斗交接；当前窗口会由 Host 精确关闭。';
+            this.setNotice('正在等待 Launcher 完成 AS2 战斗交接；当前窗口会由 Host 精确关闭。', 'error');
             this.renderLiveRegion();
             return;
         }
         if (this.authorityBlocked && action !== 'request-close') {
-            this.notice = 'AS2 战斗结果未知，当前战略态只能关闭，不能继续结算。';
+            this.setNotice('AS2 战斗结果未知，当前战略态只能关闭，不能继续结算。', 'error');
             this.renderLiveRegion();
             return;
         }
         if (action === 'select-node')
             this.handleNodeIntent(target.dataset.node);
+        if (action === 'select-all-at-node')
+            this.selectAllAtNode(this.selectedNodeId);
         if (action === 'toggle-node-scope') {
             this.nodeNavigatorMode = this.nodeNavigatorMode === 'context' ? 'all' : 'context';
             if (this.nodeNavigatorMode === 'all') {
@@ -817,7 +977,7 @@ export class WarlordSession {
             this.handleNodeIntent(target.dataset.node);
         }
         if (action === 'end-action')
-            this.dispatch({ type: 'END_ACTION', factionId: 'red' });
+            this.endRedAction();
         if (action?.startsWith('camera-'))
             this.revealCameraHud();
         if (action === 'camera-zoom-in')
@@ -911,7 +1071,7 @@ export class WarlordSession {
             const cardId = Number(target.dataset.card);
             const choice = resolveProductionChoice(this.game, 'red', cardId, this.productionControlMode, this.productionNodeId, this.selectedSlotId);
             if (!choice.nodeId || !choice.slotId) {
-                this.notice = choice.error ?? '没有可用生产槽。';
+                this.setNotice(choice.error ?? '没有可用生产槽。', 'error');
                 this.render();
                 return;
             }
@@ -974,6 +1134,13 @@ export class WarlordSession {
         }
         if (isEditableKeyboardTarget(event.target))
             return;
+        // 画布持焦时相机键由场景自己处理；这里只接管画布以外的全局入口，避免双触发
+        if (isCameraNavigationKey(event.key) && !isCameraSurfaceTarget(event.target) && this.scene) {
+            event.preventDefault();
+            this.forwardCameraKey(event.key, event.shiftKey);
+            this.revealCameraHud();
+            return;
+        }
         if (event.key === ' ' && this.playback) {
             event.preventDefault();
             this.playback = { ...this.playback, paused: !this.playback.paused };
@@ -983,19 +1150,69 @@ export class WarlordSession {
         if (event.key.toLowerCase() === 'e' && !this.playback && this.game.activeFactionId === 'red'
             && (this.game.phase === 'FIRST_FACTION_ACTION' || this.game.phase === 'SECOND_FACTION_ACTION')) {
             event.preventDefault();
-            this.dispatch({ type: 'END_ACTION', factionId: 'red' });
+            this.endRedAction();
         }
     };
+    // 与场景内键盘映射保持一致；平移步长随缩放百分比近似换算半高
+    forwardCameraKey(key, shiftKey) {
+        if (!this.scene)
+            return;
+        const normalized = key.toLowerCase();
+        const zoom = Math.max(50, this.cameraSnapshot.zoomPercent || 100);
+        const step = (36 / zoom) * (shiftKey ? 2.4 : 1);
+        if (normalized === '+' || normalized === '=')
+            this.scene.zoomBy(1.25);
+        else if (normalized === '-' || normalized === '_')
+            this.scene.zoomBy(0.8);
+        else if (normalized === '0' || normalized === 'home')
+            this.scene.fitToMap();
+        else if (normalized === 'arrowleft' || normalized === 'a')
+            this.scene.panBy(-step, 0);
+        else if (normalized === 'arrowright' || normalized === 'd')
+            this.scene.panBy(step, 0);
+        else if (normalized === 'arrowup' || normalized === 'w')
+            this.scene.panBy(0, -step);
+        else if (normalized === 'arrowdown' || normalized === 's')
+            this.scene.panBy(0, step);
+    }
+    endRedAction() {
+        if (this.dispatch({ type: 'END_ACTION', factionId: 'red' })) {
+            // 玩家完成过一整轮行动后不再显示首次引导
+            this.coachDone = true;
+            this.renderCoach();
+        }
+    }
     requestClose(reason = 'escape') {
         if (this.disposed || reason !== 'escape')
             return false;
         if (this.handoffPending) {
-            this.notice = 'AS2 战斗正在交接；等待 Launcher 精确关闭当前窗口。';
+            this.setNotice('AS2 战斗正在交接；等待 Launcher 精确关闭当前窗口。', 'error');
             this.renderLiveRegion();
             return true;
         }
         if (this.configOpen) {
             this.configOpen = false;
+            this.render();
+            return true;
+        }
+        if (this.armedTargetNodeId !== null) {
+            const armedName = this.game.map.nodes[this.armedTargetNodeId]?.displayName ?? this.armedTargetNodeId;
+            this.disarmAttack();
+            this.notice = `已解除对${armedName}的进攻确认。`;
+            this.render();
+            return true;
+        }
+        // 战斗播放层：未播完先跳到结尾（等价"立即结算"），已播完则关闭播放窗（等价"返回沙盘"）
+        if (this.playback && this.playbackRecord) {
+            const total = this.playbackRecord.result.eventLog.length;
+            if (this.playback.index < total) {
+                this.playback = { ...this.playback, index: total, paused: true };
+                this.notice = '已跳到战斗结尾；再按 Esc 返回沙盘。';
+            }
+            else {
+                this.playback = null;
+                this.notice = '已关闭战斗播放，返回沙盘。';
+            }
             this.render();
             return true;
         }
@@ -1029,6 +1246,8 @@ export class WarlordSession {
         this.renderConfig();
         this.renderFallback();
         this.renderCameraHud();
+        this.renderAuthorityBanner();
+        this.renderCoach();
         this.renderLiveRegion();
         this.root.dataset.ready = 'true';
         this.root.dataset.phase = this.game.phase;
@@ -1064,13 +1283,15 @@ export class WarlordSession {
         const node = this.game.map.nodes[this.selectedNodeId];
         const pieces = piecesAtNode(this.game, this.selectedNodeId);
         const canSelect = this.canSelectPieces();
+        const redCount = pieces.filter((piece) => piece.factionId === 'red').length;
         region.innerHTML = `<header><span>当前据点</span><b>${escapeHtml(node.displayName)}</b><small>${escapeHtml(ownerLabel(node.ownerFactionId))} · 容量 ${node.pieceIds.length}/${node.capacity}</small></header>
+      <div class="warlord-force-toolbar"><button class="warlord-select-all" data-action="select-all-at-node" aria-label="全选本据点全部己方棋子" title="全选本据点全部己方棋子（等同双击棋子）"${disabled(redCount === 0)}>全选本据点</button></div>
       <div class="warlord-force-list">${pieces.length === 0 ? '<p class="warlord-empty">无人驻守</p>' : pieces.map((piece) => {
             const definition = getCardDefinition(piece.cardId);
             return `<label class="warlord-piece ${piece.factionId}${this.selectedPieceIds.includes(piece.pieceId) ? ' selected' : ''}" data-piece-id="${escapeHtml(piece.pieceId)}">
           <input type="checkbox" data-field="piece" value="${escapeHtml(piece.pieceId)}"${checked(this.selectedPieceIds.includes(piece.pieceId))}${disabled(!canSelect || piece.factionId !== 'red')}>
           <span class="warlord-mini-portrait" data-warlord-portrait="${escapeHtml(definition.identifier)}"><img alt=""></span>
-          <span><b>${escapeHtml(definition.displayName)}</b><small>${escapeHtml(piece.pieceId)} · Lv.${this.game.factions[piece.factionId].cards[piece.cardId].level}</small><i><em style="width:${hpPercent(piece.hp, piece.maxHp)}%"></em></i></span>
+          <span><b>${escapeHtml(definition.displayName)}</b><small>${escapeHtml(piece.pieceId)} · Lv.${this.game.factions[piece.factionId].cards[piece.cardId].level}</small><i${hpBarClass(piece.hp, piece.maxHp)}><em style="width:${hpPercent(piece.hp, piece.maxHp)}%"></em></i></span>
         </label>`;
         }).join('')}</div>
       <div class="warlord-node-facts"><span>攻宽 ${node.attackWidth}</span><span>防宽 ${node.defenseWidth}</span><span>${node.goldIncome}G</span><span>+${node.apBonus}AP</span></div>`;
@@ -1277,13 +1498,23 @@ export class WarlordSession {
         region.hidden = false;
         region.dataset.legalTargets = String(legalCount);
         region.dataset.partialTargets = String(partialCount);
+        region.dataset.armedTarget = this.armedTargetNodeId ?? '';
+        region.classList.toggle('is-armed', this.armedTargetNodeId !== null);
+        region.classList.toggle('is-coach', this.armedTargetNodeId === null
+            && !this.coachDone && !this.coachCommandIssued);
+        if (this.armedTargetNodeId !== null) {
+            const armedName = this.game.map.nodes[this.armedTargetNodeId]?.displayName ?? this.armedTargetNodeId;
+            region.innerHTML = `<b>确认进攻</b><span>再次点击 ${escapeHtml(armedName)} 执行不可撤销进攻</span><small>3 秒内有效 · Esc / 点击他处解除</small>`;
+            return;
+        }
         region.innerHTML = `<b>编组 ${this.selectedPieceIds.length}</b><span>${escapeHtml(this.game.map.nodes[origin].displayName)} · ${legalCount} 个合法目标${partialCount > 0 ? ` · ${partialCount} 个容量受限` : ''}</span><small>点击高亮据点下令 · Esc 取消</small>`;
     }
     renderCards() {
         const region = this.root.querySelector('[data-region="cards"]');
         if (!region)
             return;
-        region.innerHTML = `<div class="warlord-roster-label"><b>兵种蓝图</b><span>结算升级 / 排产</span></div><div class="warlord-card-track">${CARD_IDS.map((cardId) => {
+        const planningPhase = this.game.phase === 'SETTLEMENT_PLANNING';
+        region.innerHTML = `<div class="warlord-roster-label"><b>兵种蓝图</b><span>结算升级 / 排产</span>${planningPhase ? '' : '<small class="warlord-roster-hint">统一结算阶段开放排产 / 升阶</small>'}</div><div class="warlord-card-track">${CARD_IDS.map((cardId) => {
             const definition = getCardDefinition(cardId);
             const card = this.game.factions.red.cards[cardId];
             const promotion = nextPromotionFor(this.game, 'red', cardId);
@@ -1339,7 +1570,7 @@ export class WarlordSession {
                 const unit = visual.get(pieceId);
                 if (!unit)
                     return '';
-                return `<article class="${unit.snapshot.factionId}${unit.dead ? ' dead' : ''}${event?.actorPieceId === pieceId ? ' acting' : ''}${event?.targetPieceId === pieceId ? ' targeted' : ''}"><span class="warlord-battle-portrait" data-warlord-portrait="${escapeHtml(getCardDefinition(unit.snapshot.cardId).identifier)}"><img alt=""></span><span><b>${escapeHtml(unit.snapshot.displayName)}</b><small>${escapeHtml(pieceId)}</small><i><em style="width:${hpPercent(unit.hp, unit.snapshot.maxHp)}%"></em></i><small>HP ${unit.hp}/${unit.snapshot.maxHp} · ${escapeHtml(unit.lastStatus)}</small></span></article>`;
+                return `<article class="${unit.snapshot.factionId}${unit.dead ? ' dead' : ''}${event?.actorPieceId === pieceId ? ' acting' : ''}${event?.targetPieceId === pieceId ? ' targeted' : ''}"><span class="warlord-battle-portrait" data-warlord-portrait="${escapeHtml(getCardDefinition(unit.snapshot.cardId).identifier)}"><img alt=""></span><span><b>${escapeHtml(unit.snapshot.displayName)}</b><small>${escapeHtml(pieceId)}</small><i${hpBarClass(unit.hp, unit.snapshot.maxHp)}><em style="width:${hpPercent(unit.hp, unit.snapshot.maxHp)}%"></em></i><small>HP ${unit.hp}/${unit.snapshot.maxHp} · ${escapeHtml(unit.lastStatus)}</small></span></article>`;
             }).join('')}</section>`;
         }).join('');
         region.hidden = false;
@@ -1420,6 +1651,122 @@ export class WarlordSession {
         const region = this.root.querySelector('[data-region="live"]');
         if (region)
             region.textContent = this.notice;
+        this.renderToast();
+    }
+    // 可见 toast：与 sr-only live 区域同源，只在 notice 变化（serial 前进）时重置淡出计时
+    renderToast() {
+        const toast = this.root.querySelector('[data-region="toast"]');
+        if (!toast)
+            return;
+        if (toast.dataset.serial === String(this.toastSerial))
+            return;
+        toast.dataset.serial = String(this.toastSerial);
+        this.clearToastTimers();
+        toast.textContent = this.notice;
+        toast.classList.toggle('is-error', this.noticeTone === 'error');
+        toast.classList.remove('is-fading');
+        toast.hidden = false;
+        this.toastFadeTimer = window.setTimeout(() => {
+            this.toastFadeTimer = null;
+            if (this.disposed)
+                return;
+            toast.classList.add('is-fading');
+            this.toastHideTimer = window.setTimeout(() => {
+                this.toastHideTimer = null;
+                toast.hidden = true;
+                toast.classList.remove('is-fading');
+            }, TOAST_FADE_MS);
+        }, TOAST_VISIBLE_MS);
+    }
+    clearToastTimers() {
+        if (this.toastFadeTimer !== null)
+            window.clearTimeout(this.toastFadeTimer);
+        this.toastFadeTimer = null;
+        if (this.toastHideTimer !== null)
+            window.clearTimeout(this.toastHideTimer);
+        this.toastHideTimer = null;
+    }
+    // handoff / blocked 的可见横幅：不拦截指针，关闭按钮与相机操作岛保持可点
+    renderAuthorityBanner() {
+        const region = this.root.querySelector('[data-region="authority"]');
+        if (!region)
+            return;
+        if (this.authorityBlocked) {
+            region.hidden = false;
+            region.dataset.state = 'blocked';
+            region.innerHTML = '<b>战斗结果未知</b><span>战略态已冻结，不能继续结算；请点击右上角 × 关闭本面板。</span>';
+            return;
+        }
+        if (this.handoffPending) {
+            region.hidden = false;
+            region.dataset.state = 'handoff';
+            region.innerHTML = '<i class="warlord-authority-spinner" aria-hidden="true"></i><b>正在移交 AS2 真实战斗</b><span>战略态已冻结，等待 Launcher 精确关闭本窗口…</span>';
+            return;
+        }
+        region.hidden = true;
+        region.innerHTML = '';
+        delete region.dataset.state;
+    }
+    // 首次引导教练点：仅会话内记忆；① 建立编组 ③ 结束行动（② 由意图条脉冲承担）
+    renderCoach() {
+        const region = this.root.querySelector('[data-region="coach"]');
+        if (!region)
+            return;
+        const redAction = this.game.activeFactionId === 'red'
+            && (this.game.phase === 'FIRST_FACTION_ACTION' || this.game.phase === 'SECOND_FACTION_ACTION');
+        let tip = null;
+        if (!this.coachDone && redAction && !this.playback && !this.handoffPending && !this.authorityBlocked) {
+            if (this.coachCommandIssued)
+                tip = '③ 按 E 或点击"结束红方行动"收束本回合';
+            else if (this.selectedPieceIds.length === 0)
+                tip = '① 点击己方棋子建立编组';
+        }
+        if (!tip) {
+            region.hidden = true;
+            region.textContent = '';
+            return;
+        }
+        region.hidden = false;
+        region.textContent = tip;
+    }
+    // 3D 悬停信息芯片：render 重建区域外单例，anchor 为 canvas 本地 CSS 像素
+    renderHoverChip(info, anchor) {
+        const chip = this.root.querySelector('[data-region="hover"]');
+        if (!chip)
+            return;
+        if (!info) {
+            chip.hidden = true;
+            chip.dataset.hoverKey = '';
+            return;
+        }
+        const key = info.kind === 'node' ? `node:${info.nodeId}` : `piece:${info.pieceId}`;
+        if (chip.dataset.hoverKey !== key) {
+            chip.dataset.hoverKey = key;
+            if (info.kind === 'node') {
+                const node = this.game.map.nodes[info.nodeId];
+                if (!node) {
+                    chip.hidden = true;
+                    return;
+                }
+                chip.innerHTML = `<b>${escapeHtml(node.displayName)}</b><span>${escapeHtml(ownerLabel(node.ownerFactionId))} · 红 ${piecesAtNode(this.game, info.nodeId, 'red').length} · 蓝 ${piecesAtNode(this.game, info.nodeId, 'blue').length} · 容量 ${node.pieceIds.length}/${node.capacity}</span>`;
+            }
+            else {
+                const piece = this.game.pieces[info.pieceId];
+                if (!piece) {
+                    chip.hidden = true;
+                    return;
+                }
+                chip.innerHTML = `<b>${escapeHtml(getCardDefinition(piece.cardId).displayName)}</b><span>${factionLabel(piece.factionId)} · HP ${piece.hp}/${piece.maxHp}</span>`;
+            }
+        }
+        chip.hidden = false;
+        const stage = this.root.querySelector('.warlord-map-stage');
+        if (stage) {
+            const maxX = Math.max(4, stage.clientWidth - chip.offsetWidth - 8);
+            const maxY = Math.max(4, stage.clientHeight - chip.offsetHeight - 56);
+            chip.style.left = `${Math.round(Math.max(4, Math.min(anchor.x + 14, maxX)))}px`;
+            chip.style.top = `${Math.round(Math.max(4, Math.min(anchor.y + 16, maxY)))}px`;
+        }
     }
     rebind(initData) {
         if (this.disposed)
@@ -1471,6 +1818,9 @@ export class WarlordSession {
         this.clearAutomation();
         this.clearCameraHudTimer();
         this.clearAuthorityAckTimer();
+        this.clearToastTimers();
+        this.clearAttackArmTimer();
+        this.aiReplay = null;
         this.portraitGeneration.dispose();
         this.resources.dispose();
         this.scene?.dispose();

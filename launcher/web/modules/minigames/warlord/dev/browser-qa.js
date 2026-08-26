@@ -173,7 +173,8 @@
             var initialZoom = Number(host.getAttribute('data-camera-zoom'));
             zoomIn.click();
             zoomIn.click();
-            await delay(220);
+            // 程序性相机移动有 240ms 运镜过渡 + 帧饥饿兜底计时器；CSS-B 后展开还有 140-160ms CSS 过渡，等收敛后再断言
+            await delay(1000);
             var expandedAfterAction = hud.getAttribute('data-expanded');
             var visibleAfterAction = visibleControls();
             var readout = hud.querySelector('.warlord-camera-readout');
@@ -187,7 +188,7 @@
                     + ' detail=' + detailStyle.width + '/' + detailStyle.visibility);
             }
             var zoomed = Number(host.getAttribute('data-camera-zoom'));
-            if (!(zoomed > initialZoom)) throw new Error('zoom controls did not increase tactical magnification');
+            if (!(zoomed > initialZoom)) throw new Error('zoom controls did not increase tactical magnification: initial=' + initialZoom + ' zoomed=' + zoomed);
             var pieceScreenGrowth = Number(host.getAttribute('data-piece-screen-growth'));
             if (host.getAttribute('data-piece-scale-policy') !== 'progressive-art-detail-v1'
                 || !(pieceScreenGrowth > 1.15 && pieceScreenGrowth <= 1.8)) {
@@ -213,15 +214,13 @@
             if (!wheel.defaultPrevented) throw new Error('wheel zoom did not suppress document scroll');
             if (Number(host.getAttribute('data-camera-zoom')) <= zoomed) throw new Error('wheel did not zoom around pointer anchor');
             fit.click();
-            await delay(30);
-            if (hud.getAttribute('data-at-fit') !== 'true') throw new Error('full-map fit did not restore overview');
+            await waitFor(function () { return hud.getAttribute('data-at-fit') === 'true'; }, 3000);
             canvas.focus();
             canvas.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true, cancelable: true }));
-            await delay(20);
+            await delay(360);
             if (Number(host.getAttribute('data-camera-zoom')) <= initialZoom) throw new Error('keyboard zoom did not enter tactical camera');
             canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true, cancelable: true }));
-            await delay(20);
-            if (hud.getAttribute('data-at-fit') !== 'true') throw new Error('keyboard Home did not restore full-map fit');
+            await waitFor(function () { return hud.getAttribute('data-at-fit') === 'true'; }, 3000);
             if (document.querySelectorAll('.warlord-camera-controls button').length !== 4) throw new Error('camera control surface is incomplete');
             await delay(Number(hud.getAttribute('data-idle-delay')) + 180);
             if (hud.getAttribute('data-expanded') !== 'false' || visibleControls() !== 2) {
@@ -258,6 +257,31 @@
             await delay(20);
             if (root.getAttribute('data-selected-piece-count') !== '0') throw new Error('Escape did not clear piece group');
             return 'ray-pick 1 · double-pick local group ' + selectedCount + ' · Escape clear';
+        });
+        await check('right-click-cancels-piece-group', async function () {
+            var canvas = document.querySelector('.warlord-sandtable-canvas');
+            var host = document.querySelector('.warlord-scene-host');
+            var root = document.querySelector('.warlord-scale-shell');
+            if (!canvas || !host || !root) throw new Error('canvas selection surface missing');
+            var point = findCanvasPoint(canvas, host, function (surface) {
+                return surface.getAttribute('data-hovered-piece-faction') === 'red';
+            });
+            if (!point) throw new Error('could not ray-pick a red piece');
+            clickCanvas(canvas, point, 95);
+            await delay(20);
+            if (root.getAttribute('data-selected-piece-count') !== '1') throw new Error('setup click did not select exactly one piece');
+            var empty = findCanvasPoint(canvas, host, function (surface) {
+                return surface.getAttribute('data-hovered-piece') === '' && surface.getAttribute('data-hovered-node') === '';
+            });
+            if (!empty) throw new Error('could not find an empty sandtable point');
+            canvas.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 96, button: 2, buttons: 2, clientX: empty.x, clientY: empty.y, bubbles: true, cancelable: true }));
+            canvas.dispatchEvent(new PointerEvent('pointerup', { pointerId: 96, button: 2, buttons: 0, clientX: empty.x, clientY: empty.y, bubbles: true, cancelable: true }));
+            await delay(20);
+            if (root.getAttribute('data-selected-piece-count') !== '0') throw new Error('right click did not cancel the piece group');
+            var menu = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+            canvas.dispatchEvent(menu);
+            if (!menu.defaultPrevented) throw new Error('contextmenu was not suppressed on canvas');
+            return 'right-click cancel == empty click · native menu suppressed';
         });
         await check('marquee-direct-command-and-chain', async function () {
             var canvas = document.querySelector('.warlord-sandtable-canvas');
@@ -330,6 +354,36 @@
                 throw new Error('Escape did not return node clicks to inspection mode');
             }
             return 'Shift marquee ' + marqueeCount + ' · command group ' + selectedCount + ' · non-adjacent retained · canvas direct ' + targetId + ' · chained ' + chainTarget + (invalid ? ' · invalid retained' : '');
+        });
+        await check('visible-feedback-toast', async function () {
+            var toast = document.querySelector('[data-region="toast"]');
+            var live = document.querySelector('[data-region="live"]');
+            var canvas = document.querySelector('.warlord-sandtable-canvas');
+            if (!toast || !live || !canvas) throw new Error('visible toast surface missing');
+            var box = document.querySelector('.warlord-piece input[data-field="piece"]:not(:disabled)');
+            if (!box) throw new Error('no selectable piece for the toast gate');
+            box.checked = true;
+            box.dispatchEvent(new Event('change', { bubbles: true }));
+            await delay(20);
+            document.querySelector('[data-action="toggle-node-scope"]')?.click();
+            await delay(20);
+            var far = document.querySelector('.warlord-node-card[data-command-state="none"]:not(.selected)');
+            if (!far) throw new Error('no non-adjacent node for the toast gate');
+            far.click();
+            await delay(20);
+            if (live.textContent.indexOf('不相邻') < 0) throw new Error('blocked reason not announced');
+            if (toast.hidden || toast.textContent !== live.textContent) {
+                throw new Error('blocked notice did not surface on the visible toast');
+            }
+            if (!toast.classList.contains('is-error')) throw new Error('blocked notice did not use the error tone');
+            canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+            await delay(20);
+            if (toast.hidden || toast.classList.contains('is-error') || toast.textContent !== live.textContent) {
+                throw new Error('info notice did not replace the error toast in the neutral tone');
+            }
+            document.querySelector('[data-action="toggle-node-scope"]')?.click();
+            await delay(20);
+            return 'blocked=error tone · Esc cancel=neutral · toast mirrors live';
         });
         await check('form-controls-suppress-global-shortcuts', async function () {
             var toggle = document.querySelector('[data-action="toggle-config"]');
@@ -430,7 +484,7 @@
             await waitFor(function () {
                 var root = document.querySelector('.warlord-scale-shell');
                 return root && root.getAttribute('data-phase') === 'SETTLEMENT_PLANNING';
-            }, 12000);
+            }, 24000);
             var cameraZoom = document.querySelector('[data-action="camera-zoom-in"]');
             if (cameraZoom) cameraZoom.click();
             await delay(30);
@@ -543,6 +597,63 @@
             if (!commit) throw new Error('commit planning unavailable');
             commit.click();
             return 'action -> AI -> settlement -> auto production portrait -> order-icon locate -> full-refund undo -> exact lane selection without enqueue -> commit';
+        });
+        await check('attack-arm-then-confirm', async function () {
+            window.__warlordHarness.close();
+            await delay(30);
+            window.__warlordHarness.open({ preset: 'all-units', seed: 'qa-arm-confirm' });
+            var root = await waitFor(function () { return document.querySelector('.warlord-scale-shell[data-ready="true"]'); }, 12000);
+            // 全兵种预设下蓝方在 North-Choke 驻军，与 R-Supply 相邻，首回合即可构造攻击目标
+            document.querySelector('[data-action="toggle-node-scope"]')?.click();
+            await delay(20);
+            var supplyCard = document.querySelector('[data-testid="node-R-Supply"]');
+            if (!supplyCard) throw new Error('R-Supply card missing in the all-node index');
+            supplyCard.click();
+            await delay(20);
+            var selectAll = document.querySelector('[data-action="select-all-at-node"]:not(:disabled)');
+            if (!selectAll) throw new Error('select-all affordance missing');
+            selectAll.click();
+            await delay(20);
+            if (root.getAttribute('data-selected-piece-count') !== '3') {
+                throw new Error('select-all did not group the R-Supply garrison: ' + root.getAttribute('data-selected-piece-count'));
+            }
+            var boxes = document.querySelectorAll('.warlord-piece input[data-field="piece"]:checked');
+            var trim = boxes[boxes.length - 1];
+            trim.checked = false;
+            trim.dispatchEvent(new Event('change', { bubbles: true }));
+            await delay(20);
+            var attack = document.querySelector('.warlord-node-card[data-command-state="attack"]');
+            if (!attack) throw new Error('no attack preview against the North-Choke garrison');
+            attack.click();
+            await delay(30);
+            if (document.querySelector('.warlord-battle-layer:not([hidden])')) {
+                throw new Error('first click executed the attack without confirmation');
+            }
+            var intent = document.querySelector('.warlord-command-intent:not([hidden])');
+            if (!intent || intent.getAttribute('data-armed-target') !== 'North-Choke'
+                || !intent.classList.contains('is-armed')) {
+                throw new Error('attack target was not armed on the intent bar');
+            }
+            if (document.querySelector('[data-region="live"]').textContent.indexOf('再次点击确认进攻') < 0) {
+                throw new Error('arm notice was not announced');
+            }
+            attack = document.querySelector('.warlord-node-card[data-command-state="attack"]');
+            attack.click();
+            await delay(40);
+            var layer = document.querySelector('.warlord-battle-layer:not([hidden])');
+            if (!layer) throw new Error('confirmed click did not open battle playback');
+            var canvas = document.querySelector('.warlord-sandtable-canvas');
+            canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+            await delay(30);
+            if (!document.querySelector('[data-action="battle-close"]:not(:disabled)')) {
+                throw new Error('Escape did not skip playback to the settlement point');
+            }
+            canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+            await delay(30);
+            if (document.querySelector('.warlord-battle-layer:not([hidden])')) {
+                throw new Error('second Escape did not close battle playback');
+            }
+            return 'select-all 3 -> trim 2 · arm -> confirm -> playback -> Esc skip -> Esc close';
         });
         await check('forced-webgl-fallback-remains-operable', async function () {
             window.__warlordHarness.close();

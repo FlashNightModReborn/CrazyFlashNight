@@ -6,6 +6,8 @@ export interface MapTheme {
   theaterLabel: string;
   background: number;
   fog: number;
+  fogNear: number;
+  fogFar: number;
   exposure: number;
   skyLight: number;
   groundLight: number;
@@ -36,14 +38,16 @@ export const MAP_THEMES: Record<MapThemeId, MapTheme> = {
     theaterLabel: '沙漠战区',
     background: 0x15110c,
     fog: 0x15110c,
+    fogNear: 19,
+    fogFar: 36,
     exposure: 0.92,
     skyLight: 0xffe6b0,
     groundLight: 0x261b12,
-    skyIntensity: 1.8,
+    skyIntensity: 1.1,
     sunLight: 0xffd58c,
     sunIntensity: 2.5,
     rimLight: 0x5d8ba0,
-    rimIntensity: 0.5,
+    rimIntensity: 0.7,
     slab: 0x2c2419,
     terrainHue: 0.092,
     terrainSaturation: 0.46,
@@ -64,14 +68,16 @@ export const MAP_THEMES: Record<MapThemeId, MapTheme> = {
     theaterLabel: '冻原战区预览',
     background: 0x0a1216,
     fog: 0x0a1216,
+    fogNear: 20,
+    fogFar: 38,
     exposure: 0.88,
     skyLight: 0xd8edf0,
     groundLight: 0x132026,
-    skyIntensity: 1.65,
+    skyIntensity: 1.0,
     sunLight: 0xeaf7f5,
     sunIntensity: 2.15,
     rimLight: 0x68a9c2,
-    rimIntensity: 0.72,
+    rimIntensity: 0.9,
     slab: 0x172328,
     terrainHue: 0.51,
     terrainSaturation: 0.13,

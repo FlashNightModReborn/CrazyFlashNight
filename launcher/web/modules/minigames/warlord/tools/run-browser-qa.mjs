@@ -304,7 +304,7 @@ try {
   summary.qa = await evaluate('window.__WARLORD_QA_RESULTS__ || null');
   assert(Array.isArray(summary.qa), 'Harness did not expose QA results.');
   assert(qaState === 'passed', `Harness QA ended in ${qaState}.`);
-  assert(summary.qa.length === 16 && summary.qa.every((check) => check.pass === true), 'Harness QA results contain a failure or the 16-check contract drifted.');
+  assert(summary.qa.length === 19 && summary.qa.every((check) => check.pass === true), 'Harness QA results contain a failure or the 19-check contract drifted.');
   await evaluate('document.getElementById("qa-results").hidden = true');
 
   await cdp.send('Emulation.setDeviceMetricsOverride', {
@@ -380,7 +380,8 @@ try {
     window.__warlordHarness.open({ preset: 'all-units', seed: 'qa-production-screenshot' });
     await waitFor(() => document.querySelector('.warlord-scale-shell[data-ready="true"]'));
     (await waitFor(() => document.querySelector('[data-action="end-action"]:not(:disabled)'))).click();
-    await waitFor(() => document.querySelector('.warlord-scale-shell[data-phase="SETTLEMENT_PLANNING"]'));
+    // 蓝方 AI 回合已改为 ≥460ms 逐条重放 + 战斗排队 4× 播放，等待窗口随节奏放宽
+    await waitFor(() => document.querySelector('.warlord-scale-shell[data-phase="SETTLEMENT_PLANNING"]'), 30000);
     const skip = document.querySelector('[data-action="battle-skip"]');
     if (skip) {
       skip.click();
@@ -460,7 +461,8 @@ try {
     window.dispatchEvent(new Event('resize'));
     document.querySelector('[data-action="select-node"][data-node="R-HQ"]')?.click();
     document.querySelector('[data-action="camera-focus"]')?.click();
-    await new Promise((complete) => setTimeout(complete, 180));
+    // 定位运镜 240ms 过渡 + 帧饥饿兜底计时器 300ms 收敛窗，等其落位后再采样
+    await new Promise((complete) => setTimeout(complete, 450));
     const host = document.querySelector('.warlord-scene-host');
     const hud = document.querySelector('.warlord-camera-hud');
     return {
