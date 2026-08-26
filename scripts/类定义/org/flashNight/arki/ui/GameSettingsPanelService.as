@@ -476,7 +476,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     private static function validateSettings(value:Object):Object {
         if (value == undefined || typeof value != "object" || !hasOnly(value, [
             "setGlobalVolume", "setBGMVolume", "性能等级上限", "是否阴影",
-            "是否视觉元素", "是否打击数字特效", "cameraZoomToggle", "basicZoomScale",
+            "是否视觉元素", "cameraZoomToggle", "basicZoomScale",
             "开启昼夜系统", "暂停昼夜系统", "使用滤镜渲染", "立绘类型",
             "jukeboxOverride", "jukeboxTrueRandom", "jukeboxPlayMode"
         ])) return null;
@@ -486,7 +486,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
                 || !isNumberInRange(Number(value.basicZoomScale), 0.5, 3)
                 || !isIntegerInRange(Number(value.立绘类型), 1, 2)
                 || !isBoolean(value.是否阴影) || !isBoolean(value.是否视觉元素)
-                || !isBoolean(value.是否打击数字特效) || !isBoolean(value.cameraZoomToggle)
+                || !isBoolean(value.cameraZoomToggle)
                 || !isBoolean(value.开启昼夜系统) || !isBoolean(value.暂停昼夜系统)
                 || !isBoolean(value.使用滤镜渲染) || !isBoolean(value.jukeboxOverride)
                 || !isBoolean(value.jukeboxTrueRandom)
@@ -499,7 +499,6 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             性能等级上限:Number(value.性能等级上限),
             是否阴影:value.是否阴影,
             是否视觉元素:value.是否视觉元素,
-            是否打击数字特效:value.是否打击数字特效,
             cameraZoomToggle:value.cameraZoomToggle,
             basicZoomScale:Math.round(Number(value.basicZoomScale) * 10) / 10,
             开启昼夜系统:value.开启昼夜系统,
@@ -608,7 +607,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         var settings:Object = readAuthoritySettings();
         var parts:Array = [
             settings.setGlobalVolume, settings.setBGMVolume, settings.性能等级上限,
-            settings.是否阴影, settings.是否视觉元素, settings.是否打击数字特效,
+            settings.是否阴影, settings.是否视觉元素,
             settings.cameraZoomToggle, settings.basicZoomScale, settings.开启昼夜系统,
             settings.暂停昼夜系统, settings.使用滤镜渲染, settings.立绘类型,
             settings.jukeboxOverride, settings.jukeboxTrueRandom, settings.jukeboxPlayMode

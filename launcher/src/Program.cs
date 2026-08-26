@@ -1383,7 +1383,7 @@ class Program
                 socketServer,
                 musicCatalog);
 
-        // V8 持久化 Runtime + 打击伤害数字 overlay
+        // V8 只承载 GameInput；打击伤害数字由 C# reducer + overlay 独立承载
         string scriptsDir = Path.Combine(projectRoot, "launcher", "scripts");
         V8Runtime v8Runtime;
         using (PerfTrace.Scope("v8.construct"))
@@ -1400,6 +1400,9 @@ class Program
 
         // 搓招输入处理：注入 socket 引用用于 K 前缀推送，初始化 V8 GameInput
         frameTask.SetSocket(socketServer);
+        frameTask.ConfigureHitNumbers(
+            userPrefs.HitNumberMode,
+            userPrefs.HitNumberWorldRowLimit);
         using (PerfTrace.Scope("v8.game_input_init"))
         {
             v8Runtime.InitGameInput();
@@ -1835,6 +1838,7 @@ class Program
             webOverlay.CloseKShopForMaterialNavigationNoFail);
         HairdresserTask hairdresserTask = new HairdresserTask(socketServer);
         SettingsTask settingsTask = new SettingsTask(socketServer, userPrefs);
+        settingsTask.SetHitNumberLedgerProvider(frameTask.BuildHitNumberLedgerPage);
         settingsTask.SetHostPreferenceApplied(delegate(string key, JToken value)
         {
             if (key == "sfxEnabled" || key == "ambientEnabled")
@@ -1845,6 +1849,13 @@ class Program
                 rightContext.SetMapDisplayPreference(
                     CF7Launcher.Guardian.Hud.MapDisplayPolicy.ParsePreference(
                         value.Value<string>()));
+            }
+            if ((key == "hitNumberMode" || key == "hitNumberWorldRowLimit")
+                && frameTask != null)
+            {
+                frameTask.ConfigureHitNumbers(
+                    userPrefs.HitNumberMode,
+                    userPrefs.HitNumberWorldRowLimit);
             }
         });
         EquipmentTuningTask equipmentTuningTask = new EquipmentTuningTask(socketServer);
@@ -2081,7 +2092,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, v8Runtime, hnOverlay, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

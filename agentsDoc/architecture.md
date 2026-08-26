@@ -71,6 +71,7 @@
   - Flash Player SA 启动、预热、嵌入与 reveal
   - XMLSocket / HTTP 本地总线与 `TaskRegistry`
   - Audio Platform v2 的 `AudioCoordinator` 单 owner、资格化/ready barrier、Notch / Toast / Web overlay 宿主
+  - 打击伤害数字的 C# span parser、短寿命世界 reducer、balanced/total/classic/detail 投影、Burst 原子布局、latest-wins Overlay 与持久 DIB；四模式共用 11 色与固定效果色语义，逐段项保持源色，balanced/total 聚合项采用最新色→贡献主体色且零伤回退源色，属性来源色、粉碎文字、emoji 与吸血/护盾精确值独立保留；贡献可见度与模式标签密度正交，detail 以生产 Painter 边界动态扩格/缩列，total 另保留渐进计数与续击恢复语义；有限 detail 在全局上限内每目标只保留最新六行，显式 `0` 解除产品上限；精确历史另进固定 32,768 段环形账本，只在暂停态 Web 设置按需分页物化，V8/Flash renderer 不再持有该状态
   - standard normal 的 CF7 Agent Runtime/Wings composition；显式 legacy HTTP 与 `--bus-only` 不创建该控制面
   - Native HUD 组合：`NativeHudOverlay` 是右侧条件槽的唯一 owner，按 `transactionDecision > actionableNotice > contextHint > hidden` 计算一次并把同一 `RightContextSlotOwner` 投影给 RightContext 与 SafeExit；透明 `CompositeBounds` 只负责合成范围，不拥有命中
   - 启动前存档决议与 Protocol 2
@@ -95,7 +96,7 @@
 
 ### E. Native & Build 链
 
-- `launcher/scripts/` 中的 TypeScript 编译为 V8 运行时代码
+- `launcher/scripts/` 中的 TypeScript 只编译现役 `GameInput` DFA；发布 bundle 文件名仍为历史兼容的 `hit-number-bundle.js`
 - `launcher/native/sol_parser/` 通过 Rust 生成 `sol_parser.dll`
 - `launcher/native/` 的 Audio Platform v2 以多个 C/C++ TU 构建，并把静态 libvorbis/libopus 与 bridge 链接成单一 `miniaudio.dll`；构建输入与 decoder 依赖由 tracked manifest/lock 固定
 - Windows runtime 发布已分成正交控制面：prepare 只派生 tracked 资产；policy 只读审计并签发绑定 Git tree 的 receipt；纯 producer 只消费 artifact source + producer recipe + toolchain lock，在隔离输出中生成 payload/manifest，不让政策变化进入 build identity

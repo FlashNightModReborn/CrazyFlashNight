@@ -20,7 +20,7 @@ const codes = [87,83,65,68,74,75,82,49,50,51,52,53,55,56,57,48,
 const keys = runtime.KEY_IDS.map((id, index) => ({id, label:id, keyCode:codes[index], keyName:"K" + codes[index]}));
 const settings = {
   setGlobalVolume:80, setBGMVolume:60, "性能等级上限":1,
-  "是否阴影":true, "是否视觉元素":true, "是否打击数字特效":true,
+  "是否阴影":true, "是否视觉元素":true,
   cameraZoomToggle:true, basicZoomScale:1, "开启昼夜系统":true,
   "暂停昼夜系统":false, "使用滤镜渲染":true, "立绘类型":1,
   jukeboxOverride:false, jukeboxTrueRandom:false, jukeboxPlayMode:"albumLoop"
@@ -63,7 +63,7 @@ test("snapshot adopts exact authority and normalizes legacy performance display"
     success:true, v:1, revision:4, settings:Object.assign({}, settings, {"性能等级上限":3}),
     keys, defaultKeys:keys.map(row => ({id:row.id,keyCode:row.keyCode})),
     allowedKeyCodes:allowed, hostPrefs:{introEnabled:false,sfxEnabled:true,ambientEnabled:false,
-      uiFontScale:1.35,mapDisplayPreference:"auto"}, challengeMode:false,
+      uiFontScale:1.35,mapDisplayPreference:"auto",hitNumberMode:"balanced",hitNumberWorldRowLimit:24}, challengeMode:false,
     modeLabel:"困难", cheatHelp:[], forceControls:{}, previewActive:false
   };
   const model = runtime.normalizeSnapshot(response);
@@ -83,7 +83,7 @@ test("placeholder key labels fall back to stable logical ids", () => {
     success:true, v:1, revision:4, settings, keys:dirtyKeys,
     defaultKeys:keys.map(row => ({id:row.id,keyCode:row.keyCode})),
     allowedKeyCodes:allowed, hostPrefs:{introEnabled:false,sfxEnabled:true,ambientEnabled:false,
-      uiFontScale:1.35,mapDisplayPreference:"auto"}, challengeMode:false,
+      uiFontScale:1.35,mapDisplayPreference:"auto",hitNumberMode:"balanced",hitNumberWorldRowLimit:24}, challengeMode:false,
     modeLabel:"困难", cheatHelp:[], forceControls:{}, previewActive:false
   });
   assert(model);
@@ -110,7 +110,7 @@ test("snapshot keeps a structurally valid duplicate legacy table open for repair
     success:true, v:1, revision:5, settings, keys:legacyKeys,
     defaultKeys:keys.map(row => ({id:row.id,keyCode:row.keyCode})),
     allowedKeyCodes:allowed, hostPrefs:{introEnabled:false,sfxEnabled:true,ambientEnabled:false,
-      uiFontScale:1.35,mapDisplayPreference:"auto"}, challengeMode:false,
+      uiFontScale:1.35,mapDisplayPreference:"auto",hitNumberMode:"balanced",hitNumberWorldRowLimit:24}, challengeMode:false,
     modeLabel:"困难", cheatHelp:[], forceControls:{}, previewActive:false
   });
   assert(model);
@@ -140,6 +140,29 @@ test("request mux binds exact instance and correlates one response", () => {
   mux.destroy();
 });
 
+test("request mux dispatches the read-only hit-number ledger command", () => {
+  const sent = [];
+  const callbacks = [];
+  const mux = new runtime.RequestMux({
+    send(message) { sent.push(message); return true; },
+    setTimer() { return 1; },
+    clearTimer() {}
+  });
+  assert.strictEqual(mux.openSession("settings.instance.ledger"), true);
+  const id = mux.request("hit_number_ledger", {v:1,offset:0,limit:24},
+    {kind:"hit-number-ledger",latestWins:true}, response => callbacks.push(response));
+  assert(id);
+  assert.strictEqual(sent.length, 1);
+  assert.strictEqual(sent[0].cmd, "hit_number_ledger");
+  assert.deepStrictEqual(sent[0].payload, {v:1,offset:0,limit:24});
+  assert.strictEqual(mux.handleResponse({type:"panel_resp", domain:"settings",
+    cmd:"hit_number_ledger", callId:id, panelInstanceId:"settings.instance.ledger",
+    success:true, ledger:{bursts:[]}}), true);
+  assert.strictEqual(callbacks.length, 1);
+  assert.deepStrictEqual(callbacks[0].ledger.bursts, []);
+  mux.destroy();
+});
+
 test("request mux marks only dispatched non-preview client timeouts for reconcile", () => {
   const timers = [];
   const callbacks = [];
@@ -158,7 +181,7 @@ test("request mux marks only dispatched non-preview client timeouts for reconcil
     assert.strictEqual(response.error, "client_timeout");
     assert.strictEqual(response.requiresReconcile, true, cmd);
   });
-  ["snapshot", "preview"].forEach(cmd => {
+  ["snapshot", "preview", "hit_number_ledger"].forEach(cmd => {
     const timerIndex = timers.length;
     assert(mux.request(cmd, {v:1}, {kind:"timeout." + cmd}, response => callbacks.push(response)));
     timers[timerIndex]();
@@ -257,7 +280,7 @@ test("three setting pages share the launcher header and annotations use PanelToo
   assert(css.includes(".settings-simple-tooltip"));
 });
 
-test("rescue is in the default view and jukebox rules are grouped with local Web settings", () => {
+test("local settings expose five damage modes and a keyless exact reconciliation log", () => {
   const panel = fs.readFileSync(path.join(root, "launcher/web/modules/settings-panel.js"), "utf8");
   const game = panel.slice(panel.indexOf("function renderGame()"), panel.indexOf("function volumeField"));
   const local = panel.slice(panel.indexOf("function renderLocal()"), panel.indexOf("function hostBoolean"));
@@ -265,6 +288,20 @@ test("rescue is in the default view and jukebox rules are grouped with local Web
   assert(game.indexOf("renderRescueControls()") < game.indexOf("声音试听"));
   assert(!game.includes("点歌器运行规则"));
   assert(local.includes("点歌器运行规则"));
+  assert(local.includes("打击伤害数字"));
+  assert(local.includes("hitNumberMode"));
+  assert(local.includes("hitNumberWorldRowLimit"));
+  ['off','balanced','total','classic','detail'].forEach(mode =>
+    assert(local.includes("['" + mode + "'"), "missing damage mode " + mode));
+  assert(local.includes("打开伤害对账日志"));
+  assert(local.includes("不占用任何战斗键"));
+  assert(!local.includes("Alt"));
+  assert(panel.includes("_mux.request('hit_number_ledger'"));
+  assert(panel.includes("oldestBurstMayBePartial") || panel.includes("droppedSegments"));
+  assert(panel.includes("settings-damage-ledger-modal"));
+  assert(panel.includes("input.value.trim() === ''"));
+  assert(panel.includes("value < 0 || value > 1000"));
+  assert(!game.includes("是否打击数字特效"));
   const foundation = fs.readFileSync(path.join(root, "launcher/web/css/panels/foundation-rest.css"), "utf8");
   assert(foundation.includes('#panel-container[data-panel="settings"] #panel-content'));
 });

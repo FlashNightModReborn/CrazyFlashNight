@@ -526,6 +526,70 @@ namespace CF7Launcher.Guardian
             return result;
         }
 
+        /// <summary>
+        /// Hot-path commit for a caller-owned top-down PArgb DIB that remains selected
+        /// into a reusable memory DC. Unlike CommitBitmap this creates no HBITMAP/DC per
+        /// frame. Qualification observers still receive the structured transaction.
+        /// </summary>
+        protected void CommitPreparedDib(
+            IntPtr sourceDc,
+            int width,
+            int height,
+            int screenX,
+            int screenY,
+            byte globalAlpha)
+        {
+            if (_commitObservation.IsEnabled)
+            {
+                CommitPreparedDibObserved(
+                    sourceDc,
+                    width,
+                    height,
+                    screenX,
+                    screenY,
+                    globalAlpha);
+                return;
+            }
+
+            IntPtr handle;
+            if (!TryGetExistingHandle(out handle) ||
+                sourceDc == IntPtr.Zero ||
+                width <= 0 ||
+                height <= 0)
+            {
+                return;
+            }
+
+            POINT destination = new POINT { x = screenX, y = screenY };
+            SIZE size = new SIZE { cx = width, cy = height };
+            POINT source = new POINT { x = 0, y = 0 };
+            BLENDFUNCTION blend = new BLENDFUNCTION
+            {
+                BlendOp = AC_SRC_OVER,
+                BlendFlags = 0,
+                SourceConstantAlpha = globalAlpha,
+                AlphaFormat = AC_SRC_ALPHA
+            };
+            long monitorStarted = UlwCommitMonitor.StartTick();
+            try
+            {
+                UpdateLayeredWindow(
+                    handle,
+                    IntPtr.Zero,
+                    ref destination,
+                    ref size,
+                    sourceDc,
+                    ref source,
+                    0,
+                    ref blend,
+                    ULW_ALPHA);
+            }
+            finally
+            {
+                UlwCommitMonitor.RecordCommit(monitorStarted);
+            }
+        }
+
         #endregion
 
         /// <summary>

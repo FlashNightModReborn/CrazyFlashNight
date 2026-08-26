@@ -75,6 +75,8 @@ namespace CF7Launcher.Tests.Tasks
                 h.Prefs.IntroEnabled = true;
                 h.Prefs.SfxEnabled = false;
                 h.Prefs.MapDisplayPreference = "compact";
+                h.Prefs.HitNumberMode = "detail";
+                h.Prefs.HitNumberWorldRowLimit = 0;
                 JObject sent = h.Send("snapshot", new JObject { ["v"] = 1 });
                 Assert.NotNull(sent);
                 Assert.Equal("cmd", sent.Value<string>("task"));
@@ -92,6 +94,8 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.True(web["hostPrefs"].Value<bool>("introEnabled"));
                 Assert.False(web["hostPrefs"].Value<bool>("sfxEnabled"));
                 Assert.Equal("compact", web["hostPrefs"].Value<string>("mapDisplayPreference"));
+                Assert.Equal("detail", web["hostPrefs"].Value<string>("hitNumberMode"));
+                Assert.Equal(0, web["hostPrefs"].Value<int>("hitNumberWorldRowLimit"));
                 Assert.Equal(35, ((JArray)web["keys"]).Count);
             }
         }
@@ -154,15 +158,157 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Equal("expanded", appliedValue.Value<string>());
                 Assert.True(Assert.Single(h.Web).Value<bool>("success"));
 
-                bool oldSfx = h.Prefs.SfxEnabled;
+                h.Send("host_set", new JObject
+                {
+                    ["v"] = 1, ["key"] = "hitNumberMode", ["value"] = "off"
+                }, "web.settings.hit-mode");
+                Assert.Equal("off", h.Prefs.HitNumberMode);
+                Assert.Equal("off", h.Web[1].Value<string>("currentValue"));
+
+                h.Send("host_set", new JObject
+                {
+                    ["v"] = 1, ["key"] = "hitNumberWorldRowLimit", ["value"] = 0
+                }, "web.settings.hit-limit");
+                Assert.Equal(0, h.Prefs.HitNumberWorldRowLimit);
+                Assert.Equal(0, h.Web[2].Value<int>("currentValue"));
+
                 h.SaveResult = false;
                 h.Send("host_set", new JObject
                 {
-                    ["v"] = 1, ["key"] = "sfxEnabled", ["value"] = !oldSfx
-                }, "web.settings.2");
-                Assert.Equal(oldSfx, h.Prefs.SfxEnabled);
-                Assert.Equal("save_failed", h.Web[1].Value<string>("error"));
-                Assert.Equal(oldSfx, h.Web[1].Value<bool>("currentValue"));
+                    ["v"] = 1, ["key"] = "hitNumberMode", ["value"] = "detail"
+                }, "web.settings.hit-rollback");
+                Assert.Equal("off", h.Prefs.HitNumberMode);
+                Assert.Equal("save_failed", h.Web[3].Value<string>("error"));
+                Assert.Equal("off", h.Web[3].Value<string>("currentValue"));
+            }
+        }
+
+        [Fact]
+        public void HostSet_RejectsUnknownHitModeAndOutOfRangeOrFractionalLimit()
+        {
+            using (var h = new Harness())
+            {
+                string originalMode = h.Prefs.HitNumberMode;
+                int originalLimit = h.Prefs.HitNumberWorldRowLimit;
+                JToken[] invalidModes = { new JValue("summary"), new JValue("Balanced"), new JValue(1) };
+                for (int i = 0; i < invalidModes.Length; i++)
+                {
+                    h.Send("host_set", new JObject
+                    {
+                        ["v"] = 1,
+                        ["key"] = "hitNumberMode",
+                        ["value"] = invalidModes[i]
+                    }, "web.settings.hit-mode-invalid-" + i);
+                    Assert.Equal("bad_value", h.Web[i].Value<string>("error"));
+                    Assert.Equal(originalMode, h.Prefs.HitNumberMode);
+                }
+
+                JToken[] invalidLimits = { new JValue(-1), new JValue(1001), new JValue(2.5), new JValue("24") };
+                for (int i = 0; i < invalidLimits.Length; i++)
+                {
+                    h.Send("host_set", new JObject
+                    {
+                        ["v"] = 1,
+                        ["key"] = "hitNumberWorldRowLimit",
+                        ["value"] = invalidLimits[i]
+                    }, "web.settings.hit-limit-invalid-" + i);
+                    Assert.Equal("bad_value", h.Web[invalidModes.Length + i].Value<string>("error"));
+                    Assert.Equal(originalLimit, h.Prefs.HitNumberWorldRowLimit);
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData("classic")]
+        [InlineData("total")]
+        public void HostSet_AcceptsCompatibilityHitNumberModes(string mode)
+        {
+            using (var h = new Harness())
+            {
+                h.Send("host_set", new JObject
+                {
+                    ["v"] = 1,
+                    ["key"] = "hitNumberMode",
+                    ["value"] = mode
+                }, "web.settings.hit-mode-" + mode);
+
+                Assert.Empty(h.Flash);
+                Assert.Equal(mode, h.Prefs.HitNumberMode);
+                Assert.Equal(mode, Assert.Single(h.Web).Value<string>("currentValue"));
+            }
+        }
+
+        [Fact]
+        public void HitNumberLedger_IsStrictLocalPagedQueryWithoutFlashTraffic()
+        {
+            using (var h = new Harness())
+            {
+                int seenOffset = -1;
+                int seenLimit = -1;
+                h.Task.SetHitNumberLedgerProvider(delegate(int offset, int limit)
+                {
+                    seenOffset = offset;
+                    seenLimit = limit;
+                    return new JObject
+                    {
+                        ["v"] = 1,
+                        ["retainedSegments"] = 2,
+                        ["droppedSegments"] = 0,
+                        ["bursts"] = new JArray(new JObject
+                        {
+                            ["targetId"] = "boss",
+                            ["burstId"] = "shot",
+                            ["segments"] = new JArray(
+                                new JObject { ["sequence"] = 1, ["damage"] = 43 },
+                                new JObject { ["sequence"] = 2, ["damage"] = 60 })
+                        })
+                    };
+                });
+
+                Assert.Null(h.Send("hit_number_ledger", new JObject
+                {
+                    ["v"] = 1,
+                    ["offset"] = 24,
+                    ["limit"] = 12
+                }, "web.settings.hit-ledger"));
+
+                Assert.Empty(h.Flash);
+                Assert.Equal(24, seenOffset);
+                Assert.Equal(12, seenLimit);
+                JObject response = Assert.Single(h.Web);
+                Assert.True(response.Value<bool>("success"));
+                Assert.Equal("hit_number_ledger", response.Value<string>("cmd"));
+                Assert.Equal(2, response["ledger"].Value<int>("retainedSegments"));
+            }
+        }
+
+        [Fact]
+        public void HitNumberLedger_RejectsUnavailableOrNonExactPayload()
+        {
+            using (var unavailable = new Harness())
+            {
+                unavailable.Send("hit_number_ledger", new JObject
+                {
+                    ["v"] = 1,
+                    ["offset"] = 0,
+                    ["limit"] = 24
+                }, "web.settings.ledger-unavailable");
+                Assert.Equal("hit_number_ledger_unavailable",
+                    Assert.Single(unavailable.Web).Value<string>("error"));
+            }
+
+            using (var invalid = new Harness())
+            {
+                invalid.Task.SetHitNumberLedgerProvider(delegate { return new JObject(); });
+                invalid.Send("hit_number_ledger", new JObject
+                {
+                    ["v"] = 1,
+                    ["offset"] = 0,
+                    ["limit"] = 24,
+                    ["extra"] = true
+                }, "web.settings.ledger-invalid");
+                Assert.Equal("invalid_payload",
+                    Assert.Single(invalid.Web).Value<string>("error"));
             }
         }
 
@@ -491,7 +637,7 @@ namespace CF7Launcher.Tests.Tasks
             {
                 ["setGlobalVolume"] = 80, ["setBGMVolume"] = 60,
                 ["性能等级上限"] = 1, ["是否阴影"] = true,
-                ["是否视觉元素"] = true, ["是否打击数字特效"] = true,
+                ["是否视觉元素"] = true,
                 ["cameraZoomToggle"] = true, ["basicZoomScale"] = 1.0,
                 ["开启昼夜系统"] = true, ["暂停昼夜系统"] = false,
                 ["使用滤镜渲染"] = true, ["立绘类型"] = 1,

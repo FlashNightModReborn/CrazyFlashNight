@@ -3,10 +3,10 @@
  * 视觉系统_fs_打击数字池.as - 打击伤害数字系统（_root 挂载层）
  * ============================================================================
  *
- * 核心逻辑已完全迁移到 HitNumberSystem + HitNumberBatchProcessor 中。
- * 所有伤害显示通过 DamageResult.triggerDisplay → enqueueRaw → flush → spawn 链路。
+ * 现役逻辑为 DamageResult.triggerDisplay → HitNumberBatchProcessor → C# overlay。
+ * Flash MovieClip 池与随机散开 fallback 已退役并删除。
  *
  * _root.打击数字特效 已无调用者，挂载已移除。
- * 此文件保留为占位。
+ * 时间轴仍 include 本文件，因此只保留无运行逻辑的兼容占位。
  * ============================================================================
  */

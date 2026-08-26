@@ -103,7 +103,7 @@ bootstrap preflight
 | WebView2 message | Bootstrap、Overlay、Panel 控制与展示 | Host 校验命令和 payload；Web 不拥有业务写权限 |
 | XMLSocket | Flash ↔ Host 任务消息 | 连接、握手和业务回包分别判定，裸 socket 不能代签 Flash 建连；GameStage `T+|id|seconds|label` / `T-|id` / `T!` 仅投影 keyed 计时 HUD，AS2 独占倒计时和失败裁决，断连清理 |
 | HTTP | 兼容查询、资源与受限控制面 | legacy automation 不是 Agent Runtime 的信任边界 |
-| V8 | 本地脚本总线和计算模块 | 模块源与加载闭包必须可复验 |
+| V8 | 搓招 `GameInput` DFA | 单 engine/单锁，模块源与加载闭包必须可复验；不再持有伤害数字状态或渲染描述符 |
 | named pipe / MCP | CF7 Agent Runtime | 观察 grant 与 write lease 分离，绑定 peer/session/frame/generation |
 
 ### Loot feed 与纸娃娃烘焙协议
@@ -271,16 +271,15 @@ Web/Node、真实 Edge harness、AS2 runner、Flash CS6 publish-only smoke、can
 | `diagReportIntervalSec` | `5` / `5` | `CF7_DIAG_INTERVAL_SEC` | 诊断报告周期，clamp 1–60 秒 |
 | `webOverlayHotReload` | `false` / `false` | `CF7_WEB_HOTRELOAD` | 开发热重载，玩家版保持关闭 |
 <!-- launcher-config-registry:end -->
-
-`CF7_DIAG_FOCUS_PROBE` 是 `UiFreezeProbe` 的独立环境急停，不属于 `AppConfig` key。生产默认值、诊断建议和硬件边界以 `config.toml` 注释为准，README 不复制长注释。
-
-用户偏好落在 `%LOCALAPPDATA%/CF7FlashNight/launcher_user_prefs.json`；项目根同名文件只作一次性 legacy 导入。
-
+`CF7_DIAG_FOCUS_PROBE` 是 `UiFreezeProbe` 的独立环境急停，不属于 `AppConfig` key。生产默认值、诊断建议和硬件边界以 `config.toml` 注释为准，README 不复制长注释。用户偏好落在 `%LOCALAPPDATA%/CF7FlashNight/launcher_user_prefs.json`；项目根同名文件只作一次性 legacy 导入。
 <!-- launcher-user-prefs-registry:start -->
-当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`uiFontScale`、`suppressedHighDpiWarningRaw` 和 `mapDisplayPreference`。
+当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode` 和 `hitNumberWorldRowLimit`。
 <!-- launcher-user-prefs-registry:end -->
-
-公开 Web 写入必须经过 `config_set` 白名单；Host-only 字段不得因前端出现同名属性而获得写权限。
+公开 Web 写入必须经过 `config_set` 白名单；Host-only 字段不得因前端同名而获得写权限。<a id="打击伤害数字生产路径"></a> **打击伤害数字生产路径**：AS2 仍负责伤害结算，`HitNumberBatchProcessor` 仅发送结算后的逐段事实；C# `HitNumberRuntime` 是唯一表现状态机，负责短寿命状态、模式投影和世界行裁剪，`HitNumberOverlay` 消费 latest-wins frame 并以紧边界持久 DIB 绘制。V8 只保留 `GameInput`，Flash renderer 不再作为 fallback。
+机器全局偏好提供 `off/balanced/total/classic/detail` 五状态。默认 `balanced` 只保留同目标最近三次 Burst，并把总伤的“最新段来源色闪现→该次攻击贡献主体色”、属性来源色、固定效果色、emoji、贡献强度及吸血/护盾精确值投影到攻击摘要；`classic` 复刻旧 Flash 散射/14 帧动效，`detail` 按 Burst 原子展示逐段并按实际数字/属性标签边界扩格、缩列。四模式共用同一 11 色语义表，逐段项永远使用自身来源色；属性贡献可见度与模式标签密度为正交尺度，因此平衡/逐发可保持紧凑而不伪造低贡献。
+`total` 保留旧总伤表达：当前段颜色闪现后回落到贡献主体色，状态按伤害贡献衰减，吸血/护盾保留精确累计值，总伤与 hit 渐进追赶；伤害类型与粉碎使用独立文字槽，非 MISS 零伤保持来源色，MISS 不累计，淡出续击恢复同一条目，最新目标最后绘制，冲击脉冲受平衡字号上限约束。balanced/detail 同样把最新受击目标最后绘制。
+非零 `hitNumberWorldRowLimit` 是全局攻击行上限，有限 `detail` 另对每目标只保留最新六行；`0` 明确解除两层产品上限并保持真正无限制。四种显示模式仍保留屏外剔除和自然寿命，有限上限不拆攻击，切换立即建立新 generation 并重排。
+精确对账不占战斗键：暂停态设置通过 Host-local `hit_number_ledger` 分页读取固定 32,768 段环形账本，按目标/Burst 保留逐段事实并显式报告溢出；`off` 后停止接收新段，既有记录保留至 reset 或覆盖。验证入口见[专项视觉/性能 harness](../tools/hit-number-visual-harness/README.md)和[测试矩阵](../agentsDoc/testing-guide.md)；合成门不代签真实战斗的目标归属、打击感或高 hit 人类验收。
 
 ## 命令行参数
 
@@ -385,6 +384,7 @@ Panel 的共同边界：
   latch 存在时后续写 fail-closed；Web 不显示“确定未执行”也不自动重放。cancel 半恢复保持面板与首次基线，先以权威 snapshot 对账再允许继续写。
   35 键双列同屏，标签紧邻控件，键名/键值至少 12px。Host 打开设置时将已有 16:9 Flash 进入帧按原裁切像素、JPEG 90 编成实例内静态图；上限 `4096×2304 / 8 MiB`，拒绝均匀近黑，不降采样至 `512×288`。Flash SA 为 DPI Unaware 且显示器 DPI 更高时，输出保持 `GetClientRect` 物理尺寸，GDI 源按 `windowDpi/monitorDpi` 换算并 `StretchBlt`；其他 awareness 1:1。日志同时记录 source/output，`BitBlt/StretchBlt` false 必须显式失败。
   镜头倍率使用全屏二级模拟器，入口基线按 16:9 填满舞台并保留自然像素；动态镜头关闭时仍按基础倍率预览。点歌器规则与 Web 主题集中在“本机与 Web”。Agent Runtime 仅允许 exact `settings` 与 `settings_camera_preview`；后者固定映射到 `settings + initialView:"camera_preview"`。闭环先用 Flash metadata-only grant + `window.list` 等待 surface 稳定，再用 fresh WebOverlay WGC 验证；它不授予 Flash pixels/input，也不应用或保存设置。
+  打击伤害数字属于 Host `UserPrefs`，不再进入 AS2 的游戏设置 snapshot/save；五状态模式、世界行上限和暂停态 Web 对账日志统一以[生产路径](#打击伤害数字生产路径)为准。偏好逐项即时保存，失败恢复控件和内存权威值；旧 `_root.是否打击数字特效`、`_root.同屏打击数字特效上限` 与 Flash MovieClip renderer 均不再是运行时 fallback。
 - AS2/Host/Web 三层迁移、数据权威与旧 Flash UI 退役边界以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。

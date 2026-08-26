@@ -484,22 +484,22 @@ class org.flashNight.arki.component.Damage.DamageResult {
      * 触发伤害显示功能，将伤害值显示在指定的坐标位置。
      *
      * 伤害数字不会立即渲染，而是以标量快照形式加入批处理队列，
-     * 在帧末由 HitNumberBatchProcessor.flush() 统一处理。
-     * - 将节流决策从 O(N) 降至 O(1)
-     * - 统一视野剔除，减少重复计算
-     * - 更精确地控制同屏数字数量
-     * - 先剔除后构建 HTML，被丢弃的项零 HTML 成本
+     * 在帧末由 HitNumberBatchProcessor.flush() 统一送往 C# reducer。
+     * Host 关闭或尚未允许来源时在本方法最前面返回，不分配 BurstId、不逐段入队。
      *
      * @param {Number} targetX - 伤害显示的X坐标。
      * @param {Number} targetY - 伤害显示的Y坐标。
-     * @param {String} unitId  - 目标 unit 标识（hitTarget._name），用于 C# overlay 同目标 O(1) 合并；
-     *                           调用方传 null 或空串时 C# 端回退到距离合并。
+     * @param {String} unitId  - 目标 unit 标识（hitTarget._name）；空串时 C# 以坐标键归组。
      */
     public function triggerDisplay(targetX:Number, targetY:Number, unitId:String):Void {
         var list:Array = this.totalDamageList;
         var len:Number = list.length;
 
         if (len === 0) {
+            return;
+        }
+
+        if (!HitNumberBatchProcessor.isHostEnabled()) {
             return;
         }
 
@@ -513,15 +513,18 @@ class org.flashNight.arki.component.Damage.DamageResult {
         var lifeSteal:Number = ((efFlags & 32) != 0) ? this._efLifeSteal : 0;
         var shieldAbsorb:Number = ((efFlags & 256) != 0) ? this._efShieldAbsorb : 0;
 
-        // 标量快照入队，延迟 HTML 构建到 flush 阶段
+        // 一次 triggerDisplay = 一发名义子弹；totalDamageList 的各段是同一 Burst 下
+        // 的虚拟子弹。共享 burstId/expectedHitCount，让 C# 在段到齐前预留稳定几何。
+        var burstId:String = HitNumberBatchProcessor.nextBurstId();
+
+        // 标量快照入队，延迟协议拼接到 flush 阶段
         //
         // MISS 哨兵规范化：calculateScatterDamage 用 list[i] = -1 标记联弹分段建模中的
         // MISS/直感段，原本依赖 buildHtml 的 `if (damage < 0)` 转 "MISS"。但 socket 路径
         // (C# overlay/HitNumberOverlay.cs) 仅按 packed bit 9 判定 MISS，会将 -1 字面渲染为 "-1"。
         //
         // 在此入队前把哨兵翻译为 packed bit 9 = isMISS（与 dodgeStatus="MISS" 设的全局位同位），
-        // damage 字段恒非负。两条渲染路径（Flash buildHtml / C# overlay）从此只看 isMISS 位，
-        // 协议语义统一。buildHtml 的 `damage < 0` 分支随之退化为防御性死代码，无需删除。
+        // damage 字段恒非负，C# overlay 只看 isMISS 位，协议语义统一。
         var MISS_BIT:Number = 512; // 1 << 9
         var i:Number = 0;
         var dmg:Number;
@@ -537,7 +540,8 @@ class org.flashNight.arki.component.Damage.DamageResult {
                 dmg, pkd,
                 efText, efEmoji,
                 lifeSteal, shieldAbsorb,
-                targetX, targetY, unitId
+                targetX, targetY, unitId,
+                burstId, len
             );
             i++;
         } while (i < len);

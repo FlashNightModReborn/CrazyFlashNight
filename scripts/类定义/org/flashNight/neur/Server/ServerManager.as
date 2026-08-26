@@ -506,6 +506,17 @@ class org.flashNight.neur.Server.ServerManager {
         if (data.length == 0) return;
         var prefix:String = data.charAt(0);
 
+        // C# 打击数字源头开关：H0=关闭入队/序列化，H1=开启。
+        // 行为模式与世界行上限由 Host 独占，Flash 只需要知道是否应产出事件。
+        if (prefix == "H") {
+            if (data == "H0" || data == "H1") {
+                org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHostEnabled(
+                    data == "H1"
+                );
+            }
+            return;
+        }
+
         // 搓招输入快车道：K{cmdId+0x20}[{cmdName}\x01{hints}]（绕过 JSON 解析）
         if (prefix == "K") {
             org.flashNight.arki.render.FrameBroadcaster.receiveK(data.substring(1));
@@ -697,6 +708,7 @@ class org.flashNight.neur.Server.ServerManager {
         if (xmlSocket == null && !isSocketConnected && _state != S_CONNECTED) return;
         trace("XMLSocket connection closed");
         isSocketConnected = false;
+        org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHostEnabled(false);
         // 先 retire 当前 source；旧 XMLSocket 排队的 onData/onClose 即使在新连接建立后
         // 才抵达，也会被 initXMLSocket closure 的对象身份门拒绝。
         xmlSocket = null;

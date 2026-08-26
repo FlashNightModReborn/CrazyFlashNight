@@ -13,13 +13,16 @@
     var _cameraScaleHud = null, _cameraModeHud = null;
     var _pendingInitialCameraPreview = false;
     var _cheatModal = null, _cheatHelpRequest = null, _cheatHelpText = null, _helpReturnFocus = null;
+    var _damageLedgerModal = null, _damageLedgerReturnFocus = null;
+    var _damageLedgerOffset = 0, _damageLedgerLoading = false;
     var _tooltipScope = null;
     var SECTION_CODES = {
         '游戏常用设置':'GAME CORE', '镜头缩放':'CAMERA LAB',
         '流程救援':'RECOVERY LINK', '声音试听':'AUDIO BUS', '画面与性能':'DISPLAY CORE',
         '35 项权威键位':'INPUT MAP', '移动与操作':'MOVEMENT', '攻击模式':'COMBAT MODE',
         '快捷物品':'QUICK ITEMS', '快捷技能':'SKILL CHANNEL', '战斗扩展':'COMBAT AUX',
-        'Launcher 本机偏好':'LAUNCHER LOCAL', '点歌器运行规则':'JUKEBOX RULES',
+        'Launcher 本机偏好':'LAUNCHER LOCAL', '打击伤害数字':'HIT NUMBER',
+        '点歌器运行规则':'JUKEBOX RULES',
         'Web Panel 偏好':'WEB LOCAL'
     };
 
@@ -122,6 +125,7 @@
         cancelConfirmation();
         closeCameraSimulator(false);
         closeCheatHelp();
+        closeDamageLedger(false);
         if (_cheatHelpRequest) { try { _cheatHelpRequest.abort(); } catch (abortError) {} }
         _cheatHelpRequest = null;
         if (_scale) { _scale.detach(); _scale = null; }
@@ -368,7 +372,6 @@
         fields.appendChild(field('立绘类型', selectControl('立绘类型', [[1,'类型 1'],[2,'类型 2']])));
         fields.appendChild(checkbox('是否阴影', '角色阴影'));
         fields.appendChild(checkbox('是否视觉元素', '视觉元素'));
-        fields.appendChild(checkbox('是否打击数字特效', '打击数字'));
         fields.appendChild(checkbox('使用滤镜渲染', '滤镜渲染'));
         fields.appendChild(checkbox('开启昼夜系统', '昼夜循环'));
         fields.appendChild(checkbox('暂停昼夜系统', '暂停昼夜变化'));
@@ -545,6 +548,10 @@
     }
     function onCaptureKey(event) {
         var pressed = Number(event.keyCode || event.which);
+        if (pressed === 27 && _damageLedgerModal) {
+            event.preventDefault(); event.stopPropagation();
+            closeDamageLedger(true); return;
+        }
         if (pressed === 27 && _cameraModal) {
             event.preventDefault(); event.stopPropagation();
             closeCameraSimulator(true); return;
@@ -589,6 +596,26 @@
         hgrid.appendChild(hostRange());
         host.appendChild(hgrid); _content.appendChild(host);
 
+        var hitNumber = section('打击伤害数字',
+            '本机全局偏好；世界表达与精确对账分离，不占用任何战斗键。');
+        var hitGrid = node('div', 'settings-grid two');
+        hitGrid.appendChild(hostSelect('hitNumberMode', '显示行为',
+            [['off','彻底关闭'],['balanced','平衡 · 目标锚定摘要'],
+             ['total','总伤 · 每目标连段累计'],['classic','经典 · Flash 逐段散开'],
+             ['detail','逐发 · Burst 完整矩阵']]));
+        hitGrid.appendChild(hostNumber(
+            'hitNumberWorldRowLimit',
+            '世界攻击行上限',
+            '0 表示真正无限制；非零值同时限制全局攻击行，逐发模式每个目标只保留最新 6 行，不影响独立对账日志。'));
+        hitNumber.appendChild(hitGrid);
+        var ledgerActions = node('div', 'settings-inline-actions settings-hit-number-actions');
+        ledgerActions.appendChild(annotate(
+            button('打开伤害对账日志', 'settings-button secondary settings-damage-ledger-open', function(event) {
+                openDamageLedger(event.currentTarget);
+            }),
+            '暂停查看本场景最近的精确逐段记录；最多保留 32768 段，溢出会明确标记。'));
+        hitNumber.appendChild(ledgerActions); _content.appendChild(hitNumber);
+
         var jukebox = section('点歌器运行规则', 'Flash 规则跟随底部“应用并保存”；Web 点歌器主题与其他本机偏好列在下方。');
         var jgrid = node('div', 'settings-grid three');
         jgrid.appendChild(checkbox('jukeboxOverride', '允许点歌覆盖'));
@@ -629,6 +656,24 @@
         select.value = String(_snapshot.hostPrefs[key]);
         select.addEventListener('change', function() { setHostPreference(key, select.value, select); });
         return field(label, select);
+    }
+    function hostNumber(key, label, hint) {
+        var input = document.createElement('input'); input.type = 'number';
+        input.className = 'settings-select'; input.min = '0'; input.max = '1000'; input.step = '1';
+        input.value = String(_snapshot.hostPrefs[key]); input.setAttribute('data-host-key', key);
+        input.addEventListener('change', function() {
+            if (input.value.trim() === '') {
+                applyHostControlValue(input, key, _snapshot.hostPrefs[key]);
+                return;
+            }
+            var value = Number(input.value);
+            if (!Number.isInteger(value) || value < 0 || value > 1000) {
+                applyHostControlValue(input, key, _snapshot.hostPrefs[key]);
+                return;
+            }
+            setHostPreference(key, value, input);
+        });
+        return field(label, input, hint);
     }
     function hostRange() {
         var wrap = node('div', 'settings-range-wrap');
@@ -867,6 +912,180 @@
         _cheatModal = null;
         _helpReturnFocus = null;
         if (returnFocus && document.documentElement.contains(returnFocus)) returnFocus.focus();
+    }
+
+    function openDamageLedger(trigger) {
+        if (_damageLedgerModal) return;
+        _damageLedgerReturnFocus = trigger || null;
+        _damageLedgerOffset = 0;
+        var layer = node('div', 'settings-modal-layer settings-damage-ledger-layer');
+        layer.addEventListener('click', function(event) {
+            if (event.target === layer) closeDamageLedger(true);
+        });
+        var dialog = node('section', 'settings-damage-ledger-modal');
+        dialog.setAttribute('role', 'dialog');
+        dialog.setAttribute('aria-modal', 'true');
+        dialog.setAttribute('aria-labelledby', 'settings-damage-ledger-title');
+        dialog.addEventListener('keydown', trapDamageLedgerFocus);
+
+        var header = node('header', 'settings-damage-ledger-header');
+        var identity = node('div', 'settings-damage-ledger-identity');
+        identity.appendChild(node('span', 'settings-modal-kicker', 'EXACT DAMAGE RECONCILIATION'));
+        var title = node('h2', '', '伤害对账日志'); title.id = 'settings-damage-ledger-title';
+        identity.appendChild(title); header.appendChild(identity);
+        header.appendChild(annotate(
+            button('×', 'settings-terminal-close settings-damage-ledger-close', function() {
+                closeDamageLedger(true);
+            }), '关闭日志并返回打击数字设置。', 'left'));
+        dialog.appendChild(header);
+
+        var summary = node('p', 'settings-damage-ledger-summary', '正在读取本场景记录…');
+        summary.setAttribute('data-role', 'damage-ledger-summary');
+        dialog.appendChild(summary);
+        var body = node('div', 'settings-damage-ledger-body');
+        body.setAttribute('data-role', 'damage-ledger-body');
+        body.appendChild(node('p', 'settings-help-loading', '正在读取精确逐段记录…'));
+        dialog.appendChild(body);
+
+        var footer = node('footer', 'settings-damage-ledger-footer');
+        footer.appendChild(button('较新一页', 'settings-button secondary', function() {
+            if (_damageLedgerOffset <= 0) return;
+            _damageLedgerOffset = Math.max(0, _damageLedgerOffset - 24);
+            requestDamageLedger();
+        }));
+        footer.lastChild.setAttribute('data-role', 'damage-ledger-newer');
+        footer.appendChild(button('刷新最新', 'settings-button secondary', function() {
+            _damageLedgerOffset = 0; requestDamageLedger();
+        }));
+        footer.appendChild(button('较旧一页', 'settings-button secondary', function() {
+            _damageLedgerOffset += 24; requestDamageLedger();
+        }));
+        footer.lastChild.setAttribute('data-role', 'damage-ledger-older');
+        dialog.appendChild(footer);
+        layer.appendChild(dialog); _root.appendChild(layer);
+        _damageLedgerModal = layer;
+        cue('activate');
+        var close = dialog.querySelector('.settings-damage-ledger-close');
+        if (close) close.focus();
+        requestDamageLedger();
+    }
+
+    function closeDamageLedger(restoreFocus) {
+        if (!_damageLedgerModal) return;
+        var returnFocus = _damageLedgerReturnFocus;
+        if (_tooltipScope && _tooltipScope.releaseTree) _tooltipScope.releaseTree(_damageLedgerModal);
+        if (_damageLedgerModal.parentNode) _damageLedgerModal.parentNode.removeChild(_damageLedgerModal);
+        _damageLedgerModal = null;
+        _damageLedgerReturnFocus = null;
+        _damageLedgerLoading = false;
+        if (restoreFocus !== false && returnFocus && document.documentElement.contains(returnFocus))
+            returnFocus.focus();
+    }
+
+    function requestDamageLedger() {
+        if (!_damageLedgerModal || _damageLedgerLoading) return;
+        _damageLedgerLoading = true;
+        var body = _damageLedgerModal.querySelector('[data-role="damage-ledger-body"]');
+        if (body) { clear(body); body.appendChild(node('p', 'settings-help-loading', '正在读取精确逐段记录…')); }
+        var id = _mux.request('hit_number_ledger',
+            {v:1,offset:_damageLedgerOffset,limit:24},
+            {kind:'hit-number-ledger',latestWins:true}, function(response) {
+                _damageLedgerLoading = false;
+                if (!_damageLedgerModal) return;
+                if (!response || response.success !== true || !response.ledger
+                    || !Array.isArray(response.ledger.bursts)) {
+                    renderDamageLedgerError(errorText(response && response.error || 'malformed_response'));
+                    return;
+                }
+                _damageLedgerOffset = Number(response.ledger.offset) || 0;
+                renderDamageLedger(response.ledger);
+            });
+        if (!id) {
+            _damageLedgerLoading = false;
+            renderDamageLedgerError('请求未发出');
+        }
+    }
+
+    function renderDamageLedgerError(message) {
+        if (!_damageLedgerModal) return;
+        var body = _damageLedgerModal.querySelector('[data-role="damage-ledger-body"]');
+        if (body) { clear(body); body.appendChild(node('p', 'settings-help-error', '读取失败：' + message)); }
+    }
+
+    function renderDamageLedger(ledger) {
+        if (!_damageLedgerModal) return;
+        var summary = _damageLedgerModal.querySelector('[data-role="damage-ledger-summary"]');
+        var body = _damageLedgerModal.querySelector('[data-role="damage-ledger-body"]');
+        var newer = _damageLedgerModal.querySelector('[data-role="damage-ledger-newer"]');
+        var older = _damageLedgerModal.querySelector('[data-role="damage-ledger-older"]');
+        if (newer) newer.disabled = ledger.hasNewer !== true;
+        if (older) older.disabled = ledger.hasOlder !== true;
+        if (summary) {
+            var retained = Number(ledger.retainedSegments) || 0;
+            var dropped = Number(ledger.droppedSegments) || 0;
+            summary.textContent = '本场景保留 ' + retained + ' 段 · 共 ' + (Number(ledger.totalBursts) || 0)
+                + ' 发攻击' + (dropped > 0 ? ' · 较早 ' + dropped + ' 段已越过内存上限' : ' · 尚未截断');
+            summary.setAttribute('data-truncated', dropped > 0 ? 'true' : 'false');
+        }
+        if (!body) return;
+        clear(body);
+        if (!ledger.bursts.length) {
+            body.appendChild(node('p', 'settings-empty', '本场景尚无可对账的伤害段。'));
+            return;
+        }
+        ledger.bursts.forEach(function(burst) {
+            var card = node('article', 'settings-damage-ledger-burst');
+            var heading = node('header', 'settings-damage-ledger-burst-header');
+            var target = String(burst.targetId || '未知目标');
+            heading.appendChild(node('strong', '', target));
+            heading.appendChild(node('span', '', 'Σ' + String(burst.totalDamage) + ' ×' + String(burst.hitCount)
+                + ' · ' + String(burst.ageMs) + 'ms 前'));
+            card.appendChild(heading);
+            card.appendChild(node('code', 'settings-damage-ledger-burst-id', String(burst.burstId || '独立段')));
+            var segments = node('div', 'settings-damage-ledger-segments');
+            (burst.segments || []).forEach(function(segment) {
+                var packed = Number(segment.packed) || 0;
+                var chip = node('span', 'settings-damage-ledger-segment', ledgerSegmentText(segment, packed));
+                var color = ledgerPackedColor(packed);
+                chip.style.color = color; chip.style.borderColor = color;
+                segments.appendChild(chip);
+            });
+            card.appendChild(segments); body.appendChild(card);
+        });
+    }
+
+    function ledgerSegmentText(segment, packed) {
+        var flags = packed & 511;
+        var labels = [];
+        if ((packed & 512) !== 0) labels.push('MISS');
+        else labels.push(String(segment.damage));
+        if ((flags & 8) !== 0 && segment.effectText) labels.push(String(segment.effectText));
+        if ((flags & 16) !== 0) labels.push(String(segment.effectEmoji || '') + String(segment.effectText || '破'));
+        if ((flags & 1) !== 0) labels.push('溃');
+        if ((flags & 2) !== 0) labels.push('毒');
+        if ((flags & 4) !== 0) labels.push('斩');
+        if ((flags & 32) !== 0 && Number(segment.lifeSteal) > 0) labels.push('汲:' + Math.trunc(Number(segment.lifeSteal)));
+        if ((flags & 256) !== 0 && Number(segment.shieldAbsorb) > 0) labels.push('盾:' + Math.trunc(Number(segment.shieldAbsorb)));
+        return labels.join(' · ');
+    }
+
+    function ledgerPackedColor(packed) {
+        var colors = ['#ffffff','#ff4b4b','#ffcc00','#a94b70','#8d5bdb','#ac99ff',
+            '#28adff','#c13a3a','#bca52e','#ff8e8e','#ffe770'];
+        var colorId = (packed >> 18) & 15;
+        return colors[Math.min(colorId, colors.length - 1)];
+    }
+
+    function trapDamageLedgerFocus(event) {
+        if (event.key !== 'Tab' || !_damageLedgerModal) return;
+        var focusable = _damageLedgerModal.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) return;
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault(); last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault(); first.focus();
+        }
     }
 
     function loadCheatHelp() {
@@ -1127,6 +1346,7 @@
             save_unavailable:'当前不可保存',settings_unavailable:'设置尚未初始化',revive_unavailable:'当前没有可恢复的复活流程',
             actor_alive:'角色尚未死亡',return_base_unavailable:'返回基地入口不可用',unknown_command:'无法识别该作弊码',
             apply_ambiguous:'应用结果未知，需要重新同步',key_refresh_failed:'键位缓存刷新失败，请重试同步',
+            hit_number_ledger_unavailable:'伤害对账日志暂不可用',
             malformed_response:'游戏响应格式异常'}[error]||String(error||'未知错误');
     }
 })();

@@ -4,14 +4,15 @@
  * ============================================================================
  *
  * 【系统概述】
- * 本类负责聚合每帧所有伤害数字显示请求，统一做节流和对象池使用决策，
- * 最终调用 HitNumberSystem.spawn() 完成渲染。
+ * 本类负责聚合每帧所有伤害数字事件，并一次性送往 Launcher C# reducer。
+ * Flash MovieClip 渲染路径已经退役，不再提供 fallback；屏外剔除也只由
+ * 掌握统一舞台边界与 100px 缓冲契约的 C# 布局层裁决。
  *
  * 【核心优化】
- * - 节流决策从 O(N) 降至 O(1)：每帧仅执行一次节流判断，而非每个请求都判断
- * - 零分配设计：使用并行数组 + 长度计数，避免每次入队创建临时 Object
- * - 延迟 HTML 构建：flush 先剔除/丢弃后，仅对存活项调用 buildHtml
- * - 全局开关前置短路：开关关闭时跳过全部视野计算
+ * - 入队零临时对象：使用并行数组 + 长度计数，避免每次入队创建 Object
+ * - Host 关闭态前置短路：不接收入队、不拼 hn 字符串
+ * - 每段先完成定长字段拼接，再用 AVM1 实测更快的裸 `+` 汇入批 payload
+ * - 每次 DamageResult.triggerDisplay 分配稳定 BurstId，联弹的虚拟子弹段共享一行
  *
  * 【调用时序】
  * 1. 帧内任意时刻：DamageResult.triggerDisplay() 调用 enqueueRaw() 收集请求
@@ -25,7 +26,7 @@
  *
  * 【数据结构设计】
  * 使用并行数组 + 长度计数，正索引 [0, _length)。
- * 所有请求统一受节流控制，视野外请求被剔除。
+ * Host 关闭时不接收入队；开启时保留全部请求，由 C# 做唯一可见性剔除。
  *
  * 【packed 编码格式】（由 DamageResult.triggerDisplay 打包）
  *
@@ -50,7 +51,6 @@
  */
 
 import org.flashNight.sara.util.*;
-import org.flashNight.arki.component.Effect.HitNumberSystem;
 import org.flashNight.arki.render.FrameBroadcaster;
 
 class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
@@ -86,8 +86,20 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     /** unitId 数组（来自 hitTarget._name，无 ID 时为空串）。C# overlay 用于 O(1) 同目标合并 */
     private static var _unitIds:Array = [];
 
+    /** 一次 triggerDisplay 的稳定攻击标识；联弹展开段共享同一值。 */
+    private static var _burstIds:Array = [];
+
+    /** 该次攻击预计包含的虚拟子弹段数，用于 C# 在段到齐前预留稳定行几何。 */
+    private static var _expectedHitCounts:Array = [];
+
     /** 队列长度 */
     private static var _length:Number = 0;
+
+    /** Host 权威的源头开关。默认关闭，只有当前连接收到 H1 后才开始产出。 */
+    private static var _hostEnabled:Boolean = false;
+
+    /** 场景内单调 Burst 序列；Number 精确整数范围足够覆盖单场景生命周期。 */
+    private static var _nextBurstSequence:Number = 1;
 
     /**
      * 协议字段安全发送：null/undefined → 空串
@@ -102,45 +114,8 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         return s;
     }
 
-    // ========================================================================
-    // 配置参数
-    // ========================================================================
-
     /** 是否启用调试输出 */
     public static var debugMode:Boolean = false;
-
-    // ========================================================================
-    // 默认值常量（用于防御性处理未初始化的全局变量）
-    // ========================================================================
-
-    /** 默认同屏打击数字特效上限（当 _root.同屏打击数字特效上限 未初始化时使用） */
-    private static var DEFAULT_CAPACITY:Number = 25;
-
-    /** 默认当前计数（当 _root.当前打击数字特效总数 未初始化时使用） */
-    private static var DEFAULT_CURRENT:Number = 0;
-
-    // ========================================================================
-    // 延迟 HTML 构建：颜色查表 + 静态片段缓存
-    // ========================================================================
-
-    /** 颜色 ID → 颜色字符串查表（索引即 _dmgColorId） */
-    public static var COLOR_TABLE:Array = [
-        "#FFFFFF", "#FF0000", "#FFCC00", "#660033", "#4A0099",
-        "#AC99FF", "#0099FF", "#7F0000", "#7F6A00", "#FF7F7F", "#FFE770"
-    ];
-
-    /** 预缓存的静态 HTML 片段（避免重复拼接） */
-    private static var FRAG_CRUMBLE:String       = '<font color="#FF3333" size="20"> 溃</font>';
-    private static var FRAG_TOXIC:String         = '<font color="#66dd00" size="20"> 毒</font>';
-    private static var FRAG_EXECUTE_ENEMY:String = '<font color="#660033" size="20"> 斩</font>';
-    private static var FRAG_EXECUTE_ALLY:String  = '<font color="#4A0099" size="20"> 斩</font>';
-    private static var FRAG_LIFESTEAL_PRE:String = '<font color="#bb00aa" size="15"> 汲:';
-    private static var FRAG_SHIELD_PRE:String    = '<font color="#00CED1" size="18"> 🛡';
-    private static var FRAG_CRUSH_PRE:String     = '<font color="#66bcf5" size="20"> ';
-    private static var FONT_END:String           = '</font>';
-
-    /** fontStart 懒缓存：key = (colorId << 8) | size → '<font color="X" size="Y">' */
-    private static var _fontStartCache:Object = {};
 
     // ========================================================================
     // 私有构造函数（静态工具类）
@@ -157,11 +132,30 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
     // 公共 API
     // ========================================================================
 
+    /** 为一次 DamageResult.triggerDisplay 分配场景内唯一的攻击标识。 */
+    public static function nextBurstId():String {
+        var id:String = String(_nextBurstSequence);
+        _nextBurstSequence++;
+        if (_nextBurstSequence >= 9007199254740000) _nextBurstSequence = 1;
+        return id;
+    }
+
+    /** Host→Flash H0/H1 快车道入口；关闭时 flush 在任何协议字符串工作前丢弃。 */
+    public static function setHostEnabled(enabled:Boolean):Void {
+        _hostEnabled = enabled;
+        if (!enabled) __resetQueue();
+    }
+
+    /** DamageResult.triggerDisplay 的最前置热路短路。 */
+    public static function isHostEnabled():Boolean {
+        return _hostEnabled;
+    }
+
     /**
-     * 将伤害数字显示请求以原始数据形式加入队列（延迟 HTML 构建）
+     * 将伤害数字显示请求以原始数据形式加入队列
      *
-     * 仅收集标量快照，不做任何节流判断或渲染操作。
-     * flush 先剔除/丢弃后，仅对存活项调用 buildHtml 构建 HTML。
+     * 仅收集标量快照，不做渲染操作。调用方已用 isHostEnabled() 前置短路；
+     * flush 再对断线/竞态做防御性丢弃。
      *
      * @param damage       伤害数值
      * @param packed       打包的离散状态（_efFlags | isMISS<<9 | size<<10 | colorId<<18）
@@ -171,14 +165,16 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
      * @param shieldAbsorb 盾吸收量（无则 0）
      * @param x            世界坐标 X
      * @param y            世界坐标 Y
-     * @param unitId       目标 unit 标识（hitTarget._name），用于 C# overlay 同目标 O(1) 合并；
-     *                     无标识时传空串，C# 端回退到距离合并
+     * @param unitId       目标 unit 标识（hitTarget._name）
+     * @param burstId      一次 triggerDisplay 的攻击标识
+     * @param expectedHitCount 该次攻击预计的虚拟子弹段数
      */
     public static function enqueueRaw(
         damage:Number, packed:Number,
         efText:String, efEmoji:String,
         lifeSteal:Number, shieldAbsorb:Number,
-        x:Number, y:Number, unitId:String
+        x:Number, y:Number, unitId:String,
+        burstId:String, expectedHitCount:Number
     ):Void {
         var idx:Number = _length;
         ++_length;
@@ -191,244 +187,55 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         _xs[idx] = x;
         _ys[idx] = y;
         _unitIds[idx] = (unitId == null) ? "" : unitId;
+        _burstIds[idx] = burstId;
+        _expectedHitCounts[idx] = expectedHitCount;
     }
 
     /**
      * 帧末批量处理所有排队的显示请求
      *
-     * 【处理流程】
-     * 1. 全局开关预读 + 短路（开关关闭 → 立即返回）
-     * 2. 视野剔除准备
-     * 3. 遍历队列：视野剔除 + 配额控制 + buildHtml + spawn
-     *
-     * 【节流算法】
-     * 1. 计算剩余容量 remaining = 上限 - 当前数量
-     * 2. 决策：
-     *    - remaining >= count：全部显示
-     *    - remaining <= 0：全部丢弃
-     *    - 0 < remaining < count：按队列顺序取前 remaining 个显示
-     *
-     * 【防御性处理】
-     * - _root.是否打击数字特效：由引擎常数保证初始化，无需 undefined 检查
-     * - 若 _root.同屏打击数字特效上限 未初始化，使用 DEFAULT_CAPACITY (25)
-     * - 若 _root.当前打击数字特效总数 未初始化，使用 DEFAULT_CURRENT (0)
-     * - 若 _root.gameworld 不存在，直接清空队列返回
-     *
-     * 【调用时机】
-     * 应在 frameEnd 事件中调用，确保所有 enqueueRaw 完成后统一处理。
+     * Host 关闭、socket 未连接或 gameworld 不存在时直接清空。连接态不提前做可见性裁剪，
+     * 并发送 11 字段协议：
+     * damage|x|y|packed|efText|efEmoji|lifeSteal|shieldAbsorb|unitId|burstId|expectedHitCount
      */
     public static function flush():Void {
         var n:Number = _length;
         if (n == 0) return;
 
         var r:Object = _root;
-
-        // === 阶段1：全局开关预读 + 短路 ===
-        if (!r.是否打击数字特效) {
-            if (debugMode) {
-                r.服务器.发布服务器消息(
-                    "[HitNumberBatch] global:OFF, normal:" + n + " 全部丢弃"
-                );
-            }
+        if (!_hostEnabled || !r.server.isSocketConnected) {
+            __resetQueue();
+            return;
+        }
+        if (!r.gameworld) {
             __resetQueue();
             return;
         }
 
-        // === 阶段2：视野剔除准备 ===
-        var gameWorld:MovieClip = r.gameworld;
-        if (!gameWorld) {
-            __resetQueue();
-            return;
-        }
-
-        var sx:Number = gameWorld._xscale * 0.01;
-        var gx:Number = gameWorld._x;
-        var gy:Number = gameWorld._y;
-        var sw:Number = Stage.width;
-        var sh:Number = Stage.height;
-
-        // === 阶段2.5：C# overlay 路径 ===
-        // socket 连接时，序列化 hn 数据写入 FrameBroadcaster 数据槽
-        // cam 广播 + 消息发送由 FrameBroadcaster.send() 统一处理
-        if (r.server.isSocketConnected) {
-            var buf:String = "";
-            var shown2:Number = 0;
-            var i:Number;
-            var x:Number;
-            var y:Number;
-            var locX:Number;
-            var locY:Number;
-
-            i = 0;
-            do {
-                x = _xs[i];
-                y = _ys[i];
-                locX = gx + x * sx;
-                locY = gy + y * sx;
-                if (locX < 0 || locX > sw || locY < 0 || locY > sh) {
-                    // 视口外，跳过
-                } else {
-                    if (buf.length > 0) buf += ";";
-                    buf += _values[i] + "|" + x + "|" + y + "|" + _packed[i] + "|";
-                    buf += safeField(_efTexts[i]) + "|";
-                    buf += safeField(_efEmojis[i]) + "|";
-                    buf += _efLifeSteals[i] + "|" + _efShieldAbsorbs[i] + "|";
-                    buf += _unitIds[i];
-                    ++shown2;
-                }
-            } while (++i < n);
-
-            // 写入 FrameBroadcaster 数据槽（不直接发送消息）
-            FrameBroadcaster.setHnPayload(buf);
-
-            if (debugMode) {
-                r.服务器.发布服务器消息(
-                    "[HitNumberBatch] C# path: shown:" + shown2 + "/" + n
-                );
-            }
-            __resetQueue();
-            return;
-        }
-
-        // === 阶段3：Flash fallback 路径（原有逻辑）===
-        // 获取全局控制参数（带防御性处理）
-        var capacityBase:Number = r.同屏打击数字特效上限;
-        if (isNaN(capacityBase) || capacityBase <= 0) {
-            capacityBase = DEFAULT_CAPACITY;
-        }
-
-        var current:Number = r.当前打击数字特效总数;
-        if (isNaN(current) || current < 0) {
-            current = DEFAULT_CURRENT;
-        }
-
-        var remaining:Number = capacityBase - current;
-        if (remaining < 0) remaining = 0;
-
-        var quota:Number = (remaining >= n) ? n : remaining;
-
-        var shown:Number = 0;
-        var culled:Number = 0;
-        var dropped:Number = 0;
-
-        i = 0;
+        var i:Number = 0;
+        var x:Number;
+        var y:Number;
+        var entry:String;
+        var buf:String = "";
         do {
             x = _xs[i];
             y = _ys[i];
-
-            // 视野剔除
-            locX = gx + x * sx;
-            locY = gy + y * sx;
-            if (locX < 0 || locX > sw || locY < 0 || locY > sh) {
-                ++culled;
-            } else if (shown < quota) {
-                // 配额内：构建 HTML 并渲染
-                var html:String = buildHtml(
-                    Number(_values[i]), _packed[i],
-                    _efTexts[i], _efEmojis[i],
-                    _efLifeSteals[i], _efShieldAbsorbs[i]
-                );
-                HitNumberSystem.spawn("", html, x, y);
-                ++shown;
-            } else {
-                // 配额已满，剩余项不再逐个遍历
-                dropped = n - shown - culled;
-                break;
-            }
+            entry = _values[i] + "|" + x + "|" + y + "|" + _packed[i] + "|";
+            entry += safeField(_efTexts[i]) + "|";
+            entry += safeField(_efEmojis[i]) + "|";
+            entry += _efLifeSteals[i] + "|" + _efShieldAbsorbs[i] + "|";
+            entry += _unitIds[i] + "|" + _burstIds[i] + "|" + _expectedHitCounts[i];
+            if (i === 0) buf = entry;
+            else buf += ";" + entry;
         } while (++i < n);
 
-        // === 阶段4：调试输出 ===
+        FrameBroadcaster.setHnPayload(buf);
         if (debugMode) {
             r.服务器.发布服务器消息(
-                "[HitNumberBatch] shown:" + shown + "/" + n +
-                "(剔除" + culled + ",丢弃" + dropped + ")"
+                "[HitNumberBatch] C# queued:" + n
             );
         }
-
-        // === 阶段5：重置队列 ===
         __resetQueue();
-    }
-
-    /**
-     * 从 packed Number + 标量槽构建完整 HTML 字符串
-     *
-     * 仅在 flush 存活项上调用，被 culling/quota 丢弃的项永远不执行此函数。
-     *
-     * packed 编码：
-     *   bits 0-8:   _efFlags（9 bits）
-     *   bit  9:     isMISS
-     *   bits 10-17: damageSize（0-255）
-     *   bits 18-21: colorId（0-15）
-     *
-     * @param damage       伤害数值
-     * @param packed       打包的离散状态
-     * @param efText       效果属性文本（可为 null）
-     * @param efEmoji      破击 emoji（可为 null）
-     * @param lifeSteal    吸血量
-     * @param shieldAbsorb 盾吸收量
-     * @return 完整的 HTML 格式字符串
-     */
-    public static function buildHtml(
-        damage:Number, packed:Number,
-        efText:String, efEmoji:String,
-        lifeSteal:Number, shieldAbsorb:Number
-    ):String {
-        // 解包离散状态
-        var flags:Number    = packed & 511;         // bits 0-8
-        var isMISS:Boolean  = ((packed >> 9) & 1) != 0;
-        var size:Number     = (packed >> 10) & 255; // bits 10-17
-        var colorId:Number  = (packed >> 18) & 15;  // bits 18-21
-
-        // 构建主伤害数字（fontStart 内联：避免热路径函数调用开销）
-        var key:Number = (colorId << 8) | size;
-        var fontStart:String = _fontStartCache[key];
-        if (fontStart == undefined) {
-            fontStart = '<font color="' + COLOR_TABLE[colorId] + '" size="' + size + '">';
-            _fontStartCache[key] = fontStart;
-        }
-        // MISS 判断：全局 dodgeStatus=="MISS"（packed bit 9）或 单弹丸 damage<0（联弹分段建模）
-        var html:String;
-        if (isMISS || damage < 0) {
-            html = fontStart + "MISS" + FONT_END;
-        } else {
-            html = fontStart + (damage | 0) + FONT_END;
-        }
-
-        // 无效果快速路径
-        if (flags == 0) return html;
-
-        // 按处理链执行顺序拼接效果片段
-        // （Universal → NanoToxic → LifeSteal → Crumble → Execute → Shield）
-        // bit 3: EF_DMG_TYPE_LABEL（Universal - 颜色 = damageColor，文本 = efText）
-        if ((flags & 8) != 0) {
-            html += '<font color="' + COLOR_TABLE[colorId] + '" size="20"> ' + efText + FONT_END;
-        }
-        // bit 4: EF_CRUSH_LABEL（Universal - 固定色 #66bcf5，emoji + text）
-        if ((flags & 16) != 0) {
-            html += FRAG_CRUSH_PRE + efEmoji + efText + FONT_END;
-        }
-        // bit 1: EF_TOXIC（NanoToxic）
-        if ((flags & 2) != 0) {
-            html += FRAG_TOXIC;
-        }
-        // bit 5: EF_LIFESTEAL（LifeSteal）
-        if ((flags & 32) != 0) {
-            html += FRAG_LIFESTEAL_PRE + lifeSteal + FONT_END;
-        }
-        // bit 0: EF_CRUMBLE（Crumble）
-        if ((flags & 1) != 0) {
-            html += FRAG_CRUMBLE;
-        }
-        // bit 2: EF_EXECUTE（Execute - bit 7 isEnemy 选择颜色）
-        if ((flags & 4) != 0) {
-            html += ((flags & 128) != 0) ? FRAG_EXECUTE_ENEMY : FRAG_EXECUTE_ALLY;
-        }
-        // bit 8: EF_SHIELD
-        if ((flags & 256) != 0) {
-            html += FRAG_SHIELD_PRE + shieldAbsorb + FONT_END;
-        }
-
-        return html;
     }
 
     /**
@@ -444,6 +251,8 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
         _efLifeSteals.length = 0;
         _efShieldAbsorbs.length = 0;
         _unitIds.length = 0;
+        _burstIds.length = 0;
+        _expectedHitCounts.length = 0;
         _length = 0;
     }
 
@@ -452,6 +261,7 @@ class org.flashNight.arki.component.Effect.HitNumberBatchProcessor {
      */
     public static function clear():Void {
         __resetQueue();
+        _nextBurstSequence = 1;
     }
 
     /**

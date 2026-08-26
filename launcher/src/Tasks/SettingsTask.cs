@@ -45,6 +45,7 @@ namespace CF7Launcher.Tasks
         private Action<string> _postToWeb;
         private Action<Action> _invokeOnUI;
         private Action<string, JToken> _hostPreferenceApplied;
+        private Func<int, int, JObject> _hitNumberLedgerProvider;
         private string _panelInstanceId;
         private string _lastClosedPanelInstanceId;
         private bool _nonPreviewWritePending;
@@ -88,6 +89,11 @@ namespace CF7Launcher.Tasks
         public void SetHostPreferenceApplied(Action<string, JToken> callback)
         {
             _hostPreferenceApplied = callback;
+        }
+
+        public void SetHitNumberLedgerProvider(Func<int, int, JObject> provider)
+        {
+            _hitNumberLedgerProvider = provider;
         }
 
         public bool BindPanelInstance(string panelInstanceId)
@@ -151,6 +157,12 @@ namespace CF7Launcher.Tasks
                 return;
             }
             JObject payload = parsed["payload"] as JObject;
+            if (string.Equals(cmd, "hit_number_ledger", StringComparison.Ordinal))
+            {
+                if (!_pendingCalls.TryRememberRejected(callId)) return;
+                HandleHitNumberLedger(callId, requestedInstance, payload);
+                return;
+            }
             if (string.Equals(cmd, "host_set", StringComparison.Ordinal))
             {
                 if (!_pendingCalls.TryRememberRejected(callId)) return;
@@ -332,6 +344,8 @@ namespace CF7Launcher.Tasks
             bool oldAmbient = _userPrefs.AmbientEnabled;
             double oldScale = _userPrefs.UiFontScale;
             string oldMap = _userPrefs.MapDisplayPreference;
+            string oldHitNumberMode = _userPrefs.HitNumberMode;
+            int oldHitNumberWorldRowLimit = _userPrefs.HitNumberWorldRowLimit;
             JToken normalized;
             if (!TryApplyHostPreference(key, value, out normalized))
             {
@@ -347,6 +361,8 @@ namespace CF7Launcher.Tasks
                 _userPrefs.AmbientEnabled = oldAmbient;
                 _userPrefs.UiFontScale = oldScale;
                 _userPrefs.MapDisplayPreference = oldMap;
+                _userPrefs.HitNumberMode = oldHitNumberMode;
+                _userPrefs.HitNumberWorldRowLimit = oldHitNumberWorldRowLimit;
                 RespondError(callId, "host_set", instanceId, "save_failed",
                     CurrentHostPreference(key));
                 return;
@@ -375,6 +391,59 @@ namespace CF7Launcher.Tasks
             {
                 LogManager.Log("[SettingsTask] host preference observer failed key="
                     + key + " error=" + error.Message);
+            }
+        }
+
+        private void HandleHitNumberLedger(
+            string callId,
+            string instanceId,
+            JObject payload)
+        {
+            long offset;
+            long limit;
+            if (_hitNumberLedgerProvider == null)
+            {
+                RespondError(callId, "hit_number_ledger", instanceId,
+                    "hit_number_ledger_unavailable");
+                return;
+            }
+            if (!HasExactProperties(payload, "v", "offset", "limit")
+                || !IsVersionOne(payload["v"])
+                || !TryInteger(payload["offset"], 0, int.MaxValue, out offset)
+                || !TryInteger(payload["limit"], 1, 100, out limit))
+            {
+                RespondError(callId, "hit_number_ledger", instanceId, "invalid_payload");
+                return;
+            }
+
+            try
+            {
+                JObject ledger = _hitNumberLedgerProvider((int)offset, (int)limit);
+                if (ledger == null)
+                {
+                    RespondError(callId, "hit_number_ledger", instanceId,
+                        "hit_number_ledger_unavailable");
+                    return;
+                }
+                var response = new JObject
+                {
+                    ["type"] = "panel_resp",
+                    ["panel"] = "settings",
+                    ["domain"] = "settings",
+                    ["cmd"] = "hit_number_ledger",
+                    ["callId"] = callId,
+                    ["panelInstanceId"] = instanceId,
+                    ["success"] = true,
+                    ["v"] = 1,
+                    ["ledger"] = ledger.DeepClone()
+                };
+                PostToWeb(response.ToString(Formatting.None));
+            }
+            catch (Exception error)
+            {
+                LogManager.Log("[SettingsTask] hit-number ledger failed: " + error.Message);
+                RespondError(callId, "hit_number_ledger", instanceId,
+                    "hit_number_ledger_unavailable");
             }
         }
 
@@ -414,6 +483,21 @@ namespace CF7Launcher.Tasks
                     _userPrefs.MapDisplayPreference = map;
                     normalized = new JValue(map);
                     return true;
+                case "hitNumberMode":
+                    if (value == null || value.Type != JTokenType.String) return false;
+                    string rawMode = value.Value<string>();
+                    string hitNumberMode = UserPrefs.NormalizeHitNumberMode(rawMode);
+                    if (!string.Equals(rawMode, hitNumberMode, StringComparison.Ordinal)) return false;
+                    _userPrefs.HitNumberMode = hitNumberMode;
+                    normalized = new JValue(hitNumberMode);
+                    return true;
+                case "hitNumberWorldRowLimit":
+                    long hitNumberLimit;
+                    if (!TryInteger(value, 0, UserPrefs.HitNumberWorldRowLimitMax,
+                        out hitNumberLimit)) return false;
+                    _userPrefs.HitNumberWorldRowLimit = (int)hitNumberLimit;
+                    normalized = new JValue(_userPrefs.HitNumberWorldRowLimit);
+                    return true;
                 default:
                     return false;
             }
@@ -429,7 +513,12 @@ namespace CF7Launcher.Tasks
                 ["ambientEnabled"] = _userPrefs.AmbientEnabled,
                 ["uiFontScale"] = _userPrefs.UiFontScale,
                 ["mapDisplayPreference"] =
-                    UserPrefs.NormalizeMapDisplayPreference(_userPrefs.MapDisplayPreference)
+                    UserPrefs.NormalizeMapDisplayPreference(_userPrefs.MapDisplayPreference),
+                ["hitNumberMode"] =
+                    UserPrefs.NormalizeHitNumberMode(_userPrefs.HitNumberMode),
+                ["hitNumberWorldRowLimit"] =
+                    UserPrefs.NormalizeHitNumberWorldRowLimit(
+                        _userPrefs.HitNumberWorldRowLimit)
             };
         }
 
@@ -554,7 +643,7 @@ namespace CF7Launcher.Tasks
             normalized = null;
             string[] names = {
                 "setGlobalVolume", "setBGMVolume", "性能等级上限", "是否阴影",
-                "是否视觉元素", "是否打击数字特效", "cameraZoomToggle", "basicZoomScale",
+                "是否视觉元素", "cameraZoomToggle", "basicZoomScale",
                 "开启昼夜系统", "暂停昼夜系统", "使用滤镜渲染", "立绘类型",
                 "jukeboxOverride", "jukeboxTrueRandom", "jukeboxPlayMode"
             };
@@ -570,7 +659,6 @@ namespace CF7Launcher.Tasks
                 || zoom < 0.5 || zoom > 3.0
                 || !IsBoolean(value["是否阴影"])
                 || !IsBoolean(value["是否视觉元素"])
-                || !IsBoolean(value["是否打击数字特效"])
                 || !IsBoolean(value["cameraZoomToggle"])
                 || !IsBoolean(value["开启昼夜系统"])
                 || !IsBoolean(value["暂停昼夜系统"])

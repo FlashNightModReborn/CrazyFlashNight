@@ -149,10 +149,15 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         runAllScenarios("Extended16");
         runAllScenarios("Extended32");
 
-        // 5) buildHtml 渲染顺序 + reset 清零验证
-        testBuildHtmlOrder();
+        // 5) Burst 队列契约 + reset 清零验证
+        testBurstQueueContract();
 
         info("===== DamageManager 测试结束 =====");
+    }
+
+    /** focused runner 只执行本轮打击数字跨层契约，避免把历史性能循环混入门槛。 */
+    public static function runAllTests():Void {
+        testBurstQueueContract();
     }
 
     /**
@@ -417,87 +422,108 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         info("----- 工厂 " + factoryName + " 测试完成 -----\n");
     }
 
-    /**
-     * 验证 buildHtml 渲染顺序与旧 addDamageEffect 追加顺序一致。
-     *
-     * 旧处理链执行顺序（Universal → NanoToxic → LifeSteal → Crumble → Execute → Shield）
-     * 决定了效果后缀的拼接顺序，buildHtml 必须按此顺序输出。
-     */
-    public static function testBuildHtmlOrder():Void {
-        info("===== buildHtml 渲染顺序测试 =====");
+    /** 验证 Burst 标识、预计段数入队与 reset 的纯事件契约。 */
+    public static function testBurstQueueContract():Void {
+        info("===== Burst 队列契约测试 =====");
 
-        // --- 用例A：魔法+毒+吸血+击溃（旧顺序：火 毒 汲 溃） ---
-        // flags: EF_DMG_TYPE_LABEL(8) | EF_TOXIC(2) | EF_LIFESTEAL(32) | EF_CRUMBLE(1) | isEnemy(128) = 171
-        // colorId=5 (#0099FF 敌方魔法), size=28
-        var packedA:Number = 171 | (0 << 9) | (28 << 10) | (5 << 18);
-        var htmlA:String = HitNumberBatchProcessor.buildHtml(100, packedA, "火", null, 20, 0);
+        var passed:Number = 0;
+        var failed:Number = 0;
 
-        // 验证子串顺序：火 在 毒 前，毒 在 汲 前，汲 在 溃 前
-        var idxFire:Number = htmlA.indexOf("火");
-        var idxToxic:Number = htmlA.indexOf("毒");
-        var idxSteal:Number = htmlA.indexOf("汲");
-        var idxCrumble:Number = htmlA.indexOf("溃");
-
-        if (idxFire < 0 || idxToxic < 0 || idxSteal < 0 || idxCrumble < 0) {
-            trace("Assertion Failed: 用例A - 缺少效果片段, html=" + htmlA);
-        } else if (idxFire < idxToxic && idxToxic < idxSteal && idxSteal < idxCrumble) {
-            trace("Assertion Passed: 用例A - 效果顺序正确 (火→毒→汲→溃)");
+        HitNumberBatchProcessor.clear();
+        var firstBurst:String = HitNumberBatchProcessor.nextBurstId();
+        var secondBurst:String = HitNumberBatchProcessor.nextBurstId();
+        if (firstBurst == "1" && secondBurst == "2") {
+            ++passed;
+            trace("Assertion Passed: BurstId 场景内单调且 clear 后从 1 开始");
         } else {
-            trace("Assertion Failed: 用例A - 效果顺序错误, html=" + htmlA);
-            trace("  火=" + idxFire + " 毒=" + idxToxic + " 汲=" + idxSteal + " 溃=" + idxCrumble);
+            ++failed;
+            trace("Assertion Failed: BurstId 序列异常 first=" + firstBurst + " second=" + secondBurst);
         }
 
-        // --- 用例B：毒+斩杀+护盾（旧顺序：毒 斩 🛡） ---
-        // flags: EF_TOXIC(2) | EF_EXECUTE(4) | isEnemy(128) | EF_SHIELD(256) = 390
-        // colorId=1 (#FF0000 敌方物理), size=28
-        var packedB:Number = 390 | (0 << 9) | (28 << 10) | (1 << 18);
-        var htmlB:String = HitNumberBatchProcessor.buildHtml(200, packedB, null, null, 0, 50);
-
-        var idxToxicB:Number = htmlB.indexOf("毒");
-        var idxExecuteB:Number = htmlB.indexOf("斩");
-        var idxShieldB:Number = htmlB.indexOf("🛡");
-
-        if (idxToxicB < 0 || idxExecuteB < 0 || idxShieldB < 0) {
-            trace("Assertion Failed: 用例B - 缺少效果片段, html=" + htmlB);
-        } else if (idxToxicB < idxExecuteB && idxExecuteB < idxShieldB) {
-            trace("Assertion Passed: 用例B - 效果顺序正确 (毒→斩→🛡)");
+        HitNumberBatchProcessor.setHostEnabled(false);
+        if (!HitNumberBatchProcessor.isHostEnabled() && HitNumberBatchProcessor.getQueueLength() == 0) {
+            ++passed;
+            trace("Assertion Passed: H0 关闭来源并清空队列");
         } else {
-            trace("Assertion Failed: 用例B - 效果顺序错误, html=" + htmlB);
-            trace("  毒=" + idxToxicB + " 斩=" + idxExecuteB + " 🛡=" + idxShieldB);
+            ++failed;
+            trace("Assertion Failed: H0 未关闭来源或未清空队列");
         }
 
-        // --- 用例C：MISS 路径 ---
-        var packedC:Number = 0 | (1 << 9) | (28 << 10) | (1 << 18);
-        var htmlC:String = HitNumberBatchProcessor.buildHtml(100, packedC, null, null, 0, 0);
-
-        if (htmlC.indexOf("MISS") >= 0 && htmlC.indexOf("100") < 0) {
-            trace("Assertion Passed: 用例C - MISS 路径正确");
+        var disabledResult:DamageResult = new DamageResult();
+        disabledResult.addDamageValue(10);
+        disabledResult.addDamageValue(20);
+        disabledResult.addDamageValue(30);
+        disabledResult.triggerDisplay(512, 360, "boss");
+        if (HitNumberBatchProcessor.getQueueLength() == 0) {
+            ++passed;
+            trace("Assertion Passed: Host 关闭时 triggerDisplay 在 Burst 分配前短路");
         } else {
-            trace("Assertion Failed: 用例C - MISS 路径异常, html=" + htmlC);
+            ++failed;
+            trace("Assertion Failed: Host 关闭时仍产生打击数字事件");
         }
 
-        // --- 用例D：负伤害 MISS（联弹分段模型） ---
-        var packedD:Number = 0 | (0 << 9) | (28 << 10) | (7 << 18);
-        var htmlD:String = HitNumberBatchProcessor.buildHtml(-1, packedD, null, null, 0, 0);
-
-        if (htmlD.indexOf("MISS") >= 0) {
-            trace("Assertion Passed: 用例D - 负伤害 MISS 路径正确");
+        HitNumberBatchProcessor.setHostEnabled(true);
+        if (HitNumberBatchProcessor.isHostEnabled()) {
+            ++passed;
+            trace("Assertion Passed: H1 开启来源");
         } else {
-            trace("Assertion Failed: 用例D - 负伤害未产生 MISS, html=" + htmlD);
+            ++failed;
+            trace("Assertion Failed: H1 未开启来源");
         }
 
-        // --- 用例E：破击标签（emoji+text） ---
-        // flags: EF_CRUSH_LABEL(16) | isEnemy(128) = 144
-        var packedE:Number = 144 | (0 << 9) | (28 << 10) | (1 << 18);
-        var htmlE:String = HitNumberBatchProcessor.buildHtml(300, packedE, "破击", "✨", 0, 0);
-
-        if (htmlE.indexOf("✨") >= 0 && htmlE.indexOf("破击") >= 0) {
-            trace("Assertion Passed: 用例E - 破击标签包含 emoji 和文本");
+        disabledResult.triggerDisplay(512, 360, "boss");
+        if (HitNumberBatchProcessor.getQueueLength() == 3) {
+            ++passed;
+            trace("Assertion Passed: 一发联弹的三段完整入队");
         } else {
-            trace("Assertion Failed: 用例E - 破击标签异常, html=" + htmlE);
+            ++failed;
+            trace("Assertion Failed: triggerDisplay 联弹队列长度异常");
         }
 
-        // --- 用例F：reset 后新字段清零验证 ---
+        HitNumberBatchProcessor.setHostEnabled(false);
+        if (HitNumberBatchProcessor.getQueueLength() == 0) {
+            ++passed;
+            trace("Assertion Passed: H0 原子清除未发送批次");
+        } else {
+            ++failed;
+            trace("Assertion Failed: H0 未清除未发送批次");
+        }
+
+        var packed:Number = 8 | (28 << 10) | (1 << 18);
+        HitNumberBatchProcessor.setHostEnabled(true);
+        HitNumberBatchProcessor.enqueueRaw(
+            100, packed, "火", null, 0, 0,
+            512, 360, "boss", firstBurst, 3
+        );
+        HitNumberBatchProcessor.enqueueRaw(
+            120, packed, "火", null, 0, 0,
+            512, 360, "boss", firstBurst, 3
+        );
+        HitNumberBatchProcessor.enqueueRaw(
+            140, packed, "火", null, 0, 0,
+            512, 360, "boss", firstBurst, 3
+        );
+        if (HitNumberBatchProcessor.getQueueLength() == 3) {
+            ++passed;
+            trace("Assertion Passed: 11 字段来源元数据不改变逐段计数");
+        } else {
+            ++failed;
+            trace("Assertion Failed: 直接入队的联弹队列长度异常");
+        }
+
+        var oldServer:Object = _root.server;
+        _root.server = {isSocketConnected: false};
+        HitNumberBatchProcessor.flush();
+        _root.server = oldServer;
+        if (HitNumberBatchProcessor.getQueueLength() == 0) {
+            ++passed;
+            trace("Assertion Passed: 断连竞态在序列化前清空队列");
+        } else {
+            ++failed;
+            trace("Assertion Failed: 断连竞态未清空队列");
+        }
+
+        // DamageResult.reset 后效果标量清零验证
         var dr:DamageResult = new DamageResult();
         dr._efFlags = 255;
         dr._dmgColorId = 5;
@@ -507,12 +533,18 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         dr.reset();
 
         if (dr._efFlags != 0 || dr._dmgColorId != 0 || dr._efText != null || dr._efLifeSteal != 0 || dr._efShieldAbsorb != 0) {
-            trace("Assertion Failed: 用例F - reset 未清零新字段");
+            ++failed;
+            trace("Assertion Failed: DamageResult.reset 未清零效果字段");
             trace("  _efFlags=" + dr._efFlags + " _dmgColorId=" + dr._dmgColorId + " _efText=" + dr._efText);
         } else {
-            trace("Assertion Passed: 用例F - reset 正确清零所有新字段");
+            ++passed;
+            trace("Assertion Passed: DamageResult.reset 正确清零效果字段");
         }
 
-        info("===== buildHtml 渲染顺序测试完成 =====");
+        HitNumberBatchProcessor.setHostEnabled(false);
+        HitNumberBatchProcessor.clear();
+        trace("HitNumberBurstContract Tests Passed: " + passed);
+        trace("HitNumberBurstContract Tests Failed: " + failed);
+        info("===== Burst 队列契约测试完成 =====");
     }
 }

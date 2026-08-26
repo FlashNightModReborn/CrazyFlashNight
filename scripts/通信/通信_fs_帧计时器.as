@@ -700,8 +700,6 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     HitNumberBatchProcessor.clear();
     // 重置 FrameBroadcaster 数据槽，防止跨场景残留的 hn 数据被发送
     FrameBroadcaster.reset();
-    // 初始化打击数字对象池（场景级初始化，避免 spawn 热路径的 null 检查）
-    HitNumberSystem.initPool();
     // 通知 C# 清除活跃伤害数字动画（S2 修复：场景切换时同步 reset）
     // 快车道前缀 "R" 绕过 MessageRouter JSON 路由，直达 FrameTask.HandleReset()
     // 注意：_root.server = ServerManager 单例，_root.服务器 = 兼容代理（无 socket 属性）

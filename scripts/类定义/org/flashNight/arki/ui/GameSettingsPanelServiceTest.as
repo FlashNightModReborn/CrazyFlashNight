@@ -133,7 +133,6 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         _root.帧计时器 = {性能等级上限:3};
         _root.是否阴影 = true;
         _root.是否视觉元素 = true;
-        _root.是否打击数字特效 = true;
         _root.cameraZoomToggle = true;
         _root.basicZoomScale = 1;
         _root.立绘类型 = 1;
@@ -233,7 +232,6 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         _root.帧计时器 = {性能等级上限:1};
         _root.是否阴影 = true;
         _root.是否视觉元素 = true;
-        _root.是否打击数字特效 = true;
         _root.cameraZoomToggle = true;
         _root.basicZoomScale = 1;
         _root.立绘类型 = 1;

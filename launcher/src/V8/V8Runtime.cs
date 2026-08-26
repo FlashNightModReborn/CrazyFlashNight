@@ -5,11 +5,11 @@ using Microsoft.ClearScript.V8;
 namespace CF7Launcher.V8
 {
     /// <summary>
-    /// 持久化 V8 引擎单例，运行受信任的内部 TS 编译产物（hit-number-bundle.js）。
-    /// 由 FrameTask 每帧驱动：UpdateCamera → SpawnBatch → Tick → 渲染描述符。
+    /// 持久化 V8 引擎单例，运行受信任的内部 GameInput TS 编译产物。
+    /// 文件名 hit-number-bundle.js 仅为发布闭包兼容名；伤害数字 reducer 已迁入 C#，
+    /// V8 不再持有任何伤害数字状态。
     ///
-    /// 线程安全：ReadLoop 线程写 camera/spawn，UI 线程可能调用 Reset。
-    /// 单 _lock 保护所有 V8 访问。
+    /// 线程安全：模块加载和逐帧输入处理都用同一 _lock 保护 V8 访问。
     /// </summary>
     public class V8Runtime : IDisposable
     {
@@ -35,58 +35,6 @@ namespace CF7Launcher.V8
         }
 
         public bool IsLoaded { get { return _loaded; } }
-
-        /// <summary>
-        /// 更新摄像头状态。格式: "gx|gy|sx"
-        /// </summary>
-        public void UpdateCamera(string raw)
-        {
-            if (!_loaded) return;
-            lock (_lock)
-            {
-                _engine.Script.HitNumber.updateCameraRaw(raw);
-            }
-        }
-
-        /// <summary>
-        /// 批量 spawn 伤害数字。格式: "v|x|y|p|et|ee|ls|sa;..."
-        /// </summary>
-        public void SpawnBatch(string raw)
-        {
-            if (!_loaded) return;
-            lock (_lock)
-            {
-                _engine.Script.HitNumber.spawnBatch(raw);
-            }
-        }
-
-        /// <summary>
-        /// 推进一帧动画并返回渲染描述符字符串。
-        /// 由 Flash frame 消息驱动，非独立 Timer。
-        /// </summary>
-        public string Tick()
-        {
-            if (!_loaded) return "";
-            lock (_lock)
-            {
-                object result = _engine.Script.HitNumber.tick();
-                return result as string ?? "";
-            }
-        }
-
-        /// <summary>
-        /// 场景切换时清空所有活跃动画。
-        /// </summary>
-        public void Reset()
-        {
-            if (!_loaded) return;
-            lock (_lock)
-            {
-                _engine.Script.HitNumber.reset();
-            }
-        }
-
-        // ========== GameInput namespace (搓招 DFA 迁移) ==========
 
         /// <summary>
         /// 初始化搓招输入处理器（启动时调用一次）。

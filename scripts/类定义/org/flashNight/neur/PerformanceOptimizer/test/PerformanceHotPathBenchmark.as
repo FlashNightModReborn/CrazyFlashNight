@@ -61,7 +61,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceHotPathBenchmark 
         var host:Object = { 性能等级上限: 0, offsetTolerance: 10 };
         var mockRoot:Object = { _quality: "HIGH", 天气系统: undefined };
         mockRoot.面积系数 = 300000;
-        mockRoot.同屏打击数字特效上限 = 25;
         mockRoot.发射效果上限 = 15;
         mockRoot.显示列表 = { 预设任务ID: 0, 继续播放: function() {}, 暂停播放: function() {} };
         var env:Object = { root: mockRoot };

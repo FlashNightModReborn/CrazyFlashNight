@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId hit-number Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.component.Damage.DamageManagerTest.runAllTests();
+trace("FocusedTestRunId hit-number Complete: __FOCUSED_RUN_ID__");

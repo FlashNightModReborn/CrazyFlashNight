@@ -10,7 +10,7 @@
     'use strict';
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
 
-    var COMMAND = /^(snapshot|preview|apply|cancel|save|cheat|return_base|try_revive|host_set)$/;
+    var COMMAND = /^(snapshot|preview|apply|cancel|save|cheat|return_base|try_revive|host_set|hit_number_ledger)$/;
     var KEY_IDS = [
         '上键','下键','左键','右键','A键','B键','C键','键1','键2','键3','键4','键5',
         '快捷物品栏键1','快捷物品栏键2','快捷物品栏键3','快捷物品栏键4',
@@ -22,7 +22,9 @@
 
     function copy(value) { return JSON.parse(JSON.stringify(value)); }
     function validOpaque(value) { return /^[A-Za-z0-9._~-]{1,160}$/.test(String(value || '')); }
-    function requiresAuthorityReconcile(cmd) { return cmd !== 'snapshot' && cmd !== 'preview'; }
+    function requiresAuthorityReconcile(cmd) {
+        return cmd !== 'snapshot' && cmd !== 'preview' && cmd !== 'hit_number_ledger';
+    }
     function integer(value, min, max) {
         return typeof value === 'number' && isFinite(value) && Math.floor(value) === value
             && value >= min && value <= max;

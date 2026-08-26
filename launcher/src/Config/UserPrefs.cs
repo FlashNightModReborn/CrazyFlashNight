@@ -18,6 +18,8 @@ namespace CF7Launcher.Config
     ///                    允许值 [FontScaleMin..FontScaleMax], 默认 FontScaleDefault (略放大基线)
     ///   SuppressedHighDpiWarningRaw — 用户选择不再提示的高 DPI 兼容性 raw value
     ///   MapDisplayPreference — 小地图显示偏好: auto/off/compact/expanded；与 AS2 mm 运行态分离
+    ///   HitNumberMode — 打击伤害数字行为: off/balanced/total/classic/detail；默认 balanced
+    ///   HitNumberWorldRowLimit — 世界内同时保留的攻击行全局上限；0 表示不设产品上限
     ///
     /// 未来扩展: 往 Load/Save 加字段, 并在 JSON schema 里读容错默认值.
     /// </summary>
@@ -26,6 +28,9 @@ namespace CF7Launcher.Config
         public const double FontScaleMin = 0.7;
         public const double FontScaleMax = 1.9;
         public const double FontScaleDefault = 1.35;
+        public const string HitNumberModeDefault = "balanced";
+        public const int HitNumberWorldRowLimitDefault = 24;
+        public const int HitNumberWorldRowLimitMax = 1000;
 
         public string LastPlayedSlot { get; set; }
         public bool IntroEnabled { get; set; }
@@ -34,6 +39,8 @@ namespace CF7Launcher.Config
         public double UiFontScale { get; set; }
         public string SuppressedHighDpiWarningRaw { get; set; }
         public string MapDisplayPreference { get; set; }
+        public string HitNumberMode { get; set; }
+        public int HitNumberWorldRowLimit { get; set; }
 
         private readonly string _path;
         private readonly string _legacyPath;
@@ -61,6 +68,8 @@ namespace CF7Launcher.Config
             UiFontScale = FontScaleDefault;
             SuppressedHighDpiWarningRaw = null;
             MapDisplayPreference = "auto";
+            HitNumberMode = HitNumberModeDefault;
+            HitNumberWorldRowLimit = HitNumberWorldRowLimitDefault;
             Load();
         }
 
@@ -78,6 +87,20 @@ namespace CF7Launcher.Config
             if (normalized == "off" || normalized == "compact" || normalized == "expanded")
                 return normalized;
             return "auto";
+        }
+
+        public static string NormalizeHitNumberMode(string value)
+        {
+            string normalized = (value ?? "").Trim().ToLowerInvariant();
+            if (normalized == "off" || normalized == "detail"
+                || normalized == "classic" || normalized == "total") return normalized;
+            return HitNumberModeDefault;
+        }
+
+        public static int NormalizeHitNumberWorldRowLimit(int value)
+        {
+            if (value < 0) return HitNumberWorldRowLimitDefault;
+            return Math.Min(value, HitNumberWorldRowLimitMax);
         }
 
         private void Load()
@@ -101,6 +124,10 @@ namespace CF7Launcher.Config
                 if (scale.HasValue) UiFontScale = ClampFontScale(scale.Value);
                 SuppressedHighDpiWarningRaw = obj.Value<string>("suppressedHighDpiWarningRaw");
                 MapDisplayPreference = NormalizeMapDisplayPreference(obj.Value<string>("mapDisplayPreference"));
+                HitNumberMode = NormalizeHitNumberMode(obj.Value<string>("hitNumberMode"));
+                int? hitNumberLimit = obj.Value<int?>("hitNumberWorldRowLimit");
+                if (hitNumberLimit.HasValue)
+                    HitNumberWorldRowLimit = NormalizeHitNumberWorldRowLimit(hitNumberLimit.Value);
                 if (readPath == _legacyPath && _path != _legacyPath)
                 {
                     // One-shot migration: stop mutating repo-root prefs after first successful read.
@@ -117,6 +144,8 @@ namespace CF7Launcher.Config
                 UiFontScale = FontScaleDefault;
                 SuppressedHighDpiWarningRaw = null;
                 MapDisplayPreference = "auto";
+                HitNumberMode = HitNumberModeDefault;
+                HitNumberWorldRowLimit = HitNumberWorldRowLimitDefault;
             }
         }
 
@@ -135,6 +164,9 @@ namespace CF7Launcher.Config
                 obj["ambientEnabled"] = AmbientEnabled;
                 obj["uiFontScale"] = UiFontScale;
                 obj["mapDisplayPreference"] = NormalizeMapDisplayPreference(MapDisplayPreference);
+                obj["hitNumberMode"] = NormalizeHitNumberMode(HitNumberMode);
+                obj["hitNumberWorldRowLimit"] =
+                    NormalizeHitNumberWorldRowLimit(HitNumberWorldRowLimit);
                 if (!string.IsNullOrEmpty(SuppressedHighDpiWarningRaw))
                     obj["suppressedHighDpiWarningRaw"] = SuppressedHighDpiWarningRaw;
                 File.WriteAllText(_path, obj.ToString(Newtonsoft.Json.Formatting.Indented));

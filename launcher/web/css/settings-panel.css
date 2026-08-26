@@ -916,6 +916,90 @@
     font-size: var(--settings-fs-micro);
 }
 
+/* ── 伤害对账日志：暂停态、分页、精确逐段 ── */
+.settings-hit-number-actions { margin-top: 8px; }
+.settings-damage-ledger-layer { z-index: 74; padding: 12px; }
+.settings-damage-ledger-modal {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    width: min(910px, calc(100% - 18px));
+    height: min(530px, calc(100% - 18px));
+    box-sizing: border-box;
+    overflow: hidden;
+    color: var(--term-ink-hi);
+    border: 1px solid var(--settings-dls);
+    background: color-mix(in srgb, var(--launcher-bg-0) 96%, transparent);
+    box-shadow: 0 16px 46px rgba(0, 0, 0, .72), inset 0 0 38px rgba(35, 161, 157, .06);
+}
+.settings-damage-ledger-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 50px;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--settings-dls-dim);
+    background: var(--term-surface-inset);
+}
+.settings-damage-ledger-identity { flex: 1 1 auto; min-width: 0; }
+.settings-damage-ledger-identity h2 { margin: 2px 0 0; color: var(--term-ink-hi); font-size: 17px; }
+.settings-damage-ledger-summary {
+    margin: 0;
+    padding: 7px 14px;
+    color: var(--settings-dls);
+    border-bottom: 1px solid var(--term-line-soft);
+    font: var(--settings-fs-note)/1.4 Consolas, "Microsoft YaHei", monospace;
+}
+.settings-damage-ledger-summary[data-truncated="true"] { color: var(--settings-rust); }
+.settings-damage-ledger-body {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    overflow: auto;
+    padding: 9px 12px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+}
+.settings-damage-ledger-burst {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 7px 9px;
+    border-left: 2px solid var(--settings-dls);
+    background: var(--term-surface-inset);
+}
+.settings-damage-ledger-burst-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--term-ink-lo);
+    font-size: var(--settings-fs-note);
+}
+.settings-damage-ledger-burst-header strong { color: var(--term-ink-hi); overflow-wrap: anywhere; }
+.settings-damage-ledger-burst-id {
+    color: var(--term-ink-faint);
+    font: var(--settings-fs-micro)/1.25 Consolas, monospace;
+    overflow-wrap: anywhere;
+}
+.settings-damage-ledger-segments { display: flex; flex-wrap: wrap; gap: 4px; }
+.settings-damage-ledger-segment {
+    min-width: 24px;
+    padding: 2px 5px;
+    box-sizing: border-box;
+    border: 1px solid currentColor;
+    background: rgba(0, 0, 0, .48);
+    font: var(--settings-fs-note)/1.25 Consolas, "Microsoft YaHei", monospace;
+}
+.settings-damage-ledger-footer {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border-top: 1px solid var(--settings-dls-dim);
+    background: var(--term-surface-inset);
+}
+.settings-damage-ledger-footer .settings-button { min-width: 98px; }
+
 /* ── 空态 / 页脚 ── */
 .settings-empty {
     display: grid;

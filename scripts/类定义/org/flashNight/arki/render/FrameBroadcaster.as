@@ -10,7 +10,8 @@
  *   - 前缀 "F" 标识 frame 快车道消息（C# 按首字节分发）
  *   - cam 格式: "gw._x|gw._y|scale"（管道符分隔）
  *   - \x01 (SOH) 分隔 cam 与 hn（cam/hn 内容只含 |;数字文本，不含 \x01）
- *   - hn 格式: "value|x|y|packed|efText|efEmoji|lifeSteal|shieldAbsorb;..." (分号分条目)
+ *   - hn 格式: "value|x|y|packed|efText|efEmoji|lifeSteal|shieldAbsorb|unitId|burstId|expectedHitCount;..."
+ *     （分号分条目；C# 按严格 11 字段解析）
  *
  * 架构：
  *   frameEnd pipeline:
@@ -88,7 +89,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
     /**
      * frameEnd 管线最后一步调用。
      * 收集摄像头数据 + 读取各子系统数据槽 → 发送单条 frame 消息。
-     * 每帧无条件调用（只要 socket 连接），保证 V8 侧活跃动画持续收到 tick 驱动。
+     * 每帧无条件调用（只要 socket 连接），保证 C# reducer 的自然寿命动画持续推进。
      */
     public static function send():Void {
         var sm:Object = _root.server;
@@ -124,8 +125,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
             msg += "\x04" + _inputPayload;
             _inputPayload = null;
         }
-        // SFX 优先发送：音效对延迟敏感，必须在 F 消息（含 V8 渲染）之前到达 C# 端，
-        // 避免被 SpawnBatch+Tick+UpdateRender 的处理时间阻塞
+        // SFX 优先发送：音效对延迟敏感，必须在 F 消息（含伤害 reducer/绘制）之前到达 C# 端。
         org.flashNight.arki.audio.AudioBridge.flush();
 
         sm.sendSocketMessage(msg);

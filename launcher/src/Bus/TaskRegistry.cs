@@ -5,7 +5,6 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Tasks;
 using CF7Launcher.Data;
-using CF7Launcher.V8;
 using CF7Launcher.Guardian;
 
 namespace CF7Launcher.Bus
@@ -447,8 +446,6 @@ namespace CF7Launcher.Bus
             ToastTask toast,
             FrameTask frame,
             DataQueryTask dataQuery,
-            V8Runtime v8,
-            HitNumberOverlay hnOverlay,
             AudioTask audio,
             IconBakeTask iconBake,
             DollBakeTask dollBakeTask,
@@ -724,8 +721,7 @@ namespace CF7Launcher.Bus
             router.RegisterSync("frame", frame.Handle);
             router.RegisterSync("hn_reset", delegate(JObject msg)
             {
-                v8.Reset();
-                hnOverlay.NotifyReset();
+                frame.HandleReset();
                 return null;
             });
 

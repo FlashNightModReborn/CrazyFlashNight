@@ -2016,7 +2016,6 @@ class org.flashNight.neur.Server.SaveManager {
             性能等级上限: _root.帧计时器.性能等级上限,
             是否阴影: _root.是否阴影,
             是否视觉元素: _root.是否视觉元素,
-            是否打击数字特效: _root.是否打击数字特效,
             cameraZoomToggle: _root.cameraZoomToggle,
             basicZoomScale: _root.basicZoomScale,
             开启昼夜系统: ws.enableDayNightCycle,
@@ -2044,7 +2043,6 @@ class org.flashNight.neur.Server.SaveManager {
         if (!isNaN(s.basicZoomScale)) _root.basicZoomScale = s.basicZoomScale;
         if (s.是否阴影 || s.是否阴影 === false) _root.是否阴影 = s.是否阴影;
         if (s.是否视觉元素 || s.是否视觉元素 === false) _root.是否视觉元素 = s.是否视觉元素;
-        if (s.是否打击数字特效 || s.是否打击数字特效 === false) _root.是否打击数字特效 = s.是否打击数字特效;
         var ws:WeatherSystem = WeatherSystem.getInstance();
         if (s.开启昼夜系统 || s.开启昼夜系统 === false) ws.enableDayNightCycle = s.开启昼夜系统;
         if (s.暂停昼夜系统 || s.暂停昼夜系统 === false) ws.pauseDayNightCycle = s.暂停昼夜系统;

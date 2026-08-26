@@ -30,7 +30,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         var root:Object = {
             _quality: "HIGH",
             面积系数: null,
-            同屏打击数字特效上限: null,
             发射效果上限: null,
             天气系统: { lightUpdateThreshold: null },
             显示列表: displayList
@@ -79,7 +78,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(m.es.maxScreenEffectCount == 20, "maxScreenEffectCount=20");
         out += line(m.es.isDeathEffect == true, "isDeathEffect=true");
         out += line(m.root.面积系数 == 300000, "面积系数=300000");
-        out += line(m.root.同屏打击数字特效上限 == 25, "同屏打击数字特效上限=25");
         out += line(m.dr.isEnabled == true, "DeathEffectRenderer启用");
         out += line(m.dr.enableCulling == false, "enableCulling=false");
         out += line(m.ss.limit == 25, "shellLimit=25");
@@ -127,7 +125,6 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
         out += line(m.es.maxEffectCount == 0, "maxEffectCount=0");
         out += line(m.es.maxScreenEffectCount == 5, "maxScreenEffectCount=5");
         out += line(m.root.面积系数 == 3000000, "面积系数=3000000");
-        out += line(m.root.同屏打击数字特效上限 == 10, "同屏打击数字特效上限=10");
         out += line(m.ss.limit == 10, "shellLimit=10");
         out += line(m.root.发射效果上限 == 0, "发射效果上限=0");
         out += line(m.host.offsetTolerance == 80, "offsetTolerance=80");

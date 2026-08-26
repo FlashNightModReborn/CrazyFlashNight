@@ -73,7 +73,6 @@
   ✓ L0 maxScreenEffectCount=20
   ✓ L0 isDeathEffect=true
   ✓ L0 面积系数=300000
-  ✓ L0 同屏打击数字特效上限=25
   ✓ L0 DeathEffectRenderer启用且不剔除
   ✓ L0 quality恢复预设(HIGH)
   ✓ L0 光照阈值=0.1
@@ -87,7 +86,6 @@
   ✓ L1 maxScreenEffectCount=12
   ✓ L1 isDeathEffect=true
   ✓ L1 面积系数=450000
-  ✓ L1 同屏打击数字特效上限=15
   ✓ L1 DeathEffectRenderer启用且剔除
   ✓ L1 quality=MEDIUM(预设非LOW)
   ✓ L1 光照阈值=0.2

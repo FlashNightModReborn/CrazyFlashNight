@@ -67,13 +67,13 @@
     reviveAvailable:true,
     settings:{
       setGlobalVolume:80,setBGMVolume:60,'性能等级上限':1,'是否阴影':true,
-      '是否视觉元素':true,'是否打击数字特效':true,cameraZoomToggle:false,
+      '是否视觉元素':true,cameraZoomToggle:false,
       basicZoomScale:1,'开启昼夜系统':true,'暂停昼夜系统':false,
       '使用滤镜渲染':true,'立绘类型':1,jukeboxOverride:false,
       jukeboxTrueRandom:false,jukeboxPlayMode:'albumLoop'
     },
     keys:ids.map(function(id,index){return{id:id,label:index===0?'undefined':id,keyCode:codes[index],keyName:keyNames[codes[index]]||String(codes[index])}}),
-    hostPrefs:{introEnabled:true,sfxEnabled:true,ambientEnabled:true,uiFontScale:1,mapDisplayPreference:'auto'}
+    hostPrefs:{introEnabled:true,sfxEnabled:true,ambientEnabled:true,uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24}
   };
   function clone(value){return JSON.parse(JSON.stringify(value))}
   function help(){
@@ -143,6 +143,18 @@
       }else if(message.cmd==='save')emit(message,{success:durable,v:1,operation:'save',durable:durable,revision:model.revision,error:durable?undefined:'save_failed'});
       else if(message.cmd==='host_set'){
         model.hostPrefs[payload.key]=payload.value;emit(message,{success:true,v:1,operation:'host_set',key:payload.key,currentValue:payload.value,hostPrefs:clone(model.hostPrefs)});
+      }else if(message.cmd==='hit_number_ledger'){
+        var sampleBursts=[
+          {targetId:'Lee_1_1_1',burstId:'94',totalDamage:795,hitCount:1,expectedHitCount:1,ageMs:184,
+            segments:[{sequence:94,damage:795,packed:540672,effectText:'热',effectEmoji:'',lifeSteal:0,shieldAbsorb:0,x:680,y:330}]},
+          {targetId:'红衣僵尸',burstId:'95',totalDamage:43,hitCount:3,expectedHitCount:3,ageMs:326,
+            segments:[{sequence:95,damage:12,packed:28672,effectText:'',effectEmoji:'',lifeSteal:0,shieldAbsorb:0,x:520,y:350},
+              {sequence:96,damage:14,packed:28674,effectText:'',effectEmoji:'',lifeSteal:0,shieldAbsorb:0,x:520,y:350},
+              {sequence:97,damage:17,packed:28672,effectText:'',effectEmoji:'',lifeSteal:0,shieldAbsorb:0,x:520,y:350}]}
+        ];
+        emit(message,{success:true,v:1,ledger:{v:1,generation:1,capacity:32768,
+          retainedSegments:4,droppedSegments:0,oldestBurstMayBePartial:false,totalBursts:2,
+          offset:0,limit:24,hasNewer:false,hasOlder:false,bursts:sampleBursts}});
       }else if(message.cmd==='cheat'){
         if(payload.command==='challengemode')model.challengeMode=true;
         if(payload.command==='hardmode'||payload.command==='easymode')model.challengeMode=false;

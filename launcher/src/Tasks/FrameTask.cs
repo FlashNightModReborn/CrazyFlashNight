@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Guardian;
+using CF7Launcher.Guardian.HitNumbers;
 using CF7Launcher.V8;
 
 namespace CF7Launcher.Tasks
@@ -17,20 +18,20 @@ namespace CF7Launcher.Tasks
     ///   MessageRouter → Handle(JObject)
     ///     Phase 1 期间保留，确认快车道稳定后由 Phase 3 移除
     ///
-    /// 共同调用链：
-    ///   → V8 updateCamera + spawnBatch + tick（V8 lock 内）
-    ///   → overlay.UpdateRender（BeginInvoke → UI 线程）
+    /// 伤害数字调用链：C# span parser → bounded-lifetime reducer → latest-wins overlay。
+    /// V8 仅保留 GameInput DFA，不再参与伤害数字状态或渲染描述符。
     /// </summary>
     public class FrameTask
     {
         private readonly V8Runtime _v8;
         private readonly HitNumberOverlay _overlay;
+        private readonly HitNumberRuntime _hitNumberRuntime;
+        private readonly object _hitNumberLock = new object();
         private readonly FpsRingBuffer _fpsBuffer;
         private PerfDecisionEngine _decisionEngine; // 可空，Phase 1 之前为 null
         private CF7Launcher.Bus.XmlSocketServer _socket; // 用于 K 前缀推送
         private Action<string> _uiDataHandler; // combo hints → WebView2
         private volatile bool _stopped;
-        private bool _inputPayloadLogged; // 首次收到 inputPayload 时输出一次日志
 
         public FpsRingBuffer FpsBuffer { get { return _fpsBuffer; } }
 
@@ -41,7 +42,10 @@ namespace CF7Launcher.Tasks
 
         public void SetSocket(CF7Launcher.Bus.XmlSocketServer socket)
         {
+            if (ReferenceEquals(_socket, socket)) return;
+            if (_socket != null) _socket.OnClientReady -= PublishHitNumberSourceState;
             _socket = socket;
+            if (_socket != null) _socket.OnClientReady += PublishHitNumberSourceState;
         }
 
         public void SetUiDataHandler(Action<string> handler)
@@ -53,17 +57,49 @@ namespace CF7Launcher.Tasks
         {
             _v8 = v8;
             _overlay = overlay;
+            _hitNumberRuntime = new HitNumberRuntime();
             _fpsBuffer = new FpsRingBuffer(600);
         }
 
         /// <summary>停止处理帧数据。在退出前调用，防止推送到已 disposed 的 overlay。</summary>
-        public void Stop() { _stopped = true; }
+        public void Stop()
+        {
+            _stopped = true;
+            if (_socket != null) _socket.OnClientReady -= PublishHitNumberSourceState;
+            _socket = null;
+        }
+
+        public void ConfigureHitNumbers(string mode, int worldRowLimit)
+        {
+            if (_stopped) return;
+            HitNumberRuntimeSnapshot snapshot;
+            lock (_hitNumberLock)
+            {
+                snapshot = _hitNumberRuntime.Configure(
+                    HitNumberRuntimeOptions.FromPreferences(mode, worldRowLimit));
+            }
+            _overlay.UpdateFrame(snapshot);
+            PublishHitNumberSourceState();
+        }
+
+        public void PublishHitNumberSourceState()
+        {
+            if (_stopped || _socket == null || !_socket.IsClientReady) return;
+            bool enabled;
+            lock (_hitNumberLock) enabled = _hitNumberRuntime.Options.SourceEnabled;
+            _socket.PushToClient(enabled ? "H1" : "H0");
+        }
 
         /// <summary>
-        /// 快车道入口：由 XmlSocketServer 前缀检测直接调用，跳过 JObject 构造。
-        /// 前缀协议格式：F{cam}\x01{hn}\x02{fps}
-        /// fps 字段可选（仅在有新采样时存在）。
+        /// 设置 Web 面板按需读取的场景级伤害对账页。读取与帧 reducer 共用同一把锁，
+        /// 不让 Web 请求观察到半批次数据；日志分页不经过 Flash，也不占用战斗键。
         /// </summary>
+        public JObject BuildHitNumberLedgerPage(int offset, int limit)
+        {
+            lock (_hitNumberLock)
+                return _hitNumberRuntime.BuildLedgerPage(offset, limit);
+        }
+
         /// <summary>
         /// 加载搓招模组 DFA 数据（由 D 前缀触发）。
         /// </summary>
@@ -80,19 +116,21 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        /// <summary>
+        /// 快车道入口：由 XmlSocketServer 前缀检测直接调用，跳过 JObject 构造。
+        /// 格式为 F{cam}\x01{hn}\x02{fps}\x04{inputPayload}，后三段均可为空。
+        /// </summary>
         public void HandleRaw(string cam, string hn, string fps, string inputPayload)
         {
             if (_stopped) return;
             try
             {
-                if (!string.IsNullOrEmpty(cam))
-                    _v8.UpdateCamera(cam);
-
-                if (!string.IsNullOrEmpty(hn))
-                    _v8.SpawnBatch(hn);
-
-                string renderStr = _v8.Tick();
-                _overlay.UpdateRender(renderStr);
+                HitNumberRuntimeSnapshot hitSnapshot;
+                lock (_hitNumberLock)
+                    hitSnapshot = _hitNumberRuntime.ProcessFrame(
+                        cam,
+                        hn);
+                _overlay.UpdateFrame(hitSnapshot);
 
                 // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
                 if (!string.IsNullOrEmpty(inputPayload) && _socket != null)
@@ -207,8 +245,9 @@ namespace CF7Launcher.Tasks
             if (_stopped) return;
             try
             {
-                _v8.Reset();
-                _overlay.NotifyReset();
+                HitNumberRuntimeSnapshot snapshot;
+                lock (_hitNumberLock) snapshot = _hitNumberRuntime.Reset();
+                _overlay.UpdateFrame(snapshot);
                 if (_decisionEngine != null)
                     _decisionEngine.OnSceneReset();
                 _fpsBuffer.NotifySceneReset();
@@ -224,18 +263,17 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public string Handle(JObject message)
         {
+            if (_stopped) return null;
             try
             {
                 string cam = message.Value<string>("cam");
-                if (!string.IsNullOrEmpty(cam))
-                    _v8.UpdateCamera(cam);
-
                 string hn = message.Value<string>("hn");
-                if (!string.IsNullOrEmpty(hn))
-                    _v8.SpawnBatch(hn);
-
-                string renderStr = _v8.Tick();
-                _overlay.UpdateRender(renderStr);
+                HitNumberRuntimeSnapshot snapshot;
+                lock (_hitNumberLock)
+                    snapshot = _hitNumberRuntime.ProcessFrame(
+                        cam,
+                        hn);
+                _overlay.UpdateFrame(snapshot);
             }
             catch (Exception ex)
             {

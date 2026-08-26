@@ -123,7 +123,7 @@
 
 ### 2.3 现有 F 快车道不能直接扩成计算数据面
 
-现役 `FrameBroadcaster` 在帧末合并 camera / hit-number / fps / UI / input 段（[FrameBroadcaster.as:L88-L135](../scripts/类定义/org/flashNight/arki/render/FrameBroadcaster.as#L88)）。CSharp 端 `XmlSocketServer` 使用单 ReadLoop 同步分派，且现有处理路径与 connection transition 锁、V8/overlay 等工作耦合（[XmlSocketServer.cs:L343-L400](../launcher/src/Bus/XmlSocketServer.cs#L343)；[L442-L550](../launcher/src/Bus/XmlSocketServer.cs#L442)）。
+现役 `FrameBroadcaster` 在帧末合并 camera / hit-number / fps / UI / input 段（[FrameBroadcaster.as:L88-L135](../scripts/类定义/org/flashNight/arki/render/FrameBroadcaster.as#L88)）。CSharp 端 `XmlSocketServer` 使用单 ReadLoop 同步分派，且现有处理路径与 connection transition 锁、C# hit reducer/overlay、V8 GameInput 等工作耦合（[XmlSocketServer.cs:L343-L400](../launcher/src/Bus/XmlSocketServer.cs#L343)；[L442-L550](../launcher/src/Bus/XmlSocketServer.cs#L442)）。
 
 因此：
 
@@ -134,11 +134,11 @@
 
 ### 2.4 HitNumber 是纵切原型，不是可复制的常驻实体模板
 
-伤害数字已经验证 AS2 → 快车道 → CSharp overlay 的纵向链路和坐标映射，但现役实现还经过 `FrameTask → V8 HitNumber reducer → HitNumberOverlay`（[FrameTask.cs:L20-L27](../launcher/src/Tasks/FrameTask.cs#L20)；[pool.ts:L6-L27](../launcher/scripts/src/pool.ts#L6)），按帧投 UI（[HitNumberOverlay.cs:L76-L108](../launcher/src/Guardian/HitNumberOverlay.cs#L76)）、创建大 Bitmap（[HitNumberOverlay.cs:L161-L189](../launcher/src/Guardian/HitNumberOverlay.cs#L161)），并在提交路径创建 HBITMAP/DC（[OverlayBase.cs:L386-L429](../launcher/src/Guardian/OverlayBase.cs#L386)）。人物文字是持久实体状态，必须新增身份、spawn/despawn、full resync、迟到帧丢弃和 latest-wins 合并。
+截至 2026-08-25，伤害数字已完成独立迁移：`FrameTask → HitNumberRuntime → HitNumberOverlay` 全部为 C#，V8 `HitNumber` namespace 与 Flash MovieClip fallback 已删除。世界层只保留短自然寿命，有限世界上限按 Burst 原子选择；balanced/total/classic/detail 四种表现共用同一 reducer，精确历史另进固定 32,768 段环形账本并只在暂停态 Web 设置按需分页物化。UI 侧使用 generation 栅栏、latest-wins 单槽 mailbox、紧边界和持久 top-down PArgb DIB / memory DC，常态不再逐帧创建整视口 Bitmap、HBITMAP 或 DC。具体生产与验收合同见 [Launcher README](../launcher/README.md#打击伤害数字生产路径)和[专项 harness](../tools/hit-number-visual-harness/README.md)。
 
-World Overlay 首版应复用 `PlayerInfoLayeredDibSurface` 的持久 top-down PArgb DIB / memory DC 模式，而不是复制 HitNumber 的逐帧大对象提交（[PlayerInfoLayeredDibSurface.cs:L12-L18](../launcher/src/Guardian/Hud/PlayerInfo/PlayerInfoLayeredDibSurface.cs#L12)）。
+它仍只是瞬态事件纵切，不是人物文字的可复制模板。人物文字是持久实体状态，仍必须新增身份、spawn/despawn、full resync、迟到帧丢弃和实体级 latest-wins；不能把伤害段的 1.08 秒窗口、Burst 身份或允许丢旧视觉帧直接套到 roster。
 
-P1 基线不迁现役 V8 伤害数字 reducer，也不预设两个 renderer 已可物理合层：姓名/头顶条先使用独立但有界的 World Overlay surface，现役 HitNumber 路径保持原样。P1 只允许在 V8 reducer 保持唯一权威的前提下，评估是否把其最终 render output 合入 World Overlay surface；CSharp 重写 damage-number reducer 不属于 P1，必须另立迁移门。
+World Overlay 首版继续复用 `PlayerInfoLayeredDibSurface` 的持久 surface 模式。伤害数字保持独立 reducer 和独立 surface；P1 不得重新引入 V8 状态机或第二套 damage-number reducer。是否把两个已单一权威的最终绘制面物理合层，仍由 P1 的 paint/ULW profile 单独裁决。
 
 ---
 
@@ -525,9 +525,9 @@ AS2 微基准表明裸字符串 `+` 可能比 `Array.join()` 便宜，但完整 
 
 ### 9.4 World Overlay
 
-逻辑绘制面分 nameplate、bar、damage-number、debug/radar 图层。P1 不迁移 damage-number reducer 权威：现役 `pool.ts` 继续持有 unitId aggregator、UID 重定向、脉动、跳数、颜色衰减、quiet hold 与生命周期状态（[pool.ts:L6-L27](../launcher/scripts/src/pool.ts#L6)；[L192-L205](../launcher/scripts/src/pool.ts#L192)），仍由 `FrameTask → V8Runtime` 驱动（[FrameTask.cs:L83-L95](../launcher/src/Tasks/FrameTask.cs#L83)；[V8Runtime.cs:L42-L73](../launcher/src/V8/V8Runtime.cs#L42)）。“damage-number 图层”只表示其最终渲染描述符将来可以与 World Overlay 合成，不表示 WorldFrame 或新的 CSharp reducer 接管该状态。
+逻辑绘制面分 nameplate、bar、damage-number、debug/radar 图层。damage-number 已由独立 C# `HitNumberRuntime` 单一持有段寿命、Burst 聚合/裁剪、balanced/total/classic/detail 投影与 reset generation；AS2 只在 `H1` 时发送结算后段事件，V8 只保留 GameInput。固定容量精确账本同属该 runtime，但不参与世界 paint。WorldFrame 不接管或复制这份状态，“damage-number 图层”仍只表示未来可能复用同一最终合成面。
 
-物理上 World Overlay 优先使用一个固定 viewport surface、持久 DIB/DC 和每帧最多一次 layered-window commit。P1 baseline 与现役 HitNumber 保持独立 surface；是否把 HitNumber 最终绘制输出合入同一 physical surface，由 P1 GDI+/ULW 与 V8-lock profile 决定，且不得产生第二套 damage-number reducer。若以后要移除 V8 状态机，必须另立迁移门并覆盖 aggregator/quiet-hold/pulse/color/reset 语义，不能作为 P1 顺手重写。
+物理上 World Overlay 优先使用固定 viewport surface、持久 DIB/DC 和每帧最多一次 layered-window commit。现役 HitNumber 已采用紧边界持久 DIB/DC，但与 World Overlay 保持独立 surface；是否物理合层由 P1 GDI+/ULW profile 决定。任何合层只能组合最终 paint，不得产生第二套 damage-number reducer、把设置面板的 Host-local 分页账本带回战斗 overlay，或把 WorldFrame 变成伤害历史 authority。
 
 #### 9.4.1 Bar presentation reducer
 
@@ -722,7 +722,7 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 
 ### P1 · World Overlay 垂直切除
 
-**施工范围**：姓名、称号、基础血/盾/韧性条；位置每帧、表现事实四帧、文本/受击事件化；CSharp 单独推进 bar presentation reducer；保留特殊单位 allowlist。现役 V8 damage-number reducer 留存，物理 surface 是否合并只做消融，不顺手重写 reducer。
+**施工范围**：姓名、称号、基础血/盾/韧性条；位置每帧、表现事实四帧、文本/受击事件化；CSharp 单独推进 bar presentation reducer；保留特殊单位 allowlist。现役 C# damage-number reducer 保持独立且不改语义，物理 surface 是否合并只做消融。
 
 **开工前引用闭包门**：必须基于冻结 commit 生成 AS2 + XFL 的完整 touchpoint inventory，至少覆盖 attach/unload 与兼容别名、`variableName` 文本写点、`InformationComponentUpdater` / `BloodBarEffectHandler`、方向/缩放与锚点、天气透明度、登场/死亡/注销、特殊 bitmap capture，以及非显示系统对信息 MovieClip 存在性的假设（例如 [CharacterBuildService.as:L2828-L2849](../scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as#L2828)）。inventory 必须区分活跃语义、可删除死引用和特殊 allowlist；具体文件清单下沉 P1 施工文档，AS2 编译不报错不能证明动态 MovieClip 引用已经闭合。
 
@@ -732,7 +732,7 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 - residual/fade/受击显现/颜色/抖动语义通过冻结 corpus；cutover 后 AS2 不再推进或发送最终 width/alpha/timeline frame；
 - 30–50 单位下 paint+commit、GDI/USER handles、UI mailbox 有界；
 - 单屏、缩放、方向、天气、登场、死亡与场景重置无残影；
-- V8 HitNumber 的 reducer 权威没有出现第二份；独立/合并 surface 的结论有 paint/ULW/V8-lock profile 支撑；
+- C# HitNumber 的 reducer 权威没有出现第二份；独立/合并 surface 的结论有 paint/ULW profile 支撑；
 - touchpoint inventory 每项均有改写、删除或 allowlist disposition；除冻结例外外，不再存在对退役信息 MovieClip 的活跃运行期依赖；
 - mailbox 合帧/连续丢视觉帧、长 pause 后恢复、reconnect/scene reset/旧 epoch 受击事件 golden 通过，bar reducer 不按 paint 次数或 wall clock 漂移；
 - 失败可以关闭 native renderer，但不得留下双状态机常驻。
@@ -883,7 +883,7 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 | fallback kernel/载体 | 未冻结 | P0-COLLISION 退出 | frozen snapshot、comparator+numeric、ledger 与 50/100 最坏 AVM1 尖峰；payload reparse vs 预分配数值帧 |
 | circuit-break threshold | 未冻结 | P4 前 | queue age/deadline miss/[1389ms 未归因离群](protocol-latency-baseline.md#L111)的风险注入；阈值不能由 tiny echo 外推 |
 | bar presentation reducer | CSharp 单一权威方向冻结；精确容差/重连初始化未定 | P1 cutover 前 | residual/fade/hit/color/shake、game frame 时钟、pause/reconnect/reset/旧 epoch；必要时产品降级合同 |
-| damage-number physical composition | P1 保留 V8 reducer；surface 未冻结 | P1 退出 | V8 lock/render descriptor/paint/ULW profile；独立与合并 surface 消融 |
+| damage-number physical composition | C# reducer 与独立持久 surface 已现役；是否与 World Overlay 合层未冻结 | P1 退出 | production paint/ULW profile；独立与合并 surface 消融；Host-local 分页账本与单一 reducer 不变 |
 | P1 touchpoint inventory completeness | 已知类别已登记，未穷举 | P1 开工前 | 直接属性、variableName、attach/unload、方向、天气、命中、死亡、bitmap capture 全量清单 |
 | P1 touchpoint disposition closure | 未施工 | P1 退出 | 每项标记改写/删除/allowlist；运行期直接引用与 Flash smoke 闭合 |
 | World Overlay renderer | 持久 DIB/有界 post 方向已选，细节未定 | P1 pilot 内、P1 退出前 | 字体、paint/ULW、单屏/DPI、handle 稳定性 |
@@ -941,7 +941,8 @@ P0-COLLISION 可以与 P1/P2 并行取证，也可以在其后启动；它不能
 | 2026-08-09 | AI v1 保持旧行为，2D/fresh 行为升级另案 | 产品输入已冻结 |
 | 2026-08-09 | 人物文字以语义/可读性等价为首期目标 | 产品输入已冻结 |
 | 2026-08-09 | P1 头顶条切流后由 CSharp presentation reducer 单独持有；不永久保留 AS2 width/alpha 状态机 | 提案内冻结，待路线接受生效 |
-| 2026-08-09 | P1 保留现役 V8 damage-number reducer；是否合并物理 surface 由 profile 决定 | 提案内冻结；合层待 P1 量测 |
+| 2026-08-09 | P1 保留当时现役 V8 damage-number reducer；是否合并物理 surface 由 profile 决定 | 历史决策；reducer 部分已被 2026-08-25 独立迁移取代 |
+| 2026-08-25 | damage-number 已迁为 C# 单一 reducer + 独立持久紧边界 surface；V8/Flash fallback 退役，P1 只保留物理合层消融权 | 当前现役；合层仍待 P1 量测 |
 | 2026-08-09 | 射线/多边形稀有弹先留 AS2，按尖峰 profile 再迁 | 产品范围输入已冻结 |
 | 2026-08-09 | remote-primary 普通弹仍先经过 AS2 动态消弹/反弹 prepass | 提案内冻结（v1），待路线接受生效 |
 | 2026-08-09 | collider parity 首先直传现役 cached AABB；profile 不得按动画帧提高精度 | 提案内冻结（v1 baseline），待路线接受生效 |

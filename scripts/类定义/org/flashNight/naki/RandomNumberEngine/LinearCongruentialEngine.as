@@ -87,13 +87,13 @@ class org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine extends Ba
         return 1 + (r * fluctuationRange * 2 - fluctuationRange) * 0.01;
     }
 
-    // 覆盖：整数偏移（BulletFactory 子弹散射角、HitNumberSystem 等）
+    // 覆盖：整数偏移（BulletFactory 子弹散射角等）
     public function randomOffset(range:Number):Number {
         var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
         return ((r * (range * 2 + 1)) >> 0) - range;
     }
 
-    // 覆盖：浮点偏移（ShellSystem 弹壳物理、HitNumberSystem）
+    // 覆盖：浮点偏移（ShellSystem 弹壳物理）
     public function randomFloatOffset(range:Number):Number {
         var r:Number = (seed = (1192433993 * seed + 1013904223) % 4294967296) * 2.3283064365386963e-10;
         return r * (range * 2) - range;

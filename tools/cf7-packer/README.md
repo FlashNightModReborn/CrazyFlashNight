@@ -117,7 +117,7 @@ output:
 | runtime-fonts | 根 `fonts/` 的 XML/XSD、许可证、README 与 `permanent/runtime/` 常驻字体；严格排除 `temporary/**` |
 | launcher-data | Launcher 运行时数据：`map_hud_data.json`（MapHud catalog）/ `save_repair_dict.json`（SaveAutoRepairService 字典）/ `save_schema.json`（存档编辑器 diff 基线） |
 | launcher-agent-assets | 精确收编 Wings 运行时直接读取的 `launcher/agent-assets/lore/public-companion.v1.json`；schema 与 fixtures 仍留在开发/测试链 |
-| launcher-scripts | V8 运行时 bundle（`launcher/scripts/dist/hit-number-bundle.js`，含伤害数字渲染 + 搓招 DFA） |
+| launcher-scripts | V8 运行时 bundle（历史兼容名 `launcher/scripts/dist/hit-number-bundle.js`；现役仅含搓招 `GameInput` DFA） |
 | rapfi | 五子棋引擎与权重文件：5 个 Windows CPU 变体 + `*.bin` / `*.bin.lz4` 权重 + `config.toml` + `AUTHORS`（`tools/rapfi/`） |
 | root-dirs | 教程（`0.说明文件与教程/`）、Flash fscommand 桥（`fscommand/**`，含 RAG dev 桥 + 后续 DLC 预留的外部启动通道）；`闪7重置版字体/` 是 Flash 作者目录，不进入 C#/Web 玩家包 |
 
