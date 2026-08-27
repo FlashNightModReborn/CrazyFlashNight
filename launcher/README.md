@@ -1,8 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `5f5cfce7c162ba616bfc51f3c03f3134e937d36a`（2026-08-27，库存显式批量转移真批量事务；deployment `4d5fd254752a149ce07006f8f48391ab26485f61`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-无 candidate selector 的正式入口已通过身份/生命周期窄纵切，但没有在部署后重跑库存业务写或写后重启读回，也没有执行黑市生产经济、设置写入重启、字体观感、军阀战斗或 T800 武器命令等专项正式业务旅程。维护者已接受大批物资即时完成，因此库存批量转移状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`；不得仅凭总体正式入口把其改写为业务或持久化 `standard_entry_verified`。
+**最后核对代码基线**：release source commit `732898b8aa1308cf820976324f47bba97f654e41`（2026-08-27，关卡结果原生状态槽与基地结算工作台；deployment `339b15694d631d483736880c0dfd44429f6926a3`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+维护者已接受与正式 Core 逐字节相同的 A3 隔离候选，因此关卡结果与基地结算为 `HUMAN_ACCEPTANCE_PASSED / promoted`。无 candidate selector 的正式入口已确认 `formal_runtime`、exact Core/identity/closure、bus ready、正常关闭和零新增残留；由于没有选择存档，本轮未取得 fresh `bootstrap_reveal_ready`，也没有从正式入口重跑复活、胜负、交付或奖励业务，不称本功能业务或完整入口 `standard_entry_verified`。
 
 ## 当前真值与阅读顺序
 

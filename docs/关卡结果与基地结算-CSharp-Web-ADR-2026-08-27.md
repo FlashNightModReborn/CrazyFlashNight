@@ -1,9 +1,9 @@
 # 关卡结果与基地结算 C# / Web 分层 ADR
 
 **文档角色**：关卡结束、玩家死亡复活、返回基地与关卡奖励领取的跨 AS2 / C# / Web canonical 深文档。
-**状态**：IMPLEMENTED / AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / NOT_PROMOTED / NOT_DEPLOYED
+**状态**：IMPLEMENTED / AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / promoted
 **决策日期**：2026-08-27
-**实现边界**：维护者已确认 A3 隔离候选体验有效；该结论授权冻结 release source 与进入正式发布列车，但不等于 promotion、正式 DLL 部署或部署后的标准入口验证。
+**实现边界**：维护者已确认 A3 隔离候选体验有效；与 A3 Core 逐字节相同的正式 runtime 已完成双 signer / 双 faultDomain 共识、原子 promotion、部署推送与远端 Audit。部署后的无 candidate 入口只确认 `formal_runtime`、exact identity/closure、bus ready、正常关闭与零新增残留；因为未选择存档，预热按 deadline 安全回收 Flash，未取得 fresh `bootstrap_reveal_ready`，因此不称本功能业务或完整正式入口 `standard_entry_verified`。
 
 ## 1. 决策摘要
 
@@ -166,4 +166,6 @@ dead + exact current hero
 11. 已完成任务时出现“前往交付 / 回基地”，选择前者仍先完成基地奖励流程，普通关闭不提前跳转，最终领取/放弃并关闭后只导航一次；任务在结算期间失效或目的地不可达时安全停在基地；
 12. 至少覆盖 `1024×576`、常用窗口尺寸与全屏/DPI，检查文字、点击区和低分辨率画像。
 
-A3 已由维护者确认有效，因此本功能达到相应的 `e2e_verified / NOT_DEPLOYED`，可继续冻结 release source、取得双 signer/双 faultDomain 共识、执行 production policy 与 promotion。只有正式部署提交推送且远端 Audit 明确输出 `state=promoted`、`deploymentChanged=true` 后才可称 `promoted`；部署后的无 candidate 标准入口必须另行复核，不能由 A3 或通用 supply-chain 门反向补写为 `standard_entry_verified`。
+A3 在人工验收时达到 `e2e_verified / NOT_DEPLOYED`；其 exact Core SHA-256 `5B010C6040A5E80E1E8923FD02D6B632AB2D309511F8C6A54BA7D78B7516314F` 随后由 release source `732898b8aa1308cf820976324f47bba97f654e41`、不可变 tag `runtime-build-v2/20260827-stage-outcome-settlement-v2`、release tree `d498236a3ac06294f0c871dba73302bb24bc398e` 与 request `CB8268D83DB35DF3BC7D22587822F279C29A93CD12A15B1F10DF14759B000991` 进入正式列车。39/39 production receipt SHA-256 为 `977B2B2A7466C307198438C1F8362CE9ED06F3415977F664CB4E402B4192A181`；本地 X509 与 GitHub Hosted OIDC/Sigstore run `33070890481` 对 identity `03F9825C2A2A248C73A7FA6FFB4E6C4305D49C4F97BD9E6042747B9BC5A0F5AA`、closure `5DA2B3053BF70EFCDCE74A503C33098774F9026AAD6E2D1F555C1A9EC5181D07` 达成双签共识。deployment commit `339b15694d631d483736880c0dfd44429f6926a3` 已推送，post-promotion Audit run `33071572650` 明确输出 `state=promoted`、`deploymentChanged=true`。
+
+无 candidate selector 的 `automation/start.ps1` 随后确认正式 Core、identity/closure 与 bus ready，并以 exact Guardian PID 正常关闭；本轮新增 Flash 与 WebView2 子进程、`launcher_ports.json` 均无残留。该次没有选择存档，预热在 45 秒 deadline 后以 Flash code 0 自行回收，未出现 fresh `bootstrap_reveal_ready`，也没有重跑复活、胜负、交付或奖励领取业务。因此准确状态是关卡结果与基地结算 `HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口仅有身份、总线和正常退出的窄证据，不补写 `standard_entry_verified`。
