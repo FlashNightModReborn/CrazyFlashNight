@@ -38,6 +38,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("InventoryTask", "inventory", "loot", "merge", "inventoryMerge", null)]
         [InlineData("InventoryTask", "inventory", "workbench", "swap", "inventorySwap", null)]
         [InlineData("InventoryTask", "inventory", "kshop", "autoTransfer", "inventoryAutoTransfer", null)]
+        [InlineData("InventoryTask", "inventory", "workbench", "autoTransferBatch", "inventoryAutoTransferBatch", null)]
         [InlineData("InventoryTask", "inventory", "workbench", "sortAndMerge", "inventorySortAndMerge", null)]
         [InlineData("SkillTask", "skills", "skills", "snapshot", "skillSnapshot", null)]
         [InlineData("SkillTask", "skills", "skills", "learnPreview", "skillLearnPreview", null)]

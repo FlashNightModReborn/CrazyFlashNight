@@ -73,7 +73,8 @@ namespace CF7Launcher.Guardian
                 "open_npc_shop", "open_procurement_shop", "open_procurement_kshop",
                 "return_crafting_recipe",
                 "batchPreview", "tradePreview", "buy", "batchSell", "tradeCommit",
-                "discard", "move", "merge", "swap", "autoTransfer", "sortAndMerge",
+                "discard", "move", "merge", "swap", "autoTransfer", "autoTransferBatch",
+                "sortAndMerge",
                 "learnPreview", "learnCommit", "equip", "unequip", "moveSlot",
                 "setPassive", "reorder",
                 "equipmentTuningSnapshot", "equipmentTuningPreview",
@@ -90,7 +91,8 @@ namespace CF7Launcher.Guardian
                 "npcShopTradeCommit",
                 "inventorySnapshot", "inventoryTooltip", "inventoryDiscard",
                 "inventoryMove", "inventoryMerge", "inventorySwap",
-                "inventoryAutoTransfer", "inventorySortAndMerge",
+                "inventoryAutoTransfer", "inventoryAutoTransferBatch",
+                "inventorySortAndMerge",
                 "skillSnapshot", "skillLearnPreview", "skillLearnCommit",
                 "skillEquip", "skillUnequip", "skillMoveSlot", "skillSetPassive",
                 "skillReorder"
@@ -540,6 +542,7 @@ namespace CF7Launcher.Guardian
                         case "merge": return "inventoryMerge";
                         case "swap": return "inventorySwap";
                         case "autoTransfer": return "inventoryAutoTransfer";
+                        case "autoTransferBatch": return "inventoryAutoTransferBatch";
                         case "sortAndMerge": return "inventorySortAndMerge";
                         default: return null;
                     }
