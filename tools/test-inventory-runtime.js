@@ -1670,6 +1670,114 @@ test('auto-transfer accepts an exact category-all window batch without losing th
         {branch:'category', major:'all'});
 });
 
+test('auto-transfer batch sends one ordered wire command and adopts its snapshots once', function() {
+    const transport = new DeferredTransport();
+    const requests = [
+        {containerId:'背包', offset:0, limit:2, filterKey:'all'},
+        {containerId:'仓库', offset:0, limit:2, filterKey:'all'}
+    ];
+    const coordinator = createCoordinator(transport, requests);
+    coordinator.open();
+    transport.respond(0, exactResponse(transport.calls[0], 10));
+    const sources = [0, 1].map(function(slotIndex) {
+        return {containerId:'背包', slot:slotIndex, expectedLease:'lease.source.' + slotIndex,
+            occupied:true, item:makeItem({name:'批量源' + slotIndex})};
+    });
+    const results = [];
+    assert.strictEqual(coordinator.autoTransferBatch(sources, '仓库', function(result) {
+        results.push(result);
+    }), true);
+    assert.strictEqual(transport.calls.length, 2);
+    assert.strictEqual(coordinator.debugState().busyOwner, 'inventory.autoTransferBatch');
+    assert.strictEqual(transport.calls[1].cmd, 'autoTransferBatch');
+    assert.deepStrictEqual(transport.calls[1].payload, {
+        v:1,
+        sources:[
+            {containerId:'背包', slot:0, expectedLease:'lease.source.0'},
+            {containerId:'背包', slot:1, expectedLease:'lease.source.1'}
+        ],
+        targetContainerId:'仓库',
+        policy:'mergeThenEmpty',
+        windows:requests
+    });
+    transport.respond(1, {
+        success:true,
+        completedCount:2,
+        snapshots:requests.map(function(request, index) { return makeSnapshot(request, 20 + index); })
+    });
+    assert.strictEqual(transport.calls.length, 2);
+    assert.strictEqual(results.length, 1);
+    assert.strictEqual(results[0].completedCount, 2);
+    assert.strictEqual(coordinator.debugState().busyOwner, null);
+    assert.strictEqual(coordinator.getWindow('背包').snapshotSeq, 20);
+    assert.strictEqual(coordinator.getWindow('仓库').snapshotSeq, 21);
+});
+
+test('auto-transfer batch adopts an authoritative partial prefix response', function() {
+    const transport = new DeferredTransport();
+    const coordinator = createCoordinator(transport);
+    coordinator.open();
+    transport.respond(0, exactResponse(transport.calls[0], 10));
+    const results = [];
+    const sources = [0, 1].map(function(slotIndex) {
+        return {containerId:'背包', slot:slotIndex, expectedLease:'lease.partial.' + slotIndex,
+            occupied:true, item:makeItem({name:'部分批量源' + slotIndex})};
+    });
+    coordinator.autoTransferBatch(sources, '仓库', function(result) { results.push(result); });
+    const windows = transport.calls[1].payload.windows;
+    transport.respond(1, {
+        success:true,
+        completedCount:1,
+        failure:{index:1, error:'target_full'},
+        snapshots:windows.map(function(request, index) { return makeSnapshot(request, 30 + index); })
+    });
+    assert.strictEqual(results.length, 1);
+    assert.strictEqual(results[0].success, true);
+    assert.strictEqual(results[0].completedCount, 1);
+    assert.deepStrictEqual(results[0].failure, {index:1, error:'target_full'});
+    assert.strictEqual(transport.calls.length, 2);
+    assert.strictEqual(coordinator.debugState().busyOwner, null);
+});
+
+test('auto-transfer batch releases authoritative no-op capacity failures without reconcile', function() {
+    ['target_full', 'slot_locked'].forEach(function(error) {
+        const transport = new DeferredTransport();
+        const coordinator = createCoordinator(transport);
+        coordinator.open();
+        transport.respond(0, exactResponse(transport.calls[0], 10));
+        const results = [];
+        coordinator.autoTransferBatch([{
+            containerId:'背包', slot:0, expectedLease:'lease.noop', occupied:true, item:makeItem()
+        }], '仓库', function(result) { results.push(result); });
+        transport.respond(1, {success:false, error:error});
+        assert.strictEqual(transport.calls.length, 2);
+        assert.deepStrictEqual(results, [{success:false, error:error}]);
+        assert.strictEqual(coordinator.debugState().busyOwner, null);
+        assert.strictEqual(coordinator.debugState().ready, true);
+        assert.strictEqual(coordinator.debugState().refreshRequired, false);
+    });
+});
+
+test('auto-transfer batch reconciles every ambiguous failure before reporting it', function() {
+    const transport = new DeferredTransport();
+    const coordinator = createCoordinator(transport);
+    coordinator.open();
+    transport.respond(0, exactResponse(transport.calls[0], 10));
+    const results = [];
+    coordinator.autoTransferBatch([{
+        containerId:'背包', slot:0, expectedLease:'lease.ambiguous', occupied:true, item:makeItem()
+    }], '仓库', function(result) { results.push(result); });
+    transport.respond(1, {success:false, error:'timeout'});
+    assert.strictEqual(results.length, 0);
+    assert.strictEqual(transport.calls.length, 3);
+    assert.strictEqual(transport.calls[2].cmd, 'snapshot');
+    assert.strictEqual(coordinator.debugState().busyOwner, 'inventory.autoTransferBatch');
+    transport.respond(2, exactResponse(transport.calls[2], 40));
+    assert.deepStrictEqual(results, [{success:false, error:'timeout',
+        reconciled:true, refreshError:null}]);
+    assert.strictEqual(coordinator.debugState().busyOwner, null);
+});
+
 test('late write response cannot mutate or report into a reopened session', function() {
     const transport = new DeferredTransport();
     const coordinator = createCoordinator(transport);

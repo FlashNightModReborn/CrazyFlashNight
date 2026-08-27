@@ -32,6 +32,10 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         testBattleboxAccessPolicy();
         testBattleboxTransfers();
         testAutoTransferAuthorityQueueAndFailure();
+        testAutoTransferBatchSuccessAndSingleScan();
+        testAutoTransferBatchPartialAndValidation();
+        testAutoTransferBatchRollback();
+        testAutoTransferBatchComparison();
         testMoveMergeSwapAndReverse();
         testSameContainerTransfersAndRollback();
         testEventReentrancy();
@@ -458,6 +462,40 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             v: 1,
             requests: [{containerId: "战备箱", offset: offset, limit: limit}]
         });
+    }
+
+    private static function unlockFullBattlebox():Void {
+        _root.主线任务进度 = 78;
+        _root.task_chains_progress.挑战 = 3;
+        _root.基建系统.infrastructure.越野车 = true;
+    }
+
+    private static function storagePairSnapshot(targetContainerId:String):Object {
+        return InventoryPanelService.execute("snapshot", {
+            v:1,
+            requests:[
+                {containerId:"背包", offset:0, limit:50},
+                {containerId:targetContainerId, offset:0,
+                    limit:targetContainerId == "战备箱" ? 40 : 50}
+            ]
+        });
+    }
+
+    private static function autoTransferBatchWindows(targetContainerId:String):Array {
+        return [
+            {containerId:"背包", offset:0, limit:50, filterKey:"all"},
+            {containerId:targetContainerId, offset:0,
+                limit:targetContainerId == "战备箱" ? 40 : 50,
+                filterKey:"all"}
+        ];
+    }
+
+    private static function refsFrom(response:Object, snapshotIndex:Number, count:Number):Array {
+        var refs:Array = [];
+        for (var i:Number = 0; i < count; i++) {
+            refs.push(refFrom(response, snapshotIndex, i));
+        }
+        return refs;
     }
 
     private static function filteredSnapshot(containerId:String, offset:Number, limit:Number, filterKey:String):Object {
@@ -1547,6 +1585,340 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
                 && _root.物品栏.仓库.getItem("0") == null
                 && !_root.存档系统.dirtyMark,
             "autoTransfer 目标提交失败时原子回滚且不发布 dirty");
+    }
+
+    private static function testAutoTransferBatchSuccessAndSingleScan():Void {
+        resetInventories();
+        unlockFullBattlebox();
+        var mergeSource:Object = new BaseItem("批量已有材料", 2, 1);
+        var movedStack:Object = new BaseItem("批量新材料", 4, 1);
+        var foldedStack:Object = new BaseItem("批量新材料", 3, 1);
+        var existingTarget:Object = new BaseItem("批量已有材料", 5, 1);
+        _root.物品栏.背包.add(0, mergeSource);
+        _root.物品栏.背包.add(1, movedStack);
+        _root.物品栏.背包.add(2, foldedStack);
+        _root.物品栏.战备箱.add(239, existingTarget);
+
+        var sourceHolder:MovieClip = _root.createEmptyMovieClip(
+            "__inventoryBatchSourceEvents", _root.getNextHighestDepth()
+        );
+        var targetHolder:MovieClip = _root.createEmptyMovieClip(
+            "__inventoryBatchTargetEvents", _root.getNextHighestDepth()
+        );
+        var sourceDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(sourceHolder);
+        var targetDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(targetHolder);
+        var removedCount:Number = 0;
+        var addedCount:Number = 0;
+        var valueCount:Number = 0;
+        sourceDispatcher.subscribe("ItemRemoved", function():Void { removedCount++; });
+        targetDispatcher.subscribe("ItemAdded", function():Void { addedCount++; });
+        targetDispatcher.subscribe("ItemValueChanged", function():Void { valueCount++; });
+        _root.物品栏.背包.setDispatcher(sourceDispatcher);
+        _root.物品栏.战备箱.setDispatcher(targetDispatcher);
+
+        var before:Object = storagePairSnapshot("战备箱");
+        var sourceRevision:Number = _root.物品栏.背包.getMutationRevision();
+        var targetRevision:Number = _root.物品栏.战备箱.getMutationRevision();
+        var sourceRebuilds:Number = _root.物品栏.背包._getIndexRebuildCountForTests();
+        var targetRebuilds:Number = _root.物品栏.战备箱._getIndexRebuildCountForTests();
+        var result:Object = InventoryPanelService.execute("autoTransferBatch", {
+            v:1,
+            sources:refsFrom(before, 0, 3),
+            targetContainerId:"战备箱",
+            policy:"mergeThenEmpty",
+            windows:autoTransferBatchWindows("战备箱")
+        });
+        var perf:Object = InventoryPanelService.testOnlyGetLastBatchPerf();
+
+        assertTrue(result.success && result.operation == "autoTransferBatch"
+                && result.policy == "mergeThenEmpty"
+                && result.requestedCount == 3 && result.completedCount == 3
+                && result.results.length == 3 && result.failure == undefined,
+            "autoTransferBatch 全成功返回稳定 v1 批量响应且省略 failure");
+        assertTrue(result.results[0].operation == "merge"
+                && result.results[0].destination.slot == 239
+                && result.results[1].operation == "move"
+                && result.results[1].destination.slot == 0
+                && result.results[2].operation == "merge"
+                && result.results[2].destination.slot == 0,
+            "autoTransferBatch 按选择顺序模拟已有堆合并、首空移动、再合并新堆");
+        assertTrue(_root.物品栏.战备箱.getItem("239") === existingTarget
+                && existingTarget.value == 7
+                && _root.物品栏.战备箱.getItem("0") === movedStack
+                && movedStack.value == 7
+                && _root.物品栏.背包.getItem("0") == null
+                && _root.物品栏.背包.getItem("1") == null
+                && _root.物品栏.背包.getItem("2") == null,
+            "批量 merge 保留既有对象、批量 move 保留首个 BaseItem 引用并守恒数量");
+        assertTrue(_root.物品栏.背包.getMutationRevision() == sourceRevision + 1
+                && _root.物品栏.战备箱.getMutationRevision() == targetRevision + 1
+                && _root.物品栏.背包._getIndexRebuildCountForTests() == sourceRebuilds + 1
+                && _root.物品栏.战备箱._getIndexRebuildCountForTests() == targetRebuilds + 1,
+            "全成功批量事务每个容器只推进一次 revision 且只重建一次索引");
+        assertTrue(removedCount == 3 && addedCount == 1 && valueCount == 1
+                && _root.存档系统.dirtyMark
+                && result.snapshots.length == 2,
+            "批量成功只标脏一次语义、逐源 removed、逐目标触达槽聚合事件并单次返回窗口组");
+        assertTrue(perf != null && perf.requested == 3 && perf.completed == 3
+                && perf.targetScanned == 240 && perf.plan >= 0
+                && perf.commit >= 0 && perf.snapshot >= 0 && perf.total >= 0,
+            "240 槽战备箱由 batch 规划恰好扫描一次并记录完整分阶段 trace 字段");
+
+        _root.物品栏.背包.setDispatcher(null);
+        _root.物品栏.战备箱.setDispatcher(null);
+        sourceHolder.removeMovieClip();
+        targetHolder.removeMovieClip();
+    }
+
+    private static function testAutoTransferBatchPartialAndValidation():Void {
+        resetInventories();
+        _root.主线任务进度 = 14;
+        var first:Object = new BaseItem("批量前缀一", {level:1}, 1);
+        var blocked:Object = new BaseItem("批量前缀二", {level:1}, 1);
+        var untouched:Object = new BaseItem("批量前缀三", {level:1}, 1);
+        _root.物品栏.背包.add(0, first);
+        _root.物品栏.背包.add(1, blocked);
+        _root.物品栏.背包.add(2, untouched);
+        for (var slot:Number = 0; slot < 39; slot++) {
+            _root.物品栏.战备箱.add(slot, item("批量占位" + slot, {level:1}));
+        }
+        var before:Object = storagePairSnapshot("战备箱");
+        var sourceRevision:Number = _root.物品栏.背包.getMutationRevision();
+        var targetRevision:Number = _root.物品栏.战备箱.getMutationRevision();
+        var sourceRebuilds:Number = _root.物品栏.背包._getIndexRebuildCountForTests();
+        var targetRebuilds:Number = _root.物品栏.战备箱._getIndexRebuildCountForTests();
+        var result:Object = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:refsFrom(before, 0, 3), targetContainerId:"战备箱",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("战备箱")
+        });
+        assertTrue(result.success && result.requestedCount == 3 && result.completedCount == 1
+                && result.results.length == 1 && result.results[0].operation == "move"
+                && result.results[0].destination.slot == 39
+                && result.failure.index == 1 && result.failure.error == "target_full",
+            "目标在第 j 项满时只提交有效前缀并返回零基 failure index 与 target_full");
+        assertTrue(_root.物品栏.战备箱.getItem("39") === first
+                && _root.物品栏.背包.getItem("0") == null
+                && _root.物品栏.背包.getItem("1") === blocked
+                && _root.物品栏.背包.getItem("2") === untouched,
+            "部分成功不会跳过失败项或改写失败项之后的来源槽");
+        assertTrue(_root.物品栏.背包.getMutationRevision() == sourceRevision + 1
+                && _root.物品栏.战备箱.getMutationRevision() == targetRevision + 1
+                && _root.物品栏.背包._getIndexRebuildCountForTests() == sourceRebuilds + 1
+                && _root.物品栏.战备箱._getIndexRebuildCountForTests() == targetRebuilds + 1
+                && result.snapshots.length == 2,
+            "部分前缀仍只执行每容器一次 revision/rebuild 与一次窗口组重投影");
+
+        resetInventories();
+        _root.主线任务进度 = 14;
+        var fullSource:Object = new BaseItem("首项满保护", {level:1}, 1);
+        _root.物品栏.背包.add(0, fullSource);
+        for (slot = 0; slot < 40; slot++) {
+            _root.物品栏.战备箱.add(slot, item("全满占位" + slot, {level:1}));
+        }
+        before = storagePairSnapshot("战备箱");
+        sourceRevision = _root.物品栏.背包.getMutationRevision();
+        targetRevision = _root.物品栏.战备箱.getMutationRevision();
+        sourceRebuilds = _root.物品栏.背包._getIndexRebuildCountForTests();
+        targetRebuilds = _root.物品栏.战备箱._getIndexRebuildCountForTests();
+        result = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:[refFrom(before, 0, 0)], targetContainerId:"战备箱",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("战备箱")
+        });
+        var fullPerf:Object = InventoryPanelService.testOnlyGetLastBatchPerf();
+        assertTrue(!result.success && result.error == "target_full"
+                && result.snapshots == undefined
+                && _root.物品栏.背包.getItem("0") === fullSource
+                && !_root.存档系统.dirtyMark
+                && _root.物品栏.背包.getMutationRevision() == sourceRevision
+                && _root.物品栏.战备箱.getMutationRevision() == targetRevision
+                && _root.物品栏.背包._getIndexRebuildCountForTests() == sourceRebuilds
+                && _root.物品栏.战备箱._getIndexRebuildCountForTests() == targetRebuilds
+                && fullPerf.completed == 0 && fullPerf.targetScanned == 40,
+            "首项即满返回失败且零写、零 dirty、零 snapshot、零 revision/rebuild");
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("陈旧批量来源", 1));
+        before = storagePairSnapshot("仓库");
+        var staleRef:Object = refFrom(before, 0, 0);
+        _root.物品栏.背包.add(49, item("推进版本", 1));
+        var stale:Object = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:[staleRef], targetContainerId:"仓库",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("仓库")
+        });
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("重复来源", 1));
+        before = storagePairSnapshot("仓库");
+        var duplicateRef:Object = refFrom(before, 0, 0);
+        var duplicate:Object = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:[duplicateRef, duplicateRef], targetContainerId:"仓库",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("仓库")
+        });
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("混容器背包", 1));
+        _root.物品栏.仓库.add(0, item("混容器仓库", 1));
+        before = storagePairSnapshot("仓库");
+        var mixed:Object = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:[refFrom(before, 0, 0), refFrom(before, 1, 0)],
+            targetContainerId:"仓库", policy:"mergeThenEmpty",
+            windows:autoTransferBatchWindows("仓库")
+        });
+        var overLimitRefs:Array = [];
+        for (slot = 0; slot < 51; slot++) {
+            overLimitRefs.push({containerId:"背包", slot:slot, expectedLease:"fake"});
+        }
+        var overLimit:Object = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:overLimitRefs, targetContainerId:"仓库",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("仓库")
+        });
+        assertTrue(!stale.success && stale.error == "stale_state"
+                && !duplicate.success && duplicate.error == "invalid_payload"
+                && !mixed.success && mixed.error == "invalid_payload"
+                && !overLimit.success && overLimit.error == "invalid_payload",
+            "batch 严格拒绝 stale、重复槽、混来源容器与超过 50 项请求");
+    }
+
+    private static function testAutoTransferBatchRollback():Void {
+        resetInventories();
+        _root.主线任务进度 = 14;
+        var first:Object = new BaseItem("批量回滚堆", 4, 1);
+        var second:Object = new BaseItem("批量回滚堆", 3, 1);
+        _root.物品栏.背包.add(0, first);
+        _root.物品栏.背包.add(1, second);
+
+        var sourceHolder:MovieClip = _root.createEmptyMovieClip(
+            "__inventoryBatchRollbackSource", _root.getNextHighestDepth()
+        );
+        var targetHolder:MovieClip = _root.createEmptyMovieClip(
+            "__inventoryBatchRollbackTarget", _root.getNextHighestDepth()
+        );
+        var sourceDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(sourceHolder);
+        var targetDispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(targetHolder);
+        var sourceEvents:Number = 0;
+        var targetEvents:Number = 0;
+        sourceDispatcher.subscribe("ItemRemoved", function():Void { sourceEvents++; });
+        targetDispatcher.subscribe("ItemAdded", function():Void { targetEvents++; });
+        targetDispatcher.subscribe("ItemValueChanged", function():Void { targetEvents++; });
+        _root.物品栏.背包.setDispatcher(sourceDispatcher);
+        _root.物品栏.战备箱.setDispatcher(targetDispatcher);
+
+        var before:Object = storagePairSnapshot("战备箱");
+        var sourceRevision:Number = _root.物品栏.背包.getMutationRevision();
+        var targetRevision:Number = _root.物品栏.战备箱.getMutationRevision();
+        var sourceRebuilds:Number = _root.物品栏.背包._getIndexRebuildCountForTests();
+        var targetRebuilds:Number = _root.物品栏.战备箱._getIndexRebuildCountForTests();
+        InventoryPanelService.testOnlyFailNextCommit("战备箱", 0);
+        var result:Object = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:refsFrom(before, 0, 2), targetContainerId:"战备箱",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("战备箱")
+        });
+        var indexes:Array = _root.物品栏.背包.getIndexes();
+        assertTrue(!result.success && result.error == "commit_failed"
+                && _root.物品栏.背包.getItem("0") === first
+                && _root.物品栏.背包.getItem("1") === second
+                && first.value == 4 && second.value == 3
+                && _root.物品栏.战备箱.getItem("0") == null,
+            "目标批量提交故障后 receipt 精确恢复来源槽、数量与对象引用");
+        assertTrue(_root.物品栏.背包.getMutationRevision() == sourceRevision
+                && _root.物品栏.战备箱.getMutationRevision() == targetRevision
+                && _root.物品栏.背包._getIndexRebuildCountForTests() == sourceRebuilds + 1
+                && _root.物品栏.战备箱._getIndexRebuildCountForTests() == targetRebuilds
+                && indexes.length == 2 && indexes[0] == 0 && indexes[1] == 1,
+            "rollback 恢复 raw revision 与旧索引树且故障路径每端不超过一次重建");
+        assertTrue(!_root.存档系统.dirtyMark && sourceEvents == 0 && targetEvents == 0
+                && result.snapshots == undefined,
+            "批量 commit failure 不标脏、不发事件且不生成成功 snapshot");
+
+        _root.物品栏.背包.setDispatcher(null);
+        _root.物品栏.战备箱.setDispatcher(null);
+        sourceHolder.removeMovieClip();
+        targetHolder.removeMovieClip();
+    }
+
+    private static function runAutoTransferComparisonFixture(count:Number, useBatch:Boolean):Object {
+        resetInventories();
+        unlockFullBattlebox();
+        for (var i:Number = 0; i < count; i++) {
+            _root.物品栏.背包.add(i, item("批量性能对照" + i, {level:1}));
+        }
+        var response:Object = storagePairSnapshot("战备箱");
+        var sourceRevision:Number = _root.物品栏.背包.getMutationRevision();
+        var targetRevision:Number = _root.物品栏.战备箱.getMutationRevision();
+        var sourceRebuilds:Number = _root.物品栏.背包._getIndexRebuildCountForTests();
+        var targetRebuilds:Number = _root.物品栏.战备箱._getIndexRebuildCountForTests();
+        var requests:Number = 0;
+        var snapshots:Number = 0;
+        var success:Boolean = true;
+        var started:Number = getTimer();
+        if (useBatch) {
+            var batchResult:Object = InventoryPanelService.execute("autoTransferBatch", {
+                v:1, sources:refsFrom(response, 0, count), targetContainerId:"战备箱",
+                policy:"mergeThenEmpty", windows:autoTransferBatchWindows("战备箱")
+            });
+            requests = 1;
+            success = batchResult.success && batchResult.completedCount == count;
+            snapshots = batchResult.snapshots == undefined ? 0 : batchResult.snapshots.length;
+        } else {
+            for (i = 0; i < count; i++) {
+                response = InventoryPanelService.execute("autoTransfer", {
+                    v:1, source:refFrom(response, 0, i), targetContainerId:"战备箱",
+                    policy:"mergeThenEmpty", windows:autoTransferBatchWindows("战备箱")
+                });
+                requests++;
+                if (!response.success) {
+                    success = false;
+                    break;
+                }
+                snapshots += response.snapshots.length;
+            }
+        }
+        var elapsed:Number = getTimer() - started;
+        var moved:Number = 0;
+        for (i = 0; i < count; i++) {
+            if (_root.物品栏.战备箱.getItem(String(i)) != null) moved++;
+        }
+        return {
+            success:success,
+            elapsed:elapsed,
+            requests:requests,
+            snapshots:snapshots,
+            moved:moved,
+            sourceRevisionDelta:_root.物品栏.背包.getMutationRevision() - sourceRevision,
+            targetRevisionDelta:_root.物品栏.战备箱.getMutationRevision() - targetRevision,
+            sourceRebuildDelta:_root.物品栏.背包._getIndexRebuildCountForTests() - sourceRebuilds,
+            targetRebuildDelta:_root.物品栏.战备箱._getIndexRebuildCountForTests() - targetRebuilds
+        };
+    }
+
+    private static function testAutoTransferBatchComparison():Void {
+        var sizes:Array = [1, 10, 50];
+        for (var i:Number = 0; i < sizes.length; i++) {
+            var count:Number = Number(sizes[i]);
+            var oldMetrics:Object = runAutoTransferComparisonFixture(count, false);
+            var batchMetrics:Object = runAutoTransferComparisonFixture(count, true);
+            trace("[InventoryPanelService PERF] autoTransferComparison"
+                + " count=" + count
+                + " oldTotal=" + oldMetrics.elapsed
+                + " batchTotal=" + batchMetrics.elapsed
+                + " oldRequests=" + oldMetrics.requests
+                + " batchRequests=" + batchMetrics.requests);
+            assertTrue(oldMetrics.success && batchMetrics.success
+                    && oldMetrics.moved == count && batchMetrics.moved == count,
+                count + " 件旧逐项与新 batch 在同进程 fixture 中完成等价移动");
+            assertTrue(oldMetrics.requests == count && batchMetrics.requests == 1
+                    && oldMetrics.snapshots == count * 2 && batchMetrics.snapshots == 2,
+                count + " 件 batch 将逐项 round-trip 等价请求与窗口组压缩为一次");
+            assertTrue(oldMetrics.sourceRevisionDelta == count
+                    && oldMetrics.targetRevisionDelta == count
+                    && oldMetrics.sourceRebuildDelta == count
+                    && oldMetrics.targetRebuildDelta == count
+                    && batchMetrics.sourceRevisionDelta == 1
+                    && batchMetrics.targetRevisionDelta == 1
+                    && batchMetrics.sourceRebuildDelta == 1
+                    && batchMetrics.targetRebuildDelta == 1,
+                count + " 件确定性计数证明 batch 每容器仅一次 revision/index rebuild");
+        }
     }
 
     private static function testMoveMergeSwapAndReverse():Void {

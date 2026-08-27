@@ -820,7 +820,11 @@ function slot(index, name, quantity) {
 function quickFixture(options) {
     options = options || {};
     const slots = {'背包:1':slot(1, 'A'), '背包:2':slot(2, 'B'), '仓库:3':slot(3, 'C')};
+    for (let index = 3; index <= Number(options.slotCount || 2); index++) {
+        slots['背包:' + index] = slot(index, 'Item-' + index);
+    }
     const calls = [];
+    const batchCalls = [];
     const notices = [];
     const errors = [];
     const changes = [];
@@ -835,9 +839,13 @@ function quickFixture(options) {
         getSlot:(containerId, physicalSlot) => slots[containerId + ':' + physicalSlot],
         slotRef:(containerId, value) => ({containerId, slot:value.physicalSlot, expectedLease:value.slotLease}),
         autoTransfer:(source, target, done) => { calls.push({source, target, done}); return options.rejectStart ? false : true; },
+        autoTransferBatch:(sources, target, done) => {
+            batchCalls.push({sources, target, done});
+            return options.rejectBatchStart ? false : true;
+        },
         onChange:state => changes.push(state), onNotice:reason => notices.push(reason), onError:error => errors.push(error)
     });
-    return {controller, slots, calls, notices, errors, changes, authority,
+    return {controller, slots, calls, batchCalls, notices, errors, changes, authority,
         setGeneration(value) { generation = value; }, setCurrent(value) { current = value; }};
 }
 
@@ -871,18 +879,17 @@ test('stale queued projection halts atomically before the authority port', () =>
     f.controller.setMode('deposit');
     f.controller.enqueue('背包', f.slots['背包:1']);
     f.controller.enqueue('背包', f.slots['背包:2']);
-    assert.strictEqual(f.calls.length, 0);
-    assert.strictEqual(f.controller.commit(), true);
     f.slots['背包:2'] = slot(2, 'moved');
-    f.calls[0].done({success:true});
-    assert.strictEqual(f.calls.length, 1);
+    assert.strictEqual(f.controller.commit(), false);
+    assert.strictEqual(f.calls.length, 0);
+    assert.strictEqual(f.batchCalls.length, 0);
     assert.strictEqual(f.errors.length, 1);
     assert.strictEqual(f.errors[0].error, 'stale_state');
     assert.strictEqual(f.controller.getMode(), null);
     assert.strictEqual(f.controller.isBusy(), false);
 });
 
-test('batch mode stages battlebox selections and commits them once', () => {
+test('batch mode sends one ordered lease-bound authority call and marks every source inflight', () => {
     const f = quickFixture();
     const event = {ctrlKey:false, prevented:false, stopped:false,
         preventDefault() { this.prevented = true; }, stopPropagation() { this.stopped = true; }};
@@ -897,13 +904,91 @@ test('batch mode stages battlebox selections and commits them once', () => {
     assert.strictEqual(f.controller.isBusy(), false);
     assert.strictEqual(f.controller.debugState().staged, 2);
     assert.strictEqual(f.controller.commit(), true);
-    assert.strictEqual(f.calls.length, 1);
+    assert.strictEqual(f.calls.length, 0);
+    assert.strictEqual(f.batchCalls.length, 1);
+    assert.strictEqual(f.batchCalls[0].target, '仓库');
+    assert.deepStrictEqual(f.batchCalls[0].sources, [
+        {containerId:'背包', slot:1, expectedLease:'lease-1'},
+        {containerId:'背包', slot:2, expectedLease:'lease-2'}
+    ]);
+    assert.deepStrictEqual(f.controller.debugState().inFlightKeys, ['背包:1', '背包:2']);
+    assert.strictEqual(f.controller.debugState().entries['背包:1'].inflight, true);
+    assert.strictEqual(f.controller.debugState().entries['背包:2'].inflight, true);
     assert.strictEqual(f.controller.isBusy(), true);
-    f.calls[0].done({success:true});
-    assert.strictEqual(f.calls.length, 2);
-    f.calls[1].done({success:true});
+    f.batchCalls[0].done({success:true, completedCount:2});
     assert.strictEqual(f.controller.getMode(), null);
     assert.strictEqual(f.controller.debugState().completed, 2);
+});
+
+test('fifty staged transfers remain one batch RPC in exact selection order', () => {
+    const f = quickFixture({limit:50, slotCount:50});
+    f.controller.setMode('deposit');
+    for (let index = 1; index <= 50; index++) {
+        assert.strictEqual(f.controller.enqueue('背包', f.slots['背包:' + index]), true);
+    }
+    assert.strictEqual(f.controller.commit(), true);
+    assert.strictEqual(f.calls.length, 0);
+    assert.strictEqual(f.batchCalls.length, 1);
+    assert.strictEqual(f.batchCalls[0].sources.length, 50);
+    assert.deepStrictEqual(f.batchCalls[0].sources.map(source => source.slot),
+        Array.from({length:50}, (_, index) => index + 1));
+    assert.strictEqual(f.controller.debugState().inflightCount, 50);
+    f.batchCalls[0].done({success:true, completedCount:50});
+    assert.strictEqual(f.controller.debugState().completed, 50);
+    assert.strictEqual(f.controller.isBusy(), false);
+});
+
+test('batch partial target-full result counts only the committed prefix and reports the stop', () => {
+    const f = quickFixture();
+    f.controller.setMode('deposit');
+    f.controller.enqueue('背包', f.slots['背包:1']);
+    f.controller.enqueue('背包', f.slots['背包:2']);
+    f.controller.commit();
+    f.batchCalls[0].done({success:true, completedCount:1,
+        failure:{index:1, error:'target_full'}});
+    assert.strictEqual(f.controller.debugState().completed, 1);
+    assert.strictEqual(f.controller.debugState().queued, 0);
+    assert.strictEqual(f.controller.getMode(), null);
+    assert.strictEqual(f.errors.length, 1);
+    assert.deepStrictEqual(f.errors[0], {success:true, error:'target_full',
+        failure:{index:1, error:'target_full'}, completedCount:1});
+});
+
+test('batch authoritative target-full no-op reports zero committed items without another write', () => {
+    const f = quickFixture();
+    f.controller.setMode('deposit');
+    f.controller.enqueue('背包', f.slots['背包:1']);
+    f.controller.commit();
+    f.batchCalls[0].done({success:false, error:'target_full'});
+    assert.strictEqual(f.controller.debugState().completed, 0);
+    assert.strictEqual(f.batchCalls.length, 1);
+    assert.strictEqual(f.controller.isBusy(), false);
+    assert.strictEqual(f.errors[0].error, 'target_full');
+});
+
+test('ctrl-click keeps the immediate single auto-transfer port', () => {
+    const f = quickFixture();
+    const event = {ctrlKey:true, preventDefault() {}, stopPropagation() {}};
+    assert.strictEqual(f.controller.acceptClick(event, {
+        profile:'battlebox', viewMode:'storage', containerId:'背包', slot:f.slots['背包:1']
+    }), true);
+    assert.strictEqual(f.calls.length, 1);
+    assert.strictEqual(f.batchCalls.length, 0);
+    f.calls[0].done({success:true});
+    assert.strictEqual(f.controller.debugState().completed, 1);
+});
+
+test('reset and generation change make a late batch callback inert', () => {
+    const f = quickFixture();
+    f.controller.setMode('deposit');
+    f.controller.enqueue('背包', f.slots['背包:1']);
+    f.controller.commit();
+    f.setGeneration(2);
+    f.controller.reset();
+    f.batchCalls[0].done({success:true, completedCount:1});
+    assert.strictEqual(f.controller.debugState().completed, 0);
+    assert.strictEqual(f.controller.isBusy(), false);
+    assert.strictEqual(f.errors.length, 0);
 });
 
 test('mode click gate consumes wrong-side selections without starting authority writes', () => {
@@ -926,6 +1011,13 @@ test('queue limit and rejected authority start expose deterministic failures', (
     assert.strictEqual(rejected.controller.enqueue('背包', rejected.slots['背包:1']), true);
     assert.strictEqual(rejected.errors[0].error, 'busy');
     assert.strictEqual(rejected.controller.isBusy(), false);
+    const rejectedBatch = quickFixture({rejectBatchStart:true});
+    rejectedBatch.controller.setMode('deposit');
+    rejectedBatch.controller.enqueue('背包', rejectedBatch.slots['背包:1']);
+    assert.strictEqual(rejectedBatch.controller.commit(), false);
+    assert.strictEqual(rejectedBatch.batchCalls.length, 1);
+    assert.strictEqual(rejectedBatch.errors[0].error, 'busy');
+    assert.strictEqual(rejectedBatch.controller.isBusy(), false);
 });
 
 test('owned-view presentation rules centralize locked, filtered, and capacity copy', () => {
@@ -951,6 +1043,8 @@ test('owned inventory authority projection keeps inspection while locking exact 
         {inspectable:true, actionable:false, reason:'库存正在处理另一项操作。'});
     assert.deepStrictEqual(OwnedView.authorityInteraction(
         {ready:true, busyOwner:'inventory.autoTransfer'}, true), ready);
+    assert.deepStrictEqual(OwnedView.authorityInteraction(
+        {ready:true, busyOwner:'inventory.autoTransferBatch'}, true), ready);
     assert.strictEqual(OwnedView.authorityInteraction(
         {ready:true, busyOwner:'inventory.autoTransfer'}, false).actionable, false,
         'auto-transfer may enqueue through the existing tile path but never unlocks discard');
@@ -1202,8 +1296,7 @@ test('inventory writers bind every request response and close to the exact activ
     assert(kshop.includes('send: function(message) { return Bridge.send(message); }'));
     assert(npcshop.includes('NpcShopRuntime.createDiagnosticEmitter({'));
     assert(npcshop.includes('send:function(message) { return Bridge.send(message); }'));
-    assert(npcshop.includes(
-        'NpcShopRuntime.createOwnerChannels(\n        function(message) { return Bridge.send(message); }, _runtimeConfig)'));
+    assert(/NpcShopRuntime\.createOwnerChannels\(\r?\n[ \t]{8}function\(message\) \{ return Bridge\.send\(message\); \}, _runtimeConfig\)/.test(npcshop));
     assert.strictEqual(
         (npcshop.match(/function\(message\) \{ return Bridge\.send\(message\); \}/g) || []).length,
         2,

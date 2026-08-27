@@ -69,7 +69,7 @@ $suiteConfigs = @{
         Patterns = @(
             '(?m)^EquipmentInventoryTest Tests Passed: 28\r?$'
             '(?m)^EquipmentInventoryTest Tests Failed: 0\r?$'
-            '(?m)^InventoryPanelServiceTest Tests Passed: 147\r?$'
+            '(?m)^InventoryPanelServiceTest Tests Passed: 170\r?$'
             '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
             '(?m)^CraftingPanelServiceTest Tests Passed: 155\r?$'
             '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
@@ -77,7 +77,7 @@ $suiteConfigs = @{
             '(?m)^NpcShopPanelServiceTest Tests Passed: 66\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'EquipmentInventory 28/28, Inventory 147/147, Crafting 155/155, Synthesis 18/18, NPC 66/66'
+        Summary = 'EquipmentInventory 28/28, Inventory 170/170, Crafting 155/155, Synthesis 18/18, NPC 66/66'
     }
     Shared = @{
         DomainId = 'item-panels-shared'
@@ -94,10 +94,10 @@ $suiteConfigs = @{
         Patterns = @(
             '(?m)^EquipmentInventoryTest Tests Passed: 28\r?$'
             '(?m)^EquipmentInventoryTest Tests Failed: 0\r?$'
-            '(?m)^InventoryPanelServiceTest Tests Passed: 147\r?$'
+            '(?m)^InventoryPanelServiceTest Tests Passed: 170\r?$'
             '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'EquipmentInventory 28/28, Inventory 147/147'
+        Summary = 'EquipmentInventory 28/28, Inventory 170/170'
     }
     Crafting = @{
         DomainId = 'item-panels-crafting'

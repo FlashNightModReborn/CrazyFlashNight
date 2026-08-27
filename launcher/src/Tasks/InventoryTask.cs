@@ -553,6 +553,7 @@ namespace CF7Launcher.Tasks
                 case "merge": action = "inventoryMerge"; isWrite = true; return true;
                 case "swap": action = "inventorySwap"; isWrite = true; return true;
                 case "autoTransfer": action = "inventoryAutoTransfer"; isWrite = true; return true;
+                case "autoTransferBatch": action = "inventoryAutoTransferBatch"; isWrite = true; return true;
                 case "sortAndMerge": action = "inventorySortAndMerge"; isWrite = true; return true;
                 default: action = null; return false;
             }
@@ -600,6 +601,9 @@ namespace CF7Launcher.Tasks
                 return true;
             }
 
+            if (cmd == "autoTransferBatch")
+                return TryNormalizeAutoTransferBatchPayload(payload, out normalized);
+
             if (payload["count"] != null) return false;
             JObject source;
             if (!TryNormalizeSlotRef(payload["source"] as JObject, out source)) return false;
@@ -624,6 +628,152 @@ namespace CF7Launcher.Tasks
             if (!TryNormalizeSlotRef(payload["target"] as JObject, out target)) return false;
             normalized["target"] = target;
             return true;
+        }
+
+        private static bool TryNormalizeAutoTransferBatchPayload(
+            JObject payload,
+            out JObject normalized)
+        {
+            normalized = null;
+            if (!HasExactKeys(
+                    payload,
+                    "v", "sources", "targetContainerId", "policy", "windows")
+                || !HasExactInteger(payload["v"], 1)
+                || !HasExactString(payload["policy"], "mergeThenEmpty")
+                || payload["targetContainerId"] == null
+                || payload["targetContainerId"].Type != JTokenType.String)
+            {
+                return false;
+            }
+
+            JArray sources = payload["sources"] as JArray;
+            if (sources == null || sources.Count < 1 || sources.Count > 50)
+                return false;
+
+            string sourceContainerId = null;
+            var seenSlots = new HashSet<int>();
+            var cleanSources = new JArray();
+            foreach (JToken token in sources)
+            {
+                JObject input = token as JObject;
+                JObject source;
+                if (!HasExactKeys(input, "containerId", "slot", "expectedLease")
+                    || input["containerId"].Type != JTokenType.String
+                    || input["expectedLease"].Type != JTokenType.String
+                    || !TryNormalizeSlotRef(input, out source)) return false;
+
+                string currentContainerId = source.Value<string>("containerId");
+                int currentSlot = source.Value<int>("slot");
+                if (sourceContainerId == null) sourceContainerId = currentContainerId;
+                else if (!string.Equals(
+                    sourceContainerId, currentContainerId, StringComparison.Ordinal)) return false;
+                if (!seenSlots.Add(currentSlot)) return false;
+                cleanSources.Add(source);
+            }
+
+            string targetContainerId = payload.Value<string>("targetContainerId");
+            if (!IsKnownContainerId(targetContainerId)
+                || !IsAllowedAutoTransferPair(sourceContainerId, targetContainerId))
+            {
+                return false;
+            }
+
+            JArray windows;
+            if (!TryNormalizeStrictWindows(payload["windows"] as JArray, out windows)
+                || !WindowSetExactlyMatches(
+                    windows, sourceContainerId, targetContainerId)) return false;
+
+            normalized = new JObject
+            {
+                ["v"] = 1,
+                ["sources"] = cleanSources,
+                ["targetContainerId"] = targetContainerId,
+                ["policy"] = "mergeThenEmpty",
+                ["windows"] = windows
+            };
+            return true;
+        }
+
+        private static bool TryNormalizeStrictWindows(
+            JArray requests,
+            out JArray normalized)
+        {
+            normalized = null;
+            if (requests == null || requests.Count < 1 || requests.Count > 4)
+                return false;
+            foreach (JToken token in requests)
+            {
+                JObject request = token as JObject;
+                if (!HasOnlyKeys(
+                        request,
+                        "containerId", "offset", "limit", "filterKey",
+                        "scope", "filterSpec")
+                    || !HasRequiredKeys(request, "containerId", "offset", "limit")
+                    || request["containerId"].Type != JTokenType.String)
+                {
+                    return false;
+                }
+                if (request.Property("filterKey") != null
+                    && request["filterKey"].Type != JTokenType.String) return false;
+                if (request.Property("scope") != null
+                    && request["scope"].Type != JTokenType.String) return false;
+                if (!HasStrictFilterSpecKeys(request["filterSpec"])) return false;
+            }
+            return TryNormalizeWindows(requests, out normalized);
+        }
+
+        private static bool HasStrictFilterSpecKeys(JToken token)
+        {
+            if (token == null || token.Type == JTokenType.Null) return true;
+            JObject input = token as JObject;
+            if (input == null) return false;
+            JToken branchToken = input["branch"];
+            if (branchToken != null && branchToken.Type != JTokenType.String)
+                return false;
+            string branch = input.Value<string>("branch") ?? "category";
+            if (branch == "set")
+                return HasOnlyKeys(input, "branch", "setId")
+                    && (input.Property("setId") == null
+                        || input["setId"].Type == JTokenType.String);
+            if (branch != "category") return false;
+            if (!HasOnlyKeys(input, "branch", "major", "use", "subtype"))
+                return false;
+            return (input.Property("major") == null
+                    || input["major"].Type == JTokenType.String)
+                && (input.Property("use") == null
+                    || input["use"].Type == JTokenType.String)
+                && (input.Property("subtype") == null
+                    || input["subtype"].Type == JTokenType.String);
+        }
+
+        private static bool IsAllowedAutoTransferPair(
+            string sourceContainerId,
+            string targetContainerId)
+        {
+            if (sourceContainerId == "背包")
+                return targetContainerId == "仓库" || targetContainerId == "战备箱";
+            return targetContainerId == "背包"
+                && (sourceContainerId == "仓库" || sourceContainerId == "战备箱");
+        }
+
+        private static bool WindowSetExactlyMatches(
+            JArray windows,
+            string sourceContainerId,
+            string targetContainerId)
+        {
+            if (windows == null || windows.Count != 2) return false;
+            var expected = new HashSet<string>(StringComparer.Ordinal)
+            {
+                sourceContainerId,
+                targetContainerId
+            };
+            foreach (JToken token in windows)
+            {
+                JObject window = token as JObject;
+                if (window == null
+                    || !expected.Remove(window.Value<string>("containerId"))) return false;
+            }
+            return expected.Count == 0;
         }
 
         private static bool TryNormalizeWindows(JArray requests, out JArray normalized)
@@ -829,6 +979,21 @@ namespace CF7Launcher.Tasks
                     ? container.Value<string>("containerId") : null);
                 return affected;
             }
+            if (cmd == "autoTransferBatch")
+            {
+                JArray sources = normalized["sources"] as JArray;
+                if (sources != null)
+                {
+                    foreach (JToken token in sources)
+                    {
+                        JObject sourceEntry = token as JObject;
+                        AddContainer(affected, sourceEntry != null
+                            ? sourceEntry.Value<string>("containerId") : null);
+                    }
+                }
+                AddContainer(affected, normalized.Value<string>("targetContainerId"));
+                return affected;
+            }
             JObject source = normalized["source"] as JObject;
             AddContainer(affected, source != null
                 ? source.Value<string>("containerId") : null);
@@ -1031,6 +1196,113 @@ namespace CF7Launcher.Tasks
                     },
                     ["snapshots"] = snapshots
                 };
+                return true;
+            }
+
+            if (entry.WebCmd == "autoTransferBatch")
+            {
+                JArray sources = entry.NormalizedPayload != null
+                    ? entry.NormalizedPayload["sources"] as JArray : null;
+                int requestedCount = sources != null ? sources.Count : 0;
+                int responseRequestedCount;
+                int completedCount = 0;
+                string targetContainerId = entry.NormalizedPayload != null
+                    ? entry.NormalizedPayload.Value<string>("targetContainerId") : null;
+                JArray inputResults = message["results"] as JArray;
+                bool countsValid = TryReadInteger(
+                        message["requestedCount"], 1, 50, out responseRequestedCount)
+                    && responseRequestedCount == requestedCount
+                    && TryReadInteger(
+                        message["completedCount"], 1, requestedCount, out completedCount);
+                bool partial = countsValid && completedCount < requestedCount;
+                if ((!partial && !HasExactKeys(message,
+                            "task", "callId", "success", "v", "operation", "policy",
+                            "requestedCount", "completedCount", "results", "snapshots"))
+                    || (partial && !HasExactKeys(message,
+                            "task", "callId", "success", "v", "operation", "policy",
+                            "requestedCount", "completedCount", "results", "failure",
+                            "snapshots"))
+                    || !HasExactInteger(message["v"], 1)
+                    || !HasExactString(message["operation"], "autoTransferBatch")
+                    || !HasExactString(message["policy"], "mergeThenEmpty")
+                    || !countsValid
+                    || inputResults == null
+                    || inputResults.Count != completedCount)
+                {
+                    return false;
+                }
+
+                var results = new JArray();
+                foreach (JToken token in inputResults)
+                {
+                    JObject result = token as JObject;
+                    JObject destination = result != null
+                        ? result["destination"] as JObject : null;
+                    string operation = result != null
+                        ? result.Value<string>("operation") : null;
+                    int destinationSlot;
+                    if (!HasExactKeys(result, "operation", "destination")
+                        || (operation != "move" && operation != "merge")
+                        || !HasExactKeys(destination, "containerId", "slot")
+                        || destination["containerId"].Type != JTokenType.String
+                        || destination.Value<string>("containerId") != targetContainerId
+                        || !TryReadInteger(
+                            destination["slot"], 0, 1199, out destinationSlot))
+                    {
+                        return false;
+                    }
+                    results.Add(new JObject
+                    {
+                        ["operation"] = operation,
+                        ["destination"] = new JObject
+                        {
+                            ["containerId"] = targetContainerId,
+                            ["slot"] = destinationSlot
+                        }
+                    });
+                }
+
+                JObject failure = message["failure"] as JObject;
+                if (partial)
+                {
+                    int failureIndex;
+                    if (!HasExactKeys(failure, "index", "error")
+                        || !TryReadInteger(
+                            failure["index"], completedCount, completedCount,
+                            out failureIndex)
+                        || !HasExactString(failure["error"], "target_full"))
+                    {
+                        return false;
+                    }
+                }
+                if (!TrySanitizeSnapshotBatch(
+                        message["snapshots"] as JArray,
+                        entry.NormalizedPayload != null
+                            ? entry.NormalizedPayload["windows"] as JArray : null,
+                        true,
+                        out snapshots)
+                    || !SnapshotBatchMatchesAffected(
+                        snapshots, entry.AffectedContainers)) return false;
+
+                normalized = new JObject
+                {
+                    ["success"] = true,
+                    ["v"] = 1,
+                    ["operation"] = "autoTransferBatch",
+                    ["policy"] = "mergeThenEmpty",
+                    ["requestedCount"] = requestedCount,
+                    ["completedCount"] = completedCount,
+                    ["results"] = results,
+                    ["snapshots"] = snapshots
+                };
+                if (partial)
+                {
+                    normalized["failure"] = new JObject
+                    {
+                        ["index"] = completedCount,
+                        ["error"] = "target_full"
+                    };
+                }
                 return true;
             }
 

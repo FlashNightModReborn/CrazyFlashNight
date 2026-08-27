@@ -15,6 +15,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     private var occupiedCount:Number; //当前占用格子数（与 items 对齐，用于快速校验 indexes 完整性）
     private var mutationRevision:Number; //每次成功写入后单调递增，供只读投影缓存做 O(1) 失效判断
     private var transactionWriteFaultHookForTests:Function; //仅供 focused TestLoader 注入同步提交异常
+    private var indexRebuildCountForTests:Number; //仅供 focused TestLoader 钉住批量事务的确定性复杂度
 
     public function ArrayInventory(_items:Object,_capacity:Number) {
         super(_items);
@@ -25,6 +26,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         indexes = new TreeSet(null, TreeSet.TYPE_WAVL);
         indexesDirty = true;
         occupiedCount = 0;
+        indexRebuildCountForTests = 0;
         rebuildIndexesFromItems();
     }
 
@@ -119,6 +121,12 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         return isNaN(current) || current < 0 ? 0 : current;
     }
 
+    /** focused TestLoader 只读计数；生产逻辑不依赖此值。 */
+    public function _getIndexRebuildCountForTests():Number {
+        var current:Number = Number(indexRebuildCountForTests);
+        return isNaN(current) || current < 0 ? 0 : current;
+    }
+
     /** focused TestLoader 故障注入；正式运行时默认永远为 null。 */
     public function _setTransactionWriteFaultHookForTests(hook:Function):Void {
         transactionWriteFaultHookForTests = hook;
@@ -184,6 +192,134 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             this.mutationRevision = previousRevision;
             return false;
         }
+    }
+
+    /**
+     * 多槽事务的纯预检入口。changes 每项为：
+     * {slot, expectedItem, item, hasFinalValue?, finalValue?}。
+     * expectedItem 与 item 都是精确对象引用；空槽显式写 null。
+     */
+    public function canApplySlotTransaction(changes:Array):Boolean {
+        if (!(changes instanceof Array) || changes.length < 1) return false;
+        var seenSlots:Object = {};
+        for (var i:Number = 0; i < changes.length; i++) {
+            var change:Object = changes[i];
+            if (change == null) return false;
+            var slot:Number = Number(change.slot);
+            if (isNaN(slot) || Math.floor(slot) != slot || slot < 0 || slot >= capacity) return false;
+            var slotKey:String = String(slot);
+            if (seenSlots[slotKey] === true) return false;
+            seenSlots[slotKey] = true;
+            if (getItem(slotKey) !== change.expectedItem) return false;
+            if (!isValidTransactionItem(change.item)) return false;
+            if (change.hasFinalValue === true) {
+                var finalValue:Number = Number(change.finalValue);
+                if (change.item == null || typeof change.item.value != "number"
+                        || isNaN(finalValue) || finalValue <= 0) return false;
+            }
+        }
+        return true;
+    }
+
+    private function isValidTransactionItem(item:Object):Boolean {
+        if (item == null) return true;
+        if (item.name == undefined || item.name == ""
+                || item.value == undefined || item.value == null) return false;
+        return typeof item.value != "number" || (!isNaN(Number(item.value)) && Number(item.value) > 0);
+    }
+
+    private function buildSlotTransactionReceipt(changes:Array):Object {
+        var receiptChanges:Array = [];
+        for (var i:Number = 0; i < changes.length; i++) {
+            var change:Object = changes[i];
+            var slot:Number = Number(change.slot);
+            receiptChanges.push({
+                slot:slot,
+                beforeHad:items.hasOwnProperty(String(slot)),
+                beforeItem:items[slot],
+                afterItem:change.item,
+                hasFinalValue:change.hasFinalValue === true,
+                beforeValue:change.item == null ? undefined : change.item.value,
+                afterValue:change.finalValue
+            });
+        }
+        return {
+            success:true,
+            owner:this,
+            beforeRevision:mutationRevision,
+            previousIndexes:indexes,
+            previousIndexesDirty:indexesDirty,
+            previousOccupiedCount:occupiedCount,
+            changes:receiptChanges
+        };
+    }
+
+    private function applySlotTransactionReceipt(receipt:Object):Void {
+        var changes:Array = receipt.changes;
+        var i:Number;
+        for (i = 0; i < changes.length; i++) {
+            var change:Object = changes[i];
+            if (change.afterItem == null) delete items[change.slot];
+            else items[change.slot] = change.afterItem;
+        }
+        for (i = 0; i < changes.length; i++) {
+            change = changes[i];
+            if (change.hasFinalValue === true) change.afterItem.value = Number(change.afterValue);
+        }
+        indexesDirty = true;
+        rebuildIndexesFromItems();
+        bumpMutationRevision();
+        receipt.revision = mutationRevision;
+    }
+
+    /**
+     * 完整预检后一次提交多个槽位，只重建一次索引并只推进一次 revision。
+     * 热路径不捕获异常；所有可预期失败都必须在任何写入前返回 false receipt。
+     */
+    public function transactionApplySlotChangesWithReceipt(changes:Array):Object {
+        if (!canApplySlotTransaction(changes)) return {success:false, rollbackComplete:true};
+        var receipt:Object = buildSlotTransactionReceipt(changes);
+        applySlotTransactionReceipt(receipt);
+        return receipt;
+    }
+
+    private function slotTransactionMatchesAfter(receipt:Object):Boolean {
+        var changes:Array = receipt.changes;
+        for (var i:Number = 0; i < changes.length; i++) {
+            var change:Object = changes[i];
+            if (getItem(String(change.slot)) !== change.afterItem) return false;
+            if (change.hasFinalValue === true
+                    && change.afterItem.value !== Number(change.afterValue)) return false;
+        }
+        return true;
+    }
+
+    private function restoreSlotTransactionReceipt(receipt:Object):Void {
+        var changes:Array = receipt.changes;
+        var i:Number;
+        for (i = 0; i < changes.length; i++) {
+            var change:Object = changes[i];
+            if (change.hasFinalValue === true) change.afterItem.value = change.beforeValue;
+        }
+        for (i = 0; i < changes.length; i++) {
+            change = changes[i];
+            if (change.beforeHad === true) items[change.slot] = change.beforeItem;
+            else delete items[change.slot];
+        }
+        indexes = receipt.previousIndexes;
+        indexesDirty = receipt.previousIndexesDirty;
+        occupiedCount = Number(receipt.previousOccupiedCount);
+        mutationRevision = Number(receipt.beforeRevision);
+    }
+
+    /** 只回滚本容器刚签发且未被后续写覆盖的多槽 receipt。 */
+    public function rollbackSlotTransaction(receipt:Object):Boolean {
+        if (receipt == null || receipt.success !== true || receipt.owner !== this
+                || !(receipt.changes instanceof Array)
+                || getMutationRevision() != Number(receipt.revision)
+                || !slotTransactionMatchesAfter(receipt)) return false;
+        restoreSlotTransactionReceipt(receipt);
+        return getMutationRevision() == Number(receipt.beforeRevision);
     }
 
     /**
@@ -639,6 +775,9 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * 从当前 items 重建索引树，并返回最新索引数组（升序、去重、范围内）。
      */
     private function rebuildIndexesFromItems():Array {
+        var rebuildCount:Number = Number(indexRebuildCountForTests);
+        if (isNaN(rebuildCount) || rebuildCount < 0) rebuildCount = 0;
+        indexRebuildCountForTests = rebuildCount + 1;
         var indexArr:Array = [];
         var seen:Object = {};
         for (var key:String in this.items) {

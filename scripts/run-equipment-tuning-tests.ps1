@@ -83,10 +83,10 @@ $focusedRun = @{
     ExpectedTracePatterns = @(
         '(?m)^EquipmentTuningServiceTest Tests Passed: 78\r?$'
         '(?m)^EquipmentTuningServiceTest Tests Failed: 0\r?$'
-        '(?m)^InventoryPanelServiceTest Tests Passed: 147\r?$'
+        '(?m)^InventoryPanelServiceTest Tests Passed: 170\r?$'
         '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'Equipment 78/78, Inventory 147/147'
+    SuccessSummary = 'Equipment 78/78, Inventory 170/170'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

@@ -58,6 +58,21 @@ namespace CF7Launcher.Tests.Tasks
                     new JObject { ["containerId"] = "仓库", ["offset"] = 50, ["limit"] = 50, ["filterKey"] = "material" }
                 };
             }
+            else if (cmd == "autoTransferBatch")
+            {
+                payload["sources"] = new JArray
+                {
+                    SlotRef("背包", 2, "inv100.2"),
+                    SlotRef("背包", 3, "inv100.3")
+                };
+                payload["targetContainerId"] = "仓库";
+                payload["policy"] = "mergeThenEmpty";
+                payload["windows"] = new JArray
+                {
+                    new JObject { ["containerId"] = "背包", ["offset"] = 0, ["limit"] = 1, ["filterKey"] = "all" },
+                    new JObject { ["containerId"] = "仓库", ["offset"] = 0, ["limit"] = 1, ["filterKey"] = "all" }
+                };
+            }
             else
             {
                 payload["source"] = SlotRef("背包", 2, "inv100.2");
@@ -231,7 +246,7 @@ namespace CF7Launcher.Tests.Tasks
         private static JObject StrictWriteRequest(string cmd, string callId)
         {
             JObject request = Request(cmd, callId);
-            if (cmd == "autoTransfer")
+            if (cmd == "autoTransfer" || cmd == "autoTransferBatch")
             {
                 request["payload"]["windows"] = new JArray
                 {
@@ -293,6 +308,37 @@ namespace CF7Launcher.Tests.Tasks
                 {
                     Snapshot("背包", 50, 0, 1, 104),
                     Snapshot("仓库", 1200, 0, 1, 105)
+                };
+            }
+            else if (cmd == "autoTransferBatch")
+            {
+                response["operation"] = "autoTransferBatch";
+                response["policy"] = "mergeThenEmpty";
+                response["requestedCount"] = 2;
+                response["completedCount"] = 2;
+                response["results"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["operation"] = "move",
+                        ["destination"] = new JObject
+                        {
+                            ["containerId"] = "仓库", ["slot"] = 0
+                        }
+                    },
+                    new JObject
+                    {
+                        ["operation"] = "merge",
+                        ["destination"] = new JObject
+                        {
+                            ["containerId"] = "仓库", ["slot"] = 0
+                        }
+                    }
+                };
+                response["snapshots"] = new JArray
+                {
+                    Snapshot("背包", 50, 0, 1, 107),
+                    Snapshot("仓库", 1200, 0, 1, 108)
                 };
             }
             else if (cmd == "sortAndMerge")
@@ -461,7 +507,8 @@ namespace CF7Launcher.Tests.Tasks
         {
             string[] commands =
             {
-                "discard", "move", "merge", "swap", "autoTransfer", "sortAndMerge"
+                "discard", "move", "merge", "swap", "autoTransfer",
+                "autoTransferBatch", "sortAndMerge"
             };
             string[] mutations =
             {
@@ -488,6 +535,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("merge")]
         [InlineData("swap")]
         [InlineData("autoTransfer")]
+        [InlineData("autoTransferBatch")]
         [InlineData("sortAndMerge")]
         public void StrictWriteSnapshotBaselineIsAcceptedForEveryMutationCommand(
             string cmd)
@@ -573,6 +621,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("merge", "source")]
         [InlineData("swap", "target")]
         [InlineData("autoTransfer", "window")]
+        [InlineData("autoTransferBatch", "batchSource")]
         [InlineData("sortAndMerge", "container")]
         public void UnknownContainerWriteIsRejectedBeforeAdmission(
             string cmd,
@@ -593,6 +642,8 @@ namespace CF7Launcher.Tests.Tasks
                 request["payload"]["target"]["containerId"] = "秘密容器";
             else if (location == "window")
                 request["payload"]["windows"][0]["containerId"] = "秘密容器";
+            else if (location == "batchSource")
+                request["payload"]["sources"][0]["containerId"] = "秘密容器";
             else
                 request["payload"]["container"]["containerId"] = "秘密容器";
 
@@ -607,6 +658,7 @@ namespace CF7Launcher.Tests.Tasks
         [Theory]
         [InlineData("snapshot", false)]
         [InlineData("autoTransfer", true)]
+        [InlineData("autoTransferBatch", true)]
         public void InvalidSnapshotWindowSetIsRejectedBeforeTransport(
             string cmd,
             bool duplicate)
@@ -1235,6 +1287,335 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void AutoTransferBatch_MapsTrustedActionAndRebuildsExactSelectors()
+        {
+            string sent = null;
+            var task = new InventoryTask(
+                () => true,
+                payload => { sent = payload; return true; });
+            JObject request = Request(
+                "autoTransferBatch", "wb.inventory.auto-batch.map");
+
+            task.HandleWebRequest("autoTransferBatch", request);
+
+            JObject message = ParseSent(sent);
+            Assert.Equal("cmd", message.Value<string>("task"));
+            Assert.Equal(
+                "inventoryAutoTransferBatch", message.Value<string>("action"));
+            Assert.Equal(1, message.Value<int>("v"));
+            Assert.Equal("仓库", message.Value<string>("targetContainerId"));
+            Assert.Equal("mergeThenEmpty", message.Value<string>("policy"));
+            JArray sources = (JArray)message["sources"];
+            Assert.Equal(2, sources.Count);
+            Assert.Equal("背包", sources[0].Value<string>("containerId"));
+            Assert.Equal(2, sources[0].Value<int>("slot"));
+            Assert.Equal("inv100.2", sources[0].Value<string>("expectedLease"));
+            Assert.Equal(3, sources[1].Value<int>("slot"));
+            Assert.Equal(2, ((JArray)message["windows"]).Count);
+            Assert.Null(message["payload"]);
+            Assert.Equal("write_pending", task.WriteState);
+            task.Dispose();
+        }
+
+        [Theory]
+        [InlineData("背包", "仓库")]
+        [InlineData("背包", "战备箱")]
+        [InlineData("仓库", "背包")]
+        [InlineData("战备箱", "背包")]
+        public void AutoTransferBatch_AllowsOnlySupportedDirectionalPairs(
+            string sourceContainerId,
+            string targetContainerId)
+        {
+            string sent = null;
+            var task = new InventoryTask(
+                () => true,
+                payload => { sent = payload; return true; });
+            JObject request = Request(
+                "autoTransferBatch",
+                "wb.inventory.auto-batch.pair." + Guid.NewGuid().ToString("N"));
+            foreach (JToken source in (JArray)request["payload"]["sources"])
+                source["containerId"] = sourceContainerId;
+            request["payload"]["targetContainerId"] = targetContainerId;
+            request["payload"]["windows"] = new JArray
+            {
+                new JObject
+                {
+                    ["containerId"] = sourceContainerId, ["offset"] = 0,
+                    ["limit"] = 1, ["filterKey"] = "all"
+                },
+                new JObject
+                {
+                    ["containerId"] = targetContainerId, ["offset"] = 0,
+                    ["limit"] = 1, ["filterKey"] = "all"
+                }
+            };
+
+            task.HandleWebRequest("autoTransferBatch", request);
+
+            Assert.NotNull(sent);
+            JObject message = ParseSent(sent);
+            Assert.Equal(sourceContainerId,
+                message["sources"][0].Value<string>("containerId"));
+            Assert.Equal(targetContainerId,
+                message.Value<string>("targetContainerId"));
+            task.Dispose();
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(50)]
+        public void AutoTransferBatch_AcceptsSourceCountBounds(int sourceCount)
+        {
+            string sent = null;
+            var task = new InventoryTask(
+                () => true,
+                payload => { sent = payload; return true; });
+            JObject request = Request(
+                "autoTransferBatch",
+                "wb.inventory.auto-batch.bound." + sourceCount);
+            var sources = new JArray();
+            for (int i = 0; i < sourceCount; i++)
+                sources.Add(SlotRef("背包", i, "inv.bound." + i));
+            request["payload"]["sources"] = sources;
+
+            task.HandleWebRequest("autoTransferBatch", request);
+
+            Assert.NotNull(sent);
+            Assert.Equal(sourceCount, ((JArray)ParseSent(sent)["sources"]).Count);
+            task.Dispose();
+        }
+
+        [Fact]
+        public void AutoTransferBatch_RejectsExtrasBoundsDuplicatesMixedSourcesAndIllegalPairs()
+        {
+            Action<JObject>[] mutateRequests =
+            {
+                request => request["payload"]["extra"] = true,
+                request => request["payload"]["sources"][0]["extra"] = true,
+                request => request["payload"]["windows"][0]["extra"] = true,
+                request =>
+                {
+                    request["payload"]["windows"][0]["filterSpec"] = new JObject
+                    {
+                        ["major"] = "all", ["extra"] = true
+                    };
+                },
+                request => request["payload"]["sources"] = new JArray(),
+                request =>
+                {
+                    var sources = new JArray();
+                    for (int i = 0; i < 51; i++)
+                        sources.Add(SlotRef("背包", i, "inv.limit." + i));
+                    request["payload"]["sources"] = sources;
+                },
+                request => request["payload"]["sources"][1]["slot"] = 2,
+                request => request["payload"]["sources"][1]["containerId"] = "仓库",
+                request => request["payload"]["sources"][0]["expectedLease"] = 7,
+                request => request["payload"]["sources"][0]["slot"] = -1,
+                request => request["payload"]["policy"] = "firstEmpty",
+                request => request["payload"]["targetContainerId"] = "秘密容器",
+                request => request["payload"]["targetContainerId"] = "背包",
+                request =>
+                {
+                    foreach (JToken source in (JArray)request["payload"]["sources"])
+                        source["containerId"] = "仓库";
+                    request["payload"]["targetContainerId"] = "战备箱";
+                    request["payload"]["windows"] = new JArray
+                    {
+                        new JObject
+                        {
+                            ["containerId"] = "仓库", ["offset"] = 0,
+                            ["limit"] = 1, ["filterKey"] = "all"
+                        },
+                        new JObject
+                        {
+                            ["containerId"] = "战备箱", ["offset"] = 0,
+                            ["limit"] = 1, ["filterKey"] = "all"
+                        }
+                    };
+                },
+                request => request["payload"]["windows"] = new JArray
+                {
+                    ((JObject)request["payload"]["windows"][0]).DeepClone()
+                },
+                request => request["payload"]["windows"] = "not-an-array"
+            };
+
+            for (int i = 0; i < mutateRequests.Length; i++)
+            {
+                int sends = 0;
+                string posted = null;
+                var task = new InventoryTask(
+                    () => true,
+                    _ => { sends++; return true; });
+                task.SetPostToWeb(json => posted = json);
+                JObject request = Request(
+                    "autoTransferBatch", "wb.inventory.auto-batch.invalid." + i);
+                mutateRequests[i](request);
+
+                task.HandleWebRequest("autoTransferBatch", request);
+
+                Assert.Equal(0, sends);
+                Assert.Equal(
+                    "invalid_payload", JObject.Parse(posted).Value<string>("error"));
+                Assert.Equal("idle", task.WriteState);
+                task.Dispose();
+            }
+        }
+
+        [Fact]
+        public void AutoTransferBatch_AcceptsStrictFullAndPartialSuccess()
+        {
+            foreach (bool partial in new[] { false, true })
+            {
+                string sent = null;
+                string posted = null;
+                var task = new InventoryTask(
+                    () => true,
+                    payload => { sent = payload; return true; });
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(
+                    "autoTransferBatch",
+                    StrictWriteRequest(
+                        "autoTransferBatch",
+                        "wb.inventory.auto-batch.success." + partial));
+                JObject response = StrictWriteSuccess(
+                    "autoTransferBatch", ParseSent(sent));
+                if (partial)
+                {
+                    response["completedCount"] = 1;
+                    ((JArray)response["results"]).RemoveAt(1);
+                    response["failure"] = new JObject
+                    {
+                        ["index"] = 1, ["error"] = "target_full"
+                    };
+                }
+
+                task.HandleFlashResponse(response, _ => { });
+
+                JObject web = JObject.Parse(posted);
+                Assert.True(web.Value<bool>("success"));
+                Assert.Equal("autoTransferBatch", web.Value<string>("operation"));
+                Assert.Equal(2, web.Value<int>("requestedCount"));
+                Assert.Equal(partial ? 1 : 2, web.Value<int>("completedCount"));
+                Assert.Equal(partial ? 1 : 2, ((JArray)web["results"]).Count);
+                Assert.Equal(partial, web["failure"] != null);
+                Assert.Equal("idle", task.WriteState);
+                task.Dispose();
+            }
+        }
+
+        [Fact]
+        public void AutoTransferBatch_MalformedSuccessFailsClosedAgainstFrozenSelectors()
+        {
+            Action<JObject>[] mutateResponses =
+            {
+                response => response["extra"] = true,
+                response => response["operation"] = "move",
+                response => response["policy"] = "firstEmpty",
+                response => response["requestedCount"] = 1,
+                response => response["completedCount"] = 0,
+                response => ((JArray)response["results"]).RemoveAt(1),
+                response => response["results"][0]["extra"] = true,
+                response => response["results"][0]["destination"]["containerId"] = "战备箱",
+                response => response["results"][0]["destination"]["slot"] = "0",
+                response => ((JArray)response["snapshots"]).RemoveAt(1),
+                response => response["snapshots"][0]["offset"] = 1,
+                response => response["failure"] = new JObject
+                {
+                    ["index"] = 2, ["error"] = "target_full"
+                },
+                response =>
+                {
+                    response["completedCount"] = 1;
+                    ((JArray)response["results"]).RemoveAt(1);
+                },
+                response =>
+                {
+                    response["completedCount"] = 1;
+                    ((JArray)response["results"]).RemoveAt(1);
+                    response["failure"] = new JObject
+                    {
+                        ["index"] = 0, ["error"] = "target_full"
+                    };
+                },
+                response =>
+                {
+                    response["completedCount"] = 1;
+                    ((JArray)response["results"]).RemoveAt(1);
+                    response["failure"] = new JObject
+                    {
+                        ["index"] = 1, ["error"] = "stale_state"
+                    };
+                }
+            };
+
+            for (int i = 0; i < mutateResponses.Length; i++)
+            {
+                string sent = null;
+                string posted = null;
+                var task = new InventoryTask(
+                    () => true,
+                    payload => { sent = payload; return true; });
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(
+                    "autoTransferBatch",
+                    StrictWriteRequest(
+                        "autoTransferBatch",
+                        "wb.inventory.auto-batch.malformed." + i));
+                JObject response = StrictWriteSuccess(
+                    "autoTransferBatch", ParseSent(sent));
+                mutateResponses[i](response);
+
+                task.HandleFlashResponse(response, _ => { });
+
+                JObject web = JObject.Parse(posted);
+                Assert.Equal("malformed_response", web.Value<string>("error"));
+                Assert.True(web.Value<bool>("requiresReconcile"));
+                Assert.Equal("needs_reconcile", task.WriteState);
+                task.Dispose();
+            }
+        }
+
+        [Fact]
+        public void AutoTransferBatch_TargetFullIsDefinitiveButCommitFailedNeedsReconcile()
+        {
+            foreach (string error in new[] { "target_full", "commit_failed" })
+            {
+                string sent = null;
+                string posted = null;
+                var task = new InventoryTask(
+                    () => true,
+                    payload => { sent = payload; return true; });
+                task.SetPostToWeb(json => posted = json);
+                task.HandleWebRequest(
+                    "autoTransferBatch",
+                    Request(
+                        "autoTransferBatch",
+                        "wb.inventory.auto-batch.failure." + error));
+                JObject flash = ParseSent(sent);
+
+                task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "inventory_response",
+                    ["callId"] = flash.Value<int>("callId"),
+                    ["success"] = false,
+                    ["error"] = error
+                }, _ => { });
+
+                JObject web = JObject.Parse(posted);
+                Assert.False(web.Value<bool>("success"));
+                Assert.Equal(error, web.Value<string>("error"));
+                Assert.Equal(error == "commit_failed",
+                    web.Value<bool?>("requiresReconcile") == true);
+                Assert.Equal(
+                    error == "commit_failed" ? "needs_reconcile" : "idle",
+                    task.WriteState);
+                task.Dispose();
+            }
+        }
+
+        [Fact]
         public void TransferRejectsPartialCountAndMalformedLease()
         {
             int sends = 0;
@@ -1626,6 +2007,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("merge", "背包,仓库")]
         [InlineData("swap", "背包,仓库")]
         [InlineData("autoTransfer", "背包,仓库")]
+        [InlineData("autoTransferBatch", "背包,仓库")]
         [InlineData("sortAndMerge", "仓库")]
         public void EveryMutationUsesThreeStateGateAndExactAffectedSet(
             string cmd,

@@ -99,7 +99,8 @@
             return {inspectable:true, actionable:false, reason:'库存正在同步，请稍候。'};
         }
         if (state.busyOwner && !(allowAutoTransfer
-                && state.busyOwner === 'inventory.autoTransfer')) {
+                && (state.busyOwner === 'inventory.autoTransfer'
+                    || state.busyOwner === 'inventory.autoTransferBatch'))) {
             return {inspectable:true, actionable:false, reason:'库存正在处理另一项操作。'};
         }
         return {inspectable:true, actionable:true, reason:''};

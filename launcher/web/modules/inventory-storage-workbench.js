@@ -62,6 +62,7 @@ var InventoryStorageWorkbench = (function() {
         getSlot:findCurrentSlot,
         slotRef:slotRef,
         autoTransfer:function(source, target, done) { return _coordinator.autoTransfer(source, target, done); },
+        autoTransferBatch:function(sources, target, done) { return _coordinator.autoTransferBatch(sources, target, done); },
         onChange:function() {
             clearSelection(); hideTooltip(); renderInventories(); refreshControls();
         },
@@ -643,7 +644,8 @@ var InventoryStorageWorkbench = (function() {
         }
         if (_retryButton) _retryButton.style.display = _state.refreshRequired ? '' : 'none';
         var quickBlocked = _viewMode === 'tuning' || !_state.ready || !!_state.refreshRequired
-            || (!!_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer');
+            || (!!_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer'
+                && _state.busyOwner !== 'inventory.autoTransferBatch');
         var quickState = _quickTransfer.debugState();
         if (_quickDepositButton) _quickDepositButton.disabled = quickBlocked || quickState.committing;
         if (_quickWithdrawButton) _quickWithdrawButton.disabled = quickBlocked || quickState.committing;

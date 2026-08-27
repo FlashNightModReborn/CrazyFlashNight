@@ -1084,6 +1084,64 @@
         return true;
     };
 
+    /**
+     * One authority write for an ordered set of lease-bound sources. The response adopts the current
+     * source/target windows once; target_full/slot_locked remain the only definitive no-op failures.
+     */
+    InventoryCoordinator.prototype.autoTransferBatch = function(sourceRefs, targetContainerId, callback) {
+        if (!Array.isArray(sourceRefs) || sourceRefs.length < 1 || sourceRefs.length > 50) return false;
+        targetContainerId = String(targetContainerId || '');
+        var sourceContainerId = String(sourceRefs[0] && sourceRefs[0].containerId || '');
+        if (!sourceContainerId || !targetContainerId || sourceContainerId === targetContainerId) return false;
+        var sources = [];
+        for (var sourceIndex = 0; sourceIndex < sourceRefs.length; sourceIndex++) {
+            var sourceRef = sourceRefs[sourceIndex];
+            if (!sourceRef || !sourceRef.occupied || !sourceRef.item
+                    || String(sourceRef.containerId) !== sourceContainerId) return false;
+            sources.push(wireRef(sourceRef));
+        }
+        var operation = this.beginExternalWrite('inventory.autoTransferBatch');
+        if (!operation) return false;
+        var self = this;
+        var expectedRequests = this._requestsForContainers([sourceContainerId, targetContainerId]);
+        this._request('autoTransferBatch', {
+            v: 1,
+            sources: sources,
+            targetContainerId: targetContainerId,
+            policy: 'mergeThenEmpty',
+            windows: cloneRequests(this._requests)
+        }, function(response) {
+            if (!self._isActiveOperation(operation)) return;
+            if (response && response.success === true
+                    && self._applySnapshots(response.snapshots, expectedRequests)) {
+                self._clearOwner(operation);
+                self._refreshRequired = false;
+                self._ready = true;
+                self._emitState();
+                if (typeof callback === 'function') callback(response);
+                return;
+            }
+            var original = response || {success: false, error: 'invalid_response'};
+            if (original.error === 'target_full' || original.error === 'slot_locked') {
+                self._clearOwner(operation);
+                self._refreshRequired = false;
+                self._ready = true;
+                self._emitState();
+                if (typeof callback === 'function') callback(original);
+                return;
+            }
+            self._refreshWhileOwned(function(refreshResult) {
+                if (typeof callback === 'function') callback({
+                    success: false,
+                    error: original.error || 'invalid_response',
+                    reconciled: !!refreshResult.success,
+                    refreshError: refreshResult.success ? null : refreshResult.error
+                });
+            }, operation);
+        });
+        return true;
+    };
+
     InventoryCoordinator.prototype.discard = function(slotRef, callback) {
         if (!slotRef) return false;
         var operation = this.beginExternalWrite('inventory.discard');

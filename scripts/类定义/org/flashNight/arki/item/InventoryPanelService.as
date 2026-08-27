@@ -60,6 +60,7 @@ class org.flashNight.arki.item.InventoryPanelService {
     // Gate A2 的确定性失败注入，仅供 TestLoader 验证 rollback；生产默认永不命中。
     private static var _testFailContainerId:String = "";
     private static var _testFailSlot:Number = -1;
+    private static var _testLastBatchPerf:Object = null;
 
     public static function install():Void {
         if (_inited) return;
@@ -86,6 +87,9 @@ class org.flashNight.arki.item.InventoryPanelService {
         };
         _root.gameCommands["inventoryAutoTransfer"] = function(params) {
             org.flashNight.arki.item.InventoryPanelService.handle("autoTransfer", params);
+        };
+        _root.gameCommands["inventoryAutoTransferBatch"] = function(params) {
+            org.flashNight.arki.item.InventoryPanelService.handle("autoTransferBatch", params);
         };
         _root.gameCommands["inventorySortAndMerge"] = function(params) {
             org.flashNight.arki.item.InventoryPanelService.handle("sortAndMerge", params);
@@ -117,6 +121,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             return executeTransfer(commandName, params);
         }
         if (commandName == "autoTransfer") return executeAutoTransfer(params);
+        if (commandName == "autoTransferBatch") return executeAutoTransferBatch(params);
         if (commandName == "sortAndMerge") return executeSortAndMerge(params);
         return fail("unsupported_cmd");
     }
@@ -416,6 +421,357 @@ class org.flashNight.arki.item.InventoryPanelService {
             destination: {containerId: targetContainerId, slot: targetSlot},
             snapshots: snapshots
         };
+    }
+
+    /**
+     * 真批量快速转移：一次目标扫描、一次双容器提交、一次窗口重投影。
+     * 目标不足时只提交按选择顺序可完成的前缀，绝不跳过失败项继续落位。
+     */
+    private static function executeAutoTransferBatch(params:Object):Object {
+        var totalStarted:Number = getTimer();
+        var requestCheck:Object = validateAutoTransferBatchRequest(params);
+        if (!requestCheck.success) return requestCheck;
+
+        var planStarted:Number = getTimer();
+        var scan:Object = scanAutoTransferBatchTarget(
+            requestCheck.targetInventory,
+            requestCheck.targetCapacity
+        );
+        var plan:Object = planAutoTransferBatch(
+            requestCheck.sources,
+            scan,
+            requestCheck.targetContainerId
+        );
+        var planElapsed:Number = getTimer() - planStarted;
+        if (plan.completedCount == 0 && plan.failure != null) {
+            recordAutoTransferBatchPerf(
+                requestCheck.requestedCount, 0, scan.targetScanned,
+                planElapsed, 0, 0, getTimer() - totalStarted
+            );
+            return fail("target_full");
+        }
+
+        var commitStarted:Number = getTimer();
+        _busy = true;
+        var commitResult:Object = commitAutoTransferBatch(requestCheck, plan);
+        var commitElapsed:Number = getTimer() - commitStarted;
+        if (!commitResult.success) {
+            _busy = false;
+            recordAutoTransferBatchPerf(
+                requestCheck.requestedCount, 0, scan.targetScanned,
+                planElapsed, commitElapsed, 0, getTimer() - totalStarted
+            );
+            return fail("commit_failed");
+        }
+
+        invalidateContainer(requestCheck.sourceContainerId);
+        invalidateContainer(requestCheck.targetContainerId);
+        markDirty();
+        publishAutoTransferBatchEvents(
+            plan,
+            requestCheck.sourceInventory,
+            requestCheck.targetInventory
+        );
+
+        var snapshotStarted:Number = getTimer();
+        var snapshots:Array = buildWindowSnapshots(requestCheck.windows);
+        var snapshotElapsed:Number = getTimer() - snapshotStarted;
+        _busy = false;
+        recordAutoTransferBatchPerf(
+            requestCheck.requestedCount, plan.completedCount, scan.targetScanned,
+            planElapsed, commitElapsed, snapshotElapsed, getTimer() - totalStarted
+        );
+
+        var response:Object = {
+            success:true,
+            v:1,
+            operation:"autoTransferBatch",
+            policy:"mergeThenEmpty",
+            requestedCount:requestCheck.requestedCount,
+            completedCount:plan.completedCount,
+            results:plan.results,
+            snapshots:snapshots
+        };
+        if (plan.failure != null) response.failure = plan.failure;
+        return response;
+    }
+
+    private static function validateAutoTransferBatchRequest(params:Object):Object {
+        if (String(params.policy) != "mergeThenEmpty") return fail("unsupported_policy");
+        var sourceCheck:Object = validateAutoTransferBatchSources(params.sources);
+        if (!sourceCheck.success) return sourceCheck;
+
+        var targetContainerId:String = params.targetContainerId == undefined
+            ? "" : String(params.targetContainerId);
+        if (!isAllowedAutoTransferPair(sourceCheck.containerId, targetContainerId)) {
+            return fail("transfer_forbidden");
+        }
+        var targetInventory:ArrayInventory = resolveContainer(targetContainerId);
+        if (targetInventory == null) return fail("unsupported_container");
+        var targetCapacity:Number = getAccessibleCapacity(targetContainerId);
+        if (targetCapacity <= 0) return fail("slot_locked");
+
+        var windowCheck:Object = validateWindowRequests(params.windows);
+        if (!windowCheck.success) return windowCheck;
+        var pairCheck:Object = validateAutoTransferBatchWindows(
+            windowCheck.normalized,
+            sourceCheck.containerId,
+            targetContainerId
+        );
+        if (!pairCheck.success) return pairCheck;
+        return {
+            success:true,
+            requestedCount:sourceCheck.sources.length,
+            sources:sourceCheck.sources,
+            sourceContainerId:sourceCheck.containerId,
+            sourceInventory:sourceCheck.inventory,
+            targetContainerId:targetContainerId,
+            targetInventory:targetInventory,
+            targetCapacity:targetCapacity,
+            windows:windowCheck.normalized
+        };
+    }
+
+    private static function validateAutoTransferBatchSources(refs:Array):Object {
+        if (!(refs instanceof Array) || refs.length < 1 || refs.length > 50) {
+            return fail("invalid_payload");
+        }
+        var containerId:String = "";
+        var seenSlots:Object = {};
+        var i:Number;
+        for (i = 0; i < refs.length; i++) {
+            var rawRef:Object = refs[i];
+            if (rawRef == undefined || rawRef.containerId == undefined
+                    || !isWholeNumber(rawRef.slot)) return fail("invalid_payload");
+            var rawContainerId:String = String(rawRef.containerId);
+            if (i == 0) containerId = rawContainerId;
+            else if (rawContainerId != containerId) return fail("invalid_payload");
+            var slotKey:String = String(Number(rawRef.slot));
+            if (seenSlots[slotKey] === true) return fail("invalid_payload");
+            seenSlots[slotKey] = true;
+        }
+
+        var sources:Array = [];
+        for (i = 0; i < refs.length; i++) {
+            var checked:Object = validateSlotRef(refs[i], true, false);
+            if (!checked.success) return checked;
+            sources.push(checked);
+        }
+        return {
+            success:true,
+            containerId:containerId,
+            inventory:sources[0].inventory,
+            sources:sources
+        };
+    }
+
+    private static function validateAutoTransferBatchWindows(normalized:Array,
+                                                               sourceContainerId:String,
+                                                               targetContainerId:String):Object {
+        var seenSource:Boolean = false;
+        var seenTarget:Boolean = false;
+        var seenContainers:Object = {};
+        for (var i:Number = 0; i < normalized.length; i++) {
+            var entry:Object = normalized[i];
+            if (seenContainers[entry.containerId] === true) return fail("invalid_payload");
+            seenContainers[entry.containerId] = true;
+            if (entry.containerId == sourceContainerId) seenSource = true;
+            else if (entry.containerId == targetContainerId) seenTarget = true;
+            else return fail("invalid_payload");
+        }
+        return seenSource && seenTarget ? {success:true} : fail("invalid_payload");
+    }
+
+    private static function batchStackKey(name:String):String {
+        return "$stack$" + name;
+    }
+
+    private static function scanAutoTransferBatchTarget(inventory:ArrayInventory,
+                                                          capacity:Number):Object {
+        var emptySlots:Array = [];
+        var firstStacks:Object = {};
+        for (var slot:Number = 0; slot < capacity; slot++) {
+            var candidate:Object = inventory.getItem(String(slot));
+            if (candidate == null) {
+                emptySlots.push(slot);
+            } else if (typeof candidate.value == "number") {
+                var key:String = batchStackKey(String(candidate.name));
+                if (!firstStacks.hasOwnProperty(key)) {
+                    firstStacks[key] = {
+                        slot:slot,
+                        beforeItem:candidate,
+                        afterItem:candidate,
+                        finalValue:Number(candidate.value),
+                        hasFinalValue:false,
+                        touched:false
+                    };
+                }
+            }
+        }
+        return {
+            emptySlots:emptySlots,
+            firstStacks:firstStacks,
+            targetScanned:capacity
+        };
+    }
+
+    private static function planAutoTransferBatch(sources:Array, scan:Object,
+                                                   targetContainerId:String):Object {
+        var sourceChanges:Array = [];
+        var targetStates:Array = [];
+        var results:Array = [];
+        var emptyIndex:Number = 0;
+        var failure:Object = null;
+        for (var i:Number = 0; i < sources.length; i++) {
+            var source:Object = sources[i];
+            var isStack:Boolean = typeof source.item.value == "number";
+            var stackKey:String = isStack ? batchStackKey(String(source.item.name)) : "";
+            var targetState:Object = isStack ? scan.firstStacks[stackKey] : null;
+            var operation:String;
+            if (targetState != null) {
+                operation = "merge";
+                if (targetState.touched !== true) {
+                    targetState.touched = true;
+                    targetStates.push(targetState);
+                }
+                targetState.finalValue = Number(targetState.finalValue) + Number(source.item.value);
+                targetState.hasFinalValue = true;
+            } else {
+                if (emptyIndex >= scan.emptySlots.length) {
+                    failure = {index:i, error:"target_full"};
+                    break;
+                }
+                operation = "move";
+                var targetSlot:Number = Number(scan.emptySlots[emptyIndex++]);
+                targetState = {
+                    slot:targetSlot,
+                    beforeItem:null,
+                    afterItem:source.item,
+                    finalValue:isStack ? Number(source.item.value) : 0,
+                    hasFinalValue:false,
+                    touched:true
+                };
+                targetStates.push(targetState);
+                if (isStack) scan.firstStacks[stackKey] = targetState;
+            }
+            sourceChanges.push({
+                slot:source.slot,
+                expectedItem:source.item,
+                item:null
+            });
+            results.push({
+                operation:operation,
+                destination:{
+                    containerId:targetContainerId,
+                    slot:targetState.slot
+                }
+            });
+        }
+        return {
+            completedCount:sourceChanges.length,
+            sourceChanges:sourceChanges,
+            targetStates:targetStates,
+            results:results,
+            failure:failure
+        };
+    }
+
+    private static function buildAutoTransferBatchTargetChanges(targetStates:Array):Array {
+        var changes:Array = [];
+        for (var i:Number = 0; i < targetStates.length; i++) {
+            var state:Object = targetStates[i];
+            var change:Object = {
+                slot:state.slot,
+                expectedItem:state.beforeItem,
+                item:state.afterItem
+            };
+            if (state.hasFinalValue === true) {
+                change.hasFinalValue = true;
+                change.finalValue = Number(state.finalValue);
+            }
+            changes.push(change);
+        }
+        return changes;
+    }
+
+    private static function commitAutoTransferBatch(request:Object, plan:Object):Object {
+        var targetChanges:Array = buildAutoTransferBatchTargetChanges(plan.targetStates);
+        if (!request.sourceInventory.canApplySlotTransaction(plan.sourceChanges)
+                || !request.targetInventory.canApplySlotTransaction(targetChanges)) {
+            return {success:false, rollbackComplete:true};
+        }
+        var sourceReceipt:Object = commitSlotBatch(
+            request.sourceContainerId,
+            request.sourceInventory,
+            plan.sourceChanges
+        );
+        if (!sourceReceipt.success) return sourceReceipt;
+        var targetReceipt:Object = commitSlotBatch(
+            request.targetContainerId,
+            request.targetInventory,
+            targetChanges
+        );
+        if (!targetReceipt.success) {
+            var rolledBack:Boolean = request.sourceInventory.rollbackSlotTransaction(sourceReceipt);
+            return {success:false, rollbackComplete:rolledBack};
+        }
+        return {success:true, sourceReceipt:sourceReceipt, targetReceipt:targetReceipt};
+    }
+
+    private static function batchChangesContainSlot(changes:Array, slot:Number):Boolean {
+        for (var i:Number = 0; i < changes.length; i++) {
+            if (Number(changes[i].slot) == slot) return true;
+        }
+        return false;
+    }
+
+    private static function commitSlotBatch(containerId:String, inventory:ArrayInventory,
+                                             changes:Array):Object {
+        if (_testFailContainerId == containerId
+                && (_testFailSlot < 0 || batchChangesContainSlot(changes, _testFailSlot))) {
+            _testFailContainerId = "";
+            _testFailSlot = -1;
+            return {success:false, rollbackComplete:true};
+        }
+        return inventory.transactionApplySlotChangesWithReceipt(changes);
+    }
+
+    private static function publishAutoTransferBatchEvents(plan:Object,
+                                                            sourceInventory:ArrayInventory,
+                                                            targetInventory:ArrayInventory):Void {
+        for (var i:Number = 0; i < plan.sourceChanges.length; i++) {
+            sourceInventory.publishTransactionChange(Number(plan.sourceChanges[i].slot), "removed");
+        }
+        for (i = 0; i < plan.targetStates.length; i++) {
+            var state:Object = plan.targetStates[i];
+            targetInventory.publishTransactionChange(
+                Number(state.slot),
+                state.beforeItem == null ? "added" : "value"
+            );
+        }
+    }
+
+    private static function recordAutoTransferBatchPerf(requested:Number, completed:Number,
+                                                         targetScanned:Number, planMs:Number,
+                                                         commitMs:Number, snapshotMs:Number,
+                                                         totalMs:Number):Void {
+        _testLastBatchPerf = {
+            requested:requested,
+            completed:completed,
+            targetScanned:targetScanned,
+            plan:planMs,
+            commit:commitMs,
+            snapshot:snapshotMs,
+            total:totalMs
+        };
+        trace("[InventoryPanelService PERF] autoTransferBatch"
+            + " requested=" + requested
+            + " completed=" + completed
+            + " targetScanned=" + targetScanned
+            + " plan=" + planMs
+            + " commit=" + commitMs
+            + " snapshot=" + snapshotMs
+            + " total=" + totalMs);
     }
 
     private static function executeSortAndMerge(params:Object):Object {
@@ -1785,6 +2141,20 @@ class org.flashNight.arki.item.InventoryPanelService {
         _testFailSlot = slot;
     }
 
+    /** TestLoader 专用：读取最近一次合法 batch 的分阶段计时与扫描计数。 */
+    public static function testOnlyGetLastBatchPerf():Object {
+        if (_testLastBatchPerf == null) return null;
+        return {
+            requested:Number(_testLastBatchPerf.requested),
+            completed:Number(_testLastBatchPerf.completed),
+            targetScanned:Number(_testLastBatchPerf.targetScanned),
+            plan:Number(_testLastBatchPerf.plan),
+            commit:Number(_testLastBatchPerf.commit),
+            snapshot:Number(_testLastBatchPerf.snapshot),
+            total:Number(_testLastBatchPerf.total)
+        };
+    }
+
     /** TestLoader 专用：隔离静态 lease/session/guard。 */
     public static function testOnlyReset():Void {
         _busy = false;
@@ -1792,6 +2162,7 @@ class org.flashNight.arki.item.InventoryPanelService {
         _facetCache = {};
         _testFailContainerId = "";
         _testFailSlot = -1;
+        _testLastBatchPerf = null;
         beginSession();
     }
 }

@@ -1,4 +1,4 @@
-/** Serialized quick-transfer intent queue. Authority is supplied through explicit ports. */
+/** Quick-transfer intent queue. Explicit batch commits and immediate single writes use separate authority ports. */
 (function(root, factory) {
     'use strict';
     var api = factory();
@@ -25,11 +25,12 @@
     function QuickTransferController(options) {
         options = options || {};
         if (typeof options.getSlot !== 'function' || typeof options.autoTransfer !== 'function'
-                || typeof options.slotRef !== 'function') {
-            throw new Error('QuickTransferController requires getSlot, slotRef, and autoTransfer ports');
+                || typeof options.autoTransferBatch !== 'function' || typeof options.slotRef !== 'function') {
+            throw new Error('QuickTransferController requires getSlot, slotRef, autoTransfer, and autoTransferBatch ports');
         }
         this._getSlot = options.getSlot;
         this._autoTransfer = options.autoTransfer;
+        this._autoTransferBatch = options.autoTransferBatch;
         this._slotRef = options.slotRef;
         this._getAuthorityState = typeof options.getAuthorityState === 'function'
             ? options.getAuthorityState : function() { return {ready:false}; };
@@ -44,6 +45,7 @@
         this._mode = null;
         this._pending = [];
         this._inFlight = null;
+        this._batchInFlight = [];
         this._committing = false;
         this._entries = {};
         this._completed = 0;
@@ -59,13 +61,14 @@
     QuickTransferController.prototype._authorityReady = function() {
         var state = this._getAuthorityState() || {};
         return !!state.ready && !state.refreshRequired
-            && (!state.busyOwner || state.busyOwner === 'inventory.autoTransfer');
+            && (!state.busyOwner || state.busyOwner === 'inventory.autoTransfer'
+                || state.busyOwner === 'inventory.autoTransferBatch');
     };
     QuickTransferController.prototype.setMode = function(mode) {
         if (mode !== 'deposit' && mode !== 'withdraw') return false;
         if (this._mode === mode) return this.exit();
         if (!this._authorityReady()) { this._onNotice('not_ready'); return false; }
-        if (this._inFlight || this._committing) { this._onNotice('in_flight'); return false; }
+        if (this._inFlight || this._batchInFlight.length || this._committing) { this._onNotice('in_flight'); return false; }
         this._clearPending();
         this._mode = mode;
         this._completed = 0;
@@ -74,7 +77,7 @@
         return true;
     };
     QuickTransferController.prototype.exit = function() {
-        if (this._inFlight || this._committing) return false;
+        if (this._inFlight || this._batchInFlight.length || this._committing) return false;
         if (!this._mode && !this._pending.length) return false;
         this._mode = null;
         this._clearPending();
@@ -85,6 +88,7 @@
         this._mode = null;
         this._pending = [];
         this._inFlight = null;
+        this._batchInFlight = [];
         this._committing = false;
         this._entries = {};
         this._completed = 0;
@@ -133,7 +137,7 @@
                 return true;
             }
         }
-        if (this._pending.length + (this._inFlight ? 1 : 0) >= this._limit) {
+        if (this._pending.length + (this._inFlight ? 1 : 0) + this._batchInFlight.length >= this._limit) {
             this._onNotice('queue_full'); return false;
         }
         if (!this._mode && !this._inFlight && !this._pending.length) {
@@ -160,15 +164,95 @@
     QuickTransferController.prototype.commit = function() {
         if (!this._mode) { this._onNotice('no_mode'); return false; }
         if (!this._authorityReady()) { this._onNotice('busy'); return false; }
-        if (this._inFlight || this._committing) { this._onNotice('in_flight'); return false; }
+        if (this._inFlight || this._batchInFlight.length || this._committing) { this._onNotice('in_flight'); return false; }
         if (!this._pending.length) { this._onNotice('nothing_selected'); return false; }
         this._committing = true;
         this._emit();
-        return this._drain();
+        return this._commitBatch();
+    };
+    QuickTransferController.prototype._commitBatch = function() {
+        var self = this;
+        if (!this._committing || !this._mode || this._inFlight
+                || this._batchInFlight.length || !this._pending.length) return false;
+        var entries = this._pending.slice();
+        var sources = [];
+        var targetContainerId = entries[0].targetContainerId;
+        for (var i = 0; i < entries.length; i++) {
+            var entry = entries[i];
+            var currentSlot = this._getSlot(entry.containerId, entry.slot);
+            if (!currentSlot || !currentSlot.occupied
+                    || slotSignature(currentSlot) !== entry.signature
+                    || entry.targetContainerId !== targetContainerId) {
+                this._halt({success:false, error:'stale_state'});
+                return false;
+            }
+            sources.push(this._slotRef(entry.containerId, currentSlot));
+        }
+        this._pending = [];
+        this._batchInFlight = entries;
+        this._emit();
+        var generation = this._getGeneration();
+        var settled = false;
+        function done(result) {
+            if (settled) return;
+            settled = true;
+            if (!self._isGenerationCurrent(generation) || self._batchInFlight !== entries) return;
+            var completedCount = result == null ? NaN : result.completedCount;
+            var exactCount = typeof completedCount === 'number' && isFinite(completedCount)
+                && Math.floor(completedCount) === completedCount
+                && completedCount >= 1 && completedCount <= entries.length;
+            if (result && result.success === true && exactCount
+                    && !result.failure && completedCount === entries.length) {
+                self._finishBatch(completedCount, null);
+                return;
+            }
+            var failureIndex = result && result.failure == null
+                ? NaN : result.failure.index;
+            if (result && result.success === true && exactCount
+                    && result.failure && !Array.isArray(result.failure)
+                    && result.failure.error === 'target_full'
+                    && typeof failureIndex === 'number' && isFinite(failureIndex)
+                    && Math.floor(failureIndex) === failureIndex
+                    && failureIndex === completedCount && completedCount < entries.length) {
+                self._finishBatch(completedCount, {
+                    success:true,
+                    error:'target_full',
+                    failure:{index:failureIndex, error:'target_full'},
+                    completedCount:completedCount
+                });
+                return;
+            }
+            self._halt(result && result.success === true
+                ? {success:false, error:'invalid_response'}
+                : result || {success:false, error:'invalid_response'});
+        }
+        var started = false;
+        try {
+            started = this._autoTransferBatch(sources, targetContainerId, done);
+        } catch (error) {
+            done({success:false, error:error});
+            return false;
+        }
+        if (!started && !settled) {
+            settled = true;
+            this._halt({success:false, error:'busy'});
+        }
+        return !!started;
+    };
+    QuickTransferController.prototype._finishBatch = function(completedCount, failure) {
+        for (var i = 0; i < this._batchInFlight.length; i++) {
+            delete this._entries[this._batchInFlight[i].key];
+        }
+        this._batchInFlight = [];
+        this._completed += Number(completedCount);
+        this._committing = false;
+        this._mode = null;
+        this._emit();
+        if (failure) this._onError(failure);
     };
     QuickTransferController.prototype._drain = function() {
         var self = this;
-        if (!this._committing || this._inFlight || !this._pending.length) return false;
+        if (!this._committing || this._inFlight || this._batchInFlight.length || !this._pending.length) return false;
         var entry = this._pending.shift();
         var currentSlot = this._getSlot(entry.containerId, entry.slot);
         if (!currentSlot || !currentSlot.occupied || slotSignature(currentSlot) !== entry.signature) {
@@ -183,7 +267,7 @@
         function done(result) {
                 if (settled) return;
                 settled = true;
-                if (!self._isGenerationCurrent(generation)) return;
+                if (!self._isGenerationCurrent(generation) || self._inFlight !== entry) return;
                 delete self._entries[entry.key];
                 self._inFlight = null;
                 if (result && result.success === true) {
@@ -214,22 +298,37 @@
         return !!started;
     };
     QuickTransferController.prototype._halt = function(result) {
+        if (this._inFlight) delete this._entries[this._inFlight.key];
+        this._inFlight = null;
+        for (var i = 0; i < this._batchInFlight.length; i++) {
+            delete this._entries[this._batchInFlight[i].key];
+        }
+        this._batchInFlight = [];
         this._clearPending();
         this._committing = false;
         this._mode = null;
         this._emit();
         this._onError(result || {success:false, error:'invalid_response'});
     };
-    QuickTransferController.prototype.isBusy = function() { return !!this._inFlight || this._committing; };
+    QuickTransferController.prototype.isBusy = function() {
+        return !!this._inFlight || !!this._batchInFlight.length || this._committing;
+    };
     QuickTransferController.prototype.getMode = function() { return this._mode; };
     QuickTransferController.prototype.debugState = function() {
+        var batchKeys = {};
+        var inFlightKeys = [];
+        for (var batchIndex = 0; batchIndex < this._batchInFlight.length; batchIndex++) {
+            batchKeys[this._batchInFlight[batchIndex].key] = true;
+            inFlightKeys.push(this._batchInFlight[batchIndex].key);
+        }
+        if (this._inFlight) inFlightKeys.push(this._inFlight.key);
         var entries = {};
         for (var key in this._entries) entries[key] = {
             key:this._entries[key].key,
             containerId:this._entries[key].containerId,
             slot:this._entries[key].slot,
             targetContainerId:this._entries[key].targetContainerId,
-            inflight:!!(this._inFlight && this._inFlight.key === key)
+            inflight:!!(batchKeys[key] || (this._inFlight && this._inFlight.key === key))
         };
         return {
             mode:this._mode,
@@ -237,7 +336,9 @@
             pendingCount:this._pending.length,
             inFlight:this._inFlight ? this._inFlight.key : null,
             inflight:this._inFlight ? entries[this._inFlight.key] : null,
-            queued:this._pending.length + (this._inFlight ? 1 : 0),
+            inFlightKeys:inFlightKeys,
+            inflightCount:inFlightKeys.length,
+            queued:this._pending.length + inFlightKeys.length,
             staged:this._mode && !this._committing ? this._pending.length : 0,
             committing:this._committing,
             completed:this._completed,
