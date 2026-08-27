@@ -66,14 +66,21 @@ _root.装备生命周期函数.死者之手初始化 = function(反射对象, �
    反射对象.握柄完全展开结束帧 = 46;
    反射对象.握柄当前帧 = 反射对象.握柄收纳帧;
 
-   if (自机.长枪 == "")
+   // 长枪槽为空时，以 lifecycle owner 身份借用运行态槽位。canonical 装备栏仍保持
+   // 空槽，CharacterBuild 因而不会把合法的复合武器形态误判为换装。
+   var 长枪槽借用意图:Object = org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.reserveEmptySlotAlias(反射对象, "长枪");
+   if (长枪槽借用意图 != null)
    {
       _root.长枪配置(自机._name,"死者之手",1);//借用配置生成因此不需要考虑强化数值
-      自机.长枪 = 自机.刀;
-      自机.长枪_装扮 = 自机.刀_装扮;
-      自机.刀属性.power = 自机[基础属性名].基础伤害 * 130 / 120;//刀模式伤害调整
-      自机.长枪_引用._visible = false;
-      //_root.发布调试消息(自机.刀 + " " + 自机.刀属性.power);
+      if (org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.commitSlotAlias(长枪槽借用意图))
+      {
+         自机.长枪_装扮 = 自机.刀_装扮;
+         自机.长枪_引用._visible = false;
+      }
+      else
+      {
+         org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.cancelSlotAlias(长枪槽借用意图);
+      }
    }
 
    _root.装备生命周期函数.死者之手周期(反射对象, 参数对象);

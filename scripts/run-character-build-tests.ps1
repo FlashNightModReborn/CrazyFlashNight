@@ -18,6 +18,18 @@ $characterBuildSource = Get-RepoText `
     'scripts\类定义\org\flashNight\arki\item\CharacterBuildService.as'
 $characterBuildTestSource = Get-RepoText `
     'scripts\类定义\org\flashNight\arki\item\CharacterBuildServiceTest.as'
+$runtimeProjectionSource = Get-RepoText `
+    'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\RuntimeEquipmentProjection.as'
+$runtimeProjectionTestSource = Get-RepoText `
+    'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\test\RuntimeEquipmentProjectionTest.as'
+$dressupInitializerSource = Get-RepoText `
+    'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\DressupInitializer.as'
+$guitarSource = Get-RepoText 'scripts\逻辑\装备函数\吉他喷火.as'
+$deadHandSource = Get-RepoText 'scripts\逻辑\装备函数\死者之手.as'
+$guitarActiveSource = $guitarSource.Split(
+    @('===== 原始资产代码参考 ====='),
+    [System.StringSplitOptions]::None
+)[0]
 $drugInputSource = Get-RepoText `
     'scripts\类定义\org\flashNight\arki\unit\Action\Skill\DrugInputService.as'
 $itemUtilSource = Get-RepoText `
@@ -70,6 +82,34 @@ if (($drugWriter -notmatch
             'testLootAcquireProjectsOnNewSession\s*\(')) {
     throw 'CharacterBuild writer dirty/readiness static contract or split convergence coverage is incomplete.'
 }
+$liveBaselineBody = [regex]::Match(
+    $characterBuildSource,
+    'private static function liveBaselineStatus[\s\S]*?\r?\n    /\*\*\r?\n     \* B0 spike'
+).Value
+if (($runtimeProjectionSource -notmatch 'function beginCanonical\s*\(') -or
+        ($runtimeProjectionSource -notmatch 'function reserveEmptySlotAlias\s*\(') -or
+        ($runtimeProjectionSource -notmatch 'function commitSlotAlias\s*\(') -or
+        ($runtimeProjectionSource -notmatch 'function releaseAliases\s*\(') -or
+        ($runtimeProjectionSource -notmatch 'function buildSemanticSignature\s*\(') -or
+        ($dressupInitializerSource -notmatch
+            'beginCanonical\(target\)[\s\S]*?updateLifeCycles\(target\)[\s\S]*?completeCanonical\(target\)') -or
+        ($dressupInitializerSource -notmatch
+            'teardownLifeCycles[\s\S]*?releaseAliases\(target\)') -or
+        ($liveBaselineBody -notmatch 'RuntimeEquipmentProjection\.getStatus') -or
+        ($liveBaselineBody -match 'validLiveTail|hero\[SLOT_KEYS\[i\]\]\s*!==\s*refs\[i\]') -or
+        ($guitarActiveSource -notmatch
+            'reserveEmptySlotAlias\(ref, "刀"\)[\s\S]*?commitSlotAlias') -or
+        ($guitarActiveSource -match 'target\.刀\s*=\s*target\.长枪') -or
+        ($deadHandSource -notmatch
+            'reserveEmptySlotAlias\(反射对象, "长枪"\)[\s\S]*?commitSlotAlias') -or
+        ($deadHandSource -match '自机\.长枪\s*=\s*自机\.刀') -or
+        ($deadHandSource -match '自机\[基础属性名\]') -or
+        ($runtimeProjectionTestSource -notmatch 'testForwardAndReverseAliases\s*\(') -or
+        ($characterBuildTestSource -notmatch 'testInitialTransientStateDoesNotDirty\s*\(') -or
+        ($characterBuildTestSource -notmatch 'testRuntimeSlotAliasStaysClean\s*\(')) {
+    throw 'Runtime equipment projection intent, lifecycle ownership, or CharacterBuild dirty-scope contract is incomplete.'
+}
+Write-Host '[STATIC_PASS] Runtime equipment projection intent and narrow dirty scope'
 $registeredActions = [regex]::Matches(
     $characterBuildSource,
     'gameCommands\["(characterBuild[^"]+)"\]\s*='
@@ -347,6 +387,7 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\item\itemCollection\EquipmentInventoryTest.as'
         'scripts\类定义\org\flashNight\arki\item\InventoryPanelServiceTest.as'
         'scripts\类定义\org\flashNight\arki\item\CharacterBuildTransactionSpikeTest.as'
+        'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\test\RuntimeEquipmentProjectionTest.as'
         'scripts\类定义\org\flashNight\arki\item\CharacterBuildServiceTest.as'
         'scripts\类定义\org\flashNight\arki\unit\PlayerInfoProviderTest.as'
     )
@@ -355,6 +396,7 @@ $focusedRun = @{
         'org.flashNight.arki.item.itemCollection.EquipmentInventoryTest'
         'org.flashNight.arki.item.InventoryPanelServiceTest'
         'org.flashNight.arki.item.CharacterBuildTransactionSpikeTest'
+        'org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentProjectionTest'
         'org.flashNight.arki.item.CharacterBuildServiceTest'
         'org.flashNight.arki.unit.PlayerInfoProviderTest'
     )
@@ -370,12 +412,14 @@ $focusedRun = @{
         '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
         '(?m)^CharacterBuildTransactionSpikeTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^CharacterBuildTransactionSpikeTest Tests Failed: 0\r?$'
+        '(?m)^RuntimeEquipmentProjectionTest Tests Passed: [1-9][0-9]*\r?$'
+        '(?m)^RuntimeEquipmentProjectionTest Tests Failed: 0\r?$'
         '(?m)^CharacterBuildServiceTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^CharacterBuildServiceTest Tests Failed: 0\r?$'
         '(?m)^PlayerInfoProviderTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^PlayerInfoProviderTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'SaveManager, EquipmentInventory, InventoryPanelService, transaction spike, CharacterBuildService, and PlayerInfoProvider suites completed with zero failures'
+    SuccessSummary = 'SaveManager, EquipmentInventory, InventoryPanelService, transaction spike, RuntimeEquipmentProjection, CharacterBuildService, and PlayerInfoProvider suites completed with zero failures'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

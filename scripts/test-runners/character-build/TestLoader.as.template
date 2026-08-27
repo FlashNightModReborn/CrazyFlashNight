@@ -3,6 +3,7 @@ org.flashNight.neur.Server.test.SaveManagerTest.runAllTests();
 org.flashNight.arki.item.itemCollection.EquipmentInventoryTest.runAllTests();
 org.flashNight.arki.item.InventoryPanelServiceTest.runAllTests();
 org.flashNight.arki.item.CharacterBuildTransactionSpikeTest.runAllTests();
+org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentProjectionTest.runAllTests();
 org.flashNight.arki.item.CharacterBuildServiceTest.runAllTests();
 org.flashNight.arki.unit.PlayerInfoProviderTest.runAllTests();
 trace("FocusedTestRunId character-build Complete: __FOCUSED_RUN_ID__");

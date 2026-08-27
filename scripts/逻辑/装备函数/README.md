@@ -141,6 +141,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 - `EquipmentTick.open(ref):Boolean` — 周期开场（异常清理 + 同帧去重）；`false` 即 `return`
 - `EquipmentTick.cleanup(ref):Void` — 仅异常清理（无视觉去重的装备用）
 - `VisualSync.beginTick(ref):Boolean` — 同帧去重底层
+- `RuntimeEquipmentProjection.reserveEmptySlotAlias(ref, targetSlot)` → 装备完成目标槽属性配置后调用 `commitSlotAlias(intent)`；失败调用 `cancelSlotAlias(intent)` — lifecycle owner 对 canonical 空槽的唯一运行态借用入口。只允许 `ref.装备类型` 的 exact 装备引用、同一单位 `version` 与空目标槽，冲突/过期 intent fail-closed；禁止脚本直接写 `自机.刀 = 自机.长枪` 等跨槽 alias
 - `_root.装备生命周期函数.移除周期函数(ref)` / `移除异常周期函数(ref)` — 卸载 / 版本失配检测
 - `_root.装备生命周期函数.解析刀口(ref, param)` / `获得身高修正比(ref)`
 
@@ -222,8 +223,8 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 - `主唱光剑.as` — 主唱光剑（光剑/话筒）· 光刃发射 + 红色音符叠 buff + 猩红增幅治疗 + 伙伴召唤
 - `光剑天秤.as` — 光剑天秤 · 三态（默认/攻势/守御）切换，攻击积 buff，战技伤害按切换次数倍增
 - `双面雷神.as` — 双面雷神 · 步枪/狙击双形态无缝变形 + 属性切换
-- `吉他喷火.as` — 吉他喷火 · 喷火器/机枪双形态 + 刀枪复用 + 机枪过热 + 音符 buff
-- `死者之手.as` — 死者之手 · 枪-刀复合多部件展开 + 超载模式切换
+- `吉他喷火.as` — 吉他喷火 · 喷火器/机枪双形态 + 通过 `RuntimeEquipmentProjection` 借用空刀槽 + 机枪过热 + 音符 buff
+- `死者之手.as` — 死者之手 · 通过同一 intent API 借用空长枪槽 + 枪-刀复合多部件展开 + 超载模式切换
 - `火药燃气液压打桩机.as` — 火药燃气液压打桩机（长枪）· 射击时装置展开-收缩动画状态机
 - `炎魔斩new.as` — 炎魔斩（刀）· 刀/链锯形态切换 + 各形态特效与子弹
 - `烬灭裁决.as` — 烬灭裁决（长柄/双刀）· 双形态切换 + 战技路由动画 + 属性/战技重算

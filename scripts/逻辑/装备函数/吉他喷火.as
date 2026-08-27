@@ -102,13 +102,19 @@
     // 非主角必须显式声明复合枪械能力；纯长枪宿主只保留喷火/机枪主体。
     ref.支持复合枪械 = ref.是否为主角
         || (target.装备能力 && target.装备能力.复合枪械 === true);
-    if (ref.支持复合枪械 && (target.刀 == null || target.刀 == undefined)) {
+    var 刀槽借用意图:Object = ref.支持复合枪械
+        ? org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.reserveEmptySlotAlias(ref, "刀")
+        : null;
+    if (刀槽借用意图 != null) {
         _root.刀配置(target._name, "桔色电子吉他", 1);
-        target.刀 = target.长枪;
-        target.刀_装扮 = target.长枪_装扮;
-        target.刀属性.power = ref.baseGunProps.power * ref.刀威力系数;
+        if (org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.commitSlotAlias(刀槽借用意图)) {
+            target.刀_装扮 = target.长枪_装扮;
+            target.刀属性.power = ref.baseGunProps.power * ref.刀威力系数;
+        } else {
+            org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.cancelSlotAlias(刀槽借用意图);
+        }
     }
-    ref.是否刀枪复用 = ref.支持复合枪械 && (target.刀 == target.长枪);
+    ref.是否刀枪复用 = org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.hasActiveAlias(target, "刀", "长枪");
 
     // ===== 订阅引用同步事件 =====
     // 长枪引用就位：仅读 placement 子级 gun.动画 / gun.枪口位置 的内置属性

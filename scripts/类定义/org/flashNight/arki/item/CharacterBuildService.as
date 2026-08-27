@@ -7,6 +7,8 @@
  * generation，观察 loadout/drug 漂移，投影 11+4 槽与人物信息，并在正常关闭/断线时
  * 守住 captured pause lease。
  */
+import org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
+
 class org.flashNight.arki.item.CharacterBuildService {
     private static var MAX_SAFE_STACK_QUANTITY:Number = 9007199254740991;
     private static var SLOT_KEYS:Array = [
@@ -49,6 +51,8 @@ class org.flashNight.arki.item.CharacterBuildService {
     // DrugInventory 原始 revision 与领域 revision 分离；clean rollback 只推进前者。
     private static var _drugRawRevision:Number = 0;
     private static var _liveRefreshDirty:Boolean = false;
+    // 一次刷新只要抛错或后验失败，就禁止仅凭 equipment stamp 自动采信其半完成结果。
+    private static var _liveRefreshRetryRequired:Boolean = false;
     private static var _writeInProgress:Boolean = false;
     private static var _writeAuthorityTouched:Boolean = false;
     private static var _capturedPauseLease = undefined;
@@ -169,7 +173,10 @@ class org.flashNight.arki.item.CharacterBuildService {
         var scan:Object = scanLoadout(resolved.equipment);
         if (!scan.success) return false;
         try {
-            return liveContext(root(), scan.refs) != null;
+            var r:Object = root();
+            return liveContext(r, scan.refs) != null
+                && liveBaselineStatus(r, scan.refs)
+                    != RuntimeEquipmentProjection.STATUS_INVALID;
         } catch (error) {
             return false;
         }
@@ -210,12 +217,17 @@ class org.flashNight.arki.item.CharacterBuildService {
         _slotRefs = scan.refs;
         _signature = scan.signature;
         _liveSignature = scan.liveSignature;
-        var liveAligned:Boolean = liveBaselineAligned(root(), scan.refs);
+        var liveStatus:String = liveBaselineStatus(root(), scan.refs);
+        if (liveStatus == RuntimeEquipmentProjection.STATUS_INVALID) {
+            return rejectOpen("live_unavailable");
+        }
+        var liveAligned:Boolean = liveStatus == RuntimeEquipmentProjection.STATUS_ALIGNED;
         _loadoutRevision = liveAligned ? 0 : 1;
         _liveRevision = 0;
         _drugRevision = drugRevision;
         _drugRawRevision = drugRevision;
         _liveRefreshDirty = !liveAligned;
+        _liveRefreshRetryRequired = false;
         _capturedPauseLease = pauseLease;
         _hostPauseReleaseProven = false;
         return state(true, false, false);
@@ -253,9 +265,29 @@ class org.flashNight.arki.item.CharacterBuildService {
             _signature = scan.signature;
             _liveSignature = scan.liveSignature;
             _slotRefs = scan.refs;
-            if (liveChanged) {
+            var liveStatus:String = liveBaselineStatus(root(), scan.refs);
+            if (liveStatus == RuntimeEquipmentProjection.STATUS_INVALID) {
+                return poison("live_unavailable");
+            }
+            if (liveStatus == RuntimeEquipmentProjection.STATUS_ALIGNED
+                    && !_liveRefreshRetryRequired) {
+                // 允许其他已授权写路径先完成一次 Dressup；manager 的 applied stamp
+                // 是比会话内旧签名更可靠的当前事实，避免随后重复刷新并清 Buff。
+                _liveRefreshDirty = false;
+                _liveRevision = _loadoutRevision;
+            } else if (liveChanged || _liveRefreshRetryRequired) {
                 _liveRefreshDirty = true;
             } else if (!_liveRefreshDirty) {
+                _liveRevision = _loadoutRevision;
+            }
+        }
+        if (_liveRefreshDirty && !_liveRefreshRetryRequired && !loadoutChanged) {
+            var currentLiveStatus:String = liveBaselineStatus(root(), scan.refs);
+            if (currentLiveStatus == RuntimeEquipmentProjection.STATUS_INVALID) {
+                return poison("live_unavailable");
+            }
+            if (currentLiveStatus == RuntimeEquipmentProjection.STATUS_ALIGNED) {
+                _liveRefreshDirty = false;
                 _liveRevision = _loadoutRevision;
             }
         }
@@ -386,6 +418,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (!postValid) return liveFailure();
         _liveRevision = _loadoutRevision;
         _liveRefreshDirty = false;
+        _liveRefreshRetryRequired = false;
         return liveResult(true);
     }
 
@@ -2897,29 +2930,44 @@ class org.flashNight.arki.item.CharacterBuildService {
         return result;
     }
     private static function liveFailure():Object {
+        _liveRefreshRetryRequired = true;
         var result:Object = fail("flush_failed");
         result.operation = "flushLive";
         result.changed = false;
         return result;
     }
-    private static function liveBaselineAligned(r:Object, refs:Array):Boolean {
+    /**
+     * 初始状态只区分 canonical 投影 aligned/mismatch/invalid。
+     * HP/MP、Buff、姿态、形态和瞬态数值既不是装备 authority，也不能制造 dirty。
+     */
+    private static function liveBaselineStatus(r:Object, refs:Array):String {
         try {
             if (r == null || typeof r.控制目标 != "string" || r.gameworld == null) {
-                return false;
+                return RuntimeEquipmentProjection.STATUS_INVALID;
             }
             var hero:Object = r.gameworld[r.控制目标];
             if (hero == null || hero._name !== r.控制目标
                     || hero._parent !== r.gameworld
                     || !validDispatcher(hero.dispatcher)
-                    || !validBuffManager(hero.buffManager)
-                    || !validLiveTail(hero)) return false;
-            for (var i:Number = 0; i < SLOT_KEYS.length; i++) {
-                if (hero[SLOT_KEYS[i]] !== refs[i]
-                        || !validDerived(hero[SLOT_DATA_KEYS[i]], refs[i])) return false;
+                    || !validBuffManager(hero.buffManager)) {
+                return RuntimeEquipmentProjection.STATUS_INVALID;
             }
-            return true;
+            var projectionStatus:String = RuntimeEquipmentProjection.getStatus(hero, refs);
+            if (projectionStatus == RuntimeEquipmentProjection.STATUS_INVALID) {
+                return projectionStatus;
+            }
+            for (var i:Number = 0; i < SLOT_KEYS.length; i++) {
+                // mismatch 时 hero 派生数据仍对应 manager 记录的最后 applied
+                // canonical，而不是尚未 Dressup 的新 inventory refs。
+                var appliedRef = RuntimeEquipmentProjection.getCanonicalRef(
+                    hero, SLOT_KEYS[i]);
+                if (!validDerived(hero[SLOT_DATA_KEYS[i]], appliedRef)) {
+                    return RuntimeEquipmentProjection.STATUS_INVALID;
+                }
+            }
+            return projectionStatus;
         } catch (error) {
-            return false;
+            return RuntimeEquipmentProjection.STATUS_INVALID;
         }
     }
     /**
@@ -2985,9 +3033,10 @@ class org.flashNight.arki.item.CharacterBuildService {
                 || hero.buffManager === context.oldBuffManager
                 || !validDispatcher(hero.dispatcher)
                 || !validBuffManager(hero.buffManager)) return false;
+        if (RuntimeEquipmentProjection.getStatus(hero, _slotRefs)
+                != RuntimeEquipmentProjection.STATUS_ALIGNED) return false;
         for (var i:Number = 0; i < SLOT_KEYS.length; i++) {
             if (_equipmentInventory.getItem(SLOT_KEYS[i]) !== _slotRefs[i]) return false;
-            if (hero[SLOT_KEYS[i]] !== _slotRefs[i]) return false;
             var data:Object = hero[SLOT_DATA_KEYS[i]];
             if (_slotRefs[i] == null) {
                 if (data != null) return false;
@@ -3014,13 +3063,16 @@ class org.flashNight.arki.item.CharacterBuildService {
             && typeof value.destroy == "function";
     }
     private static function validLiveTail(hero:Object):Boolean {
+        return validProjectionHealth(hero)
+            && hero.格斗架势 === false && hero.dressupRefreshing !== true;
+    }
+    private static function validProjectionHealth(hero:Object):Boolean {
         return finiteNumber(hero.重量) && finiteNumber(hero.行走X速度)
             && finiteNumber(hero.hp满血值) && finiteNumber(hero.mp满血值)
             && finiteNumber(hero.防御力)
             && hero.魔法抗性 != null && typeof hero.魔法抗性 == "object"
             && hero.主动战技 != null && typeof hero.主动战技 == "object"
-            && (hero.生命周期函数列表 instanceof Array)
-            && hero.格斗架势 === false && hero.dressupRefreshing !== true;
+            && (hero.生命周期函数列表 instanceof Array);
     }
     private static function finiteNumber(value):Boolean {
         return typeof value == "number" && !isNaN(value)
@@ -3042,34 +3094,27 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static function scanLoadout(inventory:Object):Object {
         var refs:Array = [];
         var parts:Array = ["slots", SLOT_KEYS.length];
-        var liveParts:Array = ["slots", SLOT_KEYS.length];
         try {
             for (var i:Number = 0; i < SLOT_KEYS.length; i++) {
                 var key:String = String(SLOT_KEYS[i]);
                 var item:Object = inventory.getItem(key);
                 refs[i] = item;
                 parts.push("k", stringToken(key));
-                liveParts.push("k", stringToken(key));
                 if (item == null) {
                     parts.push("empty");
-                    liveParts.push("empty");
                     continue;
                 }
                 if (typeof item != "object" || typeof item.name != "string") {
                     return {success:false, error:"invalid_loadout"};
                 }
                 parts.push("item", valueToken(item.name));
-                liveParts.push("item", valueToken(item.name));
                 var value = item.value;
                 if (typeof value == "number") {
                     parts.push("stack", valueToken(value));
-                    liveParts.push("stack");
                 } else if (typeof value == "object" && value != null) {
                     var mods:String = modifierToken(value.mods);
                     parts.push("equipment", valueToken(value.level), valueToken(value.tier),
                         mods, valueToken(item.lastUpdate));
-                    liveParts.push("equipment", valueToken(value.level),
-                        valueToken(value.tier), mods);
                 } else {
                     return {success:false, error:"invalid_loadout"};
                 }
@@ -3077,8 +3122,10 @@ class org.flashNight.arki.item.CharacterBuildService {
         } catch (error) {
             return {success:false, error:"invalid_loadout"};
         }
+        var liveSignature:String = RuntimeEquipmentProjection.buildSemanticSignature(refs);
+        if (liveSignature == null) return {success:false, error:"invalid_loadout"};
         return {success:true, refs:refs, signature:parts.join("|"),
-            liveSignature:liveParts.join("|")};
+            liveSignature:liveSignature};
     }
     private static function sameRefs(left:Array, right:Array):Boolean {
         if (left == null || right == null || left.length != SLOT_KEYS.length
@@ -3143,6 +3190,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         _drugRevision = 0;
         _drugRawRevision = 0;
         _liveRefreshDirty = false;
+        _liveRefreshRetryRequired = false;
         _writeInProgress = false;
         _writeAuthorityTouched = false;
         _capturedPauseLease = undefined;

@@ -7,6 +7,7 @@ import org.flashNight.arki.unit.UnitComponent.Initializer.SpeedDeriveInitializer
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.item.equipment.SubweaponDataUtil;
 import org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController;
+import org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
 
 /**
  * DressupInitializer - 装备初始化器
@@ -746,6 +747,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
     public static function teardownLifeCycles(target:MovieClip):Void{
         if (!target || !target.生命周期函数列表) {
+            RuntimeEquipmentProjection.releaseAliases(target);
             SetEffectController.clearController(target);
             return;
         }
@@ -762,6 +764,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             }
         }
         target.生命周期函数列表.length = 0;
+        RuntimeEquipmentProjection.releaseAliases(target);
         SetEffectController.clearController(target);
     }
 
@@ -802,6 +805,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             loadEquipmentDataFunc(target, key, loadFunc, defaultLevel);
         }
 
+        // 冻结权威装备栏输入；后续 lifecycle 只能通过 RuntimeEquipmentProjection
+        // 申请有所有权的运行态空槽借用，不能污染 CharacterBuild 的 canonical 判定。
+        RuntimeEquipmentProjection.beginCanonical(target);
+
         // 更新装扮数据
         updateDressupKeys(target);
 
@@ -821,5 +828,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         updateLifeCycles(target);
 
         if(target._name === _root.控制目标) _root.玩家信息界面.刷新攻击模式(target.攻击模式);
+        RuntimeEquipmentProjection.completeCanonical(target);
     }
 }

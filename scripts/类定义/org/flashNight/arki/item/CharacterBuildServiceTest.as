@@ -10,6 +10,7 @@ import org.flashNight.arki.item.itemCollection.DrugInventory;
 import org.flashNight.arki.item.itemCollection.EquipmentInventory;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
 import org.flashNight.gesh.object.ObjectUtil;
 
 /** CharacterBuildService 会话、只读 wire/projection、barrier 与 finalize 反例。 */
@@ -57,6 +58,10 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         testHostOnlyDetachRecovery();
         testNotReadyGenerationAndOrder();
         testOpenRejectsUnavailableLiveContext();
+        testInitialTransientStateDoesNotDirty();
+        testRuntimeSlotAliasStaysClean();
+        testExternalDressupAdoptionAvoidsDuplicateRefresh();
+        testInvalidProjectionFailsClosed();
         testOpenDetectsStaleLive();
         testStateOnlyDriftKeepsLiveMatched();
         testSemanticSignatureAndExactRefs();
@@ -377,6 +382,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var hero:Object = {
             _name:"fixtureHero",
             _parent:gameworld,
+            version:1,
             性别:root.性别,
             脸型:root.脸型,
             发型:root.发型,
@@ -410,6 +416,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         root.refreshCalls = 0;
         root.refreshSerial = 0;
         root.refreshMode = "success";
+        root.refreshAlias = "";
         root.装备引用配置 = {刷新所有装扮:function():Void {}};
         root.根据等级计算值 = function():Number { return 1; };
         root.主角函数 = {
@@ -425,11 +432,14 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             hero[SLOT_KEYS[i]] = item;
             hero[SLOT_DATA_KEYS[i]] = item == null ? null : item.getData();
         }
+        RuntimeEquipmentProjection.beginCanonical(hero);
+        RuntimeEquipmentProjection.completeCanonical(hero);
         root.刷新人物装扮 = function(targetName:String):Void {
             root.refreshCalls++;
             if (root.refreshMode == "throw") throw "fixture_refresh";
             var target:Object = root.gameworld[targetName];
             var oldHeadData:Object = target.头部装备数据;
+            RuntimeEquipmentProjection.releaseAliases(target);
             if (root.refreshMode != "same_dispatcher") {
                 target.dispatcher = makeDispatcher(++root.refreshSerial);
             }
@@ -441,6 +451,19 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 target[SLOT_KEYS[j]] = next;
                 target[SLOT_DATA_KEYS[j]] = next == null ? null : next.getData();
             }
+            RuntimeEquipmentProjection.beginCanonical(target);
+            if (root.refreshAlias == "longgun_to_knife") {
+                var aliasOwner:Object = {
+                    自机:target,
+                    装备类型:"长枪",
+                    装备名称:target.长枪.name,
+                    版本号:target.version
+                };
+                var aliasIntent:Object = RuntimeEquipmentProjection.reserveEmptySlotAlias(
+                    aliasOwner, "刀");
+                RuntimeEquipmentProjection.commitSlotAlias(aliasIntent);
+            }
+            RuntimeEquipmentProjection.completeCanonical(target);
             if (root.refreshMode == "reuse_data") target.头部装备数据 = oldHeadData;
             if (root.refreshMode == "slot_mismatch") target.头部装备 = {};
             if (root.refreshMode == "missing_data") target.头部装备数据 = null;
@@ -3819,6 +3842,111 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             "live_unavailable 的首次响应即使丢失，Host unknown recovery 仍可证明无 authority 并释放 pause");
     }
 
+    private static function testInitialTransientStateDoesNotDirty():Void {
+        var root:Object = fixtureRoot(1);
+        var hero:Object = root.gameworld[root.控制目标];
+        var originalBuffManager:Object = hero.buffManager;
+        originalBuffManager.buffCount = 4;
+        hero.hp = 23;
+        hero.mp = 17;
+        hero.格斗架势 = true;
+        hero.攻击模式 = "兵器";
+        hero.重量 = Number.NaN;
+        hero.hp满血值 = Number.NaN;
+        hero.魔法抗性 = null;
+        hero.主动战技 = null;
+        hero.生命周期函数列表 = null;
+        var opened:Object = openFixture(root);
+        var flushed:Object = CharacterBuildService.flushLive(
+            opened.sessionGeneration, opened.loadoutRevision);
+        check(opened.success && opened.loadoutRevision == 0
+                && opened.liveRevision == 0 && !opened.liveRefreshDirty
+                && flushed.success && !flushed.changed
+                && root.refreshCalls == 0
+                && hero.buffManager === originalBuffManager
+                && hero.buffManager.buffCount == 4
+                && hero.hp == 23 && hero.mp == 17
+                && hero.格斗架势 && hero.攻击模式 == "兵器"
+                && isNaN(hero.重量) && isNaN(hero.hp满血值)
+                && hero.魔法抗性 == null && hero.主动战技 == null
+                && hero.生命周期函数列表 == null,
+            "HP/MP、Buff、姿态、攻击模式及刷新后验字段不参与初始 dirty，查看构筑零刷新");
+    }
+
+    private static function testRuntimeSlotAliasStaysClean():Void {
+        var root:Object = fixtureRoot(1);
+        var hero:Object = root.gameworld[root.控制目标];
+        RuntimeEquipmentProjection.releaseAliases(hero);
+        RuntimeEquipmentProjection.beginCanonical(hero);
+        var aliasOwner:Object = {
+            自机:hero,
+            装备类型:"长枪",
+            装备名称:hero.长枪.name,
+            版本号:hero.version
+        };
+        var intent:Object = RuntimeEquipmentProjection.reserveEmptySlotAlias(
+            aliasOwner, "刀");
+        var committed:Boolean = RuntimeEquipmentProjection.commitSlotAlias(intent);
+        var completed:Boolean = RuntimeEquipmentProjection.completeCanonical(hero);
+        var opened:Object = openFixture(root);
+        check(committed && completed && opened.success
+                && opened.loadoutRevision == 0 && !opened.liveRefreshDirty
+                && hero.刀 === hero.长枪
+                && RuntimeEquipmentProjection.getCanonicalRef(hero, "刀") == null
+                && RuntimeEquipmentProjection.hasActiveAlias(hero, "刀", "长枪"),
+            "已登记的长枪到刀空槽借用被规范化为 canonical clean，不制造伪换装");
+
+        root.物品栏.装备栏.items["长枪"].value.level = 3;
+        var dirty:Object = CharacterBuildService.synchronize(opened.sessionGeneration);
+        root.refreshAlias = "longgun_to_knife";
+        var flushed:Object = CharacterBuildService.flushLive(
+            opened.sessionGeneration, dirty.loadoutRevision);
+        check(dirty.success && dirty.liveRefreshDirty
+                && flushed.success && flushed.changed && root.refreshCalls == 1
+                && !flushed.liveRefreshDirty
+                && hero.刀 === hero.长枪
+                && RuntimeEquipmentProjection.hasActiveAlias(hero, "刀", "长枪"),
+            "真实长枪语义变化仍恰好刷新一次，并在刷新后重建合法复合武器 alias");
+    }
+
+    private static function testExternalDressupAdoptionAvoidsDuplicateRefresh():Void {
+        var root:Object = fixtureRoot(1);
+        var opened:Object = openFixture(root);
+        root.物品栏.装备栏.items["头部装备"].value.level = 2;
+        var dirty:Object = CharacterBuildService.synchronize(opened.sessionGeneration);
+        root.刷新人物装扮(root.控制目标);
+        var adopted:Object = CharacterBuildService.synchronize(opened.sessionGeneration);
+        var flushed:Object = CharacterBuildService.flushLive(
+            opened.sessionGeneration, adopted.loadoutRevision);
+        check(dirty.success && dirty.liveRefreshDirty
+                && adopted.success && !adopted.loadoutChanged
+                && !adopted.liveRefreshDirty
+                && adopted.liveRevision == adopted.loadoutRevision
+                && flushed.success && !flushed.changed
+                && root.refreshCalls == 1,
+            "其他授权流程已完成 Dressup 时采信 applied stamp，构筑不重复刷新");
+    }
+
+    private static function testInvalidProjectionFailsClosed():Void {
+        var root:Object = fixtureRoot(1);
+        var hero:Object = root.gameworld[root.控制目标];
+        RuntimeEquipmentProjection.releaseAliases(hero);
+        CharacterBuildService.testOnlyUseRoot(root);
+        var missing:Object = CharacterBuildService.open();
+        check(!missing.success && missing.error == "live_unavailable"
+                && !missing.active && root.refreshCalls == 0,
+            "缺失 applied projection stamp 时 fail-closed，不把未知状态伪装成 dirty 后清 Buff");
+
+        root = fixtureRoot(1);
+        hero = root.gameworld[root.控制目标];
+        hero.头部装备数据 = null;
+        CharacterBuildService.testOnlyUseRoot(root);
+        var malformed:Object = CharacterBuildService.open();
+        check(!malformed.success && malformed.error == "live_unavailable"
+                && !malformed.active && root.refreshCalls == 0,
+            "装备派生数据损坏时拒绝建立会话，未知状态不触发猜测式刷新");
+    }
+
     private static function testNotReadyGenerationAndOrder():Void {
         CharacterBuildService.testOnlyUseRoot({});
         var missing:Object = CharacterBuildService.open();
@@ -4064,6 +4192,9 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         firstMods.slotA = "导轨";
         firstMods.slotB = "瞄具";
         root.物品栏.装备栏.items["头部装备"].value.mods = firstMods;
+        var baselineHero:Object = root.gameworld[root.控制目标];
+        RuntimeEquipmentProjection.beginCanonical(baselineHero);
+        RuntimeEquipmentProjection.completeCanonical(baselineHero);
         opened = openFixture(root);
         var secondMods:Object = {};
         secondMods.slotB = "瞄具";

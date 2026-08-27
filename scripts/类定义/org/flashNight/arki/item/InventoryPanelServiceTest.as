@@ -3,6 +3,7 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.CharacterBuildService;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
 /** Gate A2/A3：inventory-domain lease、原子事务、窗口化与整容器整理回归。 */
@@ -103,6 +104,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         var hero:Object = {
             _name:"readinessHero",
             _parent:gameworld,
+            version:1,
             aabbCollider:{},
             新版人物文字信息:{},
             dispatcher:{
@@ -132,8 +134,27 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
             装载主动战技:function():Void {},
             装载生命周期函数:function():Void {},
             完成生命周期函数装载:function():Void {},
+            重量:3,
+            行走X速度:4,
+            hp满血值:100,
+            mp满血值:50,
+            防御力:10,
+            魔法抗性:{基础:10},
+            主动战技:{},
+            生命周期函数列表:[],
+            格斗架势:false,
             dressupRefreshing:false
         };
+        var slotKeys:Array = [
+            "头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "颈部装备",
+            "长枪", "手枪", "手枪2", "刀", "手雷"
+        ];
+        for (var slotIndex:Number = 0; slotIndex < slotKeys.length; slotIndex++) {
+            hero[slotKeys[slotIndex]] = null;
+            hero[slotKeys[slotIndex] + "数据"] = null;
+        }
+        RuntimeEquipmentProjection.beginCanonical(hero);
+        RuntimeEquipmentProjection.completeCanonical(hero);
         gameworld.readinessHero = hero;
         root.gameworld = gameworld;
         root.刷新人物装扮 = function(target:String):Void {};
