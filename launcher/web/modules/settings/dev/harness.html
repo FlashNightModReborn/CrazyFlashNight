@@ -32,13 +32,14 @@
   'use strict';
   var ids=[
     '上键','下键','左键','右键','A键','B键','C键','键1','键2','键3','键4','键5',
+    '药剂组切换键',
     '快捷物品栏键1','快捷物品栏键2','快捷物品栏键3','快捷物品栏键4',
     '快捷技能栏键1','快捷技能栏键2','快捷技能栏键3','快捷技能栏键4',
     '快捷技能栏键5','快捷技能栏键6','快捷技能栏键7','快捷技能栏键8',
     '快捷技能栏键9','快捷技能栏键10','快捷技能栏键11','快捷技能栏键12',
     '切换武器键','互动键','武器技能键','飞行键','武器变形键','奔跑键','组合键'
   ];
-  var codes=[87,83,65,68,74,75,82,49,50,51,52,53,55,56,57,48,32,85,73,79,80,76,72,71,67,66,78,77,191,69,70,18,81,16,17];
+  var codes=[87,83,65,68,74,75,82,49,50,51,52,53,54,55,56,57,48,32,85,73,79,80,76,72,71,67,66,78,77,191,69,70,18,81,16,17];
   var keyNames={8:'Backspace',9:'Tab',13:'Enter',16:'Shift',17:'Control',18:'Alt',32:'Spacebar',37:'左方向键',38:'上方向键',39:'右方向键',40:'下方向键'};
   for(var digit=48;digit<=57;digit++)keyNames[digit]=String.fromCharCode(digit);
   for(var letter=65;letter<=90;letter++)keyNames[letter]=String.fromCharCode(letter);
@@ -94,14 +95,14 @@
     ])
   }
   function snapshot(){return{
-    success:true,v:1,operation:'snapshot',revision:model.revision,
+    success:true,v:1,keySchemaVersion:2,operation:'snapshot',revision:model.revision,
     settings:clone(model.settings),keys:clone(model.keys),
     defaultKeys:model.keys.map(function(row){return{id:row.id,keyCode:row.keyCode}}),
     allowedKeyCodes:clone(allowed),hostPrefs:clone(model.hostPrefs),
     challengeMode:model.challengeMode,modeLabel:model.challengeMode?'挑战':'困难',
     cheatHelp:help(),forceControls:{returnBaseAvailable:true,
       tryReviveAvailable:model.reviveAvailable,resurrectionRestricted:false},
-    previewActive:previewBaseline!==null,migrationPending:false
+    previewActive:previewBaseline!==null,migrationPending:false,keyMigrationNotice:''
   }}
   function log(message){
     var text=typeof message==='string'?message:JSON.stringify(message);
@@ -136,6 +137,7 @@
       }else if(message.cmd==='cancel'){
         previewBaseline=null;emit(message,{success:true,v:1,operation:'cancel',previewRestored:true,previewActive:false});
       }else if(message.cmd==='apply'){
+        if(payload.keySchemaVersion!==2){emit(message,{success:false,v:1,error:'invalid_payload'});return true}
         if(payload.expectedRevision!==model.revision){emit(message,Object.assign(snapshot(),{success:false,error:'stale_state',operation:'apply'}));return true}
         model.settings=clone(payload.settings);model.keys=payload.keys.map(function(row,index){return{id:row.id,label:ids[index],keyCode:row.keyCode,keyName:keyNames[row.keyCode]||String(row.keyCode)}});
         model.revision++;previewBaseline=null;

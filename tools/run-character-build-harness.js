@@ -130,7 +130,11 @@ function staticAudit() {
         && facetCounts.includes("return count == null ? '—' : String(count)")
         && facetCounts.includes('decorateSlot:decorateSlot')
         && !/Bridge\.send|PanelRequestMux|domain\s*:|cmd\s*:/.test(facetCounts),
-        'candidate count leaf maps the fixed 11+4 targets without transport or taxonomy guessing');
+        'candidate count leaf maps the fixed 11+8 targets without transport or taxonomy guessing');
+    check(template.includes('data-drug-grid role="grid"')
+        && (template.match(/data-drug-bank="[01]" role="rowgroup"/g) || []).length === 2
+        && (template.match(/data-drug-bank-grid="[01]" role="row"/g) || []).length === 2,
+        'two drug banks preserve one grid with two labeled rowgroups and two rows');
     check(candidatePresentation.includes('WorkbenchPrimitives.EntityTile.bindActivation')
         && candidatePresentation.includes('inspectable:true')
         && candidatePresentation.includes('actionable:false')
@@ -203,11 +207,12 @@ function staticAudit() {
         && cssFacade.includes('@import url("./workbench/character-build-stats.css");')
         && css.includes('var(--wb-') && !/:root\s*\{/.test(css),
         'feature CSS reuses the shared token system without a second root palette');
-    check(harness.includes('fixtures.empty') && harness.includes('fixtures.blocked')
+    check(harness.includes('fixtures.empty') && harness.includes('fixtures.cooldown')
+        && harness.includes('fixtures.blocked')
         && harness.includes('fixtures.long') && harness.includes('fixtures.unknown')
         && harness.includes('candidateFacets:candidateFacets()')
         && presentation.includes('当前装备保持不变'),
-        'static harness includes zero/unknown counts, empty, blocked, long-copy, and honest preview fixtures');
+        'static harness includes zero/unknown counts, empty, paired cooldown, blocked, long-copy, and honest preview fixtures');
 }
 
 function edgeExecutable() {
@@ -344,6 +349,10 @@ async function metrics(page) {
             armor:armor.length,
             weapons:weapons.length,
             drugs:drugs.length,
+            drugRowGroups:root.querySelectorAll(
+                '[data-drug-grid] > [role="rowgroup"]').length,
+            drugRows:root.querySelectorAll(
+                '[data-drug-grid] [role="row"]').length,
             occupied:equipment.concat(drugs).filter(node => node.getAttribute('data-empty') === 'false').length,
             slotIcons:root.querySelectorAll(
                 '.character-build-slot-card .inventory-owned-icon[data-icon-name]').length,
@@ -376,7 +385,7 @@ async function metrics(page) {
                 && slotCount.closest('.character-build-pane-heading') === loadoutHeading,
             slotGroupHeadings:Array.from(
                 root.querySelectorAll('.character-build-slot-section > h3'))
-                .map(node => node.textContent.trim()),
+                .map(node => (node.childNodes[0] || node).textContent.trim()),
             legacyLowerFocusSummaryCount:root.querySelectorAll(
                 '.character-build-composite-pane > .character-build-focus-summary,'
                 + '.character-build-loadout-column > .character-build-focus-summary').length,
@@ -424,8 +433,12 @@ async function metrics(page) {
                 trailingSlack:compositeRect.right - loadoutColumnRect.right,
                 slotRowTrailingSlack:slotRowRightEdges.map(
                     right => compositeRect.right - right),
-                drugSingleRow:drugTops.length === 4
-                    && Math.max.apply(Math, drugTops) - Math.min.apply(Math, drugTops) <= 1,
+                drugTwoRows:drugTops.length === 8
+                    && Math.max.apply(Math, drugTops.slice(0, 4))
+                        - Math.min.apply(Math, drugTops.slice(0, 4)) <= 1
+                    && Math.max.apply(Math, drugTops.slice(4))
+                        - Math.min.apply(Math, drugTops.slice(4)) <= 1
+                    && drugTops[4] > drugTops[0],
                 horizontalOverflow:[composite, visualColumn, loadoutColumn].concat(slotGrids)
                     .some(node => node.scrollWidth > node.clientWidth + 1),
                 overflowByNode:[composite, visualColumn, loadoutColumn].concat(slotGrids)
@@ -562,9 +575,10 @@ async function runViewport(browser, port, viewport) {
             && statsDegradation.emptyResult === false && statsDegradation.unavailable,
             label + ' stats invalid scalar and signed-chart inputs fail closed without fabricated visuals',
             JSON.stringify(statsDegradation));
-        check(base.armor === 6 && base.weapons === 5 && base.drugs === 4
-            && base.occupied === 15 && base.slotIcons === 15,
-            label + ' renders full 6 armor + 5 weapon + 4 drug loadout', JSON.stringify(base));
+        check(base.armor === 6 && base.weapons === 5 && base.drugs === 8
+            && base.drugRowGroups === 2 && base.drugRows === 2
+            && base.occupied === 19 && base.slotIcons === 19,
+            label + ' renders full 6 armor + 5 weapon + two explicit four-slot drug banks', JSON.stringify(base));
         check(base.protocolKeys.join('|') === [
             '头部装备','上装装备','下装装备','手部装备','脚部装备','颈部装备',
             '长枪','手枪','手枪2','刀','手雷'
@@ -588,7 +602,7 @@ async function runViewport(browser, port, viewport) {
             && base.innerLayout.visualColumnWidth > base.innerLayout.loadoutColumnWidth
             && Math.abs(base.innerLayout.trailingSlack) <= 1
             && base.innerLayout.slotRowTrailingSlack.every(slack => Math.abs(slack) <= 1)
-            && base.innerLayout.drugSingleRow
+            && base.innerLayout.drugTwoRows
             && !base.innerLayout.horizontalOverflow,
             label + ' inner loadout shrinks to content, aligns right and returns width to the doll',
             JSON.stringify(base.innerLayout));
@@ -654,7 +668,7 @@ async function runViewport(browser, port, viewport) {
             && base.candidateNextStep.indexOf('选择一个槽位') >= 0,
             label + ' fresh open hides empty preview and routine footer chrome',
             JSON.stringify(base));
-        check(base.slotCandidateBadgeCount === 15
+        check(base.slotCandidateBadgeCount === 19
             && base.slotCandidateCounts['armor:头部装备'].value === '2'
             && base.slotCandidateCounts['armor:下装装备'].value === '0'
             && base.slotCandidateCounts['armor:颈部装备'].value === '0'
@@ -663,12 +677,13 @@ async function runViewport(browser, port, viewport) {
             && base.slotCandidateCounts['weapon:手枪2'].value === '3'
             && base.slotCandidateCounts['weapon:刀'].value === '0'
             && base.slotCandidateCounts['weapon:手雷'].value === '5'
-            && ['drug:drug1','drug:drug2','drug:drug3','drug:drug4']
+            && ['drug:drug1','drug:drug2','drug:drug3','drug:drug4',
+                'drug:drug5','drug:drug6','drug:drug7','drug:drug8']
                 .every(key => base.slotCandidateCounts[key].value === '7')
             && Object.values(base.slotCandidateCounts).every(count =>
                 count.state === 'known' && count.fontSize >= 10
                     && count.insideCard && count.aria.indexOf('背包候选') >= 0),
-            label + ' initial unselected snapshot renders authoritative 11+4 counts, explicit zero and pistol alias',
+            label + ' initial unselected snapshot renders authoritative 11+8 counts, explicit zero and pistol alias',
             JSON.stringify(base.slotCandidateCounts));
         const countFallback = await page.evaluate(() => {
             const harness = CharacterBuildHarness;
@@ -704,7 +719,7 @@ async function runViewport(browser, port, viewport) {
                 scrollStable:scroll.scrollTop === scrollBefore
             };
         });
-        check(countFallback.unknown.badgeCount === 15
+        check(countFallback.unknown.badgeCount === 19
             && countFallback.unknown.allUnknown
             && countFallback.unknown.focusKey === 'weapon:长枪'
             && countFallback.unknown.summary.indexOf('暂不可用') >= 0
@@ -1018,6 +1033,28 @@ async function runViewport(browser, port, viewport) {
         check(empty.active === 'armor:脚部装备' && empty.state.selectedSlotKey === ''
             && empty.state.selectedCandidateKey === '',
             label + ' DOM rebuild restores focus without inventing a selection', JSON.stringify(empty));
+
+        await page.evaluate(() => CharacterBuildHarness.setScenario('cooldown'));
+        const cooldown = await page.evaluate(() => {
+            const nodes = ['drug1','drug5'].map(id => document.querySelector(
+                '[data-roving-key="drug:' + id + '"]'));
+            return {
+                ready:nodes.map(node => node.getAttribute('data-drug-ready')),
+                blocked:nodes.map(node => node.getAttribute('data-blocked')),
+                disabled:nodes.map(node => node.getAttribute('aria-disabled')),
+                progress:nodes.map(node => node.getAttribute('data-cooldown-progress')),
+                remaining:nodes.map(node => node.getAttribute('data-cooldown-remaining-ms')),
+                switchStatus:document.querySelector('[data-drug-switch-status]').textContent
+            };
+        });
+        check(cooldown.ready.every(value => value === 'false')
+            && cooldown.blocked.every(value => value === 'true')
+            && cooldown.disabled.every(value => value === 'true')
+            && cooldown.progress.every(value => value === '33')
+            && cooldown.remaining.every(value => value === '2000')
+            && cooldown.switchStatus.includes('冷却 2.0s'),
+            label + ' paired drug slots and switch affordance expose the same cooldown lock',
+            JSON.stringify(cooldown));
 
         await page.evaluate(() => CharacterBuildHarness.setScenario('full'));
         await page.focus('[data-armor-grid] [data-roving-key="armor:头部装备"]');

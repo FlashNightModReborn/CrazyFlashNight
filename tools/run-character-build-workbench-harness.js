@@ -688,6 +688,7 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         'modules/inventory-tuning-scope.js',
         'modules/inventory-workbench-feature-loader.js',
         'modules/character-build/character-build-mutation.js',
+        'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',
         'modules/character-build-session.js',
         'modules/loadout-picker/loadout-picker-action-view.js',

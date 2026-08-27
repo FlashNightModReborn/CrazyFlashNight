@@ -156,9 +156,10 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
       maximumTextControlGap:Math.max.apply(Math, gaps)
     };
   });
-  assert.strictEqual(keyState.count, 35);
+  assert.strictEqual(keyState.count, 36);
   assert(!keyState.labels.some(label => !label || /^(undefined|null)$/i.test(label)));
-  assert(keyState.labels.includes('奔跑键') && keyState.labels.includes('组合键'));
+  assert(keyState.labels.includes('药剂组切换键')
+    && keyState.labels.includes('奔跑键') && keyState.labels.includes('组合键'));
   if (screenshotDir) {
     await page.screenshot({path:path.join(screenshotDir, viewport.width + 'x' + viewport.height + '-keys.png')});
   }

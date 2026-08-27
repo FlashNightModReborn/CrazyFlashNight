@@ -57,11 +57,20 @@ $grenadeDirtyCount = [regex]::Matches(
     '存档系统\.dirtyMark\s*=\s*true'
 ).Count
 if (($drugWriter -notmatch
-        'inventory\.addValue\(String\(slotIndex\),\s*-1\)[\s\S]{0,720}PlayerAssetTransaction\.recordEffect\([\s\S]{0,420}存档系统\.dirtyMark\s*=\s*true[\s\S]{0,160}PlayerAssetTransaction\.commit\(assetTransaction\)') -or
+        'var\s+physicalSlot:Number\s*=\s*physicalSlotFor\(activeBank,\s*lane\)') -or
+        ($drugWriter -notmatch
+        'PlayerAssetTransaction\.markDirtyRequired\(root\.存档系统\)[\s\S]{0,720}inventory\.addValue\(String\(physicalSlot\),\s*-1\)[\s\S]{0,720}PlayerAssetTransaction\.recordEffect\([\s\S]{0,420}PlayerAssetTransaction\.commit\(assetTransaction\)') -or
         ($submitWriter -notmatch 'var wrote:Boolean\s*=\s*false') -or
         ([regex]::Matches($submitWriter, 'wrote\s*=\s*true').Count -ne 3) -or
+        ($submitWriter -notmatch 'var dirtyMarked:Boolean\s*=\s*false') -or
+        ([regex]::Matches(
+            $submitWriter,
+            'PlayerAssetTransaction\.markDirtyRequired\(_root\.存档系统\)'
+        ).Count -ne 3) -or
         ($submitWriter -notmatch
-            'if\(wrote && _root\.存档系统\) _root\.存档系统\.dirtyMark = true;[\s\S]{0,180}PlayerAssetTransaction\.recordItems\("loss", committedLosses, context\);[\s\S]{0,80}return true') -or
+            'if\(implicitAssetTransaction\) PlayerAssetTransaction\.commit\(assetTransaction\);[\s\S]{0,100}submitCompleted\s*=\s*true;[\s\S]{0,80}return submitExact') -or
+        ($submitWriter -notmatch
+            'if\(wrote\) PlayerAssetTransaction\.markAuthorityWrite\(assetTransaction\);[\s\S]{0,360}if\(wrote\) PlayerAssetTransaction\.commit\(assetTransaction\)[\s\S]{0,100}else PlayerAssetTransaction\.rollback\(assetTransaction\)') -or
         ($grenadeWriter -notmatch
             'grenadeItem\.value\s*-=\s*1[\s\S]{0,220}dirtyMark\s*=\s*true') -or
         ($grenadeWriter -notmatch

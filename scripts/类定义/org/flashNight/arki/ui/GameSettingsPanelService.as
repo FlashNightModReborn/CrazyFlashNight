@@ -5,7 +5,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 /**
  * 游戏设置 Web Panel 的 AS2 权威服务。
  *
- * Web 只持有草稿与展示状态；设置、35 键、作弊码和强制流程均在此重新校验。
+ * Web 只持有草稿与展示状态；设置、36 键、作弊码和强制流程均在此重新校验。
  * 音量试听只改变本次运行态，并由 cancel/panelClosed 恢复；apply 是唯一设置写入口。
  */
 class org.flashNight.arki.ui.GameSettingsPanelService {
@@ -167,7 +167,10 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     }
 
     private static function executeApply(params:Object):Object {
-        if (!hasOnly(params, ["task", "action", "callId", "v", "expectedRevision", "settings", "keys"])) {
+        if (!hasOnly(params, ["task", "action", "callId", "v", "keySchemaVersion",
+                "expectedRevision", "settings", "keys"])
+                || typeof params.keySchemaVersion != "number"
+                || params.keySchemaVersion !== 2) {
             return fail("invalid_payload");
         }
         var readiness:Object = ensureAuthorityReady();
@@ -181,6 +184,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             stale.v = 1;
             stale.error = "stale_state";
             stale.operation = "apply";
+            stale.migrationPending = hasPendingMigration();
             return stale;
         }
 
@@ -351,7 +355,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
 
     private static function ensureAuthorityReady():Object {
         if (_root.默认键值设定 == undefined || !(_root.默认键值设定 instanceof Array)
-                || _root.默认键值设定.length != 35 || _root.键值设定 == undefined
+                || _root.默认键值设定.length != 36 || _root.键值设定 == undefined
                 || typeof _root.刷新键值设定 != "function"
                 || _root.soundEffectManager == undefined || _root.帧计时器 == undefined) {
             return fail("settings_unavailable");
@@ -404,6 +408,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     private static function buildSnapshot():Object {
         var settings:Object = readAuthoritySettings();
         return {
+            keySchemaVersion:2,
             revision:_revision,
             settings:settings,
             keys:projectKeyBindings(),
@@ -413,8 +418,33 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             modeLabel:modeLabel(),
             cheatHelp:buildCheatHelp(),
             forceControls:buildForceControls(),
-            previewActive:_previewBaseline != undefined
+            previewActive:_previewBaseline != undefined,
+            keyMigrationNotice:buildKeyMigrationNotice()
         };
+    }
+
+    private static function buildKeyMigrationNotice():String {
+        var info:Object = null;
+        try {
+            info = KeyManager.getPendingKeySettingsMigrationInfo();
+        } catch (migrationInfoError) {
+            info = null;
+        }
+        if (info == null || String(info.id) != "药剂组切换键"
+                || Number(info.defaultCode) != 54
+                || !isIntegerInRange(Number(info.assignedCode), 0, 255)
+                || Number(info.assignedCode) == Number(info.defaultCode)) {
+            return "";
+        }
+        var assignedName:String = KeyManager.getKeyName(
+            Number(info.assignedCode));
+        if (assignedName == undefined || assignedName == null
+                || String(assignedName) == "") {
+            assignedName = String(info.assignedCode);
+        }
+        var notice:String = "已保留原有数字 6 绑定；药剂组切换已分配为 "
+            + String(assignedName) + "。";
+        return notice.length > 160 ? notice.substring(0, 160) : notice;
     }
 
     private static function readAuthoritySettings():Object {

@@ -34,7 +34,7 @@
     }
 
     /* 与 Host `CharacterBuildProtocol.IsSlotCompatible` 的药剂判别完全一致；
-     * 药剂冷却是逐槽状态，未选中槽位没有投影，统一交给 Host 在写入时裁决。 */
+     * 两组同 lane 槽位共享冷却，目标节点的 data-blocked 由严格投影给出。 */
     function defaultIsDrugRow(candidate) {
         var item = candidate && candidate.raw && candidate.raw.item || {};
         return item.itemKind === 'stack' && item.use === '药剂'

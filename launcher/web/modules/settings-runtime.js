@@ -1,4 +1,4 @@
-/** 设置面板的纯协议、35 键校验和草稿比较。 */
+/** 设置面板的纯协议、36 键校验和草稿比较。 */
 (function(root, factory) {
     'use strict';
     var shared = typeof module !== 'undefined' && module.exports
@@ -11,8 +11,10 @@
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
 
     var COMMAND = /^(snapshot|preview|apply|cancel|save|cheat|return_base|try_revive|host_set|hit_number_ledger)$/;
+    var CONTROL_CHARACTERS = /[\u0000-\u001f\u007f-\u009f]/;
     var KEY_IDS = [
         '上键','下键','左键','右键','A键','B键','C键','键1','键2','键3','键4','键5',
+        '药剂组切换键',
         '快捷物品栏键1','快捷物品栏键2','快捷物品栏键3','快捷物品栏键4',
         '快捷技能栏键1','快捷技能栏键2','快捷技能栏键3','快捷技能栏键4',
         '快捷技能栏键5','快捷技能栏键6','快捷技能栏键7','快捷技能栏键8',
@@ -183,12 +185,16 @@
 
     function normalizeSnapshot(response) {
         if (!response || response.success !== true || response.v !== 1
+            || response.keySchemaVersion !== 2
             || !integer(response.revision, 0, 2147483647)
             || !response.settings || typeof response.settings !== 'object'
             || !Array.isArray(response.keys) || response.keys.length !== KEY_IDS.length
             || !Array.isArray(response.defaultKeys) || response.defaultKeys.length !== KEY_IDS.length
             || !Array.isArray(response.allowedKeyCodes)
-            || !response.hostPrefs || typeof response.hostPrefs !== 'object') return null;
+            || !response.hostPrefs || typeof response.hostPrefs !== 'object'
+            || typeof response.keyMigrationNotice !== 'string'
+            || response.keyMigrationNotice.length > 160
+            || CONTROL_CHARACTERS.test(response.keyMigrationNotice)) return null;
         var keys = [];
         for (var i = 0; i < KEY_IDS.length; i++) {
             var row = response.keys[i];
@@ -213,14 +219,16 @@
             cheatHelp:Array.isArray(response.cheatHelp) ? copy(response.cheatHelp) : [],
             forceControls:response.forceControls && typeof response.forceControls === 'object'
                 ? copy(response.forceControls) : {}, previewActive:response.previewActive === true,
-            migrationPending:response.migrationPending === true};
+            migrationPending:response.migrationPending === true,
+            keyMigrationNotice:response.keyMigrationNotice};
     }
 
     function gameDraft(snapshot) {
         return {settings:copy(snapshot.settings), keys:copy(snapshot.keys)};
     }
     function applyPayload(snapshot, draft) {
-        return {v:1, expectedRevision:snapshot.revision, settings:copy(draft.settings),
+        return {v:1, keySchemaVersion:2,
+            expectedRevision:snapshot.revision, settings:copy(draft.settings),
             keys:draft.keys.map(function(row) { return {id:row.id, keyCode:row.keyCode}; })};
     }
     function hasGameChanges(snapshot, draft) {

@@ -105,7 +105,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.shopLayouts["测试商店"] = {title:"测试商人",defaultSection:"supplies",sections:[{id:"supplies",label:"补给",entries:[0,1,2,3,4]}]};
         _root.物品栏 = {};
         _root.物品栏.背包 = new ArrayInventory(null,50);
-        _root.物品栏.药剂栏 = new ArrayInventory(null,4);
+        _root.物品栏.药剂栏 = new ArrayInventory(null,8);
         _root.物品栏.仓库 = new ArrayInventory(null,10);
         _root.物品栏.战备箱 = new ArrayInventory(null,10);
         _root.收集品栏 = {};
@@ -172,6 +172,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
             "permille helper rejects non-finite, fractional, negative, out-of-range and unsafe products");
 
         resetOwned();
+        _root.物品栏.药剂栏.add(7, BaseItem.create("药剂", 3));
         ItemUtil.itemDataDict["药剂"].price = 1001;
         _root.主角被动技能.口才 = {启用:true,等级:5};
         _root.金钱 = 10000;
@@ -184,8 +185,10 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
                 && snapshot.buyMultiplier == undefined
                 && snapshot.catalog[0].unitPrice == 850
                 && bought.success && bought.total == 1701
-                && Number(_root.金钱) == 8299,
-            "NPC state and commit keep v1 atomic wire replacement and floor after quantity multiplication");
+                && Number(_root.金钱) == 8299
+                && _root.物品栏.药剂栏.getItem(7).value == 5
+                && _root.物品栏.背包.getIndexes().length == 0,
+            "NPC state and commit keep v1 pricing while merging into the upper potion bank");
         ItemUtil.itemDataDict["药剂"].price = 100;
         _root.主角被动技能.口才 = {启用:false,等级:0};
     }

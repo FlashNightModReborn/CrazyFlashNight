@@ -68,7 +68,7 @@
                 slot.setAttribute('data-slot-protocol-key', definition.id);
                 slot.setAttribute('data-slot-kind', kind);
                 slot.setAttribute('data-empty', item ? 'false' : 'true');
-                hooks.projectSlot(this, slot, item);
+                hooks.projectSlot(this, slot, item, definition);
                 slot.setAttribute('data-focus-label', definition.label);
                 slot.setAttribute('data-focus-name', item ? item.name : texts.emptyName);
                 slot.setAttribute('aria-selected', key === this._selectedSlotKey ? 'true' : 'false');
@@ -77,11 +77,21 @@
                 slot.setAttribute('data-focus-meta', meta);
                 var card = this._renderOwnedSlot(definition.label, {
                     occupied:!!item,
-                    physicalSlot:i,
+                    physicalSlot:Number.isFinite(Number(definition.physicalSlot))
+                        ? Number(definition.physicalSlot) : i,
                     item:item && item.presentation || {}
                 }, {iconHtml:this._iconHtml, allowDiscard:false, tagName:'span'});
                 card.classList.add(classPrefix + '-slot-card');
-                slot.setAttribute('aria-label', card.getAttribute('aria-label'));
+                var ariaLabel = card.getAttribute('aria-label');
+                if (definition.drugMeta) {
+                    var drugMeta = definition.drugMeta;
+                    ariaLabel += '，第 ' + (Number(drugMeta.bank) + 1)
+                        + ' 组，通道 ' + (Number(drugMeta.lane) + 1)
+                        + '，按键 ' + String(drugMeta.keyLabel || '未绑定')
+                        + (drugMeta.active ? '，当前组' : '，备用组')
+                        + (drugMeta.ready ? '，冷却就绪' : '，冷却中');
+                }
+                slot.setAttribute('aria-label', ariaLabel);
                 card.setAttribute('aria-hidden', 'true');
                 slot.appendChild(card);
                 if (item) hooks.bindSlotTooltip(

@@ -59,6 +59,11 @@ class org.flashNight.arki.key.KeyManager {
      * 设置面板不能只比较刷新后的 35 行，否则会漏掉已经在 load 阶段完成的迁移。
      */
     private static var keySettingsMigrationPending:Boolean = false;
+    private static var keySettingsMigrationInfo:Object = null;
+    private static var lastNormalizationMigrationInfo:Object = null;
+    private static var DRUG_SWITCH_ID:String = "药剂组切换键";
+    private static var DRUG_SWITCH_DEFAULT_CODE:Number = 54;
+    private static var DRUG_SWITCH_FALLBACK_CODES:Array = [84, 89, 86, 88, 90];
 
     /**
      * watchedKeys: 用于记录需要轮询的键（keycode），目的是避免遍历全部键码以提高性能。
@@ -606,6 +611,9 @@ class org.flashNight.arki.key.KeyManager {
         keySettings = normalizeKeySettings(keySettings, _root.默认键值设定);
         if (!sameKeySettingsByIdAndCode(incoming, keySettings)) {
             keySettingsMigrationPending = true;
+            if (lastNormalizationMigrationInfo != null) {
+                keySettingsMigrationInfo = copyMigrationInfo(lastNormalizationMigrationInfo);
+            }
         }
         _root.键值设定 = keySettings;
 
@@ -658,25 +666,49 @@ class org.flashNight.arki.key.KeyManager {
         var authority:Array = (defaults instanceof Array && defaults.length > 0)
             ? defaults : source;
         var normalized:Array = [];
+        lastNormalizationMigrationInfo = null;
         if (!(authority instanceof Array)) return normalized;
+
+        // 先冻结全部历史注册 ID 的有效值，以及其他缺失 ID 将采用的默认值。
+        // 新切换键随后只能从真正空闲的合法键中选择，不能偷走旧绑定。
+        var selectedById:Object = {};
+        var usedCodes:Object = {};
+        for (var scanIndex:Number = 0; scanIndex < authority.length; scanIndex++) {
+            var scanDefault:Object = authority[scanIndex];
+            if (!(scanDefault instanceof Array) || scanDefault.length < 3) continue;
+            var scanId:String = String(scanDefault[1]);
+            var scanSelected:Object = findSettingById(source, scanId);
+            var scanCode:Number = scanSelected == null ? NaN : Number(scanSelected[2]);
+            var scanValid:Boolean = !isNaN(scanCode) && hasKeyName(scanCode);
+            if (scanValid) selectedById[scanId] = scanSelected;
+
+            if (scanId != DRUG_SWITCH_ID) {
+                var reservedCode:Number = scanValid ? scanCode : Number(scanDefault[2]);
+                if (!isNaN(reservedCode) && hasKeyName(reservedCode)) {
+                    usedCodes[reservedCode] = true;
+                }
+            } else if (scanValid) {
+                usedCodes[scanCode] = true;
+            }
+        }
 
         for (var i:Number = 0; i < authority.length; i++) {
             var defaultRow:Object = authority[i];
             if (!(defaultRow instanceof Array) || defaultRow.length < 3) continue;
             var id:String = String(defaultRow[1]);
-            var selected:Object = null;
-            if (source instanceof Array) {
-                for (var j:Number = 0; j < source.length; j++) {
-                    var candidate:Object = source[j];
-                    if (candidate instanceof Array && candidate.length >= 3
-                            && String(candidate[1]) == id) {
-                        selected = candidate;
-                        break;
-                    }
-                }
-            }
+            var selected:Object = selectedById[id];
             var code:Number = selected == null ? Number(defaultRow[2]) : Number(selected[2]);
-            if (isNaN(code) || !hasKeyName(code)) code = Number(defaultRow[2]);
+            if (id == DRUG_SWITCH_ID && selected == null) {
+                code = chooseDrugSwitchMigrationCode(usedCodes, authority);
+                lastNormalizationMigrationInfo = {
+                    id:DRUG_SWITCH_ID,
+                    defaultCode:DRUG_SWITCH_DEFAULT_CODE,
+                    assignedCode:code
+                };
+                usedCodes[code] = true;
+            } else if (isNaN(code) || !hasKeyName(code)) {
+                code = Number(defaultRow[2]);
+            }
             normalized.push([defaultRow[0], id, code]);
         }
         return normalized;
@@ -687,9 +719,72 @@ class org.flashNight.arki.key.KeyManager {
         return keySettingsMigrationPending;
     }
 
+    /** 返回药剂组切换键自动分配结果的副本；其他历史归一只影响 pending，不伪造信息。 */
+    public static function getPendingKeySettingsMigrationInfo():Object {
+        if (!keySettingsMigrationPending || keySettingsMigrationInfo == null) return null;
+        return copyMigrationInfo(keySettingsMigrationInfo);
+    }
+
     /** 仅允许权威存盘成功路径清除。 */
     public static function clearPendingKeySettingsMigration():Void {
         keySettingsMigrationPending = false;
+        keySettingsMigrationInfo = null;
+        lastNormalizationMigrationInfo = null;
+    }
+
+    private static function findSettingById(source:Array, id:String):Object {
+        if (!(source instanceof Array)) return null;
+        for (var i:Number = 0; i < source.length; i++) {
+            var candidate:Object = source[i];
+            if (candidate instanceof Array && candidate.length >= 3
+                    && String(candidate[1]) == id) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    private static function chooseDrugSwitchMigrationCode(usedCodes:Object, defaults:Array):Number {
+        if (isAvailableMigrationCode(DRUG_SWITCH_DEFAULT_CODE, usedCodes)) {
+            return DRUG_SWITCH_DEFAULT_CODE;
+        }
+
+        for (var i:Number = 0; i < DRUG_SWITCH_FALLBACK_CODES.length; i++) {
+            var preferred:Number = Number(DRUG_SWITCH_FALLBACK_CODES[i]);
+            if (isAvailableMigrationCode(preferred, usedCodes)) return preferred;
+        }
+
+        if (defaults instanceof Array) {
+            for (i = 0; i < defaults.length; i++) {
+                var row:Object = defaults[i];
+                if (!(row instanceof Array) || row.length < 3) continue;
+                var defaultCode:Number = Number(row[2]);
+                if (isAvailableMigrationCode(defaultCode, usedCodes)) return defaultCode;
+            }
+        }
+
+        // keyMap 当前最大键码为 222；升序扫描固定上界保证结果不受 Object 枚举顺序影响。
+        for (var code:Number = 0; code <= 255; code++) {
+            if (isAvailableMigrationCode(code, usedCodes)) return code;
+        }
+
+        // 正常映射表不可能耗尽；保底保持默认值，避免生成 NaN root 写入口。
+        return DRUG_SWITCH_DEFAULT_CODE;
+    }
+
+    private static function isAvailableMigrationCode(code:Number, usedCodes:Object):Boolean {
+        if (isNaN(code) || !hasKeyName(code) || usedCodes[code] === true) return false;
+        if (code == 27 || (code >= 112 && code <= 123)) return false;
+        return true;
+    }
+
+    private static function copyMigrationInfo(info:Object):Object {
+        if (info == null) return null;
+        return {
+            id:String(info.id),
+            defaultCode:Number(info.defaultCode),
+            assignedCode:Number(info.assignedCode)
+        };
     }
 
     private static function sameKeySettingsByIdAndCode(left:Array, right:Array):Boolean {

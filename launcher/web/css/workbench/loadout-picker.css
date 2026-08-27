@@ -23,6 +23,47 @@
 .character-build-drug-grid {
     grid-template-columns:repeat(4,var(--workbench-compact-tile-size));
 }
+.character-build-drug-groups {
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    min-width:0;
+}
+.character-build-drug-bank {
+    min-width:0;
+    padding:2px 0;
+    box-sizing:border-box;
+    box-shadow:inset 0 0 0 1px var(--wb-line-soft);
+}
+.character-build-drug-bank[data-active="true"] {
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--wb-accent) 62%,var(--wb-line));
+    background:color-mix(in srgb,var(--wb-accent) 5%,transparent);
+}
+.character-build-drug-bank-heading {
+    display:flex;
+    min-height:12px;
+    align-items:center;
+    justify-content:space-between;
+    gap:4px;
+    color:var(--wb-muted);
+    font:600 11px/12px "Microsoft YaHei",sans-serif;
+}
+.character-build-drug-bank-heading b {
+    color:var(--wb-text);
+    font-weight:700;
+}
+.character-build-drug-bank[data-active="true"] .character-build-drug-bank-heading span {
+    color:var(--wb-accent);
+}
+.character-build-drug-switch-summary {
+    float:right;
+    max-width:142px;
+    overflow:hidden;
+    color:var(--wb-muted);
+    font:500 10px/1.2 "Microsoft YaHei",sans-serif;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
 .character-build-workbench .character-build-slot {
     position:relative;
     display:grid;
@@ -85,6 +126,17 @@
 }
 .character-build-slot[data-blocked="true"] .character-build-slot-card {
     border-color:var(--wb-danger);
+}
+.character-build-slot[data-drug-ready="false"] .character-build-slot-card::before {
+    content:attr(data-cooldown-progress) '%';
+    position:absolute;
+    z-index:7;
+    right:2px;
+    bottom:2px;
+    padding:1px 2px;
+    color:var(--wb-warning);
+    background:color-mix(in srgb,var(--wb-bg) 88%,transparent);
+    font:700 10px/1 "Consolas",monospace;
 }
 
 .character-build-slot-label {

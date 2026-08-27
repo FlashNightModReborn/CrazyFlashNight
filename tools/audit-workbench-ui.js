@@ -109,6 +109,7 @@ var REQUIRED_FILES = [
     'launcher/web/modules/workbench-inspection-viewport.js',
     'launcher/web/modules/workbench.js',
     'launcher/web/modules/character-build/character-build-mutation.js',
+    'launcher/web/modules/character-build/character-build-drug-layout.js',
     'launcher/web/modules/character-build/character-build-session-contract.js',
     'launcher/web/modules/loadout-picker/loadout-picker-action-view.js',
     'launcher/web/modules/character-build/character-build-tuning-adapter.js',
@@ -870,6 +871,7 @@ var moduleThresholds = {
     'launcher/web/modules/equipment-tuning-loadout-lifecycle.js':300,
     'launcher/web/modules/workbench-inspection-viewport.js':420,
     'launcher/web/modules/character-build/character-build-mutation.js':260,
+    'launcher/web/modules/character-build/character-build-drug-layout.js':170,
     'launcher/web/modules/character-build/character-build-session-contract.js':220,
     'launcher/web/modules/loadout-picker/loadout-picker-action-view.js':240,
     'launcher/web/modules/character-build/character-build-tuning-adapter.js':380,
@@ -1131,6 +1133,7 @@ if (exists(registryRel)) {
     ];
     var buildFeatureOrder = [
         'modules/character-build/character-build-mutation.js',
+        'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',
         'modules/character-build-session.js',
         'modules/loadout-picker/loadout-picker-action-view.js',

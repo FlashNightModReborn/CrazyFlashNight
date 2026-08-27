@@ -80,7 +80,10 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     equipmentKeys.forEach(function(slotKey, index) {
         enhancementBySlot[slotKey] = slotKey === '手雷' ? 0 : index % 4 + 1;
     });
-    var drugNames = ['普通hp药剂','普通mp药剂','抗生素',window.__characterBuild404Icon];
+    var drugNames = [
+        '普通hp药剂','普通mp药剂','抗生素',window.__characterBuild404Icon,
+        '普通hp药剂','普通mp药剂','抗生素','普通hp药剂'
+    ];
     var candidateLease = 'lease.candidate.9';
     var candidateEnhancement = 1;
     var portraitGender = '男';
@@ -236,22 +239,39 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         equipmentKeys.forEach(function(key) { portraitEquipment[key] = equipmentBySlot[key]; });
         return {
             equipment:equipmentRows(),
-            drugs:[0,1,2,3].map(function(slot) {
-                return {
+            drugs:[0,1,2,3,4,5,6,7].map(function(slot) {
+                var row = {
                     slot:slot,
+                    bank:Math.floor(slot / 4),
+                    lane:slot % 4,
+                    active:slot < 4,
+                    keyLabel:['7','8','9','0'][slot % 4],
+                    ready:true,
+                    totalSteps:0,
+                    currentStep:0,
+                    progressPercent:0,
+                    animationFrame:1,
+                    remainingMs:0,
                     occupied:!!drugNames[slot],
-                    quantity:slot + 1,
-                    disabled:false,
-                    item:drugNames[slot] ? {
+                    quantity:drugNames[slot] ? slot + 1 : 0
+                };
+                if (drugNames[slot]) row.item = {
                         name:drugNames[slot],
                         displayName:drugNames[slot],
                         icon:drugNames[slot],
-                        itemKind:'drug',
+                        itemKind:'stack',
+                        majorType:'消耗品',
                         use:'药剂',
                         quantity:slot + 1
-                    } : null
                 };
+                return row;
             }),
+            drugLayout:{
+                v:2, bankCount:2, laneCount:4, physicalSlotCount:8,
+                activeBank:0, switchKeyLabel:'6',
+                switchCooldown:{ready:true,totalSteps:0,currentStep:0,
+                    progressPercent:0,animationFrame:1,remainingMs:0}
+            },
             portrait:{
                 gender:portraitGender,
                 appearance:dressup.appearanceByGender[portraitGender],
@@ -1229,6 +1249,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/inventory-tuning-scope.js"></script>
 <script src="modules/inventory-workbench-feature-loader.js"></script>
 <script src="modules/character-build/character-build-mutation.js"></script>
+<script src="modules/character-build/character-build-drug-layout.js"></script>
 <script src="modules/character-build/character-build-session-contract.js"></script>
 <script src="modules/character-build-session.js"></script>
 <script src="modules/loadout-picker/loadout-picker-action-view.js"></script>
@@ -2000,7 +2021,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             })[0];
         }
         check('initial production snapshot exposes authoritative facets and a targetless backpack overview',
-            initialCandidateCounts.length === 15
+            initialCandidateCounts.length === 19
             && initialCandidateCounts.every(function(row) {
                 return row.state === 'known';
             })
@@ -2012,6 +2033,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && initialCount('weapon:手雷').value === '5'
             && initialCount('drug:drug1').value === '7'
             && initialCount('drug:drug4').value === '7'
+            && initialCount('drug:drug8').value === '7'
             && document.querySelectorAll(
                 '.character-build-slot[aria-selected="true"]').length === 0
             && commandCount('candidates') === 1
@@ -2089,7 +2111,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             function(node) { return node.getAttribute('data-icon-name'); });
         check('build shell uses DLS character skin, canonical icons and explicit missing-image fallbacks',
             document.querySelector('.workbench-shell').getAttribute('data-workbench-skin') === 'character'
-            && currentIcons.length === 13
+            && currentIcons.length === 17
             && currentIcons.indexOf(CharacterBuildDressupFixture.equipment.longGun) >= 0
             && currentIcons.indexOf('普通hp药剂') >= 0
             && document.querySelectorAll('.character-build-slot-card .inventory-icon-fallback').length === 2
@@ -5431,10 +5453,12 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             InventoryWorkbench.debugState().build.view.candidateDrag.active
             && drugDropTarget.classList.contains('workbench-drop-active')
             && document.querySelectorAll(
-                '.character-build-slot.character-build-drop-hint').length === 4
+                '.character-build-slot.character-build-drop-hint').length === 8
             && document.querySelector('[data-roving-key="drug:drug1"]')
                 .classList.contains('character-build-drop-hint')
             && document.querySelector('[data-roving-key="drug:drug4"]')
+                .classList.contains('character-build-drop-hint')
+            && document.querySelector('[data-roving-key="drug:drug8"]')
                 .classList.contains('character-build-drop-hint')
             && !document.querySelector('[data-roving-key="weapon:手枪2"]')
                 .classList.contains('character-build-drop-hint'));
@@ -5482,7 +5506,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             InventoryWorkbench.debugState().build.view.candidateDrag.active
             && compatibleDrugTarget.classList.contains('workbench-drop-active')
             && document.querySelectorAll(
-                '.character-build-slot.character-build-drop-hint').length === 4);
+                '.character-build-slot.character-build-drop-hint').length === 8);
         endPointerDrag(compatibleDrugTarget, 89, 'pointerup');
         check('compatible slot 3 can drop to slot 4 without moving the browse anchor',
             await until(function() {

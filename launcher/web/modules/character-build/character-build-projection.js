@@ -13,7 +13,10 @@
     var eligibility = typeof module !== 'undefined' && module.exports
         ? require('./character-build-candidate-eligibility.js')
         : root && root.CharacterBuildCandidateEligibility;
-    var api = factory(tuningAdapter, eligibility);
+    var drugLayout = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-drug-layout.js')
+        : root && root.CharacterBuildDrugLayout;
+    var api = factory(tuningAdapter, eligibility, drugLayout);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -21,7 +24,7 @@
         root.CharacterBuildProjection = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(TuningAdapter, CandidateEligibility) {
+function(TuningAdapter, CandidateEligibility, DrugLayout) {
     'use strict';
 
     if (!TuningAdapter
@@ -33,6 +36,10 @@ function(TuningAdapter, CandidateEligibility) {
             || typeof CandidateEligibility.rowForTarget !== 'function') {
         throw new Error(
             'character-build-projection.js requires CharacterBuildCandidateEligibility');
+    }
+    if (!DrugLayout || typeof DrugLayout.projectRows !== 'function') {
+        throw new Error(
+            'character-build-projection.js requires CharacterBuildDrugLayout');
     }
 
     function finite(value, fallback) {
@@ -58,7 +65,7 @@ function(TuningAdapter, CandidateEligibility) {
                 || String(item.use || item.itemKind || '已装备'),
             type:String(item.use || item.itemKind || ''),
             presentation:item,
-            blocked:row.disabled === true,
+            blocked:row.disabled === true || row.ready === false,
             tunable:capability.available,
             tuningReason:capability.reason
         };
@@ -66,20 +73,16 @@ function(TuningAdapter, CandidateEligibility) {
 
     function viewSnapshot(payload) {
         var equipment = {};
-        var drugs = {};
         var rows = payload && payload.equipment || [];
-        var i;
-        for (i = 0; i < rows.length; i++) {
+        for (var i = 0; i < rows.length; i++) {
             equipment[String(rows[i].slotKey || '')] = safeItem(rows[i]);
         }
-        rows = payload && payload.drugs || [];
-        for (i = 0; i < rows.length; i++) {
-            drugs['drug' + (Number(rows[i].slot) + 1)] =
-                safeItem(rows[i]);
-        }
+        var drugs = DrugLayout.projectRows(payload && payload.drugs, safeItem);
         return {
             equipment:equipment,
-            drugs:drugs,
+            drugs:drugs.drugs,
+            drugMeta:drugs.drugMeta,
+            drugLayout:payload && payload.drugLayout || null,
             portrait:payload && payload.portrait || {},
             candidateFacets:payload && payload.candidateFacets || null,
             blocked:payload && payload.stateHealth !== 'ok',
@@ -132,12 +135,7 @@ function(TuningAdapter, CandidateEligibility) {
     function targetForSelection(selection) {
         if (!selection) return null;
         if (selection.kind === 'backpack') return {kind:'backpack'};
-        if (selection.kind === 'drug') {
-            var slot = /^drug([1-4])$/.exec(String(selection.id || ''));
-            return slot
-                ? {kind:'drug', drugSlot:Number(slot[1]) - 1}
-                : null;
-        }
+        if (selection.kind === 'drug') return DrugLayout.targetForSelection(selection);
         return /^(armor|weapon)$/.test(String(selection.kind || ''))
                 && selection.id
             ? {kind:'equipment', slotKey:String(selection.id)}

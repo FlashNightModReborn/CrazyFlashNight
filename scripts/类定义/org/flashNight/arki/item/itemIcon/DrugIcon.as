@@ -32,9 +32,10 @@ class org.flashNight.arki.item.itemIcon.DrugIcon extends CollectionIcon{
             _root.发布消息("背包空间不足！");
             return;
         }
-        //卸下装备
+        // 物理药剂槽是唯一权威；旧 _root.快捷物品栏* 镜像已退役。
+        // dirty 必须先于集合首写，确保 move 的同步监听器即使抛错也不会漏存。
+        if (_root.存档系统) _root.存档系统.dirtyMark = true;
         var result = collection.move(背包,index,targetIndex);
         if(!result) return;
-        _root["快捷物品栏" + this.index] = "";
     }
 }

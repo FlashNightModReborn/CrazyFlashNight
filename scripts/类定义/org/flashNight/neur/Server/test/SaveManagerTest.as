@@ -1,6 +1,9 @@
 ﻿import org.flashNight.neur.Server.SaveManager;
 import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.arki.render.FrameBroadcaster;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.unit.Action.Skill.DrugInputService;
+import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import JSON;
 
 /**
@@ -19,12 +22,17 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         passedCount = 0;
         failedCount = 0;
 
-        runMigrationAndCoreTests();
-        runSaveFlowTests();
-        runLoadFromMydataTests();
-        runPrefetchTests();
-        runLoadAllTests();
-        runRecoveryAndTombstoneTests();
+        var itemCatalogReceipt:Object = beginDrugItemCatalogFixture();
+        try {
+            runMigrationAndCoreTests();
+            runSaveFlowTests();
+            runLoadFromMydataTests();
+            runPrefetchTests();
+            runLoadAllTests();
+            runRecoveryAndTombstoneTests();
+        } finally {
+            endDrugItemCatalogFixture(itemCatalogReceipt);
+        }
 
         trace("========== SaveManagerTest END: " + passedCount + "/" + testCount + " passed, " + failedCount + " failed ==========");
     }
@@ -46,6 +54,10 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadShopCart_empty_top_level_keeps_nested_shop();
         test_loadShopPurchased_empty_top_level_keeps_nested_shop();
         test_ext_namespace_roundtrip();
+        test_drug_schema_unmarked_discards_ghost_and_is_idempotent();
+        test_drug_schema_v2_preserves_eight_and_cleans_out_of_range();
+        test_drug_schema_future_version_fails_closed();
+        test_migrate_drug_schema_sets_pending();
     }
 
     private static function runSaveFlowTests():Void {
@@ -58,6 +70,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_flushNow_write_gate_rejection_preserves_dirty();
         test_flushNow_storage_false_preserves_dirty_and_retries();
         test_flushNow_storage_pending_preserves_dirty_and_retries();
+        test_flushNow_drug_migration_pending_survives_failure();
         test_flushNow_precommit_throw_resets_in_flight();
         test_debounce_precommit_throw_resets_in_flight();
         test_debounce_exception_publishes_failed_state();
@@ -76,6 +89,9 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadFromMydata_sets_lastsave();
         test_loadFromMydata_resets_dirty();
         test_loadFromMydata_populates_tasks_pets_shop();
+        test_loadFromMydata_drug_schema_success_resets_session();
+        test_loadFromMydata_future_drug_schema_preserves_session();
+        test_launcher_snapshot_migrates_drug_schema();
     }
 
     private static function runPrefetchTests():Void {
@@ -90,6 +106,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
     private static function runLoadAllTests():Void {
         test_loadAll_prefers_json_when_newer();
+        test_loadAll_json_future_drug_schema_does_not_fallback();
+        test_loadAll_sol_future_drug_schema_fails_closed_non_destructive();
         test_loadAll_json_overlays_sol_shop();
         test_loadAll_json_overlays_sol_tasks();
         test_loadAll_sol_empty_top_level_keeps_nested_tasks();
@@ -102,6 +120,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadAll_clearPrefetch_blocks_late_callback();
         test_loadAll_recovers_from_missing_sol();
         test_loadAll_sanitize_slot_match();
+        test_loadAll_sol_migrates_drug_schema();
     }
 
     private static function runRecoveryAndTombstoneTests():Void {
@@ -112,9 +131,47 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_isRecoveryPending();
         test_isRecoveryPending_false_after_delete();
         test_handlePreloadTombstoned_sets_sol_deleted();
+        test_newCharacter_resets_drug_session_and_writes_v2_marker();
     }
 
     // ── helpers ──
+
+    /**
+     * TestLoader 不加载生产 items XML；为真实 BaseItem 反序列化路径安装最小药剂目录，
+     * 并在本 suite 结束时恢复共享静态索引，避免污染后续 focused tests。
+     */
+    private static function beginDrugItemCatalogFixture():Object {
+        var receipt:Object = {
+            itemData:ItemUtil.itemDataDict,
+            equipment:ItemUtil.equipmentDict
+        };
+        var itemData:Object = copyDictionary(receipt.itemData);
+        itemData["普通hp药剂"] = drugItemData("普通hp药剂");
+        itemData["普通mp药剂"] = drugItemData("普通mp药剂");
+        itemData["抗生素"] = drugItemData("抗生素");
+        ItemUtil.itemDataDict = itemData;
+        ItemUtil.equipmentDict = copyDictionary(receipt.equipment);
+        return receipt;
+    }
+
+    private static function endDrugItemCatalogFixture(receipt:Object):Void {
+        ItemUtil.itemDataDict = receipt.itemData;
+        ItemUtil.equipmentDict = receipt.equipment;
+    }
+
+    private static function copyDictionary(source:Object):Object {
+        var copy:Object = {};
+        if (source == undefined || source == null) return copy;
+        for (var key:String in source) copy[key] = source[key];
+        return copy;
+    }
+
+    private static function drugItemData(name:String):Object {
+        return {
+            name:name, displayname:name, icon:name,
+            type:"消耗品", use:"药剂", data:{level:1}
+        };
+    }
 
     private static function assert(condition:Boolean, msg:String):Void {
         testCount++;
@@ -211,6 +268,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             flushResult:undefined,
             resetDirty:true
         });
+        SaveManager.getInstance().clearPendingDrugLoadoutMigration();
         return saved;
     }
 
@@ -222,6 +280,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             flushResult:undefined,
             resetDirty:true
         });
+        SaveManager.getInstance().clearPendingDrugLoadoutMigration();
         _root.savePath = saved.savePath;
         _root.允许存档 = saved.allowSave;
         _root.角色名 = saved.roleName;
@@ -421,6 +480,31 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         }
     }
 
+    private static function test_flushNow_drug_migration_pending_survives_failure():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            var md:Object = buildValidMydata();
+            var legacyGhosts:Object = {};
+            legacyGhosts["4"] = {name:"旧ghost", value:1};
+            md.inventory.药剂栏 = legacyGhosts;
+            sm.migrate(md, {});
+            assert(sm.hasPendingDrugLoadoutMigration(),
+                "flushNow_drug_migration: fixture starts with feature migration pending");
+
+            sm._configureSaveFlowForTest({flushResult:false});
+            assert(!sm.flushNow() && sm.hasPendingDrugLoadoutMigration()
+                    && sm.hasPendingChanges(),
+                "flushNow_drug_migration: failed storage commit cannot clear feature pending");
+
+            sm._configureSaveFlowForTest({flushResult:undefined});
+            assert(sm.flushNow() && !sm.hasPendingDrugLoadoutMigration(),
+                "flushNow_drug_migration: only a successful full save clears feature pending");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
     private static function test_flushNow_precommit_throw_resets_in_flight():Void {
         var saved:Object = beginSaveFlowTest();
         try {
@@ -567,7 +651,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var sm:SaveManager = SaveManager.getInstance();
         var mydata:Object = {};
         mydata.version = "2.6";
-        mydata.inventory = { 背包:{}, 装备栏:{}, 仓库:{}, 战备箱:{} };
+        mydata.inventory = { 背包:{}, 装备栏:{}, 药剂栏:{}, 仓库:{}, 战备箱:{} };
         mydata.collection = { 材料:{}, 情报:{} };
         var soData:Object = {};
         soData["test"] = mydata;
@@ -589,6 +673,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var sm:SaveManager = SaveManager.getInstance();
         var mydata:Object = {};
         mydata.version = "2.7";
+        mydata.inventory = {药剂栏:{}};
         var soData:Object = {};
         soData["test"] = mydata;
         soData.tasks_to_do = ["a", "b"];
@@ -611,6 +696,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var mydata:Object = {};
         mydata.version = "2.7";
         mydata[3] = 17;
+        mydata.inventory = {药剂栏:{}};
         var soData:Object = {};
         soData["test"] = mydata;
         soData.tasks_to_do = [];
@@ -656,9 +742,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
     private static function test_migrate_3_0_noop():Void {
         var sm:SaveManager = SaveManager.getInstance();
-        var mydata:Object = {};
-        mydata.version = "3.0";
-        mydata.tasks = { tasks_to_do:[], tasks_finished:{}, task_chains_progress:{} };
+        var mydata:Object = buildValidMydata();
+        mydata.ext = {drugLoadout:{version:2}};
         var soData:Object = {};
         soData["test"] = mydata;
 
@@ -726,6 +811,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         // 写入新导入数据
         var importedMydata:Object = {};
         importedMydata.version = "3.0";
+        importedMydata.inventory = {药剂栏:{}};
+        importedMydata.ext = {drugLoadout:{version:2}};
         importedMydata.tasks = { tasks_to_do:["new_task"], tasks_finished:{}, task_chains_progress:{ 主线:10 } };
         importedMydata.pets = { 宠物信息:[["new_pet"]], 宠物领养限制:8 };
         importedMydata.shop = { 商城已购买物品:["new_shop"], 商城购物车:[] };
@@ -744,6 +831,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var sm:SaveManager = SaveManager.getInstance();
         var mydata:Object = {};
         mydata.version = "2.7";
+        mydata.inventory = {药剂栏:{}};
         var soData:Object = {};
         soData["test"] = mydata;
 
@@ -860,6 +948,10 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var mydata:Object = sm.packGameState();
         assert(mydata.ext != undefined, "ext_roundtrip: ext exists in packed data");
         assert(mydata.ext.customData == 42, "ext_roundtrip: ext.customData preserved");
+        assert(mydata.ext.drugLoadout.version == 2,
+            "ext_roundtrip: pack defensively writes drugLoadout v2 without persisting active bank");
+        assert(mydata.ext.drugLoadout.activeBank == undefined,
+            "ext_roundtrip: active drug bank remains session-only");
         assert(mydata.reserved != undefined, "ext_roundtrip: reserved exists in packed data");
 
         // 清空后解包恢复
@@ -869,6 +961,99 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         assert(_root._saveExt.customData == 42, "ext_roundtrip: _saveExt.customData restored");
 
         _root._saveExt = oldExt;
+    }
+
+    private static function test_drug_schema_unmarked_discards_ghost_and_is_idempotent():Void {
+        var sm:SaveManager = SaveManager.getInstance();
+        var md:Object = buildValidMydata();
+        md.ext = {};
+        var legacySlots:Object = {};
+        legacySlots["0"] = {name:"旧槽0", value:1};
+        legacySlots["3"] = {name:"旧槽3", value:1};
+        legacySlots["4"] = {name:"历史ghost4", value:1};
+        legacySlots["7"] = {name:"历史ghost7", value:1};
+        legacySlots["01"] = {name:"非规范键", value:1};
+        md.inventory.药剂栏 = legacySlots;
+
+        var first:Object = sm.normalizeDrugLoadoutSchema(md);
+        assert(first.ok && first.changed && md.ext.drugLoadout.version == 2,
+            "drug_schema_unmarked: installs feature marker and reports one migration");
+        assert(md.inventory.药剂栏["0"].name == "旧槽0"
+                && md.inventory.药剂栏["3"].name == "旧槽3",
+            "drug_schema_unmarked: preserves canonical legacy slots 0..3");
+        assert(md.inventory.药剂栏["4"] == undefined
+                && md.inventory.药剂栏["7"] == undefined
+                && md.inventory.药剂栏["01"] == undefined,
+            "drug_schema_unmarked: deletes every hidden or noncanonical legacy key");
+
+        var second:Object = sm.normalizeDrugLoadoutSchema(md);
+        assert(second.ok && !second.changed,
+            "drug_schema_unmarked: a second normalization is idempotent");
+    }
+
+    private static function test_drug_schema_v2_preserves_eight_and_cleans_out_of_range():Void {
+        var sm:SaveManager = SaveManager.getInstance();
+        var md:Object = buildValidMydata();
+        md.ext = {drugLoadout:{version:2, activeBank:1}};
+        var v2Drugs:Object = {};
+        v2Drugs["0"] = {name:"I-0", value:1};
+        v2Drugs["4"] = {name:"II-0", value:1};
+        v2Drugs["7"] = {name:"II-3", value:1};
+        v2Drugs["8"] = {name:"越界", value:1};
+        md.inventory.药剂栏 = v2Drugs;
+
+        var result:Object = sm.normalizeDrugLoadoutSchema(md);
+        assert(result.ok && result.changed
+                && md.inventory.药剂栏["0"].name == "I-0"
+                && md.inventory.药剂栏["4"].name == "II-0"
+                && md.inventory.药剂栏["7"].name == "II-3",
+            "drug_schema_v2: preserves all eight canonical physical positions");
+        assert(md.inventory.药剂栏["8"] == undefined,
+            "drug_schema_v2: removes out-of-range data without touching 0..7");
+        assert(md.ext.drugLoadout.activeBank == undefined,
+            "drug_schema_v2: strips legacy activeBank because bank selection is session-only");
+        assert(sm.initInventory().药剂栏.capacity == 8,
+            "drug_schema_v2: newly initialized drug inventory owns eight physical slots");
+        assert(!sm.normalizeDrugLoadoutSchema(md).changed,
+            "drug_schema_v2: cleaned v2 payload remains stable on roundtrip");
+    }
+
+    private static function test_drug_schema_future_version_fails_closed():Void {
+        var sm:SaveManager = SaveManager.getInstance();
+        var md:Object = buildValidMydata();
+        var futureItem:Object = {name:"未来槽", value:1};
+        md.ext = {drugLoadout:{version:3}};
+        var futureDrugs:Object = {};
+        futureDrugs["7"] = futureItem;
+        futureDrugs["8"] = {name:"未来扩展", value:1};
+        md.inventory.药剂栏 = futureDrugs;
+
+        var result:Object = sm.normalizeDrugLoadoutSchema(md);
+        assert(!result.ok && !result.changed
+                && result.error == "future_drug_loadout_version",
+            "drug_schema_future: future feature versions fail closed");
+        assert(md.inventory.药剂栏["7"] === futureItem
+                && md.inventory.药剂栏["8"] != undefined
+                && md.ext.drugLoadout.version == 3,
+            "drug_schema_future: rejection is non-destructive and never downgrades data");
+    }
+
+    private static function test_migrate_drug_schema_sets_pending():Void {
+        var sm:SaveManager = SaveManager.getInstance();
+        sm.clearPendingDrugLoadoutMigration();
+        var md:Object = buildValidMydata();
+        var legacyDrugs:Object = {};
+        legacyDrugs["0"] = {name:"保留", value:1};
+        legacyDrugs["4"] = {name:"ghost", value:1};
+        md.inventory.药剂栏 = legacyDrugs;
+        var changed:Boolean = sm.migrate(md, {});
+        assert(changed && sm.hasPendingDrugLoadoutMigration()
+                && sm.hasPendingChanges(),
+            "drug_schema_migrate: SOL migration joins the durable-save pending contract");
+        assert(md.inventory.药剂栏["0"] != undefined
+                && md.inventory.药剂栏["4"] == undefined,
+            "drug_schema_migrate: SOL path performs the same old-ghost cleanup");
+        sm.clearPendingDrugLoadoutMigration();
     }
 
     // ── Phase 1: loadFromMydata 测试 helpers ──
@@ -891,10 +1076,34 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         // 单例状态重置
         var sm:SaveManager = SaveManager.getInstance();
         sm.clearPrefetch();
+        sm.clearPendingDrugLoadoutMigration();
         // _root 状态隔离
         _root.mydata = undefined;
         _root.角色名 = undefined;
         _root.lastsave = undefined;
+    }
+
+    private static function armBankTwoAndAllDrugCooldowns():Void {
+        ManualCooldownService.resetForTests();
+        ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {});
+        DrugInputService.resetSession();
+        DrugInputService.updateSwitch(
+            {hp:100}, true, true, {药剂组切换冷却时间:3000}, null);
+        for (var lane:Number = 0; lane < 4; lane++) {
+            ManualCooldownService.start(ManualCooldownService.drugKey(lane), 3000);
+        }
+    }
+
+    private static function allDrugCooldownsReady(expected:Boolean):Boolean {
+        if (ManualCooldownService.isReady(ManualCooldownService.drugSwitchKey()) != expected) {
+            return false;
+        }
+        for (var lane:Number = 0; lane < 4; lane++) {
+            if (ManualCooldownService.isReady(ManualCooldownService.drugKey(lane)) != expected) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static function buildValidMydata():Object {
@@ -1089,6 +1298,88 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         assert(_root.商城购物车[0] == "cartY", "populates_shop: 商城购物车");
     }
 
+    private static function test_loadFromMydata_drug_schema_success_resets_session():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        ManualCooldownService.resetForTests();
+        ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {});
+        DrugInputService.resetSession();
+        var unit:Object = {hp:100};
+        DrugInputService.updateSwitch(
+            unit, true, true, {药剂组切换冷却时间:3000}, null);
+        assert(DrugInputService.getActiveBank() == 1,
+            "loadFromMydata_drug_success: fixture begins in bank II");
+
+        var md:Object = buildValidMydata();
+        md.ext = {drugLoadout:{version:2}};
+        var v2Drugs:Object = {};
+        v2Drugs["0"] = {name:"普通hp药剂", value:1};
+        v2Drugs["4"] = {name:"普通mp药剂", value:2};
+        v2Drugs["7"] = {name:"抗生素", value:3};
+        md.inventory.药剂栏 = v2Drugs;
+        assert(sm.loadFromMydata(md, "launcher_snapshot:test"),
+            "loadFromMydata_drug_success: launcher-style core load succeeds");
+        assert(_root.物品栏.药剂栏.getItem("4").name == "普通mp药剂"
+                && _root.物品栏.药剂栏.getItem("7").name == "抗生素"
+                && _root.物品栏.药剂栏.capacity == 8,
+            "loadFromMydata_drug_success: v2 roundtrip preserves bank-II physical slots");
+        assert(DrugInputService.getActiveBank() == 0
+                && ManualCooldownService.isReady(ManualCooldownService.drugSwitchKey()),
+            "loadFromMydata_drug_success: only successful unpack resets bank and drug cooldowns");
+        ManualCooldownService.resetForTests();
+    }
+
+    private static function test_loadFromMydata_future_drug_schema_preserves_session():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        ManualCooldownService.resetForTests();
+        ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {});
+        DrugInputService.resetSession();
+        var unit:Object = {hp:100};
+        DrugInputService.updateSwitch(
+            unit, true, true, {药剂组切换冷却时间:3000}, null);
+        var md:Object = buildValidMydata();
+        md.ext = {drugLoadout:{version:3}};
+        var futureDrugs:Object = {};
+        futureDrugs["7"] = {name:"未来药剂", value:1};
+        md.inventory.药剂栏 = futureDrugs;
+
+        assert(!sm.loadFromMydata(md, "launcher_snapshot:future"),
+            "loadFromMydata_drug_future: future feature schema rejects the load");
+        assert(DrugInputService.getActiveBank() == 1
+                && !ManualCooldownService.isReady(ManualCooldownService.drugSwitchKey()),
+            "loadFromMydata_drug_future: failed load cannot reset live session bank or cooldown");
+        DrugInputService.resetSession();
+        ManualCooldownService.resetForTests();
+    }
+
+    private static function test_launcher_snapshot_migrates_drug_schema():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        sm._resetProtocol2ForTest();
+        var md:Object = buildValidMydata();
+        md.ext = {};
+        var legacyDrugs:Object = {};
+        legacyDrugs["0"] = {name:"普通hp药剂", value:1};
+        legacyDrugs["4"] = {name:"launcher ghost", value:1};
+        md.inventory.药剂栏 = legacyDrugs;
+        _root._launcherSaveDecision = "snapshot";
+        _root._launcherSnapshot = md;
+        _root._launcherSnapshotSource = "json_shadow";
+
+        sm.preload();
+        var ok:Boolean = sm.loadAll();
+        assert(ok && md.ext.drugLoadout.version == 2,
+            "launcher_snapshot_drug_schema: protocol-2 snapshot uses shared v2 normalization");
+        assert(_root.物品栏.药剂栏.getItem("0").name == "普通hp药剂"
+                && _root.物品栏.药剂栏.getItem("4") == null,
+            "launcher_snapshot_drug_schema: old snapshot keeps 0..3 and drops hidden 4..7");
+        assert(sm.hasPendingDrugLoadoutMigration() && sm.hasPendingChanges(),
+            "launcher_snapshot_drug_schema: in-memory snapshot migration remains pending until full save");
+        sm._resetProtocol2ForTest();
+        sm.clearPendingDrugLoadoutMigration();
+    }
+
     // ── Phase 2: prefetch / receiveSavePush 测试 helpers ──
 
     private static var _testJsonParser:JSON;
@@ -1253,15 +1544,104 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var md:Object = buildValidMydata();
         md.lastSaved = "2099-01-01 00:00:00";
         md[0][0] = "JSON角色";
+        md.ext = {};
+        var jsonDrugs:Object = {};
+        jsonDrugs["0"] = {name:"普通hp药剂", value:1};
+        jsonDrugs["4"] = {name:"JSON ghost", value:1};
+        md.inventory.药剂栏 = jsonDrugs;
         var jsonStr:String = getTestJsonParser().stringify(md);
         sm.receiveSavePush({ data: jsonStr, slot: TEST_SLOT });
 
         var ok:Boolean = sm.loadAll();
         assert(ok == true, "loadAll_prefers_json: returned true");
         assert(_root.角色名 == "JSON角色", "loadAll_prefers_json: 角色名 from JSON, got " + _root.角色名);
+        assert(_root.物品栏.药剂栏.getItem("0").name == "普通hp药剂"
+                && _root.物品栏.药剂栏.getItem("4") == null,
+            "loadAll_prefers_json: JSON shadow uses shared legacy ghost cleanup");
+        assert(sm.hasPendingDrugLoadoutMigration(),
+            "loadAll_prefers_json: JSON in-memory migration remains pending for full save");
 
         cleanTestSO();
+        sm.clearPendingDrugLoadoutMigration();
         _root.savePath = oldPath;
+    }
+
+    private static function test_loadAll_json_future_drug_schema_does_not_fallback():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath:Object = _root.savePath;
+        var oldRestoreError:Object = _root._saveRestoreError;
+        try {
+            seedTestSO("2020-01-01 00:00:00", undefined);
+            _root.savePath = TEST_SLOT;
+            _root.mydata = {lastSaved:"2020-01-01 00:00:00"};
+            _root.角色名 = "切换前角色";
+
+            var future:Object = buildValidMydata();
+            future.lastSaved = "2099-01-01 00:00:00";
+            future[0][0] = "未来JSON角色";
+            future.ext = {drugLoadout:{version:3}};
+            var futureDrugs:Object = {};
+            futureDrugs["7"] = {name:"未来药剂", value:1};
+            future.inventory.药剂栏 = futureDrugs;
+            sm.receiveSavePush({
+                data:getTestJsonParser().stringify(future),
+                slot:TEST_SLOT
+            });
+
+            var ok:Boolean = sm.loadAll();
+            assert(!ok && _root._saveRestoreError === true,
+                "loadAll_json_future_drug_schema: future marker fails closed with restore error");
+            assert(_root.角色名 == "切换前角色",
+                "loadAll_json_future_drug_schema: rejected JSON never silently falls back to older SOL");
+        } finally {
+            cleanTestSO();
+            sm.clearPendingDrugLoadoutMigration();
+            _root.savePath = oldPath;
+            if (oldRestoreError === undefined) delete _root._saveRestoreError;
+            else _root._saveRestoreError = oldRestoreError;
+        }
+    }
+
+    private static function test_loadAll_sol_future_drug_schema_fails_closed_non_destructive():Void {
+        var oldPath:Object = _root.savePath;
+        var oldRole:Object = _root.角色名;
+        var oldMydata:Object = _root.mydata;
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        try {
+            seedTestSO("2026-01-01 00:00:00", undefined);
+            _root.savePath = TEST_SLOT;
+            var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+            so.data["test"].ext = {drugLoadout:{version:3}};
+            var futureDrugs:Object = {};
+            futureDrugs["7"] = {name:"未来SOL药剂", value:1};
+            futureDrugs["8"] = {name:"未来扩展槽", value:2};
+            so.data["test"].inventory.药剂栏 = futureDrugs;
+            so.flush();
+
+            _root.角色名 = "切换前角色";
+            armBankTwoAndAllDrugCooldowns();
+            var ok:Boolean = sm.loadAll();
+            assert(!ok && _root.角色名 == "切换前角色"
+                    && DrugInputService.getActiveBank() == 1
+                    && allDrugCooldownsReady(false),
+                "loadAll_sol_future_drug_schema: native SOL fails closed without resetting the live drug session");
+
+            var after:SharedObject = SharedObject.getLocal(TEST_SLOT);
+            assert(after.data["test"].ext.drugLoadout.version == 3
+                    && after.data["test"].inventory.药剂栏["7"].name == "未来SOL药剂"
+                    && after.data["test"].inventory.药剂栏["8"].name == "未来扩展槽",
+                "loadAll_sol_future_drug_schema: rejected future SOL remains byte-shape non-destructive");
+        } finally {
+            DrugInputService.resetSession();
+            ManualCooldownService.resetForTests();
+            sm.clearPendingDrugLoadoutMigration();
+            cleanTestSO();
+            _root.savePath = oldPath;
+            _root.角色名 = oldRole;
+            _root.mydata = oldMydata;
+        }
     }
 
     private static function test_loadAll_json_overlays_sol_shop():Void {
@@ -1566,6 +1946,64 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         _root.savePath = oldPath;
     }
 
+    private static function test_loadAll_sol_migrates_drug_schema():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath:Object = _root.savePath;
+        var oldAllow:Object = _root.允许存档;
+        try {
+            seedTestSO("2026-01-01 00:00:00", undefined);
+            _root.savePath = TEST_SLOT;
+            _root.允许存档 = true;
+            var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+            so.data["test"].ext = {};
+            var solDrugs:Object = {};
+            solDrugs["0"] = {name:"普通hp药剂", value:1};
+            solDrugs["4"] = {name:"SOL ghost", value:1};
+            so.data["test"].inventory.药剂栏 = solDrugs;
+            so.flush();
+
+            sm._configureSaveFlowForTest({flushResult:true});
+            var ok:Boolean = sm.loadAll();
+            assert(ok && _root.mydata.ext.drugLoadout.version == 2
+                    && _root.物品栏.药剂栏.getItem("0").name == "普通hp药剂"
+                    && _root.物品栏.药剂栏.getItem("4") == null,
+                "loadAll_sol_drug_schema: native SOL migration installs v2 and removes old ghost");
+            assert(sm.hasPendingDrugLoadoutMigration(),
+                "loadAll_sol_drug_schema: immediate SOL flush success cannot clear full-save pending");
+            assert(sm.flushNow() && !sm.hasPendingDrugLoadoutMigration(),
+                "loadAll_sol_drug_schema: subsequent successful full save clears pending");
+
+            cleanTestSO();
+            sm.clearPendingDrugLoadoutMigration();
+            seedTestSO("2026-01-02 00:00:00", undefined);
+            _root.savePath = TEST_SLOT;
+            so = SharedObject.getLocal(TEST_SLOT);
+            so.data["test"].ext = {};
+            var failedFlushGhosts:Object = {};
+            failedFlushGhosts["4"] = {name:"失败flush ghost", value:1};
+            so.data["test"].inventory.药剂栏 = failedFlushGhosts;
+            so.flush();
+            sm._configureSaveFlowForTest({flushResult:false});
+            assert(sm.loadAll() && sm.hasPendingDrugLoadoutMigration(),
+                "loadAll_sol_drug_schema: immediate SOL flush failure also keeps pending");
+            sm._configureSaveFlowForTest({flushResult:true});
+            assert(sm.flushNow() && !sm.hasPendingDrugLoadoutMigration(),
+                "loadAll_sol_drug_schema: retrying the full save is the only clear boundary");
+        } finally {
+            sm._configureSaveFlowForTest({
+                saveInFlight:false,
+                beforeLocalCommit:null,
+                flushResult:undefined,
+                resetDirty:true
+            });
+            sm.clearPendingDrugLoadoutMigration();
+            cleanTestSO();
+            _root.savePath = oldPath;
+            _root.允许存档 = oldAllow;
+        }
+    }
+
     private static function test_deleteSlot_clears_prefetch():Void {
         setUpForLoadTest();
         var sm:SaveManager = SaveManager.getInstance();
@@ -1577,6 +2015,9 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         md[0][0] = "即将删除";
         sm.receiveSavePush({ data: getTestJsonParser().stringify(md), slot: TEST_SLOT });
         assert(sm.getPrefetchStatus().hasPrefetch == true, "deleteSlot_clears: prefetch exists before delete");
+        armBankTwoAndAllDrugCooldowns();
+        assert(DrugInputService.getActiveBank() == 1 && allDrugCooldownsReady(false),
+            "deleteSlot_clears: fixture starts in bank II with all five drug cooldowns active");
 
         // 删档
         sm.deleteSlot();
@@ -1586,7 +2027,10 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
         // 验证 hasSaveData 返回 false（SOL 空 + 预取已清）
         assert(sm.hasSaveData() == false, "deleteSlot_clears: hasSaveData false after delete");
+        assert(DrugInputService.getActiveBank() == 0 && allDrugCooldownsReady(true),
+            "deleteSlot_clears: successful delete resets active bank and all five drug cooldowns");
 
+        ManualCooldownService.resetForTests();
         cleanTestSO();
         _root.savePath = oldPath;
     }
@@ -1729,5 +2173,68 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
         cleanTestSO();
         _root.savePath = oldPath;
+    }
+
+    private static function test_newCharacter_resets_drug_session_and_writes_v2_marker():Void {
+        var oldPath:Object = _root.savePath;
+        var oldSound:Object = _root.soundEffectManager;
+        var oldTimer:Object = _root.帧计时器;
+        var oldLoadStage:Object = _root.载入关卡数据;
+        var oldFade:Object = _root.淡出动画;
+        var oldUpper:Object = _root.上装装备;
+        var oldLower:Object = _root.下装装备;
+        var oldFeet:Object = _root.脚部装备;
+        var oldDifficulty:Object = _root.难度;
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        try {
+            _root.savePath = TEST_SLOT;
+            var fixtureLoaded:Boolean = sm.loadFromMydata(buildValidMydata(), "new_character_fixture");
+            _root.soundEffectManager = {
+                getGlobalVolume:function():Number { return 100; },
+                getBGMVolume:function():Number { return 100; },
+                getJukeboxOverride:function():Boolean { return false; },
+                getTrueRandom:function():Boolean { return false; },
+                getPlayMode:function():String { return "loop"; },
+                stopBGMForTransition:function():Void {}
+            };
+            _root.帧计时器 = {
+                性能等级上限:1,
+                添加单次任务:function(callback:Function, delay:Number):Void {}
+            };
+            _root.载入关卡数据 = function(stageName:String, path:String):Void {};
+            _root.淡出动画 = {淡出跳转帧:function(frameName:String):Void {}};
+            _root.上装装备 = "";
+            _root.下装装备 = "";
+            _root.脚部装备 = "";
+            _root.难度 = "";
+
+            armBankTwoAndAllDrugCooldowns();
+            assert(fixtureLoaded && DrugInputService.getActiveBank() == 1
+                    && allDrugCooldownsReady(false),
+                "newCharacter_drug_session: fixture starts in bank II with all five cooldowns active");
+
+            var ok:Boolean = sm.newCharacter();
+            assert(ok && DrugInputService.getActiveBank() == 0 && allDrugCooldownsReady(true),
+                "newCharacter_drug_session: successful new-character boundary resets bank and five cooldowns");
+            assert(_root._saveExt.drugLoadout.version == 2
+                    && _root._saveExt.drugLoadout.activeBank == undefined
+                    && _root.mydata.ext.drugLoadout.version == 2
+                    && _root.mydata.ext.drugLoadout.activeBank == undefined,
+                "newCharacter_drug_session: live ext and packed snapshot carry v2 without session bank");
+        } finally {
+            DrugInputService.resetSession();
+            ManualCooldownService.resetForTests();
+            cleanTestSO();
+            _root.savePath = oldPath;
+            _root.soundEffectManager = oldSound;
+            _root.帧计时器 = oldTimer;
+            _root.载入关卡数据 = oldLoadStage;
+            _root.淡出动画 = oldFade;
+            _root.上装装备 = oldUpper;
+            _root.下装装备 = oldLower;
+            _root.脚部装备 = oldFeet;
+            _root.难度 = oldDifficulty;
+        }
     }
 }

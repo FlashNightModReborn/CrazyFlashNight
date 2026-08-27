@@ -19,7 +19,7 @@
     var SECTION_CODES = {
         '游戏常用设置':'GAME CORE', '镜头缩放':'CAMERA LAB',
         '流程救援':'RECOVERY LINK', '声音试听':'AUDIO BUS', '画面与性能':'DISPLAY CORE',
-        '35 项权威键位':'INPUT MAP', '移动与操作':'MOVEMENT', '攻击模式':'COMBAT MODE',
+        '36 项权威键位':'INPUT MAP', '移动与操作':'MOVEMENT', '攻击模式':'COMBAT MODE',
         '快捷物品':'QUICK ITEMS', '快捷技能':'SKILL CHANNEL', '战斗扩展':'COMBAT AUX',
         'Launcher 本机偏好':'LAUNCHER LOCAL', '打击伤害数字':'HIT NUMBER',
         '点歌器运行规则':'JUKEBOX RULES',
@@ -229,7 +229,8 @@
                 setStatus('检测到历史键位冲突或保留键；可逐项修复，全部有效后再应用。', 'warning');
             } else {
                 setStatus(model.migrationPending
-                    ? '已补齐旧存档缺失键位；应用后会立即持久化。'
+                    ? (model.keyMigrationNotice
+                        || '已补齐旧存档缺失键位；应用后会立即持久化。')
                     : '已与游戏状态同步。', model.migrationPending ? 'warning' : 'ready');
             }
             renderCurrentTab();
@@ -495,20 +496,20 @@
     }
 
     function renderKeys() {
-        var top = section('35 项权威键位', '点击一个键位后按新键。重复键、Esc 与 F1–F12 会被拒绝，不自动交换。');
+        var top = section('36 项权威键位', '点击一个键位后按新键。重复键、Esc 与 F1–F12 会被拒绝，不自动交换。');
         top.classList.add('settings-key-summary');
         var actions = node('div', 'settings-inline-actions');
         actions.appendChild(annotate(
             button('恢复全部默认', 'settings-button secondary', resetKeys),
-            '把全部 35 项恢复为默认键位；仍需点击“应用并保存”。'));
+            '把全部 36 项恢复为默认键位；药剂组切换恢复为 6，仍需点击“应用并保存”。'));
         top.appendChild(actions);
         _content.appendChild(top);
         var groups = [
             {name:'移动与操作', start:0, end:7, columns:2, side:'left'},
             {name:'攻击模式', start:7, end:12, columns:2, side:'left'},
-            {name:'快捷物品', start:12, end:16, columns:2, side:'left'},
-            {name:'快捷技能', start:16, end:28, columns:3, side:'right'},
-            {name:'战斗扩展', start:28, end:35, columns:2, side:'right'}
+            {name:'快捷物品', start:12, end:17, columns:3, side:'left'},
+            {name:'快捷技能', start:17, end:29, columns:3, side:'right'},
+            {name:'战斗扩展', start:29, end:36, columns:2, side:'right'}
         ];
         var board = node('div', 'settings-key-board');
         var left = node('div', 'settings-key-column');
@@ -1250,15 +1251,18 @@
         _busy=true; refreshFooter(); setStatus('正在应用并同步保存…','loading');
         _mux.request('apply',SettingsRuntime.applyPayload(_snapshot,_draft),{},function(response){
             _busy=false;
-            if(response&&response.applied===true){
+            if(response&&response.applied===true&&response.keySchemaVersion===2){
                 _snapshot.revision=Number(response.revision);
                 _snapshot.settings=SettingsRuntime.copy(response.settings||_draft.settings);
                 _snapshot.keys=SettingsRuntime.copy(response.keys||_draft.keys);
                 _draft=SettingsRuntime.gameDraft(_snapshot); _previewActive=false;
                 _snapshot.migrationPending=response.migrationPending===true;
+                _snapshot.keyMigrationNotice=String(response.keyMigrationNotice||'');
                 _saveRetry.hidden=response.durable===true;
                 setStatus(response.durable===true?'设置已应用并持久化。':'设置已应用，但落盘失败；请重试保存。',
                     response.durable===true?'ready':'error'); cue(response.durable===true?'success':'unknown');
+            }else if(response&&response.applied===true){
+                setStatus('设置响应缺少 36 键协议确认，未采信回包。','error');
             }else if(response&&response.error==='stale_state'){
                 setStatus('状态已在别处变化，正在重新同步。','warning'); requestSnapshot(); return;
             }else if(response&&(response.error==='apply_ambiguous'||response.requiresReconcile===true)){
@@ -1285,7 +1289,7 @@
         _mux.request('save',{v:1},{},function(response){
             _busy=false;
             var ok=response&&response.success===true&&response.durable===true;
-            if(ok)_snapshot.migrationPending=response.migrationPending===true;
+            if(ok){_snapshot.migrationPending=response.migrationPending===true;if(!_snapshot.migrationPending)_snapshot.keyMigrationNotice='';}
             if(!ok&&response&&response.requiresReconcile===true){
                 reconcileUnknownWrite('保存结果未知，正在重新读取游戏权威状态；不会自动重试。'); return;
             }

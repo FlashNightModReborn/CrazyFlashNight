@@ -54,7 +54,7 @@
 - `_root`、MovieClip、帧驱动 FSM、XML 数据加载仍是核心工程现实
 - 这条链的验证与构建依赖 Flash / JSFL / IDE 协同，不属于可直接命令行编译的普通脚本项目
 - **启动子系统（asLoader）**：承载 `org.flashNight.*` 类字节码 + boot 序列的 symbol，2026-06 已从 82 帧塌成**单帧 + `BootSequencer` 状态机**（反直觉，架构导览 + 待测见 [../docs/asLoader-README.md](../docs/asLoader-README.md)）
-- **玩家手动输入与 Skill 权威**：`通信_fs_帧计时器.as` 每帧把武器技能、12 槽快捷技能与 4 槽药剂交给 `WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService`；`ManualCooldownService` 独占 `weapon:shared + quick:1..12 + drug:0..3` 共 17 条逻辑冷却并继续使用 CooldownWheel 调度，保持暂停期间推进与跨场景存活。快捷槽描述符与 equip/unequip/reorder 由 `SkillLoadoutService` 权威维护，`QuickSkillInputService` 不再依赖玩家信息 HUD MovieClip 取槽；学习、升级、纯被动与快照投影由 `SkillPanelService` 裁决，并通过独立 `skills` domain 连接 Web。玩家信息 XFL 的控制器只显示键位、`Symbol 1791` 只投影动画，二者缺失或时间轴重绑都不能成为输入或装备门控。旧第 5 药剂格仍是装饰残留，不进入权威容量；药剂管理继续属于独立物品/药剂主线。
+- **玩家手动输入与 Skill 权威**：`通信_fs_帧计时器.as` 每帧把武器技能、12 槽快捷技能与药剂输入交给 `WeaponSkillInputService` / `QuickSkillInputService` / `DrugInputService`。药剂域是 `2 组 × 4 通道`：容器有 8 个物理槽，`7/8/9/0` 始终只映射 4 条 lane，`6` 以上升沿切换活动组。`ManualCooldownService` 独占 `weapon:shared + quick:1..12 + drug:0..3 + drug:switch` 共 18 条逻辑冷却；上下同列槽共享 `drug:lane`，切换不重置 lane 冷却。冷却继续使用 CooldownWheel 调度，保持暂停期间推进与跨场景存活；活动组跨死亡/场景保留，读档/新角色重置且不写存档。快捷槽描述符与 equip/unequip/reorder 由 `SkillLoadoutService` 权威维护，`QuickSkillInputService` 不再依赖玩家信息 HUD MovieClip 取槽；学习、升级、纯被动与快照投影由 `SkillPanelService` 裁决，并通过独立 `skills` domain 连接 Web。玩家信息 XFL 的五个控制器只显示键位、`药剂组切换图标` 只投影 `○ / × + 1 / 2`、`Symbol 1791` 只投影冷却动画，它们缺失或时间轴重绑都不能成为输入、冷却或容器权威。完整契约见[双药剂组 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。
 
 ### B. Flash CS6 编译与自动化 smoke 链
 

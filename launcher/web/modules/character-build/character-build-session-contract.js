@@ -4,16 +4,22 @@
     var mutation = typeof module !== 'undefined' && module.exports
         ? require('./character-build-mutation.js')
         : root && root.CharacterBuildMutation;
-    var api = factory(mutation);
+    var drugLayout = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-drug-layout.js')
+        : root && root.CharacterBuildDrugLayout;
+    var api = factory(mutation, drugLayout);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
         root.CF7.CharacterBuildSessionContract = api;
         root.CharacterBuildSessionContract = api;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function(Mutation) {
+})(typeof window !== 'undefined' ? window : globalThis, function(Mutation, DrugLayout) {
     'use strict';
     if (!Mutation) throw new Error('CharacterBuildSessionContract requires CharacterBuildMutation');
+    if (!DrugLayout || typeof DrugLayout.validSnapshot !== 'function') {
+        throw new Error('CharacterBuildSessionContract requires CharacterBuildDrugLayout');
+    }
 
     var COMMANDS = ['snapshot', 'candidates', 'tooltip', 'flushLive', 'statsSnapshot', 'finalize']
         .concat(Mutation.commands);
@@ -61,7 +67,8 @@
         }
         if (target.kind === 'backpack' && ownKeys(target, ['kind'])) return 'backpack';
         var slot = integer(target.drugSlot, -1);
-        return target.kind === 'drug' && slot >= 0 && slot < 4 ? 'drug:' + slot : '';
+        return target.kind === 'drug' && slot >= 0
+            && slot < DrugLayout.physicalSlotCount ? 'drug:' + slot : '';
     }
     function sameTarget(left, right) {
         return targetKey(left) !== '' && targetKey(left) === targetKey(right);
@@ -80,14 +87,17 @@
         return true;
     }
     function validProjection(payload) {
-        return !!payload && typeof payload === 'object'
-            && Array.isArray(payload.equipment) && payload.equipment.length === 11
-            && Array.isArray(payload.drugs) && payload.drugs.length === 4
-            && validLoadoutItems(payload.equipment)
-            && validLoadoutItems(payload.drugs)
-            && payload.portrait && typeof payload.portrait === 'object'
-            && typeof payload.stateHealth === 'string'
-            && Array.isArray(payload.diagnostics);
+        if (!payload || typeof payload !== 'object'
+                || !Array.isArray(payload.equipment)
+                || payload.equipment.length !== 11
+                || !validLoadoutItems(payload.equipment)
+                || !DrugLayout.validSnapshot(
+                    payload.drugs, payload.drugLayout,
+                    Mutation.validItemIdentity)
+                || !payload.portrait || typeof payload.portrait !== 'object'
+                || typeof payload.stateHealth !== 'string'
+                || !Array.isArray(payload.diagnostics)) return false;
+        return true;
     }
     function validCandidates(payload, target, scope) {
         scope = candidateScope(scope);
@@ -166,6 +176,8 @@
         token:token, copy:copy, targetKey:targetKey, candidateScope:candidateScope,
         definitiveOpenFailure:definitiveOpenFailure,
         validators:{projection:validProjection, candidates:validCandidates,
-            tooltip:validTooltip, stats:validStats}
+            tooltip:validTooltip, stats:validStats},
+        drugLayout:{bankCount:DrugLayout.bankCount, laneCount:DrugLayout.laneCount,
+            physicalSlotCount:DrugLayout.physicalSlotCount}
     };
 });

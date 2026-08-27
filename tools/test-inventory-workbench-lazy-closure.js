@@ -88,7 +88,10 @@ async function main() {
     assert(!calls[0].includes('modules/character-build.js'));
     await loader.loadBuild();
     assert.strictEqual(calls.length, 2);
+    assert(calls[1].includes('modules/character-build/character-build-drug-layout.js'));
     assert(calls[1].includes('modules/character-build/character-build-session-contract.js'));
+    assert(calls[1].indexOf('modules/character-build/character-build-drug-layout.js')
+        < calls[1].indexOf('modules/character-build/character-build-session-contract.js'));
     assert(calls[1].includes('modules/character-build/character-build-candidate-eligibility.js'));
     assert(calls[1].includes('modules/character-build/character-build-loadout-presenter.js'));
     assert(calls[1].includes('modules/loadout-picker/loadout-picker-candidate-pane.js'));

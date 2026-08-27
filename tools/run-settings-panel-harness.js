@@ -15,7 +15,7 @@ function test(name, fn) {
   process.stdout.write("[PASS] " + name + "\n");
 }
 
-const codes = [87,83,65,68,74,75,82,49,50,51,52,53,55,56,57,48,
+const codes = [87,83,65,68,74,75,82,49,50,51,52,53,54,55,56,57,48,
   32,85,73,79,80,76,72,71,67,66,78,77,47,69,70,18,81,16,17];
 const keys = runtime.KEY_IDS.map((id, index) => ({id, label:id, keyCode:codes[index], keyName:"K" + codes[index]}));
 const settings = {
@@ -27,18 +27,19 @@ const settings = {
 };
 const allowed = keys.map(row => ({code:row.keyCode, name:row.keyName}));
 
-test("authoritative table contains 35 rows including run and combination", () => {
-  assert.strictEqual(runtime.KEY_IDS.length, 35);
+test("authoritative table contains 36 rows with the potion bank switch at index 12", () => {
+  assert.strictEqual(runtime.KEY_IDS.length, 36);
+  assert.strictEqual(runtime.KEY_IDS[12], "药剂组切换键");
   assert.deepStrictEqual(runtime.KEY_IDS.slice(-2), ["奔跑键", "组合键"]);
   assert.strictEqual(runtime.validateKeyDraft(keys, allowed).valid, true);
 });
 
 test("duplicate, Esc and F-key bindings fail without swap", () => {
   const duplicate = runtime.copy(keys);
-  duplicate[34].keyCode = duplicate[33].keyCode;
+  duplicate[35].keyCode = duplicate[34].keyCode;
   const conflict = runtime.validateKeyDraft(duplicate, allowed);
   assert.strictEqual(conflict.error, "key_conflict");
-  assert.deepStrictEqual(conflict.indexes, [33, 34]);
+  assert.deepStrictEqual(conflict.indexes, [34, 35]);
   const esc = runtime.copy(keys);
   esc[0].keyCode = 27;
   assert.strictEqual(runtime.validateKeyDraft(esc, allowed.concat({code:27,name:"Esc"})).error, "reserved_key");
@@ -60,7 +61,9 @@ test("legacy conflicts can be repaired one candidate at a time", () => {
 
 test("snapshot adopts exact authority and normalizes legacy performance display", () => {
   const response = {
-    success:true, v:1, revision:4, settings:Object.assign({}, settings, {"性能等级上限":3}),
+    success:true, v:1, keySchemaVersion:2, revision:4,
+    keyMigrationNotice:"", migrationPending:false,
+    settings:Object.assign({}, settings, {"性能等级上限":3}),
     keys, defaultKeys:keys.map(row => ({id:row.id,keyCode:row.keyCode})),
     allowedKeyCodes:allowed, hostPrefs:{introEnabled:false,sfxEnabled:true,ambientEnabled:false,
       uiFontScale:1.35,mapDisplayPreference:"auto",hitNumberMode:"balanced",hitNumberWorldRowLimit:24}, challengeMode:false,
@@ -69,10 +72,22 @@ test("snapshot adopts exact authority and normalizes legacy performance display"
   const model = runtime.normalizeSnapshot(response);
   assert(model);
   assert.strictEqual(model.settings["性能等级上限"], 1);
+  assert.strictEqual(model.keys[12].keyCode, 54);
+  assert.strictEqual(model.keyMigrationNotice, "");
   const draft = runtime.gameDraft(model);
   draft.settings.setGlobalVolume = 79;
   assert.strictEqual(runtime.hasGameChanges(model, draft), true);
-  assert.strictEqual(runtime.applyPayload(model, draft).keys.length, 35);
+  assert.strictEqual(runtime.applyPayload(model, draft).keySchemaVersion, 2);
+  assert.strictEqual(runtime.applyPayload(model, draft).keys.length, 36);
+  assert.strictEqual(runtime.normalizeSnapshot(Object.assign({}, response,
+    {keySchemaVersion:1})), null);
+  const missingNotice = Object.assign({}, response);
+  delete missingNotice.keyMigrationNotice;
+  assert.strictEqual(runtime.normalizeSnapshot(missingNotice), null);
+  assert.strictEqual(runtime.normalizeSnapshot(Object.assign({}, response,
+    {keyMigrationNotice:"x".repeat(161)})), null);
+  assert.strictEqual(runtime.normalizeSnapshot(Object.assign({}, response,
+    {keyMigrationNotice:"保留绑定\n切换键已迁移"})), null);
 });
 
 test("placeholder key labels fall back to stable logical ids", () => {
@@ -80,7 +95,8 @@ test("placeholder key labels fall back to stable logical ids", () => {
   dirtyKeys[0].label = "undefined";
   dirtyKeys[1].label = " null ";
   const model = runtime.normalizeSnapshot({
-    success:true, v:1, revision:4, settings, keys:dirtyKeys,
+    success:true, v:1, keySchemaVersion:2, keyMigrationNotice:"",
+    migrationPending:false, revision:4, settings, keys:dirtyKeys,
     defaultKeys:keys.map(row => ({id:row.id,keyCode:row.keyCode})),
     allowedKeyCodes:allowed, hostPrefs:{introEnabled:false,sfxEnabled:true,ambientEnabled:false,
       uiFontScale:1.35,mapDisplayPreference:"auto",hitNumberMode:"balanced",hitNumberWorldRowLimit:24}, challengeMode:false,
@@ -105,15 +121,19 @@ test("entry Flash preview accepts only the bounded transient contract", () => {
 
 test("snapshot keeps a structurally valid duplicate legacy table open for repair", () => {
   const legacyKeys = runtime.copy(keys);
-  legacyKeys[34].keyCode = legacyKeys[33].keyCode;
+  legacyKeys[35].keyCode = legacyKeys[34].keyCode;
   const model = runtime.normalizeSnapshot({
-    success:true, v:1, revision:5, settings, keys:legacyKeys,
+    success:true, v:1, keySchemaVersion:2,
+    keyMigrationNotice:"已保留原有数字 6 绑定；药剂组切换已分配为 T。",
+    migrationPending:true, revision:5, settings, keys:legacyKeys,
     defaultKeys:keys.map(row => ({id:row.id,keyCode:row.keyCode})),
     allowedKeyCodes:allowed, hostPrefs:{introEnabled:false,sfxEnabled:true,ambientEnabled:false,
       uiFontScale:1.35,mapDisplayPreference:"auto",hitNumberMode:"balanced",hitNumberWorldRowLimit:24}, challengeMode:false,
     modeLabel:"困难", cheatHelp:[], forceControls:{}, previewActive:false
   });
   assert(model);
+  assert.strictEqual(model.keys[12].keyCode, 54);
+  assert(model.keyMigrationNotice.includes("分配为 T"));
   assert.strictEqual(runtime.validateKeyDraft(model.keys, model.allowedKeyCodes).error, "key_conflict");
 });
 

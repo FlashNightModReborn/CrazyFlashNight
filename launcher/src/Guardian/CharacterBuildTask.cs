@@ -2019,7 +2019,11 @@ namespace CF7Launcher.Guardian
                 else if (hasDrugSlot)
                 {
                     int drugSlot;
-                    if (!TryReadInteger(payload["drugSlot"], 0, 3, out drugSlot))
+                    if (!TryReadInteger(
+                        payload["drugSlot"],
+                        0,
+                        CharacterBuildProtocol.DrugPhysicalSlotCount - 1,
+                        out drugSlot))
                     {
                         error = "invalid_payload";
                         return false;
@@ -2072,7 +2076,11 @@ namespace CF7Launcher.Guardian
                 else
                 {
                     int drugSlot;
-                    if (!TryReadInteger(payload["drugSlot"], 0, 3, out drugSlot))
+                    if (!TryReadInteger(
+                        payload["drugSlot"],
+                        0,
+                        CharacterBuildProtocol.DrugPhysicalSlotCount - 1,
+                        out drugSlot))
                     {
                         error = "invalid_payload";
                         return false;
@@ -2556,11 +2564,17 @@ namespace CF7Launcher.Guardian
                 int requestedDrugSlot;
                 if (!IsExactObject(target, Set("kind", "drugSlot"))
                     || !TryReadInteger(
-                        target["drugSlot"], 0, 3, out targetDrugSlot)
+                        target["drugSlot"],
+                        0,
+                        CharacterBuildProtocol.DrugPhysicalSlotCount - 1,
+                        out targetDrugSlot)
                     || request == null
                     || request["slotKey"] != null
                     || !TryReadInteger(
-                        request["drugSlot"], 0, 3, out requestedDrugSlot)
+                        request["drugSlot"],
+                        0,
+                        CharacterBuildProtocol.DrugPhysicalSlotCount - 1,
+                        out requestedDrugSlot)
                     || requestedDrugSlot != targetDrugSlot)
                     return false;
             }
@@ -2775,10 +2789,16 @@ namespace CF7Launcher.Guardian
             return kind == "drug"
                 && IsExactObject(target, Set("kind", "drugSlot"))
                 && TryReadInteger(
-                    target["drugSlot"], 0, 3, out targetDrugSlot)
+                    target["drugSlot"],
+                    0,
+                    CharacterBuildProtocol.DrugPhysicalSlotCount - 1,
+                    out targetDrugSlot)
                 && request["slotKey"] == null
                 && TryReadInteger(
-                    request["drugSlot"], 0, 3, out requestedDrugSlot)
+                    request["drugSlot"],
+                    0,
+                    CharacterBuildProtocol.DrugPhysicalSlotCount - 1,
+                    out requestedDrugSlot)
                 && requestedDrugSlot == targetDrugSlot;
         }
 

@@ -117,7 +117,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
     private static function resetState():Void {
         _root.物品栏 = {};
         _root.物品栏.背包 = new ArrayInventory(null, 50);
-        _root.物品栏.药剂栏 = new ArrayInventory(null, 4);
+        _root.物品栏.药剂栏 = new ArrayInventory(null, 8);
         _root.物品栏.仓库 = new ArrayInventory(null, 10);
         _root.物品栏.战备箱 = new ArrayInventory(null, 10);
         _root.收集品栏 = {};
@@ -308,14 +308,16 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
 
     private static function testDirectDelivery():Void {
         resetState();
+        _root.物品栏.药剂栏.add(7, BaseItem.create("药剂", 3));
         var beforePurchased:Object = _root.商城已购买物品;
         var preview:Object = requestPreview([{idx:0, qty:2}]);
         var commit:Object = requestCommit(preview.checkoutToken);
-        var item:Object = _root.物品栏.背包.getItem(0);
+        var item:Object = _root.物品栏.药剂栏.getItem(7);
         check(preview.success && preview.canCommit && preview.total == 80 && preview.projectedBalance == 920,
             "preview derives authoritative K-point total");
-        check(commit.success && commit.newBalance == 920 && item.name == "药剂" && item.value == 2,
-            "commit delivers stack directly and deducts K points");
+        check(commit.success && commit.newBalance == 920 && item.name == "药剂" && item.value == 5
+                && _root.物品栏.背包.getIndexes().length == 0,
+            "commit merges directly into the upper potion bank and deducts K points");
         check(_root.商城购物车.length == 0 && _root.商城已购买物品 === beforePurchased
             && _root.商城已购买物品.length == 1 && _root.testKShopSaveCount == 1,
             "direct checkout clears cart, saves once and does not grow legacy pending claims");

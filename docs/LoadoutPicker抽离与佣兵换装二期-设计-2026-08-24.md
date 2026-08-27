@@ -152,7 +152,7 @@ LoadoutPicker 演进约定：① 第三消费者（肉鸽 / 战术携行集）AD
 
 - scope 只控制候选集合；锚点只控制 `compatible` 筛选和主 CTA 目标；候选的 drop target 由 AS2 权威白名单独立裁决。
 - character-build 装备候选在 `compatible/backpack` 都携 `equipmentEligibility`，并由 Host 在两种 scope 下逐行验证；merc 候选在 slot/backpack 都由 AS2 携 `eligibleSlots`。Web 先消费对应白名单再考虑 legacy fallback，MercTask 传输/写闸门维持原边界。
-- 合法药剂候选可投递到四个药剂槽；具体目标槽的冷却仍由 Host/AS2 写前最终裁决，不把 Web 高亮升级为写权限。
+- 合法药剂候选可投递到八个物理药剂槽；具体目标槽映射的共享 lane 冷却仍由 Host/AS2 写前最终裁决，不把 Web 高亮升级为写权限。
 - drop 写 exact 落点，但成功、确定失败和对账都保留写前 scope + 锚点。fresh 背包总览保持无锚点；兼容槽 A 拖到槽 B 后仍浏览 A。只有玩家显式点槽或切 scope 才改变浏览上下文。
 - merc 写回若推进 `loadoutRevision`，候选 authority 恰好重拉一次；随后同 revision 的快照只刷新投影，不重复制造 loading，也不得让连续操作沿用旧 revision。
 

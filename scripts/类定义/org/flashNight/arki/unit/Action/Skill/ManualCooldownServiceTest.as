@@ -16,6 +16,7 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownServiceTest {
         testDurationRoundingAndDuplicateStart();
         testLegacyProjectionAndRendererRebind();
         testAllLogicalChannelsAreIndependent();
+        testSafeKeyResetInvalidatesQueuedGeneration();
         testSchedulerProgressIgnoresPauseAndSceneObjects();
 
         ManualCooldownService.resetForTests();
@@ -92,19 +93,39 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownServiceTest {
         var i:Number;
         for (i = 1; i <= 12; i++) keys.push(ManualCooldownService.quickSkillKey(i));
         for (i = 0; i < 4; i++) keys.push(ManualCooldownService.drugKey(i));
+        keys.push(ManualCooldownService.drugSwitchKey());
         keys.push(ManualCooldownService.WEAPON_SKILL_KEY);
 
         for (i = 0; i < keys.length; i++) {
             assert(ManualCooldownService.start(String(keys[i]), 34), "logical cooldown channel starts independently: " + keys[i]);
         }
-        assert(keys.length == 17, "authority owns exactly 12 quick skills, 4 drugs and 1 shared weapon cooldown");
+        assert(keys.length == 18, "authority owns exactly 12 quick skills, 4 drug lanes, 1 drug switch and 1 shared weapon cooldown");
         runOneTick();
-        assert(!ManualCooldownService.isReady(String(keys[0])) && !ManualCooldownService.isReady(String(keys[16])),
+        assert(!ManualCooldownService.isReady(String(keys[0])) && !ManualCooldownService.isReady(String(keys[17])),
             "advancing one queued channel does not complete other channels");
         drainQueue();
         for (i = 0; i < keys.length; i++) {
             assert(ManualCooldownService.isReady(String(keys[i])), "logical channel completes independently: " + keys[i]);
         }
+    }
+
+    private static function testSafeKeyResetInvalidatesQueuedGeneration():Void {
+        resetFixture();
+        var key:String = ManualCooldownService.drugSwitchKey();
+        var renderer:Object = makeRenderer();
+        assert(key == "drug:switch" && ManualCooldownService.bindRenderer(key, renderer),
+            "drug switch exposes one stable logical key and accepts renderer binding");
+        assert(ManualCooldownService.start(key, 100) && queue.length == 1,
+            "drug switch cooldown schedules independently");
+        assert(ManualCooldownService.reset(key) && ManualCooldownService.isReady(key)
+                && renderer.冷却 === true && renderer.lastFrame == 1,
+            "safe key reset immediately restores ready projection");
+        drainQueue();
+        assert(ManualCooldownService.isReady(key)
+                && ManualCooldownService.getSnapshot(key).totalSteps == 0,
+            "queued callback from the reset generation cannot revive stale progress");
+        assert(!ManualCooldownService.reset(null) && !ManualCooldownService.reset(""),
+            "safe key reset rejects invalid keys without creating authority state");
     }
 
     private static function testSchedulerProgressIgnoresPauseAndSceneObjects():Void {

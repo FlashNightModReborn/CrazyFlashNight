@@ -155,12 +155,30 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             drug1:item('急救喷雾 × 3','生命恢复'),
             drug2:item('肾上腺素 × 2','短时机动'),
             drug3:item('护甲修复剂 × 1','护甲恢复'),
-            drug4:item('解毒剂 × 4','异常清除')
+            drug4:item('解毒剂 × 4','异常清除'),
+            drug5:item('力量合剂 × 2','伤害增益'),
+            drug6:item('迅捷合剂 × 2','机动增益'),
+            drug7:item('耐性合剂 × 1','抗性增益'),
+            drug8:item('专注合剂 × 1','技能增益')
         },
+        drugMeta:{},
+        drugLayout:{v:2,bankCount:2,laneCount:4,physicalSlotCount:8,
+            activeBank:0,switchKeyLabel:'6',switchCooldown:{ready:true,
+                totalSteps:0,currentStep:0,progressPercent:0,
+                animationFrame:1,remainingMs:0}},
         candidates:candidates(false, false),
         candidateFacets:candidateFacets(),
         stats:CharacterBuildStatsFixture.create()
     };
+    var drugKeys = ['7','8','9','0'];
+    for (var drugSlot = 0; drugSlot < 8; drugSlot++) {
+        base.drugMeta['drug' + (drugSlot + 1)] = {
+            slot:drugSlot, bank:Math.floor(drugSlot / 4), lane:drugSlot % 4,
+            active:drugSlot < 4, keyLabel:drugKeys[drugSlot % 4],
+            ready:true, totalSteps:0, currentStep:0, progressPercent:0,
+            animationFrame:1, remainingMs:0
+        };
+    }
 
     var fixtures = {full:base};
     fixtures.unknown = clone(base);
@@ -172,6 +190,21 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     fixtures.empty.equipment['颈部装备'] = null;
     fixtures.empty.equipment['手雷'] = null;
     fixtures.empty.drugs.drug3 = null;
+
+    fixtures.cooldown = clone(base);
+    fixtures.cooldown.playerName = '成对药剂冷却校验';
+    ['drug1','drug5'].forEach(function(id) {
+        fixtures.cooldown.drugMeta[id].ready = false;
+        fixtures.cooldown.drugMeta[id].totalSteps = 90;
+        fixtures.cooldown.drugMeta[id].currentStep = 30;
+        fixtures.cooldown.drugMeta[id].progressPercent = 33;
+        fixtures.cooldown.drugMeta[id].animationFrame = 2;
+        fixtures.cooldown.drugMeta[id].remainingMs = 2000;
+    });
+    fixtures.cooldown.drugLayout.switchCooldown = {
+        ready:false,totalSteps:90,currentStep:30,progressPercent:33,
+        animationFrame:2,remainingMs:2000
+    };
 
     fixtures.blocked = clone(base);
     fixtures.blocked.playerName = '阻断态校验';

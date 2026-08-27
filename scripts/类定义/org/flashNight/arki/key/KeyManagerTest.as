@@ -10,6 +10,10 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * @version 1.0
  */
 class org.flashNight.arki.key.KeyManagerTest {
+    private static var migrationTestsRun:Number = 0;
+    private static var migrationTestsPassed:Number = 0;
+    private static var migrationTestsFailed:Number = 0;
+
     private var eventBus:EventBus;
     private var controlSettings:Array;
     private var keySettings:Array;
@@ -261,7 +265,192 @@ class org.flashNight.arki.key.KeyManagerTest {
      * 运行所有测试。
      */
     public static function run():Void {
+        runMigrationTests();
         var test:KeyManagerTest = new KeyManagerTest();
+    }
+
+    /** 可由 focused TestLoader 独立调用，不依赖上面的交互式帧调度。 */
+    public static function runAllTests():Void {
+        runMigrationTests();
+    }
+
+    public static function runMigrationTests():Void {
+        migrationTestsRun = migrationTestsPassed = migrationTestsFailed = 0;
+        trace("--- KeyManagerMigrationTest ---");
+
+        testDrugSwitchDefaultAndFallback();
+        testDrugSwitchPreferredFallbackOrder();
+        testDrugSwitchDefaultTableFallbackAndPreservation();
+        testDrugSwitchAscendingFallbackSkipsReservedKeys();
+        testPendingMigrationInfoIsDefensive();
+
+        trace("--- KeyManagerMigrationTest: " + migrationTestsPassed + "/"
+            + migrationTestsRun + " passed, " + migrationTestsFailed + " failed ---");
+    }
+
+    private static function testDrugSwitchDefaultAndFallback():Void {
+        var defaults:Array = buildDrugSwitchDefaults();
+        var historic:Array = [
+            ["动作A", "动作A", 65],
+            ["药剂1", "快捷物品栏键1", 55],
+            ["奔跑", "奔跑键", 16]
+        ];
+        var normalized:Array = KeyManager.normalizeKeySettings(historic, defaults);
+        migrationCheck(normalized.length == 4 && codeFor(normalized, "药剂组切换键") == 54,
+            "missing switch uses 6 when keycode 54 is free");
+        migrationCheck(codeFor(normalized, "动作A") == 65
+                && codeFor(normalized, "快捷物品栏键1") == 55,
+            "normalization preserves every existing registered logical id value");
+
+        historic[0][2] = 54;
+        normalized = KeyManager.normalizeKeySettings(historic, defaults);
+        migrationCheck(codeFor(normalized, "动作A") == 54
+                && codeFor(normalized, "药剂组切换键") == 84,
+            "occupied 6 is preserved and switch deterministically falls back to T");
+    }
+
+    private static function testDrugSwitchDefaultTableFallbackAndPreservation():Void {
+        var defaults:Array = [
+            ["动作A", "动作A", 65],
+            ["动作B", "动作B", 66],
+            ["动作C", "动作C", 67],
+            ["动作D", "动作D", 68],
+            ["动作E", "动作E", 69],
+            ["动作F", "动作F", 70],
+            ["药剂组切换", "药剂组切换键", 54]
+        ];
+        var historic:Array = [
+            ["动作A", "动作A", 54],
+            ["动作B", "动作B", 84],
+            ["动作C", "动作C", 89],
+            ["动作D", "动作D", 86],
+            ["动作E", "动作E", 88],
+            ["动作F", "动作F", 90]
+        ];
+        var normalized:Array = KeyManager.normalizeKeySettings(historic, defaults);
+        migrationCheck(codeFor(normalized, "药剂组切换键") == 65,
+            "after T/Y/V/X/Z the first free authority default code is selected");
+
+        historic.push(["药剂组切换", "药剂组切换键", 90]);
+        normalized = KeyManager.normalizeKeySettings(historic, defaults);
+        migrationCheck(codeFor(normalized, "药剂组切换键") == 90
+                && codeFor(normalized, "动作F") == 90,
+            "an existing switch value is preserved without repairing unrelated historical duplicates");
+    }
+
+    private static function testDrugSwitchPreferredFallbackOrder():Void {
+        var expected:Array = [84, 89, 86, 88, 90];
+        var defaults:Array = [
+            ["动作0", "动作0", 65],
+            ["动作1", "动作1", 66],
+            ["动作2", "动作2", 67],
+            ["动作3", "动作3", 68],
+            ["动作4", "动作4", 69],
+            ["动作5", "动作5", 70],
+            ["药剂组切换", "药剂组切换键", 54]
+        ];
+        var occupied:Array = [54, 84, 89, 86, 88];
+        for (var stage:Number = 0; stage < expected.length; stage++) {
+            var historic:Array = [];
+            for (var i:Number = 0; i <= stage; i++) {
+                historic.push([
+                    "动作" + i,
+                    "动作" + i,
+                    occupied[i]
+                ]);
+            }
+            var normalized:Array = KeyManager.normalizeKeySettings(
+                historic, defaults);
+            migrationCheck(
+                codeFor(normalized, "药剂组切换键") == expected[stage],
+                "preferred switch fallback stage " + stage
+                    + " selects " + expected[stage]);
+        }
+    }
+
+    private static function testDrugSwitchAscendingFallbackSkipsReservedKeys():Void {
+        var defaults:Array = [];
+        var historic:Array = [];
+        var mapped:Array = KeyManager.getAllKeycodes();
+        var rowIndex:Number = 0;
+        for (var i:Number = 0; i < mapped.length; i++) {
+            var code:Number = Number(mapped[i]);
+            if (code >= 124 || code == 27
+                    || (code >= 112 && code <= 123)) {
+                continue;
+            }
+            var id:String = "占用键" + rowIndex++;
+            // 全部 authority defaults 故意复用已占用的 A，确保默认表阶段耗尽；
+            // source 则逐项占满 124 以下的所有非保留合法码。
+            defaults.push([id, id, 65]);
+            historic.push([id, id, code]);
+        }
+        defaults.push(["药剂组切换", "药剂组切换键", 54]);
+
+        var normalized:Array = KeyManager.normalizeKeySettings(
+            historic, defaults);
+        migrationCheck(codeFor(normalized, "药剂组切换键") == 144,
+            "ascending fallback skips free Esc and F1..F12 after every lower legal and default-table code is occupied");
+    }
+
+    private static function testPendingMigrationInfoIsDefensive():Void {
+        var oldDefaults:Object = _root.默认键值设定;
+        var oldSettings:Object = _root.键值设定;
+        var oldControl:Object = _root.按键设定表;
+        try {
+            KeyManager.clearPendingKeySettingsMigration();
+            _root.默认键值设定 = buildDrugSwitchDefaults();
+            _root.键值设定 = [
+                ["动作A", "动作A", 54],
+                ["药剂1", "快捷物品栏键1", 55],
+                ["奔跑", "奔跑键", 16]
+            ];
+            _root.按键设定表 = [[0, 0, 0, 0]];
+            KeyManager.refreshKeySettings(_root.键值设定, null, _root.按键设定表[0]);
+            var info:Object = KeyManager.getPendingKeySettingsMigrationInfo();
+            migrationCheck(KeyManager.hasPendingKeySettingsMigration()
+                    && info.id == "药剂组切换键" && info.defaultCode == 54
+                    && info.assignedCode == 84,
+                "refresh exposes the exact automatic switch assignment while persistence is pending");
+            info.assignedCode = 999;
+            migrationCheck(KeyManager.getPendingKeySettingsMigrationInfo().assignedCode == 84,
+                "pending migration info is returned as a defensive copy");
+            KeyManager.clearPendingKeySettingsMigration();
+            migrationCheck(KeyManager.getPendingKeySettingsMigrationInfo() == null,
+                "the existing durable-save clear boundary also clears migration info");
+        } finally {
+            _root.默认键值设定 = oldDefaults;
+            _root.键值设定 = oldSettings;
+            _root.按键设定表 = oldControl;
+            KeyManager.clearPendingKeySettingsMigration();
+        }
+    }
+
+    private static function buildDrugSwitchDefaults():Array {
+        return [
+            ["动作A", "动作A", 65],
+            ["药剂组切换", "药剂组切换键", 54],
+            ["药剂1", "快捷物品栏键1", 55],
+            ["奔跑", "奔跑键", 16]
+        ];
+    }
+
+    private static function codeFor(rows:Array, id:String):Number {
+        for (var i:Number = 0; i < rows.length; i++) {
+            if (String(rows[i][1]) == id) return Number(rows[i][2]);
+        }
+        return NaN;
+    }
+
+    private static function migrationCheck(condition:Boolean, message:String):Void {
+        migrationTestsRun++;
+        if (condition) {
+            migrationTestsPassed++;
+            trace("[PASS] " + message);
+        } else {
+            migrationTestsFailed++;
+            trace("[TEST_FAIL] " + message);
+        }
     }
 }
 

@@ -68,10 +68,10 @@ check('grenade count can come from stack taxonomy', function() {
             FacetCounts.normalize(projection()), 'weapon', '手雷'),
         1);
 });
-check('all four drug slots consume the same candidate category', function() {
+check('all eight drug slots consume the same candidate category', function() {
     assert.strictEqual(
         FacetCounts.countForTarget(
-            FacetCounts.normalize(projection()), 'drug', 'drug4'),
+            FacetCounts.normalize(projection()), 'drug', 'drug8'),
         2);
 });
 check('missing projection is unknown rather than zero', function() {

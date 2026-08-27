@@ -15,6 +15,9 @@ namespace CF7Launcher.Guardian
     internal static class CharacterBuildProtocol
     {
         internal const int BackpackSlotCount = 50;
+        internal const int DrugBankCount = 2;
+        internal const int DrugLaneCount = 4;
+        internal const int DrugPhysicalSlotCount = 8;
         private const double MaxSafeProjectionNumber = 9007199254740991d;
 
         private static readonly Regex ValidLease = new Regex(
@@ -207,7 +210,11 @@ namespace CF7Launcher.Guardian
                         0,
                         int.MaxValue,
                         out expectedRevision)
-                    || !TryReadInteger(payload["drugSlot"], 0, 3, out drugSlot))
+                    || !TryReadInteger(
+                        payload["drugSlot"],
+                        0,
+                        DrugPhysicalSlotCount - 1,
+                        out drugSlot))
                 {
                     error = "invalid_payload";
                     return false;
@@ -328,7 +335,7 @@ namespace CF7Launcher.Guardian
             bool hasCandidateFacets =
                 payload != null && payload["candidateFacets"] != null;
             var expectedKeys = Set(
-                "equipment", "drugs", "portrait",
+                "equipment", "drugs", "drugLayout", "portrait",
                 "stateHealth", "diagnostics");
             if (hasCandidateFacets) expectedKeys.Add("candidateFacets");
             if (!IsExactObject(
@@ -336,7 +343,10 @@ namespace CF7Launcher.Guardian
                 || !(payload["equipment"] is JArray equipment)
                 || equipment.Count != EquipmentSlots.Length
                 || !(payload["drugs"] is JArray drugs)
-                || drugs.Count != 4
+                || drugs.Count != DrugPhysicalSlotCount
+                || !TryValidateDrugLayout(
+                    payload["drugLayout"] as JObject,
+                    out int activeBank)
                 || !IsPortrait(payload["portrait"] as JObject)
                 || !IsDiagnostics(payload["diagnostics"] as JArray)
                 || !IsStateHealth(payload["stateHealth"]))
@@ -395,11 +405,20 @@ namespace CF7Launcher.Guardian
                 }
             }
 
-            for (int slot = 0; slot < 4; slot++)
+            for (int slot = 0; slot < DrugPhysicalSlotCount; slot++)
             {
                 JObject row = drugs[slot] as JObject;
                 if (row == null
-                    || !IsDrugRow(row, slot))
+                    || !IsDrugRow(row, slot, activeBank))
+                {
+                    return false;
+                }
+            }
+            for (int lane = 0; lane < DrugLaneCount; lane++)
+            {
+                if (!HaveSameDrugCooldown(
+                    drugs[lane] as JObject,
+                    drugs[lane + DrugLaneCount] as JObject))
                 {
                     return false;
                 }
@@ -606,17 +625,101 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
-        private static bool IsDrugRow(JObject row, int expectedSlot)
+        private static bool TryValidateDrugLayout(
+            JObject layout,
+            out int activeBank)
+        {
+            activeBank = -1;
+            int version;
+            int bankCount;
+            int laneCount;
+            int physicalSlotCount;
+            return IsExactObject(
+                    layout,
+                    Set("v", "bankCount", "laneCount", "physicalSlotCount",
+                        "activeBank", "switchKeyLabel", "switchCooldown"))
+                && TryReadInteger(layout["v"], 2, 2, out version)
+                && TryReadInteger(
+                    layout["bankCount"],
+                    DrugBankCount,
+                    DrugBankCount,
+                    out bankCount)
+                && TryReadInteger(
+                    layout["laneCount"],
+                    DrugLaneCount,
+                    DrugLaneCount,
+                    out laneCount)
+                && TryReadInteger(
+                    layout["physicalSlotCount"],
+                    DrugPhysicalSlotCount,
+                    DrugPhysicalSlotCount,
+                    out physicalSlotCount)
+                && TryReadInteger(
+                    layout["activeBank"],
+                    0,
+                    DrugBankCount - 1,
+                    out activeBank)
+                && IsBoundedText(layout["switchKeyLabel"], 64, true)
+                && IsCooldownProjection(
+                    layout["switchCooldown"] as JObject);
+        }
+
+        private static bool IsCooldownProjection(JObject value)
+        {
+            int totalSteps;
+            int currentStep;
+            int progressPercent;
+            int animationFrame;
+            double remainingMs;
+            return IsExactObject(
+                    value,
+                    Set("ready", "totalSteps", "currentStep", "progressPercent",
+                        "animationFrame", "remainingMs"))
+                && value["ready"] != null
+                && value["ready"].Type == JTokenType.Boolean
+                && TryReadInteger(
+                    value["totalSteps"], 0, int.MaxValue, out totalSteps)
+                && TryReadInteger(
+                    value["currentStep"], 0, int.MaxValue, out currentStep)
+                && currentStep <= totalSteps
+                && TryReadInteger(
+                    value["progressPercent"], 0, 100, out progressPercent)
+                && TryReadInteger(
+                    value["animationFrame"], 0, int.MaxValue, out animationFrame)
+                && TryReadFiniteNumber(
+                    value["remainingMs"],
+                    0,
+                    MaxSafeProjectionNumber,
+                    out remainingMs)
+                && (!value.Value<bool>("ready") || remainingMs == 0);
+        }
+
+        private static bool IsDrugRow(
+            JObject row,
+            int expectedSlot,
+            int activeBank)
         {
             int slot;
+            int bank;
+            int lane;
             int totalSteps;
             int currentStep;
             int progressPercent;
             int animationFrame;
             double remainingMs;
             double quantity;
-            if (!TryReadInteger(row["slot"], 0, 3, out slot)
+            if (!TryReadInteger(
+                    row["slot"], 0, DrugPhysicalSlotCount - 1, out slot)
                 || slot != expectedSlot
+                || !TryReadInteger(
+                    row["bank"], 0, DrugBankCount - 1, out bank)
+                || bank != expectedSlot / DrugLaneCount
+                || !TryReadInteger(
+                    row["lane"], 0, DrugLaneCount - 1, out lane)
+                || lane != expectedSlot % DrugLaneCount
+                || row["active"] == null
+                || row["active"].Type != JTokenType.Boolean
+                || row.Value<bool>("active") != (bank == activeBank)
                 || !IsBoundedText(row["keyLabel"], 64, true)
                 || row["ready"] == null
                 || row["ready"].Type != JTokenType.Boolean
@@ -649,10 +752,12 @@ namespace CF7Launcher.Guardian
             if (!IsExactObject(
                     row,
                     occupied
-                        ? Set("slot", "keyLabel", "ready", "totalSteps",
+                        ? Set("slot", "bank", "lane", "active", "keyLabel",
+                            "ready", "totalSteps",
                             "currentStep", "progressPercent", "animationFrame",
                             "remainingMs", "occupied", "quantity", "item")
-                        : Set("slot", "keyLabel", "ready", "totalSteps",
+                        : Set("slot", "bank", "lane", "active", "keyLabel",
+                            "ready", "totalSteps",
                             "currentStep", "progressPercent", "animationFrame",
                             "remainingMs", "occupied", "quantity")))
             {
@@ -674,6 +779,20 @@ namespace CF7Launcher.Guardian
                 && itemKind == "stack"
                 && use == "药剂"
                 && itemQuantity == quantity;
+        }
+
+        private static bool HaveSameDrugCooldown(JObject left, JObject right)
+        {
+            return left != null
+                && right != null
+                && JToken.DeepEquals(left["ready"], right["ready"])
+                && JToken.DeepEquals(left["totalSteps"], right["totalSteps"])
+                && JToken.DeepEquals(left["currentStep"], right["currentStep"])
+                && JToken.DeepEquals(
+                    left["progressPercent"], right["progressPercent"])
+                && JToken.DeepEquals(
+                    left["animationFrame"], right["animationFrame"])
+                && JToken.DeepEquals(left["remainingMs"], right["remainingMs"]);
         }
 
         private static bool IsEquipmentSlotCompatible(

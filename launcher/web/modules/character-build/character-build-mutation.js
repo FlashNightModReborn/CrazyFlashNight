@@ -75,7 +75,7 @@
         if (target.kind === 'equipment' && String(target.slotKey || '')) {
             return {cmd:'equipEquipment', slotKey:String(target.slotKey), source:source};
         }
-        var drugSlot = integer(target.drugSlot, 0, 3);
+        var drugSlot = integer(target.drugSlot, 0, 7);
         return target.kind === 'drug' && drugSlot !== null
             ? {cmd:'equipDrug', drugSlot:drugSlot, source:source} : null;
     }
@@ -84,7 +84,7 @@
         if (target.kind === 'equipment' && String(target.slotKey || '')) {
             return {cmd:'unequipEquipment', slotKey:String(target.slotKey)};
         }
-        var drugSlot = integer(target.drugSlot, 0, 3);
+        var drugSlot = integer(target.drugSlot, 0, 7);
         return target.kind === 'drug' && drugSlot !== null
             ? {cmd:'unequipDrug', drugSlot:drugSlot} : null;
     }
@@ -100,7 +100,7 @@
             payload.slotKey = String(intent.slotKey);
         } else {
             payload.expectedDrugRevision = integer(state.drugRevision, 0, 2147483647);
-            payload.drugSlot = integer(intent.drugSlot, 0, 3);
+            payload.drugSlot = integer(intent.drugSlot, 0, 7);
         }
         if ((equipment ? payload.expectedLoadoutRevision : payload.expectedDrugRevision) === null
                 || (!equipment && payload.drugSlot === null)) return null;

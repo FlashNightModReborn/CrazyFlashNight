@@ -16,6 +16,7 @@ namespace CF7Launcher.Tests.Tasks
         {
             "上键", "下键", "左键", "右键", "A键", "B键", "C键",
             "键1", "键2", "键3", "键4", "键5",
+            "药剂组切换键",
             "快捷物品栏键1", "快捷物品栏键2", "快捷物品栏键3", "快捷物品栏键4",
             "快捷技能栏键1", "快捷技能栏键2", "快捷技能栏键3", "快捷技能栏键4",
             "快捷技能栏键5", "快捷技能栏键6", "快捷技能栏键7", "快捷技能栏键8",
@@ -96,12 +97,59 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Equal("compact", web["hostPrefs"].Value<string>("mapDisplayPreference"));
                 Assert.Equal("detail", web["hostPrefs"].Value<string>("hitNumberMode"));
                 Assert.Equal(0, web["hostPrefs"].Value<int>("hitNumberWorldRowLimit"));
-                Assert.Equal(35, ((JArray)web["keys"]).Count);
+                Assert.Equal(2, web.Value<int>("keySchemaVersion"));
+                Assert.Equal(36, ((JArray)web["keys"]).Count);
+                Assert.Equal(string.Empty, web.Value<string>("keyMigrationNotice"));
             }
         }
 
         [Fact]
-        public void Apply_RequiresAllThirtyFiveUniqueKeys_AndPerformanceZeroOrOne()
+        public void Snapshot_RequiresSchemaTwoAndAlwaysBoundedMigrationNotice()
+        {
+            using (var conflict = new Harness())
+            {
+                JObject sent = conflict.Send("snapshot", new JObject { ["v"] = 1 });
+                JObject response = SnapshotResponse(sent.Value<int>("callId"));
+                response["keyMigrationNotice"] =
+                    "已保留原有数字 6 绑定；药剂组切换已分配为 T。";
+                conflict.Task.HandleFlashResponse(response, delegate { });
+                Assert.Equal(response.Value<string>("keyMigrationNotice"),
+                    Assert.Single(conflict.Web).Value<string>("keyMigrationNotice"));
+            }
+
+            using (var missingSchema = new Harness())
+            {
+                JObject sent = missingSchema.Send("snapshot", new JObject { ["v"] = 1 });
+                JObject response = SnapshotResponse(sent.Value<int>("callId"));
+                response.Remove("keySchemaVersion");
+                missingSchema.Task.HandleFlashResponse(response, delegate { });
+                Assert.Equal("malformed_response",
+                    Assert.Single(missingSchema.Web).Value<string>("error"));
+            }
+
+            using (var missingNotice = new Harness())
+            {
+                JObject sent = missingNotice.Send("snapshot", new JObject { ["v"] = 1 });
+                JObject response = SnapshotResponse(sent.Value<int>("callId"));
+                response.Remove("keyMigrationNotice");
+                missingNotice.Task.HandleFlashResponse(response, delegate { });
+                Assert.Equal("malformed_response",
+                    Assert.Single(missingNotice.Web).Value<string>("error"));
+            }
+
+            using (var oversizedNotice = new Harness())
+            {
+                JObject sent = oversizedNotice.Send("snapshot", new JObject { ["v"] = 1 });
+                JObject response = SnapshotResponse(sent.Value<int>("callId"));
+                response["keyMigrationNotice"] = new string('x', 161);
+                oversizedNotice.Task.HandleFlashResponse(response, delegate { });
+                Assert.Equal("malformed_response",
+                    Assert.Single(oversizedNotice.Web).Value<string>("error"));
+            }
+        }
+
+        [Fact]
+        public void Apply_RequiresSchemaTwoAndAllThirtySixUniqueKeys_AndPerformanceZeroOrOne()
         {
             using (var h = new Harness())
             {
@@ -109,7 +157,8 @@ namespace CF7Launcher.Tests.Tasks
                 JObject sent = h.Send("apply", payload);
                 Assert.NotNull(sent);
                 Assert.Equal("settingsApply", sent.Value<string>("action"));
-                Assert.Equal(35, ((JArray)sent["keys"]).Count);
+                Assert.Equal(2, sent.Value<int>("keySchemaVersion"));
+                Assert.Equal(36, ((JArray)sent["keys"]).Count);
                 Assert.Equal(1, sent["settings"].Value<int>("性能等级上限"));
                 JObject applied = SnapshotResponse(sent.Value<int>("callId"));
                 applied["operation"] = "apply";
@@ -122,9 +171,25 @@ namespace CF7Launcher.Tests.Tasks
                 using (var duplicate = new Harness())
                 {
                     JObject invalid = ApplyPayload();
-                    invalid["keys"][34]["keyCode"] = invalid["keys"][33]["keyCode"];
+                    invalid["keys"][35]["keyCode"] = invalid["keys"][34]["keyCode"];
                     Assert.Null(duplicate.Send("apply", invalid));
                     Assert.Equal("invalid_payload", Assert.Single(duplicate.Web).Value<string>("error"));
+                }
+                using (var missingSchema = new Harness())
+                {
+                    JObject invalid = ApplyPayload();
+                    invalid.Remove("keySchemaVersion");
+                    Assert.Null(missingSchema.Send("apply", invalid));
+                    Assert.Equal("invalid_payload",
+                        Assert.Single(missingSchema.Web).Value<string>("error"));
+                }
+                using (var wrongSchema = new Harness())
+                {
+                    JObject invalid = ApplyPayload();
+                    invalid["keySchemaVersion"] = 1;
+                    Assert.Null(wrongSchema.Send("apply", invalid));
+                    Assert.Equal("invalid_payload",
+                        Assert.Single(wrongSchema.Web).Value<string>("error"));
                 }
                 using (var legacyPerformance = new Harness())
                 {
@@ -618,13 +683,14 @@ namespace CF7Launcher.Tests.Tasks
         private static JObject ApplyPayload()
         {
             var keys = new JArray();
-            int[] codes = {87,83,65,68,74,75,82,49,50,51,52,53,55,56,57,48,
+            int[] codes = {87,83,65,68,74,75,82,49,50,51,52,53,54,55,56,57,48,
                 32,85,73,79,80,76,72,71,67,66,78,77,47,69,70,18,81,16,17};
             for (int i = 0; i < KeyIds.Length; i++)
                 keys.Add(new JObject { ["id"] = KeyIds[i], ["keyCode"] = codes[i] });
             return new JObject
             {
                 ["v"] = 1,
+                ["keySchemaVersion"] = 2,
                 ["expectedRevision"] = 0,
                 ["settings"] = SettingsObject(),
                 ["keys"] = keys
@@ -672,7 +738,8 @@ namespace CF7Launcher.Tests.Tasks
             return new JObject
             {
                 ["task"] = "settings_response", ["callId"] = fid,
-                ["success"] = true, ["v"] = 1, ["operation"] = "snapshot",
+                ["success"] = true, ["v"] = 1,
+                ["keySchemaVersion"] = 2, ["operation"] = "snapshot",
                 ["revision"] = 0, ["settings"] = SettingsObject(), ["keys"] = keys,
                 ["defaultKeys"] = defaults, ["allowedKeyCodes"] = allowed,
                 ["challengeMode"] = false, ["modeLabel"] = "困难",
@@ -682,7 +749,8 @@ namespace CF7Launcher.Tests.Tasks
                     ["tryReviveAvailable"] = false,
                     ["resurrectionRestricted"] = false
                 },
-                ["previewActive"] = false, ["migrationPending"] = false
+                ["previewActive"] = false, ["migrationPending"] = false,
+                ["keyMigrationNotice"] = string.Empty
             };
         }
     }

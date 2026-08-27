@@ -82,6 +82,29 @@ function(WorkbenchFocus, WorkbenchComponents,
         target.addEventListener(type, handler);
         records.push(function() { target.removeEventListener(type, handler); });
     }
+    function drugDefinitions(snapshot) {
+        var meta = snapshot && snapshot.drugMeta || {};
+        return DRUG_SLOTS.map(function(definition) {
+            var row = meta[definition.id] || null;
+            return {
+                id:definition.id,
+                label:row && row.keyLabel
+                    ? row.keyLabel : definition.label,
+                physicalSlot:definition.physicalSlot,
+                bank:definition.bank,
+                lane:definition.lane,
+                drugMeta:row
+            };
+        });
+    }
+    function switchSummary(layout) {
+        if (!layout) return '';
+        var key = text(layout.switchKeyLabel, '未绑定');
+        var cooldown = layout.switchCooldown || {};
+        if (cooldown.ready === true) return key + ' 切换';
+        var seconds = Math.max(0, Number(cooldown.remainingMs) || 0) / 1000;
+        return key + ' 切换 · 冷却 ' + seconds.toFixed(1) + 's';
+    }
 
     function CharacterBuildView(options) {
         options = options || {};
@@ -188,6 +211,11 @@ function(WorkbenchFocus, WorkbenchComponents,
         this._armorGrid = root.querySelector('[data-armor-grid]');
         this._weaponGrid = root.querySelector('[data-weapon-grid]');
         this._drugGrid = root.querySelector('[data-drug-grid]');
+        this._drugBankGrids = Array.prototype.slice.call(
+            root.querySelectorAll('[data-drug-bank-grid]'));
+        this._drugBanks = Array.prototype.slice.call(
+            root.querySelectorAll('[data-drug-bank]'));
+        this._drugSwitchStatus = root.querySelector('[data-drug-switch-status]');
         this._notice = root.querySelector('[data-build-notice]');
         this._notice.setAttribute('role', 'status');
         this._notice.setAttribute('aria-live', 'polite');
@@ -413,8 +441,26 @@ function(WorkbenchFocus, WorkbenchComponents,
             this._armorGrid, ARMOR_SLOTS, this._snapshot.equipment, 'armor', this._armorRoving);
         this._renderSlotGroup(
             this._weaponGrid, WEAPON_SLOTS, this._snapshot.equipment, 'weapon', this._weaponRoving);
+        var drugSlots = drugDefinitions(this._snapshot);
         this._renderSlotGroup(
-            this._drugGrid, DRUG_SLOTS, this._snapshot.drugs, 'drug', this._drugRoving);
+            this._drugBankGrids[0], drugSlots.slice(0, 4),
+            this._snapshot.drugs, 'drug', this._drugRoving);
+        this._renderSlotGroup(
+            this._drugBankGrids[1], drugSlots.slice(4, 8),
+            this._snapshot.drugs, 'drug', this._drugRoving);
+        var activeBank = Number(this._snapshot.drugLayout
+            && this._snapshot.drugLayout.activeBank);
+        this.root.setAttribute('data-active-drug-bank', String(activeBank));
+        for (var bank = 0; bank < this._drugBanks.length; bank++) {
+            var active = bank === activeBank;
+            this._drugBanks[bank].setAttribute('data-active', active ? 'true' : 'false');
+            this._drugBanks[bank].setAttribute('aria-current', active ? 'true' : 'false');
+            var bankState = this._drugBanks[bank].querySelector(
+                '[data-drug-bank-state]');
+            if (bankState) bankState.textContent = active ? '当前组' : '备用组';
+        }
+        this._drugSwitchStatus.textContent = switchSummary(
+            this._snapshot.drugLayout);
         this._focusSlot(this._activeSlotKey);
         this._setCandidateState('unselected', [], '');
         this._notice.textContent = this._snapshot.blocked

@@ -12,6 +12,7 @@ import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.EquipmentTuningService;
 import org.flashNight.arki.item.CharacterBuildService;
+import org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
 
 /** EquipmentTuningService 行为与事务回归。 */
 class org.flashNight.arki.item.EquipmentTuningServiceTest {
@@ -1330,7 +1331,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             equipmentInventory.add(slotKey, item);
         _root.物品栏.装备栏 = equipmentInventory;
         _root.物品栏.药剂栏 =
-            new DrugInventory(null, 4);
+            new DrugInventory(null, 8);
         _root._webPanelPauseLease =
             "lease.fixture.worn-tuning";
 
@@ -1338,6 +1339,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         var hero:Object = {
             _name:"wornTuningHero",
             _parent:gameworld,
+            version:1,
             aabbCollider:{},
             新版人物文字信息:{},
             dispatcher:{
@@ -1408,6 +1410,8 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             hero[SLOT_DATA_KEYS[i]] = equipped == null
                 ? null : equipped.getData();
         }
+        RuntimeEquipmentProjection.beginCanonical(hero);
+        RuntimeEquipmentProjection.completeCanonical(hero);
 
         CharacterBuildService.testOnlyUseRoot(_root);
         var opened:Object = CharacterBuildService.open();

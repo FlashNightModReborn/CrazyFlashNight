@@ -764,7 +764,7 @@
 }
 .settings-camera-done { min-width: 104px; }
 
-/* ── 键位 tab: 35 键两列分组一次呈现, 组内再按 2/3 列压缩 ── */
+/* ── 键位 tab: 36 键两列分组一次呈现, 组内再按 2/3 列压缩 ── */
 .settings-key-summary {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;

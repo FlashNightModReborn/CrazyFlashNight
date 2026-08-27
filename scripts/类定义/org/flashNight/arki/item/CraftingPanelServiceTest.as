@@ -98,7 +98,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
     private static function resetOwned():Void {
         _root.物品栏 = {
             背包:new ArrayInventory(null, 5),
-            药剂栏:new ArrayInventory(null, 4),
+            药剂栏:new ArrayInventory(null, 8),
             装备栏:new EquipmentInventory(null),
             战备箱:new ArrayInventory(null, 80)
         };
@@ -2199,14 +2199,14 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
     private static function testStoragePlanProjection():Void {
         resetOwned();
         _root.收集品栏.材料.addValue("测试矿石", 20);
-        _root.物品栏.药剂栏.add(1, BaseItem.create("测试药剂", 4));
+        _root.物品栏.药剂栏.add(7, BaseItem.create("测试药剂", 4));
         var drugOutput:Object = CraftingPanelService.execute("preview", {
             category:"武器合成", recipeIndex:1, craftCount:1
         });
         check(drugOutput.canCommit && drugOutput.outputDelivery.storageKind == "drug"
             && drugOutput.outputDelivery.mode == "merge"
-            && drugOutput.outputDelivery.physicalSlot == 1,
-            "singleRequire projects an existing drug-slot merge destination");
+            && drugOutput.outputDelivery.physicalSlot == 7,
+            "singleRequire projects an existing upper-bank drug-slot merge destination");
 
         _root.物品栏.背包.add(1, BaseItem.create("测试药剂", 1));
         _root.改装清单["武器合成"].push({title:"跨栏位测试", name:"测试矿石",
@@ -2261,7 +2261,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
     private static function testMergeReceiptAuthority():Void {
         resetOwned();
         _root.收集品栏.材料.addValue("测试矿石", 20);
-        _root.物品栏.药剂栏.add(1, BaseItem.create("测试药剂", 4));
+        _root.物品栏.药剂栏.add(7, BaseItem.create("测试药剂", 4));
         var preview:Object = CraftingPanelService.execute("preview", {
             category:"武器合成", recipeIndex:1, craftCount:1
         });
@@ -2272,8 +2272,8 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             && commit.outputReceipt.item.quantity == 7
             && commit.outputReceipt.confirmProjection.quantity == 7
             && commit.outputReceipt.confirmProjection.lastUpdate
-                == _root.物品栏.药剂栏.getItem(1).lastUpdate,
-            "stack merge receipt binds the frozen unit prototype to the literal post-merge quantity");
+                == _root.物品栏.药剂栏.getItem(7).lastUpdate,
+            "stack merge receipt binds the frozen unit prototype to the literal upper-bank post-merge quantity");
     }
 
     private static function testBatchAuthority():Void {

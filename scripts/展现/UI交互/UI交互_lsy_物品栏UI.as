@@ -82,8 +82,13 @@ _root.物品UI函数.是否普通物品 = function(item:Object):Boolean {
  */
 _root.物品UI函数.初始化药剂栏图标 = function():Void {
 	var 快捷药剂界面 = _root.玩家信息界面.快捷药剂界面;
-	if (!快捷药剂界面
-			|| (快捷药剂界面.药剂图标列表 && 快捷药剂界面.药剂图标列表.length == 4)) return;
+	if (!快捷药剂界面) return;
+	if (快捷药剂界面.药剂图标列表 && 快捷药剂界面.药剂图标列表.length == 4) {
+		DrugInputService.syncBankView(快捷药剂界面, _root.物品栏.药剂栏);
+		DrugInputService.syncSwitchView(
+			快捷药剂界面, Number(_root.药剂组切换键), _root);
+		return;
+	}
 
 	var list = [
 		快捷药剂界面.位置示意0,
@@ -123,10 +128,15 @@ _root.物品UI函数.初始化药剂栏图标 = function():Void {
 		快捷药剂界面.药剂图标列表.push(药剂图标);
 		控制器列表[i].药剂栏 = 药剂图标;
 	}
+	var activeBank = DrugInputService.getActiveBank();
 	for (i = 0; i < 4; i++) {
+		var physicalSlot = DrugInputService.physicalSlotFor(activeBank, i);
 		快捷药剂界面.药剂图标列表[i].itemIcon =
-			new DrugIcon(快捷药剂界面.药剂图标列表[i], _root.物品栏.药剂栏, i, 进度条列表[i]);
+			new DrugIcon(快捷药剂界面.药剂图标列表[i], _root.物品栏.药剂栏, physicalSlot, 进度条列表[i]);
 	}
+	DrugInputService.syncBankView(快捷药剂界面, _root.物品栏.药剂栏);
+	DrugInputService.syncSwitchView(
+		快捷药剂界面, Number(_root.药剂组切换键), _root);
 };
 
 /**

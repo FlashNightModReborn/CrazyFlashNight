@@ -30,6 +30,7 @@ namespace CF7Launcher.Tasks
         {
             "上键", "下键", "左键", "右键", "A键", "B键", "C键",
             "键1", "键2", "键3", "键4", "键5",
+            "药剂组切换键",
             "快捷物品栏键1", "快捷物品栏键2", "快捷物品栏键3", "快捷物品栏键4",
             "快捷技能栏键1", "快捷技能栏键2", "快捷技能栏键3", "快捷技能栏键4",
             "快捷技能栏键5", "快捷技能栏键6", "快捷技能栏键7", "快捷技能栏键8",
@@ -618,19 +619,29 @@ namespace CF7Launcher.Tasks
         private static bool NormalizeApply(JObject payload, out JObject normalized)
         {
             normalized = null;
-            if (!HasExactProperties(payload, "v", "expectedRevision", "settings", "keys"))
+            if (!HasExactProperties(
+                    payload,
+                    "v",
+                    "keySchemaVersion",
+                    "expectedRevision",
+                    "settings",
+                    "keys"))
                 return false;
             long revision;
+            long keySchemaVersion;
             JObject settings = payload["settings"] as JObject;
             JArray keys = payload["keys"] as JArray;
             JObject normalizedSettings;
             JArray normalizedKeys;
-            if (!TryInteger(payload["expectedRevision"], 0, int.MaxValue, out revision)
+            if (!TryInteger(
+                    payload["keySchemaVersion"], 2, 2, out keySchemaVersion)
+                || !TryInteger(payload["expectedRevision"], 0, int.MaxValue, out revision)
                 || !NormalizeSettings(settings, out normalizedSettings)
                 || !NormalizeKeys(keys, out normalizedKeys)) return false;
             normalized = new JObject
             {
                 ["v"] = 1,
+                ["keySchemaVersion"] = 2,
                 ["expectedRevision"] = revision,
                 ["settings"] = normalizedSettings,
                 ["keys"] = normalizedKeys
@@ -736,6 +747,11 @@ namespace CF7Launcher.Tasks
             if (!success)
             {
                 if (!IsCleanString(msg["error"], 80)) return true;
+                if (cmd == "apply" && (msg["keys"] != null
+                        || msg["keySchemaVersion"] != null))
+                {
+                    return !IsValidAuthoritySnapshot(msg);
+                }
                 return cmd == "apply" && msg.Value<bool?>("applied") == true
                     ? !IsValidApplyResponse(msg)
                     : false;
@@ -805,8 +821,11 @@ namespace CF7Launcher.Tasks
         private static bool IsValidAuthoritySnapshot(JObject msg)
         {
             long revision;
+            long keySchemaVersion;
             JObject normalizedSettings;
-            return TryInteger(msg["revision"], 0, int.MaxValue, out revision)
+            return TryInteger(
+                    msg["keySchemaVersion"], 2, 2, out keySchemaVersion)
+                && TryInteger(msg["revision"], 0, int.MaxValue, out revision)
                 && NormalizeSettings(msg["settings"] as JObject, out normalizedSettings)
                 && IsValidProjectedKeys(msg["keys"] as JArray)
                 && IsValidDefaultKeys(msg["defaultKeys"] as JArray)
@@ -816,7 +835,9 @@ namespace CF7Launcher.Tasks
                 && IsValidCheatHelp(msg["cheatHelp"] as JArray)
                 && IsValidForceControls(msg["forceControls"] as JObject)
                 && IsBoolean(msg["previewActive"])
-                && IsBoolean(msg["migrationPending"]);
+                && IsBoolean(msg["migrationPending"])
+                && IsBoundedString(
+                    msg["keyMigrationNotice"], 160, true);
         }
 
         private static bool IsValidProjectedKeys(JArray rows)
@@ -909,6 +930,19 @@ namespace CF7Launcher.Tasks
             string value = token.Value<string>();
             return !string.IsNullOrWhiteSpace(value)
                 && value.Length <= maximumLength && !ContainsControl(value);
+        }
+
+        private static bool IsBoundedString(
+            JToken token,
+            int maximumLength,
+            bool allowEmpty)
+        {
+            if (token == null || token.Type != JTokenType.String) return false;
+            string value = token.Value<string>();
+            return value != null
+                && value.Length <= maximumLength
+                && (allowEmpty || !string.IsNullOrWhiteSpace(value))
+                && !ContainsControl(value);
         }
 
         private void HandlePendingEnded(

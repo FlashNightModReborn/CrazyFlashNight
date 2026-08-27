@@ -107,7 +107,7 @@ function(FacetCountsModule) {
         if (kind === 'armor' || kind === 'weapon') {
             return {kind:'equipment', slotKey:String(id || '')};
         }
-        var drugSlot = /^drug([1-4])$/.test(String(id || ''))
+        var drugSlot = /^drug([1-8])$/.test(String(id || ''))
             ? Number(String(id).substring(4)) - 1 : -1;
         return kind === 'drug' && drugSlot >= 0
             ? {kind:'drug', drugSlot:drugSlot} : null;
@@ -163,10 +163,25 @@ function(FacetCountsModule) {
                     view._loadoutTooltipScope.releaseTree(grid);
                 }
             },
-            projectSlot:function(view, slot, item) {
+            projectSlot:function(view, slot, item, definition) {
                 slot.setAttribute('data-tunable', item && item.tunable === true ? 'true' : 'false');
                 if (item && item.tuningReason) {
                     slot.setAttribute('data-tuning-reason', text(item.tuningReason));
+                }
+                var meta = definition && definition.drugMeta;
+                if (meta) {
+                    slot.setAttribute('data-drug-bank', String(meta.bank));
+                    slot.setAttribute('data-drug-lane', String(meta.lane));
+                    slot.setAttribute('data-drug-active', meta.active ? 'true' : 'false');
+                    slot.setAttribute('data-drug-ready', meta.ready ? 'true' : 'false');
+                    slot.setAttribute('data-cooldown-progress',
+                        String(meta.progressPercent));
+                    slot.setAttribute('data-cooldown-remaining-ms',
+                        String(meta.remainingMs));
+                    if (!meta.ready) {
+                        slot.setAttribute('data-blocked', 'true');
+                        slot.setAttribute('aria-disabled', 'true');
+                    }
                 }
             },
             bindSlotTooltip:function(view, slot, key, slotLabel, projection, kind, id) {

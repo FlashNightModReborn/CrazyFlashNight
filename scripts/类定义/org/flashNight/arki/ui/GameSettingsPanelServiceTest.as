@@ -87,21 +87,23 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
     }
 
     private static function buildDefaults():Array {
-        var codes:Array = [87,83,65,68,74,75,82,49,50,51,52,53,55,56,57,48,
+        var codes:Array = [87,83,65,68,74,75,82,49,50,51,52,53,54,55,56,57,48,
             32,85,73,79,80,76,72,71,67,66,78,77,47,69,70,18,81,16,17];
         var rows:Array = [];
-        for (var i:Number = 0; i < 35; i++) {
+        for (var i:Number = 0; i < 36; i++) {
             rows.push(["键位" + i, "测试键" + i, codes[i]]);
         }
-        rows[33] = ["奔跑", "奔跑键", 16];
-        rows[34] = ["组合", "组合键", 17];
+        rows[12] = ["药剂组切换", "药剂组切换键", 54];
+        rows[34] = ["奔跑", "奔跑键", 16];
+        rows[35] = ["组合", "组合键", 17];
         return rows;
     }
 
     private static function testKeyTableMigration():Void {
         var defaults:Array = buildDefaults();
         var historic:Array = KeyManager.copyKeySettings(defaults);
-        historic.splice(33, 2);
+        historic.splice(34, 2);
+        historic.splice(12, 1);
         historic[0][2] = 90;
         historic.push(["未知", "未注册键", 88]);
 
@@ -113,12 +115,13 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
             "copyKeySettings returns a deep row copy");
 
         var normalized:Array = KeyManager.normalizeKeySettings(historic, defaults);
-        check(normalized.length == 35,
-            "historic 33-key table is expanded to the 35-key authority shape");
-        check(normalized[0][2] == 90 && normalized[33][1] == "奔跑键"
-            && normalized[34][1] == "组合键",
-            "migration preserves custom bindings and appends run and combination keys");
-        check(normalized[32][1] == "测试键32" && normalized[34][1] != "未注册键",
+        check(normalized.length == 36,
+            "historic 33-key table is expanded to the 36-key authority shape");
+        check(normalized[0][2] == 90 && normalized[12][1] == "药剂组切换键"
+            && normalized[12][2] == 54 && normalized[34][1] == "奔跑键"
+            && normalized[35][1] == "组合键",
+            "migration preserves custom bindings and appends switch, run and combination keys");
+        check(normalized[33][1] == "测试键33" && normalized[35][1] != "未注册键",
             "migration discards unknown logical ids");
 
         historic[1][2] = 999;
@@ -130,8 +133,8 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
     private static function testSnapshotMigrationLatch():Void {
         var defaults:Array = buildDefaults();
         var historic:Array = KeyManager.copyKeySettings(defaults);
-        historic.splice(33, 2);
-        historic[0][2] = 90;
+        historic.splice(12, 1);
+        historic[0][2] = 54;
         _root.默认键值设定 = defaults;
         _root.键值设定 = historic;
         _root.按键设定表 = [[0, 0, 0, 0]];
@@ -157,14 +160,19 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         _root.键值设定[0][0] = undefined;
 
         var first:Object = GameSettingsPanelService.execute("snapshot", {v:1});
-        check(first.success && first.keys.length == 35
+        check(first.success && first.keySchemaVersion == 2 && first.keys.length == 36
+            && first.defaultKeys.length == 36
             && first.settings.性能等级上限 == 1 && _root.帧计时器.性能等级上限 == 1
             && keyMigrationLatched && settingsMigrationLatched
             && first.keys[0].label == first.keys[0].id,
-            "snapshot normalizes legacy performance and projects all 35 authority keys");
-        check(first.keys[0].keyCode == 90 && first.keys[33].id == "奔跑键"
-            && first.keys[34].id == "组合键" && first.migrationPending,
-            "snapshot preserves historical custom keys and exposes the pending migration save");
+            "snapshot normalizes legacy performance and projects the explicit 36-key schema");
+        check(first.keys[0].keyCode == 54 && first.keys[12].id == "药剂组切换键"
+            && first.keys[12].keyCode == 84 && first.keys[34].id == "奔跑键"
+            && first.keys[35].id == "组合键" && first.migrationPending
+            && typeof first.keyMigrationNotice == "string"
+            && first.keyMigrationNotice.length > 0 && first.keyMigrationNotice.length <= 160
+            && first.keyMigrationNotice.indexOf("保留原有数字 6 绑定") >= 0,
+            "conflicting historic 6 remains bound while the switch fallback is disclosed once");
 
         var second:Object = GameSettingsPanelService.execute("snapshot", {v:1});
         check(second.success && second.migrationPending,
@@ -179,6 +187,7 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         _root.刷新键值设定 = function():Void { throw new Error("settings apply test"); };
         var ambiguous:Object = GameSettingsPanelService.execute("apply", {
             v:1,
+            keySchemaVersion:2,
             expectedRevision:second.revision,
             settings:second.settings,
             keys:applyKeys
@@ -188,14 +197,26 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
             && ambiguous.requiresReconcile,
             "an exception after apply begins reports an ambiguous result instead of inviting replay");
         var reconciled:Object = GameSettingsPanelService.execute("snapshot", {v:1});
-        check(reconciled.success && reconciled.keys.length == 35,
+        check(reconciled.success && reconciled.keySchemaVersion == 2
+            && reconciled.keys.length == 36,
             "the next authority snapshot retries a pending key-cache refresh before adoption");
 
         KeyManager.clearPendingKeySettingsMigration();
         SaveManager.getInstance().clearPendingSettingsMigration();
         var cleared:Object = GameSettingsPanelService.execute("snapshot", {v:1});
-        check(cleared.success && !cleared.migrationPending,
+        check(cleared.success && !cleared.migrationPending
+            && cleared.keyMigrationNotice == "",
             "clearing the per-save migration latches cannot leak pending state into another slot");
+
+        var noConflictHistoric:Array = KeyManager.copyKeySettings(defaults);
+        noConflictHistoric.splice(12, 1);
+        _root.键值设定 = noConflictHistoric;
+        _root.刷新键值设定();
+        var defaultMigration:Object = GameSettingsPanelService.execute("snapshot", {v:1});
+        check(defaultMigration.success && defaultMigration.keys[12].keyCode == 54
+            && defaultMigration.keyMigrationNotice == "",
+            "an unoccupied default 6 migrates silently while the notice field remains present");
+        KeyManager.clearPendingKeySettingsMigration();
     }
 
     private static function testSubscriptionFollowsRebind():Void {
@@ -252,15 +273,27 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
 
         var oldAllowSave = _root.允许存档;
         _root.允许存档 = false; // 停在 validator 之后，避免本测试真实落盘。
-        var unchanged:Object = GameSettingsPanelService.execute("apply", {
+        var missingSchema:Object = GameSettingsPanelService.execute("apply", {
             v:1, expectedRevision:snapshot.revision, settings:snapshot.settings, keys:keys
+        });
+        var wrongSchema:Object = GameSettingsPanelService.execute("apply", {
+            v:1, keySchemaVersion:1, expectedRevision:snapshot.revision,
+            settings:snapshot.settings, keys:keys
+        });
+        check(!missingSchema.success && missingSchema.error == "invalid_payload"
+            && !wrongSchema.success && wrongSchema.error == "invalid_payload",
+            "apply requires explicit keySchemaVersion 2 and never infers it from 36 rows");
+        var unchanged:Object = GameSettingsPanelService.execute("apply", {
+            v:1, keySchemaVersion:2, expectedRevision:snapshot.revision,
+            settings:snapshot.settings, keys:keys
         });
         check(!unchanged.success && unchanged.error == "save_unavailable",
             "unchanged legacy reserved binding no longer blocks an otherwise valid settings apply");
 
         keys[1].keyCode = 113; // 新把另一个动作分配到 F2，必须继续 fail-closed。
         var reassigned:Object = GameSettingsPanelService.execute("apply", {
-            v:1, expectedRevision:snapshot.revision, settings:snapshot.settings, keys:keys
+            v:1, keySchemaVersion:2, expectedRevision:snapshot.revision,
+            settings:snapshot.settings, keys:keys
         });
         check(!reassigned.success && reassigned.error == "reserved_key",
             "new assignments to reserved function keys remain rejected");
@@ -446,7 +479,7 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
             背包:new ArrayInventory(null, 50),
             仓库:new ArrayInventory(null, 1200),
             战备箱:new ArrayInventory(null, 400),
-            药剂栏:new ArrayInventory(null, 4)
+            药剂栏:new ArrayInventory(null, 8)
         };
         _root.收集品栏 = {
             材料:new DictCollection(null),

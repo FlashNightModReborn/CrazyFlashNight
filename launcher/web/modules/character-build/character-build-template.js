@@ -17,8 +17,14 @@
         {id:'手枪2', label:'手枪 2'}, {id:'刀', label:'刀'}, {id:'手雷', label:'手雷'}
     ];
     var DRUG_SLOTS = [
-        {id:'drug1', label:'药剂 I'}, {id:'drug2', label:'药剂 II'},
-        {id:'drug3', label:'药剂 III'}, {id:'drug4', label:'药剂 IV'}
+        {id:'drug1', label:'通道 1', physicalSlot:0, bank:0, lane:0},
+        {id:'drug2', label:'通道 2', physicalSlot:1, bank:0, lane:1},
+        {id:'drug3', label:'通道 3', physicalSlot:2, bank:0, lane:2},
+        {id:'drug4', label:'通道 4', physicalSlot:3, bank:0, lane:3},
+        {id:'drug5', label:'通道 1', physicalSlot:4, bank:1, lane:0},
+        {id:'drug6', label:'通道 2', physicalSlot:5, bank:1, lane:1},
+        {id:'drug7', label:'通道 3', physicalSlot:6, bank:1, lane:2},
+        {id:'drug8', label:'通道 4', physicalSlot:7, bank:1, lane:3}
     ];
     function create() {
         return ''
@@ -36,7 +42,11 @@
             + '      <div class="character-build-loadout-column">'
             + '        <section class="character-build-slot-section"><h3>护具</h3><div class="character-build-slot-grid item-grid-compact" data-armor-grid role="grid" aria-label="六格护具栏"></div></section>'
             + '        <section class="character-build-slot-section"><h3>武装</h3><div class="character-build-slot-grid item-grid-compact" data-weapon-grid role="grid" aria-label="五格武装栏"></div></section>'
-            + '        <section class="character-build-slot-section character-build-drug-section"><h3>药剂</h3><div class="character-build-drug-grid item-grid-compact" data-drug-grid role="grid" aria-label="四格药剂栏"></div></section>'
+            + '        <section class="character-build-slot-section character-build-drug-section"><h3>药剂 <span class="character-build-drug-switch-summary" data-drug-switch-status></span></h3>'
+            + '          <div class="character-build-drug-groups" data-drug-grid role="grid" aria-label="两组八格药剂栏">'
+            + '            <section class="character-build-drug-bank" data-drug-bank="0" role="rowgroup" aria-label="第 I 组药剂"><div class="character-build-drug-bank-heading"><b>第 I 组</b><span data-drug-bank-state="0"></span></div><div class="character-build-drug-grid item-grid-compact" data-drug-bank-grid="0" role="row"></div></section>'
+            + '            <section class="character-build-drug-bank" data-drug-bank="1" role="rowgroup" aria-label="第 II 组药剂"><div class="character-build-drug-bank-heading"><b>第 II 组</b><span data-drug-bank-state="1"></span></div><div class="character-build-drug-grid item-grid-compact" data-drug-bank-grid="1" role="row"></div></section>'
+            + '          </div></section>'
             + '      </div>'
             + '    </div>'
             + '    <div class="character-build-inline-notice" data-body-copy data-build-notice data-notice-kind="browsing"></div>'

@@ -4,7 +4,7 @@
  * Web domain 暴露 snapshot/candidates/tooltip、四个显式装备/药剂 mutation、flushLive、
  * statsSnapshot/finalize。另有 characterBuildRecoverDetach 仅供 Host 在 Web 文档或
  * socket 丢失后查询并结算 exact orphan authority，不属于 Web 业务命令。服务建立 exact
- * generation，观察 loadout/drug 漂移，投影 11+4 槽与人物信息，并在正常关闭/断线时
+ * generation，观察 loadout/drug 漂移，投影 11+8 槽与人物信息，并在正常关闭/断线时
  * 守住 captured pause lease。
  */
 import org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
@@ -368,6 +368,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         }
 
         var beforeRevision:Number = _loadoutRevision;
+        var beforeLiveRevision:Number = _liveRevision;
         var synced:Object = synchronize(expectedGeneration);
         if (!synced.success) return synced;
         synced.authorityObserved = true;
@@ -377,9 +378,17 @@ class org.flashNight.arki.item.CharacterBuildService {
             injected.authorityObserved = true;
             return injected;
         }
+        if (synced.loadoutChanged === true
+                && _loadoutRevision == beforeRevision + 1) {
+            // worn raw transaction 不会执行 Dressup。即使一次卸下恰好把语义签名
+            // 还原到旧 canonical，旧派生数据也不能冒充本次写后已完成刷新。
+            _liveRevision = beforeLiveRevision;
+            _liveRefreshDirty = true;
+            synced.liveRevision = _liveRevision;
+            synced.liveRefreshDirty = true;
+        }
         if (synced.loadoutChanged !== true
-                || _loadoutRevision != beforeRevision + 1
-                || !_liveRefreshDirty) {
+                || _loadoutRevision != beforeRevision + 1) {
             var inconsistent:Object = poison("needs_reconcile");
             inconsistent.authorityObserved = true;
             return inconsistent;
@@ -951,7 +960,8 @@ class org.flashNight.arki.item.CharacterBuildService {
         } else if (hasDrug) {
             drugSlot = Number(params.drugSlot);
             if (!wholeInRange(drugSlot, 0,
-                    org.flashNight.arki.unit.Action.Skill.DrugInputService.SLOT_COUNT - 1)) {
+                    org.flashNight.arki.unit.Action.Skill.DrugInputService
+                        .PHYSICAL_SLOT_COUNT - 1)) {
                 return fail("invalid_slot");
             }
         }
@@ -969,9 +979,12 @@ class org.flashNight.arki.item.CharacterBuildService {
         var drugCooldownKnown:Boolean = true;
         var drugReady:Boolean = true;
         if (hasDrug) {
+            var drugLane:Number = org.flashNight.arki.unit.Action.Skill
+                .DrugInputService.laneForPhysicalSlot(drugSlot);
+            if (drugLane < 0) return fail("invalid_slot");
             var cooldownKey:String =
                 org.flashNight.arki.unit.Action.Skill.ManualCooldownService
-                    .drugKey(drugSlot);
+                    .drugKey(drugLane);
             try {
                 var cooldownCallback:Function = _callbacks == null
                     ? null : _callbacks.drugCooldownReady;
@@ -1164,7 +1177,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             target = {kind:"equipment", slotKey:slotKey};
         } else {
             drugSlot = Number(params.drugSlot);
-            if (!wholeInRange(drugSlot, 0, 3)) return fail("invalid_slot");
+            if (!validDrugSlot(drugSlot)) return fail("invalid_slot");
             item = _drugInventory.getItem(String(drugSlot));
             target = {kind:"drug", drugSlot:drugSlot};
         }
@@ -1777,9 +1790,12 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function readDrugCooldown(drugSlot:Number):Object {
+        var lane:Number = org.flashNight.arki.unit.Action.Skill
+            .DrugInputService.laneForPhysicalSlot(drugSlot);
+        if (lane < 0) return fail("invalid_slot");
         var cooldownKey:String =
             org.flashNight.arki.unit.Action.Skill.ManualCooldownService
-                .drugKey(drugSlot);
+                .drugKey(lane);
         var value;
         try {
             var callback:Function = _callbacks == null
@@ -1800,7 +1816,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static function validDrugSlot(value:Number):Boolean {
         return wholeInRange(value, 0,
             org.flashNight.arki.unit.Action.Skill.DrugInputService
-                .SLOT_COUNT - 1);
+                .PHYSICAL_SLOT_COUNT - 1);
     }
 
     private static function firstBackpackVacancy():Number {
@@ -1950,7 +1966,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         } else {
             allowed.drugSlot = true;
             if (typeof params.drugSlot != "number"
-                    || !wholeInRange(Number(params.drugSlot), 0, 3)) {
+                    || !validDrugSlot(Number(params.drugSlot))) {
                 return false;
             }
         }
@@ -2015,7 +2031,7 @@ class org.flashNight.arki.item.CharacterBuildService {
                     || !wholeInRange(Number(params.expectedDrugRevision),
                         0, 2147483647)
                     || typeof params.drugSlot != "number"
-                    || !wholeNumber(params.drugSlot)
+                    || !validDrugSlot(Number(params.drugSlot))
                     || !validSourceShape(params.source)) return false;
         } else if (commandName == "unequipDrug") {
             allowed.expectedDrugRevision = true;
@@ -2024,7 +2040,7 @@ class org.flashNight.arki.item.CharacterBuildService {
                     || !wholeInRange(Number(params.expectedDrugRevision),
                         0, 2147483647)
                     || typeof params.drugSlot != "number"
-                    || !wholeNumber(params.drugSlot)) return false;
+                    || !validDrugSlot(Number(params.drugSlot))) return false;
         } else {
             return false;
         }
@@ -2166,11 +2182,14 @@ class org.flashNight.arki.item.CharacterBuildService {
         current:Object, backpackSnapshot:Object):Object {
         var diagnostics:Array = [];
         var equipment:Array = buildEquipmentProjection(diagnostics);
-        var drugs:Array = buildDrugProjection(diagnostics);
+        var drugLayout:Object = buildDrugLayoutProjection(diagnostics);
+        var drugs:Array = buildDrugProjection(
+            diagnostics, Number(drugLayout.activeBank));
         var portrait:Object = buildPortraitProjection(diagnostics);
         var payload:Object = {
             equipment:equipment,
             drugs:drugs,
+            drugLayout:drugLayout,
             portrait:portrait,
             stateHealth:diagnostics.length == 0 ? "ok" : "degraded",
             diagnostics:diagnostics
@@ -2373,11 +2392,96 @@ class org.flashNight.arki.item.CharacterBuildService {
         return rows;
     }
 
-    private static function buildDrugProjection(diagnostics:Array):Array {
+    private static function buildDrugLayoutProjection(
+        diagnostics:Array):Object {
+        var activeBank:Number = -1;
+        try {
+            activeBank = Number(org.flashNight.arki.unit.Action.Skill
+                .DrugInputService.getActiveBank());
+        } catch (activeBankError) {
+            activeBank = -1;
+        }
+        if (!wholeInRange(activeBank, 0,
+                org.flashNight.arki.unit.Action.Skill.DrugInputService
+                    .BANK_COUNT - 1)) {
+            diagnostics.push("drug_active_bank_unavailable");
+            activeBank = 0;
+        }
+
+        var switchKeyName:String = org.flashNight.arki.unit.Action.Skill
+            .DrugInputService.getSwitchKeyName();
+        var switchKeyLabel:String = readDrugKeyLabel(
+            switchKeyName, "drug_switch_key_unavailable", diagnostics);
+        var switchCooldown:Object = null;
+        var switchCooldownKey:String = org.flashNight.arki.unit.Action.Skill
+            .ManualCooldownService.drugSwitchKey();
+        try {
+            var switchCallback:Function = _callbacks == null
+                ? null : _callbacks.switchCooldownSnapshot;
+            switchCooldown = typeof switchCallback == "function"
+                ? switchCallback(switchCooldownKey)
+                : org.flashNight.arki.unit.Action.Skill.ManualCooldownService
+                    .getSnapshot(switchCooldownKey);
+        } catch (switchCooldownError) {
+            switchCooldown = null;
+        }
+        if (switchCooldown == null || typeof switchCooldown != "object") {
+            diagnostics.push("drug_switch_cooldown_unavailable");
+            switchCooldown = unavailableCooldownSnapshot();
+        }
+        return {
+            v:2,
+            bankCount:org.flashNight.arki.unit.Action.Skill
+                .DrugInputService.BANK_COUNT,
+            laneCount:org.flashNight.arki.unit.Action.Skill
+                .DrugInputService.LANE_COUNT,
+            physicalSlotCount:org.flashNight.arki.unit.Action.Skill
+                .DrugInputService.PHYSICAL_SLOT_COUNT,
+            activeBank:activeBank,
+            switchKeyLabel:switchKeyLabel,
+            switchCooldown:normalizeCooldownProjection(switchCooldown)
+        };
+    }
+
+    private static function buildDrugProjection(
+        diagnostics:Array, activeBank:Number):Array {
         var rows:Array = [];
-        var r:Object = root();
-        var count:Number =
-            org.flashNight.arki.unit.Action.Skill.DrugInputService.SLOT_COUNT;
+        var laneRows:Array = [];
+        var laneCount:Number = org.flashNight.arki.unit.Action.Skill
+            .DrugInputService.LANE_COUNT;
+        for (var lane:Number = 0; lane < laneCount; lane++) {
+            var cooldown:Object = null;
+            try {
+                var cooldownCallback:Function = _callbacks == null
+                    ? null : _callbacks.cooldownSnapshot;
+                if (typeof cooldownCallback == "function") {
+                    cooldown = cooldownCallback(lane);
+                } else {
+                    var cooldownKey:String =
+                        org.flashNight.arki.unit.Action.Skill
+                            .ManualCooldownService.drugKey(lane);
+                    cooldown =
+                        org.flashNight.arki.unit.Action.Skill
+                            .ManualCooldownService.getSnapshot(cooldownKey);
+                }
+            } catch (cooldownError) {
+                cooldown = null;
+            }
+            if (cooldown == null || typeof cooldown != "object") {
+                diagnostics.push("drug_cooldown_unavailable:" + lane);
+                cooldown = unavailableCooldownSnapshot();
+            }
+            var keyName:String = org.flashNight.arki.unit.Action.Skill
+                .DrugInputService.getKeyName(lane);
+            laneRows[lane] = {
+                keyLabel:readDrugKeyLabel(
+                    keyName, "drug_key_unavailable:" + lane, diagnostics),
+                cooldown:normalizeCooldownProjection(cooldown)
+            };
+        }
+
+        var count:Number = org.flashNight.arki.unit.Action.Skill
+            .DrugInputService.PHYSICAL_SLOT_COUNT;
         for (var slot:Number = 0; slot < count; slot++) {
             var item:Object = null;
             try {
@@ -2385,66 +2489,12 @@ class org.flashNight.arki.item.CharacterBuildService {
             } catch (drugReadError) {
                 diagnostics.push("drug_read_failed:" + slot);
             }
-            var cooldown:Object = null;
-            var cooldownFailed:Boolean = false;
-            try {
-                var cooldownCallback:Function = _callbacks == null
-                    ? null : _callbacks.cooldownSnapshot;
-                if (typeof cooldownCallback == "function") {
-                    cooldown = cooldownCallback(slot);
-                } else {
-                    var cooldownKey:String =
-                        org.flashNight.arki.unit.Action.Skill
-                            .ManualCooldownService.drugKey(slot);
-                    cooldown =
-                        org.flashNight.arki.unit.Action.Skill
-                            .ManualCooldownService.getSnapshot(cooldownKey);
-                }
-            } catch (cooldownError) {
-                cooldownFailed = true;
-            }
-            if (cooldown == null || typeof cooldown != "object") {
-                cooldownFailed = true;
-            }
-            if (cooldownFailed) {
-                diagnostics.push("drug_cooldown_unavailable:" + slot);
-                cooldown = {
-                    ready:false,
-                    totalSteps:0,
-                    currentStep:0,
-                    progressPercent:0,
-                    animationFrame:1
-                };
-            }
-            var ready:Boolean = cooldown.ready === true;
-            var totalSteps:Number = safeWhole(cooldown.totalSteps);
-            var currentStep:Number = safeWhole(cooldown.currentStep);
-            var remainingSteps:Number = Math.max(0,
-                totalSteps - currentStep);
-            var remainingMs:Number = ready ? 0 : remainingSteps
-                * org.flashNight.arki.unit.Action.Skill.ManualCooldownService
-                    .FRAME_MS;
-            var keyName:String =
-                org.flashNight.arki.unit.Action.Skill.DrugInputService
-                    .getKeyName(slot);
-            var keyLabel:String = "";
-            try {
-                var keyCode:Number = Number(r[keyName]);
-                if (!isNaN(keyCode) && typeof r.keyshow == "function") {
-                    var resolvedLabel = r.keyshow(keyCode);
-                    if (resolvedLabel != undefined && resolvedLabel != null
-                            && String(resolvedLabel) != "") {
-                        keyLabel = String(resolvedLabel);
-                    } else {
-                        diagnostics.push("drug_key_unavailable:" + slot);
-                    }
-                } else {
-                    diagnostics.push("drug_key_unavailable:" + slot);
-                }
-            } catch (keyError) {
-                diagnostics.push("drug_key_unavailable:" + slot);
-            }
-
+            var bank:Number = org.flashNight.arki.unit.Action.Skill
+                .DrugInputService.bankForPhysicalSlot(slot);
+            var mappedLane:Number = org.flashNight.arki.unit.Action.Skill
+                .DrugInputService.laneForPhysicalSlot(slot);
+            var laneRow:Object = laneRows[mappedLane];
+            var laneCooldown:Object = laneRow.cooldown;
             var quantity:Number = 0;
             if (item != null) {
                 quantity = Number(item.value);
@@ -2455,13 +2505,16 @@ class org.flashNight.arki.item.CharacterBuildService {
             }
             var row:Object = {
                 slot:slot,
-                keyLabel:keyLabel,
-                ready:ready,
-                totalSteps:totalSteps,
-                currentStep:currentStep,
-                progressPercent:safeWhole(cooldown.progressPercent),
-                animationFrame:safeWhole(cooldown.animationFrame),
-                remainingMs:remainingMs,
+                bank:bank,
+                lane:mappedLane,
+                active:bank == activeBank,
+                keyLabel:String(laneRow.keyLabel),
+                ready:laneCooldown.ready,
+                totalSteps:laneCooldown.totalSteps,
+                currentStep:laneCooldown.currentStep,
+                progressPercent:laneCooldown.progressPercent,
+                animationFrame:laneCooldown.animationFrame,
+                remainingMs:laneCooldown.remainingMs,
                 occupied:item != null,
                 quantity:quantity
             };
@@ -2472,6 +2525,55 @@ class org.flashNight.arki.item.CharacterBuildService {
             rows.push(row);
         }
         return rows;
+    }
+
+    private static function unavailableCooldownSnapshot():Object {
+        return {
+            ready:false,
+            totalSteps:0,
+            currentStep:0,
+            progressPercent:0,
+            animationFrame:1
+        };
+    }
+
+    private static function normalizeCooldownProjection(
+        cooldown:Object):Object {
+        var ready:Boolean = cooldown.ready === true;
+        var totalSteps:Number = safeWhole(cooldown.totalSteps);
+        var currentStep:Number = Math.min(
+            totalSteps, safeWhole(cooldown.currentStep));
+        var remainingSteps:Number = Math.max(0,
+            totalSteps - currentStep);
+        return {
+            ready:ready,
+            totalSteps:totalSteps,
+            currentStep:currentStep,
+            progressPercent:Math.min(100,
+                safeWhole(cooldown.progressPercent)),
+            animationFrame:safeWhole(cooldown.animationFrame),
+            remainingMs:ready ? 0 : remainingSteps
+                * org.flashNight.arki.unit.Action.Skill.ManualCooldownService
+                    .FRAME_MS
+        };
+    }
+
+    private static function readDrugKeyLabel(
+        keyName:String, diagnostic:String, diagnostics:Array):String {
+        var r:Object = root();
+        try {
+            var keyCode:Number = Number(r[keyName]);
+            if (!isNaN(keyCode) && typeof r.keyshow == "function") {
+                var resolvedLabel = r.keyshow(keyCode);
+                if (resolvedLabel != undefined && resolvedLabel != null
+                        && String(resolvedLabel) != "") {
+                    return String(resolvedLabel);
+                }
+            }
+        } catch (keyError) {
+        }
+        diagnostics.push(diagnostic);
+        return "";
     }
 
     private static function buildPortraitProjection(

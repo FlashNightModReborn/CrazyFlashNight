@@ -9,6 +9,7 @@ import LiteJSON;
 import JSON;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.arki.key.KeyManager;
+import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 /**
  * SaveManager — 存档系统统一管理器（单例）
  *
@@ -212,6 +213,9 @@ class org.flashNight.neur.Server.SaveManager {
     // ==================== 状态 ====================
     private var _dirtyMark:Boolean;
     private var _settingsMigrationPending:Boolean;
+    private var _drugLoadoutMigrationPending:Boolean;
+    private var _drugLoadoutSchemaRejected:Boolean;
+    private var _drugLoadoutMigrationSlot:String;
     private var _lastSaveHash:String;
     private var _liteJson:LiteJSON;
     private var _jsonParser:JSON;
@@ -260,6 +264,9 @@ class org.flashNight.neur.Server.SaveManager {
     private function SaveManager() {
         _dirtyMark = false;
         _settingsMigrationPending = false;
+        _drugLoadoutMigrationPending = false;
+        _drugLoadoutSchemaRejected = false;
+        _drugLoadoutMigrationSlot = undefined;
         _lastSaveHash = "";
         _liteJson = new LiteJSON();
         _jsonParser = new JSON(false);
@@ -304,6 +311,9 @@ class org.flashNight.neur.Server.SaveManager {
         _repairPending = false;
         _c4Scanned = false;
         _c4WarnedOnce = false;
+        _drugLoadoutMigrationPending = false;
+        _drugLoadoutSchemaRejected = false;
+        _drugLoadoutMigrationSlot = undefined;
     }
 
     /**
@@ -518,6 +528,7 @@ class org.flashNight.neur.Server.SaveManager {
             _root.存档系统.dirtyMark = false;
             _root.存盘标志 = 1;
             _settingsMigrationPending = false;
+            _drugLoadoutMigrationPending = false;
             KeyManager.clearPendingKeySettingsMigration();
         }
 
@@ -645,6 +656,15 @@ class org.flashNight.neur.Server.SaveManager {
             return;
         }
 
+        // 新槽位从自身 schema 重新判定；同槽位重复 preload 不得覆盖即时 flush
+        // 之后仍等待完整存盘的 migration latch。
+        var drugMigrationSlot:String = String(_root.savePath);
+        if (_drugLoadoutMigrationSlot != drugMigrationSlot) {
+            _drugLoadoutMigrationSlot = drugMigrationSlot;
+            _drugLoadoutMigrationPending = false;
+            _drugLoadoutSchemaRejected = false;
+        }
+
         sm.sendServerMessage("[SaveManager.preload] savePath=" + _root.savePath);
 
         // ── Protocol 2 快路径: launcher 存档决议 ──
@@ -765,6 +785,11 @@ class org.flashNight.neur.Server.SaveManager {
         sm.sendServerMessage("[SaveManager.preload] 顶层key: tasks_to_do=" + (so.data.tasks_to_do != undefined) + " 战宠=" + (so.data.战宠 != undefined) + " 商城=" + (so.data.商城已购买物品 != undefined));
         sm.sendServerMessage("[SaveManager.preload] mydata内部: tasks=" + (raw.tasks != undefined) + " pets=" + (raw.pets != undefined) + " shop=" + (raw.shop != undefined));
         var changed:Boolean = migrate(_root.mydata, so.data);
+        if (_drugLoadoutSchemaRejected) {
+            sm.sendServerMessage("[SaveManager.preload] drugLoadout schema rejected");
+            _root.mydata = undefined;
+            return;
+        }
         sm.sendServerMessage("[SaveManager.preload] migrate changed=" + changed + " newVersion=" + _root.mydata.version);
         if (changed) {
             syncTopLevelFromMydata(_root.mydata, so.data);
@@ -795,6 +820,11 @@ class org.flashNight.neur.Server.SaveManager {
                 _prefetchGen++;
                 runC4LateScanIfApplicable();  // C4: 兜底扫一次, 残留 fffd 时通知玩家 + launcher
                 return true;
+            }
+            if (_drugLoadoutSchemaRejected) {
+                sm.sendServerMessage("[SaveManager.loadAll] launcher snapshot future drugLoadout rejected; fail closed");
+                _root._saveRestoreError = true;
+                return false;
             }
             // apply 失败 — source-aware 分流
             if (pSrc == "sol") {
@@ -840,6 +870,11 @@ class org.flashNight.neur.Server.SaveManager {
                 clearPrefetch();
 
                 if (!_applyCore(jsonData)) {
+                    if (_drugLoadoutSchemaRejected) {
+                        sm.sendServerMessage("[SaveManager.loadAll] JSON future drugLoadout rejected; fail closed without SOL fallback");
+                        _root._saveRestoreError = true;
+                        return false;
+                    }
                     sm.sendServerMessage("[SaveManager.loadAll] JSON applyCore 失败，降级 SOL");
                 } else {
                     // SO 覆盖层：与 SOL 路径步骤一致
@@ -915,6 +950,11 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 迁移
         var changed:Boolean = migrate(_root.mydata, soData);
+        if (_drugLoadoutSchemaRejected) {
+            sm.sendServerMessage("[SaveManager.loadAll] drugLoadout schema rejected");
+            _prefetchGen++;
+            return false;
+        }
         if (changed) {
             syncTopLevelFromMydata(_root.mydata, soData);
             if (flushSO(so)) {
@@ -1015,6 +1055,10 @@ class org.flashNight.neur.Server.SaveManager {
         _root.商城购物车 = [];
         _root.easterEgg = undefined;
         _root._saveExt = {}; // ext 命名空间纵深防线（主防线在 newCharacter；成就/宠物购买次数等随档清空）
+        DrugInputService.resetSession();
+        _drugLoadoutMigrationPending = false;
+        _drugLoadoutSchemaRejected = false;
+        _drugLoadoutMigrationSlot = String(_root.savePath);
 
         // 缓存层清理
         _root.mydata = undefined;
@@ -1237,12 +1281,15 @@ class org.flashNight.neur.Server.SaveManager {
         // deleteSlot() 禁用了存档，新建角色时恢复
         _root.允许存档 = true;
         _settingsMigrationPending = false;
+        _drugLoadoutMigrationPending = false;
+        _drugLoadoutSchemaRejected = false;
+        _drugLoadoutMigrationSlot = String(_root.savePath);
         KeyManager.clearPendingKeySettingsMigration();
 
         // ext 命名空间主防线：新建角色无条件清空 _saveExt（成就/宠物购买次数等 per-character 数据）。
         // 覆盖「删档→新建」与「坏档→新建」两条路径（后者不经 deleteSlot，unpackGameState 已写入
         // 旧档 ext 残留，下方 packGameState 会把残留原样打包进新档——既有宠物涨价跨角色泄漏即此因）。
-        _root._saveExt = {};
+        _root._saveExt = {drugLoadout:{version:2}};
 
         // 初始装备
         if (_root.上装装备 != "") {
@@ -1306,6 +1353,7 @@ class org.flashNight.neur.Server.SaveManager {
         _root.载入关卡数据("无限过图", "data/stages/特殊/教学关卡.xml");
         _root.场景进入位置名 = "出生地";
         _root.淡出动画.淡出跳转帧("wuxianguotu_1");
+        DrugInputService.resetSession();
         return true;
     }
 
@@ -1397,6 +1445,13 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 预留命名空间 — 透传已有数据，保证往返不丢
         if (_root._saveExt == undefined) _root._saveExt = {};
+        if (_root._saveExt.drugLoadout == undefined
+                || typeof _root._saveExt.drugLoadout != "object") {
+            _root._saveExt.drugLoadout = {};
+        }
+        // activeBank 属于运行会话；存档只记录八槽 schema，不记录当前组。
+        _root._saveExt.drugLoadout.version = 2;
+        delete _root._saveExt.drugLoadout.activeBank;
         mydata.ext = _root._saveExt;
         mydata.reserved = {};
 
@@ -1460,7 +1515,16 @@ class org.flashNight.neur.Server.SaveManager {
         if (!validateMydata(mydata)) return false;
         // 每次切换存档都从该存档重新判定迁移，不能继承上一个角色的待保存 latch。
         _settingsMigrationPending = false;
+        _drugLoadoutMigrationPending = false;
+        _drugLoadoutSchemaRejected = false;
+        _drugLoadoutMigrationSlot = String(_root.savePath);
         KeyManager.clearPendingKeySettingsMigration();
+        var drugSchema:Object = normalizeDrugLoadoutSchema(mydata);
+        if (!drugSchema.ok) {
+            _drugLoadoutSchemaRejected = true;
+            return false;
+        }
+        if (drugSchema.changed) _drugLoadoutMigrationPending = true;
         _root.mydata = mydata;
         if (!(mydata[0][10] instanceof Array)) mydata[0][10] = [];
         if (!(mydata[0][12] instanceof Array)) mydata[0][12] = [];
@@ -1633,7 +1697,7 @@ class org.flashNight.neur.Server.SaveManager {
         _root.物品栏 = {
             背包: new ArrayInventory(mydata.inventory.背包, 50),
             装备栏: new EquipmentInventory(mydata.inventory.装备栏),
-            药剂栏: new DrugInventory(mydata.inventory.药剂栏, 4),
+            药剂栏: new DrugInventory(mydata.inventory.药剂栏, 8),
             仓库: new ArrayInventory(mydata.inventory.仓库, 1200),
             战备箱: new ArrayInventory(mydata.inventory.战备箱, 400)
         };
@@ -1677,6 +1741,7 @@ class org.flashNight.neur.Server.SaveManager {
             return false;
         }
 
+        DrugInputService.resetSession();
         return true;
     }
 
@@ -1762,7 +1827,8 @@ class org.flashNight.neur.Server.SaveManager {
      * isDirty() 保留只读内部 latch 的历史语义；close/finalize 应使用本方法。
      */
     public function hasPendingChanges():Boolean {
-        return _dirtyMark || _root.存档系统.dirtyMark === true;
+        return _dirtyMark || _root.存档系统.dirtyMark === true
+            || _drugLoadoutMigrationPending;
     }
 
     // ==================== 迁移 ====================
@@ -1774,6 +1840,7 @@ class org.flashNight.neur.Server.SaveManager {
      */
     public function migrate(mydata:Object, soData:Object):Boolean {
         if (mydata == undefined) return false;
+        _drugLoadoutSchemaRejected = false;
         var changed:Boolean = false;
         var sm:ServerManager = ServerManager.getInstance();
 
@@ -1806,7 +1873,97 @@ class org.flashNight.neur.Server.SaveManager {
             changed = true;
         }
 
+        var drugSchema:Object = normalizeDrugLoadoutSchema(mydata);
+        if (!drugSchema.ok) {
+            _drugLoadoutSchemaRejected = true;
+            return changed;
+        }
+        if (drugSchema.changed) {
+            _drugLoadoutMigrationPending = true;
+            changed = true;
+        }
+
         return changed;
+    }
+
+    /**
+     * 双药剂组特性 schema。全局存档版本保持 3.0；此方法同时供 SOL migrate 与
+     * launcher snapshot / JSON shadow 的 _applyCore 使用。
+     *
+     * 无标记/旧标记只信任 0..3，防止容量 4 时代的越界 ghost 在扩到 8 后复活；
+     * v2 只信任 0..7。未知或未来版本 fail closed，绝不降级清洗。
+     */
+    public function normalizeDrugLoadoutSchema(mydata:Object):Object {
+        if (mydata == undefined || mydata.inventory == undefined
+                || mydata.inventory.药剂栏 == undefined
+                || typeof mydata.inventory.药剂栏 != "object") {
+            return {ok:false, changed:false, error:"missing_drug_inventory"};
+        }
+
+        var changed:Boolean = false;
+        if (mydata.ext == undefined || mydata.ext == null
+                || typeof mydata.ext != "object") {
+            mydata.ext = {};
+            changed = true;
+        }
+
+        var feature:Object = mydata.ext.drugLoadout;
+        var hasVersion:Boolean = feature != undefined && feature != null
+            && feature.version != undefined;
+        var version:Number = hasVersion ? Number(feature.version) : NaN;
+        if (hasVersion && (isNaN(version) || version > 2)) {
+            return {ok:false, changed:false, error:"future_drug_loadout_version"};
+        }
+
+        var legacy:Boolean = !hasVersion || version < 2;
+        var maxExclusive:Number = legacy ? 4 : 8;
+        var raw:Object = mydata.inventory.药剂栏;
+        if (legacy || !hasOnlyCanonicalDrugSlots(raw, maxExclusive)) {
+            var normalized:Object = {};
+            for (var i:Number = 0; i < maxExclusive; i++) {
+                var value:Object = raw[String(i)];
+                if (value !== undefined) normalized[String(i)] = value;
+            }
+            mydata.inventory.药剂栏 = normalized;
+            changed = true;
+        }
+
+        if (feature == undefined || feature == null || typeof feature != "object") {
+            feature = {};
+            mydata.ext.drugLoadout = feature;
+            changed = true;
+        }
+        if (Number(feature.version) != 2) {
+            feature.version = 2;
+            changed = true;
+        }
+        if (feature.activeBank !== undefined) {
+            delete feature.activeBank;
+            changed = true;
+        }
+        return {ok:true, changed:changed, version:2};
+    }
+
+    private function hasOnlyCanonicalDrugSlots(raw:Object, maxExclusive:Number):Boolean {
+        for (var key:String in raw) {
+            var index:Number = Number(key);
+            if (isNaN(index) || Math.floor(index) != index
+                    || index < 0 || index >= maxExclusive
+                    || String(index) != key) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function hasPendingDrugLoadoutMigration():Boolean {
+        return _drugLoadoutMigrationPending;
+    }
+
+    /** focused fixture 使用；生产只由新存档边界或成功全量存盘清除。 */
+    public function clearPendingDrugLoadoutMigration():Void {
+        _drugLoadoutMigrationPending = false;
+        _drugLoadoutSchemaRejected = false;
     }
 
     /**
@@ -1840,6 +1997,11 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function migrateAndSync(mydata:Object, soData:Object):Void {
         migrate(mydata, soData);
+        if (_drugLoadoutSchemaRejected) {
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.migrateAndSync] future drugLoadout rejected; skip sync");
+            return;
+        }
         syncTopLevelFromMydata(mydata, soData);
     }
 
@@ -2073,7 +2235,7 @@ class org.flashNight.neur.Server.SaveManager {
         return {
             背包: new ArrayInventory(null, 50),
             装备栏: new EquipmentInventory(null),
-            药剂栏: new DrugInventory(null, 4),
+            药剂栏: new DrugInventory(null, 8),
             仓库: new ArrayInventory(null, 1200),
             战备箱: new ArrayInventory(null, 400)
         };

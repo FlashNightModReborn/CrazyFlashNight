@@ -5,17 +5,25 @@ import org.flashNight.arki.item.PlayerAssetTransaction;
 
 /**
  * @class DrugInputService
- * @description 四槽快捷药剂输入与消耗编排。
+ * @description 双药剂组、四输入 lane 的快捷药剂输入与消耗编排。
  *
  * 输入和库存读取不依赖玩家信息 XFL；旧控制器只显示键位，旧进度条只投影冷却。
  */
 class org.flashNight.arki.unit.Action.Skill.DrugInputService {
 
-    public static var SLOT_COUNT:Number = 4;
+    public static var BANK_COUNT:Number = 2;
+    public static var LANE_COUNT:Number = 4;
+    public static var PHYSICAL_SLOT_COUNT:Number = 8;
+    /** 兼容旧调用方；新代码应明确使用 PHYSICAL_SLOT_COUNT 或 LANE_COUNT。 */
+    public static var SLOT_COUNT:Number = PHYSICAL_SLOT_COUNT;
+    public static var SWITCH_KEY_NAME:String = "药剂组切换键";
 
     private static var KEY_NAMES:Array = [
         "快捷物品栏键1", "快捷物品栏键2", "快捷物品栏键3", "快捷物品栏键4"
     ];
+    private static var activeBank:Number = 0;
+    private static var switchKeyConsumed:Boolean = false;
+    private static var sessionGeneration:Number = 1;
 
     public static function installRootBridge(root:Object):Void {
         if (!root) return;
@@ -28,16 +36,26 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             var inventory:Object = rootRef.物品栏 ? rootRef.物品栏.药剂栏 : null;
             var usedCount:Number = 0;
 
-            for (var slotIndex:Number = 0; slotIndex < DrugInputService.SLOT_COUNT; slotIndex++) {
-                var keyName:String = DrugInputService.getKeyName(slotIndex);
+            DrugInputService.syncBankView(view, inventory);
+
+            var switchKeyCode:Number = Number(rootRef[DrugInputService.getSwitchKeyName()]);
+            var switchKeyDown:Boolean = !isNaN(switchKeyCode) && Key.isDown(switchKeyCode);
+            DrugInputService.syncSwitchView(view, switchKeyCode, rootRef);
+            var switchResult:Object = DrugInputService.updateSwitch(
+                unit, switchKeyDown, inputEnabled, rootRef, view);
+            var switched:Boolean = switchResult != null && switchResult.switched === true;
+            if (switched) DrugInputService.syncBankView(view, inventory);
+
+            for (var lane:Number = 0; lane < DrugInputService.LANE_COUNT; lane++) {
+                var keyName:String = DrugInputService.getKeyName(lane);
                 var keyCode:Number = Number(rootRef[keyName]);
                 var keyDown:Boolean = !isNaN(keyCode) && Key.isDown(keyCode);
-                DrugInputService.syncView(view, slotIndex, keyCode, rootRef);
+                DrugInputService.syncView(view, lane, keyCode, rootRef);
                 var result:Object = DrugInputService.updateSlot(
                     unit,
-                    slotIndex,
+                    lane,
                     keyDown,
-                    inputEnabled,
+                    inputEnabled && !switched,
                     inventory,
                     rootRef,
                     null
@@ -49,50 +67,105 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         bridge.clearUnit = function(unit:Object):Void {
             DrugInputService.clearUnit(unit);
         };
+        bridge.getActiveBank = function():Number {
+            return DrugInputService.getActiveBank();
+        };
+        bridge.resetSession = function():Void {
+            DrugInputService.resetSession();
+        };
 
         root.药剂输入控制器 = bridge;
     }
 
+    /**
+     * 切换键只认首次 key-down 边沿。无效边沿也立即锁存，因此暂停、死亡或冷却
+     * 期间按住不会在条件恢复后补触发。
+     */
+    public static function updateSwitch(
+        unit:Object,
+        keyDown:Boolean,
+        inputEnabled:Boolean,
+        root:Object,
+        view:Object
+    ):Object {
+        bindSwitchRenderer(view);
+        if (!keyDown) {
+            switchKeyConsumed = false;
+            return null;
+        }
+        if (switchKeyConsumed) return null;
+        switchKeyConsumed = true;
+
+        var result:Object = {
+            attempted:true,
+            switched:false,
+            cooldownStarted:false,
+            activeBank:activeBank
+        };
+        var cooldownKey:String = ManualCooldownService.drugSwitchKey();
+        if (!unit || !inputEnabled || Number(unit.hp) <= 0
+                || !ManualCooldownService.isReady(cooldownKey)) {
+            return result;
+        }
+
+        var durationMs:Number = root == null
+            ? NaN : Number(root.药剂组切换冷却时间);
+        if (isNaN(durationMs) || durationMs < 0) durationMs = 3000;
+        result.cooldownStarted = ManualCooldownService.start(cooldownKey, durationMs);
+        if (!result.cooldownStarted) return result;
+
+        activeBank = activeBank == 0 ? 1 : 0;
+        latchHeldLanesUntilRelease(unit);
+        result.switched = true;
+        result.activeBank = activeBank;
+        updateSwitchIcon(view);
+        return result;
+    }
+
     public static function updateSlot(
         unit:Object,
-        slotIndex:Number,
+        lane:Number,
         keyDown:Boolean,
         inputEnabled:Boolean,
         inventory:Object,
         root:Object,
         view:Object
     ):Object {
-        if (!unit || !isValidSlotIndex(slotIndex)) return null;
+        if (!unit || !isValidLane(lane)) return null;
 
-        bindRenderer(view, slotIndex);
+        bindRenderer(view, lane);
         var consumedSlots:Array = getConsumedSlots(unit);
         if (!keyDown) {
-            consumedSlots[slotIndex] = false;
+            consumedSlots[lane] = false;
             return null;
         }
-        if (!inputEnabled || consumedSlots[slotIndex] === true || !inventory || !inventory.getItem) return null;
+        if (!inputEnabled || consumedSlots[lane] === true || !inventory || !inventory.getItem) return null;
 
-        var item:Object = inventory.getItem(String(slotIndex));
+        var physicalSlot:Number = physicalSlotFor(activeBank, lane);
+        var item:Object = inventory.getItem(String(physicalSlot));
         if (!item) return null;
 
-        var cooldownKey:String = ManualCooldownService.drugKey(slotIndex);
+        var cooldownKey:String = ManualCooldownService.drugKey(lane);
         if (!ManualCooldownService.isReady(cooldownKey)) return null;
 
         // 与旧时间轴一致：有物品且冷却可用时即消费本次按住；死亡和零数量也要松键后重试。
-        consumedSlots[slotIndex] = true;
+        consumedSlots[lane] = true;
         var itemName:String = String(item.name);
         var result:Object = {
             attempted: true,
             used: false,
             cooldownStarted: false,
             depleted: false,
-            slotIndex: slotIndex,
+            slotIndex: physicalSlot,
+            physicalSlot: physicalSlot,
+            lane: lane,
+            bank: activeBank,
             itemName: itemName
         };
 
         if (Number(unit.hp) <= 0) return result;
         if (Number(item.value) <= 0) {
-            clearExhaustedMirror(root, slotIndex, itemName);
+            publishExhausted(root, itemName);
             result.depleted = true;
             return result;
         }
@@ -111,12 +184,12 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             // addValue 会在数量写入后同步发布 ItemValueChanged/ItemRemoved；
             // dirty 必须先于监听器可见，异常路径再按 before/after 记录真实扣除。
             try {
-                inventory.addValue(String(slotIndex), -1);
+                inventory.addValue(String(physicalSlot), -1);
                 result.used = true;
             } finally {
                 // receipt 在权威写 finally 内按 before/after 固化；catch 因而可以先
                 // 清 frame，再做索引修复，任何清理异常都不会吞掉真实 loss。
-                remaining = inventory.getItem(String(slotIndex));
+                remaining = inventory.getItem(String(physicalSlot));
                 var quantityAfter:Number = remaining == null ? 0 : Number(remaining.value);
                 var committedLoss:Number = quantityBefore - quantityAfter;
                 if (committedLoss > 0 && Math.floor(committedLoss) == committedLoss) {
@@ -141,16 +214,16 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         }
 
         if (!remaining) {
-            clearExhaustedMirror(root, slotIndex, itemName);
+            publishExhausted(root, itemName);
             result.depleted = true;
         }
         return result;
     }
 
-    public static function syncView(view:Object, slotIndex:Number, keyCode:Number, root:Object):Void {
-        if (!view || !isValidSlotIndex(slotIndex)) return;
+    public static function syncView(view:Object, lane:Number, keyCode:Number, root:Object):Void {
+        if (!view || !isValidLane(lane)) return;
 
-        var controller:Object = view["控制器" + slotIndex];
+        var controller:Object = view["控制器" + lane];
         if (controller) {
             controller.inputOwnedByAS = true;
             if (root && root.keyshow && controller.mytext && !isNaN(keyCode)
@@ -159,46 +232,156 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
                 controller.mytext.text = root.keyshow(keyCode);
             }
         }
-        bindRenderer(view, slotIndex);
+        bindRenderer(view, lane);
     }
 
-    public static function getKeyName(slotIndex:Number):String {
-        return isValidSlotIndex(slotIndex) ? String(KEY_NAMES[slotIndex]) : null;
+    public static function syncSwitchView(view:Object, keyCode:Number, root:Object):Void {
+        if (!view) return;
+        var controller:Object = view.控制器4;
+        if (controller) {
+            controller.inputOwnedByAS = true;
+            if (root && root.keyshow && controller.mytext && !isNaN(keyCode)
+                    && controller.__drugDisplayedKeyCode !== keyCode) {
+                controller.__drugDisplayedKeyCode = keyCode;
+                controller.mytext.text = root.keyshow(keyCode);
+            }
+        }
+        bindSwitchRenderer(view);
+        updateSwitchIcon(view);
+    }
+
+    /** 四个持久 DrugIcon 只在 bank 或 inventory 身份变化时重绑物理槽。 */
+    public static function syncBankView(view:Object, inventory:Object):Void {
+        if (!view || !inventory) return;
+        if (view.__drugProjectedBank === activeBank
+                && view.__drugProjectedInventory === inventory) {
+            updateSwitchIcon(view);
+            return;
+        }
+
+        var icons:Array = view.药剂图标列表;
+        if (icons instanceof Array && icons.length >= LANE_COUNT) {
+            var projectedIcons:Array = [];
+            var projectionReady:Boolean = true;
+            for (var lane:Number = 0; lane < LANE_COUNT; lane++) {
+                var iconHost:Object = icons[lane];
+                var itemIcon:Object = iconHost ? iconHost.itemIcon : null;
+                if (!itemIcon || typeof itemIcon.reset != "function") {
+                    projectionReady = false;
+                    break;
+                }
+                projectedIcons[lane] = itemIcon;
+            }
+            if (projectionReady) {
+                for (lane = 0; lane < LANE_COUNT; lane++) {
+                    projectedIcons[lane].reset(inventory, physicalSlotFor(activeBank, lane));
+                }
+                // 只有四个持久 icon 全部完成重绑后才提交整体投影标记；否则下一帧重试。
+                view.__drugProjectedBank = activeBank;
+                view.__drugProjectedInventory = inventory;
+            }
+        }
+        updateSwitchIcon(view);
+    }
+
+    public static function getActiveBank():Number {
+        return activeBank;
+    }
+
+    public static function bankForPhysicalSlot(slot:Number):Number {
+        return isValidPhysicalSlot(slot) ? Math.floor(slot / LANE_COUNT) : -1;
+    }
+
+    public static function laneForPhysicalSlot(slot:Number):Number {
+        return isValidPhysicalSlot(slot) ? slot % LANE_COUNT : -1;
+    }
+
+    public static function physicalSlotFor(bank:Number, lane:Number):Number {
+        if (!isValidBank(bank) || !isValidLane(lane)) return -1;
+        return bank * LANE_COUNT + lane;
+    }
+
+    public static function getKeyName(lane:Number):String {
+        return isValidLane(lane) ? String(KEY_NAMES[lane]) : null;
+    }
+
+    public static function getSwitchKeyName():String {
+        return SWITCH_KEY_NAME;
+    }
+
+    /** 新建、成功读档和删档边界调用；普通换组绝不调用。 */
+    public static function resetSession():Void {
+        activeBank = 0;
+        switchKeyConsumed = false;
+        sessionGeneration++;
+        for (var lane:Number = 0; lane < LANE_COUNT; lane++) {
+            ManualCooldownService.reset(ManualCooldownService.drugKey(lane));
+        }
+        ManualCooldownService.reset(ManualCooldownService.drugSwitchKey());
     }
 
     public static function clearUnit(unit:Object):Void {
-        if (unit) delete unit.__drugInputConsumedSlots;
+        if (!unit) return;
+        delete unit.__drugInputConsumedSlots;
+        delete unit.__drugInputSessionGeneration;
     }
 
-    private static function bindRenderer(view:Object, slotIndex:Number):Void {
+    private static function bindRenderer(view:Object, lane:Number):Void {
         if (!view) return;
-        var renderer:Object = view["进度条" + slotIndex];
-        if (renderer) ManualCooldownService.bindRenderer(ManualCooldownService.drugKey(slotIndex), renderer);
+        var renderer:Object = view["进度条" + lane];
+        if (renderer) ManualCooldownService.bindRenderer(ManualCooldownService.drugKey(lane), renderer);
     }
 
-    private static function clearExhaustedMirror(root:Object, slotIndex:Number, itemName:String):Void {
+    private static function bindSwitchRenderer(view:Object):Void {
+        if (!view || !view.进度条4) return;
+        ManualCooldownService.bindRenderer(ManualCooldownService.drugSwitchKey(), view.进度条4);
+    }
+
+    private static function updateSwitchIcon(view:Object):Void {
+        if (!view || !view.药剂组切换图标) return;
+        var icon:Object = view.药剂组切换图标;
+        if (icon.__drugProjectedBank === activeBank) return;
+        icon.__drugProjectedBank = activeBank;
+        if (icon.gotoAndStop) icon.gotoAndStop(activeBank == 0 ? "I" : "II");
+    }
+
+    private static function publishExhausted(root:Object, itemName:String):Void {
         if (!root) return;
         try {
             if (root.发布消息 && itemName != null && itemName != "" && itemName != "undefined") {
                 root.发布消息(itemName + "耗尽！");
             }
         } catch (exhaustedMessageError) {
-            // 扣药已经提交；可选提示失败也必须清掉快捷栏镜像，避免下一按键重放。
+            // 扣药已经提交；可选提示失败不能改变权威物品栏结果。
             trace("[DrugInputService] exhausted message failed: " + exhaustedMessageError);
         }
-        root["快捷物品栏" + slotIndex] = "";
     }
 
     private static function getConsumedSlots(unit:Object):Array {
         var consumedSlots:Array = unit.__drugInputConsumedSlots;
-        if (!consumedSlots) {
+        if (!consumedSlots || unit.__drugInputSessionGeneration !== sessionGeneration) {
             consumedSlots = [];
             unit.__drugInputConsumedSlots = consumedSlots;
+            unit.__drugInputSessionGeneration = sessionGeneration;
         }
         return consumedSlots;
     }
 
-    private static function isValidSlotIndex(slotIndex:Number):Boolean {
-        return slotIndex >= 0 && slotIndex < SLOT_COUNT && Math.floor(slotIndex) === slotIndex;
+    private static function latchHeldLanesUntilRelease(unit:Object):Void {
+        if (!unit) return;
+        var consumedSlots:Array = getConsumedSlots(unit);
+        for (var lane:Number = 0; lane < LANE_COUNT; lane++) consumedSlots[lane] = true;
+    }
+
+    private static function isValidBank(bank:Number):Boolean {
+        return bank >= 0 && bank < BANK_COUNT && Math.floor(bank) === bank;
+    }
+
+    private static function isValidLane(lane:Number):Boolean {
+        return lane >= 0 && lane < LANE_COUNT && Math.floor(lane) === lane;
+    }
+
+    private static function isValidPhysicalSlot(slot:Number):Boolean {
+        return slot >= 0 && slot < PHYSICAL_SLOT_COUNT && Math.floor(slot) === slot;
     }
 }

@@ -6,6 +6,7 @@ import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
+import org.flashNight.neur.Event.EventBus;
 
 class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
 
@@ -21,6 +22,10 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         testConsumptionCooldownAndLastDoseMirror();
         testHeldInputDeadUnitZeroValueAndCooldownWait();
         testRendererOptionalSimultaneousSlotsAndFourSlotBoundary();
+        testSwitchEdgeCooldownAndNoBuffer();
+        testLifecyclePreservesBankAndAllDrugCooldowns();
+        testPairedPhysicalSlotsShareLaneCooldown();
+        testBankProjectionAndSessionReset();
         testEffectFailureKeepsLegacyConsumptionOrder();
         testMissingSaveSystemFailsBeforeAnyAuthorityWrite();
         testItemRemovedListenerFaultRecoversIndexesAndNextTransaction();
@@ -37,6 +42,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {
             queue.push(callback);
         });
+        DrugInputService.resetSession();
     }
 
     private static function drainQueue():Void {
@@ -59,7 +65,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         assert(root.effectCalls == 1 && inventory.getItem("0").value == 1
             && root.存档系统.dirtyMark,
             "first dose keeps one authoritative inventory item and marks persistence dirty");
-        assert(root.快捷物品栏0 == "测试药剂", "non-final dose keeps legacy quick-slot mirror");
+        assert(root.快捷物品栏0 == "测试药剂", "non-final dose does not mutate the retired legacy quick-slot mirror");
 
         root.存档系统.dirtyMark = false;
         var held:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
@@ -72,7 +78,8 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         assert(last.used && last.depleted && inventory.getItem("0") == null
             && root.存档系统.dirtyMark,
             "last dose removes the authoritative inventory entry and marks persistence dirty");
-        assert(root.快捷物品栏0 == "" && root.messages.length == 1, "last dose clears mirror and publishes one exhaustion message");
+        assert(root.快捷物品栏0 == "测试药剂" && root.messages.length == 1,
+            "last dose publishes exhaustion without writing the retired root mirror");
     }
 
     private static function testHeldInputDeadUnitZeroValueAndCooldownWait():Void {
@@ -93,9 +100,9 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         inventory.getItem("0").value = 0;
         root.快捷物品栏0 = "死亡测试药剂";
         var zero:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
-        assert(zero.depleted && !zero.used && root.快捷物品栏0 == ""
+        assert(zero.depleted && !zero.used && root.快捷物品栏0 == "死亡测试药剂"
             && !root.存档系统.dirtyMark,
-            "zero-value legacy entry clears mirror without marking an inventory write dirty");
+            "zero-value legacy entry reports depletion without a mirror or inventory write");
 
         resetFixture();
         unit = {hp: 100};
@@ -123,9 +130,224 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         assert(first.used && fourth.used && root.effectCalls == 2, "two drug slots may fire independently in the same frame without UI renderers");
         assert(!ManualCooldownService.isReady(ManualCooldownService.drugKey(0))
             && !ManualCooldownService.isReady(ManualCooldownService.drugKey(3)), "simultaneous slots own independent cooldowns");
-        assert(DrugInputService.SLOT_COUNT == 4 && DrugInputService.getKeyName(3) == "快捷物品栏键4"
-            && DrugInputService.getKeyName(4) == null, "input service excludes the decorative fifth legacy slot");
-        assert(inventory.getItem("4").value == 2, "decorative fifth slot cannot be consumed by migrated input");
+        assert(DrugInputService.BANK_COUNT == 2 && DrugInputService.LANE_COUNT == 4
+            && DrugInputService.PHYSICAL_SLOT_COUNT == 8 && DrugInputService.SLOT_COUNT == 8,
+            "input service exposes two banks, four lanes and eight physical slots");
+        assert(DrugInputService.getKeyName(3) == "快捷物品栏键4"
+            && DrugInputService.getKeyName(4) == null
+            && DrugInputService.getSwitchKeyName() == "药剂组切换键",
+            "four lane keys stay separate from the dedicated switch logical id");
+        assert(DrugInputService.physicalSlotFor(1, 3) == 7
+            && DrugInputService.bankForPhysicalSlot(7) == 1
+            && DrugInputService.laneForPhysicalSlot(7) == 3
+            && DrugInputService.physicalSlotFor(2, 0) == -1
+            && DrugInputService.bankForPhysicalSlot(8) == -1,
+            "bank, lane and physical-slot helpers enforce the frozen mapping");
+        assert(inventory.getItem("4").value == 2,
+            "bank-II physical slot is not consumed while bank I is active");
+    }
+
+    private static function testSwitchEdgeCooldownAndNoBuffer():Void {
+        resetFixture();
+        var root:Object = makeRoot();
+        var unit:Object = {hp:100};
+
+        var paused:Object = DrugInputService.updateSwitch(unit, true, false, root, null);
+        assert(paused.attempted && !paused.switched && DrugInputService.getActiveBank() == 0,
+            "paused switch edge is consumed without changing bank");
+        var heldAfterPause:Object = DrugInputService.updateSwitch(unit, true, true, root, null);
+        assert(heldAfterPause == null && DrugInputService.getActiveBank() == 0,
+            "held switch does not buffer across pause recovery");
+        DrugInputService.updateSwitch(unit, false, true, root, null);
+
+        unit.hp = 0;
+        var dead:Object = DrugInputService.updateSwitch(unit, true, true, root, null);
+        assert(dead.attempted && !dead.switched && DrugInputService.getActiveBank() == 0,
+            "dead-unit switch edge is consumed without changing bank");
+        unit.hp = 100;
+        assert(DrugInputService.updateSwitch(unit, true, true, root, null) == null,
+            "held switch does not buffer across revive");
+        DrugInputService.updateSwitch(unit, false, true, root, null);
+
+        var switched:Object = DrugInputService.updateSwitch(unit, true, true, root, null);
+        assert(switched.switched && switched.cooldownStarted
+            && switched.activeBank == 1 && DrugInputService.getActiveBank() == 1,
+            "fresh live edge switches to bank II and starts the independent cooldown");
+        assert(!ManualCooldownService.isReady(ManualCooldownService.drugSwitchKey())
+            && ManualCooldownService.isReady(ManualCooldownService.drugKey(0)),
+            "switch cooldown does not start or reset a potion lane cooldown");
+        DrugInputService.updateSwitch(unit, false, true, root, null);
+        var duringCooldown:Object = DrugInputService.updateSwitch(unit, true, true, root, null);
+        assert(duringCooldown.attempted && !duringCooldown.switched,
+            "switch edge during switch cooldown is consumed without toggling");
+        drainQueue();
+        assert(DrugInputService.updateSwitch(unit, true, true, root, null) == null
+            && DrugInputService.getActiveBank() == 1,
+            "held edge does not fire when switch cooldown becomes ready");
+        DrugInputService.updateSwitch(unit, false, true, root, null);
+        assert(DrugInputService.updateSwitch(unit, true, true, root, null).switched
+            && DrugInputService.getActiveBank() == 0,
+            "release and re-press switches again after cooldown completion");
+    }
+
+    private static function testLifecyclePreservesBankAndAllDrugCooldowns():Void {
+        resetFixture();
+        var root:Object = makeRoot();
+        root.药剂组切换冷却时间 = 3000;
+        var unit:Object = {hp:100};
+
+        var switched:Object = DrugInputService.updateSwitch(
+            unit, true, true, root, null);
+        for (var lane:Number = 0; lane < DrugInputService.LANE_COUNT; lane++) {
+            ManualCooldownService.start(
+                ManualCooldownService.drugKey(lane), 3000);
+        }
+        DrugInputService.updateSwitch(unit, false, true, root, null);
+        assert(switched.switched && DrugInputService.getActiveBank() == 1
+                && allDrugCooldownsReady(false) && queue.length == 5,
+            "lifecycle fixture starts in bank II with four lane cooldowns and the switch cooldown active");
+
+        unit.hp = 0;
+        var deadPress:Object = DrugInputService.updateSwitch(
+            unit, true, true, root, null);
+        DrugInputService.clearUnit(unit);
+        unit.hp = 100;
+        var heldAfterRevive:Object = DrugInputService.updateSwitch(
+            unit, true, true, root, null);
+        assert(deadPress.attempted && !deadPress.switched
+                && heldAfterRevive == null
+                && DrugInputService.getActiveBank() == 1
+                && allDrugCooldownsReady(false) && queue.length == 5,
+            "death clearUnit and revive preserve bank II plus all five cooldowns, and consume the invalid switch edge");
+        DrugInputService.updateSwitch(unit, false, true, root, null);
+
+        var pausedPress:Object = DrugInputService.updateSwitch(
+            unit, true, false, root, null);
+        var heldAfterResume:Object = DrugInputService.updateSwitch(
+            unit, true, true, root, null);
+        assert(pausedPress.attempted && !pausedPress.switched
+                && heldAfterResume == null
+                && DrugInputService.getActiveBank() == 1
+                && allDrugCooldownsReady(false) && queue.length == 5,
+            "pause and resume preserve bank II plus all five cooldowns, and never queue the held switch press");
+        DrugInputService.updateSwitch(unit, false, true, root, null);
+
+        var scenePress:Object = DrugInputService.updateSwitch(
+            unit, true, false, root, null);
+        EventBus.getInstance().publish("SceneChanged");
+        EventBus.getInstance().publish("SceneReady");
+        var heldAfterScene:Object = DrugInputService.updateSwitch(
+            unit, true, true, root, null);
+        assert(scenePress.attempted && !scenePress.switched
+                && heldAfterScene == null
+                && DrugInputService.getActiveBank() == 1
+                && allDrugCooldownsReady(false) && queue.length == 5,
+            "SceneChanged to SceneReady preserves bank II plus all five cooldowns, and consumes the transition-time edge");
+
+        drainQueue();
+        assert(allDrugCooldownsReady(true)
+                && DrugInputService.updateSwitch(
+                    unit, true, true, root, null) == null
+                && DrugInputService.getActiveBank() == 1,
+            "all five cooldown callbacks survive the scene lifecycle, while the held rejected edge stays disarmed after readiness");
+    }
+
+    private static function testPairedPhysicalSlotsShareLaneCooldown():Void {
+        resetFixture();
+        var root:Object = makeRoot();
+        var unit:Object = {hp:100};
+        var inventory:Object = makeInventory([
+            {name:"I-0", value:2}, null, null, null,
+            {name:"II-0", value:2}, {name:"II-1", value:2}
+        ]);
+
+        var first:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
+        assert(first.used && first.physicalSlot == 0 && first.lane == 0 && first.bank == 0,
+            "bank I lane 0 consumes physical slot 0");
+        var switchResult:Object = DrugInputService.updateSwitch(unit, true, true, root, null);
+        assert(switchResult.switched && DrugInputService.getActiveBank() == 1,
+            "bank switch is independent while a potion lane is cooling");
+
+        var sameTick:Object = DrugInputService.updateSlot(
+            unit, 0, true, false, inventory, root, null);
+        var nextTickHeld:Object = DrugInputService.updateSlot(
+            unit, 0, true, true, inventory, root, null);
+        assert(sameTick == null && nextTickHeld == null
+                && inventory.getItem("4").value == 2,
+            "successful switch suppresses same-tick use and every held lane stays latched on the next tick");
+
+        // 必须先观察松键；随后仍由共享 lane 冷却阻止 4 号槽。
+        DrugInputService.updateSlot(unit, 0, false, true, inventory, root, null);
+        var pairedWaiting:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
+        assert(pairedWaiting == null && inventory.getItem("4").value == 2,
+            "physical slots 0 and 4 share lane-0 cooldown without consuming bank II early");
+
+        // lane 1 与 lane 0 独立，仍可在 bank II 同帧使用。
+        DrugInputService.updateSlot(unit, 1, false, true, inventory, root, null);
+        var independent:Object = DrugInputService.updateSlot(unit, 1, true, true, inventory, root, null);
+        assert(independent.used && independent.physicalSlot == 5
+            && inventory.getItem("5").value == 1,
+            "different lane remains independent inside bank II");
+        drainQueue();
+        var pairedReady:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
+        assert(pairedReady.used && pairedReady.physicalSlot == 4
+            && inventory.getItem("4").value == 1,
+            "held bank-II lane fires once when its shared cooldown becomes ready");
+    }
+
+    private static function testBankProjectionAndSessionReset():Void {
+        resetFixture();
+        var resetCalls:Array = [];
+        var icons:Array = [];
+        for (var i:Number = 0; i < 4; i++) {
+            var host:Object = {itemIcon:{}};
+            host.itemIcon.reset = function(collection:Object, index:Number):Void {
+                resetCalls.push(index);
+            };
+            icons.push(host);
+        }
+        var switchIcon:Object = {frames:[]};
+        switchIcon.gotoAndStop = function(frame:Object):Void { this.frames.push(frame); };
+        var view:Object = {
+            药剂图标列表:icons,
+            药剂组切换图标:switchIcon,
+            控制器4:{mytext:{text:""}},
+            进度条4:makeRenderer()
+        };
+        var inventory:Object = makeInventory([]);
+        var root:Object = makeRoot();
+        root.keyshow = function(code:Number):String { return "KEY-" + code; };
+
+        var delayedIcon:Object = icons[3].itemIcon;
+        icons[3].itemIcon = null;
+        DrugInputService.syncBankView(view, inventory);
+        assert(resetCalls.length == 0
+                && view.__drugProjectedBank === undefined
+                && view.__drugProjectedInventory === undefined,
+            "HUD waits for every persistent itemIcon before committing an atomic bank projection");
+        icons[3].itemIcon = delayedIcon;
+        DrugInputService.syncBankView(view, inventory);
+        DrugInputService.syncSwitchView(view, 54, root);
+        assert(resetCalls.join(",") == "0,1,2,3" && switchIcon.frames[0] == "I",
+            "HUD retries after delayed icon initialization and binds all four bank-I slots");
+        assert(view.控制器4.inputOwnedByAS === true
+            && view.控制器4.mytext.text == "KEY-54"
+            && view.进度条4.__manualCooldownKey == "drug:switch",
+            "HUD switch controller and progress bar are display-only projections");
+
+        var unit:Object = {hp:100};
+        DrugInputService.updateSwitch(unit, true, true, root, view);
+        DrugInputService.syncBankView(view, inventory);
+        assert(resetCalls.join(",") == "0,1,2,3,4,5,6,7"
+            && switchIcon.frames[switchIcon.frames.length - 1] == "II",
+            "successful switch reuses the same four icons for bank-II physical slots");
+
+        DrugInputService.resetSession();
+        DrugInputService.syncBankView(view, inventory);
+        assert(DrugInputService.getActiveBank() == 0
+            && resetCalls.slice(8).join(",") == "0,1,2,3"
+            && ManualCooldownService.isReady(ManualCooldownService.drugSwitchKey()),
+            "session reset restores bank I, refreshes projection and clears drug-family cooldowns");
     }
 
     private static function testEffectFailureKeepsLegacyConsumptionOrder():Void {
@@ -195,7 +417,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         });
         var root:Object = makeRoot();
         var unit:Object = {hp:100};
-        var inventory:ArrayInventory = new ArrayInventory({}, 4);
+        var inventory:ArrayInventory = new ArrayInventory({}, 8);
         inventory.add(0, new BaseItem("监听故障药剂", 1, 1));
         inventory.add(1, new BaseItem("后续独立药剂", 1, 1));
         var holder:MovieClip = _root.createEmptyMovieClip(
@@ -308,6 +530,17 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
             this.lastFrame = frame;
         };
         return renderer;
+    }
+
+    private static function allDrugCooldownsReady(expected:Boolean):Boolean {
+        for (var lane:Number = 0; lane < DrugInputService.LANE_COUNT; lane++) {
+            if (ManualCooldownService.isReady(
+                    ManualCooldownService.drugKey(lane)) != expected) {
+                return false;
+            }
+        }
+        return ManualCooldownService.isReady(
+            ManualCooldownService.drugSwitchKey()) == expected;
     }
 
     private static function assert(condition:Boolean, message:String):Void {

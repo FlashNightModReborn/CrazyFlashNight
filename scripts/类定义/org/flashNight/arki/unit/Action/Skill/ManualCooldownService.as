@@ -25,6 +25,10 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         return "drug:" + slotIndex;
     }
 
+    public static function drugSwitchKey():String {
+        return "drug:switch";
+    }
+
     public static function isReady(key:String):Boolean {
         return getState(key).ready === true;
     }
@@ -47,6 +51,22 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         state.generation = nextGeneration++;
         syncRenderer(key, state);
         scheduleNext(key, state.generation);
+        return true;
+    }
+
+    /**
+     * 按逻辑 key 安全复位单个冷却。旧 generation 的排队 callback 会自动失效；
+     * renderer 仍保持绑定并立即收到 ready 投影。
+     */
+    public static function reset(key:String):Boolean {
+        if (!isValidKey(key)) return false;
+
+        var state:Object = getState(key);
+        state.ready = true;
+        state.totalSteps = 0;
+        state.currentStep = 0;
+        state.generation = nextGeneration++;
+        syncRenderer(key, state);
         return true;
     }
 

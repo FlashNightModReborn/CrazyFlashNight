@@ -329,6 +329,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             快捷物品栏键2:50,
             快捷物品栏键3:51,
             快捷物品栏键4:52,
+            药剂组切换键:54,
             _webPanelPauseLease:"lease.fixture.character-build",
             itemUses:{},
             itemCatalog:{}
@@ -953,7 +954,9 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && initial.writeEpoch === initialParams.writeEpoch
                 && initial.sessionGeneration > 0 && initial.active
                 && initial.payload.equipment.length == 11
-                && initial.payload.drugs.length == 4,
+                && initial.payload.drugs.length == 8
+                && initial.payload.drugLayout.v == 2
+                && initial.payload.drugLayout.physicalSlotCount == 8,
             "首次无 generation snapshot 建立 session 并只回显 Host identity");
         check(hasOnlyKeys(initial, commonWireKeys({payload:true}))
                 && initial.loadoutChanged == undefined
@@ -1010,6 +1013,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         root.物品栏.药剂栏.items["0"] = drug;
         root.itemUses["观察药剂"] = "药剂";
         var callback:Object = protocolCallbacks(root, false, true);
+        DrugInputService.resetSession();
         org.flashNight.arki.unit.Action.Skill.ManualCooldownService
             .resetForTests();
         org.flashNight.arki.unit.Action.Skill.ManualCooldownService
@@ -1032,13 +1036,21 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && payload.equipment[8].slotKey == "手枪2"
                 && payload.equipment[8].label == "副手手枪"
                 && payload.equipment[1].occupied === false
-                && payload.drugs.length == 4,
-            "snapshot 投影固定有序 11 装备 + 4 药剂且空槽显式");
+                && payload.drugs.length == 8
+                && payload.drugLayout.v == 2
+                && payload.drugLayout.bankCount == 2
+                && payload.drugLayout.laneCount == 4
+                && payload.drugLayout.physicalSlotCount == 8
+                && payload.drugLayout.activeBank == 0
+                && payload.drugLayout.switchKeyLabel == "K54",
+            "snapshot 投影固定有序 11 装备 + 双组八药剂且空槽显式");
         check(payload.candidateFacets.scope == "all"
                 && payload.candidateFacets.filterItemCount == 0
                 && payload.candidateFacets.filterFacets.length == 0,
             "空背包仍显式投影已知 0 的构筑 facet counts");
         check(cooldown.occupied && cooldown.quantity == 3
+                && cooldown.slot == 0 && cooldown.bank == 0
+                && cooldown.lane == 0 && cooldown.active
                 && cooldown.keyLabel == "K49" && !cooldown.ready
                 && cooldown.remainingMs == expectedRemaining
                 && cooldown.remainingMs
@@ -1046,6 +1058,20 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                         * org.flashNight.arki.unit.Action.Skill
                             .ManualCooldownService.FRAME_MS,
             "药剂 keyLabel 沿现役键链且 remainingMs 由 FRAME_MS 推算");
+        var paired:Object = payload.drugs[4];
+        check(paired.slot == 4 && paired.bank == 1 && paired.lane == 0
+                && !paired.active && !paired.occupied && paired.quantity == 0
+                && paired.item == undefined && paired.keyLabel == cooldown.keyLabel
+                && paired.ready === cooldown.ready
+                && paired.totalSteps === cooldown.totalSteps
+                && paired.currentStep === cooldown.currentStep
+                && paired.progressPercent === cooldown.progressPercent
+                && paired.animationFrame === cooldown.animationFrame
+                && paired.remainingMs === cooldown.remainingMs,
+            "0/4 同 lane 槽共享完整冷却投影但保留独立物品与 active 归属");
+        check(payload.drugLayout.switchCooldown.ready
+                && payload.drugLayout.switchCooldown.remainingMs == 0,
+            "组切换冷却以独立六字段快照投影且 ready 时 remainingMs 为零");
         check(payload.portrait.gender == "男"
                 && payload.portrait.equipment["头部装备"] == "观察头盔"
                 && payload.portrait.appearance["脸型"] == root.脸型
@@ -1109,7 +1135,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var cooldownFailure:Object = CharacterBuildService.execute(
             "snapshot", degradedParams);
         check(cooldownFailure.success
-                && cooldownFailure.payload.drugs.length == 4
+                && cooldownFailure.payload.drugs.length == 8
                 && cooldownFailure.payload.stateHealth == "degraded"
                 && cooldownFailure.payload.diagnostics.join("|")
                     .indexOf("drug_cooldown_unavailable:0") >= 0,
@@ -1123,8 +1149,10 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var equipped:Object = equipment(
             "注释头盔", 3, "", [], 101);
         var drug:Object = stack("注释药剂", 4);
+        var upperDrug:Object = stack("注释药剂", 2);
         root.物品栏.装备栏.items["头部装备"] = equipped;
         root.物品栏.药剂栏.items["1"] = drug;
+        root.物品栏.药剂栏.items["7"] = upperDrug;
 
         var equipmentBase:Object = {
             name:"注释头盔", displayname:"注释头盔基础名",
@@ -1262,6 +1290,22 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                     kind:true, drugSlot:true
                 }),
             "tooltip 初始 writeEpoch=0 的药剂槽复用 canonical composer 并保留药剂类型");
+
+        drugParams.requestCallId = "character-build.tooltip.drug-upper";
+        drugParams.drugSlot = 7;
+        var upperDrugTooltip:Object = CharacterBuildService.execute(
+            "tooltip", drugParams);
+        drugParams.requestCallId = "character-build.tooltip.drug-invalid";
+        drugParams.drugSlot = 8;
+        var invalidDrugTooltip:Object = CharacterBuildService.execute(
+            "tooltip", drugParams);
+        check(upperDrugTooltip.success
+                && upperDrugTooltip.payload.target.drugSlot == 7
+                && upperDrugTooltip.payload.itemName == "注释药剂"
+                && !invalidDrugTooltip.success
+                && invalidDrugTooltip.error == "invalid_payload",
+            "tooltip accepts physical drug slot 7 and rejects the ninth slot at the exact envelope gate");
+        drugParams.drugSlot = 1;
 
         var emptyParams:Object = tooltipWireParams(
             panelId, "character-build.tooltip.empty");
@@ -1579,6 +1623,23 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && callback.state.drugCooldownCalls == 1
                 && callback.state.drugCooldownKey == "drug:2",
             "药剂候选只接受实例有效 use=药剂且单次读取 drugKey 冷却权威");
+
+        drugParams.requestCallId = "character-build.candidates.drug-upper";
+        drugParams.drugSlot = 6;
+        var upperDrugs:Object = CharacterBuildService.execute(
+            "candidates", drugParams);
+        drugParams.requestCallId = "character-build.candidates.drug-invalid";
+        drugParams.drugSlot = 8;
+        var invalidDrugSlot:Object = CharacterBuildService.execute(
+            "candidates", drugParams);
+        check(upperDrugs.success
+                && upperDrugs.payload.target.drugSlot == 6
+                && callback.state.drugCooldownCalls == 2
+                && callback.state.drugCooldownKey == "drug:2"
+                && !invalidDrugSlot.success
+                && invalidDrugSlot.error == "invalid_slot",
+            "候选 physical slot 6 maps to shared lane 2 cooldown while slot 8 fails closed");
+        drugParams.drugSlot = 2;
 
         var buildSnapshot:Function = callback.buildBackpackSnapshot;
         callback.buildBackpackSnapshot = function():Object {
@@ -2119,7 +2180,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
     private static function testDrugInputWriterPersistence():Void {
         var drugName:String = "B4消费落盘药剂";
         var root:Object = fixtureRoot(1);
-        var drugs:DrugInventory = new DrugInventory(null, 4);
+        var drugs:DrugInventory = new DrugInventory(null, 8);
         drugs.transactionWrite(0, new BaseItem(drugName, 1, 1));
         root.物品栏.药剂栏 = drugs;
         registerCatalog(root, drugName, "消耗品", "药剂", 1);
@@ -2183,7 +2244,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var backpack:ArrayInventory =
             new ArrayInventory(null, 50);
         var drugs:DrugInventory =
-            new DrugInventory(null, 4);
+            new DrugInventory(null, 8);
         backpack.transactionWrite(
             0, new BaseItem(bagName, 3, 1));
         drugs.transactionWrite(
@@ -2480,7 +2541,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var equippedDrug:BaseItem =
             BaseItem.create(equippedDrugName, 3, 1);
         root.物品栏.药剂栏 =
-            new DrugInventory(null, 4);
+            new DrugInventory(null, 8);
         // Fixture 用 transactionWrite 保留 exact ref，避免 DrugInventory.add
         // 走全局 _root.getItemData（本测试只绑定隔离 root 的目录）。
         root.物品栏.药剂栏.transactionWrite(0, equippedDrug);
@@ -2667,7 +2728,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                     > equipmentRevisionBefore,
             "装备真实 move 精确推进一次 loadout domain、raw revisions、save/live dirty");
         check(moved.payload.equipment.length == 11
-                && moved.payload.drugs.length == 4
+                && moved.payload.drugs.length == 8
                 && moved.payload.stateHealth == "ok"
                 && moved.inventorySnapshots.length == 1
                 && moved.inventorySnapshots[0].containerId == "背包"
@@ -2823,21 +2884,23 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         var fixture:Object = mutationFixture(
             root, "workbench.mutation.drug");
         var opened:Object = fixture.opened;
+        var targetDrugSlot:Number = 4;
         var loadoutBefore:Number = opened.loadoutRevision;
         var moveParams:Object = drugMutationParams(
             "equipDrug", "workbench.mutation.drug",
-            opened, 0, 0);
+            opened, targetDrugSlot, 0);
         var moved:Object = CharacterBuildService.execute(
             "equipDrug", moveParams);
         check(moved.success
-                && root.物品栏.药剂栏.getItem("0") === first
+                && root.物品栏.药剂栏.getItem(String(targetDrugSlot)) === first
                 && bag.getItem("0") == null
                 && moved.drugRevision == opened.drugRevision + 1
                 && moved.loadoutRevision == loadoutBefore
                 && !moved.liveRefreshDirty
                 && moved.payload.stateHealth == "ok"
-                && hasOnlyKeys(moved.payload.drugs[0], {
-                    slot:true, keyLabel:true, ready:true,
+                && hasOnlyKeys(moved.payload.drugs[targetDrugSlot], {
+                    slot:true, bank:true, lane:true, active:true,
+                    keyLabel:true, ready:true,
                     totalSteps:true, currentStep:true,
                     progressPercent:true, animationFrame:true,
                     remainingMs:true, occupied:true, quantity:true,
@@ -2847,22 +2910,22 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
 
         var mergeParams:Object = drugMutationParams(
             "equipDrug", "workbench.mutation.drug",
-            moved, 0, 1);
+            moved, targetDrugSlot, 1);
         var merged:Object = CharacterBuildService.execute(
             "equipDrug", mergeParams);
         check(merged.success
-                && root.物品栏.药剂栏.getItem("0") === first
+                && root.物品栏.药剂栏.getItem(String(targetDrugSlot)) === first
                 && first.value == 6 && bag.getItem("1") == null
                 && merged.drugRevision == moved.drugRevision + 1,
             "equipDrug 同名正有限 stack 保留 target ref 合并数量并移除 source");
 
         var swapParams:Object = drugMutationParams(
             "equipDrug", "workbench.mutation.drug",
-            merged, 0, 2);
+            merged, targetDrugSlot, 2);
         var swapped:Object = CharacterBuildService.execute(
             "equipDrug", swapParams);
         check(swapped.success
-                && root.物品栏.药剂栏.getItem("0") === other
+                && root.物品栏.药剂栏.getItem(String(targetDrugSlot)) === other
                 && bag.getItem("2") === first
                 && swapped.drugRevision == merged.drugRevision + 1,
             "equipDrug 异名 stack 复刻现役 swap，old target 回 source 槽");
@@ -2879,23 +2942,24 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
 
         var unequipParams:Object = drugMutationParams(
             "unequipDrug", "workbench.mutation.drug",
-            swapped, 0, undefined);
+            swapped, targetDrugSlot, undefined);
         var unequipped:Object = CharacterBuildService.execute(
             "unequipDrug", unequipParams);
         check(unequipped.success
                 && unequipped.affectedBackpackSlot == 0
-                && root.物品栏.药剂栏.getItem("0") == null
+                && root.物品栏.药剂栏.getItem(String(targetDrugSlot)) == null
                 && bag.getItem("0") === backpackOther
                 && backpackOther.value == 5
                 && unequipped.drugRevision
                     == swapped.drugRevision + 1,
             "unequipDrug 在满包中仍优先合并物理序号最小的同名背包堆");
         check(fixture.callback.state.drugCooldownCalls == 4
+                && fixture.callback.state.drugCooldownKey == "drug:0"
                 && fixture.callback.state.leaseInvalidations == 4
                 && unequipped.loadoutRevision == loadoutBefore
                 && !unequipped.liveRefreshDirty
                 && root.存档系统.dirtyMark,
-            "四次药剂 mutation 各恰好一次 cooldown 重验，药剂-only 零 live refresh");
+            "后组 slot 4 的四次药剂 mutation 共用 lane 0 lock/cooldown，且药剂-only 零 live refresh");
         __activeMutationRoot = null;
     }
 
@@ -2995,6 +3059,17 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && root.物品栏.装备栏.writeCount == 0
                 && !root.存档系统.dirtyMark,
             "mutation exact Host→AS2 envelope 拒绝缺失/错型 identity、错误 action 与宽松字符串数字，零写");
+
+        var ninthDrugSlotParams:Object = drugMutationParams(
+            "equipDrug", "workbench.mutation.preflight",
+            opened, 8, 1);
+        var ninthDrugSlot:Object = CharacterBuildService.execute(
+            "equipDrug", ninthDrugSlotParams);
+        check(!ninthDrugSlot.success
+                && ninthDrugSlot.error == "invalid_payload"
+                && fixture.callback.state.drugCooldownCalls == 0
+                && bag.revision == bagRevision,
+            "mutation rejects physical drug slot 8 before cooldown reads or inventory writes");
 
         var lockedParams:Object = equipmentMutationParams(
             "equipEquipment", "workbench.mutation.preflight",

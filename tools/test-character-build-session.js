@@ -4,6 +4,7 @@ const assert = require('assert');
 const Build = require('../launcher/web/modules/character-build.js');
 const Pose = require('../launcher/web/modules/character-build/character-build-pose.js');
 const SessionModule = require('../launcher/web/modules/character-build-session.js');
+const SessionContract = require('../launcher/web/modules/character-build/character-build-session-contract.js');
 
 let passed = 0;
 function test(name, run) {
@@ -31,22 +32,141 @@ function createTimers() {
 }
 
 function projection() {
+    const cooldown = {
+        ready:true,
+        totalSteps:0,
+        currentStep:0,
+        progressPercent:100,
+        animationFrame:1,
+        remainingMs:0
+    };
     return {
         equipment:Array.from({length:11}, (_, index) => ({
             slotKey:'slot-' + index,
             occupied:false,
             item:null
         })),
-        drugs:Array.from({length:4}, (_, index) => ({
+        drugs:Array.from({length:8}, (_, index) => Object.assign({
             slot:index,
+            bank:Math.floor(index / 4),
+            lane:index % 4,
+            active:index < 4,
+            keyLabel:['7','8','9','0'][index % 4],
             occupied:false,
-            item:null
-        })),
+            quantity:0
+        }, cooldown)),
+        drugLayout:{
+            v:2,
+            bankCount:2,
+            laneCount:4,
+            physicalSlotCount:8,
+            activeBank:0,
+            switchKeyLabel:'6',
+            switchCooldown:Object.assign({}, cooldown)
+        },
         portrait:{gender:'男', appearance:{}, equipment:{}},
         stateHealth:'ok',
         diagnostics:[]
     };
 }
+
+test('eight-slot drug layout validator enforces exact banks, rows and paired cooldowns', () => {
+    const validate = SessionContract.validators.projection;
+    const clone = value => JSON.parse(JSON.stringify(value));
+    const valid = projection();
+    assert.strictEqual(validate(valid), true);
+
+    const bankOne = clone(valid);
+    bankOne.drugLayout.activeBank = 1;
+    bankOne.drugs.forEach(row => { row.active = row.bank === 1; });
+    assert.strictEqual(validate(bankOne), true);
+
+    const occupied = clone(valid);
+    occupied.drugs[0].occupied = true;
+    occupied.drugs[0].quantity = 2;
+    occupied.drugs[0].item = itemProjection({
+        itemKind:'stack', use:'药剂', quantity:2
+    });
+    assert.strictEqual(validate(occupied), true);
+
+    const maximums = clone(valid);
+    maximums.drugLayout.switchCooldown.ready = false;
+    maximums.drugLayout.switchCooldown.totalSteps = 2147483647;
+    maximums.drugLayout.switchCooldown.currentStep = 2147483647;
+    maximums.drugLayout.switchCooldown.remainingMs = 9007199254740991;
+    maximums.drugs[0].occupied = true;
+    maximums.drugs[0].quantity = 9007199254740991;
+    maximums.drugs[0].item = itemProjection({
+        itemKind:'stack', use:'药剂', quantity:9007199254740991
+    });
+    assert.strictEqual(validate(maximums), true);
+
+    const mutations = [
+        value => { delete value.drugLayout; },
+        value => { value.drugLayout.v = 1; },
+        value => { value.drugLayout.bankCount = 3; },
+        value => { value.drugLayout.activeBank = 1; },
+        value => {
+            value.drugLayout.activeBank = '0';
+            value.drugs.forEach(row => { row.active = false; });
+        },
+        value => { value.drugLayout.switchCooldown.totalSteps = '0'; },
+        value => { value.drugLayout.switchCooldown.totalSteps = 2147483648; },
+        value => { value.drugLayout.switchCooldown.remainingMs = '0'; },
+        value => {
+            value.drugLayout.switchCooldown.ready = false;
+            value.drugLayout.switchCooldown.remainingMs = 9007199254740992;
+        },
+        value => { value.drugLayout.switchKeyLabel = '6\n'; },
+        value => { value.drugs[0].keyLabel = '7\n'; },
+        value => { value.drugLayout.switchCooldown.remainingMs = 1; },
+        value => { value.drugs.pop(); },
+        value => { value.drugs.push(clone(value.drugs[7])); },
+        value => { value.drugs[7].slot = 6; },
+        value => { value.drugs[4].bank = 0; },
+        value => { value.drugs[4].lane = 1; },
+        value => { value.drugs[4].active = true; },
+        value => { value.drugs[0].remainingMs = 1; },
+        value => { value.drugs[0].quantity = 1; },
+        value => { value.drugs[0].item = itemProjection(); },
+        value => {
+            value.drugs[0].occupied = true;
+            value.drugs[0].quantity = 2;
+            value.drugs[0].item = itemProjection({
+                itemKind:'stack', use:'药剂', quantity:1
+            });
+        },
+        value => {
+            value.drugs[0].occupied = true;
+            value.drugs[0].quantity = 9007199254740992;
+            value.drugs[0].item = itemProjection({
+                itemKind:'stack', use:'药剂', quantity:9007199254740992
+            });
+        },
+        value => {
+            value.drugs[0].occupied = true;
+            value.drugs[0].quantity = 1;
+            value.drugs[0].item = itemProjection({
+                itemKind:'equipment', use:'药剂', quantity:1
+            });
+        },
+        value => {
+            value.drugs[0].occupied = true;
+            value.drugs[0].quantity = 1;
+            value.drugs[0].item = itemProjection({
+                itemKind:'stack', use:'材料', quantity:1
+            });
+        },
+        value => { value.drugs[4].animationFrame = 2; },
+        value => { value.drugs[0].extra = true; },
+        value => { value.drugLayout.extra = true; }
+    ];
+    mutations.forEach((mutate, index) => {
+        const malformed = clone(valid);
+        mutate(malformed);
+        assert.strictEqual(validate(malformed), false, 'mutation ' + index);
+    });
+});
 
 function itemProjection(overrides) {
     return Object.assign({

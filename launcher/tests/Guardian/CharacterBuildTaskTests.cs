@@ -1342,7 +1342,7 @@ namespace CF7Launcher.Tests.Guardian
                         break;
                     case "invalid_drug_slot":
                         payload.Remove("slotKey");
-                        payload["drugSlot"] = 4;
+                        payload["drugSlot"] = 8;
                         break;
                     case "missing_drug_revision":
                         payload.Remove("expectedDrugRevision");
@@ -2293,6 +2293,10 @@ namespace CF7Launcher.Tests.Guardian
                 harness.Flash.Clear();
                 harness.Web.Clear();
                 JObject payload = MutationPayload(command);
+                if (!command.Contains("Equipment"))
+                {
+                    payload["drugSlot"] = 7;
+                }
                 harness.Task.HandleWebRequest(
                     command,
                     WebRequest(
@@ -2319,7 +2323,7 @@ namespace CF7Launcher.Tests.Guardian
                     Assert.Equal(
                         InitialDrugRevision,
                         flash.Value<long>("expectedDrugRevision"));
-                    Assert.Equal(1, flash.Value<int>("drugSlot"));
+                    Assert.Equal(7, flash.Value<int>("drugSlot"));
                     Assert.False(flash.ContainsKey("expectedLoadoutRevision"));
                 }
                 if (command.StartsWith("equip", StringComparison.Ordinal))
@@ -2480,7 +2484,7 @@ namespace CF7Launcher.Tests.Guardian
                         payload["slotKey"] = "披风";
                         break;
                     case "drug_slot_out_of_range":
-                        payload["drugSlot"] = 4;
+                        payload["drugSlot"] = 8;
                         break;
                     case "source_extra":
                         payload["source"]["count"] = 1;
@@ -3574,6 +3578,113 @@ namespace CF7Launcher.Tests.Guardian
                     false);
                 ((JObject)response["payload"]["equipment"][0])
                     .Remove("occupied");
+
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.Equal(
+                    "malformed_response",
+                    web.Value<string>("error"));
+                Assert.Null(harness.Task.SessionGeneration);
+            }
+        }
+
+        [Theory]
+        [InlineData("layout_missing")]
+        [InlineData("layout_version")]
+        [InlineData("layout_counts")]
+        [InlineData("layout_active_bank")]
+        [InlineData("layout_ready_remaining")]
+        [InlineData("drugs_seven")]
+        [InlineData("drugs_nine")]
+        [InlineData("drug_slot_order")]
+        [InlineData("drug_bank")]
+        [InlineData("drug_lane")]
+        [InlineData("drug_active")]
+        [InlineData("drug_ready_remaining")]
+        [InlineData("empty_quantity")]
+        [InlineData("empty_item")]
+        [InlineData("paired_cooldown")]
+        [InlineData("drug_extra")]
+        [InlineData("layout_extra")]
+        public void ProductionSnapshotRejectsMalformedEightSlotDrugLayout(
+            string mutation)
+        {
+            using (var harness = new ProductionHarness())
+            {
+                harness.Task.HandleWebRequest(
+                    "snapshot",
+                    WebRequest(
+                        "snapshot",
+                        "prod.snapshot.drug-layout." + mutation,
+                        new JObject { ["v"] = 1 }));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "snapshot",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                JObject payload = (JObject)response["payload"];
+                JObject layout = (JObject)payload["drugLayout"];
+                JArray drugs = (JArray)payload["drugs"];
+
+                switch (mutation)
+                {
+                    case "layout_missing":
+                        payload.Remove("drugLayout");
+                        break;
+                    case "layout_version":
+                        layout["v"] = 1;
+                        break;
+                    case "layout_counts":
+                        layout["bankCount"] = 3;
+                        break;
+                    case "layout_active_bank":
+                        layout["activeBank"] = 1;
+                        break;
+                    case "layout_ready_remaining":
+                        layout["switchCooldown"]["remainingMs"] = 1;
+                        break;
+                    case "drugs_seven":
+                        drugs.RemoveAt(7);
+                        break;
+                    case "drugs_nine":
+                        drugs.Add(drugs[7].DeepClone());
+                        break;
+                    case "drug_slot_order":
+                        drugs[7]["slot"] = 6;
+                        break;
+                    case "drug_bank":
+                        drugs[4]["bank"] = 0;
+                        break;
+                    case "drug_lane":
+                        drugs[4]["lane"] = 1;
+                        break;
+                    case "drug_active":
+                        drugs[4]["active"] = true;
+                        break;
+                    case "drug_ready_remaining":
+                        drugs[0]["remainingMs"] = 1;
+                        break;
+                    case "empty_quantity":
+                        drugs[0]["quantity"] = 1;
+                        break;
+                    case "empty_item":
+                        drugs[0]["item"] = CandidateItem(
+                            "药剂", "stack", 1);
+                        break;
+                    case "paired_cooldown":
+                        drugs[4]["animationFrame"] = 2;
+                        break;
+                    case "drug_extra":
+                        drugs[0]["extra"] = true;
+                        break;
+                    case "layout_extra":
+                        layout["extra"] = true;
+                        break;
+                }
 
                 harness.Task.HandleFlashResponse(response, null);
 
@@ -5419,12 +5530,16 @@ namespace CF7Launcher.Tests.Guardian
             }
 
             var drugs = new JArray();
-            for (int slot = 0; slot < 4; slot++)
+            string[] drugKeyLabels = { "7", "8", "9", "0" };
+            for (int slot = 0; slot < 8; slot++)
             {
                 drugs.Add(new JObject
                 {
                     ["slot"] = slot,
-                    ["keyLabel"] = (slot + 1).ToString(),
+                    ["bank"] = slot / 4,
+                    ["lane"] = slot % 4,
+                    ["active"] = slot < 4,
+                    ["keyLabel"] = drugKeyLabels[slot % 4],
                     ["ready"] = true,
                     ["totalSteps"] = 0,
                     ["currentStep"] = 0,
@@ -5448,6 +5563,24 @@ namespace CF7Launcher.Tests.Guardian
             {
                 ["equipment"] = equipment,
                 ["drugs"] = drugs,
+                ["drugLayout"] = new JObject
+                {
+                    ["v"] = 2,
+                    ["bankCount"] = 2,
+                    ["laneCount"] = 4,
+                    ["physicalSlotCount"] = 8,
+                    ["activeBank"] = 0,
+                    ["switchKeyLabel"] = "6",
+                    ["switchCooldown"] = new JObject
+                    {
+                        ["ready"] = true,
+                        ["totalSteps"] = 0,
+                        ["currentStep"] = 0,
+                        ["progressPercent"] = 0,
+                        ["animationFrame"] = 1,
+                        ["remainingMs"] = 0
+                    }
+                },
                 ["portrait"] = new JObject
                 {
                     ["gender"] = "男",

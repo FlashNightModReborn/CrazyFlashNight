@@ -247,6 +247,7 @@ function Get-Cf7ProductionChecks {
         'modules\workbench-profile.js', 'modules\workbench.js',
         'modules\workbench-components.js', 'modules\workbench-inspection-viewport.js',
         'modules\character-build\character-build-mutation.js',
+        'modules\character-build\character-build-drug-layout.js',
         'modules\character-build\character-build-session-contract.js',
         'modules\character-build-session.js',
         'modules\loadout-picker\loadout-picker-action-view.js',
