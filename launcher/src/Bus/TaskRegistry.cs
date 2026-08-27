@@ -445,6 +445,7 @@ namespace CF7Launcher.Bus
             GomokuTask gomoku,
             ToastTask toast,
             FrameTask frame,
+            StageOutcomeTask stageOutcomeTask,
             DataQueryTask dataQuery,
             AudioTask audio,
             IconBakeTask iconBake,
@@ -482,6 +483,8 @@ namespace CF7Launcher.Bus
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
             router.RegisterAsync("data_query", dataQuery.HandleAsync);
             router.RegisterSync("toast", toast.Handle);
+            if (stageOutcomeTask != null)
+                router.RegisterSync("stage_outcome", stageOutcomeTask.Handle);
             // loot feed（左下双向玩家物资/击杀播报）：与地图战利品箱的 "loot_response" 回包是两个域。
             // 仅 native HUD 路径构造了 widget/task；fallback 模式不注册，事件自然无路由。
             if (lootFeedTask != null)

@@ -859,6 +859,11 @@ class org.flashNight.arki.task.TaskPanelService {
             sendResponse({task: "task_response", callId: callId, success: false, error: "stage_not_found"});
             return;
         }
+        if (!org.flashNight.arki.scene.StageRunSession.canStartStage()) {
+            sendResponse({task: "task_response", callId: callId, success: false,
+                error: "pending_stage_settlement"});
+            return;
+        }
 
         sendResponse({
             task: "task_response",
@@ -1069,6 +1074,11 @@ class org.flashNight.arki.task.TaskPanelService {
         var stageName:String = dungeonStageName(taskData);
         if (stageName == "" || _root.StageInfoDict[stageName] == undefined) {
             sendResponse({ task: "task_response", callId: callId, success: false, error: "stage_not_found" });
+            return;
+        }
+        if (!org.flashNight.arki.scene.StageRunSession.canStartStage()) {
+            sendResponse({ task: "task_response", callId: callId, success: false,
+                error: "pending_stage_settlement" });
             return;
         }
 

@@ -73,13 +73,12 @@ var DollBake = (function() {
         return true;
     }
 
-    function handleMessage(message) {
-        if (!message || typeof message.key !== 'string' || message.key.indexOf('纸娃娃-') !== 0) {
-            return Promise.resolve(false);
-        }
-        var key = message.key;
-        var requestId = message.requestId || null;
-        var merc = mercFromTuple(message.tuple);
+    /**
+     * 供关卡结算等同一 WebView 内的可视消费者复用。这里只返回渲染结果，
+     * 不生成权威头像键、不落盘，也不向 Host 发送 doll_bake_result。
+     */
+    function renderTupleDataUrl(tuple) {
+        var merc = mercFromTuple(tuple);
         return ensureRenderers().then(function() {
             if (typeof MercPortraits === 'undefined' || !MercPortraits
                     || typeof MercPortraits.renderDataUrl !== 'function') {
@@ -87,9 +86,22 @@ var DollBake = (function() {
             }
             return MercPortraits.renderDataUrl(merc, { size: RENDER_SIZE });
         }).then(function(dataUrl) {
-            var base64 = (typeof dataUrl === 'string' && dataUrl.indexOf(DATA_URL_PREFIX) === 0)
-                ? dataUrl.substring(DATA_URL_PREFIX.length) : '';
-            if (!base64) throw new Error('empty render for ' + key);
+            if (typeof dataUrl !== 'string' || dataUrl.indexOf(DATA_URL_PREFIX) !== 0
+                    || dataUrl.length <= DATA_URL_PREFIX.length) {
+                throw new Error('empty doll portrait render');
+            }
+            return dataUrl;
+        });
+    }
+
+    function handleMessage(message) {
+        if (!message || typeof message.key !== 'string' || message.key.indexOf('纸娃娃-') !== 0) {
+            return Promise.resolve(false);
+        }
+        var key = message.key;
+        var requestId = message.requestId || null;
+        return renderTupleDataUrl(message.tuple).then(function(dataUrl) {
+            var base64 = dataUrl.substring(DATA_URL_PREFIX.length);
             sendResult(key, requestId, { pngBase64: base64 });
             return true;
         }).catch(function(error) {
@@ -112,6 +124,7 @@ var DollBake = (function() {
         RENDER_SIZE: RENDER_SIZE,
         normalizeTuple: normalizeTuple,
         mercFromTuple: mercFromTuple,
+        renderTupleDataUrl: renderTupleDataUrl,
         handleMessage: handleMessage
     };
 })();

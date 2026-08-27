@@ -12,6 +12,10 @@ _root.解析敌人属性 = function(敌人){
 
 //选关界面按钮
 _root.选关界面进入关卡 = function(关卡难度){
+	if (!org.flashNight.arki.scene.StageRunSession.canStartStage()) {
+		_root.发布消息(_root.获得翻译("请先领取或放弃上一关尚未处理的奖励。"));
+		return false;
+	}
 	_root.载入关卡数据(this.关卡类型, this.关卡路径);
 	_root.当前通关的关卡 = "";
 	_root.当前关卡难度 = 关卡难度 ? 关卡难度 : _root.当前关卡难度;
@@ -28,9 +32,14 @@ _root.选关界面进入关卡 = function(关卡难度){
 
 	_root.soundEffectManager.stopBGMForTransition();
 	_root.淡出动画.淡出跳转帧(淡出跳转帧);
+	return true;
 };
 
 _root.委托界面进入关卡 = function(关卡难度){
+	if (!org.flashNight.arki.scene.StageRunSession.canStartStage()) {
+		_root.发布消息(_root.获得翻译("请先领取或放弃上一关尚未处理的奖励。"));
+		return false;
+	}
 	_root.载入关卡数据(this.关卡类型, this.关卡路径);
 	_root.当前通关的关卡 = "";
 	_root.当前关卡难度 = 关卡难度 ? 关卡难度 : _root.当前关卡难度;
@@ -52,6 +61,7 @@ _root.委托界面进入关卡 = function(关卡难度){
 	}
 	_root.soundEffectManager.stopBGMForTransition();
 	_root.淡出动画.淡出跳转帧(淡出跳转帧);
+	return true;
 };
 
 _root.调试_敌人全死 = function() {

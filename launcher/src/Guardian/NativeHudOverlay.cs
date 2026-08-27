@@ -421,7 +421,9 @@ namespace CF7Launcher.Guardian
             SafeExitPanelWidget safeExit)
         {
             RightContextSlotOwner owner;
-            if (safeExit != null && safeExit.RequestsTransactionDecision)
+            if (rightContext != null && rightContext.RequestsStageDecision)
+                owner = RightContextSlotOwner.StageDecision;
+            else if (safeExit != null && safeExit.RequestsTransactionDecision)
                 owner = RightContextSlotOwner.TransactionDecision;
             else if (rightContext != null && rightContext.RequestsActionableNotice)
                 owner = RightContextSlotOwner.ActionableNotice;

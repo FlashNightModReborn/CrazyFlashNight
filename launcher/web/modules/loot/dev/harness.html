@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>Loot transfer-pair harness</title>
   <link rel="stylesheet" href="../../../css/panels.css">
+  <link rel="stylesheet" href="../../../css/terminal.css">
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050708;color:#eee}
     #panel-container,#panel-content{position:absolute;inset:0}#panel-backdrop{position:absolute;inset:0}
@@ -29,6 +30,17 @@
   window.__failInventoryRefresh=false;window.__delayInventoryWrite=false;
 window.Toast={add:function(value){__toasts.push(String(value))}};
 window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
+window.__portraitStats={staticMounts:0,dollRenders:0};
+function portraitHarnessData(color,label){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" fill="'+color+'"/><circle cx="32" cy="23" r="12" fill="#d8e4e2"/><path d="M12 61c2-17 10-25 20-25s18 8 20 25" fill="#8ba4a4"/><path d="M23 22h18" stroke="#263638" stroke-width="4"/></svg>')}
+window.EnemyPortraits={mount:function(container,img,context){
+  __portraitStats.staticMounts++;container.setAttribute('data-portrait-source','svg');
+  container.setAttribute('data-portrait-ref',String(context&&context.portraitRef||''));
+  img.src=portraitHarnessData('#294950','敌');return Promise.resolve(context)
+}};
+window.DollBake={renderTupleDataUrl:function(tuple){
+  __portraitStats.dollRenders++;return Promise.resolve(portraitHarnessData('#6b3f53',tuple&&tuple.gender==='女'?'女':'男'))
+}};
 window.PanelTooltip={
   hide:function(){},dynamicIconHtml:function(){return''},staticIconUrl:function(){return''},inferLayoutType:function(){return'narrow'},
   buildItemRichHtml:function(){return'<div>权威说明</div>'},
@@ -41,7 +53,7 @@ window.Bridge={
     __sent.push(JSON.parse(JSON.stringify(message)));
     __events.push('send:'+String(message.cmd||message.type||''));
     if(message.type==='task'&&message.task==='loot_request')setTimeout(function(){respond(message)},
-      __mode==='delayed_claim'&&message.cmd==='claim'?90:0);
+      __mode==='delayed_claim'&&(message.cmd==='claim'||message.cmd==='claimBatch')?90:0);
     if(message.type==='panel'&&message.domain==='inventory')setTimeout(function(){respondInventory(message)},
       __delayInventoryWrite&&message.cmd!=='snapshot'?90:0);
     return true;
@@ -92,18 +104,66 @@ function strictInventorySlot(source){
   function resetAuthority(full){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'强化石','lease.0'),empty(1)],backpack:full?[occupied(0,'背包物品A','bag.0'),occupied(1,'背包物品B','bag.1')]:[occupied(0,'背包物品A','bag.0'),empty(1)],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
   function resetClaimAllAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'物资A','lease.all.0'),occupied(1,'物资B','lease.all.1'),occupied(2,'物资C','lease.all.2')],backpack:[occupied(0,'背包物品A','bag.0'),empty(1),empty(2),empty(3)],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
   function resetMixedClaimAllAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'黑暗吉他','lease.mixed.guitar.1'),occupied(1,'抗生素','lease.mixed.antibiotic.1')],backpack:[occupied(0,'抗生素','bag.antibiotic'),occupied(1,'背包物品B','bag.1')],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
+var materialStock=[
+  {name:'强化石',displayName:'强化石',icon:'强化石',owned:12},
+  {name:'空瓶',displayName:'空瓶',icon:'空瓶',owned:0},
+  {name:'复活币',displayName:'复活币',icon:'复活币',owned:1}
+];
 function resetGridAuthority(capacity){resetAuthority(false);authority.loot=[];for(var i=0;i<capacity;i++)authority.loot.push(i===0?occupied(i,'保险柜物资','lease.grid.0'):empty(i))}
 function snapshot(containerId,slots){var projectedSlots=containerId==='背包'?slots.map(strictInventorySlot):slots;return{containerId:containerId,capacity:slots.length,accessibleCapacity:slots.length,viewCapacity:slots.length,filterKey:'all',pageSizeHint:slots.length,locked:false,snapshotSeq:authority.revision,containerEpoch:containerId.indexOf('loot.')===0?7:1,containerVersion:authority.version,offset:0,limit:slots.length,slots:projectedSlots,filterFacets:[],filterItemCount:slots.filter(function(x){return x.occupied}).length,setFacets:[],setFilterItemCount:0}}
 function remaining(){return authority.loot.filter(function(x){return x.occupied}).length}
-function common(message){var inactive=authority.terminal||authority.suspended;return{type:'panel_resp',task:'loot_response',domain:'loot',panel:'loot',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,chestSessionId:message.chestSessionId,lootContainerId:message.lootContainerId,containerEpoch:message.containerEpoch,success:true,error:'',authorityRevision:authority.revision,lastAppliedOperationId:authority.lastOperation,state:authority.terminal?authority.terminal.kind:authority.suspended?'LOOT_SUSPENDED':'LOOT_ACTIVE',remainingCount:authority.terminal?authority.terminal.remainingCount:remaining(),closeLease:inactive?'':authority.closeLease,snapshots:[],tooltip:null,terminal:authority.terminal}}
+function common(message){var inactive=authority.terminal||authority.suspended;return{type:'panel_resp',task:'loot_response',domain:'loot',panel:'loot',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,chestSessionId:message.chestSessionId,lootContainerId:message.lootContainerId,containerEpoch:message.containerEpoch,success:true,error:'',authorityRevision:authority.revision,lastAppliedOperationId:authority.lastOperation,state:authority.terminal?authority.terminal.kind:authority.suspended?'LOOT_SUSPENDED':'LOOT_ACTIVE',remainingCount:authority.terminal?authority.terminal.remainingCount:remaining(),closeLease:inactive?'':authority.closeLease,snapshots:[],tooltip:null,materials:null,terminal:authority.terminal}}
   function emit(value){if(value&&value.terminal)__events.push('terminal_response');else if(value&&value.state==='LOOT_SUSPENDED')__events.push('suspended_response');(__handlers.panel_resp||[]).slice().forEach(function(fn){fn(value)})}
 function activeResponse(message){var response=common(message);response.snapshots=[snapshot(message.lootContainerId,authority.loot),snapshot('背包',authority.backpack)];return response}
 function respond(message){
+  if(message.cmd==='materials'){var materialResponse=common(message);materialResponse.materials=materialStock.map(function(row){return Object.assign({},row)});emit(materialResponse);return}
     if(message.cmd==='snapshot'){
       if(__failNextLootSnapshot){__failNextLootSnapshot=false;var failed=common(message);failed.success=false;failed.error='snapshot_failed';emit(failed);return}
       emit(activeResponse(message));return
     }
   if(message.cmd==='tooltip'){var tip=common(message);tip.tooltip={iconName:'强化石',itemType:'材料',introHTML:'地图资源箱',descHTML:'权威物品说明'};emit(tip);return}
+  if(message.cmd==='claimBatch'){
+    var batchSources=Array.isArray(message.sources)?message.sources:[];
+    if((__mode==='full'||__mode==='inventory_full')
+        &&authority.backpack.every(function(slot){return slot.occupied})
+        ||__mode==='full_malformed'){
+      var batchFull=common(message);batchFull.success=false;
+      batchFull.error=__mode==='inventory_full'?'inventory_full':'target_full';batchFull.closeLease='';
+      if(__mode==='full_malformed')batchFull.snapshots=[{}];emit(batchFull);return
+    }
+    if(__mode==='mixed_full_unproven'){
+      var batchUnproven=common(message);batchUnproven.success=false;batchUnproven.error='target_full';
+      batchUnproven.closeLease='';batchUnproven.authorityRevision++;emit(batchUnproven);return
+    }
+    if(__mode==='mixed_full_then_stale'||__mode==='stale'||__mode==='stale_then_suspended'
+        ||__mode==='stale_then_terminal'){
+      var batchStale=common(message);batchStale.success=false;batchStale.error='stale_lease';
+      batchStale.closeLease='';emit(batchStale);return
+    }
+    if(__mode==='mixed_constructor'){
+      var batchUnknown=common(message);batchUnknown.success=false;batchUnknown.error='constructor';
+      batchUnknown.closeLease='';emit(batchUnknown);return
+    }
+    if(__mode==='no_progress'){
+      authority.lastOperation=message.operationId;emit(activeResponse(message));return
+    }
+    if(__mode==='wrong_slot_progress'){
+      authority.revision++;authority.version++;authority.lastOperation=message.operationId;
+      authority.closeLease='close.'+authority.revision;emit(activeResponse(message));return
+    }
+    var batchApplied=0;
+    for(var batchIndex=0;batchIndex<batchSources.length;batchIndex++){
+      var requestedSlot=Number(batchSources[batchIndex].slot);
+      if(__mode==='mixed_full'&&requestedSlot===0)continue;
+      if(!authority.loot[requestedSlot]||!authority.loot[requestedSlot].occupied)continue;
+      authority.loot[requestedSlot]=empty(requestedSlot);authority.revision++;
+      authority.version++;batchApplied++
+    }
+    authority.lastOperation=message.operationId;authority.closeLease='close.'+authority.revision;
+    if(!batchApplied){var batchBlocked=common(message);batchBlocked.success=false;
+      batchBlocked.error='target_full';batchBlocked.closeLease='';emit(batchBlocked);return}
+    emit(activeResponse(message));return
+  }
   if(message.cmd==='claim'){
     if((__mode==='full'||__mode==='inventory_full')&&authority.backpack.every(function(slot){return slot.occupied})||__mode==='full_malformed'||__mode==='stale'||__mode==='stale_then_suspended'||__mode==='stale_then_terminal'){var fail=common(message);fail.success=false;fail.error=__mode==='inventory_full'?'inventory_full':__mode.indexOf('stale')===0?'stale_lease':'target_full';fail.closeLease='';if(__mode==='full_malformed')fail.snapshots=[{}];emit(fail);return}
     if((__mode==='mixed_full'||__mode==='mixed_full_unproven'||__mode==='mixed_full_then_stale')&&Number(message.source.slot)===0){var blocked=common(message);blocked.success=false;blocked.error='target_full';blocked.closeLease='';if(__mode==='mixed_full_unproven')blocked.authorityRevision++;emit(blocked);return}
@@ -178,6 +238,18 @@ function respond(message){
     emit(inventoryResponse(message,false,'unsupported_command',[]))
   }
   function init(id){return{v:1,panelInstanceId:'panel.'+id,chestSessionId:'chest.'+id,lootContainerId:'loot.test.'+id,containerEpoch:7,displayName:'装备箱',capacity:2,columns:2}}
+  function settlementInit(id){return Object.assign(init(id),{
+    displayName:'关卡结算',capacity:3,columns:3,sourceKind:'stage_settlement',
+    report:{v:1,runId:'run.harness.1',stageName:'废弃都市 · 夜战',difficulty:'挑战',outcome:'victory',
+      activeFrames:3723,totalKills:17,omittedKillTypes:2,totalItemGains:7,totalItemLosses:2,
+      omittedItemFlowTypes:1,rewardRollOmissions:1,kills:[
+        {key:'enemy.raider',displayName:'荒原掠夺者',iconName:'荒原掠夺者',doll:null,eliteLevel:0,count:8},
+        {key:'enemy.guard',displayName:'重装守卫',iconName:'',doll:{face:'男变装-基本脸型',hair:'发型-男式-黑色辫子头',mask:'',head:'',body:'军阀重装兵衣服',leg:'军阀装甲裤',hand:'',foot:'军阀棕色皮靴',neck:'',gender:'男'},eliteLevel:2,count:5}
+      ],itemFlows:[
+        {direction:'gain',kind:'material',itemKey:'item.强化石',displayName:'强化石',iconName:'强化石',tier:'普通',source:'loot_feed',reason:'pickup',count:7},
+        {direction:'loss',kind:'item',itemKey:'item.急救针',displayName:'急救针',iconName:'急救针',tier:'',source:'item_use',reason:'consume',count:2}
+      ]}
+  })}
 </script>
 <script src="../../panel-runtime.js"></script>
 <script src="../../workbench-lifecycle.js"></script>
@@ -405,7 +477,8 @@ function respond(message){
       document.querySelectorAll('.loot-source-slot.occupied').length===1
       &&document.querySelector('[data-commit-primary]').textContent==='整理背包'
       &&document.querySelector('.workbench-commit-status').textContent.indexOf('当前页面')>=0);
-    var organizeClaimsBefore=tasks('claim').length,organizeClosesBefore=tasks('close').length;
+    var organizeClaimsBefore=tasks('claim').length,organizeBatchesBefore=tasks('claimBatch').length;
+    var organizeClosesBefore=tasks('close').length;
     var organizeLootSnapshotsBefore=tasks('snapshot').length;
     document.querySelector('[data-commit-primary]').click();
     var organizerReady=await waitFor(function(){var state=LootPanel.debugState();return state.organizerActive&&state.inventory.ready});
@@ -414,7 +487,8 @@ function respond(message){
     var organizerInventoryOpen=inventoryTasks('snapshot').slice(-1)[0];
     ok('organize CTA keeps the exact tracked loot instance and opens an in-place secondary page',
       Panels.getActive()==='loot'&&!authority.suspended&&authority.terminal===null
-      &&tasks('claim').length===organizeClaimsBefore&&tasks('close').length===organizeClosesBefore
+      &&tasks('claim').length===organizeClaimsBefore&&tasks('claimBatch').length===organizeBatchesBefore
+      &&tasks('close').length===organizeClosesBefore
       &&document.querySelector('.loot-organizer-page.active[aria-hidden="false"]')
       &&organizerInventoryOpen&&organizerInventoryOpen.panel==='loot'
       &&organizerInventoryOpen.panelInstanceId==='panel.full'
@@ -423,6 +497,12 @@ function respond(message){
       document.querySelectorAll('[data-space-grid="背包"] .inventory-discard-btn').length===2
       &&document.querySelectorAll('[data-space-grid="战备箱"] .inventory-discard-btn').length===0);
     var organizerPage=document.querySelector('.loot-organizer-page.active');
+    ok('settlement organizer restores the original KShop inventory skin instead of inheriting terminal settlement chrome',
+      organizerPage&&organizerPage.classList.contains('npcshop-space-page')
+      &&organizerPage.classList.contains('kshop-workbench')
+      &&organizerPage.getAttribute('data-workbench-skin')==='inventory'
+      &&organizerPage.querySelector('.npcshop-space-header h2').textContent==='物品管理'
+      &&!organizerPage.classList.contains('loot-stage-settlement'));
     var organizerActions=Array.prototype.slice.call(organizerPage.querySelectorAll('[data-secondary-action]'));
     var lowerHeader=document.querySelector('.loot-workbench > .workbench-header');
     var lowerHeaderActions=lowerHeader.querySelector('.workbench-header-actions');
@@ -462,12 +542,15 @@ function respond(message){
     await waitFor(function(){return !LootPanel.debugState().organizerActive});
     ok('organizer Back waits for a fresh loot snapshot and returns without suspension or claim replay',
       Panels.getActive()==='loot'&&!authority.suspended&&tasks('snapshot').length===organizeLootSnapshotsBefore+1
-      &&tasks('claim').length===organizeClaimsBefore&&tasks('close').length===organizerClosesBeforeReturn
+      &&tasks('claim').length===organizeClaimsBefore&&tasks('claimBatch').length===organizeBatchesBefore
+      &&tasks('close').length===organizerClosesBeforeReturn
       &&LootPanel.debugState().blockReason===''&&!LootPanel.debugState().organizerActive);
     document.querySelector('[data-commit-primary]').click();
     await waitFor(function(){return Panels.getActive()===null&&authority.terminal&&authority.terminal.kind==='CONSUMED'});
     ok('claiming resumes only after organizer return and does not replay the rejected claim',
-      tasks('claim').length===organizeClaimsBefore+1&&authority.terminal.remainingCount===0);
+      tasks('claim').length===organizeClaimsBefore
+      &&tasks('claimBatch').length===organizeBatchesBefore+1
+      &&authority.terminal.remainingCount===0);
 
     resetAuthority(true);__mode='full';Panels.open('loot',init('organizer-close'));
     await waitFor(function(){return LootPanel.debugState().phase==='active'});
@@ -801,34 +884,35 @@ function respond(message){
     ok('backdrop uses the same non-abandon suspend path',
       tasks('close').length===backdropClosesBefore+1&&tasks('close').slice(-1)[0].abandon===false);
 
-    resetClaimAllAuthority();__mode='normal';__events.length=0;var claimAllClaimsBefore=tasks('claim').length,claimAllClosesBefore=tasks('close').length;
+    resetClaimAllAuthority();__mode='normal';__events.length=0;var claimAllBatchesBefore=tasks('claimBatch').length,claimAllClosesBefore=tasks('close').length;
     Panels.open('loot',Object.assign(init('claim-all'),{capacity:3,columns:3}));await waitFor(function(){return LootPanel.debugState().phase==='active'});
     document.querySelector('[data-commit-primary]').click();
     await waitFor(function(){return Panels.getActive()===null&&authority.terminal&&authority.terminal.kind==='CONSUMED'});
-    var claimAllClose=tasks('close').slice(-1)[0],claimAllClaims=tasks('claim').slice(claimAllClaimsBefore);
+    var claimAllClose=tasks('close').slice(-1)[0],claimAllBatches=tasks('claimBatch').slice(claimAllBatchesBefore);
     var terminalEvent=__events.indexOf('terminal_response'),visualCloseEvent=__events.indexOf('visual_close');
-    ok('claim-all drains serially then commits CONSUMED before visual close',
-      claimAllClaims.length===3&&claimAllClaims.map(function(x){return x.expectedAuthorityRevision}).join(',')==='1,2,3'
+    ok('claim-all uses one authority batch then commits CONSUMED before visual close',
+      claimAllBatches.length===1&&claimAllBatches[0].expectedAuthorityRevision===1
+      &&claimAllBatches[0].sources.map(function(x){return x.slot}).join(',')==='0,1,2'
       &&tasks('close').length===claimAllClosesBefore+1&&claimAllClose&&claimAllClose.abandon===false
       &&claimAllClose.expectedAuthorityRevision===4&&authority.terminal.remainingCount===0
       &&terminalEvent>=0&&visualCloseEvent>terminalEvent
       &&__sent.some(function(x){return x.type==='panel'&&x.cmd==='close'&&x.panel==='loot'&&x.reason==='terminal'}));
 
-    resetAuthority(false);__mode='no_progress';var stalledClaimsBefore=tasks('claim').length,stalledClosesBefore=tasks('close').length;
+    resetAuthority(false);__mode='no_progress';var stalledBatchesBefore=tasks('claimBatch').length,stalledClosesBefore=tasks('close').length;
     Panels.open('loot',init('claim-all-no-progress'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
     document.querySelector('[data-commit-primary]').click();
-    await waitFor(function(){return tasks('claim').length===stalledClaimsBefore+1&&LootPanel.debugState().claimAll===false});
+    await waitFor(function(){return tasks('claimBatch').length===stalledBatchesBefore+1&&LootPanel.debugState().claimAll===false});
     await delay(180);
     ok('claim-all stops on strict success without authority or source-slot progress',
       Panels.getActive()==='loot'&&authority.revision===1&&remaining()===1
       &&authority.loot[0].occupied&&authority.loot[0].slotLease==='lease.0'
-      &&tasks('claim').length===stalledClaimsBefore+1&&tasks('close').length===stalledClosesBefore);
+      &&tasks('claimBatch').length===stalledBatchesBefore+1&&tasks('close').length===stalledClosesBefore);
     Panels.forceClose();await delay();
 
-    resetClaimAllAuthority();__mode='delayed_claim';var detachedClaimsBefore=tasks('claim').length,detachedClosesBefore=tasks('close').length;
+    resetClaimAllAuthority();__mode='delayed_claim';var detachedBatchesBefore=tasks('claimBatch').length,detachedClosesBefore=tasks('close').length;
     Panels.open('loot',Object.assign(init('claim-all-force-detach'),{capacity:3,columns:3}));await waitFor(function(){return LootPanel.debugState().phase==='active'});
     document.querySelector('[data-commit-primary]').click();
-    await waitFor(function(){return tasks('claim').length===detachedClaimsBefore+1&&LootPanel.debugState().phase==='write_pending'});
+    await waitFor(function(){return tasks('claimBatch').length===detachedBatchesBefore+1&&LootPanel.debugState().phase==='write_pending'});
     var claimAllBusyClose=document.querySelector('.loot-close-btn'),claimAllBusyToasts=__toasts.length;
     claimAllBusyClose.focus();claimAllBusyClose.click();
     ok('claim-all busy X reports progress and never submits close',
@@ -842,7 +926,7 @@ function respond(message){
     ok('force detach during claim-all clears the queue and ignores the late write response',
       Panels.getActive()===null&&LootPanel.debugState().phase==='closed'
       &&LootPanel.debugState().claimAll===false&&LootPanel.debugState().claimAllQueueLength===0
-      &&tasks('claim').length===detachedClaimsBefore+1&&tasks('close').length===detachedClosesBefore);
+      &&tasks('claimBatch').length===detachedBatchesBefore+1&&tasks('close').length===detachedClosesBefore);
 
     resetAuthority(true);__mode='full';var failedClaimAllClosesBefore=tasks('close').length;
     Panels.open('loot',init('claim-all-full'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
@@ -853,73 +937,73 @@ function respond(message){
       &&LootPanel.debugState().remainingCount===1&&tasks('close').length===failedClaimAllClosesBefore);
     Panels.forceClose();await delay();
 
-    resetMixedClaimAllAuthority();__mode='mixed_full';var mixedClaimsBefore=tasks('claim').length,mixedClosesBefore=tasks('close').length;
+    resetMixedClaimAllAuthority();__mode='mixed_full';var mixedBatchesBefore=tasks('claimBatch').length,mixedClosesBefore=tasks('close').length;
     Panels.open('loot',init('claim-all-mixed-full'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
     document.querySelector('[data-commit-primary]').click();
-    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claim').length===mixedClaimsBefore+2});
-    var mixedClaims=tasks('claim').slice(mixedClaimsBefore),mixedState=LootPanel.debugState();
-    ok('claim-all skips a proven capacity block and still claims a later mergeable slot',
-      mixedClaims.length===2&&mixedClaims.map(function(x){return x.source.slot}).join(',')==='0,1'
-      &&mixedClaims.map(function(x){return x.expectedAuthorityRevision}).join(',')==='1,1'
+    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claimBatch').length===mixedBatchesBefore+1});
+    var mixedBatches=tasks('claimBatch').slice(mixedBatchesBefore),mixedState=LootPanel.debugState();
+    ok('claim-all batch retains a proven capacity block and claims a later mergeable slot',
+      mixedBatches.length===1&&mixedBatches[0].sources.map(function(x){return x.slot}).join(',')==='0,1'
+      &&mixedBatches[0].expectedAuthorityRevision===1
       &&authority.revision===2&&remaining()===1&&authority.loot[0].occupied&&!authority.loot[1].occupied
-      &&authority.loot[0].slotLease==='lease.mixed.guitar.2'
+      &&authority.loot[0].slotLease==='lease.mixed.guitar.1'
       &&Panels.getActive()==='loot'&&mixedState.claimAllBlockedReason==='target_full'
       &&mixedState.claimAllBlockedSlots.join(',')==='0'&&mixedState.claimAllQueueLength===0
       &&tasks('close').length===mixedClosesBefore
       &&document.querySelector('[data-commit-primary]').textContent==='整理背包'
       &&document.querySelector('.workbench-commit-status').textContent.indexOf('当前页面')>=0);
-    var mixedClaimsAfterBlock=tasks('claim').length;
+    var mixedBatchesAfterBlock=tasks('claimBatch').length;
     document.querySelector('[data-commit-primary]').click();
     await waitFor(function(){return LootPanel.debugState().organizerActive&&LootPanel.debugState().inventory.ready});
     ok('mixed claim-all organizer preserves the blocked item without close or claim replay',
-      tasks('claim').length===mixedClaimsAfterBlock&&tasks('close').length===mixedClosesBefore
+      tasks('claimBatch').length===mixedBatchesAfterBlock&&tasks('close').length===mixedClosesBefore
       &&remaining()===1&&authority.loot[0].occupied&&!authority.loot[1].occupied
       &&authority.terminal===null&&!authority.suspended&&Panels.getActive()==='loot');
     Panels.forceClose();await delay();
 
-    resetMixedClaimAllAuthority();__mode='mixed_full_unproven';var unprovenClaimsBefore=tasks('claim').length,unprovenClosesBefore=tasks('close').length,unprovenToastsBefore=__toasts.length;
+    resetMixedClaimAllAuthority();__mode='mixed_full_unproven';var unprovenBatchesBefore=tasks('claimBatch').length,unprovenClosesBefore=tasks('close').length,unprovenToastsBefore=__toasts.length;
     Panels.open('loot',init('claim-all-unproven-capacity'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
     document.querySelector('[data-commit-primary]').click();
-    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claim').length===unprovenClaimsBefore+1});
+    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claimBatch').length===unprovenBatchesBefore+1});
     await delay(80);
     ok('claim-all fail-closes when a capacity response lacks an exact zero-write proof',
-      tasks('claim').length===unprovenClaimsBefore+1&&tasks('close').length===unprovenClosesBefore
+      tasks('claimBatch').length===unprovenBatchesBefore+1&&tasks('close').length===unprovenClosesBefore
       &&remaining()===2&&Panels.getActive()==='loot'&&LootPanel.debugState().phase==='reconcile_required'
       &&document.querySelector('[data-commit-primary]').textContent!=='整理背包'
       &&__toasts.slice(unprovenToastsBefore).some(function(value){return value.indexOf('未满足零写证明')>=0}));
     Panels.forceClose();await delay();
 
-    resetMixedClaimAllAuthority();__mode='mixed_full_then_stale';var lateFailureClaimsBefore=tasks('claim').length,lateFailureClosesBefore=tasks('close').length;
+    resetMixedClaimAllAuthority();__mode='mixed_full_then_stale';var lateFailureBatchesBefore=tasks('claimBatch').length,lateFailureClosesBefore=tasks('close').length;
     Panels.open('loot',init('claim-all-capacity-then-stale'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
     document.querySelector('[data-commit-primary]').click();
-    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claim').length===lateFailureClaimsBefore+2});
+    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claimBatch').length===lateFailureBatchesBefore+1});
     var lateFailureState=LootPanel.debugState();
-    ok('a later claim-all error replaces an earlier retained capacity outcome',
-      tasks('claim').length===lateFailureClaimsBefore+2&&tasks('close').length===lateFailureClosesBefore
+    ok('a batch preflight stale error fails closed without retaining a capacity outcome',
+      tasks('claimBatch').length===lateFailureBatchesBefore+1&&tasks('close').length===lateFailureClosesBefore
       &&lateFailureState.phase==='reconcile_required'&&lateFailureState.unknown
       &&lateFailureState.unknown.error==='stale_lease'&&lateFailureState.unknown.refreshOnly===true
       &&lateFailureState.claimAllBlockedReason===''&&lateFailureState.claimAllBlockedSlots.length===0
       &&remaining()===2&&Panels.getActive()==='loot');
     Panels.forceClose();await delay();
 
-    resetMixedClaimAllAuthority();__mode='mixed_constructor';var prototypeClaimsBefore=tasks('claim').length,prototypeClosesBefore=tasks('close').length;
+    resetMixedClaimAllAuthority();__mode='mixed_constructor';var prototypeBatchesBefore=tasks('claimBatch').length,prototypeClosesBefore=tasks('close').length;
     Panels.open('loot',init('claim-all-prototype-error'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
     document.querySelector('[data-commit-primary]').click();
     await waitFor(function(){return LootPanel.debugState().phase==='reconcile_required'&&LootPanel.debugState().claimAll===false});
     var prototypeState=LootPanel.debugState();
     ok('prototype-named errors fail closed instead of matching capacity allowlists',
-      tasks('claim').length===prototypeClaimsBefore+1&&tasks('close').length===prototypeClosesBefore
+      tasks('claimBatch').length===prototypeBatchesBefore+1&&tasks('close').length===prototypeClosesBefore
       &&prototypeState.unknown&&prototypeState.unknown.error==='constructor'
       &&prototypeState.claimAllBlockedReason===''&&remaining()===2&&Panels.getActive()==='loot');
     Panels.forceClose();await delay();
 
-    resetMixedClaimAllAuthority();__mode='wrong_slot_progress';var wrongSlotClaimsBefore=tasks('claim').length,wrongSlotClosesBefore=tasks('close').length,wrongSlotToastsBefore=__toasts.length;
+    resetMixedClaimAllAuthority();__mode='wrong_slot_progress';var wrongSlotBatchesBefore=tasks('claimBatch').length,wrongSlotClosesBefore=tasks('close').length,wrongSlotToastsBefore=__toasts.length;
     Panels.open('loot',init('claim-all-wrong-slot-progress'));await waitFor(function(){return LootPanel.debugState().phase==='active'});
     document.querySelector('[data-commit-primary]').click();
-    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claim').length===wrongSlotClaimsBefore+1});
-    ok('claim-all rejects authority progress that does not empty the exact requested slot',
-      tasks('claim').length===wrongSlotClaimsBefore+1&&tasks('close').length===wrongSlotClosesBefore
-      &&remaining()===1&&authority.loot[0].occupied&&!authority.loot[1].occupied
+    await waitFor(function(){return LootPanel.debugState().claimAll===false&&tasks('claimBatch').length===wrongSlotBatchesBefore+1});
+    ok('claim-all rejects authority progress that does not match the exact requested batch',
+      tasks('claimBatch').length===wrongSlotBatchesBefore+1&&tasks('close').length===wrongSlotClosesBefore
+      &&remaining()===2&&authority.loot[0].occupied&&authority.loot[1].occupied
       &&LootPanel.debugState().phase==='reconcile_required'
       &&__toasts.slice(wrongSlotToastsBefore).some(function(value){return value.indexOf('尚未由游戏中的实际结果确认')>=0})
       &&Panels.getActive()==='loot');
@@ -965,6 +1049,133 @@ function respond(message){
     ok('force detach is visual-only',Panels.getActive()===null&&tasks('close').length===closesBefore&&LootPanel.debugState().phase==='closed');
     for(var reopen=0;reopen<3;reopen++){resetAuthority(false);Panels.open('loot',init('repeat'+reopen));await waitFor(function(){return LootPanel.debugState().phase==='active'});Panels.forceClose();await delay()}
     ok('cleanup restores flat mux and observer ownership',PanelRuntime.sharedResponseRouter.debugState().handlerCount===baselineHandlers&&__resizeObserverStats.active===0,JSON.stringify({router:PanelRuntime.sharedResponseRouter.debugState(),resize:__resizeObserverStats}));
+
+    var validSettlement=settlementInit('shape');
+    ok('stage settlement accepts only the exact ten-key init plus exact frozen report',
+      !!LootPanel.exactInitData(validSettlement)
+      &&!LootPanel.exactInitData(Object.assign({},validSettlement,{report:Object.assign({},validSettlement.report,{stageName:''})}))
+      &&!LootPanel.exactInitData(Object.assign({},validSettlement,{legacyReward:true})));
+    resetAuthority(false);__mode='normal';
+    authority.loot=[occupied(0,'精英补给','lease.settlement.0'),occupied(1,'复活币','lease.settlement.1'),occupied(2,'强化石','lease.settlement.2')];
+    var settlementMaterialsBefore=tasks('materials').length;
+    Panels.open('loot',settlementInit('visual'));
+    var settlementReady=await waitFor(function(){var state=LootPanel.debugState();return state.phase==='active'&&state.materials.count===3});
+    if(!settlementReady)throw new Error('settlement did not become ready: '+JSON.stringify({normalized:LootPanel.exactInitData(settlementInit('diagnostic')),state:LootPanel.debugState(),active:Panels.getActive(),toasts:__toasts.slice(-4),lastTasks:tasks().slice(-4)}));
+    var settlementRoot=document.querySelector('.loot-workbench');
+    if(!settlementRoot||!settlementRoot.querySelector('.loot-settlement-report'))throw new Error('settlement report DOM is missing: '+JSON.stringify({roots:document.querySelectorAll('.loot-workbench').length,sourceSlots:document.querySelectorAll('.loot-source-slot').length,occupied:document.querySelectorAll('.loot-source-slot.occupied').length,html:settlementRoot&&settlementRoot.outerHTML.slice(0,1200)}));
+    ok('settlement mounts report left and reward authority right without a backpack transfer pane',
+      settlementReady&&settlementRoot&&settlementRoot.querySelector('.loot-settlement-report')
+      &&settlementRoot.querySelector('.loot-source-view')
+      &&!settlementRoot.querySelector('.loot-backpack-view')
+      &&settlementRoot.querySelector('[data-settlement-stage]')
+      &&settlementRoot.querySelector('[data-settlement-stage]').textContent==='废弃都市 · 夜战',
+      JSON.stringify({ready:settlementReady,state:LootPanel.debugState(),html:settlementRoot&&settlementRoot.innerHTML.slice(0,600)}));
+    var settlementBrand=settlementRoot&&settlementRoot.querySelector('.loot-settlement-brand');
+    var settlementEyebrow=settlementRoot&&settlementRoot.querySelector('.workbench-eyebrow');
+    var settlementTerminalButton=settlementRoot&&settlementRoot.querySelector('.workbench-mode-btn');
+    ok('stage settlement alone adopts the shared Launcher and Settings terminal skin',
+      settlementRoot.classList.contains('loot-stage-settlement')
+      &&settlementRoot.getAttribute('data-workbench-skin')==='terminal'
+      &&settlementBrand&&settlementBrand.textContent==='CF7·ME'
+      &&settlementEyebrow&&settlementEyebrow.textContent==='θ-FLOOD / SETTLEMENT LINK'
+      &&getComputedStyle(settlementBrand).clipPath!=='none'
+      &&getComputedStyle(settlementTerminalButton).clipPath!=='none');
+    var settlementReport=settlementRoot.querySelector('.loot-settlement-report');
+    var settlementSide=settlementRoot.querySelector('.loot-settlement-side');
+    var settlementSourceGrid=settlementRoot.querySelector('.loot-source-grid');
+    var settlementDensity=settlementRoot.querySelector('.item-grid-mode-toggle[aria-label="关卡结算布局"]');
+    ok('stage settlement defaults report, rewards and material stock to one compact density',
+      settlementReport.classList.contains('loot-settlement-compact')
+      &&settlementSide.classList.contains('loot-settlement-compact')
+      &&settlementSourceGrid.classList.contains('item-grid-compact')
+      &&settlementDensity.querySelector('[data-layout-mode="compact"]').getAttribute('aria-pressed')==='true');
+    settlementDensity.querySelector('[data-layout-mode="full"]').click();
+    await delay();
+    ok('settlement density can explicitly restore named full cards without changing authority',
+      !settlementReport.classList.contains('loot-settlement-compact')
+      &&!settlementSide.classList.contains('loot-settlement-compact')
+      &&!settlementSourceGrid.classList.contains('item-grid-compact')
+      &&getComputedStyle(settlementRoot.querySelector('.loot-settlement-kill-copy')).display!=='none'
+      &&LootPanel.debugState().remainingCount===3);
+    settlementDensity.querySelector('[data-layout-mode="compact"]').click();
+    await delay();
+    var settlementTime=settlementRoot&&settlementRoot.querySelector('[data-settlement-time]');
+    var settlementTotal=settlementRoot&&settlementRoot.querySelector('[data-settlement-kill-total]');
+    var settlementKillStatus=settlementRoot&&settlementRoot.querySelector('[data-settlement-kill-status]');
+    ok('settlement renders the exact 30 FPS frame clock and bounded kill projection',
+      settlementTime&&settlementTime.textContent==='02:04.10'
+      &&settlementTotal&&settlementTotal.textContent==='17'
+      &&settlementRoot.querySelectorAll('.loot-settlement-kill-card').length===2
+      &&settlementKillStatus&&settlementKillStatus.textContent.indexOf('另有 2 类敌人未展开')>=0);
+    var settlementPortraitsReady=await waitFor(function(){
+      return __portraitStats.staticMounts===1&&__portraitStats.dollRenders===1
+        &&settlementRoot.querySelectorAll('.loot-settlement-kill-avatar[data-portrait-source="doll"]').length===1
+        &&settlementRoot.querySelectorAll('.loot-settlement-kill-avatar[data-portrait-source="svg"]').length===1
+    });
+    ok('settlement resolves static enemy portraits and runtime doll portraits instead of icon placeholders',
+      settlementPortraitsReady,JSON.stringify({stats:__portraitStats,
+        sources:Array.prototype.map.call(settlementRoot.querySelectorAll('.loot-settlement-kill-avatar'),function(node){return node.getAttribute('data-portrait-source')})}));
+    var portraitFallbacks=settlementRoot.querySelectorAll('.loot-settlement-kill-fallback');
+    ok('loaded enemy portraits never retain a name character behind transparent artwork',
+      portraitFallbacks.length===2
+      &&Array.prototype.every.call(portraitFallbacks,function(node){
+        return node.textContent===''&&getComputedStyle(node).display==='none';
+      }));
+    var flowCards=document.querySelectorAll('.loot-settlement-flow-card');
+    ok('one scrollable action report keeps kill and asset facts together',
+      flowCards.length===2
+      &&!document.querySelector('.loot-settlement-flow-section').hidden
+      &&document.querySelector('[data-settlement-flow-gain]').textContent==='+7'
+      &&document.querySelector('[data-settlement-flow-loss]').textContent==='−2'
+      &&flowCards[0].getAttribute('data-direction')==='gain'
+      &&flowCards[0].querySelector('.loot-settlement-flow-copy b').textContent==='强化石'
+      &&flowCards[1].getAttribute('data-direction')==='loss'
+      &&flowCards[1].querySelector('.loot-settlement-flow-copy b').textContent==='急救针'
+      &&document.querySelector('[data-settlement-flow-status]').textContent.indexOf('另有 1 类物资事实未展开')>=0);
+    var materialRequest=tasks('materials').slice(-1)[0];
+    ok('settlement alone requests the exact material read at the active authority revision',
+      tasks('materials').length===settlementMaterialsBefore+1
+      &&materialRequest.expectedAuthorityRevision===1
+      &&Object.keys(materialRequest).sort().join('|')===['type','task','domain','panel','v','cmd','callId','panelInstanceId','chestSessionId','lootContainerId','containerEpoch','expectedAuthorityRevision'].sort().join('|'));
+    document.querySelector('[data-settlement-side-tab="materials"]').click();
+    await delay();
+    ok('materials tab shows owned stock and reveals zero stock only through explicit search',
+      document.querySelectorAll('.loot-settlement-material-card').length===2
+      &&getComputedStyle(document.querySelector('.loot-settlement-material-card b')).display==='none');
+    settlementDensity.querySelector('[data-layout-mode="full"]').click();
+    await delay();
+    ok('material stock follows the shared full density instead of remaining permanently expanded',
+      !settlementSide.classList.contains('loot-settlement-compact')
+      &&getComputedStyle(document.querySelector('.loot-settlement-material-card b')).display!=='none');
+    settlementDensity.querySelector('[data-layout-mode="compact"]').click();
+    await delay();
+    var materialSearch=document.querySelector('.loot-settlement-material-toolbar input[type="search"]');
+    materialSearch.value='空瓶';materialSearch.dispatchEvent(new Event('input',{bubbles:true}));
+    ok('material search can inspect a zero-stock authored material',
+      document.querySelectorAll('.loot-settlement-material-card').length===1
+      &&document.querySelector('.loot-settlement-material-card strong').textContent==='0');
+    var settlementClaimsBefore=tasks('claim').length;
+    document.querySelector('[data-settlement-side-tab="rewards"]').click();
+    document.querySelector('.loot-source-slot.occupied').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    await waitFor(function(){return LootPanel.debugState().remainingCount===2&&tasks('materials').length>=settlementMaterialsBefore+2});
+    ok('settlement Enter performs one direct authority claim and refreshes material stock',
+      tasks('claim').length===settlementClaimsBefore+1&&LootPanel.debugState().materials.count===3);
+    ok('settlement disables drag while preserving direct keyboard claim',LootPanel.debugState().hasDrag===false);
+    document.querySelector('[data-header-action="inventory"]').click();
+    await waitFor(function(){var state=LootPanel.debugState();return state.organizerActive
+      &&state.inventory.ready&&document.querySelector('[data-loot-organizer].active')});
+    ok('settlement inventory action opens the backpack and battlebox organizer without a capacity error',
+      LootPanel.debugState().organizerActive&&LootPanel.debugState().inventory.ready
+      &&inventoryTasks('snapshot').length>0
+      &&document.querySelector('[data-loot-organizer]'));
+    document.querySelector('[data-loot-organizer-back]').click();
+    var organizerReturned=await waitFor(function(){return !LootPanel.debugState().organizerActive
+      &&LootPanel.debugState().phase==='active'
+      &&!document.querySelector('[data-loot-organizer].active')});
+    document.querySelector('[data-settlement-side-tab="rewards"]').click();
+    ok('organizer return preserves the same settlement and its two unclaimed rewards',
+      organizerReturned&&Panels.getActive()==='loot'&&LootPanel.debugState().remainingCount===2
+      &&document.querySelector('[data-settlement-stage]').textContent==='废弃都市 · 夜战');
     ok('Web emits no AS2 legacy double-open signal',!__sent.some(function(x){return /legacy|资源箱界面|as2_ui/i.test(JSON.stringify(x))}));
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
   }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}

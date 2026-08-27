@@ -82,6 +82,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData(RightContextSlotOwner.ContextHint, true)]
         [InlineData(RightContextSlotOwner.ActionableNotice, true)]
         [InlineData(RightContextSlotOwner.TransactionDecision, true)]
+        [InlineData(RightContextSlotOwner.StageDecision, true)]
         public void ConditionalSlotGeometry_ExistsOnlyForAnExactOwner(
             RightContextSlotOwner owner,
             bool expectedVisible)

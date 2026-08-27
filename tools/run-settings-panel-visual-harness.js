@@ -48,8 +48,10 @@ function startServer() {
   });
 }
 
-function near(actual, expected, label) {
-  assert(Math.abs(actual - expected) <= 1, label + ': expected ' + expected + ', got ' + actual);
+function near(actual, expected, label, tolerance) {
+  tolerance = tolerance == null ? 1 : tolerance;
+  assert(Math.abs(actual - expected) <= tolerance,
+    label + ': expected ' + expected + ', got ' + actual);
 }
 
 async function runViewport(browser, baseUrl, viewport, screenshotDir) {
@@ -90,8 +92,11 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   near(layout.content.y, 0, 'panel-content y');
   near(layout.content.width, viewport.width, 'panel-content width');
   near(layout.content.height, viewport.height, 'panel-content height');
-  near(layout.panel.width, viewport.width, 'settings panel width');
-  near(layout.panel.height, viewport.height, 'settings panel height');
+  // PanelScale preserves 16:9 against the measured anchor. Fractional Windows DPI can
+  // make Edge expose a parent rect just under the requested viewport and leave <2 CSS px
+  // letterbox after the four-decimal scale write; compare to that real anchor.
+  near(layout.panel.width, layout.content.width, 'settings panel width', 2);
+  near(layout.panel.height, layout.content.height, 'settings panel height', 2);
   assert(layout.terminal, 'settings must use the launcher terminal shell');
   assert(!layout.workbench, 'settings must not inherit the workbench shell');
   assert.strictEqual(layout.brand, 'CF7:ME');
@@ -110,7 +115,9 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
     'frequent cheat entry must be immediately reachable in the default viewport');
   assert(layout.cameraEntry.y >= layout.common.bottom,
     'camera simulator entry must follow the common-control surface');
-  assert.strictEqual(await page.locator('.settings-game-common .settings-field').count(), 10);
+  // 打击数字已经迁为 Launcher 本机偏好，不再占用 AS2 游戏常用设置行：
+  // 2 个音量字段 + 7 个画面字段 = 9。
+  assert.strictEqual(await page.locator('.settings-game-common .settings-field').count(), 9);
   assert.strictEqual(await page.getByRole('button', {name:'试听界面音效'}).count(), 1);
   assert.strictEqual(await page.locator('#settings-home-cheat-input').count(), 1);
   assert.strictEqual(await page.locator('.settings-home-cheat .settings-cheat-help-open').count(), 1);

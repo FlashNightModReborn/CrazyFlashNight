@@ -9,6 +9,7 @@ namespace CF7Launcher.Guardian.Hud
         Hidden = 0,
         ContextHint = 1,
         ActionableNotice = 2,
-        TransactionDecision = 3
+        TransactionDecision = 3,
+        StageDecision = 4
     }
 }

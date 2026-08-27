@@ -95,7 +95,6 @@ bootstrap preflight
 `GuardianForm` 是主窗口与 Flash 容器。运行态 UI 由 Native HUD、Web Overlay、Panel backdrop/input shield 和原生 cursor 按状态组合；Panel 打开时由 `PanelHostController` 统一协调 snapshot、焦点、输入屏障、Native HUD suspend/resume 和 WebView2 几何。
 
 正式 Panel 路由由 `LauncherCommandRouter` 与领域 handler 授权。Web 不得凭本地 DOM 状态制造业务能力；AS2 仍是需要游戏状态或存档写入的最终裁决方。跨层请求必须遵守 exact envelope、instance/session、generation、nonce/token、revision 和迟到回包 fence，具体以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
-
 ### 通信面
 
 | 通道 | 用途 | 约束 |
@@ -376,7 +375,8 @@ Panel 的共同边界：
 - LoadoutPicker 候选只接受装备槽、药剂槽或无 selector 背包总览三种 target。Character `equipmentEligibility` 在两种 scope 由 Host 复验；Merc `eligibleSlots` 由 AS2 两种 scope 签发。scope 只筛候选，白名单裁决 drop target，写后保留原 scope/anchor；Merc 按新 revision 恰好刷新一次 authority。详见[迁移护栏](../agentsDoc/as2-web-panel-migration.md)。
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
 - close、Esc、backdrop、导航和 recovery 经过同一 lifecycle fence。Team/blackmarket/warlord close 携当前实例并等待 Host exact `panel_cmd close`；Bridge 投递成功不等于接受，确认丢失 3 秒后只恢复同实例重试权，不本地关闭；迟到 A 不得关闭 replacement B，旧 `panel:"pets"|"mercs"` child close 一律拒绝。
-- Workbench 的布局、密度、focus、tooltip、interaction broker 和 CSS 边界以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。
+- Workbench 的布局和交互以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。关卡内 `StageOutcomeTask` 把复活/胜负决策投影进 `RightContextWidget` 既有 32px 条件槽，不创建浮窗、不暂停 Flash。胜负条常驻，忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr` 证明返回后可路由时追加“前往交付”，并在奖励终态和 Web exact close 后导航。
+  Web 左栏在同一滚屏合并击杀与物资 gain/loss，右栏切换待领奖励/材料存量，一个密度控制器同步驱动三者；库存整理子页恢复 K 点商城同源原始灰黑 inventory skin。大量奖励经单次最多 50 项的 `claimBatch` 进入 AS2 顺序 authority journal 与 exact query 对账。权威、生命周期与领取/放弃语义详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
 - `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。
   新表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的 `--term-*` 派生 token；顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不保留重复“作弊码”页，玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
   默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。

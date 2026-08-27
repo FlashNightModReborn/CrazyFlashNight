@@ -94,7 +94,7 @@ namespace CF7Launcher.Guardian.Hud
     /// （如 "task|TaskName"、"announce|Text"），不写入 snapshot，只触发一次回调。
     ///
     /// 与 IUiDataConsumer 互补：snapshot KV 走 IUiDataConsumer，瞬时事件走本接口。
-    /// QuestNoticeWidget 同时实现两者：td/tdh/tdn/mm 走 snapshot；task/announce 走 legacy 通知。
+    /// QuestNoticeWidget 同时实现两者：td/tdh/tdn/tdr/mm 走 snapshot；task/announce 走 legacy 通知。
     ///
     /// **类型门控**：consumer 必须声明关心的 type 集合（LegacyTypes），NativeHudOverlay 据此
     /// 过滤掉无人订阅的 legacy 包（如 FrameTask 每帧推 combo|...，QuestNotice 不关心，整条 BeginInvoke

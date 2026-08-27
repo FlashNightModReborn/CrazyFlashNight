@@ -10,6 +10,7 @@ var LootPanel = (function() {
     var _transportInstanceId = '';
     var _claimAllTimer = null, _terminalCloseTimer = null, _closingVisual = false;
     var _claimAllQueue = [], _claimAllBlockedSlots = {}, _claimAllBlockedReason = '';
+    var _materials = {items:null,busy:false,error:'',requestedRevision:null,dirty:false};
     var _runtimeConfig = typeof window !== 'undefined' && window.__LOOT_PANEL_CONFIG__ || {};
 
     Panels.register('loot', {
@@ -51,7 +52,7 @@ var LootPanel = (function() {
             chestSessionId:_init.chestSessionId,
             lootContainerId:_init.lootContainerId,
             containerEpoch:_init.containerEpoch,
-            source:'map_chest'
+            source:_init.sourceKind
         };
         _mux = new LootRuntime.RequestMux({
             identity:_identity,
@@ -94,6 +95,7 @@ var LootPanel = (function() {
             onRequestClose:requestClose,
             onRequestAbandon:requestAbandon,
             onReconcile:reconcile,
+            onOpenOrganizer:function() { openOrganizer(true); },
             requestTooltip:requestTooltip
         });
 
@@ -131,6 +133,7 @@ var LootPanel = (function() {
         _model.open(function(ok,response) {
             if (generation !== _generation) return;
             if (!ok) toast(LootView.errorMessage(response && response.error));
+            else requestMaterials();
         });
     }
 
@@ -231,6 +234,47 @@ var LootPanel = (function() {
         return _model.tooltip(slot, callback);
     }
 
+    function requestMaterials() {
+        var state=_model&&_model.debugState();
+        if (!_init||_init.sourceKind!=='stage_settlement'||!_mux||!state
+                ||state.phase!=='active') return false;
+        if (_materials.busy) {
+            _materials.dirty=true;
+            return false;
+        }
+        _materials.busy=true;
+        _materials.error='';
+        _materials.requestedRevision=state.authorityRevision;
+        _materials.dirty=false;
+        render();
+        var accepted=_mux.request('materials',{
+            expectedAuthorityRevision:state.authorityRevision
+        },{kind:'materials',singleFlight:true,latestWins:true},function(response) {
+            _materials.busy=false;
+            var current=_model&&_model.debugState();
+            if (_materials.dirty||current&&current.phase==='active'
+                    &&current.authorityRevision!==_materials.requestedRevision) {
+                _materials.dirty=false;
+                requestMaterials();
+                return;
+            }
+            if (response&&response.success&&Array.isArray(response.materials)) {
+                _materials.items=response.materials;
+                _materials.error='';
+            } else {
+                _materials.error='材料存量读取失败；奖励领取不受影响。';
+            }
+            render();
+        });
+        if (!accepted) {
+            _materials.busy=false;
+            _materials.error='材料存量暂时无法读取；奖励领取不受影响。';
+            render();
+            return false;
+        }
+        return true;
+    }
+
     function claimSlot(slot, quiet) {
         if (!slot || !slot.occupied || !_model || _organizerActive || _organizerReturning
                 || _claimAll && !quiet) return false;
@@ -238,7 +282,11 @@ var LootPanel = (function() {
         resetClaimAllOutcome();
         var accepted=_model.claim(slot,function(success,response){
             if (!success && !quiet) toast(writeFailureMessage(response),'error');
-            else if (success && !quiet) toast('战利品已由游戏确认领取。','success');
+            else if (success) {
+                if (!quiet) toast(_init&&_init.sourceKind==='stage_settlement'
+                    ? '奖励已由游戏确认领取。' : '战利品已由游戏确认领取。','success');
+                requestMaterials();
+            }
         });
         if (!accepted) {
             _claimAllBlockedReason=retainedReason;
@@ -264,19 +312,27 @@ var LootPanel = (function() {
         drainClaimAll();
         return true;
     }
-    function claimAllAdvanced(checkpoint) {
+    function claimAllBatchAdvanced(checkpoint) {
         var state=_model&&_model.debugState(),current=projection();
-        if (!state||state.phase!=='active'
-                ||state.authorityRevision!==checkpoint.authorityRevision+1
-                ||state.remainingCount!==checkpoint.remainingCount-1) return false;
+        var applied=state?state.authorityRevision-checkpoint.authorityRevision:0;
+        if (!state||state.phase!=='active'||applied<1
+                ||applied>checkpoint.physicalSlots.length
+                ||state.remainingCount!==checkpoint.remainingCount-applied) return null;
         var slots=current&&current.loot&&current.loot.slots||[];
-        for (var i=0;i<slots.length;i++) {
-            if (slots[i].physicalSlot!==checkpoint.physicalSlot) continue;
-            return !slots[i].occupied;
+        var bySlot={},retained=[];
+        for (var i=0;i<slots.length;i++) bySlot[String(slots[i].physicalSlot)]=slots[i];
+        for (i=0;i<checkpoint.physicalSlots.length;i++) {
+            var physicalSlot=checkpoint.physicalSlots[i],slot=bySlot[String(physicalSlot)];
+            if (!slot) return null;
+            if (slot.occupied) {
+                if (slot.slotLease!==checkpoint.slotLeases[i]) return null;
+                retained.push(physicalSlot);
+            }
         }
-        return false;
+        return checkpoint.physicalSlots.length-retained.length===applied
+            ? {applied:applied,retained:retained}:null;
     }
-    function claimAllCapacityRejected(response,checkpoint) {
+    function claimAllBatchCapacityRejected(response,checkpoint) {
         var error=response&&response.error||'';
         var capacityErrors={
             target_full:true,inventory_full:true,capacity_reached:true,cap_reached:true
@@ -292,11 +348,13 @@ var LootPanel = (function() {
                 ||state.authorityRevision!==checkpoint.authorityRevision
                 ||state.remainingCount!==checkpoint.remainingCount) return false;
         var slots=current&&current.loot&&current.loot.slots||[];
-        for (var i=0;i<slots.length;i++) {
-            if (Number(slots[i].physicalSlot)!==Number(checkpoint.physicalSlot)) continue;
-            return slots[i].occupied&&slots[i].slotLease===checkpoint.slotLease;
+        var bySlot={};
+        for (var i=0;i<slots.length;i++) bySlot[String(slots[i].physicalSlot)]=slots[i];
+        for (i=0;i<checkpoint.physicalSlots.length;i++) {
+            var slot=bySlot[String(checkpoint.physicalSlots[i])];
+            if (!slot||!slot.occupied||slot.slotLease!==checkpoint.slotLeases[i]) return false;
         }
-        return false;
+        return true;
     }
     function findLootSlot(physicalSlot) {
         var current=projection(),slots=current&&current.loot&&current.loot.slots||[];
@@ -335,13 +393,15 @@ var LootPanel = (function() {
             return;
         }
         if (state.phase!=='active') return;
-        var next=null;
-        while (_claimAllQueue.length&&!next) {
+        var batch=[];
+        while (_claimAllQueue.length&&batch.length<50) {
             var physicalSlot=_claimAllQueue.shift(),candidate=findLootSlot(physicalSlot);
-            if (candidate&&candidate.occupied) next=candidate;
+            if (candidate&&candidate.occupied
+                    &&!Object.prototype.hasOwnProperty.call(
+                        _claimAllBlockedSlots,String(candidate.physicalSlot))) batch.push(candidate);
         }
-        if (!next) {
-            // “全部收取”是一个完整主动作：最后一条 claim 的权威 ACTIVE 投影已证明
+        if (!batch.length) {
+            // “全部收取”是一个完整主动作：最后一批 claim 的权威 ACTIVE 投影已证明
             // remainingCount=0 后，继续提交既有 lootClose(abandon=false)，让 AS2 生成
             // CONSUMED tombstone。视觉层仍只在 terminal 回包后关闭，不能把本地空网格
             // 当成终态，也不能绕过 Host 的 exact close / pause-release 链。
@@ -350,24 +410,29 @@ var LootPanel = (function() {
                 &&claimAllBlocksCoverRemaining(state);
             stopClaimAll(completedWithBlocks);
             if (state.remainingCount===0) commitClose(false);
-            else if (completedWithBlocks)
+            else if (completedWithBlocks) {
+                requestMaterials();
                 toast('已收取所有可放入物品；仍有 '
                 +state.remainingCount+' 个物品因背包或容量限制保留。','success');
-            else toast('箱内仍有未遍历物品，已停止全部收取，请人工核对。','error');
+            } else toast('箱内仍有未遍历物品，已停止全部收取，请人工核对。','error');
             return;
         }
         var checkpoint={
             authorityRevision:state.authorityRevision,
             remainingCount:state.remainingCount,
-            physicalSlot:next.physicalSlot,
-            slotLease:next.slotLease,
+            physicalSlots:batch.map(function(slot){return Number(slot.physicalSlot);}),
+            slotLeases:batch.map(function(slot){return String(slot.slotLease);}),
             lastAppliedOperationId:String(projection().lastAppliedOperationId||'')
         };
-        if (!_model.claim(next,function(success,response){
+        if (!_model.claimBatch(batch,function(success,response){
             if (!success) {
                 var error=response&&response.error||'';
-                if (claimAllCapacityRejected(response,checkpoint)) {
-                    _claimAllBlockedSlots[String(checkpoint.physicalSlot)]=String(error);
+                if (claimAllBatchCapacityRejected(response,checkpoint)) {
+                    for (var blockedIndex=0;blockedIndex<checkpoint.physicalSlots.length;
+                            blockedIndex++) {
+                        _claimAllBlockedSlots[String(checkpoint.physicalSlots[blockedIndex])]=
+                            String(error);
+                    }
                     if (!_claimAllBlockedReason) _claimAllBlockedReason=String(error);
                     scheduleClaimAllDrain();
                     return;
@@ -379,12 +444,19 @@ var LootPanel = (function() {
                 return;
             }
             // A syntactically valid success is insufficient for a batch loop. Require exact
-            // authority +1, remaining -1, and an empty requested source slot before issuing
+            // authority/remaining deltas and an exact requested-slot projection before issuing
             // another write; otherwise a future protocol drift could replay claims forever.
-            if (!claimAllAdvanced(checkpoint)) {
+            var advance=claimAllBatchAdvanced(checkpoint);
+            if (!advance) {
                 stopClaimAll();
                 toast('领取结果没有变化，已停止全部收取，请人工核对。','error');
                 return;
+            }
+            if (advance.retained.length) {
+                for (var retainedIndex=0;retainedIndex<advance.retained.length;retainedIndex++) {
+                    _claimAllBlockedSlots[String(advance.retained[retainedIndex])]='target_full';
+                }
+                if (!_claimAllBlockedReason) _claimAllBlockedReason='target_full';
             }
             scheduleClaimAllDrain();
         })) {
@@ -406,11 +478,13 @@ var LootPanel = (function() {
         render();
     }
 
-    function openOrganizer() {
+    function openOrganizer(force) {
         var state=_model&&_model.debugState();
         var capacityBlocked=state&&(LootView.isInventoryCapacityBlock(state.blockReason)
             ||LootView.isInventoryCapacityBlock(_claimAllBlockedReason));
-        if (!state||state.phase!=='active'||state.pending||_claimAll||!capacityBlocked
+        var settlementAccess=force===true&&_init&&_init.sourceKind==='stage_settlement';
+        if (!state||state.phase!=='active'||state.pending||_claimAll
+                ||!capacityBlocked&&!settlementAccess
                 ||!_organizer||!_inventoryCoordinator) return false;
         if (_organizerActive) return true;
         if (!_organizer.open()) {
@@ -478,6 +552,7 @@ var LootPanel = (function() {
             _organizerReturning=false;
             _inventoryCoordinator.close();
             render();
+            requestMaterials();
             toast('库存与当前箱子已重新同步，可以继续领取。','success');
             if (closePanel) requestClose();
         });
@@ -585,6 +660,7 @@ var LootPanel = (function() {
         if (_claimAllBlockedReason) state.blockReason=_claimAllBlockedReason;
         state.claimAllBlockedReason=_claimAllBlockedReason;
         state.claimAllBlockedCount=claimAllBlockedCount();
+        _view.setMaterials(_materials.items,_materials.busy,_materials.error);
         _view.render(state,projection(),_claimAll,_organizerActive||_organizerReturning);
     }
 
@@ -661,6 +737,7 @@ var LootPanel = (function() {
         _closingVisual=false;
         _organizerActive=false;
         _organizerReturning=false;
+        _materials={items:null,busy:false,error:'',requestedRevision:null,dirty:false};
         resetClaimAllOutcome();
     }
 
@@ -698,6 +775,9 @@ var LootPanel = (function() {
             state.inventory=_inventoryCoordinator?_inventoryCoordinator.debugState()
                 : {opened:false,ready:false,busyOwner:null,refreshRequired:false};
             state.organizer=_organizer?_organizer.debugState():{active:false};
+            state.materials={busy:_materials.busy,error:_materials.error,
+                count:_materials.items?_materials.items.length:null,
+                requestedRevision:_materials.requestedRevision,dirty:_materials.dirty};
             return state;
         },
         requestClose:requestClose,

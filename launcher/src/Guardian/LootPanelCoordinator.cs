@@ -75,7 +75,9 @@ namespace CF7Launcher.Guardian
     {
         public const int ProtocolVersion = 1;
         public const string PanelName = "loot";
-        public const string RequiredSource = "map_chest";
+        public const string MapChestSource = "map_chest";
+        public const string StageSettlementSource = "stage_settlement";
+        public const string RequiredSource = MapChestSource;
         public const int MaximumOpaqueLength = 128;
         public const int DefaultBindWatchdogMs = 2500;
         public const int DefaultCloseRetryDelayMs = 250;
@@ -103,6 +105,8 @@ namespace CF7Launcher.Guardian
             public string DisplayName { get; set; }
             public int Capacity { get; set; }
             public int Columns { get; set; }
+            public string SourceKind { get; set; }
+            public JObject SettlementReport { get; set; }
         }
 
         public sealed class Binding
@@ -116,6 +120,9 @@ namespace CF7Launcher.Guardian
                 DisplayName = request.DisplayName;
                 Capacity = request.Capacity;
                 Columns = request.Columns;
+                SourceKind = request.SourceKind;
+                SettlementReport = request.SettlementReport != null
+                    ? (JObject)request.SettlementReport.DeepClone() : null;
                 PanelInstanceId = panelInstanceId;
             }
 
@@ -126,6 +133,8 @@ namespace CF7Launcher.Guardian
             public string DisplayName { get; private set; }
             public int Capacity { get; private set; }
             public int Columns { get; private set; }
+            public string SourceKind { get; private set; }
+            public JObject SettlementReport { get; private set; }
             public string PanelInstanceId { get; private set; }
         }
 
@@ -341,6 +350,12 @@ namespace CF7Launcher.Guardian
                 ["capacity"] = binding.Capacity,
                 ["columns"] = binding.Columns
             };
+            if (binding.SourceKind == StageSettlementSource)
+            {
+                init["sourceKind"] = StageSettlementSource;
+                init["report"] = binding.SettlementReport != null
+                    ? binding.SettlementReport.DeepClone() : null;
+            }
 
             bool queued = false;
             try
@@ -1225,12 +1240,25 @@ namespace CF7Launcher.Guardian
                 && request.Value<string>("task") == "panel_request";
             if (request == null || (!exactBody && !exactSocketEnvelope))
                 return false;
-            if (request.Value<string>("panel") != PanelName
-                || request.Value<string>("source") != RequiredSource) return false;
+            if (request.Value<string>("panel") != PanelName) return false;
+            string source = request.Value<string>("source");
+            bool isMapChest = source == MapChestSource;
+            bool isStageSettlement = source == StageSettlementSource;
+            if (!isMapChest && !isStageSettlement) return false;
             JObject init = request["initData"] as JObject;
-            if (!HasExactKeys(init, "v", "chestSessionId", "lootContainerId",
+            if (isMapChest)
+            {
+                if (!HasExactKeys(init, "v", "chestSessionId", "lootContainerId",
+                    "containerEpoch", "openAttemptSeq", "displayName", "capacity",
+                    "columns")) return false;
+            }
+            else if (!HasExactKeys(init, "v", "chestSessionId", "lootContainerId",
                 "containerEpoch", "openAttemptSeq", "displayName", "capacity",
-                "columns")) return false;
+                "columns", "sourceKind", "report")
+                || init.Value<string>("sourceKind") != StageSettlementSource)
+            {
+                return false;
+            }
             int version;
             int epoch;
             int openAttemptSeq;
@@ -1249,6 +1277,11 @@ namespace CF7Launcher.Guardian
                 || !TryReadInteger(init["capacity"], 1, 64, out capacity)
                 || !TryReadInteger(init["columns"], 1, 8, out columns)
                 || columns > capacity) return false;
+            JObject settlementReport = null;
+            if (isStageSettlement
+                && !TryNormalizeSettlementReport(
+                    init["report"] as JObject, out settlementReport))
+                return false;
             normalized = new OpenRequest
             {
                 ChestSessionId = chestSessionId,
@@ -1257,9 +1290,232 @@ namespace CF7Launcher.Guardian
                 OpenAttemptSeq = openAttemptSeq,
                 DisplayName = displayName,
                 Capacity = capacity,
-                Columns = columns
+                Columns = columns,
+                SourceKind = source,
+                SettlementReport = settlementReport
             };
             error = null;
+            return true;
+        }
+
+        internal static bool TryNormalizeSettlementReport(
+            JObject report, out JObject normalized)
+        {
+            normalized = null;
+            if (!HasExactKeys(report, "v", "runId", "stageName", "difficulty",
+                    "outcome", "activeFrames", "totalKills", "omittedKillTypes",
+                    "totalItemGains", "totalItemLosses", "omittedItemFlowTypes",
+                    "rewardRollOmissions", "kills", "itemFlows"))
+                return false;
+            int version;
+            string runId;
+            string stageName;
+            string difficulty;
+            string outcome;
+            long activeFrames;
+            long totalKills;
+            long omittedKillTypes;
+            long totalItemGains;
+            long totalItemLosses;
+            long omittedItemFlowTypes;
+            long rewardRollOmissions;
+            if (!TryReadInteger(report["v"], 1, 1, out version)
+                || !TryReadOpaque(report["runId"], out runId)
+                || !TryReadBoundedText(report["stageName"], 96, false, out stageName)
+                || !TryReadBoundedText(report["difficulty"], 48, false, out difficulty)
+                || !TryReadOutcome(report["outcome"], out outcome)
+                || !TryReadLong(report["activeFrames"], 0, 9007199254740991L,
+                    out activeFrames)
+                || !TryReadLong(report["totalKills"], 0, 9007199254740991L,
+                    out totalKills)
+                || !TryReadLong(report["omittedKillTypes"], 0, 9007199254740991L,
+                    out omittedKillTypes)
+                || !TryReadLong(report["totalItemGains"], 0, 9007199254740991L,
+                    out totalItemGains)
+                || !TryReadLong(report["totalItemLosses"], 0, 9007199254740991L,
+                    out totalItemLosses)
+                || !TryReadLong(report["omittedItemFlowTypes"], 0,
+                    9007199254740991L, out omittedItemFlowTypes)
+                || !TryReadLong(report["rewardRollOmissions"], 0, 9007199254740991L,
+                    out rewardRollOmissions))
+                return false;
+
+            JArray kills = report["kills"] as JArray;
+            if (kills == null || kills.Count > 96) return false;
+            JArray normalizedKills = new JArray();
+            long projectedKills = 0;
+            for (int i = 0; i < kills.Count; i++)
+            {
+                JObject kill;
+                long count;
+                if (!TryNormalizeSettlementKill(kills[i] as JObject, out kill, out count))
+                    return false;
+                if (projectedKills > 9007199254740991L - count) return false;
+                projectedKills += count;
+                normalizedKills.Add(kill);
+            }
+            if (projectedKills > totalKills) return false;
+
+            JArray itemFlows = report["itemFlows"] as JArray;
+            if (itemFlows == null || itemFlows.Count > 96) return false;
+            JArray normalizedItemFlows = new JArray();
+            long projectedGains = 0;
+            long projectedLosses = 0;
+            for (int i = 0; i < itemFlows.Count; i++)
+            {
+                JObject flow;
+                long count;
+                bool gain;
+                if (!TryNormalizeSettlementItemFlow(itemFlows[i] as JObject,
+                        out flow, out count, out gain))
+                    return false;
+                if (gain)
+                {
+                    if (projectedGains > 9007199254740991L - count) return false;
+                    projectedGains += count;
+                    if (projectedGains > totalItemGains) return false;
+                }
+                else
+                {
+                    if (projectedLosses > 9007199254740991L - count) return false;
+                    projectedLosses += count;
+                    if (projectedLosses > totalItemLosses) return false;
+                }
+                normalizedItemFlows.Add(flow);
+            }
+
+            normalized = new JObject
+            {
+                ["v"] = 1,
+                ["runId"] = runId,
+                ["stageName"] = stageName,
+                ["difficulty"] = difficulty,
+                ["outcome"] = outcome,
+                ["activeFrames"] = activeFrames,
+                ["totalKills"] = totalKills,
+                ["omittedKillTypes"] = omittedKillTypes,
+                ["totalItemGains"] = totalItemGains,
+                ["totalItemLosses"] = totalItemLosses,
+                ["omittedItemFlowTypes"] = omittedItemFlowTypes,
+                ["rewardRollOmissions"] = rewardRollOmissions,
+                ["kills"] = normalizedKills,
+                ["itemFlows"] = normalizedItemFlows
+            };
+            return true;
+        }
+
+        private static bool TryNormalizeSettlementItemFlow(
+            JObject value, out JObject normalized, out long count, out bool gain)
+        {
+            normalized = null;
+            count = 0;
+            gain = false;
+            if (!HasExactKeys(value, "direction", "kind", "itemKey", "displayName",
+                    "iconName", "tier", "source", "reason", "count"))
+                return false;
+            string direction;
+            string kind;
+            string itemKey;
+            string displayName;
+            string iconName;
+            string tier;
+            string source;
+            string reason;
+            if (!TryReadBoundedText(value["direction"], 4, false, out direction)
+                || (direction != "gain" && direction != "loss")
+                || !TryReadBoundedText(value["kind"], 16, false, out kind)
+                || !IsSettlementAssetKind(kind)
+                || !TryReadBoundedText(value["itemKey"], 128, false, out itemKey)
+                || !TryReadBoundedText(value["displayName"], 96, false,
+                    out displayName)
+                || !TryReadBoundedText(value["iconName"], 128, true, out iconName)
+                || !TryReadBoundedText(value["tier"], 48, true, out tier)
+                || !TryReadBoundedText(value["source"], 48, false, out source)
+                || !TryReadBoundedText(value["reason"], 64, true, out reason)
+                || !TryReadLong(value["count"], 1, 9007199254740991L, out count))
+                return false;
+            gain = direction == "gain";
+            normalized = new JObject
+            {
+                ["direction"] = direction,
+                ["kind"] = kind,
+                ["itemKey"] = itemKey,
+                ["displayName"] = displayName,
+                ["iconName"] = iconName,
+                ["tier"] = tier,
+                ["source"] = source,
+                ["reason"] = reason,
+                ["count"] = count
+            };
+            return true;
+        }
+
+        private static bool IsSettlementAssetKind(string kind)
+        {
+            return kind == "money" || kind == "kpoint" || kind == "intel"
+                || kind == "material" || kind == "item" || kind == "equip";
+        }
+
+        private static bool TryNormalizeSettlementKill(
+            JObject value, out JObject normalized, out long count)
+        {
+            normalized = null;
+            count = 0;
+            if (!HasExactKeys(value, "key", "displayName", "iconName", "doll",
+                    "eliteLevel", "count"))
+                return false;
+            string key;
+            string displayName;
+            string iconName;
+            int eliteLevel;
+            if (!TryReadBoundedText(value["key"], 128, false, out key)
+                || !TryReadBoundedText(value["displayName"], 96, false,
+                    out displayName)
+                || !TryReadBoundedText(value["iconName"], 128, true, out iconName)
+                || !TryReadInteger(value["eliteLevel"], 0, 16, out eliteLevel)
+                || !TryReadLong(value["count"], 1, 9007199254740991L, out count))
+                return false;
+
+            JObject doll = null;
+            if (value["doll"] == null || value["doll"].Type == JTokenType.Null)
+            {
+                doll = null;
+            }
+            else if (!TryNormalizeSettlementDoll(value["doll"] as JObject, out doll))
+            {
+                return false;
+            }
+            normalized = new JObject
+            {
+                ["key"] = key,
+                ["displayName"] = displayName,
+                ["iconName"] = iconName,
+                ["doll"] = doll != null ? (JToken)doll : JValue.CreateNull(),
+                ["eliteLevel"] = eliteLevel,
+                ["count"] = count
+            };
+            return true;
+        }
+
+        private static bool TryNormalizeSettlementDoll(
+            JObject value, out JObject normalized)
+        {
+            normalized = null;
+            string[] keys =
+            {
+                "face", "hair", "mask", "head", "body", "leg", "hand",
+                "foot", "neck", "gender"
+            };
+            if (!HasExactKeys(value, keys)) return false;
+            JObject result = new JObject();
+            for (int i = 0; i < keys.Length; i++)
+            {
+                string text;
+                if (!TryReadBoundedText(value[keys[i]], 128, true, out text))
+                    return false;
+                result[keys[i]] = text;
+            }
+            normalized = result;
             return true;
         }
 
@@ -1290,6 +1546,26 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
+        private static bool TryReadBoundedText(
+            JToken token, int maximumLength, bool allowEmpty, out string value)
+        {
+            value = token != null && token.Type == JTokenType.String
+                ? token.Value<string>() : null;
+            if (value == null || value.Length > maximumLength
+                    || (!allowEmpty && value.Length == 0))
+                return false;
+            for (int i = 0; i < value.Length; i++)
+                if (char.IsControl(value[i])) return false;
+            return true;
+        }
+
+        private static bool TryReadOutcome(JToken token, out string value)
+        {
+            value = token != null && token.Type == JTokenType.String
+                ? token.Value<string>() : null;
+            return value == "victory" || value == "failure" || value == "retreat";
+        }
+
         private static bool TryReadInteger(JToken token, int min, int max, out int value)
         {
             value = 0;
@@ -1300,6 +1576,15 @@ namespace CF7Launcher.Guardian
             if (candidate < min || candidate > max) return false;
             value = (int)candidate;
             return true;
+        }
+
+        private static bool TryReadLong(JToken token, long min, long max, out long value)
+        {
+            value = 0;
+            if (token == null || token.Type != JTokenType.Integer) return false;
+            try { value = token.Value<long>(); }
+            catch (Exception) { return false; }
+            return value >= min && value <= max;
         }
 
         private static bool HasExactKeys(JObject value, params string[] expected)

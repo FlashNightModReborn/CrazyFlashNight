@@ -431,7 +431,7 @@ node tools/test-panel-lazy-loader-browser.js
 node tools/run-item-grid-visual-matrix.js --shot=tmp/item-grid-visual-matrix.png
 ```
 
-runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或结构契约失败；warning 表示 reduced-motion 仍有动画等已登记债务。F0 之后 `--strict-warnings` 还会执行 touched-line / baseline ratchet；历史债务由冻结基线控制，不靠把既有债务重新打印成 warning 制造假红。
+runner 的 error 表示几何、溢出、焦点、命中区、二级页覆盖或结构契约失败；warning 表示 reduced-motion 仍有动画等已登记债务。F0 之后 `--strict-warnings` 还会执行 touched-line / baseline ratchet；历史债务由冻结基线控制，不靠把既有债务重新打印成 warning 制造假红。模块递归审计只消费产品源码，显式排除 `dev/`、`node_modules/` 与 `.test-dist/`；本地依赖和测试构建既不属于 release tree，也不得因体积或压缩源码拖慢、污染产品模块合同。
 
 | 改动面 | 必跑 |
 |--------|------|

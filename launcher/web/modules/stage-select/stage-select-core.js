@@ -122,7 +122,9 @@
         S._lastError = error || 'unknown_error';
         if (S._logEl) {
             S._logEl.classList.add('is-error');
-            S._logEl.textContent = S._lastError;
+            S._logEl.textContent = S._lastError === 'pending_stage_settlement'
+                ? '请先领取或放弃上一关尚未处理的奖励。'
+                : S._lastError;
         }
     }
 

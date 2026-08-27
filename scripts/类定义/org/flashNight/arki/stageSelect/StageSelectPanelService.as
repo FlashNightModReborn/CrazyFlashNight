@@ -86,6 +86,17 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             return;
         }
 
+        if (entryKind != "map"
+                && !org.flashNight.arki.scene.StageRunSession.canStartStage()) {
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: false,
+                error: "pending_stage_settlement"
+            });
+            return;
+        }
+
         // 角斗场重定向：difficulty enter 命中 DEATH MATCH 角斗场时不跳旧 Flash 选关帧
         // (FadeTransitionFrame="角斗场选择挑战者"), 改为通过 C# LauncherCommandRouter
         // 打开 arena web panel。difficulty 透传到 arena enter 链路终点，让任务系统

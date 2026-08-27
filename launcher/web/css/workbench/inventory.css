@@ -274,6 +274,754 @@
 }
 .loot-abandon-btn:hover:not(:disabled) { color:#ffc1b5; border-color:#c84f3f; }
 .loot-reconcile-btn[hidden],.loot-abandon-btn[hidden] { display:none; }
+.loot-inventory-btn {
+    margin-right:5px; color:var(--wb-text); border-color:var(--wb-line-strong);
+    background:var(--wb-surface);
+}
+.loot-inventory-btn:hover:not(:disabled) { color:var(--wb-focus); border-color:var(--wb-focus); }
+.loot-settlement-report {
+    display:block; min-width:0; overflow:hidden;
+    border:1px solid var(--wb-line-soft);
+    background:color-mix(in srgb,var(--wb-bg) 82%,transparent);
+}
+.loot-settlement-report-scroll {
+    display:flex; flex-direction:column; gap:12px; height:100%; min-height:0;
+    padding:10px; box-sizing:border-box; overflow-y:auto; overflow-x:hidden;
+    scrollbar-width:thin;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+}
+.loot-settlement-side {
+    display:grid; grid-template-rows:32px minmax(0,1fr); min-width:0;
+    border:1px solid var(--wb-line-soft);
+    background:color-mix(in srgb,var(--wb-bg) 82%,transparent);
+}
+.loot-settlement-tabs {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:3px;
+    border-bottom:1px solid var(--wb-line-soft); background:var(--wb-bg);
+}
+.loot-settlement-side-tabs { grid-template-columns:repeat(2,1fr); }
+.loot-settlement-tabs button {
+    min-width:0; border:1px solid transparent; color:var(--wb-muted); background:transparent;
+    font:600 11px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
+}
+.loot-settlement-tabs button:hover,.loot-settlement-tabs button:focus-visible {
+    color:var(--wb-text); border-color:var(--wb-line-strong);
+}
+.loot-settlement-tabs button[aria-selected="true"] {
+    color:var(--wb-text); border-color:var(--wb-accent);
+    background:linear-gradient(180deg,var(--wb-accent-soft),var(--wb-surface));
+    box-shadow:inset 0 -2px var(--wb-accent);
+}
+.loot-settlement-side-body { min-height:0; overflow:hidden; }
+.loot-settlement-reward-section { height:100%; min-height:0; }
+.loot-settlement-report-section {
+    display:grid; grid-template-rows:auto auto auto auto; gap:8px;
+    min-height:0; box-sizing:border-box;
+}
+.loot-settlement-reward-section[hidden],
+.loot-settlement-material-section[hidden] { display:none; }
+.loot-settlement-hero {
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    min-height:46px; padding:5px 8px; border-left:3px solid var(--wb-accent);
+    background:linear-gradient(90deg,var(--wb-accent-soft),var(--wb-surface));
+}
+.loot-settlement-hero small,.loot-settlement-kill-heading small,
+.loot-settlement-flow-toolbar small,.loot-settlement-material-toolbar small {
+    color:var(--wb-muted); font:10px/1 Consolas,monospace; letter-spacing:1.2px;
+}
+.loot-settlement-hero h2,.loot-settlement-kill-heading h3,
+.loot-settlement-flow-toolbar h2,.loot-settlement-material-toolbar h2 {
+    margin:3px 0 0; color:var(--wb-text); font-size:15px;
+}
+.loot-settlement-hero p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
+.loot-settlement-hero > strong {
+    flex:0 0 auto; padding:5px 8px; border:1px solid var(--wb-line-strong);
+    color:var(--wb-focus); background:var(--wb-surface); font:700 12px/1 "Microsoft YaHei",sans-serif;
+}
+.loot-settlement-hero > strong[data-outcome="victory"] {
+    color:var(--wb-semantic-success); border-color:var(--wb-semantic-success);
+    background:color-mix(in srgb,var(--wb-semantic-success) 9%,var(--wb-bg));
+}
+.loot-settlement-hero > strong[data-outcome="failure"] {
+    color:var(--wb-semantic-danger); border-color:var(--wb-semantic-danger);
+    background:color-mix(in srgb,var(--wb-semantic-danger) 9%,var(--wb-bg));
+}
+.loot-settlement-metrics { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.loot-settlement-metrics > div {
+    display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto auto;
+    align-items:end; gap:1px 7px; padding:7px 8px; border:1px solid var(--wb-line-soft);
+    background:var(--wb-card-surface);
+}
+.loot-settlement-metrics small { color:var(--wb-muted); font-size:10px; }
+.loot-settlement-metrics b { grid-row:1 / 3; grid-column:2; color:var(--wb-semantic-warning); font:700 18px/1 Consolas,monospace; }
+.loot-settlement-metrics em { color:var(--wb-muted); font:normal 10px/1.3 "Microsoft YaHei",sans-serif; }
+.loot-settlement-kill-heading { display:flex; align-items:end; justify-content:space-between; gap:8px; }
+.loot-settlement-kill-heading span { color:var(--wb-muted); font:10px/1.35 "Microsoft YaHei",sans-serif; text-align:right; }
+.loot-settlement-kills,.loot-settlement-materials {
+    min-height:0; scrollbar-width:thin;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+}
+.loot-settlement-kills {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(142px,1fr));
+    grid-auto-rows:min-content; align-content:start; gap:5px;
+}
+.loot-settlement-kill-card {
+    position:relative; display:grid; grid-template-columns:42px minmax(0,1fr) auto;
+    align-items:center; gap:6px; min-height:48px; padding:4px 6px;
+    border:1px solid var(--wb-line-soft); background:var(--wb-surface);
+}
+.loot-settlement-kill-card[data-elite] {
+    border-color:color-mix(in srgb,var(--wb-semantic-warning) 45%,transparent);
+}
+.loot-settlement-kill-avatar {
+    position:relative; display:grid; place-items:center; width:40px; height:40px; overflow:hidden;
+    border:1px solid var(--wb-line);
+    background:radial-gradient(circle,var(--wb-surface),var(--wb-bg) 70%);
+}
+.loot-settlement-kill-icon,.loot-settlement-kill-avatar .cfn-layered-icon {
+    width:36px; height:36px; object-fit:contain;
+}
+.loot-settlement-kill-fallback {
+    position:absolute; z-index:0; width:13px; height:13px;
+    border:1px solid color-mix(in srgb,var(--wb-muted) 48%,transparent); transform:rotate(45deg);
+    box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--wb-muted) 8%,transparent);
+}
+.loot-settlement-kill-portrait,.loot-settlement-kill-icon-fallback {
+    position:absolute; z-index:1; inset:1px; display:grid; place-items:center;
+    width:38px; height:38px; object-fit:contain;
+}
+.loot-settlement-kill-portrait {
+    opacity:0;
+    transition:opacity var(--wb-motion-standard) var(--wb-ease-standard);
+}
+.loot-settlement-kill-avatar[data-portrait-source="doll"] .loot-settlement-kill-portrait,
+.loot-settlement-kill-avatar[data-portrait-source="svg"] .loot-settlement-kill-portrait,
+.loot-settlement-kill-avatar[data-portrait-source="png"] .loot-settlement-kill-portrait,
+.loot-settlement-kill-avatar[data-portrait-source="legacy"] .loot-settlement-kill-portrait,
+.loot-settlement-kill-avatar[data-portrait-source="locked"] .loot-settlement-kill-portrait {
+    opacity:1;
+}
+.loot-settlement-kill-avatar[data-portrait-source="doll"] .loot-settlement-kill-fallback,
+.loot-settlement-kill-avatar[data-portrait-source="svg"] .loot-settlement-kill-fallback,
+.loot-settlement-kill-avatar[data-portrait-source="png"] .loot-settlement-kill-fallback,
+.loot-settlement-kill-avatar[data-portrait-source="legacy"] .loot-settlement-kill-fallback,
+.loot-settlement-kill-avatar[data-portrait-source="locked"] .loot-settlement-kill-fallback,
+.loot-settlement-kill-avatar[data-portrait-source="icon"] .loot-settlement-kill-fallback {
+    display:none;
+}
+.loot-settlement-kill-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.loot-settlement-kill-copy b { overflow:hidden; color:var(--wb-text); font-size:11px; text-overflow:ellipsis; white-space:nowrap; }
+.loot-settlement-kill-copy small { color:var(--wb-muted); font-size:10px; }
+.loot-settlement-kill-card > strong { color:var(--wb-semantic-warning); font:700 13px/1 Consolas,monospace; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-report-section {
+    grid-template-rows:auto auto auto auto; gap:5px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-report-scroll {
+    gap:8px; padding:7px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-hero {
+    min-height:36px; padding:3px 6px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-hero h2 { font-size:13px; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-hero p { margin-top:1px; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-hero > strong {
+    padding:4px 6px; font-size:10px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-metrics { gap:4px; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-metrics > div { padding:4px 6px; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-metrics b { font-size:15px; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-metrics em { display:none; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-kill-heading h3 {
+    margin-top:1px; font-size:13px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-kills {
+    grid-template-columns:repeat(auto-fill,48px); grid-auto-rows:48px;
+    justify-content:start; gap:4px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-kill-card {
+    display:block; box-sizing:border-box; width:48px; min-width:48px;
+    height:48px; min-height:48px; padding:2px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-kill-avatar {
+    width:42px; height:42px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-kill-portrait,
+.loot-settlement-report.loot-settlement-compact .loot-settlement-kill-icon-fallback {
+    width:40px; height:40px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-kill-copy { display:none; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-kill-card > strong {
+    position:absolute; z-index:3; right:0; bottom:0; padding:1px 2px;
+    color:var(--wb-semantic-warning);
+    border:1px solid color-mix(in srgb,var(--wb-semantic-warning) 45%,transparent);
+    background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
+    font-size:10px;
+}
+.loot-settlement-flow-section {
+    display:grid; grid-template-rows:auto auto auto; gap:7px;
+    min-height:0; padding-top:10px; box-sizing:border-box;
+    border-top:1px solid var(--wb-line-soft);
+}
+.loot-settlement-flow-toolbar {
+    display:flex; align-items:end; justify-content:space-between; gap:8px;
+}
+.loot-settlement-flow-toolbar span {
+    color:var(--wb-muted); font:10px/1.35 "Microsoft YaHei",sans-serif; text-align:right;
+}
+.loot-settlement-flow-metrics { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.loot-settlement-flow-metrics > div {
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    min-height:32px; padding:4px 8px; border:1px solid var(--wb-line-soft);
+    background:var(--wb-card-surface);
+}
+.loot-settlement-flow-metrics small { color:var(--wb-muted); font-size:10px; }
+.loot-settlement-flow-metrics b { color:var(--wb-semantic-success); font:700 15px/1 Consolas,monospace; }
+.loot-settlement-flow-metrics > div:last-child b { color:var(--wb-semantic-danger); }
+.loot-settlement-flows {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(142px,1fr));
+    grid-auto-rows:min-content; align-content:start; gap:5px; min-height:0;
+}
+.loot-settlement-flow-card {
+    position:relative; display:grid; grid-template-columns:36px minmax(0,1fr) auto;
+    align-items:center; gap:6px; min-height:42px; padding:4px 6px;
+    border:1px solid var(--wb-line-soft); border-left:2px solid var(--wb-semantic-success);
+    background:var(--wb-surface);
+}
+.loot-settlement-flow-card[data-direction="loss"] { border-left-color:var(--wb-semantic-danger); }
+.loot-settlement-flow-icon {
+    display:grid; place-items:center; width:34px; height:34px; overflow:hidden;
+    border:1px solid var(--wb-line); background:var(--wb-bg);
+}
+.loot-settlement-flow-image,.loot-settlement-flow-icon .cfn-layered-icon {
+    width:31px; height:31px; object-fit:contain;
+}
+.loot-settlement-flow-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.loot-settlement-flow-copy b {
+    overflow:hidden; color:var(--wb-text); font-size:10px; text-overflow:ellipsis; white-space:nowrap;
+}
+.loot-settlement-flow-copy small {
+    overflow:hidden; color:var(--wb-muted); font-size:10px; text-overflow:ellipsis; white-space:nowrap;
+}
+.loot-settlement-flow-card > strong { color:var(--wb-semantic-success); font:700 12px/1 Consolas,monospace; }
+.loot-settlement-flow-card[data-direction="loss"] > strong { color:var(--wb-semantic-danger); }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-section { gap:5px; padding-top:7px; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-toolbar h2 { font-size:13px; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-metrics > div {
+    min-height:27px; padding:3px 6px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-flows {
+    grid-template-columns:repeat(auto-fill,48px); grid-auto-rows:48px;
+    justify-content:start; gap:4px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-card {
+    display:block; box-sizing:border-box; width:48px; min-width:48px;
+    height:48px; min-height:48px; padding:5px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-icon {
+    width:36px; height:36px;
+}
+.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-copy { display:none; }
+.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-card > strong {
+    position:absolute; z-index:2; right:0; bottom:0; padding:1px 2px;
+    border:1px solid currentColor; background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
+    font-size:10px;
+}
+.loot-settlement-material-section {
+    display:grid; grid-template-rows:auto auto minmax(0,1fr); gap:7px;
+    height:100%; min-height:0; padding:10px; box-sizing:border-box;
+}
+.loot-settlement-material-toolbar { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.loot-settlement-material-toolbar input {
+    width:138px; height:25px; padding:0 7px; border:1px solid var(--wb-line);
+    color:var(--wb-text); background:var(--wb-bg); font:10px/1 "Microsoft YaHei",sans-serif;
+}
+.loot-settlement-material-toolbar input:focus { border-color:var(--wb-focus); }
+.loot-settlement-material-status { margin:0; color:var(--wb-muted); font-size:10px; }
+.loot-settlement-material-status[data-state="error"] { color:var(--wb-semantic-danger); }
+.loot-settlement-material-status[data-state="busy"] { color:var(--wb-semantic-warning); }
+.loot-settlement-materials {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+    grid-auto-rows:min-content; align-content:start; gap:5px; padding-right:3px;
+    overflow:auto;
+}
+.loot-settlement-material-card {
+    display:grid; grid-template-columns:34px minmax(0,1fr) auto; align-items:center; gap:6px;
+    min-height:40px; padding:4px 6px; border:1px solid var(--wb-line-soft);
+    background:var(--wb-surface);
+}
+.loot-settlement-material-card.is-empty { opacity:.5; }
+.loot-settlement-material-icon {
+    display:grid; place-items:center; width:32px; height:32px; border:1px solid var(--wb-line);
+    background:var(--wb-bg);
+}
+.loot-settlement-material-image,.loot-settlement-material-icon .cfn-layered-icon {
+    width:29px; height:29px; object-fit:contain;
+}
+.loot-settlement-material-card b { overflow:hidden; color:var(--wb-text); font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+.loot-settlement-material-card strong { color:var(--wb-semantic-warning); font:700 12px/1 Consolas,monospace; }
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-section {
+    gap:5px; padding:7px;
+}
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-toolbar h2 {
+    margin-top:1px; font-size:13px;
+}
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-toolbar input {
+    width:110px; height:23px;
+}
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-status {
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.loot-settlement-side.loot-settlement-compact .loot-settlement-materials {
+    grid-template-columns:repeat(auto-fill,48px); grid-auto-rows:48px;
+    justify-content:start; gap:4px;
+}
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-card {
+    position:relative; display:block; box-sizing:border-box;
+    width:48px; min-width:48px; height:48px; min-height:48px; padding:5px;
+}
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-icon {
+    width:36px; height:36px;
+}
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-image,
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-icon .cfn-layered-icon {
+    width:33px; height:33px;
+}
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-card b { display:none; }
+.loot-settlement-side.loot-settlement-compact .loot-settlement-material-card strong {
+    position:absolute; z-index:2; right:0; bottom:0; padding:1px 2px;
+    border:1px solid currentColor; background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
+    font-size:10px;
+}
+.loot-settlement-empty {
+    grid-column:1 / -1; margin:18px 0; color:var(--wb-muted); font-size:10px; text-align:center;
+}
+
+/* 关卡结算仍使用 DualPaneShell 的权威与交互结构，但视觉明确归属
+   Launcher 首页 / Settings 的黑铁终端族。色值只消费 tokens.css 的
+   --launcher-* / --dls-* / --term-* 真源，不影响地图资源箱与库存工作台。 */
+.loot-workbench.loot-stage-settlement {
+    --wb-bg:var(--launcher-bg-0);
+    --wb-surface:var(--launcher-bg-1);
+    --wb-panel:var(--term-surface-card);
+    --wb-surface-2:color-mix(in srgb,var(--launcher-bg-1) 82%,var(--dls-crystal-dim));
+    --wb-line:color-mix(in srgb,var(--launcher-copy) 22%,transparent);
+    --wb-line-soft:color-mix(in srgb,var(--dls-crystal-dim) 72%,transparent);
+    --wb-line-strong:color-mix(in srgb,var(--dls-crystal) 42%,var(--launcher-rust-dim));
+    --wb-text:var(--term-ink-hi);
+    --wb-muted:var(--term-ink-faint);
+    --wb-accent:var(--dls-crystal);
+    --wb-accent-soft:rgba(var(--dls-crystal-rgb),.1);
+    --wb-focus:var(--dls-crystal-bright);
+    --wb-header-height:58px;
+    color:var(--launcher-copy);
+    border:1px solid var(--dls-crystal-dim);
+    border-right-color:var(--launcher-rust-dim);
+    background:
+        radial-gradient(ellipse at 50% 108%,rgba(var(--dls-crystal-rgb),.09),transparent 50%),
+        radial-gradient(ellipse at 50% -12%,rgba(var(--launcher-rust-rgb),.07),transparent 56%),
+        linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.018) 1px,transparent 1px),
+        linear-gradient(180deg,rgba(var(--dls-crystal-rgb),.014) 1px,transparent 1px),
+        var(--launcher-bg-0);
+    background-size:auto,auto,28px 28px,28px 28px,auto;
+    font-family:"Segoe UI","Microsoft YaHei",sans-serif;
+    animation:termBoot var(--wb-motion-structural) var(--wb-ease-emphasized);
+}
+.loot-stage-settlement::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    opacity:.1;
+    background-image:repeating-linear-gradient(0deg,
+        rgba(var(--dls-crystal-rgb),.12) 0,
+        rgba(var(--dls-crystal-rgb),.12) 1px,
+        transparent 1px,transparent 3px);
+}
+.loot-stage-settlement::after {
+    box-shadow:inset 12px 0 0 -11px rgba(var(--dls-crystal-rgb),.26),
+        inset -12px 0 0 -11px rgba(var(--launcher-rust-rgb),.24),
+        inset 0 -80px 100px color-mix(in srgb,var(--launcher-bg-0) 20%,transparent);
+}
+.loot-stage-settlement .workbench-header {
+    gap:8px;
+    padding:7px 11px 7px 16px;
+    background:linear-gradient(180deg,
+        color-mix(in srgb,var(--launcher-bg-0) 94%,transparent),
+        var(--term-surface-veil));
+    border-bottom-color:var(--launcher-rust-dim);
+}
+.loot-stage-settlement .workbench-header::before {
+    left:16px;
+    width:112px;
+    height:1px;
+    background:var(--dls-crystal);
+    box-shadow:0 0 7px rgba(var(--dls-crystal-rgb),.55);
+}
+.loot-stage-settlement .loot-settlement-brand {
+    --term-seal-chamfer:7px;
+    --term-seal-fs:11px;
+    --term-seal-ls:2px;
+    --term-seal-pad:6px 11px 6px 9px;
+}
+.loot-stage-settlement .workbench-identity { flex:1 1 170px; }
+.loot-stage-settlement .workbench-eyebrow {
+    color:var(--launcher-dust);
+    font:10px/1.05 Consolas,var(--cf7-font-web-overlay-mono),monospace;
+    letter-spacing:2.5px;
+}
+.loot-stage-settlement .workbench-title {
+    margin-top:3px;
+    color:var(--term-ink-hi);
+    font-size:18px;
+    line-height:1;
+    letter-spacing:1px;
+    text-shadow:0 0 10px rgba(var(--dls-crystal-rgb),.18);
+}
+.loot-stage-settlement .workbench-subtitle {
+    margin-top:2px;
+    color:var(--term-ink-faint);
+    font:9px/1.1 Consolas,"Microsoft YaHei",monospace;
+    letter-spacing:.7px;
+}
+.loot-stage-settlement .workbench-status {
+    min-width:112px;
+    padding:6px 9px;
+    color:var(--term-ink-md);
+    border-color:color-mix(in srgb,var(--launcher-copy) 22%,transparent);
+    background:var(--term-surface-veil);
+    text-align:right;
+}
+.loot-stage-settlement .workbench-status::before {
+    color:var(--launcher-dust);
+    text-shadow:none;
+}
+.loot-stage-settlement .workbench-status[data-state="ready"] {
+    color:var(--dls-crystal);
+    border-color:var(--dls-crystal-dim);
+}
+.loot-stage-settlement .workbench-status[data-state="ready"]::before {
+    color:var(--dls-crystal);
+    text-shadow:0 0 6px var(--dls-crystal);
+}
+.loot-stage-settlement .workbench-metrics { gap:4px; }
+.loot-stage-settlement .workbench-metric {
+    min-width:66px;
+    padding:3px 8px;
+    border-left:2px solid var(--dls-crystal);
+    background:var(--term-surface-inset);
+}
+.loot-stage-settlement .workbench-metric span {
+    color:var(--term-ink-faint);
+    font:10px/1 Consolas,monospace;
+    letter-spacing:1px;
+}
+.loot-stage-settlement .workbench-metric b {
+    color:var(--launcher-bone);
+    font-size:14px;
+}
+.loot-stage-settlement .workbench-header-actions { gap:3px; }
+.loot-stage-settlement .item-grid-mode-toggle {
+    min-height:27px;
+    margin:0 2px;
+    padding:2px;
+    border:1px solid var(--dls-crystal-dim);
+    background:var(--term-surface-inset);
+}
+.loot-stage-settlement .item-grid-mode-label { display:none; }
+.loot-stage-settlement .workbench-mode-btn,
+.loot-stage-settlement .workbench-help-btn {
+    min-height:27px;
+    padding:0 9px;
+    color:var(--launcher-bone);
+    border:1px solid var(--launcher-dust);
+    background:var(--term-surface-inset);
+    clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);
+    font:600 10px/1.1 "Segoe UI","Microsoft YaHei",sans-serif;
+    letter-spacing:.4px;
+}
+.loot-stage-settlement .workbench-mode-btn:hover,
+.loot-stage-settlement .workbench-mode-btn:focus-visible,
+.loot-stage-settlement .workbench-help-btn:hover,
+.loot-stage-settlement .workbench-help-btn:focus-visible {
+    color:var(--dls-crystal);
+    border-color:var(--dls-crystal);
+    background:rgba(var(--dls-crystal-rgb),.07);
+    text-shadow:0 0 5px rgba(var(--dls-crystal-rgb),.45);
+}
+.loot-stage-settlement .workbench-mode-btn.active {
+    color:color-mix(in srgb,var(--launcher-bg-0) 78%,var(--dls-crystal-dim));
+    border-color:var(--dls-crystal);
+    background:var(--dls-crystal);
+    box-shadow:0 0 9px rgba(var(--dls-crystal-rgb),.2);
+    text-shadow:none;
+}
+.loot-stage-settlement .loot-inventory-btn {
+    color:var(--dls-crystal);
+    border-color:var(--dls-crystal-dim);
+    background:rgba(var(--dls-crystal-rgb),.045);
+}
+.loot-stage-settlement .loot-abandon-btn {
+    color:var(--launcher-rust);
+    border-color:rgba(var(--launcher-rust-rgb),.48);
+    background:rgba(var(--launcher-rust-rgb),.035);
+}
+.loot-stage-settlement .loot-abandon-btn:hover:not(:disabled),
+.loot-stage-settlement .loot-abandon-btn:focus-visible {
+    color:var(--term-ink-hi);
+    border-color:var(--launcher-rust);
+    background:var(--launcher-rust);
+    text-shadow:none;
+}
+.loot-stage-settlement .workbench-close-btn {
+    width:33px;
+    height:31px;
+    color:var(--launcher-rust);
+    border:1px solid rgba(var(--launcher-rust-rgb),.42);
+    background:transparent;
+    clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);
+}
+.loot-stage-settlement .workbench-close-btn:hover,
+.loot-stage-settlement .workbench-close-btn:focus-visible {
+    color:var(--term-ink-hi);
+    border-color:var(--launcher-rust);
+    background:var(--launcher-rust);
+    box-shadow:0 0 10px rgba(var(--launcher-rust-rgb),.38);
+}
+.loot-stage-settlement > .workbench-body {
+    gap:7px;
+    padding:8px 12px 9px;
+}
+.loot-stage-settlement .workbench-slot {
+    border-color:var(--dls-crystal-dim);
+    background:color-mix(in srgb,var(--launcher-bg-0) 90%,transparent);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%);
+}
+.loot-stage-settlement .workbench-slot[data-slot="R"] {
+    border-right-color:var(--launcher-rust-dim);
+}
+.loot-stage-settlement .workbench-slot.active {
+    border-color:color-mix(in srgb,var(--dls-crystal) 58%,var(--dls-crystal-dim));
+    box-shadow:inset 2px 0 0 var(--dls-crystal-dim);
+}
+.loot-stage-settlement .workbench-slot-marker {
+    height:22px;
+    color:var(--term-ink-faint);
+    border-bottom-color:var(--launcher-rust-dim);
+    background:var(--term-surface-inset);
+    font:10px/1 Consolas,"Microsoft YaHei",monospace;
+    letter-spacing:1.4px;
+}
+.loot-stage-settlement .workbench-slot-marker b {
+    color:var(--launcher-bg-0);
+    background:var(--dls-crystal);
+}
+.loot-stage-settlement .workbench-slot[data-slot="R"] .workbench-slot-marker b {
+    color:var(--launcher-bone);
+    background:var(--launcher-rust-deep);
+}
+.loot-stage-settlement .workbench-flow-rail {
+    color:var(--launcher-dust);
+    border-color:var(--launcher-rust-dim);
+    background:linear-gradient(180deg,transparent,var(--term-surface-inset) 18%,
+        var(--term-surface-inset) 82%,transparent);
+}
+.loot-stage-settlement .workbench-flow-arrow {
+    color:var(--dls-crystal);
+    border-color:var(--dls-crystal-dim);
+    background:rgba(var(--dls-crystal-rgb),.08);
+}
+.loot-stage-settlement .workbench-flow-label {
+    color:var(--launcher-dust);
+    font-size:10px;
+}
+.loot-stage-settlement .loot-settlement-report,
+.loot-stage-settlement .loot-settlement-side {
+    border:0;
+    background:transparent;
+}
+.loot-stage-settlement .loot-settlement-tabs {
+    padding:2px 4px 0;
+    border-bottom:1px solid var(--launcher-rust-dim);
+    background:var(--term-surface-veil);
+}
+.loot-stage-settlement .loot-settlement-tabs button {
+    color:var(--launcher-dust);
+    border:0;
+    border-bottom:2px solid transparent;
+    background:transparent;
+    font:600 10px/1 "Segoe UI","Microsoft YaHei",sans-serif;
+    letter-spacing:1px;
+}
+.loot-stage-settlement .loot-settlement-tabs button:hover,
+.loot-stage-settlement .loot-settlement-tabs button:focus-visible {
+    color:var(--term-ink-hi);
+    border-color:transparent;
+    background:rgba(var(--dls-crystal-rgb),.05);
+}
+.loot-stage-settlement .loot-settlement-tabs button[aria-selected="true"] {
+    color:var(--dls-crystal);
+    border-color:var(--dls-crystal);
+    background:rgba(var(--dls-crystal-rgb),.06);
+    box-shadow:0 1px 7px -2px rgba(var(--dls-crystal-rgb),.55);
+    text-shadow:0 0 6px rgba(var(--dls-crystal-rgb),.42);
+}
+.loot-stage-settlement .loot-settlement-hero {
+    border-left:2px solid var(--launcher-rust);
+    background:linear-gradient(90deg,rgba(var(--launcher-rust-rgb),.08),var(--term-surface-inset));
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%);
+}
+.loot-stage-settlement .loot-settlement-hero small,
+.loot-stage-settlement .loot-settlement-kill-heading small,
+.loot-stage-settlement .loot-settlement-flow-toolbar small,
+.loot-stage-settlement .loot-settlement-material-toolbar small {
+    color:var(--launcher-rust);
+    letter-spacing:2px;
+}
+.loot-stage-settlement .loot-settlement-hero h2,
+.loot-stage-settlement .loot-settlement-kill-heading h3,
+.loot-stage-settlement .loot-settlement-flow-toolbar h2,
+.loot-stage-settlement .loot-settlement-material-toolbar h2 {
+    color:var(--term-ink-hi);
+}
+.loot-stage-settlement .loot-settlement-hero p,
+.loot-stage-settlement .loot-settlement-kill-heading span,
+.loot-stage-settlement .loot-settlement-flow-toolbar span,
+.loot-stage-settlement .loot-settlement-material-status {
+    color:var(--term-ink-faint);
+}
+.loot-stage-settlement .loot-settlement-hero > strong {
+    color:var(--dls-crystal);
+    border-color:var(--dls-crystal-dim);
+    background:rgba(var(--dls-crystal-rgb),.05);
+    clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);
+}
+.loot-stage-settlement .loot-settlement-hero > strong[data-outcome="victory"] {
+    color:var(--dls-crystal);
+    border-color:var(--dls-crystal);
+    background:rgba(var(--dls-crystal-rgb),.08);
+}
+.loot-stage-settlement .loot-settlement-hero > strong[data-outcome="failure"] {
+    color:var(--launcher-rust);
+    border-color:var(--launcher-rust);
+    background:rgba(var(--launcher-rust-rgb),.08);
+}
+.loot-stage-settlement .loot-settlement-metrics > div {
+    border:1px solid var(--dls-crystal-dim);
+    border-left:2px solid var(--launcher-rust-dim);
+    background:var(--term-surface-inset);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%);
+}
+.loot-stage-settlement .loot-settlement-metrics small { color:var(--term-ink-lo); }
+.loot-stage-settlement .loot-settlement-metrics b { color:var(--launcher-bone); }
+.loot-stage-settlement .loot-settlement-metrics em { color:var(--term-ink-faint); }
+.loot-stage-settlement .loot-settlement-kill-card,
+.loot-stage-settlement .loot-settlement-flow-card,
+.loot-stage-settlement .loot-settlement-material-card {
+    border-color:var(--dls-crystal-dim);
+    border-left:2px solid var(--launcher-rust-dim);
+    background:var(--term-surface-card);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%);
+}
+.loot-stage-settlement .loot-settlement-kill-card[data-elite] {
+    border-color:color-mix(in srgb,var(--launcher-bone) 52%,var(--launcher-rust-dim));
+}
+.loot-stage-settlement .loot-settlement-kill-avatar,
+.loot-stage-settlement .loot-settlement-flow-icon,
+.loot-stage-settlement .loot-settlement-material-icon {
+    border-color:var(--dls-crystal-dim);
+    background:radial-gradient(circle,rgba(var(--dls-crystal-rgb),.11),var(--launcher-bg-0) 72%);
+}
+.loot-stage-settlement .loot-settlement-kill-fallback {
+    border-color:color-mix(in srgb,var(--launcher-dust) 62%,transparent);
+    box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--launcher-dust) 12%,transparent);
+}
+.loot-stage-settlement .loot-settlement-kill-copy b,
+.loot-stage-settlement .loot-settlement-flow-copy b,
+.loot-stage-settlement .loot-settlement-material-card b { color:var(--term-ink-md); }
+.loot-stage-settlement .loot-settlement-kill-copy small,
+.loot-stage-settlement .loot-settlement-flow-copy small { color:var(--term-ink-faint); }
+.loot-stage-settlement .loot-settlement-kill-card > strong,
+.loot-stage-settlement .loot-settlement-material-card strong { color:var(--launcher-bone); }
+.loot-stage-settlement .loot-settlement-material-toolbar input {
+    color:var(--term-ink-hi);
+    border-color:var(--dls-crystal-dim);
+    background:var(--term-surface-inset);
+    clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);
+}
+.loot-stage-settlement .loot-settlement-material-toolbar input:focus {
+    border-color:var(--dls-crystal);
+    box-shadow:0 0 8px rgba(var(--dls-crystal-rgb),.2);
+}
+.loot-stage-settlement .workbench-view-chrome {
+    padding:7px 9px 6px;
+    border-bottom-color:var(--launcher-rust-dim);
+    background:linear-gradient(90deg,rgba(var(--launcher-rust-rgb),.075),var(--term-surface-inset));
+}
+.loot-stage-settlement .workbench-view-kicker {
+    color:var(--launcher-rust);
+    letter-spacing:2px;
+}
+.loot-stage-settlement .workbench-view-title { color:var(--term-ink-hi); }
+.loot-stage-settlement .workbench-view-meta { color:var(--term-ink-faint); }
+.loot-stage-settlement .workbench-grid-container { background:transparent; }
+.loot-stage-settlement .inventory-owned-grid { padding:7px; }
+.loot-stage-settlement .inventory-slot-card {
+    color:var(--term-ink-md);
+    border-color:var(--dls-crystal-dim);
+    border-left:2px solid var(--launcher-rust-dim);
+    background:var(--term-surface-card);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%);
+}
+.loot-stage-settlement .inventory-slot-card.occupied:hover,
+.loot-stage-settlement .inventory-slot-card.workbench-source-selected {
+    border-color:var(--dls-crystal);
+    background:rgba(var(--dls-crystal-rgb),.08);
+}
+.loot-stage-settlement .inventory-slot-card.empty {
+    border-color:color-mix(in srgb,var(--dls-crystal-dim) 42%,transparent);
+    background:var(--term-surface-inset);
+}
+.loot-stage-settlement .loot-commit-bar {
+    min-height:50px;
+    border-top-color:var(--launcher-rust-dim);
+    background:linear-gradient(0deg,rgba(var(--dls-crystal-rgb),.04),var(--term-surface-veil));
+}
+.loot-stage-settlement .loot-commit-bar .workbench-commit-status {
+    color:var(--term-ink-lo);
+    font:10px/1.35 Consolas,"Microsoft YaHei",monospace;
+}
+.loot-stage-settlement .loot-commit-bar .workbench-commit-primary {
+    min-height:38px;
+    color:color-mix(in srgb,var(--launcher-bg-0) 82%,var(--dls-crystal-dim));
+    border:1px solid var(--dls-crystal);
+    background:var(--dls-crystal);
+    clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+    box-shadow:0 0 10px rgba(var(--dls-crystal-rgb),.2);
+}
+.loot-stage-settlement .loot-commit-bar .workbench-commit-primary:hover:not(:disabled),
+.loot-stage-settlement .loot-commit-bar .workbench-commit-primary:focus-visible {
+    color:var(--launcher-bg-0);
+    background:var(--dls-crystal-bright);
+}
+.loot-stage-settlement .workbench-modal {
+    color:var(--launcher-copy);
+    border:1px solid var(--dls-crystal-dim);
+    border-left:3px solid var(--launcher-rust-dim);
+    background:var(--term-surface-card);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
+}
+.loot-stage-settlement .workbench-modal-action {
+    color:var(--launcher-bone);
+    border-color:var(--launcher-dust);
+    background:var(--term-surface-inset);
+    clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);
+}
+.loot-stage-settlement .workbench-modal-action.primary {
+    color:var(--launcher-bg-0);
+    border-color:var(--dls-crystal);
+    background:var(--dls-crystal);
+}
 .loot-commit-bar { position:relative; z-index:3; }
 .loot-commit-bar.is-blocked { border-top-color:var(--wb-danger); }
 .loot-commit-bar .workbench-commit-status { padding-left:4px; font-size:11px; }

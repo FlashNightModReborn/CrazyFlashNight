@@ -310,6 +310,9 @@ _root.gameCommands["webPanelUnpause"] = function() {
         org.flashNight.arki.pause.PauseManager.releaseLease(_root._webPanelPauseLease);
         _root._webPanelPauseLease = undefined;
     }
+    // 只有 exact Host visual-close 已走到通用 pause release 后，关卡会话才可兑现
+    // “结算后前往交付”；StageRunSession 会再次检查奖励终态、战斗态和任务目标。
+    org.flashNight.arki.scene.StageRunSession.onWebPanelClosed();
     // loot 正常 terminal 已先在 AS2 落权威终态，但特意保留 lease；只有 Host 收齐
     // exact DOM/native visual-close 证明后调用到这里，才解除暂停。非终态由服务保留
     // Web-only suspend，不存在 Flash UI 通用回退。

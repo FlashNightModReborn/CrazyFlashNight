@@ -55,6 +55,14 @@ class org.flashNight.arki.map.MapPanelService {
      */
     public static function canNavigateToHotspot(hotspotId:String):Boolean {
         if (_root.当前为战斗地图) return false;
+        return canRouteToHotspotAfterReturn(hotspotId);
+    }
+
+    /**
+     * 返回基地后是否具备直达资格。这里只校验目录与解锁状态，刻意忽略当前仍在战斗地图；
+     * 真正跳转仍必须在 Web 结算 exact close 后重新通过 canNavigateToHotspot。
+     */
+    public static function canRouteToHotspotAfterReturn(hotspotId:String):Boolean {
         if (hotspotId == undefined || hotspotId == "") return false;
         if (MapPanelCatalog.NAVIGATE_TARGETS[hotspotId] == undefined) return false;
 
@@ -65,20 +73,34 @@ class org.flashNight.arki.map.MapPanelService {
     }
 
     /**
-     * 聚合 HUD 交付按钮所需状态：扫描全部已达成任务，优先挑选首个可导航的 hotspot；
-     * 若无可导航但存在已达成任务，回落为首个 hotspot（用于告知「传送尚未解锁」）。
-     * @return { hotspotId:String, navigable:Boolean }
+     * 聚合 HUD 交付按钮所需状态：扫描全部已达成任务，依次优先当前可导航、
+     * 返回基地后可导航的 hotspot；两者都没有才回落首个目标用于普通任务提示。
+     * @return { hotspotId:String, navigable:Boolean, returnNavigable:Boolean }
      */
     public static function resolveDeliverableState():Object {
         var ids:Array = MapTaskNpcRegistry.collectDeliverableHotspotIds();
-        if (ids.length == 0) return { hotspotId: "", navigable: false };
+        if (ids.length == 0) {
+            return { hotspotId:"", navigable:false, returnNavigable:false };
+        }
 
+        var returnTarget:String = "";
         for (var i:Number = 0; i < ids.length; i++) {
             if (canNavigateToHotspot(ids[i])) {
-                return { hotspotId: ids[i], navigable: true };
+                return {
+                    hotspotId:ids[i], navigable:true, returnNavigable:true
+                };
             }
+            if (returnTarget == "" && canRouteToHotspotAfterReturn(ids[i]))
+                returnTarget = String(ids[i]);
         }
-        return { hotspotId: ids[0], navigable: false };
+        if (returnTarget != "") {
+            return {
+                hotspotId:returnTarget, navigable:false, returnNavigable:true
+            };
+        }
+        return {
+            hotspotId:ids[0], navigable:false, returnNavigable:false
+        };
     }
 
     /**

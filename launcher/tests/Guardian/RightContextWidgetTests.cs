@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace CF7Launcher.Tests.Guardian
@@ -93,6 +94,45 @@ namespace CF7Launcher.Tests.Guardian
                 dict[k] = p;
             }
             return dict;
+        }
+
+        private static StageOutcomeState StageState(
+            string outcome,
+            string life,
+            string settlement,
+            bool reviveAllowed = false,
+            long reviveCoins = 0,
+            string reviveBlockedReason = "",
+            bool canReturnBase = true,
+            int remainingRewards = 0,
+            int revision = 7)
+        {
+            JObject message = new JObject
+            {
+                ["task"] = "stage_outcome",
+                ["payload"] = new JObject
+                {
+                    ["v"] = 1,
+                    ["runId"] = "run.right-context.1",
+                    ["revision"] = revision,
+                    ["stageName"] = "摇滚公园",
+                    ["difficulty"] = "地狱",
+                    ["outcome"] = outcome,
+                    ["life"] = life,
+                    ["activeFrames"] = 1481,
+                    ["reviveCoins"] = reviveCoins,
+                    ["reviveAllowed"] = reviveAllowed,
+                    ["reviveBlockedReason"] = reviveBlockedReason,
+                    ["canReturnBase"] = canReturnBase,
+                    ["settlement"] = settlement,
+                    ["remainingRewards"] = remainingRewards
+                }
+            };
+            StageOutcomeState state;
+            string error;
+            Assert.True(StageOutcomeState.TryParseMessage(
+                message, out state, out error), error);
+            return state;
         }
 
         [Fact]
@@ -264,6 +304,125 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(right.SlotHitBoxActiveForTest);
             Assert.False(safeExit.Visible);
             Assert.False(safeExit.SlotHitBoxActiveForTest);
+        }
+
+        [Fact]
+        public void StageDecision_PreemptsSafeExitAndUsesOnlyItsPreciseActions()
+        {
+            Capture c;
+            RightContextWidget right = MakeWidget(out c);
+            SafeExitPanelWidget safeExit = MakeSafeExitWidget();
+            var intents = new List<string>();
+            right.IntentRequested += delegate(
+                string intent, string runId, int revision)
+            {
+                intents.Add(intent + ":" + runId + ":" + revision);
+            };
+            right.SetReady();
+            right.ApplyState(StageState(
+                "victory", "dead", "none", true, 2));
+            safeExit.Arm();
+
+            Assert.True(right.RequestsStageDecision);
+            Assert.Equal(
+                RightContextSlotOwner.StageDecision,
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                    right, safeExit));
+            Assert.True(right.PaintsStageDecisionForTest);
+            Assert.False(right.PaintsActionableNoticeForTest);
+            Assert.False(safeExit.PaintsTransactionDecisionForTest);
+            Assert.Equal(new[] { "复活×2", "回基地" },
+                right.StageActionLabelsForTest);
+
+            right.ClickStageActionForTest(0);
+            Assert.Equal(
+                new[] { "revive:run.right-context.1:7" },
+                intents);
+        }
+
+        [Fact]
+        public void Victory_HasPersistentReturnAndOnlyAddsAuthoritativeTaskRoute()
+        {
+            Capture c;
+            RightContextWidget right = MakeWidget(out c);
+            var intents = new List<string>();
+            right.IntentRequested += delegate(
+                string intent, string runId, int revision)
+            {
+                intents.Add(intent + ":" + runId + ":" + revision);
+            };
+            right.SetReady();
+
+            right.ApplyState(StageState("victory", "alive", "none"));
+            Assert.True(right.RequestsStageDecision);
+            Assert.Equal(new[] { "回基地" },
+                right.StageActionLabelsForTest);
+
+            right.ClickStageActionForTest(0);
+            Assert.True(right.RequestsStageDecision);
+            Assert.Equal(new[] { "return_base:run.right-context.1:7" },
+                intents);
+
+            right.ForceDeliverState(
+                true, "base_dorm", false, "2", returnNavigable: false);
+            Assert.Equal(new[] { "回基地" },
+                right.StageActionLabelsForTest);
+
+            right.ForceDeliverState(
+                true, "base_dorm", false, "2", returnNavigable: true);
+            Assert.Equal(new[] { "前往交付", "回基地" },
+                right.StageActionLabelsForTest);
+            right.ClickStageActionForTest(0);
+            Assert.Equal(
+                new[]
+                {
+                    "return_base:run.right-context.1:7",
+                    "return_deliverable:run.right-context.1:7"
+                },
+                intents);
+
+            right.ApplyState(StageState(
+                "failure", "alive", "none", revision:8));
+            Assert.Equal(new[] { "回基地" },
+                right.StageActionLabelsForTest);
+        }
+
+        [Fact]
+        public void ReviveCoinLabel_CompactsLargeInventoryBeforePainting()
+        {
+            Capture c;
+            RightContextWidget right = MakeWidget(out c);
+            right.SetReady();
+            right.ApplyState(StageState(
+                "victory", "dead", "none", true, 20574));
+
+            Assert.Equal(new[] { "复活×2.1万", "回基地" },
+                right.StageActionLabelsForTest);
+        }
+
+        [Fact]
+        public void RevivingAndBlockedRevive_StayInOneLineDecisionState()
+        {
+            Capture c;
+            RightContextWidget right = MakeWidget(out c);
+            right.SetReady();
+
+            right.ApplyState(StageState(
+                "victory", "dead", "none", false, 3,
+                "resurrection_restricted"));
+            Assert.Equal(new[] { "禁复活", "回基地" },
+                right.StageActionLabelsForTest);
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                right, null);
+            Assert.True(right.SlotHitBoxActiveForTest);
+
+            right.ApplyState(StageState(
+                "victory", "reviving", "none", false, 2));
+            Assert.True(right.RequestsStageDecision);
+            Assert.Empty(right.StageActionLabelsForTest);
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                right, null);
+            Assert.False(right.SlotHitBoxActiveForTest);
         }
 
         [Fact]
@@ -560,11 +719,12 @@ namespace CF7Launcher.Tests.Guardian
             Capture c;
             RightContextWidget w = MakeWidget(out c);
             w.OnUiDataChanged(
-                Snapshot("s:1", "mm:1", "mh:base_dorm", "td:1", "tdh:base_dorm", "tdn:1", "bgm:Final Sky", "pl:2"),
-                new HashSet<string> { "s", "mm", "mh", "td", "tdh", "tdn", "bgm", "pl" });
+                Snapshot("s:1", "mm:1", "mh:base_dorm", "td:1", "tdh:base_dorm", "tdn:1", "tdr:1", "bgm:Final Sky", "pl:2"),
+                new HashSet<string> { "s", "mm", "mh", "td", "tdh", "tdn", "tdr", "bgm", "pl" });
 
             Assert.True(w.MapSectionVisibleForTest);
             Assert.True(w.QuestNoticeVisibleForTest);
+            Assert.True(w.IsReturnNavigable);
         }
     }
 }

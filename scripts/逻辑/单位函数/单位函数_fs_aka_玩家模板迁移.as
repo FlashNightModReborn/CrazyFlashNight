@@ -1596,7 +1596,7 @@ _root.主角函数.死亡检测 = function() {
 
     // 主角死亡特殊处理
     if (this._name === _root.控制目标) {
-        _root.关卡结束界面.询问复活();
+        org.flashNight.arki.scene.StageRunSession.onHeroDeath();
     }
 
     // 早期返回：已经处理过经验值

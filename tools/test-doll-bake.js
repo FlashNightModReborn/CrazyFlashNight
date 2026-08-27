@@ -87,6 +87,7 @@ async function main() {
         const h = createHarness();
         assert.ok(h.api, 'DollBake api exported');
         assert.strictEqual(typeof h.api.handleMessage, 'function');
+        assert.strictEqual(typeof h.api.renderTupleDataUrl, 'function');
         assert.strictEqual(typeof h.api.mercFromTuple, 'function');
         assert.strictEqual(typeof h.api.normalizeTuple, 'function');
         assert.ok(Array.isArray(h.api.SCRIPTS));
@@ -155,7 +156,16 @@ async function main() {
         assert.ok(!('error' in call.payload));
     }
 
-    // 6. 空渲染（''）→ error 回传，不抛
+    // 6. 同 WebView 可视消费者可复用渲染，但不生成键、不回传 Host
+    {
+        const h = createHarness();
+        const dataUrl = await h.api.renderTupleDataUrl(VALID_MESSAGE.tuple);
+        assert.strictEqual(dataUrl, 'data:image/png;base64,QUJDREVGRw==');
+        assert.strictEqual(h.taskCalls.length, 0);
+        assert.strictEqual(h.loadedScripts.length, 1);
+    }
+
+    // 7. 空渲染（''）→ error 回传，不抛
     {
         const h = createHarness({ dataUrl: '' });
         const ok = await h.api.handleMessage(VALID_MESSAGE);
@@ -169,7 +179,7 @@ async function main() {
         assert.strictEqual(h.errors.length, 1);
     }
 
-    // 7. renderer 加载失败 → error 回传
+    // 8. renderer 加载失败 → error 回传
     {
         const h = createHarness({ loadFails: true });
         const ok = await h.api.handleMessage(VALID_MESSAGE);
@@ -178,7 +188,7 @@ async function main() {
         assert.ok(h.taskCalls[0].payload.error.indexOf('load failed') >= 0);
     }
 
-    // 8. 非法 key / 非 dollBake 形状 → 丢弃，无任何回传
+    // 9. 非法 key / 非 dollBake 形状 → 丢弃，无任何回传
     {
         const h = createHarness();
         assert.strictEqual(await h.api.handleMessage({ key: '斗士-26' }), false);
@@ -188,7 +198,7 @@ async function main() {
         assert.strictEqual(h.loadedScripts.length, 0);
     }
 
-    console.log('test-doll-bake: all 8 cases passed');
+    console.log('test-doll-bake: all 9 cases passed');
 }
 
 main().catch(function(error) {

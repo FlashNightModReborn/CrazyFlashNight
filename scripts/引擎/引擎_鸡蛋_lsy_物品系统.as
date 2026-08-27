@@ -232,7 +232,6 @@ _root.singleSubmit = function(name,value,context):Boolean{
 //  其余敌方单位（角斗场 主角-男 系斗士等）→ 单位 名字 + 纸娃娃运行时烘焙头像
 //  （AS2 只做字段搬运，C# 单点算键，web 侧 dressup 渲染器烘焙；无 脸型 字段走占位块）。
 _root.发布击杀播报 = function(unit:MovieClip):Void{
-	if (typeof _root.发布战利品消息 != "function") return;
 	if (unit == null) return;
 	var killKey:String = org.flashNight.arki.unit.UnitUtil.getUnitTypeKey(unit);
 	if (killKey == null || killKey.length == 0) return;
@@ -272,6 +271,14 @@ _root.发布击杀播报 = function(unit:MovieClip):Void{
 			};
 		}
 	}
+	org.flashNight.arki.scene.StageRunSession.recordKillProjection({
+		key:killKey,
+		displayName:killName,
+		iconName:iconName == null ? "" : iconName,
+		doll:dollTuple,
+		eliteLevel:eliteLevel
+	});
+	if (typeof _root.发布战利品消息 != "function") return;
 	_root.发布战利品消息("kill", killName, 1, "kill", null, iconName, dollTuple, eliteLevel);
 }
 
@@ -354,7 +361,6 @@ _root.发布物资变更消息 = function(direction:String, kind:String, name:St
 	if (name == undefined || count == undefined) return;
 	if (isNaN(Number(count)) || Number(count) <= 0) return;
 	if (direction != "gain" && direction != "loss" && direction != "neutral") return;
-	if (_root.server == undefined || _root.server.sendTaskToNode == undefined) return;
 
 	if (kind == undefined || kind == null || kind == "") {
 		if (name == "金钱" || name == "金币") kind = "money";
@@ -404,6 +410,8 @@ _root.发布物资变更消息 = function(direction:String, kind:String, name:St
 		doll:doll,
 		eliteLevel:eliteLevel
 	});
+	org.flashNight.arki.scene.StageRunSession.recordAssetProjection(msg);
+	if (_root.server == undefined || _root.server.sendTaskToNode == undefined) return;
 	_root.server.sendTaskToNode("loot", msg, null);
 }
 

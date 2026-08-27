@@ -37,6 +37,12 @@ function collectFiles(rel, extension, output) {
     return output;
 }
 
+function isProductionModule(rel) {
+    return rel.indexOf('/dev/') === -1
+        && rel.indexOf('/node_modules/') === -1
+        && rel.indexOf('/.test-dist/') === -1;
+}
+
 function finding(level, code, message, rel, line, detail) {
     var item = {level:level, code:code, message:message};
     if (rel) item.file = rel;
@@ -636,9 +642,8 @@ if (exists('launcher/web/css/panels.css')) {
     );
     var productionCalls = [];
     var unexpectedDualPaneReferences = [];
-    var productionModuleFiles = collectFiles('launcher/web/modules', '.js').filter(function(rel) {
-        return rel.indexOf('/dev/') === -1;
-    });
+    var productionModuleFiles = collectFiles('launcher/web/modules', '.js')
+        .filter(isProductionModule);
     productionModuleFiles.forEach(function(rel) {
         var source = read(rel);
         productionCalls = productionCalls.concat(uiRatchet.scanDualPaneCalls(source, rel));
@@ -1258,9 +1263,7 @@ if (exists(buildRel) && exists(releasePolicyRel)) {
         releasePolicyRel);
 }
 
-collectFiles('launcher/web/modules', '.js').filter(function(rel) {
-    return rel.indexOf('/dev/') === -1;
-}).forEach(function (rel) {
+collectFiles('launcher/web/modules', '.js').filter(isProductionModule).forEach(function (rel) {
     expect(!/addMessageListener\s*\(/.test(uiRatchet.maskJavaScriptCode(read(rel))),
         'WB026', 'domain modules must not install direct Bridge response listeners outside PanelResponseRouter', rel);
 });

@@ -323,7 +323,8 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         if (!hasOnly(params, ["task", "action", "callId", "v"])) return fail("invalid_payload");
         if (typeof _root.返回基地 != "function") return fail("return_base_unavailable");
         try {
-            _root.返回基地();
+            var accepted = _root.返回基地();
+            if (accepted === false) return fail("settlement_prepare_failed");
         } catch (returnError) {
             return fail("return_base_failed");
         }
@@ -332,26 +333,18 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
 
     private static function executeTryRevive(params:Object):Object {
         if (!hasOnly(params, ["task", "action", "callId", "v"])) return fail("invalid_payload");
-        if (_root.关卡结束界面 == undefined
-                || typeof _root.关卡结束界面.询问复活 != "function") {
-            return fail("revive_unavailable");
-        }
-        var hero:MovieClip;
-        try { hero = TargetCacheManager.findHero(); } catch (findError) { hero = undefined; }
-        if (hero != undefined && Number(hero.hp) > 0) return fail("actor_alive");
-        try {
-            // 只重新拉起现役流程；不直接改 HP、不自动扣币，也不绕过 DisableResurrection。
-            _root.关卡结束界面.询问复活();
-        } catch (reviveError) {
-            return fail("revive_failed");
+        var result:Object = org.flashNight.arki.scene.StageRunSession.requestReviveLocal(
+            "settings_recovery");
+        if (result == null || result.success !== true) {
+            return fail(result == null || result.error == undefined
+                ? "revive_failed" : String(result.error));
         }
         return {
             success:true,
             v:1,
             operation:"try_revive",
-            promptOpened:true,
-            restrictionActive:_root.限制系统 != undefined
-                && _root.限制系统.DisableResurrection == true,
+            revived:true,
+            reviveCoins:Number(result.reviveCoins),
             closePanel:true
         };
     }
@@ -632,9 +625,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         try { hero = TargetCacheManager.findHero(); } catch (findError) { hero = undefined; }
         return {
             returnBaseAvailable:typeof _root.返回基地 == "function",
-            tryReviveAvailable:_root.关卡结束界面 != undefined
-                && typeof _root.关卡结束界面.询问复活 == "function"
-                && (hero == undefined || Number(hero.hp) <= 0),
+            tryReviveAvailable:org.flashNight.arki.scene.StageRunSession.canRequestRevive(),
             resurrectionRestricted:_root.限制系统 != undefined
                 && _root.限制系统.DisableResurrection == true
         };

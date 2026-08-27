@@ -89,7 +89,8 @@ namespace CF7Launcher.Tests.Tasks
 
             public Harness(int timeoutMs = 10000, int retryInitialMs = 100,
                 int retryMaximumMs = 2000,
-                Func<LootPanelCoordinator.Binding, string, bool> requestRecovery = null)
+                Func<LootPanelCoordinator.Binding, string, bool> requestRecovery = null,
+                bool stageSettlement = false)
             {
                 Coordinator = new LootPanelCoordinator(Panel, delegate
                     {
@@ -116,7 +117,8 @@ namespace CF7Launcher.Tests.Tasks
                     Interlocked.Increment(ref DetachedReconcileSettled);
                 });
 
-                JObject ack = JObject.Parse(Coordinator.HandlePanelRequest(PanelRequest()));
+                JObject ack = JObject.Parse(Coordinator.HandlePanelRequest(
+                    stageSettlement ? SettlementPanelRequest() : PanelRequest()));
                 Assert.True(ack.Value<bool>("accepted"));
                 Assert.False(ack.Value<bool>("bound"));
                 Panel.CompleteOpenPosted();
@@ -177,6 +179,44 @@ namespace CF7Launcher.Tests.Tasks
                     ["columns"] = 2
                 }
             };
+        }
+
+        private static JObject SettlementPanelRequest()
+        {
+            JObject request = PanelRequest();
+            request["source"] = LootPanelCoordinator.StageSettlementSource;
+            JObject init = (JObject)request["initData"];
+            init["sourceKind"] = LootPanelCoordinator.StageSettlementSource;
+            init["displayName"] = "Stage rewards";
+            init["report"] = new JObject
+            {
+                ["v"] = 1,
+                ["runId"] = "run.stage.1",
+                ["stageName"] = "Test stage",
+                ["difficulty"] = "challenge",
+                ["outcome"] = "victory",
+                ["activeFrames"] = 5432,
+                ["totalKills"] = 4,
+                ["omittedKillTypes"] = 0,
+                ["totalItemGains"] = 0,
+                ["totalItemLosses"] = 0,
+                ["omittedItemFlowTypes"] = 0,
+                ["rewardRollOmissions"] = 0,
+                ["kills"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["key"] = "enemy.infected",
+                        ["displayName"] = "Infected",
+                        ["iconName"] = "enemy.infected",
+                        ["doll"] = JValue.CreateNull(),
+                        ["eliteLevel"] = 0,
+                        ["count"] = 4
+                    }
+                },
+                ["itemFlows"] = new JArray()
+            };
+            return request;
         }
 
         [Fact]
@@ -242,6 +282,18 @@ namespace CF7Launcher.Tests.Tasks
                     request["targetContainerId"] = "背包";
                 }
             }
+            else if (cmd == "claimBatch")
+            {
+                request["expectedAuthorityRevision"] = 0;
+                request["operationId"] = operationId ?? "operation.claim.batch.1";
+                request["direction"] = "loot_to_player";
+                request["sources"] = new JArray(SourceRef(lootContainerId));
+                request["targetContainerId"] = "背包";
+            }
+            else if (cmd == "materials")
+            {
+                request["expectedAuthorityRevision"] = 0;
+            }
             else if (cmd == "close")
             {
                 request["expectedAuthorityRevision"] = 0;
@@ -260,6 +312,18 @@ namespace CF7Launcher.Tests.Tasks
                 ["slot"] = 0,
                 ["expectedLease"] = "slot.lease.1",
                 ["expectedContainerVersion"] = 1
+            };
+        }
+
+        private static JObject BatchSourceRef(int slot, string lease,
+            int expectedContainerVersion = 1)
+        {
+            return new JObject
+            {
+                ["containerId"] = LootContainerId,
+                ["slot"] = slot,
+                ["expectedLease"] = lease,
+                ["expectedContainerVersion"] = expectedContainerVersion
             };
         }
 
@@ -365,6 +429,7 @@ namespace CF7Launcher.Tests.Tasks
                     Snapshot("背包", 4, 2, 1)
                 },
                 ["tooltip"] = JValue.CreateNull(),
+                ["materials"] = JValue.CreateNull(),
                 ["terminal"] = JValue.CreateNull()
             };
         }
@@ -387,8 +452,33 @@ namespace CF7Launcher.Tests.Tasks
                 ["closeLease"] = "",
                 ["snapshots"] = new JArray(),
                 ["tooltip"] = JValue.CreateNull(),
+                ["materials"] = JValue.CreateNull(),
                 ["terminal"] = JValue.CreateNull()
             };
+        }
+
+        private static JObject MaterialsResponse(JObject flash, int revision = 1)
+        {
+            JObject response = ActiveResponse(flash, "", revision);
+            response["snapshots"] = new JArray();
+            response["materials"] = new JArray
+            {
+                new JObject
+                {
+                    ["name"] = "material.iron",
+                    ["displayName"] = "Iron",
+                    ["icon"] = "material.iron",
+                    ["owned"] = 3000000000L
+                },
+                new JObject
+                {
+                    ["name"] = "material.fiber",
+                    ["displayName"] = "Fiber",
+                    ["icon"] = "material.fiber",
+                    ["owned"] = 0
+                }
+            };
+            return response;
         }
 
         private static JObject CommitPendingResponse(JObject flash, int revision = 1)
@@ -418,6 +508,7 @@ namespace CF7Launcher.Tests.Tasks
                 ["closeLease"] = "",
                 ["snapshots"] = new JArray(),
                 ["tooltip"] = JValue.CreateNull(),
+                ["materials"] = JValue.CreateNull(),
                 ["terminal"] = new JObject
                 {
                     ["kind"] = state,
@@ -446,6 +537,7 @@ namespace CF7Launcher.Tests.Tasks
                 ["closeLease"] = "",
                 ["snapshots"] = new JArray(),
                 ["tooltip"] = JValue.CreateNull(),
+                ["materials"] = JValue.CreateNull(),
                 ["terminal"] = JValue.CreateNull()
             };
         }
@@ -482,6 +574,41 @@ namespace CF7Launcher.Tests.Tasks
             return response;
         }
 
+        private static JObject ActiveBatchResponse(JObject flash, string operationId,
+            int revision, bool firstApplied, bool secondApplied)
+        {
+            JObject response = ActiveResponse(flash, operationId, revision);
+            JObject loot = (JObject)response["snapshots"][0];
+            JArray slots = (JArray)loot["slots"];
+            int remaining = 0;
+            if (!firstApplied)
+            {
+                remaining++;
+                slots[0] = new JObject
+                {
+                    ["physicalSlot"] = 0,
+                    ["occupied"] = true,
+                    ["slotLease"] = "loot.slot.1",
+                    ["item"] = ItemProjection()
+                };
+            }
+            if (!secondApplied)
+            {
+                remaining++;
+                slots[1] = new JObject
+                {
+                    ["physicalSlot"] = 1,
+                    ["occupied"] = true,
+                    ["slotLease"] = "loot.slot.second.1",
+                    ["item"] = ItemProjection()
+                };
+            }
+            response["remainingCount"] = remaining;
+            loot["filterItemCount"] = remaining;
+            loot["containerVersion"] = revision;
+            return response;
+        }
+
         private static void PrimeActiveAuthority(Harness harness, bool hasLoot)
         {
             harness.Task.HandleWebRequest(Request("snapshot",
@@ -492,6 +619,15 @@ namespace CF7Launcher.Tests.Tasks
                 : ActiveResponse(snapshot, "", 1), null);
             Assert.True(harness.PostedAt(0).Value<bool>("success"));
             Assert.Equal("LOOT_ACTIVE", harness.PostedAt(0).Value<string>("state"));
+        }
+
+        private static void PrimeActiveAuthorityWithTwoLoot(Harness harness)
+        {
+            harness.Task.HandleWebRequest(Request("snapshot", "snapshot.prime.two"));
+            JObject snapshot = Assert.Single(harness.Sent);
+            harness.Task.HandleFlashResponse(ActiveResponseWithTwoLoot(snapshot, 1), null);
+            Assert.True(harness.PostedAt(0).Value<bool>("success"));
+            Assert.Equal(2, harness.PostedAt(0).Value<int>("remainingCount"));
         }
 
         private static void AssertExactKeys(JObject value, params string[] expected)
@@ -505,7 +641,7 @@ namespace CF7Launcher.Tests.Tasks
                 "type", "task", "domain", "panel", "cmd", "callId", "panelInstanceId",
                 "success", "error", "chestSessionId", "lootContainerId", "containerEpoch",
                 "authorityRevision", "lastAppliedOperationId", "state", "remainingCount",
-                "closeLease", "snapshots", "tooltip", "terminal");
+                "closeLease", "snapshots", "tooltip", "materials", "terminal");
             Assert.Equal("panel_resp", value.Value<string>("type"));
             Assert.Equal("loot_response", value.Value<string>("task"));
             Assert.Equal(PanelInstanceId, value.Value<string>("panelInstanceId"));
@@ -617,6 +753,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("snapshot", "lootSnapshot")]
         [InlineData("tooltip", "lootTooltip")]
         [InlineData("claim", "lootClaim")]
+        [InlineData("claimBatch", "lootClaimBatch")]
         [InlineData("close", "lootClose")]
         [InlineData("query", "lootQuery")]
         public void ExactWebCommands_MapToExactFlashActions(string cmd, string action)
@@ -624,13 +761,15 @@ namespace CF7Launcher.Tests.Tasks
             using var harness = new Harness();
 
             JObject request = Request(cmd, "web." + cmd + ".1");
-            bool primedWrite = cmd == "claim" || cmd == "close";
+            bool primedWrite = cmd == "claim" || cmd == "claimBatch" || cmd == "close";
             if (primedWrite)
             {
-                PrimeActiveAuthority(harness, cmd == "claim");
+                PrimeActiveAuthority(harness, cmd == "claim" || cmd == "claimBatch");
                 request["expectedAuthorityRevision"] = 1;
                 if (cmd == "claim")
                     request["source"]["expectedLease"] = "loot.slot.1";
+                else if (cmd == "claimBatch")
+                    request["sources"][0]["expectedLease"] = "loot.slot.1";
             }
             harness.Task.HandleWebRequest(request);
 
@@ -652,6 +791,10 @@ namespace CF7Launcher.Tests.Tasks
                 AssertExactKeys(sent, "task", "action", "callId", "v", "chestSessionId",
                     "lootContainerId", "containerEpoch", "expectedAuthorityRevision", "source",
                     "operationId", "direction", "targetContainerId");
+            else if (cmd == "claimBatch")
+                AssertExactKeys(sent, "task", "action", "callId", "v", "chestSessionId",
+                    "lootContainerId", "containerEpoch", "expectedAuthorityRevision", "sources",
+                    "operationId", "direction", "targetContainerId");
             else if (cmd == "close")
                 AssertExactKeys(sent, "task", "action", "callId", "v", "chestSessionId",
                     "lootContainerId", "containerEpoch", "expectedAuthorityRevision",
@@ -659,6 +802,66 @@ namespace CF7Launcher.Tests.Tasks
             else
                 AssertExactKeys(sent, "task", "action", "callId", "v", "chestSessionId",
                     "lootContainerId", "containerEpoch");
+        }
+
+        [Fact]
+        public void Materials_IsRejectedForMapChestWithoutSendingToFlash()
+        {
+            using var harness = new Harness();
+
+            harness.Task.HandleWebRequest(Request("materials", "materials.map.1"));
+
+            Assert.Empty(harness.Sent);
+            JObject posted = harness.PostedAt(0);
+            AssertExactResponseWrapper(posted);
+            Assert.False(posted.Value<bool>("success"));
+            Assert.Equal("invalid_payload", posted.Value<string>("error"));
+            Assert.Equal("materials", posted.Value<string>("cmd"));
+        }
+
+        [Fact]
+        public void StageSettlementMaterials_MapsAndForwardsOnlyExactMaterialProjection()
+        {
+            using var harness = new Harness(stageSettlement: true);
+
+            harness.Task.HandleWebRequest(Request("materials", "materials.stage.1"));
+
+            JObject sent = Assert.Single(harness.Sent);
+            Assert.Equal("lootMaterials", sent.Value<string>("action"));
+            Assert.Equal(0, sent.Value<int>("expectedAuthorityRevision"));
+            AssertExactKeys(sent, "task", "action", "callId", "v", "chestSessionId",
+                "lootContainerId", "containerEpoch", "expectedAuthorityRevision");
+
+            harness.Task.HandleFlashResponse(MaterialsResponse(sent), null);
+
+            JObject posted = harness.PostedAt(0);
+            AssertExactResponseWrapper(posted);
+            Assert.True(posted.Value<bool>("success"));
+            Assert.Equal("materials", posted.Value<string>("cmd"));
+            JArray materials = Assert.IsType<JArray>(posted["materials"]);
+            Assert.Equal(2, materials.Count);
+            AssertExactKeys((JObject)materials[0], "name", "displayName", "icon", "owned");
+            Assert.Equal(3000000000L, materials[0].Value<long>("owned"));
+            Assert.Empty((JArray)posted["snapshots"]);
+            Assert.Equal(JTokenType.Null, posted["tooltip"].Type);
+        }
+
+        [Fact]
+        public void StageSettlementMaterials_RejectsAuthorityShapeDrift()
+        {
+            using var harness = new Harness(stageSettlement: true);
+            harness.Task.HandleWebRequest(Request("materials", "materials.stage.bad"));
+            JObject sent = Assert.Single(harness.Sent);
+            JObject malformed = MaterialsResponse(sent);
+            ((JObject)malformed["materials"][0])["forged"] = true;
+
+            harness.Task.HandleFlashResponse(malformed, null);
+
+            JObject posted = harness.PostedAt(0);
+            AssertExactResponseWrapper(posted);
+            Assert.False(posted.Value<bool>("success"));
+            Assert.Equal("malformed_response", posted.Value<string>("error"));
+            Assert.Equal(JTokenType.Null, posted["materials"].Type);
         }
 
         [Fact]
@@ -1924,6 +2127,147 @@ namespace CF7Launcher.Tests.Tasks
             harness.Task.HandleFlashResponse(TerminalResponse(closeFlash,
                 close.Value<string>("operationId"), "CONSUMED", 3, 0), null);
             Assert.Equal(1, harness.Panel.CloseCalls);
+        }
+
+        [Theory]
+        [InlineData(true, true, 3, 0)]
+        [InlineData(true, false, 2, 1)]
+        public void ExactClaimBatchSuccess_UsesOneFlashCallAndProvesEveryRequestedSlot(
+            bool firstApplied, bool secondApplied, int revision, int remaining)
+        {
+            using var harness = new Harness();
+            PrimeActiveAuthorityWithTwoLoot(harness);
+            JObject claim = Request("claimBatch", "claim.batch.strict.success",
+                operationId: "operation.claim.batch.strict");
+            claim["expectedAuthorityRevision"] = 1;
+            claim["sources"] = new JArray
+            {
+                BatchSourceRef(0, "loot.slot.1"),
+                BatchSourceRef(1, "loot.slot.second.1")
+            };
+
+            harness.Task.HandleWebRequest(claim);
+
+            JObject flash = harness.SentAt(1);
+            Assert.Equal("lootClaimBatch", flash.Value<string>("action"));
+            Assert.Equal(2, ((JArray)flash["sources"]).Count);
+            harness.Task.HandleFlashResponse(ActiveBatchResponse(flash,
+                claim.Value<string>("operationId"), revision, firstApplied, secondApplied), null);
+
+            JObject posted = harness.PostedAt(1);
+            Assert.True(posted.Value<bool>("success"));
+            Assert.Equal(revision, posted.Value<int>("authorityRevision"));
+            Assert.Equal(remaining, posted.Value<int>("remainingCount"));
+            Assert.Equal("idle", harness.Task.WriteState);
+            Assert.Equal(2, harness.SentCount);
+        }
+
+        [Fact]
+        public void DriftedClaimBatchSuccess_BecomesUnknownWithoutAdvancingKnownAuthority()
+        {
+            using var harness = new Harness();
+            PrimeActiveAuthorityWithTwoLoot(harness);
+            JObject claim = Request("claimBatch", "claim.batch.drift",
+                operationId: "operation.claim.batch.drift");
+            claim["expectedAuthorityRevision"] = 1;
+            claim["sources"] = new JArray
+            {
+                BatchSourceRef(0, "loot.slot.1"),
+                BatchSourceRef(1, "loot.slot.second.1")
+            };
+            harness.Task.HandleWebRequest(claim);
+            JObject flash = harness.SentAt(1);
+            JObject impossible = ActiveBatchResponse(flash,
+                claim.Value<string>("operationId"), 3, true, false);
+
+            harness.Task.HandleFlashResponse(impossible, null);
+
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+            Assert.Equal(1, harness.Task.LastAuthorityRevision);
+            Assert.False(harness.PostedAt(1).Value<bool>("success"));
+            Assert.Equal("reconcile_required", harness.PostedAt(1).Value<string>("error"));
+        }
+
+        [Fact]
+        public void ClaimBatchFailureAfterAppliedPrefix_RequiresExactQueryBeforeLaterWrites()
+        {
+            using var harness = new Harness();
+            PrimeActiveAuthorityWithTwoLoot(harness);
+            JObject claim = Request("claimBatch", "claim.batch.partial.failure",
+                operationId: "operation.claim.batch.partial.failure");
+            claim["expectedAuthorityRevision"] = 1;
+            claim["sources"] = new JArray
+            {
+                BatchSourceRef(0, "loot.slot.1"),
+                BatchSourceRef(1, "loot.slot.second.1")
+            };
+            harness.Task.HandleWebRequest(claim);
+            JObject flash = harness.SentAt(1);
+            JObject failed = ErrorResponse(flash, "stale_state");
+            failed["authorityRevision"] = 2;
+            failed["remainingCount"] = 1;
+            failed["lastAppliedOperationId"] = claim.Value<string>("operationId");
+
+            harness.Task.HandleFlashResponse(failed, null);
+
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+            Assert.Equal(1, harness.Task.LastAuthorityRevision);
+            Assert.Equal("stale_state", harness.PostedAt(1).Value<string>("error"));
+
+            harness.Task.HandleWebRequest(Request("query", "query.batch.partial.failure"));
+            JObject query = harness.SentAt(2);
+            harness.Task.HandleFlashResponse(ActiveBatchResponse(query,
+                claim.Value<string>("operationId"), 2, true, false), null);
+
+            Assert.Equal("idle", harness.Task.WriteState);
+            Assert.Equal(2, harness.Task.LastAuthorityRevision);
+            Assert.True(harness.PostedAt(2).Value<bool>("success"));
+        }
+
+        [Fact]
+        public void UnknownClaimBatch_AcceptsOnlyExactFrozenNoWriteProjection()
+        {
+            using var harness = new Harness();
+            PrimeActiveAuthorityWithTwoLoot(harness);
+            JObject claim = Request("claimBatch", "claim.batch.not.sent",
+                operationId: "operation.claim.batch.not.sent");
+            claim["expectedAuthorityRevision"] = 1;
+            claim["sources"] = new JArray
+            {
+                BatchSourceRef(0, "loot.slot.1"),
+                BatchSourceRef(1, "loot.slot.second.1")
+            };
+            harness.SendResult = false;
+            harness.Task.HandleWebRequest(claim);
+            harness.SendResult = true;
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+
+            harness.Task.HandleWebRequest(Request("query", "query.batch.no.write"));
+            JObject query = harness.SentAt(2);
+            harness.Task.HandleFlashResponse(ActiveResponseWithTwoLoot(query, 1), null);
+
+            Assert.Equal("idle", harness.Task.WriteState);
+            Assert.Equal(1, harness.Task.LastAuthorityRevision);
+            Assert.Equal(1, harness.Sent.Count(value =>
+                value.Value<string>("action") == "lootClaimBatch"));
+        }
+
+        [Fact]
+        public void ClaimBatchPayload_RejectsDuplicateSourcesBeforeTransport()
+        {
+            using var harness = new Harness();
+            PrimeActiveAuthorityWithTwoLoot(harness);
+            JObject claim = Request("claimBatch", "claim.batch.duplicate");
+            claim["expectedAuthorityRevision"] = 1;
+            JObject duplicate = BatchSourceRef(0, "loot.slot.1");
+            claim["sources"] = new JArray(duplicate, duplicate.DeepClone());
+
+            harness.Task.HandleWebRequest(claim);
+
+            Assert.Equal(1, harness.SentCount);
+            Assert.False(harness.PostedAt(1).Value<bool>("success"));
+            Assert.Equal("invalid_payload", harness.PostedAt(1).Value<string>("error"));
+            Assert.Equal("idle", harness.Task.WriteState);
         }
 
         [Theory]

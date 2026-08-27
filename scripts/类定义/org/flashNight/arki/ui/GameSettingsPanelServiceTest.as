@@ -1,5 +1,11 @@
 ﻿import org.flashNight.arki.key.KeyManager;
 import org.flashNight.arki.ui.GameSettingsPanelService;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.LootContainerService;
+import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.arki.item.itemCollection.InformationCollection;
+import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.weather.WeatherSystem;
 import org.flashNight.neur.Server.SaveManager;
 
@@ -34,6 +40,8 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
     }
 
     private static function resetState():Void {
+        LootContainerService.testOnlyReset();
+        StageRunSession.testOnlyReset();
         KeyManager.clearPendingKeySettingsMigration();
         SaveManager.getInstance().clearPendingSettingsMigration();
         _root.存档系统 = {dirtyMark:false};
@@ -429,15 +437,42 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
             v:1
         });
         check(!revive.success && revive.error == "revive_unavailable",
-            "try-revive fails closed when the existing resurrection prompt is unavailable");
+            "try-revive fails closed when no authoritative stage run is awaiting revival");
 
-        _root.revivePromptCalls = 0;
         _root.gameworld = {};
-        _root.控制目标 = "__settings_test_missing_hero__";
-        _root.限制系统 = {DisableResurrection:true};
-        _root.关卡结束界面 = {
-            询问复活:function():Void { _root.revivePromptCalls++; }
+        _root.控制目标 = "__settings_test_hero__";
+        _root.限制系统 = {DisableResurrection:false};
+        _root.物品栏 = {
+            背包:new ArrayInventory(null, 50),
+            仓库:new ArrayInventory(null, 1200),
+            战备箱:new ArrayInventory(null, 400),
+            药剂栏:new ArrayInventory(null, 4)
         };
+        _root.收集品栏 = {
+            材料:new DictCollection(null),
+            情报:new InformationCollection(null)
+        };
+        var materialDict:Object = ItemUtil.materialDict;
+        if (materialDict == undefined) {
+            materialDict = {};
+            ItemUtil.materialDict = materialDict;
+        }
+        var previousReviveCoin:Object = materialDict["复活币"];
+        materialDict["复活币"] = true;
+        _root.收集品栏.材料.add("复活币", 1);
+        var hero:MovieClip = _root.createEmptyMovieClip(
+            "__settingsTestHero", _root.getNextHighestDepth());
+        hero.hp = 0;
+        hero.hp满血值 = 100;
+        hero.dispatcher = {};
+        hero.dispatcher.publish = function(eventName:String):Void {
+            if (eventName != "respawn") return;
+            hero.hp = hero.hp满血值;
+            StageRunSession.onHeroRespawn(hero);
+        };
+        _root.gameworld[_root.控制目标] = hero;
+        StageRunSession.begin("设置页复活兜底", "测试");
+        StageRunSession.onHeroDeath();
         _root.默认键值设定 = buildDefaults();
         _root.键值设定 = KeyManager.copyKeySettings(_root.默认键值设定);
         _root.按键设定表 = [[0, 0, 0, 0]];
@@ -446,15 +481,20 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         };
         _root.帧计时器 = {性能等级上限:1};
         var available:Object = GameSettingsPanelService.execute("snapshot", {v:1});
-        var prompted:Object = GameSettingsPanelService.execute("try_revive", {
+        var recovered:Object = GameSettingsPanelService.execute("try_revive", {
             v:1
         });
         check(available.success && available.forceControls.tryReviveAvailable,
-            "try-revive is advertised when the existing prompt survives but the hero cache is absent");
-        check(prompted.success && prompted.promptOpened && _root.revivePromptCalls == 1,
-            "try-revive delegates to the existing prompt without directly mutating HP");
-        check(prompted.restrictionActive,
-            "try-revive reports the existing resurrection restriction for the prompt to enforce");
+            "try-revive is advertised only while the authoritative stage run is dead");
+        check(recovered.success && recovered.revived && recovered.closePanel
+            && recovered.reviveCoins == 0,
+            "try-revive delegates to the shared idempotent revive path and closes on success");
+        check(hero.hp == 100 && ItemUtil.getTotal("复活币") == 0
+            && StageRunSession.testOnlySnapshot().life == "alive",
+            "settings recovery restores the current hero and spends exactly one revive coin");
+        hero.removeMovieClip();
+        if (previousReviveCoin == undefined) delete materialDict["复活币"];
+        else materialDict["复活币"] = previousReviveCoin;
     }
 
     private static function testOpenPanelEnvelope():Void {

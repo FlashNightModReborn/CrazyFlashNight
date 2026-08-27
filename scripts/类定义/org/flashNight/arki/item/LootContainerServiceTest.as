@@ -39,6 +39,9 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testProductionDeathUnloadOrdering();
         testAbortReservationAndClaimExceptionRecovery();
         testSnapshotOwnedClaimsStaleAndConsumed();
+        testClaimBatchCommitsOnceAndIsIdempotent();
+        testClaimBatchSkipsCapacityBlockedSources();
+        testClaimBatchZeroWriteAndDuplicateSlotFence();
         testClaimPendingEmptyQuery();
         testClaimPendingMergeQuery();
         testClaimPendingCollectionQuery();
@@ -291,6 +294,32 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 expectedLease:row.slotLease,
                 expectedContainerVersion:loot.containerVersion
             }
+        };
+    }
+
+    private static function claimBatchParams(response:Object, slots:Array,
+                                              operationId:String):Object {
+        var loot:Object = response.snapshots[0];
+        var sources:Array = [];
+        for (var i:Number = 0; i < slots.length; i++) {
+            var row:Object = loot.slots[Number(slots[i])];
+            sources.push({
+                containerId:loot.containerId,
+                slot:row.physicalSlot,
+                expectedLease:row.slotLease,
+                expectedContainerVersion:loot.containerVersion
+            });
+        }
+        return {
+            v:1,
+            chestSessionId:response.chestSessionId,
+            lootContainerId:response.lootContainerId,
+            containerEpoch:response.containerEpoch,
+            expectedAuthorityRevision:response.authorityRevision,
+            operationId:operationId,
+            direction:"loot_to_player",
+            targetContainerId:"背包",
+            sources:sources
         };
     }
 
@@ -820,6 +849,85 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && queried.lastAppliedOperationId == "constructor"
                 && queried.snapshots.length == 0,
             "原型同名 operationId 仍可幂等；空箱 close/tombstone query 完成对账");
+    }
+
+    private static function testClaimBatchCommitsOnceAndIsIdempotent():Void {
+        resetWorld();
+        var first:BaseItem = stack(STACK, 2, 211);
+        var second:BaseItem = stack(ANTIBIOTIC, 3, 212);
+        var material:BaseItem = stack(MATERIAL, 4, 213);
+        var flow:Object = activate([first, second, material], "s1.batch-success");
+        var before:Object = snapshot(flow);
+        var request:Object = claimBatchParams(before, [0, 1, 2], "batch.success");
+        var result:Object = LootContainerService.execute("claimBatch", request);
+        check(result.success && result.authorityRevision == before.authorityRevision + 3
+                && result.remainingCount == 0 && result.snapshots.length == 2
+                && flow.inventory.getItem("0") == null
+                && flow.inventory.getItem("1") == null
+                && flow.inventory.getItem("2") == null
+                && _root.物品栏.背包.size() == 2
+                && _root.收集品栏.材料.getValue(MATERIAL) == 4
+                && result.lastAppliedOperationId == "batch.success",
+            "claimBatch 单次协议连续提交异构奖励，只在批末返回一组权威投影");
+        var duplicate:Object = LootContainerService.execute("claimBatch", request);
+        check(duplicate.success && duplicate.authorityRevision == result.authorityRevision
+                && duplicate.remainingCount == 0 && _root.物品栏.背包.size() == 2
+                && _root.收集品栏.材料.getValue(MATERIAL) == 4,
+            "重复 claimBatch root operation 只返回当前投影，不重放任何子写");
+    }
+
+    private static function testClaimBatchSkipsCapacityBlockedSources():Void {
+        resetWorld();
+        var destination:BaseItem = stack(ANTIBIOTIC, 358, 220);
+        _root.物品栏.背包.add(14, destination);
+        for (var i:Number = 0; i < 50; i++) {
+            if (i != 14) _root.物品栏.背包.add(i, stack(STACK, i + 1, 221 + i));
+        }
+        var blockedEquipment:BaseItem = equipment(280);
+        var mergeable:BaseItem = stack(ANTIBIOTIC, 3, 281);
+        var flow:Object = activate([blockedEquipment, mergeable], "s1.batch-partial");
+        var before:Object = snapshot(flow);
+        var request:Object = claimBatchParams(before, [0, 1], "batch.partial");
+        var result:Object = LootContainerService.execute("claimBatch", request);
+        check(result.success && result.authorityRevision == before.authorityRevision + 1
+                && result.remainingCount == 1
+                && flow.inventory.getItem("0") === blockedEquipment
+                && flow.inventory.getItem("1") == null
+                && destination.value == 361 && _root.物品栏.背包.size() == 50
+                && result.lastAppliedOperationId == "batch.partial",
+            "claimBatch 保留容量受阻格，同时领取后续可合并格并给出精确部分进度");
+        var duplicate:Object = LootContainerService.execute("claimBatch", request);
+        check(duplicate.success && duplicate.authorityRevision == result.authorityRevision
+                && duplicate.remainingCount == 1 && destination.value == 361
+                && flow.inventory.getItem("0") === blockedEquipment,
+            "部分成功 claimBatch 的重复请求不重试受阻格也不重复合并");
+        LootContainerService.expireScene("scene_cleanup");
+    }
+
+    private static function testClaimBatchZeroWriteAndDuplicateSlotFence():Void {
+        resetWorld();
+        for (var i:Number = 0; i < 50; i++) {
+            _root.物品栏.背包.add(i, stack(STACK, i + 1, 310 + i));
+        }
+        var equipmentItem:BaseItem = equipment(390);
+        var flow:Object = activate([equipmentItem], "s1.batch-zero-write");
+        var before:Object = snapshot(flow);
+        _root.存档系统.dirtyMark = false;
+        var request:Object = claimBatchParams(before, [0], "batch.full");
+        var result:Object = LootContainerService.execute("claimBatch", request);
+        check(!result.success && result.error == "target_full"
+                && result.authorityRevision == before.authorityRevision
+                && result.remainingCount == 1
+                && flow.inventory.getItem("0") === equipmentItem
+                && _root.物品栏.背包.size() == 50 && !_root.存档系统.dirtyMark,
+            "claimBatch 全部容量受阻时保留 exact 零写 authority proof");
+        var duplicateSlot:Object = claimBatchParams(before, [0, 0], "batch.duplicate-slot");
+        var rejected:Object = LootContainerService.execute("claimBatch", duplicateSlot);
+        check(!rejected.success && rejected.error == "invalid_payload"
+                && rejected.authorityRevision == before.authorityRevision
+                && flow.inventory.getItem("0") === equipmentItem,
+            "claimBatch 在首写前拒绝重复 physical slot");
+        LootContainerService.expireScene("scene_cleanup");
     }
 
     private static function testClaimPendingEmptyQuery():Void {

@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
+using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Guardian.Hud
 {
@@ -12,12 +13,16 @@ namespace CF7Launcher.Guardian.Hud
     /// 收敛后的右侧组合 HUD：六入口常驻动作行 + 条件状态槽 + 可选地图预览。
     /// 业务命令仍全部通过 LauncherCommandRouter.Dispatch，不在 widget 内复制业务分支。
     /// </summary>
-    public class RightContextWidget : INativeHudWidget, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IDisposable
+    public class RightContextWidget : INativeHudWidget, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IStageOutcomePresenter, IDisposable
     {
         private const int NOTICE_MS = 5000;
         private const int ICON_W_BASE = 28;
         private const int NOTICE_TEXT_PAD_BASE = 8;
         private const int NOTICE_ARROW_W_BASE = 24;
+        private const int STAGE_ACTION_W_BASE = 64;
+        private const int STAGE_ACTION_SINGLE_W_BASE = 84;
+        private const int STAGE_ACTION_GAP_BASE = 4;
+        private const int STAGE_ACTION_INSET_BASE = 4;
         private const int MAP_BODY_INSET_BASE = 8;
         private const int MAP_LABEL_PAD_X_BASE = 6;
         private const int MAP_LABEL_PAD_Y_BASE = 2;
@@ -26,6 +31,10 @@ namespace CF7Launcher.Guardian.Hud
 
         private const string ICON_TASK_DONE = "❗";
         private const string ICON_PLACEHOLDER = "◆";
+        private const string ICON_STAGE_VICTORY = "✓";
+        private const string ICON_STAGE_FAILURE = "!";
+        private const string ICON_STAGE_DEAD = "!";
+        private const string ICON_STAGE_REWARDS = "◆";
 
         private static readonly string[] TOOL_KEYS = { "TASK_MAP", "TASK_UI", "EQUIP_UI", "GAMESETTINGS", "PAUSE", "SAFEEXIT" };
         private static readonly string[] TOOL_LABELS_DEFAULT = { "地图", "任务", "装备", "⚙", "Ⅱ", "×" };
@@ -49,7 +58,8 @@ namespace CF7Launcher.Guardian.Hud
             Tool,
             MapCard,
             MapDisplayToggle,
-            Notice
+            Notice,
+            StageAction
         }
 
         private struct HitInfo
@@ -58,12 +68,20 @@ namespace CF7Launcher.Guardian.Hud
             public int Index;
         }
 
-        private enum NoticeMode { Idle, Flash, TaskDone }
+        private enum NoticeMode { Idle, StageBroadcast, Flash, TaskDone }
 
         private class FlashItem
         {
             public string Text;
             public string Icon;
+        }
+
+        private sealed class StageActionSpec
+        {
+            public string Id;
+            public string Label;
+            public string Intent;
+            public bool Enabled;
         }
 
         private readonly Control _anchor;
@@ -86,6 +104,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private volatile bool _taskDone;
         private volatile bool _navigable;
+        private volatile bool _returnNavigable;
         private string _deliverHotspotId = "";
 
         private readonly Queue<FlashItem> _flashQueue = new Queue<FlashItem>();
@@ -94,6 +113,17 @@ namespace CF7Launcher.Guardian.Hud
         private int _flashElapsedMs;
         private string _noticeText = "";
         private string _noticeIcon = ICON_PLACEHOLDER;
+
+        // StageRunSession 仍是唯一权威；这里仅把决策投影进常驻 HUD 的既有状态槽。
+        // 决策条不暂停游戏，也不提供伪“继续”确认；玩家可直接忽略并继续探索。
+        private readonly List<StageActionSpec> _stageActions =
+            new List<StageActionSpec>();
+        private StageOutcomeState _stageOutcomeState;
+        private bool _stageBridgeReady;
+        private string _stageBroadcastText;
+        private string _stageBroadcastIcon;
+        private string _stageBroadcastOutcome;
+        private int _stageBroadcastElapsedMs;
 
         private HitInfo _hover;
         private HitInfo _down;
@@ -236,6 +266,7 @@ namespace CF7Launcher.Guardian.Hud
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
         public event EventHandler AnimationStateChanged;
+        public event Action<string, string, int> IntentRequested;
 
         public RightContextWidget(
             Control anchor,
@@ -303,9 +334,20 @@ namespace CF7Launcher.Guardian.Hud
             get
             {
                 if (!_gameReady) return NoticeMode.Idle;
+                if (!string.IsNullOrEmpty(_stageBroadcastText))
+                    return NoticeMode.StageBroadcast;
                 if (_activeFlash != null) return NoticeMode.Flash;
                 if (_taskDone) return NoticeMode.TaskDone;
                 return NoticeMode.Idle;
+            }
+        }
+
+        internal bool RequestsStageDecision
+        {
+            get
+            {
+                return _gameReady && _stageBridgeReady
+                    && ShouldPresentStageDecision(_stageOutcomeState);
             }
         }
 
@@ -316,7 +358,7 @@ namespace CF7Launcher.Guardian.Hud
 
         internal bool RequestsActionableNotice
         {
-            get { return ShowNotice; }
+            get { return !RequestsStageDecision && ShowNotice; }
         }
 
         internal bool RequestsContextHint
@@ -334,6 +376,8 @@ namespace CF7Launcher.Guardian.Hud
         {
             get
             {
+                if (_slotOwner == RightContextSlotOwner.StageDecision)
+                    return RequestsStageDecision;
                 if (_slotOwner == RightContextSlotOwner.TransactionDecision) return true;
                 if (_slotOwner == RightContextSlotOwner.ActionableNotice)
                     return RequestsActionableNotice;
@@ -349,6 +393,15 @@ namespace CF7Launcher.Guardian.Hud
             {
                 return _slotOwner == RightContextSlotOwner.ActionableNotice
                     && RequestsActionableNotice;
+            }
+        }
+
+        private bool PaintsStageDecision
+        {
+            get
+            {
+                return _slotOwner == RightContextSlotOwner.StageDecision
+                    && RequestsStageDecision;
             }
         }
 
@@ -396,6 +449,8 @@ namespace CF7Launcher.Guardian.Hud
             get
             {
                 if (!Visible) return false;
+                if (RequestsStageDecision) return false;
+                if (!string.IsNullOrEmpty(_stageBroadcastText)) return true;
                 if (_activeFlash != null) return true;
                 return false;
             }
@@ -407,7 +462,21 @@ namespace CF7Launcher.Guardian.Hud
             bool repaint = false;
             bool tickDirty = false;
 
-            if (_activeFlash != null)
+            // 决策问询必须稳定停留；普通播报及其计时在决策期间冻结。
+            if (RequestsStageDecision) return;
+
+            if (!string.IsNullOrEmpty(_stageBroadcastText))
+            {
+                _stageBroadcastElapsedMs += deltaMs;
+                if (_stageBroadcastElapsedMs >= NOTICE_MS)
+                {
+                    ClearStageBroadcast();
+                    FireBounds();
+                    tickDirty = true;
+                }
+                repaint = true;
+            }
+            else if (_activeFlash != null)
             {
                 _flashElapsedMs += deltaMs;
                 if (_flashElapsedMs >= NOTICE_MS)
@@ -434,6 +503,7 @@ namespace CF7Launcher.Guardian.Hud
             EffectiveMapDisplayMode mapMode = LayoutMapMode;
             bool showMap = mapMode != EffectiveMapDisplayMode.Hidden;
             bool showNotice = PaintsActionableNotice;
+            bool showStageDecision = PaintsStageDecision;
             bool showHint = PaintsContextHint;
             bool showStatusSlot = ShowStatusSlot;
 
@@ -457,6 +527,7 @@ namespace CF7Launcher.Guardian.Hud
             {
                 PaintTools(g, tools, scale);
                 if (showHint) PaintActionTooltip(g, notice, scale);
+                if (showStageDecision) PaintStageDecision(g, notice, scale);
                 if (showNotice) PaintNotice(g, notice, scale);
                 if (showMap) PaintMapCard(g, map, scale);
             }
@@ -584,27 +655,39 @@ namespace CF7Launcher.Guardian.Hud
         {
             if (r.Width <= 0 || r.Height <= 0) return;
             NoticeMode mode = CurrentNoticeMode;
+            string noticeText = mode == NoticeMode.StageBroadcast
+                ? _stageBroadcastText : _noticeText;
+            string noticeIcon = mode == NoticeMode.StageBroadcast
+                ? _stageBroadcastIcon : _noticeIcon;
             int iconW = WidgetScaler.Px(ICON_W_BASE, scale);
             int pad = WidgetScaler.Px(NOTICE_TEXT_PAD_BASE, scale);
             int arrowW = WidgetScaler.Px(NOTICE_ARROW_W_BASE, scale);
             bool showArrow = mode == NoticeMode.TaskDone && CanDeliver();
-            bool hover = _hover.Kind == HitKind.Notice;
+            bool hover = mode != NoticeMode.StageBroadcast
+                && _hover.Kind == HitKind.Notice;
 
-            Color noticeAccent = mode == NoticeMode.Flash
-                ? NativeHudTheme.Warning
-                : (CanDeliver() ? NativeHudTheme.Cyan : NativeHudTheme.Gold);
+            Color noticeAccent = mode == NoticeMode.StageBroadcast
+                ? (_stageBroadcastOutcome == "victory"
+                    ? NativeHudTheme.Cyan : NativeHudTheme.Danger)
+                : (mode == NoticeMode.Flash
+                    ? NativeHudTheme.Warning
+                    : (CanDeliver() ? NativeHudTheme.Cyan : NativeHudTheme.Gold));
             Color noticeFill = hover ? NativeHudTheme.ButtonHover : NativeHudTheme.PanelFillDense;
             NativeHudTheme.DrawPanel(g, r, scale, noticeFill, noticeAccent, true);
 
             Rectangle iconRect = new Rectangle(r.X, r.Y, iconW, r.Height);
             Rectangle textRect = new Rectangle(iconRect.Right + pad, r.Y,
                 Math.Max(1, r.Width - iconW - pad * 2 - (showArrow ? arrowW : 0)), r.Height);
-            Color iconColor = mode == NoticeMode.Flash
+            Color iconColor = mode == NoticeMode.StageBroadcast
+                ? noticeAccent
+                : (mode == NoticeMode.Flash
                 ? Color.FromArgb(255, 255, 220, 130)
-                : (hover ? Color.FromArgb(255, 255, 200, 80) : Color.FromArgb(255, 255, 175, 50));
-            Color textColor = mode == NoticeMode.Flash
+                : (hover ? Color.FromArgb(255, 255, 200, 80) : Color.FromArgb(255, 255, 175, 50)));
+            Color textColor = mode == NoticeMode.StageBroadcast
+                ? NativeHudTheme.TextPrimary
+                : (mode == NoticeMode.Flash
                 ? Color.FromArgb(229, 255, 220, 150)
-                : (hover ? Color.FromArgb(255, 255, 215, 110) : Color.FromArgb(229, 255, 200, 80));
+                : (hover ? Color.FromArgb(255, 255, 215, 110) : Color.FromArgb(229, 255, 200, 80)));
 
             // P0 perf：font/sep/center/textFmt 复用；iconBrush/textBrush 颜色按 hover/mode 动态选，仍按需 new
             Font font = _fontNoticeJuke11;
@@ -615,8 +698,8 @@ namespace CF7Launcher.Guardian.Hud
             {
                 NativeHudTheme.DrawSeparator(g, iconRect.Right, r.Y + WidgetScaler.Px(4, scale),
                     r.Bottom - WidgetScaler.Px(4, scale), scale);
-                g.DrawString(_noticeIcon, font, iconBrush, iconRect, center);
-                g.DrawString(_noticeText, font, textBrush, textRect, textFmt);
+                g.DrawString(noticeIcon, font, iconBrush, iconRect, center);
+                g.DrawString(noticeText, font, textBrush, textRect, textFmt);
                 if (showArrow)
                 {
                     Rectangle arrowRect = new Rectangle(r.Right - arrowW, r.Y, arrowW, r.Height);
@@ -629,6 +712,56 @@ namespace CF7Launcher.Guardian.Hud
                         g.DrawString("➤", font, arrowBrush, arrowRect, center);
                     }
                 }
+            }
+        }
+
+        private void PaintStageDecision(Graphics g, Rectangle r, float scale)
+        {
+            StageOutcomeState state = _stageOutcomeState;
+            if (state == null || r.Width <= 0 || r.Height <= 0) return;
+
+            Color accent = StageAccent(state);
+            NativeHudTheme.DrawPanel(g, r, scale,
+                NativeHudTheme.PanelFillDense, accent, true);
+
+            int iconW = WidgetScaler.Px(ICON_W_BASE, scale);
+            int pad = WidgetScaler.Px(NOTICE_TEXT_PAD_BASE, scale);
+            int actionsWidth = StageActionsTotalWidth(scale);
+            Rectangle iconRect = new Rectangle(r.X, r.Y, iconW, r.Height);
+            Rectangle textRect = new Rectangle(
+                iconRect.Right + pad,
+                r.Y,
+                Math.Max(1, r.Width - iconW - pad * 2 - actionsWidth),
+                r.Height);
+            using (SolidBrush accentBrush = new SolidBrush(accent))
+            using (SolidBrush textBrush = new SolidBrush(NativeHudTheme.TextPrimary))
+            {
+                NativeHudTheme.DrawSeparator(g, iconRect.Right,
+                    r.Y + WidgetScaler.Px(4, scale),
+                    r.Bottom - WidgetScaler.Px(4, scale), scale);
+                g.DrawString(StageIcon(state), _fontNoticeJuke11,
+                    accentBrush, iconRect, FMT_CENTER);
+                g.DrawString(StageDecisionText(state), _fontNoticeJuke11,
+                    textBrush, textRect, FMT_NEAR_NOWRAP_ELLIPSIS);
+            }
+
+            for (int i = 0; i < _stageActions.Count; i++)
+            {
+                StageActionSpec action = _stageActions[i];
+                Rectangle button = StageActionRect(r, scale, i);
+                bool hover = _hover.Kind == HitKind.StageAction
+                    && _hover.Index == i;
+                bool pressed = _down.Kind == HitKind.StageAction
+                    && _down.Index == i;
+                bool primary = action.Id == "revive"
+                    || action.Id == "deliver" || action.Id == "resume";
+                NativeHudTheme.DrawButton(g, button, scale,
+                    hover, pressed, primary, false);
+                Color labelColor = action.Enabled
+                    ? NativeHudTheme.TextPrimary : NativeHudTheme.TextDisabled;
+                using (SolidBrush labelBrush = new SolidBrush(labelColor))
+                    g.DrawString(action.Label, _fontNoticeJuke11,
+                        labelBrush, button, FMT_CENTER_ELLIPSIS);
             }
         }
 
@@ -689,7 +822,19 @@ namespace CF7Launcher.Guardian.Hud
                 return Hit(HitKind.MapCard, 0);
             }
             Rectangle notice = RightHudLayout.StatusSlotRectFromContext(context, scale, showStatusSlot);
-            if (showNotice && notice.Contains(pt)) return Hit(HitKind.Notice, 0);
+            if (PaintsStageDecision && notice.Contains(pt))
+            {
+                for (int i = 0; i < _stageActions.Count; i++)
+                {
+                    if (_stageActions[i].Enabled
+                            && StageActionRect(notice, scale, i).Contains(pt))
+                        return Hit(HitKind.StageAction, i);
+                }
+                return NoHit();
+            }
+            if (showNotice && CurrentNoticeMode != NoticeMode.StageBroadcast
+                    && notice.Contains(pt))
+                return Hit(HitKind.Notice, 0);
             return NoHit();
         }
 
@@ -710,6 +855,9 @@ namespace CF7Launcher.Guardian.Hud
                         break;
                     case HitKind.Notice:
                         DispatchNoticeClick();
+                        break;
+                    case HitKind.StageAction:
+                        DispatchStageAction(hit.Index);
                         break;
                 }
             }
@@ -732,6 +880,19 @@ namespace CF7Launcher.Guardian.Hud
             }
         }
 
+        private void DispatchStageAction(int index)
+        {
+            StageOutcomeState state = _stageOutcomeState;
+            if (state == null || index < 0 || index >= _stageActions.Count)
+                return;
+            StageActionSpec action = _stageActions[index];
+            if (!action.Enabled) return;
+
+            Action<string, string, int> handler = IntentRequested;
+            if (handler != null && !string.IsNullOrEmpty(action.Intent))
+                handler(action.Intent, state.RunId, state.Revision);
+        }
+
         private void SetHover(HitInfo hit)
         {
             if (SameHit(_hover, hit)) return;
@@ -741,12 +902,192 @@ namespace CF7Launcher.Guardian.Hud
             else FireRepaint();
         }
 
+        public void SetReady()
+        {
+            if (MarshalToUi(SetReady)) return;
+            if (_stageBridgeReady) return;
+            _stageBridgeReady = true;
+            FireBounds();
+        }
+
+        public void ApplyState(StageOutcomeState state)
+        {
+            if (state == null) return;
+            if (MarshalToUi(delegate { ApplyState(state); })) return;
+
+            string previousRun = _stageOutcomeState != null
+                ? _stageOutcomeState.RunId : null;
+            if (!string.Equals(previousRun, state.RunId,
+                    StringComparison.Ordinal))
+                ClearStageBroadcast();
+            _stageOutcomeState = state;
+            _hover = NoHit();
+            _down = NoHit();
+            BuildStageActions();
+            FireBounds();
+            FireAnimState();
+        }
+
+        public void ResetState()
+        {
+            if (MarshalToUi(ResetState)) return;
+            _stageOutcomeState = null;
+            _stageActions.Clear();
+            ClearStageBroadcast();
+            _hover = NoHit();
+            _down = NoHit();
+            FireBounds();
+            FireAnimState();
+        }
+
+        private bool MarshalToUi(Action action)
+        {
+            if (_anchor == null || _anchor.IsDisposed) return true;
+            if (!_anchor.IsHandleCreated || !_anchor.InvokeRequired) return false;
+            try { _anchor.BeginInvoke(action); }
+            catch { }
+            return true;
+        }
+
+        private bool ShouldPresentStageDecision(StageOutcomeState state)
+        {
+            return state != null && state.ShouldDisplay;
+        }
+
+        private void BuildStageActions()
+        {
+            _stageActions.Clear();
+            StageOutcomeState state = _stageOutcomeState;
+            if (!ShouldPresentStageDecision(state)) return;
+            if (state.Settlement == "rewards_pending")
+            {
+                AddStageAction("resume", "继续领取", "resume_rewards", true);
+                return;
+            }
+            if (state.Life == "dead")
+            {
+                AddStageAction("revive",
+                    state.ReviveAllowed
+                        ? "复活×" + StageOutcomeState.FormatCompactCount(
+                            state.ReviveCoins)
+                        : "禁复活",
+                    "revive", state.ReviveAllowed);
+                if (state.CanReturnBase)
+                    AddStageAction("return", "回基地", "return_base", true);
+                return;
+            }
+            if (state.Life == "reviving") return;
+            if (CanOfferStageDelivery(state))
+                AddStageAction("deliver", "前往交付",
+                    "return_deliverable", true);
+            if (state.CanReturnBase)
+                AddStageAction("return", "回基地", "return_base", true);
+        }
+
+        private bool CanOfferStageDelivery(StageOutcomeState state)
+        {
+            return state != null && state.Outcome == "victory"
+                && state.Life == "alive" && state.Settlement == "none"
+                && state.CanReturnBase && _taskDone
+                && _returnNavigable
+                && !string.IsNullOrEmpty(_deliverHotspotId);
+        }
+
+        private void AddStageAction(
+            string id, string label, string intent, bool enabled)
+        {
+            _stageActions.Add(new StageActionSpec
+            {
+                Id = id,
+                Label = label,
+                Intent = intent,
+                Enabled = enabled
+            });
+        }
+
+        private int StageActionsTotalWidth(float scale)
+        {
+            if (_stageActions.Count == 0) return 0;
+            int width = WidgetScaler.Px(
+                _stageActions.Count == 1
+                    ? STAGE_ACTION_SINGLE_W_BASE : STAGE_ACTION_W_BASE,
+                scale);
+            int gap = WidgetScaler.Px(STAGE_ACTION_GAP_BASE, scale);
+            int inset = WidgetScaler.Px(STAGE_ACTION_INSET_BASE, scale);
+            return inset + width * _stageActions.Count
+                + gap * Math.Max(0, _stageActions.Count - 1);
+        }
+
+        private Rectangle StageActionRect(Rectangle slot, float scale, int index)
+        {
+            if (index < 0 || index >= _stageActions.Count) return Rectangle.Empty;
+            int width = WidgetScaler.Px(
+                _stageActions.Count == 1
+                    ? STAGE_ACTION_SINGLE_W_BASE : STAGE_ACTION_W_BASE,
+                scale);
+            int gap = WidgetScaler.Px(STAGE_ACTION_GAP_BASE, scale);
+            int inset = WidgetScaler.Px(STAGE_ACTION_INSET_BASE, scale);
+            int total = width * _stageActions.Count
+                + gap * Math.Max(0, _stageActions.Count - 1);
+            int height = Math.Max(1, slot.Height - inset * 2);
+            int x = slot.Right - inset - total + index * (width + gap);
+            return new Rectangle(x, slot.Y + inset, width, height);
+        }
+
+        private static string StageDecisionText(StageOutcomeState state)
+        {
+            if (state.Settlement == "rewards_pending")
+                return "待领奖励 " + state.RemainingRewards + " 项";
+            if (state.Life == "reviving") return "正在复活…";
+            if (state.Life == "dead") return "你受了重伤";
+            if (state.Outcome == "victory") return "关卡已突破";
+            return "行动未能完成";
+        }
+
+        private static string StageIcon(StageOutcomeState state)
+        {
+            if (state.Settlement == "rewards_pending") return ICON_STAGE_REWARDS;
+            if (state.Life == "dead" || state.Life == "reviving")
+                return ICON_STAGE_DEAD;
+            return state.Outcome == "victory"
+                ? ICON_STAGE_VICTORY : ICON_STAGE_FAILURE;
+        }
+
+        private static Color StageAccent(StageOutcomeState state)
+        {
+            if (state.Settlement == "rewards_pending") return NativeHudTheme.Gold;
+            if (state.Life == "dead" || state.Life == "reviving"
+                    || state.Outcome == "failure")
+                return NativeHudTheme.Danger;
+            return NativeHudTheme.Cyan;
+        }
+
+        private void StartStageBroadcast(StageOutcomeState state)
+        {
+            _stageBroadcastOutcome = state.Outcome;
+            _stageBroadcastIcon = state.Outcome == "victory"
+                ? ICON_STAGE_VICTORY : ICON_STAGE_FAILURE;
+            _stageBroadcastText = (state.Outcome == "victory"
+                    ? "关卡已突破 · " : "行动未完成 · ")
+                + state.StageName;
+            _stageBroadcastElapsedMs = 0;
+        }
+
+        private void ClearStageBroadcast()
+        {
+            _stageBroadcastText = null;
+            _stageBroadcastIcon = null;
+            _stageBroadcastOutcome = null;
+            _stageBroadcastElapsedMs = 0;
+        }
+
         public void OnUiDataChanged(IReadOnlyDictionary<string, string> snapshot, ISet<string> changedKeys)
         {
             bool boundsDirty = false;
             bool repaintDirty = false;
             bool tickDirty = false;
             bool textDirty = false;
+            bool stageActionsDirty = false;
             string piece;
 
             if (changedKeys.Contains("s") && snapshot.TryGetValue("s", out piece))
@@ -800,6 +1141,7 @@ namespace CF7Launcher.Guardian.Hud
                     _taskDone = nextDone;
                     boundsDirty = true;
                     textDirty = true;
+                    stageActionsDirty = true;
                 }
             }
             if (changedKeys.Contains("tdh") && snapshot.TryGetValue("tdh", out piece))
@@ -810,6 +1152,7 @@ namespace CF7Launcher.Guardian.Hud
                     _deliverHotspotId = next ?? "";
                     repaintDirty = true;
                     textDirty = true;
+                    stageActionsDirty = true;
                 }
             }
             if (changedKeys.Contains("tdn") && snapshot.TryGetValue("tdn", out piece))
@@ -822,7 +1165,23 @@ namespace CF7Launcher.Guardian.Hud
                     textDirty = true;
                 }
             }
+            if (changedKeys.Contains("tdr") && snapshot.TryGetValue("tdr", out piece))
+            {
+                bool nextReturnNav = UiValueParser.ParseUiBoolValue(piece);
+                if (nextReturnNav != _returnNavigable)
+                {
+                    _returnNavigable = nextReturnNav;
+                    repaintDirty = true;
+                    textDirty = true;
+                    stageActionsDirty = true;
+                }
+            }
             if (mapInputsDirty && RecomputeEffectiveMapDisplayMode()) boundsDirty = true;
+            if (stageActionsDirty)
+            {
+                BuildStageActions();
+                boundsDirty = true;
+            }
             if (textDirty) RebuildNoticeText();
             if (boundsDirty) FireBounds();
             else if (repaintDirty) FireRepaint();
@@ -1025,20 +1384,57 @@ namespace CF7Launcher.Guardian.Hud
         internal int FlashQueueCount { get { lock (_flashLock) { return _flashQueue.Count; } } }
         internal bool IsTaskDone { get { return _taskDone; } }
         internal bool IsNavigable { get { return _navigable; } }
+        internal bool IsReturnNavigable { get { return _returnNavigable; } }
         internal string DeliverHotspotId { get { return _deliverHotspotId; } }
         internal string MapMode { get { return ((int)_runtimeMapMode).ToString(); } }
         internal RuntimeMapMode RuntimeMapModeForTest { get { return _runtimeMapMode; } }
         internal MapDisplayPreference MapDisplayPreferenceForTest { get { return _mapDisplayPreference; } }
         internal bool StatusSlotVisibleForTest { get { return ShowStatusSlot; } }
         internal RightContextSlotOwner SlotOwnerForTest { get { return _slotOwner; } }
+        internal bool PaintsStageDecisionForTest { get { return PaintsStageDecision; } }
         internal bool PaintsActionableNoticeForTest { get { return PaintsActionableNotice; } }
         internal bool PaintsContextHintForTest { get { return PaintsContextHint; } }
         internal bool SlotHitBoxActiveForTest
         {
-            get { return PaintsActionableNotice; }
+            get
+            {
+                if (PaintsStageDecision)
+                {
+                    for (int i = 0; i < _stageActions.Count; i++)
+                        if (_stageActions[i].Enabled) return true;
+                    return false;
+                }
+                return PaintsActionableNotice
+                    && CurrentNoticeMode != NoticeMode.StageBroadcast;
+            }
         }
         internal EffectiveMapDisplayMode EffectiveMapDisplayModeForTest { get { return _effectiveMapDisplayMode; } }
-        internal string DisplayText { get { return _noticeText; } }
+        internal string DisplayText
+        {
+            get
+            {
+                return CurrentNoticeMode == NoticeMode.StageBroadcast
+                    ? _stageBroadcastText : _noticeText;
+            }
+        }
+        internal string[] StageActionLabelsForTest
+        {
+            get
+            {
+                string[] labels = new string[_stageActions.Count];
+                for (int i = 0; i < _stageActions.Count; i++)
+                    labels[i] = _stageActions[i].Label;
+                return labels;
+            }
+        }
+        internal bool HasStageBroadcastForTest
+        {
+            get { return !string.IsNullOrEmpty(_stageBroadcastText); }
+        }
+        internal void ClickStageActionForTest(int index)
+        {
+            DispatchStageAction(index);
+        }
         internal void ForceGameReady(bool ready) { _gameReady = ready; }
         internal void ForceTaskDone(bool done) { _taskDone = done; RebuildNoticeText(); }
         internal void ForceMapMode(string mode)
@@ -1052,14 +1448,18 @@ namespace CF7Launcher.Guardian.Hud
             _mapEntry = string.IsNullOrEmpty(_mapHotspotId) || _catalog == null ? null : _catalog.GetEntry(_mapHotspotId);
             RecomputeEffectiveMapDisplayMode();
         }
-        internal void ForceDeliverState(bool done, string hotspot, bool navigable, string mapMode)
+        internal void ForceDeliverState(
+            bool done, string hotspot, bool navigable, string mapMode,
+            bool returnNavigable = false)
         {
             _taskDone = done;
             _deliverHotspotId = hotspot ?? "";
             _navigable = navigable;
+            _returnNavigable = returnNavigable;
             _runtimeMapMode = MapDisplayPolicy.ParseRuntimeMode(mapMode);
             RecomputeEffectiveMapDisplayMode();
             RebuildNoticeText();
+            BuildStageActions();
         }
         internal void AdvanceFlashMs(int ms)
         {

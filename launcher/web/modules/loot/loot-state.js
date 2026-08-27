@@ -306,6 +306,10 @@
             beforeCloseLease:String(pending.beforeCloseLease || ''),
             physicalSlot:integer(pending.physicalSlot),
             slotLease:String(pending.slotLease || ''),
+            physicalSlots:Array.isArray(pending.physicalSlots)
+                ? pending.physicalSlots.map(Number) : [],
+            slotLeases:Array.isArray(pending.slotLeases)
+                ? pending.slotLeases.map(String) : [],
             expectedContainerVersion:integer(pending.expectedContainerVersion),
             authorityRevision:localAuthorityRevision,
             freshnessWatermark:freshnessWatermark,
@@ -394,6 +398,12 @@
         };
     };
 
+    Coordinator.prototype._sourceRefs = function(slots) {
+        var refs=[];
+        for (var i=0;i<slots.length;i++) refs.push(this._sourceRef(slots[i]));
+        return refs;
+    };
+
     Coordinator.prototype._capacityFailureProvesNoWrite = function(response, error, pending) {
         var projection = this._projection;
         if (!response || response.success !== false
@@ -438,6 +448,56 @@
         return false;
     };
 
+    Coordinator.prototype._claimBatchProjection = function(projection,pending) {
+        if (!projection||projection.state!=='ACTIVE'||!projection.loot
+                ||!Array.isArray(pending.physicalSlots)||!Array.isArray(pending.slotLeases)
+                ||pending.physicalSlots.length<1
+                ||pending.physicalSlots.length!==pending.slotLeases.length) return null;
+        var bySlot={},slots=projection.loot.slots||[];
+        for (var i=0;i<slots.length;i++) bySlot[String(slots[i].physicalSlot)]=slots[i];
+        var empty=0;
+        for (i=0;i<pending.physicalSlots.length;i++) {
+            var slot=bySlot[String(pending.physicalSlots[i])];
+            if (!slot) return null;
+            if (!slot.occupied) empty++;
+            else if (slot.slotLease!==String(pending.slotLeases[i])) return null;
+        }
+        return {empty:empty,containerVersion:projection.loot.containerVersion};
+    };
+
+    Coordinator.prototype._claimBatchSuccessProvesAdvance = function(
+            projection,pending,operationIdValue) {
+        var requested=Array.isArray(pending.physicalSlots)?pending.physicalSlots.length:0;
+        var applied=projection&&integer(pending.beforeAuthorityRevision)!=null
+            ? projection.authorityRevision-pending.beforeAuthorityRevision:0;
+        var requestedProjection=this._claimBatchProjection(projection,pending);
+        return requested>0&&applied>=1&&applied<=requested&&requestedProjection
+            &&projection.remainingCount===pending.beforeRemaining-applied
+            &&projection.lastAppliedOperationId===operationIdValue
+            &&requestedProjection.empty===applied;
+    };
+
+    Coordinator.prototype._claimBatchCapacityFailureProvesNoWrite = function(
+            response,error,pending) {
+        var projection=this._projection;
+        if (!response||response.success!==false||!own(CAPACITY_NO_WRITE_ERRORS,error)
+                ||response.state!=='LOOT_ACTIVE'||response.closeLease!==''
+                ||!Array.isArray(response.snapshots)||response.snapshots.length!==0
+                ||response.tooltip!==null||response.materials!==null||response.terminal!==null
+                ||integer(response.authorityRevision)!==integer(pending.beforeAuthorityRevision)
+                ||integer(response.remainingCount)!==integer(pending.beforeRemaining)
+                ||typeof response.lastAppliedOperationId!=='string'
+                ||response.lastAppliedOperationId!==pending.beforeLastAppliedOperationId
+                ||!projection||projection.state!=='ACTIVE'
+                ||projection.authorityRevision!==pending.beforeAuthorityRevision
+                ||projection.remainingCount!==pending.beforeRemaining
+                ||projection.lastAppliedOperationId!==pending.beforeLastAppliedOperationId
+                ||!projection.loot
+                ||projection.loot.containerVersion!==pending.expectedContainerVersion) return false;
+        var requestedProjection=this._claimBatchProjection(projection,pending);
+        return !!requestedProjection&&requestedProjection.empty===0;
+    };
+
     Coordinator.prototype._unknownClaimProjectionProves = function(projection, unknown) {
         if (integer(unknown.authorityRevision) == null
                 || integer(unknown.beforeRemaining) == null
@@ -469,6 +529,33 @@
                 && slots[i].slotLease === String(unknown.slotLease || '');
         }
         return false;
+    };
+
+    Coordinator.prototype._unknownClaimBatchProjectionProves = function(projection,unknown) {
+        if (!projection||integer(unknown.authorityRevision)==null
+                ||integer(unknown.beforeRemaining)==null
+                ||integer(unknown.expectedContainerVersion)==null
+                ||integer(unknown.freshnessWatermark)==null
+                ||projection.authorityRevision<unknown.freshnessWatermark) return false;
+        var requested=Array.isArray(unknown.physicalSlots)?unknown.physicalSlots.length:0;
+        if (!requested||!Array.isArray(unknown.slotLeases)
+                ||unknown.slotLeases.length!==requested) return false;
+        var requestedProjection=this._claimBatchProjection(projection,unknown);
+        if (!requestedProjection) return false;
+        var applied=projection.authorityRevision-unknown.authorityRevision;
+        if (applied>=1&&applied<=requested
+                &&projection.lastAppliedOperationId===unknown.operationId
+                &&projection.remainingCount===unknown.beforeRemaining-applied
+                &&requestedProjection.empty===applied) return true;
+        return unknown.requiresCausalCompletion!==true
+            &&projection.state==='ACTIVE'
+            &&projection.authorityRevision===unknown.authorityRevision
+            &&projection.remainingCount===unknown.beforeRemaining
+            &&projection.lastAppliedOperationId
+                ===String(unknown.beforeLastAppliedOperationId||'')
+            &&projection.closeLease===String(unknown.beforeCloseLease||'')
+            &&projection.loot.containerVersion===unknown.expectedContainerVersion
+            &&requestedProjection.empty===0;
     };
 
     Coordinator.prototype._unknownCloseActiveProjectionProvesNoWrite = function(projection, unknown) {
@@ -547,6 +634,74 @@
         });
         if (!callId && this._phase === 'write_pending') {
             this._markReconcile({callId:''}, opId, 'disconnected');
+            return false;
+        }
+        return true;
+    };
+
+    Coordinator.prototype.claimBatch = function(slots, callback) {
+        if (this._phase!=='active'||this._pending||!this._projection
+                ||!Array.isArray(slots)||slots.length<1||slots.length>50) return false;
+        var physicalSlots=[],slotLeases=[],seen={};
+        for (var i=0;i<slots.length;i++) {
+            var slot=slots[i],physicalSlot=integer(slot&&slot.physicalSlot);
+            var slotLease=slot&&text(String(slot.slotLease||''),240);
+            if (!slot||!slot.occupied||physicalSlot==null||!slotLease
+                    ||own(seen,String(physicalSlot))) return false;
+            seen[String(physicalSlot)]=true;
+            physicalSlots.push(physicalSlot);slotLeases.push(slotLease);
+        }
+        var revision=++this._intentRevision;
+        var opId=operationId('batch',this._operationNonce,revision);
+        var self=this,generation=this._generation;
+        this._phase='write_pending';
+        this._pending={
+            kind:'claimBatch',operationId:opId,intentRevision:revision,callId:'',
+            beforeAuthorityRevision:this._projection.authorityRevision,
+            beforeRemaining:this._projection.remainingCount,
+            beforeLastAppliedOperationId:this._projection.lastAppliedOperationId,
+            beforeCloseLease:this._projection.closeLease,
+            physicalSlots:physicalSlots,slotLeases:slotLeases,
+            expectedContainerVersion:Number(this._projection.loot.containerVersion)
+        };
+        this._lastError='';this._emit();
+        var callId=this._request('claimBatch',{
+            operationId:opId,direction:'loot_to_player',sources:this._sourceRefs(slots),
+            targetContainerId:'背包',
+            expectedAuthorityRevision:this._projection.authorityRevision
+        },{
+            kind:'write',singleFlight:true,write:true,operationId:opId,
+            onIssued:function(entry){if(self._pending)self._pending.callId=entry.callId;}
+        },function(response,entry){
+            if(generation!==self._generation||self._detached)return;
+            var projection=self._normalizeProjection(response),pending=self._pending||{};
+            if(response&&response.success===true&&projection
+                    &&self._claimBatchSuccessProvesAdvance(projection,pending,opId)
+                    &&self._apply(projection)){
+                if(typeof callback==='function')callback(true,response);
+                return;
+            }
+            var error=response&&response.error||'malformed_response';
+            if(response&&(response.clientSynthetic||response.requiresReconcile
+                    ||own(AMBIGUOUS_ERRORS,error))||response&&response.success===true){
+                self._markReconcile(entry,opId,error,false,
+                    response&&response.authorityRevision);
+            }else if(own(STALE_ERRORS,error)){
+                self._markReconcile(entry,opId,error,true,
+                    response&&response.authorityRevision);
+            }else if(self._claimBatchCapacityFailureProvesNoWrite(response,error,pending)){
+                self._phase='active';self._pending=null;self._lastError=error;self._emit();
+            }else if(projection&&own(TERMINAL_STATES,projection.state)){
+                self._apply(projection);
+            }else if(own(REFRESH_ONLY_ERRORS,error)){
+                self._markReconcile(entry,opId,error,true,
+                    response&&response.authorityRevision);
+            }else self._markReconcile(entry,opId,error,false,
+                response&&response.authorityRevision);
+            if(typeof callback==='function')callback(false,response);
+        });
+        if(!callId&&this._phase==='write_pending'){
+            this._markReconcile({callId:''},opId,'disconnected');
             return false;
         }
         return true;
@@ -662,7 +817,7 @@
                         >= Number(unknown.freshnessWatermark)
                     && projection.remainingCount === Number(unknown.beforeRemaining);
             } else if (projection && own(TERMINAL_STATES,projection.state)) {
-                if (unknown.kind === 'claim') {
+                if (unknown.kind === 'claim' || unknown.kind === 'claimBatch') {
                     provesUnknown = projection.authorityRevision
                         > Number(unknown.authorityRevision)
                         && projection.authorityRevision
@@ -678,6 +833,8 @@
                 }
             } else if (projection && unknown.kind === 'claim') {
                 provesUnknown = self._unknownClaimProjectionProves(projection,unknown);
+            } else if (projection && unknown.kind === 'claimBatch') {
+                provesUnknown = self._unknownClaimBatchProjectionProves(projection,unknown);
             } else if (projection && unknown.kind === 'close') {
                 provesUnknown = self._unknownCloseActiveProjectionProvesNoWrite(
                     projection,unknown);

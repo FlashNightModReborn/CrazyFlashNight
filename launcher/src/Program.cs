@@ -1465,7 +1465,6 @@ class Program
         {
             LogManager.Log("[Cursor] native overlay disabled by config; using system cursor for A/B diagnostics");
         }
-
         // Notch 依赖 + InputShieldForm
         InputShieldForm inputShield = null;
         // UiData handlers are wired before TaskRegistry construction. Capture this holder so
@@ -1624,9 +1623,10 @@ class Program
             }
             // flashHwndProvider 在 WebOverlay 构造前已声明（snapshot 路径用），此处复用给 PanelHostController；
             // WebOverlay 自身的焦点回推不走 provider 而走 flashFocusRestorer 统一 primitive。
+            IPanelHudCompanion panelHudCompanion = playerInfoSurface;
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
-                playerInfoSurface);
+                panelHudCompanion);
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
@@ -1776,6 +1776,8 @@ class Program
         // 烘焙成功 → widget 负缓存失效 + 重绘：存活期内的占位卡片原地升级为胸像
         dollBakeService.PortraitReady = lootFeedWidget.NotifyIconReady;
         LootFeedTask lootFeedTask = new LootFeedTask(lootFeedWidget, dollBakeService);
+        StageOutcomeTask stageOutcomeTask = new StageOutcomeTask(
+            socketServer, rightContext);
         // 兼容调用点：AudioTask 不再拥有 gain policy，SetToastSink 当前为 no-op，不能据此
         // 声称会发音量 warning。迁移期恢复入口与退出条件见 docs 中的存档编辑器事件记录。
         CF7Launcher.Tasks.AudioTask.SetToastSink(toastSink);
@@ -2094,7 +2096,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2252,6 +2254,7 @@ class Program
             craftingTask.Dispose();
             hairdresserTask.Dispose();
             settingsTask.Dispose();
+            stageOutcomeTask.Dispose();
             petTask.Dispose();
             mercTask.Dispose();
             equipmentTuningTask.Dispose();
@@ -2321,6 +2324,7 @@ class Program
             try { craftingTask.Dispose(); } catch { }
             try { hairdresserTask.Dispose(); } catch { }
             try { settingsTask.Dispose(); } catch { }
+            try { stageOutcomeTask.Dispose(); } catch { }
             try { petTask.Dispose(); } catch { }
             try { mercTask.Dispose(); } catch { }
             try { lootPanelCoordinator.Dispose(); } catch { }
@@ -2446,6 +2450,12 @@ class Program
                     using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.hitnum"))
                         hnOverlay.SetReady();
                     LogManager.Log("[RevealProbe] setready.hitnum " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
+                }
+                {
+                    long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                    using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.stage_outcome"))
+                        stageOutcomeTask.SetReady();
+                    LogManager.Log("[RevealProbe] setready.stage_outcome " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
                 }
                 if (nativeHud != null)
                 {
@@ -3178,6 +3188,7 @@ class Program
         try { craftingTask.Dispose(); } catch { }
         try { hairdresserTask.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }
+        try { stageOutcomeTask.Dispose(); } catch { }
         try { petTask.Dispose(); } catch { }
         try { mercTask.Dispose(); } catch { }
         try { lootPanelCoordinator.Dispose(); } catch { }

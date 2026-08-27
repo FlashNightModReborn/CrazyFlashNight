@@ -79,6 +79,16 @@ class org.flashNight.arki.scene.StageManager {
         isActive = true;
         isFinished = false;
         isFailed = false;
+        if (_root.斗兽标定模式 !== true
+                && !StageRunSession.begin(String(_root.当前关卡名),
+                    String(_root.当前关卡难度))) {
+            timePoolController.clear();
+            flushTimePoolUi();
+            stageInfoList = null;
+            currentStage = -1;
+            isActive = false;
+            return false;
+        }
         return true;
     }
     
@@ -319,6 +329,9 @@ class org.flashNight.arki.scene.StageManager {
 
     /** 每帧在 WaveSpawner.tick() 之后调用，使同帧通关优先于超时。 */
     public function tick():Void {
+        if (isActive && !isFinished && !isFailed && _root.暂停 !== true) {
+            StageRunSession.tick();
+        }
         if (!isActive || isCleared || isFinished || isFailed
                 || gameworld == null || timePoolController == null
                 || _root.暂停 === true) {
@@ -367,6 +380,7 @@ class org.flashNight.arki.scene.StageManager {
         isFinished = true;
         timePoolController.clear();
         flushTimePoolUi();
+        StageRunSession.finish("victory");
         _root.关卡结束();
         //设置返回地图帧值
         if(currentStageInfo.basicInfo.EndFrame) _root.关卡地图帧值 = currentStageInfo.basicInfo.EndFrame;
@@ -381,7 +395,7 @@ class org.flashNight.arki.scene.StageManager {
 
         gameworld.允许通行 = false;
         gameworld.关卡结束 = false;
-        _root.关卡结束界面.关卡失败();
+        StageRunSession.finish("failure");
         
         // 快车道隐藏刘海计时器
         var sm2:Object = _root.server;

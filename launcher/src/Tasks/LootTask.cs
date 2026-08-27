@@ -27,6 +27,8 @@ namespace CF7Launcher.Tasks
             public int ClaimRemainingBefore;
             public int ClaimPhysicalSlot;
             public string ClaimSourceLease;
+            public int[] ClaimBatchPhysicalSlots;
+            public string[] ClaimBatchSourceLeases;
             public int ClaimSourceContainerVersion;
             public string ClaimLastAppliedOperationIdBefore;
             public string ClaimCloseLeaseBefore;
@@ -75,7 +77,9 @@ namespace CF7Launcher.Tasks
         private static readonly HashSet<string> ResponseKeys = Set(
             "task", "callId", "success", "error", "chestSessionId", "lootContainerId",
             "containerEpoch", "authorityRevision", "lastAppliedOperationId", "state",
-            "remainingCount", "closeLease", "snapshots", "tooltip", "terminal");
+            "remainingCount", "closeLease", "snapshots", "tooltip", "materials", "terminal");
+        private static readonly HashSet<string> MaterialKeys = Set(
+            "name", "displayName", "icon", "owned");
         private static readonly HashSet<string> SnapshotKeys = Set(
             "containerId", "capacity", "accessibleCapacity", "viewCapacity", "filterKey",
             "pageSizeHint", "locked", "snapshotSeq", "containerEpoch", "containerVersion",
@@ -143,6 +147,8 @@ namespace CF7Launcher.Tasks
         private int _unknownClaimRemainingBefore;
         private int _unknownClaimPhysicalSlot;
         private string _unknownClaimSourceLease;
+        private int[] _unknownClaimBatchPhysicalSlots;
+        private string[] _unknownClaimBatchSourceLeases;
         private int _unknownClaimSourceContainerVersion;
         private string _unknownClaimLastAppliedOperationIdBefore;
         private string _unknownClaimCloseLeaseBefore;
@@ -327,6 +333,21 @@ namespace CF7Launcher.Tasks
                 ExpectedAuthorityRevision = expectedRevision,
                 Binding = binding
             };
+            if (cmd == "claimBatch")
+            {
+                JArray sources = normalized["sources"] as JArray;
+                entry.ClaimBatchPhysicalSlots = new int[sources.Count];
+                entry.ClaimBatchSourceLeases = new string[sources.Count];
+                for (int sourceIndex = 0; sourceIndex < sources.Count; sourceIndex++)
+                {
+                    entry.ClaimBatchPhysicalSlots[sourceIndex] =
+                        sources[sourceIndex].Value<int>("slot");
+                    entry.ClaimBatchSourceLeases[sourceIndex] =
+                        sources[sourceIndex].Value<string>("expectedLease");
+                }
+                entry.ClaimSourceContainerVersion =
+                    sources[0].Value<int>("expectedContainerVersion");
+            }
             string rejection = null;
             lock (_sync)
             {
@@ -363,8 +384,10 @@ namespace CF7Launcher.Tasks
                     else if (_writeState == "reconcile_required") rejection = "reconcile_required";
                     else
                     {
-                        if (cmd == "claim")
+                        if (cmd == "claim" || cmd == "claimBatch")
                         {
+                            int requestedClaims = cmd == "claimBatch"
+                                ? entry.ClaimBatchPhysicalSlots.Length : 1;
                             bool exactClaimPrestate = ReferenceEquals(
                                     _knownAuthorityBinding, binding)
                                 && _coordinator.IsCurrentExact(binding)
@@ -374,7 +397,8 @@ namespace CF7Launcher.Tasks
                                 && _knownLootContainerVersion >= 0
                                 && entry.ClaimSourceContainerVersion
                                     == _knownLootContainerVersion
-                                && _knownRemainingCount > 0;
+                                && requestedClaims > 0
+                                && requestedClaims <= _knownRemainingCount;
                             if (!exactClaimPrestate) rejection = "stale_state";
                             else
                             {
@@ -510,6 +534,13 @@ namespace CF7Launcher.Tasks
                     else
                     {
                         bool responseSuccess = sanitized.Value<bool>("success");
+                        bool batchFailureAdvancedAuthority = entry.IsWrite
+                            && string.Equals(entry.WebCmd, "claimBatch",
+                                StringComparison.Ordinal)
+                            && !responseSuccess
+                            && entry.HasKnownClaimPrestate
+                            && sanitized.Value<int>("authorityRevision")
+                                > entry.ClaimAuthorityRevisionBefore;
                         bool exactRecoveryProof = entry.IsDetachedReconcile
                             && !string.IsNullOrEmpty(entry.RecoveryNonce);
                         // A detached handoff is stricter than ordinary Web/business traffic: an
@@ -549,7 +580,7 @@ namespace CF7Launcher.Tasks
                         if (unprovenUnknownQuery)
                             RaiseUnknownFreshnessWatermarkLocked(entry,
                                 sanitized.Value<int>("authorityRevision"));
-                        if (!unprovenUnknownQuery)
+                        if (!unprovenUnknownQuery && !batchFailureAdvancedAuthority)
                         {
                             bool preserveKnownLootVersion =
                                 AuthorityActivePrestateWasUnchangedLocked(entry, sanitized);
@@ -577,6 +608,20 @@ namespace CF7Launcher.Tasks
                         if (commitPending)
                         {
                             MarkCommitPendingProjectionLocked(entry);
+                            if (batchFailureAdvancedAuthority)
+                                RaiseUnknownFreshnessWatermarkLocked(entry,
+                                    sanitized.Value<int>("authorityRevision"));
+                        }
+                        else if (batchFailureAdvancedAuthority)
+                        {
+                            // AS2 may have committed a recoverable prefix before a
+                            // non-capacity failure. The root operation journal and revision
+                            // show that a write occurred, but the failure response deliberately
+                            // carries no snapshots. Fence later writes until an exact query
+                            // proves which frozen batch sources were consumed.
+                            MarkUnknownLocked(entry);
+                            RaiseUnknownFreshnessWatermarkLocked(entry,
+                                sanitized.Value<int>("authorityRevision"));
                         }
                         else if (entry.IsWrite)
                         {
@@ -980,6 +1025,10 @@ namespace CF7Launcher.Tasks
             _unknownClaimRemainingBefore = entry.ClaimRemainingBefore;
             _unknownClaimPhysicalSlot = entry.ClaimPhysicalSlot;
             _unknownClaimSourceLease = entry.ClaimSourceLease;
+            _unknownClaimBatchPhysicalSlots = entry.ClaimBatchPhysicalSlots == null
+                ? null : (int[])entry.ClaimBatchPhysicalSlots.Clone();
+            _unknownClaimBatchSourceLeases = entry.ClaimBatchSourceLeases == null
+                ? null : (string[])entry.ClaimBatchSourceLeases.Clone();
             _unknownClaimSourceContainerVersion = entry.ClaimSourceContainerVersion;
             _unknownClaimLastAppliedOperationIdBefore =
                 entry.ClaimLastAppliedOperationIdBefore;
@@ -1030,6 +1079,8 @@ namespace CF7Launcher.Tasks
             _unknownClaimRemainingBefore = 0;
             _unknownClaimPhysicalSlot = -1;
             _unknownClaimSourceLease = null;
+            _unknownClaimBatchPhysicalSlots = null;
+            _unknownClaimBatchSourceLeases = null;
             _unknownClaimSourceContainerVersion = -1;
             _unknownClaimLastAppliedOperationIdBefore = null;
             _unknownClaimCloseLeaseBefore = null;
@@ -1071,12 +1122,15 @@ namespace CF7Launcher.Tasks
             {
                 if (string.Equals(_unknownWebCmd, "close", StringComparison.Ordinal))
                     return QueryProvesUnknownTerminalCloseLocked(entry, sanitized);
-                if (string.Equals(_unknownWebCmd, "claim", StringComparison.Ordinal))
+                if (string.Equals(_unknownWebCmd, "claim", StringComparison.Ordinal)
+                    || string.Equals(_unknownWebCmd, "claimBatch", StringComparison.Ordinal))
                     return QueryProvesUnknownTerminalClaimLocked(entry, sanitized);
                 return true;
             }
             if (string.Equals(_unknownWebCmd, "claim", StringComparison.Ordinal))
                 return QueryProvesUnknownClaimLocked(entry, sanitized);
+            if (string.Equals(_unknownWebCmd, "claimBatch", StringComparison.Ordinal))
+                return QueryProvesUnknownClaimBatchLocked(entry, sanitized);
             if (string.Equals(_unknownWebCmd, "close", StringComparison.Ordinal))
                 return QueryProvesUnknownActiveCloseNotAppliedLocked(entry, sanitized);
             string lastApplied = sanitized.Value<string>("lastAppliedOperationId") ?? "";
@@ -1097,7 +1151,8 @@ namespace CF7Launcher.Tasks
         {
             if (entry == null || sanitized == null
                 || _writeState != "reconcile_required"
-                || !string.Equals(_unknownWebCmd, "claim", StringComparison.Ordinal)
+                || !(string.Equals(_unknownWebCmd, "claim", StringComparison.Ordinal)
+                    || string.Equals(_unknownWebCmd, "claimBatch", StringComparison.Ordinal))
                 || !_unknownHasKnownClaimPrestate
                 || !ReferenceEquals(_unknownBinding, entry.Binding)) return false;
             int revision = sanitized.Value<int>("authorityRevision");
@@ -1193,6 +1248,53 @@ namespace CF7Launcher.Tasks
                 && containerVersion == _unknownClaimSourceContainerVersion;
         }
 
+        private bool QueryProvesUnknownClaimBatchLocked(PendingRequest entry,
+            JObject sanitized)
+        {
+            if (entry == null || sanitized == null
+                || _writeState != "reconcile_required"
+                || !string.Equals(_unknownWebCmd, "claimBatch", StringComparison.Ordinal)
+                || !_unknownHasKnownClaimPrestate
+                || _unknownClaimBatchPhysicalSlots == null
+                || _unknownClaimBatchSourceLeases == null
+                || _unknownClaimBatchPhysicalSlots.Length == 0
+                || _unknownClaimBatchPhysicalSlots.Length
+                    != _unknownClaimBatchSourceLeases.Length
+                || !ReferenceEquals(_unknownBinding, entry.Binding)
+                || !string.Equals(sanitized.Value<string>("state"), "LOOT_ACTIVE",
+                    StringComparison.Ordinal)) return false;
+
+            int revision = sanitized.Value<int>("authorityRevision");
+            int remaining = sanitized.Value<int>("remainingCount");
+            string lastApplied = sanitized.Value<string>("lastAppliedOperationId") ?? "";
+            if (revision < _unknownFreshnessWatermark) return false;
+            long appliedCount = (long)revision - _unknownClaimAuthorityRevisionBefore;
+            int emptyRequested;
+            int containerVersion;
+            bool exactRequestedProjection = TryInspectClaimBatchProjection(sanitized,
+                entry.Binding.LootContainerId, _unknownClaimBatchPhysicalSlots,
+                _unknownClaimBatchSourceLeases, out emptyRequested, out containerVersion);
+            bool applied = exactRequestedProjection
+                && appliedCount >= 1L
+                && appliedCount <= _unknownClaimBatchPhysicalSlots.Length
+                && string.Equals(lastApplied, _unknownOperationId, StringComparison.Ordinal)
+                && remaining == _unknownClaimRemainingBefore - (int)appliedCount
+                && emptyRequested == (int)appliedCount;
+            if (applied) return true;
+
+            return !_unknownRequiresCausalCompletion
+                && exactRequestedProjection
+                && revision == _unknownClaimAuthorityRevisionBefore
+                && remaining == _unknownClaimRemainingBefore
+                && string.Equals(lastApplied,
+                    _unknownClaimLastAppliedOperationIdBefore ?? "",
+                    StringComparison.Ordinal)
+                && string.Equals(sanitized.Value<string>("closeLease") ?? "",
+                    _unknownClaimCloseLeaseBefore ?? "", StringComparison.Ordinal)
+                && containerVersion == _unknownClaimSourceContainerVersion
+                && emptyRequested == 0;
+        }
+
         private bool QueryProvesUnknownActiveCloseNotAppliedLocked(PendingRequest entry,
             JObject sanitized)
         {
@@ -1261,6 +1363,58 @@ namespace CF7Launcher.Tasks
                     return snapshot.Value<int>("containerVersion");
             }
             return -1;
+        }
+
+        private static bool TryInspectClaimBatchProjection(JObject sanitized,
+            string lootContainerId, int[] physicalSlots, string[] expectedLeases,
+            out int emptyRequested, out int containerVersion)
+        {
+            emptyRequested = 0;
+            containerVersion = -1;
+            if (physicalSlots == null || expectedLeases == null
+                || physicalSlots.Length == 0
+                || physicalSlots.Length != expectedLeases.Length) return false;
+            JArray snapshots = sanitized != null ? sanitized["snapshots"] as JArray : null;
+            if (snapshots == null) return false;
+            JObject lootSnapshot = null;
+            foreach (JToken token in snapshots)
+            {
+                JObject candidate = token as JObject;
+                if (candidate != null && string.Equals(ReadString(candidate["containerId"]),
+                        lootContainerId, StringComparison.Ordinal))
+                {
+                    lootSnapshot = candidate;
+                    break;
+                }
+            }
+            if (lootSnapshot == null) return false;
+            containerVersion = lootSnapshot.Value<int>("containerVersion");
+            JArray slots = lootSnapshot["slots"] as JArray;
+            if (slots == null) return false;
+            for (int requestedIndex = 0; requestedIndex < physicalSlots.Length;
+                requestedIndex++)
+            {
+                JObject requestedSlot = null;
+                foreach (JToken slotToken in slots)
+                {
+                    JObject slot = slotToken as JObject;
+                    if (slot != null && slot.Value<int>("physicalSlot")
+                            == physicalSlots[requestedIndex])
+                    {
+                        requestedSlot = slot;
+                        break;
+                    }
+                }
+                if (requestedSlot == null) return false;
+                if (!requestedSlot.Value<bool>("occupied"))
+                {
+                    emptyRequested++;
+                    continue;
+                }
+                if (!string.Equals(requestedSlot.Value<string>("slotLease"),
+                        expectedLeases[requestedIndex], StringComparison.Ordinal)) return false;
+            }
+            return true;
         }
 
         private bool AuthorityActivePrestateWasUnchangedLocked(PendingRequest entry,
@@ -1544,8 +1698,10 @@ namespace CF7Launcher.Tasks
                 case "snapshot": action = "lootSnapshot"; return true;
                 case "tooltip": action = "lootTooltip"; return true;
                 case "claim": action = "lootClaim"; isWrite = true; return true;
+                case "claimBatch": action = "lootClaimBatch"; isWrite = true; return true;
                 case "close": action = "lootClose"; isWrite = true; return true;
                 case "query": action = "lootQuery"; return true;
+                case "materials": action = "lootMaterials"; return true;
                 default: action = null; return false;
             }
         }
@@ -1567,12 +1723,16 @@ namespace CF7Launcher.Tasks
                 expected.Add("expectedAuthorityRevision");
                 expected.Add("source");
             }
-            else if (cmd == "claim")
+            else if (cmd == "materials")
+            {
+                expected.Add("expectedAuthorityRevision");
+            }
+            else if (cmd == "claim" || cmd == "claimBatch")
             {
                 expected.Add("expectedAuthorityRevision");
                 expected.Add("operationId");
                 expected.Add("direction");
-                expected.Add("source");
+                expected.Add(cmd == "claim" ? "source" : "sources");
                 expected.Add("targetContainerId");
             }
             else if (cmd == "close")
@@ -1619,6 +1779,8 @@ namespace CF7Launcher.Tasks
             if (!TryReadInteger(parsed["expectedAuthorityRevision"], 0, int.MaxValue,
                     out expectedRevision)) return false;
             normalized["expectedAuthorityRevision"] = expectedRevision;
+            if (cmd == "materials")
+                return binding.SourceKind == LootPanelCoordinator.StageSettlementSource;
             if (cmd == "tooltip" || cmd == "claim")
             {
                 JObject source;
@@ -1632,6 +1794,36 @@ namespace CF7Launcher.Tasks
                     || ReadString(parsed["targetContainerId"]) != "背包") return false;
                 normalized["operationId"] = operationId;
                 normalized["direction"] = "loot_to_player";
+                normalized["targetContainerId"] = "背包";
+                return true;
+            }
+
+            if (cmd == "claimBatch")
+            {
+                JArray sources = parsed["sources"] as JArray;
+                if (sources == null || sources.Count < 1 || sources.Count > 50) return false;
+                JArray cleanSources = new JArray();
+                var seenSlots = new HashSet<int>();
+                int sourceContainerVersion = -1;
+                foreach (JToken token in sources)
+                {
+                    JObject source;
+                    if (!TryNormalizeSourceRef(token as JObject, binding, out source)) return false;
+                    int slot = source.Value<int>("slot");
+                    int containerVersion = source.Value<int>("expectedContainerVersion");
+                    if (!seenSlots.Add(slot)
+                        || sourceContainerVersion >= 0
+                            && containerVersion != sourceContainerVersion) return false;
+                    sourceContainerVersion = containerVersion;
+                    cleanSources.Add(source);
+                }
+                operationId = ReadString(parsed["operationId"]);
+                if (!LootPanelCoordinator.IsOpaque(operationId) || operationId.Length > 72
+                    || ReadString(parsed["direction"]) != "loot_to_player"
+                    || ReadString(parsed["targetContainerId"]) != "背包") return false;
+                normalized["operationId"] = operationId;
+                normalized["direction"] = "loot_to_player";
+                normalized["sources"] = cleanSources;
                 normalized["targetContainerId"] = "背包";
                 return true;
             }
@@ -1751,7 +1943,8 @@ namespace CF7Launcher.Tasks
             if (success && revision == 0) return false;
             bool commitPending = state == "LOOT_COMMIT_PENDING";
             if (commitPending != (!success && error == "commit_pending")
-                || (commitPending && entry.WebCmd != "claim" && entry.WebCmd != "query"))
+                || (commitPending && entry.WebCmd != "claim"
+                    && entry.WebCmd != "claimBatch" && entry.WebCmd != "query"))
                 return false;
             if (success && entry.IsWrite
                 && !string.Equals(lastApplied, entry.OperationId, StringComparison.Ordinal))
@@ -1768,13 +1961,15 @@ namespace CF7Launcher.Tasks
                 return false;
             JObject tooltip;
             if (!TrySanitizeTooltip(msg["tooltip"], out tooltip)) return false;
+            JArray materials;
+            if (!TrySanitizeMaterials(msg["materials"], out materials)) return false;
             JObject terminal;
             if (!TrySanitizeTerminal(msg["terminal"], state, remaining, out terminal)) return false;
             authorityTerminal = terminal != null;
             authoritySuspended = state == "LOOT_SUSPENDED";
             if (!TryValidateResponseShape(entry, success, authorityTerminal,
                     authoritySuspended, state, revision, closeLease, snapshots, tooltip,
-                    entry.Binding.LootContainerId, remaining)) return false;
+                    materials, entry.Binding.LootContainerId, remaining)) return false;
 
             sanitized = new JObject
             {
@@ -1790,6 +1985,7 @@ namespace CF7Launcher.Tasks
                 ["closeLease"] = closeLease,
                 ["snapshots"] = snapshots,
                 ["tooltip"] = tooltip == null ? JValue.CreateNull() : (JToken)tooltip,
+                ["materials"] = materials == null ? JValue.CreateNull() : (JToken)materials,
                 ["terminal"] = terminal == null ? JValue.CreateNull() : (JToken)terminal
             };
             return true;
@@ -1826,6 +2022,8 @@ namespace CF7Launcher.Tasks
                 && snapshots != null && snapshots.Count == 0
                 && sanitized["tooltip"] != null
                 && sanitized["tooltip"].Type == JTokenType.Null
+                && sanitized["materials"] != null
+                && sanitized["materials"].Type == JTokenType.Null
                 && sanitized["terminal"] != null
                 && sanitized["terminal"].Type == JTokenType.Null;
         }
@@ -1849,16 +2047,18 @@ namespace CF7Launcher.Tasks
         private static bool TryValidateResponseShape(PendingRequest entry, bool success,
             bool authorityTerminal, bool authoritySuspended, string state,
             int authorityRevision, string closeLease, JArray snapshots, JObject tooltip,
-            string lootContainerId, int remainingCount)
+            JArray materials, string lootContainerId, int remainingCount)
         {
             string cmd = entry.WebCmd;
             if (authoritySuspended && !success) return false;
             if (!success)
             {
                 return string.IsNullOrEmpty(closeLease) && snapshots.Count == 0
-                    && tooltip == null;
+                    && tooltip == null && materials == null;
             }
             if (cmd == "claim" && !ClaimSuccessMatchesFrozenPrestate(entry, state,
+                    authorityRevision, remainingCount, snapshots)) return false;
+            if (cmd == "claimBatch" && !ClaimBatchSuccessMatchesFrozenPrestate(entry, state,
                     authorityRevision, remainingCount, snapshots)) return false;
             if (cmd == "close")
             {
@@ -1873,37 +2073,40 @@ namespace CF7Launcher.Tasks
                     return authorityTerminal && state == "CONSUMED"
                         && remainingCount == 0
                         && string.IsNullOrEmpty(closeLease)
-                        && snapshots.Count == 0 && tooltip == null;
+                        && snapshots.Count == 0 && tooltip == null && materials == null;
                 }
                 if (entry.CloseAbandon)
                 {
                     return authorityTerminal && state == "ABANDONED"
                         && remainingCount == entry.CloseRemainingBefore
                         && string.IsNullOrEmpty(closeLease)
-                        && snapshots.Count == 0 && tooltip == null;
+                        && snapshots.Count == 0 && tooltip == null && materials == null;
                 }
                 return authoritySuspended
                     && remainingCount == entry.CloseRemainingBefore
                     && string.IsNullOrEmpty(closeLease)
-                    && snapshots.Count == 0 && tooltip == null;
+                    && snapshots.Count == 0 && tooltip == null && materials == null;
             }
             if (authorityTerminal)
             {
                 return cmd == "query"
                     && string.IsNullOrEmpty(closeLease)
-                    && snapshots.Count == 0 && tooltip == null;
+                    && snapshots.Count == 0 && tooltip == null && materials == null;
             }
             if (authoritySuspended)
             {
                 return cmd == "query"
                     && remainingCount > 0
                     && string.IsNullOrEmpty(closeLease)
-                    && snapshots.Count == 0 && tooltip == null;
+                    && snapshots.Count == 0 && tooltip == null && materials == null;
             }
             if (string.IsNullOrEmpty(closeLease)) return false;
-            if (cmd == "tooltip") return snapshots.Count == 0 && tooltip != null;
-            if (tooltip != null || cmd == "close") return false;
-            if (cmd == "snapshot" || cmd == "claim" || cmd == "query")
+            if (cmd == "tooltip")
+                return snapshots.Count == 0 && tooltip != null && materials == null;
+            if (cmd == "materials")
+                return snapshots.Count == 0 && tooltip == null && materials != null;
+            if (tooltip != null || materials != null || cmd == "close") return false;
+            if (cmd == "snapshot" || cmd == "claim" || cmd == "claimBatch" || cmd == "query")
             {
                 if (snapshots.Count != 2) return false;
                 bool sawLoot = false;
@@ -1959,6 +2162,30 @@ namespace CF7Launcher.Tasks
                 return false;
             }
             return false;
+        }
+
+        private static bool ClaimBatchSuccessMatchesFrozenPrestate(PendingRequest entry,
+            string state, int authorityRevision, int remainingCount, JArray snapshots)
+        {
+            if (entry == null || !entry.HasKnownClaimPrestate
+                || entry.ClaimBatchPhysicalSlots == null
+                || entry.ClaimBatchSourceLeases == null
+                || entry.ClaimBatchPhysicalSlots.Length == 0
+                || entry.ClaimBatchPhysicalSlots.Length != entry.ClaimBatchSourceLeases.Length
+                || !string.Equals(state, "LOOT_ACTIVE", StringComparison.Ordinal)) return false;
+            long appliedCount = (long)authorityRevision - entry.ClaimAuthorityRevisionBefore;
+            if (appliedCount < 1L || appliedCount > entry.ClaimBatchPhysicalSlots.Length
+                || (long)authorityRevision
+                    != (long)entry.ExpectedAuthorityRevision + appliedCount
+                || remainingCount != entry.ClaimRemainingBefore - (int)appliedCount)
+                return false;
+            var projection = new JObject { ["snapshots"] = snapshots };
+            int emptyRequested;
+            int containerVersion;
+            return TryInspectClaimBatchProjection(projection,
+                entry.Binding.LootContainerId, entry.ClaimBatchPhysicalSlots,
+                entry.ClaimBatchSourceLeases, out emptyRequested, out containerVersion)
+                && emptyRequested == (int)appliedCount;
         }
 
         private static bool TrySanitizeSnapshot(JObject input,
@@ -2289,6 +2516,42 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        private static bool TrySanitizeMaterials(JToken token, out JArray output)
+        {
+            output = null;
+            if (token == null || token.Type == JTokenType.Null) return true;
+            JArray input = token as JArray;
+            if (input == null || input.Count > 4096) return false;
+            JArray clean = new JArray();
+            HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken entry in input)
+            {
+                JObject material = entry as JObject;
+                string name;
+                string displayName;
+                string icon;
+                long owned;
+                if (!HasExactKeys(material, MaterialKeys)
+                    || !TryReadBoundedText(material["name"], 128, false, out name)
+                    || !TryReadBoundedText(material["displayName"], 256, false,
+                        out displayName)
+                    || !TryReadBoundedText(material["icon"], 256, false, out icon)
+                    || !TryReadLongInteger(material["owned"], 0, MaxSafeInteger,
+                        out owned)
+                    || !names.Add(name))
+                    return false;
+                clean.Add(new JObject
+                {
+                    ["name"] = name,
+                    ["displayName"] = displayName,
+                    ["icon"] = icon,
+                    ["owned"] = owned
+                });
+            }
+            output = clean;
+            return true;
+        }
+
         private static bool TrySanitizeTerminal(JToken token, string state, int remaining,
             out JObject output)
         {
@@ -2397,6 +2660,7 @@ namespace CF7Launcher.Tasks
                 ["closeLease"] = "",
                 ["snapshots"] = new JArray(),
                 ["tooltip"] = JValue.CreateNull(),
+                ["materials"] = JValue.CreateNull(),
                 ["terminal"] = terminal == null ? JValue.CreateNull() : (JToken)terminal
             };
             PostToWeb(response.ToString(Formatting.None));

@@ -37,6 +37,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
         _root.发布消息("复活");
         TargetCacheManager.addUnit(target);
         target.动画完毕(); // 通常用于强制重置动画状态
+        // 旧关卡结束 MovieClip 会在自己的收尾帧隐藏弹窗；迁到 C# 后不再有
+        // 那个时间轴替主角恢复显示。复活事件本身必须完整恢复单位表现，不能把
+        // 一个已经恢复 HP、重新进入 TargetCache 的可攻击单位留在不可见状态。
+        target._visible = true;
 
     }
 
@@ -51,12 +55,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
 
         _root.玩家信息界面.刷新hp显示();
         _root.玩家信息界面.刷新mp显示();
-
-        if (_root.关卡是否结束) {
-            _root.gotoAndStop("关卡结束");
-        } else {
-            target._visible = false;
-        }
+        org.flashNight.arki.scene.StageRunSession.onHeroRespawn(target);
 
         EffectSystem.Effect("药剂动画", target._x, target._y, 100);
     }

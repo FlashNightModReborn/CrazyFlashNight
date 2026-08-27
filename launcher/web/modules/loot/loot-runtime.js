@@ -10,7 +10,8 @@
     'use strict';
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
 
-    var COMMANDS = {snapshot:true, tooltip:true, claim:true, close:true, query:true};
+    var COMMANDS = {snapshot:true, tooltip:true, claim:true, claimBatch:true, close:true, query:true,
+        materials:true};
     var RESERVED = {
         type:true, task:true, domain:true, panel:true, v:true, cmd:true, callId:true,
         panelInstanceId:true, chestSessionId:true, lootContainerId:true, containerEpoch:true
@@ -20,7 +21,7 @@
         panelInstanceId:true, success:true, error:true, chestSessionId:true,
         lootContainerId:true, containerEpoch:true, authorityRevision:true,
         lastAppliedOperationId:true, state:true, remainingCount:true, closeLease:true,
-        snapshots:true, tooltip:true, terminal:true
+        snapshots:true, tooltip:true, materials:true, terminal:true
     };
 
     function hasExactKeys(value, expected) {
@@ -51,7 +52,8 @@
             chestSessionId:opaque(value.chestSessionId, 128),
             lootContainerId:opaque(value.lootContainerId, 128),
             containerEpoch:epoch,
-            source:value.source === 'map_chest' ? 'map_chest' : ''
+            source:value.source === 'map_chest' || value.source === 'stage_settlement'
+                ? value.source : ''
         };
         return identity.panelInstanceId && identity.chestSessionId && identity.lootContainerId && identity.source
             && typeof epoch === 'number' && isFinite(epoch)
@@ -132,6 +134,7 @@
                     remainingCount:0,
                     snapshots:[],
                     tooltip:null,
+                    materials:null,
                     terminal:null,
                     clientSynthetic:true,
                     requiresReconcile:context.entry.write === true,

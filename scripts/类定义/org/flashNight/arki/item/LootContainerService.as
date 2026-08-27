@@ -4,6 +4,7 @@ import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.LootContainerValidation;
 import org.flashNight.arki.item.LootClaimCommitCoordinator;
+import org.flashNight.arki.item.MaterialArchiveProjector;
 import org.flashNight.gesh.tooltip.TooltipComposer;
 
 /**
@@ -21,6 +22,7 @@ class org.flashNight.arki.item.LootContainerService {
     private static var STATE_ABANDONED:String = "ABANDONED";
     private static var STATE_EXPIRED:String = "EXPIRED";
     private static var PANEL_SOURCE:String = "map_chest";
+    private static var STAGE_SETTLEMENT_SOURCE:String = "stage_settlement";
     private static var MAX_WEB_COLUMNS:Number = 8;
     private static var MAX_WEB_CAPACITY:Number = 64;
     private static var SHAPE_SUPPORTED_WEB_GRID:String = "supported_web_grid";
@@ -66,11 +68,17 @@ class org.flashNight.arki.item.LootContainerService {
         _root.gameCommands["lootClaim"] = function(params) {
             org.flashNight.arki.item.LootContainerService.handle("claim", params);
         };
+        _root.gameCommands["lootClaimBatch"] = function(params) {
+            org.flashNight.arki.item.LootContainerService.handle("claimBatch", params);
+        };
         _root.gameCommands["lootClose"] = function(params) {
             org.flashNight.arki.item.LootContainerService.handle("close", params);
         };
         _root.gameCommands["lootQuery"] = function(params) {
             org.flashNight.arki.item.LootContainerService.handle("query", params);
+        };
+        _root.gameCommands["lootMaterials"] = function(params) {
+            org.flashNight.arki.item.LootContainerService.handle("materials", params);
         };
         _root.gameCommands["lootPanelRecovery"] = function(params) {
             org.flashNight.arki.item.LootContainerService.handlePanelRecovery(params);
@@ -95,8 +103,10 @@ class org.flashNight.arki.item.LootContainerService {
         if (commandName == "snapshot") return executeSnapshot(params);
         if (commandName == "tooltip") return executeTooltip(params);
         if (commandName == "claim") return executeClaim(params);
+        if (commandName == "claimBatch") return executeClaimBatch(params);
         if (commandName == "close") return executeClose(params);
         if (commandName == "query") return executeQuery(params);
+        if (commandName == "materials") return executeMaterials(params);
         return emptyFailure(params, "unsupported_cmd");
     }
 
@@ -173,6 +183,7 @@ class org.flashNight.arki.item.LootContainerService {
             ownKillObserved:false,
             operations:{},
             pendingCommit:null,
+            pendingBatch:null,
             postCommitEffects:null,
             transportDetachNeeded:false,
             transportDetachReason:"",
@@ -192,6 +203,9 @@ class org.flashNight.arki.item.LootContainerService {
             completedRecoveryProofOrder:[],
             transportDetachReleasePause:false
         };
+        _reservation.panelSource = PANEL_SOURCE;
+        _reservation.report = null;
+        _reservation.allowAnchorlessSuspend = false;
         return {
             handled:true,
             reserved:true,
@@ -201,6 +215,79 @@ class org.flashNight.arki.item.LootContainerService {
             lootContainerId:_reservation.lootContainerId,
             containerEpoch:_reservation.containerEpoch
         };
+    }
+
+    /**
+     * 基地关卡结算入口。奖励已经由 StageRunSession 一次性物化，本类只接管与地图箱
+     * 相同的 exact inventory/revision/lease/rollback 事务。结算没有场景 MovieClip
+     * anchor，因此只允许这个明确来源走 anchorless suspend；地图箱语义完全不放宽。
+     */
+    public static function beginStageSettlement(inventory:ArrayInventory,
+                                                 report:Object):Object {
+        if (_busy) return localFailure("busy");
+        if (_reservation != null || _active != null) return localFailure("loot_flow_busy");
+        if (!(inventory instanceof ArrayInventory)
+                || inventory.capacity < 8 || inventory.capacity > MAX_WEB_CAPACITY
+                || inventory.capacity % 4 != 0
+                || !validateInventory(inventory, inventory.capacity)
+                || !LootContainerValidation.validateSettlementReport(report)) {
+            return localFailure("invalid_stage_settlement");
+        }
+
+        _sessionSeq++;
+        _containerEpochSeq++;
+        var stem:String = _authorityEpoch + "." + _sessionSeq;
+        _active = {
+            target:null,
+            presetName:"关卡结算",
+            row:inventory.capacity / 4,
+            col:4,
+            chestSessionId:"stage." + stem,
+            lootContainerId:"settlement." + stem,
+            closeLease:"close.stage." + stem + "." + getTimer(),
+            containerEpoch:_containerEpochSeq,
+            authorityRevision:1,
+            lastAppliedOperationId:"",
+            state:STATE_ACTIVE,
+            reason:"",
+            inventory:inventory,
+            materialized:true,
+            killIssued:true,
+            killDispatchInProgress:false,
+            ownKillObserved:true,
+            operations:{},
+            pendingCommit:null,
+            pendingBatch:null,
+            postCommitEffects:null,
+            transportDetachNeeded:false,
+            transportDetachReason:"",
+            targetHeld:false,
+            suspendedAnchorRegistered:false,
+            suspendPauseReleasePending:false,
+            openAttemptSeq:0,
+            reopenBaseSuspendedAttemptSeq:0,
+            suspendedFromOpenAttemptSeq:0,
+            terminalFromOpenAttemptSeq:0,
+            acceptedOpenAttemptSeq:0,
+            recoveryPendingOpenAttemptSeq:0,
+            recoveryPendingNonce:"",
+            recoveryPendingReason:"",
+            socketDetachObservedOpenAttemptSeq:0,
+            completedRecoveryProofs:{},
+            completedRecoveryProofOrder:[],
+            transportDetachReleasePause:false,
+            panelSource:STAGE_SETTLEMENT_SOURCE,
+            report:report,
+            allowAnchorlessSuspend:true
+        };
+        invalidateLootLeases();
+        notifyStageSettlement(_active);
+        return recordResponse(_active, true, "");
+    }
+
+    public static function hasStageSettlementPending():Boolean {
+        return _active != null && _active.panelSource === STAGE_SETTLEMENT_SOURCE
+            && !isTerminalState(_active.state);
     }
 
     /**
@@ -315,7 +402,8 @@ class org.flashNight.arki.item.LootContainerService {
     public static function handleTargetUnload(target:Object):Object {
         var record:Object = _active;
         if (record != null && record.target === target && record.state == STATE_SUSPENDED) {
-            if (record.pendingCommit != null || record.postCommitEffects != null
+            if (record.pendingBatch != null || record.pendingCommit != null
+                    || record.postCommitEffects != null
                     || record.transportDetachNeeded === true) {
                 return failureFor(record, "commit_pending");
             }
@@ -426,7 +514,8 @@ class org.flashNight.arki.item.LootContainerService {
         try {
             transport.sendTaskWithCallback(
                 "panel_request",
-                LootContainerValidation.buildPanelRequest(record, PANEL_SOURCE),
+                LootContainerValidation.buildPanelRequest(record,
+                    record.panelSource == undefined ? PANEL_SOURCE : String(record.panelSource)),
                 null,
                 function(response:Object):Void {
                     callbackObserved = true;
@@ -466,7 +555,8 @@ class org.flashNight.arki.item.LootContainerService {
             && record.target === target && record.targetHeld === true
             && record.suspendedAnchorRegistered === true
             && record.suspendPauseReleasePending !== true
-            && record.pendingCommit == null && record.postCommitEffects == null
+            && record.pendingBatch == null && record.pendingCommit == null
+            && record.postCommitEffects == null
             && record.transportDetachNeeded !== true;
     }
 
@@ -480,7 +570,8 @@ class org.flashNight.arki.item.LootContainerService {
         if (record == null || record.target !== target || record.state != STATE_SUSPENDED) {
             return localFailure("not_suspended_target");
         }
-        if (record.pendingCommit != null || record.postCommitEffects != null
+        if (record.pendingBatch != null || record.pendingCommit != null
+                || record.postCommitEffects != null
                 || record.transportDetachNeeded === true) {
             return failureFor(record, "commit_pending");
         }
@@ -529,6 +620,58 @@ class org.flashNight.arki.item.LootContainerService {
         // 同步 callback failure 已在 exact attempt 回调中收回 SUSPENDED；
         // 方法缺失 / send 抛错则由调用方执行同一恢复 helper。两条路都
         // 不报 reopened，也不创建任何替代展示路径。
+        if (record.state != STATE_SUSPENDED && !isTerminalState(record.state)) {
+            var restored:Object = restoreSuspendedAfterPanelFailure(
+                record, dispatchError, Number(record.openAttemptSeq));
+            if (restored == null || restored.success !== true) {
+                return restored == null ? failureFor(record, "suspend_unavailable") : restored;
+            }
+        }
+        return failureFor(record, dispatchError);
+    }
+
+    /** 基地待领奖卡片的重开入口；不接受 target，也绝不替地图箱绕过场景 anchor。 */
+    public static function resumeStageSettlement():Object {
+        if (_busy) return localFailure("busy");
+        var record:Object = _active;
+        if (record == null || record.panelSource !== STAGE_SETTLEMENT_SOURCE
+                || record.allowAnchorlessSuspend !== true
+                || record.state != STATE_SUSPENDED) {
+            return localFailure("no_stage_settlement");
+        }
+        if (record.pendingBatch != null || record.pendingCommit != null
+                || record.postCommitEffects != null
+                || record.transportDetachNeeded === true) {
+            return failureFor(record, "commit_pending");
+        }
+        if (!hasRecoveryProofCapacity(record)) {
+            return failureFor(record, "recovery_history_full");
+        }
+        if (record.suspendPauseReleasePending === true
+                || _root._webPanelPauseLease != undefined) {
+            return failureFor(record, "pause_release_pending");
+        }
+        var transport:Object = _root.server;
+        if (transport == undefined || typeof transport.sendTaskWithCallback != "function") {
+            return failureFor(record, "panel_open_unavailable");
+        }
+
+        record.state = STATE_ACTIVE;
+        record.reason = "";
+        record.closeLease = mintCloseLease(record);
+        record.authorityRevision++;
+        invalidateLootLeases();
+        notifyStageSettlement(record);
+
+        var dispatched:Object = dispatchPanelOpen(true);
+        if (dispatched != null && dispatched.queued === true
+                && record.state == STATE_ACTIVE) {
+            var resumed:Object = recordResponse(record, true, "");
+            resumed.reopened = true;
+            return resumed;
+        }
+        var dispatchError:String = dispatched == null || typeof dispatched.error != "string"
+            ? "panel_open_unavailable" : String(dispatched.error);
         if (record.state != STATE_SUSPENDED && !isTerminalState(record.state)) {
             var restored:Object = restoreSuspendedAfterPanelFailure(
                 record, dispatchError, Number(record.openAttemptSeq));
@@ -615,7 +758,8 @@ class org.flashNight.arki.item.LootContainerService {
             return recordResponse(record, true, "");
         }
         if (record.state != STATE_ACTIVE) return failureFor(record, "terminal_state");
-        if (record.pendingCommit != null || record.postCommitEffects != null) {
+        if (record.pendingBatch != null || record.pendingCommit != null
+                || record.postCommitEffects != null) {
             return failureFor(record, "commit_pending");
         }
         var attemptOwnsRecovery:Boolean = Number(record.acceptedOpenAttemptSeq) == attemptSeq
@@ -643,7 +787,7 @@ class org.flashNight.arki.item.LootContainerService {
             record.transportDetachReleasePause = false;
             return finishTerminal(record, STATE_CONSUMED, "panel_open_failure_empty", "");
         }
-        if (!registerSuspendedAnchor(record)) {
+        if (record.allowAnchorlessSuspend !== true && !registerSuspendedAnchor(record)) {
             if (_root._webPanelPauseLease != undefined && !releaseTransportPauseLease()) {
                 return holdPanelTerminalPauseRetry(record, reason);
             }
@@ -675,6 +819,7 @@ class org.flashNight.arki.item.LootContainerService {
         invalidateLootLeases();
         markCompletedRecoveryProofs(record, attemptSeq);
         recordAuthorityClosedProof(record, suspendedOriginAttempt);
+        notifyStageSettlement(record);
         return recordResponse(record, true, "");
     }
 
@@ -985,6 +1130,14 @@ class org.flashNight.arki.item.LootContainerService {
 
         // 不重放客户端写，只按冻结 journal 观察 exact before/after，前滚 source 或接受
         // 可证明 rollback。transport flag 在整个过程保持 record 为 LOOT_COMMIT_PENDING。
+        if (record.pendingBatch != null) {
+            var batchResult:Object = continueClaimBatch(record);
+            if (record.pendingBatch != null) {
+                record.state = STATE_PENDING;
+                return {success:false,
+                    error:"claim_commit_pending", state:STATE_PENDING};
+            }
+        }
         if (record.pendingCommit != null) {
             var pending:Object = record.pendingCommit;
             var settled:Object = null;
@@ -1009,7 +1162,8 @@ class org.flashNight.arki.item.LootContainerService {
             return {success:false,
                 error:"claim_commit_pending", state:STATE_PENDING};
         }
-        if (record.pendingCommit != null || record.postCommitEffects != null) {
+        if (record.pendingBatch != null || record.pendingCommit != null
+                || record.postCommitEffects != null) {
             return {success:false,
                 error:"claim_commit_pending", state:STATE_PENDING};
         }
@@ -1235,6 +1389,13 @@ class org.flashNight.arki.item.LootContainerService {
         var safeReason:String = isSafeReason(reason) ? reason : "scene_cleanup";
         var record:Object = _active != null ? _active : _reservation;
         var result:Object;
+        if (record != null && record.panelSource === STAGE_SETTLEMENT_SOURCE
+                && record.state == STATE_SUSPENDED
+                && record.pendingBatch == null && record.pendingCommit == null
+                && record.postCommitEffects == null
+                && record.transportDetachNeeded !== true) {
+            return {success:true, state:STATE_SUSPENDED, reason:"stage_settlement_preserved"};
+        }
         if (_reservation != null && _reservation.materialized === true) {
             _reservation.state = STATE_PENDING;
             return failureFor(_reservation, "commit_pending");
@@ -1243,6 +1404,10 @@ class org.flashNight.arki.item.LootContainerService {
             // scene cleanup 不是 panel/pause handoff 的 causal continuation；transport detach
             // 必须只由原 lifecycle 调用或重连 lootQuery 续跑，禁止同栈显示后立刻 EXPIRED。
             return failureFor(record, "commit_pending");
+        }
+        if (record != null && record.pendingBatch != null) {
+            var batchResult:Object = continueClaimBatch(record);
+            if (record.pendingBatch != null) return failureFor(record, "commit_pending");
         }
         if (record != null && record.pendingCommit != null) {
             var pending:Object = record.pendingCommit;
@@ -1310,10 +1475,44 @@ class org.flashNight.arki.item.LootContainerService {
         return response;
     }
 
+    /** 仅关卡结算面板可读取当前材料存量；不暴露来源/用途或任何写能力。 */
+    private static function executeMaterials(params:Object):Object {
+        var checked:Object = validateActiveIdentity(params);
+        if (!checked.success) return checked.response;
+        var record:Object = checked.record;
+        if (record.panelSource !== STAGE_SETTLEMENT_SOURCE) {
+            return failureFor(record, "unsupported_cmd");
+        }
+        if (!validExpectedAuthority(params, record)) return failureFor(record, "stale_state");
+        var projected:Object;
+        try { projected = MaterialArchiveProjector.executeMaterials(); }
+        catch (materialError) { projected = null; }
+        if (projected == null || projected.success !== true
+                || !(projected.materials instanceof Array)
+                || projected.materials.length > 4096) {
+            return failureFor(record, "authority_unavailable");
+        }
+        var stocks:Array = [];
+        for (var i:Number = 0; i < projected.materials.length; i++) {
+            var material:Object = projected.materials[i];
+            if (material == null) return failureFor(record, "authority_unavailable");
+            stocks.push({
+                name:String(material.name),
+                displayName:String(material.displayName),
+                icon:String(material.icon),
+                owned:Number(material.owned)
+            });
+        }
+        var response:Object = recordResponse(record, true, "");
+        response.materials = stocks;
+        return response;
+    }
+
     private static function executeClaim(params:Object):Object {
         var checked:Object = validateAnyIdentity(params);
         if (!checked.success) return checked.response;
         var record:Object = checked.record;
+        if (record.pendingBatch != null) return failureFor(record, "commit_pending");
         if (record.transportDetachNeeded === true) return failureFor(record, "commit_pending");
         var operationId:String = validOperationId(params.operationId) ? String(params.operationId) : "";
         if (operationId == "") return failureFor(record, "invalid_operation_id");
@@ -1382,7 +1581,227 @@ class org.flashNight.arki.item.LootContainerService {
         return finalizeClaim(record, record.pendingCommit, committed);
     }
 
+    /**
+     * 一键领取的 authority 批次：一次冻结最多 50 个 exact lease，在 AS2 内连续提交，
+     * 只在批次末构造一次 loot/backpack 投影。每个物品仍沿用可恢复的双资源 journal；
+     * 容量拒绝是零写并跳过，其他确定性失败停止本批，已提交前缀不回滚重放。
+     */
+    private static function executeClaimBatch(params:Object):Object {
+        var checked:Object = validateAnyIdentity(params);
+        if (!checked.success) return checked.response;
+        var record:Object = checked.record;
+        if (record.transportDetachNeeded === true) return failureFor(record, "commit_pending");
+        var operationId:String = validOperationId(params.operationId)
+            && String(params.operationId).length <= 72 ? String(params.operationId) : "";
+        if (operationId == "") return failureFor(record, "invalid_operation_id");
+        var fingerprint:String = claimBatchFingerprint(params);
+        var prior:Object = record.operations[operationKey(operationId)];
+        if (prior != undefined) return duplicateClaimBatch(record, prior, fingerprint);
+        if (record.pendingBatch != null) {
+            if (record.pendingBatch.operationId !== operationId
+                    || record.pendingBatch.fingerprint !== fingerprint) {
+                return failureFor(record, "operation_conflict");
+            }
+            return failureFor(record, "commit_pending");
+        }
+        if (record.pendingBatch != null || record.pendingCommit != null
+                || record.postCommitEffects != null) {
+            return failureFor(record, "commit_pending");
+        }
+        if (record.state != STATE_ACTIVE) return failureFor(record, "terminal_state");
+        if (!validExpectedAuthority(params, record)) return failureFor(record, "stale_state");
+        if (params.direction !== "loot_to_player" || params.targetContainerId !== "背包") {
+            return failureFor(record, "transfer_forbidden");
+        }
+        var sources:Object = validateClaimBatchSources(record, params.sources);
+        if (!sources.success) return failureFor(record, String(sources.error));
+
+        record.pendingBatch = {
+            operationId:operationId,
+            fingerprint:fingerprint,
+            sources:sources.sources,
+            nextIndex:0,
+            appliedCount:0,
+            firstCapacityError:"",
+            stopError:"",
+            beforeAuthorityRevision:Number(record.authorityRevision),
+            beforeRemaining:remainingCount(record)
+        };
+        record.state = STATE_PENDING;
+        return continueClaimBatch(record);
+    }
+
+    private static function validateClaimBatchSources(record:Object, refs:Object):Object {
+        if (!(refs instanceof Array) || refs.length < 1 || refs.length > 50) {
+            return {success:false, error:"invalid_payload"};
+        }
+        var sources:Array = [];
+        var seen:Object = {};
+        for (var i:Number = 0; i < refs.length; i++) {
+            var source:Object = validateLootSource(record, refs[i], true);
+            if (!source.success) return source;
+            var key:String = "$" + String(source.slot);
+            if (seen[key] === true) return {success:false, error:"invalid_payload"};
+            seen[key] = true;
+            sources.push(source);
+        }
+        return {success:true, sources:sources};
+    }
+
+    private static function continueClaimBatch(record:Object):Object {
+        var batch:Object = record == null ? null : record.pendingBatch;
+        if (batch == null) return failureFor(record, "commit_pending");
+
+        if (record.postCommitEffects != null && !retryPostCommitEffects(record)) {
+            record.state = STATE_PENDING;
+            return failureFor(record, "commit_pending");
+        }
+        if (record.pendingCommit != null) {
+            var resumedPending:Object = record.pendingCommit;
+            var resumed:Object = null;
+            _busy = true;
+            try {
+                resumed = LootClaimCommitCoordinator.resume(resumedPending);
+            } finally {
+                _busy = false;
+            }
+            if (resumed == null || !resumed.success) {
+                record.state = STATE_PENDING;
+                return failureFor(record, "commit_pending");
+            }
+            var resumeRevision:Number = Number(record.authorityRevision);
+            var resumedFinal:Object = finalizeClaimForBatch(
+                record, resumedPending, resumed);
+            if (Number(record.authorityRevision) == resumeRevision + 1) {
+                batch.appliedCount = Number(batch.appliedCount) + 1;
+                batch.nextIndex = Number(batch.nextIndex) + 1;
+            }
+            if (resumedFinal == null || !resumedFinal.success) {
+                record.state = STATE_PENDING;
+                return failureFor(record, "commit_pending");
+            }
+        }
+
+        while (Number(batch.nextIndex) < batch.sources.length) {
+            var index:Number = Number(batch.nextIndex);
+            var source:Object = batch.sources[index];
+            // 所有 lease 已在首写前冻结；后续只接受原对象仍在原格，任何外部漂移
+            // 都是不可证明状态，不能拿刷新后的 lease 偷换本批 source。
+            if (source.inventory.getItem(String(source.slot)) !== source.item) {
+                batch.stopError = "stale_state";
+                break;
+            }
+            var subOperationId:String = batchSubOperationId(
+                String(batch.operationId), index);
+            var pending:Object = {
+                operationId:subOperationId,
+                fingerprint:String(batch.fingerprint) + "|" + index,
+                sourceSlot:source.slot,
+                sourceItem:source.item,
+                sourceVersion:source.inventory.getMutationRevision(),
+                kind:""
+            };
+            record.pendingCommit = pending;
+            record.state = STATE_PENDING;
+            var committed:Object = null;
+            _busy = true;
+            try {
+                var kind:String = classifyItem(source.item);
+                pending.kind = kind;
+                committed = LootClaimCommitCoordinator.begin(pending, source, kind);
+            } catch (caughtCommitError) {
+                trace("[LootContainerService] batch claim exception: " + caughtCommitError);
+                committed = LootClaimCommitCoordinator.reconcileUnexpectedFailure(pending);
+            } finally {
+                _busy = false;
+            }
+            if (committed == null || !committed.success) {
+                if (committed != null && committed.pending === true) {
+                    record.state = STATE_PENDING;
+                    return failureFor(record, "commit_pending");
+                }
+                record.pendingCommit = null;
+                var errorCode:String = committed == null
+                    ? "commit_failed" : String(committed.error);
+                if (isClaimCapacityError(errorCode)) {
+                    if (String(batch.firstCapacityError).length == 0) {
+                        batch.firstCapacityError = errorCode;
+                    }
+                    batch.nextIndex = index + 1;
+                    continue;
+                }
+                batch.stopError = errorCode;
+                break;
+            }
+
+            var revisionBefore:Number = Number(record.authorityRevision);
+            var finalized:Object = finalizeClaimForBatch(record, pending, committed);
+            if (Number(record.authorityRevision) == revisionBefore + 1) {
+                batch.appliedCount = Number(batch.appliedCount) + 1;
+                batch.nextIndex = index + 1;
+            }
+            if (finalized == null || !finalized.success) {
+                record.state = STATE_PENDING;
+                return failureFor(record, "commit_pending");
+            }
+            record.state = STATE_PENDING;
+        }
+        return finishClaimBatch(record);
+    }
+
+    private static function finishClaimBatch(record:Object):Object {
+        var batch:Object = record.pendingBatch;
+        if (batch == null || record.pendingCommit != null
+                || record.postCommitEffects != null) {
+            record.state = STATE_PENDING;
+            return failureFor(record, "commit_pending");
+        }
+        var applied:Number = Number(batch.appliedCount);
+        var operationId:String = String(batch.operationId);
+        var fingerprint:String = String(batch.fingerprint);
+        var stopError:String = String(batch.stopError);
+        var errorCode:String = stopError;
+        if (errorCode.length == 0) errorCode = String(batch.firstCapacityError);
+        record.pendingBatch = null;
+        record.state = STATE_ACTIVE;
+        if (applied <= 0) {
+            return failureFor(record, errorCode.length > 0 ? errorCode : "target_full");
+        }
+
+        record.lastAppliedOperationId = operationId;
+        record.operations[operationKey(operationId)] = {
+            kind:"claim_batch",
+            fingerprint:fingerprint,
+            authorityRevision:Number(record.authorityRevision),
+            appliedCount:applied
+        };
+        // 只有容量不足允许形成可解释的部分成功；若前缀已经提交后又遇到
+        // stale/commit 等非容量故障，必须让 Host/Web 进入 query reconcile，
+        // 不能把留下的格子误标成“背包已满”。root journal 先落盘，后续 query
+        // 才能用 exact revision + source projection 证明已提交前缀且绝不重放。
+        if (stopError.length > 0) return failureFor(record, stopError);
+        var response:Object = recordResponse(record, true, "");
+        try {
+            response.snapshots = buildFreshSnapshots(record, null, null);
+        } catch (snapshotError) {
+            trace("[LootContainerService] batch snapshot failed: " + snapshotError);
+            response.snapshots = null;
+        }
+        if (response.snapshots == null) return failureFor(record, "authority_unavailable");
+        return response;
+    }
+
+    private static function finalizeClaimForBatch(
+            record:Object, pending:Object, committed:Object):Object {
+        return finalizeClaimCore(record, pending, committed, false);
+    }
+
     private static function finalizeClaim(record:Object, pending:Object, committed:Object):Object {
+        return finalizeClaimCore(record, pending, committed, true);
+    }
+
+    private static function finalizeClaimCore(record:Object, pending:Object, committed:Object,
+                                               includeSnapshots:Boolean):Object {
         var operationId:String = String(pending.operationId);
         var fingerprint:String = String(pending.fingerprint);
         var source:Object = {
@@ -1417,6 +1836,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (!effectsCompleted) return failureFor(record, "commit_pending");
 
         var response:Object = recordResponse(record, true, "");
+        if (!includeSnapshots) return response;
         try {
             response.snapshots = buildFreshSnapshots(record, null, null);
         } catch (snapshotError) {
@@ -1495,7 +1915,8 @@ class org.flashNight.arki.item.LootContainerService {
         var checked:Object = validateAnyIdentity(params);
         if (!checked.success) return checked.response;
         var record:Object = checked.record;
-        if (record.pendingCommit != null || record.postCommitEffects != null
+        if (record.pendingBatch != null || record.pendingCommit != null
+                || record.postCommitEffects != null
                 || record.transportDetachNeeded === true) {
             return failureFor(record, "commit_pending");
         }
@@ -1520,7 +1941,7 @@ class org.flashNight.arki.item.LootContainerService {
 
         if (remaining > 0 && params.abandon !== true) {
             // anchor 是 suspend 的可恢复性前置条件；注册失败时 authority/op journal 零变化。
-            if (!registerSuspendedAnchor(record)) {
+            if (record.allowAnchorlessSuspend !== true && !registerSuspendedAnchor(record)) {
                 return failureFor(record, "suspend_unavailable");
             }
             record.operations[operationKey(operationId)] = {
@@ -1541,6 +1962,7 @@ class org.flashNight.arki.item.LootContainerService {
             record.operations[operationKey(operationId)].authorityRevision =
                 record.authorityRevision;
             invalidateLootLeases();
+            notifyStageSettlement(record);
             var suspended:Object = recordResponse(record, true, "");
             suspended.success = true;
             suspended.error = "";
@@ -1587,6 +2009,11 @@ class org.flashNight.arki.item.LootContainerService {
                 return failureFor(record, "commit_pending");
             }
             if (isTerminalState(record.state)) return recordResponse(record, true, "");
+        }
+        if (record.pendingBatch != null) {
+            var batchProjection:Object = continueClaimBatch(record);
+            if (record.pendingBatch != null) return failureFor(record, "commit_pending");
+            return batchProjection;
         }
         // 写回包落在 destination-after/source-present 时，Web 只允许 causal query，禁止重放写。
         // query 以 pending journal 的 exact before/after 观察继续 forward-complete，再投影最终状态。
@@ -1718,6 +2145,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (!checked.success) return checked;
         if (checked.record.state != STATE_ACTIVE) {
             var errorCode:String = checked.record.state == STATE_PENDING
+                    || checked.record.pendingBatch != null
                     || checked.record.pendingCommit != null
                     || checked.record.postCommitEffects != null
                     || checked.record.transportDetachNeeded === true
@@ -2017,6 +2445,25 @@ class org.flashNight.arki.item.LootContainerService {
         return response;
     }
 
+    private static function duplicateClaimBatch(
+            record:Object, prior:Object, fingerprint:String):Object {
+        if (prior.kind != "claim_batch" || prior.fingerprint != fingerprint) {
+            return failureFor(record, "operation_conflict");
+        }
+        if (record.pendingBatch != null || record.pendingCommit != null
+                || record.postCommitEffects != null) {
+            return failureFor(record, "commit_pending");
+        }
+        var response:Object = recordResponse(record, true, "");
+        try {
+            response.snapshots = buildFreshSnapshots(record, null, null);
+        } catch (snapshotError) {
+            response.snapshots = null;
+        }
+        return response.snapshots == null
+            ? failureFor(record, "authority_unavailable") : response;
+    }
+
     private static function duplicateClose(record:Object, prior:Object, fingerprint:String,
                                            operationId:String):Object {
         if (prior.kind != "close" || prior.fingerprint != fingerprint) {
@@ -2041,6 +2488,29 @@ class org.flashNight.arki.item.LootContainerService {
             + String(source == null ? "" : source.expectedContainerVersion);
     }
 
+    private static function claimBatchFingerprint(params:Object):String {
+        var result:String = String(params.direction) + "|" + String(params.targetContainerId);
+        var sources:Array = params == null ? null : params.sources;
+        if (!(sources instanceof Array)) return result + "|invalid";
+        for (var i:Number = 0; i < sources.length; i++) {
+            var source:Object = sources[i];
+            result += "|" + String(source == null ? "" : source.containerId)
+                + ":" + String(source == null ? "" : source.slot)
+                + ":" + String(source == null ? "" : source.expectedLease)
+                + ":" + String(source == null ? "" : source.expectedContainerVersion);
+        }
+        return result;
+    }
+
+    private static function batchSubOperationId(rootId:String, index:Number):String {
+        return rootId + ".b" + String(index);
+    }
+
+    private static function isClaimCapacityError(errorCode:String):Boolean {
+        return errorCode == "target_full" || errorCode == "inventory_full"
+            || errorCode == "capacity_reached" || errorCode == "cap_reached";
+    }
+
     private static function closeFingerprint(params:Object):String {
         return String(params.closeLease) + "|" + String(params.abandon);
     }
@@ -2052,7 +2522,8 @@ class org.flashNight.arki.item.LootContainerService {
 
     private static function finishTerminal(record:Object, terminalState:String,
                                            reason:String, operationId:String):Object {
-        if (record != null && (record.pendingCommit != null
+        if (record != null && (record.pendingBatch != null
+                || record.pendingCommit != null
                 || record.postCommitEffects != null
                 || record.transportDetachNeeded === true)) {
             return failureFor(record, "commit_pending");
@@ -2103,9 +2574,20 @@ class org.flashNight.arki.item.LootContainerService {
             completedRecoveryProofOrder:record.completedRecoveryProofOrder
         };
         storeTombstone(tombstone);
+        notifyStageSettlement(record);
         if (_active === record) _active = null;
         if (_reservation === record) _reservation = null;
         return recordResponse(tombstone, true, "");
+    }
+
+    private static function notifyStageSettlement(record:Object):Void {
+        if (record == null || record.panelSource !== STAGE_SETTLEMENT_SOURCE) return;
+        try {
+            org.flashNight.arki.scene.StageRunSession.onSettlementState(
+                String(record.state), remainingCount(record));
+        } catch (notifyError) {
+            trace("[LootContainerService] stage settlement state notification failed");
+        }
     }
 
     private static function holdTargetTimeline(record:Object):Boolean {
@@ -2207,6 +2689,7 @@ class org.flashNight.arki.item.LootContainerService {
             remainingCount:record == null ? 0 : remainingCount(record),
             snapshots:[],
             tooltip:null,
+            materials:null,
             terminal:terminal
         };
     }
@@ -2230,6 +2713,7 @@ class org.flashNight.arki.item.LootContainerService {
             remainingCount:0,
             snapshots:[],
             tooltip:null,
+            materials:null,
             terminal:null
         };
     }

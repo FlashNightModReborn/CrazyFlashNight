@@ -31,28 +31,29 @@ function active(revision, lootSlots, extra) {
         remainingCount:lootSlots.filter(x => x.occupied).length,
         closeLease:'close.' + revision,
         snapshots:[windowSnapshot(identity.lootContainerId, lootSlots, 'close.' + revision),
-            windowSnapshot('背包', [slot(0), slot(1)])], tooltip:null, terminal:null}, extra);
+            windowSnapshot('背包', [slot(0), slot(1)])], tooltip:null,materials:null,
+        terminal:null}, extra);
 }
 function terminal(revision, kind, operationId, remaining) {
     return {success:true,error:'',authorityRevision:revision,lastAppliedOperationId:operationId,
-        state:kind,remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,
+        state:kind,remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,materials:null,
         terminal:{kind,reason:kind.toLowerCase(),remainingCount:remaining}};
 }
 function suspended(revision, operationId, remaining) {
     return {success:true,error:'',authorityRevision:revision,lastAppliedOperationId:operationId,
-        state:'LOOT_SUSPENDED',remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,
+        state:'LOOT_SUSPENDED',remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,materials:null,
         terminal:null};
 }
 function rejectedNoWrite(error, revision, remaining, lastAppliedOperationId) {
     return {success:false,error,authorityRevision:revision,
         lastAppliedOperationId:lastAppliedOperationId || '',state:'LOOT_ACTIVE',
-        remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,terminal:null};
+        remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,materials:null,terminal:null};
 }
 
 function hostFencedReconcile(revision, remaining, lastAppliedOperationId) {
     return {success:false,error:'reconcile_required',authorityRevision:revision,
         lastAppliedOperationId:lastAppliedOperationId || '',state:'LOOT_ACTIVE',
-        remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,terminal:null};
+        remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,materials:null,terminal:null};
 }
 
 function fakeTransport() {
@@ -246,6 +247,73 @@ test('exact inventory-full zero-write proof remains active and can close through
     assert.strictEqual(model.debugState().phase,'suspended');
     assert.strictEqual(wire.calls.filter(call => call.cmd === 'claim').length,1);
     assert.strictEqual(wire.calls.filter(call => call.cmd === 'close').length,1);
+});
+
+test('claim batch freezes exact source refs and accepts only the proven partial authority advance', () => {
+    const wire=fakeTransport();
+    const model=new LootState.Coordinator({identity,capacity:3,request:wire.request});
+    const before=[slot(0,'黑暗吉他','lease.batch.0'),slot(1,'抗生素','lease.batch.1'),
+        slot(2,'强化石','lease.batch.2')];
+    model.open();wire.respond(0,active(1,before));
+    assert(model.claimBatch(model.projection().loot.slots));
+    const write=wire.calls[1],operationId=write.fields.operationId;
+    assert.strictEqual(write.cmd,'claimBatch');
+    assert.deepStrictEqual(write.fields.sources,[
+        {containerId:identity.lootContainerId,slot:0,expectedLease:'lease.batch.0',expectedContainerVersion:1},
+        {containerId:identity.lootContainerId,slot:1,expectedLease:'lease.batch.1',expectedContainerVersion:1},
+        {containerId:identity.lootContainerId,slot:2,expectedLease:'lease.batch.2',expectedContainerVersion:1}
+    ]);
+    assert.deepStrictEqual(Object.keys(write.fields).sort(),
+        ['direction','expectedAuthorityRevision','operationId','sources','targetContainerId'].sort());
+    wire.respond(1,active(3,[before[0],slot(1),slot(2)],
+        {lastAppliedOperationId:operationId}));
+    assert.strictEqual(model.debugState().phase,'active');
+    assert.strictEqual(model.debugState().remainingCount,1);
+    assert.strictEqual(model.projection().loot.slots[0].slotLease,'lease.batch.0');
+});
+
+test('claim batch capacity error needs an exact zero-write proof for every frozen source', () => {
+    const wire=fakeTransport();
+    const model=new LootState.Coordinator({identity,capacity:2,request:wire.request});
+    const before=[slot(0,'物资A','lease.batch.full.0'),slot(1,'物资B','lease.batch.full.1')];
+    model.open();wire.respond(0,active(4,before,{lastAppliedOperationId:'previous.batch'}));
+    assert(model.claimBatch(model.projection().loot.slots));
+    wire.respond(1,rejectedNoWrite('target_full',4,2,'previous.batch'));
+    assert.strictEqual(model.debugState().phase,'active');
+    assert.strictEqual(model.debugState().remainingCount,2);
+    assert.strictEqual(model.debugState().blockReason,'target_full');
+
+    assert(model.claimBatch(model.projection().loot.slots));
+    const unproved=rejectedNoWrite('target_full',5,2,'previous.batch');
+    wire.respond(2,unproved);
+    assert.strictEqual(model.debugState().phase,'reconcile_required');
+    assert.strictEqual(model.debugState().unknown.refreshOnly,true);
+});
+
+test('unknown claim batch settles only against its exact frozen no-write prestate', () => {
+    const wire=fakeTransport();
+    const model=new LootState.Coordinator({identity,capacity:2,request:wire.request});
+    const before=[slot(0,'物资A','lease.batch.unknown.0'),slot(1,'物资B','lease.batch.unknown.1')];
+    model.open();wire.respond(0,active(7,before,{lastAppliedOperationId:'previous.operation'}));
+    assert(model.claimBatch(model.projection().loot.slots));
+    wire.respond(1,hostFencedReconcile(7,2,'previous.operation'));
+    const unknown=model.debugState().unknown;
+    assert.strictEqual(model.debugState().phase,'reconcile_required');
+    assert.deepStrictEqual(unknown.physicalSlots,[0,1]);
+    assert.deepStrictEqual(unknown.slotLeases,['lease.batch.unknown.0','lease.batch.unknown.1']);
+    assert(model.query());wire.respond(2,active(7,before,{lastAppliedOperationId:'previous.operation'}));
+    assert.strictEqual(model.debugState().phase,'active');
+    assert.strictEqual(model.debugState().remainingCount,2);
+    assert.strictEqual(wire.calls.filter(call => call.cmd === 'claimBatch').length,1);
+});
+
+test('claim batch rejects duplicate physical slots before issuing a write', () => {
+    const wire=fakeTransport();
+    const model=new LootState.Coordinator({identity,capacity:2,request:wire.request});
+    model.open();wire.respond(0,active(1,[slot(0,'物资A','lease.batch.duplicate'),slot(1)]));
+    const source=model.projection().loot.slots[0];
+    assert.strictEqual(model.claimBatch([source,source]),false);
+    assert.strictEqual(wire.calls.filter(call => call.cmd === 'claimBatch').length,0);
 });
 
 test('capacity failures without every exact raw prestate field fail closed', () => {

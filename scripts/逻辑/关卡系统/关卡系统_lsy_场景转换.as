@@ -12,6 +12,7 @@ EventBus.getInstance().subscribe("SceneReady", function():Void {
 			Mover.enforceScreenBounds(hero);
 		}
 	}
+	org.flashNight.arki.scene.StageRunSession.onSceneReady();
 }, null);
 
 _root.转场景记录数据 = function(){
@@ -489,7 +490,7 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 
 //场景转换相关
 _root.关卡结束 = function(){
-	_root.关卡结束界面.关卡结束();
+	org.flashNight.arki.scene.StageRunSession.finish("victory");
 	EffectSystem.ScreenEffect("过关提示动画",Stage.width / 2,Stage.height / 2,100);
 	_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
 }
@@ -503,19 +504,24 @@ _root.获取关卡状态 = function():String{
 }
 
 _root.返回基地 = function(){
+	// 先冻结本轮战报和唯一奖励对象；冻结失败时不得继续销毁 gameworld，
+	// 否则玩家会回到基地却永远失去这一轮奖励。
+	if (!org.flashNight.arki.scene.StageRunSession.onReturnBaseStarted()) {
+		_root.发布消息(_root.获得翻译("关卡结算尚未准备完成，请稍后重试返回基地。"));
+		return false;
+	}
 	_root.新出生 = true;
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
-	if (_root.关卡结束界面.关卡是否结束 == true){
-		_root.关卡结束界面.关卡是否结束 = false;
-		_root.关卡结束界面._visible = false;
-		_root.奖励物品界面.标题 = _root.获得翻译("通关奖励");
-		_root.奖励物品界面.生成关卡随机奖励品();
-		_root.奖励物品界面.刷新();
-	}
+	_root.关卡结束界面._visible = false;
+	_root.关卡结束界面.关卡是否结束 = false;
 	_root.场景进入位置名 = "出生地";
 	_root.关卡类型 = "";
-	if (TargetCacheManager.findHero().hp == 0){
+	var 返回前主角:MovieClip;
+	try { 返回前主角 = TargetCacheManager.findHero(); } catch (findHeroError) { 返回前主角 = undefined; }
+	// 死亡伤害可以把 hp 压到负数；主角已被回收时也应允许从医务室恢复，
+	// 不能让转场入口因一次空引用把玩家永久留在结算态。
+	if (返回前主角 == undefined || Number(返回前主角.hp) <= 0){
 		_root.淡出动画.淡出跳转帧("医务室");
 	}else{
 		_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
@@ -526,6 +532,7 @@ _root.返回基地 = function(){
 	_root.soundEffectManager.stopBGMForTransition();
 	// 清除StageManager
 	StageManager.instance.clear();
+	return true;
 }
 
 

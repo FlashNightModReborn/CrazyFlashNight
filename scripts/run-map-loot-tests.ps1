@@ -19,6 +19,7 @@ $scratchMarker = Join-Path $projectDir 'scripts\testloader_scratch_inflight.mark
 $suitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootContainerServiceTest.as'
 $plannerSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootMaterializationPlannerTest.as'
 $arbiterSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\test\BoxInteractionArbiterTest.as'
+$stageSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\scene\StageRunSessionTest.as'
 $serverManagerPath = Join-Path $projectDir 'scripts\类定义\org\flashNight\neur\Server\ServerManager.as'
 $installedRunnerHash = $null
 $scratchTransaction = $null
@@ -37,9 +38,10 @@ $compileMutex = [System.Threading.Mutex]::new(
     $false, 'Local\CF7_FlashCompile_' + $repoHash)
 $compileLease = $null
 $runId = [System.Guid]::NewGuid().ToString('N')
-$expectedServicePassCount = 142
+$expectedServicePassCount = 151
 $expectedPlannerPassCount = 9
-$expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount
+$expectedStagePassCount = 88
+$expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount + $expectedStagePassCount
 
 function Get-EvidenceIdentity([string]$Path) {
     if (-not (Test-Path -LiteralPath $Path)) { return $null }
@@ -150,6 +152,24 @@ try {
             throw "Box interaction arbiter AS2 suite is missing required sentinel: $pattern"
         }
     }
+    if (-not (Test-Path -LiteralPath $stageSuitePath)) {
+        throw "Stage run AS2 suite is missing: $stageSuitePath"
+    }
+    $stageBytes = [System.IO.File]::ReadAllBytes($stageSuitePath)
+    if ($stageBytes.Length -lt 3 -or $stageBytes[0] -ne 0xEF -or
+        $stageBytes[1] -ne 0xBB -or $stageBytes[2] -ne 0xBF) {
+        throw 'StageRunSessionTest.as is not UTF-8 with BOM.'
+    }
+    $stageSource = Get-Content -LiteralPath $stageSuitePath -Raw -Encoding UTF8
+    foreach ($pattern in @(
+            'class\s+org\.flashNight\.arki\.scene\.StageRunSessionTest';
+            'public\s+static\s+function\s+runAllTests\s*\(';
+            'trace\("StageRunSessionTest Tests Passed: "\s*\+\s*_passed\)';
+            'trace\("StageRunSessionTest Tests Failed: "\s*\+\s*_failed\)')) {
+        if ($stageSource -notmatch $pattern) {
+            throw "Stage run AS2 suite is missing required sentinel: $pattern"
+        }
+    }
 
     if (-not (Test-Path -LiteralPath $serverManagerPath)) {
         throw "ServerManager AS2 source is missing; cannot verify XMLSocket source isolation: $serverManagerPath"
@@ -215,7 +235,7 @@ try {
     Write-Host (("[INFO] Verified ServerManager XMLSocket source isolation: {0} current-source guards, " +
         'captured generation retirement, and unified onSocketClose handoff.') -f
         $socketSourceGuardCount)
-    Write-Host ("[INFO] Verified focused map loot, materialization, and box arbiter AS2 suites: {0}" -f $suitePath)
+    Write-Host ("[INFO] Verified focused map loot, materialization, box arbiter, and stage run AS2 suites: {0}" -f $suitePath)
 
     $scratchTransaction = New-Cf7TestLoaderScratchTransaction `
         -MarkerPath $scratchMarker -RunnerPath $runnerPath -RepoHash $repoHash `
@@ -305,7 +325,11 @@ try {
             '(?m)^=== LootMaterializationPlannerTest start ===\r?$';
             "(?m)^LootMaterializationPlannerTest Tests Passed: $expectedPlannerPassCount\r?$";
             '(?m)^LootMaterializationPlannerTest Tests Failed: 0\r?$';
-            '(?m)^=== LootMaterializationPlannerTest end ===\r?$'
+            '(?m)^=== LootMaterializationPlannerTest end ===\r?$';
+            '(?m)^=== StageRunSessionTest start ===\r?$';
+            "(?m)^StageRunSessionTest Tests Passed: $expectedStagePassCount\r?$";
+            '(?m)^StageRunSessionTest Tests Failed: 0\r?$';
+            '(?m)^=== StageRunSessionTest end ===\r?$'
         )
         for ($blockIndex = 0; $blockIndex -lt $runBlockMatches.Count; $blockIndex++) {
             $runTrace = $runBlockMatches[$blockIndex].Groups['body'].Value

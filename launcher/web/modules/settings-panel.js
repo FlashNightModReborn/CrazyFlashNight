@@ -1344,7 +1344,12 @@
             not_sent:'请求未发出',delivery_unknown:'请求投递结果未知',invalid_payload:'请求格式无效',invalid_settings:'设置值无效',invalid_keys:'键位表无效',
             key_conflict:'键位冲突',reserved_key:'按键被保留',stale_state:'状态已变化',save_failed:'保存失败',
             save_unavailable:'当前不可保存',settings_unavailable:'设置尚未初始化',revive_unavailable:'当前没有可恢复的复活流程',
-            actor_alive:'角色尚未死亡',return_base_unavailable:'返回基地入口不可用',unknown_command:'无法识别该作弊码',
+            actor_alive:'角色尚未死亡',resurrection_restricted:'本关禁止复活',no_revive_coin:'没有复活币',
+            revive_asset_failed:'复活币扣除未被确认，请重试',revive_asset_ambiguous:'复活币状态不明确，请重新同步后核对',
+            respawn_dispatch_failed:'游戏未确认复活，复活币已返还',respawn_dispatch_rollback_failed:'复活失败且退款未确认，请立即核对复活币存量',
+            return_in_progress:'正在返回基地',return_base_unavailable:'返回基地入口不可用',
+            settlement_prepare_failed:'关卡结算尚未准备完成，请稍后重试',return_base_failed:'返回基地失败，请稍后重试',
+            unknown_command:'无法识别该作弊码',
             apply_ambiguous:'应用结果未知，需要重新同步',key_refresh_failed:'键位缓存刷新失败，请重试同步',
             hit_number_ledger_unavailable:'伤害对账日志暂不可用',
             malformed_response:'游戏响应格式异常'}[error]||String(error||'未知错误');

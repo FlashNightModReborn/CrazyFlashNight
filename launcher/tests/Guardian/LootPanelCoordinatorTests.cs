@@ -120,6 +120,70 @@ namespace CF7Launcher.Tests.Guardian
             return request;
         }
 
+        private static JObject SettlementRequest()
+        {
+            JObject request = Request();
+            request["source"] = "stage_settlement";
+            JObject init = (JObject)request["initData"];
+            init["sourceKind"] = "stage_settlement";
+            init["displayName"] = "关卡奖励";
+            init["report"] = new JObject
+            {
+                ["v"] = 1,
+                ["runId"] = "run.120.1",
+                ["stageName"] = "废弃地铁",
+                ["difficulty"] = "冒险",
+                ["outcome"] = "victory",
+                ["activeFrames"] = 5432,
+                ["totalKills"] = 4,
+                ["omittedKillTypes"] = 0,
+                ["totalItemGains"] = 3,
+                ["totalItemLosses"] = 1,
+                ["omittedItemFlowTypes"] = 0,
+                ["rewardRollOmissions"] = 0,
+                ["kills"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["key"] = "敌人.感染者",
+                        ["displayName"] = "感染者",
+                        ["iconName"] = "感染者",
+                        ["doll"] = JValue.CreateNull(),
+                        ["eliteLevel"] = 0,
+                        ["count"] = 4
+                    }
+                },
+                ["itemFlows"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["direction"] = "gain",
+                        ["kind"] = "material",
+                        ["itemKey"] = "item.强化石",
+                        ["displayName"] = "强化石",
+                        ["iconName"] = "强化石",
+                        ["tier"] = "普通",
+                        ["source"] = "loot_feed",
+                        ["reason"] = "pickup",
+                        ["count"] = 3
+                    },
+                    new JObject
+                    {
+                        ["direction"] = "loss",
+                        ["kind"] = "item",
+                        ["itemKey"] = "item.急救针",
+                        ["displayName"] = "急救针",
+                        ["iconName"] = "急救针",
+                        ["tier"] = "",
+                        ["source"] = "item_use",
+                        ["reason"] = "consume",
+                        ["count"] = 1
+                    }
+                }
+            };
+            return request;
+        }
+
         private static LootPanelCoordinator Create(FakePanel panel, Func<bool> release = null,
             Func<LootPanelCoordinator.Binding, string, bool> recovery = null,
             int bindWatchdogMs = LootPanelCoordinator.DefaultBindWatchdogMs,
@@ -246,6 +310,48 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.False((bool)ack["accepted"]);
             Assert.Equal(0, panel.OpenCalls);
+        }
+
+        [Fact]
+        public void StageSettlement_AdmitsStrictReportAndPassesSanitizedWebInit()
+        {
+            var panel = new FakePanel();
+            using var coordinator = Create(panel);
+
+            JObject ack = JObject.Parse(
+                coordinator.HandlePanelRequest(SettlementRequest()));
+
+            Assert.True(ack.Value<bool>("accepted"));
+            Assert.Equal("stage_settlement", coordinator.ActiveBinding.SourceKind);
+            JObject init = JObject.Parse(panel.InitDataJson);
+            Assert.Equal(9, init.Count);
+            Assert.Equal("stage_settlement", init.Value<string>("sourceKind"));
+            Assert.Equal("run.120.1", init["report"].Value<string>("runId"));
+            Assert.Equal(3, init["report"].Value<int>("totalItemGains"));
+            Assert.Equal(2, ((JArray)init["report"]["itemFlows"]).Count);
+            Assert.Null(init["openAttemptSeq"]);
+        }
+
+        [Fact]
+        public void StageSettlement_RejectsForgedOrInconsistentReport()
+        {
+            LootPanelCoordinator.OpenRequest normalized;
+            string error;
+
+            JObject extra = SettlementRequest();
+            extra["initData"]["report"]["rewardItems"] = new JArray("神秘物品");
+            Assert.False(LootPanelCoordinator.TryNormalizePanelRequest(
+                extra, out normalized, out error));
+
+            JObject inconsistent = SettlementRequest();
+            inconsistent["initData"]["report"]["totalKills"] = 3;
+            Assert.False(LootPanelCoordinator.TryNormalizePanelRequest(
+                inconsistent, out normalized, out error));
+
+            JObject wrongSourceKind = SettlementRequest();
+            wrongSourceKind["initData"]["sourceKind"] = "map_chest";
+            Assert.False(LootPanelCoordinator.TryNormalizePanelRequest(
+                wrongSourceKind, out normalized, out error));
         }
 
         [Fact]

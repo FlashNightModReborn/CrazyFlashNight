@@ -118,6 +118,7 @@ class org.flashNight.arki.merc.ArenaController {
     public static function prepareArenaStage(deposit:Number, reward:Number, difficulty:String, onLoaded:Function, onLoadError:Function):Boolean {
         var stageInfo:Object = _root.StageInfoDict ? _root.StageInfoDict["DEATH MATCH角斗场"] : undefined;
         if (stageInfo == undefined || stageInfo.url == undefined || String(stageInfo.url) == "") return false;
+        if (!org.flashNight.arki.scene.StageRunSession.canStartStage()) return false;
         _root.载入关卡数据(String(stageInfo.Type || "无限过图"), String(stageInfo.url), onLoaded, onLoadError);
         _root.关卡类型 = String(stageInfo.Type || "无限过图");
         _root.关卡路径 = String(stageInfo.url);

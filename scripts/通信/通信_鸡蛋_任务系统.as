@@ -750,17 +750,20 @@ _root.是否达成任务检测 = function() {
             break;
         }
     }
-    // 任务完成状态 + 最佳可交付 hotspot + 是否可直接传送 → Launcher 刘海屏
-    // resolveDeliverableState 会扫描全部已达成任务，优先挑可导航的；全部不可导航则回落首个
+    // 任务完成状态 + 最佳可交付 hotspot + 当前/返基地后是否可传送 → Launcher 刘海屏
+    // tdn 服务普通点击，tdr 服务关卡胜利后的“结算后前往交付”；两者不能混用。
     var tdh:String = "";
     var tdn:String = "0";
+    var tdr:String = "0";
     if (found) {
         var state:Object = org.flashNight.arki.map.MapPanelService.resolveDeliverableState();
         tdh = String(state.hotspotId);
         if (state.navigable) tdn = "1";
+        if (state.returnNavigable) tdr = "1";
     }
     org.flashNight.arki.render.FrameBroadcaster.pushUiState(
-        "td:" + (found ? "1" : "0") + "|tdh:" + tdh + "|tdn:" + tdn
+        "td:" + (found ? "1" : "0") + "|tdh:" + tdh
+            + "|tdn:" + tdn + "|tdr:" + tdr
     );
     return found;
 }

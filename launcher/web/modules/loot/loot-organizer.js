@@ -177,12 +177,15 @@
         this._state = {};
         this._interaction = interactionForState(this._state);
         this.root = this._document.createElement('section');
-        this.root.className = 'npcshop-space-page loot-organizer-page';
+        // 库存整理沿用商城切到“战备箱”时的原始灰阶库存皮肤；结算页自身
+        // 仍使用启动器终端皮肤，两者不互相污染。
+        this.root.className = 'npcshop-space-page loot-organizer-page kshop-workbench';
+        this.root.setAttribute('data-workbench-skin','inventory');
         this.root.setAttribute('data-loot-organizer','');
         this.root.innerHTML = '<header class="npcshop-space-header"><div class="workbench-secondary-actions">'
             + '<button type="button" data-loot-organizer-back>← 返回战利品</button>'
             + '<button type="button" data-loot-organizer-help aria-label="查看战利品整理帮助">?</button></div>'
-            + '<div><h2>整理背包</h2><p>点击物品可在背包与战备箱之间转移；返回前会重新同步当前箱子。</p></div>'
+            + '<div><h2>物品管理</h2><p>点击物品可在背包与战备箱之间转移；返回前会重新同步当前箱子。</p></div>'
             + '<span data-space-status>同步中</span>'
             + '<button type="button" data-loot-organizer-retry hidden>重试同步</button>'
             + '<button type="button" data-loot-organizer-close aria-label="关闭战利品面板">×</button></header>'
