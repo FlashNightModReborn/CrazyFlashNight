@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-金发女僵尸1" itemID="67bc37f1-00000619" linkageExportForAS="true" linkageIdentifier="敌人-金发女僵尸1" lastModified="1747127562">
   <timeline>
-    <DOMTimeline name="敌人-金发女僵尸1" currentFrame="89">
+    <DOMTimeline name="敌人-金发女僵尸1" currentFrame="106">
       <layers>
         <DOMLayer name="Labels Layer" color="#2DDFC3">
           <frames>
@@ -392,7 +392,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="95" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 965" name="man" centerPoint3DX="29.1" centerPoint3DY="69.05">
+                <DOMSymbolInstance libraryItemName="Symbol 965" name="man" selected="true" centerPoint3DX="29.1" centerPoint3DY="69.05">
                   <matrix>
                     <Matrix d="1.00039672851563"/>
                   </matrix>
@@ -413,7 +413,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1061" centerPoint3DX="151.7" centerPoint3DY="30.15">
+                <DOMSymbolInstance libraryItemName="Symbol 1061" selected="true" centerPoint3DX="151.7" centerPoint3DY="30.15">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>
