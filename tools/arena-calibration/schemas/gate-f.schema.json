@@ -1,0 +1,321 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "arena-calibration.gate-f.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema"],
+  "properties": {
+    "schema": { "const": "arena-calibration.gate-f.v1" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "gitObject": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "sourceIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "tree", "worktreeClean", "statusHash"],
+      "properties": {
+        "commit": { "$ref": "#/$defs/gitObject" },
+        "tree": { "$ref": "#/$defs/gitObject" },
+        "worktreeClean": { "const": true },
+        "statusHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "gateFShard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shardId", "candidateIds", "manifestPath", "manifestHash", "plannedRuns", "maxRecoveryAttempts", "maxWallClockMinutes", "eligibleEpoch", "decisionEvidencePath", "decisionEvidenceRef"],
+      "properties": {
+        "shardId": { "$ref": "#/$defs/id" },
+        "candidateIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "manifestPath": { "$ref": "#/$defs/nonEmptyString" },
+        "manifestHash": { "$ref": "#/$defs/sha256" },
+        "plannedRuns": { "type": "integer", "minimum": 10, "maximum": 25 },
+        "maxRecoveryAttempts": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "maxWallClockMinutes": { "type": "integer", "minimum": 5, "maximum": 40 },
+        "eligibleEpoch": { "type": "boolean" },
+        "decisionEvidencePath": {
+          "oneOf": [
+            { "$ref": "#/$defs/nonEmptyString" },
+            { "type": "null" }
+          ]
+        },
+        "decisionEvidenceRef": {
+          "oneOf": [
+            { "$ref": "#/$defs/sha256" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "eligibleEpoch": { "const": true } } },
+          "then": {
+            "properties": {
+              "decisionEvidencePath": { "$ref": "#/$defs/nonEmptyString" },
+              "decisionEvidenceRef": { "$ref": "#/$defs/sha256" }
+            }
+          },
+          "else": {
+            "properties": {
+              "decisionEvidencePath": { "type": "null" },
+              "decisionEvidenceRef": { "type": "null" }
+            }
+          }
+        }
+      ]
+    },
+    "healthPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimumFreeBytes", "maximumErrorRate", "maximumTimeoutRate", "maximumConsecutiveShardFailures", "maximumDurationDriftRatio"],
+      "properties": {
+        "minimumFreeBytes": { "type": "integer", "minimum": 1073741824 },
+        "maximumErrorRate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "maximumTimeoutRate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "maximumConsecutiveShardFailures": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "maximumDurationDriftRatio": { "type": "number", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "candidateBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidateId", "initialState", "evidenceRef"],
+      "properties": {
+        "candidateId": { "$ref": "#/$defs/id" },
+        "initialState": { "enum": ["scheduled", "completed_prior", "quarantined"] },
+        "evidenceRef": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "gateFDecisionEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "decisionId", "planId", "campaignId", "shardId", "action", "riskLevel", "candidateIds", "manifestPath", "manifestHash", "plannedRuns", "humanApprovalRequired", "evidenceRefs", "createdAt", "decisionHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.gate-f-decision-evidence.v1" },
+        "decisionId": { "$ref": "#/$defs/id" },
+        "planId": { "$ref": "#/$defs/id" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "shardId": { "$ref": "#/$defs/id" },
+        "action": { "const": "schedule_shard" },
+        "riskLevel": { "const": "auto_execute" },
+        "candidateIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "manifestPath": { "$ref": "#/$defs/nonEmptyString" },
+        "manifestHash": { "$ref": "#/$defs/sha256" },
+        "plannedRuns": { "type": "integer", "minimum": 10, "maximum": 25 },
+        "humanApprovalRequired": { "const": false },
+        "evidenceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/sha256" } },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "decisionHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "attentionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimumEligibleEpochs", "maximumTouchRate", "maximumOpsMinutesPer24Hours", "maximumStartupMinutes", "maximumCloseoutMinutes", "maximumDeferredItems", "maximumDeferredScopeRate", "targetYieldSeconds", "maximumYieldSeconds"],
+      "properties": {
+        "minimumEligibleEpochs": { "const": 20 },
+        "maximumTouchRate": { "const": 0.1 },
+        "maximumOpsMinutesPer24Hours": { "const": 10 },
+        "maximumStartupMinutes": { "const": 5 },
+        "maximumCloseoutMinutes": { "const": 10 },
+        "maximumDeferredItems": { "const": 5 },
+        "maximumDeferredScopeRate": { "const": 0.1 },
+        "targetYieldSeconds": { "const": 60 },
+        "maximumYieldSeconds": { "const": 300 }
+      }
+    },
+    "gateFPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "planId", "campaignId", "battleSemanticsCohortId", "candidateIds", "candidateBaselines", "sourceIdentity", "runtimeIdentity", "slot", "seedSlot", "healthPolicy", "attentionPolicy", "shards", "createdAt", "planHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.gate-f-plan.v1" },
+        "planId": { "$ref": "#/$defs/id" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "battleSemanticsCohortId": { "$ref": "#/$defs/id" },
+        "candidateIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "candidateBaselines": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/candidateBaseline" }
+        },
+        "sourceIdentity": { "$ref": "#/$defs/sourceIdentity" },
+        "runtimeIdentity": { "$ref": "arena-calibration.campaign-runtime.v1#/$defs/runtimeIdentity" },
+        "slot": { "type": "string", "pattern": "^cf7_agent_[A-Za-z0-9_-]+$" },
+        "seedSlot": { "type": "string", "pattern": "^crazyflasher7_saves[0-9]*$" },
+        "healthPolicy": { "$ref": "#/$defs/healthPolicy" },
+        "attentionPolicy": { "$ref": "#/$defs/attentionPolicy" },
+        "shards": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/gateFShard" }
+        },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "planHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "idleWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "windowId", "campaignId", "planHash", "sourceTree", "issuedAt", "expiresAt", "revokeFile", "windowHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.gate-f-idle-window.v1" },
+        "windowId": { "$ref": "#/$defs/id" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "planHash": { "$ref": "#/$defs/sha256" },
+        "sourceTree": { "$ref": "#/$defs/gitObject" },
+        "issuedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "expiresAt": { "$ref": "#/$defs/nonEmptyString" },
+        "revokeFile": { "$ref": "#/$defs/nonEmptyString" },
+        "windowHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "opsBreakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startup", "recovery", "exception", "closeout", "total"],
+      "properties": {
+        "startup": { "type": "number", "minimum": 0 },
+        "recovery": { "type": "number", "minimum": 0 },
+        "exception": { "type": "number", "minimum": 0 },
+        "closeout": { "type": "number", "minimum": 0 },
+        "total": { "type": "number", "minimum": 0 }
+      }
+    },
+    "attentionMeasurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "measurementId", "campaignId", "shardId", "shardKind", "shardKindDeclaredAt", "shardStartedAt", "shardFinishedAt", "automationEvidence", "shardHumanActionCount", "opsBreakdown", "humanBlockedMinutes", "interruptCount", "eligibleEpochDelta", "humanTouchDelta", "manualEditDelta", "exceptionCounts", "evidenceRefs", "createdAt", "measurementHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.attention-measurement.v1" },
+        "measurementId": { "$ref": "#/$defs/id" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "shardId": { "$ref": "#/$defs/id" },
+        "shardKind": { "enum": ["unattended", "pve_packet", "fault_injection", "maintenance"] },
+        "shardKindDeclaredAt": { "$ref": "#/$defs/nonEmptyString" },
+        "shardStartedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "shardFinishedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "automationEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["driver", "stdinMode", "interactivePromptCount", "operatorSignalCount"],
+          "properties": {
+            "driver": { "$ref": "#/$defs/nonEmptyString" },
+            "stdinMode": { "const": "disabled" },
+            "interactivePromptCount": { "const": 0 },
+            "operatorSignalCount": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "shardHumanActionCount": { "type": "integer", "minimum": 0 },
+        "opsBreakdown": { "$ref": "#/$defs/opsBreakdown" },
+        "humanBlockedMinutes": { "type": "number", "minimum": 0 },
+        "interruptCount": { "type": "integer", "minimum": 0 },
+        "eligibleEpochDelta": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "humanTouchDelta": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "manualEditDelta": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "exceptionCounts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["items", "occurrences", "affectedScopes"],
+          "properties": {
+            "items": { "type": "integer", "minimum": 0 },
+            "occurrences": { "type": "integer", "minimum": 0 },
+            "affectedScopes": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "evidenceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/sha256" } },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "measurementHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "gateFShardReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "receiptId", "planHash", "campaignId", "shardId", "manifestHash", "state", "runReportPath", "runReportSha256", "executionArtifactIds", "committedRows", "duplicatesExcluded", "recoveryAttemptsUsed", "health", "startedAt", "finishedAt", "wallClockMinutes", "yieldLatencySeconds", "reason", "receiptHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.gate-f-shard-receipt.v1" },
+        "receiptId": { "$ref": "#/$defs/id" },
+        "planHash": { "$ref": "#/$defs/sha256" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "shardId": { "$ref": "#/$defs/id" },
+        "manifestHash": { "$ref": "#/$defs/sha256" },
+        "state": { "enum": ["completed", "failed", "yielded"] },
+        "runReportPath": { "type": ["string", "null"] },
+        "runReportSha256": {
+          "oneOf": [
+            { "$ref": "#/$defs/sha256" },
+            { "type": "null" }
+          ]
+        },
+        "executionArtifactIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "committedRows": { "type": "integer", "minimum": 0 },
+        "duplicatesExcluded": { "type": "integer", "minimum": 0 },
+        "recoveryAttemptsUsed": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "health": { "type": "object" },
+        "startedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "finishedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "wallClockMinutes": { "type": "number", "minimum": 0 },
+        "yieldLatencySeconds": { "type": ["number", "null"], "minimum": 0 },
+        "reason": { "type": ["string", "null"] },
+        "receiptHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "gateFStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "planId", "planHash", "campaignId", "state", "shards", "rows", "attention", "exceptions", "health", "createdAt", "statusHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.gate-f-status.v1" },
+        "planId": { "$ref": "#/$defs/id" },
+        "planHash": { "$ref": "#/$defs/sha256" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["READY", "RUNNING", "PAUSED", "COMPLETED", "FAILED_CLOSED"] },
+        "shards": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["planned", "completed", "failed", "remaining"],
+          "properties": {
+            "planned": { "type": "integer", "minimum": 0 },
+            "completed": { "type": "integer", "minimum": 0 },
+            "failed": { "type": "integer", "minimum": 0 },
+            "remaining": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "rows": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["committed", "duplicatesExcluded"],
+          "properties": {
+            "committed": { "type": "integer", "minimum": 0 },
+            "duplicatesExcluded": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "attention": { "type": "object" },
+        "exceptions": { "type": "object" },
+        "health": { "type": "object" },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "statusHash": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

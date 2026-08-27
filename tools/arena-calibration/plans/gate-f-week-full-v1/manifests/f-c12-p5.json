@@ -1,0 +1,158 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-c12-p5",
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "buildCommit": "732898b8aa1308cf820976324f47bba97f654e41",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "long",
+    "candidateIds": [
+      "candidate-f6dde19531c77517"
+    ],
+    "sourceCell": "C12",
+    "sourceCandidateHash": "sha256:f6dde19531c77517f260bbe8900a8960f7c8a4cba9a099563d398360ab85a9f8",
+    "phaseIndex": 5,
+    "phaseRuns": 10
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 5400,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-f6dde19531c77517",
+      "blueRoster": [
+        {
+          "type": "兵种385",
+          "level": 70
+        },
+        {
+          "type": "兵种276",
+          "level": 60
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种78",
+          "level": 100
+        },
+        {
+          "type": "兵种79",
+          "level": 100
+        },
+        {
+          "type": "兵种361",
+          "level": 100
+        },
+        {
+          "type": "兵种69",
+          "level": 100,
+          "parameters": {
+            "称号": "黑铁会教主"
+          }
+        },
+        {
+          "type": "兵种365",
+          "level": 100
+        },
+        {
+          "type": "兵种59",
+          "level": 100,
+          "parameters": {
+            "宠物属性": {
+              "复仇者": true
+            },
+            "死亡动画": "a1"
+          }
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 5400,
+      "tags": [
+        "xlsx-intake",
+        "source-c12",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "high_level",
+        "gate-f-week",
+        "long"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C12; Gate F long original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:eada6ac7700680891c996cdd2da109d209a436afbbcaa27d7e1f92ba88f17e90"
+    },
+    {
+      "caseId": "candidate-f6dde19531c77517-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种78",
+          "level": 100
+        },
+        {
+          "type": "兵种79",
+          "level": 100
+        },
+        {
+          "type": "兵种361",
+          "level": 100
+        },
+        {
+          "type": "兵种69",
+          "level": 100,
+          "parameters": {
+            "称号": "黑铁会教主"
+          }
+        },
+        {
+          "type": "兵种365",
+          "level": 100
+        },
+        {
+          "type": "兵种59",
+          "level": 100,
+          "parameters": {
+            "宠物属性": {
+              "复仇者": true
+            },
+            "死亡动画": "a1"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种385",
+          "level": 70
+        },
+        {
+          "type": "兵种276",
+          "level": 60
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 5400,
+      "tags": [
+        "xlsx-intake",
+        "source-c12",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "high_level",
+        "gate-f-week",
+        "long",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C12; Gate F long swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:48131a4afe70a05041b94145f61d1e4dd114e89d683248516d491b9d2fa5996a"
+    }
+  ],
+  "manifestHash": "sha256:61c5ea479756898f0722729fd971e6c5af5e1473ca2c01a0500b86398b3476ee"
+}

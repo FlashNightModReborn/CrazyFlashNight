@@ -2,25 +2,35 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "arena-calibration.next-batch.v1",
   "type": "object",
-  "required": ["schema", "sourceBatchId", "sourceManifestHash", "sourceSummaryHash", "decisions"],
+  "additionalProperties": false,
+  "required": ["schema", "generatedAt", "planner", "sourceBatchId", "sourceManifestHash", "sourceSummaryHash", "decisions"],
   "properties": {
     "schema": { "const": "arena-calibration.next-batch.v1" },
-    "generatedAt": { "type": "string" },
-    "planner": { "type": "object" },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "planner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    },
     "sourceBatchId": { "type": "string", "minLength": 1 },
-    "sourceManifestHash": { "type": "string", "minLength": 1 },
-    "sourceSummaryHash": { "type": "string", "minLength": 1 },
+    "sourceManifestHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "sourceSummaryHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
     "decisions": {
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["caseId", "caseHash", "action", "suggestedRepeat", "reason"],
         "properties": {
-          "caseId": { "type": "string" },
-          "caseHash": { "type": "string" },
+          "caseId": { "type": "string", "minLength": 1 },
+          "caseHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
           "action": { "enum": ["append_repeat", "append_counter_case", "prune", "review"] },
-          "suggestedRepeat": { "type": "number", "minimum": 0 },
-          "reason": { "type": "string" }
+          "suggestedRepeat": { "type": "integer", "minimum": 0 },
+          "reason": { "type": "string", "minLength": 1 }
         }
       }
     }

@@ -1,0 +1,307 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "arena-calibration.campaign-evaluation.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema"],
+  "properties": {
+    "schema": { "const": "arena-calibration.campaign-evaluation.v1" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "shadowProfile": {
+      "enum": ["A_sol_manager_only", "B_luna_manager_only", "C_luna_propose_sol_adjudicate"]
+    },
+    "shadowExperiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "experimentId", "decisionSnapshotId", "snapshotHash", "profiles", "sharedActionWhitelist", "sharedBudget", "selectionPolicy", "hiddenUntilAdjudicated", "status", "createdAt", "experimentHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.shadow-experiment.v1" },
+        "experimentId": { "$ref": "#/$defs/id" },
+        "decisionSnapshotId": { "$ref": "#/$defs/id" },
+        "snapshotHash": { "$ref": "#/$defs/sha256" },
+        "profiles": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/shadowProfile" }
+        },
+        "sharedActionWhitelist": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "sharedBudget": { "type": "object" },
+        "selectionPolicy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["hardSafetyRequired", "minimumQualityDelta", "complexityPenalty", "insufficientEvidenceOutcome"],
+          "properties": {
+            "hardSafetyRequired": { "const": true },
+            "minimumQualityDelta": { "type": "number", "minimum": 0 },
+            "complexityPenalty": { "type": "number", "minimum": 0 },
+            "insufficientEvidenceOutcome": { "const": "provisional" }
+          }
+        },
+        "hiddenUntilAdjudicated": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": { "enum": ["model_identity", "profile_identity", "source", "prior_tier", "historical_conclusion"] }
+        },
+        "status": { "enum": ["awaiting_model_outputs", "awaiting_blind_human", "adjudicated"] },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "experimentHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "profileScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alias", "proposalHash", "schemaValid", "hardGatePass", "violations", "coverage", "expectedInformationGain", "durationMs", "tokenCount", "qualityScore", "eligible"],
+      "properties": {
+        "alias": { "enum": ["A", "B", "C"] },
+        "proposalHash": { "$ref": "#/$defs/sha256" },
+        "schemaValid": { "type": "boolean" },
+        "hardGatePass": { "type": "boolean" },
+        "violations": { "type": "array", "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sideSwapActions", "bridgeActions", "boundaryActions", "candidateCount"],
+          "properties": {
+            "sideSwapActions": { "type": "integer", "minimum": 0 },
+            "bridgeActions": { "type": "integer", "minimum": 0 },
+            "boundaryActions": { "type": "integer", "minimum": 0 },
+            "candidateCount": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "expectedInformationGain": { "type": "number", "minimum": 0 },
+        "durationMs": { "type": "integer", "minimum": 0 },
+        "tokenCount": { "type": "integer", "minimum": 0 },
+        "qualityScore": { "type": "number" },
+        "eligible": { "type": "boolean" }
+      }
+    },
+    "shadowScorecard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "experimentId", "snapshotHash", "scores", "mechanicalLeader", "selectionStatus", "createdAt", "scorecardHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.shadow-scorecard.v1" },
+        "experimentId": { "$ref": "#/$defs/id" },
+        "snapshotHash": { "$ref": "#/$defs/sha256" },
+        "scores": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/profileScore" } },
+        "mechanicalLeader": { "type": ["string", "null"], "enum": ["A", "B", "C", null] },
+        "selectionStatus": { "enum": ["ready_for_blind_human", "insufficient_evidence", "hard_gate_failure"] },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "scorecardHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "blindProposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alias", "actions", "risks", "counterexamples", "confidence"],
+      "properties": {
+        "alias": { "enum": ["A", "B", "C"] },
+        "actions": { "type": "array", "items": { "type": "object" } },
+        "risks": { "type": "array", "items": { "type": "string" } },
+        "counterexamples": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "blindAdjudicationPacket": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "packetId", "experimentId", "snapshotHash", "rubricVersion", "hiddenFields", "proposals", "humanResponseSchema", "status", "createdAt", "packetHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.blind-adjudication-packet.v1" },
+        "packetId": { "$ref": "#/$defs/id" },
+        "experimentId": { "$ref": "#/$defs/id" },
+        "snapshotHash": { "$ref": "#/$defs/sha256" },
+        "rubricVersion": { "$ref": "#/$defs/id" },
+        "hiddenFields": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "type": "string" } },
+        "proposals": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/blindProposal" } },
+        "humanResponseSchema": { "type": "object" },
+        "status": { "const": "awaiting_blind_human" },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "packetHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "strengthNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeId", "label", "strength", "lower95", "upper95", "samples", "component"],
+      "properties": {
+        "nodeId": { "$ref": "#/$defs/id" },
+        "label": { "$ref": "#/$defs/nonEmptyString" },
+        "strength": { "type": "number" },
+        "lower95": { "type": "number" },
+        "upper95": { "type": "number" },
+        "samples": { "type": "integer", "minimum": 0 },
+        "component": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "pairedStrengthReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "reportId", "model", "cohortId", "inputRefs", "eligibleResults", "excludedResults", "draws", "sideBias", "nodes", "componentCount", "bridgeSuggestions", "nonTransitiveCycles", "createdAt", "reportHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.paired-strength-report.v1" },
+        "reportId": { "$ref": "#/$defs/id" },
+        "model": { "const": "regularized-bradley-terry-draw-half-v1" },
+        "cohortId": { "$ref": "#/$defs/id" },
+        "inputRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sha256" } },
+        "eligibleResults": { "type": "integer", "minimum": 0 },
+        "excludedResults": { "type": "integer", "minimum": 0 },
+        "draws": { "type": "integer", "minimum": 0 },
+        "sideBias": { "type": "number" },
+        "nodes": { "type": "array", "items": { "$ref": "#/$defs/strengthNode" } },
+        "componentCount": { "type": "integer", "minimum": 0 },
+        "bridgeSuggestions": { "type": "array", "items": { "type": "object" } },
+        "nonTransitiveCycles": { "type": "array", "items": { "type": "object" } },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "reportHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "activeSamplingPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "planId", "strengthReportHash", "actions", "sideSwapReview", "anomalyDisposition", "createdAt", "planHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.active-sampling-plan.v1" },
+        "planId": { "$ref": "#/$defs/id" },
+        "strengthReportHash": { "$ref": "#/$defs/sha256" },
+        "actions": { "type": "array", "items": { "type": "object" } },
+        "sideSwapReview": { "type": "array", "items": { "type": "object" } },
+        "anomalyDisposition": { "type": "array", "items": { "type": "object" } },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "planHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "pveEncounter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["encounterId", "candidateAlias", "playerBuildProfile", "order", "holdout", "objectiveTelemetry"],
+      "properties": {
+        "encounterId": { "$ref": "#/$defs/id" },
+        "candidateAlias": { "$ref": "#/$defs/id" },
+        "playerBuildProfile": { "$ref": "#/$defs/id" },
+        "order": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "holdout": { "type": "boolean" },
+        "objectiveTelemetry": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": { "enum": ["duration", "player_death", "failure", "damage_taken", "damage_dealt", "remaining_hp", "abnormal_events"] }
+        }
+      }
+    },
+    "pvePacket": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "packetId", "campaignId", "candidatePairId", "encounters", "targetActiveMinutes", "hardLimitMinutes", "checkpointAtEncounterBoundary", "hiddenFields", "subjectiveLabelContract", "status", "createdAt", "packetHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.pve-packet.v1" },
+        "packetId": { "$ref": "#/$defs/id" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "candidatePairId": { "$ref": "#/$defs/id" },
+        "encounters": { "type": "array", "minItems": 2, "maxItems": 4, "items": { "$ref": "#/$defs/pveEncounter" } },
+        "targetActiveMinutes": { "type": "integer", "minimum": 5, "maximum": 10 },
+        "hardLimitMinutes": { "const": 15 },
+        "checkpointAtEncounterBoundary": { "const": true },
+        "hiddenFields": { "type": "array", "minItems": 4, "uniqueItems": true, "items": { "type": "string" } },
+        "subjectiveLabelContract": { "type": "object" },
+        "status": { "enum": ["ready", "in_progress", "paused", "awaiting_labels", "completed"] },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "packetHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "pveResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "packetId", "labels", "submittedAt", "responseHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.pve-response.v1" },
+        "packetId": { "$ref": "#/$defs/id" },
+        "labels": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["encounterId", "experienceTier", "pressureTags", "confidence"],
+            "properties": {
+              "encounterId": { "$ref": "#/$defs/id" },
+              "experienceTier": { "enum": ["low", "medium", "high", "extreme", "abnormal"] },
+              "pressureTags": { "type": "array", "maxItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        },
+        "submittedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "responseHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "pveEquivalenceResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "packetId", "packetHash", "calibrationObjective", "evidenceStatus", "telemetryCompleteness", "labels", "evidenceRefs", "cleanup", "submittedAt", "responseHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.pve-equivalence-response.v1" },
+        "packetId": { "$ref": "#/$defs/id" },
+        "packetHash": { "$ref": "#/$defs/sha256" },
+        "calibrationObjective": { "const": "monster_group_to_humanoid_mercenary_equivalence" },
+        "evidenceStatus": { "const": "human_equivalence_labels_complete" },
+        "telemetryCompleteness": { "enum": ["equivalence_only", "equivalence_plus_objective"] },
+        "labels": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["encounterId", "equivalentHumanoidCount", "equivalentHumanoidLevel", "humanStatement", "pressureTags", "confidence", "abnormalReported"],
+            "properties": {
+              "encounterId": { "$ref": "#/$defs/id" },
+              "equivalentHumanoidCount": { "type": "integer", "minimum": 1, "maximum": 20 },
+              "equivalentHumanoidLevel": { "type": "integer", "minimum": 1, "maximum": 100 },
+              "humanStatement": { "$ref": "#/$defs/nonEmptyString" },
+              "pressureTags": { "type": "array", "maxItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+              "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+              "abnormalReported": { "type": ["boolean", "null"] }
+            }
+          }
+        },
+        "evidenceRefs": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/sha256" } },
+        "cleanup": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sourceSaveSha256", "sourceSaveUnchanged", "nonTargetSaveUniverseUnchanged", "activeDedicatedSlotArtifacts", "runtimeProcessCount", "cloneLockPresent", "recoveryRecordPresent", "quarantinedDedicatedArtifactHashes"],
+          "properties": {
+            "sourceSaveSha256": { "$ref": "#/$defs/sha256" },
+            "sourceSaveUnchanged": { "const": true },
+            "nonTargetSaveUniverseUnchanged": { "const": true },
+            "activeDedicatedSlotArtifacts": { "const": 0 },
+            "runtimeProcessCount": { "const": 0 },
+            "cloneLockPresent": { "const": false },
+            "recoveryRecordPresent": { "const": false },
+            "quarantinedDedicatedArtifactHashes": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/sha256" } }
+          }
+        },
+        "submittedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "responseHash": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

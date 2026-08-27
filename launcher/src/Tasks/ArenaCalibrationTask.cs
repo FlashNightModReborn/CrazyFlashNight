@@ -114,7 +114,7 @@ namespace CF7Launcher.Tasks
                 : Path.GetFullPath(projectRoot);
             _isClientReady = isClientReady ?? delegate { return false; };
             _send = send ?? delegate { };
-            _timeoutMsFromFrames = timeoutMsFromFrames ?? DefaultTimeoutMsFromFrames;
+            _timeoutMsFromFrames = timeoutMsFromFrames ?? DefaultTransportTimeoutMsFromFrames;
         }
 
         public void SetBatchCompletedHandler(Action<JObject> handler)
@@ -425,7 +425,7 @@ namespace CF7Launcher.Tasks
             else if (!completed || pending.Response == null)
             {
                 row = BuildSyntheticResult(manifest, testCase, repeatIndex, runId, startedAt,
-                    "timeout", "timeout", "AS2 arena calibration response timed out");
+                    "bridge_lost", "none", "Host transport deadline elapsed before AS2 arena calibration response");
             }
             else
             {
@@ -1105,14 +1105,18 @@ namespace CF7Launcher.Tasks
             target[fieldName] = string.IsNullOrEmpty(value) ? (defaultValue ?? "") : value;
         }
 
-        private static int DefaultTimeoutMsFromFrames(int frames)
+        internal static int DefaultTransportTimeoutMsFromFrames(int frames)
         {
-            double ms = Math.Ceiling(frames * (1000.0 / 30.0));
-            if (ms < 1000.0)
-                ms = 1000.0;
-            if (ms > 300000.0)
-                ms = 300000.0;
-            return (int)ms;
+            // timeoutFrames 是 Flash 战斗的逻辑帧预算，不是 Host socket 的墙钟截止。
+            // Host 从命令下发前开始计时，必须覆盖舞台切换、低帧率、清理和回包；
+            // 否则 1800 帧在 AS2 产生 timeout 回包的同一时刻就会被 Host 抢先合成 timeout。
+            double semanticBudgetMs = Math.Ceiling(frames * 1000.0 / 30.0);
+            double transportDeadlineMs = semanticBudgetMs * 2.0 + 30000.0;
+            if (transportDeadlineMs < 30000.0)
+                transportDeadlineMs = 30000.0;
+            if (transportDeadlineMs > 600000.0)
+                transportDeadlineMs = 600000.0;
+            return (int)transportDeadlineMs;
         }
 
         private static int PositiveInt(JToken token, string fieldName, int defaultValue)

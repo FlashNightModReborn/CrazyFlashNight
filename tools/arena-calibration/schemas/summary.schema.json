@@ -2,16 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "arena-calibration.summary.v1",
   "type": "object",
-  "required": ["schema", "batchId", "manifestHash", "totals", "cases"],
+  "additionalProperties": false,
+  "required": ["schema", "generatedAt", "buildCommit", "batchId", "manifestHash", "resultPath", "totals", "cases"],
   "properties": {
     "schema": { "const": "arena-calibration.summary.v1" },
-    "generatedAt": { "type": "string" },
-    "buildCommit": { "type": "string" },
+    "generatedAt": { "type": "string", "minLength": 1 },
+    "buildCommit": { "type": "string", "minLength": 1 },
     "batchId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
-    "manifestHash": { "type": "string", "minLength": 1 },
+    "manifestHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
     "resultPath": { "type": ["string", "null"] },
     "totals": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["cases", "rows", "errors", "timeouts"],
       "properties": {
         "cases": { "type": "integer", "minimum": 0 },
@@ -24,16 +26,33 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["caseId", "caseHash", "samples", "classification", "recommendedAction"],
+        "additionalProperties": false,
+        "required": [
+          "caseId", "caseHash", "samples", "blueWins", "redWins", "draws", "blueWinRate",
+          "redWinRate", "drawRate", "timeoutRate", "errorCount", "avgFrames", "avgDurationMs",
+          "avgBlueRemainHpRatio", "avgRedRemainHpRatio", "avgWinnerRemainHpRatio", "varianceFlag",
+          "classification", "recommendedAction"
+        ],
         "properties": {
-          "caseId": { "type": "string" },
-          "caseHash": { "type": "string" },
+          "caseId": { "type": "string", "minLength": 1 },
+          "caseHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
           "samples": { "type": "integer", "minimum": 1 },
-          "blueWinRate": { "type": "number" },
-          "timeoutRate": { "type": "number" },
+          "blueWins": { "type": "integer", "minimum": 0 },
+          "redWins": { "type": "integer", "minimum": 0 },
+          "draws": { "type": "integer", "minimum": 0 },
+          "blueWinRate": { "type": "number", "minimum": 0, "maximum": 1 },
+          "redWinRate": { "type": "number", "minimum": 0, "maximum": 1 },
+          "drawRate": { "type": "number", "minimum": 0, "maximum": 1 },
+          "timeoutRate": { "type": "number", "minimum": 0, "maximum": 1 },
           "errorCount": { "type": "integer", "minimum": 0 },
-          "classification": { "type": "string" },
-          "recommendedAction": { "type": "string" }
+          "avgFrames": { "type": ["number", "null"], "minimum": 0 },
+          "avgDurationMs": { "type": ["number", "null"], "minimum": 0 },
+          "avgBlueRemainHpRatio": { "type": ["number", "null"], "minimum": 0 },
+          "avgRedRemainHpRatio": { "type": ["number", "null"], "minimum": 0 },
+          "avgWinnerRemainHpRatio": { "type": ["number", "null"], "minimum": 0 },
+          "varianceFlag": { "type": "boolean" },
+          "classification": { "enum": ["error", "unstable_timeout", "undersampled", "balanced_candidate", "blue_favored", "red_favored"] },
+          "recommendedAction": { "enum": ["append_repeat", "append_counter_case", "review"] }
         }
       }
     }

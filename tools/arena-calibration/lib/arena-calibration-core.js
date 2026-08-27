@@ -3,6 +3,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
+const { assertSchemaInstance } = require("./schema-registry");
 
 const CASE_MANIFEST_SCHEMA = "arena-calibration.case-manifest.v1";
 const RESULT_SCHEMA = "arena-calibration.result.v1";
@@ -11,6 +12,7 @@ const NEXT_BATCH_SCHEMA = "arena-calibration.next-batch.v1";
 const DEFAULT_SPAWN_DISTANCE = 650;
 const DEFAULT_FORMATION = "line";
 const DEFAULT_FORMATION_SPACING = 54;
+const DEFAULT_EXPLORATION_TIMEOUT_FRAMES = 1800;
 const FORMATIONS = new Set(["column", "line", "wedge", "shield", "grid"]);
 
 const RESULT_STATUSES = new Set([
@@ -219,10 +221,35 @@ function normalizeRosterEntry(entry, fieldName, errors) {
   if (normalizedType && !/^兵种\d+$/.test(normalizedType)) {
     errors.push(`${fieldName}.type must use a 兵种N identifier`);
   }
-  return {
+  const normalized = {
     type: normalizedType,
     level: parsePositiveInteger(level, `${fieldName}.level`, errors),
   };
+  const sourceId = entry.sourceId === undefined ? entry["来源ID"] : entry.sourceId;
+  if (sourceId !== undefined && sourceId !== null) {
+    normalized.sourceId = assertString(sourceId, `${fieldName}.sourceId`, errors);
+  }
+  const hpPermille = entry.hpPermille === undefined ? entry["生命千分比"] : entry.hpPermille;
+  if (hpPermille !== undefined && hpPermille !== null) {
+    const parsed = parsePositiveInteger(hpPermille, `${fieldName}.hpPermille`, errors);
+    if (parsed > 1000) errors.push(`${fieldName}.hpPermille must be at most 1000`);
+    normalized.hpPermille = parsed;
+  }
+  const parameters = entry.parameters !== undefined
+    ? entry.parameters
+    : entry.Parameters !== undefined
+      ? entry.Parameters
+      : entry["参数"];
+  if (parameters !== undefined && parameters !== null) {
+    if (!parameters || typeof parameters !== "object" || Array.isArray(parameters)) {
+      errors.push(`${fieldName}.parameters must be a non-empty JSON object`);
+    } else if (Object.keys(parameters).length === 0) {
+      errors.push(`${fieldName}.parameters must be a non-empty JSON object`);
+    } else {
+      normalized.parameters = stableClone(parameters);
+    }
+  }
+  return normalized;
 }
 
 function normalizeRoster(roster, fieldName, errors) {
@@ -256,6 +283,9 @@ function buildCaseHashInput(testCase) {
   hashInput.blueFormation = testCase.blueFormation;
   hashInput.redFormation = testCase.redFormation;
   hashInput.formationSpacing = testCase.formationSpacing;
+  if (Object.prototype.hasOwnProperty.call(testCase, "authorityContext")) {
+    hashInput.authorityContext = testCase.authorityContext;
+  }
   return hashInput;
 }
 
@@ -315,6 +345,13 @@ function normalizeCase(input, defaults, index, errors) {
       errors
     ),
   };
+  if (input.authorityContext !== undefined && input.authorityContext !== null) {
+    if (!input.authorityContext || typeof input.authorityContext !== "object" || Array.isArray(input.authorityContext)) {
+      errors.push(`${fieldName}.authorityContext must be an object`);
+    } else {
+      testCase.authorityContext = stableClone(input.authorityContext);
+    }
+  }
   testCase.caseHash = sha256OfValue(buildCaseHashInput(testCase));
   return testCase;
 }
@@ -342,7 +379,7 @@ function normalizeManifest(input) {
 
   const repeat = parsePositiveInteger(defaultWhenMissing(input.repeat, 5), "repeat", errors);
   const timeoutFrames = parsePositiveInteger(
-    defaultWhenMissing(input.timeoutFrames, 5400),
+    defaultWhenMissing(input.timeoutFrames, DEFAULT_EXPLORATION_TIMEOUT_FRAMES),
     "timeoutFrames",
     errors
   );
@@ -393,13 +430,14 @@ function normalizeManifest(input) {
     fail(`invalid case manifest:\n- ${errors.join("\n- ")}`);
   }
   manifest.manifestHash = sha256OfValue(buildManifestHashInput(manifest));
+  assertSchemaInstance(CASE_MANIFEST_SCHEMA, manifest, "normalized case manifest");
   return manifest;
 }
 
 function createPilotManifest(options) {
   const batchId = options.batchId || `pilot-${localDateString(new Date())}-a`;
   const repeat = defaultWhenMissing(options.repeat, 5);
-  const timeoutFrames = defaultWhenMissing(options.timeoutFrames, 5400);
+  const timeoutFrames = defaultWhenMissing(options.timeoutFrames, DEFAULT_EXPLORATION_TIMEOUT_FRAMES);
   const spawnDistance = defaultWhenMissing(options.spawnDistance, DEFAULT_SPAWN_DISTANCE);
   const blueFormation = defaultWhenMissing(options.blueFormation, DEFAULT_FORMATION);
   const redFormation = defaultWhenMissing(options.redFormation, DEFAULT_FORMATION);
@@ -456,15 +494,101 @@ function normalizeSpawnedUnits(input, fieldName, errors) {
   return input.map((entry, index) => {
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
       errors.push(`${fieldName}[${index}] must be an object`);
-      return { side: "", unit: "", parentUnit: "" };
+      return { side: "", unit: "", from: "", name: "", frame: null };
     }
-    return {
-      side: entry.side === "red" ? "red" : "blue",
+    const side = entry.side === "blue" || entry.side === "red" ? entry.side : "";
+    if (!side) errors.push(`${fieldName}[${index}].side must be blue or red`);
+    const normalized = {
+      side,
       unit: entry.unit == null ? "" : String(entry.unit),
-      parentUnit: entry.parentUnit == null ? "" : String(entry.parentUnit),
+      from: entry.from == null
+        ? (entry.parentUnit == null ? "" : String(entry.parentUnit))
+        : String(entry.from),
+      name: entry.name == null ? "" : String(entry.name),
       frame: entry.frame === undefined || entry.frame === null
         ? null
         : parseNonNegativeNumber(entry.frame, `${fieldName}[${index}].frame`, errors),
+    };
+    if (entry.auxiliary !== undefined && entry.auxiliary !== null) {
+      if (typeof entry.auxiliary !== "boolean") {
+        errors.push(`${fieldName}[${index}].auxiliary must be a boolean`);
+      } else {
+        normalized.auxiliary = entry.auxiliary;
+      }
+    }
+    return normalized;
+  });
+}
+
+function normalizeJsonObject(input, fieldName, errors) {
+  if (input === undefined || input === null) return {};
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    errors.push(`${fieldName} must be an object`);
+    return {};
+  }
+  return stableClone(input);
+}
+
+function normalizeUnitResults(input, fieldName, errors) {
+  if (input === undefined || input === null) return [];
+  if (!Array.isArray(input)) {
+    errors.push(`${fieldName} must be an array`);
+    return [];
+  }
+  return input.map((entry, index) => {
+    const itemField = `${fieldName}[${index}]`;
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      errors.push(`${itemField} must be an object`);
+      return {
+        sourceId: "", petId: -1, identifier: "", resolvedType: "", level: 1,
+        strategicPromotions: [], strategicPromotionsValid: false,
+        startMaxHp: 0, remainHp: 0, hpPermille: 0, alive: false,
+      };
+    }
+    const sourceId = assertString(entry.sourceId, `${itemField}.sourceId`, errors);
+    if (sourceId && !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(sourceId)) {
+      errors.push(`${itemField}.sourceId is invalid`);
+    }
+    function integerInRange(value, name, minimum, maximum, fallback) {
+      const number = Number(value);
+      if (!Number.isInteger(number) || number < minimum || number > maximum) {
+        errors.push(`${name} must be an integer from ${minimum} to ${maximum}`);
+        return fallback;
+      }
+      return number;
+    }
+    let promotions = entry.strategicPromotions;
+    if (!Array.isArray(promotions)) {
+      errors.push(`${itemField}.strategicPromotions must be an array`);
+      promotions = [];
+    }
+    const allowedPromotions = new Set(["基础训练", "强化药剂", "超级血清"]);
+    const seenPromotions = new Set();
+    promotions = promotions.map((value, promotionIndex) => {
+      const promotion = String(value);
+      if (!allowedPromotions.has(promotion) || seenPromotions.has(promotion)) {
+        errors.push(`${itemField}.strategicPromotions[${promotionIndex}] is invalid or duplicated`);
+      }
+      seenPromotions.add(promotion);
+      return promotion;
+    });
+    if (promotions.length > 3) errors.push(`${itemField}.strategicPromotions must have at most 3 entries`);
+    if (typeof entry.strategicPromotionsValid !== "boolean") {
+      errors.push(`${itemField}.strategicPromotionsValid must be a boolean`);
+    }
+    if (typeof entry.alive !== "boolean") errors.push(`${itemField}.alive must be a boolean`);
+    return {
+      sourceId,
+      petId: integerInRange(entry.petId, `${itemField}.petId`, -1, 1000000, -1),
+      identifier: entry.identifier == null ? "" : String(entry.identifier),
+      resolvedType: entry.resolvedType == null ? "" : String(entry.resolvedType),
+      level: integerInRange(entry.level, `${itemField}.level`, 1, 1000000, 1),
+      strategicPromotions: promotions,
+      strategicPromotionsValid: entry.strategicPromotionsValid === true,
+      startMaxHp: parseNonNegativeNumber(entry.startMaxHp, `${itemField}.startMaxHp`, errors),
+      remainHp: parseNonNegativeNumber(entry.remainHp, `${itemField}.remainHp`, errors),
+      hpPermille: integerInRange(entry.hpPermille, `${itemField}.hpPermille`, 0, 1000, 0),
+      alive: entry.alive === true,
     };
   });
 }
@@ -490,7 +614,7 @@ function normalizeSpawnPositions(input, fieldName, errors) {
       side,
       index:
         entry.index === undefined || entry.index === null
-          ? index
+          ? null
           : parseNonNegativeNumber(entry.index, `${fieldName}[${index}].index`, errors),
       unit: entry.unit == null ? "" : String(entry.unit),
       level:
@@ -498,8 +622,12 @@ function normalizeSpawnPositions(input, fieldName, errors) {
           ? 0
           : parseNonNegativeNumber(entry.level, `${fieldName}[${index}].level`, errors),
       name: entry.name == null ? "" : String(entry.name),
-      x: parseNonNegativeNumber(entry.x, `${fieldName}[${index}].x`, errors),
-      y: parseNonNegativeNumber(entry.y, `${fieldName}[${index}].y`, errors),
+      x: entry.x === undefined || entry.x === null
+        ? null
+        : parseNonNegativeNumber(entry.x, `${fieldName}[${index}].x`, errors),
+      y: entry.y === undefined || entry.y === null
+        ? null
+        : parseNonNegativeNumber(entry.y, `${fieldName}[${index}].y`, errors),
     };
   });
 }
@@ -570,12 +698,21 @@ function normalizeErrors(input, fieldName, errors) {
       errors.push(`${fieldName}[${index}] must be an object`);
       return { code: "invalid_error_entry", message: "" };
     }
-    return {
+    const normalized = {
       code: assertString(entry.code || "error", `${fieldName}[${index}].code`, errors),
       side: entry.side || null,
       unit: entry.unit || null,
       message: entry.message || "",
     };
+    ["identifier", "name"].forEach((field) => {
+      if (entry[field] !== undefined && entry[field] !== null) normalized[field] = String(entry[field]);
+    });
+    ["petId", "count"].forEach((field) => {
+      if (entry[field] !== undefined && entry[field] !== null) {
+        normalized[field] = parseNonNegativeNumber(entry[field], `${fieldName}[${index}].${field}`, errors);
+      }
+    });
+    return normalized;
   });
 }
 
@@ -641,8 +778,11 @@ function normalizeResultRow(input) {
     blueSpawnPositions: normalizeSpawnPositions(input.blueSpawnPositions, "blueSpawnPositions", errors),
     redSpawnPositions: normalizeSpawnPositions(input.redSpawnPositions, "redSpawnPositions", errors),
     formationAudit: normalizeFormationAudit(input.formationAudit, errors),
+    authorityContext: normalizeJsonObject(input.authorityContext, "authorityContext", errors),
     blue: normalizeSideSummary(input.blue, "blue", errors),
     red: normalizeSideSummary(input.red, "red", errors),
+    blueUnitResults: normalizeUnitResults(input.blueUnitResults, "blueUnitResults", errors),
+    redUnitResults: normalizeUnitResults(input.redUnitResults, "redUnitResults", errors),
     errors: normalizeErrors(input.errors, "errors", errors),
     startedAt: input.startedAt || null,
     completedAt: input.completedAt || null,
@@ -653,6 +793,7 @@ function normalizeResultRow(input) {
   if (errors.length > 0) {
     fail(`invalid result row ${input.caseId || ""}/${input.runId || ""}:\n- ${errors.join("\n- ")}`);
   }
+  assertSchemaInstance(RESULT_SCHEMA, row, "normalized result row");
   return row;
 }
 
@@ -818,6 +959,7 @@ function validateSummary(summary) {
   if (errors.length > 0) {
     fail(`invalid summary:\n- ${errors.join("\n- ")}`);
   }
+  assertSchemaInstance(SUMMARY_SCHEMA, summary, "arena calibration summary");
   return true;
 }
 
@@ -888,6 +1030,7 @@ function validateNextBatch(plan) {
   if (errors.length > 0) {
     fail(`invalid next batch plan:\n- ${errors.join("\n- ")}`);
   }
+  assertSchemaInstance(NEXT_BATCH_SCHEMA, plan, "arena calibration next batch");
   return true;
 }
 
@@ -964,6 +1107,7 @@ module.exports = {
   DEFAULT_SPAWN_DISTANCE,
   DEFAULT_FORMATION,
   DEFAULT_FORMATION_SPACING,
+  DEFAULT_EXPLORATION_TIMEOUT_FRAMES,
   analyzeRows,
   createFixtureRows,
   createPilotManifest,

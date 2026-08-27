@@ -1,0 +1,713 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-f-soak-03",
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "buildCommit": "732898b8aa1308cf820976324f47bba97f654e41",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "soak",
+    "candidateIds": [
+      "candidate-450de4e83dd0f668",
+      "candidate-95abe4faa8937edd",
+      "candidate-9a3672f0dbd36589",
+      "candidate-bfa609068eb17a37",
+      "candidate-f6dde19531c77517"
+    ],
+    "soakIndex": 3,
+    "coverage": [
+      "formation",
+      "high_level",
+      "long_timeout",
+      "unit_payload"
+    ]
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 9000,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-9a3672f0dbd36589",
+      "blueRoster": [
+        {
+          "type": "兵种52",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种50",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种441",
+          "level": 50
+        },
+        {
+          "type": "兵种359",
+          "level": 50
+        },
+        {
+          "type": "兵种286",
+          "level": 50
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种78",
+          "level": 45
+        },
+        {
+          "type": "兵种69",
+          "level": 45
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 9000,
+      "tags": [
+        "xlsx-intake",
+        "source-b11",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "formation",
+        "gate-f-week",
+        "soak"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!B11; Gate F soak original",
+      "spawnDistance": 820,
+      "blueFormation": "line",
+      "redFormation": "wedge",
+      "formationSpacing": 54,
+      "caseHash": "sha256:57d55e52b3808c4b597db65d5e564a1ac1d5dbbdcae475b50cf455356c2a55ba"
+    },
+    {
+      "caseId": "candidate-9a3672f0dbd36589-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种78",
+          "level": 45
+        },
+        {
+          "type": "兵种69",
+          "level": 45
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种52",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种50",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种441",
+          "level": 50
+        },
+        {
+          "type": "兵种359",
+          "level": 50
+        },
+        {
+          "type": "兵种286",
+          "level": 50
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 9000,
+      "tags": [
+        "xlsx-intake",
+        "source-b11",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "formation",
+        "gate-f-week",
+        "soak",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!B11; Gate F soak swapped",
+      "spawnDistance": 820,
+      "blueFormation": "wedge",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:116c83c7a4433575034f987ffeeb01707ba6f0efeb1cdd2f650c5a1570703ad8"
+    },
+    {
+      "caseId": "candidate-450de4e83dd0f668",
+      "blueRoster": [
+        {
+          "type": "兵种405",
+          "level": 45
+        },
+        {
+          "type": "兵种359",
+          "level": 45
+        },
+        {
+          "type": "兵种360",
+          "level": 50,
+          "parameters": {
+            "魔法抗性": {
+              "电子体": 0
+            }
+          }
+        },
+        {
+          "type": "兵种371",
+          "level": 50,
+          "parameters": {
+            "掉落物": {
+              "名字": "强化石",
+              "最大数量": 300,
+              "最小数量": 300,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种366",
+          "level": 50,
+          "parameters": {
+            "掉落物": {
+              "名字": "强化石",
+              "最大数量": 300,
+              "最小数量": 300,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种67",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "涅槃重生": true
+            }
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种361",
+          "level": 50
+        },
+        {
+          "type": "兵种362",
+          "level": 30
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 9000,
+      "tags": [
+        "xlsx-intake",
+        "source-c11",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "formation",
+        "high_level",
+        "gate-f-week",
+        "soak"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C11; Gate F soak original",
+      "spawnDistance": 820,
+      "blueFormation": "wedge",
+      "redFormation": "wedge",
+      "formationSpacing": 54,
+      "caseHash": "sha256:627f420bb074b10620c9e836481c1f33d680fd84addbca6a0cdf48f9354d74ce"
+    },
+    {
+      "caseId": "candidate-450de4e83dd0f668-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种361",
+          "level": 50
+        },
+        {
+          "type": "兵种362",
+          "level": 30
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种405",
+          "level": 45
+        },
+        {
+          "type": "兵种359",
+          "level": 45
+        },
+        {
+          "type": "兵种360",
+          "level": 50,
+          "parameters": {
+            "魔法抗性": {
+              "电子体": 0
+            }
+          }
+        },
+        {
+          "type": "兵种371",
+          "level": 50,
+          "parameters": {
+            "掉落物": {
+              "名字": "强化石",
+              "最大数量": 300,
+              "最小数量": 300,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种366",
+          "level": 50,
+          "parameters": {
+            "掉落物": {
+              "名字": "强化石",
+              "最大数量": 300,
+              "最小数量": 300,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种67",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "涅槃重生": true
+            }
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 9000,
+      "tags": [
+        "xlsx-intake",
+        "source-c11",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "formation",
+        "high_level",
+        "gate-f-week",
+        "soak",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C11; Gate F soak swapped",
+      "spawnDistance": 820,
+      "blueFormation": "wedge",
+      "redFormation": "wedge",
+      "formationSpacing": 54,
+      "caseHash": "sha256:004edfb111b2fecbb6cd81dfe169fafbdba3d3bedf95ca579518837d61603086"
+    },
+    {
+      "caseId": "candidate-bfa609068eb17a37",
+      "blueRoster": [
+        {
+          "type": "兵种42",
+          "level": 60
+        },
+        {
+          "type": "兵种430",
+          "level": 85
+        },
+        {
+          "type": "兵种50",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种41",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "追踪飞弹": true
+            }
+          }
+        },
+        {
+          "type": "兵种14",
+          "level": 60
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种79",
+          "level": 37
+        },
+        {
+          "type": "兵种359",
+          "level": 45
+        },
+        {
+          "type": "兵种286",
+          "level": 45
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-d11",
+        "unit-parameters",
+        "unit_payload",
+        "high_level",
+        "gate-f-week",
+        "soak"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!D11; Gate F soak original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:4060d2e89eb10270e01cf2e525b43337c745d2592230aad4fc5a5807c1417e22"
+    },
+    {
+      "caseId": "candidate-bfa609068eb17a37-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种79",
+          "level": 37
+        },
+        {
+          "type": "兵种359",
+          "level": 45
+        },
+        {
+          "type": "兵种286",
+          "level": 45
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种42",
+          "level": 60
+        },
+        {
+          "type": "兵种430",
+          "level": 85
+        },
+        {
+          "type": "兵种50",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种41",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "追踪飞弹": true
+            }
+          }
+        },
+        {
+          "type": "兵种14",
+          "level": 60
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-d11",
+        "unit-parameters",
+        "unit_payload",
+        "high_level",
+        "gate-f-week",
+        "soak",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!D11; Gate F soak swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:1f252b1e3e3e23625e3f8f585e89824ab3c1fcc931e19ca5a91723da47231256"
+    },
+    {
+      "caseId": "candidate-f6dde19531c77517",
+      "blueRoster": [
+        {
+          "type": "兵种385",
+          "level": 70
+        },
+        {
+          "type": "兵种276",
+          "level": 60
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种78",
+          "level": 100
+        },
+        {
+          "type": "兵种79",
+          "level": 100
+        },
+        {
+          "type": "兵种361",
+          "level": 100
+        },
+        {
+          "type": "兵种69",
+          "level": 100,
+          "parameters": {
+            "称号": "黑铁会教主"
+          }
+        },
+        {
+          "type": "兵种365",
+          "level": 100
+        },
+        {
+          "type": "兵种59",
+          "level": 100,
+          "parameters": {
+            "宠物属性": {
+              "复仇者": true
+            },
+            "死亡动画": "a1"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "xlsx-intake",
+        "source-c12",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "high_level",
+        "gate-f-week",
+        "soak"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C12; Gate F soak original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:355d1b6cda25aff33f083bd8c5e505809d4d419309a969d1d60ba46410d415a2"
+    },
+    {
+      "caseId": "candidate-f6dde19531c77517-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种78",
+          "level": 100
+        },
+        {
+          "type": "兵种79",
+          "level": 100
+        },
+        {
+          "type": "兵种361",
+          "level": 100
+        },
+        {
+          "type": "兵种69",
+          "level": 100,
+          "parameters": {
+            "称号": "黑铁会教主"
+          }
+        },
+        {
+          "type": "兵种365",
+          "level": 100
+        },
+        {
+          "type": "兵种59",
+          "level": 100,
+          "parameters": {
+            "宠物属性": {
+              "复仇者": true
+            },
+            "死亡动画": "a1"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种385",
+          "level": 70
+        },
+        {
+          "type": "兵种276",
+          "level": 60
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "xlsx-intake",
+        "source-c12",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "high_level",
+        "gate-f-week",
+        "soak",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C12; Gate F soak swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:32903f0583f51f1dfc411762008821f31644042a5dc7851f8ba60b269f8553da"
+    },
+    {
+      "caseId": "candidate-95abe4faa8937edd",
+      "blueRoster": [
+        {
+          "type": "兵种56",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        },
+        {
+          "type": "兵种424",
+          "level": 10
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种401",
+          "level": 20,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种16",
+          "level": 10
+        },
+        {
+          "type": "兵种13",
+          "level": 20
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-g3",
+        "unit-parameters",
+        "unit_payload",
+        "gate-f-week",
+        "soak"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!G3; Gate F soak original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:d60b2cbb6841dfc37988703f1a7261b4df575e5a38f0beda58a87a67afa6a8c8"
+    },
+    {
+      "caseId": "candidate-95abe4faa8937edd-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种401",
+          "level": 20,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种16",
+          "level": 10
+        },
+        {
+          "type": "兵种13",
+          "level": 20
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种56",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        },
+        {
+          "type": "兵种424",
+          "level": 10
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-g3",
+        "unit-parameters",
+        "unit_payload",
+        "gate-f-week",
+        "soak",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!G3; Gate F soak swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:fea8b83661d7900987a466f03ffcc2535567104d8c61f208dd050762d866f0c2"
+    }
+  ],
+  "manifestHash": "sha256:7c0692e58a89801b1a9ab9876a65abfa3255230545f94507603f7da010c8c1db"
+}

@@ -1,0 +1,144 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-b10-p3",
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "buildCommit": "732898b8aa1308cf820976324f47bba97f654e41",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-7c18831e059e2dd1"
+    ],
+    "sourceCell": "B10",
+    "sourceCandidateHash": "sha256:7c18831e059e2dd11ad1395f102d998f8059de3486ac893ecaed480569274929",
+    "phaseIndex": 3,
+    "phaseRuns": 25
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-7c18831e059e2dd1",
+      "blueRoster": [
+        {
+          "type": "兵种59",
+          "level": 60
+        },
+        {
+          "type": "兵种58",
+          "level": 60
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种50",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种52",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        }
+      ],
+      "repeat": 12,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-b10",
+        "unit-parameters",
+        "unit_payload",
+        "high_level",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!B10; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:dea7e7e6c51ed511088219af7ead20c4e93ab4bf78feafe5be5a9c0908bd2fd2"
+    },
+    {
+      "caseId": "candidate-7c18831e059e2dd1-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种50",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种52",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种59",
+          "level": 60
+        },
+        {
+          "type": "兵种58",
+          "level": 60
+        }
+      ],
+      "repeat": 13,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-b10",
+        "unit-parameters",
+        "unit_payload",
+        "high_level",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!B10; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:e3775fc483a787a3147df1b74741265682e4818e99b34aa0b64fa1051e1aeaad"
+    }
+  ],
+  "manifestHash": "sha256:7c0e4bc5194a32462f4e3feb250a9bf6c20733135c8da534dfc8da5332be93c9"
+}

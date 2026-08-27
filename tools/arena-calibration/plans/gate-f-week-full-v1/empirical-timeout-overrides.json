@@ -1,0 +1,93 @@
+{
+  "schema": "arena-calibration.empirical-timeout-overrides.v1",
+  "planId": "gate-f-week-full-v1",
+  "createdAt": "2026-08-27T15:02:00.000Z",
+  "overrides": [
+    {
+      "overrideId": "b9-long-timeout-20260827",
+      "candidateId": "candidate-24f9ff2a187a5de9",
+      "candidateHash": "sha256:24f9ff2a187a5de9f439ba129ed88d606f41adf1f770724e15f0aab6780b9742",
+      "source": {
+        "workbookSha256": "sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793",
+        "sheetName": "斗兽标定组合",
+        "cell": "B9",
+        "cellValueSha256": "sha256:0031c9c8eb800e34a7468b9bec15fe210d481b00bc14c550b18542e48d7e2715"
+      },
+      "originalTimeoutFrames": 1800,
+      "promotedTimeoutFrames": 5400,
+      "reason": "B9 原向与换边在 1800 帧均保有存活单位并触发真实 AS2 战斗超时；同一候选运行时下的 5400 帧诊断分别于 2776/3494 帧自然结束，后续计划显式转入长超时分层",
+      "preserveOriginalTimeoutEvidence": true,
+      "evidence": {
+        "runtimeIdentity": {
+          "state": "candidate_executed",
+          "coreSha256": "A7617458881B6BC1F6AE8F59D9D59D69603D3CB1E772E7D3B8AC9232C8349676",
+          "buildIdentity": "3533FD6FFF0BD390DE0AAE7CE33082F5AEC37F16CAA612278425870DC3D59E87",
+          "payloadClosure": "2067740FE31EE40215FA51DCAE49EA1EEED14A4E800B3B2A26152F537FFF9F39",
+          "formalReplayRequired": true
+        },
+        "saveProtection": {
+          "snapshotHash": "sha256:fcfaa53f9000a5b7e75205bb3549aa2c8b5798df3fe5d4843725222ffbede73b",
+          "unchanged": true
+        },
+        "standardProbe": {
+          "batchId": "gate-f-week-f-soak-01-fixv2",
+          "manifestHash": "sha256:0b46c09f6ab15099f05090e63cf0a79b3fc7a4c5eaae7a8ba1d86bff758c07ea",
+          "manifestFileSha256": "sha256:ae4bf9e557dea3697fbafc89192b66048f007269fbb56490431697956ba48245",
+          "resultFileSha256": "sha256:b6f097ba6f9fd2def2409eb368e0baba8dd714d8fe6f2ef3b565822288680437",
+          "reportFileSha256": "sha256:93f7b60a80bd48389082825de15dae43f1ce70a912fcae89be3602d97f7af295",
+          "timeoutFrames": 1800,
+          "reportRows": 10,
+          "reportErrors": 0,
+          "reportTimeouts": 2,
+          "observations": [
+            {
+              "orientation": "original",
+              "caseHash": "sha256:27ab66f96005d0dd3759f48ad9e35acb624513d194548f11f4c3a95140c01ee0",
+              "status": "timeout",
+              "winner": "timeout",
+              "frames": 1800,
+              "durationMs": 71001
+            },
+            {
+              "orientation": "swapped",
+              "caseHash": "sha256:63787bae4d32aa3772cdae3f67b7ea779d17b0f9124570be6bf8bf3e006ad2d2",
+              "status": "timeout",
+              "winner": "timeout",
+              "frames": 1800,
+              "durationMs": 72401
+            }
+          ]
+        },
+        "longProbe": {
+          "batchId": "gate-f-week-b9-long-fixv2",
+          "manifestHash": "sha256:1110041ad8a1e30edbd302e46f355c9e5996461b828cc87bb5a49c7ff95e4e9a",
+          "manifestFileSha256": "sha256:1711166ec7351ef29d0881d57073138094f6a3249b1988da2518490e577291c9",
+          "resultFileSha256": "sha256:fbffbefe58bd06e8d8edb844215f2c9106a808ea4e92e436bfd60e72c8539000",
+          "reportFileSha256": "sha256:1205350650b6011abcef0b58dfea7c7388fe9f0893be880ff613fa9fd438acfa",
+          "timeoutFrames": 5400,
+          "reportRows": 2,
+          "reportErrors": 0,
+          "reportTimeouts": 0,
+          "observations": [
+            {
+              "orientation": "original",
+              "caseHash": "sha256:40dbabfacf581d9fe7e4b88f6f057080e6f4859f914cd7c91c4477ad74efaf07",
+              "status": "finished",
+              "winner": "blue",
+              "frames": 2776,
+              "durationMs": 110460
+            },
+            {
+              "orientation": "swapped",
+              "caseHash": "sha256:de9250e7978f6ebf12c2d3a5922420cbd0e2fc95a62e85a4b08c80e8ea48dcab",
+              "status": "finished",
+              "winner": "red",
+              "frames": 3494,
+              "durationMs": 145113
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

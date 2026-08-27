@@ -11,20 +11,32 @@ const {
   normalizeManifest,
   normalizeResultRow,
 } = require("./lib/arena-calibration-core");
+const {
+  EMBEDDED_SCHEMA_IDS,
+  loadSchemaRegistry,
+  validateSchemaInstance,
+} = require("./lib/schema-registry");
 
 const scripts = [
   "test-custom-match-code.js",
+  "test-campaign-contracts.js",
+  "test-campaign-gate-b.js",
+  "test-campaign-gates-cde.js",
+  "test-campaign-gate-f.js",
+  "run-shadow-models.js",
+  "run-blind-review.js",
+  "build-pve-readiness.js",
+  "run-human-pve-session.js",
+  "finalize-human-pve.js",
+  "build-active-shard.js",
+  "build-confirmatory-shard.js",
+  "build-gate-f-week-plan.js",
+  "intake-workbook.js",
   "build-candidates.js",
   "analyze-results.js",
   "plan-next-batch.js",
   "run-unattended.js",
-];
-
-const schemas = [
-  "case-manifest.schema.json",
-  "result.schema.json",
-  "summary.schema.json",
-  "next-batch.schema.json",
+  "gate-fctl.js",
 ];
 
 function run(script) {
@@ -42,13 +54,27 @@ function run(script) {
 }
 
 function checkSchemas() {
-  schemas.forEach((schema) => {
-    const schemaPath = path.join(__dirname, "schemas", schema);
-    const parsed = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
-    if (!parsed.$id || !parsed.properties || !parsed.properties.schema) {
-      throw new Error(`${schema} is missing required schema metadata`);
+  const registry = loadSchemaRegistry();
+  registry.schemas.forEach(({ name, schema }) => {
+    if (!schema.$id || !schema.properties || !schema.properties.schema) {
+      throw new Error(`${name} is missing required schema metadata`);
     }
+    if (!registry.ajv.getSchema(schema.$id)) throw new Error(`${name} did not compile to a validator`);
   });
+  Object.entries(EMBEDDED_SCHEMA_IDS).forEach(([schemaId, target]) => {
+    if (!registry.ajv.getSchema(target)) throw new Error(`${schemaId} embedded validator is missing`);
+  });
+
+  const valid = createPilotManifest({ batchId: "schema-instance-contract", repeat: 1 });
+  const invalid = JSON.parse(JSON.stringify(valid));
+  invalid.repeat = "1";
+  if (validateSchemaInstance(valid.schema, valid).ok !== true) {
+    throw new Error("valid case manifest instance was rejected");
+  }
+  if (validateSchemaInstance(invalid.schema, invalid).ok !== false) {
+    throw new Error("invalid case manifest instance was not rejected");
+  }
+  return registry.schemas.length + Object.keys(EMBEDDED_SCHEMA_IDS).length;
 }
 
 function checkBatchIdContract() {
@@ -235,13 +261,13 @@ function checkSpawnDistanceContract() {
 
 try {
   checkRuntimeIdentityContract();
-  checkSchemas();
+  const schemaCount = checkSchemas();
   checkBatchIdContract();
   checkPositiveIntegerContract();
   checkTimeoutClassification();
   checkSpawnDistanceContract();
   scripts.forEach(run);
-  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemas.length + 5 }, null, 2));
+  console.log(JSON.stringify({ ok: true, checked: scripts.length + schemaCount + 5, schemaInstancesValidated: true }, null, 2));
 } catch (error) {
   console.error(error.message);
   process.exit(1);

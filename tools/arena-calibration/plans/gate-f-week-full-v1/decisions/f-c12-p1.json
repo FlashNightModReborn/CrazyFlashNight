@@ -1,0 +1,22 @@
+{
+  "schema": "arena-calibration.gate-f-decision-evidence.v1",
+  "decisionId": "decision-f-c12-p1",
+  "planId": "gate-f-week-full-v1",
+  "campaignId": "gate-f-week-full-v2",
+  "shardId": "f-c12-p1",
+  "action": "schedule_shard",
+  "riskLevel": "auto_execute",
+  "candidateIds": [
+    "candidate-f6dde19531c77517"
+  ],
+  "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v1/manifests/f-c12-p1.json",
+  "manifestHash": "sha256:89b2a1cf352e87d8ccabe57e638e580fa79795d4a7d70a912b53593b140395b9",
+  "plannedRuns": 10,
+  "humanApprovalRequired": false,
+  "evidenceRefs": [
+    "sha256:89b2a1cf352e87d8ccabe57e638e580fa79795d4a7d70a912b53593b140395b9",
+    "sha256:f6dde19531c77517f260bbe8900a8960f7c8a4cba9a099563d398360ab85a9f8"
+  ],
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "decisionHash": "sha256:1723a344111c379f1f14ae937d6cabf28da74fc625090b1dfb867254186303ec"
+}

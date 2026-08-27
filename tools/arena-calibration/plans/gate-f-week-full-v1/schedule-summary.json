@@ -1,0 +1,121 @@
+{
+  "schema": "arena-calibration.gate-f-week-plan-summary.v1",
+  "normalizedCandidates": 58,
+  "scheduledCandidates": 58,
+  "completedPriorCandidates": 0,
+  "quarantinedScopes": 1,
+  "empiricalTimeoutOverrides": 1,
+  "empiricalTimeoutOverrideRef": "sha256:6eab5e94cd861c7018220b6c53409a0c17e2732d52e7a3f9a40797cbc7a1d4c1",
+  "empiricalTimeoutOverrideCells": [
+    "B9"
+  ],
+  "shards": 198,
+  "plannedRuns": 3255,
+  "eligibleEpochs": 198,
+  "decisionEvidenceItems": 198,
+  "firstSoakShards": [
+    {
+      "shardId": "f-soak-01",
+      "candidateIds": [
+        "candidate-24f9ff2a187a5de9",
+        "candidate-4b517e6355726ef5",
+        "candidate-a65d27a00cf71919",
+        "candidate-c0ae68d0247fa97b",
+        "candidate-dd65977b16a48a35"
+      ],
+      "plannedRuns": 10
+    },
+    {
+      "shardId": "f-soak-02",
+      "candidateIds": [
+        "candidate-0f1b27722df4940e",
+        "candidate-25d4170a4b82155a",
+        "candidate-86cfd7f8b60fef79",
+        "candidate-ba7b2e37c973ee85",
+        "candidate-c5f1e29759c1d9e8"
+      ],
+      "plannedRuns": 10
+    },
+    {
+      "shardId": "f-soak-03",
+      "candidateIds": [
+        "candidate-450de4e83dd0f668",
+        "candidate-95abe4faa8937edd",
+        "candidate-9a3672f0dbd36589",
+        "candidate-bfa609068eb17a37",
+        "candidate-f6dde19531c77517"
+      ],
+      "plannedRuns": 10
+    }
+  ],
+  "riskCoverage": {
+    "unit_payload": 19,
+    "formation": 7,
+    "high_level": 12,
+    "long_timeout": 7,
+    "source_semantic_correction": 2,
+    "empirical_timeout_override": 1
+  },
+  "sourceCells": [
+    "B2",
+    "C2",
+    "D2",
+    "E2",
+    "F2",
+    "G2",
+    "B3",
+    "C3",
+    "D3",
+    "E3",
+    "F3",
+    "G3",
+    "B4",
+    "C4",
+    "D4",
+    "E4",
+    "F4",
+    "G4",
+    "B5",
+    "C5",
+    "D5",
+    "E5",
+    "F5",
+    "G5",
+    "B6",
+    "C6",
+    "D6",
+    "E6",
+    "F6",
+    "G6",
+    "B7",
+    "C7",
+    "D7",
+    "E7",
+    "F7",
+    "G7",
+    "B8",
+    "C8",
+    "D8",
+    "E8",
+    "F8",
+    "G8",
+    "B9",
+    "C9",
+    "D9",
+    "E9",
+    "F9",
+    "G9",
+    "B10",
+    "C10",
+    "D10",
+    "E10",
+    "F10",
+    "G10",
+    "B11",
+    "C11",
+    "D11",
+    "C12"
+  ],
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "summaryHash": "sha256:38d01fbf423e0e44968676d3b77a6f77226a1b6f7f39deb9fb39f45983634272"
+}

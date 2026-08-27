@@ -2,40 +2,170 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "arena-calibration.result.v1",
   "type": "object",
-  "required": ["schema", "batchId", "manifestHash", "caseId", "caseHash", "runId", "repeatIndex", "status"],
+  "additionalProperties": false,
+  "required": [
+    "schema", "batchId", "manifestHash", "caseId", "caseHash", "runId", "repeatIndex",
+    "status", "winner", "frames", "durationMs", "requestedSpawnDistance",
+    "blueFormation", "redFormation", "formationSpacing", "phaseSpawnCount", "spawnedUnits",
+    "blueSpawnPositions", "redSpawnPositions", "formationAudit", "authorityContext", "blue",
+    "red", "blueUnitResults", "redUnitResults", "errors", "startedAt", "completedAt"
+  ],
   "properties": {
     "schema": { "const": "arena-calibration.result.v1" },
     "batchId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
-    "manifestHash": { "type": "string", "minLength": 1 },
+    "manifestHash": { "$ref": "#/$defs/sha256" },
     "caseId": { "type": "string", "minLength": 1 },
-    "caseHash": { "type": "string", "minLength": 1 },
+    "caseHash": { "$ref": "#/$defs/sha256" },
     "runId": { "type": "string", "minLength": 1 },
     "repeatIndex": { "type": "integer", "minimum": 1 },
     "status": {
-      "enum": ["finished", "timeout", "aborted", "spawn_failed", "invalid_case", "stage_failed", "bridge_lost", "error"]
+      "enum": [
+        "finished", "timeout", "aborted", "spawn_failed", "invalid_case",
+        "stage_failed", "bridge_lost", "contamination", "error"
+      ]
     },
     "winner": { "enum": ["blue", "red", "draw", "timeout", "none", null] },
     "frames": { "type": ["number", "null"], "minimum": 0 },
     "durationMs": { "type": ["number", "null"], "minimum": 0 },
     "requestedSpawnDistance": { "type": ["number", "null"], "minimum": 0 },
     "spawnDistance": { "type": ["number", "null"], "minimum": 0 },
+    "blueFormation": { "$ref": "#/$defs/formation" },
+    "redFormation": { "$ref": "#/$defs/formation" },
+    "formationSpacing": { "type": "integer", "minimum": 1 },
+    "phaseSpawnCount": { "type": "number", "minimum": 0 },
+    "spawnedUnits": { "type": "array", "items": { "$ref": "#/$defs/spawnedUnit" } },
     "blueX": { "type": ["number", "null"], "minimum": 0 },
     "redX": { "type": ["number", "null"], "minimum": 0 },
+    "blueSpawnPositions": { "type": "array", "items": { "$ref": "#/$defs/spawnPosition" } },
+    "redSpawnPositions": { "type": "array", "items": { "$ref": "#/$defs/spawnPosition" } },
+    "formationAudit": { "$ref": "#/$defs/formationAudit" },
+    "authorityContext": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/jsonValue" }
+    },
     "blue": { "$ref": "#/$defs/sideSummary" },
     "red": { "$ref": "#/$defs/sideSummary" },
-    "errors": { "type": "array", "items": { "type": "object" } },
+    "blueUnitResults": { "type": "array", "items": { "$ref": "#/$defs/unitResult" } },
+    "redUnitResults": { "type": "array", "items": { "$ref": "#/$defs/unitResult" } },
+    "errors": { "type": "array", "items": { "$ref": "#/$defs/error" } },
     "startedAt": { "type": ["string", "null"] },
     "completedAt": { "type": ["string", "null"] }
   },
   "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "formation": { "enum": ["column", "line", "wedge", "shield", "grid"] },
+    "jsonValue": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "string" },
+        { "type": "array", "items": { "$ref": "#/$defs/jsonValue" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/jsonValue" } }
+      ]
+    },
     "sideSummary": {
       "type": "object",
+      "additionalProperties": false,
+      "required": ["maxHp", "remainHp", "aliveCount", "startMaxHp", "startCount"],
       "properties": {
         "maxHp": { "type": "number", "minimum": 0 },
         "remainHp": { "type": "number", "minimum": 0 },
         "aliveCount": { "type": "number", "minimum": 0 },
         "startMaxHp": { "type": "number", "minimum": 0 },
         "startCount": { "type": "number", "minimum": 0 }
+      }
+    },
+    "spawnedUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["side", "unit", "from", "name", "frame"],
+      "properties": {
+        "side": { "enum": ["blue", "red"] },
+        "unit": { "type": "string" },
+        "from": { "type": "string" },
+        "name": { "type": "string" },
+        "frame": { "type": ["number", "null"], "minimum": 0 },
+        "auxiliary": { "type": "boolean" }
+      }
+    },
+    "spawnPosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["side", "index", "unit", "level", "name", "x", "y"],
+      "properties": {
+        "side": { "enum": ["blue", "red"] },
+        "index": { "type": ["number", "null"], "minimum": 0 },
+        "unit": { "type": "string" },
+        "level": { "type": "number", "minimum": 0 },
+        "name": { "type": "string" },
+        "x": { "type": ["number", "null"], "minimum": 0 },
+        "y": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "formationAuditSide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "minX", "maxX", "minY", "maxY", "xRange", "yRange", "distinctX", "distinctY"],
+      "properties": {
+        "count": { "type": "number", "minimum": 0 },
+        "minX": { "type": "number", "minimum": 0 },
+        "maxX": { "type": "number", "minimum": 0 },
+        "minY": { "type": "number", "minimum": 0 },
+        "maxY": { "type": "number", "minimum": 0 },
+        "xRange": { "type": "number", "minimum": 0 },
+        "yRange": { "type": "number", "minimum": 0 },
+        "distinctX": { "type": "number", "minimum": 0 },
+        "distinctY": { "type": "number", "minimum": 0 }
+      }
+    },
+    "formationAudit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "blue": { "$ref": "#/$defs/formationAuditSide" },
+        "red": { "$ref": "#/$defs/formationAuditSide" }
+      },
+      "dependentRequired": { "blue": ["red"], "red": ["blue"] }
+    },
+    "unitResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId", "petId", "identifier", "resolvedType", "level",
+        "strategicPromotions", "strategicPromotionsValid", "startMaxHp",
+        "remainHp", "hpPermille", "alive"
+      ],
+      "properties": {
+        "sourceId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$" },
+        "petId": { "type": "integer", "minimum": -1, "maximum": 1000000 },
+        "identifier": { "type": "string", "maxLength": 160 },
+        "resolvedType": { "type": "string", "maxLength": 160 },
+        "level": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "strategicPromotions": {
+          "type": "array", "maxItems": 3, "uniqueItems": true,
+          "items": { "enum": ["基础训练", "强化药剂", "超级血清"] }
+        },
+        "strategicPromotionsValid": { "type": "boolean" },
+        "startMaxHp": { "type": "number", "minimum": 0 },
+        "remainHp": { "type": "number", "minimum": 0 },
+        "hpPermille": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "alive": { "type": "boolean" }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "side": { "enum": ["blue", "red", null] },
+        "unit": { "type": ["string", "null"] },
+        "petId": { "type": ["number", "null"] },
+        "identifier": { "type": ["string", "null"] },
+        "name": { "type": ["string", "null"] },
+        "count": { "type": ["number", "null"], "minimum": 0 },
+        "message": { "type": "string" }
       }
     }
   }

@@ -511,7 +511,7 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void StartBatch_TimeoutWritesTimeoutResult()
+        public void StartBatch_TransportDeadlineWritesBridgeLostResult()
         {
             string root = CreateProjectRoot();
             WriteManifest(root, "pilot-timeout", 1);
@@ -532,8 +532,20 @@ namespace CF7Launcher.Tests.Tasks
             JObject status = WaitForState(task, "completed");
             string resultPath = Path.Combine(root, ((string)status["resultPath"]).Replace('/', Path.DirectorySeparatorChar));
             JObject row = JObject.Parse(File.ReadAllLines(resultPath)[0]);
-            Assert.Equal("timeout", (string)row["status"]);
-            Assert.Equal("timeout", (string)row["winner"]);
+            Assert.Equal("bridge_lost", (string)row["status"]);
+            Assert.Equal("none", (string)row["winner"]);
+            Assert.Equal("bridge_lost", (string)row["errors"][0]["code"]);
+            Assert.Contains("Host transport deadline", (string)row["errors"][0]["message"]);
+        }
+
+        [Theory]
+        [InlineData(1, 30068)]
+        [InlineData(1800, 150000)]
+        [InlineData(5400, 390000)]
+        [InlineData(int.MaxValue, 600000)]
+        public void DefaultTransportTimeout_SeparatesBattleFramesFromHostDeadline(int frames, int expectedMs)
+        {
+            Assert.Equal(expectedMs, ArenaCalibrationTask.DefaultTransportTimeoutMsFromFrames(frames));
         }
 
         [Fact]

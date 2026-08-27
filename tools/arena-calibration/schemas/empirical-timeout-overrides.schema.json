@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "arena-calibration.empirical-timeout-overrides.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "planId", "createdAt", "overrides"],
+  "properties": {
+    "schema": { "const": "arena-calibration.empirical-timeout-overrides.v1" },
+    "planId": { "$ref": "#/$defs/nonEmptyString" },
+    "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+    "overrides": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/override" }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "runtimeDigest": { "type": "string", "pattern": "^[A-F0-9]{64}$" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workbookSha256", "sheetName", "cell", "cellValueSha256"],
+      "properties": {
+        "workbookSha256": { "$ref": "#/$defs/sha256" },
+        "sheetName": { "$ref": "#/$defs/nonEmptyString" },
+        "cell": { "type": "string", "pattern": "^[A-Z]+[1-9][0-9]*$" },
+        "cellValueSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "runtimeIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "coreSha256", "buildIdentity", "payloadClosure", "formalReplayRequired"],
+      "properties": {
+        "state": { "const": "candidate_executed" },
+        "coreSha256": { "$ref": "#/$defs/runtimeDigest" },
+        "buildIdentity": { "$ref": "#/$defs/runtimeDigest" },
+        "payloadClosure": { "$ref": "#/$defs/runtimeDigest" },
+        "formalReplayRequired": { "const": true }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["orientation", "caseHash", "status", "winner", "frames", "durationMs"],
+      "properties": {
+        "orientation": { "enum": ["original", "swapped"] },
+        "caseHash": { "$ref": "#/$defs/sha256" },
+        "status": { "enum": ["finished", "timeout"] },
+        "winner": { "enum": ["blue", "red", "timeout"] },
+        "frames": { "type": "integer", "minimum": 1 },
+        "durationMs": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batchId", "manifestHash", "manifestFileSha256", "resultFileSha256",
+        "reportFileSha256", "timeoutFrames", "reportRows", "reportErrors",
+        "reportTimeouts", "observations"
+      ],
+      "properties": {
+        "batchId": { "$ref": "#/$defs/nonEmptyString" },
+        "manifestHash": { "$ref": "#/$defs/sha256" },
+        "manifestFileSha256": { "$ref": "#/$defs/sha256" },
+        "resultFileSha256": { "$ref": "#/$defs/sha256" },
+        "reportFileSha256": { "$ref": "#/$defs/sha256" },
+        "timeoutFrames": { "type": "integer", "minimum": 1 },
+        "reportRows": { "type": "integer", "minimum": 2 },
+        "reportErrors": { "type": "integer", "minimum": 0 },
+        "reportTimeouts": { "type": "integer", "minimum": 0 },
+        "observations": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "$ref": "#/$defs/observation" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtimeIdentity", "saveProtection", "standardProbe", "longProbe"],
+      "properties": {
+        "runtimeIdentity": { "$ref": "#/$defs/runtimeIdentity" },
+        "saveProtection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["snapshotHash", "unchanged"],
+          "properties": {
+            "snapshotHash": { "$ref": "#/$defs/sha256" },
+            "unchanged": { "const": true }
+          }
+        },
+        "standardProbe": { "$ref": "#/$defs/probe" },
+        "longProbe": { "$ref": "#/$defs/probe" }
+      }
+    },
+    "override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overrideId", "candidateId", "candidateHash", "source",
+        "originalTimeoutFrames", "promotedTimeoutFrames", "reason",
+        "preserveOriginalTimeoutEvidence", "evidence"
+      ],
+      "properties": {
+        "overrideId": { "$ref": "#/$defs/nonEmptyString" },
+        "candidateId": { "$ref": "#/$defs/nonEmptyString" },
+        "candidateHash": { "$ref": "#/$defs/sha256" },
+        "source": { "$ref": "#/$defs/source" },
+        "originalTimeoutFrames": { "type": "integer", "minimum": 1 },
+        "promotedTimeoutFrames": { "type": "integer", "minimum": 1 },
+        "reason": { "$ref": "#/$defs/nonEmptyString" },
+        "preserveOriginalTimeoutEvidence": { "const": true },
+        "evidence": { "$ref": "#/$defs/evidence" }
+      }
+    }
+  }
+}

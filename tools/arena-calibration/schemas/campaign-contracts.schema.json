@@ -1,0 +1,643 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "arena-calibration.campaign-contracts.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema"],
+  "properties": {
+    "schema": { "const": "arena-calibration.campaign-contracts.v1" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$" },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "xlsxSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "workbookSha256", "workbookName", "sheetName", "cell", "cellValueSha256"],
+      "properties": {
+        "kind": { "const": "xlsx_cell" },
+        "workbookSha256": { "$ref": "#/$defs/sha256" },
+        "workbookName": { "$ref": "#/$defs/nonEmptyString" },
+        "sheetName": { "$ref": "#/$defs/nonEmptyString" },
+        "cell": { "type": "string", "pattern": "^[A-Z]{1,3}[1-9][0-9]*$" },
+        "cellValueSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "correctionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["correctionId", "cell", "action", "reason", "beforeSha256", "afterSha256"],
+      "properties": {
+        "correctionId": { "$ref": "#/$defs/id" },
+        "cell": { "type": "string", "pattern": "^[A-Z]{1,3}[1-9][0-9]*$" },
+        "action": { "enum": ["replace_match_code", "reviewed_no_change"] },
+        "reason": { "$ref": "#/$defs/nonEmptyString" },
+        "beforeSha256": { "$ref": "#/$defs/sha256" },
+        "afterSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "rawSubmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema", "submissionId", "ingestedAt", "provider", "source", "rawValue",
+        "rawSubmissionHash", "extractedMatchCode", "subjectiveTier", "note"
+      ],
+      "properties": {
+        "schema": { "const": "arena-calibration.raw-submission.v1" },
+        "submissionId": { "$ref": "#/$defs/id" },
+        "ingestedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "provider": { "$ref": "#/$defs/nonEmptyString" },
+        "source": { "$ref": "#/$defs/xlsxSource" },
+        "rawValue": { "$ref": "#/$defs/nonEmptyString" },
+        "rawSubmissionHash": { "$ref": "#/$defs/sha256" },
+        "extractedMatchCode": { "type": ["string", "null"] },
+        "subjectiveTier": { "type": ["string", "null"] },
+        "note": { "type": ["string", "null"] }
+      }
+    },
+    "timeoutDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frames", "source", "policy"],
+      "properties": {
+        "frames": { "type": "integer", "minimum": 1 },
+        "source": { "enum": ["match_code_explicit", "phase_default"] },
+        "policy": { "enum": ["smoke_3600", "exploration_1800", "confirmatory_1800", "explicit"] }
+      }
+    },
+    "caseTemplate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caseId", "blueRoster", "redRoster", "repeat", "timeoutFrames", "spawnDistance",
+        "blueFormation", "redFormation", "formationSpacing", "tags", "plannerReason"
+      ],
+      "properties": {
+        "caseId": { "$ref": "#/$defs/id" },
+        "blueRoster": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "$ref": "arena-calibration.case-manifest.v1#/$defs/rosterEntry" } },
+        "redRoster": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "$ref": "arena-calibration.case-manifest.v1#/$defs/rosterEntry" } },
+        "repeat": { "type": "integer", "minimum": 1 },
+        "timeoutFrames": { "type": "integer", "minimum": 1 },
+        "spawnDistance": { "type": "integer", "minimum": 360, "maximum": 1040 },
+        "blueFormation": { "enum": ["column", "line", "wedge", "shield", "grid"] },
+        "redFormation": { "enum": ["column", "line", "wedge", "shield", "grid"] },
+        "formationSpacing": { "type": "integer", "minimum": 36, "maximum": 96 },
+        "tags": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "plannerReason": { "type": "string" }
+      }
+    },
+    "normalizedCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema", "candidateId", "candidateHash", "rawSubmissionId", "rawSubmissionHash",
+        "source", "dataQuality", "mode", "seed", "sourceMatchCode", "canonicalMatchCode",
+        "timeout", "caseTemplate", "riskTags", "correctionReceipts", "weakPrior",
+        "initialSampleBudget", "completionReceipt"
+      ],
+      "properties": {
+        "schema": { "const": "arena-calibration.normalized-candidate.v1" },
+        "candidateId": { "$ref": "#/$defs/id" },
+        "candidateHash": { "$ref": "#/$defs/sha256" },
+        "rawSubmissionId": { "$ref": "#/$defs/id" },
+        "rawSubmissionHash": { "$ref": "#/$defs/sha256" },
+        "source": { "$ref": "#/$defs/xlsxSource" },
+        "dataQuality": { "enum": ["complete", "partial", "ambiguous", "invalid"] },
+        "mode": { "const": "mvm" },
+        "seed": { "type": "integer", "minimum": 0 },
+        "sourceMatchCode": { "$ref": "#/$defs/nonEmptyString" },
+        "canonicalMatchCode": { "$ref": "#/$defs/nonEmptyString" },
+        "timeout": { "$ref": "#/$defs/timeoutDecision" },
+        "caseTemplate": { "$ref": "#/$defs/caseTemplate" },
+        "riskTags": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "correctionReceipts": { "type": "array", "items": { "$ref": "#/$defs/correctionReceipt" } },
+        "weakPrior": { "type": ["string", "null"] },
+        "initialSampleBudget": {
+          "type": "object", "additionalProperties": false,
+          "required": ["pilotRuns", "explorationRuns", "confirmatoryMinPerSide"],
+          "properties": {
+            "pilotRuns": { "type": "integer", "minimum": 1, "maximum": 25 },
+            "explorationRuns": { "type": "integer", "minimum": 30, "maximum": 100 },
+            "confirmatoryMinPerSide": { "type": "integer", "minimum": 30 }
+          }
+        },
+        "completionReceipt": {
+          "type": "object", "additionalProperties": false,
+          "required": ["defaultsApplied", "sourceBound", "parametersPreserved", "sideSwapPlanned"],
+          "properties": {
+            "defaultsApplied": { "type": "array", "items": { "$ref": "#/$defs/nonEmptyString" } },
+            "sourceBound": { "const": true },
+            "parametersPreserved": { "const": true },
+            "sideSwapPlanned": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "journalPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rootTemplate", "retentionDays", "retainWhileReferenced", "oneWriter", "writerLeaseFields", "durableCommit", "closedSegmentsReopen", "recoveryOrder"],
+      "properties": {
+        "rootTemplate": { "const": "logs/arena-calibration/campaigns/<campaignId>/" },
+        "retentionDays": { "type": "integer", "minimum": 90 },
+        "retainWhileReferenced": { "const": true },
+        "oneWriter": { "const": true },
+        "writerLeaseFields": { "const": ["campaignId", "writerProcessIdentity", "writerEpoch", "expiresAt"] },
+        "durableCommit": { "const": "event_flush_then_durable_commit_flush" },
+        "closedSegmentsReopen": { "const": false },
+        "recoveryOrder": { "const": ["acquire_writer", "validate_closed_segments", "scan_open_segment", "accept_matching_durable_commits", "record_truncated_tail_in_new_segment", "rebuild_checkpoint", "reconcile_run_keys"] }
+      }
+    },
+    "campaign": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "campaignId", "createdAt", "state", "candidateRegistryHash", "decisionPolicyId", "battleSemanticsCohortId", "budget", "journalPolicy"],
+      "properties": {
+        "schema": { "const": "arena-calibration.campaign.v1" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "state": { "enum": ["DRAFT", "READY", "RUNNING", "PAUSING", "PAUSED", "EXCEPTIONS_PENDING", "REVIEW_REQUIRED", "COMPLETED", "ABORTED", "FAILED_CLOSED"] },
+        "candidateRegistryHash": { "$ref": "#/$defs/sha256" },
+        "decisionPolicyId": { "$ref": "#/$defs/id" },
+        "battleSemanticsCohortId": { "$ref": "#/$defs/id" },
+        "budget": { "$ref": "#/$defs/totalBudget" },
+        "journalPolicy": { "$ref": "#/$defs/journalPolicy" }
+      }
+    },
+    "caseCatalogEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidateId", "caseHash", "caseTemplate"],
+      "properties": {
+        "candidateId": { "$ref": "#/$defs/id" },
+        "caseHash": { "$ref": "#/$defs/sha256" },
+        "caseTemplate": { "$ref": "#/$defs/caseTemplate" }
+      }
+    },
+    "decisionSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "decisionSnapshotId", "snapshotHash", "campaignId", "epochId", "createdAt", "runtimeCohort", "caseCatalog", "candidateEvidence", "committedResultRefs", "excludedResultRefs", "posteriorSummary", "remainingBudget", "allowedActions", "stopConditions", "versions"],
+      "properties": {
+        "schema": { "const": "arena-calibration.decision-snapshot.v1" },
+        "decisionSnapshotId": { "$ref": "#/$defs/id" },
+        "snapshotHash": { "$ref": "#/$defs/sha256" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "epochId": { "$ref": "#/$defs/id" },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "runtimeCohort": {
+          "type": "object", "additionalProperties": false,
+          "required": ["executionArtifactIdentity", "battleSemanticsCohortId"],
+          "properties": {
+            "executionArtifactIdentity": { "$ref": "#/$defs/sha256" },
+            "battleSemanticsCohortId": { "$ref": "#/$defs/id" }
+          }
+        },
+        "caseCatalog": { "type": "array", "items": { "$ref": "#/$defs/caseCatalogEntry" } },
+        "candidateEvidence": { "type": "array", "items": { "$ref": "#/$defs/candidateEvidence" } },
+        "committedResultRefs": { "type": "array", "items": { "$ref": "#/$defs/sha256" } },
+        "excludedResultRefs": { "type": "array", "items": { "$ref": "#/$defs/sha256" } },
+        "posteriorSummary": { "type": "object" },
+        "remainingBudget": { "$ref": "#/$defs/totalBudget" },
+        "allowedActions": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/actionName" } },
+        "stopConditions": { "type": "object" },
+        "versions": {
+          "type": "object", "additionalProperties": false,
+          "required": ["codeCommit", "schemaVersion", "statisticsVersion", "policyVersion"],
+          "properties": {
+            "codeCommit": { "$ref": "#/$defs/nonEmptyString" },
+            "schemaVersion": { "$ref": "#/$defs/nonEmptyString" },
+            "statisticsVersion": { "$ref": "#/$defs/nonEmptyString" },
+            "policyVersion": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        }
+      }
+    },
+    "sampleEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["samples", "timeouts", "timeoutRate", "errorCount"],
+      "properties": {
+        "samples": { "type": "integer", "minimum": 0 },
+        "timeouts": { "type": "integer", "minimum": 0 },
+        "timeoutRate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "errorCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "candidateEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidateId", "caseHash", "original", "swapped", "sideSwapReviewed", "timeoutDisposition", "timeoutExplanationRef", "completionGateRef"],
+      "properties": {
+        "candidateId": { "$ref": "#/$defs/id" },
+        "caseHash": { "$ref": "#/$defs/sha256" },
+        "original": { "$ref": "#/$defs/sampleEvidence" },
+        "swapped": { "$ref": "#/$defs/sampleEvidence" },
+        "sideSwapReviewed": { "type": "boolean" },
+        "timeoutDisposition": { "enum": ["provisional", "low_rate", "explained_long_timeout"] },
+        "timeoutExplanationRef": { "type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$" },
+        "completionGateRef": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "actionName": {
+      "enum": ["schedule_shard", "append_samples", "create_side_swap", "create_bridge", "prune_sampling", "quarantine_candidate", "enqueue_pve_packet", "complete_candidate", "pause_campaign", "abstain", "request_method_change", "propose_recommendation_bundle", "request_formal_apply"]
+    },
+    "totalBudget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["maxRuns", "maxFrames", "maxWallClockMinutes", "maxHumanMinutes"],
+      "properties": {
+        "maxRuns": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "maxFrames": { "type": "integer", "minimum": 0 },
+        "maxWallClockMinutes": { "type": "integer", "minimum": 0 },
+        "maxHumanMinutes": { "type": "integer", "minimum": 0, "maximum": 15 }
+      }
+    },
+    "shortShardBudget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["maxRuns", "maxFrames", "maxWallClockMinutes", "maxHumanMinutes"],
+      "properties": {
+        "maxRuns": { "type": "integer", "minimum": 1, "maximum": 25 },
+        "maxFrames": { "type": "integer", "minimum": 1, "maximum": 225000 },
+        "maxWallClockMinutes": { "type": "integer", "minimum": 1, "maximum": 40 },
+        "maxHumanMinutes": { "const": 0 }
+      }
+    },
+    "noRunBudget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["maxRuns", "maxFrames", "maxWallClockMinutes", "maxHumanMinutes"],
+      "properties": {
+        "maxRuns": { "const": 0 }, "maxFrames": { "const": 0 },
+        "maxWallClockMinutes": { "const": 0 }, "maxHumanMinutes": { "type": "integer", "minimum": 0, "maximum": 15 }
+      }
+    },
+    "preconditions": {
+      "type": "object", "additionalProperties": false,
+      "required": ["campaignStates", "requiresIdleGrant", "snapshotHash"],
+      "properties": {
+        "campaignStates": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["READY", "RUNNING", "PAUSED", "EXCEPTIONS_PENDING"] } },
+        "requiresIdleGrant": { "type": "boolean" },
+        "snapshotHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "actionBase": {
+      "type": "object",
+      "required": ["actionId", "action", "riskLevel", "budget", "expectedInformationGain", "evidenceRefs", "confidence", "preconditions"],
+      "properties": {
+        "actionId": { "$ref": "#/$defs/id" },
+        "action": { "$ref": "#/$defs/actionName" },
+        "riskLevel": { "enum": ["auto_execute", "defer_and_continue", "human_approval_required"] },
+        "budget": { "$ref": "#/$defs/totalBudget" },
+        "expectedInformationGain": { "type": "number", "minimum": 0, "maximum": 1 },
+        "evidenceRefs": { "type": "array", "items": { "$ref": "#/$defs/sha256" } },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "preconditions": { "$ref": "#/$defs/preconditions" }
+      }
+    },
+    "caseRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidateId", "caseHash", "sideAssignment"],
+      "properties": {
+        "candidateId": { "$ref": "#/$defs/id" },
+        "caseHash": { "$ref": "#/$defs/sha256" },
+        "sideAssignment": { "enum": ["original", "swapped"] }
+      }
+    },
+    "scheduleShardAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object",
+          "required": ["shardId", "shardKind", "caseRefs"],
+          "properties": {
+            "action": { "const": "schedule_shard" },
+            "riskLevel": { "const": "auto_execute" },
+            "budget": { "$ref": "#/$defs/shortShardBudget" },
+            "shardId": { "$ref": "#/$defs/id" },
+            "shardKind": { "enum": ["unattended", "human_assisted"] },
+            "caseRefs": { "type": "array", "minItems": 1, "maxItems": 25, "items": { "$ref": "#/$defs/caseRef" } }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "appendSamplesAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object",
+          "required": ["candidateId", "caseHash", "sideAssignment", "additionalRuns"],
+          "properties": {
+            "action": { "const": "append_samples" }, "riskLevel": { "const": "auto_execute" },
+            "budget": { "$ref": "#/$defs/shortShardBudget" },
+            "candidateId": { "$ref": "#/$defs/id" }, "caseHash": { "$ref": "#/$defs/sha256" },
+            "sideAssignment": { "enum": ["original", "swapped"] },
+            "additionalRuns": { "type": "integer", "minimum": 1, "maximum": 25 }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "createSideSwapAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["candidateId", "caseHash"],
+          "properties": {
+            "action": { "const": "create_side_swap" }, "riskLevel": { "const": "auto_execute" },
+            "budget": { "$ref": "#/$defs/shortShardBudget" },
+            "candidateId": { "$ref": "#/$defs/id" }, "caseHash": { "$ref": "#/$defs/sha256" }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "createBridgeAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["leftCandidateId", "rightCandidateId", "bridgeCaseHash"],
+          "properties": {
+            "action": { "const": "create_bridge" }, "riskLevel": { "const": "auto_execute" },
+            "budget": { "$ref": "#/$defs/shortShardBudget" },
+            "leftCandidateId": { "$ref": "#/$defs/id" }, "rightCandidateId": { "$ref": "#/$defs/id" },
+            "bridgeCaseHash": { "$ref": "#/$defs/sha256" }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "candidateControlAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["candidateId", "caseHash", "reasonCode"],
+          "properties": {
+            "action": { "enum": ["prune_sampling", "quarantine_candidate"] },
+            "riskLevel": { "enum": ["auto_execute", "defer_and_continue"] },
+            "budget": { "$ref": "#/$defs/noRunBudget" },
+            "candidateId": { "$ref": "#/$defs/id" }, "caseHash": { "$ref": "#/$defs/sha256" },
+            "reasonCode": { "$ref": "#/$defs/id" }
+          },
+          "allOf": [
+            { "if": { "properties": { "action": { "const": "prune_sampling" } } }, "then": { "properties": { "riskLevel": { "const": "auto_execute" } } } },
+            { "if": { "properties": { "action": { "const": "quarantine_candidate" } } }, "then": { "properties": { "riskLevel": { "const": "defer_and_continue" } } } }
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "enqueuePveAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["packetId", "candidateIds"],
+          "properties": {
+            "action": { "const": "enqueue_pve_packet" }, "riskLevel": { "const": "auto_execute" },
+            "budget": {
+              "type": "object", "additionalProperties": false,
+              "required": ["maxRuns", "maxFrames", "maxWallClockMinutes", "maxHumanMinutes"],
+              "properties": {
+                "maxRuns": { "type": "integer", "minimum": 2, "maximum": 4 }, "maxFrames": { "const": 0 },
+                "maxWallClockMinutes": { "type": "integer", "minimum": 5, "maximum": 15 },
+                "maxHumanMinutes": { "type": "integer", "minimum": 5, "maximum": 15 }
+              }
+            },
+            "packetId": { "$ref": "#/$defs/id" },
+            "candidateIds": { "type": "array", "minItems": 2, "maxItems": 4, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "completeCandidateAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["candidateId", "caseHash", "completionGateRef", "finalState"],
+          "properties": {
+            "action": { "const": "complete_candidate" }, "riskLevel": { "const": "auto_execute" },
+            "budget": { "$ref": "#/$defs/noRunBudget" },
+            "candidateId": { "$ref": "#/$defs/id" }, "caseHash": { "$ref": "#/$defs/sha256" },
+            "completionGateRef": { "$ref": "#/$defs/sha256" },
+            "finalState": { "enum": ["accepted", "boundary", "provisional", "context_dependent", "abnormal", "rejected", "quarantined"] }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "scopeControlAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["scope", "reasonCode"],
+          "properties": {
+            "action": { "enum": ["pause_campaign", "abstain"] },
+            "riskLevel": { "enum": ["auto_execute", "defer_and_continue"] },
+            "budget": { "$ref": "#/$defs/noRunBudget" },
+            "scope": { "$ref": "#/$defs/nonEmptyString" }, "reasonCode": { "$ref": "#/$defs/id" }
+          },
+          "allOf": [
+            { "if": { "properties": { "action": { "const": "pause_campaign" } } }, "then": { "properties": { "riskLevel": { "const": "auto_execute" } } } },
+            { "if": { "properties": { "action": { "const": "abstain" } } }, "then": { "properties": { "riskLevel": { "const": "defer_and_continue" } } } }
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "methodChangeAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["changeId", "summary"],
+          "properties": {
+            "action": { "const": "request_method_change" }, "riskLevel": { "const": "human_approval_required" },
+            "budget": { "$ref": "#/$defs/noRunBudget" },
+            "changeId": { "$ref": "#/$defs/id" }, "summary": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "recommendationAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["candidateId", "bundleId", "targetRefs"],
+          "properties": {
+            "action": { "const": "propose_recommendation_bundle" }, "riskLevel": { "const": "auto_execute" },
+            "budget": { "$ref": "#/$defs/noRunBudget" },
+            "candidateId": { "$ref": "#/$defs/id" }, "bundleId": { "$ref": "#/$defs/id" },
+            "targetRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmptyString" } }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "formalApplyAction": {
+      "allOf": [
+        { "$ref": "#/$defs/actionBase" },
+        {
+          "type": "object", "required": ["bundleId", "bundleHash"],
+          "properties": {
+            "action": { "const": "request_formal_apply" }, "riskLevel": { "const": "human_approval_required" },
+            "budget": { "$ref": "#/$defs/noRunBudget" },
+            "bundleId": { "$ref": "#/$defs/id" }, "bundleHash": { "$ref": "#/$defs/sha256" }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "controllerAction": {
+      "oneOf": [
+        { "$ref": "#/$defs/scheduleShardAction" }, { "$ref": "#/$defs/appendSamplesAction" },
+        { "$ref": "#/$defs/createSideSwapAction" }, { "$ref": "#/$defs/createBridgeAction" },
+        { "$ref": "#/$defs/candidateControlAction" }, { "$ref": "#/$defs/enqueuePveAction" },
+        { "$ref": "#/$defs/completeCandidateAction" }, { "$ref": "#/$defs/scopeControlAction" },
+        { "$ref": "#/$defs/methodChangeAction" }, { "$ref": "#/$defs/recommendationAction" },
+        { "$ref": "#/$defs/formalApplyAction" }
+      ]
+    },
+    "controllerProposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "proposalId", "decisionSnapshotId", "modelProfile", "role", "generatedAt", "actions", "totalBudget", "evidenceRefs", "risks", "counterexamples", "confidence", "abstain", "requiresHuman"],
+      "properties": {
+        "schema": { "const": "arena-calibration.controller-proposal.v1" },
+        "proposalId": { "$ref": "#/$defs/id" },
+        "decisionSnapshotId": { "$ref": "#/$defs/id" },
+        "modelProfile": { "$ref": "#/$defs/id" },
+        "role": { "enum": ["manager", "worker", "critic", "adjudicator", "rule_fallback"] },
+        "generatedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "actions": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "$ref": "#/$defs/controllerAction" } },
+        "totalBudget": { "$ref": "#/$defs/totalBudget" },
+        "evidenceRefs": { "type": "array", "items": { "$ref": "#/$defs/sha256" } },
+        "risks": { "type": "array", "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "counterexamples": { "type": "array", "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "abstain": { "type": "boolean" },
+        "requiresHuman": { "type": "boolean" }
+      }
+    },
+    "decisionReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "receiptId", "proposalId", "proposalHash", "decisionSnapshotId", "modelProfile", "role", "promptPolicyVersion", "durationMs", "usage", "validation", "outcome", "campaignState", "acceptedActionIds", "rejectedActionIds", "fallback", "createdAt"],
+      "properties": {
+        "schema": { "const": "arena-calibration.decision-receipt.v1" },
+        "receiptId": { "$ref": "#/$defs/id" }, "proposalId": { "$ref": "#/$defs/id" },
+        "proposalHash": { "$ref": "#/$defs/sha256" }, "decisionSnapshotId": { "$ref": "#/$defs/id" },
+        "modelProfile": { "$ref": "#/$defs/id" }, "role": { "$ref": "#/$defs/nonEmptyString" },
+        "promptPolicyVersion": { "$ref": "#/$defs/nonEmptyString" },
+        "durationMs": { "type": "integer", "minimum": 0 },
+        "usage": { "type": "object" },
+        "validation": { "type": "object" },
+        "outcome": { "enum": ["accepted", "rejected", "failed_closed"] },
+        "campaignState": { "enum": ["RUNNING", "EXCEPTIONS_PENDING", "PAUSED", "FAILED_CLOSED"] },
+        "acceptedActionIds": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "rejectedActionIds": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "fallback": { "enum": ["none", "rule_fallback", "abstain", "quarantine_scope"] },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "adjudication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "adjudicationId", "decisionSnapshotId", "proposalIds", "mechanicalScores", "blindHumanScores", "disagreements", "selectedProposalId", "finalReason", "createdAt"],
+      "properties": {
+        "schema": { "const": "arena-calibration.adjudication.v1" },
+        "adjudicationId": { "$ref": "#/$defs/id" }, "decisionSnapshotId": { "$ref": "#/$defs/id" },
+        "proposalIds": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/id" } },
+        "mechanicalScores": { "type": "object" }, "blindHumanScores": { "type": ["object", "null"] },
+        "disagreements": { "type": "array", "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "selectedProposalId": { "type": ["string", "null"] }, "finalReason": { "$ref": "#/$defs/nonEmptyString" },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "attentionEvent": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "eventId", "campaignId", "shardId", "shardKind", "shardKindDeclaredAt", "shardStartedAt", "shardHumanActionCount", "opsActiveMinutes", "humanBlockedMinutes", "interruptCount", "proposalWindow", "exceptionCounts", "createdAt"],
+      "properties": {
+        "schema": { "const": "arena-calibration.attention-event.v1" },
+        "eventId": { "$ref": "#/$defs/id" }, "campaignId": { "$ref": "#/$defs/id" }, "shardId": { "$ref": "#/$defs/id" },
+        "shardKind": { "enum": ["unattended", "human_assisted", "pve_packet", "fault_injection", "maintenance"] },
+        "shardKindDeclaredAt": { "$ref": "#/$defs/nonEmptyString" }, "shardStartedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "shardHumanActionCount": { "type": "integer", "minimum": 0 }, "opsActiveMinutes": { "type": "number", "minimum": 0 },
+        "humanBlockedMinutes": { "type": "number", "minimum": 0 }, "interruptCount": { "type": "integer", "minimum": 0 },
+        "measurementRef": { "$ref": "#/$defs/id" },
+        "measurementHash": { "$ref": "#/$defs/sha256" },
+        "opsBreakdown": { "type": "object" },
+        "evidenceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/sha256" } },
+        "proposalWindow": {
+          "type": "object", "additionalProperties": false,
+          "required": ["windowKind", "minimumDenominator", "eligibleEpochs", "humanTouches", "manualEdits", "touchRate", "manualEditRate", "status"],
+          "properties": {
+            "windowKind": { "enum": ["rolling_20", "campaign_total"] }, "minimumDenominator": { "const": 20 },
+            "eligibleEpochs": { "type": "integer", "minimum": 0 }, "humanTouches": { "type": "integer", "minimum": 0 },
+            "manualEdits": { "type": "integer", "minimum": 0 }, "touchRate": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+            "manualEditRate": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+            "status": { "enum": ["insufficient_data", "within_threshold", "exceeds_threshold"] }
+          }
+        },
+        "exceptionCounts": {
+          "type": "object", "additionalProperties": false,
+          "required": ["items", "occurrences", "affectedScopes"],
+          "properties": {
+            "items": { "type": "integer", "minimum": 0 }, "occurrences": { "type": "integer", "minimum": 0 },
+            "affectedScopes": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "exceptionOccurrence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["occurrenceId", "observedAt", "evidenceRef"],
+      "properties": {
+        "occurrenceId": { "$ref": "#/$defs/id" }, "observedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "evidenceRef": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "exceptionInboxItem": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "exceptionId", "campaignId", "dedupeKey", "category", "severity", "status", "summary", "affectedScopes", "occurrences", "defaultAction", "reviewDeadline", "createdAt", "updatedAt"],
+      "properties": {
+        "schema": { "const": "arena-calibration.exception-inbox-item.v1" },
+        "exceptionId": { "$ref": "#/$defs/id" }, "campaignId": { "$ref": "#/$defs/id" },
+        "dedupeKey": { "$ref": "#/$defs/nonEmptyString" }, "category": { "$ref": "#/$defs/id" },
+        "severity": { "enum": ["info", "warning", "blocking_scope", "failed_closed"] },
+        "status": { "enum": ["open", "deferred", "resolved", "expired_default_applied"] },
+        "summary": { "$ref": "#/$defs/nonEmptyString" },
+        "affectedScopes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "occurrences": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/exceptionOccurrence" } },
+        "defaultAction": { "enum": ["pause_scope", "quarantine", "keep_provisional"] },
+        "reviewDeadline": { "$ref": "#/$defs/nonEmptyString" }, "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "updatedAt": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "workbookIntake": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "generatedAt", "workbookSha256", "workbookName", "sheetName", "timeoutPolicy", "counts", "corrections", "quarantines", "rawSubmissionIds", "candidateIds", "exceptionIds", "selectedCells", "manifestHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.workbook-intake.v1" },
+        "generatedAt": { "$ref": "#/$defs/nonEmptyString" }, "workbookSha256": { "$ref": "#/$defs/sha256" },
+        "workbookName": { "$ref": "#/$defs/nonEmptyString" }, "sheetName": { "$ref": "#/$defs/nonEmptyString" },
+        "timeoutPolicy": { "enum": ["smoke_3600", "exploration_1800", "confirmatory_1800"] },
+        "counts": {
+          "type": "object", "additionalProperties": false,
+          "required": ["populatedCells", "rawSubmissions", "normalizedCandidates", "corrected", "quarantined", "selectedCases", "plannedRuns"],
+          "properties": {
+            "populatedCells": { "type": "integer", "minimum": 0 }, "rawSubmissions": { "type": "integer", "minimum": 0 },
+            "normalizedCandidates": { "type": "integer", "minimum": 0 }, "corrected": { "type": "integer", "minimum": 0 },
+            "quarantined": { "type": "integer", "minimum": 0 }, "selectedCases": { "type": "integer", "minimum": 0 },
+            "plannedRuns": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "corrections": { "type": "array", "items": { "$ref": "#/$defs/correctionReceipt" } },
+        "quarantines": { "type": "array", "items": { "type": "object" } },
+        "rawSubmissionIds": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "candidateIds": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "exceptionIds": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "selectedCells": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z]{1,3}[1-9][0-9]*$" } },
+        "manifestHash": { "type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

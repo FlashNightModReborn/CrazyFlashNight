@@ -3,14 +3,14 @@
   "granularity": "subwave",
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
   "stageFilesScanned": 212,
-  "stagesWithTeams": 197,
-  "teamCount": 2099,
+  "stagesWithTeams": 196,
+  "teamCount": 2078,
   "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
-    "unknown": 105,
-    "亡灵/僵尸": 610,
-    "天网": 233,
+    "unknown": 98,
+    "亡灵/僵尸": 605,
+    "天网": 227,
     "异形": 262,
     "联合大学": 1,
     "黑铁会": 70,
@@ -18,7 +18,7 @@
     "波斯军": 94,
     "不死军团": 26,
     "斯巴达": 4,
-    "忍者": 44,
+    "忍者": 41,
     "雪山": 6,
     "军阀势力": 57,
     "摇滚公园": 14,
@@ -118,7 +118,7 @@
       "unitCount": 9
     },
     "亡灵/僵尸": {
-      "teamCount": 610,
+      "teamCount": 605,
       "units": [
         {
           "type": "兵种72",
@@ -397,7 +397,7 @@
           "isHostile": true,
           "minLevel": 42,
           "maxLevel": 60,
-          "weight": 46
+          "weight": 44
         },
         {
           "type": "兵种393",
@@ -463,15 +463,6 @@
           "weight": 28
         },
         {
-          "type": "兵种116",
-          "name": "克隆僵尸武士",
-          "spritename": "敌人-武士大僵尸",
-          "isHostile": true,
-          "minLevel": 42,
-          "maxLevel": 60,
-          "weight": 28
-        },
-        {
           "type": "兵种443",
           "name": "爆胖僵尸",
           "spritename": "敌人-爆胖僵尸",
@@ -484,15 +475,6 @@
           }
         },
         {
-          "type": "兵种198",
-          "name": "暴走克隆软化僵尸",
-          "spritename": "敌人-软化僵尸",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 27
-        },
-        {
           "type": "兵种84",
           "name": "暴走尸母",
           "spritename": "敌人-普通尸母",
@@ -500,6 +482,15 @@
           "minLevel": 41,
           "maxLevel": 60,
           "weight": 26
+        },
+        {
+          "type": "兵种116",
+          "name": "克隆僵尸武士",
+          "spritename": "敌人-武士大僵尸",
+          "isHostile": true,
+          "minLevel": 42,
+          "maxLevel": 51,
+          "weight": 25
         },
         {
           "type": "兵种179",
@@ -518,15 +509,6 @@
           "minLevel": 35,
           "maxLevel": 50,
           "weight": 22
-        },
-        {
-          "type": "兵种114",
-          "name": "稀有渗透者",
-          "spritename": "敌人-渗透者",
-          "isHostile": true,
-          "minLevel": 42,
-          "maxLevel": 60,
-          "weight": 21
         },
         {
           "type": "兵种76",
@@ -574,6 +556,15 @@
           "weight": 17
         },
         {
+          "type": "兵种114",
+          "name": "稀有渗透者",
+          "spritename": "敌人-渗透者",
+          "isHostile": true,
+          "minLevel": 42,
+          "maxLevel": 60,
+          "weight": 16
+        },
+        {
           "type": "兵种12",
           "name": "？？？",
           "spritename": "敌人-忍者BOSS",
@@ -610,31 +601,13 @@
           "weight": 15
         },
         {
-          "type": "兵种173",
-          "name": "终结者T900",
-          "spritename": "敌人-终结者T800",
+          "type": "兵种198",
+          "name": "暴走克隆软化僵尸",
+          "spritename": "敌人-软化僵尸",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 14
-        },
-        {
-          "type": "兵种169",
-          "name": "终结者T700",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 13
-        },
-        {
-          "type": "兵种118",
-          "name": "方舟克隆白虎",
-          "spritename": "敌人-方舟白虎兵",
-          "isHostile": true,
-          "minLevel": 50,
-          "maxLevel": 60,
-          "weight": 13
+          "weight": 15
         },
         {
           "type": "兵种157",
@@ -683,6 +656,15 @@
           }
         },
         {
+          "type": "兵种118",
+          "name": "方舟克隆白虎",
+          "spritename": "敌人-方舟白虎兵",
+          "isHostile": true,
+          "minLevel": 50,
+          "maxLevel": 51,
+          "weight": 12
+        },
+        {
           "type": "兵种85",
           "name": "暴走基因虫",
           "spritename": "敌人-普通基因虫",
@@ -701,22 +683,13 @@
           "weight": 11
         },
         {
-          "type": "兵种172",
-          "name": "终结者T850",
+          "type": "兵种169",
+          "name": "终结者T700",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 11
-        },
-        {
-          "type": "兵种175",
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 10
         },
         {
           "type": "兵种189",
@@ -735,6 +708,33 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 10
+        },
+        {
+          "type": "兵种172",
+          "name": "终结者T850",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 10
+        },
+        {
+          "type": "兵种173",
+          "name": "终结者T900",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 9
+        },
+        {
+          "type": "兵种175",
+          "name": "终结者T1000",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 9
         },
         {
           "type": "兵种177",
@@ -866,15 +866,6 @@
           "weight": 6
         },
         {
-          "type": "兵种207",
-          "name": "暴走方舟妖姬",
-          "spritename": "敌人-方舟妖姬",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 6
-        },
-        {
           "type": "兵种184",
           "name": "亚种方舟兽王",
           "spritename": "敌人-方舟兽王",
@@ -968,15 +959,6 @@
           }
         },
         {
-          "type": "兵种168",
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 6
-        },
-        {
           "type": "兵种164",
           "name": "终结者T800",
           "spritename": "敌人-终结者T800",
@@ -1024,6 +1006,15 @@
           }
         },
         {
+          "type": "兵种168",
+          "name": "终结者T1000",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 5
+        },
+        {
           "type": "兵种204",
           "name": "远古方舟克隆白虎",
           "spritename": "敌人-方舟白虎兵",
@@ -1033,18 +1024,18 @@
           "weight": 4
         },
         {
-          "type": "兵种196",
-          "name": "亚种方舟巨人",
-          "spritename": "敌人-方舟巨人",
+          "type": "兵种207",
+          "name": "暴走方舟妖姬",
+          "spritename": "敌人-方舟妖姬",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 4
         },
         {
-          "type": "兵种205",
-          "name": "远古方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
+          "type": "兵种196",
+          "name": "亚种方舟巨人",
+          "spritename": "敌人-方舟巨人",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
@@ -1162,15 +1153,6 @@
         {
           "type": "兵种162",
           "name": "终结者T700",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 4
-        },
-        {
-          "type": "兵种163",
-          "name": "终结者T750",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
           "minLevel": 60,
@@ -1325,6 +1307,15 @@
           "weight": 3
         },
         {
+          "type": "兵种163",
+          "name": "终结者T750",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 3
+        },
+        {
           "type": "兵种166",
           "name": "终结者T900",
           "spritename": "敌人-终结者T800",
@@ -1415,6 +1406,15 @@
           "type": "兵种190",
           "name": "远古方舟卫士",
           "spritename": "敌人-方舟卫士",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 2
+        },
+        {
+          "type": "兵种205",
+          "name": "远古方舟克隆忍者",
+          "spritename": "敌人-忍者兵",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
@@ -1616,15 +1616,6 @@
             },
             "超时空传送": true
           }
-        },
-        {
-          "type": "兵种201",
-          "name": "暴走方舟克隆巨人",
-          "spritename": "敌人-方舟巨人兵",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 2
         },
         {
           "type": "兵种200",
@@ -2202,10 +2193,10 @@
           }
         }
       ],
-      "unitCount": 185
+      "unitCount": 184
     },
     "天网": {
-      "teamCount": 233,
+      "teamCount": 227,
       "units": [
         {
           "type": "兵种108",
@@ -2241,7 +2232,7 @@
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 67
+          "weight": 61
         },
         {
           "type": "兵种163",
@@ -2268,7 +2259,7 @@
           "isHostile": true,
           "minLevel": 45,
           "maxLevel": 60,
-          "weight": 56
+          "weight": 52
         },
         {
           "type": "兵种162",
@@ -2277,19 +2268,10 @@
           "isHostile": true,
           "minLevel": 40,
           "maxLevel": 60,
-          "weight": 52
+          "weight": 50
         },
         {
           "type": "兵种172",
-          "name": "终结者T850",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 51
-        },
-        {
-          "type": "兵种165",
           "name": "终结者T850",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
@@ -2314,6 +2296,15 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 39
+        },
+        {
+          "type": "兵种165",
+          "name": "终结者T850",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 37
         },
         {
           "type": "兵种173",
@@ -2399,15 +2390,6 @@
           "weight": 25
         },
         {
-          "type": "兵种168",
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 24
-        },
-        {
           "type": "兵种167",
           "name": "终结者T950",
           "spritename": "敌人-终结者T800",
@@ -2446,18 +2428,27 @@
           "weight": 24
         },
         {
-          "type": "兵种175",
+          "type": "兵种168",
           "name": "终结者T1000",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 24
+          "weight": 22
         },
         {
           "type": "兵种191",
           "name": "远古方舟无人机",
           "spritename": "敌人-方舟无人机",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 22
+        },
+        {
+          "type": "兵种175",
+          "name": "终结者T1000",
+          "spritename": "敌人-终结者T800",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
@@ -2566,15 +2557,6 @@
           "weight": 12
         },
         {
-          "type": "兵种201",
-          "name": "暴走方舟克隆巨人",
-          "spritename": "敌人-方舟巨人兵",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 12
-        },
-        {
           "type": "兵种25",
           "name": "终结者",
           "spritename": "敌人-终结者T800",
@@ -2585,24 +2567,6 @@
           "Parameters": {
             "长枪": "G36"
           }
-        },
-        {
-          "type": "兵种200",
-          "name": "暴走方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 11
-        },
-        {
-          "type": "兵种198",
-          "name": "暴走克隆软化僵尸",
-          "spritename": "敌人-软化僵尸",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 11
         },
         {
           "type": "兵种25",
@@ -2656,9 +2620,9 @@
           "weight": 9
         },
         {
-          "type": "兵种197",
-          "name": "暴走克隆僵尸武士",
-          "spritename": "敌人-武士大僵尸",
+          "type": "兵种198",
+          "name": "暴走克隆软化僵尸",
+          "spritename": "敌人-软化僵尸",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
@@ -2680,6 +2644,15 @@
           "isHostile": true,
           "minLevel": 40,
           "maxLevel": 45,
+          "weight": 8
+        },
+        {
+          "type": "兵种201",
+          "name": "暴走方舟克隆巨人",
+          "spritename": "敌人-方舟巨人兵",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
           "weight": 8
         },
         {
@@ -2742,6 +2715,15 @@
           "spritename": "敌人-方舟白虎兵",
           "isHostile": true,
           "minLevel": 43,
+          "maxLevel": 60,
+          "weight": 7
+        },
+        {
+          "type": "兵种200",
+          "name": "暴走方舟克隆忍者",
+          "spritename": "敌人-忍者兵",
+          "isHostile": true,
+          "minLevel": 60,
           "maxLevel": 60,
           "weight": 7
         },
@@ -2842,6 +2824,15 @@
             },
             "超时空传送": true
           }
+        },
+        {
+          "type": "兵种197",
+          "name": "暴走克隆僵尸武士",
+          "spritename": "敌人-武士大僵尸",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 5
         },
         {
           "type": "兵种25",
@@ -3158,15 +3149,6 @@
           "type": "兵种80",
           "name": "重型改造僵尸",
           "spritename": "敌人-重型改造僵尸",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 2
-        },
-        {
-          "type": "兵种199",
-          "name": "暴走方舟克隆白虎",
-          "spritename": "敌人-方舟白虎兵",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
@@ -3542,7 +3524,7 @@
           }
         }
       ],
-      "unitCount": 125
+      "unitCount": 124
     },
     "异形": {
       "teamCount": 262,
@@ -6190,7 +6172,7 @@
       "unitCount": 1
     },
     "忍者": {
-      "teamCount": 44,
+      "teamCount": 41,
       "units": [
         {
           "type": "兵种188",
@@ -6220,24 +6202,6 @@
           "weight": 20
         },
         {
-          "type": "兵种119",
-          "name": "方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "isHostile": true,
-          "minLevel": 51,
-          "maxLevel": 60,
-          "weight": 17
-        },
-        {
-          "type": "兵种200",
-          "name": "暴走方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "isHostile": true,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 10
-        },
-        {
           "type": "兵种205",
           "name": "远古方舟克隆忍者",
           "spritename": "敌人-忍者兵",
@@ -6265,6 +6229,15 @@
           "weight": 6
         },
         {
+          "type": "兵种119",
+          "name": "方舟克隆忍者",
+          "spritename": "敌人-忍者兵",
+          "isHostile": true,
+          "minLevel": 51,
+          "maxLevel": 60,
+          "weight": 6
+        },
+        {
           "type": "兵种12",
           "name": "？？？",
           "spritename": "敌人-忍者BOSS",
@@ -6288,15 +6261,6 @@
           "spritename": "敌人-方舟护士",
           "isHostile": true,
           "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 5
-        },
-        {
-          "type": "兵种114",
-          "name": "稀有渗透者",
-          "spritename": "敌人-渗透者",
-          "isHostile": true,
-          "minLevel": 51,
           "maxLevel": 60,
           "weight": 5
         },
@@ -6397,6 +6361,15 @@
           "type": "兵种194",
           "name": "暴走方舟巨人",
           "spritename": "敌人-方舟巨人",
+          "isHostile": true,
+          "minLevel": 60,
+          "maxLevel": 60,
+          "weight": 3
+        },
+        {
+          "type": "兵种200",
+          "name": "暴走方舟克隆忍者",
+          "spritename": "敌人-忍者兵",
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
@@ -6527,6 +6500,15 @@
           "isHostile": true,
           "minLevel": 40,
           "maxLevel": 40,
+          "weight": 1
+        },
+        {
+          "type": "兵种114",
+          "name": "稀有渗透者",
+          "spritename": "敌人-渗透者",
+          "isHostile": true,
+          "minLevel": 51,
+          "maxLevel": 51,
           "weight": 1
         },
         {
@@ -125269,925 +125251,6 @@
       "levelMin": 60,
       "levelMax": 60,
       "powerRating": 300
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#0.0",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "0.0",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种224",
-          "id": 224,
-          "name": "翅虎",
-          "spritename": "敌人-飞刀小子",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        },
-        {
-          "type": "兵种227",
-          "id": 227,
-          "name": "史诗黑铁",
-          "spritename": "敌人-唐装剑侠",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 2,
-      "distinctTypes": 2,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 120
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#0.1",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "0.1",
-      "faction": "忍者",
-      "factionConfidence": "rule",
-      "members": [
-        {
-          "type": "兵种119",
-          "id": 119,
-          "name": "方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "level": 60,
-          "count": 7,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 7,
-      "distinctTypes": 1,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 420
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#0.2",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "0.2",
-      "faction": "天网",
-      "factionConfidence": "rule",
-      "members": [
-        {
-          "type": "兵种165",
-          "id": 165,
-          "name": "终结者T850",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 7,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 7,
-      "distinctTypes": 1,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 420
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#1.0",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "1.0",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种225",
-          "id": 225,
-          "name": "火凤",
-          "spritename": "敌人-粉红头发御姐",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        },
-        {
-          "type": "兵种227",
-          "id": 227,
-          "name": "史诗黑铁",
-          "spritename": "敌人-唐装剑侠",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 2,
-      "distinctTypes": 2,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 120
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#1.1",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "1.1",
-      "faction": "忍者",
-      "factionConfidence": "rule",
-      "members": [
-        {
-          "type": "兵种200",
-          "id": 200,
-          "name": "暴走方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "level": 60,
-          "count": 7,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 7,
-      "distinctTypes": 1,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 420
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#1.2",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "1.2",
-      "faction": "天网",
-      "factionConfidence": "rule",
-      "members": [
-        {
-          "type": "兵种172",
-          "id": 172,
-          "name": "终结者T850",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 7,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 7,
-      "distinctTypes": 1,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 420
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#2.0",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "2.0",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种226",
-          "id": 226,
-          "name": "黑龙",
-          "spritename": "敌人-铠甲勇士战马形态",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        },
-        {
-          "type": "兵种227",
-          "id": 227,
-          "name": "史诗黑铁",
-          "spritename": "敌人-唐装剑侠",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 2,
-      "distinctTypes": 2,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 120
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#2.1",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "2.1",
-      "faction": "亡灵/僵尸",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种117",
-          "id": 117,
-          "name": "克隆软化僵尸",
-          "spritename": "敌人-软化僵尸",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种116",
-          "id": 116,
-          "name": "克隆僵尸武士",
-          "spritename": "敌人-武士大僵尸",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种169",
-          "id": 169,
-          "name": "终结者T700",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种114",
-          "id": 114,
-          "name": "稀有渗透者",
-          "spritename": "敌人-渗透者",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 4,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#2.2",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "2.2",
-      "faction": "忍者",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种119",
-          "id": 119,
-          "name": "方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "level": 60,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种114",
-          "id": 114,
-          "name": "稀有渗透者",
-          "spritename": "敌人-渗透者",
-          "level": 60,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 2,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#3.0",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "3.0",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种224",
-          "id": 224,
-          "name": "翅虎",
-          "spritename": "敌人-飞刀小子",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        },
-        {
-          "type": "兵种225",
-          "id": 225,
-          "name": "火凤",
-          "spritename": "敌人-粉红头发御姐",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 2,
-      "distinctTypes": 2,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 120
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#3.1",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "3.1",
-      "faction": "天网",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种200",
-          "id": 200,
-          "name": "暴走方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种199",
-          "id": 199,
-          "name": "暴走方舟克隆白虎",
-          "spritename": "敌人-方舟白虎兵",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种168",
-          "id": 168,
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种162",
-          "id": 162,
-          "name": "终结者T700",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 4,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#3.2",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "3.2",
-      "faction": "天网",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种200",
-          "id": 200,
-          "name": "暴走方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种197",
-          "id": 197,
-          "name": "暴走克隆僵尸武士",
-          "spritename": "敌人-武士大僵尸",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种164",
-          "id": 164,
-          "name": "终结者T800",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 3,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#4.0",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "4.0",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种225",
-          "id": 225,
-          "name": "火凤",
-          "spritename": "敌人-粉红头发御姐",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        },
-        {
-          "type": "兵种226",
-          "id": 226,
-          "name": "黑龙",
-          "spritename": "敌人-铠甲勇士战马形态",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 2,
-      "distinctTypes": 2,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 120
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#4.1",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "4.1",
-      "faction": "天网",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种170",
-          "id": 170,
-          "name": "终结者T750",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种198",
-          "id": 198,
-          "name": "暴走克隆软化僵尸",
-          "spritename": "敌人-软化僵尸",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种197",
-          "id": 197,
-          "name": "暴走克隆僵尸武士",
-          "spritename": "敌人-武士大僵尸",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 3,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#4.2",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "4.2",
-      "faction": "天网",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种170",
-          "id": 170,
-          "name": "终结者T750",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种175",
-          "id": 175,
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种201",
-          "id": 201,
-          "name": "暴走方舟克隆巨人",
-          "spritename": "敌人-方舟巨人兵",
-          "level": 60,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 3,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#5.0",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "5.0",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种224",
-          "id": 224,
-          "name": "翅虎",
-          "spritename": "敌人-飞刀小子",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        },
-        {
-          "type": "兵种226",
-          "id": 226,
-          "name": "黑龙",
-          "spritename": "敌人-铠甲勇士战马形态",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 2,
-      "distinctTypes": 2,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 120
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#5.1",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "5.1",
-      "faction": "亡灵/僵尸",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种198",
-          "id": 198,
-          "name": "暴走克隆软化僵尸",
-          "spritename": "敌人-软化僵尸",
-          "level": 60,
-          "count": 3,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种173",
-          "id": 173,
-          "name": "终结者T900",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 3,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种116",
-          "id": 116,
-          "name": "克隆僵尸武士",
-          "spritename": "敌人-武士大僵尸",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种163",
-          "id": 163,
-          "name": "终结者T750",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 4,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#5.2",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "5.2",
-      "faction": "亡灵/僵尸",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种198",
-          "id": 198,
-          "name": "暴走克隆软化僵尸",
-          "spritename": "敌人-软化僵尸",
-          "level": 60,
-          "count": 3,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种114",
-          "id": 114,
-          "name": "稀有渗透者",
-          "spritename": "敌人-渗透者",
-          "level": 60,
-          "count": 3,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种118",
-          "id": 118,
-          "name": "方舟克隆白虎",
-          "spritename": "敌人-方舟白虎兵",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种168",
-          "id": 168,
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 4,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#6.0",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "6.0",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种227",
-          "id": 227,
-          "name": "史诗黑铁",
-          "spritename": "敌人-唐装剑侠",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 1,
-      "distinctTypes": 1,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 60
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#6.1",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "6.1",
-      "faction": "亡灵/僵尸",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种198",
-          "id": 198,
-          "name": "暴走克隆软化僵尸",
-          "spritename": "敌人-软化僵尸",
-          "level": 60,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种173",
-          "id": 173,
-          "name": "终结者T900",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种175",
-          "id": 175,
-          "name": "终结者T1000",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种207",
-          "id": 207,
-          "name": "暴走方舟妖姬",
-          "spritename": "敌人-方舟妖姬",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 4,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
-    },
-    {
-      "id": "雪山内部第二层/终结者占领的熔岩广场.xml#6.2",
-      "sourceStage": "雪山内部第二层/终结者占领的熔岩广场.xml",
-      "sourceName": "终结者占领的熔岩广场",
-      "group": "6.2",
-      "faction": "亡灵/僵尸",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种198",
-          "id": 198,
-          "name": "暴走克隆软化僵尸",
-          "spritename": "敌人-软化僵尸",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种201",
-          "id": 201,
-          "name": "暴走方舟克隆巨人",
-          "spritename": "敌人-方舟巨人兵",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种172",
-          "id": 172,
-          "name": "终结者T850",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种173",
-          "id": 173,
-          "name": "终结者T900",
-          "spritename": "敌人-终结者T800",
-          "level": 60,
-          "count": 1,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种205",
-          "id": 205,
-          "name": "远古方舟克隆忍者",
-          "spritename": "敌人-忍者兵",
-          "level": 60,
-          "count": 2,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 8,
-      "distinctTypes": 5,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 480
     },
     {
       "id": "雪山内部第二层/终结者占领的熔岩隧道.xml#0.0",

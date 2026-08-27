@@ -193,6 +193,30 @@ node tools/equipment-tuning/run-unattended.js `
 
 ### 无人值守斗兽标定
 
+斗兽标定工具有独立、锁版本的 Node 依赖；首次使用或 `package-lock.json` 变化后先在仓库根目录运行：
+
+```powershell
+chcp.com 65001 | Out-Null
+npm --prefix tools/arena-calibration ci --ignore-scripts --no-audit --no-fund
+```
+
+测试群工作簿直接由 intake adapter 摄取，不要求人工改填内部 `caseId`、hash、repeat、timeout、阵型或 side-swap 字段。摄取来源固定绑定 `workbookSha256 + sheetName + cell + cellValueHash`；修正/隔离规则还必须同时匹配 `tools/arena-calibration/workbook-overrides.json` 中冻结的工作簿 hash 和 sheet，且只改派生 artifact，不写回原 `.xlsx`：
+
+```powershell
+node tools/arena-calibration/intake-workbook.js `
+  --workbook "<测试群工作簿.xlsx>" `
+  --sheet "斗兽标定组合" `
+  --overrides tools/arena-calibration/workbook-overrides.json `
+  --output-dir tmp/arena-calibration/batches/<batchId> `
+  --phase exploration `
+  --directions "B2:both,G2:both,F5:both,C7:both,C12:both" `
+  --repeat 3 `
+  --batch-id <batchId> `
+  --build-commit <commit>
+```
+
+`--phase` 的系统默认分别为 smoke `3600`、exploration `1800`、confirmatory `1800` frames；单元格已有显式 timeout 时原值优先并进入来源/风险记录。`timeoutFrames` 只定义 Flash 战斗的逻辑帧预算；Host 传输安全截止独立使用“按 30 FPS 折算的语义预算 ×2 + 30 秒”，并封顶 10 分钟，以覆盖舞台切换、低帧率、清理与 socket 回包，不得把 Host 合成 timeout 混作战斗 timeout。timeout 仍是战斗语义和稳定性信号，批后不得自动延长并把原 timeout 覆盖成完成样本。生成 manifest 前会对 raw submission、normalized candidate、exception、intake receipt 和 manifest 做真实 JSON Schema 实例校验。
+
 斗兽标定的无人值守外层入口在仓库根目录运行：
 
 ```powershell
@@ -205,11 +229,68 @@ node tools/arena-calibration/run-unattended.js `
 
 `--slot` 缺省为 `cf7_agent_arena_calibration`，也可以显式传入；runner 会在启动前把该专用槽位从 `--seed-slot` 或最新有效 shadow 存档播种，并备份/移除目标槽位残留 SOL，避免复用运行中的旧 SOL。默认拒绝 `crazyflasher7_saves*` 正式槽位与 `--fresh`，除非显式传 `--allow-live-slot` / `--allow-fresh`，这两个开关只用于人工取证，不用于无人值守批跑。
 
-该脚本会在需要时显式调用 `automation/start.ps1 -EnableLegacyHttpAutomation` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；它必须在调用 `agent_control start` 前记录 `/logs` 水位，再观察到 start 后本轮新鲜 handoff 与水位后的真实 `[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared`，watchdog 不计入，缺失时报 `title_frame_not_observed`。随后才校验 exact slot / attempt 并只调用一次 agent enter。helper 先发正常入口同款 `notifyGameEntered()`，让同一 UiData 包携带 `s:1|ga:<attemptId>`，再 `gotoAndStop("读盘")`（已 loaded 时直接返回）。`readyForArenaCalibration` 必须同时满足安全 snapshot、同 attempt 的 `agent_runtime_status`、Host 的 `gameEnteredObserved=true` 且 `gameEnteredAttemptId` 精确匹配、socket 与 arena status，再调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
+该脚本会在需要时显式调用 `automation/start.ps1 -EnableLegacyHttpAutomation` 启动 Launcher，通过 HTTP `/task` 的 `agent_control` 选择专用存档；它必须在调用 `agent_control start` 前记录 `/logs` 水位，再观察到 start 后本轮新鲜 handoff 与水位后的真实 `[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared`，watchdog 不计入，缺失时报 `title_frame_not_observed`。随后才校验 exact slot / attempt 并只调用一次 agent enter。helper 先发正常入口同款 `notifyGameEntered()`，让同一 UiData 包携带 `s:1|ga:<attemptId>`，再 `gotoAndStop("读盘")`（已 loaded 时直接返回）。`readyForArenaCalibration` 必须同时满足安全 snapshot、同 attempt 的 `agent_runtime_status`、Host 的 `gameEnteredObserved=true` 且 `gameEnteredAttemptId` 精确匹配、socket 与 arena status，再调用 `arena_calibration startBatch/status` 跑批次并生成 summary / run-report。遇到游戏崩溃、socket/HTTP 断开、batch timeout、缺行或异常行时，会生成 rerun manifest，并按 `--max-recovery-attempts`（默认 1）自动关闭 Launcher、重启进档、补跑剩余 case；每轮 attempt、最终失败清单和建议都会写入 `run-report.*`。rerun 必须原样保留 roster `parameters/sourceId/hpPermille`、阵型、间距和 timeout，避免重跑改变 `caseHash` 或战斗语义。它不会自动修改战斗代码；如要生成最小 pilot，可显式加 `--generate-pilot --batch-id <id>`。
+
+runner 在启动前和全部收尾后都会对专用目标槽以外的 `crazyflasher7_saves*.json` 与对应 Flash SOL 做受保护指纹快照；任一文件新增、删除或字节 hash 改变都会让报告失败。`--shutdown` 绑定本轮 expected PID；收到成功 shutdown 后该进程已经消失属于正常终态，不能再用已过期 credential 轮询并制造 teardown 假失败。JSONL **原始行**（不是先经 normalization 丢字段后的投影）须通过 `result.schema.json` 实例校验并精确匹配 manifest/case hash；生产字段 `authorityContext`、`blueUnitResults/redUnitResults`、阶段派生单位 `from/name/auxiliary` 均在闭合 schema 内。
+
+Gate B 之后用 `campaignctl.js` 管理跨进程状态。先由外部只读观测器生成 producer observations，再签发短期 grant；工具不会自行关闭或接管一个 active/unknown producer。每次 `init/schedule/import` 都必须提供仍有效、与 registry hash 绑定且覆盖 `launcher/flash/arena_runner` 的 idle grant；`pause` 会 durable 记录、关闭 segment 并释放 writer，`status` 只从 journal 重放，不信任 `checkpoint.json`：
+
+```powershell
+node tools/arena-calibration/campaignctl.js issue-grant `
+  --observations tmp/arena-calibration/campaigns/<campaignId>/producer-observations.json `
+  --output-dir tmp/arena-calibration/campaigns/<campaignId>/grant
+
+node tools/arena-calibration/campaignctl.js init `
+  --campaign-id <campaignId> --config <campaign-config.json> `
+  --registry <producer-registry.json> --grant <idle-grant.json>
+
+node tools/arena-calibration/campaignctl.js schedule `
+  --campaign-id <campaignId> --registry <producer-registry.json> --grant <idle-grant.json> `
+  --shard-id <shardId> --manifest <case_manifest.json>
+
+node tools/arena-calibration/campaignctl.js import `
+  --campaign-id <campaignId> --registry <producer-registry.json> --grant <idle-grant.json> `
+  --shard-id <shardId> --manifest <case_manifest.json> --result <results.jsonl> `
+  --run-report <run-report.json> --attention <attention-measurement.json> `
+  --battle-semantics-cohort <cohortId> [--allow-partial] [--complete]
+
+node tools/arena-calibration/campaignctl.js pause --campaign-id <campaignId> --reason <reason>
+node tools/arena-calibration/campaignctl.js status --campaign-id <campaignId>
+```
+
+星期级全量标定由 `build-gate-f-week-plan.js` 与 `gate-fctl.js` 接管。前者只消费已绑定工作簿 hash/单元格的 normalized intake、exception 与显式证据回执，不重新读取或改写 `.xlsx`；当前冻结前草案位于 `tools/arena-calibration/plans/gate-f-week-full-v1/`，执行 campaign 为 `gate-f-week-full-v2`，包含 58 个待跑候选、1 个隔离 scope、198 个 10–25 run 短 shard 和 3255 个计划 run。部署列车改变了 Arena stage admission，旧 runtime 上已完成 PVE 的 G2 只保留 `1 × Lv10` 外部标签，不跨 cohort 代签新机器样本。B9 的原始工作簿/normalized timeout 仍为 1800 帧；`empirical-timeout-overrides.json` 以 workbook hash + sheet/cell/cell-value hash、candidate hash、原/换边 1800 帧 timeout、原/换边 5400 帧 finished、candidate runtime identity/closure 与不变存档快照为闭包，只在计划层把 B9 转入 `6 × 10` 长 timeout 分层，且明确要求 formal runtime 复跑。每个 shard 都有独立、hash-bound 的 `schedule_shard/auto_execute` 决策证据并同时计划 original/side-swap。前三个 10-run 基础设施 soak 先覆盖普通参数、单位 payload、阵型、长 timeout、高等级及 B9 来源修正；合并候选首批的 C9 换边出现 1 次 1800 帧随机 timeout，而独立 5400 帧双向复核都在 1800 帧前结束，故不制造 C9 timeout override，也不让候选波动污染基础设施开门判断。首批改由同一 runtime 下 10/10 finished 的 G2 覆盖；C9 仍完整保留在普通 `10 + 20 + 25` run 与 side-swap 分片中，G2 的机器证据不导入旧 cohort 真人 PVE 标签。
+
+部署稳定并取得最终提交后，必须在 clean Git worktree 上重新绑定 exact source commit/tree/worktree hash 与当时 formal runtime；不得把冻结前草案中的任何旧 runtime 值当成正式身份：
+
+```powershell
+node tools/arena-calibration/gate-fctl.js freeze `
+  --draft tools/arena-calibration/plans/gate-f-week-full-v1/plan-draft.json `
+  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v2/frozen
+
+node tools/arena-calibration/gate-fctl.js arm `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v2/frozen/gate-f-plan.json `
+  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v2/window-<timestamp> `
+  --hours 8
+
+node tools/arena-calibration/gate-fctl.js run `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v2/frozen/gate-f-plan.json `
+  --window tmp/arena-calibration/gate-f/gate-f-week-full-v2/window-<timestamp>/idle-window.json `
+  --max-shards 3
+
+node tools/arena-calibration/gate-fctl.js status `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v2/frozen/gate-f-plan.json `
+  --output tmp/arena-calibration/gate-f/gate-f-week-full-v2/status.json
+```
+
+只有三份 fresh soak receipt 都为 `completed`，且 exact runtime、原始 JSONL Schema/manifest 绑定、受保护存档集合、磁盘、timeout/error、时长漂移和 0 人工动作测量全部通过，才可在新的有界 window 中去掉 `--max-shards 3` 继续剩余短 shard。`arm` 会拒绝活跃 Launcher/Flash/arena runner、低磁盘和 source/runtime 漂移；window 最长 24 小时且可用 `gate-fctl.js revoke` 撤销。运行中如内容开发启动 Flash、出现 revoke/身份/磁盘异常，driver 会通过本轮 owned `.signal` 请求 abort，并在 300 秒硬上限内让位。已产生的 partial JSONL 逐行以 `manifestHash + runId` durable 提交，重复 attempt 只计一次；失败或恢复耗尽写去重 exception inbox，不要求测试群现场整理或逐批确认。Gate F low-touch 只有在真实最近 20 个 eligible epoch 与全 campaign 两个窗口都满足 attention 门后才成立，fixture 的 20 个 epoch 不能代替实跑。
+
+Gate C–E 的机器侧入口是 `evaluationctl.js freeze-shadow|score-shadow|paired-strength|prepare-pve|validate-pve`。`freeze-shadow` 只生成三 profile 的同源请求；`score-shadow` 要求三份真实 proposal/receipt 全部过硬门，才会输出盲化 packet；`prepare-pve` 要求 exact build profile、2–4 encounter 和 holdout。PVE 的标定目标固定为“怪物组合等效于多少名、多少级人形佣兵”，玩家 build 只是冻结的测量载体。工具永远不生成模型返回、盲评或真人标签；timeout/error 只进 anomaly，不得被强度模型或无证据的 blanket timeout 延长掩盖。计划层 timeout 提升必须保留原 timeout 事实，以两侧长窗自然结束、exact runtime 和存档不变证据显式绑定，并在 formal runtime 重跑。
+
+真人 PVE 用 `run-human-pve-session.js` 绑定 packet、私密 runtime plan、exact formal/candidate runtime 和专用克隆槽；runner 只允许固定 UI 选择动作，绝不替人点击“开始挑战”。运行中的 `next/finish/abort` 必须通过本轮 run-dir 内 owned-file signal 发送，不能依赖 PTY stdin/EOF。战斗后用 `finalize-human-pve.js` 摄取两份原始 report、截图、维护者原话与等效数量/等级，并复核源存档、非目标存档集合、active 专用槽、进程、锁、恢复记录和隔离克隆 hash；随后仍须用 `evaluationctl.js validate-pve` 对 exact packet 验证。未采集的胜负、残血、承伤、输出或异常只能标 `telemetryCompleteness=equivalence_only`，不得事后猜测。
 
 地图箱既有冻结证据分为自动门、精确隔离 candidate E2E 与正式标准入口三层。`node tools/test-agent-entry-contract.js` 静态锁定 notifier guard、`s:1|ga:<attemptId>` 同包与 `gotoAndStop("读盘")` 顺序；装备与斗兽 runner 的 `--check` 覆盖 post-watermark 真实 title-frame marker、watchdog 拒绝、`title_frame_not_observed`、fresh handoff、exact slot/attempt、single enter 和 attempt-bound `gameEnteredObserved`。地图箱隔离 candidate 以 build identity `7C72B92B0C1CF57EB9BC0D3C1024D31657EE52E6B13D7BBF9FDB94FD5A6186DB`、payload closure `7E5EDCD4FEA80E1269C0B8BCC325D1FE0994EE8C7321F0F71CB9AF4B369C4A44`、Core SHA-256 `3EB1D3910B764F0B7F9ACA1FA989A4D8732F75479E64325223F270502256A5DF` 在 attempt `82b9e602526c4e93a02d26aac0a44f20` 完成真人领取、满背包/整理背包、部分领取、情报上限、明确放弃、终态关闭、回到游戏与存盘，达到 `e2e_verified / NOT_DEPLOYED`；native bundle 不内嵌外部 `launcher/web`，Web 字节继续由 [地图箱实施与验收基线](../docs/地图资源箱-Web战利品工作台与开锁流程-前期调研-2026-07-17.md) 的源码哈希与 WebView2 实机日志绑定。随后同一 identity / closure 经 immutable request、production receipt、`builder-local-b` + GitHub OIDC quorum、strict verifier 与 promotion，正式无参入口 attempt `9e88d51425a54b8b84dff0aa21702eac` 完成真实地图箱领取、terminal close/unpause 与存盘，达到 `standard_entry_verified`；该次冷启动虽先出现 prewarm reveal watchdog，但真实 Flash `handoff` 与 `bootstrap_reveal_ready` 均在 runtime load 和真人业务操作前到达，因此成功结论不以 watchdog 为证据。
 
-默认启动前会先跑轻量门禁 `--build-gate arena-tools`（即 `node tools/arena-calibration/run-checks.js`）。验证新 Host candidate 时必须先独立构建，再把脚本返回的精确路径交给 runner；可在 runner 内追加不产二进制的 `launcher-tests`：
+默认启动前会先跑轻量门禁 `--build-gate arena-tools`（即 `node tools/arena-calibration/run-checks.js`）。该门会以 Ajv 2020 编译全部 schema，并同时证明合法实例通过、非法实例被拒绝；只读取 JSON schema 文件或手写字段检查不算通过。验证新 Host candidate 时必须先独立构建，再把脚本返回的精确路径交给 runner；可在 runner 内追加不产二进制的 `launcher-tests`：
 
 ```powershell
 $repo = (Resolve-Path .).Path

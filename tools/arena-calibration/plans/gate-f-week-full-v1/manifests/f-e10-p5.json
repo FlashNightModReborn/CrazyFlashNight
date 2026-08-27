@@ -1,0 +1,156 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-e10-p5",
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "buildCommit": "732898b8aa1308cf820976324f47bba97f654e41",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "long",
+    "candidateIds": [
+      "candidate-0f1b27722df4940e"
+    ],
+    "sourceCell": "E10",
+    "sourceCandidateHash": "sha256:0f1b27722df4940e0fd047e73e8e31d1c78057e8fc4d4b45fe8bd9e8605edd51",
+    "phaseIndex": 5,
+    "phaseRuns": 10
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 5400,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-0f1b27722df4940e",
+      "blueRoster": [
+        {
+          "type": "兵种359",
+          "level": 40
+        },
+        {
+          "type": "兵种440",
+          "level": 45
+        },
+        {
+          "type": "兵种434",
+          "level": 60
+        },
+        {
+          "type": "兵种434",
+          "level": 60
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种15",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "强化药剂": true,
+              "超级血清": true,
+              "钙化": true
+            },
+            "身高": 300
+          }
+        },
+        {
+          "type": "兵种430",
+          "level": 30
+        },
+        {
+          "type": "兵种42",
+          "level": 40
+        },
+        {
+          "type": "兵种286",
+          "level": 45
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 5400,
+      "tags": [
+        "xlsx-intake",
+        "source-e10",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "high_level",
+        "gate-f-week",
+        "long"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!E10; Gate F long original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:37130654e767353f455329b5c935b6ba8798915b717b1ade77cd26a5fb18eaff"
+    },
+    {
+      "caseId": "candidate-0f1b27722df4940e-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种15",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "强化药剂": true,
+              "超级血清": true,
+              "钙化": true
+            },
+            "身高": 300
+          }
+        },
+        {
+          "type": "兵种430",
+          "level": 30
+        },
+        {
+          "type": "兵种42",
+          "level": 40
+        },
+        {
+          "type": "兵种286",
+          "level": 45
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种359",
+          "level": 40
+        },
+        {
+          "type": "兵种440",
+          "level": 45
+        },
+        {
+          "type": "兵种434",
+          "level": 60
+        },
+        {
+          "type": "兵种434",
+          "level": 60
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 5400,
+      "tags": [
+        "xlsx-intake",
+        "source-e10",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "high_level",
+        "gate-f-week",
+        "long",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!E10; Gate F long swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:c7a342696e526ab06bba8d11b1016ce6d67d46b4c1f693e189ae437784e24a49"
+    }
+  ],
+  "manifestHash": "sha256:1efc66879b80dec00edc88332460ee6ef34b1bed392f01cd29c46ef085dff61a"
+}

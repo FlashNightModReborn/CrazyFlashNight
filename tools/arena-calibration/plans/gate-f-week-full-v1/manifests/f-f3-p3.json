@@ -1,0 +1,136 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-f3-p3",
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "buildCommit": "732898b8aa1308cf820976324f47bba97f654e41",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-c0ae68d0247fa97b"
+    ],
+    "sourceCell": "F3",
+    "sourceCandidateHash": "sha256:c0ae68d0247fa97b7fb3aee7d7c94ce808345d6e3837d9f0cf6cff6b6028dd74",
+    "phaseIndex": 3,
+    "phaseRuns": 25
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-c0ae68d0247fa97b",
+      "blueRoster": [
+        {
+          "type": "兵种44",
+          "level": 20
+        },
+        {
+          "type": "兵种49",
+          "level": 20
+        },
+        {
+          "type": "兵种45",
+          "level": 20
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种400",
+          "level": 20
+        },
+        {
+          "type": "兵种9",
+          "level": 20,
+          "parameters": {
+            "方向": "左",
+            "登场动画": "下落"
+          }
+        },
+        {
+          "type": "兵种9",
+          "level": 20,
+          "parameters": {
+            "方向": "左",
+            "登场动画": "下落"
+          }
+        }
+      ],
+      "repeat": 12,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-f3",
+        "unit-parameters",
+        "unit_payload",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!F3; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:8896bd5e3ebbb7cc8e37d1b6c71af3f80c8741cc0eb284b41e5ff8dffb69e62a"
+    },
+    {
+      "caseId": "candidate-c0ae68d0247fa97b-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种400",
+          "level": 20
+        },
+        {
+          "type": "兵种9",
+          "level": 20,
+          "parameters": {
+            "方向": "左",
+            "登场动画": "下落"
+          }
+        },
+        {
+          "type": "兵种9",
+          "level": 20,
+          "parameters": {
+            "方向": "左",
+            "登场动画": "下落"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种44",
+          "level": 20
+        },
+        {
+          "type": "兵种49",
+          "level": 20
+        },
+        {
+          "type": "兵种45",
+          "level": 20
+        }
+      ],
+      "repeat": 13,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-f3",
+        "unit-parameters",
+        "unit_payload",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!F3; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:65eca4676d7db11e3d682b12a57c4b360fc6e8908bf02f9508cdff185b85da91"
+    }
+  ],
+  "manifestHash": "sha256:d7a33d42f7a10e4613029f94f64ce6adc3845001a1e0a317e5461ec1d3ac36eb"
+}

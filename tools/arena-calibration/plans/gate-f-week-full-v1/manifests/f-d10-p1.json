@@ -1,0 +1,180 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-d10-p1",
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "buildCommit": "732898b8aa1308cf820976324f47bba97f654e41",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-d5b229ea7494de18"
+    ],
+    "sourceCell": "D10",
+    "sourceCandidateHash": "sha256:d5b229ea7494de18f18f3406176c2262d5e60a7e8070bc2b265ee6c2c9c3d815",
+    "phaseIndex": 1,
+    "phaseRuns": 10
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-d5b229ea7494de18",
+      "blueRoster": [
+        {
+          "type": "兵种51",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种50",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种52",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种441",
+          "level": 60
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种40",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "冲腿龙息": true
+            }
+          }
+        },
+        {
+          "type": "兵种59",
+          "level": 60
+        },
+        {
+          "type": "兵种60",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "晶能者": true
+            }
+          }
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-d10",
+        "unit-parameters",
+        "unit_payload",
+        "high_level",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!D10; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:4aa1ad6fd481134886a3bc47d434ef97e09fb5d2e2c269e5ccd2aeb5de461ba0"
+    },
+    {
+      "caseId": "candidate-d5b229ea7494de18-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种40",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "冲腿龙息": true
+            }
+          }
+        },
+        {
+          "type": "兵种59",
+          "level": 60
+        },
+        {
+          "type": "兵种60",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "晶能者": true
+            }
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种51",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种50",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种52",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种441",
+          "level": 60
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-d10",
+        "unit-parameters",
+        "unit_payload",
+        "high_level",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!D10; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:761a790bf1af294bc9f5fc424d9942f2603d8db6e2a34034e72b6025479fdf73"
+    }
+  ],
+  "manifestHash": "sha256:6f4e1ce4b0475af48d4e3dc5c96d8cfc47b142b7e705d8d6c82d6e1dd6a10010"
+}

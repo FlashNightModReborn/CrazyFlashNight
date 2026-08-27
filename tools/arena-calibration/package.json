@@ -1,0 +1,15 @@
+{
+  "name": "cf7-arena-calibration-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deterministic arena calibration contracts, workbook intake, and validation tools.",
+  "scripts": {
+    "check": "node run-checks.js",
+    "check:gate-b": "node test-campaign-gate-b.js",
+    "check:gates-cde": "node test-campaign-gates-cde.js"
+  },
+  "dependencies": {
+    "adm-zip": "0.5.16",
+    "ajv": "8.17.1"
+  }
+}

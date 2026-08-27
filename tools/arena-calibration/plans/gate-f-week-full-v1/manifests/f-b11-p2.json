@@ -1,0 +1,170 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-b11-p2",
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "buildCommit": "732898b8aa1308cf820976324f47bba97f654e41",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "long",
+    "candidateIds": [
+      "candidate-9a3672f0dbd36589"
+    ],
+    "sourceCell": "B11",
+    "sourceCandidateHash": "sha256:9a3672f0dbd3658941fc3e83ecee093a72d3eb129383b82f0c2db7463489d861",
+    "phaseIndex": 2,
+    "phaseRuns": 10
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 9000,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-9a3672f0dbd36589",
+      "blueRoster": [
+        {
+          "type": "兵种52",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种50",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种441",
+          "level": 50
+        },
+        {
+          "type": "兵种359",
+          "level": 50
+        },
+        {
+          "type": "兵种286",
+          "level": 50
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种78",
+          "level": 45
+        },
+        {
+          "type": "兵种69",
+          "level": 45
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 9000,
+      "tags": [
+        "xlsx-intake",
+        "source-b11",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "formation",
+        "gate-f-week",
+        "long"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!B11; Gate F long original",
+      "spawnDistance": 820,
+      "blueFormation": "line",
+      "redFormation": "wedge",
+      "formationSpacing": 54,
+      "caseHash": "sha256:c0b08a6ae349124c805a7b72a1dbb58a80e9fe08cee4fb314df9eff9cf6381e0"
+    },
+    {
+      "caseId": "candidate-9a3672f0dbd36589-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种78",
+          "level": 45
+        },
+        {
+          "type": "兵种69",
+          "level": 45
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种52",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种50",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种441",
+          "level": 50
+        },
+        {
+          "type": "兵种359",
+          "level": 50
+        },
+        {
+          "type": "兵种286",
+          "level": 50
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 9000,
+      "tags": [
+        "xlsx-intake",
+        "source-b11",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "formation",
+        "gate-f-week",
+        "long",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!B11; Gate F long swapped",
+      "spawnDistance": 820,
+      "blueFormation": "wedge",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:b5243fc5ab2b0735900ae7d179abd0f7fbc7d0414b2273557320e15ff33d5436"
+    }
+  ],
+  "manifestHash": "sha256:c34173f395d2a6fb0d0314d9913a117ced65fbedcf90685ae6dc69bc013ce4ca"
+}

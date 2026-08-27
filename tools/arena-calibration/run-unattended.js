@@ -2,6 +2,7 @@
 "use strict";
 
 const childProcess = require("child_process");
+const crypto = require("crypto");
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
@@ -36,8 +37,10 @@ const {
   normalizeResultRow,
   readJsonFile,
   readJsonLines,
+  sha256OfValue,
   writeJsonFile,
 } = require("./lib/arena-calibration-core");
+const { assertSchemaInstance } = require("./lib/schema-registry");
 
 const TERMINAL_STATES = new Set(["completed", "failed", "aborted"]);
 const DEFAULT_AGENT_SLOT = "cf7_agent_arena_calibration";
@@ -71,6 +74,7 @@ function parseArgs(argv) {
     allowFresh: false,
     seedSlot: null,
     candidateRoot: null,
+    cancelFile: null,
     check: false,
   };
 
@@ -100,6 +104,7 @@ function parseArgs(argv) {
     else if (token === "--allow-live-slot") args.allowLiveSlot = true;
     else if (token === "--allow-fresh") args.allowFresh = true;
     else if (token === "--seed-slot") args.seedSlot = argv[++index];
+    else if (token === "--cancel-file") args.cancelFile = argv[++index];
     else if (token === "--candidate-root") {
       const value = argv[++index];
       if (!value || String(value).startsWith("--")) fail("--candidate-root requires a value");
@@ -143,6 +148,7 @@ Options:
   --max-recovery-attempts <n>
                              Auto-run generated rerun manifests after crash/abnormal rows. Default: 1.
   --seed-slot <slot>         Source shadow slot used to seed the dedicated calibration slot.
+  --cancel-file <file>       Owned tmp/arena-calibration/*.signal path; presence requests bounded abort/yield.
   --allow-live-slot          Allow crazyflasher7_saves* as target slot. Unsafe; off by default.
   --allow-fresh              Allow --fresh. Unsafe for seeded unattended calibration; off by default.
   --shutdown                 Ask launcher to shut down after terminal batch state.
@@ -174,6 +180,17 @@ function toProjectRelative(root, filePath) {
 
 function resolveInputPath(root, filePath) {
   return path.isAbsolute(filePath) ? filePath : path.resolve(root, filePath);
+}
+
+function resolveOwnedCancelFile(root, filePath) {
+  if (!filePath) return null;
+  const resolved = resolveInputPath(root, filePath);
+  const ownedRoot = path.resolve(root, "tmp", "arena-calibration");
+  const relative = path.relative(ownedRoot, resolved);
+  if (!relative || relative.startsWith("..") || path.isAbsolute(relative) || path.extname(resolved).toLowerCase() !== ".signal") {
+    fail("--cancel-file must be a .signal file below tmp/arena-calibration");
+  }
+  return resolved;
 }
 
 function sanitizeSlotName(slot) {
@@ -290,6 +307,72 @@ function findSolFiles(root, slot) {
     }
   }
   return results;
+}
+
+function fileFingerprint(root, filePath, slot, kind) {
+  const bytes = fs.readFileSync(filePath);
+  const stat = fs.statSync(filePath);
+  const insideRoot = path.relative(root, filePath);
+  const pathKey = crypto.createHash("sha256").update(path.resolve(filePath).toLowerCase(), "utf8").digest("hex").slice(0, 16);
+  return {
+    key: `${kind}:${slot}:${pathKey}`,
+    kind,
+    slot,
+    path: insideRoot.startsWith("..") ? `${kind}/${path.basename(filePath)}` : toProjectRelative(root, filePath),
+    sha256: `sha256:${crypto.createHash("sha256").update(bytes).digest("hex")}`,
+    size: stat.size,
+  };
+}
+
+function captureProtectedSaveSnapshot(root, targetSlot) {
+  const savesDir = path.join(root, "saves");
+  const slots = fs.existsSync(savesDir)
+    ? fs.readdirSync(savesDir)
+        .filter((name) => /^crazyflasher7_saves\d*\.json$/.test(name))
+        .map((name) => path.basename(name, ".json"))
+        .filter((slot) => slot !== targetSlot)
+        .sort()
+    : [];
+  const files = [];
+  slots.forEach((slot) => {
+    const jsonPath = saveJsonPath(root, slot);
+    if (fs.existsSync(jsonPath)) files.push(fileFingerprint(root, jsonPath, slot, "shadow_json"));
+    findSolFiles(root, slot).sort().forEach((solPath) => {
+      files.push(fileFingerprint(root, solPath, slot, "flash_sol"));
+    });
+  });
+  files.sort((left, right) => left.key.localeCompare(right.key) || left.sha256.localeCompare(right.sha256));
+  return {
+    capturedAt: new Date().toISOString(),
+    targetSlot,
+    files,
+    snapshotHash: sha256OfValue(files.map(({ key, sha256, size }) => ({ key, sha256, size }))),
+  };
+}
+
+function compareProtectedSaveSnapshots(before, after) {
+  const beforeMap = new Map(before.files.map((entry) => [entry.key, entry]));
+  const afterMap = new Map(after.files.map((entry) => [entry.key, entry]));
+  const keys = Array.from(new Set([...beforeMap.keys(), ...afterMap.keys()])).sort();
+  return keys.flatMap((key) => {
+    const left = beforeMap.get(key);
+    const right = afterMap.get(key);
+    if (!left) return [{ key, change: "added", afterSha256: right.sha256 }];
+    if (!right) return [{ key, change: "removed", beforeSha256: left.sha256 }];
+    if (left.sha256 !== right.sha256 || left.size !== right.size) {
+      return [{ key, change: "modified", beforeSha256: left.sha256, afterSha256: right.sha256 }];
+    }
+    return [];
+  });
+}
+
+function finalizeSaveProtection(report, root) {
+  if (!report.saveProtection || !report.saveProtection.before) return;
+  const after = captureProtectedSaveSnapshot(root, report.slot);
+  const differences = compareProtectedSaveSnapshots(report.saveProtection.before, after);
+  report.saveProtection.after = after;
+  report.saveProtection.differences = differences;
+  report.saveProtection.unchanged = differences.length === 0;
 }
 
 function prepareCalibrationSave(root, args, runDir) {
@@ -649,6 +732,10 @@ async function shutdownExistingLauncherForGate(root, gates) {
 }
 
 async function shutdownLauncher(root) {
+  let expectedPid = null;
+  try {
+    expectedPid = Number(LegacyHttpClient.readExactLauncherPorts(root).pid) || null;
+  } catch (_error) { }
   const port = await discoverPort(root);
   if (!port) return null;
 
@@ -666,11 +753,30 @@ async function shutdownLauncher(root) {
 
   const deadline = Date.now() + 15000;
   while (Date.now() <= deadline) {
-    const stillRunning = await discoverPort(root);
+    let stillRunning = null;
+    try {
+      stillRunning = await discoverPort(root);
+    } catch (error) {
+      if (expectedPid && !isProcessRunning(expectedPid)) {
+        activeLegacyHttpContext = null;
+        break;
+      }
+      throw error;
+    }
     if (!stillRunning) break;
     await sleep(500);
   }
-  return { port, response };
+  return { port, pid: expectedPid, stopped: expectedPid ? !isProcessRunning(expectedPid) : null, response };
+}
+
+function isProcessRunning(pid) {
+  if (!Number.isInteger(Number(pid)) || Number(pid) <= 0) return false;
+  try {
+    process.kill(Number(pid), 0);
+    return true;
+  } catch (_error) {
+    return false;
+  }
 }
 
 async function ensureLauncherReady(root, args, expectedIdentity, onIdentityObserved, priorEntryProof) {
@@ -826,6 +932,13 @@ function tailText(text, limit = 6000) {
 async function runBatch(port, manifestPathRel, args) {
   let start = null;
   let status = null;
+  if (args.cancelFile && fs.existsSync(args.cancelFile)) {
+    const error = new Error(`external cancel signal is already present: ${toProjectRelative(projectRoot(), args.cancelFile)}`);
+    error.code = "gate_f_yield_requested";
+    error.phase = "external_cancel";
+    error.controlledYield = true;
+    throw error;
+  }
   try {
     start = await arena(port, "startBatch", { manifestPath: manifestPathRel });
   } catch (error) {
@@ -844,6 +957,20 @@ async function runBatch(port, manifestPathRel, args) {
   try {
     status = await arena(port, "status");
     while (!TERMINAL_STATES.has(status.state)) {
+      if (args.cancelFile && fs.existsSync(args.cancelFile)) {
+        let abortStatus = null;
+        try {
+          abortStatus = await arena(port, "abort", { batchId: status.batchId });
+          if (abortStatus && abortStatus.state) status = abortStatus;
+        } catch (_error) { }
+        const error = new Error(`external cancel signal requested bounded batch yield: ${toProjectRelative(projectRoot(), args.cancelFile)}`);
+        error.code = "gate_f_yield_requested";
+        error.phase = "external_cancel";
+        error.controlledYield = true;
+        error.start = start;
+        error.lastStatus = abortStatus || status;
+        throw error;
+      }
       if (Date.now() > deadline) {
         let abortStatus = null;
         try {
@@ -884,7 +1011,34 @@ function resultPathFromBatchOutcome(manifest, batch, error) {
   );
 }
 
-function analyzeResult(root, resultPathRel, outputs) {
+function validateResultRowsAgainstManifest(rows, manifest, label) {
+  if (!manifest || !Array.isArray(manifest.cases)) fail(`${label}: manifest is unavailable`);
+  const cases = new Map(manifest.cases.map((testCase) => [testCase.caseId, testCase]));
+  const seenRunIds = new Set();
+  const seenRepeats = new Set();
+  rows.forEach((row, index) => {
+    assertSchemaInstance("arena-calibration.result.v1", row, `${label} row ${index + 1}`);
+    if (row.batchId !== manifest.batchId || row.manifestHash !== manifest.manifestHash) {
+      fail(`${label} row ${index + 1}: batch/manifest binding mismatch`);
+    }
+    const testCase = cases.get(row.caseId);
+    if (!testCase || row.caseHash !== testCase.caseHash) {
+      fail(`${label} row ${index + 1}: case binding mismatch for ${row.caseId}`);
+    }
+    const expectedRepeats = testCase.repeat || manifest.repeat;
+    if (row.repeatIndex > expectedRepeats) {
+      fail(`${label} row ${index + 1}: repeatIndex exceeds ${expectedRepeats}`);
+    }
+    if (seenRunIds.has(row.runId)) fail(`${label}: duplicate runId ${row.runId}`);
+    seenRunIds.add(row.runId);
+    const repeatKey = `${row.caseId}|${row.repeatIndex}`;
+    if (seenRepeats.has(repeatKey)) fail(`${label}: duplicate case repeat ${repeatKey}`);
+    seenRepeats.add(repeatKey);
+  });
+  return true;
+}
+
+function analyzeResult(root, resultPathRel, outputs, manifest) {
   if (!resultPathRel) {
     fail("arena_calibration did not report resultPath");
   }
@@ -894,6 +1048,7 @@ function analyzeResult(root, resultPathRel, outputs) {
   }
 
   const rows = readJsonLines(resultPath);
+  validateResultRowsAgainstManifest(rows, manifest, resultPathRel);
   const summary = analyzeRows(rows, { resultPath });
   if (outputs.summary) writeJsonFile(outputs.summary, summary);
   if (outputs.summaryMd) {
@@ -903,7 +1058,7 @@ function analyzeResult(root, resultPathRel, outputs) {
   return { resultPath, rows, summary };
 }
 
-function analyzeAttemptResult(root, resultPathRel, summaryPath, summaryMdPath) {
+function analyzeAttemptResult(root, resultPathRel, summaryPath, summaryMdPath, manifest) {
   const result = {
     resultPath: resultPathRel || null,
     resultPathAbs: null,
@@ -926,6 +1081,7 @@ function analyzeAttemptResult(root, resultPathRel, summaryPath, summaryMdPath) {
   try {
     result.rows = readJsonLines(resultPath);
     if (result.rows.length > 0) {
+      validateResultRowsAgainstManifest(result.rows, manifest, resultPathRel);
       result.summary = analyzeRows(result.rows, { resultPath });
       if (summaryPath) writeJsonFile(summaryPath, result.summary);
       if (summaryMdPath) {
@@ -941,6 +1097,7 @@ function analyzeAttemptResult(root, resultPathRel, summaryPath, summaryMdPath) {
 
 function describeAttemptError(error) {
   if (error && error.message) return error.message;
+  if (error && error.phase === "external_cancel") return "external cancel requested a bounded yield";
   if (error && error.phase === "poll") return "arena_calibration status polling failed";
   if (error && error.phase === "batch_timeout") return "batch timeout";
   if (error && error.phase === "startBatch") return "arena_calibration startBatch failed";
@@ -972,6 +1129,13 @@ function attemptOutputPaths(root, outputs, attemptIndex, batchId) {
 
 function buildFailureList(report) {
   const failures = [];
+  if (report.saveProtection && report.saveProtection.unchanged === false) {
+    failures.push({
+      type: "protected_save_changed",
+      message: "one or more protected player save files changed during calibration",
+      differences: report.saveProtection.differences,
+    });
+  }
   (report.buildGates || []).forEach((gate) => {
     if (!gate.ok) {
       failures.push({
@@ -1048,11 +1212,17 @@ function buildRerunManifest(sourceManifest, rows, reason) {
       redRoster: testCase.redRoster,
       repeat: missing,
       timeoutFrames: testCase.timeoutFrames,
+      blueFormation: testCase.blueFormation,
+      redFormation: testCase.redFormation,
+      formationSpacing: testCase.formationSpacing,
       tags: Array.from(new Set([...(testCase.tags || []), "rerun"])),
       plannerReason: `rerun ${missing}/${expected}: ${reason}`,
     };
     if (testCase.spawnDistance !== undefined) {
       rerunCase.spawnDistance = testCase.spawnDistance;
+    }
+    if (Object.prototype.hasOwnProperty.call(testCase, "authorityContext")) {
+      rerunCase.authorityContext = testCase.authorityContext;
     }
     rerunCases.push(rerunCase);
   });
@@ -1126,6 +1296,9 @@ function formatReportMarkdown(report) {
     `- coreSha256: \`${report.runtimeIdentity && report.runtimeIdentity.coreSha256 || "not observed"}\``,
     `- buildIdentity: \`${report.runtimeIdentity && report.runtimeIdentity.buildIdentity || "not observed"}\``,
     `- payloadClosure: \`${report.runtimeIdentity && report.runtimeIdentity.payloadClosure || "not observed"}\``,
+    `- protectedSaveUnchanged: ${report.saveProtection && report.saveProtection.unchanged !== null ? report.saveProtection.unchanged : "not checked"}`,
+    `- protectedSaveBefore: \`${report.saveProtection && report.saveProtection.before ? report.saveProtection.before.snapshotHash : "not observed"}\``,
+    `- protectedSaveAfter: \`${report.saveProtection && report.saveProtection.after ? report.saveProtection.after.snapshotHash : "not observed"}\``,
     "",
     "## Attempts",
     "",
@@ -1181,9 +1354,39 @@ function runCheck() {
   if (candidateArgs.candidateRoot !== "tmp/runtime-candidates/v2/check") {
     throw new Error("--candidate-root parsing failed");
   }
+  const cancelArgs = parseArgs(["--cancel-file", "tmp/arena-calibration/gate-f/check/revoke.signal"]);
+  const cancelPath = resolveOwnedCancelFile(projectRoot(), cancelArgs.cancelFile);
+  if (!cancelPath.endsWith(path.join("gate-f", "check", "revoke.signal"))) {
+    throw new Error("--cancel-file parsing failed");
+  }
+  let unsafeCancelRejected = false;
+  try {
+    resolveOwnedCancelFile(projectRoot(), "logs/revoke.signal");
+  } catch (_error) {
+    unsafeCancelRejected = true;
+  }
+  if (!unsafeCancelRejected) throw new Error("unsafe --cancel-file escaped its owned root");
   checkRuntimeIdentityContract();
+  if (!isProcessRunning(process.pid) || isProcessRunning(2147483647)) {
+    throw new Error("process liveness contract failed");
+  }
   const manifest = createPilotManifest({ batchId: "unattended-check", repeat: 1, timeoutFrames: 1 });
-  const rerunSource = createPilotManifest({ batchId: "unattended-rerun-check", repeat: 2, timeoutFrames: 1 });
+  const rerunBase = createPilotManifest({
+    batchId: "unattended-rerun-check",
+    repeat: 2,
+    timeoutFrames: 1,
+    blueFormation: "wedge",
+    redFormation: "shield",
+    formationSpacing: 64,
+  });
+  const rerunInput = JSON.parse(JSON.stringify(rerunBase));
+  delete rerunInput.manifestHash;
+  rerunInput.cases.forEach((testCase) => {
+    delete testCase.caseHash;
+  });
+  rerunInput.cases[0].blueRoster[0].parameters = { 手枪: "P90战术版" };
+  rerunInput.cases[0].authorityContext = { economyMode: "observe_only" };
+  const rerunSource = normalizeManifest(rerunInput);
   const rerunCase = rerunSource.cases[0];
   const rerun = buildRerunManifest(
     rerunSource,
@@ -1205,6 +1408,43 @@ function runCheck() {
   if (!rerun || rerun.cases.length !== 1 || rerun.cases[0].repeat !== 1) {
     throw new Error("rerun manifest check failed");
   }
+  if (rerun.cases[0].blueRoster[0].parameters.手枪 !== "P90战术版"
+      || rerun.cases[0].blueFormation !== "wedge"
+      || rerun.cases[0].redFormation !== "shield"
+      || rerun.cases[0].formationSpacing !== 64
+      || rerun.cases[0].authorityContext.economyMode !== "observe_only") {
+    throw new Error("rerun manifest did not preserve parameters, authority, and formation semantics");
+  }
+  const manifestCase = manifest.cases[0];
+  const canonicalRow = normalizeResultRow({
+    schema: "arena-calibration.result.v1",
+    batchId: manifest.batchId,
+    manifestHash: manifest.manifestHash,
+    caseId: manifestCase.caseId,
+    caseHash: manifestCase.caseHash,
+    runId: `${manifestCase.caseId}-r001`,
+    repeatIndex: 1,
+    status: "finished",
+    winner: "blue",
+    authorityContext: { economyMode: "observe_only" },
+    spawnedUnits: [{ side: "blue", unit: "兵种45", from: "兵种44", name: "derived-1", frame: 12 }],
+    blueUnitResults: [{
+      sourceId: "fixture-blue-1", petId: -1, identifier: "", resolvedType: "兵种44",
+      level: 30, strategicPromotions: [], strategicPromotionsValid: true,
+      startMaxHp: 100, remainHp: 50, hpPermille: 500, alive: true,
+    }],
+    redUnitResults: [],
+  });
+  validateResultRowsAgainstManifest([canonicalRow], manifest, "canonical result fixture");
+  const invalidCanonicalRow = JSON.parse(JSON.stringify(canonicalRow));
+  invalidCanonicalRow.unclosedProductionField = true;
+  let invalidCanonicalRejected = false;
+  try {
+    validateResultRowsAgainstManifest([invalidCanonicalRow], manifest, "invalid result fixture");
+  } catch (_error) {
+    invalidCanonicalRejected = true;
+  }
+  if (!invalidCanonicalRejected) throw new Error("raw result schema did not reject an unclosed field");
   if (expandBuildGates(["none", "launcher", "arena-tools"]).join(",") !== "launcher-build,launcher-tests,arena-tools") {
     throw new Error("build gate expansion check failed");
   }
@@ -1329,6 +1569,9 @@ function runCheck() {
     ok: true,
     batchId: manifest.batchId,
     agentEntryContract: agentEntryContract.uiState,
+    rawResultSchemaValidated: true,
+    manifestCaseBindingsValidated: true,
+    authorityRerunPreserved: true,
   }, null, 2));
 }
 
@@ -1348,6 +1591,7 @@ async function main(argv) {
   }
 
   const root = projectRoot();
+  args.cancelFile = resolveOwnedCancelFile(root, args.cancelFile);
   const startedAt = new Date().toISOString();
   const prepared = prepareManifest(root, args);
   const outputs = defaultOutputPaths(root, prepared.manifest.batchId, args);
@@ -1359,6 +1603,7 @@ async function main(argv) {
     slot: args.slot,
     fresh: args.fresh,
     manifestPath: prepared.manifestPathRel,
+    cancelFile: args.cancelFile ? toProjectRelative(root, args.cancelFile) : null,
     resultPath: null,
     summaryPath: toProjectRelative(root, outputs.summary),
     summaryMdPath: toProjectRelative(root, outputs.summaryMd),
@@ -1371,6 +1616,7 @@ async function main(argv) {
     postRunShutdown: null,
     runtimeIdentity: createRuntimeIdentityReport(null),
     savePreflight: null,
+    saveProtection: null,
     finalAgentStatus: null,
     finalArenaStatus: null,
     attempts: [],
@@ -1423,6 +1669,12 @@ async function main(argv) {
       fail("launcher is not running; remove --no-start-launcher or start it first");
     }
 
+    report.saveProtection = {
+      before: captureProtectedSaveSnapshot(root, args.slot),
+      after: null,
+      unchanged: null,
+      differences: [],
+    };
     report.savePreflight = prepareCalibrationSave(root, args, outputs.runDir);
     writeReport(report, outputs.report, outputs.reportMd);
 
@@ -1520,14 +1772,15 @@ async function main(argv) {
       report.finalArenaStatus = attempt.finalArenaStatus;
 
       const attemptOutputs = attemptOutputPaths(root, outputs, attempt.index, current.manifest.batchId);
-      if (attempt.error && attempt.error.phase === "batch_timeout") {
+      if (attempt.error && (attempt.error.phase === "batch_timeout" || attempt.error.phase === "external_cancel")) {
         await waitForResultFile(root, resultPathRel, Math.max(5000, args.pollMs * 2), args.pollMs);
       }
       const analyzed = analyzeAttemptResult(
         root,
         resultPathRel,
         attemptOutputs.summary,
-        attemptOutputs.summaryMd
+        attemptOutputs.summaryMd,
+        current.manifest
       );
       attempt.resultPath = analyzed.resultPath;
       attempt.resultRows = analyzed.rows.length;
@@ -1582,6 +1835,9 @@ async function main(argv) {
       report.status = "needs_rerun";
       report.rerunManifestPath = finalAttempt.rerunManifestPath;
       report.suggestions.push(`Run rerun manifest: ${finalAttempt.rerunManifestPath}`);
+    } else if (finalAttempt.error && finalAttempt.error.phase === "external_cancel") {
+      report.status = "yielded";
+      report.suggestions.push("The owned cancel signal remains authoritative; arm a fresh idle window before resuming.");
     } else if (finalAttempt.status === "completed") {
       report.status = "completed";
     } else if (finalAttempt.error) {
@@ -1591,13 +1847,15 @@ async function main(argv) {
     }
     copyFinalSummary(outputs, finalAnalyzed);
     report.completedAt = new Date().toISOString();
-    report.failures = buildFailureList(report);
     if (report.status !== "completed" || report.rerunManifestPath) {
       report.suggestions.push("Inspect finalArenaStatus and result JSONL before planning the next exploratory batch.");
     }
     if (args.shutdown) {
       report.postRunShutdown = await shutdownLauncher(root);
     }
+    finalizeSaveProtection(report, root);
+    if (report.saveProtection && report.saveProtection.unchanged === false) report.status = "failed";
+    report.failures = buildFailureList(report);
     writeReport(report, outputs.report, outputs.reportMd);
 
     console.log(
@@ -1635,6 +1893,7 @@ async function main(argv) {
         details: error.details || null,
       };
     }
+    try { finalizeSaveProtection(report, root); } catch (_saveProtectionError) { }
     report.failures = buildFailureList(report);
     report.suggestions.push("Rerun with the same manifest after checking launcher.log and the run report.");
     writeReport(report, outputs.report, outputs.reportMd);

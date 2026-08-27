@@ -10,6 +10,13 @@ const TARGETS = Object.freeze({
   firstCard: ".arena-card[data-index=\"0\"]",
   confirm: ".arena-detail-confirm",
   close: ".arena-panel .workbench-close-btn",
+  customTab: ".arena-mode-tab[data-mode=\"custom\"]",
+  customEdit: ".arena-card-custom .arena-custom-edit",
+  codeInput: "#arena-custom-editor-view #arena-custom-code-input",
+  importCode: "#arena-custom-editor-view [data-custom-action=\"import\"]",
+  editorDone: "#arena-custom-editor-view [data-custom-editor-action=\"done\"]",
+  generatePve: ".arena-card-custom .arena-custom-generate",
+  pveStart: "#arena-custom-confirm [data-custom-confirm-action=\"start\"]",
 });
 
 function strictToken(value, pattern, label) {
@@ -73,6 +80,40 @@ async function openArenaInputChannel(options) {
     })()`, "Arena visible state");
   }
 
+  async function readPveState() {
+    return evaluateByValue(client, `(function(){
+      var container=document.getElementById('panel-container');
+      var state=window.ArenaCore&&window.ArenaCore.state;
+      var editor=document.getElementById('arena-custom-editor-view');
+      var customCard=document.querySelector('.arena-card-custom');
+      var codeInput=document.getElementById('arena-custom-code-input');
+      var status=document.getElementById('arena-custom-code-status');
+      var match=state&&state._customMatch;
+      var parsed=match&&match.parsed;
+      var confirm=document.getElementById('arena-custom-confirm');
+      var start=confirm&&confirm.querySelector('[data-custom-confirm-action="start"]');
+      function visible(element){
+        if(!element||element.hidden)return false;
+        var rect=element.getBoundingClientRect();
+        return !!(rect.width>0&&rect.height>0);
+      }
+      return {url:String(location.href),
+        panel:container?String(container.getAttribute('data-panel')||''):'',
+        hidden:container?!!container.hidden||container.style.display==='none':true,
+        activeMode:String(state&&state._activeMode||''),
+        customTabPresent:!!document.querySelector('.arena-mode-tab[data-mode="custom"]'),
+        customCardVisible:visible(customCard),editorVisible:visible(editor),
+        codeInputPresent:!!codeInput,codeInputValue:codeInput?String(codeInput.value||''):'',
+        codeStatus:status?String(status.textContent||'').trim():'',
+        matchCode:String(match&&match.code||''),matchError:String(match&&match.error||''),
+        parsed:parsed?{mode:String(parsed.mode||''),canonical:String(parsed.canonical||''),
+          seed:Number(parsed.seed),enemyCount:Array.isArray(parsed.enemyRoster)
+            ?parsed.enemyRoster.reduce(function(sum,row){return sum+Number(row&&row.count||0);},0):0}:null,
+        confirmVisible:visible(confirm),startPresent:!!start,startVisible:visible(start),
+        startDisabled:start?!!start.disabled:true,startText:start?String(start.textContent||'').trim():''};
+    })()`, "Arena PVE visible state");
+  }
+
   async function click(targetName) {
     const selector = TARGETS[targetName];
     if (!selector) fail("arena_input_target_forbidden", "arena_input",
@@ -108,6 +149,42 @@ async function openArenaInputChannel(options) {
       targetName, selector, geometry, browserTrustedExpected: true,
       candidatePageInput: true, physicalInputAttestation: false });
     return geometry;
+  }
+
+  async function replaceText(targetName, value) {
+    if (targetName !== "codeInput") {
+      fail("arena_input_text_target_forbidden", "arena_input",
+        "arena text input target is outside the fixed allowlist", { targetName });
+    }
+    value = String(value || "");
+    if (!/^CF7ARENA:v1;mode=pve;[^\r\n]{1,4000}$/.test(value)) {
+      fail("arena_input_text_invalid", "arena_input", "PVE match code is invalid");
+    }
+    await click(targetName);
+    await client.call("Input.dispatchKeyEvent", {
+      type: "keyDown", modifiers: 2, key: "a", code: "KeyA",
+      windowsVirtualKeyCode: 65, nativeVirtualKeyCode: 65,
+    }, 10000);
+    await client.call("Input.dispatchKeyEvent", {
+      type: "keyUp", modifiers: 0, key: "a", code: "KeyA",
+      windowsVirtualKeyCode: 65, nativeVirtualKeyCode: 65,
+    }, 10000);
+    await client.call("Input.insertText", { text: value }, 10000);
+    await sleep(150);
+    const observed = await evaluateByValue(client, `(function(selector){
+      var element=document.querySelector(selector);
+      return {present:!!element,value:element?String(element.value||''):'',
+        active:document.activeElement===element};
+    })(${JSON.stringify(TARGETS[targetName])})`, "Arena PVE match-code input");
+    if (!observed || observed.present !== true || observed.value !== value) {
+      fail("arena_input_text_mismatch", "arena_input",
+        "trusted match-code input did not preserve the frozen value", { observed });
+    }
+    writer.append({ kind: "arena_candidate_page_input", inputType: "trusted_text",
+      targetName, selector: TARGETS[targetName], characters: value.length,
+      valueSha256: sha256Bytes(Buffer.from(value, "utf8")), browserTrustedExpected: true,
+      candidatePageInput: true, physicalInputAttestation: false });
+    return observed;
   }
 
   async function sendRetiredCardProbe(details) {
@@ -164,7 +241,9 @@ async function openArenaInputChannel(options) {
   let closed = false;
   return Object.freeze({
     readState,
+    readPveState,
     click,
+    replaceText,
     sendRetiredCardProbe,
     captureScreenshot,
     close() {

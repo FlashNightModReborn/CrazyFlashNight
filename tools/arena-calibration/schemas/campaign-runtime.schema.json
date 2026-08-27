@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "arena-calibration.campaign-runtime.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema"],
+  "properties": {
+    "schema": { "const": "arena-calibration.campaign-runtime.v1" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "runtimeIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtimeMode", "processPath", "coreSha256", "buildIdentity", "payloadClosure", "verified"],
+      "properties": {
+        "runtimeMode": { "const": "formal_runtime" },
+        "processPath": { "$ref": "#/$defs/nonEmptyString" },
+        "coreSha256": { "type": "string", "pattern": "^[A-F0-9]{64}$" },
+        "buildIdentity": { "type": "string", "pattern": "^[A-F0-9]{64}$" },
+        "payloadClosure": { "type": "string", "pattern": "^[A-F0-9]{64}$" },
+        "verified": { "const": true }
+      }
+    },
+    "producerObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producerId", "scope", "online", "leaseState", "observedAt", "evidenceRef"],
+      "properties": {
+        "producerId": { "$ref": "#/$defs/id" },
+        "scope": { "enum": ["launcher", "flash", "arena_runner", "content_development"] },
+        "online": { "type": "boolean" },
+        "leaseState": { "enum": ["idle", "active", "expired", "unknown", "offline"] },
+        "observedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "evidenceRef": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "producerRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "registryId", "generatedAt", "observationTtlSeconds", "producers", "producerSetHash", "registryHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.producer-registry.v1" },
+        "registryId": { "$ref": "#/$defs/id" },
+        "generatedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "observationTtlSeconds": { "type": "integer", "minimum": 1, "maximum": 300 },
+        "producers": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/producerObservation" }
+        },
+        "producerSetHash": { "$ref": "#/$defs/sha256" },
+        "registryHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "idleGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "grantId", "issuer", "trustProfile", "scope", "issuedAt", "expiresAt", "producerSetHash", "registryId", "registryHash", "revokeSignal", "grantHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.idle-grant.v1" },
+        "grantId": { "$ref": "#/$defs/id" },
+        "issuer": { "$ref": "#/$defs/id" },
+        "trustProfile": { "const": "local-development-arbiter-v1" },
+        "scope": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": { "enum": ["launcher", "flash", "arena_runner"] }
+        },
+        "issuedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "expiresAt": { "$ref": "#/$defs/nonEmptyString" },
+        "producerSetHash": { "$ref": "#/$defs/sha256" },
+        "registryId": { "$ref": "#/$defs/id" },
+        "registryHash": { "$ref": "#/$defs/sha256" },
+        "revokeSignal": { "type": "boolean" },
+        "grantHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "journalEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "recordKind", "campaignId", "segmentId", "sequence", "previousHash", "eventType", "occurredAt", "payload", "eventHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.journal-event.v1" },
+        "recordKind": { "const": "event" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "segmentId": { "$ref": "#/$defs/id" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "previousHash": {
+          "oneOf": [
+            { "const": "GENESIS" },
+            { "$ref": "#/$defs/sha256" }
+          ]
+        },
+        "eventType": {
+          "enum": [
+            "campaign_created", "producer_registry_observed", "idle_grant_accepted",
+            "campaign_resumed", "campaign_paused", "shard_scheduled", "result_committed",
+            "duplicate_excluded", "proposal_recorded", "exception_recorded",
+            "attention_recorded", "gate_f_shard_receipt_recorded", "truncated_tail", "segment_close"
+          ]
+        },
+        "occurredAt": { "$ref": "#/$defs/nonEmptyString" },
+        "payload": { "type": "object" },
+        "eventHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "durableCommit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "recordKind", "campaignId", "segmentId", "sequence", "eventHash", "segmentOffset", "committedAt", "commitHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.durable-commit.v1" },
+        "recordKind": { "const": "durable_commit" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "segmentId": { "$ref": "#/$defs/id" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "eventHash": { "$ref": "#/$defs/sha256" },
+        "segmentOffset": { "type": "integer", "minimum": 0 },
+        "committedAt": { "$ref": "#/$defs/nonEmptyString" },
+        "commitHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "executionArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "artifactId", "campaignId", "shardId", "runKey", "manifestPath", "manifestHash", "resultPath", "resultSha256", "runReportPath", "runReportSha256", "runtimeIdentity", "battleSemanticsCohortId", "cohortCompatibilityReceiptRef", "rows", "statusCounts", "protectedSaveSnapshot", "protectedSaveUnchanged", "createdAt", "artifactHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.execution-artifact.v1" },
+        "artifactId": { "$ref": "#/$defs/id" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "shardId": { "$ref": "#/$defs/id" },
+        "runKey": { "$ref": "#/$defs/nonEmptyString" },
+        "manifestPath": { "$ref": "#/$defs/nonEmptyString" },
+        "manifestHash": { "$ref": "#/$defs/sha256" },
+        "resultPath": { "$ref": "#/$defs/nonEmptyString" },
+        "resultSha256": { "$ref": "#/$defs/sha256" },
+        "runReportPath": { "$ref": "#/$defs/nonEmptyString" },
+        "runReportSha256": { "$ref": "#/$defs/sha256" },
+        "runtimeIdentity": { "$ref": "#/$defs/runtimeIdentity" },
+        "battleSemanticsCohortId": { "$ref": "#/$defs/id" },
+        "cohortCompatibilityReceiptRef": { "$ref": "#/$defs/sha256" },
+        "rows": { "type": "integer", "minimum": 1 },
+        "expectedRows": { "type": "integer", "minimum": 1 },
+        "complete": { "type": "boolean" },
+        "rowRunKeys": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyString" }
+        },
+        "gateFPlanHash": {
+          "oneOf": [
+            { "$ref": "#/$defs/sha256" },
+            { "type": "null" }
+          ]
+        },
+        "statusCounts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "protectedSaveSnapshot": { "$ref": "#/$defs/sha256" },
+        "protectedSaveUnchanged": { "const": true },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "artifactHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "cohortCompatibilityReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "receiptId", "executionArtifactIdentity", "battleSemanticsCohortId", "changedPaths", "classifierVersion", "negativeChecks", "compatible", "reason", "createdAt", "receiptHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.cohort-compatibility-receipt.v1" },
+        "receiptId": { "$ref": "#/$defs/id" },
+        "executionArtifactIdentity": { "$ref": "#/$defs/sha256" },
+        "battleSemanticsCohortId": { "$ref": "#/$defs/id" },
+        "changedPaths": { "type": "array", "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "classifierVersion": { "$ref": "#/$defs/id" },
+        "negativeChecks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "compatible": { "type": "boolean" },
+        "reason": { "$ref": "#/$defs/nonEmptyString" },
+        "createdAt": { "$ref": "#/$defs/nonEmptyString" },
+        "receiptHash": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "campaignCheckpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "campaignId", "state", "lastSequence", "lastEventHash", "committedRunKeys", "openSegmentId", "recoveredAt", "checkpointHash"],
+      "properties": {
+        "schema": { "const": "arena-calibration.campaign-checkpoint.v1" },
+        "campaignId": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["READY", "RUNNING", "PAUSED", "EXCEPTIONS_PENDING", "FAILED_CLOSED", "COMPLETED"] },
+        "lastSequence": { "type": "integer", "minimum": 0 },
+        "lastEventHash": {
+          "oneOf": [
+            { "const": "GENESIS" },
+            { "$ref": "#/$defs/sha256" }
+          ]
+        },
+        "committedRunKeys": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmptyString" } },
+        "openSegmentId": { "type": ["string", "null"] },
+        "recoveredAt": { "$ref": "#/$defs/nonEmptyString" },
+        "checkpointHash": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

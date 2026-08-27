@@ -1,0 +1,194 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-c11-p6",
+  "createdAt": "2026-08-27T15:03:00.000Z",
+  "buildCommit": "732898b8aa1308cf820976324f47bba97f654e41",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "long",
+    "candidateIds": [
+      "candidate-450de4e83dd0f668"
+    ],
+    "sourceCell": "C11",
+    "sourceCandidateHash": "sha256:450de4e83dd0f668cc66cddd29620934033348d1be9eb747252c70338b2d6245",
+    "phaseIndex": 6,
+    "phaseRuns": 10
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 9000,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-450de4e83dd0f668",
+      "blueRoster": [
+        {
+          "type": "兵种405",
+          "level": 45
+        },
+        {
+          "type": "兵种359",
+          "level": 45
+        },
+        {
+          "type": "兵种360",
+          "level": 50,
+          "parameters": {
+            "魔法抗性": {
+              "电子体": 0
+            }
+          }
+        },
+        {
+          "type": "兵种371",
+          "level": 50,
+          "parameters": {
+            "掉落物": {
+              "名字": "强化石",
+              "最大数量": 300,
+              "最小数量": 300,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种366",
+          "level": 50,
+          "parameters": {
+            "掉落物": {
+              "名字": "强化石",
+              "最大数量": 300,
+              "最小数量": 300,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种67",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "涅槃重生": true
+            }
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种361",
+          "level": 50
+        },
+        {
+          "type": "兵种362",
+          "level": 30
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 9000,
+      "tags": [
+        "xlsx-intake",
+        "source-c11",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "formation",
+        "high_level",
+        "gate-f-week",
+        "long"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C11; Gate F long original",
+      "spawnDistance": 820,
+      "blueFormation": "wedge",
+      "redFormation": "wedge",
+      "formationSpacing": 54,
+      "caseHash": "sha256:de4108951960f71e0b8d389ea0edf4206e79c852666972b3f93c44b0367dc341"
+    },
+    {
+      "caseId": "candidate-450de4e83dd0f668-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种361",
+          "level": 50
+        },
+        {
+          "type": "兵种362",
+          "level": 30
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种405",
+          "level": 45
+        },
+        {
+          "type": "兵种359",
+          "level": 45
+        },
+        {
+          "type": "兵种360",
+          "level": 50,
+          "parameters": {
+            "魔法抗性": {
+              "电子体": 0
+            }
+          }
+        },
+        {
+          "type": "兵种371",
+          "level": 50,
+          "parameters": {
+            "掉落物": {
+              "名字": "强化石",
+              "最大数量": 300,
+              "最小数量": 300,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种366",
+          "level": 50,
+          "parameters": {
+            "掉落物": {
+              "名字": "强化石",
+              "最大数量": 300,
+              "最小数量": 300,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种67",
+          "level": 60,
+          "parameters": {
+            "宠物属性": {
+              "涅槃重生": true
+            }
+          }
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 9000,
+      "tags": [
+        "xlsx-intake",
+        "source-c11",
+        "unit-parameters",
+        "unit_payload",
+        "long_timeout",
+        "formation",
+        "high_level",
+        "gate-f-week",
+        "long",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C11; Gate F long swapped",
+      "spawnDistance": 820,
+      "blueFormation": "wedge",
+      "redFormation": "wedge",
+      "formationSpacing": 54,
+      "caseHash": "sha256:467943c4dc6bcc8ca136f60f077d1bf9f4b92521191cbed576434da8c9579f1f"
+    }
+  ],
+  "manifestHash": "sha256:19fb140a03b59a2a6a8578f9f35a823e48af10f99f798d4f2f951015d1cc0ebb"
+}

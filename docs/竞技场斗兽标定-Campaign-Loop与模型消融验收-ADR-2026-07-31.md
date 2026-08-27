@@ -2,9 +2,9 @@
 
 **文档角色**：斗兽标定 Campaign Loop、模型职责、最小消融、人类 PVE 验收与长时运行恢复的 canonical ADR。真实战斗采样协议、AS2 / C# / Node L0 平台仍以 [竞技场斗兽标定平台 — 架构设计与施工计划](竞技场斗兽标定平台-架构设计-2026-06-29.md) 为准；逐批事实进入 campaign journal，里程碑、临时模型选择与人工结论摘要写入 [竞技场斗兽标定：实验计划与运行日志](竞技场斗兽标定-实验计划与运行日志-2026-07-02.md)。
 
-**状态**：`PROPOSED / PILOT_REQUIRED`。本文冻结首轮施工边界和验收方法，不宣称 Sol、Luna Max 或任一工作流已经胜出，也不宣称现有 2026-07 样本足以完成最终分档。
+**状态**：`GATE_E_EQUIVALENCE_LABELS_COMPLETE / OBJECTIVE_PVE_TELEMETRY_UNREPORTED / NOT_FORMALLY_APPLIED`（2026-08-27）。Gate B 的 durable Campaign Supervisor 已验收；Gate C 已取得 A/B/C 三份真实模型输出和一次与模型身份、先验及历史结论隔离的模型盲评；Gate D 又执行 34-run 主动探索与 21-run 确证 shard，使 `candidate-dd65977b16a48a35` 达到 original 15 + swapped 15、0 timeout、0 error、side-swap 已复核。Gate E 的两场正式运行时 PVE 均由维护者标为“1 名 10 级佣兵等效战力”，数值等效标签已进入独立证据链。两场没有补录胜负、残血、承伤、输出等客观遥测，第一场的控制进程还在战斗结束后因 PTY EOF 走了清理性 abort，因此只称 `equivalence_only`，不称完整 PVE telemetry、正式标定落盘、发布或标准入口业务验收。
 
-**最后核对代码基线**：commit `ceeabe3a5b91c736710406de9f76c8aad1d0ef66`（2026-07-31）。该基线已包含 CF7 Agent Runtime / Wings F8 正式发布，以及现役斗兽 `run-unattended.js` 对精确 legacy HTTP 端口与进程生命周期授权的适配。
+**最后核对代码基线**：HEAD commit `286e531f214264304e490b122f533e13163b5b83`（2026-08-27）；本节所述 Gate A 增量和证据位于该 HEAD 上的当前工作树，尚未由本文冒称已提交或发布。正式运行身份仍由 runtime manifest 与实际 Core 进程独立核验。
 
 ---
 
@@ -20,7 +20,7 @@
 5. 严格 seed 复现不是前置条件。AS2 内建随机源仍未统一时，seed 只作观测元数据，不作“相同 seed 必然复现”的身份或验收依据。
 6. 梯队由连续潜在强度、置信区间和对局图关系派生；不把玩家提交的弱先验强绑到固定区间。Elo 可作实时展示，不作唯一统计真值。
 7. 最小消融能力属于生产标定的证据基础；完整通用消融平台不属于首期。首期验收必须完成一次冻结快照的 shadow 比较，但不要求统计上证明永久模型优劣。
-8. 人类 PVE 盲评是体验档位的最终验收源之一；人形怪构筑只作参考锚点，不作为待标定组合的直接可信真值。
+8. 人类 PVE 是“怪物组合等效于多少名、多少级人形佣兵”的最终外部验收源之一；冻结的玩家构筑只是有余量的测量载体，玩家等级、能否取胜或怪物原始等级都不能直接代替等效标签。
 9. 一星期指**累计 campaign 时间**，不是单进程连续运行。每个 shard 必须短、可中断、可重入，游戏、Launcher 或电脑异常后从已提交事实继续。
 10. 当前斗兽无人值守链仍是显式 legacy HTTP automation；不能把 F8 标准 Agent Runtime 的发布状态误写成斗兽业务控制已迁移。未来迁移需要独立的结构化 arena capability 决策，禁止把 `/console` 或任意 AS2 执行口扩入 Agent Runtime。
 11. “节约人类时间”是 hard acceptance，不是愿景描述：正常 shard 人工操作必须为 0，日常异常进入异步 exception inbox，只有权限、方法论、正式配置落地或全局事实连续性问题可以进入人工批准路径。
@@ -36,17 +36,18 @@
 
 - 在专用 no-player 竞技场中运行蓝 / 红双方真实 Flash 战斗。
 - 由 C# 后台串行执行 manifest 并 append JSONL。
-- 由 Node 工具生成 summary、规则 next batch 和无人值守报告。
-- 使用专用存档、运行身份校验、有限自动重启与 rerun manifest 处理部分崩溃。
+- 由 Node 工具生成 summary、规则 next batch、durable Campaign journal、模型评估/PVE 证据和无人值守报告。
+- 使用专用存档、exact 运行身份、有限自动重启、rerun manifest 和逐行 exactly-once commit 处理崩溃与 partial attempt。
 - 记录阵型、出生位置、多阶段刷怪和污染状态。
+- 以冻结 source/runtime/manifest/decision plan、有界可撤销 idle window、真实 producer/磁盘门和去重 exception inbox 编排 Gate F 短 shard。
 
-当前平台仍主要是“单批次执行器 + 规则摘要器”，尚不是可以持续一星期累计运行的完整 Campaign Loop。主要缺口包括：
+本 ADR 发起时的平台仍主要是“单批次执行器 + 规则摘要器”；Gate B–E 已在 2026-08-27 形成真实证据，Gate F0 工程控制面也已实现。当前剩余边界不是继续补一套抽象框架，而是等待部署稳定后，以 clean Git source 和当时 exact formal runtime 冻结计划，先跑三份 fresh 10-run soak，再累计真实 20+ eligible epoch 和全量星期级结果。以下历史缺口已转化为现役契约：
 
-- 候选、批次、attempt、模型决策和人工验收没有统一 campaign 身份。
-- 规则分析以单 case 胜率阈值为主，不能可靠处理弱先验、图断连、边界不确定度、平局、side bias 和非传递关系。
-- 没有冻结的模型输入快照、统一提案 schema、采纳回执和盲化裁决。
-- 当前有限恢复以 rerun manifest 为中心，不等于 campaign 级租约、原子 checkpoint 和 exactly-once 计数。
-- 人类 PVE 体感尚未进入结构化证据链。
+- 候选、批次、attempt、模型决定、PVE 与 Gate F shard 共享 hash-bound campaign/provenance 身份。
+- paired strength、bridge、side-swap、timeout/error anomaly 与盲化模型裁决已有独立 artifact；不再把单 case 胜率直接当最终档位。
+- journal 的双 flush、segment hash chain、单 writer、partial row durable commit 与 duplicate exclusion 已由 fixture/既有真实 shard分别覆盖。
+- 两场真人 PVE 的 `1 × Lv10` 等效标签已有结构化证据；未自动记录的客观 telemetry 保持未报告，不事后补猜。
+- 星期级稳定性、低注意力和完整候选终态仍须由新鲜 Gate F 实跑建立，F0 fixture 和调度草案不能代签。
 
 ### 1.2 目标
 
@@ -496,16 +497,16 @@ shadow 先比较：
 
 ### 8.1 定位
 
-机器斗兽结果负责相对强度和稳定性；人类 PVE 负责“玩家面对该组合时像哪个体验档”的外部效度。两类证据分别保存，不能把 PVE 主观分数覆盖到原始 battle result。
+机器斗兽结果负责相对强度和稳定性；人类 PVE 负责把冻结怪物组合外部拟合为“等效 N 名、L 级人形佣兵”。两类证据分别保存，不能把 PVE 标签覆盖到原始 battle result。
 
-人形怪属于重火力、弱生存的极端构筑。它可以帮助描述体验锚点，但“人形怪直接与待标定组合对战”的结果至多是参考，不作为最终可信源。
+人形佣兵是本标定任务的语义标尺。批准的玩家存档只负责提供一致且有足够余量的测量条件；例如 32 级玩家通常能击败 4 名 40 级佣兵，并不意味着每个被其击败的组合都应标成 32 级，也不允许把玩家胜负直接换算成档位。
 
 ### 8.2 协议
 
 - PVE 交付单位是可暂停的 `calibrationPacket`，默认包含 2–4 个 encounter，目标人类 active time 为 5–10 分钟，硬上限 15 分钟。
 - packet 自动选择批准的玩家 build profile、准备 encounter、进入 PVE、记录客观遥测并在 encounter 边界 checkpoint；不同 build family 分开记录。
 - 客观遥测至少包括战斗时长、玩家死亡 / 失败、承伤、输出、剩余生命和可获得的异常事件；能自动采集的字段不得要求人类手填。
-- 人类默认只提交总体体验档、最多两个压力标签和置信度；六维细分只在异常 / gold suite 建立时展开。
+- 人类默认只提交 `equivalentHumanoidCount + equivalentHumanoidLevel`、原话、最多两个压力标签和可选置信度；胜负、残血、承伤、输出等能自动采集的字段不得要求人类事后回忆或由工具虚构。
 - 主控模型提供若干成对候选及推荐观察点，但显示层隐藏 controller / model identity、候选先验档位、来源、历史机器结论和推荐结论，并随机化 A/B 顺序。
 - packet 可以随时暂停；恢复后从未完成 encounter 继续，已提交标签不重复询问。
 - 保留 holdout 候选，避免所有样本都参与方法调整。
@@ -550,22 +551,24 @@ shadow 先比较：
 
 | 优先级 | 能力 | 当前事实 | 需要增强 |
 |---|---|---|---|
-| P0 | 契约闭合 | C# roster 归一化支持 `parameters`；manifest schema 未声明该字段，Node `normalizeRosterEntry` 会丢弃它，hash / rerun 因而不能形成闭包 | 统一参数 schema、hash、rerun 和结果 provenance |
-| P0 | 结果枚举 | core 接受 `contamination`，`result.schema.json` 未列入 | 原子修复 schema / validator / fixture 漂移 |
-| P0 | 候选 registry | v1 以 batch / case 为中心 | 稳定 candidateId、source、弱先验、质量与风险标签 |
-| P0 | 决策证据 | 只有 planner label / reason | snapshot、proposal、receipt、adjudication |
-| P0 | 人类注意力 | 没有 active-time / action / interrupt 遥测 | attention event、低接触阈值、异步 exception inbox |
-| P1 | Campaign Supervisor | runner 有单次 batch 与有限 rerun | campaign journal、checkpoint、work lease、pause / resume、dedupe |
-| P1 | Provenance | report 有 attempt 与 runtime identity，结果未形成 campaign / epoch / cohort 闭包 | runKey、executionArtifactIdentity、battleSemanticsCohortId、decisionPolicyId、canonical result |
-| P1 | 资源调度 | 只有人工 pause 和 shard 边界 | fail-closed idle grant、完整 producer registry、60 秒目标 / 5 分钟硬上限让位与资源释放 |
-| P2 | 分析 v2 | 胜率阈值和简单分类 | paired model、区间、平局、side bias、图连通、非传递诊断 |
-| P2 | planner v2 | append / counter / review 规则 | active sampling、bridge、side swap、预算和停止策略 |
-| P3 | 模型 adapter | agent-review 仅预留 | 结构化 Sol / Luna profile、abstain、shadow replay 和盲化评分 |
-| P3 | 人类 PVE | 有 custom PVE 入口，未进入 campaign 证据 | build profile、A/B、分档量表、holdout 和回写 |
+| P0 | 契约闭合 | Gate A 已闭合，Gate B execution artifact 继续绑定 `parameters/sourceId/hpPermille`、原始结果和 manifest hash | 无开放缺口；后续变更按 cohort compatibility 重新判定 |
+| P0 | 结果枚举 | core、schema、fixture 和生产实例 validator 均接受 `contamination`，异常不进入强度样本 | 接入真实异常时继续写 durable disposition |
+| P0 | 候选 registry | stable source/candidate 身份已进入 intake；Gate B 账本及 Gate F partial import 以 `manifestHash + runId` 首次 durable commit 去重 | 用星期级真实 shard 验证全部候选终态 |
+| P0 | 决策证据 | 13-action proposal / receipt / adjudication、确定性 L0 adapter、三 profile 真实输出、盲评回执及 195 份 Gate F shard decision evidence 已冻结 | 正式 freeze 时绑定最终 source/runtime identity |
+| P0 | 人类注意力 | 两个既有真实 `unattended` shard 均记录 0 action / 0 blocked / 0 interrupt；Gate F0 fixture 证明不足 20 epoch fail、20 epoch 与 3/20 touch 阈值 | 用 Gate F 真实最近 20 epoch 和全 campaign 两窗口验收；fixture 不代签 |
+| P1 | Campaign Supervisor | Node owner 已实现 journal、checkpoint、writer lease、pause/resume、partial row exactly-once、失败 receipt 和真实两 shard campaign | 真实断电和星期级漂移留 Gate F 实跑 |
+| P1 | Provenance | 两个 execution artifact 均闭合 runKey、formal runtime、cohort、compatibility receipt、raw JSONL 与 save guard | 后续 shard 继续复用同一强门 |
+| P1 | 资源调度 | exact producer registry、短 grant、最长 24 小时 revocable window、真实 Windows process/disk gate 与 owned cancel signal；缺失/active/unknown/stale/expired/revoked 均 fail closed | 真实长时抢占延迟留 Gate F 汇总 |
+| P2 | 分析 v2 | regularized Bradley–Terry（draw half）已输出区间、side bias、图分量与异常排除 | 样本仍少且图断连，不能用于最终分档 |
+| P2 | planner v2 | 已生成 bridge、side-swap audit 与 timeout/error anomaly disposition | 跑真实桥接 shard 后复算 |
+| P3 | 模型 adapter | A/B/C 三 profile 已对同一 snapshot 完成真实调用；机械 scorecard 与盲化模型复核均有 receipt，盲评顺序为 C > A > B | 本次只建立一次可重放证据，不外推为永久模型排名 |
+| P3 | 人类 PVE | exact formal runtime、冻结 Lv32 玩家 build、2 场受控 encounter、两份截图/报告和两条 `1 × Lv10` 等效标签已闭合 | 客观战斗 telemetry 未报告，当前只到 `equivalence_only`；以后 packet 直接采数值等效合同 |
 | P3 | 正式建议落地 | 结果到 Web JS / XML 之间需人工翻译 | recommendation bundle、dry-run diff、一次批准 apply 和 rollback receipt |
-| P4 | 故障演练 | 已有 crash / timeout / rerun 实机证据 | checkpoint 撕裂、重复 attempt、ack 丢失、磁盘不足、长时漂移与人工 pause |
+| P4 | 故障演练 | 已有 crash/timeout/rerun 实机证据；fixture 覆盖 checkpoint 撕裂、重复 attempt、ack 丢失、磁盘不足、window expiry/revoke、active producer 和 manifest/decision 篡改 | 真实断电、长时漂移和运行中内容开发抢占留 Gate F 实跑 |
 
-P0 契约漂移修复是任何大样本新 campaign 的前置；不能先积累无法保留完整 roster 参数或 schema 不一致的数据。
+P0 契约漂移已于 2026-08-27 闭合。当前统一门用 Ajv 2020 编译 39 个 schema，并完成 63 项检查，合法实例通过、对应非法形状拒绝；覆盖 manifest、result、summary、next batch、工作簿 intake、Campaign runtime、shadow / paired / PVE artifacts、数值人形佣兵等效响应，以及 Gate F plan/window/decision/attention/shard receipt/status。测试群工作簿以 SHA-256 `840B30AF82CA686E954DC4A6378A5C2B297506070E034ED79EA91DA9E0B3B793`、sheet `斗兽标定组合` 和单元格定位摄取：59 个 populated cells 形成 59 个 raw submissions、58 个 normalized candidates，`C9` 和 `B9` 产生 hash-bound 派生修正，`B12` 保留原文并隔离，原工作簿未改写。
+
+fresh 运行前置门也已闭合：10-run `gate-a-pilot-20260827-a` 覆盖普通、单位 payload、阵型、显式长 timeout 与高等级案例，10/10 finished、0 timeout/error/contamination；随后 30-run `gate-a-exploration-20260827-a` 为 27 finished、3 timeout、0 error/contamination。两批均绑定同一 verified formal runtime identity / payload closure，且专用目标槽以外 20 份 live shadow JSON / SOL 的跑前跑后集合 hash 完全一致。探索批 10% timeout 必须保留为调查信号；每个方向只有 3 个样本，不足最终候选门。独立 1-run `gate-a-shutdown-regression-20260827-a` 证明 expected PID 消失可作为正常 shutdown 终态；随后 `gate-a-schema-regression-20260827-a` 以 1/1 finished、原始 JSONL direct-schema-valid、exact manifest/case binding、`error=null` 和相同 save hash 证明生产字段闭包真正进入现役 runner。
 
 ---
 
@@ -615,7 +618,7 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 
 ## 12. 分期施工与验收
 
-### Gate A：ADR 与最小契约
+### Gate A：ADR 与最小契约（`COMPLETE`，2026-08-27）
 
 - 本文评审通过。
 - 定义 raw submission、normalized candidate、campaign、snapshot、proposal、receipt、adjudication、attention event 和 exception inbox schema。
@@ -626,7 +629,9 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 - 修复 `parameters` 闭包与 `contamination` 枚举漂移。
 - Node fake fixtures 分别证明：未知 / 非法模型 action 被 reject 且 campaign 继续；可信 L0 manifest 非法使 campaign `FAILED_CLOSED`；两者不能共用模糊的“schema 非法”期望。
 
-### Gate B：可恢复最小 Campaign
+完成回执：闭合 action 共 13 项；schema registry、合法/非法实例、参数/authority hash、生产原始 JSONL、污染结果、最终候选硬门和确定性 adapter fixture 全部通过。10-run fresh pilot 通过后才进入 30-run exploration；原始 JSONL 和历史 teardown 错误均未被改写。Gate A 的完成只代表 Gate B 可开工，不代表 journal durability、模型消融、最终候选或正式配置回写已完成。
+
+### Gate B：可恢复最小 Campaign（`COMPLETE`，2026-08-27）
 
 - 以 provisional profile 完成一个小型真实 campaign。
 - 至少包含两个 shard 和一次人为 pause / 进程中断。
@@ -635,28 +640,38 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 - attention event、execution artifact、battle semantics cohort、compatibility receipt 与 decision policy 可追溯。
 - 无 grant、过期 grant、缺失 / 离线 producer、未知 lease 状态均阻止启动；有效 `idleGrant` 才允许恢复。开发抢占目标在 60 秒内让位，5 分钟硬上限内必须释放 Launcher、Flash 和 work lease。
 
-### Gate C：最小消融验收
+完成回执：`gate-b-campaign-20260827-a` 以 `provisional_gate_b_v1 / rule-provisional-gate-b-v1` 运行 B2、G2 两个真实 shard，中间显式 `campaign_paused + segment_close` 后由新进程、新 producer snapshot 和新 idle grant 恢复；最终 journal 重放为 `PAUSED`、26 个 committed event、2 个唯一 runKey、3 个 closed segment、0 个 open segment。两局均 1/1 finished、0 timeout/error，绑定 formal Core SHA-256 `69372E65CAB80D81A9448A41AA2167E8A7E707FB949CF57710BADC25118B16E2`、build identity `E746A365F2715556A3298C4CBF1E926F039BC147625D4612F850768C9A52ADA3`、payload closure `8175440099ECF58708CD35F81F9C4A0B81390EC64EF2896D96EB885779A20475`；20 份受保护 live JSON/SOL 的前后 snapshot 都是 `sha256:fcfaa53f9000a5b7e75205bb3549aa2c8b5798df3fe5d4843725222ffbede73b`。fixture 另覆盖 writer contention、四个双 flush crash 点、ack 丢失 exactly-once、未提交断尾排除、closed segment 篡改拒绝和显式 pause/resume。该完成只证明 Campaign 控制面与已覆盖运行路径，不证明候选数值稳定或 Gate C。
+
+### Gate C：最小消融验收（`COMPLETE`，2026-08-27）
 
 - 从 Gate B 冻结若干真实 decision snapshot。
 - A / B / C 三个 shadow profile 输出同一 proposal schema。
 - 完成机械评分和至少一次同时隐藏模型、先验档位、来源及历史结论的人类裁决，形成 versioned gold suite。
 - 输出 initial profile 选择或“证据不足”，不要求永久模型排名。
 
-### Gate D：统计与主动采样
+冻结 snapshot `sha256:643992178e0de1d8cd9f6ad7eb731cd6bceb417a4987da748af9c8d8cb2d867f` 已由 A=`gpt-5.6-sol`、B=`gpt-5.6-luna`、C=`Luna draft + gpt-5.6-sol adjudication` 三个真实 profile 产生 proposal / receipt；随后 `gpt-5.6-sol` high 对盲化 packet 独立复核，给出 C > A > B、confidence 0.96，review hash `sha256:1ac12776aebcd38af04c73692a575625f2e43eff7b1f85d0afc0c33a32636b55`。这完成本轮冻结快照的模型盲评要求，但只是一次方法选择证据，不建立永久模型排名，也不冒充真人 PVE。
+
+### Gate D：统计与主动采样（`SELECTED_CANDIDATE_MACHINE_COMPLETE`）
 
 - paired model 输出潜在强度区间。
 - planner 能发现断连子图并生成 bridge。
 - side swap、平局、异常和非传递候选不会被强塞普通档。
 
-### Gate E：人类 PVE 外部验收
+初始 42 行只形成断连预分析。随后按主动计划执行 34 个 fresh run，并对单一候选执行 21 个 confirmatory run；最终配对报告共有 91 个 eligible、6 个异常排除、1 个连通分量、0 bridge 待办，report hash `sha256:882618beb7772abbd848c70bb4b7c48902750f4b7aeb599558329c65652d5aa3`。最终 snapshot `sha256:54264666fb09b946b4206a1b9ec50c4cdefd2b2dc0771a70280b51bb37a6b5e3` 中，工作簿 G2 的 `candidate-dd65977b16a48a35` 达到 original 15 + swapped 15、两向 0 timeout / 0 error、`sideSwapReviewed=true`，`complete_candidate` receipt 已 accepted。其余候选仍保持 provisional，不随单候选一起晋级。
+
+### Gate E：人类 PVE 外部验收（`EQUIVALENCE_LABELS_COMPLETE / OBJECTIVE_TELEMETRY_UNREPORTED`）
 
 - 主控生成成对 PVE 候选。
-- 以可暂停 calibration packet 自动选择 build、进场和采集客观遥测；人类只提交少量主观标签。
+- 以可暂停 calibration packet 自动选择 build、进场和采集客观遥测；人类只提交等效人形佣兵数量、等级及少量可选标签。
 - 每 packet 2–4 encounter、目标 5–10 分钟、硬上限 15 分钟；超过即验收失败或拆包。
 - 至少一个 holdout 不参与前期调参。
 - 输出 accepted / boundary / provisional 等状态和证据引用。
 
-### Gate F：星期级累计 campaign
+本轮 packet `sha256:f66096025432d7f3707adde7b8eb514dd4d10f0ee5e3be9e123331048ee73449` 绑定获批 Lv32 玩家 build 与 exact formal runtime。两场受控 encounter 的 match hash 分别为 `sha256:dddd9868fe3dd1a8c96d5abd7c7109e287fe1f17ac7dd302e9674f18bfeed538`、`sha256:5489bae928a643aa37a0e26513e15284d48b0346d85c657d0d901e285e3f1e88`，维护者分别给出“体感应该是10级人形怪级的等效战力”和“1名10级佣兵等效战力”，均规范化为 `1 × Lv10`。数值响应 hash 为 `sha256:76ab8e72f4edfcfdbebd7c38b7235a273d0205b4fc9248f3987a4609cec18f18`，通过 exact packet validator；源存档 hash 未变、非目标存档集合未变，active 专用槽 / runtime process / lock / recovery record 均为 0。
+
+该 packet 在口径修正前生成，原 `subjectiveLabelContract` 仍是泛化体验档；已执行 encounter 的 packet hash 不回写。数值等效响应以新 schema 作为 hash-bound 补充证据，后续 packet builder 直接输出 `monster_group_to_humanoid_mercenary_equivalence`。由于本轮没有自动落下 duration、胜负、承伤、输出、残血和异常 telemetry，也不让维护者事后补猜，Gate E 当前只完成等效标签子门；未生成 recommendation bundle，未修改 `arena_factions.json`，未 formal apply。
+
+### Gate F：星期级累计 campaign（`F0_ENGINEERING_READY / FORMAL_SOAK_NOT_STARTED`）
 
 - 多次正常暂停、游戏崩溃或电脑重启后可恢复。
 - 没有无限重启、跨 cohort 拼接或重复计数。
@@ -669,6 +684,10 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 - gold suite 建立后，在滚动最近 20 个 eligible epoch 与 Gate F 全 campaign 两个窗口内，`proposalHumanTouchRate<=10%`；approve / reject / edit 均计 touch，edit 另报 `proposalManualEditRate`。任一窗口分母不足 20 或为 0 时不得称 low-touch 已验收。
 - 内容开发 / Flash 编译抢占以 `targetYieldLatency<=60` 秒为目标，并在 `maxYieldLatency<=5` 分钟硬上限内释放 Launcher、Flash 和 work lease。
 - 对进入正式建议阶段的候选生成 recommendation bundle；人类不需要手工抄录配置。
+
+Gate F0 当前已生成 `gate-f-week-full-v1` 计划族、`gate-f-week-full-v2` 执行 campaign 的冻结前草案：58 个 normalized candidate 全部待跑，`B12` 保持 quarantine；共 198 个短 shard、3255 个计划 run、198 份 hash-bound `schedule_shard/auto_execute` 决策证据。新部署在 `ArenaController.prepareArenaStage()` 增加 `StageRunSession.canStartStage()` admission，因此 G2 `candidate-dd65977b16a48a35` 的两场 `1 × Lv10` PVE 标签继续保留，但旧 runtime 的机器完成证据不跨 cohort 代签，G2 也重新执行 55 run。普通候选为 `10 + 20 + 25 = 55` run，显式长 timeout 候选为 `6 × 10 = 60` run，全部包含 original/side-swap。B9 的 1800 帧双向 timeout 与 5400 帧 2776/3494 finished 已作为 schema-valid、hash/cell/candidate/runtime/save-bound 的计划层 override 固化；normalized intake 和旧超时不改写，candidate 证据不能代签 formal replay。合并候选的首份 10-run 诊断为 9 finished + C9 换边 1 timeout；随后 C9 的 5400 帧双向探针均在 1800 帧前 finished，故没有形成 timeout override。为使前三个 10-run soak 判定基础设施稳定性，首批以同 runtime 10/10 finished 的 G2 替代 C9，合并仍覆盖普通参数、单位 payload、阵型、长 timeout、高等级与 B9 修正；C9 继续完整进入普通 `10 + 20 + 25` run 和 side-swap，不能因退出基础设施 soak 而丢失候选波动证据。
+
+工程门已通过 40-schema / 64-check 统一回归，并覆盖 plan/manifest/decision 篡改、经验 timeout override 真正 Schema 实例与双向语义闭包、低磁盘、active producer、window 到期/撤销、过期执行 grant 后既有事实提交、partial row exactly-once、重复排除、20-epoch attention 和 exception inbox 去重。独立候选 runtime 已完成 10-run soak 诊断与 B9 2-run 长窗诊断，exact candidate identity/closure、0 recovery 和受保护存档不变已闭合；这仍是 `candidate_executed / NOT_DEPLOYED`。计划尚未绑定部署后的 clean source 与 exact formal runtime，三份正式 fresh soak、真实 20-epoch low-touch、星期级恢复/抢占和 3255-run 候选终态均尚未产生；在这些 receipt 出现前不得写成 Gate F 通过或全量标定完成。
 
 ---
 
@@ -698,11 +717,11 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 ## 14. 开放项
 
 - Sol / Luna 的实际调用面：Codex 原生 subagent、自建 adapter、MCP 或 Agents SDK。
-- paired model 的首选实现与先验。
-- 首批 PVE build profile、体验量表和 holdout 比例。
+- paired model 的先验、正则强度与区间校准；首版实现已落地但尚未由桥接大样本验证。
+- 首批 exact 玩家 build profile、自动进场/目标遥测、体验量表与 holdout 比例。
 - shadow 进入在线交错实验的物质增益阈值。
-- Campaign 事件账本由 Node 还是 Launcher owner 实现；§5.3 的 canonical 路径、保留、单 writer、flush、commit 与恢复语义不是开放项。
-- producer registry 的 exact 清单、TTL 取值与 Flash CS6 编译接线；必须在 Gate B 前闭合，未闭合 / 未接线状态按 §4.5 fail closed。
+- Campaign 事件账本已由 Node owner 实现；未来迁移 owner 不得改变 §5.3 的 canonical 路径、保留、单 writer、flush、commit 与恢复语义。
+- producer registry exact scope、TTL 与当前已打开且响应的 TestLoader observation 已闭合；未来新增 producer 必须先扩 schema/registry 与 fail-closed fixture。
 - recommendation apply 工具在现有 Web JS SOT 与未来配置 SOT 迁移间的适配层。
 
 这些开放项不得削弱 §5.3 durable journal、§7.1 action 枚举、Human-attention contract 或 Gate A 的客观闭合；在对应实现 Gate 前必须闭合。

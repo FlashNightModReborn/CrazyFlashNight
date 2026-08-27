@@ -2,53 +2,102 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "arena-calibration.case-manifest.v1",
   "type": "object",
-  "required": ["schema", "batchId", "arenaMode", "cases"],
+  "additionalProperties": false,
+  "required": [
+    "schema", "batchId", "createdAt", "buildCommit", "planner", "arenaMode",
+    "repeat", "timeoutFrames", "blueBench", "cases", "manifestHash"
+  ],
   "properties": {
     "schema": { "const": "arena-calibration.case-manifest.v1" },
     "batchId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
-    "createdAt": { "type": "string" },
-    "buildCommit": { "type": "string" },
+    "createdAt": { "type": "string", "minLength": 1 },
+    "buildCommit": { "type": "string", "minLength": 1 },
     "planner": { "type": "object" },
     "arenaMode": { "const": "calibration" },
     "repeat": { "type": "integer", "minimum": 1 },
     "timeoutFrames": { "type": "integer", "minimum": 1 },
-    "blueBench": { "type": ["object", "null"] },
-    "manifestHash": { "type": "string" },
+    "blueBench": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "benchId": { "type": "string" },
+            "roster": { "type": "array", "items": { "$ref": "#/$defs/rosterEntry" } }
+          }
+        }
+      ]
+    },
+    "manifestHash": { "$ref": "#/$defs/sha256" },
     "cases": {
       "type": "array",
       "minItems": 1,
-      "items": {
-        "type": "object",
-        "required": ["caseId", "blueRoster", "redRoster"],
-        "properties": {
-          "caseId": { "type": "string", "minLength": 1 },
-          "caseHash": { "type": "string" },
-          "blueRoster": {
-            "type": "array",
-            "minItems": 1,
-            "items": { "$ref": "#/$defs/rosterEntry" }
-          },
-          "redRoster": {
-            "type": "array",
-            "minItems": 1,
-            "items": { "$ref": "#/$defs/rosterEntry" }
-          },
-          "spawnDistance": { "type": "integer", "minimum": 1 },
-          "repeat": { "type": "integer", "minimum": 1 },
-          "timeoutFrames": { "type": "integer", "minimum": 1 },
-          "tags": { "type": "array", "items": { "type": "string" } },
-          "plannerReason": { "type": "string" }
-        }
-      }
+      "items": { "$ref": "#/$defs/case" }
     }
   },
   "$defs": {
+    "sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "jsonValue": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "string" },
+        { "type": "array", "items": { "$ref": "#/$defs/jsonValue" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/jsonValue" } }
+      ]
+    },
     "rosterEntry": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["type", "level"],
       "properties": {
         "type": { "type": "string", "pattern": "^兵种[0-9]+$" },
-        "level": { "type": "integer", "minimum": 1 }
+        "level": { "type": "integer", "minimum": 1 },
+        "sourceId": { "type": "string", "minLength": 1 },
+        "hpPermille": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "parameters": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/$defs/jsonValue" }
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caseId", "blueRoster", "redRoster", "repeat", "timeoutFrames", "tags",
+        "plannerReason", "spawnDistance", "blueFormation", "redFormation",
+        "formationSpacing", "caseHash"
+      ],
+      "properties": {
+        "caseId": { "type": "string", "minLength": 1 },
+        "caseHash": { "$ref": "#/$defs/sha256" },
+        "blueRoster": {
+          "type": "array", "minItems": 1, "maxItems": 20,
+          "items": { "$ref": "#/$defs/rosterEntry" }
+        },
+        "redRoster": {
+          "type": "array", "minItems": 1, "maxItems": 20,
+          "items": { "$ref": "#/$defs/rosterEntry" }
+        },
+        "spawnDistance": { "type": "integer", "minimum": 360, "maximum": 1040 },
+        "repeat": { "type": "integer", "minimum": 1 },
+        "timeoutFrames": { "type": "integer", "minimum": 1 },
+        "blueFormation": { "enum": ["column", "line", "wedge", "shield", "grid"] },
+        "redFormation": { "enum": ["column", "line", "wedge", "shield", "grid"] },
+        "formationSpacing": { "type": "integer", "minimum": 36, "maximum": 96 },
+        "authorityContext": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/jsonValue" }
+        },
+        "tags": {
+          "type": "array", "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "plannerReason": { "type": "string" }
       }
     }
   }
