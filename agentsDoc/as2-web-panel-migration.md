@@ -1,7 +1,8 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：commit `248cca7be212219655319c666304407b0568e658`（2026-08-25，军阀战术演习 AS2 战斗 release source；deployment `126c10a3d5bf46b66a973e8b68ad27c00ef9257d`）已包含 Warlord 的 AS2 battle authority、exact close、内部专用恢复路由与 observe-only 战宠经济投影；双故障域共识、post-promotion audit 和无 candidate selector 的正式身份/可信退出均通过。
+**最后核对代码基线**：commit `96ee67c58d88ce202ee41e6ffc32037911349426`（2026-08-27，库存显式批量转移真批量事务；`NOT_DEPLOYED / HUMAN_ACCEPTANCE_REQUIRED`）。Web 以一次 `autoTransferBatch` 提交最多 50 个有序 lease，Host 严格重建请求与 full/partial 回包，AS2 一次扫描目标、每容器一次 revision/index rebuild、一次窗口组重投影；旧 `autoTransfer` 只保留给单件 `Ctrl+单击`。fresh Shared TestLoader 为 EquipmentInventory `28/28` + Inventory `170/170`、Compiler `0/0`、32K retry `0`；同进程 50 件 fixture 为旧逐项约 `673 ms`、新 batch 约 `20 ms`，该数字只属 TestLoader 性能证据，真实 WebView2 输入与玩家存档重启仍须后续验收。
+**上一正式发布**：commit `248cca7be212219655319c666304407b0568e658`（2026-08-25，军阀战术演习 AS2 战斗 release source；deployment `126c10a3d5bf46b66a973e8b68ad27c00ef9257d`）已包含 Warlord 的 AS2 battle authority、exact close、内部专用恢复路由与 observe-only 战宠经济投影；双故障域共识、post-promotion audit 和无 candidate selector 的正式身份/可信退出均通过。
 本轮没有在部署后重跑军阀沙盘→AS2 战斗→恢复、设置 apply/save/restart、`settings_camera_preview` 或战宠出退场业务旅程，因此只证明新字节已 `promoted`。维护者在 promotion 前确认的军阀体验与战后返回、战宠休息/换图闭环，以及 2026-08-22 setting release 的单屏 `settings_camera_preview` 历史窄纵切保持各自证据边界，不得替本轮增量代签真实业务标准入口、设置写入、Flash pixels/input、物理键鼠、音量听感或救援效果。
 
 2026-07-29 的 B7 施工从 commit `c96f4c3d750561022b706c72a4d53050431e627d` 起步；2026-07-30 的历史 cut 又删除仓库、装备、NPC 商店、合成与技能教师的 legacy renderer/fallback，并收口 main XFL 可达闭包。该 cut 与 2026-08-06 A1–A6 release 的 immutable tag、双故障域 quorum、promotion、成功与失败标准入口证据全部保留，但均已被上方 2026-08-08 release supersede；旧纵切没有执行 Character、Materials、Intelligence、PlayerInfo、业务 preview/commit、普通 panel close 或持久化专项旅程，本次 Help smoke 也不补齐这些业务范围。
@@ -76,13 +77,16 @@ Skill 页切换把 `Bridge.send` 严格定义为本地 transport 投递结果：
 | `discard` | `inventoryDiscard` | `executeDiscard` | `inventory_response` | `panel_resp domain=inventory cmd=discard` | `InventoryCoordinator` | 背包写 |
 | `move/merge/swap` | `inventoryMove/Merge/Swap` | `executeTransfer` | `inventory_response` | `panel_resp domain=inventory cmd=同名` | `InventoryCoordinator` | 双容器写 |
 | `autoTransfer` | `inventoryAutoTransfer` | `executeAutoTransfer` | `inventory_response` | `panel_resp domain=inventory cmd=autoTransfer` | `InventoryCoordinator` | 来源 lease + 目标容器权威自动落位 |
-| `sortAndMerge` | `inventorySortContainer` | `executeSortContainer` | `inventory_response` | `panel_resp domain=inventory cmd=sortAndMerge` | `InventoryCoordinator` | 容器写 |
+| `autoTransferBatch` | `inventoryAutoTransferBatch` | `executeAutoTransferBatch` | `inventory_response` | `panel_resp domain=inventory cmd=autoTransferBatch` | `InventoryCoordinator` | 1–50 个同源 lease 的有序批量落位 |
+| `sortAndMerge` | `inventorySortAndMerge` | `executeSortAndMerge` | `inventory_response` | `panel_resp domain=inventory cmd=sortAndMerge` | `InventoryCoordinator` | 容器写 |
 
 ### Inventory 通用 owner、未知写与响应证明
 
 通用 inventory wire 的生产 owner 固定为 `workbench / kshop / npcshop / crafting`。四者发送的业务 envelope 顶层必须精确为 `{type,panel,domain,cmd,callId,panelInstanceId,payload}`，其中 `type=panel`、`domain=inventory`，`panel` 与非空 `panelInstanceId` 必须同时等于 Host 当前 active owner；response 还必须回显同一 `panel / panelInstanceId / cmd / callId`。ordinary close 也先复验当前 owner 与 exact instance，stale、foreign、缺实例或多余字段一律不得关闭当前面板或把旧回包交给新实例。`loot` organizer 和 Character candidate rich tooltip 继续走各自更窄的专用 validator；它们不能借通用四-owner gate 扩权，也不能把专用 payload 形状回落成普通 Inventory 请求。
 
-`InventoryTask` 对四个通用 owner 共用一个进程内三态写门：`idle → write_pending → needs_reconcile`。每次 `discard / move / merge / swap / autoTransfer / sortAndMerge` 在投递前冻结实际受影响容器集合；明确成功或除 `commit_failed` 外的权威确定失败才回到 `idle`。send-false/抛异常、timeout、断线/导航、已接受的 owner close、畸形回包、`commit_failed` 或其他无法确定是否落盘的终态都把在途写收敛为 `needs_reconcile`，后续写只返回 `reconcile_required`，绝不自动重放原 mutation。只有进入未知态后新发起、覆盖全部受影响容器、且 Host 对 request/batch/容器/窗口/过滤/槽位递归验证全部通过的成功 snapshot 才能解除门；未知态之前的旧 snapshot、迟到回包、只覆盖部分容器或畸形投影均不得清水位。Web document 导航、accepted owner close 与 socket teardown 会清 transport pending，但必须保留上述未知写事实。
+`InventoryTask` 对四个通用 owner 共用一个进程内三态写门：`idle → write_pending → needs_reconcile`。每次 `discard / move / merge / swap / autoTransfer / autoTransferBatch / sortAndMerge` 在投递前冻结实际受影响容器集合；明确成功或除 `commit_failed` 外的权威确定失败才回到 `idle`。send-false/抛异常、timeout、断线/导航、已接受的 owner close、畸形回包、`commit_failed` 或其他无法确定是否落盘的终态都把在途写收敛为 `needs_reconcile`，后续写只返回 `reconcile_required`，绝不自动重放原 mutation。只有进入未知态后新发起、覆盖全部受影响容器、且 Host 对 request/batch/容器/窗口/过滤/槽位递归验证全部通过的成功 snapshot 才能解除门；未知态之前的旧 snapshot、迟到回包、只覆盖部分容器或畸形投影均不得清水位。Web document 导航、accepted owner close 与 socket teardown 会清 transport pending，但必须保留上述未知写事实。
+
+`autoTransferBatch` 请求固定为 exact `{v:1,sources:[{containerId,slot,expectedLease}],targetContainerId,policy:"mergeThenEmpty",windows}`：`sources` 必须为 1–50 项、同一来源容器、slot 唯一，并且只允许 `背包↔仓库/战备箱`。全成功回包固定 `requestedCount=N / completedCount=N / results.length=N` 且不得携 `failure`；目标在第 `j` 项满时只提交选择顺序的前缀，回包为 `success:true / completedCount=j / failure:{index:j,error:"target_full"}`；首项即满则 `success:false,error:"target_full"` 且零写。AS2 必须先验证全部来源 lease，再一次扫描目标、一次提交两个容器、一次 dirty/容器失效/窗口组重投影；目标侧提交失败必须用 receipt 精确恢复来源对象、数量、索引与 revision。Web 对 partial 只计已提交前缀并清空剩余选择，不跳项、不重放；`commit_failed`、timeout、断线或畸形 success 仍进入上述 reconcile。
 
 Host 不再把 AS2 snapshot 或写回包原对象浅传到 Web：容器、稀疏物理槽、item、`confirmProjection`、mod、递归 facets/filterSpec 与可选 `balanceSummary` 均按白名单重建；Web 再独立执行同构 strict proof，并在整批验证完成后递归 deep-copy，再原子替换窗口。任何额外键、类型强制转换、重复容器/槽、请求不匹配、item/confirm 不一致或嵌套对象别名都 fail closed。AS2 仍是背包和落位规则的唯一业务权威；Host/Web 只证明与重建投影。
 
