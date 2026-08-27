@@ -55,6 +55,16 @@ function audit(){
       ||!hasAll(interaction,["String(pendingKinds[pendingIndex]) !== 'tooltip'",'authorityPending'])
       ||!hasAll(view,["type:'debug'","scope:'equipment_tuning'",'preview_issued','preview_adopted','commit_issued','inventory_refresh_settled','reconcile_issued','reconcile_adopted'])
       ||!hasAll(tuningHarness,['tooltip-first response interleave preserves candidate activation and adopts the preview token','preview-first response interleave keeps the adopted preview when the late tooltip settles','commit and inventory refresh expose redacted current-build receipts','reconcile issued and adopted expose the exact unknown-write watermark without raw authority data']))throw new Error('tuning concurrency diagnostics or exact authority receipt gate missing');
+  if(!hasAll(view,['this._tooltipEpoch = 0','TuningView.prototype._invalidateTooltipAuthority','TuningView.prototype._adoptSnapshot','self._adoptSnapshot(response.snapshot)','self._adoptSnapshot(committedSnapshot)'])
+      ||!hasAll(render,['var diagnosticAuthoritySourceKey = Model.diagnosticAuthoritySourceKey','tooltipSnapshot && tooltipSnapshot.inventoryRevision','tooltipSnapshot && tooltipSnapshot.materialRevision','String(candidate.itemName || \'\')','self._tooltipEpoch !== tooltipEpoch','diagnosticAuthoritySourceKey(self._source) !== authoritySourceKey'])
+      ||!hasAll(writeLifecycle,['this._adoptSnapshot(authoritativeSnapshot)'])
+      ||!hasAll(loadoutLifecycle,['self._adoptSnapshot(response.snapshot)'])
+      ||view.includes('self._snapshot = response.snapshot')
+      ||view.includes('self._snapshot = committedSnapshot')
+      ||writeLifecycle.includes('this._snapshot = authoritativeSnapshot')
+      ||loadoutLifecycle.includes('self._snapshot = response.snapshot')
+      ||!hasAll(tuningHarness,['mod.N remap invalidates the cached body and binds the new inventory lease identity','tier.0 remap refetches the next progression material instead of reusing the prior tier body','unchanged candidate identity refetches stats after an equipment revision change','loadout tooltip authority follows expectedLoadoutRevision and refetches after rebind','late old-epoch tooltip response cannot write the new cache or overwrite the current overlay','reopening Equipment Tuning starts an empty tooltip authority session']))
+      throw new Error('Equipment Tuning tooltip authority epoch or remap regression gate missing');
   if(!hasAll(model,['function quickCommitEligible','enhance|convert|install_tier|install_mod|replace_mod|detach_mod|detach_all_mods'])
       ||!hasAll(view,['expectedTuningToken',"requestPreview('convert'","if (operation === 'replace_mod')"])
       ||!hasAll(render,["replacementMode ? 'replace_mod' : 'install_mod'","requestPreview('detach_all_mods'","_mux.request('tooltip'"]))throw new Error('seven-operation preview/token/tooltip flow missing');

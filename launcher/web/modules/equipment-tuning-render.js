@@ -28,7 +28,7 @@ var EquipmentTuningRender = (function() {
         var equipmentDiff = Model.equipmentDiff;
         var statsDeltaRows = Model.statsDeltaRows;
         var errorMessage = Model.errorMessage;
-        var tuningSourceKey = Model.tuningSourceKey;
+        var diagnosticAuthoritySourceKey = Model.diagnosticAuthoritySourceKey;
         var tuningSourceSupports = Model.tuningSourceSupports;
         var Confirmation = typeof EquipmentTuningConfirmation !== 'undefined'
             ? EquipmentTuningConfirmation : null;
@@ -1066,11 +1066,22 @@ var EquipmentTuningRender = (function() {
         if (!node || !candidate || !candidate.candidateKey || typeof PanelTooltip === 'undefined'
                 || !PanelTooltip || typeof PanelTooltip.bindAsyncHover !== 'function') return;
         var self = this;
+        var tooltipEpoch = this._tooltipEpoch;
+        var tooltipSource = this._source;
+        var tooltipSnapshot = this._snapshot;
+        var authoritySourceKey = diagnosticAuthoritySourceKey(tooltipSource);
         var tooltipBinder = this._tooltipScope || PanelTooltip;
         tooltipBinder.bindAsyncHover(node, {
             cache:this._tooltipCache,
-            key:'equipment-tuning:' + this._viewSessionId + ':'
-                + tuningSourceKey(this._source) + ':' + String(candidate.candidateKey),
+            key:'equipment-tuning:' + JSON.stringify([
+                this._viewSessionId,
+                tooltipEpoch,
+                authoritySourceKey,
+                tooltipSnapshot && tooltipSnapshot.inventoryRevision,
+                tooltipSnapshot && tooltipSnapshot.materialRevision,
+                String(candidate.candidateKey),
+                String(candidate.itemName || '')
+            ]),
             item:candidate,
             isSuppressed:function() { return self._busy || !self._mux.debugState().active; },
             renderBasic:function(value) {
@@ -1113,8 +1124,11 @@ var EquipmentTuningRender = (function() {
             fetch:function(value, callback) {
                 self._mux.request('tooltip', {
                     candidateKey:String(value.candidateKey),
-                    source:self._source || undefined
+                    source:tooltipSource || undefined
                 }, function(response, entry) {
+                    if (self._tooltipEpoch !== tooltipEpoch
+                            || self._snapshot !== tooltipSnapshot
+                            || diagnosticAuthoritySourceKey(self._source) !== authoritySourceKey) return;
                     callback(response, entry);
                     var previewDiagnostic = self._previewDiagnostic;
                     if (self._preview && self._preview.tuningToken && previewDiagnostic

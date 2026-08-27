@@ -88,6 +88,7 @@ var EquipmentTuningView = (function() {
         this._snapshot = null;
         this._preview = null;
         this._previewDiagnostic = null;
+        this._tooltipEpoch = 0;
         this._tooltipCache = {};
         this._tooltipScope = null;
         this._operation = 'enhance';
@@ -157,7 +158,7 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.unmount = function() {
-        if (this._tooltipScope) { this._tooltipScope.dispose(); this._tooltipScope = null; }
+        this._invalidateTooltipAuthority(false);
         if (this._densityController && this._densityController.unregister) this._densityController.unregister(this);
         this._root = null;
         this.root = null;
@@ -351,8 +352,6 @@ var EquipmentTuningView = (function() {
         this.closeSession();
         this._diagnosticEvents = [];
         this._diagnosticSequence = 0;
-        this._tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
-            ? PanelTooltip.createScope('equipment-tuning', {profile:'dense-inspect'}) : null;
         panelInstanceId = EquipmentTuningRuntime.safeToken(panelInstanceId);
         if (!panelInstanceId) {
             this._status = 'Host 面板实例无效';
@@ -362,11 +361,40 @@ var EquipmentTuningView = (function() {
         this._panelInstanceId = panelInstanceId;
         this._viewSessionId = ('tuning.' + Date.now().toString(36) + '.'
             + Math.floor(Math.random() * 0x7fffffff).toString(36)).replace(/[^A-Za-z0-9._-]/g, '');
+        this._createTooltipScope();
         var opened = this._mux.openSession(this._panelInstanceId, this._viewSessionId);
         this._status = opened ? '请选择左侧背包装备' : '无法建立调制会话';
         this._emit();
         this.render({preserveScroll:false});
         return opened;
+    };
+
+    TuningView.prototype._disposeTooltipScope = function() {
+        if (this._tooltipScope && this._tooltipScope.dispose) this._tooltipScope.dispose();
+        this._tooltipScope = null;
+    };
+
+    TuningView.prototype._createTooltipScope = function() {
+        this._disposeTooltipScope();
+        this._tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
+            ? PanelTooltip.createScope('equipment-tuning-' + this._tooltipEpoch,
+                {profile:'dense-inspect'}) : null;
+        return this._tooltipScope;
+    };
+
+    TuningView.prototype._invalidateTooltipAuthority = function(recreateScope) {
+        this._tooltipEpoch++;
+        this._tooltipCache = {};
+        this._disposeTooltipScope();
+        if (recreateScope !== false && this._viewSessionId) this._createTooltipScope();
+        return this._tooltipEpoch;
+    };
+
+    TuningView.prototype._adoptSnapshot = function(snapshot) {
+        if (!snapshot || typeof snapshot !== 'object' || snapshot instanceof Array) return false;
+        this._invalidateTooltipAuthority();
+        this._snapshot = snapshot;
+        return true;
     };
 
     TuningView.prototype.closeSession = function() {
@@ -391,8 +419,7 @@ var EquipmentTuningView = (function() {
         this._preview = null;
         this._previewDiagnostic = null;
         this._previewIntentKey = '';
-        this._tooltipCache = {};
-        if (this._tooltipScope) { this._tooltipScope.dispose(); this._tooltipScope = null; }
+        this._invalidateTooltipAuthority(false);
         this._busy = false;
         this._inventoryWriteHandle = null;
         this._readPending = false;
@@ -616,7 +643,7 @@ var EquipmentTuningView = (function() {
             var reconcileConfirmed = !reconcileAfterCallId || (response && response.reconciled === true
                 && response.reconcileAfterCallId === reconcileAfterCallId);
             if (response && response.success === true && response.snapshot && reconcileConfirmed) {
-                self._snapshot = response.snapshot;
+                self._adoptSnapshot(response.snapshot);
                 self._preview = null;
                 if (self._replaceCandidateKey && !candidateInstalled(
                         response.snapshot.modCandidates, self._replaceCandidateKey)) {
@@ -854,7 +881,7 @@ var EquipmentTuningView = (function() {
             });
             if (response && response.success === true) {
                 var committedSnapshot = response.snapshot || null;
-                if (committedSnapshot) self._snapshot = committedSnapshot;
+                if (committedSnapshot) self._adoptSnapshot(committedSnapshot);
                 self._preview = null;
                 if (committedOperation === 'replace_mod' || committedOperation === 'detach_mod') {
                     self._replaceCandidateKey = '';
@@ -1147,6 +1174,8 @@ var EquipmentTuningView = (function() {
                     ? this._loadoutBarrier.source.slotKey : ''
             } : null,
             lastCommitCallId:this._lastCommitCallId,
+            tooltipEpoch:this._tooltipEpoch,
+            tooltipCacheCount:Object.keys(this._tooltipCache).length,
             diagnostics:this._diagnosticEvents.slice(), mux:this._mux.debugState()};
     };
 

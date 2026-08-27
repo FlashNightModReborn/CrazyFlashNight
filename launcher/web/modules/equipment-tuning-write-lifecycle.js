@@ -230,7 +230,7 @@ var EquipmentTuningWriteLifecycle = (function() {
             if (authoritativeSource
                     && authoritativeSource.sourceKind === 'inventory'
                     && refKey(authoritativeSource) === refKey(this._source)) {
-                this._snapshot = authoritativeSnapshot;
+                this._adoptSnapshot(authoritativeSnapshot);
                 this._preview = null;
                 this._needsReconcile = false;
                 this._modIntent = null;

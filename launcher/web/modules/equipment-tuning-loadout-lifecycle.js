@@ -60,7 +60,7 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                     self._preview = null;
                     self._busy = false;
                     if (exactSuccess) {
-                        self._snapshot = response.snapshot;
+                        self._adoptSnapshot(response.snapshot);
                         self._targetLevel = nextEnhancementLevel(
                             response.snapshot);
                         self._needsReconcile = false;
