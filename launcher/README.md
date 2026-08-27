@@ -1,9 +1,9 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `732898b8aa1308cf820976324f47bba97f654e41`（2026-08-27，关卡结果原生状态槽与基地结算工作台；deployment `339b15694d631d483736880c0dfd44429f6926a3`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-维护者已接受与正式 Core 逐字节相同的 A3 隔离候选，因此关卡结果与基地结算为 `HUMAN_ACCEPTANCE_PASSED / promoted`。无 candidate selector 的正式入口已确认 `formal_runtime`、exact Core/identity/closure、bus ready、正常关闭和零新增残留；由于没有选择存档，本轮未取得 fresh `bootstrap_reveal_ready`，也没有从正式入口重跑复活、胜负、交付或奖励业务，不称本功能业务或完整入口 `standard_entry_verified`。
-
+**最后核对代码基线**：release source commit `b2bc05775c621616fe64be55354aebe21c63a2af`（2026-08-27，双药剂组与八槽共享冷却；deployment `6902b2b6ed067c4882e9a67267d055ce0db90b34`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+维护者已确认双药剂组功能、切换手感及修订后的 `○ / × + 1 / 2` PlayerInfo 图标有效，因此该专项为 `HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口没有执行八槽、切换、旧档迁移、键位 fallback 或重启读回，不称本功能业务 `standard_entry_verified`。
+无 candidate selector 的正式入口 run `2478a9f25873043318f2402f80105b52` 已确认 `formal_runtime`、exact Core/identity/closure、两次 verified status 的同一 lifecycle、fresh handoff/reveal、可信 shutdown、Guardian/Flash code 0、存档哈希不变且未触发强制清理，故正式 identity/lifecycle 窄纵切达到 `standard_entry_verified`。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：

@@ -1,13 +1,17 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：release source commit `732898b8aa1308cf820976324f47bba97f654e41`（2026-08-27，关卡结果原生状态槽与基地结算工作台；implementation `32ae67a1c57e10002ed00354d172ae88207a24fa`、tag `runtime-build-v2/20260827-stage-outcome-settlement-v2`、tree `d498236a3ac06294f0c871dba73302bb24bc398e`、request `CB8268D83DB35DF3BC7D22587822F279C29A93CD12A15B1F10DF14759B000991`、deployment `339b15694d631d483736880c0dfd44429f6926a3`；`HUMAN_ACCEPTANCE_PASSED / promoted`）。本地 X509 与 GitHub Hosted OIDC/Sigstore run `33070890481` 对 identity `03F9825C2A2A248C73A7FA6FFB4E6C4305D49C4F97BD9E6042747B9BC5A0F5AA`、closure `5DA2B3053BF70EFCDCE74A503C33098774F9026AAD6E2D1F555C1A9EC5181D07` 达成双 signer / 双 faultDomain 共识；39/39 production policy、原子 promotion 与 Audit run `33071572650` 均通过。无 candidate 入口只确认 exact 正式身份、bus ready、正常关闭与零新增残留；未选存档导致没有 fresh reveal，故不称业务或完整入口 `standard_entry_verified`。
-**上一正式发布**：commit `5f5cfce7c162ba616bfc51f3c03f3134e937d36a`（2026-08-27，库存显式批量转移；deployment `4d5fd254752a149ce07006f8f48391ab26485f61`）把 Web N 次 `autoTransfer` 收敛为一次最多 50 项的 `autoTransferBatch`，并完成双故障域共识、39/39 production policy 与正式入口身份/生命周期窄纵切；正式入口没有重跑库存业务写或写后重启读回，因此不称业务或持久化 `standard_entry_verified`。
-**更早正式发布**：commit `248cca7be212219655319c666304407b0568e658`（2026-08-25，军阀战术演习 AS2 战斗；deployment `126c10a3d5bf46b66a973e8b68ad27c00ef9257d`）已包含 Warlord 的 AS2 battle authority、exact close、内部专用恢复路由与 observe-only 战宠经济投影；其正式证据继续按原边界保留。
+**最后核对代码基线**：release source commit `b2bc05775c621616fe64be55354aebe21c63a2af`（2026-08-27，双药剂组与八槽共享冷却；implementation `9a85f95e748a986faca8f9a846ab360e2c7900d2`、tag `runtime-build-v2/20260827-dual-drug-banks-v1`、tree `826f37292cb591782e3d3cc41145b9158a426032`、request `9FE68E5BEB945B969A2D4CDAA1D20B2D2838A4208DB8773EF7344918B0383658`、deployment `6902b2b6ed067c4882e9a67267d055ce0db90b34`；`HUMAN_ACCEPTANCE_PASSED / promoted`）。本地 X509 与 GitHub Hosted OIDC/Sigstore run `33090620311` 对 identity `6C9CF4699C217CC65083038D3AA69B0D6640C4E8DF5A50D367D0628E366D379D`、closure `1D0C3A1272CD084ECC9532B0565E017E07A233C1511B4372C091FF081701252F` 达成双 signer / 双 faultDomain 共识；39/39 production policy、原子 promotion 与 Audit run `33092179946` 均通过。无 candidate 入口的正式 identity/lifecycle 窄纵切达到 `standard_entry_verified`，但未重跑药剂业务或持久化旅程。
+**上一正式发布**：commit `732898b8aa1308cf820976324f47bba97f654e41`（2026-08-27，关卡结果原生状态槽与基地结算工作台；deployment `339b15694d631d483736880c0dfd44429f6926a3`）完成双故障域共识、39/39 production policy 与正式入口身份/总线/正常退出窄验证；未选存档且没有 fresh reveal，不称业务或完整入口 `standard_entry_verified`。
+**更早正式发布**：commit `5f5cfce7c162ba616bfc51f3c03f3134e937d36a`（2026-08-27，库存显式批量转移；deployment `4d5fd254752a149ce07006f8f48391ab26485f61`）把 Web N 次 `autoTransfer` 收敛为一次最多 50 项的 `autoTransferBatch`，并完成双故障域共识、39/39 production policy 与正式入口身份/生命周期窄纵切；正式入口没有重跑库存业务写或写后重启读回，因此不称业务或持久化 `standard_entry_verified`。
 
 2026-07-29 的 B7 施工从 commit `c96f4c3d750561022b706c72a4d53050431e627d` 起步；2026-07-30 的历史 cut 又删除仓库、装备、NPC 商店、合成与技能教师的 legacy renderer/fallback，并收口 main XFL 可达闭包。该 cut 与 2026-08-06 A1–A6 release 的 immutable tag、双故障域 quorum、promotion、成功与失败标准入口证据全部保留，但均已被上方 2026-08-08 release supersede；旧纵切没有执行 Character、Materials、Intelligence、PlayerInfo、业务 preview/commit、普通 panel close 或持久化专项旅程，本次 Help smoke 也不补齐这些业务范围。
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
+
+### 2026-08-28 双药剂组与八槽共享冷却
+
+本列车不把怪物输出所依据的四条药剂冷却通道扩成八条，而是把物理容器扩为两组各四槽：AS2 `DrugInputService` 独占活动组、切换上升沿、同列共享冷却、同帧抑制与持键锁存；Settings 只新增逻辑键 `药剂组切换键` 并把键表升为 36 行 / `keySchemaVersion=2`；Character Build 顶层协议仍为 v1，但严格投影 `drugLayout.v=2`、八个 `{slot,bank,lane,active}` 行和两排四列 UI。PlayerInfo 的第五列只是 `drug:switch` 控件，不是第九药剂槽，专用无 linkage MovieClip 以两帧 `○ / × + 1 / 2` 显示活动组。维护者已确认功能、切换手感及最终图标有效；完整迁移、旧档、冷却、键位和发布边界见[双药剂组与八槽共享冷却 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。正式 runtime 已 promotion，部署后 identity/lifecycle 窄纵切已通过；该纵切 `businessJourneyExecuted=false`，不能代签 Character Build 写、八槽使用、旧档迁移或重启读回。
 
 ### 2026-08-27 关卡结果原生状态槽与基地结算工作台
 
