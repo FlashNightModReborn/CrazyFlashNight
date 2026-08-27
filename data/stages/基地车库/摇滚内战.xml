@@ -1143,13 +1143,12 @@
             <Background>flashswf/backgrounds/gk15_2_BG.swf</Background>
             <PlayerX>400</PlayerX>
             <PlayerY>470</PlayerY>
-        </BasicInformation>
-        <Event>
-            <EventName>Start</EventName>
             <Animation>
                 <Path>flashswf/movies/故障转场.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
             </Animation>
-        </Event>
+        </BasicInformation>
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
