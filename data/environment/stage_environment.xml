@@ -2046,14 +2046,14 @@
     <Environment>
         <BackgroundURL>防御地带电子战.swf</BackgroundURL>
         <Alignment>true</Alignment>
-        <Xmin>50</Xmin>
+        <Xmin>0</Xmin>
         <Xmax>1850</Xmax>
         <Ymin>450</Ymin>
         <Ymax>770</Ymax>
         <Width>1850</Width>
         <Height>770</Height>
         <SpaceCondition>室内</SpaceCondition>
-        <Horizon>0</Horizon>
+        <Horizon>100</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
         <Skybox>
@@ -2277,6 +2277,10 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <Skybox>
+            <url>电子战远景.swf</url>
+            <SpeedRate>4</SpeedRate>
+        </Skybox>
     </Environment>
     <!-- 彩蛋副本-->
     <Environment>
