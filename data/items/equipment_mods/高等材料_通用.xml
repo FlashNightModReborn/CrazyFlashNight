@@ -48,29 +48,30 @@
 
     <mod>
         <name>动力液压杆</name>
-        <use>上装装备,下装装备,手部装备,刀</use>
+        <use>上装装备,下装装备,手部装备,刀,长枪</use>
+        <weapontype>近战,压制近战</weapontype>
         <stats>
             <useSwitch>
-                <!-- 刀：收割能力+威力提升 -->
-                <use name="刀">
-                    <override>
+                <!-- 刀/近战长枪：收割能力+威力提升 -->
+                <use name="刀,近战,压制近战">
+                    <merge>
                         <slay>8</slay>
-                    </override>
+                    </merge>
                     <flat>
                         <power>15</power>
                     </flat>
                 </use>
                 <!-- 手部装备：收割能力+空手加成 -->
                 <use name="手部装备">
-                    <override>
+                    <merge>
                         <slay>8</slay>
-                    </override>
+                    </merge>
                     <flat>
                         <punch>15</punch>
                     </flat>
                 </use>
-                <!-- default：上装/下装，减轻重量+空手加成 -->
-                <use>
+                <!-- 上装/下装：减轻重量+空手加成；显式分支避免异常预装的其他长枪落入兜底 -->
+                <use name="上装装备,下装装备">
                     <flat>
                         <punch>15</punch>
                         <weight>-1</weight>
@@ -79,7 +80,7 @@
             </useSwitch>
         </stats>
         <description>超规格线性作动单元,大幅增加近战冲击力。
-        对上装和下装减轻重量,对手部装备和刀类武器提供收割能力,对刀类武器额外提升威力。</description>
+        对上装和下装减轻重量,对手部装备、刀类武器和近战型长枪提供收割能力,对刀类武器和近战型长枪额外提升威力。</description>
         <tag>动力接口</tag>
     </mod>
 

@@ -22,12 +22,12 @@
         <name>矩锁多点挂槽板</name>
         <use>刀</use>
         <stats>
-            <override>
+            <merge>
                 <skillmultipliers>
                     <拔刀术>3.5</拔刀术>
                     <瞬步斩>3.5</瞬步斩>
                 </skillmultipliers>
-            </override>
+            </merge>
             <flat>
                 <weight>1.5</weight>
             </flat>

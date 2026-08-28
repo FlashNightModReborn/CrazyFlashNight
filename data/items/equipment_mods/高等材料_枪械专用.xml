@@ -43,9 +43,9 @@
         <name>战术鱼骨零件</name>
         <use>长枪</use>
         <stats>
-            <override>
+            <merge>
                 <modslot>3</modslot>
-            </override>
+            </merge>
             <flat>
                 <weight>1</weight>
             </flat>
@@ -73,9 +73,9 @@
         <provideTags>NOAH,电力,导轨平台,下导轨挂点,侧导轨挂点,瞄具挂点,扩展模组槽</provideTags>
         <grantsUse>长枪</grantsUse>
         <stats>
-            <override>
+            <merge>
                 <modslot>3</modslot>
-            </override>
+            </merge>
             <flat>
                 <weight>2</weight>
             </flat>

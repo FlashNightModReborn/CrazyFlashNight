@@ -52,9 +52,9 @@
         <name>强化柄芯</name>
         <use>刀</use>
         <stats>
-            <override>
+            <merge>
                 <modslot>3</modslot>
-            </override>
+            </merge>
             <flat>
                 <weight>2</weight>
             </flat>
@@ -69,12 +69,12 @@
         <name>挂环指槽板</name>
         <use>刀</use>
         <stats>
-            <override>
+            <merge>
                 <skillmultipliers>
                     <瞬步斩>2.5</瞬步斩>
                     <凶斩>2.5</凶斩>
                 </skillmultipliers>
-            </override>
+            </merge>
             <flat>
                 <weight>0.5</weight>
             </flat>
