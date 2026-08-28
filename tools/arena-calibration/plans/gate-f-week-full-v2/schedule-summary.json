@@ -1,0 +1,146 @@
+{
+  "schema": "arena-calibration.gate-f-week-plan-summary.v1",
+  "normalizedCandidates": 58,
+  "scheduledCandidates": 58,
+  "completedPriorCandidates": 0,
+  "quarantinedScopes": 1,
+  "empiricalTimeoutOverrides": 1,
+  "empiricalTimeoutOverrideRef": "sha256:376e004fbea13fea0f709e18d73e65a61d0577ac7c89f7eb88ec048a6a78818d",
+  "empiricalTimeoutOverrideCells": [
+    "B9"
+  ],
+  "soakAdmissionRef": "sha256:7c2a0aa2527ca4ce34deed168b0e9652607c8b22c85c9cf63003760ff6ced73c",
+  "soakAdmissionId": "gate-f-week-full-v2-stable-soak-admission",
+  "soakCells": [
+    [
+      "B2",
+      "C7",
+      "G2",
+      "F3",
+      "E10"
+    ],
+    [
+      "B2",
+      "C7",
+      "G2",
+      "F3",
+      "E10"
+    ],
+    [
+      "B2",
+      "C7",
+      "G2",
+      "F3",
+      "E10"
+    ]
+  ],
+  "shards": 198,
+  "plannedRuns": 3255,
+  "eligibleEpochs": 198,
+  "decisionEvidenceItems": 198,
+  "firstSoakShards": [
+    {
+      "shardId": "f-soak-01",
+      "candidateIds": [
+        "candidate-0f1b27722df4940e",
+        "candidate-a65d27a00cf71919",
+        "candidate-c0ae68d0247fa97b",
+        "candidate-c5f1e29759c1d9e8",
+        "candidate-dd65977b16a48a35"
+      ],
+      "plannedRuns": 10
+    },
+    {
+      "shardId": "f-soak-02",
+      "candidateIds": [
+        "candidate-0f1b27722df4940e",
+        "candidate-a65d27a00cf71919",
+        "candidate-c0ae68d0247fa97b",
+        "candidate-c5f1e29759c1d9e8",
+        "candidate-dd65977b16a48a35"
+      ],
+      "plannedRuns": 10
+    },
+    {
+      "shardId": "f-soak-03",
+      "candidateIds": [
+        "candidate-0f1b27722df4940e",
+        "candidate-a65d27a00cf71919",
+        "candidate-c0ae68d0247fa97b",
+        "candidate-c5f1e29759c1d9e8",
+        "candidate-dd65977b16a48a35"
+      ],
+      "plannedRuns": 10
+    }
+  ],
+  "riskCoverage": {
+    "unit_payload": 19,
+    "formation": 7,
+    "high_level": 12,
+    "long_timeout": 7,
+    "source_semantic_correction": 2,
+    "empirical_timeout_override": 1
+  },
+  "sourceCells": [
+    "B2",
+    "C2",
+    "D2",
+    "E2",
+    "F2",
+    "G2",
+    "B3",
+    "C3",
+    "D3",
+    "E3",
+    "F3",
+    "G3",
+    "B4",
+    "C4",
+    "D4",
+    "E4",
+    "F4",
+    "G4",
+    "B5",
+    "C5",
+    "D5",
+    "E5",
+    "F5",
+    "G5",
+    "B6",
+    "C6",
+    "D6",
+    "E6",
+    "F6",
+    "G6",
+    "B7",
+    "C7",
+    "D7",
+    "E7",
+    "F7",
+    "G7",
+    "B8",
+    "C8",
+    "D8",
+    "E8",
+    "F8",
+    "G8",
+    "B9",
+    "C9",
+    "D9",
+    "E9",
+    "F9",
+    "G9",
+    "B10",
+    "C10",
+    "D10",
+    "E10",
+    "F10",
+    "G10",
+    "B11",
+    "C11",
+    "D11",
+    "C12"
+  ],
+  "createdAt": "2026-08-28T08:40:00.000Z",
+  "summaryHash": "sha256:8dedefb5dcdf143ecde27cad6cdcc922d5a192e4fdf9c5a2a435a005d996d4a9"
+}

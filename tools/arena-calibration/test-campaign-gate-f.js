@@ -146,6 +146,41 @@ function main() {
     });
     const decisionEvidencePath = path.join(tempRoot, "tmp", "gate-f-fixture", "decision.json");
     writeJson(decisionEvidencePath, decisionEvidence);
+    const soakAdmission = {
+      schema: "arena-calibration.soak-admission.v1",
+      admissionId: "gate-f-fixture-soak-admission",
+      planId: "gate-f-plan-fixture",
+      battleSemanticsCohortId: "cohort-gate-f-fixture",
+      runtimeIdentity: {
+        runtimeMode: RUNTIME.runtimeMode,
+        processPath: RUNTIME.processPath,
+        coreSha256: RUNTIME.coreSha256,
+        buildIdentity: RUNTIME.buildIdentity,
+        payloadClosure: RUNTIME.payloadClosure,
+        verified: true,
+      },
+      groups: [1, 2, 3].map((soakIndex) => ({
+        soakIndex,
+        cells: ["B2", "C7", "G2", "F3", "E10"],
+      })),
+      evidenceRuns: [{
+        evidenceRunId: "gate-f-fixture-soak-evidence",
+        manifestPath: "tmp/fixture-soak/manifest.json",
+        manifestHash: HASH("soak-manifest"),
+        manifestFileSha256: HASH("soak-manifest-file"),
+        resultPath: "tmp/fixture-soak/results.jsonl",
+        resultFileSha256: HASH("soak-result-file"),
+        reportPath: "tmp/fixture-soak/report.json",
+        reportFileSha256: HASH("soak-report-file"),
+      }],
+      createdAt: NOW,
+      admissionHash: "",
+    };
+    const soakAdmissionWithoutHash = JSON.parse(JSON.stringify(soakAdmission));
+    delete soakAdmissionWithoutHash.admissionHash;
+    soakAdmission.admissionHash = sha256OfValue(soakAdmissionWithoutHash);
+    const soakAdmissionPath = path.join(tempRoot, "tmp", "gate-f-fixture", "soak-admission.json");
+    writeJson(soakAdmissionPath, soakAdmission);
     const draft = {
       planId: "gate-f-plan-fixture",
       campaignId: "gate-f-campaign-fixture",
@@ -153,6 +188,8 @@ function main() {
       candidateIds: [candidateId],
       candidateBaselines: [{ candidateId, initialState: "scheduled", evidenceRef: HASH("candidate-baseline") }],
       runtimeIdentity: RUNTIME,
+      soakAdmissionPath: path.relative(tempRoot, soakAdmissionPath).replace(/\\/g, "/"),
+      soakAdmissionRef: soakAdmission.admissionHash,
       slot: "cf7_agent_arena_calibration",
       seedSlot: "crazyflasher7_saves",
       healthPolicy: {
@@ -199,6 +236,14 @@ function main() {
     assert.strictEqual(plan.shards[0].plannedRuns, 10);
     assert.strictEqual(Object.hasOwn(plan.runtimeIdentity, "pid"), false);
     assert.strictEqual(Object.hasOwn(plan.runtimeIdentity, "httpPort"), false);
+    assert.strictEqual(plan.soakAdmissionRef, soakAdmission.admissionHash);
+
+    const originalAdmission = fs.readFileSync(soakAdmissionPath, "utf8");
+    const driftedAdmission = JSON.parse(originalAdmission);
+    driftedAdmission.groups[2].cells[4] = "C9";
+    writeJson(soakAdmissionPath, driftedAdmission);
+    expectError(() => verifyGateFPlan(tempRoot, plan, { skipSource: true, skipRuntime: true }));
+    fs.writeFileSync(soakAdmissionPath, originalAdmission, "utf8");
 
     const originalDecision = fs.readFileSync(decisionEvidencePath, "utf8");
     const driftedDecision = JSON.parse(originalDecision);

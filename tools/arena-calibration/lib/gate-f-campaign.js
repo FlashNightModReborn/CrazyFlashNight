@@ -10,6 +10,7 @@ const {
   sha256OfValue,
 } = require("./arena-calibration-core");
 const { assertSchemaInstance } = require("./schema-registry");
+const { verifySoakAdmissionDocument } = require("./gate-f-soak-admission");
 const {
   publicRuntimeIdentity,
   resolveExpectedRuntimeIdentity,
@@ -162,6 +163,23 @@ function freezeGateFPlan(projectRoot, draft, options) {
     || publicRuntimeIdentity(resolveExpectedRuntimeIdentity(projectRoot, null));
   if (draft.runtimeIdentity) compareRuntimeIdentity(draft.runtimeIdentity, observedRuntimeIdentity);
   const runtimeIdentity = freezeRuntimeIdentity(observedRuntimeIdentity);
+  let soakAdmissionPath = null;
+  let soakAdmissionRef = null;
+  if (draft.soakAdmissionPath || draft.soakAdmissionRef) {
+    if (!draft.soakAdmissionPath || !draft.soakAdmissionRef) {
+      fail("Gate F soak admission path and reference must be supplied together", "soak_admission_binding_missing");
+    }
+    const admissionPath = resolveInsideRoot(projectRoot, draft.soakAdmissionPath, "Gate F soak admission");
+    const admission = readJsonFile(admissionPath);
+    const verifiedAdmission = verifySoakAdmissionDocument(projectRoot, admission, {
+      planId: draft.planId,
+      battleSemanticsCohortId: draft.battleSemanticsCohortId,
+      runtimeIdentity,
+      expectedRef: draft.soakAdmissionRef,
+    });
+    soakAdmissionPath = projectRelative(projectRoot, admissionPath);
+    soakAdmissionRef = verifiedAdmission.documentRef;
+  }
   const candidateIds = Array.from(new Set(draft.candidateIds || [])).sort();
   const candidateBaselines = (draft.candidateBaselines || []).map((entry) => ({ ...entry }))
     .sort((left, right) => left.candidateId.localeCompare(right.candidateId));
@@ -236,6 +254,7 @@ function freezeGateFPlan(projectRoot, draft, options) {
     candidateBaselines,
     sourceIdentity,
     runtimeIdentity,
+    ...(soakAdmissionPath ? { soakAdmissionPath, soakAdmissionRef } : {}),
     slot: draft.slot || "cf7_agent_arena_calibration",
     seedSlot: draft.seedSlot,
     healthPolicy: { ...draft.healthPolicy },
@@ -253,6 +272,15 @@ function verifyGateFPlan(projectRoot, plan, options) {
   options = options || {};
   assertSchemaInstance(PLAN_SCHEMA, plan, "Gate F plan");
   if (plan.planHash !== sha256OfValue(withoutHash(plan, "planHash"))) fail("Gate F plan hash mismatch", "plan_hash_mismatch");
+  if (plan.soakAdmissionPath || plan.soakAdmissionRef) {
+    const admissionPath = resolveInsideRoot(projectRoot, plan.soakAdmissionPath, "Gate F soak admission");
+    verifySoakAdmissionDocument(projectRoot, readJsonFile(admissionPath), {
+      planId: plan.planId,
+      battleSemanticsCohortId: plan.battleSemanticsCohortId,
+      runtimeIdentity: plan.runtimeIdentity,
+      expectedRef: plan.soakAdmissionRef,
+    });
+  }
   plan.shards.forEach((entry) => {
     const manifestPath = resolveInsideRoot(projectRoot, entry.manifestPath, `Gate F manifest ${entry.shardId}`);
     const manifest = readJsonFile(manifestPath);

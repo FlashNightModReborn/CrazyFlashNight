@@ -11,16 +11,12 @@ const {
 const { assertSchemaInstance } = require("./lib/schema-registry");
 const { writeJsonAtomic } = require("./lib/durable-campaign-journal");
 const { createGateFDecisionEvidence, verifyManifestIntegrity } = require("./lib/gate-f-campaign");
+const { verifySoakAdmissionDocument, withoutHash } = require("./lib/gate-f-soak-admission");
 
 const ROOT = path.resolve(__dirname, "../..");
 const LONG_TIMEOUT_FRAMES = 5400;
 const NORMAL_PHASE_RUNS = Object.freeze([10, 20, 25]);
 const LONG_PHASE_RUNS = Object.freeze([10, 10, 10, 10, 10, 10]);
-const DEFAULT_SOAK_CELLS = Object.freeze([
-  ["B2", "B9", "G2", "F3", "F5"],
-  ["C7", "B7", "E10", "F10", "G10"],
-  ["B11", "C11", "D11", "C12", "G3"],
-]);
 
 function fail(message) {
   const error = new Error(message);
@@ -34,6 +30,7 @@ function parseArgs(argv) {
     candidates: null,
     exceptions: null,
     empiricalTimeoutOverrides: null,
+    soakAdmission: null,
     outputDir: null,
     completed: [],
     planId: "gate-f-week-full-v1",
@@ -50,6 +47,7 @@ function parseArgs(argv) {
     if (token === "--candidates") args.candidates = argv[++index];
     else if (token === "--exceptions") args.exceptions = argv[++index];
     else if (token === "--empirical-timeout-overrides") args.empiricalTimeoutOverrides = argv[++index];
+    else if (token === "--soak-admission") args.soakAdmission = argv[++index];
     else if (token === "--output-dir") args.outputDir = argv[++index];
     else if (token === "--completed") args.completed.push(argv[++index]);
     else if (token === "--plan-id") args.planId = argv[++index];
@@ -72,6 +70,7 @@ function printHelp() {
   --candidates <normalized-candidates.json>
   --exceptions <exceptions.json>
   [--empirical-timeout-overrides <evidence-bound overrides.json>]
+  --soak-admission <same-runtime stable-soak-admission.json>
   --completed <candidateId=sha256:...>   Repeat for prior completed candidates.
   --output-dir <new project-relative directory>
   [--plan-id <id>] [--campaign-id <id>] [--battle-semantics-cohort <id>]
@@ -87,6 +86,8 @@ a pre-runtime Gate F draft. Runtime and Git identities are bound later by
 gate-fctl freeze after deployment is stable. Empirical timeout overrides act
 only on the generated plan; they never rewrite normalized intake or workbook
 facts, and candidate-runtime evidence always requires a formal-runtime replay.
+Every infrastructure-soak cell must be admitted by schema-valid, exact-policy,
+two-orientation formal-runtime evidence with unchanged protected saves.
 `);
 }
 
@@ -308,13 +309,14 @@ function buildWeekPlan(candidates, exceptions, options) {
   const manifests = [];
   const shards = [];
 
-  DEFAULT_SOAK_CELLS.forEach((group, index) => {
+  options.soakAdmission.groups.forEach((group, index) => {
     const groupCandidates = group.map((cell) => byCell.get(cell)).filter(Boolean)
       .filter((candidate) => !completed.has(candidate.candidateId));
     if (groupCandidates.length !== 5) fail(`soak shard ${index + 1} lost a required scheduled candidate`);
     const shardId = `f-soak-${String(index + 1).padStart(2, "0")}`;
     const manifest = buildManifest(groupCandidates, `gate-f-week-${shardId}`, 10, "soak", createdAt, {
       soakIndex: index + 1,
+      soakAdmissionRef: options.soakAdmission.documentRef,
       coverage: Array.from(new Set(groupCandidates.flatMap((entry) => entry.riskTags))).sort(),
       ...(groupCandidates.some((entry) => entry.empiricalTimeoutOverride) ? {
         empiricalTimeoutOverrideRefs: Array.from(new Set(groupCandidates
@@ -359,6 +361,7 @@ function buildWeekPlan(candidates, exceptions, options) {
       plannedRuns: manifest.cases.reduce((total, entry) => total + entry.repeat, 0),
       evidenceRefs: [
         manifest.manifestHash,
+        ...(manifest.planner.phase === "soak" ? [options.soakAdmission.documentRef] : []),
         ...candidateIds.map((candidateId) => candidates.find((entry) => entry.candidateId === candidateId).candidateHash),
         ...candidateIds.flatMap((candidateId) => {
           const candidate = candidates.find((entry) => entry.candidateId === candidateId);
@@ -389,6 +392,8 @@ function buildWeekPlan(candidates, exceptions, options) {
     battleSemanticsCohortId: options.battleSemanticsCohortId,
     candidateIds: baselines.map((entry) => entry.candidateId),
     candidateBaselines: baselines,
+    soakAdmissionPath: options.soakAdmission.path,
+    soakAdmissionRef: options.soakAdmission.documentRef,
     slot: "cf7_agent_arena_calibration",
     seedSlot: "crazyflasher7_saves",
     healthPolicy: {
@@ -423,6 +428,9 @@ function buildWeekPlan(candidates, exceptions, options) {
     empiricalTimeoutOverrideCells: candidates
       .filter((candidate) => candidate.empiricalTimeoutOverride)
       .map(sourceCell),
+    soakAdmissionRef: options.soakAdmission.documentRef,
+    soakAdmissionId: options.soakAdmission.admissionId,
+    soakCells: options.soakAdmission.groups,
     shards: shards.length,
     plannedRuns: shards.reduce((total, shard) => total + shard.plannedRuns, 0),
     eligibleEpochs: shards.filter((shard) => shard.eligibleEpoch).length,
@@ -475,6 +483,46 @@ function runCheck() {
   const long = fixture("candidate-long", "C7", 9000, ["long_timeout"]);
   const c9 = fixture("candidate-c9", "C9", 1800, ["source_corrected"]);
   const fixtureHash = (character) => `sha256:${character.repeat(64)}`;
+  const soakAdmission = {
+    schema: "arena-calibration.soak-admission.v1",
+    admissionId: "fixture-stable-soak-admission",
+    planId: "gate-f-week-full-v1",
+    battleSemanticsCohortId: "arena-cohort-fixture",
+    runtimeIdentity: {
+      runtimeMode: "formal_runtime",
+      processPath: "C:/fixture/runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      coreSha256: "A".repeat(64),
+      buildIdentity: "B".repeat(64),
+      payloadClosure: "C".repeat(64),
+      verified: true,
+    },
+    groups: [1, 2, 3].map((soakIndex) => ({
+      soakIndex,
+      cells: ["B2", "C7", "G2", "F3", "E10"],
+    })),
+    evidenceRuns: [{
+      evidenceRunId: "fixture-soak-run",
+      manifestPath: "fixture/manifest.json",
+      manifestHash: fixtureHash("1"),
+      manifestFileSha256: fixtureHash("2"),
+      resultPath: "fixture/results.jsonl",
+      resultFileSha256: fixtureHash("3"),
+      reportPath: "fixture/report.json",
+      reportFileSha256: fixtureHash("4"),
+    }],
+    createdAt: "2026-08-28T00:00:00.000Z",
+    admissionHash: "",
+  };
+  soakAdmission.admissionHash = sha256OfValue(withoutHash(soakAdmission, "admissionHash"));
+  const checkedAdmission = verifySoakAdmissionDocument(ROOT, soakAdmission, {
+    planId: "gate-f-week-full-v1",
+    battleSemanticsCohortId: "arena-cohort-fixture",
+  });
+  const tamperedAdmission = JSON.parse(JSON.stringify(soakAdmission));
+  tamperedAdmission.groups[2].cells[4] = "C9";
+  expectRejected("tampered stable-soak admission", () => {
+    verifySoakAdmissionDocument(ROOT, tamperedAdmission, { planId: "gate-f-week-full-v1" });
+  });
   normal.source = {
     workbookSha256: fixtureHash("a"),
     sheetName: "fixture",
@@ -565,11 +613,14 @@ function runCheck() {
       || promotedManifest.cases[0].caseHash === standardManifest.cases[0].caseHash) {
     throw new Error("Gate F week manifest split check failed");
   }
-  const soakCells = new Set(DEFAULT_SOAK_CELLS.flat());
+  const soakCells = new Set(checkedAdmission.groups.flat());
   const c9PhaseRuns = c9.caseTemplate.timeoutFrames >= LONG_TIMEOUT_FRAMES
     ? LONG_PHASE_RUNS
     : NORMAL_PHASE_RUNS;
-  if (!soakCells.has("G2")
+  if (!soakCells.has("B2")
+      || !soakCells.has("G2")
+      || !soakCells.has("C7")
+      || !soakCells.has("E10")
       || soakCells.has("C9")
       || c9PhaseRuns !== NORMAL_PHASE_RUNS
       || c9PhaseRuns.reduce((total, count) => total + count, 0) !== 55) {
@@ -584,7 +635,8 @@ function runCheck() {
     sideSwapAlwaysPlanned: true,
     evidenceBoundTimeoutPromotion: true,
     invalidTimeoutOverridesRejected: true,
-    infrastructureSoakUsesFreshStableG2: true,
+    infrastructureSoakRequiresHashBoundStableAdmission: true,
+    allSoaksCoverOrdinaryPayloadFormationLongTimeoutAndHighLevel: true,
     stochasticC9RetainedInStandardPhases: true,
   }));
 }
@@ -598,6 +650,7 @@ function main(argv) {
   const empiricalTimeoutOverridePath = args.empiricalTimeoutOverrides
     ? resolveInsideRoot(args.empiricalTimeoutOverrides, "empirical timeout overrides", true)
     : null;
+  const soakAdmissionPath = resolveInsideRoot(requireArg(args, "soakAdmission"), "Gate F soak admission", true);
   const outputDir = resolveInsideRoot(requireArg(args, "outputDir"), "Gate F week plan output", false);
   if (fs.existsSync(outputDir) && fs.readdirSync(outputDir).length > 0 && !args.updateExisting) {
     fail(`output directory must be absent or empty: ${relative(outputDir)}`);
@@ -620,6 +673,13 @@ function main(argv) {
     empiricalTimeoutOverridePath ? readJsonFile(empiricalTimeoutOverridePath) : null,
     args.planId,
   );
+  const soakAdmissionDocument = readJsonFile(soakAdmissionPath);
+  const verifiedSoakAdmission = verifySoakAdmissionDocument(ROOT, soakAdmissionDocument, {
+    planId: args.planId,
+    battleSemanticsCohortId: args.battleSemanticsCohortId,
+    candidates: empiricalTimeoutOverrides.candidates,
+    verifyRawEvidence: true,
+  });
   const result = buildWeekPlan(empiricalTimeoutOverrides.candidates, exceptions, {
     completed: parseCompleted(args.completed),
     planId: args.planId,
@@ -629,6 +689,12 @@ function main(argv) {
     createdAt,
     outputRelative: relative(outputDir),
     empiricalTimeoutOverrides,
+    soakAdmission: {
+      admissionId: soakAdmissionDocument.admissionId,
+      path: relative(soakAdmissionPath),
+      documentRef: verifiedSoakAdmission.documentRef,
+      groups: verifiedSoakAdmission.groups,
+    },
   });
   fs.mkdirSync(path.join(outputDir, "manifests"), { recursive: true });
   fs.mkdirSync(path.join(outputDir, "decisions"), { recursive: true });
@@ -656,6 +722,8 @@ function main(argv) {
     intakeExceptionsRef: sha256OfValue(exceptions),
     empiricalTimeoutOverridesRef: empiricalTimeoutOverrides.documentRef,
     empiricalTimeoutOverridesPath: empiricalTimeoutOverridePath ? relative(empiricalTimeoutOverridePath) : null,
+    soakAdmissionRef: verifiedSoakAdmission.documentRef,
+    soakAdmissionPath: relative(soakAdmissionPath),
     completedCandidates: Array.from(parseCompleted(args.completed).entries()).map(([candidateId, evidenceRef]) => ({ candidateId, evidenceRef })),
     battleBuildCommit: args.battleBuildCommit || null,
     workbookRefs: Array.from(new Set(candidates.map((entry) => entry.source.workbookSha256))).sort(),

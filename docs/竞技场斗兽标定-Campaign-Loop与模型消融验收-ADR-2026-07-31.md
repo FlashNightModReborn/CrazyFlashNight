@@ -671,7 +671,7 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 
 该 packet 在口径修正前生成，原 `subjectiveLabelContract` 仍是泛化体验档；已执行 encounter 的 packet hash 不回写。数值等效响应以新 schema 作为 hash-bound 补充证据，后续 packet builder 直接输出 `monster_group_to_humanoid_mercenary_equivalence`。由于本轮没有自动落下 duration、胜负、承伤、输出、残血和异常 telemetry，也不让维护者事后补猜，Gate E 当前只完成等效标签子门；未生成 recommendation bundle，未修改 `arena_factions.json`，未 formal apply。
 
-### Gate F：星期级累计 campaign（`F0_ENGINEERING_READY / FORMAL_SOAK_NOT_STARTED`）
+### Gate F：星期级累计 campaign（`F0_ENGINEERING_READY / FORMAL_SOAK_PAUSED / ROUTING_FIX_READY`）
 
 - 多次正常暂停、游戏崩溃或电脑重启后可恢复。
 - 没有无限重启、跨 cohort 拼接或重复计数。
@@ -685,9 +685,13 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 - 内容开发 / Flash 编译抢占以 `targetYieldLatency<=60` 秒为目标，并在 `maxYieldLatency<=5` 分钟硬上限内释放 Launcher、Flash 和 work lease。
 - 对进入正式建议阶段的候选生成 recommendation bundle；人类不需要手工抄录配置。
 
-Gate F0 当前已生成 `gate-f-week-full-v1` 计划族、`gate-f-week-full-v2` 执行 campaign 的冻结前草案：58 个 normalized candidate 全部待跑，`B12` 保持 quarantine；共 198 个短 shard、3255 个计划 run、198 份 hash-bound `schedule_shard/auto_execute` 决策证据。新部署在 `ArenaController.prepareArenaStage()` 增加 `StageRunSession.canStartStage()` admission，因此 G2 `candidate-dd65977b16a48a35` 的两场 `1 × Lv10` PVE 标签继续保留，但旧 runtime 的机器完成证据不跨 cohort 代签，G2 也重新执行 55 run。普通候选为 `10 + 20 + 25 = 55` run，显式长 timeout 候选为 `6 × 10 = 60` run，全部包含 original/side-swap。B9 的 1800 帧双向 timeout 与 5400 帧 2776/3494 finished 已作为 schema-valid、hash/cell/candidate/runtime/save-bound 的计划层 override 固化；normalized intake 和旧超时不改写，candidate 证据不能代签 formal replay。合并候选的首份 10-run 诊断为 9 finished + C9 换边 1 timeout；随后 C9 的 5400 帧双向探针均在 1800 帧前 finished，故没有形成 timeout override。为使前三个 10-run soak 判定基础设施稳定性，首批以同 runtime 10/10 finished 的 G2 替代 C9，合并仍覆盖普通参数、单位 payload、阵型、长 timeout、高等级与 B9 修正；C9 继续完整进入普通 `10 + 20 + 25` run 和 side-swap，不能因退出基础设施 soak 而丢失候选波动证据。
+Gate F0 首轮以 `gate-f-week-full-v1` 计划族、`gate-f-week-full-v2` 执行 campaign 冻结 58 个 normalized candidate，`B12` 保持 quarantine；共 198 个短 shard、3255 个计划 run、198 份 hash-bound `schedule_shard/auto_execute` 决策证据。新部署在 `ArenaController.prepareArenaStage()` 增加 `StageRunSession.canStartStage()` admission，因此 G2 `candidate-dd65977b16a48a35` 的两场 `1 × Lv10` PVE 标签继续保留，但旧 runtime 的机器完成证据不跨 cohort 代签，G2 也重新执行 55 run。普通候选为 `10 + 20 + 25 = 55` run，显式长 timeout 候选为 `6 × 10 = 60` run，全部包含 original/side-swap。B9 的 1800 帧双向 timeout 与 5400 帧 2776/3494 finished 已作为 schema-valid、hash/cell/candidate/runtime/save-bound 的计划层 override 固化；normalized intake 和旧超时不改写，candidate 证据不能代签 formal replay。合并候选的首份 10-run 诊断为 9 finished + C9 换边 1 timeout；随后 C9 的 5400 帧双向探针均在 1800 帧前 finished，故没有形成 timeout override。
 
-工程门已通过 40-schema / 64-check 统一回归，并覆盖 plan/manifest/decision 篡改、经验 timeout override 真正 Schema 实例与双向语义闭包、低磁盘、active producer、window 到期/撤销、过期执行 grant 后既有事实提交、partial row exactly-once、重复排除、20-epoch attention 和 exception inbox 去重。独立候选 runtime 已完成 10-run soak 诊断与 B9 2-run 长窗诊断，exact candidate identity/closure、0 recovery 和受保护存档不变已闭合；这仍是 `candidate_executed / NOT_DEPLOYED`。计划尚未绑定部署后的 clean source 与 exact formal runtime，三份正式 fresh soak、真实 20-epoch low-touch、星期级恢复/抢占和 3255-run 候选终态均尚未产生；在这些 receipt 出现前不得写成 Gate F 通过或全量标定完成。
+首轮三份 formal soak 已真实执行：`f-soak-01/02` 合计 20/20 finished，`f-soak-03` 为 8 finished + B11/C12 原向 2 timeout。三份均绑定 formal identity `48E2ACEA81194C0D6C3A89226DEC2748192612B5514D3F3ADB8444FA4AF6C528`、closure `DA7E5BD135FF2407ED7CE459F521BEA95C9CB6F5CC63AA5291ABAC795DAF59F1` 与不变存档 snapshot `sha256:fcfaa53f9000a5b7e75205bb3549aa2c8b5798df3fe5d4843725222ffbede73b`；30 行均 Schema/manifest-bound、零 error/recovery、正常关闭且无玩家/存档污染。失败只来自第三份把候选自身长战随机性混入基础设施门：B11 原向跑满 9000 帧、C12 原向跑满 5400 帧，而各自 side-swap 自然结束。该批正确暂停且旧行原样保留，不能通过重试或调大 timeout 改写成平台稳定。
+
+修正后的 `gate-f-week-full-v2` plan / `gate-f-week-full-v3` campaign 新增必需的 `arena-calibration.soak-admission.v1`：生成器逐文件复验原始 manifest/result/report SHA-256、真正 Schema 实例、exact candidate timeout、original/side-swap 自然结束、formal runtime identity、零 error/timeout/recovery、正常关闭与受保护存档不变；freeze 继续绑定 admission path/hash 和 exact runtime。三份 10-run fresh soak 都使用 `B2/C7/G2/F3/E10`，每份同时覆盖普通参数、单位 payload、阵型、长 timeout、高等级与 side-swap。这五项来自同一 formal runtime 已完成的前两份 soak，并按实际耗时选择有充分 timeout 余量的代表；B11/C12、C9、B9 及其他候选仍完整保留全量普通/长 timeout 分片和既有 timeout 事实，退出基础设施 soak 不删除候选、不构成平衡结论。
+
+工程门新增 soak-admission Schema、raw hash 与篡改负例，并继续覆盖 plan/manifest/decision 篡改、经验 timeout override 真正 Schema 实例与双向语义闭包、低磁盘、active producer、window 到期/撤销、过期执行 grant 后既有事实提交、partial row exactly-once、重复排除、20-epoch attention 和 exception inbox 去重。修正计划尚未绑定新的 clean source 与 exact formal runtime，三份修正后 fresh soak、真实 20-epoch low-touch、星期级恢复/抢占和 3255-run 候选终态仍未产生；旧两份成功 soak 不能跨 plan/campaign 代签新三份，在这些 receipt 出现前不得写成 Gate F 通过或全量标定完成。
 
 ---
 

@@ -1,0 +1,52 @@
+{
+  "schema": "arena-calibration.soak-admission.v1",
+  "admissionId": "gate-f-week-full-v2-stable-soak-admission",
+  "planId": "gate-f-week-full-v2",
+  "battleSemanticsCohortId": "arena-cohort-20260827-stage-outcome-v2",
+  "runtimeIdentity": {
+    "runtimeMode": "formal_runtime",
+    "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "A6A3C16D322C03718679E2E1E83D6EB959D671C3BFA366A1D6C86D3B5CCE6364",
+    "buildIdentity": "48E2ACEA81194C0D6C3A89226DEC2748192612B5514D3F3ADB8444FA4AF6C528",
+    "payloadClosure": "DA7E5BD135FF2407ED7CE459F521BEA95C9CB6F5CC63AA5291ABAC795DAF59F1",
+    "verified": true
+  },
+  "groups": [
+    {
+      "soakIndex": 1,
+      "cells": ["B2", "C7", "G2", "F3", "E10"]
+    },
+    {
+      "soakIndex": 2,
+      "cells": ["B2", "C7", "G2", "F3", "E10"]
+    },
+    {
+      "soakIndex": 3,
+      "cells": ["B2", "C7", "G2", "F3", "E10"]
+    }
+  ],
+  "evidenceRuns": [
+    {
+      "evidenceRunId": "formal-f-soak-01-20260828",
+      "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v1/manifests/f-soak-01.json",
+      "manifestHash": "sha256:496a1d7ed8ff7609ebe7de9c39101d4033df406f5c279453042e937066675e2c",
+      "manifestFileSha256": "sha256:336b30e5b16a5fa91175f40e2f5c2e389e3eea4528197fb33a5d18ce3781b010",
+      "resultPath": "logs/arena-calibration/gate-f-week-f-soak-01-results.jsonl",
+      "resultFileSha256": "sha256:5e64589ff543262c9c2c56b47e9f6c73b4485f9ecaa80883710c374cbd236969",
+      "reportPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v1/runs/f-soak-01-20260828T074100Z/run-report.json",
+      "reportFileSha256": "sha256:0937005000d0c278602c227b2bc7cdf6f0f10d59c2acf6dbe4e29f8c000fbe0b"
+    },
+    {
+      "evidenceRunId": "formal-f-soak-02-20260828",
+      "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v1/manifests/f-soak-02.json",
+      "manifestHash": "sha256:9a5de62961b08b74719b233f0e662a2940aa09622dcbabf680efdde9ea3237ff",
+      "manifestFileSha256": "sha256:dbf3db92e782a828e169563c6d763a73ef49b882a43ecd0b6305b7a441805576",
+      "resultPath": "logs/arena-calibration/gate-f-week-f-soak-02-results.jsonl",
+      "resultFileSha256": "sha256:7a568cdfda25e4e295f77cac1a9fa5ba63b9a04ebc916ca7ae26cdd88295dea0",
+      "reportPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v1/runs/f-soak-02-20260828T075020Z/run-report.json",
+      "reportFileSha256": "sha256:08e4cbaf0e6f2d67d8499157fe43e5a68ce8bbdfc874a7079422ef7f3c7b1191"
+    }
+  ],
+  "createdAt": "2026-08-28T08:35:59.8428554Z",
+  "admissionHash": "sha256:7c2a0aa2527ca4ce34deed168b0e9652607c8b22c85c9cf63003760ff6ced73c"
+}

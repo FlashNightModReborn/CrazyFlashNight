@@ -2,7 +2,7 @@
 
 **文档角色**：启动与运行自动化入口。  
 **当前正式列车（2026-08-28，斗兽星期级全量标定 Gate F）**：release source `c64a5440e5506a3f1567143711f984d063e56505`、tag `runtime-build-v2/20260828-arena-calibration-gate-f-v3`、release tree `abe5cd0ef38fff3e596b4bfe4c84ea3c30e5ead8` 与 request `62E4E1537771F0638DB9204A950DD19598962F7E8BBE7D73E2916FAB519982FE` 已由本地 X509 `builder-local-b` / `physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `33130111918`）对 identity `48E2ACEA81194C0D6C3A89226DEC2748192612B5514D3F3ADB8444FA4AF6C528`、closure `DA7E5BD135FF2407ED7CE459F521BEA95C9CB6F5CC63AA5291ABAC795DAF59F1` 达成双 signer / 双 faultDomain 共识。39/39 final receipt SHA-256 为 `AC2FE8CA89D3A88C70C383E4C3DF84639DDFA956761793A16D66780634D95738`；deployment commit `693baf7051d9e67be8930b309dc14eea65c0eab6` 与 post-promotion audit run `33130680653` 均已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
-正式根 bootstrap `--verify-only`、33-file bundle 与 signed consensus 已通过；tracked Gate F draft 为 58 个 scheduled candidate + `B12` quarantine、198 个 shard / 3,255 个 run，首批三份 10-run soak 为 `B2 / B9 / G2`。本次发布尚未 `freeze/arm` 或执行任何正式 shard，故不称 Gate F 通过、斗兽业务 `standard_entry_verified` 或新真人 PVE 证据。
+正式根 bootstrap `--verify-only`、33-file bundle 与 signed consensus 已通过。首轮 `gate-f-week-full-v2` campaign 已运行三份正式 soak：前两份 20/20 finished，第三份 8 finished + B11/C12 原向 2 timeout；三份均确认 exact formal runtime、原始 JSONL、零 recovery、正常关闭和受保护存档不变，旧 30 行原样保留。该失败暴露的是静态 soak 路由把候选自身长战随机性混入基础设施门，不是平台或存档污染。修正后的 tracked `gate-f-week-full-v2` plan / `gate-f-week-full-v3` campaign 仍为 58 个 scheduled candidate + `B12` quarantine、198 个 shard / 3,255 个 run；尚未 freeze/arm 或重跑，故不称 Gate F 通过、斗兽业务 `standard_entry_verified` 或新真人 PVE 证据。
 
 **上一正式列车（2026-08-28，双药剂组与八槽共享冷却；历史）**：release source `b2bc05775c621616fe64be55354aebe21c63a2af`、tag `runtime-build-v2/20260827-dual-drug-banks-v1`、release tree `826f37292cb591782e3d3cc41145b9158a426032` 与 request `9FE68E5BEB945B969A2D4CDAA1D20B2D2838A4208DB8773EF7344918B0383658` 已由本地 X509 `builder-local-a` / `physical-host-a` 与 GitHub OIDC/Sigstore `github-hosted-windows`（cloud run `33090620311`）对 identity `6C9CF4699C217CC65083038D3AA69B0D6640C4E8DF5A50D367D0628E366D379D`、closure `1D0C3A1272CD084ECC9532B0565E017E07A233C1511B4372C091FF081701252F` 达成双 signer / 双 faultDomain 共识。39/39 final receipt SHA-256 为 `361CAAEDD6322796631112882DB069C5B1C2F6599AF20685F9A20BB719BD6677`；deployment commit `6902b2b6ed067c4882e9a67267d055ce0db90b34` 与 post-promotion audit run `33092179946` 均已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
 无 candidate selector 的正式入口 run `2478a9f25873043318f2402f80105b52` 确认 `formal_runtime`、正式 Core DLL `D793647E666423EB73FE78F8E272CDF9A2E5792B9D694259639A6B35DD1624D0`、精确 identity/closure、同一 lifecycle 的两次 verified status、fresh handoff/reveal、可信 shutdown receipt、Guardian/Flash code 0、专用存档哈希不变且未触发强制清理；报告 SHA-256 为 `0F3349124141B5570B9FD51061AD736A71999CF1824DBF76B6AEBF50AFE41BF9`。前两次运行时 Default input desktop 持续 `GetForegroundWindow()==0`，按 30 秒门返回 `trusted_runner_credential_timeout`，均保留且不计成功；第三次只在 Default input desktop 上确认 `GetForegroundWindow()!=0` 后复用同一 runner/harness 配置。正式 identity/lifecycle 窄纵切达到 `standard_entry_verified`，但 `businessJourneyExecuted=false`，没有重跑八槽、切换、旧档迁移或重启读回；功能状态仍准确写作 `HUMAN_ACCEPTANCE_PASSED / promoted`，不称业务 `standard_entry_verified`。
@@ -261,28 +261,42 @@ node tools/arena-calibration/campaignctl.js pause --campaign-id <campaignId> --r
 node tools/arena-calibration/campaignctl.js status --campaign-id <campaignId>
 ```
 
-星期级全量标定由 `build-gate-f-week-plan.js` 与 `gate-fctl.js` 接管。前者只消费已绑定工作簿 hash/单元格的 normalized intake、exception 与显式证据回执，不重新读取或改写 `.xlsx`；当前冻结前草案位于 `tools/arena-calibration/plans/gate-f-week-full-v1/`，执行 campaign 为 `gate-f-week-full-v2`，包含 58 个待跑候选、1 个隔离 scope、198 个 10–25 run 短 shard 和 3255 个计划 run。部署列车改变了 Arena stage admission，旧 runtime 上已完成 PVE 的 G2 只保留 `1 × Lv10` 外部标签，不跨 cohort 代签新机器样本。B9 的原始工作簿/normalized timeout 仍为 1800 帧；`empirical-timeout-overrides.json` 以 workbook hash + sheet/cell/cell-value hash、candidate hash、原/换边 1800 帧 timeout、原/换边 5400 帧 finished、candidate runtime identity/closure 与不变存档快照为闭包，只在计划层把 B9 转入 `6 × 10` 长 timeout 分层，且明确要求 formal runtime 复跑。每个 shard 都有独立、hash-bound 的 `schedule_shard/auto_execute` 决策证据并同时计划 original/side-swap。前三个 10-run 基础设施 soak 先覆盖普通参数、单位 payload、阵型、长 timeout、高等级及 B9 来源修正；合并候选首批的 C9 换边出现 1 次 1800 帧随机 timeout，而独立 5400 帧双向复核都在 1800 帧前结束，故不制造 C9 timeout override，也不让候选波动污染基础设施开门判断。首批改由同一 runtime 下 10/10 finished 的 G2 覆盖；C9 仍完整保留在普通 `10 + 20 + 25` run 与 side-swap 分片中，G2 的机器证据不导入旧 cohort 真人 PVE 标签。
+星期级全量标定由 `build-gate-f-week-plan.js` 与 `gate-fctl.js` 接管。前者只消费已绑定工作簿 hash/单元格的 normalized intake、exception、显式 timeout 证据与必需的 `arena-calibration.soak-admission.v1`，不重新读取或改写 `.xlsx`；当前冻结前草案位于 `tools/arena-calibration/plans/gate-f-week-full-v2/`，执行 campaign 为 `gate-f-week-full-v3`，包含 58 个待跑候选、1 个隔离 scope、198 个 10–25 run 短 shard 和 3255 个计划 run。部署列车改变了 Arena stage admission，旧 runtime 上已完成 PVE 的 G2 只保留 `1 × Lv10` 外部标签，不跨 cohort 代签新机器样本。B9 的原始工作簿/normalized timeout 仍为 1800 帧；`gate-f-week-full-v2-empirical-timeout-overrides.json` 以 workbook hash + sheet/cell/cell-value hash、candidate hash、原/换边 1800 帧 timeout、原/换边 5400 帧 finished、candidate runtime identity/closure 与不变存档快照为闭包，只在计划层把 B9 转入 `6 × 10` 长 timeout 分层，且明确要求 formal runtime 复跑。每个 shard 都有独立、hash-bound 的 `schedule_shard/auto_execute` 决策证据并同时计划 original/side-swap。
+
+`--soak-admission tools/arena-calibration/evidence/gate-f-week-full-v2-soak-admission.json` 是生成星期计划的硬参数。生成器会逐文件复验其中的 manifest/result/report SHA-256、真实 JSON Schema 实例、exact candidate timeout、original/side-swap 自然结束、formal runtime identity、零 error/timeout/recovery、正常关闭与受保护存档不变；freeze 再把 admission path/hash 与当时 formal runtime 一起写入 plan。首轮正式 campaign 的前两份 soak 为 20/20 finished，第三份因 B11/C12 原向真实 timeout 形成 8 finished + 2 timeout 而暂停；旧 30 行继续作为不可改写事实，不能重试成“平台通过”。修正后的三份 10-run soak 均使用 `B2/C7/G2/F3/E10`，每份都覆盖普通参数、单位 payload、阵型、长 timeout、高等级与 side-swap；这五项均有同一 formal runtime exact-policy 双向完成证据。B11/C12、C9 和 B9 的既有 timeout 事实及全量普通/长 timeout 分片全部保留，退出基础设施 soak 不代表删候选或认定平衡。
+
+```powershell
+node tools/arena-calibration/build-gate-f-week-plan.js `
+  --candidates tmp/arena-calibration/intake/gate-a-workbook-audit/normalized-candidates.json `
+  --exceptions tmp/arena-calibration/intake/gate-a-workbook-audit/exceptions.json `
+  --empirical-timeout-overrides tools/arena-calibration/evidence/gate-f-week-full-v2-empirical-timeout-overrides.json `
+  --soak-admission tools/arena-calibration/evidence/gate-f-week-full-v2-soak-admission.json `
+  --output-dir tools/arena-calibration/plans/gate-f-week-full-v2 `
+  --plan-id gate-f-week-full-v2 --campaign-id gate-f-week-full-v3 `
+  --battle-semantics-cohort arena-cohort-20260827-stage-outcome-v2 `
+  --battle-build-commit c64a5440e5506a3f1567143711f984d063e56505
+```
 
 部署稳定并取得最终提交后，必须在 clean Git worktree 上重新绑定 exact source commit/tree/worktree hash 与当时 formal runtime；不得把冻结前草案中的任何旧 runtime 值当成正式身份：
 
 ```powershell
 node tools/arena-calibration/gate-fctl.js freeze `
-  --draft tools/arena-calibration/plans/gate-f-week-full-v1/plan-draft.json `
-  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v2/frozen
+  --draft tools/arena-calibration/plans/gate-f-week-full-v2/plan-draft.json `
+  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v3/frozen
 
 node tools/arena-calibration/gate-fctl.js arm `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v2/frozen/gate-f-plan.json `
-  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v2/window-<timestamp> `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v3/frozen/gate-f-plan.json `
+  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v3/window-<timestamp> `
   --hours 8
 
 node tools/arena-calibration/gate-fctl.js run `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v2/frozen/gate-f-plan.json `
-  --window tmp/arena-calibration/gate-f/gate-f-week-full-v2/window-<timestamp>/idle-window.json `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v3/frozen/gate-f-plan.json `
+  --window tmp/arena-calibration/gate-f/gate-f-week-full-v3/window-<timestamp>/idle-window.json `
   --max-shards 3
 
 node tools/arena-calibration/gate-fctl.js status `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v2/frozen/gate-f-plan.json `
-  --output tmp/arena-calibration/gate-f/gate-f-week-full-v2/status.json
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v3/frozen/gate-f-plan.json `
+  --output tmp/arena-calibration/gate-f/gate-f-week-full-v3/status.json
 ```
 
 只有三份 fresh soak receipt 都为 `completed`，且 exact runtime、原始 JSONL Schema/manifest 绑定、受保护存档集合、磁盘、timeout/error、时长漂移和 0 人工动作测量全部通过，才可在新的有界 window 中去掉 `--max-shards 3` 继续剩余短 shard。`arm` 会拒绝活跃 Launcher/Flash/arena runner、低磁盘和 source/runtime 漂移；window 最长 24 小时且可用 `gate-fctl.js revoke` 撤销。运行中如内容开发启动 Flash、出现 revoke/身份/磁盘异常，driver 会通过本轮 owned `.signal` 请求 abort，并在 300 秒硬上限内让位。已产生的 partial JSONL 逐行以 `manifestHash + runId` durable 提交，重复 attempt 只计一次；失败或恢复耗尽写去重 exception inbox，不要求测试群现场整理或逐批确认。Gate F low-touch 只有在真实最近 20 个 eligible epoch 与全 campaign 两个窗口都满足 attention 门后才成立，fixture 的 20 个 epoch 不能代替实跑。

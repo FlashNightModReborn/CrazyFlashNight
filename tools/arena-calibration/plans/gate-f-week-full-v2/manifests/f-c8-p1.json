@@ -1,0 +1,92 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-c8-p1",
+  "createdAt": "2026-08-28T08:40:00.000Z",
+  "buildCommit": "c64a5440e5506a3f1567143711f984d063e56505",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-e4b4a273f3cd0757"
+    ],
+    "sourceCell": "C8",
+    "sourceCandidateHash": "sha256:e4b4a273f3cd07576d2a3cbb8462b42f3b72cf9466a972d1e5d0df73e4e7f0a3",
+    "phaseIndex": 1,
+    "phaseRuns": 10
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-e4b4a273f3cd0757",
+      "blueRoster": [
+        {
+          "type": "兵种269",
+          "level": 30
+        },
+        {
+          "type": "兵种268",
+          "level": 30
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种59",
+          "level": 30
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-c8",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C8; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:e09c783fa0e39bf5841fa1479f32feb41ceb726a26986f13ff4f07f3b1e68b7f"
+    },
+    {
+      "caseId": "candidate-e4b4a273f3cd0757-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种59",
+          "level": 30
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种269",
+          "level": 30
+        },
+        {
+          "type": "兵种268",
+          "level": 30
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-c8",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!C8; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:7a1ab01a11754b70e5864a14782e899f3a6ba2187e72d50acd3ecd5ea9e2a4d6"
+    }
+  ],
+  "manifestHash": "sha256:5b9e27d26c39c5824e37f8cac8344822c1ee7449663306b41c4cc63918a041ad"
+}

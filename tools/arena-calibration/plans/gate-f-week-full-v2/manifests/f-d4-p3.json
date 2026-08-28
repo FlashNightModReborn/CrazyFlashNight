@@ -1,0 +1,124 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-d4-p3",
+  "createdAt": "2026-08-28T08:40:00.000Z",
+  "buildCommit": "c64a5440e5506a3f1567143711f984d063e56505",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-9524180fd7830ed0"
+    ],
+    "sourceCell": "D4",
+    "sourceCandidateHash": "sha256:9524180fd7830ed0f5c439d1a0fcf2bf82d19d083bd57dc4f0bfc63a3a5ed17f",
+    "phaseIndex": 3,
+    "phaseRuns": 25
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-9524180fd7830ed0",
+      "blueRoster": [
+        {
+          "type": "兵种44",
+          "level": 20
+        },
+        {
+          "type": "兵种48",
+          "level": 20
+        },
+        {
+          "type": "兵种49",
+          "level": 20
+        },
+        {
+          "type": "兵种353",
+          "level": 20
+        },
+        {
+          "type": "兵种46",
+          "level": 20
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种56",
+          "level": 20
+        },
+        {
+          "type": "兵种57",
+          "level": 20
+        }
+      ],
+      "repeat": 12,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-d4",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!D4; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:da773cc77f2f30e6309355ca24400ab9fc22f1e46f490d86d3590a944c8c8a68"
+    },
+    {
+      "caseId": "candidate-9524180fd7830ed0-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种56",
+          "level": 20
+        },
+        {
+          "type": "兵种57",
+          "level": 20
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种44",
+          "level": 20
+        },
+        {
+          "type": "兵种48",
+          "level": 20
+        },
+        {
+          "type": "兵种49",
+          "level": 20
+        },
+        {
+          "type": "兵种353",
+          "level": 20
+        },
+        {
+          "type": "兵种46",
+          "level": 20
+        }
+      ],
+      "repeat": 13,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-d4",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!D4; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:ccee38b390163851895f31cee33aff92d578eab29fea026882e3aa72787fa71c"
+    }
+  ],
+  "manifestHash": "sha256:7d743f5a7d15c2e641b6a06c4ca3518359f93bf4974880c9cc9ea9e393b8a881"
+}

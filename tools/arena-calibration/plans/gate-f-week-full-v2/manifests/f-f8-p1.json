@@ -1,0 +1,84 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-f8-p1",
+  "createdAt": "2026-08-28T08:40:00.000Z",
+  "buildCommit": "c64a5440e5506a3f1567143711f984d063e56505",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-a89656e36e027f0b"
+    ],
+    "sourceCell": "F8",
+    "sourceCandidateHash": "sha256:a89656e36e027f0b5d1c606dd0300f73363f4116bc70b0b77f327c458beacaef",
+    "phaseIndex": 1,
+    "phaseRuns": 10
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-a89656e36e027f0b",
+      "blueRoster": [
+        {
+          "type": "兵种445",
+          "level": 40
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种59",
+          "level": 30
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-f8",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!F8; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:14448fdc04f546adcccf18ef54bebb066c3feb084dae0b264f4b6e969ef06a28"
+    },
+    {
+      "caseId": "candidate-a89656e36e027f0b-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种59",
+          "level": 30
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种445",
+          "level": 40
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-f8",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!F8; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:35ecd671866ec64b3550e93d2a653b63435ada7dc8feaacdc0826fa7cfede2f9"
+    }
+  ],
+  "manifestHash": "sha256:9153e0ae711d593bf6073c48c30e6a940df7673c569e10ccd0c2b67f10277a05"
+}

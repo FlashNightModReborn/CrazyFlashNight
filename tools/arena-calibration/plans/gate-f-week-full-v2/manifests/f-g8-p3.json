@@ -1,0 +1,172 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-g8-p3",
+  "createdAt": "2026-08-28T08:40:00.000Z",
+  "buildCommit": "c64a5440e5506a3f1567143711f984d063e56505",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-1e7c366298755d52"
+    ],
+    "sourceCell": "G8",
+    "sourceCandidateHash": "sha256:1e7c366298755d526b3372fdb44ab3583385dc03e9cb5187958d515fd440be79",
+    "phaseIndex": 3,
+    "phaseRuns": 25
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-1e7c366298755d52",
+      "blueRoster": [
+        {
+          "type": "兵种52",
+          "level": 35,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 35,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种50",
+          "level": 35,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种15",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "强化药剂": true,
+              "钙化": true
+            },
+            "身高": 225
+          }
+        },
+        {
+          "type": "兵种266",
+          "level": 35
+        },
+        {
+          "type": "兵种354",
+          "level": 35
+        },
+        {
+          "type": "兵种455",
+          "level": 20
+        }
+      ],
+      "repeat": 12,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-g8",
+        "unit-parameters",
+        "unit_payload",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!G8; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:e03a0911b81d9a4b6eb48598c3a8d29c53a335fe6db2478a7d9c8a4e3f854f8e"
+    },
+    {
+      "caseId": "candidate-1e7c366298755d52-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种15",
+          "level": 50,
+          "parameters": {
+            "宠物属性": {
+              "强化药剂": true,
+              "钙化": true
+            },
+            "身高": 225
+          }
+        },
+        {
+          "type": "兵种266",
+          "level": 35
+        },
+        {
+          "type": "兵种354",
+          "level": 35
+        },
+        {
+          "type": "兵种455",
+          "level": 20
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种52",
+          "level": 35,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 35,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种50",
+          "level": 35,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        }
+      ],
+      "repeat": 13,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-g8",
+        "unit-parameters",
+        "unit_payload",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!G8; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:01eb536dcf222caee676d71d4995ff0c2f77978187df551b6e38d973056524f5"
+    }
+  ],
+  "manifestHash": "sha256:d718780201e5acff7c2088916ce4e9c215a1c8a52963de6465e2aa6566ea3b10"
+}

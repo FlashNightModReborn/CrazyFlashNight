@@ -1,0 +1,156 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-g6-p3",
+  "createdAt": "2026-08-28T08:40:00.000Z",
+  "buildCommit": "c64a5440e5506a3f1567143711f984d063e56505",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-53443cc3a09f4266"
+    ],
+    "sourceCell": "G6",
+    "sourceCandidateHash": "sha256:53443cc3a09f426615075809abb5e2631570cb2db6ea14087b261270d29b5e4d",
+    "phaseIndex": 3,
+    "phaseRuns": 25
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-53443cc3a09f4266",
+      "blueRoster": [
+        {
+          "type": "兵种287",
+          "level": 35
+        },
+        {
+          "type": "兵种50",
+          "level": 20
+        },
+        {
+          "type": "兵种65",
+          "level": 20
+        },
+        {
+          "type": "兵种54",
+          "level": 20
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种15",
+          "level": 35
+        },
+        {
+          "type": "兵种49",
+          "level": 28,
+          "parameters": {
+            "手枪": "加强版mp7"
+          }
+        },
+        {
+          "type": "兵种48",
+          "level": 28,
+          "parameters": {
+            "手枪": "M79式榴弹发射器"
+          }
+        },
+        {
+          "type": "兵种45",
+          "level": 28,
+          "parameters": {
+            "手枪": "P90战术版"
+          }
+        }
+      ],
+      "repeat": 12,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-g6",
+        "unit-parameters",
+        "unit_payload",
+        "formation",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!G6; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "wedge",
+      "formationSpacing": 54,
+      "caseHash": "sha256:d25f9ed6598bb0d8e4d9bf0844ce95ab6dd29eb9fe19b7aec7a9af57cf5b3010"
+    },
+    {
+      "caseId": "candidate-53443cc3a09f4266-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种15",
+          "level": 35
+        },
+        {
+          "type": "兵种49",
+          "level": 28,
+          "parameters": {
+            "手枪": "加强版mp7"
+          }
+        },
+        {
+          "type": "兵种48",
+          "level": 28,
+          "parameters": {
+            "手枪": "M79式榴弹发射器"
+          }
+        },
+        {
+          "type": "兵种45",
+          "level": 28,
+          "parameters": {
+            "手枪": "P90战术版"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种287",
+          "level": 35
+        },
+        {
+          "type": "兵种50",
+          "level": 20
+        },
+        {
+          "type": "兵种65",
+          "level": 20
+        },
+        {
+          "type": "兵种54",
+          "level": 20
+        }
+      ],
+      "repeat": 13,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-g6",
+        "unit-parameters",
+        "unit_payload",
+        "formation",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!G6; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "wedge",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:a941fd422d87f1ad2e1e66017dc5ea62fcd5f73cc6561ae933291fd68d8b300c"
+    }
+  ],
+  "manifestHash": "sha256:e340ed983100edaa86ac709c8fb928d05dfce28375be3677f11661326da8e9ea"
+}

@@ -160,6 +160,18 @@
         },
         "sourceIdentity": { "$ref": "#/$defs/sourceIdentity" },
         "runtimeIdentity": { "$ref": "arena-calibration.campaign-runtime.v1#/$defs/runtimeIdentity" },
+        "soakAdmissionPath": {
+          "oneOf": [
+            { "$ref": "#/$defs/nonEmptyString" },
+            { "type": "null" }
+          ]
+        },
+        "soakAdmissionRef": {
+          "oneOf": [
+            { "$ref": "#/$defs/sha256" },
+            { "type": "null" }
+          ]
+        },
         "slot": { "type": "string", "pattern": "^cf7_agent_[A-Za-z0-9_-]+$" },
         "seedSlot": { "type": "string", "pattern": "^crazyflasher7_saves[0-9]*$" },
         "healthPolicy": { "$ref": "#/$defs/healthPolicy" },
@@ -172,6 +184,10 @@
         },
         "createdAt": { "$ref": "#/$defs/nonEmptyString" },
         "planHash": { "$ref": "#/$defs/sha256" }
+      },
+      "dependentRequired": {
+        "soakAdmissionPath": ["soakAdmissionRef"],
+        "soakAdmissionRef": ["soakAdmissionPath"]
       }
     },
     "idleWindow": {

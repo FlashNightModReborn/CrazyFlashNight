@@ -1,0 +1,148 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "gate-f-week-f6-p1",
+  "createdAt": "2026-08-28T08:40:00.000Z",
+  "buildCommit": "c64a5440e5506a3f1567143711f984d063e56505",
+  "planner": {
+    "name": "gate-f-week-plan",
+    "version": 1,
+    "phase": "standard",
+    "candidateIds": [
+      "candidate-5705c044b67b60fe"
+    ],
+    "sourceCell": "F6",
+    "sourceCandidateHash": "sha256:5705c044b67b60fe1f7c07156b444e38561a8a1baacc19057f2585ae85da7118",
+    "phaseIndex": 1,
+    "phaseRuns": 10
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "candidate-5705c044b67b60fe",
+      "blueRoster": [
+        {
+          "type": "兵种22",
+          "level": 20
+        },
+        {
+          "type": "兵种64",
+          "level": 20
+        },
+        {
+          "type": "兵种260",
+          "level": 20
+        },
+        {
+          "type": "兵种23",
+          "level": 20
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种396",
+          "level": 25
+        },
+        {
+          "type": "兵种11",
+          "level": 10
+        },
+        {
+          "type": "兵种57",
+          "level": 30,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种44",
+          "level": 25,
+          "parameters": {
+            "汽车炸弹数量": 1
+          }
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-f6",
+        "unit-parameters",
+        "unit_payload",
+        "gate-f-week",
+        "standard"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!F6; Gate F standard original",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:2e05d205c956267a89aeda58ce98562f30eef9b71e63766a17f17a379d529f22"
+    },
+    {
+      "caseId": "candidate-5705c044b67b60fe-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种396",
+          "level": 25
+        },
+        {
+          "type": "兵种11",
+          "level": 10
+        },
+        {
+          "type": "兵种57",
+          "level": 30,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种44",
+          "level": 25,
+          "parameters": {
+            "汽车炸弹数量": 1
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种22",
+          "level": 20
+        },
+        {
+          "type": "兵种64",
+          "level": 20
+        },
+        {
+          "type": "兵种260",
+          "level": 20
+        },
+        {
+          "type": "兵种23",
+          "level": 20
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-f6",
+        "unit-parameters",
+        "unit_payload",
+        "gate-f-week",
+        "standard",
+        "side-swap"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!F6; Gate F standard swapped",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:72102286ba84d18e0f432fca01f06581f7738d8899dff2825570e5ec1fa845a0"
+    }
+  ],
+  "manifestHash": "sha256:8935b631ea1a2ede9f44998417eb3eac459a3cf4ac85e0cf2d232fe2a1b2b743"
+}
