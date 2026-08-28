@@ -199,6 +199,15 @@ try {
     Assert-Equal 'renderer qualification policy tree excludes only machine build caches' `
         'tools/player-info-hud/renderer-qualification/bin/,tools/player-info-hud/renderer-qualification/obj/' `
         ((@($rendererQualificationTrees[0].excludePrefixes | ForEach-Object { [string]$_ }) | Sort-Object) -join ',')
+    $arenaCalibrationTrees = @($repositoryPolicyTrees | Where-Object {
+        [string]$_.path -ceq 'tools/arena-calibration'
+    })
+    Assert-Equal 'arena calibration has one policy tree' 1 $arenaCalibrationTrees.Count
+    Assert-Equal 'arena calibration policy extensions are exact' '.js,.json' `
+        ((@($arenaCalibrationTrees[0].includeExtensions | ForEach-Object { [string]$_ }) | Sort-Object) -join ',')
+    Assert-Equal 'arena calibration policy tree excludes only restored dependencies' `
+        'tools/arena-calibration/node_modules/' `
+        ((@($arenaCalibrationTrees[0].excludePrefixes | ForEach-Object { [string]$_ }) | Sort-Object) -join ',')
     $buildScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'launcher\build.ps1'))
     $prepareScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\prepare-launcher-release-assets.ps1'))
     $policyScript = [IO.File]::ReadAllText((Join-Path $ProjectRoot 'tools\validate-launcher-release-policy.ps1'))

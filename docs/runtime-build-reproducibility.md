@@ -201,6 +201,8 @@ native 源码前缀内的非二进制契约文档也必须显式绑定，不能�
 
 `policyHash` 与日常审计触发集合不是同一个集合。`config/build/native-change-gate.v1.json` 联合前三域、payload、全局 native 扩展/入口名和 release 信任链路径，回答“这次 push/PR 是否值得启动 native/runtime 事后审计”；广义内容 policy 不因此变成 native。命中源码边界但未改部署字节时，Audit 成功报告 `source-ahead`，不要求即时 promotion。生成器、审计器和派生发布资产仍留在 `policyHash`，下一次正式 release 再用当时完整 release tree 建 request 与 receipt。
 
+`policy` 树只绑定受版本控制的审计实现与契约；执行门恢复出的 `node_modules/`、`bin/`、`obj/` 等机器依赖必须由各树显式排除。否则同一干净 Git tree 会因本机已安装依赖而产生不同的 Worktree `policyHash`，并在 promotion 前失败关闭。`tools/arena-calibration/node_modules/` 因此不进入政策身份，其锁文件与受跟踪脚本仍照常绑定。
+
 `payloadClosureHash` 对根 `CRAZYFLASHER7MercenaryEmpire.exe` 与 `runtime/**` 的实际 payload 文件有序计算，明确排除 `runtime/cf7-runtime-manifest.tsv`、证明与 release record。这样 manifest/policy 元数据变化不会被误判成二进制失衡；manifest v2 再记录四个构建字段中的前三个、`buildIdentityHash`、`payloadClosureHash`、工具链可读名和逐文件大小/SHA-256。
 
 ## producer 与政策闸门

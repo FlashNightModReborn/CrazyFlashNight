@@ -204,7 +204,7 @@
           "path": "tools/arena-calibration",
           "includeExtensions": [".js", ".json"],
           "excludePaths": [],
-          "excludePrefixes": []
+          "excludePrefixes": ["tools/arena-calibration/node_modules/"]
         },
         {
           "path": "tools/equipment-tuning",
