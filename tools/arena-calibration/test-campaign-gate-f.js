@@ -18,11 +18,13 @@ const { CampaignSupervisor } = require("./lib/campaign-supervisor");
 const {
   aggregateAttention,
   captureDiskHealth,
+  classifyShardRowHealth,
   createAttentionMeasurement,
   createGateFDecisionEvidence,
   createExceptionInboxItem,
   createIdleWindow,
   createProducerObservations,
+  evaluateShardHealth,
   freezeGateFPlan,
   verifyGateFPlan,
   verifyIdleWindow,
@@ -280,6 +282,27 @@ function main() {
 
     const lowDisk = captureDiskHealth(tempRoot, draft.healthPolicy.minimumFreeBytes, { freeBytes: 1024, checkedAt: NOW });
     assert.strictEqual(lowDisk.ok, false);
+    const timeoutRows = Array.from({ length: 20 }, (_unused, index) => ({
+      status: index < 15 ? "finished" : "timeout",
+      durationMs: index < 15 ? 1000 + index : 30000,
+    }));
+    const timeoutHealth = evaluateShardHealth(timeoutRows, draft.healthPolicy, null);
+    const soakTimeoutDisposition = classifyShardRowHealth(timeoutHealth, { allowCandidateTimeoutAnomaly: false });
+    const timeoutDisposition = classifyShardRowHealth(timeoutHealth, { allowCandidateTimeoutAnomaly: true });
+    assert.strictEqual(timeoutHealth.timeoutRate, 0.25);
+    assert.deepStrictEqual(timeoutHealth.reasons, ["timeout_rate"]);
+    assert.strictEqual(soakTimeoutDisposition.executionOk, false);
+    assert.strictEqual(soakTimeoutDisposition.candidateTimeoutAnomaly, false);
+    assert.strictEqual(timeoutDisposition.executionOk, true);
+    assert.strictEqual(timeoutDisposition.candidateQualityOk, false);
+    assert.strictEqual(timeoutDisposition.candidateTimeoutAnomaly, true);
+    const errorHealth = evaluateShardHealth([
+      ...timeoutRows.slice(0, 19),
+      { status: "error", durationMs: 1000 },
+    ], draft.healthPolicy, null);
+    const errorDisposition = classifyShardRowHealth(errorHealth, { allowCandidateTimeoutAnomaly: true });
+    assert.strictEqual(errorDisposition.executionOk, false);
+    assert.strictEqual(errorDisposition.candidateTimeoutAnomaly, false);
     const producerWindow = createIdleWindow(tempRoot, plan, {
       issuedAt: NOW,
       durationMs: 60 * 60 * 1000,
@@ -526,6 +549,8 @@ function main() {
       manifestTamperRejected: true,
       decisionEvidenceTamperRejected: true,
       diskAndProducerGatesFailClosed: true,
+      infrastructureSoakTimeoutStillBlocks: true,
+      candidateTimeoutDeferredWithoutInfrastructureFailure: true,
       expiredExecutionGrantStillCommitsFacts: true,
       prematureCompleteRejected: true,
       partialRowsDurablyCommitted: 10,

@@ -633,6 +633,21 @@ function evaluateShardHealth(rows, policy, baselineMedianDurationMs) {
   return { total, errors, timeouts, errorRate, timeoutRate, medianDurationMs, durationDriftRatio, ok: reasons.length === 0, reasons };
 }
 
+function classifyShardRowHealth(rowHealth, options) {
+  options = options || {};
+  const reasons = Array.isArray(rowHealth && rowHealth.reasons) ? rowHealth.reasons.slice() : [];
+  const timeoutOnly = reasons.length === 1 && reasons[0] === "timeout_rate";
+  const candidateTimeoutAnomaly = timeoutOnly && options.allowCandidateTimeoutAnomaly === true;
+  const blockingReasons = candidateTimeoutAnomaly ? [] : reasons;
+  return {
+    executionOk: blockingReasons.length === 0,
+    candidateQualityOk: reasons.length === 0,
+    candidateTimeoutAnomaly,
+    blockingReasons,
+    anomalyReasons: candidateTimeoutAnomaly ? ["timeout_rate"] : [],
+  };
+}
+
 function resultRunKey(manifestHash, row) {
   return `${manifestHash}|${row.runId}`;
 }
@@ -718,6 +733,7 @@ module.exports = {
   aggregateAttention,
   captureDiskHealth,
   captureGitSourceIdentity,
+  classifyShardRowHealth,
   collectControlProcessIds,
   compareRuntimeIdentity,
   createAttentionMeasurement,

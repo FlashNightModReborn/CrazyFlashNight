@@ -41,7 +41,7 @@
 - 记录阵型、出生位置、多阶段刷怪和污染状态。
 - 以冻结 source/runtime/manifest/decision plan、有界可撤销 idle window、真实 producer/磁盘门和去重 exception inbox 编排 Gate F 短 shard。
 
-本 ADR 发起时的平台仍主要是“单批次执行器 + 规则摘要器”；Gate B–E 已在 2026-08-27 形成真实证据，Gate F0 工程控制面也已实现。2026-08-28 的修正 campaign 已完成三份 fresh 10-run soak，并在全量开始后以 0 失败保存 8/198 shard、115 条 durable row；随后旧进程观测把内部检查子进程误判为独立 producer 而安全让位。当前边界是用修正后的受控进程树和不可变 admission snapshot 重新冻结 campaign，再累计真实 20+ eligible epoch 和全量星期级结果。以下历史缺口已转化为现役契约：
+本 ADR 发起时的平台仍主要是“单批次执行器 + 规则摘要器”；Gate B–E 已在 2026-08-27 形成真实证据，Gate F0 工程控制面也已实现。2026-08-28 的 v4 campaign 已完成三份 fresh 10-run soak，并在全量保存 16 个 completed shard、1 个 F2 timeout-anomaly shard 和 280 条 durable row；F2 的原向 10/10 finished、换边 5 finished + 5 timeout，runtime/save/shutdown 与 error 门均正常。旧 driver 把纯候选 timeout-rate 当成基础设施失败而暂停；当前边界是以 v5 拆分 execution health 与 candidate quality，保留 timeout anomaly 后无人值守继续，再累计真实 20+ eligible epoch 和全量星期级结果。以下历史缺口已转化为现役契约：
 
 - 候选、批次、attempt、模型决定、PVE 与 Gate F shard 共享 hash-bound campaign/provenance 身份。
 - paired strength、bridge、side-swap、timeout/error anomaly 与盲化模型裁决已有独立 artifact；不再把单 case 胜率直接当最终档位。
@@ -694,6 +694,10 @@ Gate F0 首轮以 `gate-f-week-full-v1` 计划族、`gate-f-week-full-v2` 执行
 v3 全量随后完成 8/198 shard、提交 115 条 durable row、排除 10 条重复且 0 failed。第一次让位来自诊断命令行自身含 producer 关键字，第二次则在 `f-c2-p3` 构建门开始约 7 秒后、0 战斗行时由内部 `arena-tools → run-checks.js → gate-fctl.js --check` 后代进程触发；两次均是 fail-closed 的 `producer_preempted`，不是窗口到期、战斗失败或存档/runtime 污染。v3 事实原样保留，不跨 plan hash 混计到新 campaign。
 
 `gate-f-week-full-v4` 草案把 controller/runner 的祖先和全部后代归入同一受控进程树，树外独立 runner/Flash 仍保持抢占；soak admission 另以唯一 run 目录中的 `resultSnapshotPath` 和 manifest snapshot 锁住实际字节，同时保留报告内原 `resultPath` 的逐字验证，避免固定 batch 输出被覆盖及 admission hash 循环引用。工程门继续覆盖 plan/manifest/decision/admission 篡改、经验 timeout override 真正 Schema 实例与双向语义闭包、低磁盘、active producer、window 到期/撤销、过期 grant 后既有事实提交、partial row exactly-once、重复排除、20-epoch attention 和 exception inbox 去重。v4 尚未 freeze/arm 或实跑；重新三份 fresh soak、真实 20-epoch low-touch、星期级恢复/抢占和 3255-run 候选终态出现前，不得写成 Gate F 通过或全量标定完成。
+
+v4 随后完成 30/30 fresh soak；全量在 16 个 completed shard + 1 个 F2 anomaly shard 后暂停，累计 280 条 durable row、0 duplicate。F2 p2 的 20 行全部 Schema/manifest-bound：原向 10/10 finished，换边 5 finished + 5 个 1800 帧 timeout，0 error，exact runtime、存档不变、正常 shutdown。该事实不能通过重试洗掉，也不能称为平台失败；它已经满足 side-swap 暴露与至少 30 个累计样本中的异常证据，应进入候选低 timeout 筛选和后续 stability investigation。
+
+`gate-f-week-full-v5` 草案把 execution health 与 candidate quality 显式分离：只有纯 `timeout_rate` 超阈值时，shard 仍以完整执行事实提交并生成 `candidate_timeout_anomaly / keep_provisional` deferred item，然后继续下一个 shard；timeout 行继续排除于强度拟合并参与最终候选门。任何 error/污染、duration drift、runtime/save/disk、runner/report/cardinality 异常仍写 failed receipt 并暂停或 fail closed。v4 的 280 行保留但不跨 plan hash 混计；v5 尚未 freeze/arm 或实跑，仍须三份 fresh soak 后才开放全量。
 
 ---
 

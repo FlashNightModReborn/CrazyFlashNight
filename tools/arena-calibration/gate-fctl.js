@@ -18,6 +18,7 @@ const { writeJsonAtomic } = require("./lib/durable-campaign-journal");
 const {
   aggregateAttention,
   captureDiskHealth,
+  classifyShardRowHealth,
   collectControlProcessIds,
   compareRuntimeIdentity,
   createAttentionMeasurement,
@@ -527,6 +528,40 @@ function writeFailureException(supervisor, plan, shard, error, severity) {
   return supervisor.recordException(item);
 }
 
+function writeCandidateTimeoutException(supervisor, plan, shard, rowHealth, reportPath) {
+  const now = new Date();
+  const scopes = [`work:${shard.shardId}`].concat(shard.candidateIds.map((id) => `candidate:${id}`));
+  const reportSha256 = sha256File(reportPath);
+  const item = createExceptionInboxItem({
+    exceptionId: `gate-f-${shard.shardId}-candidate-timeout-rate`,
+    campaignId: plan.campaignId,
+    dedupeKey: `gate-f|${shard.shardId}|candidate-timeout-rate`,
+    category: "candidate_timeout_anomaly",
+    severity: "warning",
+    status: "deferred",
+    summary: `valid shard completed with ${rowHealth.timeouts}/${rowHealth.total} timeout rows; keep the original rows, continue the campaign, and exclude the timeout rows from strength fitting`,
+    affectedScopes: scopes,
+    occurrences: [{
+      occurrenceId: `occ-${timestampId(now)}`,
+      observedAt: now.toISOString(),
+      evidenceRef: sha256OfValue({
+        planHash: plan.planHash,
+        shardId: shard.shardId,
+        manifestHash: shard.manifestHash,
+        reportSha256,
+        total: rowHealth.total,
+        timeouts: rowHealth.timeouts,
+        timeoutRate: rowHealth.timeoutRate,
+      }),
+    }],
+    defaultAction: "keep_provisional",
+    reviewDeadline: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: now.toISOString(),
+    updatedAt: now.toISOString(),
+  });
+  return supervisor.recordException(item);
+}
+
 function supervisorFor(args, plan) {
   return new CampaignSupervisor({
     projectRoot: args.projectRoot,
@@ -659,6 +694,10 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
     const baselineMedian = baselineDurations.length > 0
       ? baselineDurations[Math.floor(baselineDurations.length / 2)] : null;
     const rowHealth = evaluateShardHealth(allRows, plan.healthPolicy, baselineMedian);
+    const canonicalManifest = readJsonFile(resolveInsideRoot(args.projectRoot, shard.manifestPath, "Gate F shard manifest"));
+    const allowCandidateTimeoutAnomaly = canonicalManifest.planner
+      && ["standard", "long"].includes(canonicalManifest.planner.phase);
+    const rowDisposition = classifyShardRowHealth(rowHealth, { allowCandidateTimeoutAnomaly });
     const diskAfter = captureDiskHealth(args.projectRoot, plan.healthPolicy.minimumFreeBytes);
     const finishedAt = report.completedAt || new Date().toISOString();
     const wallClockMinutes = Math.max(0, (Date.parse(finishedAt) - Date.parse(startedAt)) / 60000);
@@ -667,8 +706,11 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
     const runtimeVerified = true;
     const withinWallClock = wallClockMinutes <= shard.maxWallClockMinutes + 1;
     const preliminaryOk = reportCompleted && saveUnchanged && runtimeVerified && diskAfter.ok
-      && rowHealth.ok && withinWallClock && allRows.length >= shard.plannedRuns;
+      && rowDisposition.executionOk && withinWallClock && allRows.length >= shard.plannedRuns;
     const yielded = report.status === "yielded" || Boolean(childResult.yieldReason);
+    if (preliminaryOk && rowDisposition.candidateTimeoutAnomaly) {
+      writeCandidateTimeoutException(supervisor, plan, shard, rowHealth, reportPath);
+    }
     const measurement = createShardMeasurement(
       args,
       plan,
@@ -724,6 +766,7 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
       diskBefore,
       diskAfter,
       rows: rowHealth,
+      rowDisposition,
     };
     const reason = preliminaryOk ? null
       : (childResult.yieldReason ? childResult.yieldReason.message

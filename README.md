@@ -1,7 +1,7 @@
 # 闪客快打7佣兵帝国 单机版 MOD
 
 **《闪客快打7佣兵帝国》（Crazy Flasher 7: Mercenary Empire）单机版 MOD 开发工程**  
-**最后核对代码基线**：斗兽星期级全量标定 Gate F release source commit `c64a5440e5506a3f1567143711f984d063e56505`（2026-08-28；deployment `693baf7051d9e67be8930b309dc14eea65c0eab6`）；正式 runtime 已 `promoted`。证据准入修正后的 `gate-f-week-full-v3` campaign 三份 soak 为 30/30 finished，随后全量累计 8/198 shard、115 条 durable row、0 failed；运行因 build gate 内部 `gate-fctl.js --check` 被旧监控误判为独立 producer 而安全暂停。进程树归属修复与不可变 manifest/result admission snapshot 已进入 `gate-f-week-full-v4` 草案，重新冻结与 fresh soak 前不称 Gate F 完成；身份、共识与证据边界见 [runtime 构建复现文档](docs/runtime-build-reproducibility.md)。
+**最后核对代码基线**：斗兽星期级全量标定 Gate F release source commit `c64a5440e5506a3f1567143711f984d063e56505`（2026-08-28；deployment `693baf7051d9e67be8930b309dc14eea65c0eab6`）；正式 runtime 已 `promoted`。`gate-f-week-full-v4` 三份 fresh soak 为 30/30 finished；全量累计 16 个 completed shard + 1 个 F2 timeout-anomaly shard、280 条 durable row，0 error，runtime/save/shutdown 均正常。F2 的 20 行中原向 10/10 finished、换边 5 finished + 5 timeout，旧 driver 把有效候选异常误作基础设施失败而暂停；v5 草案已拆分 execution health 与 candidate quality，纯 timeout-rate 进入 deferred anomaly 后继续，error/runtime/save/disk/时长漂移仍 fail closed。v4 事实原样保留但不跨 plan hash 混计，v5 重新冻结与 fresh soak 前不称 Gate F 完成；身份、共识与证据边界见 [runtime 构建复现文档](docs/runtime-build-reproducibility.md)。
 
 CF7:ME 是一个 **Flash 起源、当前已演化为多栈运行时** 的单机 MOD 工程。  
 游戏核心仍运行在 **ActionScript 2.0 + Flash CS6** 上，但外围运行、启动、UI、验证和存档链路已经扩展为：
