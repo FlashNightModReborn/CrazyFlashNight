@@ -5,6 +5,8 @@
 class org.flashNight.arki.stageSelect.StageSelectPanelService {
     private static var _json:LiteJSON;
     private static var _inited:Boolean = false;
+    private static var _pendingEnterResponseContexts:Object = {};
+    private static var _committedEnterResponseContext:Object = null;
 
     public static function install():Void {
         if (_inited) return;
@@ -86,8 +88,10 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             return;
         }
 
-        if (entryKind != "map"
-                && !org.flashNight.arki.scene.StageRunSession.canStartStage()) {
+        var lifecycleReason:String = entryKind == "map"
+            ? org.flashNight.arki.scene.StageRunSession.getSceneExitBlockReason()
+            : org.flashNight.arki.scene.StageRunSession.getStageStartBlockReason();
+        if (lifecycleReason != "") {
             sendResponse({
                 task: "stage_select_response",
                 callId: callId,
@@ -149,30 +153,54 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             return;
         }
 
-        var actionResult:Object;
         if (entryKind == "map") {
-            actionResult = performMapEnter(validation.context.stageInfo);
-        } else {
-            performEnter(validation.context, difficulty);
-            actionResult = { success: true };
-        }
-
-        if (!actionResult.success) {
-            actionResult.task = "stage_select_response";
-            actionResult.callId = callId;
-            sendResponse(actionResult);
+            var actionResult:Object = performMapEnter(validation.context.stageInfo);
+            if (!actionResult.success) {
+                actionResult.task = "stage_select_response";
+                actionResult.callId = callId;
+                sendResponse(actionResult);
+                return;
+            }
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: true,
+                closePanel: true,
+                stageName: stageName,
+                difficulty: difficulty,
+                entryKind: entryKind
+            });
             return;
         }
 
-        sendResponse({
-            task: "stage_select_response",
-            callId: callId,
-            success: true,
-            closePanel: true,
-            stageName: stageName,
-            difficulty: difficulty,
-            entryKind: entryKind
-        });
+        var resolvedStageInfo:Object = _root.StageInfoDict[stageName];
+        var resolvedStageName:String = resolvedStageInfo != undefined
+            ? String(resolvedStageInfo.Name || "") : "";
+        if (resolvedStageName == "") {
+            sendResponse({
+                task: "stage_select_response", callId: callId,
+                success: false, error: "stage_config_failed"
+            });
+            return;
+        }
+        var startToken:String =
+            org.flashNight.arki.scene.StageRunSession.reserveStageStart(
+                "stage_select", resolvedStageName, difficulty);
+        if (startToken == "") {
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: false,
+                error: "pending_stage_settlement"
+            });
+            return;
+        }
+        // AS2 的异步回调不能依赖 handleEnter 这一层的闭包激活记录：
+        // XML loader 回来时，外层局部变量可能已变成 undefined，LiteJSON 会把关联字段直接省略。
+        // 把完整 correlation envelope 作为 performEnter 自身参数，让实际异步 lexical frame
+        // 直接构造 wire response，确保 Host 能用 exact callId 结清请求并关闭 Web 面板。
+        performEnter(stageName, validation.context, resolvedStageName,
+            difficulty, entryKind, startToken, callId);
     }
 
     /**
@@ -258,6 +286,17 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
 
     public static function handleReturnFrame(params:Object):Void {
         var callId = params != undefined ? params.callId : undefined;
+        var lifecycleReason:String =
+            org.flashNight.arki.scene.StageRunSession.getSceneExitBlockReason();
+        if (lifecycleReason != "") {
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: false,
+                error: "pending_stage_settlement"
+            });
+            return;
+        }
         var frameLabel:String = "";
         if (params != undefined && params.returnFrameLabel != undefined) {
             frameLabel = String(params.returnFrameLabel);
@@ -392,32 +431,286 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         return { success: true, context: context };
     }
 
-    private static function performEnter(context:Object, difficulty:String):Void {
-        _root.载入关卡数据(context.关卡类型, context.关卡路径);
-        _root.当前通关的关卡 = "";
-        _root.当前关卡难度 = difficulty;
-        _root.难度等级 = _root.计算难度等级(_root.当前关卡难度);
-        _root.当前关卡名 = context.当前关卡名;
-        _root.场景进入位置名 = "出生地";
-        _root.关卡类型 = context.关卡类型;
+    private static function performEnter(stageKey:String, context:Object,
+            resolvedStageName:String, difficulty:String, entryKind:String,
+            startToken:String, callId):Void {
+        rememberEnterResponseContext(startToken, {
+            callId:callId,
+            stageName:stageKey,
+            difficulty:difficulty,
+            entryKind:entryKind
+        });
+        var settled:Boolean = false;
+        var failOnce:Function = function(errorCode:String):Void {
+            if (settled) return;
+            settled = true;
+            try { restoreCommittedEnterTransitionState(startToken); }
+            catch (restoreError) {
+                trace("[StageSelectPanelService] transition restore failed: "
+                    + restoreError);
+            }
+            try {
+                var manager:org.flashNight.arki.scene.StageManager =
+                    org.flashNight.arki.scene.StageManager.instance;
+                if (manager != null) manager.abortPreparedStage(startToken);
+            } catch (managerAbortError) {
+                trace("[StageSelectPanelService] prepared stage abort failed: "
+                    + managerAbortError);
+            }
+            try {
+                org.flashNight.arki.scene.StageRunSession.cancelStageStart(startToken);
+            } catch (reservationCancelError) {
+                trace("[StageSelectPanelService] reservation cancel failed: "
+                    + reservationCancelError);
+            }
+            var stableContext:Object = null;
+            try { stableContext = takeEnterResponseContextForFailure(startToken); }
+            catch (contextError) {
+                trace("[StageSelectPanelService] failure context take failed: "
+                    + contextError);
+            }
+            if (stableContext != null) {
+                try {
+                    sendResponse({
+                        task: "stage_select_response",
+                        callId: stableContext.callId,
+                        success: false,
+                        error: errorCode
+                    });
+                } catch (failureResponseError) {
+                    trace("[StageSelectPanelService] failure response failed: "
+                        + failureResponseError);
+                }
+            } else {
+                trace("[StageSelectPanelService] missing deferred response context");
+            }
+        };
+        if (typeof _root.载入关卡数据 != "function"
+                || resolvedStageName == ""
+                || typeof _root.计算难度等级 != "function"
+                || _root.淡出动画 == undefined
+                || typeof _root.淡出动画.淡出跳转帧 != "function") {
+            failOnce("stage_transition_unavailable");
+            return;
+        }
+        var difficultyLevel:Number;
+        try {
+            difficultyLevel = _root.计算难度等级(difficulty);
+        } catch (preflightError) {
+            failOnce("stage_transition_unavailable");
+            return;
+        }
+        var needsEntries:Boolean = context.限制词条 != undefined
+            && context.限制词条 != null && context.限制词条.length > 0;
+        var needsLimitLevel:Boolean = context.限制难度等级 != undefined
+            && context.限制难度等级 != null;
+        if ((needsEntries && (_root.限制系统 == undefined
+                    || typeof _root.限制系统.openEntries != "function"))
+                || (needsLimitLevel && (_root.限制系统 == undefined
+                    || typeof _root.限制系统.addLimitLevel != "function"))) {
+            failOnce("stage_transition_unavailable");
+            return;
+        }
+        try {
+            _root.载入关卡数据(context.关卡类型, context.关卡路径,
+                function(data:Object):Void {
+                    if (settled) return;
+                    if (!org.flashNight.arki.scene.StageRunSession
+                            .isStageStartReservationValid(startToken)) {
+                        failOnce("stage_load_failed");
+                        return;
+                    }
+                    var currentStageInfo:Object = _root.StageInfoDict[stageKey];
+                    if (currentStageInfo == undefined
+                            || String(currentStageInfo.Name || "") != resolvedStageName
+                            || String(currentStageInfo.Type || "") != String(context.关卡类型 || "")
+                            || String(currentStageInfo.url || "") != String(context.关卡路径 || "")) {
+                        failOnce("stage_state_changed");
+                        return;
+                    }
+                    try {
+                        if (!promoteEnterResponseContext(startToken)) {
+                            throw new Error("missing deferred response context");
+                        }
+                        _root.当前通关的关卡 = "";
+                        _root.当前关卡难度 = difficulty;
+                        _root.难度等级 = difficultyLevel;
+                        _root.当前关卡名 = resolvedStageName;
+                        _root.场景进入位置名 = "出生地";
+                        _root.关卡类型 = context.关卡类型;
 
-        if (context.限制词条 != undefined && context.限制词条 != null && context.限制词条.length > 0) {
-            _root.限制系统.openEntries(context.限制词条);
-        }
-        if (context.限制难度等级 != undefined && context.限制难度等级 != null) {
-            _root.限制系统.addLimitLevel(context.限制难度等级);
-        }
-        if (context.起点帧 != undefined && context.起点帧 != null && context.起点帧 != "") {
-            _root.关卡地图帧值 = context.起点帧;
-        }
+                        if (needsEntries) {
+                            _root.限制系统.openEntries(context.限制词条);
+                        }
+                        if (needsLimitLevel) {
+                            _root.限制系统.addLimitLevel(context.限制难度等级);
+                        }
+                        if (context.起点帧 != undefined && context.起点帧 != null
+                                && context.起点帧 != "") {
+                            _root.关卡地图帧值 = context.起点帧;
+                        }
 
-        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
-            _root.soundEffectManager.stopBGMForTransition();
+                        if (_root.soundEffectManager != undefined
+                                && _root.soundEffectManager.stopBGMForTransition != undefined) {
+                            _root.soundEffectManager.stopBGMForTransition();
+                        }
+                        _root.淡出动画.淡出跳转帧(context.淡出跳转帧);
+                    } catch (transitionError) {
+                        trace("[StageSelectPanelService] stage transition failed: " + transitionError);
+                        failOnce("stage_transition_failed");
+                        return;
+                    }
+                    settled = true;
+                    try {
+                        sendCommittedEnterResponse();
+                    } catch (responseError) {
+                        // 转场已经提交；transport 失败只能由 Host 后续对账，不能反向取消 token。
+                        trace("[StageSelectPanelService] committed response failed: "
+                            + responseError);
+                    }
+                },
+                function():Void { failOnce("stage_load_failed"); }, startToken);
+        } catch (loadStartError) {
+            trace("[StageSelectPanelService] stage load failed: " + loadStartError);
+            failOnce("stage_load_failed");
         }
-        _root.淡出动画.淡出跳转帧(context.淡出跳转帧);
+    }
+
+    private static function rememberEnterResponseContext(startToken:String,
+            responseContext:Object):Void {
+        if (_pendingEnterResponseContexts == null) _pendingEnterResponseContexts = {};
+        _pendingEnterResponseContexts[startToken] = {
+            startToken:startToken,
+            responseContext:responseContext
+        };
+    }
+
+    private static function takePendingEnterResponseContext(startToken:String):Object {
+        if (_pendingEnterResponseContexts == null) return null;
+        var record:Object = _pendingEnterResponseContexts[startToken];
+        if (record == undefined || record == null
+                || String(record.startToken || "") != startToken) return null;
+        delete _pendingEnterResponseContexts[startToken];
+        return record.responseContext;
+    }
+
+    private static function promoteEnterResponseContext(startToken:String):Boolean {
+        if (_committedEnterResponseContext != null) return false;
+        // 先完成可能抛错的快照，再消费 pending 信封；否则快照异常会丢掉 callId，
+        // Host 只能等到 timeout。
+        var transitionSnapshot:Object;
+        try { transitionSnapshot = captureEnterTransitionState(); }
+        catch (snapshotError) { return false; }
+        var responseContext:Object = takePendingEnterResponseContext(startToken);
+        if (responseContext == null) return false;
+        _committedEnterResponseContext = {
+            startToken:startToken,
+            responseContext:responseContext,
+            transitionSnapshot:transitionSnapshot
+        };
+        return true;
+    }
+
+    private static function takeEnterResponseContextForFailure(startToken:String):Object {
+        var responseContext:Object = takePendingEnterResponseContext(startToken);
+        if (responseContext != null) return responseContext;
+        if (_committedEnterResponseContext == null
+                || String(_committedEnterResponseContext.startToken || "") != startToken) {
+            return null;
+        }
+        responseContext = _committedEnterResponseContext.responseContext;
+        _committedEnterResponseContext = null;
+        return responseContext;
+    }
+
+    private static function captureEnterTransitionState():Object {
+        var restriction:Object = _root.限制系统;
+        var entriesRef:Object = restriction != undefined && restriction != null
+            ? restriction.entries : undefined;
+        return {
+            currentCompletedStage:_root.当前通关的关卡,
+            currentDifficulty:_root.当前关卡难度,
+            difficultyLevel:_root.难度等级,
+            currentStageName:_root.当前关卡名,
+            spawnName:_root.场景进入位置名,
+            stageType:_root.关卡类型,
+            hadMapFrame:_root.关卡地图帧值 != undefined,
+            mapFrame:_root.关卡地图帧值,
+            restriction:restriction,
+            entriesRef:entriesRef,
+            entriesSnapshot:cloneFlatObject(entriesRef),
+            hadLimitLevel:restriction != undefined && restriction != null
+                && restriction.limitLevel != undefined,
+            limitLevel:restriction != undefined && restriction != null
+                ? restriction.limitLevel : undefined
+        };
+    }
+
+    private static function restoreCommittedEnterTransitionState(startToken:String):Void {
+        var record:Object = _committedEnterResponseContext;
+        if (record == null || String(record.startToken || "") != startToken
+                || record.transitionSnapshot == null) return;
+        var snapshot:Object = record.transitionSnapshot;
+        _root.当前通关的关卡 = snapshot.currentCompletedStage;
+        _root.当前关卡难度 = snapshot.currentDifficulty;
+        _root.难度等级 = snapshot.difficultyLevel;
+        _root.当前关卡名 = snapshot.currentStageName;
+        _root.场景进入位置名 = snapshot.spawnName;
+        _root.关卡类型 = snapshot.stageType;
+        if (snapshot.hadMapFrame) _root.关卡地图帧值 = snapshot.mapFrame;
+        else delete _root.关卡地图帧值;
+        var restriction:Object = snapshot.restriction;
+        if (restriction != undefined && restriction != null
+                && _root.限制系统 === restriction) {
+            if (snapshot.entriesRef != undefined && snapshot.entriesRef != null) {
+                restriction.entries = snapshot.entriesRef;
+                restoreFlatObject(snapshot.entriesRef, snapshot.entriesSnapshot);
+            }
+            if (snapshot.hadLimitLevel) restriction.limitLevel = snapshot.limitLevel;
+            else delete restriction.limitLevel;
+        }
+        record.transitionSnapshot = null;
+    }
+
+    private static function cloneFlatObject(source:Object):Object {
+        if (source == undefined || source == null) return null;
+        var clone:Object = {};
+        for (var key:String in source) clone[key] = source[key];
+        return clone;
+    }
+
+    private static function restoreFlatObject(target:Object, snapshot:Object):Void {
+        if (target == undefined || target == null) return;
+        for (var key:String in target) delete target[key];
+        if (snapshot == undefined || snapshot == null) return;
+        for (var restoreKey:String in snapshot) target[restoreKey] = snapshot[restoreKey];
+    }
+
+    private static function sendCommittedEnterResponse():Void {
+        var record:Object = _committedEnterResponseContext;
+        _committedEnterResponseContext = null;
+        if (record == null || record.responseContext == null) {
+            throw new Error("missing committed response context");
+        }
+        var responseContext:Object = record.responseContext;
+        sendResponse({
+            task: "stage_select_response",
+            callId: responseContext.callId,
+            success: true,
+            closePanel: true,
+            stageName: responseContext.stageName,
+            difficulty: responseContext.difficulty,
+            entryKind: responseContext.entryKind
+        });
     }
 
     private static function performMapEnter(stageInfo:Object):Object {
+        var lifecycleReason:String =
+            org.flashNight.arki.scene.StageRunSession.getSceneExitBlockReason();
+        if (lifecycleReason != "") {
+            // 二次裁决只负责关闭 TOCTOU；外部仍保持既有统一错误契约。
+            return { success: false, error: "pending_stage_settlement" };
+        }
         if (_root.淡出动画 == undefined || _root.淡出动画.淡出跳转帧 == undefined) {
             return { success: false, error: "stage_transition_unavailable" };
         }

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Tests.Tasks
@@ -76,6 +78,105 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void HandleWebRequest_SendThrows_ClearsOnlyExactPendingAndReturnsSendFailed()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            var logs = new List<string>();
+            int sendCount = 0;
+            var task = new StageSelectTask(delegate { return true; }, delegate(string payload)
+            {
+                sendCount++;
+                sent.Add(JObject.Parse(payload.TrimEnd('\0')));
+                if (sendCount == 2) throw new InvalidOperationException("synthetic transport failure");
+            });
+            task.SetPostToWeb(delegate(string json) { posted.Add(JObject.Parse(json)); });
+
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                Assert.True(task.BindPanelInstance("panel.ss.send-failure"));
+                task.HandleWebRequest("snapshot", JObject.Parse(
+                    "{\"callId\":\"web-survivor\",\"panelInstanceId\":\"panel.ss.send-failure\"}"));
+                task.HandleWebRequest("enter", JObject.Parse(
+                    "{\"callId\":\"web-send-failure\",\"panelInstanceId\":\"panel.ss.send-failure\","
+                    + "\"stageName\":\"新手练习场\",\"difficulty\":\"简单\"}"));
+
+                Assert.Equal(2, sent.Count);
+                Assert.Single(posted);
+                JObject failed = posted[0];
+                Assert.Equal("panel_resp", (string)failed["type"]);
+                Assert.Equal("stage-select", (string)failed["panel"]);
+                Assert.Equal("enter", (string)failed["cmd"]);
+                Assert.Equal("web-send-failure", (string)failed["callId"]);
+                Assert.Equal("panel.ss.send-failure", (string)failed["panelInstanceId"]);
+                Assert.False((bool)failed["success"]);
+                Assert.Equal("send_failed", (string)failed["error"]);
+                Assert.Contains(logs, line => line.Contains(
+                    "event=stage_select_request_send_failed backend_call_id=2"
+                    + " type=InvalidOperationException request_claimed=true pending_count=1"));
+
+                // 发送失败请求已被精确移除；其迟到回包不得消费仍在途的 snapshot。
+                task.HandleFlashResponse(JObject.Parse(
+                    "{\"task\":\"stage_select_response\",\"callId\":2,\"success\":true,\"closePanel\":true}"),
+                    delegate(string json) { });
+                Assert.Single(posted);
+                Assert.Contains(logs, line => line.Contains(
+                    "event=stage_select_response_dropped reason=unknown_backend_call_id"
+                    + " backend_call_id=2 pending_count=1"));
+
+                task.HandleFlashResponse(JObject.Parse(
+                    "{\"task\":\"stage_select_response\",\"callId\":1,\"success\":true,\"snapshot\":{}}"),
+                    delegate(string json) { });
+                Assert.Equal(2, posted.Count);
+                JObject survivor = posted[1];
+                Assert.Equal("snapshot", (string)survivor["cmd"]);
+                Assert.Equal("web-survivor", (string)survivor["callId"]);
+                Assert.Equal("panel.ss.send-failure", (string)survivor["panelInstanceId"]);
+                Assert.True((bool)survivor["success"]);
+            }
+            finally
+            {
+                LogManager.ResetSink();
+                task.Dispose();
+            }
+        }
+
+        [Fact]
+        public void HandleWebRequest_SendThrows_UnboundRequestNeverAdoptsReplacementOwner()
+        {
+            JObject posted = null;
+            StageSelectTask task = null;
+            task = new StageSelectTask(delegate { return true; }, delegate(string payload)
+            {
+                throw new InvalidOperationException("synthetic transport failure");
+            });
+            task.SetPostToWeb(delegate(string json) { posted = JObject.Parse(json); });
+
+            // 同步日志 sink 作为确定性重入点：失败 fid 已认领，错误回投尚未发生。
+            LogManager.SetSink(delegate(string line)
+            {
+                if (line.Contains("event=stage_select_request_send_failed"))
+                    Assert.True(task.BindPanelInstance("panel.ss.replacement"));
+            });
+            try
+            {
+                task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"web-unbound-failure\"}"));
+
+                Assert.NotNull(posted);
+                Assert.Equal("web-unbound-failure", (string)posted["callId"]);
+                Assert.Equal("send_failed", (string)posted["error"]);
+                Assert.Null(posted["panelInstanceId"]);
+                Assert.Equal("panel.ss.replacement", task.PanelInstanceId);
+            }
+            finally
+            {
+                LogManager.ResetSink();
+                task.Dispose();
+            }
+        }
+
+        [Fact]
         public void HandleWebRequest_JumpFrame_SendsStageSelectJumpFrameAction()
         {
             string sent = null;
@@ -123,6 +224,128 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("web-4", (string)resp["callId"]);
             Assert.True((bool)resp["success"]);
             Assert.True((bool)resp["closePanel"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_MissingBackendCallId_LogsAndKeepsExactPending()
+        {
+            string posted = null;
+            var logs = new List<string>();
+            var task = new StageSelectTask(delegate { return true; }, delegate(string payload) { });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                task.HandleWebRequest("enter", JObject.Parse(
+                    "{\"callId\":\"web-missing\",\"stageName\":\"新手练习场\",\"difficulty\":\"简单\"}"));
+                task.HandleFlashResponse(JObject.Parse(
+                    "{\"task\":\"stage_select_response\",\"success\":true,\"closePanel\":true}"),
+                    delegate(string json) { });
+
+                Assert.Null(posted);
+                Assert.Contains(logs, line => line.Contains(
+                    "event=stage_select_response_dropped reason=missing_backend_call_id pending_count=1"));
+
+                task.HandleFlashResponse(JObject.Parse(
+                    "{\"task\":\"stage_select_response\",\"callId\":1,\"success\":true,\"closePanel\":true}"),
+                    delegate(string json) { });
+
+                var resp = JObject.Parse(posted);
+                Assert.Equal("web-missing", (string)resp["callId"]);
+                Assert.True((bool)resp["success"]);
+            }
+            finally
+            {
+                LogManager.ResetSink();
+                task.Dispose();
+            }
+        }
+
+        [Fact]
+        public void HandleFlashResponse_UnknownBackendCallId_LogsAndKeepsExactPending()
+        {
+            string posted = null;
+            var logs = new List<string>();
+            var task = new StageSelectTask(delegate { return true; }, delegate(string payload) { });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                task.HandleWebRequest("enter", JObject.Parse(
+                    "{\"callId\":\"web-unknown\",\"stageName\":\"新手练习场\",\"difficulty\":\"简单\"}"));
+                task.HandleFlashResponse(JObject.Parse(
+                    "{\"task\":\"stage_select_response\",\"callId\":999,\"success\":true,\"closePanel\":true}"),
+                    delegate(string json) { });
+
+                Assert.Null(posted);
+                Assert.Contains(logs, line => line.Contains(
+                    "event=stage_select_response_dropped reason=unknown_backend_call_id"
+                    + " backend_call_id=999 pending_count=1"));
+
+                task.HandleFlashResponse(JObject.Parse(
+                    "{\"task\":\"stage_select_response\",\"callId\":1,\"success\":true,\"closePanel\":true}"),
+                    delegate(string json) { });
+
+                var resp = JObject.Parse(posted);
+                Assert.Equal("web-unknown", (string)resp["callId"]);
+                Assert.True((bool)resp["success"]);
+            }
+            finally
+            {
+                LogManager.ResetSink();
+                task.Dispose();
+            }
+        }
+
+        [Fact]
+        public void HandleFlashResponse_MalformedBackendCallIds_NeverConsumeExactPending()
+        {
+            string posted = null;
+            var logs = new List<string>();
+            var task = new StageSelectTask(delegate { return true; }, delegate(string payload) { });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                task.HandleWebRequest("enter", JObject.Parse(
+                    "{\"callId\":\"web-malformed\",\"stageName\":\"新手练习场\",\"difficulty\":\"简单\"}"));
+                string[] malformed =
+                {
+                    "\"1\"",
+                    "true",
+                    "1.0",
+                    "0",
+                    "-1"
+                };
+                foreach (string rawCallId in malformed)
+                {
+                    task.HandleFlashResponse(JObject.Parse(
+                        "{\"task\":\"stage_select_response\",\"callId\":" + rawCallId
+                        + ",\"success\":true,\"closePanel\":true}"),
+                        delegate(string json) { });
+                    Assert.Null(posted);
+                }
+
+                int invalidLogCount = logs.FindAll(line => line.Contains(
+                    "event=stage_select_response_dropped reason=invalid_backend_call_id pending_count=1")).Count;
+                Assert.Equal(malformed.Length, invalidLogCount);
+
+                task.HandleFlashResponse(JObject.Parse(
+                    "{\"task\":\"stage_select_response\",\"callId\":1,\"success\":true,\"closePanel\":true}"),
+                    delegate(string json) { });
+
+                var resp = JObject.Parse(posted);
+                Assert.Equal("web-malformed", (string)resp["callId"]);
+                Assert.True((bool)resp["success"]);
+            }
+            finally
+            {
+                LogManager.ResetSink();
+                task.Dispose();
+            }
         }
 
         // ── P3 协议加固：exact instance 绑定 / 会话回显 / stateRevision ─────────────

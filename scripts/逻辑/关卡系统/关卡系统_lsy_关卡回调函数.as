@@ -46,11 +46,26 @@ _root.测试角斗场怪物 = function(等级){
 		if(_root.兵种库[兵种表[i]] != undefined) squad.push({兵种: 兵种表[i], 等级: 等级});
 	}
 	if(squad.length == 0){ _root.最上层发布文字提示("测试小队为空（兵种库未就绪？）"); return; }
-	if(!org.flashNight.arki.merc.ArenaController.prepareArenaStage(0, 1000, "")){
+	if(!org.flashNight.arki.merc.ArenaController.prepareArenaStage(0, 1000, "",
+		function(data, preparedToken):Void {
+			if (!org.flashNight.arki.merc.ArenaController.applyPreparedArenaContext(0, 1000, "")) {
+				org.flashNight.arki.merc.ArenaController.cancelPendingStageStart(preparedToken);
+				_root.最上层发布文字提示("角斗场场景状态已失效");
+				return;
+			}
+			_root.角斗场入场中 = true;
+			if (!org.flashNight.arki.merc.ArenaController.commitRoster(squad)) {
+				_root.角斗场入场中 = false;
+				org.flashNight.arki.merc.ArenaController.cancelPendingStageStart(preparedToken);
+				_root.最上层发布文字提示("角斗场转场提交失败");
+			}
+		},
+		function():Void {
+			_root.角斗场入场中 = false;
+			_root.最上层发布文字提示("角斗场场景数据加载失败");
+		})){
 		_root.最上层发布文字提示("角斗场场景数据缺失"); return;
 	}
-	_root.角斗场入场中 = true;
-	org.flashNight.arki.merc.ArenaController.commitRoster(squad);
 }
 _root.关卡回调函数.角斗场计算敌人数 = function(){
 	if(_root.角斗场对手类型 == "escalation"){
@@ -392,12 +407,27 @@ _root.测试角斗场爬升 = function(){
 		if(_root.兵种库[pool[i].type] != undefined) clean.push(pool[i]);
 	}
 	if(clean.length == 0){ _root.最上层发布文字提示("测试池为空（兵种库未就绪？）"); return; }
-	if(!org.flashNight.arki.merc.ArenaController.prepareArenaStage(0, 2000, "")){
+	if(!org.flashNight.arki.merc.ArenaController.prepareArenaStage(0, 2000, "",
+		function(data, preparedToken):Void {
+			if (!org.flashNight.arki.merc.ArenaController.applyPreparedArenaContext(0, 2000, "")) {
+				org.flashNight.arki.merc.ArenaController.cancelPendingStageStart(preparedToken);
+				_root.最上层发布文字提示("角斗场场景状态已失效");
+				return;
+			}
+			_root.角斗场入场中 = true;
+			// 参数：faction, pool, baseCount, baseLevelMin, baseLevelMax, deposit, reward(=波奖励基准), maxWaves
+			if (!org.flashNight.arki.merc.ArenaController.commitEscalation("堕落城", clean, 4, 20, 30, 0, 2000, 5)) {
+				_root.角斗场入场中 = false;
+				org.flashNight.arki.merc.ArenaController.cancelPendingStageStart(preparedToken);
+				_root.最上层发布文字提示("角斗场转场提交失败");
+			}
+		},
+		function():Void {
+			_root.角斗场入场中 = false;
+			_root.最上层发布文字提示("角斗场场景数据加载失败");
+		})){
 		_root.最上层发布文字提示("角斗场场景数据缺失"); return;
 	}
-	_root.角斗场入场中 = true;
-	// 参数：faction, pool, baseCount, baseLevelMin, baseLevelMax, deposit, reward(=波奖励基准), maxWaves
-	org.flashNight.arki.merc.ArenaController.commitEscalation("堕落城", clean, 4, 20, 30, 0, 2000, 5);
 }
 
 

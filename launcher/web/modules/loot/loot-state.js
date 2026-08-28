@@ -175,7 +175,7 @@
         return response && typeof response === 'object' && !Array.isArray(response) ? response : null;
     }
 
-    function normalizeProjection(response, identity) {
+    function normalizeProjection(response, identity, allowZeroSuspended) {
         var raw = projectionObject(response);
         if (!raw) return null;
         var state = normalizedState(raw.state);
@@ -212,7 +212,10 @@
             for (var i = 0; i < result.loot.slots.length; i++) if (result.loot.slots[i].occupied) occupied++;
             if (occupied !== remainingCount) return null;
         } else if (state === 'SUSPENDED') {
-            if (remainingCount <= 0 || raw.closeLease !== ''
+            var zeroSuspendedAllowed=allowZeroSuspended===true&&identity
+                &&identity.source==='stage_settlement';
+            if (remainingCount < 0 || remainingCount === 0&&!zeroSuspendedAllowed
+                    || raw.closeLease !== ''
                     || !Array.isArray(raw.snapshots) || raw.snapshots.length !== 0
                     || raw.tooltip !== null || raw.terminal !== null) return null;
         } else {
@@ -261,13 +264,17 @@
         this._unknown = null;
         this._lastError = '';
         this._detached = false;
+        this._allowZeroSuspended = this.identity.source === 'stage_settlement'
+            && options.settlementReport && typeof options.settlementReport === 'object'
+            && !Array.isArray(options.settlementReport);
         this._lootLimit = Math.max(0, Math.min(64, integer(options.capacity) || 0));
         this._backpackLimit = Math.max(1, Math.min(100, integer(options.backpackLimit) || 50));
     }
 
     Coordinator.prototype._emit = function() { this._onChange(this.debugState()); };
     Coordinator.prototype._normalizeProjection = function(response) {
-        var projection = normalizeProjection(response, this.identity);
+        var projection = normalizeProjection(
+            response, this.identity, this._allowZeroSuspended);
         if (!projection || projection.state !== 'ACTIVE') return projection;
         if (projection.loot.capacity !== this._lootLimit
                 || projection.backpack.offset !== 0

@@ -491,7 +491,12 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 //场景转换相关
 _root.关卡结束 = function(){
 	org.flashNight.arki.scene.StageRunSession.finish("victory");
-	EffectSystem.ScreenEffect("过关提示动画",Stage.width / 2,Stage.height / 2,100);
+	// 过关动画只是视觉投影；素材/渲染异常不得吞掉唯一的权威结算提交。
+	try {
+		EffectSystem.ScreenEffect("过关提示动画",Stage.width / 2,Stage.height / 2,100);
+	} catch (stageFinishEffectError) {
+		trace("[StageFinish] victory effect failed: " + stageFinishEffectError);
+	}
 	_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
 }
 
@@ -510,28 +515,98 @@ _root.返回基地 = function(){
 		_root.发布消息(_root.获得翻译("关卡结算尚未准备完成，请稍后重试返回基地。"));
 		return false;
 	}
-	_root.新出生 = true;
-	_root.玩家信息界面.刷新hp显示();
-	_root.玩家信息界面.刷新mp显示();
-	_root.关卡结束界面._visible = false;
-	_root.关卡结束界面.关卡是否结束 = false;
-	_root.场景进入位置名 = "出生地";
-	_root.关卡类型 = "";
+	// 以下都是可选投影：任何一个 UI/限制/BGM 对象缺失或抛错，
+	// 都不得阻塞其他清理与本次转场。
+	try {
+		if (_root.玩家信息界面 != undefined
+				&& typeof _root.玩家信息界面.刷新hp显示 == "function") {
+			_root.玩家信息界面.刷新hp显示();
+		}
+	} catch (refreshHpError) {
+		trace("[ReturnBase] HP projection failed: " + refreshHpError);
+	}
+	try {
+		if (_root.玩家信息界面 != undefined
+				&& typeof _root.玩家信息界面.刷新mp显示 == "function") {
+			_root.玩家信息界面.刷新mp显示();
+		}
+	} catch (refreshMpError) {
+		trace("[ReturnBase] MP projection failed: " + refreshMpError);
+	}
+	try {
+		if (_root.关卡结束界面 != undefined) {
+			_root.关卡结束界面._visible = false;
+			_root.关卡结束界面.关卡是否结束 = false;
+		}
+	} catch (settlementUiError) {
+		trace("[ReturnBase] settlement UI projection failed: " + settlementUiError);
+	}
+	try {
+		if (_root.限制系统 != undefined
+				&& typeof _root.限制系统.clearEntries == "function") {
+			_root.限制系统.clearEntries();
+		}
+	} catch (restrictionClearError) {
+		trace("[ReturnBase] restriction cleanup failed: " + restrictionClearError);
+	}
+	try {
+		if (_root.soundEffectManager != undefined
+				&& typeof _root.soundEffectManager.stopBGMForTransition == "function") {
+			_root.soundEffectManager.stopBGMForTransition();
+		}
+	} catch (bgmStopError) {
+		trace("[ReturnBase] BGM transition projection failed: " + bgmStopError);
+	}
+
 	var 返回前主角:MovieClip;
-	try { 返回前主角 = TargetCacheManager.findHero(); } catch (findHeroError) { 返回前主角 = undefined; }
+	try {
+		返回前主角 = TargetCacheManager.findHero();
+	} catch (findHeroError) {
+		返回前主角 = undefined;
+		trace("[ReturnBase] hero lookup failed: " + findHeroError);
+	}
 	// 死亡伤害可以把 hp 压到负数；主角已被回收时也应允许从医务室恢复，
 	// 不能让转场入口因一次空引用把玩家永久留在结算态。
-	if (返回前主角 == undefined || Number(返回前主角.hp) <= 0){
-		_root.淡出动画.淡出跳转帧("医务室");
-	}else{
-		_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+	// 健康角色必须原样传递既有 frame label/number，不在这里改型或猜测默认帧。
+	var 返回目标帧 = _root.关卡地图帧值;
+	var 返回前生命值:Number = 返回前主角 == undefined
+		? NaN : Number(返回前主角.hp);
+	if (返回前主角 == undefined || isNaN(返回前生命值) || 返回前生命值 <= 0) {
+		返回目标帧 = "医务室";
 	}
-	// 清空限制词条
-	_root.限制系统.clearEntries();
-	// 停止背景音乐(jukebox override 时保持连续播放)
-	_root.soundEffectManager.stopBGMForTransition();
-	// 清除StageManager
-	StageManager.instance.clear();
+
+	var 返回前关卡管理器:org.flashNight.arki.scene.StageManager =
+		org.flashNight.arki.scene.StageManager.instance;
+	var 原新出生标志 = _root.新出生;
+	var 原场景进入位置名 = _root.场景进入位置名;
+	var 原关卡类型 = _root.关卡类型;
+	_root.新出生 = true;
+	_root.场景进入位置名 = "出生地";
+	_root.关卡类型 = "";
+	try {
+		_root.淡出动画.淡出跳转帧(返回目标帧);
+	} catch (fadeError) {
+		// onReturnBaseStarted 已是幂等冻结；不 clear，让玩家第二次点击可重试同一转场。
+		_root.新出生 = 原新出生标志;
+		_root.场景进入位置名 = 原场景进入位置名;
+		_root.关卡类型 = 原关卡类型;
+		trace("[ReturnBase] fade transition failed: " + fadeError);
+		return false;
+	}
+
+	// fade 已接受后立即提交权威 manager 清理；后续投影不得将其阻断。
+	try {
+		if (返回前关卡管理器 != null) 返回前关卡管理器.clear();
+	} catch (stageClearError) {
+		trace("[ReturnBase] StageManager.clear failed: " + stageClearError);
+	}
+	// 即使 manager 的附属清理抛错，对外战斗态也必须最终收口。
+	_root.当前为战斗地图 = false;
+	try {
+		if (返回前关卡管理器 != null) 返回前关卡管理器.isActive = false;
+	} catch (stageInactiveError) {
+		trace("[ReturnBase] StageManager inactive projection failed: " + stageInactiveError);
+	}
 	return true;
 }
 

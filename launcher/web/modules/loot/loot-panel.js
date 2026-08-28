@@ -69,6 +69,7 @@ var LootPanel = (function() {
             identity:_identity,
             capacity:_init.capacity,
             backpackLimit:50,
+            settlementReport:_init.report,
             request:function(cmd, fields, options, callback) {
                 return _mux.request(cmd, fields, options, callback);
             },

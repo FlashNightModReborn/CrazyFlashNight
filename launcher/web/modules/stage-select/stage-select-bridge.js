@@ -70,10 +70,38 @@
         return true;
     }
 
+    // Bridge.send 的 true 仅代表本地 transport 同步投递；false/throw 都是确定的
+    // 本地发送失败。所有带 pending 的请求必须在本调用栈内消费自己的 exact callId，
+    // 不能留下一个永远等不到回包的 pending/busy 再伪装成 timeout。
+    function tryBridgeSend(message, context) {
+        if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') return false;
+        try {
+            if (Bridge.send(message) !== false) return true;
+            if (window.console && console.error) {
+                console.error('[stage-select] ' + context + ' send failed: Bridge.send returned false');
+            }
+        } catch (error) {
+            if (window.console && console.error) {
+                console.error('[stage-select] ' + context + ' send failed: Bridge.send threw', error);
+            }
+        }
+        return false;
+    }
+
+    function sendPendingRequest(reqId, message, context, onSendFailure) {
+        if (tryBridgeSend(message, context)) return true;
+        // reqId 单调唯一；仍只消费当前 exact callback，兼容测试 bridge 的同步回包。
+        if (Object.prototype.hasOwnProperty.call(S._pendingReq, reqId)) {
+            delete S._pendingReq[reqId];
+            if (typeof onSendFailure === 'function') onSendFailure();
+        }
+        return false;
+    }
+
     function requestSnapshot() {
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
             StageSelectCore.logDev('snapshot skipped: bridge unavailable');
-            return;
+            return false;
         }
         var manifest = StageSelectData.getManifest();
         var reqId = 'stage-select-snapshot-' + (++S._reqSeq);
@@ -106,7 +134,7 @@
             StageSelectCore.clearError();
             StageSelectRenderer.applyRuntimeSnapshot(resp.snapshot || {});
         };
-        Bridge.send({
+        return sendPendingRequest(reqId, {
             type: 'panel',
             panel: 'stage-select',
             cmd: 'snapshot',
@@ -118,14 +146,17 @@
             catalogVersion: manifest.version,
             catalogSchema: manifest.schema,
             stageNames: StageSelectViewModel.getManifestStageNames()
+        }, 'snapshot', function() {
+            if (currentSession !== S._session) return;
+            StageSelectCore.showError('send_failed');
         });
     }
 
     function requestJumpFrame(frameLabel, nav, sourceFrameLabel) {
-        if (!frameLabel) return;
+        if (!frameLabel) return false;
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
             StageSelectCore.showError('bridge_unavailable');
-            return;
+            return false;
         }
         var reqId = 'stage-select-jump-' + (++S._reqSeq);
         var currentSession = S._session;
@@ -139,7 +170,7 @@
             StageSelectCore.clearError();
             StageSelectCore.logDev('jump frame synced: ' + frameLabel);
         };
-        Bridge.send({
+        return sendPendingRequest(reqId, {
             type: 'panel',
             panel: 'stage-select',
             cmd: 'jump_frame',
@@ -149,13 +180,16 @@
             navId: nav && nav.id || '',
             panelInstanceId: S._panelInstanceId,
             sessionGeneration: S._session
+        }, 'jump_frame', function() {
+            if (currentSession !== S._session) return;
+            StageSelectCore.showError('send_failed');
         });
     }
 
     function requestEnter(stageName, difficulty, entryKind) {
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
             StageSelectCore.showError('bridge_unavailable');
-            return;
+            return false;
         }
         var reqId = 'stage-select-enter-' + (++S._reqSeq);
         var currentSession = S._session;
@@ -178,7 +212,7 @@
             }
             StageSelectRenderer.renderCurrentFrame();
         };
-        Bridge.send({
+        return sendPendingRequest(reqId, {
             type: 'panel',
             panel: 'stage-select',
             cmd: 'enter',
@@ -188,6 +222,13 @@
             entryKind: entryKind || 'difficulty',
             panelInstanceId: S._panelInstanceId,
             sessionGeneration: S._session
+        }, 'enter', function() {
+            if (currentSession !== S._session) return;
+            if (S._busyStageName === stageName) S._busyStageName = '';
+            StageSelectCore.showError('send_failed');
+            if (Panels.isOpen() && Panels.getActive() === 'stage-select') {
+                StageSelectRenderer.renderCurrentFrame();
+            }
         });
     }
 
@@ -195,11 +236,11 @@
         var targetFrameLabel = frameLabel || S._returnFrameLabel || S._currentFrameLabel;
         if (!targetFrameLabel) {
             StageSelectCore.showError('invalid_return_frame');
-            return;
+            return false;
         }
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
             StageSelectCore.showError('bridge_unavailable');
-            return;
+            return false;
         }
         var reqId = 'stage-select-return-' + (++S._reqSeq);
         var currentSession = S._session;
@@ -216,7 +257,7 @@
                 StageSelectRenderer.requestClose();
             }
         };
-        Bridge.send({
+        return sendPendingRequest(reqId, {
             type: 'panel',
             panel: 'stage-select',
             cmd: 'return_frame',
@@ -226,7 +267,14 @@
             navId: nav && nav.id || '',
             panelInstanceId: S._panelInstanceId,
             sessionGeneration: S._session
+        }, 'return_frame', function() {
+            if (currentSession !== S._session) return;
+            StageSelectCore.showError('send_failed');
         });
+    }
+
+    function sendCloseNotification() {
+        return tryBridgeSend({ type: 'panel', panel: 'stage-select', cmd: 'close' }, 'close');
     }
 
     // 导出：被 renderer / inspector / facade 引用的名字
@@ -238,7 +286,8 @@
         requestSnapshot: requestSnapshot,
         requestJumpFrame: requestJumpFrame,
         requestEnter: requestEnter,
-        requestReturnFrame: requestReturnFrame
+        requestReturnFrame: requestReturnFrame,
+        sendCloseNotification: sendCloseNotification
     };
 
     Bridge.on('panel_resp', function(data) {

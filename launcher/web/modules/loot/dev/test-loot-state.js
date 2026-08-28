@@ -174,6 +174,12 @@ test('suspended authority projection is nonterminal and strictly data-free', () 
     assert(valid&&valid.state==='SUSPENDED'&&valid.terminal===null&&valid.remainingCount===1);
     const empty=suspended(2,'op.suspend.empty',0);
     assert.strictEqual(LootState.normalizeProjection(empty,identity),null);
+    const settlementIdentity=Object.assign({},identity,{source:'stage_settlement'});
+    assert.strictEqual(LootState.normalizeProjection(empty,settlementIdentity),null);
+    const emptyProjection=LootState.normalizeProjection(empty,settlementIdentity,true);
+    assert(emptyProjection&&emptyProjection.state==='SUSPENDED'
+        &&emptyProjection.terminal===null&&emptyProjection.remainingCount===0);
+    assert.strictEqual(LootState.normalizeProjection(empty,identity,true),null);
     const leased=suspended(2,'op.suspend.lease',1);leased.closeLease='close.stale';
     assert.strictEqual(LootState.normalizeProjection(leased,identity),null);
     const snapshot=suspended(2,'op.suspend.snapshot',1);
@@ -247,6 +253,22 @@ test('exact inventory-full zero-write proof remains active and can close through
     assert.strictEqual(model.debugState().phase,'suspended');
     assert.strictEqual(wire.calls.filter(call => call.cmd === 'claim').length,1);
     assert.strictEqual(wire.calls.filter(call => call.cmd === 'close').length,1);
+});
+
+test('only a stage-settlement coordinator with a normalized report accepts suspended zero', () => {
+    const empty=suspended(2,'op.suspend.empty.coordinator',0);
+    const mapWire=fakeTransport();
+    const mapModel=new LootState.Coordinator({identity,capacity:2,request:mapWire.request});
+    mapModel.open();mapWire.respond(0,empty);
+    assert.strictEqual(mapModel.debugState().phase,'reconcile_required');
+
+    const settlementIdentity=Object.assign({},identity,{source:'stage_settlement'});
+    const stageWire=fakeTransport();
+    const stageModel=new LootState.Coordinator({identity:settlementIdentity,capacity:2,
+        settlementReport:{v:1},request:stageWire.request});
+    stageModel.open();stageWire.respond(0,empty);
+    assert.strictEqual(stageModel.debugState().phase,'suspended');
+    assert.strictEqual(stageModel.debugState().remainingCount,0);
 });
 
 test('claim batch freezes exact source refs and accepts only the proven partial authority advance', () => {

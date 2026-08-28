@@ -78,6 +78,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testRecoveryProofLedgerAcceptedPrunesAtStableLimit();
         testRecoveryProofLedgerDefiniteFailuresDoNotConsumeReserve();
         testRecoveryProofLedgerOrderingAndCapacity();
+        testEmptyStageSettlementReportRecovery();
         testSuspendReopenFailureEmptyConsumes();
         testInitialOpenSynchronousFailureSuspendsSameInventory();
         testSuspendAnchorFailureIsZeroAuthority();
@@ -230,6 +231,25 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var inventory:ArrayInventory = new ArrayInventory(null, 8);
         for (var i:Number = 0; i < items.length; i++) inventory.add(i, items[i]);
         return inventory;
+    }
+
+    private static function makeSettlementReport(outcome:String, suffix:String):Object {
+        return {
+            v:1,
+            runId:"run.empty." + suffix,
+            stageName:"零奖励结算测试",
+            difficulty:"测试",
+            outcome:outcome,
+            activeFrames:30,
+            totalKills:0,
+            omittedKillTypes:0,
+            totalItemGains:0,
+            totalItemLosses:0,
+            omittedItemFlowTypes:0,
+            rewardRollOmissions:0,
+            kills:[],
+            itemFlows:[]
+        };
     }
 
     private static function stack(name:String, value:Number, lastUpdate:Number):BaseItem {
@@ -2421,6 +2441,117 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             LootContainerService.expireScene("scene_cleanup");
         } finally {
             _root.server = previousServer;
+        }
+    }
+
+    private static function testEmptyStageSettlementReportRecovery():Void {
+        var previousServer:Object = _root.server;
+        try {
+            // failure + 初次离线：0 奖励仍保留报告，重连只创建一次 reopen。
+            resetWorld();
+            _root.server = {};
+            var failureReport:Object = makeSettlementReport("failure", "failure");
+            var failureBegin:Object = LootContainerService.beginStageSettlement(
+                makeInventory([]), failureReport);
+            var failureRequested:Boolean = LootContainerService.requestOpenPanel();
+            var failurePending:Object = LootContainerService.execute(
+                "query", queryParams(failureBegin));
+            var failureOfflineResume:Object = LootContainerService.resumeStageSettlement();
+            var failureSent:Array = [];
+            var failureCallbacks:Array = [];
+            installPanelTransport(failureSent, failureCallbacks);
+            var failureResumed:Object = LootContainerService.resumeStageSettlement();
+            var failureDuplicate:Object = LootContainerService.resumeStageSettlement();
+            failureCallbacks[0](panelOpenAcceptedAck());
+            var failureTerminal:Object = LootContainerService.execute("close",
+                closeParams(failureResumed, "close.empty.failure",
+                    failureResumed.closeLease, false));
+            check(failureBegin.success && !failureRequested
+                    && failurePending.success
+                    && failurePending.state == "LOOT_SUSPENDED"
+                    && failurePending.remainingCount == 0
+                    && !failureOfflineResume.success
+                    && failureOfflineResume.error == "panel_open_unavailable"
+                    && failureResumed.success && failureResumed.reopened
+                    && failureSent.length == 1 && failureCallbacks.length == 1
+                    && failureSent[0].payload.source == "stage_settlement"
+                    && failureSent[0].payload.initData.report === failureReport
+                    && !failureDuplicate.success
+                    && failureDuplicate.error == "no_stage_settlement"
+                    && failureTerminal.success
+                    && failureTerminal.state == "CONSUMED"
+                    && failureTerminal.terminal.reason == "empty_close",
+                "failure 零奖励初次离线保留报告；重连只 reopen 一次并在真实关闭后终结");
+
+            // retreat + Host 明确拒绝：不能套用普通空地图箱的 CONSUMED 快路。
+            resetWorld();
+            var retreatSent:Array = [];
+            var retreatCallbacks:Array = [];
+            installPanelTransport(retreatSent, retreatCallbacks);
+            var retreatReport:Object = makeSettlementReport("retreat", "retreat");
+            var retreatBegin:Object = LootContainerService.beginStageSettlement(
+                makeInventory([]), retreatReport);
+            var retreatRequested:Boolean = LootContainerService.requestOpenPanel();
+            retreatCallbacks[0](panelOpenRejectedAck("panel_busy"));
+            var retreatPending:Object = LootContainerService.execute(
+                "query", queryParams(retreatBegin));
+            var retreatExpiry:Object = LootContainerService.expireScene("scene_cleanup");
+            check(retreatBegin.success && retreatRequested
+                    && retreatSent.length == 1
+                    && retreatSent[0].payload.initData.report === retreatReport
+                    && retreatPending.success
+                    && retreatPending.state == "LOOT_SUSPENDED"
+                    && retreatPending.remainingCount == 0
+                    && retreatExpiry.success
+                    && retreatExpiry.state == "LOOT_SUSPENDED"
+                    && retreatExpiry.reason == "stage_settlement_preserved",
+                "retreat 零奖励 open rejection 保留报告和同一 suspended authority");
+
+            // zero-reward victory + accepted 后断线：socket recovery 仍落 suspend，
+            // reconnect 只允许一个 exact resume，显示并关闭后才 CONSUMED。
+            resetWorld();
+            var victorySent:Array = [];
+            var victoryCallbacks:Array = [];
+            installPanelTransport(victorySent, victoryCallbacks);
+            var victoryReport:Object = makeSettlementReport("victory", "victory");
+            var victoryBegin:Object = LootContainerService.beginStageSettlement(
+                makeInventory([]), victoryReport);
+            var victoryRequested:Boolean = LootContainerService.requestOpenPanel();
+            victoryCallbacks[0](panelOpenAcceptedAck());
+            var victoryDetached:Object = LootContainerService.reconcileSocketDetach(null);
+            var victoryPending:Object = LootContainerService.execute(
+                "query", queryParams(victoryBegin));
+
+            var reconnectSent:Array = [];
+            var reconnectCallbacks:Array = [];
+            installPanelTransport(reconnectSent, reconnectCallbacks);
+            var victoryResumed:Object = LootContainerService.resumeStageSettlement();
+            var victoryDuplicate:Object = LootContainerService.resumeStageSettlement();
+            reconnectCallbacks[0](panelOpenAcceptedAck());
+            var victoryTerminal:Object = LootContainerService.execute("close",
+                closeParams(victoryResumed, "close.empty.victory",
+                    victoryResumed.closeLease, false));
+            var victoryAfterTerminal:Object = LootContainerService.resumeStageSettlement();
+            check(victoryBegin.success && victoryRequested
+                    && victoryDetached.success
+                    && victoryDetached.state == "LOOT_SUSPENDED"
+                    && victoryPending.success
+                    && victoryPending.state == "LOOT_SUSPENDED"
+                    && victoryPending.remainingCount == 0
+                    && victoryResumed.success && victoryResumed.reopened
+                    && reconnectSent.length == 1 && reconnectCallbacks.length == 1
+                    && reconnectSent[0].payload.initData.report === victoryReport
+                    && !victoryDuplicate.success
+                    && victoryDuplicate.error == "no_stage_settlement"
+                    && victoryTerminal.success
+                    && victoryTerminal.state == "CONSUMED"
+                    && victoryTerminal.terminal.reason == "empty_close"
+                    && !victoryAfterTerminal.success
+                    && victoryAfterTerminal.error == "no_stage_settlement",
+                "zero-reward victory 断线恢复同一报告且 exactly-once reopen/terminal");
+        } finally {
+            _root.server = previousServer;
+            LootContainerService.testOnlyReset();
         }
     }
 

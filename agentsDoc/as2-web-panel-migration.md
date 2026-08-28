@@ -15,7 +15,7 @@
 
 ### 2026-08-27 关卡结果原生状态槽与基地结算工作台
 
-关卡结果迁移采用 C# / Web 分层，不把仍在推进的游戏态塞入会暂停 Flash 的普通 Panel：AS2 `StageRunSession` 独占关卡会话、胜负/生命双状态、30 FPS 帧时、击杀与物资获得/消耗事实、复活币事务、返回基地与奖励一次性随机化；C# `StageOutcomeTask` 只把严格状态投影进 `RightContextWidget` 已有的右上 32px 条件状态槽，不创建独立 HWND。该槽复用小地图/任务播报的 `RightHudLayout + NativeHudTheme`，由 `stageDecision > transactionDecision > actionableNotice > contextHint` 集中仲裁，只让精确动作按钮命中。胜负条不暂停且保持常驻，不再提供会隐藏返回入口的伪“继续”：玩家忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr=1` 时追加“前往交付”。后者仍走基地奖励流程，只有结算终态、Web exact close 与 pause lease 释放后，AS2 才重解析目标并导航。复活币标签用万/亿/万亿缩略避免 64px 动作格溢出。关卡内不提供完整/紧凑，NativeHud 随普通 Panel 整体 suspend；socket 断开清投影，重连后向 AS2 请求权威快照。
+关卡结果迁移采用 C# / Web 分层，不把仍在推进的游戏态塞入会暂停 Flash 的普通 Panel：AS2 `StageRunSession` 独占关卡会话、胜负/生命双状态、30 FPS 未暂停帧时、击杀与物资获得/消耗事实、复活币事务、返回基地与奖励一次性随机化；C# `StageOutcomeTask` 只把严格状态投影进 `RightContextWidget` 已有的右上 32px 条件状态槽，不创建独立 HWND。该槽复用小地图/任务播报的 `RightHudLayout + NativeHudTheme`，由 `stageDecision > transactionDecision > actionableNotice > contextHint` 集中仲裁，只让精确动作按钮命中。胜负条不暂停且保持常驻，不再提供会隐藏返回入口的伪“继续”：玩家忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr=1` 时追加“前往交付”。后者仍走基地奖励流程，只有结算终态、Web exact close 与 pause lease 释放后，AS2 才重解析目标并导航。复活双按钮保持 128 逻辑像素总宽并按 `80/48` 分配，文案强制单行；万/亿/万亿缩略仍过长时才使用紧凑字号，绘制与命中共享同一矩形。关卡内不提供完整/紧凑，NativeHud 随普通 Panel 整体 suspend；socket 断开清投影，重连后向 AS2 请求权威快照。
 
 返回基地且人物场景 ready 后才打开现役 `loot` 工作台的 `sourceKind=stage_settlement` 变体；它复用 PanelHost 的暂停、严格实例和奖励 exact authority。左栏同一滚屏合并击杀与物资 gain/loss，右栏切换待领奖励与材料只读存量；一个全新偏好默认紧凑的密度控制器同时作用于三者。结算主页使用 Launcher 首页/Settings 的黑铁终端 skin；进入库存整理后恢复 K 点商城同源的原始灰黑 inventory skin。`claimBatch` 一次跨层冻结最多 50 个有序 exact lease，AS2 内顺序复用可恢复 claim journal、批尾只重投影一次；容量项允许部分成功，其他部分写必须 query reconcile。Web 不随机奖励、不扣复活币、不写材料，也不从 DOM 推导关卡结论。设置页“尝试复活”和原生状态槽必须调用同一幂等复活事务，`respawn` 发布显式携带 exact hero，`RespawnEventComponent` 同步恢复 `_visible=true`；旧 Flash 直接写 HP/跳回关卡结束帧的分叉不再是运行时路径。完整状态机、挂载与人工验收门见[关卡结果与基地结算 C# / Web 分层 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。维护者已确认 A3 隔离候选体验有效，且其 exact Core 已进入正式 runtime，当前状态为 `AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / promoted`；待领奖励只承诺当前进程内恢复，普通关闭保留，明确放弃才销毁。
 
@@ -438,7 +438,7 @@ AS2 smoke 的成功边界按 [testing-guide.md](testing-guide.md) 与 [FlashCS6�
 - `Panels.register(id, ...)` 或懒注册表 `panels-lazy-registry.js` 已接入。
 - `onOpen` 初始化 session、pending、busy、runtime snapshot。
 - `onClose` 清理 pending、busy、timer、tooltip、hover、DOM 订阅。
-- close 按钮、ESC、backdrop click 必须进入同一 `onRequestClose(reason)`，先把 exact owner 的关闭意图通知 Host；只有 Host 返回 authoritative close/force-close 后，`Panels.close()` 才先清 visual/owner 状态并调用幂等 `onClose`（强关另调用 `onForceClose`）。不得先本地销毁再发送，也不得因清理 callback 或 `Bridge.send` 抛错把 Overlay 留在半关闭状态。
+- close 按钮、ESC、backdrop click 必须进入同一 `onRequestClose(reason)`，先把 exact owner 的关闭意图送入 bridge。Team/blackmarket/warlord 等 Host-owned close 只有收到 authoritative close/force-close 后，`Panels.close()` 才清 visual/owner 并调用幂等 `onClose`（强关另调用 `onForceClose`）。Stage Select 这类关闭本身没有 Host 事务的 ordinary panel，可在 `Bridge.send` 同步接纳消息后本地关闭；但 `false` 或抛错必须保留 active panel、owner、pending/busy，显示可见错误并允许同实例重试。所有类别都禁止先销毁再发送。
 - 任何 async callback 返回时要校验 session，避免旧面板回包污染新会话。
 - 用户可输入文本进入 `innerHTML` 前必须 escape；优先用 `textContent`。
 - tooltip 必须显式选择宿主 profile：`simple-tooltip` 只承载有界短提示；密集物品/装备/技能格使用 `dense-inspect`，浮层 `pointer-events:none`、基础→rich 连续替换、仅正文溢出时稳定停留 1000ms 进入检视，由原触发物接管 wheel/PageUp/PageDown，离开、新 owner 抢占或 Esc 即退出（指针路径 Esc 只退出检视回到 scan，不没收浮层也不冒泡给面板层；键盘 focus 路径 Esc 关闭整个 tooltip）；需要玩家主动滚动或操作的长文使用显式激活的 `pinned-inspector` 固定侧栏（header 经 `opts.title` 常驻实体 displayName），普通 hover 不得覆盖。不得再要求玩家把鼠标移入密集格上的浮层；若固定检视器加入按钮/链接，必须升级为具备焦点合同的 popover/dialog。完整几何、退出与语料门见 [workbench-ui-system.md](workbench-ui-system.md)。
@@ -467,6 +467,10 @@ AS2 smoke 的成功边界按 [testing-guide.md](testing-guide.md) 与 [FlashCS6�
 - 发送哪个 `*PanelClose` gameCommand。
 - AS2 handler 是否 no-op 或只清理状态。
 - 验证项：关闭后再次打开、鼠标可点击、键盘焦点恢复、Flash 前台恢复。
+
+焦点恢复不能只采信 close 请求时的一次快照。Host 必须同时满足：close 开始时 CF7 为 foreground，以及真正执行恢复前的 live `GetForegroundWindow` 仍属于 CF7；玩家在两者之间切到 QQ、浏览器或其他窗口时 fail closed，不得用延迟 `Activate/Focus` 抢回前台。NativeHud 的 pointer gesture 也必须在 down 时冻结 exact widget/action/revision，并在 suspend、hide、capture loss、owner/session 变化或按钮外 release 时取消，不能让旧 down 在 Web close 后重放。
+
+地图属于可读但不总是可导航的 Panel。活跃关卡、胜负结算或返回基地 pending 时，AS2 `StageRunSession` 投影 lifecycle lock，Web 保留地图内容但对 `navigate/open_stage_select` 显示具名提示并零发送。所有可能开始新关卡或切战斗场景的入口必须先向 `StageRunSession` 取得 exact reservation；loader 回调只有 exact pending owner 可 commit，supersede/abort/late callback 不能清除或采用后继请求。奖励表与 stage drop 先停在 reservation staging，首次 gameplay init 先更新 drop index、成功后才替换奖励数组，任一失败不得部分污染旧场景。Stage Select、任务、竞技场与返回基地跨淡出回包使用 class-level exact envelope；Host 只接受正整数 `callId`，Web 的进入 pending 在 transport false/throw 时立即按原 `callId` 失败并清 busy。Web/Host 不得用隐藏按钮、直达入口或本地状态绕过该门。
 
 经验规则：像 `kshop` 这类会暂停 / 恢复 Flash 状态的面板可以有 open/close gameCommand；像 `arena`、`team` 这类纯 Web 展示 / 操作面板，close 默认不通知 Flash。`arena` 的定制赛 `custom_result` 结算页是例外：Flash 背后已停在竞技场战斗场景，关闭结算页必须由 Web close 携带 `returnBase:true`，Host 下发 `arenaReturnBase` 并让 AS2 调 `_root.返回基地()`，不能只隐藏 Web panel。`team` 内宠物子视图尤其不能在 close 时调用 `petPanelClose`，该旧命令会重建 Flash 战宠图标。
 

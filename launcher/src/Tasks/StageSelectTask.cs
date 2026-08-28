@@ -214,28 +214,121 @@ namespace CF7Launcher.Tasks
 
             string flashJson = flashMsg.ToString(Formatting.None);
             LogManager.Log("[StageSelectTask] -> Flash: " + flashJson);
-            _send(flashJson + "\0");
+            try
+            {
+                _send(flashJson + "\0");
+            }
+            catch (Exception ex)
+            {
+                PendingRequest failedEntry = null;
+                Timer failedTimer = null;
+                int pendingCount;
+                lock (_lock)
+                {
+                    if (_pending.TryGetValue(fid, out failedEntry))
+                    {
+                        _pending.Remove(fid);
+                        if (_timers.TryGetValue(fid, out failedTimer))
+                            _timers.Remove(fid);
+                    }
+                    pendingCount = _pending.Count;
+                }
+
+                if (failedTimer != null) failedTimer.Dispose();
+                LogManager.Log("event=stage_select_request_send_failed"
+                    + " backend_call_id=" + fid
+                    + " type=" + ex.GetType().Name
+                    + " request_claimed=" + (failedEntry != null ? "true" : "false")
+                    + " pending_count=" + pendingCount);
+
+                // 发送可能阻塞到请求已被 timeout/response 终结；只有精确认领本 fid 的路径
+                // 才能再投递失败，避免一个请求出现两个 terminal response。
+                if (failedEntry != null)
+                    RespondPendingError(failedEntry, "send_failed");
+            }
         }
 
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             LogManager.Log("[StageSelectTask] <- Flash response received");
-            int fid = msg.Value<int>("callId");
+            JToken backendCallIdToken = msg["callId"];
+            if (backendCallIdToken == null || backendCallIdToken.Type == JTokenType.Null)
+            {
+                int pendingCount;
+                lock (_lock) { pendingCount = _pending.Count; }
+                LogManager.Log("event=stage_select_response_dropped"
+                    + " reason=missing_backend_call_id"
+                    + " pending_count=" + pendingCount);
+                respond(null);
+                return;
+            }
+
+            if (backendCallIdToken.Type != JTokenType.Integer)
+            {
+                int pendingCount;
+                lock (_lock) { pendingCount = _pending.Count; }
+                LogManager.Log("event=stage_select_response_dropped"
+                    + " reason=invalid_backend_call_id"
+                    + " pending_count=" + pendingCount);
+                respond(null);
+                return;
+            }
+
+            long backendCallId;
+            try
+            {
+                backendCallId = backendCallIdToken.Value<long>();
+            }
+            catch (Exception)
+            {
+                int pendingCount;
+                lock (_lock) { pendingCount = _pending.Count; }
+                LogManager.Log("event=stage_select_response_dropped"
+                    + " reason=invalid_backend_call_id"
+                    + " pending_count=" + pendingCount);
+                respond(null);
+                return;
+            }
+            if (backendCallId <= 0 || backendCallId > int.MaxValue)
+            {
+                int pendingCount;
+                lock (_lock) { pendingCount = _pending.Count; }
+                LogManager.Log("event=stage_select_response_dropped"
+                    + " reason=invalid_backend_call_id"
+                    + " pending_count=" + pendingCount);
+                respond(null);
+                return;
+            }
+            int fid = (int)backendCallId;
+
             PendingRequest entry;
+            int unmatchedPendingCount = 0;
             lock (_lock)
             {
                 if (!_pending.TryGetValue(fid, out entry))
                 {
-                    respond(null);
-                    return;
+                    unmatchedPendingCount = _pending.Count;
                 }
-                _pending.Remove(fid);
-                Timer t;
-                if (_timers.TryGetValue(fid, out t))
+                else
                 {
-                    t.Dispose();
-                    _timers.Remove(fid);
+                    _pending.Remove(fid);
+                    Timer t;
+                    if (_timers.TryGetValue(fid, out t))
+                    {
+                        t.Dispose();
+                        _timers.Remove(fid);
+                    }
                 }
+            }
+
+            if (entry == null)
+            {
+                LogManager.Log("event=stage_select_response_dropped"
+                    + " reason=unknown_backend_call_id"
+                    + " backend_call_id=" + fid
+                    + " pending_count=" + unmatchedPendingCount);
+                respond(null);
+                return;
             }
 
             msg.Remove("task");
@@ -279,12 +372,24 @@ namespace CF7Launcher.Tasks
         {
             string bound = panelInstanceId;
             if (bound == null) { lock (_lock) { bound = _panelInstanceId; } }
+            PostError(webCallId, cmd, error, bound);
+        }
+
+        private void RespondPendingError(PendingRequest entry, string error)
+        {
+            // Pending owner 是请求登记时的 exact 快照；null 也有语义，不能在终结时
+            // 回退采用随后绑定的 replacement panel instance。
+            PostError(entry.WebCallId, entry.WebCmd, error, entry.PanelInstanceId);
+        }
+
+        private void PostError(string webCallId, string cmd, string error, string panelInstanceId)
+        {
             var resp = new JObject();
             resp["type"] = "panel_resp";
             resp["panel"] = "stage-select";
             resp["cmd"] = cmd;
             resp["callId"] = webCallId;
-            if (IsOpaque(bound)) resp["panelInstanceId"] = bound;
+            if (IsOpaque(panelInstanceId)) resp["panelInstanceId"] = panelInstanceId;
             resp["success"] = false;
             resp["error"] = error;
             PostToWeb(resp.ToString(Formatting.None));

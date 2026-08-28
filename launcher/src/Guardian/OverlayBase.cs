@@ -104,6 +104,13 @@ namespace CF7Launcher.Guardian
         protected virtual bool IsClickThrough { get { return true; } }
 
         /// <summary>
+        /// 当前是否允许把 overlay 实际显示出来。默认仍严格跟随 owner 的
+        /// Activated/Deactivated 状态；需要识别嵌入子窗口前台的 overlay 可覆写，
+        /// 但必须保持外部前台时为 false。
+        /// </summary>
+        protected virtual bool CanShowOverlayNow { get { return _ownerVisible; } }
+
+        /// <summary>
         /// Installs a structured commit observer. Passing null restores the unobserved fast path.
         /// </summary>
         internal void SetCommitObserver(ILayeredWindowCommitObserver observer)
@@ -278,7 +285,7 @@ namespace CF7Launcher.Guardian
         protected void ShowOverlay()
         {
             _shown = true;
-            if (_ownerVisible)
+            if (CanShowOverlayNow)
             {
                 IntPtr handle;
                 if (!TryGetExistingHandle(out handle)) return;
@@ -304,7 +311,7 @@ namespace CF7Launcher.Guardian
         protected void ShowOverlayBelow(IntPtr insertAfter)
         {
             _shown = true;
-            if (_ownerVisible)
+            if (CanShowOverlayNow)
             {
                 IntPtr handle;
                 if (!TryGetExistingHandle(out handle)) return;

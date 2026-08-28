@@ -2096,7 +2096,10 @@ namespace CF7Launcher.Tasks
             if (authoritySuspended)
             {
                 return cmd == "query"
-                    && remainingCount > 0
+                    && (remainingCount > 0
+                        || entry.Binding.SourceKind
+                            == LootPanelCoordinator.StageSettlementSource
+                        && entry.Binding.SettlementReport != null)
                     && string.IsNullOrEmpty(closeLease)
                     && snapshots.Count == 0 && tooltip == null && materials == null;
             }

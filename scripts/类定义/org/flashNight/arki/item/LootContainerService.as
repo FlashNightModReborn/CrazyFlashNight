@@ -772,10 +772,13 @@ class org.flashNight.arki.item.LootContainerService {
         // 可恢复性证明必须先于 authority/revision 改变。若 target 已经离开
         // world 或 arbiter 不可用，原地继续 ACTIVE 会只留不可达强引用；按锚点
         // 丢失的生命周期边界显式 EXPIRED，也绝不创建替代展示路径。
-        // reopen 失败时 inventory 已可能在上一页被取空；空 authority 不得制造
-        // LOOT_SUSPENDED(remaining=0)。先安全释放可能存在的本次 panel lease，
-        // 再按同一 inventory 落 CONSUMED。
-        if (remainingCount(record) <= 0) {
+        // reopen 失败时普通地图箱 inventory 已可能在上一页被取空；空 authority
+        // 不得制造 LOOT_SUSPENDED(remaining=0)。stage settlement 例外：即使没有
+        // 奖励，冻结的行动报告仍须在 Host 恢复后可见，因此继续走下方明确来源的
+        // anchorless suspend；只有真正显示并关闭后才由 executeClose 落 CONSUMED。
+        var preserveEmptyStageReport:Boolean = record.panelSource === STAGE_SETTLEMENT_SOURCE
+            && record.allowAnchorlessSuspend === true && record.report != null;
+        if (remainingCount(record) <= 0 && !preserveEmptyStageReport) {
             if (_root._webPanelPauseLease != undefined && !releaseTransportPauseLease()) {
                 return holdPanelTerminalPauseRetry(record, reason);
             }

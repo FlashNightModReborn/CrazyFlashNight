@@ -43,28 +43,44 @@ class org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader {
             return;
         }
 
-        if (this.filePath == null) {
-            trace("BaseStageXMLLoader: 文件路径无效，无法加载！");
-            if (onErrorHandler != null) onErrorHandler();
-            return;
-        }
-
         this._isLoading = true;
         var self:BaseStageXMLLoader = this;
+        var settled:Boolean = false;
+        var finishError:Function = function():Void {
+            if (settled) return;
+            settled = true;
+            self._isLoading = false;
+            trace("BaseStageXMLLoader: 文件加载失败！");
+            if (onErrorHandler != null) onErrorHandler();
+        };
+        var finishSuccess:Function = function(parsedData:Object):Void {
+            if (settled) return;
+            if (parsedData == null) {
+                finishError();
+                return;
+            }
+            settled = true;
+            self._isLoading = false;
+            self.data = parsedData;
+            trace("BaseStageXMLLoader: 文件加载成功！");
+            if (onLoadHandler != null) onLoadHandler(parsedData);
+        };
+
+        if (this.filePath == null) {
+            trace("BaseStageXMLLoader: 文件路径无效，无法加载！");
+            finishError();
+            return;
+        }
 
         trace("BaseStageXMLLoader: 开始加载文件：" + this.filePath);
 
         // 使用 StageXMLLoader 加载文件
-        new StageXMLLoader(this.filePath, function(parsedData:Object):Void {
-            self._isLoading = false;
-            self.data = parsedData; // 保存数据到实例变量
-            trace("BaseStageXMLLoader: 文件加载成功！");
-            if (onLoadHandler != null) onLoadHandler(parsedData);
-        }, function():Void {
-            self._isLoading = false;
-            trace("BaseStageXMLLoader: 文件加载失败！");
-            if (onErrorHandler != null) onErrorHandler();
-        });
+        try {
+            new StageXMLLoader(this.filePath, finishSuccess, finishError);
+        } catch (loadStartError) {
+            trace("BaseStageXMLLoader: 启动加载异常：" + loadStartError);
+            finishError();
+        }
     }
 
     /**

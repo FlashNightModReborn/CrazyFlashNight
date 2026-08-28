@@ -649,6 +649,38 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("insufficient_kpoint", (string)resp["error"]);
         }
 
+        [Fact]
+        public void HandleFlashResponse_MalformedOrUnknownCallId_PreservesExactPendingRequest()
+        {
+            string sent = null;
+            string posted = null;
+            using var task = new TaskTask(() => true, payload => sent = payload);
+            task.SetPostToWeb(json => posted = json);
+            task.HandleWebRequest("snapshot", JObject.Parse("{\"callId\":\"web-exact\"}"));
+            int flashCallId = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+
+            JObject[] invalidResponses =
+            {
+                JObject.Parse("{\"task\":\"task_response\",\"success\":true}"),
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":\"" + flashCallId + "\",\"success\":true}"),
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":true,\"success\":true}"),
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":1.0,\"success\":true}"),
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":0,\"success\":true}"),
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":-1,\"success\":true}"),
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":999999,\"success\":true}")
+            };
+            foreach (JObject response in invalidResponses)
+                task.HandleFlashResponse(response, _ => { });
+
+            Assert.Null(posted);
+            task.HandleFlashResponse(
+                JObject.Parse("{\"task\":\"task_response\",\"callId\":" + flashCallId + ",\"success\":true,\"tasks\":[]}"),
+                _ => { });
+            JObject exact = JObject.Parse(posted);
+            Assert.Equal("web-exact", exact.Value<string>("callId"));
+            Assert.True(exact.Value<bool>("success"));
+        }
+
         [Theory]
         [InlineData("dispatchBoardSnapshot", "dispatchBoardSnapshot")]
         [InlineData("dispatchBoardDetail", "dispatchBoardDetail")]

@@ -7,6 +7,7 @@ class org.flashNight.gesh.xml.StageXMLLoader
     private var onLoadHandler:Function;
     private var onErrorHandler:Function;
     private var parsedData:Object;
+    private var settled:Boolean = false;
 
     /**
      * 构造函数，初始化 StageXMLLoader
@@ -32,7 +33,17 @@ class org.flashNight.gesh.xml.StageXMLLoader
                 self.handleXMLError();
             }
         };
-        this.xml.load(xmlFilePath);
+        try
+        {
+            if (this.xml.load(xmlFilePath) !== true)
+            {
+                this.finishError("XML load did not start");
+            }
+        }
+        catch (loadStartError)
+        {
+            this.finishError("XML load start exception: " + loadStartError);
+        }
     }
 
     /**
@@ -40,20 +51,28 @@ class org.flashNight.gesh.xml.StageXMLLoader
      */
     private function handleXMLLoad():Void
     {
+        if (this.settled) return;
         var root:XMLNode = this.xml.firstChild;
         if (root == null)
         {
-            trace("[StageXMLLoader] Warning: XML loaded but has no root element");
-            this.parsedData = null;
+            this.finishError("XML loaded but has no root element");
+            return;
         }
-        else
+        try
         {
             this.parsedData = XMLParser.parseStageXMLNode(root);
         }
-        if (this.onLoadHandler != null)
+        catch (parseError)
         {
-            this.onLoadHandler(this.parsedData);
+            this.finishError("stage XML parse exception: " + parseError);
+            return;
         }
+        if (this.parsedData == null)
+        {
+            this.finishError("stage XML parser returned null");
+            return;
+        }
+        this.finishSuccess();
     }
 
     /**
@@ -61,11 +80,34 @@ class org.flashNight.gesh.xml.StageXMLLoader
      */
     private function handleXMLError():Void
     {
-        trace("XMLLoader: Failed to load XML file.");
-        if (this.onErrorHandler != null)
-        {
-            this.onErrorHandler();
-        }
+        this.finishError("failed to load XML file");
+    }
+
+    private function finishSuccess():Void
+    {
+        if (this.settled) return;
+        this.settled = true;
+        var callback:Function = this.onLoadHandler;
+        this.releaseCallbacks();
+        if (callback != null) callback(this.parsedData);
+    }
+
+    private function finishError(reason:String):Void
+    {
+        if (this.settled) return;
+        this.settled = true;
+        trace("[StageXMLLoader] " + reason);
+        var callback:Function = this.onErrorHandler;
+        this.releaseCallbacks();
+        if (callback != null) callback();
+    }
+
+    private function releaseCallbacks():Void
+    {
+        if (this.xml != null) this.xml.onLoad = null;
+        this.xml = null;
+        this.onLoadHandler = null;
+        this.onErrorHandler = null;
     }
 
     /**

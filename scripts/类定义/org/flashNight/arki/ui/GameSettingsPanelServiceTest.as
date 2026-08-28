@@ -29,6 +29,7 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         testForceControls();
         testOpenPanelEnvelope();
         testResponseEnvelope();
+        testReturnBaseWireEnvelope();
         trace("GameSettingsPanelServiceTest Tests Passed: " + passed);
         trace("GameSettingsPanelServiceTest Tests Failed: " + failed);
     }
@@ -566,6 +567,42 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
             && response.globalVolume == 25 && response.bgmVolume == 35,
             "command handler emits a parseable settings_response with the exact callId");
         GameSettingsPanelService.execute("panel_closed", {v:1});
+    }
+
+    private static function testReturnBaseWireEnvelope():Void {
+        resetState();
+        var previousFade:Object = _root.淡出动画;
+        _root.淡出动画 = {
+            accepted:false,
+            淡出跳转帧:function(frame:String):Void { this.accepted = true; }
+        };
+        _root.返回基地 = function():Boolean {
+            _root.returnBaseCalls++;
+            _root.淡出动画.淡出跳转帧("基地门口");
+            return true;
+        };
+        _root.server = {sent:"", sentAfterTransition:false};
+        _root.server.sendSocketMessage = function(message:String):Boolean {
+            this.sent = message;
+            this.sentAfterTransition = _root.淡出动画.accepted === true;
+            return true;
+        };
+
+        _root.gameCommands["settingsReturnBase"]({v:2, callId:7300});
+        var rejected:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(_root.returnBaseCalls == 0
+            && rejected.task == "settings_response" && rejected.callId == 7300
+            && !rejected.success && rejected.error == "unsupported_version",
+            "return-to-base wire rejects non-v1 requests before transition authority");
+
+        _root.gameCommands["settingsReturnBase"]({v:1, callId:7301});
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(_root.returnBaseCalls == 1 && _root.server.sentAfterTransition === true
+            && response.task == "settings_response" && response.callId == 7301
+            && response.success && response.operation == "return_base"
+            && response.closePanel === true,
+            "return-to-base wire responds after authority commit with the exact callId");
+        _root.淡出动画 = previousFade;
     }
 
     private static function check(ok:Boolean, label:String):Void {

@@ -37,6 +37,10 @@ function safeName(name) {
     return name.replace(/[<>:"/\\|?*\x00-\x1f]/g, '_');
 }
 
+function escapeRegExp(text) {
+    return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function walkFiles(dir, out) {
     if (!fs.existsSync(dir)) return out;
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -268,7 +272,21 @@ function audit() {
     const hasSameSceneReturnFilter = serviceText.indexOf('isAlreadyAtReturnFrame') >= 0
         && serviceText.indexOf('skippedTransition') >= 0
         && serviceText.indexOf('if (!skipTransition)') >= 0;
-    const hasDestinationDrivenStageReturn = sceneText.indexOf('_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);') >= 0;
+    const hasDirectDestinationDrivenStageReturn =
+        sceneText.indexOf('_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);') >= 0;
+    // 返回基地硬化允许先同步快照 destination，再在死亡/缺失主角时唯一覆写为医务室。
+    // 探针同时接受旧直传形态与这一受限快照形态，但拒绝在淡出前对快照做任意二次改写。
+    const destinationSnapshot = /var\s+([^\s=;]+)\s*=\s*_root\.关卡地图帧值\s*;([\s\S]*?)_root\.淡出动画\.淡出跳转帧\(\1\)\s*;/u.exec(sceneText);
+    let hasGuardedDestinationSnapshot = false;
+    if (destinationSnapshot) {
+        const snapshotName = escapeRegExp(destinationSnapshot[1]);
+        const beforeFade = destinationSnapshot[2];
+        const assignments = beforeFade.match(new RegExp('(?:^|[;\\r\\n])\\s*' + snapshotName + '\\s*=', 'gu')) || [];
+        const hasMedicalFallback = new RegExp('(?:^|[;\\r\\n])\\s*' + snapshotName + '\\s*=\\s*"医务室"\\s*;', 'u').test(beforeFade);
+        hasGuardedDestinationSnapshot = assignments.length === 1 && hasMedicalFallback;
+    }
+    const hasDestinationDrivenStageReturn =
+        hasDirectDestinationDrivenStageReturn || hasGuardedDestinationSnapshot;
     const completedStageAutoReturnMarkers = [
         '_root.Web选关战斗回流',
         'Web选关回流待打开',

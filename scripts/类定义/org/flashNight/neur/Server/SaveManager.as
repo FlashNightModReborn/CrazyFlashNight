@@ -1278,83 +1278,194 @@ class org.flashNight.neur.Server.SaveManager {
     private static var FFFD_CHAR:String = String.fromCharCode(0xFFFD);
 
     public function newCharacter():Boolean {
-        // deleteSlot() 禁用了存档，新建角色时恢复
-        _root.允许存档 = true;
-        _settingsMigrationPending = false;
-        _drugLoadoutMigrationPending = false;
-        _drugLoadoutSchemaRejected = false;
-        _drugLoadoutMigrationSlot = String(_root.savePath);
-        KeyManager.clearPendingKeySettingsMigration();
-
-        // ext 命名空间主防线：新建角色无条件清空 _saveExt（成就/宠物购买次数等 per-character 数据）。
-        // 覆盖「删档→新建」与「坏档→新建」两条路径（后者不经 deleteSlot，unpackGameState 已写入
-        // 旧档 ext 残留，下方 packGameState 会把残留原样打包进新档——既有宠物涨价跨角色泄漏即此因）。
-        _root._saveExt = {drugLoadout:{version:2}};
-
-        // 初始装备
-        if (_root.上装装备 != "") {
-            _root.物品栏.装备栏.add("上装装备", BaseItem.create(_root.上装装备, 1));
+        // 教学关卡也必须走统一 stage-start reservation。先预检所有转场
+        // 依赖并抢到 exact token，再开始任何新角色破坏性写入；这样双击的
+        // 第二次请求会在碰角色、物品和存档快照前直接失败。
+        var tutorialStageName:String = "教学关卡";
+        var tutorialDifficulty:String = String(_root.当前关卡难度 || "简单");
+        if (typeof _root.载入关卡数据 != "function"
+                || _root.淡出动画 == undefined
+                || typeof _root.淡出动画.淡出跳转帧 != "function"
+                || _root.帧计时器 == undefined
+                || typeof _root.帧计时器.添加单次任务 != "function") {
+            return false;
         }
-        if (_root.下装装备 != "") {
-            _root.物品栏.装备栏.add("下装装备", BaseItem.create(_root.下装装备, 1));
+        var startToken:String = "";
+        try {
+            startToken = org.flashNight.arki.scene.StageRunSession.reserveStageStart(
+                "new_character", tutorialStageName, tutorialDifficulty);
+        } catch (reserveError) {
+            trace("[SaveManager.newCharacter] tutorial reservation failed: " + reserveError);
+            return false;
         }
-        if (_root.脚部装备 != "") {
-            _root.物品栏.装备栏.add("脚部装备", BaseItem.create(_root.脚部装备, 1));
+        if (startToken == "") return false;
+
+        var settled:Boolean = false;
+        var failedSynchronously:Boolean = false;
+        var loadCallReturned:Boolean = false;
+        var failOnce:Function = function():Void {
+            if (settled) return;
+            settled = true;
+            if (!loadCallReturned) failedSynchronously = true;
+            try {
+                var manager:org.flashNight.arki.scene.StageManager =
+                    org.flashNight.arki.scene.StageManager.instance;
+                if (manager != null) manager.abortPreparedStage(startToken);
+            } catch (preparedAbortError) {
+                trace("[SaveManager.newCharacter] prepared stage abort failed: "
+                    + preparedAbortError);
+            }
+            try {
+                org.flashNight.arki.scene.StageRunSession.cancelStageStart(startToken);
+            } catch (reservationCancelError) {
+                trace("[SaveManager.newCharacter] reservation cancel failed: "
+                    + reservationCancelError);
+            }
+            try {
+                if (typeof _root.最上层发布文字提示 == "function") {
+                    _root.最上层发布文字提示("教学关卡加载失败，请返回标题后重试。");
+                }
+            } catch (failureNoticeError) {
+                trace("[SaveManager.newCharacter] failure notice failed: "
+                    + failureNoticeError);
+            }
+        };
+
+        try {
+            // deleteSlot() 禁用了存档，新建角色时恢复
+            _root.允许存档 = true;
+            _settingsMigrationPending = false;
+            _drugLoadoutMigrationPending = false;
+            _drugLoadoutSchemaRejected = false;
+            _drugLoadoutMigrationSlot = String(_root.savePath);
+            KeyManager.clearPendingKeySettingsMigration();
+
+            // ext 命名空间主防线：新建角色无条件清空 _saveExt（成就/宠物购买次数等 per-character 数据）。
+            // 覆盖「删档→新建」与「坏档→新建」两条路径（后者不经 deleteSlot，unpackGameState 已写入
+            // 旧档 ext 残留，下方 packGameState 会把残留原样打包进新档——既有宠物涨价跨角色泄漏即此因）。
+            _root._saveExt = {drugLoadout:{version:2}};
+
+            // 初始装备
+            if (_root.上装装备 != "") {
+                _root.物品栏.装备栏.add("上装装备", BaseItem.create(_root.上装装备, 1));
+            }
+            if (_root.下装装备 != "") {
+                _root.物品栏.装备栏.add("下装装备", BaseItem.create(_root.下装装备, 1));
+            }
+            if (_root.脚部装备 != "") {
+                _root.物品栏.装备栏.add("脚部装备", BaseItem.create(_root.脚部装备, 1));
+            }
+
+            // 难度模式
+            if (_root.难度 == "逆天模式（简单）") {
+                _root.difficultyMode = 1;
+            } else if (_root.难度 == "挑战模式（自限）") {
+                _root.difficultyMode = 2;
+            } else {
+                _root.difficultyMode = 0;
+            }
+
+            _root.上装装备 = undefined;
+            _root.下装装备 = undefined;
+            _root.脚部装备 = undefined;
+            _root.难度 = undefined;
+
+            // 存档数据
+            _root.mydata = packGameState();
+            _root.金钱 = 0;
+            _root.虚拟币 = 0;
+            _root.宠物信息 = [[], [], [], [], []];
+            _root.宠物领养限制 = 5;
+
+            // 全局加成
+            _root.全局健身HP加成 = 0;
+            _root.全局健身MP加成 = 0;
+            _root.全局健身空攻加成 = 0;
+            _root.全局健身内力加成 = 0;
+            _root.全局健身防御加成 = 0;
+
+            // 基建
+            _root.基建系统.infrastructure = {};
+
+            // 击杀统计
+            _root.killStats = { total:0, byType:{} };
+            rebindKillStatsExtensions();
+
+            // 清空物品获取方式的动态发现集合
+            ItemObtainIndex.getInstance().clearDynamicDiscoveries();
+
+            // 新出生标志
+            _root.新出生 = false;
+            DrugInputService.resetSession();
+        } catch (initializationError) {
+            trace("[SaveManager.newCharacter] initialization failed: "
+                + initializationError);
+            failOnce();
+            return false;
         }
 
-        // 难度模式
-        if (_root.难度 == "逆天模式（简单）") {
-            _root.difficultyMode = 1;
-        } else if (_root.难度 == "挑战模式（自限）") {
-            _root.difficultyMode = 2;
-        } else {
-            _root.difficultyMode = 0;
+        // XML/TimePool 成功前不停止 BGM、不调度 SceneReady、不淡出。
+        // 异步 XML 失败按既有契约保留上方已完成的角色初始化写入。
+        try {
+            _root.载入关卡数据("无限过图", "data/stages/特殊/教学关卡.xml",
+                function():Void {
+                    if (settled) return;
+                    if (!org.flashNight.arki.scene.StageRunSession
+                            .isStageStartReservationValid(startToken)) {
+                        failOnce();
+                        return;
+                    }
+                    try {
+                        _root.当前通关的关卡 = "";
+                        _root.当前关卡名 = tutorialStageName;
+                        _root.当前关卡难度 = tutorialDifficulty;
+                        if (typeof _root.计算难度等级 == "function") {
+                            _root.难度等级 = _root.计算难度等级(tutorialDifficulty);
+                        }
+                        _root.关卡类型 = "无限过图";
+                        _root.关卡路径 = "data/stages/特殊/教学关卡.xml";
+                        _root.场景进入位置名 = "出生地";
+                    } catch (transitionPrepareError) {
+                        trace("[SaveManager.newCharacter] tutorial transition prepare failed: "
+                            + transitionPrepareError);
+                        failOnce();
+                        return;
+                    }
+                    try {
+                        if (_root.soundEffectManager != undefined
+                                && typeof _root.soundEffectManager.stopBGMForTransition == "function") {
+                            _root.soundEffectManager.stopBGMForTransition();
+                        }
+                    } catch (bgmStopError) {
+                        trace("[SaveManager.newCharacter] tutorial BGM projection failed: "
+                            + bgmStopError);
+                    }
+                    try {
+                        _root.淡出动画.淡出跳转帧("wuxianguotu_1");
+                    } catch (fadeError) {
+                        trace("[SaveManager.newCharacter] tutorial fade failed: " + fadeError);
+                        failOnce();
+                        return;
+                    }
+
+                    // fade 已接受即为转场提交点；先封闭回调，再调度 SceneReady，
+                    // 调度器投影抛错不得反向撤销已接受的 fade/StageManager preload。
+                    settled = true;
+                    try {
+                        _root.帧计时器.添加单次任务(function():Void {
+                            EventBus.instance.publish("SceneReady");
+                        }, 30);
+                    } catch (sceneReadyScheduleError) {
+                        trace("[SaveManager.newCharacter] SceneReady schedule failed: "
+                            + sceneReadyScheduleError);
+                    }
+                }, failOnce, startToken);
+        } catch (loadStartError) {
+            trace("[SaveManager.newCharacter] tutorial load failed: " + loadStartError);
+            failOnce();
         }
-
-        _root.上装装备 = undefined;
-        _root.下装装备 = undefined;
-        _root.脚部装备 = undefined;
-        _root.难度 = undefined;
-
-        // 存档数据
-        _root.mydata = packGameState();
-        _root.金钱 = 0;
-        _root.虚拟币 = 0;
-        _root.宠物信息 = [[], [], [], [], []];
-        _root.宠物领养限制 = 5;
-
-        // 全局加成
-        _root.全局健身HP加成 = 0;
-        _root.全局健身MP加成 = 0;
-        _root.全局健身空攻加成 = 0;
-        _root.全局健身内力加成 = 0;
-        _root.全局健身防御加成 = 0;
-
-        // 基建
-        _root.基建系统.infrastructure = {};
-
-        // 击杀统计
-        _root.killStats = { total:0, byType:{} };
-        rebindKillStatsExtensions();
-
-        // 清空物品获取方式的动态发现集合
-        ItemObtainIndex.getInstance().clearDynamicDiscoveries();
-
-        _root.soundEffectManager.stopBGMForTransition();
-
-        // 新出生标志
-        _root.新出生 = false;
-
-        // 延迟触发 SceneReady
-        _root.帧计时器.添加单次任务(function() {
-            EventBus.instance.publish("SceneReady");
-        }, 30);
-
-        _root.载入关卡数据("无限过图", "data/stages/特殊/教学关卡.xml");
-        _root.场景进入位置名 = "出生地";
-        _root.淡出动画.淡出跳转帧("wuxianguotu_1");
-        DrugInputService.resetSession();
-        return true;
+        loadCallReturned = true;
+        return !failedSynchronously;
     }
 
     // ==================== 数据组包/解包 ====================

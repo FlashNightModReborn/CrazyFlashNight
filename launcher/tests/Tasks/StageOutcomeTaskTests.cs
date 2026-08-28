@@ -152,5 +152,37 @@ namespace CF7Launcher.Tests.Tasks
             task.HandleTransportDisconnected();
             Assert.Equal(1, overlay.ResetCalls);
         }
+
+        [Fact]
+        public void ZeroRewardPendingReport_IsAppliedAndCanRequestResume()
+        {
+            var sent = new List<string>();
+            var overlay = new FakePresenter();
+            JObject message = Message();
+            message["payload"]["outcome"] = "failure";
+            message["payload"]["life"] = "alive";
+            message["payload"]["reviveAllowed"] = false;
+            message["payload"]["reviveCoins"] = 0;
+            message["payload"]["settlement"] = "rewards_pending";
+            message["payload"]["remainingRewards"] = 0;
+            message["payload"]["canReturnBase"] = false;
+
+            using (var task = new StageOutcomeTask(
+                payload => { sent.Add(payload); return true; }, overlay))
+            {
+                task.Handle(message);
+                Assert.Single(overlay.States);
+                Assert.True(overlay.States[0].ShouldDisplay);
+                Assert.Equal(0, overlay.States[0].RemainingRewards);
+
+                overlay.Raise("resume_rewards", "run.task.1", 4);
+                Assert.Single(sent);
+                JObject command = JObject.Parse(sent[0].TrimEnd('\0'));
+                Assert.Equal("stageOutcomeAction", command.Value<string>("action"));
+                Assert.Equal("resume_rewards", command.Value<string>("intent"));
+                Assert.Equal("run.task.1", command.Value<string>("runId"));
+                Assert.Equal(4, command.Value<int>("expectedRevision"));
+            }
+        }
     }
 }

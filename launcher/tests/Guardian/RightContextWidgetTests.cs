@@ -388,6 +388,158 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void StageActionGesture_RequiresDownAndImmutableActionIdentity()
+        {
+            using (Form owner = new Form())
+            {
+                owner.StartPosition = FormStartPosition.Manual;
+                owner.Bounds = new Rectangle(120, 80, 1024, 576);
+                Panel anchor = new Panel();
+                anchor.Bounds = new Rectangle(0, 0, 1024, 576);
+                owner.Controls.Add(anchor);
+                owner.CreateControl();
+                anchor.CreateControl();
+
+                Capture cap = new Capture();
+                LauncherCommandRouter router = new LauncherCommandRouter(
+                    socketServer: null,
+                    onSendKey: k => { },
+                    onToggleFullscreen: () => { },
+                    onToggleLog: () => { },
+                    onForceExit: () => { },
+                    postToWeb: s => cap.Posts.Add(s));
+                RightContextWidget right = new RightContextWidget(
+                    anchor,
+                    router,
+                    MapHudDataCatalog.FromPayload(BuildPayload()),
+                    MapDisplayPreference.Off);
+                var intents = new List<string>();
+                right.IntentRequested += delegate(
+                    string intent, string runId, int revision)
+                {
+                    intents.Add(intent + ":" + runId + ":" + revision);
+                };
+                right.ForceGameReady(true);
+                right.SetReady();
+                right.ApplyState(StageState("victory", "alive", "none"));
+                right.ForceDeliverState(
+                    true, "base_dorm", false, "0", returnNavigable: true);
+                NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                    right, null);
+
+                Rectangle deliver = right.StageActionBoundsForTest(0);
+                Point deliverCenter = new Point(
+                    deliver.Left + deliver.Width / 2,
+                    deliver.Top + deliver.Height / 2);
+                MouseEventArgs deliverArgs = new MouseEventArgs(
+                    MouseButtons.Left, 1,
+                    deliverCenter.X, deliverCenter.Y, 0);
+
+                right.OnMouseEvent(deliverArgs, MouseEventKind.Click);
+                Assert.Empty(intents);
+
+                right.OnMouseEvent(deliverArgs, MouseEventKind.Down);
+                // Same list index is rebuilt from deliver to return without ApplyState.
+                right.ForceDeliverState(
+                    false, "", false, "0", returnNavigable: true);
+                Rectangle current = right.StageActionBoundsForTest(0);
+                Point currentCenter = new Point(
+                    current.Left + current.Width / 2,
+                    current.Top + current.Height / 2);
+                MouseEventArgs currentArgs = new MouseEventArgs(
+                    MouseButtons.Left, 1,
+                    currentCenter.X, currentCenter.Y, 0);
+                right.OnMouseEvent(currentArgs, MouseEventKind.Up);
+                right.OnMouseEvent(currentArgs, MouseEventKind.Click);
+
+                Assert.Empty(intents);
+
+                right.OnMouseEvent(currentArgs, MouseEventKind.Down);
+                right.OnMouseEvent(currentArgs, MouseEventKind.Up);
+                right.OnMouseEvent(currentArgs, MouseEventKind.Click);
+                Assert.Equal(
+                    new[] { "return_base:run.right-context.1:7" },
+                    intents);
+            }
+        }
+
+        [Fact]
+        public void StageActionGesture_RevisionRefreshCancelsPendingDown()
+        {
+            Capture cap;
+            RightContextWidget right = MakeWidget(out cap);
+            var intents = new List<string>();
+            right.IntentRequested += delegate(
+                string intent, string runId, int revision)
+            {
+                intents.Add(intent + ":" + runId + ":" + revision);
+            };
+            right.SetReady();
+            right.ApplyState(StageState(
+                "victory", "alive", "none", revision: 7));
+
+            right.SetStageActionDownForTest(0);
+            right.ApplyState(StageState(
+                "victory", "alive", "none", revision: 8));
+            right.ClickStageActionGestureForTest(0);
+
+            Assert.Empty(intents);
+        }
+
+        [Fact]
+        public void NoticeGesture_CommandAndPayloadCannotRetargetInSameSlot()
+        {
+            Capture cap;
+            RightContextWidget right = MakeWidget(out cap);
+            right.SetReady();
+            right.ForceTaskDone(true);
+
+            right.ForceDeliverState(
+                true, "base_dorm", false, "0", returnNavigable: true);
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                right, null);
+            right.SetNoticeDownForTest();
+            Assert.True(right.ClickNoticeGestureForTest());
+
+            right.ForceDeliverState(
+                true, "base_dorm", false, "0", returnNavigable: true);
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                right, null);
+            right.SetNoticeDownForTest();
+            right.ForceDeliverState(
+                true, "base_dorm", true, "0", returnNavigable: true);
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                right, null);
+            Assert.False(right.ClickNoticeGestureForTest());
+
+            right.ForceDeliverState(
+                true, "base_dorm", true, "0", returnNavigable: true);
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                right, null);
+            right.SetNoticeDownForTest();
+            right.ForceDeliverState(
+                true, "other_hotspot", true, "0", returnNavigable: true);
+            NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                right, null);
+            Assert.False(right.ClickNoticeGestureForTest());
+        }
+
+        [Fact]
+        public void ZeroRewardPending_OffersReportInsteadOfPhantomRewardCount()
+        {
+            Capture cap;
+            RightContextWidget right = MakeWidget(out cap);
+            right.SetReady();
+            right.ApplyState(StageState(
+                "failure", "alive", "rewards_pending",
+                canReturnBase: false, remainingRewards: 0));
+
+            Assert.Equal("行动报告待查看", right.StageDecisionTextForTest);
+            Assert.Equal(new[] { "查看报告" },
+                right.StageActionLabelsForTest);
+        }
+
+        [Fact]
         public void ReviveCoinLabel_CompactsLargeInventoryBeforePainting()
         {
             Capture c;
@@ -398,6 +550,63 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.Equal(new[] { "复活×2.1万", "回基地" },
                 right.StageActionLabelsForTest);
+        }
+
+        [Fact]
+        public void ReviveActionLayout_ReallocatesWidthAndKeepsLegalCountsSingleLine()
+        {
+            using (Form owner = new Form())
+            {
+                owner.StartPosition = FormStartPosition.Manual;
+                owner.Bounds = new Rectangle(120, 80, 1600, 900);
+                Panel anchor = new Panel();
+                anchor.Bounds = new Rectangle(0, 0, 1600, 900);
+                owner.Controls.Add(anchor);
+                owner.CreateControl();
+                anchor.CreateControl();
+
+                Capture cap = new Capture();
+                LauncherCommandRouter router = new LauncherCommandRouter(
+                    socketServer: null,
+                    onSendKey: k => { },
+                    onToggleFullscreen: () => { },
+                    onToggleLog: () => { },
+                    onForceExit: () => { },
+                    postToWeb: s => cap.Posts.Add(s));
+                using (RightContextWidget right = new RightContextWidget(
+                    anchor,
+                    router,
+                    MapHudDataCatalog.FromPayload(BuildPayload()),
+                    MapDisplayPreference.Off))
+                {
+                    right.ForceGameReady(true);
+                    right.SetReady();
+                    right.ApplyState(StageState(
+                        "victory", "dead", "none", true, 20574));
+                    NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                        right, null);
+
+                    Rectangle revive = right.StageActionBoundsForTest(0);
+                    Rectangle returnBase = right.StageActionBoundsForTest(1);
+                    Assert.True(revive.Width > returnBase.Width);
+                    Assert.True(revive.Right < returnBase.Left);
+                    Assert.True(right.StageActionTextUsesSingleLineForTest);
+                    Assert.False(right.StageActionUsesCompactFontForTest(0));
+                    Assert.True(right.StageActionLabelFitsForTest(0));
+                    Assert.True(right.StageActionLabelFitsForTest(1));
+
+                    right.ApplyState(StageState(
+                        "victory", "dead", "none", true,
+                        9007199254740991L));
+                    Assert.Equal(
+                        new[] { "复活×9007.2万亿", "回基地" },
+                        right.StageActionLabelsForTest);
+                    Assert.True(right.StageActionUsesCompactFontForTest(0));
+                    Assert.True(right.StageActionLabelFitsForTest(0));
+                    Assert.Equal(revive, right.StageActionBoundsForTest(0));
+                    Assert.Equal(returnBase, right.StageActionBoundsForTest(1));
+                }
+            }
         }
 
         [Fact]

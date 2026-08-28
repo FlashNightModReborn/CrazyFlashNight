@@ -28,6 +28,10 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _settlementStarted:Boolean = false;
     private static var _returnRequested:Boolean = false;
     private static var _deliverAfterSettlement:Boolean = false;
+    // 场景淡出与 StageManager.initialize 之间存在异步窗口。入口必须先取得唯一 reservation，
+    // initialize/begin 再按目标关卡消费；这样第二个入口不能在旧 run 尚未建立时重复获准。
+    private static var _stageStartSeq:Number = 0;
+    private static var _stageStartReservation:Object = null;
     private static var _testDeliverableResolver:Function = null;
     private static var _testDeliverableNavigator:Function = null;
 
@@ -43,16 +47,41 @@ class org.flashNight.arki.scene.StageRunSession {
         _installed = true;
     }
 
-    /** 新关卡只能在上一轮奖励已经终结时开始，防止唯一奖励对象被覆盖。 */
-    public static function begin(stageName:String, difficulty:String):Boolean {
+    /** 新关卡只能在上一轮已经正规返回并终结结算时开始，防止 run/奖励对象被覆盖。 */
+    public static function begin(stageName:String, difficulty:String, stageStartToken:String):Boolean {
         install();
-        if (!canStartStage()) {
-            trace("[StageRunSession] pending settlement blocks a new stage");
-            return false;
-        }
-        _runSeq++;
         var name:String = safeText(stageName, 96, "未知关卡");
         var mode:String = safeText(difficulty, 48, "未知难度");
+        var blockReason:String = getStageStartBlockReasonIgnoringReservation();
+        if (blockReason != "") {
+            trace("[StageRunSession] " + blockReason + " blocks a new stage");
+            return false;
+        }
+        var suppliedToken:String = String(stageStartToken || "");
+        if (_stageStartReservation == null && suppliedToken != "") {
+            trace("[StageRunSession] stale_or_cancelled_stage_start_token");
+            return false;
+        }
+        if (_stageStartReservation != null) {
+            if (suppliedToken == "" || suppliedToken !== _stageStartReservation.token) {
+                trace("[StageRunSession] missing_or_mismatched_stage_start_token");
+                return false;
+            }
+            var expectedStage:String = String(_stageStartReservation.stageName || "");
+            var expectedDifficulty:String = String(_stageStartReservation.difficulty || "");
+            if (expectedStage != "" && expectedStage != name) {
+                trace("[StageRunSession] stage_start_target_mismatch expected="
+                    + expectedStage + " actual=" + name);
+                return false;
+            }
+            if (expectedDifficulty != "" && expectedDifficulty != mode) {
+                trace("[StageRunSession] stage_start_difficulty_mismatch expected="
+                    + expectedDifficulty + " actual=" + mode);
+                return false;
+            }
+            _stageStartReservation = null;
+        }
+        _runSeq++;
         _run = {
             v:1,
             runId:"run." + getTimer() + "." + _runSeq,
@@ -88,8 +117,102 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     public static function canStartStage():Boolean {
-        return _preparedInventory == null
-            && !LootContainerService.hasStageSettlementPending();
+        return getStageStartBlockReason() == "";
+    }
+
+    /** 新关卡 admission 的稳定错误码；UI 只展示，AS2 入口仍须重新裁决。 */
+    public static function getStageStartBlockReason():String {
+        if (_stageStartReservation != null) return "stage_start_pending";
+        return getStageStartBlockReasonIgnoringReservation();
+    }
+
+    /**
+     * 为即将发生的异步 stage load 保留唯一席位。返回空串表示被拒绝；token 仅用于
+     * 同步失败时 exact cancel，成功路径由 begin 按 stageName 消费。
+     */
+    public static function reserveStageStart(
+            source:String, stageName:String, difficulty:String):String {
+        install();
+        if (getStageStartBlockReason() != "") return "";
+        var normalizedStageName:String = safeText(stageName, 96, "");
+        if (normalizedStageName == "") return "";
+        _stageStartSeq++;
+        var token:String = "stage.start." + getTimer() + "." + _stageStartSeq;
+        _stageStartReservation = {
+            token:token,
+            source:safeText(source, 64, "unknown"),
+            stageName:normalizedStageName,
+            difficulty:safeText(difficulty, 48, "")
+        };
+        return token;
+    }
+
+    /** 仅 exact token 可撤销尚未被 begin 消费的 reservation。 */
+    public static function cancelStageStart(token:String):Boolean {
+        if (_stageStartReservation == null || token == undefined
+                || token == "" || token !== _stageStartReservation.token) return false;
+        _stageStartReservation = null;
+        return true;
+    }
+
+    /** 异步 loader 在应用 XML/初始化 StageManager 前复核 exact reservation。 */
+    public static function isStageStartReservationValid(token:String):Boolean {
+        return token != undefined && token != "" && _stageStartReservation != null
+            && token === _stageStartReservation.token;
+    }
+
+    /** 窄 host 例外可同时核验 exact token、来源与目标，防伪造 allow 标志。 */
+    public static function matchesStageStartReservation(
+            token:String, source:String, stageName:String):Boolean {
+        return isStageStartReservationValid(token)
+            && String(_stageStartReservation.source || "") == String(source || "")
+            && String(_stageStartReservation.stageName || "") == String(stageName || "");
+    }
+
+    /**
+     * 离开当前场景的统一硬门。正规 _root.返回基地 不走此门，而是先调用
+     * onReturnBaseStarted；地图/选关/外交地图等旁路必须在副作用前调用。
+     */
+    public static function getSceneExitBlockReason():String {
+        if (_stageStartReservation != null) return "stage_start_pending";
+        if (_run != null && !isRunTerminal()) {
+            return _returnRequested ? "pending_stage_settlement" : "stage_run_active";
+        }
+        if (_preparedInventory != null || LootContainerService.hasStageSettlementPending()) {
+            return "pending_stage_settlement";
+        }
+        if (_root.当前为战斗地图 === true) return "battle_map";
+        return "";
+    }
+
+    public static function canNavigateAwayFromStage():Boolean {
+        return getSceneExitBlockReason() == "";
+    }
+
+    /** StageManager.clear 只能发生在无 run 或正规返回已经冻结 run 之后。 */
+    public static function canClearStageManager():Boolean {
+        return _stageStartReservation == null && (_run == null || _returnRequested);
+    }
+
+    private static function getStageStartBlockReasonIgnoringReservation():String {
+        if (_run != null && !isRunTerminal()) {
+            return _returnRequested ? "pending_stage_settlement" : "stage_run_active";
+        }
+        if (_preparedInventory != null || LootContainerService.hasStageSettlementPending()) {
+            return "pending_stage_settlement";
+        }
+        // 没有 run 不代表处于基地：斗兽标定和旧战斗图可明确不创建
+        // StageRunSession。此时仍必须拒绝第二个关卡入场。
+        if (_root.斗兽标定模式 === true) return "calibration_active";
+        if (_root.当前为战斗地图 === true) return "battle_map";
+        return "";
+    }
+
+    private static function isRunTerminal():Boolean {
+        if (_run == null) return true;
+        if (!_returnRequested) return false;
+        var settlement:String = String(_run.settlement || "");
+        return settlement == "claimed" || settlement == "abandoned" || settlement == "error";
     }
 
     /** StageManager 每个未暂停的游戏帧调用；这是战报时间的唯一时钟。 */
@@ -346,6 +469,9 @@ class org.flashNight.arki.scene.StageRunSession {
 
     /** 所有返回基地入口先调用；幂等冻结战报和唯一奖励物件，再开始场景跳转。 */
     public static function onReturnBaseStarted():Boolean {
+        // stage XML/TimePool 尚未确认时不能边返回基地边让迟到回调
+        // 建立新 run。保留 exact reservation，由原入场链成功消费或失败撤销。
+        if (_stageStartReservation != null) return false;
         // 斗兽标定等明确不创建 StageRunSession 的旧流程仍可沿用返回基地；
         // requestReturnBaseLocal 本身会在无会话时拒绝原生按钮意图。
         if (_run == null) return true;
@@ -771,6 +897,15 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     public static function testOnlyReset():Void {
+        resetAuthorityForRestart();
+    }
+
+    /** 只供游戏整体 restart/dispose 调用；普通场景入口不得绕过生命周期门。 */
+    public static function resetForRestart():Void {
+        resetAuthorityForRestart();
+    }
+
+    private static function resetAuthorityForRestart():Void {
         _run = null;
         _processedIntents = {};
         _preparedInventory = null;
@@ -778,6 +913,7 @@ class org.flashNight.arki.scene.StageRunSession {
         _settlementStarted = false;
         _returnRequested = false;
         _deliverAfterSettlement = false;
+        _stageStartReservation = null;
         _testDeliverableResolver = null;
         _testDeliverableNavigator = null;
     }

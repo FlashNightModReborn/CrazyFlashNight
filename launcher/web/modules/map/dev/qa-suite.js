@@ -73,7 +73,9 @@ var MapPanelHarnessQA = (function() {
             disabledIds: [],
             lockedGroups: [],
             taskNpcHotspots: [],
-            failNavigate: false
+            failNavigate: false,
+            navigationLocked: false,
+            navigationLockReason: ''
         };
         var key;
         options = options || {};
@@ -1375,6 +1377,49 @@ var MapPanelHarnessQA = (function() {
                             }, 1500, 'stage-select shortcut busy reset').then(function() {
                                 return 'open_stage_select=' + msg.targetId + '->' + msg.frameLabel;
                             });
+                        });
+                    });
+                }
+            },
+            {
+                id: 'map-ui24a',
+                title: 'stage lifecycle lock stays readable and blocks map plus stage-select sends with feedback',
+                run: function() {
+                    return bootMap(api, host, {
+                        defaultPageId: 'faction',
+                        currentHotspotId: 'rock_park',
+                        navigationLocked: true,
+                        navigationLockReason: 'stage_run_active'
+                    }).then(function() {
+                        clickByHitTest(api, getFilterButton('rock'), 'rock filter');
+                        return api.waitFor(function() {
+                            var state = currentState();
+                            return state && state.activeFilterId === 'rock' ? state : null;
+                        }, 1500, 'switch to locked rock').then(function(state) {
+                            var notice = document.querySelector('.map-navigation-lock-notice');
+                            var navItem = document.querySelector('.map-rail-scene-item[data-hotspot-id="rock_rehearsal"]');
+                            var stageAction = document.querySelector('.map-rail-stage-select-btn[data-hotspot-id="rock_park"]');
+                            api.assert(state.navigationLocked === true, 'debug state exposes lifecycle lock');
+                            api.assertEqual(state.navigationLockReason, 'stage_run_active', 'debug state keeps lock reason');
+                            api.assert(!!notice && !notice.hidden, 'lifecycle lock notice is visibly rendered');
+                            api.assert((notice.textContent || '').indexOf('返回基地') >= 0, 'notice explains the recovery action');
+                            api.assert(!!navItem, 'locked navigation item remains present for feedback');
+                            api.assert(!!stageAction, 'locked stage-select action remains present for feedback');
+                            api.assertEqual(navItem.getAttribute('aria-disabled'), 'true', 'navigation item exposes aria-disabled');
+                            api.assertEqual(stageAction.getAttribute('aria-disabled'), 'true', 'stage-select action exposes aria-disabled');
+
+                            var beforeNav = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                            var beforeOpen = host.getMessages().filter(function(m) { return m && m.cmd === 'open_stage_select'; }).length;
+                            var beforeToast = (window.Toast && window.Toast.messages || []).length;
+                            navItem.click();
+                            stageAction.click();
+                            var afterNav = host.getMessages().filter(function(m) { return m && m.cmd === 'navigate'; }).length;
+                            var afterOpen = host.getMessages().filter(function(m) { return m && m.cmd === 'open_stage_select'; }).length;
+                            var afterToast = (window.Toast && window.Toast.messages || []).length;
+                            api.assertEqual(afterNav - beforeNav, 0, 'lifecycle lock emits zero navigate requests');
+                            api.assertEqual(afterOpen - beforeOpen, 0, 'lifecycle lock emits zero open_stage_select requests');
+                            api.assert(afterToast - beforeToast >= 2, 'both blocked actions provide an explicit toast');
+                            return 'lock notice + two blocked action toasts, zero business sends';
                         });
                     });
                 }

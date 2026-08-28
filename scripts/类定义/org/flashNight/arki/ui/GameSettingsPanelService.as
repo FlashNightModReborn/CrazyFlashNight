@@ -16,6 +16,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     private static var _previewBaseline:Object;
     private static var _previewRestoreTimer:Number;
     private static var _keyRefreshPending:Boolean = false;
+    private static var _returnBaseResponseEnvelope:Object;
 
     public static function install():Void {
         if (_installed) return;
@@ -65,6 +66,10 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         var request:Object = params == undefined ? {} : params;
         var callId:Number = Number(request.callId);
         if (isNaN(callId)) callId = 0;
+        if (commandName == "return_base") {
+            handleReturnBase(request, callId);
+            return;
+        }
         var response:Object = execute(commandName, request);
         response.task = "settings_response";
         response.callId = callId;
@@ -323,16 +328,81 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         };
     }
 
+    private static function handleReturnBase(params:Object, callId:Number):Void {
+        // _root.返回基地 会进入真实淡出/切帧链。完整 correlation 必须在调用前放进
+        // 类级封套；不能等返回后再从这一层调用帧补 task/callId。
+        _returnBaseResponseEnvelope = {
+            task:"settings_response",
+            callId:callId
+        };
+        performReturnBase(params, _returnBaseResponseEnvelope);
+        sendPendingReturnBaseResponse();
+    }
+
     private static function executeReturnBase(params:Object):Object {
-        if (!hasOnly(params, ["task", "action", "callId", "v"])) return fail("invalid_payload");
-        if (typeof _root.返回基地 != "function") return fail("return_base_unavailable");
+        return performReturnBase(params, null);
+    }
+
+    private static function performReturnBase(params:Object, responseEnvelope:Object):Object {
+        if (params == undefined || params.v !== 1) {
+            return setReturnBaseFailure(responseEnvelope, "unsupported_version");
+        }
+        if (!hasOnly(params, ["task", "action", "callId", "v"])) {
+            return setReturnBaseFailure(responseEnvelope, "invalid_payload");
+        }
+        if (typeof _root.返回基地 != "function") {
+            return setReturnBaseFailure(responseEnvelope, "return_base_unavailable");
+        }
+        // 成功形状同样在淡出前写完；若权威入口拒绝或抛错，再原位收敛为失败。
+        var response:Object = setReturnBaseSuccess(responseEnvelope);
         try {
             var accepted = _root.返回基地();
-            if (accepted === false) return fail("settlement_prepare_failed");
+            if (accepted === false) {
+                return setReturnBaseFailure(response, "settlement_prepare_failed");
+            }
         } catch (returnError) {
-            return fail("return_base_failed");
+            return setReturnBaseFailure(response, "return_base_failed");
         }
-        return {success:true, v:1, operation:"return_base", closePanel:true};
+        return stableReturnBaseResponse(response);
+    }
+
+    private static function setReturnBaseSuccess(responseEnvelope:Object):Object {
+        var response:Object = stableReturnBaseResponse(responseEnvelope);
+        response.success = true;
+        response.v = 1;
+        response.operation = "return_base";
+        response.closePanel = true;
+        delete response.error;
+        return response;
+    }
+
+    private static function setReturnBaseFailure(responseEnvelope:Object,
+            errorCode:String):Object {
+        var response:Object = stableReturnBaseResponse(responseEnvelope);
+        response.success = false;
+        response.v = 1;
+        response.error = errorCode;
+        delete response.operation;
+        delete response.closePanel;
+        return response;
+    }
+
+    private static function stableReturnBaseResponse(fallback:Object):Object {
+        if (_returnBaseResponseEnvelope != undefined
+                && _returnBaseResponseEnvelope != null) {
+            return _returnBaseResponseEnvelope;
+        }
+        return (fallback == undefined || fallback == null) ? {} : fallback;
+    }
+
+    private static function sendPendingReturnBaseResponse():Void {
+        var response:Object = _returnBaseResponseEnvelope;
+        _returnBaseResponseEnvelope = undefined;
+        if (response == undefined || response == null) {
+            trace("[GameSettingsPanelService] missing return_base response envelope");
+            return;
+        }
+        sendResponse(response);
     }
 
     private static function executeTryRevive(params:Object):Object {

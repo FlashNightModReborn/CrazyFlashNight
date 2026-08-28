@@ -225,7 +225,131 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("_disposed || _panelMode", restore);
             Assert.Contains("!_panelTakeForeground", restore);
             Assert.Contains("panel_close:settled:", restore);
-            Assert.Contains("_flashFocusRestorer(", restore);
+            Assert.Contains("TryRestoreFlashInputFocusAfterPanelCloseCore(", restore);
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_SessionSnapshotAllowsIdleAndSettledRestore()
+        {
+            int calls = 0;
+            var reasons = new List<string>();
+            Func<string, bool> restore = delegate(string reason)
+            {
+                calls++;
+                reasons.Add(reason);
+                return true;
+            };
+
+            Assert.True(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                disposed: false,
+                panelMode: false,
+                takeForeground: true,
+                sessionForeground: true,
+                restorer: restore,
+                reason: "panel_close:idle:map"));
+            int consumedGeneration = 0;
+            Assert.True(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                panelGeneration: 7,
+                closeGeneration: 7,
+                closeEligible: true,
+                currentSessionForeground: true,
+                consumedGeneration: ref consumedGeneration));
+            Assert.True(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                disposed: false,
+                panelMode: false,
+                takeForeground: true,
+                sessionForeground: true,
+                restorer: restore,
+                reason: "panel_close:settled:map"));
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                7, 7, true, true, ref consumedGeneration));
+
+            Assert.Equal(2, calls);
+            Assert.Equal(new[]
+            {
+                "panel_close:idle:map",
+                "panel_close:settled:map"
+            }, reasons);
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_ExternalSnapshotBlocksBothAttempts()
+        {
+            int calls = 0;
+            Func<string, bool> restore = delegate(string reason)
+            {
+                calls++;
+                return true;
+            };
+
+            Assert.False(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                false, false, true, false, restore,
+                "panel_close:idle:map"));
+            int consumedGeneration = 0;
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                7, 7, false, false, ref consumedGeneration));
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                7, 7, false, true, ref consumedGeneration));
+            Assert.Equal(0, calls);
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_SessionThenExternalSkipsAndConsumesSettled()
+        {
+            int consumedGeneration = 0;
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                11, 11, true, false, ref consumedGeneration));
+            Assert.Equal(11, consumedGeneration);
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                11, 11, true, true, ref consumedGeneration));
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_CoreRechecksLiveForegroundBeforeRestorer()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string core = Slice(
+                source,
+                "private bool TryRestoreFlashInputFocusAfterPanelCloseCore(",
+                "private void CapturePanelCloseFocusEligibility(");
+            int liveQuery = core.IndexOf(
+                "IsDesktopCursorSessionForeground(ownerHwnd, overlayHwnd)",
+                StringComparison.Ordinal);
+            int externalGuard = core.IndexOf(
+                "if (!currentSessionForeground)",
+                StringComparison.Ordinal);
+            int restore = core.IndexOf(
+                "TryInvokePanelCloseFocusRestore(",
+                StringComparison.Ordinal);
+
+            Assert.True(liveQuery >= 0);
+            Assert.True(externalGuard > liveQuery);
+            Assert.True(restore > externalGuard);
+            Assert.Contains("currentSessionForeground,", core);
+        }
+
+        [Fact]
+        public void PanelCloseCapturesForegroundBeforePanelModeAndHideMutation()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string close = Slice(
+                source,
+                "private void DoForceIdleSequence(string closingPanelName)",
+                "private static void LogIdleStepDuration(");
+
+            int capture = close.IndexOf(
+                "CapturePanelCloseFocusEligibility(panelTag)",
+                StringComparison.Ordinal);
+            int clearMode = close.IndexOf(
+                "_panelMode = false",
+                StringComparison.Ordinal);
+            int hideSequence = close.IndexOf(
+                "DoFullIdleSuspend(closingPanelName)",
+                StringComparison.Ordinal);
+
+            Assert.True(capture >= 0);
+            Assert.True(clearMode > capture);
+            Assert.True(hideSequence > clearMode);
         }
 
         [Fact]

@@ -13,7 +13,8 @@ namespace CF7Launcher.Tests.Guardian
             bool reviveAllowed = false,
             long reviveCoins = 2,
             string reviveBlockedReason = "",
-            int remainingRewards = 0)
+            int remainingRewards = 0,
+            bool canReturnBase = true)
         {
             return new JObject
             {
@@ -31,7 +32,7 @@ namespace CF7Launcher.Tests.Guardian
                     ["reviveCoins"] = reviveCoins,
                     ["reviveAllowed"] = reviveAllowed,
                     ["reviveBlockedReason"] = reviveBlockedReason,
-                    ["canReturnBase"] = true,
+                    ["canReturnBase"] = canReturnBase,
                     ["settlement"] = settlement,
                     ["remainingRewards"] = remainingRewards
                 }
@@ -94,9 +95,29 @@ namespace CF7Launcher.Tests.Guardian
 
             Assert.True(StageOutcomeState.TryParseMessage(
                 Message("victory", "alive", "rewards_pending",
-                    remainingRewards: 3), out rewards, out error));
+                    remainingRewards: 3, canReturnBase: false),
+                out rewards, out error));
             Assert.True(rewards.ShouldDisplay);
             Assert.Equal(3, rewards.RemainingRewards);
+        }
+
+        [Theory]
+        [InlineData("failure")]
+        [InlineData("retreat")]
+        [InlineData("victory")]
+        public void ZeroRewardPendingReport_IsValidAndVisible(string outcome)
+        {
+            StageOutcomeState state;
+            string error;
+
+            Assert.True(StageOutcomeState.TryParseMessage(
+                Message(outcome, "alive", "rewards_pending",
+                    remainingRewards: 0, canReturnBase: false),
+                out state, out error));
+            Assert.Null(error);
+            Assert.Equal(0, state.RemainingRewards);
+            Assert.Equal("rewards_pending", state.Settlement);
+            Assert.True(state.ShouldDisplay);
         }
 
         [Fact]
@@ -115,8 +136,25 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(webActive.ShouldDisplay);
             Assert.True(StageOutcomeState.TryParseMessage(
                 Message("victory", "dead", "rewards_pending",
-                    remainingRewards: 2), out pending, out error));
+                    remainingRewards: 2, canReturnBase: false),
+                out pending, out error));
             Assert.True(pending.ShouldDisplay);
+        }
+
+        [Fact]
+        public void PendingRewards_RejectImpossibleActiveOrReturnableClaims()
+        {
+            StageOutcomeState state;
+            string error;
+
+            Assert.False(StageOutcomeState.TryParseMessage(
+                Message("active", "alive", "rewards_pending",
+                    remainingRewards: 0, canReturnBase: false),
+                out state, out error));
+            Assert.False(StageOutcomeState.TryParseMessage(
+                Message("failure", "alive", "rewards_pending",
+                    remainingRewards: 0, canReturnBase: true),
+                out state, out error));
         }
 
         [Fact]

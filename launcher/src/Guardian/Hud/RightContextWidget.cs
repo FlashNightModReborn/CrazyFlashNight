@@ -20,9 +20,13 @@ namespace CF7Launcher.Guardian.Hud
         private const int NOTICE_TEXT_PAD_BASE = 8;
         private const int NOTICE_ARROW_W_BASE = 24;
         private const int STAGE_ACTION_W_BASE = 64;
+        private const int STAGE_ACTION_PRIMARY_W_BASE = 80;
+        private const int STAGE_ACTION_SECONDARY_W_BASE = 48;
         private const int STAGE_ACTION_SINGLE_W_BASE = 84;
         private const int STAGE_ACTION_GAP_BASE = 4;
         private const int STAGE_ACTION_INSET_BASE = 4;
+        private const int STAGE_ACTION_LABEL_PAD_X_BASE = 1;
+        private const int STAGE_ACTION_COMPACT_LENGTH = 7;
         private const int MAP_BODY_INSET_BASE = 8;
         private const int MAP_LABEL_PAD_X_BASE = 6;
         private const int MAP_LABEL_PAD_Y_BASE = 2;
@@ -76,12 +80,28 @@ namespace CF7Launcher.Guardian.Hud
             public string Icon;
         }
 
+        private struct StageActionGestureToken
+        {
+            public bool Valid;
+            public string ActionId;
+            public string RunId;
+            public int Revision;
+        }
+
+        private struct NoticeGestureToken
+        {
+            public bool Valid;
+            public string Command;
+            public string PayloadSignature;
+        }
+
         private sealed class StageActionSpec
         {
             public string Id;
             public string Label;
             public string Intent;
             public bool Enabled;
+            public bool CompactLabel;
         }
 
         private readonly Control _anchor;
@@ -127,6 +147,8 @@ namespace CF7Launcher.Guardian.Hud
 
         private HitInfo _hover;
         private HitInfo _down;
+        private StageActionGestureToken _downStageActionToken;
+        private NoticeGestureToken _downNoticeToken;
 
         // ── P0 perf：GDI+ 资源静态/实例缓存 ──
         // PaintTools / PaintMapLabel / PaintNotice 的稳定 GDI+ 资源复用。
@@ -156,6 +178,7 @@ namespace CF7Launcher.Guardian.Hud
         private static readonly StringFormat FMT_CENTER       = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoClip, StringTrimming.None);
         private static readonly StringFormat FMT_CENTER_ELLIPSIS = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoClip, StringTrimming.EllipsisCharacter);
         private static readonly StringFormat FMT_NEAR_NOWRAP_ELLIPSIS = MakeFmt(StringAlignment.Near, StringAlignment.Center, StringFormatFlags.NoWrap, StringTrimming.EllipsisCharacter);
+        private static readonly StringFormat FMT_STAGE_ACTION = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoWrap | StringFormatFlags.LineLimit, StringTrimming.EllipsisCharacter);
 
         private static StringFormat MakeFmt(StringAlignment h, StringAlignment v, StringFormatFlags flags, StringTrimming trim)
         {
@@ -166,7 +189,7 @@ namespace CF7Launcher.Guardian.Hud
             return f;
         }
 
-        // 实例 Font 缓存：scale 变化时整体重建（5 个不同 family/size/style）
+        // 实例 Font 缓存：scale 变化时整体重建（6 个不同 family/size/style）
         // 实例字段不能跨线程：Prewarm 走静态 base font，Paint 走实例 scaled font，二者互不触碰
         // —— 避免 PrewarmGdi (ThreadPool) 与 Paint (UI) 之间 EnsureFonts 重建期的 Font 竞争。
         private float _cachedFontScale = -1f;
@@ -175,6 +198,7 @@ namespace CF7Launcher.Guardian.Hud
         private Font _fontMapLabel115Bold;    // PaintMapLabel "Microsoft YaHei" 11.5 Bold
         private Font _fontQuest12;            // 地图预览尺寸切换按钮
         private Font _fontNoticeJuke11;       // 条件状态槽 / hover tooltip
+        private Font _fontStageActionCompact9;// 极长复活币计数的单行降级
 
         // 静态 base font（scale=1）：Prewarm + 测试探针专用，避免与实例 _font* 跨线程共用。
         // 进程级共享 + 不 dispose（与 ComboWidget._baseTypedFont 等同形）；double-checked lock 懒初始化。
@@ -241,6 +265,7 @@ namespace CF7Launcher.Guardian.Hud
             _fontMapLabel115Bold = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
             _fontQuest12         = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _fontNoticeJuke11    = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontStageActionCompact9 = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _cachedFontScale = scale;
         }
 
@@ -251,6 +276,7 @@ namespace CF7Launcher.Guardian.Hud
             if (_fontMapLabel115Bold != null) { _fontMapLabel115Bold.Dispose(); _fontMapLabel115Bold = null; }
             if (_fontQuest12 != null)         { _fontQuest12.Dispose();         _fontQuest12 = null; }
             if (_fontNoticeJuke11 != null)    { _fontNoticeJuke11.Dispose();    _fontNoticeJuke11 = null; }
+            if (_fontStageActionCompact9 != null) { _fontStageActionCompact9.Dispose(); _fontStageActionCompact9 = null; }
             _cachedFontScale = -1f;
         }
 
@@ -759,9 +785,12 @@ namespace CF7Launcher.Guardian.Hud
                     hover, pressed, primary, false);
                 Color labelColor = action.Enabled
                     ? NativeHudTheme.TextPrimary : NativeHudTheme.TextDisabled;
+                Font actionFont = action.CompactLabel
+                    ? _fontStageActionCompact9 : _fontNoticeJuke11;
+                Rectangle labelRect = StageActionLabelRect(button, scale);
                 using (SolidBrush labelBrush = new SolidBrush(labelColor))
-                    g.DrawString(action.Label, _fontNoticeJuke11,
-                        labelBrush, button, FMT_CENTER_ELLIPSIS);
+                    g.DrawString(action.Label, actionFont,
+                        labelBrush, labelRect, FMT_STAGE_ACTION);
             }
         }
 
@@ -784,15 +813,20 @@ namespace CF7Launcher.Guardian.Hud
                     SetHover(NoHit());
                     break;
                 case MouseEventKind.Down:
-                    _down = (e.Button == MouseButtons.Left) ? hit : NoHit();
+                    SetPointerDown((e.Button == MouseButtons.Left) ? hit : NoHit());
                     FireRepaint();
                     break;
                 case MouseEventKind.Up:
                     FireRepaint();
                     break;
                 case MouseEventKind.Click:
-                    if (SameHit(_down, hit) || _down.Kind == HitKind.None) DispatchHit(hit);
-                    _down = NoHit();
+                    if (PointerDownMatches(hit)) DispatchHit(hit);
+                    ClearPointerDown();
+                    FireRepaint();
+                    break;
+                case MouseEventKind.Cancel:
+                    _hover = NoHit();
+                    ClearPointerDown();
                     FireRepaint();
                     break;
             }
@@ -922,7 +956,7 @@ namespace CF7Launcher.Guardian.Hud
                 ClearStageBroadcast();
             _stageOutcomeState = state;
             _hover = NoHit();
-            _down = NoHit();
+            ClearPointerDown();
             BuildStageActions();
             FireBounds();
             FireAnimState();
@@ -935,7 +969,7 @@ namespace CF7Launcher.Guardian.Hud
             _stageActions.Clear();
             ClearStageBroadcast();
             _hover = NoHit();
-            _down = NoHit();
+            ClearPointerDown();
             FireBounds();
             FireAnimState();
         }
@@ -957,31 +991,42 @@ namespace CF7Launcher.Guardian.Hud
         private void BuildStageActions()
         {
             _stageActions.Clear();
-            StageOutcomeState state = _stageOutcomeState;
-            if (!ShouldPresentStageDecision(state)) return;
-            if (state.Settlement == "rewards_pending")
+            try
             {
-                AddStageAction("resume", "继续领取", "resume_rewards", true);
-                return;
-            }
-            if (state.Life == "dead")
-            {
-                AddStageAction("revive",
-                    state.ReviveAllowed
-                        ? "复活×" + StageOutcomeState.FormatCompactCount(
-                            state.ReviveCoins)
-                        : "禁复活",
-                    "revive", state.ReviveAllowed);
+                StageOutcomeState state = _stageOutcomeState;
+                if (!ShouldPresentStageDecision(state)) return;
+                if (state.Settlement == "rewards_pending")
+                {
+                    AddStageAction("resume",
+                        state.RemainingRewards == 0 ? "查看报告" : "继续领取",
+                        "resume_rewards", true);
+                    return;
+                }
+                if (state.Life == "dead")
+                {
+                    AddStageAction("revive",
+                        state.ReviveAllowed
+                            ? "复活×" + StageOutcomeState.FormatCompactCount(
+                                state.ReviveCoins)
+                            : "禁复活",
+                        "revive", state.ReviveAllowed);
+                    if (state.CanReturnBase)
+                        AddStageAction("return", "回基地", "return_base", true);
+                    return;
+                }
+                if (state.Life == "reviving") return;
+                if (CanOfferStageDelivery(state))
+                    AddStageAction("deliver", "前往交付",
+                        "return_deliverable", true);
                 if (state.CanReturnBase)
                     AddStageAction("return", "回基地", "return_base", true);
-                return;
             }
-            if (state.Life == "reviving") return;
-            if (CanOfferStageDelivery(state))
-                AddStageAction("deliver", "前往交付",
-                    "return_deliverable", true);
-            if (state.CanReturnBase)
-                AddStageAction("return", "回基地", "return_base", true);
+            finally
+            {
+                if (_down.Kind == HitKind.StageAction
+                    && !PointerDownMatches(_down))
+                    ClearPointerDown();
+            }
         }
 
         private bool CanOfferStageDelivery(StageOutcomeState state)
@@ -1001,43 +1046,65 @@ namespace CF7Launcher.Guardian.Hud
                 Id = id,
                 Label = label,
                 Intent = intent,
-                Enabled = enabled
+                Enabled = enabled,
+                CompactLabel = id == "revive"
+                    && label != null
+                    && label.Length > STAGE_ACTION_COMPACT_LENGTH
             });
         }
 
         private int StageActionsTotalWidth(float scale)
         {
             if (_stageActions.Count == 0) return 0;
-            int width = WidgetScaler.Px(
-                _stageActions.Count == 1
-                    ? STAGE_ACTION_SINGLE_W_BASE : STAGE_ACTION_W_BASE,
-                scale);
             int gap = WidgetScaler.Px(STAGE_ACTION_GAP_BASE, scale);
             int inset = WidgetScaler.Px(STAGE_ACTION_INSET_BASE, scale);
-            return inset + width * _stageActions.Count
-                + gap * Math.Max(0, _stageActions.Count - 1);
+            int total = inset + gap * Math.Max(0, _stageActions.Count - 1);
+            for (int i = 0; i < _stageActions.Count; i++)
+                total += StageActionWidth(scale, i);
+            return total;
         }
 
         private Rectangle StageActionRect(Rectangle slot, float scale, int index)
         {
             if (index < 0 || index >= _stageActions.Count) return Rectangle.Empty;
-            int width = WidgetScaler.Px(
-                _stageActions.Count == 1
-                    ? STAGE_ACTION_SINGLE_W_BASE : STAGE_ACTION_W_BASE,
-                scale);
             int gap = WidgetScaler.Px(STAGE_ACTION_GAP_BASE, scale);
             int inset = WidgetScaler.Px(STAGE_ACTION_INSET_BASE, scale);
-            int total = width * _stageActions.Count
-                + gap * Math.Max(0, _stageActions.Count - 1);
+            int total = gap * Math.Max(0, _stageActions.Count - 1);
+            for (int i = 0; i < _stageActions.Count; i++)
+                total += StageActionWidth(scale, i);
             int height = Math.Max(1, slot.Height - inset * 2);
-            int x = slot.Right - inset - total + index * (width + gap);
+            int x = slot.Right - inset - total;
+            for (int i = 0; i < index; i++)
+                x += StageActionWidth(scale, i) + gap;
+            int width = StageActionWidth(scale, index);
             return new Rectangle(x, slot.Y + inset, width, height);
+        }
+
+        private int StageActionWidth(float scale, int index)
+        {
+            int baseWidth = STAGE_ACTION_W_BASE;
+            if (_stageActions.Count == 1)
+                baseWidth = STAGE_ACTION_SINGLE_W_BASE;
+            else if (_stageActions.Count == 2)
+                baseWidth = index == 0
+                    ? STAGE_ACTION_PRIMARY_W_BASE
+                    : STAGE_ACTION_SECONDARY_W_BASE;
+            return WidgetScaler.Px(baseWidth, scale);
+        }
+
+        private static Rectangle StageActionLabelRect(
+            Rectangle button, float scale)
+        {
+            int pad = WidgetScaler.Px(STAGE_ACTION_LABEL_PAD_X_BASE, scale);
+            return Rectangle.Inflate(button, -pad, 0);
         }
 
         private static string StageDecisionText(StageOutcomeState state)
         {
             if (state.Settlement == "rewards_pending")
-                return "待领奖励 " + state.RemainingRewards + " 项";
+                return state.RemainingRewards == 0
+                    ? "行动报告待查看"
+                    : "待领奖励 " + state.RemainingRewards + " 项";
             if (state.Life == "reviving") return "正在复活…";
             if (state.Life == "dead") return "你受了重伤";
             if (state.Outcome == "victory") return "关卡已突破";
@@ -1194,7 +1261,7 @@ namespace CF7Launcher.Guardian.Hud
             _activeFlash = null;
             _flashElapsedMs = 0;
             _hover = NoHit();
-            _down = NoHit();
+            ClearPointerDown();
         }
 
         public IEnumerable<string> LegacyTypes { get { return LEGACY_TYPES; } }
@@ -1358,6 +1425,78 @@ namespace CF7Launcher.Guardian.Hud
             return a.Kind == b.Kind && a.Index == b.Index;
         }
 
+        private void SetPointerDown(HitInfo hit)
+        {
+            _down = hit;
+            _downStageActionToken = default(StageActionGestureToken);
+            _downNoticeToken = default(NoticeGestureToken);
+            if (hit.Kind == HitKind.Notice)
+            {
+                _downNoticeToken = CurrentNoticeGestureToken();
+                return;
+            }
+            if (hit.Kind != HitKind.StageAction
+                || hit.Index < 0 || hit.Index >= _stageActions.Count
+                || _stageOutcomeState == null)
+                return;
+
+            StageActionSpec action = _stageActions[hit.Index];
+            _downStageActionToken.Valid = true;
+            _downStageActionToken.ActionId = action.Id;
+            _downStageActionToken.RunId = _stageOutcomeState.RunId;
+            _downStageActionToken.Revision = _stageOutcomeState.Revision;
+        }
+
+        private void ClearPointerDown()
+        {
+            _down = NoHit();
+            _downStageActionToken = default(StageActionGestureToken);
+            _downNoticeToken = default(NoticeGestureToken);
+        }
+
+        private bool PointerDownMatches(HitInfo hit)
+        {
+            if (!SameHit(_down, hit)) return false;
+            if (hit.Kind == HitKind.Notice)
+            {
+                NoticeGestureToken current = CurrentNoticeGestureToken();
+                return _downNoticeToken.Valid && current.Valid
+                    && string.Equals(_downNoticeToken.Command,
+                        current.Command, StringComparison.Ordinal)
+                    && string.Equals(_downNoticeToken.PayloadSignature,
+                        current.PayloadSignature, StringComparison.Ordinal);
+            }
+            if (hit.Kind != HitKind.StageAction) return true;
+            if (!_downStageActionToken.Valid || _stageOutcomeState == null
+                || hit.Index < 0 || hit.Index >= _stageActions.Count)
+                return false;
+
+            StageActionSpec action = _stageActions[hit.Index];
+            return string.Equals(_downStageActionToken.ActionId, action.Id,
+                    StringComparison.Ordinal)
+                && string.Equals(_downStageActionToken.RunId,
+                    _stageOutcomeState.RunId, StringComparison.Ordinal)
+                && _downStageActionToken.Revision == _stageOutcomeState.Revision;
+        }
+
+        private NoticeGestureToken CurrentNoticeGestureToken()
+        {
+            NoticeGestureToken token = default(NoticeGestureToken);
+            if (!PaintsActionableNotice) return token;
+            token.Valid = true;
+            if (CanDeliver())
+            {
+                token.Command = "TASK_DELIVER";
+                token.PayloadSignature = _deliverHotspotId ?? "";
+            }
+            else
+            {
+                token.Command = "TASK_UI";
+                token.PayloadSignature = "";
+            }
+            return token;
+        }
+
         private void FireBounds()
         {
             EventHandler h = BoundsOrVisibilityChanged;
@@ -1427,6 +1566,59 @@ namespace CF7Launcher.Guardian.Hud
                 return labels;
             }
         }
+        internal string StageDecisionTextForTest
+        {
+            get { return StageDecisionText(_stageOutcomeState); }
+        }
+        internal Rectangle StageActionBoundsForTest(int index)
+        {
+            Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
+            float scale = RightHudLayout.ScaleForViewport(viewport);
+            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(
+                viewport, scale, LayoutMapMode, ShowStatusSlot);
+            Rectangle slot = RightHudLayout.StatusSlotRectFromContext(
+                context, scale, ShowStatusSlot);
+            return StageActionRect(slot, scale, index);
+        }
+        internal bool StageActionUsesCompactFontForTest(int index)
+        {
+            return index >= 0 && index < _stageActions.Count
+                && _stageActions[index].CompactLabel;
+        }
+        internal bool StageActionLabelFitsForTest(int index)
+        {
+            if (index < 0 || index >= _stageActions.Count) return false;
+            Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
+            float scale = RightHudLayout.ScaleForViewport(viewport);
+            Rectangle button = StageActionBoundsForTest(index);
+            Rectangle labelRect = StageActionLabelRect(button, scale);
+            if (labelRect.Width <= 0 || labelRect.Height <= 0) return false;
+            EnsureFonts(scale);
+            Font font = _stageActions[index].CompactLabel
+                ? _fontStageActionCompact9 : _fontNoticeJuke11;
+            using (Bitmap bitmap = new Bitmap(1, 1))
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            using (StringFormat format =
+                (StringFormat)StringFormat.GenericTypographic.Clone())
+            {
+                format.FormatFlags |= StringFormatFlags.NoWrap;
+                SizeF measured = graphics.MeasureString(
+                    _stageActions[index].Label,
+                    font,
+                    PointF.Empty,
+                    format);
+                return Math.Ceiling(measured.Width) <= labelRect.Width
+                    && Math.Ceiling(measured.Height) <= labelRect.Height;
+            }
+        }
+        internal bool StageActionTextUsesSingleLineForTest
+        {
+            get
+            {
+                return (FMT_STAGE_ACTION.FormatFlags
+                        & StringFormatFlags.NoWrap) != 0;
+            }
+        }
         internal bool HasStageBroadcastForTest
         {
             get { return !string.IsNullOrEmpty(_stageBroadcastText); }
@@ -1434,6 +1626,28 @@ namespace CF7Launcher.Guardian.Hud
         internal void ClickStageActionForTest(int index)
         {
             DispatchStageAction(index);
+        }
+        internal void SetStageActionDownForTest(int index)
+        {
+            SetPointerDown(Hit(HitKind.StageAction, index));
+        }
+        internal void ClickStageActionGestureForTest(int index)
+        {
+            HitInfo hit = Hit(HitKind.StageAction, index);
+            if (PointerDownMatches(hit)) DispatchHit(hit);
+            ClearPointerDown();
+        }
+        internal void SetNoticeDownForTest()
+        {
+            SetPointerDown(Hit(HitKind.Notice, 0));
+        }
+        internal bool ClickNoticeGestureForTest()
+        {
+            HitInfo hit = Hit(HitKind.Notice, 0);
+            bool matched = PointerDownMatches(hit);
+            if (matched) DispatchHit(hit);
+            ClearPointerDown();
+            return matched;
         }
         internal void ForceGameReady(bool ready) { _gameReady = ready; }
         internal void ForceTaskDone(bool done) { _taskDone = done; RebuildNoticeText(); }

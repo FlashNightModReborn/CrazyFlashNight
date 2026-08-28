@@ -85,6 +85,7 @@ namespace CF7Launcher.Tasks
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
         public void SetCustomResultOpenHandler(Action<JObject> handler) { _openCustomResultPanel = handler; }
+
         public void SetCalibrationTask(ArenaCalibrationTask task)
         {
             _calibrationTask = task;
@@ -471,22 +472,46 @@ namespace CF7Launcher.Tasks
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             LogManager.Log("[ArenaTask] <- Flash response received");
-            int fid = msg.Value<int>("callId");
+            int fid;
+            string invalidReason;
+            if (!TryReadBackendCallId(msg, out fid, out invalidReason))
+            {
+                int pendingCount;
+                lock (_lock) { pendingCount = _pending.Count; }
+                LogManager.Log("event=arena_response_dropped"
+                    + " reason=" + invalidReason
+                    + " pending_count=" + pendingCount);
+                respond(null);
+                return;
+            }
             PendingRequest entry;
+            int unmatchedPendingCount = 0;
             lock (_lock)
             {
                 if (!_pending.TryGetValue(fid, out entry))
                 {
-                    respond(null);
-                    return;
+                    unmatchedPendingCount = _pending.Count;
                 }
-                _pending.Remove(fid);
-                Timer t;
-                if (_timers.TryGetValue(fid, out t))
+                else
                 {
-                    t.Dispose();
-                    _timers.Remove(fid);
+                    _pending.Remove(fid);
+                    Timer t;
+                    if (_timers.TryGetValue(fid, out t))
+                    {
+                        t.Dispose();
+                        _timers.Remove(fid);
+                    }
                 }
+            }
+
+            if (entry == null)
+            {
+                LogManager.Log("event=arena_response_dropped"
+                    + " reason=unknown_backend_call_id"
+                    + " backend_call_id=" + fid
+                    + " pending_count=" + unmatchedPendingCount);
+                respond(null);
+                return;
             }
 
             if (entry.WebCmd == "snapshot")
@@ -509,6 +534,24 @@ namespace CF7Launcher.Tasks
             string json = msg.ToString(Formatting.None);
             PostToWeb(json);
             respond(null);
+        }
+
+        private static bool TryReadBackendCallId(
+            JObject msg, out int backendCallId, out string reason)
+        {
+            backendCallId = 0;
+            reason = "missing_backend_call_id";
+            JToken token = msg != null ? msg["callId"] : null;
+            if (token == null || token.Type == JTokenType.Null) return false;
+            reason = "invalid_backend_call_id";
+            if (token.Type != JTokenType.Integer) return false;
+            long value;
+            try { value = token.Value<long>(); }
+            catch (Exception) { return false; }
+            if (value <= 0 || value > int.MaxValue) return false;
+            backendCallId = (int)value;
+            reason = null;
+            return true;
         }
 
         private bool TryAttachAuthoritySnapshot(JObject msg, out string error)

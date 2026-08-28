@@ -61,6 +61,9 @@
     state._mode = 'dev';
     state._busyStageName = '';
     state._lastError = '';
+    // Web 主动关闭必须先得到 close transport 的同步接收确认，再卸载本地 visual。
+    // false/throw 时保持当前 owner/DOM/pending/busy 可重试，并暴露明确诊断。
+    state._lastCloseSendError = '';
     state._frameMenuOpen = false;
     // P2：持久选中态（pinned 决策检查器触发器）+ hover 卡/焦点/roving tabindex 跟踪。
     // 选中键 = stageButton.id（全局唯一，audit 强制），跨 snapshot/busy/error 全量重建按 id 恢复。

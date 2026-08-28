@@ -62,6 +62,15 @@ namespace CF7Launcher.Guardian.Hud
         // 不影响 _gameReady/mode/catalog 门控；折叠后玩家仍能用左下角 pin 重新展开。
         private bool _collapsed;
         private bool _hoverCloseBtn;
+        private PointerAction _downAction;
+
+        private enum PointerAction
+        {
+            None,
+            ExpandPin,
+            CardBody,
+            CloseButton
+        }
 
         private static readonly object AssetCacheLock = new object();
         private const long ASSET_CACHE_BUDGET_BYTES = 24L * 1024L * 1024L;
@@ -330,25 +339,61 @@ namespace CF7Launcher.Guardian.Hud
                 case MouseEventKind.Leave:
                     if (_hover || _hoverCloseBtn) { _hover = false; _hoverCloseBtn = false; FireRepaint(); }
                     break;
+                case MouseEventKind.Cancel:
+                    ClearPointerDown();
+                    if (_hover || _hoverCloseBtn) { _hover = false; _hoverCloseBtn = false; FireRepaint(); }
+                    break;
+                case MouseEventKind.Down:
+                    _downAction = e.Button == MouseButtons.Left
+                        ? ResolvePointerAction(new Point(e.X, e.Y))
+                        : PointerAction.None;
+                    break;
                 case MouseEventKind.Click:
-                    if (_collapsed)
+                    PointerAction clickAction = ResolvePointerAction(
+                        new Point(e.X, e.Y));
+                    bool exactGesture = e.Button == MouseButtons.Left
+                        && _downAction != PointerAction.None
+                        && _downAction == clickAction;
+                    ClearPointerDown();
+                    if (!exactGesture) break;
+                    ExecutePointerAction(clickAction);
+                    break;
+            }
+        }
+
+        private void ExecutePointerAction(PointerAction action)
+        {
+                    if (action == PointerAction.ExpandPin)
                     {
                         // pin badge → 展开（不开 panel）
                         SetCollapsed(false);
                     }
-                    else if (IsPointInCloseBtn(new Point(e.X, e.Y)))
+                    else if (action == PointerAction.CloseButton)
                     {
                         // × → 折叠
                         SetCollapsed(true);
                     }
-                    else
+                    else if (action == PointerAction.CardBody)
                     {
                         // card 主体 → 打开地图 panel
                         try { _router.Dispatch("TASK_MAP"); }
                         catch (Exception ex) { LogManager.Log("[MapHud] TASK_MAP dispatch failed: " + ex.Message); }
                     }
-                    break;
-            }
+        }
+
+        private PointerAction ResolvePointerAction(Point screenPoint)
+        {
+            Rectangle bounds = ScreenBounds;
+            if (!bounds.Contains(screenPoint)) return PointerAction.None;
+            if (_collapsed) return PointerAction.ExpandPin;
+            return IsPointInCloseBtn(screenPoint)
+                ? PointerAction.CloseButton
+                : PointerAction.CardBody;
+        }
+
+        private void ClearPointerDown()
+        {
+            _downAction = PointerAction.None;
         }
 
         public void OnUiDataChanged(IReadOnlyDictionary<string, string> snapshot, ISet<string> changedKeys)
@@ -797,7 +842,7 @@ namespace CF7Launcher.Guardian.Hud
             return p;
         }
 
-        private void FireBounds() { EventHandler h = BoundsOrVisibilityChanged; if (h != null) h(this, EventArgs.Empty); }
+        private void FireBounds() { ClearPointerDown(); EventHandler h = BoundsOrVisibilityChanged; if (h != null) h(this, EventArgs.Empty); }
         private void FireRepaint() { EventHandler h = RepaintRequested; if (h != null) h(this, EventArgs.Empty); }
 
         // ── test seams ──
@@ -815,7 +860,23 @@ namespace CF7Launcher.Guardian.Hud
         internal MapHudHotspotEntry EntryForTest { get { return _entry; } }
         internal bool HoverForTest { get { return _hover; } }
         internal bool HoverCloseBtnForTest { get { return _hoverCloseBtn; } }
-        internal void SimulateClick() { OnMouseEvent(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0), MouseEventKind.Click); }
+        internal Rectangle CloseButtonScreenBoundsForTest
+        {
+            get
+            {
+                Rectangle bounds = ScreenBounds;
+                if (bounds.Width <= 0 || _collapsed) return Rectangle.Empty;
+                Rectangle local = ComputeCloseBtnLocal(
+                    new Rectangle(0, 0, bounds.Width, bounds.Height));
+                local.Offset(bounds.Location);
+                return local;
+            }
+        }
+        internal void SimulateClick()
+        {
+            ExecutePointerAction(_collapsed
+                ? PointerAction.ExpandPin : PointerAction.CardBody);
+        }
         /// <summary>测试用：模拟 close-btn click。直接打到 close-btn 屏幕坐标，避免依赖 ScreenBounds（anchor 未在屏幕上时 ScreenBounds=Empty）。</summary>
         internal void SimulateCloseBtnClick()
         {

@@ -1792,11 +1792,10 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void SuspendedAuthorityShape_IsSuccessOnlyDataFreeAndPositive()
+        public void SuspendedAuthorityShape_IsSuccessOnlyDataFreeAndNonnegative()
         {
             Action<JObject>[] corruptions =
             {
-                response => response["remainingCount"] = 0,
                 response => response["closeLease"] = "close.stale",
                 response => response["snapshots"] = new JArray(
                     Snapshot(LootContainerId, 2, 2, ContainerEpoch)),
@@ -1836,6 +1835,43 @@ namespace CF7Launcher.Tests.Tasks
                         harness.Coordinator.State);
                 }
             }
+        }
+
+        [Fact]
+        public void SuspendedZeroRewardQuery_IsValidDataFreeRecoveryProjection()
+        {
+            using var harness = new Harness(stageSettlement: true);
+            PrimeActiveAuthority(harness, false);
+            harness.Task.HandleWebRequest(Request("query", "query.suspended.zero.reward"));
+            JObject flash = harness.SentAt(1);
+
+            harness.Task.HandleFlashResponse(SuspendedResponse(flash,
+                "operation.stage.report.zero", 2, 0), null);
+
+            JObject posted = harness.PostedAt(1);
+            Assert.True(posted.Value<bool>("success"));
+            Assert.Equal("LOOT_SUSPENDED", posted.Value<string>("state"));
+            Assert.Equal(0, posted.Value<int>("remainingCount"));
+            Assert.Empty((JArray)posted["snapshots"]);
+            Assert.Equal(JTokenType.Null, posted["terminal"].Type);
+            Assert.Equal(0, harness.Panel.CloseCalls);
+        }
+
+        [Fact]
+        public void SuspendedZeroMapChestQuery_IsRejectedAsMalformedAuthority()
+        {
+            using var harness = new Harness();
+            PrimeActiveAuthority(harness, false);
+            harness.Task.HandleWebRequest(Request("query", "query.suspended.zero.map"));
+            JObject flash = harness.SentAt(1);
+
+            harness.Task.HandleFlashResponse(SuspendedResponse(flash,
+                "operation.map.empty", 2, 0), null);
+
+            JObject posted = harness.PostedAt(1);
+            Assert.False(posted.Value<bool>("success"));
+            Assert.Equal("malformed_response", posted.Value<string>("error"));
+            Assert.Equal(0, harness.Panel.CloseCalls);
         }
 
         [Fact]

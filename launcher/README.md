@@ -376,7 +376,9 @@ Panel 的共同边界：
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
 - close、Esc、backdrop、导航和 recovery 经过同一 lifecycle fence。Team/blackmarket/warlord close 携当前实例并等待 Host exact `panel_cmd close`；Bridge 投递成功不等于接受，确认丢失 3 秒后只恢复同实例重试权，不本地关闭；迟到 A 不得关闭 replacement B，旧 `panel:"pets"|"mercs"` child close 一律拒绝。
 - Workbench 的布局和交互以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。关卡内 `StageOutcomeTask` 把复活/胜负决策投影进 `RightContextWidget` 既有 32px 条件槽，不创建浮窗、不暂停 Flash。胜负条常驻，忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr` 证明返回后可路由时追加“前往交付”，并在奖励终态和 Web exact close 后导航。
-  Web 左栏在同一滚屏合并击杀与物资 gain/loss，右栏切换待领奖励/材料存量，一个密度控制器同步驱动三者；库存整理子页恢复 K 点商城同源原始灰黑 inventory skin。大量奖励经单次最多 50 项的 `claimBatch` 进入 AS2 顺序 authority journal 与 exact query 对账。权威、生命周期与领取/放弃语义详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
+  respawn 必须在恢复 HP/MP/可见性后显式清 `倒地/_killed`、死亡诊断 latch 并 reset WatchDog，保证同一 MovieClip 的普通技能门重新开放。Web 左栏在同一滚屏合并击杀与物资 gain/loss，右栏切换待领奖励/材料存量，一个密度控制器同步驱动三者；库存整理子页恢复 K 点商城同源原始灰黑 inventory skin。大量奖励经单次最多 50 项的 `claimBatch` 进入 AS2 顺序 authority journal 与 exact query 对账。
+  地图在战斗/结算中只读，导航按 AS2 lifecycle lock 零发送；loader staging 在首次 gameplay init 按 drop→reward 提交。跨淡出回包保持正整数 `callId`；Stage Select 关闭须先投递，transport false/throw 时保留面板与重试权。NativeHud down 绑定 exact action/revision，suspend/hide/capture loss/外放均取消。
+  有效 `stage_settlement` 报告可在 `remaining=0` 时 suspend/reopen，`map_chest` 不继承。Panel close 仅在 close 起点与恢复前两次 live foreground 都属于 CF7 时恢复 Flash，切到 QQ/浏览器后不得抢焦。完整权威与生命周期详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
 - `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。
   新表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的 `--term-*` 派生 token；顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不保留重复“作弊码”页，玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
   默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。
@@ -394,9 +396,7 @@ Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README
 ## 存档编辑与诊断
 
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。
-
 简易模式的系统卡片仍是迁移期可发现性补偿，不代表 Audio 平台验收。旧 `AudioTask.SetToastSink` 当前只是兼容 no-op，不能声称会弹出音量提示。事件起因、现役边界和退出条件见 [音频迁移期存档编辑器事件记录](../docs/launcher-save-editor-audio-migration-incident-2026-04-28.md)；高频 README 不保存事故时间线。
-
 ## 故障定位
 
 | 现象 | 首查 |

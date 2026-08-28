@@ -272,6 +272,22 @@
     flex:0 0 auto;
 }
 
+.map-navigation-lock-notice {
+    flex:1 1 100%;
+    min-width:0;
+    padding:6px 10px;
+    border:1px solid color-mix(in srgb,var(--wb-role-pending) 42%,transparent);
+    color:var(--wb-role-pending);
+    background:color-mix(in srgb,var(--wb-role-pending) 18%,transparent);
+    font-size:11px;
+    line-height:1.35;
+    letter-spacing:0.4px;
+}
+
+.map-navigation-lock-notice[hidden] {
+    display:none;
+}
+
 .map-panel.is-compact .map-page-summary {
     font-size:10px;
 }

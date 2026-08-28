@@ -111,7 +111,14 @@ namespace CF7Launcher.Guardian
                     || !string.IsNullOrEmpty(blocked)))
                 return false;
             if (life != "dead" && reviveAllowed) return false;
-            if (settlement == "rewards_pending" && remainingRewards < 1) return false;
+            // rewards_pending 也承载“零奖励但行动报告尚未成功显示”的可恢复状态；
+            // 是否终结由 AS2 LootContainerService 决定，Host 不能按数量代签。
+            // 但该状态只能出现在正规返回已开始之后：生产端此时已把 active
+            // 归一成 retreat，并撤销再次返回能力。拒绝跨字段矛盾，避免伪快照
+            // 把一个仍可返回的活跃关卡投影成可恢复结算。
+            if (settlement == "rewards_pending"
+                    && (outcome == "active" || canReturnBase))
+                return false;
             if ((settlement == "claimed" || settlement == "abandoned")
                     && remainingRewards != 0)
                 return false;

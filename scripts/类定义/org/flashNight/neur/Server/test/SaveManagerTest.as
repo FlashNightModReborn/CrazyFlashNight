@@ -2,6 +2,7 @@
 import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.arki.render.FrameBroadcaster;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import JSON;
@@ -2185,36 +2186,112 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var oldLower:Object = _root.下装装备;
         var oldFeet:Object = _root.脚部装备;
         var oldDifficulty:Object = _root.难度;
+        var oldBattleMap:Object = _root.当前为战斗地图;
+        var oldCalibration:Object = _root.斗兽标定模式;
+        var oldCurrentStageName:Object = _root.当前关卡名;
+        var oldCurrentStageDifficulty:Object = _root.当前关卡难度;
         setUpForLoadTest();
         var sm:SaveManager = SaveManager.getInstance();
         try {
             _root.savePath = TEST_SLOT;
             var fixtureLoaded:Boolean = sm.loadFromMydata(buildValidMydata(), "new_character_fixture");
+            var bgmStops:Number = 0;
             _root.soundEffectManager = {
                 getGlobalVolume:function():Number { return 100; },
                 getBGMVolume:function():Number { return 100; },
                 getJukeboxOverride:function():Boolean { return false; },
                 getTrueRandom:function():Boolean { return false; },
                 getPlayMode:function():String { return "loop"; },
-                stopBGMForTransition:function():Void {}
+                stopBGMForTransition:function():Void { bgmStops++; }
             };
+            var scheduledSceneReady:Number = 0;
             _root.帧计时器 = {
                 性能等级上限:1,
-                添加单次任务:function(callback:Function, delay:Number):Void {}
+                添加单次任务:function(callback:Function, delay:Number):Void {
+                    scheduledSceneReady++;
+                }
             };
-            _root.载入关卡数据 = function(stageName:String, path:String):Void {};
-            _root.淡出动画 = {淡出跳转帧:function(frameName:String):Void {}};
+            var capturedLoaded:Function;
+            var capturedError:Function;
+            var capturedToken:String = "";
+            _root.载入关卡数据 = function(stageName:String, path:String,
+                    onLoaded:Function, onError:Function, stageStartToken:String):Void {
+                capturedLoaded = onLoaded;
+                capturedError = onError;
+                capturedToken = String(stageStartToken || "");
+            };
+            _root.淡出动画 = {
+                fadeCount:0,
+                淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
+            };
             _root.上装装备 = "";
             _root.下装装备 = "";
             _root.脚部装备 = "";
             _root.难度 = "";
+            StageRunSession.testOnlyReset();
+            _root.当前为战斗地图 = false;
+            _root.斗兽标定模式 = false;
 
             armBankTwoAndAllDrugCooldowns();
             assert(fixtureLoaded && DrugInputService.getActiveBank() == 1
                     && allDrugCooldownsReady(false),
                 "newCharacter_drug_session: fixture starts in bank II with all five cooldowns active");
 
+            // 转场依赖缺失必须在任何新角色写入/reservation 之前 fail closed。
+            var validTimer:Object = _root.帧计时器;
+            var preflightExt:Object = {sentinel:"preflight_ext"};
+            var preflightMydata:Object = _root.mydata;
+            var preflightMoney:Number = Number(_root.金钱);
+            _root._saveExt = preflightExt;
+            _root.金钱 = 314159;
+            _root.帧计时器 = undefined;
             var ok:Boolean = sm.newCharacter();
+            _root.帧计时器 = validTimer;
+            assert(!ok && _root._saveExt === preflightExt
+                    && _root.mydata === preflightMydata && _root.金钱 == 314159
+                    && DrugInputService.getActiveBank() == 1
+                    && allDrugCooldownsReady(false)
+                    && StageRunSession.canStartStage(),
+                "newCharacter_preflight: missing dependency preserves sentinels/session and creates no reservation");
+            _root.金钱 = preflightMoney;
+
+            // reservation 已拿到后的同步初始化异常必须 exact release，且不启动 XML。
+            var savedBackpack:Object = _root.物品栏.背包;
+            var savedBackpackToObject:Function = savedBackpack.toObject;
+            var initializationProbeCalls:Number = 0;
+            savedBackpack.toObject = function():Object {
+                initializationProbeCalls++;
+                throw new Error("injected new-character initialization failure");
+                return null;
+            };
+            capturedLoaded = undefined;
+            capturedError = undefined;
+            capturedToken = "";
+            try {
+                ok = sm.newCharacter();
+            } finally {
+                savedBackpack.toObject = savedBackpackToObject;
+            }
+            assert(!ok && initializationProbeCalls == 1
+                    && capturedLoaded == undefined && capturedError == undefined
+                    && capturedToken == "" && StageRunSession.canStartStage(),
+                "newCharacter_initialization: synchronous exception exact-releases reservation before XML start");
+
+            // 同步异常允许留下已发生的初始化写入；重载 fixture 隔离后续成功路径。
+            fixtureLoaded = sm.loadFromMydata(buildValidMydata(), "new_character_after_sync_failure");
+            _root.上装装备 = "";
+            _root.下装装备 = "";
+            _root.脚部装备 = "";
+            _root.难度 = "";
+            StageRunSession.testOnlyReset();
+            _root.当前为战斗地图 = false;
+            _root.斗兽标定模式 = false;
+            armBankTwoAndAllDrugCooldowns();
+            assert(fixtureLoaded && DrugInputService.getActiveBank() == 1
+                    && allDrugCooldownsReady(false),
+                "newCharacter_initialization: fixture restored after injected synchronous failure");
+
+            ok = sm.newCharacter();
             assert(ok && DrugInputService.getActiveBank() == 0 && allDrugCooldownsReady(true),
                 "newCharacter_drug_session: successful new-character boundary resets bank and five cooldowns");
             assert(_root._saveExt.drugLoadout.version == 2
@@ -2222,7 +2299,113 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                     && _root.mydata.ext.drugLoadout.version == 2
                     && _root.mydata.ext.drugLoadout.activeBank == undefined,
                 "newCharacter_drug_session: live ext and packed snapshot carry v2 without session bank");
+            assert(ok && capturedToken != ""
+                    && StageRunSession.isStageStartReservationValid(capturedToken),
+                "newCharacter_stage_entry: tutorial load owns an exact reservation");
+            assert(_root.淡出动画.fadeCount == 0 && scheduledSceneReady == 0
+                    && bgmStops == 0,
+                "newCharacter_stage_entry: no fade, SceneReady, or BGM transition before XML success");
+
+            // 真实第一次请求仍持有 reservation 时立即再调一次，模拟双击。
+            // 对象引用/sentinel、装备 add 与 pack 读取计数必须全部为零变化。
+            var pendingExt:Object = _root._saveExt;
+            var pendingMydata:Object = _root.mydata;
+            var pendingMoney:Number = 271828;
+            var equipmentContainer:Object = _root.物品栏.装备栏;
+            var backpackContainer:Object = _root.物品栏.背包;
+            var equipmentBefore:String = getTestJsonParser().stringify(
+                equipmentContainer.toObject());
+            var originalEquipmentAdd:Function = equipmentContainer.add;
+            var originalBackpackToObject:Function = backpackContainer.toObject;
+            var blockedItemWrites:Number = 0;
+            var blockedPackReads:Number = 0;
+            var secondCallThrew:Boolean = false;
+            var secondOk:Boolean = true;
+            _root.金钱 = pendingMoney;
+            _root.上装装备 = "__reservation_item_probe__";
+            equipmentContainer.add = function():Object {
+                blockedItemWrites++;
+                return originalEquipmentAdd.apply(equipmentContainer, arguments);
+            };
+            backpackContainer.toObject = function():Object {
+                blockedPackReads++;
+                return originalBackpackToObject.apply(backpackContainer, arguments);
+            };
+            try {
+                secondOk = sm.newCharacter();
+            } catch (secondCallError) {
+                secondCallThrew = true;
+            } finally {
+                equipmentContainer.add = originalEquipmentAdd;
+                backpackContainer.toObject = originalBackpackToObject;
+            }
+            var equipmentAfter:String = getTestJsonParser().stringify(
+                equipmentContainer.toObject());
+            assert(!secondCallThrew && !secondOk
+                    && _root._saveExt === pendingExt && _root.mydata === pendingMydata
+                    && _root.金钱 == pendingMoney
+                    && blockedItemWrites == 0 && blockedPackReads == 0
+                    && equipmentAfter == equipmentBefore
+                    && StageRunSession.isStageStartReservationValid(capturedToken),
+                "newCharacter_double_click: second call preserves sentinels/items and performs zero pack reads");
+            _root.金钱 = 0;
+            _root.上装装备 = "";
+
+            capturedLoaded({});
+            assert(_root.淡出动画.fadeCount == 1 && scheduledSceneReady == 1
+                    && bgmStops == 1 && _root.当前关卡名 == "教学关卡",
+                "newCharacter_stage_entry: XML success commits globals and one transition");
+            capturedLoaded({});
+            capturedError();
+            assert(_root.淡出动画.fadeCount == 1 && scheduledSceneReady == 1,
+                "newCharacter_stage_entry: duplicate callbacks cannot repeat transition");
+            StageRunSession.cancelStageStart(capturedToken);
+
+            StageRunSession.testOnlyReset();
+            _root.当前为战斗地图 = false;
+            _root.斗兽标定模式 = false;
+            _root.淡出动画.fadeCount = 0;
+            scheduledSceneReady = 0;
+            bgmStops = 0;
+            capturedLoaded = undefined;
+            capturedError = undefined;
+            ok = sm.newCharacter();
+            var deferredFailureExt:Object = _root._saveExt;
+            var deferredFailureMydata:Object = _root.mydata;
+            capturedError();
+            capturedError();
+            capturedLoaded({});
+            assert(ok && _root.淡出动画.fadeCount == 0
+                    && scheduledSceneReady == 0 && bgmStops == 0
+                    && _root._saveExt === deferredFailureExt
+                    && _root.mydata === deferredFailureMydata,
+                "newCharacter_stage_entry: deferred XML error preserves initialization and blocks late transition");
+            assert(StageRunSession.canStartStage(),
+                "newCharacter_stage_entry: deferred error exact-cancels tutorial reservation");
+
+            StageRunSession.testOnlyReset();
+            _root.当前为战斗地图 = false;
+            _root.斗兽标定模式 = false;
+            scheduledSceneReady = 0;
+            bgmStops = 0;
+            capturedLoaded = undefined;
+            capturedError = undefined;
+            _root.淡出动画 = {
+                fadeCount:0,
+                淡出跳转帧:function(frameName:String):Void {
+                    this.fadeCount++;
+                    throw new Error("injected tutorial fade failure");
+                }
+            };
+            ok = sm.newCharacter();
+            capturedLoaded({});
+            assert(ok && _root.淡出动画.fadeCount == 1
+                    && scheduledSceneReady == 0 && bgmStops == 1,
+                "newCharacter_stage_entry: fade failure schedules no stale SceneReady task");
+            assert(StageRunSession.canStartStage(),
+                "newCharacter_stage_entry: fade failure exact-cancels tutorial reservation");
         } finally {
+            StageRunSession.testOnlyReset();
             DrugInputService.resetSession();
             ManualCooldownService.resetForTests();
             cleanTestSO();
@@ -2235,6 +2418,10 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             _root.下装装备 = oldLower;
             _root.脚部装备 = oldFeet;
             _root.难度 = oldDifficulty;
+            _root.当前为战斗地图 = oldBattleMap;
+            _root.斗兽标定模式 = oldCalibration;
+            _root.当前关卡名 = oldCurrentStageName;
+            _root.当前关卡难度 = oldCurrentStageDifficulty;
         }
     }
 }

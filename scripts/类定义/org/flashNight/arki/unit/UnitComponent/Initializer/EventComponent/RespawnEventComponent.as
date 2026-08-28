@@ -1,6 +1,7 @@
 ﻿import org.flashNight.neur.Event.EventDispatcher;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.unit.UnitComponent.Updater.WatchDogUpdater;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnEventComponent {
     /**
@@ -33,6 +34,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
     public static function onRespawn(target:MovieClip):Void {
         target.hp = target.hp满血值;
         target.mp = target.mp满血值;
+
+        // 复活是同一个 MovieClip 从 dead 回到 alive，不能继续依赖死亡 man 的
+        // onUnload 帧脚本代替权威状态恢复。角色可能在倒地帧死亡，或该 onUnload
+        // 已被路由层接管；此时残留的 倒地 会拦掉所有普通技能，只有无条件的小跳
+        // 仍能释放。_killed 若不清除，下一次死亡也会被 BulletQueueProcessor 的
+        // 重复死亡守卫吞掉。先恢复这些生命期事实，再重新入缓存和切换动画。
+        target.倒地 = false;
+        target._killed = false;
+        delete target._deathDiagLogged;
+        WatchDogUpdater.reset(target);
 
         _root.发布消息("复活");
         TargetCacheManager.addUnit(target);
