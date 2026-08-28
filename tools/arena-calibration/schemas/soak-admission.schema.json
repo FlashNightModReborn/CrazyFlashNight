@@ -79,6 +79,7 @@
         "manifestHash": { "$ref": "#/$defs/sha256" },
         "manifestFileSha256": { "$ref": "#/$defs/sha256" },
         "resultPath": { "$ref": "#/$defs/nonEmptyString" },
+        "resultSnapshotPath": { "$ref": "#/$defs/nonEmptyString" },
         "resultFileSha256": { "$ref": "#/$defs/sha256" },
         "reportPath": { "$ref": "#/$defs/nonEmptyString" },
         "reportFileSha256": { "$ref": "#/$defs/sha256" }

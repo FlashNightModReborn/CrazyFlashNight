@@ -1,7 +1,7 @@
 {
   "schema": "arena-calibration.case-manifest.v1",
   "batchId": "gate-f-week-f-soak-01",
-  "createdAt": "2026-08-28T08:40:00.000Z",
+  "createdAt": "2026-08-28T11:02:50.461Z",
   "buildCommit": "c64a5440e5506a3f1567143711f984d063e56505",
   "planner": {
     "name": "gate-f-week-plan",
@@ -15,7 +15,7 @@
       "candidate-dd65977b16a48a35"
     ],
     "soakIndex": 1,
-    "soakAdmissionRef": "sha256:7c2a0aa2527ca4ce34deed168b0e9652607c8b22c85c9cf63003760ff6ced73c",
+    "soakAdmissionRef": "sha256:ef8895b0f14b65fdb98c53dfac201a4191a41bd0b964c2cdc64857e4e9d3d303",
     "coverage": [
       "formation",
       "high_level",
@@ -542,5 +542,5 @@
       "caseHash": "sha256:4288c7b03a75797abf650149f4d89063a5f3b562b428011d01e84e5a932db670"
     }
   ],
-  "manifestHash": "sha256:4f4674d479093a756a1ac6726634f8f4c0a6d73407ddb036764e9fbd1810542b"
+  "manifestHash": "sha256:ce7f5fec1c2c3fc08a0849f8afe4bb0611d3136d3f00122e2073023900b987f4"
 }

@@ -406,19 +406,38 @@ function listWindowsProcesses() {
 
 function collectControlProcessIds(processes, rootProcessIds) {
   const parentByPid = new Map();
+  const childrenByParent = new Map();
   processes.forEach((entry) => {
     const pid = Number(entry.ProcessId);
     const parentPid = Number(entry.ParentProcessId);
-    if (Number.isInteger(pid) && pid > 0) parentByPid.set(pid, parentPid);
+    if (!Number.isInteger(pid) || pid <= 0) return;
+    parentByPid.set(pid, parentPid);
+    if (Number.isInteger(parentPid) && parentPid > 0) {
+      const children = childrenByParent.get(parentPid) || [];
+      children.push(pid);
+      childrenByParent.set(parentPid, children);
+    }
   });
   const excluded = new Set();
-  (rootProcessIds || []).forEach((value) => {
+  const roots = (rootProcessIds || [])
+    .map(Number)
+    .filter((pid) => Number.isInteger(pid) && pid > 0);
+  roots.forEach((value) => {
     let pid = Number(value);
     while (Number.isInteger(pid) && pid > 0 && !excluded.has(pid)) {
       excluded.add(pid);
       pid = parentByPid.get(pid);
     }
   });
+  const descendants = new Set();
+  const queue = roots.slice();
+  while (queue.length > 0) {
+    const pid = queue.shift();
+    if (descendants.has(pid)) continue;
+    descendants.add(pid);
+    excluded.add(pid);
+    (childrenByParent.get(pid) || []).forEach((childPid) => queue.push(childPid));
+  }
   return excluded;
 }
 

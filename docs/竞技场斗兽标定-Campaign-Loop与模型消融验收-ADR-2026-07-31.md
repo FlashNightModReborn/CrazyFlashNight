@@ -41,7 +41,7 @@
 - 记录阵型、出生位置、多阶段刷怪和污染状态。
 - 以冻结 source/runtime/manifest/decision plan、有界可撤销 idle window、真实 producer/磁盘门和去重 exception inbox 编排 Gate F 短 shard。
 
-本 ADR 发起时的平台仍主要是“单批次执行器 + 规则摘要器”；Gate B–E 已在 2026-08-27 形成真实证据，Gate F0 工程控制面也已实现。当前剩余边界不是继续补一套抽象框架，而是等待部署稳定后，以 clean Git source 和当时 exact formal runtime 冻结计划，先跑三份 fresh 10-run soak，再累计真实 20+ eligible epoch 和全量星期级结果。以下历史缺口已转化为现役契约：
+本 ADR 发起时的平台仍主要是“单批次执行器 + 规则摘要器”；Gate B–E 已在 2026-08-27 形成真实证据，Gate F0 工程控制面也已实现。2026-08-28 的修正 campaign 已完成三份 fresh 10-run soak，并在全量开始后以 0 失败保存 8/198 shard、115 条 durable row；随后旧进程观测把内部检查子进程误判为独立 producer 而安全让位。当前边界是用修正后的受控进程树和不可变 admission snapshot 重新冻结 campaign，再累计真实 20+ eligible epoch 和全量星期级结果。以下历史缺口已转化为现役契约：
 
 - 候选、批次、attempt、模型决定、PVE 与 Gate F shard 共享 hash-bound campaign/provenance 身份。
 - paired strength、bridge、side-swap、timeout/error anomaly 与盲化模型裁决已有独立 artifact；不再把单 case 胜率直接当最终档位。
@@ -554,7 +554,7 @@ shadow 先比较：
 | P0 | 契约闭合 | Gate A 已闭合，Gate B execution artifact 继续绑定 `parameters/sourceId/hpPermille`、原始结果和 manifest hash | 无开放缺口；后续变更按 cohort compatibility 重新判定 |
 | P0 | 结果枚举 | core、schema、fixture 和生产实例 validator 均接受 `contamination`，异常不进入强度样本 | 接入真实异常时继续写 durable disposition |
 | P0 | 候选 registry | stable source/candidate 身份已进入 intake；Gate B 账本及 Gate F partial import 以 `manifestHash + runId` 首次 durable commit 去重 | 用星期级真实 shard 验证全部候选终态 |
-| P0 | 决策证据 | 13-action proposal / receipt / adjudication、确定性 L0 adapter、三 profile 真实输出、盲评回执及 195 份 Gate F shard decision evidence 已冻结 | 正式 freeze 时绑定最终 source/runtime identity |
+| P0 | 决策证据 | 13-action proposal / receipt / adjudication、确定性 L0 adapter、三 profile 真实输出、盲评回执及 198 份 Gate F shard decision evidence 已冻结 | 正式 freeze 时绑定最终 source/runtime identity |
 | P0 | 人类注意力 | 两个既有真实 `unattended` shard 均记录 0 action / 0 blocked / 0 interrupt；Gate F0 fixture 证明不足 20 epoch fail、20 epoch 与 3/20 touch 阈值 | 用 Gate F 真实最近 20 epoch 和全 campaign 两窗口验收；fixture 不代签 |
 | P1 | Campaign Supervisor | Node owner 已实现 journal、checkpoint、writer lease、pause/resume、partial row exactly-once、失败 receipt 和真实两 shard campaign | 真实断电和星期级漂移留 Gate F 实跑 |
 | P1 | Provenance | 两个 execution artifact 均闭合 runKey、formal runtime、cohort、compatibility receipt、raw JSONL 与 save guard | 后续 shard 继续复用同一强门 |
@@ -689,9 +689,11 @@ Gate F0 首轮以 `gate-f-week-full-v1` 计划族、`gate-f-week-full-v2` 执行
 
 首轮三份 formal soak 已真实执行：`f-soak-01/02` 合计 20/20 finished，`f-soak-03` 为 8 finished + B11/C12 原向 2 timeout。三份均绑定 formal identity `48E2ACEA81194C0D6C3A89226DEC2748192612B5514D3F3ADB8444FA4AF6C528`、closure `DA7E5BD135FF2407ED7CE459F521BEA95C9CB6F5CC63AA5291ABAC795DAF59F1` 与不变存档 snapshot `sha256:fcfaa53f9000a5b7e75205bb3549aa2c8b5798df3fe5d4843725222ffbede73b`；30 行均 Schema/manifest-bound、零 error/recovery、正常关闭且无玩家/存档污染。失败只来自第三份把候选自身长战随机性混入基础设施门：B11 原向跑满 9000 帧、C12 原向跑满 5400 帧，而各自 side-swap 自然结束。该批正确暂停且旧行原样保留，不能通过重试或调大 timeout 改写成平台稳定。
 
-修正后的 `gate-f-week-full-v2` plan / `gate-f-week-full-v3` campaign 新增必需的 `arena-calibration.soak-admission.v1`：生成器逐文件复验原始 manifest/result/report SHA-256、真正 Schema 实例、exact candidate timeout、original/side-swap 自然结束、formal runtime identity、零 error/timeout/recovery、正常关闭与受保护存档不变；freeze 继续绑定 admission path/hash 和 exact runtime。三份 10-run fresh soak 都使用 `B2/C7/G2/F3/E10`，每份同时覆盖普通参数、单位 payload、阵型、长 timeout、高等级与 side-swap。这五项来自同一 formal runtime 已完成的前两份 soak，并按实际耗时选择有充分 timeout 余量的代表；B11/C12、C9、B9 及其他候选仍完整保留全量普通/长 timeout 分片和既有 timeout 事实，退出基础设施 soak 不删除候选、不构成平衡结论。
+修正后的 `gate-f-week-full-v2` plan / `gate-f-week-full-v3` campaign 新增必需的 `arena-calibration.soak-admission.v1`：生成器逐文件复验原始 manifest/result/report SHA-256、真正 Schema 实例、exact candidate timeout、original/side-swap 自然结束、formal runtime identity、零 error/timeout/recovery、正常关闭与受保护存档不变；freeze 继续绑定 admission path/hash 和 exact runtime。三份 10-run fresh soak 都使用 `B2/C7/G2/F3/E10`，每份同时覆盖普通参数、单位 payload、阵型、长 timeout、高等级与 side-swap，并已取得 30/30 finished、0 timeout/error/recovery、exact formal runtime、正常关闭和受保护存档不变。B11/C12、C9、B9 及其他候选仍完整保留全量普通/长 timeout 分片和既有 timeout 事实，退出基础设施 soak 不删除候选、不构成平衡结论。
 
-工程门新增 soak-admission Schema、raw hash 与篡改负例，并继续覆盖 plan/manifest/decision 篡改、经验 timeout override 真正 Schema 实例与双向语义闭包、低磁盘、active producer、window 到期/撤销、过期执行 grant 后既有事实提交、partial row exactly-once、重复排除、20-epoch attention 和 exception inbox 去重。修正计划尚未绑定新的 clean source 与 exact formal runtime，三份修正后 fresh soak、真实 20-epoch low-touch、星期级恢复/抢占和 3255-run 候选终态仍未产生；旧两份成功 soak 不能跨 plan/campaign 代签新三份，在这些 receipt 出现前不得写成 Gate F 通过或全量标定完成。
+v3 全量随后完成 8/198 shard、提交 115 条 durable row、排除 10 条重复且 0 failed。第一次让位来自诊断命令行自身含 producer 关键字，第二次则在 `f-c2-p3` 构建门开始约 7 秒后、0 战斗行时由内部 `arena-tools → run-checks.js → gate-fctl.js --check` 后代进程触发；两次均是 fail-closed 的 `producer_preempted`，不是窗口到期、战斗失败或存档/runtime 污染。v3 事实原样保留，不跨 plan hash 混计到新 campaign。
+
+`gate-f-week-full-v4` 草案把 controller/runner 的祖先和全部后代归入同一受控进程树，树外独立 runner/Flash 仍保持抢占；soak admission 另以唯一 run 目录中的 `resultSnapshotPath` 和 manifest snapshot 锁住实际字节，同时保留报告内原 `resultPath` 的逐字验证，避免固定 batch 输出被覆盖及 admission hash 循环引用。工程门继续覆盖 plan/manifest/decision/admission 篡改、经验 timeout override 真正 Schema 实例与双向语义闭包、低磁盘、active producer、window 到期/撤销、过期 grant 后既有事实提交、partial row exactly-once、重复排除、20-epoch attention 和 exception inbox 去重。v4 尚未 freeze/arm 或实跑；重新三份 fresh soak、真实 20-epoch low-touch、星期级恢复/抢占和 3255-run 候选终态出现前，不得写成 Gate F 通过或全量标定完成。
 
 ---
 

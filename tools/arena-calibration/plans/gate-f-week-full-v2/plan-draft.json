@@ -1,6 +1,6 @@
 {
   "planId": "gate-f-week-full-v2",
-  "campaignId": "gate-f-week-full-v3",
+  "campaignId": "gate-f-week-full-v4",
   "battleSemanticsCohortId": "arena-cohort-20260827-stage-outcome-v2",
   "candidateIds": [
     "candidate-0155e220c2153d1c",
@@ -361,7 +361,7 @@
     }
   ],
   "soakAdmissionPath": "tools/arena-calibration/evidence/gate-f-week-full-v2-soak-admission.json",
-  "soakAdmissionRef": "sha256:7c2a0aa2527ca4ce34deed168b0e9652607c8b22c85c9cf63003760ff6ced73c",
+  "soakAdmissionRef": "sha256:ef8895b0f14b65fdb98c53dfac201a4191a41bd0b964c2cdc64857e4e9d3d303",
   "slot": "cf7_agent_arena_calibration",
   "seedSlot": "crazyflasher7_saves",
   "healthPolicy": {
@@ -393,13 +393,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-soak-01.json",
-      "manifestHash": "sha256:4f4674d479093a756a1ac6726634f8f4c0a6d73407ddb036764e9fbd1810542b",
+      "manifestHash": "sha256:ce7f5fec1c2c3fc08a0849f8afe4bb0611d3136d3f00122e2073023900b987f4",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-soak-01.json",
-      "decisionEvidenceRef": "sha256:3dd45db020cea0f5cbebe9e276dca684e4929fe3e9cd973532129cf77c70d521"
+      "decisionEvidenceRef": "sha256:5ea5aac8228630ea682e5a5f417a5ac6185e52751f7f5b16fae5d5b393896524"
     },
     {
       "shardId": "f-soak-02",
@@ -411,13 +411,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-soak-02.json",
-      "manifestHash": "sha256:8fb9fb028764f8ce608d15ab2d554832140d7e0142ee8ee107fd384a36e661e9",
+      "manifestHash": "sha256:9b97e917084cbd83dd5e2fe8499c8613b0ec07bf21809452cfab43bf19bea903",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-soak-02.json",
-      "decisionEvidenceRef": "sha256:70fd985d6e74bb8c4ef497cd740561fdc701fd3895be3c177a5721dc69228852"
+      "decisionEvidenceRef": "sha256:f92af3b1d55870cea2abed5d94d08bf82c172c932afc9abe35eb39eec39be0f9"
     },
     {
       "shardId": "f-soak-03",
@@ -429,13 +429,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-soak-03.json",
-      "manifestHash": "sha256:dd032b7c843270882c154e487ee77ce809d252115ea2379f72d21785ca621152",
+      "manifestHash": "sha256:9061d6f60efb8f7ecf15f9e1b9fc2930bac49998ee96d81f865dec9d7ee71b22",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-soak-03.json",
-      "decisionEvidenceRef": "sha256:f0e7482da8ed1f4a3832c30d8edc1233ee843083940facc7cb478990ef6228af"
+      "decisionEvidenceRef": "sha256:c642f7719eee747b6052682765af1dd5314bdb529d35b5a0bbb7b0e41ad7541a"
     },
     {
       "shardId": "f-b2-p1",
@@ -449,7 +449,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b2-p1.json",
-      "decisionEvidenceRef": "sha256:1aa4623faa0937f4ea88ad5e3076313281c0ef952686391bfb963ae2d7132430"
+      "decisionEvidenceRef": "sha256:63253b63ffad5dd607fae19dd4d8a42f246650a5ba43ed733541b50348300ea8"
     },
     {
       "shardId": "f-b2-p2",
@@ -463,7 +463,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b2-p2.json",
-      "decisionEvidenceRef": "sha256:c47e37bfa527343fed3500d63165575279534b18106ed668a1667e0b21f08875"
+      "decisionEvidenceRef": "sha256:7ad1022f6d536df4261704e0b5d9beee8e2e9576d299156ef706df0fdbbd7541"
     },
     {
       "shardId": "f-b2-p3",
@@ -477,7 +477,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b2-p3.json",
-      "decisionEvidenceRef": "sha256:c77a8566cc30ef3cf58d418775854225740549a7847d83fc6dc59ecb3f4725bc"
+      "decisionEvidenceRef": "sha256:2c4cefac2887e7ab5984f0b80f207877aebb5a05cd673172a5a668d8ede3111e"
     },
     {
       "shardId": "f-c2-p1",
@@ -491,7 +491,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c2-p1.json",
-      "decisionEvidenceRef": "sha256:7e07fc087f981e65f67ec57b19693517674e0926542b3b75c92a71301b351202"
+      "decisionEvidenceRef": "sha256:2705e9ebc44284beda014f98f8ce63846133678db7a84b7d361ad4a16d19e4ba"
     },
     {
       "shardId": "f-c2-p2",
@@ -505,7 +505,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c2-p2.json",
-      "decisionEvidenceRef": "sha256:949fd9a10b347a74dc3c0c05bd7ffd6e9b26c2b1722cf5e53029e897cf0ffb16"
+      "decisionEvidenceRef": "sha256:3e5b8d1fa63c32b4a4fac4014319e54e9176b6cedd7014d10940291ef1b7bda6"
     },
     {
       "shardId": "f-c2-p3",
@@ -519,7 +519,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c2-p3.json",
-      "decisionEvidenceRef": "sha256:b74a63bcd1a420c481a56b534bf95bbd0344450db9a9a962cddcc209656fb999"
+      "decisionEvidenceRef": "sha256:80d7d0fdebf8dbccd226242317800b43dfe5958bf85406b7a46d429ddac2b0b7"
     },
     {
       "shardId": "f-d2-p1",
@@ -533,7 +533,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d2-p1.json",
-      "decisionEvidenceRef": "sha256:d96c2cbf39950f82a61b2e11e6f29d5155df5545e0fa417446c03a7a45387a01"
+      "decisionEvidenceRef": "sha256:9573882c8b44336762f46d7f48f13dd5c6169aafbbc73062ee0f0768e5a99d18"
     },
     {
       "shardId": "f-d2-p2",
@@ -547,7 +547,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d2-p2.json",
-      "decisionEvidenceRef": "sha256:28a2904b27002f20a53b15aaecadc1249c404916892ec32ad4de313c3ff72339"
+      "decisionEvidenceRef": "sha256:ab26b16affe5637de56f2e912bc5727c898df4ea75fd4b5c5374a8245ab028cc"
     },
     {
       "shardId": "f-d2-p3",
@@ -561,7 +561,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d2-p3.json",
-      "decisionEvidenceRef": "sha256:b622dc1744d578bf0beedb0c318a3512697a3605a1dfe08928106ce6c0b5965b"
+      "decisionEvidenceRef": "sha256:6898c05f86ee03a917c24dd06581319135ad5e8a42adea63f5c578ea620f18e5"
     },
     {
       "shardId": "f-e2-p1",
@@ -575,7 +575,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e2-p1.json",
-      "decisionEvidenceRef": "sha256:0e6cc6b958b9923790912aa11412d2dedf15fa55b74115a42422fa205becbf20"
+      "decisionEvidenceRef": "sha256:eb310c553ac942c794afd10e55c393941bbfbd3223b8b72af336e6193fec2ec9"
     },
     {
       "shardId": "f-e2-p2",
@@ -589,7 +589,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e2-p2.json",
-      "decisionEvidenceRef": "sha256:e8fc6f30ef3750d5f9a1fa2e2f4743d1bdd17ee0b5ad899c7e0ce0097bb78a57"
+      "decisionEvidenceRef": "sha256:9f689c45a57688dfdb1a894fca3a79ffd250d1563c8d5642cc81ee15ab27f228"
     },
     {
       "shardId": "f-e2-p3",
@@ -603,7 +603,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e2-p3.json",
-      "decisionEvidenceRef": "sha256:d5965fecaf2c8f528e1e49fd33292393dc9630780e83351a0e7abeb16f7a7b49"
+      "decisionEvidenceRef": "sha256:bf74881ee40ef920990deecc0a506f01bac564e4b600a0f32ac69c870066b948"
     },
     {
       "shardId": "f-f2-p1",
@@ -617,7 +617,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f2-p1.json",
-      "decisionEvidenceRef": "sha256:d1a304afaa56d576ba7d34013c409b53a125083dd6d9d895bb0fdd2d2fd5ebc4"
+      "decisionEvidenceRef": "sha256:b16cef3e8a72508c2235ea951af6229611fbf7d9bbf59d58933715867d7f1b96"
     },
     {
       "shardId": "f-f2-p2",
@@ -631,7 +631,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f2-p2.json",
-      "decisionEvidenceRef": "sha256:07fe54b226108f16aaef35de3a38dcf3035d9af93eb83e2305401f126626fb26"
+      "decisionEvidenceRef": "sha256:6422b2244c9f0c590c9b9276445efab8fe700a6e47e3bd2c72619e32a004b900"
     },
     {
       "shardId": "f-f2-p3",
@@ -645,7 +645,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f2-p3.json",
-      "decisionEvidenceRef": "sha256:10ad7519f8b5b376aa585ee97ba375c6cf8096d7b19dd0ae7b70d8fc91180884"
+      "decisionEvidenceRef": "sha256:92c6e8639738a4682ec4c397734fb673f41b357938e97194ffe93f9b19d34a60"
     },
     {
       "shardId": "f-g2-p1",
@@ -659,7 +659,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g2-p1.json",
-      "decisionEvidenceRef": "sha256:1f8ca0183e74b42ce7fe458828c9a82c02c041e9f1d078521456d9ec7f8fbcf9"
+      "decisionEvidenceRef": "sha256:8eabaaa628cf6ae17a86e82ac45e9447ebebf71ee0fec994928881b74e626ce1"
     },
     {
       "shardId": "f-g2-p2",
@@ -673,7 +673,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g2-p2.json",
-      "decisionEvidenceRef": "sha256:29509d660df091d848123a88b9b97d05157f17ca14ae3b88396fc8b2beba378b"
+      "decisionEvidenceRef": "sha256:940c84351461126d90162772b01ee4a9d82d90b0c1fb6f299664f56c09db6888"
     },
     {
       "shardId": "f-g2-p3",
@@ -687,7 +687,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g2-p3.json",
-      "decisionEvidenceRef": "sha256:91ccdc60d936bbba7af15542b215e08b295a1e5b1a0239490bd35ac0756a0ee3"
+      "decisionEvidenceRef": "sha256:201dfd244b956e7abbb13e88803d974c77bb56930be1986a3170c2b8ee4a2f29"
     },
     {
       "shardId": "f-b3-p1",
@@ -701,7 +701,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b3-p1.json",
-      "decisionEvidenceRef": "sha256:908fe87c5730ec180e275d3f8f9ed906213b3f9583b2c760da80a8393a343cb5"
+      "decisionEvidenceRef": "sha256:15dca8216ff2e532da0b7ef06e207a65d960b7229011aca285e157a40afb5343"
     },
     {
       "shardId": "f-b3-p2",
@@ -715,7 +715,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b3-p2.json",
-      "decisionEvidenceRef": "sha256:6aa720faec1665b1c08a94024d2b576cf492d014fc606360e977c881f09d3c07"
+      "decisionEvidenceRef": "sha256:fea51a3a74f93e19e7d733179d580b4c5669760070b7f31bc69fb56b211d2368"
     },
     {
       "shardId": "f-b3-p3",
@@ -729,7 +729,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b3-p3.json",
-      "decisionEvidenceRef": "sha256:0cc39e56a358f48752239c1651c18d3518e5cb897e61779a5cda2afa0439e142"
+      "decisionEvidenceRef": "sha256:5f9f19f393cb903f6de05d16e62c8a4404663f2c3876a46f8e2a099a4c961b1d"
     },
     {
       "shardId": "f-c3-p1",
@@ -743,7 +743,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c3-p1.json",
-      "decisionEvidenceRef": "sha256:988dd13031434fed114964e410c81d7aa9809817cec0f9c82478491efe06a010"
+      "decisionEvidenceRef": "sha256:5f33ba10dc0a98e1e6edbb5d8542a1b305ee3a9c5b82b9e066bc1139fb40575f"
     },
     {
       "shardId": "f-c3-p2",
@@ -757,7 +757,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c3-p2.json",
-      "decisionEvidenceRef": "sha256:305ee7023b36adfef9b985fe2cfeaca20b930f231a26efe575d519ef80258244"
+      "decisionEvidenceRef": "sha256:8003d1cc66ae380a7c780f0883e99e0d515820894f1e745901ff396fefd637d2"
     },
     {
       "shardId": "f-c3-p3",
@@ -771,7 +771,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c3-p3.json",
-      "decisionEvidenceRef": "sha256:1d006159555e61c69355144f7546c774014cab87c2436fe20755ab667ec0398c"
+      "decisionEvidenceRef": "sha256:6235f5d6d8b0a7264ce0c254b9c9e5b43f87adc7f78b31730c5f1aaaa688080d"
     },
     {
       "shardId": "f-d3-p1",
@@ -785,7 +785,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d3-p1.json",
-      "decisionEvidenceRef": "sha256:09d62079d15f757aa3072c6d705b984296f26fb371be59a135a469a98cf37a5a"
+      "decisionEvidenceRef": "sha256:62afe13c4b2cd6f47a733cb96ed20a3fcdd4f159d3c3f82d4dfeae3d64e9cb03"
     },
     {
       "shardId": "f-d3-p2",
@@ -799,7 +799,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d3-p2.json",
-      "decisionEvidenceRef": "sha256:2430636f026f499d2ff67b88ded7e3ad0773d1788829763eee3525f5f5761c8c"
+      "decisionEvidenceRef": "sha256:87df76470938cea9ae06825df43efd34f6369db0509951f1d64e30c61976f8da"
     },
     {
       "shardId": "f-d3-p3",
@@ -813,7 +813,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d3-p3.json",
-      "decisionEvidenceRef": "sha256:38aae762a9277725cdaa7ebea348d46dea9fd347ba4504ce4222a91a52d5df70"
+      "decisionEvidenceRef": "sha256:09f630f00a808f98c9876f0f6466b211eb32a6441af3ff1620039289b049e1d6"
     },
     {
       "shardId": "f-e3-p1",
@@ -827,7 +827,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e3-p1.json",
-      "decisionEvidenceRef": "sha256:a06ca6bc19c7353677c047f0e84bb6703eccb5c134adc8ba0fbf72bb9ba4e153"
+      "decisionEvidenceRef": "sha256:9e5e67813d1ae4e526bae8cf716e5670f6ec571fd33be207c6ef128bf15795a2"
     },
     {
       "shardId": "f-e3-p2",
@@ -841,7 +841,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e3-p2.json",
-      "decisionEvidenceRef": "sha256:9a3fd53db2ef55bf2bee2a08576c297e3f11d6ab88bd4e2d9067b6764ec7d91f"
+      "decisionEvidenceRef": "sha256:b7064e2854ce8c2b0c63834ff3a568f1ae09297eef8779105e5bb1917d778d65"
     },
     {
       "shardId": "f-e3-p3",
@@ -855,7 +855,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e3-p3.json",
-      "decisionEvidenceRef": "sha256:e1a23a68cfa4adea2b85dcd4d4a2d0edcf9ff167a14f2e3c6c29c1991b6370a0"
+      "decisionEvidenceRef": "sha256:73cb26242f56dd8f086341c247913d842eda5609bbd96986db0d2c2a65c66344"
     },
     {
       "shardId": "f-f3-p1",
@@ -869,7 +869,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f3-p1.json",
-      "decisionEvidenceRef": "sha256:f702706b78e0ed840b5c9be9c4fc30ddd8996031ac1d198a363e955ea58a1ff8"
+      "decisionEvidenceRef": "sha256:c000a5b71f8e0a5f36ee6ba8d776a08acf6b5116e835c1546a384bd7dd676312"
     },
     {
       "shardId": "f-f3-p2",
@@ -883,7 +883,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f3-p2.json",
-      "decisionEvidenceRef": "sha256:aeabfe367263ad6d0ea1be10bfafe524506544b978963dc51096bf094517cb19"
+      "decisionEvidenceRef": "sha256:bf90c023136313486997f51a65cc2d6e02953e67f4e16920db653fa96fafe925"
     },
     {
       "shardId": "f-f3-p3",
@@ -897,7 +897,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f3-p3.json",
-      "decisionEvidenceRef": "sha256:73cd809823840a8e2a6e1116d894a853dbd1c365b4632ea80b48264065f025b2"
+      "decisionEvidenceRef": "sha256:ea80c30493e47ed05d0ab754b6f19d7e566678da3c36fac5140caccb1bf72b8b"
     },
     {
       "shardId": "f-g3-p1",
@@ -911,7 +911,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g3-p1.json",
-      "decisionEvidenceRef": "sha256:dd71b6f64e01171977a52832a27b1040a723519c3d2958a20d6b595990a8a590"
+      "decisionEvidenceRef": "sha256:4905d6ceb5446d4cc09e378f60407df2ba0c886c95cee168720c367745d31643"
     },
     {
       "shardId": "f-g3-p2",
@@ -925,7 +925,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g3-p2.json",
-      "decisionEvidenceRef": "sha256:95cc7ba0eefb0b004bd8d14a07a4999afdd1cf71c51b127c68a5a478597a54e6"
+      "decisionEvidenceRef": "sha256:8909ea544c80fa6efabefc2c7833ad37ae4b159ed96d37e04ff2716d99628111"
     },
     {
       "shardId": "f-g3-p3",
@@ -939,7 +939,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g3-p3.json",
-      "decisionEvidenceRef": "sha256:6bd8f3bddaa00948b72660b43a49caa0d4fe326e774d39df0ff08a4f8535e816"
+      "decisionEvidenceRef": "sha256:21daefa58d38fc079fb4bce47b647e49ad4569e8212bf8ba0fc49a40945104c6"
     },
     {
       "shardId": "f-b4-p1",
@@ -953,7 +953,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b4-p1.json",
-      "decisionEvidenceRef": "sha256:2023354a16540879688348d41909e012e669d73345c668f18f3fa1d5e1ffb909"
+      "decisionEvidenceRef": "sha256:f7f9d7fa18d44540265911fc630763f04ddac03b9a4dd483d0d8e851ce53a64c"
     },
     {
       "shardId": "f-b4-p2",
@@ -967,7 +967,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b4-p2.json",
-      "decisionEvidenceRef": "sha256:1b40739c80400de6c21d2062e154c9f84d54e1b39d8517338ba0732dd210bf82"
+      "decisionEvidenceRef": "sha256:e578c499ed93c32eba569e9292dc12b249d478057b7673a506b98f89c67d5db3"
     },
     {
       "shardId": "f-b4-p3",
@@ -981,7 +981,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b4-p3.json",
-      "decisionEvidenceRef": "sha256:bef72883678b87e092971a459fab77fa6532f05be9ff09266d5b6b262a6e1ca5"
+      "decisionEvidenceRef": "sha256:61480783a4b555e16cfd5cebd7e490b87d600cc8f2daf6aef7c89a7045599718"
     },
     {
       "shardId": "f-c4-p1",
@@ -995,7 +995,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c4-p1.json",
-      "decisionEvidenceRef": "sha256:7afb6cce51313dc761b58d977307f87aaf40bffbb7c0afeab2fdd489fac6571c"
+      "decisionEvidenceRef": "sha256:8b43fc54cd44ec4b832c0d6c4eda7116b424ab33d41c3a4c81eec90e2455d476"
     },
     {
       "shardId": "f-c4-p2",
@@ -1009,7 +1009,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c4-p2.json",
-      "decisionEvidenceRef": "sha256:0887c8360e9d0b4391af2c76c6d226e9bbcf44d5f5b5e06be10eb233ce8a7c7b"
+      "decisionEvidenceRef": "sha256:7de034e22b2ef52786ad804af852e64a0f50b0d07f4645c4c1bcc6aa08122d02"
     },
     {
       "shardId": "f-c4-p3",
@@ -1023,7 +1023,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c4-p3.json",
-      "decisionEvidenceRef": "sha256:366764701ecf5f9be2d398cee6145cddeb6cb1d47b5d46ce7fca0622d5af840f"
+      "decisionEvidenceRef": "sha256:9f5038bb62107081a6e8ec21517ef0c18340c044a46772158152a5bcb7de8262"
     },
     {
       "shardId": "f-d4-p1",
@@ -1037,7 +1037,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d4-p1.json",
-      "decisionEvidenceRef": "sha256:22f964acc5254e00f0cf5d0acd9e8bbc5811670965767e71f47150656efee4e2"
+      "decisionEvidenceRef": "sha256:6a232f91328b2804bda68423570d76677a9d49d40b29463a1f64bc7e32ca9c0f"
     },
     {
       "shardId": "f-d4-p2",
@@ -1051,7 +1051,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d4-p2.json",
-      "decisionEvidenceRef": "sha256:c72ca74ea2588d706a0f8432a99c2374e02daa45439a39b22d2d5eb066b2d753"
+      "decisionEvidenceRef": "sha256:361060421e8688ca4a03b51d623059c3ef9ed2f2b8898c03e3e0d2c227e28689"
     },
     {
       "shardId": "f-d4-p3",
@@ -1065,7 +1065,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d4-p3.json",
-      "decisionEvidenceRef": "sha256:ba751bfb51e971af7adc7f6d650c8c6948f5bfa82912b72d5786bec02d0bcedb"
+      "decisionEvidenceRef": "sha256:79620fbc36ca3948630ad5bc0d7de1e5e3fa9119e7649ad5056f422f1862425a"
     },
     {
       "shardId": "f-e4-p1",
@@ -1079,7 +1079,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e4-p1.json",
-      "decisionEvidenceRef": "sha256:461eda48dc7816d5dd9034d6a2f1f79c64eebd80467d8ea4d9735fcbf34acc94"
+      "decisionEvidenceRef": "sha256:e8ca0adc8a8ca99c4c8718f5803d420fb043ef9024ed6c17a32ae85b51c206cb"
     },
     {
       "shardId": "f-e4-p2",
@@ -1093,7 +1093,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e4-p2.json",
-      "decisionEvidenceRef": "sha256:6c827b11176c764ff3c50ebf4cd04d60c4707fee5e2f7070f95f2bacb2ace009"
+      "decisionEvidenceRef": "sha256:1222d73e956115e7691f0dbbf41cea68dc311b5a7a037760fbb56d40d37453e7"
     },
     {
       "shardId": "f-e4-p3",
@@ -1107,7 +1107,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e4-p3.json",
-      "decisionEvidenceRef": "sha256:74b9f51cfe5dc5ab58a09c8aa5c61fd7a754583ce9a5d33158431ff794e022fc"
+      "decisionEvidenceRef": "sha256:4814a8746f9c92f866fd0d532d3dbe6f7622eaea416d85511c55293abb58281e"
     },
     {
       "shardId": "f-f4-p1",
@@ -1121,7 +1121,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f4-p1.json",
-      "decisionEvidenceRef": "sha256:7915b316e263bff52b07feb9d33add81dea14a2915d183d17ac6da57c7b130cd"
+      "decisionEvidenceRef": "sha256:a88aa4818e0a56eef4dd8ea9c56438e470025de8f4cf13b248b4721021a48f62"
     },
     {
       "shardId": "f-f4-p2",
@@ -1135,7 +1135,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f4-p2.json",
-      "decisionEvidenceRef": "sha256:f82af3e7d079ed947d766527bb7e436a4c9bf107fce162e17a22d6112a84b5f0"
+      "decisionEvidenceRef": "sha256:fea271dc44b62747f9ec69b4090c7fc9788b82cd852f30e071f06462b047529b"
     },
     {
       "shardId": "f-f4-p3",
@@ -1149,7 +1149,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f4-p3.json",
-      "decisionEvidenceRef": "sha256:f0b930fbc1ebf83efcb86b4c733dfe67df87f045326634e1217a9e03f76097e3"
+      "decisionEvidenceRef": "sha256:788d7fc98a9a1c676edf22cc9227f7892b7a358f50e47d3c8a24be745b9aae7a"
     },
     {
       "shardId": "f-g4-p1",
@@ -1163,7 +1163,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g4-p1.json",
-      "decisionEvidenceRef": "sha256:d67d4e5ab14d6a5c7a5ecb1dc8d45f6b9e1bbd9f4637830eb0b3a96154a12c2e"
+      "decisionEvidenceRef": "sha256:171906e5fa06515ba65b3e70cf251d7340b830d5b49cc7e665925be03506130a"
     },
     {
       "shardId": "f-g4-p2",
@@ -1177,7 +1177,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g4-p2.json",
-      "decisionEvidenceRef": "sha256:29d8e74c5afb24a1befc4b9d8730f5f9f3e0ba093442f51e9f00a4e10e2a81cd"
+      "decisionEvidenceRef": "sha256:024d54852fbcf0d7de4cac7610ea73828f630faee6dcf5bb6926668364c89e85"
     },
     {
       "shardId": "f-g4-p3",
@@ -1191,7 +1191,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g4-p3.json",
-      "decisionEvidenceRef": "sha256:1e6e5492f4c1d6eb5039897ad8ee06b30b8c433f9e5797a747c53d2b1a4ad676"
+      "decisionEvidenceRef": "sha256:28eb57c3f72f7513750976adc372e8d9904d6812481a185e3f80de7ede4ae602"
     },
     {
       "shardId": "f-b5-p1",
@@ -1205,7 +1205,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b5-p1.json",
-      "decisionEvidenceRef": "sha256:2e5e40b453660bb517b0e223563cd3bc31b4aa7ed7c9e7a06893a45514033f1e"
+      "decisionEvidenceRef": "sha256:ff53d5ee90a48318d7f060ac6da708ebe05e8852b6ed91a593e86ae668a05e3e"
     },
     {
       "shardId": "f-b5-p2",
@@ -1219,7 +1219,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b5-p2.json",
-      "decisionEvidenceRef": "sha256:cc04c9b3df5093b3088253a73a71912df014ec4291652fc31e11de7d8c947aee"
+      "decisionEvidenceRef": "sha256:6752adbed8576d372950dceeaa54d73bff3c7521bf0198b91d57a240a85f4df1"
     },
     {
       "shardId": "f-b5-p3",
@@ -1233,7 +1233,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b5-p3.json",
-      "decisionEvidenceRef": "sha256:4925de91305ee058ffd78cdcb6927e63077c8de4d9970dfe7997419692339680"
+      "decisionEvidenceRef": "sha256:2110d3e1b5cf812edfcf18ed3c1382e83c76843cedc0a1275202a93e43218837"
     },
     {
       "shardId": "f-c5-p1",
@@ -1247,7 +1247,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c5-p1.json",
-      "decisionEvidenceRef": "sha256:1cd2ff9d23920e7928b3d45ead76f83ec5c2d6f333dacbb540c6a35ed87d1452"
+      "decisionEvidenceRef": "sha256:4f8aaa0f5fc53f1a2220f95d0f87f6fa533c416fdb743890fbcd9db62679c0af"
     },
     {
       "shardId": "f-c5-p2",
@@ -1261,7 +1261,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c5-p2.json",
-      "decisionEvidenceRef": "sha256:d6afed0a56df4263dabf4dd821f2d98e5a02da1ad71cffe36c3c1317293fc228"
+      "decisionEvidenceRef": "sha256:b7fbc03fcb2334d7d194f4eb1137dde9d5ecab0694328860787f92d8133381cc"
     },
     {
       "shardId": "f-c5-p3",
@@ -1275,7 +1275,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c5-p3.json",
-      "decisionEvidenceRef": "sha256:945cde0ca7d377d6e78dd7d70f6ad010bbf79cd18b6207cee6ef6173a0a3ab0f"
+      "decisionEvidenceRef": "sha256:1d530e7bc77ea50bf3002a6c185bedbc41c1831a7d65629c96add49a5f43e1fb"
     },
     {
       "shardId": "f-d5-p1",
@@ -1289,7 +1289,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d5-p1.json",
-      "decisionEvidenceRef": "sha256:fb491919d2bfebe6c2262f60fd94680a3cfc8122b350a8c3d925ccdc600a41a2"
+      "decisionEvidenceRef": "sha256:2527677d7073028c4fccaf46d72e8382591d5c8b3a87d8ab72eadce0b536f92e"
     },
     {
       "shardId": "f-d5-p2",
@@ -1303,7 +1303,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d5-p2.json",
-      "decisionEvidenceRef": "sha256:ad768da009a5d583d20e98567ab165d59d96684dac9d88bc8feb181b4cad9b7d"
+      "decisionEvidenceRef": "sha256:4801571048b0182d6c32ec87cbf066c28ac0aae99c488c1d6b95e0891aed6987"
     },
     {
       "shardId": "f-d5-p3",
@@ -1317,7 +1317,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d5-p3.json",
-      "decisionEvidenceRef": "sha256:57fa05b5f650f9d740f203d955c15ddc035a1b57c933dbbfad7e688b5cb571cc"
+      "decisionEvidenceRef": "sha256:9654927ca4346cc8650196e015e1e917276f77d5b269f993547507dac33157e5"
     },
     {
       "shardId": "f-e5-p1",
@@ -1331,7 +1331,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e5-p1.json",
-      "decisionEvidenceRef": "sha256:636ba717b74f166e90bae08c676905a9c2bda1bf38de07780899f2214661105b"
+      "decisionEvidenceRef": "sha256:7de22979f1dec46fd49eaf6f61737d5c4f8b2459b0592639f26c59b134b97c64"
     },
     {
       "shardId": "f-e5-p2",
@@ -1345,7 +1345,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e5-p2.json",
-      "decisionEvidenceRef": "sha256:06f50b6863b6951da24ed7c25d0fca30f733a419a94551c1f83cc3fef4f42a17"
+      "decisionEvidenceRef": "sha256:89ccbe66f8aeb2b51199da0196bedff3af1cab541625335b283c7d569f6b5c80"
     },
     {
       "shardId": "f-e5-p3",
@@ -1359,7 +1359,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e5-p3.json",
-      "decisionEvidenceRef": "sha256:f93bc69da2a772b65cb11e162d5994901bdc41b3734582e35c4e52fd71e7110c"
+      "decisionEvidenceRef": "sha256:895b176d159f82770fe88dda9bb49a75d6d72aa4149b1efacb99534612f03821"
     },
     {
       "shardId": "f-f5-p1",
@@ -1373,7 +1373,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f5-p1.json",
-      "decisionEvidenceRef": "sha256:60065b0dd9d83be39f4954109ea47fc0b23cc86a3aa6b8b77852f9a65ff78533"
+      "decisionEvidenceRef": "sha256:891603fb29e5df2339f175d7c19f603afae0d272324ab86032a8125cf804ac22"
     },
     {
       "shardId": "f-f5-p2",
@@ -1387,7 +1387,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f5-p2.json",
-      "decisionEvidenceRef": "sha256:2fb342bfc39dccfda6e6099ec4e0aa2a5927988093713501477976bb8b33485d"
+      "decisionEvidenceRef": "sha256:655be1eaa8c08e8f4cfc4cb4ad3a180578acb57d1e0ceb56526e54f81be7d179"
     },
     {
       "shardId": "f-f5-p3",
@@ -1401,7 +1401,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f5-p3.json",
-      "decisionEvidenceRef": "sha256:ec32e83591949cbf2341e73ce55c93331422be4f6e382ad3dff60bcf28f783e2"
+      "decisionEvidenceRef": "sha256:bf23d9502cbc195335f19a92056145619fbaf4033d977d467aebbe251be6e7ba"
     },
     {
       "shardId": "f-g5-p1",
@@ -1415,7 +1415,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g5-p1.json",
-      "decisionEvidenceRef": "sha256:1add2a5a1507320372eb3334065c68b7299e487227ea8c1429e5d55b2e94eea7"
+      "decisionEvidenceRef": "sha256:4e94555eec7e9f159db720e708e5e86082ec33d1bc3f26ae10656bfdda5b58e5"
     },
     {
       "shardId": "f-g5-p2",
@@ -1429,7 +1429,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g5-p2.json",
-      "decisionEvidenceRef": "sha256:d2ee28b54f3c25bb2124f1937e1d63dffa94c7bd4703c8dc27267d3e7be454cb"
+      "decisionEvidenceRef": "sha256:e5b69c512ea829f1dc94c2be81fa90f53d935d07bddc0363b7c692a2f66f8429"
     },
     {
       "shardId": "f-g5-p3",
@@ -1443,7 +1443,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g5-p3.json",
-      "decisionEvidenceRef": "sha256:a90868d75c9ae3ddea7b19cce80147e90bcd54d996cabc384e04866b9bae3e5f"
+      "decisionEvidenceRef": "sha256:e737208ac6428059a12672f995b7f3e71df26e021f91ce758143d95a5b76f2ce"
     },
     {
       "shardId": "f-b6-p1",
@@ -1457,7 +1457,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b6-p1.json",
-      "decisionEvidenceRef": "sha256:1efb51d65553e1be4f1e274b526e42714878fe0c9314fb948c18b8105c9bf273"
+      "decisionEvidenceRef": "sha256:b62b6ab18b08177679dbf1a8fe13bded38b8513e9ab6730bc89ba8481c611569"
     },
     {
       "shardId": "f-b6-p2",
@@ -1471,7 +1471,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b6-p2.json",
-      "decisionEvidenceRef": "sha256:049e50328dd2018c715098e7f60e517582dd544581b5504c3e8b8f5c73795524"
+      "decisionEvidenceRef": "sha256:dc43fb9f70e2d449b28fe0fbb62bd4320106c730782b6bddcf196aaaed90e85b"
     },
     {
       "shardId": "f-b6-p3",
@@ -1485,7 +1485,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b6-p3.json",
-      "decisionEvidenceRef": "sha256:456ad09f8cd6a6083fcdef53ca53dc78a2a3a7af78c188acee1bea9a960d575b"
+      "decisionEvidenceRef": "sha256:665d53f690e1cda82f346dde727c8a1c656206ed2ca719d1f9c9aaa113aa1cc1"
     },
     {
       "shardId": "f-c6-p1",
@@ -1499,7 +1499,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c6-p1.json",
-      "decisionEvidenceRef": "sha256:91cfe2f6221cb19acb9383a255739f916185c8dd192c63fedf869f80bc43d020"
+      "decisionEvidenceRef": "sha256:eb6a19b647bb10b601dcaab9b339661e0a24dbefdfc446c126d9f899d983f4b7"
     },
     {
       "shardId": "f-c6-p2",
@@ -1513,7 +1513,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c6-p2.json",
-      "decisionEvidenceRef": "sha256:8b8495c4d3917af5a478691e926d041b6aa0d5085f227a99a8f9bae7819d7a57"
+      "decisionEvidenceRef": "sha256:a13b180b94c2b48f7832ce8264ae14a1b7fddf9f0e53088bf5a236674e1e9366"
     },
     {
       "shardId": "f-c6-p3",
@@ -1527,7 +1527,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c6-p3.json",
-      "decisionEvidenceRef": "sha256:c26d0298d6b288e5b5bfc21edfbd16f7ae35218668a84fce4e6978c97e95bee3"
+      "decisionEvidenceRef": "sha256:d69483f4ae265a26ab4480465b44968de81b1482ea6796d0df8d30545f1b5d1d"
     },
     {
       "shardId": "f-d6-p1",
@@ -1541,7 +1541,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d6-p1.json",
-      "decisionEvidenceRef": "sha256:1da821c5e817462169164448dbcb567721605f7abc4f6cf82bfa56aced05ae18"
+      "decisionEvidenceRef": "sha256:e97af17e615450d6256e06810bc0d506912e1010b2bd3d86a00dc933fb5baaf9"
     },
     {
       "shardId": "f-d6-p2",
@@ -1555,7 +1555,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d6-p2.json",
-      "decisionEvidenceRef": "sha256:43870fcdcae02e34314531ac74b6fb4263024da7adfda4c4e765c72d799c3a14"
+      "decisionEvidenceRef": "sha256:56c6b2859038ce91f11749c152f0400ee88176c621d8ec922e9c7ea58675f95a"
     },
     {
       "shardId": "f-d6-p3",
@@ -1569,7 +1569,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d6-p3.json",
-      "decisionEvidenceRef": "sha256:96aa81015cf5083fa2d89e0184d8d07fae79b6ab2e39c816d7298821a9b0f26d"
+      "decisionEvidenceRef": "sha256:f4773cde11b73b4bdb75368dddb66fceb6adc67cbf73599253bcaf40e08adab2"
     },
     {
       "shardId": "f-e6-p1",
@@ -1583,7 +1583,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e6-p1.json",
-      "decisionEvidenceRef": "sha256:3b73e75ce1f8cb51e40c382d0ed55666e8510b6af05b0c2ca59d13ba25813180"
+      "decisionEvidenceRef": "sha256:5810fbc1d591a1036f944e345f7501e0253f1fbf34aa9affc6ba5e16a9ba4eef"
     },
     {
       "shardId": "f-e6-p2",
@@ -1597,7 +1597,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e6-p2.json",
-      "decisionEvidenceRef": "sha256:71a7730a05a34b5fce49c8dd037218dcc91980ef396434f9cef718f0b5e4ad43"
+      "decisionEvidenceRef": "sha256:0c55cd04e037a6c0e56f0383281216ebe1595bfe94e61c65b5b89fea38e5e590"
     },
     {
       "shardId": "f-e6-p3",
@@ -1611,7 +1611,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e6-p3.json",
-      "decisionEvidenceRef": "sha256:cdaa1801a71c5c2638c086cd4c68d45d066b9f595976ef4f111e01fcb1496ba7"
+      "decisionEvidenceRef": "sha256:9053d8dd593a7135040b16391480c709f3cd395216f792563c062610f1d99874"
     },
     {
       "shardId": "f-f6-p1",
@@ -1625,7 +1625,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f6-p1.json",
-      "decisionEvidenceRef": "sha256:00e85eebd3eecd744d33565ece58786decef74709d5d10045a84eee77f464ac4"
+      "decisionEvidenceRef": "sha256:c2687b45893af90d5a8cd7226479fb857c0c8261af8f3b972e0515787e801bd2"
     },
     {
       "shardId": "f-f6-p2",
@@ -1639,7 +1639,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f6-p2.json",
-      "decisionEvidenceRef": "sha256:f3d64d73208412fb29541bf7f59d4d3f43b19ff55c83db22f642df9f154c81aa"
+      "decisionEvidenceRef": "sha256:bfbb2319cd6b07e7ae754f516d5cb00c334e863903419245fa48f276ab06053d"
     },
     {
       "shardId": "f-f6-p3",
@@ -1653,7 +1653,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f6-p3.json",
-      "decisionEvidenceRef": "sha256:81c6f0e3fd836eaa67a05ef2f28d5bf39f8da17c54d417a53af5ed18ab51cfdb"
+      "decisionEvidenceRef": "sha256:6f0e8c4722f43adbbeff5a989b17f960a98928feafcc8f7cc95baf9e4ab46634"
     },
     {
       "shardId": "f-g6-p1",
@@ -1667,7 +1667,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g6-p1.json",
-      "decisionEvidenceRef": "sha256:5aa34aa140fad2e8c430bf088873349f4fa3193ed805cf4cb6754892d24a6661"
+      "decisionEvidenceRef": "sha256:ece6153691ab193b462cc9603071abdaca4f457251fbe4590e10ccdeb077bdd6"
     },
     {
       "shardId": "f-g6-p2",
@@ -1681,7 +1681,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g6-p2.json",
-      "decisionEvidenceRef": "sha256:b21df5bd58061505ef5715333f36a351a3667652fc10ca8f1b12a65ff93deef1"
+      "decisionEvidenceRef": "sha256:1c1bb008b91249985a837be2df6ff683c812cacf24d70b7e4eea5d86740d5647"
     },
     {
       "shardId": "f-g6-p3",
@@ -1695,7 +1695,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g6-p3.json",
-      "decisionEvidenceRef": "sha256:9b54c8c7aa53ecfad735970b0a9307b2174961f4496f04e6cc5e84423bbe966b"
+      "decisionEvidenceRef": "sha256:be7dc5ed143dec45ad96efa2489e245f1a019919f1c65ed59ddd26b3e2be643e"
     },
     {
       "shardId": "f-b7-p1",
@@ -1709,7 +1709,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b7-p1.json",
-      "decisionEvidenceRef": "sha256:fe0e1490b0dd80f701b209a712a1a11ea0c599b5e3d0897e28eb1988964c514a"
+      "decisionEvidenceRef": "sha256:553d7b11844ef6b750a1f93d720d8522a246c7a53036a3f5c64b723d88044a8d"
     },
     {
       "shardId": "f-b7-p2",
@@ -1723,7 +1723,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b7-p2.json",
-      "decisionEvidenceRef": "sha256:f736662e19962bfc5a7f81583224422d6306dc010f598daa823aad89a7b9b51b"
+      "decisionEvidenceRef": "sha256:dc0c0de7c6cb781fe19118475e84f099a122871815135ed7dc95c4e0fd7a1794"
     },
     {
       "shardId": "f-b7-p3",
@@ -1737,7 +1737,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b7-p3.json",
-      "decisionEvidenceRef": "sha256:160f65fa4e062fa84636251a2219267b51bbe1951d77aafb4e7a106c97f8303f"
+      "decisionEvidenceRef": "sha256:eb52cb1d8e1d4d5fe7d8ce37a0e0006c236699a78b654ec8006716844781804f"
     },
     {
       "shardId": "f-c7-p1",
@@ -1751,7 +1751,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p1.json",
-      "decisionEvidenceRef": "sha256:6179d0a9eb8ba961182ef432ab185645ee820c852cc0db7b747dc289e24e10fb"
+      "decisionEvidenceRef": "sha256:cfda756b6d353f752de619c712e54e3d7c14274d8e87724f5d628df46d0eb952"
     },
     {
       "shardId": "f-c7-p2",
@@ -1765,7 +1765,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p2.json",
-      "decisionEvidenceRef": "sha256:4431d79d0f0cd56ae69ec7cb3a8dfdd3dfb7d2dfdb4e2a1385effc2904c1ce94"
+      "decisionEvidenceRef": "sha256:8c181c668e7b6b9d56555b37985715eedc69328d2175e7539305f62a82180375"
     },
     {
       "shardId": "f-c7-p3",
@@ -1779,7 +1779,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p3.json",
-      "decisionEvidenceRef": "sha256:f0312ce07ae959c5b335c93f2ceb030492f56a56d60847c85b97662424abac2c"
+      "decisionEvidenceRef": "sha256:42b6e99042e9f9ac6653b504b46971ef828b76ea5bf2734aa32aceef9eef0378"
     },
     {
       "shardId": "f-c7-p4",
@@ -1793,7 +1793,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p4.json",
-      "decisionEvidenceRef": "sha256:e7e4a1d2d03b8c85a076f5b1887e2336228d5f2104b78c75921884cb35c5c17b"
+      "decisionEvidenceRef": "sha256:3bc1798d3021daf0cacde551ae440d1ca20200014f7c70329ee6e8d034d6ee2e"
     },
     {
       "shardId": "f-c7-p5",
@@ -1807,7 +1807,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p5.json",
-      "decisionEvidenceRef": "sha256:153729a6f174de7c9bd2b17eea9c2156634ac71d8c389a4504cd6f4132d77f20"
+      "decisionEvidenceRef": "sha256:aa0dbd04dcb033397530b0d6e8d35b7e07328ca5cd315d13fdfdc7e779477a08"
     },
     {
       "shardId": "f-c7-p6",
@@ -1821,7 +1821,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p6.json",
-      "decisionEvidenceRef": "sha256:8bbc0c2ad671dbff3be353710da98cc67ee1b93e977cdf4769a0aab937495d9a"
+      "decisionEvidenceRef": "sha256:f2c0eb850eab0dc519fd712fcbb62ea8e38ac8295e87a9c45f56e9a611676e90"
     },
     {
       "shardId": "f-d7-p1",
@@ -1835,7 +1835,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d7-p1.json",
-      "decisionEvidenceRef": "sha256:18106fe529e3f7600617381f45048bc9da19d92494f6ed5d4ebb1a87fd22501e"
+      "decisionEvidenceRef": "sha256:6ac0d8142e5e97736a86860389bb259b865953efb170e6e0b403cf9c9081e071"
     },
     {
       "shardId": "f-d7-p2",
@@ -1849,7 +1849,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d7-p2.json",
-      "decisionEvidenceRef": "sha256:8ea537df0f52380c149a8c9258b89861bf28d5fe617c4dd4f9830fbc8d9ff725"
+      "decisionEvidenceRef": "sha256:c93ec854cd32d590eb087cd160fc7604b5dedcccd93f924993a48e5103a5c56a"
     },
     {
       "shardId": "f-d7-p3",
@@ -1863,7 +1863,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d7-p3.json",
-      "decisionEvidenceRef": "sha256:35be74f6e7b6eda014eba8d17908f2e51efdf390369339b55020ad552fa3f450"
+      "decisionEvidenceRef": "sha256:77bd15727c53f6042849029aed2afe02f2b08f8cfe9f2c6c16673c864943ca22"
     },
     {
       "shardId": "f-e7-p1",
@@ -1877,7 +1877,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e7-p1.json",
-      "decisionEvidenceRef": "sha256:64720f6f12c2f9166b9736c1c8d3ea145f68c61478dbaacd63b3b1fe4dd1b032"
+      "decisionEvidenceRef": "sha256:de16ca83da514bf24ba652c73da39db3d972eaa68e11b260fb9a2871a5eb5c6f"
     },
     {
       "shardId": "f-e7-p2",
@@ -1891,7 +1891,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e7-p2.json",
-      "decisionEvidenceRef": "sha256:302825a3d6d079cabd18f2a105fa7773b3d632737c082a08f9106a9657d90cc9"
+      "decisionEvidenceRef": "sha256:5ad00c9fa489652c0b07ab7c90df036ce3699f55a946a9d1a20eed59ba196b43"
     },
     {
       "shardId": "f-e7-p3",
@@ -1905,7 +1905,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e7-p3.json",
-      "decisionEvidenceRef": "sha256:aeac56a26f174f042019b8e7e11f2c4c11789c2ede028446dfd3e2bd8ce2c0ae"
+      "decisionEvidenceRef": "sha256:0dce7b6bcd6b7dca1215312bad8d9c5532c85efbca526ce762a640ff7cfba6ea"
     },
     {
       "shardId": "f-f7-p1",
@@ -1919,7 +1919,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f7-p1.json",
-      "decisionEvidenceRef": "sha256:e339625838d0ddd7ba569a2b1eba5c938b673fcf9bb9c7efc8940895c37f5892"
+      "decisionEvidenceRef": "sha256:e9b714a5af170116c2a876a86f9cd12b232f623193bde1c4f0418e3e90b377c5"
     },
     {
       "shardId": "f-f7-p2",
@@ -1933,7 +1933,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f7-p2.json",
-      "decisionEvidenceRef": "sha256:1bc0ffe91a2dba12cddcb721a2f1f9e65bbd59cb1508d6a0adea51d9fec3f859"
+      "decisionEvidenceRef": "sha256:3763740f187ed2590973088f68da4a9e805adbfce9dc5d13b5ce91fe6139bd11"
     },
     {
       "shardId": "f-f7-p3",
@@ -1947,7 +1947,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f7-p3.json",
-      "decisionEvidenceRef": "sha256:e502b8e0e65576182b606ece0714851ea5d6d18f1ae6e9cba4488444ba22b312"
+      "decisionEvidenceRef": "sha256:a5ab7145bbeb0fd39e30527757e082b2a5d821a158ea7beff4f1dbd1d140bdf6"
     },
     {
       "shardId": "f-g7-p1",
@@ -1961,7 +1961,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g7-p1.json",
-      "decisionEvidenceRef": "sha256:c9c1913b147e1439f1ca212e9c35c03e667997d1293389b63243823fc890d9dd"
+      "decisionEvidenceRef": "sha256:bfd0b45c96b45bb77cc0048403c0af138561a1f51ebc2a1775db23edf6ccdd86"
     },
     {
       "shardId": "f-g7-p2",
@@ -1975,7 +1975,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g7-p2.json",
-      "decisionEvidenceRef": "sha256:a1125c3718a15f3ea62b19e906696a57d46dd552d7c8ff776c595ede233a4ec1"
+      "decisionEvidenceRef": "sha256:9a8f29f133164c05bcf29a18f041f1e06991c608f7d1dd444c275153266fcc3b"
     },
     {
       "shardId": "f-g7-p3",
@@ -1989,7 +1989,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g7-p3.json",
-      "decisionEvidenceRef": "sha256:62267a25a66fb3c66cb00c118d69152cae81336382161da1c310e26e4a6dd6dd"
+      "decisionEvidenceRef": "sha256:02025bca6644fba469a6969121a8d19f0d73c43b9c698e8e776dfe77859e9e35"
     },
     {
       "shardId": "f-b8-p1",
@@ -2003,7 +2003,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b8-p1.json",
-      "decisionEvidenceRef": "sha256:eb1802f5f7f7f3653c680b71ca7912626505aeceeb12862c98fa96e5de0af827"
+      "decisionEvidenceRef": "sha256:94459bdee2e6dbabf5a0aef7917f5e53e25b52fd03e4b176460b86d504a32a55"
     },
     {
       "shardId": "f-b8-p2",
@@ -2017,7 +2017,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b8-p2.json",
-      "decisionEvidenceRef": "sha256:f787fa2637456116112916fb2548a3c2bf3ef1bf8578cfb9be770f6ca26ed03c"
+      "decisionEvidenceRef": "sha256:c60fdcd93fc4d99d55f743b230392131d0c869da07ca98707bbac1c9edfa6b18"
     },
     {
       "shardId": "f-b8-p3",
@@ -2031,7 +2031,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b8-p3.json",
-      "decisionEvidenceRef": "sha256:4a4d9d53e1ec642f4ec24a992b3b0314e9cd66f337b1af367e850e0093a8552c"
+      "decisionEvidenceRef": "sha256:55b6117d709ea2512b71b86c3ad5419f99cef3139600275f6a96a865e918d56c"
     },
     {
       "shardId": "f-c8-p1",
@@ -2045,7 +2045,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c8-p1.json",
-      "decisionEvidenceRef": "sha256:bc52ef6bc5054c42324dd6c23446ef37611ceb7cedb04686369611db856bd2bc"
+      "decisionEvidenceRef": "sha256:bf5aa66fb10a3951ff34b9992807ce1f2c0d8889f54d3b4e3c7cfa3e046036ba"
     },
     {
       "shardId": "f-c8-p2",
@@ -2059,7 +2059,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c8-p2.json",
-      "decisionEvidenceRef": "sha256:582604514d0eaf0d6ccfe244eeb113ce9551f071276d6081cdad8a66077229bd"
+      "decisionEvidenceRef": "sha256:a01b5b35abea4a47a29645ec92b651f69f3562c3eed8438790ca985ed7f58a82"
     },
     {
       "shardId": "f-c8-p3",
@@ -2073,7 +2073,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c8-p3.json",
-      "decisionEvidenceRef": "sha256:91d9e32b731937cd9aafff5e9c5bd81b1d926a7e5decd19fff4598ef9261f861"
+      "decisionEvidenceRef": "sha256:01ab2b8416ecdc14b8c4eda16366c96ccab72e80eedf069e2aef8295d80afc9d"
     },
     {
       "shardId": "f-d8-p1",
@@ -2087,7 +2087,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d8-p1.json",
-      "decisionEvidenceRef": "sha256:1321c88988044f1d15a70ae437ddb40acbebd337aac9821331431c254b3687ff"
+      "decisionEvidenceRef": "sha256:ba7dbdb6d1f8007403a1d4a17b9afd075a5778041e0882f3310751557fb4535b"
     },
     {
       "shardId": "f-d8-p2",
@@ -2101,7 +2101,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d8-p2.json",
-      "decisionEvidenceRef": "sha256:4d6d2606cd1991fc9ce139576fde8cf004807d17a19cfcfb8692a42e7fd7a0fd"
+      "decisionEvidenceRef": "sha256:f6df7b4664150285a7ad2b77bee3ec342228afb0a4bc70f26718460de45cde48"
     },
     {
       "shardId": "f-d8-p3",
@@ -2115,7 +2115,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d8-p3.json",
-      "decisionEvidenceRef": "sha256:41c5141a2f2c9ad10aec00ab31b99de03a54df06465e3a7ca9b32ab643231274"
+      "decisionEvidenceRef": "sha256:44563fd9ac0abeb9981b46519c96b08c0b47175047587d1587aed708a7206dd1"
     },
     {
       "shardId": "f-e8-p1",
@@ -2129,7 +2129,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e8-p1.json",
-      "decisionEvidenceRef": "sha256:46cda091366d1b44d86d07b93a0505e8d90f4ef19657b42dd51a36a2e8aa0293"
+      "decisionEvidenceRef": "sha256:294f1bf3225421e05ab6e8a944150da38d245f7f0d2f0babe8ff7c4fe0df4cbe"
     },
     {
       "shardId": "f-e8-p2",
@@ -2143,7 +2143,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e8-p2.json",
-      "decisionEvidenceRef": "sha256:ba922cd7a028470a44b3f9c7acc53c4412037279b9a51174f7467ca1421aa6b6"
+      "decisionEvidenceRef": "sha256:b9c779f7025145010ce018d3f241609f05f5a6d01f86c5b87cd3e1372b7ce376"
     },
     {
       "shardId": "f-e8-p3",
@@ -2157,7 +2157,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e8-p3.json",
-      "decisionEvidenceRef": "sha256:f5d4147119f0ff3aa167553fba41d347c79f170643ba2eb9eed27d21eae85e59"
+      "decisionEvidenceRef": "sha256:175440faddc268985afa4662fbd2262f383bb6dd872730729aa5c9b8620de400"
     },
     {
       "shardId": "f-f8-p1",
@@ -2171,7 +2171,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f8-p1.json",
-      "decisionEvidenceRef": "sha256:379e27c304c42d5c0b174f5869094a77646ad9dde1c596b033fc5743972b8b65"
+      "decisionEvidenceRef": "sha256:e4cc33d049591c687f43bbc068f9dca1af26e7e4804a066176d64a37c72d03a5"
     },
     {
       "shardId": "f-f8-p2",
@@ -2185,7 +2185,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f8-p2.json",
-      "decisionEvidenceRef": "sha256:f5e883823233ed09333ffacfb129aa80d95ff11044b4d088d94b4a3c2f5a90fa"
+      "decisionEvidenceRef": "sha256:0201c9f0197f15bf37035a8688b74c61d7b6766382b2ed705f9d3eec72a432ab"
     },
     {
       "shardId": "f-f8-p3",
@@ -2199,7 +2199,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f8-p3.json",
-      "decisionEvidenceRef": "sha256:f222ba1149a00fd0f21b76853cc747d25a4640eacb55d7223d0995335d64543d"
+      "decisionEvidenceRef": "sha256:e4a9b23cf29a547f9a39ccb6127ec51fd3b7972cd62e7d47962b03c767821604"
     },
     {
       "shardId": "f-g8-p1",
@@ -2213,7 +2213,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g8-p1.json",
-      "decisionEvidenceRef": "sha256:f3ee01aaf37c1cb2498ff05a9287cf63962e13494c9f1bc33e10f407a03c3b48"
+      "decisionEvidenceRef": "sha256:ba54d8596065825e88aee5c0c44668b2bee7368d1fb33a9232f4e4b4747f5e52"
     },
     {
       "shardId": "f-g8-p2",
@@ -2227,7 +2227,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g8-p2.json",
-      "decisionEvidenceRef": "sha256:f9421ee5de456a34f62a768f6bc25e7f3b4c117d252a372b6be9a1d54af9e320"
+      "decisionEvidenceRef": "sha256:f6ee877fb7a008ea0366a11287fc5875afad3b498dfa54bce5ab9adf80c1b3a6"
     },
     {
       "shardId": "f-g8-p3",
@@ -2241,7 +2241,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g8-p3.json",
-      "decisionEvidenceRef": "sha256:d4cd0ab6e17b3d5699957e8e9091ef61a8332c60a4c46d1da889fbaa23d92b0e"
+      "decisionEvidenceRef": "sha256:e41f17895640c0c9dae88b70a3df766102023afd8da26a44adb6c9aa9d2bfaef"
     },
     {
       "shardId": "f-b9-p1",
@@ -2255,7 +2255,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p1.json",
-      "decisionEvidenceRef": "sha256:660965c6e08929211d97ce7b03942f7f3a37e4a4d745989375e08e3d4583f246"
+      "decisionEvidenceRef": "sha256:b274300885dbd1c94acf55d0ae96cb39a9f3ba9144cd14c44cf6b7e28ec19b8f"
     },
     {
       "shardId": "f-b9-p2",
@@ -2269,7 +2269,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p2.json",
-      "decisionEvidenceRef": "sha256:c13efd6bf842b62e4efc0848354f109626011869cec8ead37e0c9a44bd5c8646"
+      "decisionEvidenceRef": "sha256:7a1761d31721a0a6c7edcd44582ad858c4a2dbe2cfa603c688e6e06064253282"
     },
     {
       "shardId": "f-b9-p3",
@@ -2283,7 +2283,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p3.json",
-      "decisionEvidenceRef": "sha256:d3eedbb72352d91a70b5601f58eb617a648de7d3fad376796d3b996db840cdc4"
+      "decisionEvidenceRef": "sha256:d6ed53bc3b5df124ef4e9cd0c07f91419cfc3b9bd6747ef4b8002f494e8eebf8"
     },
     {
       "shardId": "f-b9-p4",
@@ -2297,7 +2297,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p4.json",
-      "decisionEvidenceRef": "sha256:ccd7245142a5eeb8e9b26359e015caa9350bbe0aa07877ec2f9a7ccea59405af"
+      "decisionEvidenceRef": "sha256:66c3e89ac139426b436560c090585bcd2497a2080de709c8e20f80efd1b8c0e4"
     },
     {
       "shardId": "f-b9-p5",
@@ -2311,7 +2311,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p5.json",
-      "decisionEvidenceRef": "sha256:fd40cf1e4c1404e8d94b952e9e4f3665441b9eab74914b2dedebbb011a165f59"
+      "decisionEvidenceRef": "sha256:2b84fc93cbc85499738b174aa013cd5cfde22d886938064dca72efb2ccfb5b3f"
     },
     {
       "shardId": "f-b9-p6",
@@ -2325,7 +2325,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p6.json",
-      "decisionEvidenceRef": "sha256:538237d11613b46d9f8762e721d9e93245ccf0fac98898a724a2bf5dbcb2140c"
+      "decisionEvidenceRef": "sha256:546f659bc465d7a42856c6ada4d3fedee1c1c747176bfe407bf8ad76fee24a45"
     },
     {
       "shardId": "f-c9-p1",
@@ -2339,7 +2339,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c9-p1.json",
-      "decisionEvidenceRef": "sha256:7687b2c8d74b95a8eeaa377e7c3bebc68dee788f04d13e51de4bbca6998e9fd9"
+      "decisionEvidenceRef": "sha256:b5edec425bc6a45960fcd3ee6d28237d1b4bbe1d4b8d1f366fb69053bf8152f3"
     },
     {
       "shardId": "f-c9-p2",
@@ -2353,7 +2353,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c9-p2.json",
-      "decisionEvidenceRef": "sha256:e2975b5df7c346b29bb8fa089a7e07059016a8af17ebf97c9df1372419f98177"
+      "decisionEvidenceRef": "sha256:68cdff92ee9d8a32b6c9446cdadbc0932e63c83b874bf4de84b94239eec22535"
     },
     {
       "shardId": "f-c9-p3",
@@ -2367,7 +2367,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c9-p3.json",
-      "decisionEvidenceRef": "sha256:ca3a98a1e2aa0d2aec30b416b9ea04946a8ef7dad2897d4d81ce135a3c674b42"
+      "decisionEvidenceRef": "sha256:f90852b4665b75533db298e3a05f379df1bfcdcb0fe208e2960b8dbb9d2b5a5c"
     },
     {
       "shardId": "f-d9-p1",
@@ -2381,7 +2381,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d9-p1.json",
-      "decisionEvidenceRef": "sha256:716bc6f890cc7acac8e1a5cd287ca8de44111835ab8906e594adda174a072b27"
+      "decisionEvidenceRef": "sha256:8f995ead478caadebc36240b63346b884530398bab2b72e2525e7644dbb2176f"
     },
     {
       "shardId": "f-d9-p2",
@@ -2395,7 +2395,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d9-p2.json",
-      "decisionEvidenceRef": "sha256:df3150613b21be68b309d4e6edb185693a3a9351d6164cf19d43c8b88c8605d5"
+      "decisionEvidenceRef": "sha256:2c48abfc46deedc147505e3b09ca8efd96b8a81b7586de66dcc739eafaedb01a"
     },
     {
       "shardId": "f-d9-p3",
@@ -2409,7 +2409,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d9-p3.json",
-      "decisionEvidenceRef": "sha256:34e5389f46e598c448eef7e4ebd88fbe3492b1e31d0771a31bde88b3321e50ea"
+      "decisionEvidenceRef": "sha256:b3540f8710938b314a834e673f6de0cd58bf69e4e865d1dfbf5811dac0f65e1d"
     },
     {
       "shardId": "f-e9-p1",
@@ -2423,7 +2423,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e9-p1.json",
-      "decisionEvidenceRef": "sha256:b10803eb5f88af8b97d2cc30db0dd704ccbd30c6f15eb97e622b8e98946cd878"
+      "decisionEvidenceRef": "sha256:d1f391870e8dec7c820999c66a56e3c86a0fcc4741dc12f1a73c8657967d6c7b"
     },
     {
       "shardId": "f-e9-p2",
@@ -2437,7 +2437,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e9-p2.json",
-      "decisionEvidenceRef": "sha256:f71c347959f7f638f25593ecfe20a88bf42dff168103c85bdfd1cf55edfe97e8"
+      "decisionEvidenceRef": "sha256:7fbfb8fe47d43494df3b6278f3635dd8fd5536e3c6629abb2f766f9dfad5b9a5"
     },
     {
       "shardId": "f-e9-p3",
@@ -2451,7 +2451,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e9-p3.json",
-      "decisionEvidenceRef": "sha256:7d7b0e9978ad57bb96a463ea4976f9f5f6d87fa90f381a91815ac7ad7a34ac0a"
+      "decisionEvidenceRef": "sha256:03f57889837e89ac9111ceddd6334284cb9c253cbe7b0f0fc70f4d8fa242e404"
     },
     {
       "shardId": "f-f9-p1",
@@ -2465,7 +2465,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f9-p1.json",
-      "decisionEvidenceRef": "sha256:2b2a4455d60815f5ef9c14f4dbe55e7561417b4799e1f3f575fdc78e94c9ae63"
+      "decisionEvidenceRef": "sha256:989de0199ffb447633a5f72a65cc7b5a50d88363ef195b36b31766abe12ec9b5"
     },
     {
       "shardId": "f-f9-p2",
@@ -2479,7 +2479,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f9-p2.json",
-      "decisionEvidenceRef": "sha256:c13fac85ee29ec8e89d9f1fa0a4b00642136cb646c6c8f6e8be613c240a60e0c"
+      "decisionEvidenceRef": "sha256:3bbded01b7592e659a8ddd695dfaf68989d7124aeb649212072edcfdb1199de9"
     },
     {
       "shardId": "f-f9-p3",
@@ -2493,7 +2493,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f9-p3.json",
-      "decisionEvidenceRef": "sha256:df6a1ec25c2080cde793607950424750c421208dade7e4784eaeb5f3ef507412"
+      "decisionEvidenceRef": "sha256:536a76924fec8a659d10b6573c0aba359b8bc56287dcdaa5c79bc5f10b89f67f"
     },
     {
       "shardId": "f-g9-p1",
@@ -2507,7 +2507,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g9-p1.json",
-      "decisionEvidenceRef": "sha256:3071b7103f2b8999cb25df5e33ee3907df3e2ac81969c7403e85e7cd9d91ea1f"
+      "decisionEvidenceRef": "sha256:22ce30ec1014ce3788c657370eb58a1c354fb8f4d56811d44d505c8c38f2d022"
     },
     {
       "shardId": "f-g9-p2",
@@ -2521,7 +2521,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g9-p2.json",
-      "decisionEvidenceRef": "sha256:4df6243c6dd8ee5ce22bfcc6699768788c3f8670016c3b10126e2ec381b15b1f"
+      "decisionEvidenceRef": "sha256:d3d963ea7e3119b64da37d3cc78f53e8bcd5cba447516490987f4b0399cfaf0d"
     },
     {
       "shardId": "f-g9-p3",
@@ -2535,7 +2535,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g9-p3.json",
-      "decisionEvidenceRef": "sha256:5f66fe832380573e310a9fabb5d264b769678ae3efa305855999098f4aa82ae2"
+      "decisionEvidenceRef": "sha256:4d075d6ad02a9bdaee6e6498da658e5c6b36fe2bd7ecec265bd0b4efc6e76ab6"
     },
     {
       "shardId": "f-b10-p1",
@@ -2549,7 +2549,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b10-p1.json",
-      "decisionEvidenceRef": "sha256:07bd3280c9d2d3f85475a9b469b4afed30327a77cbade7a07fb9c85c2e07aef0"
+      "decisionEvidenceRef": "sha256:9ce1d06159adcdaa7bd76c70bbdd1811923e9433274c494c1820038035cdafde"
     },
     {
       "shardId": "f-b10-p2",
@@ -2563,7 +2563,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b10-p2.json",
-      "decisionEvidenceRef": "sha256:2def3f2d60139bc4fc20667240b1241a651bdfa8c3d9b45c5ecd5251474f289b"
+      "decisionEvidenceRef": "sha256:e7de1ed67762200a559be302f8f783e85c7627deb0f4d1421aba8cac0ca4605c"
     },
     {
       "shardId": "f-b10-p3",
@@ -2577,7 +2577,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b10-p3.json",
-      "decisionEvidenceRef": "sha256:ad09a854bce228d56adf8eb70ad7110ff9139efb5d663428c53a6300925a586b"
+      "decisionEvidenceRef": "sha256:cc727c9776b2db79d9003430fb7693e2902eeef2f4f6906ccce45846980fe31e"
     },
     {
       "shardId": "f-c10-p1",
@@ -2591,7 +2591,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c10-p1.json",
-      "decisionEvidenceRef": "sha256:7db5f2b0fa7ef51bada2142ccf5cc742cfcd3cfff7506a62bd22b03e67f3790b"
+      "decisionEvidenceRef": "sha256:023c846039101179391eca3e31fd125aa98932212a798e48bc0d521da3e0c83a"
     },
     {
       "shardId": "f-c10-p2",
@@ -2605,7 +2605,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c10-p2.json",
-      "decisionEvidenceRef": "sha256:ab8c176516d39977c05e85ed958f3d582e16a4e621524b966535f4293e1e7ff8"
+      "decisionEvidenceRef": "sha256:2ce65fd6c7812c190e04fbc296d8d9686c69d634ee4ed1d6a4f6f58b0f145dc1"
     },
     {
       "shardId": "f-c10-p3",
@@ -2619,7 +2619,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c10-p3.json",
-      "decisionEvidenceRef": "sha256:51436cf3bbb44e76d870b1c9d3cf4bfbcf843a942cbfed7080c2967511907c57"
+      "decisionEvidenceRef": "sha256:dae589ef7971b257a07ba106bd804769246608c6b11bda38a3cdab412d2a202f"
     },
     {
       "shardId": "f-d10-p1",
@@ -2633,7 +2633,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d10-p1.json",
-      "decisionEvidenceRef": "sha256:70cde0e8263fcb2970557b8b5232b4b00fdf36c2a6b935405502f42cc93d85b7"
+      "decisionEvidenceRef": "sha256:62c8f8ef795d8f3703fa8417c99b23096fcfdf12cf660a55ef30b843bca6bd1f"
     },
     {
       "shardId": "f-d10-p2",
@@ -2647,7 +2647,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d10-p2.json",
-      "decisionEvidenceRef": "sha256:9c2815c48a25d50fb389d15e0a32daf0e78b7cf51212f965f1794f3b199c122b"
+      "decisionEvidenceRef": "sha256:037549aeb59637dfa5863a31f29ce9a2d81befa3b4cd3278f56b76aabe50c3bc"
     },
     {
       "shardId": "f-d10-p3",
@@ -2661,7 +2661,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d10-p3.json",
-      "decisionEvidenceRef": "sha256:38dea13b38515822062f8fcb56ff7668e7b5800aa54453019596440b751843be"
+      "decisionEvidenceRef": "sha256:716441d78955abc553b17bd159f266f8903b0dc73f14e0143a3c20d15bfb4414"
     },
     {
       "shardId": "f-e10-p1",
@@ -2675,7 +2675,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p1.json",
-      "decisionEvidenceRef": "sha256:8cabe763b924d111fd4e21b3daf763e3fd6088a1276b4cb89236022a970d365b"
+      "decisionEvidenceRef": "sha256:72e3afe60b1edc1128e39f345d950379b615c6a34b8c97e3a960920a5af4f0ff"
     },
     {
       "shardId": "f-e10-p2",
@@ -2689,7 +2689,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p2.json",
-      "decisionEvidenceRef": "sha256:7daf70412f45d8d75c5c238fdee605d2dc326e3d50929e91bbeb05d209088a53"
+      "decisionEvidenceRef": "sha256:a895ead4b64ecf87f4c22d072d581e33385ba3e9ae5615d2644f1b5dc833bc43"
     },
     {
       "shardId": "f-e10-p3",
@@ -2703,7 +2703,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p3.json",
-      "decisionEvidenceRef": "sha256:8568367f616d013849f4e22fea8e197cb18702cf203f05acffcb6ce055ac38b8"
+      "decisionEvidenceRef": "sha256:fa6b649e573da3a799a917348158fa3a8b501aa61694263378e0a35f702a1203"
     },
     {
       "shardId": "f-e10-p4",
@@ -2717,7 +2717,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p4.json",
-      "decisionEvidenceRef": "sha256:dc4a083e8d772cba8b4924ad3ec53582be2baff0d360bd37452b820e943a3a45"
+      "decisionEvidenceRef": "sha256:6bb7a4b9f26d69dcfef4759ddc167a00e5e9b47915327315fe45048564620429"
     },
     {
       "shardId": "f-e10-p5",
@@ -2731,7 +2731,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p5.json",
-      "decisionEvidenceRef": "sha256:602777484df1bdc1389950e1f27b1385ef1bdd6f89487b96ba404d8a8ddafa96"
+      "decisionEvidenceRef": "sha256:6e708904542fd07d94acd8ceaab870f9b5d51e5648e440af9c47b06e3c0cbf6c"
     },
     {
       "shardId": "f-e10-p6",
@@ -2745,7 +2745,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p6.json",
-      "decisionEvidenceRef": "sha256:02d8eef91cdbec8ec2581c71c25d2fddf08e4d268421db3c6b0ee92471ab1618"
+      "decisionEvidenceRef": "sha256:82d086452f930400dff6ba211fc342860471f6505870df705ae17db4aa95f51d"
     },
     {
       "shardId": "f-f10-p1",
@@ -2759,7 +2759,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f10-p1.json",
-      "decisionEvidenceRef": "sha256:7f01110dbcfae153dfa345ff3717a55356aa143539eaecfc84ab6ef7919d8208"
+      "decisionEvidenceRef": "sha256:700b6d587cddcc2e3ca2f471c8dc0abba4746e86ecf94013a54596a48a4092e5"
     },
     {
       "shardId": "f-f10-p2",
@@ -2773,7 +2773,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f10-p2.json",
-      "decisionEvidenceRef": "sha256:45bfa74ccda364775e67c3d4f348f6249a641bfdbe80d5b509cc457b5ca132d7"
+      "decisionEvidenceRef": "sha256:740b9d98cfb9ee98bee810795e5081c7910bfe1120df279077e955add1387f31"
     },
     {
       "shardId": "f-f10-p3",
@@ -2787,7 +2787,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f10-p3.json",
-      "decisionEvidenceRef": "sha256:4d2ce54af72b05d7ac5aa52f1247f99b9ffebbf0cec2161c3574349502fee015"
+      "decisionEvidenceRef": "sha256:c9628d16f673871f1118bd9cc001afdc16d91b49eced5c7d04cc137da3041cc6"
     },
     {
       "shardId": "f-g10-p1",
@@ -2801,7 +2801,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p1.json",
-      "decisionEvidenceRef": "sha256:2be4880d0c4d0c19f28a6ca6713be4449fb2c4bee3ea85f1bee883ace660a679"
+      "decisionEvidenceRef": "sha256:d6b8a03369d818218758424e911801eba2bf72def0d98f0ad094d5914bb2d54d"
     },
     {
       "shardId": "f-g10-p2",
@@ -2815,7 +2815,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p2.json",
-      "decisionEvidenceRef": "sha256:18af752313f4a3f14697a605254f3ed908f1532c88d23ed0f02ae1952e052647"
+      "decisionEvidenceRef": "sha256:93d8287403018fe4aa27b95fdc8acbffb627a0e40778414ae0e65069d12e3a6f"
     },
     {
       "shardId": "f-g10-p3",
@@ -2829,7 +2829,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p3.json",
-      "decisionEvidenceRef": "sha256:6c8a0aa2c155b164f089eaf9a561e899e2b3c2e2b264a74cd647bac674eeb6ff"
+      "decisionEvidenceRef": "sha256:c3bc5a03bece37fc6fa99a7f5e2a857345eea912a32f74e5bd9996f839c9718b"
     },
     {
       "shardId": "f-g10-p4",
@@ -2843,7 +2843,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p4.json",
-      "decisionEvidenceRef": "sha256:07d4a6da3d5c0b49e00fe0f59d90da7ae0725247b3c5af9e481b2ba1befedcbb"
+      "decisionEvidenceRef": "sha256:19d1813eb86ba5c596a59b5f05f488423994ff25e190d5cbaed27f4c83bcbea4"
     },
     {
       "shardId": "f-g10-p5",
@@ -2857,7 +2857,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p5.json",
-      "decisionEvidenceRef": "sha256:e606336cb9c3eb1645c3410110ca9af3c8fe546d5af1277463c98fef28e16bb5"
+      "decisionEvidenceRef": "sha256:473048474a750f872950471d15d2d26a13c73cea45eae127c01c7b8f4c4aa976"
     },
     {
       "shardId": "f-g10-p6",
@@ -2871,7 +2871,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p6.json",
-      "decisionEvidenceRef": "sha256:e651dc5b30e7514e8f64a5ed784a61874e4576884089be9577962ad1103259bf"
+      "decisionEvidenceRef": "sha256:ba7e254c902e40c85d8e8402ee2571dd9c15cf7b58ea22c24cf1f863aa14a6b5"
     },
     {
       "shardId": "f-b11-p1",
@@ -2885,7 +2885,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p1.json",
-      "decisionEvidenceRef": "sha256:53ba6546670e6139c79d917bd23cfa8eaacce399fc667f7955a47004c76c4f03"
+      "decisionEvidenceRef": "sha256:fcf3809782c530bd577a1e4eb4a67bff69ce8feffc5f3f8d912447d1b04ade4b"
     },
     {
       "shardId": "f-b11-p2",
@@ -2899,7 +2899,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p2.json",
-      "decisionEvidenceRef": "sha256:c79ca3b3e9691e43b5f86b8bc8604a08d667499b0b133755bfa5a736feb4073b"
+      "decisionEvidenceRef": "sha256:59017beb208835afc5d50f10b42f17c8106bcccac678f503d844b85d7c9ca1b5"
     },
     {
       "shardId": "f-b11-p3",
@@ -2913,7 +2913,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p3.json",
-      "decisionEvidenceRef": "sha256:822f993571b32d1726347df64c011571175df89f9afdaa2cea61b2d66fc655cb"
+      "decisionEvidenceRef": "sha256:8925d43cc9c5801227a33a2f689af4a3a04f31a2c4d16b8f7f7ce63c636ab54e"
     },
     {
       "shardId": "f-b11-p4",
@@ -2927,7 +2927,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p4.json",
-      "decisionEvidenceRef": "sha256:a2948bb74f3514df0a2404e71f7e9a3af803ee30343f56fcd9e92103d079c310"
+      "decisionEvidenceRef": "sha256:484e6fe4e1c444222ed4806d17507982aaeff449a84ab9d8ac77e99481ab2dee"
     },
     {
       "shardId": "f-b11-p5",
@@ -2941,7 +2941,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p5.json",
-      "decisionEvidenceRef": "sha256:45bca51b03e68a113f21a96433ff36566c4c840cf4f3d9687d4792bbd3631f2b"
+      "decisionEvidenceRef": "sha256:93a1359de145e25548c64fee6cb0a410054274e84c9fe9ab377a8427d035a48c"
     },
     {
       "shardId": "f-b11-p6",
@@ -2955,7 +2955,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p6.json",
-      "decisionEvidenceRef": "sha256:f9fd79c146fcf90a472eca56755ae6464519c5b13206d63da14d40ed0b3dd9b0"
+      "decisionEvidenceRef": "sha256:58f40baf34383f37b3717264cdcb0d38573874061e88932a986779da31c0c4cc"
     },
     {
       "shardId": "f-c11-p1",
@@ -2969,7 +2969,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p1.json",
-      "decisionEvidenceRef": "sha256:1d579b7ef84a01aacf3da6605a0072e8de3f82ff86320f1db749165db19425cf"
+      "decisionEvidenceRef": "sha256:61b5935e6702ff64e9470556d68b8a8871fb8146381cdb6a7cf020597c2ea92a"
     },
     {
       "shardId": "f-c11-p2",
@@ -2983,7 +2983,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p2.json",
-      "decisionEvidenceRef": "sha256:0bb32cef678e98968e75aaa20bbbd3508b6d3f0046330331e22f1f7171b83a85"
+      "decisionEvidenceRef": "sha256:7007859157464867052f3869f6918ee9d1fd4f3a152249109fe61074d5f29055"
     },
     {
       "shardId": "f-c11-p3",
@@ -2997,7 +2997,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p3.json",
-      "decisionEvidenceRef": "sha256:9fdea611baf520351386cd1e4e2442fb46c7f18b44170e965b1eb7b481f15ba7"
+      "decisionEvidenceRef": "sha256:2e3b6219e1f5332914804b008322136409ac109b8255bac7de4f26ea0556c765"
     },
     {
       "shardId": "f-c11-p4",
@@ -3011,7 +3011,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p4.json",
-      "decisionEvidenceRef": "sha256:d1e0c22a85d095cccf0fae88fc1073ee5dd0151056c7f553679d1960f88c66b4"
+      "decisionEvidenceRef": "sha256:33c86b8dc7001f671a46f960fe812cc20da99501651bd918f090e27469f26596"
     },
     {
       "shardId": "f-c11-p5",
@@ -3025,7 +3025,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p5.json",
-      "decisionEvidenceRef": "sha256:fc66c29f5cfb7c02c529611bf2d41e785f983ff361622e559e590bd1a1c8c0e1"
+      "decisionEvidenceRef": "sha256:5724c4ef0f9457afee9dd7927003b387ff6996fdf0b09677b5a074c5e83648ed"
     },
     {
       "shardId": "f-c11-p6",
@@ -3039,7 +3039,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p6.json",
-      "decisionEvidenceRef": "sha256:9d5e9d19721b89ec68be2738421115662907ac1aa613595f93396fc2254236b1"
+      "decisionEvidenceRef": "sha256:572200ed404b6333850246726e1910826f11236c1fbdad825698dd3d3d60d366"
     },
     {
       "shardId": "f-d11-p1",
@@ -3053,7 +3053,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d11-p1.json",
-      "decisionEvidenceRef": "sha256:11466f125b40ae707ce2a4eb859cd7897f7c9da87c42df1c3779e104556b4af6"
+      "decisionEvidenceRef": "sha256:6f64ebea1dd10c2a07c3118b8fcf9ac1db953cfb0f120af7d4f925e42efe37fb"
     },
     {
       "shardId": "f-d11-p2",
@@ -3067,7 +3067,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d11-p2.json",
-      "decisionEvidenceRef": "sha256:976f4110efb63174065223f4d5efc0eecb81f189cdadd9b3f9ec2272b00ef40d"
+      "decisionEvidenceRef": "sha256:acfcf18e9ed86e320202c80d2650cfbaddcc6e4422ea494172d90a6c18b17775"
     },
     {
       "shardId": "f-d11-p3",
@@ -3081,7 +3081,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d11-p3.json",
-      "decisionEvidenceRef": "sha256:20f77f5b7ddf8a8f528166962090faefede1e9b71cf0c29250982f6334905287"
+      "decisionEvidenceRef": "sha256:3a00cf8086aecac665fc95eebfa71bc90aa921f8ee238b1c8f6b1b2a9220ebe8"
     },
     {
       "shardId": "f-c12-p1",
@@ -3095,7 +3095,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p1.json",
-      "decisionEvidenceRef": "sha256:2599da502a009e5205b85bdd3e3b2ad7a4105761569da61c35c0affa626de654"
+      "decisionEvidenceRef": "sha256:2f11fa6d4cd278ce7e819c81f0e1907c46c15bdde71f9f26911dce9075c1ed40"
     },
     {
       "shardId": "f-c12-p2",
@@ -3109,7 +3109,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p2.json",
-      "decisionEvidenceRef": "sha256:185d03010d3f06f918447170995bc8a1e239b529552bc9fa4c2c18851cac7156"
+      "decisionEvidenceRef": "sha256:238421ff0bf0d32ddef9bf8f7820ebe94fba30e784144fac76102283836db218"
     },
     {
       "shardId": "f-c12-p3",
@@ -3123,7 +3123,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p3.json",
-      "decisionEvidenceRef": "sha256:6f0a3db044e0ef2c950da4ffa4e017f5e91dab54c7875cc4dfeb660f76c2fd92"
+      "decisionEvidenceRef": "sha256:720767b935e05cb3eac2680cfd5e55748059d34513ef71eb3812c1807537d665"
     },
     {
       "shardId": "f-c12-p4",
@@ -3137,7 +3137,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p4.json",
-      "decisionEvidenceRef": "sha256:00d2363f3a7770e9059c91ba3fdabe0cc271eefed2278987029d14e80d282bb4"
+      "decisionEvidenceRef": "sha256:a865d7683d54056f1c49653cdc77e57a6c6b3b558a6e5831e09be225fcc9562d"
     },
     {
       "shardId": "f-c12-p5",
@@ -3151,7 +3151,7 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p5.json",
-      "decisionEvidenceRef": "sha256:eaa60fa8b0423de5e8f9ff11b70e2e722a4aaeb16765c15695cd260e3c085536"
+      "decisionEvidenceRef": "sha256:72c26e6ad1008f580b4a96c0e078ddd8f2d61f9f59cb290416fa462e26d6fd73"
     },
     {
       "shardId": "f-c12-p6",
@@ -3165,8 +3165,8 @@
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p6.json",
-      "decisionEvidenceRef": "sha256:4f9c7802090f70d954d5e140dfdd724b6cfef25bd55d4cf99eba794c96b20815"
+      "decisionEvidenceRef": "sha256:6a9748950176832c68103fff18cbc9b84949f174f2c79f5b507d5137c7a8e9a0"
     }
   ],
-  "createdAt": "2026-08-28T08:40:00.000Z"
+  "createdAt": "2026-08-28T11:02:50.461Z"
 }

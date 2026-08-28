@@ -302,6 +302,8 @@ function main() {
       processes: [
         { ProcessId: 99, ParentProcessId: 88, Name: "node.exe", ExecutablePath: "C:/fixture/node.exe", CommandLine: "node gate-fctl.js arm" },
         { ProcessId: 88, ParentProcessId: 1, Name: "powershell.exe", ExecutablePath: "C:/fixture/powershell.exe", CommandLine: "powershell node gate-fctl.js arm" },
+        { ProcessId: 55, ParentProcessId: 99, Name: "node.exe", ExecutablePath: "C:/fixture/node.exe", CommandLine: "node run-unattended.js --check" },
+        { ProcessId: 54, ParentProcessId: 55, Name: "node.exe", ExecutablePath: "C:/fixture/node.exe", CommandLine: "node gate-fctl.js --check" },
         { ProcessId: 77, ParentProcessId: 1, Name: "node.exe", ExecutablePath: "C:/fixture/node.exe", CommandLine: "node unrelated.js" },
       ],
     });

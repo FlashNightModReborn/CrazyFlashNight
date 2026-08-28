@@ -64,7 +64,11 @@ function verifyManifestIntegrity(manifest, label) {
 
 function verifyEvidenceRun(projectRoot, evidenceRun, runtimeIdentity, candidatesById) {
   const manifestPath = resolveInsideRoot(projectRoot, evidenceRun.manifestPath, `${evidenceRun.evidenceRunId} manifest`);
-  const resultPath = resolveInsideRoot(projectRoot, evidenceRun.resultPath, `${evidenceRun.evidenceRunId} result`);
+  const resultPath = resolveInsideRoot(
+    projectRoot,
+    evidenceRun.resultSnapshotPath || evidenceRun.resultPath,
+    `${evidenceRun.evidenceRunId} result`
+  );
   const reportPath = resolveInsideRoot(projectRoot, evidenceRun.reportPath, `${evidenceRun.evidenceRunId} report`);
   if (sha256File(manifestPath) !== evidenceRun.manifestFileSha256
       || sha256File(resultPath) !== evidenceRun.resultFileSha256

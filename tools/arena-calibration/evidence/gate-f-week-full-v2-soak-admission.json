@@ -27,26 +27,28 @@
   ],
   "evidenceRuns": [
     {
-      "evidenceRunId": "formal-f-soak-01-20260828",
-      "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v1/manifests/f-soak-01.json",
-      "manifestHash": "sha256:496a1d7ed8ff7609ebe7de9c39101d4033df406f5c279453042e937066675e2c",
-      "manifestFileSha256": "sha256:336b30e5b16a5fa91175f40e2f5c2e389e3eea4528197fb33a5d18ce3781b010",
+      "evidenceRunId": "formal-v3-f-soak-01-20260828",
+      "manifestPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v2/runs/f-soak-01-20260828T085309Z/manifest-snapshot.json",
+      "manifestHash": "sha256:4f4674d479093a756a1ac6726634f8f4c0a6d73407ddb036764e9fbd1810542b",
+      "manifestFileSha256": "sha256:3da40e24165c7d1555df6d16b23dd82d8d96140ce6f708e6187b05aba4b7c97c",
       "resultPath": "logs/arena-calibration/gate-f-week-f-soak-01-results.jsonl",
-      "resultFileSha256": "sha256:5e64589ff543262c9c2c56b47e9f6c73b4485f9ecaa80883710c374cbd236969",
-      "reportPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v1/runs/f-soak-01-20260828T074100Z/run-report.json",
-      "reportFileSha256": "sha256:0937005000d0c278602c227b2bc7cdf6f0f10d59c2acf6dbe4e29f8c000fbe0b"
+      "resultSnapshotPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v2/runs/f-soak-01-20260828T085309Z/result-snapshot.jsonl",
+      "resultFileSha256": "sha256:1eb03f2dde3785d9023aaf4af052effb7f96e87aaef9c029cfc913a1d7076029",
+      "reportPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v2/runs/f-soak-01-20260828T085309Z/run-report.json",
+      "reportFileSha256": "sha256:a067ace5ec04157e98d4dc1385ad7bef059d7871191fd7990258f715cd25548a"
     },
     {
-      "evidenceRunId": "formal-f-soak-02-20260828",
-      "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v1/manifests/f-soak-02.json",
-      "manifestHash": "sha256:9a5de62961b08b74719b233f0e662a2940aa09622dcbabf680efdde9ea3237ff",
-      "manifestFileSha256": "sha256:dbf3db92e782a828e169563c6d763a73ef49b882a43ecd0b6305b7a441805576",
+      "evidenceRunId": "formal-v3-f-soak-02-20260828",
+      "manifestPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v2/runs/f-soak-02-20260828T090043Z/manifest-snapshot.json",
+      "manifestHash": "sha256:8fb9fb028764f8ce608d15ab2d554832140d7e0142ee8ee107fd384a36e661e9",
+      "manifestFileSha256": "sha256:1317ab3ffe513ce1838c564d23191cc2c783e397d298cc7f6b151ba2b479f8e2",
       "resultPath": "logs/arena-calibration/gate-f-week-f-soak-02-results.jsonl",
-      "resultFileSha256": "sha256:7a568cdfda25e4e295f77cac1a9fa5ba63b9a04ebc916ca7ae26cdd88295dea0",
-      "reportPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v1/runs/f-soak-02-20260828T075020Z/run-report.json",
-      "reportFileSha256": "sha256:08e4cbaf0e6f2d67d8499157fe43e5a68ce8bbdfc874a7079422ef7f3c7b1191"
+      "resultSnapshotPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v2/runs/f-soak-02-20260828T090043Z/result-snapshot.jsonl",
+      "resultFileSha256": "sha256:86eb0a3c1ab6113617fb305eec9d4de31b6b64c820c23391fe78ab7e61efe62a",
+      "reportPath": "tmp/arena-calibration/gate-f/gate-f-week-full-v2/runs/f-soak-02-20260828T090043Z/run-report.json",
+      "reportFileSha256": "sha256:f0d25ef98ff7700f5e2cd08f4d893ca22957d94b9163535628e517630c21cceb"
     }
   ],
-  "createdAt": "2026-08-28T08:35:59.8428554Z",
-  "admissionHash": "sha256:7c2a0aa2527ca4ce34deed168b0e9652607c8b22c85c9cf63003760ff6ced73c"
+  "createdAt": "2026-08-28T10:57:44.918Z",
+  "admissionHash": "sha256:ef8895b0f14b65fdb98c53dfac201a4191a41bd0b964c2cdc64857e4e9d3d303"
 }
