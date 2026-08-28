@@ -1,9 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `b2bc05775c621616fe64be55354aebe21c63a2af`（2026-08-27，双药剂组与八槽共享冷却；deployment `6902b2b6ed067c4882e9a67267d055ce0db90b34`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-维护者已确认双药剂组功能、切换手感及修订后的 `○ / × + 1 / 2` PlayerInfo 图标有效，因此该专项为 `HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口没有执行八槽、切换、旧档迁移、键位 fallback 或重启读回，不称本功能业务 `standard_entry_verified`。
-无 candidate selector 的正式入口 run `2478a9f25873043318f2402f80105b52` 已确认 `formal_runtime`、exact Core/identity/closure、两次 verified status 的同一 lifecycle、fresh handoff/reveal、可信 shutdown、Guardian/Flash code 0、存档哈希不变且未触发强制清理，故正式 identity/lifecycle 窄纵切达到 `standard_entry_verified`。
+**最后核对代码基线**：release source commit `b2385ee83ebd2511e501bc2b2fdd6131310aa663`（2026-08-29，关卡转场、复活状态与右上交互修复；deployment `95dec8e1c770187c57c98be6256ece6260fbed79`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+维护者已确认选关、死亡复活、返回基地、焦点与复活按钮布局修正版有效，因此该专项为 `HUMAN_ACCEPTANCE_PASSED / promoted`。部署后只执行正式根 bootstrap `--verify-only`，没有从无 candidate 的正式入口重跑上述业务或存档旅程，不称本功能业务 `standard_entry_verified`。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：

@@ -1,9 +1,9 @@
 # 关卡结果与基地结算 C# / Web 分层 ADR
 
 **文档角色**：关卡结束、玩家死亡复活、返回基地与关卡奖励领取的跨 AS2 / C# / Web canonical 深文档。
-**状态**：2026-08-29 增量修复 `IMPLEMENTED / AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`
+**状态**：2026-08-29 增量修复 `IMPLEMENTED / AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / promoted`
 **决策日期**：2026-08-27
-**既有发布基线**：维护者已确认 2026-08-27 A3 隔离候选体验有效；与 A3 Core 逐字节相同的正式 runtime 已完成双 signer / 双 faultDomain 共识、原子 promotion、部署推送与远端 Audit。部署后的无 candidate 入口只确认 `formal_runtime`、exact identity/closure、bus ready、正常关闭与零新增残留；因为未选择存档，预热按 deadline 安全回收 Flash，未取得 fresh `bootstrap_reveal_ready`，因此不称本功能业务或完整正式入口 `standard_entry_verified`。该历史结论不覆盖下述 2026-08-28 增量源码。
+**既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
 ## 0. 2026-08-28 地图绕行、焦点与转场增量
 
@@ -28,12 +28,14 @@
 
 维护者已在 fresh isolated candidate `stage-nav-revive-0829-v1` 完成下方 1–7 项真人功能矩阵并确认均有效；但复活按钮的 `复活×2.1万` 曾换行越出 32px 状态槽，因此该候选未进入发布，现已正常关闭并由布局修正版取代。
 
-2026-08-29 fresh isolated candidate `stage-revive-layout-0829-v1` 已完成 `e2e_verified / HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`：
+2026-08-29 fresh isolated candidate `stage-revive-layout-0829-v1` 在发布前达到 `e2e_verified / HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`；其 exact Core 字节随后进入正式 runtime：
 
 - Core SHA-256 `B03C2F9453CEA7F29A986421BC7182761DEC59E80ADC1726B628B59690BB984A`；
 - build identity `47001CF2926D0E47AF235AF3672BBEE984F69162570167029118FE61791A5B69`；
 - payload closure `24C95A76AEF22CC40A3EE38F61EB916DF6AD664AF4F5006462452BDD80ED0296`；
-- 首次启动 Guardian PID `10492`，复验重启 PID `23580`；candidate bundle integrity `33 files` 通过，两次均由窗口正常退出。正式 Core 仍为 `A6A3C16D322C03718679E2E1E83D6EB959D671C3BFA366A1D6C86D3B5CCE6364`，未被修改。维护者已确认复活行排版和两按钮点击区域有效、可工作。
+- 首次启动 Guardian PID `10492`，复验重启 PID `23580`；candidate bundle integrity `33 files` 通过，两次均由窗口正常退出。维护者已确认复活行排版和两按钮点击区域有效、可工作；
+- 最终 release source `b2385ee83ebd2511e501bc2b2fdd6131310aa663`、不可变 tag `runtime-build-v2/20260829-stage-nav-revive-v1`、request `C64342535E6D8CEBD88D2D359A118C75CEC967071EA00A22CEA4783A769C69E9` 已通过 39/39 production policy、本地 X509 与 GitHub Hosted OIDC/Sigstore run `33220240979` 的双签共识和原子 promotion；
+- deployment commit `95dec8e1c770187c57c98be6256ece6260fbed79` 已推送，首次 post-promotion Audit run `33221250923` 明确输出 `state=promoted`、`deploymentChanged=true`。根 bootstrap `--verify-only` exit `0` 且没有产品进程残留；该验证不执行选关、死亡复活、返回基地或存档旅程。完整发布哈希只读 [runtime build reproducibility](runtime-build-reproducibility.md)、[runtime manifest](../runtime/cf7-runtime-manifest.tsv)与 [signed consensus](../config/build/runtime-release-consensus.json)。
 
 ## 1. 决策摘要
 
@@ -195,7 +197,7 @@ dead + exact current hero
 6. 战斗中地图可打开阅读，但 `navigate/open_stage_select` 必须显示锁定且零发送；不得再次制造“画面在基地、会话仍在战斗”的裂缝。
 7. 本轮自动门已经覆盖 exact abort、loader failure、drop update 抛错、迟到回包与 malformed callId；人工无需刻意破坏文件，只需保留出现异常时的 `launcher.log` 与复现视频。
 
-维护者已确认上述 1–7 项功能路径均有效。该轮额外发现的唯一问题是 `复活×2.1万` 在旧候选中换行越界；布局修正版随后完成复活文案单行居中、不裁切/重叠，以及“复活”“回基地”点击区域与可见按钮一致的真人复验。当前准确状态为 `HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`；该结论授权进入正式发布列车，但不冒充 promotion 或正式入口验证。
+维护者已确认上述 1–7 项功能路径均有效。该轮额外发现的唯一问题是 `复活×2.1万` 在旧候选中换行越界；布局修正版随后完成复活文案单行居中、不裁切/重叠，以及“复活”“回基地”点击区域与可见按钮一致的真人复验。其 exact Core 已完成正式发布，当前准确状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`；部署后只补了 supply-chain、根 bootstrap 与远端 Audit 证据，没有重跑业务旅程，不称本功能业务 `standard_entry_verified`。
 
 既有 A3 完整功能矩阵及已发布结论仍作为历史基线，不代签上述增量。A3 隔离候选 Core SHA-256 `5B010C6040A5E80E1E8923FD02D6B632AB2D309511F8C6A54BA7D78B7516314F`、build identity `03F9825C2A2A248C73A7FA6FFB4E6C4305D49C4F97BD9E6042747B9BC5A0F5AA`、payload closure `5DA2B3053BF70EFCDCE74A503C33098774F9026AAD6E2D1F555C1A9EC5181D07`。
 
