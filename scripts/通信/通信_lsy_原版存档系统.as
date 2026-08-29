@@ -6,6 +6,9 @@
 
 // 初始化 SaveManager 单例（确保构造运行）
 SaveManager.getInstance();
+// 启动前门建角命令与 attempt-bound SceneReady 监听全部驻留在 class 内；
+// 帧脚本只做同步 install，避免 asLoader 卸载后闭包局部变量失效。
+CharacterCreationService.install();
 
 _root.存档系统 = new Object();
 _root.存档系统.latest_version = SaveManager.LATEST_VERSION;

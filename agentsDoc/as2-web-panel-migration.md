@@ -9,6 +9,30 @@
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
+### 2026-08-29 主时间轴 82–125 启动前门收尾
+
+主 XFL 作者帧 82–125 的封面、存档入口与角色创建可见 UI 已迁到 Launcher Bootstrap 的第三个顶级 Web view；作者帧 126–135 只保留无可见内容的 AS2 读盘/转场网关。`封面` 标签与 `bootstrap_reveal_ready` 继续作为“资源与 AS2 初始化已到达”的无头检查点，但它不再证明可进入游戏，也不得单独触发 `BootstrapPanel → FlashHostPanel`。正式 Web 前门必须再取得当前 attempt 的精确 `s:1|ga:<attemptId>`；普通读档与新角色都只在真实受控角色已经生成的 `SceneReady` 后发布该证明。标题帧、watchdog、OP/reveal 结束、`bootstrap_ready` 或人工延时均不能替代它。
+
+| 层 | 本轮权威 | 明确不拥有 |
+|---|---|---|
+| Web | 三步草稿、真实目录展示、纸娃娃预览、IME/键盘/ARIA 与必要说明 | 存档写入、目录推测、随机外观、价格或场景完成判断 |
+| C# Host | attempt、不可变 `slotKey`、玩家可改 `displayName` 元数据、Web open correlation、重建前单份轮换备份、消息 stale gate 与三重 reveal gate | 角色字段合法性、SOL 持久成功、游戏场景状态 |
+| AS2 | 理发店/服装/难度目录、exact draft 校验、角色初始化、`SharedObject.flush() === true` 的 durable、读盘与真实 `SceneReady` | 存档显示名、Web 草稿生命周期、Launcher 面板切换 |
+
+槽位身份与名称必须分离：新槽位由 Host 生成不碰撞的 ASCII key；已存在的安全 ASCII physical stem 原样保留，绝不重新 sanitize。`displayName` trim 后为 1–32 个 Unicode text element、拒绝控制字符并允许重名；列表以角色名、时间与短 key 辅助区分。`characterName` 仍进入 AS2 存档。建角提交必须显式携 `displayNameCustomized`：仅 `true` 写 catalog，`false` 不写或删除既有 override，使显示名长期跟随存档内角色名；已有槽位 rename 传空串也恢复该跟随语义。Host 元数据损坏只降级为角色名/key，不阻断发现或读档。catalog 中通过 exact key 校验的条目同时是一次受限的发现来源：若 AS2 已 durable、但 Launcher shadow 投影尚未建立或在进程退出前丢失，列表与启动仍可用同一物理 key 回到 SOL；畸形 catalog 不贡献任何身份，也不能用任意 rename 凭空创建槽位。普通 delete 保留 tombstone 与 catalog 显示名，便于辨认并重建同一身份；彻底 reset 同时删除 shadow、tombstone 与 catalog 条目，不能留下 catalog-only 幽灵槽位。
+
+重建在最终确认前不删除任何 SOL、shadow 或 tombstone。提交时先把 resolver 选中的规范化旧快照写成该槽位唯一一份轮换备份并读回校验；只有备份成立后才清旧 Launcher shadow/tombstone，旧 SOL 保留到 AS2 以当前 key 写入。tombstone-only 是可合法重建的已删除身份，不伪造空备份；tombstone 与有效 shadow 并存时先备份该规范化 shadow，畸形 shadow 则 fail closed。AS2 只有 `flush() === true` 才回 `durable`；durable 后元数据写失败只告警和降级，禁止重放创建。目录或旧快照不可验证时 fail closed。该备份是人工恢复材料，不是第二权威、历史账本或本轮自动恢复状态机。
+
+本轮仍只有一个游戏启动 `attemptId`，不新增 AS2 operation/session/document ID、revision ledger 或 payload digest。Web 每次打开建角页另生成窄 `openRequestId`，只在 Web→Host→对应 snapshot/rejection/state 原样回传，用于拒绝 cancel 后立即 reopen 时 WebView2 队列中上一页的迟到消息；它不发往 AS2、不参与存档或游戏权威。Web→Host 只使用 `character_create_open`、`character_create_submit` 与既有 `cancel_launch`；Host→AS2 固定 `characterCreationSnapshot`、`characterCreate`、`frontdoorEnterResolvedSave`；AS2 回包固定 flat `character_create_response`。创建流程只区分 `snapshot / durable / rejected / scene_ready`，Web 的 durable 后入场故障统一为 `durable_scene_error`，具体原因放在 detail，不扩张成多套恢复状态机。`character_create_submit` 在本地尚未投递时允许继续编辑；一旦 Host 已投递而 AS2 在 durable 前拒绝，Web 冻结 exact draft，只允许原样重试或取消，禁止修改 payload 后复用 attempt。durable 后任何失败都禁止重放创建，只能“载入已创建存档”经普通读档前门重新进入，或取消并返回槽位列表。长期把持久状态权威迁入本地服务器仍须按领域另立迁移列车，本轮不引入 StateCore 或双写权威。
+
+标题、目录响应与场景 deadline 必须分相：`Ready` 后尚缺 `bootstrap_reveal_ready` 时只运行 title watchdog；标题 receipt 到达并派发 `characterCreationSnapshot` 后，改由独立 snapshot response deadline 约束 AS2 目录回包。目录采用后取消该 deadline，玩家编辑草稿期间不运行 title、snapshot 或 scene watchdog。普通读档只在 `frontdoorEnterResolvedSave` 已决定派发后、新建角色只在 Host 采信 `success=true && localFlush=true` 的 durable 后，才从零开始 scene deadline。取消、reset、Error 与对应 exact 回执都撤销各自 timer，重复或迟到 callback 不得杀死新阶段；definitive create response 超时仍保留 exact call fence，以便只采信一次迟到 durable 并阻止重提。真实 socket 断连继续由既有 zombie watchdog 处理，不能用玩家填写时间充当连接健康超时。冷启动采用 token-correlated 完整遮罩：当前 `openRequestId` 的 live snapshot 与当前 renderer 的有效首帧必须汇合，renderer 元数据至少满足 `holders>0`、`drawnImages>0` 且 pending/failed/missing 全为零，同时 canvas 至少有 501 个非透明像素，再经双 `requestAnimationFrame` 才移除 `inert` 并开放编辑；cancel/reopen 的迟到 snapshot、图像回调或定时器不得揭开新页面。准备遮罩不新增专用幻方或改变 PM19 图形规律；现役 PM19 背景在整个建角生命周期保持既有 ambient，退出后才恢复 Ready 同步，且始终不参与 ready 判定。显式图像/manifest 失败或 12 秒展示期限只允许降级开放可编辑 Web，不杀 Flash、不启动 scene deadline，也不引入持久目录缓存或第二目录权威。
+
+玩家信息层级固定为 `characterName` 主、`displayName` 次：身份页首先填写角色名；存档显示名收进高级选项，默认跟随角色名，手动覆盖后停止跟随，清空 rename 或取消自定义即可恢复默认。存档卡与欢迎页以角色名作主标题，只有显示名不同时才显示“存档名”次级说明；确认页同样不重复列出默认跟随且相同的名称。重名继续由时间和短 key 区分。建角视图沿用其他 Web Panel 的 `1024×576` 固定逻辑画布和统一 `PanelScale`，窗口/DOM 全屏只整体等比缩放而不做响应式重排；纸娃娃 renderer 的 pixel ratio 同时补偿 DPR 与 CSS transform，避免全屏后拉伸或变糊。三步指示固定在标题右侧；确认页以难度/摘要双列铺满工作区；身份、外观和确认三页在支持的字体倍率内均不得依赖页面滚屏。
+
+外观初始装备仍只提交 identifier，但 AS2 snapshot 对每个 allowlist 物品用 `BaseItem.create(identifier,1)` 与 `InventoryPanelService.buildTooltipProjection` 生成严格六字段 `{identifier,name,iconName,itemType,introHTML,descHTML}`；Host 与 Web 独立严格验证。Web 默认以紧凑方形图标呈现上装/下装/鞋三个固定槽和当前槽位的共享候选池，允许切到放大完整卡片；只复用 `Icons + PanelTooltip` 的图标、富注释与密度语义，不挂载 Inventory/Character Build 的 session、lease、拖放或提交状态机。发型继续消费理发店真实目录并保留 77 个源行、重复 source index 与非随机行为，以单发型槽加首帧缩略图池呈现；紧凑和完整模式都挂载全部 77 项并使用候选池内部自然滚动，完整卡片显示去掉冗余“发型-男式/女式-”前缀后的可辨识名称，原始名称仍保留在 ARIA 与项目注释中。绝对 source index、选中态与 roving focus 不因密度切换或滚动改变。`光头` 可无资源降级，其余缩略图直接读取既有 manifest，不新建 77 个 renderer，也不向玩家显示 raw identifier。脸型字段仍按性别固定并贯穿 snapshot/renderer/submit/AS2 exact 校验，但不显示成可配置项；身高只在左侧预览区编辑。难度全文与装备说明统一由 scoped `PanelTooltip` 展示，hover/focus 均零 RPC；浮层使用同一逻辑坐标系与有界尺寸，不能随宿主缩放二次放大或遮住主要操作区。
+
+旧“关于作者 / 版本信息”可见页不再依赖 Flash。Bootstrap 首页“其他”使用近全屏、完整四边框表面，分别从 `launcher/web/content/about-authors.md` 与 `launcher/web/content/version-history.md` 读取受版本控制正文；版本记录以左侧版本按钮/方向键选择单个节点，右侧只滚动该版本内容，不把所有长文堆在一页。当前 Launcher 版本号仍只由 `launcher/web/config/version.js` 派生，避免 Markdown 与运行版本双写。版本史明确把 2.x 主线、历史随包小版本与当前 E 阶段分开：E 阶段只在稳定发包节点追加一位，普通提交不改号，待 AS2 权威彻底转移后才冻结最终 2.x 标识；没有标签的 2.710–2.717 不补造版本。玩家页只投影可用更新与整包/视频链接，取证边界集中在 [版本考古维护规范](../docs/version-archaeology/README.md)；稳定发包与玩家可见功能列车收口时同步维护版本条目和下一期视频提纲，不要求每个 WIP 提交填表。Markdown 使用仓库既有 `marked`，渲染后再按介绍页允许的元素和 HTTPS 链接做收窄，不引入通用 CMS、外部内容源或新的游戏权威。
+
 ### 2026-08-28 双药剂组与八槽共享冷却
 
 本列车不把怪物输出所依据的四条药剂冷却通道扩成八条，而是把物理容器扩为两组各四槽：AS2 `DrugInputService` 独占活动组、切换上升沿、同列共享冷却、同帧抑制与持键锁存；Settings 只新增逻辑键 `药剂组切换键` 并把键表升为 36 行 / `keySchemaVersion=2`；Character Build 顶层协议仍为 v1，但严格投影 `drugLayout.v=2`、八个 `{slot,bank,lane,active}` 行和两排四列 UI。PlayerInfo 的第五列只是 `drug:switch` 控件，不是第九药剂槽，专用无 linkage MovieClip 以两帧 `○ / × + 1 / 2` 显示活动组。维护者已确认功能、切换手感及最终图标有效；完整迁移、旧档、冷却、键位和发布边界见[双药剂组与八槽共享冷却 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。正式 runtime 已 promotion，部署后 identity/lifecycle 窄纵切已通过；该纵切 `businessJourneyExecuted=false`，不能代签 Character Build 写、八槽使用、旧档迁移或重启读回。

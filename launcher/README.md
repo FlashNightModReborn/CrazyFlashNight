@@ -74,7 +74,6 @@ Bootstrap 使用纯 Win32/CRT，在启动 Core 前验证正式 runtime manifest�
 | `logs/dumps/` | Core native dump 与 createdump 日志 |
 | `logs/perf-latest.jsonl` | 托管入口后的启动性能时间线 |
 | `logs/launcher.log` | Host、Bus、Flash、Panel、Audio 与运行期诊断 |
-
 ### 启动时序
 
 ```text
@@ -83,12 +82,11 @@ bootstrap preflight
   → WebView2 fail-closed 预检 → GuardianForm / BootstrapPanel
   → Steam、Flash trust、Audio、Bus、Task registry
   → save list / ready / prewarm
-  → Flash title receipt
+  → Flash title receipt → Bootstrap Web 启动前门 → bootstrap_reveal_ready 资源栅栏 → 当前 attempt 的 s:1|ga:<attemptId> 场景回执
   → reveal → runtime panels and HUD
 ```
 
 `publish_done.marker`、进程存在或页面加载完成都不能单独代表成功。真实启动结论必须绑定新鲜日志、实际进程路径和对应 runtime identity。
-
 ### 窗口与输入所有权
 
 `GuardianForm` 是主窗口与 Flash 容器。运行态 UI 由 Native HUD、Web Overlay、Panel backdrop/input shield 和原生 cursor 按状态组合；Panel 打开时由 `PanelHostController` 统一协调 snapshot、焦点、输入屏障、Native HUD suspend/resume 和 WebView2 几何。
@@ -118,7 +116,7 @@ bootstrap preflight
 ### 原生音频平台 v2
 
 原生音频 bridge、格式能力和可观测性以 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)为准。通用 runtime promotion 只证明供应链与部署完整性；Audio H2 仍是独立产品验收，不从通用 promotion 或其他 Panel smoke 外推。
-
+前门 BGM 仅走 Native Audio v2，固定循环 `sounds/PTXOA馆长/主菜单.mp3`、gain `0.4`，不读槽位音量偏好。lease 只在 `Ready` 且 source 为空时获取，不重播自身也不抢异源。无 OP 的读档/建角/提交后加载保持到 actual reveal；OP 与 legacy 在 admission 让出。`SceneReady` 不交接音频，reveal 前 reset/error 可恢复；actual reveal 以 requestId-CAS 让出并由 AS2 接权，已 supersede 时不 stop，recovery 不复活已 revoke intent。
 ### Agent Runtime
 
 Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 structured-first/visual-fallback 边界见 [Contracts README](src/AgentRuntime/Contracts/README.md)与[一期范围冻结 ADR](../docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)。历史 F7/F8 发布证据留在 ADR 和 `docs/evidence/`，不回流到本文件。
@@ -310,15 +308,17 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `ping` | 健康检查 |
 | `cancel_launch` | 启动生命周期 |
 | `start_game` | 启动生命周期 |
-| `rebuild` | 启动生命周期 |
+| `character_create_open` | 用当前 Web `openRequestId` 打开新建 / 重建角色草稿 |
+| `character_create_submit` | 提交当前 open/attempt 的角色草稿与显式 `displayNameCustomized` |
 | `reveal_ok` | reveal receipt |
 | `retry` | 启动错误恢复 |
 | `list` | 存档列表 |
-| `delete` | 存档操作 |
+| `delete` | 写 tombstone 并保留 catalog 身份供辨认/重建 |
+| `rename_slot` | 修改 Host 权威槽位显示名；允许重名，空串恢复跟随角色名，不修改物理 `slotKey` |
 | `load` | 存档操作 |
 | `load_raw` | 存档原始读取 |
 | `save` | 存档操作 |
-| `reset` | 存档操作 |
+| `reset` | 彻底清 shadow、tombstone 与 catalog 身份 |
 | `export` | 存档导出 |
 | `import_start` | 导入预检 |
 | `import_commit` | 导入提交 |
@@ -334,11 +334,12 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `repair_apply_manual` | repair 人工应用 |
 | `repair_force_continue` | repair 明示继续 |
 <!-- launcher-bootstrap-command-registry:end -->
-`config_set` 只写白名单；启动按 `list → ready → prewarm → reveal` 与 title receipt 分栅栏。FontPack 的 `runtime-parser-*` 才表示实际探针；requested/redirect 每跳仅允许默认端口 exact HTTPS `github.com`、`release-assets.githubusercontent.com`、`raw.githubusercontent.com`、`cdn.jsdelivr.net`，禁止通配子域。字节快照/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
+`config_set` 只写白名单。启动前门的 attempt/slot/displayName/backup/reveal、durable/SceneReady、catalog 与 exact retry 边界见 [AS2 → Web 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；`bootstrap_reveal_ready` 不代签 `s:1|ga:<attemptId>`，重建不预删 SOL。FontPack 的真实探针、exact HTTPS allow-list 与字节/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
+Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapshot 与纸娃娃有效首帧汇合，且 canvas 至少有 501 个非透明像素，再经过双 `requestAnimationFrame` 才移除 `inert`。准备遮罩不叠加专用幻方；既有 PM19 幻方在建角全过程保持 ambient，退出后再与 Ready 同步，动效从不参与 ready 判定。显式资源失败或 12 秒期限只降级展示。title/snapshot/scene deadline 继续分相，编辑期无 watchdog；迟到回调不得揭开新页，durable 后故障不得重放创建。
+角色名为主，存档显示名在高级选项中默认跟随；确认页仅在自定义名不同时另列。建角固定 `1024×576` + `PanelScale`，窗口/全屏只等比缩放。外观保留三装备槽、单发型槽和左侧唯一身高；紧凑/完整均挂载 77 项，完整卡片使用可辨识短名与候选池内部滚动，三步零页面滚屏；脸型只走 exact wire，注释统一用 `PanelTooltip`。作者/版本正文来自 `web/content/*.md`；版本记录为近全屏单节点浏览器，运行版本只读 `web/config/version.js`，历史证据与视频提纲按[版本考古规范](../docs/version-archaeology/README.md)收口。
 ## Panel 与 minigame 注册表
 
-**最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。
-`Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。
+**最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。`Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。
 
 <!-- launcher-panel-registry:start -->
 | id | 类别 | 最终注册模块 |
@@ -420,11 +421,10 @@ Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../s
 - Bootstrap `cmd`、Panel id、lazy 最终模块或 minigame 入口变化；
 - 测试分区、runner、SDK/包版本真源或验证入口变化；
 - Host/Web/AS2 协议、权威、生命周期或旧 UI 退役边界变化；
-- runtime 构建、候选、promotion 或正式入口术语变化。
+- runtime 构建、候选、promotion 或正式入口术语变化；发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。
 
 ```powershell
 chcp.com 65001 | Out-Null
 node tools/validate-doc-governance.js
 git diff --check
 ```
-发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。

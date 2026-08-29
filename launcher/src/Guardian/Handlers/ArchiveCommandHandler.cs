@@ -2,6 +2,7 @@
 // 零行为改动，纯搬运。
 
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using CF7Launcher.Config;
 using CF7Launcher.Tasks;
 using CF7Launcher.Save;
@@ -25,10 +26,12 @@ namespace CF7Launcher.Guardian.Handlers
 
         internal static void HandleDelete(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
         {
-            string slot = msg.Value<string>("slot");
-            if (string.IsNullOrEmpty(slot))
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostError(bootForm, "slot_missing", "delete needs slot");
+                BootstrapCommandHelpers.PostError(bootForm, slotError, "delete needs an exact slot key");
                 return;
             }
             BootstrapCommandHelpers.DispatchArchive(
@@ -39,12 +42,83 @@ namespace CF7Launcher.Guardian.Handlers
                 /*forwardSlots:*/ false);
         }
 
+        internal static void HandleRename(
+            JObject msg,
+            BootstrapPanel bootForm,
+            ArchiveTask archiveTask)
+        {
+            JObject response = BuildRenameResponse(msg, archiveTask);
+            bootForm.PostToWeb(response.ToString(Formatting.None));
+        }
+
+        internal static JObject BuildRenameResponse(
+            JObject msg,
+            ArchiveTask archiveTask)
+        {
+            string slotKey;
+            string error;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slotKey", archiveTask, out slotKey, out error))
+            {
+                return new JObject
+                {
+                    ["type"] = "bootstrap",
+                    ["cmd"] = "rename_slot_resp",
+                    ["ok"] = false,
+                    ["error"] = error
+                };
+            }
+
+            JToken displayNameToken = msg != null ? msg["displayName"] : null;
+            string displayName = displayNameToken != null
+                && displayNameToken.Type == JTokenType.String
+                    ? displayNameToken.Value<string>()
+                    : null;
+            string normalized = null;
+            bool restoreFollow = displayName != null
+                && displayName.Trim().Length == 0;
+            bool updated = restoreFollow
+                ? archiveTask.SlotCatalog.TryRemoveDisplayName(
+                    slotKey,
+                    out error)
+                : archiveTask.SlotCatalog.TrySetDisplayName(
+                    slotKey,
+                    displayName,
+                    out normalized,
+                    out error);
+            if (!updated)
+            {
+                return new JObject
+                {
+                    ["type"] = "bootstrap",
+                    ["cmd"] = "rename_slot_resp",
+                    ["ok"] = false,
+                    ["slotKey"] = slotKey,
+                    ["error"] = error
+                };
+            }
+
+            return new JObject
+            {
+                ["type"] = "bootstrap",
+                ["cmd"] = "rename_slot_resp",
+                ["ok"] = true,
+                ["slotKey"] = slotKey,
+                ["displayName"] = restoreFollow
+                    ? JValue.CreateNull()
+                    : (JToken)normalized,
+                ["followsCharacterName"] = restoreFollow
+            };
+        }
+
         internal static void HandleLoad(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, SaveResolutionContext saveCtx)
         {
-            string slot = msg.Value<string>("slot");
-            if (string.IsNullOrEmpty(slot))
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostError(bootForm, "slot_missing", "load needs slot");
+                BootstrapCommandHelpers.PostError(bootForm, slotError, "load needs an exact slot key");
                 return;
             }
             PreheatPresetSlot(saveCtx, slot);
@@ -57,10 +131,12 @@ namespace CF7Launcher.Guardian.Handlers
 
         internal static void HandleLoadRaw(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, SaveResolutionContext saveCtx)
         {
-            string slot = msg.Value<string>("slot");
-            if (string.IsNullOrEmpty(slot))
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostError(bootForm, "slot_missing", "load_raw needs slot");
+                BootstrapCommandHelpers.PostError(bootForm, slotError, "load_raw needs an exact slot key");
                 return;
             }
             PreheatPresetSlot(saveCtx, slot);

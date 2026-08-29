@@ -20,10 +20,13 @@
   var _currentEl = null;
   var _timer = 0;
   var _bound = [];
+  var _pointerFocusEl = null;
+  var _pointerFocusUntil = 0;
 
   function ensureLayer() {
     if (layer) return layer;
     layer = document.createElement('div');
+    layer.id = 'boot-tooltip-layer';
     layer.className = 'boot-tooltip';
     layer.setAttribute('role', 'tooltip');
     document.body.appendChild(layer);
@@ -42,6 +45,11 @@
     if (!text || !el.isConnected) return;
     ensureLayer();
     layer.textContent = text;
+    var describedBy = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (describedBy.indexOf(layer.id) < 0) {
+      describedBy.push(layer.id);
+      el.setAttribute('aria-describedby', describedBy.join(' '));
+    }
     // .on 只切 visibility/opacity, 布局一直在, 量尺寸不受显隐影响
     layer.classList.add('on');
     var r = el.getBoundingClientRect();
@@ -58,12 +66,30 @@
 
   function hide() {
     if (_timer) { clearTimeout(_timer); _timer = 0; }
+    if (_currentEl) {
+      var describedBy = (_currentEl.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+      var index = describedBy.indexOf('boot-tooltip-layer');
+      if (index >= 0) describedBy.splice(index, 1);
+      if (describedBy.length) _currentEl.setAttribute('aria-describedby', describedBy.join(' '));
+      else _currentEl.removeAttribute('aria-describedby');
+    }
     _currentEl = null;
     if (layer) layer.classList.remove('on');
   }
 
+  function notePointerDown(el) {
+    _pointerFocusEl = el;
+    _pointerFocusUntil = Date.now() + 500;
+    hide();
+  }
+
+  function pointerFocusIsSuppressed(el) {
+    return _pointerFocusEl === el && Date.now() < _pointerFocusUntil;
+  }
+
   function scheduleShow(el, textOrFn) {
-    if (_timer) clearTimeout(_timer);
+    if (_currentEl && _currentEl !== el) hide();
+    else if (_timer) clearTimeout(_timer);
     _currentEl = el;
     _timer = setTimeout(function () {
       _timer = 0;
@@ -76,9 +102,16 @@
     var entry = { el: el };
     entry.onEnter = function () { scheduleShow(el, textOrFn); };
     entry.onLeave = function () { if (_currentEl === el) hide(); };
+    entry.onFocus = function () {
+      if (!pointerFocusIsSuppressed(el)) scheduleShow(el, textOrFn);
+    };
+    entry.onBlur = function () { if (_currentEl === el) hide(); };
+    entry.onPointerDown = function () { notePointerDown(el); };
     el.addEventListener('mouseenter', entry.onEnter);
     el.addEventListener('mouseleave', entry.onLeave);
-    el.addEventListener('mousedown', entry.onLeave);   // 点击即收, 避免残留
+    el.addEventListener('focusin', entry.onFocus);
+    el.addEventListener('focusout', entry.onBlur);
+    el.addEventListener('mousedown', entry.onPointerDown);   // 点击即收且不被同次 focusin 复活
     _bound.push(entry);
   }
 
@@ -88,7 +121,9 @@
       if (b.el !== el) continue;
       el.removeEventListener('mouseenter', b.onEnter);
       el.removeEventListener('mouseleave', b.onLeave);
-      el.removeEventListener('mousedown', b.onLeave);
+      el.removeEventListener('focusin', b.onFocus);
+      el.removeEventListener('focusout', b.onBlur);
+      el.removeEventListener('mousedown', b.onPointerDown);
       _bound.splice(i, 1);
     }
     if (_currentEl === el) hide();
@@ -98,13 +133,16 @@
   function bindDelegate(container, classTextMap) {
     if (!container || !classTextMap) return;
     var delegateEl = null;
+    function delegatedText(btn) {
+      for (var cls in classTextMap) {
+        if (classTextMap.hasOwnProperty(cls) && btn.classList.contains(cls)) return classTextMap[cls];
+      }
+      return null;
+    }
     container.addEventListener('mouseover', function (e) {
       var btn = (e.target && e.target.closest) ? e.target.closest('button') : null;
       if (!btn || !container.contains(btn) || btn === delegateEl) return;
-      var text = null;
-      for (var cls in classTextMap) {
-        if (classTextMap.hasOwnProperty(cls) && btn.classList.contains(cls)) { text = classTextMap[cls]; break; }
-      }
+      var text = delegatedText(btn);
       if (text == null) return;
       delegateEl = btn;
       scheduleShow(btn, text);
@@ -115,7 +153,26 @@
       delegateEl = null;
       hide();
     });
-    container.addEventListener('mousedown', function () { delegateEl = null; hide(); });
+    container.addEventListener('mousedown', function (e) {
+      var btn = (e.target && e.target.closest) ? e.target.closest('button') : null;
+      if (btn && container.contains(btn)) notePointerDown(btn);
+      else hide();
+      delegateEl = null;
+    });
+    container.addEventListener('focusin', function (e) {
+      var btn = (e.target && e.target.closest) ? e.target.closest('button') : null;
+      if (!btn || !container.contains(btn)) return;
+      var text = delegatedText(btn);
+      if (text == null) return;
+      if (pointerFocusIsSuppressed(btn)) return;
+      delegateEl = btn;
+      scheduleShow(btn, text);
+    });
+    container.addEventListener('focusout', function (e) {
+      if (!delegateEl || (e.relatedTarget && delegateEl.contains(e.relatedTarget))) return;
+      delegateEl = null;
+      hide();
+    });
   }
 
   // 滚动 / 缩放让锚定位失效, 直接收 (capture 阶段捕获卡片网格内部滚动)

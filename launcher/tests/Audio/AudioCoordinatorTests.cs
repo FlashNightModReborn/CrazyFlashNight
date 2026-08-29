@@ -1804,6 +1804,165 @@ namespace CF7Launcher.Tests.Audio
         }
 
         [Fact]
+        public void FrontdoorBgm_DuplicateExactAcquireInOneEpochDoesNotReplay()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            using (var coordinator = Coordinator(native))
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                const string requestId = "host.frontdoor.duplicate-test";
+
+                Assert.True(coordinator.TryAcquireFrontdoorBgm(
+                    requestId,
+                    @"sounds\PTXOA馆长\主菜单.mp3",
+                    true,
+                    0.4f,
+                    1f));
+                Assert.True(coordinator.TryAcquireFrontdoorBgm(
+                    requestId,
+                    @"sounds\PTXOA馆长\主菜单.mp3",
+                    true,
+                    0.4f,
+                    1f));
+
+                AudioNativeBgmCommandV2 command =
+                    Assert.Single(native.BgmCommands);
+                Assert.Equal(requestId, command.RequestId);
+                Assert.Equal(0.4f, command.Volume);
+                Assert.True(command.Loop);
+                Assert.Equal("主菜单.mp3",
+                    Path.GetFileName(command.NormalizedPath));
+                Assert.Equal(requestId, coordinator.Snapshot.SourceRequestId);
+            }
+        }
+
+        [Fact]
+        public void FrontdoorBgm_RevokeWithDifferentLeaseNeverStopsOwner()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            using (var coordinator = Coordinator(native))
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                const string owner = "host.frontdoor.owner-test";
+                Assert.True(coordinator.TryAcquireFrontdoorBgm(
+                    owner,
+                    FrontdoorBgmLease.TrackRelativePath,
+                    true,
+                    FrontdoorBgmLease.TrackGain,
+                    FrontdoorBgmLease.FadeSeconds));
+
+                Assert.True(coordinator.RevokeFrontdoorBgm(
+                    "host.frontdoor.other-test",
+                    FrontdoorBgmLease.FadeSeconds));
+
+                Assert.Single(native.BgmCommands);
+                Assert.Equal(owner, coordinator.Snapshot.SourceRequestId);
+            }
+        }
+
+        [Fact]
+        public void FrontdoorBgm_As2SupersedeMakesLateRevokeANoop()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            using (var coordinator = Coordinator(native))
+            using (var as2Started = new ManualResetEventSlim(false))
+            {
+                Assert.True(coordinator.Initialize(TestRoot()));
+                const string frontdoor = "host.frontdoor.as2-fence-test";
+                Assert.True(coordinator.TryAcquireFrontdoorBgm(
+                    frontdoor,
+                    FrontdoorBgmLease.TrackRelativePath,
+                    true,
+                    FrontdoorBgmLease.TrackGain,
+                    FrontdoorBgmLease.FadeSeconds));
+
+                AudioCoordinatorSnapshotV2 tuple = coordinator.Snapshot;
+                coordinator.DispatchBgm(
+                    Request(
+                        tuple,
+                        "bgm.as2.frontdoor-supersede",
+                        "sounds/music/gameplay.mp3"),
+                    delegate(AudioBgmResultV2 result)
+                    {
+                        if (result.CompletionState == "started")
+                            as2Started.Set();
+                    });
+                Assert.True(as2Started.Wait(TimeSpan.FromSeconds(2)));
+                Assert.Equal(2, native.BgmCommands.Length);
+                Assert.Equal(
+                    "bgm.as2.frontdoor-supersede",
+                    coordinator.Snapshot.SourceRequestId);
+
+                Assert.True(coordinator.RevokeFrontdoorBgm(
+                    frontdoor,
+                    FrontdoorBgmLease.FadeSeconds));
+
+                Assert.Equal(2, native.BgmCommands.Length);
+                Assert.Equal(
+                    "bgm.as2.frontdoor-supersede",
+                    coordinator.Snapshot.SourceRequestId);
+            }
+        }
+
+        [Fact]
+        public void FrontdoorBgm_RevokeDuringQualificationClearsRecoveryReplay()
+        {
+            var native = new FakeAudioNativeV2(new List<string>());
+            var requests = new List<AudioCatalogQualificationRequestV2>();
+            using (var coordinator = Coordinator(native, false))
+            using (var qualificationArrived = new AutoResetEvent(false))
+            {
+                Assert.True(coordinator.ConfigureCatalogQualificationHook(
+                    delegate(AudioCatalogQualificationRequestV2 request)
+                    {
+                        lock (requests) requests.Add(request);
+                        qualificationArrived.Set();
+                    }));
+                Assert.False(coordinator.Initialize(TestRoot()));
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 initial;
+                lock (requests) initial = Assert.Single(requests);
+                Assert.True(CompleteQualification(
+                    coordinator,
+                    initial,
+                    true));
+
+                const string requestId =
+                    "host.frontdoor.recovery-revoke-test";
+                Assert.True(coordinator.TryAcquireFrontdoorBgm(
+                    requestId,
+                    FrontdoorBgmLease.TrackRelativePath,
+                    true,
+                    FrontdoorBgmLease.TrackGain,
+                    FrontdoorBgmLease.FadeSeconds));
+                Assert.Single(native.BgmCommands);
+
+                Assert.False(coordinator.RecoverDevice());
+                Assert.True(qualificationArrived.WaitOne(
+                    TimeSpan.FromSeconds(2)));
+                AudioCatalogQualificationRequestV2 recovery;
+                lock (requests) recovery = requests.Last();
+                Assert.Equal(
+                    AudioCoordinatorStatusV2.Recovering,
+                    coordinator.Snapshot.Status);
+
+                Assert.True(coordinator.RevokeFrontdoorBgm(
+                    requestId,
+                    FrontdoorBgmLease.FadeSeconds));
+                Assert.Single(native.BgmCommands);
+
+                Assert.True(CompleteQualification(
+                    coordinator,
+                    recovery,
+                    true));
+                Assert.True(coordinator.Snapshot.IsReady);
+                Assert.Null(coordinator.Snapshot.SourceRequestId);
+                Assert.Single(native.BgmCommands);
+            }
+        }
+
+        [Fact]
         public void AudioEngine_LegacySurfaceContainsNoRawDllImports()
         {
             MethodInfo[] methods = typeof(AudioEngine).GetMethods(

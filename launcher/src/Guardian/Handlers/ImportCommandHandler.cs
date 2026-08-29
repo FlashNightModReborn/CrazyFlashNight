@@ -61,7 +61,8 @@ namespace CF7Launcher.Guardian.Handlers
                 return;
             }
 
-            // 从文件名推测 slot（去 .json 后缀 + sanitize）
+            // Filename is presentation-only input. Commit performs the exact
+            // slot-key gate; no lossy sanitization or collision is allowed.
             string suggestedSlot = Path.GetFileNameWithoutExtension(filePath);
 
             JObject outMsg = new JObject();
@@ -84,8 +85,14 @@ namespace CF7Launcher.Guardian.Handlers
 
         private static void HandleImportCommitInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
         {
-            string slot = msg.Value<string>("slot");
-            if (string.IsNullOrEmpty(slot)) { BootstrapCommandHelpers.PostResp(bootForm, "import_resp", false, null, "slot_missing"); return; }
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadWritableSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
+            {
+                BootstrapCommandHelpers.PostResp(bootForm, "import_resp", false, null, slotError);
+                return;
+            }
 
             JObject dataObj;
             string normErr;

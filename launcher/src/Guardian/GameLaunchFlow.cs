@@ -16,8 +16,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using CF7Launcher.Audio;
 using CF7Launcher.Bus;
 using CF7Launcher.Diagnostic;
+using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Save;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -82,6 +85,8 @@ namespace CF7Launcher.Guardian
         private readonly Action _readyWiring;
         private readonly Action _hotkeyGuardSpawn;
         private readonly CF7Launcher.Save.SaveResolutionContext _saveCtx;
+        private readonly Action<string> _persistLastPlayedSlot;
+        private readonly IFrontdoorBgmLease _frontdoorBgmLease;
 
         // Phase A Step A3a: RunOnUi 稳定 dispatcher 的 pending action 队列。
         // 句柄未创建 → 入队等 HandleCreated 事件 flush；dispose → drop 队列。
@@ -175,6 +180,41 @@ namespace CF7Launcher.Guardian
         private System.Threading.Timer _flashRevealWatchdog;
         internal const int FLASH_REVEAL_WATCHDOG_DEFAULT_MS = 45000;
         private readonly int _flashRevealWatchdogMs;
+
+        // Startup frontdoor: title readiness is only the second reveal gate.
+        // The final gate is an exact-attempt UiData scene receipt (s:1 + ga).
+        private string _frontdoorMode;
+        private bool _revealWaitingScene;
+        private string _frontdoorTitleCallId;
+        private bool _frontdoorEntryDispatched;
+        private System.Threading.Timer _frontdoorSceneWatchdog;
+        private bool _lastPlayedPersistedForAttempt;
+
+        private sealed class CharacterCreateOpenContext
+        {
+            internal string Mode;
+            internal string OpenRequestId;
+            internal JObject RebuildSnapshot;
+            internal string RebuildSource;
+        }
+
+        private CharacterCreateOpenContext _characterCreateContext;
+        private bool _characterCreateSnapshotReceived;
+        private bool _characterCreatePreparingSubmit;
+        private bool _characterCreateDurable;
+        private bool _characterCreateDisplayNameCustomized;
+        private string _characterCreateDisplayName;
+        private string _characterCreateCallId;
+        private System.Threading.Timer _characterCreateSnapshotTimer;
+        private bool _characterCreateSnapshotTimedOut;
+        private System.Threading.Timer _characterCreateDefinitiveTimer;
+        private bool _characterCreateDefinitiveTimedOut;
+        internal const int CHARACTER_CREATE_SNAPSHOT_TIMEOUT_MS = 15000;
+        internal const int CHARACTER_CREATE_DEFINITIVE_TIMEOUT_MS = 15000;
+
+        // Focused test seams. Production uses BootstrapPanel/XmlSocketServer.
+        internal Action<JObject> CharacterCreateWebPostForTests;
+        internal Action<JObject> CharacterCreateAs2PushForTests;
 
         // ==================== 公共 API ====================
 
@@ -402,7 +442,8 @@ namespace CF7Launcher.Guardian
             BootstrapPanel bootstrapPanel,
             Action readyWiring,
             Action hotkeyGuardSpawn,
-            CF7Launcher.Save.SaveResolutionContext saveCtx)
+            CF7Launcher.Save.SaveResolutionContext saveCtx,
+            Action<string> persistLastPlayedSlot = null)
             : this(
                 socketServer,
                 router,
@@ -413,7 +454,8 @@ namespace CF7Launcher.Guardian
                 readyWiring,
                 hotkeyGuardSpawn,
                 saveCtx,
-                FLASH_REVEAL_WATCHDOG_DEFAULT_MS)
+                FLASH_REVEAL_WATCHDOG_DEFAULT_MS,
+                persistLastPlayedSlot)
         {
         }
 
@@ -427,7 +469,37 @@ namespace CF7Launcher.Guardian
             Action readyWiring,
             Action hotkeyGuardSpawn,
             CF7Launcher.Save.SaveResolutionContext saveCtx,
-            int flashRevealWatchdogMs)
+            int flashRevealWatchdogMs,
+            Action<string> persistLastPlayedSlot = null)
+            : this(
+                socketServer,
+                router,
+                processManager,
+                windowManager,
+                form,
+                bootstrapPanel,
+                readyWiring,
+                hotkeyGuardSpawn,
+                saveCtx,
+                flashRevealWatchdogMs,
+                persistLastPlayedSlot,
+                null)
+        {
+        }
+
+        internal GameLaunchFlow(
+            XmlSocketServer socketServer,
+            MessageRouter router,
+            ProcessManager processManager,
+            WindowManager windowManager,
+            GuardianForm form,
+            BootstrapPanel bootstrapPanel,
+            Action readyWiring,
+            Action hotkeyGuardSpawn,
+            CF7Launcher.Save.SaveResolutionContext saveCtx,
+            int flashRevealWatchdogMs,
+            Action<string> persistLastPlayedSlot,
+            IFrontdoorBgmLease frontdoorBgmLease)
         {
             if (flashRevealWatchdogMs <= 0)
                 throw new ArgumentOutOfRangeException(nameof(flashRevealWatchdogMs));
@@ -441,6 +513,8 @@ namespace CF7Launcher.Guardian
             _readyWiring = readyWiring;
             _hotkeyGuardSpawn = hotkeyGuardSpawn;
             _saveCtx = saveCtx;
+            _persistLastPlayedSlot = persistLastPlayedSlot;
+            _frontdoorBgmLease = frontdoorBgmLease;
             _flashRevealWatchdogMs = flashRevealWatchdogMs;
 
             // Phase D Step D4: bootstrap_handshake 改 RegisterAsync 以支持 prewarm 模式的 held callback.
@@ -449,9 +523,11 @@ namespace CF7Launcher.Guardian
             _router.RegisterSync("bootstrap_ready", HandleBootstrapReady);
             // Phase 2b-ext: Flash 帧 81 "封面" 发来的 reveal 信号, 清 _revealWaitingFlash
             _router.RegisterSync("bootstrap_reveal_ready", HandleBootstrapRevealReady);
+            _router.RegisterSync("character_create_response", HandleCharacterCreateResponse);
             LogManager.Log("[LaunchFlow] bootstrap_handshake registered (async)");
             LogManager.Log("[LaunchFlow] bootstrap_ready registered");
             LogManager.Log("[LaunchFlow] bootstrap_reveal_ready registered");
+            LogManager.Log("[LaunchFlow] character_create_response registered");
 
             _windowManager.OnEmbedResult += OnEmbedResult;
             _processManager.OnFlashExited += OnFlashExitedExternal;
@@ -471,24 +547,35 @@ namespace CF7Launcher.Guardian
         public void StartGame(string slot) { StartGame(slot, false, false); }
 
         /// <summary>
-        /// Fresh-start path: clear launcher shadow/tombstone + all matching SOL
-        /// files before re-entering the normal StartGame resolution flow.
-        /// Used for "新建角色" and "重建" so hidden corrupt SOL residues cannot
-        /// bounce the user into the restore-error screen.
+        /// Explicit fresh path retained for AgentControl callers. It supplies an
+        /// empty resolution override only; it never deletes SOL, shadow JSON, or
+        /// tombstones. Bootstrap character creation uses OpenCharacterCreate.
         /// </summary>
         public void StartFreshGame(string slot, bool deferJsReveal, bool requireFlashReveal)
         {
-            if (_saveCtx != null)
-            {
-                if (_saveCtx.Archive != null)
-                    _saveCtx.Archive.ResetSlotSync(slot);
-                if (_saveCtx.Locator != null)
-                {
-                    int deleted = _saveCtx.Locator.DeleteAllSolFiles(slot, _saveCtx.SwfPath);
-                    LogManager.Log("[LaunchFlow] StartFreshGame cleared SOL count=" + deleted + " slot=" + slot);
-                }
-            }
-            StartGame(slot, deferJsReveal, requireFlashReveal);
+            StartGameInternal(
+                slot,
+                deferJsReveal,
+                requireFlashReveal,
+                SolResolveResult.NewEmpty(),
+                true,
+                null,
+                null);
+        }
+
+        public void StartGameFromBootstrap(
+            string slot,
+            bool deferJsReveal,
+            bool requireFlashReveal)
+        {
+            StartGameInternal(
+                slot,
+                deferJsReveal,
+                requireFlashReveal,
+                null,
+                false,
+                "load",
+                null);
         }
 
         /// <summary>
@@ -499,17 +586,38 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void StartGame(string slot, bool deferJsReveal, bool requireFlashReveal)
         {
+            StartGameInternal(
+                slot,
+                deferJsReveal,
+                requireFlashReveal,
+                null,
+                false,
+                null,
+                null);
+        }
+
+        private void StartGameInternal(
+            string slot,
+            bool deferJsReveal,
+            bool requireFlashReveal,
+            SolResolveResult resolvedOverride,
+            bool useResolvedOverride,
+            string frontdoorMode,
+            CharacterCreateOpenContext characterCreateContext)
+        {
             PerfTrace.Mark("launch.start_game",
                 "slot=" + slot
                 + " deferJsReveal=" + deferJsReveal
                 + " requireFlashReveal=" + requireFlashReveal);
             // Phase C protocol v2: 锁外解析存档决议。避免在握手状态锁里做文件 I/O。
             // SolResolver 自身线程安全（使用 ArchiveTask 的 _lock）。
-            CF7Launcher.Save.SolResolveResult resolved = null;
+            CF7Launcher.Save.SolResolveResult resolved = useResolvedOverride
+                ? resolvedOverride
+                : null;
             string resolvedSaveSignature = null;
             bool configureAudioGate = false;
             bool armAudioGate = false;
-            if (_saveCtx != null)
+            if (!useResolvedOverride && _saveCtx != null)
             {
                 try
                 {
@@ -570,8 +678,11 @@ namespace CF7Launcher.Guardian
                 {
                     // Phase 2b-ext: defer reveal flags 在 attempt 入口 set (三条成功分支共用).
                     _revealWaitingJs = deferJsReveal;
-                    _revealWaitingFlash = requireFlashReveal;
+                    _revealWaitingFlash = requireFlashReveal || frontdoorMode != null;
                     _revealPerformed = false;
+                    ConfigureFrontdoorAttemptLocked(
+                        frontdoorMode,
+                        characterCreateContext);
 
                     if (_state == State.Idle)
                     {
@@ -629,8 +740,11 @@ namespace CF7Launcher.Guardian
                                 && _state != State.WaitingHandshake) return false;
 
                             _revealWaitingJs = deferJsReveal;
-                            _revealWaitingFlash = requireFlashReveal;
+                            _revealWaitingFlash = requireFlashReveal || frontdoorMode != null;
                             _revealPerformed = false;
+                            ConfigureFrontdoorAttemptLocked(
+                                frontdoorMode,
+                                characterCreateContext);
                             _pendingSlot = slot;
                             _resolvedSave = resolved;
                             _agentRuntimeSaveSignature =
@@ -701,10 +815,1111 @@ namespace CF7Launcher.Guardian
             {
                 if (armAudioGate) CF7Launcher.Tasks.AudioTask.ArmBootstrapBgmGate();
                 else CF7Launcher.Tasks.AudioTask.CancelBootstrapBgmGate();
+
+                // An OP starts immediately after admission, so it takes audio now.
+                // Legacy non-Bootstrap callers keep their historical admission
+                // handoff.  Bootstrap load/create keeps the frontdoor track across
+                // Flash and paper-doll loading; the exact reveal performs the handoff.
+                if (deferJsReveal || frontdoorMode == null)
+                {
+                    YieldFrontdoorBgm(
+                        "launch_accepted:" +
+                        (frontdoorMode ?? "legacy"));
+                }
             }
             // C2-β: prewarm consume 路径下若 saveDecision="repairable", 通知 JS 打开修复卡片.
             if (repairNotifyForJs != null && _bootstrapPanel != null)
                 NotifyRepairRequiredToJs(repairNotifySlotPrewarm, repairNotifyForJs);
+        }
+
+        private void ConfigureFrontdoorAttemptLocked(
+            string frontdoorMode,
+            CharacterCreateOpenContext characterCreateContext)
+        {
+            CancelCharacterCreateDefinitiveTimerLocked();
+            CancelCharacterCreateSnapshotTimerLocked();
+            CancelFrontdoorSceneWatchdogLocked();
+            _frontdoorMode = frontdoorMode;
+            _revealWaitingScene = frontdoorMode != null;
+            _frontdoorTitleCallId = null;
+            _frontdoorEntryDispatched = false;
+            _lastPlayedPersistedForAttempt = false;
+            _characterCreateContext = characterCreateContext;
+            _characterCreateSnapshotReceived = false;
+            _characterCreatePreparingSubmit = false;
+            _characterCreateDurable = false;
+            _characterCreateDisplayNameCustomized = false;
+            _characterCreateDisplayName = null;
+            _characterCreateCallId = null;
+            _characterCreateSnapshotTimedOut = false;
+            _characterCreateDefinitiveTimedOut = false;
+        }
+
+        private void ClearFrontdoorAttemptLocked()
+        {
+            CancelCharacterCreateDefinitiveTimerLocked();
+            CancelCharacterCreateSnapshotTimerLocked();
+            CancelFrontdoorSceneWatchdogLocked();
+            _frontdoorMode = null;
+            _revealWaitingScene = false;
+            _frontdoorTitleCallId = null;
+            _frontdoorEntryDispatched = false;
+            _lastPlayedPersistedForAttempt = false;
+            _characterCreateContext = null;
+            _characterCreateSnapshotReceived = false;
+            _characterCreatePreparingSubmit = false;
+            _characterCreateDurable = false;
+            _characterCreateDisplayNameCustomized = false;
+            _characterCreateDisplayName = null;
+            _characterCreateCallId = null;
+            _characterCreateSnapshotTimedOut = false;
+            _characterCreateDefinitiveTimedOut = false;
+        }
+
+        public bool OpenCharacterCreate(
+            string mode,
+            string requestedSlotKey,
+            string openRequestId,
+            out string attemptId,
+            out string slotKey,
+            out string error)
+        {
+            attemptId = null;
+            slotKey = null;
+            error = null;
+            string exactOpenRequestId;
+            if (!TryValidateCharacterCreateOpenRequestId(
+                    openRequestId,
+                    out exactOpenRequestId))
+            {
+                error = "open_request_id_invalid";
+                return false;
+            }
+            if (!string.Equals(mode, "new", StringComparison.Ordinal)
+                && !string.Equals(mode, "rebuild", StringComparison.Ordinal))
+            {
+                error = "invalid_mode";
+                return false;
+            }
+
+            lock (_stateLock)
+            {
+                bool admissible = !_prewarmAborting
+                    && _pendingSlot == null
+                    && (_state == State.Idle
+                        || _state == State.WaitingConnect
+                        || _state == State.WaitingHandshake
+                        || _state == State.PrewarmHandshakeHeld);
+                if (!admissible)
+                {
+                    error = "not_idle";
+                    return false;
+                }
+            }
+
+            CharacterCreateOpenContext context = new CharacterCreateOpenContext();
+            context.Mode = mode;
+            context.OpenRequestId = exactOpenRequestId;
+            if (mode == "new")
+            {
+                if (!string.IsNullOrEmpty(requestedSlotKey))
+                {
+                    error = "new_slot_key_must_be_host_generated";
+                    return false;
+                }
+                if (!TryCreateUnusedSlotKey(out slotKey, out error))
+                    return false;
+            }
+            else
+            {
+                if (!SaveSlotKey.TryValidateExisting(requestedSlotKey, out slotKey))
+                {
+                    error = string.IsNullOrEmpty(requestedSlotKey)
+                        ? "slot_missing"
+                        : "invalid_slot_key";
+                    return false;
+                }
+                if (_saveCtx == null || _saveCtx.Resolver == null)
+                {
+                    error = "save_resolver_unavailable";
+                    return false;
+                }
+
+                bool archiveDiscovered = false;
+                try
+                {
+                    archiveDiscovered = _saveCtx.Archive != null
+                        && _saveCtx.Archive.SlotExistsSync(slotKey);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[CharacterCreate] rebuild discovery failed: " + ex.Message);
+                    error = "rebuild_snapshot_unavailable";
+                    return false;
+                }
+
+                SolResolveResult rebuildResolved;
+                try
+                {
+                    rebuildResolved = _saveCtx.Resolver.Resolve(
+                        slotKey,
+                        _saveCtx.SwfPath);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[CharacterCreate] rebuild resolve failed: " + ex.Message);
+                    error = "rebuild_snapshot_unavailable";
+                    return false;
+                }
+
+                if (rebuildResolved != null
+                    && (rebuildResolved.Kind == DecisionKind.Snapshot
+                        || rebuildResolved.Kind == DecisionKind.Repairable)
+                    && rebuildResolved.Snapshot != null)
+                {
+                    JObject snapshot = rebuildResolved.Snapshot.DeepClone() as JObject;
+                    SaveMigrator.NormalizeResolvedSnapshot(snapshot);
+                    if (!SaveMigrator.ValidateResolvedSnapshot(snapshot)
+                        || string.IsNullOrEmpty(rebuildResolved.Source))
+                    {
+                        error = "rebuild_snapshot_unverifiable";
+                        return false;
+                    }
+                    context.RebuildSnapshot = snapshot;
+                    context.RebuildSource = rebuildResolved.Source;
+                }
+                else if (rebuildResolved != null
+                    && rebuildResolved.Kind == DecisionKind.Deleted)
+                {
+                    // A tombstone is the logical authority: a tombstone-only
+                    // slot can be rebuilt without resurrecting the old SOL.
+                    // If an inconsistent shadow is also present, it must first
+                    // become the verified rotating backup used by submit.
+                    if (!archiveDiscovered)
+                    {
+                        error = "slot_not_found";
+                        return false;
+                    }
+                    JObject priorShadow;
+                    string priorShadowError;
+                    bool priorLoaded = _saveCtx.Archive.TryLoadShadowSync(
+                        slotKey,
+                        out priorShadow,
+                        out priorShadowError);
+                    if (priorLoaded)
+                    {
+                        SaveMigrator.NormalizeResolvedSnapshot(priorShadow);
+                        if (!SaveMigrator.ValidateResolvedSnapshot(priorShadow))
+                        {
+                            error = "rebuild_snapshot_unverifiable";
+                            return false;
+                        }
+                        context.RebuildSnapshot = priorShadow.DeepClone() as JObject;
+                        context.RebuildSource = "json_shadow_tombstoned";
+                    }
+                    else if (!string.Equals(
+                            priorShadowError,
+                            "not_found",
+                            StringComparison.Ordinal))
+                    {
+                        error = "rebuild_snapshot_unverifiable";
+                        return false;
+                    }
+                }
+                else if (rebuildResolved != null
+                    && rebuildResolved.Kind == DecisionKind.Empty)
+                {
+                    // Empty is admissible only when no unverified prior data
+                    // would be destroyed. A malformed/invalid discovered shadow
+                    // must not be relabelled as an empty slot by the resolver.
+                    if (archiveDiscovered)
+                    {
+                        JObject priorShadow;
+                        string priorShadowError;
+                        bool priorLoaded = _saveCtx.Archive.TryLoadShadowSync(
+                            slotKey,
+                            out priorShadow,
+                            out priorShadowError);
+                        if (priorLoaded)
+                        {
+                            SaveMigrator.NormalizeResolvedSnapshot(priorShadow);
+                            if (!SaveMigrator.ValidateResolvedSnapshot(priorShadow))
+                            {
+                                error = "rebuild_snapshot_unverifiable";
+                                return false;
+                            }
+                            context.RebuildSnapshot = priorShadow.DeepClone() as JObject;
+                            context.RebuildSource = "json_shadow";
+                        }
+                        else if (!string.Equals(
+                                priorShadowError,
+                                "not_found",
+                                StringComparison.Ordinal))
+                        {
+                            error = "rebuild_snapshot_unverifiable";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // Rebuild never allocates caller-chosen identities.
+                        // New slots must use the Host-generated new-mode key.
+                        error = "slot_not_found";
+                        return false;
+                    }
+                }
+                else
+                {
+                    error = "rebuild_snapshot_unverifiable";
+                    return false;
+                }
+            }
+
+            StartGameInternal(
+                slotKey,
+                false,
+                true,
+                SolResolveResult.NewEmpty(),
+                true,
+                "create",
+                context);
+
+            lock (_stateLock)
+            {
+                if (!ReferenceEquals(_characterCreateContext, context)
+                    || !string.Equals(_pendingSlot, slotKey, StringComparison.Ordinal)
+                    || string.IsNullOrEmpty(_currentAttemptId))
+                {
+                    error = "launch_not_started";
+                    return false;
+                }
+                attemptId = _currentAttemptId;
+            }
+
+            PostCharacterCreateState(
+                "starting",
+                attemptId,
+                slotKey,
+                null,
+                null,
+                null);
+            return true;
+        }
+
+        public bool SubmitCharacterCreate(
+            string openRequestId,
+            string attemptId,
+            string slotKey,
+            bool displayNameCustomized,
+            string displayName,
+            JObject draft,
+            out string error)
+        {
+            error = null;
+            string exactSlot;
+            if (!SaveSlotKey.TryValidateExisting(slotKey, out exactSlot))
+            {
+                error = "invalid_slot_key";
+                return false;
+            }
+            string exactOpenRequestId;
+            if (!TryValidateCharacterCreateOpenRequestId(
+                    openRequestId,
+                    out exactOpenRequestId))
+            {
+                error = "open_request_id_invalid";
+                return false;
+            }
+            string normalizedDisplayName = null;
+            if (displayNameCustomized
+                && !SaveSlotCatalog.TryNormalizeDisplayName(
+                    displayName,
+                    out normalizedDisplayName,
+                    out error))
+                return false;
+            if (!TryValidateCharacterCreateDraft(draft, out error))
+                return false;
+            if (_saveCtx == null || _saveCtx.Archive == null)
+            {
+                error = "archive_unavailable";
+                return false;
+            }
+
+            CharacterCreateOpenContext context;
+            string createCallId = null;
+            lock (_stateLock)
+            {
+                bool exactAttempt = _frontdoorMode == "create"
+                    && _characterCreateContext != null
+                    && string.Equals(
+                        _characterCreateContext.OpenRequestId,
+                        exactOpenRequestId,
+                        StringComparison.Ordinal)
+                    && string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                    && string.Equals(_pendingSlot, exactSlot, StringComparison.Ordinal);
+                if (!exactAttempt)
+                {
+                    error = "stale_attempt";
+                    return false;
+                }
+                if (!_characterCreateSnapshotReceived)
+                {
+                    error = "snapshot_not_ready";
+                    return false;
+                }
+                if (_characterCreatePreparingSubmit || _characterCreateCallId != null
+                    || _characterCreateDurable)
+                {
+                    error = "submit_already_pending";
+                    return false;
+                }
+                _characterCreatePreparingSubmit = true;
+                context = _characterCreateContext;
+            }
+
+            if (string.Equals(context.Mode, "rebuild", StringComparison.Ordinal)
+                && context.RebuildSnapshot != null)
+            {
+                string backupPath;
+                string backupError;
+                string backupDisplayName = ResolveRebuildBackupDisplayName(
+                    exactSlot,
+                    context.RebuildSnapshot,
+                    normalizedDisplayName);
+                if (!_saveCtx.Archive.RebuildBackups.TryWriteLatest(
+                        exactSlot,
+                        backupDisplayName,
+                        context.RebuildSnapshot,
+                        context.RebuildSource,
+                        out backupPath,
+                        out backupError))
+                {
+                    lock (_stateLock)
+                    {
+                        if (ReferenceEquals(_characterCreateContext, context)
+                            && string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal))
+                            _characterCreatePreparingSubmit = false;
+                    }
+                    error = "backup_failed:" + (backupError ?? "unknown");
+                    return false;
+                }
+            }
+
+            lock (_stateLock)
+            {
+                bool stillExact = ReferenceEquals(_characterCreateContext, context)
+                    && _frontdoorMode == "create"
+                    && string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                    && string.Equals(_pendingSlot, exactSlot, StringComparison.Ordinal)
+                    && _characterCreatePreparingSubmit
+                    && _characterCreateCallId == null
+                    && !_characterCreateDurable;
+                if (!stillExact)
+                {
+                    error = "stale_attempt";
+                    return false;
+                }
+                _characterCreatePreparingSubmit = false;
+                _characterCreateDisplayNameCustomized = displayNameCustomized;
+                _characterCreateDisplayName = normalizedDisplayName;
+                createCallId = Guid.NewGuid().ToString("N");
+                _characterCreateCallId = createCallId;
+            }
+
+            if (string.Equals(context.Mode, "rebuild", StringComparison.Ordinal))
+            {
+                try
+                {
+                    _saveCtx.Archive.ResetSlotSync(exactSlot);
+                }
+                catch (Exception ex)
+                {
+                    lock (_stateLock)
+                    {
+                        if (ReferenceEquals(_characterCreateContext, context)
+                            && string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal))
+                        {
+                            _characterCreateCallId = null;
+                        }
+                    }
+                    error = "reset_failed:" + ex.GetType().Name;
+                    return false;
+                }
+            }
+
+            JObject command = new JObject
+            {
+                ["task"] = "cmd",
+                ["action"] = "characterCreate",
+                ["v"] = 1,
+                ["callId"] = createCallId,
+                ["attemptId"] = attemptId,
+                ["slotKey"] = exactSlot,
+                ["draft"] = draft.DeepClone()
+            };
+            lock (_stateLock)
+            {
+                if (string.Equals(_characterCreateCallId, createCallId, StringComparison.Ordinal)
+                    && string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal))
+                    ArmCharacterCreateDefinitiveTimerLocked(attemptId, exactSlot);
+            }
+            PostCharacterCreateState(
+                "submitting", attemptId, exactSlot, null, null, null);
+            PushFrontdoorCommand(command);
+            return true;
+        }
+
+        internal static bool TryValidateCharacterCreateDraft(
+            JObject draft,
+            out string error)
+        {
+            error = null;
+            if (draft == null)
+            {
+                error = "draft_missing";
+                return false;
+            }
+            string[] keys = new string[]
+            {
+                "characterName",
+                "gender",
+                "height",
+                "faceIdentifier",
+                "hairIdentifier",
+                "upperIdentifier",
+                "lowerIdentifier",
+                "footwearIdentifier",
+                "difficulty"
+            };
+            if (draft.Properties().Count() != keys.Length)
+            {
+                error = "draft_shape_invalid";
+                return false;
+            }
+            for (int i = 0; i < keys.Length; i++)
+            {
+                JToken value = draft[keys[i]];
+                if (value == null || value.Type == JTokenType.Null
+                    || value.Type == JTokenType.Undefined)
+                {
+                    error = "draft_shape_invalid";
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool TryCreateUnusedSlotKey(
+            out string slotKey,
+            out string error)
+        {
+            slotKey = null;
+            error = null;
+            for (int i = 0; i < 16; i++)
+            {
+                string candidate = SaveSlotKey.CreateNew();
+                try
+                {
+                    bool archiveExists = _saveCtx != null
+                        && _saveCtx.Archive != null
+                        && _saveCtx.Archive.SlotExistsSync(candidate);
+                    bool solExists = _saveCtx != null
+                        && _saveCtx.Locator != null
+                        && _saveCtx.Locator.FindSolFile(
+                            candidate,
+                            _saveCtx.SwfPath) != null;
+                    if (!archiveExists && !solExists)
+                    {
+                        slotKey = candidate;
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[CharacterCreate] slot allocation probe failed: " + ex.Message);
+                    error = "slot_allocation_failed";
+                    return false;
+                }
+            }
+            error = "slot_allocation_exhausted";
+            return false;
+        }
+
+        private string ResolveRebuildBackupDisplayName(
+            string slotKey,
+            JObject snapshot,
+            string fallbackDisplayName)
+        {
+            string characterName = null;
+            JArray player = snapshot != null ? snapshot["0"] as JArray : null;
+            if (player != null && player.Count > 0
+                && player[0] != null
+                && player[0].Type != JTokenType.Null)
+                characterName = player[0].ToString();
+            string resolved = _saveCtx.Archive.SlotCatalog.ResolveDisplayName(
+                slotKey,
+                characterName);
+            string normalized;
+            string ignored;
+            return SaveSlotCatalog.TryNormalizeDisplayName(
+                    resolved,
+                    out normalized,
+                    out ignored)
+                ? normalized
+                : fallbackDisplayName;
+        }
+
+        private static bool TryValidateCharacterCreateOpenRequestId(
+            string value,
+            out string exact)
+        {
+            exact = null;
+            if (string.IsNullOrEmpty(value) || value.Length > 128)
+                return false;
+            for (int i = 0; i < value.Length; i++)
+                if (char.IsControl(value[i])) return false;
+            exact = value;
+            return true;
+        }
+
+        private void PushFrontdoorCommand(JObject command)
+        {
+            try
+            {
+                Action<JObject> testPush = CharacterCreateAs2PushForTests;
+                if (testPush != null)
+                {
+                    testPush(command.DeepClone() as JObject);
+                    return;
+                }
+                if (_socketServer != null)
+                    _socketServer.PushToClient(command.ToString(Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[CharacterCreate] AS2 push failed: " + ex.Message);
+            }
+        }
+
+        private void PostCharacterCreateState(
+            string phase,
+            string attemptId,
+            string slotKey,
+            string error,
+            bool? retryable,
+            JObject extra)
+        {
+            JObject message = new JObject
+            {
+                ["type"] = "bootstrap",
+                ["cmd"] = "character_create_state",
+                ["phase"] = phase
+            };
+            if (attemptId != null) message["attemptId"] = attemptId;
+            if (slotKey != null) message["slotKey"] = slotKey;
+            string openRequestId = null;
+            lock (_stateLock)
+            {
+                if (_characterCreateContext != null
+                    && (attemptId == null || string.Equals(
+                        _currentAttemptId,
+                        attemptId,
+                        StringComparison.Ordinal))
+                    && (slotKey == null || string.Equals(
+                        _pendingSlot,
+                        slotKey,
+                        StringComparison.Ordinal)))
+                    openRequestId = _characterCreateContext.OpenRequestId;
+            }
+            if (openRequestId != null)
+                message["openRequestId"] = openRequestId;
+            if (error != null) message["error"] = error;
+            if (retryable.HasValue) message["retryable"] = retryable.Value;
+            if (extra != null)
+            {
+                foreach (JProperty property in extra.Properties())
+                    message[property.Name] = property.Value.DeepClone();
+            }
+            PostFrontdoorWeb(message);
+        }
+
+        private void PostFrontdoorWeb(JObject message)
+        {
+            try
+            {
+                Action<JObject> testPost = CharacterCreateWebPostForTests;
+                if (testPost != null)
+                {
+                    testPost(message.DeepClone() as JObject);
+                    return;
+                }
+                if (_bootstrapPanel != null)
+                    _bootstrapPanel.PostToWeb(message.ToString(Formatting.None));
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[CharacterCreate] Web post failed: " + ex.Message);
+            }
+        }
+
+        private void ArmCharacterCreateDefinitiveTimerLocked(
+            string attemptId,
+            string slotKey)
+        {
+            CancelCharacterCreateDefinitiveTimerLocked();
+            _characterCreateDefinitiveTimedOut = false;
+            _characterCreateDefinitiveTimer = new System.Threading.Timer(
+                delegate(object _)
+                {
+                    OnCharacterCreateDefinitiveTimeout(attemptId, slotKey);
+                },
+                null,
+                CHARACTER_CREATE_DEFINITIVE_TIMEOUT_MS,
+                System.Threading.Timeout.Infinite);
+        }
+
+        private void CancelCharacterCreateDefinitiveTimerLocked()
+        {
+            if (_characterCreateDefinitiveTimer == null) return;
+            try { _characterCreateDefinitiveTimer.Dispose(); }
+            catch { }
+            _characterCreateDefinitiveTimer = null;
+        }
+
+        private void ArmCharacterCreateSnapshotTimerLocked(
+            string attemptId,
+            string slotKey,
+            string callId)
+        {
+            CancelCharacterCreateSnapshotTimerLocked();
+            _characterCreateSnapshotTimedOut = false;
+            _characterCreateSnapshotTimer = new System.Threading.Timer(
+                delegate(object _)
+                {
+                    OnCharacterCreateSnapshotTimeout(attemptId, slotKey, callId);
+                },
+                null,
+                CHARACTER_CREATE_SNAPSHOT_TIMEOUT_MS,
+                System.Threading.Timeout.Infinite);
+        }
+
+        private void CancelCharacterCreateSnapshotTimerLocked()
+        {
+            if (_characterCreateSnapshotTimer == null) return;
+            try { _characterCreateSnapshotTimer.Dispose(); }
+            catch { }
+            _characterCreateSnapshotTimer = null;
+        }
+
+        private void OnCharacterCreateSnapshotTimeout(
+            string attemptId,
+            string slotKey,
+            string callId)
+        {
+            lock (_stateLock)
+            {
+                if (_characterCreateSnapshotTimedOut
+                    || _characterCreateSnapshotReceived
+                    || _state == State.Error
+                    || _state == State.Resetting
+                    || _frontdoorMode != "create"
+                    || !string.Equals(
+                        _frontdoorTitleCallId,
+                        callId,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _currentAttemptId,
+                        attemptId,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _pendingSlot,
+                        slotKey,
+                        StringComparison.Ordinal))
+                    return;
+                _characterCreateSnapshotTimedOut = true;
+                CancelCharacterCreateSnapshotTimerLocked();
+            }
+            PostCharacterCreateState(
+                "rejected",
+                attemptId,
+                slotKey,
+                "snapshot_response_timeout",
+                false,
+                null);
+        }
+
+        private void OnCharacterCreateDefinitiveTimeout(
+            string attemptId,
+            string slotKey)
+        {
+            lock (_stateLock)
+            {
+                if (_characterCreateCallId == null || _characterCreateDurable
+                    || _characterCreateDefinitiveTimedOut
+                    || !string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                    || !string.Equals(_pendingSlot, slotKey, StringComparison.Ordinal))
+                    return;
+                CancelCharacterCreateDefinitiveTimerLocked();
+                _characterCreateDefinitiveTimedOut = true;
+            }
+            PostCharacterCreateState(
+                "unknown",
+                attemptId,
+                slotKey,
+                "definitive_response_timeout",
+                false,
+                null);
+        }
+
+        private string HandleCharacterCreateResponse(JObject message)
+        {
+            if (message == null || message.Value<int?>("v") != 1)
+                return null;
+            string operation = message.Value<string>("operation");
+            string phase = message.Value<string>("phase");
+            string callId = message.Value<string>("callId");
+            string attemptId = message.Value<string>("attemptId");
+            string slotKey;
+            if (!SaveSlotKey.TryValidateExisting(
+                    message.Value<string>("slotKey"),
+                    out slotKey))
+                return null;
+
+            if (string.Equals(operation, "snapshot", StringComparison.Ordinal))
+            {
+                bool exactSnapshot;
+                lock (_stateLock)
+                {
+                    exactSnapshot = _state != State.Error
+                        && _state != State.Resetting
+                        && _frontdoorMode == "create"
+                        && !_characterCreateSnapshotTimedOut
+                        && !string.IsNullOrEmpty(callId)
+                        && string.Equals(_frontdoorTitleCallId, callId, StringComparison.Ordinal)
+                        && string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                        && string.Equals(_pendingSlot, slotKey, StringComparison.Ordinal);
+                    if (exactSnapshot)
+                        CancelCharacterCreateSnapshotTimerLocked();
+                }
+                if (!exactSnapshot)
+                    return null;
+
+                bool success = message.Value<bool?>("success") ?? false;
+                if (string.Equals(phase, "snapshot", StringComparison.Ordinal)
+                    && success)
+                {
+                    JObject projected;
+                    if (!TryProjectCharacterCreateSnapshot(message, out projected))
+                    {
+                        lock (_stateLock)
+                        {
+                            if (_state == State.Error
+                                || _state == State.Resetting
+                                || !string.Equals(
+                                    _frontdoorTitleCallId,
+                                    callId,
+                                    StringComparison.Ordinal)
+                                || !string.Equals(
+                                    _currentAttemptId,
+                                    attemptId,
+                                    StringComparison.Ordinal)
+                                || !string.Equals(
+                                    _pendingSlot,
+                                    slotKey,
+                                    StringComparison.Ordinal))
+                                return null;
+                        }
+                        PostCharacterCreateState(
+                            "rejected",
+                            attemptId,
+                            slotKey,
+                            "snapshot_projection_invalid",
+                            false,
+                            null);
+                        return null;
+                    }
+                    lock (_stateLock)
+                    {
+                        if (_state == State.Error
+                            || _state == State.Resetting
+                            || !string.Equals(_frontdoorTitleCallId, callId, StringComparison.Ordinal)
+                            || !string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                            || !string.Equals(_pendingSlot, slotKey, StringComparison.Ordinal))
+                            return null;
+                        _characterCreateSnapshotReceived = true;
+                        projected["openRequestId"] =
+                            _characterCreateContext.OpenRequestId;
+                    }
+                    PostFrontdoorWeb(projected);
+                    return null;
+                }
+
+                if (string.Equals(phase, "rejected", StringComparison.Ordinal)
+                    || (string.Equals(phase, "snapshot", StringComparison.Ordinal)
+                        && !success))
+                {
+                    lock (_stateLock)
+                    {
+                        if (_state == State.Error
+                            || _state == State.Resetting
+                            || !string.Equals(
+                                _frontdoorTitleCallId,
+                                callId,
+                                StringComparison.Ordinal)
+                            || !string.Equals(
+                                _currentAttemptId,
+                                attemptId,
+                                StringComparison.Ordinal)
+                            || !string.Equals(
+                                _pendingSlot,
+                                slotKey,
+                                StringComparison.Ordinal))
+                            return null;
+                    }
+                    PostCharacterCreateState(
+                        "rejected",
+                        attemptId,
+                        slotKey,
+                        message.Value<string>("error") ?? "snapshot_rejected",
+                        message.Value<bool?>("retryable") ?? true,
+                        null);
+                }
+                return null;
+            }
+
+            if (!string.Equals(operation, "create", StringComparison.Ordinal))
+                return null;
+            if (string.Equals(phase, "durable", StringComparison.Ordinal))
+            {
+                bool accepted = (message.Value<bool?>("success") ?? false)
+                    && (message.Value<bool?>("localFlush") ?? false);
+                string displayName;
+                bool displayNameCustomized;
+                lock (_stateLock)
+                {
+                    if (!accepted
+                        || _state == State.Error
+                        || _state == State.Resetting
+                        || _frontdoorMode != "create"
+                        || _characterCreateDurable
+                        || string.IsNullOrEmpty(callId)
+                        || !string.Equals(_characterCreateCallId, callId, StringComparison.Ordinal)
+                        || !string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                        || !string.Equals(_pendingSlot, slotKey, StringComparison.Ordinal))
+                        return null;
+                    _characterCreateDurable = true;
+                    CancelCharacterCreateDefinitiveTimerLocked();
+                    MaybeArmFrontdoorSceneWatchdogLocked();
+                    displayName = _characterCreateDisplayName;
+                    displayNameCustomized = _characterCreateDisplayNameCustomized;
+                }
+
+                string normalized;
+                string metadataError = null;
+                bool metadataSaved = _saveCtx != null
+                    && _saveCtx.Archive != null
+                    && (displayNameCustomized
+                        ? _saveCtx.Archive.SlotCatalog.TrySetDisplayName(
+                            slotKey,
+                            displayName,
+                            out normalized,
+                            out metadataError)
+                        : _saveCtx.Archive.SlotCatalog.TryRemoveDisplayName(
+                            slotKey,
+                            out metadataError));
+                JObject extra = new JObject
+                {
+                    ["metadataSaved"] = metadataSaved,
+                    ["displayNameCustomized"] = displayNameCustomized
+                };
+                if (!metadataSaved)
+                    extra["warning"] = metadataError ?? "metadata_save_failed";
+                PostCharacterCreateState(
+                    "durable", attemptId, slotKey, null, null, extra);
+                return null;
+            }
+
+            if (string.Equals(phase, "rejected", StringComparison.Ordinal))
+            {
+                lock (_stateLock)
+                {
+                    if (_state == State.Error
+                        || _state == State.Resetting
+                        || _frontdoorMode != "create"
+                        || string.IsNullOrEmpty(callId)
+                        || !string.Equals(_characterCreateCallId, callId, StringComparison.Ordinal)
+                        || !string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                        || !string.Equals(_pendingSlot, slotKey, StringComparison.Ordinal))
+                        return null;
+                    if (_characterCreateDurable)
+                    {
+                        bool durableSceneRejected = (message.Value<bool?>("durable") ?? false)
+                            && _revealWaitingScene
+                            && _state != State.Error;
+                        if (!durableSceneRejected)
+                            return null;
+                        TransitionToError(
+                            message.Value<string>("error")
+                                ?? "character_create_stage_rejected");
+                        return null;
+                    }
+                    else
+                    {
+                        CancelCharacterCreateDefinitiveTimerLocked();
+                        _characterCreatePreparingSubmit = false;
+                        _characterCreateCallId = null;
+                    }
+                }
+                PostCharacterCreateState(
+                    "rejected",
+                    attemptId,
+                    slotKey,
+                    message.Value<string>("error") ?? "create_rejected",
+                    message.Value<bool?>("retryable") ?? true,
+                    null);
+            }
+            // A flat AS2 scene_ready envelope is diagnostic only. The reveal
+            // authority is the exact UiData s:1 + ga packet observed below.
+            return null;
+        }
+
+        private bool TryProjectCharacterCreateSnapshot(
+            JObject response,
+            out JObject projected)
+        {
+            projected = null;
+            JObject constraints = response["constraints"] as JObject;
+            JObject defaults = response["defaults"] as JObject;
+            JObject appearance = response["appearanceCatalog"] as JObject;
+            JObject faces = appearance != null
+                ? appearance["faces"] as JObject
+                : null;
+            if (constraints == null || defaults == null || appearance == null
+                || defaults["male"] as JObject == null
+                || defaults["female"] as JObject == null
+                || faces == null
+                || faces["male"] as JObject == null
+                || faces["female"] as JObject == null
+                || !IsStrictCharacterCreateAppearanceCatalog(
+                    appearance["upper"] as JObject)
+                || !IsStrictCharacterCreateAppearanceCatalog(
+                    appearance["lower"] as JObject)
+                || !IsStrictCharacterCreateAppearanceCatalog(
+                    appearance["footwear"] as JObject)
+                || response["hairCatalog"] == null
+                || response["difficulties"] == null)
+                return false;
+
+            projected = new JObject
+            {
+                ["type"] = "bootstrap",
+                ["cmd"] = "character_create_snapshot",
+                ["attemptId"] = response.Value<string>("attemptId"),
+                ["slotKey"] = response.Value<string>("slotKey"),
+                ["constraints"] = constraints.DeepClone(),
+                ["defaults"] = defaults.DeepClone(),
+                ["appearanceCatalog"] = appearance.DeepClone(),
+                ["hairCatalog"] = response["hairCatalog"].DeepClone(),
+                ["difficulties"] = response["difficulties"].DeepClone()
+            };
+            return true;
+        }
+
+        private static bool IsStrictCharacterCreateAppearanceCatalog(
+            JObject catalog)
+        {
+            if (!HasExactCharacterCreateKeys(catalog, "male", "female"))
+                return false;
+            return IsStrictCharacterCreateAppearanceRows(catalog["male"] as JArray)
+                && IsStrictCharacterCreateAppearanceRows(catalog["female"] as JArray);
+        }
+
+        private static bool IsStrictCharacterCreateAppearanceRows(JArray rows)
+        {
+            if (rows == null || rows.Count < 1 || rows.Count > 128)
+                return false;
+            foreach (JToken token in rows)
+            {
+                JObject row = token as JObject;
+                if (!HasExactCharacterCreateKeys(
+                        row,
+                        "identifier",
+                        "name",
+                        "iconName",
+                        "itemType",
+                        "introHTML",
+                        "descHTML")
+                    || !IsCharacterCreateShortText(row["identifier"])
+                    || !IsCharacterCreateShortText(row["name"])
+                    || !IsCharacterCreateShortText(row["iconName"])
+                    || !IsCharacterCreateShortText(row["itemType"])
+                    || !IsCharacterCreateRichText(row["introHTML"])
+                    || !IsCharacterCreateRichText(row["descHTML"]))
+                    return false;
+            }
+            return true;
+        }
+
+        private static bool HasExactCharacterCreateKeys(
+            JObject value,
+            params string[] expectedKeys)
+        {
+            if (value == null || value.Properties().Count() != expectedKeys.Length)
+                return false;
+            for (int i = 0; i < expectedKeys.Length; i++)
+                if (value.Property(expectedKeys[i]) == null) return false;
+            return true;
+        }
+
+        private static bool IsCharacterCreateShortText(JToken token)
+        {
+            if (token == null || token.Type != JTokenType.String)
+                return false;
+            string value = token.Value<string>();
+            if (string.IsNullOrEmpty(value) || value.Length > 160)
+                return false;
+            foreach (char current in value)
+                if (char.IsControl(current)) return false;
+            return true;
+        }
+
+        private static bool IsCharacterCreateRichText(JToken token)
+        {
+            if (token == null || token.Type != JTokenType.String)
+                return false;
+            string value = token.Value<string>();
+            if (string.IsNullOrEmpty(value) || value.Length > 131072)
+                return false;
+            foreach (char current in value)
+            {
+                if (char.IsControl(current)
+                    && current != '\r'
+                    && current != '\n'
+                    && current != '\t')
+                    return false;
+            }
+            return true;
+        }
+
+        private void PersistLastPlayedOnce(
+            string attemptId,
+            string slotKey)
+        {
+            Action<string> callback = null;
+            lock (_stateLock)
+            {
+                if (_lastPlayedPersistedForAttempt
+                    || !string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                    || !string.Equals(_pendingSlot, slotKey, StringComparison.Ordinal))
+                    return;
+                _lastPlayedPersistedForAttempt = true;
+                callback = _persistLastPlayedSlot;
+            }
+            try { if (callback != null) callback(slotKey); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[LaunchFlow] LastPlayedSlot callback failed: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -877,6 +2092,8 @@ namespace CF7Launcher.Guardian
         public void Retry()
         {
             string slot;
+            string frontdoorMode;
+            bool characterCreateDurable;
             lock (_stateLock)
             {
                 if (_state != State.Error)
@@ -885,6 +2102,8 @@ namespace CF7Launcher.Guardian
                     return;
                 }
                 slot = _pendingSlot;
+                frontdoorMode = _frontdoorMode;
+                characterCreateDurable = _characterCreateDurable;
             }
             if (slot == null)
             {
@@ -892,8 +2111,78 @@ namespace CF7Launcher.Guardian
                 Reset(null, "retry_no_slot");
                 return;
             }
-            // Phase 2b-ext: retry 也要求 Flash reveal 覆盖 Flash 自身 init 期, 不重播片头 (deferJs=false)
+            if (string.Equals(frontdoorMode, "create", StringComparison.Ordinal)
+                && !characterCreateDurable)
+            {
+                LogManager.Log("[LaunchFlow] Retry before durable create -> reset to slot picker");
+                Reset(null, "retry_create_not_durable");
+                return;
+            }
+
+            // A durable create is now an ordinary existing save. Retry must
+            // enter through the load frontdoor and must never replay submit.
+            if (frontdoorMode != null)
+            {
+                Reset(
+                    delegate { StartGameFromBootstrap(slot, false, true); },
+                    "retry_frontdoor");
+                return;
+            }
+
+            // Legacy callers keep their historical retry route.
             Reset(delegate { StartGame(slot, false, true); }, "retry");
+        }
+
+        private void YieldFrontdoorBgm(string reason)
+        {
+            IFrontdoorBgmLease lease = _frontdoorBgmLease;
+            if (lease == null) return;
+            try { lease.YieldToGameplay(reason); }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[LaunchFlow] frontdoor BGM yield failed: " +
+                    ex.GetType().Name);
+            }
+        }
+
+        private void EnterFrontdoorBgm(string reason)
+        {
+            IFrontdoorBgmLease lease = _frontdoorBgmLease;
+            if (lease == null) return;
+            try { lease.EnterFrontdoor(reason); }
+            catch (Exception ex)
+            {
+                LogManager.Log(
+                    "[LaunchFlow] frontdoor BGM enter failed: " +
+                    ex.GetType().Name);
+            }
+        }
+
+        private bool ShouldRestoreFrontdoorBgmLocked()
+        {
+            return !_revealPerformed;
+        }
+
+        private void RestoreFrontdoorBgmAfterResetIfEligible(
+            bool restoreRequested,
+            string reason)
+        {
+            if (!restoreRequested) return;
+            lock (_stateLock)
+            {
+                // A reset continuation may immediately start a new attempt.  Only
+                // an actual return to the still-visible Bootstrap frontdoor may
+                // reacquire; only the actual reveal is a permanent handoff for
+                // the old attempt. SceneReady alone may still leave Bootstrap visible.
+                if (_state != State.Idle ||
+                    !ShouldRestoreFrontdoorBgmLocked())
+                {
+                    return;
+                }
+            }
+            EnterFrontdoorBgm(
+                "reset_to_frontdoor:" + (reason ?? "unspecified"));
         }
 
         /// <summary>
@@ -918,14 +2207,18 @@ namespace CF7Launcher.Guardian
             Process oldProcess = null;
             Action<string> heldCbForReset = null;   // prewarm 拆除时取走的 held callback
             bool enterWorker = false;
+            bool restoreFrontdoorBgmWhenIdle = false;
 
             lock (_stateLock)
             {
                 if (onIdle != null) _pendingIdleCallbacks.Add(onIdle);
+                restoreFrontdoorBgmWhenIdle =
+                    ShouldRestoreFrontdoorBgmLocked();
                 // Close Agent Runtime title admission synchronously with the
                 // reset request; an in-flight credential refresh must not
                 // reuse a receipt from the attempt being torn down.
                 _acceptedTitleAttemptId = null;
+                ClearFrontdoorAttemptLocked();
 
                 if (_state == State.Idle && !_resetInFlight)
                 {
@@ -988,6 +2281,9 @@ namespace CF7Launcher.Guardian
                     try { cb(); }
                     catch (Exception ex) { LogManager.Log("[LaunchFlow] Reset flush cb error: " + ex.Message); }
                 }
+                RestoreFrontdoorBgmAfterResetIfEligible(
+                    restoreFrontdoorBgmWhenIdle,
+                    reason);
                 return;
             }
             if (!enterWorker) return;
@@ -1111,6 +2407,9 @@ namespace CF7Launcher.Guardian
                             catch (Exception ex) { LogManager.Log("[LaunchFlow] Reset onIdle cb error: " + ex.Message); }
                         }
                     }
+                    RestoreFrontdoorBgmAfterResetIfEligible(
+                        restoreFrontdoorBgmWhenIdle,
+                        reason);
                 });
             });
         }
@@ -1204,8 +2503,9 @@ namespace CF7Launcher.Guardian
 
         /// <summary>HandleBootstrapReady 命中 WaitingGameReady 时调用（锁内）。
         /// Phase 2b-ext: 不再直接 panel swap. 改为 state=Ready 广播 + 触发 TryPerformRevealLocked;
-        /// panel swap 真实执行视 _revealWaitingJs / _revealWaitingFlash 决定 (两 flag 都清才走).
-        /// Flash reveal 等待武装看门狗 (生产默认 45s) 防 Flash 没加 sendRevealReady 时卡死. </summary>
+        /// panel swap requires JS, title, and exact-scene gates to be clear.
+        /// 标题 watchdog 与入场 watchdog 分离：草稿编辑期没有场景 deadline；
+        /// 只有普通读档命令已派发或建角 durable 后，才开始等待 exact scene。</summary>
         private void TransitionToReady()
         {
             CancelWaitTimerLocked();  // 清 game_ready 超时
@@ -1214,6 +2514,7 @@ namespace CF7Launcher.Guardian
             {
                 ArmFlashRevealWatchdogLocked(_currentAttemptId);
             }
+            MaybeArmFrontdoorSceneWatchdogLocked();
             TryPerformRevealLocked();
         }
 
@@ -1224,8 +2525,10 @@ namespace CF7Launcher.Guardian
             if (_state != State.Ready) return;   // 只在 Ready 态有意义; 未 Ready 时被外部 clear 也只是占位
             if (_revealWaitingJs) return;
             if (_revealWaitingFlash) return;
+            if (_revealWaitingScene) return;
             _revealPerformed = true;
             CancelFlashRevealWatchdogLocked();
+            CancelFrontdoorSceneWatchdogLocked();
             PerfTrace.Mark("launch.reveal_start", "attemptId=" + _currentAttemptId);
             LogManager.Log("[LaunchFlow] performing reveal (panel swap)");
             RunOnUi(delegate { DoPerformReveal(); });
@@ -1270,6 +2573,9 @@ namespace CF7Launcher.Guardian
             using (PerfTrace.Scope("reveal.release_bgm"))
             {
                 long t = System.Diagnostics.Stopwatch.GetTimestamp();
+                // This exact reveal is the Bootstrap -> Flash authority handoff.
+                // Revoke is requestId-CAS: a newer AS2 intent is never stopped.
+                YieldFrontdoorBgm("gameplay_reveal");
                 try { CF7Launcher.Tasks.AudioTask.ReleaseBootstrapBgmGate(); }
                 catch (Exception ex) { LogManager.Log("[LaunchFlow] release bootstrap BGM gate error: " + ex.Message); }
                 LogManager.Log("[RevealProbe] release_bgm " + ElapsedMs(t).ToString("0.0") + "ms");
@@ -1309,12 +2615,75 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        public void ObserveUiData(UiDataPacket packet)
+        {
+            if (packet == null || packet.IsLegacy || packet.Pairs == null)
+                return;
+            bool? finalScene = null;
+            string observedAttemptId = null;
+            for (int i = 0; i < packet.Pairs.Length; i++)
+            {
+                string pair = packet.Pairs[i];
+                if (pair == null) continue;
+                if (pair.StartsWith("s:", StringComparison.Ordinal))
+                {
+                    string value = pair.Substring(2);
+                    if (value == "1") finalScene = true;
+                    else if (value == "0") finalScene = false;
+                }
+                else if (pair.StartsWith("ga:", StringComparison.Ordinal))
+                {
+                    observedAttemptId = pair.Substring(3);
+                }
+            }
+            if (finalScene != true || string.IsNullOrEmpty(observedAttemptId))
+                return;
+
+            string slotKey;
+            string mode;
+            lock (_stateLock)
+            {
+                if (_state == State.Error
+                    || _state == State.Resetting
+                    || _frontdoorMode == null
+                    || !_revealWaitingScene
+                    || !string.Equals(
+                        _currentAttemptId,
+                        observedAttemptId,
+                        StringComparison.Ordinal))
+                    return;
+                if (_frontdoorMode == "create" && !_characterCreateDurable)
+                {
+                    LogManager.Log("[CharacterCreate] scene receipt before durable ignored");
+                    return;
+                }
+                _revealWaitingScene = false;
+                slotKey = _pendingSlot;
+                mode = _frontdoorMode;
+                CancelFrontdoorSceneWatchdogLocked();
+                TryPerformRevealLocked();
+            }
+
+            PersistLastPlayedOnce(observedAttemptId, slotKey);
+            if (mode == "create")
+            {
+                PostCharacterCreateState(
+                    "scene_ready",
+                    observedAttemptId,
+                    slotKey,
+                    null,
+                    null,
+                    null);
+            }
+        }
+
         /// <summary>Flash 帧 81 bootstrap_reveal_ready task handler. attemptId 校验防 stale attempt 干扰.
         /// Phase 2b-ext: 同时往 bootstrap.html 广播 flash_ready, 让前端给跳过按钮加就绪样式 (脉冲发光 + 改文案),
         /// 用户在视频播放中即可直观看到"Flash 已加载好, 随时可跳进游戏". </summary>
         private string HandleBootstrapRevealReady(JObject msg)
         {
             bool shouldNotifyFrontend = false;
+            JObject frontdoorCommand = null;
             lock (_stateLock)
             {
                 JObject payload = msg.Value<JObject>("payload");
@@ -1326,21 +2695,60 @@ namespace CF7Launcher.Guardian
                         + (attemptId ?? "null") + " expected=" + _currentAttemptId);
                     return null;
                 }
+                if (_state == State.Error || _state == State.Resetting)
+                {
+                    LogManager.Log("[LaunchFlow] bootstrap_reveal_ready ignored in state="
+                        + _state);
+                    return null;
+                }
                 // Record the genuine title receipt even if the reveal
                 // watchdog already made the host visible.  The watchdog
                 // never writes this latch.
                 _acceptedTitleAttemptId = attemptId;
-                if (!_revealWaitingFlash)
+                if (_revealWaitingFlash)
                 {
-                    LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: not waiting, ignored");
-                    return null;
+                    _revealWaitingFlash = false;
+                    CancelFlashRevealWatchdogLocked();
+                    shouldNotifyFrontend = true;
+                    PerfTrace.Mark("launch.flash_reveal_ready", "attemptId=" + attemptId);
+                    LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared");
                 }
-                _revealWaitingFlash = false;
-                shouldNotifyFrontend = true;
-                PerfTrace.Mark("launch.flash_reveal_ready", "attemptId=" + attemptId);
-                LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: Flash reveal cleared");
+                else
+                {
+                    LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: title gate already clear");
+                }
+                if (_frontdoorTitleCallId == null
+                    && (_frontdoorMode == "create" || _frontdoorMode == "load"))
+                {
+                    _frontdoorTitleCallId = Guid.NewGuid().ToString("N");
+                    frontdoorCommand = new JObject
+                    {
+                        ["task"] = "cmd",
+                        ["action"] = _frontdoorMode == "create"
+                            ? "characterCreationSnapshot"
+                            : "frontdoorEnterResolvedSave",
+                        ["v"] = 1,
+                        ["callId"] = _frontdoorTitleCallId,
+                        ["attemptId"] = attemptId,
+                        ["slotKey"] = _pendingSlot
+                    };
+                    if (_frontdoorMode == "load")
+                    {
+                        _frontdoorEntryDispatched = true;
+                        MaybeArmFrontdoorSceneWatchdogLocked();
+                    }
+                    else
+                    {
+                        ArmCharacterCreateSnapshotTimerLocked(
+                            attemptId,
+                            _pendingSlot,
+                            _frontdoorTitleCallId);
+                    }
+                }
                 TryPerformRevealLocked();
             }
+            if (frontdoorCommand != null)
+                PushFrontdoorCommand(frontdoorCommand);
             if (shouldNotifyFrontend && _form != null && _form.BootstrapPanel != null)
             {
                 // 锁外 post, 避免 UI 线程 BeginInvoke 重入 _stateLock
@@ -1375,12 +2783,79 @@ namespace CF7Launcher.Guardian
             lock (_stateLock)
             {
                 if (_currentAttemptId != attemptIdSnap) return;  // attempt 已切换
-                if (!_revealWaitingFlash) return;                 // 已收到或已清
+                if (_state != State.Ready) return;
+                if (!_revealWaitingFlash)
+                {
+                    CancelFlashRevealWatchdogLocked();
+                    return;
+                }
+                if (_frontdoorMode != null && _revealWaitingScene)
+                {
+                    CancelFlashRevealWatchdogLocked();
+                    LogManager.Log("[LaunchFlow] frontdoor title watchdog fired after "
+                        + _flashRevealWatchdogMs + "ms; failing closed");
+                    PerfTrace.Mark(
+                        "launch.frontdoor_title_timeout",
+                        "attemptId=" + attemptIdSnap);
+                    TransitionToError("frontdoor_title_timeout");
+                    return;
+                }
                 LogManager.Log("[LaunchFlow] Flash reveal watchdog fired after "
                     + _flashRevealWatchdogMs + "ms, force-revealing (SWF 可能未部署 sendRevealReady)");
                 _revealWaitingFlash = false;
                 PerfTrace.Mark("launch.flash_reveal_watchdog", "attemptId=" + attemptIdSnap);
                 TryPerformRevealLocked();
+            }
+        }
+
+        /// <summary>
+        /// Frontdoor 的场景 deadline 只能从真实入场动作开始计时：普通读档是
+        /// frontdoorEnterResolvedSave 已决定派发；新建角色是 durable/localFlush 已被 Host 采信。
+        /// snapshot 与玩家编辑草稿期间绝不武装此 timer。
+        /// </summary>
+        private void MaybeArmFrontdoorSceneWatchdogLocked()
+        {
+            if (_frontdoorSceneWatchdog != null
+                || _state != State.Ready
+                || !_revealWaitingScene)
+                return;
+            bool entryStarted = _frontdoorMode == "load"
+                ? _frontdoorEntryDispatched
+                : _frontdoorMode == "create" && _characterCreateDurable;
+            if (!entryStarted) return;
+            string attemptIdSnap = _currentAttemptId;
+            _frontdoorSceneWatchdog = new System.Threading.Timer(
+                delegate(object _) { OnFrontdoorSceneWatchdogFired(attemptIdSnap); },
+                null, _flashRevealWatchdogMs, System.Threading.Timeout.Infinite);
+        }
+
+        private void CancelFrontdoorSceneWatchdogLocked()
+        {
+            if (_frontdoorSceneWatchdog == null) return;
+            try { _frontdoorSceneWatchdog.Dispose(); }
+            catch { }
+            _frontdoorSceneWatchdog = null;
+        }
+
+        private void OnFrontdoorSceneWatchdogFired(string attemptIdSnap)
+        {
+            lock (_stateLock)
+            {
+                if (!string.Equals(_currentAttemptId, attemptIdSnap, StringComparison.Ordinal)
+                    || _state != State.Ready
+                    || !_revealWaitingScene)
+                    return;
+                bool entryStarted = _frontdoorMode == "load"
+                    ? _frontdoorEntryDispatched
+                    : _frontdoorMode == "create" && _characterCreateDurable;
+                if (!entryStarted) return;
+                CancelFrontdoorSceneWatchdogLocked();
+                LogManager.Log("[LaunchFlow] frontdoor scene watchdog fired after "
+                    + _flashRevealWatchdogMs + "ms; failing closed");
+                PerfTrace.Mark(
+                    "launch.frontdoor_scene_timeout",
+                    "attemptId=" + attemptIdSnap);
+                TransitionToError("frontdoor_scene_timeout");
             }
         }
 
@@ -1391,6 +2866,8 @@ namespace CF7Launcher.Guardian
             State previousState = State.Idle;
             string attemptId = null;
             string pendingSlot = null;
+            bool notifyDurableSceneError = false;
+            bool restoreFrontdoorBgm = false;
             lock (_stateLock)
             {
                 // Phase D Step D7: prewarm 路径走 silent degrade 不入 Error 态.
@@ -1407,9 +2884,18 @@ namespace CF7Launcher.Guardian
                 }
                 CancelWaitTimerLocked();
                 CancelZombieTimerLocked();
+                CancelFlashRevealWatchdogLocked();
+                CancelFrontdoorSceneWatchdogLocked();
+                CancelCharacterCreateSnapshotTimerLocked();
+                CancelCharacterCreateDefinitiveTimerLocked();
                 previousState = _state;
                 attemptId = _currentAttemptId;
                 pendingSlot = _pendingSlot;
+                restoreFrontdoorBgm =
+                    ShouldRestoreFrontdoorBgmLocked();
+                notifyDurableSceneError = _frontdoorMode == "create"
+                    && _characterCreateDurable
+                    && _revealWaitingScene;
                 // Finding C fix: 进 Error 时同步 kill Flash, 关掉 "launcher 已报 Error 但 Flash 还在
                 // 按自己的 60s timeout 等响应" 的 zombie 窗口. 原 Flash 侧 5s timeout 时这个窗口 3s 内
                 // 自行收口, 抬到 60s 后不 kill 会留 Flash 持续运行到用户点 Retry 才关.
@@ -1417,6 +2903,29 @@ namespace CF7Launcher.Guardian
                 // 避免 retry 并发 spawn 新 Flash 时误杀新进程.
                 toKill = _currentFlashProcess;
                 SetState(State.Error, msg);
+            }
+            if (restoreFrontdoorBgm)
+            {
+                EnterFrontdoorBgm(
+                    "error_to_frontdoor:" + (msg ?? "unknown"));
+            }
+            if (notifyDurableSceneError)
+            {
+                JObject detail = new JObject
+                {
+                    ["detail"] = msg ?? "unknown",
+                    ["error"] = msg != null
+                        && msg.IndexOf("timeout", StringComparison.OrdinalIgnoreCase) >= 0
+                            ? "timeout"
+                            : "load"
+                };
+                PostCharacterCreateState(
+                    "durable_scene_error",
+                    attemptId,
+                    pendingSlot,
+                    null,
+                    true,
+                    detail);
             }
             string failureReason = "launchflow_error:" + msg;
             string failureDetail = "state=" + previousState

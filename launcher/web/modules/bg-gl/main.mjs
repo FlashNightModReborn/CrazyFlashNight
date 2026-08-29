@@ -179,6 +179,8 @@ let ambientTimer = null;  // 环境态插播定时器
 let swapTimer = null;     // 换棋盘定时器链
 let rafId = 0;
 let paused = false;
+let characterCreateActive = false;
+let bodyClassObserver = null;
 let lastFrameAt = -Infinity; // 上一实际渲染帧时刻（限帧用）
 let sawFirstListResp = false;
 let lastState = null;
@@ -275,6 +277,10 @@ function onDiagonalSweepDone() {
   machine.duration = Infinity;
   machine.holdProgress = 1;
   if (syncPending) {
+    if (characterCreateActive) {
+      enterAmbient();
+      return;
+    }
     syncPending = false;
     enterSynchronized();
   }
@@ -306,6 +312,11 @@ function enterSynchronized() {
 
 // Ready / flash_ready 入口：对角扫描在播则挂起等播完，否则立即同步
 function requestSynchronized() {
+  if (characterCreateActive) {
+    syncPending = true;
+    if (machine.phase !== PHASE.DIAGONAL || !Number.isFinite(machine.duration)) enterAmbient();
+    return;
+  }
   if (machine.phase === PHASE.SYNCHRONIZED) return;
   if (machine.phase === PHASE.DIAGONAL && Number.isFinite(machine.duration)) {
     syncPending = true;
@@ -674,6 +685,32 @@ function updatePause() {
   }
 }
 
+function isCharacterCreateActive() {
+  return document.body.classList.contains("character-create-active")
+    || document.body.classList.contains("character-create-preparing");
+}
+
+// 建角期间沿用 PM19 自身的环境相位，不额外叠加另一套“幻方”图形。
+// Ready 仍被记住；退出建角后回到同一同步终态。
+function updateCharacterCreateMode() {
+  const next = isCharacterCreateActive();
+  if (next === characterCreateActive) return;
+  characterCreateActive = next;
+  const canvas = document.getElementById("bg-gl");
+  if (canvas) canvas.dataset.characterCreateMotion = next ? "ambient" : "synchronized";
+  if (next) {
+    if (lastState === "Ready" || machine.phase === PHASE.SYNCHRONIZED) syncPending = true;
+    if (machine.phase !== PHASE.DIAGONAL || !Number.isFinite(machine.duration)) enterAmbient();
+  } else if (lastState === "Ready" || syncPending) {
+    requestSynchronized();
+  }
+}
+
+function updateBodyState() {
+  updatePause();
+  updateCharacterCreateMode();
+}
+
 function teardown() {
   clearPhaseTimers();
   stopSwapLoop();
@@ -683,6 +720,8 @@ function teardown() {
     reducedMedia.removeEventListener("change", onReducedMotionChange);
   }
   reducedMedia = null;
+  if (bodyClassObserver !== null) bodyClassObserver.disconnect();
+  bodyClassObserver = null;
   removeReadout();
   removeLog();
   if (rafId !== 0) { cancelAnimationFrame(rafId); rafId = 0; }
@@ -764,8 +803,9 @@ async function main() {
 
   // 6) 暂停/恢复：页面隐藏或片头视频（body.intro-video）期间停 rAF
   document.addEventListener("visibilitychange", updatePause);
-  new MutationObserver(updatePause).observe(document.body, { attributes: true, attributeFilter: ["class"] });
-  updatePause();
+  bodyClassObserver = new MutationObserver(updateBodyState);
+  bodyClassObserver.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  updateBodyState();
   if (!paused) rafId = requestAnimationFrame(tick);
 }
 

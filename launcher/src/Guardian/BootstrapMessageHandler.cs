@@ -1,5 +1,5 @@
 // P3b Phase 1g + Phase 2a: Bootstrap JS→C# 协议 handler
-// Phase 1 入站 cmd: ready / list / start_game / delete / rebuild / retry / ping
+// Phase 1 入站 cmd: ready / list / start_game / delete / retry / ping
 // Phase 2a 入站 cmd: load / load_raw / save / reset / export / import_start / import_commit / logs
 // Phase 1 出站 cmd: state / list_resp / delete_resp / error / pong
 // Phase 2a 出站 cmd: load_resp / load_raw_resp / save_resp / reset_resp / export_resp / import_target / import_resp / logs_resp
@@ -55,11 +55,19 @@ namespace CF7Launcher.Guardian
                 case "cancel_launch":
                     LifecycleCommandHandler.HandleCancelLaunch(launchFlow);
                     return;
+                case "character_create_open":
+                    CharacterCreateCommandHandler.HandleOpen(
+                        msg, bootForm, launchFlow);
+                    return;
+                case "character_create_submit":
+                    CharacterCreateCommandHandler.HandleSubmit(
+                        msg, bootForm, launchFlow);
+                    return;
 
                 // ─────── GameState ───────
                 case "start_game":
-                case "rebuild":
-                    GameStateCommandHandler.HandleStartOrRebuild(msg, cmd, bootForm, launchFlow, userPrefs);
+                    GameStateCommandHandler.HandleStart(
+                        msg, bootForm, launchFlow, archiveTask);
                     return;
                 case "reveal_ok":
                     GameStateCommandHandler.HandleRevealOk(launchFlow);
@@ -74,6 +82,9 @@ namespace CF7Launcher.Guardian
                     return;
                 case "delete":
                     ArchiveCommandHandler.HandleDelete(msg, bootForm, archiveTask);
+                    return;
+                case "rename_slot":
+                    ArchiveCommandHandler.HandleRename(msg, bootForm, archiveTask);
                     return;
                 case "load":
                     ArchiveCommandHandler.HandleLoad(msg, bootForm, archiveTask, saveCtx);

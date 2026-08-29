@@ -1471,6 +1471,8 @@ class Program
         // both native and fallback paths can feed the eventual AgentControlTask without a
         // second raw payload split.
         AgentControlTask agentControlTask = null;
+        CF7Launcher.Guardian.GameLaunchFlow launchFlow = null;
+        CF7Launcher.Audio.FrontdoorBgmLease frontdoorBgmLease = null;
         CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel = null;
         {
             // 光照等级数据（与 NotchWidget 共用同一默认值）
@@ -1510,6 +1512,8 @@ class Program
                 }
                 try { if (agentControlTask != null) agentControlTask.ObserveUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] agent UiData throw: " + ex.Message); }
+                try { if (launchFlow != null) launchFlow.ObserveUiData(pkt); }
+                catch (Exception ex) { LogManager.Log("[Tee] launch UiData throw: " + ex.Message); }
             };
             socketServer.SetUiDataHandler(fallbackUiDataTee);
 
@@ -1726,6 +1730,8 @@ class Program
                 catch (Exception ex) { LogManager.Log("[Tee] hud UiData throw: " + ex.Message); }
                 try { if (agentControlTask != null) agentControlTask.ObserveUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] agent UiData throw: " + ex.Message); }
+                try { if (launchFlow != null) launchFlow.ObserveUiData(pkt); }
+                catch (Exception ex) { LogManager.Log("[Tee] launch UiData throw: " + ex.Message); }
             };
             socketServer.SetUiDataHandler(uiDataTee);
             frameTask.SetUiDataHandler(uiDataTee);
@@ -2243,6 +2249,8 @@ class Program
                 audioQualificationStimulusHost.Dispose();
             if (audioQualificationHost != null)
                 audioQualificationHost.Dispose();
+            if (frontdoorBgmLease != null)
+                frontdoorBgmLease.Dispose();
             CF7Launcher.Audio.AudioEngine.Shutdown();
             musicCatalog.Dispose();
             frameTask.Stop();
@@ -2384,6 +2392,13 @@ class Program
         ProcessManager processManager = new ProcessManager(
             config.FlashPlayerPath, config.SwfPath);
 
+        // The Bootstrap/frontdoor owns only this fixed historical main-menu
+        // track. It waits for Audio v2 Ready and is handed to GameLaunchFlow;
+        // no WebAudio or per-slot volume preference participates.
+        frontdoorBgmLease =
+            new CF7Launcher.Audio.FrontdoorBgmLease(projectRoot);
+        frontdoorBgmLease.EnterFrontdoor("launcher_start");
+
         form.BindWindowManager(windowManager);
 
         // 11b-α: processManager.Start / TrackProcess / TrackFlashProcess 迁入 GameLaunchFlow.TransitionToSpawning
@@ -2401,6 +2416,8 @@ class Program
         form.OnKillFlash = delegate
         {
             windowManager.DetachFlash();
+            if (frontdoorBgmLease != null)
+                frontdoorBgmLease.Dispose();
             CF7Launcher.Audio.AudioEngine.Shutdown();
             processManager.KillFlash();
         };
@@ -2424,7 +2441,7 @@ class Program
 
         // Phase A 两段式初始化：GuardianForm 已建（line 97），BootstrapPanel 已作为其子控件构造。
         // 此处构造 GameLaunchFlow（依赖 form + form.BootstrapPanel）→ 调 InitializeLaunchFlow 补 wire.
-        CF7Launcher.Guardian.GameLaunchFlow launchFlow = new CF7Launcher.Guardian.GameLaunchFlow(
+        launchFlow = new CF7Launcher.Guardian.GameLaunchFlow(
             socketServer, router, processManager, windowManager,
             form, form.BootstrapPanel,
             /* readyWiring */ delegate
@@ -2492,7 +2509,16 @@ class Program
                 LogManager.Log("[RevealProbe] readyWiring.total " + ((System.Diagnostics.Stopwatch.GetTimestamp() - tOverall) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
             },
             /* hotkeyGuardSpawn */ null,
-            saveCtx);
+            saveCtx,
+            CF7Launcher.Guardian.GameLaunchFlow
+                .FLASH_REVEAL_WATCHDOG_DEFAULT_MS,
+            /* persistLastPlayedSlot */ delegate(string slotKey)
+            {
+                if (userPrefs == null) return;
+                userPrefs.LastPlayedSlot = slotKey;
+                userPrefs.Save();
+            },
+            frontdoorBgmLease);
 
         // Phase A Step A2: wire launchFlow 到 GuardianForm（OnFormClosing 状态分流 + 热键 state-aware guard）
         form.InitializeLaunchFlow(launchFlow);
@@ -3176,6 +3202,7 @@ class Program
         try { audioSocketPublisher.Dispose(); } catch { }
         try { if (audioQualificationStimulusHost != null) audioQualificationStimulusHost.Dispose(); } catch { }
         try { if (audioQualificationHost != null) audioQualificationHost.Dispose(); } catch { }
+        try { if (frontdoorBgmLease != null) frontdoorBgmLease.Dispose(); } catch { }
         try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
         try { musicCatalog.Dispose(); } catch { }
         try { processManager.Dispose(); } catch { }

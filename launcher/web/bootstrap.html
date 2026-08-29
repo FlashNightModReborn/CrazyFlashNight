@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="css/terminal.css">
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/welcome.css">
+<!-- 建角装备注释直接复用游戏 PanelTooltip 的 canonical 样式。 -->
+<link rel="stylesheet" href="css/panels/foundation-rest.css">
+<link rel="stylesheet" href="css/character-create.css">
 </head>
 <body>
 
@@ -32,7 +35,7 @@
   <button id="btn-display">显示</button>
   <button id="btn-fullscreen">全屏</button>
   <button id="btn-logs">日志</button>
-  <button id="btn-about">其他</button>
+  <button id="btn-about" aria-label="其他：项目说明、作者与致谢、版本记录和音频设置">其他</button>
 </div>
 
 <!-- 欢迎视图 -->
@@ -82,7 +85,7 @@
       <div class="briefing">
         <span class="mark">&sect;</span> 本游戏运行时将存储数据在本地，请勿禁用本地存储。<br>
         <span class="mark">&sect;</span> 单机 MOD &middot; 无充值 &middot; 无联网 &middot; 免费开源。<br>
-        <span class="mark">&sect;</span> 版权归 <span class="mark">AndyLaw</span> 及社区共同所有。完整免责声明 / 交流群列表 请开 <span class="hint" id="briefing-about">「其他」</span>。
+        <span class="mark">&sect;</span> 版权归 <span class="mark">AndyLaw</span> 及社区共同所有。作者名单 / 版本记录 / 完整说明 请开 <button type="button" class="hint" id="briefing-about">「其他」</button>。
       </div>
 
       <div class="welcome-controls">
@@ -148,6 +151,11 @@
   </div>
 </div>
 
+<!-- 建角视图：第三个顶级 Bootstrap view；目录与状态只消费 Host 投影。 -->
+<div id="view-character-create" class="view" hidden>
+  <div id="character-create-root"></div>
+</div>
+
 <!-- 底栏 -->
 <div class="bottom">
   <span class="left">
@@ -163,8 +171,9 @@
 <!-- Modal host -->
 <div id="modal-host" style="display:none">
   <div class="modal-backdrop" id="modal-backdrop"></div>
-  <div class="modal-content" id="modal-content"></div>
+  <div class="modal-content" id="modal-content" role="dialog" aria-modal="true" tabindex="-1"></div>
 </div>
+<div id="panel-tooltip"></div>
 
 <!-- 片头视频 + 加载 overlay. 视频阶段: .on 显示 video + 跳过按钮; 加载阶段: .on.loading 隐藏 video,
      显示 spinner + "启动中..." + "ESC 取消"; Ready 状态 Guardian 层级 panel swap 时整个 overlay 自然随 BootstrapPanel 隐藏 -->
@@ -188,6 +197,15 @@
 <!-- C 期: tooltip 层 (经典 script, 暴露 window.BootTooltip; 须先于主控加载以完成同步绑定) -->
 <script src="modules/boot-tooltip.js"></script>
 
+<!-- 建角预览与控制器：manifest 仅在进入建角后由控制器按需读取。 -->
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/icons.js"></script>
+<script src="modules/tooltip.js"></script>
+<script src="modules/panel-scale.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script>
+<script src="modules/bootstrap-character-create-runtime.js"></script>
+<script src="modules/bootstrap-character-create.js"></script>
+
 <!-- 主控 IIFE -->
 <script src="bootstrap-main.js"></script>
 
@@ -210,6 +228,7 @@
 <script src="modules/archive-editor.js"></script>
 <script src="modules/diagnostic-log.js"></script>
 <script src="modules/display.js"></script>
+<script src="lib/marked.min.js"></script>
 <script src="modules/about.js"></script>
 <script src="modules/repair-card.js"></script>
 

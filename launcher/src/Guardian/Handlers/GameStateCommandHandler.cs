@@ -1,28 +1,31 @@
-// BMH 拆分：start_game / rebuild / reveal_ok / retry。
+// BMH 拆分：start_game / reveal_ok / retry。
 // 零行为改动，纯搬运。
 
 using Newtonsoft.Json.Linq;
-using CF7Launcher.Config;
+using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Guardian.Handlers
 {
     internal static class GameStateCommandHandler
     {
         /// <summary>
-        /// start_game 和 rebuild 共享骨架：slot 校验 + lastPlayedSlot 写入 +
-        /// deferReveal / requireFlashReveal 两个独立 flag 解析 + 分派到 launchFlow。
+        /// start_game validates a discovered physical slot and delegates
+        /// reveal flags to GameLaunchFlow. LastPlayedSlot is written only after
+        /// the exact scene-ready receipt; a durable create alone is insufficient.
         /// </summary>
-        internal static void HandleStartOrRebuild(
+        internal static void HandleStart(
             JObject msg,
-            string cmd,
             BootstrapPanel bootForm,
             GameLaunchFlow launchFlow,
-            UserPrefs userPrefs)
+            ArchiveTask archiveTask)
         {
-            string slot = msg.Value<string>("slot");
-            if (string.IsNullOrEmpty(slot))
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
             {
-                BootstrapCommandHelpers.PostError(bootForm, "slot_missing", cmd + " needs slot");
+                BootstrapCommandHelpers.PostError(
+                    bootForm, slotError, "start_game needs an exact slot key");
                 return;
             }
             if (launchFlow == null)
@@ -31,20 +34,12 @@ namespace CF7Launcher.Guardian.Handlers
                     "launchFlow not available (flash path missing?)");
                 return;
             }
-            // start_game / rebuild 都代表用户要以这个槽位继续游戏或重建后开局，
-            // 都应更新欢迎页默认槽位。
-            if (userPrefs != null && userPrefs.LastPlayedSlot != slot)
-            {
-                userPrefs.LastPlayedSlot = slot;
-                userPrefs.Save();
-            }
             // Phase 2b-ext: defer reveal 两个独立 flag, 前端按需 opt-in
             //   deferReveal       — 片头视频播放期 (JS 发 reveal_ok 才清)
             //   requireFlashReveal — Flash 封面帧 (Flash 发 bootstrap_reveal_ready 才清)
             bool deferJs = msg.Value<bool?>("deferReveal") ?? false;
             bool reqFlash = msg.Value<bool?>("requireFlashReveal") ?? false;
-            if (cmd == "rebuild") launchFlow.StartFreshGame(slot, deferJs, reqFlash);
-            else launchFlow.StartGame(slot, deferJs, reqFlash);
+            launchFlow.StartGameFromBootstrap(slot, deferJs, reqFlash);
         }
 
         /// <summary>Phase 2b-ext: JS 侧 reveal 信号 (片头视频播完 / 跳过 / 无片头直通)。</summary>

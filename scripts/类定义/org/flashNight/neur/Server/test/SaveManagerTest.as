@@ -5,6 +5,7 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import JSON;
 
 /**
@@ -144,20 +145,34 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
     private static function beginDrugItemCatalogFixture():Object {
         var receipt:Object = {
             itemData:ItemUtil.itemDataDict,
-            equipment:ItemUtil.equipmentDict
+            equipment:ItemUtil.equipmentDict,
+            getItemData:_root.getItemData
         };
         var itemData:Object = copyDictionary(receipt.itemData);
         itemData["普通hp药剂"] = drugItemData("普通hp药剂");
         itemData["普通mp药剂"] = drugItemData("普通mp药剂");
         itemData["抗生素"] = drugItemData("抗生素");
+        itemData["测试初始上装"] = equipmentItemData("测试初始上装", "上装装备");
+        itemData["测试初始下装"] = equipmentItemData("测试初始下装", "下装装备");
+        itemData["测试初始鞋"] = equipmentItemData("测试初始鞋", "脚部装备");
         ItemUtil.itemDataDict = itemData;
-        ItemUtil.equipmentDict = copyDictionary(receipt.equipment);
+        var equipment:Object = copyDictionary(receipt.equipment);
+        equipment["测试初始上装"] = true;
+        equipment["测试初始下装"] = true;
+        equipment["测试初始鞋"] = true;
+        ItemUtil.equipmentDict = equipment;
+        // TestLoader 不加载时间轴上的生产桥；装备栏仍按生产契约经
+        // _root.getItemData 校验 use，因此 focused fixture 显式接到同一真源。
+        _root.getItemData = function(index) {
+            return ItemUtil.getItemData(index);
+        };
         return receipt;
     }
 
     private static function endDrugItemCatalogFixture(receipt:Object):Void {
         ItemUtil.itemDataDict = receipt.itemData;
         ItemUtil.equipmentDict = receipt.equipment;
+        _root.getItemData = receipt.getItemData;
     }
 
     private static function copyDictionary(source:Object):Object {
@@ -172,6 +187,21 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             name:name, displayname:name, icon:name,
             type:"消耗品", use:"药剂", data:{level:1}
         };
+    }
+
+    private static function equipmentItemData(name:String, use:String):Object {
+        return {
+            name:name, displayname:name, icon:name,
+            type:"装备", use:use, data:{level:1}
+        };
+    }
+
+    private static function ownKeyCount(value:Object):Number {
+        var count:Number = 0;
+        for (var key:String in value) {
+            if (value.hasOwnProperty(key)) count++;
+        }
+        return count;
     }
 
     private static function assert(condition:Boolean, msg:String):Void {
@@ -2190,10 +2220,12 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var oldCalibration:Object = _root.斗兽标定模式;
         var oldCurrentStageName:Object = _root.当前关卡名;
         var oldCurrentStageDifficulty:Object = _root.当前关卡难度;
+        var oldBaseWorth:Object = _root.基础身价值;
         setUpForLoadTest();
         var sm:SaveManager = SaveManager.getInstance();
         try {
             _root.savePath = TEST_SLOT;
+            _root.基础身价值 = 1000;
             var fixtureLoaded:Boolean = sm.loadFromMydata(buildValidMydata(), "new_character_fixture");
             var bgmStops:Number = 0;
             _root.soundEffectManager = {
@@ -2256,10 +2288,10 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             _root.金钱 = preflightMoney;
 
             // reservation 已拿到后的同步初始化异常必须 exact release，且不启动 XML。
-            var savedBackpack:Object = _root.物品栏.背包;
-            var savedBackpackToObject:Function = savedBackpack.toObject;
+            var obtainIndex:ItemObtainIndex = ItemObtainIndex.getInstance();
+            var savedExportToSave:Function = obtainIndex.exportToSave;
             var initializationProbeCalls:Number = 0;
-            savedBackpack.toObject = function():Object {
+            obtainIndex.exportToSave = function():Object {
                 initializationProbeCalls++;
                 throw new Error("injected new-character initialization failure");
                 return null;
@@ -2270,7 +2302,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             try {
                 ok = sm.newCharacter();
             } finally {
-                savedBackpack.toObject = savedBackpackToObject;
+                obtainIndex.exportToSave = savedExportToSave;
             }
             assert(!ok && initializationProbeCalls == 1
                     && capturedLoaded == undefined && capturedError == undefined
@@ -2279,10 +2311,6 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
             // 同步异常允许留下已发生的初始化写入；重载 fixture 隔离后续成功路径。
             fixtureLoaded = sm.loadFromMydata(buildValidMydata(), "new_character_after_sync_failure");
-            _root.上装装备 = "";
-            _root.下装装备 = "";
-            _root.脚部装备 = "";
-            _root.难度 = "";
             StageRunSession.testOnlyReset();
             _root.当前为战斗地图 = false;
             _root.斗兽标定模式 = false;
@@ -2291,7 +2319,148 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                     && allDrugCooldownsReady(false),
                 "newCharacter_initialization: fixture restored after injected synchronous failure");
 
-            ok = sm.newCharacter();
+            // 模拟 Web 在 frame 81 直接重建：所有旧角色领域都被污染，且 SOL
+            // 仍保留一个可观察引用。prepare 必须只清内存，不得 clear/flush SO。
+            var retainedSol:Object = {sentinel:"old_sol_must_survive_prepare"};
+            var soData:Object = sm.getSOData();
+            soData["test"] = retainedSol;
+            soData.memoryResetSentinel = "keep";
+            _root.主角技能表 = [["旧技能", 9, true, "", true]];
+            _root.主角被动技能 = {旧被动:{等级:9}};
+            _root.快捷技能栏1 = "旧技能";
+            _root.快捷技能栏12 = "旧技能";
+            _root.快捷物品栏4 = "旧药剂";
+            _root.玩家称号 = "旧称号";
+            _root.物品栏 = {polluted:true};
+            _root.收集品栏 = {polluted:true};
+            _root.同伴数据 = [["旧同伴"]];
+            _root.同伴数 = 1;
+            _root.佣兵是否出战信息 = [1, 1, 1, 1, 1];
+            _root.killStats = {total:99, byType:{旧敌人:99}};
+            _root.宠物信息 = [["旧宠物"]];
+            _root.宠物领养限制 = 99;
+            _root.tasks_to_do = [{id:"旧任务"}];
+            _root.tasks_finished = {旧任务:true};
+            _root.task_chains_progress = {主线:77};
+            _root.主线任务进度 = 77;
+            _root.基建系统.infrastructure = {旧设施:9};
+            _root.商城已购买物品 = ["旧购买"];
+            _root.商城购物车 = ["旧购物车"];
+            _root.easterEgg = "旧彩蛋";
+            _root._saveExt = {oldDomain:true, drugLoadout:{version:1, activeBank:1}};
+            _root.金钱 = 99999;
+            _root.等级 = 88;
+            _root.经验值 = 77777;
+            _root.技能点数 = 66;
+            _root.difficultyMode = 2;
+            _root.虚拟币 = 98765;
+            _root.全局健身HP加成 = 10;
+            _root.全局健身MP加成 = 20;
+            _root.全局健身空攻加成 = 30;
+            _root.全局健身内力加成 = 40;
+            _root.全局健身防御加成 = 50;
+            _root.playerData = ["旧玩家缓存"];
+            _root.lastsave = "旧缓存";
+            _root.lastsave2 = ["旧缓存"];
+            _root._saveRuntimeLoaded = true;
+            _root._saveRuntimeLoadedAttemptId = "old-attempt";
+            _root.存盘标志 = 1;
+            _root.存档系统.dirtyMark = true;
+            sm.markDirty();
+            obtainIndex.loadFromSave({
+                discoveredStages:["旧关卡"],
+                discoveredEnemies:["旧敌人"],
+                discoveredQuests:["旧任务"]
+            });
+            var prepared:Object = sm.prepareNewCharacter({
+                characterName:"Web新角色",
+                genderText:"女",
+                height:165,
+                faceIdentifier:"测试女脸",
+                hairIdentifier:"测试女发",
+                upperIdentifier:"测试初始上装",
+                lowerIdentifier:"测试初始下装",
+                footwearIdentifier:"测试初始鞋",
+                difficultyText:"平衡模式（困难）"
+            }, "new_character_web_test");
+            var liveEquipment:Object = _root.物品栏.装备栏.toObject();
+            var packed:Object = _root.mydata;
+            var packedSources:Object = packed.others.物品来源缓存;
+            assert(prepared.success && soData["test"] === retainedSol
+                    && soData.memoryResetSentinel == "keep"
+                    && soData._deleted != true && capturedLoaded == undefined,
+                "prepareNewCharacter_memory_reset: keeps SOL untouched and starts no XML");
+            assert(ownKeyCount(liveEquipment) == 3
+                    && liveEquipment.上装装备.name == "测试初始上装"
+                    && liveEquipment.下装装备.name == "测试初始下装"
+                    && liveEquipment.脚部装备.name == "测试初始鞋"
+                    && ownKeyCount(_root.物品栏.背包.toObject()) == 0
+                    && ownKeyCount(_root.物品栏.药剂栏.toObject()) == 0
+                    && ownKeyCount(_root.物品栏.仓库.toObject()) == 0
+                    && ownKeyCount(_root.物品栏.战备箱.toObject()) == 0
+                    && ownKeyCount(_root.收集品栏.材料.toObject()) == 0
+                    && ownKeyCount(_root.收集品栏.情报.toObject()) == 0,
+                "prepareNewCharacter_memory_reset: replaces every container and keeps only initial equipment");
+            assert(_root.主角技能表.length == 80
+                    && _root.主角技能表[0][0] == ""
+                    && ownKeyCount(_root.主角被动技能) == 0
+                    && _root.快捷技能栏1 == "" && _root.快捷技能栏12 == ""
+                    && _root.快捷物品栏4 == "" && _root.玩家称号 == ""
+                    && _root.同伴数据.length == 0 && _root.同伴数 == 0
+                    && _root.佣兵是否出战信息.join(",") == "0,0,0,0,0",
+                "prepareNewCharacter_memory_reset: clears skill, quick-slot and companion domains");
+            assert(_root.tasks_to_do.length == 0
+                    && ownKeyCount(_root.tasks_finished) == 0
+                    && ownKeyCount(_root.task_chains_progress) == 0
+                    && _root.主线任务进度 == 0
+                    && _root.宠物信息.length == 5 && _root.宠物信息[0].length == 0
+                    && _root.宠物领养限制 == 5
+                    && _root.商城已购买物品.length == 0
+                    && _root.商城购物车.length == 0
+                    && ownKeyCount(_root.基建系统.infrastructure) == 0
+                    && _root.killStats.total == 0
+                    && _root.easterEgg == undefined
+                    && _root._saveExt.oldDomain == undefined,
+                "prepareNewCharacter_memory_reset: clears task, pet, shop, infrastructure, kill and ext domains");
+            assert(_root.虚拟币 == 0
+                    && _root.金钱 == 0 && _root.等级 == 1
+                    && _root.经验值 == 0 && _root.技能点数 == 0
+                    && _root.difficultyMode == 0 && _root.允许存档 === true
+                    && _root.全局健身HP加成 == 0
+                    && _root.全局健身MP加成 == 0
+                    && _root.全局健身空攻加成 == 0
+                    && _root.全局健身内力加成 == 0
+                    && _root.全局健身防御加成 == 0
+                    && _root.playerData[0] == undefined
+                    && _root.lastsave == "" && _root.lastsave2.length == 0
+                    && _root._saveRuntimeLoaded === false
+                    && _root._saveRuntimeLoadedAttemptId == undefined
+                    && _root.存盘标志 == 0 && !_root.存档系统.dirtyMark,
+                "prepareNewCharacter_memory_reset: clears value, cache and dirty runtime state");
+            assert(packed[0][0] == "Web新角色"
+                    && packed[0][1] == "女" && packed[0][2] == 0
+                    && packed[0][3] == 1 && packed[0][4] == 0
+                    && packed[0][5] == 165 && packed[0][6] == 0
+                    && packed[0][7] == ""
+                    && packed[0][8] == _root.基础身价值
+                    && packed[0][9] == 0 && packed[0][11] == 0
+                    && packed[0][12].join(",") == "0,0,0,0,0"
+                    && packed[1][0] == "测试女脸"
+                    && packed[1][1] == "测试女发"
+                    && packed[1][16] == "" && packed[1][27] == ""
+                    && packed[1][28] == ""
+                    && ownKeyCount(packed.inventory.装备栏) == 3
+                    && packed.tasks.tasks_to_do.length == 0
+                    && packed.pets.宠物信息.length == 5
+                    && packed.shop.商城购物车.length == 0
+                    && packed.ext.oldDomain == undefined
+                    && packedSources.discoveredStages.length == 0
+                    && packedSources.discoveredEnemies.length == 0
+                    && packedSources.discoveredQuests.length == 0,
+                "prepareNewCharacter_memory_reset: packs only the clean post-reset authority snapshot");
+
+            ok = prepared.success && sm.startNewCharacterTutorial(
+                String(prepared.startToken), true, null, null);
             assert(ok && DrugInputService.getActiveBank() == 0 && allDrugCooldownsReady(true),
                 "newCharacter_drug_session: successful new-character boundary resets bank and five cooldowns");
             assert(_root._saveExt.drugLoadout.version == 2
@@ -2350,6 +2519,9 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                 "newCharacter_double_click: second call preserves sentinels/items and performs zero pack reads");
             _root.金钱 = 0;
             _root.上装装备 = "";
+            _root.下装装备 = "";
+            _root.脚部装备 = "";
+            _root.难度 = "";
 
             capturedLoaded({});
             assert(_root.淡出动画.fadeCount == 1 && scheduledSceneReady == 1
@@ -2422,6 +2594,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             _root.斗兽标定模式 = oldCalibration;
             _root.当前关卡名 = oldCurrentStageName;
             _root.当前关卡难度 = oldCurrentStageDifficulty;
+            _root.基础身价值 = oldBaseWorth;
         }
     }
 }

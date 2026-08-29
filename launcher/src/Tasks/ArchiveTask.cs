@@ -28,9 +28,13 @@ namespace CF7Launcher.Tasks
     {
         private readonly string _savesDir;
         private readonly object _lock = new object();
+        private readonly SaveSlotCatalog _slotCatalog;
+        private readonly RebuildBackupStore _rebuildBackups;
 
         /// <summary>saves 目录路径（供 BootstrapMessageHandler 读取）。</summary>
         public string SavesDir { get { return _savesDir; } }
+        public SaveSlotCatalog SlotCatalog { get { return _slotCatalog; } }
+        public RebuildBackupStore RebuildBackups { get { return _rebuildBackups; } }
 
         /// <summary>
         /// 同步读 shadow JSON。SolResolver 专用。
@@ -42,8 +46,13 @@ namespace CF7Launcher.Tasks
         {
             data = null;
             error = null;
-            string safe = SanitizeSlotName(slot);
-            string path = Path.Combine(_savesDir, safe + ".json");
+            string exact;
+            if (!SaveSlotKey.TryValidateExisting(slot, out exact))
+            {
+                error = "invalid_slot_key";
+                return false;
+            }
+            string path = Path.Combine(_savesDir, exact + ".json");
             lock (_lock)
             {
                 if (!File.Exists(path))
@@ -75,7 +84,12 @@ namespace CF7Launcher.Tasks
                 return false;
             }
 
-            string safeName = SanitizeSlotName(slot);
+            string safeName;
+            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
+            {
+                error = "invalid_slot_key";
+                return false;
+            }
             string json = data.ToString(Formatting.None);
             if (!TryWriteShadowAtomic(safeName, json, false, out targetPath, out error))
                 return false;
@@ -139,7 +153,9 @@ namespace CF7Launcher.Tasks
 
         public bool IsTombstoned(string slot)
         {
-            string safe = SanitizeSlotName(slot);
+            string safe;
+            if (!SaveSlotKey.TryValidateExisting(slot, out safe))
+                return false;
             string tombPath = Path.Combine(_savesDir, safe + ".tombstone");
             lock (_lock)
             {
@@ -147,23 +163,65 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        public bool SlotExistsSync(string slot)
+        {
+            string exact;
+            if (!SaveSlotKey.TryValidateExisting(slot, out exact))
+                throw new ArgumentException("invalid slot key", "slot");
+            bool physicalExists;
+            lock (_lock)
+            {
+                physicalExists = File.Exists(Path.Combine(_savesDir, exact + ".json"))
+                    || File.Exists(Path.Combine(_savesDir, exact + ".tombstone"));
+            }
+            if (physicalExists)
+                return true;
+
+            // AS2 remains the save authority, so a successful local flush may
+            // outlive the best-effort shadow projection. Durable Host metadata
+            // is therefore also a known slot identity for the next bootstrap.
+            return _slotCatalog.ReadAll().ContainsKey(exact);
+        }
+
         /// <summary>
-        /// Synchronous variant of reset used by launcher-controlled "fresh start"
-        /// flows before Flash boots. Clears launcher shadow/tombstone only.
+        /// Synchronous exact-slot reset used only after a verified rebuild backup.
+        /// Clears launcher shadow/tombstone only and fails closed on any residue.
         /// </summary>
         public void ResetSlotSync(string slot)
         {
-            string safeName = SanitizeSlotName(slot);
+            string safeName;
+            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
+                throw new ArgumentException("invalid slot key", "slot");
             string jsonPath = Path.Combine(_savesDir, safeName + ".json");
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
 
             lock (_lock)
             {
+                Exception firstFailure = null;
                 try { if (File.Exists(jsonPath)) File.Delete(jsonPath); }
-                catch (Exception ex) { LogManager.Log("[ArchiveTask] reset(sync) delete json failed: " + ex.Message); }
+                catch (Exception ex)
+                {
+                    firstFailure = ex;
+                    LogManager.Log("[ArchiveTask] reset(sync) delete json failed: " + ex.Message);
+                }
 
                 try { if (File.Exists(tombPath)) File.Delete(tombPath); }
-                catch (Exception ex) { LogManager.Log("[ArchiveTask] reset(sync) delete tombstone failed: " + ex.Message); }
+                catch (Exception ex)
+                {
+                    if (firstFailure == null) firstFailure = ex;
+                    LogManager.Log("[ArchiveTask] reset(sync) delete tombstone failed: " + ex.Message);
+                }
+
+                bool jsonRemains = File.Exists(jsonPath);
+                bool tombstoneRemains = File.Exists(tombPath);
+                if (firstFailure != null || jsonRemains || tombstoneRemains)
+                {
+                    throw new IOException(
+                        "reset_slot_failed:" + safeName
+                        + ":jsonRemains=" + jsonRemains
+                        + ":tombstoneRemains=" + tombstoneRemains,
+                        firstFailure);
+                }
             }
 
             lock (_prevSnapshots)
@@ -177,9 +235,8 @@ namespace CF7Launcher.Tasks
         // 一致性校验：每个 slot 的上一次 shadow 快照
         private readonly Dictionary<string, JObject> _prevSnapshots = new Dictionary<string, JObject>();
 
-        // INV-4：saves 目录槽位枚举严格过滤，排除隐藏文件 (.broken-*.json / .repair-*.log /
-        // .launcher-version-marker.json) 和任何含内部 '.' 的路径。SanitizeSlotName 已把
-        // slot 内的 '.' 全替换为 '_'，所以合法槽位文件名形如 "<safeName>.json"，无内部点。
+        // INV-4: save discovery admits exact safe ASCII stems only and excludes
+        // hidden metadata, backup, repair, and other internal JSON files.
         private static readonly Regex SlotJsonRegex =
             new Regex(@"^[^.][^.]*\.json$", RegexOptions.Compiled);
         private static readonly Regex SlotTombstoneRegex =
@@ -193,6 +250,8 @@ namespace CF7Launcher.Tasks
                 Directory.CreateDirectory(_savesDir);
                 LogManager.Log("[ArchiveTask] Created saves directory: " + _savesDir);
             }
+            _slotCatalog = new SaveSlotCatalog(_savesDir);
+            _rebuildBackups = new RebuildBackupStore(_savesDir);
         }
 
         public void HandleAsync(JObject message, Action<string> respond)
@@ -277,7 +336,9 @@ namespace CF7Launcher.Tasks
             if (dataObj == null)
                 return BuildError("shadow_invalid_json");
 
-            string safeName = SanitizeSlotName(slot);
+            string safeName;
+            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
+                return BuildError("invalid_slot_key");
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
 
             // Phase 2a userEdit 守卫：用户态编辑/导入（BootstrapMessageHandler 注入 userEdit:true）
@@ -444,7 +505,9 @@ namespace CF7Launcher.Tasks
             if (string.IsNullOrEmpty(slot))
                 return BuildError("missing slot");
 
-            string safeName = SanitizeSlotName(slot);
+            string safeName;
+            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
+                return BuildError("invalid_slot_key");
             string targetPath = Path.Combine(_savesDir, safeName + ".json");
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
 
@@ -473,7 +536,9 @@ namespace CF7Launcher.Tasks
             if (string.IsNullOrEmpty(slot))
                 return BuildError("missing slot");
 
-            string safeName = SanitizeSlotName(slot);
+            string safeName;
+            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
+                return BuildError("invalid_slot_key");
             string jsonPath = Path.Combine(_savesDir, safeName + ".json");
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
             string tombTmp = tombPath + ".tmp";
@@ -508,27 +573,34 @@ namespace CF7Launcher.Tasks
         private string HandleList()
         {
             JArray slots = new JArray();
+            IDictionary<string, string> displayNames = _slotCatalog.ReadAll();
+            var slotNames = new HashSet<string>(
+                displayNames.Keys,
+                StringComparer.Ordinal);
             if (Directory.Exists(_savesDir))
             {
-                // 合并 *.json 与 *.tombstone 的槽位名：tombstone-only 槽位也要列出
-                var slotNames = new HashSet<string>(StringComparer.Ordinal);
+                // Merge physical shadows, tombstones, and durable Host catalog
+                // identities. The resolver remains responsible for deciding
+                // whether the matching AS2 SOL is snapshot/empty/corrupt.
                 foreach (string f in Directory.GetFiles(_savesDir, "*.json"))
                 {
                     string name = Path.GetFileName(f);
                     if (!SlotJsonRegex.IsMatch(name)) continue;
-                    slotNames.Add(Path.GetFileNameWithoutExtension(f));
+                    string slot = Path.GetFileNameWithoutExtension(f);
+                    if (SaveSlotKey.IsValidExisting(slot)) slotNames.Add(slot);
                 }
                 foreach (string f in Directory.GetFiles(_savesDir, "*.tombstone"))
                 {
                     string name = Path.GetFileName(f);
                     if (!SlotTombstoneRegex.IsMatch(name)) continue;
-                    slotNames.Add(Path.GetFileNameWithoutExtension(f));
+                    string slot = Path.GetFileNameWithoutExtension(f);
+                    if (SaveSlotKey.IsValidExisting(slot)) slotNames.Add(slot);
                 }
+            }
 
-                foreach (string slot in slotNames)
-                {
-                    slots.Add(BuildListEntry(slot));
-                }
+            foreach (string slot in slotNames)
+            {
+                slots.Add(BuildListEntry(slot, displayNames));
             }
 
             JObject result = new JObject();
@@ -538,7 +610,9 @@ namespace CF7Launcher.Tasks
             return result.ToString(Formatting.None);
         }
 
-        private JObject BuildListEntry(string slot)
+        private JObject BuildListEntry(
+            string slot,
+            IDictionary<string, string> displayNames)
         {
             string jsonPath = Path.Combine(_savesDir, slot + ".json");
             string tombPath = Path.Combine(_savesDir, slot + ".tombstone");
@@ -546,6 +620,7 @@ namespace CF7Launcher.Tasks
             bool hasTomb = File.Exists(tombPath);
 
             JObject entry = new JObject();
+            entry["slotKey"] = slot;
             entry["slot"] = slot;
             // 不变式 4：.json 与 .tombstone 并存 == tombstoned（语义同 inconsistent，用单独字段区分 UX 表现）
             entry["tombstoned"] = hasTomb;
@@ -553,6 +628,7 @@ namespace CF7Launcher.Tasks
 
             bool corrupt = false;
             string mainProgress = null;
+            string characterName = null;
             long size = 0;
             string lastModified = null;
 
@@ -570,6 +646,7 @@ namespace CF7Launcher.Tasks
                     {
                         corrupt = true;
                     }
+                    characterName = DeriveCharacterName(data);
                     mainProgress = DeriveMainProgress(data);
                 }
                 catch (Exception ex)
@@ -583,7 +660,20 @@ namespace CF7Launcher.Tasks
             entry["size"] = size;
             entry["lastModified"] = lastModified != null ? (JToken)lastModified : JValue.CreateNull();
             entry["mainProgress"] = mainProgress != null ? (JToken)mainProgress : JValue.CreateNull();
+            entry["characterName"] = characterName != null ? (JToken)characterName : JValue.CreateNull();
+            entry["displayName"] = _slotCatalog.ResolveDisplayName(
+                slot,
+                characterName,
+                displayNames);
             return entry;
+        }
+
+        private static string DeriveCharacterName(JObject data)
+        {
+            JArray player = data.Value<JArray>("0");
+            if (player == null) return null;
+            string name = SafeStr(player, 0);
+            return string.IsNullOrWhiteSpace(name) ? null : name;
         }
 
         /// <summary>
@@ -605,28 +695,10 @@ namespace CF7Launcher.Tasks
 
         public static string SanitizeSlotName(string slot)
         {
-            if (string.IsNullOrEmpty(slot))
-                return "default";
-
-            StringBuilder sb = new StringBuilder(slot.Length);
-            for (int i = 0; i < slot.Length; i++)
-            {
-                char c = slot[i];
-                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                    (c >= '0' && c <= '9') || c == '_' || c == '-')
-                {
-                    sb.Append(c);
-                }
-                else
-                {
-                    sb.Append('_');
-                }
-            }
-
-            string result = sb.ToString();
-            if (result.Length == 0)
-                return "default";
-            return result;
+            string exact;
+            if (!SaveSlotKey.TryValidateExisting(slot, out exact))
+                throw new ArgumentException("invalid slot key", "slot");
+            return exact;
         }
 
         // ==================== reset (Phase 2a) ====================
@@ -641,18 +713,39 @@ namespace CF7Launcher.Tasks
             if (string.IsNullOrEmpty(slot))
                 return BuildError("missing slot");
 
-            string safeName = SanitizeSlotName(slot);
+            string safeName;
+            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
+                return BuildError("invalid_slot_key");
             string jsonPath = Path.Combine(_savesDir, safeName + ".json");
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
 
+            // reset 表示彻底移除 Launcher 对该身份的全部认知；与 delete
+            // 保留 tombstone + 展示名以便玩家辨认/重建的语义不同。
+            // 先校验并移除 catalog，避免物理文件已删却留下 catalog-only 幽灵槽位。
+            string catalogError;
+            if (!_slotCatalog.TryRemoveDisplayName(safeName, out catalogError))
+                return BuildError("slot_catalog_reset_failed:" + catalogError);
+
+            Exception deleteError = null;
             lock (_lock)
             {
                 try { if (File.Exists(jsonPath)) File.Delete(jsonPath); }
-                catch (Exception ex) { LogManager.Log("[ArchiveTask] reset delete json failed: " + ex.Message); }
+                catch (Exception ex)
+                {
+                    deleteError = ex;
+                    LogManager.Log("[ArchiveTask] reset delete json failed: " + ex.Message);
+                }
 
                 try { if (File.Exists(tombPath)) File.Delete(tombPath); }
-                catch (Exception ex) { LogManager.Log("[ArchiveTask] reset delete tombstone failed: " + ex.Message); }
+                catch (Exception ex)
+                {
+                    if (deleteError == null) deleteError = ex;
+                    LogManager.Log("[ArchiveTask] reset delete tombstone failed: " + ex.Message);
+                }
             }
+
+            if (deleteError != null)
+                return BuildError("slot_reset_delete_failed:" + deleteError.GetType().Name);
 
             lock (_prevSnapshots)
             {
@@ -680,7 +773,9 @@ namespace CF7Launcher.Tasks
             if (string.IsNullOrEmpty(slot))
                 return BuildError("missing slot");
 
-            string safeName = SanitizeSlotName(slot);
+            string safeName;
+            if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
+                return BuildError("invalid_slot_key");
             string jsonPath = Path.Combine(_savesDir, safeName + ".json");
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
 

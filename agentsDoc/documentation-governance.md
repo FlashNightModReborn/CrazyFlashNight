@@ -55,6 +55,7 @@
 - source of truth 从一个文档转移到另一个文档
 - Launcher 的 `AppConfig` key/环境覆盖、用户偏好 JSON key、Core/Bootstrap CLI、Bootstrap cmd、测试一级分区、Panel id 或 lazy 最终模块变化 → 同步 `launcher/README.md` 对应机器注册表
 - 正式 runtime consensus/manifest 或发布列车变化 → 更新机器清单与 `docs/runtime-build-reproducibility.md`；`launcher/README.md` 只保留真源链接，不复制 request/identity/closure、文件数或产物大小
+- 稳定玩家包或玩家可见功能列车收口 → 同批更新 `docs/version-archaeology/versions/<version>.md`、`series-index.md`、玩家页 `launcher/web/content/version-history.md` 与可录制的视频提纲；稳定包另补 `release-boundaries.md` 的 Release URL/tag/时间/资产。多次 WIP 允许在收口提交批量登记，不要求逐提交填表；完整证据与措辞契约见 [版本考古维护规范](../docs/version-archaeology/README.md)
 - 装备生命周期脚本增删（`scripts/逻辑/装备函数/*.as`）→ 同步 `asLoaderManifest/frame37.as` 接线 + 该目录 `README.md` 索引；依次运行 `node tools/assemble-collapsed-frame.js`、`node tools/assemble-collapsed-frame.js --check`、`node tools/check-bom.js` 与 `node tools/validate-equip-fn-coverage.js`，再由 CS6 重编。`BOOT_SOURCES` 是 live 顶层输入的唯一清单，不得另建平行 frame / stage manifest
 - 武器 / 技能数值平衡参数变更（武器 XML `<balance>`、完整审计台账、业务判据或 `tools/cf7-balance-tool` 公式系数）→ 同步 `tools/cf7-balance-tool/docs/agent-balance-record-design.md`；判据变化同时同步 `tools/cf7-balance-tool/docs/weapon-balance-rulebook.md`，并执行设计契约的当前验证矩阵。武器 `balance-sync --check` 与 `balance-check` 是 strict v1 必跑门，但不能单独替代工作簿核对、规则证据审计或 AS2/Web 展示测试；入口路由见 `AGENTS.md` Context Packs「XML / 数据与游戏设计」
 

@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId character-creation Start: __FOCUSED_RUN_ID__");
+org.flashNight.neur.Server.test.CharacterCreationServiceTest.runAllTests();
+trace("FocusedTestRunId character-creation Complete: __FOCUSED_RUN_ID__");

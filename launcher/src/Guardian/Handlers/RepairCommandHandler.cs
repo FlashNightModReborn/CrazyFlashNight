@@ -44,10 +44,12 @@ namespace CF7Launcher.Guardian.Handlers
 
         internal static void HandleDetect(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask, string projectRoot)
         {
-            string slot = msg != null ? msg.Value<string>("slot") : null;
-            if (string.IsNullOrEmpty(slot))
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
             {
-                PostDetectError(bootForm, slot, "slot_missing", "repair_detect needs slot");
+                PostDetectError(bootForm, slot, slotError, "repair_detect needs an exact slot key");
                 return;
             }
 
@@ -105,11 +107,13 @@ namespace CF7Launcher.Guardian.Handlers
         internal static void HandleApplyManual(JObject msg, BootstrapPanel bootForm,
             ArchiveTask archiveTask, string projectRoot, GameLaunchFlow launchFlow)
         {
-            string slot = msg != null ? msg.Value<string>("slot") : null;
+            string slot;
+            string slotError;
             JArray patches = msg != null ? msg.Value<JArray>("patches") : null;
-            if (string.IsNullOrEmpty(slot))
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
             {
-                PostApplyResp(bootForm, slot, false, "slot_missing", "repair_apply_manual needs slot", 0);
+                PostApplyResp(bootForm, slot, false, slotError, "repair_apply_manual needs an exact slot key", 0);
                 return;
             }
             if (patches == null)
@@ -251,10 +255,12 @@ namespace CF7Launcher.Guardian.Handlers
         internal static void HandleForceContinue(JObject msg, BootstrapPanel bootForm,
             ArchiveTask archiveTask, string projectRoot, GameLaunchFlow launchFlow)
         {
-            string slot = msg != null ? msg.Value<string>("slot") : null;
-            if (string.IsNullOrEmpty(slot))
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
             {
-                PostForceResp(bootForm, slot, false, "slot_missing", "repair_force_continue needs slot");
+                PostForceResp(bootForm, slot, false, slotError, "repair_force_continue needs an exact slot key");
                 return;
             }
 
