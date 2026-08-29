@@ -2,6 +2,7 @@
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
+  <!-- 普通近战长枪的固有韧性按重量档位取30/50/100；专属防具化武器可独立定档。 -->
   <item weapontype="近战">
     <name>僵尸割草机</name>
     <displayname>僵尸割草机</displayname>
@@ -34,6 +35,7 @@
       <hp>125</hp>
       <mp>40</mp>
       <defence>50</defence>
+      <toughness>50</toughness>
       <damagetype>破击</damagetype>
       <magictype>生化</magictype>
       <reloadPenalty>0</reloadPenalty>
@@ -112,6 +114,7 @@
       <impact>10</impact>
       <hp>125</hp>
       <defence>100</defence>
+      <toughness>100</toughness>
       <damagetype>破击</damagetype>
       <magictype>生化</magictype>
       <reloadPenalty>0</reloadPenalty>
@@ -163,6 +166,7 @@
       <impact>10</impact>
       <hp>240</hp>
       <defence>60</defence>
+      <toughness>50</toughness>
       <damagetype>破击</damagetype>
       <magictype>装甲</magictype>
       <reloadPenalty>0</reloadPenalty>
@@ -266,6 +270,7 @@
       <bulletsize>25</bulletsize>
       <power>200</power>
       <impact>30</impact>
+      <toughness>30</toughness>
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>
@@ -302,6 +307,7 @@
       <impact>10</impact>
       <hp>160</hp>
       <defence>100</defence>
+      <toughness>50</toughness>
       <damagetype>魔法</damagetype>
       <magictype>热</magictype>
       <reloadPenalty>0</reloadPenalty>

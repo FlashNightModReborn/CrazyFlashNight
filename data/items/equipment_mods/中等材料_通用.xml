@@ -84,8 +84,20 @@
             <merge>
                 <vampirism>3</vampirism>
             </merge>
+            <!-- 电力适配：保持3%吸血不变，以固定生命与宿主生命普通百分比扩大血池。 -->
+            <tagSwitch>
+                <tag name="电力">
+                    <percentage>
+                        <hp>8</hp>
+                    </percentage>
+                    <flat>
+                        <hp>75</hp>
+                    </flat>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>以汲丝虹吸崩解能量，驱动自愈。</description>
+        <description>以汲丝虹吸崩解能量，驱动自愈。
+        在电力支持下扩展生命容量。</description>
         <tag>动力接口</tag>
     </mod>
 </root>

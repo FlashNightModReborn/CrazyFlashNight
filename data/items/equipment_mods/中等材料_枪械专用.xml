@@ -82,9 +82,15 @@
             <merge>
                 <slay>5</slay>
             </merge>
+            <!-- 近战型长枪：阻尼回收回馈电力；普通枪械与手枪不提供电力。 -->
+            <useSwitch>
+                <use name="weapontype:近战,weapontype:压制近战">
+                    <provideTags>电力</provideTags>
+                </use>
+            </useSwitch>
         </stats>
         <description>消除枪口火光与射击声,大幅降低被敌人察觉的风险。
-        附加收割残血敌人的能力。</description>
+        附加收割残血敌人的能力；用于近战型长枪时可回收惯性能量并提供电力。</description>
     </mod>
 
     <mod>
