@@ -158,7 +158,10 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
     };
     CharacterBuildController.prototype._error = function(response, command) {
         var error = response && response.error;
-        if (command === 'candidates' && error === 'stale_state') return;
+        // Candidate failures already render in the Web candidate pane, including
+        // stale-state recovery. Repeating them in the Flash HUD is both delayed
+        // and can outlive a successful tuning commit during close/finalize.
+        if (command === 'candidates') return;
         // Tooltip 是悬浮/焦点触发的展示增强；失败时保留本地紧凑摘要，
         // 不用 toast 打断玩家当前的构筑操作。
         if (command === 'tooltip') return;

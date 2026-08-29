@@ -1041,7 +1041,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
             var replacementValue:Object = ObjectUtil.clone(sourceValue);
             replacementValue.mods = cloneArray(replacementDetach.remainingMods);
             var replacementProbe:BaseItem = new BaseItem(sourceItem.name, replacementValue, sourceItem.lastUpdate);
-            var replacementData:Object = sourceItem.getData();
+            var replacementData:Object = replacementProbe.getData();
             var replacementAvailability:Number = Number(
                 EquipmentUtil.isModMaterialAvailable(replacementProbe, replacementData, candidateName));
             if (replacementAvailability != 1) return fail("mod_unavailable");
@@ -1068,6 +1068,17 @@ class org.flashNight.arki.item.EquipmentTuningService {
             addReturnedMaterials(materialDeltas, removedMods);
             fingerprint += "|detach_all=" + removedMods.join(",");
         } else return fail("unsupported_operation");
+
+        if (!noOp) {
+            var sourceValidation:Object = validatePlannedEquipment(
+                source, sourceItem, afterSource);
+            if (!sourceValidation.success) return sourceValidation;
+            if (afterTarget != null) {
+                var targetValidation:Object = validatePlannedEquipment(
+                    target, BaseItem(target.item), afterTarget);
+                if (!targetValidation.success) return targetValidation;
+            }
+        }
 
         var materials:Object = getMaterialCollection();
         if (materials == null) return fail("condition_failed");
@@ -1269,7 +1280,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
             if (replacementProjection.installed == true) continue;
             for (var installedIndex:Number = 0; installedIndex < item.value.mods.length; installedIndex++) {
                 var installedName:String = String(item.value.mods[installedIndex]);
-                if (canReplaceMod(item, itemData, installedName, String(replacementProjection.itemName))) {
+                if (canReplaceMod(item, installedName, String(replacementProjection.itemName))) {
                     replacementProjection.replaceableFrom.push(String(modKeys[installedName]));
                 }
             }
@@ -1310,8 +1321,11 @@ class org.flashNight.arki.item.EquipmentTuningService {
 
     private static function buildEquipmentProjection(item:Object, value:Object, lastUpdate:Number, includeStats:Boolean):Object {
         var raw:Object = ItemUtil.getRawItemData(item.name);
-        var data:Object = typeof item.getData == "function"
-            ? item.getData() : raw;
+        // preview 的 after 必须从传入 value 重算；直接读取 item.getData() 会把
+        // 替换前的等级需求与配件槽容量泄漏进 after 投影。
+        var projectionProbe:BaseItem = new BaseItem(
+            String(item.name), ObjectUtil.clone(value), lastUpdate);
+        var data:Object = projectionProbe.getData();
         // 唯一 legacy metadata 适配点：Host/Web 只消费完整三元身份，绝不再猜内部名。
         var presentation:Object = itemPresentation(String(item.name));
         var modSlotCapacity:Number = 0;
@@ -1513,6 +1527,53 @@ class org.flashNight.arki.item.EquipmentTuningService {
         return {success:true};
     }
 
+    /**
+     * 只在调制写计划上验证最终态；存档加载与既有非法装备保持原样。
+     * 背包装备可高于玩家等级，已穿戴装备则必须继续满足 Character Build
+     * 使用的有效等级门。所有写入都必须落在最终有效配件槽容量内。
+     */
+    private static function validatePlannedEquipment(slot:Object,
+                                                      item:BaseItem,
+                                                      value:Object):Object {
+        var probe:BaseItem = new BaseItem(
+            item.name, ObjectUtil.clone(value), item.lastUpdate);
+        var shape:Object = validateEquipment(probe);
+        if (!shape.success) return shape;
+
+        var itemData:Object = probe.getData();
+        if (itemData == null || itemData.data == null
+                || typeof itemData.data != "object"
+                || !finiteNumber(itemData.data.level)) {
+            return fail("invalid_equipment");
+        }
+
+        var rawCapacity = itemData.data.modslot;
+        var capacity:Number = Number(rawCapacity);
+        if (rawCapacity == undefined || isNaN(capacity)
+                || capacity == Number.POSITIVE_INFINITY
+                || capacity == Number.NEGATIVE_INFINITY
+                || capacity < 0 || Math.floor(capacity) != capacity) {
+            return fail("invalid_equipment");
+        }
+        if (probe.value.mods.length > capacity) {
+            return fail("mod_unavailable");
+        }
+
+        if (slot != null && slot.sourceKind == "loadout") {
+            if (!finiteNumber(_root.等级)) return fail("invalid_equipment");
+            if (Number(itemData.data.level) > Number(_root.等级)) {
+                return fail("level_locked");
+            }
+        }
+        return {success:true};
+    }
+
+    private static function finiteNumber(value):Boolean {
+        return typeof value == "number" && !isNaN(value)
+            && value != Number.POSITIVE_INFINITY
+            && value != Number.NEGATIVE_INFINITY;
+    }
+
     private static function safeSourceRef(slot:Object):Object {
         if (slot == null) return null;
         if (slot.sourceKind == "loadout") {
@@ -1618,7 +1679,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         deltas[itemName] = current + delta;
     }
 
-    private static function canReplaceMod(item:BaseItem, itemData:Object,
+    private static function canReplaceMod(item:BaseItem,
             installedName:String, candidateName:String):Boolean {
         if (installedName == "" || candidateName == "" || installedName == candidateName) return false;
         var detach:Object = buildDetachPlan(item, installedName);
@@ -1626,7 +1687,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var probeValue:Object = ObjectUtil.clone(item.value);
         probeValue.mods = cloneArray(detach.remainingMods);
         var probe:BaseItem = new BaseItem(item.name, probeValue, item.lastUpdate);
-        return Number(EquipmentUtil.isModMaterialAvailable(probe, itemData, candidateName)) == 1;
+        return Number(EquipmentUtil.isModMaterialAvailable(
+            probe, probe.getData(), candidateName)) == 1;
     }
 
     private static function getMaterialCollection():Object {

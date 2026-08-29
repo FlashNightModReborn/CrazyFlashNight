@@ -3045,10 +3045,11 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && document.querySelector('[data-roving-key="'
                 + refusalBefore.selectedSlotKey + '"]').getAttribute('aria-selected') === 'true'
             && commandCount('candidates') === refusalCandidateBase
-            && Toast.messages.length === refusalToastBase + 1
-            && Toast.messages[Toast.messages.length - 1] === '角色构筑连接不可用。'
+            && Toast.messages.length === refusalToastBase
             && document.querySelector('[data-build-notice]')
-                .getAttribute('data-notice-kind') === 'error',
+                .getAttribute('data-notice-kind') === 'error'
+            && document.querySelector('[data-build-notice]').textContent
+                .indexOf('角色构筑连接不可用') >= 0,
             JSON.stringify({before:refusalBefore, after:refusalAfter,
                 candidates:commandCount('candidates'), toasts:Toast.messages}));
         window.__routeHarness.rejectNextCandidate = true;

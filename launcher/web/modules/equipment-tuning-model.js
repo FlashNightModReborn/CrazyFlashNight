@@ -181,6 +181,7 @@
             invalid_target:'转换目标无效。',same_slot:'不能选择同一件装备。',
             type_mismatch:'只能在相同类型装备之间转换。',different_use:'只能在相同类型装备之间转换。',
             level_cap:'已达到当前强化上限。',tier_locked:'进阶顺序尚未满足。',invalid_transition:'进阶顺序尚未满足。',
+            level_locked:'调制后的装备需要更高角色等级。',
             mod_unavailable:'该配件当前不可安装。',mod_not_installed:'目标配件已不在装备上。',busy:'Flash 正在处理另一项调制。',
             invalid_equipment:'该物品不能调制。',invalid_mods:'装备的配件数据无效。',unknown_candidate:'候选项已失效，请刷新。',
             token_invalid:'调制预览已失效，请重新预览。',token_expired:'调制预览已过期，请重新预览。',

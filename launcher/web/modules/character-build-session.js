@@ -510,6 +510,7 @@
 
     CharacterBuildSession.prototype._requestFlush = function(callback) {
         if (this._state !== 'idle' && this._state !== 'flush_failed') return null;
+        this._mux.cancelKind('candidates'); this._mux.cancelKind('snapshot'); this._mux.cancelKind('stats');
         this._cancelLoadoutTooltip('flush_start');
         this._state = 'flush_pending';
         this._emit('flush_start');
@@ -568,6 +569,7 @@
         var retry = this._state === 'needs_reconcile' && this._unknown
             && this._unknown.kind === 'finalize';
         if (this._state !== 'idle' && this._state !== 'flush_failed' && !retry) return null;
+        this._mux.cancelKind('candidates'); this._mux.cancelKind('snapshot'); this._mux.cancelKind('stats');
         this._cancelLoadoutTooltip('finalize_start');
         var payload = this._basePayload();
         payload.expectedLoadoutRevision = this._loadoutRevision;

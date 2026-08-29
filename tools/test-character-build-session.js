@@ -820,6 +820,41 @@ test('latest candidate request fences a late response from the previous scope', 
     assert.deepStrictEqual(accepted, ['backpack']);
 });
 
+test('finalize cancels a pending candidate read before changing session state', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const target = {kind:'equipment', slotKey:'长枪'};
+    let candidateCallbackCount = 0;
+    fixture.session.requestCandidates(target, 'compatible', () => {
+        candidateCallbackCount++;
+    });
+    const candidate = fixture.messages[1];
+    let finalized = false;
+    fixture.session.finalize((_, accepted) => { finalized = accepted; });
+    const finalize = fixture.messages[2];
+
+    assert.strictEqual(fixture.mux.handleResponse(responseFor(candidate, {payload:{
+        target,
+        candidateScope:'compatible',
+        candidates:[],
+        backpackVersion:8,
+        stateHealth:'ok',
+        diagnostics:[]
+    }})), false);
+    assert.strictEqual(candidateCallbackCount, 0);
+    assert.deepStrictEqual(fixture.errors, []);
+
+    fixture.mux.handleResponse(responseFor(finalize, {
+        writeEpoch:1,
+        active:false,
+        closed:true,
+        liveChanged:false,
+        persistence:{success:true, changed:false}
+    }));
+    assert.strictEqual(finalized, true);
+    assert.strictEqual(fixture.session.canClose(), true);
+});
+
 test('snapshot adoption rejects blank and wrapped-case undefined loadout item identities', () => {
     [
         ['name',' Undefined '],

@@ -765,7 +765,18 @@ var EquipmentTuningRender = (function() {
             if (this._operation === 'enhance') this._renderEnhance(body);
             else this._renderConvert(body);
         }
-        else if (this._operation === 'install_tier') this._renderCandidates(body, this._snapshot.tierCandidates || [], 'install_tier');
+        else if (this._operation === 'install_tier') {
+            var tierCandidates = this._snapshot.tierCandidates || [];
+            var availableTierCandidates = tierCandidates.filter(function(candidate) {
+                return candidate && candidate.available === true;
+            });
+            this._renderCandidates(
+                body,
+                availableTierCandidates,
+                'install_tier',
+                tierEmptyText(tierCandidates)
+            );
+        }
         else this._renderMods(body);
         return body;
     };
@@ -981,13 +992,18 @@ var EquipmentTuningRender = (function() {
         hint.textContent = '这里仅列出背包中的同类装备，不会改变左侧的筛选与排序。'; body.appendChild(hint);
     };
 
-    TuningView.prototype._renderCandidates = function(body, candidates, operation) {
+    TuningView.prototype._renderCandidates = function(
+            body, candidates, operation, emptyText) {
         var list = element('div', 'equipment-tuning-candidates');
         var self = this;
-        if (!candidates.length) { body.appendChild(empty('当前装备没有可用候选。')); return; }
+        if (!candidates.length) {
+            body.appendChild(empty(emptyText || '当前装备没有可用候选。'));
+            return;
+        }
         candidates.forEach(function(candidate) {
             var displayName = candidateDisplayName(candidate, '候选');
             var iconName = candidateIconName(candidate);
+            var reasonText = blockedReasonText(candidate.reason);
             var button = element('button', 'equipment-tuning-candidate' + (candidate.available ? ' available' : ' blocked'));
             button.type = 'button'; button.disabled = self._busy || self._readPending || self._needsReconcile;
             button.setAttribute('aria-disabled', candidate.available ? 'false' : 'true');
@@ -1002,7 +1018,7 @@ var EquipmentTuningRender = (function() {
                 + String(candidate.candidateKey || ''));
             button.setAttribute(
                 'data-tuning-disabled-reason',
-                candidate.available ? '' : String(candidate.reason || '当前候选不可用。')
+                candidate.available ? '' : String(reasonText || '当前候选不可用。')
             );
             setCapability(
                 button,
@@ -1014,7 +1030,7 @@ var EquipmentTuningRender = (function() {
                 + Number(candidate.owned || 0) + '，' + String(candidate.gradeLabel || candidate.tierName || '未分类')
                 + (candidate.scopeLabel ? '，' + String(candidate.scopeLabel) : '')
                 + (candidate.roleLabel ? '，' + String(candidate.roleLabel) : '')
-                + (candidate.reason ? '，' + String(candidate.reason) : ''));
+                + (reasonText ? '，' + reasonText : ''));
             if (candidate.gradeColor) button.style.setProperty('--equipment-mod-grade-color', String(candidate.gradeColor));
             var owned = Math.max(0, Math.floor(Number(candidate.owned) || 0));
             button.innerHTML = iconHtml(iconName, 'kshop-icon')
@@ -1027,7 +1043,7 @@ var EquipmentTuningRender = (function() {
                 + owned + ' · ' + escapeHtml(candidate.gradeLabel || candidate.tierName || '未分类')
                 + (candidate.scopeLabel ? ' · ' + escapeHtml(candidate.scopeLabel) : '')
                 + (candidate.roleLabel ? ' · ' + escapeHtml(candidate.roleLabel) : '')
-                + (candidate.reason ? ' · ' + escapeHtml(candidate.reason) : '') + '</small></span>';
+                + (reasonText ? ' · ' + escapeHtml(reasonText) : '') + '</small></span>';
             button.addEventListener('click', function() {
                 var capability = operation === 'install_tier' ? 'tier' : 'candidate';
                 self._recordDiagnostic('candidate_hit', {
@@ -1049,7 +1065,12 @@ var EquipmentTuningRender = (function() {
                         capability:capability,
                         candidateKey:candidate.candidateKey
                     });
-                    self._toast(String(candidate.reason || '当前候选不可用。'));
+                    var denialText = blockedReasonText(candidate.reason);
+                    self._status = denialText
+                        ? '当前候选不可用：' + denialText + '。'
+                        : '当前候选不可用。';
+                    self._emit();
+                    self.render({previewOnly:true});
                 }
             });
             self._bindCandidateTooltip(button, candidate);
@@ -1614,6 +1635,26 @@ var EquipmentTuningRender = (function() {
         if (text === 'tier_transition_rejected') return '进阶顺序尚未满足';
         if (text === 'already_installed') return '已安装';
         return text;
+    }
+
+    function tierEmptyText(candidates) {
+        candidates = candidates instanceof Array ? candidates : [];
+        if (!candidates.length) return '当前装备没有可用进阶。';
+        var materialMissing = false;
+        var transitionRejected = false;
+        for (var index = 0; index < candidates.length; index++) {
+            var reason = String(candidates[index] && candidates[index].reason || '');
+            if (reason === 'material_missing') materialMissing = true;
+            else if (reason === 'tier_transition_rejected') transitionRejected = true;
+        }
+        if (materialMissing && transitionRejected) {
+            return '暂无可用进阶：缺少材料，或进阶顺序尚未满足。';
+        }
+        if (materialMissing) {
+            return '暂无可用进阶：缺少当前进阶所需材料。获得材料后会自动出现。';
+        }
+        if (transitionRejected) return '暂无可用进阶：进阶顺序尚未满足。';
+        return '当前装备没有可用进阶。';
     }
 
         return TuningView;

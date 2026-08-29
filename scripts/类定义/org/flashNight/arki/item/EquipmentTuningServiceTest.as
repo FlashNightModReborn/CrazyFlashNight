@@ -53,6 +53,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testWornCommitAndLiveDirtyBoundary();
         testWornConversionAcrossBackpack();
         testWornAllowedOperationMatrix();
+        testPlannedEquipmentValidityGate();
         testWornRollbackAndUnknownReconcile();
         testPreviewStatRows();
         trace("EquipmentTuningServiceTest Tests Passed: " + _passed);
@@ -85,13 +86,22 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             {name:"光谱射线弹-强化",use:"手枪",detachPolicy:"single"},
             {name:"遗留握柄",use:"长枪",detachPolicy:"single"},
             {name:"级联核心",use:"手枪",detachPolicy:"cascade"},
-            {name:"测试增幅插件",use:"手枪",detachPolicy:"single",stats:{flat:{vampirism:3}}}
+            {name:"测试增幅插件",use:"手枪",detachPolicy:"single",stats:{flat:{vampirism:3}}},
+            {name:"测试增级插件",use:"手枪",detachPolicy:"single",stats:{flat:{level:5}}},
+            {name:"测试减级插件",use:"手枪",detachPolicy:"single",stats:{flat:{level:-10}}},
+            {name:"测试扩槽基座",use:"手枪",provideTags:"测试导轨",detachPolicy:"cascade",
+                stats:{merge:{modslot:3}}},
+            {name:"测试依赖插件",use:"手枪",requireTags:"测试导轨",detachPolicy:"single"},
+            {name:"测试独立插件",use:"手枪",detachPolicy:"single",tag:"测试独立槽"},
+            {name:"测试替换插件",use:"手枪",detachPolicy:"single",tag:"测试替换槽"}
         ]);
         ItemUtil.loadItemData([
             {name:"测试手枪A",displayname:"测试手枪A",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",
                 data:{level:1,modslot:4,damage:10,interval:100,impact:100,bullet:"普通子弹",split:1},
                 data_2:{level:12,damage:30,interval:77,impact:25}},
             {name:"测试手枪B",displayname:"测试手枪B",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:4,damage:10}},
+            {name:"测试等级手枪",displayname:"测试等级手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:11,modslot:4,damage:10}},
+            {name:"测试单槽手枪",displayname:"测试单槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:1,damage:10}},
             {name:"测试未知槽手枪",displayname:"测试未知槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,damage:10}},
             {name:"测试负数槽手枪",displayname:"测试负数槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:-1,damage:10}},
             {name:"测试小数槽手枪",displayname:"测试小数槽手枪",icon:"测试",type:"武器",use:"手枪",weapontype:"手枪",data:{level:1,modslot:1.5,damage:10}},
@@ -113,7 +123,13 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             {name:"光谱射线弹-强化",displayname:"全谱色散引擎",icon:"环式棱栅折射阵列",type:"收集品",use:"材料",data:{}},
             {name:"遗留握柄",displayname:"旧式握柄展示",icon:"旧式握柄图标",type:"收集品",use:"材料",data:{}},
             {name:"级联核心",displayname:"级联核心",icon:"测试",type:"收集品",use:"材料",data:{}},
-            {name:"测试增幅插件",displayname:"测试增幅插件",icon:"测试",type:"收集品",use:"材料",data:{}}
+            {name:"测试增幅插件",displayname:"测试增幅插件",icon:"测试",type:"收集品",use:"材料",data:{}},
+            {name:"测试增级插件",displayname:"测试增级插件",icon:"测试",type:"收集品",use:"材料",data:{}},
+            {name:"测试减级插件",displayname:"测试减级插件",icon:"测试",type:"收集品",use:"材料",data:{}},
+            {name:"测试扩槽基座",displayname:"测试扩槽基座",icon:"测试",type:"收集品",use:"材料",data:{}},
+            {name:"测试依赖插件",displayname:"测试依赖插件",icon:"测试",type:"收集品",use:"材料",data:{}},
+            {name:"测试独立插件",displayname:"测试独立插件",icon:"测试",type:"收集品",use:"材料",data:{}},
+            {name:"测试替换插件",displayname:"测试替换插件",icon:"测试",type:"收集品",use:"材料",data:{}}
         ]);
         _root.物品栏 = {
             背包:new ArrayInventory(null, 50),
@@ -122,6 +138,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         };
         _root.收集品栏 = {材料:new DictCollection(null)};
         _root.性别 = "男";
+        _root.等级 = 99;
         _root.主线任务进度 = 0;
         _root.主角被动技能 = {铁匠:{启用:false,等级:0}};
         _root.存档系统 = {dirtyMark:false};
@@ -1935,6 +1952,170 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                 && _root.收集品栏.材料
                     .getValue("基础导轨") == 1,
             "loadout 允许 install/replace/detach/detach_all mod，返还与扣料无复制");
+    }
+
+    private static function testPlannedEquipmentValidityGate():Void {
+        resetFixture();
+        _root.等级 = 1;
+        _root.收集品栏.材料.add("二阶复合防御组件", 1);
+        var armor:BaseItem = equipment("测试头盔", 1, []);
+        var armorFixture:Object = installWornFixture("头部装备", armor);
+        var tierBlocked:Object = prepareWornOperation(
+            armorFixture, "worn-tier-level-locked", "install_tier",
+            "二阶复合防御组件", "", undefined);
+        assertTrue(tierBlocked.snapshot.success
+                && !tierBlocked.preview.success
+                && tierBlocked.preview.error == "level_locked"
+                && armor.value.tier == undefined
+                && _root.收集品栏.材料.getValue(
+                    "二阶复合防御组件") == 1,
+            "低等级已穿戴装备不能通过进阶写出高于玩家等级的最终态");
+
+        resetFixture();
+        _root.等级 = 12;
+        _root.收集品栏.材料.add("二阶复合防御组件", 1);
+        armor = equipment("测试头盔", 1, []);
+        armorFixture = installWornFixture("头部装备", armor);
+        var tierBoundary:Object = commitWornOperation(
+            armorFixture, "worn-tier-level-boundary", "install_tier",
+            "二阶复合防御组件", "", undefined);
+        assertTrue(tierBoundary.preview.success
+                && tierBoundary.commit.success
+                && armor.value.tier == "二阶",
+            "有效需求等级等于玩家等级时仍允许已穿戴装备进阶");
+
+        resetFixture();
+        _root.等级 = 1;
+        _root.收集品栏.材料.add("二阶复合防御组件", 1);
+        var bagArmor:BaseItem = equipment("测试头盔", 1, []);
+        _root.物品栏.背包.add(0, bagArmor);
+        var inventoryTier:Object = webCommit(
+            "inventory-tier-above-player", "install_tier", 0, -1,
+            "二阶复合防御组件", undefined, "");
+        assertTrue(inventoryTier.preview.success
+                && inventoryTier.commit.success
+                && bagArmor.value.tier == "二阶",
+            "背包装备仍可进阶到高于玩家等级，限制只作用于已穿戴最终态");
+
+        resetFixture();
+        _root.等级 = 1;
+        _root.收集品栏.材料.add("测试增级插件", 1);
+        var weapon:BaseItem = equipment("测试手枪A", 1, []);
+        var weaponFixture:Object = installWornFixture("手枪", weapon);
+        var raisedByInstall:Object = prepareWornOperation(
+            weaponFixture, "worn-mod-raises-level", "install_mod",
+            "测试增级插件", "", undefined);
+        assertTrue(!raisedByInstall.preview.success
+                && raisedByInstall.preview.error == "level_locked"
+                && weapon.value.mods.length == 0
+                && _root.收集品栏.材料.getValue("测试增级插件") == 1,
+            "安装增加等级需求的配件不能绕过已穿戴等级门");
+
+        resetFixture();
+        _root.等级 = 1;
+        weapon = equipment("测试等级手枪", 1, ["测试减级插件"]);
+        weaponFixture = installWornFixture("手枪", weapon);
+        var raisedByDetach:Object = prepareWornOperation(
+            weaponFixture, "worn-mod-detach-raises-level", "detach_mod",
+            "测试减级插件", "", undefined);
+        assertTrue(!raisedByDetach.preview.success
+                && raisedByDetach.preview.error == "level_locked"
+                && weapon.value.mods.length == 1
+                && weapon.value.mods[0] == "测试减级插件",
+            "卸下用于满足等级门的配件时按卸下后有效需求复核");
+
+        resetFixture();
+        _root.等级 = 1;
+        _root.收集品栏.材料.add("测试替换插件", 1);
+        weapon = equipment("测试等级手枪", 1, ["测试减级插件"]);
+        weaponFixture = installWornFixture("手枪", weapon);
+        var raisedByReplace:Object = prepareWornOperation(
+            weaponFixture, "worn-mod-replace-raises-level", "replace_mod",
+            "测试替换插件", "测试减级插件", undefined);
+        assertTrue(!raisedByReplace.preview.success
+                && raisedByReplace.preview.error == "level_locked"
+                && weapon.value.mods.length == 1
+                && _root.收集品栏.材料.getValue("测试替换插件") == 1,
+            "替换降低等级需求的配件时按替换后有效需求复核");
+
+        resetFixture();
+        _root.等级 = 1;
+        weapon = equipment("测试等级手枪", 1, ["测试减级插件"]);
+        weaponFixture = installWornFixture("手枪", weapon);
+        var raisedByDetachAll:Object = prepareWornOperation(
+            weaponFixture, "worn-mod-detach-all-raises-level", "detach_all_mods",
+            "", "", undefined);
+        assertTrue(!raisedByDetachAll.preview.success
+                && raisedByDetachAll.preview.error == "level_locked"
+                && weapon.value.mods.length == 1,
+            "卸下全部降低需求的配件同样不能写出超等级已穿戴装备");
+
+        resetFixture();
+        _root.收集品栏.材料.add("测试替换插件", 1);
+        weapon = equipment("测试单槽手枪", 1,
+            ["测试扩槽基座", "测试依赖插件", "测试独立插件"]);
+        _root.物品栏.背包.add(0, weapon);
+        var beforeBagRevision:Number =
+            _root.物品栏.背包.getMutationRevision();
+        var overCapacity:Object = webCommit(
+            "replace-mod-final-capacity", "replace_mod", 0, -1,
+            "测试替换插件", undefined, "测试扩槽基座");
+        assertTrue(overCapacity.snapshot.success
+                && overCapacity.snapshot.snapshot.equipment.modSlotCapacity == 3
+                && !overCapacity.preview.success
+                && overCapacity.preview.error == "mod_unavailable"
+                && weapon.value.mods.length == 3
+                && _root.物品栏.背包.getMutationRevision()
+                    == beforeBagRevision
+                && _root.收集品栏.材料.getValue("测试替换插件") == 1,
+            "replace_mod 用拆件后容量校验，不能把三槽状态替换成两件占一槽");
+
+        resetFixture();
+        _root.收集品栏.材料.add("测试替换插件", 1);
+        weapon = equipment("测试单槽手枪", 1, ["测试扩槽基座"]);
+        _root.物品栏.背包.add(0, weapon);
+        var validReplacement:Object = webCommit(
+            "replace-mod-projection-capacity", "replace_mod", 0, -1,
+            "测试替换插件", undefined, "测试扩槽基座");
+        assertTrue(validReplacement.preview.success
+                && validReplacement.preview.after.source.equipment
+                    .modSlotCapacity == 1
+                && validReplacement.commit.success
+                && weapon.value.mods.length == 1
+                && weapon.value.mods[0] == "测试替换插件",
+            "replace_mod 的 after 投影与提交都使用替换后有效槽位容量");
+
+        resetFixture();
+        _root.等级 = 12;
+        _root.收集品栏.材料.add("二阶复合防御组件", 1);
+        armor = equipment("测试头盔", 1, []);
+        armorFixture = installWornFixture("头部装备", armor);
+        var racePrepared:Object = prepareWornOperation(
+            armorFixture, "worn-tier-level-race", "install_tier",
+            "二阶复合防御组件", "", undefined);
+        var beforeArmorValue:Object = armor.value;
+        var beforeWornRevision:Number =
+            armorFixture.inventory.getMutationRevision();
+        var beforeMaterialRevision:Number =
+            _root.收集品栏.材料.getMutationRevision();
+        _root.等级 = 1;
+        var raceCommitParams:Object = params("worn-tier-level-race");
+        raceCommitParams.expectedTuningToken =
+            racePrepared.preview.tuningToken;
+        var raceCommit:Object = EquipmentTuningService.execute(
+            "commit", raceCommitParams);
+        assertTrue(racePrepared.preview.success
+                && !raceCommit.success
+                && raceCommit.error == "stale_state"
+                && armor.value === beforeArmorValue
+                && armor.value.tier == undefined
+                && armorFixture.inventory.getMutationRevision()
+                    == beforeWornRevision
+                && _root.收集品栏.材料.getMutationRevision()
+                    == beforeMaterialRevision
+                && _root.收集品栏.材料.getValue(
+                    "二阶复合防御组件") == 1,
+            "preview 后等级下降会在 commit 临界区重算并零写拒绝");
     }
 
     private static function testWornRollbackAndUnknownReconcile():Void {

@@ -70,6 +70,7 @@ function() {
         emptyCompatible:'当前背包没有可用于该槽位的候选。',
         recoveryPending:'装备状态已更新；正在刷新当前槽位与可用候选…',
         failureSnapshot:'装备状态刷新失败；可安全重试当前槽位，不会改动装备。',
+        failureNotSent:'角色构筑连接不可用；可安全重试当前槽位，不会改动装备。',
         failureCandidates:'候选读取失败；可安全重试当前槽位，不会改动装备。',
         tuningAdjacent:'原候选已移动或不再可用，已转到相邻候选。',
         tuningReturned:'已返回调制后的同一候选。',
@@ -358,8 +359,11 @@ function() {
                     requestKey:this._candidateRequestKey,
                     candidateScope:this._candidateScope
                 };
-                var result = this._onSlotSelect(selection), deferredSelection = result && result.deferSelection === true;
-                if (result === false || result == null || deferredSelection) {
+                var result = this._onSlotSelect(selection);
+                var deferredSelection = result && result.deferSelection === true;
+                var failedSelection = result && result.selectionFailed === true;
+                if (result === false || result == null || deferredSelection
+                        || failedSelection) {
                     this._candidateScope = previous.candidateScope;
                     this._selectedSlotKey = previous.selectedSlotKey;
                     this._selectedCandidateKey = previous.selectedCandidateKey;
@@ -379,7 +383,9 @@ function() {
                     }
                     this._showStatusNotice(
                         deferredSelection ? 'pending' : 'error',
-                        deferredSelection ? texts.slotDeferredPending : texts.slotChangeFailed);
+                        deferredSelection ? texts.slotDeferredPending
+                            : failedSelection && result.error === 'not_sent'
+                                ? texts.failureNotSent : texts.slotChangeFailed);
                     return deferredSelection;
                 }
                 if (result && result.deferCandidates === true) {
@@ -481,6 +487,8 @@ function() {
             this._setCandidateState('error', [], requestKey);
             this._showStatusNotice('error', this._candidateFailureCode === 'snapshot_refresh_failed'
                 ? texts.failureSnapshot
+                : this._candidateFailureCode === 'not_sent'
+                    ? texts.failureNotSent
                 : texts.failureCandidates);
             return true;
         };

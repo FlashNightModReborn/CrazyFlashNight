@@ -159,7 +159,9 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
                 this._session.setCandidateScope(previousScope);
                 this._renderPortrait(null);
             }
-            return sendRefused ? null : callId;
+            return sendRefused
+                ? {selectionFailed:true, error:'not_sent'}
+                : callId;
         };
 
         controller._changeCandidateScope = function(scope, selection) {

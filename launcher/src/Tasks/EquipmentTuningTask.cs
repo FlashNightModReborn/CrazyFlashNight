@@ -102,7 +102,7 @@ namespace CF7Launcher.Tasks
             "panel_instance_expired", "view_session_expired", "token_invalid", "token_expired",
             "token_consumed", "stale_state", "stale_lease", "same_slot", "different_use",
             "invalid_target", "target_invalid", "type_mismatch", "cap_reached", "level_cap",
-            "invalid_transition", "tier_locked", "material_missing", "mod_unavailable",
+            "invalid_transition", "tier_locked", "level_locked", "material_missing", "mod_unavailable",
             "mod_not_installed",
             "insufficient_material", "inventory_full", "slot_full", "duplicate_mod",
             "mod_conflict", "dependency_missing", "detach_blocked", "condition_failed", "busy");

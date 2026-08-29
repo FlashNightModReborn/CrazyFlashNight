@@ -887,8 +887,10 @@ namespace Launcher.Tests.Tasks
             }
         }
 
-        [Fact]
-        public void DefinitiveCommitRejection_SettlesWithoutReconcile()
+        [Theory]
+        [InlineData("mod_unavailable")]
+        [InlineData("level_locked")]
+        public void DefinitiveCommitRejection_SettlesWithoutReconcile(string error)
         {
             var sent = new List<JObject>();
             var web = new List<JObject>();
@@ -898,14 +900,14 @@ namespace Launcher.Tests.Tasks
                 sent.Clear(); web.Clear();
                 task.HandleWebRequest("commit", Request("commit", "tune.commit.rejected"));
                 JObject rejected = CommonResponse(sent[0], "commit", false);
-                rejected["error"] = "mod_unavailable";
+                rejected["error"] = error;
                 rejected["transactionId"] = "txn.rejected.1";
 
                 task.HandleFlashResponse(rejected, null);
 
                 Assert.Equal("idle", task.WriteState);
                 Assert.False((bool)web[0]["success"]);
-                Assert.Equal("mod_unavailable", (string)web[0]["error"]);
+                Assert.Equal(error, (string)web[0]["error"]);
                 Assert.Equal("txn.rejected.1", (string)web[0]["transactionId"]);
                 Assert.Null(web[0]["requiresReconcile"]);
             }

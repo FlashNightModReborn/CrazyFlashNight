@@ -146,6 +146,8 @@ equal(Model.previewIntentKey('replace_mod', {candidateKey:'new',replaceCandidate
 equal(Model.isOperation('detach_all_mods'), true, 'all-mod detach is supported');
 equal(Model.isOperation('formula'), false, 'unknown operation rejected');
 equal(Model.isOperationGroup('replace_mod'), false, 'replacement stays inside mod top-level group');
+equal(Model.errorMessage('level_locked'), '调制后的装备需要更高角色等级。',
+    'loadout post-state level rejection has a specific player-facing message');
 
 equal(Model.quickCommitEligible({
     materials:[{itemName:'导轨',delta:-1}],removedMods:[]
@@ -309,11 +311,11 @@ const equipmentProjectionSource = (
     ) || []
 )[0] || '';
 equal(
-    /typeof item\.getData == "function"[\s\S]*?data\.data\.modslot/.test(
+    /projectionProbe:BaseItem = new BaseItem\([\s\S]*?ObjectUtil\.clone\(value\)[\s\S]*?projectionProbe\.getData\(\)[\s\S]*?data\.data\.modslot/.test(
         equipmentProjectionSource
     ),
     true,
-    'AS2 tuning snapshot derives plugin capacity from current equipment data'
+    'AS2 tuning projection derives plugin capacity from the projected equipment value'
 );
 equal(
     /modSlotCapacityKnown:Boolean = data != null[\s\S]*?data\.data\.hasOwnProperty\("modslot"\)[\s\S]*?data\.data\.modslot != undefined/.test(
