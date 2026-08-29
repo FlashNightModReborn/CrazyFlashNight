@@ -1,8 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `cda82e6e4128faf8664235e48b3ed0d84c14a553`（2026-08-29，装备调制最终态、不可用反馈与交换误报修复；deployment `43c8ad6ea23f677bcb2dd7d406e8024b831d93dc`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-维护者已确认装备等级/容量最终态门、不可用进阶反馈、四入口布局与强化度交换修正版有效，因此该专项为 `HUMAN_ACCEPTANCE_PASSED / promoted`。部署后只执行正式根 bootstrap `--verify-only`，没有从无 candidate 的正式入口重跑上述业务或存档旅程，不称本功能业务 `standard_entry_verified`。
+**最后核对代码基线**：release source commit `95019c7e63492d9cb88c010d1ee06376281c590b`（2026-08-29，启动前门、角色创建、作者/版本 Markdown 与版本记录迁移收尾；deployment `fdb4fe30aa911bbac91d60d7c349c217fa71a78c`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+维护者已确认最终隔离候选实际使用无问题，因此该专项为 `HUMAN_ACCEPTANCE_PASSED / promoted`。部署后只执行正式根 bootstrap `--verify-only`，没有从无 candidate 的正式入口重跑普通读档、新建 durable 后重启读回、重建备份或旧 SOL 保护旅程，不称本功能业务 `standard_entry_verified`。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：
