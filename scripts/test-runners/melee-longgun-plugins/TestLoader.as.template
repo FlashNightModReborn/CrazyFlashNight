@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId melee-longgun-plugins Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.item.equipment.EquipmentTestSuite.runAllTests();
+trace("FocusedTestRunId melee-longgun-plugins Complete: __FOCUSED_RUN_ID__");
