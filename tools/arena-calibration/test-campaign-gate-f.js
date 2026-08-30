@@ -309,6 +309,25 @@ function main() {
     assert.strictEqual(timeoutDisposition.executionOk, true);
     assert.strictEqual(timeoutDisposition.candidateQualityOk, false);
     assert.strictEqual(timeoutDisposition.candidateTimeoutAnomaly, true);
+    const oneTimeoutRows = Array.from({ length: 20 }, (_unused, index) => ({
+      status: index === 19 ? "timeout" : "finished",
+      durationMs: index === 19 ? 30000 : 1000 + index,
+    }));
+    const oneTimeoutHealth = evaluateShardHealth(oneTimeoutRows, draft.healthPolicy, null);
+    const ordinaryOneTimeoutDisposition = classifyShardRowHealth(oneTimeoutHealth, {
+      allowCandidateTimeoutAnomaly: false,
+    });
+    const soakOneTimeoutDisposition = classifyShardRowHealth(oneTimeoutHealth, {
+      allowCandidateTimeoutAnomaly: false,
+      requireZeroErrorsAndTimeouts: true,
+    });
+    assert.strictEqual(oneTimeoutHealth.timeoutRate, 0.05);
+    assert.deepStrictEqual(oneTimeoutHealth.reasons, []);
+    assert.strictEqual(ordinaryOneTimeoutDisposition.executionOk, true);
+    assert.strictEqual(soakOneTimeoutDisposition.executionOk, false);
+    assert.strictEqual(soakOneTimeoutDisposition.candidateQualityOk, false);
+    assert.strictEqual(soakOneTimeoutDisposition.candidateTimeoutAnomaly, false);
+    assert.deepStrictEqual(soakOneTimeoutDisposition.blockingReasons, ["soak_timeout_count"]);
     const errorHealth = evaluateShardHealth([
       ...timeoutRows.slice(0, 19),
       { status: "error", durationMs: 1000 },

@@ -834,9 +834,14 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
       ? baselineDurations[Math.floor(baselineDurations.length / 2)] : null;
     const rowHealth = evaluateShardHealth(allRows, plan.healthPolicy, baselineMedian);
     const canonicalManifest = readJsonFile(resolveInsideRoot(args.projectRoot, shard.manifestPath, "Gate F shard manifest"));
+    const requireZeroErrorsAndTimeouts = canonicalManifest.planner
+      && canonicalManifest.planner.phase === "soak";
     const allowCandidateTimeoutAnomaly = canonicalManifest.planner
       && ["standard", "long"].includes(canonicalManifest.planner.phase);
-    const rowDisposition = classifyShardRowHealth(rowHealth, { allowCandidateTimeoutAnomaly });
+    const rowDisposition = classifyShardRowHealth(rowHealth, {
+      allowCandidateTimeoutAnomaly,
+      requireZeroErrorsAndTimeouts,
+    });
     const diskAfter = captureDiskHealth(args.projectRoot, plan.healthPolicy.minimumFreeBytes);
     const finishedAt = report.completedAt || new Date().toISOString();
     const wallClockMinutes = Math.max(0, (Date.parse(finishedAt) - Date.parse(startedAt)) / 60000);

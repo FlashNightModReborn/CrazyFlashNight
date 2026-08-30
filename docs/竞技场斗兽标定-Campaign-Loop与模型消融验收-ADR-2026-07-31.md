@@ -712,6 +712,8 @@ v6 的三份 fresh soak 与后续分片曾累计 16 个 completed shard / 260 �
 
 v7 以 `arena-calibration.soak-admission.v2` 收紧新星期计划准入；v1 保留历史重放但不能再生成新计划。提交后正式 admission 将五类代表案例和放大的 `兵种39` 死亡派生 original/side-swap 合并为 20 run，结果 20/20 finished、0 timeout/error/recovery、正常 shutdown、受保护存档不变，目标 `敌人-裸体兽化僵尸1` 实际为 red 8 / blue 8；admission hash 为 `sha256:60c5662d89b5b8f0e53cbe288ea1461ef32a933aff654dd4171dadf8fac396a0`。v2 同时冻结派生 parent/unit、双侧最低观察计数和案例模板，生成器把同一模板重放到三份 fresh soak，因此每份由 10 增为 20 run，总计划为 198 shard / 3,285 run。tracked 草案尚未 clean freeze/arm，三份 fresh soak 和其余 195 shard 均未执行。
 
+v7 随后在 frozen plan `sha256:b8d6e321d16950129acfc28629537eb2fe732c6344b2d9155f6ccf126e00460e` 上执行三份 20-run fresh soak：第一份 20/20 finished，第二份 E10 side-swap 1 timeout，第三份 E10 original 1 timeout；目标派生观测分别为 red/blue `7/6`、`2/6`、`6/3`，三份均 0 error/recovery、正式 runtime 身份、存档 snapshot 不变并正常 shutdown。控制器却让 `soak` 继承全局 5% timeout 阈值，把恰好 1/20 timeout 错记为 completed；该 window 已撤销，60 行不作准入或全量样本。修复在 row disposition 层对 `planner.phase=soak` 强制 error/timeout 计数均为 0，并以 1/20 timeout 回归固定边界；标准/长分片的候选 timeout anomaly 继续保留。E10 两向各出现一次 5,400 帧自然 timeout，必须退出基础设施代表但仍原样留在自身长分片；下一 campaign 先以同 runtime 新鲜双向 probe 准入替代高等级案例，再重建 admission/plan 和三份 soak。
+
 ## 13. ADR 验收边界
 
 本文的实现验收是：

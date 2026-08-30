@@ -636,6 +636,14 @@ function evaluateShardHealth(rows, policy, baselineMedianDurationMs) {
 function classifyShardRowHealth(rowHealth, options) {
   options = options || {};
   const reasons = Array.isArray(rowHealth && rowHealth.reasons) ? rowHealth.reasons.slice() : [];
+  if (options.requireZeroErrorsAndTimeouts === true) {
+    if (Number(rowHealth && rowHealth.errors) > 0 && !reasons.includes("soak_error_count")) {
+      reasons.push("soak_error_count");
+    }
+    if (Number(rowHealth && rowHealth.timeouts) > 0 && !reasons.includes("soak_timeout_count")) {
+      reasons.push("soak_timeout_count");
+    }
+  }
   const timeoutOnly = reasons.length === 1 && reasons[0] === "timeout_rate";
   const candidateTimeoutAnomaly = timeoutOnly && options.allowCandidateTimeoutAnomaly === true;
   const blockingReasons = candidateTimeoutAnomaly ? [] : reasons;
