@@ -327,7 +327,24 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
     CharacterBuildController.prototype._renderPortrait = function(candidate) {
         if (!this._renderer) return false;
         this._rendererState = this._portraitState(candidate);
-        return this._rendererState ? !!this._renderer.render(this._rendererState) : false;
+        var rendered = this._rendererState ? !!this._renderer.render(this._rendererState) : false;
+        if (rendered && !candidate) this._flashDollSwap();
+        return rendered;
+    };
+    // 换装扫描光（与建角页同一签名）：只在装备真实变更（非候选试穿）重绘时触发。
+    CharacterBuildController.prototype._flashDollSwap = function() {
+        if (global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var canvas = this._view && typeof this._view.getCanvas === 'function'
+            ? this._view.getCanvas() : null;
+        var stage = canvas && canvas.parentElement;
+        if (!stage || !stage.classList || !stage.classList.contains('character-build-doll-stage')) return;
+        stage.classList.remove('cb-doll-swapping');
+        void stage.offsetWidth;
+        stage.classList.add('cb-doll-swapping');
+        stage.addEventListener('animationend', function handler() {
+            stage.removeEventListener('animationend', handler);
+            stage.classList.remove('cb-doll-swapping');
+        });
     };
     CharacterBuildController.prototype._applySnapshot = function(
             payload, restoreSelection, deferCandidates) {

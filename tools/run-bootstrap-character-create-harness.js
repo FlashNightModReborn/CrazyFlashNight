@@ -808,6 +808,7 @@ async function run() {
                             selectedSlots:document.querySelectorAll('.cc-equipped-slot[aria-checked="true"]').length,
                             poolOptions:equipmentPool.querySelectorAll('[role="option"]').length,
                             poolCompact:equipmentPool.classList.contains('item-grid-compact'),
+                            poolFull:equipmentPool.classList.contains('cc-choice-pool-full'),
                             panelOverflow:getComputedStyle(panel).overflowY,
                             panelScrollTop:panel.scrollTop,
                             heightInPreview:heightControl.closest('.cc-preview') !== null
@@ -867,11 +868,13 @@ async function run() {
                     'step indicator is not compactly placed to the right of the title: '
                         + JSON.stringify(equipmentLayout));
                     expect(equipmentLayout.appearanceView === 'equipment'
-                        && equipmentLayout.density === 'compact'
+                        && equipmentLayout.density.equipment === 'full'
+                        && equipmentLayout.density.hair === 'compact'
                         && equipmentLayout.backgroundMotion === 'ambient'
                         && equipmentLayout.slots === 3 && equipmentLayout.selectedSlots === 1
-                        && equipmentLayout.poolOptions > 0 && equipmentLayout.poolCompact,
-                    'equipment-first slot/pool compact layout drifted: ' + JSON.stringify(equipmentLayout));
+                        && equipmentLayout.poolOptions > 0 && !equipmentLayout.poolCompact
+                        && equipmentLayout.poolFull,
+                    'equipment-first slot/pool per-view density layout drifted: ' + JSON.stringify(equipmentLayout));
                     expect(equipmentLayout.heightInPreview && !equipmentLayout.heightInWorkflow
                         && equipmentLayout.ranges === 1 && equipmentLayout.rangeAppearance === 'none',
                     'height control is duplicated, misplaced, disabled, or browser-native: '
@@ -1106,6 +1109,8 @@ async function run() {
                     }
 
                     await page.locator('#cc-next').click();
+                    // 等步骤面板入场动画播完再量 rect；reduced 视口下 cc.js 不加 .cc-panel-enter，立即通过。
+                    await page.waitForFunction(() => !document.querySelector('.cc-panel-enter'));
                     const confirmationLayout = await page.evaluate(() => {
                         const panel = document.querySelector('[data-cc-panel="2"]');
                         const panelRect = panel.getBoundingClientRect();
@@ -1664,8 +1669,14 @@ async function run() {
         });
 
         await check('rebuild-card-open', async () => {
-            await page.evaluate(() => { window.confirm = () => true; });
             await page.locator('#cards .card').nth(2).locator('.btn-rebuild').click();
+            // 重建确认已从原生 confirm() 迁到终端风 confirm-dialog modal：等框弹出并点「重建」。
+            await page.waitForFunction(() => {
+                const host = document.getElementById('modal-host');
+                return host && host.style.display !== 'none'
+                    && document.getElementById('confirm-dialog-ok');
+            });
+            await page.locator('#confirm-dialog-ok').click();
             await page.waitForFunction(() => window.BootstrapCharacterCreate.debugState().phase === 'editing'
                 && window.BootstrapCharacterCreate.debugState().expectedMode === 'rebuild');
             const open = (await page.evaluate(() => window.__ccHarness.outbound('character_create_open'))).at(-1);
@@ -1869,29 +1880,10 @@ async function run() {
                     stored:localStorage.getItem('cf7.itemgrid.mode.character-create-appearance')
                 };
             });
-            expect(before.density === 'compact' && before.stored === null
+            expect(before.density.equipment === 'full' && before.density.hair === 'compact'
+                && before.stored === null
                 && before.selected === before.active,
-            'appearance did not default to compact with grid focus established: ' + JSON.stringify(before));
-            await page.locator('[data-density="full"]').click();
-            const full = await page.evaluate(() => ({
-                messages:window.__ccHarness.outbound().length,
-                draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
-                order:Array.from(document.querySelectorAll('#cc-equipment-pool [data-choice-key]'))
-                    .map(node => node.getAttribute('data-choice-key')),
-                selected:document.querySelector('#cc-equipment-pool [aria-selected="true"]').getAttribute('data-choice-key'),
-                roving:document.querySelector('#cc-equipment-pool [tabindex="0"]').getAttribute('data-choice-key'),
-                activeDensity:document.activeElement.getAttribute('data-density'),
-                density:window.BootstrapCharacterCreate.debugState().appearanceDensity,
-                stored:localStorage.getItem('cf7.itemgrid.mode.character-create-appearance'),
-                compact:document.getElementById('cc-equipment-pool').classList.contains('item-grid-compact')
-            }));
-            expect(full.density === 'full' && full.stored === 'full' && !full.compact
-                && full.messages === before.messages && full.draft === before.draft
-                && JSON.stringify(full.order) === JSON.stringify(before.order)
-                && full.selected === before.selected && full.roving === before.selected
-                && full.activeDensity === 'full',
-            'compact → full changed RPC/draft/order/selection/roving target or pointer focus: '
-                + JSON.stringify({before, full}));
+            'appearance did not default to per-view full/compact with grid focus established: ' + JSON.stringify(before));
             await page.locator('[data-density="compact"]').click();
             const compact = await page.evaluate(() => ({
                 messages:window.__ccHarness.outbound().length,
@@ -1905,19 +1897,44 @@ async function run() {
                 stored:localStorage.getItem('cf7.itemgrid.mode.character-create-appearance'),
                 compact:document.getElementById('cc-equipment-pool').classList.contains('item-grid-compact')
             }));
-            expect(compact.density === 'compact' && compact.stored === 'compact' && compact.compact
+            expect(compact.density.equipment === 'compact' && compact.density.hair === 'compact'
+                && JSON.parse(compact.stored).equipment === 'compact'
+                && JSON.parse(compact.stored).hair === 'compact' && compact.compact
                 && compact.messages === before.messages && compact.draft === before.draft
                 && JSON.stringify(compact.order) === JSON.stringify(before.order)
                 && compact.selected === before.selected && compact.roving === before.selected
                 && compact.activeDensity === 'compact',
             'full → compact changed RPC/draft/order/selection/roving target or pointer focus: '
-                + JSON.stringify({ before, compact }));
+                + JSON.stringify({before, compact}));
+            await page.locator('[data-density="full"]').click();
+            const full = await page.evaluate(() => ({
+                messages:window.__ccHarness.outbound().length,
+                draft:JSON.stringify(window.BootstrapCharacterCreate.debugState().draft),
+                order:Array.from(document.querySelectorAll('#cc-equipment-pool [data-choice-key]'))
+                    .map(node => node.getAttribute('data-choice-key')),
+                selected:document.querySelector('#cc-equipment-pool [aria-selected="true"]').getAttribute('data-choice-key'),
+                roving:document.querySelector('#cc-equipment-pool [tabindex="0"]').getAttribute('data-choice-key'),
+                activeDensity:document.activeElement.getAttribute('data-density'),
+                density:window.BootstrapCharacterCreate.debugState().appearanceDensity,
+                stored:localStorage.getItem('cf7.itemgrid.mode.character-create-appearance'),
+                compact:document.getElementById('cc-equipment-pool').classList.contains('item-grid-compact')
+            }));
+            expect(full.density.equipment === 'full' && full.density.hair === 'compact'
+                && JSON.parse(full.stored).equipment === 'full'
+                && JSON.parse(full.stored).hair === 'compact' && !full.compact
+                && full.messages === before.messages && full.draft === before.draft
+                && JSON.stringify(full.order) === JSON.stringify(before.order)
+                && full.selected === before.selected && full.roving === before.selected
+                && full.activeDensity === 'full',
+            'compact → full changed RPC/draft/order/selection/roving target or pointer focus: '
+                + JSON.stringify({before, full}));
             await page.locator('#cc-cancel').click();
             await openCharacterCreate(page);
-            expect((await page.evaluate(() => window.BootstrapCharacterCreate.debugState().appearanceDensity)) === 'compact',
-                'persisted compact preference was not restored on reopen');
+            const restored = await page.evaluate(() => window.BootstrapCharacterCreate.debugState().appearanceDensity);
+            expect(restored.equipment === 'full' && restored.hair === 'compact',
+                'persisted per-view density preference was not restored on reopen: ' + JSON.stringify(restored));
             await page.locator('#cc-cancel').click();
-            return 'compact default/persistence; real pointer switches preserve RPC/draft/order/selection/roving target and keep focus on the density control';
+            return 'per-view full/compact defaults and persistence; real pointer switches preserve RPC/draft/order/selection/roving target and keep focus on the density control';
         });
 
         await check('catalog-defaults-ime-aria', async () => {
@@ -1962,7 +1979,8 @@ async function run() {
             expect(aria.faceControls === 0 && !aria.visibleFaceCopy,
                 'fixed protocol face leaked into a visible/control field: ' + JSON.stringify(aria));
             expect(aria.heightControls === 1 && aria.heightInPreview
-                && aria.heightHidden && aria.heightDisabled && aria.density === 'compact',
+                && aria.heightHidden && aria.heightDisabled
+                && aria.density.equipment === 'full' && aria.density.hair === 'compact',
             'step-0 height/density placement contract drifted: ' + JSON.stringify(aria));
 
             await page.locator('input[name="cc-gender"][value="female"]').check({ force: true });

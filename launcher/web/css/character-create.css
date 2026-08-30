@@ -18,10 +18,8 @@ body.character-create-active #btn-retry {
   contain: strict;
 }
 
-#view-character-create.view-enter,
-#view-character-create.view-leave {
-  animation: none;
-}
+/* 视图进出场沿用 welcome.css 全局 .view-enter/.view-leave：
+   揭幕前纸娃娃首帧已由 preparation 门就绪，动画不会露馅；reduced-motion 在 JS 侧同步硬切。 */
 
 .cc-shell {
   position: relative;
@@ -37,6 +35,9 @@ body.character-create-active #btn-retry {
   background: var(--term-surface-gradient);
   box-shadow: 0 18px 50px color-mix(in srgb, var(--launcher-bg-0) 75%, transparent);
 }
+
+/* 壳体角标旋钮：1024×576 大面板上默认 12px 角标几乎不可见，加大到与欢迎卡同档存在感。 */
+.cc-shell.corner-brackets { --cb-gap: 6px; --cb-size: 16px; }
 
 .cc-scale-shell.panel-scale-shell {
   top: 50%;
@@ -86,7 +87,7 @@ body.character-create-active #btn-retry {
 
 .cc-main {
   display: grid;
-  grid-template-columns: 278px minmax(0, 1fr);
+  grid-template-columns: 336px minmax(0, 1fr);
   flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
@@ -104,6 +105,7 @@ body.character-create-active #btn-retry {
 }
 
 .cc-preview {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 9px;
@@ -128,6 +130,49 @@ body.character-create-active #btn-retry {
     linear-gradient(0deg, transparent 49.8%, var(--dls-glow) 50%, transparent 50.2%);
 }
 
+/* 舞台底光：纸娃娃脚下垫一圈青色椭圆光，呼应欢迎页 .bg-crack 的地光叙事。
+   z-index:-1 沉到 canvas 之下、十字准线背景之上，光不盖角色。 */
+.cc-canvas-wrap::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: 4%;
+  width: 78%;
+  height: 64px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 100%,
+    color-mix(in srgb, var(--dls-crystal) 17%, transparent) 0%,
+    color-mix(in srgb, var(--dls-crystal) 5%, transparent) 45%,
+    transparent 72%);
+  pointer-events: none;
+}
+
+/* 换装扫描光：chooseEquipment/chooseHair/性别切换重绘纸娃娃时，
+   JS 加 .is-swapping 触发一道青色光带自上而下掠过，遮住 canvas 合成硬切。 */
+.cc-canvas-wrap::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: -20%;
+  height: 20%;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--dls-crystal) 24%, transparent) 58%,
+    color-mix(in srgb, var(--dls-crystal) 44%, transparent) 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.cc-canvas-wrap.is-swapping::before {
+  animation: ccPreviewSwap var(--wb-motion-structural) var(--wb-ease-standard);
+}
+@keyframes ccPreviewSwap {
+  0% { transform: translateY(0); opacity: 1; }
+  80% { opacity: .85; }
+  100% { transform: translateY(620%); opacity: 0; }
+}
 #cc-preview-canvas {
   width: 100%;
   height: 100%;
@@ -230,9 +275,21 @@ body.character-create-active #btn-retry {
 }
 
 .cc-workflow {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* 候选注释锚条：PanelTooltip 恒锚到预览列右缘内侧（纸娃娃层），
+   候选选区完全不被遮挡，hover 看属性、点击继续挑选互不干扰。 */
+.cc-tt-anchor {
+  position: absolute;
+  right: 10px;
+  top: 9%;
+  width: 2px;
+  height: 2px;
+  pointer-events: none;
 }
 
 .cc-steps {
@@ -248,13 +305,8 @@ body.character-create-active #btn-retry {
 }
 
 .cc-steps li {
-  display: grid;
-  grid-template-columns: auto minmax(0, auto);
-  align-items: center;
-  justify-content: center;
   min-width: 0;
   min-height: 32px;
-  padding: 2px 8px;
   color: var(--term-ink-faint);
   font-size: var(--fs-xs);
   letter-spacing: calc(1px * var(--ls-scale));
@@ -262,11 +314,51 @@ body.character-create-active #btn-retry {
 }
 
 .cc-steps li + li { border-left: 1px solid var(--launcher-rust-dim); }
-.cc-steps li span { margin-right: 6px; font-family: Consolas, var(--cf7-font-web-overlay-mono), monospace; }
+
+/* 步骤按钮：已完成步骤可点击回跳（骨色 + hover 提亮），当前步禁用并由 li[aria-current] 呈现。 */
+.cc-step-jump {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, auto);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 32px;
+  margin: 0;
+  padding: 2px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.cc-step-jump:disabled { cursor: default; }
+.cc-step-jump:not(:disabled) { cursor: pointer; }
+.cc-step-jump:not(:disabled):hover {
+  color: var(--dls-crystal);
+  background: color-mix(in srgb, var(--dls-crystal-soft) 55%, transparent);
+}
+.cc-step-jump:focus-visible { outline: none; box-shadow: var(--wb-ring-focus); }
+.cc-steps li.is-done { color: var(--launcher-bone); }
+
+/* 编号做成节点圆章：当前步点亮辉光，呼应欢迎页 trans-node 的节点叙事。 */
+.cc-steps li span {
+  display: inline-grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  margin-right: 7px;
+  border: 1px solid color-mix(in srgb, currentColor 62%, transparent);
+  border-radius: 50%;
+  font: 700 10px/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+}
 .cc-steps li[aria-current="step"] {
   color: var(--dls-crystal);
   background: var(--dls-crystal-soft);
   box-shadow: inset 0 -2px var(--dls-crystal), inset 2px 0 var(--dls-crystal-dim);
+}
+.cc-steps li[aria-current="step"] span {
+  border-color: var(--dls-crystal);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--dls-crystal) 55%, transparent);
 }
 
 .cc-loading {
@@ -290,10 +382,31 @@ body.character-create-active #btn-retry {
   box-sizing: border-box;
 }
 .cc-step-panel[hidden] { display: none; }
+
+/* 步骤面板切换：内容层短促淡入上移，配合已有 playTransition 音效；reduced-motion 统一关闭。 */
+.cc-panel-enter { animation: ccPanelEnter var(--wb-motion-standard) var(--wb-ease-standard); }
+@keyframes ccPanelEnter {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
 .cc-step-panel[data-cc-panel="1"]:not([hidden]) {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* 步骤0 身份登记：表单原在顶部堆叠、下半屏全空。
+   改为纵向拉开节奏——高级选项沉底，性别做大号选择卡，输入区间距放宽。 */
+.cc-step-panel[data-cc-panel="0"]:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+}
+.cc-step-panel[data-cc-panel="0"] .cc-primary-name { margin-top: 16px; }
+.cc-step-panel[data-cc-panel="0"] .cc-gender { margin-top: 20px; }
+.cc-step-panel[data-cc-panel="0"] .cc-advanced { margin-top: auto; }
+.cc-gender span {
+  padding: 15px 9px;
+  font-size: var(--fs-base);
 }
 .cc-step-panel h2 {
   margin: 0 0 7px;
@@ -593,14 +706,18 @@ body.character-create-active #btn-retry {
   text-align: center;
 }
 
+/* 紧凑格尺寸是在大字号档（fs1.75/1.9）也能 77 项无滚动全显的卡边值：
+   预览列加宽后池内宽 620px，36px 格 + 2px 缝 = 16 个/行 × 5 行 ≤ 最小可用高 217px。
+   图标从 30px 提到 32px，配合底色提亮与 hover 放大维持辨识度。 */
 .cc-choice-pool.item-grid-compact {
   grid-template-columns: repeat(auto-fill, 36px);
   grid-auto-rows: 36px;
-  gap: 4px;
+  gap: 2px;
+  padding: 5px;
 }
 .cc-choice-pool.item-grid-compact .cc-choice-card {
   display: grid;
-  grid-template-columns: 32px;
+  grid-template-columns: 34px;
   width: 36px;
   min-width: 36px;
   max-width: 36px;
@@ -614,10 +731,10 @@ body.character-create-active #btn-retry {
 .cc-choice-pool.item-grid-compact .cc-item-marker,
 .cc-choice-pool.item-grid-compact .cc-hair-marker { display: none; }
 .cc-choice-pool.item-grid-compact .cc-item-icon,
-.cc-choice-pool.item-grid-compact .cc-hair-icon { width: 32px; height: 32px; }
+.cc-choice-pool.item-grid-compact .cc-hair-icon { width: 34px; height: 34px; box-shadow: none; }
 .cc-choice-pool.item-grid-compact .cc-item-icon-image,
 .cc-choice-pool.item-grid-compact .cc-item-icon-image.cfn-layered-icon,
-.cc-choice-pool.item-grid-compact .cc-hair-icon-image { width: 30px; height: 30px; }
+.cc-choice-pool.item-grid-compact .cc-hair-icon-image { width: 32px; height: 32px; }
 
 .cc-hair-slot-row {
   display: grid;
@@ -634,9 +751,19 @@ body.character-create-active #btn-retry {
   place-items: center;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--launcher-dust) 28%, transparent);
-  background: var(--launcher-bg-0);
+  /* 深色发型剪影压在纯黑 tile 上看不清轮廓：底色提亮一档并给图标一点轮廓光。 */
+  background: color-mix(in srgb, var(--launcher-bg-1) 84%, var(--dls-crystal) 4%);
+  box-shadow: inset 0 0 9px color-mix(in srgb, var(--dls-crystal) 9%, transparent);
 }
-.cc-hair-icon-image { width: 48px; height: 48px; object-fit: contain; }
+.cc-hair-icon-image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: brightness(1.14) drop-shadow(0 1px 2px rgba(0,0,0,.72));
+  transition: transform var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.cc-hair-option:hover .cc-hair-icon-image,
+.cc-hair-option:focus-visible .cc-hair-icon-image { transform: scale(1.09); }
 .cc-hair-icon-fallback { color: var(--dls-crystal); font: 700 var(--fs-xs)/1 Consolas, monospace; }
 .cc-hair-copy { display: grid; min-width: 0; gap: 3px; }
 .cc-hair-copy b,
@@ -703,7 +830,25 @@ body.character-create-active #btn-retry {
   text-align: left;
   cursor: pointer;
 }
-.cc-difficulty strong { color: var(--launcher-bone); font-size: var(--fs-base); }
+.cc-difficulty strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--launcher-bone);
+  font-size: var(--fs-base);
+}
+.cc-difficulty-icon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  color: var(--dls-crystal-dim);
+  transition: color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.cc-difficulty-icon svg { display: block; width: 100%; height: 100%; }
+.cc-difficulty[aria-checked="true"] .cc-difficulty-icon {
+  color: var(--dls-crystal);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--dls-crystal) 52%, transparent));
+}
 .cc-difficulty[aria-checked="true"] {
   border-color: var(--dls-crystal-dim);
   background: var(--dls-crystal-soft);
@@ -716,12 +861,18 @@ body.character-create-active #btn-retry {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+/* 推荐印章：与 topbar term-brand-seal 同源的铭牌语言，不再只是裸文字。 */
 .cc-recommended {
   position: absolute;
   top: 8px;
   right: 8px;
+  padding: 2px 7px;
+  border: 1px solid color-mix(in srgb, var(--wb-semantic-success) 62%, transparent);
+  background: color-mix(in srgb, var(--wb-semantic-success) 10%, transparent);
   color: var(--wb-semantic-success);
-  font: var(--fs-xs)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+  box-shadow: 0 0 9px color-mix(in srgb, var(--wb-semantic-success) 20%, transparent);
+  font: var(--fs-xs)/1.5 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+  letter-spacing: calc(2px * var(--ls-scale));
 }
 .cc-review {
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -737,12 +888,12 @@ body.character-create-active #btn-retry {
 .cc-review div { min-width: 0; padding: 4px 0; border-bottom: 1px solid color-mix(in srgb, var(--launcher-rust-dim) 48%, transparent); }
 .cc-review div:last-child { border-bottom: 0; }
 .cc-review--display-follows [data-review-key="character-name"] { grid-column: 1 / -1; }
+/* 确认清单一行一项：半宽双列曾把"平衡模式（困难）"这类难度全名挤到词中断行。 */
+.cc-review [data-review-key="display-name"],
+.cc-review [data-review-key="identity"],
+.cc-review [data-review-key="difficulty"],
 .cc-review [data-review-key="hair"],
 .cc-review [data-review-key="equipment"] { grid-column: 1 / -1; }
-.cc-review [data-review-key="identity"] { grid-column: 1; grid-row: 2; }
-.cc-review [data-review-key="difficulty"] { grid-column: 2; grid-row: 2; }
-.cc-review [data-review-key="hair"] { grid-row: 3; }
-.cc-review [data-review-key="equipment"] { grid-row: 4; }
 .cc-review dt { min-width: 58px; }
 .cc-confirm-summary .cc-review dd {
   overflow: visible;
@@ -780,4 +931,7 @@ body.character-create-active #btn-retry {
 
 @media (prefers-reduced-motion: reduce) {
   #cc-preview-canvas { transition: none; }
+  .cc-panel-enter,
+  .cc-canvas-wrap.is-swapping::before { animation: none; }
+  .cc-difficulty-icon { transition: none; }
 }

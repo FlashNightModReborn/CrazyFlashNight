@@ -410,6 +410,35 @@
     height:100%;
     min-height:0;
 }
+
+/* 换装扫描光：与建角页同一签名——装备真实变更重绘纸娃娃时一道光带掠过，
+   候选试穿（hover 预览）不触发；reduced-motion 下 JS 不加 class、此处双保险。 */
+.character-build-doll-stage::before {
+    content:"";
+    position:absolute;
+    z-index:1;
+    left:0;
+    right:0;
+    top:-20%;
+    height:20%;
+    background:linear-gradient(180deg,
+        transparent 0%,
+        color-mix(in srgb,var(--wb-focus) 24%,transparent) 58%,
+        color-mix(in srgb,var(--wb-focus) 44%,transparent) 100%);
+    opacity:0;
+    pointer-events:none;
+}
+.character-build-doll-stage.cb-doll-swapping::before {
+    animation:cbDollSwap var(--wb-motion-structural) var(--wb-ease-standard);
+}
+@keyframes cbDollSwap {
+    0% { transform:translateY(0); opacity:1; }
+    80% { opacity:.85; }
+    100% { transform:translateY(620%); opacity:0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .character-build-doll-stage.cb-doll-swapping::before { animation:none; }
+}
 .character-build-candidate-overlay {
     position:absolute;
     right:6px;

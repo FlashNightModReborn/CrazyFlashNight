@@ -637,10 +637,28 @@ async function main() {
             const outboundRenameCount = () => page.evaluate(() => window.__bootstrapHarnessEvents
                 .filter(event => event.direction === 'out' && event.cmd === 'rename_slot').length);
             const beforeInvalid = await outboundRenameCount();
+            // 无效名两次点击：各弹一次终端风 alert modal（原生 alert 已迁移到 confirm-dialog 模块），
+            // 必须读文本并关闭后才能继续点击 inert 背景里的卡片按钮。
+            const expectAlertModal = async (fragment, label) => {
+                await page.waitForFunction(() => {
+                    const host = document.getElementById('modal-host');
+                    return host && host.style.display !== 'none';
+                });
+                const text = await page.evaluate(() => document.getElementById('modal-content').textContent);
+                if (!text.includes(fragment)) {
+                    throw new Error(label + ' alert modal missing expected copy: ' + text);
+                }
+                await page.evaluate(() => window.BootstrapApp.tryCloseModal());
+                await page.waitForFunction(() => document.getElementById('modal-host').style.display === 'none');
+                return text;
+            };
+            const invalidAlerts = [];
             await page.evaluate(() => { window.__bootstrapHarnessPromptValue = '坏\u0001名字'; });
             await renameButton.click();
+            invalidAlerts.push(await expectAlertModal('显示名无效', 'control-character name'));
             await page.evaluate(() => { window.__bootstrapHarnessPromptValue = '界'.repeat(33); });
             await renameButton.click();
+            invalidAlerts.push(await expectAlertModal('显示名无效', '33-grapheme name'));
             if (await outboundRenameCount() !== beforeInvalid) {
                 throw new Error('control-character or 33-grapheme name reached Host');
             }
@@ -665,7 +683,7 @@ async function main() {
             await page.evaluate(() => window.__bootstrapHarnessEmit({
                 cmd:'rename_slot_resp', ok:false, slotKey:'crazyflasher7_saves', error:'harness reject'
             }));
-            await page.waitForFunction(() => window.__bootstrapHarnessAlerts.some(text => text.includes('harness reject')));
+            await expectAlertModal('harness reject', 'rename failure');
             const listAfterFailure = await page.evaluate(() => window.__bootstrapHarnessEvents
                 .filter(event => event.direction === 'out' && event.cmd === 'list').length);
             if (listAfterFailure !== listBeforeFailure) throw new Error('failed rename triggered an optimistic list refresh');
@@ -680,8 +698,7 @@ async function main() {
             await page.evaluate(() => window.__bootstrapHarnessEmit({
                 cmd:'rename_slot_resp', ok:false, slotKey:'crazyflasher7_saves', error:'harness duplicate probe complete'
             }));
-            await page.waitForFunction(() => window.__bootstrapHarnessAlerts
-                .some(text => text.includes('harness duplicate probe complete')));
+            await expectAlertModal('harness duplicate probe complete', 'duplicate rename failure');
 
             await page.evaluate(() => { window.__bootstrapHarnessPromptValue = '   '; });
             await renameButton.click();
@@ -702,11 +719,13 @@ async function main() {
             await page.waitForFunction(() => document.querySelectorAll('#cards .card').length === 1
                 && document.querySelector('#cards .card').classList.contains('empty-slot'));
             const evidence = await page.evaluate(() => ({
-                defaults:window.__bootstrapHarnessPromptDefaults.slice(),
-                alerts:window.__bootstrapHarnessAlerts.slice()
+                defaults:window.__bootstrapHarnessPromptDefaults.slice()
             }));
             if (!evidence.defaults.length || evidence.defaults[0] !== '健康档') {
                 throw new Error('rename prompt did not default to the current displayName');
+            }
+            if (invalidAlerts.length !== 2) {
+                throw new Error('invalid rename values did not each present a terminal-style alert modal');
             }
             await page.locator('#btn-back-welcome').click();
             return 'rename covers invalid/emoji/duplicate values and empty restore-follow; Host response alone controls refresh';

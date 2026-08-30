@@ -219,7 +219,7 @@
   function renameSlot(slot, button) {
     if (!slot || !slot.slot || slot.__newEntry) return false;
     if (_renamePending) {
-      alert('已有存档正在重命名，请等待本地服务响应。');
+      window.BootstrapAlert('已有存档正在重命名，请等待本地服务响应。');
       return false;
     }
     var current = slotDisplayName(slot);
@@ -228,7 +228,7 @@
     var restoreFollow = input.replace(/^\s+|\s+$/g, '') === '';
     var displayName = restoreFollow ? '' : normalizeSlotDisplayName(input);
     if (!restoreFollow && displayName === null) {
-      alert('存档显示名无效：去除首尾空白后需为 1–32 个可见 Unicode 文本元素，且不能包含控制字符。');
+      window.BootstrapAlert('存档显示名无效：去除首尾空白后需为 1–32 个可见 Unicode 文本元素，且不能包含控制字符。');
       playUiCue('playError');
       return false;
     }
@@ -239,7 +239,7 @@
     }
     if (!send({cmd:'rename_slot', slotKey:slot.slot, displayName:displayName})) {
       finishRenamePending();
-      alert('无法发送重命名请求。');
+      window.BootstrapAlert('无法发送重命名请求。');
       playUiCue('playError');
       return false;
     }
@@ -788,10 +788,12 @@
 
     if (startBtn) startBtn.onclick = function() { selectSlotAndReturn(s.slot, 'normal'); };
     if (deleteBtn) deleteBtn.onclick = function() {
-      if (confirm('确定删除存档 "' + displayName + '" ?')) send({ cmd: 'delete', slot: s.slot });
+      window.BootstrapConfirm('确定删除存档 "' + displayName + '" ?', { okText: '删除' })
+        .then(function(ok) { if (ok) send({ cmd: 'delete', slot: s.slot }); });
     };
     if (rebuildBtn) rebuildBtn.onclick = function() {
-      if (confirm('重建存档 "' + displayName + '" (原数据将丢弃)?')) openCharacterCreate('rebuild', s.slot);
+      window.BootstrapConfirm('重建存档 "' + displayName + '" （原数据将丢弃）？', { okText: '重建' })
+        .then(function(ok) { if (ok) openCharacterCreate('rebuild', s.slot); });
     };
     if (newCharBtn) newCharBtn.onclick = function() { openCharacterCreate('new'); };
     if (editBtn) editBtn.onclick = function() {
@@ -804,8 +806,9 @@
       send({ cmd: 'export', slot: s.slot, defaultName: dn + '_' + ts + '.json', forceRaw: forceRaw });
     };
     if (resetBtn) resetBtn.onclick = function() {
-      if (confirm('确定清理 "' + displayName + '" 的 launcher 副本?\n\n此操作仅清理 launcher 侧 JSON 备份和删除标记，不影响 Flash 内部 SOL 存档。'))
-        send({ cmd: 'reset', slot: s.slot, confirm: true });
+      window.BootstrapConfirm('确定清理 "' + displayName + '" 的 launcher 副本？',
+        { okText: '清理', detail: '此操作仅清理 launcher 侧 JSON 备份和删除标记，不影响 Flash 内部 SOL 存档。' })
+        .then(function(ok) { if (ok) send({ cmd: 'reset', slot: s.slot, confirm: true }); });
     };
     if (renameBtn) renameBtn.onclick = function() { renameSlot(s, renameBtn); };
     return card;
@@ -1197,7 +1200,7 @@
       } else {
         var renameError = msg.error || '本地服务拒绝了重命名请求';
         logLine('tag-err', 'rename failed: slot=' + (msg.slotKey || pendingSlot || '?') + ' err=' + renameError);
-        alert('重命名失败：' + renameError);
+        window.BootstrapAlert('重命名失败：' + renameError);
         playUiCue('playError');
       }
     }
@@ -1271,23 +1274,25 @@
     if (slot == null) { playUiCue('playCancel'); return; }
     slot = slot.trim();
     if (!slot) { logLine('tag-err', '导入取消: 未输入槽位名'); playUiCue('playCancel'); return; }
-    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('槽位名不合法: "' + slot + '"'); return; }
+    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); window.BootstrapAlert('槽位名不合法: "' + slot + '"'); return; }
     var meta = window.BootstrapApp.getSlotMeta(slot);
     if (meta == null) {
       send({ cmd: 'import_commit', slot: slot, data: sourceData });
     } else if (meta.tombstoned || meta.inconsistent) {
-      if (confirm('此 slot 已标记删除/不一致，需先清理才能导入。是否自动清理？')) {
-        var unsub = window.BootstrapApp.onMessage('reset_resp', function(resp) {
-          unsub();
-          if (resp.ok) send({ cmd: 'import_commit', slot: slot, data: sourceData });
-          else logLine('tag-err', '清理失败: ' + (resp.error || ''));
+      window.BootstrapConfirm('此 slot 已标记删除/不一致，需先清理才能导入。是否自动清理？', { okText: '清理' })
+        .then(function(ok) {
+          if (!ok) return;
+          var unsub = window.BootstrapApp.onMessage('reset_resp', function(resp) {
+            unsub();
+            if (resp.ok) send({ cmd: 'import_commit', slot: slot, data: sourceData });
+            else logLine('tag-err', '清理失败: ' + (resp.error || ''));
+          });
+          send({ cmd: 'reset', slot: slot, confirm: true });
         });
-        send({ cmd: 'reset', slot: slot, confirm: true });
-      }
     } else if (meta.corrupt) {
-      if (confirm('此存档已损坏，覆盖？')) send({ cmd: 'import_commit', slot: slot, data: sourceData });
+      window.BootstrapConfirm('此存档已损坏，覆盖？', { okText: '覆盖' }).then(function(ok) { if (ok) send({ cmd: 'import_commit', slot: slot, data: sourceData }); });
     } else {
-      if (confirm('存档已存在，覆盖？')) send({ cmd: 'import_commit', slot: slot, data: sourceData });
+      window.BootstrapConfirm('存档已存在，覆盖？', { okText: '覆盖' }).then(function(ok) { if (ok) send({ cmd: 'import_commit', slot: slot, data: sourceData }); });
     }
   }
 
@@ -1555,15 +1560,15 @@
     }
     if (_launchInFlight) return;
     var s = _welcomeSlot;
-    if (!s) { alert('没有可启动的存档，请点「切换」选择槽位'); return; }
+    if (!s) { window.BootstrapAlert('没有可启动的存档，请点「切换」选择槽位'); return; }
     var mode = effectiveMode(s);
     if (s.corrupt) {
-      alert('存档已损坏，无法启动；请点「切换」到槽位页编辑或删除');
+      window.BootstrapAlert('存档已损坏，无法启动；请点「切换」到槽位页编辑或删除');
       return;
     }
     if (mode === 'normal' && (s.__empty || s.tombstoned || s.inconsistent)) {
       // 这些状态下不应该是 normal 模式 — pickDefaultSlot 已做降级, 这里兜底防御
-      alert('当前默认存档处于异常状态，请点「切换」到槽位页处理');
+      window.BootstrapAlert('当前默认存档处于异常状态，请点「切换」到槽位页处理');
       return;
     }
     if (mode === 'fresh') {

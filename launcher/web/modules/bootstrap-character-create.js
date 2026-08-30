@@ -36,7 +36,8 @@
     var previewGeneration = 0;
     var preparationTimer = null;
     var appearanceView = 'equipment';
-    var appearanceDensity = 'compact';
+    var appearanceDensity = {equipment:'full', hair:'compact'};
+    var lastPanelStep = -1;
     var activeEquipmentIndex = 0;
     var scaleHandle = null;
     var previewResizeObserver = null;
@@ -95,9 +96,9 @@
             + '  <div class="cc-heading"><span class="term-kicker">角色创建</span>'
             + '   <div class="cc-title-row"><h1 id="cc-title">建立角色</h1>'
             + '    <ol class="cc-steps" aria-label="建角步骤">'
-            + '     <li data-cc-step="0" aria-current="step"><span>01</span>身份</li>'
-            + '     <li data-cc-step="1"><span>02</span>外观</li>'
-            + '     <li data-cc-step="2"><span>03</span>确认</li>'
+            + '     <li data-cc-step="0" aria-current="step"><button type="button" class="cc-step-jump" data-cc-step-jump="0" disabled><span>01</span>身份</button></li>'
+            + '     <li data-cc-step="1"><button type="button" class="cc-step-jump" data-cc-step-jump="1" disabled><span>02</span>外观</button></li>'
+            + '     <li data-cc-step="2"><button type="button" class="cc-step-jump" data-cc-step-jump="2" disabled><span>03</span>确认</button></li>'
             + '    </ol>'
             + '   </div></div>'
             + '  <div class="cc-state"><span id="cc-state-dot" class="term-status-dot" data-state="loading"></span>'
@@ -112,6 +113,7 @@
             + '    <span class="cc-height-range"><input id="cc-height" type="range" min="150" max="200" step="1" aria-labelledby="cc-step-title-1 cc-height-label" aria-describedby="cc-height-value"><output id="cc-height-value" for="cc-height">—</output></span></label>'
             + '   <dl class="cc-preview-meta"><div><dt>性别</dt><dd id="cc-preview-gender">—</dd></div>'
             + '    <div><dt>发型</dt><dd id="cc-preview-hair">—</dd></div></dl>'
+            + '   <div class="cc-tt-anchor" aria-hidden="true"></div>'
             + '  </aside>'
             + '  <form id="cc-form" class="cc-workflow" novalidate>'
             + '   <div id="cc-loading" class="cc-loading" role="status">正在准备角色创建...</div>'
@@ -202,6 +204,11 @@
             if (step < 2) nextStep(); else submit();
         });
         byId('cc-back').addEventListener('click', previousStep);
+        rootEl.querySelectorAll('[data-cc-step-jump]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                jumpToStep(Number(button.getAttribute('data-cc-step-jump')));
+            });
+        });
         byId('cc-cancel').addEventListener('click', cancel);
         bindNameInput(byId('cc-display-name'), 'display');
         bindNameInput(byId('cc-character-name'), 'character');
@@ -226,6 +233,7 @@
                 rebuildAppearance();
                 refreshUi();
                 renderPreview();
+                flashPreviewSwap();
             });
         });
         rootEl.querySelectorAll('[data-appearance-view]').forEach(function(button) {
@@ -299,40 +307,61 @@
         fillEquipmentPool();
         fillHair();
         setAppearanceView(appearanceView, false);
-        setAppearanceDensity(appearanceDensity, false);
+        applyAppearanceDensity();
         loadAppearanceIcons();
     }
 
     function loadAppearanceDensity() {
+        var defaults = {equipment:'full', hair:'compact'};
         try {
-            var value = global.localStorage && global.localStorage.getItem(APPEARANCE_DENSITY_KEY);
-            if (value === 'full' || value === 'compact') return value;
+            var raw = global.localStorage && global.localStorage.getItem(APPEARANCE_DENSITY_KEY);
+            if (!raw) return defaults;
+            // 旧版存的是全局单值 'full'/'compact'：视为用户对两个视图共同的显式选择迁移。
+            if (raw === 'full' || raw === 'compact') return {equipment:raw, hair:raw};
+            var parsed = JSON.parse(raw);
+            return {
+                equipment:parsed && parsed.equipment === 'compact' ? 'compact' : 'full',
+                hair:parsed && parsed.hair === 'full' ? 'full' : 'compact'
+            };
         } catch (e) {}
-        return 'compact';
+        return defaults;
     }
 
+    // 装备候选只有 3–6 项，默认完整卡片直接给名称与类型；发型 77 项默认紧凑图标格。
+    // 密度开关只切换当前外观视图，两视图各自的密度独立记忆。
     function setAppearanceDensity(mode, persist) {
         if (mode !== 'full' && mode !== 'compact') return false;
-        var changed = appearanceDensity !== mode;
-        appearanceDensity = mode;
-        var panel = rootEl && rootEl.querySelector('[data-cc-panel="1"]');
-        if (panel) panel.setAttribute('data-density', mode);
-        [byId('cc-equipment-pool'), byId('cc-hair-list')].forEach(function(host) {
-            if (!host) return;
-            host.classList.toggle('item-grid-compact', mode === 'compact');
-            host.classList.toggle('cc-choice-pool-full', mode === 'full');
-        });
-        rootEl.querySelectorAll('[data-density]').forEach(function(button) {
-            button.setAttribute('aria-pressed', button.getAttribute('data-density') === mode ? 'true' : 'false');
-        });
+        var view = appearanceView === 'hair' ? 'hair' : 'equipment';
+        var changed = appearanceDensity[view] !== mode;
+        appearanceDensity[view] = mode;
+        applyAppearanceDensity();
         if (persist) {
-            try { global.localStorage.setItem(APPEARANCE_DENSITY_KEY, mode); } catch (e) {}
+            try { global.localStorage.setItem(APPEARANCE_DENSITY_KEY, JSON.stringify(appearanceDensity)); } catch (e) {}
             cue('playSelect');
         }
         if (changed && snapshot && model) {
             fillHair();
         }
         return true;
+    }
+
+    function applyAppearanceDensity() {
+        var panel = rootEl && rootEl.querySelector('[data-cc-panel="1"]');
+        if (panel) panel.setAttribute('data-density', appearanceDensity[appearanceView] || 'full');
+        var pool = byId('cc-equipment-pool');
+        if (pool) {
+            pool.classList.toggle('item-grid-compact', appearanceDensity.equipment === 'compact');
+            pool.classList.toggle('cc-choice-pool-full', appearanceDensity.equipment === 'full');
+        }
+        var hair = byId('cc-hair-list');
+        if (hair) {
+            hair.classList.toggle('item-grid-compact', appearanceDensity.hair === 'compact');
+            hair.classList.toggle('cc-choice-pool-full', appearanceDensity.hair === 'full');
+        }
+        var current = appearanceDensity[appearanceView] || 'full';
+        rootEl.querySelectorAll('[data-density]').forEach(function(button) {
+            button.setAttribute('aria-pressed', button.getAttribute('data-density') === current ? 'true' : 'false');
+        });
     }
 
     function setAppearanceView(next, focus) {
@@ -345,6 +374,7 @@
         });
         byId('cc-equipment-view').hidden = next !== 'equipment';
         byId('cc-hair-view').hidden = next !== 'hair';
+        applyAppearanceDensity();
         if (focus) {
             var target = byId(next === 'equipment' ? 'cc-appearance-tab-equipment' : 'cc-appearance-tab-hair');
             if (target) target.focus();
@@ -407,6 +437,12 @@
         });
     }
 
+    // 候选注释统一锚到表单列右缘的隐形锚条：tooltip 恒出现在表单列内部右侧，
+    // 不随格内位置跳动，也不会左压纸娃娃预览（placement 'left' 相对锚条恒可行）。
+    function appearanceTooltipAnchor() {
+        return rootEl ? rootEl.querySelector('.cc-tt-anchor') : null;
+    }
+
     function bindAppearanceTooltip(button, row) {
         if (!appearanceTooltipScope || typeof appearanceTooltipScope.bindAsync !== 'function') return;
         var key = 'appearance:' + row.identifier;
@@ -415,6 +451,7 @@
             key:key,
             item:row,
             cache:appearanceTooltipCache,
+            anchor:appearanceTooltipAnchor,
             renderBasic:function(item) { return appearanceTooltipHtml(item); },
             renderRich:function(item) { return appearanceTooltipHtml(item); },
             placement:'left',
@@ -429,6 +466,7 @@
             key:key,
             item:String(value || ''),
             cache:appearanceTooltipCache,
+            anchor:appearanceTooltipAnchor,
             renderBasic:function(text) {
                 var node = document.createElement('div');
                 node.textContent = text;
@@ -567,6 +605,15 @@
         }
     }
 
+    // 换装反馈：纸娃娃重绘时一道扫描光掠过画布，遮住合成硬切；reduced-motion 由 CSS 关闭。
+    function flashPreviewSwap() {
+        var wrap = rootEl && rootEl.querySelector('.cc-canvas-wrap');
+        if (!wrap) return;
+        wrap.classList.remove('is-swapping');
+        void wrap.offsetWidth;
+        wrap.classList.add('is-swapping');
+    }
+
     function chooseEquipment(index, focus) {
         if (!snapshot || !model || isDraftLocked()) return;
         var picker = EQUIPMENT_PICKERS[activeEquipmentIndex];
@@ -577,6 +624,7 @@
         fillEquipmentSlots();
         fillEquipmentPool(focus ? key : null);
         renderPreview();
+        flashPreviewSwap();
         refreshReview();
         cue('playSelect');
     }
@@ -590,7 +638,8 @@
             }
         } catch (e) {}
         var width = host && (host.clientWidth || host.getBoundingClientRect().width) || 300;
-        return appearanceDensity === 'compact' ? Math.max(1, Math.floor(width / 52)) : Math.max(1, Math.floor(width / 170));
+        var density = host && host.id === 'cc-hair-list' ? appearanceDensity.hair : appearanceDensity.equipment;
+        return density === 'compact' ? Math.max(1, Math.floor(width / 52)) : Math.max(1, Math.floor(width / 170));
     }
 
     function onChoiceKeydown(event, kind) {
@@ -748,14 +797,32 @@
         refreshPreviewMeta();
         refreshReview();
         renderPreview();
+        flashPreviewSwap();
     }
 
     function revealChoice(host, option) {
-        if (!host || !option || appearanceDensity !== 'full') return;
+        if (!host || !option) return;
+        var density = host.id === 'cc-hair-list' ? appearanceDensity.hair : appearanceDensity.equipment;
+        if (density !== 'full') return;
         var hostRect = host.getBoundingClientRect();
         var optionRect = option.getBoundingClientRect();
         if (optionRect.top < hostRect.top) host.scrollTop -= hostRect.top - optionRect.top + 6;
         else if (optionRect.bottom > hostRect.bottom) host.scrollTop += optionRect.bottom - hostRect.bottom + 6;
+    }
+
+    // 难度卡片图标：终端 stroke 风内联 SVG，按名称语义映射（天平=平衡、回旋=逆天/回归原版、山旗=挑战）。
+    function difficultyIcon(row) {
+        var name = row.name || '';
+        var path;
+        if (name.indexOf('平衡') >= 0) path = 'M12 4v16M6 20h12M6 8h12M8 8l-2.5 5h5L8 8zM16 8l-2.5 5h5L16 8z';
+        else if (name.indexOf('逆天') >= 0) path = 'M4 12a8 8 0 1 0 3-6M4 12V7m0 5h5';
+        else path = 'M4 20l5-9 4 6 3-4 4 7zM9 11V4m0 0h4';
+        var span = document.createElement('span');
+        span.className = 'cc-difficulty-icon';
+        span.setAttribute('aria-hidden', 'true');
+        span.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"'
+            + ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + path + '"/></svg>';
+        return span;
     }
 
     function fillDifficulties() {
@@ -773,7 +840,10 @@
             button.setAttribute('aria-checked', selected ? 'true' : 'false');
             button.tabIndex = selected ? 0 : -1;
             var title = document.createElement('strong');
-            title.textContent = row.name;
+            title.appendChild(difficultyIcon(row));
+            var titleText = document.createElement('span');
+            titleText.textContent = row.name;
+            title.appendChild(titleText);
             button.appendChild(title);
             if (row.recommended) {
                 var tag = document.createElement('span');
@@ -854,6 +924,16 @@
             refreshUi();
             focusStep();
         }
+    }
+
+    // 步骤指示器允许回跳到任一已完成步骤；前跳仍必须走「下一步」逐步校验。
+    function jumpToStep(index) {
+        if (!snapshot || isDraftLocked()) return;
+        if (!Number.isInteger(index) || index < 0 || index >= step || index > 2) return;
+        step = index;
+        cue('playTransition');
+        refreshUi();
+        focusStep();
     }
 
     function focusStep() {
@@ -1032,12 +1112,31 @@
             : '正在准备游戏与角色资料...';
         rootEl.querySelectorAll('[data-cc-panel]').forEach(function(panel) {
             var panelStep = Number(panel.getAttribute('data-cc-panel'));
-            panel.hidden = panelStep !== step || (!snapshot && panelStep !== 0);
+            var visible = panelStep === step && !(!snapshot && panelStep !== 0);
+            panel.hidden = !visible;
+            if (visible && panelStep !== lastPanelStep) {
+                lastPanelStep = panelStep;
+                var reduced = global.matchMedia
+                    && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (!reduced) {
+                    panel.classList.remove('cc-panel-enter');
+                    void panel.offsetWidth;
+                    panel.classList.add('cc-panel-enter');
+                    panel.addEventListener('animationend', function handler() {
+                        panel.removeEventListener('animationend', handler);
+                        panel.classList.remove('cc-panel-enter');
+                    });
+                }
+            }
         });
         rootEl.querySelectorAll('[data-cc-step]').forEach(function(item) {
-            var active = Number(item.getAttribute('data-cc-step')) === step;
+            var itemStep = Number(item.getAttribute('data-cc-step'));
+            var active = itemStep === step;
             if (active) item.setAttribute('aria-current', 'step');
             else item.removeAttribute('aria-current');
+            item.classList.toggle('is-done', itemStep < step);
+            var jump = item.querySelector('[data-cc-step-jump]');
+            if (jump) jump.disabled = isDraftLocked() || itemStep >= step;
         });
         var locked = isLocked() || !snapshot;
         var durableRecovery = phase === 'durable_scene_error';
@@ -1109,7 +1208,7 @@
         rows.push(
             ['identity', '角色', (gender === 'female' ? '女性' : '男性') + ' · ' + model.draft.height + ' cm'],
             ['difficulty', '难度', difficulty],
-            ['hair', '发型', hair.primary],
+            ['hair', '发型', hair.name],
             ['equipment', '服装', nameOf(snapshot.appearanceCatalog.upper[gender], model.draft.upperIdentifier)
                 + ' · ' + nameOf(snapshot.appearanceCatalog.lower[gender], model.draft.lowerIdentifier)
                 + ' · ' + nameOf(snapshot.appearanceCatalog.footwear[gender], model.draft.footwearIdentifier)]
@@ -1407,6 +1506,7 @@
         clearPreviewCanvas();
         appearanceView = 'equipment';
         appearanceDensity = loadAppearanceDensity();
+        lastPanelStep = -1;
         activeEquipmentIndex = 0;
         clearErrors();
         refreshUi();

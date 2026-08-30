@@ -303,7 +303,9 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 /* ── B 期: 随机通缉令海报装饰 (dungeon-posters; bootstrap-main.js loadSlotsPoster 填背景图) ──
    低透明侧贴右缘, 微倾角 + 降饱和压进背景; pointer-events:none 不影响卡片命中;
    元素在 #view-slots 内, view-enter 动画与 welcome 隐藏都随视图天然协调. */
-#view-slots .slots-poster{position:absolute;right:26px;top:50%;transform:translateY(-50%) rotate(1.5deg);width:min(220px,20vw);aspect-ratio:3/4;background-color:rgba(5,7,10,.5);background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid rgba(61,213,255,.22);box-shadow:0 6px 28px rgba(0,0,0,.65);opacity:.2;filter:saturate(.75);pointer-events:none;z-index:0}
+#view-slots .slots-poster{position:absolute;right:44px;top:50%;transform:translateY(-50%) rotate(1.5deg);width:min(330px,26vw);aspect-ratio:3/4;background-color:rgba(5,7,10,.5);background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid rgba(61,213,255,.22);box-shadow:0 6px 28px rgba(0,0,0,.65);opacity:.34;filter:saturate(.75);pointer-events:none;z-index:0}
+/* 一叠通缉令：同图错位旋转垫在主海报后，装饰层从"贴一张小图"升级为有体积的道具。 */
+#view-slots .slots-poster::before{content:"";position:absolute;inset:0;z-index:-1;background-color:rgba(5,7,10,.55);background-image:inherit;background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid rgba(61,213,255,.16);box-shadow:0 6px 24px rgba(0,0,0,.6);transform:rotate(-5.5deg) translate(-24%,6%) scale(.84);opacity:.6;filter:saturate(.6)}
 /* 标题分隔线收敛到 terminal.css .term-heading-rule (DOM 已挂 term-heading-rule), 旋钮: 左端 80px 辉光短段 */
 #view-slots .slots-header{--term-rule-seg-left:0;--term-rule-seg-w:80px;display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:12px}
 /* "选择存档" 4 个中文字原 letter-spacing:8px 严重拉散, 降到 4px 保留仪式感又不失连读性 */
@@ -318,7 +320,7 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 #view-slots .toolbar button:hover{border-color:var(--dls);color:var(--dls);background:rgba(61,213,255,.06);text-shadow:0 0 6px var(--dls)}
 
 /* 卡片网格 */
-#view-slots .cards{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(216px + 92px * var(--fs-scale))),1fr));gap:calc(10px + 2px * var(--geom-scale));align-content:start;align-items:stretch;padding-right:4px}
+#view-slots .cards{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(216px + 92px * var(--fs-scale))),1fr));gap:calc(10px + 2px * var(--geom-scale));align-content:center;align-items:stretch;padding-right:4px}
 #view-slots .cards::-webkit-scrollbar{width:6px}
 #view-slots .cards::-webkit-scrollbar-track{background:rgba(0,0,0,.3)}
 #view-slots .cards::-webkit-scrollbar-thumb{background:var(--dls-dim)}
@@ -327,7 +329,7 @@ html, body { background: var(--bg0); color: #d4d8dc; overflow: hidden }
 /* 卡片本体: 深底 + 左锈红竖条 + 右下角斜切 */
 /* 卡片本体: 深底 + 左锈红竖条 + 右下角斜切
    (三期半: 不透明实底 — 半透明下 PM19 矩阵高亮行经 2x 放大后会透印成"横线"穿透文字) */
-#view-slots .card{position:relative;box-sizing:border-box;min-width:0;background:linear-gradient(180deg,#0c0e12 0%,#05070a 100%);border:1px solid var(--dls-dim);border-left:3px solid var(--rust-dim);border-radius:0;padding:calc(12px + 5px * var(--geom-scale)) calc(12px + 4px * var(--geom-scale)) calc(10px + 3px * var(--geom-scale));display:flex;flex-direction:column;min-height:calc(128px + 62px * var(--fs-scale));clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);transition:border-color var(--wb-motion-standard) var(--wb-ease-standard),box-shadow var(--wb-motion-structural) var(--wb-ease-standard),transform var(--wb-motion-micro) var(--wb-ease-standard);overflow:hidden}
+#view-slots .card{position:relative;box-sizing:border-box;min-width:0;background:linear-gradient(180deg,#0c0e12 0%,#05070a 100%);border:1px solid var(--dls-dim);border-left:3px solid var(--rust-dim);border-radius:0;padding:calc(12px + 5px * var(--geom-scale)) calc(12px + 4px * var(--geom-scale)) calc(10px + 3px * var(--geom-scale));display:flex;flex-direction:column;min-height:calc(150px + 66px * var(--fs-scale));clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);transition:border-color var(--wb-motion-standard) var(--wb-ease-standard),box-shadow var(--wb-motion-structural) var(--wb-ease-standard),transform var(--wb-motion-micro) var(--wb-ease-standard);overflow:hidden}
 /* 卡片角标: 仅 BR 有 14px 切角, 臂沿切角端点贴边; gap 收紧避让顶部 SAVE 角标 */
 #view-slots .card.corner-brackets{--cb-gap:2px;--cb-size:9px;--cb-br:14px}
 /* hover: 描边/外发光提亮 + 整体 1px 上浮 (--wb-motion-micro), 与 kb-focus 内辉共存不冲突 */
