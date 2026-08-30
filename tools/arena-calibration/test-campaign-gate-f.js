@@ -267,6 +267,19 @@ function main() {
       verifyOptions: { skipSource: true, skipRuntime: true },
     });
     assert.strictEqual(verifyIdleWindow(tempRoot, plan, window, { now: "2026-08-27T12:30:00.000Z" }), true);
+    const weeklyWindow = createIdleWindow(tempRoot, plan, {
+      issuedAt: NOW,
+      durationMs: 168 * 60 * 60 * 1000,
+      windowId: "idle-weekly-fixture",
+      revokeFile: "tmp/gate-f-fixture/weekly-revoke.signal",
+      verifyOptions: { skipSource: true, skipRuntime: true },
+    });
+    assert.strictEqual(verifyIdleWindow(tempRoot, plan, weeklyWindow, { now: "2026-09-03T11:59:59.000Z" }), true);
+    expectError(() => createIdleWindow(tempRoot, plan, {
+      issuedAt: NOW,
+      durationMs: 169 * 60 * 60 * 1000,
+      verifyOptions: { skipSource: true, skipRuntime: true },
+    }), "idle_window_duration_invalid");
     const laterWindow = createIdleWindow(tempRoot, plan, {
       issuedAt: "2026-08-27T14:00:00.000Z",
       durationMs: 60 * 60 * 1000,

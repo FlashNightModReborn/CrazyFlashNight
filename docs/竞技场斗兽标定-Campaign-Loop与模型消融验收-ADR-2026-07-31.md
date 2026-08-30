@@ -703,6 +703,8 @@ v4 随后完成 30/30 fresh soak；全量在 16 个 completed shard + 1 个 F2 a
 
 ---
 
+星期级全量的显式 idle grant 上限由 24 小时扩为 168 小时，避免 3,255-run campaign 因授权窗口短于真实机器时长而停止领取 shard。该扩展不改变授权范围：仍须由 `arm` 绑定 clean source、exact formal runtime、plan hash、producer idle 与磁盘门，维护者可随时通过 exact owned revoke 撤销；身份漂移、树外竞争 producer、低磁盘与基础设施错误继续 fail closed。过期后只准提交已经产生的 durable facts，不准开启新 shard；模型异常复核仍只有诊断建议权，不继承执行或验收权。
+
 ## 13. ADR 验收边界
 
 本文的实现验收是：

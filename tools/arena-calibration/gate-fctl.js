@@ -118,7 +118,7 @@ Commands:
 
 Options:
   freeze: --draft <json> --output-dir <project path>
-  arm:    --plan <json> --output-dir <project path> [--hours 1..24]
+  arm:    --plan <json> --output-dir <project path> [--hours 1..168]
   run:    --plan <json> --window <json> [--max-shards <n>]
           [--codex-exe <absolute exe>] [--exception-review-model <id>]
           [--maximum-exception-reviews <0..3>]
@@ -318,7 +318,7 @@ function commandFreeze(args) {
 }
 
 function commandArm(args) {
-  if (!Number.isFinite(args.hours) || args.hours < 1 || args.hours > 24) fail("--hours must be between 1 and 24", "usage_error");
+  if (!Number.isFinite(args.hours) || args.hours < 1 || args.hours > 168) fail("--hours must be between 1 and 168", "usage_error");
   const { plan } = readPlan(args.projectRoot, requireArg(args, "plan"));
   const outputDir = resolveOutput(args.projectRoot, requireArg(args, "outputDir"), "Gate F arm output directory");
   const disk = captureDiskHealth(args.projectRoot, plan.healthPolicy.minimumFreeBytes);

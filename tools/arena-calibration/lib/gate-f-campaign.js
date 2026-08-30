@@ -23,7 +23,7 @@ const ATTENTION_MEASUREMENT_SCHEMA = "arena-calibration.attention-measurement.v1
 const SHARD_RECEIPT_SCHEMA = "arena-calibration.gate-f-shard-receipt.v1";
 const STATUS_SCHEMA = "arena-calibration.gate-f-status.v1";
 const EXCEPTION_SCHEMA = "arena-calibration.exception-inbox-item.v1";
-const MAX_IDLE_WINDOW_MS = 24 * 60 * 60 * 1000;
+const MAX_IDLE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 const FAILURE_STATUSES = new Set([
   "error", "spawn_failed", "stage_failed", "bridge_lost", "invalid_case", "contamination",
 ]);
@@ -326,7 +326,7 @@ function createIdleWindow(projectRoot, plan, options) {
   const issuedAt = options.issuedAt || new Date().toISOString();
   const durationMs = options.durationMs === undefined ? 8 * 60 * 60 * 1000 : options.durationMs;
   if (!Number.isInteger(durationMs) || durationMs < 60 * 1000 || durationMs > MAX_IDLE_WINDOW_MS) {
-    fail("Gate F idle window duration must be 1 minute..24 hours", "idle_window_duration_invalid");
+    fail("Gate F idle window duration must be 1 minute..7 days", "idle_window_duration_invalid");
   }
   const windowId = options.windowId || `idle-${plan.planId}-${issuedAt.replace(/[^0-9]/g, "").slice(0, 14)}`;
   const revokePath = resolveInsideRoot(
