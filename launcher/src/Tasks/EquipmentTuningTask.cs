@@ -315,6 +315,14 @@ namespace CF7Launcher.Tasks
                     requestedInstance, requestedViewSessionId);
                 return;
             }
+            if (cmd == "detach"
+                && TryCompleteDetachWithoutAuthority(
+                    callId,
+                    boundInstance,
+                    viewSessionId))
+            {
+                return;
+            }
             if (!_isClientReady())
             {
                 RejectAndRemember(callId, cmd, "disconnected",
@@ -2356,6 +2364,7 @@ namespace CF7Launcher.Tasks
             if (!SameEquipmentDefinition(
                     beforeEquipment,
                     afterEquipment)
+                || !HasValidEffectiveModCapacity(afterEquipment)
                 || beforeEquipment.Value<double>("lastUpdate")
                     != afterEquipment.Value<double>("lastUpdate"))
             {
@@ -2372,6 +2381,7 @@ namespace CF7Launcher.Tasks
                 int sourceLevel = beforeEquipment.Value<int>("level");
                 int targetLevel = beforeTarget.Value<int>("level");
                 return SameEquipmentDefinition(beforeTarget, afterTarget)
+                    && HasValidEffectiveModCapacity(afterTarget)
                     && beforeTarget.Value<double>("lastUpdate")
                         == afterTarget.Value<double>("lastUpdate")
                     && SameTierAndMods(beforeEquipment, afterEquipment)
@@ -2431,9 +2441,22 @@ namespace CF7Launcher.Tasks
             {
                 if (!JToken.DeepEquals(before[key], after[key])) return false;
             }
-            return JToken.DeepEquals(
-                before["modSlotCapacity"],
-                after["modSlotCapacity"]);
+            return true;
+        }
+
+        private static bool HasValidEffectiveModCapacity(
+            JObject equipment)
+        {
+            // Effective capacity is derived from the complete equipment value. A
+            // legal mod transition may therefore change it (for example 1 -> 3),
+            // but the authoritative after projection must still contain every
+            // installed mod within that effective capacity.
+            JArray mods = equipment != null
+                ? equipment["mods"] as JArray : null;
+            if (mods == null) return false;
+            JToken capacity = equipment["modSlotCapacity"];
+            return capacity == null
+                || mods.Count <= equipment.Value<int>("modSlotCapacity");
         }
 
         private static bool SameTierAndMods(
@@ -3239,6 +3262,58 @@ namespace CF7Launcher.Tasks
             if (requiresReconcile && IsCallId(reconcileAfterCallId))
                 response["reconcileAfterCallId"] = reconcileAfterCallId;
             PostToWeb(response.ToString(Formatting.None));
+        }
+
+        private bool TryCompleteDetachWithoutAuthority(
+            string callId,
+            string panelInstanceId,
+            string viewSessionId)
+        {
+            // Opening the tuning surface does not start Flash authority by itself;
+            // the first accepted snapshot does. If there was no equipment source,
+            // close is an authority-free no-op. Keep every active/pending/write
+            // state on the strict Flash detach path.
+            int writeEpoch;
+            lock (_lock)
+            {
+                if (_activeCallIds.Contains(callId)
+                    || _recentCallIds.Contains(callId)) return true;
+                if (!string.Equals(
+                        _panelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    || !string.IsNullOrEmpty(_activeViewSessionId)
+                    || !string.IsNullOrEmpty(_detachingViewSessionId)
+                    || _pending.Count != 0
+                    || _writeState != "idle")
+                {
+                    return false;
+                }
+                writeEpoch = _writeEpoch;
+                RememberRecentLocked(callId);
+            }
+
+            var response = new JObject
+            {
+                ["type"] = "panel_resp",
+                ["panel"] = "workbench",
+                ["domain"] = "equipment_tuning",
+                ["cmd"] = "detach",
+                ["callId"] = callId,
+                ["panelInstanceId"] = panelInstanceId,
+                ["viewSessionId"] = viewSessionId,
+                ["writeEpoch"] = writeEpoch,
+                ["success"] = true
+            };
+            PostToWeb(response.ToString(Formatting.None));
+            LogManager.Log("event=equipment_tuning_detach_local_noop"
+                + " callId=" + SafeLogField(callId)
+                + " panelInstanceId=" + SafeLogField(panelInstanceId)
+                + " viewSessionId=" + SafeLogField(viewSessionId)
+                + " writeEpoch=" + writeEpoch.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture));
+            NotifyCoordinatorSettledIfReady();
+            return true;
         }
 
         private void PostToWeb(string json)

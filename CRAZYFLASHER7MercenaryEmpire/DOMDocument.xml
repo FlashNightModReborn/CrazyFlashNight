@@ -884,7 +884,7 @@
           <Include href="无限过图计时器.xml" itemID="689c1899-000001f2" lastModified="1755135414"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="80" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="150" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;29&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;guideline direction="h"&gt;476&lt;/guideline&gt;&lt;guideline direction="h"&gt;516&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1587,7 +1587,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="淡出动画" color="#D0D4FC" locked="true" autoNamed="false">
+                    <DOMLayer name="淡出动画" color="#D0D4FC" locked="true" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="52" keyMode="9728">
                                    <elements/>
@@ -1658,7 +1658,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="9" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="9" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="40" keyMode="9728">
                                    <elements/>
@@ -1809,7 +1809,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="标题画面遮罩" color="#8ADE27" parentLayerIndex="9" autoNamed="false" visible="false">
+                    <DOMLayer name="标题画面遮罩" color="#8ADE27" parentLayerIndex="9" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="33" keyMode="9728">
                                    <elements/>
@@ -2312,7 +2312,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="新：图片容器" color="#4FFF4F" parentLayerIndex="20" autoNamed="false" visible="false">
+                    <DOMLayer name="新：图片容器" color="#4FFF4F" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -2331,32 +2331,17 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="获得任务奖励" color="#7DE3A2" parentLayerIndex="20" autoNamed="false" visible="false">
+                    <DOMLayer name="获得任务奖励" color="#7DE3A2" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/获得任务奖励" name="任务奖励提示界面" centerPoint3DX="518" centerPoint3DY="203.75">
-                                             <matrix>
-                                                  <Matrix tx="400" ty="76.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="对话框界面" color="#A9FD4E" parentLayerIndex="20" autoNamed="false" visible="false">
+                    <DOMLayer name="对话框界面" color="#A9FD4E" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -2389,7 +2374,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                               <DOMFrame index="130" duration="30" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="import/UI组件/平板电脑界面" name="平板电脑界面" centerPoint3DX="735.75" centerPoint3DY="437.15">
+                                        <DOMSymbolInstance libraryItemName="import/UI组件/平板电脑界面" name="平板电脑界面" selected="true" centerPoint3DX="735.75" centerPoint3DY="437.15">
                                              <matrix>
                                                   <Matrix tx="512" ty="288"/>
                                              </matrix>
@@ -2411,7 +2396,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                               <DOMFrame index="134" duration="77" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="import/UI组件/修改工具界面" name="修改工具界面" centerPoint3DX="504.95" centerPoint3DY="242.05">
+                                        <DOMSymbolInstance libraryItemName="import/UI组件/修改工具界面" name="修改工具界面" selected="true" centerPoint3DX="504.95" centerPoint3DY="242.05">
                                              <matrix>
                                                   <Matrix tx="276.5" ty="76.1"/>
                                              </matrix>
@@ -2432,28 +2417,13 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="通关奖励" color="#79CA6B" parentLayerIndex="20" autoNamed="false" visible="false">
+                    <DOMLayer name="通关奖励" color="#79CA6B" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/奖励物品界面" name="奖励物品界面" centerPoint3DX="523.35" centerPoint3DY="167.65">
-                                             <matrix>
-                                                  <Matrix tx="400" ty="43.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -2474,7 +2444,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/确认confirm" name="确认通用面板" centerPoint3DX="512.5" centerPoint3DY="281.4">
+                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/确认confirm" name="确认通用面板" selected="true" centerPoint3DX="512.5" centerPoint3DY="281.4">
                                              <matrix>
                                                   <Matrix tx="337" ty="195.95"/>
                                              </matrix>
@@ -2491,46 +2461,33 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="佣兵确认面板" color="#D5FADA" parentLayerIndex="20" autoNamed="false" visible="false">
+                    <DOMLayer name="佣兵确认面板" color="#D5FADA" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="委托任务界面" color="#27F8E8" parentLayerIndex="20" autoNamed="false" visible="false">
+                    <DOMLayer name="委托任务界面" color="#27F8E8" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="关卡结束界面" color="#7F9FFA" parentLayerIndex="20" autoNamed="false" visible="false">
+                    <DOMLayer name="关卡结束界面" color="#7F9FFA" parentLayerIndex="20" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1861" name="关卡结束界面" centerPoint3DX="512.3" centerPoint3DY="62.95">
-                                             <matrix>
-                                                  <Matrix tx="408" ty="17.95"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -2540,21 +2497,7 @@ _root.无限过图模式 = true;
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="130" duration="81" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/系统UI" name="系统设置界面" centerPoint3DX="674.6" centerPoint3DY="256.95">
-                                             <matrix>
-                                                  <Matrix tx="556.6" ty="91"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (load) {
-	this._visible = 0;
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -2633,7 +2576,7 @@ _root.无限过图模式 = true;
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="玩家信息UI" color="#4FFF4F" autoNamed="false" layerType="folder"/>
-                    <DOMLayer name="存盘动画" color="#DCD6F9" parentLayerIndex="45" autoNamed="false">
+                    <DOMLayer name="存盘动画" color="#DCD6F9" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -2643,7 +2586,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="任务完成提示" color="#69EC4F" parentLayerIndex="45" autoNamed="false">
+                    <DOMLayer name="任务完成提示" color="#69EC4F" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -2653,7 +2596,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="玩家信息界面" color="#84EAF7" parentLayerIndex="45" autoNamed="false">
+                    <DOMLayer name="玩家信息界面" color="#84EAF7" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -2673,7 +2616,7 @@ _root.无限过图模式 = true;
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="按钮UI" color="#4FFF4F" autoNamed="false" layerType="folder"/>
-                    <DOMLayer name="底部按钮组1" color="#DC8BA2" parentLayerIndex="49" autoNamed="false">
+                    <DOMLayer name="底部按钮组1" color="#DC8BA2" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="134" keyMode="9728">
                                    <elements/>
@@ -2686,7 +2629,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="玩家buff界面" color="#FFFFFF" parentLayerIndex="49" autoNamed="false">
+                    <DOMLayer name="玩家buff界面" color="#FFFFFF" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="130" keyMode="9728">
                                    <elements/>
@@ -2705,7 +2648,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="顶部UI-2" color="#9933CC" parentLayerIndex="49" autoNamed="false">
+                    <DOMLayer name="顶部UI-2" color="#9933CC" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="134" keyMode="9728">
                                    <elements/>
@@ -2715,7 +2658,7 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="顶部UI-1" color="#72FB84" parentLayerIndex="49" autoNamed="false">
+                    <DOMLayer name="顶部UI-1" color="#72FB84" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="134" keyMode="9728">
                                    <elements/>
@@ -3014,7 +2957,7 @@ onClipEvent (enterFrame) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="背景" color="#7370F9" locked="true" autoNamed="false">
+                    <DOMLayer name="背景" color="#7370F9" locked="true" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="211" keyMode="9728">
                                    <elements>
