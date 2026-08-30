@@ -354,6 +354,10 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             finish("contamination", "none", _active.errors);
             return;
         }
+        if (guardCalibrationFactionIntegrity(_active.errors) != true) {
+            finish("contamination", "none", _active.errors);
+            return;
+        }
 
         if (_active.primed != true) {
             _active.snapshotFrames++;
@@ -1062,16 +1066,23 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         var original:Function = _originalLoadGameWorldUnit;
         if (typeof original != "function") return undefined;
 
+        var parentRecord:Object = findPhaseSpawnParentRecord(String(name || ""), initObject);
+        if (parentRecord != undefined) {
+            if (initObject == undefined) initObject = {};
+            initObject.是否为敌人 = (parentRecord.isEnemy == true);
+        }
         var mc:MovieClip = original(id, name, depth, initObject);
-        handleSpawnedUnit(id, name, initObject, mc);
+        handleSpawnedUnit(id, name, initObject, mc, parentRecord);
         return mc;
     }
 
-    public static function handleSpawnedUnit(id:String, name:String, initObject:Object, mc:MovieClip):Void {
+    public static function handleSpawnedUnit(id:String, name:String, initObject:Object, mc:MovieClip, parentRecord:Object):Void {
         if (_active == undefined || mc == undefined || mc._parent == undefined) return;
         if (mc._arenaCalibrationUnit === true) return;
 
-        var parentRecord:Object = findPhaseSpawnParentRecord(String(name || mc._name), initObject);
+        if (parentRecord == undefined) {
+            parentRecord = findPhaseSpawnParentRecord(String(name || mc._name), initObject);
+        }
         if (parentRecord == undefined) {
             mc._arenaCalibrationUnknown = true;
             if (_active.errors != undefined) {
@@ -1182,8 +1193,38 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         mc._arenaCalibrationUnit = true;
         mc._arenaCalibrationSide = side;
         mc._arenaCalibrationRun = runKey;
+        mc.是否为敌人 = (side == "red");
         mc.产生源 = "斗兽标定源";
         if (mc.攻击目标 == undefined) mc.攻击目标 = "无";
+    }
+
+    private static function guardCalibrationFactionIntegrity(errors:Array):Boolean {
+        if (_active == undefined) return true;
+        if (guardCalibrationSideFaction(_active.blueUnits, "blue", false, errors) != true) return false;
+        return guardCalibrationSideFaction(_active.redUnits, "red", true, errors);
+    }
+
+    private static function guardCalibrationSideFaction(units:Array, side:String, expectedIsEnemy:Boolean, errors:Array):Boolean {
+        if (units == undefined) return true;
+        for (var i:Number = 0; i < units.length; i++) {
+            var record:Object = units[i];
+            if (record == undefined) continue;
+            var mc:MovieClip = record.mc;
+            if (mc == undefined || mc._parent == undefined) continue;
+            if (mc.是否为敌人 !== expectedIsEnemy) {
+                if (errors != undefined) {
+                    errors.push({
+                        code: "faction_contamination",
+                        side: side,
+                        unit: String(record.unitType || ""),
+                        name: String(mc._name || ""),
+                        message: "arena calibration unit faction drifted from its registered side"
+                    });
+                }
+                return false;
+            }
+        }
+        return true;
     }
 
     private static function markCalibrationAuxiliaryActor(mc:MovieClip, side:String, runKey:String):Void {

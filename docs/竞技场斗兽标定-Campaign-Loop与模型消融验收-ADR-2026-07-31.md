@@ -673,7 +673,7 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 
 该 packet 在口径修正前生成，原 `subjectiveLabelContract` 仍是泛化体验档；已执行 encounter 的 packet hash 不回写。数值等效响应以新 schema 作为 hash-bound 补充证据，后续 packet builder 直接输出 `monster_group_to_humanoid_mercenary_equivalence`。由于本轮没有自动落下 duration、胜负、承伤、输出、残血和异常 telemetry，也不让维护者事后补猜，Gate E 当前只完成等效标签子门；未生成 recommendation bundle，未修改 `arena_factions.json`，未 formal apply。
 
-### Gate F：星期级累计 campaign（`F0_ENGINEERING_READY / FORMAL_SOAK_PAUSED / ROUTING_FIX_READY`）
+### Gate F：星期级累计 campaign（`FORMAL_SOAK_REVOKED / BATTLE_SEMANTICS_FIX_VALIDATED / REFREEZE_REQUIRED`）
 
 - 多次正常暂停、游戏崩溃或电脑重启后可恢复。
 - 没有无限重启、跨 cohort 拼接或重复计数。
@@ -685,6 +685,7 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 - 正常 / 可延期异常 `proactiveInterruptCount=0`；urgent / overdue inbox 为 0，普通 deferred item backlog `<=5`。同时报告 occurrence、受影响 candidate / work item 和最大 fan-out；deferred 的 affected-candidate 与 affected-work-item 比例均须 `<=10%`，分母为本 campaign 已登记 candidate / 已调度 work item；任一分母为 0 时记作 `insufficient_data`，不得借此按 0% 通过 Gate F。
 - gold suite 建立后，在滚动最近 20 个 eligible epoch 与 Gate F 全 campaign 两个窗口内，`proposalHumanTouchRate<=10%`；approve / reject / edit 均计 touch，edit 另报 `proposalManualEditRate`。任一窗口分母不足 20 或为 0 时不得称 low-touch 已验收。
 - 内容开发 / Flash 编译抢占以 `targetYieldLatency<=60` 秒为目标，并在 `maxYieldLatency<=5` 分钟硬上限内释放 Launcher、Flash 和 work lease。
+- fresh admission/soak 若覆盖已知阶段派生召唤者，必须在 original/side-swap 两方向都实际观察 `phaseSpawnCount > 0`；只把召唤者放入 roster 不算覆盖。每个存活的 blue/red 初始或派生实体必须逐帧满足 `是否为敌人 === false/true`，任一漂移以 `contamination / faction_contamination` fail closed。
 - 对进入正式建议阶段的候选生成 recommendation bundle；人类不需要手工抄录配置。
 
 Gate F0 首轮以 `gate-f-week-full-v1` 计划族、`gate-f-week-full-v2` 执行 campaign 冻结 58 个 normalized candidate，`B12` 保持 quarantine；共 198 个短 shard、3255 个计划 run、198 份 hash-bound `schedule_shard/auto_execute` 决策证据。新部署在 `ArenaController.prepareArenaStage()` 增加 `StageRunSession.canStartStage()` admission，因此 G2 `candidate-dd65977b16a48a35` 的两场 `1 × Lv10` PVE 标签继续保留，但旧 runtime 的机器完成证据不跨 cohort 代签，G2 也重新执行 55 run。普通候选为 `10 + 20 + 25 = 55` run，显式长 timeout 候选为 `6 × 10 = 60` run，全部包含 original/side-swap。B9 的 1800 帧双向 timeout 与 5400 帧 2776/3494 finished 已作为 schema-valid、hash/cell/candidate/runtime/save-bound 的计划层 override 固化；normalized intake 和旧超时不改写，candidate 证据不能代签 formal replay。合并候选的首份 10-run 诊断为 9 finished + C9 换边 1 timeout；随后 C9 的 5400 帧双向探针均在 1800 帧前 finished，故没有形成 timeout override。
@@ -706,6 +707,8 @@ v4 随后完成 30/30 fresh soak；全量在 16 个 completed shard + 1 个 F2 a
 星期级全量的显式 idle grant 上限由 24 小时扩为 168 小时，避免 3,255-run campaign 因授权窗口短于真实机器时长而停止领取 shard。该扩展不改变授权范围：仍须由 `arm` 绑定 clean source、exact formal runtime、plan hash、producer idle 与磁盘门，维护者可随时通过 exact owned revoke 撤销；身份漂移、树外竞争 producer、低磁盘与基础设施错误继续 fail closed。过期后只准提交已经产生的 durable facts，不准开启新 shard；模型异常复核仍只有诊断建议权，不继承执行或验收权。
 
 `gate-f-week-full-v6` 因召唤谱系、污染判定与 `things4.swf` 战斗资产变更切换到 `arena-cohort-20260830-summon-lineage-v3`；旧 v5 的 159 个 completed shard、2,810 条 durable row 只作历史，不跨 cohort 混计。战斗语义提交 `bcfa01935d2f91a29a8a537c328c9190827c4be3` 下，D10 新鲜 10-run 为 0 contamination/error、3 个候选 timeout、runtime/save/shutdown 闭合；`B2/C7/G2/F3/E10` admission probe 为 10/10 finished、0 timeout/error/recovery，准入 hash 为 `sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb`。重建后的 tracked v2 计划仍为 58 个 scheduled candidate + `B12` quarantine、198 shard / 3,255 run；此处只证明新 cohort 可冻结，三份正式 fresh soak 与全量结果仍须实跑。
+
+v6 的三份 fresh soak 与后续分片曾累计 16 个 completed shard / 260 条 durable row；维护者随后在换边实机中观察到绿色/蓝侧 `兵种39` 死亡派生僵尸仍呈红方实体阵营，双方不可互伤并卡死。控制器已通过 owned revoke 有界收尾。根因是 `things1/LIBRARY/Symbol 2054.xml` 的 linked symbol 以硬编码 `是否为敌人=true` 调用 `_root.加载游戏世界人物`，旧服务虽把 child 记到 blue side，却没有在 actor 创建前覆盖实体字段。修复改为先解析 parent record、在原 loader 前按 parent side 写入阵营、创建后再次绑定，并逐帧检查全部存活单位；漂移立即写 `faction_contamination`。强化 10-run 工作树探针实际观察 red 派生 3 个、blue 派生 4 个，10/10 finished、0 timeout/error/contamination，exact formal runtime 与受保护存档闭合。由于探针发生在提交前，v6 的 260 行仍全部隔离，探针也不代签正式 admission；下一轮必须使用新 campaign/cohort、提交后双方向派生 admission 和三份 fresh soak。
 
 ## 13. ADR 验收边界
 
