@@ -361,6 +361,12 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 - **审计**：物品+配件数据就绪后，递归扫描全部 `bullet` 键（覆盖 `data`/`data_ice`/`data_fire` 等变体、lifecycle、skill、配件 stats/skill），未声明模板/单元体或弹壳未解析发服务器告警。**边界**：AS2 代码内嵌子弹名不在审计范围（新增时人工核对）；配件词缀经 `PropertyOperators.mergeString` 前缀保留拼接动态合成组合——后缀必须是已声明单元体，任意已声明模板组合即被全量派生覆盖。
 - **武器补弹参数** `<fillrate>`（武器 `<data>` 内，可选；2026-06-12 起普及化为默认行为）：**缺省/`auto` = 默认**——纵向联弹按本次实际射击间隔（含枪械师点按/连按修正、配件改装后的运行时射速）生成整数分数 `分子=霰弹值-1`、`分母=ceil(间隔毫秒/每帧毫秒)`，通过 Bresenham 累加器在调度器有效间隔的第 `分母` 个更新 tick 补完；同 tick 内与下一发调度的先后顺序不作保证。高射速（有效间隔 1 tick，如 XM214）一帧补完；低射速（如磁稳贯穿弹改装后 interval 300ms+）率<1 隔帧补弹，2,3,2,… 的不均匀帧分布是预期行为。**正数 = 显式每帧补弹率**：允许小数，执行时向上定点化为 `ceil(fillrate×4096)/4096`，最小有效正数为 `1/4096`；低于该精度的配置仍按 `1/4096` 执行。技能等不经 WeaponFireCore 的直调路径无间隔戳 → 回退每帧 1 发旧行为。
 
+#### 近战长枪联弹约束
+
+`<use>长枪</use>` 且 `weapontype=近战|压制近战` 的武器，每个有效 `data*` 配置在继承基础 `<data>` 后，只要 `split>1`，有效 `bullet` 必须精确为 `近战联弹`。`data_fire*` / `data_ice*` 等变体缺失 `split` 或 `bullet` 时按基础配置继承后再判定。
+
+该约束保证子弹工厂只创建一个联弹结算对象，避免 `近战子弹 + split=N` 被展开成 N 个独立对象、逐对象初始化并结算淬毒。它只把同一目标的一次多段命中从逐段满额毒收敛为一份满额毒，不改变 `近战联弹` 现有 `FLAG_NORMAL` 所对应的 100% 单次毒系数。静态门：`node tools/validate-melee-longgun-chain.js`。
+
 ### 情报字典、legacy txt 与 H5 JSON
 
 `data/dictionaries/information_dictionary.xml` 维护情报条目的名称、排序、分页解锁值、加密等级与替换/截断规则。legacy txt 位于 `data/intelligence/<Name>.txt`，使用 `@@@PageKey@@@` 分隔分页正文；H5 正文位于 `data/intelligence_h5/<Name>.json`，每个 JSON 必须包含 `schemaVersion:1`、`itemName`、`skin`、`pages[]`，且 `pages[].pageKey` 必须与字典中的 `Information PageKey` 完全一致。
