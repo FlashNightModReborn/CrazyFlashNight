@@ -2,8 +2,29 @@
 
 **文档角色**：关卡结束、玩家死亡复活、返回基地与关卡奖励领取的跨 AS2 / C# / Web canonical 深文档。
 **状态**：2026-08-29 增量修复 `IMPLEMENTED / AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / promoted`
+**2026-08-30 测试反馈修复状态**：`IMPLEMENTED / RELEASE_AUTHORIZED / FIELD_REVALIDATION_PENDING / NOT_DEPLOYED`
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
+
+## 0A. 2026-08-30 奖励持久化、立即投影与自动入栏增量
+
+测试员实际遇到了关卡结束后“前往交付”迟出、返回基地后奖励无法安全收取、焦点异常时不敢触碰推荐链路，以及领取药剂落入背包。此次增量冻结以下现役合同：
+
+- `FinishStage` 递归完成较低难度任务时延迟中间投影，只在最外层立即执行一次 `UpdateTaskProgress()` 与达成检测；NativeHud 不再等待后续偶然刷新才出现“前往交付”。
+- `StageRunSession.prepareSettlement()` 在离开战斗场景前把一次性随机结果、行动报告、remaining manifest、单调 `settlementId` 与有界 operation receipts 写入 `_saveExt.stageSettlement.v=1`。只有 `_root.强制存盘() === true` 才允许转场；false、异常或缺失均保留同一奖励和同一 id，只允许重试，绝不重新随机。
+- `SaveManager.unpackGameState()` 在资产恢复后重建 pending settlement。`LootContainerService.beginStageSettlement()` 同时读取 durable receipts，复原 operation journal、`authorityRevision` 与 `lastAppliedOperationId`；receipt 的 revision、领取数量或 remainingCount 不连续时 fail closed，不把损坏记录冒充成功领取。
+- 单领在成功回包前、批领在批尾、结算终态在释放内存 authority 前分别执行 strict durable flush。flush 未确认时保持 `LOOT_COMMIT_PENDING`，只允许同 operation 或 causal query 续跑；终态把 pending 清成有界 terminal marker 后与玩家资产同次落盘。
+- Loot command 升为 v2，目标为 AS2 权威的 `自动`，活跃响应固定返回 loot、背包、药剂栏三份快照。药剂按“最近耗尽的同名 affinity 空槽 → 已占用同名药剂最低物理槽 → 背包同名栈 → 背包最低空槽”规划；从未绑定的新药剂仍进背包，不擅自占用空药剂槽。
+
+当前明确留给维护者讨论而未擅自施工的两点：持续存盘失败时是否提供“放弃本轮奖励并返回”的不可逆出口；畸形或未来版本 pending settlement 是否允许游戏内 quarantine/repair。二者都涉及丢奖励或改写诊断证据，不能由自动修复替玩家决定。
+
+最新 fresh focused 证据为 runId `db4724af9f5c4e35b9f7f87054ba70d2`：Loot `165/165`、Planner `9/9`、StageRunSession `372/372`，总计 `546 passed / 0 failed`，Compiler `0/0`、32K retry `0`；包含 `claim(rev2) → suspend(rev3) → resume(rev4) → claim(rev5) → restart` 的真实状态迁移夹具，并证明 receipt 以原始/剩余 manifest 的精确数量链防复制或跳领，非资产生命周期只允许造成 revision 单调跳号。Character focused runId `66b0b0cf3cf8451b9f7d5cd6506e40b0` 为 SaveManager `231/231`、CharacterBuild `211/211`；PlayerAsset runId `96774078d4884214ab1be55c447284a4` 为 `113/113`，两者均 Compiler `0/0`、32K retry `0`。
+
+最终自动闭包另含 Equipment AS2 runId `1564380c6a0b458aad719b7664e286b1` 的 `88/88 + Inventory 170/170`、Loot/Equipment/PanelFocus focused xUnit `317/317`（focus 子集 `61/61`）、Launcher 全量 `4449 pass + 3 explicit opt-in skip / 4452 total`、Panel contract `68/68`、Loot Node `58/58`、KShop Edge `155/155`、Equipment Tuning model `82/82`、offline journey `9 suites`，以及三视口各 `147/147`。fresh asLoader publish 由新鲜 Output Panel 与 SWF 刷新证明；publish-only flashlog 未刷新，故不拿旧 trace 冒充行为证据。产物为 `1,200,109 bytes`、SHA-256 `6638A70485BBC79D950458D11F69FE738DC7D41604945F66A729DAA90B780107`、`10,683 functions`、最大 `50,215B < 60,000B`。
+
+异构复核前的早期隔离候选曾达到 `candidate_built / NOT_DEPLOYED`：root `tmp/runtime-candidates/v2/c-4b3dfec54046-08846e81b3-20260830t011547732z-cb9d862b`，Core SHA-256 `173EA2F77DF0B3BEB4BFFEB1AAE679B7B34608E1D5434449F44EDADB2F287593`，build identity `4B3DFEC54046494CFCC627212586D72F447D7E6E67FCDA9276569D3032A4FEB9`，payload closure `9CBEE0CDEA19B3B28BDDE9DB0B53489E816207A56175E06241DE93E683B855F2`。它未包含随后发现的 settlement revision-gap 与 Host detached-query v2 修复，现已 supersede，只保留为历史证据；当前修复树在正式不可变 request 前准确状态为 `compiled / NOT_DEPLOYED`。这些机器证据都不代签 QQ/直播前台切换、实际关卡返回、领取后重启读回或人类观感。
+
+2026-08-30 维护者明确授权本增量进入不可变 source tag、双 signer / 双 faultDomain 共识与原子 promotion。开发机环境较干净，无法稳定制造 QQ 截图、直播工具或外部弹窗抢前台的现场；因此不伪造本地焦点验收，而是将该旅程记为 `FIELD_REVALIDATION_PENDING`，由测试员的实际软件环境回报收束。供应链发布授权不等于 `e2e_verified`、`HUMAN_ACCEPTANCE_PASSED` 或 `standard_entry_verified`；领奖重启读回、战斗空调制关闭和血瓶三来源回原槽同样保留为首轮现场回归项。
 
 ## 0. 2026-08-28 地图绕行、焦点与转场增量
 
@@ -173,7 +194,7 @@ dead + exact current hero
 
 ## 7. 当前限制
 
-- 待领奖励保存在当前进程内存权威中，不承诺 Launcher/系统崩溃后的跨进程恢复；在加入带存档 schema、幂等恢复和迁移策略的持久化前，不得宣称“崩溃不丢奖励”。
+- 待领奖励现以 `_saveExt.stageSettlement.v=1` 保存冻结 manifest、remaining manifest 与有界 receipt journal，并在读档后重建 AS2 authority；自动夹具已覆盖进程内重启模型和回包丢失窗口。真实产品仍未完成“领取一部分 → 杀进程/重启 → 继续领取 → 再重启核对资产”的标准入口旅程，因此当前只能声称持久化机制已实现并通过 focused gate，不能称 `standard_entry_verified`。
 - 当前危险操作是一次性放弃所有剩余奖励，不提供逐奖励放弃；“全部收取”会先用单批请求收走所有可接收项，因此危险操作通常只作用于无法领取的剩余项。单批上限为 50，超过时由 Web 在上一批得到精确权威投影后再发下一批。
 - 自动头像 harness 使用受控资源和浏览器环境；真实敌人 manifest、纸娃娃组合的构图与低分辨率可读性仍需人类验收。
 - 32px 共用状态槽消除了独立结算卡对中央/底部立绘的遮挡面；真实关卡仍须覆盖窗口化、全屏、不同 DPI、按钮点击与普通任务播报恢复，不能把离屏位图视为最终验收。

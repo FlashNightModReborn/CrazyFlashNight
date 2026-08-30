@@ -1083,7 +1083,9 @@ class org.flashNight.neur.Server.SaveManager {
         _root.商城已购买物品 = [];
         _root.商城购物车 = [];
         _root.easterEgg = undefined;
-        _root._saveExt = {drugLoadout:{version:2}};
+        var initialDrugFeature:Object = DrugSlotAffinityService.normalizeSavedFeature(
+            null, {}, persistedDrugKeyValidator()).feature;
+        _root._saveExt = {drugLoadout:initialDrugFeature};
         _root.虚拟币 = 0;
         _root.全局健身HP加成 = 0;
         _root.全局健身MP加成 = 0;
@@ -1667,13 +1669,16 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 预留命名空间 — 透传已有数据，保证往返不丢
         if (_root._saveExt == undefined) _root._saveExt = {};
-        if (_root._saveExt.drugLoadout == undefined
-                || typeof _root._saveExt.drugLoadout != "object") {
-            _root._saveExt.drugLoadout = {};
+        var packedDrugFeature:Object = DrugSlotAffinityService.normalizeSavedFeature(
+            _root._saveExt.drugLoadout, mydata.inventory.药剂栏,
+            persistedDrugKeyValidator());
+        if (packedDrugFeature.ok === true) {
+            _root._saveExt.drugLoadout = packedDrugFeature.feature;
+        } else {
+            // 未知未来版本必须原样透传，禁止 pack 时静默降级或丢 affinity。
+            trace("[SaveManager.packGameState] drugLoadout preserved: "
+                + String(packedDrugFeature.error));
         }
-        // activeBank 属于运行会话；存档只记录八槽 schema，不记录当前组。
-        _root._saveExt.drugLoadout.version = 2;
-        delete _root._saveExt.drugLoadout.activeBank;
         mydata.ext = _root._saveExt;
         mydata.reserved = {};
 
@@ -1955,6 +1960,19 @@ class org.flashNight.neur.Server.SaveManager {
         // 预留命名空间恢复
         _root._saveExt = (mydata.ext != undefined) ? mydata.ext : {};
 
+        // ext 与全部玩家资产均已重建后，恢复未完成的关卡结算 authority。
+        // 畸形/未来记录保留原文并由 StageRunSession 阻止新关卡覆盖，不拖垮普通读档。
+        org.flashNight.arki.scene.StageRunSession.resetForRestart();
+        var settlementRestore:Object = null;
+        try {
+            settlementRestore = org.flashNight.arki.scene.StageRunSession.restorePendingSettlement();
+        } catch (settlementRestoreError) {
+            settlementRestore = null;
+        }
+        if (settlementRestore == null || settlementRestore.success !== true) {
+            trace("[SaveManager.unpackGameState] pending stage settlement preserved but not restored");
+        }
+
         // 主线任务进度（从 mydata[3]，后续 loadAll 会从 task_chains_progress 覆盖）
         _root.主线任务进度 = Math.floor(Number(mydata[3]));
 
@@ -2109,11 +2127,11 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     /**
-     * 双药剂组特性 schema。全局存档版本保持 3.0；此方法同时供 SOL migrate 与
+     * 双药剂组 affinity schema。全局存档版本保持 3.0；此方法同时供 SOL migrate 与
      * launcher snapshot / JSON shadow 的 _applyCore 使用。
      *
      * 无标记/旧标记只信任 0..3，防止容量 4 时代的越界 ghost 在扩到 8 后复活；
-     * v2 只信任 0..7。未知或未来版本 fail closed，绝不降级清洗。
+     * v2/v3 只信任 0..7。v3 affinity 由纯 normalizer 生成；未来版本 fail closed。
      */
     public function normalizeDrugLoadoutSchema(mydata:Object):Object {
         if (mydata == undefined || mydata.inventory == undefined
@@ -2133,7 +2151,10 @@ class org.flashNight.neur.Server.SaveManager {
         var hasVersion:Boolean = feature != undefined && feature != null
             && feature.version != undefined;
         var version:Number = hasVersion ? Number(feature.version) : NaN;
-        if (hasVersion && (isNaN(version) || version > 2)) {
+        if (hasVersion && (isNaN(version) || Math.floor(version) != version)) {
+            return {ok:false, changed:false, error:"invalid_drug_loadout_version"};
+        }
+        if (hasVersion && version > DrugSlotAffinityService.VERSION) {
             return {ok:false, changed:false, error:"future_drug_loadout_version"};
         }
 
@@ -2150,20 +2171,23 @@ class org.flashNight.neur.Server.SaveManager {
             changed = true;
         }
 
-        if (feature == undefined || feature == null || typeof feature != "object") {
-            feature = {};
-            mydata.ext.drugLoadout = feature;
-            changed = true;
+        var normalizedFeature:Object = DrugSlotAffinityService.normalizeSavedFeature(
+            feature, mydata.inventory.药剂栏, persistedDrugKeyValidator());
+        if (normalizedFeature.ok !== true) {
+            return {ok:false, changed:false, error:String(normalizedFeature.error)};
         }
-        if (Number(feature.version) != 2) {
-            feature.version = 2;
-            changed = true;
-        }
-        if (feature.activeBank !== undefined) {
-            delete feature.activeBank;
-            changed = true;
-        }
-        return {ok:true, changed:changed, version:2};
+        mydata.ext.drugLoadout = normalizedFeature.feature;
+        if (normalizedFeature.changed === true) changed = true;
+        return {ok:true, changed:changed,
+            version:DrugSlotAffinityService.VERSION,
+            diagnostics:normalizedFeature.diagnostics};
+    }
+
+    private static function persistedDrugKeyValidator():Function {
+        return function(itemKey:String):Boolean {
+            var data:Object = ItemUtil.getRawItemData(itemKey);
+            return data != null && data.use === "药剂";
+        };
     }
 
     private function hasOnlyCanonicalDrugSlots(raw:Object, maxExclusive:Number):Boolean {

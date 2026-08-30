@@ -311,9 +311,9 @@ namespace CF7Launcher.Tests.Guardian
             string core = Slice(
                 source,
                 "private bool TryRestoreFlashInputFocusAfterPanelCloseCore(",
-                "private void CapturePanelCloseFocusEligibility(");
+                "private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(");
             int liveQuery = core.IndexOf(
-                "IsDesktopCursorSessionForeground(ownerHwnd, overlayHwnd)",
+                "TryCapturePanelCloseForeground(",
                 StringComparison.Ordinal);
             int externalGuard = core.IndexOf(
                 "if (!currentSessionForeground)",
@@ -326,6 +326,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(externalGuard > liveQuery);
             Assert.True(restore > externalGuard);
             Assert.Contains("currentSessionForeground,", core);
+            Assert.Contains("currentForeground.IsSessionOwned", core);
         }
 
         [Fact]
@@ -344,12 +345,122 @@ namespace CF7Launcher.Tests.Guardian
                 "_panelMode = false",
                 StringComparison.Ordinal);
             int hideSequence = close.IndexOf(
-                "DoFullIdleSuspend(closingPanelName)",
+                "DoFullIdleSuspend(closingPanelName, trace)",
                 StringComparison.Ordinal);
 
             Assert.True(capture >= 0);
             Assert.True(clearMode > capture);
             Assert.True(hideSequence > clearMode);
+        }
+
+        [Fact]
+        public void PanelCloseFocusTelemetry_PairsCloseHideAndRestoreStagesByGeneration()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string capture = Slice(
+                source,
+                "private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(",
+                "public void ForceIdleState(");
+            Assert.Contains("new PanelCloseFocusTraceContext(", capture);
+            Assert.Contains("Stopwatch.GetTimestamp()", capture);
+            Assert.Contains("RegisterPanelCloseFocusTraceForSettled(trace)", capture);
+            Assert.Contains("\"close_start\"", capture);
+
+            string idle = Slice(
+                source,
+                "private void DoFullIdleSuspend(",
+                "private void SuspendWebTimers()");
+            Assert.Contains("PanelCloseFocusTraceContext trace", idle);
+            int hideBefore = idle.IndexOf("\"hide_before\"", StringComparison.Ordinal);
+            int hide = idle.IndexOf("ShowWindow(this.Handle, SW_HIDE)", StringComparison.Ordinal);
+            int hideAfter = idle.IndexOf("\"hide_after\"", StringComparison.Ordinal);
+            Assert.True(hideBefore >= 0);
+            Assert.True(hide > hideBefore);
+            Assert.True(hideAfter > hide);
+            Assert.Contains("ClassifyPanelCloseHandoffTransition(", idle);
+
+            string restore = Slice(
+                source,
+                "private bool TryRestoreFlashInputFocusAfterPanelCloseCore(",
+                "private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(");
+            int restoreBefore = restore.IndexOf("\"restore_before\"", StringComparison.Ordinal);
+            int invoke = restore.IndexOf("TryInvokePanelCloseFocusRestore(", StringComparison.Ordinal);
+            int restoreResult = restore.IndexOf(
+                "\"restore_result\"",
+                invoke,
+                StringComparison.Ordinal);
+            Assert.True(restoreBefore >= 0);
+            Assert.True(invoke > restoreBefore);
+            Assert.True(restoreResult > invoke);
+
+            string trace = Slice(
+                source,
+                "private void LogPanelCloseFocusTrace(",
+                "private void LogPanelCloseFocusTraceFailure(");
+            Assert.Contains("[PanelFocusHandoff] generation=", trace);
+            Assert.Contains("trace.Generation", trace);
+            Assert.Contains("trace.PanelTag", trace);
+            Assert.Contains("ElapsedMs(trace.StartedAt)", trace);
+            Assert.Contains("elapsed=", trace);
+            Assert.Contains("foreground=", trace);
+            Assert.Contains("kind=", trace);
+            Assert.DoesNotContain("_panelCloseFocusTraceGeneration", source);
+            Assert.DoesNotContain("_panelCloseFocusTracePanelTag", source);
+            Assert.DoesNotContain("_panelCloseFocusTraceStartedAt", source);
+
+            string close = Slice(
+                source,
+                "private void DoForceIdleSequence(string closingPanelName)",
+                "private static void LogIdleStepDuration(");
+            Assert.Contains("PanelCloseFocusTraceContext trace", close);
+            Assert.Contains("DoFullIdleSuspend(closingPanelName, trace)", close);
+
+            string settled = Slice(
+                source,
+                "internal bool RestoreFlashInputFocusAfterPanelClose(",
+                "private bool TryRestoreFlashInputFocusAfterPanelCloseCore(");
+            Assert.Contains("ResolvePanelCloseFocusTraceForStage(", settled);
+            Assert.Contains("result=stale_stage_rejected", source);
+        }
+
+        [Fact]
+        public void PanelCloseFocusTraceContext_RejectsInterleavedGenerationAndPanel()
+        {
+            var first = new WebOverlayForm.PanelCloseFocusTraceContext(
+                7, "map", 101);
+            var replacement = new WebOverlayForm.PanelCloseFocusTraceContext(
+                8, "tasks", 202);
+            var samePanelReplacement =
+                new WebOverlayForm.PanelCloseFocusTraceContext(
+                    8, "map", 303);
+
+            Assert.True(first.IsValid);
+            Assert.True(first.Matches(7, "map"));
+            Assert.False(first.Matches(8, "map"));
+            Assert.False(first.Matches(7, "tasks"));
+            Assert.True(replacement.Matches(8, "tasks"));
+            Assert.False(replacement.Matches(7, "map"));
+            Assert.True(samePanelReplacement.Matches(8, "map"));
+            Assert.False(samePanelReplacement.Matches(7, "map"));
+            Assert.False(default(WebOverlayForm.PanelCloseFocusTraceContext)
+                .IsValid);
+
+            int matchCount;
+            WebOverlayForm.PanelCloseFocusTraceContext unique =
+                WebOverlayForm.SelectUniquePanelCloseFocusTrace(
+                    new[] { first, replacement },
+                    "map",
+                    out matchCount);
+            Assert.Equal(1, matchCount);
+            Assert.True(unique.Matches(7, "map"));
+
+            WebOverlayForm.PanelCloseFocusTraceContext ambiguous =
+                WebOverlayForm.SelectUniquePanelCloseFocusTrace(
+                    new[] { first, samePanelReplacement },
+                    "map",
+                    out matchCount);
+            Assert.Equal(2, matchCount);
+            Assert.False(ambiguous.IsValid);
         }
 
         [Fact]

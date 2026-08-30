@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.CharacterBuildService;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.DrugSlotAffinityService;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 import org.flashNight.arki.item.equipment.ModRegistry;
@@ -42,6 +43,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         testCandidateEligibilityAndCooldownAuthority();
         testEffectiveInstanceQualificationFamilies();
         testDrugInputWriterPersistence();
+        testDrugAffinitySchemaAndRouting();
         testItemSubmitWriterPersistence();
         testLongGunGrenadeWriterPersistence();
         testLootAcquireProjectsOnNewSession();
@@ -332,7 +334,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             药剂组切换键:54,
             _webPanelPauseLease:"lease.fixture.character-build",
             itemUses:{},
-            itemCatalog:{}
+            itemCatalog:{},
+            _saveExt:{drugLoadout:{version:2}}
         };
         root.存档系统 = {dirtyMark:false};
         root.keyshow = function(keyCode:Number):String {
@@ -684,6 +687,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             inventory:_root.物品栏,
             collections:_root.收集品栏,
             save:_root.存档系统,
+            saveExt:_root._saveExt,
+            getItemData:_root.getItemData,
             itemData:ItemUtil.itemDataDict,
             equipment:ItemUtil.equipmentDict,
             materials:ItemUtil.materialDict,
@@ -692,6 +697,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         _root.物品栏 = root.物品栏;
         _root.收集品栏 = root.收集品栏;
         _root.存档系统 = root.存档系统;
+        _root._saveExt = root._saveExt;
+        _root.getItemData = root.getItemData;
         ItemUtil.itemDataDict = itemData;
         ItemUtil.equipmentDict = {};
         ItemUtil.materialDict =
@@ -708,6 +715,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         _root.物品栏 = receipt.inventory;
         _root.收集品栏 = receipt.collections;
         _root.存档系统 = receipt.save;
+        _root._saveExt = receipt.saveExt;
+        _root.getItemData = receipt.getItemData;
     }
 
     private static function fixtureItemProjection(root:Object,
@@ -2236,6 +2245,198 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         ManualCooldownService.resetForTests();
     }
 
+    private static function testDrugAffinitySchemaAndRouting():Void {
+        var restoreName:String = "affinity恢复药剂";
+        var occupiedName:String = "affinity占用药剂";
+        var bagName:String = "affinity背包药剂";
+        var newName:String = "affinity新药剂";
+        var savedSlots:Array = [];
+        var slot:Number;
+        for (slot = 0;
+                slot < DrugSlotAffinityService.SLOT_COUNT; slot++) {
+            savedSlots[slot] = {
+                itemKey:"", lastDepletedSequence:0
+            };
+        }
+        savedSlots[0] = {
+            itemKey:restoreName, lastDepletedSequence:2
+        };
+        savedSlots[2] = {
+            itemKey:restoreName, lastDepletedSequence:0
+        };
+        savedSlots[3] = {
+            itemKey:"不存在药剂", lastDepletedSequence:3
+        };
+        savedSlots[4] = {
+            itemKey:restoreName, lastDepletedSequence:9
+        };
+        var savedFeature:Object = {
+            version:3,
+            slots:savedSlots,
+            nextDepletedSequence:5
+        };
+        var rawSlots:Object = {};
+        rawSlots["7"] = {name:occupiedName, value:2};
+        var validator:Function = function(itemKey:String):Boolean {
+            return itemKey == restoreName || itemKey == occupiedName;
+        };
+        var normalized:Object =
+            DrugSlotAffinityService.normalizeSavedFeature(
+                savedFeature, rawSlots, validator);
+        var futureFeature:Object = {version:4};
+        var future:Object =
+            DrugSlotAffinityService.normalizeSavedFeature(
+                futureFeature, {}, validator);
+        check(normalized.ok && normalized.changed
+                && normalized.feature.version == 3
+                && normalized.feature.slots.length == 8
+                && normalized.feature.slots[0].itemKey == restoreName
+                && normalized.feature.slots[2].itemKey == ""
+                && normalized.feature.slots[3].itemKey == ""
+                && normalized.feature.slots[4]
+                    .lastDepletedSequence == 9
+                && normalized.feature.slots[7].itemKey == occupiedName
+                && normalized.feature.slots[7]
+                    .lastDepletedSequence == 0
+                && normalized.feature.nextDepletedSequence == 10
+                && savedFeature.slots[2].itemKey == restoreName,
+            "v3 纯归一化清理空槽 seq0/失效 key，以占用槽重绑且不修改输入");
+        check(!future.ok
+                && future.error == "future_drug_loadout_version"
+                && future.feature === futureFeature,
+            "v3 纯归一化对 future schema fail closed");
+
+        var root:Object = fixtureRoot(1);
+        var drugs:DrugInventory = new DrugInventory(null, 8);
+        var backpack:ArrayInventory = new ArrayInventory(null, 3);
+        var existing:BaseItem = new BaseItem(restoreName, 5, 1);
+        var bagStack:BaseItem = new BaseItem(bagName, 4, 1);
+        drugs.transactionWrite(2, existing);
+        backpack.transactionWrite(1, bagStack);
+        root.物品栏.药剂栏 = drugs;
+        root.物品栏.背包 = backpack;
+        root.收集品栏 = {
+            材料:new DictCollection({}),
+            情报:new DictCollection({})
+        };
+        registerCatalog(root, restoreName, "消耗品", "药剂", 1);
+        registerCatalog(root, occupiedName, "消耗品", "药剂", 1);
+        registerCatalog(root, bagName, "消耗品", "药剂", 1);
+        registerCatalog(root, newName, "消耗品", "药剂", 1);
+        var runtimeSlots:Array = [];
+        for (slot = 0; slot < 8; slot++) {
+            runtimeSlots[slot] = {
+                itemKey:"", lastDepletedSequence:0
+            };
+        }
+        runtimeSlots[0] = {
+            itemKey:restoreName, lastDepletedSequence:2
+        };
+        runtimeSlots[4] = {
+            itemKey:restoreName, lastDepletedSequence:9
+        };
+        root._saveExt.drugLoadout = {
+            version:3,
+            slots:runtimeSlots,
+            nextDepletedSequence:10
+        };
+
+        var planning:Object =
+            DrugSlotAffinityService.createAcquirePlanningState(
+                root, drugs, backpack);
+        var firstPlan:Object = DrugSlotAffinityService.planAcquireTarget(
+            planning, restoreName, 2, true, true);
+        var secondPlan:Object = DrugSlotAffinityService.planAcquireTarget(
+            planning, restoreName, 1, true, true);
+        var bagMergePlan:Object = DrugSlotAffinityService.planAcquireTarget(
+            planning, bagName, 3, true, true);
+        var newPlan:Object = DrugSlotAffinityService.planAcquireTarget(
+            planning, newName, 1, true, true);
+        check(planning.ok
+                && firstPlan.success
+                && firstPlan.mode == "affinity_restore"
+                && firstPlan.slot == 4
+                && secondPlan.mode == "affinity_restore"
+                && secondPlan.slot == 0
+                && bagMergePlan.mode == "backpack_merge"
+                && bagMergePlan.slot == 1
+                && newPlan.mode == "backpack_empty"
+                && newPlan.slot == 0,
+            "批内 shadow 按最新耗尽跨组恢复多槽，再按药剂栏/背包/空位冻结顺序");
+
+        var itemData:Object = {};
+        itemData[restoreName] = {
+            name:restoreName, type:"消耗品", use:"药剂",
+            data:{level:1}
+        };
+        itemData[bagName] = {
+            name:bagName, type:"消耗品", use:"药剂",
+            data:{level:1}
+        };
+        itemData[newName] = {
+            name:newName, type:"消耗品", use:"药剂",
+            data:{level:1}
+        };
+        var binding:Object = bindItemUtilFixture(root, itemData, {});
+        var restoredNewest:Boolean = ItemUtil.singleAcquire(
+            restoreName, 2);
+        var acquiredNew:Boolean = ItemUtil.singleAcquire(newName, 1);
+        var restoredOlder:Boolean = ItemUtil.singleAcquire(
+            restoreName, 1);
+        check(restoredNewest && acquiredNew && restoredOlder
+                && drugs.getItem("4") != null
+                && drugs.getItem("4").name == restoreName
+                && drugs.getItem("4").value == 2
+                && drugs.getItem("0") != null
+                && drugs.getItem("0").value == 1
+                && drugs.getItem("2") === existing
+                && existing.value == 5
+                && backpack.getItem("0") != null
+                && backpack.getItem("0").name == newName
+                && root._saveExt.drugLoadout.slots[0]
+                    .lastDepletedSequence == 0
+                && root._saveExt.drugLoadout.slots[4]
+                    .lastDepletedSequence == 0,
+            "ItemUtil 优先恢复精确 affinity 并保留双堆，无历史新药仍进背包");
+        var submittedLastDose:Boolean = ItemUtil.singleSubmit(
+            restoreName, 1);
+        check(submittedLastDose && drugs.getItem("0") == null
+                && root._saveExt.drugLoadout.slots[0]
+                    .itemKey == restoreName
+                && root._saveExt.drugLoadout.slots[0]
+                    .lastDepletedSequence == 10
+                && root._saveExt.drugLoadout.nextDepletedSequence == 11,
+            "ItemUtil.submit 作为成本扣空最后一剂时也保留原槽并推进耗尽序列");
+        restoreItemUtilFixture(binding);
+
+        var futureRoot:Object = fixtureRoot(1);
+        __activeMutationRoot = futureRoot;
+        var futureDrug:Object = stack("future schema 药剂", 1);
+        futureRoot.物品栏.背包.items["0"] = futureDrug;
+        registerCatalog(
+            futureRoot, futureDrug.name, "消耗品", "药剂", 1);
+        futureRoot._saveExt.drugLoadout = {version:4};
+        var fixture:Object = mutationFixture(
+            futureRoot, "workbench.affinity.future");
+        var opened:Object = fixture.opened;
+        var futureParams:Object = drugMutationParams(
+            "equipDrug", "workbench.affinity.future",
+            opened, 0, 0);
+        var beforeDrugRevision:Number =
+            futureRoot.物品栏.药剂栏.revision;
+        var rejected:Object = CharacterBuildService.execute(
+            "equipDrug", futureParams);
+        check(!rejected.success && rejected.error == "service_not_ready"
+                && futureRoot.物品栏.背包.getItem("0") === futureDrug
+                && futureRoot.物品栏.药剂栏.getItem("0") == null
+                && futureRoot.物品栏.药剂栏.revision
+                    == beforeDrugRevision
+                && !futureRoot.存档系统.dirtyMark,
+            "Character Build 在 future affinity schema 下于任何槽位写前 fail closed");
+        CharacterBuildService.testOnlyReset();
+        __activeMutationRoot = null;
+    }
+
     private static function testItemSubmitWriterPersistence():Void {
         var materialName:String = "B4提交材料";
         var bagName:String = "B4提交背包药剂";
@@ -2894,6 +3095,10 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         check(moved.success
                 && root.物品栏.药剂栏.getItem(String(targetDrugSlot)) === first
                 && bag.getItem("0") == null
+                && root._saveExt.drugLoadout.slots[targetDrugSlot]
+                    .itemKey == first.name
+                && root._saveExt.drugLoadout.slots[targetDrugSlot]
+                    .lastDepletedSequence == 0
                 && moved.drugRevision == opened.drugRevision + 1
                 && moved.loadoutRevision == loadoutBefore
                 && !moved.liveRefreshDirty
@@ -2916,6 +3121,8 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         check(merged.success
                 && root.物品栏.药剂栏.getItem(String(targetDrugSlot)) === first
                 && first.value == 6 && bag.getItem("1") == null
+                && root._saveExt.drugLoadout.slots[targetDrugSlot]
+                    .itemKey == first.name
                 && merged.drugRevision == moved.drugRevision + 1,
             "equipDrug 同名正有限 stack 保留 target ref 合并数量并移除 source");
 
@@ -2927,6 +3134,10 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         check(swapped.success
                 && root.物品栏.药剂栏.getItem(String(targetDrugSlot)) === other
                 && bag.getItem("2") === first
+                && root._saveExt.drugLoadout.slots[targetDrugSlot]
+                    .itemKey == other.name
+                && root._saveExt.drugLoadout.slots[targetDrugSlot]
+                    .lastDepletedSequence == 0
                 && swapped.drugRevision == merged.drugRevision + 1,
             "equipDrug 异名 stack 复刻现役 swap，old target 回 source 槽");
 
@@ -2950,6 +3161,10 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && root.物品栏.药剂栏.getItem(String(targetDrugSlot)) == null
                 && bag.getItem("0") === backpackOther
                 && backpackOther.value == 5
+                && root._saveExt.drugLoadout.slots[targetDrugSlot]
+                    .itemKey == ""
+                && root._saveExt.drugLoadout.slots[targetDrugSlot]
+                    .lastDepletedSequence == 0
                 && unequipped.drugRevision
                     == swapped.drugRevision + 1,
             "unequipDrug 在满包中仍优先合并物理序号最小的同名背包堆");

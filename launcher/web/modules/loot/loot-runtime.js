@@ -101,7 +101,7 @@
             validateSession:function(session) { return sameIdentity(session, identity); },
             createMessage:function(context) {
                 var message = {
-                    type:'task', task:'loot_request', domain:'loot', panel:'loot', v:1,
+                    type:'task', task:'loot_request', domain:'loot', panel:'loot', v:2,
                     cmd:context.entry.cmd, callId:context.entry.callId,
                     panelInstanceId:identity.panelInstanceId,
                     chestSessionId:identity.chestSessionId,
@@ -120,7 +120,7 @@
             },
             createSynthetic:function(context) {
                 return {
-                    type:'panel_resp', task:'loot_response', domain:'loot', panel:'loot', v:1,
+                    type:'panel_resp', task:'loot_response', domain:'loot', panel:'loot', v:2,
                     cmd:context.entry.cmd, callId:context.entry.callId,
                     panelInstanceId:identity.panelInstanceId,
                     chestSessionId:identity.chestSessionId,

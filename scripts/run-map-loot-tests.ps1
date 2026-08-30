@@ -39,9 +39,9 @@ $compileMutex = [System.Threading.Mutex]::new(
     $false, 'Local\CF7_FlashCompile_' + $repoHash)
 $compileLease = $null
 $runId = [System.Guid]::NewGuid().ToString('N')
-$expectedServicePassCount = 154
+$expectedServicePassCount = 165
 $expectedPlannerPassCount = 9
-$expectedStagePassCount = 333
+$expectedStagePassCount = 372
 $expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount + $expectedStagePassCount
 
 function Get-EvidenceIdentity([string]$Path) {

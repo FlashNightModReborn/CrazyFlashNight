@@ -31,7 +31,9 @@ function active(revision, lootSlots, extra) {
         remainingCount:lootSlots.filter(x => x.occupied).length,
         closeLease:'close.' + revision,
         snapshots:[windowSnapshot(identity.lootContainerId, lootSlots, 'close.' + revision),
-            windowSnapshot('背包', [slot(0), slot(1)])], tooltip:null,materials:null,
+            windowSnapshot('背包', [slot(0), slot(1)]),
+            windowSnapshot('药剂栏', [slot(0),slot(1),slot(2),slot(3),
+                slot(4),slot(5),slot(6),slot(7)])], tooltip:null,materials:null,
         terminal:null}, extra);
 }
 function terminal(revision, kind, operationId, remaining) {
@@ -225,7 +227,7 @@ test('claim is one-way and exact target-full zero-write proof preserves source p
     const source = model.projection().loot.slots[0];
     assert(model.claim(source));
     assert.strictEqual(wire.calls[1].fields.direction,'loot_to_player');
-    assert.strictEqual(wire.calls[1].fields.targetContainerId,'背包');
+    assert.strictEqual(wire.calls[1].fields.targetContainerId,'自动');
     assert.deepStrictEqual(wire.calls[1].fields.source,
         {containerId:identity.lootContainerId,slot:0,expectedLease:'lease.0',expectedContainerVersion:1});
     assert.deepStrictEqual(Object.keys(wire.calls[1].fields).sort(),
@@ -1034,7 +1036,7 @@ test('runtime uses one shared router and exact top-level envelope', () => {
     runtime.request('snapshot',{loot:{offset:0,limit:2},backpack:{offset:0,limit:50}},r=>{received=r});
     assert.strictEqual(router.debugState().handlerCount,baseline+1);
     assert.deepStrictEqual(Object.assign({},sent[0],{callId:'<id>'}),{
-        type:'task',task:'loot_request',domain:'loot',panel:'loot',v:1,cmd:'snapshot',callId:'<id>',
+        type:'task',task:'loot_request',domain:'loot',panel:'loot',v:2,cmd:'snapshot',callId:'<id>',
         panelInstanceId:identity.panelInstanceId,
         chestSessionId:identity.chestSessionId,lootContainerId:identity.lootContainerId,
         containerEpoch:identity.containerEpoch,
@@ -1048,7 +1050,7 @@ test('runtime uses one shared router and exact top-level envelope', () => {
     const source={containerId:identity.lootContainerId,slot:0,expectedLease:'lease.0',expectedContainerVersion:1};
     runtime.request('tooltip',{expectedAuthorityRevision:1,source},function(){});
     runtime.request('claim',{expectedAuthorityRevision:1,source,operationId:'op.strict.1',
-        direction:'loot_to_player',targetContainerId:'背包'},
+        direction:'loot_to_player',targetContainerId:'自动'},
         {write:true,operationId:'op.strict.1'},function(){});
     runtime.request('close',{expectedAuthorityRevision:1,operationId:'op.strict.2',
         closeLease:'close.1',abandon:false},{write:true,operationId:'op.strict.2'},function(){});

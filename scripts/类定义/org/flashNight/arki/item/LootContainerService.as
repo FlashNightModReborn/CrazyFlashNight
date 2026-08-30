@@ -54,6 +54,7 @@ class org.flashNight.arki.item.LootContainerService {
     private static var _testPostCommitFailureStage:String = "";
     private static var _testPostCommitFailureRemaining:Number = 0;
     private static var _testTransportHandoffFailureStage:String = "";
+    private static var _testAllowUnpersistedStageSettlement:Boolean = false;
 
     public static function install():Void {
         if (_inited) return;
@@ -96,7 +97,7 @@ class org.flashNight.arki.item.LootContainerService {
     /** 同步测试入口；wire handler 只额外补 task/callId。 */
     public static function execute(commandName:String, params:Object):Object {
         if (_busy) return emptyFailure(params, "busy");
-        if (params == undefined || params.v !== 1) {
+        if (params == undefined || params.v !== 2) {
             return emptyFailure(params, "unsupported_version");
         }
         if (!validateCommandShape(commandName, params)) return emptyFailure(params, "invalid_payload");
@@ -185,6 +186,7 @@ class org.flashNight.arki.item.LootContainerService {
             pendingCommit:null,
             pendingBatch:null,
             postCommitEffects:null,
+            pendingTerminal:null,
             transportDetachNeeded:false,
             transportDetachReason:"",
             targetHeld:false,
@@ -226,6 +228,16 @@ class org.flashNight.arki.item.LootContainerService {
                                                  report:Object):Object {
         if (_busy) return localFailure("busy");
         if (_reservation != null || _active != null) return localFailure("loot_flow_busy");
+        var settlementId:String = "";
+        try {
+            settlementId = org.flashNight.arki.scene.StageRunSession.getCurrentSettlementId();
+        } catch (identityError) {
+            settlementId = "";
+        }
+        var persistenceRequired:Boolean = settlementId.length > 0;
+        if (!persistenceRequired && !_testAllowUnpersistedStageSettlement) {
+            return localFailure("settlement_not_persisted");
+        }
         if (!(inventory instanceof ArrayInventory)
                 || inventory.capacity < 8 || inventory.capacity > MAX_WEB_CAPACITY
                 || inventory.capacity % 4 != 0
@@ -237,7 +249,7 @@ class org.flashNight.arki.item.LootContainerService {
         _sessionSeq++;
         _containerEpochSeq++;
         var stem:String = _authorityEpoch + "." + _sessionSeq;
-        _active = {
+        var candidate:Object = {
             target:null,
             presetName:"关卡结算",
             row:inventory.capacity / 4,
@@ -259,6 +271,7 @@ class org.flashNight.arki.item.LootContainerService {
             pendingCommit:null,
             pendingBatch:null,
             postCommitEffects:null,
+            pendingTerminal:null,
             transportDetachNeeded:false,
             transportDetachReason:"",
             targetHeld:false,
@@ -278,11 +291,90 @@ class org.flashNight.arki.item.LootContainerService {
             transportDetachReleasePause:false,
             panelSource:STAGE_SETTLEMENT_SOURCE,
             report:report,
-            allowAnchorlessSuspend:true
+            allowAnchorlessSuspend:true,
+            settlementId:settlementId,
+            persistenceRequired:persistenceRequired
         };
+        if (persistenceRequired && !restorePersistedStageOperations(candidate)) {
+            return localFailure("settlement_receipts_invalid");
+        }
+        _active = candidate;
         invalidateLootLeases();
         notifyStageSettlement(_active);
         return recordResponse(_active, true, "");
+    }
+
+    /**
+     * 重启恢复的 settlement inventory 已是 durable remaining 真相；这里把与它同一次
+     * flush 落盘的有界 receipt journal 重建进新 authority。资产数量序列必须从原始
+     * manifest 精确递减到 remaining manifest；UI suspend/resume 等非资产状态允许只造成
+     * revision 单调跳号。任何资产序列断裂仍 fail closed，绝不把手改/损坏 receipt 当成已提交操作。
+     */
+    private static function restorePersistedStageOperations(record:Object):Boolean {
+        var loaded:Object = null;
+        try {
+            loaded = org.flashNight.arki.scene.StageRunSession
+                .getPersistedSettlementReceipts(String(record.settlementId));
+        } catch (readError) {
+            loaded = null;
+        }
+        if (loaded == null || loaded.success !== true
+                || !(loaded.receipts instanceof Array)
+                || !isWhole(Number(loaded.originalCount))
+                || Number(loaded.originalCount) < 0
+                || Number(loaded.originalCount) > Number(record.inventory.capacity)
+                || !isWhole(Number(loaded.remainingCount))
+                || Number(loaded.remainingCount) < 0
+                || Number(loaded.remainingCount) > Number(loaded.originalCount)
+                || Number(loaded.remainingCount) != remainingCount(record)) return false;
+
+        var operations:Object = {};
+        var previousRevision:Number = 1;
+        var previousRemaining:Number = Number(loaded.originalCount);
+        var lastOperationId:String = "";
+        for (var i:Number = 0; i < loaded.receipts.length; i++) {
+            var receipt:Object = loaded.receipts[i];
+            if (receipt == null || !validOperationId(String(receipt.operationId))
+                    || (receipt.kind != "claim" && receipt.kind != "claim_batch")
+                    || typeof receipt.fingerprint != "string"
+                    || !isWhole(Number(receipt.authorityRevision))
+                    || Number(receipt.authorityRevision) > MAX_SAFE_INTEGER
+                    || !isWhole(Number(receipt.remainingCount))
+                    || Number(receipt.remainingCount) < 0
+                    || Number(receipt.remainingCount) > Number(record.inventory.capacity)) {
+                return false;
+            }
+            var applied:Number = receipt.kind == "claim" ? 1 : Number(receipt.appliedCount);
+            if (!isWhole(applied) || applied < 1 || applied > MAX_WEB_CAPACITY
+                    || Number(receipt.authorityRevision) < previousRevision + applied
+                    || Number(receipt.remainingCount) != previousRemaining - applied) {
+                return false;
+            }
+
+            var operation:Object = {
+                kind:String(receipt.kind),
+                fingerprint:String(receipt.fingerprint),
+                authorityRevision:Number(receipt.authorityRevision)
+            };
+            if (receipt.appliedCount !== undefined) {
+                operation.appliedCount = Number(receipt.appliedCount);
+            }
+            if (receipt.resultState !== undefined) {
+                operation.resultState = String(receipt.resultState);
+            }
+            if (receipt.error !== undefined) operation.error = String(receipt.error);
+            operations[operationKey(String(receipt.operationId))] = operation;
+            previousRevision = Number(receipt.authorityRevision);
+            previousRemaining = Number(receipt.remainingCount);
+            lastOperationId = String(receipt.operationId);
+        }
+        if (previousRemaining != Number(loaded.remainingCount)) return false;
+        if (loaded.receipts.length > 0) {
+            record.authorityRevision = previousRevision;
+            record.lastAppliedOperationId = lastOperationId;
+        }
+        record.operations = operations;
+        return true;
     }
 
     public static function hasStageSettlementPending():Boolean {
@@ -1392,6 +1484,9 @@ class org.flashNight.arki.item.LootContainerService {
         var safeReason:String = isSafeReason(reason) ? reason : "scene_cleanup";
         var record:Object = _active != null ? _active : _reservation;
         var result:Object;
+        if (record != null && record.pendingTerminal != null) {
+            return continuePendingTerminal(record);
+        }
         if (record != null && record.panelSource === STAGE_SETTLEMENT_SOURCE
                 && record.state == STATE_SUSPENDED
                 && record.pendingBatch == null && record.pendingCommit == null
@@ -1516,6 +1611,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (!checked.success) return checked.response;
         var record:Object = checked.record;
         if (record.pendingBatch != null) return failureFor(record, "commit_pending");
+        if (record.pendingTerminal != null) return failureFor(record, "commit_pending");
         if (record.transportDetachNeeded === true) return failureFor(record, "commit_pending");
         var operationId:String = validOperationId(params.operationId) ? String(params.operationId) : "";
         if (operationId == "") return failureFor(record, "invalid_operation_id");
@@ -1537,6 +1633,11 @@ class org.flashNight.arki.item.LootContainerService {
                 _busy = false;
             }
             if (resumed == null || !resumed.success) {
+                if (resumed != null && resumed.rolledBack === true) {
+                    record.pendingCommit = null;
+                    record.state = STATE_ACTIVE;
+                    return failureFor(record, String(resumed.error));
+                }
                 record.state = STATE_PENDING;
                 return failureFor(record, resumed == null ? "commit_pending" : resumed.error);
             }
@@ -1544,7 +1645,7 @@ class org.flashNight.arki.item.LootContainerService {
         }
         if (record.state != STATE_ACTIVE) return failureFor(record, "terminal_state");
         if (!validExpectedAuthority(params, record)) return failureFor(record, "stale_state");
-        if (params.direction !== "loot_to_player" || params.targetContainerId !== "背包") {
+        if (params.direction !== "loot_to_player" || params.targetContainerId !== "自动") {
             return failureFor(record, "transfer_forbidden");
         }
         var source:Object = validateLootSource(record, params.source, true);
@@ -1593,6 +1694,7 @@ class org.flashNight.arki.item.LootContainerService {
         var checked:Object = validateAnyIdentity(params);
         if (!checked.success) return checked.response;
         var record:Object = checked.record;
+        if (record.pendingTerminal != null) return failureFor(record, "commit_pending");
         if (record.transportDetachNeeded === true) return failureFor(record, "commit_pending");
         var operationId:String = validOperationId(params.operationId)
             && String(params.operationId).length <= 72 ? String(params.operationId) : "";
@@ -1613,7 +1715,7 @@ class org.flashNight.arki.item.LootContainerService {
         }
         if (record.state != STATE_ACTIVE) return failureFor(record, "terminal_state");
         if (!validExpectedAuthority(params, record)) return failureFor(record, "stale_state");
-        if (params.direction !== "loot_to_player" || params.targetContainerId !== "背包") {
+        if (params.direction !== "loot_to_player" || params.targetContainerId !== "自动") {
             return failureFor(record, "transfer_forbidden");
         }
         var sources:Object = validateClaimBatchSources(record, params.sources);
@@ -1655,6 +1757,8 @@ class org.flashNight.arki.item.LootContainerService {
         var batch:Object = record == null ? null : record.pendingBatch;
         if (batch == null) return failureFor(record, "commit_pending");
 
+        if (batch.finalizing === true) return finishClaimBatch(record);
+
         if (record.postCommitEffects != null && !retryPostCommitEffects(record)) {
             record.state = STATE_PENDING;
             return failureFor(record, "commit_pending");
@@ -1669,6 +1773,11 @@ class org.flashNight.arki.item.LootContainerService {
                 _busy = false;
             }
             if (resumed == null || !resumed.success) {
+                if (resumed != null && resumed.rolledBack === true) {
+                    record.pendingCommit = null;
+                    batch.stopError = String(resumed.error);
+                    return finishClaimBatch(record);
+                }
                 record.state = STATE_PENDING;
                 return failureFor(record, "commit_pending");
             }
@@ -1765,19 +1874,53 @@ class org.flashNight.arki.item.LootContainerService {
         var stopError:String = String(batch.stopError);
         var errorCode:String = stopError;
         if (errorCode.length == 0) errorCode = String(batch.firstCapacityError);
-        record.pendingBatch = null;
-        record.state = STATE_ACTIVE;
         if (applied <= 0) {
+            record.pendingBatch = null;
+            record.state = STATE_ACTIVE;
             return failureFor(record, errorCode.length > 0 ? errorCode : "target_full");
         }
 
-        record.lastAppliedOperationId = operationId;
-        record.operations[operationKey(operationId)] = {
-            kind:"claim_batch",
-            fingerprint:fingerprint,
-            authorityRevision:Number(record.authorityRevision),
-            appliedCount:applied
-        };
+        batch.finalizing = true;
+        if (batch.rootJournalDone !== true) {
+            record.lastAppliedOperationId = operationId;
+            record.operations[operationKey(operationId)] = {
+                kind:"claim_batch",
+                fingerprint:fingerprint,
+                authorityRevision:Number(record.authorityRevision),
+                appliedCount:applied
+            };
+            batch.rootJournalDone = true;
+        }
+        if (record.persistenceRequired === true && batch.stageProgressDone !== true) {
+            var stageProgress:Object = null;
+            try {
+                var stageReceipt:Object = {
+                    kind:"claim_batch",
+                    fingerprint:fingerprint,
+                    authorityRevision:Number(record.authorityRevision),
+                    appliedCount:applied
+                };
+                if (stopError.length > 0) stageReceipt.error = stopError;
+                stageProgress = org.flashNight.arki.scene.StageRunSession.recordSettlementProgress(
+                    String(record.settlementId), operationId, record.inventory, stageReceipt);
+            } catch (stageProgressError) {
+                stageProgress = null;
+            }
+            if (stageProgress == null || stageProgress.success !== true) {
+                record.state = STATE_PENDING;
+                return failureFor(record, "commit_pending");
+            }
+            batch.stageProgressDone = true;
+        }
+        if (batch.saveDone !== true) {
+            if (!flushSaveVerified()) {
+                record.state = STATE_PENDING;
+                return failureFor(record, "commit_pending");
+            }
+            batch.saveDone = true;
+        }
+        record.pendingBatch = null;
+        record.state = STATE_ACTIVE;
         // 只有容量不足允许形成可解释的部分成功；若前缀已经提交后又遇到
         // stale/commit 等非容量故障，必须让 Host/Web 进入 query reconcile，
         // 不能把留下的格子误标成“背包已满”。root journal 先落盘，后续 query
@@ -1830,6 +1973,8 @@ class org.flashNight.arki.item.LootContainerService {
             dirtyDone:false,
             lootCacheDone:false,
             destinationCacheDone:committed.destinationSlot == undefined,
+            stageProgressDone:record.persistenceRequired !== true,
+            saveDone:includeSnapshots !== true,
             sourceEventPublished:false,
             destinationEventPublished:committed.destinationInventory == undefined,
             collectionEventPublished:committed.collection == undefined,
@@ -1888,13 +2033,42 @@ class org.flashNight.arki.item.LootContainerService {
         if (!effects.destinationCacheDone) {
             try {
                 injectPostCommitFailure("destination_cache");
+                var destinationContainerId:String = String(
+                    effects.committed.destinationContainerId);
+                if (destinationContainerId != "药剂栏") destinationContainerId = "背包";
                 InventoryPanelService.invalidateExternalSlot(
-                    "背包", Number(effects.committed.destinationSlot));
+                    destinationContainerId, Number(effects.committed.destinationSlot));
                 effects.destinationCacheDone = true;
             } catch (destinationCacheError) {
                 trace("[LootContainerService] post-commit destination cache pending");
                 return false;
             }
+        }
+
+        if (!effects.stageProgressDone) {
+            var progress:Object = null;
+            try {
+                progress = org.flashNight.arki.scene.StageRunSession.recordSettlementProgress(
+                    String(record.settlementId), String(effects.operationId), record.inventory, {
+                        kind:"claim",
+                        fingerprint:String(effects.fingerprint),
+                        authorityRevision:Number(record.authorityRevision)
+                    });
+            } catch (progressError) {
+                progress = null;
+            }
+            if (progress == null || progress.success !== true) {
+                trace("[LootContainerService] stage settlement progress pending");
+                return false;
+            }
+            effects.stageProgressDone = true;
+        }
+        if (!effects.saveDone) {
+            if (!flushSaveVerified()) {
+                trace("[LootContainerService] durable save pending");
+                return false;
+            }
+            effects.saveDone = true;
         }
 
         record.postCommitEffects = null;
@@ -1931,6 +2105,7 @@ class org.flashNight.arki.item.LootContainerService {
         var prior:Object = record.operations == undefined
             ? undefined : record.operations[operationKey(operationId)];
         if (prior != undefined) return duplicateClose(record, prior, fingerprint, operationId);
+        if (record.pendingTerminal != null) return failureFor(record, "commit_pending");
         if (record.state != STATE_ACTIVE) return failureFor(record, "terminal_state");
         if (!validExpectedAuthority(params, record)) return failureFor(record, "stale_state");
         if (typeof params.closeLease != "string" || params.closeLease !== record.closeLease) {
@@ -1999,6 +2174,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (hasOwnField(params, "openAttemptSeq")) {
             return executeRecoveryProofQuery(record, params);
         }
+        if (record.pendingTerminal != null) return continuePendingTerminal(record);
         if (record.transportDetachNeeded === true) {
             // 真实 panel attempt 的 connected/socket recovery 只能由 exact 9 键 proof、
             // ServerManager.onSocketClose 或 exact webPanelUnpause 续跑。普通 triple
@@ -2265,8 +2441,15 @@ class org.flashNight.arki.item.LootContainerService {
         var bagSnapshot:Object = InventoryPanelService.buildExternalSnapshot(
             "背包", Number(bagWindow.offset), Number(bagWindow.limit));
         if (bagSnapshot == null) return null;
+        var drugSnapshot:Object = InventoryPanelService.buildExternalSnapshot(
+            "药剂栏", 0, 8);
+        if (drugSnapshot == null || Number(drugSnapshot.capacity) != 8
+                || Number(drugSnapshot.offset) != 0
+                || Number(drugSnapshot.limit) != 8) return null;
         stripSnapshotBalanceSummary(bagSnapshot);
-        return [buildLootSnapshot(record, Number(lootWindow.offset), Number(lootWindow.limit)), bagSnapshot];
+        stripSnapshotBalanceSummary(drugSnapshot);
+        return [buildLootSnapshot(record, Number(lootWindow.offset), Number(lootWindow.limit)),
+            bagSnapshot, drugSnapshot];
     }
 
     private static function buildLootSnapshot(record:Object, offset:Number, limit:Number):Object {
@@ -2472,6 +2655,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (prior.kind != "close" || prior.fingerprint != fingerprint) {
             return failureFor(record, "operation_conflict");
         }
+        if (record.pendingTerminal != null) return continuePendingTerminal(record);
         // suspend op 只在仍为当前 suspend 时幂等；reopen/再次 suspend 后的旧回包不能
         // 被误认成新页面的 close 成功。
         if (prior.resultState == STATE_SUSPENDED
@@ -2531,6 +2715,15 @@ class org.flashNight.arki.item.LootContainerService {
                 || record.transportDetachNeeded === true)) {
             return failureFor(record, "commit_pending");
         }
+        if (record != null && record.panelSource === STAGE_SETTLEMENT_SOURCE
+                && record.persistenceRequired === true) {
+            var terminalPersisted:Object = persistStageTerminal(
+                record, terminalState, reason, operationId);
+            if (terminalPersisted == null || terminalPersisted.success !== true) {
+                record.state = STATE_PENDING;
+                return failureFor(record, "commit_pending");
+            }
+        }
         // 正常 terminal 只证明 AS2 权威已落盘，不能冒充 Web DOM 与 native
         // PanelHost 的 exact visual close。全局 pause lease 必须继续由 Host 持有，
         // 待 LootPanelCoordinator 收齐关闭证明后经 webPanelUnpause 释放；否则游戏会
@@ -2541,6 +2734,7 @@ class org.flashNight.arki.item.LootContainerService {
         record.state = terminalState;
         record.reason = reason;
         record.pendingCommit = null;
+        record.pendingTerminal = null;
         if (Number(record.terminalFromOpenAttemptSeq) <= 0) {
             record.terminalFromOpenAttemptSeq = Number(record.openAttemptSeq);
         }
@@ -2581,6 +2775,80 @@ class org.flashNight.arki.item.LootContainerService {
         if (_active === record) _active = null;
         if (_reservation === record) _reservation = null;
         return recordResponse(tombstone, true, "");
+    }
+
+    private static function continuePendingTerminal(record:Object):Object {
+        var pending:Object = record == null ? null : record.pendingTerminal;
+        if (pending == null) return failureFor(record, "commit_pending");
+        return finishTerminal(record, String(pending.terminalState),
+            String(pending.reason), String(pending.operationId));
+    }
+
+    /**
+     * 关卡结算终态先把 pending 清理、exact close receipt 与玩家资产放进同一次
+     * SharedObject flush；只有 strict true 后才释放内存 authority 和通知 StageRunSession。
+     */
+    private static function persistStageTerminal(record:Object, terminalState:String,
+                                                   reason:String,
+                                                   operationId:String):Object {
+        var terminalSettlementState:String = terminalState == STATE_CONSUMED ? "claimed"
+            : terminalState == STATE_ABANDONED ? "abandoned"
+            : terminalState == STATE_EXPIRED ? "error" : "";
+        if (terminalSettlementState == "" || String(record.settlementId).length == 0) {
+            return {success:false, error:"invalid_terminal_settlement"};
+        }
+        var pending:Object = record.pendingTerminal;
+        if (pending == null) {
+            var operation:Object = operationId == "" || record.operations == undefined
+                ? null : record.operations[operationKey(operationId)];
+            var receipt:Object = {
+                operationId:operationId,
+                kind:operation == null ? "terminal" : String(operation.kind),
+                authorityRevision:Number(record.authorityRevision) + 1,
+                terminalState:terminalSettlementState
+            };
+            if (operation != null && operation.fingerprint != undefined) {
+                receipt.fingerprint = String(operation.fingerprint);
+            } else if (reason != "") {
+                receipt.fingerprint = String(reason);
+            }
+            pending = {
+                terminalState:terminalState,
+                terminalSettlementState:terminalSettlementState,
+                reason:reason,
+                operationId:operationId,
+                receipt:receipt,
+                extCleared:false,
+                saveDone:false
+            };
+            record.pendingTerminal = pending;
+            record.state = STATE_PENDING;
+        } else if (pending.terminalState !== terminalState
+                || pending.terminalSettlementState !== terminalSettlementState
+                || pending.reason !== reason || pending.operationId !== operationId) {
+            return {success:false, error:"terminal_conflict"};
+        }
+
+        if (pending.extCleared !== true) {
+            var cleared:Object = null;
+            try {
+                cleared = org.flashNight.arki.scene.StageRunSession.clearPersistedSettlement(
+                    String(record.settlementId), terminalSettlementState, pending.receipt);
+            } catch (clearError) {
+                cleared = null;
+            }
+            if (cleared == null || cleared.success !== true) {
+                return {success:false, error:"terminal_persistence_pending"};
+            }
+            pending.extCleared = true;
+        }
+        if (pending.saveDone !== true) {
+            if (!flushSaveVerified()) {
+                return {success:false, error:"terminal_save_pending"};
+            }
+            pending.saveDone = true;
+        }
+        return {success:true, error:""};
     }
 
     private static function notifyStageSettlement(record:Object):Void {
@@ -2882,6 +3150,17 @@ class org.flashNight.arki.item.LootContainerService {
         return _root.存档系统.dirtyMark === true;
     }
 
+    /** 所有玩家资产领取都以同步 strict-true flush 作为成功回包前的 durable fence。 */
+    private static function flushSaveVerified():Boolean {
+        if (typeof _root.强制存盘 != "function") return false;
+        try {
+            return _root.强制存盘() === true;
+        } catch (saveError) {
+            trace("[LootContainerService] durable save failed");
+            return false;
+        }
+    }
+
     private static function injectPostCommitFailure(stage:String):Void {
         if (_testPostCommitFailureStage !== stage
                 || _testPostCommitFailureRemaining <= 0) return;
@@ -2914,6 +3193,11 @@ class org.flashNight.arki.item.LootContainerService {
         _testTransportHandoffFailureStage = stage;
     }
 
+    /** TestLoader 专用：隔离测试 transport/report 时允许不建立 Stage 持久化 authority。 */
+    public static function testOnlyAllowUnpersistedStageSettlement():Void {
+        _testAllowUnpersistedStageSettlement = true;
+    }
+
     private static function sendResponse(response:Object):Void {
         if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return;
         if (_json == undefined) _json = new LiteJSON();
@@ -2939,6 +3223,7 @@ class org.flashNight.arki.item.LootContainerService {
         _testPostCommitFailureStage = "";
         _testPostCommitFailureRemaining = 0;
         _testTransportHandoffFailureStage = "";
+        _testAllowUnpersistedStageSettlement = false;
         _terminalBySession = {};
         _terminalOrder = [];
         invalidateLootLeases();

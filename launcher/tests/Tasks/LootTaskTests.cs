@@ -258,7 +258,7 @@ namespace CF7Launcher.Tests.Tasks
                 ["task"] = "loot_request",
                 ["domain"] = "loot",
                 ["panel"] = "loot",
-                ["v"] = 1,
+                ["v"] = 2,
                 ["cmd"] = cmd,
                 ["callId"] = callId,
                 ["panelInstanceId"] = PanelInstanceId,
@@ -279,7 +279,7 @@ namespace CF7Launcher.Tests.Tasks
                 {
                     request["operationId"] = operationId ?? "operation.claim.1";
                     request["direction"] = "loot_to_player";
-                    request["targetContainerId"] = "背包";
+                    request["targetContainerId"] = "自动";
                 }
             }
             else if (cmd == "claimBatch")
@@ -288,7 +288,7 @@ namespace CF7Launcher.Tests.Tasks
                 request["operationId"] = operationId ?? "operation.claim.batch.1";
                 request["direction"] = "loot_to_player";
                 request["sources"] = new JArray(SourceRef(lootContainerId));
-                request["targetContainerId"] = "背包";
+                request["targetContainerId"] = "自动";
             }
             else if (cmd == "materials")
             {
@@ -426,7 +426,8 @@ namespace CF7Launcher.Tests.Tasks
                 ["snapshots"] = new JArray
                 {
                     Snapshot(LootContainerId, 2, 2, ContainerEpoch),
-                    Snapshot("背包", 4, 2, 1)
+                    Snapshot("背包", 4, 2, 1),
+                    Snapshot("药剂栏", 8, 8, 1)
                 },
                 ["tooltip"] = JValue.CreateNull(),
                 ["materials"] = JValue.CreateNull(),
@@ -673,6 +674,7 @@ namespace CF7Launcher.Tests.Tasks
             AssertExactKeys(query, "task", "action", "callId", "v", "chestSessionId",
                 "lootContainerId", "containerEpoch", "openAttemptSeq", "recoveryNonce");
             Assert.Equal("lootQuery", query.Value<string>("action"));
+            Assert.Equal(2, query.Value<int>("v"));
             Assert.Equal(ChestSessionId, query.Value<string>("chestSessionId"));
             Assert.Equal(LootContainerId, query.Value<string>("lootContainerId"));
             Assert.Equal(ContainerEpoch, query.Value<int>("containerEpoch"));
@@ -1213,7 +1215,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(posted.Value<bool>("success"));
             Assert.Equal("snapshot.1", posted.Value<string>("callId"));
             Assert.Equal("snapshot", posted.Value<string>("cmd"));
-            Assert.Equal(2, ((JArray)posted["snapshots"]).Count);
+            Assert.Equal(3, ((JArray)posted["snapshots"]).Count);
             Assert.IsType<string>(posted["callId"].Value<string>());
         }
 

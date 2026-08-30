@@ -2,6 +2,7 @@
 
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.item.PlayerAssetTransaction;
+import org.flashNight.arki.item.DrugSlotAffinityService;
 
 /**
  * @class DrugInputService
@@ -160,13 +161,23 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             physicalSlot: physicalSlot,
             lane: lane,
             bank: activeBank,
-            itemName: itemName
+            itemName: itemName,
+            affinityCommitted: false
         };
 
         if (Number(unit.hp) <= 0) return result;
         if (Number(item.value) <= 0) {
             publishExhausted(root, itemName);
             result.depleted = true;
+            return result;
+        }
+
+        // future schema 必须在药效/冷却/扣药任一权威写前 fail closed。
+        // preview 纯读；最后一剂的 affinity 与扣药在同一 dirty frame 提交。
+        var affinityPreflight:Object =
+            DrugSlotAffinityService.previewNormalized(root, inventory);
+        if (!affinityPreflight.ok) {
+            result.affinityError = String(affinityPreflight.error);
             return result;
         }
 
@@ -195,6 +206,10 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
                 if (committedLoss > 0 && Math.floor(committedLoss) == committedLoss) {
                     PlayerAssetTransaction.recordEffect(
                         "loss", "item", itemName, committedLoss, assetContext);
+                    if (remaining == null) {
+                        recordDepletionAffinity(
+                            root, inventory, physicalSlot, itemName, result);
+                    }
                 }
             }
             PlayerAssetTransaction.commit(assetTransaction);
@@ -218,6 +233,24 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             result.depleted = true;
         }
         return result;
+    }
+
+    private static function recordDepletionAffinity(
+        root:Object,
+        inventory:Object,
+        physicalSlot:Number,
+        itemName:String,
+        result:Object
+    ):Void {
+        var affinityCommit:Object =
+            DrugSlotAffinityService.recordDepleted(
+                root, inventory, physicalSlot, itemName);
+        result.affinityCommitted = affinityCommit.success === true;
+        if (!result.affinityCommitted) {
+            result.affinityError = String(affinityCommit.error);
+            trace("[DrugInputService] affinity commit failed: "
+                + result.affinityError);
+        }
     }
 
     public static function syncView(view:Object, lane:Number, keyCode:Number, root:Object):Void {

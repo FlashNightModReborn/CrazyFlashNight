@@ -375,9 +375,11 @@ Panel 的共同边界：
 - LoadoutPicker 候选只接受装备槽、药剂槽或无 selector 背包总览三种 target。Character `equipmentEligibility` 在两种 scope 由 Host 复验；Merc `eligibleSlots` 由 AS2 两种 scope 签发。scope 只筛候选，白名单裁决 drop target，写后保留原 scope/anchor；Merc 按新 revision 恰好刷新一次 authority。详见[迁移护栏](../agentsDoc/as2-web-panel-migration.md)。
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
 - `equipment_tuning` 的已穿戴调制按 after effective data 复核玩家等级；`level_locked` 是 Host 可确定收束的业务拒绝，Web 显示“调制后的装备需要更高角色等级”。背包装备不受该玩家等级门限制。`replace_mod` 的候选可用性和 after `modSlotCapacity` 都来自拆件后的 probe；存档加载不做迁移、卸装或清洗。进阶页仅显示 `available=true` 并在 Web 空态解释缺料/顺序；四入口同排。候选错误留在 Web，flush/finalize 先取消旁路读，保存失败仍阻断。
+- 合法配件变换可使 before/after effective `modSlotCapacity` 不同；Host 仍复核 `0..64` 整数、installed≤capacity、操作差分及 preview/commit/fresh snapshot 深绑定。空背包未建 Flash authority 时，仅 exact panel 在 idle 且无 pending/detaching/write 可本地 no-op detach；其余仍严格走 Flash，断线不可绕过。
 - close、Esc、backdrop、导航和 recovery 经过同一 lifecycle fence。Team/blackmarket/warlord close 携当前实例并等待 Host exact `panel_cmd close`；Bridge 投递成功不等于接受，确认丢失 3 秒后只恢复同实例重试权，不本地关闭；迟到 A 不得关闭 replacement B，旧 `panel:"pets"|"mercs"` child close 一律拒绝。
 - Workbench 的布局和交互以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。关卡内 `StageOutcomeTask` 把复活/胜负决策投影进 `RightContextWidget` 既有 32px 条件槽，不创建浮窗、不暂停 Flash。胜负条常驻，忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr` 证明返回后可路由时追加“前往交付”，并在奖励终态和 Web exact close 后导航。
-  respawn 必须在恢复 HP/MP/可见性后显式清 `倒地/_killed`、死亡诊断 latch 并 reset WatchDog，保证同一 MovieClip 的普通技能门重新开放。Web 左栏在同一滚屏合并击杀与物资 gain/loss，右栏切换待领奖励/材料存量，一个密度控制器同步驱动三者；库存整理子页恢复 K 点商城同源原始灰黑 inventory skin。大量奖励经单次最多 50 项的 `claimBatch` 进入 AS2 顺序 authority journal 与 exact query 对账。
+  respawn 恢复 HP/MP/可见性后清 `倒地/_killed`、死亡 latch 并 reset WatchDog，重开同一 MovieClip 技能门。Web 左栏同滚屏合并击杀与物资 gain/loss，右栏切换待领/材料，一个密度控制器同步三者；整理页保留 KShop 同源灰黑 inventory skin。奖励每批最多 50 项，`claimBatch` 进入 AS2 顺序 authority journal 并以 exact query 对账。2026-08-30 起 Loot v2 固定 `targetContainerId:"自动"`与 loot/背包/药剂栏三快照，Host/Web 不选药剂槽。
+  关卡奖励退场前写 `_saveExt.stageSettlement.v=1` 并 strict flush；单领、批领和终态依 durable remaining/receipt journal 对账。SaveManager 读档重建 pending，Loot 恢复已落盘 operation/revision。flush 未确认时保持 `LOOT_COMMIT_PENDING`，不得回成功或释放场景；详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
   地图在战斗/结算中只读，导航按 AS2 lifecycle lock 零发送；loader staging 在首次 gameplay init 按 drop→reward 提交。跨淡出回包保持正整数 `callId`；Stage Select 关闭须先投递，transport false/throw 时保留面板与重试权。NativeHud down 绑定 exact action/revision，suspend/hide/capture loss/外放均取消。
   有效 `stage_settlement` 报告可在 `remaining=0` 时 suspend/reopen，`map_chest` 不继承。Panel close 仅在 close 起点与恢复前两次 live foreground 都属于 CF7 时恢复 Flash，切到 QQ/浏览器后不得抢焦。完整权威与生命周期详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
 - `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。
@@ -385,6 +387,7 @@ Panel 的共同边界：
   默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。
   非 preview 写的 timeout、`DeliveryUnknown` 或 malformed success 均建立 reconcile latch；它跨 owner close、同名 rebind 与 pending cleanup 保留，只由锁存后发出、格式有效且成功的 Flash snapshot 清除，早期迟到 snapshot 不得解锁。
   latch 存在时后续写 fail-closed；Web 不显示“确定未执行”也不自动重放。cancel 半恢复保持面板与首次基线，先以权威 snapshot 对账再允许继续写。<br>36 键双列同屏，标签紧邻控件，键名/键值至少 12px。新“药剂组切换键”默认为 `6`；携键表的 snapshot/apply 精确使用 `keySchemaVersion:2`，旧 `6` 自定义绑定保留并为新动作确定分配空闲键。
+  药剂存档 feature 现为 `drugLoadout.version=3`：精确 8 槽 affinity 记录同名药剂最近耗尽位置。任务/商店/拾取、Character Build、DrugIcon 与 Loot v2 共享“最近耗尽原槽→现有同名最低槽→背包同名→背包空槽”规划；从未绑定的新药剂仍进背包。v2 读档迁移到 v3，future v4 原样保留并 fail closed，详见[双药剂组 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。
   Host 打开设置时将已有 16:9 Flash 进入帧按原裁切像素、JPEG 90 编成实例内静态图；上限 `4096×2304 / 8 MiB`，拒绝均匀近黑，不降采样至 `512×288`。Flash SA 为 DPI Unaware 且显示器 DPI 更高时，输出保持 `GetClientRect` 物理尺寸，GDI 源按 `windowDpi/monitorDpi` 换算并 `StretchBlt`；其他 awareness 1:1。日志同时记录 source/output，`BitBlt/StretchBlt` false 必须显式失败。
   镜头倍率使用全屏二级模拟器，入口基线按 16:9 填满舞台并保留自然像素；动态镜头关闭时仍按基础倍率预览。点歌器规则与 Web 主题集中在“本机与 Web”。Agent Runtime 仅允许 exact `settings` 与 `settings_camera_preview`；后者固定映射到 `settings + initialView:"camera_preview"`。闭环先用 Flash metadata-only grant + `window.list` 等待 surface 稳定，再用 fresh WebOverlay WGC 验证；它不授予 Flash pixels/input，也不应用或保存设置。
   打击伤害数字属于 Host `UserPrefs`，不再进入 AS2 的游戏设置 snapshot/save；五状态模式、世界行上限和暂停态 Web 对账日志统一以[生产路径](#打击伤害数字生产路径)为准。偏好逐项即时保存，失败恢复控件和内存权威值；旧 `_root.是否打击数字特效`、`_root.同屏打击数字特效上限` 与 Flash MovieClip renderer 均不再是运行时 fallback。
@@ -416,15 +419,12 @@ Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../s
 
 以下变化必须在同轮更新本 README 对应 registry/地图，并运行文档治理：
 
-- Core/Bootstrap 入口、参数或启动阶段变化；
-- `AppConfig` key、环境覆盖或用户偏好写入边界变化；
+- Core/Bootstrap 入口、参数或启动阶段变化；`AppConfig` key、环境覆盖或用户偏好写入边界变化；
 - Bootstrap `cmd`、Panel id、lazy 最终模块或 minigame 入口变化；
 - 测试分区、runner、SDK/包版本真源或验证入口变化；
 - Host/Web/AS2 协议、权威、生命周期或旧 UI 退役边界变化；
 - runtime 构建、候选、promotion 或正式入口术语变化；发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。
 
 ```powershell
-chcp.com 65001 | Out-Null
-node tools/validate-doc-governance.js
-git diff --check
+chcp.com 65001 | Out-Null; node tools/validate-doc-governance.js; git diff --check
 ```

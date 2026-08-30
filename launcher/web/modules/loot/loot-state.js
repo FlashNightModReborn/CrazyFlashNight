@@ -194,20 +194,25 @@
             blockReason:raw.blockReason == null ? '' : String(raw.blockReason),
             closeLease:raw.closeLease === '' ? '' : opaque(raw.closeLease),
             backpack:null,
+            drugLoadout:null,
             loot:null,
             terminal:null
         };
         if (state === 'ACTIVE') {
-            if (!Array.isArray(raw.snapshots) || raw.snapshots.length !== 2) return null;
+            if (!Array.isArray(raw.snapshots) || raw.snapshots.length !== 3) return null;
             for (var snapshotIndex = 0; snapshotIndex < raw.snapshots.length; snapshotIndex++) {
                 var candidate = raw.snapshots[snapshotIndex];
                 if (candidate && candidate.containerId === identity.lootContainerId) {
                     result.loot = normalizeWindow(candidate, identity.lootContainerId, true, true);
                 } else if (candidate && candidate.containerId === '背包') {
                     result.backpack = normalizeWindow(candidate, '背包', false, false);
+                } else if (candidate && candidate.containerId === '药剂栏') {
+                    result.drugLoadout = normalizeWindow(candidate, '药剂栏', true, false);
                 } else return null;
             }
-            if (!result.backpack || !result.loot || !result.closeLease) return null;
+            if (!result.backpack || !result.drugLoadout || !result.loot || !result.closeLease
+                    || result.drugLoadout.capacity !== 8
+                    || result.drugLoadout.accessibleCapacity !== 8) return null;
             var occupied = 0;
             for (var i = 0; i < result.loot.slots.length; i++) if (result.loot.slots[i].occupied) occupied++;
             if (occupied !== remainingCount) return null;
@@ -604,7 +609,7 @@
             operationId:opId,
             direction:'loot_to_player',
             source:this._sourceRef(slot),
-            targetContainerId:'背包',
+            targetContainerId:'自动',
             expectedAuthorityRevision:this._projection.authorityRevision
         }, {
             kind:'write', singleFlight:true, write:true, operationId:opId,
@@ -674,7 +679,7 @@
         this._lastError='';this._emit();
         var callId=this._request('claimBatch',{
             operationId:opId,direction:'loot_to_player',sources:this._sourceRefs(slots),
-            targetContainerId:'背包',
+            targetContainerId:'自动',
             expectedAuthorityRevision:this._projection.authorityRevision
         },{
             kind:'write',singleFlight:true,write:true,operationId:opId,

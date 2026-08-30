@@ -16,6 +16,11 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var MAX_ITEM_FLOW_TYPES:Number = 96;
     private static var MAX_REWARD_SLOTS:Number = 64;
     private static var REWARD_COLUMNS:Number = 4;
+    private static var SETTLEMENT_STORE_VERSION:Number = 1;
+    private static var SETTLEMENT_RECORD_VERSION:Number = 1;
+    private static var MAX_SETTLEMENT_RECEIPTS:Number = 128;
+    private static var MAX_RECEIPT_FINGERPRINT_LENGTH:Number = 16384;
+    private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
     // AVM1 random() 的跨度是有符号 32 位整数；safe integer 仍可能在这里回绕。
     private static var MAX_RANDOM_SPAN:Number = 2147483647;
 
@@ -104,6 +109,7 @@ class org.flashNight.arki.scene.StageRunSession {
             omittedItemFlowKeys:{},
             rewardRollOmissions:0,
             settlement:"none",
+            settlementId:"",
             remainingRewards:0
         };
         _processedIntents = {};
@@ -178,7 +184,8 @@ class org.flashNight.arki.scene.StageRunSession {
         if (_run != null && !isRunTerminal()) {
             return _returnRequested ? "pending_stage_settlement" : "stage_run_active";
         }
-        if (_preparedInventory != null || LootContainerService.hasStageSettlementPending()) {
+        if (_preparedInventory != null || LootContainerService.hasStageSettlementPending()
+                || hasPersistedSettlementPending()) {
             return "pending_stage_settlement";
         }
         if (_root.当前为战斗地图 === true) return "battle_map";
@@ -198,7 +205,8 @@ class org.flashNight.arki.scene.StageRunSession {
         if (_run != null && !isRunTerminal()) {
             return _returnRequested ? "pending_stage_settlement" : "stage_run_active";
         }
-        if (_preparedInventory != null || LootContainerService.hasStageSettlementPending()) {
+        if (_preparedInventory != null || LootContainerService.hasStageSettlementPending()
+                || hasPersistedSettlementPending()) {
             return "pending_stage_settlement";
         }
         // 没有 run 不代表处于基地：斗兽标定和旧战斗图可明确不创建
@@ -462,8 +470,14 @@ class org.flashNight.arki.scene.StageRunSession {
 
         _deliverAfterSettlement = true;
         var returned:Object = requestReturnBaseLocal(source);
-        if (returned == null || returned.success !== true)
+        if (returned == null || returned.success !== true) {
             _deliverAfterSettlement = false;
+            if (_preparedInventory != null && _preparedReport != null) {
+                // 返回/淡出失败已撤销交付意图；若奖励此前已冻结，同步修正同一 pending，
+                // 避免重启后把一次失败点击重新解释为自动导航。
+                persistPreparedSettlement();
+            }
+        }
         return returned;
     }
 
@@ -483,6 +497,17 @@ class org.flashNight.arki.scene.StageRunSession {
             bumpRevision();
         }
         if (!prepareSettlement()) return false;
+        // 奖励 manifest 已冻结并写入 _saveExt 后，仍必须确认整档真实落盘，
+        // 才能让场景跳转/cleanup 开始。缺失函数、异常约定值和 false 均 fail-closed；
+        // 失败时保留同一 prepared/pending，下一次请求只重试持久化与 flush，绝不重 roll。
+        if (typeof _root.强制存盘 != "function") return false;
+        var durable:Boolean = false;
+        try {
+            durable = (_root.强制存盘() === true);
+        } catch (flushError) {
+            durable = false;
+        }
+        if (!durable) return false;
         _returnRequested = true;
         bumpRevision();
         pushState();
@@ -490,8 +515,12 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     public static function prepareSettlement():Boolean {
-        if (_preparedInventory != null && _preparedReport != null) return true;
+        if (_preparedInventory != null && _preparedReport != null) {
+            return persistPreparedSettlement().success === true;
+        }
         if (_run == null) return false;
+        // 任意无法解释的持久化结算都必须先恢复/修复，绝不能重新 roll 后覆盖。
+        if (hasPersistedSettlementPending()) return false;
         if (_run.outcome == "active") {
             _run.outcome = "retreat";
             bumpRevision();
@@ -506,6 +535,8 @@ class org.flashNight.arki.scene.StageRunSession {
         _preparedInventory = rolled.inventory;
         _preparedReport = buildReport();
         bumpRevision();
+        var persisted:Object = persistPreparedSettlement();
+        if (persisted == null || persisted.success !== true) return false;
         pushState();
         return true;
     }
@@ -541,6 +572,17 @@ class org.flashNight.arki.scene.StageRunSession {
         else if (state == "ABANDONED") settlement = "abandoned";
         else if (state == "EXPIRED") settlement = "error";
         else return;
+        if ((settlement == "claimed" || settlement == "abandoned" || settlement == "error")
+                && _run.settlementId != undefined && String(_run.settlementId) != "") {
+            // Loot 正常路径会先携 exact receipt 清理并 flush；本调用于是幂等命中 marker。
+            // 旧/本地调用若尚未清理，也至少在释放内存 authority 前写 terminal marker。
+            var cleared:Object = clearPersistedSettlement(
+                String(_run.settlementId), settlement, null);
+            if (cleared == null || cleared.success !== true) {
+                trace("[StageRunSession] persisted settlement terminal cleanup failed");
+                return;
+            }
+        }
         _run.settlement = settlement;
         _run.remainingRewards = safeWhole(remaining, 0, MAX_REWARD_SLOTS, 0);
         bumpRevision();
@@ -550,6 +592,348 @@ class org.flashNight.arki.scene.StageRunSession {
             _preparedReport = null;
             tryCompletePendingDeliverNavigation();
         }
+    }
+
+    /**
+     * 把已经 materialize 的同一份奖励写进存档扩展域。这里只写 _saveExt 并标脏；
+     * 是否真正 durable 必须由调用方随后以 SaveManager.flushNow()==true 证明。
+     */
+    public static function persistPreparedSettlement():Object {
+        if (_run == null || _preparedInventory == null || _preparedReport == null) {
+            return settlementFailure("settlement_not_prepared");
+        }
+        var serialized:Object = serializeSettlementInventory(_preparedInventory);
+        if (serialized == null || serialized.success !== true) {
+            return settlementFailure("invalid_prepared_inventory");
+        }
+        var report:Object = normalizePersistedReport(_preparedReport);
+        if (report == null) return settlementFailure("invalid_prepared_report");
+
+        var inspected:Object = inspectSettlementStore();
+        if (inspected.success !== true) return inspected;
+        var store:Object = inspected.store;
+        if (store == null) store = {v:SETTLEMENT_STORE_VERSION, nextSeq:1};
+        var existing:Object = store.pending;
+        if (existing !== undefined && existing !== null) {
+            var decoded:Object = decodePendingSettlement(existing);
+            if (decoded == null) return settlementFailure("malformed_persisted_settlement");
+            if (String(existing.runId) !== String(_run.runId)
+                    || !sameManifest(existing.manifest, serialized.manifest)
+                    || !samePlainValue(existing.report, report, 0)) {
+                return settlementFailure("pending_settlement_conflict");
+            }
+            if (_run.settlementId != undefined && String(_run.settlementId) != ""
+                    && String(_run.settlementId) !== String(existing.settlementId)) {
+                return settlementFailure("pending_settlement_conflict");
+            }
+            _run.settlementId = String(existing.settlementId);
+            if (existing.deliverAfterSettlement !== (_deliverAfterSettlement === true)) {
+                var updated:Object = clonePlainValue(existing, 0);
+                updated.deliverAfterSettlement = _deliverAfterSettlement === true;
+                var replacementStore:Object = cloneStoreWithPending(store, updated);
+                var updatedWrite:Object = writeSettlementStore(replacementStore);
+                if (updatedWrite.success !== true) return updatedWrite;
+            }
+            return {
+                success:true, error:"", duplicate:true,
+                settlementId:String(existing.settlementId)
+            };
+        }
+
+        var nextSeq:Number = Number(store.nextSeq);
+        if (!isWhole(nextSeq) || nextSeq < 1 || nextSeq >= MAX_SAFE_INTEGER) {
+            return settlementFailure("settlement_sequence_exhausted");
+        }
+        var settlementId:String = "stage.settlement." + nextSeq;
+        var pending:Object = {
+            v:SETTLEMENT_RECORD_VERSION,
+            settlementId:settlementId,
+            runId:String(_run.runId),
+            runRevision:Number(_run.revision),
+            state:"prepared",
+            outcome:String(_run.outcome),
+            life:String(_run.life),
+            capacity:Number(serialized.capacity),
+            report:report,
+            manifest:serialized.manifest,
+            remainingManifest:clonePlainValue(serialized.manifest, 0),
+            remainingCount:Number(serialized.manifest.length),
+            receipts:[],
+            deliverAfterSettlement:_deliverAfterSettlement === true
+        };
+        var replacement:Object = {
+            v:SETTLEMENT_STORE_VERSION,
+            nextSeq:nextSeq + 1,
+            pending:pending
+        };
+        if (store.lastTerminal !== undefined && store.lastTerminal !== null) {
+            replacement.lastTerminal = clonePlainValue(store.lastTerminal, 0);
+        }
+        var written:Object = writeSettlementStore(replacement);
+        if (written.success !== true) return written;
+        _run.settlementId = settlementId;
+        return {success:true, error:"", duplicate:false, settlementId:settlementId};
+    }
+
+    /**
+     * 每次领取资产提交后，把权威 remaining inventory 与 operation receipt 一并写入 ext。
+     * 同 operationId + 同结果是幂等成功；同 id 不同结果 fail closed。
+     */
+    public static function recordSettlementProgress(settlementId:String,
+            operationId:String, remainingInventory:ArrayInventory, receipt:Object):Object {
+        if (!isSafeToken(String(settlementId), 96)
+                || !isSafeToken(String(operationId), 96)
+                || remainingInventory == null) {
+            return settlementFailure("invalid_settlement_progress");
+        }
+        var inspected:Object = inspectSettlementStore();
+        if (inspected.success !== true) return inspected;
+        var store:Object = inspected.store;
+        if (store == null || store.pending === undefined || store.pending === null) {
+            return settlementFailure("no_pending_settlement");
+        }
+        var decoded:Object = decodePendingSettlement(store.pending);
+        if (decoded == null) return settlementFailure("malformed_persisted_settlement");
+        if (String(store.pending.settlementId) !== String(settlementId)) {
+            return settlementFailure("settlement_id_mismatch");
+        }
+
+        var serialized:Object = serializeSettlementInventory(remainingInventory);
+        if (serialized == null || serialized.success !== true
+                || Number(serialized.capacity) != Number(store.pending.capacity)
+                || !isManifestSubset(serialized.manifest, store.pending.manifest)) {
+            return settlementFailure("invalid_remaining_inventory");
+        }
+        var normalizedReceipt:Object = normalizeProgressReceipt(
+            operationId, receipt, Number(serialized.manifest.length));
+        if (normalizedReceipt == null) return settlementFailure("invalid_claim_receipt");
+
+        var receipts:Array = store.pending.receipts;
+        for (var i:Number = 0; i < receipts.length; i++) {
+            if (String(receipts[i].operationId) !== String(operationId)) continue;
+            if (!samePlainValue(receipts[i], normalizedReceipt, 0)
+                    || !sameManifest(store.pending.remainingManifest,
+                        serialized.manifest)) {
+                return settlementFailure("operation_conflict");
+            }
+            return {
+                success:true, error:"", duplicate:true,
+                settlementId:String(settlementId), remainingCount:serialized.manifest.length
+            };
+        }
+        var appliedCount:Number = normalizedReceipt.kind == "claim"
+            ? 1 : Number(normalizedReceipt.appliedCount);
+        if (!isWhole(appliedCount) || appliedCount < 1
+                || appliedCount > MAX_REWARD_SLOTS
+                || !isManifestSubset(serialized.manifest, decoded.remainingManifest)
+                || Number(serialized.manifest.length)
+                    != Number(decoded.remainingManifest.length) - appliedCount) {
+            return settlementFailure("invalid_remaining_inventory");
+        }
+        if (receipts.length >= MAX_SETTLEMENT_RECEIPTS) {
+            return settlementFailure("settlement_receipt_capacity");
+        }
+
+        var pending:Object = clonePlainValue(store.pending, 0);
+        pending.remainingManifest = serialized.manifest;
+        pending.remainingCount = Number(serialized.manifest.length);
+        pending.receipts.push(normalizedReceipt);
+        if (_run != null && String(_run.settlementId) === String(settlementId)
+                && (_run.settlement == "prepared" || _run.settlement == "web_active"
+                    || _run.settlement == "rewards_pending")) {
+            pending.state = String(_run.settlement);
+        }
+        var replacement:Object = cloneStoreWithPending(store, pending);
+        var written:Object = writeSettlementStore(replacement);
+        if (written.success !== true) return written;
+        if (_run != null && String(_run.settlementId) === String(settlementId)) {
+            _preparedInventory = remainingInventory;
+            _run.remainingRewards = Number(serialized.manifest.length);
+        }
+        return {
+            success:true, error:"", duplicate:false,
+            settlementId:String(settlementId), remainingCount:serialized.manifest.length
+        };
+    }
+
+    /** 返回 ext 中某个领取操作的持久化幂等 receipt；不泄露可变存档引用。 */
+    public static function getPersistedSettlementReceipt(
+            settlementId:String, operationId:String):Object {
+        var inspected:Object = inspectSettlementStore();
+        if (inspected.success !== true) return inspected;
+        var store:Object = inspected.store;
+        if (store == null || store.pending === undefined || store.pending === null) {
+            return settlementFailure("no_pending_settlement");
+        }
+        if (decodePendingSettlement(store.pending) == null) {
+            return settlementFailure("malformed_persisted_settlement");
+        }
+        if (String(store.pending.settlementId) !== String(settlementId)
+                || !isSafeToken(String(operationId), 96)) {
+            return settlementFailure("settlement_id_mismatch");
+        }
+        var receipts:Array = store.pending.receipts;
+        for (var i:Number = 0; i < receipts.length; i++) {
+            if (String(receipts[i].operationId) === String(operationId)) {
+                return {success:true, error:"", found:true,
+                    receipt:clonePlainValue(receipts[i], 0)};
+            }
+        }
+        return {success:true, error:"", found:false, receipt:null};
+    }
+
+    /** 重启后的 Loot authority 可一次读取全部有界 receipts 来重建幂等 journal。 */
+    public static function getPersistedSettlementReceipts(settlementId:String):Object {
+        var inspected:Object = inspectSettlementStore();
+        if (inspected.success !== true) return inspected;
+        var store:Object = inspected.store;
+        if (store == null || store.pending === undefined || store.pending === null) {
+            return settlementFailure("no_pending_settlement");
+        }
+        var decoded:Object = decodePendingSettlement(store.pending);
+        if (decoded == null) return settlementFailure("malformed_persisted_settlement");
+        if (String(store.pending.settlementId) !== String(settlementId)) {
+            return settlementFailure("settlement_id_mismatch");
+        }
+        return {success:true, error:"",
+            originalCount:Number(decoded.manifest.length),
+            remainingCount:Number(decoded.remainingManifest.length),
+            receipts:clonePlainValue(decoded.receipts, 0)};
+    }
+
+    /**
+     * 终态只清 pending 并保留一个有界 terminal marker；仍不自行 flush。
+     * 这让资产写与 pending 清理由 SaveManager 的同一次 durable commit 覆盖。
+     */
+    public static function clearPersistedSettlement(settlementId:String,
+            terminalState:String, receipt:Object):Object {
+        if (!isSafeToken(String(settlementId), 96)
+                || (terminalState != "claimed" && terminalState != "abandoned"
+                    && terminalState != "error")) {
+            return settlementFailure("invalid_terminal_settlement");
+        }
+        var inspected:Object = inspectSettlementStore();
+        if (inspected.success !== true) return inspected;
+        var store:Object = inspected.store;
+        if (store == null) return settlementFailure("no_pending_settlement");
+        if (store.pending === undefined || store.pending === null) {
+            var prior:Object = store.lastTerminal;
+            if (prior != null && String(prior.settlementId) === String(settlementId)
+                    && String(prior.terminalState) === String(terminalState)) {
+                return {success:true, error:"", duplicate:true,
+                    settlementId:String(settlementId)};
+            }
+            return settlementFailure("no_pending_settlement");
+        }
+        if (decodePendingSettlement(store.pending) == null) {
+            return settlementFailure("malformed_persisted_settlement");
+        }
+        if (String(store.pending.settlementId) !== String(settlementId)) {
+            return settlementFailure("settlement_id_mismatch");
+        }
+        var terminalReceipt:Object = normalizeTerminalReceipt(receipt, terminalState);
+        if (terminalReceipt == null) return settlementFailure("invalid_terminal_receipt");
+        var marker:Object = {
+            v:1,
+            settlementId:String(settlementId),
+            terminalState:String(terminalState),
+            receipt:terminalReceipt
+        };
+        var replacement:Object = {
+            v:SETTLEMENT_STORE_VERSION,
+            nextSeq:Number(store.nextSeq),
+            lastTerminal:marker
+        };
+        var written:Object = writeSettlementStore(replacement);
+        if (written.success !== true) return written;
+        return {success:true, error:"", duplicate:false,
+            settlementId:String(settlementId)};
+    }
+
+    /**
+     * SaveManager 完成 ext 读入后调用。它从 remainingManifest 重建真实 BaseItem/
+     * ArrayInventory，并把进程态 Web authority 规范化为可恢复的 rewards_pending。
+     */
+    public static function restorePendingSettlement():Object {
+        var inspected:Object = inspectSettlementStore();
+        if (inspected.success !== true) return inspected;
+        var store:Object = inspected.store;
+        if (store == null || store.pending === undefined || store.pending === null) {
+            return {success:true, error:"", restored:false};
+        }
+        var decoded:Object = decodePendingSettlement(store.pending);
+        if (decoded == null) return settlementFailure("malformed_persisted_settlement");
+        if (_run != null || _preparedInventory != null || _preparedReport != null) {
+            if (_run != null
+                    && String(_run.settlementId) === String(store.pending.settlementId)
+                    && _preparedInventory != null && _preparedReport != null) {
+                return {success:true, error:"", restored:false, duplicate:true,
+                    settlementId:String(store.pending.settlementId)};
+            }
+            return settlementFailure("settlement_authority_busy");
+        }
+
+        var report:Object = decoded.report;
+        var revision:Number = Number(store.pending.runRevision);
+        if (revision >= MAX_SAFE_INTEGER) revision = MAX_SAFE_INTEGER - 1;
+        _run = {
+            v:1,
+            runId:String(store.pending.runId),
+            revision:revision + 1,
+            stageName:String(report.stageName),
+            difficulty:String(report.difficulty),
+            outcome:String(store.pending.outcome),
+            life:String(store.pending.life),
+            activeFrames:Number(report.activeFrames),
+            totalKills:Number(report.totalKills),
+            kills:clonePlainValue(report.kills, 0),
+            killsByKey:{},
+            omittedKillTypes:Number(report.omittedKillTypes),
+            omittedKillKeys:{},
+            totalItemGains:Number(report.totalItemGains),
+            totalItemLosses:Number(report.totalItemLosses),
+            itemFlows:clonePlainValue(report.itemFlows, 0),
+            itemFlowsByKey:{},
+            omittedItemFlowTypes:Number(report.omittedItemFlowTypes),
+            omittedItemFlowKeys:{},
+            rewardRollOmissions:Number(report.rewardRollOmissions),
+            settlement:"rewards_pending",
+            settlementId:String(store.pending.settlementId),
+            remainingRewards:Number(store.pending.remainingCount)
+        };
+        _processedIntents = {};
+        _preparedInventory = decoded.remainingInventory;
+        _preparedReport = report;
+        _settlementStarted = false;
+        _returnRequested = true;
+        _deliverAfterSettlement = store.pending.deliverAfterSettlement === true;
+        _stageStartReservation = null;
+        pushState();
+        return {
+            success:true, error:"", restored:true,
+            settlementId:String(store.pending.settlementId),
+            remainingCount:Number(store.pending.remainingCount),
+            receiptCount:Number(store.pending.receipts.length)
+        };
+    }
+
+    /** 降级/畸形 store 也算未知 pending，保证旧构建不会覆盖未来权威。 */
+    public static function hasPersistedSettlementPending():Boolean {
+        var ext:Object = _root._saveExt;
+        if (ext === undefined || ext === null) return false;
+        if (typeof ext != "object" || ext instanceof Array) return true;
+        if (ext.stageSettlement === undefined || ext.stageSettlement === null) return false;
+        var inspected:Object = inspectSettlementStore();
+        if (inspected.success !== true) return true;
+        return inspected.store != null && inspected.store.pending !== undefined
+            && inspected.store.pending !== null;
+    }
+
+    /** Loot authority 建立/恢复时读取当前稳定 identity；空串表示无可绑定结算。 */
+    public static function getCurrentSettlementId():String {
+        if (_run == null || _run.settlementId == undefined) return "";
+        var settlementId:String = String(_run.settlementId);
+        return isSafeToken(settlementId, 96) ? settlementId : "";
     }
 
     /**
@@ -876,6 +1260,540 @@ class org.flashNight.arki.scene.StageRunSession {
         return true;
     }
 
+    private static function settlementFailure(errorCode:String):Object {
+        return {success:false, error:errorCode};
+    }
+
+    private static function inspectSettlementStore():Object {
+        var ext:Object = _root._saveExt;
+        if (ext === undefined || ext === null) {
+            return {success:true, error:"", store:null};
+        }
+        if (typeof ext != "object" || ext instanceof Array) {
+            return settlementFailure("malformed_save_ext");
+        }
+        var raw:Object = ext.stageSettlement;
+        if (raw === undefined || raw === null) {
+            return {success:true, error:"", store:null};
+        }
+        if (typeof raw != "object" || raw instanceof Array
+                || typeof raw.v != "number" || !isWhole(Number(raw.v))) {
+            return settlementFailure("malformed_settlement_store");
+        }
+        if (Number(raw.v) > SETTLEMENT_STORE_VERSION) {
+            return settlementFailure("future_settlement_store_version");
+        }
+        if (Number(raw.v) != SETTLEMENT_STORE_VERSION
+                || !hasOnlyKeys(raw, ["v", "nextSeq", "pending", "lastTerminal"])
+                || !isWhole(Number(raw.nextSeq)) || Number(raw.nextSeq) < 1
+                || Number(raw.nextSeq) > MAX_SAFE_INTEGER) {
+            return settlementFailure("malformed_settlement_store");
+        }
+        if (raw.pending !== undefined && raw.pending !== null
+                && (typeof raw.pending != "object" || raw.pending instanceof Array)) {
+            return settlementFailure("malformed_settlement_store");
+        }
+        if (raw.lastTerminal !== undefined && raw.lastTerminal !== null
+                && normalizeTerminalMarker(raw.lastTerminal) == null) {
+            return settlementFailure("malformed_settlement_store");
+        }
+        return {success:true, error:"", store:raw};
+    }
+
+    private static function writeSettlementStore(store:Object):Object {
+        if (store == null || inspectReplacementStore(store) !== true) {
+            return settlementFailure("invalid_settlement_store_write");
+        }
+        var ext:Object = _root._saveExt;
+        if (ext === undefined || ext === null) {
+            ext = {};
+            _root._saveExt = ext;
+        } else if (typeof ext != "object" || ext instanceof Array) {
+            return settlementFailure("malformed_save_ext");
+        }
+        ext.stageSettlement = store;
+        if (_root.存档系统 != undefined && _root.存档系统 != null) {
+            _root.存档系统.dirtyMark = true;
+            if (typeof _root.存档系统.markDirty == "function") {
+                _root.存档系统.markDirty();
+            }
+        }
+        return {success:true, error:""};
+    }
+
+    private static function inspectReplacementStore(store:Object):Boolean {
+        if (store == null || typeof store != "object" || store instanceof Array
+                || Number(store.v) != SETTLEMENT_STORE_VERSION
+                || !isWhole(Number(store.nextSeq)) || Number(store.nextSeq) < 1
+                || Number(store.nextSeq) > MAX_SAFE_INTEGER) return false;
+        if (store.pending !== undefined && store.pending !== null
+                && decodePendingSettlement(store.pending) == null) return false;
+        if (store.lastTerminal !== undefined && store.lastTerminal !== null
+                && normalizeTerminalMarker(store.lastTerminal) == null) return false;
+        return true;
+    }
+
+    private static function cloneStoreWithPending(store:Object, pending:Object):Object {
+        var result:Object = {
+            v:SETTLEMENT_STORE_VERSION,
+            nextSeq:Number(store.nextSeq),
+            pending:pending
+        };
+        if (store.lastTerminal !== undefined && store.lastTerminal !== null) {
+            result.lastTerminal = clonePlainValue(store.lastTerminal, 0);
+        }
+        return result;
+    }
+
+    private static function serializeSettlementInventory(inventory:ArrayInventory):Object {
+        if (inventory == null || !isWhole(Number(inventory.capacity))
+                || Number(inventory.capacity) < 8
+                || Number(inventory.capacity) > MAX_REWARD_SLOTS
+                || Number(inventory.capacity) % REWARD_COLUMNS != 0) return null;
+        var indexes:Array = inventory.getIndexes();
+        if (!(indexes instanceof Array) || indexes.length > MAX_REWARD_SLOTS) return null;
+        var manifest:Array = [];
+        var previous:Number = -1;
+        for (var i:Number = 0; i < indexes.length; i++) {
+            var slot:Number = Number(indexes[i]);
+            if (!isWhole(slot) || slot <= previous || slot < 0
+                    || slot >= Number(inventory.capacity)) return null;
+            var item:Object = normalizePersistedItem(inventory.getItem(String(slot)));
+            if (item == null) return null;
+            manifest.push({slot:slot, item:item});
+            previous = slot;
+        }
+        return {success:true, capacity:Number(inventory.capacity), manifest:manifest};
+    }
+
+    private static function decodePendingSettlement(raw:Object):Object {
+        if (raw == null || typeof raw != "object" || raw instanceof Array
+                || !hasOnlyKeys(raw, ["v", "settlementId", "runId", "runRevision",
+                    "state", "outcome", "life", "capacity", "report", "manifest",
+                    "remainingManifest", "remainingCount", "receipts",
+                    "deliverAfterSettlement"])
+                || Number(raw.v) != SETTLEMENT_RECORD_VERSION
+                || !isSafeToken(String(raw.settlementId), 96)
+                || !isSafeToken(String(raw.runId), 96)
+                || !isWhole(Number(raw.runRevision)) || Number(raw.runRevision) < 1
+                || Number(raw.runRevision) > MAX_SAFE_INTEGER
+                || (raw.state != "prepared" && raw.state != "web_active"
+                    && raw.state != "rewards_pending")
+                || (raw.outcome != "victory" && raw.outcome != "failure"
+                    && raw.outcome != "retreat")
+                || (raw.life != "alive" && raw.life != "dead" && raw.life != "reviving")
+                || !isWhole(Number(raw.capacity)) || Number(raw.capacity) < 8
+                || Number(raw.capacity) > MAX_REWARD_SLOTS
+                || Number(raw.capacity) % REWARD_COLUMNS != 0
+                || typeof raw.deliverAfterSettlement != "boolean") return null;
+        var report:Object = normalizePersistedReport(raw.report);
+        if (report == null || String(report.runId) !== String(raw.runId)
+                || String(report.outcome) !== String(raw.outcome)) return null;
+        var original:Object = decodeManifest(raw.manifest, Number(raw.capacity));
+        var remaining:Object = decodeManifest(raw.remainingManifest, Number(raw.capacity));
+        if (original == null || remaining == null
+                || !isManifestSubset(remaining.manifest, original.manifest)
+                || !isWhole(Number(raw.remainingCount))
+                || Number(raw.remainingCount) != remaining.manifest.length) return null;
+        if (!(raw.receipts instanceof Array)
+                || raw.receipts.length > MAX_SETTLEMENT_RECEIPTS) return null;
+        var seen:Object = {};
+        var receipts:Array = [];
+        var previousRevision:Number = 1;
+        var previousRemaining:Number = Number(original.manifest.length);
+        for (var i:Number = 0; i < raw.receipts.length; i++) {
+            var receipt:Object = normalizeStoredProgressReceipt(raw.receipts[i]);
+            if (receipt == null) return null;
+            var operationKey:String = "$" + String(receipt.operationId);
+            if (seen[operationKey] === true) return null;
+            var appliedCount:Number = receipt.kind == "claim"
+                ? 1 : Number(receipt.appliedCount);
+            if (!isWhole(appliedCount) || appliedCount < 1
+                    || appliedCount > MAX_REWARD_SLOTS
+                    || Number(receipt.authorityRevision)
+                        < previousRevision + appliedCount
+                    || Number(receipt.remainingCount)
+                        != previousRemaining - appliedCount) return null;
+            seen[operationKey] = true;
+            receipts.push(receipt);
+            previousRevision = Number(receipt.authorityRevision);
+            previousRemaining = Number(receipt.remainingCount);
+        }
+        if (previousRemaining != Number(remaining.manifest.length)) return null;
+        return {
+            report:report,
+            manifest:original.manifest,
+            remainingManifest:remaining.manifest,
+            remainingInventory:remaining.inventory,
+            receipts:receipts
+        };
+    }
+
+    private static function decodeManifest(raw:Object, capacity:Number):Object {
+        if (!(raw instanceof Array) || raw.length > MAX_REWARD_SLOTS) return null;
+        var manifest:Array = [];
+        var inventory:ArrayInventory = new ArrayInventory(null, capacity);
+        var previous:Number = -1;
+        for (var i:Number = 0; i < raw.length; i++) {
+            var row:Object = raw[i];
+            if (row == null || !hasOnlyKeys(row, ["slot", "item"])) return null;
+            var slot:Number = Number(row.slot);
+            if (!isWhole(slot) || slot <= previous || slot < 0 || slot >= capacity) return null;
+            var itemData:Object = normalizePersistedItem(row.item);
+            if (itemData == null) return null;
+            var item:BaseItem = BaseItem.createFromObject(clonePlainValue(itemData, 0));
+            if (item == null || !inventory.add(slot, item)) return null;
+            manifest.push({slot:slot, item:itemData});
+            previous = slot;
+        }
+        return {manifest:manifest, inventory:inventory};
+    }
+
+    private static function normalizePersistedItem(raw:Object):Object {
+        if (raw == null || typeof raw != "object" || raw instanceof Array
+                || !hasOnlyKeys(raw, ["name", "value", "lastUpdate"])
+                || typeof raw.name != "string"
+                || !isBoundedText(String(raw.name), 128, false)
+                || !ItemUtil.isItem(String(raw.name))
+                || typeof raw.lastUpdate != "number"
+                || !isWhole(Number(raw.lastUpdate)) || Number(raw.lastUpdate) < 0
+                || Number(raw.lastUpdate) > MAX_SAFE_INTEGER) return null;
+        var value:Object;
+        if (ItemUtil.isEquipment(String(raw.name))) {
+            if (raw.value == null || typeof raw.value != "object"
+                    || raw.value instanceof Array) return null;
+            var cloned:Object = cloneSaveValue(raw.value, 0);
+            if (cloned == null || cloned.success !== true) return null;
+            value = cloned.value;
+        } else {
+            if (typeof raw.value != "number" || !isWhole(Number(raw.value))
+                    || Number(raw.value) <= 0 || Number(raw.value) > MAX_SAFE_INTEGER) return null;
+            value = Number(raw.value);
+        }
+        return {name:String(raw.name), value:value, lastUpdate:Number(raw.lastUpdate)};
+    }
+
+    private static function normalizePersistedReport(raw:Object):Object {
+        if (raw == null || typeof raw != "object" || raw instanceof Array
+                || !hasOnlyKeys(raw, ["v", "runId", "stageName", "difficulty", "outcome",
+                    "activeFrames", "totalKills", "omittedKillTypes", "totalItemGains",
+                    "totalItemLosses", "omittedItemFlowTypes", "rewardRollOmissions",
+                    "kills", "itemFlows"])
+                || Number(raw.v) != 1 || typeof raw.runId != "string"
+                || typeof raw.stageName != "string" || typeof raw.difficulty != "string"
+                || typeof raw.outcome != "string" || !isSafeToken(String(raw.runId), 96)
+                || !isBoundedText(String(raw.stageName), 96, false)
+                || !isBoundedText(String(raw.difficulty), 48, false)
+                || (raw.outcome != "victory" && raw.outcome != "failure"
+                    && raw.outcome != "retreat")
+                || !isCount(raw.activeFrames) || !isCount(raw.totalKills)
+                || !isCount(raw.omittedKillTypes) || !isCount(raw.totalItemGains)
+                || !isCount(raw.totalItemLosses) || !isCount(raw.omittedItemFlowTypes)
+                || !isCount(raw.rewardRollOmissions)
+                || !(raw.kills instanceof Array) || raw.kills.length > MAX_KILL_TYPES
+                || !(raw.itemFlows instanceof Array)
+                || raw.itemFlows.length > MAX_ITEM_FLOW_TYPES) return null;
+        var kills:Array = [];
+        for (var i:Number = 0; i < raw.kills.length; i++) {
+            var kill:Object = normalizePersistedKill(raw.kills[i]);
+            if (kill == null) return null;
+            kills.push(kill);
+        }
+        var flows:Array = [];
+        for (i = 0; i < raw.itemFlows.length; i++) {
+            var flow:Object = normalizePersistedFlow(raw.itemFlows[i]);
+            if (flow == null) return null;
+            flows.push(flow);
+        }
+        return {
+            v:1,
+            runId:String(raw.runId),
+            stageName:String(raw.stageName),
+            difficulty:String(raw.difficulty),
+            outcome:String(raw.outcome),
+            activeFrames:Number(raw.activeFrames),
+            totalKills:Number(raw.totalKills),
+            omittedKillTypes:Number(raw.omittedKillTypes),
+            totalItemGains:Number(raw.totalItemGains),
+            totalItemLosses:Number(raw.totalItemLosses),
+            omittedItemFlowTypes:Number(raw.omittedItemFlowTypes),
+            rewardRollOmissions:Number(raw.rewardRollOmissions),
+            kills:kills,
+            itemFlows:flows
+        };
+    }
+
+    private static function normalizePersistedKill(raw:Object):Object {
+        if (raw == null || typeof raw != "object" || raw instanceof Array
+                || !hasOnlyKeys(raw,
+                ["key", "displayName", "iconName", "doll", "eliteLevel", "count"])
+                || typeof raw.key != "string" || typeof raw.displayName != "string"
+                || typeof raw.iconName != "string"
+                || !isBoundedText(String(raw.key), 128, false)
+                || !isBoundedText(String(raw.displayName), 96, false)
+                || !isBoundedText(String(raw.iconName), 128, true)
+                || !isWhole(Number(raw.eliteLevel)) || Number(raw.eliteLevel) < 0
+                || Number(raw.eliteLevel) > 16 || !isCount(raw.count)
+                || Number(raw.count) < 1) return null;
+        var doll:Object = normalizePersistedDoll(raw.doll);
+        if (raw.doll != null && doll == null) return null;
+        return {key:String(raw.key), displayName:String(raw.displayName),
+            iconName:String(raw.iconName), doll:doll,
+            eliteLevel:Number(raw.eliteLevel), count:Number(raw.count)};
+    }
+
+    private static function normalizePersistedDoll(raw:Object):Object {
+        if (raw === undefined || raw === null) return null;
+        var keys:Array = ["face", "hair", "mask", "head", "body", "leg",
+            "hand", "foot", "neck", "gender"];
+        if (!hasOnlyKeys(raw, keys)) return null;
+        var result:Object = {};
+        for (var i:Number = 0; i < keys.length; i++) {
+            var key:String = String(keys[i]);
+            if (typeof raw[key] != "string") return null;
+            if (!isBoundedText(String(raw[key]), 128, true)) return null;
+            result[key] = String(raw[key]);
+        }
+        return result;
+    }
+
+    private static function normalizePersistedFlow(raw:Object):Object {
+        if (raw == null || typeof raw != "object" || raw instanceof Array
+                || !hasOnlyKeys(raw, ["direction", "kind", "itemKey",
+                "displayName", "iconName", "tier", "source", "reason", "count"])
+                || typeof raw.direction != "string" || typeof raw.kind != "string"
+                || typeof raw.itemKey != "string" || typeof raw.displayName != "string"
+                || typeof raw.iconName != "string" || typeof raw.tier != "string"
+                || typeof raw.source != "string" || typeof raw.reason != "string"
+                || (raw.direction != "gain" && raw.direction != "loss")
+                || !isReportAssetKind(String(raw.kind))
+                || !isBoundedText(String(raw.itemKey), 128, false)
+                || !isBoundedText(String(raw.displayName), 96, false)
+                || !isBoundedText(String(raw.iconName), 128, true)
+                || !isBoundedText(String(raw.tier), 48, true)
+                || !isBoundedText(String(raw.source), 48, false)
+                || !isBoundedText(String(raw.reason), 64, true)
+                || !isCount(raw.count) || Number(raw.count) < 1) return null;
+        return {direction:String(raw.direction), kind:String(raw.kind),
+            itemKey:String(raw.itemKey), displayName:String(raw.displayName),
+            iconName:String(raw.iconName), tier:String(raw.tier),
+            source:String(raw.source), reason:String(raw.reason), count:Number(raw.count)};
+    }
+
+    private static function normalizeProgressReceipt(operationId:String,
+            raw:Object, remainingCount:Number):Object {
+        if (raw == null || typeof raw != "object" || raw instanceof Array
+                || !hasOnlyKeys(raw, ["kind", "fingerprint", "authorityRevision",
+                    "appliedCount", "resultState", "error"])) return null;
+        if (typeof raw.kind != "string" || typeof raw.fingerprint != "string") return null;
+        var kind:String = String(raw.kind);
+        if (kind != "claim" && kind != "claim_batch") return null;
+        if (!isBoundedText(String(raw.fingerprint), MAX_RECEIPT_FINGERPRINT_LENGTH, false)
+                || !isCount(raw.authorityRevision)) return null;
+        if (kind == "claim_batch" && raw.appliedCount === undefined) return null;
+        var result:Object = {
+            operationId:String(operationId),
+            kind:kind,
+            fingerprint:String(raw.fingerprint),
+            authorityRevision:Number(raw.authorityRevision),
+            remainingCount:Number(remainingCount)
+        };
+        if (raw.appliedCount !== undefined) {
+            if (!isWhole(Number(raw.appliedCount)) || Number(raw.appliedCount) < 1
+                    || Number(raw.appliedCount) > MAX_REWARD_SLOTS
+                    || (kind == "claim" && Number(raw.appliedCount) != 1)) return null;
+            result.appliedCount = Number(raw.appliedCount);
+        }
+        if (raw.resultState !== undefined) {
+            if (!isBoundedText(String(raw.resultState), 48, false)) return null;
+            result.resultState = String(raw.resultState);
+        }
+        if (raw.error !== undefined) {
+            if (!isBoundedText(String(raw.error), 96, true)) return null;
+            result.error = String(raw.error);
+        }
+        return result;
+    }
+
+    private static function normalizeStoredProgressReceipt(raw:Object):Object {
+        if (raw == null || typeof raw != "object" || raw instanceof Array
+                || !isSafeToken(String(raw.operationId), 96)
+                || !isCount(raw.remainingCount)) return null;
+        var source:Object = {
+            kind:raw.kind,
+            fingerprint:raw.fingerprint,
+            authorityRevision:raw.authorityRevision
+        };
+        if (raw.appliedCount !== undefined) source.appliedCount = raw.appliedCount;
+        if (raw.resultState !== undefined) source.resultState = raw.resultState;
+        if (raw.error !== undefined) source.error = raw.error;
+        var normalized:Object = normalizeProgressReceipt(
+            String(raw.operationId), source, Number(raw.remainingCount));
+        if (normalized == null || !samePlainValue(raw, normalized, 0)) return null;
+        return normalized;
+    }
+
+    private static function normalizeTerminalReceipt(raw:Object, terminalState:String):Object {
+        if (raw === undefined || raw === null) {
+            return {operationId:"", kind:"terminal", terminalState:terminalState};
+        }
+        if (typeof raw != "object" || raw instanceof Array
+                || !hasOnlyKeys(raw, ["operationId", "kind", "fingerprint",
+                    "authorityRevision", "appliedCount", "error", "terminalState"])) return null;
+        if (raw.terminalState !== undefined
+                && String(raw.terminalState) !== String(terminalState)) return null;
+        var operationId:String = raw.operationId === undefined ? "" : String(raw.operationId);
+        if (operationId != "" && !isSafeToken(operationId, 96)) return null;
+        var kind:String = raw.kind === undefined ? "terminal" : String(raw.kind);
+        if (kind != "terminal" && kind != "close" && kind != "claim"
+                && kind != "claim_batch") return null;
+        var result:Object = {operationId:operationId, kind:kind,
+            terminalState:String(terminalState)};
+        if (raw.fingerprint !== undefined) {
+            if (!isBoundedText(String(raw.fingerprint), MAX_RECEIPT_FINGERPRINT_LENGTH, true)) return null;
+            result.fingerprint = String(raw.fingerprint);
+        }
+        if (raw.authorityRevision !== undefined) {
+            if (!isCount(raw.authorityRevision)) return null;
+            result.authorityRevision = Number(raw.authorityRevision);
+        }
+        if (raw.appliedCount !== undefined) {
+            if (!isWhole(Number(raw.appliedCount)) || Number(raw.appliedCount) < 0
+                    || Number(raw.appliedCount) > MAX_REWARD_SLOTS) return null;
+            result.appliedCount = Number(raw.appliedCount);
+        }
+        if (raw.error !== undefined) {
+            if (!isBoundedText(String(raw.error), 96, true)) return null;
+            result.error = String(raw.error);
+        }
+        return result;
+    }
+
+    private static function normalizeTerminalMarker(raw:Object):Object {
+        if (raw == null || !hasOnlyKeys(raw,
+                ["v", "settlementId", "terminalState", "receipt"])
+                || Number(raw.v) != 1 || !isSafeToken(String(raw.settlementId), 96)
+                || (raw.terminalState != "claimed" && raw.terminalState != "abandoned"
+                    && raw.terminalState != "error")) return null;
+        var receipt:Object = normalizeTerminalReceipt(raw.receipt, String(raw.terminalState));
+        if (receipt == null || !samePlainValue(raw.receipt, receipt, 0)) return null;
+        return {v:1, settlementId:String(raw.settlementId),
+            terminalState:String(raw.terminalState), receipt:receipt};
+    }
+
+    private static function isManifestSubset(candidate:Array, original:Array):Boolean {
+        if (!(candidate instanceof Array) || !(original instanceof Array)
+                || candidate.length > original.length) return false;
+        var originalIndex:Number = 0;
+        for (var i:Number = 0; i < candidate.length; i++) {
+            var row:Object = candidate[i];
+            while (originalIndex < original.length
+                    && Number(original[originalIndex].slot) < Number(row.slot)) originalIndex++;
+            if (originalIndex >= original.length
+                    || Number(original[originalIndex].slot) != Number(row.slot)
+                    || !samePlainValue(original[originalIndex].item, row.item, 0)) return false;
+        }
+        return true;
+    }
+
+    private static function sameManifest(left:Object, right:Object):Boolean {
+        if (!(left instanceof Array) || !(right instanceof Array)
+                || left.length != right.length) return false;
+        for (var i:Number = 0; i < left.length; i++) {
+            if (Number(left[i].slot) != Number(right[i].slot)
+                    || !samePlainValue(left[i].item, right[i].item, 0)) return false;
+        }
+        return true;
+    }
+
+    private static function cloneSaveValue(value, depth:Number):Object {
+        if (depth > 8) return null;
+        if (value === null) return {success:true, value:null};
+        var kind:String = typeof value;
+        if (kind == "string") {
+            if (!isBoundedText(String(value), MAX_RECEIPT_FINGERPRINT_LENGTH, true)) return null;
+            return {success:true, value:String(value)};
+        }
+        if (kind == "number") {
+            if ((Number(value) - Number(value)) != 0) return null;
+            return {success:true, value:Number(value)};
+        }
+        if (kind == "boolean") return {success:true, value:value === true};
+        if (kind != "object" || value === undefined) return null;
+        if (value instanceof Array) {
+            if (value.length > 64) return null;
+            var arrayCopy:Array = [];
+            for (var i:Number = 0; i < value.length; i++) {
+                var child:Object = cloneSaveValue(value[i], depth + 1);
+                if (child == null || child.success !== true) return null;
+                arrayCopy.push(child.value);
+            }
+            return {success:true, value:arrayCopy};
+        }
+        var objectCopy:Object = {};
+        var count:Number = 0;
+        for (var key:String in value) {
+            if (typeof value.hasOwnProperty == "function" && !value.hasOwnProperty(key)) continue;
+            if (!isBoundedText(key, 64, false) || key.substr(0, 2) == "__"
+                    || key == "constructor" || key == "prototype"
+                    || key == "hasOwnProperty") return null;
+            count++;
+            if (count > 64) return null;
+            child = cloneSaveValue(value[key], depth + 1);
+            if (child == null || child.success !== true) return null;
+            objectCopy[key] = child.value;
+        }
+        return {success:true, value:objectCopy};
+    }
+
+    private static function clonePlainValue(value, depth:Number) {
+        var cloned:Object = cloneSaveValue(value, depth);
+        return cloned == null || cloned.success !== true ? null : cloned.value;
+    }
+
+    private static function samePlainValue(left, right, depth:Number):Boolean {
+        if (depth > 8 || typeof left != typeof right) return false;
+        if (left === null || right === null || typeof left != "object") return left === right;
+        var leftArray:Boolean = left instanceof Array;
+        if (leftArray != (right instanceof Array)) return false;
+        if (leftArray) {
+            if (left.length != right.length) return false;
+            for (var i:Number = 0; i < left.length; i++) {
+                if (!samePlainValue(left[i], right[i], depth + 1)) return false;
+            }
+            return true;
+        }
+        var leftCount:Number = 0;
+        for (var key:String in left) {
+            if (typeof left.hasOwnProperty == "function" && !left.hasOwnProperty(key)) continue;
+            leftCount++;
+            if (!right.hasOwnProperty(key)
+                    || !samePlainValue(left[key], right[key], depth + 1)) return false;
+        }
+        var rightCount:Number = 0;
+        for (key in right) {
+            if (typeof right.hasOwnProperty == "function" && !right.hasOwnProperty(key)) continue;
+            rightCount++;
+        }
+        return leftCount == rightCount;
+    }
+
+    private static function isBoundedText(value:String, maximum:Number,
+                                          allowEmpty:Boolean):Boolean {
+        if (typeof value != "string" || value.length > maximum
+                || (!allowEmpty && value.length < 1)) return false;
+        for (var i:Number = 0; i < value.length; i++) {
+            var code:Number = value.charCodeAt(i);
+            if (code < 32 || code == 127 || (code >= 128 && code <= 159)) return false;
+        }
+        return true;
+    }
+
+    private static function isCount(value):Boolean {
+        return typeof value == "number" && isWhole(Number(value))
+            && Number(value) >= 0 && Number(value) <= MAX_SAFE_INTEGER;
+    }
+
     /** focused TestLoader 只读投影与隔离复位。 */
     public static function testOnlySnapshot():Object {
         if (_run == null) return null;
@@ -887,6 +1805,7 @@ class org.flashNight.arki.scene.StageRunSession {
             activeFrames:_run.activeFrames,
             totalKills:_run.totalKills,
             settlement:_run.settlement,
+            settlementId:_run.settlementId,
             remainingRewards:_run.remainingRewards,
             report:_preparedReport,
             inventory:_preparedInventory,

@@ -50,6 +50,11 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testProjectionFailureCannotBreakRevive();
         testReturnFreezesAndOfflinePanelPreservesRewards();
         testZeroRewardOfflineSettlementSurvivesSceneExpiry();
+        testPreparedSettlementPersistsWithoutReroll();
+        testReturnRequiresDurableSettlementFlush();
+        testPersistedSettlementProgressAndRestartRestore();
+        testPersistedSettlementVersionsFailClosed();
+        testPersistedSettlementTerminalCleanup();
         testReturnAvailabilityAndRetreat();
         testDeliverableReturnWaitsForSettlementVisualClose();
         testHostIntentRevisionAndIdempotency();
@@ -2698,6 +2703,209 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "duplicate close proof cannot replay task navigation");
     }
 
+    private static function testPreparedSettlementPersistsWithoutReroll():Void {
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
+        assertTrue(StageRunSession.begin("持久化冻结", "困难"),
+            "persistent settlement begins from an ordinary stage run");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.prepareSettlement(),
+            "prepare writes the frozen settlement into save ext");
+        var state:Object = StageRunSession.testOnlySnapshot();
+        var inventory:Object = state.inventory;
+        var store:Object = _root._saveExt.stageSettlement;
+        var settlementId:String = String(store.pending.settlementId);
+        assertTrue(store.v == 1 && store.nextSeq == 2
+                && settlementId == "stage.settlement.1",
+            "first persisted settlement receives a stable monotonic identity");
+        assertTrue(store.pending.manifest.length == 1
+                && store.pending.remainingManifest.length == 1
+                && store.pending.report.outcome == "victory",
+            "pending record freezes manifest, remaining inventory, and report");
+        assertTrue(_root.存档系统.dirtyMark === true,
+            "ext persistence marks the save dirty without pretending it was flushed");
+
+        _root.关卡可获得奖励品 = [];
+        assertTrue(StageRunSession.prepareSettlement(),
+            "repeated prepare reuses the already materialized settlement");
+        state = StageRunSession.testOnlySnapshot();
+        store = _root._saveExt.stageSettlement;
+        assertTrue(state.inventory === inventory && state.inventory.size() == 1,
+            "prepare retry never rerolls or replaces the reward inventory");
+        assertTrue(String(store.pending.settlementId) == settlementId
+                && store.nextSeq == 2 && store.pending.manifest.length == 1,
+            "prepare retry reuses the same id and immutable manifest");
+    }
+
+    private static function testReturnRequiresDurableSettlementFlush():Void {
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
+        _root.__stageRunSessionTestFlushCalls = 0;
+        _root.强制存盘 = function():Boolean {
+            _root.__stageRunSessionTestFlushCalls++;
+            return _root.__stageRunSessionTestFlushCalls >= 2;
+        };
+        assertTrue(StageRunSession.begin("持久化退场门", "困难"),
+            "durable return fixture begins from an ordinary stage run");
+        StageRunSession.finish("victory");
+        assertFalse(StageRunSession.onReturnBaseStarted(),
+            "return is denied when the first durable save reports false");
+        var first:Object = StageRunSession.testOnlySnapshot();
+        var inventory:Object = first.inventory;
+        var settlementId:String = String(first.settlementId);
+        assertTrue(first.returnRequested === false && inventory != null
+                && inventory.size() == 1
+                && _root._saveExt.stageSettlement.pending.settlementId == settlementId,
+            "failed flush preserves the exact prepared and pending settlement before transition");
+
+        _root.关卡可获得奖励品 = [];
+        assertTrue(StageRunSession.onReturnBaseStarted(),
+            "same return request succeeds after the durable save retry reports true");
+        var second:Object = StageRunSession.testOnlySnapshot();
+        assertTrue(_root.__stageRunSessionTestFlushCalls == 2
+                && second.returnRequested === true
+                && second.inventory === inventory
+                && String(second.settlementId) == settlementId
+                && second.inventory.size() == 1,
+            "durable retry reuses one settlement id and reward object without rerolling");
+        delete _root.__stageRunSessionTestFlushCalls;
+    }
+
+    private static function testPersistedSettlementProgressAndRestartRestore():Void {
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[REWARD, 1, 1], [REWARD, 1, 1]];
+        StageRunSession.begin("重启恢复", "挑战");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.prepareSettlement(),
+            "restart fixture persists two exact reward slots");
+        var state:Object = StageRunSession.testOnlySnapshot();
+        var settlementId:String = String(state.settlementId);
+        var remaining:ArrayInventory = state.inventory;
+        remaining.remove(0);
+        var receipt:Object = {
+            kind:"claim", fingerprint:"loot_to_player|bag|slot.0",
+            authorityRevision:3
+        };
+        var progress:Object = StageRunSession.recordSettlementProgress(
+            settlementId, "claim.restart.1", remaining, receipt);
+        assertTrue(progress.success === true && progress.duplicate === false
+                && progress.remainingCount == 1,
+            "claim progress stores exact remaining inventory and first receipt");
+        var duplicate:Object = StageRunSession.recordSettlementProgress(
+            settlementId, "claim.restart.1", remaining, receipt);
+        assertTrue(duplicate.success === true && duplicate.duplicate === true,
+            "same operation id and result is an idempotent persistence success");
+        var stagnant:Object = StageRunSession.recordSettlementProgress(
+            settlementId, "claim.restart.stagnant", remaining, {
+                kind:"claim", fingerprint:"loot_to_player|bag|slot.1",
+                authorityRevision:4
+            });
+        assertEquals("invalid_remaining_inventory", stagnant.error,
+            "a new claim receipt cannot persist without removing exactly one current reward");
+        var persistedReceipt:Object = StageRunSession.getPersistedSettlementReceipt(
+            settlementId, "claim.restart.1");
+        var allReceipts:Object = StageRunSession.getPersistedSettlementReceipts(settlementId);
+        assertTrue(persistedReceipt.success === true && persistedReceipt.found === true
+                && persistedReceipt.receipt.authorityRevision == 3
+                && persistedReceipt.receipt.remainingCount == 1
+                && allReceipts.success === true && allReceipts.receipts.length == 1
+                && allReceipts.originalCount == 2 && allReceipts.remainingCount == 1
+                && allReceipts.receipts[0].operationId == "claim.restart.1",
+            "persisted receipt can seed claim idempotency after process restart");
+
+        remaining.remove(1);
+        var conflict:Object = StageRunSession.recordSettlementProgress(
+            settlementId, "claim.restart.1", remaining, receipt);
+        assertEquals("operation_conflict", conflict.error,
+            "same operation id cannot be rebound to a different remaining manifest");
+
+        StageRunSession.resetForRestart();
+        var restored:Object = StageRunSession.restorePendingSettlement();
+        state = StageRunSession.testOnlySnapshot();
+        assertTrue(restored.success === true && restored.restored === true
+                && restored.remainingCount == 1 && restored.receiptCount == 1,
+            "restart restores one exact pending reward and its receipt journal");
+        assertTrue(state.inventory.size() == 1 && state.inventory.getItem(0) == null
+                && state.inventory.getItem(1).name == REWARD,
+            "remaining manifest rebuilds BaseItem objects at their original physical slots");
+        assertTrue(state.report.outcome == "victory" && state.outcome == "victory"
+                && state.settlement == "rewards_pending"
+                && state.returnRequested === true,
+            "restart restores report/run authority as a resumable base settlement");
+        assertFalse(StageRunSession.canStartStage(),
+            "restored pending settlement blocks a new stage overwrite");
+        var secondRestore:Object = StageRunSession.restorePendingSettlement();
+        assertTrue(secondRestore.success === true && secondRestore.duplicate === true,
+            "duplicate restore preserves the existing in-memory authority");
+    }
+
+    private static function testPersistedSettlementVersionsFailClosed():Void {
+        resetWorld(0);
+        var future:Object = {v:2, nextSeq:1, pending:{future:true}};
+        _root._saveExt.stageSettlement = future;
+        var restored:Object = StageRunSession.restorePendingSettlement();
+        assertEquals("future_settlement_store_version", restored.error,
+            "future settlement schema fails closed under an older runtime");
+        assertTrue(StageRunSession.hasPersistedSettlementPending(),
+            "unknown future settlement authority remains an admission blocker");
+        assertFalse(StageRunSession.begin("禁止覆盖未来档", "简单"),
+            "future pending schema cannot be overwritten by a new run");
+        assertTrue(_root._saveExt.stageSettlement === future,
+            "future store is preserved byte-structure-wise instead of downgraded");
+
+        StageRunSession.testOnlyReset();
+        var malformed:Object = {v:1, nextSeq:1, pending:{v:1}};
+        _root._saveExt.stageSettlement = malformed;
+        restored = StageRunSession.restorePendingSettlement();
+        assertEquals("malformed_persisted_settlement", restored.error,
+            "malformed current-version pending record fails closed");
+        assertTrue(StageRunSession.hasPersistedSettlementPending(),
+            "malformed pending record still blocks destructive overwrite");
+        assertFalse(StageRunSession.begin("禁止覆盖畸形档", "简单"),
+            "malformed pending record closes stage admission");
+        assertTrue(_root._saveExt.stageSettlement === malformed,
+            "malformed store remains untouched for diagnosis and recovery");
+    }
+
+    private static function testPersistedSettlementTerminalCleanup():Void {
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
+        StageRunSession.begin("终态清理一", "简单");
+        StageRunSession.finish("victory");
+        StageRunSession.onReturnBaseStarted();
+        var settlementId:String = String(StageRunSession.testOnlySnapshot().settlementId);
+        var cleared:Object = StageRunSession.clearPersistedSettlement(
+            settlementId, "claimed", {
+                operationId:"close.terminal.1", kind:"close",
+                fingerprint:"close|consume", authorityRevision:5
+            });
+        var store:Object = _root._saveExt.stageSettlement;
+        assertTrue(cleared.success === true && cleared.duplicate === false,
+            "terminal persistence clears pending with an explicit success result");
+        assertTrue(store.pending == null && store.lastTerminal.settlementId == settlementId
+                && store.lastTerminal.terminalState == "claimed"
+                && store.lastTerminal.receipt.operationId == "close.terminal.1",
+            "terminal marker preserves the last exact receipt without retaining rewards");
+        var duplicate:Object = StageRunSession.clearPersistedSettlement(
+            settlementId, "claimed", null);
+        assertTrue(duplicate.success === true && duplicate.duplicate === true,
+            "repeated terminal cleanup is idempotent after pending removal");
+        var conflict:Object = StageRunSession.clearPersistedSettlement(
+            settlementId, "abandoned", null);
+        assertFalse(conflict.success,
+            "a cleared settlement cannot be relabeled with a conflicting terminal state");
+
+        StageRunSession.onSettlementState("CONSUMED", 0);
+        assertTrue(StageRunSession.begin("终态清理二", "简单"),
+            "terminal in-memory and persisted cleanup reopen stage admission");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.prepareSettlement(),
+            "next stage can persist a new settlement after terminal cleanup");
+        assertEquals("stage.settlement.2",
+            StageRunSession.testOnlySnapshot().settlementId,
+            "terminal cleanup retains the monotonic sequence for the next settlement");
+    }
+
     private static function testHostIntentRevisionAndIdempotency():Void {
         resetWorld(2);
         installHero("success");
@@ -2782,6 +2990,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         };
         if (reviveCoins > 0) _root.收集品栏.材料.add(REVIVE, reviveCoins);
         _root.存档系统 = {dirtyMark:false};
+        _root._saveExt = {};
+        _root.强制存盘 = function():Boolean { return true; };
         _root.金钱 = 0;
         _root.虚拟币 = 0;
         _root.经验值 = 0;
@@ -2832,6 +3042,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             inventory:_root.物品栏,
             collection:_root.收集品栏,
             saveSystem:_root.存档系统,
+            saveExt:_root._saveExt,
+            forceSave:_root.强制存盘,
             money:_root.金钱,
             virtualCurrency:_root.虚拟币,
             experience:_root.经验值,
@@ -2866,6 +3078,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.物品栏 = _backup.inventory;
         _root.收集品栏 = _backup.collection;
         _root.存档系统 = _backup.saveSystem;
+        _root._saveExt = _backup.saveExt;
+        _root.强制存盘 = _backup.forceSave;
         _root.金钱 = _backup.money;
         _root.虚拟币 = _backup.virtualCurrency;
         _root.经验值 = _backup.experience;

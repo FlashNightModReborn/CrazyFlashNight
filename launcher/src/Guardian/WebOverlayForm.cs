@@ -75,6 +75,129 @@ namespace CF7Launcher.Guardian
 
         private static readonly uint _ourPid = (uint)System.Diagnostics.Process.GetCurrentProcess().Id;
 
+        internal enum SessionForegroundKind
+        {
+            Null,
+            Owner,
+            OwnerTree,
+            Overlay,
+            OverlayTree,
+            GuardianProcess,
+            External
+        }
+
+        internal readonly struct SessionForegroundSnapshot
+        {
+            internal SessionForegroundSnapshot(
+                IntPtr foregroundHwnd,
+                uint foregroundPid,
+                SessionForegroundKind kind)
+            {
+                ForegroundHwnd = foregroundHwnd;
+                ForegroundPid = foregroundPid;
+                Kind = kind;
+            }
+
+            internal IntPtr ForegroundHwnd { get; }
+            internal uint ForegroundPid { get; }
+            internal SessionForegroundKind Kind { get; }
+
+            internal bool IsSessionOwned
+            {
+                get
+                {
+                    return Kind != SessionForegroundKind.Null
+                        && Kind != SessionForegroundKind.External;
+                }
+            }
+
+            internal string OwnershipLabel
+            {
+                get
+                {
+                    if (Kind == SessionForegroundKind.Null) return "null";
+                    return IsSessionOwned ? "session" : "external";
+                }
+            }
+
+            internal string KindLabel
+            {
+                get
+                {
+                    switch (Kind)
+                    {
+                        case SessionForegroundKind.Owner: return "owner";
+                        case SessionForegroundKind.OwnerTree: return "owner_tree";
+                        case SessionForegroundKind.Overlay: return "overlay";
+                        case SessionForegroundKind.OverlayTree: return "overlay_tree";
+                        case SessionForegroundKind.GuardianProcess: return "guardian_process";
+                        case SessionForegroundKind.External: return "external";
+                        default: return "null";
+                    }
+                }
+            }
+        }
+
+        internal readonly struct PanelCloseFocusTraceContext
+        {
+            internal PanelCloseFocusTraceContext(
+                int generation,
+                string panelTag,
+                long startedAt)
+            {
+                Generation = generation;
+                PanelTag = panelTag ?? "?";
+                StartedAt = startedAt;
+            }
+
+            internal int Generation { get; }
+            internal string PanelTag { get; }
+            internal long StartedAt { get; }
+            internal bool IsValid
+            {
+                get { return Generation > 0 && StartedAt > 0; }
+            }
+
+            internal bool Matches(int generation, string panelTag)
+            {
+                return IsValid
+                    && Generation == generation
+                    && string.Equals(
+                        PanelTag,
+                        panelTag ?? "?",
+                        StringComparison.Ordinal);
+            }
+        }
+
+        internal static PanelCloseFocusTraceContext
+            SelectUniquePanelCloseFocusTrace(
+                IReadOnlyList<PanelCloseFocusTraceContext> pending,
+                string panelTag,
+                out int matchCount)
+        {
+            matchCount = 0;
+            PanelCloseFocusTraceContext match =
+                default(PanelCloseFocusTraceContext);
+            if (pending == null) return match;
+
+            string expectedPanel = panelTag ?? "?";
+            for (int i = 0; i < pending.Count; i++)
+            {
+                PanelCloseFocusTraceContext candidate = pending[i];
+                if (!candidate.IsValid
+                    || !string.Equals(
+                        candidate.PanelTag,
+                        expectedPanel,
+                        StringComparison.Ordinal))
+                    continue;
+                matchCount++;
+                match = candidate;
+            }
+            return matchCount == 1
+                ? match
+                : default(PanelCloseFocusTraceContext);
+        }
+
         // Desktop cursor 的前台判定要覆盖两种同一游戏会话状态：
         // 1. Guardian/overlay/native cursor 等同进程窗口成为 foreground。
         // 2. 嵌入后的 Flash 子窗口仍短暂保留 foreground，PID 可能仍是 Flash 进程。
@@ -88,28 +211,81 @@ namespace CF7Launcher.Guardian
             IntPtr ownerHwnd,
             IntPtr overlayHwnd)
         {
-            IntPtr fg = GetForegroundWindow();
-            if (fg == IntPtr.Zero) return false;
-            uint pid;
-            GetWindowThreadProcessId(fg, out pid);
-
-            bool foregroundInOwnerTree = ownerHwnd != IntPtr.Zero
-                && (fg == ownerHwnd || IsChild(ownerHwnd, fg));
-            bool foregroundInOverlayTree = overlayHwnd != IntPtr.Zero
-                && (fg == overlayHwnd || IsChild(overlayHwnd, fg));
-
-            return IsDesktopCursorForegroundAccepted(
-                pid,
-                _ourPid,
-                foregroundInOwnerTree || foregroundInOverlayTree);
+            return CaptureSessionForegroundSnapshot(ownerHwnd, overlayHwnd)
+                .IsSessionOwned;
         }
 
-        internal static bool IsDesktopCursorForegroundAccepted(uint foregroundPid, uint ourPid, bool foregroundInOwnerTree)
+        internal static SessionForegroundSnapshot CaptureSessionForegroundSnapshot(
+            IntPtr ownerHwnd,
+            IntPtr overlayHwnd)
         {
-            if (foregroundPid != 0 && foregroundPid == ourPid)
-                return true;
+            IntPtr fg = GetForegroundWindow();
+            uint pid;
+            pid = 0;
+            if (fg != IntPtr.Zero)
+                GetWindowThreadProcessId(fg, out pid);
 
-            return foregroundInOwnerTree;
+            bool foregroundIsOwner = ownerHwnd != IntPtr.Zero && fg == ownerHwnd;
+            bool foregroundInOwnerTree = ownerHwnd != IntPtr.Zero
+                && fg != IntPtr.Zero && !foregroundIsOwner && IsChild(ownerHwnd, fg);
+            bool foregroundIsOverlay = overlayHwnd != IntPtr.Zero && fg == overlayHwnd;
+            bool foregroundInOverlayTree = overlayHwnd != IntPtr.Zero
+                && fg != IntPtr.Zero && !foregroundIsOverlay && IsChild(overlayHwnd, fg);
+
+            return ClassifySessionForeground(
+                fg,
+                pid,
+                _ourPid,
+                foregroundIsOwner,
+                foregroundInOwnerTree,
+                foregroundIsOverlay,
+                foregroundInOverlayTree);
+        }
+
+        internal static SessionForegroundSnapshot ClassifySessionForeground(
+            IntPtr foregroundHwnd,
+            uint foregroundPid,
+            uint guardianPid,
+            bool foregroundIsOwner,
+            bool foregroundInOwnerTree,
+            bool foregroundIsOverlay,
+            bool foregroundInOverlayTree)
+        {
+            SessionForegroundKind kind;
+            if (foregroundHwnd == IntPtr.Zero)
+                kind = SessionForegroundKind.Null;
+            else if (foregroundIsOverlay)
+                kind = SessionForegroundKind.Overlay;
+            else if (foregroundInOverlayTree)
+                kind = SessionForegroundKind.OverlayTree;
+            else if (foregroundIsOwner)
+                kind = SessionForegroundKind.Owner;
+            else if (foregroundInOwnerTree)
+                // 嵌入的 Flash HWND 仍可能属于 Flash 进程，但一定在 owner 树内。
+                kind = SessionForegroundKind.OwnerTree;
+            else if (foregroundPid != 0 && foregroundPid == guardianPid)
+                kind = SessionForegroundKind.GuardianProcess;
+            else
+                kind = SessionForegroundKind.External;
+
+            return new SessionForegroundSnapshot(
+                foregroundHwnd,
+                foregroundPid,
+                kind);
+        }
+
+        internal static string ClassifyPanelCloseHandoffTransition(
+            SessionForegroundSnapshot before,
+            SessionForegroundSnapshot after)
+        {
+            if (after.Kind == SessionForegroundKind.Null) return "null";
+            if (!after.IsSessionOwned) return "external";
+            if (!before.IsSessionOwned) return "session_from_non_session";
+            if (before.ForegroundHwnd != after.ForegroundHwnd
+                || before.Kind != after.Kind)
+                // 同步包围 SW_HIDE 的观测只能证明“内部交接候选”，不把它冒充用户意图。
+                return "self_hide_session_transfer_candidate";
+            return "session_stable";
         }
 
         internal static bool TryInvokePanelCloseFocusRestore(
@@ -1003,6 +1179,10 @@ namespace CF7Launcher.Guardian
         private bool _panelCloseFocusEligibilityCaptured;
         private bool _panelCloseFocusEligible;
         private int _panelSettledFocusRestoreConsumedGeneration;
+        private readonly object _panelCloseFocusTraceSync = new object();
+        private readonly List<PanelCloseFocusTraceContext>
+            _panelCloseFocusPendingSettledTraces =
+                new List<PanelCloseFocusTraceContext>();
 
         // 面板系统
         private ShopTask _shopTask;
@@ -4050,16 +4230,11 @@ namespace CF7Launcher.Guardian
             string foregroundState = "query_failed";
             try
             {
-                foregroundHwnd = GetForegroundWindow();
-                uint foregroundPid = 0;
-                if (foregroundHwnd != IntPtr.Zero)
-                    GetWindowThreadProcessId(foregroundHwnd, out foregroundPid);
-                bool foregroundInOwnerTree = _owner != null && _owner.IsHandleCreated
-                    && (foregroundHwnd == _owner.Handle
-                        || IsChild(_owner.Handle, foregroundHwnd));
-                foregroundEligible = IsDesktopCursorForegroundAccepted(
-                    foregroundPid, _ourPid, foregroundInOwnerTree);
-                foregroundState = foregroundEligible ? "session" : "external";
+                SessionForegroundSnapshot foreground =
+                    CaptureCurrentSessionForegroundSnapshot();
+                foregroundHwnd = foreground.ForegroundHwnd;
+                foregroundEligible = foreground.IsSessionOwned;
+                foregroundState = foreground.OwnershipLabel + "/" + foreground.KindLabel;
             }
             catch (Exception ex)
             {
@@ -4211,6 +4386,133 @@ namespace CF7Launcher.Guardian
             DoForceIdleSequence(closingPanelName);
         }
 
+        private SessionForegroundSnapshot CaptureCurrentSessionForegroundSnapshot()
+        {
+            IntPtr ownerHwnd = _owner != null && _owner.IsHandleCreated
+                ? _owner.Handle : IntPtr.Zero;
+            IntPtr overlayHwnd = IsHandleCreated ? Handle : IntPtr.Zero;
+            return CaptureSessionForegroundSnapshot(ownerHwnd, overlayHwnd);
+        }
+
+        private void RegisterPanelCloseFocusTraceForSettled(
+            PanelCloseFocusTraceContext trace)
+        {
+            if (!trace.IsValid) return;
+            lock (_panelCloseFocusTraceSync)
+            {
+                _panelCloseFocusPendingSettledTraces.Add(trace);
+            }
+        }
+
+        private PanelCloseFocusTraceContext ResolvePanelCloseFocusTraceForStage(
+            int expectedGeneration,
+            string panelTag,
+            string stage)
+        {
+            PanelCloseFocusTraceContext trace;
+            int matchCount;
+            string matchingGenerations = string.Empty;
+            lock (_panelCloseFocusTraceSync)
+            {
+                trace = SelectUniquePanelCloseFocusTrace(
+                    _panelCloseFocusPendingSettledTraces,
+                    panelTag,
+                    out matchCount);
+                for (int i = _panelCloseFocusPendingSettledTraces.Count - 1;
+                    i >= 0;
+                    i--)
+                {
+                    PanelCloseFocusTraceContext candidate =
+                        _panelCloseFocusPendingSettledTraces[i];
+                    if (!candidate.IsValid
+                        || !string.Equals(
+                            candidate.PanelTag,
+                            panelTag ?? "?",
+                            StringComparison.Ordinal))
+                        continue;
+                    matchingGenerations = candidate.Generation
+                        + (matchingGenerations.Length == 0
+                            ? string.Empty
+                            : "," + matchingGenerations);
+                    _panelCloseFocusPendingSettledTraces.RemoveAt(i);
+                }
+            }
+
+            if (matchCount == 1)
+                return trace;
+
+            LogManager.Log("[PanelFocusHandoff] generation=unbound"
+                + " panel=" + (panelTag ?? "?")
+                + " stage=" + stage
+                + " result=stale_stage_rejected"
+                + " expected_generation=" + expectedGeneration
+                + " pending_matches=" + matchCount
+                + " pending_generations="
+                + (matchingGenerations.Length == 0
+                    ? "none"
+                    : matchingGenerations));
+            return default(PanelCloseFocusTraceContext);
+        }
+
+        private bool TryCapturePanelCloseForeground(
+            PanelCloseFocusTraceContext trace,
+            string stage,
+            string detail,
+            out SessionForegroundSnapshot snapshot)
+        {
+            try
+            {
+                snapshot = CaptureCurrentSessionForegroundSnapshot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                snapshot = default(SessionForegroundSnapshot);
+                LogPanelCloseFocusTraceFailure(trace, stage, detail, ex);
+                return false;
+            }
+        }
+
+        private void LogPanelCloseFocusTrace(
+            PanelCloseFocusTraceContext trace,
+            string stage,
+            SessionForegroundSnapshot snapshot,
+            string detail = null)
+        {
+            if (!trace.IsValid) return;
+            string suffix = string.IsNullOrEmpty(detail) ? string.Empty : " " + detail;
+            double elapsedMs = ElapsedMs(trace.StartedAt);
+            LogManager.Log("[PanelFocusHandoff] generation="
+                + trace.Generation
+                + " panel=" + trace.PanelTag
+                + " stage=" + stage
+                + " elapsed=" + FormatMs(elapsedMs) + "ms"
+                + " foreground=" + snapshot.OwnershipLabel
+                + " kind=" + snapshot.KindLabel
+                + " hwnd=0x" + snapshot.ForegroundHwnd.ToString("X")
+                + " pid=" + snapshot.ForegroundPid
+                + suffix);
+        }
+
+        private void LogPanelCloseFocusTraceFailure(
+            PanelCloseFocusTraceContext trace,
+            string stage,
+            string detail,
+            Exception error)
+        {
+            if (!trace.IsValid) return;
+            string suffix = string.IsNullOrEmpty(detail) ? string.Empty : " " + detail;
+            double elapsedMs = ElapsedMs(trace.StartedAt);
+            LogManager.Log("[PanelFocusHandoff] generation="
+                + trace.Generation
+                + " panel=" + trace.PanelTag
+                + " stage=" + stage
+                + " elapsed=" + FormatMs(elapsedMs) + "ms"
+                + " foreground=query_failed"
+                + suffix
+                + " error=" + error.Message);
+        }
+
         /// <summary>
         /// PanelHost 完成 shield、HUD、toast 与 cursor 收尾后的最终焦点归还。
         /// SuspendAfterPanel 中的早期归还仍作为异常/独立路径兜底；此方法
@@ -4220,20 +4522,26 @@ namespace CF7Launcher.Guardian
             string closingPanelName = null)
         {
             string panelTag = closingPanelName ?? "?";
-            bool currentSessionForeground = false;
-            try
+            PanelCloseFocusTraceContext trace =
+                ResolvePanelCloseFocusTraceForStage(
+                    _panelCloseFocusGeneration,
+                    panelTag,
+                    "settled_gate");
+            SessionForegroundSnapshot currentForeground;
+            bool foregroundCaptured = TryCapturePanelCloseForeground(
+                trace,
+                "settled_gate",
+                "attempt=settled",
+                out currentForeground);
+            bool currentSessionForeground = foregroundCaptured
+                && currentForeground.IsSessionOwned;
+            if (foregroundCaptured)
             {
-                IntPtr ownerHwnd = _owner != null && _owner.IsHandleCreated
-                    ? _owner.Handle : IntPtr.Zero;
-                IntPtr overlayHwnd = IsHandleCreated ? Handle : IntPtr.Zero;
-                currentSessionForeground =
-                    IsDesktopCursorSessionForeground(ownerHwnd, overlayHwnd);
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[PanelFocus] settled foreground query failed panel="
-                    + panelTag + " generation=" + _panelSessionGeneration
-                    + " error=" + ex.Message);
+                LogPanelCloseFocusTrace(
+                    trace,
+                    "settled_gate",
+                    currentForeground,
+                    "attempt=settled");
             }
 
             bool closeEligible = _panelCloseFocusEligibilityCaptured
@@ -4244,17 +4552,32 @@ namespace CF7Launcher.Guardian
                     closeEligible,
                     currentSessionForeground,
                     ref _panelSettledFocusRestoreConsumedGeneration))
+            {
+                if (foregroundCaptured)
+                {
+                    LogPanelCloseFocusTrace(
+                        trace,
+                        "restore_result",
+                        currentForeground,
+                        "attempt=settled result=gate_skipped close_eligible="
+                            + closeEligible
+                            + " consumed_generation="
+                            + _panelSettledFocusRestoreConsumedGeneration);
+                }
                 return false;
+            }
             return TryRestoreFlashInputFocusAfterPanelCloseCore(
                 "panel_close:settled:" + panelTag,
                 "webOverlay.idle.settled.restore_focus.start",
-                panelTag);
+                panelTag,
+                trace);
         }
 
         private bool TryRestoreFlashInputFocusAfterPanelCloseCore(
             string reason,
             string perfEvent,
-            string panelTag)
+            string panelTag,
+            PanelCloseFocusTraceContext trace)
         {
             if (_disposed || _panelMode || !_panelTakeForeground
                 || _flashFocusRestorer == null)
@@ -4272,82 +4595,111 @@ namespace CF7Launcher.Guardian
             // real scheduling window in which the user can switch to QQ/browser. Re-read
             // foreground immediately before the restoring primitive so the early idle
             // path cannot steal focus from that newer external owner.
-            bool currentSessionForeground = false;
-            try
-            {
-                IntPtr ownerHwnd = _owner != null && _owner.IsHandleCreated
-                    ? _owner.Handle : IntPtr.Zero;
-                IntPtr overlayHwnd = IsHandleCreated ? Handle : IntPtr.Zero;
-                currentSessionForeground =
-                    IsDesktopCursorSessionForeground(ownerHwnd, overlayHwnd);
-            }
-            catch (Exception ex)
+            string attempt = reason.IndexOf(":settled:", StringComparison.Ordinal) >= 0
+                ? "settled" : "idle";
+            SessionForegroundSnapshot currentForeground;
+            if (!TryCapturePanelCloseForeground(
+                    trace,
+                    "restore_before",
+                    "attempt=" + attempt,
+                    out currentForeground))
             {
                 LogManager.Log("[PanelFocus] live foreground query failed panel="
-                    + panelTag + " generation=" + _panelSessionGeneration
-                    + " error=" + ex.Message);
+                    + panelTag + " generation=" + _panelSessionGeneration);
                 return false;
             }
+            LogPanelCloseFocusTrace(
+                trace,
+                "restore_before",
+                currentForeground,
+                "attempt=" + attempt);
+            bool currentSessionForeground = currentForeground.IsSessionOwned;
             if (!currentSessionForeground)
             {
                 LogManager.Log("[PanelFocus] restore skipped panel=" + panelTag
                     + " generation=" + _panelSessionGeneration
-                    + " foreground=external");
+                    + " foreground=" + currentForeground.OwnershipLabel
+                    + " kind=" + currentForeground.KindLabel);
+                LogPanelCloseFocusTrace(
+                    trace,
+                    "restore_result",
+                    currentForeground,
+                    "attempt=" + attempt + " result=skipped_"
+                        + currentForeground.OwnershipLabel);
                 return false;
             }
 
             try
             {
                 PerfTrace.Mark(perfEvent, panelTag);
-                return TryInvokePanelCloseFocusRestore(
+                bool restored = TryInvokePanelCloseFocusRestore(
                     _disposed,
                     _panelMode,
                     _panelTakeForeground,
                     currentSessionForeground,
                     _flashFocusRestorer,
                     reason);
+                LogPanelCloseFocusTrace(
+                    trace,
+                    "restore_result",
+                    currentForeground,
+                    "attempt=" + attempt + " result="
+                        + (restored ? "success" : "failed"));
+                return restored;
             }
             catch (Exception ex)
             {
+                LogPanelCloseFocusTrace(
+                    trace,
+                    "restore_result",
+                    currentForeground,
+                    "attempt=" + attempt + " result=throw");
                 LogManager.Log("[Panel] restore-flash-foreground throw reason="
                     + reason + ": " + ex.Message);
                 return false;
             }
         }
 
-        private void CapturePanelCloseFocusEligibility(string panelTag)
+        private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(
+            string panelTag)
         {
             _panelCloseFocusGeneration = _panelSessionGeneration;
             _panelCloseFocusEligibilityCaptured = true;
             _panelCloseFocusEligible = false;
+            PanelCloseFocusTraceContext trace =
+                new PanelCloseFocusTraceContext(
+                    _panelSessionGeneration,
+                    panelTag,
+                    Stopwatch.GetTimestamp());
 
             if (!_panelMode || _panelSessionGeneration <= 0)
             {
                 LogManager.Log("[PanelFocus] close eligibility panel=" + panelTag
                     + " generation=" + _panelSessionGeneration
                     + " foreground=no_active_panel");
-                return;
+                return trace;
             }
 
-            try
+            RegisterPanelCloseFocusTraceForSettled(trace);
+            SessionForegroundSnapshot closeForeground;
+            if (TryCapturePanelCloseForeground(
+                    trace,
+                    "close_start",
+                    "eligibility=capture",
+                    out closeForeground))
             {
-                IntPtr ownerHwnd = _owner != null && _owner.IsHandleCreated
-                    ? _owner.Handle : IntPtr.Zero;
-                IntPtr overlayHwnd = IsHandleCreated
-                    ? Handle : IntPtr.Zero;
-                _panelCloseFocusEligible =
-                    IsDesktopCursorSessionForeground(ownerHwnd, overlayHwnd);
+                _panelCloseFocusEligible = closeForeground.IsSessionOwned;
+                LogPanelCloseFocusTrace(
+                    trace,
+                    "close_start",
+                    closeForeground,
+                    "eligibility=" + (_panelCloseFocusEligible ? "accepted" : "rejected"));
                 LogManager.Log("[PanelFocus] close eligibility panel=" + panelTag
                     + " generation=" + _panelSessionGeneration
-                    + " foreground="
-                    + (_panelCloseFocusEligible ? "session" : "external"));
+                    + " foreground=" + closeForeground.OwnershipLabel
+                    + " kind=" + closeForeground.KindLabel);
             }
-            catch (Exception ex)
-            {
-                LogManager.Log("[PanelFocus] close eligibility query failed panel="
-                    + panelTag + " generation=" + _panelSessionGeneration
-                    + " error=" + ex.Message);
-            }
+            return trace;
         }
 
         /// <summary>
@@ -4397,7 +4749,8 @@ namespace CF7Launcher.Guardian
             // 必须在 SW_HIDE / _panelMode=false 之前冻结本次 close 的前台归属。
             // 正常 panel 前台随后即使由 Windows 自动切给 Flash 仍可恢复；若此刻已是
             // QQ/浏览器等外部前台，idle 与 settled 两条路径都复用 false，绝不抢回。
-            CapturePanelCloseFocusEligibility(panelTag);
+            PanelCloseFocusTraceContext trace =
+                CapturePanelCloseFocusEligibility(panelTag);
             _panelMode = false;
             _panelFocusRestoreGate.EndPanel();
 
@@ -4406,7 +4759,7 @@ namespace CF7Launcher.Guardian
             // 整个 SW_HIDE WebView2 + TrySuspendAsync 安全 → 拿回 ~15pp DWM α 地板成本。
             try
             {
-                DoFullIdleSuspend(closingPanelName);
+                DoFullIdleSuspend(closingPanelName, trace);
             }
             finally
             {
@@ -4448,7 +4801,9 @@ namespace CF7Launcher.Guardian
         /// 完整 idle 冻结：SW_HIDE + 恢复 EX_STYLE + 停 timer + 冻结 HandleUiData + TrySuspendAsync。
         /// 常驻 HUD 由 NativeHud widget 渲染，玩家在 panel 关闭期间仍能看到 notch/toolbar/退出按钮。
         /// </summary>
-        private void DoFullIdleSuspend(string closingPanelName)
+        private void DoFullIdleSuspend(
+            string closingPanelName,
+            PanelCloseFocusTraceContext trace)
         {
             string panelTag = closingPanelName ?? "?";
             long stepStart;
@@ -4468,7 +4823,42 @@ namespace CF7Launcher.Guardian
             // 3) SW_HIDE
             stepStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("webOverlay.idle.full.sw_hide.start", panelTag);
+            SessionForegroundSnapshot hideBefore =
+                default(SessionForegroundSnapshot);
+            bool hideBeforeCaptured = trace.IsValid
+                && TryCapturePanelCloseForeground(
+                    trace,
+                    "hide_before",
+                    "trigger=sw_hide",
+                    out hideBefore);
+            if (hideBeforeCaptured)
+            {
+                LogPanelCloseFocusTrace(
+                    trace,
+                    "hide_before",
+                    hideBefore,
+                    "trigger=sw_hide");
+            }
             try { ShowWindow(this.Handle, SW_HIDE); } catch { }
+            SessionForegroundSnapshot hideAfter;
+            if (trace.IsValid
+                && TryCapturePanelCloseForeground(
+                    trace,
+                    "hide_after",
+                    "trigger=sw_hide",
+                    out hideAfter))
+            {
+                string transition = hideBeforeCaptured
+                    ? ClassifyPanelCloseHandoffTransition(
+                        hideBefore,
+                        hideAfter)
+                    : "before_query_failed";
+                LogPanelCloseFocusTrace(
+                    trace,
+                    "hide_after",
+                    hideAfter,
+                    "trigger=sw_hide transition=" + transition);
+            }
             LogIdleStepDuration("full.sw_hide", panelTag, stepStart, 25.0);
 
             // 4) 恢复 EX_STYLE：加回 WS_EX_LAYERED + WS_EX_TRANSPARENT + WS_EX_NOACTIVATE
@@ -4516,7 +4906,8 @@ namespace CF7Launcher.Guardian
                 TryRestoreFlashInputFocusAfterPanelCloseCore(
                     "panel_close:idle:" + panelTag,
                     "webOverlay.idle.full.restore_focus.start",
-                    panelTag);
+                    panelTag,
+                    trace);
                 LogIdleStepDuration("full.restore_focus", panelTag, stepStart, 25.0);
             }
         }

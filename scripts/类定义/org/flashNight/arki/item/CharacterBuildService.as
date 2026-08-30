@@ -8,6 +8,7 @@
  * 守住 captured pause lease。
  */
 import org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
+import org.flashNight.arki.item.DrugSlotAffinityService;
 
 class org.flashNight.arki.item.CharacterBuildService {
     private static var MAX_SAFE_STACK_QUANTITY:Number = 9007199254740991;
@@ -1457,6 +1458,10 @@ class org.flashNight.arki.item.CharacterBuildService {
             stackBefore:stackMerge ? Number(targetBefore.value) : 0,
             stackAfter:stackMerge ? mergedValue : 0
         };
+        var affinityPreflight:Object =
+            DrugSlotAffinityService.previewNormalized(
+                root(), _drugInventory);
+        if (!affinityPreflight.ok) return fail("service_not_ready");
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
         return commitDrugMutation(
@@ -1518,6 +1523,10 @@ class org.flashNight.arki.item.CharacterBuildService {
             stackBefore:stackMerge ? Number(targetBefore.value) : 0,
             stackAfter:stackMerge ? Number(destination.value) : 0
         };
+        var affinityPreflight:Object =
+            DrugSlotAffinityService.previewNormalized(
+                root(), _drugInventory);
+        if (!affinityPreflight.ok) return fail("service_not_ready");
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
         return commitDrugMutation(
@@ -1656,6 +1665,12 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (rawAfter <= _drugRawRevision) {
             return poison("needs_reconcile");
         }
+        var affinitySlot:Number = plan.target === _drugInventory
+            ? Number(plan.targetSlot) : Number(plan.sourceSlot);
+        var affinityCommit:Object =
+            DrugSlotAffinityService.recordManualSlots(
+                root(), _drugInventory, [affinitySlot], true);
+        if (!affinityCommit.success) return poison("needs_reconcile");
         _drugRawRevision = rawAfter;
         _drugRevision++;
         markSaveDirty();

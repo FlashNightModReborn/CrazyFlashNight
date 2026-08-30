@@ -239,6 +239,10 @@ function run() {
     const uiLibrary = read("flashswf/UI/基地特殊UI合集/LIBRARY/素材库-基地特殊UI.xml");
     const mainDocument = read("CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml");
     const assetSourceMap = read("data/items/asset_source_map.xml");
+    const characterCreation = read(
+      "scripts/类定义/org/flashNight/neur/Server/CharacterCreationService.as");
+    const characterCreateWeb = read(
+      "launcher/web/modules/bootstrap-character-create.js");
     assert((service.match(/_root\.gameCommands\["openHairdresser"\]\s*=/g) || []).length === 1,
       "expected one openHairdresser command registration");
     const openerPattern = new RegExp(
@@ -289,14 +293,18 @@ function run() {
       assert(!new RegExp("function\\s+" + name + "\\s*\\(").test(mainDocument),
         "retired global function must stay absent: " + name);
     });
-    assert((mainDocument.match(
-      /_root\.发型 = "发型-男式-黑暴走头";/g) || []).length === 1
-      && (mainDocument.match(
-        /_root\.发型 = "发型-女式-咖啡色中长马尾";/g) || []).length === 1,
-      "new-character male/female default hair writers must remain exact");
-    assert((mainDocument.match(/name="界面-发型选择[1-4]"/g) || []).length === 8
-      && (mainDocument.match(/控制值 = "发型";/g) || []).length === 2,
-      "new-character appearance selectors must remain outside hairdresser cleanup");
+    assert(!mainDocument.includes('_root.发型 = "发型-男式-黑暴走头";')
+      && !mainDocument.includes('_root.发型 = "发型-女式-咖啡色中长马尾";')
+      && !/name="界面-发型选择[1-4]"/.test(mainDocument)
+      && !mainDocument.includes('控制值 = "发型";'),
+      "retired main-timeline character creation hair writers/selectors must stay absent");
+    assert((characterCreation.match(
+      /hairIdentifier:"发型-男式-黑暴走头"/g) || []).length === 1
+      && (characterCreation.match(
+        /hairIdentifier:"发型-女式-咖啡色中长马尾"/g) || []).length === 1
+      && characterCreateWeb.includes(
+        "model.draft.hairIdentifier = snapshot.hairCatalog[index].identifier;"),
+      "Web draft selection and AS2 final commit must own new-character hair authority");
   });
 
   test("hairdresser Web activation remains exact and production-reachable", function () {

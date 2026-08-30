@@ -6,10 +6,12 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.LootContainerService;
 import org.flashNight.arki.item.LootContainerValidation;
 import org.flashNight.arki.item.LootClaimCommitCoordinator;
+import org.flashNight.arki.item.DrugSlotAffinityService;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.InformationCollection;
 import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.arki.scene.SceneManager;
+import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter;
 
 /** S1：瞬态 Web loot container 的 identity/lease/事务/挂起/终态回归。 */
@@ -42,12 +44,15 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testClaimBatchCommitsOnceAndIsIdempotent();
         testClaimBatchSkipsCapacityBlockedSources();
         testClaimBatchZeroWriteAndDuplicateSlotFence();
+        testDrugClaimRoutingAndAffinity();
         testClaimPendingEmptyQuery();
         testClaimPendingMergeQuery();
         testClaimPendingCollectionQuery();
         testPendingClaimRejectsOperationDrift();
         testPostCommitDirtyRetryGate();
         testPostCommitDestinationCacheRetry();
+        testDurableSaveRetryGate();
+        testPersistedSettlementJournalRehydration();
         testSceneTeardownPendingBarrier();
         testTransportDetachUnpauseLastItemRetry();
         testTransportDetachConflictStaysPending();
@@ -103,7 +108,9 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             materialDict:ItemUtil.materialDict,
             informationMaxValueDict:ItemUtil.informationMaxValueDict,
             modDict:EquipmentUtil.modDict,
-            levelCallback:_root.主角是否升级
+            levelCallback:_root.主角是否升级,
+            getItemData:_root.getItemData,
+            forceSave:_root.强制存盘
         };
         ItemUtil.itemDataDict = {};
         ItemUtil.equipmentDict = {};
@@ -147,6 +154,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         ItemUtil.informationMaxValueDict = _backup.informationMaxValueDict;
         EquipmentUtil.modDict = _backup.modDict;
         _root.主角是否升级 = _backup.levelCallback;
+        _root.getItemData = _backup.getItemData;
+        _root.强制存盘 = _backup.forceSave;
     }
 
     private static function resetWorld():Void {
@@ -156,6 +165,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         _root.gameworld = makeTestGameworld();
         _root.物品栏 = {
             背包:new ArrayInventory(null, 50),
+            药剂栏:new ArrayInventory(null, 8),
             仓库:new ArrayInventory(null, 1200),
             战备箱:new ArrayInventory(null, 400)
         };
@@ -167,6 +177,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         _root.task_chains_progress = {挑战:0};
         _root.基建系统 = {infrastructure:{越野车:false}};
         _root.存档系统 = {dirtyMark:false};
+        _root._saveExt = {drugLoadout:{version:2}};
         _root.金钱 = 100;
         _root.虚拟币 = 20;
         _root.经验值 = 30;
@@ -174,7 +185,15 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         _root.等级 = 1;
         _root._webPanelPauseLease = undefined;
         _root.__lootLevelChecks = 0;
+        _root.__lootSaveCalls = 0;
         _root.主角是否升级 = function():Void { _root.__lootLevelChecks++; };
+        _root.getItemData = function(itemKey:String):Object {
+            return ItemUtil.getRawItemData(itemKey);
+        };
+        _root.强制存盘 = function():Boolean {
+            _root.__lootSaveCalls++;
+            return true;
+        };
         InventoryPanelService.testOnlyReset();
         LootContainerService.testOnlyReset();
     }
@@ -287,7 +306,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
 
     private static function snapshot(flow:Object):Object {
         return LootContainerService.execute("snapshot", {
-            v:1,
+            v:2,
             chestSessionId:flow.active.chestSessionId,
             lootContainerId:flow.active.lootContainerId,
             containerEpoch:flow.active.containerEpoch,
@@ -300,14 +319,14 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var loot:Object = response.snapshots[0];
         var row:Object = loot.slots[slot];
         return {
-            v:1,
+            v:2,
             chestSessionId:response.chestSessionId,
             lootContainerId:response.lootContainerId,
             containerEpoch:response.containerEpoch,
             expectedAuthorityRevision:response.authorityRevision,
             operationId:operationId,
             direction:"loot_to_player",
-            targetContainerId:"背包",
+            targetContainerId:"自动",
             source:{
                 containerId:loot.containerId,
                 slot:row.physicalSlot,
@@ -331,21 +350,21 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             });
         }
         return {
-            v:1,
+            v:2,
             chestSessionId:response.chestSessionId,
             lootContainerId:response.lootContainerId,
             containerEpoch:response.containerEpoch,
             expectedAuthorityRevision:response.authorityRevision,
             operationId:operationId,
             direction:"loot_to_player",
-            targetContainerId:"背包",
+            targetContainerId:"自动",
             sources:sources
         };
     }
 
     private static function queryParams(response:Object):Object {
         return {
-            v:1,
+            v:2,
             chestSessionId:response.chestSessionId,
             lootContainerId:response.lootContainerId,
             containerEpoch:response.containerEpoch
@@ -355,7 +374,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static function proofQueryParams(response:Object, attemptSeq:Number,
                                               nonce:String):Object {
         return {
-            v:1,
+            v:2,
             chestSessionId:response.chestSessionId,
             lootContainerId:response.lootContainerId,
             containerEpoch:response.containerEpoch,
@@ -380,7 +399,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static function closeParams(response:Object, operationId:String,
                                         closeLease:String, abandon:Boolean):Object {
         return {
-            v:1,
+            v:2,
             chestSessionId:response.chestSessionId,
             lootContainerId:response.lootContainerId,
             containerEpoch:response.containerEpoch,
@@ -621,7 +640,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             target, "materialization_failed");
         var expiryRejected:Object = LootContainerService.expireScene("scene_cleanup");
         var diagnostic:Object = LootContainerService.execute("query", {
-            v:1,
+            v:2,
             chestSessionId:begun.chestSessionId,
             lootContainerId:begun.lootContainerId,
             containerEpoch:begun.containerEpoch
@@ -714,7 +733,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var earlyBegin:Object = LootContainerService.beginMapChestOpen(earlyDeathTarget);
         var earlyDeath:Object = LootContainerService.observeDeath(earlyDeathTarget);
         var earlyTerminal:Object = LootContainerService.execute("query", {
-            v:1, chestSessionId:earlyBegin.chestSessionId,
+            v:2, chestSessionId:earlyBegin.chestSessionId,
             lootContainerId:earlyBegin.lootContainerId,
             containerEpoch:earlyBegin.containerEpoch
         });
@@ -763,7 +782,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var stillReserved:Object = LootContainerService.beginMapChestOpen(makeTarget("s1.busy"));
         var aborted:Object = LootContainerService.abortReservedOpen(target, "materialization_failed");
         var tombstone:Object = LootContainerService.execute("query", {
-            v:1, chestSessionId:begun.chestSessionId,
+            v:2, chestSessionId:begun.chestSessionId,
             lootContainerId:begun.lootContainerId, containerEpoch:begun.containerEpoch
         });
         var nextTarget:Object = makeTarget("s1.after-abort");
@@ -819,7 +838,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var flow:Object = activate([stackItem, equipmentItem], "s1.owned");
         var first:Object = snapshot(flow);
         var equipmentProjection:Object = first.snapshots[0].slots[1].item;
-        check(first.success && first.snapshots.length == 2
+        check(first.success && first.snapshots.length == 3
                 && first.snapshots[0].containerId == first.lootContainerId
                 && first.snapshots[1].containerId == "背包"
                 && equipmentProjection.itemKind == "equipment"
@@ -881,18 +900,20 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var request:Object = claimBatchParams(before, [0, 1, 2], "batch.success");
         var result:Object = LootContainerService.execute("claimBatch", request);
         check(result.success && result.authorityRevision == before.authorityRevision + 3
-                && result.remainingCount == 0 && result.snapshots.length == 2
+                && result.remainingCount == 0 && result.snapshots.length == 3
                 && flow.inventory.getItem("0") == null
                 && flow.inventory.getItem("1") == null
                 && flow.inventory.getItem("2") == null
                 && _root.物品栏.背包.size() == 2
                 && _root.收集品栏.材料.getValue(MATERIAL) == 4
+                && _root.__lootSaveCalls == 1
                 && result.lastAppliedOperationId == "batch.success",
             "claimBatch 单次协议连续提交异构奖励，只在批末返回一组权威投影");
         var duplicate:Object = LootContainerService.execute("claimBatch", request);
         check(duplicate.success && duplicate.authorityRevision == result.authorityRevision
                 && duplicate.remainingCount == 0 && _root.物品栏.背包.size() == 2
-                && _root.收集品栏.材料.getValue(MATERIAL) == 4,
+                && _root.收集品栏.材料.getValue(MATERIAL) == 4
+                && _root.__lootSaveCalls == 1,
             "重复 claimBatch root operation 只返回当前投影，不重放任何子写");
     }
 
@@ -948,6 +969,74 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && flow.inventory.getItem("0") === equipmentItem,
             "claimBatch 在首写前拒绝重复 physical slot");
         LootContainerService.expireScene("scene_cleanup");
+    }
+
+    private static function testDrugClaimRoutingAndAffinity():Void {
+        resetWorld();
+        var occupied:BaseItem = stack(ANTIBIOTIC, 2, 39432);
+        _root.物品栏.药剂栏.add(4, occupied);
+        for (var i:Number = 0; i < 50; i++) {
+            _root.物品栏.背包.add(i, stack(STACK, i + 1, 39440 + i));
+        }
+        var fullBagReward:BaseItem = stack(ANTIBIOTIC, 3, 39500);
+        var fullBagFlow:Object = activate([fullBagReward], "s1.drug-existing-full-bag");
+        var fullBagBefore:Object = snapshot(fullBagFlow);
+        var fullBagRequest:Object = claimParams(
+            fullBagBefore, 0, "claim.drug-existing-full-bag");
+        var fullBagResult:Object = LootContainerService.execute("claim", fullBagRequest);
+        var fullBagDuplicate:Object = LootContainerService.execute("claim", fullBagRequest);
+        check(fullBagResult.success && fullBagResult.snapshots.length == 3
+                && occupied.value == 5 && fullBagFlow.inventory.getItem("0") == null
+                && _root.物品栏.背包.size() == 50
+                && fullBagDuplicate.success && occupied.value == 5
+                && _root.__lootSaveCalls == 1,
+            "满背包仍优先合并第二组现有同名药剂；duplicate 不重放也不重存");
+
+        resetWorld();
+        var normalized:Object = DrugSlotAffinityService.normalizeSavedFeature(
+            null, {}, function(itemKey:String):Boolean {
+                return itemKey == ANTIBIOTIC;
+            });
+        normalized.feature.slots[4] = {
+            itemKey:ANTIBIOTIC, lastDepletedSequence:7
+        };
+        normalized.feature.nextDepletedSequence = 8;
+        _root._saveExt.drugLoadout = normalized.feature;
+        var restoredReward:BaseItem = stack(ANTIBIOTIC, 4, 39510);
+        var restoredFlow:Object = activate([restoredReward], "s1.drug-affinity-restore");
+        var restoredBefore:Object = snapshot(restoredFlow);
+        var restoredResult:Object = LootContainerService.execute("claim",
+            claimParams(restoredBefore, 0, "claim.drug-affinity-restore"));
+        check(restoredResult.success
+                && _root.物品栏.药剂栏.getItem("4") === restoredReward
+                && _root.物品栏.背包.size() == 0
+                && _root._saveExt.drugLoadout.slots[4].itemKey == ANTIBIOTIC
+                && _root._saveExt.drugLoadout.slots[4].lastDepletedSequence == 0,
+            "耗尽 affinity 按最近序列恢复原物理槽，并转为 occupied 绑定");
+
+        resetWorld();
+        var low:BaseItem = stack(ANTIBIOTIC, 2, 39520);
+        var high:BaseItem = stack(ANTIBIOTIC, 5, 39521);
+        _root.物品栏.药剂栏.add(0, low);
+        _root.物品栏.药剂栏.add(4, high);
+        var duplicateNameReward:BaseItem = stack(ANTIBIOTIC, 3, 39522);
+        var duplicateNameFlow:Object = activate(
+            [duplicateNameReward], "s1.drug-lowest-physical-slot");
+        var duplicateNameBefore:Object = snapshot(duplicateNameFlow);
+        var duplicateNameResult:Object = LootContainerService.execute("claim",
+            claimParams(duplicateNameBefore, 0, "claim.drug-lowest-physical-slot"));
+        check(duplicateNameResult.success && low.value == 5 && high.value == 5,
+            "两组同时存在同名药剂时固定选择最低物理槽，不依赖活动组");
+
+        resetWorld();
+        var newDrug:BaseItem = stack(ANTIBIOTIC, 6, 39530);
+        var newDrugFlow:Object = activate([newDrug], "s1.drug-unbound-backpack");
+        var newDrugBefore:Object = snapshot(newDrugFlow);
+        var newDrugResult:Object = LootContainerService.execute("claim",
+            claimParams(newDrugBefore, 0, "claim.drug-unbound-backpack"));
+        check(newDrugResult.success && _root.物品栏.背包.getItem("0") === newDrug
+                && _root.物品栏.药剂栏.size() == 0,
+            "从未绑定的新药剂继续进入背包，不擅自占用空药剂槽");
     }
 
     private static function testClaimPendingEmptyQuery():Void {
@@ -1152,6 +1241,116 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         } finally {
             sourceOwner.removeMovieClip();
             destinationOwner.removeMovieClip();
+        }
+    }
+
+    private static function testDurableSaveRetryGate():Void {
+        resetWorld();
+        var saveAttempts:Number = 0;
+        _root.强制存盘 = function():Boolean {
+            saveAttempts++;
+            return saveAttempts >= 2;
+        };
+        var item:BaseItem = stack(STACK, 3, 39431);
+        var flow:Object = activate([item], "s1.durable-save-retry");
+        var authority:Object = snapshot(flow);
+        var request:Object = claimParams(authority, 0, "claim.durable-save-retry");
+        var pending:Object = LootContainerService.execute("claim", request);
+        var snapshotBlocked:Object = snapshot(flow);
+        var recovered:Object = LootContainerService.execute("query", queryParams(authority));
+        var duplicate:Object = LootContainerService.execute("claim", request);
+
+        check(!pending.success && pending.error == "commit_pending"
+                && pending.state == "LOOT_COMMIT_PENDING"
+                && !snapshotBlocked.success && snapshotBlocked.error == "commit_pending"
+                && flow.inventory.getItem("0") == null
+                && _root.物品栏.背包.getItem("0") === item
+                && recovered.success && recovered.state == "LOOT_ACTIVE"
+                && duplicate.success && saveAttempts == 2,
+            "资产已写但 flush 返回 false 时保持 pending；causal query strict true 后才成功且 duplicate 不重存");
+        LootContainerService.expireScene("scene_cleanup");
+    }
+
+    private static function testPersistedSettlementJournalRehydration():Void {
+        var previousServer:Object = _root.server;
+        try {
+            resetWorld();
+            var sent:Array = [];
+            var callbacks:Array = [];
+            installPanelTransport(sent, callbacks);
+            StageRunSession.testOnlyReset();
+            _root.关卡可获得奖励品 = [
+                [STACK, 1, 1], [STACK, 1, 1], [STACK, 1, 1]
+            ];
+            _root.当前为战斗地图 = false;
+
+            var beganRun:Boolean = StageRunSession.begin("领取回包丢失恢复", "困难");
+            StageRunSession.finish("victory");
+            var prepared:Boolean = StageRunSession.prepareSettlement();
+            var before:Object = StageRunSession.testOnlySnapshot();
+            var firstBegin:Object = prepared
+                ? LootContainerService.beginStageSettlement(before.inventory, before.report)
+                : null;
+            var firstSnapshot:Object = firstBegin != null && firstBegin.success
+                ? snapshot({active:firstBegin}) : null;
+            var firstRequest:Object = firstSnapshot != null && firstSnapshot.success
+                ? claimParams(firstSnapshot, 0, "claim.restart-receipt.1") : null;
+            var firstClaim:Object = firstRequest == null ? null
+                : LootContainerService.execute("claim", firstRequest);
+            var suspended:Object = firstClaim == null ? null
+                : LootContainerService.execute("close", closeParams(
+                    firstClaim, "close.restart-receipt", firstClaim.closeLease, false));
+            var pauseReleased:Object = suspended == null ? null
+                : LootContainerService.releaseSuspendedPauseForClose();
+            var resumed:Object = pauseReleased != null && pauseReleased.success
+                ? LootContainerService.resumeStageSettlement() : null;
+            if (callbacks.length > 0) callbacks[0](panelOpenAcceptedAck());
+            var resumedSnapshot:Object = resumed != null && resumed.success
+                ? snapshot({active:resumed}) : null;
+            var secondRequest:Object = resumedSnapshot != null && resumedSnapshot.success
+                ? claimParams(resumedSnapshot, 1, "claim.restart-receipt.2") : null;
+            var secondClaim:Object = secondRequest == null ? null
+                : LootContainerService.execute("claim", secondRequest);
+
+            // 模拟两次资产 receipt 之间发生 suspend/resume revision 跳号，且第二次
+            // success 回包丢失后 AS2 authority 重建。资产序列仍须精确恢复。
+            LootContainerService.testOnlyReset();
+            StageRunSession.resetForRestart();
+            var restored:Object = StageRunSession.restorePendingSettlement();
+            var after:Object = StageRunSession.testOnlySnapshot();
+            var secondBegin:Object = restored != null && restored.success
+                ? LootContainerService.beginStageSettlement(after.inventory, after.report)
+                : null;
+            var storedReceipts:Object = after.settlementId == undefined ? null
+                : StageRunSession.getPersistedSettlementReceipts(String(after.settlementId));
+
+            check(beganRun && prepared && firstClaim != null && firstClaim.success
+                    && firstClaim.remainingCount == 2
+                    && suspended != null && suspended.success
+                    && suspended.authorityRevision == firstClaim.authorityRevision + 1
+                    && pauseReleased != null && pauseReleased.success
+                    && resumed != null && resumed.success && resumed.reopened
+                    && resumed.authorityRevision == suspended.authorityRevision + 1
+                    && secondClaim != null && secondClaim.success
+                    && secondClaim.authorityRevision == resumed.authorityRevision + 1
+                    && secondClaim.remainingCount == 1
+                    && restored != null && restored.success && restored.remainingCount == 1
+                    && secondBegin != null && secondBegin.success
+                    && secondBegin.authorityRevision == secondClaim.authorityRevision
+                    && secondBegin.lastAppliedOperationId == "claim.restart-receipt.2"
+                    && secondBegin.remainingCount == 1
+                    && storedReceipts != null && storedReceipts.success
+                    && storedReceipts.originalCount == 3
+                    && storedReceipts.remainingCount == 1
+                    && storedReceipts.receipts.length == 2
+                    && storedReceipts.receipts[0].remainingCount == 2
+                    && storedReceipts.receipts[1].remainingCount == 1,
+                "领取-关闭-重开-再领取后重启，durable journal 容许非资产 revision 跳号并精确恢复");
+
+            LootContainerService.testOnlyReset();
+            StageRunSession.testOnlyReset();
+        } finally {
+            _root.server = previousServer;
         }
     }
 
@@ -2449,6 +2648,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         try {
             // failure + 初次离线：0 奖励仍保留报告，重连只创建一次 reopen。
             resetWorld();
+            LootContainerService.testOnlyAllowUnpersistedStageSettlement();
             _root.server = {};
             var failureReport:Object = makeSettlementReport("failure", "failure");
             var failureBegin:Object = LootContainerService.beginStageSettlement(
@@ -2485,6 +2685,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
 
             // retreat + Host 明确拒绝：不能套用普通空地图箱的 CONSUMED 快路。
             resetWorld();
+            LootContainerService.testOnlyAllowUnpersistedStageSettlement();
             var retreatSent:Array = [];
             var retreatCallbacks:Array = [];
             installPanelTransport(retreatSent, retreatCallbacks);
@@ -2510,6 +2711,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             // zero-reward victory + accepted 后断线：socket recovery 仍落 suspend，
             // reconnect 只允许一个 exact resume，显示并关闭后才 CONSUMED。
             resetWorld();
+            LootContainerService.testOnlyAllowUnpersistedStageSettlement();
             var victorySent:Array = [];
             var victoryCallbacks:Array = [];
             installPanelTransport(victorySent, victoryCallbacks);
@@ -2857,13 +3059,13 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             LootContainerService.requestOpenPanel();
             var attemptSeq:Number = Number(sent[0].payload.initData.openAttemptSeq);
             var ordinaryWire:Object = {
-                task:"cmd", action:"lootQuery", callId:901, v:1,
+                task:"cmd", action:"lootQuery", callId:901, v:2,
                 chestSessionId:flow.active.chestSessionId,
                 lootContainerId:flow.active.lootContainerId,
                 containerEpoch:flow.active.containerEpoch
             };
             var proofWire:Object = {
-                task:"cmd", action:"lootQuery", callId:902, v:1,
+                task:"cmd", action:"lootQuery", callId:902, v:2,
                 chestSessionId:flow.active.chestSessionId,
                 lootContainerId:flow.active.lootContainerId,
                 containerEpoch:flow.active.containerEpoch,
@@ -3098,7 +3300,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var previousServer:Object = _root.server;
         _root.server = {sendSocketMessage:function(message:String):Boolean { captured = message; return true; }};
         _root.gameCommands["lootQuery"]({
-            task:"cmd", action:"lootQuery", callId:77, v:1,
+            task:"cmd", action:"lootQuery", callId:77, v:2,
             chestSessionId:flow.active.chestSessionId,
             lootContainerId:flow.active.lootContainerId,
             containerEpoch:flow.active.containerEpoch
@@ -3109,7 +3311,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && typeof _root.gameCommands["lootPanelRecovery"] == "function",
             "gameCommands 返回 exact loot_response/callId 与 active closeLease");
         var invalid:Object = LootContainerService.execute("query", {
-            v:1, chestSessionId:flow.active.chestSessionId,
+            v:2, chestSessionId:flow.active.chestSessionId,
             lootContainerId:flow.active.lootContainerId,
             containerEpoch:flow.active.containerEpoch,
             unexpected:true
@@ -3117,7 +3319,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         check(!invalid.success && invalid.error == "invalid_payload",
             "未知顶层字段被 strict command shape 拒绝");
         var partialEnvelope:Object = LootContainerService.execute("query", {
-            task:"cmd", v:1,
+            task:"cmd", v:2,
             chestSessionId:flow.active.chestSessionId,
             lootContainerId:flow.active.lootContainerId,
             containerEpoch:flow.active.containerEpoch

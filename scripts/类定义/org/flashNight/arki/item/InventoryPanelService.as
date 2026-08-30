@@ -2034,7 +2034,8 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     private static function resolveContainer(containerId:String):ArrayInventory {
-        if (containerId != "背包" && containerId != "仓库" && containerId != "战备箱") return null;
+        if (containerId != "背包" && containerId != "药剂栏"
+                && containerId != "仓库" && containerId != "战备箱") return null;
         if (_root.物品栏 == undefined) return null;
         var inventory:ArrayInventory = _root.物品栏[containerId];
         if (!(inventory instanceof ArrayInventory)) return null;
@@ -2072,6 +2073,7 @@ class org.flashNight.arki.item.InventoryPanelService {
     }
 
     private static function getPageSizeHint(containerId:String):Number {
+        if (containerId == "药剂栏") return 8;
         return containerId == "战备箱" ? 40 : 50;
     }
 

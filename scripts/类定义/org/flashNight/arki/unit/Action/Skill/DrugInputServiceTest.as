@@ -76,7 +76,12 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         DrugInputService.updateSlot(unit, 0, false, true, inventory, root, null);
         var last:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
         assert(last.used && last.depleted && inventory.getItem("0") == null
-            && root.存档系统.dirtyMark,
+            && root.存档系统.dirtyMark && last.affinityCommitted
+            && root._saveExt.drugLoadout.version == 3
+            && root._saveExt.drugLoadout.slots[0].itemKey == "测试药剂"
+            && root._saveExt.drugLoadout.slots[0]
+                .lastDepletedSequence == 1
+            && root._saveExt.drugLoadout.nextDepletedSequence == 2,
             "last dose removes the authoritative inventory entry and marks persistence dirty");
         assert(root.快捷物品栏0 == "测试药剂" && root.messages.length == 1,
             "last dose publishes exhaustion without writing the retired root mirror");
@@ -439,7 +444,11 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
                 "drug removal preserves the synchronous listener exception");
             var repairedIndexes:Array = inventory.getIndexes();
             assert(inventory.getItem("0") == null && root.存档系统.dirtyMark === true
-                    && repairedIndexes.length == 1 && repairedIndexes[0] == 1,
+                    && repairedIndexes.length == 1 && repairedIndexes[0] == 1
+                    && root._saveExt.drugLoadout.slots[0]
+                        .itemKey == "监听故障药剂"
+                    && root._saveExt.drugLoadout.slots[0]
+                        .lastDepletedSequence == 1,
                 "listener fault keeps the committed dose loss, marks dirty first and repairs indexes");
             assert(PlayerAssetTransaction.current() == null && receipts.length == 1
                     && receipts[0].effects.length == 1
@@ -460,7 +469,13 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
                 unit, 1, true, true, inventory, root, null);
             assert(next.used && next.depleted && inventory.getItem("1") == null
                     && observedNextRemoval == 1 && root.存档系统.dirtyMark === true
-                    && PlayerAssetTransaction.current() == null,
+                    && PlayerAssetTransaction.current() == null
+                    && next.affinityCommitted
+                    && root._saveExt.drugLoadout.slots[1]
+                        .itemKey == "后续独立药剂"
+                    && root._saveExt.drugLoadout.slots[1]
+                        .lastDepletedSequence == 2
+                    && root._saveExt.drugLoadout.nextDepletedSequence == 3,
                 "the next slot dispatch and asset transaction complete independently after the fault");
             assert(receipts.length == 2 && receipts[1].effects.length == 1
                     && receipts[1].effects[0].name == "后续独立药剂"
@@ -494,7 +509,11 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
             吃药冷却时间:100,
             effectCalls:0,
             messages:[],
-            存档系统:{dirtyMark:false}
+            存档系统:{dirtyMark:false},
+            _saveExt:{drugLoadout:{version:2}}
+        };
+        root.getItemData = function(itemName:String):Object {
+            return {name:itemName, type:"消耗品", use:"药剂"};
         };
         root.使用药剂 = function(itemName:String):Void {
             this.effectCalls++;
