@@ -710,6 +710,8 @@ v4 随后完成 30/30 fresh soak；全量在 16 个 completed shard + 1 个 F2 a
 
 v6 的三份 fresh soak 与后续分片曾累计 16 个 completed shard / 260 条 durable row；维护者随后在换边实机中观察到绿色/蓝侧 `兵种39` 死亡派生僵尸仍呈红方实体阵营，双方不可互伤并卡死。控制器已通过 owned revoke 有界收尾。根因是 `things1/LIBRARY/Symbol 2054.xml` 的 linked symbol 以硬编码 `是否为敌人=true` 调用 `_root.加载游戏世界人物`，旧服务虽把 child 记到 blue side，却没有在 actor 创建前覆盖实体字段。修复改为先解析 parent record、在原 loader 前按 parent side 写入阵营、创建后再次绑定，并逐帧检查全部存活单位；漂移立即写 `faction_contamination`。强化 10-run 工作树探针实际观察 red 派生 3 个、blue 派生 4 个，10/10 finished、0 timeout/error/contamination，exact formal runtime 与受保护存档闭合。由于探针发生在提交前，v6 的 260 行仍全部隔离，探针也不代签正式 admission；下一轮必须使用新 campaign/cohort、提交后双方向派生 admission 和三份 fresh soak。
 
+v7 以 `arena-calibration.soak-admission.v2` 收紧新星期计划准入；v1 保留历史重放但不能再生成新计划。提交后正式 admission 将五类代表案例和放大的 `兵种39` 死亡派生 original/side-swap 合并为 20 run，结果 20/20 finished、0 timeout/error/recovery、正常 shutdown、受保护存档不变，目标 `敌人-裸体兽化僵尸1` 实际为 red 8 / blue 8；admission hash 为 `sha256:60c5662d89b5b8f0e53cbe288ea1461ef32a933aff654dd4171dadf8fac396a0`。v2 同时冻结派生 parent/unit、双侧最低观察计数和案例模板，生成器把同一模板重放到三份 fresh soak，因此每份由 10 增为 20 run，总计划为 198 shard / 3,285 run。tracked 草案尚未 clean freeze/arm，三份 fresh soak 和其余 195 shard 均未执行。
+
 ## 13. ADR 验收边界
 
 本文的实现验收是：

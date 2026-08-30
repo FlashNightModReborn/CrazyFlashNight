@@ -1,8 +1,8 @@
 {
   "schema": "arena-calibration.case-manifest.v1",
   "batchId": "gate-f-week-f-soak-02",
-  "createdAt": "2026-08-30T06:52:00.000Z",
-  "buildCommit": "bcfa01935d2f91a29a8a537c328c9190827c4be3",
+  "createdAt": "2026-08-30T09:43:00.000Z",
+  "buildCommit": "f87ca1148f2635c2121ec8f92e40c059bc3e1036",
   "planner": {
     "name": "gate-f-week-plan",
     "version": 1,
@@ -15,13 +15,16 @@
       "candidate-dd65977b16a48a35"
     ],
     "soakIndex": 2,
-    "soakAdmissionRef": "sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb",
+    "soakAdmissionRef": "sha256:60c5662d89b5b8f0e53cbe288ea1461ef32a933aff654dd4171dadf8fac396a0",
     "coverage": [
       "formation",
       "high_level",
       "long_timeout",
       "unit_payload"
-    ]
+    ],
+    "derivedFactionEvidenceRunId": "formal-derived-faction-v4-observed-spawns-20260830",
+    "derivedFactionParentUnitType": "兵种39",
+    "derivedFactionUnitType": "敌人-裸体兽化僵尸1"
   },
   "arenaMode": "calibration",
   "repeat": 1,
@@ -540,7 +543,115 @@
       "redFormation": "line",
       "formationSpacing": 54,
       "caseHash": "sha256:4288c7b03a75797abf650149f4d89063a5f3b562b428011d01e84e5a932db670"
+    },
+    {
+      "caseId": "f-soak-02-derived-faction-original",
+      "blueRoster": [
+        {
+          "type": "兵种27",
+          "level": 10
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种6",
+          "level": 20
+        },
+        {
+          "type": "兵种5",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-f2",
+        "original",
+        "derived-spawn-required",
+        "amplified-兵种39",
+        "formal-admission",
+        "gate-f-week",
+        "soak",
+        "derived-faction-replay"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!F2; amplify the known 兵种39 death-derived spawn on red under committed faction semantics; Gate F f-soak-02 hash-bound derived-faction replay",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:99ab50bc7387aa4f2b017b9aaa40cb301faee07767fb65443ebc9f90d32e6627"
+    },
+    {
+      "caseId": "f-soak-02-derived-faction-side-swap",
+      "blueRoster": [
+        {
+          "type": "兵种6",
+          "level": 20
+        },
+        {
+          "type": "兵种5",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        },
+        {
+          "type": "兵种39",
+          "level": 20
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种27",
+          "level": 10
+        }
+      ],
+      "repeat": 5,
+      "timeoutFrames": 1800,
+      "tags": [
+        "xlsx-intake",
+        "source-f2",
+        "side-swap",
+        "derived-spawn-required",
+        "amplified-兵种39",
+        "formal-admission",
+        "gate-f-week",
+        "soak",
+        "derived-faction-replay"
+      ],
+      "plannerReason": "workbook sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793 斗兽标定组合!F2; swap the amplified 兵种39 death-derived spawn onto blue under committed faction semantics; Gate F f-soak-02 hash-bound derived-faction replay",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "caseHash": "sha256:259bf0253a3d74898bf50e2cc3aec868602a578425aff7994eec84f538b45c93"
     }
   ],
-  "manifestHash": "sha256:b162d375a44fb7fa11dbe5bc5dc62b5b7c7becc4ab731d9675dcbf5b69d5c548"
+  "manifestHash": "sha256:25a0510ea06cbddbac95d146c3acb99ddd7e46e414670ade6606c6d4a75cce95"
 }

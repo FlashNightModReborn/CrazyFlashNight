@@ -9,8 +9,8 @@
   "empiricalTimeoutOverrideCells": [
     "B9"
   ],
-  "soakAdmissionRef": "sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb",
-  "soakAdmissionId": "gate-f-week-full-v2-summon-lineage-v3-stable-soak-admission",
+  "soakAdmissionRef": "sha256:60c5662d89b5b8f0e53cbe288ea1461ef32a933aff654dd4171dadf8fac396a0",
+  "soakAdmissionId": "gate-f-week-full-v2-derived-faction-v4-stable-soak-admission",
   "soakCells": [
     [
       "B2",
@@ -35,7 +35,7 @@
     ]
   ],
   "shards": 198,
-  "plannedRuns": 3255,
+  "plannedRuns": 3285,
   "eligibleEpochs": 198,
   "decisionEvidenceItems": 198,
   "firstSoakShards": [
@@ -48,7 +48,7 @@
         "candidate-c5f1e29759c1d9e8",
         "candidate-dd65977b16a48a35"
       ],
-      "plannedRuns": 10
+      "plannedRuns": 20
     },
     {
       "shardId": "f-soak-02",
@@ -59,7 +59,7 @@
         "candidate-c5f1e29759c1d9e8",
         "candidate-dd65977b16a48a35"
       ],
-      "plannedRuns": 10
+      "plannedRuns": 20
     },
     {
       "shardId": "f-soak-03",
@@ -70,7 +70,7 @@
         "candidate-c5f1e29759c1d9e8",
         "candidate-dd65977b16a48a35"
       ],
-      "plannedRuns": 10
+      "plannedRuns": 20
     }
   ],
   "riskCoverage": {
@@ -141,6 +141,6 @@
     "D11",
     "C12"
   ],
-  "createdAt": "2026-08-30T06:52:00.000Z",
-  "summaryHash": "sha256:285a90d106ec224da42b02b325559c8b975fa7aae40f78545a54155bd5050452"
+  "createdAt": "2026-08-30T09:43:00.000Z",
+  "summaryHash": "sha256:70079f73600fba6ad831c96534a7a703a261eed2f165539e20b229c764274a1c"
 }
