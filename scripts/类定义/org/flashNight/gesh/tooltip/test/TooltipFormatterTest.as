@@ -132,6 +132,36 @@ class org.flashNight.gesh.tooltip.test.TooltipFormatterTest {
         assertContains(joined, " + ", "upgradeLine enhanced has plus sign");
         assertContains(joined, "50", "upgradeLine enhanced has delta");
 
+        // 浮点尾噪只在展示层清理：30 + 0.2 的差值必须显示为 0.2
+        buf = [];
+        var finalWeight:Number = 30 + 0.2;
+        TooltipFormatter.upgradeLine(buf, {weight: 30}, {weight: finalWeight}, "weight", "重量", "kg");
+        joined = buf.join("");
+        assertContains(joined, "30.2kg", "upgradeLine decimal final is readable");
+        assertContains(joined, "(30 + 0.2)", "upgradeLine decimal delta removes IEEE-754 tail noise");
+        assert(joined.indexOf("999999") < 0, "upgradeLine decimal delta has no repeated-nine tail");
+
+        // 负向差值使用同一清理规则
+        buf = [];
+        TooltipFormatter.upgradeLine(buf, {weight: 30.2}, {weight: 30}, "weight", "重量", "kg");
+        joined = buf.join("");
+        assertContains(joined, "(30.2 - 0.2)", "upgradeLine negative decimal delta removes tail noise");
+
+        // 仅有运算尾噪时不应伪装成实际强化
+        var oneTenth:Number = 0.1;
+        var twoTenths:Number = 0.2;
+        buf = [];
+        TooltipFormatter.upgradeLine(buf, {weight: 0.3}, {weight: oneTenth + twoTenths}, "weight", "重量", "kg");
+        joined = buf.join("");
+        assertContains(joined, "0.3kg", "upgradeLine equivalent decimal keeps readable value");
+        assert(joined.indexOf(TooltipConstants.COL_HL) < 0, "upgradeLine equivalent decimal has no false highlight");
+
+        // 合法的更高 authored 精度不能被一刀切成一位小数
+        buf = [];
+        TooltipFormatter.upgradeLine(buf, {weight: 0.01}, null, "weight", "重量", "kg");
+        joined = buf.join("");
+        assertContains(joined, "0.01kg", "upgradeLine preserves meaningful hundredth precision");
+
         // equipData < base，显示减少
         buf = [];
         TooltipFormatter.upgradeLine(buf, {power: 100}, {power: 80}, "power", "威力", null);

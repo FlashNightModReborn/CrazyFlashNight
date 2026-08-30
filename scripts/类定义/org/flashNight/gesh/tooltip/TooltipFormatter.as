@@ -2,6 +2,33 @@
 
 class org.flashNight.gesh.tooltip.TooltipFormatter {
 
+  // 展示层只吸附极接近常用十进制网格的值，清理 IEEE-754 运算尾噪。
+  // 不直接按固定小数位量化，避免把 0.01 等合法 authored 数值改写成 0。
+  private static var DISPLAY_SNAP_EPSILON:Number = 0.000000000001;
+  private static var DISPLAY_SNAP_MAX_DECIMALS:Number = 6;
+
+  private static function snapDisplayNumber(value:Number):Number {
+    if (isNaN(value) || !isFinite(value)) return value;
+
+    var scale:Number = 1;
+    for (var digits:Number = 0; digits <= DISPLAY_SNAP_MAX_DECIMALS; digits++) {
+      var scaled:Number = value * scale;
+      if (!isFinite(scaled)) return value;
+
+      var snapped:Number = Math.round(scaled) / scale;
+      if (Math.abs(value - snapped) <= DISPLAY_SNAP_EPSILON) {
+        return snapped == 0 ? 0 : snapped;
+      }
+      scale *= 10;
+    }
+    return value;
+  }
+
+  private static function formatDisplayValue(value):String {
+    if (typeof value != "number") return String(value);
+    return String(snapDisplayNumber(Number(value)));
+  }
+
   public static function bold(s:String):String {
     return "<B>" + s + "</B>";
   }
@@ -72,18 +99,28 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
 
     // 若没有实际装备数值或实际数值与原始数值相等，则打印原始数值
     if(!equipData || final == base){
-      buf.push(label, "：", base, suffix, "<BR>");
+      buf.push(label, "：", formatDisplayValue(base), suffix, "<BR>");
       return;
     }
-    
-    // 以橙色字体打印实际数值
-    buf.push(label, "：<FONT COLOR='" + TooltipConstants.COL_HL + "'>", final, suffix, "</FONT>");
+
     if(base == null) base = 0;
     // 若属性为数字，则额外打印增幅值
     if(isNaN(final) || isNaN(base)){
-      buf.push(" (" + TooltipConstants.TXT_OVERRIDE + base + ")<BR>");
+      buf.push(label, "：<FONT COLOR='" + TooltipConstants.COL_HL + "'>", formatDisplayValue(final), suffix, "</FONT>");
+      buf.push(" (" + TooltipConstants.TXT_OVERRIDE + formatDisplayValue(base) + ")<BR>");
     }else{
-      var enhance = final - base;
+      var displayBase:Number = snapDisplayNumber(Number(base));
+      var displayFinal:Number = snapDisplayNumber(Number(final));
+      var enhance:Number = snapDisplayNumber(displayFinal - displayBase);
+
+      // 仅有浮点尾噪时视为展示上的无变化，避免橙色高亮和“+0”。
+      if(enhance == 0) {
+        buf.push(label, "：", displayFinal, suffix, "<BR>");
+        return;
+      }
+
+      // 以橙色字体打印实际数值
+      buf.push(label, "：<FONT COLOR='" + TooltipConstants.COL_HL + "'>", displayFinal, suffix, "</FONT>");
       var sign:String;
       if(enhance < 0) {
         enhance = -enhance;
@@ -91,7 +128,7 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
       } else {
         sign = " + ";
       }
-      buf.push(" (", base, sign, enhance, ")<BR>");
+      buf.push(" (", displayBase, sign, enhance, ")<BR>");
     }
   }
   
