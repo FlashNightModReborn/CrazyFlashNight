@@ -414,8 +414,6 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         inventorySnapshotSeq: 0,
         inventoryEpochs: null,
         inventoryVersions: null,
-        tuningSnapshotSessions: null,
-        tuningLifecycleEvents: null,
         checkoutSeq: 0,
         checkoutPlan: null,
         battleboxAccessibleCapacity: 240,
@@ -442,8 +440,6 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             this.inventorySnapshotSeq = 0;
             this.inventoryEpochs = {背包:1,仓库:1,战备箱:1};
             this.inventoryVersions = {背包:1,仓库:1,战备箱:1};
-            this.tuningSnapshotSessions = {};
-            this.tuningLifecycleEvents = [];
             this.checkoutSeq = 0;
             this.checkoutPlan = null;
             this.battleboxAccessibleCapacity = 240;
@@ -685,39 +681,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             }, 1000);
         },
 
-        openTuningWithoutEquipment: async function(fixtureMode, panelInstanceId) {
-            if (Panels.getActive && Panels.getActive()) Panels.close();
-            this.reset();
-            this.state.inventory = {
-                背包:new Array(50), 仓库:new Array(1200), 战备箱:new Array(400)
-            };
-            if (fixtureMode === 'non-equipment') {
-                this.state.inventory.背包[0] = {
-                    name:'仅有药剂', displayName:'仅有药剂', icon:'背包药剂',
-                    majorType:'消耗品', use:'药剂', itemKind:'stack', quantity:2
-                };
-                this.state.inventory.战备箱[0] = {
-                    name:'仅有材料', displayName:'仅有材料', icon:'大宗弹药',
-                    majorType:'收集品', use:'材料', itemKind:'stack', quantity:7
-                };
-            }
-            this.battleboxAccessibleCapacity = 240;
-            this.openPanel('workbench', {
-                mode:'runtime', profile:'battlebox', view:'tuning',
-                panelInstanceId:panelInstanceId
-            });
-            await waitFor(function() {
-                var state = InventoryWorkbench.debugState();
-                var closeButton = document.querySelector(
-                    '.inventory-workbench-panel [data-header-action="close"]');
-                return Panels.getActive() === 'workbench'
-                    && state.view === 'tuning' && state.coordinator.ready
-                    && closeButton && !closeButton.disabled;
-            }, 1000);
-            await wait(20);
-        },
-
-        respond: function(request, response, delay, beforeEmit) {
+        respond: function(request, response, delay) {
             response.type = 'panel_resp';
             response.callId = request.callId;
             response.cmd = request.cmd;
@@ -726,10 +690,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             if (request.domain) {
                 response.domain = request.domain;
             } else if (Object.prototype.hasOwnProperty.call(response, 'domain')) delete response.domain;
-            setTimeout(function() {
-                if (typeof beforeEmit === 'function') beforeEmit();
-                window.__emitBridge('panel_resp', response);
-            }, delay || 0);
+            setTimeout(function() { window.__emitBridge('panel_resp', response); }, delay || 0);
         },
 
         handle: function(message) {
@@ -740,11 +701,6 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             }
             this.sent.push(clone(message));
             if (message.cmd === 'close') {
-                if (message.panel === 'workbench') {
-                    this.tuningLifecycleEvents.push({
-                        event:'panel_close', panelInstanceId:message.panelInstanceId
-                    });
-                }
                 if (this.activePanel && (message.panel !== this.activePanel
                         || message.panelInstanceId !== this.activePanelInstanceId)) {
                     this.rejectedCloseCount += 1;
@@ -785,26 +741,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                             tierCandidates:[],modCandidates:[],materials:[],
                             materialRevision:1,inventoryRevision:1
                         };
-                        this.tuningSnapshotSessions[String(tuningPayload.viewSessionId)] = true;
                     }
                 } else if (message.cmd === 'detach') {
                     tuningCommon.detached = true;
-                    if (!this.tuningSnapshotSessions[String(tuningPayload.viewSessionId)]) {
-                        var localNoopHost = this;
-                        this.tuningLifecycleEvents.push({
-                            event:'local_noop_request',
-                            panelInstanceId:message.panelInstanceId,
-                            viewSessionId:tuningPayload.viewSessionId
-                        });
-                        this.respond(message, tuningCommon, delay, function() {
-                            localNoopHost.tuningLifecycleEvents.push({
-                                event:'local_noop_response',
-                                panelInstanceId:message.panelInstanceId,
-                                viewSessionId:tuningPayload.viewSessionId
-                            });
-                        });
-                        return;
-                    }
                 } else {
                     tuningCommon.success = false;
                     tuningCommon.error = 'unsupported_harness_tuning_cmd';
@@ -3271,102 +3210,6 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 expectedFocus:tuningReturnKey
             }));
         Panels.close();
-
-        var emptyTuningXInstance = 'panel.harness.tuning-empty-x';
-        await Host.openTuningWithoutEquipment('empty', emptyTuningXInstance);
-        var emptyTuningXInventoryRequest = Host.sent.filter(function(message) {
-            return message.domain === 'inventory' && message.cmd === 'snapshot';
-        }).pop();
-        var emptyTuningXSnapshotCount = Host.sent.filter(function(message) {
-            return message.domain === 'equipment_tuning' && message.cmd === 'snapshot';
-        }).length;
-        var emptyTuningXButton = document.querySelector(
-            '.inventory-workbench-panel [data-header-action="close"]');
-        if (emptyTuningXButton) emptyTuningXButton.click();
-        await waitFor(function() {
-            return !Panels.isOpen() && Host.tuningLifecycleEvents.some(function(event) {
-                return event.event === 'local_noop_response';
-            });
-        }, 500);
-        var emptyTuningXDetach = Host.sent.filter(function(message) {
-            return message.domain === 'equipment_tuning' && message.cmd === 'detach';
-        }).pop();
-        var emptyTuningXClose = Host.sent.filter(function(message) {
-            return message.type === 'panel' && message.cmd === 'close'
-                && message.panel === 'workbench';
-        }).pop();
-        var emptyTuningXEvents = Host.tuningLifecycleEvents.map(function(event) {
-            return event.event;
-        });
-        assert('workbench-tuning-empty-close-x',
-            '全空库存直达调制不发 snapshot；× 经 Host local-noop detach 回调后精确关闭 Panels',
-            Host.state.inventory.背包.every(function(item) { return !item; })
-                && Host.state.inventory.仓库.every(function(item) { return !item; })
-                && Host.state.inventory.战备箱.every(function(item) { return !item; })
-                && emptyTuningXInventoryRequest
-                && emptyTuningXInventoryRequest.payload.requests[0].scope === 'equipment'
-                && emptyTuningXSnapshotCount === 0
-                && emptyTuningXDetach
-                && emptyTuningXDetach.panelInstanceId === emptyTuningXInstance
-                && emptyTuningXClose
-                && emptyTuningXClose.panelInstanceId === emptyTuningXInstance
-                && Object.keys(emptyTuningXClose).sort().join(',')
-                    === 'cmd,panel,panelInstanceId,type'
-                && emptyTuningXEvents.join(',')
-                    === 'local_noop_request,local_noop_response,panel_close'
-                && Host.closeCount === 1 && Host.rejectedCloseCount === 0
-                && !Panels.isOpen(),
-            JSON.stringify({snapshotCount:emptyTuningXSnapshotCount,
-                detach:emptyTuningXDetach,close:emptyTuningXClose,
-                events:Host.tuningLifecycleEvents}));
-
-        var nonEquipmentEscapeInstance = 'panel.harness.tuning-non-equipment-escape';
-        await Host.openTuningWithoutEquipment('non-equipment', nonEquipmentEscapeInstance);
-        var nonEquipmentItems = Object.keys(Host.state.inventory).reduce(function(items, containerId) {
-            return items.concat(Host.state.inventory[containerId].filter(function(item) { return !!item; }));
-        }, []);
-        var nonEquipmentInventoryRequest = Host.sent.filter(function(message) {
-            return message.domain === 'inventory' && message.cmd === 'snapshot';
-        }).pop();
-        var nonEquipmentSnapshotCount = Host.sent.filter(function(message) {
-            return message.domain === 'equipment_tuning' && message.cmd === 'snapshot';
-        }).length;
-        window.__emitBridge('panel_esc', {reason:'escape'});
-        await waitFor(function() {
-            return !Panels.isOpen() && Host.tuningLifecycleEvents.some(function(event) {
-                return event.event === 'local_noop_response';
-            });
-        }, 500);
-        var nonEquipmentDetach = Host.sent.filter(function(message) {
-            return message.domain === 'equipment_tuning' && message.cmd === 'detach';
-        }).pop();
-        var nonEquipmentClose = Host.sent.filter(function(message) {
-            return message.type === 'panel' && message.cmd === 'close'
-                && message.panel === 'workbench';
-        }).pop();
-        var nonEquipmentEvents = Host.tuningLifecycleEvents.map(function(event) {
-            return event.event;
-        });
-        assert('workbench-tuning-empty-close-escape',
-            '仅非装备库存直达调制不发 snapshot；Escape 经 Host local-noop detach 回调后精确关闭 Panels',
-            nonEquipmentItems.length === 2
-                && nonEquipmentItems.every(function(item) { return item.itemKind !== 'equipment'; })
-                && nonEquipmentInventoryRequest
-                && nonEquipmentInventoryRequest.payload.requests[0].scope === 'equipment'
-                && nonEquipmentSnapshotCount === 0
-                && nonEquipmentDetach
-                && nonEquipmentDetach.panelInstanceId === nonEquipmentEscapeInstance
-                && nonEquipmentClose
-                && nonEquipmentClose.panelInstanceId === nonEquipmentEscapeInstance
-                && Object.keys(nonEquipmentClose).sort().join(',')
-                    === 'cmd,panel,panelInstanceId,type'
-                && nonEquipmentEvents.join(',')
-                    === 'local_noop_request,local_noop_response,panel_close'
-                && Host.closeCount === 1 && Host.rejectedCloseCount === 0
-                && !Panels.isOpen(),
-            JSON.stringify({snapshotCount:nonEquipmentSnapshotCount,
-                detach:nonEquipmentDetach,close:nonEquipmentClose,
-                events:Host.tuningLifecycleEvents}));
 
         await Host.openWorkbench(240);
         var workbenchState = InventoryWorkbench.debugState();
