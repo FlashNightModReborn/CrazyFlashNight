@@ -6,9 +6,9 @@ using System.Drawing.Drawing2D;
 namespace CF7Launcher.Guardian.HitNumbers
 {
     /// <summary>
-    /// 世界数字的轻量目标归属标记。默认、详细和总伤模式只绘制目标头顶的短距
-    /// 指向符，不再绘制 Burst 卡片、长脊线或大面积边框；经典模式保持旧 Flash
-    /// 的纯飘字表达，不额外叠加标记。
+    /// 世界数字的轻量目标归属标记。默认平衡模式与经典模式保持纯伤害数字表达，
+    /// 不额外叠加箭头；详细和总伤模式仍可绘制目标头顶的短距指向符，帮助诊断
+    /// 多目标归属，同时不恢复 Burst 卡片、长脊线或大面积边框。
     /// </summary>
     internal sealed class HitNumberScenePainter : IDisposable
     {
@@ -31,7 +31,10 @@ namespace CF7Launcher.Guardian.HitNumbers
             if (graphics == null) throw new ArgumentNullException(nameof(graphics));
             if (rows == null) throw new ArgumentNullException(nameof(rows));
             ThrowIfDisposed();
-            if (rows.Count == 0 || mode == HitNumberDisplayMode.Classic) return;
+            if (rows.Count == 0
+                || mode == HitNumberDisplayMode.Balanced
+                || mode == HitNumberDisplayMode.Classic)
+                return;
 
             float scaleX = viewport.Width / HitNumberLayoutEngine.StageWidth;
             float scaleY = viewport.Height / HitNumberLayoutEngine.StageHeight;

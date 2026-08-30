@@ -116,13 +116,13 @@ function(FacetCountsModule) {
     function install(prototype) {
         if (!prototype) throw new Error('CharacterBuildLoadoutPresenter.install requires a view method target');
         prototype._bindLoadoutTooltip = function(
-                slot, key, slotLabel, projection, target) {
+                slot, key, slotLabel, projection, target, extraSuppression) {
             if (!target || !this._loadoutTooltipScope
                     || typeof this._loadoutTooltipScope.bindAsync !== 'function') return false;
             var self = this;
             slot.setAttribute('data-loadout-tooltip',
                 this._fetchLoadoutTooltip ? 'authoritative' : 'projection-fallback');
-            this._loadoutTooltipScope.bindAsync(slot, {
+            return this._loadoutTooltipScope.bindAsync(slot, {
                 key:'loadout:' + this._loadoutTooltipEpoch + ':' + key,
                 item:projection,
                 cache:this._loadoutTooltipCache,
@@ -134,7 +134,9 @@ function(FacetCountsModule) {
                 // 且永不盖住相邻槽位（含空槽）——鼠标在槽位间移动不会落进浮层被截获。
                 anchor:function(event, node) { return node.parentNode; },
                 isSuppressed:function() {
-                    return self._candidateDragActive || self._interactionState !== 'idle';
+                    return self._candidateDragActive || self._interactionState !== 'idle'
+                        || (typeof extraSuppression === 'function'
+                            && extraSuppression());
                 },
                 renderBasic:function(value) {
                     return loadoutBasicTooltipHtml(value, slotLabel);
@@ -149,7 +151,6 @@ function(FacetCountsModule) {
                     return self._fetchLoadoutTooltip(target, callback);
                 } : null
             });
-            return true;
         };
         return prototype;
     }

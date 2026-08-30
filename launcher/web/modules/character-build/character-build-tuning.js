@@ -60,6 +60,8 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
         this._exitGeneration = 0;
         this._density = options.density === 'compact' ? 'compact' : 'full';
         this._projectCandidates = options.projectCandidates || function() { return []; };
+        this._bindCandidateTooltip = typeof options.bindCandidateTooltip === 'function'
+            ? options.bindCandidateTooltip : null;
         this._candidateFlow = new TuningAdapter.CandidateFlow({
             session:this._session,
             view:this._buildView,
@@ -208,6 +210,7 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
             resolveSlot:this._resolveCandidateSlot.bind(this),
             refreshLoadout:this._refreshLoadout.bind(this),
             loadConversionCandidates:TuningPorts.loadConversionCandidates.bind(null, this),
+            bindSourceTooltip:TuningPorts.bindSourceTooltip.bind(null, this),
             onStateChange:this._notifyStateChange.bind(this),
             toast:this._ports.toast || function() {}
         };

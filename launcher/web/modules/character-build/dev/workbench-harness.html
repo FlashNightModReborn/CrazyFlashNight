@@ -3573,8 +3573,27 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
         var equipDragCandidate = document.querySelector('.character-build-candidate');
         var equipDragTarget = document.querySelector(
             '[data-roving-key="' + longGunKey + '"]');
+        var writeDollStage = document.querySelector('.character-build-doll-stage');
+        var writeDollCanvas = document.querySelector('.character-build-doll-canvas');
+        var writeDollStageHeight = writeDollStage.getBoundingClientRect().height;
+        var writeDollCanvasHeight = writeDollCanvas.getBoundingClientRect().height;
         beginPointerDrag(equipDragCandidate, equipDragTarget, 84);
         endPointerDrag(equipDragTarget, 84, 'pointerup');
+        var writeNotice = document.querySelector('[data-build-notice]');
+        check('equip feedback overlays the doll stage without changing its fit viewport',
+            writeNotice.closest('.character-build-doll-stage') === writeDollStage
+            && writeNotice.textContent.indexOf('正在写入构筑') >= 0
+            && Math.abs(writeDollStage.getBoundingClientRect().height
+                - writeDollStageHeight) <= 1
+            && Math.abs(writeDollCanvas.getBoundingClientRect().height
+                - writeDollCanvasHeight) <= 1,
+            JSON.stringify({
+                stage:[writeDollStageHeight,
+                    writeDollStage.getBoundingClientRect().height],
+                canvas:[writeDollCanvasHeight,
+                    writeDollCanvas.getBoundingClientRect().height],
+                notice:writeNotice.textContent
+            }));
         check('successful backpack drop adopts loadout data while preserving neutral browsing and focus',
             await until(function() {
                 var state = InventoryWorkbench.debugState().build;
@@ -3864,6 +3883,38 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 '.character-build-tuning-title > span').textContent.trim()
                 === '候选装备调制'
             && window.__routeHarness.storage.activations === candidateTuningStorageBase);
+        PanelTooltip.hide();
+        var candidateTuningTooltipBase = inventoryMessages().length;
+        var candidateTuningSourceIcon = document.querySelector(
+            '.equipment-tuning-main-icon');
+        var candidateTuningSourceRect = candidateTuningSourceIcon.getBoundingClientRect();
+        candidateTuningSourceIcon.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:91,
+            pointerType:'mouse',
+            clientX:candidateTuningSourceRect.left + candidateTuningSourceRect.width / 2,
+            clientY:candidateTuningSourceRect.top + candidateTuningSourceRect.height / 2
+        }));
+        check('candidate tuning source icon exposes the exact inventory rich tooltip',
+            await until(function() {
+                var copy = document.getElementById('panel-tooltip').textContent;
+                return PanelTooltip.isVisible()
+                    && candidateTuningSourceIcon.getAttribute('data-source-tooltip')
+                        === 'authoritative'
+                    && inventoryMessages().length === candidateTuningTooltipBase + 1
+                    && copy.indexOf('构筑候选详情') >= 0
+                    && copy.indexOf('权威候选说明') >= 0;
+            }) && JSON.stringify(inventoryMessages().slice(-1)[0].payload.source)
+                === JSON.stringify({
+                    containerId:'背包',
+                    slot:9,
+                    expectedLease:candidateTuningLeaseBefore
+                }));
+        candidateTuningSourceIcon.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:91,
+            pointerType:'mouse'
+        }));
+        await wait(180);
+        PanelTooltip.hide();
         document.querySelector('.equipment-tuning-commit').click();
         check('candidate commit refreshes one exact target and rebinds the new lease',
             await until(function() {
@@ -3875,6 +3926,33 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && window.__routeHarness.candidateLease !== candidateTuningLeaseBefore
                     && tuning.tuning.hasPreview && !tuning.tuning.readPending;
             }));
+        PanelTooltip.hide();
+        var reboundTuningTooltipBase = inventoryMessages().length;
+        var reboundTuningSourceIcon = document.querySelector(
+            '.equipment-tuning-main-icon');
+        var reboundTuningSourceRect = reboundTuningSourceIcon.getBoundingClientRect();
+        reboundTuningSourceIcon.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:93,
+            pointerType:'mouse',
+            clientX:reboundTuningSourceRect.left + reboundTuningSourceRect.width / 2,
+            clientY:reboundTuningSourceRect.top + reboundTuningSourceRect.height / 2
+        }));
+        check('candidate tuning source tooltip rebinds to the refreshed inventory lease',
+            await until(function() {
+                return PanelTooltip.isVisible()
+                    && inventoryMessages().length === reboundTuningTooltipBase + 1;
+            }) && JSON.stringify(inventoryMessages().slice(-1)[0].payload.source)
+                === JSON.stringify({
+                    containerId:'背包',
+                    slot:9,
+                    expectedLease:window.__routeHarness.candidateLease
+                }));
+        reboundTuningSourceIcon.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:93,
+            pointerType:'mouse'
+        }));
+        await wait(180);
+        PanelTooltip.hide();
         var candidateReturnRequestCount = commandCount('candidates');
         var candidateExpectedKey =
             'backpack:9:' + window.__routeHarness.candidateLease;
@@ -4306,6 +4384,29 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 info:document.querySelector('.equipment-tuning-info-open').textContent}));
         var inspectTrigger = document.querySelector('.equipment-tuning-main-icon');
         var inspectToastBase = Toast.messages.length;
+        var tuningLoadoutTooltipBase = commandCount('tooltip');
+        var tuningLoadoutRect = inspectTrigger.getBoundingClientRect();
+        inspectTrigger.dispatchEvent(new PointerEvent('pointerenter', {
+            pointerId:92,
+            pointerType:'mouse',
+            clientX:tuningLoadoutRect.left + tuningLoadoutRect.width / 2,
+            clientY:tuningLoadoutRect.top + tuningLoadoutRect.height / 2
+        }));
+        check('loadout tuning source icon reuses the equipped-item authoritative tooltip',
+            await until(function() {
+                var copy = document.getElementById('panel-tooltip').textContent;
+                return PanelTooltip.isVisible()
+                    && inspectTrigger.getAttribute('data-source-tooltip') === 'authoritative'
+                    && commandCount('tooltip') === tuningLoadoutTooltipBase + 1
+                    && copy.indexOf('权威已装备属性') >= 0
+                    && copy.indexOf('权威已装备说明') >= 0;
+            }));
+        inspectTrigger.dispatchEvent(new PointerEvent('pointerleave', {
+            pointerId:92,
+            pointerType:'mouse'
+        }));
+        await wait(180);
+        PanelTooltip.hide();
         inspectTrigger.focus();
         inspectTrigger.click();
         check('current equipment inspection opens as a modal above tuning',

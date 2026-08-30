@@ -78,6 +78,9 @@ var EquipmentTuningView = (function() {
             ? options.openInspector : function() { return false; };
         this._closeInspector = typeof options.closeInspector === 'function'
             ? options.closeInspector : function() { return false; };
+        this._bindSourceTooltipPort = typeof options.bindSourceTooltip === 'function'
+            ? options.bindSourceTooltip : null;
+        this._sourceTooltipBinding = null;
         this._root = null;
         this._panelInstanceId = '';
         this._viewSessionId = '';
@@ -370,6 +373,7 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype._disposeTooltipScope = function() {
+        this._releaseSourceTooltipBinding();
         if (this._tooltipScope && this._tooltipScope.dispose) this._tooltipScope.dispose();
         this._tooltipScope = null;
     };

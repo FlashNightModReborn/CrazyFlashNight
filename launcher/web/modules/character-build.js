@@ -261,6 +261,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             sessionNonce:this._tuningTransport.sessionNonce,
             density:this._ports.getDensity ? this._ports.getDensity() : 'full',
             projectCandidates:Projection.viewCandidates,
+            bindCandidateTooltip:this._candidateTooltip
+                ? this._candidateTooltip.bind.bind(this._candidateTooltip) : null,
             invalidateCandidateTooltip:function() {
                 if (self._candidateTooltip) self._candidateTooltip.invalidate();
             },

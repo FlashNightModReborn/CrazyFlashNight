@@ -385,7 +385,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void ScenePainterDrawsOnlyShortTargetAnchorWithoutRowCardFrame()
+        public void ScenePainter_OmitsBalancedArrow_ButKeepsDetailTargetAnchor()
         {
             using var painter = new HitNumberScenePainter();
             using var bitmap = new Bitmap(1024, 576);
@@ -408,6 +408,15 @@ namespace CF7Launcher.Tests.Guardian
                 new RectangleF(0, 0, 1024, 576),
                 new[] { row },
                 HitNumberDisplayMode.Balanced);
+
+            Assert.False(HasVisiblePixel(bitmap));
+
+            graphics.Clear(Color.Transparent);
+            painter.DrawWorldRows(
+                graphics,
+                new RectangleF(0, 0, 1024, 576),
+                new[] { row },
+                HitNumberDisplayMode.Detail);
 
             Assert.Equal(0, bitmap.GetPixel(438, 321).A);
             Assert.Equal(0, bitmap.GetPixel(585, 321).A);

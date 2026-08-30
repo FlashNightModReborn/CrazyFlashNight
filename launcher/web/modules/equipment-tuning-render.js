@@ -83,6 +83,13 @@ var EquipmentTuningRender = (function() {
         return false;
     }
 
+    TuningView.prototype._releaseSourceTooltipBinding = function() {
+        var binding = this._sourceTooltipBinding;
+        this._sourceTooltipBinding = null;
+        if (binding && typeof binding.destroy === 'function') binding.destroy();
+        return !!binding;
+    };
+
     TuningView.prototype.render = function(renderOptions) {
         if (!this._root) return;
         renderOptions = renderOptions || {};
@@ -114,6 +121,7 @@ var EquipmentTuningRender = (function() {
         var previewScroll = preserveScroll && previousPreview ? {top:previousPreview.scrollTop,left:previousPreview.scrollLeft} : null;
         var detailScroll = preserveScroll && previousDetail ? {top:previousDetail.scrollTop,left:previousDetail.scrollLeft} : null;
         if (this._modNavigator) { this._modNavigator.destroy(); this._modNavigator = null; }
+        this._releaseSourceTooltipBinding();
         clear(this._root, this._tooltipScope);
         var root = element('div', 'equipment-tuning-view');
         var self = this;
@@ -385,6 +393,19 @@ var EquipmentTuningRender = (function() {
         icon.innerHTML = iconHtml(item.icon, 'kshop-icon');
         icon.addEventListener('click', function() { self.inspectCurrentEquipment(); });
         setCapability(icon, 'inspect', !this._inspectAvailable(item));
+        if (this._bindSourceTooltipPort) {
+            this._sourceTooltipBinding = this._bindSourceTooltipPort(
+                icon,
+                item,
+                this._source,
+                function() {
+                    return self._busy || self._readPending || self._needsReconcile
+                        || !self._mux.debugState().active;
+                }) || null;
+            if (this._sourceTooltipBinding) {
+                icon.setAttribute('data-source-tooltip', 'authoritative');
+            }
+        }
         var copy = element('div', 'equipment-tuning-main-copy equipment-tuning-summary-copy');
         var equipment = this._snapshot && this._snapshot.equipment;
         var level = equipment ? Number(equipment.level || 0) : Number(item.enhancementLevel || 0);

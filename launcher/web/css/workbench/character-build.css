@@ -283,7 +283,7 @@
 
 .character-build-composite-pane {
     display:grid;
-    grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-rows:auto minmax(0,1fr);
 }
 .character-build-composite {
     display:grid;
@@ -412,7 +412,7 @@
 }
 
 /* 换装扫描光：与建角页同一签名——装备真实变更重绘纸娃娃时一道光带掠过，
-   候选试穿（hover 预览）不触发；reduced-motion 下 JS 不加 class、此处双保险。 */
+   候选试穿（hover 预览）不触发；reduced-motion 由共享工作台 reducer 收束。 */
 .character-build-doll-stage::before {
     content:"";
     position:absolute;
@@ -436,19 +436,22 @@
     80% { opacity:.85; }
     100% { transform:translateY(620%); opacity:0; }
 }
-@media (prefers-reduced-motion: reduce) {
-    .character-build-doll-stage.cb-doll-swapping::before { animation:none; }
-}
-.character-build-candidate-overlay {
+.character-build-doll-feedback {
     position:absolute;
+    z-index:2;
     right:6px;
     bottom:6px;
     left:6px;
+    display:grid;
+    gap:4px;
+    pointer-events:none;
+}
+.character-build-candidate-overlay {
+    position:relative;
     padding:5px 7px;
     color:var(--wb-text);
     background:color-mix(in srgb,var(--wb-bg) 86%,transparent);
     border-left:2px solid var(--wb-focus);
-    pointer-events:none;
 }
 .character-build-candidate-overlay b {
     display:block;
@@ -529,7 +532,7 @@
 .character-build-inline-notice {
     display:block;
     min-height:26px;
-    margin-top:5px;
+    margin-top:0;
     padding:5px 8px;
     box-sizing:border-box;
     overflow:hidden;

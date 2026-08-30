@@ -123,7 +123,7 @@ var InventoryStorageWorkbench = (function() {
                 refreshControls();
             },
             densityController:_densityController,
-            loadConversionCandidates:loadTuningConversionCandidates,
+            loadConversionCandidates:loadTuningConversionCandidates, bindSourceTooltip:bindTuningSourceTooltip,
             openInspector:openEquipmentInspector,
             closeInspector:closeEquipmentInspector,
             toast:toast
@@ -709,15 +709,16 @@ var InventoryStorageWorkbench = (function() {
             ]
         });
     }
-    function bindSlotTooltip(node, containerId, slot) {
+    function bindTuningSourceTooltip(node, item, source, isSuppressed) { var slot = InventoryWorkbenchOwnedView.resolveExactSourceSlot(item, source, findCurrentSlot); return node && slot ? bindSlotTooltip(node, '背包', slot, isSuppressed) : null; }
+    function bindSlotTooltip(node, containerId, slot, extraSuppression) {
         var key = containerId + ':' + slot.physicalSlot + ':' + String(slot.slotLease || '');
         var item = slot.item || {};
-        (_tooltipScope || PanelTooltip).bindAsyncHover(node, {
+        return (_tooltipScope || PanelTooltip).bindAsyncHover(node, {
             profile:'dense-inspect',
             cache: _tooltipCache,
             key: key,
             item: item,
-            isSuppressed: function() { return _tooltipSuppressed; },
+            isSuppressed: function() { return _tooltipSuppressed || typeof extraSuppression === 'function' && extraSuppression(); },
             renderBasic:function(value) {
                 return InventoryWorkbenchOwnedView.basicTooltip(value, escapeHtml);
             },

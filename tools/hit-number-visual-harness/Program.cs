@@ -139,7 +139,7 @@ namespace CF7Launcher.Tools.HitNumberVisualHarness
                     scenePainter = "launcher/src/Guardian/HitNumbers/HitNumberScenePainter.cs",
                     layout = "launcher/src/Guardian/HitNumbers/HitNumberLayoutEngine.cs",
                     renderer = "production tight-region composite; no harness-owned hit-number layout or battle ledger painter",
-                    deterministicPlacement = "target-local-centered-stack-with-short-anchor-v2"
+                    deterministicPlacement = "target-local-centered-stack-balanced-no-arrow-v3"
                 },
                 scope = new
                 {

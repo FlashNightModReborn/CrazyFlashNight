@@ -131,6 +131,13 @@ function audit(){
       ||!hasAll(view,['_openInspector','_closeInspector','inspectCurrentEquipment','inspectConversionTarget','this._snapshot.gender'])
       ||!hasAll(render,['equipment-tuning-inspect-trigger','equipment-tuning-convert-inspect'])
       ||!hasAll(workbench,['EquipmentInspector.open','openInspector:openEquipmentInspector','closeInspector:closeEquipmentInspector',"gender !== '男' && gender !== '女'"]))throw new Error('shared tuning equipment inspector adapter missing');
+  if(!hasAll(view,['_bindSourceTooltipPort','_sourceTooltipBinding'])
+      ||!hasAll(render,['_releaseSourceTooltipBinding','data-source-tooltip','authoritative'])
+      ||!hasAll(workbench,['bindSourceTooltip:bindTuningSourceTooltip','function bindTuningSourceTooltip',
+        "bindSlotTooltip(node, '背包', slot, isSuppressed)"])
+      ||!hasAll(ownedView,['function resolveExactSourceSlot',"String(slot.slotLease || '') !== expectedLease"])
+      ||!hasAll(characterBuildTuningPorts,['function bindSourceTooltip','expectedLoadoutRevision','expectedLease']))
+      throw new Error('shared tuning source tooltip or production entrypoint authority binding missing');
   if(inventorySource.includes('syncTuningConversionFilter')||inventorySource.includes('_conversionFilterRestore')
       ||tuningSource.includes('syncConversionFilter')||tuningSource.includes('_conversionFilterActive'))throw new Error('legacy conversion mutation of visible bag filter remains');
   if(!hasAll(view,['model, decision presenter, renderer, confirmation, interaction, write lifecycle, loadout lifecycle, then view.',

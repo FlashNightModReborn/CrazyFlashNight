@@ -31,6 +31,28 @@ test('profile and view resolution reject unknown launch shapes', () => {
     assert.strictEqual(Config.resolveView({view:'debug'}), null);
 });
 
+test('tuning source tooltip resolves only the exact authoritative backpack lease', () => {
+    const authoritative = {
+        occupied:true,
+        slotLease:'lease-7',
+        item:{name:'钛合金61式胸甲'}
+    };
+    const resolveSlot = (containerId, physicalSlot) =>
+        containerId === '背包' && physicalSlot === 7 ? authoritative : null;
+    const source = {
+        sourceKind:'inventory',
+        containerId:'背包',
+        slot:7,
+        expectedLease:'lease-7'
+    };
+    assert.strictEqual(OwnedView.resolveExactSourceSlot(
+        {name:'钛合金61式胸甲'}, source, resolveSlot), authoritative);
+    assert.strictEqual(OwnedView.resolveExactSourceSlot(
+        {name:'黑色重甲'}, Object.assign({}, source, {expectedLease:'stale'}), resolveSlot), null);
+    assert.strictEqual(OwnedView.resolveExactSourceSlot(
+        {name:'黑色重甲'}, source, resolveSlot), null);
+});
+
 test('return focus action is a two-value migration enum, never a selector', () => {
     assert.strictEqual(Config.resolveReturnFocusAction({}), '');
     assert.strictEqual(Config.resolveReturnFocusAction({
@@ -1133,6 +1155,11 @@ test('facade owns registration and delegates to the bounded storage controller',
     assert(source.includes('EquipmentTuningConfirmation.shared.read()'));
     assert(!source.includes('new InventoryWorkbenchConfig.ConfirmationPreference'));
     assert(source.includes('function ensureTuningFeature()'));
+    assert(source.includes('bindSourceTooltip:bindTuningSourceTooltip'));
+    assert(source.includes('function bindTuningSourceTooltip('));
+    assert(source.includes("bindSlotTooltip(node, '背包', slot, isSuppressed)"));
+    assert(extracted.includes('function resolveExactSourceSlot('));
+    assert(extracted.includes("String(slot.slotLease || '') !== expectedLease"));
     assert(source.includes('activate:activate'));
     assert(source.includes('deactivate:cleanup'));
     assert(source.includes('beginExternalWrite:beginExternalWrite'));

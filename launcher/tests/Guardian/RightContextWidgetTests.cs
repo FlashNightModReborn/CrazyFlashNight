@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Guardian.Hud.Loot;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -48,7 +51,9 @@ namespace CF7Launcher.Tests.Guardian
             return p;
         }
 
-        private static RightContextWidget MakeWidget(out Capture cap)
+        private static RightContextWidget MakeWidget(
+            out Capture cap,
+            LootIconCatalog itemIcons = null)
         {
             cap = new Capture();
             Capture local = cap;
@@ -64,9 +69,26 @@ namespace CF7Launcher.Tests.Guardian
                 anchor,
                 router,
                 MapHudDataCatalog.FromPayload(BuildPayload()),
-                MapDisplayPreference.Compact);
+                MapDisplayPreference.Compact,
+                null,
+                itemIcons);
             w.ForceGameReady(true);
             return w;
+        }
+
+        private static string FindIconsDir()
+        {
+            DirectoryInfo dir = new DirectoryInfo(AppContext.BaseDirectory);
+            while (dir != null)
+            {
+                string candidate = Path.Combine(
+                    dir.FullName, "launcher", "web", "icons");
+                if (File.Exists(Path.Combine(candidate, "manifest.json")))
+                    return candidate;
+                dir = dir.Parent;
+            }
+            throw new DirectoryNotFoundException(
+                "launcher/web/icons not found above " + AppContext.BaseDirectory);
         }
 
         private static SafeExitPanelWidget MakeSafeExitWidget()
@@ -331,8 +353,12 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(right.PaintsStageDecisionForTest);
             Assert.False(right.PaintsActionableNoticeForTest);
             Assert.False(safeExit.PaintsTransactionDecisionForTest);
-            Assert.Equal(new[] { "复活×2", "回基地" },
+            Assert.Equal(new[] { "复活", "回基地" },
                 right.StageActionLabelsForTest);
+            Assert.Equal("持有复活币 2", right.StageDecisionTextForTest);
+            Assert.Equal("复活币", right.StageDecisionItemIconForTest);
+            Assert.Equal("复活币", right.StageDecisionBalanceLabelForTest);
+            Assert.Equal("2", right.StageDecisionBalanceMetaForTest);
 
             right.ClickStageActionForTest(0);
             Assert.Equal(
@@ -540,7 +566,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void ReviveCoinLabel_CompactsLargeInventoryBeforePainting()
+        public void ReviveBalance_MovesInventoryOutOfActionSemantics()
         {
             Capture c;
             RightContextWidget right = MakeWidget(out c);
@@ -548,8 +574,10 @@ namespace CF7Launcher.Tests.Guardian
             right.ApplyState(StageState(
                 "victory", "dead", "none", true, 20574));
 
-            Assert.Equal(new[] { "复活×2.1万", "回基地" },
+            Assert.Equal(new[] { "复活", "回基地" },
                 right.StageActionLabelsForTest);
+            Assert.Equal("持有复活币 2.1万", right.StageDecisionTextForTest);
+            Assert.Equal("复活币", right.StageDecisionItemIconForTest);
         }
 
         [Fact]
@@ -573,11 +601,15 @@ namespace CF7Launcher.Tests.Guardian
                     onToggleLog: () => { },
                     onForceExit: () => { },
                     postToWeb: s => cap.Posts.Add(s));
+                using (LootIconCatalog itemIcons =
+                    new LootIconCatalog(FindIconsDir()))
                 using (RightContextWidget right = new RightContextWidget(
                     anchor,
                     router,
                     MapHudDataCatalog.FromPayload(BuildPayload()),
-                    MapDisplayPreference.Off))
+                    MapDisplayPreference.Off,
+                    null,
+                    itemIcons))
                 {
                     right.ForceGameReady(true);
                     right.SetReady();
@@ -591,20 +623,51 @@ namespace CF7Launcher.Tests.Guardian
                     Assert.True(revive.Width > returnBase.Width);
                     Assert.True(revive.Right < returnBase.Left);
                     Assert.True(right.StageActionTextUsesSingleLineForTest);
-                    Assert.False(right.StageActionUsesCompactFontForTest(0));
                     Assert.True(right.StageActionLabelFitsForTest(0));
                     Assert.True(right.StageActionLabelFitsForTest(1));
+                    Assert.True(right.StageDecisionBalanceIconResolvesForTest);
+                    Assert.Equal("持有",
+                        right.StageDecisionBalanceLabelForTest);
+                    Assert.Equal("2.1万",
+                        right.StageDecisionBalanceMetaForTest);
+                    Assert.False(right.StageDecisionBalanceUsesCompactFontForTest);
+                    Assert.True(right.StageDecisionBalanceFitsForTest);
 
                     right.ApplyState(StageState(
                         "victory", "dead", "none", true,
                         9007199254740991L));
                     Assert.Equal(
-                        new[] { "复活×9007.2万亿", "回基地" },
+                        new[] { "复活", "回基地" },
                         right.StageActionLabelsForTest);
-                    Assert.True(right.StageActionUsesCompactFontForTest(0));
+                    Assert.True(right.StageDecisionBalanceUsesCompactFontForTest);
                     Assert.True(right.StageActionLabelFitsForTest(0));
+                    Assert.Equal(
+                        "9007.2万亿",
+                        right.StageDecisionBalanceMetaForTest);
+                    Assert.True(right.StageDecisionBalanceFitsForTest);
                     Assert.Equal(revive, right.StageActionBoundsForTest(0));
                     Assert.Equal(returnBase, right.StageActionBoundsForTest(1));
+                }
+
+                using (RightContextWidget fallback = new RightContextWidget(
+                    anchor,
+                    router,
+                    MapHudDataCatalog.FromPayload(BuildPayload()),
+                    MapDisplayPreference.Off))
+                {
+                    fallback.ForceGameReady(true);
+                    fallback.SetReady();
+                    fallback.ApplyState(StageState(
+                        "victory", "dead", "none", true, 20574));
+                    NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
+                        fallback, null);
+
+                    Assert.False(fallback.StageDecisionBalanceIconResolvesForTest);
+                    Assert.Equal("复活币",
+                        fallback.StageDecisionBalanceLabelForTest);
+                    Assert.Equal("2.1万",
+                        fallback.StageDecisionBalanceMetaForTest);
+                    Assert.True(fallback.StageDecisionBalanceFitsForTest);
                 }
             }
         }
@@ -621,9 +684,22 @@ namespace CF7Launcher.Tests.Guardian
                 "resurrection_restricted"));
             Assert.Equal(new[] { "禁复活", "回基地" },
                 right.StageActionLabelsForTest);
+            Assert.Equal("你受了重伤", right.StageDecisionTextForTest);
+            Assert.Null(right.StageDecisionItemIconForTest);
             NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
                 right, null);
             Assert.True(right.SlotHitBoxActiveForTest);
+
+            right.ApplyState(StageState(
+                "victory", "dead", "none", false, 0,
+                "no_revive_coin"));
+            Assert.Equal(new[] { "复活", "回基地" },
+                right.StageActionLabelsForTest);
+            Assert.Equal("持有复活币 0", right.StageDecisionTextForTest);
+            Assert.Equal("复活币", right.StageDecisionItemIconForTest);
+            Assert.Equal("复活币", right.StageDecisionBalanceLabelForTest);
+            Assert.Equal("0", right.StageDecisionBalanceMetaForTest);
+            Assert.False(right.StageActionEnabledForTest(0));
 
             right.ApplyState(StageState(
                 "victory", "reviving", "none", false, 2));

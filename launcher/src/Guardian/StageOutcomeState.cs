@@ -159,8 +159,8 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 原生 64px 决策按钮使用的有界中文计数。低于一万保留精确值；更大值按
-        /// 万/亿/万亿压缩到至多一位小数，避免复活币存量挤掉按钮动作文本。
+        /// 原生复活决策栏使用的有界中文计数。低于一万保留精确值；更大值按
+        /// 万/亿/万亿压缩到至多一位小数，避免复活币存量挤掉相邻动作。
         /// </summary>
         public static string FormatCompactCount(long value)
         {
