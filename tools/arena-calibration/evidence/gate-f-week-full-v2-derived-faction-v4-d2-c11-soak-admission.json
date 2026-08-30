@@ -1,0 +1,104 @@
+{
+  "schema": "arena-calibration.soak-admission.v2",
+  "admissionId": "gate-f-week-full-v9-d2-stable-soak-admission",
+  "planId": "gate-f-week-full-v2",
+  "battleSemanticsCohortId": "arena-cohort-20260830-derived-faction-v4",
+  "runtimeIdentity": {
+    "runtimeMode": "formal_runtime",
+    "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "A6A3C16D322C03718679E2E1E83D6EB959D671C3BFA366A1D6C86D3B5CCE6364",
+    "buildIdentity": "48E2ACEA81194C0D6C3A89226DEC2748192612B5514D3F3ADB8444FA4AF6C528",
+    "payloadClosure": "DA7E5BD135FF2407ED7CE459F521BEA95C9CB6F5CC63AA5291ABAC795DAF59F1",
+    "verified": true
+  },
+  "groups": [
+    {
+      "soakIndex": 1,
+      "cells": [
+        "D2",
+        "C7",
+        "G2",
+        "F3",
+        "C11"
+      ]
+    },
+    {
+      "soakIndex": 2,
+      "cells": [
+        "D2",
+        "C7",
+        "G2",
+        "F3",
+        "C11"
+      ]
+    },
+    {
+      "soakIndex": 3,
+      "cells": [
+        "D2",
+        "C7",
+        "G2",
+        "F3",
+        "C11"
+      ]
+    }
+  ],
+  "evidenceRuns": [
+    {
+      "evidenceRunId": "formal-derived-faction-v4-stable-soak-20260830",
+      "manifestPath": "tmp/arena-calibration/derived-faction-v4-soak-admission-20260830/manifest-snapshot.json",
+      "manifestHash": "sha256:66abaec0d0c2516d290cb74d97441a8e3474d09c680470e5d0c45fe5dea8a878",
+      "manifestFileSha256": "sha256:4d55514f48cbfb8c11c470aadfb3f568492d0257d056ef1b0316b92af8c3af8f",
+      "resultPath": "logs/arena-calibration/gate-f-week-derived-faction-v4-admission-20260830-results.jsonl",
+      "resultSnapshotPath": "tmp/arena-calibration/derived-faction-v4-soak-admission-20260830/result-snapshot.jsonl",
+      "resultFileSha256": "sha256:92e26636aa41ca8b8535ce5663c0be8d370915d18603bbe60efbaa0852ad12f9",
+      "reportPath": "tmp/arena-calibration/derived-faction-v4-soak-admission-20260830/report.json",
+      "reportFileSha256": "sha256:1536d06410043b3259e29a3e3daf8410e5357c21f912ba75ad78dd3c703b8763"
+    },
+    {
+      "evidenceRunId": "formal-gate-f-v8-c11-soak-admission-20260830",
+      "manifestPath": "tmp/arena-calibration/v8-admission-probe-c11/manifest-snapshot.json",
+      "manifestHash": "sha256:f6ba45999d3b1302d1c416fa20a262b873d6546f3c407e3beee8a4ca2d47c8c6",
+      "manifestFileSha256": "sha256:5edd9dadc89ad61ca7af65e9064e550fa20b82d35a979da53a01e6009108eabe",
+      "resultPath": "logs/arena-calibration/gate-f-week-v8-admission-probe-c11-20260830-results.jsonl",
+      "resultSnapshotPath": "tmp/arena-calibration/v8-admission-probe-c11/result-snapshot.jsonl",
+      "resultFileSha256": "sha256:b7dd8f68276baf93f2c4481af5d8f2819e589581d989192a6c79d2d4623ce79b",
+      "reportPath": "tmp/arena-calibration/v8-admission-probe-c11/report.json",
+      "reportFileSha256": "sha256:3cea5eabab62168ed888f5d308b910214fe3e71b1b602efb6d01e9622e03ee78"
+    },
+    {
+      "evidenceRunId": "formal-gate-f-v9-d2-soak-admission-20260830",
+      "manifestPath": "tmp/arena-calibration/v9-admission-probe-d2/manifest-snapshot.json",
+      "manifestHash": "sha256:fea9576944c03479492d545cdabde1b7811c37e2a4a66a4631a708ebec77ea0b",
+      "manifestFileSha256": "sha256:cfa2a8e23c5154fc6596da2261baf34ad718044dcdf617da01d462c1bd414860",
+      "resultPath": "logs/arena-calibration/gate-f-week-v9-admission-probe-d2-20260830-results.jsonl",
+      "resultSnapshotPath": "tmp/arena-calibration/v9-admission-probe-d2/result-snapshot.jsonl",
+      "resultFileSha256": "sha256:0010c3ea2cf810c83ec69facba15853e1c29504dd515257eb371ee2f16ae7055",
+      "reportPath": "tmp/arena-calibration/v9-admission-probe-d2/report.json",
+      "reportFileSha256": "sha256:62fd3b8d5858be71680aee376172c6ec5f2c3be9af1c8bb7943722a4c79cdc8f"
+    }
+  ],
+  "derivedFactionEvidenceRuns": [
+    {
+      "evidenceRunId": "formal-derived-faction-v4-observed-spawns-20260830",
+      "manifestPath": "tmp/arena-calibration/derived-faction-v4-soak-admission-20260830/manifest-snapshot.json",
+      "manifestHash": "sha256:66abaec0d0c2516d290cb74d97441a8e3474d09c680470e5d0c45fe5dea8a878",
+      "manifestFileSha256": "sha256:4d55514f48cbfb8c11c470aadfb3f568492d0257d056ef1b0316b92af8c3af8f",
+      "resultPath": "logs/arena-calibration/gate-f-week-derived-faction-v4-admission-20260830-results.jsonl",
+      "resultSnapshotPath": "tmp/arena-calibration/derived-faction-v4-soak-admission-20260830/result-snapshot.jsonl",
+      "resultFileSha256": "sha256:92e26636aa41ca8b8535ce5663c0be8d370915d18603bbe60efbaa0852ad12f9",
+      "reportPath": "tmp/arena-calibration/derived-faction-v4-soak-admission-20260830/report.json",
+      "reportFileSha256": "sha256:1536d06410043b3259e29a3e3daf8410e5357c21f912ba75ad78dd3c703b8763",
+      "originalCaseId": "derived-faction-amplified-original",
+      "sideSwapCaseId": "derived-faction-amplified-side-swap",
+      "parentUnitType": "兵种39",
+      "derivedUnitType": "敌人-裸体兽化僵尸1",
+      "minimumSpawnedUnitsBySide": {
+        "red": 3,
+        "blue": 3
+      }
+    }
+  ],
+  "createdAt": "2026-08-30T11:52:33.145Z",
+  "admissionHash": "sha256:9034715cffb240f9f1d42b6eb6b31064cfb5147dd0b879d67cc3b164eb83f4a2"
+}

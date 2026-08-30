@@ -261,18 +261,18 @@ node tools/arena-calibration/campaignctl.js pause --campaign-id <campaignId> --r
 node tools/arena-calibration/campaignctl.js status --campaign-id <campaignId>
 ```
 
-星期级全量标定由 `build-gate-f-week-plan.js` 与 `gate-fctl.js` 接管。前者只消费已绑定工作簿 hash/单元格的 normalized intake、exception、显式 timeout 证据与新计划必需的 `arena-calibration.soak-admission.v2`，不重新读取或改写 `.xlsx`；v1 只允许历史重放，不能生成新星期计划。当前冻结前草案位于 `tools/arena-calibration/plans/gate-f-week-full-v2/`，执行 campaign 为 `gate-f-week-full-v8`，包含 58 个待跑候选、1 个隔离 scope、198 个 10–25 run 短 shard和 3,285 个计划 run。旧 runtime/PVE/撤销 cohort 事实均不跨 cohort 代签新机器样本。B9 的原始工作簿/normalized timeout 仍为 1800 帧；`gate-f-week-full-v2-empirical-timeout-overrides.json` 只在计划层把 B9 转入 `6 × 10` 长 timeout 分层，原始事实与 formal replay 要求不变。每个 shard 都有独立、hash-bound 的 `schedule_shard/auto_execute` 决策证据并同时计划 original/side-swap。
+星期级全量标定由 `build-gate-f-week-plan.js` 与 `gate-fctl.js` 接管。前者只消费已绑定工作簿 hash/单元格的 normalized intake、exception、显式 timeout 证据与新计划必需的 `arena-calibration.soak-admission.v2`，不重新读取或改写 `.xlsx`；v1 只允许历史重放，不能生成新星期计划。当前冻结前草案位于 `tools/arena-calibration/plans/gate-f-week-full-v2/`，执行 campaign 为 `gate-f-week-full-v9`，包含 58 个待跑候选、1 个隔离 scope、198 个 10–25 run 短 shard和 3,285 个计划 run。旧 runtime/PVE/撤销 cohort 事实均不跨 cohort 代签新机器样本。B9 的原始工作簿/normalized timeout 仍为 1800 帧；`gate-f-week-full-v2-empirical-timeout-overrides.json` 只在计划层把 B9 转入 `6 × 10` 长 timeout 分层，原始事实与 formal replay 要求不变。每个 shard 都有独立、hash-bound 的 `schedule_shard/auto_execute` 决策证据并同时计划 original/side-swap。
 
-`--soak-admission tools/arena-calibration/evidence/gate-f-week-full-v2-derived-faction-v4-c11-soak-admission.json` 是当前硬参数。生成器会逐文件复验 manifest/result/report SHA-256、真实 JSON Schema、exact candidate timeout、original/side-swap 自然结束、formal runtime identity、零 error/timeout/recovery、正常关闭与受保护存档不变；v2 还必须在原/换边两侧实际观察最低数量的指定派生单位，并把同一 hash-bound 案例模板自动重放到每份 infrastructure soak。既有 evidence 为 20/20 finished、目标 red 8 / blue 8，最低门各 3；新增 C11 正式 evidence 为 2/2 finished、0 timeout/error/recovery。三份 fresh soak 各含 `B2/C7/G2/F3/C11` 代表 10 run 与派生阵营 10 run，共 20 run；E10 退出 soak 但保留全部六个 10-run 长分片。`resultPath` 继续逐字绑定原报告，实际字节由同次唯一 `resultSnapshotPath` 和 manifest snapshot 固定；B11/C12、C9、B9 的既有 timeout 事实和全量分片不变。
+`--soak-admission tools/arena-calibration/evidence/gate-f-week-full-v2-derived-faction-v4-d2-c11-soak-admission.json` 是当前硬参数。生成器会逐文件复验 manifest/result/report SHA-256、真实 JSON Schema、exact candidate timeout、original/side-swap 自然结束、formal runtime identity、零 error/timeout/recovery、正常关闭与受保护存档不变；v2 还必须在原/换边两侧实际观察最低数量的指定派生单位，并把同一 hash-bound 案例模板自动重放到每份 infrastructure soak。既有 evidence 为 20/20 finished、目标 red 8 / blue 8，最低门各 3；C11 正式 evidence 为 2/2 finished；D2 当前正式 exact-policy evidence 为原/换边各 5、10/10 finished、0 timeout/error/recovery、最大 423 帧。三份 fresh soak 各含 `D2/C7/G2/F3/C11` 代表 10 run 与派生阵营 10 run，共 20 run；B2 与 E10 退出 soak 但仍保留各自全部数值分片。`resultPath` 继续逐字绑定原报告，实际字节由同次唯一 `resultSnapshotPath` 和 manifest snapshot 固定；B11/C12、C9、B9 的既有 timeout 事实和全量分片不变。
 
 ```powershell
 node tools/arena-calibration/build-gate-f-week-plan.js `
   --candidates tmp/arena-calibration/intake/gate-a-workbook-audit/normalized-candidates.json `
   --exceptions tmp/arena-calibration/intake/gate-a-workbook-audit/exceptions.json `
   --empirical-timeout-overrides tools/arena-calibration/evidence/gate-f-week-full-v2-empirical-timeout-overrides.json `
-  --soak-admission tools/arena-calibration/evidence/gate-f-week-full-v2-derived-faction-v4-c11-soak-admission.json `
+  --soak-admission tools/arena-calibration/evidence/gate-f-week-full-v2-derived-faction-v4-d2-c11-soak-admission.json `
   --output-dir tools/arena-calibration/plans/gate-f-week-full-v2 `
-  --plan-id gate-f-week-full-v2 --campaign-id gate-f-week-full-v8 `
+  --plan-id gate-f-week-full-v2 --campaign-id gate-f-week-full-v9 `
   --battle-semantics-cohort arena-cohort-20260830-derived-faction-v4 `
   --battle-build-commit f87ca1148f2635c2121ec8f92e40c059bc3e1036
 ```
@@ -282,26 +282,26 @@ node tools/arena-calibration/build-gate-f-week-plan.js `
 ```powershell
 node tools/arena-calibration/gate-fctl.js freeze `
   --draft tools/arena-calibration/plans/gate-f-week-full-v2/plan-draft.json `
-  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v8/frozen
+  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v9/frozen
 
 node tools/arena-calibration/gate-fctl.js arm `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v8/frozen/gate-f-plan.json `
-  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v8/window-<timestamp> `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v9/frozen/gate-f-plan.json `
+  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v9/window-<timestamp> `
   --hours 8
 
 node tools/arena-calibration/gate-fctl.js run `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v8/frozen/gate-f-plan.json `
-  --window tmp/arena-calibration/gate-f/gate-f-week-full-v8/window-<timestamp>/idle-window.json `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v9/frozen/gate-f-plan.json `
+  --window tmp/arena-calibration/gate-f/gate-f-week-full-v9/window-<timestamp>/idle-window.json `
   --max-shards 3 `
   --codex-exe <可选；未给出时自动发现 Codex CLI> `
   --maximum-exception-reviews 1
 
 node tools/arena-calibration/gate-fctl.js status `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v8/frozen/gate-f-plan.json `
-  --output tmp/arena-calibration/gate-f/gate-f-week-full-v8/status.json
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v9/frozen/gate-f-plan.json `
+  --output tmp/arena-calibration/gate-f/gate-f-week-full-v9/status.json
 ```
 
-`gate-f-week-full-v6` / `arena-cohort-20260830-summon-lineage-v3` 已因派生单位实体阵营错误作废；16 个 completed shard / 260 行只作历史。修复提交 `901685557fcaaf972a0fd76b1218be0e3b61c1cb` 和 v2 准入提交 `f87ca1148f2635c2121ec8f92e40c059bc3e1036` 后，正式 20-run admission 在同一 formal runtime 上取得目标派生 red 8 / blue 8、0 timeout/error/recovery、正常 shutdown 和存档 snapshot `sha256:fcfaa53f9000a5b7e75205bb3549aa2c8b5798df3fe5d4843725222ffbede73b` 不变。v7 三份 20-run fresh soak 中，第一份 20/20 finished，第二、三份各有 E10 一向 1/20 timeout；window 已 revoke，60 行只作历史诊断，剩余 195 shard 未开放。exact-zero 修复提交 `b9cdd924f3177d46367ae06d58e8825e3d2d7178` 后，D11 probe 因 original timeout 被拒；C11 正式双向 probe 2/2 finished，0 timeout/error/recovery，runtime/save/shutdown 闭合。v8 admission hash 为 `sha256:901c06ce6771f1bbfafa49f6f08fb698354419c8a01198583b68e7b6ebc8ac39`；新计划必须 clean freeze 并重跑三份 soak，不得复用 v7 plan/window/receipt。
+`gate-f-week-full-v6` / `arena-cohort-20260830-summon-lineage-v3` 已因派生单位实体阵营错误作废；16 个 completed shard / 260 行只作历史。修复提交 `901685557fcaaf972a0fd76b1218be0e3b61c1cb` 和 v2 准入提交 `f87ca1148f2635c2121ec8f92e40c059bc3e1036` 后，正式 20-run admission 在同一 formal runtime 上取得目标派生 red 8 / blue 8、0 timeout/error/recovery、正常 shutdown 和存档 snapshot `sha256:fcfaa53f9000a5b7e75205bb3549aa2c8b5798df3fe5d4843725222ffbede73b` 不变。v7 因 E10 两向各一次 timeout 暴露旧 soak 5% 口径缺口；exact-zero 修复提交 `b9cdd924f3177d46367ae06d58e8825e3d2d7178` 后，D11 probe 因 original timeout 被拒，C11 正式双向 probe 2/2 finished。v8 的前两份 soak 各 20/20，第三份为 19 finished + B2 original 1 timeout；严格门正确失败并 revoke，60 行只作诊断，剩余 195 shard 未开放。B2 继续留在自身标准分片；D2 以旧 55/55 诊断筛选后完成当前正式原/换边各 5 的 10/10 新鲜 probe。v9 admission hash 为 `sha256:9034715cffb240f9f1d42b6eb6b31064cfb5147dd0b879d67cc3b164eb83f4a2`；新计划必须 clean freeze 并重跑三份 soak，不得复用 v7/v8 plan、window 或 receipt。
 
 只有三份 fresh soak receipt 都为 `completed`，且 exact runtime、原始 JSONL Schema/manifest 绑定、受保护存档集合、磁盘、timeout/error、时长漂移和 0 人工动作测量全部通过，才可在新的有界 window 中去掉 `--max-shards 3` 继续剩余短 shard。`planner.phase=soak` 逐份强制 error=0 且 timeout=0；即使 1/20 恰好未超过全局 `maximumTimeoutRate=0.05` 也必须写 failed receipt 并停止，不得套用标准/长分片的候选 timeout anomaly 继续策略。若候选或素材存在阶段派生单位，fresh admission/soak 还必须让已知召唤者在 original/side-swap 两方向都实际产生 `phaseSpawnCount > 0`；只把召唤者放进 roster、但该批未发生派生，不算覆盖。每个存活的 blue/red 初始或派生实体都必须逐帧满足 `是否为敌人 === false/true`；任一漂移立即返回 schema-valid `contamination`，错误码为 `faction_contamination`。`arm` 会拒绝活跃 Launcher/Flash/arena runner、低磁盘和 source/runtime 漂移；显式星期级授权 window 最长 168 小时且可随时用 `gate-fctl.js revoke` 撤销，过期后只允许提交已经产生的 durable facts，不再领取新 shard。全量阶段的纯 `timeout_rate` 超阈值属于候选质量 anomaly：原始行照常 durable 提交，写 `candidate_timeout_anomaly / keep_provisional` deferred item并继续；timeout 仍从强度拟合排除并参与最终候选低-timeout 门。标准/长分片在 exact runtime、存档、磁盘、墙钟和完整 cardinality 全部闭合后，若恢复耗尽且失败行只属于 `contamination/error/invalid_case/spawn_failed`，则 receipt 为 `quarantined`：只隔离由 `caseId` 确定的候选、跳过该候选后续 shard，其他候选继续；这些原始行绝不进入强度拟合。`stage_failed/bridge_lost`、duration drift、runtime/save/disk、runner/report/cardinality 异常仍失败。每个控制器最多异步启动一个 `run-exception-review.js`，模型只能在 hash-bound packet 上返回 `confirm_quarantine/likely_legitimate_spawn/request_method_change/abstain` 建议，不能接受样本、恢复候选或阻塞主批；CLI 缺失、超时、失败或非法输出都保持确定性 quarantine。运行监控把 controller、runner、它们的祖先和全部后代视为同一受控进程树；因此内部 `run-checks.js` 启动的 `gate-fctl.js --check` 不构成竞争者，而树外的真实第二 runner 或独立 `Flash.exe` 仍会触发让位。运行中如内容开发启动 Flash、出现 revoke/身份/磁盘异常，driver 会通过本轮 owned `.signal` 请求 abort，并在 300 秒硬上限内让位。已产生的 partial JSONL 逐行以 `manifestHash + runId` durable 提交，重复 attempt 只计一次；失败或恢复耗尽写去重 exception inbox，不要求测试群现场整理或逐批确认。Gate F low-touch 只有在真实最近 20 个 eligible epoch 与全 campaign 两个窗口都满足 attention 门后才成立，fixture 的 20 个 epoch 不能代替实跑。
 

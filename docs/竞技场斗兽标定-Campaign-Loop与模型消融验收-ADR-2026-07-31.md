@@ -716,6 +716,10 @@ v7 随后在 frozen plan `sha256:b8d6e321d16950129acfc28629537eb2fe732c6344b2d91
 
 exact-zero 修复提交 `b9cdd924f3177d46367ae06d58e8825e3d2d7178` 后，D11 replacement probe 的 original 在 1,800 帧 timeout、side-swap 自然结束，故未准入；随后 C11 exact-policy original/side-swap 分别于 1,526 / 1,711 帧自然结束，2/2 finished、0 timeout/error/recovery、正式 runtime、存档 snapshot 不变且正常 shutdown。新 `arena-calibration.soak-admission.v2` 将这份逐文件 hash-bound evidence 与既有 `B2/C7/G2/F3`、派生 red/blue 证据合并，group 改为 `B2/C7/G2/F3/C11`，hash 为 `sha256:901c06ce6771f1bbfafa49f6f08fb698354419c8a01198583b68e7b6ebc8ac39`。tracked v8 仍为 58 scheduled + B12 quarantine、198 shard / 3,285 run；E10 六个 10-run 长分片保留。当前只到草案重建，尚未 clean freeze/arm 或执行 v8 三份 fresh soak。
 
+v8 随后由提交 `2dc660cb1d2ecbb64fa78a5ec7d9c89f515263b8` clean freeze 为 plan `sha256:d9c029815d18e3960dbe9050f90403875c3fdb76e2e9bf159ee9c2cc2f0fbed5`。三份 exact-zero fresh soak 中，前两份各 20/20 finished，第三份为 19 finished + B2 original 1 timeout；三份均 0 error/recovery、exact formal runtime、受保护存档 snapshot 不变并正常 shutdown，派生 red/blue 实际计数分别为 `7/6`、`4/4`、`7/5`。控制器正确把第三份 receipt 写为 failed、状态转为 PAUSED；短 window 已 revoke，v8 的 60 行只作 B2 随机卡住与门控诊断，剩余 195 shard 未领取。该结果不授权用“派生案例全部通过”覆盖普通代表 timeout，也不允许复用前两份 receipt 到新 plan。
+
+B2 继续保留在自身 `10 + 20 + 25` 标准数值分片，不因基础设施代表替换而丢样。替代选择只把旧 cohort 的 55-run 结果当诊断：D2 为 55/55 finished、0 timeout/error、P95 429 帧，但这些旧行不进入 admission、拟合或新 cohort。当前 formal runtime 上的新鲜 D2 exact-policy probe 固定 original/side-swap 各 5，取得 10/10 finished、0 timeout/error/recovery、最大 423 帧、正常 shutdown 与相同存档 snapshot。v9 admission 将 group 改为 `D2/C7/G2/F3/C11`，逐文件绑定 D2 manifest/result/report 与既有 C11、派生 red/blue evidence，hash 为 `sha256:9034715cffb240f9f1d42b6eb6b31064cfb5147dd0b879d67cc3b164eb83f4a2`。tracked v9 仍为 58 scheduled + B12 quarantine、198 shard / 3,285 run；当前只到草案重建，必须再次 clean freeze 并从零执行三份 20-run soak。
+
 ## 13. ADR 验收边界
 
 本文的实现验收是：
