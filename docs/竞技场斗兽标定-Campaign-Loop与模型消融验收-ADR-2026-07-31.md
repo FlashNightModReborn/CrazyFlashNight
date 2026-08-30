@@ -173,6 +173,7 @@ Campaign Supervisor
 - **模型 proposal 非法**：schema、未知 action、预算或前置约束任一失败，都只拒绝该 proposal，按 `dedupeKey` 记录异常，再执行冻结 rule fallback；没有合法 fallback 时收束为 `abstain` / 隔离 affected scope。Campaign 继续，非法 proposal 不得进入 L0。
 - **Supervisor 生成的可信 L0 manifest 非法**：proposal 已通过但确定性 adapter 产出的 manifest 仍不能通过 L0 schema / identity / cohort 验证，表示内部不变量或 adapter 已失效，整个 campaign 才进入 `FAILED_CLOSED`。
 - **未知 action**：必须在 proposal schema 层 reject；不存在“无法分类后仍继续执行该 action”的路径。任何未分类动作都不得下发。
+- **执行异常的模型兜底**：标准/长 shard 的候选级异常先由确定性规则写 `quarantined` receipt 并 `defer_and_continue`；后台模型只读取 hash-bound request，最多返回 `confirm_quarantine | likely_legitimate_spawn | request_method_change | abstain`。模型不得接受污染样本、恢复候选、改 receipt 或阻塞下一 shard；CLI 缺失、超时、非法输出或模型失败都保持默认隔离。
 
 只有事实账本不连续、可信 L0 manifest 非法、身份 / 权限异常或全局资源安全问题才 `FAILED_CLOSED` 停止整个 campaign。
 
@@ -566,7 +567,7 @@ shadow 先比较：
 | P3 | 正式建议落地 | 结果到 Web JS / XML 之间需人工翻译 | recommendation bundle、dry-run diff、一次批准 apply 和 rollback receipt |
 | P4 | 故障演练 | 已有 crash/timeout/rerun 实机证据；fixture 覆盖 checkpoint 撕裂、重复 attempt、ack 丢失、磁盘不足、window expiry/revoke、active producer 和 manifest/decision 篡改 | 真实断电、长时漂移和运行中内容开发抢占留 Gate F 实跑 |
 
-P0 契约漂移已于 2026-08-27 闭合。当前统一门用 Ajv 2020 编译 39 个 schema，并完成 63 项检查，合法实例通过、对应非法形状拒绝；覆盖 manifest、result、summary、next batch、工作簿 intake、Campaign runtime、shadow / paired / PVE artifacts、数值人形佣兵等效响应，以及 Gate F plan/window/decision/attention/shard receipt/status。测试群工作簿以 SHA-256 `840B30AF82CA686E954DC4A6378A5C2B297506070E034ED79EA91DA9E0B3B793`、sheet `斗兽标定组合` 和单元格定位摄取：59 个 populated cells 形成 59 个 raw submissions、58 个 normalized candidates，`C9` 和 `B9` 产生 hash-bound 派生修正，`B12` 保留原文并隔离，原工作簿未改写。
+P0 契约漂移已于 2026-08-27 闭合。当前统一门用 Ajv 2020 编译 46 个顶层/嵌入 schema，并完成 73 项检查，合法实例通过、对应非法形状拒绝；覆盖 manifest、result、summary、next batch、工作簿 intake、Campaign runtime、shadow / paired / PVE artifacts、数值人形佣兵等效响应、Gate F plan/window/decision/attention/shard receipt/status，以及候选 quarantine、异常模型 request/result/receipt/dispatch。测试群工作簿以 SHA-256 `840B30AF82CA686E954DC4A6378A5C2B297506070E034ED79EA91DA9E0B3B793`、sheet `斗兽标定组合` 和单元格定位摄取：59 个 populated cells 形成 59 个 raw submissions、58 个 normalized candidates，`C9` 和 `B9` 产生 hash-bound 派生修正，`B12` 保留原文并隔离，原工作簿未改写。
 
 fresh 运行前置门也已闭合：10-run `gate-a-pilot-20260827-a` 覆盖普通、单位 payload、阵型、显式长 timeout 与高等级案例，10/10 finished、0 timeout/error/contamination；随后 30-run `gate-a-exploration-20260827-a` 为 27 finished、3 timeout、0 error/contamination。两批均绑定同一 verified formal runtime identity / payload closure，且专用目标槽以外 20 份 live shadow JSON / SOL 的跑前跑后集合 hash 完全一致。探索批 10% timeout 必须保留为调查信号；每个方向只有 3 个样本，不足最终候选门。独立 1-run `gate-a-shutdown-regression-20260827-a` 证明 expected PID 消失可作为正常 shutdown 终态；随后 `gate-a-schema-regression-20260827-a` 以 1/1 finished、原始 JSONL direct-schema-valid、exact manifest/case binding、`error=null` 和相同 save hash 证明生产字段闭包真正进入现役 runner。
 
@@ -603,7 +604,8 @@ F8 的 lease、audit 与 trusted runner 设计可作安全参考，官方 manage
 | 正式槽、坏档或 runtime identity 不符 | `FAILED_CLOSED`，写安全 exception | 否 |
 | socket / Launcher 在结果提交前断开 | work item `RETRYABLE` | 有界；新 attempt |
 | result 已提交但 ack 丢失 | reconcile `runKey`，首个有效 durable commit 胜出 | 不盲重计 |
-| `contamination` / spawn / stage 异常 | candidate / run `QUARANTINED`，写 inbox，其余继续 | 默认否，先诊断 |
+| 标准/长 shard 的 `contamination/error/invalid_case/spawn_failed`，且 runtime/save/disk/墙钟/cardinality 均闭合 | affected candidate `QUARANTINED`，写 inbox，跳过其后续 shard，其余继续；可异步唤醒无接受权的模型诊断 | 默认否，修复后 fresh rerun |
+| 基础设施 soak、`stage_failed/bridge_lost`、duration drift、runtime/save/disk、runner/report/cardinality 异常 | shard 失败；全局身份/存档/磁盘问题可 `FAILED_CLOSED` | 按现有有界恢复与安全门 |
 | timeout / 僵持 | 独立异常样本 | 按策略追加或隔离 |
 | 图断连 / 区间过宽 | planner 生成 bridge / boundary 样本 | 是，受预算约束 |
 | 模型 profile 冲突或 Sol 无法解释 | Sol `abstain`；Supervisor 执行冻结 rule fallback，否则 `defer_and_continue` 并隔离 affected scope | 否；仅需改 rubric / 统计方法 / gold suite 时进入 L2 |

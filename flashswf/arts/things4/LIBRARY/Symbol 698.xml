@@ -64,7 +64,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -75,7 +75,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -105,7 +105,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -116,7 +116,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -146,7 +146,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -157,7 +157,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -194,7 +194,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -205,7 +205,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -235,7 +235,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -246,7 +246,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -276,7 +276,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -287,7 +287,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -324,7 +324,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -335,7 +335,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -365,7 +365,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -376,7 +376,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -406,7 +406,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -417,7 +417,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -447,7 +447,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -458,7 +458,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -488,7 +488,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -499,7 +499,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -536,7 +536,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -547,7 +547,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -577,7 +577,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -588,7 +588,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -618,7 +618,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -629,7 +629,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -659,7 +659,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -670,7 +670,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>
@@ -700,7 +700,7 @@
    是否为敌人 = _parent._parent.是否为敌人;
    身高 = 175;
    _parent._parent.水晶计数 = _parent._parent.水晶计数 + 1;
-   僵尸型敌人newname = this._name + 兵种 + _parent._parent.水晶计数;
+   僵尸型敌人newname = (_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name) + 兵种 + _parent._parent.水晶计数;
    _root.gameworld[僵尸型敌人newname].removeMovieClip();
    if(_parent._parent.水晶计数 > 20)
    {
@@ -711,7 +711,7 @@
    _root.gameworld.globalToLocal(myPoint);
    shootX = myPoint.x;
    shootY = myPoint.y + 1 + random(10);
-   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:this._name});
+   _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:(_parent._parent._arenaCalibrationUnit === true ? _parent._parent._name : this._name)});
 }
 ]]></script>
                   </Actionscript>

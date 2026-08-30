@@ -275,7 +275,7 @@
         "campaignId": { "$ref": "#/$defs/id" },
         "shardId": { "$ref": "#/$defs/id" },
         "manifestHash": { "$ref": "#/$defs/sha256" },
-        "state": { "enum": ["completed", "failed", "yielded"] },
+        "state": { "enum": ["completed", "failed", "yielded", "quarantined"] },
         "runReportPath": { "type": ["string", "null"] },
         "runReportSha256": {
           "oneOf": [
@@ -284,6 +284,7 @@
           ]
         },
         "executionArtifactIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "affectedCandidateIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
         "committedRows": { "type": "integer", "minimum": 0 },
         "duplicatesExcluded": { "type": "integer", "minimum": 0 },
         "recoveryAttemptsUsed": { "type": "integer", "minimum": 0, "maximum": 3 },
@@ -309,11 +310,12 @@
         "shards": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["planned", "completed", "failed", "remaining"],
+          "required": ["planned", "completed", "failed", "quarantined", "remaining"],
           "properties": {
             "planned": { "type": "integer", "minimum": 0 },
             "completed": { "type": "integer", "minimum": 0 },
             "failed": { "type": "integer", "minimum": 0 },
+            "quarantined": { "type": "integer", "minimum": 0 },
             "remaining": { "type": "integer", "minimum": 0 }
           }
         },

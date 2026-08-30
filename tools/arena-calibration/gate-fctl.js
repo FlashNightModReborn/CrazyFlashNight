@@ -16,6 +16,13 @@ const {
 const { CampaignSupervisor } = require("./lib/campaign-supervisor");
 const { writeJsonAtomic } = require("./lib/durable-campaign-journal");
 const {
+  classifyCandidateAnomaly,
+  createExceptionReviewRequest,
+  discoverCodexExecutable,
+  selectRunnableShards,
+  sha256File: sha256AnomalyFile,
+} = require("./lib/gate-f-anomaly-policy");
+const {
   aggregateAttention,
   captureDiskHealth,
   classifyShardRowHealth,
@@ -72,6 +79,10 @@ function parseArgs(argv) {
     output: null,
     hours: 8,
     maxShards: Number.POSITIVE_INFINITY,
+    codexExe: null,
+    exceptionReviewModel: "gpt-5.6-sol",
+    maximumExceptionReviews: 1,
+    exceptionReviewsStarted: 0,
     check: directCheck,
   };
   for (let index = 1; index < argv.length; index += 1) {
@@ -85,6 +96,9 @@ function parseArgs(argv) {
     else if (token === "--output") args.output = argv[++index];
     else if (token === "--hours") args.hours = Number(argv[++index]);
     else if (token === "--max-shards") args.maxShards = Number(argv[++index]);
+    else if (token === "--codex-exe") args.codexExe = path.resolve(argv[++index]);
+    else if (token === "--exception-review-model") args.exceptionReviewModel = String(argv[++index]);
+    else if (token === "--maximum-exception-reviews") args.maximumExceptionReviews = Number(argv[++index]);
     else if (token === "--check") args.check = true;
     else if (token === "--help" || token === "-h") args.command = "help";
     else fail(`unknown argument: ${token}`, "usage_error");
@@ -106,6 +120,8 @@ Options:
   freeze: --draft <json> --output-dir <project path>
   arm:    --plan <json> --output-dir <project path> [--hours 1..24]
   run:    --plan <json> --window <json> [--max-shards <n>]
+          [--codex-exe <absolute exe>] [--exception-review-model <id>]
+          [--maximum-exception-reviews <0..3>]
   status: --plan <json> [--output <json>]
   revoke: --plan <json> --window <json>
   shared: [--journal-root <path>] [--project-root <path>]
@@ -218,8 +234,10 @@ function buildStatus(args, plan, options) {
   const exceptionItems = readArtifacts(args, plan, /^exception-.*\.json$/i, "arena-calibration.exception-inbox-item.v1")
     .filter((entry) => entry.campaignId === plan.campaignId);
   const exceptions = summarizeExceptions(exceptionItems, plan, now);
+  const scheduling = selectRunnableShards(plan, latest, Number.POSITIVE_INFINITY);
   const completed = Array.from(latest.values()).filter((entry) => entry.state === "completed").length;
   const failed = Array.from(latest.values()).filter((entry) => entry.state === "failed").length;
+  const quarantined = scheduling.quarantinedShardIds.size;
   const completedHealth = Array.from(latest.values()).filter((entry) => entry.state === "completed").every((entry) => entry.health.ok === true);
   let sourceAndRuntimeCurrent = true;
   let drift = null;
@@ -240,6 +258,9 @@ function buildStatus(args, plan, options) {
   const candidateOutcomes = plan.candidateBaselines.map((baseline) => {
     if (baseline.initialState === "completed_prior") return { candidateId: baseline.candidateId, state: "completed" };
     if (baseline.initialState === "quarantined") return { candidateId: baseline.candidateId, state: "quarantined" };
+    if (scheduling.quarantinedCandidateIds.has(baseline.candidateId)) {
+      return { candidateId: baseline.candidateId, state: "quarantined" };
+    }
     const candidateShards = plan.shards.filter((shard) => shard.candidateIds.includes(baseline.candidateId));
     const complete = candidateShards.length > 0 && candidateShards.every((shard) => {
       const receipt = latest.get(shard.shardId);
@@ -258,7 +279,8 @@ function buildStatus(args, plan, options) {
       planned: plan.shards.length,
       completed,
       failed,
-      remaining: plan.shards.length - completed,
+      quarantined,
+      remaining: plan.shards.length - completed - quarantined,
     },
     rows: {
       committed: receipts.reduce((total, entry) => total + entry.committedRows, 0),
@@ -528,6 +550,123 @@ function writeFailureException(supervisor, plan, shard, error, severity) {
   return supervisor.recordException(item);
 }
 
+function writeQuarantineException(supervisor, plan, shard, anomaly, reason) {
+  const now = new Date();
+  const scopes = [`work:${shard.shardId}`].concat(
+    anomaly.affectedCandidateIds.map((candidateId) => `candidate:${candidateId}`),
+  );
+  const item = createExceptionInboxItem({
+    exceptionId: `gate-f-${shard.shardId}-candidate-quarantine`,
+    campaignId: plan.campaignId,
+    dedupeKey: `gate-f|${shard.shardId}|candidate-quarantine`,
+    category: "candidate_execution_anomaly",
+    severity: "warning",
+    status: "deferred",
+    summary: reason || "candidate-scoped error or contamination exhausted bounded recovery",
+    affectedScopes: scopes,
+    occurrences: [{
+      occurrenceId: `occ-${timestampId(now)}`,
+      observedAt: now.toISOString(),
+      evidenceRef: sha256OfValue({
+        planHash: plan.planHash,
+        shardId: shard.shardId,
+        manifestHash: shard.manifestHash,
+        candidateIds: anomaly.affectedCandidateIds,
+        rowStatusCounts: anomaly.rowStatusCounts,
+        errorSignals: anomaly.errorSignals,
+      }),
+    }],
+    defaultAction: "quarantine",
+    reviewDeadline: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: now.toISOString(),
+    updatedAt: now.toISOString(),
+  });
+  return supervisor.recordException(item);
+}
+
+function writeReviewDispatch(supervisor, dispatch) {
+  assertSchemaInstance(dispatch.schema, dispatch, "Gate F exception review dispatch");
+  const artifactDir = path.join(supervisor.journal.root, "artifacts");
+  fs.mkdirSync(artifactDir, { recursive: true });
+  writeJsonAtomic(path.join(artifactDir, `llm-review-dispatch-${dispatch.requestId}.json`), dispatch);
+  supervisor.journal.append("gate_f_exception_review_dispatched", {
+    requestId: dispatch.requestId,
+    requestHash: dispatch.requestHash,
+    state: dispatch.state,
+    processId: dispatch.processId,
+    dispatchHash: dispatch.dispatchHash,
+  });
+  return dispatch;
+}
+
+function dispatchExceptionReview(args, plan, supervisor, request) {
+  const artifactDir = path.join(supervisor.journal.root, "artifacts");
+  const requestPath = path.join(artifactDir, `llm-review-request-${request.requestId}.json`);
+  const reviewDir = path.join(artifactDir, "llm-reviews", request.requestId);
+  fs.mkdirSync(reviewDir, { recursive: true });
+  writeJsonAtomic(requestPath, request);
+  const dispatchedAt = new Date().toISOString();
+  const base = {
+    schema: "arena-calibration.exception-review-dispatch.v1",
+    requestId: request.requestId,
+    requestHash: request.requestHash,
+    state: "unavailable",
+    processId: null,
+    codexExe: null,
+    codexExeSha256: null,
+    requestPath: projectRelative(args.projectRoot, requestPath),
+    outputDir: projectRelative(args.projectRoot, reviewDir),
+    model: args.exceptionReviewModel,
+    dispatchedAt,
+    reason: null,
+    dispatchHash: "",
+  };
+  if (args.exceptionReviewsStarted >= args.maximumExceptionReviews) {
+    base.state = "deferred_capacity";
+    base.reason = `per-controller exception review limit ${args.maximumExceptionReviews} reached`;
+  } else {
+    const codexExe = discoverCodexExecutable(args.codexExe);
+    if (!codexExe) {
+      base.reason = "Codex executable was not discovered; deterministic quarantine remains active";
+    } else {
+      base.codexExe = codexExe;
+      base.codexExeSha256 = sha256AnomalyFile(codexExe);
+      let stdoutFd = null;
+      let stderrFd = null;
+      try {
+        stdoutFd = fs.openSync(path.join(reviewDir, "dispatcher-stdout.log"), "a");
+        stderrFd = fs.openSync(path.join(reviewDir, "dispatcher-stderr.log"), "a");
+        const child = childProcess.spawn(process.execPath, [
+          path.join(args.projectRoot, "tools", "arena-calibration", "run-exception-review.js"),
+          "--request", requestPath,
+          "--output-dir", reviewDir,
+          "--codex-exe", codexExe,
+          "--model", args.exceptionReviewModel,
+        ], {
+          cwd: args.projectRoot,
+          detached: true,
+          windowsHide: true,
+          stdio: ["ignore", stdoutFd, stderrFd],
+        });
+        child.once("error", () => { });
+        child.unref();
+        if (!Number.isInteger(child.pid) || child.pid <= 0) throw new Error("review worker did not expose a process id");
+        base.state = "started";
+        base.processId = child.pid;
+        args.exceptionReviewsStarted += 1;
+      } catch (error) {
+        base.state = "spawn_failed";
+        base.reason = error.message;
+      } finally {
+        if (stdoutFd !== null) fs.closeSync(stdoutFd);
+        if (stderrFd !== null) fs.closeSync(stderrFd);
+      }
+    }
+  }
+  base.dispatchHash = sha256OfValue(withoutHash(base, "dispatchHash"));
+  return writeReviewDispatch(supervisor, base);
+}
+
 function writeCandidateTimeoutException(supervisor, plan, shard, rowHealth, reportPath) {
   const now = new Date();
   const scopes = [`work:${shard.shardId}`].concat(shard.candidateIds.map((id) => `candidate:${id}`));
@@ -708,8 +847,23 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
     const preliminaryOk = reportCompleted && saveUnchanged && runtimeVerified && diskAfter.ok
       && rowDisposition.executionOk && withinWallClock && allRows.length >= shard.plannedRuns;
     const yielded = report.status === "yielded" || Boolean(childResult.yieldReason);
+    const candidateAnomaly = classifyCandidateAnomaly({
+      manifest: canonicalManifest,
+      rows: allRows,
+      candidateIds: shard.candidateIds,
+      plannedRuns: shard.plannedRuns,
+      saveUnchanged,
+      runtimeVerified,
+      diskOk: diskAfter.ok,
+      withinWallClock,
+    });
+    const candidateAnomalyReason = candidateAnomaly.eligible
+      ? `candidate-scoped anomaly: ${Object.keys(candidateAnomaly.rowStatusCounts).sort().join(",")}`
+      : null;
     if (preliminaryOk && rowDisposition.candidateTimeoutAnomaly) {
       writeCandidateTimeoutException(supervisor, plan, shard, rowHealth, reportPath);
+    } else if (!preliminaryOk && !yielded && candidateAnomaly.eligible) {
+      writeQuarantineException(supervisor, plan, shard, candidateAnomaly, candidateAnomalyReason);
     }
     const measurement = createShardMeasurement(
       args,
@@ -754,7 +908,8 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
       duplicatesExcluded += imported.disposition.duplicateCount;
     });
     if (attempts.length === 0) supervisor.recordAttentionMeasurement(measurement, plan.attentionPolicy);
-    const state = preliminaryOk ? "completed" : (yielded ? "yielded" : "failed");
+    const state = preliminaryOk ? "completed"
+      : (yielded ? "yielded" : (candidateAnomaly.eligible ? "quarantined" : "failed"));
     const fatal = !saveUnchanged || !runtimeVerified || !diskAfter.ok;
     const health = {
       ok: preliminaryOk,
@@ -767,10 +922,13 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
       diskAfter,
       rows: rowHealth,
       rowDisposition,
+      candidateAnomaly,
     };
     const reason = preliminaryOk ? null
       : (childResult.yieldReason ? childResult.yieldReason.message
-        : (report.error && report.error.message) || `runner status=${report.status}`);
+        : (report.error && report.error.message)
+          || candidateAnomalyReason
+          || `runner status=${report.status}`);
     if (state === "failed") {
       writeFailureException(supervisor, plan, shard, {
         code: fatal ? "gate_f_fatal_health" : "gate_f_shard_failed",
@@ -787,6 +945,7 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
       runReportPath: projectRelative(args.projectRoot, reportPath),
       runReportSha256: sha256File(reportPath),
       executionArtifactIds,
+      affectedCandidateIds: state === "quarantined" ? candidateAnomaly.affectedCandidateIds : [],
       committedRows,
       duplicatesExcluded,
       recoveryAttemptsUsed: report.recoveryAttemptsUsed || 0,
@@ -799,6 +958,16 @@ async function runOneShard(args, plan, window, shard, priorReceipts) {
     });
     writeShardReceipt(supervisor, receipt);
     receiptWritten = true;
+    if (state === "quarantined") {
+      const reviewRequest = createExceptionReviewRequest({
+        receipt,
+        candidateIds: candidateAnomaly.affectedCandidateIds,
+        rowStatusCounts: candidateAnomaly.rowStatusCounts,
+        errorSignals: candidateAnomaly.errorSignals,
+        createdAt: finishedAt,
+      });
+      dispatchExceptionReview(args, plan, supervisor, reviewRequest);
+    }
     supervisor.pause(`gate_f_${state}`, { resourcesReleased: true });
     paused = true;
     return receipt;
@@ -853,18 +1022,31 @@ async function commandRun(args) {
   if ((!Number.isInteger(args.maxShards) && args.maxShards !== Number.POSITIVE_INFINITY) || args.maxShards < 1) {
     fail("--max-shards must be a positive integer", "usage_error");
   }
+  if (!Number.isInteger(args.maximumExceptionReviews)
+      || args.maximumExceptionReviews < 0 || args.maximumExceptionReviews > 3) {
+    fail("--maximum-exception-reviews must be an integer between 0 and 3", "usage_error");
+  }
+  if (!args.exceptionReviewModel || /[\0\r\n]/.test(args.exceptionReviewModel)) {
+    fail("--exception-review-model is invalid", "usage_error");
+  }
   const { plan } = readPlan(args.projectRoot, requireArg(args, "plan"));
   const { window } = readWindow(args.projectRoot, plan, requireArg(args, "window"));
   const priorReceipts = readArtifacts(args, plan, /^gate-f-shard-receipt-.*\.json$/i, "arena-calibration.gate-f-shard-receipt.v1")
     .map(verifyShardReceipt)
     .filter((entry) => entry.planHash === plan.planHash);
   const completed = latestReceipts(priorReceipts);
-  const remaining = plan.shards.filter((shard) => !completed.has(shard.shardId)
-    || completed.get(shard.shardId).state !== "completed").slice(0, args.maxShards);
+  const scheduling = selectRunnableShards(plan, completed, Number.POSITIVE_INFINITY);
+  const remaining = scheduling.runnable;
   const receipts = [];
   for (const shard of remaining) {
+    if (receipts.length >= args.maxShards) break;
+    if (shard.candidateIds.some((candidateId) => scheduling.quarantinedCandidateIds.has(candidateId))) continue;
     const receipt = await runOneShard(args, plan, window, shard, priorReceipts.concat(receipts));
     receipts.push(receipt);
+    if (receipt.state === "quarantined") {
+      receipt.affectedCandidateIds.forEach((candidateId) => scheduling.quarantinedCandidateIds.add(candidateId));
+      continue;
+    }
     if (receipt.state !== "completed") break;
   }
   const status = buildStatus(args, plan);

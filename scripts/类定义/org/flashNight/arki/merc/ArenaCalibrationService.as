@@ -1099,6 +1099,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         var bestDist:Number = 999999999;
         var spawnX:Number = Number(initObject != undefined ? initObject._x : undefined);
         var spawnY:Number = Number(initObject != undefined ? initObject._y : undefined);
+        var sourceName:String = String(initObject != undefined ? initObject.产生源 : "");
 
         for (var i:Number = 0; i < units.length; i++) {
             var record:Object = units[i];
@@ -1106,6 +1107,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             var mc:MovieClip = record.mc;
             if (mc == undefined || mc._parent == undefined) continue;
             var parentName:String = String(mc._name || "");
+            var parentSpawnName:String = String(record.spawnName || parentName);
+            if (sourceName != "" && (sourceName == parentName || sourceName == parentSpawnName)) return record;
             if (parentName != "" && name.indexOf(parentName) == 0) return record;
 
             if (record.deathObserved == true && !isNaN(spawnX) && !isNaN(spawnY)) {
@@ -1721,6 +1724,15 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         if (_active == undefined || child == undefined || child._parent == undefined) return false;
         var parentRecord:Object = findPhaseSpawnParentRecord(String(child._name || name), child);
         if (parentRecord == undefined) return false;
+
+        var unitType:String = String(child.兵种 || child.兵种名 || "");
+        if (unitType != "") {
+            registerPhaseSpawnedUnit(parentRecord, unitType, String(child._name || name), child, child);
+            child._arenaCalibrationUnknown = false;
+            child._arenaCalibrationDerived = true;
+            child._arenaCalibrationParent = String(parentRecord.spawnName || "");
+            return true;
+        }
         if (isAuxiliaryDerivedActor(child) != true) return false;
 
         markCalibrationAuxiliaryActor(child, parentRecord.side, String(_active.runId || ""));

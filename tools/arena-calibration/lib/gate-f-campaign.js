@@ -706,6 +706,7 @@ function createGateFShardReceipt(input) {
     runReportPath: input.runReportPath || null,
     runReportSha256: input.runReportSha256 || null,
     executionArtifactIds: Array.from(new Set(input.executionArtifactIds || [])).sort(),
+    affectedCandidateIds: Array.from(new Set(input.affectedCandidateIds || [])).sort(),
     committedRows: input.committedRows || 0,
     duplicatesExcluded: input.duplicatesExcluded || 0,
     recoveryAttemptsUsed: input.recoveryAttemptsUsed || 0,

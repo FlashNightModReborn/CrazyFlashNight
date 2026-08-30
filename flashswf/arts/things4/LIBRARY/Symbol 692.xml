@@ -14,14 +14,16 @@
 	是否为敌人 = _parent.是否为敌人;
 	身高 = 175;
 	_parent.水晶计数 = _parent.水晶计数 % 20 + 1;
-	僵尸型敌人newname = this._name + 兵种 + _parent.水晶计数;
+	var 产生源名 = this._name;
+	if (_parent._arenaCalibrationUnit === true) 产生源名 = _parent._name;
+	僵尸型敌人newname = 产生源名 + 兵种 + _parent.水晶计数;
 	var myPoint = {x:攻击点._x, y:攻击点._y};
 	this.localToGlobal(myPoint);
 	_root.gameworld.globalToLocal(myPoint);
 	shootX = myPoint.x;
 	//保留了随机y坐标
 	shootY = myPoint.y + -10 + random(20);
-	_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX, _y:shootY, 等级:this.等级, 名字:this.名字, 是否为敌人:this.是否为敌人, 身高:this.身高, 长枪:this.长枪, 手枪:this.手枪, 手枪2:this.手枪2, 刀:this.刀, 手雷:this.手雷, 产生源:this._name});
+	_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX, _y:shootY, 等级:this.等级, 名字:this.名字, 是否为敌人:this.是否为敌人, 身高:this.身高, 长枪:this.长枪, 手枪:this.手枪, 手枪2:this.手枪2, 刀:this.刀, 手雷:this.手雷, 产生源:产生源名});
 }]]></script>
               </Actionscript>
               <elements/>

@@ -38,6 +38,10 @@ const EMBEDDED_SCHEMA_IDS = Object.freeze({
   "arena-calibration.attention-measurement.v1": "arena-calibration.gate-f.v1#/$defs/attentionMeasurement",
   "arena-calibration.gate-f-shard-receipt.v1": "arena-calibration.gate-f.v1#/$defs/gateFShardReceipt",
   "arena-calibration.gate-f-status.v1": "arena-calibration.gate-f.v1#/$defs/gateFStatus",
+  "arena-calibration.exception-review-request.v1": "arena-calibration.exception-review.v1#/$defs/exceptionReviewRequest",
+  "arena-calibration.exception-review-result.v1": "arena-calibration.exception-review.v1#/$defs/exceptionReviewResult",
+  "arena-calibration.exception-review-receipt.v1": "arena-calibration.exception-review.v1#/$defs/exceptionReviewReceipt",
+  "arena-calibration.exception-review-dispatch.v1": "arena-calibration.exception-review.v1#/$defs/exceptionReviewDispatch",
 });
 
 let registry = null;
