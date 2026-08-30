@@ -312,6 +312,12 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 `data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
 
+### 装备插件基础选档与确定性覆盖
+
+`<stats><baseSwitch path="data.*">` 在 tier/强化结算后、任何插件尚未应用时读取宿主基础数据，只应用第一个命中的命名 `<value>`，无命名 `<value>` 为 default。它用于石英磨刀石这类“按改质前伤害类型补偿”的配额，其他插件的 `override` 不得反向影响其选档。`softOverride`、`override`、`lockOverride` 构成三层浅覆盖：前者覆盖宿主原值但让位于普通覆盖，后者在普通覆盖与 `merge` 后最终重申锁定值；因此低优先级暴击基线和高优先级物理锁定均不依赖插件槽遍历顺序。完整运算顺序、Tooltip 语义与 XML 示例见 `data/items/equipment_mods/README.md`。
+
+近战切手技的运行时可配置面是武器 `data.switchstrike` 数值对象，现役字段为 `weightCoefficient` 与 `impactMultiplier`。插件通过 `merge` 写入，`SwitchStrikeCore` 以封闭形态表解释；XFL 时间轴只传定位器与形态名，禁止在 XML/XFL 重复公式或配置任意函数名。
+
 `useSwitch` / `skillSwitch` 的无前缀 `name` 继续匹配宿主 `use` 与 `weapontype` 的联合集合。需要消除同名歧义时可写 `use:值` 或 `weapontype:值`：例如 `weapontype:手枪` 只命中精确子类，不会命中仅因 `use=手枪` 而共用装备槽的冲锋手枪和大威力手枪。`grantsUse` 同时进入无前缀集合与 `use:` 限定集合。Tooltip 必须隐藏内部限定符，显示为“装备类型：…”或“武器子类：…”。`stats.useSwitch.use` 分支除数值运算符外还可声明 `provideTags` 与 `requireTags`：前者仅在分支命中时提供结构，后者仅在分支命中时并入根层安装前置，并必须同时用于候选过滤、安装检查、缺失标签提示与拆卸依赖判定。
 
 ### 声明式子弹命中行为 `<hitBehavior>`

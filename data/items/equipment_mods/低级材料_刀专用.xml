@@ -22,18 +22,33 @@
 
     <mod>
         <name>绳扣穿孔片</name>
-        <use>刀</use>
+        <use>刀,长枪</use>
+        <weapontype>近战,压制近战</weapontype>
         <stats>
-            <merge>
-                <skillmultipliers>
-                    <瞬步斩>2.5</瞬步斩>
-                </skillmultipliers>
-            </merge>
             <flat>
                 <weight>0.3</weight>
             </flat>
+            <useSwitch>
+                <use name="use:刀">
+                    <merge>
+                        <skillmultipliers>
+                            <瞬步斩>2.5</瞬步斩>
+                        </skillmultipliers>
+                    </merge>
+                </use>
+            </useSwitch>
         </stats>
-        <description>低碳钢片冲压成形的简易固定组件,优化防脱手功能,为瞬步斩赋予150%的锋利度加成。</description>
+        <skillSwitch>
+            <use name="weapontype:近战,weapontype:压制近战">
+                <skillname>旋转抡枪</skillname>
+                <description>经过绳扣穿孔片改装的近战长枪可以使用旋转抡枪。</description>
+                <cd>5000</cd>
+                <mp>0</mp>
+                <level>1</level>
+            </use>
+        </skillSwitch>
+        <description>低碳钢片冲压成形的简易固定组件,优化防脱手功能。
+        用于刀时强化瞬步斩;用于近战型长枪时赋予旋转抡枪。</description>
         <tag>柄侧板</tag>
     </mod>
 

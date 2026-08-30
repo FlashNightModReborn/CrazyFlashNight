@@ -77,7 +77,7 @@ node tools/validate-equipment-mod-ui.js
 
 ---
 
-### 【七种核心运算符】
+### 【七种基础运算符与两种覆盖级别】
 
 #### 1. flat - 固定值加成
 
@@ -143,6 +143,26 @@ node tools/validate-equipment-mod-ui.js
 **用途：** 改变装备的本质属性，无视之前的计算结果
 
 **注意：** override是浅层覆盖，会完全替换整个对象。对于嵌套对象（如magicdefence），建议使用merge运算符
+
+#### 3A. softOverride / lockOverride - 确定性覆盖级别
+
+二者与 `override` 一样是浅层覆盖，但解决多个插件改写同一多义字段时的槽位顺序依赖：
+
+- `softOverride`：覆盖宿主原值，但一定让位于任意普通 `override`。适合“先设一个基础暴击档，之后允许专用暴击插件替换”。
+- `lockOverride`：在普通 `override` 与 `merge` 之后最终生效。适合“锁定物理伤害类型”这类不可被同构插件改回的契约。
+
+```xml
+<stats>
+    <softOverride>
+        <criticalhit>10</criticalhit> <!-- 原生暴击先改为10；暴击镜仍可覆盖 -->
+    </softOverride>
+    <lockOverride>
+        <damagetype>物理</damagetype> <!-- 不受插件数组遍历顺序影响 -->
+    </lockOverride>
+</stats>
+```
+
+同一级别内若多个插件覆盖同一字段，仍沿用既有 XML/插件数组顺序；需要跨插件确定性时应选不同级别或通过 `tag` 互斥，不得依赖玩家调整槽位顺序。
 
 ---
 
@@ -397,11 +417,15 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
     ↓
 4. flat（固定值）
     ↓
-5. override（覆盖）
+5. softOverride（可覆盖设定）
     ↓
-6. merge（深度合并）
+6. override（普通覆盖）
     ↓
-7. cap（上限限制）        ← 优先级最低，最后执行
+7. merge（深度合并）
+    ↓
+8. lockOverride（最终锁定）
+    ↓
+9. cap（上限限制）        ← 优先级最低，最后执行
 ```
 
 **为什么这样排序？**
@@ -409,8 +433,10 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 - multiplier次之：在percentage基础上应用独立乘区（乘法增幅，精细控制）
 - curve在乘区后：对已经形成的当前值做非线性压缩，适合高数值更强收益的属性
 - flat再次：在所有百分比计算后加固定值
+- softOverride设定宿主基础档：会改写原生值，但不与专用覆盖插件争夺最终解释权
 - override覆盖：可以完全改变前面的计算结果，用于改变本质属性
 - merge合并：深度合并嵌套对象，在override之后避免被覆盖影响
+- lockOverride锁定：最后重申必须保持的字段，消除同字段插件的遍历顺序差异
 - cap兜底：作为最后的安全阀，防止数值异常
 
 ---
@@ -466,6 +492,29 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 当前类型表示：有效命中按 `hitStacks` 沉积，真实破韧按 `breakStacks` 追加；联弹全段 MISS/直感不算有效命中。每格易伤为 `damagePerStack`，每跨过 `milestoneInterval` 格为当发配给 `crumblePerMilestone` 击溃，预测达到 `maxStacks` 时配给 `executeAtMax` 斩杀。停火 `decayDelay` 帧后每 `decayInterval` 帧退一格。击溃/斩杀字段使用原始百分比（`0.1` 即 0.1%，`5` 即 5%），`damagePerStack` 使用小数倍率（`0.01` 即 1%）。
 
 `stackGroup` 定义共享最终输出的聚合域，`profileId` 定义同一来源下独立衰减的候选档位。同一组只对各候选的完整倍率取 MAX，不跨档拼接字段，也不把多来源相加。灰蛊裂隙弹基础档由冲锋枪使用：每命中 1 格、节点 `1%` 击溃、满层 `8%` 斩杀；精确 `weapontype:大威力手枪` 分支覆写为每命中 2 格，并显式锁回节点 `0.1%` 击溃与满层 `5%` 斩杀，避免深度 merge 继承冲锋枪补偿；精确 `weapontype:手枪` 分支覆写为每命中 3 格，并把衰减参数改为 `150/15` 帧、击溃改为 `0.3%`、斩杀改为 `8%`。Tooltip 不逐字段展开运行协议：基础档压缩为三条玩家语义，每个枪种分支只用一条摘要展示相对变化。`ToughnessBroken` 仅在非刚体真实破韧时发布；刚体越阈仍清槽，但不对灰蛊追加层数。
+
+#### switchstrike - 切手技参数对象
+
+`data.switchstrike` 由 `SwitchStrikeCore` 消费，用于调整攻击模式切换动画中的命中参数。时间轴只保留定位器与形态名，禁止在 XML 中填写公式字符串或函数名。
+
+```xml
+<stats>
+    <useSwitch>
+        <use name="weapontype:近战,weapontype:压制近战">
+            <merge>
+                <switchstrike>
+                    <weightCoefficient>5</weightCoefficient>
+                    <impactMultiplier>5</impactMultiplier>
+                </switchstrike>
+            </merge>
+        </use>
+    </useSwitch>
+</stats>
+```
+
+- `weightCoefficient` 只替换长枪切手技公式中的重量系数，不整体放大空手攻击力项。
+- `impactMultiplier` 按倒数缩小击倒率；长枪默认击倒率 5，配置 5 后得到 1。
+- 各形态的默认公式、霰弹值、范围、伤害类型与击退参数统一定义在 `SwitchStrikeCore`，新增字段必须继续采用受控数值/枚举。
 
 #### tag - 插件位置标签
 **作用：** 同tag的插件不能同时装备（互斥机制）
@@ -793,6 +842,25 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 ---
 
+### 【baseSwitch - 按配件应用前基础属性选档】
+
+`baseSwitch` 用于“同一插件根据宿主原始档位取得不同配额”的场景。它在 tier/强化完成后、任何配件数值尚未应用时读取 `path`，只应用第一个命中的命名 `<value>`；均未命中时应用省略 `name` 的 default 分支。
+
+```xml
+<stats>
+    <baseSwitch path="data.damagetype">
+        <value name="破击"><percentage><power>24</power></percentage></value>
+        <value name="魔法"><percentage><power>50</power></percentage></value>
+        <value><percentage><power>9</power></percentage></value>
+    </baseSwitch>
+    <lockOverride><damagetype>物理</damagetype></lockOverride>
+</stats>
+```
+
+判定只看插件应用前的数据，因此其他插件把伤害类型改成破击/魔法不会改变本插件的配额，交换槽位顺序也不会改变结果。分支内支持全部数值运算符，但不支持 `provideTags` / `requireTags`；结构依赖仍使用 `useSwitch`。
+
+---
+
 ### 【useSwitch - 按装备类型追加效果（条件分支机制）】
 
 **作用：** 让配件对不同类型的装备产生不同的效果
@@ -817,7 +885,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 **语义说明：**
 - 顶层stats：对所有装备统一生效的基础效果
 - useSwitch内的分支：当装备类型匹配时，追加执行（而非替换）
-- 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap），也可声明条件性 `provideTags` / `requireTags`
+- 分支内可使用所有运算符（percentage、multiplier、curve、flat、softOverride、override、merge、lockOverride、cap），也可声明条件性 `provideTags` / `requireTags`
 
 **匹配规则：**
 - 无前缀分支的 name 与装备的 use 或 weapontype 联合集合匹配；这是兼容既有数据的默认语义
@@ -910,7 +978,7 @@ useSwitch 分支内还可以包含 `<provideTags>` 或 `<requireTags>`，分别�
 **语义说明：**
 - 顶层stats：对所有装备统一生效的基础效果
 - tagSwitch内的分支：当装备的 presentTags 包含指定标签时，追加执行
-- 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap）
+- 分支内可使用所有运算符（percentage、multiplier、curve、flat、softOverride、override、merge、lockOverride、cap）
 
 **匹配规则：**
 - 分支的name与装备的 presentTags（固有结构 + 配件提供的结构）进行匹配
@@ -1010,7 +1078,7 @@ presentTags = 装备固有 inherentTags
 **语义说明：**
 - 顶层stats：对所有装备统一生效的基础效果
 - bulletSwitch内的分支：当装备的子弹类型匹配时，追加执行（而非替换）
-- 分支内可使用所有运算符（percentage、multiplier、curve、flat、override、merge、cap）
+- 分支内可使用所有运算符（percentage、multiplier、curve、flat、softOverride、override、merge、lockOverride、cap）
 
 **支持的类型标识符：** 与 excludeBulletTypes 相同
 | 标识符 | 说明 | 检测方法 |

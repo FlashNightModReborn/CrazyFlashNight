@@ -22,6 +22,30 @@ import org.flashNight.gesh.object.ObjectUtil;
 class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
 
     /**
+     * 展示 baseSwitch：按插件应用前的基础属性选择唯一数值档位。
+     */
+    public static function buildBaseSwitchDetailed(result:Array, stats:Object):Void {
+        if (!stats || !stats.baseSwitch || !stats.baseSwitch.valueCases) return;
+
+        var valueCases:Array = stats.baseSwitch.valueCases;
+        if (valueCases.length == 0) return;
+
+        var path:String = stats.baseSwitch.path || "data.damagetype";
+        var pathLabel:String = (path == "data.damagetype") ? "基础伤害类型" : path;
+        result.push("<font color='" + TooltipConstants.COL_HL + "'>按基础属性分档</font><BR>");
+
+        for (var i:Number = 0; i < valueCases.length; i++) {
+            var valueCase:Object = valueCases[i];
+            if (!valueCase) continue;
+            var label:String = (valueCase._isDefault || !valueCase.name)
+                ? "其他情况"
+                : pathLabel + "为" + valueCase.name;
+            result.push("<font color='" + TooltipConstants.COL_INFO + "'>[" + label + "]</font><BR>");
+            buildStatBlock(result, valueCase, "  ");
+        }
+    }
+
+    /**
      * 构建 useSwitch 的详细效果展示
      *
      * @param result:Array 输出缓冲区（就地修改）
@@ -83,11 +107,13 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
      * 构建统一的属性块（可被顶层 stats 和 useCase 共用）
      *
      * @param result:Array 输出缓冲区（就地修改）
-     * @param statsObj:Object 包含 percentage/multiplier/curve/flat/override/merge/cap 的对象
+     * @param statsObj:Object 包含 percentage/multiplier/curve/flat/softOverride/override/merge/lockOverride/cap 的对象
      * @param indent:String 缩进字符串（如 "  " 或 ""）
      * @return Void（直接修改 result）
      */
     public static function buildStatBlock(result:Array, statsObj:Object, indent:String):Void {
+        if (!statsObj) return;
+
         // 显示 percentage 加成
         if (statsObj.percentage) {
             var sortedList = TooltipTextBuilder.getSortedAttrList(statsObj.percentage);
@@ -190,7 +216,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
                 // impact 需要转换（显示值 = 500/impact）
                 // bullet/bulletrename 需要组合显示展示名
                 // split 需要单独显示
-                if (key == "damagetype" || key == "magictype" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot" || key == "reloadType" || key == "impact" || key == "bullet" || key == "bulletrename" || key == "split") continue;
+                if (key == "damagetype" || key == "magictype" || key == "criticalhit" || key == "silence" || key == "slay" || key == "actiontype" || key == "singleshoot" || key == "reloadType" || key == "impact" || key == "bullet" || key == "bulletrename" || key == "split") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "override", key, statsObj.override[key], null);
             }
@@ -214,7 +240,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             for (var i = 0; i < sortedList.length; i++) {
                 var key = sortedList[i];
                 // 跳过嵌套对象，它们需要特殊处理
-                if (key == "magicdefence" || key == "skillmultipliers" || key == "hitBehavior") continue;
+                if (key == "magicdefence" || key == "skillmultipliers" || key == "hitBehavior" || key == "switchstrike") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "merge", key, statsObj.merge[key], null);
             }
@@ -301,12 +327,37 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             if (statsObj.merge.hitBehavior) {
                 appendHitBehavior(result, indent, statsObj.merge.hitBehavior);
             }
+            if (statsObj.merge.switchstrike) {
+                appendSwitchStrike(result, indent, statsObj.merge.switchstrike);
+            }
         }
 
         // 显示伤害类型和破击类型（组合显示 damagetype 和 magictype）
         if (statsObj.override && statsObj.override.damagetype) {
             result.push(indent);
             TooltipTextBuilder.quickBuildDamageType(result, statsObj.override);
+        }
+
+        // softOverride 先于普通 override 生效；lockOverride 在所有覆盖/合并后生效。
+        if (statsObj.softOverride) {
+            result.push(indent, "<FONT COLOR='", TooltipConstants.COL_INFO,
+                "'>【可覆盖设定】</FONT><BR>");
+            buildStatBlock(result, {override: statsObj.softOverride}, indent + "  ");
+        }
+        if (statsObj.lockOverride) {
+            result.push(indent, "<FONT COLOR='", TooltipConstants.COL_HL,
+                "'>【最终锁定】</FONT><BR>");
+            buildStatBlock(result, {override: statsObj.lockOverride}, indent + "  ");
+        }
+    }
+
+    private static function appendSwitchStrike(result:Array, indent:String, config:Object):Void {
+        if (!config) return;
+        if (config.weightCoefficient != undefined) {
+            result.push(indent, "切手技重量系数 → ", config.weightCoefficient, "<BR>");
+        }
+        if (config.impactMultiplier != undefined) {
+            result.push(indent, "切手技冲击力 ×", config.impactMultiplier, "<BR>");
         }
     }
 

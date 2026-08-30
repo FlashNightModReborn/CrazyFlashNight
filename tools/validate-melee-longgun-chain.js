@@ -8,6 +8,18 @@ const ROOT = path.resolve(__dirname, '..');
 const ITEM_DIR = path.join(ROOT, 'data', 'items');
 const ITEM_LIST_PATH = path.join(ITEM_DIR, 'list.xml');
 const MELEE_LONGGUN_TYPES = new Set(['近战', '压制近战']);
+const MOD_DIR = path.join(ITEM_DIR, 'equipment_mods');
+const MOD_FILES = [
+    '低级材料_刀专用.xml',
+    '中等材料_刀专用.xml',
+    '高等材料_刀专用.xml'
+];
+const SWITCH_XFL_PATH = path.join(
+    ROOT, 'flashswf', 'arts', 'things0', 'LIBRARY', 'sprite', '攻击模式切换.xml');
+const SWITCH_CORE_PATH = path.join(
+    ROOT, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'unit', 'Action', 'Melee', 'SwitchStrikeCore.as');
+const PLAYER_FUNCTION_PATH = path.join(
+    ROOT, 'scripts', '逻辑', '单位函数', '单位函数_fs_aka_玩家模板迁移.as');
 
 function fail(message) {
     throw new Error(message);
@@ -96,6 +108,54 @@ function childText(node, name) {
     return target ? decodeXml(target.text.trim()) : '';
 }
 
+function childrenNamed(node, name) {
+    return node ? node.children.filter(candidate => candidate.name === name) : [];
+}
+
+function at(node, ...names) {
+    let current = node;
+    for (const name of names) {
+        current = child(current, name);
+        if (!current) return null;
+    }
+    return current;
+}
+
+function textAt(node, ...names) {
+    const target = at(node, ...names);
+    return target ? decodeXml(target.text.trim()) : '';
+}
+
+function csvSet(value) {
+    return new Set(String(value || '').split(',').map(part => part.trim()).filter(Boolean));
+}
+
+function findBranch(container, elementName, branchName) {
+    return childrenNamed(container, elementName).find(branch =>
+        String(branch.attributes.name || '') === branchName) || null;
+}
+
+function expectEqual(errors, label, actual, expected) {
+    if (String(actual) !== String(expected)) {
+        errors.push(label + ': expected ' + expected + ', got ' + actual);
+    }
+}
+
+function expectCsv(errors, label, actual, expected) {
+    const actualSet = csvSet(actual);
+    const expectedSet = csvSet(expected);
+    if (actualSet.size !== expectedSet.size ||
+        [...expectedSet].some(value => !actualSet.has(value))) {
+        errors.push(label + ': expected {' + [...expectedSet].join(',') +
+            '}, got {' + [...actualSet].join(',') + '}');
+    }
+}
+
+function expectNode(errors, label, node) {
+    if (!node) errors.push(label + ': missing node');
+    return node;
+}
+
 function effectiveField(profile, baseProfile, fieldName) {
     const authored = childText(profile, fieldName);
     return authored !== '' ? authored : childText(baseProfile, fieldName);
@@ -151,6 +211,154 @@ function auditItemDocument(sourceLabel, source) {
     return {errors, itemCount, profileCount, multiSegmentCount};
 }
 
+function auditPluginBuild() {
+    const errors = [];
+    const mods = new Map();
+
+    for (const fileName of MOD_FILES) {
+        const root = parseXml(readText(path.join(MOD_DIR, fileName)), fileName);
+        for (const mod of childrenNamed(root, 'mod')) {
+            const name = childText(mod, 'name');
+            if (mods.has(name)) errors.push('duplicate audited mod: ' + name);
+            mods.set(name, {node: mod, fileName});
+        }
+    }
+
+    function requireMod(name) {
+        const record = mods.get(name);
+        if (!record) {
+            errors.push('missing audited mod: ' + name);
+            return null;
+        }
+        return record.node;
+    }
+
+    function expectDirectPort(name, expectedUse, expectedWeaponType, expectedTag) {
+        const mod = requireMod(name);
+        if (!mod) return null;
+        expectCsv(errors, name + '.use', childText(mod, 'use'), expectedUse);
+        if (expectedWeaponType != null) {
+            expectCsv(errors, name + '.weapontype', childText(mod, 'weapontype'), expectedWeaponType);
+        }
+        expectEqual(errors, name + '.tag', childText(mod, 'tag'), expectedTag);
+        return mod;
+    }
+
+    const quartz = expectDirectPort('石英磨刀石', '刀,长枪', '近战,压制近战', '刃面处理');
+    if (quartz) {
+        const baseSwitch = expectNode(errors, '石英磨刀石.baseSwitch', at(quartz, 'stats', 'baseSwitch'));
+        if (baseSwitch) {
+            expectEqual(errors, '石英磨刀石.baseSwitch.path', baseSwitch.attributes.path, 'data.damagetype');
+            const values = childrenNamed(baseSwitch, 'value');
+            const actual = new Map(values.map(value => [value.attributes.name || 'default', textAt(value, 'percentage', 'power')]));
+            expectEqual(errors, '石英磨刀石.default', actual.get('default'), '9');
+            expectEqual(errors, '石英磨刀石.break', actual.get('破击'), '24');
+            expectEqual(errors, '石英磨刀石.magic', actual.get('魔法'), '50');
+        }
+        expectEqual(errors, '石英磨刀石.lock', textAt(quartz, 'stats', 'lockOverride', 'damagetype'), '物理');
+    }
+
+    const core = expectDirectPort('强化柄芯', '刀,长枪', '近战,压制近战', '柄芯');
+    if (core) {
+        expectEqual(errors, '强化柄芯.modslot', textAt(core, 'stats', 'merge', 'modslot'), '3');
+        expectEqual(errors, '强化柄芯.weight', textAt(core, 'stats', 'flat', 'weight'), '2');
+        expectCsv(errors, '强化柄芯.provideTags', childText(core, 'provideTags'), '扩展模组槽,强化框架');
+        const branch = findBranch(at(core, 'stats', 'useSwitch'), 'use', 'weapontype:近战,weapontype:压制近战');
+        if (expectNode(errors, '强化柄芯.meleeBranch', branch)) {
+            expectEqual(errors, '强化柄芯.interface', childText(branch, 'provideTags'), '刀式柄芯接口');
+        }
+    }
+
+    const rope = expectDirectPort('绳扣穿孔片', '刀,长枪', '近战,压制近战', '柄侧板');
+    if (rope) {
+        const branch = findBranch(child(rope, 'skillSwitch'), 'use', 'weapontype:近战,weapontype:压制近战');
+        if (expectNode(errors, '绳扣穿孔片.skillBranch', branch)) {
+            expectEqual(errors, '绳扣穿孔片.skill', childText(branch, 'skillname'), '旋转抡枪');
+        }
+    }
+
+    const ring = expectDirectPort('挂环指槽板', '刀,长枪', '近战,压制近战', '柄侧板');
+    if (ring) {
+        const branch = findBranch(at(ring, 'stats', 'useSwitch'), 'use', 'weapontype:近战,weapontype:压制近战');
+        if (expectNode(errors, '挂环指槽板.meleeBranch', branch)) {
+            expectEqual(errors, '挂环指槽板.weightCoefficient', textAt(branch, 'merge', 'switchstrike', 'weightCoefficient'), '5');
+            expectEqual(errors, '挂环指槽板.impactMultiplier', textAt(branch, 'merge', 'switchstrike', 'impactMultiplier'), '5');
+        }
+    }
+
+    const electric = expectDirectPort('电击导能柄', '刀,长枪', '近战,压制近战', '握柄核心');
+    if (electric) {
+        const switchNode = at(electric, 'stats', 'useSwitch');
+        const bladeBranch = findBranch(switchNode, 'use', 'use:刀');
+        const meleeBranch = findBranch(switchNode, 'use', 'weapontype:近战,weapontype:压制近战');
+        if (expectNode(errors, '电击导能柄.bladeBranch', bladeBranch)) {
+            expectEqual(errors, '电击导能柄.bladePenalty', textAt(bladeBranch, 'flat', 'power'), '-10');
+        }
+        if (expectNode(errors, '电击导能柄.meleeBranch', meleeBranch)) {
+            expectEqual(errors, '电击导能柄.require', childText(meleeBranch, 'requireTags'), '刀式柄芯接口');
+            expectEqual(errors, '电击导能柄.multiplier', textAt(meleeBranch, 'multiplier', 'power'), '-3');
+            expectEqual(errors, '电击导能柄.powerTag', childText(meleeBranch, 'provideTags'), '电力');
+        }
+    }
+
+    const matrix = expectDirectPort('矩锁多点挂槽板', '刀,长枪', null, '柄侧板');
+    if (matrix) {
+        if (childText(matrix, 'weapontype')) errors.push('矩锁多点挂槽板 must remain available to all longguns');
+        const switchNode = at(matrix, 'stats', 'useSwitch');
+        const gunBranch = findBranch(switchNode, 'use', 'use:长枪');
+        const meleeBranch = findBranch(switchNode, 'use', 'weapontype:近战,weapontype:压制近战');
+        if (expectNode(errors, '矩锁多点挂槽板.gunBranch', gunBranch)) {
+            expectEqual(errors, '矩锁多点挂槽板.power', textAt(gunBranch, 'percentage', 'power'), '5');
+            expectEqual(errors, '矩锁多点挂槽板.criticalhit', textAt(gunBranch, 'softOverride', 'criticalhit'), '10');
+            expectEqual(errors, '矩锁多点挂槽板.NOAH', childText(gunBranch, 'provideTags'), 'NOAH');
+        }
+        if (expectNode(errors, '矩锁多点挂槽板.meleeBranch', meleeBranch)) {
+            expectEqual(errors, '矩锁多点挂槽板.interface', childText(meleeBranch, 'provideTags'), '刀式柄芯接口');
+        }
+    }
+
+    const red = expectDirectPort('赤旌熔脊柄', '刀,长枪', '近战,压制近战', '握柄核心');
+    if (red) {
+        expectEqual(errors, '赤旌熔脊柄.damage', textAt(red, 'stats', 'override', 'damagetype'), '破击');
+        expectEqual(errors, '赤旌熔脊柄.magic', textAt(red, 'stats', 'override', 'magictype'), '热');
+        const meleeBranch = findBranch(at(red, 'stats', 'useSwitch'), 'use', 'weapontype:近战,weapontype:压制近战');
+        if (expectNode(errors, '赤旌熔脊柄.meleeBranch', meleeBranch)) {
+            expectEqual(errors, '赤旌熔脊柄.require', childText(meleeBranch, 'requireTags'), '刀式柄芯接口');
+        }
+        const powerBranch = findBranch(at(red, 'stats', 'tagSwitch'), 'tag', '电力');
+        if (expectNode(errors, '赤旌熔脊柄.powerBranch', powerBranch)) {
+            expectEqual(errors, '赤旌熔脊柄.hp', textAt(powerBranch, 'flat', 'hp'), '50');
+        }
+    }
+
+    const xfl = readText(SWITCH_XFL_PATH);
+    const profileCounts = {};
+    for (const match of xfl.matchAll(/执行切手技\(this,\s*"([^"]+)"\)/g)) {
+        profileCounts[match[1]] = (profileCounts[match[1]] || 0) + 1;
+    }
+    const expectedProfiles = {回旋踢: 2, 空手: 1, 长枪: 1, 兵器: 1, 双刀: 2, 疾影: 1};
+    for (const [profile, count] of Object.entries(expectedProfiles)) {
+        expectEqual(errors, '攻击模式切换.' + profile, profileCounts[profile] || 0, count);
+    }
+    if (/子弹属性\.子弹威力|_root\.子弹属性初始化\(this\)/.test(xfl)) {
+        errors.push('攻击模式切换.xml still embeds switch-strike formulas');
+    }
+
+    const coreSource = readText(SWITCH_CORE_PATH);
+    for (const token of [
+        'weightCoefficient: 3', 'knockRate: 5', 'impactMultiplier: 1',
+        'data.switchstrike', 'buildBulletProperties'
+    ]) {
+        if (!coreSource.includes(token)) errors.push('SwitchStrikeCore missing contract token: ' + token);
+    }
+    const playerSource = readText(PLAYER_FUNCTION_PATH);
+    if (!/主角函数\.执行切手技[\s\S]*SwitchStrikeCore\.shoot/.test(playerSource)) {
+        errors.push('player function does not expose the persistent switch-strike entry');
+    }
+
+    return errors;
+}
+
 function runSelfTests() {
     const validFixture = `
 <root>
@@ -200,6 +408,7 @@ function main() {
         profileCount += result.profileCount;
         multiSegmentCount += result.multiSegmentCount;
     }
+    errors.push(...auditPluginBuild());
 
     if (errors.length) {
         for (const error of errors) console.error('[melee-longgun-chain] ' + error);
@@ -207,7 +416,8 @@ function main() {
         return;
     }
     console.log('近战长枪联弹校验通过：items=' + itemCount
-        + ' profiles=' + profileCount + ' multiSegment=' + multiSegmentCount);
+        + ' profiles=' + profileCount + ' multiSegment=' + multiSegmentCount
+        + ' pluginBuild=7 switchStrikeLocators=8');
 }
 
 try {

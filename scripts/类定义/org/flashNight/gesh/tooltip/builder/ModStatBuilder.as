@@ -114,6 +114,7 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
 
         var stats = modData.stats;
         UseSwitchStatsBuilder.buildStatBlock(result, stats, "");
+        UseSwitchStatsBuilder.buildBaseSwitchDetailed(result, stats);
         UseSwitchStatsBuilder.buildDetailed(result, stats);
         TagSwitchStatsBuilder.buildDetailed(result, stats);
         UseSwitchStatsBuilder.buildBulletSwitchDetailed(result, stats);

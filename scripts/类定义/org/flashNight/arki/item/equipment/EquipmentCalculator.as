@@ -160,8 +160,10 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
     private static function accumulateModifiers(mods:Array, itemData:Object, modRegistry:Object):Object {
         var adder:Object = {};
         var multiplier:Object = {};
+        var softOverrider:Object = {};
         var overrider:Object = {};
         var merger:Object = {};
+        var lockOverrider:Object = {};
         var capper:Object = {};
         var multiplierZone:Object = {};
         var curver:Object = {};
@@ -200,7 +202,16 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
             if (!modInfo) continue;
 
             // 1. 先应用基础stats（词条主体 - 无条件生效）
-            applyStatsToAccumulators(modInfo.stats, adder, multiplier, overrider, merger, capper, multiplierZone, curver);
+            applyStatsToAccumulators(modInfo.stats, adder, multiplier, softOverrider,
+                overrider, merger, lockOverrider, capper, multiplierZone, curver);
+
+            // 1.5 按配件应用前的基础属性选择唯一数值档位。
+            // baseSwitch 读取的是同一份未应用配件的 itemData，因此与 mods 数组顺序无关。
+            var matchedBaseCase:Object = ModRegistry.matchBaseSwitch(modInfo, itemData);
+            if (matchedBaseCase) {
+                applyStatsToAccumulators(matchedBaseCase, adder, multiplier, softOverrider,
+                    overrider, merger, lockOverrider, capper, multiplierZone, curver);
+            }
 
             // 2. 应用所有匹配的useSwitch分支（基于装备类型的条件词条）
             var matchedUseCases:Array = ModRegistry.matchUseSwitchAll(modInfo, useLookup);
@@ -208,7 +219,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
                 for (var mc:Number = 0; mc < matchedUseCases.length; mc++) {
                     applyStatsToAccumulators(
                         matchedUseCases[mc],
-                        adder, multiplier, overrider, merger, capper, multiplierZone, curver
+                        adder, multiplier, softOverrider, overrider, merger,
+                        lockOverrider, capper, multiplierZone, curver
                     );
                 }
             }
@@ -219,7 +231,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
                 for (var tc:Number = 0; tc < matchedTagCases.length; tc++) {
                     applyStatsToAccumulators(
                         matchedTagCases[tc],
-                        adder, multiplier, overrider, merger, capper, multiplierZone, curver
+                        adder, multiplier, softOverrider, overrider, merger,
+                        lockOverrider, capper, multiplierZone, curver
                     );
                 }
             }
@@ -230,7 +243,8 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
                 for (var bc:Number = 0; bc < matchedBulletCases.length; bc++) {
                     applyStatsToAccumulators(
                         matchedBulletCases[bc],
-                        adder, multiplier, overrider, merger, capper, multiplierZone, curver
+                        adder, multiplier, softOverrider, overrider, merger,
+                        lockOverrider, capper, multiplierZone, curver
                     );
                 }
             }
@@ -249,8 +263,10 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         return {
             adder: adder,
             multiplier: multiplier,
+            softOverrider: softOverrider,
             overrider: overrider,
             merger: merger,
+            lockOverrider: lockOverrider,
             capper: capper,
             multiplierZone: multiplierZone,
             curver: curver,
@@ -270,16 +286,22 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
      * @private
      */
     private static function applyStatsToAccumulators(stats:Object, adder:Object, multiplier:Object,
-                                                      overrider:Object, merger:Object, capper:Object,
-                                                      multiplierZone:Object, curver:Object):Void {
+                                                      softOverrider:Object, overrider:Object,
+                                                      merger:Object, lockOverrider:Object,
+                                                      capper:Object, multiplierZone:Object,
+                                                      curver:Object):Void {
         if (!stats) return;
 
         // 应用各种修改器
         if (stats.flat) PropertyOperators.add(adder, stats.flat, 0);
         if (stats.percentage) PropertyOperators.add(multiplier, stats.percentage, 1);
         if (stats.curve) PropertyOperators.override(curver, stats.curve);
+        // softOverride 会覆盖宿主原值，但让位于普通 override；适合“基础暴击档”一类语义。
+        if (stats.softOverride) PropertyOperators.override(softOverrider, stats.softOverride);
         if (stats.override) PropertyOperators.override(overrider, stats.override);
         if (stats.merge) PropertyOperators.merge(merger, stats.merge);
+        // lockOverride 最后生效，确保锁定属性不受配件遍历顺序影响。
+        if (stats.lockOverride) PropertyOperators.override(lockOverrider, stats.lockOverride);
         if (stats.cap) PropertyOperators.add(capper, stats.cap, 0);
 
         // 独立乘区处理
@@ -358,13 +380,15 @@ class org.flashNight.arki.item.equipment.EquipmentCalculator {
         }
         PropertyOperators.applyCurve(data, modifiers.curver);            // 3. 曲线压缩
         PropertyOperators.add(data, modifiers.adder, 0);                 // 4. 固定值加成
+        PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.softOverrider)); // 5. 可覆盖设定
         // 使用 cloneFast：overrider 是配件定义的简单对象，无循环引用
-        PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.overrider)); // 5. 覆盖值
-        PropertyOperators.merge(data, modifiers.merger);                 // 6. 深度合并
+        PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.overrider)); // 6. 覆盖值
+        PropertyOperators.merge(data, modifiers.merger);                 // 7. 深度合并
+        PropertyOperators.override(data, ObjectUtil.cloneFast(modifiers.lockOverrider)); // 8. 锁定值
 
         // 【优化】仅当baseData存在时应用cap
         if (baseData) {
-            PropertyOperators.applyCap(data, capper, baseData);          // 7. 上限限制
+            PropertyOperators.applyCap(data, capper, baseData);          // 9. 上限限制
         }
     }
 
