@@ -9,29 +9,29 @@
   "empiricalTimeoutOverrideCells": [
     "B9"
   ],
-  "soakAdmissionRef": "sha256:60c5662d89b5b8f0e53cbe288ea1461ef32a933aff654dd4171dadf8fac396a0",
-  "soakAdmissionId": "gate-f-week-full-v2-derived-faction-v4-stable-soak-admission",
+  "soakAdmissionRef": "sha256:901c06ce6771f1bbfafa49f6f08fb698354419c8a01198583b68e7b6ebc8ac39",
+  "soakAdmissionId": "gate-f-week-full-v8-c11-stable-soak-admission",
   "soakCells": [
     [
       "B2",
       "C7",
       "G2",
       "F3",
-      "E10"
+      "C11"
     ],
     [
       "B2",
       "C7",
       "G2",
       "F3",
-      "E10"
+      "C11"
     ],
     [
       "B2",
       "C7",
       "G2",
       "F3",
-      "E10"
+      "C11"
     ]
   ],
   "shards": 198,
@@ -42,7 +42,7 @@
     {
       "shardId": "f-soak-01",
       "candidateIds": [
-        "candidate-0f1b27722df4940e",
+        "candidate-450de4e83dd0f668",
         "candidate-a65d27a00cf71919",
         "candidate-c0ae68d0247fa97b",
         "candidate-c5f1e29759c1d9e8",
@@ -53,7 +53,7 @@
     {
       "shardId": "f-soak-02",
       "candidateIds": [
-        "candidate-0f1b27722df4940e",
+        "candidate-450de4e83dd0f668",
         "candidate-a65d27a00cf71919",
         "candidate-c0ae68d0247fa97b",
         "candidate-c5f1e29759c1d9e8",
@@ -64,7 +64,7 @@
     {
       "shardId": "f-soak-03",
       "candidateIds": [
-        "candidate-0f1b27722df4940e",
+        "candidate-450de4e83dd0f668",
         "candidate-a65d27a00cf71919",
         "candidate-c0ae68d0247fa97b",
         "candidate-c5f1e29759c1d9e8",
@@ -141,6 +141,6 @@
     "D11",
     "C12"
   ],
-  "createdAt": "2026-08-30T09:43:00.000Z",
-  "summaryHash": "sha256:70079f73600fba6ad831c96534a7a703a261eed2f165539e20b229c764274a1c"
+  "createdAt": "2026-08-30T11:07:00.000Z",
+  "summaryHash": "sha256:44940e8ffc4f29a42bdd8306f1bb51f1f1abb555f90b914a4430659bbfc67b14"
 }

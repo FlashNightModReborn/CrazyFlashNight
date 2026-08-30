@@ -714,6 +714,8 @@ v7 以 `arena-calibration.soak-admission.v2` 收紧新星期计划准入；v1 �
 
 v7 随后在 frozen plan `sha256:b8d6e321d16950129acfc28629537eb2fe732c6344b2d9155f6ccf126e00460e` 上执行三份 20-run fresh soak：第一份 20/20 finished，第二份 E10 side-swap 1 timeout，第三份 E10 original 1 timeout；目标派生观测分别为 red/blue `7/6`、`2/6`、`6/3`，三份均 0 error/recovery、正式 runtime 身份、存档 snapshot 不变并正常 shutdown。控制器却让 `soak` 继承全局 5% timeout 阈值，把恰好 1/20 timeout 错记为 completed；该 window 已撤销，60 行不作准入或全量样本。修复在 row disposition 层对 `planner.phase=soak` 强制 error/timeout 计数均为 0，并以 1/20 timeout 回归固定边界；标准/长分片的候选 timeout anomaly 继续保留。E10 两向各出现一次 5,400 帧自然 timeout，必须退出基础设施代表但仍原样留在自身长分片；下一 campaign 先以同 runtime 新鲜双向 probe 准入替代高等级案例，再重建 admission/plan 和三份 soak。
 
+exact-zero 修复提交 `b9cdd924f3177d46367ae06d58e8825e3d2d7178` 后，D11 replacement probe 的 original 在 1,800 帧 timeout、side-swap 自然结束，故未准入；随后 C11 exact-policy original/side-swap 分别于 1,526 / 1,711 帧自然结束，2/2 finished、0 timeout/error/recovery、正式 runtime、存档 snapshot 不变且正常 shutdown。新 `arena-calibration.soak-admission.v2` 将这份逐文件 hash-bound evidence 与既有 `B2/C7/G2/F3`、派生 red/blue 证据合并，group 改为 `B2/C7/G2/F3/C11`，hash 为 `sha256:901c06ce6771f1bbfafa49f6f08fb698354419c8a01198583b68e7b6ebc8ac39`。tracked v8 仍为 58 scheduled + B12 quarantine、198 shard / 3,285 run；E10 六个 10-run 长分片保留。当前只到草案重建，尚未 clean freeze/arm 或执行 v8 三份 fresh soak。
+
 ## 13. ADR 验收边界
 
 本文的实现验收是：
