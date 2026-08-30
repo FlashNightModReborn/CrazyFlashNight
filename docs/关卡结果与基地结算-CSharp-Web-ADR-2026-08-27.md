@@ -2,7 +2,7 @@
 
 **文档角色**：关卡结束、玩家死亡复活、返回基地与关卡奖励领取的跨 AS2 / C# / Web canonical 深文档。
 **状态**：2026-08-29 增量修复 `IMPLEMENTED / AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / promoted`
-**2026-08-30 测试反馈修复状态**：`IMPLEMENTED / RELEASE_AUTHORIZED / FIELD_REVALIDATION_PENDING / NOT_DEPLOYED`
+**2026-08-30 测试反馈修复状态**：`IMPLEMENTED / promoted / FIELD_REVALIDATION_PENDING`
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
@@ -22,9 +22,11 @@
 
 最终自动闭包另含 Equipment AS2 runId `1564380c6a0b458aad719b7664e286b1` 的 `88/88 + Inventory 170/170`、Loot/Equipment/PanelFocus focused xUnit `317/317`（focus 子集 `61/61`）、Launcher 全量 `4449 pass + 3 explicit opt-in skip / 4452 total`、Panel contract `68/68`、Loot Node `58/58`、KShop Edge `155/155`、Equipment Tuning model `82/82`、offline journey `9 suites`，以及三视口各 `147/147`。fresh asLoader publish 由新鲜 Output Panel 与 SWF 刷新证明；publish-only flashlog 未刷新，故不拿旧 trace 冒充行为证据。产物为 `1,200,109 bytes`、SHA-256 `6638A70485BBC79D950458D11F69FE738DC7D41604945F66A729DAA90B780107`、`10,683 functions`、最大 `50,215B < 60,000B`。
 
-异构复核前的早期隔离候选曾达到 `candidate_built / NOT_DEPLOYED`：root `tmp/runtime-candidates/v2/c-4b3dfec54046-08846e81b3-20260830t011547732z-cb9d862b`，Core SHA-256 `173EA2F77DF0B3BEB4BFFEB1AAE679B7B34608E1D5434449F44EDADB2F287593`，build identity `4B3DFEC54046494CFCC627212586D72F447D7E6E67FCDA9276569D3032A4FEB9`，payload closure `9CBEE0CDEA19B3B28BDDE9DB0B53489E816207A56175E06241DE93E683B855F2`。它未包含随后发现的 settlement revision-gap 与 Host detached-query v2 修复，现已 supersede，只保留为历史证据；当前修复树在正式不可变 request 前准确状态为 `compiled / NOT_DEPLOYED`。这些机器证据都不代签 QQ/直播前台切换、实际关卡返回、领取后重启读回或人类观感。
+异构复核前的早期隔离候选曾达到 `candidate_built / NOT_DEPLOYED`：root `tmp/runtime-candidates/v2/c-4b3dfec54046-08846e81b3-20260830t011547732z-cb9d862b`，Core SHA-256 `173EA2F77DF0B3BEB4BFFEB1AAE679B7B34608E1D5434449F44EDADB2F287593`，build identity `4B3DFEC54046494CFCC627212586D72F447D7E6E67FCDA9276569D3032A4FEB9`，payload closure `9CBEE0CDEA19B3B28BDDE9DB0B53489E816207A56175E06241DE93E683B855F2`。它未包含随后发现的 settlement revision-gap 与 Host detached-query v2 修复，现已 supersede，只保留为历史证据；正式 v2 发布身份以下段为准。这些机器证据都不代签 QQ/直播前台切换、实际关卡返回、领取后重启读回或人类观感。
 
 2026-08-30 维护者明确授权本增量进入不可变 source tag、双 signer / 双 faultDomain 共识与原子 promotion。开发机环境较干净，无法稳定制造 QQ 截图、直播工具或外部弹窗抢前台的现场；因此不伪造本地焦点验收，而是将该旅程记为 `FIELD_REVALIDATION_PENDING`，由测试员的实际软件环境回报收束。供应链发布授权不等于 `e2e_verified`、`HUMAN_ACCEPTANCE_PASSED` 或 `standard_entry_verified`；领奖重启读回、战斗空调制关闭和血瓶三来源回原槽同样保留为首轮现场回归项。
+
+正式列车绑定 release source `5789d597fbb7af32753fe4a35887b1f2a3a34e10`、tag `runtime-build-v2/20260830-tester-feedback-stability-v2`、tree `f0151025a88c416a5580ca658c9917ca3a922b4a` 与 request `90E4BFB9875C73EE6672E89F404763C68E2BF33184AD2ED68421D5C975ECEED6`。本地 X509 `physical-host-a` 与 GitHub Hosted OIDC/Sigstore run `33288898204` 对 identity `9B146D22C82925853757DCA8D63CDDBECD31CD19C43EC1771F6B26D8F5824CEE`、closure `C8B22C4532AD259E4C514BED30C87DC016E2FE17F9C001158F4CF18F900E1C94` 达成双 signer / 双 faultDomain 共识；39/39 production receipt SHA-256 为 `E35133850D7DBAD88B3AD9EF28ACC44E9DA8D097D29C3EC719C6A1294578FF79`。deployment `3e23bda255dae09e20e309a12c5b21d86b28f347` 与 audit run `33289302965` 已通过，明确输出 `state=promoted`、`deploymentChanged=true`。首个 v1 请求因材料目录 provenance 过期以 38/39 停止，未发起云构建、未 promotion，旧 tag 保持不可变。
 
 ## 0. 2026-08-28 地图绕行、焦点与转场增量
 

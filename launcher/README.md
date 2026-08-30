@@ -1,8 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `95019c7e63492d9cb88c010d1ee06376281c590b`（2026-08-29，启动前门、角色创建、作者/版本 Markdown 与版本记录迁移收尾；deployment `fdb4fe30aa911bbac91d60d7c349c217fa71a78c`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-维护者已确认最终隔离候选实际使用无问题，因此该专项为 `HUMAN_ACCEPTANCE_PASSED / promoted`。部署后只执行正式根 bootstrap `--verify-only`，没有从无 candidate 的正式入口重跑普通读档、新建 durable 后重启读回、重建备份或旧 SOL 保护旅程，不称本功能业务 `standard_entry_verified`。
+**最后核对代码基线**：release source commit `5789d597fbb7af32753fe4a35887b1f2a3a34e10`（2026-08-30，测试反馈稳定性修复；deployment `3e23bda255dae09e20e309a12c5b21d86b28f347`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+本增量已通过双 signer / 双 faultDomain 共识、production policy、原子 promotion、正式根 bootstrap `--verify-only` 与 post-promotion Audit，准确状态为 `promoted / FIELD_REVALIDATION_PENDING`。开发机没有稳定复现外部抢焦，也未从正式入口重跑领奖重启读回、战斗空调制关闭或药剂三来源回原槽，不称本增量 `e2e_verified`、`HUMAN_ACCEPTANCE_PASSED` 或业务 `standard_entry_verified`。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：
