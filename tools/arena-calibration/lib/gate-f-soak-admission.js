@@ -11,7 +11,9 @@ const {
 } = require("./arena-calibration-core");
 const { assertSchemaInstance } = require("./schema-registry");
 
-const SOAK_ADMISSION_SCHEMA = "arena-calibration.soak-admission.v1";
+const SOAK_ADMISSION_SCHEMA_V1 = "arena-calibration.soak-admission.v1";
+const SOAK_ADMISSION_SCHEMA_V2 = "arena-calibration.soak-admission.v2";
+const SOAK_ADMISSION_SCHEMAS = new Set([SOAK_ADMISSION_SCHEMA_V1, SOAK_ADMISSION_SCHEMA_V2]);
 const RUNTIME_FIELDS = Object.freeze([
   "runtimeMode",
   "processPath",
@@ -62,7 +64,7 @@ function verifyManifestIntegrity(manifest, label) {
   }
 }
 
-function verifyEvidenceRun(projectRoot, evidenceRun, runtimeIdentity, candidatesById) {
+function readCleanEvidenceRun(projectRoot, evidenceRun, runtimeIdentity) {
   const manifestPath = resolveInsideRoot(projectRoot, evidenceRun.manifestPath, `${evidenceRun.evidenceRunId} manifest`);
   const resultPath = resolveInsideRoot(
     projectRoot,
@@ -118,6 +120,16 @@ function verifyEvidenceRun(projectRoot, evidenceRun, runtimeIdentity, candidates
     rowsByCase.set(row.caseId, values);
   });
 
+  return { manifest, report, rows, casesById, rowsByCase };
+}
+
+function verifyEvidenceRun(projectRoot, evidenceRun, runtimeIdentity, candidatesById) {
+  const { manifest, rows, casesById, rowsByCase } = readCleanEvidenceRun(
+    projectRoot,
+    evidenceRun,
+    runtimeIdentity,
+  );
+
   const admitted = [];
   const manifestCandidateIds = Array.from(new Set(manifest.planner.candidateIds || []));
   manifestCandidateIds.forEach((candidateId) => {
@@ -138,6 +150,65 @@ function verifyEvidenceRun(projectRoot, evidenceRun, runtimeIdentity, candidates
   return admitted;
 }
 
+function verifyDerivedFactionCoverage(manifest, rows, evidenceRun) {
+  const casesById = new Map(manifest.cases.map((entry) => [entry.caseId, entry]));
+  const original = casesById.get(evidenceRun.originalCaseId);
+  const sideSwap = casesById.get(evidenceRun.sideSwapCaseId);
+  if (!original || !sideSwap || original.tags.includes("side-swap") || !sideSwap.tags.includes("side-swap")) {
+    fail(`${evidenceRun.evidenceRunId} does not bind distinct original and side-swap faction cases`);
+  }
+  if (!original.redRoster.some((entry) => entry.type === evidenceRun.parentUnitType)
+      || !sideSwap.blueRoster.some((entry) => entry.type === evidenceRun.parentUnitType)) {
+    fail(`${evidenceRun.evidenceRunId} does not place the declared parent unit on red and swapped blue sides`);
+  }
+
+  const counts = { red: 0, blue: 0 };
+  const inspectCase = (caseId, expectedSide) => {
+    const caseRows = rows.filter((row) => row.caseId === caseId);
+    if (caseRows.length !== casesById.get(caseId).repeat) {
+      fail(`${evidenceRun.evidenceRunId} faction case cardinality mismatch: ${caseId}`);
+    }
+    caseRows.forEach((row) => {
+      let matching = 0;
+      (row.spawnedUnits || []).forEach((spawned) => {
+        if (spawned.from !== evidenceRun.parentUnitType || spawned.unit !== evidenceRun.derivedUnitType) return;
+        if (spawned.side !== expectedSide) {
+          fail(`${evidenceRun.evidenceRunId} derived faction mismatch in ${row.runId}: expected ${expectedSide}, got ${spawned.side}`);
+        }
+        matching += 1;
+      });
+      if (matching > 0 && Number(row.phaseSpawnCount) < matching) {
+        fail(`${evidenceRun.evidenceRunId} phaseSpawnCount under-reports ${row.runId}`);
+      }
+      counts[expectedSide] += matching;
+    });
+  };
+  inspectCase(original.caseId, "red");
+  inspectCase(sideSwap.caseId, "blue");
+
+  ["red", "blue"].forEach((side) => {
+    if (counts[side] < evidenceRun.minimumSpawnedUnitsBySide[side]) {
+      fail(`${evidenceRun.evidenceRunId} lacks observed ${side} derived spawns: ${counts[side]} < ${evidenceRun.minimumSpawnedUnitsBySide[side]}`);
+    }
+  });
+  return counts;
+}
+
+function verifyDerivedFactionEvidenceRun(projectRoot, evidenceRun, runtimeIdentity) {
+  const { manifest, rows } = readCleanEvidenceRun(projectRoot, evidenceRun, runtimeIdentity);
+  const casesById = new Map(manifest.cases.map((entry) => [entry.caseId, entry]));
+  return {
+    evidenceRunId: evidenceRun.evidenceRunId,
+    parentUnitType: evidenceRun.parentUnitType,
+    derivedUnitType: evidenceRun.derivedUnitType,
+    spawnedUnitsBySide: verifyDerivedFactionCoverage(manifest, rows, evidenceRun),
+    caseTemplates: {
+      original: JSON.parse(JSON.stringify(casesById.get(evidenceRun.originalCaseId))),
+      sideSwap: JSON.parse(JSON.stringify(casesById.get(evidenceRun.sideSwapCaseId))),
+    },
+  };
+}
+
 function verifyCoverage(groupCandidates, soakIndex) {
   const riskTags = new Set(groupCandidates.flatMap((candidate) => candidate.riskTags || []));
   const hasOrdinary = groupCandidates.some((candidate) => (candidate.riskTags || []).length === 0
@@ -152,7 +223,12 @@ function verifyCoverage(groupCandidates, soakIndex) {
 
 function verifySoakAdmissionDocument(projectRoot, document, options) {
   options = options || {};
-  assertSchemaInstance(SOAK_ADMISSION_SCHEMA, document, "Gate F soak admission");
+  const schemaId = document && document.schema;
+  if (!SOAK_ADMISSION_SCHEMAS.has(schemaId)) fail(`unsupported Gate F soak admission schema: ${schemaId}`);
+  assertSchemaInstance(schemaId, document, "Gate F soak admission");
+  if (options.requireDerivedFactionEvidence === true && schemaId !== SOAK_ADMISSION_SCHEMA_V2) {
+    fail("Gate F week-plan generation requires arena-calibration.soak-admission.v2 derived faction evidence");
+  }
   const documentRef = sha256OfValue(withoutHash(document, "admissionHash"));
   if (document.admissionHash !== documentRef) fail("Gate F soak admission hash mismatch");
   if (options.expectedRef && options.expectedRef !== documentRef) fail("Gate F soak admission reference drifted");
@@ -167,7 +243,12 @@ function verifySoakAdmissionDocument(projectRoot, document, options) {
   if (groupIndexes.join(",") !== "1,2,3") fail("Gate F soak admission must declare soak indexes 1,2,3 exactly once");
 
   if (options.verifyRawEvidence !== true) {
-    return { documentRef, groups: document.groups.map((group) => group.cells.slice()), runtimeIdentity: document.runtimeIdentity };
+    return {
+      documentRef,
+      groups: document.groups.map((group) => group.cells.slice()),
+      runtimeIdentity: document.runtimeIdentity,
+      schema: schemaId,
+    };
   }
   const candidates = options.candidates || [];
   const candidatesById = new Map(candidates.map((candidate) => [candidate.candidateId, candidate]));
@@ -183,6 +264,18 @@ function verifySoakAdmissionDocument(projectRoot, document, options) {
     verifyEvidenceRun(projectRoot, evidenceRun, document.runtimeIdentity, candidatesById)
       .forEach((candidateId) => admittedCandidateIds.add(candidateId));
   });
+  const derivedFactionEvidence = [];
+  if (schemaId === SOAK_ADMISSION_SCHEMA_V2) {
+    document.derivedFactionEvidenceRuns.forEach((evidenceRun) => {
+      if (evidenceRunIds.has(evidenceRun.evidenceRunId)) fail(`duplicate soak evidence run: ${evidenceRun.evidenceRunId}`);
+      evidenceRunIds.add(evidenceRun.evidenceRunId);
+      derivedFactionEvidence.push(verifyDerivedFactionEvidenceRun(
+        projectRoot,
+        evidenceRun,
+        document.runtimeIdentity,
+      ));
+    });
+  }
   document.groups.forEach((group) => {
     const groupCandidates = group.cells.map((cell) => {
       const candidate = candidatesByCell.get(cell);
@@ -199,12 +292,15 @@ function verifySoakAdmissionDocument(projectRoot, document, options) {
     groups: document.groups.slice().sort((left, right) => left.soakIndex - right.soakIndex).map((group) => group.cells.slice()),
     runtimeIdentity: document.runtimeIdentity,
     admittedCandidateIds: Array.from(admittedCandidateIds).sort(),
+    derivedFactionEvidence,
   };
 }
 
 module.exports = {
-  SOAK_ADMISSION_SCHEMA,
+  SOAK_ADMISSION_SCHEMA_V1,
+  SOAK_ADMISSION_SCHEMA_V2,
   compareRuntimeIdentity,
+  verifyDerivedFactionCoverage,
   verifySoakAdmissionDocument,
   withoutHash,
 };

@@ -11,7 +11,11 @@ const {
 const { assertSchemaInstance } = require("./lib/schema-registry");
 const { writeJsonAtomic } = require("./lib/durable-campaign-journal");
 const { createGateFDecisionEvidence, verifyManifestIntegrity } = require("./lib/gate-f-campaign");
-const { verifySoakAdmissionDocument, withoutHash } = require("./lib/gate-f-soak-admission");
+const {
+  verifyDerivedFactionCoverage,
+  verifySoakAdmissionDocument,
+  withoutHash,
+} = require("./lib/gate-f-soak-admission");
 
 const ROOT = path.resolve(__dirname, "../..");
 const LONG_TIMEOUT_FRAMES = 5400;
@@ -87,7 +91,9 @@ gate-fctl freeze after deployment is stable. Empirical timeout overrides act
 only on the generated plan; they never rewrite normalized intake or workbook
 facts, and candidate-runtime evidence always requires a formal-runtime replay.
 Every infrastructure-soak cell must be admitted by schema-valid, exact-policy,
-two-orientation formal-runtime evidence with unchanged protected saves.
+two-orientation formal-runtime evidence with unchanged protected saves. Gate F
+week plans require v2 admission with observed red and blue derived-unit spawns;
+the bound faction cases are replayed in every infrastructure soak.
 `);
 }
 
@@ -269,6 +275,41 @@ function buildManifest(candidates, batchId, totalRuns, phaseTag, createdAt, plan
   });
 }
 
+function appendDerivedFactionCases(manifest, evidence, shardId) {
+  if (!evidence || !evidence.caseTemplates || !evidence.caseTemplates.original
+      || !evidence.caseTemplates.sideSwap) {
+    fail("Gate F soak lacks verified derived-faction case templates");
+  }
+  const raw = JSON.parse(JSON.stringify(manifest));
+  delete raw.manifestHash;
+  raw.cases.forEach((entry) => { delete entry.caseHash; });
+  const appendCase = (source, orientation) => {
+    const entry = JSON.parse(JSON.stringify(source));
+    delete entry.caseHash;
+    entry.caseId = `${shardId}-derived-faction-${orientation}`;
+    entry.tags = Array.from(new Set([
+      ...(entry.tags || []),
+      "gate-f-week",
+      "soak",
+      "derived-faction-replay",
+      ...(orientation === "side-swap" ? ["side-swap"] : []),
+    ]));
+    entry.plannerReason = `${entry.plannerReason}; Gate F ${shardId} hash-bound derived-faction replay`;
+    raw.cases.push(entry);
+  };
+  appendCase(evidence.caseTemplates.original, "original");
+  appendCase(evidence.caseTemplates.sideSwap, "side-swap");
+  raw.timeoutFrames = Math.max(...raw.cases.map((entry) => entry.timeoutFrames));
+  raw.planner.derivedFactionEvidenceRunId = evidence.evidenceRunId;
+  raw.planner.derivedFactionParentUnitType = evidence.parentUnitType;
+  raw.planner.derivedFactionUnitType = evidence.derivedUnitType;
+  const totalRuns = raw.cases.reduce((total, entry) => total + entry.repeat, 0);
+  if (totalRuns < 10 || totalRuns > 25) {
+    fail(`derived-faction soak ${shardId} must remain a 10-25 run shard, got ${totalRuns}`);
+  }
+  return normalizeManifest(raw);
+}
+
 function quarantineBaselines(exceptions) {
   return exceptions.map((item) => {
     assertSchemaInstance("arena-calibration.exception-inbox-item.v1", item, "intake exception");
@@ -308,13 +349,18 @@ function buildWeekPlan(candidates, exceptions, options) {
   const createdAt = options.createdAt;
   const manifests = [];
   const shards = [];
+  if (!Array.isArray(options.soakAdmission.derivedFactionEvidence)
+      || options.soakAdmission.derivedFactionEvidence.length !== 1) {
+    fail("Gate F week plan requires exactly one verified derived-faction evidence run");
+  }
+  const derivedFactionEvidence = options.soakAdmission.derivedFactionEvidence[0];
 
   options.soakAdmission.groups.forEach((group, index) => {
     const groupCandidates = group.map((cell) => byCell.get(cell)).filter(Boolean)
       .filter((candidate) => !completed.has(candidate.candidateId));
     if (groupCandidates.length !== 5) fail(`soak shard ${index + 1} lost a required scheduled candidate`);
     const shardId = `f-soak-${String(index + 1).padStart(2, "0")}`;
-    const manifest = buildManifest(groupCandidates, `gate-f-week-${shardId}`, 10, "soak", createdAt, {
+    const baseManifest = buildManifest(groupCandidates, `gate-f-week-${shardId}`, 10, "soak", createdAt, {
       soakIndex: index + 1,
       soakAdmissionRef: options.soakAdmission.documentRef,
       coverage: Array.from(new Set(groupCandidates.flatMap((entry) => entry.riskTags))).sort(),
@@ -324,6 +370,7 @@ function buildWeekPlan(candidates, exceptions, options) {
           .filter(Boolean))).sort(),
       } : {}),
     }, options.battleBuildCommit);
+    const manifest = appendDerivedFactionCases(baseManifest, derivedFactionEvidence, shardId);
     manifests.push({ shardId, manifest });
   });
 
@@ -484,7 +531,7 @@ function runCheck() {
   const c9 = fixture("candidate-c9", "C9", 1800, ["source_corrected"]);
   const fixtureHash = (character) => `sha256:${character.repeat(64)}`;
   const soakAdmission = {
-    schema: "arena-calibration.soak-admission.v1",
+    schema: "arena-calibration.soak-admission.v2",
     admissionId: "fixture-stable-soak-admission",
     planId: "gate-f-week-full-v1",
     battleSemanticsCohortId: "arena-cohort-fixture",
@@ -510,6 +557,21 @@ function runCheck() {
       reportPath: "fixture/report.json",
       reportFileSha256: fixtureHash("4"),
     }],
+    derivedFactionEvidenceRuns: [{
+      evidenceRunId: "fixture-derived-faction-run",
+      manifestPath: "fixture/derived-manifest.json",
+      manifestHash: fixtureHash("5"),
+      manifestFileSha256: fixtureHash("6"),
+      resultPath: "fixture/derived-results.jsonl",
+      resultFileSha256: fixtureHash("7"),
+      reportPath: "fixture/derived-report.json",
+      reportFileSha256: fixtureHash("8"),
+      originalCaseId: "fixture-derived-original",
+      sideSwapCaseId: "fixture-derived-side-swap",
+      parentUnitType: "兵种39",
+      derivedUnitType: "敌人-裸体兽化僵尸1",
+      minimumSpawnedUnitsBySide: { red: 1, blue: 1 },
+    }],
     createdAt: "2026-08-28T00:00:00.000Z",
     admissionHash: "",
   };
@@ -517,12 +579,105 @@ function runCheck() {
   const checkedAdmission = verifySoakAdmissionDocument(ROOT, soakAdmission, {
     planId: "gate-f-week-full-v1",
     battleSemanticsCohortId: "arena-cohort-fixture",
+    requireDerivedFactionEvidence: true,
+  });
+  const legacyAdmission = JSON.parse(JSON.stringify(soakAdmission));
+  legacyAdmission.schema = "arena-calibration.soak-admission.v1";
+  delete legacyAdmission.derivedFactionEvidenceRuns;
+  legacyAdmission.admissionHash = sha256OfValue(withoutHash(legacyAdmission, "admissionHash"));
+  expectRejected("legacy admission for a new week plan", () => {
+    verifySoakAdmissionDocument(ROOT, legacyAdmission, { requireDerivedFactionEvidence: true });
   });
   const tamperedAdmission = JSON.parse(JSON.stringify(soakAdmission));
   tamperedAdmission.groups[2].cells[4] = "C9";
   expectRejected("tampered stable-soak admission", () => {
     verifySoakAdmissionDocument(ROOT, tamperedAdmission, { planId: "gate-f-week-full-v1" });
   });
+  const derivedFactionManifest = {
+    cases: [{
+      caseId: "fixture-derived-original",
+      blueRoster: [{ type: "兵种27", level: 10 }],
+      redRoster: [{ type: "兵种39", level: 20 }],
+      repeat: 1,
+      timeoutFrames: 1800,
+      spawnDistance: 650,
+      blueFormation: "line",
+      redFormation: "line",
+      formationSpacing: 54,
+      tags: ["original"],
+      plannerReason: "fixture derived-faction original",
+    }, {
+      caseId: "fixture-derived-side-swap",
+      blueRoster: [{ type: "兵种39", level: 20 }],
+      redRoster: [{ type: "兵种27", level: 10 }],
+      repeat: 1,
+      timeoutFrames: 1800,
+      spawnDistance: 650,
+      blueFormation: "line",
+      redFormation: "line",
+      formationSpacing: 54,
+      tags: ["side-swap"],
+      plannerReason: "fixture derived-faction side swap",
+    }],
+  };
+  const derivedFactionRows = [{
+    runId: "fixture-derived-red",
+    caseId: "fixture-derived-original",
+    phaseSpawnCount: 1,
+    spawnedUnits: [{ from: "兵种39", unit: "敌人-裸体兽化僵尸1", side: "red" }],
+  }, {
+    runId: "fixture-derived-blue",
+    caseId: "fixture-derived-side-swap",
+    phaseSpawnCount: 1,
+    spawnedUnits: [{ from: "兵种39", unit: "敌人-裸体兽化僵尸1", side: "blue" }],
+  }];
+  const factionCoverage = verifyDerivedFactionCoverage(
+    derivedFactionManifest,
+    derivedFactionRows,
+    soakAdmission.derivedFactionEvidenceRuns[0],
+  );
+  if (factionCoverage.red !== 1 || factionCoverage.blue !== 1) {
+    throw new Error("Gate F derived-faction positive coverage check failed");
+  }
+  const factionMismatchRows = JSON.parse(JSON.stringify(derivedFactionRows));
+  factionMismatchRows[1].spawnedUnits[0].side = "red";
+  expectRejected("wrong-side derived spawn", () => {
+    verifyDerivedFactionCoverage(
+      derivedFactionManifest,
+      factionMismatchRows,
+      soakAdmission.derivedFactionEvidenceRuns[0],
+    );
+  });
+  const missingFactionRows = JSON.parse(JSON.stringify(derivedFactionRows));
+  missingFactionRows[1].spawnedUnits = [];
+  missingFactionRows[1].phaseSpawnCount = 0;
+  expectRejected("unobserved blue derived spawn", () => {
+    verifyDerivedFactionCoverage(
+      derivedFactionManifest,
+      missingFactionRows,
+      soakAdmission.derivedFactionEvidenceRuns[0],
+    );
+  });
+  const factionReplayManifest = appendDerivedFactionCases(
+    buildManifest([normal], "gate-f-check-soak", 10, "soak", "2026-08-28T00:00:00.000Z", {}),
+    {
+      evidenceRunId: "fixture-derived-faction-run",
+      parentUnitType: "兵种39",
+      derivedUnitType: "敌人-裸体兽化僵尸1",
+      caseTemplates: {
+        original: derivedFactionManifest.cases[0],
+        sideSwap: derivedFactionManifest.cases[1],
+      },
+    },
+    "f-soak-check",
+  );
+  assertSchemaInstance(factionReplayManifest.schema, factionReplayManifest, "Gate F derived-faction replay manifest");
+  if (factionReplayManifest.cases.reduce((total, entry) => total + entry.repeat, 0) !== 12
+      || factionReplayManifest.planner.derivedFactionEvidenceRunId !== "fixture-derived-faction-run"
+      || !factionReplayManifest.cases.some((entry) => entry.caseId === "f-soak-check-derived-faction-original")
+      || !factionReplayManifest.cases.some((entry) => entry.caseId === "f-soak-check-derived-faction-side-swap")) {
+    throw new Error("Gate F derived-faction replay manifest check failed");
+  }
   normal.source = {
     workbookSha256: fixtureHash("a"),
     sheetName: "fixture",
@@ -636,6 +791,9 @@ function runCheck() {
     evidenceBoundTimeoutPromotion: true,
     invalidTimeoutOverridesRejected: true,
     infrastructureSoakRequiresHashBoundStableAdmission: true,
+    newWeekPlanRequiresDerivedFactionAdmissionV2: true,
+    wrongSideOrUnobservedDerivedSpawnsRejected: true,
+    everyInfrastructureSoakReplaysDerivedFactionCases: true,
     allSoaksCoverOrdinaryPayloadFormationLongTimeoutAndHighLevel: true,
     stochasticC9RetainedInStandardPhases: true,
   }));
@@ -679,6 +837,7 @@ function main(argv) {
     battleSemanticsCohortId: args.battleSemanticsCohortId,
     candidates: empiricalTimeoutOverrides.candidates,
     verifyRawEvidence: true,
+    requireDerivedFactionEvidence: true,
   });
   const result = buildWeekPlan(empiricalTimeoutOverrides.candidates, exceptions, {
     completed: parseCompleted(args.completed),
@@ -694,6 +853,7 @@ function main(argv) {
       path: relative(soakAdmissionPath),
       documentRef: verifiedSoakAdmission.documentRef,
       groups: verifiedSoakAdmission.groups,
+      derivedFactionEvidence: verifiedSoakAdmission.derivedFactionEvidence,
     },
   });
   fs.mkdirSync(path.join(outputDir, "manifests"), { recursive: true });
