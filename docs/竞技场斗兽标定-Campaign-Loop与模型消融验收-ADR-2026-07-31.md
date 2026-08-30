@@ -705,6 +705,8 @@ v4 随后完成 30/30 fresh soak；全量在 16 个 completed shard + 1 个 F2 a
 
 星期级全量的显式 idle grant 上限由 24 小时扩为 168 小时，避免 3,255-run campaign 因授权窗口短于真实机器时长而停止领取 shard。该扩展不改变授权范围：仍须由 `arm` 绑定 clean source、exact formal runtime、plan hash、producer idle 与磁盘门，维护者可随时通过 exact owned revoke 撤销；身份漂移、树外竞争 producer、低磁盘与基础设施错误继续 fail closed。过期后只准提交已经产生的 durable facts，不准开启新 shard；模型异常复核仍只有诊断建议权，不继承执行或验收权。
 
+`gate-f-week-full-v6` 因召唤谱系、污染判定与 `things4.swf` 战斗资产变更切换到 `arena-cohort-20260830-summon-lineage-v3`；旧 v5 的 159 个 completed shard、2,810 条 durable row 只作历史，不跨 cohort 混计。战斗语义提交 `bcfa01935d2f91a29a8a537c328c9190827c4be3` 下，D10 新鲜 10-run 为 0 contamination/error、3 个候选 timeout、runtime/save/shutdown 闭合；`B2/C7/G2/F3/E10` admission probe 为 10/10 finished、0 timeout/error/recovery，准入 hash 为 `sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb`。重建后的 tracked v2 计划仍为 58 个 scheduled candidate + `B12` quarantine、198 shard / 3,255 run；此处只证明新 cohort 可冻结，三份正式 fresh soak 与全量结果仍须实跑。
+
 ## 13. ADR 验收边界
 
 本文的实现验收是：

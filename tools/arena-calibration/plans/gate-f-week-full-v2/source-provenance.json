@@ -4,10 +4,10 @@
   "intakeExceptionsRef": "sha256:50828ad220dd5c2db52ce988fd32bda8b29780a42c24148870300bbcc84b2823",
   "empiricalTimeoutOverridesRef": "sha256:376e004fbea13fea0f709e18d73e65a61d0577ac7c89f7eb88ec048a6a78818d",
   "empiricalTimeoutOverridesPath": "tools/arena-calibration/evidence/gate-f-week-full-v2-empirical-timeout-overrides.json",
-  "soakAdmissionRef": "sha256:ef8895b0f14b65fdb98c53dfac201a4191a41bd0b964c2cdc64857e4e9d3d303",
-  "soakAdmissionPath": "tools/arena-calibration/evidence/gate-f-week-full-v2-soak-admission.json",
+  "soakAdmissionRef": "sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb",
+  "soakAdmissionPath": "tools/arena-calibration/evidence/gate-f-week-full-v2-summon-lineage-v3-soak-admission.json",
   "completedCandidates": [],
-  "battleBuildCommit": "c64a5440e5506a3f1567143711f984d063e56505",
+  "battleBuildCommit": "bcfa01935d2f91a29a8a537c328c9190827c4be3",
   "workbookRefs": [
     "sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793"
   ],
@@ -71,5 +71,5 @@
     "D11",
     "C12"
   ],
-  "generatedAt": "2026-08-28T13:15:43.880Z"
+  "generatedAt": "2026-08-30T06:52:00.000Z"
 }

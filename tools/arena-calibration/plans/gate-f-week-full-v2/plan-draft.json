@@ -1,7 +1,7 @@
 {
   "planId": "gate-f-week-full-v2",
-  "campaignId": "gate-f-week-full-v5",
-  "battleSemanticsCohortId": "arena-cohort-20260827-stage-outcome-v2",
+  "campaignId": "gate-f-week-full-v6",
+  "battleSemanticsCohortId": "arena-cohort-20260830-summon-lineage-v3",
   "candidateIds": [
     "candidate-0155e220c2153d1c",
     "candidate-07899540b1d0c4bc",
@@ -360,8 +360,8 @@
       "evidenceRef": "sha256:1ad930f2131f7427afbf262c2a03f72b39eaaf8201aa4fea7b65c30c47a6696e"
     }
   ],
-  "soakAdmissionPath": "tools/arena-calibration/evidence/gate-f-week-full-v2-soak-admission.json",
-  "soakAdmissionRef": "sha256:ef8895b0f14b65fdb98c53dfac201a4191a41bd0b964c2cdc64857e4e9d3d303",
+  "soakAdmissionPath": "tools/arena-calibration/evidence/gate-f-week-full-v2-summon-lineage-v3-soak-admission.json",
+  "soakAdmissionRef": "sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb",
   "slot": "cf7_agent_arena_calibration",
   "seedSlot": "crazyflasher7_saves",
   "healthPolicy": {
@@ -393,13 +393,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-soak-01.json",
-      "manifestHash": "sha256:ce7f5fec1c2c3fc08a0849f8afe4bb0611d3136d3f00122e2073023900b987f4",
+      "manifestHash": "sha256:ab09bccfddc241671bf6a8dd0ec9a9880c7badd392b079c2a2f7feb46fd7aaaf",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-soak-01.json",
-      "decisionEvidenceRef": "sha256:5d14261653bc04018e1514341c85d35e0da0a1c4754014dfc4ae2c408998320e"
+      "decisionEvidenceRef": "sha256:c1e79d7d9274219a95062d7b3ac9dd9db9a741af4066971199332962aa223c24"
     },
     {
       "shardId": "f-soak-02",
@@ -411,13 +411,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-soak-02.json",
-      "manifestHash": "sha256:9b97e917084cbd83dd5e2fe8499c8613b0ec07bf21809452cfab43bf19bea903",
+      "manifestHash": "sha256:b162d375a44fb7fa11dbe5bc5dc62b5b7c7becc4ab731d9675dcbf5b69d5c548",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-soak-02.json",
-      "decisionEvidenceRef": "sha256:5dda307c5bc47a11430518687f609713371e53194762fba7a30522f55253b3d9"
+      "decisionEvidenceRef": "sha256:4d251d1c4a8b1c5089cf91ca9eee71dc8c0200c3b81501b1b554c3977053c366"
     },
     {
       "shardId": "f-soak-03",
@@ -429,13 +429,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-soak-03.json",
-      "manifestHash": "sha256:9061d6f60efb8f7ecf15f9e1b9fc2930bac49998ee96d81f865dec9d7ee71b22",
+      "manifestHash": "sha256:76a059936f7354cf63218778ab6f7b41be34ed520fad5676adf70d37b6b41f04",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-soak-03.json",
-      "decisionEvidenceRef": "sha256:12dabc7e7757489be636d21a10f75ecf37df2311c9d04e862cb497fe7e8dfeb8"
+      "decisionEvidenceRef": "sha256:6f0b94b46fb21f18f8dc84fad2760c2bbe0f39ecf302d730c316ca7ca6f05eb6"
     },
     {
       "shardId": "f-b2-p1",
@@ -443,13 +443,13 @@
         "candidate-a65d27a00cf71919"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b2-p1.json",
-      "manifestHash": "sha256:91709dd251daf5ec4546d197a68a12bda932c432587bb4b087502099e9282e94",
+      "manifestHash": "sha256:ea16f1fb19bc7ee5c974202e29b8093bcec6ec3697d954ced18f74538c98b0e2",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b2-p1.json",
-      "decisionEvidenceRef": "sha256:d42d662816b7c0a4eef2da3764af43da43fe014e5e6bba04a1b14a1d79ccfa34"
+      "decisionEvidenceRef": "sha256:f17ed7a1070f39d332a654e128192b48bf7ed6f72628d15bc2c51f6f214bbf03"
     },
     {
       "shardId": "f-b2-p2",
@@ -457,13 +457,13 @@
         "candidate-a65d27a00cf71919"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b2-p2.json",
-      "manifestHash": "sha256:dae97c68dde55b63248f5892fc2e1d3652a1c4a8484bc070632f5aa21f2c5c2f",
+      "manifestHash": "sha256:e53bc522ee69f0e2dcf59ddee74ff486c2092e23ead251c3120d045cbb894517",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b2-p2.json",
-      "decisionEvidenceRef": "sha256:80f076f5644070a5262ba8c0d29c7e38b4b3373abef89968616b5a5832c4bfa1"
+      "decisionEvidenceRef": "sha256:cffb9cc41e1ccd470ba8836b228b9c27263581e865031f225d9ecab4c9450e85"
     },
     {
       "shardId": "f-b2-p3",
@@ -471,13 +471,13 @@
         "candidate-a65d27a00cf71919"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b2-p3.json",
-      "manifestHash": "sha256:129001d3c551b863583a14e402735057954b11766a8b07fe8c9c3c9cc7468b54",
+      "manifestHash": "sha256:3cbbbc91a827fb83c461d34c3c52b4125228f1de73efadc4f6fe6052e10b10e0",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b2-p3.json",
-      "decisionEvidenceRef": "sha256:6defb2254a45affb1b9fb5754c5f781df1e32ca7ddbb5c028bd9accb8342b6c9"
+      "decisionEvidenceRef": "sha256:0377b25837be8e0efe73167f1453379a09b7a0a48714f15cfdfd65e7f113b9b5"
     },
     {
       "shardId": "f-c2-p1",
@@ -485,13 +485,13 @@
         "candidate-5916c1cceeba49d5"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c2-p1.json",
-      "manifestHash": "sha256:51b5e4261eed3c08fc224f85738db5524e5554594808a138b285f4c5d98dd0bc",
+      "manifestHash": "sha256:592b38ede611f5cfa7f7238595d217ec076dacd63bbc459b2079d97dc04b3110",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c2-p1.json",
-      "decisionEvidenceRef": "sha256:3206d1841c04e30913ae1ed40b14261dbbfd7af318832cc4773f5fbe5779e826"
+      "decisionEvidenceRef": "sha256:26f70137f68e46e119533d8d4ee3e6cac603598317a9f8892cfae902e1e03b0c"
     },
     {
       "shardId": "f-c2-p2",
@@ -499,13 +499,13 @@
         "candidate-5916c1cceeba49d5"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c2-p2.json",
-      "manifestHash": "sha256:b5bbcfdadb508e9059d813897d6514a8ebc841afe9b01135c5b2a411bd18cbac",
+      "manifestHash": "sha256:b56233a2dba5f0e61094748750eb5be280993693ec863f7d9bbbd1cc954d5c62",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c2-p2.json",
-      "decisionEvidenceRef": "sha256:2e58c6f463f85d087088027c73450a9113eaf59ab6064ccaa05f61f5a3ac5e62"
+      "decisionEvidenceRef": "sha256:59086fbdf924b1af12b3ec86f565855f99d8f0ecf461b24f4aedb43f31ad784a"
     },
     {
       "shardId": "f-c2-p3",
@@ -513,13 +513,13 @@
         "candidate-5916c1cceeba49d5"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c2-p3.json",
-      "manifestHash": "sha256:10c3e1ce5e3c603932f36b2005fe3a41ca5c6e41d8bdfce8ffcc2fad867201ab",
+      "manifestHash": "sha256:d1560524fbb4e7736414a46fb26915efe4910d222763c5f643e2ddf0b15b3813",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c2-p3.json",
-      "decisionEvidenceRef": "sha256:1529b97caecd432c632c35be9256dedb8b3e0dd4695be7e7c9cadcc660ac8ae1"
+      "decisionEvidenceRef": "sha256:198f82356fca37b2a41fd9f92cc105c61dbc51d9ab518bf60364bf5f2b9c0eb6"
     },
     {
       "shardId": "f-d2-p1",
@@ -527,13 +527,13 @@
         "candidate-bc74763292a63c5c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d2-p1.json",
-      "manifestHash": "sha256:323fed265dd4eb22ab50714b94df003f837f76b1cf9fd9a8c99256bce4648b88",
+      "manifestHash": "sha256:bfa14f92c9be2e54ceaa7eb6bdbdfd4c206306ae817baa38e56fbe8a2c0e0766",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d2-p1.json",
-      "decisionEvidenceRef": "sha256:9833fbb8d2302fc45a97e479662ac7967f274bd7285165c34ff748c597da9df3"
+      "decisionEvidenceRef": "sha256:aee3f6918a43fbac7c65ccef30cf39a725956a0e14dee4d4dccaab7796e0ef37"
     },
     {
       "shardId": "f-d2-p2",
@@ -541,13 +541,13 @@
         "candidate-bc74763292a63c5c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d2-p2.json",
-      "manifestHash": "sha256:71a08883d40ecdd5940196aa1f589c1fa15a43c2b9eed98e402fda49dd693f22",
+      "manifestHash": "sha256:ea0df62958519da1635e0780c98f15e3aadffdf8caf439f97aa537a073140992",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d2-p2.json",
-      "decisionEvidenceRef": "sha256:77f492922631e64f36faf9fea8a02dbbdb9e863dc218c5ee706f4cd4033b0695"
+      "decisionEvidenceRef": "sha256:85250954e094a9abf4eb1b02c2b597a333f6f05d7afab8869bf4261f71208988"
     },
     {
       "shardId": "f-d2-p3",
@@ -555,13 +555,13 @@
         "candidate-bc74763292a63c5c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d2-p3.json",
-      "manifestHash": "sha256:dee36c01ebe93336785eb92f67ab8b49af4461b50ad7c9b0dd6b4f7d51e579a5",
+      "manifestHash": "sha256:7fcd44b56c3ef4fa8054e8818e86f29223f342aa1ba99c471ad92f5a39ca68b9",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d2-p3.json",
-      "decisionEvidenceRef": "sha256:a1b19c54f763b99c8eb039d99d87469cd919e69de09a8f89702f7207f1a7c8b2"
+      "decisionEvidenceRef": "sha256:03a98ce8a94fb66b722a5e758d8579f01fb2664d8bca3c1937e593691e516e98"
     },
     {
       "shardId": "f-e2-p1",
@@ -569,13 +569,13 @@
         "candidate-88ff4d62419433d7"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e2-p1.json",
-      "manifestHash": "sha256:c48bd1b2e116d79b1a950da5f9598f712b18376ac539293b7f67a8377bfc5db2",
+      "manifestHash": "sha256:3325cca3546fa510e8cb5144fc8748e7cfcb3f854bb8cf42ebf6581f54e236f5",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e2-p1.json",
-      "decisionEvidenceRef": "sha256:2d9fab805d8fc71ff88c8571de09194cbcc293ced4a90ae5876498f8103dc431"
+      "decisionEvidenceRef": "sha256:5ff06f4f0e18b07871ba874abdbe1b34b39326967827f95007c6ba57ed7faecf"
     },
     {
       "shardId": "f-e2-p2",
@@ -583,13 +583,13 @@
         "candidate-88ff4d62419433d7"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e2-p2.json",
-      "manifestHash": "sha256:d7d81fb0700ca536d5e21cf83395c0cca1574415b76f01eea3aea18095173e7e",
+      "manifestHash": "sha256:3cf8eb4853874a8f7e19314aac4715a1075b82b1fa550481837910c3a2a37631",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e2-p2.json",
-      "decisionEvidenceRef": "sha256:3359ca6bfd4522cd618f2cb0fa75d621872de34e1b5283481fd36af74c61aefc"
+      "decisionEvidenceRef": "sha256:5cdf11e1247f595bb03fed0a271adb1cccd5d05f477c50bac758698e8f96c8a4"
     },
     {
       "shardId": "f-e2-p3",
@@ -597,13 +597,13 @@
         "candidate-88ff4d62419433d7"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e2-p3.json",
-      "manifestHash": "sha256:4468fa361ce6f0b30bed00d1f02eca909eb02c7fe6123130b52fa8a9a39f0cf4",
+      "manifestHash": "sha256:d1d8f3fa14372a72c7bd1d7f117d57fae314568a0a446ef615251fb6d669c732",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e2-p3.json",
-      "decisionEvidenceRef": "sha256:0962ff98bf9433be008cb39d9ed8e7943841b98b9b275275916b1a4656dd772c"
+      "decisionEvidenceRef": "sha256:95a75aa2f6baf5c3c1f53c2a0e68c6b295c2ab69f839a32f446d148f5659584b"
     },
     {
       "shardId": "f-f2-p1",
@@ -611,13 +611,13 @@
         "candidate-a7a265a498830259"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f2-p1.json",
-      "manifestHash": "sha256:cd252d456681d909ed3873b5bfdb52db9ae60eee548e27836c39333570bd8ba9",
+      "manifestHash": "sha256:2b4eba9d93087169cb1a6888eb359e4c69a0aa73d5b1d1749c8cf6668837730d",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f2-p1.json",
-      "decisionEvidenceRef": "sha256:41ad502172481bedcf7d2b56e8367ecb298f14cba941df9cd08b22962217c1c4"
+      "decisionEvidenceRef": "sha256:33a331053dbe7f8a5b428b6bff42e600bf7def0c31fe64d8e835574d7e5b0fd4"
     },
     {
       "shardId": "f-f2-p2",
@@ -625,13 +625,13 @@
         "candidate-a7a265a498830259"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f2-p2.json",
-      "manifestHash": "sha256:22fd2bb791db1ee60310ac5717a73a54c05e9f06631b5ebbeadb0509440f0192",
+      "manifestHash": "sha256:609ef902c66664fac8e1ae66781767d72b77d8fe4237cc9546a3e983c7492d18",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f2-p2.json",
-      "decisionEvidenceRef": "sha256:888b21ccb37def0097e0b87789dea0a1db4fc77440d4c2474eb4a21b9ca0f213"
+      "decisionEvidenceRef": "sha256:c1ab3444442757028077d6eea20d366bd43d83ebf2f823f5b14c700e7dcbda1b"
     },
     {
       "shardId": "f-f2-p3",
@@ -639,13 +639,13 @@
         "candidate-a7a265a498830259"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f2-p3.json",
-      "manifestHash": "sha256:cce6612dc70b42530d57943e508ec50f7352554ed25b27bfc5c33c72e5808436",
+      "manifestHash": "sha256:b70f6b4546c5f14317c87e4094bd71a491d8b7e9898d4c69805e05d2cf38dc5c",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f2-p3.json",
-      "decisionEvidenceRef": "sha256:092154e810e95513f90e2e854d3fcfbbf881b091bbe2e5a607b006dbdeedb86b"
+      "decisionEvidenceRef": "sha256:f4d671911d85eab3cdfa1797a85b529312ef1f41af4bcafd278d7c427d3b5548"
     },
     {
       "shardId": "f-g2-p1",
@@ -653,13 +653,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g2-p1.json",
-      "manifestHash": "sha256:a62e6477221e1e776395f6b00602cc1fe816e878531dcbd3f61a0bece201368f",
+      "manifestHash": "sha256:781cf3276e3879130d284bf9b767e6193248f9f2c04833ca5a03fa0b794f1436",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g2-p1.json",
-      "decisionEvidenceRef": "sha256:4c571ca02f8ce96a58551861be4b24f8dc7a6a28bdb52b6aa99662d98ee61e99"
+      "decisionEvidenceRef": "sha256:ab72577b58c9d2469c7647687c94fb6394229ee2e381e904ae629c8a0c848621"
     },
     {
       "shardId": "f-g2-p2",
@@ -667,13 +667,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g2-p2.json",
-      "manifestHash": "sha256:69a847b6f37c115e0accc70d7789f1d8b9edbb3c847f9da49e4eb67fac8a6a7a",
+      "manifestHash": "sha256:20b2e81008365487907c1df5fbf4a8c11dceb6cb28e2738762a5c32878046b16",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g2-p2.json",
-      "decisionEvidenceRef": "sha256:5c0e4bd2f21ae1680caf57b58f376475f9895bcd2930da5707328f88666a9bfb"
+      "decisionEvidenceRef": "sha256:a15f708e161550da954fcd3574e74e7fc5f9e3680a5057984c99d598ff73064b"
     },
     {
       "shardId": "f-g2-p3",
@@ -681,13 +681,13 @@
         "candidate-dd65977b16a48a35"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g2-p3.json",
-      "manifestHash": "sha256:5c1a8e7c7b695350937a4fa15b833818077dbef90591837c28efaf99dd2eaeaf",
+      "manifestHash": "sha256:85f9d37994d4a68dacfffc43dfaf9cb017bb843430a49f658b98a5366f0725cf",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g2-p3.json",
-      "decisionEvidenceRef": "sha256:bcd4f79ab25366f5e441669861fb970bbc08beb53870e842f010aaf8d57e6ec5"
+      "decisionEvidenceRef": "sha256:b2a1c7e10798bc8b1b140f14a3244f8bf3e590e1f127fc11b032ddd73fc7148a"
     },
     {
       "shardId": "f-b3-p1",
@@ -695,13 +695,13 @@
         "candidate-fb6db434424460a4"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b3-p1.json",
-      "manifestHash": "sha256:9798bb1460e8df21ae476b1ed35fb38fc4aaf7c07ae35b89c512845297c13e80",
+      "manifestHash": "sha256:3176b51d8abdc241aeae1165b9dd79f51e1a8d6c7b7a8b0c732fb334bb66c8a0",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b3-p1.json",
-      "decisionEvidenceRef": "sha256:ee825be15d778db114a368681856002cc1f455e469239ac8df50469ba94a5bfc"
+      "decisionEvidenceRef": "sha256:d80cf2b908f9fe33e328e689c977622efc6ca7795a76de6c0998bdbb5a5b0bf5"
     },
     {
       "shardId": "f-b3-p2",
@@ -709,13 +709,13 @@
         "candidate-fb6db434424460a4"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b3-p2.json",
-      "manifestHash": "sha256:bcd6e399cb9a143490842dd1e60b4ba091c32e46566cc0a3bf1c660c94560460",
+      "manifestHash": "sha256:d88bb2e504ff343e83907ce48254518d702bf6c9d34225604e6752c939307bdd",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b3-p2.json",
-      "decisionEvidenceRef": "sha256:a57a777d27a73a69f3fef7056b7635e7e0c9a44a9a58c90e360b355bd4eee44e"
+      "decisionEvidenceRef": "sha256:8c09886e68e7beb7ba511ad9f3c5249137a7ce6fedf96a95fa519e3c95662f2e"
     },
     {
       "shardId": "f-b3-p3",
@@ -723,13 +723,13 @@
         "candidate-fb6db434424460a4"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b3-p3.json",
-      "manifestHash": "sha256:38f70846a31d67649ea608701b5a92bb0a8875d7de22d93ec221e9c88c3c57af",
+      "manifestHash": "sha256:5c81c9d21d65e4bce00b5c066d8aa83cd357c12b9e2b2b7a90985f8263a39790",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b3-p3.json",
-      "decisionEvidenceRef": "sha256:f0d5a9f1094d83000dd1654d0f1dd3167b7521d78773f3ae42aed505547a016a"
+      "decisionEvidenceRef": "sha256:d14112e6ab3b7a45ce1862f919f6a9d89e32e92feec853ea0d22fde05541eab7"
     },
     {
       "shardId": "f-c3-p1",
@@ -737,13 +737,13 @@
         "candidate-4d0915a0786a930d"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c3-p1.json",
-      "manifestHash": "sha256:92dd68f3a41900ba3bc55a58ff90397592b08d37e499b244802f54913421f54d",
+      "manifestHash": "sha256:6e0c0d0758b733d6c0060bfeb08ac5f027bae9fbabec3a884ee9ad10040e997d",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c3-p1.json",
-      "decisionEvidenceRef": "sha256:c44c89a228ace8661be24338ddeef11e3faac866a5945ddd99ddb845971aade8"
+      "decisionEvidenceRef": "sha256:bfb5081145299a010e9837973e7dbfc8bcdfce3a9d999ed8c8d97675077c9a62"
     },
     {
       "shardId": "f-c3-p2",
@@ -751,13 +751,13 @@
         "candidate-4d0915a0786a930d"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c3-p2.json",
-      "manifestHash": "sha256:e4d594146b457730c4db9272213e5821eeb3b56bbb8380dddf6b2e4d44019391",
+      "manifestHash": "sha256:0d9e2af0c163a6a23389c14a3caf40103ec835b82ff13306bb4587743d73720d",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c3-p2.json",
-      "decisionEvidenceRef": "sha256:18430886d99f9c5ad8938459973d09223e3e3ffcaff0382d0c2b5ae138127ed0"
+      "decisionEvidenceRef": "sha256:a0f009c64c85a4138e7c912abab9b5798aaad4f1b3d004edcf3e79e3d4fc9ea5"
     },
     {
       "shardId": "f-c3-p3",
@@ -765,13 +765,13 @@
         "candidate-4d0915a0786a930d"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c3-p3.json",
-      "manifestHash": "sha256:5dec18342b4a9317afdb13fe0b1ca26b1aa11f1a1c9c25d2cb67bd9889dec3dd",
+      "manifestHash": "sha256:c91e60e5c61639e896bbc428fb6d1cee6a87f606c4972750c1bb491e11d3a551",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c3-p3.json",
-      "decisionEvidenceRef": "sha256:589937ec4cbaeabf429f4ca15e1c8e8d25a65e65f0f93b39e3dd9cb6b0a82671"
+      "decisionEvidenceRef": "sha256:f2cb7a4a81c6b4679674ea99cfaf7bcd0e7a5fbbfde998f6ce17570b81c0d534"
     },
     {
       "shardId": "f-d3-p1",
@@ -779,13 +779,13 @@
         "candidate-43c67ad5a5bceff1"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d3-p1.json",
-      "manifestHash": "sha256:837325ee65917715e402100876149f318f0728a792755b095b1b19aec34e7a38",
+      "manifestHash": "sha256:d535fdeffd724b6d8a6d7e5b4f9b4b850d3493db7617e2782ad3bba1b66489c5",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d3-p1.json",
-      "decisionEvidenceRef": "sha256:c6dff1c47319be4e82452fcc3cba133a5aaca67dac8d74660e8529d56d0773d6"
+      "decisionEvidenceRef": "sha256:36703d56850768ea2c1756a6f703c938e1787027054009419f8d4b54d5f5a682"
     },
     {
       "shardId": "f-d3-p2",
@@ -793,13 +793,13 @@
         "candidate-43c67ad5a5bceff1"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d3-p2.json",
-      "manifestHash": "sha256:a4f2292a4475f70748b658785fd07c57d4d7b94d500a59edf848d680f035b4ff",
+      "manifestHash": "sha256:ee244387710ec088d6cee73a0cea5147f4e583e9e7ed086ea74e2153d6404c38",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d3-p2.json",
-      "decisionEvidenceRef": "sha256:8a985fa1676c5eec5c932c9ee0dd25a5db5348d5328fe262d35eacf7cf05e356"
+      "decisionEvidenceRef": "sha256:7300cc247a57087c7835c0d65129953c795df89b954a390cf4bf56b09d8e6dcb"
     },
     {
       "shardId": "f-d3-p3",
@@ -807,13 +807,13 @@
         "candidate-43c67ad5a5bceff1"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d3-p3.json",
-      "manifestHash": "sha256:5b875749d055132da375dc4795009b1ced2ff0157abf9723a538d6523d3b7c34",
+      "manifestHash": "sha256:b3b24aaf3e86c108d0483d0902c62042e7837783546151a7dd3ca2d6f3d423f8",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d3-p3.json",
-      "decisionEvidenceRef": "sha256:39d2ffe57a8c00cc50b31ea9d04578af981acbff1ea882971e30ab6a03ebe2e8"
+      "decisionEvidenceRef": "sha256:2b1613a2792bcbd94778539026f0efb9c37d22ef612103aadf7637c68bd452dd"
     },
     {
       "shardId": "f-e3-p1",
@@ -821,13 +821,13 @@
         "candidate-6cd5a40eaa336e4a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e3-p1.json",
-      "manifestHash": "sha256:713454251c668e47b6ba927d86eb5e3ecfb151eea3158a1ec15d556d725a2843",
+      "manifestHash": "sha256:cbf8ec982999f8b269938e1ed3e8a9b2c044e1fbedf2b25e0d35fa887d0ec635",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e3-p1.json",
-      "decisionEvidenceRef": "sha256:72502e0dd3a4dafdb194eaa259f0a7eac0269c6cd2ad634c6a0449a25bf141b6"
+      "decisionEvidenceRef": "sha256:8460679bf3816b1789c7b9022f3ae4083712630c9cd7305d905017db5aac4977"
     },
     {
       "shardId": "f-e3-p2",
@@ -835,13 +835,13 @@
         "candidate-6cd5a40eaa336e4a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e3-p2.json",
-      "manifestHash": "sha256:9e20bd50cfd775c6ec6b9f4e64e5ff91aee014991f921b8a0e879c81704fa712",
+      "manifestHash": "sha256:40b1ec252855d7135d7b21dd7246d6ee827624adac04837e52cfac412d2a4ff2",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e3-p2.json",
-      "decisionEvidenceRef": "sha256:c1ef8b806d5b586438256cc94452ca73e0a30d75100968014bc89ab7ce0e6f32"
+      "decisionEvidenceRef": "sha256:82668d468508b89817a9134203e5c1252216b1203af91fdd774578df7faaba51"
     },
     {
       "shardId": "f-e3-p3",
@@ -849,13 +849,13 @@
         "candidate-6cd5a40eaa336e4a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e3-p3.json",
-      "manifestHash": "sha256:7eee2caada622e9131470dca72fa4869bbc7fb1423293cd788e75180354cb01a",
+      "manifestHash": "sha256:e431a03541fb946928c9e69caa5cbb15ffef64208d4c1f6f63c93cbef0eb2642",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e3-p3.json",
-      "decisionEvidenceRef": "sha256:05940e98df3e4f5c4e10c251675fc042198405e0cd49d6429d0a532b7d0210a1"
+      "decisionEvidenceRef": "sha256:a9cd139e57f01a7fcc8e89fab9eebdd97bb409b44364c6eef920880a988c6ae1"
     },
     {
       "shardId": "f-f3-p1",
@@ -863,13 +863,13 @@
         "candidate-c0ae68d0247fa97b"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f3-p1.json",
-      "manifestHash": "sha256:07c4283ff4b8bd062577913591be63b4e256684cc51af4746c41d2e4a33575bc",
+      "manifestHash": "sha256:191c8d1ab56ccee16cf1d61cd9014ab7b94f58f290480c3b6faa0a4f927c81d5",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f3-p1.json",
-      "decisionEvidenceRef": "sha256:e3839853165c266533e5ac689c77893368a5cc1230d0d16d563e45c44715364a"
+      "decisionEvidenceRef": "sha256:481c3970c3798ce5db43d66a9d0fb0c7ed5777e8147a7f26348296281d878de0"
     },
     {
       "shardId": "f-f3-p2",
@@ -877,13 +877,13 @@
         "candidate-c0ae68d0247fa97b"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f3-p2.json",
-      "manifestHash": "sha256:378c167854a589a96f4f6a6c0019d09d06a087c7338f0a36c55d14a388e46ba6",
+      "manifestHash": "sha256:e14f3a5cb2f7e169fdfb0eb652c5334eb75f32a5950d57e590fbce3fb0fd4b55",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f3-p2.json",
-      "decisionEvidenceRef": "sha256:5cd36c51e19bf0a8453b4a85f3e1c8764b59ca4f35189ca4a8537aee18fe335c"
+      "decisionEvidenceRef": "sha256:3c7544c0e4a0a5a67ae5715b693525710b4563b3bfda79015ab19e79f986e92e"
     },
     {
       "shardId": "f-f3-p3",
@@ -891,13 +891,13 @@
         "candidate-c0ae68d0247fa97b"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f3-p3.json",
-      "manifestHash": "sha256:6459604cc361ef6a2431fff50cdeb0a48aad7152c93b4379f4c254d5bc572394",
+      "manifestHash": "sha256:c11390422177f25b6bfb5d7415d8d31d358daae37365ff4fc6459d0ab1c3f8ba",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f3-p3.json",
-      "decisionEvidenceRef": "sha256:4578e3278968c036e97c8fc0da92b0adfd571c2289b4249589c7e112a55ffe91"
+      "decisionEvidenceRef": "sha256:5cc7d040b683870f28b713c0314472a953e00ea7d1585d8be2adbf30239b83d7"
     },
     {
       "shardId": "f-g3-p1",
@@ -905,13 +905,13 @@
         "candidate-95abe4faa8937edd"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g3-p1.json",
-      "manifestHash": "sha256:c7842962e1f6c230c81c8f7e01074b9d6a345a14e4459cdaa2232f214bd113e8",
+      "manifestHash": "sha256:459fcbefad1ed3cba8957b6a159c1a69673db7b5cc80e561764db985ab84c612",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g3-p1.json",
-      "decisionEvidenceRef": "sha256:9d17ddf1a903b77274ce53ab295449862e83485f3aa665e03f2a39ae1f49b244"
+      "decisionEvidenceRef": "sha256:ede05e3225e50f217ce4b6160c3caca0b95deff97aea8514d8b15a2b83867379"
     },
     {
       "shardId": "f-g3-p2",
@@ -919,13 +919,13 @@
         "candidate-95abe4faa8937edd"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g3-p2.json",
-      "manifestHash": "sha256:ee2934a8e0a1625ca4d5686146d2488f7814da645ce5d4fc15d0ec0bca2c2e9a",
+      "manifestHash": "sha256:74ee57b31b9fb64c43fdbab641d569c3f2c1c004b14363ce91e57eb26930228d",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g3-p2.json",
-      "decisionEvidenceRef": "sha256:9a55e5740fce7c4a3dbe1504a5b33409c756966ba3363f9068e87ae3dd99dc4b"
+      "decisionEvidenceRef": "sha256:ad5e11298ec10000772962ff4b393cfd745babb9fec7bf2d90c8719cafd56484"
     },
     {
       "shardId": "f-g3-p3",
@@ -933,13 +933,13 @@
         "candidate-95abe4faa8937edd"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g3-p3.json",
-      "manifestHash": "sha256:e351e1a1e5c273ac8a0efa27adbd6aef865f26cf94d0bed4fadb90f19d44607e",
+      "manifestHash": "sha256:eb3f34db5002d866b238cebb6b7490951615f32a91826e26ecee009e102821a3",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g3-p3.json",
-      "decisionEvidenceRef": "sha256:cea7339c60fac968b26d9498d9ce019e3c2c284cf41567e69c72012ae11ac98d"
+      "decisionEvidenceRef": "sha256:30b81c8fbd3a7201bb2d794a0c1e398497385fecda3f2751c5221b8084973f55"
     },
     {
       "shardId": "f-b4-p1",
@@ -947,13 +947,13 @@
         "candidate-0ed4c60a2a0c358c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b4-p1.json",
-      "manifestHash": "sha256:8873c8959d2ce5dfcd1548f32ec9c662cf956194caed23112ec0249a01a5eaa4",
+      "manifestHash": "sha256:70825a7c8133b10e305c914326d2d08b95d56eee7c353daded7718ecc37196bf",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b4-p1.json",
-      "decisionEvidenceRef": "sha256:f1353b0bce2163a0cd1effb4014aa8449bec94ea7e803fe862c74db44641f289"
+      "decisionEvidenceRef": "sha256:9246d65403631b073746f5b4df70aef8556ef75e50d8f1fde37a08641074e2ae"
     },
     {
       "shardId": "f-b4-p2",
@@ -961,13 +961,13 @@
         "candidate-0ed4c60a2a0c358c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b4-p2.json",
-      "manifestHash": "sha256:69241eb69de099bc0a48a278c73eb8e1e670a4c983da0afa56db1ab42740fcbe",
+      "manifestHash": "sha256:5a22a05b228a31d422f3febae49327668138464b419a1eb6f4a2db4f3374bc71",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b4-p2.json",
-      "decisionEvidenceRef": "sha256:3c14ec5e9faa40909d7b026367ef5c8651559b3a3f53c02b202c08cd79b3c716"
+      "decisionEvidenceRef": "sha256:ba1cae4ecf9a8c8808d540517c285ff728623ef3501d26e7608eb9967a529053"
     },
     {
       "shardId": "f-b4-p3",
@@ -975,13 +975,13 @@
         "candidate-0ed4c60a2a0c358c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b4-p3.json",
-      "manifestHash": "sha256:727f974fc1ca56cb5c44449ba6d0ed10e8c06cb7361d42f390fdad7b9dc600ed",
+      "manifestHash": "sha256:fda2ff39df7363ba1c1410f3346bb3494abd61616e05106938324c5d9b873564",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b4-p3.json",
-      "decisionEvidenceRef": "sha256:90261d27d594c2104a1a673b94b484deb442641f6dca58f1d360ad32bb441a04"
+      "decisionEvidenceRef": "sha256:f0561d593b3807d265782b6e1789315e641d5673d938be102cb441c6f25c76d9"
     },
     {
       "shardId": "f-c4-p1",
@@ -989,13 +989,13 @@
         "candidate-7cecb6e2959183ee"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c4-p1.json",
-      "manifestHash": "sha256:4bb4f0561e36d21f90cfc10080a9da588f6bc3a223acb79a7f0db21860421963",
+      "manifestHash": "sha256:79dfa12d5b24237346ef5cc0f773988a9d701ef76acf50396ebeefccb73ec612",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c4-p1.json",
-      "decisionEvidenceRef": "sha256:10926dc3924d62b1b5026127e4ecc0e5fba43a3e063d0d1f40498a328c7627ca"
+      "decisionEvidenceRef": "sha256:454feb3802ce2fb102c2fc0c485ca5417bf3a0c8efcde08db6461766e22ee124"
     },
     {
       "shardId": "f-c4-p2",
@@ -1003,13 +1003,13 @@
         "candidate-7cecb6e2959183ee"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c4-p2.json",
-      "manifestHash": "sha256:c06f626d9c734a91bd3498c534fccb2c4cd6029fffbff01a1ae04c31dbd6b2c6",
+      "manifestHash": "sha256:d9f9dc405244607ef875d9ed29dc50eec6f4d59384382a8238e64721ef6f35b2",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c4-p2.json",
-      "decisionEvidenceRef": "sha256:8547b46cc02954f493b1153d22b910bad8960d0c31b389fc8aa9589cdc83614e"
+      "decisionEvidenceRef": "sha256:5d0d5308bb12445d2f4ccb0389484a8e8f523b343a3607cc369d782b0dffa58a"
     },
     {
       "shardId": "f-c4-p3",
@@ -1017,13 +1017,13 @@
         "candidate-7cecb6e2959183ee"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c4-p3.json",
-      "manifestHash": "sha256:9678c8ffe4e64f6f4b05ae7f52f3e2631fd71ba131c8b70946f1ed9b4d09551c",
+      "manifestHash": "sha256:e93cd4e06105e16018b75aebb03eeec1909b0a7bc3d3673c8f44741b979a52db",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c4-p3.json",
-      "decisionEvidenceRef": "sha256:f9e73af2409558f32f172b2c64e897a68757a3261243bd5f11cb42c8d63fe9ec"
+      "decisionEvidenceRef": "sha256:e9f39dc33fc72235a10a944b595c9dfeed96e1d0a2e50c9cfb6f79c3a9855cb9"
     },
     {
       "shardId": "f-d4-p1",
@@ -1031,13 +1031,13 @@
         "candidate-9524180fd7830ed0"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d4-p1.json",
-      "manifestHash": "sha256:13641e13d4c4ba3f9f40ea2272dd254e52a2154d9173acac171f5f2c552064a5",
+      "manifestHash": "sha256:b0973c1a7803db58d590bb47b5dd6c7e7c83a5f5410db0d8398ffc9f7f32d7b3",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d4-p1.json",
-      "decisionEvidenceRef": "sha256:7384968e49ac6315c55b82585aae6181eddab271faae6d62eb79b39bc57157b1"
+      "decisionEvidenceRef": "sha256:dc520d4859a11be9a3e25ce5395acca999fe3a04d1ee1cad62e343f9739d087e"
     },
     {
       "shardId": "f-d4-p2",
@@ -1045,13 +1045,13 @@
         "candidate-9524180fd7830ed0"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d4-p2.json",
-      "manifestHash": "sha256:ea3260e0fe20004676a1dbe967e12c745c207e1a891729d86f4b6618a8f9a86d",
+      "manifestHash": "sha256:8a5ab4746cd35fb724d9a5f873faca70fda05c0bee09b1d16529efde9a974abf",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d4-p2.json",
-      "decisionEvidenceRef": "sha256:9961a1fbf30fbfafa43dd6389b253c2900518372f0591c9aba842e0b33a17fd3"
+      "decisionEvidenceRef": "sha256:332374198425d50ccd8c51a88324de7cce713f03c12e07e19573a6701d6ea4aa"
     },
     {
       "shardId": "f-d4-p3",
@@ -1059,13 +1059,13 @@
         "candidate-9524180fd7830ed0"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d4-p3.json",
-      "manifestHash": "sha256:7d743f5a7d15c2e641b6a06c4ca3518359f93bf4974880c9cc9ea9e393b8a881",
+      "manifestHash": "sha256:d770cc0b9d945f7145f3402eea9a7e50bc474ac64cb50cabac65b6060fdc90a5",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d4-p3.json",
-      "decisionEvidenceRef": "sha256:39f211340501ff0e30f9bb015fc3d4f63f466b5bd6e952377522f534476d7f35"
+      "decisionEvidenceRef": "sha256:1b13e5ba15303b187d05f00121ff387cea87da7c5cff516232100345caef46bd"
     },
     {
       "shardId": "f-e4-p1",
@@ -1073,13 +1073,13 @@
         "candidate-acaa213758076266"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e4-p1.json",
-      "manifestHash": "sha256:b259653488d2e36634e38c671bd132ce07619a5503fdf466cbd5d84eaebc7fdd",
+      "manifestHash": "sha256:7eb9f5a9ceb17084fbe0f87e83b21559bb0ae2bae2376032532ca38cb6f31353",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e4-p1.json",
-      "decisionEvidenceRef": "sha256:55e00feb71879278793a246877b67a20f7600f1ac27ba08e3d5d613d3f0d6e1d"
+      "decisionEvidenceRef": "sha256:64d58137706d7da07e5d070716e26e8dc406a76fc8982184f367e121bdc99a16"
     },
     {
       "shardId": "f-e4-p2",
@@ -1087,13 +1087,13 @@
         "candidate-acaa213758076266"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e4-p2.json",
-      "manifestHash": "sha256:c1db866a2e5efb5172f55f8c999e577b550cd8513de25109efa7b80aeb3dd0d3",
+      "manifestHash": "sha256:4be6205831dea752407d9e0d3907aa2c73effe93a3402d12bfa3504521621105",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e4-p2.json",
-      "decisionEvidenceRef": "sha256:a29b3111f796922467521dc8924709c39f84e478d27c1e37d3ecaa3ec59c5796"
+      "decisionEvidenceRef": "sha256:2d11252d106f4743159a4fe14a394667715771c5382f087c4d3070b7ed161f24"
     },
     {
       "shardId": "f-e4-p3",
@@ -1101,13 +1101,13 @@
         "candidate-acaa213758076266"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e4-p3.json",
-      "manifestHash": "sha256:720f25394ffe5b27b670f2965fca9073f4ecf1c55e2d6c5cbaec364d8c7af6b2",
+      "manifestHash": "sha256:5d41f9a0aa16b7a29522eba7dbc9fe261a5219a76ef880d84fa43cfb3508a6ab",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e4-p3.json",
-      "decisionEvidenceRef": "sha256:8b7f1745e1a12c042ce6b560ffa78b543c2de0eef933762d009b8477d0f3dcac"
+      "decisionEvidenceRef": "sha256:22054a3c1dd8050882964e1a481515938ddfa227ab3e9a5bd676f1c6beaea9e5"
     },
     {
       "shardId": "f-f4-p1",
@@ -1115,13 +1115,13 @@
         "candidate-a4ff13b0f2eb8892"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f4-p1.json",
-      "manifestHash": "sha256:cbef69c526e94cac5adaf9a77586cfadc6f1e5a0dc416c27882a2d7c2c73f300",
+      "manifestHash": "sha256:3e6259eee4cf524c6593f7a46edcc37a0eb5b0c7e1f35fd835093f6f82cde34f",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f4-p1.json",
-      "decisionEvidenceRef": "sha256:74b25fcfe8939b905de0a08fb9efc2a6bb5d94b3390c68221e6252f421a5eacd"
+      "decisionEvidenceRef": "sha256:5333fc1057ed023c51194921bc4d1e6cc2a1e195248580788b01fcc6cad9effb"
     },
     {
       "shardId": "f-f4-p2",
@@ -1129,13 +1129,13 @@
         "candidate-a4ff13b0f2eb8892"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f4-p2.json",
-      "manifestHash": "sha256:916b74ddbb77bdc0d9ac49be248459ce7f5d1084e7a3264672db8300b739fced",
+      "manifestHash": "sha256:2657f8e66ffada8195ac0888feacd369b74e222d53d51a3ad8cd0fe25d9f831b",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f4-p2.json",
-      "decisionEvidenceRef": "sha256:39a07a18eaf78f59a0677ec32aee75d3b7a1bf5a8082557bf8b90b79dd86708b"
+      "decisionEvidenceRef": "sha256:6308e936e7dfbc56ff29893ffe2fff559f2d95710b0019375146783bdce40771"
     },
     {
       "shardId": "f-f4-p3",
@@ -1143,13 +1143,13 @@
         "candidate-a4ff13b0f2eb8892"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f4-p3.json",
-      "manifestHash": "sha256:45050a7273091c9b7c623d24c76b799b1c69f98163de0369434d08e6c4e47037",
+      "manifestHash": "sha256:7ee97caba2b319d6c12f9693ec0f48e51da54f9e9ba4dcc9b7032f3a06c8b084",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f4-p3.json",
-      "decisionEvidenceRef": "sha256:a4001476ea215774e3271fef8ff8b7d7f2e93c858836996760a92a975107ef90"
+      "decisionEvidenceRef": "sha256:d1295a59400a240d9f07c2a62f4443f4695bb68cf068c1415aa27584c4910b80"
     },
     {
       "shardId": "f-g4-p1",
@@ -1157,13 +1157,13 @@
         "candidate-1efe14b8000912a6"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g4-p1.json",
-      "manifestHash": "sha256:5d06d34d8d18c2472d37cc12f5950085e7a6d248745d3e990bb797428b8ef40b",
+      "manifestHash": "sha256:d0d2ad6b03578b93ff17ba35b597568297aa039c573e8d3af48b33ec42a91890",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g4-p1.json",
-      "decisionEvidenceRef": "sha256:939999ea7ca4de36543357a87a0bb4ed0aec88350cb88c8f6c6474ebef470789"
+      "decisionEvidenceRef": "sha256:2c864d3808644de212f9f204b766bbbed268a5974ac29bc69ccc9d6b9d8c3a7e"
     },
     {
       "shardId": "f-g4-p2",
@@ -1171,13 +1171,13 @@
         "candidate-1efe14b8000912a6"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g4-p2.json",
-      "manifestHash": "sha256:268ec814c1b8055e290957b17002066ae829e27b1784efa42f71de181b4cce71",
+      "manifestHash": "sha256:08ffc4f52a562b73498e60b1109d727b706fc8cc0f0395782163b5aa926d4a4e",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g4-p2.json",
-      "decisionEvidenceRef": "sha256:a0818e07ef1cc652a3fe54d52384308a5f204ccd1a3c83bf8ba7f14ef812e4c0"
+      "decisionEvidenceRef": "sha256:af30b9f5d6096978a30fd8d331014f77cdd440ea0adbb59d3432eb848ab17d57"
     },
     {
       "shardId": "f-g4-p3",
@@ -1185,13 +1185,13 @@
         "candidate-1efe14b8000912a6"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g4-p3.json",
-      "manifestHash": "sha256:6a653df0725aa50f95ea5fa1dce4f004dd86448786023529d84bb0eb2ac243ef",
+      "manifestHash": "sha256:128b82392f50f74a2a10b09be60ee0410570afbc9cb68ca552eb2c405f069680",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g4-p3.json",
-      "decisionEvidenceRef": "sha256:072ae487fc4b79fce216d4df1c1145b0c69710fd93d4eb9ed0cee222d9305cd2"
+      "decisionEvidenceRef": "sha256:d7d9489aa948bf3aedd4d5900ac816018fb973df41df248d5047f4d44d2c548b"
     },
     {
       "shardId": "f-b5-p1",
@@ -1199,13 +1199,13 @@
         "candidate-2bcf5e26feb87468"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b5-p1.json",
-      "manifestHash": "sha256:924fecd8df32ba84f634d8be2502ea52f69d73431b47eca9937445c238c6f4b9",
+      "manifestHash": "sha256:d03ef9a40fdc087119656cba9638baa485b597880f94455db0bb1bb408e97893",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b5-p1.json",
-      "decisionEvidenceRef": "sha256:3bf6410d64ce75c7385004784c2a020c84d120fac8631009eb5742cc324247a9"
+      "decisionEvidenceRef": "sha256:8252aaa4a176e66c0d0db7e022ebc4eea323661e69b4d7d117d47159d71f27d8"
     },
     {
       "shardId": "f-b5-p2",
@@ -1213,13 +1213,13 @@
         "candidate-2bcf5e26feb87468"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b5-p2.json",
-      "manifestHash": "sha256:193267dde8e6b3fbd181710154d98525ea8bf5ec78d61093c892c57a6c8f1d38",
+      "manifestHash": "sha256:9d8838aa1c8313cade3c545bb83221d6771c71c2403e2d1922e4ea196a304495",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b5-p2.json",
-      "decisionEvidenceRef": "sha256:b8462e0e8be0647b35603934d369937a5f8235b49acad424da4b21d3d2c6259f"
+      "decisionEvidenceRef": "sha256:52be108dd68d10de478ccf2ba4633b4b216b84c7c2d165167cba5d7d9bbaa0fc"
     },
     {
       "shardId": "f-b5-p3",
@@ -1227,13 +1227,13 @@
         "candidate-2bcf5e26feb87468"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b5-p3.json",
-      "manifestHash": "sha256:388a01d97eb999a5a4c3f81ed335d3f403d747d1f543536a8ea9705f97a6b2dc",
+      "manifestHash": "sha256:2087c6b4cafe6e6a6f4f7707d36004975ec87cdb16fbf57072764b334678cacc",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b5-p3.json",
-      "decisionEvidenceRef": "sha256:3e28ea7abeaaa23c37eb02384ff92abd7b3a917e07ff7ab0ceba4e663118c8f1"
+      "decisionEvidenceRef": "sha256:bd910521b12ae89ace18f5e4034430b38a9a0717e468b2d9e3b9c9e5e04894d4"
     },
     {
       "shardId": "f-c5-p1",
@@ -1241,13 +1241,13 @@
         "candidate-774d675df0d85f33"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c5-p1.json",
-      "manifestHash": "sha256:b676907365dc8e4736836ba80dcd62595ccd70ce5bc70197b98b06be67af909b",
+      "manifestHash": "sha256:384ecb05c684148400ca18df769027930242e51a26f07c30eac7074d56fcfabc",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c5-p1.json",
-      "decisionEvidenceRef": "sha256:da25d7bb1165d2fd82c6639017ba745403082f9fa2a2a03b1bc56127091ce5df"
+      "decisionEvidenceRef": "sha256:dd70a5d10ab4852a400998631c8a4f6f178d55c7e468e6e8c6f335e0724cfcb2"
     },
     {
       "shardId": "f-c5-p2",
@@ -1255,13 +1255,13 @@
         "candidate-774d675df0d85f33"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c5-p2.json",
-      "manifestHash": "sha256:a3dde76065b2e46e2b3f778dd1c21e738c812e1f241e526b913ac298d7af8242",
+      "manifestHash": "sha256:05b8c6af9e7d06a7b108535037deeaa1d7276041dad2c25a94ba80e18d0086f1",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c5-p2.json",
-      "decisionEvidenceRef": "sha256:735f2858bb943d75a368f9437702761d5d5b66d36334a8b32ea3f4c61709bb72"
+      "decisionEvidenceRef": "sha256:4c5dba05292ebe7af710903cefa2217f6bf0673fdde5c339f1aed9a09d63aa45"
     },
     {
       "shardId": "f-c5-p3",
@@ -1269,13 +1269,13 @@
         "candidate-774d675df0d85f33"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c5-p3.json",
-      "manifestHash": "sha256:456d8d8bab01624d928adb10396dc3962e88c3773d4d348275738cae8b461820",
+      "manifestHash": "sha256:6a1c834f9868961d9fe31208e6b7219fe756cee42ac413f59b271d8e897bf7cd",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c5-p3.json",
-      "decisionEvidenceRef": "sha256:6091f43f7700202bb0019f3518870a0944cb8fcdf58093571eafb96ef4de1970"
+      "decisionEvidenceRef": "sha256:096f9444eaeb2bfc1f13db5c57a52a0368281bb5d6d9341687f061e2faa1c5a1"
     },
     {
       "shardId": "f-d5-p1",
@@ -1283,13 +1283,13 @@
         "candidate-07899540b1d0c4bc"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d5-p1.json",
-      "manifestHash": "sha256:e6e97aabe7c2bf2b1f5dff9783ec8167d8434ed42ec619f646ae814201b2f97f",
+      "manifestHash": "sha256:6611ffa602e2a41796190d81941bb885329faf62d34d7cf2cc375c637c0e7816",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d5-p1.json",
-      "decisionEvidenceRef": "sha256:0f05e3c03224a87d43da00848a3adc6a7b0b812ab9fb886cd3bd4d60ccd15e7f"
+      "decisionEvidenceRef": "sha256:ae25c6b344575368b1c1cb2eec29beee95d75e11d5a50008d54c582d148b9386"
     },
     {
       "shardId": "f-d5-p2",
@@ -1297,13 +1297,13 @@
         "candidate-07899540b1d0c4bc"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d5-p2.json",
-      "manifestHash": "sha256:de17345fc3fabe95762b46ba37bf723033346036caa9044c6f87a02d3bfdd79c",
+      "manifestHash": "sha256:7413187b1f960d92e40f01437d878b6930cbb4253f5f55849b3b481c69ad77f9",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d5-p2.json",
-      "decisionEvidenceRef": "sha256:59c1ed20bec7a4622d26d648dd81fb4c271704706e6b55b664cf48ecb89cfe30"
+      "decisionEvidenceRef": "sha256:a100ef5eb7be012a11eeb9db26b34d6f649fb66747a335cda34f123aee36635a"
     },
     {
       "shardId": "f-d5-p3",
@@ -1311,13 +1311,13 @@
         "candidate-07899540b1d0c4bc"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d5-p3.json",
-      "manifestHash": "sha256:dfd7c14450a5c27c50aeb8b2627375e73bec8a51c89718257b5345c27c1d8252",
+      "manifestHash": "sha256:a3a4186404fc6e64bc285a9d889d501a3785ab22cfd861a53437f77c92e7393d",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d5-p3.json",
-      "decisionEvidenceRef": "sha256:18e93aefdbb4097b40e540604038cbdac4a302581c840cfbfa954c804f7f135a"
+      "decisionEvidenceRef": "sha256:63706988fcbdbba3f5929cfcbd2f5492a71dbd56d3338ebfa5edc576ce0c657f"
     },
     {
       "shardId": "f-e5-p1",
@@ -1325,13 +1325,13 @@
         "candidate-e6de6a1f3d09004c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e5-p1.json",
-      "manifestHash": "sha256:99ad0c1d38394e6cd48ac2d8a6fa0958da8743c8181dc6eae62171f2a32fd353",
+      "manifestHash": "sha256:f9bdb72c32b90d8bf290f99aff3447785a82f201e3c249245031d3ed76a8ebb9",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e5-p1.json",
-      "decisionEvidenceRef": "sha256:061427c369ce515cbfa53ee62337dd49a1536eb02a2da21b6b951e5c6abdbc29"
+      "decisionEvidenceRef": "sha256:01813f67473b1d0ee6b68ab54cdd51697ff9553bbd5cb89d5ef32a1db4414638"
     },
     {
       "shardId": "f-e5-p2",
@@ -1339,13 +1339,13 @@
         "candidate-e6de6a1f3d09004c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e5-p2.json",
-      "manifestHash": "sha256:becb62fbaa9adadfb9ba832d5fb9c568ee523122e4acf57271ba1014f8508f08",
+      "manifestHash": "sha256:b698eedf5389c41497e1e11f5d70fdcba5d8bac756cbf8dcbaa304077da01a98",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e5-p2.json",
-      "decisionEvidenceRef": "sha256:e12d1588252fd64adb7778133dd6cf7a4d08191e4d94744c5698f6ea30c5530e"
+      "decisionEvidenceRef": "sha256:4c0875d78f8050c55ada8b72de24758473f204c1e2991ffda958994a71821725"
     },
     {
       "shardId": "f-e5-p3",
@@ -1353,13 +1353,13 @@
         "candidate-e6de6a1f3d09004c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e5-p3.json",
-      "manifestHash": "sha256:26f2787358ff20266ca32ba5eca9421a25db26aaccb0864efa7015e2897350fe",
+      "manifestHash": "sha256:e142daf731ee54dc6e7e72582e55553ff5163e2a5598ae0ded5edb1fdde6e345",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e5-p3.json",
-      "decisionEvidenceRef": "sha256:4d101d9a4e99efe2894ea5d991621bb5c1a4286e05af319b512260e390334019"
+      "decisionEvidenceRef": "sha256:b3def587718c83395bf719be85d2fe13b785a5b450ebb55d0659525245220bd2"
     },
     {
       "shardId": "f-f5-p1",
@@ -1367,13 +1367,13 @@
         "candidate-4b517e6355726ef5"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f5-p1.json",
-      "manifestHash": "sha256:43c40d2f571c501988d51885e517394cf233d4d873b75316ed7eda9e432e3cf6",
+      "manifestHash": "sha256:3d41a620919db5fa6294d8ff314024b77af84eaf9ea4ccb9beead555193f2e72",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f5-p1.json",
-      "decisionEvidenceRef": "sha256:1324e28c941e6b6e0db6ee976dc6c0902c02829f052294d10acc45e8b0664f72"
+      "decisionEvidenceRef": "sha256:067636f3011575f353fdd83e660854cadf8e7c80fd4860fb5ef94cf91410ba67"
     },
     {
       "shardId": "f-f5-p2",
@@ -1381,13 +1381,13 @@
         "candidate-4b517e6355726ef5"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f5-p2.json",
-      "manifestHash": "sha256:be92e131095f71e99f4c622a3f68058d079b32b86ace5b8b8ca166ede6e9a8d3",
+      "manifestHash": "sha256:852e2b06349450c0b481c518ee7e63b7d3d1e8edf24f77c7028ca262f5530530",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f5-p2.json",
-      "decisionEvidenceRef": "sha256:ae0040c0f06abf0acafdb5eef81a301113560c72d03c6ac21a6211ef420cb8ab"
+      "decisionEvidenceRef": "sha256:e5ab24a9142fe348150874494814dc9449587565f722aa92c82edb14b4010b44"
     },
     {
       "shardId": "f-f5-p3",
@@ -1395,13 +1395,13 @@
         "candidate-4b517e6355726ef5"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f5-p3.json",
-      "manifestHash": "sha256:46f0337a6faefa39b8d39dc25ed9ea106203fa2e5d732e112f8d4c96bfd18450",
+      "manifestHash": "sha256:dcba83f5342ae0c36f2ff017e6dccd17d4c983be56574b2a4d66ea5b7c1f0ead",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f5-p3.json",
-      "decisionEvidenceRef": "sha256:b9f4d46bed9487a3a91598ba7631c7f5d7073999fbab0406234f6cbe6535c4eb"
+      "decisionEvidenceRef": "sha256:805fee379c8b2281bd96a859405ab0a4be0323cbb820b38764fe2dc67b10f81f"
     },
     {
       "shardId": "f-g5-p1",
@@ -1409,13 +1409,13 @@
         "candidate-4b6afcb498167830"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g5-p1.json",
-      "manifestHash": "sha256:72934e5ccbe8e91c113c8da03b93ce74514780111f069666afb131f7571b5c0d",
+      "manifestHash": "sha256:1351d4b4036e0855a6646ac4d7e3b546b0417762d2398ac838415e76ad5c0b60",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g5-p1.json",
-      "decisionEvidenceRef": "sha256:fbabc70ac8bcd499efadbf4ba51b87bc749b28daa7d18e1607f73b0757badbc5"
+      "decisionEvidenceRef": "sha256:d256a6710e3e6a7e6889ead3a4147192c311f3a41f759c41d6bce55fa9f7ea3f"
     },
     {
       "shardId": "f-g5-p2",
@@ -1423,13 +1423,13 @@
         "candidate-4b6afcb498167830"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g5-p2.json",
-      "manifestHash": "sha256:016ffd1994eda1b5d6dcdfca8d7d8b9c178af8c07dc2f8ee56a7576604e0cc70",
+      "manifestHash": "sha256:a5a44f6c263471c1b3e641fc95eee49e4bf6c84afbf176ce88c683f23664da4d",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g5-p2.json",
-      "decisionEvidenceRef": "sha256:e23a714dcd89f46b1121e0442752a844a8d504424a282960156250f17c81ba57"
+      "decisionEvidenceRef": "sha256:0de9d4fdf6c9b2547e4e5f32ea80458f5acd6d7c6c39679db9ff741ffc8d3bd4"
     },
     {
       "shardId": "f-g5-p3",
@@ -1437,13 +1437,13 @@
         "candidate-4b6afcb498167830"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g5-p3.json",
-      "manifestHash": "sha256:1b9e19e75ddda3744e2262c5a532d11dc097241f2dc0b33b5d27ca2c259d67fc",
+      "manifestHash": "sha256:ff2f67587854e0076c822645fc9f9321c52834890e9df6ef3c6a4f637ace2790",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g5-p3.json",
-      "decisionEvidenceRef": "sha256:f255242d5d079b5abff1747590acf61b9ee8df48180d5b559d5eb1ec77c60e3a"
+      "decisionEvidenceRef": "sha256:1e7e0edfa3b90feb2b8ead93e55a20cd776d049157fa3bc9739e192bde686855"
     },
     {
       "shardId": "f-b6-p1",
@@ -1451,13 +1451,13 @@
         "candidate-27cd5fd027a411d3"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b6-p1.json",
-      "manifestHash": "sha256:ba319742278d24fc0e3f80cd0b2f13a33a2bf05b0e8b811bbc7c8b4b722bd535",
+      "manifestHash": "sha256:a7d2acf104490edaca62f1b721b6be622aaa02ced188cec29a89ff764540123b",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b6-p1.json",
-      "decisionEvidenceRef": "sha256:264576790a0115fb866580a80213b087f6c1818d689382ddc0de8de0ffc85e1f"
+      "decisionEvidenceRef": "sha256:eccbf8cf6620a891088083d1a007ec18f11f5ef9e1216da440d192451cd3faa5"
     },
     {
       "shardId": "f-b6-p2",
@@ -1465,13 +1465,13 @@
         "candidate-27cd5fd027a411d3"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b6-p2.json",
-      "manifestHash": "sha256:eb1ded1f33fa0d5da9c0f97bc2ee9524df1fcb1be88b2ba1f93ca6a56a73673e",
+      "manifestHash": "sha256:ef7d607b358a81dd0addd77d8f8dbcb75b3de560c6c342fda12637a7c422d60b",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b6-p2.json",
-      "decisionEvidenceRef": "sha256:5f21a2a44b4906e63f2b9bd4a0cfe60c14bc80e9961bfe2225c24ae54e3a081d"
+      "decisionEvidenceRef": "sha256:be633d641dc76e5a0c8a78a509a5681c8d3487563bd27c95244640c359f7209f"
     },
     {
       "shardId": "f-b6-p3",
@@ -1479,13 +1479,13 @@
         "candidate-27cd5fd027a411d3"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b6-p3.json",
-      "manifestHash": "sha256:9eab8ae2bdb197ed9bc5117c16e1a2fe7bb15102a98ccd44c6700324bc523c06",
+      "manifestHash": "sha256:a1d1b938cd6d3f062957961f968eee2e441b878ae143026fbfc2e01ac5e4c746",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b6-p3.json",
-      "decisionEvidenceRef": "sha256:89bb034943817e9a491f49d921f9f9754a73f45d7d565aec960e8ffcfff1bbde"
+      "decisionEvidenceRef": "sha256:e227f6483a2399ae7bdee7ddc8f1529eaf39ebda361cacf037f30916cdf57875"
     },
     {
       "shardId": "f-c6-p1",
@@ -1493,13 +1493,13 @@
         "candidate-6ed7448dff5c54fa"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c6-p1.json",
-      "manifestHash": "sha256:525aca0a189d77fe0d6eee1f2bc5674b0128d3cbb89827ee44a835fa47a004af",
+      "manifestHash": "sha256:0d34a50fe52f31b3d98cc1e612f4214beb7f3613800f649abc066cf86b654bc5",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c6-p1.json",
-      "decisionEvidenceRef": "sha256:265a45e043c5a48c0d5052a88145fb5a625dc126f7304d81f21bffbe14d45c0e"
+      "decisionEvidenceRef": "sha256:60a60f0cd81127e72e2eaace7fafc6ee4b87b16b7a88280afc43265b116a8798"
     },
     {
       "shardId": "f-c6-p2",
@@ -1507,13 +1507,13 @@
         "candidate-6ed7448dff5c54fa"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c6-p2.json",
-      "manifestHash": "sha256:800b03e90c8143676f0af0b538997d7f8934e1ea8f12e4897b7a2de3a19f6a43",
+      "manifestHash": "sha256:b5b25cc8c82e5c8cbb9b4ae8f81ed8f2fd2c4f28896e91eab4e4cbab1561c598",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c6-p2.json",
-      "decisionEvidenceRef": "sha256:e42f522258a1720c142f127a99b5b3fdaf83659ee1fc7a72251fe3d5576c9453"
+      "decisionEvidenceRef": "sha256:bbb557c37c19bed0b2272d42a656f3bdf2954acf6407d634e279f2e6af096d50"
     },
     {
       "shardId": "f-c6-p3",
@@ -1521,13 +1521,13 @@
         "candidate-6ed7448dff5c54fa"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c6-p3.json",
-      "manifestHash": "sha256:e1bca5263af5f06e80db6fe37b9bc403bce007e5f1b3f5bcf4a2a4988876af97",
+      "manifestHash": "sha256:bf59dbae755d9d5272d65aa7d2f44aedc76a57658685887c0d3c04ac52945be8",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c6-p3.json",
-      "decisionEvidenceRef": "sha256:a2ddf3747563d936a19a7465057f7f5eabaedeeb1661b5c25577f7e92a4d9f8c"
+      "decisionEvidenceRef": "sha256:83beee8e349ab860ee962ca98a6a0f18dbc4c8cfee4b8be9a5aca76d96976533"
     },
     {
       "shardId": "f-d6-p1",
@@ -1535,13 +1535,13 @@
         "candidate-90b4baa7179b5279"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d6-p1.json",
-      "manifestHash": "sha256:6f1d85ce1daef2b9bc3902fe8956463d5cf3e51b3e2a715676c776af1930c8fd",
+      "manifestHash": "sha256:abdcf39c2d03e21efc22f318f1c545ff5533e10dbf1737d60bf9779a382bf82e",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d6-p1.json",
-      "decisionEvidenceRef": "sha256:eda8f2aa8a0253c5c871f69a4bbba67ba8b74958b64fe4b0026061ff1499344b"
+      "decisionEvidenceRef": "sha256:9f61b99ebcd6581fba50c4dfe2633a24c8e5c8b97c833f446b24120f9e42a256"
     },
     {
       "shardId": "f-d6-p2",
@@ -1549,13 +1549,13 @@
         "candidate-90b4baa7179b5279"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d6-p2.json",
-      "manifestHash": "sha256:adacf74c0010d08974b7cdc3ffd71800684d3e57a0ef6ae385cf75ded48f94dc",
+      "manifestHash": "sha256:a502f51b9480b483bacf63aa06116f18fad26b2315e5fbaa3aaff397c40ca948",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d6-p2.json",
-      "decisionEvidenceRef": "sha256:2b8fa3d7887142d14f41aa2584270fb11687fcd0c33110d078972ba430aa98cb"
+      "decisionEvidenceRef": "sha256:26d9b28acd2033ae9f5d0436a4aa9336c2f99b6f1e8fc3297af7106563b4644b"
     },
     {
       "shardId": "f-d6-p3",
@@ -1563,13 +1563,13 @@
         "candidate-90b4baa7179b5279"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d6-p3.json",
-      "manifestHash": "sha256:1d4e4272a02a207257ea673d81a88085f82a61b577790432c81db5c7d121918e",
+      "manifestHash": "sha256:39211ca89c5f109ba05bbbcfaa9da8424e3c24eb9d6a014d63e282296544129c",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d6-p3.json",
-      "decisionEvidenceRef": "sha256:a5f0e2c1de791460842d81138772770e69b523df5b82776a14a486546ba97108"
+      "decisionEvidenceRef": "sha256:236c1025c448f2e0f0797ae833e7e5aace98bae0d0af6d8281dc339476620d75"
     },
     {
       "shardId": "f-e6-p1",
@@ -1577,13 +1577,13 @@
         "candidate-9a42f63bb8ad501f"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e6-p1.json",
-      "manifestHash": "sha256:3caef827a4fe9e6c24887c42646261370aa936708f289ad867844d890f487e3a",
+      "manifestHash": "sha256:5aca7171613835b7e201a368c3f89923888f9bd3de7e9ec69ab6dcd14d78f612",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e6-p1.json",
-      "decisionEvidenceRef": "sha256:33d5211040716c45b0d1e45d638e9f85cc4968cd3d51498ed51954f603ac2749"
+      "decisionEvidenceRef": "sha256:f9b0394ada5592d24cdbd9cb5624b87cfc0f7a9b601a67ed002aab3db50ba3fb"
     },
     {
       "shardId": "f-e6-p2",
@@ -1591,13 +1591,13 @@
         "candidate-9a42f63bb8ad501f"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e6-p2.json",
-      "manifestHash": "sha256:3aeb9757ab5be4bbcd5d8ff4fd3fe62e44242116cfabc8eeaa9919d311bcd7f3",
+      "manifestHash": "sha256:0210c7d2c9da7363405a8f688e38dd189e1647255a30f8551c1b818af8f7cac8",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e6-p2.json",
-      "decisionEvidenceRef": "sha256:d3ab14b67f1388f678b5de071904ebd38db448d66c8726282e71243c0377970f"
+      "decisionEvidenceRef": "sha256:66b9b069d8bc9be91dc98a63338a45b3901ff80fb793a1719b4eaa698325b3ca"
     },
     {
       "shardId": "f-e6-p3",
@@ -1605,13 +1605,13 @@
         "candidate-9a42f63bb8ad501f"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e6-p3.json",
-      "manifestHash": "sha256:23ca488434e88a25461ef58ff7b46bbf0ad08206186f5a1fbf524dd8ebdcb361",
+      "manifestHash": "sha256:7385391f69d3aa8e92d4dbd892db60cb3a0f1baea26774e4f562398351cca87a",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e6-p3.json",
-      "decisionEvidenceRef": "sha256:31812ccdfdc727fdeda718314f48fed5e6c93ac00da8a20c543fc650f30181ae"
+      "decisionEvidenceRef": "sha256:d56422c27769ce4ceb6bed11bc813887975dd847c52750c66dcd095e934c0c51"
     },
     {
       "shardId": "f-f6-p1",
@@ -1619,13 +1619,13 @@
         "candidate-5705c044b67b60fe"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f6-p1.json",
-      "manifestHash": "sha256:8935b631ea1a2ede9f44998417eb3eac459a3cf4ac85e0cf2d232fe2a1b2b743",
+      "manifestHash": "sha256:dffe63e1b4f1115e50bb62ce6b7f184008997d7e6b623da6369330ac1653e7e1",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f6-p1.json",
-      "decisionEvidenceRef": "sha256:017567b30f19c779072bfdb53cb3b0cc7a6cb49598a4dbc41e1c68133c72a23e"
+      "decisionEvidenceRef": "sha256:c2ffbcf5490746d2e5ac4be2752f5ada3cbf7a960c429cda55e73a111237ff09"
     },
     {
       "shardId": "f-f6-p2",
@@ -1633,13 +1633,13 @@
         "candidate-5705c044b67b60fe"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f6-p2.json",
-      "manifestHash": "sha256:eee56b6d065825d1303bb6fd2f70853e7a71b65133070e048b6d00da7e1afdef",
+      "manifestHash": "sha256:e99bbefae1dd3d53b907db2aa64121fe712d159918a2c0af4ae4565e23617122",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f6-p2.json",
-      "decisionEvidenceRef": "sha256:8997d8deb62dd475d7bbb789ae349b508aafff27ac33647585d254e813838f0a"
+      "decisionEvidenceRef": "sha256:2ac5e3968895f69927e53ce0ba71a882c9bb856707214e3f4ad3680e32b1df7e"
     },
     {
       "shardId": "f-f6-p3",
@@ -1647,13 +1647,13 @@
         "candidate-5705c044b67b60fe"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f6-p3.json",
-      "manifestHash": "sha256:8d6d290f45af2620a4a293471e74591e76685536c316412892a553098b92d382",
+      "manifestHash": "sha256:6f779959e57538e037bc4b57b0ec2cee82af260531716b0eadd1bb2729b6ac29",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f6-p3.json",
-      "decisionEvidenceRef": "sha256:790895cff2b1248a96224979ea3e6e6f7bc9a72c7399af81607783e1501b154d"
+      "decisionEvidenceRef": "sha256:20830deb0f69351314e628d091f68766aa84f226109a22cb42ef264b5eb13786"
     },
     {
       "shardId": "f-g6-p1",
@@ -1661,13 +1661,13 @@
         "candidate-53443cc3a09f4266"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g6-p1.json",
-      "manifestHash": "sha256:092347f200d2f9318ff957488c38c36d7153eb52240eb76bc1a173948e43c6b5",
+      "manifestHash": "sha256:f0c1e870e5e0e60ea62be5a2a262ecb8799b04851bde9f9a43f0b7b2702a1aef",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g6-p1.json",
-      "decisionEvidenceRef": "sha256:7d207ffef0cca8324bda13e8f10268e701607539d32d6c782f72be9b239aea02"
+      "decisionEvidenceRef": "sha256:0a17d43b6d581449b8db5072c2f6ce8837a79eef99e9f9c28f2e114af764e05d"
     },
     {
       "shardId": "f-g6-p2",
@@ -1675,13 +1675,13 @@
         "candidate-53443cc3a09f4266"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g6-p2.json",
-      "manifestHash": "sha256:2de7a511a044366fcf34220f08955faaaad0e0a2e58f3924036819ecd2ba36f5",
+      "manifestHash": "sha256:5620293df63b2195a0b6041c82001e673ded2631bed1eee747b565750139b1c7",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g6-p2.json",
-      "decisionEvidenceRef": "sha256:fabdc4128502d737a42c0392ea557e195700368c79009942617cd4e9b84c8072"
+      "decisionEvidenceRef": "sha256:e955bcfda00dbda2943e7ccada4952498e8feecbe62fae92a4147d41c3c16742"
     },
     {
       "shardId": "f-g6-p3",
@@ -1689,13 +1689,13 @@
         "candidate-53443cc3a09f4266"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g6-p3.json",
-      "manifestHash": "sha256:e340ed983100edaa86ac709c8fb928d05dfce28375be3677f11661326da8e9ea",
+      "manifestHash": "sha256:d96a07459a3234e6e251880aeebb708eec683211418ea29753373aefeef5d9a2",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g6-p3.json",
-      "decisionEvidenceRef": "sha256:727f4856132977b35b7f4ad9eb5954ae7b97995bfaf7c673cc5aef4cf1a627a5"
+      "decisionEvidenceRef": "sha256:533d7ac0c268508dacd6fa2ca837aa581a310ee2489befe30578ad3b373b8994"
     },
     {
       "shardId": "f-b7-p1",
@@ -1703,13 +1703,13 @@
         "candidate-86cfd7f8b60fef79"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b7-p1.json",
-      "manifestHash": "sha256:f076ca0944b1ff772477d617fb1cf1f020931eb5025775c49d0d218ed5b92217",
+      "manifestHash": "sha256:7402f6a8352b61540918a16c44a843e9db03a5477c482057bc21e2fc07e8d520",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b7-p1.json",
-      "decisionEvidenceRef": "sha256:012c0324cca59ede467077fbd76cf4f70cd97b6417d98c0093065716de25a26d"
+      "decisionEvidenceRef": "sha256:d84ac4775f19b356c462b0268769e63b2cee315d6051172412a80ba272e9d9c5"
     },
     {
       "shardId": "f-b7-p2",
@@ -1717,13 +1717,13 @@
         "candidate-86cfd7f8b60fef79"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b7-p2.json",
-      "manifestHash": "sha256:8f8044ae4df38ab1b98c68695b05c8fd9f190cc20b0504d898ebd081b22afc7f",
+      "manifestHash": "sha256:01639e6ca48f9be834cdbe5973d7db76164c254f21dcf237453c52f9a840fbbd",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b7-p2.json",
-      "decisionEvidenceRef": "sha256:a56eaf9ce373cf22acccaaea79b864b2a8b5a261e6f71a2c589bdbecfe9d47f7"
+      "decisionEvidenceRef": "sha256:f46304e582a5cdd8c6b14da14db6c592049cd50adc0ce210217fb5b5479a5194"
     },
     {
       "shardId": "f-b7-p3",
@@ -1731,13 +1731,13 @@
         "candidate-86cfd7f8b60fef79"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b7-p3.json",
-      "manifestHash": "sha256:048bb6b8948e39d15225515803e2046d2e0745b3618cededfc2ba47db9fe9bb2",
+      "manifestHash": "sha256:bfa92d11793ed6f2ee3fc18c789597f86907329ca1ea15ef97759ecb63da6afb",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b7-p3.json",
-      "decisionEvidenceRef": "sha256:0440786ea0bf649231f8b6cdd9e7071ff9fc2bbd6d50dd7b63fbfb73f4337a68"
+      "decisionEvidenceRef": "sha256:29540ee9bbdfdaa33606b467b37582df5efcb84db10c54c69c371578baab720d"
     },
     {
       "shardId": "f-c7-p1",
@@ -1745,13 +1745,13 @@
         "candidate-c5f1e29759c1d9e8"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c7-p1.json",
-      "manifestHash": "sha256:de2fcfd47ded883bb6f44a086f47d8d17e6ea13a55b23df003798bb585df78e0",
+      "manifestHash": "sha256:ba434786a322e90db1899576b7c2a26a4803fb41a2bb2b4526b3eea476d5d12d",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p1.json",
-      "decisionEvidenceRef": "sha256:3e64c1e5215b82c406408a2bff7072889587bb5fac66b865a244ee5c455fc85b"
+      "decisionEvidenceRef": "sha256:0e7485600e74469fabf88d5d6b456728235d448a000b831d71d61d5b6330976d"
     },
     {
       "shardId": "f-c7-p2",
@@ -1759,13 +1759,13 @@
         "candidate-c5f1e29759c1d9e8"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c7-p2.json",
-      "manifestHash": "sha256:14f64b8a5e13bbb9fafa904691560271601b0d866ebdd8f89da9ef911d57cc53",
+      "manifestHash": "sha256:44d02cfe739feb0f27c1b5163f72d723cc06d8aa93ec9b41defd152e460d5728",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p2.json",
-      "decisionEvidenceRef": "sha256:a991035b0c74ea165c7eb6625f936ab2b036c2101d5de2f3d310257746e4b3bb"
+      "decisionEvidenceRef": "sha256:2b3921c72579f1822dd8824463c52c58d4db84966d7546f67d47240583bd7cff"
     },
     {
       "shardId": "f-c7-p3",
@@ -1773,13 +1773,13 @@
         "candidate-c5f1e29759c1d9e8"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c7-p3.json",
-      "manifestHash": "sha256:b1ceaf5e99a5ae108c9a4477caeb6216c2642aa6cbbeaba4e96e6d91fc339a08",
+      "manifestHash": "sha256:50c50ddac40de1999648704e82dacb1774d8645d2f6fc420e9610af4ef6a4d48",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p3.json",
-      "decisionEvidenceRef": "sha256:a08e44e46a0dbbf4cf271e4c3ea2edf5aef9ac1d1ea4f4da4b38bb92f25e6418"
+      "decisionEvidenceRef": "sha256:53e7e9152154b5ed026f6caf3e7d9b365a13599173e9fa656f5d8b5193289833"
     },
     {
       "shardId": "f-c7-p4",
@@ -1787,13 +1787,13 @@
         "candidate-c5f1e29759c1d9e8"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c7-p4.json",
-      "manifestHash": "sha256:b4d794b86f889e66dba83688caf32454381ec879075ab933afc8c1fc69523f24",
+      "manifestHash": "sha256:96bb3651722dd3a0d7a1f3c03b61e3f11fc3860c031721b82aa9c18b25b7b804",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p4.json",
-      "decisionEvidenceRef": "sha256:96879127d20c9fda75dd59214f339109308edf853fd1e59c870893a0f3229b85"
+      "decisionEvidenceRef": "sha256:a79c5dcef149e1a833a3e9fff8aefc978ca89bc47ea23f0593febb4c8103e2cc"
     },
     {
       "shardId": "f-c7-p5",
@@ -1801,13 +1801,13 @@
         "candidate-c5f1e29759c1d9e8"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c7-p5.json",
-      "manifestHash": "sha256:b9150dabee423d4cddcab2ab7aa3c3e7469e3e7410f9316b7f8952be507f35d6",
+      "manifestHash": "sha256:3408a4efa279afcee5134577fb0c0d7c47a00b8d9d91f9ebaf95ae9c88a63031",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p5.json",
-      "decisionEvidenceRef": "sha256:c47b94d7b13f8d1237301572db599510501e828b2ffe2b67cf47aa2afbd063f9"
+      "decisionEvidenceRef": "sha256:2179ebb934345da198a6376b2713da4b86aa6c4e6b8dbe0b4a8d9d0136a6ba60"
     },
     {
       "shardId": "f-c7-p6",
@@ -1815,13 +1815,13 @@
         "candidate-c5f1e29759c1d9e8"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c7-p6.json",
-      "manifestHash": "sha256:810ced8130ce17f99854edddb689b3b17b676475b4165ef5bd21e2faf50abc39",
+      "manifestHash": "sha256:d94b4ce86232d6efcfc54a3e355ebcb47048aeaa101e8dd4c0803dcb47352615",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c7-p6.json",
-      "decisionEvidenceRef": "sha256:a9ed6f694e740a74788298fedfe85ec08acf24b74dc619ceffcb0c7990446714"
+      "decisionEvidenceRef": "sha256:9a1258dd4686ff42e95493cba1d7b83fb601d07eea2fefc75d18f3ef2a9fe3b8"
     },
     {
       "shardId": "f-d7-p1",
@@ -1829,13 +1829,13 @@
         "candidate-c0b105b6465fcc75"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d7-p1.json",
-      "manifestHash": "sha256:615075faa863e66501b93e88bbb8a670be840f94afcbef9e6d2116562a03c87a",
+      "manifestHash": "sha256:7b0b761c345e0f3564af97ba58b2000d33e624c9af522dde180a9feab8c65f31",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d7-p1.json",
-      "decisionEvidenceRef": "sha256:d16bb8f380cd5ff2222fa62a1e059a1c4d6f3afa722b763234f440659676a07b"
+      "decisionEvidenceRef": "sha256:874b569a68da6cd9dbcc2c2d3177f2e2683f03e6e63173f2b16f89da5f0e5713"
     },
     {
       "shardId": "f-d7-p2",
@@ -1843,13 +1843,13 @@
         "candidate-c0b105b6465fcc75"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d7-p2.json",
-      "manifestHash": "sha256:8bc11b42e1c1a0ae9a557b2ac8295c6afda0080d9681553302cb7919cb61b8a6",
+      "manifestHash": "sha256:010add1f325960704fe4386281e2274fa41c4858985dc802568216d6248c415a",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d7-p2.json",
-      "decisionEvidenceRef": "sha256:bd504fdea48dfd38a8cd2130d8691acf4827b7253834120f3af12a6902c6eb72"
+      "decisionEvidenceRef": "sha256:ae42c24cd279fef299771c0c086f6bcb4ddf4bf802024b5bc925a33b9bd51d6b"
     },
     {
       "shardId": "f-d7-p3",
@@ -1857,13 +1857,13 @@
         "candidate-c0b105b6465fcc75"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d7-p3.json",
-      "manifestHash": "sha256:b4037480c3719d322ce1b1ef9898d94e94ce439072b56d5720f6ed094e6be868",
+      "manifestHash": "sha256:86f33e4a39835b30db1b97183791c32a80d2a3ef9f0213e1c24e9e220249eb35",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d7-p3.json",
-      "decisionEvidenceRef": "sha256:e0a36012f2c35ac989fb781d698a4a5ef50ed9ddb0f585f4cecff047ef8065a5"
+      "decisionEvidenceRef": "sha256:36ec0ff3c57250e1816bd9a45ad7781c9b1988a9dba2f94c95e20a0c3393e011"
     },
     {
       "shardId": "f-e7-p1",
@@ -1871,13 +1871,13 @@
         "candidate-19132c3ec3ca6592"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e7-p1.json",
-      "manifestHash": "sha256:a5e05ec920e31e87484e09e9bbdd1ee44b6ef07753de9627ed77b716cfba3cb1",
+      "manifestHash": "sha256:74448141dcff60aa814a436beacd7808e85f081a10ec850b835ea6bf760ead29",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e7-p1.json",
-      "decisionEvidenceRef": "sha256:387f135764309f8a889721a4f71610bad2c1a498ac6a25dfd3a84fc202928958"
+      "decisionEvidenceRef": "sha256:2bca12ecf539613b1500e769e74150732acb265cbc3d1f835f760f4aa3921a96"
     },
     {
       "shardId": "f-e7-p2",
@@ -1885,13 +1885,13 @@
         "candidate-19132c3ec3ca6592"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e7-p2.json",
-      "manifestHash": "sha256:ef976ebf7fa7856a0b766d5f50d60cd38a4c8051e79f7aa82f347adbd27c274e",
+      "manifestHash": "sha256:f05f7640d1c948a3b1de2c56fcd261757ea5591d246ad88a960883a93a337bab",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e7-p2.json",
-      "decisionEvidenceRef": "sha256:336222d29781253702d6c12cb55d1d001fdd22bb476737e8d057a10f7f3efa3a"
+      "decisionEvidenceRef": "sha256:36516c134dfdcf31632a0ba767ebf844497b955653aff1a2a41bedc6955fc6f3"
     },
     {
       "shardId": "f-e7-p3",
@@ -1899,13 +1899,13 @@
         "candidate-19132c3ec3ca6592"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e7-p3.json",
-      "manifestHash": "sha256:eb6b1b61d3bbaba284a0ef3048f20fbec49ad450a37e841ae9660ee2ca3f4aa1",
+      "manifestHash": "sha256:99d5d51ce9a15ab2d46a239137df5ba2056dae8e92b21092224ee23f2b965758",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e7-p3.json",
-      "decisionEvidenceRef": "sha256:fdb6df3af92278a67a0a319df3fe1aa3c260094b756fd1dbeb94e9c1b1074dcb"
+      "decisionEvidenceRef": "sha256:81e90f1b25a2a1ba4b3d6a27b1e62999c798714f1cedc4c02df7c9ea37b573a2"
     },
     {
       "shardId": "f-f7-p1",
@@ -1913,13 +1913,13 @@
         "candidate-0f3053345f890e21"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f7-p1.json",
-      "manifestHash": "sha256:a615e8c46d25fc7c3643e8009d81b2d673cc4d87fe0b0930a6f24ff94d1d8bcf",
+      "manifestHash": "sha256:10679decca20e26964ceda4196536909a91edd58afbd31e553fbc54c36617714",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f7-p1.json",
-      "decisionEvidenceRef": "sha256:e466c1a511b408284cc6796da830a5a6d31f46af036a40c42d1665db79230398"
+      "decisionEvidenceRef": "sha256:437607dde73d4599c82e1ba17adc25a4e0aa672bcb672877c10b5d2cc4b001e6"
     },
     {
       "shardId": "f-f7-p2",
@@ -1927,13 +1927,13 @@
         "candidate-0f3053345f890e21"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f7-p2.json",
-      "manifestHash": "sha256:51bb459f99ee1da2b0c4977fd9a10be8f75ed877f8eeaac7c74d03d1c2e26427",
+      "manifestHash": "sha256:fc30a4219a6e801ff9933fe7491dcb54ad31080e97c4036a12a5e5f7456274f9",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f7-p2.json",
-      "decisionEvidenceRef": "sha256:6384ec1d561009b4eb17504ef3eb6784ef3b4b21198cb3e3c57807cd7fc890ce"
+      "decisionEvidenceRef": "sha256:67efbf5328fccef1693e51907a71ef6e0ab9fc76ed2b23e73dfa67fd688db472"
     },
     {
       "shardId": "f-f7-p3",
@@ -1941,13 +1941,13 @@
         "candidate-0f3053345f890e21"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f7-p3.json",
-      "manifestHash": "sha256:7ac50d4f46d93e59038f0a54b27cb3cb2772046bf8cbaaf6a106acde4a73a89e",
+      "manifestHash": "sha256:26b6fc50077d39d73d31c01d7e28645abf43f9bd4b1fd581d58498d0db9880ca",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f7-p3.json",
-      "decisionEvidenceRef": "sha256:8ea62f25d4ea189d281fb2bf741ac8e235d69ff507fc594b7f56fa9df0817b3e"
+      "decisionEvidenceRef": "sha256:22388db418eabd27c2999d12c845a70142340e6f1977e8cb1898615f0e118dac"
     },
     {
       "shardId": "f-g7-p1",
@@ -1955,13 +1955,13 @@
         "candidate-333d6e20e4cfd39d"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g7-p1.json",
-      "manifestHash": "sha256:a0d6e26b516d2142d10958b81898d75b444aef3d525d045ab0ef0d19a709b970",
+      "manifestHash": "sha256:5379096636fa929f3c335ffb0b90b6ddc23049e9ccd7353ed2716e81dd948dd5",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g7-p1.json",
-      "decisionEvidenceRef": "sha256:0e2c82b1d3270dd283072751a34dd39b83a4909a728a7578ae1e8e97a62192aa"
+      "decisionEvidenceRef": "sha256:1cc59f3c4798e59b3bde8aa162d26389675554f33b163b31612ebb4b0dde4987"
     },
     {
       "shardId": "f-g7-p2",
@@ -1969,13 +1969,13 @@
         "candidate-333d6e20e4cfd39d"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g7-p2.json",
-      "manifestHash": "sha256:272741ce6e39c94ece2493ca2dc24eaf3726271907f769d0311a6ca11eb2344d",
+      "manifestHash": "sha256:6cbf30ebf04505fbbbb9c3399f9826ecde5e3fc17a910bfcb69635dc66a3ec10",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g7-p2.json",
-      "decisionEvidenceRef": "sha256:17a9f4c4ca1704796f9a2c92b89b4ef64a057519703360095f17978468253e09"
+      "decisionEvidenceRef": "sha256:d77c7994435a290ec5c647d32a7bbaaf501d374f67c149c7fd38cb20602efbc7"
     },
     {
       "shardId": "f-g7-p3",
@@ -1983,13 +1983,13 @@
         "candidate-333d6e20e4cfd39d"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g7-p3.json",
-      "manifestHash": "sha256:e73c67cb18a7f349e3eb2d0a5a248f81e1ec97a9dc1445af35ed4d698eb739aa",
+      "manifestHash": "sha256:c59db973118d508f35537cf72b41c2494fa1e5d233121e90b2c5d6ee9709f1b8",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g7-p3.json",
-      "decisionEvidenceRef": "sha256:0a8f73f700ac40e6324ed6b57d0849b596d4fb321c181e9ed0a2584a148d433a"
+      "decisionEvidenceRef": "sha256:2543ceae1762f4da0d99b97c80e2d0ec2b8cb7ad9f7af71cc15742320c84d544"
     },
     {
       "shardId": "f-b8-p1",
@@ -1997,13 +1997,13 @@
         "candidate-0155e220c2153d1c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b8-p1.json",
-      "manifestHash": "sha256:c8c2ba2142326ec3f7827dda5fc4185a7ab11b7e8ca82208d2e8f5c8679e4b3b",
+      "manifestHash": "sha256:185e5992909a2f71993e92d2ddc2f2a93f8566e5a21602308e35be27c77e3002",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b8-p1.json",
-      "decisionEvidenceRef": "sha256:f62c4a3325219e8d2d1a2c21b90577ac4334578504a1957042549e4e8cadf602"
+      "decisionEvidenceRef": "sha256:da1329fecfec2c445b51af419e67e62f744afcfe2e22d4577029b8d543e2f4ae"
     },
     {
       "shardId": "f-b8-p2",
@@ -2011,13 +2011,13 @@
         "candidate-0155e220c2153d1c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b8-p2.json",
-      "manifestHash": "sha256:66499ec87f0058695063c4d01626cd7b004ea9e91a402e8319a8bd2c81fd264d",
+      "manifestHash": "sha256:1934bfa655f42d06b40c4ac0df8f2d97b888ffba395824954ee2af706823ed72",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b8-p2.json",
-      "decisionEvidenceRef": "sha256:c7bf6f3b4f4aa18887784d08f3954134f14910bb04d6707485212454d4fab38e"
+      "decisionEvidenceRef": "sha256:bc8982742da39f239001465047838ae35561aa954d21429788a25c414555c0b3"
     },
     {
       "shardId": "f-b8-p3",
@@ -2025,13 +2025,13 @@
         "candidate-0155e220c2153d1c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b8-p3.json",
-      "manifestHash": "sha256:0ec637099c1ea83fc4c441138a80b71ae367adcddece84291a30f64a80ed7db2",
+      "manifestHash": "sha256:5eacc060f2e62d908f169a0dc4f81dca5c5c51a5189010d43e78e79839a8a430",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b8-p3.json",
-      "decisionEvidenceRef": "sha256:a184762cb52f916d951ea6e6d7a1debea8721412f7f6e46070e4c6815f8b83b5"
+      "decisionEvidenceRef": "sha256:faf52a935dad130f5ee619b079633e1479b709212c466ae6435924d6c86aff99"
     },
     {
       "shardId": "f-c8-p1",
@@ -2039,13 +2039,13 @@
         "candidate-e4b4a273f3cd0757"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c8-p1.json",
-      "manifestHash": "sha256:5b9e27d26c39c5824e37f8cac8344822c1ee7449663306b41c4cc63918a041ad",
+      "manifestHash": "sha256:3b159260c78c49148729aa908f46ac28269b4663eefce7cfbdc8b28b752e8ff7",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c8-p1.json",
-      "decisionEvidenceRef": "sha256:cde6a5422452460333979ab20a948eb225a830adda1d7a8a955a79d22679d6b1"
+      "decisionEvidenceRef": "sha256:6e104134e205ed94c07e18046752e6385c6f8b357557586a9d45bb59cdd2eeb2"
     },
     {
       "shardId": "f-c8-p2",
@@ -2053,13 +2053,13 @@
         "candidate-e4b4a273f3cd0757"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c8-p2.json",
-      "manifestHash": "sha256:614249bd65b53ddb1909de9a2216f74fe043fc572e7176bb6dd071fb6dbabf3f",
+      "manifestHash": "sha256:65a1dd287d8e7ceac6559e3307022e2a7fe776749749f72e4a0ee8e56df6d409",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c8-p2.json",
-      "decisionEvidenceRef": "sha256:56535491a95191ae2f367262e9aceccfd27be6df2032bcb03b9e838948c6d48e"
+      "decisionEvidenceRef": "sha256:ff86e78c0ac577a4911633f322f62bd325d4b3225f1ab9da1413b431532040d5"
     },
     {
       "shardId": "f-c8-p3",
@@ -2067,13 +2067,13 @@
         "candidate-e4b4a273f3cd0757"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c8-p3.json",
-      "manifestHash": "sha256:33bb9165abf2df650ae73a6501ae6ec33012cf7982f3ca56336ff7b5a37a6ad2",
+      "manifestHash": "sha256:35df4c0f0cce3d9d482a80e240ca65509516ec9ca8d438f0a72deef4f99726d2",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c8-p3.json",
-      "decisionEvidenceRef": "sha256:cfe1803fd9bdc6f7af9c0a36058cc4cfe262f38c0551250dabe060af42f6abc2"
+      "decisionEvidenceRef": "sha256:2374ccacc221af1be6bfe475d761b806a6d0946f023fc92fe5ba01e4b1521236"
     },
     {
       "shardId": "f-d8-p1",
@@ -2081,13 +2081,13 @@
         "candidate-f5e24bec513b96d2"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d8-p1.json",
-      "manifestHash": "sha256:114053d8957522c3f1a97177da1945e477a27892e90c4d36ee50701720dc7945",
+      "manifestHash": "sha256:82c9781b165e27c7c060689b74db349838af60932d983594f3211302d6680a45",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d8-p1.json",
-      "decisionEvidenceRef": "sha256:c5893f57e288f120b0d49070f24f054fa4f3e6f276170ac0830db4e212ed42bd"
+      "decisionEvidenceRef": "sha256:dbabc5a4186908aecf338e53f5a44e83e861e627ea0388e59a0785641071d841"
     },
     {
       "shardId": "f-d8-p2",
@@ -2095,13 +2095,13 @@
         "candidate-f5e24bec513b96d2"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d8-p2.json",
-      "manifestHash": "sha256:db9180615e8fcdf94803dbfd32d160040b49f5c9bd81b22065cd1d41da302c34",
+      "manifestHash": "sha256:5cf78efc30560738084af3b4be3050e5f1f1a24c3a43d39fcf2f5bd549033884",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d8-p2.json",
-      "decisionEvidenceRef": "sha256:a9459683dd4fbd00101899bb8dbc4d86795ee3d01bda57172a87f1b7fb1f59d7"
+      "decisionEvidenceRef": "sha256:0ddc374f9c4973df8bee4faf907d6ea84237a0a67452fafd8144f9c7390c6e2b"
     },
     {
       "shardId": "f-d8-p3",
@@ -2109,13 +2109,13 @@
         "candidate-f5e24bec513b96d2"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d8-p3.json",
-      "manifestHash": "sha256:c94544dd02c2c178149067a5362653bf4a52a1c886cf7641d93362dfc6b394f4",
+      "manifestHash": "sha256:6185ecc9c367dfabd028cac10aabda35b1d9a9e8d479897be73811a2941162b5",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d8-p3.json",
-      "decisionEvidenceRef": "sha256:ab13eacb4ab2bca96e23432d1b832136e8c363e7b78beeb1fbd281ccc7ac1c65"
+      "decisionEvidenceRef": "sha256:acbe919a9f240730a5fea0d62557b570164c8c0fae8d9a7f535363841744e6f1"
     },
     {
       "shardId": "f-e8-p1",
@@ -2123,13 +2123,13 @@
         "candidate-52df6ba65d2b011c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e8-p1.json",
-      "manifestHash": "sha256:5416a12996a98050c5809720938552637ea3f90d864ed8917a9dc86cf3024663",
+      "manifestHash": "sha256:a9a8641d9a3759ca0d34f308224f1645c234c02ee538076ad364b50ffb37a478",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e8-p1.json",
-      "decisionEvidenceRef": "sha256:aa5ec8df73f855309b23624db0d06687d5eefe30b36dfde1539fdb543f994a4d"
+      "decisionEvidenceRef": "sha256:7bff426a75dc5dce9855cd5acdbedcb20488f4e514b7d3be0d0edd7bac0f0ef6"
     },
     {
       "shardId": "f-e8-p2",
@@ -2137,13 +2137,13 @@
         "candidate-52df6ba65d2b011c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e8-p2.json",
-      "manifestHash": "sha256:73b1ed7d9ab60a3bab40cd355591fe19cbe565ff548ce8cbeed256a21d097019",
+      "manifestHash": "sha256:e139b8be4954b6cd9b5ecc173b005beb7172751c6f8bf59d5a2abb6de2c7a521",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e8-p2.json",
-      "decisionEvidenceRef": "sha256:3bafb559a32798b523a99e9e680380b809ab4dcd5b3d882be8495e484f947d4d"
+      "decisionEvidenceRef": "sha256:6338303d270923cb614cd8d4a79201f5b1745f5f31273f2e7cfef053db7f79e2"
     },
     {
       "shardId": "f-e8-p3",
@@ -2151,13 +2151,13 @@
         "candidate-52df6ba65d2b011c"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e8-p3.json",
-      "manifestHash": "sha256:062dd6b78c7fa8ffc925bc1aaeaf8be79371fb738bff3d5c24c589b8bd5ea3b5",
+      "manifestHash": "sha256:bf67de57f3816442334ae156efff3b8ef04548c6bd70c62e2c81cd591672f395",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e8-p3.json",
-      "decisionEvidenceRef": "sha256:901af8e780fb1cb80ff15baf0ecabf2c6a65129c94d9329087e027eed283c429"
+      "decisionEvidenceRef": "sha256:9820ae615f6c81875848fe8eab5175bbe5dadc5d17a58d815c166d4451eff519"
     },
     {
       "shardId": "f-f8-p1",
@@ -2165,13 +2165,13 @@
         "candidate-a89656e36e027f0b"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f8-p1.json",
-      "manifestHash": "sha256:9153e0ae711d593bf6073c48c30e6a940df7673c569e10ccd0c2b67f10277a05",
+      "manifestHash": "sha256:97c59af6e63ac33b93aa110567fe851ffe9d91ff8830b8ff3de9ecab8cd91c4e",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f8-p1.json",
-      "decisionEvidenceRef": "sha256:805af2798daa1979987d201e7ae223e5672c3f897c0c985694f9ac4c9396c1dc"
+      "decisionEvidenceRef": "sha256:1b5e807da33a84412503f0bfa16be61f5266405d55f9a581ec79994bd483a727"
     },
     {
       "shardId": "f-f8-p2",
@@ -2179,13 +2179,13 @@
         "candidate-a89656e36e027f0b"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f8-p2.json",
-      "manifestHash": "sha256:27d7d883b2f4a5ac501522d99d355d561e6e083532ae4f51a60182089ada126b",
+      "manifestHash": "sha256:18c6f2cc632ba3f0445cf5dcd1ea24aaa4f69e56ed3ea2d3b287d3d4e526967f",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f8-p2.json",
-      "decisionEvidenceRef": "sha256:bb573b52a854f62487e9408a8f526c150d185905713ac10eb6f18b1bc01736bc"
+      "decisionEvidenceRef": "sha256:3e29574de96de22bce85df72f4aa064765cec1766b8f7647a092729987e7b20d"
     },
     {
       "shardId": "f-f8-p3",
@@ -2193,13 +2193,13 @@
         "candidate-a89656e36e027f0b"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f8-p3.json",
-      "manifestHash": "sha256:f69c44157570c22500fa6e3013093014dbdbbac27a75c7649d6c27529f40abdb",
+      "manifestHash": "sha256:63d3e0a5a3fcb290b165590237d173d6c8e04b70da34bee1715c8d2443914af4",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f8-p3.json",
-      "decisionEvidenceRef": "sha256:55977f7b0717328f75f790885ed70e3a4e5d59b34f925e6f5f20172fe9f47055"
+      "decisionEvidenceRef": "sha256:1fa12f2fbb1564d302d5055802625983aab11f77c2378d172b4a7363fc2f57c7"
     },
     {
       "shardId": "f-g8-p1",
@@ -2207,13 +2207,13 @@
         "candidate-1e7c366298755d52"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g8-p1.json",
-      "manifestHash": "sha256:6bff1711301a9e2bf91de47924043ef563d363e7c3a03f171ffa99258042d902",
+      "manifestHash": "sha256:d9e95f70e0a33bdbcb8acb935f90efefa1536c50034fa52022831131fdf3291b",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g8-p1.json",
-      "decisionEvidenceRef": "sha256:d9530170ade0acb37eb9da63c874b4725130ffaa46b63d48949d61af6fcc25e6"
+      "decisionEvidenceRef": "sha256:bc279e007ef5179ae8e25445c6444721eaf369cb8c688442cd74b23de5587c58"
     },
     {
       "shardId": "f-g8-p2",
@@ -2221,13 +2221,13 @@
         "candidate-1e7c366298755d52"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g8-p2.json",
-      "manifestHash": "sha256:ad436510a25808930a5943aa51c2122029251469f0088c37f8fcdbb1212e73f1",
+      "manifestHash": "sha256:08831a3912f1cf133efc424a23882e2955c4065b950e55578cce0909dfba724a",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g8-p2.json",
-      "decisionEvidenceRef": "sha256:5b0671bd83fef5a3bc129b0f6a3e1f39ff7dd9a70c5d0ede91a99de9ce9e351d"
+      "decisionEvidenceRef": "sha256:fb5cc6096c253a6ce8f7a13319a52bd3f287fa5ad44c1c7f8875d00fdf44ddb7"
     },
     {
       "shardId": "f-g8-p3",
@@ -2235,13 +2235,13 @@
         "candidate-1e7c366298755d52"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g8-p3.json",
-      "manifestHash": "sha256:d718780201e5acff7c2088916ce4e9c215a1c8a52963de6465e2aa6566ea3b10",
+      "manifestHash": "sha256:eaa535d9c7a213c9d6f6f93dd547673c24f8f004d280022cf3dab40a2c519322",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g8-p3.json",
-      "decisionEvidenceRef": "sha256:35572dd7acfafd0401afd8c8525f84d30e6573c8ac1c0e1989d2872c3d190cfc"
+      "decisionEvidenceRef": "sha256:cb137010d932e027befadffbab325257ad507267f5f0da3bba9d20c6a7628188"
     },
     {
       "shardId": "f-b9-p1",
@@ -2249,13 +2249,13 @@
         "candidate-24f9ff2a187a5de9"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b9-p1.json",
-      "manifestHash": "sha256:81bc0561bbfc255c2b0a2ebc7ae106d428b92067938abcebd63c189d9f7282f9",
+      "manifestHash": "sha256:75068a563df21716f115c1d595236e15c348be5ee27c1fa5ab29c6301ee9e926",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p1.json",
-      "decisionEvidenceRef": "sha256:acdac46fcc343220acd741e8e0d74b5364ee00ef136cb47d2b009f79def9f2a6"
+      "decisionEvidenceRef": "sha256:99915fadb2aa48d1ab3bf8937b4ae5f0baf18b9a321e29b7518cde4e165f7842"
     },
     {
       "shardId": "f-b9-p2",
@@ -2263,13 +2263,13 @@
         "candidate-24f9ff2a187a5de9"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b9-p2.json",
-      "manifestHash": "sha256:708e6eb58803dc102b06460738e9600a19e253f14b16387ccbf226d48d1b8c14",
+      "manifestHash": "sha256:e19a2c1ec9b6bf5ef2e8bf211ae4d1ae42a6f7e98101e14cfc80cd523fd66e2b",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p2.json",
-      "decisionEvidenceRef": "sha256:8e46ef96f5626a34b150815d19b691f217f799657b9571e61a05f4d1c0c8caa0"
+      "decisionEvidenceRef": "sha256:23e26d0ef49808c97716263a63be56169753d1876af72142d1724531d3282beb"
     },
     {
       "shardId": "f-b9-p3",
@@ -2277,13 +2277,13 @@
         "candidate-24f9ff2a187a5de9"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b9-p3.json",
-      "manifestHash": "sha256:d6e4e48a801ad6bf75860c53dd1fbd27e20095ce4ca7163767cfa0a6d3f3673b",
+      "manifestHash": "sha256:95bca7ce87db821108048329e50c954bf8cbb8a442f86482799603c61771f0a7",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p3.json",
-      "decisionEvidenceRef": "sha256:c4ae7314aaac7b682844c8c665943308252f665c666a550c7abe238d2b67f6f6"
+      "decisionEvidenceRef": "sha256:b27822e667bc31fd5085e0b78e9edbda2fc2029e4537b0361c548851b67d75d1"
     },
     {
       "shardId": "f-b9-p4",
@@ -2291,13 +2291,13 @@
         "candidate-24f9ff2a187a5de9"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b9-p4.json",
-      "manifestHash": "sha256:867e087e47974aa58905a7dedbc66b11124a1c4811c0fa84bccbfcb4fa654402",
+      "manifestHash": "sha256:163041d03b08dda5b1864d7f5246214f66817fc56f27801c7408ae66cc325daa",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p4.json",
-      "decisionEvidenceRef": "sha256:d2a3162e6d30cb0be04552c166cfe3cdf990e9b4167cbeb3e6c60594e46355b9"
+      "decisionEvidenceRef": "sha256:0f512afa8965b7b24f1618a73a55aa2674bb13bb48d63444259e851c5fbae359"
     },
     {
       "shardId": "f-b9-p5",
@@ -2305,13 +2305,13 @@
         "candidate-24f9ff2a187a5de9"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b9-p5.json",
-      "manifestHash": "sha256:81739be5d1b437e8073b239964bbcb00c99098b28d4fe61a945e5240cc56e843",
+      "manifestHash": "sha256:e5f2674ff07e9e30f6be970aca083b3388a1129906bd1f97077b023ed14e3cbc",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p5.json",
-      "decisionEvidenceRef": "sha256:fc7c4120280116ef724fc1da7e785c09d97e16e3eaa260a4d81ccefd9e290f29"
+      "decisionEvidenceRef": "sha256:061bcb0a1c268af71365e5cec7ab572cf7b2d1c0ecf750bbd46ee06bc164e5af"
     },
     {
       "shardId": "f-b9-p6",
@@ -2319,13 +2319,13 @@
         "candidate-24f9ff2a187a5de9"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b9-p6.json",
-      "manifestHash": "sha256:b6076c210fde81d8914bb9cecfb99136643f44dd0959cbc349bbae130ab7d7ac",
+      "manifestHash": "sha256:45c178e8d46f86072718d9829992e11c76c3df970530884907e06f62cd83db80",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b9-p6.json",
-      "decisionEvidenceRef": "sha256:c4ee3d03bc9294370fe0a7b66b08ff7265f67edd64000338d9d82e1319f40695"
+      "decisionEvidenceRef": "sha256:7b9d9dca574cb6b1ce1a600444cea749ed1201641430c680aa470a3d4aadc966"
     },
     {
       "shardId": "f-c9-p1",
@@ -2333,13 +2333,13 @@
         "candidate-4cd02c2da2f19d12"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c9-p1.json",
-      "manifestHash": "sha256:6bbded3e6bf9c29e28a31f02a6c7c796f7320c33e9decb8a89d49adf1375aa0c",
+      "manifestHash": "sha256:6bcba251afea0f125054a35643dea0f430e428526df23bfc859c72b3efd71453",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c9-p1.json",
-      "decisionEvidenceRef": "sha256:ccc3bd4411e5f00d33312a7a699dffe65c578ba73c4a740e14fd71af30ce00b8"
+      "decisionEvidenceRef": "sha256:bd22cbf48dc5acc934659002f11f278c6fd772cd5f0cf718294fc0f99b5e9bd9"
     },
     {
       "shardId": "f-c9-p2",
@@ -2347,13 +2347,13 @@
         "candidate-4cd02c2da2f19d12"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c9-p2.json",
-      "manifestHash": "sha256:5434e05bb65dfd47d8ba7db85a7cd5fca5b24529fa6ac2af7ae2ac649d7f4361",
+      "manifestHash": "sha256:2e11fa618958531f6e1b45b9636fe5e38dd1ccf3c486d40412940606b29c9027",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c9-p2.json",
-      "decisionEvidenceRef": "sha256:4c07d11c495ad4ea09548d232092880a79bc3d270d72de3eeea2fe8b9fa19596"
+      "decisionEvidenceRef": "sha256:71a39623077edc0e699eb8c5da021eb4dec92257ba9f47fbbbffed91585d236e"
     },
     {
       "shardId": "f-c9-p3",
@@ -2361,13 +2361,13 @@
         "candidate-4cd02c2da2f19d12"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c9-p3.json",
-      "manifestHash": "sha256:5d901bccd539ffe1bd2e5d25d9932dfeee18a122762981eeb7937bf43985eb49",
+      "manifestHash": "sha256:9e79d4a1194c8688d6cd1c9b226a5311f18a783db7738122bc01375da60aaba7",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c9-p3.json",
-      "decisionEvidenceRef": "sha256:29c4c1bf8a4c44d47b818892789fda0c01e86d137b79fed331579f1e930c9988"
+      "decisionEvidenceRef": "sha256:e5ec4aad0369d1d1848c0fa06afaf45014a0950d251ad7d80313a6d05f9e572f"
     },
     {
       "shardId": "f-d9-p1",
@@ -2375,13 +2375,13 @@
         "candidate-37dab4bbb006a44a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d9-p1.json",
-      "manifestHash": "sha256:b4193b3d858bf17b9da67c73d1dffd710757121613915a0173f160d2648bc02e",
+      "manifestHash": "sha256:7b713bdbeecc23509e15d9f76661477076ccd3ecc23448c8233d34fe78faef54",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d9-p1.json",
-      "decisionEvidenceRef": "sha256:fcff704983f91ff802cd61fa03b70511a0c5d20f52a05b651d4d1be075aad6fc"
+      "decisionEvidenceRef": "sha256:4c47007d0674c7943777407e8140936e00241ec8899e32093ef6174a0b6657e6"
     },
     {
       "shardId": "f-d9-p2",
@@ -2389,13 +2389,13 @@
         "candidate-37dab4bbb006a44a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d9-p2.json",
-      "manifestHash": "sha256:d89913264337bb6b9537d814ee607c6bc27410a0e3020f41b27de3c150db86a3",
+      "manifestHash": "sha256:3e241125e4d776f7dd7b844e5f1bc7a3bdd347a82f4f8dabdb022585224028d3",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d9-p2.json",
-      "decisionEvidenceRef": "sha256:95319b6984a1d009d4a4e2ddd872090bc81ab8a37de0b79ab7be8edbd74696e4"
+      "decisionEvidenceRef": "sha256:cab53ee35bd7f0b12997d40427e37aedc0b440706d67f8fd093f15b787db0c7e"
     },
     {
       "shardId": "f-d9-p3",
@@ -2403,13 +2403,13 @@
         "candidate-37dab4bbb006a44a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d9-p3.json",
-      "manifestHash": "sha256:9efbacaedfbdecfb1d03aa0b46b465a2c34bae1620a1e167df159ff9240d17b4",
+      "manifestHash": "sha256:0e9a89c0558d2ab9ef73f46ee59850599bac218b28646883b3a52d2fd5fb7039",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d9-p3.json",
-      "decisionEvidenceRef": "sha256:a8952e6e0bead7ed6a1cc91564bb1762840b24bf788a7b90ffebbcf902b3ce05"
+      "decisionEvidenceRef": "sha256:b905b82d78251095c4381816c10be746a591a8406b79c51b54a8543d1bc5ee48"
     },
     {
       "shardId": "f-e9-p1",
@@ -2417,13 +2417,13 @@
         "candidate-5ef7bf5b2e3e1141"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e9-p1.json",
-      "manifestHash": "sha256:4571ca1475e6c81e8b64e0f73087bdeb5bf8f563619509b82c7bc59ec580ec00",
+      "manifestHash": "sha256:5cabfcfb5fec4694ceac9d4af996fc9d690de63f9e22f1d0290540eac024d09b",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e9-p1.json",
-      "decisionEvidenceRef": "sha256:9f4587d3a826ab3e3d815b79dc03d809c17a046bff038076886971339b1f6d46"
+      "decisionEvidenceRef": "sha256:bde03b5e1dcc9f4c3378deb429fe62129f6efc3d098926ce6f5e896f0a670ef2"
     },
     {
       "shardId": "f-e9-p2",
@@ -2431,13 +2431,13 @@
         "candidate-5ef7bf5b2e3e1141"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e9-p2.json",
-      "manifestHash": "sha256:90ed4b3f48008c321fef9b909cf1db40f28fcad28f56f2259ea7c8bc656c9bb8",
+      "manifestHash": "sha256:cca91d53aa2cb759d0f9f3ed7ab0529c0572b504629b59c16656fa3ec36da752",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e9-p2.json",
-      "decisionEvidenceRef": "sha256:f7c0d2152998a707d4c48d2a9ecc59d24ea7949a008a13fa4a8d479b2585fab9"
+      "decisionEvidenceRef": "sha256:ddacc5d25a159599e9d9d0188d9f80bd318cfde44be18c339e4c339dca641ab6"
     },
     {
       "shardId": "f-e9-p3",
@@ -2445,13 +2445,13 @@
         "candidate-5ef7bf5b2e3e1141"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e9-p3.json",
-      "manifestHash": "sha256:8bd4678d46d93b66b54a54f9dee9cd8663e763af23c9b0b675513ca96d20cf6f",
+      "manifestHash": "sha256:8f0e14e7185915c6a04c748a9a0aa56d2309dc91468be80668e2ed1194ca4421",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e9-p3.json",
-      "decisionEvidenceRef": "sha256:dcb29b894f277c234c4d758a449948902f919a8688c41a28486b4ca5eaefdfa2"
+      "decisionEvidenceRef": "sha256:4ee00e5bab23ca39be84bb23df5ef4e8cf6d023afdab099cdfba36be39e85955"
     },
     {
       "shardId": "f-f9-p1",
@@ -2459,13 +2459,13 @@
         "candidate-4226569b0b398b22"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f9-p1.json",
-      "manifestHash": "sha256:fb3182a262ce090868a9b96841a6f4e7dc8d91a0b4f72b3fe4180af0429336ad",
+      "manifestHash": "sha256:54e980bcce712fcc1af041f761e7f080fc7dddfa4e14e0a2750f843c9a943d5e",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f9-p1.json",
-      "decisionEvidenceRef": "sha256:11129d64cdaac05e0a6f562ee4dff31add6ac20503d1f968d42862d61badeee0"
+      "decisionEvidenceRef": "sha256:de1383c01d454dc2f1869cae8d99ddfed7e2a876d4b553c5187fc4f69d28f55c"
     },
     {
       "shardId": "f-f9-p2",
@@ -2473,13 +2473,13 @@
         "candidate-4226569b0b398b22"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f9-p2.json",
-      "manifestHash": "sha256:4bb0bcafc1e92638ecce3e549062cac6bdeb13de808ef0a52d8cd4c1db5a7890",
+      "manifestHash": "sha256:9a27736211cf13252af2b001425b47b74dba748183ecaa4ce66d06f1fe4bf168",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f9-p2.json",
-      "decisionEvidenceRef": "sha256:3031bfa62c929b25b92818d08630ad25b6ded36f15bdada305e2df85fcb8cda4"
+      "decisionEvidenceRef": "sha256:0c4b4268c1256fc8acfc80fa395a602de142d1e5c66572c02cc32b5fef4a8d96"
     },
     {
       "shardId": "f-f9-p3",
@@ -2487,13 +2487,13 @@
         "candidate-4226569b0b398b22"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f9-p3.json",
-      "manifestHash": "sha256:69b9b3a71b08f9216984351446ba8e66199ac5eb0eb1c3e4dd22b7189a4cab90",
+      "manifestHash": "sha256:153e48e3eb3d6ad2be02472933c2d16c98f7dfde5e0e70734dbe60f9fbda0ba1",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f9-p3.json",
-      "decisionEvidenceRef": "sha256:78455839daa4f9b2f51b9ac97b87d99109c7647cfe881234accf1aae20ec3335"
+      "decisionEvidenceRef": "sha256:78793024ab63e94cabaa71419a81193225c4c3ccabe937aae03e208b5637591e"
     },
     {
       "shardId": "f-g9-p1",
@@ -2501,13 +2501,13 @@
         "candidate-f234e2514c44f04f"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g9-p1.json",
-      "manifestHash": "sha256:1f50331d6995c1fea58c14148d8ed030aecc00c5ec4493f4b6f92796bb26f3c1",
+      "manifestHash": "sha256:dd1327127e40440b6838be254f44384de69707f8ce2a4d32f8c9501e3bfe27e1",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g9-p1.json",
-      "decisionEvidenceRef": "sha256:bdba7e426f0a80e7e295be380067907b148a2d72c6ba2f0d395fc3eae6455222"
+      "decisionEvidenceRef": "sha256:5c9686460a027ee1572f756ee2810a4b54cddc38cf9acdccd33aa91aadb23b2c"
     },
     {
       "shardId": "f-g9-p2",
@@ -2515,13 +2515,13 @@
         "candidate-f234e2514c44f04f"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g9-p2.json",
-      "manifestHash": "sha256:33d5609688034cfe583a1f2c376dddd89706b77e084fcf782b1f63c56dcba6e2",
+      "manifestHash": "sha256:324a637da4110d80ad8a6991c66b3d63fd2f79b5adcd172d71213f4cc0794e4f",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g9-p2.json",
-      "decisionEvidenceRef": "sha256:570cae78137998e67e9dd47645d09b287a38e8a52e0db67e87c6d4647bae863d"
+      "decisionEvidenceRef": "sha256:d21632281948bcef87c4f6f6d7d160ac75d174b5046282783e81eb4b8d452383"
     },
     {
       "shardId": "f-g9-p3",
@@ -2529,13 +2529,13 @@
         "candidate-f234e2514c44f04f"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g9-p3.json",
-      "manifestHash": "sha256:1c82200e0de5b0983d38ebdf6f628a1abbe81de75140d073afa1cfb237b2185e",
+      "manifestHash": "sha256:3e0796e410033fc61ff3d2a175467d7df86d512955011fa65049833458670aa1",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g9-p3.json",
-      "decisionEvidenceRef": "sha256:8642cb50bb4f1802078a1e7bab3e266012daf638c0bb5b7fe84af703b58f9c39"
+      "decisionEvidenceRef": "sha256:7b2955803b00d815ddd4e20607221cc74cf615e346dbe5ec648917f22c470c95"
     },
     {
       "shardId": "f-b10-p1",
@@ -2543,13 +2543,13 @@
         "candidate-7c18831e059e2dd1"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b10-p1.json",
-      "manifestHash": "sha256:3e3e8d2d42280b016f8adbea6067f0289069fc1382ed8101c2233d1bac78e160",
+      "manifestHash": "sha256:777d7eed23764fa6d64671a57fb3d7ec4fe466faeb81068b201f428a71a1bf81",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b10-p1.json",
-      "decisionEvidenceRef": "sha256:0037f1399f6dc626f39a316270432023b71e20f2409496ba39315392835102f1"
+      "decisionEvidenceRef": "sha256:fd2ee5282f6fa8bff965a7f285701cadffeae2d7b4c27951692f7ec5c149edc7"
     },
     {
       "shardId": "f-b10-p2",
@@ -2557,13 +2557,13 @@
         "candidate-7c18831e059e2dd1"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b10-p2.json",
-      "manifestHash": "sha256:51ee270d72920b1714cae874ef2be92a633302705d5b45c2a55603de4113af34",
+      "manifestHash": "sha256:f7f74730e32f6b93e346e2b6fa1d056d3bf292f8e3ad1046779f6c0e8be4743c",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b10-p2.json",
-      "decisionEvidenceRef": "sha256:6a6ab7a51ace5bf253c83cc46e698f012457a42ad5bf7b17f32e1a2fb251c94f"
+      "decisionEvidenceRef": "sha256:153739987c5ace601511606e104a64d7f8695519f31bf532ce1d080de81fce76"
     },
     {
       "shardId": "f-b10-p3",
@@ -2571,13 +2571,13 @@
         "candidate-7c18831e059e2dd1"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b10-p3.json",
-      "manifestHash": "sha256:07fddbd685ce21f176ab37f0b76a7503fcf0b0c888c9eec3f0fb3162a9a18a6a",
+      "manifestHash": "sha256:9c2fe5bc3d3dbdde1a69f34210ee5f00d0ba9b326b4250a4d10659939f1726be",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b10-p3.json",
-      "decisionEvidenceRef": "sha256:b2960b651f8cfdc70d904b4ec51b54ff1d774834c6fb3eb6812241ba3a283499"
+      "decisionEvidenceRef": "sha256:a60fd5e4f7a98ae6dd824807a32e9343f75eb970e7165a08bfbd0cc45cdb6411"
     },
     {
       "shardId": "f-c10-p1",
@@ -2585,13 +2585,13 @@
         "candidate-75ffe563d1b60f42"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c10-p1.json",
-      "manifestHash": "sha256:f37d1ec6fd5af08127ab060389f1e0ac150092d50f6095066ef0b3f46c7fe0fe",
+      "manifestHash": "sha256:d70bee395c7a523f19bda33ac60105c8ba891cbeacc102bf130890741772e84a",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c10-p1.json",
-      "decisionEvidenceRef": "sha256:64c51ea5a9077209ba776a0427baad7dea5f11e0748cdc8913f92d138a93138d"
+      "decisionEvidenceRef": "sha256:f4ff1c7f9d9b1ff11f627996a7503e87e1d3dbc091a5e8ba6d7feae7c7c4f3ac"
     },
     {
       "shardId": "f-c10-p2",
@@ -2599,13 +2599,13 @@
         "candidate-75ffe563d1b60f42"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c10-p2.json",
-      "manifestHash": "sha256:62a305bf23e469f641a75e3c7cbbdffc776d175d15b41aba662c6326b6a0f43f",
+      "manifestHash": "sha256:89de73037f8cb22473ec9948bb484a8a58a585dcdad5e907cb5dc2ebe947c60c",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c10-p2.json",
-      "decisionEvidenceRef": "sha256:85af3abff44ece6c56241903720d6a28e391f94706bb32949da256c8c62681bd"
+      "decisionEvidenceRef": "sha256:fe534b813c35ceaf857e97ee7fdecc58c436bf19eaacc284b35dd5273f7b5474"
     },
     {
       "shardId": "f-c10-p3",
@@ -2613,13 +2613,13 @@
         "candidate-75ffe563d1b60f42"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c10-p3.json",
-      "manifestHash": "sha256:efed873b8bfde4c6bcb4198dd51216f1bc1d69a94c1e98db2514350aaaf45657",
+      "manifestHash": "sha256:7865b9e172064e7e348b8ec391c0733efac4f015a19e4652c4617461fcb00e05",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c10-p3.json",
-      "decisionEvidenceRef": "sha256:8d709c4f5ab6949dd891290d12730258eaa7db71a635fe1208a8e3d45fae8431"
+      "decisionEvidenceRef": "sha256:db375007be8652457b399215b8313650a15450dbc39869b9bdf6db56eaea079c"
     },
     {
       "shardId": "f-d10-p1",
@@ -2627,13 +2627,13 @@
         "candidate-d5b229ea7494de18"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d10-p1.json",
-      "manifestHash": "sha256:b3c3df00e34d591464ce30f15bc7973c6086c81769b95488e153d364441c3815",
+      "manifestHash": "sha256:391a641fe811f13b91a538cc51b661f117d128ab440ba271a51afbce88ee05c4",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d10-p1.json",
-      "decisionEvidenceRef": "sha256:2f5ab893d14e9312f16c068eabac113efd3dccfe5bcf41412a1b1cbd716737aa"
+      "decisionEvidenceRef": "sha256:3810569133dfc684b5e816c55c1f805d39e2340759bf8ae786978d1555ed973a"
     },
     {
       "shardId": "f-d10-p2",
@@ -2641,13 +2641,13 @@
         "candidate-d5b229ea7494de18"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d10-p2.json",
-      "manifestHash": "sha256:0410b166d6ebd83623657696216178b080ed7d8ffa20af47364b31f97bf0678b",
+      "manifestHash": "sha256:e3973b2f88f513d7e848ec08c1764ef1192fdf3924ad1ba3f4142b04dcad9548",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d10-p2.json",
-      "decisionEvidenceRef": "sha256:d9164253836da543d4ad45d68571cb270053a76fdaf69daf921b6bfaf9b05c00"
+      "decisionEvidenceRef": "sha256:9f14c54a2e10e031091f7078ca0ccc718d00af1ba70bbcc49e444351457d11f4"
     },
     {
       "shardId": "f-d10-p3",
@@ -2655,13 +2655,13 @@
         "candidate-d5b229ea7494de18"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d10-p3.json",
-      "manifestHash": "sha256:0b443d870daf1c9fed0e96c2da095bbae7d0a8c41e562e7266b52a93382a2a45",
+      "manifestHash": "sha256:fd795d55483826018acd08c0627a729eada5bd3460d697c9db69c149daf82734",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d10-p3.json",
-      "decisionEvidenceRef": "sha256:6bf47a9229e6f9d96719a0eee455737fe5267cf0af0465df6268ba47e6f86db7"
+      "decisionEvidenceRef": "sha256:3f69729c16fb1150557fb495d2eeb5d6992c49b5c26b94e5b72415a2beaab45e"
     },
     {
       "shardId": "f-e10-p1",
@@ -2669,13 +2669,13 @@
         "candidate-0f1b27722df4940e"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e10-p1.json",
-      "manifestHash": "sha256:1fa6260d07b0841a415f7af7b0d83a967e4f4e451051abd5c6f35ee44d042116",
+      "manifestHash": "sha256:87abcc94259b0b5a75c47425ec1b59cc18f9619acf06a3420f4d79ad239a6520",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p1.json",
-      "decisionEvidenceRef": "sha256:0f44a303f71c11ab4b56062769b71c8ccf55e4c1be75dcc648961ce041f53195"
+      "decisionEvidenceRef": "sha256:f4a1e69bd1e283eff09ee43dd2169304e8de1e6a6b6a8c86d5fab6a142f658f8"
     },
     {
       "shardId": "f-e10-p2",
@@ -2683,13 +2683,13 @@
         "candidate-0f1b27722df4940e"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e10-p2.json",
-      "manifestHash": "sha256:3dc73cdd19ab2f6c57ce428e42d357cfe7d579eb89f5731831368adf214e44a2",
+      "manifestHash": "sha256:9a92157e78539b1fa0845feaca588e48d105fcc575cc2a37a8a80f59b02059d0",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p2.json",
-      "decisionEvidenceRef": "sha256:ce2dfd87445099b5596e728a022bd5e336bc533053b80d0acd9edff9fda73da4"
+      "decisionEvidenceRef": "sha256:9957b288d4a71bd948a16019034d4a150ba1f07a8632176fc189f7cc785993ef"
     },
     {
       "shardId": "f-e10-p3",
@@ -2697,13 +2697,13 @@
         "candidate-0f1b27722df4940e"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e10-p3.json",
-      "manifestHash": "sha256:f6b454680c5410b70775c103c3a1348e545d34da183a047f855d7b7ee32140e9",
+      "manifestHash": "sha256:d5acef817f1ec3fe2a898705f10ad18092ad94990afc01802da1df572262a64a",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p3.json",
-      "decisionEvidenceRef": "sha256:735fb306f6d63c6590763c95d56d51d5da07a139000f21ceb83ef32f5365b63f"
+      "decisionEvidenceRef": "sha256:020502a00e679a1fa34bd02374162f8392c51a77505e07c738da0e482993903d"
     },
     {
       "shardId": "f-e10-p4",
@@ -2711,13 +2711,13 @@
         "candidate-0f1b27722df4940e"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e10-p4.json",
-      "manifestHash": "sha256:2b32723c74e050db420b7063831a3aed497ee75cc28a17a7f25bad19153a985d",
+      "manifestHash": "sha256:a32179c4c15ccfb6b0d2b76d84b13278d0d31d91afcebcabc3ceb2a874653961",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p4.json",
-      "decisionEvidenceRef": "sha256:712652dafcc1328c45c028530916c63b32f4c392664db5c3dc0d570186a652af"
+      "decisionEvidenceRef": "sha256:2b9e35d50615acb4c3cbd87ab946d37123d2cbcd0ed74e5b6b45666a823d0fc9"
     },
     {
       "shardId": "f-e10-p5",
@@ -2725,13 +2725,13 @@
         "candidate-0f1b27722df4940e"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e10-p5.json",
-      "manifestHash": "sha256:2f0f8dc71d27c7ed865cb30d1409a0ce8bfe12276c18318aec24eb4dff4ab3a3",
+      "manifestHash": "sha256:6d57e07d08fed3ef326a674993c1c733368525fe8617e6e539bf9d07732a7ce6",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p5.json",
-      "decisionEvidenceRef": "sha256:767d241e0c380fd73221d626a11a663a938634e9f248b5b3b38877ced2c16249"
+      "decisionEvidenceRef": "sha256:1b647cc1928c367d403a197f167350a96a2ff5e7e5372a1b8d14852bbde768fe"
     },
     {
       "shardId": "f-e10-p6",
@@ -2739,13 +2739,13 @@
         "candidate-0f1b27722df4940e"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-e10-p6.json",
-      "manifestHash": "sha256:9c14f0666f778d0ad52eba1040086637bbe7435552e12f60d08b606cc39d2ea5",
+      "manifestHash": "sha256:7659036e18700291678f182766d79dab5da1ed46d78bf3e753573df032e57842",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-e10-p6.json",
-      "decisionEvidenceRef": "sha256:acd9d4ede1e2d5edd51c8dd377f61f8e129bde26a54a825e5cce365ab1bfc6a6"
+      "decisionEvidenceRef": "sha256:28b18e997235b3e89e3e0f005be253f9264f7518e31e148e5aaf693c5e4b766f"
     },
     {
       "shardId": "f-f10-p1",
@@ -2753,13 +2753,13 @@
         "candidate-ba7b2e37c973ee85"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f10-p1.json",
-      "manifestHash": "sha256:550479f6f269d7ee57bd9119ab86d41de6646e01e3c9b4ad4f9ebd713dd6f91f",
+      "manifestHash": "sha256:24577879d211fd39842595ba88f2805e9b6803d396c4482d2e6f0b3648bdcd28",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f10-p1.json",
-      "decisionEvidenceRef": "sha256:6701a24b6405ef29e87c134ace8fa8208484eab7c8f58fcfc55c01d84b9c4b3c"
+      "decisionEvidenceRef": "sha256:344553e89034195e72ad9c8253e69334f6bd30270cf12a5c3f029f3298be155b"
     },
     {
       "shardId": "f-f10-p2",
@@ -2767,13 +2767,13 @@
         "candidate-ba7b2e37c973ee85"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f10-p2.json",
-      "manifestHash": "sha256:f17a1ce3b15a520df423cc58f0acaa5857ac131f5527835931e716ccb9c881af",
+      "manifestHash": "sha256:c9156e79f90c410bb0d1f6ab3ce166dce248845fbc3c1628a3fce3b2b6f86647",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f10-p2.json",
-      "decisionEvidenceRef": "sha256:5d227efd5e513635ebd7c801ecad631098cfcc915bd96462d4df1178362bfe17"
+      "decisionEvidenceRef": "sha256:72142b3fcdb61e0735c1ba440809eb6f1aa0a956ae27e82279c184ea72759343"
     },
     {
       "shardId": "f-f10-p3",
@@ -2781,13 +2781,13 @@
         "candidate-ba7b2e37c973ee85"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-f10-p3.json",
-      "manifestHash": "sha256:6b08012ff36748d896bebb5a12a4f0fa6f2b0ce42ed3b32682accbf2efa9cfea",
+      "manifestHash": "sha256:baf2fcd0405a614578a9e461b8586906cb5d65169494c49c17a88a061499bcd9",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-f10-p3.json",
-      "decisionEvidenceRef": "sha256:2cb8f7b796bef34caf5aae234584ddcf87b44924ac4436a5908af63083c564c5"
+      "decisionEvidenceRef": "sha256:dcd41bbe0b71e831200091ec605e94036d9547d2e65a19757af0ebbc2641a532"
     },
     {
       "shardId": "f-g10-p1",
@@ -2795,13 +2795,13 @@
         "candidate-25d4170a4b82155a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g10-p1.json",
-      "manifestHash": "sha256:b0e9917a2d639cb90266dd421d3159b86f76620cfac122301db3d81b2612b796",
+      "manifestHash": "sha256:e4e41c51bfec325717f2a9d4296ef371596f97242245b49af2e9087419b4aaf1",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p1.json",
-      "decisionEvidenceRef": "sha256:1b177437dac3869e96c00d4c3b9f1592a97d41201a28b7a9b981a400e4a79678"
+      "decisionEvidenceRef": "sha256:c7f65170782115a5dfde857dfa35306dfe78ed2899830d0f8dbf7a5fdf30ba8b"
     },
     {
       "shardId": "f-g10-p2",
@@ -2809,13 +2809,13 @@
         "candidate-25d4170a4b82155a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g10-p2.json",
-      "manifestHash": "sha256:ae76b890f93ad85f911d53a97cf1d28532ed7869dd2052b0a74b1e701248698d",
+      "manifestHash": "sha256:32b4f79c457a1d00be7db6bef46f33977b8d1a4d96544ecfdca59b725396817b",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p2.json",
-      "decisionEvidenceRef": "sha256:51c57006568bd3156b094b914615cab5d23e12c32d96329d49897f2807412356"
+      "decisionEvidenceRef": "sha256:7d6d5ddd1c1660ec1475ddce71fae8c362119ea3d965b250fad6869be3adc16a"
     },
     {
       "shardId": "f-g10-p3",
@@ -2823,13 +2823,13 @@
         "candidate-25d4170a4b82155a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g10-p3.json",
-      "manifestHash": "sha256:bb65ba10ba138a917874cacb43dae5e58b334c12f8f2b573ed005b69aa7619fb",
+      "manifestHash": "sha256:294004323b20f0c31d160184a12f9be076ea9d575be7c704467f73918a52b559",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p3.json",
-      "decisionEvidenceRef": "sha256:563780700a68e6867920876117d6bee89d2feb7052a2c2be332cf177321dad0e"
+      "decisionEvidenceRef": "sha256:0aa240bf180d1223fa5c5856cbab314e665d9e442c1646359eab991695cd17dc"
     },
     {
       "shardId": "f-g10-p4",
@@ -2837,13 +2837,13 @@
         "candidate-25d4170a4b82155a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g10-p4.json",
-      "manifestHash": "sha256:2ab15394289528032f6af218ae1e3ab85ec80de523e85f006b0a8a24f50a3620",
+      "manifestHash": "sha256:8f7dc8c5a6acde10215d235c8e9b0594d682bb68251daf91b013fe1b5612866a",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p4.json",
-      "decisionEvidenceRef": "sha256:3171fe8f5488467998e11d7975e5b8e1a44c57955f27aacb64b772ed13094be4"
+      "decisionEvidenceRef": "sha256:f4afc43f56e5db95d9350542019679f2f05916835ad4e073b653485a7d4a346c"
     },
     {
       "shardId": "f-g10-p5",
@@ -2851,13 +2851,13 @@
         "candidate-25d4170a4b82155a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g10-p5.json",
-      "manifestHash": "sha256:4fccd5f15a53349f0b03cc890510280657dafbe603bf03279acce085eb1398d1",
+      "manifestHash": "sha256:4c1621a77a1730688e8d4c1e03b34b6e60b8e15dc265560d70952b82858f32f5",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p5.json",
-      "decisionEvidenceRef": "sha256:a80776a12a24d615d0308b2cf61d46d3c851b0f055ed40c89cc576ada9c2da82"
+      "decisionEvidenceRef": "sha256:cf660acab96653ea7927e8987f200f42b3fabca252fd22808bd2e4a07c06bc08"
     },
     {
       "shardId": "f-g10-p6",
@@ -2865,13 +2865,13 @@
         "candidate-25d4170a4b82155a"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-g10-p6.json",
-      "manifestHash": "sha256:44e2e809c8ba8c93c2b1874140d08993c58db40918882419a8ee741b1a806195",
+      "manifestHash": "sha256:19891d334ecb2a2c0ec331e2ac31f39147a0a1afde9846f99ce289771649efae",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-g10-p6.json",
-      "decisionEvidenceRef": "sha256:47f28fe405f560af3683e8daa233d5e8a19ed09f434dfd49f2f0eaa8c3bcf28d"
+      "decisionEvidenceRef": "sha256:e55229077be7196af059cf086189aef8ef939aae92a4987c121b494149c36851"
     },
     {
       "shardId": "f-b11-p1",
@@ -2879,13 +2879,13 @@
         "candidate-9a3672f0dbd36589"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b11-p1.json",
-      "manifestHash": "sha256:e501126302812b462171ccbc036f37805c4da586401b06f82f49d2542f99c2e1",
+      "manifestHash": "sha256:29ad8bd6c0a1a6a8c5b9c196ec82dec374f56b41585fb2875cd47f8b16ca9150",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p1.json",
-      "decisionEvidenceRef": "sha256:2e27d7c54b6be5c7f282dc1bd349f9bbffd70e1a745e38a93d758a7df1bd9014"
+      "decisionEvidenceRef": "sha256:266eef830a2c779f3e1eb3208368b6900dbe6a27300400f0d76908c6402320a4"
     },
     {
       "shardId": "f-b11-p2",
@@ -2893,13 +2893,13 @@
         "candidate-9a3672f0dbd36589"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b11-p2.json",
-      "manifestHash": "sha256:29e8f2a89129a8921942450864850375250bd43dec9d8a784d9c5437c2039f5d",
+      "manifestHash": "sha256:8e9692381996c8a107d78af936ae425e3917580ba2ec206a479508ada13aca0f",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p2.json",
-      "decisionEvidenceRef": "sha256:009c24cbf33abf215c16687918fe44d902c5cf336af4e7edb9b2642c2cfc9a8a"
+      "decisionEvidenceRef": "sha256:76e172477a2a837f1804db189d0cc0ba8bcd385cef12248f50df7a8ebadc2fe8"
     },
     {
       "shardId": "f-b11-p3",
@@ -2907,13 +2907,13 @@
         "candidate-9a3672f0dbd36589"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b11-p3.json",
-      "manifestHash": "sha256:ba8496f7f85339c7c42adf1aee4d71392b5ce728ed5bf5c81af705f4d0cae003",
+      "manifestHash": "sha256:cb52fcc8cf527b7f0f2f246126b2059d37c29c8e6cbb2f9b0e244cd375a20f36",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p3.json",
-      "decisionEvidenceRef": "sha256:7955a64c6c118a55fff0c351ea7e0f8935906e90017e9fc2c62d7f4020827ed4"
+      "decisionEvidenceRef": "sha256:5392609da13475c5a59f40aef0f5b9fcc9adfffea4d3e7447bdc7beca99b8a14"
     },
     {
       "shardId": "f-b11-p4",
@@ -2921,13 +2921,13 @@
         "candidate-9a3672f0dbd36589"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b11-p4.json",
-      "manifestHash": "sha256:a2ac5180b9175186e5023037f9c8a09c03ca0b010afec525df7ca32c096c08d0",
+      "manifestHash": "sha256:dd5e4c33925a59995ba6854f86d9b112feb065677db183bbfb1f776ac4ad2865",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p4.json",
-      "decisionEvidenceRef": "sha256:97fd45554a065d29fc351cceb7b0daffd0fd22e51f1c97df40e0164b17573432"
+      "decisionEvidenceRef": "sha256:b6d68eb0cf7ebec2cbf3f5fecf451cf505c47c84009cbad397ca674fe3011f03"
     },
     {
       "shardId": "f-b11-p5",
@@ -2935,13 +2935,13 @@
         "candidate-9a3672f0dbd36589"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b11-p5.json",
-      "manifestHash": "sha256:299168ae5cd08cb798412e250ecd904fb71298a5c6e8602cb9dc429bbe29bddf",
+      "manifestHash": "sha256:1aaeaf7dd2eec6ab077b2479a46455201f9b630af39d759cd7f52652529b1ea6",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p5.json",
-      "decisionEvidenceRef": "sha256:8a22128eae51834370e5a0e7b8b0d88454394f400895c6bbc5da15d937e5a2e1"
+      "decisionEvidenceRef": "sha256:a83752e73199696f2cbfd810642b1f47bb926b944c3750c053ae3dff8cc757e1"
     },
     {
       "shardId": "f-b11-p6",
@@ -2949,13 +2949,13 @@
         "candidate-9a3672f0dbd36589"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-b11-p6.json",
-      "manifestHash": "sha256:4693d8c660dbf3ba96358379e0828c094a10875a670cc7b87fc15c91c2a67aae",
+      "manifestHash": "sha256:09e2144edc94007b2cd646b1a9fa4495a2c80d80daed924a8ebf4501df9f8960",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-b11-p6.json",
-      "decisionEvidenceRef": "sha256:407bf5736ef1ef8afe5c39bc6d440a04af2d17918a8e66ca0900137da8761992"
+      "decisionEvidenceRef": "sha256:cb2524df027dbca0b78ad6ceb9d83ff64ca1148f06c833bb5a037b323276425f"
     },
     {
       "shardId": "f-c11-p1",
@@ -2963,13 +2963,13 @@
         "candidate-450de4e83dd0f668"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c11-p1.json",
-      "manifestHash": "sha256:b5df9e2a691b9e49ed860cf43e488f126408d44b0993b65b0db27c9d26281b8c",
+      "manifestHash": "sha256:fd8d1bbfa78ec2b42d19ea6eca5f1d3771d27374440e811d9db4804d56475e20",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p1.json",
-      "decisionEvidenceRef": "sha256:098fd1ff9a2e4977c7992e90dd4419a214e7206e1e6e34c2138b956986fbceab"
+      "decisionEvidenceRef": "sha256:46f2a7532426aff12290ac2a08389f7493c06caca43757d561f8dd36f0244261"
     },
     {
       "shardId": "f-c11-p2",
@@ -2977,13 +2977,13 @@
         "candidate-450de4e83dd0f668"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c11-p2.json",
-      "manifestHash": "sha256:fc188a5155449faa58f29eadfa9f778554efb4a5906511dd33d746a2650e6408",
+      "manifestHash": "sha256:eca75c4dbb095898bcaf67469e8bd39667d99e1d63fcf9b088ff7a5546f8c829",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p2.json",
-      "decisionEvidenceRef": "sha256:2a057b6307747e8384a59719d0cd3545e0eebea79fe765f8b7aadae3796a626c"
+      "decisionEvidenceRef": "sha256:bc8485b451b84c855b6d62045dde12dd18142f900ae86abb2fc7a557ebc904bc"
     },
     {
       "shardId": "f-c11-p3",
@@ -2991,13 +2991,13 @@
         "candidate-450de4e83dd0f668"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c11-p3.json",
-      "manifestHash": "sha256:74f52dd720107722ee286af92188e60a3c69510bdab94e2b3e7f75f553da3c5f",
+      "manifestHash": "sha256:65688573623a690e944e40a1ec20a7cad5bac020d1391987141f8c94cfce0a57",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p3.json",
-      "decisionEvidenceRef": "sha256:6a759bc47daf85bb7346815349869b6b773bb4497a18653c7f6297722552dbf2"
+      "decisionEvidenceRef": "sha256:b3cbc49623d00c152fe79493de1e1c68c97f39965d0ecab2cc2621b717fc2f60"
     },
     {
       "shardId": "f-c11-p4",
@@ -3005,13 +3005,13 @@
         "candidate-450de4e83dd0f668"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c11-p4.json",
-      "manifestHash": "sha256:bcac7b70255fc52842bc16ebe01b1e49b2ea5b2e2c40d5cacc6691bed64cb14d",
+      "manifestHash": "sha256:c17b84980eac8beebf8f89228de29f4ccf0a312f6acdbb1e80649726198d0c34",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p4.json",
-      "decisionEvidenceRef": "sha256:f0337b3643bf86a6bbcc761ec3d575a8b3e5ea69ef5f7ef5a7879ed82f65bea7"
+      "decisionEvidenceRef": "sha256:81e16f2fffee12c39284b2552254220b28a6aa93df067060e4f069bcadc37a1a"
     },
     {
       "shardId": "f-c11-p5",
@@ -3019,13 +3019,13 @@
         "candidate-450de4e83dd0f668"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c11-p5.json",
-      "manifestHash": "sha256:2e3d3134c0b9ab335e550101c90abeb9033815dbeb66f163c0287b1542b7009f",
+      "manifestHash": "sha256:194d52600fa67580c7d1fdd86ea2fc4c79c8afdd6447454c4f6f8037edad7b28",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p5.json",
-      "decisionEvidenceRef": "sha256:4081b33b100698ea7d5aecaa8702acf868587f0f144ba0887f5aee9985d39448"
+      "decisionEvidenceRef": "sha256:47d696c4d22e4b71b38a924fa85b24f0e6be0727d0f30b0539ad1f689d1df2aa"
     },
     {
       "shardId": "f-c11-p6",
@@ -3033,13 +3033,13 @@
         "candidate-450de4e83dd0f668"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c11-p6.json",
-      "manifestHash": "sha256:cd8328a9224aca0b5b09fe4787da984dedf92c35bf9290f4ce58dad9a543b0e3",
+      "manifestHash": "sha256:0dc0bfaf87e77268e9856eb9ff004e35831c8e596ef14180e814604919693a51",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c11-p6.json",
-      "decisionEvidenceRef": "sha256:76ef1e18edf5be7ca7b1b2fa8dd8bf584339eda5d7b1f3d3d9ab13aa5d06580c"
+      "decisionEvidenceRef": "sha256:f1ee701809c20ebdb76322ac7efac9e039a2af3bab1c02803aba392849f5d451"
     },
     {
       "shardId": "f-d11-p1",
@@ -3047,13 +3047,13 @@
         "candidate-bfa609068eb17a37"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d11-p1.json",
-      "manifestHash": "sha256:d744799e8bff4fbdf5f40eec52e75fd7f7365e6b8eee0f86cf6b7c09b843a3ec",
+      "manifestHash": "sha256:51cd86a2087f82728e05114c90370607d4c6468bc3d88ff55ed2ef302025bb90",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d11-p1.json",
-      "decisionEvidenceRef": "sha256:c0657b1963211c88054a5d28bc8cf8df05873ec132ac196ac121049995cce848"
+      "decisionEvidenceRef": "sha256:490fb41f2dd30918feff662fb201c2fee20a05090f34547e7b8a21bd88702d7d"
     },
     {
       "shardId": "f-d11-p2",
@@ -3061,13 +3061,13 @@
         "candidate-bfa609068eb17a37"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d11-p2.json",
-      "manifestHash": "sha256:5d885280fcb63fbda62f4afb5ae91840ef7c7dce7b1494787c0752582355bce0",
+      "manifestHash": "sha256:6aa81e1b05adda97c350fcbbffc73f3ffa044f0cc34ca5b82bd3870348ba75d1",
       "plannedRuns": 20,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d11-p2.json",
-      "decisionEvidenceRef": "sha256:0313a7c584279b9afea33f9979b154c665946d0f1d27656c36aebd1231c14b78"
+      "decisionEvidenceRef": "sha256:aa09bdc6a6860b87c0d895f7ddd1e217573a9cf6a46bd098fb7665c0ce56bce9"
     },
     {
       "shardId": "f-d11-p3",
@@ -3075,13 +3075,13 @@
         "candidate-bfa609068eb17a37"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-d11-p3.json",
-      "manifestHash": "sha256:2f87d4f68ae13976c998788d7f7a1083eb3e88b666649d940c6dbc2f873c2fe0",
+      "manifestHash": "sha256:526e44726024095f59b7eb30d8aaa58c296cd85e7966100e90209bf2059ea13c",
       "plannedRuns": 25,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-d11-p3.json",
-      "decisionEvidenceRef": "sha256:2d2d4fcc5fd6216b39f86bae7747421c4c522a4b8df326578557ef9bc096d207"
+      "decisionEvidenceRef": "sha256:371a8fa3c61368f9f80f73d8881b7c7b80be9a65616e8415994206d6dab68b43"
     },
     {
       "shardId": "f-c12-p1",
@@ -3089,13 +3089,13 @@
         "candidate-f6dde19531c77517"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c12-p1.json",
-      "manifestHash": "sha256:139fee28a8e398629f763a19c2713ad3da1c3bdf6dca2aa1eebfb3168ef8759f",
+      "manifestHash": "sha256:71c65ed86a833ee116d3a22f0b6939e2a211620e1e6292542e204c1ac9b9ee86",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p1.json",
-      "decisionEvidenceRef": "sha256:ea1274f343b3208a08e6bb185abf14cc48cde5a10662f08ffeceb63eb52b89d0"
+      "decisionEvidenceRef": "sha256:eb30faaae9c54a2add0a9f83dbba89dbf011ccf12da3550b9a8161ca3c372ecd"
     },
     {
       "shardId": "f-c12-p2",
@@ -3103,13 +3103,13 @@
         "candidate-f6dde19531c77517"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c12-p2.json",
-      "manifestHash": "sha256:ad522c1740a470097fcda2d1fc955b1016d2286fb6fc68c3187c4780781c796f",
+      "manifestHash": "sha256:f770facc72dc36a4b67351d7f116a654f4629d7ca9bd7457168202d0a37139b3",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p2.json",
-      "decisionEvidenceRef": "sha256:6b3006a7586cdc53c2da01ab1ab5e9036227019b92580116f35d885dce749de4"
+      "decisionEvidenceRef": "sha256:7dbd1697aadfeacf026c5c38b4e6f5f3259c9b34f90a50af0976fcfd92b8bf85"
     },
     {
       "shardId": "f-c12-p3",
@@ -3117,13 +3117,13 @@
         "candidate-f6dde19531c77517"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c12-p3.json",
-      "manifestHash": "sha256:cb897b1a8e0a933144c787efb8e2a51412870a30ba4fdf87af25d6a82dd1360b",
+      "manifestHash": "sha256:88c2a38e199fda7d9ff7cfeac49b0e8ece4d1ac799c75cee2d61ec195b42c7cd",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p3.json",
-      "decisionEvidenceRef": "sha256:77a08ca2e543e636dfc9bdbbb8fa10a0439d1b8a9c0a50308b35e0a4668c88af"
+      "decisionEvidenceRef": "sha256:8e708fe746098c6cebcbbb8615e91fc318a3996026fda548e9b2797f9fc185b6"
     },
     {
       "shardId": "f-c12-p4",
@@ -3131,13 +3131,13 @@
         "candidate-f6dde19531c77517"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c12-p4.json",
-      "manifestHash": "sha256:f4be4c0085c283d57f678be1e49e26b7d2dfd793a46f9619a9ed664dc30fdcd6",
+      "manifestHash": "sha256:99167d917b21dada0ae04e1f357bf79bc6231c6b97253829b6cd215a57df83bf",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p4.json",
-      "decisionEvidenceRef": "sha256:fafde9f7151cbd73dca3bdf5d90ce4b6b5d6f19d9c4701a432c397f1bd1c25c0"
+      "decisionEvidenceRef": "sha256:801ad46a5b6b965163508259559ff47edad16274d3fd21000c96d177ac3f8361"
     },
     {
       "shardId": "f-c12-p5",
@@ -3145,13 +3145,13 @@
         "candidate-f6dde19531c77517"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c12-p5.json",
-      "manifestHash": "sha256:baba0a0821398a521d6a213321c1f5b04fcf036748682bbc7e49577960a7db7a",
+      "manifestHash": "sha256:01ff4c684ab9a79567950d41b871a1c395f40a0cf633b8bba66dae6a8ef4a8c8",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p5.json",
-      "decisionEvidenceRef": "sha256:c928bacdaaa948e5aa69dbbfa8d9c3241ae07026b72870c4ff8ffc7870b44b6d"
+      "decisionEvidenceRef": "sha256:cc0b02360a55b00ae5f8f1b996965d6d33af4200c8a58566d19aab22511d7d0d"
     },
     {
       "shardId": "f-c12-p6",
@@ -3159,14 +3159,14 @@
         "candidate-f6dde19531c77517"
       ],
       "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-c12-p6.json",
-      "manifestHash": "sha256:47d924b96ed3b5c98ffc306a97af634a84afceaf4bc481c86b3bb8810cf908b0",
+      "manifestHash": "sha256:72950eba97daf3f67a06592bdc95056969548d56b08d452b4c796afc0f64dc55",
       "plannedRuns": 10,
       "maxRecoveryAttempts": 1,
       "maxWallClockMinutes": 40,
       "eligibleEpoch": true,
       "decisionEvidencePath": "tools/arena-calibration/plans/gate-f-week-full-v2/decisions/f-c12-p6.json",
-      "decisionEvidenceRef": "sha256:eb2548e74c7c56a9174271964b90525c329b03743e9d8d41ddbf0d16cb8ca684"
+      "decisionEvidenceRef": "sha256:7371331e0381cc0290f42d10508df89bb4d3d4d0c64f795c2c370de9e48f0f64"
     }
   ],
-  "createdAt": "2026-08-28T13:15:43.880Z"
+  "createdAt": "2026-08-30T06:52:00.000Z"
 }

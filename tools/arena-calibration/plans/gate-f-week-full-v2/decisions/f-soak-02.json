@@ -2,7 +2,7 @@
   "schema": "arena-calibration.gate-f-decision-evidence.v1",
   "decisionId": "decision-f-soak-02",
   "planId": "gate-f-week-full-v2",
-  "campaignId": "gate-f-week-full-v5",
+  "campaignId": "gate-f-week-full-v6",
   "shardId": "f-soak-02",
   "action": "schedule_shard",
   "riskLevel": "auto_execute",
@@ -14,18 +14,18 @@
     "candidate-dd65977b16a48a35"
   ],
   "manifestPath": "tools/arena-calibration/plans/gate-f-week-full-v2/manifests/f-soak-02.json",
-  "manifestHash": "sha256:9b97e917084cbd83dd5e2fe8499c8613b0ec07bf21809452cfab43bf19bea903",
+  "manifestHash": "sha256:b162d375a44fb7fa11dbe5bc5dc62b5b7c7becc4ab731d9675dcbf5b69d5c548",
   "plannedRuns": 10,
   "humanApprovalRequired": false,
   "evidenceRefs": [
     "sha256:0f1b27722df4940e0fd047e73e8e31d1c78057e8fc4d4b45fe8bd9e8605edd51",
-    "sha256:9b97e917084cbd83dd5e2fe8499c8613b0ec07bf21809452cfab43bf19bea903",
+    "sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb",
     "sha256:a65d27a00cf7191970da4d66da11e4b1978336a02cd08290afcffbdb5b9e06fa",
+    "sha256:b162d375a44fb7fa11dbe5bc5dc62b5b7c7becc4ab731d9675dcbf5b69d5c548",
     "sha256:c0ae68d0247fa97b7fb3aee7d7c94ce808345d6e3837d9f0cf6cff6b6028dd74",
     "sha256:c5f1e29759c1d9e8a65334bf3c322573b4a8cc24b4030e5b1a4013dc3af16027",
-    "sha256:dd65977b16a48a357e6286e3490560cfa1c5ed4c3ff5364a4119601956bf8152",
-    "sha256:ef8895b0f14b65fdb98c53dfac201a4191a41bd0b964c2cdc64857e4e9d3d303"
+    "sha256:dd65977b16a48a357e6286e3490560cfa1c5ed4c3ff5364a4119601956bf8152"
   ],
-  "createdAt": "2026-08-28T13:15:43.880Z",
-  "decisionHash": "sha256:5dda307c5bc47a11430518687f609713371e53194762fba7a30522f55253b3d9"
+  "createdAt": "2026-08-30T06:52:00.000Z",
+  "decisionHash": "sha256:4d251d1c4a8b1c5089cf91ca9eee71dc8c0200c3b81501b1b554c3977053c366"
 }

@@ -270,11 +270,11 @@ node tools/arena-calibration/build-gate-f-week-plan.js `
   --candidates tmp/arena-calibration/intake/gate-a-workbook-audit/normalized-candidates.json `
   --exceptions tmp/arena-calibration/intake/gate-a-workbook-audit/exceptions.json `
   --empirical-timeout-overrides tools/arena-calibration/evidence/gate-f-week-full-v2-empirical-timeout-overrides.json `
-  --soak-admission tools/arena-calibration/evidence/gate-f-week-full-v2-soak-admission.json `
+  --soak-admission tools/arena-calibration/evidence/gate-f-week-full-v2-summon-lineage-v3-soak-admission.json `
   --output-dir tools/arena-calibration/plans/gate-f-week-full-v2 `
-  --plan-id gate-f-week-full-v2 --campaign-id gate-f-week-full-v5 `
-  --battle-semantics-cohort arena-cohort-20260827-stage-outcome-v2 `
-  --battle-build-commit c64a5440e5506a3f1567143711f984d063e56505
+  --plan-id gate-f-week-full-v2 --campaign-id gate-f-week-full-v6 `
+  --battle-semantics-cohort arena-cohort-20260830-summon-lineage-v3 `
+  --battle-build-commit bcfa01935d2f91a29a8a537c328c9190827c4be3
 ```
 
 部署稳定并取得最终提交后，必须在 clean Git worktree 上重新绑定 exact source commit/tree/worktree hash 与当时 formal runtime；不得把冻结前草案中的任何旧 runtime 值当成正式身份：
@@ -282,24 +282,26 @@ node tools/arena-calibration/build-gate-f-week-plan.js `
 ```powershell
 node tools/arena-calibration/gate-fctl.js freeze `
   --draft tools/arena-calibration/plans/gate-f-week-full-v2/plan-draft.json `
-  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v5/frozen
+  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v6/frozen
 
 node tools/arena-calibration/gate-fctl.js arm `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v5/frozen/gate-f-plan.json `
-  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v5/window-<timestamp> `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v6/frozen/gate-f-plan.json `
+  --output-dir tmp/arena-calibration/gate-f/gate-f-week-full-v6/window-<timestamp> `
   --hours 8
 
 node tools/arena-calibration/gate-fctl.js run `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v5/frozen/gate-f-plan.json `
-  --window tmp/arena-calibration/gate-f/gate-f-week-full-v5/window-<timestamp>/idle-window.json `
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v6/frozen/gate-f-plan.json `
+  --window tmp/arena-calibration/gate-f/gate-f-week-full-v6/window-<timestamp>/idle-window.json `
   --max-shards 3 `
   --codex-exe <可选；未给出时自动发现 Codex CLI> `
   --maximum-exception-reviews 1
 
 node tools/arena-calibration/gate-fctl.js status `
-  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v5/frozen/gate-f-plan.json `
-  --output tmp/arena-calibration/gate-f/gate-f-week-full-v5/status.json
+  --plan tmp/arena-calibration/gate-f/gate-f-week-full-v6/frozen/gate-f-plan.json `
+  --output tmp/arena-calibration/gate-f/gate-f-week-full-v6/status.json
 ```
+
+当前 `gate-f-week-full-v6` 切换到 `arena-cohort-20260830-summon-lineage-v3`，战斗语义提交为 `bcfa01935d2f91a29a8a537c328c9190827c4be3`。D10 新鲜诊断为 10/10 完整、0 contamination/error、3 个真实 1800 帧 timeout，正式 runtime 与受保护存档均闭合；随后 `B2/C7/G2/F3/E10` 新 cohort admission probe 为 10/10 finished、0 timeout/error/recovery、正常 shutdown 与存档不变，raw admission hash 为 `sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb`。tracked v2 计划仍是 58 个 scheduled candidate + `B12` quarantine、198 shard / 3,255 run；尚未 freeze/arm，三份正式 fresh soak 尚未执行，旧 v5 的 159 completed shard/2,810 行只保留为历史，不跨 cohort 混计。
 
 只有三份 fresh soak receipt 都为 `completed`，且 exact runtime、原始 JSONL Schema/manifest 绑定、受保护存档集合、磁盘、timeout/error、时长漂移和 0 人工动作测量全部通过，才可在新的有界 window 中去掉 `--max-shards 3` 继续剩余短 shard。`arm` 会拒绝活跃 Launcher/Flash/arena runner、低磁盘和 source/runtime 漂移；显式星期级授权 window 最长 168 小时且可随时用 `gate-fctl.js revoke` 撤销，过期后只允许提交已经产生的 durable facts，不再领取新 shard。全量阶段的纯 `timeout_rate` 超阈值属于候选质量 anomaly：原始行照常 durable 提交，写 `candidate_timeout_anomaly / keep_provisional` deferred item并继续；timeout 仍从强度拟合排除并参与最终候选低-timeout 门。标准/长分片在 exact runtime、存档、磁盘、墙钟和完整 cardinality 全部闭合后，若恢复耗尽且失败行只属于 `contamination/error/invalid_case/spawn_failed`，则 receipt 为 `quarantined`：只隔离由 `caseId` 确定的候选、跳过该候选后续 shard，其他候选继续；这些原始行绝不进入强度拟合。基础设施 soak、`stage_failed/bridge_lost`、duration drift、runtime/save/disk、runner/report/cardinality 异常仍失败。每个控制器最多异步启动一个 `run-exception-review.js`，模型只能在 hash-bound packet 上返回 `confirm_quarantine/likely_legitimate_spawn/request_method_change/abstain` 建议，不能接受样本、恢复候选或阻塞主批；CLI 缺失、超时、失败或非法输出都保持确定性 quarantine。运行监控把 controller、runner、它们的祖先和全部后代视为同一受控进程树；因此内部 `run-checks.js` 启动的 `gate-fctl.js --check` 不构成竞争者，而树外的真实第二 runner 或独立 `Flash.exe` 仍会触发让位。运行中如内容开发启动 Flash、出现 revoke/身份/磁盘异常，driver 会通过本轮 owned `.signal` 请求 abort，并在 300 秒硬上限内让位。已产生的 partial JSONL 逐行以 `manifestHash + runId` durable 提交，重复 attempt 只计一次；失败或恢复耗尽写去重 exception inbox，不要求测试群现场整理或逐批确认。Gate F low-touch 只有在真实最近 20 个 eligible epoch 与全 campaign 两个窗口都满足 attention 门后才成立，fixture 的 20 个 epoch 不能代替实跑。
 

@@ -1,0 +1,43 @@
+{
+  "schema": "arena-calibration.soak-admission.v1",
+  "admissionId": "gate-f-week-full-v2-summon-lineage-v3-stable-soak-admission",
+  "planId": "gate-f-week-full-v2",
+  "battleSemanticsCohortId": "arena-cohort-20260830-summon-lineage-v3",
+  "runtimeIdentity": {
+    "runtimeMode": "formal_runtime",
+    "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "A6A3C16D322C03718679E2E1E83D6EB959D671C3BFA366A1D6C86D3B5CCE6364",
+    "buildIdentity": "48E2ACEA81194C0D6C3A89226DEC2748192612B5514D3F3ADB8444FA4AF6C528",
+    "payloadClosure": "DA7E5BD135FF2407ED7CE459F521BEA95C9CB6F5CC63AA5291ABAC795DAF59F1",
+    "verified": true
+  },
+  "groups": [
+    {
+      "soakIndex": 1,
+      "cells": ["B2", "C7", "G2", "F3", "E10"]
+    },
+    {
+      "soakIndex": 2,
+      "cells": ["B2", "C7", "G2", "F3", "E10"]
+    },
+    {
+      "soakIndex": 3,
+      "cells": ["B2", "C7", "G2", "F3", "E10"]
+    }
+  ],
+  "evidenceRuns": [
+    {
+      "evidenceRunId": "formal-summon-lineage-v3-soak-probe-01-20260830",
+      "manifestPath": "tmp/arena-calibration/summon-lineage-soak-admission-20260830/manifest-snapshot.json",
+      "manifestHash": "sha256:94cc1be94e4c86206af61d41aee8686953f542e72a81c28008b3bd7c97135df9",
+      "manifestFileSha256": "sha256:e7466954bfd863e3075bb633ee61dbeb54f60b6c961971fba377e3db4a38b942",
+      "resultPath": "logs/arena-calibration/gate-f-week-summon-lineage-soak-probe-01-results.jsonl",
+      "resultSnapshotPath": "tmp/arena-calibration/summon-lineage-soak-admission-20260830/result-snapshot.jsonl",
+      "resultFileSha256": "sha256:5f53bdb6c6803482478da4b7a4b9f3238cf0da9668cfb089c2c023c9d102e811",
+      "reportPath": "tmp/arena-calibration/summon-lineage-soak-admission-20260830/report.json",
+      "reportFileSha256": "sha256:9ab882fc7fce4c5b7730f3c3d6d414253e003bc15906d730e75061903f7115ef"
+    }
+  ],
+  "createdAt": "2026-08-30T06:50:58.091Z",
+  "admissionHash": "sha256:a1b445c93b432e719f09472a1e2cea8633c29ddb607e6301207216b3936b37eb"
+}
