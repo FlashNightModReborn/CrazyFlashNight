@@ -55,12 +55,11 @@ function audit(){
       ||!hasAll(interaction,["String(pendingKinds[pendingIndex]) !== 'tooltip'",'authorityPending'])
       ||!hasAll(view,["type:'debug'","scope:'equipment_tuning'",'preview_issued','preview_adopted','commit_issued','inventory_refresh_settled','reconcile_issued','reconcile_adopted'])
       ||!hasAll(tuningHarness,['tooltip-first response interleave preserves candidate activation and adopts the preview token','preview-first response interleave keeps the adopted preview when the late tooltip settles','commit and inventory refresh expose redacted current-build receipts','reconcile issued and adopted expose the exact unknown-write watermark without raw authority data']))throw new Error('tuning concurrency diagnostics or exact authority receipt gate missing');
-  if(!hasAll(view,['this._tooltipEpoch = 0','TuningView.prototype._invalidateTooltipAuthority','TuningView.prototype._adoptSnapshot','self._adoptSnapshot(response.snapshot)','self._adoptSnapshot(committedSnapshot)'])
+  if(!hasAll(view,['this._tooltipEpoch = 0','TuningView.prototype._invalidateTooltipAuthority','TuningView.prototype._adoptSnapshot','self._adoptSnapshot(response.snapshot)','self._adoptSnapshot(committedSnapshot)','TuningView.prototype._resetReplacementAfterCommit',"operation !== 'replace_mod' && operation !== 'detach_mod'","this._operation = 'install_mod'"])
       ||!hasAll(render,['var diagnosticAuthoritySourceKey = Model.diagnosticAuthoritySourceKey','tooltipSnapshot && tooltipSnapshot.inventoryRevision','tooltipSnapshot && tooltipSnapshot.materialRevision','String(candidate.itemName || \'\')','self._tooltipEpoch !== tooltipEpoch','diagnosticAuthoritySourceKey(self._source) !== authoritySourceKey'])
       ||!hasAll(writeLifecycle,['this._adoptSnapshot(authoritativeSnapshot)'])
       ||!hasAll(loadoutLifecycle,['self._adoptSnapshot(response.snapshot)',
-        "operation === 'replace_mod' || operation === 'detach_mod'",
-        "self._operation = 'install_mod'"])
+        'self._resetReplacementAfterCommit(operation)'])
       ||view.includes('self._snapshot = response.snapshot')
       ||view.includes('self._snapshot = committedSnapshot')
       ||writeLifecycle.includes('this._snapshot = authoritativeSnapshot')

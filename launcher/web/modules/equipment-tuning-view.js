@@ -887,11 +887,7 @@ var EquipmentTuningView = (function() {
                 var committedSnapshot = response.snapshot || null;
                 if (committedSnapshot) self._adoptSnapshot(committedSnapshot);
                 self._preview = null;
-                if (committedOperation === 'replace_mod' || committedOperation === 'detach_mod') {
-                    self._replaceCandidateKey = '';
-                    self._replaceCandidateName = '';
-                    self._operation = 'install_mod';
-                }
+                self._resetReplacementAfterCommit(committedOperation);
                 self._lastCommitCallId = '';
                 self._setModIntentPhase('committed_syncing');
                 self._status = noOp ? '无变化，未写入存档'
@@ -1034,6 +1030,14 @@ var EquipmentTuningView = (function() {
             this.scheduleEnhancementPreview(this._targetLevel, 80);
         }
         this.render({preserveScroll:false});
+        return true;
+    };
+
+    TuningView.prototype._resetReplacementAfterCommit = function(operation) {
+        if (operation !== 'replace_mod' && operation !== 'detach_mod') return false;
+        this._replaceCandidateKey = '';
+        this._replaceCandidateName = '';
+        this._operation = 'install_mod';
         return true;
     };
 
