@@ -712,6 +712,11 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                 provideTags: "结构A"
             },
             {
+                name: "插件A备用",
+                use: "头部装备",
+                provideTags: "结构A"
+            },
+            {
                 name: "插件B",
                 use: "头部装备",
                 requireTags: "结构A"
@@ -893,8 +898,20 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         // 查询哪些插件依赖"插件A"
         var dependents:Array = TagManager.getDependentMods(testItem, "插件A");
         var hasDependent:Boolean = (dependents.length == 1 && dependents[0] == "插件B");
+        var redundantProviderItem = {
+            name: "测试装备",
+            value: {
+                mods: ["插件A", "插件A备用", "插件B"]
+            }
+        };
+        var redundantDependents:Array = TagManager.getDependentMods(
+            redundantProviderItem, "插件A");
+        var keepsSupportedMod:Boolean = redundantDependents.length == 0;
 
-        return hasDependent ? "✓ 依赖链测试通过\n" : "✗ 依赖链测试失败（依赖数=" + dependents.length + "）\n";
+        return hasDependent && keepsSupportedMod
+            ? "✓ 依赖链测试通过\n"
+            : "✗ 依赖链测试失败（唯一提供者依赖数=" + dependents.length
+                + "，冗余提供者依赖数=" + redundantDependents.length + "）\n";
     }
 
     /**

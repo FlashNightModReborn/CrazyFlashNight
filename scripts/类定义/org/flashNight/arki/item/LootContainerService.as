@@ -1950,6 +1950,10 @@ class org.flashNight.arki.item.LootContainerService {
                                                includeSnapshots:Boolean):Object {
         var operationId:String = String(pending.operationId);
         var fingerprint:String = String(pending.fingerprint);
+        // includeSnapshots=false 只由 claimBatch 的子提交路径使用。子项仍完成
+        // 资产、dirty/cache 与事件副作用，但 settlement progress 和 durable save
+        // 统一延迟到 finishClaimBatch，避免子 receipt 先把 remaining 减到 0。
+        var deferDurabilityToBatchTail:Boolean = includeSnapshots !== true;
         var source:Object = {
             inventory:pending.sourceInventory,
             slot:Number(pending.sourceSlot),
@@ -1973,8 +1977,9 @@ class org.flashNight.arki.item.LootContainerService {
             dirtyDone:false,
             lootCacheDone:false,
             destinationCacheDone:committed.destinationSlot == undefined,
-            stageProgressDone:record.persistenceRequired !== true,
-            saveDone:includeSnapshots !== true,
+            stageProgressDone:record.persistenceRequired !== true
+                || deferDurabilityToBatchTail,
+            saveDone:deferDurabilityToBatchTail,
             sourceEventPublished:false,
             destinationEventPublished:committed.destinationInventory == undefined,
             collectionEventPublished:committed.collection == undefined,

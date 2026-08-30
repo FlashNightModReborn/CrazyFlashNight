@@ -269,18 +269,20 @@ function auditPluginBuild() {
         }
     }
 
-    const rope = expectDirectPort('绳扣穿孔片', '刀,长枪', '近战,压制近战', '柄侧板');
+    const rope = expectDirectPort('绳扣穿孔片', '刀,长枪', null, '柄侧板');
     if (rope) {
-        const branch = findBranch(child(rope, 'skillSwitch'), 'use', 'weapontype:近战,weapontype:压制近战');
+        if (childText(rope, 'weapontype')) errors.push('绳扣穿孔片 must remain available to all longguns');
+        const branch = findBranch(child(rope, 'skillSwitch'), 'use', 'use:长枪');
         if (expectNode(errors, '绳扣穿孔片.skillBranch', branch)) {
             expectEqual(errors, '绳扣穿孔片.skill', childText(branch, 'skillname'), '旋转抡枪');
         }
     }
 
-    const ring = expectDirectPort('挂环指槽板', '刀,长枪', '近战,压制近战', '柄侧板');
+    const ring = expectDirectPort('挂环指槽板', '刀,长枪', null, '柄侧板');
     if (ring) {
-        const branch = findBranch(at(ring, 'stats', 'useSwitch'), 'use', 'weapontype:近战,weapontype:压制近战');
-        if (expectNode(errors, '挂环指槽板.meleeBranch', branch)) {
+        if (childText(ring, 'weapontype')) errors.push('挂环指槽板 must remain available to all longguns');
+        const branch = findBranch(at(ring, 'stats', 'useSwitch'), 'use', 'use:长枪');
+        if (expectNode(errors, '挂环指槽板.longgunBranch', branch)) {
             expectEqual(errors, '挂环指槽板.weightCoefficient', textAt(branch, 'merge', 'switchstrike', 'weightCoefficient'), '5');
             expectEqual(errors, '挂环指槽板.impactMultiplier', textAt(branch, 'merge', 'switchstrike', 'impactMultiplier'), '5');
         }

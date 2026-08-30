@@ -61,6 +61,11 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                     self._busy = false;
                     if (exactSuccess) {
                         self._adoptSnapshot(response.snapshot);
+                        if (operation === 'replace_mod' || operation === 'detach_mod') {
+                            self._replaceCandidateKey = '';
+                            self._replaceCandidateName = '';
+                            self._operation = 'install_mod';
+                        }
                         self._targetLevel = nextEnhancementLevel(
                             response.snapshot);
                         self._needsReconcile = false;

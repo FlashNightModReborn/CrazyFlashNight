@@ -58,12 +58,14 @@ function audit(){
   if(!hasAll(view,['this._tooltipEpoch = 0','TuningView.prototype._invalidateTooltipAuthority','TuningView.prototype._adoptSnapshot','self._adoptSnapshot(response.snapshot)','self._adoptSnapshot(committedSnapshot)'])
       ||!hasAll(render,['var diagnosticAuthoritySourceKey = Model.diagnosticAuthoritySourceKey','tooltipSnapshot && tooltipSnapshot.inventoryRevision','tooltipSnapshot && tooltipSnapshot.materialRevision','String(candidate.itemName || \'\')','self._tooltipEpoch !== tooltipEpoch','diagnosticAuthoritySourceKey(self._source) !== authoritySourceKey'])
       ||!hasAll(writeLifecycle,['this._adoptSnapshot(authoritativeSnapshot)'])
-      ||!hasAll(loadoutLifecycle,['self._adoptSnapshot(response.snapshot)'])
+      ||!hasAll(loadoutLifecycle,['self._adoptSnapshot(response.snapshot)',
+        "operation === 'replace_mod' || operation === 'detach_mod'",
+        "self._operation = 'install_mod'"])
       ||view.includes('self._snapshot = response.snapshot')
       ||view.includes('self._snapshot = committedSnapshot')
       ||writeLifecycle.includes('this._snapshot = authoritativeSnapshot')
       ||loadoutLifecycle.includes('self._snapshot = response.snapshot')
-      ||!hasAll(tuningHarness,['mod.N remap invalidates the cached body and binds the new inventory lease identity','tier.0 remap refetches the next progression material instead of reusing the prior tier body','unchanged candidate identity refetches stats after an equipment revision change','loadout tooltip authority follows expectedLoadoutRevision and refetches after rebind','late old-epoch tooltip response cannot write the new cache or overwrite the current overlay','reopening Equipment Tuning starts an empty tooltip authority session']))
+      ||!hasAll(tuningHarness,['mod.N remap invalidates the cached body and binds the new inventory lease identity','tier.0 remap refetches the next progression material instead of reusing the prior tier body','unchanged candidate identity refetches stats after an equipment revision change','loadout tooltip authority follows expectedLoadoutRevision and refetches after rebind','late old-epoch tooltip response cannot write the new cache or overwrite the current overlay','reopening Equipment Tuning starts an empty tooltip authority session','loadout detach clears stale replacement state and immediately restores install intent']))
       throw new Error('Equipment Tuning tooltip authority epoch or remap regression gate missing');
   if(!hasAll(model,['function quickCommitEligible','enhance|convert|install_tier|install_mod|replace_mod|detach_mod|detach_all_mods'])
       ||!hasAll(view,['expectedTuningToken',"requestPreview('convert'","if (operation === 'replace_mod')"])

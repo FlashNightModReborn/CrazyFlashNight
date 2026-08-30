@@ -94,7 +94,6 @@
     <mod>
         <name>挂环指槽板</name>
         <use>刀,长枪</use>
-        <weapontype>近战,压制近战</weapontype>
         <stats>
             <flat>
                 <weight>0.5</weight>
@@ -108,7 +107,7 @@
                         </skillmultipliers>
                     </merge>
                 </use>
-                <use name="weapontype:近战,weapontype:压制近战">
+                <use name="use:长枪">
                     <merge>
                         <switchstrike>
                             <weightCoefficient>5</weightCoefficient>
@@ -119,7 +118,7 @@
             </useSwitch>
         </stats>
         <description>带指槽的侧板组件,优化握持防脱。
-        用于刀时强化瞬步斩与凶斩;用于近战型长枪时将切手技重量系数由3提高至5,并将击倒率由5降至1。</description>
+        用于刀时强化瞬步斩与凶斩;用于长枪时将切手技重量系数由3提高至5,并将击倒率由5降至1。</description>
         <tag>柄侧板</tag>
     </mod>
 

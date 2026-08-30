@@ -134,6 +134,57 @@ namespace CF7Launcher.Save
                 if (!IsAbsent(shop["商城购物车"]))
                     shop["商城购物车"] = NormalizeListArray(shop["商城购物车"]);
             }
+
+            NormalizeStageSettlementEmptyArrays(mydata);
+        }
+
+        /// <summary>
+        /// AMF0 cannot distinguish an empty AS2 Array from an empty Object.
+        /// Repair only the array-shaped fields in the known v1 settlement
+        /// contract; unknown versions and non-empty objects remain untouched.
+        /// </summary>
+        private static void NormalizeStageSettlementEmptyArrays(JObject mydata)
+        {
+            JObject ext = mydata["ext"] as JObject;
+            JObject store = ext != null ? ext["stageSettlement"] as JObject : null;
+            if (!HasExactVersion(store, 1)) return;
+
+            JObject pending = store["pending"] as JObject;
+            if (!HasExactVersion(pending, 1)) return;
+
+            NormalizeKnownEmptyArrayField(pending, "manifest");
+            NormalizeKnownEmptyArrayField(pending, "remainingManifest");
+            NormalizeKnownEmptyArrayField(pending, "receipts");
+
+            JObject report = pending["report"] as JObject;
+            if (!HasExactVersion(report, 1)) return;
+
+            NormalizeKnownEmptyArrayField(report, "kills");
+            NormalizeKnownEmptyArrayField(report, "itemFlows");
+        }
+
+        private static void NormalizeKnownEmptyArrayField(JObject owner, string fieldName)
+        {
+            JObject emptyObject = owner != null ? owner[fieldName] as JObject : null;
+            if (emptyObject != null && !emptyObject.HasValues)
+                owner[fieldName] = new JArray();
+        }
+
+        private static bool HasExactVersion(JObject value, int expected)
+        {
+            if (value == null) return false;
+
+            JToken version = value["v"];
+            if (version == null) return false;
+            if (version.Type == JTokenType.Integer)
+                return version.Value<long>() == expected;
+            if (version.Type == JTokenType.Float)
+            {
+                double number = version.Value<double>();
+                return !double.IsNaN(number) && !double.IsInfinity(number)
+                    && number == expected;
+            }
+            return false;
         }
 
         /// <summary>

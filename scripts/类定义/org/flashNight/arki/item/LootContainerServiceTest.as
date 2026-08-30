@@ -899,7 +899,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         var before:Object = snapshot(flow);
         var request:Object = claimBatchParams(before, [0, 1, 2], "batch.success");
         var result:Object = LootContainerService.execute("claimBatch", request);
-        check(result.success && result.authorityRevision == before.authorityRevision + 3
+        var initialBatchValid:Boolean = result.success
+                && result.authorityRevision == before.authorityRevision + 3
                 && result.remainingCount == 0 && result.snapshots.length == 3
                 && flow.inventory.getItem("0") == null
                 && flow.inventory.getItem("1") == null
@@ -907,14 +908,59 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && _root.物品栏.背包.size() == 2
                 && _root.收集品栏.材料.getValue(MATERIAL) == 4
                 && _root.__lootSaveCalls == 1
-                && result.lastAppliedOperationId == "batch.success",
-            "claimBatch 单次协议连续提交异构奖励，只在批末返回一组权威投影");
+                && result.lastAppliedOperationId == "batch.success";
         var duplicate:Object = LootContainerService.execute("claimBatch", request);
-        check(duplicate.success && duplicate.authorityRevision == result.authorityRevision
+        var duplicateValid:Boolean = duplicate.success
+                && duplicate.authorityRevision == result.authorityRevision
                 && duplicate.remainingCount == 0 && _root.物品栏.背包.size() == 2
                 && _root.收集品栏.材料.getValue(MATERIAL) == 4
-                && _root.__lootSaveCalls == 1,
+                && _root.__lootSaveCalls == 1;
+        var persistedBatchValid:Boolean = persistedSettlementBatchCommitsAtTail();
+        check(initialBatchValid && persistedBatchValid,
+            "claimBatch 只在批末返回投影；stage settlement 只落一条 root receipt 并 flush 一次");
+        check(duplicateValid,
             "重复 claimBatch root operation 只返回当前投影，不重放任何子写");
+    }
+
+    private static function persistedSettlementBatchCommitsAtTail():Boolean {
+        resetWorld();
+        StageRunSession.testOnlyReset();
+        _root.关卡可获得奖励品 = [
+            [STACK, 1, 1], [MATERIAL, 1, 1]
+        ];
+        _root.当前为战斗地图 = false;
+
+        var beganRun:Boolean = StageRunSession.begin("批量领奖批尾持久化", "困难");
+        StageRunSession.finish("victory");
+        var prepared:Boolean = StageRunSession.prepareSettlement();
+        var stageState:Object = StageRunSession.testOnlySnapshot();
+        var active:Object = prepared
+            ? LootContainerService.beginStageSettlement(stageState.inventory, stageState.report)
+            : null;
+        var before:Object = active != null && active.success
+            ? snapshot({active:active}) : null;
+        _root.__lootSaveCalls = 0;
+        var request:Object = before != null && before.success
+            ? claimBatchParams(before, [0, 1], "batch.stage.tail") : null;
+        var result:Object = request == null ? null
+            : LootContainerService.execute("claimBatch", request);
+        var storedReceipts:Object = stageState.settlementId == undefined ? null
+            : StageRunSession.getPersistedSettlementReceipts(
+                String(stageState.settlementId));
+
+        var valid:Boolean = beganRun && prepared && result != null && result.success
+                && result.remainingCount == 0
+                && storedReceipts != null && storedReceipts.success
+                && storedReceipts.remainingCount == 0
+                && storedReceipts.receipts.length == 1
+                && storedReceipts.receipts[0].operationId == "batch.stage.tail"
+                && storedReceipts.receipts[0].kind == "claim_batch"
+                && storedReceipts.receipts[0].appliedCount == 2
+                && _root.__lootSaveCalls == 1;
+
+        LootContainerService.testOnlyReset();
+        StageRunSession.testOnlyReset();
+        return valid;
     }
 
     private static function testClaimBatchSkipsCapacityBlockedSources():Void {
