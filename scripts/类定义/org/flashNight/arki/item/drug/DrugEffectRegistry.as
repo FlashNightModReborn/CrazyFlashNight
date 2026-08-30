@@ -34,7 +34,11 @@ class org.flashNight.arki.item.drug.DrugEffectRegistry {
         register(new RegenEffect());
         register(new StateEffect());
         register(new PurifyEffect());
+        register(new BuffDomainEffect());
         register(new BuffEffect());
+        register(new ToughnessBuffEffect());
+        register(new ResistanceBuffEffect());
+        register(new ToughnessRestoreEffect());
         register(new GlobalEffect());
         register(new GrantItemEffect());
         register(new PlayEffectEffect());

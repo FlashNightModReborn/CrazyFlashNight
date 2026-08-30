@@ -14,11 +14,29 @@
     这下好了,质量真的合格.....</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="0" mp="15" target="self" scaleWithAlchemy="true" />
         <effect type="regen" mp="15" duration="300" interval="30" mode="total" id="药剂_缓释_MP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>1</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>22.5</currentValue>
+      <valueCap>200</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>50</marketPrice>
+      <inputDigest>fnv1a32:ff85d75d</inputDigest>
+      <sourceDigest>sha256:aeb44ac11382fd6478dae0a1a731abe517c3e6fa4017959e1774e9ff54918a74</sourceDigest>
+      <auditRef>potion:饮用水易拉罐</auditRef>
+    </balance>
   </item>
   <item>
     <name>牛肉罐头</name>
@@ -31,11 +49,29 @@
     末世前生产的罐头就成为了幸存者们重要的&lt;font color="#eee822"&gt;食物&lt;/font&gt;来源,其中&lt;font color="#eee822"&gt;牛肉罐头&lt;/font&gt;以其高营养价值尤其受人们欢迎。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="5" duration="1500" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>5</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>276.5</currentValue>
+      <valueCap>600</valueCap>
+      <formulaPrice>200</formulaPrice>
+      <marketPrice>300</marketPrice>
+      <inputDigest>fnv1a32:e302611f</inputDigest>
+      <sourceDigest>sha256:ee46f49ec6a8f378212c0bdc29c49fb667f61473c1b15efd9504671c16d52cda</sourceDigest>
+      <auditRef>potion:牛肉罐头</auditRef>
+    </balance>
   </item>
   <item>
     <name>白菜</name>
@@ -48,11 +84,29 @@
     富含水分,可以直接食用补充体力。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="30" mp="30" target="self" scaleWithAlchemy="true" />
         <effect type="regen" hp="30" mp="30" duration="300" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>1</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>90</currentValue>
+      <valueCap>200</valueCap>
+      <formulaPrice>50</formulaPrice>
+      <marketPrice>200</marketPrice>
+      <inputDigest>fnv1a32:ff948e91</inputDigest>
+      <sourceDigest>sha256:147124df6ab20ed3351b11738fdc6303b10dbd629649af9973e8764d63fd0522</sourceDigest>
+      <auditRef>potion:白菜</auditRef>
+    </balance>
   </item>
   <item>
     <name>番茄</name>
@@ -65,11 +119,29 @@
     酸甜可口,略微提振精神。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="4" duration="900" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>2</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>157.2</currentValue>
+      <valueCap>300</valueCap>
+      <formulaPrice>100</formulaPrice>
+      <marketPrice>300</marketPrice>
+      <inputDigest>fnv1a32:6f6cb889</inputDigest>
+      <sourceDigest>sha256:b81be73ae58630328dba4ced47f8a906b828fa8e3e5d37ad91db6cf51083a7cb</sourceDigest>
+      <auditRef>potion:番茄</auditRef>
+    </balance>
   </item>
   <item>
     <name>土豆</name>
@@ -82,11 +154,29 @@
     生吃口感一般,但能提供持久的饱腹感。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="防御力" calc="add_positive" value="6" duration="900" buffId="药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>2</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>157.2</currentValue>
+      <valueCap>300</valueCap>
+      <formulaPrice>100</formulaPrice>
+      <marketPrice>300</marketPrice>
+      <inputDigest>fnv1a32:39d29212</inputDigest>
+      <sourceDigest>sha256:c2583a5f189b5646f8547bd027f26282693a707f5d26bf0cdb6df2c649df3498</sourceDigest>
+      <auditRef>potion:土豆</auditRef>
+    </balance>
   </item>
   <item>
     <name>黄瓜</name>
@@ -99,11 +189,29 @@
     食用后感觉身体轻盈。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="60" mp="60" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.05" duration="900" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>5</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>507.5</currentValue>
+      <valueCap>600</valueCap>
+      <formulaPrice>500</formulaPrice>
+      <marketPrice>300</marketPrice>
+      <inputDigest>fnv1a32:31b2dc5e</inputDigest>
+      <sourceDigest>sha256:d9ee9789d2427dedd289635153130180af74dcbf1469a246d6edd303633691e8</sourceDigest>
+      <auditRef>potion:黄瓜</auditRef>
+    </balance>
   </item>
   <item>
     <name>月饼</name>
@@ -115,12 +223,30 @@
     <description>来自C国的传统习俗,是特殊月满之日必要的节日&lt;font color="#eee822"&gt;食品&lt;/font&gt;,热量还是比较丰富的。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="150" mp="150" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="6" duration="1800" buffId="药剂_伤害加成" />
         <effect type="buff" property="防御力" calc="add_positive" value="6" duration="1800" buffId="药剂_防御力" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>483</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>400</formulaPrice>
+      <marketPrice>800</marketPrice>
+      <inputDigest>fnv1a32:6db73b8a</inputDigest>
+      <sourceDigest>sha256:82add926376ba5d6dd52e5b61616e1bc4c09a3ca89b47d26618b887629a8183c</sourceDigest>
+      <auditRef>potion:月饼</auditRef>
+    </balance>
   </item>
   <item>
     <name>白米饭罐头</name>
@@ -132,11 +258,29 @@
     <description>一开始是给懒人准备的罐头,开罐即可享用一碗香喷喷的米饭,现在给活人准备的罐头,开罐即可享用一碗可能第二天就吃不到的米饭。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="150" mp="150" target="self" scaleWithAlchemy="true" />
         <effect type="regen" hp="400" duration="600" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>5</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>500</currentValue>
+      <valueCap>600</valueCap>
+      <formulaPrice>350</formulaPrice>
+      <marketPrice>1000</marketPrice>
+      <inputDigest>fnv1a32:57c8ee59</inputDigest>
+      <sourceDigest>sha256:9565d221dc15cefc4b7cbbc4cd10ef16c41f35b372cd62a10395fad4d8fac0fe</sourceDigest>
+      <auditRef>potion:白米饭罐头</auditRef>
+    </balance>
   </item>
   <item>
     <name>奶</name>
@@ -154,6 +298,23 @@
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>5</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>400</currentValue>
+      <valueCap>600</valueCap>
+      <formulaPrice>650</formulaPrice>
+      <marketPrice>1000</marketPrice>
+      <inputDigest>fnv1a32:0cb56bbd</inputDigest>
+      <sourceDigest>sha256:27550697a3a939602e4eeb4f4346146508d1898aff059e781f8e73bf30c8f761</sourceDigest>
+      <auditRef>potion:奶</auditRef>
+    </balance>
   </item>
 
   <!-- ========== 战斗食品 (Buff为主，恢复附带) ========== -->
@@ -168,6 +329,7 @@
     末世稀缺的甜蜜,是奢侈品级别的存在。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="80" mp="80" target="self" scaleWithAlchemy="true" />
         <effect type="regen" hp="120" mp="120" duration="90" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.06" duration="600" buffId="药剂_速度" />
@@ -176,6 +338,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>712.229546</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>650</formulaPrice>
+      <marketPrice>700</marketPrice>
+      <inputDigest>fnv1a32:12cf13da</inputDigest>
+      <sourceDigest>sha256:ec083800d66670bcacb80f4cf95114d05eb94b8ad50ead4bad920babdfddf3a1</sourceDigest>
+      <auditRef>potion:棒棒糖</auditRef>
+    </balance>
   </item>
   <item>
     <name>进口香烟</name>
@@ -188,6 +367,7 @@
     尼古丁的刺激让精神持续保持兴奋状态,反应更加敏锐。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="50" mp="100" target="self" scaleWithAlchemy="true" />
         <effect type="regen" mp="200" duration="900" interval="30" mode="total" id="药剂_缓释_MP" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="12" duration="1800" buffId="药剂_伤害加成" />
@@ -195,6 +375,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1689.6</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>2500</formulaPrice>
+      <marketPrice>2000</marketPrice>
+      <inputDigest>fnv1a32:011818eb</inputDigest>
+      <sourceDigest>sha256:dc7dab5260e133c71d7ee7b3a452d2b0ac6879e925e0943c1efd4bfa7f785641</sourceDigest>
+      <auditRef>potion:进口香烟</auditRef>
+    </balance>
   </item>
 
   <!-- ========== 菜品类 (高性价比，需合成) ========== -->
@@ -204,18 +401,36 @@
     <icon>番茄炒蛋</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>2000</price>
+    <price>1550</price>
     <description>king爱吃。
     番茄的维生素与鸡蛋的蛋白质完美结合,这道简单的家常菜在末世中承载着无数人对美好生活的向往。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="65" duration="1800" buffId="药剂_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="35" duration="1800" buffId="药剂_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="20" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="20" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.02" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1315</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>1550</formulaPrice>
+      <marketPrice>1550</marketPrice>
+      <inputDigest>fnv1a32:08e83a92</inputDigest>
+      <sourceDigest>sha256:104b5a2e0e64c6417c93fff715661083b3e2ec72077a0751801da012a9b7877e</sourceDigest>
+      <auditRef>potion:番茄炒蛋</auditRef>
+    </balance>
   </item>
   <item>
     <name>土豆炒肉丝</name>
@@ -223,18 +438,36 @@
     <icon>土豆炒肉丝</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>2000</price>
+    <price>1600</price>
     <description>土豆的淀粉提供饱腹感,猪肉的蛋白质增强力量。
     营养均衡的家常菜。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="60" duration="1800" buffId="药剂_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="药剂_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="30" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.02" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1345.5</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>1600</formulaPrice>
+      <marketPrice>1600</marketPrice>
+      <inputDigest>fnv1a32:ad5d8911</inputDigest>
+      <sourceDigest>sha256:ce746206a1e1bd67a8ae0d14a468015e95497f49b49f17e290c27ec7e7fcd188</sourceDigest>
+      <auditRef>potion:土豆炒肉丝</auditRef>
+    </balance>
   </item>
   <item>
     <name>黄瓜炒肉片</name>
@@ -242,16 +475,34 @@
     <icon>黄瓜炒肉片</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>2000</price>
+    <price>1550</price>
     <description>黄瓜的水分与猪肉的营养,清爽而有力。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="70" duration="1800" buffId="药剂_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="药剂_速度" />
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="25" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.03" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1315</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>1550</formulaPrice>
+      <marketPrice>1550</marketPrice>
+      <inputDigest>fnv1a32:803eb628</inputDigest>
+      <sourceDigest>sha256:829e4c6647fa3c4d7545f5e61d188c8fe3da9bc42ba3aceb3c60528e37103ed1</sourceDigest>
+      <auditRef>potion:黄瓜炒肉片</auditRef>
+    </balance>
   </item>
   <item>
     <name>蒜蓉炒空心菜</name>
@@ -259,17 +510,35 @@
     <icon>蒜蓉炒空心菜</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>2000</price>
+    <price>1600</price>
     <description>大蒜的辛香刺激感官,空心菜清热解毒。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="药剂_速度" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.02" duration="1800" buffId="药剂_速度" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="药剂_伤害加成" />
         <effect type="purify" value="5" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1279.5</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>1600</formulaPrice>
+      <marketPrice>1600</marketPrice>
+      <inputDigest>fnv1a32:5ed92f50</inputDigest>
+      <sourceDigest>sha256:8004f4f5f804c22f0f02f3bda7619da7d0f43d04f97e7bc6aa9e6171472eb986</sourceDigest>
+      <auditRef>potion:蒜蓉炒空心菜</auditRef>
+    </balance>
   </item>
   <item>
     <name>清炒白菜</name>
@@ -277,18 +546,36 @@
     <icon>清炒白菜</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>2000</price>
+    <price>1300</price>
     <description>简单的白菜,清淡而持久的能量补充。
     清热解毒,调理肠胃。</description>
     <data>
       <effects>
-        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
-        <effect type="regen" hp="400" mp="400" duration="900" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="50" duration="1800" buffId="药剂_防御力" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="150" mp="150" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="300" mp="300" duration="900" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="30" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="18" duration="1800" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1295.4</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>1300</formulaPrice>
+      <marketPrice>1300</marketPrice>
+      <inputDigest>fnv1a32:66f8edb9</inputDigest>
+      <sourceDigest>sha256:87ed356a205c80604935c0d11a2143d40407ca105bf70a93bad76ae9f202d0bf</sourceDigest>
+      <auditRef>potion:清炒白菜</auditRef>
+    </balance>
   </item>
   <item>
     <name>清炒花菜</name>
@@ -296,18 +583,36 @@
     <icon>清炒花菜</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>2000</price>
+    <price>1500</price>
     <description>花菜富含维生素,增强身体抵抗力。
     口感清脆,营养丰富。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="55" duration="1800" buffId="药剂_防御力" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="45" duration="1800" buffId="药剂_伤害加成" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="药剂_速度" />
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="25" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.02" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1284.5</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>1500</formulaPrice>
+      <marketPrice>1500</marketPrice>
+      <inputDigest>fnv1a32:0abd4c83</inputDigest>
+      <sourceDigest>sha256:c9116af5c1dce9234edace12b96461f57c5fb2dfaf9ef340f208a22a15539f18</sourceDigest>
+      <auditRef>potion:清炒花菜</auditRef>
+    </balance>
   </item>
   <item>
     <name>清炒土豆丝</name>
@@ -315,18 +620,36 @@
     <icon>清炒土豆丝</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>2000</price>
+    <price>1350</price>
     <description>土豆的淀粉带来持久的饱腹感和防护力。
     酸辣口味开胃下饭。</description>
     <data>
       <effects>
-        <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="防御力" calc="add_positive" value="70" duration="1800" buffId="药剂_防御力" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="35" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="15" duration="1800" buffId="药剂_伤害加成" />
         <effect type="regen" hp="300" duration="600" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1312.5</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>1350</formulaPrice>
+      <marketPrice>1350</marketPrice>
+      <inputDigest>fnv1a32:161962b7</inputDigest>
+      <sourceDigest>sha256:61355c80bdd085fe590ddaa50e43fc1b769b0714536173af033b311c58d23702</sourceDigest>
+      <auditRef>potion:清炒土豆丝</auditRef>
+    </balance>
   </item>
   <item>
     <name>葱花炒蛋</name>
@@ -334,18 +657,36 @@
     <icon>葱花炒蛋</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>2000</price>
+    <price>1500</price>
     <description>葱花的辛香与鸡蛋的营养,简单却有效。
     家常味道,温暖人心。</description>
     <data>
       <effects>
-        <effect type="heal" hp="500" mp="500" target="self" scaleWithAlchemy="true" />
-        <effect type="buff" property="伤害加成" calc="add_positive" value="55" duration="1800" buffId="药剂_伤害加成" />
-        <effect type="buff" property="防御力" calc="add_positive" value="40" duration="1800" buffId="药剂_防御力" />
-        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
+        <effect type="buffDomain" domain="meal" />
+        <effect type="heal" hp="200" mp="200" target="self" scaleWithAlchemy="true" />
+        <effect type="buff" property="伤害加成" calc="add_positive" value="18" duration="1800" buffId="药剂_伤害加成" />
+        <effect type="buff" property="防御力" calc="add_positive" value="22" duration="1800" buffId="药剂_防御力" />
+        <effect type="buff" property="行走X速度" calc="mult_positive" value="1.02" duration="1800" buffId="药剂_速度" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1302.8</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>1500</formulaPrice>
+      <marketPrice>1500</marketPrice>
+      <inputDigest>fnv1a32:cfda2672</inputDigest>
+      <sourceDigest>sha256:fd7b48a0136a338fde665fbd929f4b2eebca01a8f3653f064c4dcf4516285cd6</sourceDigest>
+      <auditRef>potion:葱花炒蛋</auditRef>
+    </balance>
   </item>
 
   <!-- ========== 特殊品 (独立验算) ========== -->
@@ -363,6 +704,7 @@
     有人说这是知识,有人说这是诅咒,但所有喝过的人都明白——&lt;font color="#8B0000"&gt;回头路早已消失在第一口酒里&lt;/font&gt;。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <!-- heal: 即时恢复 -->
         <effect type="heal" hp="100" mp="100" target="self" scaleWithAlchemy="true" />
         <!-- regen: 缓释恢复 -->
@@ -383,6 +725,24 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>exception</balanceMode>
+      <status>proposed</status>
+      <currentValue>5404.986628</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>9150</formulaPrice>
+      <marketPrice>2000</marketPrice>
+      <inputDigest>fnv1a32:b3a84073</inputDigest>
+      <sourceDigest>sha256:9698eb484f726746826c9f050eab273a0143fabed1e013a433a13dc9c1ab140a</sourceDigest>
+      <auditRef>potion:情报鸡尾酒</auditRef>
+      <exceptionCode>quest-intelligence-payload</exceptionCode>
+    </balance>
   </item>
 
   <!-- ========== 奢侈品 (叙事溢价) ========== -->
@@ -397,6 +757,7 @@
     酸甜的口感令人精神振奋。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="600" mp="600" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.15" duration="1800" buffId="药剂_速度" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="30" duration="1800" buffId="药剂_伤害加成" />
@@ -404,6 +765,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>45</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>4280.5</currentValue>
+      <valueCap>4600</valueCap>
+      <formulaPrice>10550</formulaPrice>
+      <marketPrice>4000</marketPrice>
+      <inputDigest>fnv1a32:58332ce2</inputDigest>
+      <sourceDigest>sha256:4863f3a62e4fea91d8bd1be6a5692e7ffd75a891a8ed1c351acedc2f26e9b1ce</sourceDigest>
+      <auditRef>potion:菠萝罐头</auditRef>
+    </balance>
   </item>
   <item>
     <name>巧克力板</name>
@@ -416,12 +794,30 @@
     高糖分带来的能量爆发让你行动更加敏捷,精神亢奋。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="300" mp="600" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.12" duration="1800" buffId="药剂_速度" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="28" duration="1800" buffId="药剂_伤害加成" />
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>35</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>3242.4</currentValue>
+      <valueCap>3600</valueCap>
+      <formulaPrice>6200</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:af039f39</inputDigest>
+      <sourceDigest>sha256:bd99afbab6e1c79ff55585877009f1033c42abb14051d5a2e227a8447cd7a847</sourceDigest>
+      <auditRef>potion:巧克力板</auditRef>
+    </balance>
   </item>
   <item>
     <name>番茄炒鸡蛋罐头</name>
@@ -434,6 +830,7 @@
     此罐头在末日社会是高级货,这罐头本身并不稀少,那么为什么是高级货呢?每吃一口,都是对过去美好生活的&lt;font color="#00FF00"&gt;回忆&lt;/font&gt;。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="600" mp="800" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="防御力" calc="add_positive" value="35" duration="1800" buffId="药剂_防御力" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="40" duration="1800" buffId="药剂_伤害加成" />
@@ -441,6 +838,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>50</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>4846.5</currentValue>
+      <valueCap>5100</valueCap>
+      <formulaPrice>13550</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:97ba19b7</inputDigest>
+      <sourceDigest>sha256:8f71714c5f93db06f7c4414746b3620637404d42bd2db052d675f713e9d2f477</sourceDigest>
+      <auditRef>potion:番茄炒鸡蛋罐头</auditRef>
+    </balance>
   </item>
   <item>
     <name>啤酒</name>
@@ -453,6 +867,7 @@
     微醺状态下攻击更加凶猛,但防御意识也会下降。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="300" mp="800" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="50" duration="1800" buffId="药剂_伤害加成" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.10" duration="1800" buffId="药剂_速度" />
@@ -460,6 +875,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>35</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>3357</currentValue>
+      <valueCap>3600</valueCap>
+      <formulaPrice>6300</formulaPrice>
+      <marketPrice>6000</marketPrice>
+      <inputDigest>fnv1a32:72ac8374</inputDigest>
+      <sourceDigest>sha256:6bb9891bfb8bf633de56211a4a49d45f4781363d516c483787e3f9fe600ebddb</sourceDigest>
+      <auditRef>potion:啤酒</auditRef>
+    </balance>
   </item>
   <item>
     <name>超级棒棒糖</name>
@@ -472,6 +904,7 @@
     迷糊老师发明的超级棒棒糖,更有额外的功效。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="400" mp="400" target="self" scaleWithAlchemy="true" />
         <effect type="regen" hp="200" mp="200" duration="900" interval="30" mode="total" id="药剂_缓释_HP" scaleWithAlchemy="true" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.12" duration="1800" buffId="药剂_速度" />
@@ -480,6 +913,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>35</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>3598.6</currentValue>
+      <valueCap>3600</valueCap>
+      <formulaPrice>7300</formulaPrice>
+      <marketPrice>7000</marketPrice>
+      <inputDigest>fnv1a32:7093083b</inputDigest>
+      <sourceDigest>sha256:774c409b014e534b7c60902601df02511007f7bee28d4a11ef8873e707e86ef8</sourceDigest>
+      <auditRef>potion:超级棒棒糖</auditRef>
+    </balance>
   </item>
   <item>
     <name>红酒</name>
@@ -492,6 +942,7 @@
     优质红酒带来的微醺状态更加持久而强烈,是战前最佳的激励饮品。</description>
     <data>
       <effects>
+        <effect type="buffDomain" domain="meal" />
         <effect type="heal" hp="700" mp="1200" target="self" scaleWithAlchemy="true" />
         <effect type="buff" property="伤害加成" calc="add_positive" value="95" duration="1800" buffId="药剂_伤害加成" />
         <effect type="buff" property="行走X速度" calc="mult_positive" value="1.20" duration="1800" buffId="药剂_速度" />
@@ -499,5 +950,22 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>65</sourceLevel>
+      <domain>meal</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>6383.5</currentValue>
+      <valueCap>6600</valueCap>
+      <formulaPrice>19100</formulaPrice>
+      <marketPrice>10000</marketPrice>
+      <inputDigest>fnv1a32:6f666dda</inputDigest>
+      <sourceDigest>sha256:24c1660a87ca662db3b8fd79543b4d1226b6c906cc3552efb9dc4152724db11e</sourceDigest>
+      <auditRef>potion:红酒</auditRef>
+    </balance>
   </item>
 </root>

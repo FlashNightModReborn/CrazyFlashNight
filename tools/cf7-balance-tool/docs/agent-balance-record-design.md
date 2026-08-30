@@ -247,3 +247,19 @@ git diff --check
 - 验证矩阵：[agentsDoc/testing-guide.md](../../../agentsDoc/testing-guide.md)
 - AS2 → Web 护栏：[agentsDoc/as2-web-panel-migration.md](../../../agentsDoc/as2-web-panel-migration.md)
 - 公式实现：`packages/core/src/formulas/weapons.ts`
+
+## 10. 药剂公式族的并行投影
+
+药剂/食品不复用 weapon v1 profile，也不进入武器 `balanceSummary`。其人工方案、机械审计与 item 根旁路同样遵循“只维护一个人工源、其余机械生成”的原则，但使用独立入口：
+
+| 层 | 药剂入口 |
+|---|---|
+| 业务规则 | `docs/potion-balance-rulebook.md` |
+| 人工方案 | `records/potion-balance-plan.xml` |
+| 机械审计 | `records/potion-balance-audit.xml` |
+| 公式 | `packages/core/src/formulas/potions.ts::computePotionV2Row()` |
+| 同步 / 反查 | `npm run potion-balance-sync` / `npm run potion-balance-check` |
+
+同步器必须从实际物品 `<effects>` 派生即时恢复、缓释恢复、Buff、净化和专用韧性输入；不得在计划表再抄一套战斗数值。item 根 `<balance>` 只保存来源等级、域、状态、价格/配额结果、digest 与审计引用，加载后仍由 `ItemUtil` 从一般物品树剥离。
+
+药剂 v2 尚未登记进公式权威工作簿，因此当前全链统一标记 `authorityStatus=workbook-registration-pending`。同步和静态检查通过只证明三份投影一致，不能代替工作簿登记或 Flash 实机验收；`runtime-test-pending` 也不能由公式门自动提升。

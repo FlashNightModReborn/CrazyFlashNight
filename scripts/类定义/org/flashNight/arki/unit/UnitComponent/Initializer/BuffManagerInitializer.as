@@ -4,8 +4,23 @@ import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
+import org.flashNight.arki.component.StatHandler.ImpactHandler;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer {
+
+    /**
+     * Buff 属性变化后的派生刷新表。处理函数显式接收宿主，避免静态表捕获单位引用。
+     * 新增派生关系时只登记一项，不在 BuffManager 回调里扩张条件分支。
+     */
+    private static var _propertyChangeHandlers:Object = initializePropertyChangeHandlers();
+
+    private static function initializePropertyChangeHandlers():Object {
+        var handlers:Object = {};
+        handlers["韧性系数"] = function(target:MovieClip, newValue:Number):Void {
+            ImpactHandler.refreshImpactDerived(target);
+        };
+        return handlers;
+    }
 
     /**
      * 创建新的 BuffManager 实例
@@ -14,6 +29,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
      */
     private static function createManager(target:MovieClip):BuffManager {
         // 构造时传入 target 作为 owner，和一组可选回调
+        // 只捕获共享静态表的引用；不为每个单位重新创建处理器或分发表。
+        var propertyChangeHandlers:Object = _propertyChangeHandlers;
         return new BuffManager(
             target,
             {
@@ -23,6 +40,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
                 },
                 onBuffRemoved: function(id:String, buff:IBuff):Void {
                     // _root.服务器.发布服务器消息("remove buff " + id + " : " + buff);
+                },
+                onPropertyChanged: function(propertyName:String, newValue:Number):Void {
+                    var handler:Function = propertyChangeHandlers[propertyName];
+                    if (handler != undefined) handler(target, newValue);
                 }
             }
         );

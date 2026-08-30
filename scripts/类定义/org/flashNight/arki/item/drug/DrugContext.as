@@ -24,11 +24,15 @@ class org.flashNight.arki.item.drug.DrugContext {
     /** 完整物品数据 */
     public var itemData:Object;
 
+    /** 当前使用声明的持续效果域；空值表示本次使用不参与域互斥 */
+    public var activeBuffDomain:String;
+
     /**
      * 构造函数
      */
     public function DrugContext() {
         this.alchemyLevel = 0;
+        this.activeBuffDomain = null;
     }
 
     /**
@@ -79,6 +83,65 @@ class org.flashNight.arki.item.drug.DrugContext {
         return this.target != null &&
                this.target.hp > 0 &&
                this.drugData != null;
+    }
+
+    // ========================================
+    // 持续效果域（一个餐食 + 一个强化剂）
+    // ========================================
+
+    /**
+     * 清除同域上一次药剂注册的持续 Buff，并开始收集本次使用的新 Buff ID。
+     * 即时恢复、净化等没有注册 ID 的效果不受影响。
+     */
+    public function beginBuffDomain(domain:String):Boolean {
+        if (!this.target || !this.target.buffManager) return false;
+        if (domain != "meal" && domain != "enhancer") {
+            trace("[DrugContext] 未知的持续效果域: " + domain);
+            return false;
+        }
+
+        var registry:Object = this.target._drugBuffDomainRegistry;
+        if (!registry) {
+            registry = {};
+            this.target._drugBuffDomainRegistry = registry;
+        }
+
+        var oldIds:Array = registry[domain];
+        if (oldIds instanceof Array) {
+            for (var i:Number = 0; i < oldIds.length; i++) {
+                var oldId:String = oldIds[i];
+                if (oldId && oldId.length > 0) {
+                    this.target.buffManager.removeBuff(oldId);
+                }
+            }
+            this.target.buffManager.update(0);
+        }
+
+        registry[domain] = [];
+        this.activeBuffDomain = domain;
+        return true;
+    }
+
+    /** 将一个实际注册到 BuffManager 的 ID 归入当前效果域。 */
+    public function registerDomainBuffId(buffId:String):Void {
+        if (!this.activeBuffDomain || !buffId || buffId.length == 0 || !this.target) return;
+
+        var registry:Object = this.target._drugBuffDomainRegistry;
+        if (!registry) {
+            registry = {};
+            this.target._drugBuffDomainRegistry = registry;
+        }
+
+        var ids:Array = registry[this.activeBuffDomain];
+        if (!(ids instanceof Array)) {
+            ids = [];
+            registry[this.activeBuffDomain] = ids;
+        }
+
+        for (var i:Number = 0; i < ids.length; i++) {
+            if (ids[i] == buffId) return;
+        }
+        ids.push(buffId);
     }
 
     // ========================================

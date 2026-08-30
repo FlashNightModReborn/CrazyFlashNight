@@ -17,6 +17,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>1</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>150</currentValue>
+      <valueCap>200</valueCap>
+      <formulaPrice>100</formulaPrice>
+      <marketPrice>100</marketPrice>
+      <inputDigest>fnv1a32:a61efa89</inputDigest>
+      <sourceDigest>sha256:d315599ed1567bb5e64f041c942379ca0a2eb37f3d71ac46c66fd4b735f2311f</sourceDigest>
+      <auditRef>potion:普通hp药剂</auditRef>
+    </balance>
   </item>
   <item>
     <name>普通mp药剂</name>
@@ -33,6 +50,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>1</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>100</currentValue>
+      <valueCap>200</valueCap>
+      <formulaPrice>50</formulaPrice>
+      <marketPrice>50</marketPrice>
+      <inputDigest>fnv1a32:0fb46469</inputDigest>
+      <sourceDigest>sha256:25595ee361221217bf947628170307390d0047482d615cc11be64af1f47eac49</sourceDigest>
+      <auditRef>potion:普通mp药剂</auditRef>
+    </balance>
   </item>
   <item>
     <name>抗生素</name>
@@ -49,6 +83,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>5</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>350</currentValue>
+      <valueCap>600</valueCap>
+      <formulaPrice>250</formulaPrice>
+      <marketPrice>250</marketPrice>
+      <inputDigest>fnv1a32:a522d566</inputDigest>
+      <sourceDigest>sha256:06c6842030517049e0f62b3f0f4c785598efbe0276b2159bbcc202cf513afc7e</sourceDigest>
+      <auditRef>potion:抗生素</auditRef>
+    </balance>
   </item>
   <item>
     <name>普通hp粉尘</name>
@@ -64,6 +115,23 @@
         <effect type="heal" hp="500" mp="0" target="group" scaleWithAlchemy="true" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1000</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>750</formulaPrice>
+      <marketPrice>750</marketPrice>
+      <inputDigest>fnv1a32:a54b902c</inputDigest>
+      <sourceDigest>sha256:07288c37e91414ae6f34d4d30739731c5b16a96d7813c833600c48c3f722648b</sourceDigest>
+      <auditRef>potion:普通hp粉尘</auditRef>
+    </balance>
   </item>
   <item>
     <name>普通mp粉尘</name>
@@ -80,6 +148,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>5</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>350</currentValue>
+      <valueCap>600</valueCap>
+      <formulaPrice>250</formulaPrice>
+      <marketPrice>500</marketPrice>
+      <inputDigest>fnv1a32:aa9dd2ae</inputDigest>
+      <sourceDigest>sha256:4530ed97ad5854ad6321e56e4a129fa72bf10739f829f8e9ea394f88ecb1092f</sourceDigest>
+      <auditRef>potion:普通mp粉尘</auditRef>
+    </balance>
   </item>
   <item>
     <name>格格巫的毒</name>
@@ -97,6 +182,23 @@
         <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>weapon-agent</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>857.014434</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>550</formulaPrice>
+      <marketPrice>500</marketPrice>
+      <inputDigest>fnv1a32:d46e31c1</inputDigest>
+      <sourceDigest>sha256:3f573fce45dccb240dfb9fe27e31712d920665f5c469432673e5cc5bc789d900</sourceDigest>
+      <auditRef>potion:格格巫的毒</auditRef>
+    </balance>
   </item>
   <item>
     <name>肾上腺素</name>
@@ -112,6 +214,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>5</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>300</currentValue>
+      <valueCap>600</valueCap>
+      <formulaPrice>200</formulaPrice>
+      <marketPrice>200</marketPrice>
+      <inputDigest>fnv1a32:63bee47e</inputDigest>
+      <sourceDigest>sha256:e2923d372a029860adc85af12812fc4d1c2b1cd9c91af3175784946f73d276d7</sourceDigest>
+      <auditRef>potion:肾上腺素</auditRef>
+    </balance>
   </item>
   <item>
     <name>加强抗生素药剂</name>
@@ -127,6 +246,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>800</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>750</formulaPrice>
+      <marketPrice>800</marketPrice>
+      <inputDigest>fnv1a32:11bf4170</inputDigest>
+      <sourceDigest>sha256:699602dc9ae42662894f425f0c9dc6253154cf2e2eeb6bcc790aab5cfcdba605</sourceDigest>
+      <auditRef>potion:加强抗生素药剂</auditRef>
+    </balance>
   </item>
   <item>
     <name>加强mp药剂</name>
@@ -142,6 +278,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>10</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>600</currentValue>
+      <valueCap>1100</valueCap>
+      <formulaPrice>500</formulaPrice>
+      <marketPrice>500</marketPrice>
+      <inputDigest>fnv1a32:e1817e0e</inputDigest>
+      <sourceDigest>sha256:a73e5d52c23b8dc8b38ede589e586257df73781fb924f501dc0745315252d2a1</sourceDigest>
+      <auditRef>potion:加强mp药剂</auditRef>
+    </balance>
   </item>
   <item>
     <name>战队药箱</name>
@@ -157,6 +310,23 @@
         <effect type="heal" hp="1500" mp="0" target="group" scaleWithAlchemy="true" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>30</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>3000</currentValue>
+      <valueCap>3100</valueCap>
+      <formulaPrice>5100</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <inputDigest>fnv1a32:302ea948</inputDigest>
+      <sourceDigest>sha256:5d2e5acd8b7a5a6c0a97cfbd83794030398d218acc311f486ddcb1bb82786db2</sourceDigest>
+      <auditRef>potion:战队药箱</auditRef>
+    </balance>
   </item>
   <item>
     <name>大HP药剂</name>
@@ -175,6 +345,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1500</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>2550</formulaPrice>
+      <marketPrice>2500</marketPrice>
+      <inputDigest>fnv1a32:ff2afc24</inputDigest>
+      <sourceDigest>sha256:c0e8df98e7f311d5b961a4e776e0c20b80c248a4e1f12f8e798b95921435734a</sourceDigest>
+      <auditRef>potion:大HP药剂</auditRef>
+    </balance>
   </item>
   <item>
     <name>大MP药剂</name>
@@ -191,6 +378,23 @@
         <effect type="playEffect" name="药剂动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>15</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1500</currentValue>
+      <valueCap>1600</valueCap>
+      <formulaPrice>2550</formulaPrice>
+      <marketPrice>2500</marketPrice>
+      <inputDigest>fnv1a32:744b1a15</inputDigest>
+      <sourceDigest>sha256:e2262ba126544d49e18c05b4647d16199b62e43a5b2b39878928300265c88919</sourceDigest>
+      <auditRef>potion:大MP药剂</auditRef>
+    </balance>
   </item>
   <item>
     <name>净化药剂</name>
@@ -207,6 +411,23 @@
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>30</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>3000</currentValue>
+      <valueCap>3100</valueCap>
+      <formulaPrice>6000</formulaPrice>
+      <marketPrice>6000</marketPrice>
+      <inputDigest>fnv1a32:1825c0bf</inputDigest>
+      <sourceDigest>sha256:2cd67db8976bb5208e423badc32229f4e59321786ee460afa1764664694e73bf</sourceDigest>
+      <auditRef>potion:净化药剂</auditRef>
+    </balance>
   </item>
   <item>
     <name>稀释的毒</name>
@@ -225,6 +446,23 @@
         <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>25</sourceLevel>
+      <domain>weapon-agent</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2580.576215</currentValue>
+      <valueCap>2600</valueCap>
+      <formulaPrice>7050</formulaPrice>
+      <marketPrice>7000</marketPrice>
+      <inputDigest>fnv1a32:3eb52b37</inputDigest>
+      <sourceDigest>sha256:288418d1021f52dee0dee629f07a930bb045dc5cc0f6192c1d5cf86cda0f382f</sourceDigest>
+      <auditRef>potion:稀释的毒</auditRef>
+    </balance>
   </item>
   <item>
     <name>合成纳米毒</name>
@@ -243,6 +481,23 @@
         <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>50</sourceLevel>
+      <domain>weapon-agent</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>4644.154307</currentValue>
+      <valueCap>5100</valueCap>
+      <formulaPrice>30350</formulaPrice>
+      <marketPrice>30000</marketPrice>
+      <inputDigest>fnv1a32:46fccddf</inputDigest>
+      <sourceDigest>sha256:caebb481dcb4cd62a3b034c8e1bd7b803f3a9d45aaf2e582ce1c11d06498f58e</sourceDigest>
+      <auditRef>potion:合成纳米毒</auditRef>
+    </balance>
   </item>
   <item>
     <name>高纯度合成毒</name>
@@ -262,6 +517,23 @@
         <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>70</sourceLevel>
+      <domain>weapon-agent</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>6753.885585</currentValue>
+      <valueCap>7100</valueCap>
+      <formulaPrice>44150</formulaPrice>
+      <marketPrice>80000</marketPrice>
+      <inputDigest>fnv1a32:fcc0c6c2</inputDigest>
+      <sourceDigest>sha256:f8c89456d15c34118b15f67956c4a2b00f21c13c0a5f32f40801def97d6d2022</sourceDigest>
+      <auditRef>potion:高纯度合成毒</auditRef>
+    </balance>
   </item>
   <item>
     <name>丽丽丝的毒</name>
@@ -279,5 +551,23 @@
         <effect type="playEffect" name="淬毒动画" />
       </effects>
     </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>weapon-agent</domain>
+      <balanceMode>exception</balanceMode>
+      <status>proposed</status>
+      <currentValue>156904.426054</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>1026050</formulaPrice>
+      <marketPrice>1000000</marketPrice>
+      <inputDigest>fnv1a32:d057820c</inputDigest>
+      <sourceDigest>sha256:77769cd0f04a4ed4dbe7833db11f86c41c0eb9eae7c5af4165a07cf186a889f7</sourceDigest>
+      <auditRef>potion:丽丽丝的毒</auditRef>
+      <exceptionCode>story-apex-toxin</exceptionCode>
+    </balance>
   </item>
 </root>

@@ -278,11 +278,24 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 喷火视觉风格使用 `vfxStyle=flame_stream` / `vfxPreset=flame_stream`，常用字段包括 `rayLength`、`rayWidthFactor`、`damageFalloff`、`thickness`、`waveAmp`、`waveLen`、`waveSpeed`、`tongueCount`、`tipBloomScale`、`smokeColor`、`visualDuration`、`fadeOutDuration`。`rayWidthFactor>0` 时运行时走带宽射线碰撞，半宽由 `Z轴攻击范围 * rayWidthFactor * 0.5` 计算；视觉宽度仍由 `thickness/waveAmp` 等字段独立控制。
 
-### 装备平衡记录 `<balance>`
+### 消耗品药效 `<effects>` 与持续效果域
 
-`<balance>` 的原则是**只记录 XML `<data>` 中没有的公式输入与最小展示门**，不要复制 `level/weight/defence/hp/mp/damage/power/interval` 等现有数值。AS2 战斗逻辑不消费它；展示层只允许从严格验证的武器 profile 生成最小 `balanceSummary`，不能让 Web 自行读取审计原文或推断状态。
+`data/items/消耗品_药剂*.xml` 的 `<effects>` 按物理顺序执行。现有基础类型为 `heal / regen / state / purify / buff / playEffect / message / grantItem / global`；九龙批次新增四个封闭类型：
+
+- `buffDomain domain="meal|enhancer"`：必须位于持续效果之前；移除同域旧药剂登记的 Buff，再登记本次 `buff`、`regen` 和专用 Buff 的真实返回 ID。`meal` 与 `enhancer` 各保留一个槽且可以并存，即时医疗效果不占槽。
+- `resistanceBuff value duration buffId`：对 `魔法抗性.电/热/冷/波/蚀/毒/冲` 七个叶子路径施加同值增益；不得把 `魔法抗性` 对象交给普通数值 Buff。
+- `toughnessBuff value duration buffId`：`value` 使用装备 XML 的 `toughness` 点数口径；运行时添加 `基础韧性系数 × value / 100`，不得对已含装备值的最终韧性系数再次乘算。
+- `restoreToughness`：同时清零 `remainingImpactForce` 与 `impactDecayBaseForce` 并刷新派生显示；不改 `lastHitTime`，不撤销已进入的控制状态。
+
+域注册表只保存 `BuffManager.addBuff()` 返回的外部 ID，不能保存 MetaBuff 内部 ID。完整参数、顺序与 Tooltip 约束见 [`data/items/消耗品_药剂.md`](../data/items/消耗品_药剂.md)。上述三个新战斗数值路径在 Flash 旅程通过前必须保持 `runtime-test-pending`。
+
+### 平衡记录 `<balance>`
+
+`<balance>` 不是战斗数据源，也不得形成第二份人工数值。武器只记录 XML `<data>` 中没有的公式输入与最小展示门，不复制 `level/weight/defence/hp/mp/damage/power/interval`；药剂则允许同步器写入派生输出和 `marketPrice` 对账副本，但禁止手工修改。AS2 战斗逻辑不消费它；展示层只允许从严格验证的武器 profile 生成最小 `balanceSummary`，不能让 Web 自行读取审计原文或推断状态。
 
 **枪械 / 武器**：尚未上线的契约统一为严格 `formulaFamily=weapon + schemaVersion=1`，不兼容此前平铺/v2 或 runtime SHA 开发草案。item 根 `<balance>` 只保留容器身份、数字 `workbookVersion` 和 `<profiles>`；完整 SHA 只在工具注册表、规则表与外部审计台账保存一次。`data/data_*` 每个静态形态都要有独立完整 profile，保存八个公式输入、`status/displayEligible/inputDigest/auditRef`，缺 profile 禁止回退基础形态。条款、证据、预算和可选短备注存入不由 ItemDataLoader 加载的 `tools/cf7-balance-tool/records/weapon-balance-audit.xml`，runtime profile 必须由台账机械同步并逐字段对账。完整 schema、digest 和施工流程以 `tools/cf7-balance-tool/docs/agent-balance-record-design.md` 为准，取值判据及条款 ID 以 `tools/cf7-balance-tool/docs/weapon-balance-rulebook.md` 为准。公式最高权威仍是 `0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx`。
+
+**药剂 / 食品**：使用 `formulaFamily=potion + schemaVersion=1 + formulaVersion=2` 的提案记录。人工真源是 `records/potion-balance-plan.xml`；工具必须从实际 `<effects>` 重建输入，生成 `records/potion-balance-audit.xml` 和 item 根最小 `<balance>`，并对来源等级上限、全量覆盖、工作簿快照、input/source digest 做反向检查。当前工作簿尚未正式登记 v2，所有记录必须保留 `authorityStatus=workbook-registration-pending`，不得提升为确认值。公式、产品域、数值表和退出条件见 [`potion-balance-rulebook.md`](../tools/cf7-balance-tool/docs/potion-balance-rulebook.md)。
 
 **防具**：属于另一公式族，不因武器 v1 的不兼容决定而迁移。不要沿用枪械字段；防具平衡表的核心额外输入是 `extraWeightLayers`，`armorType` 仅在不能从装备位/用途稳定推断时填写，合法值为 `standard | glove | necklace`。
 

@@ -153,7 +153,7 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
                 finalHPId = buffIdHP + "_" + getTimer() + "_" + Math.floor(Math.random() * 1000);
             }
             createRegenBuff(buffManager, finalHPId, hpPerTick, hpRemainder, 0, 0,
-                           interval, tickCount, target, maxHPWithAlchemy);
+                           interval, tickCount, target, maxHPWithAlchemy, ctx);
         }
 
         if (mpPerTick > 0 || mpRemainder > 0) {
@@ -162,7 +162,7 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
                 finalMPId = buffIdMP + "_" + getTimer() + "_" + Math.floor(Math.random() * 1000);
             }
             createRegenBuff(buffManager, finalMPId, 0, 0, mpPerTick, mpRemainder,
-                           interval, tickCount, target, maxHPWithAlchemy);
+                           interval, tickCount, target, maxHPWithAlchemy, ctx);
         }
 
         return true;
@@ -181,6 +181,7 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
      * @param maxTicks         最大tick次数
      * @param target           目标单位
      * @param maxHPWithAlchemy 炼金加成后的HP上限
+     * @param drugContext      当前药剂上下文，用于登记持续效果域
      */
     private function createRegenBuff(
         buffManager:BuffManager,
@@ -192,7 +193,8 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
         interval:Number,
         maxTicks:Number,
         target:Object,
-        maxHPWithAlchemy:Number
+        maxHPWithAlchemy:Number,
+        drugContext:DrugContext
     ):Void {
         // 创建tick回调
         var tickCallback:Function = function(host:IBuff, tickNum:Number, ctx:Object):Void {
@@ -235,7 +237,8 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
         var regenMeta:MetaBuff = new MetaBuff([], [tickComp], 0);
 
         // 添加到BuffManager
-        buffManager.addBuff(regenMeta, buffId);
+        var registeredId:String = buffManager.addBuff(regenMeta, buffId);
+        drugContext.registerDomainBuffId(registeredId);
         buffManager.update(0); // 立即生效
     }
 }

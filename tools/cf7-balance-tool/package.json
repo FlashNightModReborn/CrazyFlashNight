@@ -28,6 +28,8 @@
     "solve": "tsx packages/cli/src/index.ts solve",
     "balance-check": "tsx packages/cli/src/index.ts balance-check",
     "balance-sync": "tsx packages/cli/src/index.ts balance-sync",
+    "potion-balance-check": "tsx packages/cli/src/potion-balance.ts check",
+    "potion-balance-sync": "tsx packages/cli/src/potion-balance.ts sync",
     "dev:web": "npm run dev:renderer --workspace @cf7-balance-tool/web",
     "dev:electron": "npm run dev:electron --workspace @cf7-balance-tool/web"
   },

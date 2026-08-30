@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  人工维护的药剂平衡方案真源。audit 与物品内 balance 均由 potion-balance-sync 派生。
+  当前工作簿缺少可登记的药剂 v2 页面，因此全表保持 proposed/pending，禁止冒充 confirmed。
+-->
+<potionBalancePlan>
+  <formulaFamily>potion</formulaFamily>
+  <schemaVersion>1</schemaVersion>
+  <formulaVersion>2</formulaVersion>
+  <authorityStatus>workbook-registration-pending</authorityStatus>
+  <sourceWorkbookSha256>357E07955281D4CB3884902B58165E19E97852216AE5A76965D3EBD04FB4E107</sourceWorkbookSha256>
+  <records>
+    <!-- 既有医疗药剂与武器制剂 -->
+    <record itemName="普通hp药剂" sourceFile="消耗品_药剂.xml" sourceLevel="1" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="普通mp药剂" sourceFile="消耗品_药剂.xml" sourceLevel="1" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="抗生素" sourceFile="消耗品_药剂.xml" sourceLevel="5" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="普通hp粉尘" sourceFile="消耗品_药剂.xml" sourceLevel="10" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="普通mp粉尘" sourceFile="消耗品_药剂.xml" sourceLevel="5" domain="medical" balanceMode="formula" status="proposed" note="当前XML为self目标；名称与旧说明中的群体语义仍需另案确认" />
+    <record itemName="格格巫的毒" sourceFile="消耗品_药剂.xml" sourceLevel="10" domain="weapon-agent" balanceMode="formula" status="proposed" />
+    <record itemName="肾上腺素" sourceFile="消耗品_药剂.xml" sourceLevel="5" domain="medical" balanceMode="formula" status="proposed" note="历史名称保留，现行为MP即时恢复" />
+    <record itemName="加强抗生素药剂" sourceFile="消耗品_药剂.xml" sourceLevel="10" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="加强mp药剂" sourceFile="消耗品_药剂.xml" sourceLevel="10" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="战队药箱" sourceFile="消耗品_药剂.xml" sourceLevel="30" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="大HP药剂" sourceFile="消耗品_药剂.xml" sourceLevel="15" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="大MP药剂" sourceFile="消耗品_药剂.xml" sourceLevel="15" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="净化药剂" sourceFile="消耗品_药剂.xml" sourceLevel="30" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="稀释的毒" sourceFile="消耗品_药剂.xml" sourceLevel="25" domain="weapon-agent" balanceMode="formula" status="proposed" />
+    <record itemName="合成纳米毒" sourceFile="消耗品_药剂.xml" sourceLevel="50" domain="weapon-agent" balanceMode="formula" status="proposed" />
+    <record itemName="高纯度合成毒" sourceFile="消耗品_药剂.xml" sourceLevel="70" domain="weapon-agent" balanceMode="formula" status="proposed" />
+    <record itemName="丽丽丝的毒" sourceFile="消耗品_药剂.xml" sourceLevel="60" domain="weapon-agent" balanceMode="exception" status="proposed" exceptionCode="story-apex-toxin" />
+
+    <!-- 既有食品：全量登记；本批数值改动集中在八道家常菜 -->
+    <record itemName="饮用水易拉罐" sourceFile="消耗品_药剂_食品.xml" sourceLevel="1" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="牛肉罐头" sourceFile="消耗品_药剂_食品.xml" sourceLevel="5" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="白菜" sourceFile="消耗品_药剂_食品.xml" sourceLevel="1" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="番茄" sourceFile="消耗品_药剂_食品.xml" sourceLevel="2" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="土豆" sourceFile="消耗品_药剂_食品.xml" sourceLevel="2" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="黄瓜" sourceFile="消耗品_药剂_食品.xml" sourceLevel="5" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="月饼" sourceFile="消耗品_药剂_食品.xml" sourceLevel="10" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="白米饭罐头" sourceFile="消耗品_药剂_食品.xml" sourceLevel="5" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="奶" sourceFile="消耗品_药剂_食品.xml" sourceLevel="5" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="棒棒糖" sourceFile="消耗品_药剂_食品.xml" sourceLevel="10" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="进口香烟" sourceFile="消耗品_药剂_食品.xml" sourceLevel="20" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="番茄炒蛋" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="土豆炒肉丝" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="黄瓜炒肉片" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="蒜蓉炒空心菜" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="清炒白菜" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="清炒花菜" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="清炒土豆丝" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="葱花炒蛋" sourceFile="消耗品_药剂_食品.xml" sourceLevel="15" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="情报鸡尾酒" sourceFile="消耗品_药剂_食品.xml" sourceLevel="20" domain="meal" balanceMode="exception" status="proposed" exceptionCode="quest-intelligence-payload" />
+    <record itemName="菠萝罐头" sourceFile="消耗品_药剂_食品.xml" sourceLevel="45" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="巧克力板" sourceFile="消耗品_药剂_食品.xml" sourceLevel="35" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="番茄炒鸡蛋罐头" sourceFile="消耗品_药剂_食品.xml" sourceLevel="50" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="啤酒" sourceFile="消耗品_药剂_食品.xml" sourceLevel="35" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="超级棒棒糖" sourceFile="消耗品_药剂_食品.xml" sourceLevel="35" domain="meal" balanceMode="formula" status="proposed" />
+    <record itemName="红酒" sourceFile="消耗品_药剂_食品.xml" sourceLevel="65" domain="meal" balanceMode="formula" status="proposed" />
+
+    <!-- 九龙一型：20级；二型：40级；三型：60级 -->
+    <record itemName="狻猊·一型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="狻猊·二型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="40" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="狻猊·三型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="60" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="囚牛·一型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="囚牛·二型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="40" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="囚牛·三型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="60" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="赑屃·一型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="赑屃·二型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="40" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="赑屃·三型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="60" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="螭吻·一型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="enhancer" balanceMode="formula" status="runtime-test-pending" note="七属性对象路径的新词条" />
+    <record itemName="螭吻·二型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="40" domain="enhancer" balanceMode="formula" status="runtime-test-pending" note="七属性对象路径的新词条" />
+    <record itemName="螭吻·三型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="60" domain="enhancer" balanceMode="formula" status="runtime-test-pending" note="七属性对象路径的新词条" />
+    <record itemName="睚眦·一型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="睚眦·二型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="40" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="睚眦·三型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="60" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="蒲牢·一型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="蒲牢·二型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="40" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="蒲牢·三型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="60" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="嘲风·一型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="嘲风·二型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="40" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="嘲风·三型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="60" domain="enhancer" balanceMode="formula" status="proposed" />
+    <record itemName="狴犴·一型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="enhancer" balanceMode="formula" status="runtime-test-pending" note="装备toughness到韧性系数的新路径" />
+    <record itemName="狴犴·二型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="40" domain="enhancer" balanceMode="formula" status="runtime-test-pending" note="装备toughness到韧性系数的新路径" />
+    <record itemName="狴犴·三型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="60" domain="enhancer" balanceMode="formula" status="runtime-test-pending" note="装备toughness到韧性系数的新路径" />
+    <record itemName="狴犴·零型" sourceFile="消耗品_药剂_九龙.xml" sourceLevel="20" domain="medical" balanceMode="exception" status="runtime-test-pending" exceptionCode="toughness-reset-public-utility" note="清零remainingImpactForce与impactDecayBaseForce，不撤销既有控制状态" />
+  </records>
+</potionBalancePlan>
