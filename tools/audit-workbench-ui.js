@@ -899,12 +899,13 @@ var moduleThresholds = {
     'launcher/web/modules/character-build/character-build-slot-transition.js':100,
     'launcher/web/modules/character-build/character-build-pose.js':90,
     // 物品使用只扩展候选投影的窄闭集；transport/lifecycle 已拆到独立模块。
-    'launcher/web/modules/character-build/character-build-projection.js':190,
+    'launcher/web/modules/character-build/character-build-projection.js':200,
     'launcher/web/modules/character-build/character-build-transport.js':180,
     'launcher/web/modules/character-build/character-build-item-use.js':360,
-    'launcher/web/modules/character-build/character-build-item-use-channel.js':180,
-    'launcher/web/modules/character-build/character-build-candidate-channel.js':300,
-    'launcher/web/modules/character-build-session.js':700,
+    // 2026-08-31 奖励/物品使用迁移的有限增长：保留单一通道事务与选择恢复语义，避免制造碎片化加载依赖。
+    'launcher/web/modules/character-build/character-build-item-use-channel.js':260,
+    'launcher/web/modules/character-build/character-build-candidate-channel.js':360,
+    'launcher/web/modules/character-build-session.js':740,
     'launcher/web/modules/character-build-view.js':760,
     // 控制器仅保留 item-use 组合/锁态 seam，协议与换面编排均已拆分。
     'launcher/web/modules/character-build.js':640,
