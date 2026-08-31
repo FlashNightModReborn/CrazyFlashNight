@@ -720,7 +720,7 @@ class org.flashNight.arki.item.RewardInboxService {
     private static function recordResponse(record:Object, success:Boolean,
                                            errorCode:String):Object {
         var terminal:Object = null;
-        if (record != null && record.state != ACTIVE && record.state != PENDING) {
+        if (record != null && record.state == CONSUMED) {
             terminal = {kind:String(record.state), reason:String(record.reason),
                 remainingCount:record.inventory == null ? 0 : record.inventory.size()};
         }

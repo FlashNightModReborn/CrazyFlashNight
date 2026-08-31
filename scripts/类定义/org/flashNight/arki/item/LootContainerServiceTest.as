@@ -3626,10 +3626,22 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             operationId:"reward.close.keep", closeLease:snapshot.closeLease,
             abandon:false
         });
+        var suspendedQuery:Object = LootContainerService.execute("query", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:authority.chestSessionId,
+            lootContainerId:authority.lootContainerId,
+            containerEpoch:authority.containerEpoch
+        });
         check(!abandon.success && abandon.error == "abandon_forbidden"
                 && closed.success && closed.state == "LOOT_SUSPENDED"
-                && closed.remainingCount == 1,
-            "reward inbox forbids abandon and ordinary close preserves unclaimed occurrences");
+                && closed.remainingCount == 1 && closed.terminal == null
+                && closed.snapshots.length == 0
+                && suspendedQuery.success
+                && suspendedQuery.state == "LOOT_SUSPENDED"
+                && suspendedQuery.remainingCount == 1
+                && suspendedQuery.terminal == null
+                && suspendedQuery.snapshots.length == 0,
+            "reward inbox close/query preserve unclaimed occurrences as nonterminal suspended state");
         var previousSaveAuthority:Object = RewardInboxService.materializeAuthority();
         _root._saveExt = {};
         RewardInboxService.resetSession();
