@@ -74,6 +74,25 @@ namespace CF7Launcher.Tests.Guardian
             Assert.DoesNotContain(json, line);
         }
 
+        [Fact]
+        public void PanelIngress_ItemUseSnapshotIsAlwaysAnAuthoritySurface()
+        {
+            const string json = "{\"type\":\"panel\",\"panel\":\"workbench\","
+                + "\"domain\":\"item_use\",\"cmd\":\"inboxSnapshot\","
+                + "\"callId\":\"item.use.log.1\",\"panelInstanceId\":\"panel.secret\","
+                + "\"payload\":{\"v\":1,\"panelInstanceId\":\"panel.secret\","
+                + "\"sessionGeneration\":7}}";
+
+            string line = Capture(() =>
+                WebOverlayForm.FormatPanelEnvelopeLog(
+                    "inboxSnapshot", json));
+
+            Assert.Contains("domain=item_use", line);
+            Assert.Contains("cmd=inboxSnapshot", line);
+            Assert.Contains("payload=redacted", line);
+            Assert.DoesNotContain("panel.secret", line);
+        }
+
         [Theory]
         [InlineData("{\"panel\":\"kshop\",\"cmd\":\"checkoutCommit\","
             + "\"payload\":{\"expectedCheckoutToken\":\"first.secret\","
@@ -122,6 +141,8 @@ namespace CF7Launcher.Tests.Guardian
             "inventory.lease.secret")]
         [InlineData("SkillTask", "skillLearnCommit", "expectedLearnToken",
             "skill.learn.secret")]
+        [InlineData("ItemUseTask", "itemUseOpen", "slotLease",
+            "item.use.lease.secret")]
         public void FlashCommandLogs_KeepRoutingSummaryAndDeterministicTokenReference(
             string component,
             string action,
@@ -229,6 +250,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("CRAFTING_RESPONSE")]
         [InlineData("npcshop_respons")]
         [InlineData("material_shop_access_response_v2")]
+        [InlineData("item_use_response_v2")]
         public void XmlSocketNearMatchResponseFamiliesFailClosed(string task)
         {
             const string secret = "near.response.secret";

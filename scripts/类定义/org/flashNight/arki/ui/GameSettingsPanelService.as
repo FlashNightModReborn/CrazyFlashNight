@@ -755,6 +755,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             {command:"#level:15 / #gold:99999 / #sp:99", description:"修改角色进度", effectScope:"save"},
             {command:"#give:物品名,数量", description:"给予物品", effectScope:"save"},
             {command:"#task:链名,进度", description:"修改任务链进度", effectScope:"save"},
+            {command:"#supplytime:10", description:"设置圣诞树在线补给测试分钟（本次运行）", effectScope:"session"},
             {command:"#spawn:兵种,等级 / #tp:x,y", description:"召唤或传送（当前场景）", effectScope:"session"},
             {command:"#get / #eval / #set / #_root / #func / #code", description:"高级表达式与原始控制，保守按存档写入处理", effectScope:"save"}
         ]);
@@ -780,7 +781,8 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
                 || startsWith(command, "#task:") || (startsWith(command, "..")
                     && !isNaN(Number(command.substring(2))))) return {effectScope:"save"};
         if (startsWith(command, "#spawn:") || startsWith(command, "#tp:")
-                || startsWith(command, "#change:")) return {effectScope:"session"};
+                || startsWith(command, "#change:")
+                || startsWith(command, "#supplytime:")) return {effectScope:"session"};
         if (startsWith(command, "#set:") || startsWith(command, "#_root.")
                 || startsWith(command, "#func:_root.") || startsWith(command, "#code:")) {
             // raw 控制可直接写 _root 或调用任意根函数，无法可靠证明只影响会话态；

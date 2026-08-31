@@ -58,6 +58,37 @@ check('legacy snapshot omission remains unknown input', function() {
     }).candidateFacets, null);
 });
 
+check('cooling potion slots stay selectable and reserve blocking for data failure', function() {
+    const view = Projection.viewSnapshot({
+        equipment:[],
+        drugs:[{
+            slot:0,bank:0,lane:0,active:true,keyLabel:'7',
+            ready:false,totalSteps:90,currentStep:30,
+            progressPercent:33,animationFrame:34,remainingMs:2000,
+            occupied:true,quantity:2,
+            item:{name:'测试药剂',displayName:'测试药剂',itemKind:'stack',
+                majorType:'消耗品',use:'药剂',quantity:2}
+        }],
+        portrait:{},stateHealth:'ok'
+    });
+    assert.strictEqual(view.drugs.drug1.blocked, false);
+    assert.strictEqual(view.drugMeta.drug1.ready, false);
+
+    const unavailable = Projection.viewSnapshot({
+        equipment:[],
+        drugs:[{
+            slot:0,bank:0,lane:0,active:true,keyLabel:'7',
+            ready:true,totalSteps:0,currentStep:0,
+            progressPercent:100,animationFrame:1,remainingMs:0,
+            occupied:true,quantity:2,disabled:true,
+            item:{name:'损坏药剂槽',displayName:'损坏药剂槽',itemKind:'stack',
+                majorType:'消耗品',use:'药剂',quantity:2}
+        }],
+        portrait:{},stateHealth:'degraded'
+    });
+    assert.strictEqual(unavailable.drugs.drug1.blocked, true);
+});
+
 check('candidate projection keeps stable physical-slot lease key', function() {
     const rows = Projection.viewCandidates({
         candidates:[{
@@ -167,6 +198,50 @@ check('neutral backpack overview preserves authoritative cross-slot rows and ove
     assert.strictEqual(rows[0].raw, payload.candidates[0]);
     assert.strictEqual(rows[1].blocked, true);
     assert(rows[1].blockedReason.indexOf('不能用于角色构筑') >= 0);
+});
+
+check('backpack item-use action stays selectable without weakening equipment source shape', function() {
+    const wire = {
+        target:{kind:'backpack'},
+        candidateScope:'backpack',
+        backpackVersion:12,
+        candidates:[{
+            physicalSlot:7,
+            disabled:true,
+            blockedReason:'incompatible_item',
+            source:{containerId:'背包',slot:7,expectedLease:'equip.7'},
+            useAction:{command:'open',label:'打开',source:{
+                physicalSlot:7,slotLease:'use.7',itemName:'福袋',backpackVersion:12
+            }},
+            useBlockedReason:'',
+            item:{name:'福袋',displayName:'福袋',itemKind:'stack',use:'礼包'}
+        }]
+    };
+    const rows = Projection.viewCandidates(wire, {kind:'backpack'});
+    assert.strictEqual(rows[0].blocked, false);
+    assert.deepStrictEqual(rows[0].useAction, {command:'open',label:'打开'});
+    assert.strictEqual(rows[0].raw.source, wire.candidates[0].source);
+    assert.strictEqual(rows[0].raw.useAction.source.slotLease, 'use.7');
+});
+
+check('blocked potion use remains inspectable with a player-facing lane reason', function() {
+    const payload = {
+        target:{kind:'backpack'},candidateScope:'backpack',
+        candidates:[{
+            physicalSlot:8,disabled:true,blockedReason:'incompatible_item',
+            source:{containerId:'背包',slot:8,expectedLease:'equip.8'},
+            useAction:{command:'consume',label:'服用',source:{
+                physicalSlot:8,slotLease:'use.8',itemName:'测试药剂',backpackVersion:2
+            }},
+            useBlockedReason:'no_available_lane',
+            item:{name:'测试药剂',displayName:'测试药剂',itemKind:'stack',use:'药剂'}
+        }]
+    };
+    const row = Projection.viewCandidates(payload, {kind:'backpack'})[0];
+    assert.strictEqual(row.blocked, false);
+    assert.strictEqual(row.useAction.command, 'consume');
+    assert(row.useBlockedReason.indexOf('四条药剂通道当前都不能承接') >= 0);
+    assert.strictEqual(row.summary, row.useBlockedReason);
 });
 
 check('backpack, equipment and drug selectors map without guessing', function() {

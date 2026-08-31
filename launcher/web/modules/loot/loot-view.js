@@ -5,11 +5,13 @@ var LootView = (function() {
     function normalizeInitData(value) {
         if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
         var settlement=value.sourceKind==='stage_settlement';
+        var rewardInbox=value.sourceKind==='reward_inbox';
         var allowed = {v:true,panelInstanceId:true,chestSessionId:true,lootContainerId:true,
             containerEpoch:true,displayName:true,capacity:true,columns:true};
         if (settlement) { allowed.sourceKind=true;allowed.report=true; }
+        else if (rewardInbox) allowed.sourceKind=true;
         var keys = Object.keys(value);
-        if (keys.length !== (settlement ? 10 : 8)) return null;
+        if (keys.length !== (settlement ? 10 : rewardInbox ? 9 : 8)) return null;
         for (var i = 0; i < keys.length; i++)
             if (!Object.prototype.hasOwnProperty.call(allowed,keys[i])) return null;
 
@@ -31,7 +33,8 @@ var LootView = (function() {
             displayName:bounded('displayName',80),
             capacity:value.capacity,
             columns:value.columns,
-            sourceKind:settlement ? 'stage_settlement' : 'map_chest',
+            sourceKind:settlement ? 'stage_settlement'
+                : rewardInbox ? 'reward_inbox' : 'map_chest',
             report:settlement ? normalizeSettlementReport(value.report) : null
         };
         if (normalized.v !== 1 || !normalized.panelInstanceId || !normalized.chestSessionId
@@ -216,6 +219,7 @@ var LootView = (function() {
         this.tooltipSuppressed = false;
         this.interaction = interactionForState({}, false, false);
         this.isSettlement = this.init && this.init.sourceKind === 'stage_settlement';
+        this.isRewardInbox = this.init && this.init.sourceKind === 'reward_inbox';
         this.reportPane = null;
         this.reportView = null;
         this.settlementSidePane = null;
@@ -291,6 +295,8 @@ var LootView = (function() {
                 : '领取物品\n• Enter、双击或 Ctrl+单击可直接领取。\n• 空格先选择，再到背包侧确认。\n• Ctrl+A 或底部“全部收取”会批量领取。',
             detail:this.isSettlement
                 ? '左栏合并展示击杀与物资记录；右栏可切换待领取奖励和当前材料存量。\n库存整理仍使用原有背包与战备箱界面。普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。'
+                : this.isRewardInbox
+                    ? '普通关闭会保留未领取内容；待领取恢复批次不提供永久放弃。'
                 : '可进入库存整理，在背包与战备箱之间转移或丢弃物品。\n普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。',
             actions:[{id:'close',label:'知道了',primary:true}]
         }});
@@ -328,6 +334,7 @@ var LootView = (function() {
             ? '永久放弃剩余关卡奖励' : '永久放弃箱内剩余战利品');
         this.abandonButton.setAttribute('data-audio-cue','destructive');
         this.abandonButton.hidden = true;
+        this.abandonButton.disabled = !!this.isRewardInbox;
         this.reconcileButton = document.createElement('button');
         this.reconcileButton.type = 'button';
         this.reconcileButton.className = 'workbench-mode-btn loot-reconcile-btn';
@@ -1120,15 +1127,17 @@ var LootView = (function() {
             this.closeButton.setAttribute('aria-busy',busy?'true':'false');
         }
         if (this.abandonButton) {
-            this.abandonButton.hidden=state.phase!=='active'||state.remainingCount<=0;
-            this.abandonButton.disabled=busy;
+            this.abandonButton.hidden=!!this.isRewardInbox
+                ||state.phase!=='active'||state.remainingCount<=0;
+            this.abandonButton.disabled=!!this.isRewardInbox||busy;
         }
         if (this.inventoryButton) {
             this.inventoryButton.disabled=busy||state.phase!=='active';
             this.inventoryButton.setAttribute('aria-busy',organizerActive?'true':'false');
         }
         if (this.commitBar) this.commitBar.update(
-            commitPresentation(state,claimAll,organizerActive,this.isSettlement));
+            commitPresentation(
+                state,claimAll,organizerActive,this.isSettlement,this.isRewardInbox));
     };
 
     View.prototype.hasModal = function() { return !!(this.shell && this.shell.hasModal()); };
@@ -1139,7 +1148,7 @@ var LootView = (function() {
         return this.helpAction ? this.helpAction.open(opener) : false;
     };
     View.prototype.openAbandon = function(remainingCount,onAbandon) {
-        if (!this.shell) return false;
+        if (!this.shell || this.isRewardInbox) return false;
         var noun=this.isSettlement?'项关卡奖励':'个非空槽位';
         this.shell.openModal({
             kind:'loot-abandon',
@@ -1237,7 +1246,8 @@ var LootView = (function() {
             INVENTORY_CAPACITY_BLOCKS,String(error||''));
     }
 
-    function commitPresentation(state,claimAll,organizerActive,isSettlement) {
+    function commitPresentation(
+            state,claimAll,organizerActive,isSettlement,isRewardInbox) {
         var block=blockMessage(state.blockReason);
         if (state.phase==='reconcile_required') return {
             label:'重新核对',
@@ -1248,19 +1258,22 @@ var LootView = (function() {
             label:'已结束',status:terminalLabel(state.terminal,isSettlement),state:'success',disabled:true
         };
         if (state.phase==='suspended') return {
-            label:isSettlement?'关闭结算':'返回游戏',
-            status:isSettlement?'游戏已确认保留同一批未领取奖励。'
+            label:isSettlement?'关闭结算':isRewardInbox?'关闭待领取':'返回游戏',
+            status:isSettlement||isRewardInbox?'游戏已确认保留同一批未领取奖励。'
                 :'游戏已确认保留同一箱内的剩余战利品。',
             state:'success',disabled:true
         };
         if (state.phase!=='active') return {
             label:'同步中',status:isSettlement?'正在读取游戏中的关卡奖励快照…'
+                :isRewardInbox?'正在读取游戏中的待领取物品快照…'
                 :'正在读取游戏中的背包与战利品快照…',
             state:'idle',disabled:true,busy:true
         };
         if (organizerActive) return {
             label:'整理背包中',status:isSettlement
                 ? '库存稳定并重新同步当前奖励后才能继续领取。'
+                : isRewardInbox
+                    ? '库存稳定并重新同步待领取物品后才能继续领取。'
                 : '库存稳定并重新同步当前箱子后才能继续领取。',
             state:'busy',disabled:true,busy:true
         };
@@ -1269,8 +1282,9 @@ var LootView = (function() {
             state:'busy',disabled:true,busy:true
         };
         if (state.remainingCount===0) return {
-            label:isSettlement?'完成结算':'关闭空箱',
+            label:isSettlement?'完成结算':isRewardInbox?'完成领取':'关闭空箱',
             status:isSettlement?'游戏确认奖励已全部处理；完成后结束本次结算。'
+                :isRewardInbox?'游戏确认待领取物品已全部处理；完成后关闭领取页。'
                 :'游戏确认箱内已空；关闭会结束本次拾取。',
             state:'ready',canCommit:true
         };
@@ -1283,6 +1297,8 @@ var LootView = (function() {
             label:'全部收取',
             status:block||(isSettlement
                 ? '剩余 '+state.remainingCount+' 项奖励；关闭会保留，永久放弃请使用顶部危险操作。'
+                : isRewardInbox
+                    ? '剩余 '+state.remainingCount+' 项待领取物品；关闭会保留，不能永久放弃。'
                 : '剩余 '+state.remainingCount
                     +' 个非空槽位；关闭只返回游戏，永久放弃请使用顶部危险操作。'),
             state:block?'blocked':'ready',canCommit:true

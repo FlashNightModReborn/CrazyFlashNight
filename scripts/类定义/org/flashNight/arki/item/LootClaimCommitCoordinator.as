@@ -437,7 +437,10 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         if (pending == null || pending._lootFeedEmitted === true) return;
         pending._lootFeedEmitted = true;
         var context:Object = {
-            source:"loot_box", reason:"claim",
+            source:pending.feedSource == undefined
+                ? "loot_box" : String(pending.feedSource),
+            reason:pending.feedReason == undefined
+                ? "claim" : String(pending.feedReason),
             operationId:String(pending.operationId), mergeScope:"operation"
         };
 

@@ -78,9 +78,11 @@ function(WorkbenchFocus, WorkbenchComponents,
         var match = target.closest(selector);
         return match && (!root || root.contains(match)) ? match : null;
     }
-    function listen(records, target, type, handler) {
-        target.addEventListener(type, handler);
-        records.push(function() { target.removeEventListener(type, handler); });
+    function listen(records, target, type, handler, options) {
+        target.addEventListener(type, handler, options);
+        records.push(function() {
+            target.removeEventListener(type, handler, options);
+        });
     }
     function drugDefinitions(snapshot) {
         var meta = snapshot && snapshot.drugMeta || {};
@@ -105,7 +107,6 @@ function(WorkbenchFocus, WorkbenchComponents,
         var seconds = Math.max(0, Number(cooldown.remainingMs) || 0) / 1000;
         return key + ' 切换 · 冷却 ' + seconds.toFixed(1) + 's';
     }
-
     function CharacterBuildView(options) {
         options = options || {};
         var self = this;
@@ -126,6 +127,10 @@ function(WorkbenchFocus, WorkbenchComponents,
             ? options.onCandidateScopeChange : function() { return true; };
         this._onCommitCandidate = typeof options.onCommitCandidate === 'function'
             ? options.onCommitCandidate : function() {};
+        this._onUseCandidate = typeof options.onUseCandidate === 'function'
+            ? options.onUseCandidate : function() {};
+        this._onOpenInbox = typeof options.onOpenInbox === 'function'
+            ? options.onOpenInbox : function() {};
         this._onSlotDropEquip = typeof options.onSlotDropEquip === 'function'
             ? options.onSlotDropEquip
             : function(slotKey, candidate) {
@@ -160,6 +165,10 @@ function(WorkbenchFocus, WorkbenchComponents,
             }) : null;
         this._stats = null;
         this._facetCounts = FacetCountsModule.normalize(null);
+        this._itemUseState = 'idle';
+        this._selectedUseCandidate = null;
+        this._inboxSummary = null;
+        this._itemUseResultNotice = '';
         this._createDOM();
         LoadoutPickerModule.createScopeGroup(this);
         this.setDensity(this._density);
@@ -224,6 +233,8 @@ function(WorkbenchFocus, WorkbenchComponents,
         this._candidateCount = root.querySelector('[data-candidate-count]');
         this._candidateScopeMount = root.querySelector('[data-build-candidate-scope-mount]');
         this._candidateFocusSummary = root.querySelector('[data-candidate-focus-summary]');
+        this._useButton = root.querySelector('[data-build-action="use"]');
+        this._inboxButton = root.querySelector('[data-build-action="inbox"]');
         this._statsRoot = root.querySelector('.character-build-stats-page');
         this._statsScroll = root.querySelector('[data-scroll-region="stats"]');
         this._statsGrid = root.querySelector('[data-stats-grid]');
@@ -278,17 +289,31 @@ function(WorkbenchFocus, WorkbenchComponents,
 
     CharacterBuildView.prototype._bindInteractions = function() {
         var self = this;
+        var capturedUseEnter = null;
+        // Capture the pre-keydown selection state. The shared candidate handler
+        // selects on the first Enter before the event bubbles to this root.
+        listen(this._listeners, this.root, 'keydown', function(event) {
+            var node = event && event.key === 'Enter' && !event.repeat
+                ? closest(event.target, '[data-candidate-key]', self._candidateList)
+                : null;
+            capturedUseEnter = node ? {
+                event:event,
+                key:String(node.getAttribute('data-candidate-key') || ''),
+                wasSelected:String(node.getAttribute('data-candidate-key') || '')
+                    === self._selectedCandidateKey
+            } : null;
+        }, true);
         listen(this._listeners, this._armorGrid, 'click', function(event) {
             var slot = closest(event.target, '[data-roving-key]', self._armorGrid);
-            if (slot) self._selectSlot(slot.getAttribute('data-roving-key'), 'click');
+            if (slot) self._selectUserSlot(slot.getAttribute('data-roving-key'), 'click');
         });
         listen(this._listeners, this._weaponGrid, 'click', function(event) {
             var slot = closest(event.target, '[data-roving-key]', self._weaponGrid);
-            if (slot) self._selectSlot(slot.getAttribute('data-roving-key'), 'click');
+            if (slot) self._selectUserSlot(slot.getAttribute('data-roving-key'), 'click');
         });
         listen(this._listeners, this._drugGrid, 'click', function(event) {
             var slot = closest(event.target, '[data-roving-key]', self._drugGrid);
-            if (slot) self._selectSlot(slot.getAttribute('data-roving-key'), 'click');
+            if (slot) self._selectUserSlot(slot.getAttribute('data-roving-key'), 'click');
         });
         listen(this._listeners, this._candidateList, 'click', function(event) {
             if (self._candidateDrag && self._candidateDrag.consumeClick()) {
@@ -309,6 +334,8 @@ function(WorkbenchFocus, WorkbenchComponents,
             if (!node || self._interactionState !== 'idle') return;
             var candidate = self._candidateByKey(node.getAttribute('data-candidate-key'));
             if (!candidate || candidate.blocked === true) return;
+            // Item use is deliberately explicit: double-click remains equip-only.
+            if (candidate.useAction) return;
             if (event.preventDefault) event.preventDefault();
             if (event.stopPropagation) event.stopPropagation();
             if (self._selectCandidate(candidate.key)) self._actionView.commitCandidate(candidate);
@@ -320,7 +347,27 @@ function(WorkbenchFocus, WorkbenchComponents,
             if (node.hasAttribute('data-candidate-key')) self._focusCandidate(key);
             else self._focusSlot(key);
         });
+        listen(this._listeners, this.root, 'click', function(event) {
+            var button = closest(event.target, '[data-build-action]', self.root);
+            if (!button || button.disabled) return;
+            var action = button.getAttribute('data-build-action');
+            if (action === 'use') self._tryUseCandidate(self._selectedUseCandidate);
+            else if (action === 'inbox') self._onOpenInbox();
+        });
         listen(this._listeners, this.root, 'keydown', function(event) {
+            var captured = capturedUseEnter && capturedUseEnter.event === event
+                ? capturedUseEnter : null;
+            capturedUseEnter = null;
+            if (captured && captured.wasSelected
+                    && captured.key === self._selectedCandidateKey) {
+                var selected = self._candidateByKey(captured.key);
+                if (selected && selected.useAction) {
+                    event.preventDefault();
+                    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+                    self._tryUseCandidate(selected);
+                    return;
+                }
+            }
             if (!event || (event.key !== 'Escape' && event.key !== 'Esc')
                     || self._statsPage.isActive()) return;
             if (self._selectedCandidateKey) {
@@ -343,6 +390,113 @@ function(WorkbenchFocus, WorkbenchComponents,
                 self.syncDollViewport('resize');
             });
         }
+    };
+
+    CharacterBuildView.prototype._selectUserSlot = function(key, reason) {
+        if (this._interactionState !== 'idle') return false;
+        this._itemUseResultNotice = '';
+        return this._selectSlot(key, reason);
+    };
+
+    CharacterBuildView.prototype._tryUseCandidate = function(candidate) {
+        if (!candidate || !candidate.useAction) return false;
+        if (candidate.useBlockedReason) {
+            this._showStatusNotice('blocked', candidate.useBlockedReason);
+            return false;
+        }
+        if (this._itemUseState !== 'idle'
+                && this._itemUseState !== 'needs_reconcile') return false;
+        return this._onUseCandidate(candidate) !== false;
+    };
+
+    CharacterBuildView.prototype._syncItemUseActions = function() {
+        if (!this._useButton || !this._inboxButton) return false;
+        var candidate = this._selectedUseCandidate;
+        var action = candidate && candidate.useAction;
+        var reconciling = this._itemUseState === 'needs_reconcile';
+        var submitting = this._itemUseState === 'write_pending';
+        var confirming = this._itemUseState === 'query_pending';
+        var actionCommand = action && String(action.command || '');
+        var pendingLabel = actionCommand === 'consume'
+            ? (confirming ? '正在确认服用…' : '正在服用…')
+            : actionCommand === 'open'
+                ? (confirming ? '正在确认开箱…' : '正在打开…')
+                : '处理中…';
+        var commit = this.root.querySelector('[data-build-action="commit"]');
+        var tune = this.root.querySelector('[data-build-action="tune"]');
+        var unequip = this.root.querySelector('[data-build-action="unequip"]');
+        if (commit) commit.hidden = !!action;
+        if (unequip) unequip.hidden = !!action;
+        if (action && tune) tune.hidden = true;
+        this._useButton.hidden = !action;
+        this._useButton.textContent = reconciling ? '重新确认'
+            : submitting || confirming ? pendingLabel
+            : action ? String(action.label || '使用') : '使用';
+        this._useButton.disabled = !action || !!candidate.useBlockedReason
+            || (this._itemUseState !== 'idle' && !reconciling)
+            || (this._interactionState !== 'idle' && !reconciling);
+        this._useButton.setAttribute('aria-label', candidate && candidate.useBlockedReason
+            ? candidate.useBlockedReason : reconciling
+                ? '重新确认上次物品使用结果'
+                : submitting || confirming
+                    ? pendingLabel.replace(/…$/, '') + String(candidate && candidate.name || '所选物品')
+                : action ? String(action.label || '使用') + String(candidate.name || '所选物品')
+                    : '使用所选物品');
+        if (candidate && candidate.useBlockedReason) {
+            this._useButton.setAttribute('title', candidate.useBlockedReason);
+        } else this._useButton.removeAttribute('title');
+
+        var remaining = Number(this._inboxSummary && this._inboxSummary.remainingCount) || 0;
+        this._inboxButton.hidden = remaining < 1;
+        this._inboxButton.textContent = remaining > 0 ? '待领取 ' + remaining : '待领取';
+        this._inboxButton.disabled = remaining < 1 || this._itemUseState !== 'idle'
+            || this._interactionState !== 'idle';
+        return true;
+    };
+
+    CharacterBuildView.prototype.setItemUseCandidate = function(candidate) {
+        this._selectedUseCandidate = candidate && candidate.useAction ? candidate : null;
+        return this._syncItemUseActions();
+    };
+
+    CharacterBuildView.prototype.captureItemUseFocus = function() {
+        var active = this._document && this._document.activeElement;
+        if (active === this._useButton) return 'action';
+        return active && this._candidateList && this._candidateList.contains(active)
+            ? 'candidate' : '';
+    };
+
+    CharacterBuildView.prototype.restoreItemUseCandidate = function(candidate, focusMode) {
+        if (this._destroyed || !candidate || !candidate.key
+                || !this._selectCandidate(candidate.key)) return false;
+        this._activeCandidateKey = String(candidate.key);
+        this._candidateRoving.refresh({preferredKey:this._activeCandidateKey});
+        if (focusMode === 'candidate') {
+            this._candidateState.focusCandidate(
+                this._activeCandidateKey, this._candidateList.parentNode);
+        } else if (focusMode === 'action' && this._useButton
+                && !this._useButton.hidden && !this._useButton.disabled) {
+            try { this._useButton.focus({preventScroll:true}); }
+            catch (_) { this._useButton.focus(); }
+        }
+        return true;
+    };
+
+    CharacterBuildView.prototype.setItemUseState = function(state) {
+        this._itemUseState = String(state || 'idle');
+        return this._syncItemUseActions();
+    };
+
+    CharacterBuildView.prototype.setInboxSummary = function(summary) {
+        this._inboxSummary = summary || null;
+        return this._syncItemUseActions();
+    };
+
+    CharacterBuildView.prototype.showItemUseResult = function(message) {
+        if (this._destroyed || !message) return false;
+        this._itemUseResultNotice = String(message);
+        this._showStatusNotice('success', this._itemUseResultNotice);
+        return true;
     };
 
     CharacterBuildView.prototype.mount = function(host) {
@@ -414,11 +568,17 @@ function(WorkbenchFocus, WorkbenchComponents,
     };
 
     CharacterBuildView.prototype._showStatusNotice = function(kind, message) {
+        if (kind !== 'success') this._itemUseResultNotice = '';
         this._notice.textContent = message;
         this._notice.setAttribute('data-notice-kind', kind || 'error');
     };
 
     CharacterBuildView.prototype._showBrowsingNotice = function(message) {
+        if (this._itemUseResultNotice) {
+            this._notice.textContent = this._itemUseResultNotice;
+            this._notice.setAttribute('data-notice-kind', 'success');
+            return;
+        }
         this._notice.textContent = message;
         this._notice.setAttribute('data-notice-kind', 'browsing');
     };
@@ -428,6 +588,7 @@ function(WorkbenchFocus, WorkbenchComponents,
         this._loadoutTooltipEpoch++;
         this._loadoutTooltipCache = {};
         this._snapshot = snapshot || {};
+        this._itemUseResultNotice = '';
         this._facetCounts =
             FacetCountsModule.normalize(this._snapshot.candidateFacets);
         if (this.root.getAttribute('data-build-subview') !== 'tuning') this._selectedSlotKey = '';
@@ -512,6 +673,9 @@ function(WorkbenchFocus, WorkbenchComponents,
             },
             candidateCount:this._candidateState.debugState().count,
             candidateState:this._candidateState.debugState(),
+            itemUseState:this._itemUseState,
+            inboxRemaining:Number(this._inboxSummary
+                && this._inboxSummary.remainingCount) || 0,
             statsOpen:this._statsPage.isActive(),
             dollPreviewOpen:this._dollPreview.isOpen(),
             renderModel:this.root.getAttribute('data-render-model')

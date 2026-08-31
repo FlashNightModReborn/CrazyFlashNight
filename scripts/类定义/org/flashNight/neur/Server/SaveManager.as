@@ -215,6 +215,8 @@ class org.flashNight.neur.Server.SaveManager {
     private var _settingsMigrationPending:Boolean;
     private var _drugLoadoutMigrationPending:Boolean;
     private var _drugLoadoutSchemaRejected:Boolean;
+    private var _rewardInboxMigrationPending:Boolean;
+    private var _rewardInboxSchemaRejected:Boolean;
     private var _drugLoadoutMigrationSlot:String;
     private var _lastSaveHash:String;
     private var _liteJson:LiteJSON;
@@ -266,6 +268,8 @@ class org.flashNight.neur.Server.SaveManager {
         _settingsMigrationPending = false;
         _drugLoadoutMigrationPending = false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
         _drugLoadoutMigrationSlot = undefined;
         _lastSaveHash = "";
         _liteJson = new LiteJSON();
@@ -313,6 +317,8 @@ class org.flashNight.neur.Server.SaveManager {
         _c4WarnedOnce = false;
         _drugLoadoutMigrationPending = false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
         _drugLoadoutMigrationSlot = undefined;
     }
 
@@ -529,6 +535,7 @@ class org.flashNight.neur.Server.SaveManager {
             _root.存盘标志 = 1;
             _settingsMigrationPending = false;
             _drugLoadoutMigrationPending = false;
+            _rewardInboxMigrationPending = false;
             KeyManager.clearPendingKeySettingsMigration();
         }
 
@@ -663,6 +670,8 @@ class org.flashNight.neur.Server.SaveManager {
             _drugLoadoutMigrationSlot = drugMigrationSlot;
             _drugLoadoutMigrationPending = false;
             _drugLoadoutSchemaRejected = false;
+            _rewardInboxMigrationPending = false;
+            _rewardInboxSchemaRejected = false;
         }
 
         sm.sendServerMessage("[SaveManager.preload] savePath=" + _root.savePath);
@@ -955,6 +964,11 @@ class org.flashNight.neur.Server.SaveManager {
             _prefetchGen++;
             return false;
         }
+        if (_rewardInboxSchemaRejected) {
+            sm.sendServerMessage("[SaveManager.loadAll] rewardInbox schema rejected");
+            _prefetchGen++;
+            return false;
+        }
         if (changed) {
             syncTopLevelFromMydata(_root.mydata, soData);
             if (flushSO(so)) {
@@ -1086,6 +1100,7 @@ class org.flashNight.neur.Server.SaveManager {
         var initialDrugFeature:Object = DrugSlotAffinityService.normalizeSavedFeature(
             null, {}, persistedDrugKeyValidator()).feature;
         _root._saveExt = {drugLoadout:initialDrugFeature};
+        RewardInboxService.resetSession();
         _root.虚拟币 = 0;
         _root.全局健身HP加成 = 0;
         _root.全局健身MP加成 = 0;
@@ -1097,6 +1112,8 @@ class org.flashNight.neur.Server.SaveManager {
         _settingsMigrationPending = false;
         _drugLoadoutMigrationPending = false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
         _drugLoadoutMigrationSlot = String(_root.savePath);
         KeyManager.clearPendingKeySettingsMigration();
 
@@ -1744,6 +1761,8 @@ class org.flashNight.neur.Server.SaveManager {
         _settingsMigrationPending = false;
         _drugLoadoutMigrationPending = false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
         _drugLoadoutMigrationSlot = String(_root.savePath);
         KeyManager.clearPendingKeySettingsMigration();
         var drugSchema:Object = normalizeDrugLoadoutSchema(mydata);
@@ -1752,6 +1771,12 @@ class org.flashNight.neur.Server.SaveManager {
             return false;
         }
         if (drugSchema.changed) _drugLoadoutMigrationPending = true;
+        var rewardSchema:Object = RewardInboxService.normalizeSaveData(mydata);
+        if (!rewardSchema.ok) {
+            _rewardInboxSchemaRejected = true;
+            return false;
+        }
+        if (rewardSchema.changed) _rewardInboxMigrationPending = true;
         _root.mydata = mydata;
         if (!(mydata[0][10] instanceof Array)) mydata[0][10] = [];
         if (!(mydata[0][12] instanceof Array)) mydata[0][12] = [];
@@ -1959,6 +1984,7 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 预留命名空间恢复
         _root._saveExt = (mydata.ext != undefined) ? mydata.ext : {};
+        RewardInboxService.resetSession();
 
         // ext 与全部玩家资产均已重建后，恢复未完成的关卡结算 authority。
         // 畸形/未来记录保留原文并由 StageRunSession 阻止新关卡覆盖，不拖垮普通读档。
@@ -2068,7 +2094,7 @@ class org.flashNight.neur.Server.SaveManager {
      */
     public function hasPendingChanges():Boolean {
         return _dirtyMark || _root.存档系统.dirtyMark === true
-            || _drugLoadoutMigrationPending;
+            || _drugLoadoutMigrationPending || _rewardInboxMigrationPending;
     }
 
     // ==================== 迁移 ====================
@@ -2081,6 +2107,7 @@ class org.flashNight.neur.Server.SaveManager {
     public function migrate(mydata:Object, soData:Object):Boolean {
         if (mydata == undefined) return false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxSchemaRejected = false;
         var changed:Boolean = false;
         var sm:ServerManager = ServerManager.getInstance();
 
@@ -2120,6 +2147,16 @@ class org.flashNight.neur.Server.SaveManager {
         }
         if (drugSchema.changed) {
             _drugLoadoutMigrationPending = true;
+            changed = true;
+        }
+
+        var rewardSchema:Object = RewardInboxService.normalizeSaveData(mydata);
+        if (!rewardSchema.ok) {
+            _rewardInboxSchemaRejected = true;
+            return changed;
+        }
+        if (rewardSchema.changed) {
+            _rewardInboxMigrationPending = true;
             changed = true;
         }
 
@@ -2204,6 +2241,16 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function hasPendingDrugLoadoutMigration():Boolean {
         return _drugLoadoutMigrationPending;
+    }
+
+    public function hasPendingRewardInboxMigration():Boolean {
+        return _rewardInboxMigrationPending;
+    }
+
+    /** focused fixture 使用；生产只由新存档边界或成功全量存盘清除。 */
+    public function clearPendingRewardInboxMigration():Void {
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
     }
 
     /** focused fixture 使用；生产只由新存档边界或成功全量存盘清除。 */

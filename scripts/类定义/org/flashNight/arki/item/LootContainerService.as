@@ -5,6 +5,7 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.LootContainerValidation;
 import org.flashNight.arki.item.LootClaimCommitCoordinator;
 import org.flashNight.arki.item.MaterialArchiveProjector;
+import org.flashNight.arki.item.RewardInboxService;
 import org.flashNight.gesh.tooltip.TooltipComposer;
 
 /**
@@ -57,6 +58,9 @@ class org.flashNight.arki.item.LootContainerService {
     private static var _testAllowUnpersistedStageSettlement:Boolean = false;
 
     public static function install():Void {
+        RewardInboxService.setStandardLaneBusyProbe(function():Boolean {
+            return org.flashNight.arki.item.LootContainerService.isStandardLaneBusy();
+        });
         if (_inited) return;
         _json = new LiteJSON();
         if (_root.gameCommands == undefined) _root.gameCommands = {};
@@ -96,11 +100,14 @@ class org.flashNight.arki.item.LootContainerService {
 
     /** 同步测试入口；wire handler 只额外补 task/callId。 */
     public static function execute(commandName:String, params:Object):Object {
-        if (_busy) return emptyFailure(params, "busy");
         if (params == undefined || params.v !== 2) {
             return emptyFailure(params, "unsupported_version");
         }
         if (!validateCommandShape(commandName, params)) return emptyFailure(params, "invalid_payload");
+        if (params.sourceKind === "reward_inbox") {
+            return RewardInboxService.executeLoot(commandName, params);
+        }
+        if (_busy) return emptyFailure(params, "busy");
         if (commandName == "snapshot") return executeSnapshot(params);
         if (commandName == "tooltip") return executeTooltip(params);
         if (commandName == "claim") return executeClaim(params);
@@ -157,7 +164,8 @@ class org.flashNight.arki.item.LootContainerService {
         if (_busy) {
             return {handled:true, reserved:false, reason:"loot_flow_busy"};
         }
-        if (_reservation != null || _active != null) {
+        if (_reservation != null || _active != null
+                || RewardInboxService.hasActiveAuthority()) {
             return {handled:true, reserved:false, reason:"loot_flow_busy"};
         }
 
@@ -227,7 +235,10 @@ class org.flashNight.arki.item.LootContainerService {
     public static function beginStageSettlement(inventory:ArrayInventory,
                                                  report:Object):Object {
         if (_busy) return localFailure("busy");
-        if (_reservation != null || _active != null) return localFailure("loot_flow_busy");
+        if (_reservation != null || _active != null
+                || RewardInboxService.hasActiveAuthority()) {
+            return localFailure("loot_flow_busy");
+        }
         var settlementId:String = "";
         try {
             settlementId = org.flashNight.arki.scene.StageRunSession.getCurrentSettlementId();
@@ -943,6 +954,9 @@ class org.flashNight.arki.item.LootContainerService {
     public static function handlePanelRecovery(params:Object):Object {
         if (!LootContainerValidation.validatePanelRecoveryEnvelope(params)) {
             return {handled:false, recovered:false, reason:"invalid_payload"};
+        }
+        if (params.sourceKind === "reward_inbox") {
+            return RewardInboxService.handlePanelRecovery(params);
         }
         var checked:Object = validateAnyIdentity(params);
         if (!checked.success) {
@@ -1683,6 +1697,11 @@ class org.flashNight.arki.item.LootContainerService {
             return failureFor(record, committed == null ? "commit_failed" : committed.error);
         }
         return finalizeClaim(record, record.pendingCommit, committed);
+    }
+
+    /** RewardInbox 只读这个门；不得访问或覆盖现役 singleton。 */
+    public static function isStandardLaneBusy():Boolean {
+        return _busy || _reservation != null || _active != null;
     }
 
     /**
@@ -3212,6 +3231,9 @@ class org.flashNight.arki.item.LootContainerService {
 
     /** TestLoader 专用：隔离静态 authority、lease、tombstone 与 recovery。 */
     public static function testOnlyReset():Void {
+        RewardInboxService.setStandardLaneBusyProbe(function():Boolean {
+            return org.flashNight.arki.item.LootContainerService.isStandardLaneBusy();
+        });
         releaseSuspendedAnchor(_active);
         releaseHeldTargetTimeline(_active);
         if (_reservation !== _active) releaseHeldTargetTimeline(_reservation);

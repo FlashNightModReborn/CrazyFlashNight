@@ -6,6 +6,9 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.LootContainerService;
 import org.flashNight.arki.item.LootContainerValidation;
 import org.flashNight.arki.item.LootClaimCommitCoordinator;
+import org.flashNight.arki.item.RewardInboxService;
+import org.flashNight.arki.item.ItemUseService;
+import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.item.DrugSlotAffinityService;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.InformationCollection;
@@ -94,6 +97,14 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testInitialRecoveryBeforeAckProof();
         testConnectedPanelRecoverySignal();
         testWireHandlersAndExactPayload();
+        testRewardInboxLegacyMigrationAndCapacity();
+        testOnlineSupplyFacadeIdempotencyAndRollback();
+        testOnlineSupplyFacadeRequestsStrictRewardPanel();
+        testRewardInboxRefreshesOnlyUnopenedAuthority();
+        testRewardInboxLootAdapterIsolation();
+        testRewardInboxPendingClaimAndRestartRecovery();
+        testRewardPackRecipeClosedModes();
+        testItemUseCooldownSnapshotUsesFrameAuthority();
 
         restoreMetadata();
         trace("LootContainerServiceTest Tests Passed: " + _passed);
@@ -128,6 +139,11 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         addMeta("经验值", "消耗品", "货币");
         addMeta("技能点", "消耗品", "货币");
         addMeta(MOD, "收集品", "材料");
+        addMeta("在线补给包·Ⅰ", "消耗品", "礼包");
+        addMeta("在线补给包·Ⅱ", "消耗品", "礼包");
+        addMeta("在线补给包·Ⅲ", "消耗品", "礼包");
+        addMeta("在线补给包·Ⅳ", "消耗品", "礼包");
+        addMeta("在线补给包·Ⅴ", "消耗品", "礼包");
         ItemUtil.itemDataDict[MOD].displayname = "装备箱插件显示名";
         ItemUtil.itemDataDict[MOD].icon = "装备箱插件图标名";
         ItemUtil.equipmentDict[EQUIPMENT] = true;
@@ -156,6 +172,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         _root.主角是否升级 = _backup.levelCallback;
         _root.getItemData = _backup.getItemData;
         _root.强制存盘 = _backup.forceSave;
+        RewardInboxService.resetForTests();
     }
 
     private static function resetWorld():Void {
@@ -196,6 +213,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         };
         InventoryPanelService.testOnlyReset();
         LootContainerService.testOnlyReset();
+        RewardInboxService.resetForTests();
     }
 
     private static function makeTarget(id:String):Object {
@@ -3374,6 +3392,452 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             "ServerManager envelope 必须 task/action/callId 三字段原子出现");
         _root.server = previousServer;
         LootContainerService.expireScene("scene_cleanup");
+    }
+
+    private static function testRewardInboxLegacyMigrationAndCapacity():Void {
+        var legacy:Object = {inventory:{装备栏:{手雷:{name:"福袋", value:2}}},
+            ext:{}};
+        var first:Object = RewardInboxService.normalizeSaveData(legacy);
+        var second:Object = RewardInboxService.normalizeSaveData(legacy);
+        var feature:Object = legacy.ext.rewardInbox;
+        check(first.ok && first.changed && second.ok && !second.changed
+                && legacy.inventory.装备栏.手雷 == undefined
+                && feature.batches.length == 1
+                && feature.batches[0].sourceKind == "legacy_grenade_slot_recovery"
+                && feature.batches[0].entries[0].itemName == "福袋"
+                && feature.batches[0].entries[0].remaining == 2,
+            "legacy grenade carrier migrates itself once into a stable recovery batch");
+
+        var fullBatches:Array = [];
+        for (var i:Number = 0; i < 64; i++) {
+            fullBatches.push({batchId:"full." + i,
+                entries:[{entryId:"full." + i + ".e1",
+                    itemName:STACK, quantity:1, remaining:1}]});
+        }
+        var full:Object = {inventory:{装备栏:{手雷:{name:"福袋", value:1}}},
+            ext:{rewardInbox:{v:1, sequence:64, authorityRevision:1,
+                batches:fullBatches, receipts:[], migrations:[], supplyKeys:[]}}};
+        var deferred:Object = RewardInboxService.normalizeSaveData(full);
+        check(deferred.ok && deferred.deferred === true
+                && deferred.error == "reward_inbox_full"
+                && full.inventory.装备栏.手雷.name == "福袋"
+                && full.ext.rewardInbox.batches.length == 64,
+            "full reward inbox refuses before clearing the legacy grenade slot");
+
+        var tombstone:Object = {inventory:{装备栏:{手雷:{name:"新手礼包", value:1}}},
+            ext:{}};
+        var removed:Object = RewardInboxService.normalizeSaveData(tombstone);
+        check(removed.ok && removed.changed
+                && tombstone.inventory.装备栏.手雷 == undefined
+                && tombstone.ext.rewardInbox.batches.length == 0,
+            "confirmed obsolete starter carrier tombstones to empty hand without recovery");
+    }
+
+    private static function testOnlineSupplyFacadeIdempotencyAndRollback():Void {
+        resetWorld();
+        RewardInboxService.installRootFacade();
+        var absentBefore:Boolean = _root.奖励待领取系统.在线补给包已投送(
+            "christmas_tree:online-10m");
+        var malformedBefore:Boolean = _root.奖励待领取系统.在线补给包已投送("../bad");
+        var safeUnknownBefore:Boolean = _root.奖励待领取系统.在线补给包已投送(
+            "christmas_tree:online-15m");
+        var safeUnknownDelivery:Object = _root.奖励待领取系统.投送在线补给包(
+            "在线补给包·Ⅰ", "christmas_tree:online-15m");
+        var mismatchedDelivery:Object = _root.奖励待领取系统.投送在线补给包(
+            "在线补给包·Ⅴ", "christmas_tree:online-10m");
+        var first:Object = _root.奖励待领取系统.投送在线补给包(
+            "在线补给包·Ⅰ", "christmas_tree:online-10m");
+        var deliveredAfter:Boolean = _root.奖励待领取系统.在线补给包已投送(
+            "christmas_tree:online-10m");
+        RewardInboxService.resetSession();
+        var deliveredAfterSaveBoundary:Boolean = _root.奖励待领取系统.在线补给包已投送(
+            "christmas_tree:online-10m");
+        var duplicate:Object = _root.奖励待领取系统.投送在线补给包(
+            "在线补给包·Ⅰ", "christmas_tree:online-10m");
+        var feature:Object = _root._saveExt.rewardInbox;
+        check(!absentBefore && !malformedBefore && !safeUnknownBefore
+                && !safeUnknownDelivery.success
+                && safeUnknownDelivery.error == "invalid_supply_delivery"
+                && !mismatchedDelivery.success
+                && mismatchedDelivery.error == "invalid_supply_delivery"
+                && deliveredAfter
+                && deliveredAfterSaveBoundary
+                && first.success === true && first.duplicate === false
+                && duplicate.success === true && duplicate.duplicate === true
+                && duplicate.batchId == first.batchId
+                && feature.batches.length == 1
+                && feature.batches[0].entries.length == 1
+                && feature.batches[0].entries[0].itemName == "在线补给包·Ⅰ"
+                && feature.batches[0].entries[0].remaining == 1
+                && _root.__lootSaveCalls == 1,
+            "online supply facade appends one durable occurrence and treats duplicate sourceKey as success");
+        _root.存档系统.dirtyMark = false;
+        _root.强制存盘 = function():Boolean {
+            _root.__lootSaveCalls++;
+            return false;
+        };
+        var failed:Object = _root.奖励待领取系统.投送在线补给包(
+            "在线补给包·Ⅱ", "christmas_tree:online-20m");
+        var rolledBackDelivery:Boolean = _root.奖励待领取系统.在线补给包已投送(
+            "christmas_tree:online-20m");
+        var rollbackClean:Boolean = _root._saveExt.rewardInbox.batches.length == 1
+            && _root._saveExt.rewardInbox.supplyKeys.length == 1
+            && _root.存档系统.dirtyMark === false;
+        var rollbackFeature:Object = _root._saveExt.rewardInbox;
+        var priorSessionKey:String = String(rollbackFeature.supplyKeys[0]);
+        var sessionTokenParts:Array = String(
+            priorSessionKey.split(":")[1]).split("-");
+        var originalBatch:Object = rollbackFeature.batches[0];
+        for (var fullIndex:Number = 1; fullIndex < 64; fullIndex++) {
+            rollbackFeature.batches.push({batchId:"supply.full." + fullIndex,
+                entries:[{entryId:"supply.full." + fullIndex + ".e1",
+                    itemName:STACK, quantity:1, remaining:1}]});
+        }
+        _root.强制存盘 = function():Boolean {
+            _root.__lootSaveCalls++;
+            return true;
+        };
+        RewardInboxService.resetForTests();
+        RewardInboxService.installRootFacade();
+        var priorSessionHidden:Boolean = !_root.奖励待领取系统.在线补给包已投送(
+            "christmas_tree:online-10m");
+        var capacityRejected:Object = _root.奖励待领取系统.投送在线补给包(
+            "在线补给包·Ⅱ", "christmas_tree:online-20m");
+        var capacityPreservedPriorIndex:Boolean = rollbackFeature.supplyKeys.length == 1
+            && String(rollbackFeature.supplyKeys[0]) == priorSessionKey;
+        rollbackFeature.batches = [originalBatch];
+        var nextSession:Object = _root.奖励待领取系统.投送在线补给包(
+            "在线补给包·Ⅱ", "christmas_tree:online-20m");
+        var nextFeature:Object = _root._saveExt.rewardInbox;
+        check(!failed.success && failed.error == "commit_pending"
+                && !rolledBackDelivery
+                && rollbackClean && priorSessionHidden
+                && sessionTokenParts.length == 3
+                && sessionTokenParts[0] != "" && sessionTokenParts[1] != ""
+                && sessionTokenParts[2] != ""
+                && priorSessionKey.indexOf("online_supply:0-zik0zk:") != 0
+                && !capacityRejected.success
+                && capacityRejected.error == "reward_inbox_full"
+                && capacityPreservedPriorIndex
+                && nextSession.success && nextSession.duplicate === false
+                && nextFeature.supplyKeys.length == 1
+                && String(nextFeature.supplyKeys[0]) != priorSessionKey
+                && _root.奖励待领取系统.在线补给包已投送(
+                    "christmas_tree:online-20m"),
+            "flush failure rolls back the ledger, while a fresh Flash session replaces only the bounded supply index");
+    }
+
+    private static function testOnlineSupplyFacadeRequestsStrictRewardPanel():Void {
+        var previousServer:Object = _root.server;
+        try {
+            resetWorld();
+            RewardInboxService.installRootFacade();
+            var delivered:Object = _root.奖励待领取系统.投送在线补给包(
+                "在线补给包·Ⅰ", "christmas_tree:online-10m");
+            var captured:Object = {};
+            _root.server = {
+                sendTaskWithCallback:function(task:String, payload:Object,
+                                              extra:Object, callback:Function,
+                                              timeoutFrames:Number):Void {
+                    captured.task = task;
+                    captured.payload = payload;
+                    captured.timeoutFrames = timeoutFrames;
+                    callback({success:true, accepted:true, bound:false,
+                        panel:"loot"});
+                }
+            };
+            var requested:Boolean = _root.奖励待领取系统.打开待领取界面();
+            var authority:Object = captured.payload == null
+                ? null : captured.payload.initData;
+            check(delivered.success && requested
+                    && captured.task == "panel_request"
+                    && captured.timeoutFrames == 600
+                    && captured.payload.panel == "loot"
+                    && captured.payload.source == "reward_inbox"
+                    && authority != null
+                    && authority.sourceKind == "reward_inbox"
+                    && authority.displayName == "待领取物品"
+                    && authority.state == "LOOT_ACTIVE"
+                    && authority.remainingCount == 1,
+                "online supply click requests the strict reward inbox Loot panel after durable delivery");
+
+            _root.server.sendTaskWithCallback = function(task:String,
+                                                          payload:Object,
+                                                          extra:Object,
+                                                          callback:Function,
+                                                          timeoutFrames:Number):Void {
+                callback({success:false, accepted:false,
+                    error:"panel_unavailable"});
+            };
+            var rejected:Boolean = _root.奖励待领取系统.打开待领取界面();
+            check(!rejected
+                    && RewardInboxService.inboxSummary().remainingCount == 1,
+                "reward panel rejection preserves the already durable supply batch");
+        } finally {
+            _root.server = previousServer;
+        }
+    }
+
+    private static function testRewardInboxLootAdapterIsolation():Void {
+        resetWorld();
+        var delivered:Object = RewardInboxService.deliverOnlineSupplyPack(
+            "在线补给包·Ⅲ", "christmas_tree:online-40m");
+        var target:Object = makeTarget("reward.standard.first");
+        var reserved:Object = LootContainerService.beginMapChestOpen(target);
+        var unavailable:Object = RewardInboxService.materializeAuthority();
+        check(delivered.success && reserved.reserved && unavailable == null,
+            "active standard loot reservation prevents reward inbox materialization without overwrite");
+        LootContainerService.abortReservedOpen(target, "test_abort");
+
+        var authority:Object = RewardInboxService.materializeAuthority();
+        var blocked:Object = LootContainerService.beginMapChestOpen(
+            makeTarget("reward.inbox.first"));
+        check(authority != null && authority.sourceKind == "reward_inbox"
+                && authority.openAttemptSeq == 1
+                && authority.displayName == "待领取物品"
+                && !blocked.reserved && blocked.reason == "loot_flow_busy",
+            "materialized reward authority owns the panel lane while standard singleton remains untouched");
+        var snapshot:Object = LootContainerService.execute("snapshot", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:authority.chestSessionId,
+            lootContainerId:authority.lootContainerId,
+            containerEpoch:authority.containerEpoch,
+            loot:{offset:0, limit:authority.capacity},
+            backpack:{offset:0, limit:50}
+        });
+        check(snapshot.success && snapshot.snapshots.length == 3
+                && snapshot.snapshots[0].slots[0].item.name == "在线补给包·Ⅲ",
+            "reward_inbox sourceKind routes through the existing Loot snapshot projection");
+        var abandon:Object = LootContainerService.execute("close", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:authority.chestSessionId,
+            lootContainerId:authority.lootContainerId,
+            containerEpoch:authority.containerEpoch,
+            expectedAuthorityRevision:snapshot.authorityRevision,
+            operationId:"reward.close.abandon", closeLease:snapshot.closeLease,
+            abandon:true
+        });
+        var closed:Object = LootContainerService.execute("close", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:authority.chestSessionId,
+            lootContainerId:authority.lootContainerId,
+            containerEpoch:authority.containerEpoch,
+            expectedAuthorityRevision:snapshot.authorityRevision,
+            operationId:"reward.close.keep", closeLease:snapshot.closeLease,
+            abandon:false
+        });
+        check(!abandon.success && abandon.error == "abandon_forbidden"
+                && closed.success && closed.state == "LOOT_SUSPENDED"
+                && closed.remainingCount == 1,
+            "reward inbox forbids abandon and ordinary close preserves unclaimed occurrences");
+        var previousSaveAuthority:Object = RewardInboxService.materializeAuthority();
+        _root._saveExt = {};
+        RewardInboxService.resetSession();
+        check(previousSaveAuthority != null
+                && !RewardInboxService.hasActiveAuthority()
+                && RewardInboxService.materializeAuthority() == null,
+            "save boundary reset discards transient reward authority before reading the next _saveExt");
+    }
+
+    private static function testRewardInboxRefreshesOnlyUnopenedAuthority():Void {
+        resetWorld();
+        var firstAppend:Object = RewardInboxService.appendRewardBatch(
+            "测试礼包", "reward.refresh.1",
+            [{itemName:STACK, quantity:1}]);
+        var cached:Object = RewardInboxService.materializeAuthority();
+        var secondAppend:Object = RewardInboxService.appendRewardBatch(
+            "测试礼包", "reward.refresh.2",
+            [{itemName:ANTIBIOTIC, quantity:1}]);
+        var refreshed:Object = RewardInboxService.materializeAuthority();
+        var summary:Object = RewardInboxService.inboxSummary();
+        check(firstAppend.success && secondAppend.success
+                && cached != null && refreshed != null
+                && refreshed.containerEpoch != cached.containerEpoch
+                && refreshed.remainingCount == 2
+                && refreshed.remainingCount == summary.remainingCount,
+            "unopened reward authority refreshes after a later durable batch append");
+
+        var opened:Object = LootContainerService.execute("snapshot", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:refreshed.chestSessionId,
+            lootContainerId:refreshed.lootContainerId,
+            containerEpoch:refreshed.containerEpoch,
+            loot:{offset:0, limit:refreshed.capacity},
+            backpack:{offset:0, limit:50}
+        });
+        var thirdAppend:Object = RewardInboxService.appendRewardBatch(
+            "测试礼包", "reward.refresh.3",
+            [{itemName:STACK, quantity:1}]);
+        var stable:Object = RewardInboxService.materializeAuthority();
+        var closed:Object = LootContainerService.execute("close", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:refreshed.chestSessionId,
+            lootContainerId:refreshed.lootContainerId,
+            containerEpoch:refreshed.containerEpoch,
+            expectedAuthorityRevision:opened.authorityRevision,
+            operationId:"reward.refresh.close", closeLease:opened.closeLease,
+            abandon:false
+        });
+        var reopened:Object = RewardInboxService.materializeAuthority();
+        check(opened.success && thirdAppend.success
+                && stable.containerEpoch == refreshed.containerEpoch
+                && stable.remainingCount == 2
+                && closed.success && reopened != null
+                && reopened.containerEpoch != refreshed.containerEpoch
+                && reopened.remainingCount == 3,
+            "opened reward authority keeps its identity and sees appended batches after close");
+    }
+
+    private static function testRewardPackRecipeClosedModes():Void {
+        resetWorld();
+        var scalar:Object = ItemUseService.normalizeRecipe({mode:"fixed",
+            entries:{entry:{itemName:STACK, quantityMin:1, quantityMax:2}}});
+        var independent:Object = ItemUseService.normalizeRecipe({mode:"independent",
+            entries:{entry:[
+                {itemName:STACK, quantityMin:1, quantityMax:1,
+                    chanceNumerator:1, chanceDenominator:2},
+                {itemName:ANTIBIOTIC, quantityMin:2, quantityMax:3,
+                    chanceNumerator:2, chanceDenominator:3}
+            ]}});
+        var chooseOne:Object = ItemUseService.normalizeRecipe({mode:"chooseOne",
+            entries:{entry:[
+                {itemName:STACK, quantityMin:1, quantityMax:1, weight:2},
+                {itemName:ANTIBIOTIC, quantityMin:1, quantityMax:1, weight:3}
+            ]}});
+        var invalid:Object = ItemUseService.normalizeRecipe({mode:"script",
+            entries:{entry:{itemName:STACK, quantityMin:1, quantityMax:1}}});
+        var zeroChance:Object = ItemUseService.normalizeRecipe({mode:"independent",
+            entries:{entry:{itemName:STACK, quantityMin:1, quantityMax:1,
+                chanceNumerator:0, chanceDenominator:2}}});
+        var nestedCapability:Object = ItemUseService.buildCandidateUseAction(
+            {name:"测试礼包"}, {use:"礼包", data:{rewardPack:{mode:"fixed",
+                entries:{entry:{itemName:STACK,
+                    quantityMin:1, quantityMax:1}}}}},
+            0, "lease.reward.pack", 1);
+        check(scalar.success && scalar.entries.length == 1
+                && scalar.maxOccurrences == 1
+                && independent.success && independent.entries.length == 2
+                && independent.maxOccurrences == 2
+                && chooseOne.success && chooseOne.totalWeight == 5
+                && chooseOne.maxOccurrences == 1 && !invalid.success
+                && !zeroChance.success
+                && nestedCapability.useAction != null
+                && nestedCapability.useAction.command == "open"
+                && nestedCapability.useAction.label == "打开",
+            "rewardPack normalizer accepts closed modes and the live data.rewardPack shape projects open");
+    }
+
+    private static function testItemUseCooldownSnapshotUsesFrameAuthority():Void {
+        resetWorld();
+        var scheduled:Array = [];
+        ManualCooldownService.resetForTests();
+        ManualCooldownService.setSchedulerForTests(function(callback:Function):Void {
+            scheduled.push(callback);
+        });
+        ItemUseService.setContextValidator(function(panelInstanceId:String,
+                                                     generation:Number):Object {
+            return {success:panelInstanceId == "panel.cooldown"
+                && generation == 1, error:"stale_session"};
+        });
+        var started:Boolean = ManualCooldownService.start(
+            ManualCooldownService.drugKey(2), 3000);
+        var params:Object = {task:"cmd", action:"itemUseCooldownSnapshot",
+            callId:1, v:1, panelInstanceId:"panel.cooldown",
+            sessionGeneration:1};
+        var first:Object = ItemUseService.execute("cooldownSnapshot", params);
+        if (scheduled.length > 0) {
+            var tick = scheduled.shift();
+            tick();
+        }
+        params.callId = 2;
+        var second:Object = ItemUseService.execute("cooldownSnapshot", params);
+        var invalid:Object = {task:"cmd", action:"itemUseCooldownSnapshot",
+            callId:3, v:1, panelInstanceId:"panel.cooldown",
+            sessionGeneration:1, unexpected:true};
+        var rejected:Object = ItemUseService.execute("cooldownSnapshot", invalid);
+        check(started && first.success && second.success
+                && first.cooldownLanes.length == 4
+                && first.cooldownLanes[2].lane == 2
+                && first.cooldownLanes[2].ready === false
+                && first.cooldownLanes[2].currentStep == 0
+                && first.cooldownLanes[2].remainingMs == Math.ceil(
+                    first.cooldownLanes[2].totalSteps
+                    * ManualCooldownService.FRAME_MS)
+                && second.cooldownLanes[2].currentStep == 1
+                && second.cooldownLanes[2].remainingMs
+                    < first.cooldownLanes[2].remainingMs
+                && second.cooldownLanes[0].ready === true
+                && !rejected.success && rejected.error == "invalid_payload",
+            "item-use cooldown snapshot exposes four frame-authoritative lanes and rejects shape drift");
+        ItemUseService.setContextValidator(null);
+        ManualCooldownService.resetForTests();
+    }
+
+    private static function testRewardInboxPendingClaimAndRestartRecovery():Void {
+        resetWorld();
+        var delivered:Object = RewardInboxService.deliverOnlineSupplyPack(
+            "在线补给包·Ⅳ", "christmas_tree:online-60m");
+        RewardInboxService.resetForTests();
+        var authority:Object = RewardInboxService.materializeAuthority();
+        var snapshot:Object = LootContainerService.execute("snapshot", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:authority.chestSessionId,
+            lootContainerId:authority.lootContainerId,
+            containerEpoch:authority.containerEpoch,
+            loot:{offset:0, limit:authority.capacity},
+            backpack:{offset:0, limit:50}
+        });
+        var loot:Object = snapshot.snapshots[0];
+        var row:Object = loot.slots[0];
+        LootClaimCommitCoordinator.testOnlyFailNext(
+            "ordinary_source_write", "false");
+        LootClaimCommitCoordinator.testOnlyFailNext(
+            "ordinary_rollback", "false");
+        var claim:Object = LootContainerService.execute("claim", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:authority.chestSessionId,
+            lootContainerId:authority.lootContainerId,
+            containerEpoch:authority.containerEpoch,
+            expectedAuthorityRevision:snapshot.authorityRevision,
+            operationId:"reward.pending.claim", direction:"loot_to_player",
+            targetContainerId:"自动", source:{containerId:loot.containerId,
+                slot:row.physicalSlot, expectedLease:row.slotLease,
+                expectedContainerVersion:loot.containerVersion}
+        });
+        _root.强制存盘 = function():Boolean {
+            _root.__lootSaveCalls++;
+            return false;
+        };
+        var pendingQuery:Object = LootContainerService.execute("query", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:authority.chestSessionId,
+            lootContainerId:authority.lootContainerId,
+            containerEpoch:authority.containerEpoch
+        });
+        check(delivered.success && !claim.success
+                && claim.error == "commit_pending"
+                && !pendingQuery.success
+                && pendingQuery.error == "commit_pending"
+                && _root.物品栏.背包.size() == 1
+                && LootContainerService.beginMapChestOpen(
+                    makeTarget("reward.pending.blocked")).reason == "loot_flow_busy",
+            "reward claim keeps coordinator and persist journals fenced across a failed strong flush");
+        _root.强制存盘 = function():Boolean {
+            _root.__lootSaveCalls++;
+            return true;
+        };
+        var recovered:Object = LootContainerService.execute("query", {
+            v:2, sourceKind:"reward_inbox",
+            chestSessionId:authority.chestSessionId,
+            lootContainerId:authority.lootContainerId,
+            containerEpoch:authority.containerEpoch
+        });
+        RewardInboxService.resetForTests();
+        check(recovered.success && recovered.remainingCount == 0
+                && _root.物品栏.背包.size() == 1
+                && RewardInboxService.inboxSummary().remainingCount == 0
+                && RewardInboxService.materializeAuthority() == null,
+            "query forward-completes once, and restart observes the durable claimed state without replay");
     }
 
     private static function check(condition:Boolean, message:String):Void {

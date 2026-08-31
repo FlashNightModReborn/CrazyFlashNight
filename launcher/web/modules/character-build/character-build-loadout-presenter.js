@@ -175,13 +175,15 @@ function(FacetCountsModule) {
                     slot.setAttribute('data-drug-lane', String(meta.lane));
                     slot.setAttribute('data-drug-active', meta.active ? 'true' : 'false');
                     slot.setAttribute('data-drug-ready', meta.ready ? 'true' : 'false');
+                    slot.setAttribute('data-drug-state', meta.ready ? 'ready'
+                        : Number(meta.totalSteps) > 0 ? 'cooling' : 'unavailable');
                     slot.setAttribute('data-cooldown-progress',
                         String(meta.progressPercent));
                     slot.setAttribute('data-cooldown-remaining-ms',
                         String(meta.remainingMs));
-                    if (!meta.ready) {
-                        slot.setAttribute('data-blocked', 'true');
-                        slot.setAttribute('aria-disabled', 'true');
+                    if (slot.style && typeof slot.style.setProperty === 'function') {
+                        slot.style.setProperty('--drug-cooldown-progress',
+                            String(meta.progressPercent) + '%');
                     }
                 }
             },

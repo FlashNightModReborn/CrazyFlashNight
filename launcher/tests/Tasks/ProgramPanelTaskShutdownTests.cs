@@ -33,6 +33,7 @@ namespace Launcher.Tests.Tasks
             Assert.Equal(3, CountOccurrences(source, "petTask.Dispose();"));
             Assert.Equal(3, CountOccurrences(source, "mercTask.Dispose();"));
             Assert.Equal(3, CountOccurrences(source, "characterBuildTask.Dispose();"));
+            Assert.Equal(3, CountOccurrences(source, "itemUseTask.Dispose();"));
         }
 
         [Fact]
@@ -98,6 +99,76 @@ namespace Launcher.Tests.Tasks
             Assert.DoesNotContain(
                 "characterBuildTask.TryClosePanelInstance(panelInstanceId);",
                 observer);
+        }
+
+        [Fact]
+        public void RewardInboxHandoffWaitsForExactWorkbenchCloseAndCharacterRelease()
+        {
+            string source = File.ReadAllText(FindProgramSource());
+            string observer = Slice(
+                source,
+                "panelHost.PanelClosed += delegate(",
+                "skillTask.SetCoordinatorSettled");
+            Assert.Contains(
+                "itemUseTask.OnWorkbenchPanelClosed(panelInstanceId);",
+                observer);
+
+            string settled = Slice(
+                source,
+                "characterBuildTask.SetCoordinatorSettled(delegate",
+                "MapTask mapTask =");
+            int preparation = settled.IndexOf(
+                ".TryCompleteCharacterBuildPreparationNavigation()",
+                StringComparison.Ordinal);
+            int take = settled.IndexOf(
+                "itemUseTask.TryTakeClosedRewardHandoff(",
+                StringComparison.Ordinal);
+            int open = settled.IndexOf(
+                "lootPanelCoordinator.TryOpenRewardInbox(",
+                StringComparison.Ordinal);
+            Assert.True(preparation >= 0 && take > preparation && open > take);
+        }
+
+        [Fact]
+        public void RewardInboxReturnPrefersExactReplacementAndKeepsSettledFallback()
+        {
+            string source = File.ReadAllText(FindProgramSource());
+            string replacement = Slice(
+                source,
+                "lootPanelCoordinator.SetRewardInboxReturnHandler(",
+                "lootPanelCoordinator.BindingSettled += delegate(");
+            string returnFlow = Slice(
+                source,
+                "lootPanelCoordinator.BindingSettled += delegate(",
+                "SkillTask skillTask =");
+
+            Assert.Contains(
+                "commandRouter",
+                replacement);
+            Assert.Contains(
+                ".TryOpenCharacterBuildAfterRewardInbox(",
+                replacement);
+            Assert.Contains(
+                "binding);",
+                replacement);
+            Assert.Contains(
+                "binding.SourceKind",
+                returnFlow);
+            Assert.Contains(
+                "LootPanelCoordinator.RewardInboxSource",
+                returnFlow);
+            Assert.Contains(
+                ".TryOpenCharacterBuildAfterRewardInbox(",
+                returnFlow);
+            Assert.Contains(
+                "binding);",
+                returnFlow);
+            Assert.DoesNotContain(
+                "panelHost.OpenPanel(",
+                returnFlow);
+            Assert.DoesNotContain(
+                "TryOpenPanel(",
+                returnFlow);
         }
 
         [Fact]

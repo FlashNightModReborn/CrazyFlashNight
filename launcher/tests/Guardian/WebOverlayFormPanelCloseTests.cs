@@ -64,6 +64,130 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void ItemUseDomain_RoutesExplicitlyWhileCloseKeepsPriority()
+        {
+            Assert.Equal(
+                WebOverlayForm.PanelDomainRoute.ItemUse,
+                WebOverlayForm.ResolvePanelDomainRoute("open", "item_use"));
+            Assert.Equal(
+                WebOverlayForm.PanelDomainRoute.Close,
+                WebOverlayForm.ResolvePanelDomainRoute(
+                    "close", "item_use"));
+        }
+
+        [Fact]
+        public void WorkbenchClose_AllowsOnlyFrozenRewardInboxNavigationReason()
+        {
+            JObject exact = JObject.Parse(
+                "{\"type\":\"panel\",\"panel\":\"workbench\","
+                + "\"cmd\":\"close\",\"panelInstanceId\":\"workbench.1\","
+                + "\"reason\":\"navigate_reward_inbox\"}");
+            Assert.True(WebOverlayForm.IsValidWorkbenchCloseEnvelope(
+                exact, "workbench", "workbench.1"));
+
+            exact["reason"] = "navigate_item_use";
+            Assert.False(WebOverlayForm.IsValidWorkbenchCloseEnvelope(
+                exact, "workbench", "workbench.1"));
+        }
+
+        [Fact]
+        public void RewardInboxHandoffRecordsAuthoritativeVisualRetireBeforeDetachRecovery()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string close = Slice(
+                source,
+                "case \"close\":",
+                "case \"bulkQuery\":");
+            int retire = close.IndexOf(
+                "TryRetireCharacterBuildHostVisual(",
+                StringComparison.Ordinal);
+            int markClosed = close.IndexOf(
+                "_itemUseTask.OnWorkbenchPanelClosed(",
+                retire,
+                StringComparison.Ordinal);
+            int commitEffects = close.IndexOf(
+                "CommitAcceptedPanelCloseEffects(",
+                markClosed,
+                StringComparison.Ordinal);
+
+            Assert.True(retire >= 0);
+            Assert.True(markClosed > retire);
+            Assert.True(commitEffects > markClosed);
+        }
+
+        [Fact]
+        public void RewardInboxTerminalClosePreservesWebSurfaceUntilExactReplacement()
+        {
+            string panel = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "modules", "loot", "loot-panel.js"));
+            string finish = Slice(
+                panel,
+                "function finishVisualClose(reason)",
+                "function onRebind(");
+            Assert.Contains(
+                "_init.sourceKind==='reward_inbox'",
+                finish);
+            Assert.Contains(
+                "reason==='terminal'||reason==='suspended'",
+                finish);
+            Assert.Contains(
+                "if (!preserveForRewardReturn) Panels.close();",
+                finish);
+
+            string host = File.ReadAllText(FindWebOverlaySource());
+            string close = Slice(
+                host,
+                "private void HandleLootVisualClose(JObject parsed)",
+                "private bool HasExactActivePanelOwnerBinding(");
+            int pending = close.IndexOf(
+                ".IsRewardInboxReplacementPendingExact(",
+                StringComparison.Ordinal);
+            int retry = close.IndexOf(
+                ".RetryAuthorityVisualCloseExact(",
+                StringComparison.Ordinal);
+            Assert.True(pending >= 0 && retry > pending);
+            Assert.Contains(
+                "replacement=pending",
+                close);
+        }
+
+        [Fact]
+        public void LootRecovery_AddsSourceKindOnlyForRewardInbox()
+        {
+            var request = new LootPanelCoordinator.OpenRequest
+            {
+                ChestSessionId = "reward.chest.1",
+                LootContainerId = "reward.container.1",
+                ContainerEpoch = 2,
+                OpenAttemptSeq = 3,
+                DisplayName = "待领取物品",
+                Capacity = 64,
+                Columns = 8,
+                SourceKind = LootPanelCoordinator.RewardInboxSource
+            };
+            var binding = new LootPanelCoordinator.Binding(
+                request, "panel.loot.reward.1");
+
+            JObject reward = JObject.Parse(
+                WebOverlayForm.BuildLootPanelRecoveryCommand(
+                    binding,
+                    "web_open_failed",
+                    "recovery.nonce.1"));
+            Assert.Equal(
+                "reward_inbox", reward.Value<string>("sourceKind"));
+
+            request.SourceKind = LootPanelCoordinator.MapChestSource;
+            binding = new LootPanelCoordinator.Binding(
+                request, "panel.loot.map.1");
+            JObject map = JObject.Parse(
+                WebOverlayForm.BuildLootPanelRecoveryCommand(
+                    binding,
+                    "web_open_failed",
+                    "recovery.nonce.2"));
+            Assert.Null(map["sourceKind"]);
+        }
+
+        [Fact]
         public void ShouldReturnBaseOnPanelClose_OnlyArenaReturnBaseFlagTriggers()
         {
             Assert.True(WebOverlayForm.ShouldReturnBaseOnPanelClose(

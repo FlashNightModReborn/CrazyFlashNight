@@ -514,6 +514,22 @@ _root.cheatCode = function(作弊码){
 			var taskProgress:Number = Number(taskParts[1].split(" ").join("").split("　").join("").split("\t").join(""));
 			_root._cheatSetTaskChainProgress(taskChainName, taskProgress);
 		}
+	}else if(作弊码.indexOf("#supplytime:") == 0){
+		var supplyText:String = 作弊码.split("#supplytime:")[1]
+			.split(" ").join("").split("　").join("").split("\t").join("");
+		var supplyMinutes:Number = Number(supplyText);
+		if (_root.帧计时器 == undefined
+				|| typeof _root.帧计时器.设置在线补给测试分钟 != "function") {
+			_root.最上层发布文字提示("在线补给帧计时器尚未就绪");
+		} else {
+			var supplyResult:Object = _root.帧计时器.设置在线补给测试分钟(supplyMinutes);
+			if (supplyResult != null && supplyResult.success === true) {
+				_root.最上层发布文字提示("在线补给测试时间已设为 "
+					+ supplyResult.minutes + " 分钟（仅影响本次运行的圣诞树）");
+			} else {
+				_root.最上层发布文字提示("用法：#supplytime:分钟（允许 0 至 1440）");
+			}
+		}
 	}else if(作弊码.indexOf("#gold:")>-1){
 		var goldVal:Number = Number(作弊码.split("#gold:")[1].split(" ").join(""));
 		var goldBefore:Number = Number(_root.金钱);

@@ -128,6 +128,8 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             holdNextLeave:false, heldLeave:null, heldLeaveInvocations:0},
         tooltip:{requests:0},
         audio:{cues:[]},
+        itemUse:{commitNextConsume:false, potionLease:'lease.incompatible.11',
+            potionQuantity:2, backpackVersion:12, cooldownLane:-1},
         candidateLease:candidateLease,
         freshenConversionCandidate:function(slotKey) {
             candidateEnhancement = enhancementBySlot[slotKey] >= 9
@@ -240,18 +242,20 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
         return {
             equipment:equipmentRows(),
             drugs:[0,1,2,3,4,5,6,7].map(function(slot) {
+                var cooling = window.__routeHarness
+                    && window.__routeHarness.itemUse.cooldownLane === slot % 4;
                 var row = {
                     slot:slot,
                     bank:Math.floor(slot / 4),
                     lane:slot % 4,
                     active:slot < 4,
                     keyLabel:['7','8','9','0'][slot % 4],
-                    ready:true,
-                    totalSteps:0,
-                    currentStep:0,
-                    progressPercent:0,
-                    animationFrame:1,
-                    remainingMs:0,
+                    ready:!cooling,
+                    totalSteps:cooling ? 90 : 0,
+                    currentStep:cooling ? 30 : 0,
+                    progressPercent:cooling ? 33 : 0,
+                    animationFrame:cooling ? 34 : 1,
+                    remainingMs:cooling ? 2000 : 0,
                     occupied:!!drugNames[slot],
                     quantity:drugNames[slot] ? slot + 1 : 0
                 };
@@ -471,11 +475,23 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                         candidateItem(dressup.equipment.grenade,
                             'stack','消耗品','手雷',3,0,[]),
                         ['手雷'], ''),
-                    equipmentBackpackRow(11, 'lease.incompatible.11',
-                        candidateItem('测试药剂','stack','消耗品','药剂',2,0,[]),
+                    equipmentBackpackRow(11, harness.itemUse.potionLease,
+                        candidateItem('测试药剂','stack','消耗品','药剂',
+                            harness.itemUse.potionQuantity,0,[]),
                         [], '')
                 ];
                 if (backpackOverview) {
+                    candidateRows[5].useAction = {
+                        command:'consume',
+                        label:'服用',
+                        source:{
+                            physicalSlot:11,
+                            slotLease:harness.itemUse.potionLease,
+                            itemName:'测试药剂',
+                            backpackVersion:harness.itemUse.backpackVersion
+                        }
+                    };
+                    candidateRows[5].useBlockedReason = '';
                     candidateRows.push({
                         physicalSlot:15,
                         disabled:true,
@@ -565,7 +581,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                         : {kind:'backpack'},
                 candidateScope:message.payload.candidateScope,
                 candidates:candidateRows,
-                backpackVersion:12,
+                backpackVersion:harness.itemUse.backpackVersion,
                 stateHealth:'ok',
                 diagnostics:[]
             };
@@ -880,6 +896,40 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             introHTML:'<FONT COLOR=\"#66CCFF\">构筑候选详情</FONT>'
         };
     }
+    function itemUseResponse(message) {
+        var harness = window.__routeHarness;
+        var response = {
+            type:'panel_resp',
+            panel:'workbench',
+            domain:'item_use',
+            cmd:message.cmd,
+            callId:message.callId,
+            panelInstanceId:message.panelInstanceId,
+            success:message.cmd === 'inboxSnapshot',
+            rewardReady:false,
+            inboxSummary:{
+                v:1,batchCount:0,remainingCount:0,capacity:64,
+                authorityRevision:0
+            },
+            rewardAuthority:null
+        };
+        if (message.cmd === 'consume' && harness.itemUse.commitNextConsume) {
+            harness.itemUse.commitNextConsume = false;
+            harness.itemUse.potionQuantity--;
+            harness.itemUse.backpackVersion++;
+            harness.itemUse.potionLease = 'lease.incompatible.11.use.'
+                + String(harness.itemUse.backpackVersion);
+            harness.itemUse.cooldownLane = 2;
+            harness.authority.drugRevision++;
+            response.success = true;
+            response.selectedLane = 2;
+            response.consumed = 1;
+            response.remaining = harness.itemUse.potionQuantity;
+            delete response.error;
+        }
+        if (!response.success) response.error = 'unsupported_cmd';
+        return response;
+    }
     window.Bridge = {
         on:function(type, handler) {
             (handlers[type] || (handlers[type] = [])).push(handler);
@@ -948,6 +998,10 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
             } else if (message.type === 'panel' && message.domain === 'inventory') {
                 setTimeout(function() {
                     emit('panel_resp', inventoryTooltipResponse(message));
+                }, 0);
+            } else if (message.type === 'panel' && message.domain === 'item_use') {
+                setTimeout(function() {
+                    emit('panel_resp', itemUseResponse(message));
                 }, 0);
             } else if (message.type === 'panel' && message.domain === 'equipment_tuning') {
                 window.__routeHarness.events.push('tuning_' + message.cmd + '_request');
@@ -1274,6 +1328,9 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/character-build/character-build-candidate-eligibility.js"></script>
 <script src="modules/character-build/character-build-projection.js"></script>
 <script src="modules/character-build/character-build-transport.js"></script>
+<script src="modules/character-build/character-build-cooldown-channel.js"></script>
+<script src="modules/character-build/character-build-item-use.js"></script>
+<script src="modules/character-build/character-build-item-use-channel.js"></script>
 <script src="modules/character-build/character-build-candidate-channel.js"></script>
 <script src="modules/character-build.js"></script>
 <script src="modules/inventory-workbench.js"></script>
@@ -1386,6 +1443,12 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
     function inventoryMessages() {
         return window.__routeHarness.sent.filter(function(message) {
             return message.domain === 'inventory';
+        });
+    }
+    function itemUseMessages(command) {
+        return window.__routeHarness.sent.filter(function(message) {
+            return message.domain === 'item_use'
+                && (!command || message.cmd === command);
         });
     }
     function tuningMessages(command) {
@@ -5549,6 +5612,50 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             document.querySelectorAll('.character-build-candidate'), function(node) {
                 return (node.getAttribute('aria-label') || '').indexOf('测试药剂') >= 0;
             });
+        var directUseBase = itemUseMessages('consume').length;
+        drugDropCandidate.focus();
+        drugDropCandidate.dispatchEvent(new KeyboardEvent('keydown', {
+            key:'Enter', bubbles:true, cancelable:true
+        }));
+        check('first Enter only selects an actionable backpack item',
+            itemUseMessages('consume').length === directUseBase
+            && InventoryWorkbench.debugState().build.view.selectedCandidateKey !== '');
+        window.__routeHarness.itemUse.commitNextConsume = true;
+        drugDropCandidate.dispatchEvent(new KeyboardEvent('keydown', {
+            key:'Enter', bubbles:true, cancelable:true
+        }));
+        check('second Enter consumes once then reselects the fresh same-slot lease', await until(function() {
+            var messages = itemUseMessages('consume');
+            var state = InventoryWorkbench.debugState().build;
+            var last = messages[messages.length - 1];
+            return messages.length === directUseBase + 1
+                && state.itemUse.state === 'idle'
+                && last.payload.source.physicalSlot === 11
+                && last.payload.source.slotLease === 'lease.incompatible.11'
+                && last.payload.source.itemName === '测试药剂'
+                && last.payload.source.backpackVersion === 12
+                && state.view.selectedCandidateKey
+                    === 'backpack:11:' + window.__routeHarness.itemUse.potionLease
+                && document.activeElement
+                && document.activeElement.getAttribute('data-candidate-key')
+                    === state.view.selectedCandidateKey;
+        }));
+        var coolingPrimary = document.querySelector(
+            '[data-roving-key="drug:drug3"]');
+        var coolingBackup = document.querySelector(
+            '[data-roving-key="drug:drug7"]');
+        check('shared cooldown uses only the in-tile shade and never red blocked borders',
+            coolingPrimary.getAttribute('data-drug-ready') === 'false'
+            && coolingBackup.getAttribute('data-drug-ready') === 'false'
+            && coolingPrimary.getAttribute('data-blocked') == null
+            && coolingBackup.getAttribute('data-blocked') == null
+            && coolingPrimary.getAttribute('aria-disabled') !== 'true'
+            && coolingBackup.getAttribute('aria-disabled') !== 'true'
+            && coolingPrimary.disabled === false
+            && coolingBackup.disabled === false);
+        drugDropCandidate = document.querySelector(
+            '[data-candidate-key="backpack:11:'
+                + window.__routeHarness.itemUse.potionLease + '"]');
         var drugDropTarget = document.querySelector('[data-roving-key="drug:drug3"]');
         beginPointerDrag(drugDropCandidate, drugDropTarget, 88);
         check('backpack potion row drags and marks every drug slot',
@@ -5575,7 +5682,8 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && commandCount('equipDrug') === drugDropBase + 1
                     && lastEquip && lastEquip.payload.drugSlot === 2
                     && lastEquip.payload.source.slot === 11
-                    && lastEquip.payload.source.expectedLease === 'lease.incompatible.11'
+                    && lastEquip.payload.source.expectedLease
+                        === window.__routeHarness.itemUse.potionLease
                     && state.selectedSlotKey === ''
                     && state.selectedTarget == null
                     && state.view.selectedSlotKey === ''

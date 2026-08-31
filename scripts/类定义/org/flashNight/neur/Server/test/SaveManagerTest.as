@@ -2,6 +2,7 @@
 import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.arki.render.FrameBroadcaster;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.RewardInboxService;
 import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
@@ -61,6 +62,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_drug_schema_v2_migrates_to_v3_and_preserves_eight();
         test_drug_schema_future_version_fails_closed();
         test_migrate_drug_schema_sets_pending();
+        test_reward_inbox_sol_migration_is_idempotent();
     }
 
     private static function runSaveFlowTests():Void {
@@ -95,6 +97,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_loadFromMydata_drug_schema_success_resets_session();
         test_loadFromMydata_future_drug_schema_preserves_session();
         test_launcher_snapshot_migrates_drug_schema();
+        test_launcher_snapshot_migrates_reward_inbox();
     }
 
     private static function runPrefetchTests():Void {
@@ -156,6 +159,10 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         itemData["测试初始上装"] = equipmentItemData("测试初始上装", "上装装备");
         itemData["测试初始下装"] = equipmentItemData("测试初始下装", "下装装备");
         itemData["测试初始鞋"] = equipmentItemData("测试初始鞋", "脚部装备");
+        itemData["福袋"] = {
+            name:"福袋", displayname:"福袋", icon:"福袋",
+            type:"消耗品", use:"礼包", data:{level:1}
+        };
         ItemUtil.itemDataDict = itemData;
         var equipment:Object = copyDictionary(receipt.equipment);
         equipment["测试初始上装"] = true;
@@ -211,6 +218,11 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             slots[i] = {itemKey:"", lastDepletedSequence:0};
         }
         return {version:3, slots:slots, nextDepletedSequence:1};
+    }
+
+    private static function buildEmptyRewardInboxV1():Object {
+        return {v:1, sequence:0, authorityRevision:1,
+            batches:[], receipts:[], migrations:[], supplyKeys:[]};
     }
 
     private static function assert(condition:Boolean, msg:String):Void {
@@ -309,6 +321,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             resetDirty:true
         });
         SaveManager.getInstance().clearPendingDrugLoadoutMigration();
+        SaveManager.getInstance().clearPendingRewardInboxMigration();
         return saved;
     }
 
@@ -321,6 +334,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             resetDirty:true
         });
         SaveManager.getInstance().clearPendingDrugLoadoutMigration();
+        SaveManager.getInstance().clearPendingRewardInboxMigration();
         _root.savePath = saved.savePath;
         _root.允许存档 = saved.allowSave;
         _root.角色名 = saved.roleName;
@@ -784,7 +798,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
     private static function test_migrate_3_0_noop():Void {
         var sm:SaveManager = SaveManager.getInstance();
         var mydata:Object = buildValidMydata();
-        mydata.ext = {drugLoadout:buildEmptyDrugLoadoutV3()};
+        mydata.ext = {drugLoadout:buildEmptyDrugLoadoutV3(),
+            rewardInbox:buildEmptyRewardInboxV1()};
         var soData:Object = {};
         soData["test"] = mydata;
 
@@ -1156,6 +1171,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
     private static function test_migrate_drug_schema_sets_pending():Void {
         var sm:SaveManager = SaveManager.getInstance();
         sm.clearPendingDrugLoadoutMigration();
+        sm.clearPendingRewardInboxMigration();
         var md:Object = buildValidMydata();
         md.ext = {};
         var legacyDrugs:Object = {};
@@ -1170,6 +1186,25 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                 && md.inventory.药剂栏["4"] == undefined,
             "drug_schema_migrate: SOL path performs the same old-ghost cleanup");
         sm.clearPendingDrugLoadoutMigration();
+        sm.clearPendingRewardInboxMigration();
+    }
+
+    private static function test_reward_inbox_sol_migration_is_idempotent():Void {
+        var sm:SaveManager = SaveManager.getInstance();
+        sm.clearPendingRewardInboxMigration();
+        var md:Object = buildValidMydata();
+        md.inventory.装备栏.手雷 = {name:"福袋", value:1, lastUpdate:17};
+        var first:Boolean = sm.migrate(md, {});
+        var batchId:String = String(md.ext.rewardInbox.batches[0].batchId);
+        var second:Boolean = sm.migrate(md, {});
+        assert(first && !second && sm.hasPendingRewardInboxMigration()
+                && sm.hasPendingChanges()
+                && md.inventory.装备栏.手雷 == undefined
+                && md.ext.rewardInbox.batches.length == 1
+                && md.ext.rewardInbox.batches[0].batchId == batchId
+                && md.ext.rewardInbox.batches[0].entries[0].itemName == "福袋",
+            "reward_inbox_sol: carrier migration is durable-pending and idempotent on repeated SOL normalization");
+        sm.clearPendingRewardInboxMigration();
     }
 
     // ── Phase 1: loadFromMydata 测试 helpers ──
@@ -1193,6 +1228,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         var sm:SaveManager = SaveManager.getInstance();
         sm.clearPrefetch();
         sm.clearPendingDrugLoadoutMigration();
+        sm.clearPendingRewardInboxMigration();
         // _root 状态隔离
         _root.mydata = undefined;
         _root.角色名 = undefined;
@@ -1241,7 +1277,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         md.tasks = { tasks_to_do:[], tasks_finished:{}, task_chains_progress:{} };
         md.pets = { 宠物信息:[[], [], [], [], []], 宠物领养限制:5 };
         md.shop = { 商城已购买物品:[], 商城购物车:[] };
-        md.ext = {drugLoadout:buildEmptyDrugLoadoutV3()};
+        md.ext = {drugLoadout:buildEmptyDrugLoadoutV3(),
+            rewardInbox:buildEmptyRewardInboxV1()};
         md.reserved = {};
         return md;
     }
@@ -1496,6 +1533,29 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             "launcher_snapshot_drug_schema: in-memory snapshot migration remains pending until full save");
         sm._resetProtocol2ForTest();
         sm.clearPendingDrugLoadoutMigration();
+    }
+
+    private static function test_launcher_snapshot_migrates_reward_inbox():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        sm._resetProtocol2ForTest();
+        var md:Object = buildValidMydata();
+        md.inventory.装备栏.手雷 = {name:"福袋", value:1, lastUpdate:23};
+        _root._launcherSaveDecision = "snapshot";
+        _root._launcherSnapshot = md;
+        _root._launcherSnapshotSource = "json_shadow";
+
+        sm.preload();
+        var ok:Boolean = sm.loadAll();
+        assert(ok && _root.物品栏.装备栏.getItem("手雷") == null
+                && _root._saveExt.rewardInbox.batches.length == 1
+                && _root._saveExt.rewardInbox.batches[0]
+                    .sourceKind == "legacy_grenade_slot_recovery",
+            "reward_inbox_launcher: protocol-2 applyCore normalizes before equipment construction");
+        assert(sm.hasPendingRewardInboxMigration() && sm.hasPendingChanges(),
+            "reward_inbox_launcher: migrated batch remains pending until a successful full save");
+        sm._resetProtocol2ForTest();
+        sm.clearPendingRewardInboxMigration();
     }
 
     // ── Phase 2: prefetch / receiveSavePush 测试 helpers ──

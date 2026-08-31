@@ -721,6 +721,7 @@
 
     Coordinator.prototype.close = function(abandon, callback) {
         if (this._phase !== 'active' || this._pending || !this._projection) return false;
+        if (abandon === true && this.identity.source === 'reward_inbox') return false;
         abandon = abandon === true;
         if (this._projection.remainingCount === 0) abandon = false;
         var beforeRevision = this._projection.authorityRevision;

@@ -49,7 +49,7 @@ namespace CF7Launcher.Tasks
             "item_use", "task_entry", "arena_entry", "arena_reward",
             "base_upgrade", "tavern_purchase", "vehicle_service",
             "gym_training", "appearance_service", "player_revive",
-            "cheat", "system_reward", "kill", "unknown"
+            "cheat", "system_reward", "reward_inbox", "kill", "unknown"
         };
 
         private static readonly HashSet<string> AllowedDirections =

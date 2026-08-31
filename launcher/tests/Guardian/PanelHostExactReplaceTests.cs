@@ -87,6 +87,52 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void Replace_ConsumesMatchingTrackedSourceLeaseWithoutClosingSurface()
+        {
+            using var harness = new Harness();
+            PanelHostController.TrackedOpenOutcome? openOutcome = null;
+            Assert.True(harness.Host.TryOpenTrackedPanel(
+                "loot",
+                "{}",
+                "panel.loot.tracked",
+                () => true,
+                value => openOutcome = value));
+            harness.Pump();
+            Assert.Equal(
+                PanelHostController.TrackedOpenOutcome.OpenPosted,
+                openOutcome);
+            Assert.True(harness.Host.HasTrackedPanelLease);
+
+            int commits = 0;
+            int aborts = 0;
+            var plan = new PreparedPanelReplace(
+                "workbench",
+                "panel.workbench.target",
+                "{\"mode\":\"runtime\"}",
+                () => commits++,
+                () => aborts++);
+            PanelHostController.ExactReplaceOutcome? outcome = null;
+            Assert.True(harness.Host.TryReplacePanelExact(
+                "loot",
+                "panel.loot.tracked",
+                plan,
+                () => true,
+                value => outcome = value));
+            harness.Pump();
+
+            Assert.Equal(1, commits);
+            Assert.Equal(0, aborts);
+            Assert.Equal(
+                PanelHostController.ExactReplaceOutcome.TargetCommitted,
+                outcome);
+            Assert.Equal("workbench", harness.Host.ActivePanelName);
+            Assert.Equal(
+                "panel.workbench.target",
+                harness.Host.ActivePanelInstanceId);
+            Assert.False(harness.Host.HasTrackedPanelLease);
+        }
+
+        [Fact]
         public void GateRejection_AbortsOnceAndPreservesSource()
         {
             using var harness = new Harness();

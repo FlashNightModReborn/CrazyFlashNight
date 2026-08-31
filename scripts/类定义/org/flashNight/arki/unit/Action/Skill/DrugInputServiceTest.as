@@ -29,6 +29,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         testEffectFailureKeepsLegacyConsumptionOrder();
         testMissingSaveSystemFailsBeforeAnyAuthorityWrite();
         testItemRemovedListenerFaultRecoversIndexesAndNextTransaction();
+        testDirectUseLanePriorityAndPausedConcurrency();
         testLiveKeyLabelAndCleanup();
 
         ManualCooldownService.resetForTests();
@@ -549,6 +550,42 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
             this.lastFrame = frame;
         };
         return renderer;
+    }
+
+    private static function testDirectUseLanePriorityAndPausedConcurrency():Void {
+        resetFixture();
+        var root:Object = makeRoot();
+        root.暂停 = true;
+        var drugs:Object = makeInventory([
+            {name:"同名直服药", value:1}, {name:"其他1", value:1},
+            null, {name:"同名直服药", value:1},
+            {name:"其他4", value:1}, {name:"其他5", value:1},
+            null, {name:"其他7", value:1}
+        ]);
+        root.物品栏 = {药剂栏:drugs};
+        var sameFirst:Object = DrugInputService.selectDirectUseLane(
+            "同名直服药", drugs);
+        assert(sameFirst.success && sameFirst.lane == 0,
+            "direct use prefers the lowest ready lane carrying the same item");
+
+        var unrelated:Object = DrugInputService.selectDirectUseLane(
+            "未装备直服药", drugs);
+        assert(unrelated.success && unrelated.lane == 0,
+            "direct use may occupy the lowest ready cooldown lane even when both equipment banks are full");
+
+        var backpack:Object = makeInventory([{name:"同名直服药", value:2}]);
+        var firstItem:Object = backpack.getItem("0");
+        var first:Object = DrugInputService.consumeBackpackItem(
+            {hp:100}, backpack, 0, firstItem, 0, root);
+        var secondLane:Object = DrugInputService.selectDirectUseLane(
+            "同名直服药", drugs);
+        var second:Object = DrugInputService.consumeBackpackItem(
+            {hp:100}, backpack, 0, backpack.getItem("0"),
+            Number(secondLane.lane), root);
+        assert(first.used && first.lane == 0 && secondLane.success
+                && secondLane.lane == 3 && second.used && second.lane == 3
+                && backpack.getItem("0") == null && root.effectCalls == 2,
+            "paused direct use is allowed and the same item may run concurrently on different ready lanes");
     }
 
     private static function allDrugCooldownsReady(expected:Boolean):Boolean {

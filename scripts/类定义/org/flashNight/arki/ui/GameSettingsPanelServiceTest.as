@@ -396,6 +396,21 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
             && _root.lastCheat == "status" && !_root.存档系统.dirtyMark,
             "normal modes retain full cheat help and read-only diagnostics");
 
+        var supply:Object = GameSettingsPanelService.execute("cheat", {
+            v:1, command:"#supplytime:20", confirmed:true
+        });
+        var supplyHelpFound:Boolean = false;
+        for (var i:Number = 0; i < supply.cheatHelp.length; i++) {
+            if (String(supply.cheatHelp[i].command) == "#supplytime:10") {
+                supplyHelpFound = supply.cheatHelp[i].effectScope == "session";
+                break;
+            }
+        }
+        check(supply.success && supply.effectScope == "session" && supplyHelpFound
+                && _root.lastCheat == "#supplytime:20"
+                && !_root.存档系统.dirtyMark,
+            "online supply frame-time cheat is session-scoped and visible in normal help");
+
         var challenge:Object = GameSettingsPanelService.execute("cheat", {
             v:1, command:"challengemode", confirmed:true
         });

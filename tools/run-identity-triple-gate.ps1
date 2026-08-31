@@ -115,6 +115,7 @@ try {
     Invoke-CheckedNode 'tools\test-character-build-session.js'
     Invoke-CheckedNode 'tools\test-character-build-facet-counts.js'
     Invoke-CheckedNode 'tools\test-character-build-projection.js'
+    Invoke-CheckedNode 'tools\test-character-build-item-use.js'
     Invoke-CheckedNode 'tools\test-character-build-candidate-tooltip.js'
     Invoke-CheckedNode 'tools\test-character-build-candidate-tuning.js'
     Invoke-CheckedNode 'tools\test-character-build-tuning-capability.js'

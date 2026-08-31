@@ -4,10 +4,21 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 const LootState = require('../loot-state.js');
 const LootRuntime = require('../loot-runtime.js');
 const LootOrganizer = require('../loot-organizer.js');
 const PanelRuntime = require('../../panel-runtime.js');
+
+function loadLootView() {
+    const context = {};
+    const source = fs.readFileSync(path.join(__dirname, '..', 'loot-view.js'), 'utf8');
+    vm.runInNewContext(source + '\nthis.__lootView = LootView;', context,
+        {filename:'loot-view.js'});
+    return context.__lootView;
+}
+
+const LootView = loadLootView();
 
 const identity = {
     panelInstanceId:'panel.loot.test.1', chestSessionId:'chest.test.1', lootContainerId:'loot.test.1',
@@ -1017,6 +1028,45 @@ test('runtime identity rejects non-positive and non-native integer epochs', () =
     assert(LootRuntime.normalizeIdentity(identity));
 });
 
+test('reward inbox uses the exact nine-key init shape and cannot open abandon', () => {
+    const init={
+        v:1,panelInstanceId:'panel.reward.1',chestSessionId:'reward.session.1',
+        lootContainerId:'reward.container.1',containerEpoch:3,
+        displayName:'待领取恢复批次',capacity:4,columns:4,sourceKind:'reward_inbox'
+    };
+    const normalized=LootView.normalizeInitData(init);
+    assert(normalized);
+    assert.strictEqual(normalized.sourceKind,'reward_inbox');
+    assert.strictEqual(normalized.report,null);
+    assert.strictEqual(LootView.normalizeInitData(Object.assign({},init,{report:null})),null);
+    assert.strictEqual(LootView.normalizeInitData(Object.assign({},init,{sourceKind:'reward'})),null);
+
+    const view=new LootView.View({init:normalized});
+    let modalOpened=false;
+    view.shell={openModal:function(){modalOpened=true;}};
+    assert.strictEqual(view.isRewardInbox,true);
+    assert.strictEqual(view.openAbandon(1,function(){}),false);
+    assert.strictEqual(modalOpened,false);
+    const presentation=LootView.commitPresentation({
+        phase:'active',remainingCount:2,pending:null,blockReason:''
+    },false,false,false,true);
+    assert.strictEqual(
+        presentation.status,
+        '剩余 2 项待领取物品；关闭会保留，不能永久放弃。');
+});
+
+test('reward inbox rejects abandon before issuing a close write', () => {
+    const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    const wire=fakeTransport(),model=new LootState.Coordinator({
+        identity:rewardIdentity,capacity:1,request:wire.request
+    });
+    model.open();wire.respond(0,active(1,[slot(0,'恢复物品','lease.reward')]));
+    assert.strictEqual(model.close(true),false);
+    assert.strictEqual(wire.calls.filter(call=>call.cmd==='close').length,0);
+    assert.strictEqual(model.close(false),true);
+    assert.strictEqual(wire.calls[1].fields.abandon,false);
+});
+
 test('runtime exact-key and command allowlists ignore prototype properties', () => {
     assert.strictEqual(LootRuntime.hasExactKeys(
         {type:'panel_resp',constructor:true},{type:true,success:true}),false);
@@ -1063,6 +1113,25 @@ test('runtime uses one shared router and exact top-level envelope', () => {
     assert.deepStrictEqual(Object.keys(sent[4]).sort(),common.sort());
     runtime.destroy();
     assert.strictEqual(router.debugState().handlerCount,baseline);
+});
+
+test('reward inbox runtime returns the exact source kind on every request', () => {
+    const sent=[],rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    assert(LootRuntime.normalizeIdentity(rewardIdentity));
+    const runtime=new LootRuntime.RequestMux({
+        identity:rewardIdentity,router:new PanelRuntime.PanelResponseRouter(),
+        sessionNonce:'reward-inbox-source',send:message=>{sent.push(message);return true;}
+    });
+    runtime.openSession();
+    ['snapshot','tooltip','claim','claimBatch','close','query','materials'].forEach(cmd => {
+        assert(runtime.request(cmd,{sourceKind:'map_chest'},function(){}));
+    });
+    assert.strictEqual(sent.length,7);
+    sent.forEach(message => {
+        assert.strictEqual(message.sourceKind,'reward_inbox');
+        assert.strictEqual(Object.keys(message).filter(key=>key==='sourceKind').length,1);
+    });
+    runtime.destroy();
 });
 
 test('organizer inventory mux binds an exact loot panel envelope and rejects stale responses', () => {

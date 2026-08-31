@@ -151,6 +151,11 @@ test('launch context accepts only exact Host-owned standalone workbenches', () =
         panelInstanceId:'panel.workbench.exact',reason:'navigate_intelligence'
     });
     assert.deepStrictEqual(Config.createCloseMessage(
+        'panel.workbench.exact', 'navigate_reward_inbox'), {
+        type:'panel',cmd:'close',panel:'workbench',
+        panelInstanceId:'panel.workbench.exact',reason:'navigate_reward_inbox'
+    });
+    assert.deepStrictEqual(Config.createCloseMessage(
         'panel.workbench.exact', 'navigate_panel'), {
         type:'panel',cmd:'close',panel:'workbench',
         panelInstanceId:'panel.workbench.exact'

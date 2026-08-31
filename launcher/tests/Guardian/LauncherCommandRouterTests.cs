@@ -3395,6 +3395,216 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Fact]
+        public void RewardInboxReturn_UsesFreshNativeBuildPreflightExactlyOnce()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
+            var gameCommands = new List<JObject>();
+            router.SetGameCommandSenderForTests(
+                delegate(string payload)
+                {
+                    gameCommands.Add(ParseWire(payload));
+                    return true;
+                });
+
+            Assert.True(
+                router.TryOpenCharacterBuildAfterRewardInbox());
+            Assert.False(
+                router.TryOpenCharacterBuildAfterRewardInbox());
+            JObject firstPreflight = Assert.Single(gameCommands);
+            Assert.Equal(6, firstPreflight.Count);
+            Assert.Equal("cmd", firstPreflight.Value<string>("task"));
+            Assert.Equal(
+                "openInventoryWorkbench",
+                firstPreflight.Value<string>("action"));
+            Assert.Equal(
+                "battlebox",
+                firstPreflight.Value<string>("profile"));
+            Assert.Equal("build", firstPreflight.Value<string>("view"));
+            Assert.Equal(
+                "nativehud_equipment",
+                firstPreflight.Value<string>("source"));
+            string firstRequestId =
+                firstPreflight.Value<string>("openRequestId");
+            Assert.False(string.IsNullOrEmpty(firstRequestId));
+
+            router.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                firstRequestId);
+            Assert.Equal("workbench", harness.Host.ActivePanelName);
+            string firstInstance = harness.Host.ActivePanelInstanceId;
+            Assert.False(string.IsNullOrEmpty(firstInstance));
+            JObject firstOpen = harness.LastOpenPayload;
+            Assert.Null(firstOpen["initData"]["navigationOrigin"]);
+
+            harness.CloseCurrent();
+            Assert.True(harness.Host.IsIdleForTrackedOpen);
+            Assert.True(
+                router.TryOpenCharacterBuildAfterRewardInbox());
+            JObject[] buildPreflights = gameCommands
+                .Where(command =>
+                    command.Value<string>("action")
+                        == "openInventoryWorkbench")
+                .ToArray();
+            Assert.Equal(2, buildPreflights.Length);
+            string secondRequestId =
+                buildPreflights[1].Value<string>("openRequestId");
+            Assert.NotEqual(firstRequestId, secondRequestId);
+            router.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                secondRequestId);
+            Assert.Equal("workbench", harness.Host.ActivePanelName);
+            Assert.NotEqual(
+                firstInstance,
+                harness.Host.ActivePanelInstanceId);
+        }
+
+        [Fact]
+        public void RewardInboxReturn_ReplacesTrackedLootWithoutPauseOrVisualGap()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
+            int pauseReleases = 0;
+            using var coordinator = new LootPanelCoordinator(
+                new LootPanelHostPort(harness.Host),
+                delegate
+                {
+                    pauseReleases++;
+                    return true;
+                },
+                delegate { return "panel.loot.reward"; });
+            router.SetLootPanelCoordinator(coordinator);
+            coordinator.SetRewardInboxReturnHandler(
+                delegate(LootPanelCoordinator.Binding binding)
+                {
+                    return router
+                        .TryOpenCharacterBuildAfterRewardInbox(
+                            binding);
+                });
+            var gameCommands = new List<JObject>();
+            router.SetGameCommandSenderForTests(
+                delegate(string payload)
+                {
+                    gameCommands.Add(ParseWire(payload));
+                    return true;
+                });
+
+            string rejection;
+            Assert.True(coordinator.TryOpenRewardInbox(
+                new JObject
+                {
+                    ["sourceKind"] = "reward_inbox",
+                    ["chestSessionId"] = "reward.chest.router",
+                    ["lootContainerId"] = "reward.container.router",
+                    ["containerEpoch"] = 3,
+                    ["openAttemptSeq"] = 4,
+                    ["displayName"] = "待领取物品",
+                    ["authorityRevision"] = 6,
+                    ["state"] = "LOOT_ACTIVE",
+                    ["remainingCount"] = 2,
+                    ["capacity"] = 8,
+                    ["columns"] = 8
+                },
+                out rejection));
+            Assert.Equal("loot", harness.Host.ActivePanelName);
+            Assert.True(harness.Host.HasTrackedPanelLease);
+            LootPanelCoordinator.Binding binding;
+            Assert.True(coordinator.TryBindExact(
+                "panel.loot.reward",
+                "reward.chest.router",
+                "reward.container.router",
+                3,
+                out binding));
+
+            Assert.True(
+                coordinator.CloseAfterAuthoritySuspended(binding));
+            Assert.Equal("loot", harness.Host.ActivePanelName);
+            Assert.True(
+                coordinator.IsRewardInboxReplacementPendingExact(
+                    binding.PanelInstanceId));
+            JObject preflight = Assert.Single(gameCommands);
+            string requestId =
+                preflight.Value<string>("openRequestId");
+            Assert.False(string.IsNullOrEmpty(requestId));
+            string replacementPayload = null;
+            harness.Host.SetExactReplacePosterForTests(
+                delegate(string payload)
+                {
+                    replacementPayload = payload;
+                    return true;
+                });
+
+            router.RequestOpenPanel(
+                "workbench",
+                "nativehud_equipment",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "{\"profile\":\"battlebox\",\"view\":\"build\"}",
+                requestId);
+
+            Assert.Equal("workbench", harness.Host.ActivePanelName);
+            Assert.NotEqual(
+                binding.PanelInstanceId,
+                harness.Host.ActivePanelInstanceId);
+            Assert.False(harness.Host.HasTrackedPanelLease);
+            Assert.Equal(
+                LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.Null(coordinator.ActiveBinding);
+            Assert.Equal(0, pauseReleases);
+            Assert.Equal(
+                "reward_inbox_return",
+                JObject.Parse(replacementPayload)["initData"]
+                    .Value<string>("navigationOrigin"));
+        }
+
+        [Fact]
+        public void RewardInboxReturn_RejectsCompetingPanelOrClosedAdmission()
+        {
+            Capture capture = new Capture();
+            LauncherCommandRouter router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
+            var gameCommands = new List<string>();
+            router.SetGameCommandSenderForTests(
+                delegate(string payload)
+                {
+                    gameCommands.Add(payload);
+                    return true;
+                });
+
+            Assert.True(harness.Host.TryOpenPanel(
+                "settings", "{}", null, null));
+            Assert.False(
+                router.TryOpenCharacterBuildAfterRewardInbox());
+            Assert.Empty(gameCommands);
+
+            harness.CloseCurrent();
+            router.SetPanelAdmissionGate(delegate { return false; });
+            Assert.False(
+                router.TryOpenCharacterBuildAfterRewardInbox());
+            Assert.Empty(gameCommands);
+        }
+
         [Theory]
         [InlineData("navigate_skills", "skills", true)]
         [InlineData("navigate_materials", "materials", true)]

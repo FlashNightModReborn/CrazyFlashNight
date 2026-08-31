@@ -1568,6 +1568,12 @@ namespace CF7Launcher.Tasks
                         ["lootContainerId"] = entry.Binding.LootContainerId,
                         ["containerEpoch"] = entry.Binding.ContainerEpoch
                     });
+                if (entry.Binding.SourceKind
+                    == LootPanelCoordinator.RewardInboxSource)
+                {
+                    flash["sourceKind"] =
+                        LootPanelCoordinator.RewardInboxSource;
+                }
                 flash["openAttemptSeq"] = entry.Binding.OpenAttemptSeq;
                 flash["recoveryNonce"] = entry.RecoveryNonce;
             }
@@ -1714,6 +1720,9 @@ namespace CF7Launcher.Tasks
             operationId = null;
             expectedRevision = -1;
             HashSet<string> expected = new HashSet<string>(CommonRequestKeys, StringComparer.Ordinal);
+            bool rewardInbox = binding != null
+                && binding.SourceKind == LootPanelCoordinator.RewardInboxSource;
+            if (rewardInbox) expected.Add("sourceKind");
             if (cmd == "snapshot")
             {
                 expected.Add("loot");
@@ -1748,7 +1757,10 @@ namespace CF7Launcher.Tasks
                 || ReadString(parsed["task"]) != "loot_request"
                 || ReadString(parsed["domain"]) != "loot"
                 || ReadString(parsed["panel"]) != "loot"
-                || ReadString(parsed["cmd"]) != cmd)
+                || ReadString(parsed["cmd"]) != cmd
+                || rewardInbox
+                    && ReadString(parsed["sourceKind"])
+                        != LootPanelCoordinator.RewardInboxSource)
                 return false;
             int version;
             int epoch;
@@ -1763,6 +1775,9 @@ namespace CF7Launcher.Tasks
                 ["lootContainerId"] = binding.LootContainerId,
                 ["containerEpoch"] = binding.ContainerEpoch
             };
+            if (rewardInbox)
+                normalized["sourceKind"] =
+                    LootPanelCoordinator.RewardInboxSource;
 
             if (cmd == "snapshot")
             {
@@ -1834,7 +1849,8 @@ namespace CF7Launcher.Tasks
             bool abandon;
             if (!LootPanelCoordinator.IsOpaque(operationId)
                 || !LootPanelCoordinator.IsOpaque(closeLease)
-                || !TryReadBoolean(parsed["abandon"], out abandon)) return false;
+                || !TryReadBoolean(parsed["abandon"], out abandon)
+                || rewardInbox && abandon) return false;
             normalized["operationId"] = operationId;
             normalized["closeLease"] = closeLease;
             normalized["abandon"] = abandon;

@@ -17,13 +17,10 @@
 }
 function 在线奖励刷新(值)
 {
-   this.标题 = 值;
+   奖励品 = [];
    删除奖励块();
-   排列奖励块();
-   if(奖励品.length > 0)
-   {
-      this._visible = 1;
-   }
+   this._visible = 0;
+   return false;
 }
 function 排列奖励块()
 {

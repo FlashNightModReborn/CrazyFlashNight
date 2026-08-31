@@ -96,7 +96,7 @@ bootstrap preflight
 
 | 通道 | 用途 | 约束 |
 |---|---|---|
-| WebView2 message | Bootstrap、Overlay、Panel 控制与展示 | Host 校验命令和 payload；Web 不拥有业务写权限 |
+| WebView2 message | Bootstrap、Overlay、Panel 控制与展示 | Host 校验命令和 payload；Web 不拥有业务写权限。Character Build `item_use` 只转发严格闭集，AS2 独占物资裁决与四条药剂帧冷却；Web 的格内冷却阴影仅采样 `cooldownSnapshot`，不按现实时间续算，也不新增独立排版行。Reward Inbox 结束先经 AS2 nonce preflight，再由 PanelHost 原位换成全新构筑会话并继承 pause lease，失败才 exact close/unpause 后从 idle 重试 |
 | XMLSocket | Flash ↔ Host 任务消息 | 连接、握手和业务回包分别判定，裸 socket 不能代签 Flash 建连；GameStage `T+|id|seconds|label` / `T-|id` / `T!` 仅投影 keyed 计时 HUD，AS2 独占倒计时和失败裁决，断连清理 |
 | HTTP | 兼容查询、资源与受限控制面 | legacy automation 不是 Agent Runtime 的信任边界 |
 | V8 | 搓招 `GameInput` DFA | 单 engine/单锁，模块源与加载闭包必须可复验；不再持有伤害数字状态或渲染描述符 |

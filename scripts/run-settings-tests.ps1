@@ -17,10 +17,10 @@ $focusedRun = @{
         'org.flashNight.arki.ui.GameSettingsPanelServiceTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^GameSettingsPanelServiceTest Tests Passed: 46\r?$'
+        '(?m)^GameSettingsPanelServiceTest Tests Passed: 47\r?$'
         '(?m)^GameSettingsPanelServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = '46/46 assertions'
+    SuccessSummary = '47/47 assertions'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

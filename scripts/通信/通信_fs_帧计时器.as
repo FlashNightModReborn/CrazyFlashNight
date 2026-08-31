@@ -122,6 +122,30 @@ _root.帧计时器.初始化任务栈 = function():Void {
     this.帧率 = 30;                      // 项目标称帧率 (Hz)
     this.毫秒每帧 = this.帧率 / 1000;    // 帧率/1000，用于乘法优化
     this.当前帧数 = 0;                   // 全局帧计数器
+    // 在线补给只消费本次运行的帧时间。测试偏移不改全局帧数，
+    // 因而不会影响冷却、任务调度或其他消费帧计时器的系统。
+    this.在线补给起始帧 = this.当前帧数;
+    this.在线补给测试偏移帧 = 0;
+    this.获取在线补给帧数 = function():Number {
+        var elapsed:Number = Number(this.当前帧数) - Number(this.在线补给起始帧);
+        if (isNaN(elapsed) || elapsed < 0) elapsed = 0;
+        var adjusted:Number = elapsed + Number(this.在线补给测试偏移帧);
+        return isNaN(adjusted) || adjusted < 0 ? 0 : Math.floor(adjusted);
+    };
+    this.设置在线补给测试分钟 = function(minutes:Number):Object {
+        var normalized:Number = Number(minutes);
+        if (isNaN(normalized) || normalized == Infinity || normalized == -Infinity
+                || normalized < 0 || normalized > 1440) {
+            return {success:false, error:"invalid_supply_minutes"};
+        }
+        normalized = Math.round(normalized * 100) / 100;
+        var elapsed:Number = Number(this.当前帧数) - Number(this.在线补给起始帧);
+        if (isNaN(elapsed) || elapsed < 0) elapsed = 0;
+        var targetFrame:Number = Math.round(normalized * 60 * Number(this.帧率));
+        this.在线补给测试偏移帧 = targetFrame - elapsed;
+        return {success:true, minutes:normalized,
+            frame:this.获取在线补给帧数()};
+    };
     this.异常间隔帧数 = this.帧率 * 5;   // 异常检测周期 = 5秒
 
     // ┌─────────────────────────────────────────────────────────┐
@@ -723,19 +747,6 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
 }, null);
 
 
-//开始对在线奖励计时
-var 检测在线奖励 = function(){
-    _root.在线时间计数++;
-    if(_root.主线任务进度 > 28){
-        if (_root.在线时间计数 == 2) _root.奖励10分钟._visible = true;
-        else if (_root.在线时间计数 == 4) _root.奖励20分钟._visible = true;
-        else if (_root.在线时间计数 == 8) _root.奖励40分钟._visible = true;
-        else if (_root.在线时间计数 == 12) _root.奖励60分钟._visible = true;
-        else if (_root.在线时间计数 == 24) _root.奖励120分钟._visible = true;
-    }
-}
-_root.在线时间计数 = 0;
-_root.帧计时器.添加任务(检测在线奖励, 300000, 24); // 每5分钟检测一次，共24次
 _root.帧计时器.添加循环任务(BulletFactory.resetCount, 1000 * 60 * 5); // 每5分钟重置一次子弹深度计数
 
 // 保存 stageWatcher 到 _root.帧计时器 以便在 cleanupForRestart 时移除

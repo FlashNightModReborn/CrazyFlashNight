@@ -1878,12 +1878,38 @@ class Program
                 return !form.IsShutdownAdmissionClosed;
             });
         commandRouter.SetCharacterBuildTask(characterBuildTask);
+        ItemUseTask itemUseTask = new ItemUseTask(
+            socketServer,
+            characterBuildTask.IsExactSession);
+        commandRouter.SetLootPanelCoordinator(
+            lootPanelCoordinator);
         lootPanelCoordinator.SetExternalAdmissionGate(
             delegate
             {
                 return !form.IsShutdownAdmissionClosed
                     && !characterBuildTask.HasBoundPanel;
             });
+        lootPanelCoordinator.SetRewardInboxReturnHandler(
+            delegate(LootPanelCoordinator.Binding binding)
+            {
+                return commandRouter
+                    .TryOpenCharacterBuildAfterRewardInbox(
+                        binding);
+            });
+        lootPanelCoordinator.BindingSettled += delegate(
+            LootPanelCoordinator.Binding binding)
+        {
+            // Exact replacement is preferred. If preflight/Host admission failed, the ordinary
+            // Loot close path releases pause and lands here; retry once from the idle baseline.
+            if (binding == null
+                || binding.SourceKind
+                    != LootPanelCoordinator.RewardInboxSource)
+            {
+                return;
+            }
+            commandRouter.TryOpenCharacterBuildAfterRewardInbox(
+                binding);
+        };
         SkillTask skillTask = new SkillTask(socketServer);
         commandRouter.SetSkillTask(skillTask);
         // stageSelectTask 提前到 panelHost 接线块之前声明：关闭观察器 lambda 需要捕获它。
@@ -1932,6 +1958,11 @@ class Program
                 string panelName,
                 string panelInstanceId)
             {
+                if (panelName == "workbench")
+                {
+                    itemUseTask.OnWorkbenchPanelClosed(panelInstanceId);
+                    itemUseTask.ClearPending();
+                }
                 if (panelName == "skills")
                 {
                     commandRouter
@@ -1981,6 +2012,30 @@ class Program
             bool preparationNavigationConsumed =
                 commandRouter
                     .TryCompleteCharacterBuildPreparationNavigation();
+            if (preparationNavigationConsumed) return;
+
+            ItemUseTask.RewardHandoff rewardHandoff;
+            if (itemUseTask.TryTakeClosedRewardHandoff(
+                    out rewardHandoff))
+            {
+                string rejection;
+                if (lootPanelCoordinator.TryOpenRewardInbox(
+                        rewardHandoff.Authority,
+                        out rejection))
+                {
+                    LogManager.Log(
+                        "event=reward_inbox_panel_open_queued source=item_use");
+                    return;
+                }
+                LogManager.Log(
+                    "event=reward_inbox_panel_open_rejected reason="
+                    + (rejection ?? "unknown"));
+                if (toastSink != null)
+                {
+                    toastSink.AddMessage(
+                        "奖励已安全保存；领取页面暂时无法打开，请稍后从角色构筑重试");
+                }
+            }
             if (!preparationNavigationConsumed)
             {
                 panelHost.FlushDeferredBarrierOpen();
@@ -2105,7 +2160,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2125,6 +2180,7 @@ class Program
         webOverlay.SetSettingsTask(settingsTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
         webOverlay.SetCharacterBuildTask(characterBuildTask);
+        webOverlay.SetItemUseTask(itemUseTask);
         webOverlay.SetSkillTask(skillTask);
         webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
@@ -2269,6 +2325,7 @@ class Program
             petTask.Dispose();
             mercTask.Dispose();
             equipmentTuningTask.Dispose();
+            itemUseTask.Dispose();
             characterBuildTask.Dispose();
             mapTask.Dispose();
             stageSelectTask.Dispose();
@@ -2340,6 +2397,7 @@ class Program
             try { mercTask.Dispose(); } catch { }
             try { lootPanelCoordinator.Dispose(); } catch { }
             try { equipmentTuningTask.Dispose(); } catch { }
+            try { itemUseTask.Dispose(); } catch { }
             try { characterBuildTask.Dispose(); } catch { }
             try { skillTask.Dispose(); } catch { }
             try { mapTask.Dispose(); } catch { }
@@ -3223,6 +3281,7 @@ class Program
         try { mercTask.Dispose(); } catch { }
         try { lootPanelCoordinator.Dispose(); } catch { }
         try { equipmentTuningTask.Dispose(); } catch { }
+        try { itemUseTask.Dispose(); } catch { }
         try { characterBuildTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }

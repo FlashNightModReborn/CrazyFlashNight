@@ -387,6 +387,25 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// Captures only the exact active source tuple for a delayed replacement. A matching
+        /// tracked lease is allowed because TryReplacePanelExact consumes it atomically; callers
+        /// must still pass the captured tuple back to that exact replacement entry.
+        /// </summary>
+        internal bool TryCaptureExactReplaceBaseline(
+            out string activePanel,
+            out string activeInstance)
+        {
+            lock (_queueLock)
+            {
+                activePanel = _activePanel;
+                activeInstance = _activePanelInstanceId;
+                return IsStableExactReplaceAdmissionLocked(
+                    activePanel,
+                    activeInstance);
+            }
+        }
+
+        /// <summary>
         /// Atomically admits a delayed generic open only if no Host lifecycle mutation has occurred
         /// since TryCaptureOpenAdmission and the Host still has the exact captured active identity.
         /// </summary>
@@ -779,6 +798,41 @@ namespace CF7Launcher.Guardian
                 && _returnStack.Count == 0;
         }
 
+        private bool IsStableExactReplaceAdmissionLocked(
+            string expectedActivePanel,
+            string expectedActiveInstance)
+        {
+            bool trackedLeaseCompatible =
+                _trackedLeaseInstanceId == null
+                || string.Equals(
+                    _trackedLeasePanelName,
+                    expectedActivePanel,
+                    StringComparison.Ordinal)
+                    && string.Equals(
+                        _trackedLeaseInstanceId,
+                        expectedActiveInstance,
+                        StringComparison.Ordinal);
+            return !_disposed
+                && string.Equals(
+                    _activePanel,
+                    expectedActivePanel,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    _activePanelInstanceId,
+                    expectedActiveInstance,
+                    StringComparison.Ordinal)
+                && trackedLeaseCompatible
+                && _queue.Count == 0
+                && !_processing
+                && !_trackedOpenReserved
+                && !_exactReplaceReserved
+                && _idleFenceToken == null
+                && !_deferredRebind.HasValue
+                && !_deferredBarrierOpen.HasValue
+                && _visualRetireWaiters.Count == 0
+                && _returnStack.Count == 0;
+        }
+
         /// <summary>
         /// 异常路径（断线 / force_close / 进程退出前）专用：清空 return stack，
         /// 让接下来的 ClosePanel 不要尝试 reopen 任何上层 panel。
@@ -829,7 +883,7 @@ namespace CF7Launcher.Guardian
                 if (_idleFenceToken != null) return false;
                 if (cmd.IsExactReplace)
                 {
-                    if (!IsStableOpenAdmissionLocked(
+                    if (!IsStableExactReplaceAdmissionLocked(
                             cmd.ExpectedSourcePanel,
                             cmd.ExpectedSourceInstanceId))
                     {
@@ -1236,6 +1290,21 @@ namespace CF7Launcher.Guardian
                     outcome = ExactReplaceOutcome.SourceMismatch;
                     return;
                 }
+                bool sourceOwnsTrackedLease =
+                    string.Equals(
+                        _trackedLeasePanelName,
+                        command.ExpectedSourcePanel,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _trackedLeaseInstanceId,
+                        command.ExpectedSourceInstanceId,
+                        StringComparison.Ordinal);
+                if (_trackedLeaseInstanceId != null
+                    && !sourceOwnsTrackedLease)
+                {
+                    outcome = ExactReplaceOutcome.SourceMismatch;
+                    return;
+                }
                 bool gateAccepted;
                 try
                 {
@@ -1291,6 +1360,11 @@ namespace CF7Launcher.Guardian
                 {
                     outcome = ExactReplaceOutcome.PreExecutionRejected;
                     return;
+                }
+                if (sourceOwnsTrackedLease)
+                {
+                    _trackedLeasePanelName = null;
+                    _trackedLeaseInstanceId = null;
                 }
                 _activePanel = plan.TargetPanel;
                 _activePanelInstanceId = plan.TargetInstanceId;

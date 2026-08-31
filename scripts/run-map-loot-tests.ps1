@@ -39,7 +39,7 @@ $compileMutex = [System.Threading.Mutex]::new(
     $false, 'Local\CF7_FlashCompile_' + $repoHash)
 $compileLease = $null
 $runId = [System.Guid]::NewGuid().ToString('N')
-$expectedServicePassCount = 165
+$expectedServicePassCount = 183
 $expectedPlannerPassCount = 9
 $expectedStagePassCount = 372
 $expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount + $expectedStagePassCount

@@ -434,14 +434,28 @@ async function runStorageToBuildVisibilityProbe(browser, server, shotDirectory) 
         }
 
         await page.locator('[data-header-action="return-build"]').click();
-        await page.waitForFunction(() => {
-            const state = InventoryWorkbench.debugState();
-            return state.view === 'build' && state.build && state.build.mounted
-                && state.build.rendererCount === 1
-                && state.build.view && state.build.view.candidateCount === 7
-                && state.build.view.candidateScope === 'backpack'
-                && state.build.view.selectedSlotKey === '';
-        }, null, {timeout:30000});
+        try {
+            await page.waitForFunction(() => {
+                const state = InventoryWorkbench.debugState();
+                return state.view === 'build' && state.build && state.build.mounted
+                    && state.build.rendererCount === 1
+                    && state.build.view && state.build.view.candidateCount === 7
+                    && state.build.view.candidateScope === 'backpack'
+                    && state.build.view.selectedSlotKey === '';
+            }, null, {timeout:30000});
+        } catch (error) {
+            const diagnostics = await page.evaluate(() => ({
+                state:InventoryWorkbench.debugState(),
+                events:(window.__routeHarness.events || []).slice(-30),
+                sent:(window.__routeHarness.sent || []).slice(-12).map(message => ({
+                    domain:message.domain || '', cmd:message.cmd || '',
+                    panelInstanceId:message.panelInstanceId || ''
+                })),
+                report:window.__qaReport || null
+            }));
+            throw new Error('storage-to-build readiness timed out: '
+                + JSON.stringify(diagnostics) + '; ' + error.message);
+        }
         const switched = await page.evaluate(() => {
             const body = document.querySelector('.workbench-shell > .workbench-body');
             const host = document.querySelector('.character-build-host');
@@ -711,6 +725,8 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         'modules/character-build/character-build-pose.js',
         'modules/character-build/character-build-projection.js',
         'modules/character-build/character-build-transport.js',
+        'modules/character-build/character-build-item-use.js',
+        'modules/character-build/character-build-item-use-channel.js',
         'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js',
         'modules/inventory-workbench.js'

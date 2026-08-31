@@ -241,6 +241,8 @@ function audit(){
     "'modules/character-build/character-build-candidate-eligibility.js'",
     "'modules/character-build/character-build-projection.js'",
     "'modules/character-build/character-build-transport.js'",
+    "'modules/character-build/character-build-item-use.js'",
+    "'modules/character-build/character-build-item-use-channel.js'",
     "'modules/character-build/character-build-candidate-channel.js'",
     "'modules/character-build.js'"
   ];

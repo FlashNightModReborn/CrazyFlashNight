@@ -380,6 +380,7 @@ namespace CF7Launcher.Guardian
             Hairdresser,
             Settings,
             EquipmentTuning,
+            ItemUse,
             Loadout,
             Skills,
             Unsupported
@@ -397,6 +398,7 @@ namespace CF7Launcher.Guardian
             if (domain == "hairdresser") return PanelDomainRoute.Hairdresser;
             if (domain == "settings") return PanelDomainRoute.Settings;
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
+            if (domain == "item_use") return PanelDomainRoute.ItemUse;
             if (domain == "loadout") return PanelDomainRoute.Loadout;
             if (domain == "skills") return PanelDomainRoute.Skills;
             return PanelDomainRoute.Unsupported;
@@ -530,6 +532,7 @@ namespace CF7Launcher.Guardian
                 || reason == "lazy_user_cancel" || reason == "lazy_cancel"
                 || reason == "lazy_load_failed" || reason == "lazy_register_failed"
                 || reason == "lazy_register_missing"
+                || reason == "navigate_reward_inbox"
                 || LauncherCommandRouter
                     .TryParseCharacterBuildPreparationCloseReason(
                         reason,
@@ -661,7 +664,7 @@ namespace CF7Launcher.Guardian
                 || binding.OpenAttemptSeq < 1
                 || !LootPanelCoordinator.IsOpaque(recoveryNonce)
                 || (reason != "web_mount_failed" && reason != "web_open_failed")) return null;
-            return new JObject
+            var command = new JObject
             {
                 ["task"] = "cmd",
                 ["action"] = "lootPanelRecovery",
@@ -671,7 +674,13 @@ namespace CF7Launcher.Guardian
                 ["openAttemptSeq"] = binding.OpenAttemptSeq,
                 ["recoveryNonce"] = recoveryNonce,
                 ["reason"] = reason
-            }.ToString(Newtonsoft.Json.Formatting.None);
+            };
+            if (binding.SourceKind == LootPanelCoordinator.RewardInboxSource)
+            {
+                command["sourceKind"] =
+                    LootPanelCoordinator.RewardInboxSource;
+            }
+            return command.ToString(Newtonsoft.Json.Formatting.None);
         }
 
         internal static bool IsActiveSkillPanel(string activePanel, string activePanelInstanceId)
@@ -1196,6 +1205,7 @@ namespace CF7Launcher.Guardian
         private HairdresserTask _hairdresserTask;
         private SettingsTask _settingsTask;
         private EquipmentTuningTask _equipmentTuningTask;
+        private ItemUseTask _itemUseTask;
         private CharacterBuildTask _characterBuildTask;
         private SkillTask _skillTask;
         private MapTask _mapTask;
@@ -3866,6 +3876,13 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetItemUseTask(ItemUseTask task)
+        {
+            _itemUseTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetCharacterBuildTask(CharacterBuildTask task)
         {
             _characterBuildTask = task;
@@ -5048,6 +5065,17 @@ namespace CF7Launcher.Guardian
                 }
                 bool stillActive = _lootPanelCoordinator.IsAuthorityVisualCloseActiveExact(
                     envelopeInstance, reason);
+                if (stillActive
+                    && _lootPanelCoordinator
+                        .IsRewardInboxReplacementPendingExact(
+                            envelopeInstance))
+                {
+                    LogManager.Log(
+                        "event=loot_visual_close_consumed reason="
+                        + reason
+                        + " replacement=pending");
+                    return;
+                }
                 if (stillActive)
                     _lootPanelCoordinator.RetryAuthorityVisualCloseExact(
                         envelopeInstance, reason);
@@ -5668,6 +5696,38 @@ namespace CF7Launcher.Guardian
                 _equipmentTuningTask.HandleWebRequest(cmd, parsed);
                 return;
             }
+            if (domainRoute == PanelDomainRoute.ItemUse)
+            {
+                string activeName = _panelHost != null
+                    ? _panelHost.ActivePanelName : null;
+                string instanceId = _panelHost != null
+                    ? _panelHost.ActivePanelInstanceId : null;
+                LogManager.Log(
+                    "[Panel] Routing domain=item_use cmd=" + logCmd
+                    + " to ItemUseTask, _itemUseTask="
+                    + (_itemUseTask != null ? "ok" : "NULL"));
+                if (activeName != "workbench"
+                    || string.IsNullOrEmpty(instanceId))
+                {
+                    RespondPanelDomainError(parsed, "panel_not_active");
+                    return;
+                }
+                if (!IsActiveCharacterBuildPanel(
+                        activeName, instanceId, parsed))
+                {
+                    RespondPanelDomainError(
+                        parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_itemUseTask == null)
+                {
+                    RespondPanelDomainError(
+                        parsed, "item_use_unavailable");
+                    return;
+                }
+                _itemUseTask.HandleWebRequest(cmd, parsed);
+                return;
+            }
             if (domainRoute == PanelDomainRoute.Loadout)
             {
                 string activeName = _panelHost != null ? _panelHost.ActivePanelName
@@ -5763,6 +5823,7 @@ namespace CF7Launcher.Guardian
                         bool characterBuildVisualRetirePending = false;
                         bool navigateCharacterBuild = false;
                         bool navigatePreparation = false;
+                        bool navigateRewardInbox = false;
                         bool navigatePreparationChild = false;
                         LauncherCommandRouter
                             .CharacterBuildPreparationTarget
@@ -5849,6 +5910,10 @@ namespace CF7Launcher.Guardian
                                         parsed.Value<string>(
                                             "reason"),
                                         out preparationTarget);
+                            navigateRewardInbox = string.Equals(
+                                parsed.Value<string>("reason"),
+                                "navigate_reward_inbox",
+                                StringComparison.Ordinal);
                             if (navigatePreparation
                                 && !LauncherCommandRouter
                                     .IsCharacterBuildPreparationTargetEnabled(
@@ -5939,6 +6004,26 @@ namespace CF7Launcher.Guardian
                                     return;
                                 }
                             }
+                            if (navigateRewardInbox)
+                            {
+                                long? generation = _characterBuildTask != null
+                                    ? _characterBuildTask.SessionGeneration
+                                    : null;
+                                bool navigationArmed = exactLoadoutBinding
+                                    && generation.HasValue
+                                    && _itemUseTask != null
+                                    && _itemUseTask.TryArmRewardNavigation(
+                                        activeInstance,
+                                        generation.Value);
+                                if (!navigationArmed)
+                                {
+                                    LogManager.Log(
+                                        "[ItemUseTask] reward inbox navigation rejected without exact cached authority");
+                                    PostToWeb(
+                                        "{\"type\":\"toast\",\"text\":\"待领取物品尚未准备好，请稍后重试\"}");
+                                    return;
+                                }
+                            }
                             if (tuningBound
                                 && !_equipmentTuningTask.HandlePanelClosed(activeInstance))
                             {
@@ -5954,6 +6039,8 @@ namespace CF7Launcher.Guardian
                                         preparationTarget,
                                         "equipment_tuning_close_race");
                                 }
+                                if (navigateRewardInbox && _itemUseTask != null)
+                                    _itemUseTask.CancelRewardNavigation(activeInstance);
                                 LogManager.Log("[EquipmentTuningTask] close lost coordinator race");
                                 return;
                             }
@@ -5978,6 +6065,8 @@ namespace CF7Launcher.Guardian
                                             preparationTarget,
                                             "character_close_race");
                                     }
+                                    if (navigateRewardInbox && _itemUseTask != null)
+                                        _itemUseTask.CancelRewardNavigation(activeInstance);
                                     LogManager.Log(
                                         "[CharacterBuildTask] close recovery lost coordinator race");
                                     return;
@@ -6167,7 +6256,8 @@ namespace CF7Launcher.Guardian
                             // 还会读到栈顶 entry 并 enqueue reopen 命令。
                             if (dismissReturnStack || navigatePreparation
                                 || navigateCharacterBuild
-                                || navigatePreparationChild)
+                                || navigatePreparationChild
+                                || navigateRewardInbox)
                             {
                                 if (!deferInventoryOwnerCloseCommit)
                                     _panelHost.ClearReturnStack();
@@ -6197,9 +6287,26 @@ namespace CF7Launcher.Guardian
                                                         preparationTarget,
                                                         "visual_retire_failed");
                                             }
-                                            : null,
+                                            : navigateRewardInbox
+                                                ? (Action)delegate
+                                                {
+                                                    if (_itemUseTask != null)
+                                                        _itemUseTask.CancelRewardNavigation(
+                                                            closeInstance);
+                                                }
+                                                : null,
                                         delegate
                                         {
+                                            if (navigateRewardInbox
+                                                && _itemUseTask != null)
+                                            {
+                                                // TryRetirePanelVisualExact is the authoritative
+                                                // visual-idle proof. Record it before detach can
+                                                // settle; PanelClosed is only a best-effort async
+                                                // notification and remains an idempotent fallback.
+                                                _itemUseTask.OnWorkbenchPanelClosed(
+                                                    closeInstance);
+                                            }
                                             CommitAcceptedPanelCloseEffects(
                                                 panel,
                                                 returnBase,
@@ -6226,6 +6333,8 @@ namespace CF7Launcher.Guardian
                                              : null);
                                 if (!closeQueued)
                                 {
+                                    if (navigateRewardInbox && _itemUseTask != null)
+                                        _itemUseTask.CancelRewardNavigation(closeInstance);
                                     LogManager.Log(
                                         "[Workbench] exact Host close was not queued");
                                 }
