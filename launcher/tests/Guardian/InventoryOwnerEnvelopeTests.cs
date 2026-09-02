@@ -333,7 +333,7 @@ namespace CF7Launcher.Tests.Guardian
             string setHost = Slice(
                 source,
                 "public void SetPanelHost(PanelHostController host)",
-                "public void ResumeForPanel(");
+                "public bool ResumeForPanel(");
             Assert.DoesNotContain(
                 "_commandRouter.PanelChanged",
                 setHost);

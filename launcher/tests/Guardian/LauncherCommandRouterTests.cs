@@ -5016,7 +5016,7 @@ namespace CF7Launcher.Tests.Guardian
                             == "openMaterialUI"
                         || command.Value<string>("action")
                             == "openInventoryWorkbench");
-                Assert.Single(
+                Assert.DoesNotContain(
                     gameCommands,
                     command =>
                         command.Value<string>("action")
@@ -7692,13 +7692,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(
                 string.IsNullOrEmpty(
                     harness.Host.ActivePanelInstanceId));
-            Assert.Equal(
-                2,
-                commands.Count);
-            Assert.Equal(
-                "webPanelPause",
-                ParseWire(commands[1])
-                    .Value<string>("action"));
+            Assert.Single(commands);
 
             using (var tuningTask =
                 new EquipmentTuningTask(

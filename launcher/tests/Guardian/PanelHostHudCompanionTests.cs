@@ -199,21 +199,21 @@ namespace CF7Launcher.Tests.Guardian
                 "Bitmap composed = CaptureBackdrop(",
                 StringComparison.Ordinal);
             Assert.True(captureBackdrop >= 0);
-            int productionComment = open.IndexOf(
-                "// Independent split surfaces must disappear",
+            int validAdmissionComment = open.IndexOf(
+                "// valid admission 后才能暂停独立 surface/HUD",
                 StringComparison.Ordinal);
-            Assert.True(productionComment >= 0);
+            Assert.True(validAdmissionComment >= 0);
             int suspendCompanion = open.IndexOf(
                 "SuspendHudCompanion();",
-                productionComment,
+                validAdmissionComment,
                 StringComparison.Ordinal);
             int resumeWeb = open.IndexOf(
-                "_web.ResumeForPanel(panelRect);",
+                "if (!_web.ResumeForPanel(panelRect))",
                 captureBackdrop,
                 StringComparison.Ordinal);
 
             Assert.True(suspendCompanion >= 0);
-            Assert.True(suspendCompanion > productionComment);
+            Assert.True(suspendCompanion > validAdmissionComment);
             Assert.True(suspendCompanion < captureBackdrop);
             Assert.True(resumeWeb > captureBackdrop);
         }

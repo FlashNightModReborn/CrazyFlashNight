@@ -1184,6 +1184,8 @@ namespace CF7Launcher.Guardian
         private readonly PanelFocusRestoreGate _panelFocusRestoreGate =
             new PanelFocusRestoreGate();
         private int _panelSessionGeneration;
+        private Rectangle _committedPanelRect = Rectangle.Empty;
+        private int _committedPanelGeometryGeneration;
         private int _panelCloseFocusGeneration;
         private bool _panelCloseFocusEligibilityCaptured;
         private bool _panelCloseFocusEligible;
@@ -2420,6 +2422,12 @@ namespace CF7Launcher.Guardian
         {
             if (!_panelMode || _disposed || _webView == null)
                 return false;
+            Rectangle committedRect;
+            int committedGeneration;
+            if (!TryGetCommittedPanelGeometry(
+                    out committedRect,
+                    out committedGeneration))
+                return false;
             if (_panelViewportRepairAttempts >= 3)
                 return false;
             if (_coordinateContext.OverlayPhysicalBounds.Width < 800 ||
@@ -2437,6 +2445,15 @@ namespace CF7Launcher.Guardian
 
         private void SchedulePanelViewportRepair(string reason)
         {
+            Rectangle committedRect;
+            int committedGeneration;
+            if (!TryGetCommittedPanelGeometry(
+                    out committedRect,
+                    out committedGeneration))
+            {
+                LogManager.Log("[Panel] viewport repair rejected: committed geometry unavailable");
+                return;
+            }
             PerfTrace.Counter("webOverlay.panelViewportRepair");
             _panelViewportRepairAttempts++;
             int attempt = _panelViewportRepairAttempts;
@@ -2446,7 +2463,15 @@ namespace CF7Launcher.Guardian
                 {
                     if (_disposed || !_panelMode || _webView == null)
                         return;
-                    SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
+                    Rectangle currentCommittedRect;
+                    int currentCommittedGeneration;
+                    if (!TryGetCommittedPanelGeometry(
+                            out currentCommittedRect,
+                            out currentCommittedGeneration)
+                        || currentCommittedGeneration != committedGeneration
+                        || !currentCommittedRect.Equals(committedRect))
+                        return;
+                    SyncWebViewViewportBounds(committedRect.Width, committedRect.Height,
                         1.0, "panel_viewport_repair:" + reason + ":" + attempt, true);
                     try
                     {
@@ -4053,6 +4078,7 @@ namespace CF7Launcher.Guardian
         private volatile bool _frozenForIdle;
 
         public bool IsPanelMode { get { return _panelMode; } }
+        internal int PanelSessionGeneration { get { return _panelSessionGeneration; } }
         internal bool CanAcceptPanelDocumentMessages
         {
             get { return !_disposed && _webReady; }
@@ -4099,11 +4125,13 @@ namespace CF7Launcher.Guardian
         ///       SetWindowPos HWND_TOP+SWP_FRAMECHANGED → PostToWeb panel_viewport_set → flush snapshot
         /// 注：用 HWND_TOP 而非 backdropHwnd（MSDN: hWndInsertAfter 是 "precede"，反而把 web 放到 backdrop 之下）。
         /// </summary>
-        public void ResumeForPanel(Rectangle panelRectScreen)
+        public bool ResumeForPanel(Rectangle panelRectScreen)
         {
-            if (_disposed) return;
+            if (_disposed || panelRectScreen.Width <= 1
+                || panelRectScreen.Height <= 1) return false;
             PerfTrace.Mark("webOverlay.panel_resume",
                 panelRectScreen.Width + "x" + panelRectScreen.Height);
+            ClearCommittedPanelGeometry("panel_resume_begin");
             _panelMode = true;
             _panelSessionGeneration = _panelFocusRestoreGate.BeginPanel();
             _panelCloseFocusGeneration = 0;
@@ -4162,7 +4190,7 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex) { LogManager.Log("[Panel] ResumeForPanel bounds/zoom sync failed: " + ex.Message); }
 
-            SetWindowPos(this.Handle, HWND_TOP,
+            bool formPresented = SetWindowPos(this.Handle, HWND_TOP,
                 panelRectScreen.X, panelRectScreen.Y,
                 panelRectScreen.Width, panelRectScreen.Height,
                 SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
@@ -4215,7 +4243,16 @@ namespace CF7Launcher.Guardian
             // panel 态接管前台 + WebView 持焦点（修首次点击失效）。首次打开与应用从外部
             // 重新激活共用同一条 generation/foreground/debounce guarded 路径，避免
             // SetForegroundWindow 产生的 WM_ACTIVATEAPP 回声再次抢焦。
+            if (!formPresented || !_panelMode || _panelSessionGeneration <= 0
+                || !IsHandleCreated)
+            {
+                LogManager.Log("[Panel] ResumeForPanel presentation rejected"
+                    + " set_window_pos=" + formPresented
+                    + " generation=" + _panelSessionGeneration);
+                return false;
+            }
             QueuePanelFocusRestore("panel_resume");
+            return true;
         }
 
         private void QueuePanelFocusRestore(string reason)
@@ -4351,41 +4388,215 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RepositionForPanel(Rectangle panelRectScreen)
         {
-            if (_disposed) return;
-            if (!_panelMode) return;
+            RepositionForPanel(panelRectScreen, false);
+        }
+
+        internal bool RepositionForPanel(
+            Rectangle panelRectScreen,
+            bool ensureVisible)
+        {
+            if (_disposed || !_panelMode
+                || panelRectScreen.Width <= 1
+                || panelRectScreen.Height <= 1) return false;
             try
             {
                 this.Bounds = panelRectScreen;
                 this.ClientSize = new Size(panelRectScreen.Width, panelRectScreen.Height);
-                SetWindowPos(this.Handle, IntPtr.Zero,
+                bool positioned = SetWindowPos(this.Handle, IntPtr.Zero,
                     panelRectScreen.X, panelRectScreen.Y,
                     panelRectScreen.Width, panelRectScreen.Height,
-                    SWP_NOACTIVATE | SWP_NOZORDER);
+                    SWP_NOACTIVATE | SWP_NOZORDER
+                        | (ensureVisible ? SWP_SHOWWINDOW : 0));
                 if (_webView != null)
                 {
-                    SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
+                    if (ensureVisible) _webView.Visible = true;
+                    SyncWebViewViewportBounds(panelRectScreen.Width, panelRectScreen.Height,
                         1.0, "panel_reposition", false);
                 }
+                return positioned;
             }
             catch (Exception ex) { LogManager.Log("[Panel] RepositionForPanel SetWindowPos failed: " + ex.Message); }
+            return false;
+        }
+
+        internal bool CommitPanelGeometry(
+            Rectangle panelRectScreen,
+            int panelGeneration)
+        {
+            if (_disposed || !_panelMode || panelGeneration <= 0
+                || panelGeneration != _panelSessionGeneration
+                || panelRectScreen.Width <= 1 || panelRectScreen.Height <= 1)
+                return false;
+            _committedPanelRect = panelRectScreen;
+            _committedPanelGeometryGeneration = panelGeneration;
+            return true;
+        }
+
+        internal void ClearCommittedPanelGeometry(string reason)
+        {
+            if (!_committedPanelRect.IsEmpty
+                || _committedPanelGeometryGeneration != 0)
+            {
+                LogManager.Log("[PanelGeometry] web committed geometry cleared reason="
+                    + (reason ?? "unspecified")
+                    + " generation=" + _committedPanelGeometryGeneration);
+            }
+            _committedPanelRect = Rectangle.Empty;
+            _committedPanelGeometryGeneration = 0;
+        }
+
+        private bool TryGetCommittedPanelGeometry(
+            out Rectangle panelRectScreen,
+            out int panelGeneration)
+        {
+            panelRectScreen = _committedPanelRect;
+            panelGeneration = _committedPanelGeometryGeneration;
+            return !_disposed && _panelMode
+                && panelGeneration > 0
+                && panelGeneration == _panelSessionGeneration
+                && panelRectScreen.Width > 1
+                && panelRectScreen.Height > 1;
         }
 
         /// <summary>
-        /// 计算当前 viewport 屏幕矩形（与 SyncPosition 同算法），不应用、不受 _panelMode 早 return 限制。
-        /// PanelHostController 在 owner 移动时用此重算 anchor + panelRect。失败返回 Rectangle.Empty。
+        /// 同一 panel generation 的无焦点 presentation replay。只读取 committed rect；
+        /// 不创建 session、不排队焦点恢复、不发送业务 open。
         /// </summary>
-        public Rectangle GetCurrentAnchorScreenRect()
+        internal bool ReplayCommittedPanelPresentation(
+            Rectangle expectedPanelRect,
+            int expectedPanelGeneration,
+            string reason)
         {
+            Rectangle committedRect;
+            int committedGeneration;
+            if (!TryGetCommittedPanelGeometry(
+                    out committedRect,
+                    out committedGeneration)
+                || committedGeneration != expectedPanelGeneration
+                || !committedRect.Equals(expectedPanelRect))
+                return false;
+
+            string replayReason = string.IsNullOrEmpty(reason)
+                ? "restore_revalidation"
+                : reason;
             try
             {
-                if (_mapper == null || _anchor == null) return Rectangle.Empty;
+                this.Bounds = committedRect;
+                this.ClientSize = new Size(
+                    committedRect.Width,
+                    committedRect.Height);
+                if (_webView != null)
+                {
+                    _webView.Visible = true;
+                    SyncWebViewViewportBounds(
+                        committedRect.Width,
+                        committedRect.Height,
+                        1.0,
+                        "panel_restore_replay:" + replayReason,
+                        true);
+                }
+                this.PerformLayout();
+                bool formPresented = SetWindowPos(
+                    this.Handle,
+                    IntPtr.Zero,
+                    committedRect.X,
+                    committedRect.Y,
+                    committedRect.Width,
+                    committedRect.Height,
+                    SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
+                if (_webView != null && _webView.IsHandleCreated)
+                {
+                    KickWebViewCompositor(
+                        "panel_restore_replay:" + replayReason);
+                    SyncWebViewViewportBounds(
+                        committedRect.Width,
+                        committedRect.Height,
+                        1.0,
+                        "panel_restore_replay_post_show:" + replayReason,
+                        true);
+                    SetWindowPos(
+                        _webView.Handle,
+                        HWND_TOP,
+                        0,
+                        0,
+                        committedRect.Width,
+                        committedRect.Height,
+                        SWP_NOACTIVATE | SWP_SHOWWINDOW);
+                }
+                PostToWeb("{\"type\":\"panel_viewport_set\",\"w\":"
+                    + committedRect.Width + ",\"h\":"
+                    + committedRect.Height + "}");
+                ExecScript("window.dispatchEvent(new Event('resize'));"
+                    + "if(window.OverlayViewportMetrics&&OverlayViewportMetrics.schedule){"
+                    + "OverlayViewportMetrics.schedule('panel_restore_replay');"
+                    + "}else if(window.OverlayViewportMetrics&&OverlayViewportMetrics.report){"
+                    + "OverlayViewportMetrics.report('panel_restore_replay');}");
+                LogManager.Log("[PanelGeometry] focus-free replay"
+                    + " generation=" + committedGeneration
+                    + " reason=" + replayReason
+                    + " rect=" + committedRect
+                    + " presented=" + formPresented);
+                return formPresented;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelGeometry] focus-free replay failed: "
+                    + ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 读取当前 viewport 屏幕矩形而不发布。明确错误读数保留为 explicit-invalid，
+        /// 只有对象/handle 确实不可读时才返回 unavailable。
+        /// </summary>
+        internal PanelGeometryMeasurement MeasureCurrentAnchorScreenRect()
+        {
+            if (_owner == null || _anchor == null || _mapper == null
+                || _owner.IsDisposed || _anchor.IsDisposed)
+            {
+                return PanelGeometryMeasurement.Unavailable(
+                    "web_mapper",
+                    "object_unavailable");
+            }
+            if (_owner.WindowState == FormWindowState.Minimized)
+            {
+                return PanelGeometryMeasurement.ExplicitInvalid(
+                    "web_mapper",
+                    "minimized");
+            }
+            if (!_owner.Visible || !_anchor.Visible)
+            {
+                return PanelGeometryMeasurement.ExplicitInvalid(
+                    "web_mapper",
+                    "hidden");
+            }
+            if (!_owner.IsHandleCreated || !_anchor.IsHandleCreated)
+            {
+                return PanelGeometryMeasurement.Unavailable(
+                    "web_mapper",
+                    "handle_unavailable");
+            }
+            try
+            {
                 float vpX, vpY, vpW, vpH;
                 _mapper.CalcViewport(out vpX, out vpY, out vpW, out vpH);
                 Point origin = _anchor.PointToScreen(Point.Empty);
-                return new Rectangle(origin.X + (int)vpX, origin.Y + (int)vpY,
-                    Math.Max(1, (int)vpW), Math.Max(1, (int)vpH));
+                return PanelGeometryMeasurement.FromViewport(
+                    vpX,
+                    vpY,
+                    vpW,
+                    vpH,
+                    origin,
+                    "web_mapper",
+                    "flash_viewport");
             }
-            catch { return Rectangle.Empty; }
+            catch (Exception ex)
+            {
+                return PanelGeometryMeasurement.Unavailable(
+                    "web_mapper",
+                    ex.GetType().Name);
+            }
         }
 
         /// <summary>
@@ -4768,6 +4979,7 @@ namespace CF7Launcher.Guardian
             // QQ/浏览器等外部前台，idle 与 settled 两条路径都复用 false，绝不抢回。
             PanelCloseFocusTraceContext trace =
                 CapturePanelCloseFocusEligibility(panelTag);
+            ClearCommittedPanelGeometry("panel_idle");
             _panelMode = false;
             _panelFocusRestoreGate.EndPanel();
 
@@ -7085,6 +7297,11 @@ namespace CF7Launcher.Guardian
         public bool AssertWebPanelPause()
         {
             return TrySendGameCommand("webPanelPause");
+        }
+
+        internal bool ReleaseWebPanelPauseAfterFailedOpen()
+        {
+            return TryReleaseGenericWebPanelPause();
         }
 
         private bool TryRetireCharacterBuildHostVisual(

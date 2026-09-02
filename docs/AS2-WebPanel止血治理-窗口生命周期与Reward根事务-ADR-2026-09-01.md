@@ -1,11 +1,11 @@
 # AS2 / WebPanel 止血治理：窗口生命周期、Reward 根事务与软锁归因 ADR
 
-- **文档角色**：跨 AS2 / C# Guardian / WebView2 / Web 的正式止血治理架构决策记录；冻结问题边界、最小架构差量、施工顺序、验证与回滚，不充当实现完成或发布证据。
-- **状态**：`APPROVED / DESIGN_FROZEN / IMPLEMENTATION_DEFERRED`
+- **文档角色**：跨 AS2 / C# Guardian / WebView2 / Web 的正式止血治理架构决策记录；冻结问题边界、最小架构差量、施工顺序、验证与回滚，并记录 W 的当前施工检查点。本文中的状态摘要不替代 exact candidate、测试输出或 runtime 共识收据。
+- **状态**：`W_HUMAN_ACCEPTANCE_PASSED / RELEASE_IN_PROGRESS / NOT_DEPLOYED；A/S_SECOND_TRAIN_AUTHORIZED`
 - **决策日期**：2026-09-01
-- **最后核对代码基线**：commit `dff0c4390b5788151f75954cde397d54fba54257`；该 commit 同时是撰写时的 `origin/main`。
-- **调度约束**：维护者已于 2026-09-01 明确确认本版；本文档以独立提交冻结。止血实现必须等待当前军阀施工完成、重叠工作树收束并建立新的 Checkpoint-0。
-- **当前实现状态**：尚未修改止血代码，尚未建立 Checkpoint-0，尚未运行本 ADR 所列新增测试，尚无候选或发布结论。
+- **最后核对代码基线**：W 开工时 `HEAD == origin/main == 11376feb76116334c68c2cc8632f52650b194abe`，tree `bfbe61dce0ad42de77b5972af00a7893ed08b066`；工作树干净、仅一个 worktree，构成新的 Checkpoint-0。原始撰写基线 `dff0c4390b5788151f75954cde397d54fba54257` 仅保留为设计考古。
+- **调度约束**：维护者已于 2026-09-02 授权 W 独立开工并在 exact candidate 上通过 H-W；现已解锁 W 的提交、immutable request、双故障域共识、promotion、部署和推送。W 正式发布完成后继续施工 A/A1 与 S/O1 到第二次真人验收点；第二列车只有在人类通过 H-A/H-S 后才允许提交与部署。
+- **当前实现状态**：W/B0 代码、focused/full Launcher 自动门、隔离候选执行与 H-W 已完成；候选仍是 `NOT_DEPLOYED`，正式发布列车正在配置本地环境。尚未创建 W release source commit/request，尚无本轮云端共识、promotion、部署或正式入口结论。
 
 > 自包含声明：本文不依赖任何 Chat 对话、分享链接、下载文件、模型原始回执或仓库外日志才能理解和执行。现场事实摘要、源码反证、决策、否决项、硬门与施工边界均写在本文中；进一步核查只需本文链接的仓库内源码和 canonical 文档。
 
@@ -71,7 +71,9 @@
 
 ---
 
-## 2. 当前实现的源码反证
+## 2. W 开工前实现的源码反证
+
+本节冻结的是 W 设计与 Checkpoint-0 的反例，不再描述本文件顶部所列 W 工作树。W 当前实现已按 §4 和 §8.1 关闭这些反例；A/S 各节仍是未施工现状。
 
 ### 2.1 Window：无效几何能越过 publication boundary
 
@@ -135,7 +137,7 @@
 
 O1 只能增加归因观测；在确定 first stalled owner 之前，不允许添加 timeout、retry、close 或 repair 行为。
 
-### 2.6 当前工作树不能直接作为四文件 overlay 基线
+### 2.6 原始工作树不能直接作为四文件 overlay 基线
 
 在本文撰写前的只读预检中：
 
@@ -145,7 +147,7 @@ O1 只能增加归因观测；在确定 first stalled owner 之前，不允许�
 - dirty `WebOverlayForm.cs` 引用了当时仍为 untracked 的 `WarlordStageTask.cs`，说明仅复制四个目标文件不能形成可编译依赖闭包。
 - `scripts/asLoader.swf` 是当前 dirty 二进制之一；任何完整 checkpoint 都必须按二进制内容保存并记录 hash，不能只保存文本 patch。
 
-结论：partial patch 只能充当冲突地图，不能充当编译、测试或集成证据。等待军阀施工完成并不会取消 Checkpoint-0；它只会让 Checkpoint-0 面向新的真实 HEAD/残余工作树重新生成。
+结论：partial patch 只能充当冲突地图，不能充当编译、测试或集成证据。该历史风险已由 2026-09-02 的 clean `11376feb...` Checkpoint-0 取代；W 没有覆盖或复用旧 dirty overlay。
 
 ---
 
@@ -171,7 +173,7 @@ O1 只能增加归因观测；在确定 first stalled owner 之前，不允许�
 
 ### 3.3 工程与发布不变量
 
-- 军阀在途施工与止血代码施工不并发写 `WebOverlayForm.cs` 等重叠文件。
+- W 开工前必须确认军阀在途施工已不再与 `WebOverlayForm.cs` 等目标文件形成重叠 dirty 闭包；本轮已由 clean Checkpoint-0 满足。
 - 每个 production file 在同一施工波次只有一个 owner；跨 owner 只通过已冻结 fixture/join point 对接。
 - W 与 A 始终保留独立 commit、candidate、证据和 rollback。
 - runtime v2 供应链证据只证明 C#/Web 字节的生产与部署，不能代签 AS2 journal、存档或业务 journey。
@@ -488,20 +490,15 @@ heartbeat 存活只证明相应 Web document 的定时回调曾推进；它不�
 
 ## 7. 施工调度、所有权与 join points
 
-### 7.1 当前延迟施工决定
+### 7.1 W 独立开工裁决
 
-本 ADR 已按独立文档冻结，但源码止血不与军阀当前施工争抢工作树。进入 Checkpoint-0 前必须满足：
+2026-09-02 复核确认军阀重叠源码与依赖闭包已经收束：`HEAD == origin/main == 11376feb76116334c68c2cc8632f52650b194abe`、工作树干净、仅一个 worktree。维护者随后明确授权 W 先行施工到 H-W，而不等待军阀持续数天的产品验收。该裁决只解锁 W/B0，不解锁 A/A1、S/O1，也不允许在 H-W 之前提交或启动正式发布。
 
-1. 军阀在途源码已形成具名 commit，或被完整、可恢复地 checkpoint；
-2. `WebOverlayForm.cs`、Launcher task 注册与 `WarlordStageTask` 等依赖不再处于 partial/untracked 闭包；
-3. 新的真实 HEAD、`origin/main` 和残余 dirty 状态重新盘点；
-4. 不含止血 patch 的新基线先通过适用的编译/定向回归。
-
-这里的“军阀施工完成”是**重叠源码与依赖闭包收束**，不强迫止血等待与它无关的 promotion 或真人产品验收；军阀自身的发布门仍由其专项决定。
+W 没有沿用原始四文件 overlay。开工前的全量 Launcher 基线为 SDK resolver **7/7**、Launcher **4509 passed + 3 explicit opt-in skipped / 4512 total**；由此把后续失败归因边界固定在 clean Checkpoint-0。
 
 ### 7.2 Checkpoint-0
 
-若届时工作树仍 dirty，Root 必须创建完整可恢复 checkpoint，覆盖：
+若未来再次从 dirty 工作树开工，Root 仍必须创建完整可恢复 checkpoint，覆盖：
 
 - 所有 tracked 内容差异；
 - 所有相关 untracked 文件；
@@ -510,7 +507,7 @@ heartbeat 存活只证明相应 Web document 的定时回调曾推进；它不�
 - `PanelHostController/WebOverlayForm` 的完整编译依赖闭包；
 - 零止血 patch 状态下的 baseline build/focused test 结果。
 
-若军阀施工已经全部提交且工作树干净，冻结 commit/tree 加残余状态清单即可成为 Checkpoint-0；不为了形式再制造一份大型副本。
+本轮军阀施工已经提交且工作树干净，因此冻结上述 commit/tree 加零残余状态清单即构成 Checkpoint-0；没有为了形式制造另一份大型副本或 worktree。
 
 ### 7.3 修正后的并发 DAG
 
@@ -560,7 +557,7 @@ Wave 2                              S2
 | **S / A consumer** | `LootTask.cs`、`ItemUseTask.cs`、`LootPanelCoordinator.cs`、Loot Web 三文件及 focused tests | J-A-contract 后实现 discovery/exact validators、S2 exact consumer 和 Reward inference deletion | 不写 AS2/Window；不定义 business terminal；不加 retry |
 | **S / O1** | `blackmarket-panel.js`、G0-S 后明确列名的非 Window wait-owner 文件 | S1 观测与 bounded correlation | 不写 Window files；不加 retry/watchdog/control behavior |
 
-现役 Window focused test 文件在撰写时已经 dirty。W 优先新增测试文件；如必须修改既有 dirty test，由 Root 在 J-W 做单点 hunk merge，不能覆盖在途版本。任何 owner 若发现必须新增另一 production file，先暂停该 hunk并重新冻结 ownership。
+原始撰写时 Window focused test 曾经 dirty，但该状态已由 clean Checkpoint-0 取代。W 新增 `PanelGeometryLifecycleTests.cs`，并只为新合同调整三个既有 source-contract test 与 Router 预暂停断言；未覆盖在途版本，也未修改 AS2/Loot/Reward 文件。
 
 ### 7.5 唯一 join points
 
@@ -634,6 +631,15 @@ Wave 2                              S2
 - 真实 Windows candidate 绑定实际 EXE/Core/payload closure。
 - candidate-executed 的 HWND、taskbar、foreground、WebView2 实证。
 
+2026-09-02 机器检查点：新增 W 生命周期合同与受影响 Router/Host tests **266/266**；随后 canonical `launcher/tests/run_tests.ps1` 取得 SDK resolver **7/7**、Launcher **4516 passed + 3 explicit opt-in skipped / 4519 total**。隔离候选 `c-7bd7cb663ffe-08846e81b3-20260902t120840656z-8f558f09` 已由 `automation/start.ps1 -CandidateRoot` 通过 33-file integrity、manifest/metadata、实际 Core 进程路径与 bus-ready 核验，达到 `candidate_executed / NOT_DEPLOYED`：
+
+- build identity `7BD7CB663FFE7F338BBAA5566CD738B22A106A0835D272A7498D43C2EBE7972D`；
+- payload closure `F59DB97F0F6302FDF5F2F9934FEA07394FA8B135E7F5B6E0B690A60C9078D331`；
+- Core DLL SHA-256 `82C94E7B35C3311F4DCC62FE0FBF2E0835C3838DC4D111CFE23778583E1F2BAB`；
+- 正式 Core 仍为 `A5F84FDA978839869FD5B47170D652E40DDB534357E483AA71D2C0CE3D58E476`，formal closure 未改写。
+
+上述机器结果不代签 taskbar、foreground 与肉眼 WebView2 presentation；C-W 仍须由下方 H-W 关闭，当前不得写成 `e2e_verified`。
+
 #### C-A
 
 - fresh TestLoader trace 与 Compiler/Output 无错误。
@@ -652,6 +658,8 @@ Wave 2                              S2
 - 活动 Panel 最小化并从任务栏恢复，window rect 与最小化前完全相同；
 - QQ/浏览器抢前台后返回；
 - 无永久空白、窗口组逃逸、错误 hide/show 或抢焦；关闭路径继续 external/null fail closed。
+
+2026-09-02，维护者在上述 exact candidate 完成同尺寸任务栏恢复、外部 QQ/浏览器前台与关闭路径复核后明确回复“有效”。H-W 因而裁决为 `HUMAN_ACCEPTANCE_PASSED`，解锁 W 的正式发布列车；该结论不代签尚未运行的 post-promotion 标准入口。
 
 **H-A**：
 
@@ -786,17 +794,18 @@ O1 可在 first stalled owner 确认后单独删除或默认关闭，不影响 W
 
 ## 12. 当前状态与冻结流程
 
-| 项目 | 当前状态（2026-09-01） | 下一自然动作 |
+| 项目 | 当前状态（2026-09-02） | 下一自然动作 |
 |---|---|---|
-| ADR 内容 | `APPROVED / DESIGN_FROZEN`，位于 `docs/` | 作为止血实现的设计输入；范围变化必须先修订 ADR |
-| 正式文档冻结 | 随本文档独立提交发生 | 推送后核对 `HEAD == origin/main` 与 commit 文件清单 |
-| 军阀重叠施工 | 仍在当前工作树中 | 先完成/收束其依赖闭包 |
-| Checkpoint-0 | 未创建 | 军阀收束后按新 HEAD/dirty truth 生成 |
-| G0-W/G0-A/G0-S | 未冻结 | Checkpoint-0 后只读并行审计 |
-| W/A/S 实现 | 未开始 | 三个 G0 通过后按 DAG 施工 |
-| 新增自动测试 | 未运行 | 各 patch 落地后按 §8 执行 |
-| 人类验收 | 未运行 | exact candidate 后执行 H-W/H-A/H-S |
-| runtime/asLoader 发布 | 未授权、未发生 | 另按候选与发布门授权 |
+| ADR 内容 | W 设计保持 `APPROVED / DESIGN_FROZEN`；本轮未扩张为 B1 framework | H-W 反馈若要求范围变化，先修订 ADR |
+| Checkpoint-0 | clean commit `11376feb...` / tree `bfbe61dc...`，baseline Launcher **4509+3/4512** | 已关闭 |
+| G0-W | valid / explicit-invalid / unavailable、pre-pause admission、committed snapshot、same-rect replay 已冻结并实现 | 只允许 H-W 发现的窄修正 |
+| G0-A/G0-S | 未启动；A/S production files 零修改；W 发布后第二列车已获授权 | W promotion/push 后继续施工到 H-A/H-S |
+| W 实现 | `PanelHostController`、`WebOverlayForm`、Router pause owner 与 tests 已完成；无 AS2/SWF 变更 | 等待 H-W |
+| 自动测试 | focused **266/266**；full SDK resolver **7/7**、Launcher **4516+3/4519** | H-W 若触发代码迭代则重跑 affected + full |
+| 隔离候选 | `candidate_executed / NOT_DEPLOYED`；identity `7BD7...972D`、closure `F59D...D331`、Core `82C9...2BAB` | 已完成 W 候选职责 |
+| 人类验收 | H-W 已由维护者回复“有效”，状态 `HUMAN_ACCEPTANCE_PASSED`；H-A/H-S 留给第二列车 | W 发布后实施 A/S，再等待第二次人类裁决 |
+| runtime 发布 | W release 正在配置本地 builder/GitHub 环境；尚未提交、建 request、取得共识或 promotion；正式 Core 未变 | 完整执行 v2 source/tag/request/local+cloud/policy/promotion/push/audit |
+| asLoader | W 不涉及，未编译、未改写、未发布 | 无动作 |
 
 本次冻结使用的全中文提交标题：
 
@@ -804,7 +813,7 @@ O1 可在 first stalled owner 确认后单独删除或默认关闭，不影响 W
 docs: 冻结窗口生命周期与奖励根事务止血架构
 ```
 
-该提交只冻结 ADR，不暗示实现、编译、候选、验收或发布已经完成。
+该历史提交只冻结 ADR。当前 W 工作树和候选仍未形成 release source commit；本节新增的机器检查点不暗示 H-W、云端共识、promotion、部署或正式入口已经完成。
 
 ---
 

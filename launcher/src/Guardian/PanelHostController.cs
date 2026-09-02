@@ -13,6 +13,174 @@ using CF7Launcher.Guardian.Hud;
 
 namespace CF7Launcher.Guardian
 {
+    internal enum PanelGeometryMeasurementKind
+    {
+        Valid,
+        ExplicitInvalid,
+        Unavailable
+    }
+
+    internal readonly struct PanelGeometryMeasurement
+    {
+        private PanelGeometryMeasurement(
+            PanelGeometryMeasurementKind kind,
+            Rectangle rect,
+            string source,
+            string reason)
+        {
+            Kind = kind;
+            Rect = rect;
+            Source = source ?? "unknown";
+            Reason = reason ?? "unspecified";
+        }
+
+        internal PanelGeometryMeasurementKind Kind { get; }
+        internal Rectangle Rect { get; }
+        internal string Source { get; }
+        internal string Reason { get; }
+
+        internal static PanelGeometryMeasurement FromViewport(
+            double viewportX,
+            double viewportY,
+            double viewportWidth,
+            double viewportHeight,
+            Point screenOrigin,
+            string source,
+            string reason)
+        {
+            if (!double.IsFinite(viewportX)
+                || !double.IsFinite(viewportY)
+                || !double.IsFinite(viewportWidth)
+                || !double.IsFinite(viewportHeight))
+            {
+                return ExplicitInvalid(source, "non_finite");
+            }
+            if (viewportWidth <= 1.0 || viewportHeight <= 1.0)
+            {
+                return ExplicitInvalid(source,
+                    viewportWidth <= 0.0 || viewportHeight <= 0.0
+                        ? "non_positive"
+                        : "transient_sentinel");
+            }
+
+            double screenX = screenOrigin.X + viewportX;
+            double screenY = screenOrigin.Y + viewportY;
+            if (!double.IsFinite(screenX) || !double.IsFinite(screenY)
+                || screenX < int.MinValue || screenX > int.MaxValue
+                || screenY < int.MinValue || screenY > int.MaxValue
+                || viewportWidth > int.MaxValue || viewportHeight > int.MaxValue)
+            {
+                return ExplicitInvalid(source, "out_of_range");
+            }
+
+            int width = (int)viewportWidth;
+            int height = (int)viewportHeight;
+            if (width <= 1 || height <= 1)
+                return ExplicitInvalid(source, "transient_sentinel");
+            return Valid(
+                new Rectangle((int)screenX, (int)screenY, width, height),
+                source,
+                reason);
+        }
+
+        internal static PanelGeometryMeasurement FromRectangle(
+            Rectangle rect,
+            string source,
+            string reason)
+        {
+            if (rect.Width <= 1 || rect.Height <= 1)
+            {
+                return ExplicitInvalid(source,
+                    rect.Width <= 0 || rect.Height <= 0
+                        ? "non_positive"
+                        : "transient_sentinel");
+            }
+            return Valid(rect, source, reason);
+        }
+
+        internal static PanelGeometryMeasurement Valid(
+            Rectangle rect,
+            string source,
+            string reason)
+        {
+            return new PanelGeometryMeasurement(
+                PanelGeometryMeasurementKind.Valid,
+                rect,
+                source,
+                reason);
+        }
+
+        internal static PanelGeometryMeasurement ExplicitInvalid(
+            string source,
+            string reason)
+        {
+            return new PanelGeometryMeasurement(
+                PanelGeometryMeasurementKind.ExplicitInvalid,
+                Rectangle.Empty,
+                source,
+                reason);
+        }
+
+        internal static PanelGeometryMeasurement Unavailable(
+            string source,
+            string reason)
+        {
+            return new PanelGeometryMeasurement(
+                PanelGeometryMeasurementKind.Unavailable,
+                Rectangle.Empty,
+                source,
+                reason);
+        }
+    }
+
+    internal enum PanelRestoreRevalidationDisposition
+    {
+        None,
+        ReplayCommitted,
+        GeometryChanged
+    }
+
+    internal sealed class PanelRestoreRevalidationGate
+    {
+        private int _generation;
+        private bool _pending;
+
+        internal bool IsPendingFor(int generation)
+        {
+            return _pending && generation > 0 && _generation == generation;
+        }
+
+        internal bool Mark(int generation, bool hasCommittedSnapshot)
+        {
+            if (generation <= 0 || !hasCommittedSnapshot) return false;
+            _generation = generation;
+            _pending = true;
+            return true;
+        }
+
+        internal PanelRestoreRevalidationDisposition Consume(
+            int generation,
+            bool sameGeometry)
+        {
+            if (!_pending) return PanelRestoreRevalidationDisposition.None;
+            if (generation <= 0 || _generation != generation)
+            {
+                Clear();
+                return PanelRestoreRevalidationDisposition.None;
+            }
+            Clear();
+            return sameGeometry
+                ? PanelRestoreRevalidationDisposition.ReplayCommitted
+                : PanelRestoreRevalidationDisposition.GeometryChanged;
+        }
+
+        internal void Clear()
+        {
+            _generation = 0;
+            _pending = false;
+        }
+    }
+
     internal interface IPanelHudCompanion
     {
         // PanelHost cannot infer whether a throwing implementation changed
@@ -43,6 +211,38 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class PanelHostController : IDisposable
     {
+        private sealed class PanelGeometrySnapshot
+        {
+            internal string PanelName;
+            internal string PanelInstanceId;
+            internal IntPtr OwnerHwnd;
+            internal int OwnerHandleGeneration;
+            internal int FocusGeneration;
+            internal Rectangle AnchorRect;
+            internal Rectangle PanelRect;
+            internal string Source;
+            internal string ValidReason;
+            internal string MonitorDeviceName;
+            internal int Dpi;
+
+            internal bool HasSameGeometry(PanelGeometrySnapshot other)
+            {
+                return other != null
+                    && AnchorRect.Equals(other.AnchorRect)
+                    && PanelRect.Equals(other.PanelRect);
+            }
+
+            internal bool HasSameOwnerAndDisplay(PanelGeometrySnapshot other)
+            {
+                return other != null
+                    && OwnerHwnd == other.OwnerHwnd
+                    && OwnerHandleGeneration == other.OwnerHandleGeneration
+                    && string.Equals(MonitorDeviceName, other.MonitorDeviceName,
+                        StringComparison.Ordinal)
+                    && Dpi == other.Dpi;
+            }
+        }
+
         #region Win32
 
         [DllImport("user32.dll")]
@@ -53,6 +253,7 @@ namespace CF7Launcher.Guardian
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOACTIVATE = 0x0010;
+        private const uint SWP_SHOWWINDOW = 0x0040;
 
         #endregion
 
@@ -234,6 +435,10 @@ namespace CF7Launcher.Guardian
         private System.Windows.Forms.Timer _ownerLayoutSettleTimer;
         private Rectangle _lastOwnerAnchorRect = Rectangle.Empty;
         private Rectangle _lastOwnerPanelRect = Rectangle.Empty;
+        private int _ownerHandleGeneration;
+        private PanelGeometrySnapshot _committedGeometry;
+        private readonly PanelRestoreRevalidationGate _restoreRevalidation =
+            new PanelRestoreRevalidationGate();
         private bool _disposed;
 
         public PanelHostController(
@@ -287,6 +492,7 @@ namespace CF7Launcher.Guardian
             _escSource = escSource; // 可空（fallback hotkey 模式下没有）
             _flashHwndProvider = flashHwndProvider; // 可空（snapshot 不可用时降级 placeholder）
             _hudCompanion = hudCompanion; // 可空；独立 split surface 仍由 Program 持有/释放
+            _ownerHandleGeneration = ownerForm.IsHandleCreated ? 1 : 0;
 
             // Backdrop 点击外侧 → web panel_esc（等价 web 端 panels.js 的 backdrop click）
             _backdrop.BackdropClickedOutsidePanel += OnBackdropClickOutsidePanel;
@@ -1174,13 +1380,17 @@ namespace CF7Launcher.Guardian
                     return;
                 }
                 if (_activePanel != null) DoClose();
-                // 调用方显式带了 returnTo → push 进栈，关闭本 panel 时 pop 出来自动 reopen。
-                // B 时代会改成：无 returnTo 参数时，open 自动 push 前一个 _activePanel。
+                if (!DoOpen(cmd.Name, cmd.InitDataJson))
+                {
+                    _consecutiveFailures = 0;
+                    return;
+                }
+                // 只有成功发布窗口组后才建立 return edge；geometry/pause/presentation
+                // admission 失败不能留下一个会在后续 close 中误触发的幽灵返回项。
                 if (!string.IsNullOrEmpty(cmd.ReturnToName))
                 {
                     _returnStack.Add(new ReturnStackEntry(cmd.ReturnToName, cmd.ReturnInitDataJson));
                 }
-                DoOpen(cmd.Name, cmd.InitDataJson);
             }
             else
             {
@@ -1324,6 +1534,25 @@ namespace CF7Launcher.Guardian
                     return;
                 }
 
+                PanelGeometrySnapshot replaceGeometry = null;
+                if (_testPumpDispatcher == null)
+                {
+                    PanelGeometryMeasurement replaceMeasurement;
+                    if (!TryCreateProvisionalGeometry(
+                            plan.TargetPanel,
+                            plan.TargetInstanceId,
+                            out replaceGeometry,
+                            out replaceMeasurement))
+                    {
+                        LogManager.Log("[PanelGeometry] exact replace rejected"
+                            + " kind=" + replaceMeasurement.Kind
+                            + " source=" + replaceMeasurement.Source
+                            + " reason=" + replaceMeasurement.Reason);
+                        outcome = ExactReplaceOutcome.PreExecutionRejected;
+                        return;
+                    }
+                }
+
                 string payload = BuildPanelOpenPayload(
                     plan.TargetPanel,
                     plan.ImmutableInitDataJson,
@@ -1368,6 +1597,27 @@ namespace CF7Launcher.Guardian
                 }
                 _activePanel = plan.TargetPanel;
                 _activePanelInstanceId = plan.TargetInstanceId;
+                if (replaceGeometry != null)
+                {
+                    RepositionBackdrop(replaceGeometry.AnchorRect, false);
+                    _backdrop.SetPanelRect(replaceGeometry.PanelRect);
+                    _web.RepositionForPanel(replaceGeometry.PanelRect, false);
+                    if (_shield != null)
+                    {
+                        _shield.EnterTelemetryMode(
+                            replaceGeometry.PanelRect,
+                            _ownerForm.Handle,
+                            replaceGeometry.AnchorRect,
+                            _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+                    }
+                    if (!CommitGeometry(
+                            replaceGeometry,
+                            _web.PanelSessionGeneration))
+                    {
+                        ClearCommittedGeometry(
+                            "exact_replace_geometry_commit_rejected");
+                    }
+                }
                 plan.NotifyTargetCommittedNoFail();
                 PublishPanelChanged(
                     plan.TargetPanel,
@@ -1744,38 +1994,222 @@ namespace CF7Launcher.Guardian
         #region DoOpen / DoClose
 
         /// <summary>
-        /// anchor 屏幕矩形 = mapper.CalcViewport 实时算的 Flash 可见区（扣除 letterbox）。
-        /// **不能用 _web.Bounds**：DoFullIdleSuspend 只 SW_HIDE 不复位窗口位置/大小，
-        /// 下一次 DoOpen 取到的会是上一次的 panelRect，导致新 panel 嵌在过时小矩形里。
-        /// 退路：GetCurrentAnchorScreenRect 失败 → FlashHostPanel 屏幕矩形 → owner client。
+        /// 按来源顺序解析 anchor。只有 unavailable 允许尝试下一来源；explicit-invalid
+        /// 保留因果身份并立即 fail closed，不能被 fallback 包装成合法矩形。
         /// </summary>
-        private Rectangle ComputeAnchorScreenRect()
+        internal static PanelGeometryMeasurement ResolveAnchorMeasurements(
+            params Func<PanelGeometryMeasurement>[] sources)
         {
-            try
+            PanelGeometryMeasurement lastUnavailable =
+                PanelGeometryMeasurement.Unavailable("none", "no_source");
+            if (sources == null) return lastUnavailable;
+            foreach (Func<PanelGeometryMeasurement> source in sources)
             {
-                Rectangle vp = _web.GetCurrentAnchorScreenRect();
-                if (vp.Width > 0 && vp.Height > 0) return vp;
-            }
-            catch { }
-            try
-            {
-                Control fp = GetFlashPanelOrNull();
-                if (fp != null && fp.Width > 0 && fp.Height > 0)
+                if (source == null) continue;
+                PanelGeometryMeasurement measurement;
+                try { measurement = source(); }
+                catch (Exception ex)
                 {
-                    Point origin = fp.PointToScreen(Point.Empty);
-                    return new Rectangle(origin.X, origin.Y, fp.Width, fp.Height);
+                    measurement = PanelGeometryMeasurement.Unavailable(
+                        "source_exception",
+                        ex.GetType().Name);
                 }
+                if (measurement.Kind == PanelGeometryMeasurementKind.Valid
+                    || measurement.Kind == PanelGeometryMeasurementKind.ExplicitInvalid)
+                    return measurement;
+                lastUnavailable = measurement;
             }
-            catch { }
+            return lastUnavailable;
+        }
+
+        private PanelGeometryMeasurement MeasureFlashPanelAnchor()
+        {
+            Control flashPanel = GetFlashPanelOrNull();
+            if (flashPanel == null || flashPanel.IsDisposed)
+                return PanelGeometryMeasurement.Unavailable(
+                    "flash_panel",
+                    "control_unavailable");
+            if (!flashPanel.IsHandleCreated)
+                return PanelGeometryMeasurement.Unavailable(
+                    "flash_panel",
+                    "handle_unavailable");
+            Rectangle rect = new Rectangle(
+                flashPanel.PointToScreen(Point.Empty),
+                flashPanel.ClientSize);
+            return PanelGeometryMeasurement.FromRectangle(
+                rect,
+                "flash_panel",
+                "flash_panel_client");
+        }
+
+        private PanelGeometryMeasurement MeasureOwnerClientAnchor()
+        {
+            if (_ownerForm == null || _ownerForm.IsDisposed
+                || !_ownerForm.IsHandleCreated)
+            {
+                return PanelGeometryMeasurement.Unavailable(
+                    "owner_client",
+                    "handle_unavailable");
+            }
+            Rectangle rect = new Rectangle(
+                _ownerForm.PointToScreen(Point.Empty),
+                _ownerForm.ClientSize);
+            return PanelGeometryMeasurement.FromRectangle(
+                rect,
+                "owner_client",
+                "owner_client");
+        }
+
+        private PanelGeometryMeasurement MeasureAnchorScreenRect()
+        {
+            if (_ownerForm.WindowState == FormWindowState.Minimized)
+            {
+                return PanelGeometryMeasurement.ExplicitInvalid(
+                    "owner_state",
+                    "minimized");
+            }
+            if (!_ownerForm.Visible)
+            {
+                return PanelGeometryMeasurement.ExplicitInvalid(
+                    "owner_state",
+                    "hidden");
+            }
+            return ResolveAnchorMeasurements(
+                delegate { return _web.MeasureCurrentAnchorScreenRect(); },
+                MeasureFlashPanelAnchor,
+                MeasureOwnerClientAnchor);
+        }
+
+        private bool TryCreateProvisionalGeometry(
+            string panelName,
+            string localOpenIdentity,
+            out PanelGeometrySnapshot provisional,
+            out PanelGeometryMeasurement measurement)
+        {
+            provisional = null;
+            measurement = MeasureAnchorScreenRect();
+            if (measurement.Kind != PanelGeometryMeasurementKind.Valid)
+                return false;
+            if (string.IsNullOrEmpty(localOpenIdentity)
+                || !_ownerForm.IsHandleCreated
+                || _ownerForm.Handle == IntPtr.Zero)
+            {
+                measurement = PanelGeometryMeasurement.Unavailable(
+                    "owner_identity",
+                    "handle_unavailable");
+                return false;
+            }
+
+            Rectangle panelRect = PanelLayoutCatalog.GetRect(
+                panelName,
+                measurement.Rect);
+            PanelGeometryMeasurement panelMeasurement =
+                PanelGeometryMeasurement.FromRectangle(
+                    panelRect,
+                    "panel_layout",
+                    panelName ?? "unknown");
+            if (panelMeasurement.Kind != PanelGeometryMeasurementKind.Valid)
+            {
+                measurement = panelMeasurement;
+                return false;
+            }
+
+            Screen monitor;
+            int dpi;
             try
             {
-                Point origin = _ownerForm.PointToScreen(Point.Empty);
-                return new Rectangle(origin.X, origin.Y, _ownerForm.ClientSize.Width, _ownerForm.ClientSize.Height);
+                monitor = Screen.FromRectangle(measurement.Rect);
+                dpi = _ownerForm.DeviceDpi;
             }
-            catch
+            catch (Exception ex)
             {
-                return new Rectangle(0, 0, 1024, 576);
+                measurement = PanelGeometryMeasurement.Unavailable(
+                    "display_identity",
+                    ex.GetType().Name);
+                return false;
             }
+            if (monitor == null || string.IsNullOrEmpty(monitor.DeviceName)
+                || dpi <= 0)
+            {
+                measurement = PanelGeometryMeasurement.Unavailable(
+                    "display_identity",
+                    "monitor_or_dpi_unavailable");
+                return false;
+            }
+
+            provisional = new PanelGeometrySnapshot
+            {
+                PanelName = panelName,
+                PanelInstanceId = localOpenIdentity,
+                OwnerHwnd = _ownerForm.Handle,
+                OwnerHandleGeneration = _ownerHandleGeneration,
+                FocusGeneration = 0,
+                AnchorRect = measurement.Rect,
+                PanelRect = panelRect,
+                Source = measurement.Source,
+                ValidReason = measurement.Reason,
+                MonitorDeviceName = monitor.DeviceName,
+                Dpi = dpi
+            };
+            return true;
+        }
+
+        private bool CommitGeometry(
+            PanelGeometrySnapshot provisional,
+            int focusGeneration)
+        {
+            if (provisional == null || focusGeneration <= 0
+                || !_ownerForm.IsHandleCreated
+                || provisional.OwnerHwnd != _ownerForm.Handle
+                || provisional.OwnerHandleGeneration != _ownerHandleGeneration
+                || !string.Equals(provisional.PanelName, _activePanel,
+                    StringComparison.Ordinal)
+                || !string.Equals(provisional.PanelInstanceId,
+                    _activePanelInstanceId, StringComparison.Ordinal)
+                || _web.PanelSessionGeneration != focusGeneration)
+            {
+                return false;
+            }
+            try
+            {
+                Screen currentMonitor = Screen.FromRectangle(
+                    provisional.AnchorRect);
+                if (currentMonitor == null
+                    || !string.Equals(
+                        provisional.MonitorDeviceName,
+                        currentMonitor.DeviceName,
+                        StringComparison.Ordinal)
+                    || provisional.Dpi != _ownerForm.DeviceDpi)
+                    return false;
+            }
+            catch { return false; }
+            provisional.FocusGeneration = focusGeneration;
+            if (!_web.CommitPanelGeometry(
+                    provisional.PanelRect,
+                    focusGeneration))
+                return false;
+            _committedGeometry = provisional;
+            _lastOwnerAnchorRect = provisional.AnchorRect;
+            _lastOwnerPanelRect = provisional.PanelRect;
+            _restoreRevalidation.Clear();
+            LogManager.Log("[PanelGeometry] committed panel="
+                + provisional.PanelName
+                + " instance=" + provisional.PanelInstanceId
+                + " focus_generation=" + focusGeneration
+                + " owner_generation=" + provisional.OwnerHandleGeneration
+                + " source=" + provisional.Source
+                + " monitor=" + provisional.MonitorDeviceName
+                + " dpi=" + provisional.Dpi
+                + " rect=" + provisional.PanelRect);
+            return true;
+        }
+
+        private void ClearCommittedGeometry(string reason)
+        {
+            _committedGeometry = null;
+            _restoreRevalidation.Clear();
+            if (_web != null)
+                _web.ClearCommittedPanelGeometry(reason);
         }
 
         /// <summary>
@@ -1969,9 +2403,9 @@ namespace CF7Launcher.Guardian
             return bmp;
         }
 
-        private void DoOpen(string name, string initDataJson)
+        private bool DoOpen(string name, string initDataJson)
         {
-            DoOpen(name, initDataJson, null, false, null);
+            return DoOpen(name, initDataJson, null, false, null);
         }
 
         private void SuspendHudCompanion()
@@ -2040,131 +2474,185 @@ namespace CF7Launcher.Guardian
                 return true;
             }
 
-            // Loot tracked open promises that the game is already under the global webpanel lease
-            // before any native/Web visual side effect.  A socket write failure is therefore a
-            // known pre-open failure, never an OpenPosted outcome.
-            if (requireTrackedDelivery)
+            // local identity 必须先于 geometry，但不得建立 focus generation 或发布窗口事实。
+            string instanceId = string.IsNullOrEmpty(reservedPanelInstanceId)
+                ? NextPanelInstanceId()
+                : reservedPanelInstanceId;
+            ClearCommittedGeometry("open_attempt_begin");
+            PanelGeometrySnapshot provisional;
+            PanelGeometryMeasurement measurement;
+            if (!TryCreateProvisionalGeometry(
+                    name,
+                    instanceId,
+                    out provisional,
+                    out measurement))
             {
-                bool pauseDelivered = false;
-                try { pauseDelivered = _web.AssertWebPanelPause(); }
-                catch (Exception ex)
-                {
-                    LogManager.Log("[PanelHost] tracked AssertWebPanelPause failed: " + ex.Message);
-                }
-                if (!pauseDelivered)
-                {
-                    LogManager.Log("[PanelHost] tracked open rejected before visual side effects: pause not delivered");
-                    return false;
-                }
+                LogManager.Log("[PanelGeometry] open rejected before side effects"
+                    + " panel=" + name
+                    + " identity=" + instanceId
+                    + " kind=" + measurement.Kind
+                    + " source=" + measurement.Source
+                    + " reason=" + measurement.Reason);
+                return false;
             }
-            // Independent split surfaces must disappear before backdrop capture/show
-            // and before WebOverlay enters panel mode. Calls are idempotent and isolated.
-            SuspendHudCompanion();
+
+            bool pauseDelivered = false;
+            try { pauseDelivered = _web.AssertWebPanelPause(); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] AssertWebPanelPause failed: " + ex.Message);
+            }
+            if (!pauseDelivered)
+            {
+                LogManager.Log("[PanelHost] open rejected after valid geometry: pause not delivered panel="
+                    + name);
+                return false;
+            }
+
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             PerfTrace.Mark("panel.open_start", name);
-            Rectangle anchor = ComputeAnchorScreenRect();
-            Rectangle panelRect = PanelLayoutCatalog.GetRect(name, anchor);
+            try
+            {
+                Rectangle anchor = provisional.AnchorRect;
+                Rectangle panelRect = provisional.PanelRect;
 
-            // Step 1-2: snapshot + compose（带 dim + letterbox 黑边保留 + 黑帧兜底）
-            string settingsPreviewDataUrl;
-            int settingsPreviewWidth;
-            int settingsPreviewHeight;
-            Bitmap composed = CaptureBackdrop(
-                anchor,
-                string.Equals(name, "settings", StringComparison.Ordinal),
-                out settingsPreviewDataUrl,
-                out settingsPreviewWidth,
-                out settingsPreviewHeight);
-            if (string.Equals(name, "settings", StringComparison.Ordinal))
-            {
-                _activeSettingsPreviewDataUrl = settingsPreviewDataUrl;
-                _activeSettingsPreviewWidth = settingsPreviewWidth;
-                _activeSettingsPreviewHeight = settingsPreviewHeight;
-            }
-            else
-            {
-                ClearActiveSettingsPreview();
-            }
-            // Step 3: backdrop show + 设 panel rect（屏幕坐标，backdrop 内自转 client）
-            _backdrop.SetComposedAndShow(composed, anchor);
-            _backdrop.SetPanelRect(panelRect);
-            // Step 4: HUD 暂停（NativeHud 容器隐藏，让 backdrop 干净遮住）
-            _hud.Suspend();
-            // Step 5: WebOverlay 切 panel-rect（去 LAYERED+TRANSPARENT、opaque、SetWindowPos HWND_TOP+SWP_FRAMECHANGED、PostToWeb panel_viewport_set）
-            _web.ResumeForPanel(panelRect);
-            // Step 6: InputShield 进 telemetry（仅记录 panelRect 外 click，不拦截）
-            if (_shield != null) _shield.EnterTelemetryMode(panelRect, _ownerForm.Handle, anchor,
-                _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
-            EnsurePanelZOrder();
-            // Step 7: 通知 web 打开 panel（panel_viewport_set 已在 ResumeForPanel 内 PostToWeb）
-            string instanceId = string.IsNullOrEmpty(reservedPanelInstanceId)
-                ? NextPanelInstanceId() : reservedPanelInstanceId;
-            initDataJson =
-                ApplyInitDataEnrichers(
+                // valid admission 后才能暂停独立 surface/HUD；这些调用不得早于 geometry。
+                SuspendHudCompanion();
+                _hud.Suspend();
+
+                string settingsPreviewDataUrl;
+                int settingsPreviewWidth;
+                int settingsPreviewHeight;
+                Bitmap composed = CaptureBackdrop(
+                    anchor,
+                    string.Equals(name, "settings", StringComparison.Ordinal),
+                    out settingsPreviewDataUrl,
+                    out settingsPreviewWidth,
+                    out settingsPreviewHeight);
+                if (string.Equals(name, "settings", StringComparison.Ordinal))
+                {
+                    _activeSettingsPreviewDataUrl = settingsPreviewDataUrl;
+                    _activeSettingsPreviewWidth = settingsPreviewWidth;
+                    _activeSettingsPreviewHeight = settingsPreviewHeight;
+                }
+                else
+                {
+                    ClearActiveSettingsPreview();
+                }
+
+                _backdrop.SetComposedAndShow(composed, anchor);
+                _backdrop.SetPanelRect(panelRect);
+                if (!_web.ResumeForPanel(panelRect))
+                    throw new InvalidOperationException(
+                        "WebOverlay rejected panel presentation");
+                int focusGeneration = _web.PanelSessionGeneration;
+                if (_shield != null)
+                {
+                    _shield.EnterTelemetryMode(
+                        panelRect,
+                        _ownerForm.Handle,
+                        anchor,
+                        _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+                }
+                EnsurePanelZOrder();
+
+                initDataJson = ApplyInitDataEnrichers(
                     name,
                     initDataJson,
                     instanceId);
-            initDataJson = AttachSettingsFlashPreview(
-                name,
-                initDataJson,
-                _activeSettingsPreviewDataUrl,
-                _activeSettingsPreviewWidth,
-                _activeSettingsPreviewHeight);
-            string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
-            bool delivered = true;
-            try
-            {
-                if (requireTrackedDelivery)
-                    delivered = _web.TryPostToWeb(payload);
-                else
-                    _web.PostToWeb(payload);
+                initDataJson = AttachSettingsFlashPreview(
+                    name,
+                    initDataJson,
+                    _activeSettingsPreviewDataUrl,
+                    _activeSettingsPreviewWidth,
+                    _activeSettingsPreviewHeight);
+                string payload = BuildPanelOpenPayload(
+                    name,
+                    initDataJson,
+                    instanceId);
+                bool delivered = false;
+                try { delivered = _web.TryPostToWeb(payload); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[PanelHost] TryPostToWeb open failed: "
+                        + ex.Message);
+                }
+                if (!delivered)
+                {
+                    LogManager.Log("[PanelHost] open PostToWeb not delivered: " + name);
+                    AbortOpenAttempt(pauseDelivered, "open_post_not_delivered");
+                    return false;
+                }
+
+                ReTopOverlay(_hitNumber);
+                ReTopOverlay(_cursor as Form);
+                if (_escSource != null)
+                    _escSource.SetPanelEscapeEnabled(true);
+                SubscribeOwnerLayout();
+
+                _activePanel = name;
+                _activePanelInstanceId = instanceId;
+                if (!CommitGeometry(provisional, focusGeneration))
+                {
+                    AbortOpenAttempt(pauseDelivered, "geometry_commit_rejected");
+                    return false;
+                }
+                PublishPanelChanged(name, instanceId);
+                if (requireTrackedDelivery && trackedWebPostAccepted != null)
+                    trackedWebPostAccepted();
+
+                LogManager.Log("[PanelHost] opened: " + name
+                    + " rect=" + panelRect.Width + "x" + panelRect.Height);
+                PerfTrace.Duration("panel.open", perfStart,
+                    name + " rect=" + panelRect.Width + "x" + panelRect.Height);
+                PerfTrace.FlushCounters("panel_open:" + name);
+                if (DiagnosticsBootstrap.LayerAuditEnabled)
+                    LayerAuditDump.DumpToLog("panel-open:" + name);
+                return true;
             }
             catch (Exception ex)
             {
-                delivered = false;
-                LogManager.Log("[PanelHost] PostToWeb open failed: " + ex.Message);
-            }
-            if (requireTrackedDelivery && !delivered)
-            {
-                LogManager.Log("[PanelHost] tracked open PostToWeb not delivered: " + name);
-                ResetToClosedState();
+                AbortOpenAttempt(pauseDelivered, "open_exception");
+                LogManager.Log("[PanelHost] open exception after geometry admission: "
+                    + ex.Message);
                 return false;
             }
-            if (requireTrackedDelivery && trackedWebPostAccepted != null)
-                trackedWebPostAccepted();
-            // Step 8: 把 HitNumber/Cursor 重新顶置（Backdrop/WebOverlay 的 SetWindowPos HWND_TOP 把它们压下去了）
-            ReTopOverlay(_hitNumber);
-            // INativeCursor 抽象后 cursor 实现仍是 Form（CursorOverlayForm / DesktopCursorOverlay 都是）。
-            // ReTopOverlay 需要 Handle，所以走 as Form 投影；非 Form 实现（不存在）会被静默跳过。
-            ReTopOverlay(_cursor as Form);
-            // Step 9: ESC 拦截启用
-            if (_escSource != null) _escSource.SetPanelEscapeEnabled(true);
-            // Step 10: 跟随 owner 拖窗/大小变化，重定位 backdrop+web 到新 anchor
-            SubscribeOwnerLayout();
-            _lastOwnerAnchorRect = anchor;
-            _lastOwnerPanelRect = panelRect;
+        }
 
-            _activePanel = name;
-            _activePanelInstanceId = instanceId;
-            PublishPanelChanged(
-                name,
-                instanceId);
-            // 任意真实打开 → 暂停游戏。覆盖 returnTo 自动重开（ExecuteCommand 从 _returnStack
-            // enqueue 的 Open 不经 LauncherCommandRouter.OpenPanel，否则重开面板背后游戏已恢复运行）。
-            // AS2 webPanelPause 幂等，首次打开与 router 路径重复发也安全。
-            if (!requireTrackedDelivery)
+        private void AbortOpenAttempt(bool pauseDelivered, string reason)
+        {
+            ClearCommittedGeometry(reason);
+            string abortClosePayload = BuildPanelClosePayload(
+                _activePanel,
+                _activePanelInstanceId);
+            if (abortClosePayload != null)
             {
-                try { _web.AssertWebPanelPause(); }
-                catch (Exception ex) { LogManager.Log("[PanelHost] AssertWebPanelPause failed: " + ex.Message); }
+                try { _web.TryPostToWeb(abortClosePayload); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[PanelHost] open abort exact close failed: "
+                        + ex.Message);
+                }
             }
-            LogManager.Log("[PanelHost] opened: " + name + " rect=" + panelRect.Width + "x" + panelRect.Height);
-            PerfTrace.Duration("panel.open", perfStart,
-                name + " rect=" + panelRect.Width + "x" + panelRect.Height);
-            PerfTrace.FlushCounters("panel_open:" + name);
-            // B0 诊断: panel-open 后立即 dump layered HWND 结构, 捕获 visible_layered 峰值时刻
-            if (DiagnosticsBootstrap.LayerAuditEnabled)
-                LayerAuditDump.DumpToLog("panel-open:" + name);
-            return true;
+            try { ResetToClosedState(); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] open abort reset failed: " + ex.Message);
+            }
+            if (!pauseDelivered) return;
+            try
+            {
+                if (!_web.ReleaseWebPanelPauseAfterFailedOpen())
+                {
+                    LogManager.Log("[PanelHost] open abort pause release not delivered reason="
+                        + reason);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelHost] open abort pause release failed: "
+                    + ex.Message);
+            }
         }
 
         /// <summary>同名 panel 的上下文切换不拆 backdrop/HUD，只换实例水位并让 Web 重建 session。</summary>
@@ -2199,6 +2687,21 @@ namespace CF7Launcher.Guardian
                 ClearDeferredRebindAfterCommit(name);
                 return;
             }
+            PanelGeometrySnapshot provisional;
+            PanelGeometryMeasurement measurement;
+            if (!TryCreateProvisionalGeometry(
+                    name,
+                    instanceId,
+                    out provisional,
+                    out measurement))
+            {
+                lock (_queueLock) { _deferredRebind = command; }
+                LogManager.Log("[PanelGeometry] rebind deferred"
+                    + " kind=" + measurement.Kind
+                    + " source=" + measurement.Source
+                    + " reason=" + measurement.Reason);
+                return;
+            }
             initDataJson =
                 ApplyInitDataEnrichers(
                     name,
@@ -2231,11 +2734,28 @@ namespace CF7Launcher.Guardian
                 return;
             }
             _activePanelInstanceId = instanceId;
+            int focusGeneration = _web.PanelSessionGeneration;
+            RepositionBackdrop(provisional.AnchorRect, false);
+            _backdrop.SetPanelRect(provisional.PanelRect);
+            _web.RepositionForPanel(provisional.PanelRect, false);
+            if (_shield != null)
+            {
+                _shield.EnterTelemetryMode(
+                    provisional.PanelRect,
+                    _ownerForm.Handle,
+                    provisional.AnchorRect,
+                    _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+            }
+            if (!CommitGeometry(provisional, focusGeneration))
+            {
+                LogManager.Log("[PanelGeometry] rebind commit rejected: " + name);
+                AbortOpenAttempt(true, "rebind_geometry_commit_rejected");
+                return;
+            }
             PublishPanelChanged(
                 name,
                 instanceId);
             ClearDeferredRebindAfterCommit(name);
-            try { _web.AssertWebPanelPause(); } catch { }
             LogManager.Log("[PanelHost] rebound: " + name + " instance=" + instanceId);
         }
 
@@ -2295,6 +2815,9 @@ namespace CF7Launcher.Guardian
                 _ownerForm.LocationChanged += OnOwnerLayoutChanged;
                 _ownerForm.SizeChanged += OnOwnerLayoutSettleOnly;
                 _ownerForm.ClientSizeChanged += OnOwnerLayoutSettleOnly;
+                _ownerForm.VisibleChanged += OnOwnerVisibilityChanged;
+                _ownerForm.HandleDestroyed += OnOwnerHandleDestroyed;
+                _ownerForm.HandleCreated += OnOwnerHandleCreated;
                 // FlashHostPanel.SizeChanged：viewport 变化的真实源头（全屏切换时 owner SizeChanged
                 // 早于 ResizeFlashToPanel，订阅 owner.SizeChanged 会拿到旧 viewport；订阅 panel
                 // 自身 SizeChanged 才能等到 layout settle 后的正确 size）
@@ -2313,6 +2836,9 @@ namespace CF7Launcher.Guardian
                 _ownerForm.LocationChanged -= OnOwnerLayoutChanged;
                 _ownerForm.SizeChanged -= OnOwnerLayoutSettleOnly;
                 _ownerForm.ClientSizeChanged -= OnOwnerLayoutSettleOnly;
+                _ownerForm.VisibleChanged -= OnOwnerVisibilityChanged;
+                _ownerForm.HandleDestroyed -= OnOwnerHandleDestroyed;
+                _ownerForm.HandleCreated -= OnOwnerHandleCreated;
                 Control fp = GetFlashPanelOrNull();
                 if (fp != null) fp.SizeChanged -= OnOwnerLayoutChanged;
             }
@@ -2321,6 +2847,7 @@ namespace CF7Launcher.Guardian
             _ownerLayoutPending = false;
             _lastOwnerAnchorRect = Rectangle.Empty;
             _lastOwnerPanelRect = Rectangle.Empty;
+            ClearCommittedGeometry("owner_layout_unsubscribe");
             if (_ownerLayoutSettleTimer != null)
             {
                 try { _ownerLayoutSettleTimer.Stop(); } catch { }
@@ -2331,6 +2858,7 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             if (_activePanel == null) return;
+            ObserveOwnerPresentationWithdrawal("layout_changed");
             ScheduleOwnerLayoutSettle();
             // 节流：拖窗 LocationChanged 高频触发；BeginInvoke 合并到下一个消息泵循环只跑一次
             if (_ownerLayoutPending) return;
@@ -2350,7 +2878,72 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             if (_activePanel == null) return;
+            ObserveOwnerPresentationWithdrawal("layout_settle");
             ScheduleOwnerLayoutSettle();
+        }
+
+        private void OnOwnerVisibilityChanged(object sender, EventArgs e)
+        {
+            if (_disposed || _activePanel == null) return;
+            if (!_ownerForm.Visible)
+            {
+                MarkRestoreRevalidation("owner_hidden");
+                return;
+            }
+            OnOwnerLayoutChanged(sender, e);
+        }
+
+        private void OnOwnerHandleDestroyed(object sender, EventArgs e)
+        {
+            _ownerHandleGeneration++;
+            ClearCommittedGeometry("owner_handle_destroyed");
+        }
+
+        private void OnOwnerHandleCreated(object sender, EventArgs e)
+        {
+            _ownerHandleGeneration++;
+            ClearCommittedGeometry("owner_handle_created");
+            if (_disposed || _activePanel == null) return;
+            OnOwnerLayoutChanged(sender, e);
+        }
+
+        private void ObserveOwnerPresentationWithdrawal(string reason)
+        {
+            if (_ownerForm.WindowState == FormWindowState.Minimized)
+            {
+                MarkRestoreRevalidation(reason + ":minimized");
+                return;
+            }
+            if (!_ownerForm.Visible)
+                MarkRestoreRevalidation(reason + ":hidden");
+        }
+
+        private bool HasCurrentCommittedGeometry(int focusGeneration)
+        {
+            PanelGeometrySnapshot committed = _committedGeometry;
+            return committed != null
+                && focusGeneration > 0
+                && committed.FocusGeneration == focusGeneration
+                && committed.OwnerHandleGeneration == _ownerHandleGeneration
+                && _ownerForm.IsHandleCreated
+                && committed.OwnerHwnd == _ownerForm.Handle
+                && string.Equals(committed.PanelName, _activePanel,
+                    StringComparison.Ordinal)
+                && string.Equals(committed.PanelInstanceId,
+                    _activePanelInstanceId, StringComparison.Ordinal);
+        }
+
+        private void MarkRestoreRevalidation(string reason)
+        {
+            int focusGeneration = _web.PanelSessionGeneration;
+            if (_restoreRevalidation.Mark(
+                    focusGeneration,
+                    HasCurrentCommittedGeometry(focusGeneration)))
+            {
+                LogManager.Log("[PanelGeometry] restore revalidation marked"
+                    + " generation=" + focusGeneration
+                    + " reason=" + reason);
+            }
         }
 
         private void ScheduleOwnerLayoutSettle()
@@ -2381,21 +2974,63 @@ namespace CF7Launcher.Guardian
             if (_activePanel == null) return;
             try
             {
-                Rectangle newAnchor = _web.GetCurrentAnchorScreenRect();
-                if (newAnchor.Width <= 0 || newAnchor.Height <= 0) return;
-                Rectangle newPanelRect = PanelLayoutCatalog.GetRect(_activePanel, newAnchor);
-                bool geometryChanged = !_lastOwnerAnchorRect.Equals(newAnchor)
-                    || !_lastOwnerPanelRect.Equals(newPanelRect);
-                if (!geometryChanged) return;
-                bool panelSizeChanged = _lastOwnerPanelRect.IsEmpty
-                    || _lastOwnerPanelRect.Width != newPanelRect.Width
-                    || _lastOwnerPanelRect.Height != newPanelRect.Height;
+                PanelGeometrySnapshot candidate;
+                PanelGeometryMeasurement measurement;
+                if (!TryCreateProvisionalGeometry(
+                        _activePanel,
+                        _activePanelInstanceId,
+                        out candidate,
+                        out measurement))
+                {
+                    if (measurement.Kind
+                        == PanelGeometryMeasurementKind.ExplicitInvalid)
+                        MarkRestoreRevalidation("layout_explicit_invalid:"
+                            + measurement.Source + ":" + measurement.Reason);
+                    LogManager.Log("[PanelGeometry] layout rejected"
+                        + " kind=" + measurement.Kind
+                        + " source=" + measurement.Source
+                        + " reason=" + measurement.Reason);
+                    return;
+                }
 
-                _backdrop.RepositionTo(newAnchor);
+                int focusGeneration = _web.PanelSessionGeneration;
+                candidate.FocusGeneration = focusGeneration;
+                PanelGeometrySnapshot committed = _committedGeometry;
+                bool sameLifetime = HasCurrentCommittedGeometry(focusGeneration);
+                bool sameOwnerAndDisplay = sameLifetime
+                    && committed.HasSameOwnerAndDisplay(candidate);
+                bool sameGeometry = sameOwnerAndDisplay
+                    && committed.HasSameGeometry(candidate);
+                PanelRestoreRevalidationDisposition restoreDisposition =
+                    _restoreRevalidation.Consume(
+                        focusGeneration,
+                        sameGeometry);
+
+                if (sameGeometry)
+                {
+                    if (restoreDisposition
+                        == PanelRestoreRevalidationDisposition.ReplayCommitted)
+                    {
+                        ReplayCommittedPanelGroup(
+                            committed,
+                            "owner_restore_same_rect");
+                    }
+                    return;
+                }
+
+                bool ensureVisible = restoreDisposition
+                        == PanelRestoreRevalidationDisposition.GeometryChanged
+                    || !sameLifetime
+                    || !sameOwnerAndDisplay;
+                Rectangle newAnchor = candidate.AnchorRect;
+                Rectangle newPanelRect = candidate.PanelRect;
+                bool panelSizeChanged = committed == null
+                    || committed.PanelRect.Width != newPanelRect.Width
+                    || committed.PanelRect.Height != newPanelRect.Height;
+
+                RepositionBackdrop(newAnchor, ensureVisible);
                 _backdrop.SetPanelRect(newPanelRect);
-                _web.RepositionForPanel(newPanelRect);
-                _lastOwnerAnchorRect = newAnchor;
-                _lastOwnerPanelRect = newPanelRect;
+                _web.RepositionForPanel(newPanelRect, ensureVisible);
 
                 // PostToWeb 让 CSS var(--panel-w/-h) 自适应（仅在尺寸真变化时；拖窗只动位置时跳过）
                 if (panelSizeChanged)
@@ -2413,6 +3048,12 @@ namespace CF7Launcher.Guardian
                     try { _shield.EnterTelemetryMode(newPanelRect, _ownerForm.Handle, newAnchor,
                         _web.IsHandleCreated ? _web.Handle : IntPtr.Zero); }
                     catch (Exception ex) { LogManager.Log("[PanelHost] shield reposition failed: " + ex.Message); }
+                }
+                if (ensureVisible) EnsurePanelZOrder();
+                if (!CommitGeometry(candidate, focusGeneration))
+                {
+                    ClearCommittedGeometry("layout_commit_rejected");
+                    LogManager.Log("[PanelGeometry] layout commit rejected");
                 }
                 // ★ 拖动期间不 ReTopOverlay：backdrop/web 用 SWP_NOZORDER 不破坏 z-order，
                 //   主动 ReTop 反而触发 z-order 重排导致闪烁 + 抢焦点
@@ -2467,6 +3108,7 @@ namespace CF7Launcher.Guardian
                 catch (Exception ex) { LogManager.Log("[PanelHost] close observer failed: " + ex.Message); }
             }
             // Step 0: 取消 owner 跟随订阅（先于 SuspendAfterPanel，防止 SW_HIDE 触发的 LocationChanged 误触发 reposition）
+            ClearCommittedGeometry("panel_close");
             UnsubscribeOwnerLayout();
             // Step 1: 先让 Web 精确卸载当前 owner，再隐藏 WebOverlay。
             // crafting 等 Host-owned panel 的 requestClose 只提交 intent，不会自行 Panels.close；
@@ -2689,6 +3331,65 @@ namespace CF7Launcher.Guardian
             catch { }
         }
 
+        private void RepositionBackdrop(
+            Rectangle anchorRect,
+            bool ensureVisible)
+        {
+            if (!ensureVisible)
+            {
+                _backdrop.RepositionTo(anchorRect);
+                return;
+            }
+            SetWindowPos(
+                _backdrop.Handle,
+                IntPtr.Zero,
+                anchorRect.X,
+                anchorRect.Y,
+                anchorRect.Width,
+                anchorRect.Height,
+                SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            _backdrop.Invalidate();
+        }
+
+        private bool ReplayCommittedPanelGroup(
+            PanelGeometrySnapshot committed,
+            string reason)
+        {
+            if (committed == null
+                || !HasCurrentCommittedGeometry(committed.FocusGeneration)
+                || !ReferenceEquals(committed, _committedGeometry))
+                return false;
+            try
+            {
+                RepositionBackdrop(committed.AnchorRect, true);
+                _backdrop.SetPanelRect(committed.PanelRect);
+                bool webReplayed = _web.ReplayCommittedPanelPresentation(
+                    committed.PanelRect,
+                    committed.FocusGeneration,
+                    reason);
+                if (_shield != null)
+                {
+                    _shield.EnterTelemetryMode(
+                        committed.PanelRect,
+                        _ownerForm.Handle,
+                        committed.AnchorRect,
+                        _web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
+                }
+                EnsurePanelZOrder();
+                LogManager.Log("[PanelGeometry] panel-group replay"
+                    + " generation=" + committed.FocusGeneration
+                    + " reason=" + reason
+                    + " web=" + webReplayed);
+                return webReplayed;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[PanelGeometry] panel-group replay failed: "
+                    + ex.Message);
+                return false;
+            }
+        }
+
         private void EnsurePanelZOrder()
         {
             try
@@ -2719,6 +3420,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void ResetToClosedState()
         {
+            ClearCommittedGeometry("reset_to_closed");
             UnsubscribeOwnerLayout();
             Action<string, string> closeObserver = _panelCloseObserver;
             if (closeObserver != null && _activePanel != null)

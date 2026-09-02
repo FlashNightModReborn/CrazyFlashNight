@@ -4339,25 +4339,13 @@ namespace CF7Launcher.Guardian
                         returnToPanel,
                         returnToInitDataJson);
                 }
-                // Acquire the generic pause only after Host admission succeeds.  Otherwise a
-                // stale atomic admission could leave the game paused with no panel/close edge
-                // capable of releasing the lease.  Production PumpQueue is posted to the UI
-                // thread, and DoOpen independently asserts the same idempotent lease.
+                // Host admission only reserves the queued command. Geometry can still be
+                // explicit-invalid when the UI-thread pump executes (for example during
+                // minimize). PanelHost is therefore the sole pause publisher: it asserts the
+                // lease only after valid geometry and owns failure cleanup.
                 if (accepted)
                 {
                     ClearSuccessfulNativeEquipmentTuningOpenProof();
-                    try
-                    {
-                        TrySendGameCommand("webPanelPause");
-                    }
-                    catch (Exception ex)
-                    {
-                        // Host admission already linearized the open. A late socket exception
-                        // cannot turn that accepted edge into a rollback or duplicate open.
-                        LogManager.Log(
-                            "[Router] webPanelPause send threw after accepted Host open: "
-                            + ex.Message);
-                    }
                 }
                 return accepted;
             }
