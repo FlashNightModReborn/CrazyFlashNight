@@ -26,6 +26,10 @@
     var validProjection = validators.projection, validCandidates = validators.candidates,
         validTooltip = validators.tooltip, validStats = validators.stats,
         definitiveOpenFailure = Contract.definitiveOpenFailure;
+    var candidateValidationError = typeof Contract.candidateValidationError === 'function'
+        ? Contract.candidateValidationError : function(payload, target, scope) {
+            return validCandidates(payload, target, scope) ? '' : 'payload';
+        };
 
     function CharacterBuildSession(options) {
         options = options || {};
@@ -55,6 +59,7 @@
         this._reconcileCallId = '';
         this._reconcileIntent = null;
         this._loadoutTooltipPending = null;
+        this._candidateFailureCode = '';
         this._destroyed = false;
     }
     CharacterBuildSession.prototype._emit = function(reason) {
@@ -257,20 +262,39 @@
             latestWins:true,
             metadata:{target:copy(target), targetKey:targetKey(target), candidateScope:scope}
         }, function(response, entry) {
-            var accepted = self._state === 'idle'
-                && self._commonValid(response, entry, false)
-                && response.success === true
-                && validCandidates(
+            var idle = self._state === 'idle';
+            var commonValid = idle && self._commonValid(response, entry, false);
+            var validationError = commonValid && response.success === true
+                ? candidateValidationError(
                     response.payload,
                     entry.metadata.target,
-                    entry.metadata.candidateScope)
-                && self._applyCommon(response);
+                    entry.metadata.candidateScope) : '';
+            var accepted = commonValid && response.success === true
+                && validationError === '';
+            if (accepted) accepted = self._applyCommon(response);
+            var callbackResponse = response;
             if (!accepted) {
-                if (response && response.success === true) self._malformed(response, entry, false);
+                if (response && response.success === true) {
+                    var stale = idle && (!commonValid
+                            && integer(response.writeEpoch, -1) < self._writeEpoch
+                        || commonValid && validationError === '');
+                    var code = !idle ? 'superseded'
+                        : stale ? 'stale_state'
+                        : 'malformed_candidates_'
+                            + (commonValid ? validationError || 'payload' : 'common');
+                    self._candidateFailureCode = code;
+                    callbackResponse = copy(response);
+                    callbackResponse.success = false;
+                    callbackResponse.error = code;
+                    callbackResponse.clientSynthetic = true;
+                    if (code.indexOf('malformed_candidates_') === 0) {
+                        self._malformed(response, entry, false);
+                    }
+                }
                 else self._onError(response, 'candidates');
-            }
+            } else self._candidateFailureCode = '';
             if (callback) callback(
-                response,
+                callbackResponse,
                 accepted,
                 entry.metadata.targetKey,
                 entry.metadata.candidateScope);
@@ -510,6 +534,7 @@
 
     CharacterBuildSession.prototype._requestFlush = function(callback) {
         if (this._state !== 'idle' && this._state !== 'flush_failed') return null;
+        this._mux.cancelKind('candidates'); this._mux.cancelKind('snapshot'); this._mux.cancelKind('stats');
         this._cancelLoadoutTooltip('flush_start');
         this._state = 'flush_pending';
         this._emit('flush_start');
@@ -568,6 +593,7 @@
         var retry = this._state === 'needs_reconcile' && this._unknown
             && this._unknown.kind === 'finalize';
         if (this._state !== 'idle' && this._state !== 'flush_failed' && !retry) return null;
+        this._mux.cancelKind('candidates'); this._mux.cancelKind('snapshot'); this._mux.cancelKind('stats');
         this._cancelLoadoutTooltip('finalize_start');
         var payload = this._basePayload();
         payload.expectedLoadoutRevision = this._loadoutRevision;
@@ -644,6 +670,7 @@
         this._reconcileCallId = '';
         this._reconcileIntent = null;
         this._loadoutTooltipPending = null;
+        this._candidateFailureCode = '';
     };
 
     CharacterBuildSession.prototype.destroy = function() {
@@ -674,6 +701,7 @@
             liveRevision:this._liveRevision,
             drugRevision:this._drugRevision,
             candidateScope:this._candidateScope,
+            candidateFailureCode:this._candidateFailureCode,
             liveRefreshDirty:this._liveRefreshDirty,
             unknown:this._unknown ? {kind:this._unknown.kind, callId:this._unknown.callId} : null,
             openingAttempts:this._openingAttempts,

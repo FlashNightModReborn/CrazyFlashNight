@@ -6,3 +6,4 @@ EquipmentTuningService.install();
 LootContainerService.install();
 org.flashNight.arki.scene.StageRunSession.install();
 org.flashNight.arki.item.CharacterBuildService.install();
+org.flashNight.arki.item.ItemUseService.install();

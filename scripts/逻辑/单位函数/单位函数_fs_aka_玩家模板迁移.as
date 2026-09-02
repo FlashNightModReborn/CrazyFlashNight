@@ -1087,6 +1087,11 @@ _root.主角函数.移动钝感硬直 = function(时间) {
     }, 时间, 1);
 };
 
+// 切手技统一入口：时间轴只传定位器与形态名，公式由持久类集中维护。
+_root.主角函数.执行切手技 = function(定位器:MovieClip, 形态:String):Void {
+    org.flashNight.arki.unit.Action.Melee.SwitchStrikeCore.shoot(定位器, 形态);
+};
+
 //切换武器
 _root.主角函数.攻击模式切换 = function(模式) {
     if (this.飞行浮空 && this._name === _root.控制目标) {

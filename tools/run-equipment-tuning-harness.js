@@ -55,15 +55,16 @@ function audit(){
       ||!hasAll(interaction,["String(pendingKinds[pendingIndex]) !== 'tooltip'",'authorityPending'])
       ||!hasAll(view,["type:'debug'","scope:'equipment_tuning'",'preview_issued','preview_adopted','commit_issued','inventory_refresh_settled','reconcile_issued','reconcile_adopted'])
       ||!hasAll(tuningHarness,['tooltip-first response interleave preserves candidate activation and adopts the preview token','preview-first response interleave keeps the adopted preview when the late tooltip settles','commit and inventory refresh expose redacted current-build receipts','reconcile issued and adopted expose the exact unknown-write watermark without raw authority data']))throw new Error('tuning concurrency diagnostics or exact authority receipt gate missing');
-  if(!hasAll(view,['this._tooltipEpoch = 0','TuningView.prototype._invalidateTooltipAuthority','TuningView.prototype._adoptSnapshot','self._adoptSnapshot(response.snapshot)','self._adoptSnapshot(committedSnapshot)'])
+  if(!hasAll(view,['this._tooltipEpoch = 0','TuningView.prototype._invalidateTooltipAuthority','TuningView.prototype._adoptSnapshot','self._adoptSnapshot(response.snapshot)','self._adoptSnapshot(committedSnapshot)','TuningView.prototype._resetReplacementAfterCommit',"operation !== 'replace_mod' && operation !== 'detach_mod'","this._operation = 'install_mod'"])
       ||!hasAll(render,['var diagnosticAuthoritySourceKey = Model.diagnosticAuthoritySourceKey','tooltipSnapshot && tooltipSnapshot.inventoryRevision','tooltipSnapshot && tooltipSnapshot.materialRevision','String(candidate.itemName || \'\')','self._tooltipEpoch !== tooltipEpoch','diagnosticAuthoritySourceKey(self._source) !== authoritySourceKey'])
       ||!hasAll(writeLifecycle,['this._adoptSnapshot(authoritativeSnapshot)'])
-      ||!hasAll(loadoutLifecycle,['self._adoptSnapshot(response.snapshot)'])
+      ||!hasAll(loadoutLifecycle,['self._adoptSnapshot(response.snapshot)',
+        'self._resetReplacementAfterCommit(operation)'])
       ||view.includes('self._snapshot = response.snapshot')
       ||view.includes('self._snapshot = committedSnapshot')
       ||writeLifecycle.includes('this._snapshot = authoritativeSnapshot')
       ||loadoutLifecycle.includes('self._snapshot = response.snapshot')
-      ||!hasAll(tuningHarness,['mod.N remap invalidates the cached body and binds the new inventory lease identity','tier.0 remap refetches the next progression material instead of reusing the prior tier body','unchanged candidate identity refetches stats after an equipment revision change','loadout tooltip authority follows expectedLoadoutRevision and refetches after rebind','late old-epoch tooltip response cannot write the new cache or overwrite the current overlay','reopening Equipment Tuning starts an empty tooltip authority session']))
+      ||!hasAll(tuningHarness,['mod.N remap invalidates the cached body and binds the new inventory lease identity','tier.0 remap refetches the next progression material instead of reusing the prior tier body','unchanged candidate identity refetches stats after an equipment revision change','loadout tooltip authority follows expectedLoadoutRevision and refetches after rebind','late old-epoch tooltip response cannot write the new cache or overwrite the current overlay','reopening Equipment Tuning starts an empty tooltip authority session','loadout detach clears stale replacement state and immediately restores install intent']))
       throw new Error('Equipment Tuning tooltip authority epoch or remap regression gate missing');
   if(!hasAll(model,['function quickCommitEligible','enhance|convert|install_tier|install_mod|replace_mod|detach_mod|detach_all_mods'])
       ||!hasAll(view,['expectedTuningToken',"requestPreview('convert'","if (operation === 'replace_mod')"])
@@ -131,6 +132,13 @@ function audit(){
       ||!hasAll(view,['_openInspector','_closeInspector','inspectCurrentEquipment','inspectConversionTarget','this._snapshot.gender'])
       ||!hasAll(render,['equipment-tuning-inspect-trigger','equipment-tuning-convert-inspect'])
       ||!hasAll(workbench,['EquipmentInspector.open','openInspector:openEquipmentInspector','closeInspector:closeEquipmentInspector',"gender !== '男' && gender !== '女'"]))throw new Error('shared tuning equipment inspector adapter missing');
+  if(!hasAll(view,['_bindSourceTooltipPort','_sourceTooltipBinding'])
+      ||!hasAll(render,['_releaseSourceTooltipBinding','data-source-tooltip','authoritative'])
+      ||!hasAll(workbench,['bindSourceTooltip:bindTuningSourceTooltip','function bindTuningSourceTooltip',
+        "bindSlotTooltip(node, '背包', slot, isSuppressed)"])
+      ||!hasAll(ownedView,['function resolveExactSourceSlot',"String(slot.slotLease || '') !== expectedLease"])
+      ||!hasAll(characterBuildTuningPorts,['function bindSourceTooltip','expectedLoadoutRevision','expectedLease']))
+      throw new Error('shared tuning source tooltip or production entrypoint authority binding missing');
   if(inventorySource.includes('syncTuningConversionFilter')||inventorySource.includes('_conversionFilterRestore')
       ||tuningSource.includes('syncConversionFilter')||tuningSource.includes('_conversionFilterActive'))throw new Error('legacy conversion mutation of visible bag filter remains');
   if(!hasAll(view,['model, decision presenter, renderer, confirmation, interaction, write lifecycle, loadout lifecycle, then view.',
@@ -233,6 +241,8 @@ function audit(){
     "'modules/character-build/character-build-candidate-eligibility.js'",
     "'modules/character-build/character-build-projection.js'",
     "'modules/character-build/character-build-transport.js'",
+    "'modules/character-build/character-build-item-use.js'",
+    "'modules/character-build/character-build-item-use-channel.js'",
     "'modules/character-build/character-build-candidate-channel.js'",
     "'modules/character-build.js'"
   ];

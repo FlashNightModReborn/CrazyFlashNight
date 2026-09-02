@@ -25,6 +25,22 @@ namespace CF7Launcher.Guardian
     {
         protected override bool IsClickThrough { get { return false; } }
 
+        protected override bool CanShowOverlayNow
+        {
+            get { return base.CanShowOverlayNow || IsOwnerSessionForeground(); }
+        }
+
+        protected virtual bool IsOwnerSessionForeground()
+        {
+            try
+            {
+                IntPtr ownerHwnd = _owner != null && _owner.IsHandleCreated
+                    ? _owner.Handle : IntPtr.Zero;
+                return WebOverlayForm.IsDesktopCursorSessionForeground(ownerHwnd);
+            }
+            catch { return false; }
+        }
+
         private readonly List<INativeHudWidget> _widgets = new List<INativeHudWidget>();
         private readonly object _widgetsLock = new object();
         // IUiDataConsumer widget 计数：HandleUiData fast path 检查，无 consumer 直接早 return
@@ -112,6 +128,7 @@ namespace CF7Launcher.Guardian
         /// <summary>Panel 态调用：SW_HIDE + 停 tick。</summary>
         public void Suspend()
         {
+            CancelPointerGesture();
             _suspendedForPanel = true;
             if (_animTick != null) _animTick.Stop();
             _lastTickMs = 0;
@@ -388,10 +405,8 @@ namespace CF7Launcher.Guardian
                     SWP_NOACTIVATE);
                 // 用 ShowOverlayBelow 而非 ShowOverlay：后者会把 z-order 拉到 HWND_TOP，覆盖上面的 insertAfter。
                 ShowOverlayBelow(insertAfter);
-                // 兜底：ShowOverlayBelow 受 _ownerVisible 闸门控制，
-                // panel 关闭时焦点常在 Flash 子窗口 → owner 仍 deactivated → ShowWindow 被跳过。
-                // 直接 SW_SHOWNOACTIVATE 强制显示；ShowWindow 不改 z-order，上面 insertAfter 排序保留。
-                try { ShowWindow(this.Handle, SW_SHOWNOACTIVATE); } catch { }
+                // ShowOverlayBelow 的 CanShowOverlayNow 会接受 owner/嵌入 Flash 会话，
+                // 但外部应用已经前台时保持隐藏；禁止无条件 ShowWindow 绕过 owner 状态。
             }
             _renderPending = false;
             if (_renderCoalesceTimer != null) _renderCoalesceTimer.Stop();
@@ -773,6 +788,41 @@ namespace CF7Launcher.Guardian
         // Phase 4：鼠标事件路由。命中 widget → 转屏幕坐标 → OnMouseEvent。
         // 仅向当前命中 widget 派发；hover 切换通过 Move 事件 + widget 自身 idx 比对处理。
         private INativeHudWidget _lastHoverWidget;
+        private bool _handlingMouseUp;
+
+        internal void CancelPointerGesture()
+        {
+            INativeHudWidget down = _leftDownWidget;
+            INativeHudWidget hover = _lastHoverWidget;
+            _leftDownWidget = null;
+            _lastHoverWidget = null;
+
+            MouseEventArgs cancelArgs = new MouseEventArgs(
+                MouseButtons.None, 0, 0, 0, 0);
+            if (down != null)
+            {
+                try { down.OnMouseEvent(cancelArgs, MouseEventKind.Cancel); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget Cancel throw: " + ex.Message); }
+            }
+            if (hover != null)
+            {
+                try { hover.OnMouseEvent(cancelArgs, MouseEventKind.Leave); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget Leave throw: " + ex.Message); }
+            }
+        }
+
+        protected override void OnOwnerVisibilityChanged(bool ownerVisible)
+        {
+            base.OnOwnerVisibilityChanged(ownerVisible);
+            if (!ownerVisible) CancelPointerGesture();
+        }
+
+        protected override void OnMouseCaptureChanged(EventArgs e)
+        {
+            base.OnMouseCaptureChanged(e);
+            if (!_handlingMouseUp && !Capture)
+                CancelPointerGesture();
+        }
 
         private INativeHudWidget HitTestScreen(Point screenPt)
         {
@@ -831,22 +881,36 @@ namespace CF7Launcher.Guardian
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            base.OnMouseUp(e);
-            Point screenPt = this.PointToScreen(e.Location);
-            INativeHudWidget hit = HitTestScreen(screenPt);
-            INativeHudWidget downWidget = _leftDownWidget;
-            if (e.Button == MouseButtons.Left) _leftDownWidget = null;
-            if (hit == null) return;
-            MouseEventArgs sArgs = new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta);
-            try { hit.OnMouseEvent(sArgs, MouseEventKind.Up); }
-            catch (Exception ex) { LogManager.Log("[NativeHud] widget Up throw: " + ex.Message); }
-            // Form 的 OnMouseClick 在 Down/Up 同一控件时才 fire。仿此语义：仅当 Up widget == Down widget 才派发 Click。
-            // widget 内部如需 button-level 匹配（e.g. SafeExitPanel 的取消/退出），自行用 Down/Up 跟踪 _downIndex。
-            if (e.Button == MouseButtons.Left && hit == downWidget)
+            _handlingMouseUp = true;
+            try
             {
-                try { hit.OnMouseEvent(sArgs, MouseEventKind.Click); }
-                catch (Exception ex) { LogManager.Log("[NativeHud] widget Click throw: " + ex.Message); }
+                base.OnMouseUp(e);
+                Point screenPt = this.PointToScreen(e.Location);
+                INativeHudWidget hit = HitTestScreen(screenPt);
+                INativeHudWidget downWidget = _leftDownWidget;
+
+                if (e.Button == MouseButtons.Left
+                    && (hit == null || (downWidget != null && hit != downWidget)))
+                {
+                    CancelPointerGesture();
+                    return;
+                }
+
+                if (e.Button == MouseButtons.Left) _leftDownWidget = null;
+                if (hit == null) return;
+                MouseEventArgs sArgs = new MouseEventArgs(
+                    e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta);
+                try { hit.OnMouseEvent(sArgs, MouseEventKind.Up); }
+                catch (Exception ex) { LogManager.Log("[NativeHud] widget Up throw: " + ex.Message); }
+                // Form 的 OnMouseClick 在 Down/Up 同一控件时才 fire。仿此语义：仅当 Up widget == Down widget 才派发 Click。
+                // widget 内部如需 button-level 匹配（e.g. SafeExitPanel 的取消/退出），自行用 Down/Up 跟踪 _downIndex。
+                if (e.Button == MouseButtons.Left && hit == downWidget)
+                {
+                    try { hit.OnMouseEvent(sArgs, MouseEventKind.Click); }
+                    catch (Exception ex) { LogManager.Log("[NativeHud] widget Click throw: " + ex.Message); }
+                }
             }
+            finally { _handlingMouseUp = false; }
         }
 
         #endregion

@@ -2,6 +2,7 @@
 
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.item.PlayerAssetTransaction;
+import org.flashNight.arki.item.DrugSlotAffinityService;
 
 /**
  * @class DrugInputService
@@ -160,13 +161,23 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             physicalSlot: physicalSlot,
             lane: lane,
             bank: activeBank,
-            itemName: itemName
+            itemName: itemName,
+            affinityCommitted: false
         };
 
         if (Number(unit.hp) <= 0) return result;
         if (Number(item.value) <= 0) {
             publishExhausted(root, itemName);
             result.depleted = true;
+            return result;
+        }
+
+        // future schema 必须在药效/冷却/扣药任一权威写前 fail closed。
+        // preview 纯读；最后一剂的 affinity 与扣药在同一 dirty frame 提交。
+        var affinityPreflight:Object =
+            DrugSlotAffinityService.previewNormalized(root, inventory);
+        if (!affinityPreflight.ok) {
+            result.affinityError = String(affinityPreflight.error);
             return result;
         }
 
@@ -195,6 +206,10 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
                 if (committedLoss > 0 && Math.floor(committedLoss) == committedLoss) {
                     PlayerAssetTransaction.recordEffect(
                         "loss", "item", itemName, committedLoss, assetContext);
+                    if (remaining == null) {
+                        recordDepletionAffinity(
+                            root, inventory, physicalSlot, itemName, result);
+                    }
                 }
             }
             PlayerAssetTransaction.commit(assetTransaction);
@@ -218,6 +233,148 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             result.depleted = true;
         }
         return result;
+    }
+
+    /**
+     * 背包直服只借用四条药剂 lane 的冷却权威，不改变 active bank，亦不把
+     * 背包物品临时装备进药剂栏。装备位是否已有其他药剂不代表这条冷却通道
+     * 正在占用：先选已装备同名药剂的最低 ready lane，便于玩家从 HUD 对应；
+     * 没有 ready 同名 lane 时，占用任意最低 ready lane。
+     */
+    public static function selectDirectUseLane(itemName:String,
+                                                inventory:Object):Object {
+        if (itemName == null || itemName == "" || itemName == "undefined"
+                || inventory == null || typeof inventory.getItem != "function") {
+            return {success:false, error:"service_not_ready"};
+        }
+        var lane:Number;
+        try {
+            for (lane = 0; lane < LANE_COUNT; lane++) {
+                if (!ManualCooldownService.isReady(
+                        ManualCooldownService.drugKey(lane))) continue;
+                var first:Object = inventory.getItem(String(
+                    physicalSlotFor(0, lane)));
+                var second:Object = inventory.getItem(String(
+                    physicalSlotFor(1, lane)));
+                if ((first != null && String(first.name) == itemName)
+                        || (second != null && String(second.name) == itemName)) {
+                    return {success:true, lane:lane};
+                }
+            }
+            for (lane = 0; lane < LANE_COUNT; lane++) {
+                if (ManualCooldownService.isReady(
+                        ManualCooldownService.drugKey(lane))) {
+                    return {success:true, lane:lane};
+                }
+            }
+        } catch (cooldownOrInventoryError) {
+            return {success:false, error:"cooldown_unavailable"};
+        }
+        return {success:false, error:"no_available_lane"};
+    }
+
+    /**
+     * 对 exact 背包来源执行一次药剂事务。暂停状态不是领域拒绝条件；调用方只需
+     * 提供存活的当前玩家。该写不会记录药剂槽 affinity。
+     */
+    public static function consumeBackpackItem(unit:Object,
+                                                inventory:Object,
+                                                physicalSlot:Number,
+                                                item:Object,
+                                                lane:Number,
+                                                root:Object):Object {
+        if (unit == null || Number(unit.hp) <= 0) {
+            return {used:false, error:"player_unavailable"};
+        }
+        if (root == null || root.存档系统 == null || inventory == null
+                || typeof inventory.getItem != "function"
+                || typeof inventory.addValue != "function"
+                || !isValidLane(lane) || physicalSlot < 0
+                || Math.floor(physicalSlot) != physicalSlot) {
+            return {used:false, error:"service_not_ready"};
+        }
+        var current:Object;
+        try {
+            current = inventory.getItem(String(physicalSlot));
+        } catch (sourceReadError) {
+            return {used:false, error:"stale_source"};
+        }
+        if (current == null || current !== item || Number(current.value) <= 0) {
+            return {used:false, error:"stale_source"};
+        }
+        var selected:Object = selectDirectUseLane(String(current.name),
+            root.物品栏 == null ? null : root.物品栏.药剂栏);
+        if (selected == null || selected.success !== true
+                || Number(selected.lane) != lane) {
+            return {used:false, error:selected == null
+                ? "cooldown_unavailable" : String(selected.error)};
+        }
+
+        var itemName:String = String(current.name);
+        var cooldownKey:String = ManualCooldownService.drugKey(lane);
+        var result:Object = {attempted:true, used:false,
+            cooldownStarted:false, depleted:false, physicalSlot:physicalSlot,
+            lane:lane, itemName:itemName, remaining:Number(current.value)};
+        var assetContext:Object = {
+            source:"item_use", reason:"direct_drug_use", mergeScope:"operation"
+        };
+        var transaction:Object = PlayerAssetTransaction.begin(assetContext);
+        var quantityBefore:Number = Number(current.value);
+        var remaining:Object;
+        try {
+            PlayerAssetTransaction.markDirtyRequired(root.存档系统);
+            if (root.使用药剂) root.使用药剂(itemName);
+            result.cooldownStarted = ManualCooldownService.start(
+                cooldownKey, Number(root.吃药冷却时间));
+            if (!result.cooldownStarted) throw "cooldown_start_failed";
+            try {
+                inventory.addValue(String(physicalSlot), -1);
+                result.used = true;
+            } finally {
+                remaining = inventory.getItem(String(physicalSlot));
+                var quantityAfter:Number = remaining == null
+                    ? 0 : Number(remaining.value);
+                var committedLoss:Number = quantityBefore - quantityAfter;
+                if (committedLoss > 0 && Math.floor(committedLoss) == committedLoss) {
+                    PlayerAssetTransaction.recordEffect(
+                        "loss", "item", itemName, committedLoss, assetContext);
+                }
+                result.remaining = quantityAfter;
+            }
+            PlayerAssetTransaction.commit(transaction);
+        } catch (useError) {
+            PlayerAssetTransaction.settleAfterException(transaction, true);
+            try {
+                if (inventory.setIndexes != undefined) inventory.setIndexes(null);
+            } catch (indexRepairError) {
+                trace("[DrugInputService] direct inventory index repair failed: "
+                    + indexRepairError);
+            }
+            throw useError;
+        }
+        if (remaining == null) {
+            publishExhausted(root, itemName);
+            result.depleted = true;
+        }
+        return result;
+    }
+
+    private static function recordDepletionAffinity(
+        root:Object,
+        inventory:Object,
+        physicalSlot:Number,
+        itemName:String,
+        result:Object
+    ):Void {
+        var affinityCommit:Object =
+            DrugSlotAffinityService.recordDepleted(
+                root, inventory, physicalSlot, itemName);
+        result.affinityCommitted = affinityCommit.success === true;
+        if (!result.affinityCommitted) {
+            result.affinityError = String(affinityCommit.error);
+            trace("[DrugInputService] affinity commit failed: "
+                + result.affinityError);
+        }
     }
 
     public static function syncView(view:Object, lane:Number, keyCode:Number, root:Object):Void {

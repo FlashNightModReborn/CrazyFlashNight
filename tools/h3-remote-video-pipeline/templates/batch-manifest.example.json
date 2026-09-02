@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "runId": "demo-concert-batch-20260830",
+  "remoteLeaf": "demo-concert-batch",
+  "controllerLogPrefix": "controller",
+  "reviewStem": "demo-concert",
+  "generation": {
+    "modelId": "local/MiniMax-H3-FL2VA-8bit",
+    "steps": 16,
+    "audioSeconds": 0
+  },
+  "rawProfile": {
+    "width": 1280,
+    "height": 736,
+    "frames": 56,
+    "fpsRate": "24/1"
+  },
+  "targetProfile": {
+    "enabled": true,
+    "kind": "center-crop-1280x736-to-1024x576"
+  },
+  "jobs": [
+    {
+      "order": 1,
+      "slug": "01-composition-a-second-seed-1001",
+      "seed": 1001,
+      "reviewLabel": "构图 A 第二种子",
+      "remotePipeline": "pipelines/demo-concert-batch/01-composition-a-second-seed-1001.vpipeline"
+    },
+    {
+      "order": 2,
+      "slug": "02-instrument-action-seed-1002",
+      "seed": 1002,
+      "reviewLabel": "器械动作补卡",
+      "remotePipeline": "pipelines/demo-concert-batch/02-instrument-action-seed-1002.vpipeline"
+    }
+  ]
+}

@@ -466,6 +466,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if(isNaN(target.hp)) target.hp = target.hp满血值;
         if(isNaN(target.mp)) target.mp = target.mp满血值;
 
+        // updateProperties 会整体替换魔法抗性及武器属性对象；先让仍在生效的路径 Buff
+        // 重绑到新对象，再刷新所有读取这些属性的下游派生值。
+        if (target.buffManager && typeof target.buffManager.syncAllPathBindings == "function") {
+            target.buffManager.syncAllPathBindings();
+        }
+
         // 装备数值更新后，通知护盾系统刷新立场抗性派生字段
         // 因为魔法抗性表在本函数中被重建，需要触发护盾系统重新计算立场抗性
         if (target.shield && target.shield.refreshStanceResistance) {

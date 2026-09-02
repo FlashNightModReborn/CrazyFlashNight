@@ -793,8 +793,13 @@ namespace CF7Launcher.Tasks
                 case "return_base":
                     return msg.Value<bool?>("closePanel") != true;
                 case "try_revive":
-                    return msg.Value<bool?>("promptOpened") != true
-                        || !IsBoolean(msg["restrictionActive"])
+                    long reviveCoins;
+                    return msg.Value<bool?>("revived") != true
+                        || !TryInteger(
+                            msg["reviveCoins"],
+                            0,
+                            int.MaxValue,
+                            out reviveCoins)
                         || msg.Value<bool?>("closePanel") != true;
                 default:
                     return true;

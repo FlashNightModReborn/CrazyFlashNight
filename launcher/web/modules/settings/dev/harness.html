@@ -163,7 +163,11 @@
         emit(message,{success:true,v:1,operation:'cheat',accepted:true,command:payload.command,
           effectScope:'session',challengeMode:model.challengeMode,modeLabel:model.challengeMode?'挑战':'困难',
           cheatHelp:help(),message:'Harness：命令已模拟执行。'});
-      }else if(message.cmd==='return_base'||message.cmd==='try_revive')emit(message,{success:true,v:1,operation:message.cmd,closePanel:true,promptOpened:message.cmd==='try_revive'});
+      }else if(message.cmd==='return_base'){
+        emit(message,{success:true,v:1,operation:'return_base',closePanel:true});
+      }else if(message.cmd==='try_revive'){
+        emit(message,{success:true,v:1,operation:'try_revive',revived:true,reviveCoins:2,closePanel:true});
+      }
       else emit(message,{success:false,v:1,error:'unsupported_cmd'});
       return true
     }

@@ -165,6 +165,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("player_revive")]
         [InlineData("cheat")]
         [InlineData("system_reward")]
+        [InlineData("reward_inbox")]
         [InlineData("kill")]
         public void TryParse_AllWhitelistedSources_Accepted(string goodSource)
         {

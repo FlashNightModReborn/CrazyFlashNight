@@ -638,6 +638,98 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
+            ['transport-send-failure-settles', 'Bridge.send false/throw immediately settles every pending request and enter busy', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                host.open();
+                return waitRuntime(api).then(function(initialState) {
+                    function runFault(mode, label, action, expectBusyClear) {
+                        var accepted = host.withBridgeSendFault(mode, action);
+                        var state = StageSelectPanel._debugGetState();
+                        api.assertEqual(accepted, false, label + ' reports local send failure');
+                        api.assertEqual(state.pendingCount, 0, label + ' consumes exact pending synchronously');
+                        api.assertEqual(state.lastError, 'send_failed', label + ' exposes send_failed instead of timeout');
+                        if (expectBusyClear) api.assertEqual(state.busyStageName, '', label + ' clears enter busy');
+                    }
+
+                    runFault('false', 'snapshot false', function() {
+                        return StageSelectBridge.requestSnapshot();
+                    });
+                    runFault('throw', 'jump_frame throw', function() {
+                        return StageSelectBridge.requestJumpFrame(initialState.frameLabel, null, initialState.frameLabel);
+                    });
+                    runFault('false', 'enter false', function() {
+                        return StageSelectBridge.requestEnter('新手练习场', '简单', 'difficulty');
+                    }, true);
+                    runFault('throw', 'return_frame throw', function() {
+                        return StageSelectBridge.requestReturnFrame(initialState.returnFrameLabel, null);
+                    });
+
+                    var beforeRevision = StageSelectPanel._debugGetState().lastAppliedStateRevision;
+                    api.assertEqual(StageSelectPanel._debugRequestSnapshot(), true, 'fresh snapshot retry is synchronously delivered');
+                    return api.waitFor(function() {
+                        var state = StageSelectPanel._debugGetState();
+                        return state.pendingCount === 0 && state.lastAppliedStateRevision > beforeRevision
+                            && !state.lastError ? state : null;
+                    }, 2000, 'transport failure recovery').then(function() {
+                        return 'false/throw settle immediately and fresh retry recovers';
+                    });
+                });
+            }],
+            ['transport-close-failure-retryable', 'close waits for synchronous transport acceptance and stays retryable on false/throw', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                host.open();
+                return waitRuntime(api).then(function() {
+                    host.nextEnterError = 'qa_hold';
+                    api.assertEqual(StageSelectBridge.requestEnter('新手练习场', '简单', 'difficulty'), true,
+                        'setup enter request is synchronously accepted');
+                    var beforeClose = StageSelectPanel._debugGetState();
+                    api.assert(beforeClose.pendingCount > 0, 'setup leaves an exact request pending');
+                    api.assertEqual(beforeClose.busyStageName, '新手练习场', 'setup exposes enter busy');
+
+                    var falseResult = host.withBridgeSendFault('false', function() {
+                        return StageSelectRenderer.requestClose('button');
+                    });
+                    var falseState = StageSelectPanel._debugGetState();
+                    api.assertEqual(falseResult, false, 'close false is reported');
+                    api.assertEqual(Panels.getActive(), 'stage-select', 'close false keeps the current panel visible');
+                    api.assertEqual(falseState.lastCloseSendError, 'send_failed', 'close false remains diagnostically explicit');
+                    api.assertEqual(falseState.lastError, 'send_failed', 'close false exposes visible send_failed');
+                    api.assertEqual(falseState.pendingCount, beforeClose.pendingCount, 'close false preserves exact pending');
+                    api.assertEqual(falseState.busyStageName, beforeClose.busyStageName, 'close false preserves enter busy');
+
+                    return api.waitFor(function() {
+                        var state = StageSelectPanel._debugGetState();
+                        return Panels.getActive() === 'stage-select' && state.pendingCount === 0
+                            && state.busyStageName === '' && state.lastError === 'qa_hold' ? state : null;
+                    }, 2000, 'preserved enter response').then(function() {
+                        api.assertEqual(StageSelectRenderer.requestClose('button'), true,
+                            'retry after close false is accepted');
+                        api.assertEqual(Panels.getActive(), null, 'accepted retry closes the panel');
+                        host.open();
+                        return waitRuntime(api);
+                    });
+                }).then(function() {
+                    var throwResult = host.withBridgeSendFault('throw', function() {
+                        return StageSelectRenderer.requestClose('button');
+                    });
+                    var throwState = StageSelectPanel._debugGetState();
+                    api.assertEqual(throwResult, false, 'close throw is contained and reported');
+                    api.assertEqual(Panels.getActive(), 'stage-select', 'close throw keeps the current panel visible');
+                    api.assertEqual(throwState.lastCloseSendError, 'send_failed', 'close throw remains diagnostically explicit');
+                    api.assertEqual(throwState.lastError, 'send_failed', 'close throw exposes visible send_failed');
+                    var closeCount = host.sentMessages.filter(function(message) {
+                        return message && message.cmd === 'close';
+                    }).length;
+                    api.assertEqual(StageSelectRenderer.requestClose('button'), true, 'retry after close throw is accepted');
+                    var finalState = StageSelectPanel._debugGetState();
+                    api.assertEqual(Panels.getActive(), null, 'accepted retry closes the panel');
+                    api.assertEqual(finalState.lastCloseSendError, '', 'accepted retry clears failure diagnostic');
+                    api.assertEqual(host.sentMessages.filter(function(message) {
+                        return message && message.cmd === 'close';
+                    }).length, closeCount + 1, 'accepted retry emits one Host notification');
+                    return 'close false/throw preserve visible state; accepted retry closes';
+                });
+            }],
             ['challenge-enter', 'challenge mode only sends hell difficulty', function() {
                 document.getElementById('stage-fixture-select').value = 'challenge';
                 host.open();

@@ -459,6 +459,24 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(0, cap.Exit);
         }
 
+        [Fact]
+        public void SaveStateChange_ClearsPendingButtonGesture()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:3"), new HashSet<string> { "sv" });
+            w.InternalDownIndex = 1;
+
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
+
+            Assert.Equal(-1, w.InternalDownIndex);
+            Assert.Equal(
+                SafeExitPanelWidget.ClickOutcome.MismatchedDownUp,
+                w.TryFireButtonClick(1));
+            Assert.Equal(0, cap.Exit);
+        }
+
         // ── s:0 完整复位 ──
         [Fact]
         public void GameNotReady_DisarmsAndResets()

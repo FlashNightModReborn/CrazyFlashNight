@@ -69,6 +69,7 @@ var LootPanel = (function() {
             identity:_identity,
             capacity:_init.capacity,
             backpackLimit:50,
+            settlementReport:_init.report,
             request:function(cmd, fields, options, callback) {
                 return _mux.request(cmd, fields, options, callback);
             },
@@ -624,6 +625,10 @@ var LootPanel = (function() {
 
     function requestAbandon() {
         if (_view&&_view.hasModal()) return;
+        if (_init&&_init.sourceKind==='reward_inbox') {
+            toast('待领取恢复批次不能永久放弃；关闭会保留剩余内容。');
+            return;
+        }
         var state=_model&&_model.debugState();
         if (!state||state.phase!=='active'||state.remainingCount<=0||_claimAll
                 ||_organizerActive||_organizerReturning) {
@@ -682,7 +687,9 @@ var LootPanel = (function() {
         _closingVisual=true;
         var panelInstanceId=_identity&&_identity.panelInstanceId
             ||_init&&_init.panelInstanceId||_transportInstanceId||'';
-        Panels.close();
+        var preserveForRewardReturn=_init&&_init.sourceKind==='reward_inbox'
+            &&(reason==='terminal'||reason==='suspended');
+        if (!preserveForRewardReturn) Panels.close();
         var message={type:'panel',cmd:'close',panel:'loot',reason:String(reason||'closed')};
         if (panelInstanceId) message.panelInstanceId=panelInstanceId;
         Bridge.send(message);

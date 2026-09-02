@@ -820,6 +820,81 @@ test('latest candidate request fences a late response from the previous scope', 
     assert.deepStrictEqual(accepted, ['backpack']);
 });
 
+test('candidate read behind a newer snapshot is stale-recovered instead of reported malformed', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const target = {kind:'equipment',slotKey:'刀'};
+    let result = null;
+    fixture.session.requestCandidates(target, 'compatible', (response, accepted) => {
+        result = {response,accepted};
+    });
+    const candidateRequest = fixture.messages[1];
+    fixture.session.refreshSnapshot();
+    const snapshotRequest = fixture.messages[2];
+    fixture.mux.handleResponse(responseFor(snapshotRequest, {
+        drugRevision:3,
+        payload:projection()
+    }));
+    fixture.mux.handleResponse(responseFor(candidateRequest, {payload:{
+        target,
+        candidateScope:'compatible',
+        candidates:[{
+            physicalSlot:4,
+            disabled:false,
+            blockedReason:'',
+            source:{containerId:'背包',slot:4,expectedLease:'lease.4'},
+            item:itemProjection({majorType:'武器',use:'刀'}),
+            equipmentEligibility:{slots:['刀'],blockedReason:''}
+        }],
+        backpackVersion:8,
+        stateHealth:'ok',
+        diagnostics:[]
+    }}));
+    assert(result);
+    assert.strictEqual(result.accepted, false);
+    assert.strictEqual(result.response.success, false);
+    assert.strictEqual(result.response.error, 'stale_state');
+    assert.strictEqual(result.response.clientSynthetic, true);
+    assert.strictEqual(fixture.errors.length, 0);
+    assert.strictEqual(
+        fixture.session.debugState().candidateFailureCode, 'stale_state');
+});
+
+test('finalize cancels a pending candidate read before changing session state', () => {
+    const fixture = createFixture();
+    openClean(fixture);
+    const target = {kind:'equipment', slotKey:'长枪'};
+    let candidateCallbackCount = 0;
+    fixture.session.requestCandidates(target, 'compatible', () => {
+        candidateCallbackCount++;
+    });
+    const candidate = fixture.messages[1];
+    let finalized = false;
+    fixture.session.finalize((_, accepted) => { finalized = accepted; });
+    const finalize = fixture.messages[2];
+
+    assert.strictEqual(fixture.mux.handleResponse(responseFor(candidate, {payload:{
+        target,
+        candidateScope:'compatible',
+        candidates:[],
+        backpackVersion:8,
+        stateHealth:'ok',
+        diagnostics:[]
+    }})), false);
+    assert.strictEqual(candidateCallbackCount, 0);
+    assert.deepStrictEqual(fixture.errors, []);
+
+    fixture.mux.handleResponse(responseFor(finalize, {
+        writeEpoch:1,
+        active:false,
+        closed:true,
+        liveChanged:false,
+        persistence:{success:true, changed:false}
+    }));
+    assert.strictEqual(finalized, true);
+    assert.strictEqual(fixture.session.canClose(), true);
+});
+
 test('snapshot adoption rejects blank and wrapped-case undefined loadout item identities', () => {
     [
         ['name',' Undefined '],

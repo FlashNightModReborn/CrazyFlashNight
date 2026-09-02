@@ -20,6 +20,7 @@ $suitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\L
 $plannerSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\item\LootMaterializationPlannerTest.as'
 $arbiterSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\test\BoxInteractionArbiterTest.as'
 $stageSuitePath = Join-Path $projectDir 'scripts\类定义\org\flashNight\arki\scene\StageRunSessionTest.as'
+$playerSkillPath = Join-Path $projectDir 'scripts\逻辑\单位函数\单位函数_lsy_主角技能.as'
 $serverManagerPath = Join-Path $projectDir 'scripts\类定义\org\flashNight\neur\Server\ServerManager.as'
 $installedRunnerHash = $null
 $scratchTransaction = $null
@@ -38,9 +39,9 @@ $compileMutex = [System.Threading.Mutex]::new(
     $false, 'Local\CF7_FlashCompile_' + $repoHash)
 $compileLease = $null
 $runId = [System.Guid]::NewGuid().ToString('N')
-$expectedServicePassCount = 151
+$expectedServicePassCount = 183
 $expectedPlannerPassCount = 9
-$expectedStagePassCount = 88
+$expectedStagePassCount = 372
 $expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount + $expectedStagePassCount
 
 function Get-EvidenceIdentity([string]$Path) {
@@ -168,6 +169,28 @@ try {
             'trace\("StageRunSessionTest Tests Failed: "\s*\+\s*_failed\)')) {
         if ($stageSource -notmatch $pattern) {
             throw "Stage run AS2 suite is missing required sentinel: $pattern"
+        }
+    }
+
+    if (-not (Test-Path -LiteralPath $playerSkillPath)) {
+        throw "Player skill gate source is missing: $playerSkillPath"
+    }
+    $playerSkillBytes = [System.IO.File]::ReadAllBytes($playerSkillPath)
+    if ($playerSkillBytes.Length -lt 3 -or $playerSkillBytes[0] -ne 0xEF -or
+        $playerSkillBytes[1] -ne 0xBB -or $playerSkillBytes[2] -ne 0xBF) {
+        throw 'Player skill gate source is not UTF-8 with BOM.'
+    }
+    $playerSkillSource = Get-Content -LiteralPath $playerSkillPath -Raw -Encoding UTF8
+    foreach ($requirement in ([ordered]@{
+            'the ordinary skill downed-state gate' =
+                '(?s)_root\.技能函数\.释放条件\.默认\s*=\s*function\s*\(\s*\)\s*\{.*?return\s+!this\.倒地\s*\?\s*true\s*:\s*false\s*;';
+            'the unconditional small-jump gate function' =
+                '(?s)var\s+无条件\s*=\s*function\s*\(\s*\)\s*\{.*?return\s+true\s*;';
+            'the small-jump binding to the unconditional gate' =
+                '_root\.技能函数\.释放条件\.小跳\s*=\s*无条件\s*;'
+        }).GetEnumerator()) {
+        if ($playerSkillSource -notmatch $requirement.Value) {
+            throw ("Player skill gate source is missing {0}." -f $requirement.Key)
         }
     }
 

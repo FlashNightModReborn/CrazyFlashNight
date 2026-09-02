@@ -68,6 +68,7 @@ namespace CF7Launcher.Tasks
         private const int RecentCallIdCapacity = 256;
         private const int MaxSnapshotSlots = 100;
         private const long MaxSafeInteger = 9007199254740991L;
+        private const int LootCommandVersion = 2;
         private const int DefaultDetachedReconcileRetryInitialMs = 100;
         private const int DefaultDetachedReconcileRetryMaximumMs = 2000;
 
@@ -1562,11 +1563,17 @@ namespace CF7Launcher.Tasks
                 flash = PanelBridge.BuildFlashCommand("lootQuery", entry.FlashCallId,
                     new JObject
                     {
-                        ["v"] = 1,
+                        ["v"] = LootCommandVersion,
                         ["chestSessionId"] = entry.Binding.ChestSessionId,
                         ["lootContainerId"] = entry.Binding.LootContainerId,
                         ["containerEpoch"] = entry.Binding.ContainerEpoch
                     });
+                if (entry.Binding.SourceKind
+                    == LootPanelCoordinator.RewardInboxSource)
+                {
+                    flash["sourceKind"] =
+                        LootPanelCoordinator.RewardInboxSource;
+                }
                 flash["openAttemptSeq"] = entry.Binding.OpenAttemptSeq;
                 flash["recoveryNonce"] = entry.RecoveryNonce;
             }
@@ -1713,6 +1720,9 @@ namespace CF7Launcher.Tasks
             operationId = null;
             expectedRevision = -1;
             HashSet<string> expected = new HashSet<string>(CommonRequestKeys, StringComparer.Ordinal);
+            bool rewardInbox = binding != null
+                && binding.SourceKind == LootPanelCoordinator.RewardInboxSource;
+            if (rewardInbox) expected.Add("sourceKind");
             if (cmd == "snapshot")
             {
                 expected.Add("loot");
@@ -1747,21 +1757,27 @@ namespace CF7Launcher.Tasks
                 || ReadString(parsed["task"]) != "loot_request"
                 || ReadString(parsed["domain"]) != "loot"
                 || ReadString(parsed["panel"]) != "loot"
-                || ReadString(parsed["cmd"]) != cmd)
+                || ReadString(parsed["cmd"]) != cmd
+                || rewardInbox
+                    && ReadString(parsed["sourceKind"])
+                        != LootPanelCoordinator.RewardInboxSource)
                 return false;
             int version;
             int epoch;
-            if (!TryReadInteger(parsed["v"], 1, 1, out version)
+            if (!TryReadInteger(parsed["v"], LootCommandVersion, LootCommandVersion, out version)
                 || !TryReadInteger(parsed["containerEpoch"], 1, int.MaxValue, out epoch)
                 || epoch != binding.ContainerEpoch) return false;
 
             normalized = new JObject
             {
-                ["v"] = 1,
+                ["v"] = LootCommandVersion,
                 ["chestSessionId"] = binding.ChestSessionId,
                 ["lootContainerId"] = binding.LootContainerId,
                 ["containerEpoch"] = binding.ContainerEpoch
             };
+            if (rewardInbox)
+                normalized["sourceKind"] =
+                    LootPanelCoordinator.RewardInboxSource;
 
             if (cmd == "snapshot")
             {
@@ -1791,10 +1807,10 @@ namespace CF7Launcher.Tasks
                 operationId = ReadString(parsed["operationId"]);
                 if (!LootPanelCoordinator.IsOpaque(operationId)
                     || ReadString(parsed["direction"]) != "loot_to_player"
-                    || ReadString(parsed["targetContainerId"]) != "背包") return false;
+                    || ReadString(parsed["targetContainerId"]) != "自动") return false;
                 normalized["operationId"] = operationId;
                 normalized["direction"] = "loot_to_player";
-                normalized["targetContainerId"] = "背包";
+                normalized["targetContainerId"] = "自动";
                 return true;
             }
 
@@ -1820,11 +1836,11 @@ namespace CF7Launcher.Tasks
                 operationId = ReadString(parsed["operationId"]);
                 if (!LootPanelCoordinator.IsOpaque(operationId) || operationId.Length > 72
                     || ReadString(parsed["direction"]) != "loot_to_player"
-                    || ReadString(parsed["targetContainerId"]) != "背包") return false;
+                    || ReadString(parsed["targetContainerId"]) != "自动") return false;
                 normalized["operationId"] = operationId;
                 normalized["direction"] = "loot_to_player";
                 normalized["sources"] = cleanSources;
-                normalized["targetContainerId"] = "背包";
+                normalized["targetContainerId"] = "自动";
                 return true;
             }
 
@@ -1833,7 +1849,8 @@ namespace CF7Launcher.Tasks
             bool abandon;
             if (!LootPanelCoordinator.IsOpaque(operationId)
                 || !LootPanelCoordinator.IsOpaque(closeLease)
-                || !TryReadBoolean(parsed["abandon"], out abandon)) return false;
+                || !TryReadBoolean(parsed["abandon"], out abandon)
+                || rewardInbox && abandon) return false;
             normalized["operationId"] = operationId;
             normalized["closeLease"] = closeLease;
             normalized["abandon"] = abandon;
@@ -2032,7 +2049,7 @@ namespace CF7Launcher.Tasks
             LootPanelCoordinator.Binding binding, out JArray output)
         {
             output = null;
-            if (input == null || input.Count > 2) return false;
+            if (input == null || input.Count > 3) return false;
             JArray clean = new JArray();
             foreach (JToken token in input)
             {
@@ -2096,7 +2113,10 @@ namespace CF7Launcher.Tasks
             if (authoritySuspended)
             {
                 return cmd == "query"
-                    && remainingCount > 0
+                    && (remainingCount > 0
+                        || entry.Binding.SourceKind
+                            == LootPanelCoordinator.StageSettlementSource
+                        && entry.Binding.SettlementReport != null)
                     && string.IsNullOrEmpty(closeLease)
                     && snapshots.Count == 0 && tooltip == null && materials == null;
             }
@@ -2108,9 +2128,10 @@ namespace CF7Launcher.Tasks
             if (tooltip != null || materials != null || cmd == "close") return false;
             if (cmd == "snapshot" || cmd == "claim" || cmd == "claimBatch" || cmd == "query")
             {
-                if (snapshots.Count != 2) return false;
+                if (snapshots.Count != 3) return false;
                 bool sawLoot = false;
                 bool sawBackpack = false;
+                bool sawDrugLoadout = false;
                 foreach (JToken token in snapshots)
                 {
                     string containerId = ReadString(token["containerId"]);
@@ -2118,6 +2139,11 @@ namespace CF7Launcher.Tasks
                     {
                         if (sawBackpack) return false;
                         sawBackpack = true;
+                    }
+                    else if (containerId == "药剂栏")
+                    {
+                        if (sawDrugLoadout) return false;
+                        sawDrugLoadout = true;
                     }
                     else
                     {
@@ -2129,7 +2155,7 @@ namespace CF7Launcher.Tasks
                         sawLoot = true;
                     }
                 }
-                return sawLoot && sawBackpack;
+                return sawLoot && sawBackpack && sawDrugLoadout;
             }
             return false;
         }
@@ -2196,7 +2222,8 @@ namespace CF7Launcher.Tasks
                 return false;
             string containerId = ReadString(input["containerId"]);
             bool isLoot = containerId == binding.LootContainerId;
-            if (!isLoot && containerId != "背包") return false;
+            bool isDrugLoadout = containerId == "药剂栏";
+            if (!isLoot && containerId != "背包" && !isDrugLoadout) return false;
             int capacity;
             int accessible;
             int viewCapacity;
@@ -2209,9 +2236,10 @@ namespace CF7Launcher.Tasks
             int filterItemCount;
             int setFilterItemCount;
             bool locked;
-            int maxCapacity = isLoot ? binding.Capacity : 1200;
+            int maxCapacity = isLoot ? binding.Capacity : isDrugLoadout ? 8 : 1200;
             if (!TryReadInteger(input["capacity"], 1, maxCapacity, out capacity)
                 || (isLoot && capacity != binding.Capacity)
+                || (isDrugLoadout && capacity != 8)
                 || !TryReadInteger(input["accessibleCapacity"], 0, capacity, out accessible)
                 || !TryReadInteger(input["viewCapacity"], 0, capacity, out viewCapacity)
                 || ReadString(input["filterKey"]) != "all"
@@ -2228,7 +2256,9 @@ namespace CF7Launcher.Tasks
                     out setFilterItemCount)
                 || input.Property("filterSpec") != null
                 || (isLoot && (accessible != capacity || viewCapacity != capacity
-                    || offset != 0 || limit != capacity || locked))) return false;
+                    || offset != 0 || limit != capacity || locked))
+                || (isDrugLoadout && (accessible != 8 || viewCapacity != 8
+                    || pageSize != 8 || offset != 0 || limit != 8 || locked))) return false;
 
             JArray slots;
             if (!TrySanitizeSlots(input["slots"] as JArray, capacity, offset, limit, isLoot,

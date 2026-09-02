@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  九龙药业战斗强化剂预配置。
+  图标暂借用既有药剂 linkage；医院投放、美术替换与实机验收见延期测试备忘。
+  同一时间只保留一个 enhancer 域效果，但可与一个 meal 域食品效果并存。
+-->
+<root>
+  <!-- 狻猊：生命缓释 -->
+  <item>
+    <name>狻猊·一型</name>
+    <displayname>狻猊·一型</displayname>
+    <icon>普通hp药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1700</price>
+    <description>WP在西南登记的本土化牌号“九龙药业”出品。狻猊线一型在10秒内缓释恢复1500点生命。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="regen" hp="1500" duration="300" interval="30" mode="total" id="九龙_狻猊" scaleWithAlchemy="true" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>750</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>1700</formulaPrice>
+      <marketPrice>1700</marketPrice>
+      <inputDigest>fnv1a32:55b16764</inputDigest>
+      <sourceDigest>sha256:b1c31ebd1b867da3cbefe3ffd2372967d57fbf661ce7afd85b34ad55363d543d</sourceDigest>
+      <auditRef>potion:狻猊·一型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>狻猊·二型</name>
+    <displayname>狻猊·二型</displayname>
+    <icon>普通hp药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>2950</price>
+    <description>九龙药业狻猊线二型，在15秒内缓释恢复3000点生命。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="regen" hp="3000" duration="450" interval="30" mode="total" id="九龙_狻猊" scaleWithAlchemy="true" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>40</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1500</currentValue>
+      <valueCap>4100</valueCap>
+      <formulaPrice>2950</formulaPrice>
+      <marketPrice>2950</marketPrice>
+      <inputDigest>fnv1a32:441c03d1</inputDigest>
+      <sourceDigest>sha256:6d692683a14171d641ce3bd5faff82758d189c14f7b58a9a7062cf20879fa8da</sourceDigest>
+      <auditRef>potion:狻猊·二型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>狻猊·三型</name>
+    <displayname>狻猊·三型</displayname>
+    <icon>普通hp药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>3800</price>
+    <description>九龙药业狻猊线三型，在20秒内缓释恢复4500点生命。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="regen" hp="4500" duration="600" interval="30" mode="total" id="九龙_狻猊" scaleWithAlchemy="true" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2250</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>3800</formulaPrice>
+      <marketPrice>3800</marketPrice>
+      <inputDigest>fnv1a32:bdd456f2</inputDigest>
+      <sourceDigest>sha256:669362c2d6d3f25926a3d00ddb92da609400398d4fee6abd8264ebe3e82170d6</sourceDigest>
+      <auditRef>potion:狻猊·三型</auditRef>
+    </balance>
+  </item>
+
+  <!-- 囚牛：精力缓释 -->
+  <item>
+    <name>囚牛·一型</name>
+    <displayname>囚牛·一型</displayname>
+    <icon>普通mp药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1700</price>
+    <description>九龙药业囚牛线一型，在10秒内缓释恢复1500点精力。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="regen" mp="1500" duration="300" interval="30" mode="total" id="九龙_囚牛" scaleWithAlchemy="true" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>750</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>1700</formulaPrice>
+      <marketPrice>1700</marketPrice>
+      <inputDigest>fnv1a32:25c93f5a</inputDigest>
+      <sourceDigest>sha256:0d0b1d6f5dc3766d1d46a24a7439b66e4a58d0942c1b523b390087b9964610b1</sourceDigest>
+      <auditRef>potion:囚牛·一型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>囚牛·二型</name>
+    <displayname>囚牛·二型</displayname>
+    <icon>普通mp药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>2950</price>
+    <description>九龙药业囚牛线二型，在15秒内缓释恢复3000点精力。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="regen" mp="3000" duration="450" interval="30" mode="total" id="九龙_囚牛" scaleWithAlchemy="true" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>40</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1500</currentValue>
+      <valueCap>4100</valueCap>
+      <formulaPrice>2950</formulaPrice>
+      <marketPrice>2950</marketPrice>
+      <inputDigest>fnv1a32:b91bb7e7</inputDigest>
+      <sourceDigest>sha256:e31df5570ec311a359b1c5755a48910ba6b0fed2201d06fb71be639bcb0fa585</sourceDigest>
+      <auditRef>potion:囚牛·二型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>囚牛·三型</name>
+    <displayname>囚牛·三型</displayname>
+    <icon>普通mp药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>3800</price>
+    <description>九龙药业囚牛线三型，在20秒内缓释恢复4500点精力。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="regen" mp="4500" duration="600" interval="30" mode="total" id="九龙_囚牛" scaleWithAlchemy="true" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2250</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>3800</formulaPrice>
+      <marketPrice>3800</marketPrice>
+      <inputDigest>fnv1a32:e4cc45cc</inputDigest>
+      <sourceDigest>sha256:9a95186ba962ee542a9570a3d584ded9b32f09a7441ed6b651b318518602a10a</sourceDigest>
+      <auditRef>potion:囚牛·三型</auditRef>
+    </balance>
+  </item>
+
+  <!-- 赑屃：防御 -->
+  <item>
+    <name>赑屃·一型</name>
+    <displayname>赑屃·一型</displayname>
+    <icon>抗生素</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1850</price>
+    <description>九龙药业赑屃线一型，10秒内增加550点防御。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="防御力" calc="add_positive" value="550" duration="300" buffId="九龙_赑屃_防御" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1210</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>1850</formulaPrice>
+      <marketPrice>1850</marketPrice>
+      <inputDigest>fnv1a32:b53a036b</inputDigest>
+      <sourceDigest>sha256:c31a655b2e28ed22ad775962a31e12260b19dd2b8866dbc8ba84a1b5f6e8ee4b</sourceDigest>
+      <auditRef>potion:赑屃·一型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>赑屃·二型</name>
+    <displayname>赑屃·二型</displayname>
+    <icon>抗生素</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>7400</price>
+    <description>九龙药业赑屃线二型，15秒内增加875点防御。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="防御力" calc="add_positive" value="875" duration="450" buffId="九龙_赑屃_防御" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>40</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2800</currentValue>
+      <valueCap>4100</valueCap>
+      <formulaPrice>7400</formulaPrice>
+      <marketPrice>7400</marketPrice>
+      <inputDigest>fnv1a32:63f6b52c</inputDigest>
+      <sourceDigest>sha256:e7c14996aeef36aa8f81c80c1ba3516ca8b8c238ab62174443976c69378caf6f</sourceDigest>
+      <auditRef>potion:赑屃·二型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>赑屃·三型</name>
+    <displayname>赑屃·三型</displayname>
+    <icon>抗生素</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>17100</price>
+    <description>九龙药业赑屃线三型，20秒内增加1150点防御。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="防御力" calc="add_positive" value="1150" duration="600" buffId="九龙_赑屃_防御" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>4830</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>17100</formulaPrice>
+      <marketPrice>17100</marketPrice>
+      <inputDigest>fnv1a32:0319bf35</inputDigest>
+      <sourceDigest>sha256:c7bfbdf806166f8148b79192399bba8e6169d936eea39d72e2542e65f16395a4</sourceDigest>
+      <auditRef>potion:赑屃·三型</auditRef>
+    </balance>
+  </item>
+
+  <!-- 螭吻：七属性全抗 -->
+  <item>
+    <name>螭吻·一型</name>
+    <displayname>螭吻·一型</displayname>
+    <icon>净化药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1600</price>
+    <description>九龙药业螭吻线一型，10秒内使电、热、冷、波、蚀、毒、冲抗性各增加10点。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="resistanceBuff" value="10" duration="300" buffId="九龙_螭吻_全抗" />
+      <effect type="playEffect" name="净化动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1100</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>1600</formulaPrice>
+      <marketPrice>1600</marketPrice>
+      <inputDigest>fnv1a32:15ea6052</inputDigest>
+      <sourceDigest>sha256:3bc5b4b6c1eb5aa166261c5ac9320068192559db9d13e3af952d063b8573942a</sourceDigest>
+      <auditRef>potion:螭吻·一型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>螭吻·二型</name>
+    <displayname>螭吻·二型</displayname>
+    <icon>净化药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>7800</price>
+    <description>九龙药业螭吻线二型，15秒内使七种基础属性抗性各增加18点。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="resistanceBuff" value="18" duration="450" buffId="九龙_螭吻_全抗" />
+      <effect type="playEffect" name="净化动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>40</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2880</currentValue>
+      <valueCap>4100</valueCap>
+      <formulaPrice>7800</formulaPrice>
+      <marketPrice>7800</marketPrice>
+      <inputDigest>fnv1a32:c600eaed</inputDigest>
+      <sourceDigest>sha256:19d2afdb86ac45c4ff1688a4df3b80f8e07e140dfd7423b6b6983302a751d892</sourceDigest>
+      <auditRef>potion:螭吻·二型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>螭吻·三型</name>
+    <displayname>螭吻·三型</displayname>
+    <icon>净化药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>17100</price>
+    <description>九龙药业螭吻线三型，20秒内使七种基础属性抗性各增加23点。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="resistanceBuff" value="23" duration="600" buffId="九龙_螭吻_全抗" />
+      <effect type="playEffect" name="净化动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>4830</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>17100</formulaPrice>
+      <marketPrice>17100</marketPrice>
+      <inputDigest>fnv1a32:2f5a3734</inputDigest>
+      <sourceDigest>sha256:c208707b9b27f0593b4679fb8f0aa9c4d8669d29140b38b46041e2631d74e79d</sourceDigest>
+      <auditRef>potion:螭吻·三型</auditRef>
+    </balance>
+  </item>
+
+  <!-- 睚眦：伤害 -->
+  <item>
+    <name>睚眦·一型</name>
+    <displayname>睚眦·一型</displayname>
+    <icon>肾上腺素</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1800</price>
+    <description>九龙药业睚眦线一型，10秒内增加360点伤害。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="伤害加成" calc="add_positive" value="360" duration="300" buffId="九龙_睚眦_伤害" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1188</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>1800</formulaPrice>
+      <marketPrice>1800</marketPrice>
+      <inputDigest>fnv1a32:86c69d8f</inputDigest>
+      <sourceDigest>sha256:8181bef23a34056e34482141f8595272e14145438158d6201e77cee4d7385e09</sourceDigest>
+      <auditRef>potion:睚眦·一型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>睚眦·二型</name>
+    <displayname>睚眦·二型</displayname>
+    <icon>肾上腺素</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>7300</price>
+    <description>九龙药业睚眦线二型，15秒内增加580点伤害。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="伤害加成" calc="add_positive" value="580" duration="450" buffId="九龙_睚眦_伤害" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>40</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2784</currentValue>
+      <valueCap>4100</valueCap>
+      <formulaPrice>7300</formulaPrice>
+      <marketPrice>7300</marketPrice>
+      <inputDigest>fnv1a32:ba730946</inputDigest>
+      <sourceDigest>sha256:e9cc63e3099cacdca0d1cdfcfe9e6246c1d0d90c96e43a41f944ff57a36ee9f4</sourceDigest>
+      <auditRef>potion:睚眦·二型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>睚眦·三型</name>
+    <displayname>睚眦·三型</displayname>
+    <icon>肾上腺素</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>16950</price>
+    <description>九龙药业睚眦线三型，20秒内增加760点伤害。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="伤害加成" calc="add_positive" value="760" duration="600" buffId="九龙_睚眦_伤害" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>4788</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>16950</formulaPrice>
+      <marketPrice>16950</marketPrice>
+      <inputDigest>fnv1a32:c1f34575</inputDigest>
+      <sourceDigest>sha256:51adfdc8130a9c8c95d388299b9657200536b7c5947bf500bf603ac5518e849f</sourceDigest>
+      <auditRef>potion:睚眦·三型</auditRef>
+    </balance>
+  </item>
+
+  <!-- 蒲牢：空手攻击 -->
+  <item>
+    <name>蒲牢·一型</name>
+    <displayname>蒲牢·一型</displayname>
+    <icon>加强抗生素药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1850</price>
+    <description>九龙药业蒲牢线一型，10秒内增加275点空手攻击力。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="空手攻击力" calc="add_positive" value="275" duration="300" buffId="九龙_蒲牢_空手" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>1210</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>1850</formulaPrice>
+      <marketPrice>1850</marketPrice>
+      <inputDigest>fnv1a32:0cbc1333</inputDigest>
+      <sourceDigest>sha256:62c9644d21d8f17196c30055114c870239f060cbcfff8bd186a8e71d699ef07f</sourceDigest>
+      <auditRef>potion:蒲牢·一型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>蒲牢·二型</name>
+    <displayname>蒲牢·二型</displayname>
+    <icon>加强抗生素药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>7450</price>
+    <description>九龙药业蒲牢线二型，15秒内增加440点空手攻击力。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="空手攻击力" calc="add_positive" value="440" duration="450" buffId="九龙_蒲牢_空手" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>40</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2816</currentValue>
+      <valueCap>4100</valueCap>
+      <formulaPrice>7450</formulaPrice>
+      <marketPrice>7450</marketPrice>
+      <inputDigest>fnv1a32:f5f52183</inputDigest>
+      <sourceDigest>sha256:e92c5a4110df58941a373c0485500bc9adf98d1cdf4df26d5da8de135c5e569e</sourceDigest>
+      <auditRef>potion:蒲牢·二型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>蒲牢·三型</name>
+    <displayname>蒲牢·三型</displayname>
+    <icon>加强抗生素药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>17100</price>
+    <description>九龙药业蒲牢线三型，20秒内增加575点空手攻击力。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="空手攻击力" calc="add_positive" value="575" duration="600" buffId="九龙_蒲牢_空手" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>4830</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>17100</formulaPrice>
+      <marketPrice>17100</marketPrice>
+      <inputDigest>fnv1a32:b0e9ac45</inputDigest>
+      <sourceDigest>sha256:fab6826ba0ebd6b241d185a7de678691209b50d3c6a4400410c4f6946d2c98cc</sourceDigest>
+      <auditRef>potion:蒲牢·三型</auditRef>
+    </balance>
+  </item>
+
+  <!-- 嘲风：移动速度 -->
+  <item>
+    <name>嘲风·一型</name>
+    <displayname>嘲风·一型</displayname>
+    <icon>加强MP药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1350</price>
+    <description>九龙药业嘲风线一型，10秒内增加35%移动速度。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="行走X速度" calc="mult_positive" value="1.35" duration="300" buffId="九龙_嘲风_速度" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>962.5</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>1350</formulaPrice>
+      <marketPrice>1350</marketPrice>
+      <inputDigest>fnv1a32:e1b514f3</inputDigest>
+      <sourceDigest>sha256:51f9bcac7cb6d792bfebc90c9652d32bb1e08af246bce620b7a2aea6a0596bce</sourceDigest>
+      <auditRef>potion:嘲风·一型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>嘲风·二型</name>
+    <displayname>嘲风·二型</displayname>
+    <icon>加强MP药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>4700</price>
+    <description>九龙药业嘲风线二型，15秒内增加55%移动速度。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="行走X速度" calc="mult_positive" value="1.55" duration="450" buffId="九龙_嘲风_速度" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>40</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>2200</currentValue>
+      <valueCap>4100</valueCap>
+      <formulaPrice>4700</formulaPrice>
+      <marketPrice>4700</marketPrice>
+      <inputDigest>fnv1a32:886f639e</inputDigest>
+      <sourceDigest>sha256:512e2c4f751765e05d60633968ff7a1d2c4f03f86109a3acec175249c561fe5b</sourceDigest>
+      <auditRef>potion:嘲风·二型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>嘲风·三型</name>
+    <displayname>嘲风·三型</displayname>
+    <icon>加强MP药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>13950</price>
+    <description>九龙药业嘲风线三型，20秒内增加75%移动速度。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="buff" property="行走X速度" calc="mult_positive" value="1.75" duration="600" buffId="九龙_嘲风_速度" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>proposed</status>
+      <currentValue>3937.5</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>13950</formulaPrice>
+      <marketPrice>13950</marketPrice>
+      <inputDigest>fnv1a32:39c42978</inputDigest>
+      <sourceDigest>sha256:2a3db0f97886af00284b7e20cb97b7138a9f4b4fc65761b64aef616f02b21fc1</sourceDigest>
+      <auditRef>potion:嘲风·三型</auditRef>
+    </balance>
+  </item>
+
+  <!-- 狴犴：装备 toughness 口径的临时韧性；新路径，等待实机验收 -->
+  <item>
+    <name>狴犴·一型</name>
+    <displayname>狴犴·一型</displayname>
+    <icon>战队药箱</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>1850</price>
+    <description>九龙药业狴犴线一型，10秒内增加2750点装备口径韧性。该型号处于新路径验证期。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="toughnessBuff" value="2750" duration="300" buffId="九龙_狴犴_韧性" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>1210</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>1850</formulaPrice>
+      <marketPrice>1850</marketPrice>
+      <inputDigest>fnv1a32:adce4b8d</inputDigest>
+      <sourceDigest>sha256:0ab1765363d0bebbf2092861916b228c7532b66bb12b1e1ccbfa116be44d956a</sourceDigest>
+      <auditRef>potion:狴犴·一型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>狴犴·二型</name>
+    <displayname>狴犴·二型</displayname>
+    <icon>战队药箱</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>7400</price>
+    <description>九龙药业狴犴线二型，15秒内增加4375点装备口径韧性。该型号处于新路径验证期。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="toughnessBuff" value="4375" duration="450" buffId="九龙_狴犴_韧性" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>40</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>2800</currentValue>
+      <valueCap>4100</valueCap>
+      <formulaPrice>7400</formulaPrice>
+      <marketPrice>7400</marketPrice>
+      <inputDigest>fnv1a32:9428f787</inputDigest>
+      <sourceDigest>sha256:70949aaa727d9b1f047d94750a33378780bfdb307c4806146b5a640919a127ad</sourceDigest>
+      <auditRef>potion:狴犴·二型</auditRef>
+    </balance>
+  </item>
+  <item>
+    <name>狴犴·三型</name>
+    <displayname>狴犴·三型</displayname>
+    <icon>战队药箱</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>17100</price>
+    <description>九龙药业狴犴线三型，20秒内增加5750点装备口径韧性。该型号处于新路径验证期。</description>
+    <data><effects>
+      <effect type="buffDomain" domain="enhancer" />
+      <effect type="toughnessBuff" value="5750" duration="600" buffId="九龙_狴犴_韧性" />
+      <effect type="playEffect" name="药剂动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>formula</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>4830</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>17100</formulaPrice>
+      <marketPrice>17100</marketPrice>
+      <inputDigest>fnv1a32:cb7c5775</inputDigest>
+      <sourceDigest>sha256:b5c745eca818588243d8131d7804612aa048240fbacb4a3b6790c03b64a8e6e7</sourceDigest>
+      <auditRef>potion:狴犴·三型</auditRef>
+    </balance>
+  </item>
+
+  <!-- 狴犴零型：公共应急品，不占 enhancer 域 -->
+  <item>
+    <name>狴犴·零型</name>
+    <displayname>狴犴·零型</displayname>
+    <icon>净化药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>100</price>
+    <description>九龙药业面向急救渠道供应的韧性应急剂，立即清空累计冲击并恢复完整韧性槽；不会解除已经发生的硬直、击飞或倒地。</description>
+    <data><effects>
+      <effect type="restoreToughness" />
+      <effect type="playEffect" name="净化动画" />
+    </effects></data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>20</sourceLevel>
+      <domain>medical</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>2100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>100</marketPrice>
+      <inputDigest>fnv1a32:3b87144f</inputDigest>
+      <sourceDigest>sha256:3f9f6fe303c5eeef1ccff63e945ef5527ddaf6ece4fa71d3c1fada8f2ca0af50</sourceDigest>
+      <auditRef>potion:狴犴·零型</auditRef>
+      <exceptionCode>toughness-reset-public-utility</exceptionCode>
+    </balance>
+  </item>
+
+  <!-- 负屃保留为未来新 Buff 轴，不在本批创建物品。 -->
+</root>

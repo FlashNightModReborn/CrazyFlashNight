@@ -80,7 +80,8 @@
             panelInstanceId:String(panelInstanceId || '')
         };
         if (reason === 'navigate_skills' || reason === 'navigate_materials'
-                || reason === 'navigate_intelligence') message.reason = reason;
+                || reason === 'navigate_intelligence'
+                || reason === 'navigate_reward_inbox') message.reason = reason;
         return message;
     }
 

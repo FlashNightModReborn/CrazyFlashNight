@@ -2,7 +2,7 @@ var MapPanel = (function() {
     'use strict';
 
     var _el, _bodyEl, _stageEl, _stageShellEl, _railEl, _canvasEl, _ringCanvasEl, _fgCanvasEl, _canvasRenderer, _contentFitEl, _sceneVisualLayerEl, _avatarLayerEl, _hotspotLayer, _hitcaptureEl, _hotspotLabelLayer, _currentRadarEl, _loadingEl, _errorEl, _errorTextEl;
-    var _pageTabsEl, _pageSummaryEl, _coordinateReadoutEl;
+    var _pageTabsEl, _pageSummaryEl, _coordinateReadoutEl, _navigationLockNoticeEl;
     var _activePage = null;
     var _reqSeq = 0;
     var _pendingReq = {};
@@ -29,6 +29,9 @@ var MapPanel = (function() {
     // - byPage[pageId] = N 时该 page tab 数字 badge 显 N
     var _taskBadge = { byPage: {}, byFilter: {}, byHotspot: {} };
     var _snapshotVersion = 2;
+    // v3 additive：AS2 关卡生命周期锁。地图仍可只读浏览，但不得发任何场景/选关动作。
+    var _navigationLocked = false;
+    var _navigationLockReason = '';
     var _currentHotspotId = '';
     var _requestedInitialPageId = '';
     var _hoverHotspotId = '';
@@ -98,6 +101,7 @@ var MapPanel = (function() {
                 '<div class="map-page-tabs" id="map-page-tabs"></div>' +
                 '<div class="map-coordinate-readout" id="map-coordinate-readout" aria-label="地图坐标"></div>' +
                 '<div class="map-page-summary" id="map-page-summary"></div>' +
+                '<div class="map-navigation-lock-notice" id="map-navigation-lock-notice" role="status" aria-live="polite" hidden></div>' +
                 '<button class="map-panel-close-btn" type="button" title="关闭" data-audio-cue="back">X</button>' +
             '</div>' +
             '<div class="map-panel-body">' +
@@ -163,6 +167,7 @@ var MapPanel = (function() {
         _errorTextEl = _el.querySelector('#map-stage-error-text');
         _pageTabsEl = _el.querySelector('#map-page-tabs');
         _pageSummaryEl = _el.querySelector('#map-page-summary');
+        _navigationLockNoticeEl = _el.querySelector('#map-navigation-lock-notice');
         _coordinateReadoutEl = _el.querySelector('#map-coordinate-readout');
         _canvasRenderer = (typeof MapCanvasStageRenderer !== 'undefined')
             ? new MapCanvasStageRenderer(_canvasEl, { fgCanvas: _fgCanvasEl, ringCanvas: _ringCanvasEl, resolveAssetUrl: resolveAssetUrl })
@@ -277,6 +282,9 @@ var MapPanel = (function() {
         _snapshotInfrastructure = {};
         _taskBadge = { byPage: {}, byFilter: {}, byHotspot: {} };
         _snapshotVersion = 2;
+        _navigationLocked = false;
+        _navigationLockReason = '';
+        syncNavigationLockNotice();
         _snapshotMarkers = [];
         _snapshotTips = [];
         _currentHotspotId = '';
@@ -289,7 +297,10 @@ var MapPanel = (function() {
         bindPanelEventListeners();
         resetCanvasRenderCache();
         resetContentFit();
-        if (_el) _el.classList.remove('is-compact');
+        if (_el) {
+            _el.classList.remove('is-compact');
+            _el.classList.remove('is-navigation-locked');
+        }
 
         if (_el) {
             _el.classList.remove('is-entering');
@@ -325,6 +336,9 @@ var MapPanel = (function() {
         _snapshotInfrastructure = {};
         _taskBadge = { byPage: {}, byFilter: {}, byHotspot: {} };
         _snapshotVersion = 2;
+        _navigationLocked = false;
+        _navigationLockReason = '';
+        syncNavigationLockNotice();
         _snapshotMarkers = [];
         _snapshotTips = [];
         _currentHotspotId = '';
@@ -336,7 +350,10 @@ var MapPanel = (function() {
         _stageScalePolicy = null;
         resetCanvasRenderCache();
         resetContentFit();
-        if (_el) _el.classList.remove('is-compact');
+        if (_el) {
+            _el.classList.remove('is-compact');
+            _el.classList.remove('is-navigation-locked');
+        }
         hideError();
         setLoading(false);
     }
@@ -968,6 +985,11 @@ var MapPanel = (function() {
     function requestNavigate(hotspot) {
         if (!_activePage || _closing) return;
 
+        if (_navigationLocked) {
+            pushNavigationLockedReason();
+            return;
+        }
+
         if (!_enabledLookup[hotspot.id]) {
             // hotspot 按钮本身带 data-audio-cue='illegal'，overlay click 代理已播一次 cue，此处只补 toast
             pushLockedReason(hotspot.id);
@@ -1017,6 +1039,11 @@ var MapPanel = (function() {
             event.stopPropagation();
         }
         if (!_activePage || _closing || !hotspot) return;
+
+        if (_navigationLocked) {
+            pushNavigationLockedReason();
+            return;
+        }
 
         var entry = resolveStageSelectEntryForHotspot(hotspot);
         if (!entry) {
@@ -1082,6 +1109,27 @@ var MapPanel = (function() {
         finishClose(true);
     }
 
+    function pushNavigationLockedReason() {
+        if (typeof Toast === 'undefined' || !Toast) return;
+        Toast.add(getNavigationLockMessage());
+    }
+
+    function getNavigationLockMessage() {
+        if (_navigationLockReason === 'stage_start_pending') {
+            return '正在进入关卡，请勿重复操作。';
+        }
+        if (_navigationLockReason === 'battle_map' || _navigationLockReason === 'stage_run_active') {
+            return '当前仍在战斗关卡，请先使用“返回基地”。';
+        }
+        return '上一关结算尚未完成，请先完成返回基地与奖励处理。';
+    }
+
+    function syncNavigationLockNotice() {
+        if (!_navigationLockNoticeEl) return;
+        _navigationLockNoticeEl.hidden = !_navigationLocked;
+        _navigationLockNoticeEl.textContent = _navigationLocked ? getNavigationLockMessage() : '';
+    }
+
     function finishClose(notifyHost) {
         if (_closing) return;
         _closing = true;
@@ -1096,6 +1144,10 @@ var MapPanel = (function() {
         _snapshotInfrastructure = {};
         _taskBadge = { byPage: {}, byFilter: {}, byHotspot: {} };
         _snapshotVersion = 2;
+        _navigationLocked = false;
+        _navigationLockReason = '';
+        if (_el) _el.classList.remove('is-navigation-locked');
+        syncNavigationLockNotice();
         _snapshotMarkers = [];
         _snapshotTips = [];
         _currentHotspotId = '';
@@ -1125,6 +1177,11 @@ var MapPanel = (function() {
         _currentHotspotId = snapshot.currentHotspotId || resolveCurrentHotspotId(_snapshotMarkers) || '';
         // v3 字段：v2 snapshot 没有这些 key，缺 = 默认可见（保留向后兼容）
         _snapshotVersion = Number(snapshot.version) || 2;
+        _navigationLocked = snapshot.navigationLocked === true;
+        _navigationLockReason = _navigationLocked
+            ? String(snapshot.navigationLockReason || 'pending_stage_settlement') : '';
+        if (_el) _el.classList.toggle('is-navigation-locked', _navigationLocked);
+        syncNavigationLockNotice();
         _avatarVisibility = (_snapshotVersion >= 3 && snapshot.avatarVisibility) ? snapshot.avatarVisibility : {};
         _snapshotTaskChains = (_snapshotVersion >= 3 && snapshot.taskChains) ? snapshot.taskChains : {};
         _snapshotInfrastructure = (_snapshotVersion >= 3 && snapshot.infrastructure) ? snapshot.infrastructure : {};
@@ -1274,6 +1331,8 @@ var MapPanel = (function() {
                 if (subList) _railEl.appendChild(subList);
             }
         }
+        // rail 刚被整体重建，重新投影 lifecycle/busy a11y 状态。
+        syncRailSceneItemStates();
     }
 
     function isMetaFilterId(filterId) {
@@ -1923,7 +1982,9 @@ var MapPanel = (function() {
             buttons[i].classList.toggle('is-busy', isBusy);
             buttons[i].classList.toggle('is-muted', isMuted);
             buttons[i].classList.toggle('is-relation', activeViewMode === 'hierarchy');
+            // 锁定态保留点击反馈，requestNavigate 会显示原因且绝不发 Bridge 业务请求。
             buttons[i].disabled = isBusy;
+            buttons[i].setAttribute('aria-disabled', (_navigationLocked || isBusy) ? 'true' : 'false');
         }
 
         syncHotspotLabelStates();
@@ -1954,6 +2015,7 @@ var MapPanel = (function() {
                 var stageSelectBusy = _stageSelectBusyHotspotId === id;
                 action.classList.toggle('is-busy', stageSelectBusy);
                 action.disabled = stageSelectBusy || (!!_stageSelectBusyHotspotId && !stageSelectBusy);
+                action.setAttribute('aria-disabled', (_navigationLocked || action.disabled) ? 'true' : 'false');
                 action.setAttribute('aria-busy', stageSelectBusy ? 'true' : 'false');
             }
         }
@@ -1968,6 +2030,7 @@ var MapPanel = (function() {
             var isBusy = !!_busyLookup[id];
             items[i].classList.toggle('is-busy', isBusy);
             items[i].disabled = isBusy;
+            items[i].setAttribute('aria-disabled', (_navigationLocked || isBusy) ? 'true' : 'false');
             items[i].setAttribute('aria-busy', isBusy ? 'true' : 'false');
         }
 
@@ -1977,6 +2040,7 @@ var MapPanel = (function() {
             var stageSelectBusy = _stageSelectBusyHotspotId === id;
             actions[i].classList.toggle('is-busy', stageSelectBusy);
             actions[i].disabled = stageSelectBusy || (!!_stageSelectBusyHotspotId && !stageSelectBusy);
+            actions[i].setAttribute('aria-disabled', (_navigationLocked || actions[i].disabled) ? 'true' : 'false');
             actions[i].setAttribute('aria-busy', stageSelectBusy ? 'true' : 'false');
         }
     }
@@ -2974,6 +3038,8 @@ var MapPanel = (function() {
             stageSelectHotspotIds: stageSelectHotspotIds,
             taskStageSelectHotspotIds: taskStageSelectHotspotIds,
             stageSelectBusyHotspotId: _stageSelectBusyHotspotId,
+            navigationLocked: _navigationLocked,
+            navigationLockReason: _navigationLockReason,
             dynamicAvatarState: _dynamicAvatarState,
             unlockFlags: _unlockFlags,
             currentHotspotId: _currentHotspotId,

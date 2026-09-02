@@ -20,32 +20,64 @@
     </mod>
     <mod>
         <name>矩锁多点挂槽板</name>
-        <use>刀</use>
+        <use>刀,长枪</use>
         <stats>
-            <merge>
-                <skillmultipliers>
-                    <拔刀术>3.5</拔刀术>
-                    <瞬步斩>3.5</瞬步斩>
-                </skillmultipliers>
-            </merge>
             <flat>
                 <weight>1.5</weight>
             </flat>
+            <useSwitch>
+                <use name="use:刀">
+                    <merge>
+                        <skillmultipliers>
+                            <拔刀术>3.5</拔刀术>
+                            <瞬步斩>3.5</瞬步斩>
+                        </skillmultipliers>
+                    </merge>
+                </use>
+                <use name="use:长枪">
+                    <percentage>
+                        <power>5</power>
+                    </percentage>
+                    <softOverride>
+                        <criticalhit>10</criticalhit>
+                    </softOverride>
+                    <provideTags>NOAH</provideTags>
+                </use>
+                <use name="weapontype:近战,weapontype:压制近战">
+                    <provideTags>刀式柄芯接口</provideTags>
+                </use>
+            </useSwitch>
         </stats>
-        <description>战术快速锁紧平台,六点矩阵分力结构,为拔刀术和瞬步斩赋予高额锋利度加成。</description>
+        <description>战术快速锁紧平台,六点矩阵分力结构。
+        用于刀时强化拔刀术与瞬步斩;用于长枪时威力+5%、将基础暴击设为10%并提供NOAH。
+        近战型长枪额外获得刀式柄芯接口;其他暴击覆盖插件仍可替换本插件的10%设定。</description>
         <tag>柄侧板</tag>
     </mod>
 
     <mod>
         <name>赤旌熔脊柄</name>
-        <use>刀</use>
+        <use>刀,长枪</use>
+        <weapontype>近战,压制近战</weapontype>
         <stats>
             <override>
                 <damagetype>破击</damagetype>
                 <magictype>热</magictype>
             </override>
+            <useSwitch>
+                <use name="weapontype:近战,weapontype:压制近战">
+                    <requireTags>刀式柄芯接口</requireTags>
+                </use>
+            </useSwitch>
+            <tagSwitch>
+                <tag name="电力">
+                    <flat>
+                        <hp>50</hp>
+                    </flat>
+                </tag>
+            </tagSwitch>
         </stats>
-        <description>超高温核心柄部组件,附加热属性伤害,有效穿透硬目标。</description>
+        <description>超高温核心柄部组件,将伤害改质为热属性破击。
+        近战型长枪需要刀式柄芯接口;宿主具备电力时额外获得50生命值。</description>
         <tag>握柄核心</tag>
     </mod>
 

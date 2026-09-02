@@ -77,6 +77,7 @@ namespace CF7Launcher.Guardian
         public const string PanelName = "loot";
         public const string MapChestSource = "map_chest";
         public const string StageSettlementSource = "stage_settlement";
+        public const string RewardInboxSource = "reward_inbox";
         public const string RequiredSource = MapChestSource;
         public const int MaximumOpaqueLength = 128;
         public const int DefaultBindWatchdogMs = 2500;
@@ -149,6 +150,7 @@ namespace CF7Launcher.Guardian
         private readonly int _pauseReleaseRetryMs;
         private Func<IDisposable> _acquireAdmissionLease;
         private Func<bool> _externalAdmissionGate;
+        private Func<Binding, bool> _rewardInboxReturnHandler;
         private BindingState _state;
         private Binding _active;
         private bool _openExecutionStarted;
@@ -170,6 +172,8 @@ namespace CF7Launcher.Guardian
         // binding clears both fields.
         private string _authorityVisualCloseProvenPanelInstanceId;
         private string _authorityVisualCloseProvenReason;
+        private string _rewardInboxReplacementPendingPanelInstanceId;
+        private string _rewardInboxReplacementPendingReason;
         private bool _disposed;
 
         public LootPanelCoordinator(ILootPanelPort panel, Func<bool> releasePause,
@@ -205,6 +209,13 @@ namespace CF7Launcher.Guardian
         public event Action BindingDetached;
 
         /// <summary>
+        /// Fires only after an executed Loot visual has retired and its global pause release has
+        /// completed behind PanelHost's idle fence. Consumers may use the captured immutable
+        /// binding to begin a fresh panel preflight; they must not reuse the retired Web session.
+        /// </summary>
+        public event Action<Binding> BindingSettled;
+
+        /// <summary>
         /// Installs the LootTask recovery-fence admission lease. The factory is invoked outside
         /// coordinator locks and returns a held lease only when no old write/detached authority
         /// can race this open. Production wires it immediately after LootTask construction.
@@ -224,6 +235,18 @@ namespace CF7Launcher.Guardian
         {
             lock (_sync)
                 _externalAdmissionGate = externalAdmissionGate;
+        }
+
+        /// <summary>
+        /// Installs the one fixed Reward Inbox -> Character Build navigation edge. The callback
+        /// runs only after strict terminal/suspended authority proof, while the exact Loot visual
+        /// and its inherited pause lease are still owned by this coordinator.
+        /// </summary>
+        public void SetRewardInboxReturnHandler(
+            Func<Binding, bool> rewardInboxReturnHandler)
+        {
+            lock (_sync)
+                _rewardInboxReturnHandler = rewardInboxReturnHandler;
         }
 
         public BindingState State { get { lock (_sync) return _state; } }
@@ -334,6 +357,7 @@ namespace CF7Launcher.Guardian
                     _deferredFinalizePending = false;
                     _deferredFinalizeReleasePause = false;
                     _closeRequestPending = false;
+                    ClearRewardInboxReplacementLocked();
                     _closeAttemptGeneration = 0;
                     _closeAttemptCount = 0;
                 }
@@ -350,7 +374,11 @@ namespace CF7Launcher.Guardian
                 ["capacity"] = binding.Capacity,
                 ["columns"] = binding.Columns
             };
-            if (binding.SourceKind == StageSettlementSource)
+            if (binding.SourceKind == RewardInboxSource)
+            {
+                init["sourceKind"] = RewardInboxSource;
+            }
+            else if (binding.SourceKind == StageSettlementSource)
             {
                 init["sourceKind"] = StageSettlementSource;
                 init["report"] = binding.SettlementReport != null
@@ -400,6 +428,38 @@ namespace CF7Launcher.Guardian
             }
             rejection = "open_not_queued";
             return false;
+        }
+
+        /// <summary>
+        /// Host-only admission for an AS2-stamped durable reward inbox. Unlike panel_request,
+        /// this path can run only after the exact CharacterBuild visual and pause owner retire.
+        /// </summary>
+        public bool TryOpenRewardInbox(
+            JObject rewardAuthority,
+            out string rejection)
+        {
+            OpenRequest normalized;
+            if (!TryNormalizeRewardAuthority(
+                    rewardAuthority, out normalized, out rejection))
+            {
+                return false;
+            }
+            return TryOpen(normalized, out rejection);
+        }
+
+        /// <summary>
+        /// Dedicated AS2 world-entry envelope for an already-durable Reward Inbox authority.
+        /// This does not widen the ordinary map/stage panel_request normalizer.
+        /// </summary>
+        public string HandleRewardInboxPanelRequest(JObject rewardAuthority)
+        {
+            string rejection;
+            bool accepted = TryOpenRewardInbox(
+                rewardAuthority,
+                out rejection);
+            return BuildOpenAck(
+                accepted,
+                accepted ? null : rejection);
         }
 
         private static bool AllowsExternalAdmission(
@@ -504,6 +564,7 @@ namespace CF7Launcher.Guardian
         private bool CloseAfterAuthorityVisualProof(Binding binding, string reason,
             BindingState closeState)
         {
+            Func<Binding, bool> rewardInboxReturnHandler = null;
             lock (_sync)
             {
                 if (!ReferenceEquals(_active, binding)
@@ -515,6 +576,116 @@ namespace CF7Launcher.Guardian
                 _authorityVisualCloseProvenReason = reason;
                 _state = closeState;
                 CancelBindWatchdogLocked();
+                if (binding.SourceKind == RewardInboxSource
+                    && _rewardInboxReturnHandler != null)
+                {
+                    _rewardInboxReplacementPendingPanelInstanceId =
+                        binding.PanelInstanceId;
+                    _rewardInboxReplacementPendingReason = reason;
+                    rewardInboxReturnHandler = _rewardInboxReturnHandler;
+                }
+            }
+            if (rewardInboxReturnHandler != null)
+            {
+                bool accepted = false;
+                try { accepted = rewardInboxReturnHandler(binding); }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "event=reward_inbox_return_handler_failed type="
+                        + ex.GetType().Name);
+                }
+                if (accepted) return true;
+                CancelRewardInboxReplacementAndCloseExact(
+                    binding.PanelInstanceId);
+                return true;
+            }
+            return QueueAuthorityVisualClose(binding, closeState);
+        }
+
+        /// <summary>
+        /// True only while the fixed Reward Inbox -> Character Build replacement owns the exact
+        /// active Loot binding. Web's terminal close acknowledgement must not retire the surface
+        /// during this interval; the replacement either commits in place or falls back to the
+        /// ordinary exact close path.
+        /// </summary>
+        public bool IsRewardInboxReplacementPendingExact(
+            string panelInstanceId)
+        {
+            lock (_sync)
+            {
+                return !_disposed
+                    && _active != null
+                    && _active.SourceKind == RewardInboxSource
+                    && IsCloseState(_state)
+                    && string.Equals(
+                        _active.PanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _rewardInboxReplacementPendingPanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal)
+                    && _panel != null
+                    && string.Equals(
+                        _panel.ActivePanelName,
+                        PanelName,
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _panel.ActivePanelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal);
+            }
+        }
+
+        /// <summary>
+        /// Consumes the old tracked Loot ownership after PanelHost has accepted the exact target
+        /// payload. The global pause lease deliberately remains live for the fresh Character Build
+        /// authority; no BindingSettled callback is emitted because there is no Host-idle gap.
+        /// </summary>
+        public bool CompleteRewardInboxReplacementExact(
+            string panelInstanceId)
+        {
+            bool notify = false;
+            lock (_sync)
+            {
+                if (!IsRewardInboxReplacementPendingLocked(panelInstanceId))
+                    return false;
+                CancelBindWatchdogLocked();
+                CancelCloseRetryLocked();
+                CancelPauseReleaseRetryLocked();
+                _active = null;
+                _state = BindingState.Idle;
+                _openExecutionStarted = false;
+                _openPosted = false;
+                _recoverySignalAttempted = false;
+                _recoveryInFlightBinding = null;
+                _deferredFinalizePending = false;
+                _deferredFinalizeReleasePause = false;
+                _closeRequestPending = false;
+                ClearRewardInboxReplacementLocked();
+                notify = true;
+            }
+            if (notify) NotifyDetached();
+            return notify;
+        }
+
+        /// <summary>
+        /// Aborts only the exact pending replacement and resumes the existing close/unpause path.
+        /// A later BindingSettled callback may then reopen Character Build from the idle baseline.
+        /// </summary>
+        public bool CancelRewardInboxReplacementAndCloseExact(
+            string panelInstanceId)
+        {
+            Binding binding;
+            BindingState closeState;
+            lock (_sync)
+            {
+                if (!IsRewardInboxReplacementPendingLocked(panelInstanceId))
+                    return false;
+                binding = _active;
+                closeState = _state;
+                ClearRewardInboxReplacementLocked();
             }
             return QueueAuthorityVisualClose(binding, closeState);
         }
@@ -596,6 +767,7 @@ namespace CF7Launcher.Guardian
             {
                 if (!ReferenceEquals(_active, binding)
                     || _state != expectedState) return false;
+                ClearRewardInboxReplacementLocked();
             }
             return QueueExactClose(binding);
         }
@@ -633,6 +805,7 @@ namespace CF7Launcher.Guardian
                     // LOOT_SUSPENDED proof, nor re-enter either already-settled object into the
                     // authority-handoff path.
                     _state = authorityCloseState;
+                    ClearRewardInboxReplacementLocked();
                     CancelBindWatchdogLocked();
                 }
                 else if (!alreadyQueued)
@@ -738,6 +911,20 @@ namespace CF7Launcher.Guardian
                 catch (Exception ex)
                 {
                     LogManager.Log("event=loot_binding_detached_callback_failed type="
+                        + ex.GetType().Name);
+                }
+            }
+        }
+
+        private void NotifySettled(Binding binding)
+        {
+            Action<Binding> handler = BindingSettled;
+            if (handler != null)
+            {
+                try { handler(binding); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("event=loot_binding_settled_callback_failed type="
                         + ex.GetType().Name);
                 }
             }
@@ -962,6 +1149,7 @@ namespace CF7Launcher.Guardian
                 _openExecutionStarted = false;
                 _openPosted = false;
                 _closeRequestPending = false;
+                ClearRewardInboxReplacementLocked();
                 if (releasePause)
                 {
                     _state = BindingState.PauseReleasePending;
@@ -1027,6 +1215,7 @@ namespace CF7Launcher.Guardian
             }
             if (released)
             {
+                bool settled = false;
                 lock (_sync)
                 {
                     if (_disposed || !ReferenceEquals(_active, binding)
@@ -1035,7 +1224,9 @@ namespace CF7Launcher.Guardian
                     _active = null;
                     _state = BindingState.Idle;
                     _recoverySignalAttempted = false;
+                    settled = true;
                 }
+                if (settled) NotifySettled(binding);
                 return;
             }
             LogManager.Log("event=loot_pause_release_retry_pending");
@@ -1215,8 +1406,36 @@ namespace CF7Launcher.Guardian
                 _deferredFinalizePending = false;
                 _deferredFinalizeReleasePause = false;
                 _closeRequestPending = false;
+                ClearRewardInboxReplacementLocked();
                 BindingDetached = null;
+                BindingSettled = null;
+                _rewardInboxReturnHandler = null;
             }
+        }
+
+        private bool IsRewardInboxReplacementPendingLocked(
+            string panelInstanceId)
+        {
+            return !_disposed
+                && _active != null
+                && _active.SourceKind == RewardInboxSource
+                && IsCloseState(_state)
+                && string.Equals(
+                    _active.PanelInstanceId,
+                    panelInstanceId,
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    _rewardInboxReplacementPendingPanelInstanceId,
+                    panelInstanceId,
+                    StringComparison.Ordinal)
+                && !string.IsNullOrEmpty(
+                    _rewardInboxReplacementPendingReason);
+        }
+
+        private void ClearRewardInboxReplacementLocked()
+        {
+            _rewardInboxReplacementPendingPanelInstanceId = null;
+            _rewardInboxReplacementPendingReason = null;
         }
 
 
@@ -1401,6 +1620,77 @@ namespace CF7Launcher.Guardian
                 ["kills"] = normalizedKills,
                 ["itemFlows"] = normalizedItemFlows
             };
+            return true;
+        }
+
+        internal static bool TryNormalizeRewardAuthority(
+            JObject authority,
+            out OpenRequest normalized,
+            out string error)
+        {
+            normalized = null;
+            error = "invalid_reward_authority";
+            if (!HasExactKeys(
+                    authority,
+                    "sourceKind", "chestSessionId", "lootContainerId",
+                    "containerEpoch", "openAttemptSeq", "displayName",
+                    "authorityRevision", "state", "remainingCount",
+                    "capacity", "columns")
+                || authority.Value<string>("sourceKind") != RewardInboxSource
+                || authority.Value<string>("state") != "LOOT_ACTIVE")
+            {
+                return false;
+            }
+            int epoch;
+            int openAttemptSeq;
+            int authorityRevision;
+            int remainingCount;
+            int capacity;
+            int columns;
+            string chestSessionId;
+            string lootContainerId;
+            string displayName;
+            if (!TryReadOpaque(
+                    authority["chestSessionId"], out chestSessionId)
+                || !TryReadOpaque(
+                    authority["lootContainerId"], out lootContainerId)
+                || !TryReadInteger(
+                    authority["containerEpoch"], 1, int.MaxValue, out epoch)
+                || !TryReadInteger(
+                    authority["openAttemptSeq"], 1, int.MaxValue,
+                    out openAttemptSeq)
+                || !TryReadDisplayName(
+                    authority["displayName"], out displayName)
+                || displayName != "待领取物品"
+                || !TryReadInteger(
+                    authority["authorityRevision"],
+                    0,
+                    int.MaxValue,
+                    out authorityRevision)
+                || !TryReadInteger(
+                    authority["remainingCount"], 1, 64, out remainingCount)
+                || !TryReadInteger(
+                    authority["capacity"], 1, 64, out capacity)
+                || remainingCount > capacity
+                || !TryReadInteger(
+                    authority["columns"], 1, 8, out columns)
+                || columns != Math.Min(8, capacity))
+            {
+                return false;
+            }
+            normalized = new OpenRequest
+            {
+                ChestSessionId = chestSessionId,
+                LootContainerId = lootContainerId,
+                ContainerEpoch = epoch,
+                OpenAttemptSeq = openAttemptSeq,
+                DisplayName = displayName,
+                Capacity = capacity,
+                Columns = columns,
+                SourceKind = RewardInboxSource,
+                SettlementReport = null
+            };
+            error = null;
             return true;
         }
 

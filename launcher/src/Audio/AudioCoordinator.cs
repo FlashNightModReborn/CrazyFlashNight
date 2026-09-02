@@ -1585,6 +1585,131 @@ namespace CF7Launcher.Audio
                 -1);
         }
 
+        /// <summary>
+        /// Acquires the one fixed launcher-frontdoor BGM intent.  The request id is
+        /// the ownership fence: repeating the exact intent in the same process is
+        /// idempotent, while any later AS2 request naturally supersedes it.
+        /// </summary>
+        internal bool TryAcquireFrontdoorBgm(
+            string requestId,
+            string path,
+            bool loop,
+            float volume,
+            float fadeSeconds)
+        {
+            if (!IsFrontdoorBgmRequestId(requestId)) return false;
+            return InvokeOwner(
+                delegate
+                {
+                    if (!Snapshot.IsReady ||
+                        !IsFiniteGain(volume) ||
+                        !IsFiniteRange(fadeSeconds, 0f, 60f))
+                    {
+                        return false;
+                    }
+
+                    string normalizedPath;
+                    if (!TryNormalizeMediaPath(path, out normalizedPath))
+                        return false;
+
+                    if (_latestBgmIntent != null && string.Equals(
+                            _latestBgmIntent.RequestId,
+                            requestId,
+                            StringComparison.Ordinal))
+                    {
+                        // A stable lease id must never be reused with a different
+                        // payload.  Exact repeats are no-ops and do not restart the
+                        // track after a duplicate Ready projection.
+                        return _latestBgmIntent.Operation ==
+                                AudioNativeV2.OperationBgmPlay &&
+                            string.Equals(
+                                _latestBgmIntent.NormalizedPath,
+                                normalizedPath,
+                                StringComparison.OrdinalIgnoreCase) &&
+                            _latestBgmIntent.Loop == loop &&
+                            _latestBgmIntent.Volume == volume &&
+                            _latestBgmIntent.FadeSeconds == fadeSeconds;
+                    }
+
+                    var command = new AudioNativeBgmCommandV2(
+                        requestId,
+                        _audioSessionId,
+                        _audioReadyGeneration,
+                        AudioNativeV2.OperationBgmPlay,
+                        normalizedPath,
+                        loop,
+                        volume,
+                        fadeSeconds,
+                        0f);
+                    AudioNativeCallResultV2 result =
+                        ExecuteBgmCore(command, true);
+                    return result != null && result.IsOk;
+                },
+                false);
+        }
+
+        /// <summary>
+        /// Revokes only this launcher's frontdoor request.  It clears both the live
+        /// remembered intent and a qualification-delayed recovery replay.  If AS2
+        /// has already superseded the request, this method deliberately sends no
+        /// native stop and cannot silence gameplay BGM.
+        /// </summary>
+        internal bool RevokeFrontdoorBgm(
+            string requestId,
+            float fadeSeconds)
+        {
+            if (!IsFrontdoorBgmRequestId(requestId) ||
+                !IsFiniteRange(fadeSeconds, 0f, 60f))
+            {
+                return false;
+            }
+
+            return InvokeOwner(
+                delegate
+                {
+                    bool ownsLatest = HasRequestId(
+                        _latestBgmIntent,
+                        requestId);
+                    if (HasRequestId(_pendingRecoveryIntent, requestId))
+                    {
+                        _pendingRecoveryIntent = null;
+                        _pendingRecoveryPaused = false;
+                    }
+
+                    if (!ownsLatest)
+                    {
+                        // Already revoked or superseded.  This is an idempotent
+                        // success, but never a license to stop another owner.
+                        return true;
+                    }
+
+                    _latestBgmIntent = null;
+                    _latestBgmPaused = false;
+                    if (!Snapshot.IsReady)
+                    {
+                        // Recovering/qualifying has no current native source that
+                        // this lease can safely address. Clearing both remembered
+                        // intents is the durable revoke and prevents resurrection.
+                        return true;
+                    }
+
+                    var stop = new AudioNativeBgmCommandV2(
+                        requestId,
+                        _audioSessionId,
+                        _audioReadyGeneration,
+                        AudioNativeV2.OperationBgmStop,
+                        null,
+                        false,
+                        0f,
+                        fadeSeconds,
+                        0f);
+                    AudioNativeCallResultV2 result =
+                        ExecuteBgmCore(stop, false);
+                    return result != null && result.IsOk;
+                },
+                false);
+        }
+
         internal int LegacyBgmControl(
             uint operation,
             float scalar,
@@ -3654,6 +3779,25 @@ namespace CF7Launcher.Audio
         {
             return operation >= AudioNativeV2.OperationBgmPlay &&
                 operation <= AudioNativeV2.OperationBgmSetGain;
+        }
+
+        private static bool IsFrontdoorBgmRequestId(string requestId)
+        {
+            return !string.IsNullOrEmpty(requestId) &&
+                requestId.Length <= 96 &&
+                requestId.StartsWith(
+                    "host.frontdoor.",
+                    StringComparison.Ordinal);
+        }
+
+        private static bool HasRequestId(
+            AudioNativeBgmCommandV2 command,
+            string requestId)
+        {
+            return command != null && string.Equals(
+                command.RequestId,
+                requestId,
+                StringComparison.Ordinal);
         }
 
         private static bool IsFiniteGain(float value)

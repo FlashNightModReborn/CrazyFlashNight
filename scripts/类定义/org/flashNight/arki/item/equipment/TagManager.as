@@ -309,13 +309,10 @@ class org.flashNight.arki.item.equipment.TagManager {
             }
         }
 
-        // 创建临时item来计算移除后的tag上下文
-        var tempItem:Object = {
-            name: item.name,
-            value: { mods: tempMods }
-        };
-        var contextBeforeRemoval:Object = buildTagContext(item, itemData);
-        var contextAfterRemoval:Object = buildTagContext(BaseItem(tempItem), itemData);
+        // 依赖判定只需要 presentTags。不要把普通 Object 强转为 BaseItem：
+        // AVM1 在该边界可能丢失临时 mods，令仍由另一插件提供的结构被误判为消失。
+        var presentBeforeRemoval:Object = buildPresentTagsDict(mods, itemData, modRegistry);
+        var presentAfterRemoval:Object = buildPresentTagsDict(tempMods, itemData, modRegistry);
         var useLookupAfterRemoval:Object = buildUseLookupForMods(tempMods, itemData, modRegistry);
 
         // 检查每个已安装的插件是否还满足依赖
@@ -329,7 +326,7 @@ class org.flashNight.arki.item.equipment.TagManager {
             // 检查该插件的依赖是否还能满足
             for (var reqTag:String in requiredTagDict) {
                 // 只有移除前存在、移除后消失的结构，才算对当前拆卸的真实依赖。
-                if (contextBeforeRemoval.presentTags[reqTag] && !contextAfterRemoval.presentTags[reqTag]) {
+                if (presentBeforeRemoval[reqTag] && !presentAfterRemoval[reqTag]) {
                     dependentMods.push(mods[j]);
                     break;
                 }

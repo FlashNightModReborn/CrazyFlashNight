@@ -65,6 +65,21 @@
         return '操作失败，请重试。';
     }
 
+    function resolveExactSourceSlot(item, source, resolveSlot) {
+        if (!item || !source || source.sourceKind !== 'inventory'
+                || source.containerId !== '背包' || typeof resolveSlot !== 'function') return null;
+        var physicalSlot = Number(source.slot);
+        var expectedLease = String(source.expectedLease || '');
+        if (!isFinite(physicalSlot) || Math.floor(physicalSlot) !== physicalSlot
+                || physicalSlot < 0 || physicalSlot > 49 || !expectedLease) return null;
+        var slot = resolveSlot('背包', physicalSlot);
+        if (!slot || !slot.occupied || !slot.item
+                || String(slot.slotLease || '') !== expectedLease) return null;
+        var sourceName = String(item.name || '');
+        var slotName = String(slot.item.name || '');
+        return sourceName && slotName && sourceName !== slotName ? null : slot;
+    }
+
     function storageHelpSpec(containerId) {
         var target = containerId === '战备箱' ? '战备箱' : '仓库';
         return {
@@ -268,6 +283,7 @@
         richTooltip:richTooltip,
         iconHtml:iconHtml,
         errorMessage:errorMessage,
+        resolveExactSourceSlot:resolveExactSourceSlot,
         storageHelpSpec:storageHelpSpec,
         createView:createView,
         createToolbar:createToolbar

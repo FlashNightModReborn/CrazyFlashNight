@@ -59,7 +59,10 @@ function checkSyntaxAndSelfCheck() {
   ));
   if (contract.ok !== true
       || contract.uiState !== "s:1|ga:<attemptId>"
-      || contract.titleFrameGate !== "bootstrap_reveal_ready") {
+      || !Array.isArray(contract.revealGates)
+      || contract.revealGates.length !== 2
+      || contract.revealGates[0] !== "bootstrap_reveal_ready"
+      || contract.revealGates[1] !== "s:1|ga:<attemptId>") {
     throw new Error("agent entry static contract returned an unexpected result");
   }
   const output = runNode([runnerPath, "--check"], "run-unattended.js --check");

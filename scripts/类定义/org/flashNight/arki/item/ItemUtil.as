@@ -4,6 +4,7 @@ import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.PlayerAssetTransaction;
+import org.flashNight.arki.item.DrugSlotAffinityService;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.neur.Event.EventBus;
@@ -570,8 +571,26 @@ class org.flashNight.arki.item.ItemUtil{
     // 将物品移入药剂栏
     public static function moveItemToDrug(icon,drugIcon):Boolean{
         if(!drugIcon.isCoolDown()) return false;
+        var drugCollection:Object = drugIcon.collection;
+        var affinityPreflight:Object = DrugSlotAffinityService
+            .previewNormalized(_root, drugCollection);
+        if(!affinityPreflight.ok) return false;
+        var sourceCollection:Object = icon.collection;
+        var sourceIndex:Number = Number(icon.index);
+        var targetIndex:Number = Number(drugIcon.index);
         var result = ItemUtil.moveItemToInventory(icon,drugIcon);
         _root.存档系统.dirtyMark = true;
+        if(result){
+            var touchedSlots:Array = [targetIndex];
+            if(sourceCollection === drugCollection) touchedSlots.push(sourceIndex);
+            var affinityCommit:Object = DrugSlotAffinityService
+                .recordManualSlots(
+                    _root, drugCollection, touchedSlots, true);
+            if(!affinityCommit.success){
+                trace("[ItemUtil.moveItemToDrug] affinity commit failed: "
+                    + affinityCommit.error);
+            }
+        }
         return result;
     }
 
@@ -635,6 +654,7 @@ class org.flashNight.arki.item.ItemUtil{
     public static function require(itemArray:Array):Object {
         var list = {金币:0, K点:0, 经验值:0, 技能点:0, 背包:{}, 装备栏:{}, 药剂栏:{}, 材料:{}, 情报:{}};
         var mergables:Object = {}; // 用来累计可合并物品的需求：键为物品名，值为总需求数量
+        var mergableOrder:Array = []; // 冻结首次出现顺序，批内规划不依赖 for..in 反插入顺序
         var nonMergeableList:Array = []; // 不可合并物品（如武器、防具）—必须占用新格子
 
         // 遍历要求数组，区分材料、情报、可合并与不可合并物品
@@ -686,6 +706,7 @@ class org.flashNight.arki.item.ItemUtil{
             } else if(!isEquipment(name)){
                 // 可合并物品
                 var stackIncrement:Number = Number(value);
+                if(mergables[name] == undefined) mergableOrder.push(name);
                 var stackTotal:Number = Number(
                     mergables[name] == undefined ? 0 : mergables[name])
                     + stackIncrement;
@@ -735,79 +756,63 @@ class org.flashNight.arki.item.ItemUtil{
             delete mergables[equippedGrenade.name];
         }
 
-        // 得到药剂栏对象
         var 药剂栏:Object = _root.物品栏.药剂栏;
-        var drugindexArr:Array = 药剂栏.getIndexes();
-        var drugArr:Array = 药剂栏.getItemArray();
-        // 这里默认能装进药剂栏的物品均可合并，检查药剂栏中是否已存在相同物品
-        for(var i = 0; i < drugindexArr.length; i++){
-            var drugItem:Object = drugArr[i];
-            if(mergables[drugItem.name] != undefined){
-                var drugCurrent:Number = Number(drugItem.value);
-                var drugIncrement:Number = Number(mergables[drugItem.name]);
-                var drugTotal:Number = drugCurrent + drugIncrement;
-                if(isNaN(drugCurrent) || !isFinite(drugCurrent)
-                        || drugCurrent <= 0
-                        || Math.floor(drugCurrent) != drugCurrent
-                        || isNaN(drugTotal) || !isFinite(drugTotal)
-                        || Math.floor(drugTotal) != drugTotal
-                        || drugTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
-                // 记录：将原有合并堆增加新需求
-                list.药剂栏[drugindexArr[i]] = {
-                    name:drugItem.name,
-                    value:drugIncrement
-                };
-                // 标记该物品已处理
-                delete mergables[drugItem.name];
-            }
-        }
-        
-        // 得到背包对象
         var 背包:Object = _root.物品栏.背包;
-        var indexArr:Array = 背包.getIndexes();
-        var itemArr:Array = 背包.getItemArray();
-
-        // 对于剩余的可合并物品，先检查背包中是否已存在相同物品
-        for(var i = 0; i < itemArr.length; i++){
-            var bagItem:Object = itemArr[i];
-            if(mergables[bagItem.name] != undefined){
-                var bagCurrent:Number = Number(bagItem.value);
-                var bagIncrement:Number = Number(mergables[bagItem.name]);
-                var bagTotal:Number = bagCurrent + bagIncrement;
-                if(isNaN(bagCurrent) || !isFinite(bagCurrent)
-                        || bagCurrent <= 0
-                        || Math.floor(bagCurrent) != bagCurrent
-                        || isNaN(bagTotal) || !isFinite(bagTotal)
-                        || Math.floor(bagTotal) != bagTotal
-                        || bagTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
-                // 记录：将原有合并堆增加新需求
-                list.背包[indexArr[i]] = {
-                    name:bagItem.name,
-                    value:bagIncrement
-                };
-                // 标记该物品已处理
-                delete mergables[bagItem.name];
+        var hasPendingMergable:Boolean = false;
+        for(var pendingOrder:Number = 0;
+                pendingOrder < mergableOrder.length; pendingOrder++){
+            if(mergables[String(mergableOrder[pendingOrder])] != undefined){
+                hasPendingMergable = true;
+                break;
             }
         }
+        if(hasPendingMergable || nonMergeableList.length > 0){
+            var acquireState:Object = DrugSlotAffinityService
+                .createAcquirePlanningState(_root, 药剂栏, 背包);
+            if(!acquireState.ok) return null;
 
-        // 对于剩余的可合并物品（在背包中尚无此类物品），加入不可合并列表
-        for (var key:String in mergables) {
-            nonMergeableList.push({ name: key, value: mergables[key] });
-        }
+            // 所有可堆叠物品按首次出现顺序使用同一 shadow。
+            // 空 exact affinity 优先于已有药剂堆，有意保留“原槽恢复”的双堆语义。
+            for(var orderIndex:Number = 0;
+                    orderIndex < mergableOrder.length; orderIndex++){
+                var mergeName:String = String(mergableOrder[orderIndex]);
+                if(mergables[mergeName] == undefined) continue;
+                var mergeValue:Number = Number(mergables[mergeName]);
+                var rawItemData:Object = getRawItemData(mergeName);
+                var isDrugItem:Boolean = rawItemData != null
+                    && typeof rawItemData.use == "string"
+                    && String(rawItemData.use) == "药剂";
+                var mergePlan:Object = DrugSlotAffinityService
+                    .planAcquireTarget(
+                        acquireState, mergeName, mergeValue,
+                        isDrugItem, true);
+                if(!mergePlan.success) return null;
+                var mergeRequest:Object = {
+                    name:mergeName,
+                    value:mergeValue,
+                    __drugAffinityPlan:mergePlan
+                };
+                if(mergePlan.storageKind == "drug") {
+                    list.药剂栏[String(mergePlan.slot)] = mergeRequest;
+                } else {
+                    list.背包[String(mergePlan.slot)] = mergeRequest;
+                }
+                delete mergables[mergeName];
+            }
 
-        // 计算 mergeable items 的数量（不知道ds写这个干嘛）
-        // var mergeableItemCount:Number = 0;
-        // for (var key:String in mergables) {
-        //     mergeableItemCount++;
-        // }
-
-        // 处理不可合并物品，要求必须有空位（依旧检查容量）
-        var vacancyList:Array = 背包.getVacancies(nonMergeableList.length);
-        if(isNaN(vacancyList.length) || vacancyList.length < nonMergeableList.length) return null;
-
-        // 处理非合并物品的插入
-        for(var i = 0; i < nonMergeableList.length; i++){
-            list.背包[vacancyList[i]] = nonMergeableList[i];
+            // 装备等不可堆叠项也复用同一 shadow，避免与前面新建的
+            // affinity/背包堆争用同一物理空位。
+            for(var pendingIndex:Number = 0;
+                    pendingIndex < nonMergeableList.length; pendingIndex++){
+                var pendingItem:Object = nonMergeableList[pendingIndex];
+                var vacancyPlan:Object = DrugSlotAffinityService
+                    .planAcquireTarget(
+                        acquireState, String(pendingItem.name),
+                        Number(pendingItem.value), false, false);
+                if(!vacancyPlan.success
+                        || vacancyPlan.storageKind != "backpack") return null;
+                list.背包[String(vacancyPlan.slot)] = pendingItem;
+            }
         }
 
         // ServerManager.getInstance().sendServerMessage(ObjectUtil.stringify(list));
@@ -1067,6 +1072,25 @@ class org.flashNight.arki.item.ItemUtil{
                     if(committedDrug > 0 && !isNaN(committedDrug)) {
                         acquireWrote = true;
                         var drugName:String = String(drugReq.name);
+                        var committedPlan:Object =
+                            drugReq.__drugAffinityPlan;
+                        if(committedPlan == null){
+                            committedPlan = {
+                                success:true,
+                                storageKind:"drug",
+                                slot:drugIndex,
+                                itemKey:drugName,
+                                quantity:Number(drugReq.value)
+                            };
+                        }
+                        var affinityCommit:Object = DrugSlotAffinityService
+                            .commitAcquireTarget(
+                                _root, 药剂栏, committedPlan);
+                        if(!affinityCommit.success){
+                            acquireExact = false;
+                            trace("[ItemUtil.acquire] affinity commit failed: "
+                                + affinityCommit.error);
+                        }
                         var drugEffect:Object = claimAcquisitionEffect(
                             acquisitionOwnership, drugName,
                             inferAssetEffectKind(drugName), "", committedDrug);
@@ -1332,12 +1356,19 @@ class org.flashNight.arki.item.ItemUtil{
         }
         var expectedDrugItems:Object = {};
         var preflightDrugs:Object = _root.物品栏.药剂栏;
+        var hasDrugSubmission:Boolean = false;
         for(var expectedDrugKey:String in list.药剂栏) {
+            hasDrugSubmission = true;
             var expectedDrugItem:Object = preflightDrugs.getItem(expectedDrugKey);
             if(expectedDrugItem == null) return false;
             expectedDrugItems[expectedDrugKey] = {
                 ref:expectedDrugItem, name:String(expectedDrugItem.name)
             };
+        }
+        if(hasDrugSubmission){
+            var affinityPreflight:Object = DrugSlotAffinityService
+                .previewNormalized(_root, preflightDrugs);
+            if(!affinityPreflight.ok) return false;
         }
 
         // submit 与 acquire 对称：没有显式领域 frame 时自己持有短事务；已有
@@ -1492,6 +1523,16 @@ class org.flashNight.arki.item.ItemUtil{
                     wrote = true;
                     PlayerAssetTransaction.recordEffect(
                         "loss", "item", removedDrugName, committedDrug, context);
+                    if(drugAfterItem == null){
+                        var affinityCommit:Object = DrugSlotAffinityService
+                            .recordDepleted(
+                                _root, 药剂栏, Number(i), removedDrugName);
+                        if(!affinityCommit.success){
+                            submitExact = false;
+                            trace("[ItemUtil.submit] affinity commit failed: "
+                                + affinityCommit.error);
+                        }
+                    }
                 }
             }
         }

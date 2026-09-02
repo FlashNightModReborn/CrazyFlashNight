@@ -127,9 +127,8 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             return shopAccessFailure(callId, "stale", "source_not_current");
         }
 
-        if (_root.UI系统 == undefined
-                || _root.UI系统.NPC商店WebView == undefined
-                || typeof _root.UI系统.NPC商店WebView.buildCatalog != "function"
+        var npcCatalogContext:Object = resolveNpcCatalogContext();
+        if (npcCatalogContext == null
                 || _root.shops == undefined || _root.shops == null) {
             return shopAccessFailure(callId, "deny", "authority_unavailable");
         }
@@ -141,7 +140,8 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             return shopAccessFailure(callId, "stale", "catalog_not_current");
         }
 
-        var catalog = _root.UI系统.NPC商店WebView.buildCatalog(shopId);
+        var catalog = npcCatalogContext.service.buildCatalog(
+            shopId, npcCatalogContext.buyRatePermille);
         if (!(catalog instanceof Array)) {
             return shopAccessFailure(callId, "deny", "authority_unavailable");
         }
@@ -238,9 +238,8 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         if (countCurrentShopSources(records, itemName, shopId, catalogIndex) != 1) {
             return shopAccessFailure(callId, "stale", "source_not_current");
         }
-        if (_root.UI系统 == undefined
-                || _root.UI系统.NPC商店WebView == undefined
-                || typeof _root.UI系统.NPC商店WebView.buildCatalog != "function"
+        var npcCatalogContext:Object = resolveNpcCatalogContext();
+        if (npcCatalogContext == null
                 || _root.shops == undefined || _root.shops == null) {
             return shopAccessFailure(callId, "deny", "authority_unavailable");
         }
@@ -249,7 +248,8 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
                 || rawShopItemName(rawShop, catalogIndex) != itemName) {
             return shopAccessFailure(callId, "stale", "catalog_not_current");
         }
-        var catalog = _root.UI系统.NPC商店WebView.buildCatalog(shopId);
+        var catalog = npcCatalogContext.service.buildCatalog(
+            shopId, npcCatalogContext.buyRatePermille);
         if (!(catalog instanceof Array)) {
             return shopAccessFailure(callId, "deny", "authority_unavailable");
         }
@@ -1127,6 +1127,8 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         _buildError = "";
         var result:Array = [];
         var shopCatalogs:Object = {};
+        var npcCatalogContext:Object = null;
+        var npcCatalogContextResolved:Boolean = false;
         for (var i:Number = 0; i < frozenSources.length; i++) {
             var source:Object = frozenSources[i];
             if (String(source.kind) != "shop") {
@@ -1136,12 +1138,18 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             var shopId:String = String(source.shopId);
             var catalog:Array = shopCatalogs[shopId];
             if (catalog == undefined) {
-                var npcService:Object = _root.UI系统 == undefined
-                    ? null : _root.UI系统.NPC商店WebView;
-                if (npcService == null || typeof npcService.buildCatalog != "function") {
+                if (!npcCatalogContextResolved) {
+                    npcCatalogContext = resolveNpcCatalogContext();
+                    npcCatalogContextResolved = true;
+                }
+                if (npcCatalogContext == null) {
                     return invalid("shop_snapshot_unavailable");
                 }
-                catalog = npcService.buildCatalog(shopId);
+                catalog = npcCatalogContext.service.buildCatalog(
+                    shopId, npcCatalogContext.buyRatePermille);
+                if (!(catalog instanceof Array)) {
+                    return invalid("shop_snapshot_unavailable");
+                }
                 shopCatalogs[shopId] = catalog;
             }
             var liveEntry:Object = findCatalogEntry(catalog, Number(source.catalogIndex));
@@ -1172,6 +1180,23 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             });
         }
         return result;
+    }
+
+    /**
+     * NPC 商店目录的只读权威上下文。材料 snapshot 只冻结来源身份；
+     * 每次详情/点击都从同一 service 读取当前口才费率，并显式传给 catalog。
+     */
+    private static function resolveNpcCatalogContext():Object {
+        var npcService:Object = _root.UI系统 == undefined
+            ? null : _root.UI系统.NPC商店WebView;
+        if (npcService == null
+                || typeof npcService.getBuyRatePermille != "function"
+                || typeof npcService.buildCatalog != "function") {
+            return null;
+        }
+        var buyRatePermille:Number = Number(npcService.getBuyRatePermille());
+        if (!validNni(buyRatePermille)) return null;
+        return {service:npcService, buyRatePermille:buyRatePermille};
     }
 
     private static function findCatalogEntry(catalog:Array, catalogIndex:Number):Object {

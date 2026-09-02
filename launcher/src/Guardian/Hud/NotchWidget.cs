@@ -233,6 +233,26 @@ namespace CF7Launcher.Guardian.Hud
         private Rectangle _sparklineRect = Rectangle.Empty;
         private Rectangle _expandButtonRect = Rectangle.Empty;
         private Rectangle _expandedChartRect = Rectangle.Empty;
+        private PointerActionToken _downAction;
+
+        private enum PointerActionKind
+        {
+            None,
+            ExpandedChart,
+            Sparkline,
+            ExpandButton,
+            CommandButton
+        }
+
+        private struct PointerActionToken
+        {
+            public PointerActionKind Kind;
+            public int Index;
+            public string Label;
+            public string CommandKey;
+            public Keys KeyCode;
+            public bool Enabled;
+        }
 
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
@@ -657,8 +677,28 @@ namespace CF7Launcher.Guardian.Hud
                     FireRepaint();
                     break;
                 }
+                case MouseEventKind.Cancel:
+                    ClearPointerDown();
+                    _hoverButtonIndex = -1;
+                    if (_state == NotchState.Expanded || _state == NotchState.Expanding)
+                    {
+                        _autoHideCountdown = AutoHideDelayMs;
+                        FireAnimationStateChanged();
+                    }
+                    FireRepaint();
+                    break;
+                case MouseEventKind.Down:
+                    _downAction = e.Button == MouseButtons.Left
+                        ? ResolvePointerAction(localX, localY)
+                        : default(PointerActionToken);
+                    break;
                 case MouseEventKind.Click:
-                    if (e.Button == MouseButtons.Left) HandleClick(localX, localY);
+                    PointerActionToken clickAction = ResolvePointerAction(
+                        localX, localY);
+                    bool exactGesture = e.Button == MouseButtons.Left
+                        && PointerActionMatches(_downAction, clickAction);
+                    ClearPointerDown();
+                    if (exactGesture) HandleClick(localX, localY);
                     break;
             }
         }
@@ -940,6 +980,64 @@ namespace CF7Launcher.Guardian.Hud
             }
         }
 
+        private PointerActionToken ResolvePointerAction(int localX, int localY)
+        {
+            PointerActionToken token = default(PointerActionToken);
+            token.Index = -1;
+            if (_chartVisible && _expandedChartRect.Contains(localX, localY))
+            {
+                token.Kind = PointerActionKind.ExpandedChart;
+                return token;
+            }
+            if (_sparklineRect.Contains(localX, localY))
+            {
+                token.Kind = PointerActionKind.Sparkline;
+                return token;
+            }
+            if (_expandButtonRect.Contains(localX, localY))
+            {
+                token.Kind = PointerActionKind.ExpandButton;
+                return token;
+            }
+            for (int i = 0; i < _buttonRects.Length; i++)
+            {
+                if (!_buttonRects[i].Contains(localX, localY)) continue;
+                NotchButtonDef def = i < _buttonDefs.Length
+                    ? _buttonDefs[i] : null;
+                if (def == null) return token;
+                token.Kind = PointerActionKind.CommandButton;
+                token.Index = i;
+                token.Label = def.Label;
+                token.CommandKey = def.CommandKey;
+                token.KeyCode = def.KeyCode;
+                token.Enabled = def.Enabled;
+                return token;
+            }
+            return token;
+        }
+
+        private static bool PointerActionMatches(
+            PointerActionToken down,
+            PointerActionToken current)
+        {
+            if (down.Kind == PointerActionKind.None
+                || down.Kind != current.Kind
+                || down.Index != current.Index)
+                return false;
+            if (down.Kind != PointerActionKind.CommandButton) return true;
+            return string.Equals(down.Label, current.Label,
+                    StringComparison.Ordinal)
+                && string.Equals(down.CommandKey, current.CommandKey,
+                    StringComparison.Ordinal)
+                && down.KeyCode == current.KeyCode
+                && down.Enabled == current.Enabled;
+        }
+
+        private void ClearPointerDown()
+        {
+            _downAction = default(PointerActionToken);
+        }
+
         private void ToggleExpandedChart()
         {
             if (!_gameReady) return;
@@ -1084,6 +1182,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private void RefreshToolbarRows()
         {
+            ClearPointerDown();
             _toolbarRows = NotchToolbarProjection.Build(
                 true,
                 _preparationNavigationV1,
@@ -2084,6 +2183,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private void FireBounds()
         {
+            ClearPointerDown();
             EventHandler h = BoundsOrVisibilityChanged;
             if (h != null) h(this, EventArgs.Empty);
         }
@@ -2182,6 +2282,22 @@ namespace CF7Launcher.Guardian.Hud
         internal bool IsOtherMenuOpenForTest { get { return _otherMenuOpen; } }
         internal int OtherMenuGroupIndexForTest { get { return _otherMenuGroupIndex; } }
         internal int OtherMenuItemCountForTest { get { return CountVisibleButtons(GetActiveOtherButtons()); } }
+        internal Rectangle ButtonScreenBoundsForTest(string commandKey)
+        {
+            Rectangle bounds = ScreenBounds;
+            for (int i = 0; i < _buttonDefs.Length && i < _buttonRects.Length; i++)
+            {
+                NotchButtonDef def = _buttonDefs[i];
+                if (def != null && string.Equals(def.CommandKey, commandKey,
+                        StringComparison.Ordinal))
+                {
+                    Rectangle result = _buttonRects[i];
+                    result.Offset(bounds.Location);
+                    return result;
+                }
+            }
+            return Rectangle.Empty;
+        }
         internal void OpenOtherMenuForTest(int groupIndex)
         {
             _otherMenuOpen = true;

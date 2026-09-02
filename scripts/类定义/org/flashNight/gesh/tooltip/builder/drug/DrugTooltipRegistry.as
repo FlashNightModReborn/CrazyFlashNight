@@ -23,7 +23,8 @@ class org.flashNight.gesh.tooltip.builder.drug.DrugTooltipRegistry {
     private static var _hiddenTypes:Object = {
         playEffect: true,
         message: true,
-        global: true
+        global: true,
+        buffDomain: true
     };
 
     /**
@@ -40,6 +41,9 @@ class org.flashNight.gesh.tooltip.builder.drug.DrugTooltipRegistry {
         register(new StateTooltipBuilder());
         register(new PurifyTooltipBuilder());
         register(new BuffTooltipBuilder());
+        register(new ToughnessBuffTooltipBuilder());
+        register(new ResistanceBuffTooltipBuilder());
+        register(new ToughnessRestoreTooltipBuilder());
         register(new GrantItemTooltipBuilder());
         // playEffect, message, global 默认不显示，不需要注册
 

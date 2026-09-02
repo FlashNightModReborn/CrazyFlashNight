@@ -462,6 +462,7 @@ namespace CF7Launcher.Bus
             SettingsTask settingsTask,
             EquipmentTuningTask equipmentTuningTask,
             CharacterBuildTask characterBuildTask,
+            ItemUseTask itemUseTask,
             SkillTask skillTask,
             MapTask mapTask,
             StageSelectTask stageSelectTask,
@@ -547,6 +548,11 @@ namespace CF7Launcher.Bus
             if (characterBuildTask != null)
                 router.RegisterAsync("loadout_response", characterBuildTask.HandleFlashResponse);
 
+            // 背包礼包/药剂使用回包。Web ingress 仅允许 exact CharacterBuild workbench，
+            // 不能注册成通用 socket/http request task。
+            if (itemUseTask != null)
+                router.RegisterAsync("item_use_response", itemUseTask.HandleFlashResponse);
+
             // 独立技能面板 domain 回包路由
             if (skillTask != null)
                 router.RegisterAsync("skill_response", skillTask.HandleFlashResponse);
@@ -623,6 +629,28 @@ namespace CF7Launcher.Bus
                                 ["panel"] = "loot",
                                 ["error"] = "panel_unavailable"
                             }.ToString(Newtonsoft.Json.Formatting.None);
+                        }
+                        if (source == LootPanelCoordinator.RewardInboxSource)
+                        {
+                            bool exactRewardEnvelope = callbackPayload != null
+                                && request.Count == 3
+                                && request.Property("panel") != null
+                                && request.Property("source") != null
+                                && request.Property("initData") != null;
+                            JObject rewardAuthority = request["initData"] as JObject;
+                            if (!exactRewardEnvelope || rewardAuthority == null)
+                            {
+                                return new JObject
+                                {
+                                    ["success"] = false,
+                                    ["accepted"] = false,
+                                    ["bound"] = false,
+                                    ["panel"] = "loot",
+                                    ["error"] = "invalid_reward_authority"
+                                }.ToString(Newtonsoft.Json.Formatting.None);
+                            }
+                            return lootPanelCoordinator
+                                .HandleRewardInboxPanelRequest(rewardAuthority);
                         }
                         return lootPanelCoordinator.HandlePanelRequest(request);
                     }
@@ -789,6 +817,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "settings_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "equipment_tuning_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "loadout_response", "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "item_use_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "skill_response",    "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);

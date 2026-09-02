@@ -207,6 +207,7 @@
         S._runtimeSnapshot = null;
         S._busyStageName = '';
         S._lastError = '';
+        S._lastCloseSendError = '';
         S._mode = initData && initData.mode || 'dev';
         S.DESIGN_W = manifest.designSize && manifest.designSize.width || 1024;
         S.DESIGN_H = manifest.designSize && manifest.designSize.height || 576;
@@ -264,11 +265,17 @@
                 return;
             }
         }
+        // Web 主动关闭以 Host transport 的同步接收结果为提交点。false/throw 时不能先卸载
+        // 当前 owner/DOM，也不能消费在途请求或 busy；保留原状态供用户直接重试。
+        if (!StageSelectBridge.sendCloseNotification()) {
+            S._lastCloseSendError = 'send_failed';
+            StageSelectCore.showError('send_failed');
+            return false;
+        }
+        S._lastCloseSendError = '';
         StageSelectBridge.invalidatePendingRequests('requestClose');
         Panels.close();
-        if (typeof Bridge !== 'undefined' && Bridge && Bridge.send) {
-            Bridge.send({ type: 'panel', panel: 'stage-select', cmd: 'close' });
-        }
+        return true;
     }
 
     // 幂等：任何关闭路径（requestClose→Panels.close / C# close / 切面板）都经此统一销毁
@@ -283,6 +290,7 @@
         // P3：C# 侧发起/切面板导致的关闭也在这里清 pending（requestClose 只覆盖 web 主动路径），
         // 在途回包随 session 自增一并失效。
         StageSelectBridge.invalidatePendingRequests('onClose');
+        S._busyStageName = '';
         if (S._scaleHandle) { S._scaleHandle.detach(); S._scaleHandle = null; }
         StageSelectCore.clearTimers();
     }

@@ -1685,28 +1685,32 @@ namespace CF7Launcher.Tests.Guardian
                         false,
                         "",
                         new JArray("刀"),
-                        ""),
+                        "",
+                        true),
                     CandidateRow(
                         3,
                         CandidateItem("药剂", "stack", 2),
                         false,
                         "",
                         new JArray(),
-                        ""),
+                        "",
+                        true),
                     CandidateRow(
                         4,
                         CandidateItem("材料", "stack", 3),
                         true,
                         "incompatible_item",
                         new JArray(),
-                        ""),
+                        "",
+                        true),
                     CandidateRow(
                         5,
                         CandidateItem("上装装备", "equipment", 1),
                         true,
                         "level_locked",
                         new JArray("上装装备"),
-                        "level_locked"));
+                        "level_locked",
+                        true));
                 harness.Task.HandleFlashResponse(response, null);
 
                 JObject web = Assert.Single(harness.Web);
@@ -1796,7 +1800,8 @@ namespace CF7Launcher.Tests.Guardian
                     mutation != "material_enabled",
                     mutation == "material_enabled" ? "" : "incompatible_item",
                     new JArray(),
-                    "");
+                    "",
+                    true);
                 if (mutation == "target_extra") target["slotKey"] = "长枪";
                 if (mutation == "missing_eligibility")
                     row.Remove("equipmentEligibility");
@@ -3586,6 +3591,154 @@ namespace CF7Launcher.Tests.Guardian
                     "malformed_response",
                     web.Value<string>("error"));
                 Assert.Null(harness.Task.SessionGeneration);
+            }
+        }
+
+        [Theory]
+        [InlineData("open", "打开", "")]
+        [InlineData("consume", "服用", "no_available_lane")]
+        public void BackpackOverviewAcceptsOnlyExactStampedItemUseCapability(
+            string command,
+            string label,
+            string useBlockedReason)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("candidates");
+                request.Remove("slotKey");
+                request["candidateScope"] = "backpack";
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.candidates.item-use." + command,
+                        request));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "candidates",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                response["payload"]["target"] =
+                    new JObject { ["kind"] = "backpack" };
+                JObject row = CandidateRow(
+                    3,
+                    CandidateItem(
+                        command == "consume" ? "药剂" : "礼包",
+                        "stack",
+                        2),
+                    command == "open",
+                    command == "open" ? "incompatible_item" : "",
+                    new JArray(),
+                    "");
+                row["useBlockedReason"] = useBlockedReason;
+                row["useAction"] = new JObject
+                {
+                    ["command"] = command,
+                    ["label"] = label,
+                    ["source"] = new JObject
+                    {
+                        ["physicalSlot"] = 3,
+                        ["slotLease"] = "inv.candidate.3",
+                        ["itemName"] = command == "consume"
+                            ? "药剂测试物品" : "礼包测试物品",
+                        ["backpackVersion"] = 5
+                    }
+                };
+                response["payload"]["candidates"] = new JArray(row);
+
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.True(
+                    web.Value<bool>("success"),
+                    web.ToString());
+                Assert.Equal(
+                    command,
+                    web["payload"]["candidates"][0]["useAction"]
+                        .Value<string>("command"));
+            }
+        }
+
+        [Theory]
+        [InlineData("foreign_lease")]
+        [InlineData("foreign_slot")]
+        [InlineData("foreign_item")]
+        [InlineData("foreign_version")]
+        [InlineData("extra_key")]
+        [InlineData("bad_command")]
+        [InlineData("bad_blocked_reason")]
+        public void BackpackOverviewRejectsForgedItemUseCapability(string mutation)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("candidates");
+                request.Remove("slotKey");
+                request["candidateScope"] = "backpack";
+                harness.Task.HandleWebRequest(
+                    "candidates",
+                    WebRequest(
+                        "candidates",
+                        "prod.candidates.item-use.invalid." + mutation,
+                        request));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "candidates",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                response["payload"]["target"] =
+                    new JObject { ["kind"] = "backpack" };
+                JObject row = CandidateRow(
+                    3,
+                    CandidateItem("药剂", "stack", 2),
+                    false,
+                    "",
+                    new JArray(),
+                    "",
+                    true);
+                var action = new JObject
+                {
+                    ["command"] = "consume",
+                    ["label"] = "服用",
+                    ["source"] = new JObject
+                    {
+                        ["physicalSlot"] = 3,
+                        ["slotLease"] = "inv.candidate.3",
+                        ["itemName"] = "药剂测试物品",
+                        ["backpackVersion"] = 5
+                    }
+                };
+                row["useAction"] = action;
+                if (mutation == "foreign_lease")
+                    action["source"]["slotLease"] = "inv.foreign";
+                else if (mutation == "foreign_slot")
+                    action["source"]["physicalSlot"] = 4;
+                else if (mutation == "foreign_item")
+                    action["source"]["itemName"] = "另一物品";
+                else if (mutation == "foreign_version")
+                    action["source"]["backpackVersion"] = 6;
+                else if (mutation == "extra_key")
+                    action["extra"] = true;
+                else if (mutation == "bad_command")
+                    action["command"] = "equip";
+                else
+                    row["useBlockedReason"] = "arbitrary_reason";
+                response["payload"]["candidates"] = new JArray(row);
+
+                harness.Task.HandleFlashResponse(response, null);
+
+                Assert.Equal(
+                    "malformed_response",
+                    Assert.Single(harness.Web).Value<string>("error"));
             }
         }
 
@@ -5848,7 +6001,8 @@ namespace CF7Launcher.Tests.Guardian
             bool disabled,
             string blockedReason,
             JArray equipmentSlots = null,
-            string equipmentBlockedReason = null)
+            string equipmentBlockedReason = null,
+            bool includeItemUseCapability = false)
         {
             var row = new JObject
             {
@@ -5870,6 +6024,11 @@ namespace CF7Launcher.Tests.Guardian
                     ["slots"] = equipmentSlots,
                     ["blockedReason"] = equipmentBlockedReason ?? ""
                 };
+            }
+            if (includeItemUseCapability)
+            {
+                row["useAction"] = JValue.CreateNull();
+                row["useBlockedReason"] = "";
             }
             return row;
         }

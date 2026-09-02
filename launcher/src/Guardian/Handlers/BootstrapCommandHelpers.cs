@@ -5,6 +5,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Config;
+using CF7Launcher.Save;
 using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Guardian.Handlers
@@ -73,6 +74,73 @@ namespace CF7Launcher.Guardian.Handlers
                 }
             }
             error = "schema_data_type_invalid";
+            return false;
+        }
+
+        internal static bool TryReadSlotKey(
+            JObject message,
+            string propertyName,
+            out string slotKey,
+            out string error)
+        {
+            slotKey = null;
+            error = null;
+            JToken token = message != null ? message[propertyName] : null;
+            if (token == null || token.Type == JTokenType.Null)
+            {
+                error = "slot_missing";
+                return false;
+            }
+            if (token.Type != JTokenType.String
+                || !SaveSlotKey.TryValidateExisting(token.Value<string>(), out slotKey))
+            {
+                error = "invalid_slot_key";
+                return false;
+            }
+            return true;
+        }
+
+        internal static bool TryReadDiscoveredSlotKey(
+            JObject message,
+            string propertyName,
+            ArchiveTask archiveTask,
+            out string slotKey,
+            out string error)
+        {
+            if (!TryReadSlotKey(
+                    message,
+                    propertyName,
+                    out slotKey,
+                    out error))
+                return false;
+            if (archiveTask == null || !archiveTask.SlotExistsSync(slotKey))
+            {
+                slotKey = null;
+                error = "slot_not_found";
+                return false;
+            }
+            return true;
+        }
+
+        internal static bool TryReadWritableSlotKey(
+            JObject message,
+            string propertyName,
+            ArchiveTask archiveTask,
+            out string slotKey,
+            out string error)
+        {
+            if (!TryReadSlotKey(
+                    message,
+                    propertyName,
+                    out slotKey,
+                    out error))
+                return false;
+            if (SaveSlotKey.IsValid(slotKey))
+                return true;
+            if (archiveTask != null && archiveTask.SlotExistsSync(slotKey))
+                return true;
+            slotKey = null;
+            error = "slot_not_found";
             return false;
         }
 

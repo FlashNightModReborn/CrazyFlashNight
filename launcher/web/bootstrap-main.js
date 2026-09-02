@@ -12,6 +12,7 @@
   var cancelLaunchBtn = document.getElementById('btn-cancel-launch');
   var viewWelcome = document.getElementById('view-welcome');
   var viewSlots = document.getElementById('view-slots');
+  var viewCharacterCreate = document.getElementById('view-character-create');
   var welcomeSlotNameEl = document.getElementById('welcome-slot-name');
   var welcomeSlotTimeEl = document.getElementById('welcome-slot-time');
   var btnConfirmStart = document.getElementById('btn-confirm-start');
@@ -47,10 +48,12 @@
   var _lastLaunchState = 'Idle';
   var _welcomeSlot = null;        // 当前欢迎页展示的默认槽位对象
   var _introActive = false;       // 片头视频是否正在播
+  var _characterCreatePrepToken = null; // 建角揭幕租约；只允许当前 openRequestId 解除
   var _handlers = {};             // onMessage 注册表
   // 仅保留启动阶段的小型权威状态，供晚加载的 ESM 消费者补收最新值。
   // 不缓存任意消息，避免长期持有导入数据、诊断结果等大 payload。
   var _replayMessages = {};
+  var _renamePending = null;
 
   // Phase 2b: UserPrefs 字段, 初次 list_resp 前是未初始化占位 —
   //   lastPlayedSlot: null 表示"没有已记录的上次槽位" (新玩家 / 偏好文件不存在)
@@ -150,8 +153,14 @@
     obj.type = 'bootstrap';
     var json = JSON.stringify(obj);
     logLine('tag-out', '→ ' + json);
-    try { window.chrome.webview.postMessage(json); }
-    catch (e) { logLine('tag-err', 'postMessage failed: ' + e.message); }
+    try {
+      window.chrome.webview.postMessage(json);
+      return true;
+    }
+    catch (e) {
+      logLine('tag-err', 'postMessage failed: ' + e.message);
+      return false;
+    }
   }
 
   function escapeHtml(s) {
@@ -174,6 +183,69 @@
     return '存档 ' + (idx + 1);
   }
 
+  function slotDisplayName(slot) {
+    if (slot && slot.__newEntry) return '新建存档';
+    if (slot && typeof slot.displayName === 'string' && slot.displayName.trim()) return slot.displayName.trim();
+    return presetDisplayName(slot && slot.slot || '');
+  }
+
+  function slotPrimaryName(slot) {
+    if (slot && slot.__newEntry) return '新建存档';
+    if (slot && typeof slot.characterName === 'string' && slot.characterName.trim()) {
+      return slot.characterName.trim();
+    }
+    return slotDisplayName(slot);
+  }
+
+  function shortSlotKey(slotKey) {
+    slotKey = String(slotKey || '');
+    return slotKey.length <= 12 ? slotKey : slotKey.slice(0, 4) + '…' + slotKey.slice(-6);
+  }
+
+  function normalizeSlotDisplayName(value) {
+    var runtime = window.BootstrapCharacterCreateRuntime;
+    if (!runtime || typeof runtime.normalizeDisplayName !== 'function') return null;
+    return runtime.normalizeDisplayName(value);
+  }
+
+  function finishRenamePending() {
+    if (_renamePending && _renamePending.button && _renamePending.button.isConnected) {
+      _renamePending.button.disabled = false;
+      _renamePending.button.textContent = '重命名';
+    }
+    _renamePending = null;
+  }
+
+  function renameSlot(slot, button) {
+    if (!slot || !slot.slot || slot.__newEntry) return false;
+    if (_renamePending) {
+      window.BootstrapAlert('已有存档正在重命名，请等待本地服务响应。');
+      return false;
+    }
+    var current = slotDisplayName(slot);
+    var input = prompt('重命名存档显示名（允许重名；清空后恢复跟随角色名）', current);
+    if (input == null) return false;
+    var restoreFollow = input.replace(/^\s+|\s+$/g, '') === '';
+    var displayName = restoreFollow ? '' : normalizeSlotDisplayName(input);
+    if (!restoreFollow && displayName === null) {
+      window.BootstrapAlert('存档显示名无效：去除首尾空白后需为 1–32 个可见 Unicode 文本元素，且不能包含控制字符。');
+      playUiCue('playError');
+      return false;
+    }
+    _renamePending = { slotKey:slot.slot, button:button };
+    if (button) {
+      button.disabled = true;
+      button.textContent = '重命名中…';
+    }
+    if (!send({cmd:'rename_slot', slotKey:slot.slot, displayName:displayName})) {
+      finishRenamePending();
+      window.BootstrapAlert('无法发送重命名请求。');
+      playUiCue('playError');
+      return false;
+    }
+    return true;
+  }
+
   function mergeSlots(fromLauncher) {
     var byName = {};
     for (var i = 0; i < fromLauncher.length; i++) byName[fromLauncher[i].slot] = fromLauncher[i];
@@ -181,19 +253,24 @@
     for (var j = 0; j < PRESET_SLOTS.length; j++) {
       var slot = PRESET_SLOTS[j];
       var data = byName[slot];
-      if (data) { merged.push(data); delete byName[slot]; }
-      else merged.push(emptyPlaceholder(slot, true));
+      if (data) {
+        var preset = {};
+        for (var prop in data) if (data.hasOwnProperty(prop)) preset[prop] = data[prop];
+        preset.__preset = true;
+        merged.push(preset);
+        delete byName[slot];
+      }
     }
     var rest = [];
     for (var key in byName) if (byName.hasOwnProperty(key)) rest.push(byName[key]);
     rest.sort(function(a, b) { return a.slot < b.slot ? -1 : a.slot > b.slot ? 1 : 0; });
-    return merged.concat(rest);
+    return merged.concat(rest, [newCharacterPlaceholder()]);
   }
 
-  function emptyPlaceholder(slot, isPreset) {
+  function newCharacterPlaceholder() {
     return {
-      slot: slot, corrupt: false, tombstoned: false, inconsistent: false,
-      mainProgress: null, size: 0, lastModified: null, __empty: true, __preset: !!isPreset
+      slot: '', corrupt: false, tombstoned: false, inconsistent: false,
+      mainProgress: null, size: 0, lastModified: null, __empty: true, __newEntry: true
     };
   }
 
@@ -214,8 +291,10 @@
   function switchView(target, source) {
     var seq = ++_viewAnimSeq;
     if (window.BootTooltip) window.BootTooltip.hide();   // C 期: 视图切换时收掉残留 tooltip
+    if (window.PanelTooltip) window.PanelTooltip.hide(); // 建角装备注释不得跨顶级视图残留
     viewWelcome.classList.remove('view-enter', 'view-leave');
     viewSlots.classList.remove('view-enter', 'view-leave');
+    viewCharacterCreate.classList.remove('view-enter', 'view-leave');
     var animate = !_reducedMotion && source && !source.hidden && target !== source;
     if (!animate) {
       if (source) source.hidden = true;
@@ -241,22 +320,44 @@
     setTimeout(finish, 300);   // 兜底: animationend 丢失也能落地
   }
 
+  function activeView() {
+    if (!viewCharacterCreate.hidden) return viewCharacterCreate;
+    if (!viewSlots.hidden) return viewSlots;
+    return viewWelcome;
+  }
+
   function showWelcome() {
-    var changed = viewWelcome.hidden || !viewSlots.hidden;
+    var source = activeView();
+    var changed = source !== viewWelcome;
     renderWelcomeSlot();
+    document.body.classList.remove('character-create-active');
     if (changed) playUiCue('playTransition');
-    switchView(viewWelcome, viewSlots);
+    switchView(viewWelcome, source);
   }
   function showSlots() {
-    var changed = viewSlots.hidden || !viewWelcome.hidden;
+    var source = activeView();
+    var changed = source !== viewSlots;
+    document.body.classList.remove('character-create-active');
     if (changed) playUiCue('playTransition');
-    switchView(viewSlots, viewWelcome);
+    switchView(viewSlots, source);
     loadSlotsPoster();
     if (changed) {
       // C 期: 进入 slots 时清掉旧键盘焦点, 并聚焦卡片容器让方向键有 keydown 冒泡源
       setKbFocus(null);
       try { cardsEl.focus({ preventScroll: true }); } catch (e) { cardsEl.focus(); }
     }
+  }
+
+  function showCharacterCreate() {
+    var source = activeView();
+    document.body.classList.add('character-create-active');
+    if (source !== viewCharacterCreate) playUiCue('playTransition');
+    switchView(viewCharacterCreate, source);
+  }
+
+  function openCharacterCreate(mode, slotKey) {
+    if (!window.BootstrapCharacterCreate) return false;
+    return window.BootstrapCharacterCreate.open(mode, slotKey);
   }
 
   // ── A 期翻新: 侧栏真实数据 ──
@@ -370,7 +471,7 @@
       var s = slots[i];
       if (!s.__empty && !s.corrupt && !s.tombstoned && !s.inconsistent) return s;
     }
-    // 3) 第一个 preset (空槽, 新建流程)
+    // 3) 第一个已存在 preset；没有物理槽位时回退到唯一“新建存档”入口。
     for (var j = 0; j < slots.length; j++) if (slots[j].__preset) return slots[j];
     return slots[0] || null;
   }
@@ -391,7 +492,7 @@
       applyConfirmLabel('normal', null);
       return;
     }
-    welcomeSlotNameEl.textContent = presetDisplayName(s.slot);
+    welcomeSlotNameEl.textContent = slotPrimaryName(s);
 
     var mode = effectiveMode(s);
     var modeHint = '';
@@ -482,7 +583,7 @@
   // 无片头路径类似: start_game 也带 requireFlashReveal:true (不带 deferReveal),
   // loading spinner 覆盖 Flash 初始化期, 等 Flash 封面帧到达自动 swap.
 
-  function playIntroThenStart(slot, mode) {
+  function playIntroThenStart(slot) {
     var ov = document.getElementById('intro-ov');
     var vid = document.getElementById('intro-video');
     var skipBtn = document.getElementById('intro-skip');
@@ -496,11 +597,10 @@
       vid.load();
       vid.currentTime = 0;
     } catch (e) {}
-    // 立即 send 启动命令 + defer flags, 让视频播放与 Flash 加载并行.
-    // mode='fresh' 走 rebuild (launcher 侧先 DeleteAllSolFiles + ResetSlotSync 再 spawn).
+    // 立即 send 启动命令 + defer flags, 让视频播放与 Flash 加载并行。
+    // 新建/重建已由独立建角协议接管，本路径只加载已有存档。
     setLaunchInFlight(true);
-    var cmd = (mode === 'fresh') ? 'rebuild' : 'start_game';
-    send({ cmd: cmd, slot: slot.slot, deferReveal: true, requireFlashReveal: true });
+    send({ cmd: 'start_game', slot: slot.slot, deferReveal: true, requireFlashReveal: true });
     var fired = false;
     function onVideoDone(reason) {
       if (fired) return;
@@ -533,11 +633,42 @@
   function showLoadingOverlay() {
     var ov = document.getElementById('intro-ov');
     var skipBtn = document.getElementById('intro-skip');
+    var loadingText = ov.querySelector('.loading-text');
+    var loadingHint = ov.querySelector('.loading-hint');
     _introActive = true;
     document.body.classList.add('intro-playing');
     ov.classList.add('on', 'loading');
+    if (loadingText) loadingText.textContent = '启动中';
+    if (loadingHint) loadingHint.textContent = 'ESC 取消';
     skipBtn.onclick = null;
     skipBtn.style.display = 'none';
+  }
+
+  function beginCharacterCreatePreparation(token) {
+    token = String(token || '');
+    if (!token) return false;
+    _characterCreatePrepToken = token;
+    showLoadingOverlay();
+    document.body.classList.add('character-create-preparing');
+    viewCharacterCreate.setAttribute('inert', '');
+    viewCharacterCreate.setAttribute('aria-busy', 'true');
+    var ov = document.getElementById('intro-ov');
+    var loadingText = ov.querySelector('.loading-text');
+    if (loadingText) loadingText.textContent = '正在准备角色';
+    var active = document.activeElement;
+    if (active && typeof active.blur === 'function') active.blur();
+    return true;
+  }
+
+  function finishCharacterCreatePreparation(token) {
+    token = String(token || '');
+    if (!token || token !== _characterCreatePrepToken) return false;
+    _characterCreatePrepToken = null;
+    document.body.classList.remove('character-create-preparing');
+    viewCharacterCreate.removeAttribute('inert');
+    viewCharacterCreate.removeAttribute('aria-busy');
+    hideLaunchOverlay();
+    return true;
   }
 
   function hideLaunchOverlay() {
@@ -565,13 +696,6 @@
     setLaunchInFlight(true);
     send({ cmd: 'start_game', slot: slotName, requireFlashReveal: true });
   }
-  function initiateFreshLaunch(slotName) {
-    if (_launchInFlight) return;
-    showLoadingOverlay();
-    setLaunchInFlight(true);
-    send({ cmd: 'rebuild', slot: slotName, requireFlashReveal: true });
-  }
-
   function renderCards(slots) {
     cardsEl.innerHTML = '';
     _kbFocusCard = null;   // C 期: 重绘后旧焦点卡已不在 DOM, 清除键盘导航焦点
@@ -608,8 +732,12 @@
       if (s.lastModified) meta += ' · ' + s.lastModified.slice(0, 16).replace('T', ' ');
     }
 
-    var displayName = presetDisplayName(s.slot);
-    var progressText = s.__empty ? '—' : (s.mainProgress || '—');
+    var displayName = slotDisplayName(s);
+    var primaryName = slotPrimaryName(s);
+    var progressParts = [];
+    if (!s.__empty && displayName !== primaryName) progressParts.push('存档名 · ' + displayName);
+    if (!s.__empty && s.mainProgress) progressParts.push(s.mainProgress);
+    var progressText = s.__empty ? '—' : (progressParts.join(' · ') || '—');
 
     var actions = '';
     if (s.__empty) {
@@ -633,16 +761,19 @@
               + '<button class="btn-export">导出</button>'
               + '<button class="btn-delete danger">删除</button>';
     }
+    if (s.slot && !s.__newEntry) actions += '<button class="btn-rename">重命名</button>';
 
     card.innerHTML =
       '<div class="card-gem ' + gemCls + '" aria-hidden="true"></div>' +
-      '<div class="slot">' + escapeHtml(displayName) + '</div>' +
+      '<div class="slot">' + escapeHtml(primaryName) + '</div>' +
       // 卡头/信息区分隔线 (rust-dim + dls 辉光短段, 样式见 welcome.css .card-divider)
       '<div class="card-divider" aria-hidden="true"></div>' +
-      '<div class="slot-id mono-num">' + escapeHtml(s.slot) + '</div>' +
+      '<div class="slot-id mono-num" aria-label="'
+        + (s.__newEntry ? '由本地服务自动分配槽位' : '槽位 ' + escapeHtml(s.slot)) + '">'
+        + (s.__newEntry ? '槽位 · 自动分配' : '槽位 · ' + escapeHtml(shortSlotKey(s.slot))) + '</div>' +
       '<div class="progress mono-num">' + escapeHtml(progressText) + '</div>' +
       '<div class="meta mono-num">' + flags + meta + '</div>' +
-      // 空槽中央大号「＋」引导符, 仅空槽插入
+      // 无物理 identity 的新建入口显示「＋」引导符。
       (s.__empty ? '<div class="empty-glyph" aria-hidden="true">＋</div>' : '') +
       '<div class="card-actions">' + actions + '</div>';
 
@@ -653,63 +784,39 @@
     var editBtn    = card.querySelector('.btn-edit');
     var exportBtn  = card.querySelector('.btn-export');
     var resetBtn   = card.querySelector('.btn-reset');
+    var renameBtn  = card.querySelector('.btn-rename');
 
     if (startBtn) startBtn.onclick = function() { selectSlotAndReturn(s.slot, 'normal'); };
     if (deleteBtn) deleteBtn.onclick = function() {
-      if (confirm('确定删除存档 "' + displayName + '" ?')) send({ cmd: 'delete', slot: s.slot });
+      window.BootstrapConfirm('确定删除存档 "' + displayName + '" ?', { okText: '删除' })
+        .then(function(ok) { if (ok) send({ cmd: 'delete', slot: s.slot }); });
     };
     if (rebuildBtn) rebuildBtn.onclick = function() {
-      if (confirm('重建存档 "' + displayName + '" (原数据将丢弃)?')) selectSlotAndReturn(s.slot, 'fresh');
+      window.BootstrapConfirm('重建存档 "' + displayName + '" （原数据将丢弃）？', { okText: '重建' })
+        .then(function(ok) { if (ok) openCharacterCreate('rebuild', s.slot); });
     };
-    if (newCharBtn) newCharBtn.onclick = function() { selectSlotAndReturn(s.slot, 'fresh'); };
+    if (newCharBtn) newCharBtn.onclick = function() { openCharacterCreate('new'); };
     if (editBtn) editBtn.onclick = function() {
       window.BootstrapApp.openModal('archive-editor', { slot: s.slot, slotMeta: s });
     };
     if (exportBtn) exportBtn.onclick = function() {
       var forceRaw = !!(s.corrupt || s.inconsistent);
-      var dn = presetDisplayName(s.slot);
+      var dn = slotDisplayName(s);
       var ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
       send({ cmd: 'export', slot: s.slot, defaultName: dn + '_' + ts + '.json', forceRaw: forceRaw });
     };
     if (resetBtn) resetBtn.onclick = function() {
-      if (confirm('确定清理 "' + displayName + '" 的 launcher 副本?\n\n此操作仅清理 launcher 侧 JSON 备份和删除标记，不影响 Flash 内部 SOL 存档。'))
-        send({ cmd: 'reset', slot: s.slot, confirm: true });
+      window.BootstrapConfirm('确定清理 "' + displayName + '" 的 launcher 副本？',
+        { okText: '清理', detail: '此操作仅清理 launcher 侧 JSON 备份和删除标记，不影响 Flash 内部 SOL 存档。' })
+        .then(function(ok) { if (ok) send({ cmd: 'reset', slot: s.slot, confirm: true }); });
     };
+    if (renameBtn) renameBtn.onclick = function() { renameSlot(s, renameBtn); };
     return card;
-  }
-
-  function pickAutoSlotName() {
-    var occupied = {};
-    for (var i = 0; i < lastSlotsFromLauncher.length; i++) occupied[lastSlotsFromLauncher[i].slot] = true;
-    for (var j = 0; j < PRESET_SLOTS.length; j++) if (!occupied[PRESET_SLOTS[j]]) return PRESET_SLOTS[j];
-    return 'custom_' + Date.now();
   }
 
   function handleNewCharacterClick() {
     if (_launchInFlight) return;
-    var defaultName = pickAutoSlotName();
-    playUiCue('playModalOpen');
-    var input = prompt(
-      '输入存档名称:\n'
-      + '• 留空自动选用: ' + defaultName + '\n'
-      + '• 仅允许字母/数字/下划线/短横线, 1-32 字符',
-      defaultName);
-    if (input == null) { playUiCue('playCancel'); return; }
-    var slot = input.trim();
-    if (!slot) slot = defaultName;
-    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('存档名称不合法: ' + slot); return; }
-    for (var k = 0; k < lastSlotsFromLauncher.length; k++) {
-      if (lastSlotsFromLauncher[k].slot === slot) {
-        var entry = lastSlotsFromLauncher[k];
-        if (entry.tombstoned) {
-          if (!confirm('此档已删除, 是否重建?')) return;
-          selectSlotAndReturn(slot, 'fresh'); return;
-        }
-        if (!confirm('存档 "' + slot + '" 已存在, 直接加载?')) return;
-        selectSlotAndReturn(slot, 'normal'); return;
-      }
-    }
-    selectSlotAndReturn(slot, 'fresh');
+    openCharacterCreate('new');
   }
 
   // ── State 广播 ──
@@ -745,7 +852,7 @@
       // 视频相期间的 Idle 广播 (不会再出现了, 因为并行路径下 prewarm deadline 在 start_game
       // 发出后自动 cancel; 仍保留保险, 万一 launcher 异常回到 Idle 也能退出 overlay).
       var ovIdle = document.getElementById('intro-ov');
-      if (ovIdle && ovIdle.classList.contains('loading')) hideLaunchOverlay();
+      if (!_characterCreatePrepToken && ovIdle && ovIdle.classList.contains('loading')) hideLaunchOverlay();
     } else if (state === 'Ready') {
       // Phase 2b-ext: Ready 广播不再立即 hide overlay. panel swap 被 launcher 按 defer flags
       // gate 住 (_revealWaitingJs / _revealWaitingFlash). 真正 swap 发生时 BootstrapPanel 不可见,
@@ -753,7 +860,9 @@
       // 注意: 视频相看到 Ready 是正常情况 (Flash 先 Ready 才发 reveal_ready, 视频还在播),
       // JS 不该动 overlay — 继续视频播放.
     } else if (state === 'Error') {
-      hideLaunchOverlay();
+      // 建角遮罩由 exact openRequestId 的 character_create_state/snapshot 收口；
+      // 全局 Error 不得误关 cancel/reopen 后的新租约。
+      if (!_characterCreatePrepToken) hideLaunchOverlay();
       // 错误后 welcome 再可见, 确认按钮 .retry 样式 + 顶栏重试按钮
     }
   }
@@ -1082,6 +1191,19 @@
         playUiCue('playError');
       }
     }
+    else if (msg.cmd === 'rename_slot_resp') {
+      var pendingSlot = _renamePending && _renamePending.slotKey;
+      finishRenamePending();
+      if (msg.ok) {
+        playUiCue('playSuccess');
+        send({ cmd: 'list' });
+      } else {
+        var renameError = msg.error || '本地服务拒绝了重命名请求';
+        logLine('tag-err', 'rename failed: slot=' + (msg.slotKey || pendingSlot || '?') + ' err=' + renameError);
+        window.BootstrapAlert('重命名失败：' + renameError);
+        playUiCue('playError');
+      }
+    }
     else if (msg.cmd === 'fontpack_status_resp') {
       applyFontPackStatus(msg);
     }
@@ -1152,28 +1274,89 @@
     if (slot == null) { playUiCue('playCancel'); return; }
     slot = slot.trim();
     if (!slot) { logLine('tag-err', '导入取消: 未输入槽位名'); playUiCue('playCancel'); return; }
-    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); alert('槽位名不合法: "' + slot + '"'); return; }
+    if (!SLOT_NAME_RE.test(slot)) { playUiCue('playError'); window.BootstrapAlert('槽位名不合法: "' + slot + '"'); return; }
     var meta = window.BootstrapApp.getSlotMeta(slot);
     if (meta == null) {
       send({ cmd: 'import_commit', slot: slot, data: sourceData });
     } else if (meta.tombstoned || meta.inconsistent) {
-      if (confirm('此 slot 已标记删除/不一致，需先清理才能导入。是否自动清理？')) {
-        var unsub = window.BootstrapApp.onMessage('reset_resp', function(resp) {
-          unsub();
-          if (resp.ok) send({ cmd: 'import_commit', slot: slot, data: sourceData });
-          else logLine('tag-err', '清理失败: ' + (resp.error || ''));
+      window.BootstrapConfirm('此 slot 已标记删除/不一致，需先清理才能导入。是否自动清理？', { okText: '清理' })
+        .then(function(ok) {
+          if (!ok) return;
+          var unsub = window.BootstrapApp.onMessage('reset_resp', function(resp) {
+            unsub();
+            if (resp.ok) send({ cmd: 'import_commit', slot: slot, data: sourceData });
+            else logLine('tag-err', '清理失败: ' + (resp.error || ''));
+          });
+          send({ cmd: 'reset', slot: slot, confirm: true });
         });
-        send({ cmd: 'reset', slot: slot, confirm: true });
-      }
     } else if (meta.corrupt) {
-      if (confirm('此存档已损坏，覆盖？')) send({ cmd: 'import_commit', slot: slot, data: sourceData });
+      window.BootstrapConfirm('此存档已损坏，覆盖？', { okText: '覆盖' }).then(function(ok) { if (ok) send({ cmd: 'import_commit', slot: slot, data: sourceData }); });
     } else {
-      if (confirm('存档已存在，覆盖？')) send({ cmd: 'import_commit', slot: slot, data: sourceData });
+      window.BootstrapConfirm('存档已存在，覆盖？', { okText: '覆盖' }).then(function(ok) { if (ok) send({ cmd: 'import_commit', slot: slot, data: sourceData }); });
     }
   }
 
   // ── Modal 管理 ──
   var _currentModal = null, _currentModule = null, _moduleRegistry = {};
+  var _modalReturnFocus = null, _modalBackgroundState = null;
+
+  function setModalBackgroundInert(active) {
+    if (active) {
+      if (_modalBackgroundState) return;
+      _modalBackgroundState = Array.prototype.slice.call(
+        document.querySelectorAll('.topbar, .view, .bottom, #log')
+      ).map(function(node) {
+        var state = {node:node, ariaHidden:node.getAttribute('aria-hidden')};
+        node.inert = true;
+        node.setAttribute('aria-hidden', 'true');
+        return state;
+      });
+      return;
+    }
+    (_modalBackgroundState || []).forEach(function(state) {
+      state.node.inert = false;
+      if (state.ariaHidden == null) state.node.removeAttribute('aria-hidden');
+      else state.node.setAttribute('aria-hidden', state.ariaHidden);
+    });
+    _modalBackgroundState = null;
+  }
+
+  function modalFocusables() {
+    var content = document.getElementById('modal-content');
+    return Array.prototype.slice.call(content.querySelectorAll(
+      'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), '
+      + 'a[href], [tabindex]:not([tabindex="-1"])'
+    )).filter(function(node) { return node.getClientRects().length > 0; });
+  }
+
+  function focusModalStart() {
+    var focusables = modalFocusables();
+    var target = focusables[0] || document.getElementById('modal-content');
+    try { target.focus({preventScroll:true}); } catch (e) { target.focus(); }
+  }
+
+  function trapModalTab(event) {
+    if (!_currentModal || event.key !== 'Tab') return false;
+    var content = document.getElementById('modal-content');
+    var focusables = modalFocusables();
+    if (!focusables.length) {
+      event.preventDefault();
+      content.focus();
+      return true;
+    }
+    var first = focusables[0], last = focusables[focusables.length - 1];
+    if (!content.contains(document.activeElement)) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    } else if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+    return true;
+  }
 
   function openModal(name, initData) {
     if (_currentModal) {
@@ -1186,17 +1369,35 @@
     _currentModule = mod;
     var host = document.getElementById('modal-host');
     var content = document.getElementById('modal-content');
+    _modalReturnFocus = document.activeElement;
     content.innerHTML = '';
     mod.mount(content, initData);
+    var heading = content.querySelector('.modal-header h1, .modal-header h2, .modal-header h3');
+    if (heading) {
+      if (!heading.id) heading.id = 'bootstrap-modal-title';
+      content.setAttribute('aria-labelledby', heading.id);
+      content.removeAttribute('aria-label');
+    } else {
+      content.removeAttribute('aria-labelledby');
+      content.setAttribute('aria-label', '启动器对话框');
+    }
     host.style.display = '';
+    setModalBackgroundInert(true);
+    focusModalStart();
     playUiCue('playModalOpen');
   }
   function closeModal() {
     if (!_currentModal) return;
+    var returnFocus = _modalReturnFocus;
     if (_currentModule && _currentModule.unmount) _currentModule.unmount();
     document.getElementById('modal-host').style.display = 'none';
+    setModalBackgroundInert(false);
     _currentModal = null;
     _currentModule = null;
+    _modalReturnFocus = null;
+    if (returnFocus && returnFocus.isConnected && typeof returnFocus.focus === 'function') {
+      try { returnFocus.focus({preventScroll:true}); } catch (e) { returnFocus.focus(); }
+    }
   }
   function tryCloseModal() {
     if (!_currentModal) return;
@@ -1205,8 +1406,13 @@
   }
   document.getElementById('modal-backdrop').onclick = function() { tryCloseModal(); };
   document.addEventListener('keydown', function(e) {
+    if (trapModalTab(e)) return;
     if (e.key !== 'Escape') return;
     if (_introActive) {
+      if (_characterCreatePrepToken) {
+        if (window.BootstrapCharacterCreate) window.BootstrapCharacterCreate.handleEscape();
+        return;
+      }
       var ovEsc = document.getElementById('intro-ov');
       if (ovEsc.classList.contains('loading')) {
         // loading 相: ESC → cancel_launch, 由 Idle 广播回头 hideLaunchOverlay
@@ -1220,7 +1426,11 @@
       }
       return;
     }
-    // C 期 ESC 分层: intro (上面, 优先级最高) → tooltip → modal → slots 返回 welcome
+    // ESC 分层: intro → tooltip → modal → 建角内部返回/取消 → slots 返回 welcome
+    if (window.PanelTooltip && window.PanelTooltip.isVisible && window.PanelTooltip.isVisible()) {
+      window.PanelTooltip.hide();
+      return;
+    }
     if (window.BootTooltip && window.BootTooltip.isVisible && window.BootTooltip.isVisible()) {
       window.BootTooltip.hide();
       return;   // consumed: 本次 ESC 只关 tooltip, 不继续下落
@@ -1230,6 +1440,8 @@
       tryCloseModal();
       return;
     }
+    if (!viewCharacterCreate.hidden && window.BootstrapCharacterCreate
+        && window.BootstrapCharacterCreate.handleEscape()) return;
     if (!viewSlots.hidden) {
       showWelcome();
       return;
@@ -1238,7 +1450,7 @@
 
   // ── 全局桥 ──
   window.BootstrapApp = {
-    send: function(obj) { send(obj); },
+    send: function(obj) { return send(obj); },
     playUiCue: playUiCue,
     onMessage: function(cmd, handler, options) {
       if (!_handlers[cmd]) _handlers[cmd] = [];
@@ -1260,6 +1472,7 @@
       return null;
     },
     refreshList: function() { send({ cmd: 'list' }); },
+    openCharacterCreate: openCharacterCreate,
     openModal: openModal,
     closeModal: closeModal,
     tryCloseModal: tryCloseModal,
@@ -1287,6 +1500,40 @@
     }
   };
 
+  function initCharacterCreate() {
+    if (!window.BootstrapCharacterCreate || !viewCharacterCreate) {
+      logLine('tag-err', 'character-create controller missing');
+      return;
+    }
+    window.BootstrapCharacterCreate.init({
+      root: document.getElementById('character-create-root'),
+      send: send,
+      onShow: showCharacterCreate,
+      onPrepare: beginCharacterCreatePreparation,
+      onReady: finishCharacterCreatePreparation,
+      onCancel: function(token) {
+        finishCharacterCreatePreparation(token);
+        showSlots();
+      },
+      onLoadDurable: function() {
+        showLoadingOverlay();
+        setLaunchInFlight(true);
+        if (send({cmd:'retry'})) return true;
+        setLaunchInFlight(false);
+        hideLaunchOverlay();
+        return false;
+      },
+      playUiCue: playUiCue
+    });
+    window.BootstrapApp.onMessage('character_create_snapshot', function(msg) {
+      window.BootstrapCharacterCreate.handleSnapshot(msg);
+    });
+    window.BootstrapApp.onMessage('character_create_state', function(msg) {
+      window.BootstrapCharacterCreate.handleState(msg);
+    });
+  }
+  initCharacterCreate();
+
   // ── Welcome 视图事件 ──
   // Phase 2b: chkIntro 初值由首个 list_resp 推来（默认 false, 和 Flash 原版对齐）; 这里只给个
   // 保守初值, 真正值在 list_resp 回调里 set. onchange 用 config_set 协议落盘.
@@ -1313,22 +1560,23 @@
     }
     if (_launchInFlight) return;
     var s = _welcomeSlot;
-    if (!s) { alert('没有可启动的存档，请点「切换」选择槽位'); return; }
+    if (!s) { window.BootstrapAlert('没有可启动的存档，请点「切换」选择槽位'); return; }
     var mode = effectiveMode(s);
     if (s.corrupt) {
-      alert('存档已损坏，无法启动；请点「切换」到槽位页编辑或删除');
+      window.BootstrapAlert('存档已损坏，无法启动；请点「切换」到槽位页编辑或删除');
       return;
     }
     if (mode === 'normal' && (s.__empty || s.tombstoned || s.inconsistent)) {
       // 这些状态下不应该是 normal 模式 — pickDefaultSlot 已做降级, 这里兜底防御
-      alert('当前默认存档处于异常状态，请点「切换」到槽位页处理');
+      window.BootstrapAlert('当前默认存档处于异常状态，请点「切换」到槽位页处理');
       return;
     }
-    if (chkIntro.checked) {
-      playIntroThenStart(s, mode);
+    if (mode === 'fresh') {
+      openCharacterCreate(s.__empty ? 'new' : 'rebuild', s.__empty ? null : s.slot);
+    } else if (chkIntro.checked) {
+      playIntroThenStart(s);
     } else {
-      if (mode === 'fresh') initiateFreshLaunch(s.slot);
-      else                  initiateLaunch(s.slot);
+      initiateLaunch(s.slot);
     }
   };
 
@@ -1409,14 +1657,14 @@
     TT.bind(document.getElementById('btn-display'), '显示：字号档位 / 显示偏好');
     TT.bind(document.getElementById('btn-fullscreen'), '全屏：切换窗口全屏');
     TT.bind(document.getElementById('btn-logs'), '日志：查看启动诊断日志');
-    TT.bind(document.getElementById('btn-about'), '其他：免责声明 / 音频 / 字号设置');
+    TT.bind(document.getElementById('btn-about'), '其他：项目说明 / 作者与致谢 / 版本记录 / 音频');
     TT.bind(retryBtn, '重试：按上次参数重新启动');
     TT.bind(cancelLaunchBtn, '取消启动：中止当前启动流程');
     TT.bind(btnSwitchSlot, '切换：选择其他存档槽位');
     TT.bind(document.querySelector('.chk-intro'), '加载片头动画：启动时播放开场视频');
     TT.bind(document.getElementById('btn-back-welcome'), '返回：回到欢迎页 (ESC)');
     TT.bind(document.getElementById('btn-refresh'), '刷新：重新扫描存档槽位');
-    TT.bind(document.getElementById('btn-new'), '新建角色：在新槽位创建角色');
+    TT.bind(document.getElementById('btn-new'), '新建角色：由本地服务自动分配槽位');
     TT.bind(document.getElementById('btn-import'), '导入存档：从 JSON 备份导入');
     TT.bind(document.getElementById('btn-open-dir'), '打开存档目录：在资源管理器中查看');
     // 卡片操作按钮是动态渲染 — 事件委托按 class 匹配, renderCard 重绘不丢绑定
@@ -1427,7 +1675,8 @@
       'btn-delete': '删除：删除存档（不可恢复）',
       'btn-rebuild': '重建：清空并重新开始（原数据丢弃）',
       'btn-reset': '清理副本：清除 launcher 侧备份与删除标记',
-      'btn-newchar': '新建角色：在此空槽位创建角色'
+      'btn-rename': '重命名：修改启动器中的存档显示名（允许重名）',
+      'btn-newchar': '新建角色：由本地服务自动分配槽位'
     });
   }
 

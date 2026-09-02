@@ -175,7 +175,7 @@
         return response && typeof response === 'object' && !Array.isArray(response) ? response : null;
     }
 
-    function normalizeProjection(response, identity) {
+    function normalizeProjection(response, identity, allowZeroSuspended) {
         var raw = projectionObject(response);
         if (!raw) return null;
         var state = normalizedState(raw.state);
@@ -194,25 +194,33 @@
             blockReason:raw.blockReason == null ? '' : String(raw.blockReason),
             closeLease:raw.closeLease === '' ? '' : opaque(raw.closeLease),
             backpack:null,
+            drugLoadout:null,
             loot:null,
             terminal:null
         };
         if (state === 'ACTIVE') {
-            if (!Array.isArray(raw.snapshots) || raw.snapshots.length !== 2) return null;
+            if (!Array.isArray(raw.snapshots) || raw.snapshots.length !== 3) return null;
             for (var snapshotIndex = 0; snapshotIndex < raw.snapshots.length; snapshotIndex++) {
                 var candidate = raw.snapshots[snapshotIndex];
                 if (candidate && candidate.containerId === identity.lootContainerId) {
                     result.loot = normalizeWindow(candidate, identity.lootContainerId, true, true);
                 } else if (candidate && candidate.containerId === '背包') {
                     result.backpack = normalizeWindow(candidate, '背包', false, false);
+                } else if (candidate && candidate.containerId === '药剂栏') {
+                    result.drugLoadout = normalizeWindow(candidate, '药剂栏', true, false);
                 } else return null;
             }
-            if (!result.backpack || !result.loot || !result.closeLease) return null;
+            if (!result.backpack || !result.drugLoadout || !result.loot || !result.closeLease
+                    || result.drugLoadout.capacity !== 8
+                    || result.drugLoadout.accessibleCapacity !== 8) return null;
             var occupied = 0;
             for (var i = 0; i < result.loot.slots.length; i++) if (result.loot.slots[i].occupied) occupied++;
             if (occupied !== remainingCount) return null;
         } else if (state === 'SUSPENDED') {
-            if (remainingCount <= 0 || raw.closeLease !== ''
+            var zeroSuspendedAllowed=allowZeroSuspended===true&&identity
+                &&identity.source==='stage_settlement';
+            if (remainingCount < 0 || remainingCount === 0&&!zeroSuspendedAllowed
+                    || raw.closeLease !== ''
                     || !Array.isArray(raw.snapshots) || raw.snapshots.length !== 0
                     || raw.tooltip !== null || raw.terminal !== null) return null;
         } else {
@@ -261,13 +269,17 @@
         this._unknown = null;
         this._lastError = '';
         this._detached = false;
+        this._allowZeroSuspended = this.identity.source === 'stage_settlement'
+            && options.settlementReport && typeof options.settlementReport === 'object'
+            && !Array.isArray(options.settlementReport);
         this._lootLimit = Math.max(0, Math.min(64, integer(options.capacity) || 0));
         this._backpackLimit = Math.max(1, Math.min(100, integer(options.backpackLimit) || 50));
     }
 
     Coordinator.prototype._emit = function() { this._onChange(this.debugState()); };
     Coordinator.prototype._normalizeProjection = function(response) {
-        var projection = normalizeProjection(response, this.identity);
+        var projection = normalizeProjection(
+            response, this.identity, this._allowZeroSuspended);
         if (!projection || projection.state !== 'ACTIVE') return projection;
         if (projection.loot.capacity !== this._lootLimit
                 || projection.backpack.offset !== 0
@@ -597,7 +609,7 @@
             operationId:opId,
             direction:'loot_to_player',
             source:this._sourceRef(slot),
-            targetContainerId:'背包',
+            targetContainerId:'自动',
             expectedAuthorityRevision:this._projection.authorityRevision
         }, {
             kind:'write', singleFlight:true, write:true, operationId:opId,
@@ -667,7 +679,7 @@
         this._lastError='';this._emit();
         var callId=this._request('claimBatch',{
             operationId:opId,direction:'loot_to_player',sources:this._sourceRefs(slots),
-            targetContainerId:'背包',
+            targetContainerId:'自动',
             expectedAuthorityRevision:this._projection.authorityRevision
         },{
             kind:'write',singleFlight:true,write:true,operationId:opId,
@@ -709,6 +721,7 @@
 
     Coordinator.prototype.close = function(abandon, callback) {
         if (this._phase !== 'active' || this._pending || !this._projection) return false;
+        if (abandon === true && this.identity.source === 'reward_inbox') return false;
         abandon = abandon === true;
         if (this._projection.remainingCount === 0) abandon = false;
         var beforeRevision = this._projection.authorityRevision;

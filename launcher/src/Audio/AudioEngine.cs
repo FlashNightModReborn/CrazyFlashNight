@@ -138,6 +138,30 @@ namespace CF7Launcher.Audio
                 capabilityDigest);
         }
 
+        internal static bool TryAcquireFrontdoorBgm(
+            string requestId,
+            string path,
+            bool loop,
+            float volume,
+            float fadeSeconds)
+        {
+            return Coordinator.TryAcquireFrontdoorBgm(
+                requestId,
+                path,
+                loop,
+                volume,
+                fadeSeconds);
+        }
+
+        internal static bool RevokeFrontdoorBgm(
+            string requestId,
+            float fadeSeconds)
+        {
+            return Coordinator.RevokeFrontdoorBgm(
+                requestId,
+                fadeSeconds);
+        }
+
         public static int PreloadFromDirectories(string projectRoot)
         {
             int loaded = Coordinator.EnsurePreloaded(projectRoot);

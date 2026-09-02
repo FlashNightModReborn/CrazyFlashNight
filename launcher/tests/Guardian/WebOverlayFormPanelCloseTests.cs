@@ -64,6 +64,130 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void ItemUseDomain_RoutesExplicitlyWhileCloseKeepsPriority()
+        {
+            Assert.Equal(
+                WebOverlayForm.PanelDomainRoute.ItemUse,
+                WebOverlayForm.ResolvePanelDomainRoute("open", "item_use"));
+            Assert.Equal(
+                WebOverlayForm.PanelDomainRoute.Close,
+                WebOverlayForm.ResolvePanelDomainRoute(
+                    "close", "item_use"));
+        }
+
+        [Fact]
+        public void WorkbenchClose_AllowsOnlyFrozenRewardInboxNavigationReason()
+        {
+            JObject exact = JObject.Parse(
+                "{\"type\":\"panel\",\"panel\":\"workbench\","
+                + "\"cmd\":\"close\",\"panelInstanceId\":\"workbench.1\","
+                + "\"reason\":\"navigate_reward_inbox\"}");
+            Assert.True(WebOverlayForm.IsValidWorkbenchCloseEnvelope(
+                exact, "workbench", "workbench.1"));
+
+            exact["reason"] = "navigate_item_use";
+            Assert.False(WebOverlayForm.IsValidWorkbenchCloseEnvelope(
+                exact, "workbench", "workbench.1"));
+        }
+
+        [Fact]
+        public void RewardInboxHandoffRecordsAuthoritativeVisualRetireBeforeDetachRecovery()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string close = Slice(
+                source,
+                "case \"close\":",
+                "case \"bulkQuery\":");
+            int retire = close.IndexOf(
+                "TryRetireCharacterBuildHostVisual(",
+                StringComparison.Ordinal);
+            int markClosed = close.IndexOf(
+                "_itemUseTask.OnWorkbenchPanelClosed(",
+                retire,
+                StringComparison.Ordinal);
+            int commitEffects = close.IndexOf(
+                "CommitAcceptedPanelCloseEffects(",
+                markClosed,
+                StringComparison.Ordinal);
+
+            Assert.True(retire >= 0);
+            Assert.True(markClosed > retire);
+            Assert.True(commitEffects > markClosed);
+        }
+
+        [Fact]
+        public void RewardInboxTerminalClosePreservesWebSurfaceUntilExactReplacement()
+        {
+            string panel = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "modules", "loot", "loot-panel.js"));
+            string finish = Slice(
+                panel,
+                "function finishVisualClose(reason)",
+                "function onRebind(");
+            Assert.Contains(
+                "_init.sourceKind==='reward_inbox'",
+                finish);
+            Assert.Contains(
+                "reason==='terminal'||reason==='suspended'",
+                finish);
+            Assert.Contains(
+                "if (!preserveForRewardReturn) Panels.close();",
+                finish);
+
+            string host = File.ReadAllText(FindWebOverlaySource());
+            string close = Slice(
+                host,
+                "private void HandleLootVisualClose(JObject parsed)",
+                "private bool HasExactActivePanelOwnerBinding(");
+            int pending = close.IndexOf(
+                ".IsRewardInboxReplacementPendingExact(",
+                StringComparison.Ordinal);
+            int retry = close.IndexOf(
+                ".RetryAuthorityVisualCloseExact(",
+                StringComparison.Ordinal);
+            Assert.True(pending >= 0 && retry > pending);
+            Assert.Contains(
+                "replacement=pending",
+                close);
+        }
+
+        [Fact]
+        public void LootRecovery_AddsSourceKindOnlyForRewardInbox()
+        {
+            var request = new LootPanelCoordinator.OpenRequest
+            {
+                ChestSessionId = "reward.chest.1",
+                LootContainerId = "reward.container.1",
+                ContainerEpoch = 2,
+                OpenAttemptSeq = 3,
+                DisplayName = "待领取物品",
+                Capacity = 64,
+                Columns = 8,
+                SourceKind = LootPanelCoordinator.RewardInboxSource
+            };
+            var binding = new LootPanelCoordinator.Binding(
+                request, "panel.loot.reward.1");
+
+            JObject reward = JObject.Parse(
+                WebOverlayForm.BuildLootPanelRecoveryCommand(
+                    binding,
+                    "web_open_failed",
+                    "recovery.nonce.1"));
+            Assert.Equal(
+                "reward_inbox", reward.Value<string>("sourceKind"));
+
+            request.SourceKind = LootPanelCoordinator.MapChestSource;
+            binding = new LootPanelCoordinator.Binding(
+                request, "panel.loot.map.1");
+            JObject map = JObject.Parse(
+                WebOverlayForm.BuildLootPanelRecoveryCommand(
+                    binding,
+                    "web_open_failed",
+                    "recovery.nonce.2"));
+            Assert.Null(map["sourceKind"]);
+        }
+
+        [Fact]
         public void ShouldReturnBaseOnPanelClose_OnlyArenaReturnBaseFlagTriggers()
         {
             Assert.True(WebOverlayForm.ShouldReturnBaseOnPanelClose(
@@ -225,7 +349,242 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("_disposed || _panelMode", restore);
             Assert.Contains("!_panelTakeForeground", restore);
             Assert.Contains("panel_close:settled:", restore);
-            Assert.Contains("_flashFocusRestorer(", restore);
+            Assert.Contains("TryRestoreFlashInputFocusAfterPanelCloseCore(", restore);
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_SessionSnapshotAllowsIdleAndSettledRestore()
+        {
+            int calls = 0;
+            var reasons = new List<string>();
+            Func<string, bool> restore = delegate(string reason)
+            {
+                calls++;
+                reasons.Add(reason);
+                return true;
+            };
+
+            Assert.True(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                disposed: false,
+                panelMode: false,
+                takeForeground: true,
+                sessionForeground: true,
+                restorer: restore,
+                reason: "panel_close:idle:map"));
+            int consumedGeneration = 0;
+            Assert.True(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                panelGeneration: 7,
+                closeGeneration: 7,
+                closeEligible: true,
+                currentSessionForeground: true,
+                consumedGeneration: ref consumedGeneration));
+            Assert.True(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                disposed: false,
+                panelMode: false,
+                takeForeground: true,
+                sessionForeground: true,
+                restorer: restore,
+                reason: "panel_close:settled:map"));
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                7, 7, true, true, ref consumedGeneration));
+
+            Assert.Equal(2, calls);
+            Assert.Equal(new[]
+            {
+                "panel_close:idle:map",
+                "panel_close:settled:map"
+            }, reasons);
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_ExternalSnapshotBlocksBothAttempts()
+        {
+            int calls = 0;
+            Func<string, bool> restore = delegate(string reason)
+            {
+                calls++;
+                return true;
+            };
+
+            Assert.False(WebOverlayForm.TryInvokePanelCloseFocusRestore(
+                false, false, true, false, restore,
+                "panel_close:idle:map"));
+            int consumedGeneration = 0;
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                7, 7, false, false, ref consumedGeneration));
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                7, 7, false, true, ref consumedGeneration));
+            Assert.Equal(0, calls);
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_SessionThenExternalSkipsAndConsumesSettled()
+        {
+            int consumedGeneration = 0;
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                11, 11, true, false, ref consumedGeneration));
+            Assert.Equal(11, consumedGeneration);
+            Assert.False(WebOverlayForm.TryConsumePanelSettledFocusRestore(
+                11, 11, true, true, ref consumedGeneration));
+        }
+
+        [Fact]
+        public void PanelCloseFocusRestore_CoreRechecksLiveForegroundBeforeRestorer()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string core = Slice(
+                source,
+                "private bool TryRestoreFlashInputFocusAfterPanelCloseCore(",
+                "private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(");
+            int liveQuery = core.IndexOf(
+                "TryCapturePanelCloseForeground(",
+                StringComparison.Ordinal);
+            int externalGuard = core.IndexOf(
+                "if (!currentSessionForeground)",
+                StringComparison.Ordinal);
+            int restore = core.IndexOf(
+                "TryInvokePanelCloseFocusRestore(",
+                StringComparison.Ordinal);
+
+            Assert.True(liveQuery >= 0);
+            Assert.True(externalGuard > liveQuery);
+            Assert.True(restore > externalGuard);
+            Assert.Contains("currentSessionForeground,", core);
+            Assert.Contains("currentForeground.IsSessionOwned", core);
+        }
+
+        [Fact]
+        public void PanelCloseCapturesForegroundBeforePanelModeAndHideMutation()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string close = Slice(
+                source,
+                "private void DoForceIdleSequence(string closingPanelName)",
+                "private static void LogIdleStepDuration(");
+
+            int capture = close.IndexOf(
+                "CapturePanelCloseFocusEligibility(panelTag)",
+                StringComparison.Ordinal);
+            int clearMode = close.IndexOf(
+                "_panelMode = false",
+                StringComparison.Ordinal);
+            int hideSequence = close.IndexOf(
+                "DoFullIdleSuspend(closingPanelName, trace)",
+                StringComparison.Ordinal);
+
+            Assert.True(capture >= 0);
+            Assert.True(clearMode > capture);
+            Assert.True(hideSequence > clearMode);
+        }
+
+        [Fact]
+        public void PanelCloseFocusTelemetry_PairsCloseHideAndRestoreStagesByGeneration()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string capture = Slice(
+                source,
+                "private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(",
+                "public void ForceIdleState(");
+            Assert.Contains("new PanelCloseFocusTraceContext(", capture);
+            Assert.Contains("Stopwatch.GetTimestamp()", capture);
+            Assert.Contains("RegisterPanelCloseFocusTraceForSettled(trace)", capture);
+            Assert.Contains("\"close_start\"", capture);
+
+            string idle = Slice(
+                source,
+                "private void DoFullIdleSuspend(",
+                "private void SuspendWebTimers()");
+            Assert.Contains("PanelCloseFocusTraceContext trace", idle);
+            int hideBefore = idle.IndexOf("\"hide_before\"", StringComparison.Ordinal);
+            int hide = idle.IndexOf("ShowWindow(this.Handle, SW_HIDE)", StringComparison.Ordinal);
+            int hideAfter = idle.IndexOf("\"hide_after\"", StringComparison.Ordinal);
+            Assert.True(hideBefore >= 0);
+            Assert.True(hide > hideBefore);
+            Assert.True(hideAfter > hide);
+            Assert.Contains("ClassifyPanelCloseHandoffTransition(", idle);
+
+            string restore = Slice(
+                source,
+                "private bool TryRestoreFlashInputFocusAfterPanelCloseCore(",
+                "private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(");
+            int restoreBefore = restore.IndexOf("\"restore_before\"", StringComparison.Ordinal);
+            int invoke = restore.IndexOf("TryInvokePanelCloseFocusRestore(", StringComparison.Ordinal);
+            int restoreResult = restore.IndexOf(
+                "\"restore_result\"",
+                invoke,
+                StringComparison.Ordinal);
+            Assert.True(restoreBefore >= 0);
+            Assert.True(invoke > restoreBefore);
+            Assert.True(restoreResult > invoke);
+
+            string trace = Slice(
+                source,
+                "private void LogPanelCloseFocusTrace(",
+                "private void LogPanelCloseFocusTraceFailure(");
+            Assert.Contains("[PanelFocusHandoff] generation=", trace);
+            Assert.Contains("trace.Generation", trace);
+            Assert.Contains("trace.PanelTag", trace);
+            Assert.Contains("ElapsedMs(trace.StartedAt)", trace);
+            Assert.Contains("elapsed=", trace);
+            Assert.Contains("foreground=", trace);
+            Assert.Contains("kind=", trace);
+            Assert.DoesNotContain("_panelCloseFocusTraceGeneration", source);
+            Assert.DoesNotContain("_panelCloseFocusTracePanelTag", source);
+            Assert.DoesNotContain("_panelCloseFocusTraceStartedAt", source);
+
+            string close = Slice(
+                source,
+                "private void DoForceIdleSequence(string closingPanelName)",
+                "private static void LogIdleStepDuration(");
+            Assert.Contains("PanelCloseFocusTraceContext trace", close);
+            Assert.Contains("DoFullIdleSuspend(closingPanelName, trace)", close);
+
+            string settled = Slice(
+                source,
+                "internal bool RestoreFlashInputFocusAfterPanelClose(",
+                "private bool TryRestoreFlashInputFocusAfterPanelCloseCore(");
+            Assert.Contains("ResolvePanelCloseFocusTraceForStage(", settled);
+            Assert.Contains("result=stale_stage_rejected", source);
+        }
+
+        [Fact]
+        public void PanelCloseFocusTraceContext_RejectsInterleavedGenerationAndPanel()
+        {
+            var first = new WebOverlayForm.PanelCloseFocusTraceContext(
+                7, "map", 101);
+            var replacement = new WebOverlayForm.PanelCloseFocusTraceContext(
+                8, "tasks", 202);
+            var samePanelReplacement =
+                new WebOverlayForm.PanelCloseFocusTraceContext(
+                    8, "map", 303);
+
+            Assert.True(first.IsValid);
+            Assert.True(first.Matches(7, "map"));
+            Assert.False(first.Matches(8, "map"));
+            Assert.False(first.Matches(7, "tasks"));
+            Assert.True(replacement.Matches(8, "tasks"));
+            Assert.False(replacement.Matches(7, "map"));
+            Assert.True(samePanelReplacement.Matches(8, "map"));
+            Assert.False(samePanelReplacement.Matches(7, "map"));
+            Assert.False(default(WebOverlayForm.PanelCloseFocusTraceContext)
+                .IsValid);
+
+            int matchCount;
+            WebOverlayForm.PanelCloseFocusTraceContext unique =
+                WebOverlayForm.SelectUniquePanelCloseFocusTrace(
+                    new[] { first, replacement },
+                    "map",
+                    out matchCount);
+            Assert.Equal(1, matchCount);
+            Assert.True(unique.Matches(7, "map"));
+
+            WebOverlayForm.PanelCloseFocusTraceContext ambiguous =
+                WebOverlayForm.SelectUniquePanelCloseFocusTrace(
+                    new[] { first, samePanelReplacement },
+                    "map",
+                    out matchCount);
+            Assert.Equal(2, matchCount);
+            Assert.False(ambiguous.IsValid);
         }
 
         [Fact]

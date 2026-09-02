@@ -23,9 +23,15 @@
     var candidateChannel = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-candidate-channel.js')
         : root && root.CharacterBuildCandidateChannel;
+    var itemUse = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-item-use.js')
+        : root && root.CharacterBuildItemUse;
+    var itemUseChannel = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-item-use-channel.js')
+        : root && root.CharacterBuildItemUseChannel;
     var api = factory(
         session, view, tuning, mutation, pose, projection, candidateTooltip,
-        transport, candidateChannel, root);
+        transport, candidateChannel, itemUse, itemUseChannel, root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -34,7 +40,8 @@
     }
 })(typeof window !== 'undefined' ? window : globalThis,
 function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
-        CandidateTooltipModule, Transport, CandidateChannel, global) {
+        CandidateTooltipModule, Transport, CandidateChannel, ItemUseModule,
+        ItemUseChannel, global) {
     'use strict';
     if (!SessionModule || !SessionModule.CharacterBuildSession) throw new Error('CharacterBuildSession is required');
     if (!ViewModule || !ViewModule.CharacterBuildView) throw new Error('CharacterBuildView is required');
@@ -52,6 +59,12 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
     }
     if (!CandidateChannel || typeof CandidateChannel.install !== 'function') {
         throw new Error('CharacterBuildCandidateChannel is required');
+    }
+    if (!ItemUseModule || typeof ItemUseModule.Controller !== 'function') {
+        throw new Error('CharacterBuildItemUse is required');
+    }
+    if (!ItemUseChannel || typeof ItemUseChannel.install !== 'function') {
+        throw new Error('CharacterBuildItemUseChannel is required');
     }
     var MANIFEST_URL = 'assets/dressup/manifest.json';
     // Structural body fields define stable framing; pose extremities stay draw-only for inspection.
@@ -94,6 +107,22 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             ports:this._ports,
             onApplied:function(response) { self._applySnapshot(response.payload, true); }
         });
+        this._itemUse = new ItemUseModule.Controller({
+            send:options.send,
+            setTimer:options.setTimer,
+            clearTimer:options.clearTimer,
+            timeoutMs:options.timeoutMs,
+            sessionNonce:options.sessionNonce,
+            router:options.router,
+            onState:function(state, reason) {
+                self._itemUseStateChanged(state, reason);
+            },
+            onSettled:function(response, committed, pending) {
+                self._itemUseSettled(response, committed, pending);
+            },
+            onInbox:function(inbox) { self._itemUseInboxChanged(inbox); },
+            onCooldown:function(lanes) { self._itemUseCooldownChanged(lanes); }
+        });
         this._view = null;
         this._tuning = null;
         this._renderer = null;
@@ -111,6 +140,9 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._resizeObserver = null;
         this._panelInstanceId = '';
         this._candidateRecoverySequence = 0;
+        this._itemUseBindKey = '';
+        this._itemUseResumeSelection = null;
+        this._rewardAuthority = null;
         this._tuningTransport = {
             send:options.send,
             timeoutMs:options.timeoutMs,
@@ -129,8 +161,16 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             this._candidateCache = null;
         }
         var tuningLocked = !!(this._tuning && this._tuning.isLocked());
+        var itemUseState = this._itemUse
+            ? this._itemUse.debugState().state : 'closed';
+        var itemUsePending = itemUseState === 'write_pending'
+            || itemUseState === 'query_pending';
+        var itemUseUnknown = itemUseState === 'needs_reconcile';
         if (this._ports.setStatus) {
-            var label = tuningLocked ? '正在同步装备调制'
+            var label = itemUseState === 'write_pending' ? '正在使用物品'
+                : itemUseState === 'query_pending' ? '正在确认物品使用结果'
+                : itemUseUnknown ? '物品使用结果待确认'
+                : tuningLocked ? '正在同步装备调制'
                 : reason === 'mutation_reconciled' ? '写入结果已确认'
                 : state === 'opening' || state === 'opening_reconcile' ? '正在确认构筑会话'
                 : state === 'write_pending' ? '正在写入构筑'
@@ -138,17 +178,27 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 : state === 'needs_reconcile' ? '等待结果确认'
                 : state === 'flush_failed' ? '应用或保存失败'
                 : debug && debug.liveRefreshDirty ? '构筑待应用' : '已同步';
-            this._ports.setStatus(label, state === 'flush_failed' || state === 'needs_reconcile'
+            this._ports.setStatus(label, itemUseUnknown
+                || state === 'flush_failed' || state === 'needs_reconcile'
                 ? 'warning' : state === 'opening' || state === 'opening_reconcile'
-                    || state === 'flush_pending' ? 'busy' : 'ready');
+                    || state === 'flush_pending' || itemUsePending ? 'busy' : 'ready');
         }
-        if (this._view) this._view.setInteractionState(tuningLocked ? 'write_pending'
-            : state === 'needs_reconcile' && debug && debug.unknown
-                && debug.unknown.kind === 'mutation' ? 'mutation_reconcile' : state);
+        if (this._view) {
+            this._view.setInteractionState(itemUsePending ? 'write_pending'
+                : itemUseUnknown ? 'mutation_reconcile'
+                : tuningLocked ? 'write_pending'
+                : state === 'needs_reconcile' && debug && debug.unknown
+                    && debug.unknown.kind === 'mutation' ? 'mutation_reconcile' : state);
+            this._view.setItemUseState(itemUseState);
+        }
         if (this._ports.setInteractionLocked) {
-            var locked = tuningLocked || state === 'write_pending'
+            var locked = tuningLocked || itemUsePending || itemUseUnknown
+                || state === 'write_pending'
                 || state === 'needs_reconcile' || state === 'flush_pending';
-            this._ports.setInteractionLocked(locked, tuningLocked
+            this._ports.setInteractionLocked(locked, itemUseUnknown
+                ? '物品使用结果尚待确认；只会查询结果，不会自动重放使用。'
+                : itemUsePending ? '物品使用正在处理，完成后才能切换整备目标。'
+                : tuningLocked
                 ? this._tuning.lockReason() : state === 'needs_reconcile'
                 ? '写入结果尚待确认，完成对账后才能进入收纳。'
                 : state === 'write_pending' ? '构筑正在写入，完成后才能进入收纳。'
@@ -158,7 +208,10 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
     };
     CharacterBuildController.prototype._error = function(response, command) {
         var error = response && response.error;
-        if (command === 'candidates' && error === 'stale_state') return;
+        // Candidate failures already render in the Web candidate pane, including
+        // stale-state recovery. Repeating them in the Flash HUD is both delayed
+        // and can outlive a successful tuning commit during close/finalize.
+        if (command === 'candidates') return;
         // Tooltip 是悬浮/焦点触发的展示增强；失败时保留本地紧凑摘要，
         // 不用 toast 打断玩家当前的构筑操作。
         if (command === 'tooltip') return;
@@ -190,7 +243,9 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 return self._changeCandidateScope(scope, selection);
             },
             onCandidateSelect:function(candidate) {
-                self._selectedCandidate = candidate; self._renderPortrait(candidate);
+                self._selectedCandidate = candidate;
+                if (self._view) self._view.setItemUseCandidate(candidate);
+                self._renderPortrait(candidate);
             },
             bindCandidateTooltip:function(node, candidate, isSuppressed) {
                 return self._candidateTooltip
@@ -210,6 +265,10 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             onCommitCandidate:function(candidate) {
                 return self._mutations.equip(self._selectedTarget, candidate);
             },
+            onUseCandidate:function(candidate) {
+                return self._useCandidate(candidate);
+            },
+            onOpenInbox:function() { return self._openRewardInbox(); },
             onSlotDropEquip:function(slotKey, candidate) {
                 return self._equipDroppedCandidate(slotKey, candidate);
             },
@@ -258,6 +317,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             sessionNonce:this._tuningTransport.sessionNonce,
             density:this._ports.getDensity ? this._ports.getDensity() : 'full',
             projectCandidates:Projection.viewCandidates,
+            bindCandidateTooltip:this._candidateTooltip
+                ? this._candidateTooltip.bind.bind(this._candidateTooltip) : null,
             invalidateCandidateTooltip:function() {
                 if (self._candidateTooltip) self._candidateTooltip.invalidate();
             },
@@ -324,7 +385,24 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
     CharacterBuildController.prototype._renderPortrait = function(candidate) {
         if (!this._renderer) return false;
         this._rendererState = this._portraitState(candidate);
-        return this._rendererState ? !!this._renderer.render(this._rendererState) : false;
+        var rendered = this._rendererState ? !!this._renderer.render(this._rendererState) : false;
+        if (rendered && !candidate) this._flashDollSwap();
+        return rendered;
+    };
+    // 换装扫描光（与建角页同一签名）：只在装备真实变更（非候选试穿）重绘时触发。
+    CharacterBuildController.prototype._flashDollSwap = function() {
+        if (global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var canvas = this._view && typeof this._view.getCanvas === 'function'
+            ? this._view.getCanvas() : null;
+        var stage = canvas && canvas.parentElement;
+        if (!stage || !stage.classList || !stage.classList.contains('character-build-doll-stage')) return;
+        stage.classList.remove('cb-doll-swapping');
+        void stage.offsetWidth;
+        stage.classList.add('cb-doll-swapping');
+        stage.addEventListener('animationend', function handler() {
+            stage.removeEventListener('animationend', handler);
+            stage.classList.remove('cb-doll-swapping');
+        });
     };
     CharacterBuildController.prototype._applySnapshot = function(
             payload, restoreSelection, deferCandidates) {
@@ -336,7 +414,11 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 this._panelInstanceId,
                 this._session.getSessionGeneration());
         }
-        this._createView().setSnapshot(Projection.viewSnapshot(payload));
+        var projected = Projection.viewSnapshot(payload);
+        this._createView().setSnapshot(projected);
+        this._itemUseCooldownFromSnapshot(projected);
+        this._view.setItemUseCandidate(null);
+        this._bindItemUse();
         this._ensureRenderer();
         this._renderPortrait(null);
         var restored = restoreSelection !== false && this._selectedSlotKey
@@ -415,6 +497,11 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._mountGeneration++;
         if (this._candidateTooltip) this._candidateTooltip.suspend();
         this._candidateCache = null;
+        this._stopItemUseCooldownPolling();
+        if (this._itemUse) this._itemUse.close();
+        this._itemUseBindKey = '';
+        this._itemUseResumeSelection = null;
+        this._rewardAuthority = null;
         this._session.suspendView();
         if (this._tuning) this._tuning.destroy();
         this._tuning = null;
@@ -453,12 +540,19 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         return this._ports.openModal ? !!this._ports.openModal({
             kind:'character-build-help',
             title:'角色构筑帮助',
-            message:'未选择栏位时默认显示背包总览，可把物品直接拖到高亮兼容栏位完成配装。选择任一装备/药剂栏会切换为当前栏位的兼容候选。',
-            detail:'总览不会猜测目标栏位：装备按权威槽位白名单高亮，药剂可放入任一药剂栏，其他物品只供查看。兼容范围中首次 Enter 或 Space 只固定预览，Space 不提交；同一候选再次按 Enter、双击或主按钮才提交。占用栏位可显式卸下或调制；写入结果未知时只拉取权威快照，绝不重放写入。',
+            message:'未选择栏位时默认显示背包总览，可把装备拖到高亮栏位；礼包与药剂则在选中后用明确按钮打开或服用。',
+            detail:'选择装备/药剂栏会切换到该栏位的兼容候选，主按钮仍用于装备或装入。背包总览中的可用物品只响应按钮或再次按 Enter，不响应双击；礼包内容进入待领取页，药剂由系统选择符合规则的冷却通道。结果未知时只查询原操作，不会自动重放。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]
         }) : false;
     };
     CharacterBuildController.prototype.finalize = function(callback) {
+        var itemUseState = this._itemUse.debugState().state;
+        if (itemUseState !== 'idle' && itemUseState !== 'closed') {
+            if (callback) callback(false, {
+                success:false, error:'item_use_pending'
+            }, itemUseState === 'needs_reconcile');
+            return null;
+        }
         if (this._tuning && this._tuning.isActive()) {
             var self = this;
             return this._tuning.exit(function(detached) {
@@ -472,7 +566,9 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
     };
     CharacterBuildController.prototype.canLeave = function() {
         var state = this._session.getState();
-        return state === 'idle' || state === 'flush_failed';
+        var itemUseState = this._itemUse.debugState().state;
+        return (itemUseState === 'idle' || itemUseState === 'closed')
+            && (state === 'idle' || state === 'flush_failed');
     };
     CharacterBuildController.prototype.prepareLeave = function(callback) {
         if (this._tuning && this._tuning.isActive()) {
@@ -487,12 +583,15 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         });
     };
     CharacterBuildController.prototype.canClose = function() {
-        return !(this._tuning && this._tuning.isActive()) && this._session.canClose();
+        var itemUseState = this._itemUse.debugState().state;
+        return (itemUseState === 'idle' || itemUseState === 'closed')
+            && !(this._tuning && this._tuning.isActive()) && this._session.canClose();
     };
     CharacterBuildController.prototype.destroy = function() {
         this._candidateRecoverySequence++;
         this.suspend();
         if (this._candidateTooltip) this._candidateTooltip.destroy();
+        this._itemUse.destroy();
         this._session.destroy();
         this._mutations.destroy();
         return true;
@@ -508,11 +607,18 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             candidateTooltip:this._candidateTooltip
                 ? this._candidateTooltip.debugState() : null,
             candidateCacheCount:this._candidateCache ? 1 : 0,
+            itemUseResumeSelection:this._itemUseResumeSelection ? {
+                physicalSlot:this._itemUseResumeSelection.physicalSlot,
+                itemName:this._itemUseResumeSelection.itemName,
+                requestKey:this._itemUseResumeSelection.requestKey || ''
+            } : null,
+            itemUse:this._itemUse.debugState(),
             session:this._session.debugState(),
             view:this._view ? this._view.debugState() : null
         };
     };
 
+    ItemUseChannel.install(CharacterBuildController.prototype);
     CandidateChannel.install(CharacterBuildController.prototype);
     return {
         CharacterBuildController:CharacterBuildController,

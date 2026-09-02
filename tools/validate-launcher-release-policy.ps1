@@ -274,6 +274,8 @@ function Get-Cf7ProductionChecks {
         'modules\character-build\character-build-pose.js',
         'modules\character-build\character-build-projection.js',
         'modules\character-build\character-build-transport.js',
+        'modules\character-build\character-build-item-use.js',
+        'modules\character-build\character-build-item-use-channel.js',
         'modules\character-build\character-build-candidate-channel.js',
         'modules\character-build.js',
         'modules\item-filter.js', 'modules\kshop-runtime.js',

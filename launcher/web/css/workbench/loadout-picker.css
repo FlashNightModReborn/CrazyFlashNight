@@ -128,15 +128,25 @@
     border-color:var(--wb-danger);
 }
 .character-build-slot[data-drug-ready="false"] .character-build-slot-card::before {
-    content:attr(data-cooldown-progress) '%';
+    content:"";
     position:absolute;
-    z-index:7;
-    right:2px;
-    bottom:2px;
-    padding:1px 2px;
-    color:var(--wb-warning);
-    background:color-mix(in srgb,var(--wb-bg) 88%,transparent);
-    font:700 10px/1 "Consolas",monospace;
+    z-index:1;
+    inset:0 0 auto;
+    height:calc(100% - var(--drug-cooldown-progress,0%));
+    background:color-mix(in srgb,var(--wb-bg) 74%,transparent);
+    border-bottom:1px solid color-mix(in srgb,var(--wb-warning) 45%,transparent);
+    box-sizing:border-box;
+    pointer-events:none;
+    transition:height var(--wb-motion-standard) var(--wb-ease-linear);
+}
+.character-build-slot[data-drug-state="unavailable"] .character-build-slot-card::before {
+    height:100%;
+    border-bottom-color:color-mix(in srgb,var(--wb-danger) 55%,transparent);
+}
+@media (prefers-reduced-motion:reduce) {
+    .character-build-slot[data-drug-ready="false"] .character-build-slot-card::before {
+        transition:none;
+    }
 }
 
 .character-build-slot-label {

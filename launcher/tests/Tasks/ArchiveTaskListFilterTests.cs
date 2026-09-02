@@ -10,7 +10,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using CF7Launcher.Guardian.Handlers;
 using CF7Launcher.Tasks;
+using CF7Launcher.Tests.Save;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -109,6 +112,179 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("test1", slotNames[0]);
         }
 
+        [Fact]
+        public void List_ProjectsStableSlotKeyDisplayNameAndCharacterName()
+        {
+            JObject snapshot = RebuildBackupStoreTests.BuildSnapshot("角色甲", 7);
+            WriteJson("slot_a.json", snapshot.ToString(Formatting.None));
+            string normalized;
+            string error;
+            Assert.True(_archive.SlotCatalog.TrySetDisplayName(
+                "slot_a", " 一周目 ", out normalized, out error), error);
+
+            JObject slot = (JObject)Assert.Single(ListSlots());
+            Assert.Equal("slot_a", slot.Value<string>("slotKey"));
+            Assert.Equal("slot_a", slot.Value<string>("slot"));
+            Assert.Equal("一周目", slot.Value<string>("displayName"));
+            Assert.Equal("角色甲", slot.Value<string>("characterName"));
+            Assert.Equal("角色甲 Lv.7", slot.Value<string>("mainProgress"));
+        }
+
+        [Fact]
+        public void List_MalformedMetadataFallsBackWithoutBlocking()
+        {
+            JObject snapshot = RebuildBackupStoreTests.BuildSnapshot("角色乙", 3);
+            WriteJson("slot_b.json", snapshot.ToString(Formatting.None));
+            WriteJson(".slot-display-names.json", "{ malformed");
+
+            JObject slot = (JObject)Assert.Single(ListSlots());
+            Assert.Equal("slot_b", slot.Value<string>("slotKey"));
+            Assert.Equal("角色乙", slot.Value<string>("displayName"));
+            Assert.Equal("角色乙", slot.Value<string>("characterName"));
+            Assert.False(_archive.SlotExistsSync("metadata_ghost"));
+        }
+
+        [Fact]
+        public void List_CatalogOnlyIdentityRemainsVisibleAndPassesStartGate()
+        {
+            const string slotKey = "cf7_metadata_only";
+            string normalized;
+            string error;
+            Assert.True(_archive.SlotCatalog.TrySetDisplayName(
+                slotKey, "断线恢复槽位", out normalized, out error), error);
+            Assert.False(File.Exists(Path.Combine(_savesDir, slotKey + ".json")));
+            Assert.False(File.Exists(Path.Combine(_savesDir, slotKey + ".tombstone")));
+
+            Assert.True(_archive.SlotExistsSync(slotKey));
+            JObject slot = (JObject)Assert.Single(ListSlots());
+            Assert.Equal(slotKey, slot.Value<string>("slotKey"));
+            Assert.Equal(slotKey, slot.Value<string>("slot"));
+            Assert.Equal("断线恢复槽位", slot.Value<string>("displayName"));
+            Assert.Null(slot["characterName"].Value<string>());
+
+            string discovered;
+            Assert.True(BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                new JObject { ["slot"] = slotKey },
+                "slot",
+                _archive,
+                out discovered,
+                out error), error);
+            Assert.Equal(slotKey, discovered);
+        }
+
+        [Fact]
+        public void List_PreservesDiscoveredLegacyStemLongerThanNewKeyLimit()
+        {
+            string legacy = new string('c', 64) + "_legacy";
+            JObject snapshot = RebuildBackupStoreTests.BuildSnapshot("旧角色", 5);
+            WriteJson(legacy + ".json", snapshot.ToString(Formatting.None));
+
+            JObject slot = (JObject)Assert.Single(ListSlots());
+            Assert.Equal(legacy, slot.Value<string>("slotKey"));
+            Assert.Equal(legacy, slot.Value<string>("slot"));
+            Assert.Equal("旧角色", slot.Value<string>("displayName"));
+        }
+
+        [Fact]
+        public void Delete_PreservesCatalogNameAndTombstoneForRebuildIdentity()
+        {
+            const string slotKey = "slot_deleted_identity";
+            WriteJson(
+                slotKey + ".json",
+                RebuildBackupStoreTests.BuildSnapshot("待重建角色", 9)
+                    .ToString(Formatting.None));
+            string normalized;
+            string error;
+            Assert.True(_archive.SlotCatalog.TrySetDisplayName(
+                slotKey,
+                "待重建的一周目",
+                out normalized,
+                out error), error);
+
+            JObject response = Send("delete", slotKey);
+
+            Assert.True(response.Value<bool>("success"));
+            Assert.True(response.Value<bool>("tombstoned"));
+            Assert.False(File.Exists(Path.Combine(_savesDir, slotKey + ".json")));
+            Assert.True(File.Exists(Path.Combine(_savesDir, slotKey + ".tombstone")));
+            Assert.Equal(
+                "待重建的一周目",
+                _archive.SlotCatalog.ReadAll()[slotKey]);
+            JObject listed = (JObject)Assert.Single(ListSlots());
+            Assert.Equal(slotKey, listed.Value<string>("slotKey"));
+            Assert.Equal("待重建的一周目", listed.Value<string>("displayName"));
+            Assert.True(listed.Value<bool>("tombstoned"));
+            Assert.True(_archive.SlotExistsSync(slotKey));
+        }
+
+        [Fact]
+        public void Reset_RemovesPhysicalStateAndCatalogOnlyIdentity()
+        {
+            const string slotKey = "slot_full_reset";
+            WriteJson(
+                slotKey + ".json",
+                RebuildBackupStoreTests.BuildSnapshot("彻底重置角色", 4)
+                    .ToString(Formatting.None));
+            WriteJson(slotKey + ".tombstone", "{\"deletedAt\":\"x\"}");
+            string normalized;
+            string error;
+            Assert.True(_archive.SlotCatalog.TrySetDisplayName(
+                slotKey,
+                "不应留下幽灵",
+                out normalized,
+                out error), error);
+
+            JObject response = Send("reset", slotKey);
+
+            Assert.True(response.Value<bool>("success"));
+            Assert.True(response.Value<bool>("reset"));
+            Assert.False(File.Exists(Path.Combine(_savesDir, slotKey + ".json")));
+            Assert.False(File.Exists(Path.Combine(_savesDir, slotKey + ".tombstone")));
+            Assert.False(_archive.SlotCatalog.ReadAll().ContainsKey(slotKey));
+            Assert.False(_archive.SlotExistsSync(slotKey));
+            Assert.DoesNotContain(
+                ListSlots(),
+                item => item.Value<string>("slotKey") == slotKey);
+        }
+
+        [Fact]
+        public void Reset_MalformedCatalogFailsBeforeDeletingPhysicalState()
+        {
+            const string slotKey = "slot_reset_catalog_error";
+            WriteJson(
+                slotKey + ".json",
+                RebuildBackupStoreTests.BuildSnapshot("保留现场", 6)
+                    .ToString(Formatting.None));
+            WriteJson(slotKey + ".tombstone", "{\"deletedAt\":\"x\"}");
+            WriteJson(".slot-display-names.json", "{ malformed");
+
+            JObject response = Send("reset", slotKey);
+
+            Assert.False(response.Value<bool>("success"));
+            Assert.StartsWith(
+                "slot_catalog_reset_failed:metadata_parse_failed:",
+                response.Value<string>("error"));
+            Assert.True(File.Exists(Path.Combine(_savesDir, slotKey + ".json")));
+            Assert.True(File.Exists(Path.Combine(_savesDir, slotKey + ".tombstone")));
+        }
+
+        [Theory]
+        [InlineData("load")]
+        [InlineData("load_raw")]
+        [InlineData("delete")]
+        [InlineData("reset")]
+        public void SlotMutationAndReadOps_InvalidKeyFailClosed(string op)
+        {
+            WriteJson("slot_bad.json", "{\"sentinel\":true}");
+
+            JObject response = Send(op, "slot?bad");
+
+            Assert.False(response.Value<bool>("success"));
+            Assert.Equal("invalid_slot_key", response.Value<string>("error"));
+            Assert.True(File.Exists(Path.Combine(_savesDir, "slot_bad.json")));
+            Assert.False(File.Exists(Path.Combine(_savesDir, "slot_bad.tombstone")));
+        }
+
         // ───────────── helpers ─────────────
 
         private void WriteJson(string fileName, string content)
@@ -118,9 +294,15 @@ namespace CF7Launcher.Tests.Tasks
 
         private JArray ListSlots()
         {
+            return Send("list", null).Value<JArray>("slots");
+        }
+
+        private JObject Send(string op, string slot)
+        {
             JObject msg = new JObject();
             JObject payload = new JObject();
-            payload["op"] = "list";
+            payload["op"] = op;
+            if (slot != null) payload["slot"] = slot;
             msg["payload"] = payload;
 
             string responseJson = null;
@@ -131,8 +313,8 @@ namespace CF7Launcher.Tests.Tasks
             }
 
             JObject response = JObject.Parse(responseJson);
-            Assert.True(response.Value<bool>("success"));
-            return response.Value<JArray>("slots");
+            if (op == "list") Assert.True(response.Value<bool>("success"));
+            return response;
         }
     }
 }

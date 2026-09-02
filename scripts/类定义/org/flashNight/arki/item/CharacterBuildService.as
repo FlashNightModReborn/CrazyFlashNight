@@ -8,6 +8,8 @@
  * 守住 captured pause lease。
  */
 import org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection;
+import org.flashNight.arki.item.DrugSlotAffinityService;
+import org.flashNight.arki.item.ItemUseService;
 
 class org.flashNight.arki.item.CharacterBuildService {
     private static var MAX_SAFE_STACK_QUANTITY:Number = 9007199254740991;
@@ -71,6 +73,11 @@ class org.flashNight.arki.item.CharacterBuildService {
     public static function install():Void {
         if (_inited) return;
         var r:Object = root();
+        ItemUseService.setContextValidator(function(panelInstanceId:String,
+                                                     expectedGeneration:Number):Object {
+            return org.flashNight.arki.item.CharacterBuildService
+                .validateItemUseContext(panelInstanceId, expectedGeneration);
+        });
         if (r.gameCommands == undefined) r.gameCommands = {};
         _json = new LiteJSON();
         r.gameCommands["characterBuildSnapshot"] = function(params) {
@@ -180,6 +187,25 @@ class org.flashNight.arki.item.CharacterBuildService {
         } catch (error) {
             return false;
         }
+    }
+
+    /**
+     * ItemUseService 复用角色构筑面板的 exact session authority，但不把
+     * 背包消费伪装成装备 mutation。来源槽位/lease/version 仍由 ItemUseService
+     * 在真正写入前独立复验。
+     */
+    public static function validateItemUseContext(panelInstanceId:String,
+                                                  expectedGeneration:Number):Object {
+        var identity:Object = panelGate(panelInstanceId);
+        if (!identity.success) return identity;
+        if (_writeInProgress) return fail("service_not_ready");
+        if (!_active || _stale) return fail("service_not_ready");
+        if (isNaN(expectedGeneration)
+                || Math.floor(expectedGeneration) != expectedGeneration
+                || expectedGeneration != _sessionGeneration) {
+            return fail("stale_session");
+        }
+        return {success:true};
     }
 
     /**
@@ -1115,6 +1141,14 @@ class org.flashNight.arki.item.CharacterBuildService {
                     expectedLease:lease
                 }
             };
+            if (backpackOverview) {
+                var useCapability:Object = ItemUseService.buildCandidateUseAction(
+                    item, itemData, physicalSlot, lease,
+                    Number(backpackSnapshot.containerVersion));
+                candidateRow.useAction = useCapability.useAction;
+                candidateRow.useBlockedReason = String(
+                    useCapability.useBlockedReason || "");
+            }
             if (equipmentEligibility != null) {
                 candidateRow.equipmentEligibility = {
                     slots:equipmentEligibility.slots,
@@ -1457,6 +1491,10 @@ class org.flashNight.arki.item.CharacterBuildService {
             stackBefore:stackMerge ? Number(targetBefore.value) : 0,
             stackAfter:stackMerge ? mergedValue : 0
         };
+        var affinityPreflight:Object =
+            DrugSlotAffinityService.previewNormalized(
+                root(), _drugInventory);
+        if (!affinityPreflight.ok) return fail("service_not_ready");
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
         return commitDrugMutation(
@@ -1518,6 +1556,10 @@ class org.flashNight.arki.item.CharacterBuildService {
             stackBefore:stackMerge ? Number(targetBefore.value) : 0,
             stackAfter:stackMerge ? Number(destination.value) : 0
         };
+        var affinityPreflight:Object =
+            DrugSlotAffinityService.previewNormalized(
+                root(), _drugInventory);
+        if (!affinityPreflight.ok) return fail("service_not_ready");
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
         return commitDrugMutation(
@@ -1656,6 +1698,12 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (rawAfter <= _drugRawRevision) {
             return poison("needs_reconcile");
         }
+        var affinitySlot:Number = plan.target === _drugInventory
+            ? Number(plan.targetSlot) : Number(plan.sourceSlot);
+        var affinityCommit:Object =
+            DrugSlotAffinityService.recordManualSlots(
+                root(), _drugInventory, [affinitySlot], true);
+        if (!affinityCommit.success) return poison("needs_reconcile");
         _drugRawRevision = rawAfter;
         _drugRevision++;
         markSaveDirty();
@@ -3319,6 +3367,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     public static function testOnlyReset():Void {
+        ItemUseService.setContextValidator(null);
         _testRoot = null;
         _callbacks = null;
         _inited = false;

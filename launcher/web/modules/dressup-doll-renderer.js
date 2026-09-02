@@ -749,6 +749,7 @@ var DressupDollRenderer = (function() {
             var missing = 0;
             var pendingImages = 0;
             var failedImages = 0;
+            var drawnImages = 0;
             function imageDrawable(image) {
                 return !!(image && image.complete && image.naturalWidth > 0);
             }
@@ -772,6 +773,7 @@ var DressupDollRenderer = (function() {
                 });
                 if (imageDrawable(image)) {
                     drawFrameImage(ctx, layer, frame, image);
+                    drawnImages++;
                 } else if (imagePending(image)) {
                     pendingImages++;
                 } else if (imageErrored(image)) {
@@ -816,6 +818,7 @@ var DressupDollRenderer = (function() {
                 }
                 if (renderable.entry && image && image.complete && image.naturalWidth > 0) {
                     drawFrameImage(ctx, renderable.entry, frame, image);
+                    drawnImages++;
                 } else if (debugPlaceholders) {
                     drawPlaceholder(ctx, holder, renderable.key, renderable.covered);
                 }
@@ -844,7 +847,8 @@ var DressupDollRenderer = (function() {
                 animated: needsAnimation,
                 missing: missing,
                 pendingImages: pendingImages,
-                failedImages: failedImages
+                failedImages: failedImages,
+                drawnImages: drawnImages
             };
             if (typeof options.onRender === 'function') options.onRender(result);
             return result;

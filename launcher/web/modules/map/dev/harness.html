@@ -85,6 +85,17 @@
     };
 })();
 </script>
+<script>
+window.Icons = {
+    load: function(callback) {
+        if (typeof callback === 'function') callback();
+    },
+    html: function(name, cls) {
+        return '<span class="' + (cls || '') + '" data-icon="'
+            + String(name || '').replace(/"/g, '') + '"></span>';
+    }
+};
+</script>
 <script src="../../bridge.js"></script>
 <script src="../../panels.js"></script>
 <script src="../../minigames/shared/dev/harness-base.js"></script>
@@ -190,7 +201,9 @@ window.BootstrapAudio = (function() {
             disabledIds: parseIds(query.disabled),
             lockedGroups: parseIds(query.lockedGroups),
             taskNpcHotspots: parseIds(query.taskNpcs),
-            failNavigate: query.failNavigate === '1'
+            failNavigate: query.failNavigate === '1',
+            navigationLocked: query.navigationLocked === '1',
+            navigationLockReason: query.navigationLockReason || ''
         },
         sentMessages: [],
         closeCount: 0,
@@ -232,6 +245,8 @@ window.BootstrapAudio = (function() {
                 lockedGroups: this.state.lockedGroups.slice(),
                 taskNpcHotspots: (this.state.taskNpcHotspots || []).slice(),
                 failNavigate: this.state.failNavigate,
+                navigationLocked: this.state.navigationLocked,
+                navigationLockReason: this.state.navigationLockReason,
                 closeCount: this.closeCount,
                 lastNavigateTarget: this.lastNavigateTarget
             };
@@ -316,6 +331,9 @@ window.BootstrapAudio = (function() {
                 defaultPageId: currentPageId,
                 regionId: currentPageId,
                 currentHotspotId: currentHotspotId,
+                navigationLocked: this.state.navigationLocked === true,
+                navigationLockReason: this.state.navigationLocked
+                    ? String(this.state.navigationLockReason || 'stage_run_active') : '',
                 unlocks: unlocks,
                 hotspotStates: hotspotStates,
                 enabledHotspotIds: enabledHotspotIds,

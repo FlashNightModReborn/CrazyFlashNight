@@ -14,7 +14,8 @@
         materials:true};
     var RESERVED = {
         type:true, task:true, domain:true, panel:true, v:true, cmd:true, callId:true,
-        panelInstanceId:true, chestSessionId:true, lootContainerId:true, containerEpoch:true
+        panelInstanceId:true, chestSessionId:true, lootContainerId:true, containerEpoch:true,
+        sourceKind:true
     };
     var RESPONSE_KEYS = {
         type:true, task:true, domain:true, panel:true, cmd:true, callId:true,
@@ -53,6 +54,7 @@
             lootContainerId:opaque(value.lootContainerId, 128),
             containerEpoch:epoch,
             source:value.source === 'map_chest' || value.source === 'stage_settlement'
+                    || value.source === 'reward_inbox'
                 ? value.source : ''
         };
         return identity.panelInstanceId && identity.chestSessionId && identity.lootContainerId && identity.source
@@ -101,13 +103,14 @@
             validateSession:function(session) { return sameIdentity(session, identity); },
             createMessage:function(context) {
                 var message = {
-                    type:'task', task:'loot_request', domain:'loot', panel:'loot', v:1,
+                    type:'task', task:'loot_request', domain:'loot', panel:'loot', v:2,
                     cmd:context.entry.cmd, callId:context.entry.callId,
                     panelInstanceId:identity.panelInstanceId,
                     chestSessionId:identity.chestSessionId,
                     lootContainerId:identity.lootContainerId,
                     containerEpoch:identity.containerEpoch,
                 };
+                if (identity.source === 'reward_inbox') message.sourceKind = 'reward_inbox';
                 return copyFields(message, context.payload);
             },
             validateResponse:function(data, entry) {
@@ -120,7 +123,7 @@
             },
             createSynthetic:function(context) {
                 return {
-                    type:'panel_resp', task:'loot_response', domain:'loot', panel:'loot', v:1,
+                    type:'panel_resp', task:'loot_response', domain:'loot', panel:'loot', v:2,
                     cmd:context.entry.cmd, callId:context.entry.callId,
                     panelInstanceId:identity.panelInstanceId,
                     chestSessionId:identity.chestSessionId,

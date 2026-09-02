@@ -83,6 +83,9 @@ namespace CF7Launcher.Guardian
         private static readonly HashSet<string> CandidateBlockedReasons = Set(
             "level_locked", "cooldown_active", "cooldown_unavailable",
             "incompatible_item");
+        private static readonly HashSet<string> ItemUseBlockedReasons = Set(
+            "", "no_available_lane", "cooldown_unavailable",
+            "player_unavailable", "reward_inbox_full", "service_not_ready");
 
         private readonly object _gate = new object();
         private readonly object _bindingGate = new object();
@@ -265,6 +268,29 @@ namespace CF7Launcher.Guardian
                 return !_disposed && IsOpaque(panelInstanceId)
                     && string.Equals(
                         _panelInstanceId, panelInstanceId, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Atomic authority fence for sibling workbench domains such as item_use. Callers must
+        /// bind both the exact Host panel instance and the AS2-issued CharacterBuild generation.
+        /// </summary>
+        internal bool IsExactSession(
+            string panelInstanceId,
+            long sessionGeneration)
+        {
+            lock (_gate)
+            {
+                return !_disposed && !_bindingChanging
+                    && !_detachRecoveryRequired
+                    && IsOpaque(panelInstanceId)
+                    && sessionGeneration > 0
+                    && _sessionGeneration.HasValue
+                    && _sessionGeneration.Value == sessionGeneration
+                    && string.Equals(
+                        _panelInstanceId,
+                        panelInstanceId,
+                        StringComparison.Ordinal);
+            }
         }
 
         /// <summary>
@@ -2597,18 +2623,22 @@ namespace CF7Launcher.Guardian
             // has to infer a drop target from item use/type.
             bool equipmentEligibilityRequired = kind == "equipment"
                 || (candidateScope == "backpack" && kind == "backpack");
+            bool itemUseCapabilityRequired = kind == "backpack";
 
             int previousPhysicalSlot = -1;
             foreach (JToken token in candidates)
             {
                 JObject row = token as JObject;
-                if (!IsExactObject(
-                        row,
-                        equipmentEligibilityRequired
-                            ? Set("physicalSlot", "disabled", "blockedReason",
-                                "item", "source", "equipmentEligibility")
-                            : Set("physicalSlot", "disabled", "blockedReason",
-                                "item", "source")))
+                HashSet<string> expectedRowKeys = Set(
+                    "physicalSlot", "disabled", "blockedReason", "item", "source");
+                if (equipmentEligibilityRequired)
+                    expectedRowKeys.Add("equipmentEligibility");
+                if (itemUseCapabilityRequired)
+                {
+                    expectedRowKeys.Add("useAction");
+                    expectedRowKeys.Add("useBlockedReason");
+                }
+                if (!IsExactObject(row, expectedRowKeys))
                     return false;
 
                 int physicalSlot;
@@ -2657,6 +2687,21 @@ namespace CF7Launcher.Guardian
                         out majorType,
                         out quantity))
                     return false;
+                if (itemUseCapabilityRequired
+                    && (!IsBoundedText(row["useBlockedReason"], 64, true)
+                        || !ItemUseBlockedReasons.Contains(
+                            ReadString(row["useBlockedReason"]))
+                        || !TryValidateItemUseAction(
+                            row["useAction"],
+                            physicalSlot,
+                            ReadString(source["expectedLease"]),
+                            ReadString((row["item"] as JObject)["name"]),
+                            ReadString((row["item"] as JObject)["use"]),
+                            backpackVersion,
+                            ReadString(row["useBlockedReason"]))))
+                {
+                    return false;
+                }
                 string eligibilityReason = null;
                 string[] eligibleEquipmentSlots = new string[0];
                 if (equipmentEligibilityRequired)
@@ -2746,6 +2791,64 @@ namespace CF7Launcher.Guardian
                 }
             }
             return true;
+        }
+
+        private static bool TryValidateItemUseAction(
+            JToken token,
+            int physicalSlot,
+            string slotLease,
+            string itemName,
+            string itemUse,
+            int backpackVersion,
+            string blockedReason)
+        {
+            if (token == null || token.Type == JTokenType.Null)
+                return blockedReason.Length == 0;
+            JObject action = token as JObject;
+            JObject source = action != null
+                ? action["source"] as JObject : null;
+            string command = ReadString(
+                action != null ? action["command"] : null);
+            string label = ReadString(
+                action != null ? action["label"] : null);
+            int sourceSlot;
+            int sourceBackpackVersion;
+            return IsExactObject(
+                    action, Set("command", "label", "source"))
+                && ((command == "open" && label == "打开")
+                    || (command == "consume" && label == "服用"))
+                && ((command == "open"
+                        && itemUse == "礼包"
+                        && (blockedReason.Length == 0
+                            || blockedReason == "reward_inbox_full"
+                            || blockedReason == "service_not_ready"))
+                    || (command == "consume"
+                        && itemUse == "药剂"
+                        && (blockedReason.Length == 0
+                            || blockedReason == "no_available_lane"
+                            || blockedReason == "cooldown_unavailable"
+                            || blockedReason == "player_unavailable"
+                            || blockedReason == "service_not_ready")))
+                && IsExactObject(
+                    source,
+                    Set("physicalSlot", "slotLease", "itemName",
+                        "backpackVersion"))
+                && TryReadInteger(
+                    source["physicalSlot"],
+                    0,
+                    MaxCandidatePhysicalSlot,
+                    out sourceSlot)
+                && sourceSlot == physicalSlot
+                && IsOpaque(ReadString(source["slotLease"]))
+                && ReadString(source["slotLease"]) == slotLease
+                && IsIdentityText(source["itemName"], 256)
+                && ReadString(source["itemName"]) == itemName
+                && TryReadInteger(
+                    source["backpackVersion"],
+                    0,
+                    int.MaxValue,
+                    out sourceBackpackVersion)
+                && sourceBackpackVersion == backpackVersion;
         }
 
         private static bool IsTooltipProjection(

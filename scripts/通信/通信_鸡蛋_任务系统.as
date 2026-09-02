@@ -535,7 +535,7 @@ _root.FinishTask = function(index) {
     return true;
 }
 
-_root.FinishStage = function(name, difficulty) {
+_root.FinishStage = function(name, difficulty, deferProjection) {
     for (var i in _root.tasks_to_do) {
         var task = _root.tasks_to_do[i];
         var stageArr = task.requirements.stages;
@@ -557,20 +557,30 @@ _root.FinishStage = function(name, difficulty) {
     }
     // Plan A audit: FinishStage 写 tasks_to_do[i].requirements，必须标脏
     _root.存档系统.dirtyMark = true;
-    _root.UpdateTaskProgress();
     //检测更低难度的任务完成
     switch (difficulty) {
         case "地狱":
-            FinishStage(name, "修罗");
+            FinishStage(name, "修罗", true);
             break;
         case "修罗":
-            FinishStage(name, "冒险");
+            FinishStage(name, "冒险", true);
             break;
         case "冒险":
-            FinishStage(name, "简单");
+            FinishStage(name, "简单", true);
             break;
         case "简单":
             break;
+    }
+    // 一次关卡胜利会递归完成全部较低难度要求；只在最外层统一重算，
+    // 避免逐层广播中间态，并让 Launcher 的“前往交付”无需等待后续心跳。
+    if (deferProjection !== true) {
+        _root.UpdateTaskProgress();
+        try {
+            _root.是否达成任务检测();
+        } catch (stageTaskProjectionError) {
+            trace("[FinishStage] post-commit completion projection failed: "
+                + stageTaskProjectionError);
+        }
     }
 }
 

@@ -99,47 +99,58 @@
                 || !Array.isArray(payload.diagnostics)) return false;
         return true;
     }
-    function validCandidates(payload, target, scope) {
+    function candidateValidationError(payload, target, scope) {
         scope = candidateScope(scope);
         var expectedTargetKeys = target && target.kind === 'equipment'
             ? ['kind', 'slotKey'] : target && target.kind === 'drug'
                 ? ['kind', 'drugSlot'] : ['kind'];
         if (!payload || typeof payload !== 'object'
                 || !sameTarget(payload.target, target)
-                || !ownKeys(payload.target, expectedTargetKeys)
-                || !scope || payload.candidateScope !== scope
-                || !Array.isArray(payload.candidates)
+                || !ownKeys(payload.target, expectedTargetKeys)) {
+            return 'target';
+        }
+        if (!scope || payload.candidateScope !== scope) return 'scope';
+        if (!Array.isArray(payload.candidates)
                 || integer(payload.backpackVersion, -1) < 0
                 || typeof payload.stateHealth !== 'string'
-                || !Array.isArray(payload.diagnostics)) return false;
+                || !Array.isArray(payload.diagnostics)) return 'envelope';
         for (var i = 0; i < payload.candidates.length; i++) {
             var row = payload.candidates[i];
             if (!row || typeof row !== 'object'
-                    || !Mutation.validItemIdentity(row.item)) return false;
+                    || !Mutation.validItemIdentity(row.item)) return 'item_identity';
             var equipmentEligibilityRequired = target && (target.kind === 'equipment'
                 || (scope === 'backpack' && target.kind === 'backpack'));
             var hasEligibility = Object.prototype.hasOwnProperty.call(
                 row, 'equipmentEligibility');
-            if (hasEligibility !== equipmentEligibilityRequired) return false;
+            if (hasEligibility !== equipmentEligibilityRequired) {
+                return 'eligibility_presence';
+            }
             if (equipmentEligibilityRequired) {
                 var eligibility = row.equipmentEligibility;
                 if (!ownKeys(eligibility, ['slots', 'blockedReason'])
                         || !Array.isArray(eligibility.slots)
                         || eligibility.slots.length > EQUIPMENT_SLOTS.length
                         || (eligibility.blockedReason !== ''
-                            && eligibility.blockedReason !== 'level_locked')) return false;
+                            && eligibility.blockedReason !== 'level_locked')) {
+                    return 'eligibility_shape';
+                }
                 var previousSlotIndex = -1;
                 for (var slotIndex = 0;
                         slotIndex < eligibility.slots.length;
                         slotIndex++) {
                     var canonicalIndex = EQUIPMENT_SLOTS.indexOf(
                         eligibility.slots[slotIndex]);
-                    if (canonicalIndex <= previousSlotIndex) return false;
+                    if (canonicalIndex <= previousSlotIndex) {
+                        return 'eligibility_order';
+                    }
                     previousSlotIndex = canonicalIndex;
                 }
             }
         }
-        return true;
+        return '';
+    }
+    function validCandidates(payload, target, scope) {
+        return candidateValidationError(payload, target, scope) === '';
     }
     function validTooltip(payload, target) {
         if (!ownKeys(payload, [
@@ -174,6 +185,7 @@
     return {
         commands:COMMANDS.slice(), noop:noop, integer:integer, positive:positive,
         token:token, copy:copy, targetKey:targetKey, candidateScope:candidateScope,
+        candidateValidationError:candidateValidationError,
         definitiveOpenFailure:definitiveOpenFailure,
         validators:{projection:validProjection, candidates:validCandidates,
             tooltip:validTooltip, stats:validStats},

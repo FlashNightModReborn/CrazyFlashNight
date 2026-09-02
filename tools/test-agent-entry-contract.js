@@ -56,24 +56,95 @@ function assertAgentHelperContract(source) {
   }
 }
 
+function extractDomLayer(dom, name) {
+  const marker = `<DOMLayer name="${name}"`;
+  const start = dom.indexOf(marker);
+  if (start < 0 || dom.indexOf(marker, start + marker.length) >= 0) {
+    throw new Error(`expected exactly one main timeline layer: ${name}`);
+  }
+  const end = dom.indexOf("</DOMLayer>", start);
+  if (end < 0) throw new Error(`unterminated main timeline layer: ${name}`);
+  return dom.slice(start, end + "</DOMLayer>".length);
+}
+
+function extractLayerFrames(layer) {
+  return Array.from(layer.matchAll(/<DOMFrame index="(\d+)"([^>]*)>([\s\S]*?)<\/DOMFrame>/g),
+    (match) => {
+      const duration = /\bduration="(\d+)"/.exec(match[2]);
+      return {
+        index: Number(match[1]),
+        duration: duration ? Number(duration[1]) : 1,
+        body: match[3],
+      };
+    });
+}
+
 function assertNormalTimelineContract(dom) {
-  const titleRead = dom.indexOf('_root.gotoAndStop("读盘");');
-  const titleNotify = dom.lastIndexOf("_root.notifyGameEntered();", titleRead);
-  const titleRelease = dom.lastIndexOf("on (release) {", titleRead);
-  const titleScriptEnd = dom.indexOf("]]></script>", titleRead);
-  if (titleRead < 0 || titleNotify < 0 || titleRelease < 0 || titleScriptEnd < 0
-      || !(titleRelease < titleNotify && titleNotify < titleRead && titleRead < titleScriptEnd)) {
-    throw new Error("title save-entry timeline no longer preserves notifyGameEntered -> 读盘 order");
+  const actionFrames = extractLayerFrames(extractDomLayer(dom, "as"));
+  const frame81 = actionFrames.find((frame) => frame.index === 81);
+  if (!frame81 || !frame81.body.includes("_root._bootstrap.sendRevealReady();")
+      || frame81.body.includes("_root.notifyGameEntered();")) {
+    throw new Error("headless frame 81 must emit only the bootstrap reveal checkpoint");
   }
 
-  const frame125Blocks = dom.match(/<DOMFrame index="125"[^>]*>[\s\S]*?<\/DOMFrame>/g) || [];
-  if (!frame125Blocks.some((block) => block.includes("_root.notifyGameEntered();"))) {
-    throw new Error("new-character frame 125 no longer emits notifyGameEntered");
+  const retiredActionFrames = new Set([82, 83, 88, 91, 101, 110, 119, 125]);
+  for (const frame of actionFrames) {
+    if (!retiredActionFrames.has(frame.index)) continue;
+    const script = /<script><!\[CDATA\[([\s\S]*?)\]\]><\/script>/.exec(frame.body);
+    if (!script || script[1].trim() !== "stop();") {
+      throw new Error(`retired author frame ${frame.index + 1} still has timeline side effects`);
+    }
   }
+
+  const retiredVisibleLayers = [
+    "标题画面遮罩",
+    "加载进度条",
+    "Layer 177",
+    "Layer 179",
+    "加载背景",
+  ];
+  for (const name of retiredVisibleLayers) {
+    const frames = extractLayerFrames(extractDomLayer(dom, name));
+    for (const frame of frames) {
+      if (frame.index > 125 || frame.index + frame.duration - 1 < 81) continue;
+      if (!/<elements\s*\/>/.test(frame.body)
+          && !/<elements>\s*<\/elements>/.test(frame.body)) {
+        throw new Error(`${name} still renders legacy UI at author frame ${frame.index + 1}`);
+      }
+    }
+  }
+
   const label125 = dom.indexOf('<DOMFrame index="125" duration="4" name="新人物创建中"');
   const label129 = dom.indexOf('<DOMFrame index="129" duration="6" name="读盘"');
   if (label125 < 0 || label129 < 0 || label125 >= label129) {
-    throw new Error("new-character/read-frame labels no longer preserve the expected order");
+    throw new Error("headless new-character/read-frame gateway labels no longer preserve order");
+  }
+}
+
+function assertFrontdoorServiceContract(service, installer) {
+  const required = [
+    '_root.gameCommands["characterCreationSnapshot"]',
+    '_root.gameCommands["characterCreate"]',
+    '_root.gameCommands["frontdoorEnterResolvedSave"]',
+    "_root._bootstrapAttemptId",
+    "_root.savePath",
+    "_root.notifyGameEntered();",
+    'baseResponse("create", "scene_ready"',
+  ];
+  for (const marker of required) {
+    if (!service.includes(marker)) {
+      throw new Error(`CharacterCreationService is missing frontdoor marker: ${marker}`);
+    }
+  }
+  const sceneReadySubscription = /EventBus\.getInstance\(\)\.subscribe\(\s*"SceneReady"\s*,\s*org\.flashNight\.neur\.Server\.CharacterCreationService\.onSceneReady\s*,\s*null\s*\);/;
+  if (!sceneReadySubscription.test(service)) {
+    throw new Error("CharacterCreationService is missing the semantic SceneReady subscription");
+  }
+  if (service.includes("添加单次任务")) {
+    throw new Error("Web frontdoor SceneReady must not use an artificial frame delay");
+  }
+  if (!installer.includes("CharacterCreationService.install();")) {
+    throw new Error("CharacterCreationService is not installed by the save boot entrypoint");
   }
 }
 
@@ -120,11 +191,14 @@ function checkAgentEntryContract() {
   const frame3Path = "scripts/asLoaderManifest/frame3.as";
   const frame41Path = "scripts/asLoaderManifest/frame41.as";
   const uiManagerPath = "scripts/展现/UI交互/UI交互_lsy_UI管理.as";
+  const frontdoorServicePath = "scripts/类定义/org/flashNight/neur/Server/CharacterCreationService.as";
   const equipmentRunnerPath = "tools/equipment-tuning/run-unattended.js";
   const arenaRunnerPath = "tools/arena-calibration/run-unattended.js";
 
-  assertAgentHelperContract(read(helperPath));
+  const helper = read(helperPath);
+  assertAgentHelperContract(helper);
   assertNormalTimelineContract(read(domPath));
+  assertFrontdoorServiceContract(read(frontdoorServicePath), helper);
   assertBootManifestContract(read(frame3Path), read(frame41Path), read(uiManagerPath));
   assertRunnerTitleFrameGate(read(equipmentRunnerPath), "equipment runner");
   assertRunnerTitleFrameGate(read(arenaRunnerPath), "arena runner");
@@ -133,15 +207,17 @@ function checkAgentEntryContract() {
     ok: true,
     helper: helperPath,
     normalEntry: domPath,
+    frontdoorService: frontdoorServicePath,
     bootOrder: [3, 41],
     uiState: "s:1|ga:<attemptId>",
-    titleFrameGate: "bootstrap_reveal_ready",
+    revealGates: ["bootstrap_reveal_ready", "s:1|ga:<attemptId>"],
   };
 }
 
 module.exports = {
   assertAgentHelperContract,
   assertBootManifestContract,
+  assertFrontdoorServiceContract,
   assertNormalTimelineContract,
   assertRunnerTitleFrameGate,
   checkAgentEntryContract,

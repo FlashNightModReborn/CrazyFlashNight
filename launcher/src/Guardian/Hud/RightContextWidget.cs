@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
+using CF7Launcher.Guardian.Hud.Loot;
 using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Guardian.Hud
@@ -20,9 +22,18 @@ namespace CF7Launcher.Guardian.Hud
         private const int NOTICE_TEXT_PAD_BASE = 8;
         private const int NOTICE_ARROW_W_BASE = 24;
         private const int STAGE_ACTION_W_BASE = 64;
+        private const int STAGE_ACTION_REVIVE_W_BASE = 64;
+        private const int STAGE_ACTION_PRIMARY_W_BASE = 80;
+        private const int STAGE_ACTION_SECONDARY_W_BASE = 48;
         private const int STAGE_ACTION_SINGLE_W_BASE = 84;
         private const int STAGE_ACTION_GAP_BASE = 4;
         private const int STAGE_ACTION_INSET_BASE = 4;
+        private const int STAGE_ACTION_LABEL_PAD_X_BASE = 1;
+        private const int STAGE_BALANCE_ICON_BASE = 16;
+        private const int STAGE_BALANCE_ICON_COMPACT_BASE = 14;
+        private const int STAGE_BALANCE_ICON_MICRO_BASE = 12;
+        private const int STAGE_BALANCE_GAP_BASE = 2;
+        private const int STAGE_BALANCE_GAP_COMPACT_BASE = 1;
         private const int MAP_BODY_INSET_BASE = 8;
         private const int MAP_LABEL_PAD_X_BASE = 6;
         private const int MAP_LABEL_PAD_Y_BASE = 2;
@@ -35,6 +46,7 @@ namespace CF7Launcher.Guardian.Hud
         private const string ICON_STAGE_FAILURE = "!";
         private const string ICON_STAGE_DEAD = "!";
         private const string ICON_STAGE_REWARDS = "◆";
+        private const string REVIVE_COIN_ICON = "复活币";
 
         private static readonly string[] TOOL_KEYS = { "TASK_MAP", "TASK_UI", "EQUIP_UI", "GAMESETTINGS", "PAUSE", "SAFEEXIT" };
         private static readonly string[] TOOL_LABELS_DEFAULT = { "地图", "任务", "装备", "⚙", "Ⅱ", "×" };
@@ -76,6 +88,21 @@ namespace CF7Launcher.Guardian.Hud
             public string Icon;
         }
 
+        private struct StageActionGestureToken
+        {
+            public bool Valid;
+            public string ActionId;
+            public string RunId;
+            public int Revision;
+        }
+
+        private struct NoticeGestureToken
+        {
+            public bool Valid;
+            public string Command;
+            public string PayloadSignature;
+        }
+
         private sealed class StageActionSpec
         {
             public string Id;
@@ -84,9 +111,24 @@ namespace CF7Launcher.Guardian.Hud
             public bool Enabled;
         }
 
+        private struct StageBalanceVisualLayout
+        {
+            public Bitmap Icon;
+            public string LabelText;
+            public string MetaText;
+            public Font LabelFont;
+            public Font MetaFont;
+            public RectangleF LabelRect;
+            public Rectangle IconRect;
+            public RectangleF MetaRect;
+            public bool Compact;
+            public bool Fits;
+        }
+
         private readonly Control _anchor;
         private readonly LauncherCommandRouter _router;
         private readonly MapHudDataCatalog _catalog;
+        private readonly LootIconCatalog _itemIcons;
         private readonly FlashCoordinateMapper _mapper;
 
         private volatile bool _gameReady;
@@ -127,6 +169,8 @@ namespace CF7Launcher.Guardian.Hud
 
         private HitInfo _hover;
         private HitInfo _down;
+        private StageActionGestureToken _downStageActionToken;
+        private NoticeGestureToken _downNoticeToken;
 
         // ── P0 perf：GDI+ 资源静态/实例缓存 ──
         // PaintTools / PaintMapLabel / PaintNotice 的稳定 GDI+ 资源复用。
@@ -156,6 +200,7 @@ namespace CF7Launcher.Guardian.Hud
         private static readonly StringFormat FMT_CENTER       = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoClip, StringTrimming.None);
         private static readonly StringFormat FMT_CENTER_ELLIPSIS = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoClip, StringTrimming.EllipsisCharacter);
         private static readonly StringFormat FMT_NEAR_NOWRAP_ELLIPSIS = MakeFmt(StringAlignment.Near, StringAlignment.Center, StringFormatFlags.NoWrap, StringTrimming.EllipsisCharacter);
+        private static readonly StringFormat FMT_STAGE_ACTION = MakeFmt(StringAlignment.Center, StringAlignment.Center, StringFormatFlags.NoWrap | StringFormatFlags.LineLimit, StringTrimming.EllipsisCharacter);
 
         private static StringFormat MakeFmt(StringAlignment h, StringAlignment v, StringFormatFlags flags, StringTrimming trim)
         {
@@ -166,7 +211,7 @@ namespace CF7Launcher.Guardian.Hud
             return f;
         }
 
-        // 实例 Font 缓存：scale 变化时整体重建（5 个不同 family/size/style）
+        // 实例 Font 缓存：scale 变化时整体重建（6 个不同 family/size/style）
         // 实例字段不能跨线程：Prewarm 走静态 base font，Paint 走实例 scaled font，二者互不触碰
         // —— 避免 PrewarmGdi (ThreadPool) 与 Paint (UI) 之间 EnsureFonts 重建期的 Font 竞争。
         private float _cachedFontScale = -1f;
@@ -175,6 +220,8 @@ namespace CF7Launcher.Guardian.Hud
         private Font _fontMapLabel115Bold;    // PaintMapLabel "Microsoft YaHei" 11.5 Bold
         private Font _fontQuest12;            // 地图预览尺寸切换按钮
         private Font _fontNoticeJuke11;       // 条件状态槽 / hover tooltip
+        private Font _fontStageActionCompact9;// 极长复活币计数的单行降级
+        private Font _fontStageActionMicro8;  // 合法 long 上界的最终单行降级
 
         // 静态 base font（scale=1）：Prewarm + 测试探针专用，避免与实例 _font* 跨线程共用。
         // 进程级共享 + 不 dispose（与 ComboWidget._baseTypedFont 等同形）；double-checked lock 懒初始化。
@@ -219,7 +266,7 @@ namespace CF7Launcher.Guardian.Hud
                     string[] samples = {
                         "地图 任务 装备",
                         "⚙ Ⅱ ▶ × ＋ － ➤",
-                        "展开预览 缩略预览 任务已达成 可交付"
+                        "展开预览 缩略预览 任务已达成 可交付 持有 复活币 回基地"
                     };
                     // 只接静态 base font，不触碰任何实例 _font*；与 UI 线程 Paint 路径完全无共享状态
                     g.DrawString(samples[0], _baseTools15Bold,     BR_TOOLS_FG,         0f,  0f);
@@ -241,6 +288,8 @@ namespace CF7Launcher.Guardian.Hud
             _fontMapLabel115Bold = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
             _fontQuest12         = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _fontNoticeJuke11    = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontStageActionCompact9 = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontStageActionMicro8 = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(8f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _cachedFontScale = scale;
         }
 
@@ -251,6 +300,8 @@ namespace CF7Launcher.Guardian.Hud
             if (_fontMapLabel115Bold != null) { _fontMapLabel115Bold.Dispose(); _fontMapLabel115Bold = null; }
             if (_fontQuest12 != null)         { _fontQuest12.Dispose();         _fontQuest12 = null; }
             if (_fontNoticeJuke11 != null)    { _fontNoticeJuke11.Dispose();    _fontNoticeJuke11 = null; }
+            if (_fontStageActionCompact9 != null) { _fontStageActionCompact9.Dispose(); _fontStageActionCompact9 = null; }
+            if (_fontStageActionMicro8 != null) { _fontStageActionMicro8.Dispose(); _fontStageActionMicro8 = null; }
             _cachedFontScale = -1f;
         }
 
@@ -273,13 +324,15 @@ namespace CF7Launcher.Guardian.Hud
             LauncherCommandRouter router,
             MapHudDataCatalog catalog,
             MapDisplayPreference mapDisplayPreference = MapDisplayPreference.Auto,
-            Action<MapDisplayPreference> onMapDisplayPreferenceChanged = null)
+            Action<MapDisplayPreference> onMapDisplayPreferenceChanged = null,
+            LootIconCatalog itemIcons = null)
         {
             if (anchor == null) throw new ArgumentNullException("anchor");
             if (router == null) throw new ArgumentNullException("router");
             _anchor = anchor;
             _router = router;
             _catalog = catalog;
+            _itemIcons = itemIcons;
             _mapDisplayPreference = mapDisplayPreference;
             _onMapDisplayPreferenceChanged = onMapDisplayPreferenceChanged;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
@@ -741,8 +794,12 @@ namespace CF7Launcher.Guardian.Hud
                     r.Bottom - WidgetScaler.Px(4, scale), scale);
                 g.DrawString(StageIcon(state), _fontNoticeJuke11,
                     accentBrush, iconRect, FMT_CENTER);
-                g.DrawString(StageDecisionText(state), _fontNoticeJuke11,
-                    textBrush, textRect, FMT_NEAR_NOWRAP_ELLIPSIS);
+                if (ShouldShowReviveBalance(state))
+                    PaintReviveBalance(
+                        g, state, textRect, scale, textBrush);
+                else
+                    g.DrawString(StageDecisionText(state), _fontNoticeJuke11,
+                        textBrush, textRect, FMT_NEAR_NOWRAP_ELLIPSIS);
             }
 
             for (int i = 0; i < _stageActions.Count; i++)
@@ -760,8 +817,256 @@ namespace CF7Launcher.Guardian.Hud
                 Color labelColor = action.Enabled
                     ? NativeHudTheme.TextPrimary : NativeHudTheme.TextDisabled;
                 using (SolidBrush labelBrush = new SolidBrush(labelColor))
+                {
+                    Rectangle labelRect = StageActionLabelRect(button, scale);
                     g.DrawString(action.Label, _fontNoticeJuke11,
-                        labelBrush, button, FMT_CENTER_ELLIPSIS);
+                        labelBrush, labelRect, FMT_STAGE_ACTION);
+                }
+            }
+        }
+
+        private void PaintReviveBalance(
+            Graphics graphics,
+            StageOutcomeState state,
+            Rectangle content,
+            float scale,
+            Brush labelBrush)
+        {
+            StageBalanceVisualLayout layout = BuildReviveBalanceVisualLayout(
+                graphics, state, content, scale);
+            graphics.DrawString(
+                layout.LabelText,
+                layout.LabelFont,
+                labelBrush,
+                layout.LabelRect,
+                FMT_STAGE_ACTION);
+
+            if (layout.Icon != null && layout.IconRect.Width > 0)
+                DrawStageItemIcon(
+                    graphics, layout.Icon, layout.IconRect, true);
+
+            using (SolidBrush metaBrush = new SolidBrush(
+                NativeHudTheme.TextSecondary))
+            {
+                graphics.DrawString(
+                    layout.MetaText,
+                    layout.MetaFont,
+                    metaBrush,
+                    layout.MetaRect,
+                    FMT_STAGE_ACTION);
+            }
+        }
+
+        private StageBalanceVisualLayout BuildReviveBalanceVisualLayout(
+            Graphics graphics,
+            StageOutcomeState state,
+            Rectangle content,
+            float scale)
+        {
+            Bitmap icon = ResolveStageItemIcon(REVIVE_COIN_ICON);
+            string labelText = icon != null ? "持有" : "复活币";
+            string metaText = StageOutcomeState.FormatCompactCount(
+                state != null ? state.ReviveCoins : 0L);
+            StageBalanceVisualLayout layout;
+            if (TryBuildStageBalanceVisualLayout(
+                    graphics,
+                    labelText,
+                    metaText,
+                    icon,
+                    content,
+                    scale,
+                    _fontNoticeJuke11,
+                    _fontNoticeJuke11,
+                    STAGE_BALANCE_ICON_BASE,
+                    STAGE_BALANCE_GAP_BASE,
+                    false,
+                    out layout))
+                return layout;
+            if (TryBuildStageBalanceVisualLayout(
+                    graphics,
+                    labelText,
+                    metaText,
+                    icon,
+                    content,
+                    scale,
+                    _fontStageActionCompact9,
+                    _fontStageActionCompact9,
+                    STAGE_BALANCE_ICON_COMPACT_BASE,
+                    STAGE_BALANCE_GAP_COMPACT_BASE,
+                    true,
+                    out layout))
+                return layout;
+
+            if (TryBuildStageBalanceVisualLayout(
+                    graphics,
+                    labelText,
+                    metaText,
+                    icon,
+                    content,
+                    scale,
+                    _fontStageActionMicro8,
+                    _fontStageActionMicro8,
+                    STAGE_BALANCE_ICON_MICRO_BASE,
+                    STAGE_BALANCE_GAP_COMPACT_BASE,
+                    true,
+                    out layout))
+                return layout;
+
+            // JS 安全整数上界等异常存量仍必须保持单行。仅在最终 8px 层仍
+            // 放不下时去掉计数的小数位，保留数量级（如 9007.2万亿 →
+            // 9007万亿）；常见库存继续显示原始一位小数。
+            string tightMetaText = TightenStageBalanceMeta(metaText);
+            if (tightMetaText != metaText)
+            {
+                TryBuildStageBalanceVisualLayout(
+                    graphics,
+                    labelText,
+                    tightMetaText,
+                    icon,
+                    content,
+                    scale,
+                    _fontStageActionMicro8,
+                    _fontStageActionMicro8,
+                    STAGE_BALANCE_ICON_MICRO_BASE,
+                    STAGE_BALANCE_GAP_COMPACT_BASE,
+                    true,
+                    out layout);
+            }
+            return layout;
+        }
+
+        private static string TightenStageBalanceMeta(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return text;
+            int decimalPoint = text.IndexOf('.');
+            if (decimalPoint < 0) return text;
+            int suffix = decimalPoint + 1;
+            while (suffix < text.Length && char.IsDigit(text[suffix]))
+                suffix++;
+            return suffix > decimalPoint + 1
+                ? text.Substring(0, decimalPoint) + text.Substring(suffix)
+                : text;
+        }
+
+        private static bool TryBuildStageBalanceVisualLayout(
+            Graphics graphics,
+            string label,
+            string metaText,
+            Bitmap icon,
+            Rectangle content,
+            float scale,
+            Font labelFont,
+            Font metaFont,
+            int iconBaseSize,
+            int gapBaseSize,
+            bool compactLabel,
+            out StageBalanceVisualLayout layout)
+        {
+            float labelWidth = MeasureStageActionText(
+                graphics, label, labelFont);
+            float metaWidth = MeasureStageActionText(
+                graphics, metaText, metaFont);
+            int gap = WidgetScaler.Px(gapBaseSize, scale);
+            int iconSize = icon != null
+                ? WidgetScaler.Px(iconBaseSize, scale)
+                : 0;
+            int gapCount = icon != null ? 2 : 1;
+            float totalWidth = labelWidth + metaWidth + iconSize
+                + gap * gapCount;
+            bool fits = totalWidth <= content.Width + 0.01f;
+            float startX = content.X
+                + Math.Max(0f, (content.Width - totalWidth) / 2f);
+            float currentX = startX;
+
+            layout = new StageBalanceVisualLayout
+            {
+                Icon = icon,
+                LabelText = label,
+                MetaText = metaText,
+                LabelFont = labelFont,
+                MetaFont = metaFont,
+                LabelRect = new RectangleF(
+                    currentX, content.Y, labelWidth, content.Height),
+                Compact = compactLabel,
+                Fits = fits
+            };
+            currentX += labelWidth + gap;
+            if (icon != null)
+            {
+                layout.IconRect = new Rectangle(
+                    (int)Math.Round(currentX),
+                    content.Y + (content.Height - iconSize) / 2,
+                    iconSize,
+                    iconSize);
+                currentX += iconSize + gap;
+            }
+            layout.MetaRect = new RectangleF(
+                currentX, content.Y, metaWidth, content.Height);
+            return fits;
+        }
+
+        private static float MeasureStageActionText(
+            Graphics graphics, string text, Font font)
+        {
+            if (string.IsNullOrEmpty(text)) return 0f;
+            SizeF measured = graphics.MeasureString(
+                text,
+                font,
+                PointF.Empty,
+                FMT_NEAR_NOWRAP_ELLIPSIS);
+            return (float)Math.Ceiling(measured.Width);
+        }
+
+        private Bitmap ResolveStageItemIcon(string iconName)
+        {
+            if (_itemIcons == null || string.IsNullOrEmpty(iconName))
+                return null;
+            LootIconCatalog.LootIconFrames frames;
+            return _itemIcons.TryGet(iconName, out frames)
+                && frames != null
+                ? frames.First
+                : null;
+        }
+
+        private static void DrawStageItemIcon(
+            Graphics graphics, Bitmap icon, Rectangle destination, bool enabled)
+        {
+            InterpolationMode previousInterpolation = graphics.InterpolationMode;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            try
+            {
+                if (enabled)
+                {
+                    graphics.DrawImage(
+                        icon,
+                        destination,
+                        0,
+                        0,
+                        icon.Width,
+                        icon.Height,
+                        GraphicsUnit.Pixel);
+                    return;
+                }
+
+                using (ImageAttributes attributes = new ImageAttributes())
+                {
+                    ColorMatrix matrix = new ColorMatrix();
+                    matrix.Matrix33 = 0.42f;
+                    attributes.SetColorMatrix(matrix);
+                    graphics.DrawImage(
+                        icon,
+                        destination,
+                        0,
+                        0,
+                        icon.Width,
+                        icon.Height,
+                        GraphicsUnit.Pixel,
+                        attributes);
+                }
+            }
+            finally
+            {
+                graphics.InterpolationMode = previousInterpolation;
             }
         }
 
@@ -784,15 +1089,20 @@ namespace CF7Launcher.Guardian.Hud
                     SetHover(NoHit());
                     break;
                 case MouseEventKind.Down:
-                    _down = (e.Button == MouseButtons.Left) ? hit : NoHit();
+                    SetPointerDown((e.Button == MouseButtons.Left) ? hit : NoHit());
                     FireRepaint();
                     break;
                 case MouseEventKind.Up:
                     FireRepaint();
                     break;
                 case MouseEventKind.Click:
-                    if (SameHit(_down, hit) || _down.Kind == HitKind.None) DispatchHit(hit);
-                    _down = NoHit();
+                    if (PointerDownMatches(hit)) DispatchHit(hit);
+                    ClearPointerDown();
+                    FireRepaint();
+                    break;
+                case MouseEventKind.Cancel:
+                    _hover = NoHit();
+                    ClearPointerDown();
                     FireRepaint();
                     break;
             }
@@ -922,7 +1232,7 @@ namespace CF7Launcher.Guardian.Hud
                 ClearStageBroadcast();
             _stageOutcomeState = state;
             _hover = NoHit();
-            _down = NoHit();
+            ClearPointerDown();
             BuildStageActions();
             FireBounds();
             FireAnimState();
@@ -935,7 +1245,7 @@ namespace CF7Launcher.Guardian.Hud
             _stageActions.Clear();
             ClearStageBroadcast();
             _hover = NoHit();
-            _down = NoHit();
+            ClearPointerDown();
             FireBounds();
             FireAnimState();
         }
@@ -957,31 +1267,50 @@ namespace CF7Launcher.Guardian.Hud
         private void BuildStageActions()
         {
             _stageActions.Clear();
-            StageOutcomeState state = _stageOutcomeState;
-            if (!ShouldPresentStageDecision(state)) return;
-            if (state.Settlement == "rewards_pending")
+            try
             {
-                AddStageAction("resume", "继续领取", "resume_rewards", true);
-                return;
-            }
-            if (state.Life == "dead")
-            {
-                AddStageAction("revive",
-                    state.ReviveAllowed
-                        ? "复活×" + StageOutcomeState.FormatCompactCount(
-                            state.ReviveCoins)
-                        : "禁复活",
-                    "revive", state.ReviveAllowed);
+                StageOutcomeState state = _stageOutcomeState;
+                if (!ShouldPresentStageDecision(state)) return;
+                if (state.Settlement == "rewards_pending")
+                {
+                    AddStageAction("resume",
+                        state.RemainingRewards == 0 ? "查看报告" : "继续领取",
+                        "resume_rewards", true);
+                    return;
+                }
+                if (state.Life == "dead")
+                {
+                    bool showReviveBalance = ShouldShowReviveBalance(state);
+                    if (showReviveBalance)
+                    {
+                        AddStageAction(
+                            "revive",
+                            "复活",
+                            "revive",
+                            state.ReviveAllowed);
+                    }
+                    else
+                    {
+                        AddStageAction(
+                            "revive", "禁复活", "revive", false);
+                    }
+                    if (state.CanReturnBase)
+                        AddStageAction("return", "回基地", "return_base", true);
+                    return;
+                }
+                if (state.Life == "reviving") return;
+                if (CanOfferStageDelivery(state))
+                    AddStageAction("deliver", "前往交付",
+                        "return_deliverable", true);
                 if (state.CanReturnBase)
                     AddStageAction("return", "回基地", "return_base", true);
-                return;
             }
-            if (state.Life == "reviving") return;
-            if (CanOfferStageDelivery(state))
-                AddStageAction("deliver", "前往交付",
-                    "return_deliverable", true);
-            if (state.CanReturnBase)
-                AddStageAction("return", "回基地", "return_base", true);
+            finally
+            {
+                if (_down.Kind == HitKind.StageAction
+                    && !PointerDownMatches(_down))
+                    ClearPointerDown();
+            }
         }
 
         private bool CanOfferStageDelivery(StageOutcomeState state)
@@ -994,7 +1323,10 @@ namespace CF7Launcher.Guardian.Hud
         }
 
         private void AddStageAction(
-            string id, string label, string intent, bool enabled)
+            string id,
+            string label,
+            string intent,
+            bool enabled)
         {
             _stageActions.Add(new StageActionSpec
             {
@@ -1008,40 +1340,72 @@ namespace CF7Launcher.Guardian.Hud
         private int StageActionsTotalWidth(float scale)
         {
             if (_stageActions.Count == 0) return 0;
-            int width = WidgetScaler.Px(
-                _stageActions.Count == 1
-                    ? STAGE_ACTION_SINGLE_W_BASE : STAGE_ACTION_W_BASE,
-                scale);
             int gap = WidgetScaler.Px(STAGE_ACTION_GAP_BASE, scale);
             int inset = WidgetScaler.Px(STAGE_ACTION_INSET_BASE, scale);
-            return inset + width * _stageActions.Count
-                + gap * Math.Max(0, _stageActions.Count - 1);
+            int total = inset + gap * Math.Max(0, _stageActions.Count - 1);
+            for (int i = 0; i < _stageActions.Count; i++)
+                total += StageActionWidth(scale, i);
+            return total;
         }
 
         private Rectangle StageActionRect(Rectangle slot, float scale, int index)
         {
             if (index < 0 || index >= _stageActions.Count) return Rectangle.Empty;
-            int width = WidgetScaler.Px(
-                _stageActions.Count == 1
-                    ? STAGE_ACTION_SINGLE_W_BASE : STAGE_ACTION_W_BASE,
-                scale);
             int gap = WidgetScaler.Px(STAGE_ACTION_GAP_BASE, scale);
             int inset = WidgetScaler.Px(STAGE_ACTION_INSET_BASE, scale);
-            int total = width * _stageActions.Count
-                + gap * Math.Max(0, _stageActions.Count - 1);
+            int total = gap * Math.Max(0, _stageActions.Count - 1);
+            for (int i = 0; i < _stageActions.Count; i++)
+                total += StageActionWidth(scale, i);
             int height = Math.Max(1, slot.Height - inset * 2);
-            int x = slot.Right - inset - total + index * (width + gap);
+            int x = slot.Right - inset - total;
+            for (int i = 0; i < index; i++)
+                x += StageActionWidth(scale, i) + gap;
+            int width = StageActionWidth(scale, index);
             return new Rectangle(x, slot.Y + inset, width, height);
+        }
+
+        private int StageActionWidth(float scale, int index)
+        {
+            int baseWidth = STAGE_ACTION_W_BASE;
+            if (_stageActions.Count == 1)
+                baseWidth = STAGE_ACTION_SINGLE_W_BASE;
+            else if (_stageActions.Count == 2)
+                baseWidth = index == 0
+                    ? (_stageActions[0].Id == "revive"
+                        ? STAGE_ACTION_REVIVE_W_BASE
+                        : STAGE_ACTION_PRIMARY_W_BASE)
+                    : STAGE_ACTION_SECONDARY_W_BASE;
+            return WidgetScaler.Px(baseWidth, scale);
+        }
+
+        private static Rectangle StageActionLabelRect(
+            Rectangle button, float scale)
+        {
+            int pad = WidgetScaler.Px(STAGE_ACTION_LABEL_PAD_X_BASE, scale);
+            return Rectangle.Inflate(button, -pad, 0);
         }
 
         private static string StageDecisionText(StageOutcomeState state)
         {
             if (state.Settlement == "rewards_pending")
-                return "待领奖励 " + state.RemainingRewards + " 项";
+                return state.RemainingRewards == 0
+                    ? "行动报告待查看"
+                    : "待领奖励 " + state.RemainingRewards + " 项";
             if (state.Life == "reviving") return "正在复活…";
-            if (state.Life == "dead") return "你受了重伤";
+            if (state.Life == "dead")
+                return ShouldShowReviveBalance(state)
+                    ? "持有复活币 " + StageOutcomeState.FormatCompactCount(
+                        state.ReviveCoins)
+                    : "你受了重伤";
             if (state.Outcome == "victory") return "关卡已突破";
             return "行动未能完成";
+        }
+
+        private static bool ShouldShowReviveBalance(StageOutcomeState state)
+        {
+            return state != null && state.Life == "dead"
+                && (state.ReviveAllowed
+                    || state.ReviveBlockedReason == "no_revive_coin");
         }
 
         private static string StageIcon(StageOutcomeState state)
@@ -1194,7 +1558,7 @@ namespace CF7Launcher.Guardian.Hud
             _activeFlash = null;
             _flashElapsedMs = 0;
             _hover = NoHit();
-            _down = NoHit();
+            ClearPointerDown();
         }
 
         public IEnumerable<string> LegacyTypes { get { return LEGACY_TYPES; } }
@@ -1358,6 +1722,78 @@ namespace CF7Launcher.Guardian.Hud
             return a.Kind == b.Kind && a.Index == b.Index;
         }
 
+        private void SetPointerDown(HitInfo hit)
+        {
+            _down = hit;
+            _downStageActionToken = default(StageActionGestureToken);
+            _downNoticeToken = default(NoticeGestureToken);
+            if (hit.Kind == HitKind.Notice)
+            {
+                _downNoticeToken = CurrentNoticeGestureToken();
+                return;
+            }
+            if (hit.Kind != HitKind.StageAction
+                || hit.Index < 0 || hit.Index >= _stageActions.Count
+                || _stageOutcomeState == null)
+                return;
+
+            StageActionSpec action = _stageActions[hit.Index];
+            _downStageActionToken.Valid = true;
+            _downStageActionToken.ActionId = action.Id;
+            _downStageActionToken.RunId = _stageOutcomeState.RunId;
+            _downStageActionToken.Revision = _stageOutcomeState.Revision;
+        }
+
+        private void ClearPointerDown()
+        {
+            _down = NoHit();
+            _downStageActionToken = default(StageActionGestureToken);
+            _downNoticeToken = default(NoticeGestureToken);
+        }
+
+        private bool PointerDownMatches(HitInfo hit)
+        {
+            if (!SameHit(_down, hit)) return false;
+            if (hit.Kind == HitKind.Notice)
+            {
+                NoticeGestureToken current = CurrentNoticeGestureToken();
+                return _downNoticeToken.Valid && current.Valid
+                    && string.Equals(_downNoticeToken.Command,
+                        current.Command, StringComparison.Ordinal)
+                    && string.Equals(_downNoticeToken.PayloadSignature,
+                        current.PayloadSignature, StringComparison.Ordinal);
+            }
+            if (hit.Kind != HitKind.StageAction) return true;
+            if (!_downStageActionToken.Valid || _stageOutcomeState == null
+                || hit.Index < 0 || hit.Index >= _stageActions.Count)
+                return false;
+
+            StageActionSpec action = _stageActions[hit.Index];
+            return string.Equals(_downStageActionToken.ActionId, action.Id,
+                    StringComparison.Ordinal)
+                && string.Equals(_downStageActionToken.RunId,
+                    _stageOutcomeState.RunId, StringComparison.Ordinal)
+                && _downStageActionToken.Revision == _stageOutcomeState.Revision;
+        }
+
+        private NoticeGestureToken CurrentNoticeGestureToken()
+        {
+            NoticeGestureToken token = default(NoticeGestureToken);
+            if (!PaintsActionableNotice) return token;
+            token.Valid = true;
+            if (CanDeliver())
+            {
+                token.Command = "TASK_DELIVER";
+                token.PayloadSignature = _deliverHotspotId ?? "";
+            }
+            else
+            {
+                token.Command = "TASK_UI";
+                token.PayloadSignature = "";
+            }
+            return token;
+        }
+
         private void FireBounds()
         {
             EventHandler h = BoundsOrVisibilityChanged;
@@ -1427,6 +1863,129 @@ namespace CF7Launcher.Guardian.Hud
                 return labels;
             }
         }
+        internal bool StageActionEnabledForTest(int index)
+        {
+            return index >= 0 && index < _stageActions.Count
+                && _stageActions[index].Enabled;
+        }
+        internal string StageDecisionTextForTest
+        {
+            get { return StageDecisionText(_stageOutcomeState); }
+        }
+        internal Rectangle StageActionBoundsForTest(int index)
+        {
+            Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
+            float scale = RightHudLayout.ScaleForViewport(viewport);
+            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(
+                viewport, scale, LayoutMapMode, ShowStatusSlot);
+            Rectangle slot = RightHudLayout.StatusSlotRectFromContext(
+                context, scale, ShowStatusSlot);
+            return StageActionRect(slot, scale, index);
+        }
+        internal bool StageActionLabelFitsForTest(int index)
+        {
+            if (index < 0 || index >= _stageActions.Count) return false;
+            Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
+            float scale = RightHudLayout.ScaleForViewport(viewport);
+            Rectangle button = StageActionBoundsForTest(index);
+            Rectangle labelRect = StageActionLabelRect(button, scale);
+            if (labelRect.Width <= 0 || labelRect.Height <= 0) return false;
+            EnsureFonts(scale);
+            using (Bitmap bitmap = new Bitmap(1, 1))
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            using (StringFormat format =
+                (StringFormat)StringFormat.GenericTypographic.Clone())
+            {
+                format.FormatFlags |= StringFormatFlags.NoWrap;
+                SizeF measured = graphics.MeasureString(
+                    _stageActions[index].Label,
+                    _fontNoticeJuke11,
+                    PointF.Empty,
+                    format);
+                return Math.Ceiling(measured.Width) <= labelRect.Width
+                    && Math.Ceiling(measured.Height) <= labelRect.Height;
+            }
+        }
+        internal string StageDecisionItemIconForTest
+        {
+            get
+            {
+                return ShouldShowReviveBalance(_stageOutcomeState)
+                    ? REVIVE_COIN_ICON : null;
+            }
+        }
+        internal bool StageDecisionBalanceIconResolvesForTest
+        {
+            get
+            {
+                return ShouldShowReviveBalance(_stageOutcomeState)
+                    && ResolveStageItemIcon(REVIVE_COIN_ICON) != null;
+            }
+        }
+        internal string StageDecisionBalanceLabelForTest
+        {
+            get
+            {
+                return ShouldShowReviveBalance(_stageOutcomeState)
+                    ? ReviveBalanceLayoutForTest().LabelText : null;
+            }
+        }
+        internal string StageDecisionBalanceMetaForTest
+        {
+            get
+            {
+                return ShouldShowReviveBalance(_stageOutcomeState)
+                    ? ReviveBalanceLayoutForTest().MetaText : null;
+            }
+        }
+        internal bool StageDecisionBalanceUsesCompactFontForTest
+        {
+            get
+            {
+                return ShouldShowReviveBalance(_stageOutcomeState)
+                    && ReviveBalanceLayoutForTest().Compact;
+            }
+        }
+        internal bool StageDecisionBalanceFitsForTest
+        {
+            get
+            {
+                return ShouldShowReviveBalance(_stageOutcomeState)
+                    && ReviveBalanceLayoutForTest().Fits;
+            }
+        }
+        private StageBalanceVisualLayout ReviveBalanceLayoutForTest()
+        {
+            Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
+            float scale = RightHudLayout.ScaleForViewport(viewport);
+            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(
+                viewport, scale, LayoutMapMode, ShowStatusSlot);
+            Rectangle slot = RightHudLayout.StatusSlotRectFromContext(
+                context, scale, ShowStatusSlot);
+            int iconW = WidgetScaler.Px(ICON_W_BASE, scale);
+            int pad = WidgetScaler.Px(NOTICE_TEXT_PAD_BASE, scale);
+            Rectangle textRect = new Rectangle(
+                slot.X + iconW + pad,
+                slot.Y,
+                Math.Max(1, slot.Width - iconW - pad * 2
+                    - StageActionsTotalWidth(scale)),
+                slot.Height);
+            EnsureFonts(scale);
+            using (Bitmap bitmap = new Bitmap(1, 1))
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                return BuildReviveBalanceVisualLayout(
+                    graphics, _stageOutcomeState, textRect, scale);
+            }
+        }
+        internal bool StageActionTextUsesSingleLineForTest
+        {
+            get
+            {
+                return (FMT_STAGE_ACTION.FormatFlags
+                        & StringFormatFlags.NoWrap) != 0;
+            }
+        }
         internal bool HasStageBroadcastForTest
         {
             get { return !string.IsNullOrEmpty(_stageBroadcastText); }
@@ -1434,6 +1993,28 @@ namespace CF7Launcher.Guardian.Hud
         internal void ClickStageActionForTest(int index)
         {
             DispatchStageAction(index);
+        }
+        internal void SetStageActionDownForTest(int index)
+        {
+            SetPointerDown(Hit(HitKind.StageAction, index));
+        }
+        internal void ClickStageActionGestureForTest(int index)
+        {
+            HitInfo hit = Hit(HitKind.StageAction, index);
+            if (PointerDownMatches(hit)) DispatchHit(hit);
+            ClearPointerDown();
+        }
+        internal void SetNoticeDownForTest()
+        {
+            SetPointerDown(Hit(HitKind.Notice, 0));
+        }
+        internal bool ClickNoticeGestureForTest()
+        {
+            HitInfo hit = Hit(HitKind.Notice, 0);
+            bool matched = PointerDownMatches(hit);
+            if (matched) DispatchHit(hit);
+            ClearPointerDown();
+            return matched;
         }
         internal void ForceGameReady(bool ready) { _gameReady = ready; }
         internal void ForceTaskDone(bool done) { _taskDone = done; RebuildNoticeText(); }

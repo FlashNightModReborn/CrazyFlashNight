@@ -346,6 +346,12 @@ namespace CF7Launcher.Guardian.Hud
                 case MouseEventKind.Leave:
                     SetHover(-1);
                     break;
+                case MouseEventKind.Cancel:
+                    bool hadDown = _downIndex >= 0;
+                    _downIndex = -1;
+                    if (_hoverIndex >= 0) SetHover(-1);
+                    else if (hadDown) FireRepaint();
+                    break;
                 case MouseEventKind.Down:
                     // 只在左键 down 命中按钮才记录 anchor；其他情况 reset 防 stale 状态。
                     _downIndex = (e.Button == MouseButtons.Left) ? idx : -1;
@@ -420,6 +426,8 @@ namespace CF7Launcher.Guardian.Hud
                 if (next != _state)
                 {
                     _state = next;
+                    _downIndex = -1;
+                    _hoverIndex = -1;
                     _doneAutoDismissRemainingMs = next == SaveState.Done && _armed
                         ? DONE_AUTO_DISMISS_MS
                         : 0;

@@ -84,6 +84,35 @@ namespace CF7Launcher.Tests.Save
             return md;
         }
 
+        private static JObject BuildStageSettlementSnapshot(
+            JToken storeVersion, JToken pendingVersion, JToken reportVersion,
+            bool populateKnownFields)
+        {
+            JObject md = BuildValidMydata();
+            JObject report = new JObject(
+                new JProperty("v", reportVersion),
+                new JProperty("kills", SettlementArrayObject(populateKnownFields)),
+                new JProperty("itemFlows", SettlementArrayObject(populateKnownFields)));
+            JObject pending = new JObject(
+                new JProperty("v", pendingVersion),
+                new JProperty("manifest", SettlementArrayObject(populateKnownFields)),
+                new JProperty("remainingManifest", SettlementArrayObject(populateKnownFields)),
+                new JProperty("receipts", SettlementArrayObject(populateKnownFields)),
+                new JProperty("report", report));
+            JObject store = new JObject(
+                new JProperty("v", storeVersion),
+                new JProperty("pending", pending));
+            md["ext"] = new JObject(new JProperty("stageSettlement", store));
+            return md;
+        }
+
+        private static JObject SettlementArrayObject(bool populated)
+        {
+            return populated
+                ? new JObject(new JProperty("unexpected", 1))
+                : new JObject();
+        }
+
         // ─────────────── IsAbsent ───────────────
 
         [Fact]
@@ -344,6 +373,62 @@ namespace CF7Launcher.Tests.Save
 
             Assert.Empty((JArray)md["tasks"]["tasks_to_do"]);
             Assert.True(SaveMigrator.ValidateResolvedSnapshot(md));
+        }
+
+        [Fact]
+        public void NormalizeResolvedSnapshot_RepairsV1StageSettlementEmptyArrays()
+        {
+            JObject md = BuildStageSettlementSnapshot(1, 1, 1, false);
+
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+
+            JObject pending = (JObject)md["ext"]["stageSettlement"]["pending"];
+            Assert.IsType<JArray>(pending["manifest"]);
+            Assert.IsType<JArray>(pending["remainingManifest"]);
+            Assert.IsType<JArray>(pending["receipts"]);
+            Assert.IsType<JArray>(pending["report"]["kills"]);
+            Assert.IsType<JArray>(pending["report"]["itemFlows"]);
+        }
+
+        [Fact]
+        public void NormalizeResolvedSnapshot_PreservesNonEmptyStageSettlementObjects()
+        {
+            JObject md = BuildStageSettlementSnapshot(1, 1, 1, true);
+
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+
+            JObject pending = (JObject)md["ext"]["stageSettlement"]["pending"];
+            Assert.IsType<JObject>(pending["manifest"]);
+            Assert.IsType<JObject>(pending["remainingManifest"]);
+            Assert.IsType<JObject>(pending["receipts"]);
+            Assert.IsType<JObject>(pending["report"]["kills"]);
+            Assert.IsType<JObject>(pending["report"]["itemFlows"]);
+        }
+
+        [Fact]
+        public void NormalizeResolvedSnapshot_PreservesUnknownStageSettlementVersions()
+        {
+            JObject futureStore = BuildStageSettlementSnapshot(2, 1, 1, false);
+            SaveMigrator.NormalizeResolvedSnapshot(futureStore);
+            JObject storePending = (JObject)futureStore["ext"]["stageSettlement"]["pending"];
+            Assert.IsType<JObject>(storePending["manifest"]);
+            Assert.IsType<JObject>(storePending["report"]["kills"]);
+
+            JObject futurePending = BuildStageSettlementSnapshot(1, 2, 1, false);
+            SaveMigrator.NormalizeResolvedSnapshot(futurePending);
+            JObject pending = (JObject)futurePending["ext"]["stageSettlement"]["pending"];
+            Assert.IsType<JObject>(pending["manifest"]);
+            Assert.IsType<JObject>(pending["report"]["kills"]);
+
+            JObject futureReport = BuildStageSettlementSnapshot(1, 1, 2, false);
+            SaveMigrator.NormalizeResolvedSnapshot(futureReport);
+            JObject reportPending = (JObject)futureReport["ext"]["stageSettlement"]["pending"];
+            Assert.IsType<JArray>(reportPending["manifest"]);
+            Assert.IsType<JObject>(reportPending["report"]["kills"]);
+
+            JObject malformedStore = BuildStageSettlementSnapshot(true, 1, 1, false);
+            SaveMigrator.NormalizeResolvedSnapshot(malformedStore);
+            Assert.IsType<JObject>(malformedStore["ext"]["stageSettlement"]["pending"]["manifest"]);
         }
 
         [Fact]

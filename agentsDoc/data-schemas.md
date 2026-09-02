@@ -71,7 +71,7 @@ var list:Array = XMLParser.configureDataAsArray(parsed.items);
 大多数采用 **list.xml 主从模式**：
 
 ```
-data/items/list.xml          → 引用 52 个物品分类文件 + item_sets.xml 套装中心表
+data/items/list.xml          → 引用 54 个物品分类文件 + item_sets.xml 套装中心表
 data/enemy_properties/list.xml → 引用 14 个敌人定义文件
 data/dialogues/list.xml       → 引用 16 个对话文件
 data/environment/             → scene_environment.xml、stage_environment.xml、color_engine_preset.xml
@@ -226,7 +226,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 | 加载器 | 数据路径 | 说明 |
 |--------|---------|------|
-| `ItemDataLoader` | `data/items/list.xml` | 并行加载 52 个物品分类文件与 `item_sets.xml`；合并数组附带中心套装元数据 |
+| `ItemDataLoader` | `data/items/list.xml` | 并行加载 54 个物品分类文件与 `item_sets.xml`；合并数组附带中心套装元数据 |
 | `ArenaDropRulesLoader` | `data/arena/arena_drop_rules.xml` | 严格加载标准佣兵装备掉落规则，并为 `ItemObtainIndex` 提供静态竞技场来源投影 |
 | `EnemyPropertiesLoader` | `data/enemy_properties/list.xml` | 敌人属性（14 文件合并，按名称索引） |
 | `NpcDialogueLoader` | `data/dialogues/list.xml` | NPC 对话数据 |
@@ -281,11 +281,30 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 喷火视觉风格使用 `vfxStyle=flame_stream` / `vfxPreset=flame_stream`，常用字段包括 `rayLength`、`rayWidthFactor`、`damageFalloff`、`thickness`、`waveAmp`、`waveLen`、`waveSpeed`、`tongueCount`、`tipBloomScale`、`smokeColor`、`visualDuration`、`fadeOutDuration`。`rayWidthFactor>0` 时运行时走带宽射线碰撞，半宽由 `Z轴攻击范围 * rayWidthFactor * 0.5` 计算；视觉宽度仍由 `thickness/waveAmp` 等字段独立控制。
 
-### 装备平衡记录 `<balance>`
+### 消耗品药效 `<effects>` 与持续效果域
 
-`<balance>` 的原则是**只记录 XML `<data>` 中没有的公式输入与最小展示门**，不要复制 `level/weight/defence/hp/mp/damage/power/interval` 等现有数值。AS2 战斗逻辑不消费它；展示层只允许从严格验证的武器 profile 生成最小 `balanceSummary`，不能让 Web 自行读取审计原文或推断状态。
+`data/items/消耗品_药剂*.xml` 的 `<effects>` 按物理顺序执行。现有基础类型为 `heal / regen / state / purify / buff / playEffect / message / grantItem / global`；九龙批次新增四个封闭类型：
+
+- `buffDomain domain="meal|enhancer"`：必须位于持续效果之前；移除同域旧药剂登记的 Buff，再登记本次 `buff`、`regen` 和专用 Buff 的真实返回 ID。`meal` 与 `enhancer` 各保留一个槽且可以并存，即时医疗效果不占槽。
+- `resistanceBuff value duration buffId`：对 `魔法抗性.电/热/冷/波/蚀/毒/冲` 七个叶子路径施加同值增益；不得把 `魔法抗性` 对象交给普通数值 Buff。
+- `toughnessBuff value duration buffId`：`value` 使用装备 XML 的 `toughness` 点数口径；运行时添加 `基础韧性系数 × value / 100`，不得对已含装备值的最终韧性系数再次乘算。
+- `restoreToughness`：同时清零 `remainingImpactForce` 与 `impactDecayBaseForce` 并刷新派生显示；不改 `lastHitTime`，不撤销已进入的控制状态。
+
+域注册表只保存 `BuffManager.addBuff()` 返回的外部 ID，不能保存 MetaBuff 内部 ID。完整参数、顺序与 Tooltip 约束见 [`data/items/消耗品_药剂.md`](../data/items/消耗品_药剂.md)。上述三个新战斗数值路径在 Flash 旅程通过前必须保持 `runtime-test-pending`。
+
+### 礼包 `<rewardPack>` 与物品使用
+
+`data/items/消耗品_礼包.xml` 是现役礼包目录；礼包必须声明 `type=消耗品`、`use=礼包`，并只在 `<data><rewardPack>` 描述领取内容，不再携带手雷投掷字段。`<mode>` 只允许三种值：`fixed` 逐项生成，`chooseOne` 按正整数 `<weight>` 选择一项，`independent` 按每项正整数 `chanceNumerator/chanceDenominator` 独立检定。每个 `<entry>` 必须有目录中真实存在的 `itemName`，并满足 `1 <= quantityMin <= quantityMax`；缺失物品直接删除，不得静默换成近似名称或货币。
+
+礼包只能从角色构筑的背包总览显式“打开”。运行时先完成随机结果与 64 occurrence 待领取容量预检，再以同一事务消耗一个来源礼包、追加不可变领取批次、记录 `operationId` 回执并刷盘；未知写结果只按同一 `operationId` 查询，不重放打开。礼包产出若仍是礼包，只作为普通待领取物品交付，不递归自动打开。旧在线奖励按钮与 5 分钟任务已封存；圣诞树恢复旧系统“每次 Flash 运行可领五档”的会话语义，改用 `_root.帧计时器` 的本次运行帧时间，在 10–20、20–40、40–60、60–120 与 `>=120` 分钟五个窗口中分别幂等投送在线补给包Ⅰ–Ⅴ，并继续要求主线进度 `>28`。成功投送并强制存盘后，圣诞树必须用 strict `panel_request {panel:"loot",source:"reward_inbox",initData:<authority>}` 请求现役领取页；面板拒绝不回滚批次，玩家仍可从角色构筑的“待领取”入口继续。持久 `supplyKeys` 只保留当前进程 token 的最多五个窗口键，存盘切换不丢本会话幂等性，新运行首次成功投送时才以事务替换旧会话索引；token 的毫秒时间必须先拆为 AVM1 int32 安全段再编码，禁止直接对时间戳调用 `Number.toString(36)` 而把所有现代日期饱和成同一键。`#supplytime:<minutes>` 只调整该在线补给域的会话偏移，不改全局帧数、冷却或调度，也不清除本会话已经领取的档位。`node tools/validate-reward-packs.js` 固定校验 mode/字段形状、数量与概率边界、物品目录闭包、在线补给帧时间/五窗口/幂等探针闭包及旧手雷定义已迁空。
+
+### 平衡记录 `<balance>`
+
+`<balance>` 不是战斗数据源，也不得形成第二份人工数值。武器只记录 XML `<data>` 中没有的公式输入与最小展示门，不复制 `level/weight/defence/hp/mp/damage/power/interval`；药剂则允许同步器写入派生输出和 `marketPrice` 对账副本，但禁止手工修改。AS2 战斗逻辑不消费它；展示层只允许从严格验证的武器 profile 生成最小 `balanceSummary`，不能让 Web 自行读取审计原文或推断状态。
 
 **枪械 / 武器**：尚未上线的契约统一为严格 `formulaFamily=weapon + schemaVersion=1`，不兼容此前平铺/v2 或 runtime SHA 开发草案。item 根 `<balance>` 只保留容器身份、数字 `workbookVersion` 和 `<profiles>`；完整 SHA 只在工具注册表、规则表与外部审计台账保存一次。`data/data_*` 每个静态形态都要有独立完整 profile，保存八个公式输入、`status/displayEligible/inputDigest/auditRef`，缺 profile 禁止回退基础形态。条款、证据、预算和可选短备注存入不由 ItemDataLoader 加载的 `tools/cf7-balance-tool/records/weapon-balance-audit.xml`，runtime profile 必须由台账机械同步并逐字段对账。完整 schema、digest 和施工流程以 `tools/cf7-balance-tool/docs/agent-balance-record-design.md` 为准，取值判据及条款 ID 以 `tools/cf7-balance-tool/docs/weapon-balance-rulebook.md` 为准。公式最高权威仍是 `0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx`。
+
+**药剂 / 食品**：使用 `formulaFamily=potion + schemaVersion=1 + formulaVersion=2` 的提案记录。人工真源是 `records/potion-balance-plan.xml`；工具必须从实际 `<effects>` 重建输入，生成 `records/potion-balance-audit.xml` 和 item 根最小 `<balance>`，并对来源等级上限、全量覆盖、工作簿快照、input/source digest 做反向检查。当前工作簿尚未正式登记 v2，所有记录必须保留 `authorityStatus=workbook-registration-pending`，不得提升为确认值。公式、产品域、数值表和退出条件见 [`potion-balance-rulebook.md`](../tools/cf7-balance-tool/docs/potion-balance-rulebook.md)。
 
 **防具**：属于另一公式族，不因武器 v1 的不兼容决定而迁移。不要沿用枪械字段；防具平衡表的核心额外输入是 `extraWeightLayers`，`armorType` 仅在不能从装备位/用途稳定推断时填写，合法值为 `standard | glove | necklace`。
 
@@ -301,6 +320,12 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 ### 装备插件条件战技
 
 `data/items/equipment_mods/*.xml` 的插件支持根层 `<skillSwitch>`（与 `<skill>`、`<stats>` 同级），用于按宿主装备 `use` / `weapontype` 切换主动战技。命中分支时优先使用分支技能，未命名 `<use>` 是 default 分支，仅在无命名分支命中时使用；多个分支同时匹配时按 XML 顺序取第一个。根层 `<skill>` 仍可作为兼容回退，但有条件战技映射时建议把默认技能也写进 `skillSwitch` 的 default 分支，避免 tooltip 表达成多个可同时装载的战技。`skillSwitch` 只决定技能，不应用属性，条件数值仍走 `<stats><useSwitch>...</useSwitch></stats>`。完整写法与示例见 `data/items/equipment_mods/README.md`。
+
+### 装备插件基础选档与确定性覆盖
+
+`<stats><baseSwitch path="data.*">` 在 tier/强化结算后、任何插件尚未应用时读取宿主基础数据，只应用第一个命中的命名 `<value>`，无命名 `<value>` 为 default。它用于石英磨刀石这类“按改质前伤害类型补偿”的配额，其他插件的 `override` 不得反向影响其选档。`softOverride`、`override`、`lockOverride` 构成三层浅覆盖：前者覆盖宿主原值但让位于普通覆盖，后者在普通覆盖与 `merge` 后最终重申锁定值；因此低优先级暴击基线和高优先级物理锁定均不依赖插件槽遍历顺序。完整运算顺序、Tooltip 语义与 XML 示例见 `data/items/equipment_mods/README.md`。
+
+近战切手技的运行时可配置面是武器 `data.switchstrike` 数值对象，现役字段为 `weightCoefficient` 与 `impactMultiplier`。插件通过 `merge` 写入，`SwitchStrikeCore` 以封闭形态表解释；XFL 时间轴只传定位器与形态名，禁止在 XML/XFL 重复公式或配置任意函数名。
 
 `useSwitch` / `skillSwitch` 的无前缀 `name` 继续匹配宿主 `use` 与 `weapontype` 的联合集合。需要消除同名歧义时可写 `use:值` 或 `weapontype:值`：例如 `weapontype:手枪` 只命中精确子类，不会命中仅因 `use=手枪` 而共用装备槽的冲锋手枪和大威力手枪。`grantsUse` 同时进入无前缀集合与 `use:` 限定集合。Tooltip 必须隐藏内部限定符，显示为“装备类型：…”或“武器子类：…”。`stats.useSwitch.use` 分支除数值运算符外还可声明 `provideTags` 与 `requireTags`：前者仅在分支命中时提供结构，后者仅在分支命中时并入根层安装前置，并必须同时用于候选过滤、安装检查、缺失标签提示与拆卸依赖判定。
 
@@ -363,6 +388,12 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 - **合并契约**：显式 `"模板-单元体"` 条目始终优先，派生仅补缺（shellData/attributeData 按各自键独立判断）；movement 配置不可派生，必须显式（如 `横向拖尾追踪联弹-普通无壳子弹`）。
 - **审计**：物品+配件数据就绪后，递归扫描全部 `bullet` 键（覆盖 `data`/`data_ice`/`data_fire` 等变体、lifecycle、skill、配件 stats/skill），未声明模板/单元体或弹壳未解析发服务器告警。**边界**：AS2 代码内嵌子弹名不在审计范围（新增时人工核对）；配件词缀经 `PropertyOperators.mergeString` 前缀保留拼接动态合成组合——后缀必须是已声明单元体，任意已声明模板组合即被全量派生覆盖。
 - **武器补弹参数** `<fillrate>`（武器 `<data>` 内，可选；2026-06-12 起普及化为默认行为）：**缺省/`auto` = 默认**——纵向联弹按本次实际射击间隔（含枪械师点按/连按修正、配件改装后的运行时射速）生成整数分数 `分子=霰弹值-1`、`分母=ceil(间隔毫秒/每帧毫秒)`，通过 Bresenham 累加器在调度器有效间隔的第 `分母` 个更新 tick 补完；同 tick 内与下一发调度的先后顺序不作保证。高射速（有效间隔 1 tick，如 XM214）一帧补完；低射速（如磁稳贯穿弹改装后 interval 300ms+）率<1 隔帧补弹，2,3,2,… 的不均匀帧分布是预期行为。**正数 = 显式每帧补弹率**：允许小数，执行时向上定点化为 `ceil(fillrate×4096)/4096`，最小有效正数为 `1/4096`；低于该精度的配置仍按 `1/4096` 执行。技能等不经 WeaponFireCore 的直调路径无间隔戳 → 回退每帧 1 发旧行为。
+
+#### 近战长枪联弹约束
+
+`<use>长枪</use>` 且 `weapontype=近战|压制近战` 的武器，每个有效 `data*` 配置在继承基础 `<data>` 后，只要 `split>1`，有效 `bullet` 必须精确为 `近战联弹`。`data_fire*` / `data_ice*` 等变体缺失 `split` 或 `bullet` 时按基础配置继承后再判定。
+
+该约束保证子弹工厂只创建一个联弹结算对象，避免 `近战子弹 + split=N` 被展开成 N 个独立对象、逐对象初始化并结算淬毒。它只把同一目标的一次多段命中从逐段满额毒收敛为一份满额毒，不改变 `近战联弹` 现有 `FLAG_NORMAL` 所对应的 100% 单次毒系数。静态门：`node tools/validate-melee-longgun-chain.js`。
 
 ### 情报字典、legacy txt 与 H5 JSON
 

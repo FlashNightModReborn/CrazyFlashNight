@@ -155,16 +155,19 @@ class org.flashNight.arki.item.equipment.ModRegistry {
         // 10. 归一化multiplier（独立乘区）
         normalizeMultiplier(mod);
 
-        // 11. 处理和优化useSwitch
+        // 11. 处理按插件应用前基础属性分支的 baseSwitch
+        processBaseSwitch(mod);
+
+        // 12. 处理和优化useSwitch
         processUseSwitch(mod);
 
-        // 12. 【新增】处理和优化tagSwitch（基于结构的条件加成）
+        // 13. 【新增】处理和优化tagSwitch（基于结构的条件加成）
         processTagSwitch(mod);
 
-        // 13. 处理和优化bulletSwitch（基于子弹类型的条件加成）
+        // 14. 处理和优化bulletSwitch（基于子弹类型的条件加成）
         processBulletSwitch(mod);
 
-        // 14. 处理和优化skillSwitch（基于装备类型的条件战技）
+        // 15. 处理和优化skillSwitch（基于装备类型的条件战技）
         processSkillSwitch(mod);
 
         // 添加到注册表
@@ -230,6 +233,54 @@ class org.flashNight.arki.item.equipment.ModRegistry {
             }
             mod._multiplierNormalized = true;
         }
+    }
+
+    /**
+     * 处理 baseSwitch（按配件应用前的基础属性选择一档数值）。
+     *
+     * baseSwitch 只读取 tier/强化已结算、配件尚未应用时的 itemData，
+     * 因而不会受配件安装顺序或其他配件 override 的影响。
+     *
+     * XML 示例：
+     *   <baseSwitch path="data.damagetype">
+     *     <value name="破击"><percentage><power>24</power></percentage></value>
+     *     <value><percentage><power>9</power></percentage></value>
+     *   </baseSwitch>
+     *
+     * @private
+     */
+    private static function processBaseSwitch(mod:Object):Void {
+        if (mod._baseSwitchProcessed) return;
+        if (!mod.stats || !mod.stats.baseSwitch) return;
+
+        var baseSwitch:Object = mod.stats.baseSwitch;
+        var valueCases:Array = normalizeToArray(baseSwitch.value);
+
+        for (var i:Number = 0; i < valueCases.length; i++) {
+            var valueCase:Object = valueCases[i];
+            if (!valueCase) continue;
+
+            if (valueCase.percentage) {
+                for (var pKey:String in valueCase.percentage) {
+                    valueCase.percentage[pKey] *= 0.01;
+                }
+            }
+            if (valueCase.multiplier) {
+                for (var mKey:String in valueCase.multiplier) {
+                    valueCase.multiplier[mKey] *= 0.01;
+                }
+            }
+
+            if (valueCase.name != undefined && String(valueCase.name).length > 0) {
+                valueCase.lookupDict = buildDictFromList(String(valueCase.name));
+            } else {
+                valueCase._isDefault = true;
+            }
+        }
+
+        if (!baseSwitch.path) baseSwitch.path = "data.damagetype";
+        baseSwitch.valueCases = valueCases;
+        mod._baseSwitchProcessed = true;
     }
 
     /**
@@ -527,6 +578,48 @@ class org.flashNight.arki.item.equipment.ModRegistry {
      */
     public static function getModUseLists():Object {
         return _modUseLists;
+    }
+
+    /**
+     * 匹配 baseSwitch 的唯一生效分支。
+     * 命名分支按 XML 顺序优先；均未命中时使用第一个 default 分支。
+     *
+     * @param modData 配件数据
+     * @param itemData tier/强化已应用、配件尚未应用的装备数据
+     * @return 命中的属性分支；无配置或无匹配时返回 null
+     */
+    public static function matchBaseSwitch(modData:Object, itemData:Object):Object {
+        if (!modData || !modData.stats || !modData.stats.baseSwitch) return null;
+
+        var baseSwitch:Object = modData.stats.baseSwitch;
+        var valueCases:Array = baseSwitch.valueCases;
+        if (!valueCases) {
+            valueCases = normalizeToArray(baseSwitch.value);
+            baseSwitch.valueCases = valueCases;
+        }
+        if (!valueCases || valueCases.length == 0) return null;
+
+        var sourceValue = resolvePathValue(itemData, baseSwitch.path || "data.damagetype");
+        var defaultCase:Object = null;
+
+        for (var i:Number = 0; i < valueCases.length; i++) {
+            var valueCase:Object = valueCases[i];
+            if (!valueCase) continue;
+
+            if (valueCase._isDefault || valueCase.name == undefined || String(valueCase.name).length == 0) {
+                if (!defaultCase) defaultCase = valueCase;
+                continue;
+            }
+
+            var lookup:Object = valueCase.lookupDict;
+            if (!lookup) {
+                lookup = buildDictFromList(String(valueCase.name));
+                valueCase.lookupDict = lookup;
+            }
+            if (lookup[String(sourceValue)]) return valueCase;
+        }
+
+        return defaultCase;
     }
 
     /**

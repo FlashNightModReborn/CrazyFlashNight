@@ -114,7 +114,7 @@ function snapshot(containerId,slots){var projectedSlots=containerId==='背包'?s
 function remaining(){return authority.loot.filter(function(x){return x.occupied}).length}
 function common(message){var inactive=authority.terminal||authority.suspended;return{type:'panel_resp',task:'loot_response',domain:'loot',panel:'loot',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,chestSessionId:message.chestSessionId,lootContainerId:message.lootContainerId,containerEpoch:message.containerEpoch,success:true,error:'',authorityRevision:authority.revision,lastAppliedOperationId:authority.lastOperation,state:authority.terminal?authority.terminal.kind:authority.suspended?'LOOT_SUSPENDED':'LOOT_ACTIVE',remainingCount:authority.terminal?authority.terminal.remainingCount:remaining(),closeLease:inactive?'':authority.closeLease,snapshots:[],tooltip:null,materials:null,terminal:authority.terminal}}
   function emit(value){if(value&&value.terminal)__events.push('terminal_response');else if(value&&value.state==='LOOT_SUSPENDED')__events.push('suspended_response');(__handlers.panel_resp||[]).slice().forEach(function(fn){fn(value)})}
-function activeResponse(message){var response=common(message);response.snapshots=[snapshot(message.lootContainerId,authority.loot),snapshot('背包',authority.backpack)];return response}
+function activeResponse(message){var response=common(message);response.snapshots=[snapshot(message.lootContainerId,authority.loot),snapshot('背包',authority.backpack),snapshot('药剂栏',[empty(0),empty(1),empty(2),empty(3),empty(4),empty(5),empty(6),empty(7)])];return response}
 function respond(message){
   if(message.cmd==='materials'){var materialResponse=common(message);materialResponse.materials=materialStock.map(function(row){return Object.assign({},row)});emit(materialResponse);return}
     if(message.cmd==='snapshot'){
@@ -1177,6 +1177,39 @@ function respond(message){
       organizerReturned&&Panels.getActive()==='loot'&&LootPanel.debugState().remainingCount===2
       &&document.querySelector('[data-settlement-stage]').textContent==='废弃都市 · 夜战');
     ok('Web emits no AS2 legacy double-open signal',!__sent.some(function(x){return /legacy|资源箱界面|as2_ui/i.test(JSON.stringify(x))}));
+
+    Panels.forceClose();await delay();
+    resetAuthority(false);__mode='normal';
+    authority.loot=[empty(0),empty(1),empty(2)];
+    __events.length=0;
+    var zeroSettlementClosesBefore=tasks('close').length;
+    Panels.open('loot',settlementInit('zero-report'));
+    var zeroSettlementReady=await waitFor(function(){
+      var state=LootPanel.debugState();
+      return state.phase==='active'&&state.remainingCount===0
+        &&Panels.getActive()==='loot'
+        &&document.querySelector('.loot-settlement-report [data-settlement-stage]');
+    });
+    var zeroSettlementRoot=document.querySelector('.loot-workbench');
+    ok('zero-reward settlement mounts the frozen action report with an empty reward authority',
+      zeroSettlementReady&&zeroSettlementRoot
+      &&zeroSettlementRoot.querySelector('[data-settlement-stage]').textContent==='废弃都市 · 夜战'
+      &&zeroSettlementRoot.querySelectorAll('.loot-source-slot.occupied').length===0,
+      JSON.stringify({state:LootPanel.debugState(),active:Panels.getActive()}));
+    await delay();await delay();
+    ok('zero-reward report stays open until an explicit user close and emits no implicit close write',
+      Panels.getActive()==='loot'
+      &&LootPanel.debugState().phase==='active'
+      &&tasks('close').length===zeroSettlementClosesBefore);
+    document.querySelector('.loot-close-btn').click();
+    await waitFor(function(){return Panels.getActive()===null&&authority.terminal});
+    var zeroSettlementClose=tasks('close').slice(-1)[0];
+    ok('explicit zero-reward close submits one non-abandon consume before visual detach',
+      tasks('close').length===zeroSettlementClosesBefore+1
+      &&zeroSettlementClose&&zeroSettlementClose.abandon===false
+      &&authority.terminal.kind==='CONSUMED'
+      &&__events.indexOf('terminal_response')>=0
+      &&__events.indexOf('visual_close')>__events.indexOf('terminal_response'));
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
   }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}
 })();

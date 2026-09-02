@@ -99,43 +99,142 @@ _root.解析单次对话 = function(对话列表:Array){
 	return 输出对话;
 }
 
-_root.载入关卡数据 = function(stageType, url, onLoaded, onLoadError){
-	var loader = new org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader(url);
-	loader.load(function(data:Object):Void {
-		_root.发布调试消息("load xml " + stageType + "  " + url);
-		var 奖励品配置 = _root.配置数据为数组(data.Rewards.Reward);
-		_root.关卡可获得奖励品 = 奖励品配置[0] != null ? _root.解析并设置奖励品配置(奖励品配置) : [];
-
-		// === 更新关卡掉落缓存 ===
-		// 从 url 提取关卡名（格式: data/stages/.../关卡名.xml）
-		if (奖励品配置 && 奖励品配置.length > 0 && 奖励品配置[0] != null) {
-			var urlParts:Array = url.split("/");
-			var fileName:String = urlParts[urlParts.length - 1]; // 关卡名.xml
-			var stageName:String = fileName.substr(0, fileName.lastIndexOf(".")); // 去掉.xml
-			if (stageName) {
-				org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance().updateStageDrops(stageName, 奖励品配置);
+_root.载入关卡数据 = function(stageType, url, onLoaded, onLoadError,
+		stageStartToken, allowCalibrationHost){
+	var loader;
+	var settled:Boolean = false;
+	var failOnce:Function = function(reason:String):Void {
+		if (settled) return;
+		settled = true;
+		if (stageStartToken != undefined && stageStartToken != "") {
+			try {
+				var preparedManager:org.flashNight.arki.scene.StageManager =
+					org.flashNight.arki.scene.StageManager.instance;
+				if (preparedManager != null) {
+					preparedManager.abortPreparedStage(String(stageStartToken));
+				}
+			} catch (preparedAbortError) {
+				trace("[StageXMLLoaderRoot] prepared manager abort failed: "
+					+ preparedAbortError);
+			}
+			try {
+				org.flashNight.arki.scene.StageRunSession.cancelStageStart(
+					String(stageStartToken));
+			} catch (reservationCancelError) {
+				trace("[StageXMLLoaderRoot] reservation cancel failed: "
+					+ reservationCancelError);
 			}
 		}
-
-		if(stageType == "无限过图"){
-			// _root.rogue敌人集合表 = _root.解析rogue敌人集合(data.Unions);
-			var stageManager:org.flashNight.arki.scene.StageManager =
-				org.flashNight.arki.scene.StageManager.instance;
-			var timePoolData = data.TimePools == null
-				? null : data.TimePools.TimePool;
-			if (!stageManager.initialize(data.SubStage, timePoolData)) {
-				_root.发布调试消息("invalid stage time pools: "
-					+ stageManager.getTimePoolValidationError());
-				if (typeof onLoadError == "function") onLoadError();
+		try {
+			_root.发布调试消息(reason + " " + stageType + "  " + url);
+		} catch (debugMessageError) {
+			trace("[StageXMLLoaderRoot] debug projection failed: " + debugMessageError);
+		}
+		try {
+			if (typeof onLoadError == "function") onLoadError();
+			else if (typeof onError == "function") onError();
+		} catch (failureCallbackError) {
+			trace("[StageXMLLoaderRoot] failure callback threw: " + failureCallbackError);
+		}
+	};
+	try {
+		loader = new org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader(url);
+		loader.load(function(data:Object):Void {
+			if (settled) return;
+			if (stageStartToken != undefined && stageStartToken != ""
+					&& !org.flashNight.arki.scene.StageRunSession.isStageStartReservationValid(
+						String(stageStartToken))) {
+				failOnce("ignore stale stage xml");
 				return;
 			}
-		}
-		if (typeof onLoaded == "function") onLoaded(data);
-	}, function():Void {
-		_root.发布调试消息("fail to load xml " + stageType + "  " + url);
-		if (typeof onLoadError == "function") onLoadError();
-		else if (typeof onError == "function") onError();
-	});
+
+			// 先完成全部纯解析与 StageManager/TimePool 验证。在此之前不允许
+			// 覆盖当前关卡奖励或掉落索引，避免 invalid TimePool 污染旧场景。
+			var 奖励品配置:Array;
+			var 解析后奖励:Array;
+			var 掉落关卡名:String = "";
+			try {
+				奖励品配置 = _root.配置数据为数组(
+					data != null && data.Rewards != null ? data.Rewards.Reward : undefined);
+				解析后奖励 = 奖励品配置[0] != null
+					? _root.解析并设置奖励品配置(奖励品配置) : [];
+				var urlParts:Array = String(url).split("/");
+				var fileName:String = urlParts[urlParts.length - 1];
+				掉落关卡名 = fileName.substr(0, fileName.lastIndexOf("."));
+			} catch (奖励解析错误) {
+				failOnce("invalid stage rewards");
+				return;
+			}
+
+			if(stageType == "无限过图"){
+				var stageManager:org.flashNight.arki.scene.StageManager;
+				var managerInitialized:Boolean = false;
+				try {
+					stageManager = org.flashNight.arki.scene.StageManager.getInstance();
+					if (stageManager == null) throw new Error("StageManager unavailable");
+					var timePoolData = data.TimePools == null
+						? null : data.TimePools.TimePool;
+					managerInitialized = stageManager.initialize(
+						data.SubStage, timePoolData, stageStartToken,
+						allowCalibrationHost === true, 解析后奖励,
+						掉落关卡名, 奖励品配置);
+				} catch (managerInitializeError) {
+					trace("[StageXMLLoaderRoot] manager initialize threw: "
+						+ managerInitializeError);
+					failOnce("stage manager initialization failed");
+					return;
+				}
+				if (!managerInitialized) {
+					try {
+						_root.发布调试消息("invalid stage time pools: "
+							+ stageManager.getTimePoolValidationError());
+					} catch (invalidDebugError) {
+						trace("[StageXMLLoaderRoot] invalid-config debug projection failed: "
+							+ invalidDebugError);
+					}
+					failOnce("invalid stage time pools");
+					return;
+				}
+			}
+
+			// 无限过图的 StageManager 仍只处于 exact preload：奖励/掉落随 manager
+			// 保留到首个 gameplay init，final gate/fade 失败时 abort 直接丢弃。
+			// 无 StageManager 的旧 stage type 维持同步提交契约。
+			if (stageType != "无限过图") {
+				try {
+					_root.关卡可获得奖励品 = 解析后奖励;
+					if (掉落关卡名 != "" && 奖励品配置.length > 0
+							&& 奖励品配置[0] != null) {
+						org.flashNight.arki.item.obtain.ItemObtainIndex.getInstance()
+							.updateStageDrops(掉落关卡名, 奖励品配置);
+					}
+				} catch (缓存提交错误) {
+					failOnce("stage cache commit failed");
+					return;
+				}
+			}
+
+			settled = true;
+			try {
+				_root.发布调试消息("load xml " + stageType + "  " + url);
+			} catch (successDebugError) {
+				trace("[StageXMLLoaderRoot] success debug projection failed: "
+					+ successDebugError);
+			}
+			try {
+				if (typeof onLoaded == "function") onLoaded(data);
+			} catch (successCallbackError) {
+				// manager 与 exact reservation 已成功准备；callback transport/投影失败
+				// 不得反向取消已提交 preload，也不得让底层重复终止。
+				trace("[StageXMLLoaderRoot] success callback threw: "
+					+ successCallbackError);
+			}
+		}, function():Void {
+			failOnce("fail to load xml");
+		});
+	} catch (启动载入错误) {
+		failOnce("stage loader threw");
+	}
 };
 
 _root.配置外交地图关卡信息 = function(对象, StageInfo){
@@ -143,8 +242,10 @@ _root.配置外交地图关卡信息 = function(对象, StageInfo){
 	对象.root场景进入位置名 = StageInfo.Address;
 	对象.淡出动画淡出跳转帧 = StageInfo.RootFadeTransitionFrame;
 	对象.onPress = function(){
+		if (!org.flashNight.arki.scene.StageRunSession.canNavigateAwayFromStage()) return false;
 		_root.场景进入位置名 = 对象.root场景进入位置名;
 		_root.淡出动画.淡出跳转帧(对象.淡出动画淡出跳转帧);
+		return true;
 	};
 };
 

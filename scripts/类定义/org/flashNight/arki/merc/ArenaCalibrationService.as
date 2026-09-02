@@ -32,10 +32,12 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var _inited:Boolean = false;
     private static var _active:Object = undefined;
     private static var _pendingRun:Object = undefined;
+    private static var _pendingStageRequest:Object = undefined;
     private static var _transitionStarted:Boolean = false;
     private static var _originalLoadGameWorldUnit:Function = undefined;
     private static var _loaderHookInstalled:Boolean = false;
     private static var _runSeq:Number = 0;
+    private static var _stageRequestSeq:Number = 0;
     private static var SNAPSHOT_WARMUP_FRAMES:Number = 5;
     private static var CALIBRATION_STAGE_LINKAGE:String = "wuxianguotu_1";
     private static var CALIBRATION_STAGE_NAME:String = "斗兽标定竞技场";
@@ -75,6 +77,14 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         _inited = true;
     }
 
+    /** focused TestLoader 专用：只布置尚未 ready 的 pending run。 */
+    public static function testOnlySetPendingRun(params:Object):Void {
+        _active = undefined;
+        _pendingRun = params;
+        _pendingStageRequest = undefined;
+        _transitionStarted = false;
+    }
+
     public static function handleRun(params:Object):Void {
         if (params == undefined) params = {};
         var callId = params.callId;
@@ -83,9 +93,30 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             finish("aborted", "none", [{code: "aborted", message: "superseded by a new calibration run"}]);
         }
         if (_pendingRun != undefined) {
+            if (_transitionStarted == true) {
+                sendResponse({
+                    task: "arena_calibration_response",
+                    callId: callId,
+                    success: false,
+                    status: "stage_failed",
+                    winner: "none",
+                    frames: 0,
+                    durationMs: 0,
+                    blue: emptySideSummary(),
+                    red: emptySideSummary(),
+                    errors: [{code: "stage_transition_pending", message: "calibration stage transition is already committed"}]
+                });
+                return;
+            }
+            var supersededRun:Object = _pendingRun;
+            cancelPendingStageRequest();
+            _pendingRun = undefined;
+            _pendingStageRequest = undefined;
+            _transitionStarted = false;
+            clearCalibrationGlobals();
             sendResponse({
                 task: "arena_calibration_response",
-                callId: _pendingRun.callId,
+                callId: supersededRun.callId,
                 success: false,
                 status: "aborted",
                 winner: "none",
@@ -95,7 +126,6 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 red: emptySideSummary(),
                 errors: [{code: "aborted", message: "superseded by a new calibration run before stage ready"}]
             });
-            _pendingRun = undefined;
         }
 
         if (!isLoaderReady()) {
@@ -260,12 +290,36 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     public static function onCalibrationStageReady():Void {
         _transitionStarted = false;
         if (_pendingRun == undefined) {
+            _pendingStageRequest = undefined;
             clearCalibrationGlobals();
             return;
         }
         var params:Object = _pendingRun;
         _pendingRun = undefined;
+        _pendingStageRequest = undefined;
         handleRun(params);
+    }
+
+    /** StageManager 已进入 host 初始化但同步 setup 失败时的 exact 终止入口。 */
+    public static function onCalibrationStageInitializationFailed(expectedToken:String):Void {
+        var token:String = String(expectedToken || "");
+        if (_pendingStageRequest != undefined) {
+            if (token != ""
+                    && String(_pendingStageRequest.token || "") === token) {
+                handleStageDataFailed(_pendingStageRequest, token);
+                return;
+            }
+            // A 的迟到 StageManager failure 不能清掉已成为当前 owner 的 B。
+            // controller cancel 同样携带 A token，只允许撤销仍属于 A 的底层预载。
+            if (token != "") ArenaController.cancelPendingStageStart(token);
+            trace("[ArenaCalibration] stale stage initialization failure ignored");
+            return;
+        }
+        if (token != "") ArenaController.cancelPendingStageStart(token);
+        _pendingRun = undefined;
+        _pendingStageRequest = undefined;
+        _transitionStarted = false;
+        clearCalibrationGlobals();
     }
 
     public static function handleAbort(params:Object):Void {
@@ -290,7 +344,25 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 return;
             }
 
+            if (_transitionStarted == true) {
+                sendResponse({
+                    task: "arena_calibration_response",
+                    callId: callId,
+                    success: false,
+                    status: "error",
+                    winner: "none",
+                    frames: 0,
+                    durationMs: 0,
+                    blue: emptySideSummary(),
+                    red: emptySideSummary(),
+                    errors: [{code: "stage_transition_pending", message: "calibration stage transition can no longer be aborted"}]
+                });
+                return;
+            }
+
+            cancelPendingStageRequest();
             _pendingRun = undefined;
+            _pendingStageRequest = undefined;
             if (_transitionStarted != true) clearCalibrationGlobals();
             sendResponse({
                 task: "arena_calibration_response",
@@ -411,23 +483,40 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         return true;
     }
 
-    public static function handleStageDataReady():Void {
-        if (_pendingRun == undefined) return;
+    public static function handleStageDataReady(expectedRequest:Object, expectedToken:String):Void {
+        if (!matchesPendingStageRequest(expectedRequest, expectedToken)) return;
         if (typeof _root.淡出动画.淡出跳转帧 != "function") {
-            handleStageDataFailed();
+            handleStageDataFailed(expectedRequest, expectedToken);
             return;
         }
+        // apply 会覆盖普通关卡/角斗场上下文；fade 同步失败时必须把这些值
+        // 精确恢复到本请求写入前，而不是只清几个 calibration 布尔量。
+        expectedRequest.transitionGlobalsSnapshot = captureCalibrationTransitionGlobals();
         applyCalibrationTransitionGlobals();
         _transitionStarted = true;
-        _root.淡出动画.淡出跳转帧(CALIBRATION_STAGE_LINKAGE);
+        try {
+            _root.淡出动画.淡出跳转帧(CALIBRATION_STAGE_LINKAGE);
+        } catch (fadeError) {
+            trace("[ArenaCalibration] stage fade failed: " + fadeError);
+            _transitionStarted = false;
+            handleStageDataFailed(expectedRequest, expectedToken);
+        }
     }
 
-    public static function handleStageDataFailed():Void {
-        if (_pendingRun == undefined) return;
+    public static function handleStageDataFailed(expectedRequest:Object, expectedToken:String):Void {
+        if (!matchesPendingStageRequest(expectedRequest, expectedToken)) return;
         var params:Object = _pendingRun;
+        var transitionSnapshot:Object = expectedRequest.transitionGlobalsSnapshot;
+        ArenaController.cancelPendingStageStart(expectedToken);
         _pendingRun = undefined;
+        _pendingStageRequest = undefined;
         _transitionStarted = false;
-        clearCalibrationGlobals();
+        if (transitionSnapshot != undefined) {
+            restoreCalibrationTransitionGlobals(transitionSnapshot);
+            expectedRequest.transitionGlobalsSnapshot = undefined;
+        } else {
+            clearCalibrationGlobals();
+        }
         sendResponse({
             task: "arena_calibration_response",
             callId: params.callId,
@@ -440,6 +529,26 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             red: emptySideSummary(),
             errors: [{code: "stage_failed", message: "failed to load calibration arena stage data"}]
         });
+    }
+
+    private static function matchesPendingStageRequest(
+            expectedRequest:Object, expectedToken:String):Boolean {
+        if (_pendingRun == undefined || _pendingStageRequest == undefined
+                || expectedRequest == undefined
+                || _pendingStageRequest !== expectedRequest
+                || expectedRequest.params !== _pendingRun
+                || Number(expectedRequest.generation) != Number(_pendingStageRequest.generation)) {
+            return false;
+        }
+        var token:String = String(expectedToken || "");
+        return token != "" && String(expectedRequest.token || "") === token;
+    }
+
+    private static function cancelPendingStageRequest():Boolean {
+        var token:String = _pendingStageRequest != undefined
+            ? String(_pendingStageRequest.token || "") : "";
+        if (token != "") return ArenaController.cancelPendingStageStart(token);
+        return ArenaController.cancelPendingStageStart();
     }
 
     private static function isCalibrationStageActive():Boolean {
@@ -1540,25 +1649,37 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
         removeClock();
         resetCalibrationSource();
+        _stageRequestSeq++;
+        var requestIdentity:Object = {
+            generation: _stageRequestSeq,
+            params: params,
+            token: ""
+        };
         _pendingRun = params;
+        _pendingStageRequest = requestIdentity;
         _transitionStarted = false;
 
         if (!ArenaController.prepareArenaStage(
                 0,
                 0,
                 "",
-                function(data:Object):Void {
-                    org.flashNight.arki.merc.ArenaCalibrationService.handleStageDataReady();
+                function(data:Object, startToken:String):Void {
+                    requestIdentity.token = String(startToken || "");
+                    org.flashNight.arki.merc.ArenaCalibrationService.handleStageDataReady(
+                        requestIdentity, startToken);
                 },
-                function():Void {
-                    org.flashNight.arki.merc.ArenaCalibrationService.handleStageDataFailed();
-                })) {
+                function(startToken:String):Void {
+                    requestIdentity.token = String(startToken || "");
+                    org.flashNight.arki.merc.ArenaCalibrationService.handleStageDataFailed(
+                        requestIdentity, startToken);
+                },
+                true)) {
             _pendingRun = undefined;
+            _pendingStageRequest = undefined;
             errors.push({code: "stage_failed", message: "DEATH MATCH arena StageInfo is unavailable"});
             return false;
         }
 
-        applyCalibrationTransitionGlobals();
         return true;
     }
 
@@ -1963,6 +2084,54 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     }
 
     private static function sendResponse(resp:Object):Void {
-        _root.server.sendSocketMessage(_json.stringifySafe(resp));
+        try {
+            _root.server.sendSocketMessage(_json.stringifySafe(resp));
+        } catch (responseError) {
+            // Host 投影不是标定状态机权威。特别是 A→B supersede 时，A 回包
+            // 失败不得阻断已经清空 A 后继续为 B 建立新 reservation。
+            trace("[ArenaCalibrationService] response projection failed: " + responseError);
+        }
+    }
+
+    private static function captureCalibrationTransitionGlobals():Object {
+        return {
+            calibrationMode:_root.斗兽标定模式,
+            calibrationNoSave:_root.斗兽标定禁存档,
+            agentCalibrationNoSave:_root._agentCalibrationNoSave,
+            clearedStage:_root.当前通关的关卡,
+            stageName:_root.当前关卡名,
+            stageType:_root.关卡类型,
+            infiniteMode:_root.无限过图模式,
+            entryName:_root.场景进入位置名,
+            opponentType:_root.角斗场对手类型,
+            roster:_root.角斗场roster阵容,
+            deposit:_root.押金,
+            reward:_root.角斗场奖金,
+            enemyCompanions:_root.敌人同伴数,
+            enemyTotal:_root.敌人总数,
+            transitionFrame:_root.场景转换函数 != undefined
+                ? _root.场景转换函数.上次切换帧数 : undefined
+        };
+    }
+
+    private static function restoreCalibrationTransitionGlobals(snapshot:Object):Void {
+        if (snapshot == undefined) return;
+        _root.斗兽标定模式 = snapshot.calibrationMode;
+        _root.斗兽标定禁存档 = snapshot.calibrationNoSave;
+        _root._agentCalibrationNoSave = snapshot.agentCalibrationNoSave;
+        _root.当前通关的关卡 = snapshot.clearedStage;
+        _root.当前关卡名 = snapshot.stageName;
+        _root.关卡类型 = snapshot.stageType;
+        _root.无限过图模式 = snapshot.infiniteMode;
+        _root.场景进入位置名 = snapshot.entryName;
+        _root.角斗场对手类型 = snapshot.opponentType;
+        _root.角斗场roster阵容 = snapshot.roster;
+        _root.押金 = snapshot.deposit;
+        _root.角斗场奖金 = snapshot.reward;
+        _root.敌人同伴数 = snapshot.enemyCompanions;
+        _root.敌人总数 = snapshot.enemyTotal;
+        if (_root.场景转换函数 != undefined) {
+            _root.场景转换函数.上次切换帧数 = snapshot.transitionFrame;
+        }
     }
 }

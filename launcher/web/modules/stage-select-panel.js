@@ -62,6 +62,7 @@ var StageSelectPanel = (function() {
             droppedRespCount: S._droppedRespCount,
             busyStageName: S._busyStageName,
             lastError: S._lastError,
+            lastCloseSendError: S._lastCloseSendError,
             lastDifficultyClick: S._lastDifficultyClick,
             selectedStageId: S._selectedStageId,
             inspectorOpen: StageSelectInspector.isInspectorOpen(),

@@ -29,6 +29,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         testEffectFailureKeepsLegacyConsumptionOrder();
         testMissingSaveSystemFailsBeforeAnyAuthorityWrite();
         testItemRemovedListenerFaultRecoversIndexesAndNextTransaction();
+        testDirectUseLanePriorityAndPausedConcurrency();
         testLiveKeyLabelAndCleanup();
 
         ManualCooldownService.resetForTests();
@@ -76,7 +77,12 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
         DrugInputService.updateSlot(unit, 0, false, true, inventory, root, null);
         var last:Object = DrugInputService.updateSlot(unit, 0, true, true, inventory, root, null);
         assert(last.used && last.depleted && inventory.getItem("0") == null
-            && root.存档系统.dirtyMark,
+            && root.存档系统.dirtyMark && last.affinityCommitted
+            && root._saveExt.drugLoadout.version == 3
+            && root._saveExt.drugLoadout.slots[0].itemKey == "测试药剂"
+            && root._saveExt.drugLoadout.slots[0]
+                .lastDepletedSequence == 1
+            && root._saveExt.drugLoadout.nextDepletedSequence == 2,
             "last dose removes the authoritative inventory entry and marks persistence dirty");
         assert(root.快捷物品栏0 == "测试药剂" && root.messages.length == 1,
             "last dose publishes exhaustion without writing the retired root mirror");
@@ -439,7 +445,11 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
                 "drug removal preserves the synchronous listener exception");
             var repairedIndexes:Array = inventory.getIndexes();
             assert(inventory.getItem("0") == null && root.存档系统.dirtyMark === true
-                    && repairedIndexes.length == 1 && repairedIndexes[0] == 1,
+                    && repairedIndexes.length == 1 && repairedIndexes[0] == 1
+                    && root._saveExt.drugLoadout.slots[0]
+                        .itemKey == "监听故障药剂"
+                    && root._saveExt.drugLoadout.slots[0]
+                        .lastDepletedSequence == 1,
                 "listener fault keeps the committed dose loss, marks dirty first and repairs indexes");
             assert(PlayerAssetTransaction.current() == null && receipts.length == 1
                     && receipts[0].effects.length == 1
@@ -460,7 +470,13 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
                 unit, 1, true, true, inventory, root, null);
             assert(next.used && next.depleted && inventory.getItem("1") == null
                     && observedNextRemoval == 1 && root.存档系统.dirtyMark === true
-                    && PlayerAssetTransaction.current() == null,
+                    && PlayerAssetTransaction.current() == null
+                    && next.affinityCommitted
+                    && root._saveExt.drugLoadout.slots[1]
+                        .itemKey == "后续独立药剂"
+                    && root._saveExt.drugLoadout.slots[1]
+                        .lastDepletedSequence == 2
+                    && root._saveExt.drugLoadout.nextDepletedSequence == 3,
                 "the next slot dispatch and asset transaction complete independently after the fault");
             assert(receipts.length == 2 && receipts[1].effects.length == 1
                     && receipts[1].effects[0].name == "后续独立药剂"
@@ -494,7 +510,11 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
             吃药冷却时间:100,
             effectCalls:0,
             messages:[],
-            存档系统:{dirtyMark:false}
+            存档系统:{dirtyMark:false},
+            _saveExt:{drugLoadout:{version:2}}
+        };
+        root.getItemData = function(itemName:String):Object {
+            return {name:itemName, type:"消耗品", use:"药剂"};
         };
         root.使用药剂 = function(itemName:String):Void {
             this.effectCalls++;
@@ -530,6 +550,42 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputServiceTest {
             this.lastFrame = frame;
         };
         return renderer;
+    }
+
+    private static function testDirectUseLanePriorityAndPausedConcurrency():Void {
+        resetFixture();
+        var root:Object = makeRoot();
+        root.暂停 = true;
+        var drugs:Object = makeInventory([
+            {name:"同名直服药", value:1}, {name:"其他1", value:1},
+            null, {name:"同名直服药", value:1},
+            {name:"其他4", value:1}, {name:"其他5", value:1},
+            null, {name:"其他7", value:1}
+        ]);
+        root.物品栏 = {药剂栏:drugs};
+        var sameFirst:Object = DrugInputService.selectDirectUseLane(
+            "同名直服药", drugs);
+        assert(sameFirst.success && sameFirst.lane == 0,
+            "direct use prefers the lowest ready lane carrying the same item");
+
+        var unrelated:Object = DrugInputService.selectDirectUseLane(
+            "未装备直服药", drugs);
+        assert(unrelated.success && unrelated.lane == 0,
+            "direct use may occupy the lowest ready cooldown lane even when both equipment banks are full");
+
+        var backpack:Object = makeInventory([{name:"同名直服药", value:2}]);
+        var firstItem:Object = backpack.getItem("0");
+        var first:Object = DrugInputService.consumeBackpackItem(
+            {hp:100}, backpack, 0, firstItem, 0, root);
+        var secondLane:Object = DrugInputService.selectDirectUseLane(
+            "同名直服药", drugs);
+        var second:Object = DrugInputService.consumeBackpackItem(
+            {hp:100}, backpack, 0, backpack.getItem("0"),
+            Number(secondLane.lane), root);
+        assert(first.used && first.lane == 0 && secondLane.success
+                && secondLane.lane == 3 && second.used && second.lane == 3
+                && backpack.getItem("0") == null && root.effectCalls == 2,
+            "paused direct use is allowed and the same item may run concurrently on different ready lanes");
     }
 
     private static function allDrugCooldownsReady(expected:Boolean):Boolean {

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "profileKind": "workspace-private-no-credentials",
+  "sshHost": "h3-worker",
+  "remoteRoot": "/Users/<worker-user>/vpipe",
+  "vpipeBin": "/Applications/Vpipe Manager.app/Contents/Helpers/vpipe",
+  "modelId": "local/MiniMax-H3-FL2VA-8bit",
+  "productionRoot": "tmp/<private-production-root>",
+  "sourceManifests": [],
+  "collectedManifests": [],
+  "containsCredentials": false,
+  "reverifyBeforeRemoteMutation": true
+}

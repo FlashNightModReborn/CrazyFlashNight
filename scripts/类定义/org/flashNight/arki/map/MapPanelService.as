@@ -51,10 +51,11 @@ class org.flashNight.arki.map.MapPanelService {
     // ─────────────────────────────────────────────
 
     /**
-     * hotspotId 是否可直接跳转：非战斗地图 + NAVIGATE_TARGETS 命中 + 所在组已解锁（base 永解锁）
+     * hotspotId 是否可直接跳转：关卡会话允许离场 + NAVIGATE_TARGETS 命中 +
+     * 所在组已解锁（base 永解锁）。不能只信 当前为战斗地图；旁路跳帧可能留下 stale run。
      */
     public static function canNavigateToHotspot(hotspotId:String):Boolean {
-        if (_root.当前为战斗地图) return false;
+        if (!org.flashNight.arki.scene.StageRunSession.canNavigateAwayFromStage()) return false;
         return canRouteToHotspotAfterReturn(hotspotId);
     }
 
@@ -169,8 +170,21 @@ class org.flashNight.arki.map.MapPanelService {
             return;
         }
 
-        MapHotspotResolver.beginPending(targetId);
-        performNavigate(targetFrame);
+        if (!canNavigateToHotspot(targetId)) {
+            resp.success = false;
+            // 保持既有 response error 契约；只读原因通过 v3 snapshot additive 字段下发。
+            resp.error = "not_navigable";
+            sendResponse(resp);
+            return;
+        }
+
+        // 复用 AS2 权威 helper，避免 Web handler 与任务交付入口再次分叉。
+        if (!navigateToHotspot(targetId)) {
+            resp.success = false;
+            resp.error = "not_navigable";
+            sendResponse(resp);
+            return;
+        }
 
         resp.success = true;
         resp.closePanel = true;
@@ -354,15 +368,20 @@ class org.flashNight.arki.map.MapPanelService {
         var currentHotspotId:String = MapHotspotResolver.resolveCurrent();
         var currentPageId:String = MapPanelCatalog.resolvePageId(currentHotspotId);
         var unlocks:Object = buildUnlockFlags();
+        var navigationLockReason:String =
+            org.flashNight.arki.scene.StageRunSession.getSceneExitBlockReason();
         if (_root.性别 != undefined) {
             roommateGender = String(_root.性别);
         }
 
         return {
+            // v3 保持兼容；navigationLocked/reason 是可选 additive 字段，旧消费者可忽略。
             version: 3,
             defaultPageId: currentPageId,
             regionId: currentPageId,
             currentHotspotId: currentHotspotId,
+            navigationLocked: navigationLockReason != "",
+            navigationLockReason: navigationLockReason,
             unlocks: unlocks,
             enabledHotspotIds: buildEnabledHotspotIds(),
             hotspotStates: buildHotspotStates(unlocks),

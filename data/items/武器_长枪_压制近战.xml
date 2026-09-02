@@ -2,6 +2,7 @@
 <!--
 物品ID已自动生成，无需手动维护-->
 <root>
+  <!-- 普通近战长枪的固有韧性按重量档位取30/50/100；专属防具化武器可独立定档。 -->
   <item weapontype="压制近战">
     <name>等离子切割机</name>
     <displayname>等离子切割机</displayname>
@@ -29,6 +30,7 @@
       <impact>10</impact>
       <damagetype>真伤</damagetype>
       <defence>350</defence>
+      <toughness>100</toughness>
       <reloadPenalty>0</reloadPenalty>
     </data>
     <lifecycle>

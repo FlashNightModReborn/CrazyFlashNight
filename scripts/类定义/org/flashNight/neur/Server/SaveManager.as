@@ -215,6 +215,8 @@ class org.flashNight.neur.Server.SaveManager {
     private var _settingsMigrationPending:Boolean;
     private var _drugLoadoutMigrationPending:Boolean;
     private var _drugLoadoutSchemaRejected:Boolean;
+    private var _rewardInboxMigrationPending:Boolean;
+    private var _rewardInboxSchemaRejected:Boolean;
     private var _drugLoadoutMigrationSlot:String;
     private var _lastSaveHash:String;
     private var _liteJson:LiteJSON;
@@ -266,6 +268,8 @@ class org.flashNight.neur.Server.SaveManager {
         _settingsMigrationPending = false;
         _drugLoadoutMigrationPending = false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
         _drugLoadoutMigrationSlot = undefined;
         _lastSaveHash = "";
         _liteJson = new LiteJSON();
@@ -313,6 +317,8 @@ class org.flashNight.neur.Server.SaveManager {
         _c4WarnedOnce = false;
         _drugLoadoutMigrationPending = false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
         _drugLoadoutMigrationSlot = undefined;
     }
 
@@ -529,6 +535,7 @@ class org.flashNight.neur.Server.SaveManager {
             _root.存盘标志 = 1;
             _settingsMigrationPending = false;
             _drugLoadoutMigrationPending = false;
+            _rewardInboxMigrationPending = false;
             KeyManager.clearPendingKeySettingsMigration();
         }
 
@@ -663,6 +670,8 @@ class org.flashNight.neur.Server.SaveManager {
             _drugLoadoutMigrationSlot = drugMigrationSlot;
             _drugLoadoutMigrationPending = false;
             _drugLoadoutSchemaRejected = false;
+            _rewardInboxMigrationPending = false;
+            _rewardInboxSchemaRejected = false;
         }
 
         sm.sendServerMessage("[SaveManager.preload] savePath=" + _root.savePath);
@@ -955,6 +964,11 @@ class org.flashNight.neur.Server.SaveManager {
             _prefetchGen++;
             return false;
         }
+        if (_rewardInboxSchemaRejected) {
+            sm.sendServerMessage("[SaveManager.loadAll] rewardInbox schema rejected");
+            _prefetchGen++;
+            return false;
+        }
         if (changed) {
             syncTopLevelFromMydata(_root.mydata, soData);
             if (flushSO(so)) {
@@ -1032,46 +1046,93 @@ class org.flashNight.neur.Server.SaveManager {
             );
         }
 
-        // 现有清理
-        _root.主角技能表 = [];
-        _root.初始化主角技能表();
+        resetPerCharacterMemory();
+    }
+
+    /**
+     * 只清当前角色的内存权威，不读取或改写 SOL，也不发送 shadow/archive 命令。
+     * deleteSlot() 在完成存储删除后复用；Web 建角在 reserve 成功后、写入新 draft
+     * 前复用，避免 frame 91 未执行时把旧角色领域带入新存档。
+     */
+    private function resetPerCharacterMemory():Void {
+        // 旧角色尚未触发的 debounce 不能在 fresh draft 写到一半时突然落盘。
+        if (_dispatchToken != undefined) {
+            EnhancedCooldownWheel.I().removeTask(_dispatchToken);
+            _dispatchToken = undefined;
+        }
+
+        // 技能、快捷栏与称号。
+        // 不委托时间轴回调：Web 路径的 reset 必须自身建立完整 80 槽默认，
+        // 也避免外部初始化器被旧状态、加载顺序或测试替身影响。
+        _root.主角技能表 = new Array(80);
+        for (var skillIndex:Number = 0; skillIndex < 80; skillIndex++) {
+            _root.主角技能表[skillIndex] = ["", 0, false, "", true];
+        }
         _root.主角被动技能 = {};
+        for (var quickSkillIndex:Number = 1; quickSkillIndex <= 12;
+                quickSkillIndex++) {
+            _root["快捷技能栏" + quickSkillIndex] = "";
+        }
+        _root.快捷物品栏4 = "";
+        _root.玩家称号 = "";
+
+        // frame 91 与 deleteSlot 共有的容器/同伴边界。
         _root.物品栏 = initInventory();
         _root.收集品栏 = initCollection();
         _root.同伴数据 = [];
         _root.同伴数 = 0;
+        _root.佣兵是否出战信息 = [0, 0, 0, 0, 0];
         _root.killStats = { total:0, byType:{} };
         rebindKillStatsExtensions();
 
-        // 补充遗漏项（类型与运行时一致）
+        // 其余现役 per-character 存档领域。
         _root.宠物信息 = [[], [], [], [], []];
         _root.宠物领养限制 = 5;
         _root.tasks_to_do = [];
         _root.tasks_finished = {};
         _root.task_chains_progress = {};
         _root.主线任务进度 = 0;
+        if (_root.基建系统 == undefined) _root.基建系统 = {};
         _root.基建系统.infrastructure = {};
         _root.商城已购买物品 = [];
         _root.商城购物车 = [];
         _root.easterEgg = undefined;
-        _root._saveExt = {}; // ext 命名空间纵深防线（主防线在 newCharacter；成就/宠物购买次数等随档清空）
+        var initialDrugFeature:Object = DrugSlotAffinityService.normalizeSavedFeature(
+            null, {}, persistedDrugKeyValidator()).feature;
+        _root._saveExt = {drugLoadout:initialDrugFeature};
+        RewardInboxService.resetSession();
+        _root.虚拟币 = 0;
+        _root.全局健身HP加成 = 0;
+        _root.全局健身MP加成 = 0;
+        _root.全局健身空攻加成 = 0;
+        _root.全局健身内力加成 = 0;
+        _root.全局健身防御加成 = 0;
+        ItemObtainIndex.getInstance().clearDynamicDiscoveries();
         DrugInputService.resetSession();
+        _settingsMigrationPending = false;
         _drugLoadoutMigrationPending = false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
         _drugLoadoutMigrationSlot = String(_root.savePath);
+        KeyManager.clearPendingKeySettingsMigration();
 
-        // 缓存层清理
+        // 只清内存缓存；SharedObject/shadow 只能由各自显式存储边界处理。
         _root.mydata = undefined;
         if (_root.playerData == undefined) _root.playerData = [];
         _root.playerData[0] = undefined;
         _root.lastsave = "";
         _root.lastsave2 = [];
         _lastSaveHash = "";
+        _runtimeSaveLoaded = false;
+        _root._saveRuntimeLoaded = false;
+        _root._saveRuntimeLoadedAttemptId = undefined;
+        _root.存盘标志 = 0;
 
-        // 禁止在删档→新建角色之间的窗口期意外触发存盘
+        // 调用方完成全量新角色初始化后才重新开放同步存盘。
         _root.允许存档 = false;
         _dirtyMark = false;
-        _root.存档系统.dirtyMark = false;
+        if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = false;
     }
 
     public function hasSaveData():Boolean {
@@ -1277,84 +1338,264 @@ class org.flashNight.neur.Server.SaveManager {
     // 单字符常量, 避免每次重新构造 String.fromCharCode (AS2 类静态字段在 ASO 缓存里复用)
     private static var FFFD_CHAR:String = String.fromCharCode(0xFFFD);
 
+    /**
+     * 旧时间轴兼容入口。旧 UI 仍保留 30 帧人工 SceneReady；Web 建角必须改走
+     * prepareNewCharacter() -> flushNow() -> startNewCharacterTutorial(..., false, ...)，
+     * 只采信场景加载完真实主角后发布的 SceneReady。
+     */
     public function newCharacter():Boolean {
-        // deleteSlot() 禁用了存档，新建角色时恢复
-        _root.允许存档 = true;
-        _settingsMigrationPending = false;
-        _drugLoadoutMigrationPending = false;
-        _drugLoadoutSchemaRejected = false;
-        _drugLoadoutMigrationSlot = String(_root.savePath);
-        KeyManager.clearPendingKeySettingsMigration();
-
-        // ext 命名空间主防线：新建角色无条件清空 _saveExt（成就/宠物购买次数等 per-character 数据）。
-        // 覆盖「删档→新建」与「坏档→新建」两条路径（后者不经 deleteSlot，unpackGameState 已写入
-        // 旧档 ext 残留，下方 packGameState 会把残留原样打包进新档——既有宠物涨价跨角色泄漏即此因）。
-        _root._saveExt = {drugLoadout:{version:2}};
-
-        // 初始装备
-        if (_root.上装装备 != "") {
-            _root.物品栏.装备栏.add("上装装备", BaseItem.create(_root.上装装备, 1));
+        if (_root.帧计时器 == undefined
+                || typeof _root.帧计时器.添加单次任务 != "function") {
+            return false;
         }
-        if (_root.下装装备 != "") {
-            _root.物品栏.装备栏.add("下装装备", BaseItem.create(_root.下装装备, 1));
+        var prepared:Object = prepareNewCharacter(null, "new_character");
+        if (!prepared.success) return false;
+        return startNewCharacterTutorial(String(prepared.startToken), true, null, null);
+    }
+
+    /**
+     * 新角色事务第一段：先抢教学关 exact reservation，再执行一次初始化。
+     * initialState 仅供已经完成权威校验的 CharacterCreationService 使用；null
+     * 表示沿用旧时间轴已经写入 _root 的外观字段。
+     */
+    public function prepareNewCharacter(initialState:Object, reservationOwner:String):Object {
+        var reservation:Object = reserveNewCharacterTutorial(reservationOwner);
+        if (!reservation.success) return reservation;
+        var tutorialStageName:String = String(reservation.stageName);
+        var tutorialDifficulty:String = String(reservation.stageDifficulty);
+        var startToken:String = String(reservation.startToken);
+
+        try {
+            // Web 路径停在 frame 81，不会经过 frame 91/deleteSlot。先清旧角色
+            // 的全部内存领域与预取缓存，但绝不触碰当前 SOL/shadow。
+            clearPrefetch();
+            resetPerCharacterMemory();
+
+            if (initialState != null) {
+                _root.角色名 = initialState.characterName;
+                _root.性别 = initialState.genderText;
+                _root.身高 = initialState.height;
+                _root.脸型 = initialState.faceIdentifier;
+                _root.发型 = initialState.hairIdentifier;
+                _root.上装装备 = initialState.upperIdentifier;
+                _root.下装装备 = initialState.lowerIdentifier;
+                _root.脚部装备 = initialState.footwearIdentifier;
+                _root.难度 = initialState.difficultyText;
+            }
+
+            // 旧性别选择帧本来会写入这些基础值；收口到初始化边界后，Web 路径
+            // 不需要先污染 _root，旧入口重复写入相同值也保持兼容。
+            _root.金钱 = 0;
+            _root.等级 = 1;
+            _root.经验值 = 0;
+            _root.技能点数 = 0;
+            _root.身价 = _root.基础身价值;
+
+            // deleteSlot() 禁用了存档，新建角色时恢复
+            _root.允许存档 = true;
+
+            // 初始装备
+            if (_root.上装装备 != "") {
+                _root.物品栏.装备栏.add("上装装备", BaseItem.create(_root.上装装备, 1));
+            }
+            if (_root.下装装备 != "") {
+                _root.物品栏.装备栏.add("下装装备", BaseItem.create(_root.下装装备, 1));
+            }
+            if (_root.脚部装备 != "") {
+                _root.物品栏.装备栏.add("脚部装备", BaseItem.create(_root.脚部装备, 1));
+            }
+
+            // 难度模式
+            if (_root.难度 == "逆天模式（简单）") {
+                _root.difficultyMode = 1;
+            } else if (_root.难度 == "挑战模式（自限）") {
+                _root.difficultyMode = 2;
+            } else {
+                _root.difficultyMode = 0;
+            }
+
+            _root.上装装备 = undefined;
+            _root.下装装备 = undefined;
+            _root.脚部装备 = undefined;
+            _root.难度 = undefined;
+
+            // 所有 per-character 默认与初装都已完成后才组包；这样 prepare 返回时
+            // _root.mydata 本身也是干净候选，不依赖后续 flush 重新组包来纠偏。
+            _root.mydata = packGameState();
+
+            // 新出生标志
+            _root.新出生 = false;
+        } catch (initializationError) {
+            trace("[SaveManager.prepareNewCharacter] initialization failed: "
+                + initializationError);
+            releaseNewCharacterReservation(startToken, null, "initialization_failed");
+            return {success:false, error:"initialization_failed"};
         }
-        if (_root.脚部装备 != "") {
-            _root.物品栏.装备栏.add("脚部装备", BaseItem.create(_root.脚部装备, 1));
+
+        return {
+            success:true,
+            startToken:startToken,
+            stageName:tutorialStageName,
+            stageDifficulty:tutorialDifficulty
+        };
+    }
+
+    /**
+     * durable 后教学关加载失败的重试入口：只重新抢 reservation，不碰角色数据。
+     */
+    public function reserveNewCharacterTutorial(reservationOwner:String):Object {
+        var tutorialStageName:String = "教学关卡";
+        var tutorialDifficulty:String = String(_root.当前关卡难度 || "简单");
+        if (typeof _root.载入关卡数据 != "function"
+                || _root.淡出动画 == undefined
+                || typeof _root.淡出动画.淡出跳转帧 != "function") {
+            return {success:false, error:"transition_unavailable"};
+        }
+        var startToken:String = "";
+        try {
+            startToken = org.flashNight.arki.scene.StageRunSession.reserveStageStart(
+                reservationOwner == null || reservationOwner == ""
+                    ? "new_character" : reservationOwner,
+                tutorialStageName, tutorialDifficulty);
+        } catch (reserveError) {
+            trace("[SaveManager.reserveNewCharacterTutorial] reservation failed: "
+                + reserveError);
+            return {success:false, error:"stage_busy"};
+        }
+        if (startToken == "") return {success:false, error:"stage_busy"};
+        return {
+            success:true,
+            startToken:startToken,
+            stageName:tutorialStageName,
+            stageDifficulty:tutorialDifficulty
+        };
+    }
+
+    /**
+     * 新角色事务第二段：只负责教学 XML 与淡出。调用方必须先持有
+     * prepareNewCharacter() 返回的 exact token；本方法绝不重新初始化角色。
+     */
+    public function startNewCharacterTutorial(startToken:String,
+            scheduleSyntheticSceneReady:Boolean,
+            onTransitionAccepted:Function,
+            onFailure:Function):Boolean {
+        if (startToken == null || startToken == ""
+                || typeof _root.载入关卡数据 != "function"
+                || _root.淡出动画 == undefined
+                || typeof _root.淡出动画.淡出跳转帧 != "function"
+                || (scheduleSyntheticSceneReady
+                    && (_root.帧计时器 == undefined
+                        || typeof _root.帧计时器.添加单次任务 != "function"))) {
+            releaseNewCharacterReservation(startToken, onFailure, "transition_unavailable");
+            return false;
         }
 
-        // 难度模式
-        if (_root.难度 == "逆天模式（简单）") {
-            _root.difficultyMode = 1;
-        } else if (_root.难度 == "挑战模式（自限）") {
-            _root.difficultyMode = 2;
-        } else {
-            _root.difficultyMode = 0;
+        var tutorialStageName:String = "教学关卡";
+        var tutorialDifficulty:String = String(_root.当前关卡难度 || "简单");
+        var settled:Boolean = false;
+        var failedSynchronously:Boolean = false;
+        var loadCallReturned:Boolean = false;
+        var failOnce:Function = function():Void {
+            if (settled) return;
+            settled = true;
+            if (!loadCallReturned) failedSynchronously = true;
+            SaveManager.getInstance().releaseNewCharacterReservation(
+                startToken, onFailure, "stage_load_failed");
+        };
+
+        // XML/TimePool 成功前不停止 BGM、不调度 SceneReady、不淡出。
+        // 异步 XML 失败按既有契约保留上方已完成的角色初始化写入。
+        try {
+            _root.载入关卡数据("无限过图", "data/stages/特殊/教学关卡.xml",
+                function():Void {
+                    if (settled) return;
+                    if (!org.flashNight.arki.scene.StageRunSession
+                            .isStageStartReservationValid(startToken)) {
+                        failOnce();
+                        return;
+                    }
+                    try {
+                        _root.当前通关的关卡 = "";
+                        _root.当前关卡名 = tutorialStageName;
+                        _root.当前关卡难度 = tutorialDifficulty;
+                        if (typeof _root.计算难度等级 == "function") {
+                            _root.难度等级 = _root.计算难度等级(tutorialDifficulty);
+                        }
+                        _root.关卡类型 = "无限过图";
+                        _root.关卡路径 = "data/stages/特殊/教学关卡.xml";
+                        _root.场景进入位置名 = "出生地";
+                    } catch (transitionPrepareError) {
+                        trace("[SaveManager.newCharacter] tutorial transition prepare failed: "
+                            + transitionPrepareError);
+                        failOnce();
+                        return;
+                    }
+                    try {
+                        if (_root.soundEffectManager != undefined
+                                && typeof _root.soundEffectManager.stopBGMForTransition == "function") {
+                            _root.soundEffectManager.stopBGMForTransition();
+                        }
+                    } catch (bgmStopError) {
+                        trace("[SaveManager.newCharacter] tutorial BGM projection failed: "
+                            + bgmStopError);
+                    }
+                    try {
+                        _root.淡出动画.淡出跳转帧("wuxianguotu_1");
+                    } catch (fadeError) {
+                        trace("[SaveManager.newCharacter] tutorial fade failed: " + fadeError);
+                        failOnce();
+                        return;
+                    }
+
+                    // fade 已接受即为转场提交点；先封闭回调，再调度 SceneReady，
+                    // 调度器投影抛错不得反向撤销已接受的 fade/StageManager preload。
+                    settled = true;
+                    if (onTransitionAccepted != null) onTransitionAccepted();
+                    if (scheduleSyntheticSceneReady) {
+                        try {
+                            _root.帧计时器.添加单次任务(function():Void {
+                                EventBus.instance.publish("SceneReady");
+                            }, 30);
+                        } catch (sceneReadyScheduleError) {
+                            trace("[SaveManager.newCharacter] SceneReady schedule failed: "
+                                + sceneReadyScheduleError);
+                        }
+                    }
+                }, failOnce, startToken);
+        } catch (loadStartError) {
+            trace("[SaveManager.newCharacter] tutorial load failed: " + loadStartError);
+            failOnce();
         }
+        loadCallReturned = true;
+        return !failedSynchronously;
+    }
 
-        _root.上装装备 = undefined;
-        _root.下装装备 = undefined;
-        _root.脚部装备 = undefined;
-        _root.难度 = undefined;
-
-        // 存档数据
-        _root.mydata = packGameState();
-        _root.金钱 = 0;
-        _root.虚拟币 = 0;
-        _root.宠物信息 = [[], [], [], [], []];
-        _root.宠物领养限制 = 5;
-
-        // 全局加成
-        _root.全局健身HP加成 = 0;
-        _root.全局健身MP加成 = 0;
-        _root.全局健身空攻加成 = 0;
-        _root.全局健身内力加成 = 0;
-        _root.全局健身防御加成 = 0;
-
-        // 基建
-        _root.基建系统.infrastructure = {};
-
-        // 击杀统计
-        _root.killStats = { total:0, byType:{} };
-        rebindKillStatsExtensions();
-
-        // 清空物品获取方式的动态发现集合
-        ItemObtainIndex.getInstance().clearDynamicDiscoveries();
-
-        _root.soundEffectManager.stopBGMForTransition();
-
-        // 新出生标志
-        _root.新出生 = false;
-
-        // 延迟触发 SceneReady
-        _root.帧计时器.添加单次任务(function() {
-            EventBus.instance.publish("SceneReady");
-        }, 30);
-
-        _root.载入关卡数据("无限过图", "data/stages/特殊/教学关卡.xml");
-        _root.场景进入位置名 = "出生地";
-        _root.淡出动画.淡出跳转帧("wuxianguotu_1");
-        DrugInputService.resetSession();
-        return true;
+    /** 释放教学关 prepared stage 与 reservation，并把失败投影回调用方。 */
+    private function releaseNewCharacterReservation(startToken:String,
+            onFailure:Function, errorCode:String):Void {
+        try {
+            var manager:org.flashNight.arki.scene.StageManager =
+                org.flashNight.arki.scene.StageManager.instance;
+            if (manager != null) manager.abortPreparedStage(startToken);
+        } catch (preparedAbortError) {
+            trace("[SaveManager.newCharacter] prepared stage abort failed: "
+                + preparedAbortError);
+        }
+        try {
+            org.flashNight.arki.scene.StageRunSession.cancelStageStart(startToken);
+        } catch (reservationCancelError) {
+            trace("[SaveManager.newCharacter] reservation cancel failed: "
+                + reservationCancelError);
+        }
+        try {
+            if (typeof _root.最上层发布文字提示 == "function") {
+                _root.最上层发布文字提示("教学关卡加载失败，请返回标题后重试。");
+            }
+        } catch (failureNoticeError) {
+            trace("[SaveManager.newCharacter] failure notice failed: "
+                + failureNoticeError);
+        }
+        if (onFailure != null) onFailure(errorCode);
     }
 
     // ==================== 数据组包/解包 ====================
@@ -1445,13 +1686,16 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 预留命名空间 — 透传已有数据，保证往返不丢
         if (_root._saveExt == undefined) _root._saveExt = {};
-        if (_root._saveExt.drugLoadout == undefined
-                || typeof _root._saveExt.drugLoadout != "object") {
-            _root._saveExt.drugLoadout = {};
+        var packedDrugFeature:Object = DrugSlotAffinityService.normalizeSavedFeature(
+            _root._saveExt.drugLoadout, mydata.inventory.药剂栏,
+            persistedDrugKeyValidator());
+        if (packedDrugFeature.ok === true) {
+            _root._saveExt.drugLoadout = packedDrugFeature.feature;
+        } else {
+            // 未知未来版本必须原样透传，禁止 pack 时静默降级或丢 affinity。
+            trace("[SaveManager.packGameState] drugLoadout preserved: "
+                + String(packedDrugFeature.error));
         }
-        // activeBank 属于运行会话；存档只记录八槽 schema，不记录当前组。
-        _root._saveExt.drugLoadout.version = 2;
-        delete _root._saveExt.drugLoadout.activeBank;
         mydata.ext = _root._saveExt;
         mydata.reserved = {};
 
@@ -1517,6 +1761,8 @@ class org.flashNight.neur.Server.SaveManager {
         _settingsMigrationPending = false;
         _drugLoadoutMigrationPending = false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
         _drugLoadoutMigrationSlot = String(_root.savePath);
         KeyManager.clearPendingKeySettingsMigration();
         var drugSchema:Object = normalizeDrugLoadoutSchema(mydata);
@@ -1525,6 +1771,12 @@ class org.flashNight.neur.Server.SaveManager {
             return false;
         }
         if (drugSchema.changed) _drugLoadoutMigrationPending = true;
+        var rewardSchema:Object = RewardInboxService.normalizeSaveData(mydata);
+        if (!rewardSchema.ok) {
+            _rewardInboxSchemaRejected = true;
+            return false;
+        }
+        if (rewardSchema.changed) _rewardInboxMigrationPending = true;
         _root.mydata = mydata;
         if (!(mydata[0][10] instanceof Array)) mydata[0][10] = [];
         if (!(mydata[0][12] instanceof Array)) mydata[0][12] = [];
@@ -1732,6 +1984,20 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 预留命名空间恢复
         _root._saveExt = (mydata.ext != undefined) ? mydata.ext : {};
+        RewardInboxService.resetSession();
+
+        // ext 与全部玩家资产均已重建后，恢复未完成的关卡结算 authority。
+        // 畸形/未来记录保留原文并由 StageRunSession 阻止新关卡覆盖，不拖垮普通读档。
+        org.flashNight.arki.scene.StageRunSession.resetForRestart();
+        var settlementRestore:Object = null;
+        try {
+            settlementRestore = org.flashNight.arki.scene.StageRunSession.restorePendingSettlement();
+        } catch (settlementRestoreError) {
+            settlementRestore = null;
+        }
+        if (settlementRestore == null || settlementRestore.success !== true) {
+            trace("[SaveManager.unpackGameState] pending stage settlement preserved but not restored");
+        }
 
         // 主线任务进度（从 mydata[3]，后续 loadAll 会从 task_chains_progress 覆盖）
         _root.主线任务进度 = Math.floor(Number(mydata[3]));
@@ -1828,7 +2094,7 @@ class org.flashNight.neur.Server.SaveManager {
      */
     public function hasPendingChanges():Boolean {
         return _dirtyMark || _root.存档系统.dirtyMark === true
-            || _drugLoadoutMigrationPending;
+            || _drugLoadoutMigrationPending || _rewardInboxMigrationPending;
     }
 
     // ==================== 迁移 ====================
@@ -1841,6 +2107,7 @@ class org.flashNight.neur.Server.SaveManager {
     public function migrate(mydata:Object, soData:Object):Boolean {
         if (mydata == undefined) return false;
         _drugLoadoutSchemaRejected = false;
+        _rewardInboxSchemaRejected = false;
         var changed:Boolean = false;
         var sm:ServerManager = ServerManager.getInstance();
 
@@ -1883,15 +2150,25 @@ class org.flashNight.neur.Server.SaveManager {
             changed = true;
         }
 
+        var rewardSchema:Object = RewardInboxService.normalizeSaveData(mydata);
+        if (!rewardSchema.ok) {
+            _rewardInboxSchemaRejected = true;
+            return changed;
+        }
+        if (rewardSchema.changed) {
+            _rewardInboxMigrationPending = true;
+            changed = true;
+        }
+
         return changed;
     }
 
     /**
-     * 双药剂组特性 schema。全局存档版本保持 3.0；此方法同时供 SOL migrate 与
+     * 双药剂组 affinity schema。全局存档版本保持 3.0；此方法同时供 SOL migrate 与
      * launcher snapshot / JSON shadow 的 _applyCore 使用。
      *
      * 无标记/旧标记只信任 0..3，防止容量 4 时代的越界 ghost 在扩到 8 后复活；
-     * v2 只信任 0..7。未知或未来版本 fail closed，绝不降级清洗。
+     * v2/v3 只信任 0..7。v3 affinity 由纯 normalizer 生成；未来版本 fail closed。
      */
     public function normalizeDrugLoadoutSchema(mydata:Object):Object {
         if (mydata == undefined || mydata.inventory == undefined
@@ -1911,7 +2188,10 @@ class org.flashNight.neur.Server.SaveManager {
         var hasVersion:Boolean = feature != undefined && feature != null
             && feature.version != undefined;
         var version:Number = hasVersion ? Number(feature.version) : NaN;
-        if (hasVersion && (isNaN(version) || version > 2)) {
+        if (hasVersion && (isNaN(version) || Math.floor(version) != version)) {
+            return {ok:false, changed:false, error:"invalid_drug_loadout_version"};
+        }
+        if (hasVersion && version > DrugSlotAffinityService.VERSION) {
             return {ok:false, changed:false, error:"future_drug_loadout_version"};
         }
 
@@ -1928,20 +2208,23 @@ class org.flashNight.neur.Server.SaveManager {
             changed = true;
         }
 
-        if (feature == undefined || feature == null || typeof feature != "object") {
-            feature = {};
-            mydata.ext.drugLoadout = feature;
-            changed = true;
+        var normalizedFeature:Object = DrugSlotAffinityService.normalizeSavedFeature(
+            feature, mydata.inventory.药剂栏, persistedDrugKeyValidator());
+        if (normalizedFeature.ok !== true) {
+            return {ok:false, changed:false, error:String(normalizedFeature.error)};
         }
-        if (Number(feature.version) != 2) {
-            feature.version = 2;
-            changed = true;
-        }
-        if (feature.activeBank !== undefined) {
-            delete feature.activeBank;
-            changed = true;
-        }
-        return {ok:true, changed:changed, version:2};
+        mydata.ext.drugLoadout = normalizedFeature.feature;
+        if (normalizedFeature.changed === true) changed = true;
+        return {ok:true, changed:changed,
+            version:DrugSlotAffinityService.VERSION,
+            diagnostics:normalizedFeature.diagnostics};
+    }
+
+    private static function persistedDrugKeyValidator():Function {
+        return function(itemKey:String):Boolean {
+            var data:Object = ItemUtil.getRawItemData(itemKey);
+            return data != null && data.use === "药剂";
+        };
     }
 
     private function hasOnlyCanonicalDrugSlots(raw:Object, maxExclusive:Number):Boolean {
@@ -1958,6 +2241,16 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function hasPendingDrugLoadoutMigration():Boolean {
         return _drugLoadoutMigrationPending;
+    }
+
+    public function hasPendingRewardInboxMigration():Boolean {
+        return _rewardInboxMigrationPending;
+    }
+
+    /** focused fixture 使用；生产只由新存档边界或成功全量存盘清除。 */
+    public function clearPendingRewardInboxMigration():Void {
+        _rewardInboxMigrationPending = false;
+        _rewardInboxSchemaRejected = false;
     }
 
     /** focused fixture 使用；生产只由新存档边界或成功全量存盘清除。 */

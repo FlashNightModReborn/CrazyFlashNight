@@ -313,25 +313,93 @@ onClipEvent (load) {
                     <script><![CDATA[on (release) {
 	if (flag == 0)
 	{
-		flag = 1;
-		生成随机奖励品();
-		_root.奖励物品界面.在线奖励刷新(_root.获得翻译("圣诞树"));
-		_root.奖励物品界面.刷新();
+		var 当前投送 = 解析当前投送(获取当前在线补给帧数());
+		if (当前投送 == null || !(_root.主线任务进度 > 28))
+		{
+			this.更新在线补给显示();
+		}
+		else if (_root.奖励待领取系统 != null
+				&& typeof _root.奖励待领取系统.投送在线补给包 == "function")
+		{
+			if (当前来源键 != 当前投送.sourceKey)
+			{
+				当前来源键 = 当前投送.sourceKey;
+				flag = 0;
+			}
+			var 投送结果 = _root.奖励待领取系统.投送在线补给包(当前投送.packName, 当前投送.sourceKey);
+			if (投送结果 != null && 投送结果.success === true)
+			{
+				flag = 1;
+				this._visible = 0;
+				var 已请求领取界面 = _root.奖励待领取系统 != null
+					&& typeof _root.奖励待领取系统.打开待领取界面 == "function"
+					&& _root.奖励待领取系统.打开待领取界面() === true;
+				if (!已请求领取界面 && typeof _root.最上层发布文字提示 == "function")
+				{
+					_root.最上层发布文字提示("在线补给已保存，可从角色构筑的待领取入口领取");
+				}
+			}
+			else if (typeof _root.最上层发布文字提示 == "function")
+			{
+				var 提示 = 投送结果 != null && 投送结果.error == "reward_inbox_full"
+					? "待领取区已满，请先领取物品" : "在线补给暂时无法投送，请稍后重试";
+				_root.最上层发布文字提示(提示);
+			}
+		}
+		else
+		{
+			if (typeof _root.最上层发布文字提示 == "function")
+			{
+				_root.最上层发布文字提示("在线补给服务尚未就绪，请稍后重试");
+			}
+			this.更新在线补给显示();
+		}
 	}
 }
 onClipEvent (load) {
-	function 生成随机奖励品()
+	function 获取当前在线补给帧数()
 	{
-		_root.奖励物品界面.奖励品 = [];
-		var _loc2_ = 0;
-		while (_loc2_ < 关卡可获得奖励品.length)
+		if (_root.帧计时器 == null || typeof _root.帧计时器.获取在线补给帧数 != "function")
 		{
-			if (random(Math.floor(关卡可获得奖励品[_loc2_][1]) / 1) == 0)
-			{
-				_root.奖励物品界面.奖励品.push([关卡可获得奖励品[_loc2_][0], random(关卡可获得奖励品[_loc2_][2]) + 1]);
-			}
-			_loc2_ += 1;
+			return -1;
 		}
+		var 帧数 = Number(_root.帧计时器.获取在线补给帧数());
+		return isNaN(帧数) || 帧数 < 0 ? -1 : 帧数;
+	}
+	function 解析当前投送(当前帧数)
+	{
+		var 帧率 = _root.帧计时器 == null ? NaN : Number(_root.帧计时器.帧率);
+		if (isNaN(当前帧数) || 当前帧数 < 0 || isNaN(帧率) || 帧率 < 1)
+		{
+			return null;
+		}
+		if (当前帧数 < 10 * 60 * 帧率) return null;
+		if (当前帧数 < 20 * 60 * 帧率) return {sourceKey:"christmas_tree:online-10m", packName:"在线补给包·Ⅰ"};
+		if (当前帧数 < 40 * 60 * 帧率) return {sourceKey:"christmas_tree:online-20m", packName:"在线补给包·Ⅱ"};
+		if (当前帧数 < 60 * 60 * 帧率) return {sourceKey:"christmas_tree:online-40m", packName:"在线补给包·Ⅲ"};
+		if (当前帧数 < 120 * 60 * 帧率) return {sourceKey:"christmas_tree:online-60m", packName:"在线补给包·Ⅳ"};
+		return {sourceKey:"christmas_tree:online-120m", packName:"在线补给包·Ⅴ"};
+	}
+	function 当前窗口已投送(来源键)
+	{
+		return _root.奖励待领取系统 != null
+			&& typeof _root.奖励待领取系统.在线补给包已投送 == "function"
+			&& _root.奖励待领取系统.在线补给包已投送(来源键) === true;
+	}
+	function 更新在线补给显示()
+	{
+		var 当前投送 = 解析当前投送(获取当前在线补给帧数());
+		var 新来源键 = 当前投送 == null ? "" : 当前投送.sourceKey;
+		if (新来源键 != 当前来源键)
+		{
+			当前来源键 = 新来源键;
+			flag = 0;
+		}
+		if (当前投送 != null && 当前窗口已投送(当前投送.sourceKey)) flag = 1;
+		var 服务就绪 = _root.奖励待领取系统 != null
+			&& typeof _root.奖励待领取系统.投送在线补给包 == "function"
+			&& typeof _root.奖励待领取系统.在线补给包已投送 == "function";
+		this._visible = 当前投送 != null && _root.主线任务进度 > 28 && 服务就绪 && flag == 0;
 	}
 	是否为敌人 = false;
 	等级 = 1;
@@ -342,22 +410,23 @@ onClipEvent (load) {
 	躲闪率 = 100;
 	击中效果 = "火花";
 	Z轴坐标 = this._y;
-	this._visible = 0;
-	if (_root.按钮副本一排 == 4 or _root.按钮副本二排 == 4)
-	{
-		this._visible = 1;
-	}
 	flag = 0;
-	关卡可获得奖励品 = [];
-	关卡可获得奖励品.push(["抗生素", 8, 1]);
-	关卡可获得奖励品.push(["普通hp药剂", 1, 1]);
-	关卡可获得奖励品.push(["普通mp药剂", 5, 1]);
-	关卡可获得奖励品.push(["突击步枪通用弹药", 10, 3]);
-	关卡可获得奖励品.push(["手枪通用弹药", 10, 3]);
-	关卡可获得奖励品.push(["冲锋枪通用弹药", 15, 3]);
-	关卡可获得奖励品.push(["12号霰弹弹药", 10, 3]);
-	关卡可获得奖励品.push(["普通hp粉尘", 10, 1]);
-	关卡可获得奖励品.push(["复活币", 20, 1]);
+	当前来源键 = "";
+	下次补给检查帧 = 0;
+	this.更新在线补给显示();
+}
+onClipEvent (enterFrame) {
+	if (_root.帧计时器 != null)
+	{
+		var 当前全局帧 = Number(_root.帧计时器.当前帧数);
+		if (!isNaN(当前全局帧) && 当前全局帧 >= 下次补给检查帧)
+		{
+			var 检查间隔 = Number(_root.帧计时器.帧率);
+			if (isNaN(检查间隔) || 检查间隔 < 1) 检查间隔 = 30;
+			下次补给检查帧 = 当前全局帧 + 检查间隔;
+			this.更新在线补给显示();
+		}
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

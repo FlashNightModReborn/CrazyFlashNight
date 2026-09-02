@@ -51,6 +51,9 @@ import LiteJSON;
 class org.flashNight.arki.task.TaskPanelService {
     private static var _json:LiteJSON;
     private static var _inited:Boolean = false;
+    private static var _pendingStageResponseContexts:Object = {};
+    private static var _committedStageResponseContext:Object = null;
+    private static var _preparedStageFailureWire:String = null;
 
     public static function install():Void {
         if (_inited) return;
@@ -855,27 +858,59 @@ class org.flashNight.arki.task.TaskPanelService {
 
         var stageName:String = dungeonStageName(taskData);
         var stageDifficulty:String = dungeonStageDifficulty(taskData);
-        if (stageName == "" || stageDifficulty == "" || _root.StageInfoDict[stageName] == undefined) {
+        var stageInfo:Object = stageName != "" ? _root.StageInfoDict[stageName] : undefined;
+        var resolvedStageName:String = stageInfo != undefined
+            ? String(stageInfo.Name || "") : "";
+        if (stageName == "" || stageDifficulty == "" || stageInfo == undefined
+                || resolvedStageName == "") {
             sendResponse({task: "task_response", callId: callId, success: false, error: "stage_not_found"});
             return;
         }
-        if (!org.flashNight.arki.scene.StageRunSession.canStartStage()) {
+        var startToken:String =
+            org.flashNight.arki.scene.StageRunSession.reserveStageStart(
+                "dispatch_board", resolvedStageName, stageDifficulty);
+        if (startToken == "") {
             sendResponse({task: "task_response", callId: callId, success: false,
                 error: "pending_stage_settlement"});
             return;
         }
 
-        sendResponse({
-            task: "task_response",
-            callId: callId,
-            success: true,
-            entered: true,
-            taskId: taskData.id,
-            stageName: stageName,
-            difficulty: stageDifficulty,
-            replay: replay
-        });
-        performTaskStageEnter(stageName, stageDifficulty, []);
+        performTaskStageEnter(stageName, resolvedStageName, stageDifficulty, [], startToken,
+            {
+                callId:callId,
+                successResponse:{
+                    task:"task_response", callId:callId,
+                    success:true, entered:true,
+                    taskId:taskData.id,
+                    stageName:stageName,
+                    difficulty:stageDifficulty,
+                    replay:replay
+                }
+            },
+            function():Object {
+                var currentTask:Object = TaskUtil.tasks[params.taskId];
+                if (!isDispatchTask(currentTask, boardId)) {
+                    return {success:false, error:"board_mismatch"};
+                }
+                var currentActive:Boolean = resolveIndexByTaskId(currentTask.id) >= 0;
+                var currentReplay:Boolean = isDispatchTaskReplay(currentTask);
+                var currentStage:Object = _root.StageInfoDict[stageName];
+                if ((!currentActive && !currentReplay)
+                        || dungeonStageName(currentTask) != stageName
+                        || dungeonStageDifficulty(currentTask) != stageDifficulty
+                        || currentStage == undefined
+                        || String(currentStage.Name || "") != resolvedStageName) {
+                    return {success:false, error:"task_state_changed"};
+                }
+                return {success:true};
+            },
+            function():Void {
+                // 调度板没有额外权威写入；保留显式 commit 槽位，确保所有入口都遵守
+                // “commit 成功后才允许淡出”的同一时序。
+            },
+            function():Void {
+                // 无提交，无回滚。
+            });
     }
 
     public static function handleOpenWebDispatchBoard(params:Object):Void {
@@ -890,28 +925,343 @@ class org.flashNight.arki.task.TaskPanelService {
         });
     }
 
-    private static function performTaskStageEnter(stageName:String, difficulty:String, extraLimitations:Array):Void {
+    private static function performTaskStageEnter(stageName:String, resolvedStageName:String,
+            difficulty:String, extraLimitations:Array, startToken:String,
+            responseContext:Object,
+            finalGate:Function, commitBeforeFade:Function,
+            rollbackCommit:Function):Void {
+        rememberTaskStageResponseContext(startToken, responseContext);
+        var settled:Boolean = false;
+        var commitCompleted:Boolean = false;
+        var failOnce:Function = function(errorCode:String):Void {
+            if (settled) return;
+            settled = true;
+            try { restoreCommittedTaskStageTransitionState(startToken); }
+            catch (restoreError) {
+                trace("[TaskPanelService] transition restore failed: " + restoreError);
+            }
+            try {
+                var manager:org.flashNight.arki.scene.StageManager =
+                    org.flashNight.arki.scene.StageManager.instance;
+                if (manager != null) manager.abortPreparedStage(startToken);
+            } catch (managerAbortError) {
+                trace("[TaskPanelService] prepared stage abort failed: "
+                    + managerAbortError);
+            }
+            try {
+                org.flashNight.arki.scene.StageRunSession.cancelStageStart(startToken);
+            } catch (reservationCancelError) {
+                trace("[TaskPanelService] reservation cancel failed: "
+                    + reservationCancelError);
+            }
+            if (commitCompleted && typeof rollbackCommit == "function") {
+                try { rollbackCommit(); }
+                catch (rollbackError) {
+                    trace("[TaskPanelService] stage commit rollback failed: "
+                        + rollbackError);
+                }
+                commitCompleted = false;
+            }
+            try {
+                if (prepareTaskStageFailureResponse(startToken, errorCode)) {
+                    sendPreparedTaskStageFailureResponse();
+                } else {
+                    trace("[TaskPanelService] missing deferred response context");
+                }
+            } catch (failureResponseError) {
+                trace("[TaskPanelService] failure response failed: "
+                    + failureResponseError);
+            }
+        };
         var stageInfo:Object = _root.StageInfoDict[stageName];
-        _root.载入关卡数据(stageInfo.Type, stageInfo.url);
-        _root.当前通关的关卡 = "";
-        _root.当前关卡难度 = difficulty ? difficulty : _root.当前关卡难度;
-        _root.难度等级 = _root.计算难度等级(_root.当前关卡难度);
-        _root.当前关卡名 = stageInfo.Name;
-        _root.场景进入位置名 = "出生地";
-        _root.关卡类型 = stageInfo.Type;
-        if (stageInfo.StartFrame) _root.关卡地图帧值 = stageInfo.StartFrame;
+        if (stageInfo == undefined || resolvedStageName == ""
+                || String(stageInfo.Name || "") != resolvedStageName
+                || typeof _root.载入关卡数据 != "function"
+                || typeof _root.计算难度等级 != "function"
+                || _root.淡出动画 == undefined
+                || typeof _root.淡出动画.淡出跳转帧 != "function") {
+            failOnce("stage_transition_unavailable");
+            return;
+        }
+        var resolvedDifficulty:String = difficulty ? difficulty : _root.当前关卡难度;
+        var resolvedDifficultyLevel:Number;
+        var normalLimits:Array;
+        var stageType:String = String(stageInfo.Type || "");
+        var stageUrl:String = String(stageInfo.url || "");
+        var startFrame = stageInfo.StartFrame;
+        var fadeFrame = stageInfo.FadeTransitionFrame;
+        var limitLevel = stageInfo.LimitLevel;
+        try {
+            resolvedDifficultyLevel = _root.计算难度等级(resolvedDifficulty);
+            normalLimits = limitationArray(stageInfo.Limitation);
+        } catch (preflightError) {
+            failOnce("stage_transition_unavailable");
+            return;
+        }
+        if (stageType == "" || stageUrl == "" || fadeFrame == undefined
+                || fadeFrame == "") {
+            failOnce("stage_transition_unavailable");
+            return;
+        }
+        var needsEntries:Boolean = normalLimits.length > 0
+            || (extraLimitations != undefined && extraLimitations.length > 0);
+        if ((needsEntries && (_root.限制系统 == undefined
+                    || typeof _root.限制系统.openEntries != "function"))
+                || (limitLevel && (_root.限制系统 == undefined
+                    || typeof _root.限制系统.addLimitLevel != "function"))) {
+            failOnce("stage_transition_unavailable");
+            return;
+        }
+        try {
+            _root.载入关卡数据(stageType, stageUrl,
+                function(data:Object):Void {
+                    if (settled) return;
+                    if (!org.flashNight.arki.scene.StageRunSession
+                            .isStageStartReservationValid(startToken)) {
+                        failOnce("stage_load_failed");
+                        return;
+                    }
+                    var currentStageInfo:Object = _root.StageInfoDict[stageName];
+                    if (currentStageInfo == undefined
+                            || String(currentStageInfo.Name || "") != resolvedStageName
+                            || String(currentStageInfo.Type || "") != stageType
+                            || String(currentStageInfo.url || "") != stageUrl) {
+                        failOnce("stage_state_changed");
+                        return;
+                    }
+                    var gateResult:Object;
+                    try {
+                        gateResult = typeof finalGate == "function"
+                            ? finalGate() : {success:true};
+                    } catch (gateError) {
+                        gateResult = {success:false, error:"stage_state_changed"};
+                    }
+                    if (gateResult == null || gateResult.success !== true) {
+                        failOnce(gateResult != null && gateResult.error != undefined
+                            ? String(gateResult.error) : "stage_state_changed");
+                        return;
+                    }
+                    try {
+                        // 资产/任务等权威提交必须先于任何场景可见副作用。提交抛错时
+                        // reservation 仍可 exact-cancel，且绝不淡出。
+                        if (!promoteTaskStageResponseContext(startToken)) {
+                            throw new Error("missing deferred response context");
+                        }
+                        if (typeof commitBeforeFade == "function") commitBeforeFade();
+                        commitCompleted = true;
+                        _root.当前通关的关卡 = "";
+                        _root.当前关卡难度 = resolvedDifficulty;
+                        _root.难度等级 = resolvedDifficultyLevel;
+                        _root.当前关卡名 = resolvedStageName;
+                        _root.场景进入位置名 = "出生地";
+                        _root.关卡类型 = stageType;
+                        if (startFrame) _root.关卡地图帧值 = startFrame;
 
-        var normalLimits:Array = limitationArray(stageInfo.Limitation);
-        if (normalLimits.length > 0) _root.限制系统.openEntries(normalLimits);
-        if (stageInfo.LimitLevel) _root.限制系统.addLimitLevel(stageInfo.LimitLevel);
-        if (extraLimitations != undefined && extraLimitations.length > 0) {
-            _root.限制系统.openEntries(extraLimitations);
+                        if (normalLimits.length > 0) _root.限制系统.openEntries(normalLimits);
+                        if (limitLevel) _root.限制系统.addLimitLevel(limitLevel);
+                        if (extraLimitations != undefined && extraLimitations.length > 0) {
+                            _root.限制系统.openEntries(extraLimitations);
+                        }
+                        if (_root.soundEffectManager != undefined
+                                && _root.soundEffectManager.stopBGMForTransition != undefined) {
+                            _root.soundEffectManager.stopBGMForTransition();
+                        }
+                        if (_root.对话框界面 != undefined) _root.对话框界面._visible = false;
+                        _root.淡出动画.淡出跳转帧(fadeFrame);
+                    } catch (transitionError) {
+                        trace("[TaskPanelService] stage transition failed: " + transitionError);
+                        failOnce("stage_transition_failed");
+                        return;
+                    }
+                    // 只有 commit + transition 全部成功才封口。成功回包属于提交后的
+                    // 最佳努力投影：回包异常不得回滚已提交状态或取消有效 token。
+                    settled = true;
+                    try {
+                        // AS2 的调用帧值会在异步返回/主时间轴切换后失效；
+                        // correlation envelope 与预序列化 wire 由类级 exact-token mailbox 持有，
+                        // 淡出后从独立静态调用帧一次性发送，不能再把动态对象跨异步调用帧传给 sendResponse。
+                        sendCommittedTaskStageResponse();
+                    } catch (responseError) {
+                        trace("[TaskPanelService] post-commit response failed: "
+                            + responseError);
+                    }
+                },
+                function():Void { failOnce("stage_load_failed"); }, startToken);
+        } catch (loadStartError) {
+            trace("[TaskPanelService] stage load failed: " + loadStartError);
+            failOnce("stage_load_failed");
         }
-        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
-            _root.soundEffectManager.stopBGMForTransition();
+    }
+
+    private static function rememberTaskStageResponseContext(startToken:String,
+            responseContext:Object):Void {
+        if (_pendingStageResponseContexts == null) _pendingStageResponseContexts = {};
+        var currencyProjection:Object = null;
+        if (responseContext.currencyProjection != null) {
+            currencyProjection = {
+                money:Number(responseContext.currencyProjection.money),
+                kpoint:Number(responseContext.currencyProjection.kpoint)
+            };
         }
-        if (_root.对话框界面 != undefined) _root.对话框界面._visible = false;
-        _root.淡出动画.淡出跳转帧(stageInfo.FadeTransitionFrame);
+        _pendingStageResponseContexts[startToken] = {
+            startToken:startToken,
+            callId:responseContext.callId,
+            successWire:_json.stringifySafe(responseContext.successResponse),
+            currencyProjection:currencyProjection
+        };
+    }
+
+    private static function takePendingTaskStageResponseContext(startToken:String):Object {
+        if (_pendingStageResponseContexts == null) return null;
+        var record:Object = _pendingStageResponseContexts[startToken];
+        if (record == undefined || record == null
+                || String(record.startToken || "") != startToken) return null;
+        delete _pendingStageResponseContexts[startToken];
+        return record;
+    }
+
+    private static function promoteTaskStageResponseContext(startToken:String):Boolean {
+        if (_committedStageResponseContext != null) return false;
+        // 先完成可能抛错的快照，再消费 pending 信封；否则快照异常会同时丢掉 callId，
+        // Host 只能等到 timeout。
+        var transitionSnapshot:Object;
+        try { transitionSnapshot = captureTaskStageTransitionState(); }
+        catch (snapshotError) { return false; }
+        var record:Object = takePendingTaskStageResponseContext(startToken);
+        if (record == null) return false;
+        record.transitionSnapshot = transitionSnapshot;
+        _committedStageResponseContext = record;
+        return true;
+    }
+
+    private static function prepareTaskStageFailureResponse(startToken:String,
+            errorCode:String):Boolean {
+        var record:Object = takePendingTaskStageResponseContext(startToken);
+        if (record == null) {
+            if (_committedStageResponseContext == null
+                    || String(_committedStageResponseContext.startToken || "") != startToken) {
+                return false;
+            }
+            record = _committedStageResponseContext;
+            _committedStageResponseContext = null;
+        }
+        _preparedStageFailureWire = _json.stringifySafe({
+            task:"task_response",
+            callId:record.callId,
+            success:false,
+            error:errorCode
+        });
+        return _preparedStageFailureWire != null
+            && _preparedStageFailureWire != ""
+            && _preparedStageFailureWire != "undefined";
+    }
+
+    private static function sendPreparedTaskStageFailureResponse():Void {
+        var wire:String = _preparedStageFailureWire;
+        _preparedStageFailureWire = null;
+        if (wire == null || wire == "" || wire == "undefined") {
+            throw new Error("missing prepared stage failure response");
+        }
+        _root.server.sendSocketMessage(wire);
+    }
+
+    private static function captureTaskStageTransitionState():Object {
+        var restriction:Object = _root.限制系统;
+        var entriesRef:Object = restriction != undefined && restriction != null
+            ? restriction.entries : undefined;
+        var dialogue:Object = _root.对话框界面;
+        return {
+            currentCompletedStage:_root.当前通关的关卡,
+            currentDifficulty:_root.当前关卡难度,
+            difficultyLevel:_root.难度等级,
+            currentStageName:_root.当前关卡名,
+            spawnName:_root.场景进入位置名,
+            stageType:_root.关卡类型,
+            hadMapFrame:_root.关卡地图帧值 != undefined,
+            mapFrame:_root.关卡地图帧值,
+            restriction:restriction,
+            entriesRef:entriesRef,
+            entriesSnapshot:cloneTaskStageFlatObject(entriesRef),
+            hadLimitLevel:restriction != undefined && restriction != null
+                && restriction.limitLevel != undefined,
+            limitLevel:restriction != undefined && restriction != null
+                ? restriction.limitLevel : undefined,
+            dialogue:dialogue,
+            dialogueVisible:dialogue != undefined && dialogue != null
+                ? dialogue._visible : undefined
+        };
+    }
+
+    private static function restoreCommittedTaskStageTransitionState(startToken:String):Void {
+        var record:Object = _committedStageResponseContext;
+        if (record == null || String(record.startToken || "") != startToken
+                || record.transitionSnapshot == null) return;
+        var snapshot:Object = record.transitionSnapshot;
+        _root.当前通关的关卡 = snapshot.currentCompletedStage;
+        _root.当前关卡难度 = snapshot.currentDifficulty;
+        _root.难度等级 = snapshot.difficultyLevel;
+        _root.当前关卡名 = snapshot.currentStageName;
+        _root.场景进入位置名 = snapshot.spawnName;
+        _root.关卡类型 = snapshot.stageType;
+        if (snapshot.hadMapFrame) _root.关卡地图帧值 = snapshot.mapFrame;
+        else delete _root.关卡地图帧值;
+        var restriction:Object = snapshot.restriction;
+        if (restriction != undefined && restriction != null
+                && _root.限制系统 === restriction) {
+            if (snapshot.entriesRef != undefined && snapshot.entriesRef != null) {
+                restriction.entries = snapshot.entriesRef;
+                restoreTaskStageFlatObject(snapshot.entriesRef, snapshot.entriesSnapshot);
+            }
+            if (snapshot.hadLimitLevel) restriction.limitLevel = snapshot.limitLevel;
+            else delete restriction.limitLevel;
+        }
+        if (snapshot.dialogue != undefined && snapshot.dialogue != null
+                && _root.对话框界面 === snapshot.dialogue) {
+            snapshot.dialogue._visible = snapshot.dialogueVisible;
+        }
+        record.transitionSnapshot = null;
+    }
+
+    private static function cloneTaskStageFlatObject(source:Object):Object {
+        if (source == undefined || source == null) return null;
+        var clone:Object = {};
+        for (var key:String in source) clone[key] = source[key];
+        return clone;
+    }
+
+    private static function restoreTaskStageFlatObject(target:Object, snapshot:Object):Void {
+        if (target == undefined || target == null) return;
+        for (var key:String in target) delete target[key];
+        if (snapshot == undefined || snapshot == null) return;
+        for (var restoreKey:String in snapshot) target[restoreKey] = snapshot[restoreKey];
+    }
+
+    private static function sendCommittedTaskStageResponse():Void {
+        var record:Object = _committedStageResponseContext;
+        _committedStageResponseContext = null;
+        if (record == null || record.successWire == null
+                || record.successWire == "" || record.successWire == "undefined") {
+            throw new Error("missing committed response context");
+        }
+        if (record.currencyProjection != null) {
+            try {
+                org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
+                    Number(record.currencyProjection.money),
+                    Number(record.currencyProjection.kpoint),
+                    {source:"task_entry", reason:"dungeon_enter", mergeScope:"operation"});
+            } catch (projectionError) {
+                trace("[TaskPanelService] dungeon currency projection failed: "
+                    + projectionError);
+            }
+            if (typeof _root.获取虚拟币值 == "function") {
+                try { _root.获取虚拟币值(); }
+                catch (currencyUiError) {
+                    trace("[TaskPanelService] dungeon currency UI refresh failed: "
+                        + currencyUiError);
+                }
+            }
+        }
+        _root.server.sendSocketMessage(String(record.successWire));
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -1072,16 +1422,18 @@ class org.flashNight.arki.task.TaskPanelService {
 
         // 关卡存在性（在任何状态写入前校验，避免扣费后进图失败）
         var stageName:String = dungeonStageName(taskData);
-        if (stageName == "" || _root.StageInfoDict[stageName] == undefined) {
+        var stageInfo:Object = stageName != "" ? _root.StageInfoDict[stageName] : undefined;
+        var resolvedStageName:String = stageInfo != undefined
+            ? String(stageInfo.Name || "") : "";
+        if (stageName == "" || stageInfo == undefined || resolvedStageName == "") {
             sendResponse({ task: "task_response", callId: callId, success: false, error: "stage_not_found" });
             return;
         }
-        if (!org.flashNight.arki.scene.StageRunSession.canStartStage()) {
+        if (typeof _root.AddTask != "function" || _root.存档系统 == undefined) {
             sendResponse({ task: "task_response", callId: callId, success: false,
-                error: "pending_stage_settlement" });
+                error: "task_runtime_unavailable" });
             return;
         }
-
         var deposit:Number = taskData.deposit > 0 ? Number(taskData.deposit) : 0;
         var kDeposit:Number = taskData.Kdeposit > 0 ? Number(taskData.Kdeposit) : 0;
         var restrictedLevel:Number = taskData.restricted_level > 0 ? Number(taskData.restricted_level) : 1;
@@ -1100,30 +1452,118 @@ class org.flashNight.arki.task.TaskPanelService {
             return;
         }
 
-        // 扣费（与 虚拟币支付 同序：扣金钱契约金；K点路径再扣虚拟币）
-        _root.金钱 -= deposit;
-        if (kDeposit > 0) _root.虚拟币 -= kDeposit;
-        org.flashNight.arki.item.PlayerAssetTransaction.recordCurrencyDeltas(
-            -deposit, -kDeposit,
-            {source:"task_entry", reason:"dungeon_enter", mergeScope:"operation"});
-        if (typeof _root.获取虚拟币值 == "function") _root.获取虚拟币值();
-        // ⚠ 扣费改写了 金钱/虚拟币（权威存档态），必须显式标脏。重进同一副本时 AddTask 命中
-        //   已在进行的任务会 return false 且只在实际 push 后才 dirtyMark（通信_鸡蛋_任务系统.as:419-421），
-        //   不在此处补标脏的话：重进扣费成功却不落盘 → 下次存档/读档费用回滚（外部审阅 P1b）。
-        _root.存档系统.dirtyMark = true;
+        var enterDifficulty:String = (mode == "challenge")
+            ? String(taskData.challenge.difficulty) : dungeonStageDifficulty(taskData);
+        var startToken:String =
+            org.flashNight.arki.scene.StageRunSession.reserveStageStart(
+                "dungeon_task", resolvedStageName, enterDifficulty);
+        if (startToken == "") {
+            sendResponse({ task: "task_response", callId: callId, success: false,
+                error: "pending_stage_settlement" });
+            return;
+        }
 
-        // 接取任务
-        _root.AddTask(taskData.id);
-
-        // 进图：复用剧情调度与委托共同的权威 StageInfo 进入函数；扣费/AddTask 仍只在本委托分支发生。
-        var enterDifficulty:String = (mode == "challenge") ? String(taskData.challenge.difficulty) : dungeonStageDifficulty(taskData);
         var extraLimitations:Array = (mode == "challenge" && (taskData.challenge.limitations instanceof Array))
             ? taskData.challenge.limitations
             : [];
-
-        // 先回包再触发淡出跳转（场景切换后 socket 仍在；web 收 entered 关面板）
-        sendResponse({ task: "task_response", callId: callId, success: true, entered: true, mode: mode });
-        performTaskStageEnter(stageName, enterDifficulty, extraLimitations);
+        var dungeonCommitSnapshot:Object = null;
+        // XML + TimePool 成功后再复核任务/资产权威；迟到失败零扣费、
+        // 零 AddTask、零淡出，并由 exact token 只回包一次。
+        performTaskStageEnter(stageName, resolvedStageName, enterDifficulty,
+            extraLimitations, startToken,
+            {
+                callId:callId,
+                successResponse:{
+                    task:"task_response", callId:callId,
+                    success:true, entered:true, mode:mode
+                },
+                currencyProjection:{money:-deposit, kpoint:-kDeposit}
+            },
+            function():Object {
+                var currentTask:Object = TaskUtil.tasks[params.taskId];
+                if (!isDungeonTask(currentTask)) {
+                    return {success:false, error:"task_state_changed"};
+                }
+                var currentHasChallenge:Boolean = currentTask.challenge != undefined
+                    && currentTask.challenge != null;
+                var currentDifficulty:String = mode == "challenge" && currentHasChallenge
+                    ? String(currentTask.challenge.difficulty)
+                    : dungeonStageDifficulty(currentTask);
+                var currentDeposit:Number = currentTask.deposit > 0
+                    ? Number(currentTask.deposit) : 0;
+                var currentKDeposit:Number = currentTask.Kdeposit > 0
+                    ? Number(currentTask.Kdeposit) : 0;
+                var currentRestricted:Number = currentTask.restricted_level > 0
+                    ? Number(currentTask.restricted_level) : 1;
+                var currentStage:Object = _root.StageInfoDict[stageName];
+                if ((mode == "challenge" && !currentHasChallenge)
+                        || dungeonStageName(currentTask) != stageName
+                        || currentDifficulty != enterDifficulty
+                        || currentDeposit != deposit || currentKDeposit != kDeposit
+                        || currentRestricted != restrictedLevel
+                        || currentStage == undefined
+                        || String(currentStage.Name || "") != resolvedStageName) {
+                    return {success:false, error:"task_state_changed"};
+                }
+                if (Number(_root.金钱) < deposit) {
+                    return {success:false, error:"insufficient_money"};
+                }
+                if (Number(_root.等级) < restrictedLevel) {
+                    return {success:false, error:"insufficient_level"};
+                }
+                if (kDeposit > 0 && Number(_root.虚拟币) < kDeposit) {
+                    return {success:false, error:"insufficient_kpoint"};
+                }
+                return {success:true};
+            },
+            function():Void {
+                // AddTask 是本提交唯一可能执行任意旧脚本的核心写入口。先对任务数组
+                // 做同引用快照；若它抛错则恢复任务态并让 performTaskStageEnter 在
+                // 淡出前 exact-cancel。货币扣除只在 AddTask 成功返回后发生。
+                var todoRef:Array = _root.tasks_to_do instanceof Array
+                    ? _root.tasks_to_do : null;
+                var todoSnapshot:Array = todoRef != null ? todoRef.slice() : null;
+                dungeonCommitSnapshot = {
+                    todoRef:todoRef,
+                    todoSnapshot:todoSnapshot,
+                    money:Number(_root.金钱),
+                    virtualCurrency:Number(_root.虚拟币),
+                    dirtyMark:_root.存档系统.dirtyMark
+                };
+                try {
+                    _root.AddTask(taskData.id);
+                } catch (addTaskError) {
+                    if (todoSnapshot != null) {
+                        if (_root.tasks_to_do !== todoRef) _root.tasks_to_do = todoRef;
+                        todoRef.length = 0;
+                        for (var restoreIndex:Number = 0;
+                                restoreIndex < todoSnapshot.length; restoreIndex++) {
+                            todoRef.push(todoSnapshot[restoreIndex]);
+                        }
+                    }
+                    throw addTaskError;
+                }
+                _root.金钱 -= deposit;
+                if (kDeposit > 0) _root.虚拟币 -= kDeposit;
+                _root.存档系统.dirtyMark = true;
+            },
+            function():Void {
+                if (dungeonCommitSnapshot == null) return;
+                var snapshotTodo:Array = dungeonCommitSnapshot.todoRef;
+                var snapshotEntries:Array = dungeonCommitSnapshot.todoSnapshot;
+                if (snapshotTodo != null && snapshotEntries != null) {
+                    if (_root.tasks_to_do !== snapshotTodo) _root.tasks_to_do = snapshotTodo;
+                    snapshotTodo.length = 0;
+                    for (var rollbackIndex:Number = 0;
+                            rollbackIndex < snapshotEntries.length; rollbackIndex++) {
+                        snapshotTodo.push(snapshotEntries[rollbackIndex]);
+                    }
+                }
+                _root.金钱 = dungeonCommitSnapshot.money;
+                _root.虚拟币 = dungeonCommitSnapshot.virtualCurrency;
+                _root.存档系统.dirtyMark = dungeonCommitSnapshot.dirtyMark;
+                dungeonCommitSnapshot = null;
+            });
     }
 
     // ── openWebDungeon（AS2 内部）：NPC「获得任务」触发，发 panel_request 打开 web 副本视图 ──

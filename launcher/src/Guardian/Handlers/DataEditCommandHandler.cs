@@ -24,8 +24,14 @@ namespace CF7Launcher.Guardian.Handlers
 
         private static void HandleSaveInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
         {
-            string slot = msg.Value<string>("slot");
-            if (string.IsNullOrEmpty(slot)) { BootstrapCommandHelpers.PostResp(bootForm, "save_resp", false, null, "slot_missing"); return; }
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadWritableSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
+            {
+                BootstrapCommandHelpers.PostResp(bootForm, "save_resp", false, null, slotError);
+                return;
+            }
 
             JObject dataObj;
             string normErr;
@@ -87,8 +93,14 @@ namespace CF7Launcher.Guardian.Handlers
 
         private static void HandleResetInternal(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
         {
-            string slot = msg.Value<string>("slot");
-            if (string.IsNullOrEmpty(slot)) { BootstrapCommandHelpers.PostResp(bootForm, "reset_resp", false, null, "slot_missing"); return; }
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
+            {
+                BootstrapCommandHelpers.PostResp(bootForm, "reset_resp", false, null, slotError);
+                return;
+            }
 
             bool confirm = msg.Value<bool?>("confirm") ?? false;
             if (!confirm) { BootstrapCommandHelpers.PostResp(bootForm, "reset_resp", false, slot, "confirm_required"); return; }
@@ -124,8 +136,14 @@ namespace CF7Launcher.Guardian.Handlers
 
         internal static void HandleExport(JObject msg, BootstrapPanel bootForm, ArchiveTask archiveTask)
         {
-            string slot = msg.Value<string>("slot");
-            if (string.IsNullOrEmpty(slot)) { BootstrapCommandHelpers.PostResp(bootForm, "export_resp", false, null, "slot_missing"); return; }
+            string slot;
+            string slotError;
+            if (!BootstrapCommandHelpers.TryReadDiscoveredSlotKey(
+                    msg, "slot", archiveTask, out slot, out slotError))
+            {
+                BootstrapCommandHelpers.PostResp(bootForm, "export_resp", false, null, slotError);
+                return;
+            }
 
             bool forceRaw = msg.Value<bool?>("forceRaw") ?? false;
             string defaultName = msg.Value<string>("defaultName");

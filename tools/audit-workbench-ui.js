@@ -135,6 +135,8 @@ var REQUIRED_FILES = [
     'launcher/web/modules/character-build/character-build-pose.js',
     'launcher/web/modules/character-build/character-build-projection.js',
     'launcher/web/modules/character-build/character-build-transport.js',
+    'launcher/web/modules/character-build/character-build-item-use.js',
+    'launcher/web/modules/character-build/character-build-item-use-channel.js',
     'launcher/web/modules/character-build/character-build-candidate-channel.js',
     'launcher/web/modules/character-build-session.js',
     'launcher/web/modules/character-build-view.js',
@@ -189,6 +191,7 @@ var REQUIRED_FILES = [
     'tools/test-character-build-candidate-tooltip.js',
     'tools/test-character-build-facet-counts.js',
     'tools/test-character-build-projection.js',
+    'tools/test-character-build-item-use.js',
     'tools/test-kshop-presenters.js',
     'tools/test-npcshop-secondary-pages.js',
     'tools/test-skills-ui-modules.js',
@@ -895,12 +898,17 @@ var moduleThresholds = {
     'launcher/web/modules/character-build/character-build-tuning.js':380,
     'launcher/web/modules/character-build/character-build-slot-transition.js':100,
     'launcher/web/modules/character-build/character-build-pose.js':90,
-    'launcher/web/modules/character-build/character-build-projection.js':160,
+    // 物品使用只扩展候选投影的窄闭集；transport/lifecycle 已拆到独立模块。
+    'launcher/web/modules/character-build/character-build-projection.js':200,
     'launcher/web/modules/character-build/character-build-transport.js':180,
-    'launcher/web/modules/character-build/character-build-candidate-channel.js':300,
-    'launcher/web/modules/character-build-session.js':700,
+    'launcher/web/modules/character-build/character-build-item-use.js':360,
+    // 2026-08-31 奖励/物品使用迁移的有限增长：保留单一通道事务与选择恢复语义，避免制造碎片化加载依赖。
+    'launcher/web/modules/character-build/character-build-item-use-channel.js':260,
+    'launcher/web/modules/character-build/character-build-candidate-channel.js':360,
+    'launcher/web/modules/character-build-session.js':740,
     'launcher/web/modules/character-build-view.js':760,
-    'launcher/web/modules/character-build.js':550,
+    // 控制器仅保留 item-use 组合/锁态 seam，协议与换面编排均已拆分。
+    'launcher/web/modules/character-build.js':640,
     'launcher/web/modules/inventory-tuning-scope.js':200,
     'launcher/web/modules/inventory-storage-workbench.js':960,
     'launcher/web/modules/inventory-workbench-preparation-menu.js':440,
@@ -1158,6 +1166,8 @@ if (exists(registryRel)) {
         'modules/character-build/character-build-candidate-eligibility.js',
         'modules/character-build/character-build-projection.js',
         'modules/character-build/character-build-transport.js',
+        'modules/character-build/character-build-item-use.js',
+        'modules/character-build/character-build-item-use-channel.js',
         'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js'
     ];

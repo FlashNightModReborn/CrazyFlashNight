@@ -4,7 +4,7 @@ class org.flashNight.arki.item.LootContainerValidation {
 
     public static function validateCommandShape(commandName:String, params:Object):Boolean {
         var allowed:Array = ["task", "action", "callId", "v", "chestSessionId",
-            "lootContainerId", "containerEpoch"];
+            "lootContainerId", "containerEpoch", "sourceKind"];
         var expectedAction:String = "";
         if (commandName == "snapshot") {
             expectedAction = "lootSnapshot";
@@ -32,6 +32,9 @@ class org.flashNight.arki.item.LootContainerValidation {
             allowed.push("expectedAuthorityRevision");
         } else return false;
         if (!hasOnlyKeys(params, allowed) || !hasOwnField(params, "v")) return false;
+        if (hasOwnField(params, "sourceKind")
+                && (params.sourceKind !== "reward_inbox"
+                    || commandName == "materials")) return false;
         var hasTask:Boolean = hasOwnField(params, "task");
         var hasAction:Boolean = hasOwnField(params, "action");
         var hasCallId:Boolean = hasOwnField(params, "callId");
@@ -283,11 +286,14 @@ class org.flashNight.arki.item.LootContainerValidation {
     /** Host accepted 后的 Web mount/open watchdog 走扁平 cmd envelope 回告 AS2。 */
     public static function validatePanelRecoveryEnvelope(params:Object):Boolean {
         var allowed:Array = ["task", "action", "chestSessionId", "lootContainerId",
-            "containerEpoch", "openAttemptSeq", "recoveryNonce", "reason"];
+            "containerEpoch", "openAttemptSeq", "recoveryNonce", "reason",
+            "sourceKind"];
         if (!hasOnlyKeys(params, allowed)) return false;
-        for (var index:Number = 0; index < allowed.length; index++) {
+        for (var index:Number = 0; index < 8; index++) {
             if (!hasOwnField(params, String(allowed[index]))) return false;
         }
+        if (hasOwnField(params, "sourceKind")
+                && params.sourceKind !== "reward_inbox") return false;
         if (params.task !== "cmd" || params.action !== "lootPanelRecovery"
                 || typeof params.chestSessionId != "string"
                 || !isSafeToken(String(params.chestSessionId), 96)

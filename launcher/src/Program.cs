@@ -1471,6 +1471,8 @@ class Program
         // both native and fallback paths can feed the eventual AgentControlTask without a
         // second raw payload split.
         AgentControlTask agentControlTask = null;
+        CF7Launcher.Guardian.GameLaunchFlow launchFlow = null;
+        CF7Launcher.Audio.FrontdoorBgmLease frontdoorBgmLease = null;
         CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel = null;
         {
             // 光照等级数据（与 NotchWidget 共用同一默认值）
@@ -1510,6 +1512,8 @@ class Program
                 }
                 try { if (agentControlTask != null) agentControlTask.ObserveUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] agent UiData throw: " + ex.Message); }
+                try { if (launchFlow != null) launchFlow.ObserveUiData(pkt); }
+                catch (Exception ex) { LogManager.Log("[Tee] launch UiData throw: " + ex.Message); }
             };
             socketServer.SetUiDataHandler(fallbackUiDataTee);
 
@@ -1641,6 +1645,13 @@ class Program
             string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
             CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
                 CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFileAsync(mapHudJsonPath);
+            // 复用 NativeHud 的既有物品图标目录：RightContext 只借用复活币帧，
+            // LootFeedWidget 保持目录唯一所有者并在 HUD teardown 时释放。
+            CF7Launcher.Guardian.Hud.Loot.LootIconCatalog lootIconCatalog =
+                new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(
+                    Path.Combine(projectRoot, "launcher", "web", "icons"),
+                    Path.Combine(projectRoot, "launcher", "web", "assets", "enemy-portraits"),
+                    dollPortraitsDir: Path.Combine(projectRoot, "launcher", "data", "doll-portraits"));
             rightContext = new CF7Launcher.Guardian.Hud.RightContextWidget(
                     form.FlashHostPanel,
                     commandRouter,
@@ -1655,7 +1666,8 @@ class Program
                                 + userPrefs.MapDisplayPreference);
                         nativeHud.AddMessage("地图显示："
                             + CF7Launcher.Guardian.Hud.MapDisplayPolicy.ToDisplayLabel(preference));
-                    });
+                    },
+                    lootIconCatalog);
             nativeHud.AddWidget(rightContext);
             safeExitPanel =
                 new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(form.FlashHostPanel, commandRouter);
@@ -1673,11 +1685,6 @@ class Program
             // 同时是 NativeHud 图标源（IconBakeTask 烘焙产物的首个运行时消费者）。
             // doll-portraits 为运行时纸娃娃胸像缓存（DollBakeTask 落盘），
             // 解析 "纸娃娃-<hex>" ref，负缓存 2s TTL 等待异步烘焙落盘。
-            CF7Launcher.Guardian.Hud.Loot.LootIconCatalog lootIconCatalog =
-                new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(
-                    Path.Combine(projectRoot, "launcher", "web", "icons"),
-                    Path.Combine(projectRoot, "launcher", "web", "assets", "enemy-portraits"),
-                    dollPortraitsDir: Path.Combine(projectRoot, "launcher", "data", "doll-portraits"));
             lootFeedWidget =
                 new CF7Launcher.Guardian.Hud.Loot.LootFeedWidget(form.FlashHostPanel, lootIconCatalog);
             nativeHud.AddWidget(lootFeedWidget);
@@ -1726,6 +1733,8 @@ class Program
                 catch (Exception ex) { LogManager.Log("[Tee] hud UiData throw: " + ex.Message); }
                 try { if (agentControlTask != null) agentControlTask.ObserveUiData(pkt); }
                 catch (Exception ex) { LogManager.Log("[Tee] agent UiData throw: " + ex.Message); }
+                try { if (launchFlow != null) launchFlow.ObserveUiData(pkt); }
+                catch (Exception ex) { LogManager.Log("[Tee] launch UiData throw: " + ex.Message); }
             };
             socketServer.SetUiDataHandler(uiDataTee);
             frameTask.SetUiDataHandler(uiDataTee);
@@ -1869,12 +1878,38 @@ class Program
                 return !form.IsShutdownAdmissionClosed;
             });
         commandRouter.SetCharacterBuildTask(characterBuildTask);
+        ItemUseTask itemUseTask = new ItemUseTask(
+            socketServer,
+            characterBuildTask.IsExactSession);
+        commandRouter.SetLootPanelCoordinator(
+            lootPanelCoordinator);
         lootPanelCoordinator.SetExternalAdmissionGate(
             delegate
             {
                 return !form.IsShutdownAdmissionClosed
                     && !characterBuildTask.HasBoundPanel;
             });
+        lootPanelCoordinator.SetRewardInboxReturnHandler(
+            delegate(LootPanelCoordinator.Binding binding)
+            {
+                return commandRouter
+                    .TryOpenCharacterBuildAfterRewardInbox(
+                        binding);
+            });
+        lootPanelCoordinator.BindingSettled += delegate(
+            LootPanelCoordinator.Binding binding)
+        {
+            // Exact replacement is preferred. If preflight/Host admission failed, the ordinary
+            // Loot close path releases pause and lands here; retry once from the idle baseline.
+            if (binding == null
+                || binding.SourceKind
+                    != LootPanelCoordinator.RewardInboxSource)
+            {
+                return;
+            }
+            commandRouter.TryOpenCharacterBuildAfterRewardInbox(
+                binding);
+        };
         SkillTask skillTask = new SkillTask(socketServer);
         commandRouter.SetSkillTask(skillTask);
         // stageSelectTask 提前到 panelHost 接线块之前声明：关闭观察器 lambda 需要捕获它。
@@ -1923,6 +1958,11 @@ class Program
                 string panelName,
                 string panelInstanceId)
             {
+                if (panelName == "workbench")
+                {
+                    itemUseTask.OnWorkbenchPanelClosed(panelInstanceId);
+                    itemUseTask.ClearPending();
+                }
                 if (panelName == "skills")
                 {
                     commandRouter
@@ -1972,6 +2012,30 @@ class Program
             bool preparationNavigationConsumed =
                 commandRouter
                     .TryCompleteCharacterBuildPreparationNavigation();
+            if (preparationNavigationConsumed) return;
+
+            ItemUseTask.RewardHandoff rewardHandoff;
+            if (itemUseTask.TryTakeClosedRewardHandoff(
+                    out rewardHandoff))
+            {
+                string rejection;
+                if (lootPanelCoordinator.TryOpenRewardInbox(
+                        rewardHandoff.Authority,
+                        out rejection))
+                {
+                    LogManager.Log(
+                        "event=reward_inbox_panel_open_queued source=item_use");
+                    return;
+                }
+                LogManager.Log(
+                    "event=reward_inbox_panel_open_rejected reason="
+                    + (rejection ?? "unknown"));
+                if (toastSink != null)
+                {
+                    toastSink.AddMessage(
+                        "奖励已安全保存；领取页面暂时无法打开，请稍后从角色构筑重试");
+                }
+            }
             if (!preparationNavigationConsumed)
             {
                 panelHost.FlushDeferredBarrierOpen();
@@ -2096,7 +2160,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2116,6 +2180,7 @@ class Program
         webOverlay.SetSettingsTask(settingsTask);
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
         webOverlay.SetCharacterBuildTask(characterBuildTask);
+        webOverlay.SetItemUseTask(itemUseTask);
         webOverlay.SetSkillTask(skillTask);
         webOverlay.SetGomokuTask(gomokuTask);
         webOverlay.SetMapTask(mapTask);
@@ -2243,6 +2308,8 @@ class Program
                 audioQualificationStimulusHost.Dispose();
             if (audioQualificationHost != null)
                 audioQualificationHost.Dispose();
+            if (frontdoorBgmLease != null)
+                frontdoorBgmLease.Dispose();
             CF7Launcher.Audio.AudioEngine.Shutdown();
             musicCatalog.Dispose();
             frameTask.Stop();
@@ -2258,6 +2325,7 @@ class Program
             petTask.Dispose();
             mercTask.Dispose();
             equipmentTuningTask.Dispose();
+            itemUseTask.Dispose();
             characterBuildTask.Dispose();
             mapTask.Dispose();
             stageSelectTask.Dispose();
@@ -2329,6 +2397,7 @@ class Program
             try { mercTask.Dispose(); } catch { }
             try { lootPanelCoordinator.Dispose(); } catch { }
             try { equipmentTuningTask.Dispose(); } catch { }
+            try { itemUseTask.Dispose(); } catch { }
             try { characterBuildTask.Dispose(); } catch { }
             try { skillTask.Dispose(); } catch { }
             try { mapTask.Dispose(); } catch { }
@@ -2384,6 +2453,13 @@ class Program
         ProcessManager processManager = new ProcessManager(
             config.FlashPlayerPath, config.SwfPath);
 
+        // The Bootstrap/frontdoor owns only this fixed historical main-menu
+        // track. It waits for Audio v2 Ready and is handed to GameLaunchFlow;
+        // no WebAudio or per-slot volume preference participates.
+        frontdoorBgmLease =
+            new CF7Launcher.Audio.FrontdoorBgmLease(projectRoot);
+        frontdoorBgmLease.EnterFrontdoor("launcher_start");
+
         form.BindWindowManager(windowManager);
 
         // 11b-α: processManager.Start / TrackProcess / TrackFlashProcess 迁入 GameLaunchFlow.TransitionToSpawning
@@ -2401,6 +2477,8 @@ class Program
         form.OnKillFlash = delegate
         {
             windowManager.DetachFlash();
+            if (frontdoorBgmLease != null)
+                frontdoorBgmLease.Dispose();
             CF7Launcher.Audio.AudioEngine.Shutdown();
             processManager.KillFlash();
         };
@@ -2424,7 +2502,7 @@ class Program
 
         // Phase A 两段式初始化：GuardianForm 已建（line 97），BootstrapPanel 已作为其子控件构造。
         // 此处构造 GameLaunchFlow（依赖 form + form.BootstrapPanel）→ 调 InitializeLaunchFlow 补 wire.
-        CF7Launcher.Guardian.GameLaunchFlow launchFlow = new CF7Launcher.Guardian.GameLaunchFlow(
+        launchFlow = new CF7Launcher.Guardian.GameLaunchFlow(
             socketServer, router, processManager, windowManager,
             form, form.BootstrapPanel,
             /* readyWiring */ delegate
@@ -2492,7 +2570,16 @@ class Program
                 LogManager.Log("[RevealProbe] readyWiring.total " + ((System.Diagnostics.Stopwatch.GetTimestamp() - tOverall) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
             },
             /* hotkeyGuardSpawn */ null,
-            saveCtx);
+            saveCtx,
+            CF7Launcher.Guardian.GameLaunchFlow
+                .FLASH_REVEAL_WATCHDOG_DEFAULT_MS,
+            /* persistLastPlayedSlot */ delegate(string slotKey)
+            {
+                if (userPrefs == null) return;
+                userPrefs.LastPlayedSlot = slotKey;
+                userPrefs.Save();
+            },
+            frontdoorBgmLease);
 
         // Phase A Step A2: wire launchFlow 到 GuardianForm（OnFormClosing 状态分流 + 热键 state-aware guard）
         form.InitializeLaunchFlow(launchFlow);
@@ -3176,6 +3263,7 @@ class Program
         try { audioSocketPublisher.Dispose(); } catch { }
         try { if (audioQualificationStimulusHost != null) audioQualificationStimulusHost.Dispose(); } catch { }
         try { if (audioQualificationHost != null) audioQualificationHost.Dispose(); } catch { }
+        try { if (frontdoorBgmLease != null) frontdoorBgmLease.Dispose(); } catch { }
         try { CF7Launcher.Audio.AudioEngine.Shutdown(); } catch { }
         try { musicCatalog.Dispose(); } catch { }
         try { processManager.Dispose(); } catch { }
@@ -3193,6 +3281,7 @@ class Program
         try { mercTask.Dispose(); } catch { }
         try { lootPanelCoordinator.Dispose(); } catch { }
         try { equipmentTuningTask.Dispose(); } catch { }
+        try { itemUseTask.Dispose(); } catch { }
         try { characterBuildTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }

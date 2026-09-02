@@ -42,6 +42,15 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
         return !!response && response.success === false
             && String(response.error || '') === 'stale_state';
     }
+    function candidateSuperseded(response) {
+        return !!response && response.clientSynthetic === true
+            && String(response.error || '') === 'superseded';
+    }
+    function candidateItemName(candidate) {
+        var raw = candidate && candidate.raw || {};
+        var item = raw.item || candidate && candidate.presentation || {};
+        return String(item.name || '').trim();
+    }
     function candidateCacheTarget(target, scope) {
         if (!target || typeof target !== 'object') return '';
         if (target.kind === 'backpack') {
@@ -100,7 +109,37 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
             };
             return true;
         };
+        controller._armItemUseResumeRequest = function(selection, target, scope) {
+            var resume = this._itemUseResumeSelection;
+            if (!resume) return false;
+            if (!target || target.kind !== 'backpack'
+                    || SessionModule.candidateScope(scope) !== 'backpack') {
+                this._itemUseResumeSelection = null;
+                return false;
+            }
+            resume.requestKey = String(selection && selection.requestKey || '');
+            return !!resume.requestKey;
+        };
+        controller._restoreItemUseCandidate = function(candidates, requestKey) {
+            var resume = this._itemUseResumeSelection;
+            if (!resume || resume.requestKey !== String(requestKey || '')) return false;
+            this._itemUseResumeSelection = null;
+            candidates = Array.isArray(candidates) ? candidates : [];
+            for (var i = 0; i < candidates.length; i++) {
+                var candidate = candidates[i];
+                if (candidate && candidate.useAction
+                        && String(candidate.useAction.command || '') === 'consume'
+                        && Number(candidate.physicalSlot) === resume.physicalSlot
+                        && candidateItemName(candidate) === resume.itemName) {
+                    return !!(this._view && this._view.restoreItemUseCandidate
+                        && this._view.restoreItemUseCandidate(
+                            candidate, resume.focusMode));
+                }
+            }
+            return false;
+        };
         controller._selectSlot = function(selection) {
+            this._itemUseResumeSelection = null;
             var target = Projection.targetForSelection(selection);
             var scope = SessionModule.candidateScope(
                 selection && selection.candidateScope || 'compatible');
@@ -140,11 +179,15 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
                 if (accepted) {
                     var candidates = Projection.viewCandidates(response.payload, target);
                     self._storeCandidateCache(target, scope, response.payload, candidates);
-                    self._view.setCandidates(
-                        selection.requestKey,
-                        candidates);
+                    if (self._view.setCandidates(
+                            selection.requestKey, candidates)) {
+                        self._restoreItemUseCandidate(
+                            candidates, selection.requestKey);
+                    }
                 } else if (definitiveCandidateStale(response)
                         && self._recoverCandidateSelection(selection)) {
+                    return;
+                } else if (candidateSuperseded(response)) {
                     return;
                 } else {
                     self._view.setCandidateFailure(
@@ -159,7 +202,9 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
                 this._session.setCandidateScope(previousScope);
                 this._renderPortrait(null);
             }
-            return sendRefused ? null : callId;
+            return sendRefused
+                ? {selectionFailed:true, error:'not_sent'}
+                : callId;
         };
 
         controller._changeCandidateScope = function(scope, selection) {
@@ -192,8 +237,17 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
                 this._session.setCandidateScope(previousScope);
                 return false;
             }
+            this._armItemUseResumeRequest(selection, target, scope);
             var cachedCandidates = this._readCandidateCache(target, scope);
-            if (cachedCandidates) return cachedCandidates;
+            if (cachedCandidates) {
+                if (this._view && this._view.setCandidates(
+                        selection.requestKey, cachedCandidates)) {
+                    this._restoreItemUseCandidate(
+                        cachedCandidates, selection.requestKey);
+                    return true;
+                }
+                return false;
+            }
             var self = this, sendRefused = false;
             var callId = this._session.requestCandidates(target, scope, function(
                     response, accepted, targetKey, responseScope) {
@@ -204,11 +258,15 @@ function(SessionModule, Projection, SlotTransition, TuningModule, DropTargetsMod
                 if (accepted) {
                     var candidates = Projection.viewCandidates(response.payload, target);
                     self._storeCandidateCache(target, scope, response.payload, candidates);
-                    self._view.setCandidates(
-                        selection.requestKey,
-                        candidates);
+                    if (self._view.setCandidates(
+                            selection.requestKey, candidates)) {
+                        self._restoreItemUseCandidate(
+                            candidates, selection.requestKey);
+                    }
                 } else if (definitiveCandidateStale(response)
                         && self._recoverCandidateSelection(selection)) {
+                    return;
+                } else if (candidateSuperseded(response)) {
                     return;
                 } else {
                     self._view.setCandidateFailure(

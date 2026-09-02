@@ -176,6 +176,7 @@ namespace CF7Launcher.Guardian
         private readonly Action<string> _postToWeb;
         private readonly bool _preparationNavigationV1;
         private PanelHostController _panelHost;
+        private LootPanelCoordinator _lootPanelCoordinator;
         private SkillTask _skillTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private CharacterBuildTask _characterBuildTask;
@@ -271,6 +272,10 @@ namespace CF7Launcher.Guardian
         public void SetSkillTask(SkillTask task) { _skillTask = task; }
         public void SetEquipmentTuningTask(EquipmentTuningTask task) { _equipmentTuningTask = task; }
         public void SetCharacterBuildTask(CharacterBuildTask task) { _characterBuildTask = task; }
+        public void SetLootPanelCoordinator(LootPanelCoordinator coordinator)
+        {
+            _lootPanelCoordinator = coordinator;
+        }
         internal bool PreparationNavigationV1
         {
             get { return _preparationNavigationV1; }
@@ -2098,6 +2103,108 @@ namespace CF7Launcher.Guardian
             return true;
         }
 
+        /// <summary>
+        /// Starts a fresh Character Build session for the fixed Reward Inbox return edge. While
+        /// the exact Loot binding is still active this preserves its inherited pause lease and
+        /// prepares an in-place Host replacement; after a fallback close it reuses the same nonce
+        /// preflight from PanelHost's idle baseline.
+        /// </summary>
+        internal bool TryOpenCharacterBuildAfterRewardInbox()
+        {
+            return TryOpenCharacterBuildAfterRewardInbox(null);
+        }
+
+        internal bool TryOpenCharacterBuildAfterRewardInbox(
+            LootPanelCoordinator.Binding binding)
+        {
+            const string origin = "reward_inbox_return";
+            if (binding != null
+                && binding.SourceKind
+                    != LootPanelCoordinator.RewardInboxSource)
+            {
+                return false;
+            }
+            if (!CanAdmitPanel(origin))
+            {
+                LogManager.Log(
+                    "event=character_build_open_failed source="
+                    + origin + " reason=admission_closed");
+                return false;
+            }
+
+            string activePanel = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : null;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : null;
+            bool replacingActiveRewardInbox =
+                _panelHost != null
+                && _lootPanelCoordinator != null
+                && string.Equals(
+                    activePanel,
+                    LootPanelCoordinator.PanelName,
+                    StringComparison.Ordinal)
+                && binding != null
+                && string.Equals(
+                    activeInstance,
+                    binding.PanelInstanceId,
+                    StringComparison.Ordinal)
+                && _lootPanelCoordinator
+                    .IsRewardInboxReplacementPendingExact(
+                        binding.PanelInstanceId);
+            bool reopeningAfterFallback =
+                _panelHost != null
+                && string.IsNullOrEmpty(activePanel)
+                && string.IsNullOrEmpty(activeInstance)
+                && _panelHost.IsIdleForTrackedOpen;
+            if (!replacingActiveRewardInbox
+                && !reopeningAfterFallback)
+            {
+                LogManager.Log(
+                    "event=character_build_open_failed source="
+                    + origin + " reason=competing_panel");
+                return false;
+            }
+
+            int generation;
+            string openRequestId;
+            if (!TryBeginNativeEquipmentBuildOpenWait(
+                    origin,
+                    false,
+                    out generation,
+                    out openRequestId))
+            {
+                LogManager.Log(
+                    "event=character_build_open_failed source="
+                    + origin + " reason=preflight_busy");
+                return false;
+            }
+
+            LogManager.Log(
+                "event=character_build_open_requested source="
+                + origin);
+            bool intentCurrent;
+            if (TrySendNativeEquipmentBuildPreflightIfCurrent(
+                    generation,
+                    openRequestId,
+                    out intentCurrent))
+            {
+                return true;
+            }
+            if (!intentCurrent)
+                return false;
+            if (!CancelNativeEquipmentBuildOpenWait(generation))
+                return false;
+
+            LogManager.Log(
+                "event=character_build_open_failed source="
+                + origin + " reason=preflight_send");
+            PostToWeb(
+                "{\"type\":\"toast\",\"text\":\"奖励已保存；返回角色构筑失败，请从装备入口重试\"}");
+            return false;
+        }
+
         private void OnSkillsCharacterBuildNavigationTimeout(
             int generation,
             string panelInstanceId)
@@ -3210,14 +3317,27 @@ namespace CF7Launcher.Guardian
                     null;
                 string openOrigin =
                     null;
+                string baselinePanel =
+                    null;
+                string baselineInstance =
+                    null;
                 bool hasHostAdmission =
                     false;
                 long hostAdmission =
                     0;
                 int lifecycleEpoch =
                     0;
+                bool replaceRewardInbox =
+                    false;
                 lock (_panelNavigationLifecycleLock)
                 {
+                    if (_nativeEquipmentBuildOpen.Pending)
+                    {
+                        baselinePanel =
+                            _nativeEquipmentBuildOpen.BaselinePanel;
+                        baselineInstance =
+                            _nativeEquipmentBuildOpen.BaselineInstance;
+                    }
                     if (!exactPanelName
                         || !exactNativeBuildInit
                         || !TryConsumeNativeEquipmentBuildOpenWait(
@@ -3268,13 +3388,30 @@ namespace CF7Launcher.Guardian
                         initData["returnFocusAction"] =
                             returnFocusAction;
                     }
+                    replaceRewardInbox =
+                        string.Equals(
+                            openOrigin,
+                            "reward_inbox_return",
+                            StringComparison.Ordinal)
+                        && string.Equals(
+                            baselinePanel,
+                            LootPanelCoordinator.PanelName,
+                            StringComparison.Ordinal)
+                        && !string.IsNullOrEmpty(
+                            baselineInstance);
+                    if (replaceRewardInbox)
+                    {
+                        initData["navigationOrigin"] =
+                            openOrigin;
+                    }
                     if (lifecycleEpoch
                         != _panelNavigationLifecycleEpoch)
                     {
                         return false;
                     }
-                    opened =
-                        OpenPanel(
+                    opened = replaceRewardInbox
+                        ? false
+                        : OpenPanel(
                             "workbench",
                             initData.ToString(
                                 Formatting.None),
@@ -3282,6 +3419,14 @@ namespace CF7Launcher.Guardian
                             null,
                             hasHostAdmission,
                             hostAdmission);
+                }
+                if (replaceRewardInbox)
+                {
+                    opened =
+                        TryReplaceRewardInboxWithCharacterBuild(
+                            baselineInstance,
+                            initData,
+                            lifecycleEpoch);
                 }
             }
             else
@@ -3319,6 +3464,91 @@ namespace CF7Launcher.Guardian
                     openRequestId);
             }
             return opened;
+        }
+
+        private bool TryReplaceRewardInboxWithCharacterBuild(
+            string sourcePanelInstanceId,
+            JObject initData,
+            int lifecycleEpoch)
+        {
+            LootPanelCoordinator coordinator =
+                _lootPanelCoordinator;
+            PanelHostController host =
+                _panelHost;
+            if (coordinator == null
+                || host == null
+                || initData == null
+                || !coordinator
+                    .IsRewardInboxReplacementPendingExact(
+                        sourcePanelInstanceId))
+            {
+                return false;
+            }
+
+            string targetPanelInstanceId;
+            try
+            {
+                targetPanelInstanceId =
+                    OpaqueIdGenerator.Create("panel");
+            }
+            catch
+            {
+                targetPanelInstanceId = null;
+            }
+            if (string.IsNullOrEmpty(targetPanelInstanceId))
+            {
+                coordinator
+                    .CancelRewardInboxReplacementAndCloseExact(
+                        sourcePanelInstanceId);
+                return false;
+            }
+
+            var plan = new PreparedPanelReplace(
+                "workbench",
+                targetPanelInstanceId,
+                initData.ToString(Formatting.None),
+                delegate
+                {
+                    coordinator
+                        .CompleteRewardInboxReplacementExact(
+                            sourcePanelInstanceId);
+                },
+                delegate
+                {
+                    coordinator
+                        .CancelRewardInboxReplacementAndCloseExact(
+                            sourcePanelInstanceId);
+                });
+            bool queued = host.TryReplacePanelExact(
+                LootPanelCoordinator.PanelName,
+                sourcePanelInstanceId,
+                plan,
+                delegate
+                {
+                    lock (_panelNavigationLifecycleLock)
+                    {
+                        return lifecycleEpoch
+                                == _panelNavigationLifecycleEpoch
+                            && (_characterBuildTask == null
+                                || !_characterBuildTask.HasBoundPanel)
+                            && coordinator
+                                .IsRewardInboxReplacementPendingExact(
+                                    sourcePanelInstanceId);
+                    }
+                },
+                delegate(
+                    PanelHostController.ExactReplaceOutcome outcome)
+                {
+                    LogManager.Log(
+                        "event=reward_inbox_character_build_replace outcome="
+                        + outcome.ToString());
+                });
+            if (!queued)
+            {
+                LogManager.Log(
+                    "event=reward_inbox_character_build_replace outcome=not_queued");
+            }
+            return queued;
         }
 
         private void OpenNpcShopPanel(string source, string initDataExtrasJson)
@@ -5097,7 +5327,20 @@ namespace CF7Launcher.Guardian
                         out hasHostAdmission,
                         out hostAdmission))
                 {
-                    return false;
+                    bool capturedRewardReplacement =
+                        string.Equals(
+                            origin,
+                            "reward_inbox_return",
+                            StringComparison.Ordinal)
+                        && _panelHost != null
+                        && _panelHost
+                            .TryCaptureExactReplaceBaseline(
+                                out activePanel,
+                                out activeInstance);
+                    if (!capturedRewardReplacement)
+                        return false;
+                    hasHostAdmission = false;
+                    hostAdmission = 0;
                 }
 
                 if (isDirectUserIntent)
@@ -5189,6 +5432,8 @@ namespace CF7Launcher.Guardian
             System.Threading.Timer timer;
             string activePanel;
             string origin;
+            string baselinePanel;
+            string baselineInstance;
             lock (_panelNavigationLifecycleLock)
             {
                 if (!_nativeEquipmentBuildOpen.Pending
@@ -5207,11 +5452,34 @@ namespace CF7Launcher.Guardian
                         : null;
                 origin =
                     _nativeEquipmentBuildOpen.Origin;
+                baselinePanel =
+                    _nativeEquipmentBuildOpen.BaselinePanel;
+                baselineInstance =
+                    _nativeEquipmentBuildOpen.BaselineInstance;
                 timer =
                     ClearNativeEquipmentBuildOpenWaitLocked();
             }
             if (timer != null)
                 timer.Dispose();
+            if (string.Equals(
+                    origin,
+                    "reward_inbox_return",
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    baselinePanel,
+                    LootPanelCoordinator.PanelName,
+                    StringComparison.Ordinal)
+                && _lootPanelCoordinator != null
+                && _lootPanelCoordinator
+                    .CancelRewardInboxReplacementAndCloseExact(
+                        baselineInstance))
+            {
+                LogManager.Log(
+                    "event=character_build_open_failed source="
+                    + origin
+                    + " reason=panel_request_timeout fallback=loot_close");
+                return;
+            }
             if (!string.IsNullOrEmpty(activePanel))
             {
                 LogManager.Log(

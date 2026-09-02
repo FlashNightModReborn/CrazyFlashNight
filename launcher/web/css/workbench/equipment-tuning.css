@@ -186,7 +186,6 @@
 }
 .equipment-tuning-tabs { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid #233d44; background:#081014; }
 .equipment-tuning-tabs { grid-row:2; }
-.equipment-tuning-view[data-source-kind="loadout"] .equipment-tuning-tabs { grid-template-columns:repeat(3,1fr); }
 .equipment-tuning-tab {
     min-height:34px; padding:0 4px; border:0; border-right:1px solid #21363d; border-radius:0;
     background:#0d171b; color:#78939a; font:700 11px/1 "Microsoft YaHei",sans-serif; cursor:pointer;

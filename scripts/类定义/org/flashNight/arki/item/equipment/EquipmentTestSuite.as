@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.equipment.*;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.unit.Action.Melee.SwitchStrikeCore;
 
 /** 
  * EquipmentTestSuite - 装备系统测试套件
@@ -711,6 +712,11 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
                 provideTags: "结构A"
             },
             {
+                name: "插件A备用",
+                use: "头部装备",
+                provideTags: "结构A"
+            },
+            {
                 name: "插件B",
                 use: "头部装备",
                 requireTags: "结构A"
@@ -892,8 +898,20 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         // 查询哪些插件依赖"插件A"
         var dependents:Array = TagManager.getDependentMods(testItem, "插件A");
         var hasDependent:Boolean = (dependents.length == 1 && dependents[0] == "插件B");
+        var redundantProviderItem = {
+            name: "测试装备",
+            value: {
+                mods: ["插件A", "插件A备用", "插件B"]
+            }
+        };
+        var redundantDependents:Array = TagManager.getDependentMods(
+            redundantProviderItem, "插件A");
+        var keepsSupportedMod:Boolean = redundantDependents.length == 0;
 
-        return hasDependent ? "✓ 依赖链测试通过\n" : "✗ 依赖链测试失败（依赖数=" + dependents.length + "）\n";
+        return hasDependent && keepsSupportedMod
+            ? "✓ 依赖链测试通过\n"
+            : "✗ 依赖链测试失败（唯一提供者依赖数=" + dependents.length
+                + "，冗余提供者依赖数=" + redundantDependents.length + "）\n";
     }
 
     /**
@@ -1509,6 +1527,8 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         result += testEquipmentCalculator_CurveOperator();
         result += testEquipmentCalculator_PureVsNormal();
         result += testEquipmentCalculator_UseSwitchMatching();
+        result += testEquipmentCalculator_BaseSwitchAndOverridePrecedence();
+        result += testSwitchStrikeCore_ProfileConfiguration();
         result += testEquipmentCalculator_QualifiedHandgunHitBehavior();
         result += testEquipmentCalculator_GunShieldProfile();
 
@@ -1553,7 +1573,7 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
 
     /**
      * P1: 修正项顺序测试
-     * 验证顺序：multiply → multiplierZone → add → override → merge → cap
+     * 验证顺序：percentage → multiplier → curve → flat → softOverride → override → merge → lockOverride → cap
      */
     private static function testEquipmentCalculator_ModifierOrder():String {
         EquipmentConfigManager.loadConfig({
@@ -1737,6 +1757,113 @@ class org.flashNight.arki.item.equipment.EquipmentTestSuite {
         }
 
         return "✓ useSwitch多分支匹配测试通过\n";
+    }
+
+    /**
+     * baseSwitch 必须读取配件应用前的伤害类型；soft/普通/lock 覆盖优先级不得受槽位顺序影响。
+     */
+    private static function testEquipmentCalculator_BaseSwitchAndOverridePrecedence():String {
+        EquipmentConfigManager.loadConfig({levelStatList: [1, 1.0], decimalPropDict: {}});
+
+        ModRegistry.loadModData([
+            {
+                name: "测试磨刀石", use: "长枪",
+                stats: {
+                    baseSwitch: {
+                        path: "data.damagetype",
+                        value: [
+                            {name: "破击", percentage: {power: 24}},
+                            {name: "魔法", percentage: {power: 50}},
+                            {percentage: {power: 9}}
+                        ]
+                    },
+                    lockOverride: {damagetype: "物理"}
+                }
+            },
+            {name: "测试电柄", use: "长枪", stats: {override: {damagetype: "破击", magictype: "电"}}},
+            {name: "测试矩锁", use: "长枪", stats: {softOverride: {criticalhit: 10}}},
+            {name: "测试暴击镜", use: "长枪", stats: {override: {criticalhit: 20}}}
+        ]);
+
+        var registry:Object = {
+            测试磨刀石: ModRegistry.getModData("测试磨刀石"),
+            测试电柄: ModRegistry.getModData("测试电柄"),
+            测试矩锁: ModRegistry.getModData("测试矩锁"),
+            测试暴击镜: ModRegistry.getModData("测试暴击镜")
+        };
+        var cfg:Object = EquipmentConfigManager.getFullConfig();
+
+        var physical:Object = EquipmentCalculator.calculatePure(
+            {name: "物理枪", use: "长枪", data: {power: 100, damagetype: "物理"}},
+            {level: 1, mods: ["测试磨刀石"]}, cfg, registry);
+        var breakDamage:Object = EquipmentCalculator.calculatePure(
+            {name: "破击枪", use: "长枪", data: {power: 100, damagetype: "破击"}},
+            {level: 1, mods: ["测试电柄", "测试磨刀石"]}, cfg, registry);
+        var magicDamage:Object = EquipmentCalculator.calculatePure(
+            {name: "属性枪", use: "长枪", data: {power: 100, damagetype: "魔法"}},
+            {level: 1, mods: ["测试磨刀石", "测试电柄"]}, cfg, registry);
+
+        var matrixOnly:Object = EquipmentCalculator.calculatePure(
+            {name: "原生暴击枪", use: "长枪", data: {criticalhit: 30}},
+            {level: 1, mods: ["测试矩锁"]}, cfg, registry);
+        var critOrderA:Object = EquipmentCalculator.calculatePure(
+            {name: "暴击枪A", use: "长枪", data: {criticalhit: 30}},
+            {level: 1, mods: ["测试矩锁", "测试暴击镜"]}, cfg, registry);
+        var critOrderB:Object = EquipmentCalculator.calculatePure(
+            {name: "暴击枪B", use: "长枪", data: {criticalhit: 30}},
+            {level: 1, mods: ["测试暴击镜", "测试矩锁"]}, cfg, registry);
+
+        var passed:Boolean = (
+            physical.data.power == 109 && physical.data.damagetype == "物理" &&
+            breakDamage.data.power == 124 && breakDamage.data.damagetype == "物理" &&
+            magicDamage.data.power == 150 && magicDamage.data.damagetype == "物理" &&
+            matrixOnly.data.criticalhit == 10 &&
+            critOrderA.data.criticalhit == 20 && critOrderB.data.criticalhit == 20
+        );
+
+        return passed
+            ? "✓ baseSwitch与覆盖优先级测试通过\n"
+            : "✗ baseSwitch与覆盖优先级测试失败（威力=" + physical.data.power + "/" +
+              breakDamage.data.power + "/" + magicDamage.data.power + "，类型=" +
+              breakDamage.data.damagetype + "/" + magicDamage.data.damagetype + "，暴击=" +
+              matrixOnly.data.criticalhit + "/" + critOrderA.data.criticalhit + "/" +
+              critOrderB.data.criticalhit + "）\n";
+    }
+
+    /** 切手技默认公式与挂环的重量/冲击配置回归。 */
+    private static function testSwitchStrikeCore_ProfileConfiguration():String {
+        var baseUnit:Object = {
+            空手攻击力: 100,
+            mp攻击加成: 5,
+            长枪属性: {weight: 10},
+            刀属性: {power: 40},
+            被动技能: {拳脚攻击: {启用: true, 等级: 2}}
+        };
+        var ringUnit:Object = {
+            空手攻击力: 100,
+            mp攻击加成: 5,
+            长枪属性: {weight: 10, switchstrike: {weightCoefficient: 5, impactMultiplier: 5}},
+            刀属性: {power: 40},
+            被动技能: {拳脚攻击: {启用: true, 等级: 2}}
+        };
+
+        var baseLonggun:Object = SwitchStrikeCore.buildBulletProperties(baseUnit, "长枪", {});
+        var ringLonggun:Object = SwitchStrikeCore.buildBulletProperties(ringUnit, "长枪", {});
+        var blade:Object = SwitchStrikeCore.buildBulletProperties(baseUnit, "兵器", {});
+        var kick:Object = SwitchStrikeCore.buildBulletProperties(baseUnit, "回旋踢", {});
+
+        var passed:Boolean = (
+            baseLonggun.子弹威力 == 55 && baseLonggun.击倒率 == 5 &&
+            ringLonggun.子弹威力 == 75 && ringLonggun.击倒率 == 1 &&
+            ringLonggun.伤害类型 == "物理" && blade.子弹威力 == 65 &&
+            kick.子弹威力 == 125 && kick.霰弹值 == 1
+        );
+
+        return passed
+            ? "✓ 切手技形态配置测试通过\n"
+            : "✗ 切手技形态配置测试失败（长枪=" + baseLonggun.子弹威力 + "/" +
+              baseLonggun.击倒率 + "，挂环=" + ringLonggun.子弹威力 + "/" +
+              ringLonggun.击倒率 + "，刀/踢=" + blade.子弹威力 + "/" + kick.子弹威力 + "）\n";
     }
 
     /**

@@ -35,7 +35,8 @@ namespace CF7Launcher.Guardian
                 "material_shop_access_response",
                 "skill_response",
                 "inventory_response",
-                "loadout_response"
+                "loadout_response",
+                "item_use_response"
             };
 
         private static readonly string[] ResponseFamilyPrefixes =
@@ -48,7 +49,8 @@ namespace CF7Launcher.Guardian
             "material_shop_access_",
             "skill_",
             "inventory_",
-            "loadout_"
+            "loadout_",
+            "item_use_"
         };
 
         private static readonly HashSet<string> AuthorityPanels =
@@ -61,13 +63,14 @@ namespace CF7Launcher.Guardian
             new HashSet<string>(StringComparer.Ordinal)
             {
                 "inventory", "npcshop", "crafting", "equipment_tuning",
-                "tuning", "loadout", "skills"
+                "tuning", "loadout", "item_use", "skills"
             };
 
         private static readonly HashSet<string> SafeOperations =
             new HashSet<string>(StringComparer.Ordinal)
             {
                 "close", "snapshot", "candidates", "preview", "commit", "tooltip", "detach",
+                "open", "consume", "query", "inboxSnapshot",
                 "bulkQuery", "saveCart", "checkoutPreview", "checkoutCommit",
                 "checkout", "claim", "materials", "materialDetail", "setPlan",
                 "open_npc_shop", "open_procurement_shop", "open_procurement_kshop",
@@ -95,7 +98,9 @@ namespace CF7Launcher.Guardian
                 "inventorySortAndMerge",
                 "skillSnapshot", "skillLearnPreview", "skillLearnCommit",
                 "skillEquip", "skillUnequip", "skillMoveSlot", "skillSetPassive",
-                "skillReorder"
+                "skillReorder",
+                "itemUseOpen", "itemUseConsume", "itemUseQuery",
+                "itemUseInboxSnapshot"
             };
 
         private static readonly Dictionary<string, string> KnownSensitiveKeys =
@@ -439,6 +444,7 @@ namespace CF7Launcher.Guardian
                 case "CraftingTask": return "crafting";
                 case "NpcShopTask": return "npcshop";
                 case "InventoryTask": return "inventory";
+                case "ItemUseTask": return "item_use";
                 case "SkillTask": return "skills";
                 default: return "other";
             }
@@ -449,6 +455,7 @@ namespace CF7Launcher.Guardian
             switch (component)
             {
                 case "EquipmentTuningTask":
+                case "ItemUseTask":
                     return string.Equals(panel, "workbench", StringComparison.Ordinal)
                         ? panel : "other";
                 case "ShopTask":
@@ -874,6 +881,7 @@ namespace CF7Launcher.Guardian
                 case "SkillTask":
                 case "EquipmentTuningTask":
                 case "MaterialShopAccessTask":
+                case "ItemUseTask":
                     return component;
                 default:
                     return "AuthorityTask";

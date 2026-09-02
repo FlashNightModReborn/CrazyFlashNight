@@ -15,7 +15,9 @@ namespace CF7Launcher.Guardian.Hud
         Up,
         Click,
         Enter,
-        Leave
+        Leave,
+        /// <summary>宿主失焦、suspend、capture lost 或落空松键时取消未完成手势。</summary>
+        Cancel
     }
 
     /// <summary>

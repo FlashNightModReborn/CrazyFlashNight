@@ -196,6 +196,26 @@ namespace CF7Launcher.Tests.Bus
         }
 
         [Fact]
+        public void ItemUseResponseLog_RedactsOperationAndRewardAuthority()
+        {
+            const string operationId = "itemuse.operation.secret";
+            const string chestSessionId = "reward.chest.secret";
+            string message = "{\"task\":\"item_use_response\",\"command\":\"open\","
+                + "\"callId\":9,\"success\":true,\"operationId\":\""
+                + operationId + "\",\"rewardAuthority\":{\"sourceKind\":\"reward_inbox\","
+                + "\"chestSessionId\":\"" + chestSessionId + "\"}}";
+
+            string line = XmlSocketServer.FormatJsonMessageLog(message);
+
+            Assert.StartsWith(
+                "[XmlSocket:JSON] task=item_use_response cmd=open"
+                + " callId=9 success=true payload=redacted len=" + message.Length,
+                line);
+            Assert.DoesNotContain(operationId, line);
+            Assert.DoesNotContain(chestSessionId, line);
+        }
+
+        [Fact]
         public void NearMatchLoadoutResponseLog_FailsClosed()
         {
             const string lease = "lease.near-match.secret";

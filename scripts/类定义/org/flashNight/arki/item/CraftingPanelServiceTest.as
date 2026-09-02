@@ -375,8 +375,21 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         _root.shops["测试商人"]["0"] = "测试矿石";
         _root.shops["测试商人"]["1"] = "旧测试枪";
         var shopProjector:Object = {price:120, locked:true, maxQuantity:0,
-            catalogMode:"exact"};
-        shopProjector.buildCatalog = function(shopId:String):Array {
+            buyRatePermille:1000, lastBuyRatePermille:null,
+            rateReadCount:0, catalogCallCount:0, catalogMode:"exact"};
+        shopProjector.getBuyRatePermille = function():Number {
+            this.rateReadCount++;
+            return Number(this.buyRatePermille);
+        };
+        shopProjector.buildCatalog = function(
+                shopId:String, buyRatePermille:Number):Array {
+            if (!org.flashNight.gesh.number.NumberUtil.isSafeNonNegativeInteger(
+                    buyRatePermille)
+                    || buyRatePermille !== Number(this.buyRatePermille)) {
+                return null;
+            }
+            this.catalogCallCount++;
+            this.lastBuyRatePermille = buyRatePermille;
             if (this.catalogMode == "empty") return [];
             if (this.catalogMode == "non_array") return null;
             if (this.catalogMode == "throw") throw "shop_catalog_fixture_throw";
@@ -391,7 +404,9 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                     {catalogIndex:0, itemName:"测试矿石"}];
             }
             return [{catalogIndex:0, itemName:"测试矿石",
-                    basePrice:this.price, unitPrice:this.price - 10,
+                    basePrice:this.price,
+                    unitPrice:org.flashNight.gesh.number.NumberUtil.floorPermille(
+                        this.price, buyRatePermille),
                     requiredInfo:"测试图纸", locked:this.locked,
                     maxQuantity:this.maxQuantity},
                 {catalogIndex:1, itemName:"旧测试枪",
@@ -452,10 +467,11 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && detail.useCount == 2 && detail.structuredPurposeCount == 3,
             "v2 detail reuses immutable catalog state while preserving authored summary");
         check(shop != null && shop.sourceOrder == 0
-                && shop.basePrice == 120 && shop.unitPriceAtSnapshot == 110
+                && shop.basePrice == 120 && shop.unitPriceAtSnapshot == 120
                 && shop.requiredInfo == "测试图纸" && shop.locked
                 && shop.shopAccessMode == "full"
                 && shop.shopAccessReason == "indexed_live_match"
+                && shopProjector.lastBuyRatePermille === 1000
                 && kshop != null && kshop.sourceOrder == 1
                 && kshop.catalogIndex == 0 && kshop.entryId == "mat-1"
                 && kshop.category == "材料" && kshop.priceK == 1
@@ -486,6 +502,9 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && detail.directPurposes.length == 1
                 && detail.infrastructureUses == undefined,
             "v2 uses preserve exact recipe occurrences and preview every required ingredient");
+
+        testProductionNpcCatalogSeam(
+            snapshotId, previousNpcService, shopProjector);
 
         var ordinarySnapshot:Object = CraftingPanelService.execute(
             "snapshot", {category:"武器合成"});
@@ -522,6 +541,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
 
         // Only shop dynamic fields may refresh inside one frozen material snapshot.
         shopProjector.price = 220;
+        shopProjector.buyRatePermille = 700;
         var repriced:Object = CraftingPanelService.execute("materialDetail", {
             v:2, snapshotId:snapshotId, itemName:"测试矿石"
         });
@@ -529,8 +549,9 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             repriced.sources, "shop", "shopId", "测试商人");
         check(repriced.success && repriced.material.owned == 5
                 && repricedShop.basePrice == 220
-                && repricedShop.unitPriceAtSnapshot == 210,
-            "v2 detail refreshes only live NPC shop price and lock projection");
+                && repricedShop.unitPriceAtSnapshot == 154
+                && shopProjector.lastBuyRatePermille === 700,
+            "v2 detail refreshes live NPC shop price, rate and lock projection");
 
         delete shopProjector.locked;
         var missingLocked:Object = CraftingPanelService.execute(
@@ -708,6 +729,94 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
             _root.UI系统.NPC商店WebView = previousNpcService;
         }
         resetOwned();
+    }
+
+    /** 真实 NPC leaf 与材料详情/两种导航 consumer 的跨文件契约缝。 */
+    private static function testProductionNpcCatalogSeam(snapshotId:String,
+            productionService:Object, fixtureService:Object):Void {
+        var infrastructure:Object = _root.基建系统.infrastructure;
+        var previousBicycle = infrastructure.自行车;
+        var previousMotorcycle = infrastructure.摩托车;
+        var previousOffroad = infrastructure.越野车;
+        var passive:Object = _root.主角被动技能;
+        var hadEloquence:Boolean = passive.hasOwnProperty("口才");
+        var previousEloquence = passive.口才;
+        var mineralData:Object = ItemUtil.itemDataDict["测试矿石"];
+        var equipmentData:Object = ItemUtil.itemDataDict["旧测试枪"];
+        var mineralHadPrice:Boolean = mineralData.hasOwnProperty("price");
+        var equipmentHadPrice:Boolean = equipmentData.hasOwnProperty("price");
+        var previousMineralPrice = mineralData.price;
+        var previousEquipmentPrice = equipmentData.price;
+        var detail:Object = null;
+        var ordinaryRequest:Object = materialShopAccessRequest(snapshotId, 142);
+        var ordinaryAccess:Object = null;
+        var recipeAccess:Object = null;
+        var failure:String = "";
+
+        try {
+            if (productionService == undefined || productionService == null
+                    || typeof productionService.getBuyRatePermille != "function"
+                    || typeof productionService.buildCatalog != "function") {
+                throw "production_npc_catalog_service_missing";
+            }
+            _root.UI系统.NPC商店WebView = productionService;
+            mineralData.price = 120;
+            equipmentData.price = 900;
+            passive.口才 = {启用:true, 等级:5};
+            infrastructure.自行车 = 0;
+            infrastructure.摩托车 = 0;
+            infrastructure.越野车 = 0;
+
+            detail = CraftingPanelService.execute("materialDetail", {
+                v:2, snapshotId:snapshotId, itemName:"测试矿石"});
+
+            infrastructure.自行车 = 1;
+            ordinaryAccess = MaterialArchiveProjector.authorizeShopAccess(
+                ordinaryRequest);
+
+            infrastructure.自行车 = 0;
+            infrastructure.摩托车 = 1;
+            recipeAccess = MaterialArchiveProjector.authorizeRecipeShopAccess(
+                143, "测试矿石", "测试商人", 0);
+        } catch (error) {
+            failure = String(error);
+        } finally {
+            _root.UI系统.NPC商店WebView = fixtureService;
+            infrastructure.自行车 = previousBicycle;
+            infrastructure.摩托车 = previousMotorcycle;
+            infrastructure.越野车 = previousOffroad;
+            if (hadEloquence) passive.口才 = previousEloquence;
+            else delete passive.口才;
+            if (mineralHadPrice) mineralData.price = previousMineralPrice;
+            else delete mineralData.price;
+            if (equipmentHadPrice) equipmentData.price = previousEquipmentPrice;
+            else delete equipmentData.price;
+        }
+
+        var liveShop:Object = detail == null || detail.success !== true
+            ? null : findProjectedSource(
+                detail.sources, "shop", "shopId", "测试商人");
+        check(failure == "" && detail.success && liveShop != null
+                && liveShop.basePrice === 120
+                && liveShop.unitPriceAtSnapshot === 102,
+            "production NPC catalog seam applies the live 850 permille rate to material detail");
+        check(failure == "" && exactShopAccessAllow(
+                ordinaryAccess, ordinaryRequest),
+            "production NPC catalog seam authorizes exact material navigation with a bicycle");
+        check(failure == "" && recipeAccess != null
+                && recipeAccess.task == "material_shop_access_response"
+                && recipeAccess.callId === 143 && recipeAccess.success === true
+                && recipeAccess.v === 1 && recipeAccess.decision == "allow"
+                && recipeAccess.reason == "indexed_live_match"
+                && recipeAccess.materialName == "测试矿石"
+                && recipeAccess.shopId == "测试商人"
+                && recipeAccess.catalogIndex === 0
+                && recipeAccess.itemName == "测试矿石"
+                && hasExactKeys(recipeAccess, {task:true,callId:true,
+                    success:true,v:true,decision:true,reason:true,
+                    materialName:true,shopId:true,catalogIndex:true,
+                    itemName:true}, 10),
+            "production NPC catalog seam authorizes exact recipe procurement with a motorcycle");
     }
 
     /** A4b：Host-only 商店导航必须在点击时重新证明三层 authority。 */
@@ -896,6 +1005,18 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         var methodNotReady:Object = invokeMaterialShopAccess(
             materialShopAccessRequest(snapshotId, 38));
         shopProjector.buildCatalog = savedBuildCatalog;
+        var savedRateGetter:Function = shopProjector.getBuyRatePermille;
+        delete shopProjector.getBuyRatePermille;
+        var rateMethodNotReady:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 381));
+        shopProjector.getBuyRatePermille = savedRateGetter;
+        var catalogCallsBeforeInvalidRate:Number =
+            Number(shopProjector.catalogCallCount);
+        var savedBuyRatePermille:Number = Number(shopProjector.buyRatePermille);
+        shopProjector.buyRatePermille = Number.NaN;
+        var invalidRate:Object = invokeMaterialShopAccess(
+            materialShopAccessRequest(snapshotId, 382));
+        shopProjector.buyRatePermille = savedBuyRatePermille;
         shopProjector.catalogMode = "non_array";
         var invalidProjector:Object = invokeMaterialShopAccess(
             materialShopAccessRequest(snapshotId, 39));
@@ -904,9 +1025,15 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                     "authority_unavailable")
                 && exactShopAccessFailure(methodNotReady, 38, "deny",
                     "authority_unavailable")
+                && exactShopAccessFailure(rateMethodNotReady, 381, "deny",
+                    "authority_unavailable")
+                && exactShopAccessFailure(invalidRate, 382, "deny",
+                    "authority_unavailable")
+                && Number(shopProjector.catalogCallCount)
+                    == catalogCallsBeforeInvalidRate + 1
                 && exactShopAccessFailure(invalidProjector, 39, "deny",
                     "authority_unavailable"),
-            "A4b persistent service/method/non-array projector readiness fails unavailable");
+            "A4b service, rate, catalog and non-array readiness fail unavailable before unsafe use");
 
         shopProjector.catalogMode = "throw";
         var projectorThrew:Boolean = false;

@@ -152,6 +152,19 @@
         nextEnterError: '',
         openCounter: 0,      // P3：合成 Host 实例序号（对齐 BuildPanelOpenPayload 的 panelInstanceId 注入）
         stateRevision: 0,    // P3：C# 侧 snapshot 回包单调序号的 mock 等价物
+        withBridgeSendFault: function(mode, action) {
+            var originalSend = Bridge.send;
+            Bridge.send = function() {
+                if (mode === 'false') return false;
+                if (mode === 'throw') throw new Error('qa_bridge_send_throw');
+                return originalSend.apply(Bridge, arguments);
+            };
+            try {
+                return action();
+            } finally {
+                Bridge.send = originalSend;
+            }
+        },
         setViewport: function(value) {
             var parts = String(value || '1366x768').split('x');
             var width = Math.max(800, parseInt(parts[0] || '1366', 10) || 1366);

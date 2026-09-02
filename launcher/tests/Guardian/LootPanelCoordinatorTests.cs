@@ -184,6 +184,24 @@ namespace CF7Launcher.Tests.Guardian
             return request;
         }
 
+        private static JObject RewardAuthority()
+        {
+            return new JObject
+            {
+                ["sourceKind"] = "reward_inbox",
+                ["chestSessionId"] = "reward.chest.1",
+                ["lootContainerId"] = "reward.container.1",
+                ["containerEpoch"] = 3,
+                ["openAttemptSeq"] = 4,
+                ["displayName"] = "待领取物品",
+                ["authorityRevision"] = 6,
+                ["state"] = "LOOT_ACTIVE",
+                ["remainingCount"] = 2,
+                ["capacity"] = 8,
+                ["columns"] = 8
+            };
+        }
+
         private static LootPanelCoordinator Create(FakePanel panel, Func<bool> release = null,
             Func<LootPanelCoordinator.Binding, string, bool> recovery = null,
             int bindWatchdogMs = LootPanelCoordinator.DefaultBindWatchdogMs,
@@ -233,6 +251,37 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(8, webInit.Count);
             Assert.Equal("panel.loot.host.1", webInit.Value<string>("panelInstanceId"));
             Assert.Null(webInit["openAttemptSeq"]);
+        }
+
+        [Fact]
+        public void RewardInbox_UsesHostOnlyStrictAuthorityAndTrackedOpen()
+        {
+            var panel = new FakePanel();
+            using var coordinator = Create(panel);
+
+            string rejection;
+            Assert.True(coordinator.TryOpenRewardInbox(
+                RewardAuthority(), out rejection));
+            Assert.Null(rejection);
+            Assert.Equal(
+                LootPanelCoordinator.BindingState.OpenQueued,
+                coordinator.State);
+            JObject init = JObject.Parse(panel.InitDataJson);
+            Assert.Equal(8, init.Count);
+            Assert.Equal(1, init.Value<int>("v"));
+            Assert.Equal(
+                "reward_inbox", init.Value<string>("sourceKind"));
+            Assert.Equal(
+                "reward.chest.1", init.Value<string>("chestSessionId"));
+            Assert.Null(init["authorityRevision"]);
+            Assert.Null(init["remainingCount"]);
+
+            JObject malformed = RewardAuthority();
+            malformed["extra"] = true;
+            using var second = Create(new FakePanel());
+            Assert.False(second.TryOpenRewardInbox(
+                malformed, out rejection));
+            Assert.Equal("invalid_reward_authority", rejection);
         }
 
         [Fact]
@@ -947,6 +996,145 @@ namespace CF7Launcher.Tests.Guardian
             WaitUntil(delegate { return coordinator.State == LootPanelCoordinator.BindingState.Idle; });
             Assert.True(Volatile.Read(ref attempts) >= 2);
             Assert.Equal(1, Volatile.Read(ref detaches));
+        }
+
+        [Fact]
+        public void RewardInboxSettled_FiresOnceOnlyAfterVisualAndPauseRelease()
+        {
+            var panel = new FakePanel();
+            int releaseAttempts = 0;
+            int detaches = 0;
+            int settlements = 0;
+            using var coordinator = Create(
+                panel,
+                delegate
+                {
+                    return Interlocked.Increment(ref releaseAttempts) >= 2;
+                },
+                null,
+                bindWatchdogMs: 1000,
+                closeRetryDelayMs: 10,
+                closeRetryMaximumMs: 20,
+                pauseReleaseRetryMs: 10);
+            coordinator.BindingDetached += delegate
+            {
+                Interlocked.Increment(ref detaches);
+            };
+            coordinator.BindingSettled += delegate(
+                LootPanelCoordinator.Binding settled)
+            {
+                Assert.Equal(
+                    LootPanelCoordinator.RewardInboxSource,
+                    settled.SourceKind);
+                Assert.Equal(
+                    LootPanelCoordinator.BindingState.Idle,
+                    coordinator.State);
+                Assert.Null(coordinator.ActiveBinding);
+                Interlocked.Increment(ref settlements);
+            };
+
+            string rejection;
+            Assert.True(coordinator.TryOpenRewardInbox(
+                RewardAuthority(), out rejection));
+            panel.CompleteOpenPosted();
+            LootPanelCoordinator.Binding binding;
+            Assert.True(coordinator.TryBindExact(
+                "panel.loot.host.1",
+                "reward.chest.1",
+                "reward.container.1",
+                3,
+                out binding));
+            Assert.True(coordinator.CloseAfterAuthoritySuspended(binding));
+
+            panel.ActiveName = null;
+            panel.ActiveInstance = null;
+            coordinator.OnPanelHostClosed(
+                "loot", "panel.loot.host.1");
+
+            Assert.Equal(
+                LootPanelCoordinator.BindingState.PauseReleasePending,
+                coordinator.State);
+            Assert.Equal(1, Volatile.Read(ref detaches));
+            Assert.Equal(0, Volatile.Read(ref settlements));
+
+            WaitUntil(delegate
+            {
+                return Volatile.Read(ref settlements) == 1;
+            });
+            Assert.Equal(
+                LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.True(Volatile.Read(ref releaseAttempts) >= 2);
+            Assert.Equal(1, Volatile.Read(ref settlements));
+            Assert.False(coordinator.OnDetachedReconcileSettled());
+            Assert.Equal(1, Volatile.Read(ref settlements));
+        }
+
+        [Fact]
+        public void RewardInboxReplacement_TransfersPauseWithoutExactCloseOrSettledGap()
+        {
+            var panel = new FakePanel();
+            int releases = 0;
+            int detaches = 0;
+            int settlements = 0;
+            using var coordinator = Create(
+                panel,
+                delegate
+                {
+                    Interlocked.Increment(ref releases);
+                    return true;
+                });
+            coordinator.BindingDetached += delegate
+            {
+                Interlocked.Increment(ref detaches);
+            };
+            coordinator.BindingSettled += delegate
+            {
+                Interlocked.Increment(ref settlements);
+            };
+            coordinator.SetRewardInboxReturnHandler(
+                delegate(LootPanelCoordinator.Binding binding)
+                {
+                    Assert.Equal(
+                        LootPanelCoordinator.RewardInboxSource,
+                        binding.SourceKind);
+                    Assert.True(
+                        coordinator
+                            .IsRewardInboxReplacementPendingExact(
+                                binding.PanelInstanceId));
+                    return true;
+                });
+
+            string rejection;
+            Assert.True(coordinator.TryOpenRewardInbox(
+                RewardAuthority(), out rejection));
+            panel.CompleteOpenPosted();
+            LootPanelCoordinator.Binding binding;
+            Assert.True(coordinator.TryBindExact(
+                "panel.loot.host.1",
+                "reward.chest.1",
+                "reward.container.1",
+                3,
+                out binding));
+
+            Assert.True(
+                coordinator.CloseAfterAuthoritySuspended(binding));
+            Assert.True(
+                coordinator.IsRewardInboxReplacementPendingExact(
+                    binding.PanelInstanceId));
+            Assert.Equal(0, panel.CloseCalls);
+            Assert.True(
+                coordinator.CompleteRewardInboxReplacementExact(
+                    binding.PanelInstanceId));
+
+            Assert.Equal(
+                LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.Null(coordinator.ActiveBinding);
+            Assert.Equal(1, Volatile.Read(ref detaches));
+            Assert.Equal(0, Volatile.Read(ref settlements));
+            Assert.Equal(0, Volatile.Read(ref releases));
+            Assert.Equal(0, panel.CloseCalls);
         }
 
         [Fact]

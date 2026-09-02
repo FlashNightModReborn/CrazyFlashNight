@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.item.DrugSlotAffinityService;
 import org.flashNight.arki.item.PlayerAssetTransaction;
 
 /**
@@ -52,6 +53,15 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
                 destinationState = observeDestination(pending);
             }
             if (destinationState != "after") {
+                return {success:false, error:"commit_pending", pending:true};
+            }
+            if (!commitAffinityAfterDestination(pending)) {
+                if (sourceState == "present"
+                        && rollbackDestinationAndAffinity(
+                            pending, "ordinary_affinity_rollback")) {
+                    pending.phase = "ROLLED_BACK";
+                    return {success:false, error:"commit_failed", rolledBack:true};
+                }
                 return {success:false, error:"commit_pending", pending:true};
             }
             if (sourceState == "present") {
@@ -121,55 +131,76 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
 
     private static function beginOrdinary(pending:Object):Object {
         var backpack:ArrayInventory = resolveBackpack();
-        if (backpack == null) return {success:false, error:"authority_unavailable"};
+        var drugs:ArrayInventory = resolveDrugInventory();
+        if (backpack == null || drugs == null) {
+            return {success:false, error:"authority_unavailable"};
+        }
         var sourceItem:Object = pending.sourceItem;
         var isStack:Boolean = typeof sourceItem.value == "number";
-        var mergeSlot:Number = -1;
-        var emptySlot:Number = -1;
-        var mergeItem:Object = null;
-        for (var slot:Number = 0; slot < backpack.capacity; slot++) {
-            var candidate:Object = backpack.getItem(String(slot));
-            if (candidate == null) {
-                if (emptySlot < 0) emptySlot = slot;
-            } else if (isStack && typeof candidate.value == "number"
-                    && candidate.name === sourceItem.name) {
-                mergeSlot = slot;
-                mergeItem = candidate;
-                break;
-            }
+        var itemData:Object = ItemUtil.getRawItemData(String(sourceItem.name));
+        var isDrug:Boolean = itemData != null && itemData.use === "药剂";
+        var planning:Object = DrugSlotAffinityService.createAcquirePlanningState(
+            _root, drugs, backpack);
+        if (planning == null || planning.ok !== true) {
+            return {success:false, error:"authority_unavailable"};
         }
+        var plan:Object = DrugSlotAffinityService.planAcquireTarget(
+            planning, String(sourceItem.name),
+            isStack ? Number(sourceItem.value) : 1, isDrug, isStack);
+        if (plan == null || plan.success !== true) {
+            var planError:String = plan == null ? "commit_failed" : String(plan.error);
+            if (planError == "inventory_full") planError = "target_full";
+            return {success:false, error:planError};
+        }
+        var destination:ArrayInventory = String(plan.storageKind) == "drug"
+            ? drugs : backpack;
+        var destinationSlot:Number = Number(plan.slot);
+        var destinationItem:Object = destination.getItem(String(destinationSlot));
 
         pending.domain = "ordinary";
-        pending.destinationInventory = backpack;
-        if (mergeSlot >= 0) {
-            var before:Number = Number(mergeItem.value);
+        pending.destinationInventory = destination;
+        pending.destinationContainerId = String(plan.storageKind) == "drug"
+            ? "药剂栏" : "背包";
+        pending.acquirePlan = plan;
+        pending.affinityBefore = captureAffinityFeature();
+        pending.affinityCommitted = String(plan.storageKind) != "drug";
+        if (destinationItem != null) {
+            var before:Number = Number(destinationItem.value);
             var quantity:Number = Number(sourceItem.value);
             var after:Number = before + quantity;
             if (!isPositiveWhole(before) || !isPositiveWhole(quantity)
                     || !isPositiveWhole(after)) return {success:false, error:"invalid_quantity"};
             pending.destinationKind = "merge";
-            pending.destinationSlot = mergeSlot;
-            pending.destinationItem = mergeItem;
+            pending.destinationSlot = destinationSlot;
+            pending.destinationItem = destinationItem;
             pending.destinationBeforeValue = before;
             pending.destinationAfterValue = after;
             pending.outcome = {
-                success:true, destinationSlot:mergeSlot,
-                destinationInventory:backpack, destinationEvent:"value"
+                success:true, destinationSlot:destinationSlot,
+                destinationContainerId:pending.destinationContainerId,
+                destinationInventory:destination, destinationEvent:"value"
             };
         } else {
-            if (emptySlot < 0) return {success:false, error:"target_full"};
             pending.destinationKind = "empty";
-            pending.destinationSlot = emptySlot;
+            pending.destinationSlot = destinationSlot;
             pending.destinationItem = sourceItem;
             pending.outcome = {
-                success:true, destinationSlot:emptySlot,
-                destinationInventory:backpack, destinationEvent:"added"
+                success:true, destinationSlot:destinationSlot,
+                destinationContainerId:pending.destinationContainerId,
+                destinationInventory:destination, destinationEvent:"added"
             };
         }
 
         pending.phase = "PREPARED";
         if (!applyDestinationAfter(pending)) return reconcileAfterFailure(pending);
         pending.phase = "DESTINATION_APPLIED";
+        if (!commitAffinityAfterDestination(pending)) {
+            if (rollbackDestinationAndAffinity(pending, "ordinary_affinity_rollback")) {
+                pending.phase = "ROLLED_BACK";
+                return {success:false, error:"commit_failed", rolledBack:true};
+            }
+            return {success:false, error:"commit_pending", pending:true};
+        }
         if (writeInventory("ordinary_source_write", pending.sourceInventory,
                            pending.sourceSlot, null)) {
             pending.phase = "COMMITTED";
@@ -310,13 +341,17 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         if (fault == "throw") throw "injected_" + stage;
         if (fault == "false") return false;
         if (pending.domain == "ordinary") {
+            var restored:Boolean;
             if (pending.destinationKind == "merge") {
                 pending.destinationItem.value = pending.destinationBeforeValue;
-                return transactionWriteSafe(pending.destinationInventory,
+                restored = transactionWriteSafe(pending.destinationInventory,
                     pending.destinationSlot, pending.destinationItem);
+            } else {
+                restored = transactionWriteSafe(pending.destinationInventory,
+                    pending.destinationSlot, null);
             }
-            return transactionWriteSafe(pending.destinationInventory,
-                pending.destinationSlot, null);
+            if (restored) restoreAffinityBefore(pending);
+            return restored;
         }
         if (pending.domain == "scalar") {
             writeScalar(pending.kind, pending.destinationBeforeValue);
@@ -402,7 +437,10 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         if (pending == null || pending._lootFeedEmitted === true) return;
         pending._lootFeedEmitted = true;
         var context:Object = {
-            source:"loot_box", reason:"claim",
+            source:pending.feedSource == undefined
+                ? "loot_box" : String(pending.feedSource),
+            reason:pending.feedReason == undefined
+                ? "claim" : String(pending.feedReason),
             operationId:String(pending.operationId), mergeScope:"operation"
         };
 
@@ -480,6 +518,62 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         if (_root.物品栏 == undefined) return null;
         var backpack:ArrayInventory = _root.物品栏.背包;
         return backpack instanceof ArrayInventory ? backpack : null;
+    }
+
+    private static function resolveDrugInventory():ArrayInventory {
+        if (_root.物品栏 == undefined) return null;
+        var drugs:ArrayInventory = _root.物品栏.药剂栏;
+        return drugs instanceof ArrayInventory ? drugs : null;
+    }
+
+    private static function commitAffinityAfterDestination(pending:Object):Boolean {
+        if (pending == null || pending.domain != "ordinary"
+                || pending.affinityCommitted === true) return true;
+        var committed:Object = DrugSlotAffinityService.commitAcquireTarget(
+            _root, resolveDrugInventory(), pending.acquirePlan);
+        if (committed == null || committed.success !== true) return false;
+        pending.affinityCommitted = true;
+        return true;
+    }
+
+    private static function rollbackDestinationAndAffinity(
+            pending:Object, stage:String):Boolean {
+        return applyDestinationBefore(pending, stage) === true
+            && restoreAffinityBefore(pending);
+    }
+
+    private static function captureAffinityFeature():Object {
+        var feature:Object = _root._saveExt == undefined
+            ? null : _root._saveExt.drugLoadout;
+        if (feature == null || typeof feature != "object") return null;
+        var snapshot:Object = {};
+        for (var key:String in feature) {
+            if (typeof feature.hasOwnProperty == "function"
+                    && !feature.hasOwnProperty(key)) continue;
+            if (key == "slots" && feature.slots instanceof Array) {
+                snapshot.slots = [];
+                for (var i:Number = 0; i < feature.slots.length; i++) {
+                    var entry:Object = feature.slots[i];
+                    snapshot.slots[i] = entry == null ? null : {
+                        itemKey:String(entry.itemKey),
+                        lastDepletedSequence:Number(entry.lastDepletedSequence)
+                    };
+                }
+            } else {
+                snapshot[key] = feature[key];
+            }
+        }
+        return snapshot;
+    }
+
+    private static function restoreAffinityBefore(pending:Object):Boolean {
+        if (pending == null || pending.acquirePlan == null
+                || String(pending.acquirePlan.storageKind) != "drug") return true;
+        if (_root._saveExt == undefined || _root._saveExt == null
+                || typeof _root._saveExt != "object") _root._saveExt = {};
+        _root._saveExt.drugLoadout = pending.affinityBefore;
+        pending.affinityCommitted = false;
+        return true;
     }
 
     private static function readScalar(kind:String):Number {

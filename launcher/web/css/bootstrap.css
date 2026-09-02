@@ -515,3 +515,22 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
 }
 .tree-leaf.has-fffd { background: rgba(208, 128, 64, 0.12); border-left: 2px solid #d08040; padding-left: 4px; }
 .tree-leaf.has-fffd input { border-color: #d08040; }
+
+/* ── confirm-dialog：终端风确认/提示框（confirm-dialog.js；替代原生 confirm/alert） ── */
+.modal-content.confirm-dialog-surface { width: min(440px, 86vw); }
+.confirm-dialog { display: grid; gap: 12px; }
+.confirm-dialog-message {
+  margin: 0; color: var(--bone); font-size: var(--fs-md); line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.confirm-dialog-detail {
+  margin: 0; color: var(--term-ink-lo, #8a919a); font-size: var(--fs-sm); line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.confirm-dialog-detail[hidden] { display: none; }
+.confirm-dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+.confirm-dialog-actions .term-btn { min-width: 88px; }
+.confirm-dialog-ok-danger {
+  --term-btn-border: var(--rust, #b83a2e);
+  --term-btn-color: var(--rust, #b83a2e);
+}

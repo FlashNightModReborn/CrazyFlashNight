@@ -32,6 +32,10 @@ import org.flashNight.gesh.tooltip.*;
 class org.flashNight.arki.merc.ArenaPanelService {
     private static var _json:LiteJSON;
     private static var _inited:Boolean = false;
+    private static var _arenaResponseSeq:Number = 0;
+    private static var _arenaResponseEnvelopes:Object = {};
+    private static var _committingArenaResponseKey:String = "";
+    private static var _committingArenaResponseToken:String = "";
 
     public static function install():Void {
         if (_inited) return;
@@ -70,9 +74,7 @@ class org.flashNight.arki.merc.ArenaPanelService {
             _root.返回基地();
             return;
         }
-        if (_root.淡出动画 != undefined && _root.淡出动画.淡出跳转帧 != undefined) {
-            _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
-        }
+        // 返回基地必须经过 StageRunSession.onReturnBaseStarted；没有权威入口时 fail closed。
     }
 
     public static function handleSnapshot(params:Object):Void {
@@ -199,6 +201,12 @@ class org.flashNight.arki.merc.ArenaPanelService {
             out.push(src[i].slice());
         }
         return out;
+    }
+
+    private static function matchesFrozenLineup(
+            current:Array, expectedRef:Array, expectedSignature:String):Boolean {
+        return current != undefined && current === expectedRef && current.length > 0
+            && _json.stringifySafe(current) === expectedSignature;
     }
 
     private static function buildOpponentSummary(merc:Array):Object {
@@ -360,8 +368,6 @@ class org.flashNight.arki.merc.ArenaPanelService {
 
         // ── 爬升模式（Phase 3）分叉：web 下发 mode="escalation" + faction + pool（该势力单位池）──
         // 战斗循环 / 压力板决策 / 奖池经济全在 关卡回调函数 自管；这里仅校验 pool + 预载场景 + commit。
-        _root.角斗场对手禁收益 = false;
-
         if (enterMode == "escalation") {
             var poolParam:Array = (params.pool != undefined) ? params.pool : null;
             if (poolParam == null || poolParam.length == 0) {
@@ -400,23 +406,19 @@ class org.flashNight.arki.merc.ArenaPanelService {
             if (isNaN(baseLevelMax) || baseLevelMax < baseLevelMin) baseLevelMax = baseLevelMin;
             var maxWaves:Number = Number(params.maxWaves);
             if (isNaN(maxWaves) || maxWaves < 1) maxWaves = 10; // 波数上限（小5/大10/联军15），缺省 10
-            if (!ArenaController.prepareArenaStage(deposit, reward, difficulty)) {
+            if (!beginArenaCommit(params, authority, difficulty, "escalation",
+                    undefined,
+                    function():Void {
+                        _root.角斗场对手禁收益 = false;
+                    },
+                    function():Boolean {
+                        return ArenaController.commitEscalation(faction, pool, baseCount,
+                            baseLevelMin, baseLevelMax, deposit, reward, maxWaves);
+                    },
+                    function():Void {
+                        _root.角斗场对手禁收益 = false;
+                    })) {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "stage_info_missing" });
-                return;
-            }
-            _root.角斗场入场中 = true;
-            sendResponse({
-                task: "arena_response", callId: callId, success: true,
-                closePanel: true, deposit: deposit, reward: reward, expr: expr, mode: "escalation"
-            });
-            if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
-                _root.soundEffectManager.stopBGMForTransition();
-            }
-            try {
-                ArenaController.commitEscalation(faction, pool, baseCount, baseLevelMin, baseLevelMax, deposit, reward, maxWaves);
-            } catch (eE:Error) {
-                _root.角斗场入场中 = false;
-                if (typeof _root.最上层发布文字提示 == "function") _root.最上层发布文字提示("角斗场入场失败：" + eE.message);
             }
             return;
         }
@@ -454,25 +456,19 @@ class org.flashNight.arki.merc.ArenaPanelService {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "roster_empty" });
                 return;
             }
-            if (!ArenaController.prepareArenaStage(deposit, reward, difficulty)) {
+            if (!beginArenaCommit(params, authority, difficulty,
+                    customPve ? "custom_pve" : "roster",
+                    undefined,
+                    function():Void {
+                        _root.角斗场对手禁收益 = customPve;
+                    },
+                    function():Boolean {
+                        return ArenaController.commitRoster(squad);
+                    },
+                    function():Void {
+                        _root.角斗场对手禁收益 = false;
+                    })) {
                 sendResponse({ task: "arena_response", callId: callId, success: false, error: "stage_info_missing" });
-                return;
-            }
-            _root.角斗场对手禁收益 = customPve;
-            _root.角斗场入场中 = true;
-            sendResponse({
-                task: "arena_response", callId: callId, success: true,
-                closePanel: true, deposit: deposit, reward: reward, expr: expr, mode: customPve ? "custom_pve" : "roster"
-            });
-            if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
-                _root.soundEffectManager.stopBGMForTransition();
-            }
-            try {
-                ArenaController.commitRoster(squad);
-            } catch (eR:Error) {
-                _root.角斗场入场中 = false;
-                _root.角斗场对手禁收益 = false;
-                if (typeof _root.最上层发布文字提示 == "function") _root.最上层发布文字提示("角斗场入场失败：" + eR.message);
             }
             return;
         }
@@ -491,45 +487,276 @@ class org.flashNight.arki.merc.ArenaPanelService {
                 return;
             }
         }
+        var frozenLineupRef:Array = _root.出阵人员;
+        var frozenLineupSignature:String = _json.stringifySafe(frozenLineupRef);
 
         // 原始路径："DEATH MATCH角斗场" 的 StageInfo.FadeTransitionFrame = "角斗场选择挑战者",
         // 玩家先到那个帧、由该帧 stage-select 入口预先调过 _root.载入关卡数据 把 StageManager 初始化,
         // 后续 enterArenaCommon → wuxianguotu_1 才能加载场景背景. Web 面板直接跳关, 必须手动复现 stage
         // 数据预载 + 押金/奖金/难度上下文——抽到 ArenaController.prepareArenaStage（merc 与 roster 共用）。
-        if (!ArenaController.prepareArenaStage(deposit, reward, difficulty)) {
+        if (!beginArenaCommit(params, authority, difficulty, "",
+                function():Boolean {
+                    return matchesFrozenLineup(
+                        _root.出阵人员, frozenLineupRef, frozenLineupSignature);
+                },
+                function():Void {
+                    _root.角斗场对手禁收益 = false;
+                },
+                function():Boolean {
+                    return ArenaController.commitArena();
+                },
+                function():Void {
+                    _root.角斗场对手禁收益 = false;
+                })) {
             sendResponse({ task: "arena_response", callId: callId, success: false, error: "stage_info_missing" });
+        }
+    }
+
+    /** XML/TimePool 成功后才复核报价/余额并提交角斗场写操作。 */
+    private static function beginArenaCommit(params:Object, authority:Object,
+            difficulty:String, successMode:String, finalGate:Function, beforeCommit:Function,
+            commit:Function, cleanup:Function):Boolean {
+        var callId = params.callId;
+        var deposit:Number = Number(authority.deposit);
+        var reward:Number = Number(authority.reward);
+        var expr:String = String(authority.expr);
+        var responseGeneration:Number = registerArenaResponseEnvelope(
+            callId, deposit, reward, expr, successMode);
+        var settled:Boolean = false;
+        var requestToken:String = "";
+        var failOnce:Function = function(errorCode:String):Void {
+            if (settled) return;
+            settled = true;
+            try { ArenaController.cancelPendingStageStart(requestToken); }
+            catch (cancelError) {
+                trace("[ArenaPanelService.handleEnter] pending cancel failed: "
+                    + cancelError);
+            }
+            _root.角斗场入场中 = false;
+            try {
+                if (typeof cleanup == "function") cleanup();
+            } catch (cleanupError) {
+                trace("[ArenaPanelService.handleEnter] failure cleanup failed: "
+                    + cleanupError);
+            }
+            try {
+                sendArenaFailureResponse(responseGeneration, requestToken, errorCode);
+            } catch (failureResponseError) {
+                trace("[ArenaPanelService.handleEnter] failure response failed: "
+                    + failureResponseError);
+            }
+        };
+        var prepared:Boolean = ArenaController.prepareArenaStage(deposit, reward, difficulty,
+            function(data:Object, preparedToken:String):Void {
+                if (settled) return;
+                requestToken = String(preparedToken || "");
+                if (!bindArenaResponseEnvelope(responseGeneration, requestToken)) {
+                    failOnce("stage_state_changed");
+                    return;
+                }
+                var fresh:Object = buildAuthorityQuote(params);
+                if (fresh == null || String(fresh.expr) != expr
+                        || Number(fresh.deposit) != deposit
+                        || Number(fresh.reward) != reward
+                        || String(params.difficulty || "") != difficulty) {
+                    failOnce("authority_changed");
+                    return;
+                }
+                if (Number(_root.金钱) < deposit) {
+                    failOnce("insufficient_money");
+                    return;
+                }
+                if (_root.角斗场入场中 == true || _root.发布请求 == true) {
+                    failOnce("busy");
+                    return;
+                }
+                if (typeof finalGate == "function") {
+                    var gatePassed:Boolean = false;
+                    try { gatePassed = finalGate() === true; }
+                    catch (gateError) {
+                        trace("[ArenaPanelService.handleEnter] final gate failed: " + gateError);
+                    }
+                    if (!gatePassed) {
+                        failOnce("stage_state_changed");
+                        return;
+                    }
+                }
+                var commitSnapshot:Object = captureArenaCommitState();
+                if (!markArenaResponseCommitting(responseGeneration, requestToken)) {
+                    failOnce("stage_state_changed");
+                    return;
+                }
+                try {
+                    if (!ArenaController.applyPreparedArenaContext(
+                            deposit, reward, difficulty)) {
+                        throw new Error("prepared arena context is stale");
+                    }
+                    if (typeof beforeCommit == "function") beforeCommit();
+                    _root.角斗场入场中 = true;
+                    if (_root.soundEffectManager != undefined
+                            && _root.soundEffectManager.stopBGMForTransition != undefined) {
+                        _root.soundEffectManager.stopBGMForTransition();
+                    }
+                    if (typeof commit != "function" || commit() !== true) {
+                        throw new Error("arena commit produced no transition");
+                    }
+                } catch (commitError) {
+                    trace("[ArenaPanelService.handleEnter] deferred commit failed: " + commitError);
+                    restoreArenaCommitState(commitSnapshot);
+                    failOnce("stage_transition_failed");
+                    return;
+                }
+                settled = true;
+                try {
+                    // commit 内部已经触发淡出；此处只从类级 exact-token 封套取回回包，
+                    // 不再读取 beginArenaCommit 的任何函数局部量。
+                    sendCommittedArenaResponse();
+                }
+                catch (responseError) {
+                    trace("[ArenaPanelService.handleEnter] post-commit response failed: "
+                        + responseError);
+                }
+            },
+            function(preparedToken:String):Void {
+                requestToken = String(preparedToken || "");
+                if (!bindArenaResponseEnvelope(responseGeneration, requestToken)) {
+                    discardArenaResponseEnvelope(responseGeneration);
+                    return;
+                }
+                failOnce("stage_load_failed");
+            });
+        if (!prepared) discardArenaResponseEnvelope(responseGeneration);
+        return prepared;
+    }
+
+    /**
+     * 异步 arena enter 的回包必须活在类级 owner 中：AS2 主时间轴淡出后，调用方
+     * activation 的 callId/报价局部量可能变成 undefined。generation 只负责抵御
+     * 尚未拿到 token 的重复请求；绑定后所有 take/clear 都同时复核 exact token。
+     */
+    private static function registerArenaResponseEnvelope(callId,
+            deposit:Number, reward:Number, expr:String, successMode:String):Number {
+        var generation:Number = ++_arenaResponseSeq;
+        var response:Object = {
+            task:"arena_response", callId:callId, success:true,
+            closePanel:true, deposit:deposit, reward:reward, expr:expr
+        };
+        if (successMode != "") response.mode = successMode;
+        _arenaResponseEnvelopes["r" + generation] = {
+            generation:generation,
+            token:"",
+            state:"awaiting_token",
+            successResponse:response
+        };
+        return generation;
+    }
+
+    private static function getArenaResponseEnvelope(generation:Number):Object {
+        return _arenaResponseEnvelopes["r" + generation];
+    }
+
+    private static function bindArenaResponseEnvelope(
+            generation:Number, token:String):Boolean {
+        if (token == "") return false;
+        var envelope:Object = getArenaResponseEnvelope(generation);
+        if (envelope == null || Number(envelope.generation) != generation) return false;
+        if (envelope.token != "" && String(envelope.token) !== token) return false;
+        envelope.token = token;
+        if (envelope.state == "awaiting_token") envelope.state = "bound";
+        return envelope.state == "bound" || envelope.state == "committing";
+    }
+
+    private static function markArenaResponseCommitting(
+            generation:Number, token:String):Boolean {
+        var key:String = "r" + generation;
+        var envelope:Object = _arenaResponseEnvelopes[key];
+        if (envelope == null || envelope.state != "bound"
+                || String(envelope.token) !== token) return false;
+        if (_committingArenaResponseKey != ""
+                && _committingArenaResponseKey !== key) return false;
+        envelope.state = "committing";
+        _committingArenaResponseKey = key;
+        _committingArenaResponseToken = token;
+        return true;
+    }
+
+    private static function discardArenaResponseEnvelope(generation:Number):Void {
+        var key:String = "r" + generation;
+        if (_committingArenaResponseKey === key) {
+            _committingArenaResponseKey = "";
+            _committingArenaResponseToken = "";
+        }
+        delete _arenaResponseEnvelopes[key];
+    }
+
+    private static function sendArenaFailureResponse(
+            generation:Number, token:String, errorCode:String):Void {
+        var key:String = "r" + generation;
+        var envelope:Object = _arenaResponseEnvelopes[key];
+        if (envelope == null || token == ""
+                || String(envelope.token) !== token) return;
+        if (_committingArenaResponseKey === key) {
+            _committingArenaResponseKey = "";
+            _committingArenaResponseToken = "";
+        }
+        delete _arenaResponseEnvelopes[key];
+        sendResponse({task:"arena_response",
+            callId:envelope.successResponse.callId,
+            success:false, error:errorCode});
+    }
+
+    private static function sendCommittedArenaResponse():Void {
+        var key:String = _committingArenaResponseKey;
+        if (key == "") return;
+        var envelope:Object = _arenaResponseEnvelopes[key];
+        if (envelope == null || envelope.state != "committing"
+                || String(envelope.token) == ""
+                || String(envelope.token) !== _committingArenaResponseToken) {
+            _committingArenaResponseKey = "";
+            _committingArenaResponseToken = "";
             return;
         }
+        _committingArenaResponseKey = "";
+        _committingArenaResponseToken = "";
+        delete _arenaResponseEnvelopes[key];
+        sendResponse(envelope.successResponse);
+    }
 
-        // 上自管入场锁；handleSnapshot 入口 reset。覆盖 web 端 10s timeout 后的重发场景。
-        _root.角斗场入场中 = true;
-
-        sendResponse({
-            task: "arena_response",
-            callId: callId,
-            success: true,
-            closePanel: true,
-            deposit: deposit,
-            reward: reward,
-            expr: expr
-        });
-
-        if (_root.soundEffectManager != undefined && _root.soundEffectManager.stopBGMForTransition != undefined) {
-            _root.soundEffectManager.stopBGMForTransition();
+    private static function captureArenaCommitState():Object {
+        var fields:Array = [
+            "关卡类型", "关卡路径", "押金", "角斗场奖金", "当前关卡难度", "难度等级",
+            "角斗场入场中", "角斗场对手禁收益", "角斗场对手类型", "角斗场roster状态",
+            "角斗场roster阵容", "角斗场爬升", "当前通关的关卡", "当前关卡名",
+            "场景进入位置名", "敌人同伴数", "敌人同伴数据", "当前佣兵重用数"
+        ];
+        var values:Object = {};
+        for (var i:Number = 0; i < fields.length; i++) {
+            values[String(fields[i])] = _root[String(fields[i])];
         }
-        // commit 已 preview 好的 _root.出阵人员（含 reuse 计数 / pool 刷新 / 扣押金 / 跳关）。
-        // try/catch 兜底：commitArena 内任意 step 抛错都不能让 角斗场入场中 锁卡死。
-        // 否则正常路径下要等下次开 panel 才解锁；若错误源持续存在玩家会永远入不了场。
-        // 注：sendResponse(success) 已在 commit 之前发出 → web panel 已 close；异常时
-        // 走 最上层发布文字提示 让玩家知道发生了什么，并 reset 锁让下一次 confirm 可行。
-        try {
-            ArenaController.commitArena();
-        } catch (e:Error) {
-            _root.角斗场入场中 = false;
-            if (typeof _root.最上层发布文字提示 == "function") {
-                _root.最上层发布文字提示("角斗场入场失败：" + e.message);
-            }
-            trace("[ArenaPanelService.handleEnter] commitArena failed: " + e.message);
+        return {
+            fields:fields,
+            values:values,
+            money:_root.金钱,
+            dirtyMark:_root.存档系统 != undefined
+                ? _root.存档系统.dirtyMark : undefined,
+            switchFrame:_root.场景转换函数 != undefined
+                ? _root.场景转换函数.上次切换帧数 : undefined
+        };
+    }
+
+    private static function restoreArenaCommitState(snapshot:Object):Void {
+        if (snapshot == null) return;
+        var fields:Array = snapshot.fields;
+        for (var i:Number = 0; i < fields.length; i++) {
+            var field:String = String(fields[i]);
+            _root[field] = snapshot.values[field];
+        }
+        _root.金钱 = snapshot.money;
+        if (_root.存档系统 != undefined) {
+            _root.存档系统.dirtyMark = snapshot.dirtyMark;
+        }
+        if (_root.场景转换函数 != undefined) {
+            _root.场景转换函数.上次切换帧数 = snapshot.switchFrame;
         }
     }
 

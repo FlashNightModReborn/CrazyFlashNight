@@ -1,5 +1,21 @@
 ﻿trace("MapLootTestRunId Start: __MAP_LOOT_RUN_ID__");
-org.flashNight.arki.unit.UnitComponent.Initializer.test.BoxInteractionArbiterTest.runAllTests();
+import org.flashNight.arki.weather.EnvironmentConfig;
+import org.flashNight.arki.weather.WeatherSystem;
+import org.flashNight.arki.collision.CollisionLayerRenderer;
+import org.flashNight.arki.component.Effect.EffectSystem;
+import org.flashNight.arki.merc.ArenaDropRuleCatalog;
+import org.flashNight.arki.merc.MercLibrary;
+import org.flashNight.arki.scene.SceneManager;
+import org.flashNight.arki.scene.StageManager;
+import org.flashNight.arki.scene.WaveSpawner;
+import org.flashNight.arki.spatial.move.Mover;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.unit.UnitComponent.Initializer.test.*;
+import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.neur.Event.EventBus;
+#include "通信/通信_fs_lsy_XML数据解析.as"
+#include "逻辑/关卡系统/关卡系统_lsy_场景转换.as"
+BoxInteractionArbiterTest.runAllTests();
 org.flashNight.arki.item.LootContainerServiceTest.runAllTests();
 org.flashNight.arki.item.LootMaterializationPlannerTest.runAllTests();
 org.flashNight.arki.scene.StageRunSessionTest.runAllTests();

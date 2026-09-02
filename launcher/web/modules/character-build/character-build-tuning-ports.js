@@ -93,8 +93,40 @@ function(EquipmentTuningModel, TuningAdapter, global) {
         return true;
     }
 
+    function bindSourceTooltip(owner, node, item, source, isSuppressed) {
+        if (!node || !item || !source) return null;
+        if (source.sourceKind === 'loadout') {
+            var slotKey = String(source.slotKey || '');
+            if (!slotKey || !owner._buildView
+                    || typeof owner._buildView._bindLoadoutTooltip !== 'function') return null;
+            return owner._buildView._bindLoadoutTooltip(
+                node,
+                'tuning:' + String(source.sessionGeneration || '') + ':' + slotKey
+                    + ':' + String(source.expectedLoadoutRevision || '')
+                    + ':' + String(item.name || ''),
+                slotKey.replace(/装备$/, ''), item,
+                {kind:'equipment', slotKey:slotKey}, isSuppressed);
+        }
+        var physicalSlot = Number(source.slot);
+        var lease = String(source.expectedLease || '');
+        if (source.sourceKind !== 'inventory' || source.containerId !== '背包'
+                || !isFinite(physicalSlot) || Math.floor(physicalSlot) !== physicalSlot
+                || physicalSlot < 0 || physicalSlot > 49
+                || !/^[A-Za-z0-9._-]{1,128}$/.test(lease)
+                || !owner._bindCandidateTooltip) return null;
+        return owner._bindCandidateTooltip(node, {
+            key:'tuning-source:' + physicalSlot + ':' + lease
+                + ':' + String(item.name || ''),
+            name:String(item.displayName || item.name || ''),
+            type:String(item.majorType || item.use || '装备'),
+            presentation:item,
+            raw:{source:{containerId:'背包', slot:physicalSlot, expectedLease:lease}}
+        }, isSuppressed);
+    }
+
     return {
         loadConversionCandidates:loadConversionCandidates,
+        bindSourceTooltip:bindSourceTooltip,
         openInspector:openInspector,
         closeInspector:closeInspector
     };

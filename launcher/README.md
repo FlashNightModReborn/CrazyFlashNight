@@ -1,9 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `b2bc05775c621616fe64be55354aebe21c63a2af`（2026-08-27，双药剂组与八槽共享冷却；deployment `6902b2b6ed067c4882e9a67267d055ce0db90b34`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-维护者已确认双药剂组功能、切换手感及修订后的 `○ / × + 1 / 2` PlayerInfo 图标有效，因此该专项为 `HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口没有执行八槽、切换、旧档迁移、键位 fallback 或重启读回，不称本功能业务 `standard_entry_verified`。
-无 candidate selector 的正式入口 run `2478a9f25873043318f2402f80105b52` 已确认 `formal_runtime`、exact Core/identity/closure、两次 verified status 的同一 lifecycle、fresh handoff/reveal、可信 shutdown、Guardian/Flash code 0、存档哈希不变且未触发强制清理，故正式 identity/lifecycle 窄纵切达到 `standard_entry_verified`。
+**最后核对代码基线**：release source commit `5789d597fbb7af32753fe4a35887b1f2a3a34e10`（2026-08-30，测试反馈稳定性修复；deployment `3e23bda255dae09e20e309a12c5b21d86b28f347`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+本增量已通过双 signer / 双 faultDomain 共识、production policy、原子 promotion、正式根 bootstrap `--verify-only` 与 post-promotion Audit，准确状态为 `promoted / FIELD_REVALIDATION_PENDING`。开发机没有稳定复现外部抢焦，也未从正式入口重跑领奖重启读回、战斗空调制关闭或药剂三来源回原槽，不称本增量 `e2e_verified`、`HUMAN_ACCEPTANCE_PASSED` 或业务 `standard_entry_verified`。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：
@@ -75,7 +74,6 @@ Bootstrap 使用纯 Win32/CRT，在启动 Core 前验证正式 runtime manifest�
 | `logs/dumps/` | Core native dump 与 createdump 日志 |
 | `logs/perf-latest.jsonl` | 托管入口后的启动性能时间线 |
 | `logs/launcher.log` | Host、Bus、Flash、Panel、Audio 与运行期诊断 |
-
 ### 启动时序
 
 ```text
@@ -84,12 +82,11 @@ bootstrap preflight
   → WebView2 fail-closed 预检 → GuardianForm / BootstrapPanel
   → Steam、Flash trust、Audio、Bus、Task registry
   → save list / ready / prewarm
-  → Flash title receipt
+  → Flash title receipt → Bootstrap Web 启动前门 → bootstrap_reveal_ready 资源栅栏 → 当前 attempt 的 s:1|ga:<attemptId> 场景回执
   → reveal → runtime panels and HUD
 ```
 
 `publish_done.marker`、进程存在或页面加载完成都不能单独代表成功。真实启动结论必须绑定新鲜日志、实际进程路径和对应 runtime identity。
-
 ### 窗口与输入所有权
 
 `GuardianForm` 是主窗口与 Flash 容器。运行态 UI 由 Native HUD、Web Overlay、Panel backdrop/input shield 和原生 cursor 按状态组合；Panel 打开时由 `PanelHostController` 统一协调 snapshot、焦点、输入屏障、Native HUD suspend/resume 和 WebView2 几何。
@@ -99,7 +96,7 @@ bootstrap preflight
 
 | 通道 | 用途 | 约束 |
 |---|---|---|
-| WebView2 message | Bootstrap、Overlay、Panel 控制与展示 | Host 校验命令和 payload；Web 不拥有业务写权限 |
+| WebView2 message | Bootstrap、Overlay、Panel 控制与展示 | Host 校验命令和 payload；Web 不拥有业务写权限。Character Build `item_use` 只转发严格闭集，AS2 独占物资裁决与四条药剂帧冷却；Web 的格内冷却阴影仅采样 `cooldownSnapshot`，不按现实时间续算，也不新增独立排版行。Reward Inbox 结束先经 AS2 nonce preflight，再由 PanelHost 原位换成全新构筑会话并继承 pause lease，失败才 exact close/unpause 后从 idle 重试 |
 | XMLSocket | Flash ↔ Host 任务消息 | 连接、握手和业务回包分别判定，裸 socket 不能代签 Flash 建连；GameStage `T+|id|seconds|label` / `T-|id` / `T!` 仅投影 keyed 计时 HUD，AS2 独占倒计时和失败裁决，断连清理 |
 | HTTP | 兼容查询、资源与受限控制面 | legacy automation 不是 Agent Runtime 的信任边界 |
 | V8 | 搓招 `GameInput` DFA | 单 engine/单锁，模块源与加载闭包必须可复验；不再持有伤害数字状态或渲染描述符 |
@@ -119,7 +116,7 @@ bootstrap preflight
 ### 原生音频平台 v2
 
 原生音频 bridge、格式能力和可观测性以 [Audio Platform v2 ADR](../docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)为准。通用 runtime promotion 只证明供应链与部署完整性；Audio H2 仍是独立产品验收，不从通用 promotion 或其他 Panel smoke 外推。
-
+前门 BGM 仅走 Native Audio v2，固定循环 `sounds/PTXOA馆长/主菜单.mp3`、gain `0.4`，不读槽位音量偏好。lease 只在 `Ready` 且 source 为空时获取，不重播自身也不抢异源。无 OP 的读档/建角/提交后加载保持到 actual reveal；OP 与 legacy 在 admission 让出。`SceneReady` 不交接音频，reveal 前 reset/error 可恢复；actual reveal 以 requestId-CAS 让出并由 AS2 接权，已 supersede 时不 stop，recovery 不复活已 revoke intent。
 ### Agent Runtime
 
 Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 structured-first/visual-fallback 边界见 [Contracts README](src/AgentRuntime/Contracts/README.md)与[一期范围冻结 ADR](../docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)。历史 F7/F8 发布证据留在 ADR 和 `docs/evidence/`，不回流到本文件。
@@ -311,15 +308,17 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `ping` | 健康检查 |
 | `cancel_launch` | 启动生命周期 |
 | `start_game` | 启动生命周期 |
-| `rebuild` | 启动生命周期 |
+| `character_create_open` | 用当前 Web `openRequestId` 打开新建 / 重建角色草稿 |
+| `character_create_submit` | 提交当前 open/attempt 的角色草稿与显式 `displayNameCustomized` |
 | `reveal_ok` | reveal receipt |
 | `retry` | 启动错误恢复 |
 | `list` | 存档列表 |
-| `delete` | 存档操作 |
+| `delete` | 写 tombstone 并保留 catalog 身份供辨认/重建 |
+| `rename_slot` | 修改 Host 权威槽位显示名；允许重名，空串恢复跟随角色名，不修改物理 `slotKey` |
 | `load` | 存档操作 |
 | `load_raw` | 存档原始读取 |
 | `save` | 存档操作 |
-| `reset` | 存档操作 |
+| `reset` | 彻底清 shadow、tombstone 与 catalog 身份 |
 | `export` | 存档导出 |
 | `import_start` | 导入预检 |
 | `import_commit` | 导入提交 |
@@ -335,11 +334,12 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `repair_apply_manual` | repair 人工应用 |
 | `repair_force_continue` | repair 明示继续 |
 <!-- launcher-bootstrap-command-registry:end -->
-`config_set` 只写白名单；启动按 `list → ready → prewarm → reveal` 与 title receipt 分栅栏。FontPack 的 `runtime-parser-*` 才表示实际探针；requested/redirect 每跳仅允许默认端口 exact HTTPS `github.com`、`release-assets.githubusercontent.com`、`raw.githubusercontent.com`、`cdn.jsdelivr.net`，禁止通配子域。字节快照/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
+`config_set` 只写白名单。启动前门的 attempt/slot/displayName/backup/reveal、durable/SceneReady、catalog 与 exact retry 边界见 [AS2 → Web 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；`bootstrap_reveal_ready` 不代签 `s:1|ga:<attemptId>`，重建不预删 SOL。FontPack 的真实探针、exact HTTPS allow-list 与字节/ETag/WOFF2 边界见[字体目录](../fonts/README.md)。
+Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapshot 与纸娃娃有效首帧汇合，且 canvas 至少有 501 个非透明像素，再经过双 `requestAnimationFrame` 才移除 `inert`。准备遮罩不叠加专用幻方；既有 PM19 幻方在建角全过程保持 ambient，退出后再与 Ready 同步，动效从不参与 ready 判定。显式资源失败或 12 秒期限只降级展示。title/snapshot/scene deadline 继续分相，编辑期无 watchdog；迟到回调不得揭开新页，durable 后故障不得重放创建。
+角色名为主，存档显示名在高级选项中默认跟随；确认页仅在自定义名不同时另列。建角固定 `1024×576` + `PanelScale`，窗口/全屏只等比缩放。外观保留三装备槽、单发型槽和左侧唯一身高；紧凑/完整均挂载 77 项，完整卡片使用可辨识短名与候选池内部滚动，三步零页面滚屏；脸型只走 exact wire，注释统一用 `PanelTooltip`。作者/版本正文来自 `web/content/*.md`；版本记录为近全屏单节点浏览器，运行版本只读 `web/config/version.js`，历史证据与视频提纲按[版本考古规范](../docs/version-archaeology/README.md)收口。
 ## Panel 与 minigame 注册表
 
-**最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。
-`Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。
+**最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。`Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。
 
 <!-- launcher-panel-registry:start -->
 | id | 类别 | 最终注册模块 |
@@ -374,14 +374,20 @@ Panel 的共同边界：
 - Team 内嵌 `pets` / `mercs` 的全部请求（含 T800 武器命令与佣兵装备 tooltip）携 active `panelInstanceId`；Web 回包精确匹配 instance/callId/cmd，Host 拒绝 inactive/foreign/stale owner，replacement 清退旧 pending，迟到响应不可跨实例采用。业务写仍由白名单、revision/lease/token 与 AS2/Host 裁决，未知结果进入对账；T800 详见[施工记录](../docs/终结者T800-托管长枪与射击核心-施工-2026-08-22.md)。
 - LoadoutPicker 候选只接受装备槽、药剂槽或无 selector 背包总览三种 target。Character `equipmentEligibility` 在两种 scope 由 Host 复验；Merc `eligibleSlots` 由 AS2 两种 scope 签发。scope 只筛候选，白名单裁决 drop target，写后保留原 scope/anchor；Merc 按新 revision 恰好刷新一次 authority。详见[迁移护栏](../agentsDoc/as2-web-panel-migration.md)。
 - `equipment_tuning` 的 loadout `convert` 只接受 exact 背包 inventory target。已改变的成功 commit 必须包含一份完整背包 snapshot，其他 loadout 写与 convert no-op 必须包含零份；Host 依 operation/no-op 严格校验后，Web 才可在同一写锁下收敛 loadout/背包 authority。配件候选 snapshot 可携完整兼容目录，但 Web fresh open 默认只显示“已拥有”；全目录只能由玩家显式切换。
+- `equipment_tuning` 的已穿戴调制按 after effective data 复核玩家等级；`level_locked` 是 Host 可确定收束的业务拒绝，Web 显示“调制后的装备需要更高角色等级”。背包装备不受该玩家等级门限制。`replace_mod` 的候选可用性和 after `modSlotCapacity` 都来自拆件后的 probe；存档加载不做迁移、卸装或清洗。进阶页仅显示 `available=true` 并在 Web 空态解释缺料/顺序；四入口同排。候选错误留在 Web，flush/finalize 先取消旁路读，保存失败仍阻断。
+- 合法配件变换可使 before/after effective `modSlotCapacity` 不同；Host 仍复核 `0..64` 整数、installed≤capacity、操作差分及 preview/commit/fresh snapshot 深绑定。空背包未建 Flash authority 时，仅 exact panel 在 idle 且无 pending/detaching/write 可本地 no-op detach；其余仍严格走 Flash，断线不可绕过。
 - close、Esc、backdrop、导航和 recovery 经过同一 lifecycle fence。Team/blackmarket/warlord close 携当前实例并等待 Host exact `panel_cmd close`；Bridge 投递成功不等于接受，确认丢失 3 秒后只恢复同实例重试权，不本地关闭；迟到 A 不得关闭 replacement B，旧 `panel:"pets"|"mercs"` child close 一律拒绝。
 - Workbench 的布局和交互以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。关卡内 `StageOutcomeTask` 把复活/胜负决策投影进 `RightContextWidget` 既有 32px 条件槽，不创建浮窗、不暂停 Flash。胜负条常驻，忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr` 证明返回后可路由时追加“前往交付”，并在奖励终态和 Web exact close 后导航。
-  Web 左栏在同一滚屏合并击杀与物资 gain/loss，右栏切换待领奖励/材料存量，一个密度控制器同步驱动三者；库存整理子页恢复 K 点商城同源原始灰黑 inventory skin。大量奖励经单次最多 50 项的 `claimBatch` 进入 AS2 顺序 authority journal 与 exact query 对账。权威、生命周期与领取/放弃语义详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
+  respawn 恢复 HP/MP/可见性后清 `倒地/_killed`、死亡 latch 并 reset WatchDog，重开同一 MovieClip 技能门。Web 左栏同滚屏合并击杀与物资 gain/loss，右栏切换待领/材料，一个密度控制器同步三者；整理页保留 KShop 同源灰黑 inventory skin。奖励每批最多 50 项，`claimBatch` 进入 AS2 顺序 authority journal 并以 exact query 对账。2026-08-30 起 Loot v2 固定 `targetContainerId:"自动"`与 loot/背包/药剂栏三快照，Host/Web 不选药剂槽。
+  关卡奖励退场前写 `_saveExt.stageSettlement.v=1` 并 strict flush；单领、批领和终态依 durable remaining/receipt journal 对账。SaveManager 读档重建 pending，Loot 恢复已落盘 operation/revision。flush 未确认时保持 `LOOT_COMMIT_PENDING`，不得回成功或释放场景；详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
+  地图在战斗/结算中只读，导航按 AS2 lifecycle lock 零发送；loader staging 在首次 gameplay init 按 drop→reward 提交。跨淡出回包保持正整数 `callId`；Stage Select 关闭须先投递，transport false/throw 时保留面板与重试权。NativeHud down 绑定 exact action/revision，suspend/hide/capture loss/外放均取消。
+  有效 `stage_settlement` 报告可在 `remaining=0` 时 suspend/reopen，`map_chest` 不继承。Panel close 仅在 close 起点与恢复前两次 live foreground 都属于 CF7 时恢复 Flash，切到 QQ/浏览器后不得抢焦。完整权威与生命周期详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
 - `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。
   新表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的 `--term-*` 派生 token；顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不保留重复“作弊码”页，玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
   默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。
   非 preview 写的 timeout、`DeliveryUnknown` 或 malformed success 均建立 reconcile latch；它跨 owner close、同名 rebind 与 pending cleanup 保留，只由锁存后发出、格式有效且成功的 Flash snapshot 清除，早期迟到 snapshot 不得解锁。
   latch 存在时后续写 fail-closed；Web 不显示“确定未执行”也不自动重放。cancel 半恢复保持面板与首次基线，先以权威 snapshot 对账再允许继续写。<br>36 键双列同屏，标签紧邻控件，键名/键值至少 12px。新“药剂组切换键”默认为 `6`；携键表的 snapshot/apply 精确使用 `keySchemaVersion:2`，旧 `6` 自定义绑定保留并为新动作确定分配空闲键。
+  药剂存档 feature 现为 `drugLoadout.version=3`：精确 8 槽 affinity 记录同名药剂最近耗尽位置。任务/商店/拾取、Character Build、DrugIcon 与 Loot v2 共享“最近耗尽原槽→现有同名最低槽→背包同名→背包空槽”规划；从未绑定的新药剂仍进背包。v2 读档迁移到 v3，future v4 原样保留并 fail closed，详见[双药剂组 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。
   Host 打开设置时将已有 16:9 Flash 进入帧按原裁切像素、JPEG 90 编成实例内静态图；上限 `4096×2304 / 8 MiB`，拒绝均匀近黑，不降采样至 `512×288`。Flash SA 为 DPI Unaware 且显示器 DPI 更高时，输出保持 `GetClientRect` 物理尺寸，GDI 源按 `windowDpi/monitorDpi` 换算并 `StretchBlt`；其他 awareness 1:1。日志同时记录 source/output，`BitBlt/StretchBlt` false 必须显式失败。
   镜头倍率使用全屏二级模拟器，入口基线按 16:9 填满舞台并保留自然像素；动态镜头关闭时仍按基础倍率预览。点歌器规则与 Web 主题集中在“本机与 Web”。Agent Runtime 仅允许 exact `settings` 与 `settings_camera_preview`；后者固定映射到 `settings + initialView:"camera_preview"`。闭环先用 Flash metadata-only grant + `window.list` 等待 surface 稳定，再用 fresh WebOverlay WGC 验证；它不授予 Flash pixels/input，也不应用或保存设置。
   打击伤害数字属于 Host `UserPrefs`，不再进入 AS2 的游戏设置 snapshot/save；五状态模式、世界行上限和暂停态 Web 对账日志统一以[生产路径](#打击伤害数字生产路径)为准。偏好逐项即时保存，失败恢复控件和内存权威值；旧 `_root.是否打击数字特效`、`_root.同屏打击数字特效上限` 与 Flash MovieClip renderer 均不再是运行时 fallback。
@@ -394,9 +400,7 @@ Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README
 ## 存档编辑与诊断
 
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。
-
 简易模式的系统卡片仍是迁移期可发现性补偿，不代表 Audio 平台验收。旧 `AudioTask.SetToastSink` 当前只是兼容 no-op，不能声称会弹出音量提示。事件起因、现役边界和退出条件见 [音频迁移期存档编辑器事件记录](../docs/launcher-save-editor-audio-migration-incident-2026-04-28.md)；高频 README 不保存事故时间线。
-
 ## 故障定位
 
 | 现象 | 首查 |
@@ -415,16 +419,12 @@ Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../s
 
 以下变化必须在同轮更新本 README 对应 registry/地图，并运行文档治理：
 
-- Core/Bootstrap 入口、参数或启动阶段变化；
-- `AppConfig` key、环境覆盖或用户偏好写入边界变化；
+- Core/Bootstrap 入口、参数或启动阶段变化；`AppConfig` key、环境覆盖或用户偏好写入边界变化；
 - Bootstrap `cmd`、Panel id、lazy 最终模块或 minigame 入口变化；
 - 测试分区、runner、SDK/包版本真源或验证入口变化；
 - Host/Web/AS2 协议、权威、生命周期或旧 UI 退役边界变化；
-- runtime 构建、候选、promotion 或正式入口术语变化。
+- runtime 构建、候选、promotion 或正式入口术语变化；发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。
 
 ```powershell
-chcp.com 65001 | Out-Null
-node tools/validate-doc-governance.js
-git diff --check
+chcp.com 65001 | Out-Null; node tools/validate-doc-governance.js; git diff --check
 ```
-发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。

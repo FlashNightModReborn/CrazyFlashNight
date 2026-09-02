@@ -116,13 +116,13 @@ function(FacetCountsModule) {
     function install(prototype) {
         if (!prototype) throw new Error('CharacterBuildLoadoutPresenter.install requires a view method target');
         prototype._bindLoadoutTooltip = function(
-                slot, key, slotLabel, projection, target) {
+                slot, key, slotLabel, projection, target, extraSuppression) {
             if (!target || !this._loadoutTooltipScope
                     || typeof this._loadoutTooltipScope.bindAsync !== 'function') return false;
             var self = this;
             slot.setAttribute('data-loadout-tooltip',
                 this._fetchLoadoutTooltip ? 'authoritative' : 'projection-fallback');
-            this._loadoutTooltipScope.bindAsync(slot, {
+            return this._loadoutTooltipScope.bindAsync(slot, {
                 key:'loadout:' + this._loadoutTooltipEpoch + ':' + key,
                 item:projection,
                 cache:this._loadoutTooltipCache,
@@ -134,7 +134,9 @@ function(FacetCountsModule) {
                 // 且永不盖住相邻槽位（含空槽）——鼠标在槽位间移动不会落进浮层被截获。
                 anchor:function(event, node) { return node.parentNode; },
                 isSuppressed:function() {
-                    return self._candidateDragActive || self._interactionState !== 'idle';
+                    return self._candidateDragActive || self._interactionState !== 'idle'
+                        || (typeof extraSuppression === 'function'
+                            && extraSuppression());
                 },
                 renderBasic:function(value) {
                     return loadoutBasicTooltipHtml(value, slotLabel);
@@ -149,7 +151,6 @@ function(FacetCountsModule) {
                     return self._fetchLoadoutTooltip(target, callback);
                 } : null
             });
-            return true;
         };
         return prototype;
     }
@@ -174,13 +175,15 @@ function(FacetCountsModule) {
                     slot.setAttribute('data-drug-lane', String(meta.lane));
                     slot.setAttribute('data-drug-active', meta.active ? 'true' : 'false');
                     slot.setAttribute('data-drug-ready', meta.ready ? 'true' : 'false');
+                    slot.setAttribute('data-drug-state', meta.ready ? 'ready'
+                        : Number(meta.totalSteps) > 0 ? 'cooling' : 'unavailable');
                     slot.setAttribute('data-cooldown-progress',
                         String(meta.progressPercent));
                     slot.setAttribute('data-cooldown-remaining-ms',
                         String(meta.remainingMs));
-                    if (!meta.ready) {
-                        slot.setAttribute('data-blocked', 'true');
-                        slot.setAttribute('aria-disabled', 'true');
+                    if (slot.style && typeof slot.style.setProperty === 'function') {
+                        slot.style.setProperty('--drug-cooldown-progress',
+                            String(meta.progressPercent) + '%');
                     }
                 }
             },

@@ -530,6 +530,77 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void SuccessfulTryRevive_AdoptsCurrentAuthorityContract()
+        {
+            using (var h = new Harness())
+            {
+                JObject sent = h.Send("try_revive", new JObject { ["v"] = 1 });
+                h.Task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "settings_response",
+                    ["callId"] = sent.Value<int>("callId"),
+                    ["success"] = true,
+                    ["v"] = 1,
+                    ["operation"] = "try_revive",
+                    ["revived"] = true,
+                    ["reviveCoins"] = 2,
+                    ["closePanel"] = true
+                }, delegate { });
+
+                JObject response = Assert.Single(h.Web);
+                Assert.True(response.Value<bool>("success"));
+                Assert.True(response.Value<bool>("revived"));
+                Assert.Equal(2, response.Value<int>("reviveCoins"));
+                Assert.True(response.Value<bool>("closePanel"));
+                Assert.Null(response["requiresReconcile"]);
+            }
+        }
+
+        [Fact]
+        public void TryReviveSuccess_RejectsLegacyAndInvalidAuthorityShapes()
+        {
+            using (var legacy = new Harness())
+            {
+                JObject sent = legacy.Send(
+                    "try_revive", new JObject { ["v"] = 1 });
+                legacy.Task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "settings_response",
+                    ["callId"] = sent.Value<int>("callId"),
+                    ["success"] = true,
+                    ["v"] = 1,
+                    ["operation"] = "try_revive",
+                    ["promptOpened"] = true,
+                    ["restrictionActive"] = false,
+                    ["closePanel"] = true
+                }, delegate { });
+                JObject response = Assert.Single(legacy.Web);
+                Assert.Equal("malformed_response", response.Value<string>("error"));
+                Assert.True(response.Value<bool>("requiresReconcile"));
+            }
+
+            using (var invalidCoins = new Harness())
+            {
+                JObject sent = invalidCoins.Send(
+                    "try_revive", new JObject { ["v"] = 1 });
+                invalidCoins.Task.HandleFlashResponse(new JObject
+                {
+                    ["task"] = "settings_response",
+                    ["callId"] = sent.Value<int>("callId"),
+                    ["success"] = true,
+                    ["v"] = 1,
+                    ["operation"] = "try_revive",
+                    ["revived"] = true,
+                    ["reviveCoins"] = -1,
+                    ["closePanel"] = true
+                }, delegate { });
+                JObject response = Assert.Single(invalidCoins.Web);
+                Assert.Equal("malformed_response", response.Value<string>("error"));
+                Assert.True(response.Value<bool>("requiresReconcile"));
+            }
+        }
+
+        [Fact]
         public void TimedOutWrite_BlocksFurtherWritesUntilAuthoritativeSnapshot()
         {
             using (var h = new Harness(100))
