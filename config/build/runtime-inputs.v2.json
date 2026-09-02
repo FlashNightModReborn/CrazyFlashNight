@@ -205,7 +205,10 @@
         {
           "path": "tools/arena-calibration",
           "includeExtensions": [".js", ".json"],
-          "excludePaths": [],
+          "excludePaths": [
+            "tools/arena-calibration/plans/gate-f-week-full-v1/source-provenance.json",
+            "tools/arena-calibration/plans/gate-f-week-full-v2/source-provenance.json"
+          ],
           "excludePrefixes": ["tools/arena-calibration/node_modules/"]
         },
         {

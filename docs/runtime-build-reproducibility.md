@@ -233,7 +233,7 @@ native 源码前缀内的非二进制契约文档也必须显式绑定，不能�
 
 `policyHash` 与日常审计触发集合不是同一个集合。`config/build/native-change-gate.v1.json` 联合前三域、payload、全局 native 扩展/入口名和 release 信任链路径，回答“这次 push/PR 是否值得启动 native/runtime 事后审计”；广义内容 policy 不因此变成 native。命中源码边界但未改部署字节时，Audit 成功报告 `source-ahead`，不要求即时 promotion。生成器、审计器和派生发布资产仍留在 `policyHash`，下一次正式 release 再用当时完整 release tree 建 request 与 receipt。
 
-`policy` 树只绑定受版本控制的审计实现与契约；执行门恢复出的 `node_modules/`、`bin/`、`obj/` 等机器依赖必须由各树显式排除。否则同一干净 Git tree 会因本机已安装依赖而产生不同的 Worktree `policyHash`，并在 promotion 前失败关闭。`tools/arena-calibration/node_modules/` 因此不进入政策身份，其锁文件与受跟踪脚本仍照常绑定。
+`policy` 树只绑定受版本控制的审计实现与契约；执行门恢复出的 `node_modules/`、`bin/`、`obj/` 等机器依赖必须由各树显式排除。否则同一干净 Git tree 会因本机已安装依赖而产生不同的 Worktree `policyHash`，并在 promotion 前失败关闭。`tools/arena-calibration/node_modules/` 因此不进入政策身份，其锁文件与受跟踪脚本仍照常绑定。斗兽计划中的两份 `source-provenance.json` 是仓库侧取证材料，不是 producer 或 policy 执行输入，也必须由 `excludePaths` 精确排除；计划、Schema、runner 与受跟踪校验脚本继续留在闭包内。
 
 `payloadClosureHash` 对根 `CRAZYFLASHER7MercenaryEmpire.exe` 与 `runtime/**` 的实际 payload 文件有序计算，明确排除 `runtime/cf7-runtime-manifest.tsv`、证明与 release record。这样 manifest/policy 元数据变化不会被误判成二进制失衡；manifest v2 再记录四个构建字段中的前三个、`buildIdentityHash`、`payloadClosureHash`、工具链可读名和逐文件大小/SHA-256。
 
@@ -261,6 +261,7 @@ prepare 中的派生器必须字节幂等；例如 save-repair dictionary 仅在
 - `config/build/runtime-toolchain.lock.json` 锁定 .NET SDK/host、Roslyn/MSBuild、MSVC `cl/link`、Windows SDK `rc`、Rust `rustc/cargo` 及 bootstrapper 入口字节；NuGet 图由 `launcher/packages.lock.json` 固定，其中 PlayerInfo 生产直接引用为 `Svg.Skia 5.1.1`，既有 `SkiaSharp` 保持 `3.119.4`，分发 notice 以 LF canonical byte 同时进入 artifact source 与 candidate payload。Visual Studio 安装器只是尽力补齐组件，不能把会移动的在线 channel 伪装成已固定 payload；最终资格始终以 `cl/link/rc` 的版本与 SHA-256 精确门为准。`.NET` provisioning 脚本也必须使用 `dotnet/install-scripts` 官方仓库的完整 commit URL 并固定 SHA-256，禁止重新使用会因 Authenticode 重签而变字节的 `https://dot.net/v1/dotnet-install.ps1`。
 - 当前基线 `cf7-win-x64-2026-07-22` 为 .NET SDK `10.0.300`、Visual Studio Build Tools `17.14.36` / installer `17.14.37502.11` / MSVC toolset `14.44.35207`（cl `19.44.35228.0`、link `14.44.35228.0`）、Windows SDK `10.0.22621.0`、Rust `1.96.0`；精确 SHA 只以 lock JSON 为准。2026-07-22 已核验 `dot.net` 当前脚本的 Microsoft Authenticode 签名有效，去除签名块后与官方 `dotnet/install-scripts@4a37a9f9d1a061fc389d6515100336db4e51710e` 源码逐行相同，因此 provisioning 改用该不可变源码字节。2026-07-19 本机 BT1736 的 bootstrap `-VerifyOnly` 与独立环境门均为 exit `0`。
 - producer 清除外部编译/链接/Rust 注入变量；Audio v2 的全部 C/C++/header/adapter 输入按 manifest 固定顺序与 SHA materialize 为 LF，使用固定 response file、SDK library、codec flags、`/pathmap`、`/experimental:deterministic`、`/Brepro`，并在候选中只产生一个静态闭合的 `miniaudio.dll`；Rust 每次 clean + locked；managed publish 不带 PDB/SourceLink。
+- promotion preflight 的隐私回归对本地路径做全文排除，对 Windows 用户名和机器名按完整 JSON 字符串值排除；不能用两字符用户名之类的短标识做任意子串匹配，否则会把无关字段误报为机器身份泄漏。
 - candidate 默认位于 `tmp/runtime-candidates/v2/c-<identity-prefix>-<builder-hash>-<run-token>/`，完整 build identity / builder label 只存 metadata 与证明，避免目录名把 legacy `MAX_PATH` 撑爆；producer 在编译前后都做 259 字符预算门，已存在目录不覆盖。native / Cargo / MSBuild / `TMP` / `TEMP` 的 job 工作根默认位于环境门规范化后的 machine-local `[IO.Path]::GetTempPath()/cf7-runtime-build-work/job-<token>/`，避免仓库位于 `Program Files (x86)` 等含括号路径时把 CMD 元字符传给 VsDevCmd；`CF7_RUNTIME_WORK_ROOT` 只能覆盖为短的本机绝对目录，卷根、UNC/映射网络盘、reparse point、仓库内/祖先、CMD 元字符或 projected MAX_PATH 超限均 fail-closed。队列 worker 从 request Git bundle 创建隔离 clone；输出按 job 分离，不再共享 `launcher/bin/Release`、Cargo target、MSBuild obj/bin 或临时目录。
 
 ## 本地 builder enrollment 与证明
@@ -275,9 +276,11 @@ $entry = .\tools\register-runtime-builder.ps1 `
 
 脚本在 `Cert:\CurrentUser\My` 创建 3072-bit、不可导出的 RSA 私钥，只把 public certificate/`keyId`/epoch/faultDomain 写到 `tmp/runtime-builder-enrollment/`，**不会自动改 registry**。维护者核对机器与故障域后，才把 entry 合入 `config/build/runtime-builders.v2.json`。私钥不得导出或跨机复制；轮换/撤销通过新 epoch/key 或 `enabled=false` 完成。两台 VM 若共享同一宿主、磁盘或管理员边界，不得宣称两个 faultDomain。
 
-tracked registry 继续保留 `builder-local-a` / `physical-host-a` 与 `builder-local-b` / `physical-host-b` 两张公钥；本次 consensus 实际采用 `builder-local-a` 的 keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3` / `physical-host-a` 和 GitHub Actions run `30364763726` 的 OIDC builder identity `1BDD1B0F419E0CA384E59986DBC1C9C9195A01CFEAF0838E116A8AD13B9BCEC3` / `github-hosted-windows`。任一单独本地票都仍不构成 quorum，也不授权单机 promotion。
+tracked registry 继续保留 `builder-local-a` / `physical-host-a` 与 `builder-local-b` / `physical-host-b` 两张历史公钥；既有 consensus 曾实际采用 `builder-local-a` 的 keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3` / `physical-host-a` 和 GitHub Actions run `30364763726` 的 OIDC builder identity `1BDD1B0F419E0CA384E59986DBC1C9C9195A01CFEAF0838E116A8AD13B9BCEC3` / `github-hosted-windows`。任一单独本地票都仍不构成 quorum，也不授权单机 promotion。
 
 本次 local proof 使用已注册的 `builder-local-a` 3072-bit CurrentUser 不可导出 RSA key：keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`、thumbprint `647AFE92BD801518AF25F2A2EE1845E6847C2118`、epoch `1`；未复制或导出私钥。不同故障域的第二票由 GitHub hosted OIDC/Sigstore 提供，双 faultDomain quorum 已满足；dirty staged/unstaged/untracked 工作树仍不能冒充 source commit。
+
+2026-09-02，本机因不存在 `builder-local-a` / `builder-local-b` 对应的不可导出私钥，按一次性 enrollment 新增 `builder-local-c` / `physical-host-c`：keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`、thumbprint `892236D1AE9EB9EFE0624E7C70B739F94A8DA6EF`、epoch `1`。旧私钥没有导出或复制；该登记只有在 tracked registry、immutable request、实际 local proof 与不同 faultDomain 的 GitHub OIDC proof 全部通过后才计入新 quorum，登记本身不构成票或部署。
 
 worker 使用该 CurrentUser certificate 对 canonical payload inventory 做 RS256 签名。验证端只信 tracked registry 中启用且 epoch/faultDomain/certificate 全匹配的 key；旧式自由文本 builder ID 不再计入 v2 quorum。
 

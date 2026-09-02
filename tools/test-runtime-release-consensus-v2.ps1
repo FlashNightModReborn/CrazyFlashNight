@@ -114,6 +114,17 @@ function Assert-Cf7TextExcludes {
     }
 }
 
+function Assert-Cf7JsonStringValuesExcluded {
+    param([string]$Text,[string[]]$Values,[string]$Message)
+    foreach ($value in $Values) {
+        if ([string]::IsNullOrWhiteSpace($value)) { continue }
+        $jsonLiteral = ConvertTo-Json -InputObject $value -Compress
+        Assert-Cf7Fixture -Condition (
+            $Text.IndexOf($jsonLiteral,[StringComparison]::OrdinalIgnoreCase) -lt 0) `
+            -Message "$Message`: $value"
+    }
+}
+
 function Write-Cf7CandidateManifest {
     param([string]$CandidateRoot,[object]$Identity)
     $closure = Get-Cf7RuntimePayloadClosureV2 -ProjectRoot $fixtureRoot -DeploymentRoot $CandidateRoot -Mode Worktree
@@ -412,8 +423,11 @@ echo [{"attestation":{},"verificationResult":{"signature":{"certificate":{}},"ve
     Assert-Cf7Fixture -Condition ($sortedProofFaultDomains.Count -eq 2 -and $sortedProofFaultDomains[0] -cne $sortedProofFaultDomains[1]) -Message 'preflight report lacks two fault domains'
     Assert-Cf7TextExcludes -Text $preflightText -Values @(
         $testRoot,$fixtureRoot,$queueRoot,$failedCandidate.root,$passedCandidate.root,$fakeBin,
-        $ProjectRoot,[Environment]::UserName,[Environment]::MachineName
+        $ProjectRoot
     ) -Message 'preflight report leaked local path or machine identity'
+    Assert-Cf7JsonStringValuesExcluded -Text $preflightText -Values @(
+        [Environment]::UserName,[Environment]::MachineName
+    ) -Message 'preflight report leaked local machine identity as a JSON string value'
     Assert-Cf7Fixture -Condition ($preflightText -notmatch '(?i)"[^"]*(AtUtc|timestamp)[^"]*"\s*:') -Message 'preflight report contains a timestamp field'
     Assert-Cf7Fixture -Condition ($preflightText -notmatch '\d{4}-\d{2}-\d{2}T\d{2}:') -Message 'preflight report contains an ISO timestamp value'
 
