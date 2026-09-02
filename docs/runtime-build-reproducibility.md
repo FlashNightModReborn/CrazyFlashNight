@@ -404,7 +404,7 @@ promotion 重新验证 request、精确 `request.releaseTreeOid` worktree、rece
 
 job 名为 `audit-native-runtime`。所有事件都以 job-level `github.run_attempt == 1` 在 runner 分配前拒绝 rerun；`workflow_dispatch` 再限制为 `Crazyfs` / `Flash-Night` 的固定 actor ID，并传入 `-ForceDeploymentVerification`，强制当前 HEAD 走 integrity、source identity 与 strict consensus 全链，作为明确的 release-readiness 检查。push/PR 则用于对真实 diff 做低成本被动审计。它不解析外部成功绿灯锚，也不把某次 Actions success 变成服务端准入权。
 
-`tools/classify-runtime-release-state.ps1 -Mode Audit` 先完成 Git path safety 与 native binding 检查，再计算 `deploymentChanged`：
+`tools/classify-runtime-release-state.ps1 -Mode Audit` 先完成 Git path safety 与 native binding 检查，再计算 `deploymentChanged`。路径门拒绝控制字符、Windows 保留/歧义路径、非 NFC、未配对 surrogate 与所有 Unicode plane 的 noncharacter；历史树中的不安全路径仅可按 base 的 mode + object identity 原样存活，任何触碰、重命名或新引入都必须重新通过严格门：
 
 | 状态 | 条件 | 行为 |
 |------|------|------|

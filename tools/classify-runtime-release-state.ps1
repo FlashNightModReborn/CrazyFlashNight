@@ -140,8 +140,24 @@ function ConvertTo-Cf7SafeRepoPath([AllowNull()][string]$Value, [string]$Label, 
             $path.IndexOfAny([char[]]@([char]0, [char]10, [char]13, [char]34, [char]42, [char]60, [char]62, [char]63, [char]124, [char]127)) -ge 0) {
         throw "$Label is not a safe repository-relative path: $path"
     }
-    foreach ($character in $path.ToCharArray()) {
-        if ([int]$character -lt 32) { throw "$Label contains a control character." }
+    for ($index = 0; $index -lt $path.Length; $index++) {
+        $character = $path[$index]
+        $codeUnit = [int]$character
+        if ($codeUnit -lt 32) { throw "$Label contains a control character." }
+        if ([char]::IsHighSurrogate($character)) {
+            if ($index + 1 -ge $path.Length -or -not [char]::IsLowSurrogate($path[$index + 1])) {
+                throw "$Label contains an unpaired Unicode surrogate."
+            }
+            $scalar = [char]::ConvertToUtf32($character, $path[$index + 1])
+            $index++
+        } elseif ([char]::IsLowSurrogate($character)) {
+            throw "$Label contains an unpaired Unicode surrogate."
+        } else {
+            $scalar = $codeUnit
+        }
+        if (($scalar -ge 0xFDD0 -and $scalar -le 0xFDEF) -or (($scalar -band 0xFFFF) -ge 0xFFFE)) {
+            throw "$Label contains a Unicode noncharacter."
+        }
     }
     if ($path.EndsWith('/') -and -not $AllowTrailingSlash) { throw "$Label cannot end with '/': $path" }
     $segments = @($path.TrimEnd('/').Split('/'))
