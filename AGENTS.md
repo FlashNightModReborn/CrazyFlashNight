@@ -5,13 +5,11 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：release source commit `8b71d81f3777157d924f7023c55219c75d695238`（2026-09-02；tag `runtime-build-v2/20260902-arena-calibration-production-v1`、tree `0b2172f023c7e192d003e47d432a278063870b59`、request `45C86C4FA3AB947C4CE0E9249F8BC5A5BE52AA4CE81F3BE5BECF3FA05732108B`、deployment `59212346e3b43d75924babcde4d1ee1cfaa9c860`）。
-本地 X509 `builder-local-b` / `physical-host-b`（keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`）与 GitHub OIDC/Sigstore builder `346CB67DAB689EEBAD29E8241B9B2A21E47F32E18DE7F189CD839EE5A65538D9` / `github-hosted-windows`（cloud run `33578482626`）已对 identity `491CF53B1D6447335D7798EBE4018C575B4BFC25277FCD5FA0138A550370007B`、closure `73040C84F9ACCAAA6E1A9DF5D89F87AC3E30D3ABEE0DE85031D8BE69C4E2260D` 达成 v2 双 signer / 双故障域共识；正式 Core DLL SHA-256 为 `A5F84FDA978839869FD5B47170D652E40DDB534357E483AA71D2C0CE3D58E476`，39/39 production receipt SHA-256 为 `E21067C501DCD21C410F89809F2A9028C6EC71D0F262009619265BF99DD76DB7`；deployment commit `59212346e3b43d75924babcde4d1ee1cfaa9c860` 与首次 post-promotion audit run `33579694615` 已推送/通过，审计明确输出 `state=promoted`、`deploymentChanged=true`。
+**最后核对代码基线**：release source commit `b2a70248eb6fae5dda843d2a7f7156a18b03ef7e`（2026-09-02；tag `runtime-build-v2/20260902-window-lifecycle-w2`、tree `c35b896578a4b5f7b8751081a600ef374781b589`、request `981A0D150FFDCDB1B2B430E44DE6B9D2FBE76726B8EAA515711950325A731096`、deployment `a3b0b5f77027be295cf574c6751310f634067812`）。
+本地 X509 `builder-local-c` / `physical-host-c`（keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`）与 GitHub OIDC/Sigstore builder `8B958CC4E6C87DC7D9406842EA1AC0CEBAF8D4FFFE93332BC4AD421D893CFD8D` / `github-hosted-windows`（cloud run `33641807449`）已对 identity `7BD7CB663FFE7F338BBAA5566CD738B22A106A0835D272A7498D43C2EBE7972D`、closure `DBAD534395A8383DFD29DF0321BFEE39AC30040763A957E8260013E6D480F18A` 达成 v2 双 signer / 双故障域共识；正式 Core DLL SHA-256 为 `3B346B9818FFACC536B250BC2CB41D9FD67FE19B8D74CD82DF2527430226A361`，40/40 production receipt SHA-256 为 `869F8855B37274D3FD88F47877E040C4A27628E81D590357891107EFE58BD2E7`，manifest / consensus SHA-256 分别为 `9D888B3BE393BDAB4CF10C74ECF912E6F2744867A15707B4819A7B42DC7E1E01` / `8DCD3B45730ED595F2A558A1C6539E39D2F06A9202F12E401669DC6F33AD6220`。
+deployment commit `a3b0b5f77027be295cf574c6751310f634067812` 与首次 post-promotion Audit run `33645182028` 已推送/通过，审计精确输出 `state=promoted`、`deploymentChanged=true`。
 
-**状态边界**：本列车把星期级斗兽标定的 55 个 exact roster、session-scoped `calibratedRosterId` 与 Host 权威重建闭包纳入正式 Launcher runtime。production policy `39/39`、worktree/index 33-file bundle、双签共识、原子 promotion、正式根 bootstrap `--verify-only` 与 post-promotion Audit 均通过。
-准确状态为 `promoted`。部署后尚未从无 candidate selector 的正式入口重跑 Arena 业务旅程或新一轮真人 PVE，因此不称本增量业务 `standard_entry_verified`；既有 G2 两场真人等效标注仍只作为生产目录的数值依据，不反向代签部署后 E2E。Audio H2 继续保持独立门。
-**斗兽标定领域状态（2026-09-02）**：`gate-f-week-full-v9` 已从 195 个 completed shard / 3,230 条 selected durable row 中形成 3,170 条数值样本；36 个 candidate 达到机器完成门，其中 33 个与默认 `650 / line / line / 54` 生产 profile 兼容并去重为 55 个 exact roster。`G2` 两组按真人 PVE 复核固定为 `Lv10 / arena-2`；`B11/C11/C7` 仅保留 context-only，21 个 timeout candidate 保持 provisional，`D10/B12` quarantine。正式目录采用组合级 roster，不写 faction `benchLevel`，Host 只接受 session-scoped `calibratedRosterId` 并从权威目录重建阵容。
-合并后 exact bundle `sha256:6ed3c7461330657f4770abc454b9c6ccdf280c5c2190f347d798c19fa5f21b43` 已获人类批准，并在 source revision `06e554e762d3bae83ccd20c264c78e7fa74ec92c`、implementation closure `sha256:d876f02c1e52eba7d8b89bb0d41c9fec2e1992449c0bcaa305f3d0ebaa6026e7` 与 fresh `asLoader.swf` 上取得 `APPLIED_VERIFIED`；目标文件 SHA-256 为 `sha256:f9bfb2d2496da9648b5bbe4227c3fb0e5828c3456b16b9115a76456eb98d41e5`，目录 hash 为 `sha256:c667bbb1d7da4263ffb93cc916a251774af8e1cc41df1bbc667a9611f7035eb4`，receipt hash 为 `sha256:8f6b152a3289c72e3d20bd8cb723f3d7dcec37a85a747e159280fe4ea6d56a68`。随后上述 `8b71d81f...` source/tag/request 取得本地 X509 + GitHub OIDC 同闭包双构建、39/39 final receipt、严格 `VerifyOnly`、原子 promotion 与审计通过；正式 manifest SHA-256 为 `CA94923367F0086AB4E6B71074E6A04D14ABD3E00D35FCCAAAC0BEB2CE162947`，consensus SHA-256 为 `7CFFEEB6EAB11B216CCD9F6050E9A1608B96CE956598F24AB0F3E184C76A21C0`。当前已部署，但业务 `standard_entry_verified` 仍待正式入口复验。
+**状态边界**：W/B0 窗口生命周期根治已完成 focused 266/266、Launcher 4516 pass + 3 explicit opt-in skip、隔离候选执行与维护者 H-W“有效”验收，并经严格 preflight、原子 promotion、worktree/index 33-file bundle、signed consensus 与正式根 bootstrap `--verify-only`。准确状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`；部署后尚未从无 candidate selector 的正式入口重跑最小化恢复、外部抢焦与关闭业务旅程，故不称 W 专项 `standard_entry_verified`。A/A1 Reward 根事务与 S/O1 观测已获第二列车施工授权，但必须停在 H-A/H-S 真人验收前，不得提前提交或部署；完整状态见 [止血治理 ADR](docs/AS2-WebPanel止血治理-窗口生命周期与Reward根事务-ADR-2026-09-01.md)。
 
 ---
 
@@ -38,7 +36,7 @@
 
 ---
 
-## Context Packs（按任务最小加载，最后核对 commit `86de257152c23536ae4590c6e8b42585aeaca290`）
+## Context Packs（按任务最小加载，最后核对 commit `b2a70248eb6fae5dda843d2a7f7156a18b03ef7e`）
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 

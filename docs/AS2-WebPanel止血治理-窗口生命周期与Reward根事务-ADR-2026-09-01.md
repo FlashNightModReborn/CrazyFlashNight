@@ -1,11 +1,11 @@
 # AS2 / WebPanel 止血治理：窗口生命周期、Reward 根事务与软锁归因 ADR
 
 - **文档角色**：跨 AS2 / C# Guardian / WebView2 / Web 的正式止血治理架构决策记录；冻结问题边界、最小架构差量、施工顺序、验证与回滚，并记录 W 的当前施工检查点。本文中的状态摘要不替代 exact candidate、测试输出或 runtime 共识收据。
-- **状态**：`W_HUMAN_ACCEPTANCE_PASSED / RELEASE_IN_PROGRESS / NOT_DEPLOYED；A/S_SECOND_TRAIN_AUTHORIZED`
+- **状态**：`W_HUMAN_ACCEPTANCE_PASSED / PROMOTED / FORMAL_BUSINESS_REVALIDATION_PENDING；A/S_SECOND_TRAIN_AUTHORIZED`
 - **决策日期**：2026-09-01
-- **最后核对代码基线**：W 开工时 `HEAD == origin/main == 11376feb76116334c68c2cc8632f52650b194abe`，tree `bfbe61dce0ad42de77b5972af00a7893ed08b066`；工作树干净、仅一个 worktree，构成新的 Checkpoint-0。原始撰写基线 `dff0c4390b5788151f75954cde397d54fba54257` 仅保留为设计考古。
-- **调度约束**：维护者已于 2026-09-02 授权 W 独立开工并在 exact candidate 上通过 H-W；现已解锁 W 的提交、immutable request、双故障域共识、promotion、部署和推送。W 正式发布完成后继续施工 A/A1 与 S/O1 到第二次真人验收点；第二列车只有在人类通过 H-A/H-S 后才允许提交与部署。
-- **当前实现状态**：W/B0 代码、focused/full Launcher 自动门、隔离候选执行与 H-W 已完成；候选仍是 `NOT_DEPLOYED`，正式发布列车正在配置本地环境。尚未创建 W release source commit/request，尚无本轮云端共识、promotion、部署或正式入口结论。
+- **最后核对代码基线**：W release source `b2a70248eb6fae5dda843d2a7f7156a18b03ef7e`，tree `c35b896578a4b5f7b8751081a600ef374781b589`，deployment `a3b0b5f77027be295cf574c6751310f634067812`。W 开工 Checkpoint-0 `11376feb76116334c68c2cc8632f52650b194abe` / tree `bfbe61dce0ad42de77b5972af00a7893ed08b066` 与原始撰写基线 `dff0c4390b5788151f75954cde397d54fba54257` 只保留为设计考古。
+- **调度约束**：维护者已于 2026-09-02 在 exact candidate 上通过 H-W，W 的 immutable request、双故障域共识、promotion、部署与推送均已完成。现继续施工 A/A1 与 S/O1 到第二次真人验收点；第二列车只有在人类通过 H-A/H-S 后才允许提交与部署。
+- **当前实现状态**：W/B0 代码、focused/full Launcher 自动门、隔离候选执行、H-W、40/40 production policy、双 signer / 双 faultDomain 共识、严格 preflight、原子 promotion、worktree/index 正式根复验与 bootstrap `--verify-only` 均已完成；deployment 已推送，首次 post-promotion Audit run `33645182028` 通过并精确输出 `state=promoted`、`deploymentChanged=true`。部署后没有重跑正式入口 W 业务旅程，因此只称 `HUMAN_ACCEPTANCE_PASSED / promoted`，不称 W 专项 `standard_entry_verified`。
 
 > 自包含声明：本文不依赖任何 Chat 对话、分享链接、下载文件、模型原始回执或仓库外日志才能理解和执行。现场事实摘要、源码反证、决策、否决项、硬门与施工边界均写在本文中；进一步核查只需本文链接的仓库内源码和 canonical 文档。
 
@@ -638,7 +638,15 @@ Wave 2                              S2
 - Core DLL SHA-256 `82C94E7B35C3311F4DCC62FE0FBF2E0835C3838DC4D111CFE23778583E1F2BAB`；
 - 正式 Core 仍为 `A5F84FDA978839869FD5B47170D652E40DDB534357E483AA71D2C0CE3D58E476`，formal closure 未改写。
 
-上述机器结果不代签 taskbar、foreground 与肉眼 WebView2 presentation；C-W 仍须由下方 H-W 关闭，当前不得写成 `e2e_verified`。
+上述机器结果本身不代签 taskbar、foreground 与肉眼 WebView2 presentation；该门随后由下方 H-W 关闭。该隔离候选不是正式发布证明，也没有被手工复制进正式 runtime。
+
+#### W 正式发布检查点
+
+W 实现与 H-W 先由 commit `28edc13560` 落盘；新机构建环境随后注册不可导出本地 X509 `builder-local-c` / `physical-host-c`。首个 immutable tag `runtime-build-v2/20260902-window-lifecycle-w1` / request `AE7B4246693EAF19B66D1F92D82A6A4EE51A653D22B514B52E0B238B57CBECD9` 在本地 production policy 暴露材料字典 raw-byte sidecar 过期后停止，未 dispatch 云构建、未 promotion；tag 保持不可变，由 W2 全新 request supersede。
+
+最终 release source `b2a70248eb6fae5dda843d2a7f7156a18b03ef7e`（tag `runtime-build-v2/20260902-window-lifecycle-w2`）、release tree `c35b896578a4b5f7b8751081a600ef374781b589`、request commit `d90c901f863406d4fd4f8cf50d1167a9d579b9a5` 与 request `981A0D150FFDCDB1B2B430E44DE6B9D2FBE76726B8EAA515711950325A731096` 形成 build identity `7BD7CB663FFE7F338BBAA5566CD738B22A106A0835D272A7498D43C2EBE7972D`。本地 X509 keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86` / `physical-host-c` 与 GitHub OIDC/Sigstore builder `8B958CC4E6C87DC7D9406842EA1AC0CEBAF8D4FFFE93332BC4AD421D893CFD8D` / `github-hosted-windows`（cloud run `33641807449`）对 33-file payload closure `DBAD534395A8383DFD29DF0321BFEE39AC30040763A957E8260013E6D480F18A` 达成双 signer、双 faultDomain 共识。
+
+40/40 production receipt SHA-256 为 `869F8855B37274D3FD88F47877E040C4A27628E81D590357891107EFE58BD2E7`；正式 Core DLL / manifest / consensus SHA-256 分别为 `3B346B9818FFACC536B250BC2CB41D9FD67FE19B8D74CD82DF2527430226A361`、`9D888B3BE393BDAB4CF10C74ECF912E6F2744867A15707B4819A7B42DC7E1E01`、`8DCD3B45730ED595F2A558A1C6539E39D2F06A9202F12E401669DC6F33AD6220`。严格 `VerifyOnly` preflight 明确零 runtime/release-state mutation，随后原子 promotion、worktree/index bundle、signed consensus、GitHub proof replay 与正式根 bootstrap `--verify-only` 均通过；deployment commit `a3b0b5f77027be295cf574c6751310f634067812` 已推送，post-promotion Audit run `33645182028` 通过并精确输出 `state=promoted`、`deploymentChanged=true`。这些发布证据不反向把早期 H-W 候选冒充成正式 runtime 业务复验；W 专项 `standard_entry_verified` 仍待部署后旅程。
 
 #### C-A
 
