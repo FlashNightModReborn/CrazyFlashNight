@@ -202,6 +202,10 @@
     // ════════════════════════════════════════════════════════════════════════════
     // 按标准卡角色计划决定本卡是否为 mixed / 怪物小队；返回 {kind,faction,opponents} 或 null（=走 merc）。
     function decideStandardRosterSquad(card) {
+        if (card.standardRole === 'monster') {
+            var calibrated = sampleCalibratedRosterSquad(card);
+            if (calibrated) return calibrated;
+        }
         var rosters = (typeof window !== 'undefined' && window.ArenaMetaRosters)
             ? window.ArenaMetaRosters.factions : null;
         if (!rosters) return null;                       // 无数据（如 QA harness 未载）→ 恒 merc
@@ -219,6 +223,42 @@
             return monster;
         }
         return null;
+    }
+
+    function sampleCalibratedRosterSquad(card) {
+        var authority = S._snapshot && S._snapshot.arenaAuthority;
+        var rosters = authority && Array.isArray(authority.calibratedRosters)
+            ? authority.calibratedRosters : [];
+        var candidates = [];
+        for (var i = 0; i < rosters.length; i++) {
+            var roster = rosters[i];
+            if (!roster || roster.cardId !== card.id || typeof roster.id !== 'string'
+                    || !Array.isArray(roster.members) || !roster.members.length) continue;
+            candidates.push(roster);
+        }
+        if (!candidates.length) return null;
+        var chosen = candidates[Math.floor(Math.random() * candidates.length)];
+        var unitCount = 0;
+        for (var m = 0; m < chosen.members.length; m++) {
+            unitCount += Math.max(1, Math.round(Number(chosen.members[m].count) || 1));
+        }
+        var opponents = expandTeamOpponents({
+            id: chosen.id,
+            sourceName: chosen.displayName || '标定组合',
+            faction: '标定组合',
+            unitCount: unitCount,
+            members: chosen.members
+        }, ArenaChallengeBrowser.HIDDEN_MIXED_TEAM_MAX_UNITS, null, true);
+        if (!opponents.length) return null;
+        return {
+            kind: 'monster',
+            faction: '标定组合',
+            source: 'calibrated-roster',
+            calibratedRosterId: chosen.id,
+            equivalentLevel: chosen.equivalentLevel,
+            equivalentCount: card.opponentCount,
+            opponents: opponents
+        };
     }
 
     // 隐藏警报卡：优先走已知的真实关卡组合；没有可用组合时才回退到已知兵种池临时混编。
@@ -686,7 +726,7 @@
         return pool[0].team;
     }
 
-    function expandTeamOpponents(team, maxUnits, groupInstance) {
+    function expandTeamOpponents(team, maxUnits, groupInstance, preserveOrder) {
         var limit = Math.max(1, Math.min(ArenaChallengeBrowser.HIDDEN_MIXED_TEAM_MAX_UNITS,
             Math.round(Number(maxUnits) || ArenaChallengeBrowser.HIDDEN_MIXED_TEAM_MAX_UNITS)));
         var out = [];
@@ -718,7 +758,7 @@
                 out.push(opponent);
             }
         }
-        shuffleInPlace(out);
+        if (preserveOrder !== true) shuffleInPlace(out);
         return out;
     }
 

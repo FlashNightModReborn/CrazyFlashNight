@@ -72,6 +72,7 @@ var ArenaHarnessQA = (function() {
         { id: 'preview-switch-race',  title: '迟到 preview 回包被丢弃' },
         { id: 'equip-tooltip',        title: '装备 hover 发起 tooltip 请求 + cache' },
         { id: 'grid-batch-preview',   title: 'Panel 打开后公开卡 preview + 隐藏混编 cache' },
+        { id: 'calibrated-roster-authority', title: '标定组合仅提交 session id，Host 保持阵容权威' },
         { id: 'keyboard-commit',      title: '键盘提交 = 右栏同一 commit handler（P0 裁决 2）' },
         { id: 'grid-cache-consistency', title: '换一批后目录摘要同步更新' },
         { id: 'grid-money-disable',   title: '金钱不足 CommitBar 灰 / 卡仍可选中' },
@@ -139,6 +140,7 @@ var ArenaHarnessQA = (function() {
         }
         host.setFixture('normal');
         if (host.resetKnownEnemies) host.resetKnownEnemies();
+        if (host.resetCalibratedRosters) host.resetCalibratedRosters();
         host.resetPreviewState();
         host.enterMessages = [];
         host.sentMessages = [];
@@ -166,6 +168,7 @@ var ArenaHarnessQA = (function() {
             case 'preview-switch-race':     return casePreviewSwitchRace(api, host);
             case 'equip-tooltip':           return caseEquipTooltip(api, host);
             case 'grid-batch-preview':      return caseGridBatchPreview(api, host);
+            case 'calibrated-roster-authority': return caseCalibratedRosterAuthority(api, host);
             case 'keyboard-commit':         return caseKeyboardCommit(api, host);
             case 'grid-cache-consistency':  return caseGridCacheConsistency(api, host);
             case 'grid-money-disable':      return caseGridMoneyDisable(api, host);
@@ -1299,6 +1302,69 @@ var ArenaHarnessQA = (function() {
                 api.assertEqual(multiGroup.querySelectorAll('.arena-card-portrait-item').length, items.length, '密度切换不得丢弃阵容头像数据');
                 api.assertEqual(host.previewMessages.length, beforeDensityMessages, '密度切换不得重新请求或抽取对手');
                 fullButton.click();
+            })
+            .then(function() { return { pass: true }; })
+            .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
+    }
+
+    // ── case: calibrated-roster-authority ──
+    // 标定组合来自同一 session snapshot；Web 只展示 canonical roster，并在 commit 时回传
+    // session-scoped id。阵容、参数与顺序由 Host 反查，不能再随 enter payload 回送。
+    function caseCalibratedRosterAuthority(api, host) {
+        var cardIdx = -1;
+        var expectedRosterId = '';
+        return Promise.resolve()
+            .then(function() {
+                host.setFixture('rich');
+                host.setKnownEnemies(window.ArenaQaKnownFixtures.all());
+                host.setCalibratedRosters(true);
+                host.enterMessages = [];
+                host.resetPreviewState();
+                host.open();
+                return api.waitFor(function() {
+                    return Panels.getActive && Panels.getActive() === 'arena';
+                }, 2000, 'panel active');
+            })
+            .then(function() {
+                return waitBatchPreviewReady(api);
+            })
+            .then(function() {
+                var cards = window.ArenaPanel.getCards();
+                cardIdx = findPublicCardIndexByRole(cards, 'monster', 1);
+                api.assert(cardIdx >= 0, '应能找到怪物公开卡');
+                var state = window.ArenaPanel.getState();
+                var squad = state.monsterSquad[cardIdx];
+                api.assert(squad && squad.source === 'calibrated-roster', '怪物公开卡应优先采用标定组合');
+                api.assert(typeof squad.calibratedRosterId === 'string' && squad.calibratedRosterId.length > 0,
+                    '标定组合应携 session-scoped id');
+                expectedRosterId = squad.calibratedRosterId;
+                api.assertEqual(squad.opponents.length, 2, 'fixture 标定组合应展开为两个单位');
+                api.assertEqual(squad.opponents[0].parameters.fixtureOrder, 1, '标定组合应保留首成员顺序与参数');
+                api.assertEqual(squad.opponents[1].parameters.fixtureOrder, 2, '标定组合应保留次成员顺序与参数');
+                api.assertEqual(host.previewMessages.some(function(message) {
+                    return message.cardIndex === cardIdx;
+                }), false, '标定怪物卡不应请求 AS2 随机 preview');
+                clickCard(cardIdx);
+                return api.waitFor(function() {
+                    return window.ArenaPanel.getState().selectedCardIdx === cardIdx;
+                }, 2000, '标定卡已选中');
+            })
+            .then(function() {
+                return waitCommitEnabled(api);
+            })
+            .then(function() {
+                commitPrimary().click();
+                return api.waitFor(function() {
+                    return host.enterMessages.length === 1;
+                }, 2000, '标定卡应发出 enter');
+            })
+            .then(function() {
+                var message = host.enterMessages[0];
+                var cards = window.ArenaPanel.getCards();
+                api.assertEqual(message.cardId, cards[cardIdx].id, 'enter 应绑定所选权威 cardId');
+                api.assertEqual(message.cardIndex, cardIdx, 'enter 应绑定所选 cardIndex');
+                api.assertEqual(message.calibratedRosterId, expectedRosterId, 'enter 只回传 snapshot 中的标定 id');
+                api.assert(!Object.prototype.hasOwnProperty.call(message, 'roster'), '标定 enter 不得携带 Web 重建 roster');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });

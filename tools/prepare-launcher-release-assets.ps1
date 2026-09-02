@@ -154,6 +154,7 @@ $generatedOutputs = @(
     'launcher/data/map_hud_data.json',
     'launcher/web/modules/tasks/task-catalog.json',
     'launcher/web/modules/tasks/achievement-catalog.json',
+    'data/arena/arena_calibrated_rosters.json',
     'data/arena/meta_teams.json',
     'launcher/web/modules/arena-meta-rosters.js',
     'launcher/web/modules/arena-factions.js',

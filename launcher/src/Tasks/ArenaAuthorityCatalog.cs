@@ -18,9 +18,11 @@ namespace CF7Launcher.Tasks
     /// </summary>
     internal sealed class ArenaAuthorityCatalog
     {
+        internal const string SourceDescription = "data/arena/arena_config.xml+meta_teams.json+arena_factions.json+arena_calibrated_rosters.json+data/units/units.json";
         private const int StandardOpponentCap = 4;
         private const int FallenMinUnits = 4;
         private const int FallenBandWindow = 15;
+        private const int MaximumCalibratedRosterEntries = 12;
 
         private readonly List<TierDefinition> _tiers;
         private readonly List<HiddenDefinition> _hidden;
@@ -28,6 +30,7 @@ namespace CF7Launcher.Tasks
         private readonly Dictionary<string, List<UnitDefinition>> _rosters;
         private readonly Dictionary<string, List<UnitDefinition>> _unitsByType;
         private readonly Dictionary<string, int> _mercenaryLevels;
+        private readonly List<CalibratedRosterDefinition> _calibratedRosters;
 
         private ArenaAuthorityCatalog(
             List<TierDefinition> tiers,
@@ -35,6 +38,7 @@ namespace CF7Launcher.Tasks
             Dictionary<string, FactionDefinition> factions,
             Dictionary<string, List<UnitDefinition>> rosters,
             Dictionary<string, int> mercenaryLevels,
+            List<CalibratedRosterDefinition> calibratedRosters,
             string sourceDigest)
         {
             _tiers = tiers;
@@ -42,6 +46,7 @@ namespace CF7Launcher.Tasks
             _factions = factions;
             _rosters = rosters;
             _mercenaryLevels = mercenaryLevels;
+            _calibratedRosters = calibratedRosters;
             SourceDigest = sourceDigest;
             _unitsByType = new Dictionary<string, List<UnitDefinition>>(StringComparer.Ordinal);
             foreach (List<UnitDefinition> roster in rosters.Values)
@@ -69,17 +74,33 @@ namespace CF7Launcher.Tasks
             string xmlPath = Path.Combine(root, "data", "arena", "arena_config.xml");
             string teamsPath = Path.Combine(root, "data", "arena", "meta_teams.json");
             string factionsPath = Path.Combine(root, "data", "arena", "arena_factions.json");
+            string calibratedRostersPath = Path.Combine(root, "data", "arena", "arena_calibrated_rosters.json");
+            string unitsPath = Path.Combine(root, "data", "units", "units.json");
             byte[] xmlBytes = ReadRequiredBytes(xmlPath);
             byte[] teamsBytes = ReadRequiredBytes(teamsPath);
             byte[] factionsBytes = ReadRequiredBytes(factionsPath);
+            byte[] calibratedRostersBytes = ReadRequiredBytes(calibratedRostersPath);
+            byte[] unitsBytes = ReadRequiredBytes(unitsPath);
 
             ParseXml(xmlBytes, out List<TierDefinition> tiers, out List<HiddenDefinition> hidden);
             ParseTeams(teamsBytes,
                 out Dictionary<string, List<UnitDefinition>> rosters,
                 out Dictionary<string, int> mercenaryLevels);
             Dictionary<string, FactionDefinition> factions = ParseFactions(factionsBytes, rosters);
-            string digest = ComputeDigest(xmlBytes, teamsBytes, factionsBytes);
-            return new ArenaAuthorityCatalog(tiers, hidden, factions, rosters, mercenaryLevels, digest);
+            HashSet<string> knownUnitIdentities = ParseUnitIdentities(unitsBytes);
+            List<CalibratedRosterDefinition> calibratedRosters = ParseCalibratedRosters(
+                calibratedRostersBytes,
+                tiers,
+                knownUnitIdentities);
+            string digest = ComputeDigest(xmlBytes, teamsBytes, factionsBytes, calibratedRostersBytes, unitsBytes);
+            return new ArenaAuthorityCatalog(
+                tiers,
+                hidden,
+                factions,
+                rosters,
+                mercenaryLevels,
+                calibratedRosters,
+                digest);
         }
 
         internal ArenaAuthoritySession CreateSession(
@@ -190,9 +211,14 @@ namespace CF7Launcher.Tasks
                     pool));
             }
 
+            List<CalibratedRosterDefinition> calibratedRosters = _calibratedRosters
+                .Where(roster => roster.RequiredKnownEnemies.All(known.Contains))
+                .ToList();
+
             return new ArenaAuthoritySession(
                 SourceDigest,
                 cards,
+                calibratedRosters,
                 known,
                 _unitsByType,
                 _mercenaryLevels);
@@ -440,6 +466,240 @@ namespace CF7Launcher.Tasks
             return result;
         }
 
+        private static List<CalibratedRosterDefinition> ParseCalibratedRosters(
+            byte[] bytes,
+            IReadOnlyList<TierDefinition> tiers,
+            HashSet<string> knownUnitIdentities)
+        {
+            JObject root = ParseObject(bytes, "arena_calibrated_rosters.json");
+            if (root.Value<int?>("schemaVersion") != 1)
+                throw new InvalidDataException("arena_calibrated_rosters.json schemaVersion must be 1.");
+            JToken activeToken = root["active"];
+            if (activeToken?.Type != JTokenType.Boolean)
+                throw new InvalidDataException("arena_calibrated_rosters.json active must be boolean.");
+            RequiredString(root, "catalogId");
+            string expectedHash = RequiredString(root, "catalogHash");
+            string actualHash = ComputeCatalogHash(root);
+            if (!string.Equals(expectedHash, actualHash, StringComparison.Ordinal))
+                throw new InvalidDataException("arena_calibrated_rosters.json catalogHash mismatch.");
+
+            JArray source = root["rosters"] as JArray
+                ?? throw new InvalidDataException("arena_calibrated_rosters.json rosters array is required.");
+            bool active = activeToken.Value<bool>();
+            if (!active)
+            {
+                if (source.Count != 0 || root["campaignId"]?.Type != JTokenType.Null
+                        || root["cohortId"]?.Type != JTokenType.Null
+                        || root["source"]?.Type != JTokenType.Null
+                        || root["model"]?.Type != JTokenType.Null)
+                {
+                    throw new InvalidDataException("Inactive calibrated roster catalog must be empty and unbound.");
+                }
+                return new List<CalibratedRosterDefinition>();
+            }
+
+            RequiredString(root, "campaignId");
+            RequiredString(root, "cohortId");
+            if (root["source"] is not JObject || root["model"] is not JObject || source.Count == 0)
+                throw new InvalidDataException("Active calibrated roster catalog requires source, model, and rosters.");
+
+            var tiersById = tiers.ToDictionary(tier => tier.Id, StringComparer.Ordinal);
+            var result = new List<CalibratedRosterDefinition>();
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in source)
+            {
+                if (token is not JObject item)
+                    throw new InvalidDataException("Calibrated roster entry must be an object.");
+                string id = RequiredString(item, "id");
+                if (!IsCalibratedRosterId(id) || !ids.Add(id))
+                    throw new InvalidDataException("Calibrated roster id is invalid or duplicated: " + id);
+                string tierId = RequiredString(item, "tierId");
+                if (!tiersById.TryGetValue(tierId, out TierDefinition tier))
+                    throw new InvalidDataException("Calibrated roster references unknown tier: " + tierId);
+                int equivalentLevel = PositiveInt(item, "equivalentLevel");
+                int equivalentLevelMin = PositiveInt(item, "equivalentLevelMin");
+                int equivalentLevelMax = PositiveInt(item, "equivalentLevelMax");
+                if (equivalentLevelMin > equivalentLevel || equivalentLevel > equivalentLevelMax
+                        || equivalentLevelMin < tier.LevelMin || equivalentLevelMax > tier.LevelMax)
+                {
+                    throw new InvalidDataException("Calibrated roster equivalent level is outside its tier: " + id);
+                }
+                string assignmentBasis = RequiredString(item, "assignmentBasis");
+                if (assignmentBasis != "workbook_source_band" && assignmentBasis != "exact_human_pve_override")
+                    throw new InvalidDataException("Calibrated roster assignment basis is invalid: " + id);
+                if (PositiveInt(item, "sourceCandidateMinSamples") < 30)
+                    throw new InvalidDataException("Calibrated roster has fewer than 30 source samples: " + id);
+
+                JObject machine = item["machineValidation"] as JObject
+                    ?? throw new InvalidDataException("Calibrated roster machineValidation is required: " + id);
+                double timeoutRate = RequiredFiniteNumber(machine, "sourceCandidateTimeoutRateMax");
+                if (timeoutRate < 0d || timeoutRate > 0.1d
+                        || NonNegativeInt(machine, "sourceCandidateErrorCount") != 0
+                        || machine["sideSwapReviewed"]?.Type != JTokenType.Boolean
+                        || machine.Value<bool>("sideSwapReviewed") != true)
+                {
+                    throw new InvalidDataException("Calibrated roster machine gate is not satisfied: " + id);
+                }
+
+                JArray members = item["members"] as JArray
+                    ?? throw new InvalidDataException("Calibrated roster members are required: " + id);
+                if (members.Count == 0) throw new InvalidDataException("Calibrated roster is empty: " + id);
+                var canonicalRoster = new JArray();
+                var expectedKnownEnemies = new HashSet<string>(StringComparer.Ordinal);
+                var memberKeys = new HashSet<string>(StringComparer.Ordinal);
+                foreach (JToken memberToken in members)
+                {
+                    if (memberToken is not JObject member)
+                        throw new InvalidDataException("Calibrated roster member must be an object: " + id);
+                    string type = RequiredString(member, "type");
+                    string spriteName = RequiredString(member, "spritename");
+                    RequiredString(member, "name");
+                    int level = PositiveInt(member, "level");
+                    int count = PositiveInt(member, "count");
+                    if (!type.StartsWith("兵种", StringComparison.Ordinal)
+                            || !knownUnitIdentities.Contains(type + "\0" + spriteName)
+                            || member["humanoid"]?.Type != JTokenType.Boolean
+                            || count > MaximumCalibratedRosterEntries)
+                    {
+                        throw new InvalidDataException("Calibrated roster member is invalid: " + id);
+                    }
+                    JObject parameters = null;
+                    if (member["parameters"] != null && member["parameters"].Type != JTokenType.Null)
+                    {
+                        parameters = member["parameters"] as JObject
+                            ?? throw new InvalidDataException("Calibrated roster parameters must be an object: " + id);
+                        if (parameters.ToString(Formatting.None).Length > 8192)
+                            throw new InvalidDataException("Calibrated roster parameters are too large: " + id);
+                    }
+                    string memberKey = type + "\0" + level.ToString(CultureInfo.InvariantCulture) + "\0"
+                        + (parameters == null ? string.Empty : StableCloneToken(parameters).ToString(Formatting.None));
+                    if (!memberKeys.Add(memberKey))
+                        throw new InvalidDataException("Calibrated roster contains an uncollapsed duplicate member: " + id);
+                    bool humanoid = member.Value<bool>("humanoid");
+                    if (humanoid != spriteName.Contains("主角", StringComparison.Ordinal))
+                        throw new InvalidDataException("Calibrated roster humanoid classification is invalid: " + id);
+                    if (!humanoid) expectedKnownEnemies.Add(spriteName);
+                    for (int index = 0; index < count; index++)
+                    {
+                        var canonical = new JObject
+                        {
+                            ["type"] = type,
+                            ["level"] = level
+                        };
+                        if (parameters != null) canonical["Parameters"] = parameters.DeepClone();
+                        canonicalRoster.Add(canonical);
+                    }
+                }
+                if (canonicalRoster.Count == 0 || canonicalRoster.Count > MaximumCalibratedRosterEntries)
+                    throw new InvalidDataException("Calibrated roster expanded count is invalid: " + id);
+
+                string[] requiredKnownEnemies = RequiredStringArray(item, "requiredKnownEnemies");
+                if (!expectedKnownEnemies.SetEquals(requiredKnownEnemies))
+                    throw new InvalidDataException("Calibrated roster known-enemy closure is invalid: " + id);
+                result.Add(new CalibratedRosterDefinition
+                {
+                    Id = id,
+                    TierId = tierId,
+                    DisplayName = RequiredString(item, "displayName"),
+                    EquivalentLevel = equivalentLevel,
+                    AssignmentBasis = assignmentBasis,
+                    Members = (JArray)members.DeepClone(),
+                    CanonicalRoster = canonicalRoster,
+                    RequiredKnownEnemies = requiredKnownEnemies
+                });
+            }
+            return result;
+        }
+
+        private static HashSet<string> ParseUnitIdentities(byte[] bytes)
+        {
+            JArray source;
+            try
+            {
+                source = JArray.Parse(Encoding.UTF8.GetString(bytes));
+            }
+            catch (Exception error)
+            {
+                throw new InvalidDataException("data/units/units.json is not a valid JSON array.", error);
+            }
+            var result = new HashSet<string>(StringComparer.Ordinal);
+            var ids = new HashSet<int>();
+            foreach (JToken token in source)
+            {
+                if (token is not JObject item)
+                    throw new InvalidDataException("data/units/units.json entry must be an object.");
+                int id = NonNegativeInt(item, "id");
+                string spriteName = RequiredString(item, "spritename");
+                string identity = "兵种" + id.ToString(CultureInfo.InvariantCulture) + "\0" + spriteName;
+                if (!ids.Add(id) || !result.Add(identity))
+                    throw new InvalidDataException("data/units/units.json contains a duplicate unit identity: " + id);
+            }
+            if (result.Count == 0) throw new InvalidDataException("data/units/units.json contains no units.");
+            return result;
+        }
+
+        internal static string ComputeCatalogHash(JObject root)
+        {
+            JObject clone = (JObject)root.DeepClone();
+            clone.Remove("catalogHash");
+            string canonical = StableCloneToken(clone).ToString(Formatting.None);
+            using SHA256 sha256 = SHA256.Create();
+            byte[] digest = sha256.ComputeHash(Encoding.UTF8.GetBytes(canonical));
+            return "sha256:" + Convert.ToHexString(digest).ToLowerInvariant();
+        }
+
+        private static JToken StableCloneToken(JToken token)
+        {
+            if (token is JObject obj)
+            {
+                var result = new JObject();
+                foreach (JProperty property in obj.Properties().OrderBy(property => property.Name, StringComparer.Ordinal))
+                    result.Add(property.Name, StableCloneToken(property.Value));
+                return result;
+            }
+            if (token is JArray array)
+                return new JArray(array.Select(StableCloneToken));
+            return token.DeepClone();
+        }
+
+        private static bool IsCalibratedRosterId(string value)
+        {
+            const string prefix = "roster-";
+            if (value == null || value.Length != prefix.Length + 16
+                    || !value.StartsWith(prefix, StringComparison.Ordinal)) return false;
+            for (int index = prefix.Length; index < value.Length; index++)
+            {
+                char character = value[index];
+                if (!((character >= '0' && character <= '9') || (character >= 'a' && character <= 'f')))
+                    return false;
+            }
+            return true;
+        }
+
+        private static string[] RequiredStringArray(JObject item, string name)
+        {
+            if (item[name] is not JArray array)
+                throw new InvalidDataException("Arena JSON string array is required: " + name);
+            string[] values = array.Select(token => token.Type == JTokenType.String ? token.Value<string>() : null).ToArray();
+            if (values.Any(string.IsNullOrWhiteSpace)
+                    || values.Distinct(StringComparer.Ordinal).Count() != values.Length)
+            {
+                throw new InvalidDataException("Arena JSON string array is invalid: " + name);
+            }
+            return values;
+        }
+
+        private static double RequiredFiniteNumber(JObject item, string name)
+        {
+            JToken token = item[name];
+            if (token == null || (token.Type != JTokenType.Integer && token.Type != JTokenType.Float))
+                throw new InvalidDataException("Arena JSON finite number is required: " + name);
+            double value = token.Value<double>();
+            if (double.IsNaN(value) || double.IsInfinity(value))
+                throw new InvalidDataException("Arena JSON finite number is required: " + name);
+            return value;
+        }
+
         private static JObject ParseObject(byte[] bytes, string name)
         {
             try
@@ -560,6 +820,31 @@ namespace CF7Launcher.Tasks
             internal string[] Units;
         }
 
+        internal sealed class CalibratedRosterDefinition
+        {
+            internal string Id;
+            internal string TierId;
+            internal string DisplayName;
+            internal int EquivalentLevel;
+            internal string AssignmentBasis;
+            internal JArray Members;
+            internal JArray CanonicalRoster;
+            internal string[] RequiredKnownEnemies;
+
+            internal JObject ToSnapshot(string scopedId, string scopedCardId)
+            {
+                return new JObject
+                {
+                    ["id"] = scopedId,
+                    ["cardId"] = scopedCardId,
+                    ["displayName"] = DisplayName,
+                    ["equivalentLevel"] = EquivalentLevel,
+                    ["assignmentBasis"] = AssignmentBasis,
+                    ["members"] = Members.DeepClone()
+                };
+            }
+        }
+
         internal sealed class UnitDefinition
         {
             internal string Type;
@@ -576,6 +861,7 @@ namespace CF7Launcher.Tasks
     {
         private const int MaximumRosterEntries = 12;
         private readonly Dictionary<string, ArenaAuthorityCard> _cards;
+        private readonly Dictionary<string, ArenaAuthorityCatalog.CalibratedRosterDefinition> _calibratedRosters;
         private readonly HashSet<string> _knownEnemies;
         private readonly Dictionary<string, List<ArenaAuthorityCatalog.UnitDefinition>> _unitsByType;
         private readonly Dictionary<string, int> _mercenaryLevels;
@@ -583,6 +869,7 @@ namespace CF7Launcher.Tasks
         internal ArenaAuthoritySession(
             string sourceDigest,
             IEnumerable<ArenaAuthorityCard> cards,
+            IEnumerable<ArenaAuthorityCatalog.CalibratedRosterDefinition> calibratedRosters,
             HashSet<string> knownEnemies,
             Dictionary<string, List<ArenaAuthorityCatalog.UnitDefinition>> unitsByType,
             Dictionary<string, int> mercenaryLevels)
@@ -593,6 +880,10 @@ namespace CF7Launcher.Tasks
             _cards = Cards.ToDictionary(
                 card => ScopeCardId(card.Id),
                 StringComparer.Ordinal);
+            CalibratedRosters = calibratedRosters.ToList();
+            _calibratedRosters = CalibratedRosters.ToDictionary(
+                roster => ScopeCalibratedRosterId(roster.Id),
+                StringComparer.Ordinal);
             _knownEnemies = knownEnemies;
             _unitsByType = unitsByType;
             _mercenaryLevels = mercenaryLevels;
@@ -601,15 +892,17 @@ namespace CF7Launcher.Tasks
         internal string SourceDigest { get; }
         internal string SessionId { get; }
         internal IReadOnlyList<ArenaAuthorityCard> Cards { get; }
+        internal IReadOnlyList<ArenaAuthorityCatalog.CalibratedRosterDefinition> CalibratedRosters { get; }
 
         internal JObject ToSnapshot()
         {
             return new JObject
             {
                 ["schemaVersion"] = 1,
-                ["source"] = "data/arena/arena_config.xml+meta_teams.json+arena_factions.json",
+                ["source"] = ArenaAuthorityCatalog.SourceDescription,
                 ["sourceDigest"] = SourceDigest,
-                ["cards"] = new JArray(Cards.Select(ToSessionCardSnapshot))
+                ["cards"] = new JArray(Cards.Select(ToSessionCardSnapshot)),
+                ["calibratedRosters"] = new JArray(CalibratedRosters.Select(ToSessionCalibratedRosterSnapshot))
             };
         }
 
@@ -620,15 +913,55 @@ namespace CF7Launcher.Tasks
             return snapshot;
         }
 
+        private JObject ToSessionCalibratedRosterSnapshot(ArenaAuthorityCatalog.CalibratedRosterDefinition roster)
+        {
+            return roster.ToSnapshot(
+                ScopeCalibratedRosterId(roster.Id),
+                ScopeCardId(roster.TierId));
+        }
+
         private string ScopeCardId(string authorityId)
         {
             return SessionId + ":" + authorityId;
+        }
+
+        private string ScopeCalibratedRosterId(string authorityId)
+        {
+            return SessionId + ":calibrated:" + authorityId;
         }
 
         internal bool TryGetCard(string cardId, out ArenaAuthorityCard card)
         {
             card = null;
             return !string.IsNullOrWhiteSpace(cardId) && _cards.TryGetValue(cardId, out card);
+        }
+
+        internal bool TryResolveCalibratedRoster(
+            string calibratedRosterId,
+            ArenaAuthorityCard card,
+            out JArray roster,
+            out string error)
+        {
+            roster = null;
+            error = null;
+            if (card == null || card.Mode != "standard")
+            {
+                error = "calibrated_roster_not_supported";
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(calibratedRosterId)
+                    || !_calibratedRosters.TryGetValue(calibratedRosterId, out ArenaAuthorityCatalog.CalibratedRosterDefinition definition))
+            {
+                error = "stale_calibrated_roster";
+                return false;
+            }
+            if (!string.Equals(definition.TierId, card.Id, StringComparison.Ordinal))
+            {
+                error = "wrong_calibrated_roster_tier";
+                return false;
+            }
+            roster = (JArray)definition.CanonicalRoster.DeepClone();
+            return true;
         }
 
         internal bool TrySanitizeRoster(

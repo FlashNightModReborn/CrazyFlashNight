@@ -366,7 +366,7 @@
             }
             return AUTHORITY_TIERS.length - 1;
         }
-        function buildAuthorityFixture(playerLevel, knownEnemies) {
+        function buildAuthorityFixture(playerLevel, knownEnemies, calibratedEnabled) {
             var cards = [];
             for (var i = 0; i < AUTHORITY_TIERS.length; i++) {
                 cards.push(authorityStandardCard('arena-' + (i + 1), 'standard', i + 1,
@@ -418,7 +418,53 @@
                     reward: waveReward, deposit: authorityRound(waveReward, 1000)
                 }));
             }
-            return { schemaVersion: 1, source: 'harness-authority-fixture', sourceDigest: 'HARNESS', cards: cards };
+            var calibratedRosters = [];
+            if (calibratedEnabled) {
+                var calibratedUnits = [];
+                var calibratedSeen = {};
+                for (var rosterFaction in rosters) {
+                    var rosterUnits = rosters[rosterFaction] && rosters[rosterFaction].units || [];
+                    for (var ru = 0; ru < rosterUnits.length && calibratedUnits.length < 2; ru++) {
+                        var rosterUnit = rosterUnits[ru];
+                        var rosterKey = String(rosterUnit.type || '') + '|' + String(rosterUnit.spritename || '');
+                        if (!known[String(rosterUnit.spritename || '')] || calibratedSeen[rosterKey]) continue;
+                        calibratedSeen[rosterKey] = true;
+                        calibratedUnits.push(rosterUnit);
+                    }
+                    if (calibratedUnits.length >= 2) break;
+                }
+                for (var ci = 0; ci < 10 && calibratedUnits.length; ci++) {
+                    var calibratedCard = cards[ci];
+                    var calibratedMembers = [];
+                    for (var cu = 0; cu < calibratedUnits.length; cu++) {
+                        var calibratedUnit = calibratedUnits[cu];
+                        calibratedMembers.push({
+                            type: calibratedUnit.type,
+                            name: calibratedUnit.name,
+                            spritename: calibratedUnit.spritename,
+                            level: calibratedCard.levelMin + cu,
+                            count: calibratedUnits.length === 1 ? 2 : 1,
+                            humanoid: false,
+                            parameters: { fixtureOrder: cu + 1, fixtureTier: calibratedCard.index }
+                        });
+                    }
+                    calibratedRosters.push({
+                        id: 'session:calibrated:' + calibratedCard.id + ':0123456789abcdef',
+                        cardId: calibratedCard.id,
+                        displayName: '标定 fixture ' + calibratedCard.index,
+                        equivalentLevel: calibratedCard.levelMin,
+                        assignmentBasis: 'workbook_source_band',
+                        members: calibratedMembers
+                    });
+                }
+            }
+            return {
+                schemaVersion: 1,
+                source: 'harness-authority-fixture',
+                sourceDigest: 'HARNESS',
+                cards: cards,
+                calibratedRosters: calibratedRosters
+            };
         }
         // ── Host 对象 ──
         var host = window.ArenaHarnessHost = {
@@ -436,6 +482,7 @@
             _fixture: 'normal',
             // null = 未显式设置 → getSnapshot 注入默认环境（全量已知）
             _knownEnemies: null,
+            _calibratedEnabled: false,
             _authorityById: {},
 
             setViewport: function(value) {
@@ -465,10 +512,18 @@
                 this._knownEnemies = null;
             },
 
+            setCalibratedRosters: function(enabled) {
+                this._calibratedEnabled = enabled === true;
+            },
+
+            resetCalibratedRosters: function() {
+                this._calibratedEnabled = false;
+            },
+
             getSnapshot: function() {
                 var f = FIXTURES[this._fixture] || FIXTURES.normal;
                 var knownEnemies = this._knownEnemies ? this._knownEnemies.slice() : defaultKnownEnemies();
-                var authority = buildAuthorityFixture(f.playerLevel, knownEnemies);
+                var authority = buildAuthorityFixture(f.playerLevel, knownEnemies, this._calibratedEnabled);
                 this._authorityById = {};
                 for (var i = 0; i < authority.cards.length; i++) this._authorityById[authority.cards[i].id] = authority.cards[i];
                 return {

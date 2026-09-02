@@ -40,7 +40,7 @@ function authorityMessage(overrides) {
       playerLevel: 30,
       arenaAuthority: {
         schemaVersion: 1,
-        source: "data/arena/arena_config.xml+meta_teams.json+arena_factions.json",
+        source: "data/arena/arena_config.xml+meta_teams.json+arena_factions.json+arena_calibrated_rosters.json+data/units/units.json",
         sourceDigest: "A".repeat(64),
         cards,
       },

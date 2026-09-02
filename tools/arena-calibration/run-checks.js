@@ -34,6 +34,8 @@ const scripts = [
   "build-active-shard.js",
   "build-confirmatory-shard.js",
   "build-gate-f-week-plan.js",
+  "build-production-recommendation.js",
+  "apply-production-recommendation.js",
   "intake-workbook.js",
   "build-candidates.js",
   "analyze-results.js",

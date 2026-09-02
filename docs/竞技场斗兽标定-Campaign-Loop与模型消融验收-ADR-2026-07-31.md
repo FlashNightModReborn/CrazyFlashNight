@@ -2,7 +2,7 @@
 
 **文档角色**：斗兽标定 Campaign Loop、模型职责、最小消融、人类 PVE 验收与长时运行恢复的 canonical ADR。真实战斗采样协议、AS2 / C# / Node L0 平台仍以 [竞技场斗兽标定平台 — 架构设计与施工计划](竞技场斗兽标定平台-架构设计-2026-06-29.md) 为准；逐批事实进入 campaign journal，里程碑、临时模型选择与人工结论摘要写入 [竞技场斗兽标定：实验计划与运行日志](竞技场斗兽标定-实验计划与运行日志-2026-07-02.md)。
 
-**状态**：`GATE_E_EQUIVALENCE_LABELS_COMPLETE / OBJECTIVE_PVE_TELEMETRY_UNREPORTED / NOT_FORMALLY_APPLIED`（2026-08-27）。Gate B 的 durable Campaign Supervisor 已验收；Gate C 已取得 A/B/C 三份真实模型输出和一次与模型身份、先验及历史结论隔离的模型盲评；Gate D 又执行 34-run 主动探索与 21-run 确证 shard，使 `candidate-dd65977b16a48a35` 达到 original 15 + swapped 15、0 timeout、0 error、side-swap 已复核。Gate E 的两场正式运行时 PVE 均由维护者标为“1 名 10 级佣兵等效战力”，数值等效标签已进入独立证据链。两场没有补录胜负、残血、承伤、输出等客观遥测，第一场的控制进程还在战斗结束后因 PTY EOF 走了清理性 abort，因此只称 `equivalence_only`，不称完整 PVE telemetry、正式标定落盘、发布或标准入口业务验收。
+**状态**：`GATE_F_WEEK_CLOSEOUT_COMPLETE / PRODUCTION_RECOMMENDATION_AWAITING_EXACT_HASH_APPROVAL / NOT_FORMALLY_APPLIED`（2026-09-02）。v9 closeout 已冻结 195 个 completed shard、3,230 条 selected row（其中 3,170 条数值候选行）和 36 个 completion-eligible candidate；21 个 timeout candidate 保持 provisional，D10/B12 保持 quarantine。额外 bridge 批为 160 行、157 finished、3 timeout、0 error，并继续绑定 exact formal runtime、受保护存档不变与正常 shutdown。两组真人 PVE 标签均为 `equivalence_only`：G2 的 exact 两个 roster 为 `1 × Lv10`；B11 两个 roster 支持测试群原 50–60 档可信度，但因 820/wedge 物理语义不进入默认 650/line/line/54 生产 profile。当前已生成精确组合目录与可回滚 recommendation 工具链，活动目录仍为 `active=false`；bundle 生成、代码回归或人类标签都不等于正式 apply、candidate、promotion 或标准入口业务验收。
 
 **最后核对代码基线**：HEAD commit `286e531f214264304e490b122f533e13163b5b83`（2026-08-27）；本节所述 Gate A 增量和证据位于该 HEAD 上的当前工作树，尚未由本文冒称已提交或发布。正式运行身份仍由 runtime manifest 与实际 Core 进程独立核验。
 
@@ -564,7 +564,7 @@ shadow 先比较：
 | P2 | planner v2 | 已生成 bridge、side-swap audit 与 timeout/error anomaly disposition | 跑真实桥接 shard 后复算 |
 | P3 | 模型 adapter | A/B/C 三 profile 已对同一 snapshot 完成真实调用；机械 scorecard 与盲化模型复核均有 receipt，盲评顺序为 C > A > B | 本次只建立一次可重放证据，不外推为永久模型排名 |
 | P3 | 人类 PVE | exact formal runtime、冻结 Lv32 玩家 build、2 场受控 encounter、两份截图/报告和两条 `1 × Lv10` 等效标签已闭合 | 客观战斗 telemetry 未报告，当前只到 `equivalence_only`；以后 packet 直接采数值等效合同 |
-| P3 | 正式建议落地 | 结果到 Web JS / XML 之间需人工翻译 | recommendation bundle、dry-run diff、一次批准 apply 和 rollback receipt |
+| P3 | 正式建议落地 | 33 个生产 profile 候选已去重为 55 个 exact roster；Host/Web canonical ID 消费、release input、recommendation/apply/rollback 工具已实现 | 人类批准最终 exact bundle hash 后执行一次 CAS apply；随后构建 candidate、真实 Arena E2E 与 runtime promotion 分门取证 |
 | P4 | 故障演练 | 已有 crash/timeout/rerun 实机证据；fixture 覆盖 checkpoint 撕裂、重复 attempt、ack 丢失、磁盘不足、window expiry/revoke、active producer 和 manifest/decision 篡改 | 真实断电、长时漂移和运行中内容开发抢占留 Gate F 实跑 |
 
 P0 契约漂移已于 2026-08-27 闭合。当前统一门用 Ajv 2020 编译 46 个顶层/嵌入 schema，并完成 73 项检查，合法实例通过、对应非法形状拒绝；覆盖 manifest、result、summary、next batch、工作簿 intake、Campaign runtime、shadow / paired / PVE artifacts、数值人形佣兵等效响应、Gate F plan/window/decision/attention/shard receipt/status，以及候选 quarantine、异常模型 request/result/receipt/dispatch。测试群工作簿以 SHA-256 `840B30AF82CA686E954DC4A6378A5C2B297506070E034ED79EA91DA9E0B3B793`、sheet `斗兽标定组合` 和单元格定位摄取：59 个 populated cells 形成 59 个 raw submissions、58 个 normalized candidates，`C9` 和 `B9` 产生 hash-bound 派生修正，`B12` 保留原文并隔离，原工作簿未改写。
@@ -720,6 +720,10 @@ v8 随后由提交 `2dc660cb1d2ecbb64fa78a5ec7d9c89f515263b8` clean freeze 为 p
 
 B2 继续保留在自身 `10 + 20 + 25` 标准数值分片，不因基础设施代表替换而丢样。替代选择只把旧 cohort 的 55-run 结果当诊断：D2 为 55/55 finished、0 timeout/error、P95 429 帧，但这些旧行不进入 admission、拟合或新 cohort。当前 formal runtime 上的新鲜 D2 exact-policy probe 固定 original/side-swap 各 5，取得 10/10 finished、0 timeout/error/recovery、最大 423 帧、正常 shutdown 与相同存档 snapshot。v9 admission 将 group 改为 `D2/C7/G2/F3/C11`，逐文件绑定 D2 manifest/result/report 与既有 C11、派生 red/blue evidence，hash 为 `sha256:9034715cffb240f9f1d42b6eb6b31064cfb5147dd0b879d67cc3b164eb83f4a2`。tracked v9 仍为 58 scheduled + B12 quarantine、198 shard / 3,285 run；当前只到草案重建，必须再次 clean freeze 并从零执行三份 20-run soak。
 
+v9 最终 closeout 已完成三份 fresh soak 与其余 195 个 completed shard；`closeout-index` 绑定 plan `sha256:5d6b3bef5d359a342c76de9c8e4660eb5447610de0bf247ea614d27e2cba61db`、formal build identity `48E2ACEA81194C0D6C3A89226DEC2748192612B5514D3F3ADB8444FA4AF6C528`、payload closure `DA7E5BD135FF2407ED7CE459F521BEA95C9CB6F5CC63AA5291ABAC795DAF59F1` 和不变 save snapshot。机器门最终给出 57 个数值候选中的 36 个 completion eligible、21 个 timeout provisional，D10 与 B12 隔离；closeout 选中 3,230 行，其中 3,170 行进入候选统计。随后为断连图补跑的 160 行 bridge evidence 为 157 finished、3 timeout、0 error、0 recovery，仍保持同一 runtime/save/shutdown 闭包；timeout 只作质量异常，不伪造成强度胜负。
+
+生产转换只选 completion eligible 且物理语义精确匹配 `650/line/line/54` 的 33 个候选，B11/C11/C7 作为 820 或非 line context evidence 留存；候选两侧去重后形成 55 个 exact roster。工作簿原档位映射到标准卡离散 tier，pairwise 图只作各连通分量内复核，不制造跨分量连续等级。G2 两个 exact roster 由两场真人标签覆盖为 Lv10 / `arena-2`；B11 两场真人结果与测试群 50–60 档一致，但不跨物理 profile 激活。正式 SOT 为 `data/arena/arena_calibrated_rosters.json`，Host 按 known-enemy 和 session-scoped ID 投影/反查，Web 不下发 roster。recommendation bundle 同时绑定 proposed/base/rollback、Git revision 与实现 closure；未取得 exact bundle hash 批准前，tracked SOT 保持 inactive。
+
 ## 13. ADR 验收边界
 
 本文的实现验收是：
@@ -751,7 +755,7 @@ B2 继续保留在自身 `10 + 20 + 25` 标准数值分片，不因基础设施�
 - shadow 进入在线交错实验的物质增益阈值。
 - Campaign 事件账本已由 Node owner 实现；未来迁移 owner 不得改变 §5.3 的 canonical 路径、保留、单 writer、flush、commit 与恢复语义。
 - producer registry exact scope、TTL 与当前已打开且响应的 TestLoader observation 已闭合；未来新增 producer 必须先扩 schema/registry 与 fail-closed fixture。
-- recommendation apply 工具在现有 Web JS SOT 与未来配置 SOT 迁移间的适配层。
+- active catalog 通过 exact apply 后的 isolated candidate、真实 WebView2 → Host → AS2 Arena 旅程、promotion 与标准入口回归；这些发布门不得由 recommendation 或 browser harness 代签。
 
 这些开放项不得削弱 §5.3 durable journal、§7.1 action 枚举、Human-attention contract 或 Gate A 的客观闭合；在对应实现 Gate 前必须闭合。
 

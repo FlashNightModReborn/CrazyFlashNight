@@ -767,19 +767,26 @@
         // roster 卡（堕落/标准混入/隐藏混编）：把本地采样的小队作为 roster 下发 → AS2 走 commitRoster 生成混合阵容。
         // WYSIWYG：下发的就是 grid/detail 预览里那批怪（兵种 type 或 mercId + level 一一对应）。
         else if ((S._cardKind[cardIdx] === 'monster' || S._cardKind[cardIdx] === 'mixed')) {
-            var roster = [];
-            for (var ri = 0; ri < opponents.length; ri++) {
-                var rosterEntry = null;
-                if (opponents[ri].mercId != null) {
-                    rosterEntry = { kind: 'merc', mercId: opponents[ri].mercId, level: opponents[ri].level };
-                } else if (opponents[ri].type) {
-                    rosterEntry = { type: opponents[ri].type, level: opponents[ri].level };
+            var selectedSquad = S._monsterSquad[cardIdx];
+            if (selectedSquad && typeof selectedSquad.calibratedRosterId === 'string') {
+                // 标定目录只提交 session-scoped id；Host 从同一权威快照反查 canonical roster。
+                // 禁止同时发送 Web 重建的 roster，避免参数或顺序漂移扩大信任面。
+                msg.calibratedRosterId = selectedSquad.calibratedRosterId;
+            } else {
+                var roster = [];
+                for (var ri = 0; ri < opponents.length; ri++) {
+                    var rosterEntry = null;
+                    if (opponents[ri].mercId != null) {
+                        rosterEntry = { kind: 'merc', mercId: opponents[ri].mercId, level: opponents[ri].level };
+                    } else if (opponents[ri].type) {
+                        rosterEntry = { type: opponents[ri].type, level: opponents[ri].level };
+                    }
+                    if (!rosterEntry) continue;
+                    if (ArenaCustomEditor.customHasParameters(opponents[ri].parameters)) rosterEntry.parameters = ArenaCustomEditor.cloneCustomParameters(opponents[ri].parameters);
+                    roster.push(rosterEntry);
                 }
-                if (!rosterEntry) continue;
-                if (ArenaCustomEditor.customHasParameters(opponents[ri].parameters)) rosterEntry.parameters = ArenaCustomEditor.cloneCustomParameters(opponents[ri].parameters);
-                roster.push(rosterEntry);
+                if (roster.length) msg.roster = roster;
             }
-            if (roster.length) msg.roster = roster;
         }
         Bridge.send(msg);
     }

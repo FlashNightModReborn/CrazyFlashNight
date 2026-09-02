@@ -214,7 +214,10 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\validate-arena-drop-rules.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7RequiredPathsCheck -Name 'required-arena-authority-assets' `
         -Root (Join-Path $ProjectRoot 'data\arena') `
-        -Paths @('arena_config.xml', 'arena_drop_rules.xml', 'arena_factions.json', 'meta_teams.json')
+        -Paths @('arena_calibrated_rosters.json', 'arena_config.xml', 'arena_drop_rules.xml', 'arena_factions.json', 'meta_teams.json')
+    $checks += New-Cf7RequiredPathsCheck -Name 'required-arena-unit-catalog' `
+        -Root (Join-Path $ProjectRoot 'data\units') `
+        -Paths @('units.json')
 
     $requiredWebPaths = @(
         'bootstrap.html', 'bootstrap-main.js', 'overlay.html', 'config\version.js',

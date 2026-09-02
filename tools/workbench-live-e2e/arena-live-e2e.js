@@ -160,7 +160,7 @@ function validateAuthoritySnapshot(message) {
   const cards = authority && authority.cards;
   if (!message || message.success !== true || !snapshot || !Number.isFinite(Number(snapshot.money))
       || !authority || authority.schemaVersion !== 1
-      || authority.source !== "data/arena/arena_config.xml+meta_teams.json+arena_factions.json"
+      || authority.source !== "data/arena/arena_config.xml+meta_teams.json+arena_factions.json+arena_calibrated_rosters.json+data/units/units.json"
       || !/^[0-9A-F]{64}$/.test(String(authority.sourceDigest || ""))
       || !Array.isArray(cards) || cards.length < 12) {
     fail("arena_authority_snapshot_invalid", "arena_open",

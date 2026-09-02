@@ -1,0 +1,3312 @@
+{
+  "schemaVersion": 1,
+  "active": true,
+  "catalogId": "gate-f-week-full-v9-production-compatible-v1",
+  "campaignId": "gate-f-week-full-v9",
+  "cohortId": "arena-cohort-20260830-derived-faction-v4",
+  "source": {
+    "workbookSha256": "sha256:840b30af82ca686e954dc4a6378a5c2b297506070e034ed79ea91da9e0b3b793",
+    "sheetName": "斗兽标定组合",
+    "arenaConfigSha256": "sha256:f6b59bf26a1e7cc0c561cf130c49ab85458de57a5f3a607d644a4ee1f24d8b9a",
+    "unitCatalogSha256": "sha256:411f983ae2b33b16b7cf5d3a1c65c21574fa8d4a4ef04631edb7682c56436928",
+    "candidateMetricsSha256": "sha256:2b8da8d35802340148b5646f0d12d1c1c0c53ad5298739bc9504a29944b5b9c9",
+    "pairedInputSha256": "sha256:e43ad1d2bcf0a43fc3e391934a7abb8dc2ac123d4994e1fba763e8c523324c32",
+    "productionRefitHash": "sha256:c27340e7b0b6a2d9cd7de3cccf0df66f783ec159fa91dba3d9b737ca2a92c583",
+    "human650ResponseHash": "sha256:76ab8e72f4edfcfdbebd7c38b7235a273d0205b4fc9248f3987a4609cec18f18",
+    "human820ResponseHash": "sha256:d7a58b072ddb920b99199e0d715d0cd4ed11a23c89b7d5ade9987e819b106548"
+  },
+  "model": {
+    "method": "workbook-tier-exact-combination-with-production-domain-pairwise-validation-v1",
+    "strengthModel": "regularized-bradley-terry-draw-half-v1",
+    "graphComponentCount": 10,
+    "publishedComponents": [
+      {
+        "component": 0,
+        "tierIds": [
+          "arena-1",
+          "arena-2",
+          "arena-3",
+          "arena-4",
+          "arena-5",
+          "arena-7",
+          "arena-8"
+        ],
+        "publishedNodes": 26
+      },
+      {
+        "component": 1,
+        "tierIds": [
+          "arena-1",
+          "arena-2",
+          "arena-8"
+        ],
+        "publishedNodes": 8
+      },
+      {
+        "component": 2,
+        "tierIds": [
+          "arena-4",
+          "arena-5",
+          "arena-7"
+        ],
+        "publishedNodes": 6
+      },
+      {
+        "component": 3,
+        "tierIds": [
+          "arena-10",
+          "arena-6"
+        ],
+        "publishedNodes": 5
+      },
+      {
+        "component": 4,
+        "tierIds": [
+          "arena-7"
+        ],
+        "publishedNodes": 2
+      },
+      {
+        "component": 5,
+        "tierIds": [
+          "arena-7"
+        ],
+        "publishedNodes": 2
+      },
+      {
+        "component": 6,
+        "tierIds": [
+          "arena-1"
+        ],
+        "publishedNodes": 2
+      },
+      {
+        "component": 7,
+        "tierIds": [
+          "arena-5"
+        ],
+        "publishedNodes": 2
+      },
+      {
+        "component": 8,
+        "tierIds": [
+          "arena-1"
+        ],
+        "publishedNodes": 2
+      }
+    ],
+    "bridgeOnlyNodes": 19,
+    "publishedNonTransitiveCycles": [
+      {
+        "nodes": [
+          "roster-bd110eb701ae9139",
+          "roster-680fa8007ae09429",
+          "roster-b9fe7c421e62ef03"
+        ],
+        "rates": [
+          0.9454545454545454,
+          0.7181818181818181,
+          0.9454545454545454
+        ],
+        "disposition": "context_dependent",
+        "runtimeTierIds": [
+          "arena-3"
+        ]
+      }
+    ],
+    "humanOverrides": [
+      {
+        "sourceCell": "G2",
+        "nodeIds": [
+          "roster-0d9b709d0091fa0b",
+          "roster-b1d41a6f8f8796f0"
+        ],
+        "equivalentHumanoidLevel": 10,
+        "responseHash": "sha256:76ab8e72f4edfcfdbebd7c38b7235a273d0205b4fc9248f3987a4609cec18f18"
+      }
+    ],
+    "absoluteScaleBoundary": "workbook bands assign runtime tiers; pairwise component strengths are retained only within each connected tier and are not converted into a cross-tier continuous level",
+    "productionProxyProfile": {
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54
+    },
+    "transferBoundary": "only 650/line/line/54 machine-completion-eligible candidates are active; 820 or non-line evidence is retained outside the runtime catalog"
+  },
+  "rosters": [
+    {
+      "id": "roster-0857fe3c13d72022",
+      "displayName": "左轮 Lv20",
+      "equivalentLevel": 3,
+      "equivalentLevelMin": 1,
+      "equivalentLevelMax": 5,
+      "tierId": "arena-1",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "C2"
+      ],
+      "candidateIds": [
+        "candidate-5916c1cceeba49d5"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 1,
+        "withinComponentStrength": -1.93612888,
+        "lower95": -2.4648869,
+        "upper95": -1.40737086,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种44",
+          "level": 20,
+          "count": 1,
+          "name": "左轮",
+          "spritename": "敌人-盗贼枪手",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-盗贼枪手"
+      ]
+    },
+    {
+      "id": "roster-0b1c3f03818a531d",
+      "displayName": "僵尸 Lv20 + 僵尸 Lv20 + 僵尸 Lv20 + 僵尸 Lv20 + 狂暴僵尸 Lv20",
+      "equivalentLevel": 3,
+      "equivalentLevelMin": 1,
+      "equivalentLevelMax": 5,
+      "tierId": "arena-1",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "E2"
+      ],
+      "candidateIds": [
+        "candidate-88ff4d62419433d7"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 6,
+        "withinComponentStrength": -2.54877476,
+        "lower95": -3.52620695,
+        "upper95": -1.57134257,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种1",
+          "level": 20,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-金发女僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种2",
+          "level": 20,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-眼镜僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种3",
+          "level": 20,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-光头军人僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种5",
+          "level": 20,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-胖僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种7",
+          "level": 20,
+          "count": 1,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-光头军人僵尸1",
+        "敌人-帽子瘦僵尸1",
+        "敌人-眼镜僵尸1",
+        "敌人-胖僵尸1",
+        "敌人-金发女僵尸1"
+      ]
+    },
+    {
+      "id": "roster-3c1652b64f865f80",
+      "displayName": "盗贼 Lv10",
+      "equivalentLevel": 3,
+      "equivalentLevelMin": 1,
+      "equivalentLevelMax": 5,
+      "tierId": "arena-1",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "F2"
+      ],
+      "candidateIds": [
+        "candidate-a7a265a498830259"
+      ],
+      "samples": 54,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 8,
+        "withinComponentStrength": 2.32946888,
+        "lower95": -1.07254041,
+        "upper95": 5.73147816,
+        "sourceCandidateTimeoutRateMax": 0.01818181818181818,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种27",
+          "level": 10,
+          "count": 1,
+          "name": "盗贼",
+          "spritename": "主角-男",
+          "humanoid": true
+        }
+      ],
+      "requiredKnownEnemies": []
+    },
+    {
+      "id": "roster-4fabc6ce6357acc6",
+      "displayName": "狂暴僵尸 Lv20×2 + 兽化僵尸 Lv20×2",
+      "equivalentLevel": 3,
+      "equivalentLevelMin": 1,
+      "equivalentLevelMax": 5,
+      "tierId": "arena-1",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "B2",
+        "C2",
+        "D2"
+      ],
+      "candidateIds": [
+        "candidate-5916c1cceeba49d5",
+        "candidate-a65d27a00cf71919",
+        "candidate-bc74763292a63c5c"
+      ],
+      "samples": 169,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 1,
+        "withinComponentStrength": -2.06254172,
+        "lower95": -2.45633722,
+        "upper95": -1.66874623,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种7",
+          "level": 20,
+          "count": 2,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "level": 20,
+          "count": 2,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-帽子瘦僵尸1",
+        "敌人-裸体兽化僵尸1"
+      ]
+    },
+    {
+      "id": "roster-723fd0cd478d0b38",
+      "displayName": "杀手 Lv20 + 跳蚤 Lv20",
+      "equivalentLevel": 3,
+      "equivalentLevelMin": 1,
+      "equivalentLevelMax": 5,
+      "tierId": "arena-1",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "E2"
+      ],
+      "candidateIds": [
+        "candidate-88ff4d62419433d7"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 6,
+        "withinComponentStrength": -0.06055763,
+        "lower95": -1.0096581,
+        "upper95": 0.88854285,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种49",
+          "level": 20,
+          "count": 1,
+          "name": "杀手",
+          "spritename": "敌人-盗贼瘦子",
+          "humanoid": false
+        },
+        {
+          "type": "兵种45",
+          "level": 20,
+          "count": 1,
+          "name": "跳蚤",
+          "spritename": "敌人-盗贼侏儒",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-盗贼侏儒",
+        "敌人-盗贼瘦子"
+      ]
+    },
+    {
+      "id": "roster-cd23781163d8e56b",
+      "displayName": "黑铁死士 Lv20×2",
+      "equivalentLevel": 3,
+      "equivalentLevelMin": 1,
+      "equivalentLevelMax": 5,
+      "tierId": "arena-1",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "D2"
+      ],
+      "candidateIds": [
+        "candidate-bc74763292a63c5c"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 1,
+        "withinComponentStrength": -0.68685748,
+        "lower95": -1.33350365,
+        "upper95": -0.04021131,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种47",
+          "level": 20,
+          "count": 2,
+          "name": "黑铁死士",
+          "spritename": "敌人-黑铁会死士",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-黑铁会死士"
+      ]
+    },
+    {
+      "id": "roster-d50f818acf534b8d",
+      "displayName": "掠夺少女 Lv20",
+      "equivalentLevel": 3,
+      "equivalentLevelMin": 1,
+      "equivalentLevelMax": 5,
+      "tierId": "arena-1",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "B2"
+      ],
+      "candidateIds": [
+        "candidate-a65d27a00cf71919"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 1,
+        "withinComponentStrength": 1.16604475,
+        "lower95": -0.17581435,
+        "upper95": 2.50790384,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种353",
+          "level": 20,
+          "count": 1,
+          "name": "掠夺少女",
+          "spritename": "敌人-劫掠少女",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-劫掠少女"
+      ]
+    },
+    {
+      "id": "roster-e4af336dbec89026",
+      "displayName": "僵尸 Lv20 + 狂暴僵尸 Lv20 + 狂躁僵尸 Lv20 + 兽化僵尸 Lv20×2 + 僵尸 Lv20",
+      "equivalentLevel": 3,
+      "equivalentLevelMin": 1,
+      "equivalentLevelMax": 5,
+      "tierId": "arena-1",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "F2"
+      ],
+      "candidateIds": [
+        "candidate-a7a265a498830259"
+      ],
+      "samples": 58,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 8,
+        "withinComponentStrength": -3.12046932,
+        "lower95": -6.18358433,
+        "upper95": -0.05735432,
+        "sourceCandidateTimeoutRateMax": 0.01818181818181818,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种6",
+          "level": 20,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-黄色衣服男僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种7",
+          "level": 20,
+          "count": 1,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种39",
+          "level": 20,
+          "count": 1,
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种10",
+          "level": 20,
+          "count": 2,
+          "name": "兽化僵尸",
+          "spritename": "敌人-裸体兽化僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种5",
+          "level": 20,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-胖僵尸1",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-士兵奔跑僵尸1",
+        "敌人-帽子瘦僵尸1",
+        "敌人-胖僵尸1",
+        "敌人-裸体兽化僵尸1",
+        "敌人-黄色衣服男僵尸1"
+      ]
+    },
+    {
+      "id": "roster-37bf8ddf2ef02ca2",
+      "displayName": "杀手 Lv20 + 左轮 Lv20×2",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "D3"
+      ],
+      "candidateIds": [
+        "candidate-43c67ad5a5bceff1"
+      ],
+      "samples": 63,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 1,
+        "withinComponentStrength": -1.26588139,
+        "lower95": -1.80687099,
+        "upper95": -0.72489179,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种49",
+          "level": 20,
+          "count": 1,
+          "name": "杀手",
+          "spritename": "敌人-盗贼瘦子",
+          "humanoid": false
+        },
+        {
+          "type": "兵种44",
+          "level": 20,
+          "count": 2,
+          "name": "左轮",
+          "spritename": "敌人-盗贼枪手",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-盗贼枪手",
+        "敌人-盗贼瘦子"
+      ]
+    },
+    {
+      "id": "roster-4f487010a6a274ef",
+      "displayName": "防暴僵尸 Lv20 + 狂暴僵尸 Lv20×2",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "C3"
+      ],
+      "candidateIds": [
+        "candidate-4d0915a0786a930d"
+      ],
+      "samples": 58,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.58258784,
+        "lower95": -1.26552389,
+        "upper95": 0.1003482,
+        "sourceCandidateTimeoutRateMax": 0.01818181818181818,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种400",
+          "level": 20,
+          "count": 1,
+          "name": "防暴僵尸",
+          "spritename": "敌人-防爆服僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种7",
+          "level": 20,
+          "count": 2,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-帽子瘦僵尸1",
+        "敌人-防爆服僵尸"
+      ]
+    },
+    {
+      "id": "roster-66809df5d87dc25a",
+      "displayName": "防暴僵尸 Lv20 + 兽化僵尸 Lv20×2",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "F3"
+      ],
+      "candidateIds": [
+        "candidate-c0ae68d0247fa97b"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -2.11639047,
+        "lower95": -2.64672269,
+        "upper95": -1.58605825,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种400",
+          "level": 20,
+          "count": 1,
+          "name": "防暴僵尸",
+          "spritename": "敌人-防爆服僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种9",
+          "level": 20,
+          "count": 2,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "humanoid": false,
+          "parameters": {
+            "方向": "左",
+            "登场动画": "下落"
+          }
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-兽化僵尸1",
+        "敌人-防爆服僵尸"
+      ]
+    },
+    {
+      "id": "roster-69345b119a5de6cc",
+      "displayName": "街舞少女 Lv20 + 掠夺少女 Lv20 + 战斗少女 Lv20",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "B3",
+        "C3"
+      ],
+      "candidateIds": [
+        "candidate-4d0915a0786a930d",
+        "candidate-fb6db434424460a4"
+      ],
+      "samples": 113,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 1.03959215,
+        "lower95": 0.47832597,
+        "upper95": 1.60085833,
+        "sourceCandidateTimeoutRateMax": 0.01818181818181818,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种86",
+          "level": 20,
+          "count": 1,
+          "name": "街舞少女",
+          "spritename": "敌人-狂野玫瑰马尾姑娘",
+          "humanoid": false
+        },
+        {
+          "type": "兵种353",
+          "level": 20,
+          "count": 1,
+          "name": "掠夺少女",
+          "spritename": "敌人-劫掠少女",
+          "humanoid": false
+        },
+        {
+          "type": "兵种46",
+          "level": 20,
+          "count": 1,
+          "name": "战斗少女",
+          "spritename": "敌人-辫子姑娘",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-劫掠少女",
+        "敌人-狂野玫瑰马尾姑娘",
+        "敌人-辫子姑娘"
+      ]
+    },
+    {
+      "id": "roster-945d330902bcb5b4",
+      "displayName": "突击兵 Lv20×2",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "B3",
+        "E3"
+      ],
+      "candidateIds": [
+        "candidate-6cd5a40eaa336e4a",
+        "candidate-fb6db434424460a4"
+      ],
+      "samples": 114,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -1.52897706,
+        "lower95": -2.02209303,
+        "upper95": -1.03586108,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种56",
+          "level": 20,
+          "count": 2,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-军阀突击兵"
+      ]
+    },
+    {
+      "id": "roster-98d18b5728bd8b29",
+      "displayName": "黑铁死士 Lv20×3",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "E3"
+      ],
+      "candidateIds": [
+        "candidate-6cd5a40eaa336e4a"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -2.3245127,
+        "lower95": -2.8912512,
+        "upper95": -1.7577742,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种47",
+          "level": 20,
+          "count": 3,
+          "name": "黑铁死士",
+          "spritename": "敌人-黑铁会死士",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-黑铁会死士"
+      ]
+    },
+    {
+      "id": "roster-a32d676c41a71552",
+      "displayName": "狂暴僵尸 Lv20×2 + 防暴僵尸 Lv20",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "D3"
+      ],
+      "candidateIds": [
+        "candidate-43c67ad5a5bceff1"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 1,
+        "withinComponentStrength": -1.81572784,
+        "lower95": -2.36299019,
+        "upper95": -1.26846549,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种7",
+          "level": 20,
+          "count": 2,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种400",
+          "level": 20,
+          "count": 1,
+          "name": "防暴僵尸",
+          "spritename": "敌人-防爆服僵尸",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-帽子瘦僵尸1",
+        "敌人-防爆服僵尸"
+      ]
+    },
+    {
+      "id": "roster-bdb91ea1e4494434",
+      "displayName": "突击兵 Lv20 + 狂躁僵尸 Lv20 + 兽化变种僵尸 Lv10",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "G3"
+      ],
+      "candidateIds": [
+        "candidate-95abe4faa8937edd"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 2.19766382,
+        "lower95": 1.56434168,
+        "upper95": 2.83098596,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种56",
+          "level": 20,
+          "count": 1,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种39",
+          "level": 20,
+          "count": 1,
+          "name": "狂躁僵尸",
+          "spritename": "敌人-士兵奔跑僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种424",
+          "level": 10,
+          "count": 1,
+          "name": "兽化变种僵尸",
+          "spritename": "敌人-兽化变种",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-兽化变种",
+        "敌人-军阀突击兵",
+        "敌人-士兵奔跑僵尸1"
+      ]
+    },
+    {
+      "id": "roster-c9a5f84e5662139b",
+      "displayName": "左轮 Lv20 + 杀手 Lv20 + 跳蚤 Lv20",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "F3"
+      ],
+      "candidateIds": [
+        "candidate-c0ae68d0247fa97b"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -2.31324802,
+        "lower95": -2.83589378,
+        "upper95": -1.79060226,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种44",
+          "level": 20,
+          "count": 1,
+          "name": "左轮",
+          "spritename": "敌人-盗贼枪手",
+          "humanoid": false
+        },
+        {
+          "type": "兵种49",
+          "level": 20,
+          "count": 1,
+          "name": "杀手",
+          "spritename": "敌人-盗贼瘦子",
+          "humanoid": false
+        },
+        {
+          "type": "兵种45",
+          "level": 20,
+          "count": 1,
+          "name": "跳蚤",
+          "spritename": "敌人-盗贼侏儒",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-盗贼侏儒",
+        "敌人-盗贼枪手",
+        "敌人-盗贼瘦子"
+      ]
+    },
+    {
+      "id": "roster-f77e7ee6906d6ff6",
+      "displayName": "特战僵尸 Lv20 + 斥候异形 Lv10 + 野狗 Lv20",
+      "equivalentLevel": 8,
+      "equivalentLevelMin": 5,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "5-10级"
+      ],
+      "sourceCells": [
+        "G3"
+      ],
+      "candidateIds": [
+        "candidate-95abe4faa8937edd"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 0.93767252,
+        "lower95": 0.31372023,
+        "upper95": 1.56162482,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种401",
+          "level": 20,
+          "count": 1,
+          "name": "特战僵尸",
+          "spritename": "敌人-特警僵尸",
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种16",
+          "level": 10,
+          "count": 1,
+          "name": "斥候异形",
+          "spritename": "敌人-肉色异形兵1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种13",
+          "level": 20,
+          "count": 1,
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-僵尸1-狗",
+        "敌人-特警僵尸",
+        "敌人-肉色异形兵1"
+      ]
+    },
+    {
+      "id": "roster-0d9b709d0091fa0b",
+      "displayName": "僵尸 Lv20 + 跳蚤 Lv20 + 僵尸 Lv20",
+      "equivalentLevel": 10,
+      "equivalentLevelMin": 10,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "exact_human_pve_override",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "G2"
+      ],
+      "candidateIds": [
+        "candidate-dd65977b16a48a35"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -1.83973287,
+        "lower95": -2.35581693,
+        "upper95": -1.3236488,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种293",
+          "level": 20,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-柜员女僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种45",
+          "level": 20,
+          "count": 1,
+          "name": "跳蚤",
+          "spritename": "敌人-盗贼侏儒",
+          "humanoid": false
+        },
+        {
+          "type": "兵种1",
+          "level": 20,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-金发女僵尸1",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-柜员女僵尸",
+        "敌人-盗贼侏儒",
+        "敌人-金发女僵尸1"
+      ],
+      "humanOverride": {
+        "sourceCell": "G2",
+        "encounterId": "encounter-pve-candidate-dd65977b16a48a35-20260827-a-1",
+        "equivalentHumanoidCount": 1,
+        "equivalentHumanoidLevel": 10,
+        "responseHash": "sha256:76ab8e72f4edfcfdbebd7c38b7235a273d0205b4fc9248f3987a4609cec18f18"
+      }
+    },
+    {
+      "id": "roster-b1d41a6f8f8796f0",
+      "displayName": "野狗 Lv10×2 + 狂暴僵尸 Lv25",
+      "equivalentLevel": 10,
+      "equivalentLevelMin": 10,
+      "equivalentLevelMax": 10,
+      "tierId": "arena-2",
+      "assignmentBasis": "exact_human_pve_override",
+      "sourceBands": [
+        "1-5级"
+      ],
+      "sourceCells": [
+        "G2"
+      ],
+      "candidateIds": [
+        "candidate-dd65977b16a48a35"
+      ],
+      "samples": 62,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -1.97349784,
+        "lower95": -2.49431307,
+        "upper95": -1.4526826,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种13",
+          "level": 10,
+          "count": 2,
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "humanoid": false
+        },
+        {
+          "type": "兵种7",
+          "level": 25,
+          "count": 1,
+          "name": "狂暴僵尸",
+          "spritename": "敌人-帽子瘦僵尸1",
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-僵尸1-狗",
+        "敌人-帽子瘦僵尸1"
+      ],
+      "humanOverride": {
+        "sourceCell": "G2",
+        "encounterId": "encounter-pve-candidate-dd65977b16a48a35-20260827-a-2",
+        "equivalentHumanoidCount": 1,
+        "equivalentHumanoidLevel": 10,
+        "responseHash": "sha256:76ab8e72f4edfcfdbebd7c38b7235a273d0205b4fc9248f3987a4609cec18f18"
+      }
+    },
+    {
+      "id": "roster-680fa8007ae09429",
+      "displayName": "巨型僵尸 Lv20",
+      "equivalentLevel": 13,
+      "equivalentLevelMin": 10,
+      "equivalentLevelMax": 15,
+      "tierId": "arena-3",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "10-15级"
+      ],
+      "sourceCells": [
+        "E4",
+        "F4"
+      ],
+      "candidateIds": [
+        "candidate-a4ff13b0f2eb8892",
+        "candidate-acaa213758076266"
+      ],
+      "samples": 110,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.97643909,
+        "lower95": -1.36131666,
+        "upper95": -0.59156152,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种11",
+          "level": 20,
+          "count": 1,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-boss大僵尸"
+      ]
+    },
+    {
+      "id": "roster-8631437b2d321022",
+      "displayName": "左轮 Lv20 + 铁拳 Lv20 + 杀手 Lv20 + 掠夺少女 Lv20 + 战斗少女 Lv20",
+      "equivalentLevel": 13,
+      "equivalentLevelMin": 10,
+      "equivalentLevelMax": 15,
+      "tierId": "arena-3",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "10-15级"
+      ],
+      "sourceCells": [
+        "D4"
+      ],
+      "candidateIds": [
+        "candidate-9524180fd7830ed0"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 1.24908752,
+        "lower95": 0.58901836,
+        "upper95": 1.90915669,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种44",
+          "level": 20,
+          "count": 1,
+          "name": "左轮",
+          "spritename": "敌人-盗贼枪手",
+          "humanoid": false
+        },
+        {
+          "type": "兵种48",
+          "level": 20,
+          "count": 1,
+          "name": "铁拳",
+          "spritename": "敌人-盗贼大叔",
+          "humanoid": false
+        },
+        {
+          "type": "兵种49",
+          "level": 20,
+          "count": 1,
+          "name": "杀手",
+          "spritename": "敌人-盗贼瘦子",
+          "humanoid": false
+        },
+        {
+          "type": "兵种353",
+          "level": 20,
+          "count": 1,
+          "name": "掠夺少女",
+          "spritename": "敌人-劫掠少女",
+          "humanoid": false
+        },
+        {
+          "type": "兵种46",
+          "level": 20,
+          "count": 1,
+          "name": "战斗少女",
+          "spritename": "敌人-辫子姑娘",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-劫掠少女",
+        "敌人-盗贼大叔",
+        "敌人-盗贼枪手",
+        "敌人-盗贼瘦子",
+        "敌人-辫子姑娘"
+      ]
+    },
+    {
+      "id": "roster-b9fe7c421e62ef03",
+      "displayName": "突击兵 Lv20 + 弹药兵 Lv20",
+      "equivalentLevel": 13,
+      "equivalentLevelMin": 10,
+      "equivalentLevelMax": 15,
+      "tierId": "arena-3",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "10-15级"
+      ],
+      "sourceCells": [
+        "C4",
+        "D4",
+        "E4"
+      ],
+      "candidateIds": [
+        "candidate-7cecb6e2959183ee",
+        "candidate-9524180fd7830ed0",
+        "candidate-acaa213758076266"
+      ],
+      "samples": 169,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.3464355,
+        "lower95": -0.68277101,
+        "upper95": -0.0101,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种56",
+          "level": 20,
+          "count": 1,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种57",
+          "level": 20,
+          "count": 1,
+          "name": "弹药兵",
+          "spritename": "敌人-军阀弹药兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-军阀弹药兵",
+        "敌人-军阀突击兵"
+      ]
+    },
+    {
+      "id": "roster-bd110eb701ae9139",
+      "displayName": "黑铁死士 Lv20×2 + 黑铁刺客 Lv20×2",
+      "equivalentLevel": 13,
+      "equivalentLevelMin": 10,
+      "equivalentLevelMax": 15,
+      "tierId": "arena-3",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "10-15级"
+      ],
+      "sourceCells": [
+        "C4",
+        "F4"
+      ],
+      "candidateIds": [
+        "candidate-7cecb6e2959183ee",
+        "candidate-a4ff13b0f2eb8892"
+      ],
+      "samples": 118,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.6736632,
+        "lower95": -1.0491438,
+        "upper95": -0.2981826,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种47",
+          "level": 20,
+          "count": 2,
+          "name": "黑铁死士",
+          "spritename": "敌人-黑铁会死士",
+          "humanoid": false
+        },
+        {
+          "type": "兵种64",
+          "level": 20,
+          "count": 2,
+          "name": "黑铁刺客",
+          "spritename": "敌人-黑铁会刺客",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-黑铁会刺客",
+        "敌人-黑铁会死士"
+      ]
+    },
+    {
+      "id": "roster-beae146af4b7de7f",
+      "displayName": "突击兵 Lv20×2 + 重装兵 Lv20",
+      "equivalentLevel": 13,
+      "equivalentLevelMin": 10,
+      "equivalentLevelMax": 15,
+      "tierId": "arena-3",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "10-15级"
+      ],
+      "sourceCells": [
+        "B4"
+      ],
+      "candidateIds": [
+        "candidate-0ed4c60a2a0c358c"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -1.01528287,
+        "lower95": -1.54372482,
+        "upper95": -0.48684091,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种56",
+          "level": 20,
+          "count": 2,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种55",
+          "level": 20,
+          "count": 1,
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-军阀突击兵",
+        "敌人-军阀重装兵"
+      ]
+    },
+    {
+      "id": "roster-f9f3cc37c8ce3591",
+      "displayName": "左轮 Lv20 + 杀手 Lv20 + 战斗少女 Lv20 + 掠夺少女 Lv20 + 铁拳 Lv20",
+      "equivalentLevel": 13,
+      "equivalentLevelMin": 10,
+      "equivalentLevelMax": 15,
+      "tierId": "arena-3",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "10-15级"
+      ],
+      "sourceCells": [
+        "B4"
+      ],
+      "candidateIds": [
+        "candidate-0ed4c60a2a0c358c"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.91043932,
+        "lower95": -1.43551615,
+        "upper95": -0.3853625,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种44",
+          "level": 20,
+          "count": 1,
+          "name": "左轮",
+          "spritename": "敌人-盗贼枪手",
+          "humanoid": false
+        },
+        {
+          "type": "兵种49",
+          "level": 20,
+          "count": 1,
+          "name": "杀手",
+          "spritename": "敌人-盗贼瘦子",
+          "humanoid": false
+        },
+        {
+          "type": "兵种46",
+          "level": 20,
+          "count": 1,
+          "name": "战斗少女",
+          "spritename": "敌人-辫子姑娘",
+          "humanoid": false
+        },
+        {
+          "type": "兵种353",
+          "level": 20,
+          "count": 1,
+          "name": "掠夺少女",
+          "spritename": "敌人-劫掠少女",
+          "humanoid": false
+        },
+        {
+          "type": "兵种48",
+          "level": 20,
+          "count": 1,
+          "name": "铁拳",
+          "spritename": "敌人-盗贼大叔",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-劫掠少女",
+        "敌人-盗贼大叔",
+        "敌人-盗贼枪手",
+        "敌人-盗贼瘦子",
+        "敌人-辫子姑娘"
+      ]
+    },
+    {
+      "id": "roster-49667d63312614ea",
+      "displayName": "兽化僵尸 Lv20×2 + 巨型僵尸 Lv20",
+      "equivalentLevel": 18,
+      "equivalentLevelMin": 15,
+      "equivalentLevelMax": 20,
+      "tierId": "arena-4",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "15-20级"
+      ],
+      "sourceCells": [
+        "D5"
+      ],
+      "candidateIds": [
+        "candidate-07899540b1d0c4bc"
+      ],
+      "samples": 61,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.2606692,
+        "lower95": -0.79593384,
+        "upper95": 0.27459545,
+        "sourceCandidateTimeoutRateMax": 0.01818181818181818,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种9",
+          "level": 20,
+          "count": 2,
+          "name": "兽化僵尸",
+          "spritename": "敌人-兽化僵尸1",
+          "humanoid": false
+        },
+        {
+          "type": "兵种11",
+          "level": 20,
+          "count": 1,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-boss大僵尸",
+        "敌人-兽化僵尸1"
+      ]
+    },
+    {
+      "id": "roster-50daa26308dd12f2",
+      "displayName": "巨臂僵尸 Lv20 + 僵尸 Lv20×2",
+      "equivalentLevel": 18,
+      "equivalentLevelMin": 15,
+      "equivalentLevelMax": 20,
+      "tierId": "arena-4",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "15-20级"
+      ],
+      "sourceCells": [
+        "E5"
+      ],
+      "candidateIds": [
+        "candidate-e6de6a1f3d09004c"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 2,
+        "withinComponentStrength": -3.46428091,
+        "lower95": -4.19408641,
+        "upper95": -2.73447542,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种425",
+          "level": 20,
+          "count": 1,
+          "name": "巨臂僵尸",
+          "spritename": "敌人-巨臂僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种393",
+          "level": 20,
+          "count": 2,
+          "name": "僵尸",
+          "spritename": "敌人-瘦骨男尸",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-巨臂僵尸",
+        "敌人-瘦骨男尸"
+      ]
+    },
+    {
+      "id": "roster-62f37ac804276185",
+      "displayName": "爆胖僵尸 Lv20×2 + 僵尸 Lv20×2",
+      "equivalentLevel": 18,
+      "equivalentLevelMin": 15,
+      "equivalentLevelMax": 20,
+      "tierId": "arena-4",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "15-20级"
+      ],
+      "sourceCells": [
+        "C5"
+      ],
+      "candidateIds": [
+        "candidate-774d675df0d85f33"
+      ],
+      "samples": 57,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.41330075,
+        "lower95": -0.96109637,
+        "upper95": 0.13449486,
+        "sourceCandidateTimeoutRateMax": 0.03636363636363636,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种443",
+          "level": 20,
+          "count": 2,
+          "name": "爆胖僵尸",
+          "spritename": "敌人-爆胖僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种393",
+          "level": 20,
+          "count": 2,
+          "name": "僵尸",
+          "spritename": "敌人-瘦骨男尸",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-爆胖僵尸",
+        "敌人-瘦骨男尸"
+      ]
+    },
+    {
+      "id": "roster-dd5072a56b1fc5b8",
+      "displayName": "摇滚学姐 Lv20",
+      "equivalentLevel": 18,
+      "equivalentLevelMin": 15,
+      "equivalentLevelMax": 20,
+      "tierId": "arena-4",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "15-20级"
+      ],
+      "sourceCells": [
+        "E5"
+      ],
+      "candidateIds": [
+        "candidate-e6de6a1f3d09004c"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 2,
+        "withinComponentStrength": -1.70817946,
+        "lower95": -2.43191357,
+        "upper95": -0.98444535,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种259",
+          "level": 20,
+          "count": 1,
+          "name": "摇滚学姐",
+          "spritename": "敌人-双喷少女",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-双喷少女"
+      ]
+    },
+    {
+      "id": "roster-ed0f173dfb074fe9",
+      "displayName": "军阀精英突击兵 Lv30 + 突击兵 Lv20",
+      "equivalentLevel": 18,
+      "equivalentLevelMin": 15,
+      "equivalentLevelMax": 20,
+      "tierId": "arena-4",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "15-20级"
+      ],
+      "sourceCells": [
+        "C5",
+        "D5"
+      ],
+      "candidateIds": [
+        "candidate-07899540b1d0c4bc",
+        "candidate-774d675df0d85f33"
+      ],
+      "samples": 107,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 0.28228428,
+        "lower95": -0.11505461,
+        "upper95": 0.67962318,
+        "sourceCandidateTimeoutRateMax": 0.03636363636363636,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种264",
+          "level": 30,
+          "count": 1,
+          "name": "军阀精英突击兵",
+          "spritename": "敌人-军阀精英突击兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种56",
+          "level": 20,
+          "count": 1,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-军阀突击兵",
+        "敌人-军阀精英突击兵"
+      ]
+    },
+    {
+      "id": "roster-7553f2dffca9815a",
+      "displayName": "精英战术少女 Lv20 + 街舞少女 Lv20 + 掠夺少女 Lv20 + 精锐掠夺少女 Lv20 + 战斗少女 Lv20",
+      "equivalentLevel": 23,
+      "equivalentLevelMin": 20,
+      "equivalentLevelMax": 25,
+      "tierId": "arena-5",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "20-25级"
+      ],
+      "sourceCells": [
+        "B6"
+      ],
+      "candidateIds": [
+        "candidate-27cd5fd027a411d3"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 2,
+        "withinComponentStrength": 0.71280695,
+        "lower95": -0.0258668,
+        "upper95": 1.45148069,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种260",
+          "level": 20,
+          "count": 1,
+          "name": "精英战术少女",
+          "spritename": "敌人-精英战术少女",
+          "humanoid": false
+        },
+        {
+          "type": "兵种86",
+          "level": 20,
+          "count": 1,
+          "name": "街舞少女",
+          "spritename": "敌人-狂野玫瑰马尾姑娘",
+          "humanoid": false
+        },
+        {
+          "type": "兵种353",
+          "level": 20,
+          "count": 1,
+          "name": "掠夺少女",
+          "spritename": "敌人-劫掠少女",
+          "humanoid": false
+        },
+        {
+          "type": "兵种354",
+          "level": 20,
+          "count": 1,
+          "name": "精锐掠夺少女",
+          "spritename": "敌人-刀狙少女",
+          "humanoid": false
+        },
+        {
+          "type": "兵种46",
+          "level": 20,
+          "count": 1,
+          "name": "战斗少女",
+          "spritename": "敌人-辫子姑娘",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-刀狙少女",
+        "敌人-劫掠少女",
+        "敌人-狂野玫瑰马尾姑娘",
+        "敌人-精英战术少女",
+        "敌人-辫子姑娘"
+      ]
+    },
+    {
+      "id": "roster-962c9fc2e1e8d16d",
+      "displayName": "黑铁刺客 Lv20×4 + 黑铁流锤 Lv30",
+      "equivalentLevel": 23,
+      "equivalentLevelMin": 20,
+      "equivalentLevelMax": 25,
+      "tierId": "arena-5",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "20-25级"
+      ],
+      "sourceCells": [
+        "D6"
+      ],
+      "candidateIds": [
+        "candidate-90b4baa7179b5279"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 1.87610446,
+        "lower95": 1.35442847,
+        "upper95": 2.39778044,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种64",
+          "level": 20,
+          "count": 4,
+          "name": "黑铁刺客",
+          "spritename": "敌人-黑铁会刺客",
+          "humanoid": false
+        },
+        {
+          "type": "兵种268",
+          "level": 30,
+          "count": 1,
+          "name": "黑铁流锤",
+          "spritename": "敌人-黑铁精英流锤兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-黑铁会刺客",
+        "敌人-黑铁精英流锤兵"
+      ]
+    },
+    {
+      "id": "roster-acec2bc819765015",
+      "displayName": "突击兵 Lv20 + 重装兵 Lv20 + 弹药兵 Lv20 + 狙击兵 Lv20 + 军阀精英突击兵 Lv20",
+      "equivalentLevel": 23,
+      "equivalentLevelMin": 20,
+      "equivalentLevelMax": 25,
+      "tierId": "arena-5",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "20-25级"
+      ],
+      "sourceCells": [
+        "B6"
+      ],
+      "candidateIds": [
+        "candidate-27cd5fd027a411d3"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 2,
+        "withinComponentStrength": -1.10442432,
+        "lower95": -1.84141971,
+        "upper95": -0.36742892,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种56",
+          "level": 20,
+          "count": 1,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种55",
+          "level": 20,
+          "count": 1,
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种57",
+          "level": 20,
+          "count": 1,
+          "name": "弹药兵",
+          "spritename": "敌人-军阀弹药兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种54",
+          "level": 20,
+          "count": 1,
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种264",
+          "level": 20,
+          "count": 1,
+          "name": "军阀精英突击兵",
+          "spritename": "敌人-军阀精英突击兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-军阀弹药兵",
+        "敌人-军阀狙击兵",
+        "敌人-军阀突击兵",
+        "敌人-军阀精英突击兵",
+        "敌人-军阀重装兵"
+      ]
+    },
+    {
+      "id": "roster-d477a65985b4e4b5",
+      "displayName": "巨型僵尸 Lv20×2",
+      "equivalentLevel": 23,
+      "equivalentLevelMin": 20,
+      "equivalentLevelMax": 25,
+      "tierId": "arena-5",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "20-25级"
+      ],
+      "sourceCells": [
+        "D6"
+      ],
+      "candidateIds": [
+        "candidate-90b4baa7179b5279"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 1.96865941,
+        "lower95": 1.4403134,
+        "upper95": 2.49700541,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种11",
+          "level": 20,
+          "count": 2,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-boss大僵尸"
+      ]
+    },
+    {
+      "id": "roster-20cc3cb7cea740f9",
+      "displayName": "骨刺僵尸 Lv1 + 狩猎者铁血 Lv20 + 基因虫 Lv40",
+      "equivalentLevel": 28,
+      "equivalentLevelMin": 25,
+      "equivalentLevelMax": 30,
+      "tierId": "arena-5",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "25-30级"
+      ],
+      "sourceCells": [
+        "E7"
+      ],
+      "candidateIds": [
+        "candidate-19132c3ec3ca6592"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 7,
+        "withinComponentStrength": 0.95271514,
+        "lower95": 0.41459448,
+        "upper95": 1.49083579,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种430",
+          "level": 1,
+          "count": 1,
+          "name": "骨刺僵尸",
+          "spritename": "敌人-骨刺僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种22",
+          "level": 20,
+          "count": 1,
+          "name": "狩猎者铁血",
+          "spritename": "敌人-蓝色铁血战士",
+          "humanoid": false
+        },
+        {
+          "type": "兵种77",
+          "level": 40,
+          "count": 1,
+          "name": "基因虫",
+          "spritename": "敌人-普通基因虫",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-普通基因虫",
+        "敌人-蓝色铁血战士",
+        "敌人-骨刺僵尸"
+      ]
+    },
+    {
+      "id": "roster-b5a331c897f1ac89",
+      "displayName": "美洲狮异形 Lv40 + 军阀精英狙击兵 Lv40 + 黑铁流锤 Lv40",
+      "equivalentLevel": 28,
+      "equivalentLevelMin": 25,
+      "equivalentLevelMax": 30,
+      "tierId": "arena-5",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "25-30级"
+      ],
+      "sourceCells": [
+        "E7"
+      ],
+      "candidateIds": [
+        "candidate-19132c3ec3ca6592"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 7,
+        "withinComponentStrength": 0.55553497,
+        "lower95": 0.02050914,
+        "upper95": 1.09056079,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种426",
+          "level": 40,
+          "count": 1,
+          "name": "美洲狮异形",
+          "spritename": "敌人-美洲狮异形",
+          "humanoid": false
+        },
+        {
+          "type": "兵种267",
+          "level": 40,
+          "count": 1,
+          "name": "军阀精英狙击兵",
+          "spritename": "敌人-军阀精英狙击兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种268",
+          "level": 40,
+          "count": 1,
+          "name": "黑铁流锤",
+          "spritename": "敌人-黑铁精英流锤兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-军阀精英狙击兵",
+        "敌人-美洲狮异形",
+        "敌人-黑铁精英流锤兵"
+      ]
+    },
+    {
+      "id": "roster-7fd59ddad564b6fb",
+      "displayName": "翅虎 Lv30 + 黑铁流锤 Lv30 + 黑铁刺客 Lv20×2",
+      "equivalentLevel": 33,
+      "equivalentLevelMin": 30,
+      "equivalentLevelMax": 35,
+      "tierId": "arena-6",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "30-35级"
+      ],
+      "sourceCells": [
+        "D8"
+      ],
+      "candidateIds": [
+        "candidate-f5e24bec513b96d2"
+      ],
+      "samples": 57,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 3,
+        "withinComponentStrength": -0.984312,
+        "lower95": -1.5408831,
+        "upper95": -0.42774089,
+        "sourceCandidateTimeoutRateMax": 0.03636363636363636,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种66",
+          "level": 30,
+          "count": 1,
+          "name": "翅虎",
+          "spritename": "敌人-飞刀小子",
+          "humanoid": false
+        },
+        {
+          "type": "兵种268",
+          "level": 30,
+          "count": 1,
+          "name": "黑铁流锤",
+          "spritename": "敌人-黑铁精英流锤兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种64",
+          "level": 20,
+          "count": 2,
+          "name": "黑铁刺客",
+          "spritename": "敌人-黑铁会刺客",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-飞刀小子",
+        "敌人-黑铁会刺客",
+        "敌人-黑铁精英流锤兵"
+      ]
+    },
+    {
+      "id": "roster-cbf4f84ad732d41c",
+      "displayName": "浮士德兄弟 Lv30",
+      "equivalentLevel": 33,
+      "equivalentLevelMin": 30,
+      "equivalentLevelMax": 35,
+      "tierId": "arena-6",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "30-35级"
+      ],
+      "sourceCells": [
+        "C8",
+        "D8"
+      ],
+      "candidateIds": [
+        "candidate-e4b4a273f3cd0757",
+        "candidate-f5e24bec513b96d2"
+      ],
+      "samples": 112,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 3,
+        "withinComponentStrength": -0.39918423,
+        "lower95": -0.90981638,
+        "upper95": 0.11144792,
+        "sourceCandidateTimeoutRateMax": 0.03636363636363636,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种59",
+          "level": 30,
+          "count": 1,
+          "name": "浮士德兄弟",
+          "spritename": "敌人-黑白无常",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-黑白无常"
+      ]
+    },
+    {
+      "id": "roster-e7c138f026a47371",
+      "displayName": "黑铁重锤 Lv30 + 黑铁流锤 Lv30",
+      "equivalentLevel": 33,
+      "equivalentLevelMin": 30,
+      "equivalentLevelMax": 35,
+      "tierId": "arena-6",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "30-35级"
+      ],
+      "sourceCells": [
+        "C8"
+      ],
+      "candidateIds": [
+        "candidate-e4b4a273f3cd0757"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 3,
+        "withinComponentStrength": -3.5131795,
+        "lower95": -4.79194058,
+        "upper95": -2.23441843,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种269",
+          "level": 30,
+          "count": 1,
+          "name": "黑铁重锤",
+          "spritename": "敌人-黑铁重锤",
+          "humanoid": false
+        },
+        {
+          "type": "兵种268",
+          "level": 30,
+          "count": 1,
+          "name": "黑铁流锤",
+          "spritename": "敌人-黑铁精英流锤兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-黑铁精英流锤兵",
+        "敌人-黑铁重锤"
+      ]
+    },
+    {
+      "id": "roster-100cb03d4af44a6c",
+      "displayName": "军阀精英重装兵 Lv40 + 黑铁重锤 Lv30 + 吉他 Lv30 + 巨型僵尸 Lv30",
+      "equivalentLevel": 38,
+      "equivalentLevelMin": 35,
+      "equivalentLevelMax": 40,
+      "tierId": "arena-7",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "35-40级"
+      ],
+      "sourceCells": [
+        "G9"
+      ],
+      "candidateIds": [
+        "candidate-f234e2514c44f04f"
+      ],
+      "samples": 61,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 2.11990284,
+        "lower95": 1.58911827,
+        "upper95": 2.65068742,
+        "sourceCandidateTimeoutRateMax": 0.03636363636363636,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种265",
+          "level": 40,
+          "count": 1,
+          "name": "军阀精英重装兵",
+          "spritename": "敌人-军阀精英重装兵",
+          "humanoid": false,
+          "parameters": {
+            "称号": "军阀"
+          }
+        },
+        {
+          "type": "兵种269",
+          "level": 30,
+          "count": 1,
+          "name": "黑铁重锤",
+          "spritename": "敌人-黑铁重锤",
+          "humanoid": false
+        },
+        {
+          "type": "兵种50",
+          "level": 30,
+          "count": 1,
+          "name": "吉他",
+          "spritename": "敌人-摇滚公园萝莉",
+          "humanoid": false
+        },
+        {
+          "type": "兵种11",
+          "level": 30,
+          "count": 1,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-boss大僵尸",
+        "敌人-军阀精英重装兵",
+        "敌人-摇滚公园萝莉",
+        "敌人-黑铁重锤"
+      ]
+    },
+    {
+      "id": "roster-2ac7621fc6ee9020",
+      "displayName": "黑铁重锤 Lv40 + 黑铁弓手 Lv40×3",
+      "equivalentLevel": 38,
+      "equivalentLevelMin": 35,
+      "equivalentLevelMax": 40,
+      "tierId": "arena-7",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "35-40级"
+      ],
+      "sourceCells": [
+        "D9"
+      ],
+      "candidateIds": [
+        "candidate-37dab4bbb006a44a"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 5,
+        "withinComponentStrength": 1.07391892,
+        "lower95": 0.55980612,
+        "upper95": 1.58803173,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种269",
+          "level": 40,
+          "count": 1,
+          "name": "黑铁重锤",
+          "spritename": "敌人-黑铁重锤",
+          "humanoid": false
+        },
+        {
+          "type": "兵种410",
+          "level": 40,
+          "count": 3,
+          "name": "黑铁弓手",
+          "spritename": "敌人-黑铁弓箭手",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-黑铁弓箭手",
+        "敌人-黑铁重锤"
+      ]
+    },
+    {
+      "id": "roster-7f2c7aa7b7d4d9fc",
+      "displayName": "浮士德兄弟 Lv40",
+      "equivalentLevel": 38,
+      "equivalentLevelMin": 35,
+      "equivalentLevelMax": 40,
+      "tierId": "arena-7",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "35-40级"
+      ],
+      "sourceCells": [
+        "B9"
+      ],
+      "candidateIds": [
+        "candidate-24f9ff2a187a5de9"
+      ],
+      "samples": 62,
+      "sourceCandidateMinSamples": 60,
+      "machineValidation": {
+        "component": 2,
+        "withinComponentStrength": 1.19361597,
+        "lower95": 0.4776261,
+        "upper95": 1.90960584,
+        "sourceCandidateTimeoutRateMax": 0.03333333333333333,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种59",
+          "level": 40,
+          "count": 1,
+          "name": "浮士德兄弟",
+          "spritename": "敌人-黑白无常",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-黑白无常"
+      ]
+    },
+    {
+      "id": "roster-85b57b64c404023b",
+      "displayName": "吉他 Lv60 + 键盘 Lv60 + 主唱 Lv60",
+      "equivalentLevel": 38,
+      "equivalentLevelMin": 35,
+      "equivalentLevelMax": 40,
+      "tierId": "arena-7",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "35-40级"
+      ],
+      "sourceCells": [
+        "B9"
+      ],
+      "candidateIds": [
+        "candidate-24f9ff2a187a5de9"
+      ],
+      "samples": 60,
+      "sourceCandidateMinSamples": 60,
+      "machineValidation": {
+        "component": 2,
+        "withinComponentStrength": 2.99225189,
+        "lower95": 2.26233886,
+        "upper95": 3.72216492,
+        "sourceCandidateTimeoutRateMax": 0.03333333333333333,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种50",
+          "level": 60,
+          "count": 1,
+          "name": "吉他",
+          "spritename": "敌人-摇滚公园萝莉",
+          "humanoid": false
+        },
+        {
+          "type": "兵种51",
+          "level": 60,
+          "count": 1,
+          "name": "键盘",
+          "spritename": "敌人-摇滚公园少女",
+          "humanoid": false
+        },
+        {
+          "type": "兵种52",
+          "level": 60,
+          "count": 1,
+          "name": "主唱",
+          "spritename": "敌人-摇滚公园御姐",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-摇滚公园少女",
+        "敌人-摇滚公园御姐",
+        "敌人-摇滚公园萝莉"
+      ]
+    },
+    {
+      "id": "roster-86a6beac5e57f07b",
+      "displayName": "黑铁重锤 Lv30 + 军阀精英弹药兵 Lv30",
+      "equivalentLevel": 38,
+      "equivalentLevelMin": 35,
+      "equivalentLevelMax": 40,
+      "tierId": "arena-7",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "35-40级"
+      ],
+      "sourceCells": [
+        "C9"
+      ],
+      "candidateIds": [
+        "candidate-4cd02c2da2f19d12"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 4,
+        "withinComponentStrength": 0.74668868,
+        "lower95": 0.0667297,
+        "upper95": 1.42664765,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种269",
+          "level": 30,
+          "count": 1,
+          "name": "黑铁重锤",
+          "spritename": "敌人-黑铁重锤",
+          "humanoid": false
+        },
+        {
+          "type": "兵种266",
+          "level": 30,
+          "count": 1,
+          "name": "军阀精英弹药兵",
+          "spritename": "敌人-军阀精英弹药兵",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-军阀精英弹药兵",
+        "敌人-黑铁重锤"
+      ]
+    },
+    {
+      "id": "roster-8bcc312545055886",
+      "displayName": "僵尸 Lv30 + 触手僵尸 Lv30 + 巨臂僵尸 Lv30 + 爆胖僵尸 Lv30×2 + 巨型僵尸 Lv30",
+      "equivalentLevel": 38,
+      "equivalentLevelMin": 35,
+      "equivalentLevelMax": 40,
+      "tierId": "arena-7",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "35-40级"
+      ],
+      "sourceCells": [
+        "C9"
+      ],
+      "candidateIds": [
+        "candidate-4cd02c2da2f19d12"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 4,
+        "withinComponentStrength": -0.75593063,
+        "lower95": -1.43588961,
+        "upper95": -0.07597166,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种393",
+          "level": 30,
+          "count": 1,
+          "name": "僵尸",
+          "spritename": "敌人-瘦骨男尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种442",
+          "level": 30,
+          "count": 1,
+          "name": "触手僵尸",
+          "spritename": "敌人-触手僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种425",
+          "level": 30,
+          "count": 1,
+          "name": "巨臂僵尸",
+          "spritename": "敌人-巨臂僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种443",
+          "level": 30,
+          "count": 2,
+          "name": "爆胖僵尸",
+          "spritename": "敌人-爆胖僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种11",
+          "level": 30,
+          "count": 1,
+          "name": "巨型僵尸",
+          "spritename": "敌人-boss大僵尸",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-boss大僵尸",
+        "敌人-巨臂僵尸",
+        "敌人-爆胖僵尸",
+        "敌人-瘦骨男尸",
+        "敌人-触手僵尸"
+      ]
+    },
+    {
+      "id": "roster-dc881e40c2b90914",
+      "displayName": "鳄嘴兽人 Lv20 + 爆炸僵尸 Lv40 + 清道夫 Lv35 + 基因虫 Lv40",
+      "equivalentLevel": 38,
+      "equivalentLevelMin": 35,
+      "equivalentLevelMax": 40,
+      "tierId": "arena-7",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "35-40级"
+      ],
+      "sourceCells": [
+        "G9"
+      ],
+      "candidateIds": [
+        "candidate-f234e2514c44f04f"
+      ],
+      "samples": 53,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": 1.98824798,
+        "lower95": 1.4495938,
+        "upper95": 2.52690216,
+        "sourceCandidateTimeoutRateMax": 0.03636363636363636,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种397",
+          "level": 20,
+          "count": 1,
+          "name": "鳄嘴兽人",
+          "spritename": "敌人-鳄嘴兽人",
+          "humanoid": false
+        },
+        {
+          "type": "兵种74",
+          "level": 40,
+          "count": 1,
+          "name": "爆炸僵尸",
+          "spritename": "敌人-普通爆炸僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种395",
+          "level": 35,
+          "count": 1,
+          "name": "清道夫",
+          "spritename": "敌人-防护服士兵",
+          "humanoid": false
+        },
+        {
+          "type": "兵种77",
+          "level": 40,
+          "count": 1,
+          "name": "基因虫",
+          "spritename": "敌人-普通基因虫",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-普通基因虫",
+        "敌人-普通爆炸僵尸",
+        "敌人-防护服士兵",
+        "敌人-鳄嘴兽人"
+      ]
+    },
+    {
+      "id": "roster-e82b871d102cb3e9",
+      "displayName": "重型改造僵尸 Lv40×3 + 克隆人 Lv40",
+      "equivalentLevel": 38,
+      "equivalentLevelMin": 35,
+      "equivalentLevelMax": 40,
+      "tierId": "arena-7",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "35-40级"
+      ],
+      "sourceCells": [
+        "D9"
+      ],
+      "candidateIds": [
+        "candidate-37dab4bbb006a44a"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 5,
+        "withinComponentStrength": 1.116047,
+        "lower95": 0.59216676,
+        "upper95": 1.63992724,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种70",
+          "level": 40,
+          "count": 3,
+          "name": "重型改造僵尸",
+          "spritename": "敌人-重型改造僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种373",
+          "level": 40,
+          "count": 1,
+          "name": "克隆人",
+          "spritename": "敌人-闪6特工",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-重型改造僵尸",
+        "敌人-闪6特工"
+      ]
+    },
+    {
+      "id": "roster-778c7bcdf3353e8c",
+      "displayName": "浮士德兄弟 Lv60 + 牛仔 Lv60",
+      "equivalentLevel": 45,
+      "equivalentLevelMin": 40,
+      "equivalentLevelMax": 50,
+      "tierId": "arena-8",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "40-50级"
+      ],
+      "sourceCells": [
+        "B10"
+      ],
+      "candidateIds": [
+        "candidate-7c18831e059e2dd1"
+      ],
+      "samples": 55,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.92814038,
+        "lower95": -1.49776842,
+        "upper95": -0.35851233,
+        "sourceCandidateTimeoutRateMax": 0,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种59",
+          "level": 60,
+          "count": 1,
+          "name": "浮士德兄弟",
+          "spritename": "敌人-黑白无常",
+          "humanoid": false
+        },
+        {
+          "type": "兵种58",
+          "level": 60,
+          "count": 1,
+          "name": "牛仔",
+          "spritename": "敌人-牛仔boss",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-牛仔boss",
+        "敌人-黑白无常"
+      ]
+    },
+    {
+      "id": "roster-9028cc0b18454e5e",
+      "displayName": "吉他 Lv60 + 键盘 Lv60 + 主唱 Lv60",
+      "equivalentLevel": 45,
+      "equivalentLevelMin": 40,
+      "equivalentLevelMax": 50,
+      "tierId": "arena-8",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "40-50级"
+      ],
+      "sourceCells": [
+        "B10",
+        "C10"
+      ],
+      "candidateIds": [
+        "candidate-75ffe563d1b60f42",
+        "candidate-7c18831e059e2dd1"
+      ],
+      "samples": 109,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.13107858,
+        "lower95": -0.52825328,
+        "upper95": 0.26609612,
+        "sourceCandidateTimeoutRateMax": 0.01818181818181818,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种50",
+          "level": 60,
+          "count": 1,
+          "name": "吉他",
+          "spritename": "敌人-摇滚公园萝莉",
+          "humanoid": false,
+          "parameters": {
+            "宠物属性": {
+              "导弹烈炎炮": true
+            }
+          }
+        },
+        {
+          "type": "兵种51",
+          "level": 60,
+          "count": 1,
+          "name": "键盘",
+          "spritename": "敌人-摇滚公园少女",
+          "humanoid": false,
+          "parameters": {
+            "宠物属性": {
+              "弹射弧光斩": true
+            }
+          }
+        },
+        {
+          "type": "兵种52",
+          "level": 60,
+          "count": 1,
+          "name": "主唱",
+          "spritename": "敌人-摇滚公园御姐",
+          "humanoid": false,
+          "parameters": {
+            "宠物属性": {
+              "广域裂空斩": true
+            }
+          }
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-摇滚公园少女",
+        "敌人-摇滚公园御姐",
+        "敌人-摇滚公园萝莉"
+      ]
+    },
+    {
+      "id": "roster-bb5a4e837daeba8d",
+      "displayName": "翅虎 Lv60 + 火凤 Lv60",
+      "equivalentLevel": 45,
+      "equivalentLevelMin": 40,
+      "equivalentLevelMax": 50,
+      "tierId": "arena-8",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "40-50级"
+      ],
+      "sourceCells": [
+        "C10"
+      ],
+      "candidateIds": [
+        "candidate-75ffe563d1b60f42"
+      ],
+      "samples": 58,
+      "sourceCandidateMinSamples": 55,
+      "machineValidation": {
+        "component": 0,
+        "withinComponentStrength": -0.66823727,
+        "lower95": -1.21629818,
+        "upper95": -0.12017636,
+        "sourceCandidateTimeoutRateMax": 0.01818181818181818,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种66",
+          "level": 60,
+          "count": 1,
+          "name": "翅虎",
+          "spritename": "敌人-飞刀小子",
+          "humanoid": false,
+          "parameters": {
+            "宠物属性": {
+              "超级血清": true
+            }
+          }
+        },
+        {
+          "type": "兵种67",
+          "level": 60,
+          "count": 1,
+          "name": "火凤",
+          "spritename": "敌人-粉红头发御姐",
+          "humanoid": false,
+          "parameters": {
+            "宠物属性": {
+              "涅槃重生": true
+            }
+          }
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-粉红头发御姐",
+        "敌人-飞刀小子"
+      ]
+    },
+    {
+      "id": "roster-de9d4821ffe59677",
+      "displayName": "禁卫异形 Lv50 + 骨刺僵尸 Lv30 + 硬化僵尸 Lv40 + 方舟爪豪 Lv45",
+      "equivalentLevel": 45,
+      "equivalentLevelMin": 40,
+      "equivalentLevelMax": 50,
+      "tierId": "arena-8",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "40-50级"
+      ],
+      "sourceCells": [
+        "E10"
+      ],
+      "candidateIds": [
+        "candidate-0f1b27722df4940e"
+      ],
+      "samples": 66,
+      "sourceCandidateMinSamples": 60,
+      "machineValidation": {
+        "component": 1,
+        "withinComponentStrength": 2.11947854,
+        "lower95": 1.59083379,
+        "upper95": 2.6481233,
+        "sourceCandidateTimeoutRateMax": 0.03333333333333333,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种15",
+          "level": 50,
+          "count": 1,
+          "name": "禁卫异形",
+          "spritename": "敌人-球形异形兵1",
+          "humanoid": false,
+          "parameters": {
+            "宠物属性": {
+              "强化药剂": true,
+              "超级血清": true,
+              "钙化": true
+            },
+            "身高": 300
+          }
+        },
+        {
+          "type": "兵种430",
+          "level": 30,
+          "count": 1,
+          "name": "骨刺僵尸",
+          "spritename": "敌人-骨刺僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种42",
+          "level": 40,
+          "count": 1,
+          "name": "硬化僵尸",
+          "spritename": "敌人-硬化僵尸",
+          "humanoid": false
+        },
+        {
+          "type": "兵种286",
+          "level": 45,
+          "count": 1,
+          "name": "方舟爪豪",
+          "spritename": "敌人-方舟爪豪",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-方舟爪豪",
+        "敌人-球形异形兵1",
+        "敌人-硬化僵尸",
+        "敌人-骨刺僵尸"
+      ]
+    },
+    {
+      "id": "roster-f3bdf065656c2b70",
+      "displayName": "Ark Reaper Lv40 + ARIUS Lv45 + ARCHAI Lv60×2",
+      "equivalentLevel": 45,
+      "equivalentLevelMin": 40,
+      "equivalentLevelMax": 50,
+      "tierId": "arena-8",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "40-50级"
+      ],
+      "sourceCells": [
+        "E10"
+      ],
+      "candidateIds": [
+        "candidate-0f1b27722df4940e"
+      ],
+      "samples": 58,
+      "sourceCandidateMinSamples": 60,
+      "machineValidation": {
+        "component": 1,
+        "withinComponentStrength": 1.54383444,
+        "lower95": 1.00845285,
+        "upper95": 2.07921603,
+        "sourceCandidateTimeoutRateMax": 0.03333333333333333,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种359",
+          "level": 40,
+          "count": 1,
+          "name": "Ark Reaper",
+          "spritename": "敌人-方舟收割者",
+          "humanoid": false
+        },
+        {
+          "type": "兵种440",
+          "level": 45,
+          "count": 1,
+          "name": "ARIUS",
+          "spritename": "敌人-ArmsArius",
+          "humanoid": false
+        },
+        {
+          "type": "兵种434",
+          "level": 60,
+          "count": 2,
+          "name": "ARCHAI",
+          "spritename": "敌人-ArmsArchai",
+          "humanoid": false
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-ArmsArchai",
+        "敌人-ArmsArius",
+        "敌人-方舟收割者"
+      ]
+    },
+    {
+      "id": "roster-9530dd1c6ffe8d61",
+      "displayName": "拼命之王 Lv70 + The Girl Lv60",
+      "equivalentLevel": 80,
+      "equivalentLevelMin": 60,
+      "equivalentLevelMax": 100,
+      "tierId": "arena-10",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "60-100级"
+      ],
+      "sourceCells": [
+        "C12"
+      ],
+      "candidateIds": [
+        "candidate-f6dde19531c77517"
+      ],
+      "samples": 59,
+      "sourceCandidateMinSamples": 60,
+      "machineValidation": {
+        "component": 3,
+        "withinComponentStrength": 0.77310498,
+        "lower95": 0.14010992,
+        "upper95": 1.40610005,
+        "sourceCandidateTimeoutRateMax": 0.016666666666666666,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种385",
+          "level": 70,
+          "count": 1,
+          "name": "拼命之王",
+          "spritename": "敌人-拼命之王",
+          "humanoid": false
+        },
+        {
+          "type": "兵种276",
+          "level": 60,
+          "count": 1,
+          "name": "The Girl",
+          "spritename": "主角-男",
+          "humanoid": true
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-拼命之王"
+      ]
+    },
+    {
+      "id": "roster-dd3cac9c76921672",
+      "displayName": "方舟兽王 Lv100 + 方舟兽王兽形 Lv100 + EXUSIAI指挥官 Lv100 + 黑铁 Lv100 + Surveyor Lv100 + 浮士德兄弟 Lv100",
+      "equivalentLevel": 80,
+      "equivalentLevelMin": 60,
+      "equivalentLevelMax": 100,
+      "tierId": "arena-10",
+      "assignmentBasis": "workbook_source_band",
+      "sourceBands": [
+        "60-100级"
+      ],
+      "sourceCells": [
+        "C12"
+      ],
+      "candidateIds": [
+        "candidate-f6dde19531c77517"
+      ],
+      "samples": 63,
+      "sourceCandidateMinSamples": 60,
+      "machineValidation": {
+        "component": 3,
+        "withinComponentStrength": 2.14926464,
+        "lower95": 1.52501228,
+        "upper95": 2.773517,
+        "sourceCandidateTimeoutRateMax": 0.016666666666666666,
+        "sourceCandidateErrorCount": 0,
+        "sideSwapReviewed": true
+      },
+      "members": [
+        {
+          "type": "兵种78",
+          "level": 100,
+          "count": 1,
+          "name": "方舟兽王",
+          "spritename": "敌人-方舟兽王",
+          "humanoid": false
+        },
+        {
+          "type": "兵种79",
+          "level": 100,
+          "count": 1,
+          "name": "方舟兽王兽形",
+          "spritename": "敌人-方舟兽王虎",
+          "humanoid": false
+        },
+        {
+          "type": "兵种361",
+          "level": 100,
+          "count": 1,
+          "name": "EXUSIAI指挥官",
+          "spritename": "敌人-EXUSIAI指挥官",
+          "humanoid": false
+        },
+        {
+          "type": "兵种69",
+          "level": 100,
+          "count": 1,
+          "name": "黑铁",
+          "spritename": "敌人-唐装剑侠",
+          "humanoid": false,
+          "parameters": {
+            "称号": "黑铁会教主"
+          }
+        },
+        {
+          "type": "兵种365",
+          "level": 100,
+          "count": 1,
+          "name": "Surveyor",
+          "spritename": "敌人-Surveyor",
+          "humanoid": false
+        },
+        {
+          "type": "兵种59",
+          "level": 100,
+          "count": 1,
+          "name": "浮士德兄弟",
+          "spritename": "敌人-黑白无常",
+          "humanoid": false,
+          "parameters": {
+            "宠物属性": {
+              "复仇者": true
+            },
+            "死亡动画": "a1"
+          }
+        }
+      ],
+      "requiredKnownEnemies": [
+        "敌人-EXUSIAI指挥官",
+        "敌人-Surveyor",
+        "敌人-唐装剑侠",
+        "敌人-方舟兽王",
+        "敌人-方舟兽王虎",
+        "敌人-黑白无常"
+      ]
+    }
+  ],
+  "catalogHash": "sha256:20bba78afeee1e8c49b528475433da1d3a3b2c1c1174b25b7b422ff59d163f92"
+}

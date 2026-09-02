@@ -137,7 +137,7 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 | [src/Program.cs](src/Program.cs) | Core 入口、运行模式、依赖装配和启动顺序 |
 | [src/Guardian](src/Guardian/) | 窗口、启动 UI、WebView2、Native HUD、Panel、焦点和命令路由 |
 | [src/Fonts](src/Fonts/) | XML-hash runtime 投影、face-major 来源解析、已验证字节快照缓存、Native role 创建与 WebView2 exact-set/ETag 资源处理 |
-| [src/Tasks](src/Tasks/) | Flash/Host 任务实现与领域消息处理 |
+| [src/Tasks](src/Tasks/) | Flash/Host 任务实现与领域消息处理；竞技场标定组合由 Host 按 session ID 反查 canonical roster |
 | [src/Bus](src/Bus/) | HTTP、XMLSocket、V8 和消息总线 |
 | [src/Save](src/Save/) | 启动期存档决议、备份、repair 与用户存档操作 |
 | [src/Audio](src/Audio/) | Audio Platform v2 managed bridge、协调与专项诊断 |

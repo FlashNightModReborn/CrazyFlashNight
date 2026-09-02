@@ -259,8 +259,26 @@ namespace CF7Launcher.Tasks
             }
 
             if (!TryResolveCard(parsed, out ArenaAuthorityCard card, out error)) return false;
-            if (!_authoritySession.TrySanitizeRoster(
-                    parsed["roster"], card, false, out JArray roster, out error))
+            JArray roster;
+            JToken calibratedRosterToken = parsed["calibratedRosterId"];
+            bool usesCalibratedRoster = calibratedRosterToken != null
+                && calibratedRosterToken.Type != JTokenType.Null;
+            if (usesCalibratedRoster)
+            {
+                if (calibratedRosterToken.Type != JTokenType.String
+                        || (parsed["roster"] != null && parsed["roster"].Type != JTokenType.Null))
+                {
+                    error = "invalid_calibrated_roster_payload";
+                    return false;
+                }
+                if (!_authoritySession.TryResolveCalibratedRoster(
+                        calibratedRosterToken.Value<string>(), card, out roster, out error))
+                {
+                    return false;
+                }
+            }
+            else if (!_authoritySession.TrySanitizeRoster(
+                parsed["roster"], card, false, out roster, out error))
             {
                 return false;
             }
