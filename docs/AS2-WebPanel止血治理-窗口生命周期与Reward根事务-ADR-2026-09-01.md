@@ -1,11 +1,11 @@
 # AS2 / WebPanel 止血治理：窗口生命周期、Reward 根事务与软锁归因 ADR
 
 - **文档角色**：跨 AS2 / C# Guardian / WebView2 / Web 的正式止血治理架构决策记录；冻结问题边界、最小架构差量、施工顺序、验证与回滚，并记录 W 与 A/S 两列车的当前施工检查点。本文中的状态摘要不替代 exact candidate、测试输出或 runtime 共识收据。
-- **状态**：`W_HUMAN_ACCEPTANCE_PASSED / PROMOTED / FORMAL_BUSINESS_REVALIDATION_PENDING；A/S_HUMAN_ACCEPTANCE_PASSED / RELEASE_AUTHORIZED / CANDIDATE_EXECUTED / NOT_COMMITTED / NOT_DEPLOYED`
+- **状态**：`W_HUMAN_ACCEPTANCE_PASSED / PROMOTED / FORMAL_BUSINESS_REVALIDATION_PENDING；A/S_HUMAN_ACCEPTANCE_PASSED / PROMOTED / DEPLOYMENT_PUSH_PENDING / FORMAL_BUSINESS_REVALIDATION_PENDING`
 - **决策日期**：2026-09-01
 - **最后核对代码基线**：W release source `b2a70248eb6fae5dda843d2a7f7156a18b03ef7e`，tree `c35b896578a4b5f7b8751081a600ef374781b589`，deployment `a3b0b5f77027be295cf574c6751310f634067812`。W 开工 Checkpoint-0 `11376feb76116334c68c2cc8632f52650b194abe` / tree `bfbe61dce0ad42de77b5972af00a7893ed08b066` 与原始撰写基线 `dff0c4390b5788151f75954cde397d54fba54257` 只保留为设计考古。
-- **调度约束**：维护者已于 2026-09-02 在 exact candidate 上通过 H-W，W 的 immutable request、双故障域共识、promotion、部署与推送均已完成。A/A1 与 S/O1 的第二次真人窗口已于 2026-09-03 分别通过 H-A 与 H-S，因而解锁第二列车的提交、immutable request、双故障域共识、promotion、部署与推送；发布链仍不得把候选人工证据写成正式入口复验。
-- **当前实现状态**：W/B0 代码、focused/full Launcher 自动门、隔离候选执行、H-W、40/40 production policy、双 signer / 双 faultDomain 共识、严格 preflight、原子 promotion、worktree/index 正式根复验与 bootstrap `--verify-only` 均已完成；deployment 已推送，首次 post-promotion Audit run `33645182028` 通过并精确输出 `state=promoted`、`deploymentChanged=true`。部署后没有重跑正式入口 W 业务旅程，因此只称 `HUMAN_ACCEPTANCE_PASSED / promoted`，不称 W 专项 `standard_entry_verified`。A/A1 与 S/O1 已在当前工作树完成实现、自动门与全新隔离候选执行；首次 H-A 暴露的“整理背包”缺口已修复，复验完成跨重启不重不丢、主动重开、整理后领取全部 remaining。O1 的主动观测取得 13 个同实例连续样本，其中第 2–13 个均为 exact AS2 tuple 且结论为 `no_outstanding_operation`，没有把无故障样本冒充故障 owner 归因。H-A/H-S 均为 `HUMAN_ACCEPTANCE_PASSED`，A/S 仍未提交、未进入 immutable request 或正式 runtime。
+- **调度约束**：维护者已于 2026-09-02 在 exact candidate 上通过 H-W，W 的 immutable request、双故障域共识、promotion、部署与推送均已完成。A/A1 与 S/O1 的第二次真人窗口已于 2026-09-03 分别通过 H-A 与 H-S；第二列车随后完成源码提交、immutable request、本地与 GitHub Hosted 双故障域共识及原子 promotion，正在收尾 deployment push / post-promotion Audit。发布链仍不得把候选人工证据写成正式入口复验。
+- **当前实现状态**：W/B0 代码、focused/full Launcher 自动门、隔离候选执行、H-W、40/40 production policy、双 signer / 双 faultDomain 共识、严格 preflight、原子 promotion、worktree/index 正式根复验与 bootstrap `--verify-only` 均已完成；deployment 已推送，首次 post-promotion Audit run `33645182028` 通过并精确输出 `state=promoted`、`deploymentChanged=true`。部署后没有重跑正式入口 W 业务旅程，因此只称 `HUMAN_ACCEPTANCE_PASSED / promoted`，不称 W 专项 `standard_entry_verified`。A/A1 与 S/O1 的实现、自动门、修复后隔离候选与 H-A/H-S 均已完成；A 覆盖跨重启不重不丢、主动重开、整理后领取全部 remaining，O1 取得 13 个同实例连续样本并合法落到 `no_outstanding_operation`。正式构建另由本地 X509 与 GitHub Hosted 对同一 33-file closure 达成共识并 promotion，当前为 `HUMAN_ACCEPTANCE_PASSED / promoted / DEPLOYMENT_PUSH_PENDING / FORMAL_BUSINESS_REVALIDATION_PENDING`。
 
 > 自包含声明：本文不依赖任何 Chat 对话、分享链接、下载文件、模型原始回执或仓库外日志才能理解和执行。现场事实摘要、源码反证、决策、否决项、硬门与施工边界均写在本文中；进一步核查只需本文链接的仓库内源码和 canonical 文档。
 
@@ -73,7 +73,7 @@
 
 ## 2. W 开工前实现的源码反证
 
-本节冻结的是 W 设计与 Checkpoint-0 的反例，不再描述本文件顶部所列 W 工作树。W 当前实现已按 §4 和 §8.1 关闭这些反例；A/S 各节仍是未施工现状。
+本节冻结的是 W 设计与 Checkpoint-0 的反例，不再描述本文件顶部所列当前实现。W 当前实现已按 §4 和 §8.1 关闭这些反例；A/S 的最初设计基线与已完成施工、验收、发布检查点分别见 §5–§6 与 §8.4。
 
 ### 2.1 Window：无效几何能越过 publication boundary
 
@@ -669,7 +669,13 @@ W 实现与 H-W 先由 commit `28edc13560` 落盘；新机构建环境随后注�
 
 同一修复候选在精确启用 `CF7_BLACKMARKET_SOFTLOCK_OBSERVATION=1` 后完成 H-S。一次正确 O1 进程内，blackmarket 同一 `panelInstanceId=panel_xasKpFNUhmc-xXPYsEZ6say_` 连续输出 `web_sequence=1..13`；首个探针发出时 AS2 tuple 尚为 `missing`，第 2–13 个样本均为 `as2_tuple=exact`、`pause_owner=webpanel`、`scene_owner=base_scene`，AS2 frame sequence 从 `1090` 单调推进至 `4370`，`web_pending=false`、`web_ready=true`、`socket_ready=true`、`business_outstanding=0`，结论均为 `no_outstanding_operation`。期间维护者实际游玩两轮且未卡住；此前未继承 O1 环境的两轮没有观测心跳，按合同排除而不补猜。H-S 因而通过的是“本轮未发生 outstanding operation/软锁”的合法结论，不识别也不声称某个故障 owner。
 
-正式 Core DLL 此时仍为 `3B346B9818FFACC536B250BC2CB41D9FD67FE19B8D74CD82DF2527430226A361`，没有被候选覆盖。H-A/H-S 已解锁提交和正式发布链，但上述候选与人工证据本身仍不构成 immutable request、quorum、promotion 或正式入口复验。
+#### A/S 正式发布检查点
+
+H-A/H-S 通过后，implementation commit `bfdf261016` 与 release config commit `0b71d91987bee27f399bedc90a2c648a8bcbf44e` 已推送，immutable tag `runtime-build-v2/20260903-reward-root-o1-v1` 精确冻结 source `0b71d91987bee27f399bedc90a2c648a8bcbf44e`。release tree `68ae915ad90ab96dc31c6371b37a1469be11a934`、request commit `924328adfd2605e4344b58011267a6aee7ba980d` 与 request `A0DA1D0F5E3E91EF9A53BC8D81419E5917016B860EB49AC655DA4D83EDAF7367` 形成 build identity `1E09139852A981BBDA4A99E65F4FCF5BDBDD71E44DDE39EE13FC5B71ABF29709`。
+
+本地 X509 keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86` / `physical-host-c` 与 GitHub OIDC/Sigstore builder `A714D2836BD6EE928FD163BA46032555665E57F99D27DEAE151237CE0AD25CEA` / `github-hosted-windows`（cloud run `33701115609`）对正式 33-file payload closure `81DE32947F126EEC968280C4771C427140A82268CA042F91BE945F60A441F76B` 达成双 signer、双 faultDomain 共识。40/40 production receipt SHA-256 为 `BC6467ED923BE45E3341545A4DF35BD558B1F379A253E01DCE8D34E6A6A5C6C5`；正式根 EXE / Core DLL / Core EXE / manifest / consensus SHA-256 分别为 `55EABB5C3280FDFEE8302843D969C6B6354808F1AF4DC24DB5E2397AA80499D8`、`AE0E56CFCA82E12DE54845636D36A3F2D5E9D9EFE94A7BFC30228B21E00F8E8B`、`86DF1F5DC611037DB3A85FD9BA0D43490394F232D25A4F62B59AA4F2B4B6E4FD`、`BEE0507B2F55C04039A38C086998A2A74043EF9003AA22C66B29C26CE33E750C`、`86124784FE893AA474A12BB1DB2B9770C3BA6DF8365779C42C3057FD0B8C52E2`。
+
+直接 promotion 全链于 `2026-09-03T00:56:05.591629Z` 原子写入正式 runtime，signed consensus、GitHub proof replay 与正式根 bootstrap `--verify-only` 均通过，旧 bundle 已留可恢复备份。隔离人工候选与正式构建共享 build identity，但开发态 managed bytes / closure 不作为 builder vote；发布结论只依赖本地和云端精确一致的正式 closure。deployment commit、push 与首次 post-promotion Audit 仍待本轮后续步骤，因此当前准确状态为 `HUMAN_ACCEPTANCE_PASSED / promoted / DEPLOYMENT_PUSH_PENDING / FORMAL_BUSINESS_REVALIDATION_PENDING`，不称 A/S 专项 `standard_entry_verified`。
 
 若 C# runtime 字节进入正式 runtime，继续遵守 [runtime build reproducibility](../docs/runtime-build-reproducibility.md) 的 immutable request、双 signer、双 faultDomain、相同 identity/closure、production policy、原子 promotion 与 post-promotion audit。该链不代签 A 的 AS2 业务正确性。
 

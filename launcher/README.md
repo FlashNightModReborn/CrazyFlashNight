@@ -1,8 +1,8 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `b2a70248eb6fae5dda843d2a7f7156a18b03ef7e`（2026-09-02，窗口生命周期根治；deployment `a3b0b5f77027be295cf574c6751310f634067812`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-W/B0 已通过维护者 H-W“有效”验收、双 signer / 双 faultDomain 共识、production policy、原子 promotion、正式根 bootstrap `--verify-only` 与 post-promotion Audit，准确状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`。部署后尚未从正式入口重跑最小化恢复、外部抢焦与关闭业务旅程，不称 W 专项 `standard_entry_verified`；A/A1 与 S/O1 的第二列车停在真人验收前，不由本次 promotion 代签。
+**最后核对代码基线**：release source commit `0b71d91987bee27f399bedc90a2c648a8bcbf44e`（2026-09-03，Reward 根事务与黑市软锁观测；deployment push / Audit 待本轮收尾）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
+W/B0 保持 `HUMAN_ACCEPTANCE_PASSED / promoted`，正式业务旅程待复验；A/A1 与 S/O1 已通过 H-A/H-S，并由独立 request、本地 X509 + GitHub Hosted 双故障域共识和原子 promotion 进入正式 runtime，现为 `HUMAN_ACCEPTANCE_PASSED / promoted / DEPLOYMENT_PUSH_PENDING / FORMAL_BUSINESS_REVALIDATION_PENDING`，不称 A/S 专项 `standard_entry_verified`。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：
