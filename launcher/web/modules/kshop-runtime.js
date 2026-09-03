@@ -954,7 +954,10 @@
         if (response.error === 'busy') return true;
         if (cmd === 'checkoutCommit') return response.error === 'insufficient_kpoints'
             || response.error === 'inventory_full' || response.error === 'stale_state';
+        // destination_full 与 inventory_full 同为容量类零写拒绝（singleAcquire 的 require
+        // 预检在任何 mutate 前 return false），必须直接定论，避免白走一轮 bulkQuery 对账。
         if (cmd === 'claim') return response.error === 'inventory_full'
+            || response.error === 'destination_full'
             || response.error === 'acquire_failed';
         return false;
     };

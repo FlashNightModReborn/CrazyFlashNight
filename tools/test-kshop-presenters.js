@@ -330,6 +330,17 @@ test('KShop protocol binds refreshed checkout catalog to delivered identity and 
     }
 });
 
+test('claim write coordinator treats every capacity zero-write rejection as definitive', () => {
+    const isDefinitive = Runtime.KShopWriteCoordinator.prototype._isDefinitive;
+    // 容量类零写拒绝（含情报收集项 destination_full）必须直接定论，不进 bulkQuery 对账。
+    for (const error of ['inventory_full', 'destination_full', 'acquire_failed']) {
+        assert.strictEqual(isDefinitive('claim', {success:false, error}), true);
+    }
+    assert.strictEqual(isDefinitive('claim', {success:false, error:'unknown_glitch'}), false);
+    // stale_state/item_not_found 由 claim 流程显式走 reconcile 刷新待领取列表，不在白名单。
+    assert.strictEqual(isDefinitive('claim', {success:false, error:'stale_state'}), false);
+});
+
 test('procurement navigation init binds the exact KShop catalog identity', () => {
     const target = Runtime.KShopProtocol.parseProcurementNavigationInit({
         navigationOrigin:'crafting_recipe', canReturnCraftingRecipe:true,

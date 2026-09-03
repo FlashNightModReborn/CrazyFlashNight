@@ -23,6 +23,7 @@ import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEve
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.neur.Event.EventDispatcher;
+import org.flashNight.neur.Server.SaveManager;
 
 /** StageRunSession 的 outcome/life 正交状态、复活与结算冻结 focused 回归。 */
 class org.flashNight.arki.scene.StageRunSessionTest {
@@ -50,10 +51,13 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testProjectionFailureCannotBreakRevive();
         testReturnFreezesAndOfflinePanelPreservesRewards();
         testZeroRewardOfflineSettlementSurvivesSceneExpiry();
+        testSettlementRewardInformationCapFilter();
         testPreparedSettlementPersistsWithoutReroll();
         testReturnRequiresDurableSettlementFlush();
         testPersistedSettlementProgressAndRestartRestore();
         testPersistedSettlementVersionsFailClosed();
+        testStageSettlementEmptyArrayShapeRepair();
+        testTaskAndPetEmptyArrayShapeRepair();
         testPersistedSettlementTerminalCleanup();
         testReturnAvailabilityAndRetreat();
         testDeliverableReturnWaitsForSettlementVisualClose();
@@ -2605,6 +2609,41 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertEquals("prepared", state.settlement, "retreat still produces an empty settlement");
     }
 
+    private static function testSettlementRewardInformationCapFilter():Void {
+        var intel:String = "StageRunSession测试情报";
+        addMeta(intel, "收集品", "情报");
+        ItemUtil.informationMaxValueDict[intel] = 1;
+
+        resetWorld(0);
+        _root.收集品栏.情报.add(intel, 1);
+        _root.关卡可获得奖励品 = [[intel, 1, 1], [REWARD, 1, 1]];
+        assertTrue(StageRunSession.begin("结算情报上限", "简单"),
+            "settlement intel-cap stage run begins");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.onReturnBaseStarted(),
+            "victory return prepares the settlement");
+        var state:Object = StageRunSession.testOnlySnapshot();
+        assertEquals(1, state.inventory.size(),
+            "capped story intel is not materialized into the settlement box");
+        assertEquals(1, state.remainingRewards,
+            "remaining rewards only count actually generated items");
+        assertEquals(1, state.report.rewardRollOmissions,
+            "the capped intel roll is counted as an omission");
+
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[intel, 1, 1], [REWARD, 1, 1]];
+        assertTrue(StageRunSession.begin("结算情报放行", "简单"),
+            "settlement intel-accept stage run begins");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.onReturnBaseStarted(),
+            "victory return prepares the second settlement");
+        state = StageRunSession.testOnlySnapshot();
+        assertEquals(2, state.inventory.size(),
+            "uncapped intel is materialized alongside the other reward");
+        assertEquals(2, state.remainingRewards,
+            "both rewards remain claimable");
+    }
+
     private static function testZeroRewardOfflineSettlementSurvivesSceneExpiry():Void {
         resetWorld(0);
         _root.关卡可获得奖励品 = [];
@@ -2868,6 +2907,135 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "malformed store remains untouched for diagnosis and recovery");
     }
 
+    private static function testStageSettlementEmptyArrayShapeRepair():Void {
+        resetWorld(0);
+        // 复刻 AMF0 现场：0 击杀/0 物品流向的撤退 + 空奖励池，五个数组字段全被
+        // 磨成空对象 {} 落盘（manifest/remainingManifest/receipts + kills/itemFlows）。
+        var mydata:Object = makeShapeRepairMydata();
+        mydata.ext.stageSettlement = {v:1, nextSeq:2, pending:{
+            v:1, settlementId:"stage.settlement.1", runId:"run.amf0.empty.arrays",
+            runRevision:1, state:"prepared", outcome:"retreat", life:"alive",
+            capacity:8,
+            report:{v:1, runId:"run.amf0.empty.arrays", stageName:"空奖励撤退关",
+                difficulty:"简单", outcome:"retreat", activeFrames:0, totalKills:0,
+                omittedKillTypes:0, totalItemGains:0, totalItemLosses:0,
+                omittedItemFlowTypes:0, rewardRollOmissions:0,
+                kills:{}, itemFlows:{}},
+            manifest:{}, remainingManifest:{}, remainingCount:0,
+            receipts:{}, deliverAfterSettlement:false}};
+        var changed:Boolean = SaveManager.getInstance().migrate(mydata, {});
+        var repaired:Object = mydata.ext.stageSettlement.pending;
+        assertTrue(changed === true
+                && repaired.manifest instanceof Array
+                && repaired.remainingManifest instanceof Array
+                && repaired.receipts instanceof Array
+                && repaired.report.kills instanceof Array
+                && repaired.report.itemFlows instanceof Array,
+            "migrate 把结算持久态五个被磨成空对象的数组字段修复回 []");
+        assertTrue(repaired.manifest.length == 0 && repaired.receipts.length == 0
+                && repaired.report.kills.length == 0
+                && repaired.report.itemFlows.length == 0,
+            "形状修复只换容器，不捏造任何结算内容");
+
+        // 修复后的持久态在生产读档路径上可解码、可恢复、可正常收敛。
+        _root._saveExt.stageSettlement = mydata.ext.stageSettlement;
+        var restored:Object = StageRunSession.restorePendingSettlement();
+        assertTrue(restored.success === true && restored.restored === true
+                && restored.remainingCount == 0 && restored.receiptCount == 0,
+            "修复后的零奖励结算在重启恢复路径上成功 decode 并恢复");
+        StageRunSession.onSettlementState("CONSUMED", 0);
+        var store:Object = _root._saveExt.stageSettlement;
+        assertTrue(store.pending == null
+                && store.lastTerminal.settlementId == "stage.settlement.1"
+                && store.lastTerminal.terminalState == "claimed",
+            "恢复后的零奖励结算可写入终态 marker 并释放 pending");
+        assertTrue(StageRunSession.begin("修复后开新关", "简单"),
+            "终态收敛后新关卡准入恢复，软锁解除");
+
+        // 带键非数组是真损坏：migrate 不得吞掉，decode 侧继续 fail closed。
+        StageRunSession.testOnlyReset();
+        var corrupt:Object = makeShapeRepairMydata();
+        corrupt.ext.stageSettlement = {v:1, nextSeq:2, pending:{
+            v:1, settlementId:"stage.settlement.1", runId:"run.amf0.corrupt",
+            runRevision:1, state:"prepared", outcome:"retreat", life:"alive",
+            capacity:8,
+            report:{v:1, runId:"run.amf0.corrupt", stageName:"真损坏关",
+                difficulty:"简单", outcome:"retreat", activeFrames:0, totalKills:0,
+                omittedKillTypes:0, totalItemGains:0, totalItemLosses:0,
+                omittedItemFlowTypes:0, rewardRollOmissions:0,
+                kills:{ghost:1}, itemFlows:{}},
+            manifest:{slot:0}, remainingManifest:{}, remainingCount:0,
+            receipts:{}, deliverAfterSettlement:false}};
+        SaveManager.getInstance().migrate(corrupt, {});
+        var corruptPending:Object = corrupt.ext.stageSettlement.pending;
+        assertTrue(!(corruptPending.manifest instanceof Array)
+                && corruptPending.manifest.slot == 0
+                && !(corruptPending.report.kills instanceof Array)
+                && corruptPending.report.kills.ghost == 1,
+            "带键非数组不被形状修复吞掉，原文保留供诊断");
+        _root._saveExt.stageSettlement = corrupt.ext.stageSettlement;
+        var corruptRestore:Object = StageRunSession.restorePendingSettlement();
+        assertEquals("malformed_persisted_settlement", corruptRestore.error,
+            "真损坏结算仍 fail closed 并报畸形");
+        assertTrue(StageRunSession.hasPersistedSettlementPending()
+                && !StageRunSession.canStartStage(),
+            "真损坏结算继续阻止新关卡覆盖，保留诊断现场");
+        SaveManager.getInstance().clearPendingDrugLoadoutMigration();
+        SaveManager.getInstance().clearPendingRewardInboxMigration();
+    }
+
+    private static function testTaskAndPetEmptyArrayShapeRepair():Void {
+        resetWorld(0);
+        // AMF0 现场：无进行中任务、五个宠物槽全空 → tasks_to_do 与内层槽
+        // 全部被磨成空对象 {} 落盘。
+        var mydata:Object = makeShapeRepairMydata();
+        mydata.tasks.tasks_to_do = {};
+        mydata.pets.宠物信息 = [{}, {}, {}, {}, {}];
+        var soData:Object = {};
+        var changed:Boolean = SaveManager.getInstance().migrate(mydata, soData);
+        assertTrue(changed === true
+                && mydata.tasks.tasks_to_do instanceof Array
+                && mydata.tasks.tasks_to_do.length == 0,
+            "migrate 把被磨成空对象的 tasks_to_do 修复回空数组");
+        var info:Object = mydata.pets.宠物信息;
+        var slotsOk:Boolean = info instanceof Array && info.length == 5;
+        for (var i:Number = 0; i < 5; i++) {
+            if (!(info[i] instanceof Array) || info[i].length != 0) slotsOk = false;
+        }
+        assertTrue(slotsOk,
+            "migrate 把宠物信息五个被磨成空对象的内层空槽修复回 []");
+        // 修复后的形状经受得住消费方操作：push/splice 与空槽判定不再静默失败。
+        mydata.tasks.tasks_to_do.push({id:"shape.repair.task"});
+        mydata.tasks.tasks_to_do.splice(0, 1);
+        assertTrue(mydata.tasks.tasks_to_do.length == 0,
+            "修复后的 tasks_to_do 上 push/splice 正常生效");
+        var emptyCount:Number = 0;
+        for (var s:Number = 0; s < info.length; s++) {
+            if (info[s] == undefined || info[s].length == 0) emptyCount++;
+        }
+        assertEquals(5, emptyCount,
+            "修复后的宠物内层槽按 length==0 全部判为空槽");
+        // SOL 通道生产流程：migrate 变更经 syncTopLevelFromMydata 同步到顶层 key。
+        SaveManager.getInstance().syncTopLevelFromMydata(mydata, soData);
+        assertTrue(soData.tasks_to_do instanceof Array
+                && soData.战宠 instanceof Array && soData.战宠[0] instanceof Array,
+            "修复结果经 syncTopLevelFromMydata 同步到顶层 tasks_to_do / 战宠");
+        // 既有任务与带键占用槽不被修复触碰。
+        var occupied:Object = makeShapeRepairMydata();
+        occupied.tasks.tasks_to_do = [{id:"keep.me"}];
+        occupied.pets.宠物信息 = [["战宠甲"], {}, ["战宠乙"], {}, {}];
+        SaveManager.getInstance().migrate(occupied, {});
+        assertTrue(occupied.tasks.tasks_to_do.length == 1
+                && occupied.tasks.tasks_to_do[0].id == "keep.me"
+                && occupied.pets.宠物信息[0][0] == "战宠甲"
+                && occupied.pets.宠物信息[2][0] == "战宠乙"
+                && occupied.pets.宠物信息[1] instanceof Array
+                && occupied.pets.宠物信息[1].length == 0,
+            "占用槽与既有任务原样保留，仅空槽 {} 被修复");
+        SaveManager.getInstance().clearPendingDrugLoadoutMigration();
+        SaveManager.getInstance().clearPendingRewardInboxMigration();
+    }
+
     private static function testPersistedSettlementTerminalCleanup():Void {
         resetWorld(0);
         _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
@@ -3022,6 +3190,23 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         };
         _root.gameworld[_root.控制目标] = hero;
         return hero;
+    }
+
+    /** AMF0 形状修复夹具：最小但完整的 3.0 mydata（drug/reward 归一化所需字段齐备）。 */
+    private static function makeShapeRepairMydata():Object {
+        var md:Object = {};
+        md.version = "3.0";
+        md.lastSaved = "2026-09-03 00:00:00";
+        md[0] = ["形状修复角色", "男", 1000, 10, 500, 170, 5, "无", 10000, 0, [], 0, [], ""];
+        md[3] = 0;
+        md.inventory = {背包:[], 装备栏:{}, 药剂栏:{}, 仓库:[], 战备箱:[]};
+        md.collection = {材料:{}, 情报:{}};
+        md.infrastructure = {};
+        md.tasks = {tasks_to_do:[], tasks_finished:{}, task_chains_progress:{}};
+        md.pets = {宠物信息:[[], [], [], [], []], 宠物领养限制:5};
+        md.shop = {商城已购买物品:[], 商城购物车:[]};
+        md.ext = {};
+        return md;
     }
 
     private static function resetWorld(reviveCoins:Number):Void {

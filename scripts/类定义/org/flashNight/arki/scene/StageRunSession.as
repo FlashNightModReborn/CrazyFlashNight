@@ -1077,6 +1077,16 @@ class org.flashNight.arki.scene.StageRunSession {
                 continue;
             }
             var quantity:Number = random(maximum) + 1;
+            // 情报持有上限分流（与地图箱物化/敌人掉落同一语义）：掷骰照旧，生成量按
+            // maxvalue 截断；已达上限的零价剧情情报不生成，避免结算箱出现永恒受阻格。
+            var informationPlan:Object = ItemUtil.planInformationAcquire(name, quantity);
+            if (informationPlan.valid === true) {
+                if (Number(informationPlan.accepted) <= 0) {
+                    omissions++;
+                    continue;
+                }
+                quantity = Number(informationPlan.accepted);
+            }
             var item:BaseItem = BaseItem.create(name, quantity, new Date().getTime());
             if (item == null) {
                 omissions++;
@@ -1595,6 +1605,60 @@ class org.flashNight.arki.scene.StageRunSession {
             itemKey:String(raw.itemKey), displayName:String(raw.displayName),
             iconName:String(raw.iconName), tier:String(raw.tier),
             source:String(raw.source), reason:String(raw.reason), count:Number(raw.count)};
+    }
+
+    /**
+     * SOL migrate 与 Protocol 2 _applyCore 共用的纯数据 normalizer。
+     * AMF0/JSON 存档往返无法保留空数组：pending 的 manifest/remainingManifest/
+     * receipts 与 report 的 kills/itemFlows 为空时会以空对象 {} 落盘，读回后被
+     * decodePendingSettlement / normalizePersistedReport 误判为
+     * malformed_persisted_settlement；hasPersistedSettlementPending 对畸形
+     * store 恒 true，新关卡永久拒入、场景退出被拒（软锁）。这里只把“空对象”
+     * 修复为 []；带键的非数组仍是真实损坏，继续交给 decode 侧 fail closed。
+     * 字段集与 launcher C# SaveMigrator.NormalizeStageSettlementEmptyArrays 对齐。
+     */
+    public static function normalizeSaveData(mydata:Object):Object {
+        if (mydata == null) return {ok:true, changed:false};
+        var ext:Object = mydata.ext;
+        if (ext == null || typeof ext != "object" || ext instanceof Array) {
+            return {ok:true, changed:false};
+        }
+        var store:Object = ext.stageSettlement;
+        if (store == null || typeof store != "object" || store instanceof Array
+                || Number(store.v) != SETTLEMENT_STORE_VERSION) {
+            return {ok:true, changed:false};
+        }
+        var pending:Object = store.pending;
+        if (pending == null || typeof pending != "object" || pending instanceof Array
+                || Number(pending.v) != SETTLEMENT_RECORD_VERSION) {
+            return {ok:true, changed:false};
+        }
+        var changed:Boolean = false;
+        if (normalizeEmptyArrayField(pending, "manifest")) changed = true;
+        if (normalizeEmptyArrayField(pending, "remainingManifest")) changed = true;
+        if (normalizeEmptyArrayField(pending, "receipts")) changed = true;
+        var report:Object = pending.report;
+        if (report != null && typeof report == "object" && !(report instanceof Array)
+                && Number(report.v) == 1) {
+            if (normalizeEmptyArrayField(report, "kills")) changed = true;
+            if (normalizeEmptyArrayField(report, "itemFlows")) changed = true;
+        }
+        return {ok:true, changed:changed};
+    }
+
+    private static function normalizeEmptyArrayField(owner:Object, key:String):Boolean {
+        var value:Object = owner[key];
+        if (value != null && typeof value == "object" && !(value instanceof Array)
+                && emptyOwnObject(value)) {
+            owner[key] = [];
+            return true;
+        }
+        return false;
+    }
+
+    private static function emptyOwnObject(value:Object):Boolean {
+        for (var key:String in value) return false;
+        return true;
     }
 
     private static function normalizeProgressReceipt(operationId:String,

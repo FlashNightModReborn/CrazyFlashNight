@@ -181,11 +181,17 @@ class org.flashNight.arki.item.ItemUseService {
         if (unit == null || Number(unit.hp) <= 0) {
             return commonFailure("consume", params, "player_unavailable");
         }
+        // 与 open 路径对称：任何权威写之前先捕获 exact snapshot，receipt 无法
+        // 落地时按同一粒度恢复，避免 Web 侧 not_committed 重试造成二次扣药。
+        var bag:Object = source.inventory;
+        var bagBefore:Object = bag.toObject();
+        var dirtyBefore = _root.存档系统 == null
+            ? undefined : _root.存档系统.dirtyMark;
         _busy = true;
         var used:Object = null;
         try {
             used = org.flashNight.arki.unit.Action.Skill.DrugInputService
-                .consumeBackpackItem(unit, source.inventory, Number(source.slot),
+                .consumeBackpackItem(unit, bag, Number(source.slot),
                     source.item, Number(lane.lane), _root);
         } catch (consumeError) {
             used = null;
@@ -200,6 +206,12 @@ class org.flashNight.arki.item.ItemUseService {
             status:"committed", fingerprint:fingerprint, consumed:1,
             remaining:Number(used.remaining), selectedLane:Number(lane.lane)};
         if (!RewardInboxService.recordReceipt(receipt)) {
+            if (!restoreConsumeState(bag, bagBefore, String(source.item.name),
+                    Number(lane.lane), dirtyBefore)) {
+                trace("[ItemUseService] consume restore incomplete after receipt failure: "
+                    + operationId);
+            }
+            InventoryPanelService.invalidateExternalSlot("背包", Number(source.slot));
             return commonFailure("consume", params, "commit_pending");
         }
         if (_root.存档系统 != null) _root.存档系统.dirtyMark = true;
@@ -545,6 +557,38 @@ class org.flashNight.arki.item.ItemUseService {
             if (_root.存档系统 != null) _root.存档系统.dirtyMark = dirtyBefore;
             return true;
         } catch (restoreError) { return false; }
+    }
+
+    /**
+     * consume 的 exact snapshot 恢复，粒度对齐 restoreOpenState：整体回滚背包、
+     * 还原 dirtyMark；药剂 lane 冷却是 consume 独有且可被 reset 安全逆操作的
+     * 副作用，一并复位。root.使用药剂 的药效没有通用逆操作，保持已发生事实
+     * （与 DrugInputService 异常恢复惯例一致）；consume 内部事务已播报的 loss
+     * 无法收回，补一笔对冲 gain 保持资产流水与 HUD 播报净零。
+     */
+    private static function restoreConsumeState(bag:Object, bagBefore:Object,
+                                                itemName:String, lane:Number,
+                                                dirtyBefore):Boolean {
+        var restored:Boolean = true;
+        try {
+            bag.setItems(bagBefore);
+        } catch (restoreError) { restored = false; }
+        try {
+            org.flashNight.arki.unit.Action.Skill.ManualCooldownService.reset(
+                org.flashNight.arki.unit.Action.Skill.ManualCooldownService
+                    .drugKey(lane));
+        } catch (cooldownError) { }
+        if (restored) {
+            try {
+                PlayerAssetTransaction.recordEffect("gain", "item", itemName, 1,
+                    {source:"item_use", reason:"direct_drug_use_reverted",
+                        mergeScope:"operation"});
+            } catch (effectError) { }
+        }
+        try {
+            if (_root.存档系统 != null) _root.存档系统.dirtyMark = dirtyBefore;
+        } catch (dirtyError) { }
+        return restored;
     }
 
     private static function flushSave():Boolean {
