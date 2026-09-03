@@ -50,7 +50,6 @@ class org.flashNight.arki.item.LootContainerService {
     private static var _terminalOrder:Array = [];
     private static var _lootLeaseIds:Array = [];
     private static var _lootLeaseRefs:Array = [];
-    private static var _lootLeaseVersions:Array = [];
     private static var _lootLeaseSignatures:Array = [];
     private static var _testPostCommitFailureStage:String = "";
     private static var _testPostCommitFailureRemaining:Number = 0;
@@ -2073,7 +2072,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (!effects.lootCacheDone) {
             try {
                 injectPostCommitFailure("loot_cache");
-                invalidateLootLeases();
+                invalidateLootLeaseSlot(Number(effects.source.slot));
                 effects.lootCacheDone = true;
             } catch (lootCacheError) {
                 trace("[LootContainerService] post-commit loot cache pending");
@@ -2469,8 +2468,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (slot < 0 || slot >= inventory.capacity) return {success:false, error:"invalid_slot"};
         var version:Number = inventory.getMutationRevision();
         if (Number(sourceRef.expectedContainerVersion) != version
-                || _lootLeaseIds[slot] !== sourceRef.expectedLease
-                || Number(_lootLeaseVersions[slot]) != version) {
+                || _lootLeaseIds[slot] !== sourceRef.expectedLease) {
             return {success:false, error:"stale_state"};
         }
         var item:Object = inventory.getItem(String(slot));
@@ -2512,7 +2510,7 @@ class org.flashNight.arki.item.LootContainerService {
             var row:Object = {
                 physicalSlot:slot,
                 occupied:item != null,
-                slotLease:issueLootLease(record, slot, item, version)
+                slotLease:issueLootLease(record, slot, item)
             };
             if (item != null) row.item = stripBalanceSummary(InventoryPanelService.buildItemProjection(item));
             slots.push(row);
@@ -2555,17 +2553,19 @@ class org.flashNight.arki.item.LootContainerService {
         }
     }
 
-    private static function issueLootLease(record:Object, slot:Number, item:Object, version:Number):String {
+    // 租约只绑定槽位内容身份（对象引用 + 签名），不绑定容器级 mutation revision：
+    // 兄弟格领取后未动格租约必须保持字面值稳定，否则 Web 批量部分成功证明
+    // （loot-state.js _claimBatchProjection）永不可通过，面板死锁在 reconcile_required。
+    // 容器级并发由 expectedContainerVersion / expectedAuthorityRevision 各自承担。
+    private static function issueLootLease(record:Object, slot:Number, item:Object):String {
         var signature:String = itemSignature(item);
         var current:String = _lootLeaseIds[slot] == undefined ? "" : String(_lootLeaseIds[slot]);
         if (current != "" && _lootLeaseRefs[slot] === item
-                && Number(_lootLeaseVersions[slot]) == version
                 && String(_lootLeaseSignatures[slot]) == signature) return current;
         _leaseSeq++;
         var lease:String = record.lootContainerId + ".slot." + slot + "." + _leaseSeq;
         _lootLeaseIds[slot] = lease;
         _lootLeaseRefs[slot] = item;
-        _lootLeaseVersions[slot] = version;
         _lootLeaseSignatures[slot] = signature;
         return lease;
     }
@@ -2573,8 +2573,15 @@ class org.flashNight.arki.item.LootContainerService {
     private static function invalidateLootLeases():Void {
         _lootLeaseIds = [];
         _lootLeaseRefs = [];
-        _lootLeaseVersions = [];
         _lootLeaseSignatures = [];
+    }
+
+    /** 单槽失效：只清本次被写动的格子，未触碰格子的租约跨兄弟写保持稳定。 */
+    private static function invalidateLootLeaseSlot(slot:Number):Void {
+        if (isNaN(slot) || slot < 0) return;
+        delete _lootLeaseIds[slot];
+        delete _lootLeaseRefs[slot];
+        delete _lootLeaseSignatures[slot];
     }
 
     private static function buildTooltip(item:Object):Object {

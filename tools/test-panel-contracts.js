@@ -57,8 +57,8 @@ function run() {
     const report = validator.validateRepository({ root: ROOT, contract: clone(contract) });
     assert(report.ok, JSON.stringify(report.errors));
     assert(report.contractVersion === 2, "expected strict panel contract v2");
-    assert(report.checked.domains === 5, "expected five governed domains");
-    assert(report.checked.commands === 31, "expected thirty-one governed command mappings");
+    assert(report.checked.domains === 6, "expected six governed domains");
+    assert(report.checked.commands === 38, "expected thirty-eight governed command mappings");
     const hairdresser = contract.domains.find(function (domain) {
       return domain.id === "hairdresser";
     });
@@ -735,6 +735,84 @@ function run() {
       contract: clone(contract),
       sourceOverrides: { [file]: wrongOwner }
     }), "source.csharp_response_owner_rebuild_drift");
+  });
+
+  test("loot exact-identity binding, normalization and admission gate cannot disappear", function () {
+    const file = "launcher/src/Tasks/LootTask.cs";
+    const source = read(file);
+    const missingBinding = replaceOnce(source,
+      "_coordinator.TryBindExact(",
+      "_coordinator.TryBindExactForged(",
+      "LootTask exact identity binding");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: missingBinding }
+    }), "source.csharp_exact_identity_drift");
+
+    const missingNormalizer = replaceOnce(source,
+      "TryNormalizeRequest(parsed, binding, cmd,",
+      "TryNormalizeRequestForged(parsed, binding, cmd,",
+      "LootTask request normalizer");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: missingNormalizer }
+    }), "source.csharp_exact_identity_drift");
+
+    const missingAdmissionGate = replaceOnce(source,
+      '"root_admission_disabled"',
+      '"admission_off"',
+      "LootTask root admission rollback gate");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: missingAdmissionGate }
+    }), "source.csharp_exact_identity_drift");
+  });
+
+  test("loot normalized dispatch and write gate cannot drift", function () {
+    const file = "launcher/src/Tasks/LootTask.cs";
+    const source = read(file);
+    const rawDispatch = replaceOnce(source,
+      "PanelBridge.BuildFlashCommand(action, entry.FlashCallId, normalized)",
+      "PanelBridge.BuildFlashCommand(action, entry.FlashCallId, parsed)",
+      "LootTask normalized dispatch");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: rawDispatch }
+    }), "source.csharp_flash_dispatch_drift");
+
+    const fidDispatch = replaceOnce(source,
+      "PanelBridge.BuildFlashCommand(action, entry.FlashCallId, normalized)",
+      "PanelBridge.BuildFlashCommand(action, fid, normalized)",
+      "LootTask flash call id dispatch");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: fidDispatch }
+    }), "source.csharp_flash_dispatch_drift");
+
+    const unguardedWrite = replaceOnce(source,
+      "else if (rejection == null && isWrite)",
+      "else if (rejection == null)",
+      "LootTask write gate");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: unguardedWrite }
+    }), "source.csharp_access_binding_drift");
+
+    const unscopedReject = replaceOnce(source,
+      'RejectAndRemember(binding, webCallId, cmd, "unsupported_cmd")',
+      'RejectAndRemember(webCallId, cmd, "unsupported_cmd")',
+      "LootTask binding-scoped unsupported_cmd reject");
+    assertError(validator.validateRepository({
+      root: ROOT,
+      contract: clone(contract),
+      sourceOverrides: { [file]: unscopedReject }
+    }), "source.csharp_command_resolution_drift");
   });
 
   test("Crafting exact-type domain guard remains executable", function () {

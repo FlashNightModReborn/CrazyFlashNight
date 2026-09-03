@@ -306,10 +306,11 @@ function validateContractSchema(contract, errors) {
       if (domain.hostPayloadMode !== "normalized"
           && domain.hostPayloadMode !== "passthrough"
           && domain.hostPayloadMode !== "passthrough-owner-sanitized"
-          && domain.hostPayloadMode !== "normalized-domainless-owner-rebuilt") {
+          && domain.hostPayloadMode !== "normalized-domainless-owner-rebuilt"
+          && domain.hostPayloadMode !== "normalized-exact-identity") {
         addError(errors, "schema.enum", at + ".hostPayloadMode",
           "expected normalized, passthrough, passthrough-owner-sanitized, "
-            + "or normalized-domainless-owner-rebuilt");
+            + "normalized-domainless-owner-rebuilt, or normalized-exact-identity");
       }
       if (domain.flashCommandHandler !== null
           && (typeof domain.flashCommandHandler !== "string"
@@ -1125,8 +1126,16 @@ function validateSources(contract, root, overrides, errors) {
           const rejectCalls = guardBody === null
             ? { calls: [], error: "command resolver guard body is unterminated" }
             : parseBareCalls(guardBody, "RejectAndRemember");
+          const exactIdentityMode = domain.hostPayloadMode === "normalized-exact-identity";
           const exactRejects = rejectCalls.calls.filter(function (argumentsList) {
             const callIdentity = canonicalExpression(argumentsList[0]);
+            if (exactIdentityMode) {
+              return argumentsList.length >= 4
+                && callIdentity === "binding"
+                && canonicalExpression(argumentsList[1]) === "webCallId"
+                && canonicalExpression(argumentsList[2]) === "cmd"
+                && quotedLiteral(argumentsList[argumentsList.length - 1]) === "unsupported_cmd";
+            }
             return argumentsList.length >= 2
               && (callIdentity === "callId" || callIdentity === "webCallId")
               && canonicalExpression(argumentsList[1]) === "cmd"
@@ -1175,7 +1184,9 @@ function validateSources(contract, root, overrides, errors) {
           if (handleCodePositions[pendingWriteBindingMatch.index]) pendingWriteBindingCount += 1;
         }
         let writeGateUseCount = 0;
-        const writeGateUsePattern = /\bif\s*\(\s*isWrite\b/g;
+        const writeGateUsePattern = domain.hostPayloadMode === "normalized-exact-identity"
+          ? /\bif\s*\([^)]*&&\s*isWrite\b/g
+          : /\bif\s*\(\s*isWrite\b/g;
         let writeGateUseMatch;
         while ((writeGateUseMatch = writeGateUsePattern.exec(handleWebRequest.body)) !== null) {
           if (handleCodePositions[writeGateUseMatch.index]) writeGateUseCount += 1;
@@ -1185,25 +1196,29 @@ function validateSources(contract, root, overrides, errors) {
             "HandleWebRequest must bind IsWrite=isWrite exactly once and use isWrite in a write gate");
         }
         const buildCalls = parseQualifiedCalls(handleWebRequest.body, "BuildFlashCommand");
+        const exactIdentityMode = domain.hostPayloadMode === "normalized-exact-identity";
         const expectedPayload = domain.hostPayloadMode === "normalized"
           ? "normalized"
           : domain.hostPayloadMode === "normalized-domainless-owner-rebuilt"
             ? "normalizedPayload"
           : domain.hostPayloadMode === "passthrough-owner-sanitized"
             ? "flashRequest"
+          : exactIdentityMode
+            ? "normalized"
             : "parsed";
+        const expectedFlashCallId = exactIdentityMode ? "entry.FlashCallId" : "fid";
         const exactBuildCalls = buildCalls.calls.filter(function (call) {
           return call.receiver === "PanelBridge"
             && call.arguments.length >= 3
             && canonicalExpression(call.arguments[0]) === "action"
-            && canonicalExpression(call.arguments[1]) === "fid"
+            && canonicalExpression(call.arguments[1]) === expectedFlashCallId
             && canonicalExpression(call.arguments[2]) === expectedPayload;
         });
         if (buildCalls.error || buildCalls.calls.length !== 1 || exactBuildCalls.length !== 1) {
           addError(errors, "source.csharp_flash_dispatch_drift", domainAt + ".hostTask",
             buildCalls.error
-              || "HandleWebRequest must contain exactly one PanelBridge.BuildFlashCommand(action, fid, "
-                + expectedPayload + ") dispatch");
+              || "HandleWebRequest must contain exactly one PanelBridge.BuildFlashCommand(action, "
+                + expectedFlashCallId + ", " + expectedPayload + ") dispatch");
         }
       }
       if (domain.hostPayloadMode === "passthrough-owner-sanitized"
@@ -1322,6 +1337,56 @@ function validateSources(contract, root, overrides, errors) {
             domainAt + ".hostPayloadMode",
             "domainless normalized mode must sanitize once and rebuild the exact Web owner envelope "
               + "from pending state; owner counts=" + JSON.stringify(responseOwnerBindings));
+        }
+      }
+      if (domain.hostPayloadMode === "normalized-exact-identity"
+          && handleWebRequest.body !== null) {
+        const identityBody = handleWebRequest.body;
+        // 精确身份绑定取代 domain 字符串门：任何命令离开 Host 前都必须先把
+        // panelInstanceId/chestSessionId/lootContainerId/containerEpoch 绑定到
+        // 当前 coordinator binding，陈旧文档连 unsupported_domain 都收不到。
+        const bindCalls = parseQualifiedCalls(identityBody, "TryBindExact");
+        const exactBindCalls = bindCalls.calls.filter(function (call) {
+          return call.arguments.length === 5
+            && canonicalExpression(call.arguments[0]) === "panelInstanceId"
+            && canonicalExpression(call.arguments[1]) === "chestSessionId"
+            && canonicalExpression(call.arguments[2]) === "lootContainerId"
+            && canonicalExpression(call.arguments[3]) === "containerEpoch"
+            && canonicalExpression(call.arguments[4]) === "outbinding";
+        });
+        const identityNormalizeCalls = parseBareCalls(identityBody, "TryNormalizeRequest");
+        const exactIdentityNormalizeCalls = identityNormalizeCalls.calls.filter(
+          function (argumentsList) {
+            return argumentsList.length === 6
+              && canonicalExpression(argumentsList[0]) === "parsed"
+              && canonicalExpression(argumentsList[1]) === "binding"
+              && canonicalExpression(argumentsList[2]) === "cmd"
+              && canonicalExpression(argumentsList[3]) === "outnormalized"
+              && canonicalExpression(argumentsList[4]) === "outoperationId"
+              && canonicalExpression(argumentsList[5]) === "outexpectedRevision";
+          });
+        const identityRejectCalls = parseBareCalls(identityBody, "RejectAndRemember");
+        const missingRejectReason = ["invalid_payload", "root_admission_disabled", "disconnected"]
+          .filter(function (reason) {
+            return !identityRejectCalls.calls.some(function (argumentsList) {
+              return argumentsList.length >= 4
+                && canonicalExpression(argumentsList[0]) === "binding"
+                && canonicalExpression(argumentsList[1]) === "webCallId"
+                && canonicalExpression(argumentsList[2]) === "cmd"
+                && quotedLiteral(argumentsList[argumentsList.length - 1]) === reason;
+            });
+          });
+        if (bindCalls.error || bindCalls.calls.length !== 1 || exactBindCalls.length !== 1
+            || identityNormalizeCalls.error || identityNormalizeCalls.calls.length !== 1
+            || exactIdentityNormalizeCalls.length !== 1
+            || identityRejectCalls.error || missingRejectReason.length !== 0) {
+          addError(errors, "source.csharp_exact_identity_drift", domainAt + ".hostPayloadMode",
+            "normalized-exact-identity mode requires one TryBindExact(panelInstanceId, "
+              + "chestSessionId, lootContainerId, containerEpoch, out binding), one "
+              + "TryNormalizeRequest(parsed, binding, cmd, out normalized, out operationId, "
+              + "out expectedRevision), and fail-closed RejectAndRemember(binding, webCallId, "
+              + "cmd, <reason>) branches for invalid_payload/root_admission_disabled/disconnected; "
+              + "missing rejects=" + JSON.stringify(missingRejectReason));
         }
       }
       if (domain.hostPayloadMode === "passthrough"

@@ -358,6 +358,46 @@ test('unknown claim batch settles only against its exact frozen no-write prestat
     assert.strictEqual(wire.calls.filter(call => call.cmd === 'claimBatch').length,1);
 });
 
+test('claim batch partial success with a rotated retained lease fails closed into reconcile', () => {
+    const wire=fakeTransport();
+    const model=new LootState.Coordinator({identity,capacity:2,request:wire.request});
+    const before=[slot(0,'物资A','lease.batch.rotate.0'),slot(1,'物资B','lease.batch.rotate.1')];
+    model.open();wire.respond(0,active(1,before));
+    assert(model.claimBatch(model.projection().loot.slots));
+    const operationId=wire.calls[1].fields.operationId;
+    // 受阻格仍在原位但租约被轮换：与冻结值不同即证明不了精确推进，成功回包也必须 fail-closed。
+    const rotated=[slot(0),slot(1,'物资B','lease.batch.rotated.1')];
+    wire.respond(1,active(2,rotated,{lastAppliedOperationId:operationId}));
+    const state=model.debugState();
+    assert.strictEqual(state.phase,'reconcile_required');
+    assert.strictEqual(state.remainingCount,2);
+    assert.strictEqual(state.unknown.refreshOnly,false);
+    assert.deepStrictEqual(state.unknown.physicalSlots,[0,1]);
+    assert.deepStrictEqual(state.unknown.slotLeases,['lease.batch.rotate.0','lease.batch.rotate.1']);
+    assert.strictEqual(wire.calls.filter(call => call.cmd === 'claimBatch').length,1);
+});
+
+test('claim batch reconcile clears when the query keeps the retained slot lease stable', () => {
+    const wire=fakeTransport();
+    const model=new LootState.Coordinator({identity,capacity:2,request:wire.request});
+    const before=[slot(0,'物资A','lease.batch.stable.0'),slot(1,'物资B','lease.batch.stable.1')];
+    model.open();wire.respond(0,active(1,before));
+    assert(model.claimBatch(model.projection().loot.slots));
+    const operationId=wire.calls[1].fields.operationId;
+    const rotated=[slot(0),slot(1,'物资B','lease.batch.rotated.1')];
+    wire.respond(1,active(2,rotated,{lastAppliedOperationId:operationId}));
+    assert.strictEqual(model.debugState().phase,'reconcile_required');
+    // 修复后的生产行为：未动格租约跨兄弟写稳定，query 投影与冻结值一致即可解除对账。
+    assert(model.query());
+    assert.strictEqual(wire.calls[2].cmd,'query');
+    const settled=[slot(0),slot(1,'物资B','lease.batch.stable.1')];
+    wire.respond(2,active(2,settled,{lastAppliedOperationId:operationId}));
+    assert.strictEqual(model.debugState().phase,'active');
+    assert.strictEqual(model.debugState().remainingCount,1);
+    assert.strictEqual(model.projection().loot.slots[1].slotLease,'lease.batch.stable.1');
+    assert.strictEqual(wire.calls.filter(call => call.cmd === 'claimBatch').length,1);
+});
+
 test('claim batch rejects duplicate physical slots before issuing a write', () => {
     const wire=fakeTransport();
     const model=new LootState.Coordinator({identity,capacity:2,request:wire.request});
@@ -1271,6 +1311,27 @@ test('reward recovery-only discovery queries the exact root before any write', (
     assert.strictEqual(model.debugState().phase,'active');
     assert.strictEqual(wire.calls[2].fields.acknowledgeTerminalRootOperationId,
         'reward.recovery.pending');
+});
+
+test('reward pending root never applies a mixed asset projection', () => {
+    const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    const wire=fakeTransport(),model=new LootState.Coordinator({
+        identity:rewardIdentity,capacity:1,request:wire.request,
+        recoverableRootOperationId:'reward.mixed.pending',
+        recoverableRootStatus:'pending',recoveryRequired:true,recoveryOnly:true
+    });
+    model.open();wire.respond(0,active(1,[slot(0)]));
+    assert.strictEqual(model.projection().authorityRevision,1);
+    assert(model.query());
+    wire.respond(1,rewardRoot(active(2,[slot(0)]),'reward.mixed.pending',
+        'pending','in_progress',{success:false,error:'commit_pending'}));
+    assert.strictEqual(model.debugState().phase,'reconcile_required');
+    assert.strictEqual(model.projection().authorityRevision,1);
+    assert(model.query());
+    wire.respond(2,rewardRoot(active(2,[slot(0)]),'reward.mixed.pending',
+        'committed','all_applied'));
+    assert.strictEqual(model.debugState().phase,'active');
+    assert.strictEqual(model.projection().authorityRevision,2);
 });
 
 test('runtime exact-key and command allowlists ignore prototype properties', () => {

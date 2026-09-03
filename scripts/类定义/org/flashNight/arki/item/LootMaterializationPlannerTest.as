@@ -25,6 +25,7 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
             testCreateResumeKeepsExactItem();
             testAddResumeIsIdempotent();
             testTotalsCommitRollback();
+            testInformationCapFilter();
         } finally {
             restoreWorld();
         }
@@ -37,11 +38,15 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
         var rng:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
         _backup = {
             itemDataDict:ItemUtil.itemDataDict,
+            informationMaxValueDict:ItemUtil.informationMaxValueDict,
+            collectibles:_root.收集品栏,
             dropPRDEngine:_root.dropPRDEngine,
             passive:_root.主角被动技能,
             rngState:rng.captureState()
         };
         ItemUtil.itemDataDict = {};
+        ItemUtil.informationMaxValueDict = {};
+        _root.收集品栏 = undefined;
         ItemUtil.itemDataDict[ITEM] = {
             name:ITEM, displayname:ITEM, icon:ITEM, type:"消耗品", use:"道具",
             price:1, description:"物化测试", data:{level:1}
@@ -53,6 +58,8 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
     private static function restoreWorld():Void {
         LootMaterializationPlanner.testOnlyReset();
         ItemUtil.itemDataDict = _backup.itemDataDict;
+        ItemUtil.informationMaxValueDict = _backup.informationMaxValueDict;
+        _root.收集品栏 = _backup.collectibles;
         _root.dropPRDEngine = _backup.dropPRDEngine;
         _root.主角被动技能 = _backup.passive;
         LinearCongruentialEngine.getInstance().restoreState(_backup.rngState);
@@ -322,6 +329,61 @@ class org.flashNight.arki.item.LootMaterializationPlannerTest {
                 && resumed.success && fixture.掉落物 == null
                 && resumed.inventory.size() == 2,
             "总数批次故障先回滚，重试后两条规则与 source detach 一次提交");
+    }
+
+    private static function testInformationCapFilter():Void {
+        var intel:String = "S1物化测试情报";
+        ItemUtil.itemDataDict[intel] = {
+            name:intel, displayname:intel, icon:intel, type:"收集品", use:"情报",
+            price:0, description:"物化测试情报", data:{level:1}
+        };
+        ItemUtil.informationMaxValueDict[intel] = 1;
+        var owned:Object = {};
+        _root.收集品栏 = {
+            情报:{
+                getValue:function(name:String):Number {
+                    var value:Number = Number(owned[name]);
+                    return isNaN(value) ? 0 : value;
+                }
+            }
+        };
+
+        resetEntropy(6001, {});
+        owned[intel] = 1;
+        var capped:Object = {名字:intel, 最小数量:1, 最大数量:1, 总数:3};
+        var normal:Object = {名字:ITEM, 最小数量:1, 最大数量:1, 总数:2};
+        var cappedResult:Object = LootMaterializationPlanner.materialize(
+            target("mat.intel-capped", [capped, normal]));
+        var cappedEntry:Object = cappedResult.entries[0];
+        check(cappedResult.success && cappedResult.inventory.size() == 1
+                && cappedEntry.hit && cappedEntry.quantity == 1
+                && cappedEntry.generateQuantity == 0 && cappedEntry.item == null
+                && cappedResult.inventory.getItem(String(cappedEntry.slot)) == null
+                && capped.总数 == 2 && normal.总数 == 1,
+            "已满零价情报不生成：槽位留空，掷骰量仍按原语义扣减 总数，非情报规则照常生成");
+
+        resetEntropy(6002, {});
+        ItemUtil.informationMaxValueDict[intel] = 5;
+        owned[intel] = 3;
+        var partial:Object = {名字:intel, 最小数量:4, 最大数量:4, 总数:4};
+        var partialResult:Object = LootMaterializationPlanner.materialize(
+            target("mat.intel-partial", partial));
+        var partialEntry:Object = partialResult.entries[0];
+        check(partialResult.success && partialResult.inventory.size() == 1
+                && partialEntry.quantity == 4 && partialEntry.generateQuantity == 2
+                && partialResult.inventory.getItem(String(partialEntry.slot)).value == 2,
+            "情报剩余容量 2 时按请求 4 截断为 2 生成");
+
+        resetEntropy(6003, {});
+        owned[intel] = 0;
+        var full:Object = {名字:intel, 最小数量:2, 最大数量:2, 总数:2};
+        var fullResult:Object = LootMaterializationPlanner.materialize(
+            target("mat.intel-full", full));
+        var fullEntry:Object = fullResult.entries[0];
+        check(fullResult.success && fullResult.inventory.size() == 1
+                && fullEntry.generateQuantity == 2
+                && fullResult.inventory.getItem(String(fullEntry.slot)).value == 2,
+            "情报容量充足时请求量全额生成");
     }
 
     private static function ownKeyCount(value:Object):Number {

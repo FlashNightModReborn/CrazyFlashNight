@@ -240,6 +240,7 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
                     hit:false,
                     quantityRecorded:false,
                     quantity:0,
+                    generateQuantity:0,
                     itemCreated:false,
                     item:null,
                     applied:false
@@ -279,18 +280,22 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
                     + random(descriptor.max - descriptor.min + 1);
                 if (quantity > descriptor.totalBefore) quantity = descriptor.totalBefore;
                 entry.quantity = quantity;
+                // 情报持有上限分流：掷骰与 总数 扣减保持原语义，只有生成量被截断。
+                entry.generateQuantity = planInformationGenerate(descriptor.name, quantity);
                 entry.quantityRecorded = true;
             }
             if (!entry.itemCreated) {
                 var item:BaseItem = null;
-                try {
-                    item = BaseItem.create(descriptor.name, entry.quantity);
-                } catch (createError) {
-                    item = null;
-                }
-                if (item == null) {
-                    fail(journal, "item_creation_failed", false);
-                    return false;
+                if (entry.generateQuantity > 0) {
+                    try {
+                        item = BaseItem.create(descriptor.name, entry.generateQuantity);
+                    } catch (createError) {
+                        item = null;
+                    }
+                    if (item == null) {
+                        fail(journal, "item_creation_failed", false);
+                        return false;
+                    }
                 }
                 entry.item = item;
                 entry.itemCreated = true;
@@ -304,11 +309,26 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
         return true;
     }
 
+    // 与敌人掉落同一上限语义（单位函数_lsy_敌人模板迁移 掉落物品）：先按原始掉落数量
+    // 掷骰，再按每件情报自己的 maxvalue 截断；已达上限则一件都不生成。箱子路径不制造
+    // 计划外的折算金币槽——有价格溢出折金币是地面拾取语义，箱内只截断不生成。
+    // 非情报物品或收集品栏未就绪时原样放行，领取时仍有 cap_reached 兜底。
+    private static function planInformationGenerate(name:String, quantity:Number):Number {
+        var plan:Object = ItemUtil.planInformationAcquire(name, quantity);
+        if (plan == null || plan.valid !== true) return quantity;
+        return Number(plan.accepted);
+    }
+
     private static function writeInventory(journal:Object):Boolean {
         var inventory:ArrayInventory = journal.inventory;
         for (var ruleIndex:Number = journal.entries.length - 1; ruleIndex >= 0; ruleIndex--) {
             var entry:Object = journal.entries[ruleIndex];
             if (entry == undefined || !entry.hit || entry.applied) continue;
+            // 情报上限过滤后不生成：槽位保持为空，只标记已应用，不写物品。
+            if (entry.item == null) {
+                entry.applied = true;
+                continue;
+            }
             var existing:Object = inventory.getItem(String(entry.slot));
             if (existing === entry.item) {
                 entry.applied = true;

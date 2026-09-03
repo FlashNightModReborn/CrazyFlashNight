@@ -289,6 +289,71 @@
           "boundary": "technical-ceiling"
         }
       ]
+    },
+    {
+      "id": "loot",
+      "wireDomain": "loot",
+      "hostTask": "launcher/src/Tasks/LootTask.cs",
+      "flashResponseTask": "loot_response",
+      "hostResponseHandler": "lootTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized-exact-identity",
+      "flashCommandHandler": "org.flashNight.arki.item.LootContainerService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/item/LootContainerService.as"
+      ],
+      "commands": [
+        {
+          "cmd": "snapshot",
+          "action": "lootSnapshot",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "tooltip",
+          "action": "lootTooltip",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "claim",
+          "action": "lootClaim",
+          "capability": "transaction",
+          "access": "write",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "claimBatch",
+          "action": "lootClaimBatch",
+          "capability": "transaction",
+          "access": "write",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "close",
+          "action": "lootClose",
+          "capability": "transaction",
+          "access": "write",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "query",
+          "action": "lootQuery",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "materials",
+          "action": "lootMaterials",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
     }
   ],
   "vectors": {
