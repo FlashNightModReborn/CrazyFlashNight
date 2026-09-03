@@ -102,5 +102,125 @@ namespace CF7Launcher.Tests.Tasks
                 delegate(string ignored) { });
             Assert.Single(_posted);
         }
+
+        [Fact]
+        public void Observation_UsesOneGenerationBoundReadOnlyProbeAndCapturesExactTuple()
+        {
+            var sends = new List<string>();
+            var generations = new List<int>();
+
+            BlackMarketObservationSnapshot first = _task.ObserveHeartbeat(
+                7,
+                delegate(string payload, int generation)
+                {
+                    sends.Add(payload);
+                    generations.Add(generation);
+                    return true;
+                });
+
+            Assert.Single(sends);
+            Assert.Equal(7, generations[0]);
+            JObject command = JObject.Parse(sends[0].TrimEnd('\0'));
+            Assert.Equal("cmd", (string)command["task"]);
+            Assert.Equal("blackmarketObservation", (string)command["action"]);
+            Assert.Equal(3, command.Count);
+            Assert.Equal(1, first.OutstandingCount);
+            Assert.Equal(0, first.BusinessOutstandingCount);
+            Assert.Equal("blackmarket.observation", first.OutstandingOwner);
+
+            BlackMarketObservationSnapshot stillPending = _task.ObserveHeartbeat(
+                7,
+                delegate(string payload, int generation)
+                {
+                    sends.Add(payload);
+                    return true;
+                });
+            Assert.Single(sends);
+            Assert.Equal(first.RouteSequence, stillPending.RouteSequence);
+
+            _task.HandleFlashResponse(JObject.Parse(
+                "{\"task\":\"blackmarket_response\",\"callId\":"
+                + (int)command["callId"]
+                + ",\"success\":true,\"observationTuple\":{"
+                + "\"v\":1,\"businessOwner\":\"blackmarket.observation\","
+                + "\"pauseOwner\":\"webpanel\",\"sceneOwner\":\"base_scene\","
+                + "\"frameSequence\":321}}"),
+                delegate(string ignored) { });
+
+            BlackMarketObservationSnapshot completed =
+                _task.CaptureObservation();
+            Assert.Equal(0, completed.OutstandingCount);
+            Assert.Equal(first.RouteSequence,
+                completed.LastCompletedRouteSequence);
+            Assert.Equal("exact", completed.As2TupleState);
+            Assert.Equal("blackmarket.observation", completed.BusinessOwner);
+            Assert.Equal("webpanel", completed.PauseOwner);
+            Assert.Equal("base_scene", completed.SceneOwner);
+            Assert.Equal(321, completed.FrameSequence);
+            Assert.Empty(_posted);
+        }
+
+        [Fact]
+        public void Observation_MalformedTupleFailsClosedAndRetireHasNoControlAction()
+        {
+            string sent = null;
+            BlackMarketObservationSnapshot pending = _task.ObserveHeartbeat(
+                11,
+                delegate(string payload, int generation)
+                {
+                    sent = payload;
+                    return true;
+                });
+            JObject command = JObject.Parse(sent.TrimEnd('\0'));
+            _task.HandleFlashResponse(JObject.Parse(
+                "{\"task\":\"blackmarket_response\",\"callId\":"
+                + (int)command["callId"]
+                + ",\"success\":true,\"observationTuple\":{"
+                + "\"v\":1,\"businessOwner\":\"blackmarket.observation\","
+                + "\"pauseOwner\":\"webpanel\",\"sceneOwner\":\"base_scene\","
+                + "\"frameSequence\":1,\"extra\":true}}"),
+                null);
+            BlackMarketObservationSnapshot invalid =
+                _task.CaptureObservation();
+            Assert.Equal("invalid", invalid.As2TupleState);
+            Assert.Equal(-1, invalid.FrameSequence);
+
+            _task.ObserveHeartbeat(11, delegate(string payload, int generation)
+            {
+                return true;
+            });
+            _task.RetireObservation();
+            BlackMarketObservationSnapshot retired =
+                _task.CaptureObservation();
+            Assert.Equal(0, retired.OutstandingCount);
+            Assert.Equal("missing", retired.As2TupleState);
+            Assert.Equal("none", retired.OutstandingOwner);
+            Assert.Equal(0, retired.BusinessOutstandingCount);
+            Assert.True(pending.RouteSequence > 0);
+        }
+
+        [Theory]
+        [InlineData("none", "base_scene", -1, true)]
+        [InlineData("shop", "stage_run", 99, true)]
+        [InlineData("secret", "base_scene", 1, false)]
+        [InlineData("none", "unknown_scene", 1, false)]
+        [InlineData("none", "base_scene", 1.5, false)]
+        public void ObservationTuple_RequiresExactBoundedOwnerSet(
+            string pauseOwner,
+            string sceneOwner,
+            double frameSequence,
+            bool expected)
+        {
+            var tuple = new JObject
+            {
+                ["v"] = 1,
+                ["businessOwner"] = "blackmarket.observation",
+                ["pauseOwner"] = pauseOwner,
+                ["sceneOwner"] = sceneOwner,
+                ["frameSequence"] = frameSequence
+            };
+            Assert.Equal(expected,
+                BlackMarketTask.IsExactAs2ObservationTuple(tuple));
+        }
     }
 }

@@ -2,6 +2,7 @@
 import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.DrugSlotAffinityService;
 import org.flashNight.arki.item.PlayerAssetTransaction;
+import org.flashNight.gesh.object.ObjectUtil;
 
 /**
  * Loot claim 的双资源提交协调器。目的写成功、source 删除失败时先尝试回滚；只有观察到
@@ -14,6 +15,17 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
     private static var _testFaultCounts:Object = {};
 
     public static function begin(pending:Object, source:Object, kind:String):Object {
+        var prepared:Object = prepare(pending, source, kind);
+        if (prepared == null || prepared.success !== true) return prepared;
+        return applyOrReconcile(pending);
+    }
+
+    /**
+     * 纯 prepare seam。只解析 source、目标、before/after 与 affinity，不写任何资产。
+     * 普通 Loot 仍由 begin 紧接着 apply；Reward durable root 会先把导出的 descriptor
+     * 强制落盘，再调用 applyOrReconcile。
+     */
+    public static function prepare(pending:Object, source:Object, kind:String):Object {
         if (pending == null || source == null || source.inventory == null || source.item == null) {
             return {success:false, error:"commit_failed"};
         }
@@ -23,19 +35,29 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         pending.sourceItem = source.item;
         pending.phase = "PREPARING";
         try {
-            if (kind == "ordinary") return beginOrdinary(pending);
-            return beginSpecial(pending);
+            if (kind == "ordinary") return prepareOrdinary(pending);
+            return prepareSpecial(pending);
         } catch (commitError) {
-            trace("[LootClaimCommitCoordinator] begin failed: " + commitError);
-            return reconcileAfterFailure(pending);
+            trace("[LootClaimCommitCoordinator] prepare failed: " + commitError);
+            return {success:false, error:"commit_failed"};
         }
     }
 
     public static function resume(pending:Object):Object {
+        return applyOrReconcile(pending);
+    }
+
+    /** 对 PREPARED descriptor 幂等应用，或从 exact before/after 继续收敛。 */
+    public static function applyOrReconcile(pending:Object):Object {
         if (pending == null || pending.sourceInventory == null || pending.sourceItem == null) {
             return {success:false, error:"commit_failed"};
         }
         try {
+            // 只有 begin 紧接 prepare 的第一次尝试允许回滚。destination 已落地后保存的
+            // process-local journal，或 Reward durable descriptor 的任何 resume，都只能
+            // forward-complete；否则第二次 source write 失败会把一次已不确定提交倒退。
+            var allowRollback:Boolean = pending.forwardOnly !== true
+                && pending.phase == "PREPARED";
             // TestLoader 专用 fault point：模拟进程内连续 query 仍无法观察/续跑 journal。
             // 无注入时 consumeFault 为空，不改变生产提交路径。
             if (consumeFault("resume") != "") {
@@ -44,10 +66,15 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
             var destinationState:String = observeDestination(pending);
             var sourceState:String = observeSource(pending);
             if (destinationState == "conflict" || sourceState == "conflict") {
+                if (pending.forwardOnly === true) {
+                    pending.phase = "QUARANTINED";
+                    return {success:false, error:"invariant_conflict", quarantined:true};
+                }
                 return {success:false, error:"commit_pending", pending:true};
             }
             if (destinationState == "before") {
                 if (!applyDestinationAfter(pending)) {
+                    if (allowRollback) return reconcileAfterFailure(pending);
                     return {success:false, error:"commit_pending", pending:true};
                 }
                 destinationState = observeDestination(pending);
@@ -56,6 +83,9 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
                 return {success:false, error:"commit_pending", pending:true};
             }
             if (!commitAffinityAfterDestination(pending)) {
+                if (!allowRollback) {
+                    return {success:false, error:"commit_pending", pending:true};
+                }
                 if (sourceState == "present"
                         && rollbackDestinationAndAffinity(
                             pending, "ordinary_affinity_rollback")) {
@@ -69,6 +99,11 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
                         ? "ordinary_source_write" : "special_source_write",
                         pending.sourceInventory, pending.sourceSlot, null)) {
                     pending.phase = "DESTINATION_APPLIED";
+                    if (allowRollback) {
+                        return rollbackOrPreservePending(pending,
+                            pending.kind == "ordinary"
+                                ? "ordinary_rollback" : "special_rollback");
+                    }
                     return {success:false, error:"commit_pending", pending:true};
                 }
                 sourceState = observeSource(pending);
@@ -129,7 +164,7 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         }
     }
 
-    private static function beginOrdinary(pending:Object):Object {
+    private static function prepareOrdinary(pending:Object):Object {
         var backpack:ArrayInventory = resolveBackpack();
         var drugs:ArrayInventory = resolveDrugInventory();
         if (backpack == null || drugs == null) {
@@ -163,6 +198,12 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
             ? "药剂栏" : "背包";
         pending.acquirePlan = plan;
         pending.affinityBefore = captureAffinityFeature();
+        pending.affinityAfter = ObjectUtil.clone(planning.feature);
+        if (String(plan.storageKind) == "drug") {
+            pending.affinityAfter.slots[Number(plan.slot)] = {
+                itemKey:String(sourceItem.name), lastDepletedSequence:0
+            };
+        }
         pending.affinityCommitted = String(plan.storageKind) != "drug";
         if (destinationItem != null) {
             var before:Number = Number(destinationItem.value);
@@ -192,24 +233,10 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         }
 
         pending.phase = "PREPARED";
-        if (!applyDestinationAfter(pending)) return reconcileAfterFailure(pending);
-        pending.phase = "DESTINATION_APPLIED";
-        if (!commitAffinityAfterDestination(pending)) {
-            if (rollbackDestinationAndAffinity(pending, "ordinary_affinity_rollback")) {
-                pending.phase = "ROLLED_BACK";
-                return {success:false, error:"commit_failed", rolledBack:true};
-            }
-            return {success:false, error:"commit_pending", pending:true};
-        }
-        if (writeInventory("ordinary_source_write", pending.sourceInventory,
-                           pending.sourceSlot, null)) {
-            pending.phase = "COMMITTED";
-            return successOutcome(pending);
-        }
-        return rollbackOrPreservePending(pending, "ordinary_rollback");
+        return {success:true, prepared:true};
     }
 
-    private static function beginSpecial(pending:Object):Object {
+    private static function prepareSpecial(pending:Object):Object {
         var item:Object = pending.sourceItem;
         var quantity:Number = Number(item.value);
         if (!isPositiveWhole(quantity)) return {success:false, error:"invalid_quantity"};
@@ -257,14 +284,162 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         }
 
         pending.phase = "PREPARED";
-        if (!applyDestinationAfter(pending)) return reconcileAfterFailure(pending);
-        pending.phase = "DESTINATION_APPLIED";
-        if (writeInventory("special_source_write", pending.sourceInventory,
-                           pending.sourceSlot, null)) {
-            pending.phase = "COMMITTED";
-            return successOutcome(pending);
+        return {success:true, prepared:true};
+    }
+
+    /** 把 PREPARED live journal 压成可写入 Reward v1 的纯数据 descriptor。 */
+    public static function exportDurableDescriptor(pending:Object):Object {
+        if (pending == null || pending.phase != "PREPARED"
+                || pending.sourceItem == null
+                || typeof pending.sourceItem.toObject != "function") return null;
+        var sourceData:Object = pending.sourceItem.toObject();
+        var descriptor:Object = {
+            descriptorSchemaVersion:1,
+            operationId:String(pending.operationId),
+            kind:String(pending.kind),
+            domain:String(pending.domain),
+            sourceItemData:ObjectUtil.clone(sourceData),
+            feedSource:String(pending.feedSource || "reward_inbox"),
+            feedReason:String(pending.feedReason || "claim"),
+            phase:"PREPARED"
+        };
+        if (pending.domain == "ordinary") {
+            descriptor.destinationContainerId = String(pending.destinationContainerId);
+            descriptor.destinationSlot = Number(pending.destinationSlot);
+            descriptor.destinationKind = String(pending.destinationKind);
+            descriptor.destinationBeforeItemData = pending.destinationKind == "merge"
+                ? ObjectUtil.clone(pending.destinationItem.toObject()) : null;
+            descriptor.destinationAfterItemData = pending.destinationKind == "merge"
+                ? ObjectUtil.clone(descriptor.destinationBeforeItemData)
+                : ObjectUtil.clone(sourceData);
+            if (pending.destinationKind == "merge") {
+                descriptor.destinationAfterItemData.value = Number(
+                    pending.destinationAfterValue);
+            }
+            descriptor.destinationBeforeValue = pending.destinationKind == "merge"
+                ? Number(pending.destinationBeforeValue) : 0;
+            descriptor.destinationAfterValue = pending.destinationKind == "merge"
+                ? Number(pending.destinationAfterValue) : 0;
+            descriptor.acquirePlan = {
+                success:true,
+                storageKind:String(pending.acquirePlan.storageKind),
+                slot:Number(pending.acquirePlan.slot),
+                itemKey:String(pending.acquirePlan.itemKey),
+                quantity:Number(pending.acquirePlan.quantity),
+                expectedValue:Number(pending.acquirePlan.expectedValue)
+            };
+            descriptor.affinityBefore = ObjectUtil.clone(pending.affinityBefore);
+            descriptor.affinityAfter = ObjectUtil.clone(pending.affinityAfter);
+        } else {
+            descriptor.destinationName = String(pending.destinationName);
+            descriptor.quantity = Number(pending.quantity);
+            descriptor.destinationBeforeValue = Number(pending.destinationBeforeValue);
+            descriptor.destinationAfterValue = Number(pending.destinationAfterValue);
         }
-        return rollbackOrPreservePending(pending, "special_rollback");
+        return descriptor;
+    }
+
+    /**
+     * reload 后只按稳定 locator 与 exact before/after 重绑；任何第三态都交给上层
+     * quarantine，绝不猜测或回滚已经 durable-admitted 的 root。
+     */
+    public static function rebindDurableDescriptor(
+            descriptor:Object, source:Object):Object {
+        if (descriptor == null || descriptor.descriptorSchemaVersion != 1
+                || source == null || source.inventory == null || source.item == null
+                || typeof source.item.toObject != "function"
+                || !ObjectUtil.deepEquals(source.item.toObject(),
+                    descriptor.sourceItemData)) {
+            return {success:false, error:"source_rebind_conflict", quarantined:true};
+        }
+        var pending:Object = {
+            operationId:String(descriptor.operationId),
+            kind:String(descriptor.kind),
+            domain:String(descriptor.domain),
+            sourceInventory:source.inventory,
+            sourceSlot:Number(source.slot),
+            sourceItem:source.item,
+            feedSource:String(descriptor.feedSource),
+            feedReason:String(descriptor.feedReason),
+            phase:String(descriptor.phase),
+            forwardOnly:true,
+            deferFeed:true
+        };
+        if (pending.domain == "ordinary") {
+            var destination:ArrayInventory = String(descriptor.destinationContainerId) == "药剂栏"
+                ? resolveDrugInventory() : resolveBackpack();
+            if (destination == null) {
+                return {success:false, error:"destination_unavailable", quarantined:true};
+            }
+            var destinationSlot:Number = Number(descriptor.destinationSlot);
+            var current:Object = destination.getItem(String(destinationSlot));
+            var currentData:Object = current == null ? null : current.toObject();
+            var atBefore:Boolean = ObjectUtil.deepEquals(
+                currentData, descriptor.destinationBeforeItemData);
+            var atAfter:Boolean = ObjectUtil.deepEquals(
+                currentData, descriptor.destinationAfterItemData);
+            if (!atBefore && !atAfter) {
+                return {success:false, error:"destination_rebind_conflict", quarantined:true};
+            }
+            pending.destinationInventory = destination;
+            pending.destinationContainerId = String(descriptor.destinationContainerId);
+            pending.destinationSlot = destinationSlot;
+            pending.destinationKind = String(descriptor.destinationKind);
+            pending.destinationItem = current == null ? source.item : current;
+            pending.destinationBeforeValue = Number(descriptor.destinationBeforeValue);
+            pending.destinationAfterValue = Number(descriptor.destinationAfterValue);
+            pending.acquirePlan = ObjectUtil.clone(descriptor.acquirePlan);
+            pending.affinityBefore = ObjectUtil.clone(descriptor.affinityBefore);
+            pending.affinityAfter = ObjectUtil.clone(descriptor.affinityAfter);
+            pending.affinityCommitted = String(descriptor.destinationContainerId) != "药剂栏"
+                || ObjectUtil.deepEquals(captureAffinityFeature(), pending.affinityAfter);
+            pending.outcome = {
+                success:true,
+                destinationSlot:destinationSlot,
+                destinationContainerId:pending.destinationContainerId,
+                destinationInventory:destination,
+                destinationEvent:pending.destinationKind == "merge" ? "value" : "added"
+            };
+        } else {
+            pending.destinationName = String(descriptor.destinationName);
+            pending.quantity = Number(descriptor.quantity);
+            pending.destinationBeforeValue = Number(descriptor.destinationBeforeValue);
+            pending.destinationAfterValue = Number(descriptor.destinationAfterValue);
+            if (pending.domain == "collection") {
+                if (_root.收集品栏 == undefined) {
+                    return {success:false, error:"destination_unavailable", quarantined:true};
+                }
+                pending.destinationCollection = pending.kind == "information"
+                    ? _root.收集品栏.情报 : _root.收集品栏.材料;
+                if (pending.destinationCollection == null
+                        || typeof pending.destinationCollection.getValue != "function") {
+                    return {success:false, error:"destination_unavailable", quarantined:true};
+                }
+                var currentValue:Number = Number(
+                    pending.destinationCollection.getValue(pending.destinationName));
+                if (currentValue != pending.destinationBeforeValue
+                        && currentValue != pending.destinationAfterValue) {
+                    return {success:false, error:"destination_rebind_conflict", quarantined:true};
+                }
+                pending.outcome = {success:true,
+                    collection:pending.destinationCollection, collectionChanges:null};
+            } else if (pending.domain == "scalar") {
+                currentValue = readScalar(pending.kind);
+                if (currentValue != pending.destinationBeforeValue
+                        && currentValue != pending.destinationAfterValue) {
+                    return {success:false, error:"destination_rebind_conflict", quarantined:true};
+                }
+                pending.outcome = {success:true, postCommitKind:pending.kind};
+            } else {
+                return {success:false, error:"invalid_destination_domain", quarantined:true};
+            }
+        }
+        return {success:true, pending:pending};
+    }
+
+    /** durable child completion 落盘后再发非权威播报。 */
+    public static function publishAfterDurable(pending:Object):Void {
+        emitLootFeed(pending);
     }
 
     private static function rollbackOrPreservePending(pending:Object,
@@ -419,10 +594,12 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
         if (outcome == null) return {success:false, error:"commit_failed"};
         outcome.success = true;
         // 消费者回执永不破坏提交链路：异常只留 trace，不影响已提交结果。
-        try {
-            emitLootFeed(pending);
-        } catch (emitError) {
-            trace("[LootClaimCommitCoordinator] loot feed emit failed: " + emitError);
+        if (pending.deferFeed !== true) {
+            try {
+                emitLootFeed(pending);
+            } catch (emitError) {
+                trace("[LootClaimCommitCoordinator] loot feed emit failed: " + emitError);
+            }
         }
         return outcome;
     }
@@ -529,9 +706,23 @@ class org.flashNight.arki.item.LootClaimCommitCoordinator {
     private static function commitAffinityAfterDestination(pending:Object):Boolean {
         if (pending == null || pending.domain != "ordinary"
                 || pending.affinityCommitted === true) return true;
+        var current:Object = captureAffinityFeature();
+        if (pending.affinityAfter != undefined
+                && ObjectUtil.deepEquals(current, pending.affinityAfter)) {
+            pending.affinityCommitted = true;
+            return true;
+        }
+        if (pending.affinityBefore != undefined
+                && !ObjectUtil.deepEquals(current, pending.affinityBefore)) {
+            return false;
+        }
         var committed:Object = DrugSlotAffinityService.commitAcquireTarget(
             _root, resolveDrugInventory(), pending.acquirePlan);
         if (committed == null || committed.success !== true) return false;
+        if (pending.affinityAfter != undefined
+                && !ObjectUtil.deepEquals(captureAffinityFeature(), pending.affinityAfter)) {
+            return false;
+        }
         pending.affinityCommitted = true;
         return true;
     }

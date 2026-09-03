@@ -67,6 +67,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testStageSelectLifecycleAuthority();
         testTaskDeferredEntryAuthority();
         testArenaDeferredLoadAuthority();
+        testSoftlockObservationOwnerIsReadOnly();
 
         restoreWorld();
         trace("StageRunSessionTest Tests Passed: " + _passed);
@@ -2931,6 +2932,59 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         };
         _root.gameCommands.stageOutcomeAction(stale);
         assertEquals(1, ItemUtil.getTotal(REVIVE), "new id with stale revision is also zero-write");
+    }
+
+    private static function testSoftlockObservationOwnerIsReadOnly():Void {
+        resetWorld(0);
+        var oldTransition = _root.场景转换中;
+        var oldCalibration = _root.斗兽标定模式;
+        _root.场景转换中 = false;
+        _root.斗兽标定模式 = false;
+        _root.当前为战斗地图 = false;
+        assertEquals("base_scene", StageRunSession.getObservationOwner(),
+            "O1 scene owner names the idle base without mutation");
+        _root.场景转换中 = true;
+        assertEquals("scene_transition", StageRunSession.getObservationOwner(),
+            "O1 scene owner names the existing transition wait");
+        _root.场景转换中 = false;
+        _root.当前为战斗地图 = true;
+        assertEquals("legacy_battle_map", StageRunSession.getObservationOwner(),
+            "O1 scene owner names the legacy battle owner");
+        _root.当前为战斗地图 = false;
+        _root.斗兽标定模式 = true;
+        assertEquals("arena_calibration", StageRunSession.getObservationOwner(),
+            "O1 scene owner names the calibration owner");
+        _root.斗兽标定模式 = false;
+        assertTrue(StageRunSession.begin("O1只读场景", "简单"),
+            "O1 observation fixture can establish a normal stage owner");
+        var before:Object = StageRunSession.testOnlySnapshot();
+        assertEquals("stage_run", StageRunSession.getObservationOwner(),
+            "O1 scene owner names an active StageRunSession");
+        var after:Object = StageRunSession.testOnlySnapshot();
+        assertTrue(before.revision === after.revision
+                && before.runId === after.runId
+                && before.outcome === after.outcome,
+            "reading the O1 scene owner leaves the exact run unchanged");
+        var oldPause = _root.暂停;
+        org.flashNight.arki.pause.PauseManager.install();
+        org.flashNight.arki.pause.PauseManager.set(false, "o1-test");
+        assertEquals("none",
+            org.flashNight.arki.pause.PauseManager.getObservationOwner(),
+            "O1 pause owner names an unpaused runtime");
+        var observationLease:String =
+            org.flashNight.arki.pause.PauseManager.lease(true, "webpanel");
+        assertEquals("webpanel",
+            org.flashNight.arki.pause.PauseManager.getObservationOwner(),
+            "O1 pause owner names the existing Web panel lease without its id");
+        var pauseBeforeRead:Boolean = _root.暂停 === true;
+        org.flashNight.arki.pause.PauseManager.getObservationOwner();
+        assertTrue(pauseBeforeRead === (_root.暂停 === true),
+            "reading the O1 pause owner leaves pause state unchanged");
+        org.flashNight.arki.pause.PauseManager.releaseLease(observationLease);
+        _root.暂停 = oldPause;
+        StageRunSession.testOnlyReset();
+        _root.场景转换中 = oldTransition;
+        _root.斗兽标定模式 = oldCalibration;
     }
 
     private static function installHero(mode:String):MovieClip {

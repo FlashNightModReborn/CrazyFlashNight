@@ -3520,7 +3520,11 @@ namespace CF7Launcher.Tests.Guardian
                     ["state"] = "LOOT_ACTIVE",
                     ["remainingCount"] = 2,
                     ["capacity"] = 8,
-                    ["columns"] = 8
+                    ["columns"] = 8,
+                    ["recoverableRootOperationId"] = "",
+                    ["recoverableRootStatus"] = "not_started",
+                    ["recoveryRequired"] = false,
+                    ["recoveryOnly"] = false
                 },
                 out rejection));
             Assert.Equal("loot", harness.Host.ActivePanelName);

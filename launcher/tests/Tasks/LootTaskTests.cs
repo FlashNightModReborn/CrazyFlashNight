@@ -94,14 +94,18 @@ namespace CF7Launcher.Tests.Tasks
                 int retryMaximumMs = 2000,
                 Func<LootPanelCoordinator.Binding, string, bool> requestRecovery = null,
                 bool stageSettlement = false,
-                bool rewardInbox = false)
+                bool rewardInbox = false,
+                JObject rewardAuthority = null,
+                bool rewardRootAdmissionEnabled = true)
             {
                 Coordinator = new LootPanelCoordinator(Panel, delegate
                     {
                         Interlocked.Increment(ref PauseReleaseCalls);
                         return true;
                     },
-                    delegate { return PanelInstanceId; }, requestRecovery);
+                    delegate { return PanelInstanceId; }, requestRecovery,
+                    rewardRootAdmissionEnabled:
+                        rewardRootAdmissionEnabled);
                 Task = new LootTask(delegate { return Ready; },
                     delegate(string payload) { return RecordSend(payload, 0); },
                     Coordinator, timeoutMs,
@@ -125,7 +129,7 @@ namespace CF7Launcher.Tests.Tasks
                 {
                     string rejection;
                     Assert.True(Coordinator.TryOpenRewardInbox(
-                        RewardAuthority(), out rejection));
+                        rewardAuthority ?? RewardAuthority(), out rejection));
                     Assert.Null(rejection);
                 }
                 else
@@ -247,7 +251,11 @@ namespace CF7Launcher.Tests.Tasks
                 ["state"] = "LOOT_ACTIVE",
                 ["remainingCount"] = 2,
                 ["capacity"] = 64,
-                ["columns"] = 8
+                ["columns"] = 8,
+                ["recoverableRootOperationId"] = "",
+                ["recoverableRootStatus"] = "not_started",
+                ["recoveryRequired"] = false,
+                ["recoveryOnly"] = false
             };
         }
 
@@ -359,6 +367,10 @@ namespace CF7Launcher.Tests.Tasks
                 request["sources"][0]["containerId"] =
                     RewardLootContainerId;
             }
+            if (cmd == "claim" || cmd == "claimBatch")
+                request["previousTerminalRootOperationId"] = "";
+            else if (cmd == "query")
+                request["rootOperationId"] = operationId ?? "operation.query.root.1";
             return request;
         }
 
@@ -523,6 +535,35 @@ namespace CF7Launcher.Tests.Tasks
                     ["item"] = ItemProjection()
                 };
             }
+            return response;
+        }
+
+        private static JObject RewardRootResponse(JObject flash, string rootOperationId,
+            string rootStatus = "committed", string resultKind = "all_applied",
+            bool hasLoot = false, bool success = true, string error = "",
+            int appliedCount = 1, string stopReason = "", int revision = 2)
+        {
+            JObject response = RewardActiveResponse(
+                flash, rootOperationId, revision, hasLoot);
+            var applied = new JArray();
+            for (int index = 0; index < appliedCount; index++)
+                applied.Add("reward.entry." + (index + 1));
+            var blocked = new JArray();
+            var remaining = new JArray();
+            if (hasLoot) remaining.Add("reward.entry.remaining");
+            response["success"] = success;
+            response["error"] = error;
+            response["rootOperationId"] = rootOperationId;
+            response["rootStatus"] = rootStatus;
+            response["resultKind"] = resultKind;
+            response["result"] = new JObject
+            {
+                ["appliedEntryIds"] = applied,
+                ["blockedEntries"] = blocked,
+                ["remainingEntryIds"] = remaining
+            };
+            response["appliedCount"] = appliedCount;
+            response["stopReason"] = stopReason;
             return response;
         }
 
@@ -1038,6 +1079,256 @@ namespace CF7Launcher.Tests.Tasks
                 RewardLootContainerId,
                 query.Value<string>("lootContainerId"));
             Assert.Equal(4, query.Value<int>("openAttemptSeq"));
+            Assert.StartsWith("host.recovery.",
+                query.Value<string>("rootOperationId"));
+            AssertExactKeys(query, "task", "action", "callId", "v",
+                "chestSessionId", "lootContainerId", "containerEpoch",
+                "sourceKind", "rootOperationId", "openAttemptSeq", "recoveryNonce");
+        }
+
+        [Fact]
+        public void RewardInbox_ExactCommittedRootIsForwardedWithoutProjectionInference()
+        {
+            using var harness = new Harness(rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.commit.1";
+            JObject request = RewardRequest("claim", "reward.root.web.commit", rootId);
+            request["expectedAuthorityRevision"] = 1;
+            request["source"]["expectedLease"] = "reward.loot.slot.1";
+
+            harness.Task.HandleWebRequest(request);
+
+            JObject sent = harness.SentAt(1);
+            AssertExactKeys(sent, "task", "action", "callId", "v",
+                "chestSessionId", "lootContainerId", "containerEpoch", "sourceKind",
+                "expectedAuthorityRevision", "source", "operationId", "direction",
+                "targetContainerId", "previousTerminalRootOperationId");
+            Assert.Equal(rootId, sent.Value<string>("operationId"));
+            Assert.Equal("", sent.Value<string>("previousTerminalRootOperationId"));
+            harness.Task.HandleFlashResponse(
+                RewardRootResponse(sent, rootId), null);
+
+            JObject posted = harness.PostedAt(1);
+            AssertExactKeys(posted,
+                "type", "task", "domain", "panel", "cmd", "callId", "panelInstanceId",
+                "success", "error", "chestSessionId", "lootContainerId", "containerEpoch",
+                "authorityRevision", "lastAppliedOperationId", "state", "remainingCount",
+                "closeLease", "snapshots", "tooltip", "materials", "terminal",
+                "rootOperationId", "rootStatus", "resultKind", "result", "appliedCount",
+                "stopReason");
+            Assert.True(posted.Value<bool>("success"));
+            Assert.Equal(rootId, posted.Value<string>("rootOperationId"));
+            Assert.Equal("committed", posted.Value<string>("rootStatus"));
+            Assert.Equal("all_applied", posted.Value<string>("resultKind"));
+            Assert.Equal(1, posted.Value<int>("appliedCount"));
+            Assert.Equal("idle", harness.Task.WriteState);
+            Assert.Equal(1, harness.Sent.Count(value =>
+                value.Value<string>("action") == "lootClaim"));
+        }
+
+        [Fact]
+        public void RewardInbox_ExactPartialCapacityRootPreservesBlockedRemainder()
+        {
+            using var harness = new Harness(rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.partial.capacity.1";
+            JObject request = RewardRequest("claim", "reward.root.web.partial", rootId);
+            request["expectedAuthorityRevision"] = 1;
+            request["source"]["expectedLease"] = "reward.loot.slot.1";
+            harness.Task.HandleWebRequest(request);
+            JObject sent = harness.SentAt(1);
+            JObject response = RewardRootResponse(sent, rootId,
+                rootStatus: "committed", resultKind: "partial_applied",
+                hasLoot: true, success: true, appliedCount: 1,
+                stopReason: "capacity_limited");
+            response["result"]["blockedEntries"] = new JArray(new JObject
+            {
+                ["entryId"] = "reward.entry.remaining",
+                ["error"] = "target_full"
+            });
+
+            harness.Task.HandleFlashResponse(response, null);
+
+            JObject posted = harness.PostedAt(1);
+            Assert.True(posted.Value<bool>("success"));
+            Assert.Equal("partial_applied", posted.Value<string>("resultKind"));
+            Assert.Equal("reward.entry.remaining",
+                posted["result"]["blockedEntries"][0].Value<string>("entryId"));
+            Assert.Equal("target_full",
+                posted["result"]["blockedEntries"][0].Value<string>("error"));
+            Assert.Equal("reward.entry.remaining",
+                posted["result"]["remainingEntryIds"][0].Value<string>());
+            Assert.Equal("idle", harness.Task.WriteState);
+        }
+
+        [Fact]
+        public void RewardInbox_CompatDisabledBlocksNewWritesButKeepsExactQuery()
+        {
+            using var harness = new Harness(
+                rewardInbox: true,
+                rewardRootAdmissionEnabled: false);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.compat.disabled";
+            JObject claim = RewardRequest(
+                "claim",
+                "reward.root.web.compat.disabled",
+                rootId);
+            claim["expectedAuthorityRevision"] = 1;
+            claim["source"]["expectedLease"] =
+                "reward.loot.slot.1";
+
+            harness.Task.HandleWebRequest(claim);
+
+            Assert.Single(harness.Sent);
+            Assert.Equal(
+                "root_admission_disabled",
+                harness.PostedAt(1).Value<string>("error"));
+            Assert.Equal("idle", harness.Task.WriteState);
+
+            harness.Task.HandleWebRequest(RewardRequest(
+                "query",
+                "reward.root.web.compat.query",
+                rootId));
+            Assert.Equal(2, harness.Sent.Count);
+            Assert.Equal(
+                "lootQuery",
+                harness.SentAt(1).Value<string>("action"));
+            Assert.Equal(
+                rootId,
+                harness.SentAt(1).Value<string>("rootOperationId"));
+        }
+
+        [Theory]
+        [InlineData("projection_only")]
+        [InlineData("foreign_root")]
+        [InlineData("top_extra")]
+        [InlineData("result_extra")]
+        [InlineData("applied_mismatch")]
+        [InlineData("capacity_set_mismatch")]
+        [InlineData("capacity_noncapacity_error")]
+        public void RewardInbox_MalformedOrForeignRootCannotSettleWrite(
+            string corruption)
+        {
+            using var harness = new Harness(rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.malformed.1";
+            JObject request = RewardRequest("claim", "reward.root.web.malformed", rootId);
+            request["expectedAuthorityRevision"] = 1;
+            request["source"]["expectedLease"] = "reward.loot.slot.1";
+            harness.Task.HandleWebRequest(request);
+            JObject sent = harness.SentAt(1);
+            JObject response = RewardRootResponse(sent, rootId);
+            switch (corruption)
+            {
+                case "projection_only":
+                    foreach (string field in new[] { "rootOperationId", "rootStatus",
+                        "resultKind", "result", "appliedCount", "stopReason" })
+                        response.Remove(field);
+                    break;
+                case "foreign_root":
+                    response["rootOperationId"] = "reward.root.foreign";
+                    break;
+                case "top_extra":
+                    response["forged"] = true;
+                    break;
+                case "result_extra":
+                    response["result"]["forged"] = true;
+                    break;
+                case "applied_mismatch":
+                    response["appliedCount"] = 0;
+                    break;
+                case "capacity_set_mismatch":
+                    response["resultKind"] = "partial_applied";
+                    response["stopReason"] = "capacity_limited";
+                    response["result"]["blockedEntries"] = new JArray(new JObject
+                    {
+                        ["entryId"] = "reward.entry.blocked",
+                        ["error"] = "target_full"
+                    });
+                    response["result"]["remainingEntryIds"] =
+                        new JArray("reward.entry.different");
+                    break;
+                case "capacity_noncapacity_error":
+                    response["resultKind"] = "partial_applied";
+                    response["stopReason"] = "capacity_limited";
+                    response["result"]["blockedEntries"] = new JArray(new JObject
+                    {
+                        ["entryId"] = "reward.entry.blocked",
+                        ["error"] = "child_failed"
+                    });
+                    response["result"]["remainingEntryIds"] =
+                        new JArray("reward.entry.blocked");
+                    break;
+                default:
+                    throw new InvalidOperationException(corruption);
+            }
+
+            harness.Task.HandleFlashResponse(response, null);
+
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+            Assert.Equal(rootId, harness.Task.UnknownOperationId);
+            Assert.Equal("reconcile_required",
+                harness.PostedAt(1).Value<string>("error"));
+            Assert.Equal(1, harness.Sent.Count(value =>
+                value.Value<string>("action") == "lootClaim"));
+        }
+
+        [Fact]
+        public void RewardInbox_ResponseLossReconcilesOnlyByExactRootQuery()
+        {
+            using var harness = new Harness(timeoutMs: 40,
+                retryInitialMs: 1000, retryMaximumMs: 1000, rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.response.loss.1";
+            JObject claim = RewardRequest("claim", "reward.root.web.timeout", rootId);
+            claim["expectedAuthorityRevision"] = 1;
+            claim["source"]["expectedLease"] = "reward.loot.slot.1";
+            harness.Task.HandleWebRequest(claim);
+            Assert.True(SpinWait.SpinUntil(delegate { return harness.PostedCount == 2; },
+                2000));
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+
+            harness.Task.HandleWebRequest(RewardRequest(
+                "query", "reward.root.web.query", rootId));
+            JObject query = harness.SentAt(2);
+            Assert.Equal("lootQuery", query.Value<string>("action"));
+            Assert.Equal(rootId, query.Value<string>("rootOperationId"));
+            AssertExactKeys(query, "task", "action", "callId", "v",
+                "chestSessionId", "lootContainerId", "containerEpoch", "sourceKind",
+                "rootOperationId");
+            harness.Task.HandleFlashResponse(
+                RewardRootResponse(query, rootId), null);
+
+            Assert.Equal("idle", harness.Task.WriteState);
+            Assert.Equal(1, harness.Sent.Count(value =>
+                value.Value<string>("action") == "lootClaim"));
+            Assert.Equal(1, harness.Sent.Count(value =>
+                value.Value<string>("action") == "lootQuery"));
+            Assert.Equal("committed",
+                harness.PostedAt(2).Value<string>("rootStatus"));
+        }
+
+        [Fact]
+        public void RewardInbox_DetachedRecoveryUsesDiscoveredRootWithoutWriteReplay()
+        {
+            JObject authority = RewardAuthority();
+            authority["recoverableRootOperationId"] = "reward.root.discovered.1";
+            authority["recoverableRootStatus"] = "pending";
+            authority["recoveryRequired"] = true;
+            using var harness = new Harness(rewardInbox: true,
+                rewardAuthority: authority);
+            harness.Task.OnSocketTransportDetached(harness.Generation);
+            harness.Generation = 2;
+
+            harness.Task.OnSocketReconnected();
+
+            JObject query = WaitForSent(harness, 1);
+            Assert.Equal("lootQuery", query.Value<string>("action"));
+            Assert.Equal("reward.root.discovered.1",
+                query.Value<string>("rootOperationId"));
+            Assert.DoesNotContain(harness.Sent, value =>
+                value.Value<string>("action") == "lootClaim"
+                || value.Value<string>("action") == "lootClaimBatch");
         }
 
         [Fact]

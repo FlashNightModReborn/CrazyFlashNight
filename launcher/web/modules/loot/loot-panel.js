@@ -70,6 +70,11 @@ var LootPanel = (function() {
             capacity:_init.capacity,
             backpackLimit:50,
             settlementReport:_init.report,
+            recoverableRootOperationId:_init.recoverableRootOperationId,
+            recoverableRootStatus:_init.recoverableRootStatus,
+            recoveryRequired:_init.recoveryRequired,
+            recoveryOnly:_init.recoveryOnly,
+            rewardRootAdmissionEnabled:_init.rootAdmissionEnabled,
             request:function(cmd, fields, options, callback) {
                 return _mux.request(cmd, fields, options, callback);
             },
@@ -134,6 +139,8 @@ var LootPanel = (function() {
         _model.open(function(ok,response) {
             if (generation !== _generation) return;
             if (!ok) toast(LootView.errorMessage(response && response.error));
+            else if (_init.sourceKind==='reward_inbox'
+                    &&_model.debugState().phase==='reconcile_required') reconcile();
             else requestMaterials();
         });
     }
@@ -141,7 +148,9 @@ var LootPanel = (function() {
     function projection() { return _model && _model.projection(); }
     function canWrite() {
         return _model && _model.debugState().phase === 'active' && !_claimAll
-            && !_organizerActive && !_organizerReturning;
+            && !_organizerActive && !_organizerReturning
+            && (_init.sourceKind !== 'reward_inbox'
+                || _init.rootAdmissionEnabled === true);
     }
 
     function setupOrganizer(session,generation) {
@@ -279,6 +288,11 @@ var LootPanel = (function() {
     function claimSlot(slot, quiet) {
         if (!slot || !slot.occupied || !_model || _organizerActive || _organizerReturning
                 || _claimAll && !quiet) return false;
+        if (_init && _init.sourceKind === 'reward_inbox'
+                && _init.rootAdmissionEnabled !== true) {
+            if (!quiet) toast('当前为兼容回滚只读模式，不接纳新的领取事务。');
+            return false;
+        }
         var retainedReason=_claimAllBlockedReason,retainedSlots=_claimAllBlockedSlots;
         resetClaimAllOutcome();
         var accepted=_model.claim(slot,function(success,response){
@@ -301,7 +315,9 @@ var LootPanel = (function() {
     function startClaimAll() {
         var state=_model&&_model.debugState(),current=projection();
         if (!state||state.phase!=='active'||state.remainingCount<=0||_claimAll
-                ||_organizerActive||_organizerReturning) return false;
+                ||_organizerActive||_organizerReturning
+                ||_init&&_init.sourceKind==='reward_inbox'
+                    &&_init.rootAdmissionEnabled!==true) return false;
         var slots=current&&current.loot&&current.loot.slots||[];
         resetClaimAllOutcome();
         for (var i=0;i<slots.length;i++)
@@ -332,6 +348,56 @@ var LootPanel = (function() {
         }
         return checkpoint.physicalSlots.length-retained.length===applied
             ? {applied:applied,retained:retained}:null;
+    }
+    function claimAllCapacityError(error) {
+        var allowed={
+            target_full:true,inventory_full:true,capacity_reached:true,cap_reached:true
+        };
+        return Object.prototype.hasOwnProperty.call(allowed,String(error||''));
+    }
+    function claimAllRewardRootOutcome(checkpoint,response) {
+        if (!_init||_init.sourceKind!=='reward_inbox'||!response) return null;
+        var state=_model&&_model.debugState(),current=projection();
+        var root=state&&state.rewardRoot&&state.rewardRoot.exact;
+        if (!state||state.phase!=='active'||!root||!current
+                ||root.rootOperationId!==String(response.rootOperationId||'')
+                ||current.lastAppliedOperationId!==root.rootOperationId
+                ||state.authorityRevision<checkpoint.authorityRevision) return null;
+        var committed=root.rootStatus==='committed'
+            &&(root.resultKind==='all_applied'||root.resultKind==='partial_applied');
+        var noEffect=root.rootStatus==='terminal_failure'
+            &&root.resultKind==='no_effect_capacity';
+        var applied=Number(root.appliedCount);
+        if (!committed&&!noEffect||applied<0||Math.floor(applied)!==applied
+                ||applied>checkpoint.physicalSlots.length
+                ||committed&&applied<1||noEffect&&applied!==0
+                ||state.remainingCount!==checkpoint.remainingCount-applied) return null;
+        var slots=current&&current.loot&&current.loot.slots||[];
+        var bySlot={},retained=[];
+        for (var i=0;i<slots.length;i++) bySlot[String(slots[i].physicalSlot)]=slots[i];
+        for (i=0;i<checkpoint.physicalSlots.length;i++) {
+            var physicalSlot=checkpoint.physicalSlots[i],slot=bySlot[String(physicalSlot)];
+            if (!slot) return null;
+            // Reward 根每次 durable child 落盘都会轮换全窗 lease；根结果与槽位空/非空
+            // 投影共同证明进展，不能再要求被容量保留项沿用请求前 lease。
+            if (slot.occupied) retained.push(physicalSlot);
+        }
+        if (checkpoint.physicalSlots.length-retained.length!==applied) return null;
+        var result=root.result||{},blocked=result.blockedEntries||[];
+        var remaining=result.remainingEntryIds||[];
+        if (root.resultKind==='all_applied') return !retained.length
+                &&!blocked.length&&!remaining.length
+            ? {applied:applied,retained:retained,blockReason:''}:null;
+        if (!retained.length||blocked.length!==retained.length
+                ||remaining.length!==retained.length) return null;
+        var blockReason='';
+        for (i=0;i<blocked.length;i++) {
+            var error=String(blocked[i]&&blocked[i].error||'');
+            if (!claimAllCapacityError(error)) return null;
+            if (!blockReason||error==='target_full'||error==='inventory_full')
+                blockReason=error;
+        }
+        return {applied:applied,retained:retained,blockReason:blockReason};
     }
     function claimAllBatchCapacityRejected(response,checkpoint) {
         var error=response&&response.error||'';
@@ -426,8 +492,22 @@ var LootPanel = (function() {
             lastAppliedOperationId:String(projection().lastAppliedOperationId||'')
         };
         if (!_model.claimBatch(batch,function(success,response){
+            var rewardRootOutcome=claimAllRewardRootOutcome(checkpoint,response);
             if (!success) {
                 var error=response&&response.error||'';
+                if (rewardRootOutcome&&rewardRootOutcome.retained.length) {
+                    for (var rootBlockedIndex=0;
+                            rootBlockedIndex<rewardRootOutcome.retained.length;
+                            rootBlockedIndex++) {
+                        _claimAllBlockedSlots[String(
+                            rewardRootOutcome.retained[rootBlockedIndex])]=
+                            rewardRootOutcome.blockReason;
+                    }
+                    if (!_claimAllBlockedReason)
+                        _claimAllBlockedReason=rewardRootOutcome.blockReason;
+                    scheduleClaimAllDrain();
+                    return;
+                }
                 if (claimAllBatchCapacityRejected(response,checkpoint)) {
                     for (var blockedIndex=0;blockedIndex<checkpoint.physicalSlots.length;
                             blockedIndex++) {
@@ -447,7 +527,8 @@ var LootPanel = (function() {
             // A syntactically valid success is insufficient for a batch loop. Require exact
             // authority/remaining deltas and an exact requested-slot projection before issuing
             // another write; otherwise a future protocol drift could replay claims forever.
-            var advance=claimAllBatchAdvanced(checkpoint);
+            var advance=_init&&_init.sourceKind==='reward_inbox'
+                ? rewardRootOutcome : claimAllBatchAdvanced(checkpoint);
             if (!advance) {
                 stopClaimAll();
                 toast('领取结果没有变化，已停止全部收取，请人工核对。','error');
@@ -455,9 +536,11 @@ var LootPanel = (function() {
             }
             if (advance.retained.length) {
                 for (var retainedIndex=0;retainedIndex<advance.retained.length;retainedIndex++) {
-                    _claimAllBlockedSlots[String(advance.retained[retainedIndex])]='target_full';
+                    _claimAllBlockedSlots[String(advance.retained[retainedIndex])]=
+                        advance.blockReason||'target_full';
                 }
-                if (!_claimAllBlockedReason) _claimAllBlockedReason='target_full';
+                if (!_claimAllBlockedReason)
+                    _claimAllBlockedReason=advance.blockReason||'target_full';
             }
             scheduleClaimAllDrain();
         })) {
@@ -597,6 +680,9 @@ var LootPanel = (function() {
         if (state.remainingCount===0) commitClose(false);
         else if (LootView.isInventoryCapacityBlock(state.blockReason)
                 ||LootView.isInventoryCapacityBlock(_claimAllBlockedReason)) openOrganizer();
+        else if (_init&&_init.sourceKind==='reward_inbox'
+                &&_init.rootAdmissionEnabled!==true)
+            toast('当前为兼容回滚只读模式，不接纳新的领取事务。');
         else startClaimAll();
     }
 

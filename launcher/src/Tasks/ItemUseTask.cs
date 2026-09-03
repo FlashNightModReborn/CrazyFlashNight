@@ -1034,7 +1034,8 @@ namespace CF7Launcher.Tasks
                 return false;
             }
             bool rewardReady = message.Value<bool>("rewardReady");
-            if (rewardReady != (summary.Value<int>("remainingCount") > 0))
+            if (rewardReady != (summary.Value<int>("remainingCount") > 0
+                    || summary.Value<bool>("recoveryRequired")))
                 return false;
             result["inboxSummary"] = summary;
             result["rewardReady"] = rewardReady;
@@ -1163,9 +1164,10 @@ namespace CF7Launcher.Tasks
         {
             sanitized = null;
             if (!IsExactObject(
-                    value,
-                    "v", "batchCount", "remainingCount", "capacity",
-                    "authorityRevision")
+                     value,
+                     "v", "batchCount", "remainingCount", "capacity",
+                     "authorityRevision", "recoverableRootOperationId",
+                     "recoverableRootStatus", "recoveryRequired")
                 || !TryReadInteger(value["v"], 1, 1, out int version)
                 || !TryReadInteger(
                     value["batchCount"], 0, InboxCapacity, out int batchCount)
@@ -1184,7 +1186,20 @@ namespace CF7Launcher.Tasks
                     0,
                     int.MaxValue,
                     out int authorityRevision)
-                || batchCount > remainingCount)
+                 || batchCount > remainingCount
+                 || !TryReadSafeText(value["recoverableRootOperationId"], 128, true,
+                    out string recoverableRootOperationId)
+                 || !TryReadSafeText(value["recoverableRootStatus"], 32, false,
+                    out string recoverableRootStatus)
+                 || value["recoveryRequired"] == null
+                 || value["recoveryRequired"].Type != JTokenType.Boolean
+                 || !IsRewardRootStatus(recoverableRootStatus)
+                 || (!string.IsNullOrEmpty(recoverableRootOperationId)
+                    && !LootPanelCoordinator.IsOpaque(recoverableRootOperationId))
+                 || string.IsNullOrEmpty(recoverableRootOperationId)
+                    != (recoverableRootStatus == "not_started")
+                 || value.Value<bool>("recoveryRequired")
+                    && string.IsNullOrEmpty(recoverableRootOperationId))
             {
                 return false;
             }
@@ -1194,7 +1209,10 @@ namespace CF7Launcher.Tasks
                 ["batchCount"] = batchCount,
                 ["remainingCount"] = remainingCount,
                 ["capacity"] = capacity,
-                ["authorityRevision"] = authorityRevision
+                 ["authorityRevision"] = authorityRevision,
+                 ["recoverableRootOperationId"] = recoverableRootOperationId,
+                 ["recoverableRootStatus"] = recoverableRootStatus,
+                 ["recoveryRequired"] = value.Value<bool>("recoveryRequired")
             };
             return true;
         }
@@ -1211,9 +1229,10 @@ namespace CF7Launcher.Tasks
             if (!IsExactObject(
                     value,
                     "sourceKind", "chestSessionId", "lootContainerId",
-                    "containerEpoch", "openAttemptSeq", "displayName",
-                    "authorityRevision", "state", "remainingCount",
-                    "capacity", "columns")
+                     "containerEpoch", "openAttemptSeq", "displayName",
+                     "authorityRevision", "state", "remainingCount",
+                     "capacity", "columns", "recoverableRootOperationId",
+                     "recoverableRootStatus", "recoveryRequired", "recoveryOnly")
                 || ReadString(value["sourceKind"]) != "reward_inbox"
                 || !TryReadToken(
                     value["chestSessionId"], out string chestSessionId)
@@ -1233,9 +1252,9 @@ namespace CF7Launcher.Tasks
                     int.MaxValue,
                     out int authorityRevision)
                 || ReadString(value["state"]) != "LOOT_ACTIVE"
-                || !TryReadInteger(
-                    value["remainingCount"],
-                    1,
+                 || !TryReadInteger(
+                     value["remainingCount"],
+                     0,
                     InboxCapacity,
                     out int remainingCount)
                 || !TryReadInteger(
@@ -1247,8 +1266,28 @@ namespace CF7Launcher.Tasks
                 || !TryReadInteger(
                     value["columns"], 1, 8, out int columns)
                 || columns != Math.Min(8, capacity)
-                || summary == null
-                || remainingCount != summary.Value<int>("remainingCount"))
+                 || !TryReadSafeText(value["recoverableRootOperationId"], 128, true,
+                    out string recoverableRootOperationId)
+                 || !TryReadSafeText(value["recoverableRootStatus"], 32, false,
+                    out string recoverableRootStatus)
+                 || value["recoveryRequired"] == null
+                 || value["recoveryRequired"].Type != JTokenType.Boolean
+                 || value["recoveryOnly"] == null
+                 || value["recoveryOnly"].Type != JTokenType.Boolean
+                 || !IsRewardRootStatus(recoverableRootStatus)
+                 || (!string.IsNullOrEmpty(recoverableRootOperationId)
+                    && !LootPanelCoordinator.IsOpaque(recoverableRootOperationId))
+                 || summary == null
+                 || remainingCount != summary.Value<int>("remainingCount")
+                 || recoverableRootOperationId
+                    != summary.Value<string>("recoverableRootOperationId")
+                 || recoverableRootStatus
+                    != summary.Value<string>("recoverableRootStatus")
+                 || value.Value<bool>("recoveryRequired")
+                    != summary.Value<bool>("recoveryRequired")
+                 || value.Value<bool>("recoveryOnly") != (remainingCount == 0)
+                 || value.Value<bool>("recoveryOnly")
+                    && !value.Value<bool>("recoveryRequired"))
             {
                 return false;
             }
@@ -1264,9 +1303,19 @@ namespace CF7Launcher.Tasks
                 ["state"] = "LOOT_ACTIVE",
                 ["remainingCount"] = remainingCount,
                 ["capacity"] = capacity,
-                ["columns"] = columns
+                 ["columns"] = columns,
+                 ["recoverableRootOperationId"] = recoverableRootOperationId,
+                 ["recoverableRootStatus"] = recoverableRootStatus,
+                 ["recoveryRequired"] = value.Value<bool>("recoveryRequired"),
+                 ["recoveryOnly"] = value.Value<bool>("recoveryOnly")
             };
             return true;
+        }
+
+        private static bool IsRewardRootStatus(string value)
+        {
+            return value == "not_started" || value == "pending" || value == "committed"
+                || value == "terminal_failure" || value == "quarantined";
         }
 
         private static bool HasCommonResponseKeys(

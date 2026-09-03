@@ -16,6 +16,8 @@ import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.arki.scene.SceneManager;
 import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter;
+import org.flashNight.gesh.object.ObjectUtil;
+import JSON;
 
 /** S1：瞬态 Web loot container 的 identity/lease/事务/挂起/终态回归。 */
 class org.flashNight.arki.item.LootContainerServiceTest {
@@ -28,6 +30,10 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static var MATERIAL:String = "S1测试材料";
     private static var INFORMATION:String = "S1测试情报";
     private static var MOD:String = "S1测试插件";
+    private static var _rewardPersistedSaveWire:String = "";
+    private static var _rewardFlushCount:Number = 0;
+    private static var _rewardFlushFailAt:Number = -1;
+    private static var _rewardFlushFailureMode:String = "";
 
     public static function runAllTests():Void {
         _passed = 0;
@@ -103,6 +109,11 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testRewardInboxRefreshesOnlyUnopenedAuthority();
         testRewardInboxLootAdapterIsolation();
         testRewardInboxPendingClaimAndRestartRecovery();
+        testRewardClaimRootFaultCutsAndRestartRecovery();
+        testRewardClaimRootResultKindsAndQuarantine();
+        testRewardClaimRootAssetKinds();
+        testRewardClaimRootTombstoneSuccessorAndCompatibility();
+        testRewardClaimRootNormalizerQuarantine();
         testRewardPackRecipeClosedModes();
         testItemUseCooldownSnapshotUsesFrameAuthority();
 
@@ -214,6 +225,11 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         InventoryPanelService.testOnlyReset();
         LootContainerService.testOnlyReset();
         RewardInboxService.resetForTests();
+        RewardInboxService.CLAIM_ROOT_ADMISSION_ENABLED = true;
+        _rewardPersistedSaveWire = "";
+        _rewardFlushCount = 0;
+        _rewardFlushFailAt = -1;
+        _rewardFlushFailureMode = "";
     }
 
     private static function makeTarget(id:String):Object {
@@ -3630,7 +3646,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             v:2, sourceKind:"reward_inbox",
             chestSessionId:authority.chestSessionId,
             lootContainerId:authority.lootContainerId,
-            containerEpoch:authority.containerEpoch
+            containerEpoch:authority.containerEpoch,
+            rootOperationId:"reward.close.query"
         });
         check(!abandon.success && abandon.error == "abandon_forbidden"
                 && closed.success && closed.state == "LOOT_SUSPENDED"
@@ -3786,12 +3803,141 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     }
 
     private static function testRewardInboxPendingClaimAndRestartRecovery():Void {
-        resetWorld();
-        var delivered:Object = RewardInboxService.deliverOnlineSupplyPack(
-            "在线补给包·Ⅳ", "christmas_tree:online-60m");
+        var fixture:Object = makeRewardRootFixture(
+            [{itemName:STACK, quantity:1}], 0);
+        installRewardPersistedSaveHarness(-1, "");
+        LootClaimCommitCoordinator.testOnlyFailNext(
+            "ordinary_source_write", "false", 1);
+        var rootId:String = "reward.pending.claim";
+        var request:Object = rewardRootClaimParams(fixture, rootId, false, "");
+        var pending:Object = LootContainerService.execute("claim", request);
+        var restarted:Boolean = restartFromRewardPersistedSave();
+        var recovered:Object = queryRewardRoot(rootId, "");
+        var duplicate:Object = queryRewardRoot(rootId, "");
+        check(fixture.success && !pending.success
+                && pending.rootStatus == "pending"
+                && pending.resultKind == "in_progress"
+                && restarted && recovered.success
+                && recovered.rootOperationId == rootId
+                && recovered.rootStatus == "committed"
+                && recovered.resultKind == "all_applied"
+                && recovered.appliedCount == 1
+                && duplicate.rootStatus == recovered.rootStatus
+                && duplicate.appliedCount == recovered.appliedCount
+                && rewardBackpackQuantity(STACK) == 1
+                && RewardInboxService.inboxSummary().remainingCount == 0,
+            "durable root query reload 后只 forward-complete 一次并返回 exact terminal");
+    }
+
+    /**
+     * 每次成功的强存盘都把 Reward ledger 与全部可能被 child commit 修改的玩家资产
+     * 写成 JSON save image。restart 必须从这份字节像重建容器；失败调用后的活对象
+     * 一律丢弃，因此这些用例不是同进程 reset 冒充 reload。
+     */
+    private static function installRewardPersistedSaveHarness(
+            failAt:Number, failureMode:String):Void {
+        _rewardFlushCount = 0;
+        _rewardFlushFailAt = failAt;
+        _rewardFlushFailureMode = failureMode;
+        captureRewardPersistedSaveForTest();
+        _root.强制存盘 = function() {
+            return org.flashNight.arki.item.LootContainerServiceTest
+                .flushRewardPersistedSaveForTest();
+        };
+    }
+
+    public static function flushRewardPersistedSaveForTest() {
+        _rewardFlushCount++;
+        _root.__lootSaveCalls++;
+        if (_rewardFlushFailAt > 0 && _rewardFlushCount == _rewardFlushFailAt) {
+            if (_rewardFlushFailureMode == "throw") {
+                throw new Error("injected_reward_persist_failure");
+            }
+            if (_rewardFlushFailureMode == "pending") return "pending";
+            return false;
+        }
+        captureRewardPersistedSaveForTest();
+        if (_root.存档系统 != null) _root.存档系统.dirtyMark = false;
+        return true;
+    }
+
+    public static function captureRewardPersistedSaveForTest():Void {
+        var image:Object = {
+            saveExt:_root._saveExt,
+            inventory:{
+                backpack:_root.物品栏.背包.toObject(),
+                drugs:_root.物品栏.药剂栏.toObject(),
+                warehouse:_root.物品栏.仓库.toObject(),
+                armory:_root.物品栏.战备箱.toObject()
+            },
+            collection:{
+                materials:_root.收集品栏.材料.toObject(),
+                information:_root.收集品栏.情报.toObject()
+            },
+            balances:{money:_root.金钱, kpoints:_root.虚拟币,
+                experience:_root.经验值, skillPoints:_root.技能点数,
+                level:_root.等级}
+        };
+        _rewardPersistedSaveWire = new JSON(false).stringify(image);
+    }
+
+    private static function restartFromRewardPersistedSave():Boolean {
+        if (_rewardPersistedSaveWire == "") return false;
+        var image:Object;
+        try { image = new JSON(false).parse(_rewardPersistedSaveWire); }
+        catch (parseError) { return false; }
+        if (image == null || image.inventory == null
+                || image.collection == null || image.balances == null) return false;
+
+        _root._saveExt = image.saveExt;
+        _root.物品栏 = {
+            背包:new ArrayInventory(image.inventory.backpack, 50),
+            药剂栏:new ArrayInventory(image.inventory.drugs, 8),
+            仓库:new ArrayInventory(image.inventory.warehouse, 1200),
+            战备箱:new ArrayInventory(image.inventory.armory, 400)
+        };
+        _root.收集品栏 = {
+            材料:new DictCollection(image.collection.materials),
+            情报:new InformationCollection(image.collection.information)
+        };
+        _root.金钱 = Number(image.balances.money);
+        _root.虚拟币 = Number(image.balances.kpoints);
+        _root.经验值 = Number(image.balances.experience);
+        _root.技能点数 = Number(image.balances.skillPoints);
+        _root.等级 = Number(image.balances.level);
+        _root.存档系统 = {dirtyMark:false};
+
+        InventoryPanelService.testOnlyReset();
+        LootContainerService.testOnlyReset();
         RewardInboxService.resetForTests();
+        _rewardFlushCount = 0;
+        _rewardFlushFailAt = -1;
+        _rewardFlushFailureMode = "";
+        _root.强制存盘 = function() {
+            return org.flashNight.arki.item.LootContainerServiceTest
+                .flushRewardPersistedSaveForTest();
+        };
+        return true;
+    }
+
+    private static function makeRewardRootFixture(entries:Array,
+                                                   occupiedBackpack:Number):Object {
+        resetWorld();
+        for (var i:Number = 0; i < occupiedBackpack; i++) {
+            _root.物品栏.背包.add(i, equipment(41000 + i));
+        }
+        var appended:Object = RewardInboxService.appendRewardBatch(
+            "测试礼包", "reward.fixture", entries);
+        if (appended == null || appended.success !== true) {
+            return {success:false, error:"fixture_append_failed"};
+        }
+        return materializeCurrentRewardFixture();
+    }
+
+    private static function materializeCurrentRewardFixture():Object {
         var authority:Object = RewardInboxService.materializeAuthority();
-        var snapshot:Object = LootContainerService.execute("snapshot", {
+        if (authority == null) return {success:false, error:"fixture_authority_failed"};
+        var snap:Object = LootContainerService.execute("snapshot", {
             v:2, sourceKind:"reward_inbox",
             chestSessionId:authority.chestSessionId,
             lootContainerId:authority.lootContainerId,
@@ -3799,57 +3945,432 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             loot:{offset:0, limit:authority.capacity},
             backpack:{offset:0, limit:50}
         });
-        var loot:Object = snapshot.snapshots[0];
-        var row:Object = loot.slots[0];
-        LootClaimCommitCoordinator.testOnlyFailNext(
-            "ordinary_source_write", "false");
-        LootClaimCommitCoordinator.testOnlyFailNext(
-            "ordinary_rollback", "false");
-        var claim:Object = LootContainerService.execute("claim", {
+        if (snap == null || snap.success !== true || snap.snapshots.length != 3) {
+            return {success:false, error:"fixture_snapshot_failed"};
+        }
+        var loot:Object = snap.snapshots[0];
+        var rows:Array = [];
+        for (var slot:Number = 0; slot < loot.slots.length; slot++) {
+            var row:Object = loot.slots[slot];
+            if (row != null && row.occupied === true) rows.push(row);
+        }
+        return {success:rows.length > 0, authority:authority,
+            snapshot:snap, loot:loot, rows:rows};
+    }
+
+    private static function rewardRootClaimParams(fixture:Object, rootId:String,
+                                                  batch:Boolean,
+                                                  predecessor:String):Object {
+        if (fixture == null || fixture.success !== true) return null;
+        var refs:Array = [];
+        for (var i:Number = 0; i < fixture.rows.length; i++) {
+            var row:Object = fixture.rows[i];
+            refs.push({containerId:fixture.loot.containerId,
+                slot:row.physicalSlot, expectedLease:row.slotLease,
+                expectedContainerVersion:fixture.loot.containerVersion});
+        }
+        var request:Object = {
             v:2, sourceKind:"reward_inbox",
+            chestSessionId:fixture.authority.chestSessionId,
+            lootContainerId:fixture.authority.lootContainerId,
+            containerEpoch:fixture.authority.containerEpoch,
+            expectedAuthorityRevision:fixture.snapshot.authorityRevision,
+            operationId:rootId, direction:"loot_to_player",
+            targetContainerId:"自动",
+            previousTerminalRootOperationId:predecessor
+        };
+        if (batch) request.sources = refs;
+        else request.source = refs[0];
+        return request;
+    }
+
+    private static function queryRewardRoot(rootId:String, acknowledgeId:String):Object {
+        var authority:Object = RewardInboxService.materializeAuthority();
+        if (authority == null) return {success:false, error:"authority_unavailable"};
+        var params:Object = {v:2, sourceKind:"reward_inbox",
             chestSessionId:authority.chestSessionId,
             lootContainerId:authority.lootContainerId,
             containerEpoch:authority.containerEpoch,
-            expectedAuthorityRevision:snapshot.authorityRevision,
-            operationId:"reward.pending.claim", direction:"loot_to_player",
-            targetContainerId:"自动", source:{containerId:loot.containerId,
-                slot:row.physicalSlot, expectedLease:row.slotLease,
-                expectedContainerVersion:loot.containerVersion}
-        });
-        _root.强制存盘 = function():Boolean {
-            _root.__lootSaveCalls++;
-            return false;
+            rootOperationId:rootId};
+        if (acknowledgeId != "") {
+            params.acknowledgeTerminalRootOperationId = acknowledgeId;
+        }
+        return LootContainerService.execute("query", params);
+    }
+
+    private static function rewardBackpackQuantity(itemName:String):Number {
+        var inventory:ArrayInventory = _root.物品栏.背包;
+        var total:Number = 0;
+        for (var slot:Number = 0; slot < inventory.capacity; slot++) {
+            var item:Object = inventory.getItem(String(slot));
+            if (item != null && String(item.name) == itemName) {
+                total += typeof item.value == "number" ? Number(item.value) : 1;
+            }
+        }
+        return total;
+    }
+
+    private static function exactRootTupleEquals(left:Object, right:Object):Boolean {
+        return left != null && right != null
+            && left.rootOperationId == right.rootOperationId
+            && left.rootStatus == right.rootStatus
+            && left.resultKind == right.resultKind
+            && Number(left.appliedCount) == Number(right.appliedCount)
+            && String(left.stopReason) == String(right.stopReason)
+            && ObjectUtil.deepEquals(left.result, right.result);
+    }
+
+    private static function mutatePersistedBackpackConflict():Boolean {
+        var image:Object;
+        try { image = new JSON(false).parse(_rewardPersistedSaveWire); }
+        catch (parseError) { return false; }
+        if (image == null || image.inventory == null) return false;
+        image.inventory.backpack["0"] = {
+            name:ANTIBIOTIC, value:1, lastUpdate:49999
         };
-        var pendingQuery:Object = LootContainerService.execute("query", {
-            v:2, sourceKind:"reward_inbox",
-            chestSessionId:authority.chestSessionId,
-            lootContainerId:authority.lootContainerId,
-            containerEpoch:authority.containerEpoch
-        });
-        check(delivered.success && !claim.success
-                && claim.error == "commit_pending"
-                && !pendingQuery.success
-                && pendingQuery.error == "commit_pending"
-                && _root.物品栏.背包.size() == 1
-                && LootContainerService.beginMapChestOpen(
-                    makeTarget("reward.pending.blocked")).reason == "loot_flow_busy",
-            "reward claim keeps coordinator and persist journals fenced across a failed strong flush");
-        _root.强制存盘 = function():Boolean {
-            _root.__lootSaveCalls++;
-            return true;
+        _rewardPersistedSaveWire = new JSON(false).stringify(image);
+        return true;
+    }
+
+    private static function testRewardClaimRootFaultCutsAndRestartRecovery():Void {
+        for (var cut:Number = 1; cut <= 7; cut++) {
+            var entries:Array = cut == 5
+                ? [{itemName:STACK, quantity:1}, {itemName:STACK, quantity:1},
+                    {itemName:STACK, quantity:1}]
+                : [{itemName:STACK, quantity:1}];
+            var fixture:Object = makeRewardRootFixture(entries, 0);
+            var failAt:Number = -1;
+            var failureMode:String = "";
+            if (cut == 1) { failAt = 1; failureMode = "false"; }
+            else if (cut == 4) { failAt = 2; failureMode = "pending"; }
+            else if (cut == 5) { failAt = 3; failureMode = "throw"; }
+            else if (cut == 6) { failAt = 3; failureMode = "false"; }
+            installRewardPersistedSaveHarness(failAt, failureMode);
+            if (cut == 2) {
+                LootClaimCommitCoordinator.testOnlyFailNext(
+                    "ordinary_destination_write", "false", 1);
+            } else if (cut == 3) {
+                LootClaimCommitCoordinator.testOnlyFailNext(
+                    "ordinary_source_write", "false", 1);
+            }
+            var rootId:String = "reward.fault.cut." + cut;
+            var request:Object = rewardRootClaimParams(
+                fixture, rootId, entries.length > 1, "");
+            var first:Object = LootContainerService.execute(
+                entries.length > 1 ? "claimBatch" : "claim", request);
+            var firstShape:Boolean = cut == 1
+                ? !first.success && first.rootStatus == "not_started"
+                    && first.resultKind == "none"
+                : cut == 7
+                    ? first.rootStatus == "committed"
+                        && first.resultKind == "all_applied"
+                    : !first.success && first.rootStatus == "pending"
+                        && first.resultKind == "in_progress";
+            var restarted:Boolean = restartFromRewardPersistedSave();
+            var recovered:Object = queryRewardRoot(rootId, "");
+            var beforeDuplicate:Number = rewardBackpackQuantity(STACK);
+            var duplicate:Object = queryRewardRoot(rootId, "");
+            var expectedApplied:Number = entries.length;
+            var closure:Boolean;
+            if (cut == 1) {
+                closure = recovered.success
+                    && recovered.rootOperationId == rootId
+                    && recovered.rootStatus == "not_started"
+                    && recovered.resultKind == "none"
+                    && recovered.appliedCount == 0
+                    && rewardBackpackQuantity(STACK) == 0
+                    && RewardInboxService.inboxSummary().remainingCount == 1;
+            } else {
+                closure = recovered.success
+                    && recovered.rootOperationId == rootId
+                    && recovered.rootStatus == "committed"
+                    && recovered.resultKind == "all_applied"
+                    && recovered.appliedCount == expectedApplied
+                    && recovered.result.appliedEntryIds.length == expectedApplied
+                    && recovered.result.blockedEntries.length == 0
+                    && recovered.result.remainingEntryIds.length == 0
+                    && exactRootTupleEquals(recovered, duplicate)
+                    && beforeDuplicate == expectedApplied
+                    && rewardBackpackQuantity(STACK) == expectedApplied
+                    && RewardInboxService.inboxSummary().remainingCount == 0;
+            }
+            check(fixture.success && firstShape && restarted && closure,
+                "Reward root persisted fault cut " + cut
+                + " restart 后 exact query 收敛且不重放资产");
+        }
+    }
+
+    private static function testRewardClaimRootResultKindsAndQuarantine():Void {
+        var partialFixture:Object = makeRewardRootFixture([
+            {itemName:EQUIPMENT, quantity:1},
+            {itemName:EQUIPMENT, quantity:1}], 49);
+        installRewardPersistedSaveHarness(-1, "");
+        var partial:Object = LootContainerService.execute("claimBatch",
+            rewardRootClaimParams(partialFixture, "reward.kind.partial", true, ""));
+        check(partialFixture.success && partial.success
+                && partial.rootStatus == "committed"
+                && partial.resultKind == "partial_applied"
+                && partial.appliedCount == 1
+                && partial.result.appliedEntryIds.length == 1
+                && partial.result.blockedEntries.length == 1
+                && partial.result.remainingEntryIds.length == 1,
+            "Reward root partial_applied 精确区分已落地与容量受阻 child");
+
+        var capacityFixture:Object = makeRewardRootFixture(
+            [{itemName:EQUIPMENT, quantity:1}], 50);
+        installRewardPersistedSaveHarness(-1, "");
+        var noEffect:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(capacityFixture, "reward.kind.no-effect", false, ""));
+        check(capacityFixture.success && !noEffect.success
+                && noEffect.rootStatus == "terminal_failure"
+                && noEffect.resultKind == "no_effect_capacity"
+                && noEffect.appliedCount == 0
+                && noEffect.result.blockedEntries.length == 1
+                && noEffect.result.remainingEntryIds.length == 1,
+            "Reward root no_effect_capacity durable 化零资产容量结果");
+
+        var failedFixture:Object = makeRewardRootFixture(
+            [{itemName:STACK, quantity:1}], 0);
+        _root.物品栏.背包.add(0,
+            stack(STACK, 9007199254740991, 42001));
+        installRewardPersistedSaveHarness(-1, "");
+        var failed:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(failedFixture, "reward.kind.failed", false, ""));
+        check(failedFixture.success && !failed.success
+                && failed.rootStatus == "terminal_failure"
+                && failed.resultKind == "failed"
+                && failed.appliedCount == 0
+                && failed.error == "quantity_overflow"
+                && rewardBackpackQuantity(STACK) == 9007199254740991,
+            "Reward root failed 在 durable admission 后保留 exact 非容量错误");
+
+        var partialFailedFixture:Object = makeRewardRootFixture([
+            {itemName:EQUIPMENT, quantity:1},
+            {itemName:STACK, quantity:1}], 0);
+        _root.物品栏.背包.add(0,
+            stack(STACK, 9007199254740991, 42002));
+        installRewardPersistedSaveHarness(-1, "");
+        var partialFailed:Object = LootContainerService.execute("claimBatch",
+            rewardRootClaimParams(partialFailedFixture,
+                "reward.kind.partial-failed", true, ""));
+        check(partialFailedFixture.success && !partialFailed.success
+                && partialFailed.rootStatus == "terminal_failure"
+                && partialFailed.resultKind == "partial_failed"
+                && partialFailed.appliedCount == 1
+                && partialFailed.result.appliedEntryIds.length == 1
+                && partialFailed.result.remainingEntryIds.length == 1
+                && rewardBackpackQuantity(EQUIPMENT) == 1,
+            "Reward root partial_failed 不把已应用 child 回滚或伪装为全失败");
+
+        var quarantineFixture:Object = makeRewardRootFixture(
+            [{itemName:STACK, quantity:1}], 0);
+        installRewardPersistedSaveHarness(-1, "");
+        LootClaimCommitCoordinator.testOnlyFailNext(
+            "ordinary_destination_write", "false", 1);
+        var quarantineRootId:String = "reward.kind.quarantined";
+        var pending:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(quarantineFixture, quarantineRootId, false, ""));
+        var conflictWritten:Boolean = mutatePersistedBackpackConflict();
+        var quarantineRestarted:Boolean = restartFromRewardPersistedSave();
+        var quarantined:Object = queryRewardRoot(quarantineRootId, "");
+        check(quarantineFixture.success && pending.rootStatus == "pending"
+                && conflictWritten && quarantineRestarted && quarantined.success
+                && quarantined.rootOperationId == quarantineRootId
+                && quarantined.rootStatus == "quarantined"
+                && quarantined.resultKind == "quarantined"
+                && quarantined.appliedCount == 0
+                && quarantined.error == "destination_rebind_conflict",
+            "Reward root third-state destination 只隔离 root，绝不猜测提交或回滚");
+    }
+
+    private static function testRewardClaimRootAssetKinds():Void {
+        var emptyFixture:Object = makeRewardRootFixture(
+            [{itemName:STACK, quantity:2}], 0);
+        installRewardPersistedSaveHarness(-1, "");
+        var empty:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(emptyFixture, "reward.asset.empty", false, ""));
+        check(empty.rootStatus == "committed" && empty.resultKind == "all_applied"
+                && rewardBackpackQuantity(STACK) == 2,
+            "Reward root ordinary empty-slot descriptor 精确落地");
+
+        var mergeFixture:Object = makeRewardRootFixture(
+            [{itemName:STACK, quantity:2}], 0);
+        _root.物品栏.背包.add(0, stack(STACK, 5, 43001));
+        installRewardPersistedSaveHarness(-1, "");
+        var merged:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(mergeFixture, "reward.asset.merge", false, ""));
+        check(merged.rootStatus == "committed" && merged.resultKind == "all_applied"
+                && rewardBackpackQuantity(STACK) == 7,
+            "Reward root ordinary merge descriptor 绑定 exact before/after");
+
+        var materialFixture:Object = makeRewardRootFixture(
+            [{itemName:MATERIAL, quantity:3}], 0);
+        installRewardPersistedSaveHarness(-1, "");
+        var material:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(materialFixture, "reward.asset.material", false, ""));
+        check(material.rootStatus == "committed" && material.resultKind == "all_applied"
+                && _root.收集品栏.材料.getValue(MATERIAL) == 3,
+            "Reward root material descriptor 使用 collection exact delta");
+
+        var informationFixture:Object = makeRewardRootFixture(
+            [{itemName:INFORMATION, quantity:2}], 0);
+        installRewardPersistedSaveHarness(-1, "");
+        var information:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(informationFixture,
+                "reward.asset.information", false, ""));
+        check(information.rootStatus == "committed"
+                && information.resultKind == "all_applied"
+                && _root.收集品栏.情报.getValue(INFORMATION) == 2,
+            "Reward root information descriptor 保持上限检查与 exact delta");
+
+        var drugFixture:Object = makeRewardRootFixture(
+            [{itemName:ANTIBIOTIC, quantity:4}], 0);
+        var affinity:Object = DrugSlotAffinityService.normalizeSavedFeature(
+            null, {}, function(itemKey:String):Boolean {
+                return itemKey == ANTIBIOTIC;
+            });
+        affinity.feature.slots[4] = {
+            itemKey:ANTIBIOTIC, lastDepletedSequence:7
         };
-        var recovered:Object = LootContainerService.execute("query", {
-            v:2, sourceKind:"reward_inbox",
-            chestSessionId:authority.chestSessionId,
-            lootContainerId:authority.lootContainerId,
-            containerEpoch:authority.containerEpoch
-        });
-        RewardInboxService.resetForTests();
-        check(recovered.success && recovered.remainingCount == 0
-                && _root.物品栏.背包.size() == 1
-                && RewardInboxService.inboxSummary().remainingCount == 0
-                && RewardInboxService.materializeAuthority() == null,
-            "query forward-completes once, and restart observes the durable claimed state without replay");
+        affinity.feature.nextDepletedSequence = 8;
+        _root._saveExt.drugLoadout = affinity.feature;
+        installRewardPersistedSaveHarness(-1, "");
+        var drug:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(drugFixture, "reward.asset.drug", false, ""));
+        var drugItem:Object = _root.物品栏.药剂栏.getItem("4");
+        check(drug.rootStatus == "committed" && drug.resultKind == "all_applied"
+                && drugItem != null && drugItem.name == ANTIBIOTIC
+                && drugItem.value == 4
+                && _root._saveExt.drugLoadout.slots[4].itemKey == ANTIBIOTIC
+                && _root._saveExt.drugLoadout.slots[4].lastDepletedSequence == 0,
+            "Reward root drug descriptor 同步持久化 affinity before/after");
+    }
+
+    private static function testRewardClaimRootTombstoneSuccessorAndCompatibility():Void {
+        var firstFixture:Object = makeRewardRootFixture(
+            [{itemName:STACK, quantity:1}], 0);
+        installRewardPersistedSaveHarness(-1, "");
+        var firstId:String = "reward.successor.first";
+        var first:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(firstFixture, firstId, false, ""));
+        var appended:Object = RewardInboxService.appendRewardBatch(
+            "测试礼包", "reward.successor.append",
+            [{itemName:STACK, quantity:2}]);
+        captureRewardPersistedSaveForTest();
+        RewardInboxService.resetSession();
+        var secondFixture:Object = materializeCurrentRewardFixture();
+        var secondId:String = "reward.successor.second";
+        var secondRequest:Object = rewardRootClaimParams(
+            secondFixture, secondId, false, firstId);
+        var second:Object = LootContainerService.execute("claim", secondRequest);
+        var successorRestarted:Boolean = restartFromRewardPersistedSave();
+        var recoveredSecond:Object = queryRewardRoot(secondId, "");
+        var expiredFirst:Object = queryRewardRoot(firstId, "");
+        check(first.rootStatus == "committed" && appended.success
+                && secondFixture.success && second.rootStatus == "committed"
+                && successorRestarted
+                && recoveredSecond.rootStatus == "committed"
+                && recoveredSecond.appliedCount == 1
+                && !expiredFirst.success
+                && expiredFirst.rootOperationId == firstId
+                && expiredFirst.rootStatus == "not_started"
+                && expiredFirst.error == "operation_expired"
+                && rewardBackpackQuantity(STACK) == 3,
+            "successor 以 predecessor 原子 supersede 旧 tombstone，response loss 后可 exact query");
+
+        var beforeAck:Object = ObjectUtil.clone(
+            _root._saveExt.rewardInbox.claimRootTerminal);
+        var ackAuthority:Object = RewardInboxService.materializeAuthority();
+        var ackRequest:Object = {v:2, sourceKind:"reward_inbox",
+            chestSessionId:ackAuthority.chestSessionId,
+            lootContainerId:ackAuthority.lootContainerId,
+            containerEpoch:ackAuthority.containerEpoch,
+            rootOperationId:secondId,
+            acknowledgeTerminalRootOperationId:secondId};
+        var ack:Object = LootContainerService.execute("query", ackRequest);
+        var duplicateRequest:Object = ObjectUtil.clone(ackRequest);
+        delete duplicateRequest.acknowledgeTerminalRootOperationId;
+        var duplicateAfterAck:Object = LootContainerService.execute(
+            "query", duplicateRequest);
+        var terminalAfterAck:Object = _root._saveExt.rewardInbox.claimRootTerminal;
+        check(ack.success && ack.rootStatus == "committed"
+                && duplicateAfterAck.rootStatus == "committed"
+                && exactRootTupleEquals(ack, duplicateAfterAck)
+                && terminalAfterAck.discoveryAcknowledged === true
+                && beforeAck.discoveryAcknowledged === false
+                && terminalAfterAck.rootOperationId == beforeAck.rootOperationId
+                && ObjectUtil.deepEquals(terminalAfterAck.result, beforeAck.result)
+                && terminalAfterAck.appliedCount == beforeAck.appliedCount,
+            "terminal acknowledgement 只推进 discovery bit，丢响应也不改变 exact result");
+
+        var ackRestarted:Boolean = restartFromRewardPersistedSave();
+        var acknowledgedSummary:Object = RewardInboxService.inboxSummary();
+        var persistedTerminal:Object = _root._saveExt.rewardInbox.claimRootTerminal;
+        check(ackRestarted && acknowledgedSummary.remainingCount == 0
+                && acknowledgedSummary.recoveryRequired === false
+                && acknowledgedSummary.recoverableRootOperationId == secondId
+                && persistedTerminal != null
+                && persistedTerminal.rootOperationId == secondId
+                && persistedTerminal.discoveryAcknowledged === true,
+            "ack 后 rewardReady 可回落，但 restart 不清除 terminal tombstone");
+
+        var pendingAppend:Object = RewardInboxService.appendRewardBatch(
+            "测试礼包", "reward.compat.append",
+            [{itemName:STACK, quantity:1}]);
+        captureRewardPersistedSaveForTest();
+        RewardInboxService.resetSession();
+        var compatibilityFixture:Object = materializeCurrentRewardFixture();
+        RewardInboxService.CLAIM_ROOT_ADMISSION_ENABLED = false;
+        var disabled:Object = LootContainerService.execute("claim",
+            rewardRootClaimParams(compatibilityFixture,
+                "reward.compat.disabled", false, secondId));
+        var retained:Object = queryRewardRoot(secondId, "");
+        RewardInboxService.CLAIM_ROOT_ADMISSION_ENABLED = true;
+        check(pendingAppend.success && compatibilityFixture.success
+                && !disabled.success
+                && disabled.rootStatus == "not_started"
+                && disabled.resultKind == "none"
+                && disabled.error == "root_admission_disabled"
+                && retained.success && retained.rootOperationId == secondId
+                && retained.rootStatus == "committed"
+                && _root._saveExt.rewardInbox.claimRootTerminal.rootOperationId == secondId
+                && RewardInboxService.inboxSummary().remainingCount == 1,
+            "A-compat-disabled 拒绝新 admission，同时保留 discovery、tombstone 与 exact query reader");
+    }
+
+    private static function testRewardClaimRootNormalizerQuarantine():Void {
+        var opaqueFuture:Object = {claimRootSchemaVersion:2,
+            rootOperationId:"reward.opaque.future", opaqueMarker:"keep-exact"};
+        var futureNestedSave:Object = {inventory:{装备栏:{}}, ext:{
+            unrelatedState:{kept:true}, rewardInbox:{v:1, sequence:0,
+                authorityRevision:1, batches:[], receipts:[], migrations:[],
+                supplyKeys:[], activeClaimRoot:opaqueFuture,
+                claimRootTerminal:null}}};
+        var futureNested:Object = RewardInboxService.normalizeSaveData(
+            futureNestedSave);
+        check(futureNested.ok && futureNested.quarantined === true
+                && futureNested.diagnostic == "malformed_active_claim_root"
+                && futureNestedSave.ext.rewardInbox.activeClaimRoot === opaqueFuture
+                && opaqueFuture.claimRootSchemaVersion == 2
+                && opaqueFuture.opaqueMarker == "keep-exact"
+                && futureNestedSave.ext.unrelatedState.kept === true,
+            "v1 nested future root 原样保留并只 quarantine Reward lane");
+
+        var malformedTerminal:Object = {opaqueMarker:"malformed-terminal"};
+        var malformedSave:Object = {inventory:{装备栏:{}}, ext:{rewardInbox:{
+            v:1, sequence:0, authorityRevision:1, batches:[], receipts:[],
+            migrations:[], supplyKeys:[], activeClaimRoot:null,
+            claimRootTerminal:malformedTerminal}}};
+        var malformed:Object = RewardInboxService.normalizeSaveData(malformedSave);
+        var topFutureSave:Object = {inventory:{装备栏:{}}, ext:{
+            rewardInbox:{v:2}, unrelatedState:{kept:true}}};
+        var topFuture:Object = RewardInboxService.normalizeSaveData(topFutureSave);
+        check(malformed.ok && malformed.quarantined === true
+                && malformedSave.ext.rewardInbox.claimRootTerminal === malformedTerminal
+                && malformedTerminal.opaqueMarker == "malformed-terminal"
+                && !topFuture.ok && topFuture.error == "future_reward_inbox"
+                && topFutureSave.ext.unrelatedState.kept === true,
+            "malformed nested root opaque 隔离，顶层未来 Reward 版本仍拒绝整档");
     }
 
     private static function check(condition:Boolean, message:String):Void {

@@ -378,7 +378,9 @@ Panel 的共同边界：
 - 合法配件变换可使 before/after effective `modSlotCapacity` 不同；Host 仍复核 `0..64` 整数、installed≤capacity、操作差分及 preview/commit/fresh snapshot 深绑定。空背包未建 Flash authority 时，仅 exact panel 在 idle 且无 pending/detaching/write 可本地 no-op detach；其余仍严格走 Flash，断线不可绕过。
 - Panel close/recovery 共用 lifecycle fence，迟到或旧实例不得关闭 replacement。W/B0 将 anchor 分为 valid / explicit-invalid / unavailable：invalid 在 pause/focus/presentation 前拒绝且不 fallback；valid 仅提交代际绑定 snapshot；同代同矩形恢复只按 committed snapshot 无焦点重放一次。当前状态与验收见[止血治理 ADR](../docs/AS2-WebPanel止血治理-窗口生命周期与Reward根事务-ADR-2026-09-01.md)。
 - Workbench 的布局和交互以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。关卡内 `StageOutcomeTask` 把复活/胜负决策投影进 `RightContextWidget` 既有 32px 条件槽，不创建浮窗、不暂停 Flash。胜负条常驻，忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr` 证明返回后可路由时追加“前往交付”，并在奖励终态和 Web exact close 后导航。
-  respawn 恢复 HP/MP/可见性后清 `倒地/_killed`、死亡 latch 并 reset WatchDog，重开同一 MovieClip 技能门。Web 左栏同滚屏合并击杀与物资 gain/loss，右栏切换待领/材料，一个密度控制器同步三者；整理页保留 KShop 同源灰黑 inventory skin。奖励每批最多 50 项，`claimBatch` 进入 AS2 顺序 authority journal 并以 exact query 对账。2026-08-30 起 Loot v2 固定 `targetContainerId:"自动"`与 loot/背包/药剂栏三快照，Host/Web 不选药剂槽。
+  respawn 恢复 HP/MP/可见性后清 `倒地/_killed`、死亡 latch 并 reset WatchDog。Reward Inbox 每批最多 50 项；单领/批领以 `operationId` 建 durable root，首个 child 写前落盘，完成后保留 terminal tombstone。未知写只按 `lootQuery(rootOperationId)` exact 终态收束，不从 projection 猜测或重放；`remaining=0` 也可建 recovery-only authority。
+  容量终态的 `blockedEntries` ID 集必须精确等于 remaining ID 集且每项只含容量错误；已提交 child 触发 Reward authority 重投影时 retained slot lease 可以权威轮换，Web 仍须按 exact root + applied/remaining delta + 物理槽占用接纳结果，保留 `target_full` 并显示“整理背包”。普通 Loot v2 仍固定 `targetContainerId:"自动"` 与三容器快照。
+  A1 兼容禁用只接受精确环境值 `CF7_REWARD_ROOT_ADMISSION=0`，Host/Web 此时拒绝新 Reward root admission，但继续允许 discovery/query/tombstone/quarantine；完整回滚还必须配套经验证的 `CLAIM_ROOT_ADMISSION_ENABLED=false` asLoader，不能只切单层开关。默认或其他字符串均保持 admission 开启。
   关卡奖励退场前写 `_saveExt.stageSettlement.v=1` 并 strict flush；单领、批领和终态依 durable remaining/receipt journal 对账。SaveManager 读档重建 pending，Loot 恢复已落盘 operation/revision。flush 未确认时保持 `LOOT_COMMIT_PENDING`，不得回成功或释放场景；详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
   地图在战斗/结算中只读，导航按 AS2 lifecycle lock 零发送；loader staging 在首次 gameplay init 按 drop→reward 提交。跨淡出回包保持正整数 `callId`；Stage Select 关闭须先投递，transport false/throw 时保留面板与重试权。NativeHud down 绑定 exact action/revision，suspend/hide/capture loss/外放均取消。
   有效 `stage_settlement` 报告可在 `remaining=0` 时 suspend/reopen，`map_chest` 不继承。Panel close 仅在 close 起点与恢复前两次 live foreground 都属于 CF7 时恢复 Flash，切到 QQ/浏览器后不得抢焦。完整权威与生命周期详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
@@ -395,7 +397,7 @@ Panel 的共同边界：
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
 Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)、[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)和[军阀战术演习](web/modules/minigames/warlord/README.md)。
-`blackmarket` 仅允许 `dev + shadowOnly`；产品不接调用方 seed，只生成不命中真实目录的匿名货物与 `data:` 表面。lazy closure 不含 exact oracle、dressup/preview 或 debug API，close 绑定 exact 实例；Web 根外夹具仅供 Node QA。面板固定 `1024×576`/`PanelScale`，K 账本按 `deltaV=deltaTp+50×deltaK` 复核；测试见 [testing guide](../agentsDoc/testing-guide.md)。
+`blackmarket` 保持 `dev + shadowOnly`、匿名表面与 `productionWrites=false`；close 绑定 exact instance。临时 O1 仅在 `CF7_BLACKMARKET_SOFTLOCK_OBSERVATION=1` 时由 Web/Host 双重放行：立即一次后每 10 秒发 heartbeat，每生命周期最多记录 64 条脱敏 tuple 并发送只读 AS2 probe；无 timeout、retry、watchdog、自动 close 或修复，默认关闭。测试见 [testing guide](../agentsDoc/testing-guide.md)。
 `warlord` 为 `1024×576` 全锚、`productionWrites=false / battleAuthority=as2`；卡牌隔离战宠，JS resolver 仅供 fixture，恢复只走 Host 内部专用路由。维护者已确认 c4 战后返回；正式列车已 promotion/audit/identity smoke，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`，未重跑部署后军阀业务。详见[军阀演习 ADR](../docs/军阀战术演习-3D沙盘UI-ADR-2026-08-24.md)。
 ## 存档编辑与诊断
 
@@ -412,9 +414,7 @@ Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原�
 | Web 画面黑屏 | hot reload、WebView2 process failure、overlay suspend/resume；不要先把 watcher 打开 |
 | Audio 无声 | Host audio 状态、存档音量、endpoint generation；H2 按专项流程处理 |
 | candidate/正式身份不符 | verifier 输出、process path、manifest、identity、closure 和 consensus |
-
 Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../scripts/FlashCS6自动化编译.md)；没有新鲜 trace、Output Panel 或 IDE 复核时，不声称“已编译通过”。
-
 ## 维护规则
 
 以下变化必须在同轮更新本 README 对应 registry/地图，并运行文档治理：

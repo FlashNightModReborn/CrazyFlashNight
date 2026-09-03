@@ -16,10 +16,12 @@ class org.flashNight.arki.item.LootContainerValidation {
             expectedAction = "lootClaim";
             allowed.push("expectedAuthorityRevision"); allowed.push("operationId");
             allowed.push("direction"); allowed.push("source"); allowed.push("targetContainerId");
+            allowed.push("previousTerminalRootOperationId");
         } else if (commandName == "claimBatch") {
             expectedAction = "lootClaimBatch";
             allowed.push("expectedAuthorityRevision"); allowed.push("operationId");
             allowed.push("direction"); allowed.push("sources"); allowed.push("targetContainerId");
+            allowed.push("previousTerminalRootOperationId");
         } else if (commandName == "close") {
             expectedAction = "lootClose";
             allowed.push("expectedAuthorityRevision"); allowed.push("operationId");
@@ -27,6 +29,8 @@ class org.flashNight.arki.item.LootContainerValidation {
         } else if (commandName == "query") {
             expectedAction = "lootQuery";
             allowed.push("openAttemptSeq"); allowed.push("recoveryNonce");
+            allowed.push("rootOperationId");
+            allowed.push("acknowledgeTerminalRootOperationId");
         } else if (commandName == "materials") {
             expectedAction = "lootMaterials";
             allowed.push("expectedAuthorityRevision");
@@ -35,6 +39,13 @@ class org.flashNight.arki.item.LootContainerValidation {
         if (hasOwnField(params, "sourceKind")
                 && (params.sourceKind !== "reward_inbox"
                     || commandName == "materials")) return false;
+        if (params.sourceKind === "reward_inbox") {
+            if ((commandName == "claim" || commandName == "claimBatch")
+                    && !hasOwnField(params, "previousTerminalRootOperationId")) return false;
+            if (commandName == "query" && !hasOwnField(params, "rootOperationId")) return false;
+        } else if (hasOwnField(params, "previousTerminalRootOperationId")
+                || hasOwnField(params, "rootOperationId")
+                || hasOwnField(params, "acknowledgeTerminalRootOperationId")) return false;
         var hasTask:Boolean = hasOwnField(params, "task");
         var hasAction:Boolean = hasOwnField(params, "action");
         var hasCallId:Boolean = hasOwnField(params, "callId");

@@ -97,6 +97,48 @@ try {
   equal(verification.assertions.numericAntibioticStackPresent, true, "exact target requires a numeric antibiotic stack");
   equal(verification.assertions.darkGuitarAbsent, true, "exact target excludes dark guitar before loot");
 
+  const rewardFixtureSlot = "cf7_agent_reward_root_acceptance_v1";
+  const rewardFixturePath = path.join(saves, rewardFixtureSlot + ".json");
+  const rewardPrepared = Tool.prepareTarget(root, {
+    seedSlot: "crazyflasher7_saves",
+    slot: rewardFixtureSlot,
+    fixture: Tool.REWARD_ROOT_ACCEPTANCE_FIXTURE,
+  }, {
+    backupDir: path.join(root, "reward-fixture-backups"),
+    sharedObjectsRoot: shared,
+    nowMs: 1700000100000,
+    now: new Date("2026-07-19T12:36:36Z"),
+  });
+  ok(Object.values(rewardPrepared.assertions).every(Boolean), "reward-root fixture satisfies all preparation assertions");
+  equal(rewardPrepared.fixture.name, Tool.REWARD_ROOT_ACCEPTANCE_FIXTURE, "reward-root fixture identity is explicit");
+  equal(rewardPrepared.fixture.rewardPackSlot, 49, "reward-root fixture pack occupies the frozen final slot");
+  const rewardTarget = JSON.parse(fs.readFileSync(rewardFixturePath, "utf8"));
+  equal(rewardTarget["0"][0], Tool.REWARD_ROOT_FIXTURE_CHARACTER_NAME,
+    "fixture character name is visibly distinct from the read-only seed");
+  equal(rewardTarget.inventory["背包"]["49"], {
+    name: Tool.REWARD_ROOT_FIXTURE_PACK,
+    value: 1,
+    lastUpdate: 1700000100051,
+  }, "fixture installs one deterministic reward pack without changing the inventory schema");
+  equal(Object.values(rewardTarget.inventory["背包"])
+    .filter((entry) => entry.name === Tool.REWARD_ROOT_FIXTURE_PACK).length,
+  1, "fixture contains exactly one deterministic reward pack");
+  equal(rewardTarget.ext.rewardInbox, {
+    v: 1,
+    sequence: 0,
+    authorityRevision: 1,
+    batches: [],
+    receipts: [],
+    migrations: [],
+    supplyKeys: [],
+    activeClaimRoot: null,
+    claimRootTerminal: null,
+  }, "fixture starts from one canonical empty Reward root lane");
+  const rewardVerification = Tool.verifyPreparedTarget(root, rewardFixtureSlot,
+    shared, { fixture: Tool.REWARD_ROOT_ACCEPTANCE_FIXTURE });
+  ok(Object.values(rewardVerification.assertions).every(Boolean), "strict verification accepts the exact reward-root fixture before launch");
+  equal(fs.readFileSync(seedPath, "utf8"), seedRaw, "reward-root preparation also leaves the seed byte-for-byte untouched");
+
   fs.writeFileSync(ownedSol, Buffer.from([7, 8, 9]));
   rejected(() => Tool.verifyPreparedTarget(root, slot, shared), "target_verification_failed");
   const postLaunchVerification = Tool.verifyPreparedContent(root, slot, shared);
@@ -107,10 +149,13 @@ try {
   ok(Object.values(postLaunchVerification.assertions).every(Boolean), "content-only assertions remain green after a legitimate runtime SOL appears");
 
   equal(Tool.parseArgs(["--verify-content-only"]).verifyContentOnly, true, "content-only CLI mode parses explicitly");
+  equal(Tool.parseArgs(["--fixture", Tool.REWARD_ROOT_ACCEPTANCE_FIXTURE]).fixture,
+    Tool.REWARD_ROOT_ACCEPTANCE_FIXTURE, "reward-root fixture CLI mode parses explicitly");
   rejected(() => Tool.parseArgs(["--verify-only", "--verify-content-only"]), "conflicting_verification_modes");
 
   rejected(() => Tool.assertSafeArgs({ seedSlot: "crazyflasher7_saves", slot: "crazyflasher7_saves2" }), "unsafe_target_slot");
   rejected(() => Tool.assertSafeArgs({ seedSlot: slot, slot }), "seed_equals_target");
+  rejected(() => Tool.assertSafeArgs({ seedSlot: "crazyflasher7_saves", slot, fixture: "unknown" }), "unsupported_fixture");
   rejected(() => Tool.assertTargetSlotNotInUse({ save: { slot }, saveRuntime: { savePath: "another" } }, slot), "target_slot_in_use");
   rejected(() => Tool.assertTargetSlotNotInUse({ save: { slot: slot.toUpperCase() } }, slot, root), "target_slot_in_use");
   rejected(() => Tool.assertTargetSlotNotInUse({ saveRuntime: { savePath: targetPath.toUpperCase() } }, slot, root), "target_slot_in_use");

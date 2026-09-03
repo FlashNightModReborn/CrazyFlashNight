@@ -121,6 +121,27 @@ class org.flashNight.arki.pause.PauseManager {
         return _root.暂停 === true;
     }
 
+    /**
+     * O1 临时只读观测面：只返回有界、脱敏的暂停 owner 类别。
+     * 不创建/释放 lease，不写 _root.暂停，也不暴露 leaseId。
+     */
+    public static function getObservationOwner():String {
+        if (!PauseManager.isPaused()) return "none";
+        if (!PauseManager._initialized || PauseManager._leases == undefined) {
+            return "unowned_pause";
+        }
+        var count:Number = 0;
+        var owner:String = "";
+        for (var leaseId:String in PauseManager._leases) {
+            count++;
+            if (count == 1) owner = String(PauseManager._leases[leaseId].owner || "");
+            if (count > 1) return "multiple_leases";
+        }
+        if (count == 0) return "unowned_pause";
+        if (owner == "shop" || owner == "webpanel") return owner;
+        return "other_lease";
+    }
+
     // 带 owner tag 的写入。owner 例：'shop' / 'dialog' / 'stage' / 'merc'；
     // 业务侧裸写 _root.暂停 = ... 不调本方法，subscribers 收到 tag === null。
     public static function set(value:Boolean, owner:String):Void {

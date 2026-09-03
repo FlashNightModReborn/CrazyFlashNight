@@ -12,6 +12,10 @@ const LegacyHttpClient = require("./lib/legacy-http-client");
 
 const DEFAULT_SEED_SLOT = "crazyflasher7_saves";
 const DEFAULT_TARGET_SLOT = "cf7_agent_loot_target_full_v1";
+const REWARD_ROOT_ACCEPTANCE_FIXTURE = "reward-root-partial-v1";
+const REWARD_ROOT_FIXTURE_PACK = "感恩节礼包";
+const REWARD_ROOT_FIXTURE_SLOT = 49;
+const REWARD_ROOT_FIXTURE_CHARACTER_NAME = "A1奖励根事务验收档";
 const AGENT_SLOT_RE = /^cf7_agent_[A-Za-z0-9_-]+$/;
 const SAFE_SLOT_RE = /^[A-Za-z0-9_-]+$/;
 const LIVE_SLOT_RE = /^crazyflasher7_saves\d*$/;
@@ -39,6 +43,7 @@ function parseArgs(argv) {
   const args = {
     seedSlot: DEFAULT_SEED_SLOT,
     slot: DEFAULT_TARGET_SLOT,
+    fixture: null,
     verifyOnly: false,
     verifyContentOnly: false,
     root: projectRoot(),
@@ -54,6 +59,7 @@ function parseArgs(argv) {
     const token = argv[index];
     if (token === "--seed-slot") args.seedSlot = valueAfter(index++, token);
     else if (token === "--slot") args.slot = valueAfter(index++, token);
+    else if (token === "--fixture") args.fixture = valueAfter(index++, token);
     else if (token === "--root") args.root = valueAfter(index++, token);
     else if (token === "--verify-only") args.verifyOnly = true;
     else if (token === "--verify-content-only") args.verifyContentOnly = true;
@@ -77,6 +83,7 @@ function printHelp() {
     "Options:",
     "  --seed-slot <slot>  Read-only source shadow. Default: " + DEFAULT_SEED_SLOT,
     "  --slot <slot>       Dedicated target. Default: " + DEFAULT_TARGET_SLOT,
+    "  --fixture <name>    Optional exact fixture: " + REWARD_ROOT_ACCEPTANCE_FIXTURE,
     "  --verify-only       Strict pre-launch gate: verifies content and requires no target SOL; never writes.",
     "  --verify-content-only  Post-launch diagnostic: verifies shadow JSON content but does not inspect or reject a target SOL; never writes.",
     "  --root <path>       Project root (mainly useful for isolated tests).",
@@ -92,6 +99,9 @@ function assertSafeArgs(args) {
   }
   if (args.seedSlot === args.slot) {
     fail("seed_equals_target", "seed slot must differ from the dedicated target slot");
+  }
+  if (args.fixture != null && args.fixture !== REWARD_ROOT_ACCEPTANCE_FIXTURE) {
+    fail("unsupported_fixture", "unsupported exact fixture: " + args.fixture);
   }
 }
 
@@ -228,6 +238,95 @@ function fillBackpack(data, nowMs) {
       slots0To49Full: after.occupied.length === SLOT_COUNT && after.occupied.every((slot, index) => slot === index),
     },
   };
+}
+
+function emptyRewardInboxFeature() {
+  return {
+    v: 1,
+    sequence: 0,
+    authorityRevision: 1,
+    batches: [],
+    receipts: [],
+    migrations: [],
+    supplyKeys: [],
+    activeClaimRoot: null,
+    claimRootTerminal: null,
+  };
+}
+
+function rewardRootAcceptanceAssertions(data) {
+  const inspected = inspectBackpack(data);
+  const fixedSlot = inspected.bag[String(REWARD_ROOT_FIXTURE_SLOT)];
+  const packCount = inspected.donors.filter((entry) => (
+    entry.name === REWARD_ROOT_FIXTURE_PACK
+  )).length;
+  const ext = isPlainObject(data.ext) ? data.ext : null;
+  const feature = ext && isPlainObject(ext.rewardInbox) ? ext.rewardInbox : null;
+  const featureKeys = feature ? Object.keys(feature).sort() : [];
+  const expectedFeatureKeys = Object.keys(emptyRewardInboxFeature()).sort();
+  return {
+    rewardRootCharacterNameDistinct: Array.isArray(data["0"])
+      && data["0"][0] === REWARD_ROOT_FIXTURE_CHARACTER_NAME,
+    rewardRootBackpackInitiallyFull: inspected.occupied.length === SLOT_COUNT
+      && inspected.occupied.every((slot, index) => slot === index),
+    rewardRootPackAtFixedSlot: isLegalInventoryEntry(fixedSlot)
+      && fixedSlot.name === REWARD_ROOT_FIXTURE_PACK
+      && fixedSlot.value === 1
+      && Number.isFinite(Number(fixedSlot.lastUpdate)),
+    rewardRootPackUnique: packCount === 1,
+    rewardRootInboxCanonicalEmpty: !!feature
+      && featureKeys.length === expectedFeatureKeys.length
+      && featureKeys.every((key, index) => key === expectedFeatureKeys[index])
+      && feature.v === 1
+      && feature.sequence === 0
+      && feature.authorityRevision === 1
+      && Array.isArray(feature.batches) && feature.batches.length === 0
+      && Array.isArray(feature.receipts) && feature.receipts.length === 0
+      && Array.isArray(feature.migrations) && feature.migrations.length === 0
+      && Array.isArray(feature.supplyKeys) && feature.supplyKeys.length === 0
+      && feature.activeClaimRoot === null
+      && feature.claimRootTerminal === null,
+  };
+}
+
+function installRewardRootAcceptanceFixture(data, nowMs) {
+  const inspected = inspectBackpack(data);
+  const full = inspected.occupied.length === SLOT_COUNT
+    && inspected.occupied.every((slot, index) => slot === index);
+  if (!full) {
+    fail("fixture_requires_full_backpack", "reward-root fixture requires a full 0..49 backpack before installation");
+  }
+  if (inspected.donors.some((entry) => entry.name === REWARD_ROOT_FIXTURE_PACK)) {
+    fail("fixture_pack_already_present", "reward-root fixture requires the deterministic reward pack to be absent from the seed clone");
+  }
+  if (!isPlainObject(data.ext)) data.ext = {};
+  data["0"][0] = REWARD_ROOT_FIXTURE_CHARACTER_NAME;
+  data.ext.rewardInbox = emptyRewardInboxFeature();
+  const base = Number.isFinite(nowMs) ? Math.floor(nowMs) : Date.now();
+  inspected.bag[String(REWARD_ROOT_FIXTURE_SLOT)] = {
+    name: REWARD_ROOT_FIXTURE_PACK,
+    value: 1,
+    lastUpdate: base + SLOT_COUNT + 1,
+  };
+  const assertions = rewardRootAcceptanceAssertions(data);
+  if (!Object.values(assertions).every(Boolean)) {
+    fail("fixture_installation_failed", "reward-root fixture did not satisfy its exact assertions", assertions);
+  }
+  return {
+    name: REWARD_ROOT_ACCEPTANCE_FIXTURE,
+    rewardPackName: REWARD_ROOT_FIXTURE_PACK,
+    rewardPackSlot: REWARD_ROOT_FIXTURE_SLOT,
+    characterName: REWARD_ROOT_FIXTURE_CHARACTER_NAME,
+    assertions,
+  };
+}
+
+function exactFixtureAssertions(data, fixture) {
+  if (fixture == null) return {};
+  if (fixture === REWARD_ROOT_ACCEPTANCE_FIXTURE) {
+    return rewardRootAcceptanceAssertions(data);
+  }
+  fail("unsupported_fixture", "unsupported exact fixture: " + fixture);
 }
 
 function solOwnershipSuffix(root, slot) {
@@ -508,12 +607,14 @@ function verifyPreparedTarget(root, slot, sharedObjectsRoot, options) {
   };
   if (requireTargetSolAbsent) report.assertions.targetSolAbsent = targetSolAbsent;
   Object.assign(report.assertions, exactScenarioAssertions(target.data));
+  Object.assign(report.assertions, exactFixtureAssertions(target.data, opts.fixture));
   if (!Object.values(report.assertions).every(Boolean)) fail("target_verification_failed", "target does not satisfy target_full save assertions", report);
   return report;
 }
 
-function verifyPreparedContent(root, slot, sharedObjectsRoot) {
-  return verifyPreparedTarget(root, slot, sharedObjectsRoot, { requireTargetSolAbsent: false });
+function verifyPreparedContent(root, slot, sharedObjectsRoot, options) {
+  return verifyPreparedTarget(root, slot, sharedObjectsRoot,
+    Object.assign({}, options || {}, { requireTargetSolAbsent: false }));
 }
 
 function prepareTarget(root, args, options) {
@@ -527,6 +628,9 @@ function prepareTarget(root, args, options) {
   const solFiles = findSolFiles(root, args.slot, opts.sharedObjectsRoot);
   const clone = deepClone(seed.data);
   const fill = fillBackpack(clone, opts.nowMs);
+  const fixture = args.fixture === REWARD_ROOT_ACCEPTANCE_FIXTURE
+    ? installRewardRootAcceptanceFixture(clone, opts.nowMs)
+    : args.fixture == null ? null : exactFixtureAssertions(clone, args.fixture);
   const exactAssertions = assertExactScenario(clone);
   clone.lastSaved = localTimestamp(opts.now || new Date());
   const backups = [];
@@ -544,20 +648,23 @@ function prepareTarget(root, args, options) {
   solFiles.forEach((filePath) => fs.unlinkSync(filePath));
   if (fs.existsSync(targetTombstone)) fs.unlinkSync(targetTombstone);
   const afterSha = writeMinifiedJsonAtomic(targetPath, clone);
-  const verification = verifyPreparedTarget(root, args.slot, opts.sharedObjectsRoot);
+  const verification = verifyPreparedTarget(root, args.slot, opts.sharedObjectsRoot,
+    { fixture: args.fixture });
   return {
     targetPath: relativeOrAbsolute(root, targetPath),
     seedPath: relativeOrAbsolute(root, seedPath),
     before: { sha256: beforeSha, occupied: fill.beforeOccupied },
     after: { sha256: afterSha, occupied: fill.afterOccupied },
     insertedSlots: fill.insertedSlots,
+    fixture,
     backups,
     removedTargetSolFiles: solFiles.map((filePath) => relativeOrAbsolute(root, filePath)),
     removedTargetTombstone: backupTargets.some(([filePath]) => filePath === targetTombstone && fs.existsSync(path.join(backupDir, "target-tombstone-" + path.basename(targetTombstone)))),
     assertions: Object.assign({
       seedUnchanged: sha256File(seedPath) === seed.sha256,
       targetJsonMinifiedUtf8: fs.readFileSync(targetPath, "utf8") === JSON.stringify(JSON.parse(fs.readFileSync(targetPath, "utf8"))),
-    }, fill.assertions, exactAssertions, verification.assertions),
+    }, fill.assertions, exactAssertions, fixture == null ? {} : fixture.assertions,
+    verification.assertions),
     verification,
   };
 }
@@ -565,11 +672,13 @@ function prepareTarget(root, args, options) {
 async function run(args) {
   assertSafeArgs(args);
   if (args.verifyOnly) {
-    const verification = verifyPreparedTarget(args.root, args.slot);
+    const verification = verifyPreparedTarget(args.root, args.slot, null,
+      { fixture: args.fixture });
     return { ok: true, mode: "verify-only", targetSlot: args.slot, seedSlot: args.seedSlot, runtimeGuard: null, ...verification };
   }
   if (args.verifyContentOnly) {
-    const verification = verifyPreparedContent(args.root, args.slot);
+    const verification = verifyPreparedContent(args.root, args.slot, null,
+      { fixture: args.fixture });
     return { ok: true, mode: "verify-content-only", targetSlot: args.slot, seedSlot: args.seedSlot, runtimeGuard: null, ...verification };
   }
   const runtimeGuard = await assertTargetNotRunning(args.root, args.slot);
@@ -588,6 +697,10 @@ async function main(argv) {
 module.exports = {
   DEFAULT_SEED_SLOT,
   DEFAULT_TARGET_SLOT,
+  REWARD_ROOT_ACCEPTANCE_FIXTURE,
+  REWARD_ROOT_FIXTURE_PACK,
+  REWARD_ROOT_FIXTURE_SLOT,
+  REWARD_ROOT_FIXTURE_CHARACTER_NAME,
   PrepareError,
   assertSafeArgs,
   assertExactScenario,
@@ -596,11 +709,13 @@ module.exports = {
   fillBackpack,
   exactScenarioAssertions,
   findSolFiles,
+  installRewardRootAcceptanceFixture,
   isLegalInventoryEntry,
   isOwnedSolPath,
   isValidSaveData,
   parseArgs,
   prepareTarget,
+  rewardRootAcceptanceAssertions,
   solOwnershipSuffix,
   verifyPreparedContent,
   verifyPreparedTarget,

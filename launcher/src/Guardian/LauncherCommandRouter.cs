@@ -2839,7 +2839,22 @@ namespace CF7Launcher.Guardian
                     OpenPanel("gobang", "{\"mode\":\"dev\",\"source\":\"runtime\",\"ruleset\":\"casual\",\"difficulty\":\"normal\",\"playerRole\":1,\"aiEnabled\":true,\"debug\":true}");
                     break;
                 case "BLACKMARKET_TEST":
-                    OpenPanel("blackmarket", "{\"mode\":\"dev\",\"source\":\"runtime\",\"shadowOnly\":true,\"debug\":true}");
+                    {
+                        // O1 是临时手动诊断入口，默认关闭。环境变量只决定是否把
+                        // 只读 heartbeat capability 下发给当前 blackmarket document；
+                        // 不改变面板业务、socket、pause、scene 或关闭语义。
+                        bool softlockObservation =
+                            WebOverlayForm.IsBlackMarketSoftlockObservationEnabled(
+                                Environment.GetEnvironmentVariable(
+                                    "CF7_BLACKMARKET_SOFTLOCK_OBSERVATION"));
+                        OpenPanel(
+                            "blackmarket",
+                            "{\"mode\":\"dev\",\"source\":\"runtime\",\"shadowOnly\":true,\"debug\":true"
+                                + (softlockObservation
+                                    ? ",\"softlockObservation\":true"
+                                    : "")
+                                + "}");
+                    }
                     break;
                 case "WARLORD_TEST":
                     OpenPanel("warlord", "{\"mode\":\"phase-c-as2\",\"source\":\"runtime\",\"seed\":\"warlord-demo-seed-001\",\"preset\":\"standard\",\"difficulty\":\"normal\",\"mapTheme\":\"desert\",\"battleAuthority\":\"as2\",\"productionWrites\":false}");

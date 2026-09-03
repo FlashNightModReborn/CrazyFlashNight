@@ -9,9 +9,16 @@ var LootView = (function() {
         var allowed = {v:true,panelInstanceId:true,chestSessionId:true,lootContainerId:true,
             containerEpoch:true,displayName:true,capacity:true,columns:true};
         if (settlement) { allowed.sourceKind=true;allowed.report=true; }
-        else if (rewardInbox) allowed.sourceKind=true;
+        else if (rewardInbox) {
+            allowed.sourceKind=true;
+            allowed.recoverableRootOperationId=true;
+            allowed.recoverableRootStatus=true;
+            allowed.recoveryRequired=true;
+            allowed.recoveryOnly=true;
+            allowed.rootAdmissionEnabled=true;
+        }
         var keys = Object.keys(value);
-        if (keys.length !== (settlement ? 10 : rewardInbox ? 9 : 8)) return null;
+        if (keys.length !== (settlement ? 10 : rewardInbox ? 14 : 8)) return null;
         for (var i = 0; i < keys.length; i++)
             if (!Object.prototype.hasOwnProperty.call(allowed,keys[i])) return null;
 
@@ -35,7 +42,15 @@ var LootView = (function() {
             columns:value.columns,
             sourceKind:settlement ? 'stage_settlement'
                 : rewardInbox ? 'reward_inbox' : 'map_chest',
-            report:settlement ? normalizeSettlementReport(value.report) : null
+            report:settlement ? normalizeSettlementReport(value.report) : null,
+            recoverableRootOperationId:rewardInbox
+                ? String(value.recoverableRootOperationId || '') : '',
+            recoverableRootStatus:rewardInbox
+                ? String(value.recoverableRootStatus || '') : 'not_started',
+            recoveryRequired:rewardInbox && value.recoveryRequired === true,
+            recoveryOnly:rewardInbox && value.recoveryOnly === true,
+            rootAdmissionEnabled:rewardInbox
+                ? value.rootAdmissionEnabled === true : true
         };
         if (normalized.v !== 1 || !normalized.panelInstanceId || !normalized.chestSessionId
                 || !normalized.lootContainerId || !normalized.displayName
@@ -44,6 +59,18 @@ var LootView = (function() {
                 || !positiveInteger(normalized.columns) || normalized.columns > 8
                 || normalized.columns > normalized.capacity
                 || settlement && !normalized.report) return null;
+        if (rewardInbox) {
+            var rootId=normalized.recoverableRootOperationId;
+            if (rootId && (!/^[A-Za-z0-9._~-]+$/.test(rootId)||rootId.length>128)
+                    || ['not_started','pending','committed','terminal_failure','quarantined']
+                        .indexOf(normalized.recoverableRootStatus)<0
+                    || (!!rootId)===(normalized.recoverableRootStatus==='not_started')
+                    || normalized.recoveryRequired&&!rootId
+                    || normalized.recoveryOnly&&!normalized.recoveryRequired
+                    || typeof value.recoveryRequired!=='boolean'
+                    || typeof value.recoveryOnly!=='boolean'
+                    || typeof value.rootAdmissionEnabled!=='boolean') return null;
+        }
         return normalized;
     }
 
@@ -1080,6 +1107,14 @@ var LootView = (function() {
     View.prototype.render = function(state,projection,claimAll,organizerActive) {
         if (!this.shell || !state) return;
         this.interaction=interactionForState(state,claimAll,organizerActive);
+        if (this.isRewardInbox
+                && this.init.rootAdmissionEnabled === false
+                && state.phase === 'active'
+                && !claimAll
+                && !organizerActive) {
+            this.interaction={inspectable:true,actionable:false,
+                reason:'当前为兼容回滚只读模式，不接纳新的领取事务。'};
+        }
         if (this.backpackPane) this.backpackPane.setInteraction(this.interaction);
         if (this.lootPane) this.lootPane.setInteraction(this.interaction);
         if (this.broker) this.broker.clearSelection();
@@ -1137,7 +1172,8 @@ var LootView = (function() {
         }
         if (this.commitBar) this.commitBar.update(
             commitPresentation(
-                state,claimAll,organizerActive,this.isSettlement,this.isRewardInbox));
+                state,claimAll,organizerActive,this.isSettlement,this.isRewardInbox,
+                !this.isRewardInbox || this.init.rootAdmissionEnabled === true));
     };
 
     View.prototype.hasModal = function() { return !!(this.shell && this.shell.hasModal()); };
@@ -1247,7 +1283,8 @@ var LootView = (function() {
     }
 
     function commitPresentation(
-            state,claimAll,organizerActive,isSettlement,isRewardInbox) {
+            state,claimAll,organizerActive,isSettlement,isRewardInbox,
+            rootAdmissionEnabled) {
         var block=blockMessage(state.blockReason);
         if (state.phase==='reconcile_required') return {
             label:'重新核对',
@@ -1292,6 +1329,11 @@ var LootView = (function() {
             label:'整理背包',
             status:'背包已满。可在当前页面转移背包与战备箱物品，再继续领取。',
             state:'blocked',canCommit:true
+        };
+        if (isRewardInbox && rootAdmissionEnabled === false) return {
+            label:'兼容只读',
+            status:'当前回滚模式不接纳新的领取事务；既有根仍可重新核对并安全收束。',
+            state:'blocked',disabled:true
         };
         return {
             label:'全部收取',

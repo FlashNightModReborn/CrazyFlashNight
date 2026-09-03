@@ -1049,6 +1049,49 @@ namespace CF7Launcher.Guardian
             return candidate >= minimum && candidate <= maximum;
         }
 
+        internal static bool IsBlackMarketSoftlockObservationEnabled(
+            string setting)
+        {
+            return string.Equals(setting, "1", StringComparison.Ordinal);
+        }
+
+        internal static bool TryReadBlackMarketHeartbeat(
+            JObject payload,
+            string activePanelInstanceId,
+            out JObject data)
+        {
+            data = null;
+            if (!HasOnlyObjectKeys(payload, "game", "kind", "data")
+                || !HasExactStringValue(payload["game"], "blackmarket")
+                || !HasExactStringValue(payload["kind"], "heartbeat"))
+            {
+                return false;
+            }
+            data = payload["data"] as JObject;
+            if (!HasOnlyObjectKeys(
+                    data,
+                    "panelInstanceId",
+                    "documentGeneration",
+                    "sequence",
+                    "snapshotRevision",
+                    "pending")
+                || !HasExactStringValue(
+                    data["panelInstanceId"],
+                    activePanelInstanceId)
+                || !IsBoundedInteger(
+                    data["documentGeneration"], 1, int.MaxValue)
+                || !IsBoundedInteger(data["sequence"], 1, int.MaxValue)
+                || !IsBoundedInteger(
+                    data["snapshotRevision"], 0, int.MaxValue)
+                || data["pending"] == null
+                || data["pending"].Type != JTokenType.Boolean)
+            {
+                data = null;
+                return false;
+            }
+            return true;
+        }
+
         internal static bool IsValidSkillManageSwitchEnvelope(JObject parsed, string activePanel, string activePanelInstanceId)
         {
             return IsValidSkillViewSwitchEnvelope(parsed, activePanel, activePanelInstanceId, "switch_manage");
@@ -1148,6 +1191,7 @@ namespace CF7Launcher.Guardian
         private bool _webReadyBeforeNavigation;
         private bool _webNavigationLoadedNewDocument;
         private ulong _webNavigationId;
+        private int _webDocumentObservationGeneration;
         internal event Action DocumentAdvanced;
         private bool _shown;
         private bool _disposed;
@@ -1219,6 +1263,11 @@ namespace CF7Launcher.Guardian
         private TaskTask _taskTask;
         private IntelligenceTask _intelligenceTask;
         private BlackMarketTask _blackMarketTask;
+        private const int BlackMarketObservationRecordLimit = 64;
+        private string _blackMarketObservationPanelInstanceId;
+        private string _blackMarketObservationIdentity;
+        private int _blackMarketObservationRecordCount;
+        private int _blackMarketObservationLastSequence;
         private GomokuTask _gomokuTask;
         private Action<bool> _onPanelStateChanged;
         private readonly PanelRequestOwnerLifecycle
@@ -1654,6 +1703,15 @@ namespace CF7Launcher.Guardian
 
         private void PublishDocumentAdvanced()
         {
+            _webDocumentObservationGeneration =
+                _webDocumentObservationGeneration == int.MaxValue
+                    ? 1
+                    : _webDocumentObservationGeneration + 1;
+            _blackMarketObservationIdentity = null;
+            _blackMarketObservationRecordCount = 0;
+            _blackMarketObservationLastSequence = 0;
+            if (_blackMarketTask != null)
+                _blackMarketTask.RetireObservation();
             Action advanced = DocumentAdvanced;
             if (advanced == null) return;
             foreach (Action subscriber
@@ -3706,6 +3764,23 @@ namespace CF7Launcher.Guardian
             string panelName,
             string panelInstanceId)
         {
+            string nextObservationInstance = string.Equals(
+                panelName, "blackmarket", StringComparison.Ordinal)
+                    ? panelInstanceId
+                    : null;
+            if (!string.Equals(
+                    _blackMarketObservationPanelInstanceId,
+                    nextObservationInstance,
+                    StringComparison.Ordinal))
+            {
+                _blackMarketObservationPanelInstanceId =
+                    nextObservationInstance;
+                _blackMarketObservationIdentity = null;
+                _blackMarketObservationRecordCount = 0;
+                _blackMarketObservationLastSequence = 0;
+                if (_blackMarketTask != null)
+                    _blackMarketTask.RetireObservation();
+            }
             MaterialShopNavigationCoordinator materialCoordinator =
                 _materialShopNavigationCoordinator;
             if (materialCoordinator != null)
@@ -4054,6 +4129,132 @@ namespace CF7Launcher.Guardian
             _blackMarketTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
+        private void HandleBlackMarketHeartbeat(JObject payload)
+        {
+            if (!IsBlackMarketSoftlockObservationEnabled(
+                    Environment.GetEnvironmentVariable(
+                        "CF7_BLACKMARKET_SOFTLOCK_OBSERVATION")))
+            {
+                return;
+            }
+            string activePanel = _panelHost != null
+                ? _panelHost.ActivePanelName
+                : null;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId
+                : null;
+            JObject data;
+            if (!string.Equals(activePanel, "blackmarket", StringComparison.Ordinal)
+                || !TryReadBlackMarketHeartbeat(
+                    payload, activeInstance, out data))
+            {
+                if (_blackMarketObservationRecordCount
+                    < BlackMarketObservationRecordLimit)
+                {
+                    _blackMarketObservationRecordCount++;
+                    LogManager.Log(
+                        "event=blackmarket_softlock_observation_rejected reason=invalid_or_foreign_tuple");
+                }
+                return;
+            }
+
+            int webDocumentGeneration = data.Value<int>("documentGeneration");
+            int webSequence = data.Value<int>("sequence");
+            string identity = activeInstance + "|"
+                + webDocumentGeneration.ToString(CultureInfo.InvariantCulture)
+                + "|"
+                + _webDocumentObservationGeneration.ToString(
+                    CultureInfo.InvariantCulture);
+            if (!string.Equals(
+                    _blackMarketObservationIdentity,
+                    identity,
+                    StringComparison.Ordinal))
+            {
+                _blackMarketObservationIdentity = identity;
+                _blackMarketObservationLastSequence = 0;
+                if (_blackMarketTask != null)
+                    _blackMarketTask.RetireObservation();
+            }
+            if (webSequence <= _blackMarketObservationLastSequence)
+            {
+                if (_blackMarketObservationRecordCount
+                    < BlackMarketObservationRecordLimit)
+                {
+                    _blackMarketObservationRecordCount++;
+                    LogManager.Log(
+                        "event=blackmarket_softlock_observation_rejected reason=non_monotonic_sequence");
+                }
+                return;
+            }
+            _blackMarketObservationLastSequence = webSequence;
+            if (_blackMarketObservationRecordCount
+                >= BlackMarketObservationRecordLimit) return;
+            _blackMarketObservationRecordCount++;
+
+            int socketGeneration = 0;
+            bool socketReady = _socketServer != null
+                && _socketServer.TryGetReadyGeneration(
+                    out socketGeneration);
+            BlackMarketObservationSnapshot observation =
+                _blackMarketTask != null
+                    ? (socketReady
+                        ? _blackMarketTask.ObserveHeartbeat(
+                            socketGeneration,
+                            delegate(string message, int expectedGeneration)
+                            {
+                                return _socketServer != null
+                                    && _socketServer.TrySendIfGen(
+                                        message,
+                                        expectedGeneration);
+                            })
+                        : _blackMarketTask.CaptureObservation())
+                    : new BlackMarketObservationSnapshot
+                    {
+                        OutstandingOwner = "none",
+                        As2TupleState = "missing",
+                        BusinessOwner = "none",
+                        PauseOwner = "unknown",
+                        SceneOwner = "unknown",
+                        FrameSequence = -1
+                    };
+            bool webPending = data.Value<bool>("pending");
+            string conclusion = !webPending
+                    && observation.BusinessOutstandingCount == 0
+                ? "no_outstanding_operation"
+                : "inconclusive";
+
+            LogManager.Log(
+                "event=blackmarket_softlock_observation"
+                + " conclusion=" + conclusion
+                + " panel_instance=" + activeInstance
+                + " host_document_generation="
+                + _webDocumentObservationGeneration
+                + " web_document_generation=" + webDocumentGeneration
+                + " web_sequence=" + webSequence
+                + " snapshot_revision="
+                + data.Value<int>("snapshotRevision")
+                + " web_pending="
+                + (webPending ? "true" : "false")
+                + " web_ready=" + (_webReady ? "true" : "false")
+                + " socket_ready="
+                + (socketReady ? "true" : "false")
+                + " socket_generation="
+                + (socketReady ? socketGeneration : 0)
+                + " route_sequence=" + observation.RouteSequence
+                + " route_completed_sequence="
+                + observation.LastCompletedRouteSequence
+                + " route_outstanding="
+                + observation.OutstandingCount
+                + " business_outstanding="
+                + observation.BusinessOutstandingCount
+                + " route_owner=" + observation.OutstandingOwner
+                + " as2_tuple=" + observation.As2TupleState
+                + " as2_business_owner=" + observation.BusinessOwner
+                + " pause_owner=" + observation.PauseOwner
+                + " scene_owner=" + observation.SceneOwner
+                + " as2_frame_sequence=" + observation.FrameSequence);
         }
 
         public void SetPanelStateCallback(Action<bool> cb) { _onPanelStateChanged = cb; }
@@ -6994,7 +7195,20 @@ namespace CF7Launcher.Guardian
                         }
                         else if (string.Equals(game, "blackmarket", StringComparison.OrdinalIgnoreCase))
                         {
-                            LogManager.Log("[BlackMarket] minigame_session payload=redacted");
+                            JObject blackMarketPayload = payload as JObject;
+                            if (blackMarketPayload != null
+                                && string.Equals(
+                                    blackMarketPayload.Value<string>("kind"),
+                                    "heartbeat",
+                                    StringComparison.Ordinal))
+                            {
+                                HandleBlackMarketHeartbeat(
+                                    blackMarketPayload);
+                            }
+                            else
+                            {
+                                LogManager.Log("[BlackMarket] minigame_session payload=redacted");
+                            }
                             break;
                         }
                         else if (string.Equals(game, "warlord", StringComparison.OrdinalIgnoreCase))
@@ -7665,6 +7879,8 @@ namespace CF7Launcher.Guardian
             if (_mercTask != null) _mercTask.ClearPending();
             if (_taskTask != null) _taskTask.ClearPending();
             if (_intelligenceTask != null) _intelligenceTask.ClearPending();
+            if (_blackMarketTask != null)
+                _blackMarketTask.RetireObservation();
         }
 
         public void OnSocketReconnected(int readyGeneration)

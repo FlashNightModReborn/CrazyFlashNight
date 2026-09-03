@@ -685,6 +685,114 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void BlackMarketSoftlockHeartbeat_IsExactBoundedAndLifecycleScoped()
+        {
+            const string activeInstance = "panel.blackmarket.observation";
+            var payload = new JObject
+            {
+                ["game"] = "blackmarket",
+                ["kind"] = "heartbeat",
+                ["data"] = new JObject
+                {
+                    ["panelInstanceId"] = activeInstance,
+                    ["documentGeneration"] = 3,
+                    ["sequence"] = 9,
+                    ["snapshotRevision"] = 4,
+                    ["pending"] = false
+                }
+            };
+            JObject data;
+            Assert.True(WebOverlayForm.TryReadBlackMarketHeartbeat(
+                payload, activeInstance, out data));
+            Assert.Equal(9, data.Value<int>("sequence"));
+            Assert.False(WebOverlayForm.TryReadBlackMarketHeartbeat(
+                payload, "panel.blackmarket.replacement", out data));
+
+            JObject malformed = (JObject)payload.DeepClone();
+            ((JObject)malformed["data"])["extra"] = true;
+            Assert.False(WebOverlayForm.TryReadBlackMarketHeartbeat(
+                malformed, activeInstance, out data));
+            malformed = (JObject)payload.DeepClone();
+            ((JObject)malformed["data"])["sequence"] = 0;
+            Assert.False(WebOverlayForm.TryReadBlackMarketHeartbeat(
+                malformed, activeInstance, out data));
+            malformed = (JObject)payload.DeepClone();
+            malformed["kind"] = "ready";
+            Assert.False(WebOverlayForm.TryReadBlackMarketHeartbeat(
+                malformed, activeInstance, out data));
+
+            string panel = File.ReadAllText(FindRepositoryFile(
+                "launcher", "web", "modules", "minigames", "blackmarket",
+                "blackmarket-panel.js"));
+            Assert.Contains("softlockObservation: input.softlockObservation === true", panel);
+            Assert.Contains("setInterval(sendSoftlockObservation, 10000)", panel);
+            Assert.Contains("window.addEventListener(\"pagehide\", clearSoftlockObservation)", panel);
+            Assert.Contains("clearSoftlockObservation();", Slice(
+                panel, "function cleanup()", "function closeAckTimeoutMs()"));
+            string probe = Slice(
+                panel, "function sendSoftlockObservation()", "function notifyHost(");
+            Assert.Contains("panelInstanceId", probe);
+            Assert.Contains("documentGeneration", probe);
+            Assert.Contains("snapshotRevision", probe);
+            Assert.Contains("pending:", probe);
+            Assert.DoesNotContain("closePanel", probe);
+            Assert.DoesNotContain("reload", probe, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("retry", probe, StringComparison.OrdinalIgnoreCase);
+
+            string router = File.ReadAllText(FindRepositoryFile(
+                "launcher", "src", "Guardian", "LauncherCommandRouter.cs"));
+            Assert.Contains("CF7_BLACKMARKET_SOFTLOCK_OBSERVATION", router);
+            Assert.Contains("? \",\\\"softlockObservation\\\":true\"", router);
+            string overlay = File.ReadAllText(FindRepositoryFile(
+                "launcher", "src", "Guardian", "WebOverlayForm.cs"));
+            Assert.Contains(
+                "IsBlackMarketSoftlockObservationEnabled(",
+                Slice(
+                    overlay,
+                    "private void HandleBlackMarketHeartbeat(JObject payload)",
+                    "public void SetPanelStateCallback"));
+
+            string pauseManager = File.ReadAllText(FindRepositoryFile(
+                "scripts", "类定义", "org", "flashNight", "arki", "pause",
+                "PauseManager.as"));
+            string pauseObservation = Slice(
+                pauseManager,
+                "public static function getObservationOwner():String",
+                "// 带 owner tag 的写入");
+            Assert.Contains(
+                "owner == \"shop\" || owner == \"webpanel\"",
+                pauseObservation);
+            Assert.Contains("return owner;", pauseObservation);
+            Assert.DoesNotContain("PauseManager.set(", pauseObservation);
+            Assert.DoesNotContain("releaseLease(", pauseObservation);
+
+            string stageSession = File.ReadAllText(FindRepositoryFile(
+                "scripts", "类定义", "org", "flashNight", "arki", "scene",
+                "StageRunSession.as"));
+            string sceneObservation = Slice(
+                stageSession,
+                "public static function getObservationOwner():String",
+                "public static function canNavigateAwayFromStage()");
+            Assert.Contains("return \"scene_transition\"", sceneObservation);
+            Assert.DoesNotContain("reserveStageStart(", sceneObservation);
+            Assert.DoesNotContain("cancelStageStart(", sceneObservation);
+        }
+
+        [Theory]
+        [InlineData("1", true)]
+        [InlineData("0", false)]
+        [InlineData("true", false)]
+        [InlineData(null, false)]
+        public void BlackMarketObservationGate_OnlyAcceptsExactOne(
+            string setting,
+            bool expected)
+        {
+            Assert.Equal(
+                expected,
+                WebOverlayForm.IsBlackMarketSoftlockObservationEnabled(setting));
+        }
+
+        [Fact]
         public void WarlordClose_IsExactAndCannotRetireReplacement()
         {
             const string activeInstance = "panel.warlord.replacement";

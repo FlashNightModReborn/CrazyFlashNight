@@ -69,6 +69,22 @@ function hostFencedReconcile(revision, remaining, lastAppliedOperationId) {
         remainingCount:remaining,closeLease:'',snapshots:[],tooltip:null,materials:null,terminal:null};
 }
 
+function rewardRoot(response, rootOperationId, rootStatus, resultKind, options) {
+    options=options||{};
+    const applied=options.appliedEntryIds
+        ||(rootStatus==='committed'||resultKind==='partial_failed'
+            ?['reward.entry.1']:[]);
+    const blocked=options.blockedEntries||[];
+    const remaining=options.remainingEntryIds||[];
+    return Object.assign(response,{
+        success:options.success!==undefined?options.success:rootStatus==='committed',
+        error:String(options.error||''),rootOperationId,rootStatus,resultKind,
+        result:{appliedEntryIds:applied,blockedEntries:blocked,
+            remainingEntryIds:remaining},
+        appliedCount:applied.length,stopReason:String(options.stopReason||'')
+    });
+}
+
 function fakeTransport() {
     let sequence = 0;
     const calls = [];
@@ -1028,18 +1044,26 @@ test('runtime identity rejects non-positive and non-native integer epochs', () =
     assert(LootRuntime.normalizeIdentity(identity));
 });
 
-test('reward inbox uses the exact nine-key init shape and cannot open abandon', () => {
+test('reward inbox uses the exact root-discovery init shape and cannot open abandon', () => {
     const init={
         v:1,panelInstanceId:'panel.reward.1',chestSessionId:'reward.session.1',
         lootContainerId:'reward.container.1',containerEpoch:3,
-        displayName:'待领取恢复批次',capacity:4,columns:4,sourceKind:'reward_inbox'
+        displayName:'待领取恢复批次',capacity:4,columns:4,sourceKind:'reward_inbox',
+        recoverableRootOperationId:'',recoverableRootStatus:'not_started',
+        recoveryRequired:false,recoveryOnly:false,rootAdmissionEnabled:true
     };
     const normalized=LootView.normalizeInitData(init);
     assert(normalized);
     assert.strictEqual(normalized.sourceKind,'reward_inbox');
+    assert.strictEqual(normalized.rootAdmissionEnabled,true);
     assert.strictEqual(normalized.report,null);
     assert.strictEqual(LootView.normalizeInitData(Object.assign({},init,{report:null})),null);
     assert.strictEqual(LootView.normalizeInitData(Object.assign({},init,{sourceKind:'reward'})),null);
+    assert.strictEqual(LootView.normalizeInitData(Object.assign({},init,
+        {rootAdmissionEnabled:false})).rootAdmissionEnabled,false);
+    const missingAdmission=Object.assign({},init);
+    delete missingAdmission.rootAdmissionEnabled;
+    assert.strictEqual(LootView.normalizeInitData(missingAdmission),null);
 
     const view=new LootView.View({init:normalized});
     let modalOpened=false;
@@ -1065,6 +1089,188 @@ test('reward inbox rejects abandon before issuing a close write', () => {
     assert.strictEqual(wire.calls.filter(call=>call.cmd==='close').length,0);
     assert.strictEqual(model.close(false),true);
     assert.strictEqual(wire.calls[1].fields.abandon,false);
+});
+
+test('reward compat-disabled blocks new roots while exact recovery query stays available', () => {
+    const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    const wire=fakeTransport(),model=new LootState.Coordinator({
+        identity:rewardIdentity,capacity:1,request:wire.request,
+        rewardRootAdmissionEnabled:false
+    });
+    model.open();wire.respond(0,active(1,[slot(0,'只读奖励','lease.compat.readonly')]));
+    const current=model.projection().loot.slots[0];
+    assert.strictEqual(model.claim(current),false);
+    assert.strictEqual(model.claimBatch([current]),false);
+    assert.strictEqual(wire.calls.filter(call=>call.cmd==='claim'
+        ||call.cmd==='claimBatch').length,0);
+    assert.strictEqual(model.debugState().rewardRootAdmissionEnabled,false);
+
+    const recoveryWire=fakeTransport(),recovery=new LootState.Coordinator({
+        identity:rewardIdentity,capacity:1,request:recoveryWire.request,
+        rewardRootAdmissionEnabled:false,
+        recoverableRootOperationId:'reward.compat.pending',
+        recoverableRootStatus:'pending',recoveryRequired:true,recoveryOnly:true
+    });
+    recovery.open();recoveryWire.respond(0,active(1,[slot(0)]));
+    assert.strictEqual(recovery.query(),true);
+    assert.strictEqual(recoveryWire.calls[1].cmd,'query');
+    assert.strictEqual(recoveryWire.calls[1].fields.rootOperationId,
+        'reward.compat.pending');
+});
+
+test('reward response loss reconciles by the same root query and never replays the write', () => {
+    const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    const wire=fakeTransport(),model=new LootState.Coordinator({
+        identity:rewardIdentity,capacity:1,request:wire.request,
+        recoverableRootOperationId:'',recoverableRootStatus:'not_started',
+        recoveryRequired:false,recoveryOnly:false
+    });
+    model.open();wire.respond(0,active(1,[slot(0,'恢复物品','lease.reward.root')]));
+    assert(model.claim(model.projection().loot.slots[0]));
+    const rootId=wire.calls[1].fields.operationId;
+    assert.strictEqual(wire.calls[1].fields.previousTerminalRootOperationId,'');
+    wire.respond(1,{success:false,error:'client_timeout',clientSynthetic:true,
+        requiresReconcile:true,rootOperationId:rootId,rootStatus:'not_started',
+        resultKind:'none',result:{appliedEntryIds:[],blockedEntries:[],remainingEntryIds:[]},
+        appliedCount:0,stopReason:''});
+    assert.strictEqual(model.debugState().phase,'reconcile_required');
+
+    assert(model.query());
+    assert.strictEqual(wire.calls[2].cmd,'query');
+    assert.strictEqual(wire.calls[2].fields.rootOperationId,rootId);
+    wire.respond(2,rewardRoot(active(2,[slot(0)]),rootId,
+        'committed','all_applied'));
+
+    assert.strictEqual(model.debugState().phase,'active');
+    assert.strictEqual(wire.calls.filter(call=>call.cmd==='claim').length,1);
+    assert.strictEqual(wire.calls.filter(call=>call.cmd==='query').length,2);
+    assert.strictEqual(wire.calls[3].fields.rootOperationId,rootId);
+    assert.strictEqual(wire.calls[3].fields.acknowledgeTerminalRootOperationId,rootId);
+    wire.respond(3,rewardRoot(active(2,[slot(0)]),rootId,
+        'committed','all_applied'));
+    assert.strictEqual(model.debugState().rewardRoot.recoveryRequired,false);
+});
+
+test('reward partial capacity commit survives lease rotation and presents organizer', () => {
+    const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    const wire=fakeTransport(),model=new LootState.Coordinator({
+        identity:rewardIdentity,capacity:3,request:wire.request
+    });
+    const before=[slot(0,'已可领取','lease.reward.before.0'),
+        slot(1,'容量保留甲','lease.reward.before.1'),
+        slot(2,'容量保留乙','lease.reward.before.2')];
+    model.open();wire.respond(0,active(1,before));
+    let settled=null;
+    assert(model.claimBatch(model.projection().loot.slots,
+        success=>{ settled=success; }));
+    const rootId=wire.calls[1].fields.operationId;
+    const after=[slot(0),slot(1,'容量保留甲','lease.reward.rotated.1'),
+        slot(2,'容量保留乙','lease.reward.rotated.2')];
+    const partial=rewardRoot(active(2,after,{lastAppliedOperationId:rootId}),rootId,
+        'committed','partial_applied',{
+            appliedEntryIds:['reward.entry.1'],
+            blockedEntries:[
+                {entryId:'reward.entry.2',error:'target_full'},
+                {entryId:'reward.entry.3',error:'target_full'}
+            ],
+            remainingEntryIds:['reward.entry.2','reward.entry.3'],
+            stopReason:'capacity_limited'
+        });
+    wire.respond(1,partial);
+    const state=model.debugState();
+    assert.strictEqual(settled,true);
+    assert.strictEqual(state.phase,'active');
+    assert.strictEqual(state.remainingCount,2);
+    assert.strictEqual(state.blockReason,'target_full');
+    assert.strictEqual(state.rewardRoot.exact.resultKind,'partial_applied');
+    assert.strictEqual(LootView.commitPresentation(
+        state,false,false,false,true,true).label,'整理背包');
+    assert.strictEqual(wire.calls[2].fields.acknowledgeTerminalRootOperationId,rootId);
+    wire.respond(2,rewardRoot(active(2,after,{lastAppliedOperationId:rootId}),rootId,
+        'committed','partial_applied',{
+            appliedEntryIds:['reward.entry.1'],
+            blockedEntries:[
+                {entryId:'reward.entry.2',error:'target_full'},
+                {entryId:'reward.entry.3',error:'target_full'}
+            ],
+            remainingEntryIds:['reward.entry.2','reward.entry.3'],
+            stopReason:'capacity_limited'
+        }));
+    assert.strictEqual(model.debugState().blockReason,'target_full');
+    assert.strictEqual(model.debugState().rewardRoot.recoveryRequired,false);
+});
+
+test('reward capacity roots require blocked and remaining ids to match exactly', () => {
+    const base={success:true,error:'',rootOperationId:'reward.capacity.exact',
+        rootStatus:'committed',resultKind:'partial_applied',
+        result:{appliedEntryIds:['reward.entry.1'],
+            blockedEntries:[{entryId:'reward.entry.2',error:'target_full'}],
+            remainingEntryIds:['reward.entry.3']},
+        appliedCount:1,stopReason:'capacity_limited'};
+    assert.strictEqual(LootState.normalizeRewardRoot(base,'reward.capacity.exact'),null);
+    base.result.remainingEntryIds=['reward.entry.2'];
+    base.result.blockedEntries[0].error='child_failed';
+    assert.strictEqual(LootState.normalizeRewardRoot(base,'reward.capacity.exact'),null);
+});
+
+test('reward malformed foreign or projection-only responses cannot settle a root', () => {
+    ['projection_only','foreign_root','result_extra'].forEach((corruption,index) => {
+        const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+        const wire=fakeTransport(),model=new LootState.Coordinator({
+            identity:rewardIdentity,capacity:1,request:wire.request
+        });
+        model.open();wire.respond(0,active(1,[slot(0,'恢复物品','lease.bad.'+index)]));
+        assert(model.claim(model.projection().loot.slots[0]));
+        const rootId=wire.calls[1].fields.operationId;
+        let malformed=rewardRoot(active(2,[slot(0)]),rootId,
+            'committed','all_applied');
+        if(corruption==='projection_only') {
+            ['rootOperationId','rootStatus','resultKind','result','appliedCount','stopReason']
+                .forEach(field=>delete malformed[field]);
+        } else if(corruption==='foreign_root') malformed.rootOperationId='reward.foreign';
+        else malformed.result.forged=true;
+        wire.respond(1,malformed);
+        assert.strictEqual(model.debugState().phase,'reconcile_required',corruption);
+        assert(model.query());
+        const queryIndex=wire.calls.length-1;
+        assert.strictEqual(wire.calls[queryIndex].fields.rootOperationId,rootId);
+        wire.respond(queryIndex,malformed);
+        assert.strictEqual(model.debugState().phase,'reconcile_required',corruption);
+        assert.strictEqual(wire.calls.filter(call=>call.cmd==='claim').length,1,corruption);
+    });
+});
+
+test('reward successor carries the exact terminal predecessor discovered at init', () => {
+    const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    const wire=fakeTransport(),model=new LootState.Coordinator({
+        identity:rewardIdentity,capacity:1,request:wire.request,
+        recoverableRootOperationId:'reward.terminal.previous',
+        recoverableRootStatus:'committed',recoveryRequired:false,recoveryOnly:false
+    });
+    model.open();wire.respond(0,active(1,[slot(0,'后继奖励','lease.successor')]));
+    assert(model.claim(model.projection().loot.slots[0]));
+    assert.strictEqual(wire.calls[1].fields.previousTerminalRootOperationId,
+        'reward.terminal.previous');
+    assert.strictEqual(wire.calls.filter(call=>call.cmd==='claim').length,1);
+});
+
+test('reward recovery-only discovery queries the exact root before any write', () => {
+    const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    const wire=fakeTransport(),model=new LootState.Coordinator({
+        identity:rewardIdentity,capacity:1,request:wire.request,
+        recoverableRootOperationId:'reward.recovery.pending',
+        recoverableRootStatus:'pending',recoveryRequired:true,recoveryOnly:true
+    });
+    model.open();wire.respond(0,active(1,[slot(0)]));
+    assert.strictEqual(model.debugState().phase,'reconcile_required');
+    assert(model.query());
+    assert.strictEqual(wire.calls[1].fields.rootOperationId,'reward.recovery.pending');
+    assert.strictEqual(wire.calls.filter(call=>call.cmd==='claim'||call.cmd==='claimBatch').length,0);
+    wire.respond(1,rewardRoot(active(2,[slot(0)]),'reward.recovery.pending',
+        'committed','all_applied'));
+    assert.strictEqual(model.debugState().phase,'active');
+    assert.strictEqual(wire.calls[2].fields.acknowledgeTerminalRootOperationId,
+        'reward.recovery.pending');
 });
 
 test('runtime exact-key and command allowlists ignore prototype properties', () => {
@@ -1131,6 +1337,56 @@ test('reward inbox runtime returns the exact source kind on every request', () =
         assert.strictEqual(message.sourceKind,'reward_inbox');
         assert.strictEqual(Object.keys(message).filter(key=>key==='sourceKind').length,1);
     });
+    runtime.destroy();
+});
+
+test('reward runtime accepts only the exact root response set and preserves the root tuple', () => {
+    const sent=[],protocolErrors=[],router=new PanelRuntime.PanelResponseRouter();
+    const rewardIdentity=Object.assign({},identity,{source:'reward_inbox'});
+    const runtime=new LootRuntime.RequestMux({
+        identity:rewardIdentity,router,sessionNonce:'reward-root-runtime',
+        send:message=>{sent.push(message);return true;},
+        onProtocolError:message=>protocolErrors.push(message)
+    });
+    runtime.openSession();
+    const source={containerId:identity.lootContainerId,slot:0,
+        expectedLease:'lease.reward.runtime',expectedContainerVersion:1};
+    let accepted=null;
+    const firstId='reward.runtime.root.1';
+    runtime.request('claim',{expectedAuthorityRevision:1,source,operationId:firstId,
+        direction:'loot_to_player',targetContainerId:'自动',
+        previousTerminalRootOperationId:''},
+        {write:true,operationId:firstId},response=>{accepted=response;});
+    assert.strictEqual(sent[0].sourceKind,'reward_inbox');
+    assert.strictEqual(sent[0].previousTerminalRootOperationId,'');
+    const envelopeBase=(cmd,callId)=>Object.assign({
+        type:'panel_resp',task:'loot_response',domain:'loot',panel:'loot',cmd,callId,
+        panelInstanceId:identity.panelInstanceId,
+        chestSessionId:identity.chestSessionId,
+        lootContainerId:identity.lootContainerId,containerEpoch:identity.containerEpoch
+    },active(2,[slot(0)]));
+    const exact=rewardRoot(envelopeBase('claim',sent[0].callId),firstId,
+        'committed','all_applied');
+    assert.strictEqual(router.handleResponse(exact),true);
+    assert(accepted&&accepted.rootOperationId===firstId
+        &&accepted.rootStatus==='committed'&&accepted.resultKind==='all_applied');
+
+    let second=null;
+    const secondId='reward.runtime.root.2';
+    runtime.request('claim',{expectedAuthorityRevision:2,source,operationId:secondId,
+        direction:'loot_to_player',targetContainerId:'自动',
+        previousTerminalRootOperationId:firstId},
+        {write:true,operationId:secondId},response=>{second=response;});
+    const projectionOnly=envelopeBase('claim',sent[1].callId);
+    assert.strictEqual(router.handleResponse(projectionOnly),false);
+    assert.strictEqual(second,null);
+    assert.strictEqual(runtime.debugState().pendingCount,1);
+    assert.strictEqual(protocolErrors.length,1);
+    const recoveredExact=rewardRoot(projectionOnly,secondId,
+        'committed','all_applied');
+    assert.strictEqual(router.handleResponse(recoveredExact),true);
+    assert(second&&second.rootOperationId===secondId);
+    assert.strictEqual(runtime.debugState().pendingCount,0);
     runtime.destroy();
 });
 

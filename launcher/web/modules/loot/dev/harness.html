@@ -104,6 +104,7 @@ function strictInventorySlot(source){
   function resetAuthority(full){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'强化石','lease.0'),empty(1)],backpack:full?[occupied(0,'背包物品A','bag.0'),occupied(1,'背包物品B','bag.1')]:[occupied(0,'背包物品A','bag.0'),empty(1)],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
   function resetClaimAllAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'物资A','lease.all.0'),occupied(1,'物资B','lease.all.1'),occupied(2,'物资C','lease.all.2')],backpack:[occupied(0,'背包物品A','bag.0'),empty(1),empty(2),empty(3)],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
   function resetMixedClaimAllAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'黑暗吉他','lease.mixed.guitar.1'),occupied(1,'抗生素','lease.mixed.antibiotic.1')],backpack:[occupied(0,'抗生素','bag.antibiotic'),occupied(1,'背包物品B','bag.1')],terminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
+  function resetRewardRootPartialAuthority(){authority={revision:1,version:1,lastOperation:'',loot:[occupied(0,'可收取奖励','lease.reward.before.0'),occupied(1,'容量保留奖励','lease.reward.before.1')],backpack:[occupied(0,'背包物品A','bag.0'),occupied(1,'背包物品B','bag.1')],terminal:null,rewardTerminal:null,suspended:false,closeLease:'close.1'};addInventoryAuthority()}
 var materialStock=[
   {name:'强化石',displayName:'强化石',icon:'强化石',owned:12},
   {name:'空瓶',displayName:'空瓶',icon:'空瓶',owned:0},
@@ -115,7 +116,16 @@ function remaining(){return authority.loot.filter(function(x){return x.occupied}
 function common(message){var inactive=authority.terminal||authority.suspended;return{type:'panel_resp',task:'loot_response',domain:'loot',panel:'loot',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,chestSessionId:message.chestSessionId,lootContainerId:message.lootContainerId,containerEpoch:message.containerEpoch,success:true,error:'',authorityRevision:authority.revision,lastAppliedOperationId:authority.lastOperation,state:authority.terminal?authority.terminal.kind:authority.suspended?'LOOT_SUSPENDED':'LOOT_ACTIVE',remainingCount:authority.terminal?authority.terminal.remainingCount:remaining(),closeLease:inactive?'':authority.closeLease,snapshots:[],tooltip:null,materials:null,terminal:authority.terminal}}
   function emit(value){if(value&&value.terminal)__events.push('terminal_response');else if(value&&value.state==='LOOT_SUSPENDED')__events.push('suspended_response');(__handlers.panel_resp||[]).slice().forEach(function(fn){fn(value)})}
 function activeResponse(message){var response=common(message);response.snapshots=[snapshot(message.lootContainerId,authority.loot),snapshot('背包',authority.backpack),snapshot('药剂栏',[empty(0),empty(1),empty(2),empty(3),empty(4),empty(5),empty(6),empty(7)])];return response}
-function respond(message){
+  function exactRewardRootResponse(message){
+    var response=activeResponse(message),root=authority.rewardTerminal;
+    if(!root)return response;
+    response.success=root.rootStatus==='committed';response.error=root.error;
+    response.rootOperationId=root.rootOperationId;response.rootStatus=root.rootStatus;
+    response.resultKind=root.resultKind;response.result=JSON.parse(JSON.stringify(root.result));
+    response.appliedCount=root.appliedCount;response.stopReason=root.stopReason;
+    return response
+  }
+  function respond(message){
   if(message.cmd==='materials'){var materialResponse=common(message);materialResponse.materials=materialStock.map(function(row){return Object.assign({},row)});emit(materialResponse);return}
     if(message.cmd==='snapshot'){
       if(__failNextLootSnapshot){__failNextLootSnapshot=false;var failed=common(message);failed.success=false;failed.error='snapshot_failed';emit(failed);return}
@@ -124,6 +134,19 @@ function respond(message){
   if(message.cmd==='tooltip'){var tip=common(message);tip.tooltip={iconName:'强化石',itemType:'材料',introHTML:'地图资源箱',descHTML:'权威物品说明'};emit(tip);return}
   if(message.cmd==='claimBatch'){
     var batchSources=Array.isArray(message.sources)?message.sources:[];
+    if(__mode==='reward_root_partial'){
+      authority.loot[0]=empty(0);
+      authority.loot[1]=occupied(1,'容量保留奖励','lease.reward.rotated.1');
+      authority.revision=2;authority.version=2;authority.lastOperation=message.operationId;
+      authority.closeLease='close.2';authority.rewardTerminal={
+        rootOperationId:message.operationId,rootStatus:'committed',resultKind:'partial_applied',
+        result:{appliedEntryIds:['reward.entry.1'],
+          blockedEntries:[{entryId:'reward.entry.2',error:'target_full'}],
+          remainingEntryIds:['reward.entry.2']},
+        appliedCount:1,error:'',stopReason:'capacity_limited'
+      };
+      emit(exactRewardRootResponse(message));return
+    }
     if((__mode==='full'||__mode==='inventory_full')
         &&authority.backpack.every(function(slot){return slot.occupied})
         ||__mode==='full_malformed'){
@@ -178,6 +201,9 @@ function respond(message){
     emit(activeResponse(message));return
   }
   if(message.cmd==='query'){
+    if(__mode==='reward_root_partial'&&authority.rewardTerminal){
+      emit(exactRewardRootResponse(message));return
+    }
     if(__mode==='stale_then_suspended'){var suspendedRefresh=common(message);suspendedRefresh.state='LOOT_SUSPENDED';suspendedRefresh.closeLease='';emit(suspendedRefresh);return}
     if(__mode==='stale_then_terminal'){var terminalRefresh=common(message);terminalRefresh.state='EXPIRED';terminalRefresh.closeLease='';terminalRefresh.terminal={kind:'EXPIRED',reason:'expired',remainingCount:remaining()};emit(terminalRefresh);return}
     emit(authority.terminal||authority.suspended?common(message):activeResponse(message));return
@@ -238,6 +264,11 @@ function respond(message){
     emit(inventoryResponse(message,false,'unsupported_command',[]))
   }
   function init(id){return{v:1,panelInstanceId:'panel.'+id,chestSessionId:'chest.'+id,lootContainerId:'loot.test.'+id,containerEpoch:7,displayName:'装备箱',capacity:2,columns:2}}
+  function rewardInit(id){return Object.assign(init(id),{
+    displayName:'待领取物品',sourceKind:'reward_inbox',
+    recoverableRootOperationId:'',recoverableRootStatus:'not_started',
+    recoveryRequired:false,recoveryOnly:false,rootAdmissionEnabled:true
+  })}
   function settlementInit(id){return Object.assign(init(id),{
     displayName:'关卡结算',capacity:3,columns:3,sourceKind:'stage_settlement',
     report:{v:1,runId:'run.harness.1',stageName:'废弃都市 · 夜战',difficulty:'挑战',outcome:'victory',
@@ -883,6 +914,33 @@ function respond(message){
     await waitFor(function(){return Panels.getActive()===null&&authority.suspended});
     ok('backdrop uses the same non-abandon suspend path',
       tasks('close').length===backdropClosesBefore+1&&tasks('close').slice(-1)[0].abandon===false);
+
+    resetRewardRootPartialAuthority();__mode='reward_root_partial';
+    var rewardRootBatchesBefore=tasks('claimBatch').length;
+    var rewardRootQueriesBefore=tasks('query').length;
+    var rewardRootClosesBefore=tasks('close').length;
+    var rewardRootToastsBefore=__toasts.length;
+    Panels.open('loot',rewardInit('reward-root-partial'));
+    await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){var state=LootPanel.debugState();return !state.claimAll
+      &&state.blockReason==='target_full'&&state.rewardRoot
+      &&state.rewardRoot.recoveryRequired===false});
+    var rewardRootState=LootPanel.debugState();
+    ok('reward exact partial root survives retained-slot lease rotation and exposes organizer',
+      tasks('claimBatch').length===rewardRootBatchesBefore+1
+      &&tasks('query').length===rewardRootQueriesBefore+1
+      &&tasks('close').length===rewardRootClosesBefore
+      &&authority.revision===2&&remaining()===1
+      &&authority.loot[1].slotLease==='lease.reward.rotated.1'
+      &&rewardRootState.claimAllBlockedReason==='target_full'
+      &&rewardRootState.claimAllBlockedSlots.join(',')==='1'
+      &&rewardRootState.rewardRoot.exact.resultKind==='partial_applied'
+      &&document.querySelector('[data-commit-primary]').textContent==='整理背包'
+      &&document.querySelector('.workbench-commit-status').textContent.indexOf('当前页面')>=0
+      &&!__toasts.slice(rewardRootToastsBefore).some(function(value){return value.indexOf('领取结果没有变化')>=0}),
+      JSON.stringify({state:rewardRootState,toasts:__toasts.slice(rewardRootToastsBefore)}));
+    Panels.forceClose();await delay();
 
     resetClaimAllAuthority();__mode='normal';__events.length=0;var claimAllBatchesBefore=tasks('claimBatch').length,claimAllClosesBefore=tasks('close').length;
     Panels.open('loot',Object.assign(init('claim-all'),{capacity:3,columns:3}));await waitFor(function(){return LootPanel.debugState().phase==='active'});

@@ -105,6 +105,102 @@
         return result;
     }
 
+    function normalizeRootIds(value) {
+        if (!Array.isArray(value)||value.length>50) return null;
+        var result=[],seen={};
+        for (var i=0;i<value.length;i++) {
+            var id=opaque(value[i]);
+            if (!id||own(seen,id)) return null;
+            seen[id]=true;result.push(id);
+        }
+        return result;
+    }
+
+    function normalizeRewardRoot(response,expectedRootId) {
+        if (!response||typeof response!=='object'||Array.isArray(response)) return null;
+        var rootId=opaque(response.rootOperationId);
+        var status=String(response.rootStatus||'');
+        var kind=String(response.resultKind||'');
+        var stopReason=String(response.stopReason||'');
+        var error=String(response.error||'');
+        var appliedCount=integer(response.appliedCount);
+        var result=response.result;
+        if (!rootId||rootId.length>72||rootId!==String(expectedRootId||'')
+                ||['not_started','pending','committed','terminal_failure','quarantined']
+                    .indexOf(status)<0
+                ||['none','in_progress','all_applied','partial_applied','no_effect_capacity',
+                    'partial_failed','failed','quarantined'].indexOf(kind)<0
+                ||stopReason!==''&&!safeWord(stopReason)
+                ||error!==''&&!safeWord(error)
+                ||appliedCount==null||appliedCount<0||appliedCount>50
+                ||!hasExactKeys(result,
+                    ['appliedEntryIds','blockedEntries','remainingEntryIds'])) return null;
+        var applied=normalizeRootIds(result.appliedEntryIds);
+        var remaining=normalizeRootIds(result.remainingEntryIds);
+        if (!applied||!remaining||applied.length!==appliedCount
+                ||!Array.isArray(result.blockedEntries)||result.blockedEntries.length>50)
+            return null;
+        var appliedSet={},remainingSet={},blockedSet={},blocked=[];
+        for (var i=0;i<applied.length;i++) appliedSet[applied[i]]=true;
+        for (i=0;i<remaining.length;i++) {
+            if (own(appliedSet,remaining[i])) return null;
+            remainingSet[remaining[i]]=true;
+        }
+        for (i=0;i<result.blockedEntries.length;i++) {
+            var candidate=result.blockedEntries[i];
+            var entryId=candidate&&opaque(candidate.entryId);
+            var blockedError=candidate&&safeWord(candidate.error);
+            if (!hasExactKeys(candidate,['entryId','error'])||!entryId||!blockedError
+                    ||own(appliedSet,entryId)||own(blockedSet,entryId)) return null;
+            blockedSet[entryId]=true;blocked.push({entryId:entryId,error:blockedError});
+        }
+        var exactCapacityRemainder=blocked.length===remaining.length;
+        for (i=0;i<blocked.length;i++) {
+            if (!own(remainingSet,blocked[i].entryId)
+                    ||!own(CAPACITY_NO_WRITE_ERRORS,blocked[i].error)) {
+                exactCapacityRemainder=false;
+                break;
+            }
+        }
+        var exact=false;
+        if (status==='not_started') exact=kind==='none'&&!applied.length&&!blocked.length
+            &&!remaining.length&&appliedCount===0&&!stopReason;
+        else if (status==='pending') exact=kind==='in_progress';
+        else if (status==='committed'&&kind==='all_applied') exact=applied.length>0
+            &&!blocked.length&&!remaining.length&&!error;
+        else if (status==='committed'&&kind==='partial_applied') exact=applied.length>0
+            &&blocked.length>0&&remaining.length>0&&exactCapacityRemainder
+            &&!error&&stopReason==='capacity_limited';
+        else if (status==='terminal_failure'&&kind==='no_effect_capacity') exact=!applied.length
+            &&blocked.length>0&&remaining.length>0&&exactCapacityRemainder
+            &&own(CAPACITY_NO_WRITE_ERRORS,error)&&error===blocked[0].error
+            &&stopReason==='capacity_limited';
+        else if (status==='terminal_failure'&&kind==='partial_failed') exact=applied.length>0
+            &&!!error&&stopReason==='child_failed';
+        else if (status==='terminal_failure'&&kind==='failed') exact=!applied.length
+            &&!!error&&stopReason==='child_failed';
+        else if (status==='quarantined'&&kind==='quarantined') exact=!!error;
+        if (!exact) return null;
+        return {rootOperationId:rootId,rootStatus:status,resultKind:kind,
+            result:{appliedEntryIds:applied,blockedEntries:blocked,remainingEntryIds:remaining},
+            appliedCount:appliedCount,error:error,stopReason:stopReason};
+    }
+
+    function rewardRootCapacityReason(root) {
+        if (!root||root.stopReason!=='capacity_limited'
+                ||root.resultKind!=='partial_applied'
+                    &&root.resultKind!=='no_effect_capacity'
+                ||!root.result||!Array.isArray(root.result.blockedEntries)
+                ||!root.result.blockedEntries.length) return '';
+        var first='';
+        for (var i=0;i<root.result.blockedEntries.length;i++) {
+            var error=String(root.result.blockedEntries[i].error||'');
+            if (!own(CAPACITY_NO_WRITE_ERRORS,error)) return '';
+            if (!first||error==='target_full'||error==='inventory_full') first=error;
+        }
+        return first;
+    }
+
     function normalizeSlot(value, fallbackIndex, requireLease, requireConfirm) {
         if (!value || typeof value !== 'object' || Array.isArray(value)
                 || typeof value.occupied !== 'boolean') return null;
@@ -269,6 +365,18 @@
         this._unknown = null;
         this._lastError = '';
         this._detached = false;
+        this._rewardRoot = this.identity.source === 'reward_inbox' ? {
+            rootOperationId:String(options.recoverableRootOperationId||''),
+            rootStatus:String(options.recoverableRootStatus||'not_started'),
+            recoveryRequired:options.recoveryRequired===true,
+            recoveryOnly:options.recoveryOnly===true,
+            previousTerminalRootOperationId:
+                options.recoverableRootStatus==='committed'
+                    ||options.recoverableRootStatus==='terminal_failure'
+                ? String(options.recoverableRootOperationId||'') : ''
+        } : null;
+        this._rewardRootAdmissionEnabled = !this._rewardRoot
+            || options.rewardRootAdmissionEnabled !== false;
         this._allowZeroSuspended = this.identity.source === 'stage_settlement'
             && options.settlementReport && typeof options.settlementReport === 'object'
             && !Array.isArray(options.settlementReport);
@@ -333,6 +441,69 @@
         this._emit();
     };
 
+    Coordinator.prototype._enterRewardRecovery = function(rootId,error) {
+        if (!this._rewardRoot||!opaque(rootId)) return false;
+        this._phase='reconcile_required';
+        this._pending=null;
+        this._unknown={kind:'rewardRoot',operationId:String(rootId),
+            error:String(error||'recovery_required')};
+        this._lastError=String(error||'recovery_required');
+        this._emit();
+        return true;
+    };
+
+    Coordinator.prototype._consumeRewardRoot = function(response,rootId) {
+        if (!this._rewardRoot) return null;
+        var root=normalizeRewardRoot(response,rootId);
+        if (!root) return null;
+        var projection=this._normalizeProjection(response);
+        if (projection&&!this._apply(projection)) return null;
+        this._pending=null;
+        this._rewardRoot.rootOperationId=root.rootOperationId;
+        this._rewardRoot.rootStatus=root.rootStatus;
+        this._rewardRoot.exact=clone(root);
+        this._lastError=root.error||rewardRootCapacityReason(root)||'';
+        if (root.rootStatus==='pending'||root.rootStatus==='quarantined') {
+            this._rewardRoot.recoveryRequired=true;
+            this._enterRewardRecovery(root.rootOperationId,
+                root.rootStatus==='quarantined'?'reward_root_quarantined':'recovery_required');
+            return {root:root,settled:false,success:false};
+        }
+        this._unknown=null;
+        if (root.rootStatus==='committed'||root.rootStatus==='terminal_failure') {
+            this._rewardRoot.previousTerminalRootOperationId=root.rootOperationId;
+            this._rewardRoot.recoveryRequired=true;
+        } else {
+            this._rewardRoot.recoveryRequired=false;
+        }
+        this._phase=this._projection
+            ? this._projection.state==='ACTIVE'?'active'
+                :this._projection.state==='SUSPENDED'?'suspended':'terminal'
+            :'reconcile_required';
+        this._emit();
+        if (root.rootStatus==='committed'||root.rootStatus==='terminal_failure')
+            this._ackRewardTerminal(root.rootOperationId);
+        return {root:root,settled:true,success:root.rootStatus==='committed'};
+    };
+
+    Coordinator.prototype._ackRewardTerminal = function(rootId) {
+        if (!this._rewardRoot||!opaque(rootId)||this._detached) return false;
+        var self=this,generation=this._generation;
+        return !!this._request('query',{
+            rootOperationId:rootId,
+            acknowledgeTerminalRootOperationId:rootId
+        },{kind:'rootAck',latestWins:true,operationId:rootId},function(response){
+            if(generation!==self._generation||self._detached)return;
+            var exact=normalizeRewardRoot(response,rootId);
+            if(exact&&(exact.rootStatus==='committed'
+                    ||exact.rootStatus==='terminal_failure')) {
+                self._rewardRoot.recoveryRequired=false;
+                self._rewardRoot.exact=clone(exact);
+                self._emit();
+            }
+        });
+    };
+
     Coordinator.prototype.open = function(callback) {
         if (this._phase !== 'idle') return false;
         this._phase = 'opening'; this._emit();
@@ -350,7 +521,9 @@
                 self._phase = 'reconcile_required';
                 self._lastError = response && response.error || 'malformed_response';
                 self._emit();
-            }
+            } else if (self._rewardRoot&&self._rewardRoot.recoveryRequired)
+                self._enterRewardRecovery(self._rewardRoot.rootOperationId,
+                    'recovery_required');
             if (typeof callback === 'function') callback(!!projection, response);
         });
         if (!callId) {
@@ -588,7 +761,8 @@
     };
 
     Coordinator.prototype.claim = function(slot, callback) {
-        if (this._phase !== 'active' || this._pending || !slot || !slot.occupied
+        if (!this._rewardRootAdmissionEnabled
+                || this._phase !== 'active' || this._pending || !slot || !slot.occupied
                 || !text(String(slot.slotLease || ''), 240)) return false;
         var revision = ++this._intentRevision;
         var opId = operationId('claim', this._operationNonce, revision);
@@ -605,17 +779,31 @@
             expectedContainerVersion:Number(this._projection.loot.containerVersion)
         };
         this._lastError = ''; this._emit();
-        var callId = this._request('claim', {
+        var claimPayload={
             operationId:opId,
             direction:'loot_to_player',
             source:this._sourceRef(slot),
             targetContainerId:'自动',
             expectedAuthorityRevision:this._projection.authorityRevision
-        }, {
+        };
+        if(this._rewardRoot)claimPayload.previousTerminalRootOperationId=
+            String(this._rewardRoot.previousTerminalRootOperationId||'');
+        var callId = this._request('claim', claimPayload, {
             kind:'write', singleFlight:true, write:true, operationId:opId,
             onIssued:function(entry) { if (self._pending) self._pending.callId = entry.callId; }
         }, function(response, entry) {
             if (generation !== self._generation || self._detached) return;
+            if (self._rewardRoot) {
+                var rootOutcome=response&&!response.clientSynthetic
+                    ?self._consumeRewardRoot(response,opId):null;
+                if(rootOutcome){
+                    if(typeof callback==='function')callback(rootOutcome.success,response);
+                    return;
+                }
+                self._markReconcile(entry,opId,response&&response.error||'malformed_response');
+                if(typeof callback==='function')callback(false,response);
+                return;
+            }
             var projection = self._normalizeProjection(response);
             var pending = self._pending || {};
             if (response && response.success === true && projection
@@ -652,7 +840,8 @@
     };
 
     Coordinator.prototype.claimBatch = function(slots, callback) {
-        if (this._phase!=='active'||this._pending||!this._projection
+        if (!this._rewardRootAdmissionEnabled
+                ||this._phase!=='active'||this._pending||!this._projection
                 ||!Array.isArray(slots)||slots.length<1||slots.length>50) return false;
         var physicalSlots=[],slotLeases=[],seen={};
         for (var i=0;i<slots.length;i++) {
@@ -677,15 +866,30 @@
             expectedContainerVersion:Number(this._projection.loot.containerVersion)
         };
         this._lastError='';this._emit();
-        var callId=this._request('claimBatch',{
-            operationId:opId,direction:'loot_to_player',sources:this._sourceRefs(slots),
+        var batchPayload={
+            operationId:opId,
+            direction:'loot_to_player',sources:this._sourceRefs(slots),
             targetContainerId:'自动',
             expectedAuthorityRevision:this._projection.authorityRevision
-        },{
+        };
+        if(this._rewardRoot)batchPayload.previousTerminalRootOperationId=
+            String(this._rewardRoot.previousTerminalRootOperationId||'');
+        var callId=this._request('claimBatch',batchPayload,{
             kind:'write',singleFlight:true,write:true,operationId:opId,
             onIssued:function(entry){if(self._pending)self._pending.callId=entry.callId;}
         },function(response,entry){
             if(generation!==self._generation||self._detached)return;
+            if(self._rewardRoot){
+                var rootOutcome=response&&!response.clientSynthetic
+                    ?self._consumeRewardRoot(response,opId):null;
+                if(rootOutcome){
+                    if(typeof callback==='function')callback(rootOutcome.success,response);
+                    return;
+                }
+                self._markReconcile(entry,opId,response&&response.error||'malformed_response');
+                if(typeof callback==='function')callback(false,response);
+                return;
+            }
             var projection=self._normalizeProjection(response),pending=self._pending||{};
             if(response&&response.success===true&&projection
                     &&self._claimBatchSuccessProvesAdvance(projection,pending,opId)
@@ -791,7 +995,37 @@
         return true;
     };
 
+    Coordinator.prototype._queryRewardRoot = function(callback) {
+        if(this._phase!=='reconcile_required'||this._pending||!this._rewardRoot)return false;
+        var unknown=clone(this._unknown||{});
+        var rootId=opaque(unknown.operationId)||opaque(this._rewardRoot.rootOperationId);
+        if(!rootId)return false;
+        var self=this,generation=this._generation;
+        this._pending={kind:'query',operationId:rootId,callId:''};
+        this._emit();
+        var callId=this._request('query',{rootOperationId:rootId},{kind:'query',
+            singleFlight:true,latestWins:true,operationId:rootId,
+            onIssued:function(entry){if(self._pending)self._pending.callId=entry.callId;}},
+        function(response){
+            if(generation!==self._generation||self._detached)return;
+            self._pending=null;
+            var outcome=response&&!response.clientSynthetic
+                ?self._consumeRewardRoot(response,rootId):null;
+            if(!outcome){
+                self._phase='reconcile_required';self._unknown=unknown;
+                self._lastError=response&&response.error||'reconcile_failed';self._emit();
+            }
+            if(typeof callback==='function')callback(!!outcome&&outcome.settled,response);
+        });
+        if(!callId){
+            this._pending=null;this._phase='reconcile_required';this._unknown=unknown;
+            this._lastError='disconnected';this._emit();return false;
+        }
+        return true;
+    };
+
     Coordinator.prototype.query = function(callback) {
+        if(this._rewardRoot)return this._queryRewardRoot(callback);
         if (this._phase !== 'reconcile_required' || this._pending) return false;
         var unknown = clone(this._unknown || {});
         var self = this, generation = this._generation;
@@ -904,6 +1138,8 @@
             terminal:this._projection && this._projection.terminal ? clone(this._projection.terminal) : null,
             pending:this._pending ? clone(this._pending) : null,
             unknown:this._unknown ? clone(this._unknown) : null,
+            rewardRoot:this._rewardRoot ? clone(this._rewardRoot) : null,
+            rewardRootAdmissionEnabled:this._rewardRootAdmissionEnabled,
             detached:this._detached
         };
     };
@@ -911,6 +1147,7 @@
     return {
         Coordinator:Coordinator,
         normalizeProjection:normalizeProjection,
+        normalizeRewardRoot:normalizeRewardRoot,
         normalizeWindow:normalizeWindow,
         normalizeSlot:normalizeSlot,
         ACTIVE_STATES:ACTIVE_STATES,

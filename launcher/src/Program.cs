@@ -1817,6 +1817,14 @@ class Program
         DollBakeTask dollBakeTask = new DollBakeTask(projectRoot, dollBakeService);
         ShopTask shopTask = new ShopTask(socketServer);
         InventoryTask inventoryTask = new InventoryTask(socketServer);
+        bool rewardRootAdmissionEnabled = !string.Equals(
+            Environment.GetEnvironmentVariable(
+                "CF7_REWARD_ROOT_ADMISSION"),
+            "0",
+            StringComparison.Ordinal);
+        LogManager.Log(
+            "event=reward_root_admission_policy enabled="
+            + (rewardRootAdmissionEnabled ? "true" : "false"));
         LootPanelCoordinator lootPanelCoordinator = new LootPanelCoordinator(
             new LootPanelHostPort(panelHost),
             delegate { return webOverlay.ReleaseLootPanelPause(); },
@@ -1824,7 +1832,9 @@ class Program
             delegate(LootPanelCoordinator.Binding binding, string reason)
             {
                 return webOverlay.TryRequestLootPanelRecovery(binding, reason);
-            });
+            },
+            rewardRootAdmissionEnabled:
+                rewardRootAdmissionEnabled);
         LootTask lootTask = new LootTask(socketServer, lootPanelCoordinator);
         lootPanelCoordinator.SetAdmissionLeaseFactory(
             lootTask.TryAcquirePanelAdmissionLease);

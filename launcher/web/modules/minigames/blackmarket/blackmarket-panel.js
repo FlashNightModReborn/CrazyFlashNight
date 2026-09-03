@@ -21,6 +21,10 @@ var BlackMarketPanel = (function() {
     var _closeTimer = null;
     var _openGeneration = 0;
     var _callSequence = 0;
+    // O1 软锁观测：默认关闭，只在 Host 明确下发 softlockObservation=true 时启动。
+    // 这条低频 timer 只上报脱敏只读 tuple，不包含 timeout/repair/retry/close 行为。
+    var _softlockObservationTimer = null;
+    var _softlockObservationSequence = 0;
     var _surfaceRenderer = null;
     var _surfaceMetrics = {};
     var _surfaceSnapshotKey = null;
@@ -51,7 +55,8 @@ var BlackMarketPanel = (function() {
         mode: "",
         source: "",
         shadowOnly: false,
-        debug: false
+        debug: false,
+        softlockObservation: false
     };
 
     if (typeof Panels !== "undefined") {
@@ -63,6 +68,9 @@ var BlackMarketPanel = (function() {
             onClose: cleanup,
             onForceClose: cleanup
         });
+    }
+    if (typeof window !== "undefined" && window.addEventListener) {
+        window.addEventListener("pagehide", clearSoftlockObservation);
     }
 
     function createDOM() {
@@ -111,6 +119,7 @@ var BlackMarketPanel = (function() {
         destroyInspectionCamera();
         _surfaceGeneration += 1;
         _callSequence = 0;
+        _softlockObservationSequence = 0;
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== "undefined" && PanelScale.attach
             ? PanelScale.attach(_scaleShell, DESIGN_WIDTH, DESIGN_HEIGHT) : null;
@@ -126,6 +135,7 @@ var BlackMarketPanel = (function() {
             render();
             notifyHost("open", sessionTelemetry());
             notifyHost("ready", sessionTelemetry());
+            startSoftlockObservation();
             notifyFx("fx-poweron");
         } catch (error) {
             if (!_panelOpen || generation !== _openGeneration) return;
@@ -1265,6 +1275,7 @@ var BlackMarketPanel = (function() {
 
     function cleanup() {
         clearCloseTimer();
+        clearSoftlockObservation();
         _openGeneration += 1;
         _surfaceGeneration += 1;
         _panelOpen = false;
@@ -1300,6 +1311,33 @@ var BlackMarketPanel = (function() {
     function clearCloseTimer() {
         if (_closeTimer !== null) clearTimeout(_closeTimer);
         _closeTimer = null;
+    }
+
+    function startSoftlockObservation() {
+        clearSoftlockObservation();
+        if (!_panelOpen || !_init || _init.softlockObservation !== true) return;
+        sendSoftlockObservation();
+        _softlockObservationTimer = setInterval(sendSoftlockObservation, 10000);
+    }
+
+    function clearSoftlockObservation() {
+        if (_softlockObservationTimer !== null) {
+            clearInterval(_softlockObservationTimer);
+        }
+        _softlockObservationTimer = null;
+    }
+
+    function sendSoftlockObservation() {
+        if (!_panelOpen || !_init || _init.softlockObservation !== true) return false;
+        _softlockObservationSequence += 1;
+        return notifyHost("heartbeat", {
+            panelInstanceId: _init.panelInstanceId || "",
+            documentGeneration: _openGeneration,
+            sequence: _softlockObservationSequence,
+            snapshotRevision: _snapshot && Number.isFinite(Number(_snapshot.revision))
+                ? Number(_snapshot.revision) : 0,
+            pending: _busy || _closePending || Object.keys(_tipRequests).length > 0
+        });
     }
 
     function notifyHost(kind, data) {
@@ -1387,6 +1425,7 @@ var BlackMarketPanel = (function() {
             source: typeof input.source === "string" ? input.source : DEFAULT_INIT.source,
             shadowOnly: input.shadowOnly === true,
             debug: input.debug === true,
+            softlockObservation: input.softlockObservation === true,
             panelInstanceId: typeof input.panelInstanceId === "string"
                 ? input.panelInstanceId : ""
         };

@@ -108,6 +108,11 @@ namespace CF7Launcher.Guardian
             public int Columns { get; set; }
             public string SourceKind { get; set; }
             public JObject SettlementReport { get; set; }
+            public string RecoverableRootOperationId { get; set; }
+            public string RecoverableRootStatus { get; set; }
+            public bool RecoveryRequired { get; set; }
+            public bool RecoveryOnly { get; set; }
+            public bool RewardRootAdmissionEnabled { get; set; }
         }
 
         public sealed class Binding
@@ -124,6 +129,12 @@ namespace CF7Launcher.Guardian
                 SourceKind = request.SourceKind;
                 SettlementReport = request.SettlementReport != null
                     ? (JObject)request.SettlementReport.DeepClone() : null;
+                RecoverableRootOperationId = request.RecoverableRootOperationId ?? "";
+                RecoverableRootStatus = request.RecoverableRootStatus ?? "not_started";
+                RecoveryRequired = request.RecoveryRequired;
+                RecoveryOnly = request.RecoveryOnly;
+                RewardRootAdmissionEnabled =
+                    request.RewardRootAdmissionEnabled;
                 PanelInstanceId = panelInstanceId;
             }
 
@@ -136,6 +147,11 @@ namespace CF7Launcher.Guardian
             public int Columns { get; private set; }
             public string SourceKind { get; private set; }
             public JObject SettlementReport { get; private set; }
+            public string RecoverableRootOperationId { get; private set; }
+            public string RecoverableRootStatus { get; private set; }
+            public bool RecoveryRequired { get; private set; }
+            public bool RecoveryOnly { get; private set; }
+            public bool RewardRootAdmissionEnabled { get; private set; }
             public string PanelInstanceId { get; private set; }
         }
 
@@ -148,6 +164,7 @@ namespace CF7Launcher.Guardian
         private readonly int _closeRetryDelayMs;
         private readonly int _closeRetryMaximumMs;
         private readonly int _pauseReleaseRetryMs;
+        private readonly bool _rewardRootAdmissionEnabled;
         private Func<IDisposable> _acquireAdmissionLease;
         private Func<bool> _externalAdmissionGate;
         private Func<Binding, bool> _rewardInboxReturnHandler;
@@ -182,7 +199,8 @@ namespace CF7Launcher.Guardian
             int bindWatchdogMs = DefaultBindWatchdogMs,
             int closeRetryDelayMs = DefaultCloseRetryDelayMs,
             int closeRetryMaximumMs = DefaultCloseRetryMaximumMs,
-            int pauseReleaseRetryMs = DefaultPauseReleaseRetryMs)
+            int pauseReleaseRetryMs = DefaultPauseReleaseRetryMs,
+            bool rewardRootAdmissionEnabled = true)
         {
             if (bindWatchdogMs <= 0) throw new ArgumentOutOfRangeException("bindWatchdogMs");
             if (closeRetryDelayMs <= 0) throw new ArgumentOutOfRangeException("closeRetryDelayMs");
@@ -203,6 +221,7 @@ namespace CF7Launcher.Guardian
             _closeRetryDelayMs = closeRetryDelayMs;
             _closeRetryMaximumMs = closeRetryMaximumMs;
             _pauseReleaseRetryMs = pauseReleaseRetryMs;
+            _rewardRootAdmissionEnabled = rewardRootAdmissionEnabled;
             _state = BindingState.Idle;
         }
 
@@ -377,6 +396,13 @@ namespace CF7Launcher.Guardian
             if (binding.SourceKind == RewardInboxSource)
             {
                 init["sourceKind"] = RewardInboxSource;
+                init["recoverableRootOperationId"] =
+                    binding.RecoverableRootOperationId;
+                init["recoverableRootStatus"] = binding.RecoverableRootStatus;
+                init["recoveryRequired"] = binding.RecoveryRequired;
+                init["recoveryOnly"] = binding.RecoveryOnly;
+                init["rootAdmissionEnabled"] =
+                    binding.RewardRootAdmissionEnabled;
             }
             else if (binding.SourceKind == StageSettlementSource)
             {
@@ -444,6 +470,8 @@ namespace CF7Launcher.Guardian
             {
                 return false;
             }
+            normalized.RewardRootAdmissionEnabled =
+                _rewardRootAdmissionEnabled;
             return TryOpen(normalized, out rejection);
         }
 
@@ -1635,7 +1663,8 @@ namespace CF7Launcher.Guardian
                     "sourceKind", "chestSessionId", "lootContainerId",
                     "containerEpoch", "openAttemptSeq", "displayName",
                     "authorityRevision", "state", "remainingCount",
-                    "capacity", "columns")
+                    "capacity", "columns", "recoverableRootOperationId",
+                    "recoverableRootStatus", "recoveryRequired", "recoveryOnly")
                 || authority.Value<string>("sourceKind") != RewardInboxSource
                 || authority.Value<string>("state") != "LOOT_ACTIVE")
             {
@@ -1650,6 +1679,10 @@ namespace CF7Launcher.Guardian
             string chestSessionId;
             string lootContainerId;
             string displayName;
+            string recoverableRootOperationId;
+            string recoverableRootStatus;
+            bool recoveryRequired;
+            bool recoveryOnly;
             if (!TryReadOpaque(
                     authority["chestSessionId"], out chestSessionId)
                 || !TryReadOpaque(
@@ -1668,13 +1701,27 @@ namespace CF7Launcher.Guardian
                     int.MaxValue,
                     out authorityRevision)
                 || !TryReadInteger(
-                    authority["remainingCount"], 1, 64, out remainingCount)
+                    authority["remainingCount"], 0, 64, out remainingCount)
                 || !TryReadInteger(
                     authority["capacity"], 1, 64, out capacity)
                 || remainingCount > capacity
                 || !TryReadInteger(
                     authority["columns"], 1, 8, out columns)
-                || columns != Math.Min(8, capacity))
+                || columns != Math.Min(8, capacity)
+                || !TryReadBoundedText(authority["recoverableRootOperationId"],
+                    MaximumOpaqueLength, true, out recoverableRootOperationId)
+                || !TryReadBoundedText(authority["recoverableRootStatus"],
+                    32, false, out recoverableRootStatus)
+                || !TryReadBoolean(authority["recoveryRequired"], out recoveryRequired)
+                || !TryReadBoolean(authority["recoveryOnly"], out recoveryOnly)
+                || !IsRewardRootStatus(recoverableRootStatus)
+                || (!string.IsNullOrEmpty(recoverableRootOperationId)
+                    && !IsOpaque(recoverableRootOperationId))
+                || recoveryOnly != (remainingCount == 0)
+                || recoveryOnly && !recoveryRequired
+                || recoveryRequired && string.IsNullOrEmpty(recoverableRootOperationId)
+                || string.IsNullOrEmpty(recoverableRootOperationId)
+                    != (recoverableRootStatus == "not_started"))
             {
                 return false;
             }
@@ -1688,10 +1735,20 @@ namespace CF7Launcher.Guardian
                 Capacity = capacity,
                 Columns = columns,
                 SourceKind = RewardInboxSource,
-                SettlementReport = null
+                SettlementReport = null,
+                RecoverableRootOperationId = recoverableRootOperationId,
+                RecoverableRootStatus = recoverableRootStatus,
+                RecoveryRequired = recoveryRequired,
+                RecoveryOnly = recoveryOnly
             };
             error = null;
             return true;
+        }
+
+        private static bool IsRewardRootStatus(string value)
+        {
+            return value == "not_started" || value == "pending" || value == "committed"
+                || value == "terminal_failure" || value == "quarantined";
         }
 
         private static bool TryNormalizeSettlementItemFlow(
@@ -1846,6 +1903,14 @@ namespace CF7Launcher.Guardian
                 return false;
             for (int i = 0; i < value.Length; i++)
                 if (char.IsControl(value[i])) return false;
+            return true;
+        }
+
+        private static bool TryReadBoolean(JToken token, out bool value)
+        {
+            value = false;
+            if (token == null || token.Type != JTokenType.Boolean) return false;
+            value = token.Value<bool>();
             return true;
         }
 

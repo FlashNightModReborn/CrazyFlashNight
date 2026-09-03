@@ -654,7 +654,10 @@ namespace CF7Launcher.Tests.Tasks
                 ["batchCount"] = batchCount,
                 ["remainingCount"] = remainingCount,
                 ["capacity"] = 64,
-                ["authorityRevision"] = authorityRevision
+                ["authorityRevision"] = authorityRevision,
+                ["recoverableRootOperationId"] = "",
+                ["recoverableRootStatus"] = "not_started",
+                ["recoveryRequired"] = false
             };
         }
 
@@ -672,7 +675,11 @@ namespace CF7Launcher.Tests.Tasks
                 ["state"] = "LOOT_ACTIVE",
                 ["remainingCount"] = 1,
                 ["capacity"] = 8,
-                ["columns"] = 8
+                ["columns"] = 8,
+                ["recoverableRootOperationId"] = "",
+                ["recoverableRootStatus"] = "not_started",
+                ["recoveryRequired"] = false,
+                ["recoveryOnly"] = false
             };
         }
     }

@@ -138,7 +138,7 @@ class org.flashNight.arki.item.ItemUseService {
             var receipt:Object = {operationId:operationId, kind:"open",
                 status:"committed", fingerprint:fingerprint, consumed:1,
                 remaining:remaining, rewardBatchId:String(batch.batchId),
-                rewardReady:RewardInboxService.inboxSummary().remainingCount > 0};
+                rewardReady:rewardSummaryReady(RewardInboxService.inboxSummary())};
             if (!RewardInboxService.recordReceipt(receipt)) throw "receipt_conflict";
             if (!flushSave()) throw "flush_failed";
             PlayerAssetTransaction.commit(transaction);
@@ -226,7 +226,7 @@ class org.flashNight.arki.item.ItemUseService {
         if (summary == null) return commonFailure("inboxSnapshot", params, "service_not_ready");
         var response:Object = common("inboxSnapshot", params, true, "");
         response.inboxSummary = summary;
-        response.rewardReady = Number(summary.remainingCount) > 0;
+        response.rewardReady = rewardSummaryReady(summary);
         response.rewardAuthority = response.rewardReady
             ? RewardInboxService.materializeAuthority() : null;
         return response;
@@ -275,6 +275,11 @@ class org.flashNight.arki.item.ItemUseService {
         }
         response.cooldownLanes = lanes;
         return response;
+    }
+
+    private static function rewardSummaryReady(summary:Object):Boolean {
+        return summary != null && (Number(summary.remainingCount) > 0
+            || summary.recoveryRequired === true);
     }
 
     private static function openSuccess(params:Object, receipt:Object):Object {

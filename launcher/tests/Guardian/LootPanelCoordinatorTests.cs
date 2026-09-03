@@ -198,7 +198,11 @@ namespace CF7Launcher.Tests.Guardian
                 ["state"] = "LOOT_ACTIVE",
                 ["remainingCount"] = 2,
                 ["capacity"] = 8,
-                ["columns"] = 8
+                ["columns"] = 8,
+                ["recoverableRootOperationId"] = "",
+                ["recoverableRootStatus"] = "not_started",
+                ["recoveryRequired"] = false,
+                ["recoveryOnly"] = false
             };
         }
 
@@ -207,11 +211,13 @@ namespace CF7Launcher.Tests.Guardian
             int bindWatchdogMs = LootPanelCoordinator.DefaultBindWatchdogMs,
             int closeRetryDelayMs = LootPanelCoordinator.DefaultCloseRetryDelayMs,
             int closeRetryMaximumMs = LootPanelCoordinator.DefaultCloseRetryMaximumMs,
-            int pauseReleaseRetryMs = LootPanelCoordinator.DefaultPauseReleaseRetryMs)
+            int pauseReleaseRetryMs = LootPanelCoordinator.DefaultPauseReleaseRetryMs,
+            bool rewardRootAdmissionEnabled = true)
         {
             return new LootPanelCoordinator(panel, release,
                 delegate { return "panel.loot.host.1"; }, recovery, bindWatchdogMs,
-                closeRetryDelayMs, closeRetryMaximumMs, pauseReleaseRetryMs);
+                closeRetryDelayMs, closeRetryMaximumMs, pauseReleaseRetryMs,
+                rewardRootAdmissionEnabled);
         }
 
         private static void WaitUntil(Func<bool> predicate, int timeoutMs = 1500)
@@ -267,12 +273,17 @@ namespace CF7Launcher.Tests.Guardian
                 LootPanelCoordinator.BindingState.OpenQueued,
                 coordinator.State);
             JObject init = JObject.Parse(panel.InitDataJson);
-            Assert.Equal(8, init.Count);
+            Assert.Equal(13, init.Count);
             Assert.Equal(1, init.Value<int>("v"));
             Assert.Equal(
                 "reward_inbox", init.Value<string>("sourceKind"));
             Assert.Equal(
                 "reward.chest.1", init.Value<string>("chestSessionId"));
+            Assert.Equal("", init.Value<string>("recoverableRootOperationId"));
+            Assert.Equal("not_started", init.Value<string>("recoverableRootStatus"));
+            Assert.False(init.Value<bool>("recoveryRequired"));
+            Assert.False(init.Value<bool>("recoveryOnly"));
+            Assert.True(init.Value<bool>("rootAdmissionEnabled"));
             Assert.Null(init["authorityRevision"]);
             Assert.Null(init["remainingCount"]);
 
@@ -282,6 +293,32 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(second.TryOpenRewardInbox(
                 malformed, out rejection));
             Assert.Equal("invalid_reward_authority", rejection);
+        }
+
+        [Fact]
+        public void RewardInbox_CompatDisabledPropagatesReadOnlyAdmissionPolicy()
+        {
+            var panel = new FakePanel();
+            using var coordinator = Create(
+                panel,
+                rewardRootAdmissionEnabled: false);
+
+            string rejection;
+            Assert.True(coordinator.TryOpenRewardInbox(
+                RewardAuthority(), out rejection));
+            Assert.Null(rejection);
+            JObject init = JObject.Parse(panel.InitDataJson);
+            Assert.False(init.Value<bool>("rootAdmissionEnabled"));
+
+            panel.CompleteOpenPosted();
+            LootPanelCoordinator.Binding binding;
+            Assert.True(coordinator.TryBindExact(
+                "panel.loot.host.1",
+                "reward.chest.1",
+                "reward.container.1",
+                3,
+                out binding));
+            Assert.False(binding.RewardRootAdmissionEnabled);
         }
 
         [Fact]

@@ -1,11 +1,11 @@
 # AS2 / WebPanel 止血治理：窗口生命周期、Reward 根事务与软锁归因 ADR
 
-- **文档角色**：跨 AS2 / C# Guardian / WebView2 / Web 的正式止血治理架构决策记录；冻结问题边界、最小架构差量、施工顺序、验证与回滚，并记录 W 的当前施工检查点。本文中的状态摘要不替代 exact candidate、测试输出或 runtime 共识收据。
-- **状态**：`W_HUMAN_ACCEPTANCE_PASSED / PROMOTED / FORMAL_BUSINESS_REVALIDATION_PENDING；A/S_SECOND_TRAIN_AUTHORIZED`
+- **文档角色**：跨 AS2 / C# Guardian / WebView2 / Web 的正式止血治理架构决策记录；冻结问题边界、最小架构差量、施工顺序、验证与回滚，并记录 W 与 A/S 两列车的当前施工检查点。本文中的状态摘要不替代 exact candidate、测试输出或 runtime 共识收据。
+- **状态**：`W_HUMAN_ACCEPTANCE_PASSED / PROMOTED / FORMAL_BUSINESS_REVALIDATION_PENDING；A/S_HUMAN_ACCEPTANCE_PASSED / RELEASE_AUTHORIZED / CANDIDATE_EXECUTED / NOT_COMMITTED / NOT_DEPLOYED`
 - **决策日期**：2026-09-01
 - **最后核对代码基线**：W release source `b2a70248eb6fae5dda843d2a7f7156a18b03ef7e`，tree `c35b896578a4b5f7b8751081a600ef374781b589`，deployment `a3b0b5f77027be295cf574c6751310f634067812`。W 开工 Checkpoint-0 `11376feb76116334c68c2cc8632f52650b194abe` / tree `bfbe61dce0ad42de77b5972af00a7893ed08b066` 与原始撰写基线 `dff0c4390b5788151f75954cde397d54fba54257` 只保留为设计考古。
-- **调度约束**：维护者已于 2026-09-02 在 exact candidate 上通过 H-W，W 的 immutable request、双故障域共识、promotion、部署与推送均已完成。现继续施工 A/A1 与 S/O1 到第二次真人验收点；第二列车只有在人类通过 H-A/H-S 后才允许提交与部署。
-- **当前实现状态**：W/B0 代码、focused/full Launcher 自动门、隔离候选执行、H-W、40/40 production policy、双 signer / 双 faultDomain 共识、严格 preflight、原子 promotion、worktree/index 正式根复验与 bootstrap `--verify-only` 均已完成；deployment 已推送，首次 post-promotion Audit run `33645182028` 通过并精确输出 `state=promoted`、`deploymentChanged=true`。部署后没有重跑正式入口 W 业务旅程，因此只称 `HUMAN_ACCEPTANCE_PASSED / promoted`，不称 W 专项 `standard_entry_verified`。
+- **调度约束**：维护者已于 2026-09-02 在 exact candidate 上通过 H-W，W 的 immutable request、双故障域共识、promotion、部署与推送均已完成。A/A1 与 S/O1 的第二次真人窗口已于 2026-09-03 分别通过 H-A 与 H-S，因而解锁第二列车的提交、immutable request、双故障域共识、promotion、部署与推送；发布链仍不得把候选人工证据写成正式入口复验。
+- **当前实现状态**：W/B0 代码、focused/full Launcher 自动门、隔离候选执行、H-W、40/40 production policy、双 signer / 双 faultDomain 共识、严格 preflight、原子 promotion、worktree/index 正式根复验与 bootstrap `--verify-only` 均已完成；deployment 已推送，首次 post-promotion Audit run `33645182028` 通过并精确输出 `state=promoted`、`deploymentChanged=true`。部署后没有重跑正式入口 W 业务旅程，因此只称 `HUMAN_ACCEPTANCE_PASSED / promoted`，不称 W 专项 `standard_entry_verified`。A/A1 与 S/O1 已在当前工作树完成实现、自动门与全新隔离候选执行；首次 H-A 暴露的“整理背包”缺口已修复，复验完成跨重启不重不丢、主动重开、整理后领取全部 remaining。O1 的主动观测取得 13 个同实例连续样本，其中第 2–13 个均为 exact AS2 tuple 且结论为 `no_outstanding_operation`，没有把无故障样本冒充故障 owner 归因。H-A/H-S 均为 `HUMAN_ACCEPTANCE_PASSED`，A/S 仍未提交、未进入 immutable request 或正式 runtime。
 
 > 自包含声明：本文不依赖任何 Chat 对话、分享链接、下载文件、模型原始回执或仓库外日志才能理解和执行。现场事实摘要、源码反证、决策、否决项、硬门与施工边界均写在本文中；进一步核查只需本文链接的仓库内源码和 canonical 文档。
 
@@ -657,6 +657,20 @@ W 实现与 H-W 先由 commit `28edc13560` 落盘；新机构建环境随后注�
 - 预先构建并验证 `A-compat-disabled` 回滚候选：拒绝新 root admission，但保留 v1 nested normalizer、opaque/quarantine、discovery、tombstone 和 exact query consumer。
 - rollback 前 active-root drain/quarantine 通过。
 
+2026-09-03 本地自动检查点：`scripts/run-map-loot-tests.ps1` 取得 fresh TestLoader trace **596/596**（Loot **205/205** + planner **9/9** + StageRunSession **382/382**）、Compiler **0/0**；正常 admission 的 fresh `scripts/asLoader.swf` 为 **1,231,365 bytes** / SHA-256 `A8BDA31A48719D345B43DFC61B93DE04E4697FF2F4CA59CD95E78E542AF85AA1`，函数 **10,900** 个、最大函数 **54,560B**，低于 60KiB 门。首次 H-A 修复后的 Loot state **69/69**、生产 Edge harness **102/102**、lazy cancel **6/6**，且真实应用内浏览器已定向通过“partial root + retained-slot lease 轮换仍显示整理背包”场景；blackmarket Node **25/25**、装备/检视 **44/44**、Panel contracts **68/68**、inventory lazy closure **28/28**、doll-bake **9/9** 与相关 final-state 门均通过。Loot Host focused 为 **138/138**；canonical Launcher 全量为 **4541 passed + 3 explicit opt-in skipped / 4544 total，0 fail**。
+
+`A-compat-disabled` 已作为忽略目录内的本地回滚检查点单独发布并反编译复验：`tmp/a1-compat-disabled-20260903/asLoader.compat-disabled.swf`，**1,231,364 bytes**，SHA-256 `0F2430FBDB744D7C660A0C9512F60D1A5E9885DA1C4EBEC818D56985D5CB5D3B`；其 AS2 常量精确为 `CLAIM_ROOT_ADMISSION_ENABLED=false`，仍保留 nested normalizer、opaque/quarantine、discovery、terminal tombstone 与 exact query。该文件不是待提交资产、不是已部署回滚，也不授权把 Host/Web 的 `CF7_REWARD_ROOT_ADMISSION=0` 单独冒充完整 AS2 admission 回滚。
+
+隔离候选 `tmp/runtime-candidates/v2/a1s-o1-0903` 随后完成 33-file integrity 校验并由 `automation/start.ps1 -CandidateRoot` 实际启动，达到 `candidate_executed / NOT_DEPLOYED`：build identity `52E765EF9A798086BF6561F7822586CA913E35175C7C09CEB3074288641B1A09`，payload closure `D7222B2E59281E8560C5028C4D989E9E7D441A57CF890592E289A1F1F9B05B26`，Core DLL SHA-256 `5572655444E9F9A926334DBB75B6C60B4DBEAF635C5408306FFE57A34462C196`。首次执行的实际 Core EXE 位于该候选 `runtime/`，PID `17884`、窗口标题“CF7:FlashNight — 隔离候选 / 未部署”、bus-ready；日志确认 `reward_root_admission_policy enabled=true`。本次进程只在启动环境中精确设置 `CF7_BLACKMARKET_SOFTLOCK_OBSERVATION=1`，Reward admission 环境覆盖未设置。
+
+首次 H-A 在上述候选上得到可复验失败：界面领取前为 11 项，根事务终态为 `committed / partial_applied / appliedCount=4 / stopReason=target_full`，持久化 applied 精确为复活币、强化石、战宠灵石、加强抗生素药剂，remaining 与 blocked 精确同为其余 7 项；关闭后存档和 exact terminal query 均保留该结果。因此 AS2 durable root 没有重放或丢失，产品失败是 Web 仍显示“全部收取”且未提供“整理背包”。根因是每个已提交 child 都会使 Reward authority 重投影并轮换 retained slot lease，而旧批领前端沿用普通 Loot 的“retained lease 必须不变”判断；合法 root 被当作无进展后又清空了 `target_full`。修复后 Host/Web 要求 capacity root 的 blocked entry ID 集与 remaining ID 集精确相等、错误仅为容量错误；Web 以 exact root tuple、applied/remaining delta 与物理槽占用投影裁决 Reward 结果，允许这种权威 lease 轮换，并保留容量原因及“整理背包”恢复动作。旧候选据此标记为 `H-A_FAILED / NOT_DEPLOYED`，不得复用为通过证据。
+
+修复后的全新隔离候选 `tmp/runtime-candidates/v2/a1s-o1-cta-fix-0903` 通过 33-file integrity 校验并实际启动：build identity `1E09139852A981BBDA4A99E65F4FCF5BDBDD71E44DDE39EE13FC5B71ABF29709`，payload closure `4558CD63B1977D6A7AFD5FAF674FC65461B5EABB21FCF151236F7CD076492AF4`，Core DLL SHA-256 `9D5239EADA553F7585CCE71654724E5653D28B6EE90801D1FD3FE3F1D50CAD23`。H-A 首段再次得到 `committed / partial_applied / appliedCount=4`，7 个 blocked entry 与 7 个 remaining entry exact-set 相等且全部为 `target_full`；界面这次正确显示“整理背包”。正常关闭后，同一 candidate/slot 重启仍精确保留这 7 项，维护者还从角色构筑右侧主动入口“待领取 7”重开领取页；整理腾位后 7 项全部收取，最终存档根终态为 `committed / all_applied / appliedCount=7`、remaining/blocked 均为空，未见重复、丢失或卡住。该候选因此达到 A 专项 `e2e_verified / HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`。
+
+同一修复候选在精确启用 `CF7_BLACKMARKET_SOFTLOCK_OBSERVATION=1` 后完成 H-S。一次正确 O1 进程内，blackmarket 同一 `panelInstanceId=panel_xasKpFNUhmc-xXPYsEZ6say_` 连续输出 `web_sequence=1..13`；首个探针发出时 AS2 tuple 尚为 `missing`，第 2–13 个样本均为 `as2_tuple=exact`、`pause_owner=webpanel`、`scene_owner=base_scene`，AS2 frame sequence 从 `1090` 单调推进至 `4370`，`web_pending=false`、`web_ready=true`、`socket_ready=true`、`business_outstanding=0`，结论均为 `no_outstanding_operation`。期间维护者实际游玩两轮且未卡住；此前未继承 O1 环境的两轮没有观测心跳，按合同排除而不补猜。H-S 因而通过的是“本轮未发生 outstanding operation/软锁”的合法结论，不识别也不声称某个故障 owner。
+
+正式 Core DLL 此时仍为 `3B346B9818FFACC536B250BC2CB41D9FD67FE19B8D74CD82DF2527430226A361`，没有被候选覆盖。H-A/H-S 已解锁提交和正式发布链，但上述候选与人工证据本身仍不构成 immutable request、quorum、promotion 或正式入口复验。
+
 若 C# runtime 字节进入正式 runtime，继续遵守 [runtime build reproducibility](../docs/runtime-build-reproducibility.md) 的 immutable request、双 signer、双 faultDomain、相同 identity/closure、production policy、原子 promotion 与 post-promotion audit。该链不代签 A 的 AS2 业务正确性。
 
 ### 8.5 一次物理 Windows/Flash 人类窗口，三项分别裁决
@@ -675,12 +689,25 @@ W 实现与 H-W 先由 commit `28edc13560` 落盘；新机构建环境随后注�
 - 正常关闭/重启并重开领取界面，已领取项不重复、未领取项不丢失，剩余数量与可见列表一致；
 - 腾出空间后能够继续领取 remaining entry，流程没有永久 loading、错误禁用或必须理解内部 root ID 才能恢复的交互。
 
+H-A 的人工布置固定使用可丢弃槽 `cf7_agent_reward_root_acceptance_v1`，不得改写玩家现役槽。先运行：
+
+```powershell
+node tools/prepare-loot-target-full-save.js --seed-slot crazyflasher7_saves --slot cf7_agent_reward_root_acceptance_v1 --fixture reward-root-partial-v1
+node tools/prepare-loot-target-full-save.js --slot cf7_agent_reward_root_acceptance_v1 --fixture reward-root-partial-v1 --verify-only
+```
+
+生成器只读复制 seed，先备份并清理该 target 自己的旧 JSON / tombstone / SOL，将隔离角色显示名改为 `A1奖励根事务验收档`，再把背包 0–49 填满、将 49 槽替换为唯一的固定配方“感恩节礼包”，并把 target 的 `ext.rewardInbox` 重置为 canonical empty v1；seed 必须逐字节不变。进入该槽后打开礼包会先消费礼包并恰好腾出一格，再建立 11 项确定性 Reward，因而“一键领取”应稳定形成可辨认的 `partial_applied`。真人随后按上述三条观察、正常退出并以同一 candidate / target 重启，最后在同一 Loot 整理子页腾出空间继续领取。该 fixture 只降低布置成本，不代签 H-A 的中文结果、跨重启读回与交互感知。
+
+2026-09-03 首次 H-A 已按该 fixture 执行并因容量受限后缺少“整理背包”入口判定失败；其 4 项 applied / 7 项 remaining 存档作为失败证据保留在 target 备份中。全新修复候选随后完成全部复验：重新生成 target 后先形成 4 applied / 7 remaining 并正确显示“整理背包”，正常关闭及同 candidate/slot 重启后仍为 exact 7，角色构筑右侧“待领取 7”可主动重开，整理腾位后 7 项全部领取；最终 terminal 为 `all_applied / appliedCount=7` 且 remaining/blocked 为空。维护者确认“正常安全，整理后都能收取”，H-A 裁决为 `HUMAN_ACCEPTANCE_PASSED`。
+
 fault cut、exact query、ledger 和 `appliedCount` 对账属于 C-A 自动化门，不要求真人逐字核验内部协议状态。
 
 **H-S**：
 
 - 候选携带 O1 时主动复现一次 blackmarket 卡住；
 - 按 §6.1 输出四种合法结论之一，并让日志能够解释该结论；`inconclusive` 不冒充归因通过，只按 §6.3 保留一次定向补采资格。
+
+2026-09-03 的正确 O1 进程在同一 blackmarket 实例取得 13 个连续样本；第 2–13 个 exact tuple 中 Web、socket、AS2 frame 均持续推进，业务未决数始终为 0，全部合法落到 `no_outstanding_operation`。维护者实际游玩两轮且未卡住，H-S 裁决为 `HUMAN_ACCEPTANCE_PASSED`；该结论只说明本轮没有可归因软锁，不把正常样本伪造为 Web/Host/socket/AS2 任一层故障。
 
 三项可同场执行，但结果不得合并成一个 pass。A 失败不能抹掉已经通过的 W，W 失败也不能推翻 A 的持久化证据。
 
@@ -802,18 +829,18 @@ O1 可在 first stalled owner 确认后单独删除或默认关闭，不影响 W
 
 ## 12. 当前状态与冻结流程
 
-| 项目 | 当前状态（2026-09-02） | 下一自然动作 |
+| 项目 | 当前状态（2026-09-03） | 下一自然动作 |
 |---|---|---|
 | ADR 内容 | W 设计保持 `APPROVED / DESIGN_FROZEN`；本轮未扩张为 B1 framework | H-W 反馈若要求范围变化，先修订 ADR |
 | Checkpoint-0 | clean commit `11376feb...` / tree `bfbe61dc...`，baseline Launcher **4509+3/4512** | 已关闭 |
 | G0-W | valid / explicit-invalid / unavailable、pre-pause admission、committed snapshot、same-rect replay 已冻结并实现 | 只允许 H-W 发现的窄修正 |
-| G0-A/G0-S | 未启动；A/S production files 零修改；W 发布后第二列车已获授权 | W promotion/push 后继续施工到 H-A/H-S |
+| G0-A/G0-S | A/A1 durable root、exact query、capacity recovery 与 S/O1 只读观测均已实现；未扩张为通用 workflow/watchdog | 进入已授权的第二列车发布链 |
 | W 实现 | `PanelHostController`、`WebOverlayForm`、Router pause owner 与 tests 已完成；无 AS2/SWF 变更 | 等待 H-W |
 | 自动测试 | focused **266/266**；full SDK resolver **7/7**、Launcher **4516+3/4519** | H-W 若触发代码迭代则重跑 affected + full |
 | 隔离候选 | `candidate_executed / NOT_DEPLOYED`；identity `7BD7...972D`、closure `F59D...D331`、Core `82C9...2BAB` | 已完成 W 候选职责 |
-| 人类验收 | H-W 已由维护者回复“有效”，状态 `HUMAN_ACCEPTANCE_PASSED`；H-A/H-S 留给第二列车 | W 发布后实施 A/S，再等待第二次人类裁决 |
-| runtime 发布 | W release 正在配置本地 builder/GitHub 环境；尚未提交、建 request、取得共识或 promotion；正式 Core 未变 | 完整执行 v2 source/tag/request/local+cloud/policy/promotion/push/audit |
-| asLoader | W 不涉及，未编译、未改写、未发布 | 无动作 |
+| 人类验收 | H-W、H-A、H-S 已分别裁决 `HUMAN_ACCEPTANCE_PASSED`；H-S 的合法结论为 `no_outstanding_operation` | 发布后只在明确需要时补正式入口业务 smoke |
+| runtime 发布 | W 已完成 promotion/push/audit；A/S 已获发布授权但尚未提交、建 request、取得共识或 promotion，正式 Core 未变 | 完整执行 v2 source/tag/request/local+cloud/policy/promotion/push/audit |
+| asLoader | A/S fresh publish 已完成；`scripts/asLoader.swf` 为 1,231,365 bytes、SHA-256 `A8BDA31A...5AA1`，Compiler 0/0 | 随 A/S source commit 推送，不把 SWF freshness 冒充 runtime promotion |
 
 本次冻结使用的全中文提交标题：
 

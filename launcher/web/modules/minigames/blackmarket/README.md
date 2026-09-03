@@ -1,6 +1,6 @@
 # 黑市匿名影子版与独立目录开发测试
 
-**状态**：`SHADOW_MINIGAME_V1 / PRIVACY_HARDENING_PROMOTED / ANONYMOUS_PRODUCT_FIXTURE / EXACT_ORACLE_NODE_ONLY / NOT_PRODUCTION_STATEFUL / NOT_E2E_VERIFIED`
+**状态**：`SHADOW_MINIGAME_V1 / PRIVACY_HARDENING_PROMOTED / ANONYMOUS_PRODUCT_FIXTURE / EXACT_ORACLE_NODE_ONLY / O1_OBSERVATION_CANDIDATE_ONLY / NOT_PRODUCTION_STATEFUL / NOT_E2E_VERIFIED`
 
 2026-08-23 的匿名产品夹具、Node-only exact oracle 隔离与双币种账本修复已随 release source `416c4441947d40bc27ae3854178e87e2c5cf1ac9` 和 deployment `df060eac491c7251b261a3f5626960a8ea18911a` 进入正式 runtime；post-promotion audit run `32644777181` 已确认 `state=promoted / deploymentChanged=true`。
 这只证明隐私加固字节已部署，不表示黑市生产经济、存档、掉落、NPC 入口、真实目录鉴定信号、物理 WebView2 或业务 E2E 已实现。普通安全表面继续是明确的匿名 shadow 降级。
@@ -56,6 +56,12 @@ name/instance；确认在 3 秒内丢失时 Web 只解除 pending 以允许重�
 解锁 replacement。迟到实例 A 的 close 不能关闭 replacement B。该约束不改变 `dev + shadowOnly`、
 匿名表面、影子余额或 `productionWrites=false`。
 
+### O1 软锁观测（临时候选能力）
+
+仅当进程环境 `CF7_BLACKMARKET_SOFTLOCK_OBSERVATION` **精确等于** `1` 时，Host 才在 initData 中下发 `softlockObservation:true`；heartbeat 的 Host 接收入口还会再次检查同一精确开关，`0`、`true`、空值或其他字符串都保持关闭。Web 在打开/重绑后立即发送一次 heartbeat，随后每 10 秒发送 `{panelInstanceId,documentGeneration,sequence,snapshotRevision,pending}`；close、force-close、rebind、pagehide 均清 timer。
+
+Host 只接受当前 blackmarket exact instance、递增 sequence 与有界整数，按真实 Web 文档生命周期最多记录 64 条 `event=blackmarket_softlock_observation`。每个 heartbeat 至多维持一个 observation-only AS2 probe，用现有 socket generation 读取 `businessOwner/pauseOwner/sceneOwner/frameSequence`，并同时记录 Web pending、Host route outstanding 与 socket ready。探针没有业务写、timeout、retry、watchdog、自动关闭或修复能力；目前机器只能安全输出 `no_outstanding_operation` 或 `inconclusive`，主动复现时再按止血治理 ADR 结合现场日志裁决四种合法结论之一。该能力默认关闭、未进入正式 runtime，不能拿 heartbeat 存活或沉默单独推断卡顿 owner。
+
 P2 演出钩子：面板通过 `minigame_session` 的 `kind="fx"` 上报机器演出时刻（`fx` 字段取值
 `fx-poweron / fx-select / fx-reveal-profit / fx-reveal-loss / fx-error / fx-scan-open /
 fx-scan-rotate / fx-drain`），供 Host 或未来音效系统消费；纯通知、无状态依赖，Host 缺席即 no-op。
@@ -79,7 +85,7 @@ node launcher/tools/validate-minigame-final-state.js
 node tools/test-panel-contracts.js
 ```
 
-当前 Node 逻辑门为 22/22：其中 `bm22` 锁定产品 core 拒绝 exact catalog，并证明所有公开 `category/subclass/counterPrice` 三元组在真实目录中命中 0 项；`bm20` 锁定 K 提取/回售双币种账本；`bm21` 用只存在于 CommonJS 的私有熵注入 seam 证明调用方 seed 不能重放产品状态。装备/检视专项当前为 44/44，并锁定旧 marker 预置后浏览器产品 core 仍无 exact API、普通 lazy closure 不含 exact/dressup 依赖、Web 根没有 exact catalog/oracle 文件，且两个历史 HTTP 路径均返回 404。
+当前 Node 逻辑门为 25/25：其中 `bm22` 锁定产品 core 拒绝 exact catalog，并证明所有公开 `category/subclass/counterPrice` 三元组在真实目录中命中 0 项；`bm20` 锁定 K 提取/回售双币种账本；`bm21` 用只存在于 CommonJS 的私有熵注入 seam 证明调用方 seed 不能重放产品状态；新增用例锁定 O1 默认关闭、精确启用、立即/10 秒 heartbeat 与 cleanup。装备/检视专项当前为 44/44，并锁定旧 marker 预置后浏览器产品 core 仍无 exact API、普通 lazy closure 不含 exact/dressup 依赖、Web 根没有 exact catalog/oracle 文件，且两个历史 HTTP 路径均返回 404。
 
 浏览器 harness 现有 8 个场景：匿名三舱、DOM/新请求与历史 URL 负例、购买回售、旧 marker/capability 失效、固定布局、匿名放大检视、PanelScale，以及 close acknowledgment 丢失后保持打开并以同一 exact instance 重试。浏览器用例已编写不等于物理 WebView2 已执行；Node 门不代替像素观感、正式 runtime 或业务 E2E。
 

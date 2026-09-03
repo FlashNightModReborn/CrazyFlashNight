@@ -24,6 +24,10 @@
         lastAppliedOperationId:true, state:true, remainingCount:true, closeLease:true,
         snapshots:true, tooltip:true, materials:true, terminal:true
     };
+    var REWARD_ROOT_RESPONSE_KEYS = Object.assign({}, RESPONSE_KEYS, {
+        rootOperationId:true, rootStatus:true, resultKind:true, result:true,
+        appliedCount:true, stopReason:true
+    });
 
     function hasExactKeys(value, expected) {
         if (!value || typeof value !== 'object') return false;
@@ -114,7 +118,11 @@
                 return copyFields(message, context.payload);
             },
             validateResponse:function(data, entry) {
-                return hasExactKeys(data, RESPONSE_KEYS)
+                var rewardRoot = identity.source === 'reward_inbox'
+                    && (entry.cmd === 'claim' || entry.cmd === 'claimBatch'
+                        || entry.cmd === 'query');
+                return hasExactKeys(data, rewardRoot
+                        ? REWARD_ROOT_RESPONSE_KEYS : RESPONSE_KEYS)
                     && data.type === 'panel_resp' && data.task === 'loot_response'
                     && data.domain === 'loot'
                     && data.panel === 'loot'
@@ -122,7 +130,7 @@
                     && sameResponseIdentity(data, identity);
             },
             createSynthetic:function(context) {
-                return {
+                var response = {
                     type:'panel_resp', task:'loot_response', domain:'loot', panel:'loot', v:2,
                     cmd:context.entry.cmd, callId:context.entry.callId,
                     panelInstanceId:identity.panelInstanceId,
@@ -135,6 +143,7 @@
                     lastAppliedOperationId:'',
                     state:'',
                     remainingCount:0,
+                    closeLease:'',
                     snapshots:[],
                     tooltip:null,
                     materials:null,
@@ -143,6 +152,18 @@
                     requiresReconcile:context.entry.write === true,
                     operationId:context.entry.metadata.operationId || ''
                 };
+                if (identity.source === 'reward_inbox'
+                        && (context.entry.cmd === 'claim'
+                            || context.entry.cmd === 'claimBatch'
+                            || context.entry.cmd === 'query')) {
+                    response.rootOperationId=context.entry.metadata.operationId||'';
+                    response.rootStatus='not_started';
+                    response.resultKind='none';
+                    response.result={appliedEntryIds:[],blockedEntries:[],remainingEntryIds:[]};
+                    response.appliedCount=0;
+                    response.stopReason='';
+                }
+                return response;
             },
             onProtocolError:options.onProtocolError
         });

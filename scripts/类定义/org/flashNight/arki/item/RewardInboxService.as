@@ -10,7 +10,9 @@ import org.flashNight.gesh.object.ObjectUtil;
 class org.flashNight.arki.item.RewardInboxService {
     public static var VERSION:Number = 1;
     public static var MAX_OCCURRENCES:Number = 64;
+    public static var CLAIM_ROOT_ADMISSION_ENABLED:Boolean = true;
     private static var MAX_RECEIPTS:Number = 128;
+    private static var CLAIM_ROOT_SCHEMA_VERSION:Number = 1;
     private static var ACTIVE:String = "LOOT_ACTIVE";
     private static var PENDING:String = "LOOT_COMMIT_PENDING";
     private static var SUSPENDED:String = "LOOT_SUSPENDED";
@@ -22,6 +24,9 @@ class org.flashNight.arki.item.RewardInboxService {
     private static var _standardLaneBusyProbe:Function = null;
     private static var _supplySessionToken:String = null;
     private static var _supplyTokenGeneration:Number = 0;
+    private static var _rootPersistPending:Boolean = false;
+    private static var _rootPersistPendingId:String = "";
+    private static var _rootPersistVisibleBefore:Object = null;
 
     /**
      * 由 LootContainerService 安装的只读探针。保持依赖单向，避免 AS2 编译器在
@@ -36,6 +41,9 @@ class org.flashNight.arki.item.RewardInboxService {
         _authority = null;
         _snapshotSeq = 0;
         _leaseSeq = 0;
+        _rootPersistPending = false;
+        _rootPersistPendingId = "";
+        _rootPersistVisibleBefore = null;
     }
 
     /** 时间线只获得这个窄 facade，不允许自行拼待领取批次或存档事务。 */
@@ -110,6 +118,9 @@ class org.flashNight.arki.item.RewardInboxService {
         }
         var feature:Object = ensureFeature();
         if (feature == null) return {success:false, error:"service_not_ready"};
+        if (inspectRootLane(feature).quarantined === true) {
+            return {success:false, error:"reward_lane_quarantined"};
+        }
         var sessionPrefix:String = supplySessionPrefix();
         var deliveryKey:String = sessionPrefix + sourceKey;
         if (containsString(feature.supplyKeys, deliveryKey)) {
@@ -172,26 +183,28 @@ class org.flashNight.arki.item.RewardInboxService {
 
         var grenade:Object = mydata.inventory.装备栏.手雷;
         if (grenade == null || typeof grenade.name != "string") {
-            return {ok:true, changed:changed};
+            return normalizedResult(normalized, changed);
         }
         var itemName:String = String(grenade.name);
         if (isLegacyTombstone(itemName)) {
             delete mydata.inventory.装备栏.手雷;
-            return {ok:true, changed:true};
+            return normalizedResult(normalized, true);
         }
-        if (!isLegacyCarrier(itemName)) return {ok:true, changed:changed};
+        if (!isLegacyCarrier(itemName)) return normalizedResult(normalized, changed);
         var quantity:Number = Number(grenade.value);
         if (!positiveWhole(quantity)) {
             delete mydata.inventory.装备栏.手雷;
-            return {ok:true, changed:true};
+            return normalizedResult(normalized, true);
         }
 
         var migrationKey:String = "legacy_grenade_slot_recovery";
         if (!containsString(normalized.feature.migrations, migrationKey)) {
             if (remainingCount(normalized.feature) >= MAX_OCCURRENCES) {
                 // 禁止截断或丢弃旧槽资产。
-                return {ok:true, changed:changed, deferred:true,
-                    error:"reward_inbox_full"};
+                var deferred:Object = normalizedResult(normalized, changed);
+                deferred.deferred = true;
+                deferred.error = "reward_inbox_full";
+                return deferred;
             }
             var batchId:String = nextBatchId(normalized.feature, "legacy");
             normalized.feature.batches.push({
@@ -207,7 +220,15 @@ class org.flashNight.arki.item.RewardInboxService {
         }
         // 只有批次已存在/已创建时才清理旧槽。
         delete mydata.inventory.装备栏.手雷;
-        return {ok:true, changed:true};
+        return normalizedResult(normalized, true);
+    }
+
+    /** nested future/malformed root 只隔离 Reward lane，并把诊断传给存档调用方。 */
+    private static function normalizedResult(normalized:Object,
+                                             changed:Boolean):Object {
+        return {ok:true, changed:changed,
+            quarantined:normalized != null && normalized.quarantined === true,
+            diagnostic:normalized == null ? "" : String(normalized.diagnostic || "")};
     }
 
     public static function ensureFeature():Object {
@@ -223,6 +244,7 @@ class org.flashNight.arki.item.RewardInboxService {
     public static function canAppendOccurrenceCount(count:Number):Boolean {
         var feature:Object = ensureFeature();
         return nonNegativeWhole(count) && feature != null
+            && inspectRootLane(feature).quarantined !== true
             && remainingCount(feature) + count <= MAX_OCCURRENCES;
     }
 
@@ -232,6 +254,9 @@ class org.flashNight.arki.item.RewardInboxService {
                                              rolledEntries:Array):Object {
         var feature:Object = ensureFeature();
         if (feature == null) return {success:false, error:"service_not_ready"};
+        if (inspectRootLane(feature).quarantined === true) {
+            return {success:false, error:"reward_lane_quarantined"};
+        }
         if (!(rolledEntries instanceof Array)
                 || rolledEntries.length > MAX_OCCURRENCES
                 || !canAppendOccurrenceCount(rolledEntries.length)) {
@@ -262,6 +287,7 @@ class org.flashNight.arki.item.RewardInboxService {
     public static function recordReceipt(receipt:Object):Boolean {
         var feature:Object = ensureFeature();
         if (feature == null || receipt == null
+                || inspectRootLane(feature).quarantined === true
                 || typeof receipt.operationId != "string"
                 || findReceipt(feature, String(receipt.operationId)) != null) return false;
         feature.receipts.push(receipt);
@@ -276,10 +302,15 @@ class org.flashNight.arki.item.RewardInboxService {
 
     public static function inboxSummary():Object {
         var feature:Object = ensureFeature();
-        return feature == null ? null : {v:VERSION,
+        if (feature == null) return null;
+        var discovery:Object = rootDiscovery(feature);
+        return {v:VERSION,
             batchCount:pendingBatchCount(feature),
             remainingCount:remainingCount(feature), capacity:MAX_OCCURRENCES,
-            authorityRevision:Number(feature.authorityRevision)};
+            authorityRevision:Number(feature.authorityRevision),
+            recoverableRootOperationId:String(discovery.rootOperationId),
+            recoverableRootStatus:String(discovery.rootStatus),
+            recoveryRequired:discovery.recoveryRequired === true};
     }
 
     public static function hasActiveAuthority():Boolean {
@@ -291,6 +322,7 @@ class org.flashNight.arki.item.RewardInboxService {
     public static function materializeAuthority():Object {
         var feature:Object = ensureFeature();
         if (feature == null) return null;
+        var discovery:Object = rootDiscovery(feature);
         // Character Build 的待领取角标会预先物化一次 authority，但此时 Loot
         // 尚未读取 snapshot。若玩家随后继续开礼包，持久 ledger 已扩张，旧的
         // 未打开 authority 不能继续返回，否则 summary 与 authority.remainingCount
@@ -306,7 +338,7 @@ class org.flashNight.arki.item.RewardInboxService {
                 && !continuePendingCommit(_authority)) return null;
         if (_authority != null && _authority.pendingPersist != null
                 && !finishPendingPersist(_authority)) return null;
-        if (remainingCount(feature) <= 0) return null;
+        if (remainingCount(feature) <= 0 && discovery.recoveryRequired !== true) return null;
         if (standardLaneBusy()) return null;
         if (_authority != null && _authority.state == ACTIVE) {
             return authorityProjection(_authority);
@@ -321,15 +353,18 @@ class org.flashNight.arki.item.RewardInboxService {
             for (var e:Number = 0; e < batch.entries.length; e++) {
                 var entry:Object = batch.entries[e];
                 if (entry == null || !positiveWhole(Number(entry.remaining))) continue;
-                var item:Object = BaseItem.create(String(entry.itemName),
-                    Number(entry.remaining), new Date().getTime());
+                var frozen:Object = findFrozenRootEntry(feature, String(entry.entryId));
+                var item:Object = frozen != null && frozen.itemData != null
+                    ? BaseItem.createFromObject(ObjectUtil.clone(frozen.itemData))
+                    : BaseItem.create(String(entry.itemName),
+                        Number(entry.remaining), new Date().getTime());
                 if (item == null) continue;
                 items[String(slot)] = item.toObject();
                 mappings[slot] = {batch:batch, entry:entry};
                 slot++;
             }
         }
-        if (slot <= 0) return null;
+        if (slot <= 0 && discovery.recoveryRequired !== true) return null;
         var capacity:Number = Math.max(8, slot);
         if (capacity > MAX_OCCURRENCES) capacity = MAX_OCCURRENCES;
         _authoritySeq++;
@@ -343,7 +378,8 @@ class org.flashNight.arki.item.RewardInboxService {
             state:ACTIVE, reason:"", inventory:new ArrayInventory(items, capacity),
             mappings:mappings, operations:{}, pendingCommit:null,
             pendingPersist:null,
-            leases:[], leaseRefs:[], leaseVersions:[], leaseSignatures:[]};
+            leases:[], leaseRefs:[], leaseVersions:[], leaseSignatures:[],
+            recoveryOnly:slot <= 0};
         return authorityProjection(_authority);
     }
 
@@ -356,17 +392,25 @@ class org.flashNight.arki.item.RewardInboxService {
         if (record == null) return emptyFailure(params, "authority_unavailable");
         if (!sameIdentity(record, params)) return emptyFailure(params, "invalid_identity");
         if (record.pendingCommit != null && !continuePendingCommit(record)) {
-            return failureFor(record, "commit_pending");
+            return commandName == "claim" || commandName == "claimBatch"
+                    || commandName == "query"
+                ? durableFailureFor(record, durableRequestRootId(commandName, params),
+                    "commit_pending")
+                : failureFor(record, "commit_pending");
         }
         if (record.pendingPersist != null && !finishPendingPersist(record)) {
-            return failureFor(record, "commit_pending");
+            return commandName == "claim" || commandName == "claimBatch"
+                    || commandName == "query"
+                ? durableFailureFor(record, durableRequestRootId(commandName, params),
+                    "commit_pending")
+                : failureFor(record, "commit_pending");
         }
         if (commandName == "snapshot") return executeSnapshot(record, params);
         if (commandName == "tooltip") return executeTooltip(record, params);
-        if (commandName == "claim") return executeClaim(record, params);
-        if (commandName == "claimBatch") return executeClaimBatch(record, params);
+        if (commandName == "claim") return executeDurableClaim(record, params, false);
+        if (commandName == "claimBatch") return executeDurableClaim(record, params, true);
         if (commandName == "close") return executeClose(record, params);
-        if (commandName == "query") return executeQuery(record);
+        if (commandName == "query") return executeDurableQuery(record, params);
         return failureFor(record, "unsupported_cmd");
     }
 
@@ -411,6 +455,739 @@ class org.flashNight.arki.item.RewardInboxService {
         var response:Object = recordResponse(record, true, "");
         response.tooltip = tooltip;
         return response;
+    }
+
+    /** Reward claim/claimBatch 的单 durable root 入口。 */
+    private static function executeDurableClaim(record:Object, params:Object,
+                                                batch:Boolean):Object {
+        var feature:Object = ensureFeature();
+        var requestedRootId:String = validOperationId(params.operationId)
+            ? String(params.operationId) : "";
+        if (feature == null) return durableFailureFor(record, requestedRootId,
+            "service_not_ready");
+        var lane:Object = inspectRootLane(feature);
+        if (lane.quarantined === true) {
+            return quarantinedLaneResponse(record, feature, String(lane.error));
+        }
+        var operationId:String = validOperationId(params.operationId)
+                && String(params.operationId).length <= 72
+            ? String(params.operationId) : "";
+        if (operationId == "") return durableFailureFor(record, "",
+            "invalid_operation_id");
+        if (!hasOwnField(params, "previousTerminalRootOperationId")
+                || typeof params.previousTerminalRootOperationId != "string"
+                || String(params.previousTerminalRootOperationId).length > 72
+                || (String(params.previousTerminalRootOperationId) != ""
+                    && !validOperationId(String(params.previousTerminalRootOperationId)))) {
+            return durableFailureFor(record, operationId, "invalid_payload");
+        }
+        var predecessor:String = String(params.previousTerminalRootOperationId);
+        var active:Object = feature.activeClaimRoot;
+        var terminal:Object = feature.claimRootTerminal;
+        var commandKind:String = batch ? "claimBatch" : "claim";
+
+        if (active != null) {
+            if (String(active.rootOperationId) != operationId) {
+                return exactRootResponse(record, visibleActiveRoot(feature), false,
+                    "active_root_conflict", false);
+            }
+            var duplicateFingerprint:String = fingerprintExistingRequest(
+                record, params, batch, active);
+            if (String(active.commandKind) != commandKind
+                    || predecessor != String(active.previousTerminalRootOperationId)
+                    || duplicateFingerprint == ""
+                    || duplicateFingerprint != String(active.requestFingerprint)) {
+                return exactRootResponse(record, visibleActiveRoot(feature), false,
+                    "operation_conflict", false);
+            }
+            advanceActiveRoot(record, feature);
+            var duplicateCurrent:Object = feature.activeClaimRoot != null
+                ? visibleActiveRoot(feature) : feature.claimRootTerminal;
+            var duplicatePending:Boolean = duplicateCurrent != null
+                && duplicateCurrent.rootStatus == "pending";
+            return exactRootResponse(record, duplicateCurrent,
+                duplicateCurrent != null && duplicateCurrent.rootStatus == "committed",
+                _rootPersistPending || duplicatePending ? "commit_pending" : "", false);
+        }
+        if (terminal != null && String(terminal.rootOperationId) == operationId) {
+            var terminalFingerprint:String = fingerprintExistingRequest(
+                record, params, batch, terminal);
+            if (String(terminal.commandKind) != commandKind
+                    || predecessor != String(terminal.previousTerminalRootOperationId)
+                    || terminalFingerprint == ""
+                    || terminalFingerprint != String(terminal.requestFingerprint)) {
+                return exactRootResponse(record, terminal, false,
+                    "operation_conflict", false);
+            }
+            return exactRootResponse(record, terminal,
+                terminal.rootStatus == "committed", String(terminal.error || ""), false);
+        }
+        if (CLAIM_ROOT_ADMISSION_ENABLED !== true) {
+            return durableFailureFor(record, operationId, "root_admission_disabled");
+        }
+        if (record.state != ACTIVE) return durableFailureFor(record, operationId,
+            "terminal_state");
+        if (!validExpectedRevision(record, params)) return durableFailureFor(record,
+            operationId, "stale_state");
+        if (params.direction !== "loot_to_player"
+                || params.targetContainerId !== "自动") {
+            return durableFailureFor(record, operationId, "transfer_forbidden");
+        }
+        if ((terminal == null && predecessor != "")
+                || (terminal != null
+                    && predecessor != String(terminal.rootOperationId))) {
+            return durableFailureFor(record, operationId, "predecessor_conflict");
+        }
+
+        var frozen:Object = freezeRequestedEntries(record, params, batch);
+        if (frozen == null || frozen.success !== true) {
+            return durableFailureFor(record, operationId, frozen == null
+                ? "invalid_payload" : String(frozen.error));
+        }
+        var root:Object = {
+            claimRootSchemaVersion:CLAIM_ROOT_SCHEMA_VERSION,
+            rootOperationId:operationId,
+            commandKind:commandKind,
+            requestFingerprint:String(frozen.fingerprint),
+            previousTerminalRootOperationId:predecessor,
+            orderedEntries:frozen.entries,
+            cursor:0,
+            appliedCount:0,
+            rootStatus:"pending",
+            childOrdinal:0,
+            childDescriptor:null,
+            result:{appliedEntryIds:[], blockedEntries:[],
+                remainingEntryIds:entryIds(frozen.entries)},
+            error:"",
+            stopReason:""
+        };
+        root.childDescriptor = prepareRootChild(record, root, 0);
+        if (root.childDescriptor == null) {
+            root.childDescriptor = decisionDescriptor(root.orderedEntries[0],
+                "quarantined", "descriptor_unavailable");
+        }
+
+        var dirtyBefore = _root.存档系统 == null
+            ? undefined : _root.存档系统.dirtyMark;
+        var priorActive:Object = feature.activeClaimRoot;
+        var priorTerminal:Object = feature.claimRootTerminal;
+        feature.activeClaimRoot = root;
+        feature.claimRootTerminal = null;
+        feature.authorityRevision++;
+        if (!markDirty() || !flushSave()) {
+            feature.activeClaimRoot = priorActive;
+            feature.claimRootTerminal = priorTerminal;
+            feature.authorityRevision--;
+            if (_root.存档系统 != null) _root.存档系统.dirtyMark = dirtyBefore;
+            return durableFailureFor(record, operationId, "commit_pending");
+        }
+        advanceActiveRoot(record, feature);
+        var current:Object = feature.activeClaimRoot != null
+            ? visibleActiveRoot(feature) : feature.claimRootTerminal;
+        var currentPending:Boolean = current != null && current.rootStatus == "pending";
+        return exactRootResponse(record, current,
+            current != null && current.rootStatus == "committed",
+            _rootPersistPending || currentPending
+                ? "commit_pending" : String(current.error || ""), false);
+    }
+
+    /** Reward-only exact query；只 forward-complete 已 durable root。 */
+    private static function executeDurableQuery(record:Object, params:Object):Object {
+        var feature:Object = ensureFeature();
+        var requestedRootId:String = validOperationId(params.rootOperationId)
+            ? String(params.rootOperationId) : "";
+        if (feature == null) return durableFailureFor(record, requestedRootId,
+            "service_not_ready");
+        var lane:Object = inspectRootLane(feature);
+        if (lane.quarantined === true) {
+            return quarantinedLaneResponse(record, feature, String(lane.error));
+        }
+        if (!validOperationId(params.rootOperationId)
+                || String(params.rootOperationId).length > 72) {
+            return durableFailureFor(record, "", "invalid_root_operation_id");
+        }
+        var rootId:String = String(params.rootOperationId);
+        var hasAck:Boolean = hasOwnField(params, "acknowledgeTerminalRootOperationId");
+        var ackId:String = hasAck ? String(params.acknowledgeTerminalRootOperationId) : "";
+        if (hasAck && (!validOperationId(params.acknowledgeTerminalRootOperationId)
+                || ackId != rootId)) return durableFailureFor(record, rootId,
+                    "invalid_terminal_ack");
+
+        var active:Object = feature.activeClaimRoot;
+        if (active != null && String(active.rootOperationId) == rootId) {
+            if (hasAck) return exactRootResponse(record, visibleActiveRoot(feature), false,
+                "invalid_terminal_ack", true);
+            advanceActiveRoot(record, feature);
+            var current:Object = feature.activeClaimRoot != null
+                ? visibleActiveRoot(feature) : feature.claimRootTerminal;
+            return exactRootResponse(record, current, true,
+                _rootPersistPending ? "commit_pending" : "", true);
+        }
+        var terminal:Object = feature.claimRootTerminal;
+        if (terminal != null && String(terminal.rootOperationId) == rootId) {
+            if (hasAck && terminal.discoveryAcknowledged !== true) {
+                var beforeTerminal:Object = ObjectUtil.clone(terminal);
+                terminal.discoveryAcknowledged = true;
+                feature.authorityRevision++;
+                if (!markDirty() || !flushSave()) {
+                    feature.claimRootTerminal = beforeTerminal;
+                    feature.authorityRevision--;
+                    return exactRootResponse(record, beforeTerminal, false,
+                        "commit_pending", true);
+                }
+            }
+            return exactRootResponse(record, feature.claimRootTerminal, true, "", true);
+        }
+        if (isExpiredRootId(feature, rootId)) {
+            return notStartedRootResponse(record, rootId, "operation_expired", false);
+        }
+        if (hasAck) return notStartedRootResponse(record, rootId,
+            "invalid_terminal_ack", false);
+        return notStartedRootResponse(record, rootId, "", true);
+    }
+
+    /** bounded forward completion；任一 durable cut 失败即停止。 */
+    private static function advanceActiveRoot(record:Object, feature:Object):Boolean {
+        var root:Object = feature.activeClaimRoot;
+        if (root == null) return true;
+        if (_rootPersistPending
+                && _rootPersistPendingId == String(root.rootOperationId)) {
+            if (!markDirty() || !flushSave()) return false;
+            clearRootPersistPending();
+        }
+        if (root.rootStatus == "quarantined") return true;
+        var guard:Number = 0;
+        while (root != null && guard < 64) {
+            guard++;
+            var cursor:Number = Number(root.cursor);
+            if (cursor >= root.orderedEntries.length) {
+                return finalizeActiveRoot(record, feature, root);
+            }
+            if (root.childDescriptor == null) {
+                var beforePrepare:Object = ObjectUtil.clone(root);
+                root.childOrdinal = cursor;
+                root.childDescriptor = prepareRootChild(record, root, cursor);
+                if (root.childDescriptor == null) {
+                    root.childDescriptor = decisionDescriptor(root.orderedEntries[cursor],
+                        "quarantined", "descriptor_unavailable");
+                }
+                if (!persistRootProgress(root, beforePrepare)) return false;
+            }
+            var descriptor:Object = root.childDescriptor;
+            var decision:String = String(descriptor.decision || "");
+            if (decision != "") {
+                if (decision == "capacity") {
+                    var beforeBlocked:Object = ObjectUtil.clone(root);
+                    root.result.blockedEntries.push({entryId:String(descriptor.entryId),
+                        error:String(descriptor.error)});
+                    root.cursor = cursor + 1;
+                    root.childOrdinal = Number(root.cursor);
+                    root.childDescriptor = null;
+                    root.result.remainingEntryIds = collectRootRemaining(feature, root);
+                    if (!persistRootProgress(root, beforeBlocked)) return false;
+                    continue;
+                }
+                if (decision == "failed") {
+                    root.error = String(descriptor.error);
+                    root.stopReason = "child_failed";
+                    root.result.remainingEntryIds = collectRootRemaining(feature, root);
+                    return finalizeActiveRoot(record, feature, root);
+                }
+                return quarantineActiveRoot(feature, root, String(descriptor.error));
+            }
+            var source:Object = findLiveSourceByEntryId(record, String(descriptor.entryId));
+            if (source == null) {
+                return quarantineActiveRoot(feature, root, "source_rebind_conflict");
+            }
+            var rebound:Object = LootClaimCommitCoordinator.rebindDurableDescriptor(
+                descriptor, source);
+            if (rebound == null || rebound.success !== true) {
+                return quarantineActiveRoot(feature, root, rebound == null
+                    ? "descriptor_rebind_failed" : String(rebound.error));
+            }
+            var pending:Object = rebound.pending;
+            var applied:Object = LootClaimCommitCoordinator.applyOrReconcile(pending);
+            if (applied == null || applied.success !== true) {
+                if (applied != null && applied.quarantined === true) {
+                    return quarantineActiveRoot(feature, root, String(applied.error));
+                }
+                return false;
+            }
+            var beforeApplied:Object = ObjectUtil.clone(root);
+            if (!markLedgerEntryClaimed(feature, String(descriptor.entryId))) {
+                return quarantineActiveRoot(feature, root, "source_ledger_conflict");
+            }
+            record.featureRevision = Number(feature.authorityRevision);
+            root.result.appliedEntryIds.push(String(descriptor.entryId));
+            root.appliedCount = Number(root.appliedCount) + 1;
+            root.cursor = cursor + 1;
+            root.childOrdinal = Number(root.cursor);
+            root.childDescriptor = null;
+            root.result.remainingEntryIds = collectRootRemaining(feature, root);
+            record.authorityRevision++;
+            record.lastAppliedOperationId = String(root.rootOperationId);
+            invalidateLeases(record);
+            if (!persistRootProgress(root, beforeApplied)) return false;
+            publishCommitted(applied);
+            LootClaimCommitCoordinator.publishAfterDurable(pending);
+        }
+        return false;
+    }
+
+    private static function finalizeActiveRoot(record:Object, feature:Object,
+                                               root:Object):Boolean {
+        root.result.remainingEntryIds = collectRootRemaining(feature, root);
+        var blockedCount:Number = root.result.blockedEntries.length;
+        var failed:Boolean = String(root.error) != "";
+        var resultKind:String;
+        var status:String;
+        if (failed) {
+            resultKind = Number(root.appliedCount) > 0 ? "partial_failed" : "failed";
+            status = "terminal_failure";
+        } else if (blockedCount <= 0) {
+            resultKind = "all_applied";
+            status = "committed";
+        } else if (Number(root.appliedCount) > 0) {
+            resultKind = "partial_applied";
+            status = "committed";
+            root.stopReason = "capacity_limited";
+        } else {
+            resultKind = "no_effect_capacity";
+            status = "terminal_failure";
+            root.error = String(root.result.blockedEntries[0].error);
+            root.stopReason = "capacity_limited";
+        }
+        var terminal:Object = {
+            claimRootSchemaVersion:CLAIM_ROOT_SCHEMA_VERSION,
+            rootOperationId:String(root.rootOperationId),
+            commandKind:String(root.commandKind),
+            requestFingerprint:String(root.requestFingerprint),
+            previousTerminalRootOperationId:String(root.previousTerminalRootOperationId),
+            orderedEntries:ObjectUtil.clone(root.orderedEntries),
+            rootStatus:status,
+            resultKind:resultKind,
+            discoveryAcknowledged:false,
+            result:ObjectUtil.clone(root.result),
+            appliedCount:Number(root.appliedCount),
+            error:String(root.error),
+            stopReason:String(root.stopReason)
+        };
+        feature.activeClaimRoot = null;
+        feature.claimRootTerminal = terminal;
+        feature.authorityRevision++;
+        if (!markDirty() || !flushSave()) {
+            feature.activeClaimRoot = root;
+            feature.claimRootTerminal = null;
+            feature.authorityRevision--;
+            return false;
+        }
+        clearRootPersistPending();
+        record.lastAppliedOperationId = String(root.rootOperationId);
+        return true;
+    }
+
+    private static function persistRootProgress(root:Object, before:Object):Boolean {
+        if (markDirty() && flushSave()) {
+            clearRootPersistPending();
+            return true;
+        }
+        _rootPersistPending = true;
+        _rootPersistPendingId = String(root.rootOperationId);
+        _rootPersistVisibleBefore = before;
+        return false;
+    }
+
+    private static function clearRootPersistPending():Void {
+        _rootPersistPending = false;
+        _rootPersistPendingId = "";
+        _rootPersistVisibleBefore = null;
+    }
+
+    private static function freezeRequestedEntries(record:Object, params:Object,
+                                                   batch:Boolean):Object {
+        var refs:Array = batch ? params.sources : [params.source];
+        if (!(refs instanceof Array) || refs.length < 1 || refs.length > 50) {
+            return {success:false, error:"invalid_payload"};
+        }
+        var entries:Array = [];
+        var seen:Object = {};
+        for (var i:Number = 0; i < refs.length; i++) {
+            var checked:Object = validateLootSource(record, refs[i]);
+            if (!checked.success) return checked;
+            var mapping:Object = checked.mapping;
+            if (mapping == null || mapping.entry == null
+                    || typeof mapping.entry.entryId != "string"
+                    || !positiveWhole(Number(mapping.entry.remaining))
+                    || seen["$" + String(mapping.entry.entryId)] === true
+                    || typeof checked.item.toObject != "function") {
+                return {success:false, error:"invalid_reward_row"};
+            }
+            var itemData:Object = checked.item.toObject();
+            if (itemData == null || String(itemData.name) != String(mapping.entry.itemName)) {
+                return {success:false, error:"invalid_reward_row"};
+            }
+            var entry:Object = {
+                entryId:String(mapping.entry.entryId),
+                itemName:String(mapping.entry.itemName),
+                quantity:Number(mapping.entry.remaining),
+                itemData:ObjectUtil.clone(itemData),
+                itemSignature:stableRootItemSignature(itemData),
+                admissionSlot:Number(checked.slot)
+            };
+            seen["$" + entry.entryId] = true;
+            entries.push(entry);
+        }
+        return {success:true, entries:entries,
+            fingerprint:buildRootFingerprint(batch ? "claimBatch" : "claim", entries)};
+    }
+
+    private static function fingerprintExistingRequest(record:Object, params:Object,
+                                                      batch:Boolean,
+                                                      root:Object):String {
+        if (params.direction !== "loot_to_player" || params.targetContainerId !== "自动") {
+            return "";
+        }
+        var refs:Array = batch ? params.sources : [params.source];
+        if (!(refs instanceof Array) || root == null
+                || !(root.orderedEntries instanceof Array)
+                || refs.length != root.orderedEntries.length) return "";
+        var entries:Array = [];
+        for (var i:Number = 0; i < refs.length; i++) {
+            var ref:Object = refs[i];
+            if (ref == null || String(ref.containerId) != record.lootContainerId
+                    || !whole(Number(ref.slot))) return "";
+            var slot:Number = Number(ref.slot);
+            var mapping:Object = record.mappings[slot];
+            if (mapping == null || mapping.entry == null) return "";
+            var frozen:Object = findOrderedRootEntry(root,
+                String(mapping.entry.entryId));
+            if (frozen == null) return "";
+            entries.push(frozen);
+        }
+        return buildRootFingerprint(batch ? "claimBatch" : "claim", entries);
+    }
+
+    private static function buildRootFingerprint(commandKind:String,
+                                                 entries:Array):String {
+        var value:String = commandKind + "|automatic";
+        for (var i:Number = 0; i < entries.length; i++) {
+            value += "|" + String(entries[i].entryId) + ":"
+                + String(entries[i].itemSignature);
+        }
+        return value;
+    }
+
+    private static function stableRootItemSignature(itemData:Object):String {
+        if (itemData == null) return "invalid";
+        return String(itemData.name) + "#" + String(itemData.lastUpdate)
+            + "#" + ObjectUtil.toJSON(itemData.value, false);
+    }
+
+    private static function entryIds(entries:Array):Array {
+        var ids:Array = [];
+        for (var i:Number = 0; i < entries.length; i++) {
+            ids.push(String(entries[i].entryId));
+        }
+        return ids;
+    }
+
+    private static function prepareRootChild(record:Object, root:Object,
+                                             ordinal:Number):Object {
+        if (root == null || !(root.orderedEntries instanceof Array)
+                || ordinal < 0 || ordinal >= root.orderedEntries.length) return null;
+        var entry:Object = root.orderedEntries[ordinal];
+        var source:Object = findLiveSourceByEntryId(record, String(entry.entryId));
+        if (source == null) return decisionDescriptor(entry,
+            "quarantined", "source_rebind_conflict");
+        var pending:Object = {
+            operationId:String(root.rootOperationId) + ".c" + String(ordinal + 1),
+            fingerprint:String(root.requestFingerprint) + "|" + String(ordinal),
+            sourceSlot:Number(source.slot),
+            sourceItem:source.item,
+            sourceVersion:source.inventory.getMutationRevision(),
+            feedSource:"reward_inbox",
+            feedReason:String(root.commandKind) == "claimBatch" ? "claim_batch" : "claim",
+            deferFeed:true,
+            forwardOnly:true
+        };
+        var prepared:Object = LootClaimCommitCoordinator.prepare(
+            pending, source, classifyItem(source.item));
+        if (prepared == null || prepared.success !== true) {
+            var errorCode:String = prepared == null
+                ? "descriptor_unavailable" : String(prepared.error);
+            return decisionDescriptor(entry,
+                capacityFailure(errorCode) ? "capacity" : "failed", errorCode);
+        }
+        var descriptor:Object = LootClaimCommitCoordinator.exportDurableDescriptor(pending);
+        if (descriptor == null) return decisionDescriptor(entry,
+            "quarantined", "descriptor_unavailable");
+        descriptor.entryId = String(entry.entryId);
+        descriptor.itemName = String(entry.itemName);
+        descriptor.quantity = Number(entry.quantity);
+        descriptor.itemSignature = String(entry.itemSignature);
+        descriptor.sourceLedgerBefore = Number(entry.quantity);
+        descriptor.sourceLedgerAfter = 0;
+        return descriptor;
+    }
+
+    private static function decisionDescriptor(entry:Object, decision:String,
+                                               errorCode:String):Object {
+        return {descriptorSchemaVersion:1, entryId:String(entry.entryId),
+            itemName:String(entry.itemName), quantity:Number(entry.quantity),
+            itemSignature:String(entry.itemSignature), decision:decision,
+            error:errorCode, sourceLedgerBefore:Number(entry.quantity),
+            sourceLedgerAfter:0, phase:"PREPARED"};
+    }
+
+    private static function findLiveSourceByEntryId(record:Object,
+                                                    entryId:String):Object {
+        if (record == null || !(record.mappings instanceof Array)
+                || record.inventory == null) return null;
+        for (var slot:Number = 0; slot < record.mappings.length; slot++) {
+            var mapping:Object = record.mappings[slot];
+            if (mapping == null || mapping.entry == null
+                    || String(mapping.entry.entryId) != entryId) continue;
+            var item:Object = record.inventory.getItem(String(slot));
+            if (item == null) return null;
+            return {success:true, containerId:record.lootContainerId,
+                inventory:record.inventory, slot:slot, item:item, mapping:mapping};
+        }
+        return null;
+    }
+
+    private static function markLedgerEntryClaimed(feature:Object,
+                                                   entryId:String):Boolean {
+        var entry:Object = findLedgerEntry(feature, entryId);
+        if (entry == null || !positiveWhole(Number(entry.remaining))) return false;
+        entry.remaining = 0;
+        pruneCompletedBatches(feature);
+        feature.authorityRevision++;
+        return true;
+    }
+
+    private static function findLedgerEntry(feature:Object, entryId:String):Object {
+        if (feature == null || !(feature.batches instanceof Array)) return null;
+        for (var b:Number = 0; b < feature.batches.length; b++) {
+            var batch:Object = feature.batches[b];
+            if (batch == null || !(batch.entries instanceof Array)) continue;
+            for (var e:Number = 0; e < batch.entries.length; e++) {
+                var entry:Object = batch.entries[e];
+                if (entry != null && String(entry.entryId) == entryId) return entry;
+            }
+        }
+        return null;
+    }
+
+    private static function collectRootRemaining(feature:Object, root:Object):Array {
+        var ids:Array = [];
+        for (var i:Number = 0; i < root.orderedEntries.length; i++) {
+            var id:String = String(root.orderedEntries[i].entryId);
+            var entry:Object = findLedgerEntry(feature, id);
+            if (entry != null && positiveWhole(Number(entry.remaining))) ids.push(id);
+        }
+        return ids;
+    }
+
+    private static function quarantineActiveRoot(feature:Object, root:Object,
+                                                 errorCode:String):Boolean {
+        var before:Object = ObjectUtil.clone(root);
+        root.rootStatus = "quarantined";
+        root.error = errorCode;
+        root.stopReason = "invariant_conflict";
+        root.result.remainingEntryIds = collectRootRemaining(feature, root);
+        feature.authorityRevision++;
+        if (!markDirty() || !flushSave()) {
+            feature.activeClaimRoot = before;
+            feature.authorityRevision--;
+            return false;
+        }
+        clearRootPersistPending();
+        return true;
+    }
+
+    private static function exactRootResponse(record:Object, root:Object,
+                                              success:Boolean, errorCode:String,
+                                              query:Boolean):Object {
+        var response:Object = record != null && record.state == ACTIVE
+            ? withSnapshots(record) : recordResponse(record, true, "");
+        if (response == null) response = recordResponse(record, false,
+            "authority_unavailable");
+        var status:String = root == null ? "not_started" : String(root.rootStatus);
+        var resultKind:String = "none";
+        if (root != null) {
+            if (status == "pending") resultKind = "in_progress";
+            else if (status == "quarantined") resultKind = "quarantined";
+            else resultKind = String(root.resultKind);
+        }
+        response.success = query ? true : success;
+        response.error = errorCode != "" ? errorCode
+            : root == null ? "" : String(root.error || "");
+        response.rootOperationId = root == null ? "" : String(root.rootOperationId);
+        response.rootStatus = status;
+        response.resultKind = resultKind;
+        response.result = root == null || root.result == null
+            ? emptyRootResult() : ObjectUtil.clone(root.result);
+        response.appliedCount = root == null ? 0 : Number(root.appliedCount);
+        response.stopReason = root == null ? "" : String(root.stopReason || "");
+        return response;
+    }
+
+    private static function notStartedRootResponse(record:Object, rootId:String,
+                                                   errorCode:String,
+                                                   query:Boolean):Object {
+        var response:Object = exactRootResponse(record, null,
+            errorCode == "", errorCode, query);
+        response.rootOperationId = rootId;
+        return response;
+    }
+
+    private static function durableFailureFor(record:Object, rootId:String,
+                                              errorCode:String):Object {
+        return notStartedRootResponse(record,
+            validOperationId(rootId) ? rootId : "", errorCode, false);
+    }
+
+    private static function durableRequestRootId(commandName:String,
+                                                 params:Object):String {
+        if (params == null) return "";
+        var candidate = commandName == "query"
+            ? params.rootOperationId : params.operationId;
+        return validOperationId(candidate) ? String(candidate) : "";
+    }
+
+    private static function quarantinedLaneResponse(record:Object, feature:Object,
+                                                    errorCode:String):Object {
+        var laneRoot:Object = feature.activeClaimRoot != null
+            ? feature.activeClaimRoot : feature.claimRootTerminal;
+        var response:Object = recordResponse(record, false, errorCode);
+        response.rootOperationId = laneRoot != null
+                && validOperationId(laneRoot.rootOperationId)
+            ? String(laneRoot.rootOperationId) : "";
+        response.rootStatus = "quarantined";
+        response.resultKind = "quarantined";
+        response.result = emptyRootResult();
+        response.appliedCount = 0;
+        response.stopReason = errorCode;
+        return response;
+    }
+
+    private static function emptyRootResult():Object {
+        return {appliedEntryIds:[], blockedEntries:[], remainingEntryIds:[]};
+    }
+
+    private static function visibleActiveRoot(feature:Object):Object {
+        if (_rootPersistPending && _rootPersistVisibleBefore != null
+                && feature.activeClaimRoot != null
+                && _rootPersistPendingId == String(feature.activeClaimRoot.rootOperationId)) {
+            return _rootPersistVisibleBefore;
+        }
+        return feature.activeClaimRoot;
+    }
+
+    private static function rootDiscovery(feature:Object):Object {
+        if (feature == null) return {rootOperationId:"", rootStatus:"not_started",
+            recoveryRequired:false};
+        var lane:Object = inspectRootLane(feature);
+        if (lane.quarantined === true) {
+            var opaque:Object = feature.activeClaimRoot != null
+                ? feature.activeClaimRoot : feature.claimRootTerminal;
+            return {rootOperationId:opaque != null && validOperationId(opaque.rootOperationId)
+                    ? String(opaque.rootOperationId) : "",
+                rootStatus:"quarantined", recoveryRequired:true};
+        }
+        var active:Object = visibleActiveRoot(feature);
+        if (active != null) return {rootOperationId:String(active.rootOperationId),
+            rootStatus:String(active.rootStatus), recoveryRequired:true};
+        var terminal:Object = feature.claimRootTerminal;
+        if (terminal != null) return {rootOperationId:String(terminal.rootOperationId),
+            rootStatus:String(terminal.rootStatus),
+            recoveryRequired:terminal.discoveryAcknowledged !== true};
+        return {rootOperationId:"", rootStatus:"not_started", recoveryRequired:false};
+    }
+
+    private static function findFrozenRootEntry(feature:Object,
+                                                entryId:String):Object {
+        var root:Object = feature == null ? null : feature.activeClaimRoot;
+        return findOrderedRootEntry(root, entryId);
+    }
+
+    private static function findOrderedRootEntry(root:Object,
+                                                entryId:String):Object {
+        if (root == null || !(root.orderedEntries instanceof Array)) return null;
+        for (var i:Number = 0; i < root.orderedEntries.length; i++) {
+            if (String(root.orderedEntries[i].entryId) == entryId) {
+                return root.orderedEntries[i];
+            }
+        }
+        return null;
+    }
+
+    private static function isExpiredRootId(feature:Object, rootId:String):Boolean {
+        var current:Object = feature.activeClaimRoot != null
+            ? feature.activeClaimRoot : feature.claimRootTerminal;
+        return current != null
+            && String(current.previousTerminalRootOperationId) == rootId;
+    }
+
+    private static function inspectRootLane(feature:Object):Object {
+        if (feature == null) return {quarantined:true, error:"missing_reward_feature"};
+        var active:Object = feature.activeClaimRoot;
+        var terminal:Object = feature.claimRootTerminal;
+        if (active != null && terminal != null) {
+            return {quarantined:true, error:"multiple_claim_roots"};
+        }
+        if (active != null && !validActiveClaimRoot(active)) {
+            return {quarantined:true, error:"malformed_active_claim_root"};
+        }
+        if (terminal != null && !validClaimRootTerminal(terminal)) {
+            return {quarantined:true, error:"malformed_claim_root_terminal"};
+        }
+        return {quarantined:false, error:""};
+    }
+
+    private static function validActiveClaimRoot(root:Object):Boolean {
+        return root != null && typeof root == "object" && !(root instanceof Array)
+            && root.claimRootSchemaVersion == CLAIM_ROOT_SCHEMA_VERSION
+            && validOperationId(root.rootOperationId)
+            && (root.commandKind == "claim" || root.commandKind == "claimBatch")
+            && typeof root.requestFingerprint == "string"
+            && typeof root.previousTerminalRootOperationId == "string"
+            && (String(root.previousTerminalRootOperationId) == ""
+                || validOperationId(root.previousTerminalRootOperationId))
+            && root.orderedEntries instanceof Array
+            && root.orderedEntries.length >= 1 && root.orderedEntries.length <= 50
+            && nonNegativeWhole(Number(root.cursor))
+            && Number(root.cursor) <= root.orderedEntries.length
+            && nonNegativeWhole(Number(root.appliedCount))
+            && (root.rootStatus == "pending" || root.rootStatus == "quarantined")
+            && validRootResult(root.result);
+    }
+
+    private static function validClaimRootTerminal(root:Object):Boolean {
+        return root != null && typeof root == "object" && !(root instanceof Array)
+            && root.claimRootSchemaVersion == CLAIM_ROOT_SCHEMA_VERSION
+            && validOperationId(root.rootOperationId)
+            && (root.commandKind == "claim" || root.commandKind == "claimBatch")
+            && typeof root.requestFingerprint == "string"
+            && typeof root.previousTerminalRootOperationId == "string"
+            && (root.rootStatus == "committed" || root.rootStatus == "terminal_failure")
+            && (root.discoveryAcknowledged === true
+                || root.discoveryAcknowledged === false)
+            && nonNegativeWhole(Number(root.appliedCount))
+            && validRootResult(root.result);
+    }
+
+    private static function validRootResult(result:Object):Boolean {
+        return result != null && typeof result == "object"
+            && result.appliedEntryIds instanceof Array
+            && result.blockedEntries instanceof Array
+            && result.remainingEntryIds instanceof Array;
+    }
+
+    private static function hasOwnField(value:Object, key:String):Boolean {
+        if (value == null || typeof value != "object") return false;
+        if (typeof value.hasOwnProperty == "function") return value.hasOwnProperty(key);
+        return value[key] != undefined;
     }
 
     private static function executeClaim(record:Object, params:Object):Object {
@@ -692,7 +1469,8 @@ class org.flashNight.arki.item.RewardInboxService {
             return {success:false, error:"stale_state"};
         }
         return {success:true, containerId:record.lootContainerId,
-            inventory:record.inventory, slot:slot, item:item};
+            inventory:record.inventory, slot:slot, item:item,
+            mapping:record.mappings[slot]};
     }
 
     private static function buildTooltip(item:Object):Object {
@@ -753,6 +1531,8 @@ class org.flashNight.arki.item.RewardInboxService {
 
     private static function authorityProjection(record:Object):Object {
         if (record == null || record.state != ACTIVE) return null;
+        var feature:Object = ensureFeature();
+        var discovery:Object = rootDiscovery(feature);
         return {sourceKind:"reward_inbox",
             chestSessionId:String(record.chestSessionId),
             lootContainerId:String(record.lootContainerId),
@@ -761,7 +1541,11 @@ class org.flashNight.arki.item.RewardInboxService {
             displayName:String(record.displayName),
             authorityRevision:Number(record.authorityRevision), state:ACTIVE,
             remainingCount:record.inventory.size(), capacity:Number(record.inventory.capacity),
-            columns:Math.min(8, Number(record.inventory.capacity))};
+            columns:Math.min(8, Number(record.inventory.capacity)),
+            recoverableRootOperationId:String(discovery.rootOperationId),
+            recoverableRootStatus:String(discovery.rootStatus),
+            recoveryRequired:discovery.recoveryRequired === true,
+            recoveryOnly:record.recoveryOnly === true};
     }
 
     private static function standardLaneBusy():Boolean {
@@ -777,7 +1561,7 @@ class org.flashNight.arki.item.RewardInboxService {
         if (raw == null || typeof raw != "object") {
             return {ok:true, changed:true, feature:{v:VERSION, sequence:0,
                 authorityRevision:1, batches:[], receipts:[], migrations:[],
-                supplyKeys:[]}};
+                supplyKeys:[], activeClaimRoot:null, claimRootTerminal:null}};
         }
         if (raw.v != VERSION) return {ok:false, changed:false, error:"future_reward_inbox"};
         var changed:Boolean = false;
@@ -785,11 +1569,19 @@ class org.flashNight.arki.item.RewardInboxService {
         if (!(raw.receipts instanceof Array)) { raw.receipts = []; changed = true; }
         if (!(raw.migrations instanceof Array)) { raw.migrations = []; changed = true; }
         if (!(raw.supplyKeys instanceof Array)) { raw.supplyKeys = []; changed = true; }
+        if (!hasOwnField(raw, "activeClaimRoot")) {
+            raw.activeClaimRoot = null; changed = true;
+        }
+        if (!hasOwnField(raw, "claimRootTerminal")) {
+            raw.claimRootTerminal = null; changed = true;
+        }
         if (!nonNegativeWhole(Number(raw.sequence))) { raw.sequence = 0; changed = true; }
         if (!positiveWhole(Number(raw.authorityRevision))) {
             raw.authorityRevision = 1; changed = true;
         }
-        return {ok:true, changed:changed, feature:raw};
+        var lane:Object = inspectRootLane(raw);
+        return {ok:true, changed:changed, feature:raw,
+            quarantined:lane.quarantined === true, diagnostic:String(lane.error || "")};
     }
 
     private static function nextBatchId(feature:Object, prefix:String):String {

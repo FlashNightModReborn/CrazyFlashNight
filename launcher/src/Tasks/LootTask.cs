@@ -79,6 +79,16 @@ namespace CF7Launcher.Tasks
             "task", "callId", "success", "error", "chestSessionId", "lootContainerId",
             "containerEpoch", "authorityRevision", "lastAppliedOperationId", "state",
             "remainingCount", "closeLease", "snapshots", "tooltip", "materials", "terminal");
+        private static readonly HashSet<string> RewardRootResponseKeys = Set(
+            "task", "callId", "success", "error", "chestSessionId", "lootContainerId",
+            "containerEpoch", "authorityRevision", "lastAppliedOperationId", "state",
+            "remainingCount", "closeLease", "snapshots", "tooltip", "materials", "terminal",
+            "rootOperationId", "rootStatus", "resultKind", "result", "appliedCount",
+            "stopReason");
+        private static readonly HashSet<string> RewardRootResultKeys = Set(
+            "appliedEntryIds", "blockedEntries", "remainingEntryIds");
+        private static readonly HashSet<string> RewardRootBlockedKeys = Set(
+            "entryId", "error");
         private static readonly HashSet<string> MaterialKeys = Set(
             "name", "displayName", "icon", "owned");
         private static readonly HashSet<string> SnapshotKeys = Set(
@@ -311,6 +321,20 @@ namespace CF7Launcher.Tasks
                 RejectAndRemember(binding, webCallId, cmd, "invalid_payload");
                 return;
             }
+            // A-compat-disabled is a cross-layer rollback gate. Existing roots remain
+            // queryable/reconcilable, but no new claim intent may leave Host even if a
+            // stale or forged Web document bypasses its disabled controls.
+            if (binding.SourceKind == LootPanelCoordinator.RewardInboxSource
+                && !binding.RewardRootAdmissionEnabled
+                && (cmd == "claim" || cmd == "claimBatch"))
+            {
+                RejectAndRemember(
+                    binding,
+                    webCallId,
+                    cmd,
+                    "root_admission_disabled");
+                return;
+            }
             if (!_isClientReady())
             {
                 RejectAndRemember(binding, webCallId, cmd, "disconnected");
@@ -522,7 +546,10 @@ namespace CF7Launcher.Tasks
                         msg, entry, out exactResponseRevision);
                     valid = TrySanitizeResponse(msg, entry, out sanitized,
                         out authorityTerminal, out authoritySuspended);
-                    commitPending = valid && IsCommitPendingProjection(sanitized);
+                    commitPending = valid && (IsRewardRootRequest(entry)
+                        ? string.Equals(sanitized.Value<string>("rootStatus"), "pending",
+                            StringComparison.Ordinal)
+                        : IsCommitPendingProjection(sanitized));
                     CompletePendingLocked(fid, entry);
 
                     if (!valid)
@@ -535,7 +562,8 @@ namespace CF7Launcher.Tasks
                     else
                     {
                         bool responseSuccess = sanitized.Value<bool>("success");
-                        bool batchFailureAdvancedAuthority = entry.IsWrite
+                        bool batchFailureAdvancedAuthority = !IsRewardRootRequest(entry)
+                            && entry.IsWrite
                             && string.Equals(entry.WebCmd, "claimBatch",
                                 StringComparison.Ordinal)
                             && !responseSuccess
@@ -1115,6 +1143,13 @@ namespace CF7Launcher.Tasks
             if (_unknownBinding != null
                 && !ReferenceEquals(_unknownBinding, entry.Binding)) return false;
             if (string.IsNullOrEmpty(_unknownOperationId)) return true;
+            if (entry.Binding.SourceKind == LootPanelCoordinator.RewardInboxSource)
+            {
+                string rootStatus = sanitized.Value<string>("rootStatus") ?? "";
+                return string.Equals(sanitized.Value<string>("rootOperationId"),
+                        _unknownOperationId, StringComparison.Ordinal)
+                    && rootStatus != "pending";
+            }
             if (string.Equals(sanitized.Value<string>("state"), "LOOT_SUSPENDED",
                     StringComparison.Ordinal)
                 && string.Equals(_unknownWebCmd, "close", StringComparison.Ordinal))
@@ -1539,12 +1574,32 @@ namespace CF7Launcher.Tasks
                     || transportGeneration != _detachedReconcileTransportGeneration
                     || _pending.Count != 0) return;
 
+                string rewardRootOperationId = null;
+                if (_detachedReconcileBinding.SourceKind
+                    == LootPanelCoordinator.RewardInboxSource)
+                {
+                    if (ReferenceEquals(_unknownBinding, _detachedReconcileBinding)
+                        && LootPanelCoordinator.IsOpaque(_unknownOperationId))
+                        rewardRootOperationId = _unknownOperationId;
+                    else if (LootPanelCoordinator.IsOpaque(
+                            _detachedReconcileBinding.RecoverableRootOperationId))
+                        rewardRootOperationId =
+                            _detachedReconcileBinding.RecoverableRootOperationId;
+                    else
+                    {
+                        string suffix = _detachedReconcileRecoveryNonce.Length > 48
+                            ? _detachedReconcileRecoveryNonce.Substring(0, 48)
+                            : _detachedReconcileRecoveryNonce;
+                        rewardRootOperationId = "host.recovery." + suffix;
+                    }
+                }
+
                 entry = new PendingRequest
                 {
                     FlashCallId = ++_sequence,
                     WebCallId = "host.detached.reconcile." + _sequence,
                     WebCmd = "query",
-                    OperationId = null,
+                    OperationId = rewardRootOperationId,
                     IsWrite = false,
                     IsDetachedReconcile = true,
                     ReconcileEpoch = reconcileEpoch,
@@ -1573,6 +1628,7 @@ namespace CF7Launcher.Tasks
                 {
                     flash["sourceKind"] =
                         LootPanelCoordinator.RewardInboxSource;
+                    flash["rootOperationId"] = rewardRootOperationId;
                 }
                 flash["openAttemptSeq"] = entry.Binding.OpenAttemptSeq;
                 flash["recoveryNonce"] = entry.RecoveryNonce;
@@ -1744,6 +1800,7 @@ namespace CF7Launcher.Tasks
                 expected.Add("direction");
                 expected.Add(cmd == "claim" ? "source" : "sources");
                 expected.Add("targetContainerId");
+                if (rewardInbox) expected.Add("previousTerminalRootOperationId");
             }
             else if (cmd == "close")
             {
@@ -1751,6 +1808,12 @@ namespace CF7Launcher.Tasks
                 expected.Add("operationId");
                 expected.Add("closeLease");
                 expected.Add("abandon");
+            }
+            else if (cmd == "query" && rewardInbox)
+            {
+                expected.Add("rootOperationId");
+                if (parsed.Property("acknowledgeTerminalRootOperationId") != null)
+                    expected.Add("acknowledgeTerminalRootOperationId");
             }
             if (!HasExactKeys(parsed, expected)
                 || ReadString(parsed["type"]) != "task"
@@ -1790,7 +1853,24 @@ namespace CF7Launcher.Tasks
                 normalized["backpack"] = backpack;
                 return true;
             }
-            if (cmd == "query") return true;
+            if (cmd == "query")
+            {
+                if (!rewardInbox) return true;
+                string rootOperationId = ReadString(parsed["rootOperationId"]);
+                if (!LootPanelCoordinator.IsOpaque(rootOperationId)
+                    || rootOperationId.Length > 72) return false;
+                operationId = rootOperationId;
+                normalized["rootOperationId"] = rootOperationId;
+                if (parsed.Property("acknowledgeTerminalRootOperationId") != null)
+                {
+                    string acknowledged = ReadString(
+                        parsed["acknowledgeTerminalRootOperationId"]);
+                    if (!string.Equals(acknowledged, rootOperationId,
+                            StringComparison.Ordinal)) return false;
+                    normalized["acknowledgeTerminalRootOperationId"] = acknowledged;
+                }
+                return true;
+            }
 
             if (!TryReadInteger(parsed["expectedAuthorityRevision"], 0, int.MaxValue,
                     out expectedRevision)) return false;
@@ -1806,11 +1886,21 @@ namespace CF7Launcher.Tasks
                 if (cmd == "tooltip") return true;
                 operationId = ReadString(parsed["operationId"]);
                 if (!LootPanelCoordinator.IsOpaque(operationId)
+                    || rewardInbox && operationId.Length > 72
                     || ReadString(parsed["direction"]) != "loot_to_player"
                     || ReadString(parsed["targetContainerId"]) != "自动") return false;
                 normalized["operationId"] = operationId;
                 normalized["direction"] = "loot_to_player";
                 normalized["targetContainerId"] = "自动";
+                if (rewardInbox)
+                {
+                    string predecessor = ReadString(
+                        parsed["previousTerminalRootOperationId"]);
+                    if (predecessor == null || predecessor.Length > 72
+                        || predecessor.Length > 0
+                            && !LootPanelCoordinator.IsOpaque(predecessor)) return false;
+                    normalized["previousTerminalRootOperationId"] = predecessor;
+                }
                 return true;
             }
 
@@ -1841,6 +1931,15 @@ namespace CF7Launcher.Tasks
                 normalized["direction"] = "loot_to_player";
                 normalized["sources"] = cleanSources;
                 normalized["targetContainerId"] = "自动";
+                if (rewardInbox)
+                {
+                    string predecessor = ReadString(
+                        parsed["previousTerminalRootOperationId"]);
+                    if (predecessor == null || predecessor.Length > 72
+                        || predecessor.Length > 0
+                            && !LootPanelCoordinator.IsOpaque(predecessor)) return false;
+                    normalized["previousTerminalRootOperationId"] = predecessor;
+                }
                 return true;
             }
 
@@ -1923,8 +2022,9 @@ namespace CF7Launcher.Tasks
             sanitized = null;
             authorityTerminal = false;
             authoritySuspended = false;
+            bool rewardRoot = IsRewardRootRequest(entry);
             if (!BindingIdentityMatchesRevisionLocked(entry != null ? entry.Binding : null)
-                || !HasExactKeys(msg, ResponseKeys)
+                || !HasExactKeys(msg, rewardRoot ? RewardRootResponseKeys : ResponseKeys)
                 || ReadString(msg["task"]) != "loot_response") return false;
             bool success;
             int callId;
@@ -1956,14 +2056,14 @@ namespace CF7Launcher.Tasks
                 || closeLease == null
                 || (!string.IsNullOrEmpty(closeLease)
                     && !LootPanelCoordinator.IsOpaque(closeLease))) return false;
-            if (success != string.IsNullOrEmpty(error)) return false;
+            if (!rewardRoot && success != string.IsNullOrEmpty(error)) return false;
             if (success && revision == 0) return false;
             bool commitPending = state == "LOOT_COMMIT_PENDING";
-            if (commitPending != (!success && error == "commit_pending")
+            if (!rewardRoot && (commitPending != (!success && error == "commit_pending")
                 || (commitPending && entry.WebCmd != "claim"
-                    && entry.WebCmd != "claimBatch" && entry.WebCmd != "query"))
+                    && entry.WebCmd != "claimBatch" && entry.WebCmd != "query")))
                 return false;
-            if (success && entry.IsWrite
+            if (!rewardRoot && success && entry.IsWrite
                 && !string.Equals(lastApplied, entry.OperationId, StringComparison.Ordinal))
                 return false;
             bool terminalState = state == "CONSUMED" || state == "ABANDONED"
@@ -1984,7 +2084,22 @@ namespace CF7Launcher.Tasks
             if (!TrySanitizeTerminal(msg["terminal"], state, remaining, out terminal)) return false;
             authorityTerminal = terminal != null;
             authoritySuspended = state == "LOOT_SUSPENDED";
-            if (!TryValidateResponseShape(entry, success, authorityTerminal,
+            string rootOperationId = null;
+            string rootStatus = null;
+            string resultKind = null;
+            JObject rootResult = null;
+            int appliedCount = 0;
+            string stopReason = null;
+            if (rewardRoot)
+            {
+                if (!TrySanitizeRewardRoot(msg, entry, success, error,
+                        out rootOperationId, out rootStatus, out resultKind,
+                        out rootResult, out appliedCount, out stopReason)
+                    || !TryValidateRewardRootProjectionShape(state, closeLease,
+                        snapshots, tooltip, materials, terminal,
+                        entry.Binding.LootContainerId, remaining)) return false;
+            }
+            else if (!TryValidateResponseShape(entry, success, authorityTerminal,
                     authoritySuspended, state, revision, closeLease, snapshots, tooltip,
                     materials, entry.Binding.LootContainerId, remaining)) return false;
 
@@ -2005,6 +2120,15 @@ namespace CF7Launcher.Tasks
                 ["materials"] = materials == null ? JValue.CreateNull() : (JToken)materials,
                 ["terminal"] = terminal == null ? JValue.CreateNull() : (JToken)terminal
             };
+            if (rewardRoot)
+            {
+                sanitized["rootOperationId"] = rootOperationId;
+                sanitized["rootStatus"] = rootStatus;
+                sanitized["resultKind"] = resultKind;
+                sanitized["result"] = rootResult;
+                sanitized["appliedCount"] = appliedCount;
+                sanitized["stopReason"] = stopReason;
+            }
             return true;
         }
 
@@ -2013,6 +2137,218 @@ namespace CF7Launcher.Tasks
             return sanitized != null && !sanitized.Value<bool>("success")
                 && sanitized.Value<string>("error") == "commit_pending"
                 && sanitized.Value<string>("state") == "LOOT_COMMIT_PENDING";
+        }
+
+        private static bool IsRewardRootRequest(PendingRequest entry)
+        {
+            return entry != null && entry.Binding != null
+                && entry.Binding.SourceKind == LootPanelCoordinator.RewardInboxSource
+                && (entry.WebCmd == "claim" || entry.WebCmd == "claimBatch"
+                    || entry.WebCmd == "query");
+        }
+
+        private static bool TrySanitizeRewardRoot(JObject message, PendingRequest entry,
+            bool success, string error, out string rootOperationId, out string rootStatus,
+            out string resultKind, out JObject result, out int appliedCount,
+            out string stopReason)
+        {
+            rootOperationId = ReadString(message["rootOperationId"]);
+            rootStatus = ReadString(message["rootStatus"]);
+            resultKind = ReadString(message["resultKind"]);
+            stopReason = ReadString(message["stopReason"]);
+            result = null;
+            appliedCount = 0;
+            if (!LootPanelCoordinator.IsOpaque(rootOperationId)
+                || rootOperationId.Length > 72
+                || !string.Equals(rootOperationId, entry.OperationId,
+                    StringComparison.Ordinal)
+                || !IsRewardRootStatus(rootStatus)
+                || !IsRewardResultKind(resultKind)
+                || !IsSafeWord(stopReason, true)
+                || !TryReadInteger(message["appliedCount"], 0, 50, out appliedCount))
+                return false;
+
+            JObject rawResult = message["result"] as JObject;
+            if (!HasExactKeys(rawResult, RewardRootResultKeys)) return false;
+            JArray applied;
+            JArray remaining;
+            if (!TrySanitizeRewardRootIds(rawResult["appliedEntryIds"] as JArray,
+                    out applied)
+                || !TrySanitizeRewardRootIds(rawResult["remainingEntryIds"] as JArray,
+                    out remaining)
+                || applied.Count != appliedCount) return false;
+            var appliedIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in applied) appliedIds.Add(token.Value<string>());
+            var remainingIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in remaining)
+            {
+                string remainingId = token.Value<string>();
+                if (appliedIds.Contains(remainingId)) return false;
+                remainingIds.Add(remainingId);
+            }
+
+            JArray rawBlocked = rawResult["blockedEntries"] as JArray;
+            if (rawBlocked == null || rawBlocked.Count > 50) return false;
+            JArray blocked = new JArray();
+            var blockedIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in rawBlocked)
+            {
+                JObject candidate = token as JObject;
+                string entryId = ReadString(candidate != null ? candidate["entryId"] : null);
+                string blockedError = ReadString(candidate != null ? candidate["error"] : null);
+                if (!HasExactKeys(candidate, RewardRootBlockedKeys)
+                    || !LootPanelCoordinator.IsOpaque(entryId)
+                    || !IsSafeWord(blockedError, false)
+                    || appliedIds.Contains(entryId) || !blockedIds.Add(entryId)) return false;
+                blocked.Add(new JObject
+                {
+                    ["entryId"] = entryId,
+                    ["error"] = blockedError
+                });
+            }
+            bool exactCapacityRemainder = blocked.Count == remaining.Count
+                && blockedIds.SetEquals(remainingIds);
+            foreach (JToken token in blocked)
+            {
+                if (!IsRewardCapacityError(token.Value<string>("error")))
+                {
+                    exactCapacityRemainder = false;
+                    break;
+                }
+            }
+
+            bool exactStatus;
+            if (rootStatus == "not_started")
+                exactStatus = resultKind == "none" && applied.Count == 0
+                    && blocked.Count == 0 && remaining.Count == 0
+                    && appliedCount == 0 && string.IsNullOrEmpty(stopReason);
+            else if (rootStatus == "pending")
+                exactStatus = resultKind == "in_progress";
+            else if (rootStatus == "committed" && resultKind == "all_applied")
+                exactStatus = applied.Count > 0 && blocked.Count == 0
+                    && remaining.Count == 0 && string.IsNullOrEmpty(error);
+            else if (rootStatus == "committed" && resultKind == "partial_applied")
+                exactStatus = applied.Count > 0 && blocked.Count > 0
+                    && remaining.Count > 0 && exactCapacityRemainder
+                    && string.IsNullOrEmpty(error)
+                    && stopReason == "capacity_limited";
+            else if (rootStatus == "terminal_failure" && resultKind == "no_effect_capacity")
+                exactStatus = applied.Count == 0 && blocked.Count > 0
+                    && remaining.Count > 0 && exactCapacityRemainder
+                    && IsRewardCapacityError(error)
+                    && error == blocked[0].Value<string>("error")
+                    && stopReason == "capacity_limited";
+            else if (rootStatus == "terminal_failure" && resultKind == "partial_failed")
+                exactStatus = applied.Count > 0 && !string.IsNullOrEmpty(error)
+                    && stopReason == "child_failed";
+            else if (rootStatus == "terminal_failure" && resultKind == "failed")
+                exactStatus = applied.Count == 0 && !string.IsNullOrEmpty(error)
+                    && stopReason == "child_failed";
+            else
+                exactStatus = rootStatus == "quarantined" && resultKind == "quarantined"
+                    && !string.IsNullOrEmpty(error);
+            if (!exactStatus) return false;
+
+            if (entry.WebCmd == "query")
+            {
+                if (rootStatus == "not_started")
+                {
+                    if (success != string.IsNullOrEmpty(error)) return false;
+                }
+                else if (rootStatus != "quarantined" && !success) return false;
+            }
+            else if (success != (rootStatus == "committed"
+                    && string.IsNullOrEmpty(error))) return false;
+
+            result = new JObject
+            {
+                ["appliedEntryIds"] = applied,
+                ["blockedEntries"] = blocked,
+                ["remainingEntryIds"] = remaining
+            };
+            return true;
+        }
+
+        private static bool TrySanitizeRewardRootIds(JArray input, out JArray output)
+        {
+            output = null;
+            if (input == null || input.Count > 50) return false;
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            JArray clean = new JArray();
+            foreach (JToken token in input)
+            {
+                string value = ReadString(token);
+                if (!LootPanelCoordinator.IsOpaque(value) || !seen.Add(value)) return false;
+                clean.Add(value);
+            }
+            output = clean;
+            return true;
+        }
+
+        private static bool IsRewardRootStatus(string value)
+        {
+            return value == "not_started" || value == "pending" || value == "committed"
+                || value == "terminal_failure" || value == "quarantined";
+        }
+
+        private static bool IsRewardResultKind(string value)
+        {
+            return value == "none" || value == "in_progress" || value == "all_applied"
+                || value == "partial_applied" || value == "no_effect_capacity"
+                || value == "partial_failed" || value == "failed"
+                || value == "quarantined";
+        }
+
+        private static bool IsRewardCapacityError(string value)
+        {
+            return value == "target_full" || value == "inventory_full"
+                || value == "capacity_reached" || value == "cap_reached";
+        }
+
+        private static bool TryValidateRewardRootProjectionShape(string state,
+            string closeLease, JArray snapshots, JObject tooltip, JArray materials,
+            JObject terminal, string lootContainerId, int remainingCount)
+        {
+            if (tooltip != null || materials != null) return false;
+            if (state == "LOOT_ACTIVE")
+            {
+                if (terminal != null) return false;
+                if (snapshots.Count == 0) return string.IsNullOrEmpty(closeLease);
+                if (snapshots.Count != 3 || !LootPanelCoordinator.IsOpaque(closeLease))
+                    return false;
+                bool sawLoot = false;
+                bool sawBackpack = false;
+                bool sawDrugLoadout = false;
+                foreach (JToken token in snapshots)
+                {
+                    string containerId = ReadString(token["containerId"]);
+                    if (containerId == "背包")
+                    {
+                        if (sawBackpack) return false;
+                        sawBackpack = true;
+                    }
+                    else if (containerId == "药剂栏")
+                    {
+                        if (sawDrugLoadout) return false;
+                        sawDrugLoadout = true;
+                    }
+                    else if (containerId == lootContainerId)
+                    {
+                        if (sawLoot) return false;
+                        sawLoot = true;
+                        int occupied = 0;
+                        foreach (JToken slot in token["slots"] as JArray)
+                            if (slot.Value<bool>("occupied")) occupied++;
+                        if (occupied != remainingCount) return false;
+                    }
+                    else return false;
+                }
+                return sawLoot && sawBackpack && sawDrugLoadout;
+            }
+            if (snapshots.Count != 0 || !string.IsNullOrEmpty(closeLease)) return false;
+            if (state == "LOOT_SUSPENDED") return terminal == null;
+            return (state == "CONSUMED" || state == "ABANDONED" || state == "EXPIRED")
+                && terminal != null;
         }
 
         private bool ShouldPreserveKnownCloseLeaseLocked(PendingRequest entry,

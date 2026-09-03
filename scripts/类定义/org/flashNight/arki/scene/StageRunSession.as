@@ -192,6 +192,23 @@ class org.flashNight.arki.scene.StageRunSession {
         return "";
     }
 
+    /**
+     * O1 临时只读观测面：把现役 scene wait 归一为固定 owner 名称。
+     * 不触发 reservation、settlement、scene transition 或任何持久化。
+     */
+    public static function getObservationOwner():String {
+        if (_stageStartReservation != null) return "stage_start_reservation";
+        if (_run != null && !isRunTerminal()) {
+            return _returnRequested ? "stage_settlement" : "stage_run";
+        }
+        if (_preparedInventory != null || _preparedReport != null
+                || hasPersistedSettlementPending()) return "stage_settlement";
+        if (_root.场景转换中 === true) return "scene_transition";
+        if (_root.斗兽标定模式 === true) return "arena_calibration";
+        if (_root.当前为战斗地图 === true) return "legacy_battle_map";
+        return "base_scene";
+    }
+
     public static function canNavigateAwayFromStage():Boolean {
         return getSceneExitBlockReason() == "";
     }
