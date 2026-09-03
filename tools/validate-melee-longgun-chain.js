@@ -281,10 +281,16 @@ function auditPluginBuild() {
     const ring = expectDirectPort('挂环指槽板', '刀,长枪', null, '柄侧板');
     if (ring) {
         if (childText(ring, 'weapontype')) errors.push('挂环指槽板 must remain available to all longguns');
+        if (childText(ring, 'provideTags')) errors.push('挂环指槽板 NOAH must remain conditional to longguns');
+        const bladeBranch = findBranch(at(ring, 'stats', 'useSwitch'), 'use', 'use:刀');
+        if (bladeBranch && childText(bladeBranch, 'provideTags')) {
+            errors.push('挂环指槽板 blade branch must not provide NOAH');
+        }
         const branch = findBranch(at(ring, 'stats', 'useSwitch'), 'use', 'use:长枪');
         if (expectNode(errors, '挂环指槽板.longgunBranch', branch)) {
             expectEqual(errors, '挂环指槽板.weightCoefficient', textAt(branch, 'merge', 'switchstrike', 'weightCoefficient'), '5');
             expectEqual(errors, '挂环指槽板.impactMultiplier', textAt(branch, 'merge', 'switchstrike', 'impactMultiplier'), '5');
+            expectEqual(errors, '挂环指槽板.NOAH', childText(branch, 'provideTags'), 'NOAH');
         }
     }
 
