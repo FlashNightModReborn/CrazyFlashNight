@@ -1127,6 +1127,57 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void RewardInbox_PendingRootWithSnapshotsIsRejectedAsMixedProjection()
+        {
+            using var harness = new Harness(rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.pending.mixed.1";
+            JObject request = RewardRequest("claim", "reward.root.web.pending.mixed", rootId);
+            request["expectedAuthorityRevision"] = 1;
+            request["source"]["expectedLease"] = "reward.loot.slot.1";
+            harness.Task.HandleWebRequest(request);
+            JObject sent = harness.SentAt(1);
+
+            harness.Task.HandleFlashResponse(RewardRootResponse(sent, rootId,
+                rootStatus: "pending", resultKind: "in_progress",
+                success: false, error: "commit_pending", appliedCount: 0), null);
+
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+            Assert.Equal(rootId, harness.Task.UnknownOperationId);
+            Assert.Equal("reconcile_required",
+                harness.PostedAt(1).Value<string>("error"));
+        }
+
+        [Fact]
+        public void RewardInbox_PendingRootWithoutProjectionFencesCommitPending()
+        {
+            using var harness = new Harness(rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.pending.clean.1";
+            JObject request = RewardRequest("claim", "reward.root.web.pending.clean", rootId);
+            request["expectedAuthorityRevision"] = 1;
+            request["source"]["expectedLease"] = "reward.loot.slot.1";
+            harness.Task.HandleWebRequest(request);
+            JObject sent = harness.SentAt(1);
+            JObject clean = RewardRootResponse(sent, rootId,
+                rootStatus: "pending", resultKind: "in_progress",
+                success: false, error: "commit_pending", appliedCount: 0);
+            clean["snapshots"] = new JArray();
+            clean["closeLease"] = "";
+
+            harness.Task.HandleFlashResponse(clean, null);
+
+            JObject posted = harness.PostedAt(1);
+            Assert.False(posted.Value<bool>("success"));
+            Assert.Equal("commit_pending", posted.Value<string>("error"));
+            Assert.Equal("pending", posted.Value<string>("rootStatus"));
+            Assert.Equal("in_progress", posted.Value<string>("resultKind"));
+            Assert.Empty((JArray)posted["snapshots"]);
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+            Assert.Equal(rootId, harness.Task.UnknownOperationId);
+        }
+
+        [Fact]
         public void RewardInbox_ExactPartialCapacityRootPreservesBlockedRemainder()
         {
             using var harness = new Harness(rewardInbox: true);

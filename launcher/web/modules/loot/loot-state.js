@@ -456,7 +456,11 @@
         if (!this._rewardRoot) return null;
         var root=normalizeRewardRoot(response,rootId);
         if (!root) return null;
-        var projection=this._normalizeProjection(response);
+        // 混合投影封死（ADR 2026-09-03 Commit 2）：pending/commit_pending 响应
+        // 不携带可应用资产投影；即使信道回退混入快照也绝不应用，保留旧
+        // projection 并仅走 exact-query 恢复。
+        var pendingCut=root.rootStatus==='pending'||root.error==='commit_pending';
+        var projection=pendingCut?null:this._normalizeProjection(response);
         if (projection&&!this._apply(projection)) return null;
         this._pending=null;
         this._rewardRoot.rootOperationId=root.rootOperationId;

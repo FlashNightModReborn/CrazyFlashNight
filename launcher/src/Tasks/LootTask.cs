@@ -2103,6 +2103,14 @@ namespace CF7Launcher.Tasks
                     authoritySuspended, state, revision, closeLease, snapshots, tooltip,
                     materials, entry.Binding.LootContainerId, remaining)) return false;
 
+            // Mixed-cut fence (ADR 2026-09-03): a pending / commit_pending reward root
+            // response must not carry an applicable asset projection. The durable prefix
+            // view paired with fresh snapshots would let Web apply effects that are not
+            // yet durable; AS2 strips them and this boundary enforces it fail-closed.
+            if (rewardRoot && snapshots.Count != 0
+                && (rootStatus == "pending" || error == "commit_pending"))
+                return false;
+
             sanitized = new JObject
             {
                 ["success"] = success,

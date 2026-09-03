@@ -69,6 +69,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_save_flow_restores_missing_save_system();
         test_hasPendingChanges_combines_both_latches();
         test_flushNow_success_clears_both_latches();
+        test_flushNow_physical_stats_track_outcomes();
         test_flushNow_repeated_early_failure_publishes_attempt_edges();
         test_flushNow_save_disabled_preserves_dirty();
         test_flushNow_in_flight_preserves_dirty();
@@ -222,7 +223,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
     private static function buildEmptyRewardInboxV1():Object {
         return {v:1, sequence:0, authorityRevision:1,
-            batches:[], receipts:[], migrations:[], supplyKeys:[]};
+            batches:[], receipts:[], migrations:[], supplyKeys:[],
+            activeClaimRoot:null, claimRootTerminal:null};
     }
 
     private static function assert(condition:Boolean, msg:String):Void {
@@ -410,6 +412,41 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                    "flushNow_success: committed save payload exists");
             assert(_root.存盘标志 == 1,
                    "flushNow_success: publishes the saved flag only after local commit");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushNow_physical_stats_track_outcomes():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._resetSavePhysicalStatsForTest();
+
+            sm._configureSaveFlowForTest({flushResult:true});
+            assert(sm.flushNow() == true,
+                   "physical_stats: overridden success flush commits");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 1 && stats.doSaveAll == 1
+                   && stats.flushAttempt == 1 && stats.flushSuccess == 1
+                   && stats.flushPending == 0 && stats.flushFalse == 0
+                   && stats.jsonStringify == 0 && stats.shadowDispatch == 0,
+                   "physical_stats: 成功 flush 恰好一次 pack/doSaveAll/flushSuccess，socket 断开无 shadow");
+
+            sm.markDirty();
+            sm._configureSaveFlowForTest({flushResult:false});
+            assert(sm.flushNow() == false,
+                   "physical_stats: overridden false flush rejected");
+            sm._configureSaveFlowForTest({flushResult:"pending"});
+            assert(sm.flushNow() == false,
+                   "physical_stats: overridden pending flush not committed");
+            stats = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 3 && stats.doSaveAll == 3
+                   && stats.flushAttempt == 3 && stats.flushSuccess == 1
+                   && stats.flushFalse == 1 && stats.flushPending == 1
+                   && stats.jsonStringify == 0 && stats.shadowDispatch == 0,
+                   "physical_stats: false/pending 分桶精确，领域尝试不偷减物理量");
         } finally {
             endSaveFlowTest(saved);
         }

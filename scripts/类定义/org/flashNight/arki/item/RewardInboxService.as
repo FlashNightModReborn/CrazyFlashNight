@@ -27,6 +27,8 @@ class org.flashNight.arki.item.RewardInboxService {
     private static var _rootPersistPending:Boolean = false;
     private static var _rootPersistPendingId:String = "";
     private static var _rootPersistVisibleBefore:Object = null;
+    private static var _durableCutProbe:Function = null;
+    private static var _durableCutAttemptProbe:Function = null;
 
     /**
      * 由 LootContainerService 安装的只读探针。保持依赖单向，避免 AS2 编译器在
@@ -34,6 +36,19 @@ class org.flashNight.arki.item.RewardInboxService {
      */
     public static function setStandardLaneBusyProbe(probe:Function):Void {
         _standardLaneBusyProbe = probe;
+    }
+
+    /** durable-cut 观测探针（存盘次数回归门专用）：每次 flushSave 尝试后以
+     * (cutName, ok) 回调；探针异常绝不影响存盘裁决，生产永远为 null。 */
+    public static function setDurableCutProbe(probe:Function):Void {
+        _durableCutProbe = probe;
+    }
+
+    /** durable-cut attempt 预通知（语义故障注入专用）：flushSave 在真实调用
+     * _root.强制存盘 前以 cutName 回调，使测试能在真实存盘边界按语义名注入
+     * 失败；探针异常绝不影响存盘路径，生产永远为 null。 */
+    public static function setDurableCutAttemptProbe(probe:Function):Void {
+        _durableCutAttemptProbe = probe;
     }
 
     /** 换档/新档边界必须丢弃仅属于上一角色会话的 Loot authority。 */
@@ -143,7 +158,7 @@ class org.flashNight.arki.item.RewardInboxService {
                 quantity:1, remaining:1}]});
         feature.supplyKeys.push(deliveryKey);
         feature.authorityRevision++;
-        if (!markDirty() || !flushSave()) {
+        if (!markDirty() || !flushSave("supply_delivery")) {
             _root._saveExt.rewardInbox = featureBefore;
             if (_root.存档系统 != null) {
                 _root.存档系统.dirtyMark = dirtyBefore;
@@ -574,7 +589,7 @@ class org.flashNight.arki.item.RewardInboxService {
         feature.activeClaimRoot = root;
         feature.claimRootTerminal = null;
         feature.authorityRevision++;
-        if (!markDirty() || !flushSave()) {
+        if (!markDirty() || !flushSave("root_admission")) {
             feature.activeClaimRoot = priorActive;
             feature.claimRootTerminal = priorTerminal;
             feature.authorityRevision--;
@@ -629,7 +644,7 @@ class org.flashNight.arki.item.RewardInboxService {
                 var beforeTerminal:Object = ObjectUtil.clone(terminal);
                 terminal.discoveryAcknowledged = true;
                 feature.authorityRevision++;
-                if (!markDirty() || !flushSave()) {
+                if (!markDirty() || !flushSave("terminal_ack")) {
                     feature.claimRootTerminal = beforeTerminal;
                     feature.authorityRevision--;
                     return exactRootResponse(record, beforeTerminal, false,
@@ -646,16 +661,27 @@ class org.flashNight.arki.item.RewardInboxService {
         return notStartedRootResponse(record, rootId, "", true);
     }
 
-    /** bounded forward completion；任一 durable cut 失败即停止。 */
+    /**
+     * bounded forward completion；任一 durable cut 失败即停止。
+     * F1′（存盘风暴止血 ADR 2026-09-03 §3.1）：post(child i) == pre(child i+1)，
+     * child i 的完成态与 child i+1 的纯 prepare 桥接进同一次落盘（child_bridge），
+     * 末 child 直接折叠进 terminal 一次落盘；bridge flush 返回 true 前严禁执行
+     * 下一 child。admission(A+P0) 与 quarantine 的独立强存盘不变，事件发布仍在
+     * durable save 之后。
+     */
     private static function advanceActiveRoot(record:Object, feature:Object):Boolean {
         var root:Object = feature.activeClaimRoot;
         if (root == null) return true;
         if (_rootPersistPending
                 && _rootPersistPendingId == String(root.rootOperationId)) {
-            if (!markDirty() || !flushSave()) return false;
+            if (!markDirty() || !flushSave("resume_pending")) return false;
             clearRootPersistPending();
         }
         if (root.rootStatus == "quarantined") return true;
+        // F5（ADR §3.2）：entryId→ledger entry 索引每次 advance 建一次；
+        // 索引持有 entry 引用，pruneCompletedBatches 不使其失效（已 prune 的
+        // entry remaining 恒 0，复用只会 fail-closed 进 quarantine）。
+        var ledgerIndex:Object = buildLedgerIndex(feature);
         var guard:Number = 0;
         while (root != null && guard < 64) {
             guard++;
@@ -664,33 +690,33 @@ class org.flashNight.arki.item.RewardInboxService {
                 return finalizeActiveRoot(record, feature, root);
             }
             if (root.childDescriptor == null) {
-                var beforePrepare:Object = ObjectUtil.clone(root);
-                root.childOrdinal = cursor;
-                root.childDescriptor = prepareRootChild(record, root, cursor);
-                if (root.childDescriptor == null) {
-                    root.childDescriptor = decisionDescriptor(root.orderedEntries[cursor],
-                        "quarantined", "descriptor_unavailable");
-                }
-                if (!persistRootProgress(root, beforePrepare)) return false;
+                // 纯 prepare 只在内存完成：恢复旧格式 durable prefix（cursor 已前进、
+                // descriptor 缺失）与崩溃重放都幂等，descriptor 随下一 cut 落盘。
+                prepareChildDescriptor(record, root, cursor);
             }
             var descriptor:Object = root.childDescriptor;
             var decision:String = String(descriptor.decision || "");
+            var lastChild:Boolean = cursor + 1 >= root.orderedEntries.length;
             if (decision != "") {
                 if (decision == "capacity") {
-                    var beforeBlocked:Object = ObjectUtil.clone(root);
+                    var beforeBlocked:Object = shallowRootCutSnapshot(root);
                     root.result.blockedEntries.push({entryId:String(descriptor.entryId),
                         error:String(descriptor.error)});
                     root.cursor = cursor + 1;
                     root.childOrdinal = Number(root.cursor);
                     root.childDescriptor = null;
-                    root.result.remainingEntryIds = collectRootRemaining(feature, root);
-                    if (!persistRootProgress(root, beforeBlocked)) return false;
+                    // F5：capacity 保留 remaining（增量维护），不重扫真账簿。
+                    if (lastChild) {
+                        return finalizeActiveRoot(record, feature, root);
+                    }
+                    prepareChildDescriptor(record, root, Number(root.cursor));
+                    if (!persistRootProgress(root, beforeBlocked, "child_bridge")) return false;
                     continue;
                 }
                 if (decision == "failed") {
                     root.error = String(descriptor.error);
                     root.stopReason = "child_failed";
-                    root.result.remainingEntryIds = collectRootRemaining(feature, root);
+                    // F5：failed 保留 remaining（增量维护），不重扫真账簿。
                     return finalizeActiveRoot(record, feature, root);
                 }
                 return quarantineActiveRoot(feature, root, String(descriptor.error));
@@ -713,30 +739,51 @@ class org.flashNight.arki.item.RewardInboxService {
                 }
                 return false;
             }
-            var beforeApplied:Object = ObjectUtil.clone(root);
-            if (!markLedgerEntryClaimed(feature, String(descriptor.entryId))) {
+            var beforeApplied:Object = shallowRootCutSnapshot(root);
+            if (!markLedgerEntryClaimed(feature, String(descriptor.entryId),
+                    ledgerIndex)) {
                 return quarantineActiveRoot(feature, root, "source_ledger_conflict");
             }
             record.featureRevision = Number(feature.authorityRevision);
             root.result.appliedEntryIds.push(String(descriptor.entryId));
+            removeRootRemainingId(root, String(descriptor.entryId));
             root.appliedCount = Number(root.appliedCount) + 1;
             root.cursor = cursor + 1;
             root.childOrdinal = Number(root.cursor);
             root.childDescriptor = null;
-            root.result.remainingEntryIds = collectRootRemaining(feature, root);
             record.authorityRevision++;
             record.lastAppliedOperationId = String(root.rootOperationId);
             invalidateLeases(record);
-            if (!persistRootProgress(root, beforeApplied)) return false;
+            if (lastChild) {
+                // 末 child 直接构造 terminal 并与完成态一次落盘，不先存 cursor=N。
+                if (!finalizeActiveRoot(record, feature, root)) return false;
+                publishCommitted(applied);
+                LootClaimCommitCoordinator.publishAfterDurable(pending);
+                return true;
+            }
+            prepareChildDescriptor(record, root, Number(root.cursor));
+            if (!persistRootProgress(root, beforeApplied, "child_bridge")) return false;
             publishCommitted(applied);
             LootClaimCommitCoordinator.publishAfterDurable(pending);
         }
         return false;
     }
 
+    /** child 的纯 prepare：只改内存不落盘，descriptor 随相邻 durable cut 同批持久化。 */
+    private static function prepareChildDescriptor(record:Object, root:Object,
+                                                   ordinal:Number):Void {
+        root.childOrdinal = ordinal;
+        root.childDescriptor = prepareRootChild(record, root, ordinal);
+        if (root.childDescriptor == null) {
+            root.childDescriptor = decisionDescriptor(root.orderedEntries[ordinal],
+                "quarantined", "descriptor_unavailable");
+        }
+    }
+
     private static function finalizeActiveRoot(record:Object, feature:Object,
                                                root:Object):Boolean {
-        root.result.remainingEntryIds = collectRootRemaining(feature, root);
+        // F5：remaining 自 admission 起增量维护，此处与 admission/capacity/failed
+        // 语义恒等；唯一真账簿重扫保留在 quarantineActiveRoot。
         var blockedCount:Number = root.result.blockedEntries.length;
         var failed:Boolean = String(root.error) != "";
         var resultKind:String;
@@ -775,7 +822,7 @@ class org.flashNight.arki.item.RewardInboxService {
         feature.activeClaimRoot = null;
         feature.claimRootTerminal = terminal;
         feature.authorityRevision++;
-        if (!markDirty() || !flushSave()) {
+        if (!markDirty() || !flushSave("terminal")) {
             feature.activeClaimRoot = root;
             feature.claimRootTerminal = null;
             feature.authorityRevision--;
@@ -786,8 +833,9 @@ class org.flashNight.arki.item.RewardInboxService {
         return true;
     }
 
-    private static function persistRootProgress(root:Object, before:Object):Boolean {
-        if (markDirty() && flushSave()) {
+    private static function persistRootProgress(root:Object, before:Object,
+                                                cutName:String):Boolean {
+        if (markDirty() && flushSave(cutName)) {
             clearRootPersistPending();
             return true;
         }
@@ -956,8 +1004,10 @@ class org.flashNight.arki.item.RewardInboxService {
     }
 
     private static function markLedgerEntryClaimed(feature:Object,
-                                                   entryId:String):Boolean {
-        var entry:Object = findLedgerEntry(feature, entryId);
+                                                   entryId:String,
+                                                   index:Object):Boolean {
+        var entry:Object = index != null
+            ? index["$" + entryId] : findLedgerEntry(feature, entryId);
         if (entry == null || !positiveWhole(Number(entry.remaining))) return false;
         entry.remaining = 0;
         pruneCompletedBatches(feature);
@@ -978,6 +1028,56 @@ class org.flashNight.arki.item.RewardInboxService {
         return null;
     }
 
+    private static function buildLedgerIndex(feature:Object):Object {
+        var index:Object = {};
+        if (feature == null || !(feature.batches instanceof Array)) return index;
+        for (var b:Number = 0; b < feature.batches.length; b++) {
+            var batch:Object = feature.batches[b];
+            if (batch == null || !(batch.entries instanceof Array)) continue;
+            for (var e:Number = 0; e < batch.entries.length; e++) {
+                var entry:Object = batch.entries[e];
+                if (entry != null) index["$" + String(entry.entryId)] = entry;
+            }
+        }
+        return index;
+    }
+
+    private static function removeRootRemainingId(root:Object, entryId:String):Void {
+        var ids:Array = root.result.remainingEntryIds;
+        for (var i:Number = 0; i < ids.length; i++) {
+            if (String(ids[i]) == entryId) { ids.splice(i, 1); return; }
+        }
+    }
+
+    /**
+     * F5 窄 staged-root 拷贝：persist 失败时的 durable-prefix 只读视图。
+     * orderedEntries 自 admission 冻结故共享引用；result 三数组 slice 防后续
+     * push/splice 污染视图；标量显式复制。只用于热路径 persistRootProgress
+     * 的 visible-before，quarantine 回滚仍用 ObjectUtil.clone 深拷贝。
+     */
+    private static function shallowRootCutSnapshot(root:Object):Object {
+        return {
+            claimRootSchemaVersion:Number(root.claimRootSchemaVersion),
+            rootOperationId:String(root.rootOperationId),
+            commandKind:String(root.commandKind),
+            requestFingerprint:String(root.requestFingerprint),
+            previousTerminalRootOperationId:String(root.previousTerminalRootOperationId),
+            orderedEntries:root.orderedEntries,
+            cursor:Number(root.cursor),
+            appliedCount:Number(root.appliedCount),
+            rootStatus:String(root.rootStatus),
+            childOrdinal:Number(root.childOrdinal),
+            childDescriptor:root.childDescriptor,
+            result:{
+                appliedEntryIds:root.result.appliedEntryIds.slice(),
+                blockedEntries:root.result.blockedEntries.slice(),
+                remainingEntryIds:root.result.remainingEntryIds.slice()
+            },
+            error:String(root.error),
+            stopReason:String(root.stopReason)
+        };
+    }
+
     private static function collectRootRemaining(feature:Object, root:Object):Array {
         var ids:Array = [];
         for (var i:Number = 0; i < root.orderedEntries.length; i++) {
@@ -996,7 +1096,7 @@ class org.flashNight.arki.item.RewardInboxService {
         root.stopReason = "invariant_conflict";
         root.result.remainingEntryIds = collectRootRemaining(feature, root);
         feature.authorityRevision++;
-        if (!markDirty() || !flushSave()) {
+        if (!markDirty() || !flushSave("quarantine")) {
             feature.activeClaimRoot = before;
             feature.authorityRevision--;
             return false;
@@ -1008,11 +1108,23 @@ class org.flashNight.arki.item.RewardInboxService {
     private static function exactRootResponse(record:Object, root:Object,
                                               success:Boolean, errorCode:String,
                                               query:Boolean):Object {
-        var response:Object = record != null && record.state == ACTIVE
-            ? withSnapshots(record) : recordResponse(record, true, "");
+        var status:String = root == null ? "not_started" : String(root.rootStatus);
+        var response:Object;
+        if (status == "pending" || errorCode == "commit_pending") {
+            // 跨 cut 混合投影封死（存盘风暴止血 ADR §3.1 Commit 2）：pending /
+            // commit_pending 响应的效果可能已在内存收敛但尚未 durable，durable
+            // prefix 的 root 视图配新鲜资产快照就是混合投影。此类响应只携带
+            // record 标量与 root tuple；Web 保留旧 projection 仅走 exact-query 恢复。
+            response = recordResponse(record, true, "");
+            response.snapshots = [];
+            response.closeLease = "";
+        } else if (record != null && record.state == ACTIVE) {
+            response = withSnapshots(record);
+        } else {
+            response = recordResponse(record, true, "");
+        }
         if (response == null) response = recordResponse(record, false,
             "authority_unavailable");
-        var status:String = root == null ? "not_started" : String(root.rootStatus);
         var resultKind:String = "none";
         if (root != null) {
             if (status == "pending") resultKind = "in_progress";
@@ -1362,7 +1474,7 @@ class org.flashNight.arki.item.RewardInboxService {
                 kind:String(pending.kind), fingerprint:String(pending.fingerprint),
                 authorityRevision:record.authorityRevision};
         }
-        if (!markDirty() || !flushSave()) return false;
+        if (!markDirty() || !flushSave("pending_persist")) return false;
         if (pending.committed != null) publishCommitted(pending.committed);
         record.pendingPersist = null;
         record.state = ACTIVE;
@@ -1579,9 +1691,36 @@ class org.flashNight.arki.item.RewardInboxService {
         if (!positiveWhole(Number(raw.authorityRevision))) {
             raw.authorityRevision = 1; changed = true;
         }
+        if (normalizeClaimRootResultShapes(raw.activeClaimRoot)) changed = true;
+        if (normalizeClaimRootResultShapes(raw.claimRootTerminal)) changed = true;
         var lane:Object = inspectRootLane(raw);
         return {ok:true, changed:changed, feature:raw,
             quarantined:lane.quarantined === true, diagnostic:String(lane.error || "")};
+    }
+
+    // AMF0/JSON 存档往返无法保留空数组：空的 appliedEntryIds/blockedEntries/
+    // remainingEntryIds 会以空对象 {} 落盘，读回后被 validRootResult 误判为
+    // malformed_claim_root_terminal 并 quarantine 整条奖励车道（症状是所有
+    // 礼包 open 报 reward_inbox_full）。这里只把"空对象"修复为 []；带键的
+    // 非数组仍是真实损坏，继续交给 quarantine。
+    private static function normalizeClaimRootResultShapes(root:Object):Boolean {
+        if (root == null || root.result == null || typeof root.result != "object") return false;
+        var changed:Boolean = false;
+        var keys:Array = ["appliedEntryIds", "blockedEntries", "remainingEntryIds"];
+        for (var i:Number = 0; i < keys.length; i++) {
+            var value:Object = root.result[keys[i]];
+            if (value != null && typeof value == "object" && !(value instanceof Array)
+                    && emptyOwnObject(value)) {
+                root.result[keys[i]] = [];
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    private static function emptyOwnObject(value:Object):Boolean {
+        for (var key:String in value) return false;
+        return true;
     }
 
     private static function nextBatchId(feature:Object, prefix:String):String {
@@ -1837,10 +1976,21 @@ class org.flashNight.arki.item.RewardInboxService {
         return _root.存档系统.dirtyMark === true;
     }
 
-    private static function flushSave():Boolean {
-        if (typeof _root.强制存盘 != "function") return false;
-        try { return _root.强制存盘() === true; }
-        catch (saveError) { return false; }
+    private static function flushSave(cutName:String):Boolean {
+        if (_durableCutAttemptProbe != null) {
+            try { _durableCutAttemptProbe(cutName); }
+            catch (attemptProbeError) { }
+        }
+        var ok:Boolean = false;
+        if (typeof _root.强制存盘 == "function") {
+            try { ok = _root.强制存盘() === true; }
+            catch (saveError) { ok = false; }
+        }
+        if (_durableCutProbe != null) {
+            try { _durableCutProbe(cutName, ok); }
+            catch (probeError) { }
+        }
+        return ok;
     }
 
     private static function whole(value:Number):Boolean {

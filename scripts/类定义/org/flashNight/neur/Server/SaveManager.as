@@ -233,6 +233,9 @@ class org.flashNight.neur.Server.SaveManager {
     private var _saveInFlight:Boolean = false; // 重入护栏
     private var _beforeLocalCommitHookForTests:Function = null;
     private var _flushResultOverrideForTests:Object = undefined;
+    // 存盘物理量分桶（存盘风暴止血 ADR 2026-09-03 Commit 0）：领域层调用计数
+    // 之外的物理真相，防 wrapper 假通过；测试经专用访问器读取，生产只累计。
+    private var _savePhysicalStats:Object = null;
 
     // ── Protocol 2 (launcher 存档决议) ──
     // 握手回调把 _root._launcher* 写入, preload() 一次性消费并转存到实例字段后 delete.
@@ -350,6 +353,31 @@ class org.flashNight.neur.Server.SaveManager {
     /** 存盘 debounce 测试夹具：生产代码不得调用。 */
     public function _triggerDebounceForTest():Void {
         _onDebounceFire();
+    }
+
+    private function savePhysicalStats():Object {
+        if (_savePhysicalStats == null) {
+            _savePhysicalStats = {packGameState:0, doSaveAll:0,
+                flushAttempt:0, flushSuccess:0, flushPending:0, flushFalse:0,
+                jsonStringify:0, shadowDispatch:0};
+        }
+        return _savePhysicalStats;
+    }
+
+    public function _getSavePhysicalStatsForTest():Object {
+        var stats:Object = savePhysicalStats();
+        return {packGameState:Number(stats.packGameState),
+            doSaveAll:Number(stats.doSaveAll),
+            flushAttempt:Number(stats.flushAttempt),
+            flushSuccess:Number(stats.flushSuccess),
+            flushPending:Number(stats.flushPending),
+            flushFalse:Number(stats.flushFalse),
+            jsonStringify:Number(stats.jsonStringify),
+            shadowDispatch:Number(stats.shadowDispatch)};
+    }
+
+    public function _resetSavePhysicalStatsForTest():Void {
+        _savePhysicalStats = null;
     }
 
     // ==================== 预取管理 ====================
@@ -478,6 +506,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     private function _doSaveAll():Boolean {
+        savePhysicalStats().doSaveAll++;
         if (_root.允许存档 !== true) {
             FrameBroadcaster.pushUiState("sv:3");
             return false;
@@ -1611,6 +1640,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 注意：mydata.lastSaved / mydata.version 必须每次都更新（不可分块跳过）。
      */
     public function packGameState():Object {
+        savePhysicalStats().packGameState++;
         _root.身价 = _root.基础身价值 * _root.等级;
 
         var 主角储存数据:Array = [
@@ -1777,6 +1807,10 @@ class org.flashNight.neur.Server.SaveManager {
             return false;
         }
         if (rewardSchema.changed) _rewardInboxMigrationPending = true;
+        // AMF0 空数组→空对象修复（幂等纯内存修复；修复结果随 _saveExt 与
+        // tasks/pets 应用层进入运行时，下次存盘自然持久化）。
+        org.flashNight.arki.scene.StageRunSession.normalizeSaveData(mydata);
+        normalizeTaskAndPetShapes(mydata);
         _root.mydata = mydata;
         if (!(mydata[0][10] instanceof Array)) mydata[0][10] = [];
         if (!(mydata[0][12] instanceof Array)) mydata[0][12] = [];
@@ -2160,6 +2194,13 @@ class org.flashNight.neur.Server.SaveManager {
             changed = true;
         }
 
+        // AMF0/JSON 往返把空数组磨成空对象 {}：结算持久态五个数组字段与
+        // tasks_to_do / 宠物信息 内层空槽在此统一修复（详见各 normalizer 注释）。
+        var settlementSchema:Object =
+            org.flashNight.arki.scene.StageRunSession.normalizeSaveData(mydata);
+        if (settlementSchema.changed) changed = true;
+        if (normalizeTaskAndPetShapes(mydata)) changed = true;
+
         return changed;
     }
 
@@ -2236,6 +2277,74 @@ class org.flashNight.neur.Server.SaveManager {
                 return false;
             }
         }
+        return true;
+    }
+
+    /**
+     * AMF0/JSON 存档往返把空数组磨成空对象 {}：tasks_to_do 为空读回 {} 后
+     * push/splice 静默失败（接/删/交任务丢操作）；宠物信息 内层空槽读回 {} 后
+     * length==0 判空失效，空槽被当占用，买/领养报 slots_full。这里只把“空对象”
+     * 修复为 []；带键非数组保持原样，交消费方按既有语义处理。字段集与 launcher
+     * C# SaveMigrator.NormalizeTaskArray / NormalizePetSlot 的空槽修复对齐。
+     * SOL migrate 与 Protocol 2 _applyCore 共用；返回是否有变更。
+     */
+    private function normalizeTaskAndPetShapes(mydata:Object):Boolean {
+        var changed:Boolean = false;
+        var tasks:Object = mydata.tasks;
+        if (tasks != undefined && tasks != null && typeof tasks == "object") {
+            var repairedTasks:Object = repairEmptyArrayShape(tasks.tasks_to_do);
+            if (repairedTasks.changed) {
+                tasks.tasks_to_do = repairedTasks.value;
+                changed = true;
+            }
+        }
+        var pets:Object = mydata.pets;
+        if (pets != undefined && pets != null && typeof pets == "object"
+                && pets.宠物信息 !== undefined) {
+            var repairedPets:Object = repairPetsInfoShape(pets.宠物信息);
+            if (repairedPets.changed) {
+                pets.宠物信息 = repairedPets.info;
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    /** 空对象 → [] 单值修复；带键非数组原样返回。 */
+    private function repairEmptyArrayShape(value:Object):Object {
+        if (value != null && typeof value == "object" && !(value instanceof Array)
+                && isEmptyOwnObject(value)) {
+            return {value:[], changed:true};
+        }
+        return {value:value, changed:false};
+    }
+
+    /**
+     * 宠物信息 形状修复：整层被磨成空对象时恢复默认五槽空壳（与 C#
+     * NormalizePetsInfo 补齐五槽对齐）；数组层的内层空槽空对象原地修复为 []。
+     */
+    private function repairPetsInfoShape(info:Object):Object {
+        if (info == null || typeof info != "object") {
+            return {info:info, changed:false};
+        }
+        if (!(info instanceof Array)) {
+            if (isEmptyOwnObject(info)) return {info:defaultPetsInfo(), changed:true};
+            return {info:info, changed:false};
+        }
+        var changed:Boolean = false;
+        for (var i:Number = 0; i < info.length; i++) {
+            var slot:Object = info[i];
+            if (slot != null && typeof slot == "object" && !(slot instanceof Array)
+                    && isEmptyOwnObject(slot)) {
+                info[i] = [];
+                changed = true;
+            }
+        }
+        return {info:info, changed:changed};
+    }
+
+    private function isEmptyOwnObject(value:Object):Boolean {
+        for (var key:String in value) return false;
         return true;
     }
 
@@ -2364,6 +2473,8 @@ class org.flashNight.neur.Server.SaveManager {
         var nested:Object = (nestedTasks != undefined) ? nestedTasks : {};
         _root.tasks_to_do = preferTaskLayer(topData != undefined ? topData.tasks_to_do : undefined,
                                             nested.tasks_to_do, []);
+        // 顶层 SO 与 mydata 嵌套层可能各自被 AMF0 磨出空对象，择优后对赢家兜底修复。
+        _root.tasks_to_do = repairEmptyArrayShape(_root.tasks_to_do).value;
         _root.tasks_finished = preferTaskLayer(topData != undefined ? topData.tasks_finished : undefined,
                                                nested.tasks_finished, {});
         _root.task_chains_progress = preferTaskLayer(topData != undefined ? topData.task_chains_progress : undefined,
@@ -2427,6 +2538,8 @@ class org.flashNight.neur.Server.SaveManager {
             && (hasPetEntries(topPets) || nestedPetsInfo == undefined || !hasPetEntries(nestedPetsInfo));
 
         _root.宠物信息 = preferPetsInfoLayer(topPets, nestedPetsInfo, defaultPetsInfo());
+        // 同上：内层空槽空对象兜底修复，避免空槽被 length 判空误当占用。
+        _root.宠物信息 = repairPetsInfoShape(_root.宠物信息).info;
         if (useTopPets) {
             _root.宠物领养限制 = (topData != undefined && topData.宠物领养限制 != undefined)
                 ? topData.宠物领养限制
@@ -2575,8 +2688,11 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     private function pushShadowWithConfirm(sm:ServerManager, mydata:Object):Void {
+        var stats:Object = savePhysicalStats();
         var dataJson:String = _jsonParser.stringify(mydata);
         if (dataJson == null || dataJson == "null") return;
+        stats.jsonStringify++;
+        stats.shadowDispatch++;
         sm.sendTaskWithCallback("archive",
             {op:"shadow", slot:_root.savePath, data:dataJson}, null,
             function(resp:Object):Void {
@@ -2618,12 +2734,17 @@ class org.flashNight.neur.Server.SaveManager {
      * 只有 true 才算成功落盘，"pending" 视为未完成（不清 dirtyMark）。
      */
     private function flushSO(so:SharedObject):Boolean {
+        var stats:Object = savePhysicalStats();
+        stats.flushAttempt++;
         var result:Object = _flushResultOverrideForTests !== undefined
             ? _flushResultOverrideForTests
             : so.flush();
         if (result === true) {
+            stats.flushSuccess++;
             return true;
         }
+        if (result == "pending") stats.flushPending++;
+        else stats.flushFalse++;
         var msg:String = (result == "pending")
             ? "SaveManager: flush pending (awaiting user authorization) for "
             : "SaveManager: flush failed (result=" + result + ") for ";
