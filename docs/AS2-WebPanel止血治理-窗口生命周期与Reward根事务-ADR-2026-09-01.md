@@ -486,6 +486,10 @@ heartbeat 存活只证明相应 Web document 的定时回调曾推进；它不�
 
 只有第一次主动复现仍无法区分 owner 时，才允许针对同一假说做第二次采集。
 
+### 6.4 补充：loot 车道只读类别（2026-09-03）
+
+O1 tuple 在同一 §6.2 授权下扩展两个字段：`lootLane`（`LootContainerService.getObservationLane()`，12 个固定类别：`idle` / `map_chest_reservation_pending` / `map_chest_active` / `map_chest_claim_commit_pending` / `map_chest_suspended` / `map_chest_suspended_pause_release_pending` / `map_chest_suspended_transport_detach` / `stage_settlement_active` / `stage_settlement_claim_commit_pending` / `stage_settlement_suspended` / `stage_settlement_suspended_pause_release_pending` / `stage_settlement_suspended_transport_detach`）与 `rewardInboxActive`（布尔，复用现役 `RewardInboxService.hasActiveAuthority()`）。动机是地图箱"按 E 无反应"类软锁：车道内部 state 此前不在任何观测面内，无法区分 SUSPENDED 类粘住与待领取类粘住。两字段只读、有界、脱敏，不改 pause/scene/socket/loot 任何行为，不引入 watchdog 或自动修复；AS2 类别全集与 `BlackMarketTask.IsExactAs2ObservationTuple` 白名单一一对应，新增类别必须两侧同步。Host 校验同时接受 5 键 legacy tuple（车道字段投影为 `unknown`/`false`）与 7 键现版 tuple，其余键数 fail-closed。
+
 ---
 
 ## 7. 施工调度、所有权与 join points

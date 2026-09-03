@@ -19,6 +19,8 @@ namespace CF7Launcher.Tasks
         public string BusinessOwner { get; set; }
         public string PauseOwner { get; set; }
         public string SceneOwner { get; set; }
+        public string LootLane { get; set; }
+        public bool RewardInboxActive { get; set; }
         public long FrameSequence { get; set; }
     }
 
@@ -54,6 +56,8 @@ namespace CF7Launcher.Tasks
         private string _businessOwner = "none";
         private string _pauseOwner = "unknown";
         private string _sceneOwner = "unknown";
+        private string _lootLane = "unknown";
+        private bool _rewardInboxActive;
         private long _frameSequence = -1;
         private volatile bool _disposed;
 
@@ -352,6 +356,8 @@ namespace CF7Launcher.Tasks
             _businessOwner = "none";
             _pauseOwner = "unknown";
             _sceneOwner = "unknown";
+            _lootLane = "unknown";
+            _rewardInboxActive = false;
             _frameSequence = -1;
         }
 
@@ -385,6 +391,8 @@ namespace CF7Launcher.Tasks
                 BusinessOwner = _businessOwner,
                 PauseOwner = _pauseOwner,
                 SceneOwner = _sceneOwner,
+                LootLane = _lootLane,
+                RewardInboxActive = _rewardInboxActive,
                 FrameSequence = _frameSequence
             };
         }
@@ -397,6 +405,8 @@ namespace CF7Launcher.Tasks
                 _businessOwner = "none";
                 _pauseOwner = "unknown";
                 _sceneOwner = "unknown";
+                _lootLane = "unknown";
+                _rewardInboxActive = false;
                 _frameSequence = -1;
                 return;
             }
@@ -404,12 +414,21 @@ namespace CF7Launcher.Tasks
             _businessOwner = tuple.Value<string>("businessOwner");
             _pauseOwner = tuple.Value<string>("pauseOwner");
             _sceneOwner = tuple.Value<string>("sceneOwner");
+            // 旧 5 键 tuple 不带车道字段：保持 exact，车道投影为 unknown/false。
+            string lootLane = tuple.Value<string>("lootLane");
+            _lootLane = lootLane == null ? "unknown" : lootLane;
+            JToken rewardInbox = tuple["rewardInboxActive"];
+            _rewardInboxActive = rewardInbox != null
+                && rewardInbox.Type == JTokenType.Boolean
+                && rewardInbox.Value<bool>();
             _frameSequence = Convert.ToInt64(tuple.Value<double>("frameSequence"));
         }
 
         internal static bool IsExactAs2ObservationTuple(JObject tuple)
         {
-            if (tuple == null || tuple.Count != 5
+            // 5 键 = 车道字段引入前的 legacy tuple；7 键 = 现版。6 键或其他一律 fail-closed。
+            if (tuple == null
+                || (tuple.Count != 5 && tuple.Count != 7)
                 || tuple.Value<int?>("v") != 1
                 || !string.Equals(tuple.Value<string>("businessOwner"),
                     "blackmarket.observation", StringComparison.Ordinal))
@@ -422,6 +441,8 @@ namespace CF7Launcher.Tasks
                     && property.Name != "businessOwner"
                     && property.Name != "pauseOwner"
                     && property.Name != "sceneOwner"
+                    && property.Name != "lootLane"
+                    && property.Name != "rewardInboxActive"
                     && property.Name != "frameSequence") return false;
             }
             string pause = tuple.Value<string>("pauseOwner");
@@ -437,9 +458,27 @@ namespace CF7Launcher.Tasks
                 "scene_transition", "arena_calibration", "legacy_battle_map",
                 "base_scene"
             };
+            // 与 LootContainerService.getObservationLane 的类别全集一一对应，两侧必须同步。
+            var lootLanes = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "idle",
+                "map_chest_reservation_pending", "map_chest_active",
+                "map_chest_claim_commit_pending", "map_chest_suspended",
+                "map_chest_suspended_pause_release_pending",
+                "map_chest_suspended_transport_detach",
+                "stage_settlement_active", "stage_settlement_claim_commit_pending",
+                "stage_settlement_suspended",
+                "stage_settlement_suspended_pause_release_pending",
+                "stage_settlement_suspended_transport_detach"
+            };
             double frame = tuple.Value<double?>("frameSequence") ?? Double.NaN;
+            bool laneExact = tuple.Count == 5
+                || (lootLanes.Contains(tuple.Value<string>("lootLane"))
+                    && tuple["rewardInboxActive"] != null
+                    && tuple["rewardInboxActive"].Type == JTokenType.Boolean);
             return pauseOwners.Contains(pause)
                 && sceneOwners.Contains(scene)
+                && laneExact
                 && !Double.IsNaN(frame)
                 && !Double.IsInfinity(frame)
                 && Math.Floor(frame) == frame

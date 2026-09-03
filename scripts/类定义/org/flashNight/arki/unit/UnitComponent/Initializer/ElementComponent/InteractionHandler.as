@@ -12,6 +12,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
     // 交互距离常量
     private static var INTERACTION_Z_DISTANCE:Number = 50;
     private static var DEFAULT_PICKUP_AUDIO:String = "拾取音效.mp3";
+
+    // 拒开玩家反馈的节流表：按原因分桶记录上次提示时间，避免长按互动键刷屏
+    private static var REJECT_NOTICE_INTERVAL_MS:Number = 2000;
+    private static var _rejectNoticeTimes:Object = null;
     
     /**
      * 初始化目标的交互功能
@@ -104,17 +108,21 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
                     if (resumed == null || resumed.success !== true) {
                         trace("[LootContainer] suspended reopen rejected: "
                             + (resumed == null ? "unknown" : resumed.error));
+                        InteractionHandler.notifyOpenRejected(
+                            resumed == null ? "unknown" : resumed.error);
                     }
                     return;
                 }
                 if (lootResult.reserved !== true) {
-                    // Web-only 的 fail-closed 不能表现成“箱子偶尔没反应”。测试期必须把
-                    // classifier / authority fence 的精确原因留在 trace，便于第一时间暴露
-                    // 数据畸形、并发占用或未收束提交；仍然禁止回弹 Flash UI。
+                    // Web-only 的 fail-closed 不能表现成“箱子偶尔没反应”：classifier /
+                    // authority fence 的精确原因留在 trace，同时给玩家分桶 toast 反馈；
+                    // 仍然禁止回弹 Flash UI。
                     trace("[LootContainer] open rejected before materialization: reason="
                         + (lootResult.reason == undefined ? "unknown" : lootResult.reason)
                         + ", state="
                         + (lootResult.state == undefined ? "none" : lootResult.state));
+                    InteractionHandler.notifyOpenRejected(
+                        lootResult.reason == undefined ? "unknown" : lootResult.reason);
                     return;
                 }
 
@@ -123,6 +131,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
                     LootContainerService.abortReservedOpen(target, "materialization_failed");
                     trace("[LootContainer] materialization rejected: "
                         + (materialized == null ? "planner_returned_null" : materialized.error));
+                    InteractionHandler.notifyOpenRejected("materialization_failed");
                     return;
                 }
 
@@ -136,6 +145,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
                     // 到 Flash UI，否则会把协议/Host 故障伪装成一次成功的旧流程。
                     trace("[LootContainer] reserved commit rejected: "
                         + (committed.error == undefined ? "unknown" : committed.error));
+                    InteractionHandler.notifyOpenRejected(
+                        committed.error == undefined ? "unknown" : committed.error);
                 }
                 return;
             }
@@ -171,6 +182,39 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
             return false;
         }
         return true;
+    }
+
+    /**
+     * 拒开的玩家可见反馈。权威车道拒绝开箱时 trace 玩家看不到，沉默会被感知为
+     * “箱子偶尔没反应”；按原因分桶给出可操作提示，同一分桶在
+     * REJECT_NOTICE_INTERVAL_MS 内只发一次，避免长按互动键刷屏。
+     * @param reason LootContainerService 返回的精确拒绝原因
+     */
+    private static function notifyOpenRejected(reason:String):Void {
+        var bucket:String;
+        var message:String;
+        if (reason == "loot_flow_busy") {
+            bucket = "busy";
+            message = "暂时无法开箱：有未完成的物资结算，请先处理待领取物品";
+        } else if (reason == "loot_reservation_pending" || reason == "claim_commit_pending"
+                || reason == "loot_authority_active" || reason == "commit_pending") {
+            bucket = "pending";
+            message = "箱子结算未完成，请稍后再试";
+        } else {
+            bucket = "other";
+            message = "箱子暂时无法打开，请稍后再试";
+        }
+        if (typeof _root.发布消息 != "function") return;
+        if (_rejectNoticeTimes == null) _rejectNoticeTimes = {};
+        var now:Number = getTimer();
+        var last:Number = Number(_rejectNoticeTimes[bucket]);
+        if (!isNaN(last) && now - last < REJECT_NOTICE_INTERVAL_MS) return;
+        _rejectNoticeTimes[bucket] = now;
+        try {
+            _root.发布消息(_root.获得翻译(message));
+        } catch (noticeError) {
+            trace("[InteractionHandler] reject notice failed: " + noticeError);
+        }
     }
 
     private static function setupUnloadHandler(target:MovieClip):Boolean {

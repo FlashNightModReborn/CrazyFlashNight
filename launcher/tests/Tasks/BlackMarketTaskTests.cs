@@ -157,6 +157,9 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("webpanel", completed.PauseOwner);
             Assert.Equal("base_scene", completed.SceneOwner);
             Assert.Equal(321, completed.FrameSequence);
+            // legacy 5 键 tuple 不带车道字段，投影为 unknown/false
+            Assert.Equal("unknown", completed.LootLane);
+            Assert.False(completed.RewardInboxActive);
             Assert.Empty(_posted);
         }
 
@@ -221,6 +224,92 @@ namespace CF7Launcher.Tests.Tasks
             };
             Assert.Equal(expected,
                 BlackMarketTask.IsExactAs2ObservationTuple(tuple));
+        }
+
+        [Theory]
+        [InlineData("idle", true, true)]
+        [InlineData("map_chest_suspended_pause_release_pending", false, true)]
+        [InlineData("map_chest_reservation_pending", true, true)]
+        [InlineData("stage_settlement_suspended", true, true)]
+        [InlineData("stage_settlement_claim_commit_pending", false, true)]
+        [InlineData("unknown_lane", true, false)]
+        [InlineData("", false, false)]
+        public void ObservationTuple_LaneFieldsValidatedWhenPresent(
+            string lootLane,
+            bool rewardInboxActive,
+            bool expected)
+        {
+            var tuple = new JObject
+            {
+                ["v"] = 1,
+                ["businessOwner"] = "blackmarket.observation",
+                ["pauseOwner"] = "none",
+                ["sceneOwner"] = "base_scene",
+                ["lootLane"] = lootLane,
+                ["rewardInboxActive"] = rewardInboxActive,
+                ["frameSequence"] = 7
+            };
+            Assert.Equal(expected,
+                BlackMarketTask.IsExactAs2ObservationTuple(tuple));
+        }
+
+        [Fact]
+        public void ObservationTuple_SixKeysFailsClosed()
+        {
+            var tuple = new JObject
+            {
+                ["v"] = 1,
+                ["businessOwner"] = "blackmarket.observation",
+                ["pauseOwner"] = "none",
+                ["sceneOwner"] = "base_scene",
+                ["lootLane"] = "idle",
+                ["frameSequence"] = 7
+            };
+            Assert.False(BlackMarketTask.IsExactAs2ObservationTuple(tuple));
+        }
+
+        [Fact]
+        public void ObservationTuple_NonBooleanRewardInboxFailsClosed()
+        {
+            var tuple = new JObject
+            {
+                ["v"] = 1,
+                ["businessOwner"] = "blackmarket.observation",
+                ["pauseOwner"] = "none",
+                ["sceneOwner"] = "base_scene",
+                ["lootLane"] = "idle",
+                ["rewardInboxActive"] = "yes",
+                ["frameSequence"] = 7
+            };
+            Assert.False(BlackMarketTask.IsExactAs2ObservationTuple(tuple));
+        }
+
+        [Fact]
+        public void Observation_ExactLaneTupleProjectsToSnapshot()
+        {
+            string sent = null;
+            _task.ObserveHeartbeat(5, delegate(string payload, int generation)
+            {
+                sent = payload;
+                return true;
+            });
+            JObject command = JObject.Parse(sent.TrimEnd('\0'));
+            _task.HandleFlashResponse(JObject.Parse(
+                "{\"task\":\"blackmarket_response\",\"callId\":"
+                + (int)command["callId"]
+                + ",\"success\":true,\"observationTuple\":{"
+                + "\"v\":1,\"businessOwner\":\"blackmarket.observation\","
+                + "\"pauseOwner\":\"webpanel\",\"sceneOwner\":\"base_scene\","
+                + "\"lootLane\":\"map_chest_suspended\","
+                + "\"rewardInboxActive\":true,"
+                + "\"frameSequence\":64}}"),
+                delegate(string ignored) { });
+
+            BlackMarketObservationSnapshot snapshot = _task.CaptureObservation();
+            Assert.Equal("exact", snapshot.As2TupleState);
+            Assert.Equal("map_chest_suspended", snapshot.LootLane);
+            Assert.True(snapshot.RewardInboxActive);
+            Assert.Equal(64, snapshot.FrameSequence);
         }
     }
 }

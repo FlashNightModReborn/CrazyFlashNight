@@ -829,7 +829,7 @@ _root.gameCommands["blackmarketTooltip"] = function(params) {
 };
 
 // O1 临时软锁观测：由 feature-gated blackmarket heartbeat 低频触发。
-// 只读取三个明确 owner 与帧序号；不改 pause/scene/socket/业务状态，也不含 watchdog。
+// 只读取明确 owner、loot 车道类别与帧序号；不改 pause/scene/socket/loot/业务状态，也不含 watchdog。
 _root.gameCommands["blackmarketObservation"] = function(params) {
     var frameSequence:Number = _root.帧计时器 != undefined
         ? Number(_root.帧计时器.当前帧数) : -1;
@@ -843,6 +843,8 @@ _root.gameCommands["blackmarketObservation"] = function(params) {
             businessOwner: "blackmarket.observation",
             pauseOwner: org.flashNight.arki.pause.PauseManager.getObservationOwner(),
             sceneOwner: org.flashNight.arki.scene.StageRunSession.getObservationOwner(),
+            lootLane: org.flashNight.arki.item.LootContainerService.getObservationLane(),
+            rewardInboxActive: org.flashNight.arki.item.RewardInboxService.hasActiveAuthority(),
             frameSequence: frameSequence
         }
     });

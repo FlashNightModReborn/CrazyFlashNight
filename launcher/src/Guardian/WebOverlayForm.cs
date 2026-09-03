@@ -4217,6 +4217,7 @@ namespace CF7Launcher.Guardian
                         BusinessOwner = "none",
                         PauseOwner = "unknown",
                         SceneOwner = "unknown",
+                        LootLane = "unknown",
                         FrameSequence = -1
                     };
             bool webPending = data.Value<bool>("pending");
@@ -4254,6 +4255,9 @@ namespace CF7Launcher.Guardian
                 + " as2_business_owner=" + observation.BusinessOwner
                 + " pause_owner=" + observation.PauseOwner
                 + " scene_owner=" + observation.SceneOwner
+                + " loot_lane=" + observation.LootLane
+                + " reward_inbox_active="
+                + (observation.RewardInboxActive ? "true" : "false")
                 + " as2_frame_sequence=" + observation.FrameSequence);
         }
 

@@ -1405,6 +1405,32 @@ class org.flashNight.arki.item.LootContainerService {
         return record != null && record.transportDetachNeeded === true;
     }
 
+    /**
+     * O1 临时只读观测面：把标准权威车道归一为固定类别名，供软锁心跳采样归因。
+     * 只读取 _reservation/_active 的现存字段，不创建/收束 authority、不改任何状态。
+     * 类别全集与 BlackMarketTask 的白名单一一对应，新增类别必须两侧同步。
+     */
+    public static function getObservationLane():String {
+        var record:Object = _active;
+        if (record != null) {
+            var source:String = record.panelSource === STAGE_SETTLEMENT_SOURCE
+                ? "stage_settlement" : "map_chest";
+            if (record.state == STATE_PENDING) return source + "_claim_commit_pending";
+            if (record.state == STATE_SUSPENDED) {
+                if (record.transportDetachNeeded === true) {
+                    return source + "_suspended_transport_detach";
+                }
+                if (record.suspendPauseReleasePending === true) {
+                    return source + "_suspended_pause_release_pending";
+                }
+                return source + "_suspended";
+            }
+            return source + "_active";
+        }
+        if (_reservation != null) return "map_chest_reservation_pending";
+        return "idle";
+    }
+
     /** SUSPENDED authority 存在时，同一 supported target 可重开；其他 shape 统一分类。 */
     private static function guardAnyMapChestGrid(target:Object):Object {
         var shape:String = classifyMapChestShape(target);
