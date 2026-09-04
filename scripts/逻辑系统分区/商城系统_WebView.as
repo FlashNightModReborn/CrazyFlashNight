@@ -451,9 +451,20 @@ _root.UI系统.商城WebView.finalizeCheckout = function(preview:Object, resp:Ob
             }
         }
         _root.商城购物车 = [];
-        // durability 请求属于本次领域 finality；commit 会隔离存盘异常并保留 dirty，
-        // 不能让已扣款/已交付的成功回包被 post-commit 存盘异常截断后重放。
-        org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
+        // durable fence 必须先于 commit：flush 失败时 exact restore 交付/扣款/购物车，
+        // 不发布成功 receipt，命令以 commit_pending 交给 Web bulkQuery 对账，
+        // 不留"已返回成功、资产未 durable"的崩溃丢失窗口（存盘风暴止血专项 A①）。
+        if (!org.flashNight.arki.item.PlayerAssetTransaction.flushStrongSaveNow()) {
+            var checkoutFlushRestored:Boolean =
+                org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                    checkoutAssetSnapshot);
+            if (checkoutFlushRestored) _root.商城购物车 = checkoutCartBefore;
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                assetTransaction, !checkoutFlushRestored);
+            resp.success = false;
+            resp.error = "commit_pending";
+            return resp;
+        }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
     } catch (checkoutAssetError) {
         var checkoutRestored:Boolean =
@@ -635,11 +646,28 @@ _root.gameCommands["shopClaim"] = function(params) {
             claimAttemptToken = _root.UI系统.商城WebView.rotatePurchasedToken();
             if (org.flashNight.arki.item.ItemUtil.singleAcquire(itemName, qty, claimContext)) {
                 _root.商城已购买物品.splice(claimIdx, 1);
-                // 入包与移除待领取记录共同构成领域 finality；升级强存盘也延迟到
-                // 这两项权威状态均完成后，receipt 不再领先于待领取列表。
-                org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
-                org.flashNight.arki.item.PlayerAssetTransaction.commit(claimTransaction);
-                claimSucceeded = true;
+                // durable fence 先于 commit：入包与待领取移除完成后先确认落盘；
+                // flush 失败 exact restore 资产/待领取/token 并回 commit_pending，
+                // 成功 receipt 只在 durable 之后发布（存盘风暴止血专项 A①）。
+                if (!org.flashNight.arki.item.PlayerAssetTransaction.flushStrongSaveNow()) {
+                    var claimFlushRestored:Boolean =
+                        org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                            claimAssetSnapshot);
+                    if (claimFlushRestored) {
+                        _root.商城已购买物品 = claimPurchasedBefore;
+                        _root.UI系统.商城WebView.purchasedToken = claimTokenBefore;
+                    }
+                    org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                        claimTransaction, !claimFlushRestored);
+                    resp.success = false;
+                    resp.error = "commit_pending";
+                    resp.purchasedToken =
+                        String(_root.UI系统.商城WebView.purchasedToken);
+                } else {
+                    org.flashNight.arki.item.PlayerAssetTransaction.commit(
+                        claimTransaction);
+                    claimSucceeded = true;
+                }
             } else {
                 org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
                     claimAssetSnapshot);

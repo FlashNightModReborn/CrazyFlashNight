@@ -36,6 +36,9 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         testMalformedPreviewInvalidatesToken();
         testCheckoutListenerFaultRestoresExactSnapshot();
         testClaimListenerFaultRestoresExactSnapshot();
+        testClaimFlushFailureRestoresAndReturnsCommitPending();
+        testClaimFlushThrowRestoresAndReturnsCommitPending();
+        testCheckoutFlushFailureRestoresAndReturnsCommitPending();
         trace("KShopCheckoutServiceTest Tests Passed: " + passed);
         trace("KShopCheckoutServiceTest Tests Failed: " + failed);
     }
@@ -111,7 +114,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         _root.server.sendServerMessage = function(message:String):Void {};
         _root.soundEffectManager = {playSound:function(name:String):Void {}};
         _root.存档系统 = {dirtyMark:false};
-        _root.强制存盘 = function():Void { _root.testKShopSaveCount++; };
+        _root.强制存盘 = function():Boolean { _root.testKShopSaveCount++; return true; };
     }
 
     private static function resetState():Void {
@@ -552,6 +555,108 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
                 && PlayerAssetTransaction.current() == null,
             "KShop claim listener fault permits one exact retry without duplication");
         holder.removeMovieClip();
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimFlushFailureRestoresAndReturnsCommitPending():Void {
+        resetState();
+        _root.存档系统.dirtyMark = false;
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var tokenBefore:String = String(_root.UI系统.商城WebView.purchasedToken);
+        var saveAttempts:Number = 0;
+        var oldFlush:Function = _root.强制存盘;
+        _root.强制存盘 = function():Boolean {
+            saveAttempts++;
+            _root.testKShopSaveCount++;
+            return false;
+        };
+        var bag:ArrayInventory = _root.物品栏.背包;
+        _root.gameCommands["shopClaim"]({
+            callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
+        });
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(!response.success && response.error == "commit_pending"
+                && response.purchasedToken == tokenBefore
+                && bag.getItem("0") == null
+                && _root.商城已购买物品.length == 1
+                && String(_root.UI系统.商城WebView.purchasedToken) == tokenBefore
+                && _root.存档系统.dirtyMark === false
+                && receipts.length == 0 && saveAttempts == 1
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "claim flush false restores item/pending/token/dirty, withholds receipt and answers commit_pending");
+
+        _root.强制存盘 = oldFlush;
+        _root.gameCommands["shopClaim"]({
+            callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
+        });
+        var retry:Object = new LiteJSON().parse(String(_root.server.sent));
+        check(retry.success === true && bag.getItem("0").value == 1
+                && _root.商城已购买物品.length == 0 && receipts.length == 1
+                && PlayerAssetTransaction.current() == null,
+            "claim commit_pending keeps the same token valid for one exact retry");
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimFlushThrowRestoresAndReturnsCommitPending():Void {
+        resetState();
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var tokenBefore:String = String(_root.UI系统.商城WebView.purchasedToken);
+        var oldFlush:Function = _root.强制存盘;
+        _root.强制存盘 = function():Boolean { throw "kshop_claim_flush_failed"; return false; };
+        _root.gameCommands["shopClaim"]({
+            callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
+        });
+        var response:Object = new LiteJSON().parse(String(_root.server.sent));
+        _root.强制存盘 = oldFlush;
+        check(!response.success && response.error == "commit_pending"
+                && _root.物品栏.背包.getItem("0") == null
+                && _root.商城已购买物品.length == 1
+                && String(_root.UI系统.商城WebView.purchasedToken) == tokenBefore
+                && receipts.length == 0
+                && PlayerAssetTransaction.current() == null,
+            "claim flush throw is contained by the durable fence and answers commit_pending");
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testCheckoutFlushFailureRestoresAndReturnsCommitPending():Void {
+        resetState();
+        _root.存档系统.dirtyMark = false;
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var preview:Object = requestPreview([{idx:0, qty:2}]);
+        var oldFlush:Function = _root.强制存盘;
+        _root.强制存盘 = function():Boolean {
+            _root.testKShopSaveCount++;
+            return false;
+        };
+        var commit:Object = requestCommit(preview.checkoutToken);
+        _root.强制存盘 = oldFlush;
+        check(!commit.success && commit.error == "commit_pending"
+                && _root.虚拟币 == 1000 && _root.商城购物车.length == 1
+                && _root.物品栏.背包.getIndexes().length == 0
+                && _root.存档系统.dirtyMark === false
+                && receipts.length == 0 && _root.testKShopSaveCount == 1
+                && PlayerAssetTransaction.current() == null,
+            "checkout flush false restores delivery/payment/cart/dirty, withholds receipt and answers commit_pending");
+
+        var retryPreview:Object = requestPreview([{idx:0, qty:2}]);
+        var retry:Object = requestCommit(retryPreview.checkoutToken);
+        check(retry.success === true && _root.虚拟币 == 920
+                && _root.物品栏.背包.getItem(0).value == 2
+                && receipts.length == 1 && _root.testKShopSaveCount == 2,
+            "checkout commit_pending leaves the cart submittable for one exact retry");
         PlayerAssetTransaction.resetForTests();
     }
 

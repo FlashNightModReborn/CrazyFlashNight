@@ -185,6 +185,24 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         performStrongSave();
     }
 
+    /**
+     * 显式 durable fence：立即执行一次强制存盘并只返回真实 durable 结果。
+     *
+     * 需要在回执发布之前确认 durable 的命令车道（K 店 checkout/claim）在所有权威写
+     * 完成、commit 之前调用；false 与异常都按未 durable 处理，由调用方 exact restore
+     * 或 preserve。与 requestStrongSave 不同，本方法不经事务的延迟请求队列，调用方
+     * 因此能在发布成功 receipt 之前否决命令 finality（存盘风暴止血专项 A①）。
+     */
+    public static function flushStrongSaveNow():Boolean {
+        try {
+            return performStrongSave() === true;
+        } catch (flushError) {
+            trace("[PlayerAssetTransaction] explicit strong save fence failed: "
+                + flushError);
+            return false;
+        }
+    }
+
     private static function addSignedCurrency(transaction:Object, kind:String,
                                               name:String, delta:Number,
                                               context:Object):Void {

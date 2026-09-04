@@ -39,6 +39,7 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
         suite.testCurrencyDeltas();
         suite.testWireProjection();
         suite.testStrongSaveFinality();
+        suite.testExplicitStrongSaveFence();
         suite.testConsumerFailureIsolated();
         suite.testImplicitExceptionDoesNotPoisonStack();
         suite.testAcquireExceptionOwnsOnlyImplicitFrame();
@@ -354,6 +355,33 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
             "强存盘异常保留为未耐久状态");
         assert(receipts.length == 1 && receipts[0].effects[0].count == 2,
             "强存盘异常不吞掉已经提交的资产回执");
+    }
+
+    private function testExplicitStrongSaveFence():Void {
+        PlayerAssetTransaction.resetForTests();
+        var saveCount:Number = 0;
+        PlayerAssetTransaction.setTestStrongSaveSink(function():Boolean {
+            saveCount++;
+            return true;
+        });
+        assert(PlayerAssetTransaction.flushStrongSaveNow() === true && saveCount == 1,
+            "显式 durable fence 立即兑现一次强存盘并返回真实 durable 结果");
+
+        PlayerAssetTransaction.setTestStrongSaveSink(function():Boolean {
+            saveCount++;
+            return false;
+        });
+        assert(PlayerAssetTransaction.flushStrongSaveNow() === false && saveCount == 2,
+            "显式 durable fence 把 flush false 按未 durable 返回");
+
+        PlayerAssetTransaction.setTestStrongSaveSink(function() {
+            saveCount++;
+            throw "fence_save_failed";
+        });
+        assert(PlayerAssetTransaction.flushStrongSaveNow() === false && saveCount == 3,
+            "显式 durable fence 隔离存盘异常并返回未 durable");
+        assert(PlayerAssetTransaction.current() == null,
+            "显式 durable fence 不创建也不泄漏事务栈");
     }
 
     private function testConsumerFailureIsolated():Void {
