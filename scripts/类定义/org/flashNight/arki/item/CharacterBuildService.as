@@ -3001,7 +3001,9 @@ class org.flashNight.arki.item.CharacterBuildService {
                 if (name == "isGlobalDirty") {
                     value = saveManager.hasPendingChanges();
                 } else if (name == "flushNow") {
-                    value = saveManager.flushNow();
+                    // R1 步骤 7：finalize fence 内核换 flushDurableNow；桥名与回调
+                    // 键保持 "flushNow"（测试 double 形状不变），true 语义不变
+                    value = saveManager.flushDurableNow("character_build.finalize");
                 } else {
                     return {known:false};
                 }

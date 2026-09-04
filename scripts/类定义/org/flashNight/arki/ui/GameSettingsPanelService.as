@@ -231,7 +231,8 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
 
         var durable:Boolean = false;
         try {
-            durable = SaveManager.getInstance().flushNow() === true;
+            // R1 步骤 7：durable cut 走 flushDurableNow；true 仍仅代表本地 SOL flush true
+            durable = SaveManager.getInstance().flushDurableNow("settings.apply") === true;
         } catch (saveError) {
             durable = false;
         }
@@ -257,7 +258,8 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         if (_root.存档系统 == undefined || _root.允许存档 !== true) return fail("save_unavailable");
         var durable:Boolean = false;
         try {
-            durable = SaveManager.getInstance().flushNow() === true;
+            // R1 步骤 7：durable cut 走 flushDurableNow；true 仍仅代表本地 SOL flush true
+            durable = SaveManager.getInstance().flushDurableNow("settings.save") === true;
         } catch (saveError) {
             durable = false;
         }

@@ -1957,7 +1957,7 @@ class org.flashNight.arki.item.LootContainerService {
             batch.stageProgressDone = true;
         }
         if (batch.saveDone !== true) {
-            if (!flushSaveVerified()) {
+            if (!flushSaveVerified("loot.claim_batch")) {
                 record.state = STATE_PENDING;
                 return failureFor(record, "commit_pending");
             }
@@ -2113,7 +2113,7 @@ class org.flashNight.arki.item.LootContainerService {
             effects.stageProgressDone = true;
         }
         if (!effects.saveDone) {
-            if (!flushSaveVerified()) {
+            if (!flushSaveVerified("loot.standalone_claim")) {
                 trace("[LootContainerService] durable save pending");
                 return false;
             }
@@ -2900,7 +2900,7 @@ class org.flashNight.arki.item.LootContainerService {
             pending.extCleared = true;
         }
         if (pending.saveDone !== true) {
-            if (!flushSaveVerified()) {
+            if (!flushSaveVerified("loot.settlement_terminal")) {
                 return {success:false, error:"terminal_save_pending"};
             }
             pending.saveDone = true;
@@ -3208,10 +3208,10 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     /** 所有玩家资产领取都以同步 strict-true flush 作为成功回包前的 durable fence。 */
-    private static function flushSaveVerified():Boolean {
-        if (typeof _root.强制存盘 != "function") return false;
+    private static function flushSaveVerified(reason:String):Boolean {
+        if (_root.存档系统 == null || typeof _root.存档系统.flushDurableNow != "function") return false;
         try {
-            return _root.强制存盘() === true;
+            return _root.存档系统.flushDurableNow(reason) === true;
         } catch (saveError) {
             trace("[LootContainerService] durable save failed");
             return false;

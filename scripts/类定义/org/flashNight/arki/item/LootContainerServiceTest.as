@@ -236,6 +236,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             _root.__lootSaveCalls++;
             return true;
         };
+        // R1 步骤 9：A4/A5 已迁 flushDurableNow，同一 double 镜像到新 shim 入口
+        _root.存档系统.flushDurableNow = _root.强制存盘;
         InventoryPanelService.testOnlyReset();
         LootContainerService.testOnlyReset();
         RewardInboxService.resetForTests();
@@ -1335,6 +1337,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             saveSystem.addProperty("dirtyMark",
                 function():Boolean { return dirtyValue; },
                 function(value:Boolean):Void { dirtyWrites++; dirtyValue = value; });
+            // R1 步骤 9：A5 已迁 flushDurableNow，自定义存档系统同样挂 double
+            saveSystem.flushDurableNow = _root.强制存盘;
             _root.存档系统 = saveSystem;
 
             var item:BaseItem = equipment(3943);
@@ -1382,6 +1386,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             saveAttempts++;
             return saveAttempts >= 2;
         };
+        // R1 步骤 9：A4/A5 已迁 flushDurableNow，同一 double 镜像到新 shim 入口
+        _root.存档系统.flushDurableNow = _root.强制存盘;
         var item:BaseItem = stack(STACK, 3, 39431);
         var flow:Object = activate([item], "s1.durable-save-retry");
         var authority:Object = snapshot(flow);
@@ -3543,6 +3549,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             _root.__lootSaveCalls++;
             return false;
         };
+        // R1 步骤 9：A4/A5 已迁 flushDurableNow，同一 double 镜像到新 shim 入口
+        _root.存档系统.flushDurableNow = _root.强制存盘;
         var failed:Object = _root.奖励待领取系统.投送在线补给包(
             "在线补给包·Ⅱ", "christmas_tree:online-20m");
         var rolledBackDelivery:Boolean = _root.奖励待领取系统.在线补给包已投送(
@@ -3564,6 +3572,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             _root.__lootSaveCalls++;
             return true;
         };
+        // R1 步骤 9：A4/A5 已迁 flushDurableNow，同一 double 镜像到新 shim 入口
+        _root.存档系统.flushDurableNow = _root.强制存盘;
         RewardInboxService.resetForTests();
         RewardInboxService.installRootFacade();
         var priorSessionHidden:Boolean = !_root.奖励待领取系统.在线补给包已投送(
@@ -4358,6 +4368,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             return org.flashNight.arki.item.LootContainerServiceTest
                 .flushRewardPersistedSaveForTest();
         };
+        // R1 步骤 9：A4/A5 已迁 flushDurableNow，同一 double 镜像到新 shim 入口
+        _root.存档系统.flushDurableNow = _root.强制存盘;
     }
 
     public static function flushRewardPersistedSaveForTest() {
@@ -4450,6 +4462,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             return org.flashNight.arki.item.LootContainerServiceTest
                 .flushRewardPersistedSaveForTest();
         };
+        // R1 步骤 9：A4/A5 已迁 flushDurableNow，同一 double 镜像到新 shim 入口
+        _root.存档系统.flushDurableNow = _root.强制存盘;
         return true;
     }
 

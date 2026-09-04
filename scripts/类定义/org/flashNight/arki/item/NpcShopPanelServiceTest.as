@@ -116,6 +116,8 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         _root.存档系统 = {dirtyMark:false};
         _root.testNpcShopSaveCount = 0;
         _root.强制存盘 = function():Void { _root.testNpcShopSaveCount++; };
+        // R1 步骤 9：A3 已迁 flushDurableNow，double 镜像到新 shim 入口
+        _root.存档系统.flushDurableNow = _root.强制存盘;
         _root.soundEffectManager = {};
         _root.soundEffectManager.playSound = function():Void {};
         _root.Web物品注释HTML = function(name:String):Object { return {displayname:name,descHTML:"desc",introHTML:"intro"}; };

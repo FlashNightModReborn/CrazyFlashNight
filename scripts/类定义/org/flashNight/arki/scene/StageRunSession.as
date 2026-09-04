@@ -517,10 +517,10 @@ class org.flashNight.arki.scene.StageRunSession {
         // 奖励 manifest 已冻结并写入 _saveExt 后，仍必须确认整档真实落盘，
         // 才能让场景跳转/cleanup 开始。缺失函数、异常约定值和 false 均 fail-closed；
         // 失败时保留同一 prepared/pending，下一次请求只重试持久化与 flush，绝不重 roll。
-        if (typeof _root.强制存盘 != "function") return false;
+        if (_root.存档系统 == null || typeof _root.存档系统.flushBeforeTransition != "function") return false;
         var durable:Boolean = false;
         try {
-            durable = (_root.强制存盘() === true);
+            durable = (_root.存档系统.flushBeforeTransition("stage.return_base") === true);
         } catch (flushError) {
             durable = false;
         }

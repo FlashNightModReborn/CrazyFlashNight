@@ -592,8 +592,9 @@ class org.flashNight.arki.item.ItemUseService {
     }
 
     private static function flushSave():Boolean {
-        if (typeof _root.强制存盘 != "function") return false;
-        try { return _root.强制存盘() === true; }
+        // R1 步骤 9：durable cut 内核换 flushDurableNow；false/异常语义不变
+        if (_root.存档系统 == null || typeof _root.存档系统.flushDurableNow != "function") return false;
+        try { return _root.存档系统.flushDurableNow("item_use.open_commit") === true; }
         catch (saveError) { return false; }
     }
 

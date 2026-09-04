@@ -725,7 +725,7 @@ class org.flashNight.neur.Server.CharacterCreationService {
 
     private static function flushCharacter():Boolean {
         if (_flushHookForTests != null) return _flushHookForTests() === true;
-        return SaveManager.getInstance().flushNow() === true;
+        return SaveManager.getInstance().flushBeforeTransition("character_creation.start_tutorial") === true;
     }
 
     private static function startTutorial(startToken:String,

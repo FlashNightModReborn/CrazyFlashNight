@@ -115,6 +115,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         _root.soundEffectManager = {playSound:function(name:String):Void {}};
         _root.存档系统 = {dirtyMark:false};
         _root.强制存盘 = function():Boolean { _root.testKShopSaveCount++; return true; };
+        // R1 步骤 9：A3 已迁 flushDurableNow，默认 double 镜像到新 shim 入口
+        _root.存档系统.flushDurableNow = _root.强制存盘;
     }
 
     private static function resetState():Void {
@@ -568,8 +570,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         });
         var tokenBefore:String = String(_root.UI系统.商城WebView.purchasedToken);
         var saveAttempts:Number = 0;
-        var oldFlush:Function = _root.强制存盘;
-        _root.强制存盘 = function():Boolean {
+        var oldFlush:Function = _root.存档系统.flushDurableNow;
+        _root.存档系统.flushDurableNow = function(reason):Boolean {
             saveAttempts++;
             _root.testKShopSaveCount++;
             return false;
@@ -590,7 +592,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
                 && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
             "claim flush false restores item/pending/token/dirty, withholds receipt and answers commit_pending");
 
-        _root.强制存盘 = oldFlush;
+        _root.存档系统.flushDurableNow = oldFlush;
         _root.gameCommands["shopClaim"]({
             callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
         });
@@ -610,13 +612,13 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
             receipts.push(receipt);
         });
         var tokenBefore:String = String(_root.UI系统.商城WebView.purchasedToken);
-        var oldFlush:Function = _root.强制存盘;
-        _root.强制存盘 = function():Boolean { throw "kshop_claim_flush_failed"; return false; };
+        var oldFlush:Function = _root.存档系统.flushDurableNow;
+        _root.存档系统.flushDurableNow = function(reason):Boolean { throw "kshop_claim_flush_failed"; return false; };
         _root.gameCommands["shopClaim"]({
             callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
         });
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
-        _root.强制存盘 = oldFlush;
+        _root.存档系统.flushDurableNow = oldFlush;
         check(!response.success && response.error == "commit_pending"
                 && _root.物品栏.背包.getItem("0") == null
                 && _root.商城已购买物品.length == 1
@@ -636,13 +638,13 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
             receipts.push(receipt);
         });
         var preview:Object = requestPreview([{idx:0, qty:2}]);
-        var oldFlush:Function = _root.强制存盘;
-        _root.强制存盘 = function():Boolean {
+        var oldFlush:Function = _root.存档系统.flushDurableNow;
+        _root.存档系统.flushDurableNow = function(reason):Boolean {
             _root.testKShopSaveCount++;
             return false;
         };
         var commit:Object = requestCommit(preview.checkoutToken);
-        _root.强制存盘 = oldFlush;
+        _root.存档系统.flushDurableNow = oldFlush;
         check(!commit.success && commit.error == "commit_pending"
                 && _root.虚拟币 == 1000 && _root.商城购物车.length == 1
                 && _root.物品栏.背包.getIndexes().length == 0

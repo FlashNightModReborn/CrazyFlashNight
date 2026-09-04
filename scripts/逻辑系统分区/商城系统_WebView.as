@@ -194,9 +194,9 @@ _root.gameCommands["shopPanelOpen"] = function(params) {
 
 _root.gameCommands["shopPanelClose"] = function(params) {
     _root.UI系统.商城WebView.log("shopPanelClose");
-    // TODO Plan A2/C: 可改 if(dirtyMark) 守卫或直接删除（checkout/claim 已 flushNow）
-    // 本轮保留 _root.自动存盘() 作为 SOL 子层兜底；走 debounce 不会立即落盘
-    _root.自动存盘();
+    // R1 步骤 6：收敛为无条件 requestSave（300ms trailing 合并，不承诺 durability）；
+    // checkout/claim 的 durable 仍走 PAT strict fence（专项 A①），不在本路径。
+    _root.存档系统.requestSave("shop.panel_close");
     if (_root.UI系统.商城WebView.pauseLeaseId !== undefined) {
         org.flashNight.arki.pause.PauseManager.releaseLease(_root.UI系统.商城WebView.pauseLeaseId);
         _root.UI系统.商城WebView.pauseLeaseId = undefined;
@@ -742,11 +742,12 @@ _root.gameCommands["shopSaveCart"] = function(params) {
     }
     // Plan A audit: shopSaveCart 写 _root.商城购物车（save-relevant）。
     // 删除原本的 _root.保存购物车() 子层 flush（仅写 cart 子层 SOL，与 mydata 顶层
-    // 长期 desync 风险）。改为标脏 + 自动存盘 debounce：购物车连续编辑被合并；
-    // 后续 checkout/claim 会走 flushNow 一次性写完整 mydata；玩家离开商城面板
-    // 时 shopPanelClose 兜底 + SceneChanged hook unconditional flushNow 兜底。
-    _root.存档系统.dirtyMark = true;
-    _root.自动存盘();
+    // 长期 desync 风险）。R1 步骤 6：dirty setter 收敛 canonical markDirty()，
+    // 随后 requestSave("shop.cart_edit") 300ms trailing 合并：连续编辑被合并；
+    // 后续 checkout/claim 走 PAT strict fence 一次性写完整 mydata；玩家离开商城面板
+    // 时 shopPanelClose requestSave 兜底 + SceneChanged hook unconditional flushNow 兜底。
+    _root.存档系统.markDirty();
+    _root.存档系统.requestSave("shop.cart_edit");
     var resp = { task: "shop_response", callId: callId, success: true, v:1, cart:savedCart };
     _root.UI系统.商城WebView.sendResponse(resp);
 };

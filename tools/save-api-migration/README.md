@@ -4,7 +4,7 @@ R1 路线（裁决回执 `tmp/adjudication-savemanager-api-20260904/gptpro.txt` 
 
 | 文件 | 作用 |
 |---|---|
-| `callsites.v1.json` | 机器可读调用点 manifest：36 条物理记录 / 32 个逻辑调用点（17 strict + 15 debounce）+ 3 处悬空 `存档系统.markDirty()` + C6 关联子层 flush 基线 + 当前发布 SWF hash 基线 |
+| `callsites.v1.json` | 机器可读调用点 manifest：37 条物理记录 / 32 个逻辑调用点（17 strict + 15 debounce；D2 于步骤 6 拆为 markDirty+requestSave 两物理点）+ 3 处已接通 canonical `存档系统.markDirty()` + C6 关联子层 flush 基线 + 当前发布 SWF hash 基线 |
 | `check-callsites.js` | 回归门扫描器：全库独立扫描，精确数量断言（`==` 非 `<=`），扫描命中与 manifest 一一对应，任何漂移非零退出 |
 
 ## 用法
@@ -23,19 +23,31 @@ node tools/save-api-migration/check-callsites.js --verify-swf-hashes  # 额外�
 ### 什么算一个调用点
 
 - **逻辑调用点**：裁决 §3.1 分类的一个语义归属单位（A1-A6 / B1-B5 / C1-C6 / D1-D2 / E1-E13），共 17 strict（A/B/C 组）+ 15 debounce（D/E 组）= 32 个。
-- **物理调用点**：源码中一处实际的旧入口调用文本。C1/C2/C3/C5 因主 XFL 与 `flashswf/UI` 同源双份各含 2 个物理点，故 32 逻辑点对应 36 物理点（scripts 11 strict + 2 debounce；XFL 10 strict + 13 debounce）。
+- **物理调用点**：源码中一处实际的存盘 API 调用文本。C1/C2/C3/C5 因主 XFL 与 `flashswf/UI` 同源双份各含 2 个物理点；D2 在步骤 6 迁移后由一个逻辑点拆为 `markDirty` + `requestSave` 两个物理点，故 32 逻辑点当前对应 37 物理点（scripts 11 strict + 2 debounce + 1 canonical markDirty；XFL 10 strict + 13 debounce）。
 - manifest 每条记录 = 一个物理点，`callsiteId` 指向逻辑点，`physicalId` 全局唯一。
 
 ### 旧入口 family（扫描口径）
 
 | family | pattern | 范围 | 精确数 |
 |---|---|---|---|
-| `forceSave` | `_root.强制存盘(` | scripts 生产 + XFL XML | scripts 6 / XFL 10 |
-| `directFlushNow` | `flushNow(` | scripts 生产，排除 `SaveManager.as`（定义宿主）与 `通信_lsy_原版存档系统.as`（shim 委托） | 5（B1-B5） |
-| `autoSave` | `_root.自动存盘(` | scripts 生产 + XFL XML | scripts 2 / XFL 13 |
+| `forceSave` | `_root.强制存盘(` | scripts 生产 + XFL XML | scripts 1 / XFL 10 |
+| `directFlushNow` | `flushNow(` | scripts 生产，排除 `SaveManager.as`（定义宿主）与 `通信_lsy_原版存档系统.as`（shim 委托） | 1（B1） |
+| `autoSave` | `_root.自动存盘(` | scripts 生产 + XFL XML | scripts 0 / XFL 13 |
 | `localSave` | `_root.本地存盘(` | scripts 生产 + XFL XML | 0 / 0（死委托） |
-| `danglingMarkDirty` | `存档系统.markDirty(` | scripts 生产 | 3（悬空调用） |
 | `saveShopCart` | `_root.保存购物车(` | XFL XML | 2（C6 关联，不纳入四层） |
+
+### 四层 API family（扫描口径，步骤 6 起）
+
+| family | pattern | 范围 | 精确数 |
+|---|---|---|---|
+| `apiMarkDirty` | `存档系统.markDirty(` | scripts 生产 + XFL XML，排除两个定义宿主 | scripts 4 / XFL 0 |
+| `apiRequestSave` | `requestSave(` | 同上 | scripts 2 / XFL 0 |
+| `apiFlushDurableNow` | `flushDurableNow(` | 同上 | scripts 6 / XFL 0 |
+| `apiFlushBeforeTransition` | `flushBeforeTransition(` | 同上 | scripts 3 / XFL 0 |
+
+- 四层 family 同时匹配 shim 形态（`_root.存档系统.x(...)`）与类内直调形态（`sm.x(...)`）；`SaveManager.as`（定义宿主）与 `通信_lsy_原版存档系统.as`（shim 委托）经 `SAVE_API_DEF_HOSTS` 排除。
+- `apiMarkDirty` 的 scripts 精确数 4 = `canonicalMarkDirty` 区段 3 处（Slice 1 已由 `installSaveApiShims()` 接通的 SkillLoadoutService:839 / StageRunSession:1345 / ProcurementPlanService:711）+ D2.markDirty（步骤 6）。
+- 迁移状态（2026-09-04，步骤 6→9 完成）：D1/D2 迁 `requestSave`/`markDirty+requestSave`；B3/B4/B5、A4/A5/A3 迁 `flushDurableNow`；A1/A6/B2 迁 `flushBeforeTransition`。scripts 旧入口余量：A2 Reward `forceSave`（步骤 10）、B1 SceneChanged `directFlushNow`（步骤 11）。wrapper 内部迁移（A4 `flushSave` / A5 `flushSaveVerified(reason)` / A3 `performStrongSave`）只换内核目标，wrapper 形状与失败语义不变；受影响测试套件（LootContainerServiceTest / KShopCheckoutServiceTest / NpcShopPanelServiceTest / StageRunSessionTest）的 `_root.强制存盘` double 已按同函数镜像补挂 `_root.存档系统.flushDurableNow/flushBeforeTransition`，计数与失败注入零漂移。
 
 - **扫描范围**：`scripts/**/*.as` 生产文件（排除 `test/` 目录、`*Test.as` / `*Tests.as`、gitignored 的 `TestLoader.as` scratch runner）+ `CRAZYFLASHER7MercenaryEmpire/**/*.xml`（含 DOMDocument.xml 与 LIBRARY）+ `flashswf/UI/**/*.xml`。
 - **注释判定**：逐文件 `/* */` 块注释状态机 + 行内 `//`；XML 额外处理 `<!-- -->`。XFL 中 3 处已注释的 `//_root.自动存盘();`（宠物进阶页.xml:185、进阶方案详情页.xml:447/:841）据此不计入。

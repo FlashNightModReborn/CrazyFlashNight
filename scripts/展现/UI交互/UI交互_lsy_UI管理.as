@@ -104,8 +104,8 @@ _root.gameCommands["safeExit"] = function() {
     // 只触发存盘，sv:1/sv:2/sv:3 分别通知存盘中/成功/失败
     _root.仓库标志 = 0;
     _root.存盘标志 = 0;
-    // Plan A: safeExit 必达，绕过 debounce 立即同步落盘
-    _root.强制存盘();
+    // R1 步骤 8：safeExit transition barrier，Host 只认本轮 sv:1→sv:2 成功门
+    _root.存档系统.flushBeforeTransition("safe_exit");
 };
 
 _root.gameCommands["openTaskMap"] = function() {

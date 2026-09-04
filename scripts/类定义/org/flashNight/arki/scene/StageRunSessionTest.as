@@ -2785,6 +2785,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             _root.__stageRunSessionTestFlushCalls++;
             return _root.__stageRunSessionTestFlushCalls >= 2;
         };
+        // R1 步骤 8：A6 已迁 flushBeforeTransition，同一 double 镜像到新 shim 入口
+        _root.存档系统.flushBeforeTransition = _root.强制存盘;
         assertTrue(StageRunSession.begin("持久化退场门", "困难"),
             "durable return fixture begins from an ordinary stage run");
         StageRunSession.finish("victory");
@@ -3231,6 +3233,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.存档系统 = {dirtyMark:false};
         _root._saveExt = {};
         _root.强制存盘 = function():Boolean { return true; };
+        // R1 步骤 8：A6 已迁 flushBeforeTransition，默认 double 同步镜像
+        _root.存档系统.flushBeforeTransition = _root.强制存盘;
         _root.金钱 = 0;
         _root.虚拟币 = 0;
         _root.经验值 = 0;

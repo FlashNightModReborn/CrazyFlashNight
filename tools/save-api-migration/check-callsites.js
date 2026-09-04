@@ -29,19 +29,31 @@ const STRICT_APIS = ['flushDurableNow', 'flushBeforeTransition'];
 const REQUEST_APIS = ['requestSave', 'markDirty+requestSave'];
 
 // pattern 家族：扫描、计数与 manifest 比对的统一口径
+// 旧入口 family（forceSave/autoSave/localSave/directFlushNow/saveShopCart）随调用点迁移
+// 逐步归零；四层 API family（apiMarkDirty/apiRequestSave/apiFlushDurableNow/
+// apiFlushBeforeTransition）承载已迁移调用点与已接通的 canonical markDirty。
+// 新 API family 同时匹配 shim 形态（_root.存档系统.x(...)）与类内直调形态（sm.x(...)），
+// 定义宿主文件经 SAVE_API_DEF_HOSTS 排除。
 const FAMILIES = {
   forceSave:        { re: /_root\.强制存盘\s*\(/,  layers: ['scripts', 'xfl'] },
   autoSave:         { re: /_root\.自动存盘\s*\(/,  layers: ['scripts', 'xfl'] },
   localSave:        { re: /_root\.本地存盘\s*\(/,  layers: ['scripts', 'xfl'] },
   directFlushNow:   { re: /flushNow\s*\(/,          layers: ['scripts'] },
-  danglingMarkDirty:{ re: /存档系统\.markDirty\s*\(/, layers: ['scripts'] },
+  apiMarkDirty:     { re: /存档系统\.markDirty\s*\(/, layers: ['scripts', 'xfl'] },
+  apiRequestSave:   { re: /requestSave\s*\(/,       layers: ['scripts', 'xfl'] },
+  apiFlushDurableNow:{ re: /flushDurableNow\s*\(/,  layers: ['scripts', 'xfl'] },
+  apiFlushBeforeTransition: { re: /flushBeforeTransition\s*\(/, layers: ['scripts', 'xfl'] },
   saveShopCart:     { re: /_root\.保存购物车\s*\(/,  layers: ['xfl'] }
 };
 
-// directFlushNow 的定义宿主与 shim 委托文件（不是调用点）
-const FLUSHNOW_DEF_HOSTS = new Set([
+// 旧 directFlushNow 与四层 API 的定义宿主与 shim 委托文件（不是调用点）
+const SAVE_API_DEF_HOSTS = new Set([
   'scripts/类定义/org/flashNight/neur/Server/SaveManager.as',
   'scripts/通信/通信_lsy_原版存档系统.as'
+]);
+// 需要排除定义宿主的 family（其余 family 的模式本就只命中调用形态）
+const DEF_HOST_EXCLUDED_FAMILIES = new Set([
+  'directFlushNow', 'apiMarkDirty', 'apiRequestSave', 'apiFlushDurableNow', 'apiFlushBeforeTransition'
 ]);
 
 const errors = [];
@@ -132,7 +144,7 @@ function scanFiles(files, isXml) {
     const codeLines = effectiveCodeLines(text, isXml);
     for (const [lineNo, code] of codeLines) {
       for (const [name, fam] of Object.entries(FAMILIES)) {
-        if (name === 'directFlushNow' && FLUSHNOW_DEF_HOSTS.has(norm)) continue;
+        if (DEF_HOST_EXCLUDED_FAMILIES.has(name) && SAVE_API_DEF_HOSTS.has(norm)) continue;
         if (fam.re.test(code)) {
           hits[name].push({ file: norm, line: lineNo, snippet: code.trim().slice(0, 120) });
         }
@@ -209,12 +221,19 @@ function main() {
   // 3) 精确数量断言（==，非 <=）
   assertEq('scripts/ 生产 _root.强制存盘() 物理点', scriptsHits.forceSave.length, counts.scriptsForceSavePhysical);
   assertEq('scripts/ 生产 flushNow() 直调物理点（B 组）', scriptsHits.directFlushNow.length, counts.scriptsDirectFlushNowPhysical);
-  assertEq('scripts/ 生产 _root.自动存盘() 物理点', scriptsHits.autoSave.length, counts.scriptsDebouncePhysical);
+  assertEq('scripts/ 生产 _root.自动存盘() 物理点', scriptsHits.autoSave.length, counts.scriptsAutoSavePhysical);
   assertEq('scripts/ 生产 _root.本地存盘() 物理点', scriptsHits.localSave.length, counts.scriptsLocalSavePhysical);
-  assertEq('scripts/ 生产悬空 _root.存档系统.markDirty() 物理点', scriptsHits.danglingMarkDirty.length, counts.danglingMarkDirtyPhysical);
+  assertEq('scripts/ 生产 canonical 存档系统.markDirty() 物理点', scriptsHits.apiMarkDirty.length, counts.scriptsApiMarkDirtyPhysical);
+  assertEq('scripts/ 生产 requestSave() 物理点', scriptsHits.apiRequestSave.length, counts.scriptsApiRequestSavePhysical);
+  assertEq('scripts/ 生产 flushDurableNow() 物理点', scriptsHits.apiFlushDurableNow.length, counts.scriptsApiFlushDurableNowPhysical);
+  assertEq('scripts/ 生产 flushBeforeTransition() 物理点', scriptsHits.apiFlushBeforeTransition.length, counts.scriptsApiFlushBeforeTransitionPhysical);
   assertEq('XFL _root.强制存盘() 物理点', xflHits.forceSave.length, counts.xflStrictPhysical);
   assertEq('XFL _root.自动存盘() 物理点', xflHits.autoSave.length, counts.xflDebouncePhysical);
   assertEq('XFL _root.本地存盘() 物理点', xflHits.localSave.length, counts.xflLocalSavePhysical);
+  assertEq('XFL canonical 存档系统.markDirty() 物理点', xflHits.apiMarkDirty.length, counts.xflApiMarkDirtyPhysical);
+  assertEq('XFL requestSave() 物理点', xflHits.apiRequestSave.length, counts.xflApiRequestSavePhysical);
+  assertEq('XFL flushDurableNow() 物理点', xflHits.apiFlushDurableNow.length, counts.xflApiFlushDurableNowPhysical);
+  assertEq('XFL flushBeforeTransition() 物理点', xflHits.apiFlushBeforeTransition.length, counts.xflApiFlushBeforeTransitionPhysical);
   assertEq('XFL _root.保存购物车() 物理点（C6 关联，不纳入四层）', xflHits.saveShopCart.length, counts.xflSaveShopCartPhysical);
 
   // 4) manifest 逐条定位校验：sourcePath 存在、line 行有效代码含对应 family pattern
@@ -262,8 +281,20 @@ function main() {
   assertSetEqual('xfl forceSave', xflHits.forceSave, manKeys(isXfl, 'forceSave'));
   assertSetEqual('xfl autoSave', xflHits.autoSave, manKeys(isXfl, 'autoSave'));
   assertSetEqual('xfl localSave', xflHits.localSave, manKeys(isXfl, 'localSave'));
-  const danglingKeys = (manifest.danglingMarkDirty || []).map(d => d.sourcePath + ':' + d.line);
-  assertSetEqual('scripts danglingMarkDirty', scriptsHits.danglingMarkDirty, danglingKeys);
+  // canonical markDirty：已接通区段（manifest.canonicalMarkDirty）+ 迁移记录（legacyEntry=apiMarkDirty）
+  const canonicalMarkDirtyKeys = (manifest.canonicalMarkDirty || manifest.danglingMarkDirty || [])
+    .map(d => d.sourcePath + ':' + d.line);
+  assertSetEqual('scripts apiMarkDirty', scriptsHits.apiMarkDirty,
+    canonicalMarkDirtyKeys.concat(manKeys(isScripts, 'apiMarkDirty')));
+  assertSetEqual('xfl apiMarkDirty', xflHits.apiMarkDirty, manKeys(isXfl, 'apiMarkDirty'));
+  assertSetEqual('scripts apiRequestSave', scriptsHits.apiRequestSave, manKeys(isScripts, 'apiRequestSave'));
+  assertSetEqual('xfl apiRequestSave', xflHits.apiRequestSave, manKeys(isXfl, 'apiRequestSave'));
+  assertSetEqual('scripts apiFlushDurableNow', scriptsHits.apiFlushDurableNow, manKeys(isScripts, 'apiFlushDurableNow'));
+  assertSetEqual('xfl apiFlushDurableNow', xflHits.apiFlushDurableNow, manKeys(isXfl, 'apiFlushDurableNow'));
+  assertSetEqual('scripts apiFlushBeforeTransition', scriptsHits.apiFlushBeforeTransition,
+    manKeys(isScripts, 'apiFlushBeforeTransition'));
+  assertSetEqual('xfl apiFlushBeforeTransition', xflHits.apiFlushBeforeTransition,
+    manKeys(isXfl, 'apiFlushBeforeTransition'));
   const shopCartKeys = (manifest.outOfScope && manifest.outOfScope.xflSaveShopCart || [])
     .map(d => d.sourcePath + ':' + d.line);
   assertSetEqual('xfl saveShopCart', xflHits.saveShopCart, shopCartKeys);
@@ -364,10 +395,17 @@ function main() {
         scriptsDirectFlushNow: scriptsHits.directFlushNow.length,
         scriptsAutoSave: scriptsHits.autoSave.length,
         scriptsLocalSave: scriptsHits.localSave.length,
-        scriptsDanglingMarkDirty: scriptsHits.danglingMarkDirty.length,
+        scriptsApiMarkDirty: scriptsHits.apiMarkDirty.length,
+        scriptsApiRequestSave: scriptsHits.apiRequestSave.length,
+        scriptsApiFlushDurableNow: scriptsHits.apiFlushDurableNow.length,
+        scriptsApiFlushBeforeTransition: scriptsHits.apiFlushBeforeTransition.length,
         xflForceSave: xflHits.forceSave.length,
         xflAutoSave: xflHits.autoSave.length,
         xflLocalSave: xflHits.localSave.length,
+        xflApiMarkDirty: xflHits.apiMarkDirty.length,
+        xflApiRequestSave: xflHits.apiRequestSave.length,
+        xflApiFlushDurableNow: xflHits.apiFlushDurableNow.length,
+        xflApiFlushBeforeTransition: xflHits.apiFlushBeforeTransition.length,
         xflSaveShopCart: xflHits.saveShopCart.length,
         strictLogical: strictLogical.length,
         debounceLogical: requestLogical.length
@@ -383,12 +421,18 @@ function main() {
     console.log('物理点计数（精确断言）：');
     console.log('  scripts/ _root.强制存盘()      = ' + scriptsHits.forceSave.length + '（期望 ' + counts.scriptsForceSavePhysical + '）');
     console.log('  scripts/ flushNow() 直调(B组)  = ' + scriptsHits.directFlushNow.length + '（期望 ' + counts.scriptsDirectFlushNowPhysical + '）');
-    console.log('  scripts/ _root.自动存盘()      = ' + scriptsHits.autoSave.length + '（期望 ' + counts.scriptsDebouncePhysical + '）');
+    console.log('  scripts/ _root.自动存盘()      = ' + scriptsHits.autoSave.length + '（期望 ' + counts.scriptsAutoSavePhysical + '）');
     console.log('  scripts/ _root.本地存盘()      = ' + scriptsHits.localSave.length + '（期望 ' + counts.scriptsLocalSavePhysical + '）');
-    console.log('  scripts/ 悬空 存档系统.markDirty() = ' + scriptsHits.danglingMarkDirty.length + '（期望 ' + counts.danglingMarkDirtyPhysical + '）');
+    console.log('  scripts/ 存档系统.markDirty()  = ' + scriptsHits.apiMarkDirty.length + '（期望 ' + counts.scriptsApiMarkDirtyPhysical + '，含已接通 3 处）');
+    console.log('  scripts/ requestSave()         = ' + scriptsHits.apiRequestSave.length + '（期望 ' + counts.scriptsApiRequestSavePhysical + '）');
+    console.log('  scripts/ flushDurableNow()     = ' + scriptsHits.apiFlushDurableNow.length + '（期望 ' + counts.scriptsApiFlushDurableNowPhysical + '）');
+    console.log('  scripts/ flushBeforeTransition() = ' + scriptsHits.apiFlushBeforeTransition.length + '（期望 ' + counts.scriptsApiFlushBeforeTransitionPhysical + '）');
     console.log('  XFL      _root.强制存盘()      = ' + xflHits.forceSave.length + '（期望 ' + counts.xflStrictPhysical + '）');
     console.log('  XFL      _root.自动存盘()      = ' + xflHits.autoSave.length + '（期望 ' + counts.xflDebouncePhysical + '）');
     console.log('  XFL      _root.本地存盘()      = ' + xflHits.localSave.length + '（期望 ' + counts.xflLocalSavePhysical + '）');
+    console.log('  XFL      四层 API 物理点        = markDirty ' + xflHits.apiMarkDirty.length + ' / requestSave ' + xflHits.apiRequestSave.length +
+      ' / flushDurableNow ' + xflHits.apiFlushDurableNow.length + ' / flushBeforeTransition ' + xflHits.apiFlushBeforeTransition.length + '（期望 ' +
+      counts.xflApiMarkDirtyPhysical + '/' + counts.xflApiRequestSavePhysical + '/' + counts.xflApiFlushDurableNowPhysical + '/' + counts.xflApiFlushBeforeTransitionPhysical + '）');
     console.log('  XFL      _root.保存购物车()    = ' + xflHits.saveShopCart.length + '（期望 ' + counts.xflSaveShopCartPhysical + '，C6 关联不纳入四层）');
     console.log('逻辑点：strict ' + strictLogical.length + '/' + counts.strictLogicalTotal +
       '，debounce ' + requestLogical.length + '/' + counts.debounceLogicalTotal);

@@ -437,7 +437,8 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         if (_testStrongSaveSink != null) {
             return _testStrongSaveSink() === true;
         }
-        if (typeof _root.强制存盘 == "function") return _root.强制存盘() === true;
+        // R1 步骤 9：durable fence 内核换 flushDurableNow；true 仍仅代表本地 SOL flush true
+        if (_root.存档系统 != null && typeof _root.存档系统.flushDurableNow == "function") return _root.存档系统.flushDurableNow("asset_tx.commit") === true;
         return false;
     }
 

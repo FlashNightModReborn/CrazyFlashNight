@@ -12,12 +12,12 @@
     "lineNumberNote": "本 manifest 全部行号以 headCommit 工作树为准。相对 callsites.md 封包基线 776db2ae26 的已确认漂移：A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）；D2 商城系统_WebView.as 721→749。",
     "swf": {
       "scripts/asLoader.swf": {
-        "sha256": "83ddebde7225207c64bf67131efb26b8374030c89820c2ee08819924458c325f",
-        "sizeBytes": 1236590,
+        "sha256": "b63c7ffb54b44e395ed316b484124166a1ff9d91d47ef462408d4f17925ca70f",
+        "sizeBytes": 1236813,
         "functions": 10953,
         "maxFunctionBytes": 55767,
         "functionSizeGate": "node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 15（未发现 codeSize >= 60000 B 近墙项）",
-        "republishNote": "2026-09-04 R1 Slice 1-4 施工后按 README 漂移流程重发布刷新；行为证据见当轮 character-build 334/334 与 map-loot 648/648 fresh trace"
+        "republishNote": "2026-09-04 R1 步骤 6-9 调用点迁移后按 README 漂移流程重发布刷新；行为证据见当轮 character-build 334/334、map-loot 648/648、K 店 37/37、PAT 117/117、settings 47/47、建角 40/40、NPC 66/66 fresh trace"
       },
       "CRAZYFLASHER7MercenaryEmpire.swf": {
         "sha256": "e00cffb55e76a903e9f4457eb346c4f218968d4c2574a29589d546a178755cff",
@@ -42,12 +42,21 @@
     "scriptsDebouncePhysical": 2,
     "xflStrictPhysical": 10,
     "xflDebouncePhysical": 13,
-    "scriptsForceSavePhysical": 6,
-    "scriptsDirectFlushNowPhysical": 5,
+    "scriptsForceSavePhysical": 1,
+    "scriptsDirectFlushNowPhysical": 1,
+    "scriptsAutoSavePhysical": 0,
     "scriptsLocalSavePhysical": 0,
+    "scriptsApiMarkDirtyPhysical": 4,
+    "scriptsApiRequestSavePhysical": 2,
+    "scriptsApiFlushDurableNowPhysical": 6,
+    "scriptsApiFlushBeforeTransitionPhysical": 3,
     "xflLocalSavePhysical": 0,
-    "danglingMarkDirtyPhysical": 3,
-    "xflSaveShopCartPhysical": 2
+    "xflApiMarkDirtyPhysical": 0,
+    "xflApiRequestSavePhysical": 0,
+    "xflApiFlushDurableNowPhysical": 0,
+    "xflApiFlushBeforeTransitionPhysical": 0,
+    "xflSaveShopCartPhysical": 2,
+    "countsNote": "strict/debounceLogical 与 scripts/xflStrict/DebouncePhysical 为 manifest 记录分类计数（迁移不改变）；scripts*/xfl* 其余为扫描期望。2026-09-04 步骤 6：autoSave 2→0（D1/D2 迁 requestSave，scriptsApiRequestSavePhysical 2）。2026-09-04 步骤 7：directFlushNow 5→2（B3/B4/B5 迁 flushDurableNow，余 B1/B2），scriptsApiFlushDurableNowPhysical 3。2026-09-04 步骤 8：forceSave 6→4、directFlushNow 2→1（A1/A6/B2 迁 flushBeforeTransition，余 A2-A5 forceSave 与 B1），scriptsApiFlushBeforeTransitionPhysical 3。2026-09-04 步骤 9：forceSave 4→1（A3/A4/A5 wrapper 内核迁 flushDurableNow，余 A2 Reward），scriptsApiFlushDurableNowPhysical 6；danglingMarkDirty 区段更名 canonicalMarkDirty（Slice 1 已接通，3 处）+ D2.markDirty = scriptsApiMarkDirtyPhysical 4。"
   },
   "legacyApiRegistry": {
     "forceSave": { "entry": "_root.强制存盘()", "mapsTo": "SaveManager.flushNow()", "shim": "scripts/通信/通信_lsy_原版存档系统.as:31", "semantics": "立即同步全量落盘，true = 本地 SOL 已 durable" },
@@ -61,7 +70,7 @@
     {
       "callsiteId": "A1", "physicalId": "A1", "layer": "scripts",
       "sourcePath": "scripts/展现/UI交互/UI交互_lsy_UI管理.as", "line": 108, "frame": null,
-      "legacyEntry": "forceSave", "legacyApi": "_root.强制存盘()",
+      "legacyEntry": "apiFlushBeforeTransition", "legacyApi": "_root.存档系统.flushBeforeTransition(\"safe_exit\")",
       "targetApi": "flushBeforeTransition", "reasonId": ["safe_exit"],
       "returnConsumed": false, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
@@ -83,8 +92,8 @@
     },
     {
       "callsiteId": "A3", "physicalId": "A3", "layer": "scripts",
-      "sourcePath": "scripts/类定义/org/flashNight/arki/item/PlayerAssetTransaction.as", "line": 440, "frame": null,
-      "legacyEntry": "forceSave", "legacyApi": "_root.强制存盘()",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/item/PlayerAssetTransaction.as", "line": 441, "frame": null,
+      "legacyEntry": "apiFlushDurableNow", "legacyApi": "_root.存档系统.flushDurableNow(\"asset_tx.commit\")",
       "targetApi": "flushDurableNow", "reasonId": ["asset_tx.commit"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
@@ -95,8 +104,8 @@
     },
     {
       "callsiteId": "A4", "physicalId": "A4", "layer": "scripts",
-      "sourcePath": "scripts/类定义/org/flashNight/arki/item/ItemUseService.as", "line": 596, "frame": null,
-      "legacyEntry": "forceSave", "legacyApi": "_root.强制存盘()",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/item/ItemUseService.as", "line": 597, "frame": null,
+      "legacyEntry": "apiFlushDurableNow", "legacyApi": "_root.存档系统.flushDurableNow(\"item_use.open_commit\")",
       "targetApi": "flushDurableNow", "reasonId": ["item_use.open_commit"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
@@ -107,20 +116,20 @@
     {
       "callsiteId": "A5", "physicalId": "A5", "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/LootContainerService.as", "line": 3214, "frame": null,
-      "legacyEntry": "forceSave", "legacyApi": "_root.强制存盘()",
+      "legacyEntry": "apiFlushDurableNow", "legacyApi": "_root.存档系统.flushDurableNow(reason)（flushSaveVerified(reason) wrapper 内）",
       "targetApi": "flushDurableNow",
       "reasonId": ["loot.claim_batch", "loot.standalone_claim", "loot.settlement_terminal"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
-      "wrapper": "flushSaveVerified()",
-      "upstream": "①:1960 claimBatch 批尾 1 次（batch.saveDone）；②:2116 standalone 逐格 claim 每格 1 次（effects.saveDone）；③:2903 结算 terminal close 1 次（pending.saveDone）",
+      "wrapper": "flushSaveVerified(reason)",
+      "upstream": "①:1960 claimBatch 批尾 1 次（batch.saveDone，loot.claim_batch）；②:2116 standalone 逐格 claim 每格 1 次（effects.saveDone，loot.standalone_claim）；③:2903 结算 terminal close 1 次（pending.saveDone，loot.settlement_terminal）。2026-09-04 步骤 9 已迁移：wrapper 内核换 flushDurableNow(reason)，形状/失败语义不变",
       "migrateSlice": 5,
       "notes": "三种语义各对应一个 reasonId（Slice 0 冻结提案，裁决 §3.1 A5 只给定 flushDurableNow(...) 未给定字符串）。"
     },
     {
       "callsiteId": "A6", "physicalId": "A6", "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as", "line": 523, "frame": null,
-      "legacyEntry": "forceSave", "legacyApi": "_root.强制存盘()",
+      "legacyEntry": "apiFlushBeforeTransition", "legacyApi": "_root.存档系统.flushBeforeTransition(\"stage.return_base\")",
       "targetApi": "flushBeforeTransition", "reasonId": ["stage.return_base"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
@@ -142,7 +151,7 @@
     {
       "callsiteId": "B2", "physicalId": "B2", "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/neur/Server/CharacterCreationService.as", "line": 728, "frame": null,
-      "legacyEntry": "directFlushNow", "legacyApi": "SaveManager.getInstance().flushNow()",
+      "legacyEntry": "apiFlushBeforeTransition", "legacyApi": "SaveManager.getInstance().flushBeforeTransition(\"character_creation.start_tutorial\")",
       "targetApi": "flushBeforeTransition", "reasonId": ["character_creation.start_tutorial"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
@@ -152,19 +161,19 @@
     },
     {
       "callsiteId": "B3", "physicalId": "B3", "layer": "scripts",
-      "sourcePath": "scripts/类定义/org/flashNight/arki/ui/GameSettingsPanelService.as", "line": 234, "frame": null,
-      "legacyEntry": "directFlushNow", "legacyApi": "SaveManager.getInstance().flushNow()",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/ui/GameSettingsPanelService.as", "line": 235, "frame": null,
+      "legacyEntry": "apiFlushDurableNow", "legacyApi": "SaveManager.getInstance().flushDurableNow(\"settings.apply\")",
       "targetApi": "flushDurableNow", "reasonId": ["settings.apply"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
-      "wrapper": "executeApply", "upstream": "设置应用；durable=true 才清迁移 latch 并回 success",
+      "wrapper": "executeApply", "upstream": "设置应用；durable=true 才清迁移 latch 并回 success（2026-09-04 步骤 7 已迁移 flushDurableNow）",
       "migrateSlice": 3,
       "notes": "裁决 §3.1 B3/B4 合写 \"settings.apply/save\"，本 manifest 拆为 settings.apply / settings.save 两个注册 reason。"
     },
     {
       "callsiteId": "B4", "physicalId": "B4", "layer": "scripts",
-      "sourcePath": "scripts/类定义/org/flashNight/arki/ui/GameSettingsPanelService.as", "line": 260, "frame": null,
-      "legacyEntry": "directFlushNow", "legacyApi": "SaveManager.getInstance().flushNow()",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/ui/GameSettingsPanelService.as", "line": 262, "frame": null,
+      "legacyEntry": "apiFlushDurableNow", "legacyApi": "SaveManager.getInstance().flushDurableNow(\"settings.save\")",
       "targetApi": "flushDurableNow", "reasonId": ["settings.save"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
@@ -174,8 +183,8 @@
     },
     {
       "callsiteId": "B5", "physicalId": "B5", "layer": "scripts",
-      "sourcePath": "scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as", "line": 3004, "frame": null,
-      "legacyEntry": "directFlushNow", "legacyApi": "saveManager.flushNow()（invokeBoolean(\"flushNow\") 桥）",
+      "sourcePath": "scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as", "line": 3006, "frame": null,
+      "legacyEntry": "apiFlushDurableNow", "legacyApi": "saveManager.flushDurableNow(\"character_build.finalize\")（invokeBoolean(\"flushNow\") 桥 fallback）",
       "targetApi": "flushDurableNow", "reasonId": ["character_build.finalize"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
@@ -296,24 +305,35 @@
     {
       "callsiteId": "D1", "physicalId": "D1", "layer": "scripts",
       "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 199, "frame": null,
-      "legacyEntry": "autoSave", "legacyApi": "_root.自动存盘()",
+      "legacyEntry": "apiRequestSave", "legacyApi": "_root.存档系统.requestSave(\"shop.panel_close\")",
       "targetApi": "requestSave", "reasonId": ["shop.panel_close"],
       "returnConsumed": false, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
       "wrapper": null, "upstream": "gameCommands[\"shopPanelClose\"] 商城关闭兜底（:195-204）",
       "migrateSlice": 2,
-      "notes": "V1 保持无条件 request；shop 全 mutator 证明标脏前不加全局 guard。"
+      "notes": "V1 保持无条件 request；shop 全 mutator 证明标脏前不加全局 guard。2026-09-04 步骤 6 已迁移：_root.自动存盘() → _root.存档系统.requestSave(\"shop.panel_close\")。"
     },
     {
-      "callsiteId": "D2", "physicalId": "D2", "layer": "scripts",
-      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 749, "frame": null,
-      "legacyEntry": "autoSave", "legacyApi": "_root.自动存盘()",
+      "callsiteId": "D2", "physicalId": "D2.requestSave", "layer": "scripts",
+      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 750, "frame": null,
+      "legacyEntry": "apiRequestSave", "legacyApi": "_root.存档系统.requestSave(\"shop.cart_edit\")",
       "targetApi": "markDirty+requestSave", "reasonId": ["shop.cart_edit"],
       "returnConsumed": false, "duplicateGroup": null, "pairRole": "sole",
       "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
-      "wrapper": "shopSaveCart", "upstream": "购物车保存：前行 :748 dirtyMark = true + debounce（checkout/claim 走 strict fence）",
+      "wrapper": "shopSaveCart", "upstream": "购物车保存：前行 :749 canonical markDirty + requestSave（checkout/claim 走 strict fence）",
       "migrateSlice": 2,
-      "notes": "行号自 callsites.md 封包基线 :721 漂移为 :749（专项 A① 合入）；迁移时 dirty setter 收敛到 canonical markDirty()。"
+      "notes": "行号自 callsites.md 封包基线 :721 漂移为 :749（专项 A① 合入）。2026-09-04 步骤 6 已迁移：_root.自动存盘() → _root.存档系统.requestSave(\"shop.cart_edit\")；与 D2.markDirty 为同一逻辑调用点的两个物理点。"
+    },
+    {
+      "callsiteId": "D2", "physicalId": "D2.markDirty", "layer": "scripts",
+      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 749, "frame": null,
+      "legacyEntry": "apiMarkDirty", "legacyApi": "_root.存档系统.markDirty()",
+      "targetApi": "markDirty", "reasonId": ["shop.cart_edit"],
+      "returnConsumed": false, "duplicateGroup": null, "pairRole": "sole",
+      "liveState": "live", "dirtyGuard": false, "expectedSwf": "scripts/asLoader.swf",
+      "wrapper": "shopSaveCart", "upstream": "见 D2.requestSave（同一 shopSaveCart 末尾）",
+      "migrateSlice": 2,
+      "notes": "2026-09-04 步骤 6 已迁移：原 :748 直接 dirty setter 收敛 canonical markDirty()；逻辑上属 D2 同一调用点，不计入 strict/debounce 逻辑分类计数。"
     },
     {
       "callsiteId": "E1", "physicalId": "E1", "layer": "xfl-main",
@@ -459,20 +479,20 @@
       "notes": "V1 无条件 requestSave。"
     }
   ],
-  "danglingMarkDirty": [
+  "canonicalMarkDirty": [
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as", "line": 839,
-      "api": "_root.存档系统.markDirty()", "liveState": "dangling",
-      "notes": "typeof == \"function\" 守卫的悬空调用；生产从未定义该方法（仅 CraftingPanelServiceTest.as:2195/:2219 测试 fixture 定义），恒为 no-op，实际标脏由前行 dirtyMark = true 完成。Slice 1 接通为真 API。"
+      "api": "_root.存档系统.markDirty()", "liveState": "live",
+      "notes": "Slice 1（2026-09-04）已由 installSaveApiShims() 接通为 canonical markDirty()（原 dangling：typeof 守卫恒 no-op，实际标脏由前行 dirtyMark = true 完成）。"
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as", "line": 1345,
-      "api": "_root.存档系统.markDirty()", "liveState": "dangling",
+      "api": "_root.存档系统.markDirty()", "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839；typeof 守卫在 :1344。"
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/item/ProcurementPlanService.as", "line": 711,
-      "api": "_root.存档系统.markDirty()", "liveState": "dangling",
+      "api": "_root.存档系统.markDirty()", "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839。"
     }
   ],
