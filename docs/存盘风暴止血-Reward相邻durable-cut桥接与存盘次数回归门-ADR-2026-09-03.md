@@ -101,8 +101,8 @@ F1′: [A+P0]→[C0+P1]→[C1+P2]→…→[C(N-1)+T]          = N+1（每 child 
 
 **回归门基线变更**:map-loot 链 634 → **648**(service 217→231、planner 12、stage 405),`run-map-loot-tests.ps1` 与 testing-guide.md 已同步；SaveManagerTest 为自校验计数（fixture 对齐后 239/239)。
 
-- **专项 A(K 店，独立立项）**:batch 前先裁决修正 ①`PlayerAssetTransaction.commit` strong-save false 时命令 finality（现只记 `strongSaveFlushed=false` 仍发 receipt、shopClaim 仍 `claimSucceeded=true`,PlayerAssetTransaction.as:223-236)②purchased row 稳定 identity vs 可变 purchasedIdx ③batch operationId/冻结列表/exact result 证明 ④unknown response reconcile ⑤batch partial failure 政策。未完成前只允许 UI 单飞/cooldown。
-- **专项 B（礼包 openMany，独立立项）**：先裁决产品语义——多包一个原子 command（则批尾一次 full save）还是保留每包 durable prefix（则需 root journal/mini-WAL)。不得靠 debounce。
+- **专项 A(K 店，第一阶段+第三轮裁决已完成）**:A① durable finality 已修复入主线 `8dc2940e6c`(flush 先于 commit，失败 exact restore 回 `commit_pending`)。第三轮裁决（回执 `tmp/adjudication-kshop-batch-20260904/gptpro.txt` 774 行）终裁：**batch 只做 legacy 存量收尾的原子命令 `shopClaimBatch`**(durable unit `{0,K}`，全或无；token-epoch 行指纹 `(purchasedToken, rowFingerprint)`，双 FNV-1a lane 64-bit + 碰撞 fail-closed；专用 receipt lane `_saveExt.kshopClaimBatch` 上限 128 非淘汰，满则 `batch_receipt_ledger_full` 单项 claim 兜底；Host stale 请求必须 `replayOnly` 只读模式；unknown 复用 bulkQuery 不自动重放，不新增恢复命令）。A② 行指纹条件采纳（digest 只覆盖 canonical 五元组，occurrenceOrdinal 独立尾部）。A⑤-a 有序前缀、A⑤-c best effort、通用批框架、共用 Reward receipt、五元组 schema 变更均否决。
+- **专项 B（礼包 openMany，第三轮裁决终裁）**:**新增显式命令 `itemUseOpenMany`**（不在旧 `itemUseOpen` 加 optional count):K 次 rollRecipe/appendRewardBatch、一次扣 K、一个 `kind:"openMany"` receipt、一次 fence，全或无；失败 exact restore 但不承诺重试同随机结果；F2 mini-WAL 继续否决。**排期约束（裁决 §6)**:R1 步骤 6 先清 D1/D2 → A②/batch/openMany 居中（业务只调领域 wrapper) → **R1 步骤 9 最后统一 wrapper retarget**；若步骤 9 提前落地不回滚，但业务 handler 严禁直调 R1 新 API。施工边界按裁决 §九 11 步与 9 个提交切分。
 - **发布门**:648/648 基线全绿 ✅ + save-count 门全绿 ✅ + semantic fault-cut 全绿 ✅ + pending 无 mixed-cut 投影 ✅ + Reward happy path N+1 ✅ + 无 bridge true 前执行下一 child ✅(fault 切面 4/5 实证）+ root save/terminal ACK/shadow 分桶监控 ✅(Commit 0 两层计数）+ 弱机实测连续阻塞明显下降 ✅(2026-09-04 测试员现场复验：大量开箱无崩溃、耗时显著降低)。
 
 ## 5. 工程与收尾清单（勿忘）
