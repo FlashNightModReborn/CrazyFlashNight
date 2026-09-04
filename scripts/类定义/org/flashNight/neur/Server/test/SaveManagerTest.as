@@ -6,6 +6,7 @@ import org.flashNight.arki.item.RewardInboxService;
 import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+import org.flashNight.arki.key.KeyManager;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import JSON;
 
@@ -29,6 +30,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         try {
             runMigrationAndCoreTests();
             runSaveFlowTests();
+            runSaveApiTests();
             runLoadFromMydataTests();
             runPrefetchTests();
             runLoadAllTests();
@@ -81,6 +83,37 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_debounce_precommit_throw_resets_in_flight();
         test_debounce_exception_publishes_failed_state();
         test_flushNow_postcommit_notification_throw_keeps_success();
+    }
+
+    private static function runSaveApiTests():Void {
+        // ── R1 Slice 1：canonical dirty ──
+        test_markDirty_canonical_mirrors_both_latches();
+        test_saveApi_shim_binding_marks_both_latches();
+        test_hasPendingChanges_includes_settings_and_key_latches();
+        test_settings_and_key_latches_survive_flush_failure();
+        // ── R1 Slice 2：四层 API ──
+        test_flushDurableNow_clean_state_commits_immediately();
+        test_flushBeforeTransition_clean_state_commits_immediately();
+        test_flushBeforeTransition_rejects_reason_outside_allowlist();
+        test_requestSave_schedules_without_physical_attempt();
+        test_requestSave_coalesces_to_single_physical_save();
+        test_requestSave_absorbed_by_successful_fence();
+        test_failed_fence_keeps_pending_request();
+        test_legacy_and_new_strict_entries_each_commit_once();
+        test_saveApi_shim_exposes_four_layer_api();
+        // ── R1 Slice 3：scheduler 正确性 ──
+        test_debounce_in_flight_rearms_pending_request();
+        test_strict_reentry_keeps_pending_request_token();
+        test_guarded_debounce_callback_never_throws();
+        // ── R1 Slice 4：语义桶 _saveApiStats ──
+        test_saveApi_ingress_counts_each_public_entry_once();
+        test_saveApi_request_disposition_merge_gate();
+        test_saveApi_request_absorb_and_rearm_dispositions();
+        test_saveApi_strict_outcome_buckets_per_family();
+        test_saveApi_full_origin_and_flush_lane_buckets();
+        test_saveApi_flush_lane_read_migration_and_preload_tombstone();
+        test_saveApi_reason_registry_clamps_dynamic_text();
+        test_saveApi_stats_snapshot_isolation_reset_and_trace();
     }
 
     private static function runLoadFromMydataTests():Void {
@@ -320,7 +353,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             saveInFlight:false,
             beforeLocalCommit:null,
             flushResult:undefined,
-            resetDirty:true
+            resetDirty:true,
+            resetScheduler:true
         });
         SaveManager.getInstance().clearPendingDrugLoadoutMigration();
         SaveManager.getInstance().clearPendingRewardInboxMigration();
@@ -333,7 +367,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             saveInFlight:false,
             beforeLocalCommit:null,
             flushResult:undefined,
-            resetDirty:true
+            resetDirty:true,
+            resetScheduler:true
         });
         SaveManager.getInstance().clearPendingDrugLoadoutMigration();
         SaveManager.getInstance().clearPendingRewardInboxMigration();
@@ -2783,5 +2818,771 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             _root.当前关卡难度 = oldCurrentStageDifficulty;
             _root.基础身价值 = oldBaseWorth;
         }
+    }
+
+    // ── R1 Slice 1：canonical dirty ──
+
+    private static function test_markDirty_canonical_mirrors_both_latches():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            assert(sm.hasPendingChanges() == false,
+                   "markDirty_canonical: fixture starts fully clean");
+
+            sm.markDirty();
+            assert(sm.isDirty() == true && _root.存档系统.dirtyMark === true,
+                   "markDirty_canonical: sets private latch and compatibility mirror together");
+            assert(sm.hasPendingChanges() == true,
+                   "markDirty_canonical: pending query observes canonical mark");
+
+            sm.markDirty();
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 0 && stats.doSaveAll == 0
+                   && stats.flushAttempt == 0 && stats.flushSuccess == 0
+                   && stats.flushPending == 0 && stats.flushFalse == 0
+                   && stats.jsonStringify == 0 && stats.shadowDispatch == 0,
+                   "markDirty_canonical: idempotent set never triggers a physical save");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_saveApi_shim_binding_marks_both_latches():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            // 与生产 shim（通信_lsy_原版存档系统.as）调用同一 install 绑定；
+            // 三处悬空 typeof 守卫调用点据此接通 canonical markDirty()。
+            sm.installSaveApiShims();
+            assert(typeof _root.存档系统.markDirty == "function",
+                   "saveApi_shim: markDirty delegate installed on _root.存档系统");
+
+            _root.存档系统.markDirty();
+            assert(sm.isDirty() == true && _root.存档系统.dirtyMark === true,
+                   "saveApi_shim: shim call reaches canonical markDirty and mirrors both latches");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_hasPendingChanges_includes_settings_and_key_latches():Void {
+        var saved:Object = beginSaveFlowTest();
+        var keyFixture:Object = beginKeyMigrationLatchFixture();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            assert(sm.hasPendingChanges() == false,
+                   "hasPendingChanges_latches: fixture starts fully clean");
+
+            sm.markSettingsMigrationPending();
+            assert(sm.hasPendingChanges() == true,
+                   "hasPendingChanges_latches: observes settings migration latch");
+            sm.clearPendingSettingsMigration();
+            assert(sm.hasPendingChanges() == false,
+                   "hasPendingChanges_latches: settings latch cleared back to clean");
+
+            latchKeySettingsMigrationForTest();
+            assert(KeyManager.hasPendingKeySettingsMigration(),
+                   "hasPendingChanges_latches: key fixture latches key settings migration");
+            assert(sm.hasPendingChanges() == true,
+                   "hasPendingChanges_latches: observes KeyManager migration latch");
+            KeyManager.clearPendingKeySettingsMigration();
+            assert(sm.hasPendingChanges() == false,
+                   "hasPendingChanges_latches: key latch cleared back to clean");
+        } finally {
+            endKeyMigrationLatchFixture(keyFixture);
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_settings_and_key_latches_survive_flush_failure():Void {
+        var saved:Object = beginSaveFlowTest();
+        var keyFixture:Object = beginKeyMigrationLatchFixture();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+
+            sm.markSettingsMigrationPending();
+            latchKeySettingsMigrationForTest();
+            sm._configureSaveFlowForTest({flushResult:false});
+            assert(sm.flushNow() == false
+                    && sm.hasPendingSettingsMigration()
+                    && KeyManager.hasPendingKeySettingsMigration()
+                    && sm.hasPendingChanges(),
+                   "latch_survive_failure: storage false clears neither settings nor key latch");
+
+            sm._configureSaveFlowForTest({flushResult:"pending"});
+            assert(sm.flushNow() == false
+                    && sm.hasPendingSettingsMigration()
+                    && KeyManager.hasPendingKeySettingsMigration()
+                    && sm.hasPendingChanges(),
+                   "latch_survive_failure: storage pending clears neither settings nor key latch");
+
+            sm._configureSaveFlowForTest({
+                beforeLocalCommit:function():Void {
+                    throw new Error("injected latch pre-commit failure");
+                }
+            });
+            var threw:Boolean = false;
+            try {
+                sm.flushNow();
+            } catch (error:Error) {
+                threw = true;
+            }
+            assert(threw == true
+                    && sm.hasPendingSettingsMigration()
+                    && KeyManager.hasPendingKeySettingsMigration()
+                    && sm.hasPendingChanges(),
+                   "latch_survive_failure: precommit throw clears neither settings nor key latch");
+
+            sm._configureSaveFlowForTest({beforeLocalCommit:null, flushResult:undefined});
+            assert(sm.flushNow() == true
+                    && !sm.hasPendingSettingsMigration()
+                    && !KeyManager.hasPendingKeySettingsMigration()
+                    && sm.hasPendingChanges() == false,
+                   "latch_survive_failure: only a successful full save clears both latches");
+        } finally {
+            endKeyMigrationLatchFixture(keyFixture);
+            endSaveFlowTest(saved);
+        }
+    }
+
+    // ── R1 Slice 4：语义桶 _saveApiStats ──
+
+    private static function test_saveApi_ingress_counts_each_public_entry_once():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm._resetSaveApiStatsForTest();
+            sm.markDirty();
+            sm.flushNow();
+            sm.flushDurableNow("manual_save");
+            sm.flushBeforeTransition("safe_exit");
+            sm.saveAll();
+            sm.requestSave("shop.panel_close");
+            var api:Object = sm._getSaveApiStatsForTest();
+            assert(api.ingress.markDirty == 1
+                   && api.ingress.legacyFlushNow == 1
+                   && api.ingress.flushDurableNow == 1
+                   && api.ingress.flushBeforeTransition == 1
+                   && api.ingress.legacySaveAll == 1
+                   && api.ingress.requestSave == 1,
+                   "api_ingress: each public entry records exactly one ingress; legacy and new never double-count");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 3 && stats.flushAttempt == 3 && stats.flushSuccess == 3,
+                   "api_ingress: strict entries each produce one physical attempt while requests stay pending");
+            assert(api.request.requestScheduled == 1 && api.request.requestCoalesced == 1,
+                   "api_ingress: legacy saveAll and requestSave share one pending window");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_saveApi_request_disposition_merge_gate():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm._resetSaveApiStatsForTest();
+            sm.requestSave("shop.panel_close");
+            sm.requestSave("shop.cart_edit");
+            sm.requestSave("ui.tablet_close");
+            var api:Object = sm._getSaveApiStatsForTest();
+            assert(api.ingress.requestSave == 3
+                   && api.request.requestScheduled == 1
+                   && api.request.requestCoalesced == 2,
+                   "request_merge_gate: N=3 ingress, exactly one schedule, N-1 coalesced");
+            assert(api.pendingReasons.length == 3
+                   && api.pendingReasons[0] == "shop.cart_edit"
+                   && api.pendingReasons[2] == "ui.tablet_close",
+                   "request_merge_gate: reason set merges all three registered reasons for diagnostics");
+            sm._triggerDebounceForTest();
+            api = sm._getSaveApiStatsForTest();
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(api.request.requestFired == 1
+                   && stats.doSaveAll == 1 && stats.packGameState == 1
+                   && api.fullOrigin.fullFromRequest == 1
+                   && api.pendingReasons.length == 0,
+                   "request_merge_gate: one fire, one physical full save from request origin");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_saveApi_request_absorb_and_rearm_dispositions():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm._resetSaveApiStatsForTest();
+            sm.requestSave("shop.panel_close");
+            assert(sm.flushDurableNow("asset_tx.commit") == true,
+                   "api_disposition: fence commits");
+            var api:Object = sm._getSaveApiStatsForTest();
+            assert(api.request.requestAbsorbedByFence == 1
+                   && api.request.requestFired == 0
+                   && api.fullOrigin.fullFromDurable == 1
+                   && api.pendingOrigin == undefined,
+                   "api_disposition: pending request absorbed by the successful fence");
+            sm._advanceDebounceWheelForTest();
+            api = sm._getSaveApiStatsForTest();
+            assert(api.request.requestFired == 0 && api.fullOrigin.fullFromRequest == 0,
+                   "api_disposition: advancing the wheel after absorb never fires");
+
+            sm.requestSave("shop.cart_edit");
+            sm._configureSaveFlowForTest({saveInFlight:true});
+            sm._triggerDebounceForTest();
+            sm._configureSaveFlowForTest({saveInFlight:false});
+            api = sm._getSaveApiStatsForTest();
+            assert(api.request.requestRearmedInFlight == 1
+                   && api.request.requestFired == 0
+                   && api.pendingOrigin == "request",
+                   "api_disposition: in-flight fire rearms instead of dropping");
+            sm._triggerDebounceForTest();
+            api = sm._getSaveApiStatsForTest();
+            assert(api.request.requestFired == 1
+                   && api.fullOrigin.fullFromRequest == 1,
+                   "api_disposition: rearmed request fires exactly once afterwards");
+
+            _root.允许存档 = false;
+            sm.requestSave("ui.tablet_close");
+            assert(sm.saveAll() == false,
+                   "api_disposition: legacy saveAll keeps its false contract when disabled");
+            _root.允许存档 = true;
+            api = sm._getSaveApiStatsForTest();
+            assert(api.request.requestRejectedDisabled == 2
+                   && api.request.requestScheduled == 2,
+                   "api_disposition: disabled entries rejected without scheduling");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_saveApi_strict_outcome_buckets_per_family():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm._resetSaveApiStatsForTest();
+            assert(sm.flushNow() && sm.flushDurableNow("manual_save")
+                   && sm.flushBeforeTransition("stage.return_base"),
+                   "strict_outcome: three families all commit");
+            sm._configureSaveFlowForTest({flushResult:"pending"});
+            assert(sm.flushDurableNow("settings.apply") == false,
+                   "strict_outcome: durable pending rejected");
+            sm._configureSaveFlowForTest({flushResult:false});
+            assert(sm.flushBeforeTransition("safe_exit") == false,
+                   "strict_outcome: transition false rejected");
+            _root.允许存档 = false;
+            assert(sm.flushNow() == false,
+                   "strict_outcome: legacy disabled early-rejected");
+            _root.允许存档 = true;
+            _root.角色名 = "";
+            assert(sm.flushDurableNow("manual_save") == false,
+                   "strict_outcome: write-gate rejection returns false");
+            _root.角色名 = "SaveManagerTest";
+            sm._configureSaveFlowForTest({
+                flushResult:undefined,
+                beforeLocalCommit:function():Void {
+                    throw new Error("injected strict outcome failure");
+                }
+            });
+            var threw:Boolean = false;
+            try {
+                sm.flushDurableNow("manual_save");
+            } catch (error:Error) {
+                threw = true;
+            }
+            assert(threw == true,
+                   "strict_outcome: precommit throw keeps its throw contract");
+            var api:Object = sm._getSaveApiStatsForTest();
+            assert(api.strict.legacy.success == 1 && api.strict.legacy.earlyReject == 1
+                   && api.strict.durable.success == 1 && api.strict.durable.pending == 1
+                   && api.strict.durable.earlyReject == 1 && api.strict.durable["throw"] == 1
+                   && api.strict.transition.success == 1 && api.strict.transition["false"] == 1
+                   && api.strict.legacy.pending == 0 && api.strict.legacy["false"] == 0
+                   && api.strict.durable["false"] == 0 && api.strict.transition["throw"] == 0,
+                   "strict_outcome: success/pending/false/earlyReject/throw land in exact per-family buckets");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_saveApi_full_origin_and_flush_lane_buckets():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm._resetSaveApiStatsForTest();
+            assert(sm.flushNow() && sm.flushDurableNow("manual_save")
+                   && sm.flushBeforeTransition("stage.return_base"),
+                   "origin_lane: three strict origins commit");
+            sm.requestSave("shop.panel_close");
+            sm._triggerDebounceForTest();
+            sm.saveAll();
+            sm._triggerDebounceForTest();
+            var api:Object = sm._getSaveApiStatsForTest();
+            assert(api.fullOrigin.fullFromLegacyStrict == 1
+                   && api.fullOrigin.fullFromDurable == 1
+                   && api.fullOrigin.fullFromTransition == 1
+                   && api.fullOrigin.fullFromRequest == 1
+                   && api.fullOrigin.fullFromLegacyDebounce == 1,
+                   "origin_lane: five full-save origins each attributed exactly once");
+            sm.saveShopCart();
+            sm.saveShopPurchased();
+            sm.deleteSlot();
+            api = sm._getSaveApiStatsForTest();
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            var lanes:Object = api.flushLane;
+            var laneAttempts:Number = lanes.full.attempt + lanes.shop_partial.attempt
+                + lanes.delete_tombstone.attempt + lanes.preload_tombstone.attempt
+                + lanes.read_migration.attempt;
+            assert(lanes.full.attempt == 5 && lanes.full.success == 5
+                   && lanes.shop_partial.attempt == 2 && lanes.shop_partial.success == 2
+                   && lanes.delete_tombstone.attempt == 1 && lanes.delete_tombstone.success == 1
+                   && laneAttempts == stats.flushAttempt,
+                   "origin_lane: lane buckets split exactly and always sum to the physical flushAttempt total");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_saveApi_flush_lane_read_migration_and_preload_tombstone():Void {
+        setUpForLoadTest();
+        var sm:SaveManager = SaveManager.getInstance();
+        var oldPath:Object = _root.savePath;
+        var oldAllow:Object = _root.允许存档;
+        sm._resetProtocol2ForTest();
+        sm._resetSavePhysicalStatsForTest();
+        sm._resetSaveApiStatsForTest();
+        try {
+            seedTestSO("2026-01-01 00:00:00", undefined);
+            _root.savePath = TEST_SLOT;
+            _root.允许存档 = true;
+            var so:SharedObject = SharedObject.getLocal(TEST_SLOT);
+            so.data["test"].ext = {};
+            var solDrugs:Object = {};
+            solDrugs["0"] = {name:"普通hp药剂", value:1};
+            solDrugs["4"] = {name:"SOL ghost", value:1};
+            so.data["test"].inventory.药剂栏 = solDrugs;
+            so.flush();
+            assert(sm.loadAll() == true,
+                   "lane_migration: legacy SOL load succeeds");
+            var api:Object = sm._getSaveApiStatsForTest();
+            assert(api.flushLane.read_migration.attempt == 1
+                   && api.flushLane.read_migration.success == 1
+                   && api.flushLane.full.attempt == 0,
+                   "lane_migration: migrate persist lands in read_migration, never in full");
+
+            sm._resetProtocol2ForTest();
+            _root._launcherSaveDecision = "deleted";
+            sm.preload();
+            api = sm._getSaveApiStatsForTest();
+            assert(api.flushLane.preload_tombstone.attempt == 1
+                   && api.flushLane.preload_tombstone.success == 1,
+                   "lane_migration: launcher deleted decision persists the tombstone in preload_tombstone");
+            assert(SharedObject.getLocal(TEST_SLOT).data._deleted == true,
+                   "lane_migration: tombstone visible in the save image");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            var lanes:Object = api.flushLane;
+            assert(lanes.full.attempt + lanes.shop_partial.attempt
+                   + lanes.delete_tombstone.attempt + lanes.preload_tombstone.attempt
+                   + lanes.read_migration.attempt == stats.flushAttempt,
+                   "lane_migration: lanes always sum to the physical flushAttempt total");
+        } finally {
+            cleanTestSO();
+            sm.clearPendingDrugLoadoutMigration();
+            sm._resetProtocol2ForTest();
+            _root.savePath = oldPath;
+            _root.允许存档 = oldAllow;
+        }
+    }
+
+    private static function test_saveApi_reason_registry_clamps_dynamic_text():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm._resetSaveApiStatsForTest();
+            sm.requestSave("shop.panel_close");
+            sm.requestSave("reward.terminal");
+            sm.requestSave("totally.dynamic." + String(getTimer()));
+            assert(sm.flushDurableNow("asset_tx.commit") == true,
+                   "reason_registry: fence commits");
+            var api:Object = sm._getSaveApiStatsForTest();
+            assert(api.reasons["shop.panel_close"] == 1
+                   && api.reasons["reward.terminal"] == 1
+                   && api.reasons["asset_tx.commit"] == 1
+                   && api.reasonUnregistered == 1,
+                   "reason_registry: registered ids count into fixed buckets, dynamic text only into the clamp counter");
+            var hasDynamicKey:Boolean = false;
+            for (var key:String in api.reasons) {
+                if (key.indexOf("totally.dynamic") == 0) hasDynamicKey = true;
+            }
+            assert(hasDynamicKey == false,
+                   "reason_registry: arbitrary dynamic text never becomes a stats key");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_saveApi_stats_snapshot_isolation_reset_and_trace():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSaveApiStatsForTest();
+            sm.markDirty();
+            sm.requestSave("shop.panel_close");
+            var api:Object = sm._getSaveApiStatsForTest();
+            api.ingress.markDirty = 999;
+            api.request.requestScheduled = 999;
+            api.strict.durable.success = 999;
+            api.flushLane.full.attempt = 999;
+            api.reasons["shop.panel_close"] = 999;
+            var fresh:Object = sm._getSaveApiStatsForTest();
+            assert(fresh.ingress.markDirty == 1
+                   && fresh.request.requestScheduled == 1
+                   && fresh.strict.durable.success == 0
+                   && fresh.flushLane.full.attempt == 0
+                   && fresh.reasons["shop.panel_close"] == 1,
+                   "api_snapshot: accessor returns a deep snapshot, mutation never leaks into internal buckets");
+            sm._resetSaveApiStatsForTest();
+            var cleared:Object = sm._getSaveApiStatsForTest();
+            assert(cleared.ingress.markDirty == 0
+                   && cleared.request.requestScheduled == 0
+                   && cleared.reasons["shop.panel_close"] == 0
+                   && cleared.reasonUnregistered == 0,
+                   "api_snapshot: reset zeroes every bucket including the fixed reason set");
+
+            sm._configureSaveFlowForTest({resetScheduler:true});
+            sm._enableSaveApiTraceForTest();
+            sm.requestSave("ui.tablet_close");
+            var traceRows:Array = sm._getSaveApiTraceForTest();
+            assert(traceRows.length == 1
+                   && traceRows[0].apiKind == "request"
+                   && traceRows[0].reasonId == "ui.tablet_close"
+                   && traceRows[0].outcome == "scheduled"
+                   && traceRows[0].requestBatchId > 0,
+                   "api_trace: bounded test trace records apiKind/reasonId/batch/outcome");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    // ── R1 Slice 3：scheduler 正确性 ──
+
+    private static function test_debounce_in_flight_rearms_pending_request():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._resetSavePhysicalStatsForTest();
+            sm.requestSave("shop.panel_close");
+            sm._configureSaveFlowForTest({saveInFlight:true});
+            sm._triggerDebounceForTest();
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 0 && stats.flushAttempt == 0,
+                   "debounce_rearm: in-flight fire attempts nothing and never drops the request");
+            sm._configureSaveFlowForTest({saveInFlight:false});
+            sm._triggerDebounceForTest();
+            stats = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 1 && stats.packGameState == 1 && stats.flushSuccess == 1,
+                   "debounce_rearm: rearmed pending request still commits exactly one full save");
+            assert(sm.hasPendingChanges() == false,
+                   "debounce_rearm: rearmed save clears dirty");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_strict_reentry_keeps_pending_request_token():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm.requestSave("shop.panel_close");
+            sm._configureSaveFlowForTest({saveInFlight:true});
+            assert(sm.flushDurableNow("asset_tx.commit") == false,
+                   "strict_reentry_pending: reentrant strict fence is rejected");
+            assert(sm.flushNow() == false,
+                   "strict_reentry_pending: reentrant legacy strict is rejected");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 0 && stats.flushAttempt == 0,
+                   "strict_reentry_pending: reentry never reaches the physical kernel");
+            sm._configureSaveFlowForTest({saveInFlight:false});
+            sm._triggerDebounceForTest();
+            stats = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 1 && stats.flushSuccess == 1,
+                   "strict_reentry_pending: pending token survives reentry rejection and fires later");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_guarded_debounce_callback_never_throws():Void {
+        var saved:Object = beginSaveFlowTest();
+        var capture:Object = beginFrameUiCapture();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm.requestSave("shop.panel_close");
+            sm._configureSaveFlowForTest({
+                beforeLocalCommit:function():Void {
+                    throw new Error("injected wheel-boundary failure");
+                }
+            });
+            var escaped:Boolean = false;
+            try {
+                sm._triggerDebounceGuardedForTest();
+            } catch (error:Error) {
+                escaped = true;
+            }
+            assert(escaped == false,
+                   "guarded_debounce: exception never escapes the wheel-boundary callback");
+            assert(takeFrameUiPayload(capture) == "sv:1|sv:3",
+                   "guarded_debounce: failure still projects Saving then Failed");
+            assert(sm.hasPendingChanges() == true,
+                   "guarded_debounce: dirty survives the swallowed failure");
+            sm._configureSaveFlowForTest({beforeLocalCommit:null});
+            sm.requestSave("shop.panel_close");
+            sm._triggerDebounceForTest();
+            assert(sm.hasPendingChanges() == false,
+                   "guarded_debounce: a fresh request after the swallowed failure commits and clears dirty");
+        } finally {
+            endFrameUiCapture(capture);
+            endSaveFlowTest(saved);
+        }
+    }
+
+    // ── R1 Slice 2：四层 API ──
+
+    private static function test_flushDurableNow_clean_state_commits_immediately():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            // 完全 clean：不标任何 dirty——防 dirty 早退/防 debounce 偷换门
+            assert(sm.flushDurableNow("manual_save") == true,
+                   "durable_clean_commit: clean state still commits synchronously");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 1 && stats.doSaveAll == 1
+                   && stats.flushAttempt == 1 && stats.flushSuccess == 1
+                   && stats.flushPending == 0 && stats.flushFalse == 0,
+                   "durable_clean_commit: exactly one pack/doSaveAll/flushAttempt without any dirty");
+            assert(SharedObject.getLocal(TEST_SLOT).data["test"] != undefined,
+                   "durable_clean_commit: save image readable immediately after return");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushBeforeTransition_clean_state_commits_immediately():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            assert(sm.flushBeforeTransition("stage.return_base") == true,
+                   "transition_clean_commit: clean state still commits synchronously");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 1 && stats.doSaveAll == 1
+                   && stats.flushAttempt == 1 && stats.flushSuccess == 1,
+                   "transition_clean_commit: same single-kernel physical shape as durable");
+            assert(SharedObject.getLocal(TEST_SLOT).data["test"] != undefined,
+                   "transition_clean_commit: save image readable immediately after return");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_flushBeforeTransition_rejects_reason_outside_allowlist():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm.markDirty();
+            assert(sm.flushBeforeTransition("manual_save") == false,
+                   "transition_allowlist: durable-only reason is fail-closed");
+            assert(sm.flushBeforeTransition(undefined) == false,
+                   "transition_allowlist: missing reason is fail-closed");
+            assert(sm.flushBeforeTransition("arbitrary.dynamic.text") == false,
+                   "transition_allowlist: unregistered dynamic text is fail-closed");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 0 && stats.doSaveAll == 0 && stats.flushAttempt == 0,
+                   "transition_allowlist: rejection never reaches the physical kernel");
+            assert(sm.hasPendingChanges() == true,
+                   "transition_allowlist: rejection preserves dirty");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_requestSave_schedules_without_physical_attempt():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm.requestSave("shop.panel_close");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 0 && stats.doSaveAll == 0
+                   && stats.flushAttempt == 0 && stats.flushSuccess == 0
+                   && stats.flushPending == 0 && stats.flushFalse == 0
+                   && stats.jsonStringify == 0 && stats.shadowDispatch == 0,
+                   "request_no_physical: zero physical bucket delta before the timer fires");
+            assert(sm.hasPendingChanges() == false,
+                   "request_no_physical: requestSave never marks dirty by itself");
+
+            sm._triggerDebounceForTest();
+            stats = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 1 && stats.doSaveAll == 1
+                   && stats.flushAttempt == 1 && stats.flushSuccess == 1,
+                   "request_no_physical: fired timer commits exactly one full save");
+            assert(SharedObject.getLocal(TEST_SLOT).data["test"] != undefined,
+                   "request_no_physical: fired request lands in the save image");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_requestSave_coalesces_to_single_physical_save():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm.requestSave("shop.panel_close");
+            sm.requestSave("shop.cart_edit");
+            sm.requestSave("ui.tablet_close");
+            sm._triggerDebounceForTest();
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.packGameState == 1 && stats.doSaveAll == 1
+                   && stats.flushAttempt == 1 && stats.flushSuccess == 1,
+                   "request_coalesce: three requests in one window merge into one physical save");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_requestSave_absorbed_by_successful_fence():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            sm.requestSave("shop.panel_close");
+            assert(sm.flushDurableNow("asset_tx.commit") == true,
+                   "request_fence_absorb: fence commits");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 1 && stats.packGameState == 1 && stats.flushAttempt == 1,
+                   "request_fence_absorb: total full save is exactly one (fence covers the request)");
+            assert(sm._hasPendingSaveRequestForTest() == false,
+                   "request_fence_absorb: successful fence clears the pending request");
+            sm._advanceDebounceWheelForTest();
+            stats = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 1 && stats.packGameState == 1 && stats.flushAttempt == 1,
+                   "request_fence_absorb: advancing the wheel after absorb never fires another save");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_failed_fence_keeps_pending_request():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.markDirty();
+            sm._resetSavePhysicalStatsForTest();
+            sm.requestSave("shop.panel_close");
+            sm._configureSaveFlowForTest({flushResult:false});
+            assert(sm.flushDurableNow("asset_tx.commit") == false,
+                   "failed_fence_pending: storage false rejects the fence");
+            assert(sm.hasPendingChanges() == true,
+                   "failed_fence_pending: failed fence preserves dirty");
+            sm._configureSaveFlowForTest({flushResult:undefined});
+            sm._triggerDebounceForTest();
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 2 && stats.flushAttempt == 2
+                   && stats.flushFalse == 1 && stats.flushSuccess == 1,
+                   "failed_fence_pending: pending request survives failed fence and retries later");
+            assert(sm.hasPendingChanges() == false,
+                   "failed_fence_pending: retried full save clears dirty");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_legacy_and_new_strict_entries_each_commit_once():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm._resetSavePhysicalStatsForTest();
+            assert(sm.flushNow() == true,
+                   "entries_once: legacy strict commits");
+            assert(sm.flushDurableNow("manual_save") == true,
+                   "entries_once: durable strict commits");
+            assert(sm.flushBeforeTransition("safe_exit") == true,
+                   "entries_once: transition strict commits");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 3 && stats.packGameState == 3
+                   && stats.flushAttempt == 3 && stats.flushSuccess == 3,
+                   "entries_once: each public strict entry produces exactly one physical attempt");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    private static function test_saveApi_shim_exposes_four_layer_api():Void {
+        var saved:Object = beginSaveFlowTest();
+        try {
+            var sm:SaveManager = SaveManager.getInstance();
+            sm.installSaveApiShims();
+            assert(typeof _root.存档系统.markDirty == "function"
+                   && typeof _root.存档系统.requestSave == "function"
+                   && typeof _root.存档系统.flushDurableNow == "function"
+                   && typeof _root.存档系统.flushBeforeTransition == "function",
+                   "shim_four_layer: installs all four R1 delegates");
+            sm._resetSavePhysicalStatsForTest();
+            _root.存档系统.markDirty();
+            assert(sm.hasPendingChanges() == true,
+                   "shim_four_layer: markDirty marks pending");
+            _root.存档系统.requestSave("ui.tablet_close");
+            assert(_root.存档系统.flushDurableNow("manual_save") == true,
+                   "shim_four_layer: durable commit returns true");
+            assert(sm.hasPendingChanges() == false,
+                   "shim_four_layer: successful fence clears dirty and absorbs pending");
+            assert(_root.存档系统.flushBeforeTransition("character_creation.start_tutorial") == true,
+                   "shim_four_layer: transition commit returns true");
+            var stats:Object = sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll == 2 && stats.flushAttempt == 2 && stats.flushSuccess == 2,
+                   "shim_four_layer: shim path produces one physical attempt per strict call");
+        } finally {
+            endSaveFlowTest(saved);
+        }
+    }
+
+    // ── KeyManager 迁移 latch 夹具（R1 Slice 1）──
+    // 合成两行键位表，不入生产键名；结束时恢复原 _root 键位字段并清 pending。
+    private static function beginKeyMigrationLatchFixture():Object {
+        var receipt:Object = {
+            defaults: _root.默认键值设定,
+            keySettings: _root.键值设定,
+            keyTable: _root.按键设定表
+        };
+        _root.默认键值设定 = [["动作一", "测试动作键一", 65], ["动作二", "测试动作键二", 66]];
+        _root.按键设定表 = [[0, 0, 0, 0]];
+        return receipt;
+    }
+
+    private static function latchKeySettingsMigrationForTest():Void {
+        var historic:Array = KeyManager.copyKeySettings(_root.默认键值设定);
+        // 非法键码：归一回退默认值后与入参不一致，按生产契约锁存 pending。
+        historic[0][2] = 999;
+        KeyManager.refreshKeySettings(historic, null, _root.按键设定表[0]);
+    }
+
+    private static function endKeyMigrationLatchFixture(receipt:Object):Void {
+        KeyManager.clearPendingKeySettingsMigration();
+        delete _root.测试动作键一;
+        delete _root.测试动作键二;
+        _root.默认键值设定 = receipt.defaults;
+        _root.键值设定 = receipt.keySettings;
+        _root.按键设定表 = receipt.keyTable;
     }
 }

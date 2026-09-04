@@ -302,27 +302,48 @@ if ($sceneTransitionSource -match '__legacyMaterialOnly') {
 
 $saveManagerSource = Get-RepoText `
     'scripts\类定义\org\flashNight\neur\Server\SaveManager.as'
+# R1 Slice 2：三个 strict public 入口（flushNow/flushDurableNow/flushBeforeTransition）
+# 分别进入同一私有内核 _strictFlushCore。sv 投影契约钉在内核上，另加防 public
+# 级联断言（级联会让一次调用同时计入 legacy 与新 API ingress，裁决 §5.3 兼容 wrapper 门）。
+$strictCoreBody = [regex]::Match(
+    $saveManagerSource,
+    'private function _strictFlushCore\(origin:String, reason:String\):Boolean \{[\s\S]*?\r?\n    \}'
+).Value
 $flushNowBody = [regex]::Match(
     $saveManagerSource,
     'public function flushNow\(\):Boolean \{[\s\S]*?\r?\n    \}'
+).Value
+$durableNowBody = [regex]::Match(
+    $saveManagerSource,
+    'public function flushDurableNow\(reason:String\):Boolean \{[\s\S]*?\r?\n    \}'
+).Value
+$beforeTransitionBody = [regex]::Match(
+    $saveManagerSource,
+    'public function flushBeforeTransition\(reason:String\):Boolean \{[\s\S]*?\r?\n    \}'
 ).Value
 $debounceBody = [regex]::Match(
     $saveManagerSource,
     'private function _onDebounceFire\(\):Void \{[\s\S]*?\r?\n    \}'
 ).Value
-if (($flushNowBody -notmatch
+if (($strictCoreBody -notmatch
         'pushUiState\("sv:1"\)[\s\S]*?允许存档\s*!==\s*true') -or
-        ($flushNowBody -notmatch
+        ($strictCoreBody -notmatch
         '允许存档\s*!==\s*true[\s\S]*?pushUiState\("sv:3"\)[\s\S]*?return false') -or
-        ($flushNowBody -notmatch
+        ($strictCoreBody -notmatch
             '_saveInFlight[\s\S]*?pushUiState\("sv:3"\)[\s\S]*?return false') -or
-        ($flushNowBody -notmatch
+        ($strictCoreBody -notmatch
             'catch \(saveError\)[\s\S]*?pushUiState\("sv:3"\)[\s\S]*?throw saveError') -or
         ($debounceBody -notmatch
             'catch \(saveError\)[\s\S]*?pushUiState\("sv:3"\)[\s\S]*?throw saveError') -or
         ($saveManagerSource -notmatch
-            'pushUiState\(ok \? "sv:2" : "sv:3"\)')) {
-    throw 'SaveManager must expose sv:2 only for committed flush and sv:3 for every synchronous failure path.'
+            'pushUiState\(ok \? "sv:2" : "sv:3"\)') -or
+        ($flushNowBody -notmatch '_strictFlushCore\("legacyStrict"') -or
+        ($flushNowBody -match 'flushDurableNow|flushBeforeTransition|_doSaveAll') -or
+        ($durableNowBody -notmatch '_strictFlushCore\("durable"') -or
+        ($durableNowBody -match 'flushNow\(|flushBeforeTransition|_doSaveAll') -or
+        ($beforeTransitionBody -notmatch '_strictFlushCore\("transition"') -or
+        ($beforeTransitionBody -match 'flushNow\(|flushDurableNow|_doSaveAll')) {
+    throw 'SaveManager must expose sv:2 only for committed flush, sv:3 for every synchronous failure path, and route every strict public entry through the shared private core without public cascading.'
 }
 Write-Host '[STATIC_PASS] Safe-exit save outcome projection contract'
 

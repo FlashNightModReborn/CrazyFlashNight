@@ -12,11 +12,12 @@
     "lineNumberNote": "本 manifest 全部行号以 headCommit 工作树为准。相对 callsites.md 封包基线 776db2ae26 的已确认漂移：A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）；D2 商城系统_WebView.as 721→749。",
     "swf": {
       "scripts/asLoader.swf": {
-        "sha256": "7adaa5cbcddb5311ebe4f1f900fa54ff32a52bff2e24aec262e2c38dfddd3d44",
-        "sizeBytes": 1234250,
-        "functions": 10924,
-        "maxFunctionBytes": 54560,
-        "functionSizeGate": "node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 5（未发现 codeSize >= 60000 B 近墙项）"
+        "sha256": "83ddebde7225207c64bf67131efb26b8374030c89820c2ee08819924458c325f",
+        "sizeBytes": 1236590,
+        "functions": 10953,
+        "maxFunctionBytes": 55767,
+        "functionSizeGate": "node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 15（未发现 codeSize >= 60000 B 近墙项）",
+        "republishNote": "2026-09-04 R1 Slice 1-4 施工后按 README 漂移流程重发布刷新；行为证据见当轮 character-build 334/334 与 map-loot 648/648 fresh trace"
       },
       "CRAZYFLASHER7MercenaryEmpire.swf": {
         "sha256": "e00cffb55e76a903e9f4457eb346c4f218968d4c2574a29589d546a178755cff",

@@ -236,6 +236,77 @@ class org.flashNight.neur.Server.SaveManager {
     // 存盘物理量分桶（存盘风暴止血 ADR 2026-09-03 Commit 0）：领域层调用计数
     // 之外的物理真相，防 wrapper 假通过；测试经专用访问器读取，生产只累计。
     private var _savePhysicalStats:Object = null;
+    // R1 Slice 4：API 语义分桶（裁决 §5.2）。与 _savePhysicalStats 物理八分桶严格分离：
+    // ingress/调度/origin/outcome/lane 只进本桶，物理八分桶名称与含义不变。
+    // 生产只累计，测试经专用访问器读深拷贝快照。
+    private var _saveApiStats:Object = null;
+    // 测试模式有界 trace（裁决 §5.2：apiKind/reasonId/requestBatchId/physicalAttemptId/outcome）。
+    // null=未开启（生产零开销）；开启后环形保留最近 64 条。
+    private var _saveApiTrace:Array = null;
+
+    // ==================== R1 四层 API：reason 注册表与调度状态 ====================
+    // reason 注册表与 tools/save-api-migration/callsites.v1.json 的 reasonId 清单同源：
+    // 新增/修改必须同轮更新 manifest 与本表（README「reasonId 冻结性质」），只接受低基数字符串。
+    private static var SAVE_REASON_IDS:Array = [
+        "safe_exit",
+        "reward.supply_delivery", "reward.root_admission", "reward.terminal_ack",
+        "reward.resume_pending", "reward.child_bridge", "reward.terminal",
+        "reward.quarantine", "reward.pending_persist",
+        "asset_tx.commit",
+        "item_use.open_commit",
+        "loot.claim_batch", "loot.standalone_claim", "loot.settlement_terminal",
+        "stage.return_base",
+        "scene.changed_safety_net",
+        "character_creation.start_tutorial",
+        "settings.apply", "settings.save",
+        "character_build.finalize",
+        "reward_ui.task_panel_close", "reward_ui.item_panel_close", "reward_ui.claim_all_close",
+        "manual_save",
+        "shop_legacy.close",
+        "shop.panel_close", "shop.cart_edit",
+        "ui.fade_out", "ui.safe_exit_open_legacy", "ui.taskbar_legacy_close",
+        "ui.storage_money_button_close", "ui.storage_money_close", "ui.plastic_surgery_paid",
+        "ui.tablet_close", "ui.pet_info_close", "ui.inventory_close", "ui.warehouse_close",
+        "ui.warehouse_legacy_close", "ui.inventory_legacy_close", "ui.player_info_inventory_close"
+    ];
+    // transition barrier 固定 reason allowlist（裁决 §2.2/§3.1：A1/A6/B2）
+    private static var TRANSITION_REASON_IDS:Array = [
+        "safe_exit", "stage.return_base", "character_creation.start_tutorial"
+    ];
+    private static var _reasonRegistry:Object = null;
+    private static var _transitionReasonAllowlist:Object = null;
+
+    // requestSave 全局单 pending request：所有 reason 合并进同一个 300ms trailing 调度
+    private var _pendingSaveOrigin:String = undefined;   // undefined=无 pending；"legacyDebounce"|"request"
+    private var _pendingSaveReasons:Object = null;       // 注册 reason 集合（仅诊断合并）
+    private var _requestBatchSeq:Number = 0;
+    private var _pendingRequestBatchId:Number = 0;
+
+    private static function saveReasonRegistry():Object {
+        if (_reasonRegistry == null) {
+            _reasonRegistry = {};
+            for (var i:Number = 0; i < SAVE_REASON_IDS.length; i++) {
+                _reasonRegistry[SAVE_REASON_IDS[i]] = true;
+            }
+        }
+        return _reasonRegistry;
+    }
+
+    /** reason 注册表查询：R1 只接受低基数注册 ID，任意动态文本不得进入诊断集合。 */
+    public static function isRegisteredSaveReason(reason:String):Boolean {
+        return reason != undefined && saveReasonRegistry()[reason] === true;
+    }
+
+    /** transition barrier 固定 allowlist 查询（裁决 §2.2：A1/A6/B2 三个 reason）。 */
+    public static function isTransitionReasonAllowed(reason:String):Boolean {
+        if (_transitionReasonAllowlist == null) {
+            _transitionReasonAllowlist = {};
+            for (var i:Number = 0; i < TRANSITION_REASON_IDS.length; i++) {
+                _transitionReasonAllowlist[TRANSITION_REASON_IDS[i]] = true;
+            }
+        }
+        return reason != undefined && _transitionReasonAllowlist[reason] === true;
+    }
 
     // ── Protocol 2 (launcher 存档决议) ──
     // 握手回调把 _root._launcher* 写入, preload() 一次性消费并转存到实例字段后 delete.
@@ -348,11 +419,39 @@ class org.flashNight.neur.Server.SaveManager {
         if (config.resetDirty === true) {
             _dirtyMark = false;
         }
+        if (config.resetScheduler === true) {
+            if (_dispatchToken != undefined) {
+                EnhancedCooldownWheel.I().removeTask(_dispatchToken);
+                _dispatchToken = undefined;
+            }
+            _pendingSaveOrigin = undefined;
+            _pendingSaveReasons = null;
+        }
     }
 
     /** 存盘 debounce 测试夹具：生产代码不得调用。 */
     public function _triggerDebounceForTest():Void {
         _onDebounceFire();
+    }
+
+    /** wheel 边界守卫路径测试夹具：与 timer 实际回调同路径，异常不得逃逸出本方法。 */
+    public function _triggerDebounceGuardedForTest():Void {
+        _onDebounceFireGuarded();
+    }
+
+    /** pending request 诊断查询（R1）：测试专用。 */
+    public function _hasPendingSaveRequestForTest():Boolean {
+        return _pendingSaveOrigin != undefined;
+    }
+
+    /**
+     * 忠实模拟 EnhancedCooldownWheel 推进的测试探针：只有活动 token 才触发回调
+     * （与生产 timer 同一目标方法）；被吸收/复位的 pending 没有活动 token，本方法
+     * 什么都不做。用于"后续推进时间轮不再额外保存"的吸收门。生产代码不得调用。
+     */
+    public function _advanceDebounceWheelForTest():Void {
+        if (_dispatchToken == undefined) return;
+        _onDebounceFireGuarded();
     }
 
     private function savePhysicalStats():Object {
@@ -378,6 +477,108 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function _resetSavePhysicalStatsForTest():Void {
         _savePhysicalStats = null;
+    }
+
+    private function saveApiStats():Object {
+        if (_saveApiStats == null) {
+            _saveApiStats = {
+                ingress: {legacySaveAll:0, legacyFlushNow:0, markDirty:0,
+                    requestSave:0, flushDurableNow:0, flushBeforeTransition:0},
+                request: {requestScheduled:0, requestCoalesced:0, requestFired:0,
+                    requestAbsorbedByFence:0, requestRearmedInFlight:0,
+                    requestRejectedDisabled:0},
+                fullOrigin: {fullFromLegacyDebounce:0, fullFromRequest:0,
+                    fullFromLegacyStrict:0, fullFromDurable:0, fullFromTransition:0},
+                strict: {
+                    legacy: newStrictOutcomeStats(),
+                    durable: newStrictOutcomeStats(),
+                    transition: newStrictOutcomeStats()
+                },
+                flushLane: {
+                    full: newFlushLaneStats(),
+                    shop_partial: newFlushLaneStats(),
+                    delete_tombstone: newFlushLaneStats(),
+                    preload_tombstone: newFlushLaneStats(),
+                    read_migration: newFlushLaneStats()
+                },
+                reasons: {},
+                reasonUnregistered: 0
+            };
+            // reason 只接受注册 ID：预置全部注册键为 0，任意动态文本永远不会成为 key。
+            var registry:Object = saveReasonRegistry();
+            for (var reasonId:String in registry) {
+                _saveApiStats.reasons[reasonId] = 0;
+            }
+        }
+        return _saveApiStats;
+    }
+
+    private static function newStrictOutcomeStats():Object {
+        // AS2 编译器不接受保留字作对象字面量键（即使加引号），一律括号赋值
+        var stats:Object = {success:0, pending:0, earlyReject:0};
+        stats["false"] = 0;
+        stats["throw"] = 0;
+        return stats;
+    }
+
+    private static function newFlushLaneStats():Object {
+        var stats:Object = {attempt:0, success:0, pending:0};
+        stats["false"] = 0;
+        return stats;
+    }
+
+    private static function copyBucketTree(node:Object):Object {
+        if (node == null || typeof node != "object") return node;
+        var copy:Object = {};
+        for (var key:String in node) {
+            var value:Object = node[key];
+            copy[key] = (value != null && typeof value == "object") ? copyBucketTree(value) : value;
+        }
+        return copy;
+    }
+
+    /**
+     * R1 Slice 4 测试访问器：返回 _saveApiStats 深拷贝快照与 pending 诊断，
+     * 调用方改写快照不影响内部累计。生产代码不得调用。
+     */
+    public function _getSaveApiStatsForTest():Object {
+        var snapshot:Object = copyBucketTree(saveApiStats());
+        snapshot.pendingOrigin = _pendingSaveOrigin;
+        snapshot.pendingRequestBatchId = _pendingRequestBatchId;
+        var pendingReasons:Array = [];
+        if (_pendingSaveReasons != null) {
+            for (var reasonId:String in _pendingSaveReasons) {
+                pendingReasons.push(reasonId);
+            }
+        }
+        pendingReasons.sort();
+        snapshot.pendingReasons = pendingReasons;
+        return snapshot;
+    }
+
+    public function _resetSaveApiStatsForTest():Void {
+        _saveApiStats = null;
+    }
+
+    /** 测试模式有界 trace：开启即清空；生产保持 null 零开销。 */
+    public function _enableSaveApiTraceForTest():Void {
+        _saveApiTrace = [];
+    }
+
+    public function _getSaveApiTraceForTest():Array {
+        return (_saveApiTrace == null) ? [] : _saveApiTrace.slice();
+    }
+
+    private function recordSaveApiTrace(apiKind:String, reasonId:String, outcome:String):Void {
+        if (_saveApiTrace == null) return;
+        if (_saveApiTrace.length >= 64) _saveApiTrace.shift();
+        _saveApiTrace.push({
+            apiKind: apiKind,
+            reasonId: (reasonId != undefined) ? reasonId : "",
+            requestBatchId: _pendingRequestBatchId,
+            physicalAttemptId: savePhysicalStats().doSaveAll,
+            outcome: outcome
+        });
     }
 
     // ==================== 预取管理 ====================
@@ -429,32 +630,115 @@ class org.flashNight.neur.Server.SaveManager {
      * 禁止在本函数体内做组包/IO，任何"真正落盘"逻辑都应在 _doSaveAll 内。
      */
     public function saveAll():Boolean {
-        if (_root.允许存档 !== true) return false;
-        // 立即转入实例字段，避免 token 调度期间 mark 被读后清零的 race
-        if (_root.存档系统.dirtyMark) _dirtyMark = true;
+        saveApiStats().ingress.legacySaveAll++;
+        if (_root.允许存档 !== true) {
+            saveApiStats().request.requestRejectedDisabled++;
+            recordSaveApiTrace("legacyDebounce", null, "rejectedDisabled");
+            return false;
+        }
+        _requestSaveCore("legacyDebounce", null);
+        return true;
+    }
 
-        // trailing edge：每次 saveAll 取消旧任务、重新调度
+    /**
+     * R1 四层 API · 最终请求层：300ms trailing 全局单 timer 合并，返回 Void 刻意
+     * 不承诺 durability。不自动标脏；成功全量存盘才清 dirty/latch，失败保留。
+     * reason 只接受 SAVE_REASON_IDS 注册表低基数字符串；同一窗口 reason 做集合合并，
+     * 仅用于诊断。未注册 reason 不阻断调度（绝不因标签错误丢存盘），仅诊断留痕。
+     */
+    public function requestSave(reason:String):Void {
+        saveApiStats().ingress.requestSave++;
+        if (isRegisteredSaveReason(reason)) saveApiStats().reasons[reason]++;
+        if (_root.允许存档 !== true) {
+            saveApiStats().request.requestRejectedDisabled++;
+            recordSaveApiTrace("request", reason, "rejectedDisabled");
+            return;
+        }
+        _requestSaveCore("request", reason);
+    }
+
+    /**
+     * 调度内核（R1）：saveAll 与 requestSave 分别进入本内核，public 之间严禁级联。
+     * 全局单 pending request：重复调用取消旧 timer 重挂（trailing edge），origin 取
+     * 本窗口首个调度方，reason 集合跨调用合并，仅作诊断。
+     */
+    private function _requestSaveCore(origin:String, reason:String):Void {
+        // 立即转入实例字段，避免 token 调度期间 mark 被读后清零的 race
+        if (_root.存档系统 != undefined && _root.存档系统.dirtyMark) _dirtyMark = true;
+        if (origin == "request" && reason != undefined) {
+            if (isRegisteredSaveReason(reason)) {
+                if (_pendingSaveReasons == null) _pendingSaveReasons = {};
+                _pendingSaveReasons[reason] = true;
+            } else {
+                // 未注册 reason：不拒绝存盘请求，仅诊断留痕（R1 防高基数）
+                saveApiStats().reasonUnregistered++;
+                ServerManager.getInstance().sendServerMessage(
+                    "[SaveManager.requestSave] unregistered reason ignored for diagnostics: " + reason);
+            }
+        }
+        // trailing edge：重复调用取消旧任务、重新调度；origin 保留本窗口首个调度方
         if (_dispatchToken != undefined) {
+            saveApiStats().request.requestCoalesced++;
             EnhancedCooldownWheel.I().removeTask(_dispatchToken);
             _dispatchToken = undefined;
+            recordSaveApiTrace(origin, reason, "coalesced");
+        } else {
+            saveApiStats().request.requestScheduled++;
+            _pendingSaveOrigin = origin;
+            _pendingRequestBatchId = ++_requestBatchSeq;
+            recordSaveApiTrace(origin, reason, "scheduled");
         }
+        _scheduleDebounceTimer();
+    }
 
+    private function _scheduleDebounceTimer():Void {
         _dispatchToken = EnhancedCooldownWheel.I().addDelayedTask(
             DEBOUNCE_MS,
             function():Void {
                 // AS2 闭包陷阱规避：每次走 getInstance()，不闭包捕获 sm
-                SaveManager.getInstance()._onDebounceFire();
+                SaveManager.getInstance()._onDebounceFireGuarded();
             }
         );
-        return true;
+    }
+
+    /**
+     * EnhancedCooldownWheel 契约（EnhancedCooldownWheel.as:232-241）：回调不得抛异常。
+     * timer 边界统一由本守卫吞掉异常：sv:3 已在 _onDebounceFire 内部投影，
+     * dirty/latch 保留（成功全量存盘才清），这里只做诊断记录，绝不 rethrow 给 wheel。
+     */
+    private function _onDebounceFireGuarded():Void {
+        try {
+            _onDebounceFire();
+        } catch (saveError) {
+            trace("[SaveManager.requestSave] scheduled save failed at wheel boundary: " + saveError);
+            try {
+                ServerManager.getInstance().sendServerMessage(
+                    "[SaveManager.requestSave] scheduled save failed at wheel boundary: " + saveError);
+            } catch (logError) {
+            }
+        }
     }
 
     private function _onDebounceFire():Void {
         _dispatchToken = undefined;
-        if (_saveInFlight) return;
+        if (_saveInFlight) {
+            // in-flight 时 request 不得静默丢弃：重挂 pending（origin/reason 集合保留），
+            // 下一个 trailing 窗口再触发（R1 Slice 3）。
+            _rearmPendingRequest();
+            return;
+        }
+        // 无条件触发（旧契约）：无 pending 的直触（测试夹具/防御路径）按 legacyDebounce
+        // 归因；被吸收/复位的 pending 没有活动 token，生产 wheel 不会调到这里。
+        // requestFired 只量度真实 pending request 的触发，不量度直触内核。
+        var hadPending:Boolean = (_pendingSaveOrigin != undefined);
+        var origin:String = hadPending ? _pendingSaveOrigin : "legacyDebounce";
+        if (hadPending) {
+            saveApiStats().request.requestFired++;
+            recordSaveApiTrace(origin, null, "fired");
+        }
         _saveInFlight = true;
         try {
-            _doSaveAll();
+            _doSaveAll(origin);
         } catch (saveError) {
             // 后台 saveAll 同样必须结束通用存盘指示；保留异常供既有诊断链处理。
             try {
@@ -464,6 +748,8 @@ class org.flashNight.neur.Server.SaveManager {
             throw saveError;
         } finally {
             _saveInFlight = false;
+            _pendingSaveOrigin = undefined;
+            _pendingSaveReasons = null;
         }
     }
 
@@ -471,42 +757,161 @@ class org.flashNight.neur.Server.SaveManager {
      * 公开 API：立即同步落盘，绕过 debounce。
      * 关键事件路径（safeExit/升级/手动/商城checkout/商城claim/奖励）调用本入口。
      * SceneChanged hook 也调本入口（保证 pending 在 deactivateAll 前落盘）。
+     * R1：本入口保留为 legacy strict，与 flushDurableNow/flushBeforeTransition
+     * 分别进入同一私有内核 _strictFlushCore，public 之间严禁级联（防 ingress 双计数）。
      */
     public function flushNow():Boolean {
-        // 每次同步尝试都先推进到 Saving。否则连续两次早拒绝只会产生相同 sv:3，
-        // Host/Web 的状态去重会吞掉第二次失败，令已按“重试”复位的 UI 永久卡在 Saving。
-        FrameBroadcaster.pushUiState("sv:1");
-        if (_root.允许存档 !== true) {
+        saveApiStats().ingress.legacyFlushNow++;
+        return _strictFlushCore("legacyStrict", null);
+    }
+
+    /**
+     * R1 四层 API · durable cut：同步全量落盘。true 仅且仅代表本地
+     * SharedObject.flush() === true；不合并 strict 调用、不 debounce、不 dirty 早退，
+     * 完全 clean 状态同样全量组包。成功 strict fence 吸收此前 pending request。
+     * reason 只接受注册表 ID（未注册仅诊断留痕，绝不因此丢 durable 存盘）。
+     */
+    public function flushDurableNow(reason:String):Boolean {
+        saveApiStats().ingress.flushDurableNow++;
+        if (isRegisteredSaveReason(reason)) {
+            saveApiStats().reasons[reason]++;
+        } else if (reason != undefined) {
+            saveApiStats().reasonUnregistered++;
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.flushDurableNow] unregistered reason: " + reason);
+        }
+        return _strictFlushCore("durable", reason);
+    }
+
+    /**
+     * R1 四层 API · transition barrier：与 flushDurableNow 同一私有同步落盘内核，
+     * 不多一次写盘、不引入不同 dirty 行为；但有独立 ingress 与固定 reason allowlist。
+     * reason 不在 TRANSITION_REASON_IDS 内时 fail-closed 返回 false（不发起存盘），
+     * 调用方只能在返回 true 后执行 transition；false/"pending"/throw 均不得越过。
+     */
+    public function flushBeforeTransition(reason:String):Boolean {
+        saveApiStats().ingress.flushBeforeTransition++;
+        if (isRegisteredSaveReason(reason)) saveApiStats().reasons[reason]++;
+        if (!isTransitionReasonAllowed(reason)) {
+            // allowlist 拒绝从不到达物理内核：计入 transition 家族 earlyReject
+            saveApiStats().strict.transition.earlyReject++;
+            if (reason != undefined && !isRegisteredSaveReason(reason)) {
+                saveApiStats().reasonUnregistered++;
+            }
+            recordSaveApiTrace("transition", reason, "earlyReject");
+            FrameBroadcaster.pushUiState("sv:1");
             FrameBroadcaster.pushUiState("sv:3");
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.flushBeforeTransition] reason outside transition allowlist, fail-closed: " + reason);
             return false;
         }
-        if (_dispatchToken != undefined) {
-            EnhancedCooldownWheel.I().removeTask(_dispatchToken);
-            _dispatchToken = undefined;
+        return _strictFlushCore("transition", reason);
+    }
+
+    /**
+     * 私有同步落盘内核（R1）：三个 strict public 入口共用，可观察时序与原 flushNow
+     * 完全兼容——每次同步尝试都先推进到 Saving。否则连续两次早拒绝只会产生相同 sv:3，
+     * Host/Web 的状态去重会吞掉第二次失败，令已按“重试”复位的 UI 永久卡在 Saving。
+     * 重入/禁用早拒绝不得先删原 pending request token（R1 Slice 3）；
+     * 只有成功全量存盘才吸收 pending request。
+     */
+    private function _strictFlushCore(origin:String, reason:String):Boolean {
+        FrameBroadcaster.pushUiState("sv:1");
+        // 裁决 §5.2：strict outcome 按 durable/transition/legacy 三家族统计
+        var outcomeStats:Object = saveApiStats().strict[(origin == "legacyStrict") ? "legacy" : origin];
+        if (_root.允许存档 !== true) {
+            FrameBroadcaster.pushUiState("sv:3");
+            outcomeStats.earlyReject++;
+            recordSaveApiTrace(origin, reason, "earlyReject");
+            return false;
         }
         if (_saveInFlight) {
             FrameBroadcaster.pushUiState("sv:3");
+            outcomeStats.earlyReject++;
+            recordSaveApiTrace(origin, reason, "earlyReject");
             return false;
         }
         _saveInFlight = true;
         var ok:Boolean = false;
+        var physicalStats:Object = savePhysicalStats();
+        var flushPendingBefore:Number = Number(physicalStats.flushPending);
+        var flushFalseBefore:Number = Number(physicalStats.flushFalse);
         try {
-            ok = _doSaveAll();
+            ok = _doSaveAll(origin);
         } catch (saveError) {
             // 生产异常同样不得让安全退出永远停在 Saving；先投影失败，再保留原异常语义。
             try {
                 FrameBroadcaster.pushUiState("sv:3");
             } catch (uiStateError) {
             }
+            outcomeStats["throw"]++;
+            recordSaveApiTrace(origin, reason, "throw");
             throw saveError;
         } finally {
             _saveInFlight = false;
         }
+        if (ok) {
+            outcomeStats.success++;
+            recordSaveApiTrace(origin, reason, "success");
+            _absorbPendingRequest();
+        } else if (Number(physicalStats.flushPending) > flushPendingBefore) {
+            outcomeStats.pending++;
+            recordSaveApiTrace(origin, reason, "pending");
+        } else if (Number(physicalStats.flushFalse) > flushFalseBefore) {
+            outcomeStats["false"]++;
+            recordSaveApiTrace(origin, reason, "false");
+        } else {
+            // _doSaveAll 内部写入门（角色名/等级校验）拒绝：未到达物理 flush
+            outcomeStats.earlyReject++;
+            recordSaveApiTrace(origin, reason, "earlyReject");
+        }
         return ok;
     }
 
-    private function _doSaveAll():Boolean {
+    /**
+     * 成功 strict fence 吸收 pending request：取消 timer、清空 origin 与 reason 集合。
+     * 只在全量存盘成功后调用；strict 失败/重入拒绝一律保留 pending（失败保留语义）。
+     */
+    private function _absorbPendingRequest():Void {
+        if (_pendingSaveOrigin != undefined) {
+            saveApiStats().request.requestAbsorbedByFence++;
+            recordSaveApiTrace(_pendingSaveOrigin, null, "absorbedByFence");
+        }
+        if (_dispatchToken != undefined) {
+            EnhancedCooldownWheel.I().removeTask(_dispatchToken);
+            _dispatchToken = undefined;
+        }
+        _pendingSaveOrigin = undefined;
+        _pendingSaveReasons = null;
+    }
+
+    /**
+     * timer 触发遇 _saveInFlight 时重挂 pending request（R1 Slice 3）：
+     * 不像旧 _onDebounceFire 一样直接丢弃。无 pending 时不重挂（防御）。
+     */
+    private function _rearmPendingRequest():Void {
+        if (_pendingSaveOrigin == undefined) return;
+        saveApiStats().request.requestRearmedInFlight++;
+        recordSaveApiTrace(_pendingSaveOrigin, null, "rearmedInFlight");
+        _scheduleDebounceTimer();
+    }
+
+    // origin ∈ legacyDebounce / request / legacyStrict / durable / transition，
+    // 供 R1 Slice 4 full-save origin 分桶；不改变任何物理存盘行为。
+    private function _doSaveAll(origin:String):Boolean {
         savePhysicalStats().doSaveAll++;
+        // R1 Slice 4 full-save origin 分桶（闭集五桶；未知 origin 只诊断不计数，
+        // 测试以 sum(fullOrigin) == doSaveAll 守门）
+        var fullOriginStats:Object = saveApiStats().fullOrigin;
+        if (origin == "request") fullOriginStats.fullFromRequest++;
+        else if (origin == "legacyDebounce") fullOriginStats.fullFromLegacyDebounce++;
+        else if (origin == "durable") fullOriginStats.fullFromDurable++;
+        else if (origin == "transition") fullOriginStats.fullFromTransition++;
+        else if (origin == "legacyStrict") fullOriginStats.fullFromLegacyStrict++;
+        else {
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager._doSaveAll] unknown full-save origin: " + origin);
+        }
         if (_root.允许存档 !== true) {
             FrameBroadcaster.pushUiState("sv:3");
             return false;
@@ -557,7 +962,7 @@ class org.flashNight.neur.Server.SaveManager {
         if (_beforeLocalCommitHookForTests != null) {
             _beforeLocalCommitHookForTests();
         }
-        var ok:Boolean = flushSO(so);
+        var ok:Boolean = flushSO(so, "full");
         if (ok) {
             _dirtyMark = false;
             _root.存档系统.dirtyMark = false;
@@ -741,7 +1146,7 @@ class org.flashNight.neur.Server.SaveManager {
                 var soDel:SharedObject = getSO();
                 soDel.clear();
                 soDel.data._deleted = true;
-                var flushOk:Boolean = flushSO(soDel);
+                var flushOk:Boolean = flushSO(soDel, "preload_tombstone");
                 if (!flushOk) {
                     sm.sendServerMessage("[SaveManager.preload] tombstone flush FAILED slot=" + _root.savePath);
                 }
@@ -831,7 +1236,7 @@ class org.flashNight.neur.Server.SaveManager {
         sm.sendServerMessage("[SaveManager.preload] migrate changed=" + changed + " newVersion=" + _root.mydata.version);
         if (changed) {
             syncTopLevelFromMydata(_root.mydata, so.data);
-            if (flushSO(so)) {
+            if (flushSO(so, "read_migration")) {
                 sm.sendServerMessage("[SaveManager.preload] 迁移已持久化");
             }
         }
@@ -1000,7 +1405,7 @@ class org.flashNight.neur.Server.SaveManager {
         }
         if (changed) {
             syncTopLevelFromMydata(_root.mydata, soData);
-            if (flushSO(so)) {
+            if (flushSO(so, "read_migration")) {
                 sm.sendServerMessage("[SaveManager.loadAll] 迁移已持久化");
             }
         }
@@ -1063,7 +1468,7 @@ class org.flashNight.neur.Server.SaveManager {
         // 原因：旧的 inflight shadow 可能晚于 delete 落地，重新写回 JSON 文件；
         // 如果 delete 回调清了墓碑，这个迟到的旧 shadow 就会在下次启动时复活已删存档。
         so.data._deleted = true;
-        flushSO(so);
+        flushSO(so, "delete_tombstone");
 
         // 通知 Launcher 删除 shadow JSON（best-effort，墓碑是真正的防线）
         var sm:ServerManager = ServerManager.getInstance();
@@ -1089,6 +1494,8 @@ class org.flashNight.neur.Server.SaveManager {
             EnhancedCooldownWheel.I().removeTask(_dispatchToken);
             _dispatchToken = undefined;
         }
+        _pendingSaveOrigin = undefined;
+        _pendingSaveReasons = null;
 
         // 技能、快捷栏与称号。
         // 不委托时间轴回调：Web 路径的 reset 必须自身建立完整 80 槽默认，
@@ -2084,7 +2491,7 @@ class org.flashNight.neur.Server.SaveManager {
         ensureShopNode(soData);
         soData[SAVE_KEY].shop.商城购物车 = _root.商城购物车;
         soData.商城购物车 = _root.商城购物车;
-        flushSO(so);
+        flushSO(so, "shop_partial");
     }
 
     public function loadShopCart():Void {
@@ -2101,7 +2508,7 @@ class org.flashNight.neur.Server.SaveManager {
         ensureShopNode(soData);
         soData[SAVE_KEY].shop.商城已购买物品 = _root.商城已购买物品;
         soData.商城已购买物品 = _root.商城已购买物品;
-        flushSO(so);
+        flushSO(so, "shop_partial");
     }
 
     public function loadShopPurchased():Void {
@@ -2114,8 +2521,39 @@ class org.flashNight.neur.Server.SaveManager {
 
     // ==================== Dirty 追踪 ====================
 
+    /**
+     * canonical 置位入口（R1 Slice 1）：所有持久化状态 mutator 的统一标脏 API。
+     * 迁移期同时维护 _dirtyMark 与 _root.存档系统.dirtyMark 兼容镜像。
+     * 幂等：只置位、绝不触发存盘；只有成功全量存盘（_doSaveAll 内 flush === true）才清。
+     * 不得被当作"已请求存盘"或"已 durable"。
+     */
     public function markDirty():Void {
+        saveApiStats().ingress.markDirty++;
+        recordSaveApiTrace("markDirty", null, "set");
         _dirtyMark = true;
+        if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+    }
+
+    /**
+     * 安装 _root.存档系统 四层存档 API 委托（R1 Slice 1/2 逐层补全）。
+     * 由 通信_lsy_原版存档系统.as 启动时同步调用一次；委托不闭包捕获实例，
+     * 每次调用经 SaveManager.getInstance() 取单例，规避 asLoader 卸载闭包陷阱。
+     * XFL 只引用 _root.存档系统.*，不直接引用 org.flashNight.* 类。
+     */
+    public function installSaveApiShims():Void {
+        if (_root.存档系统 == undefined) _root.存档系统 = {};
+        _root.存档系统.markDirty = function():Void {
+            SaveManager.getInstance().markDirty();
+        };
+        _root.存档系统.requestSave = function(reason):Void {
+            SaveManager.getInstance().requestSave(reason);
+        };
+        _root.存档系统.flushDurableNow = function(reason):Boolean {
+            return SaveManager.getInstance().flushDurableNow(reason);
+        };
+        _root.存档系统.flushBeforeTransition = function(reason):Boolean {
+            return SaveManager.getInstance().flushBeforeTransition(reason);
+        };
     }
 
     public function isDirty():Boolean {
@@ -2125,10 +2563,14 @@ class org.flashNight.neur.Server.SaveManager {
     /**
      * 无写副作用的全局待保存查询。
      * isDirty() 保留只读内部 latch 的历史语义；close/finalize 应使用本方法。
+     * R1 Slice 1 补全：覆盖两个 dirty 镜像与设置/键位/药剂组/收件箱全部迁移 latch，
+     * 四者同样只能由成功全量存盘清除。
      */
     public function hasPendingChanges():Boolean {
         return _dirtyMark || _root.存档系统.dirtyMark === true
-            || _drugLoadoutMigrationPending || _rewardInboxMigrationPending;
+            || _settingsMigrationPending
+            || _drugLoadoutMigrationPending || _rewardInboxMigrationPending
+            || KeyManager.hasPendingKeySettingsMigration();
     }
 
     // ==================== 迁移 ====================
@@ -2733,18 +3175,33 @@ class org.flashNight.neur.Server.SaveManager {
      * flush() 返回值：true=成功, "pending"=等待用户授权, false/其他=失败
      * 只有 true 才算成功落盘，"pending" 视为未完成（不清 dirtyMark）。
      */
-    private function flushSO(so:SharedObject):Boolean {
+    // lane 闭集：full / shop_partial / delete_tombstone / preload_tombstone / read_migration。
+    // lane 只增不改：物理八分桶 flushAttempt/flushSuccess/flushPending/flushFalse 原样累计。
+    private function flushSO(so:SharedObject, lane:String):Boolean {
         var stats:Object = savePhysicalStats();
         stats.flushAttempt++;
+        var laneStats:Object = saveApiStats().flushLane[lane];
+        if (laneStats == null) {
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.flushSO] unknown flush lane clamped to full: " + lane);
+            laneStats = saveApiStats().flushLane.full;
+        }
+        laneStats.attempt++;
         var result:Object = _flushResultOverrideForTests !== undefined
             ? _flushResultOverrideForTests
             : so.flush();
         if (result === true) {
             stats.flushSuccess++;
+            laneStats.success++;
             return true;
         }
-        if (result == "pending") stats.flushPending++;
-        else stats.flushFalse++;
+        if (result == "pending") {
+            stats.flushPending++;
+            laneStats.pending++;
+        } else {
+            stats.flushFalse++;
+            laneStats["false"]++;
+        }
         var msg:String = (result == "pending")
             ? "SaveManager: flush pending (awaiting user authorization) for "
             : "SaveManager: flush failed (result=" + result + ") for ";

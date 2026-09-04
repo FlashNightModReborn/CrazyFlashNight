@@ -36,6 +36,11 @@ _root.存档恢复等待中 = function() { return SaveManager.getInstance().isRe
 _root.新建角色 = function() { return SaveManager.getInstance().newCharacter(); };
 _root.删除存盘 = function() { SaveManager.getInstance().deleteSlot(); };
 
+// R1 四层存档 API（markDirty / requestSave / flushDurableNow / flushBeforeTransition）：
+// 绑定驻留 class 内、帧脚本只做同步 install（与 CharacterCreationService.install 同一约定），
+// XFL 只引用 _root.存档系统.*，不直接引用 org.flashNight.* 类。
+SaveManager.getInstance().installSaveApiShims();
+
 // Agent 专用：启动器已完成 Protocol 2 存档决议后，自动执行原 UI 的“进入游戏”动作。
 // 必须跳到主时间轴“读盘”帧，让原流程统一负责 loadAll、任务恢复、出生点和地图跳转；
 // 不可在这里提前 loadAll，否则会消费 launcher snapshot 后停留在主菜单。
