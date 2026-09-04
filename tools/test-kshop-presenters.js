@@ -205,9 +205,11 @@ const protocolCatalog = [{
     weaponType:'',setId:'',setName:'',setOrder:0,level:1,
     icon:'icon.gamma',maxQuantity:999999
 }];
+const FP_A = 'kpr1.0123456789abcdef.0';
+const FP_B = 'kpr1.2222222222222222.0';
 const protocolPurchased = [{
     purchasedIdx:0,item:'rule.alpha',displayname:'展示 Beta',
-    icon:'icon.gamma',quantity:2
+    icon:'icon.gamma',quantity:2,rowFingerprint:FP_A
 }];
 const protocolCart = [{idx:0,qty:1}];
 const protocolLine = {
@@ -404,6 +406,7 @@ test('facade initializes after the documented module load order', () => {
         KShopTooltipPresenter:Tooltip,
         KShopOwnedInventoryPresenter:Owned,
         KShopProcurementNavigation:ProcurementNavigation,
+        KShopClaimBatch:require('../launcher/web/modules/kshop-claim-batch.js'),
         Bridge:{on:() => {}, send:() => true},
         Panels:{register:(id, contract) => { registration = {id, contract}; }}
     });
@@ -416,13 +419,197 @@ test('facade initializes after the documented module load order', () => {
     for (const key of ['KShopRequestMux', 'KShopWriteCoordinator', 'InventoryRuntime',
         'KShopCatalogPresenter', 'KShopCartController', 'KShopTooltipPresenter',
         'KShopOwnedInventoryPresenter', 'KShopProcurementNavigation',
-        'Bridge', 'Panels']) delete global[key];
+        'KShopClaimBatch', 'Bridge', 'Panels']) delete global[key];
 });
 
 test('KShop facade stays below the physical slimming gate', () => {
     const source = fs.readFileSync(path.join(__dirname, '..', 'launcher', 'web', 'modules', 'kshop.js'), 'utf8');
     assert.ok(source.split(/\r?\n/).length < 1200);
     assert.doesNotMatch(source, /function (renderCatalogCard|bindCatalogTooltip|renderOwnedSlot|renderCartRow|requestCheckoutPreview)\s*\(/);
+});
+
+function claimPayload(fingerprint) {
+    return {v:1, purchasedIdx:0, expectedPurchasedToken:'shop.unit.1',
+        expectedRowFingerprint:fingerprint};
+}
+
+test('KShop protocol claim v1 requires the exact fingerprint triple binding', () => {
+    assert.deepStrictEqual(Runtime.KShopProtocol.normalizeRequest('claim', claimPayload(FP_A)),
+        claimPayload(FP_A));
+    // 旧无 v 形状与永久 optional fingerprint 一律拒绝。
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claim',{purchasedIdx:0,expectedPurchasedToken:'shop.unit.1'}),null);
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claim',{v:1,purchasedIdx:0,expectedPurchasedToken:'shop.unit.1'}),null);
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claim',claimPayload('kpr1.ZZZZZZZZZZZZZZZZ.0')),null);
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claim',claimPayload('kpr1.0123456789abcdef.01')),null);
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claim',Object.assign(claimPayload(FP_A),{replayOnly:true})),null);
+});
+
+test('KShop protocol claimBatch normalize gates the frozen ordered rows', () => {
+    const payload = {v:1, batchOperationId:'kcb.unit.1',
+        expectedPurchasedToken:'shop.unit.1', rows:[FP_A, FP_B]};
+    assert.deepStrictEqual(Runtime.KShopProtocol.normalizeRequest('claimBatch', payload), payload);
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claimBatch', Object.assign(payload, {replayOnly:true})), null);
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claimBatch', Object.assign(payload, {rows:[FP_A, FP_A]})), null);
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claimBatch', Object.assign(payload, {rows:[]})), null);
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest(
+        'claimBatch', Object.assign(payload, {batchOperationId:'bad id!'})), null);
+    const overflow = Object.assign({}, payload, {
+        rows:Array.from({length:41}, (_, i) => 'kpr1.0123456789abcdef.' + i)
+    });
+    assert.strictEqual(Runtime.KShopProtocol.normalizeRequest('claimBatch', overflow), null);
+});
+
+test('KShop protocol sanitizePurchased requires a lexically valid rowFingerprint', () => {
+    const missing = JSON.parse(JSON.stringify(protocolBulk));
+    delete missing.purchased[0].rowFingerprint;
+    assert.strictEqual(Runtime.KShopProtocol.sanitizeBulkSnapshot(missing), null);
+    const malformed = JSON.parse(JSON.stringify(protocolBulk));
+    malformed.purchased[0].rowFingerprint = 'kpr1.0123456789ABCDEF.0';
+    assert.strictEqual(Runtime.KShopProtocol.sanitizeBulkSnapshot(malformed), null);
+});
+
+function duplicateAuthority() {
+    const rows = [0, 1, 2].map(i => ({
+        purchasedIdx:i, item:'rule.alpha', displayname:'展示 Beta',
+        icon:'icon.gamma', quantity:1,
+        rowFingerprint:'kpr1.aaaaaaaaaaaaaaaa.' + i
+    }));
+    return {catalog:protocolCatalog, purchased:rows, purchasedToken:'shop.unit.1',
+        balance:100, cart:[]};
+}
+
+test('KShop protocol claim success rebases duplicate ordinals like the AS2 epoch', () => {
+    const authority = duplicateAuthority();
+    const payload = {v:1, purchasedIdx:0, expectedPurchasedToken:'shop.unit.1',
+        expectedRowFingerprint:'kpr1.aaaaaaaaaaaaaaaa.0'};
+    const rebased = [0, 1].map(i => ({
+        purchasedIdx:i, item:'rule.alpha', displayname:'展示 Beta',
+        icon:'icon.gamma', quantity:1,
+        rowFingerprint:'kpr1.aaaaaaaaaaaaaaaa.' + i
+    }));
+    const business = {success:true, catalog:protocolCatalog, purchased:rebased,
+        purchasedToken:'shop.unit.2'};
+    const clean = Runtime.KShopProtocol.sanitizeResponse('claim', payload, business, authority);
+    assert.ok(clean && clean.purchasedToken === 'shop.unit.2');
+    // 旧 epoch ordinal 拒绝；survivor 未 rebase 的投影也拒绝。
+    assert.strictEqual(Runtime.KShopProtocol.sanitizeResponse('claim',
+        Object.assign({}, payload, {expectedRowFingerprint:'kpr1.aaaaaaaaaaaaaaaa.2'}),
+        business, authority), null);
+    const notRebased = JSON.parse(JSON.stringify(business));
+    notRebased.purchased[1].rowFingerprint = 'kpr1.aaaaaaaaaaaaaaaa.2';
+    assert.strictEqual(Runtime.KShopProtocol.sanitizeResponse(
+        'claim', payload, notRebased, authority), null);
+});
+
+function batchBusiness(overrides) {
+    return Object.assign({
+        success:true, v:1, batchOperationId:'kcb.unit.1', policy:'atomic', replayed:false,
+        committedPurchasedToken:'shop.unit.2', purchasedToken:'shop.unit.2',
+        resultRows:[{rowFingerprint:FP_A, status:'claimed'}],
+        purchased:[{purchasedIdx:0, item:'rule.beta', displayname:'展示 Gamma',
+            icon:'icon.delta', quantity:1, rowFingerprint:FP_B}],
+        catalog:protocolCatalog
+    }, overrides || {});
+}
+
+function batchAuthority() {
+    return {catalog:protocolCatalog, purchased:[
+        {purchasedIdx:0, item:'rule.alpha', displayname:'展示 Beta',
+            icon:'icon.gamma', quantity:2, rowFingerprint:FP_A},
+        {purchasedIdx:1, item:'rule.beta', displayname:'展示 Gamma',
+            icon:'icon.delta', quantity:1, rowFingerprint:FP_B}
+    ], purchasedToken:'shop.unit.1', balance:100, cart:[]};
+}
+
+test('KShop protocol claimBatch fresh and replay proofs are independent at Web', () => {
+    const authority = batchAuthority();
+    const payload = {v:1, batchOperationId:'kcb.unit.1',
+        expectedPurchasedToken:'shop.unit.1', rows:[FP_A]};
+    const fresh = Runtime.KShopProtocol.sanitizeResponse(
+        'claimBatch', payload, batchBusiness(), authority);
+    assert.ok(fresh && fresh.replayed === false
+        && fresh.purchased[0].rowFingerprint === FP_B);
+    // replay：当前 view/token 与 Web authority 完全一致，committed token 可不同。
+    const replay = Runtime.KShopProtocol.sanitizeResponse('claimBatch', payload,
+        batchBusiness({replayed:true, committedPurchasedToken:'shop.unit.0',
+            purchasedToken:'shop.unit.1', purchased:authority.purchased}), authority);
+    assert.ok(replay && replay.replayed === true);
+    // fresh 终态 token 关系不符、resultRows 乱序、replay 改列表都拒绝。
+    assert.strictEqual(Runtime.KShopProtocol.sanitizeResponse('claimBatch', payload,
+        batchBusiness({committedPurchasedToken:'shop.unit.9'}), authority), null);
+    assert.strictEqual(Runtime.KShopProtocol.sanitizeResponse('claimBatch',
+        Object.assign({}, payload, {rows:[FP_A, FP_B]}),
+        batchBusiness({resultRows:[{rowFingerprint:FP_B, status:'claimed'},
+            {rowFingerprint:FP_A, status:'claimed'}]}), authority), null);
+    assert.strictEqual(Runtime.KShopProtocol.sanitizeResponse('claimBatch', payload,
+        batchBusiness({replayed:true, purchasedToken:'shop.unit.1',
+            purchased:[], committedPurchasedToken:'shop.unit.0'}), authority), null);
+});
+
+test('claimBatch write coordinator stays exclusive and reconciles unknown results', () => {
+    const calls = [];
+    const coordinator = new Runtime.KShopWriteCoordinator({
+        request:(cmd, payload, callback) => {
+            calls.push(cmd);
+            if (cmd === 'claimBatch') callback({success:false, error:'stale_state'});
+            else if (cmd === 'bulkQuery') callback(protocolBulk);
+            else callback({success:false, error:'unexpected'});
+        },
+        getPurchasedToken:() => 'shop.unit.1',
+        applyBulkSnapshot:() => {}
+    });
+    coordinator.open();
+    const batchRows = [FP_A, FP_B];
+    let result = null;
+    assert.strictEqual(coordinator.claimBatch('kcb.unit.1', batchRows, r => { result = r; }), true);
+    assert.ok(result && result.reconciled === true && result.error === 'stale_state');
+    assert.deepStrictEqual(calls, ['claimBatch', 'bulkQuery'],
+        'unknown batch result must reuse bulkQuery reconcile without replaying the write');
+    coordinator.forceClose();
+
+    // busy 互斥：回包挂起期间第二笔批量写被拒绝。
+    const pending = [];
+    const busy = new Runtime.KShopWriteCoordinator({
+        request:(cmd, payload, callback) => { pending.push({cmd, callback}); },
+        getPurchasedToken:() => 'shop.unit.1'
+    });
+    busy.open();
+    assert.strictEqual(busy.claimBatch('kcb.busy.1', [FP_A], () => {}), true);
+    assert.strictEqual(busy.claimBatch('kcb.busy.2', [FP_A], () => {}), false,
+        'a second batch while one is in flight stays mutually exclusive');
+    pending[0].callback({success:false, error:'operation_conflict'});
+    busy.forceClose();
+});
+
+test('claimBatch write coordinator treats definitive failures without reconcile', () => {
+    const calls = [];
+    const coordinator = new Runtime.KShopWriteCoordinator({
+        request:(cmd, payload, callback) => {
+            calls.push(cmd);
+            callback({success:false, error:'operation_conflict'});
+        },
+        getPurchasedToken:() => 'shop.unit.1'
+    });
+    coordinator.open();
+    let result = null;
+    coordinator.claimBatch('kcb.unit.1', [FP_A], r => { result = r; });
+    assert.deepStrictEqual(result, {success:false, error:'operation_conflict'});
+    assert.deepStrictEqual(calls, ['claimBatch']);
+    const isDefinitive = Runtime.KShopWriteCoordinator.prototype._isDefinitive;
+    for (const error of ['batch_receipt_ledger_full', 'batch_lane_quarantined',
+            'row_order_invalid', 'purchased_identity_collision', 'commit_pending']) {
+        assert.strictEqual(isDefinitive('claimBatch', {success:false, error}),
+            error !== 'commit_pending', error + ' definiteness');
+    }
+    coordinator.forceClose();
 });
 
 process.stdout.write(`KShop presenter tests passed: ${passed}/${passed}\n`);

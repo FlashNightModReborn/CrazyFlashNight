@@ -110,6 +110,8 @@ var KShop = (function() {
     var _cartGridView, _purchasedGridView, _catalogRenderer, _interactionBroker, _dragController;
     var _shopModeButton, _inventoryModeButton, _inventoryRetryButton, _modeChoiceGroup;
     var _cartDropTarget, _selectedCatalogIdx = null;
+    // legacy 待领取整批收尾的多选 UI 由 KShopClaimBatch 模块承载（facade 瘦身门）。
+    var _claimBatch = null;
     var _dragTooltipSuppressed = false;
     var _ownedTooltipSelectionSuppressed = false;
     var _tooltipScope = null;
@@ -297,6 +299,24 @@ var KShop = (function() {
             if (typeof console !== 'undefined' && console.warn) console.warn('[KShop claim]', code);
             return '领取失败，请重试。';
         }
+        if (scope === 'claimBatch') {
+            if (code === 'inventory_full') return '物品栏已满，整批未领取！';
+            if (code === 'destination_full') return '对应收集项已达持有上限，整批未领取！';
+            if (code === 'acquire_failed') return '背包空间不足，整批未领取！';
+            if (code === 'unknown_row' || code === 'stale_state') return '待领取列表已变化，已刷新，请重新勾选。';
+            if (code === 'row_duplicate' || code === 'row_order_invalid'
+                    || code === 'invalid_payload' || code === 'invalid_operation_id'
+                    || code === 'unsupported_version') return '批量请求不合法，请刷新后重新勾选。';
+            if (code === 'purchased_identity_collision') return '待领取列表数据冲突，整批未领取。';
+            if (code === 'operation_conflict') return '同一批次号对应了不同请求，未重复领取。';
+            if (code === 'batch_receipt_ledger_full') return '批量领取账本已满，请改用单项领取。';
+            if (code === 'batch_lane_quarantined') return '批量领取账本数据异常，仅批量停用，单项领取仍可用。';
+            if (code === 'busy') return '商城正在处理另一笔写入，请稍后再试。';
+            if (code === 'timeout' || code === 'client_timeout' || code === 'reconcile_required') return '批量领取结果不确定，已刷新已购买列表，未自动重试。';
+            if (code === 'disconnected') return '商城连接已断开，批量领取不会自动重试。';
+            if (typeof console !== 'undefined' && console.warn) console.warn('[KShop claimBatch]', code);
+            return '批量领取失败，请重试。';
+        }
         if (scope === 'save') {
             if (code === 'busy') return '商城正在处理另一笔写入';
             if (code === 'timeout' || code === 'client_timeout' || code === 'reconcile_required') return '购物车保存结果未知，必须先完成对账';
@@ -335,7 +355,8 @@ var KShop = (function() {
                 ? JSON.parse(JSON.stringify(_protocolCheckoutPreview)) : null
         };
         if (cmd === 'checkoutPreview' || cmd === 'bulkQuery'
-                || cmd === 'checkout' || cmd === 'claim' || cmd === 'checkoutCommit') {
+                || cmd === 'checkout' || cmd === 'claim' || cmd === 'claimBatch'
+                || cmd === 'checkoutCommit') {
             _protocolCheckoutPreview = null;
         }
         return _mux.request('shop', cmd, normalized, function(response) {
@@ -409,6 +430,7 @@ var KShop = (function() {
         if (_cartController.getSettlement()) _cartController.getSettlement().render();
         var claimButtons = _el.querySelectorAll('.kshop-claim-btn');
         for (var j = 0; j < claimButtons.length; j++) claimButtons[j].disabled = claimBlocked;
+        if (_claimBatch) _claimBatch.setBlocked(claimBlocked);
         _ownedPresenter.setAuthorityState(_inventoryState);
         if (_inventoryRetryButton) _inventoryRetryButton.style.display = _inventoryState.refreshRequired ? '' : 'none';
         if (_cartDropTarget) {
@@ -535,6 +557,33 @@ var KShop = (function() {
         _purchasedGridView = orderComposition.purchasedGridView;
         _cartDropTarget = orderComposition.dropTarget;
         _checkoutBtn = orderComposition.checkoutButton;
+
+        _claimBatch = KShopClaimBatch.create({
+            coordinator:_writeCoordinator,
+            inventoryCoordinator:_inventoryCoordinator,
+            getPurchased:function() { return _purchased; },
+            isOpen:isKShopOpen,
+            canStartWrite:canStartShopWrite,
+            toast:toast,
+            messageForError:messageForError,
+            applyResult:function(resp) {
+                _purchased = resp.purchased || [];
+                _purchasedToken = String(resp.purchasedToken || _purchasedToken);
+                applyWriteCatalog(resp.catalog);
+                renderClaimed();
+            },
+            renderOwned:function() { _ownedPresenter.render(); },
+            refreshControls:function() { refreshWriteControls(_writeState || _writeCoordinator.debugState()); },
+            cue:function(name) {
+                var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                if (A && typeof A.cue === 'function') A.cue(name);
+            },
+            cueForError:function(error) {
+                var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+                if (A && typeof A.cue === 'function') A.cue(isUncertainResult(error) ? 'unknown' : 'rejected');
+            }
+        });
+        _claimBatch.attachBar(_purchasedGridView);
 
         var ownedViews = _ownedPresenter.createViews(_layoutMode, _densityController);
         _backpackView = ownedViews.backpack;
@@ -849,6 +898,8 @@ var KShop = (function() {
     }
 
     function renderClaimed() {
+        // 任何列表刷新都先作废多选，再由行渲染按当前行数重建批量入口。
+        if (_claimBatch) _claimBatch.reset();
         if (_purchasedGridView) {
             _purchasedGridView.renderer.render(_purchased);
             var totalPending = 0;
@@ -857,6 +908,7 @@ var KShop = (function() {
             }
             _purchasedGridView.chrome.setMeta(totalPending > 0 ? totalPending + ' 件' : '');
         }
+        if (_claimBatch) _claimBatch.updateBar();
         refreshWriteControls(_writeState || _writeCoordinator.debugState());
     }
 
@@ -871,6 +923,7 @@ var KShop = (function() {
         row.setAttribute('data-pidx', purchasedIndex);
         if (catItem) row.setAttribute('data-idx', catItem.idx);
         row.innerHTML =
+            (_claimBatch ? _claimBatch.checkboxHtml() : '') +
             '<span class="kshop-cart-thumb">' + iconHtml(iconName, 'kshop-row-icon') + '</span>' +
             '<span class="kshop-claim-copy"><b class="kshop-claim-name">' + escHtml(displayName) + '</b><small>待领取 × ' + qty + '</small></span>' +
             '<button class="kshop-claim-btn" data-pidx="' + purchasedIndex + '" data-audio-cue="activate">领取</button>';
@@ -880,6 +933,7 @@ var KShop = (function() {
     function bindClaimRow(row, purchasedItem, purchasedIndex) {
         var button = row.querySelector('.kshop-claim-btn');
         if (button) button.addEventListener('click', onClaim);
+        if (_claimBatch) _claimBatch.bindRow(row, purchasedItem);
         var idx = Number(row.getAttribute('data-idx'));
         if (isNaN(idx)) return;
         var item = findCatalogItem(idx);
@@ -904,7 +958,8 @@ var KShop = (function() {
             toast('背包尚未同步或正在处理另一笔写入。');
             return;
         }
-        if (!_writeCoordinator.claim(pidx, function(resp) {
+        var claimRow = _purchased[pidx] || {};
+        if (!_writeCoordinator.claim(pidx, String(claimRow.rowFingerprint || ''), function(resp) {
             if (!isKShopOpen()) return;
             var needsInventoryRefresh = !!resp.success
                 || (!!resp.reconciled && resp.error !== 'item_not_found' && resp.error !== 'stale_state');

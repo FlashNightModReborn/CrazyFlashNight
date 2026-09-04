@@ -44,6 +44,7 @@
          'modules/kshop-owned-inventory-presenter.js',
          'modules/kshop-tooltip-presenter.js',
          'modules/kshop-procurement-navigation.js',
+         'modules/kshop-claim-batch.js',
          'modules/kshop.js'],
         noop);
 

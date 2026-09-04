@@ -162,7 +162,24 @@ _root.UI系统.商城WebView.buildPurchasedSnapshot = function():Object {
             quantity:quantity
         });
     }
-    return {success:true, purchased:legacy, purchasedView:view};
+    // A② wire v1：rowFingerprint 只在当前 token epoch 内有效。digest→tuple
+    // collision guard 在投影入口 fail-closed；同 digest 同 tuple 只增 ordinal。
+    var fingerprintProjection:Object =
+        org.flashNight.arki.item.KShopLegacyClaimSupport.buildSnapshotFingerprints(legacy);
+    if (!fingerprintProjection.success) {
+        return {success:false, error:String(fingerprintProjection.error)};
+    }
+    for (var fingerprintIndex:Number = 0; fingerprintIndex < view.length; fingerprintIndex++) {
+        view[fingerprintIndex].rowFingerprint =
+            String(fingerprintProjection.fingerprints[fingerprintIndex]);
+    }
+    return {
+        success:true,
+        purchased:legacy,
+        purchasedView:view,
+        fingerprints:fingerprintProjection.fingerprints,
+        fingerprintIndex:fingerprintProjection.indexByFingerprint
+    };
 };
 
 _root.UI系统.商城WebView.buildPurchasedView = function():Array {
@@ -606,17 +623,32 @@ _root.gameCommands["shopClaim"] = function(params) {
     _root.UI系统.商城WebView.log("shopClaim callId=" + callId + " idx=" + claimIdx);
     var resp = { task: "shop_response", callId: callId };
 
-    if (String(params.expectedPurchasedToken) != String(_root.UI系统.商城WebView.purchasedToken)) {
-        resp.success = false; resp.error = "stale_state";
+    // 单项 claim wire v1：token → canonical snapshot → index 范围 → 该 index 的
+    // rowFingerprint exact echo 三重绑定；fingerprint 不符 stale_state 零写。
+    if (Number(params.v) != 1) {
+        resp.success = false; resp.error = "unsupported_version";
         resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
-    } else if (claimIdx < 0 || claimIdx >= _root.商城已购买物品.length) {
-        resp.success = false; resp.error = "item_not_found";
+    } else if (String(params.expectedPurchasedToken) != String(_root.UI系统.商城WebView.purchasedToken)) {
+        resp.success = false; resp.error = "stale_state";
         resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
     } else {
         var purchasedSnapshot:Object = _root.UI系统.商城WebView.buildPurchasedSnapshot();
         if (!purchasedSnapshot.success) {
             resp.success = false;
             resp.error = String(purchasedSnapshot.error);
+            resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
+            _root.UI系统.商城WebView.sendResponse(resp);
+            return;
+        }
+        if (claimIdx < 0 || claimIdx >= purchasedSnapshot.purchased.length) {
+            resp.success = false; resp.error = "item_not_found";
+            resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
+            _root.UI系统.商城WebView.sendResponse(resp);
+            return;
+        }
+        if (String(params.expectedRowFingerprint)
+                != String(purchasedSnapshot.fingerprints[claimIdx])) {
+            resp.success = false; resp.error = "stale_state";
             resp.purchasedToken = _root.UI系统.商城WebView.purchasedToken;
             _root.UI系统.商城WebView.sendResponse(resp);
             return;
@@ -750,6 +782,281 @@ _root.gameCommands["shopSaveCart"] = function(params) {
     _root.存档系统.requestSave("shop.cart_edit");
     var resp = { task: "shop_response", callId: callId, success: true, v:1, cart:savedCart };
     _root.UI系统.商城WebView.sendResponse(resp);
+};
+
+// ========== legacy 待领取批收尾：整批原子 shopClaimBatch ==========
+// 第三轮裁决 §1.3 十二步状态机：lookup 先于一切；全或无 {0,K}；一个 batch
+// receipt；批尾一次 PAT durable fence；durable 后只做可降级投影，绝不回滚。
+_root.gameCommands["shopClaimBatch"] = function(params) {
+    _root.UI系统.商城WebView.ensureState();
+    _root.UI系统.商城WebView.checkoutPlan = null;
+    var callId = params.callId;
+    var support = org.flashNight.arki.item.KShopLegacyClaimSupport;
+    _root.UI系统.商城WebView.log("shopClaimBatch callId=" + callId);
+    var resp = { task:"shop_response", callId:callId };
+    var respondFailure = function(code:String):Void {
+        resp.success = false;
+        resp.error = code;
+        resp.purchasedToken = String(_root.UI系统.商城WebView.purchasedToken);
+        _root.UI系统.商城WebView.sendResponse(resp);
+    };
+    // 1. exact envelope、operationId 与 receipt lane 校验；lookup prior。
+    if (Number(params.v) != 1) { respondFailure("unsupported_version"); return; }
+    var batchOperationId:String = params.batchOperationId == undefined
+        ? "" : String(params.batchOperationId);
+    if (!support.isValidBatchOperationId(batchOperationId)) {
+        respondFailure("invalid_operation_id");
+        return;
+    }
+    var expectedBatchToken:String = params.expectedPurchasedToken == undefined
+        ? "" : String(params.expectedPurchasedToken);
+    if (!support.isValidPurchasedToken(expectedBatchToken)) {
+        respondFailure("invalid_payload");
+        return;
+    }
+    var batchReplayOnly:Boolean = params.replayOnly === true;
+    var rawBatchRows = params.rows;
+    if (!(rawBatchRows instanceof Array) || rawBatchRows.length < 1
+            || rawBatchRows.length > support.MAX_BATCH_ROWS) {
+        respondFailure("invalid_payload");
+        return;
+    }
+    var requestRows:Array = [];
+    var requestRowSeen:Object = {};
+    for (var requestRowIndex:Number = 0; requestRowIndex < rawBatchRows.length;
+            requestRowIndex++) {
+        if (support.parseRowFingerprint(rawBatchRows[requestRowIndex]) == null) {
+            respondFailure("invalid_payload");
+            return;
+        }
+        var requestFingerprint:String = String(rawBatchRows[requestRowIndex]);
+        if (requestRowSeen[requestFingerprint] === true) {
+            respondFailure("row_duplicate");
+            return;
+        }
+        requestRowSeen[requestFingerprint] = true;
+        requestRows.push(requestFingerprint);
+    }
+    var laneState:Object = support.ensureLane();
+    if (!laneState.ok || laneState.quarantined === true) {
+        respondFailure("batch_lane_quarantined");
+        return;
+    }
+    var batchLane:Object = laneState.lane;
+    var priorReceipt:Object = support.lookupReceipt(batchLane, batchOperationId);
+    if (priorReceipt != null) {
+        // 同 id 任何字段不同：operation_conflict，零写不存盘。
+        if (!support.receiptMatchesRequest(priorReceipt, expectedBatchToken, requestRows)) {
+            respondFailure("operation_conflict");
+            return;
+        }
+        // 同 id 同完整请求：返回首次 immutable result；只读投影当前 authority。
+        resp.success = true;
+        resp.v = 1;
+        resp.batchOperationId = batchOperationId;
+        resp.policy = "atomic";
+        resp.replayed = true;
+        resp.committedPurchasedToken = String(priorReceipt.committedPurchasedToken);
+        resp.resultRows = [];
+        for (var replayRowIndex:Number = 0;
+                replayRowIndex < priorReceipt.request.rows.length; replayRowIndex++) {
+            resp.resultRows.push({
+                rowFingerprint:String(priorReceipt.request.rows[replayRowIndex]),
+                status:"claimed"
+            });
+        }
+        resp.purchasedToken = String(_root.UI系统.商城WebView.purchasedToken);
+        try {
+            var replaySnapshot:Object = _root.UI系统.商城WebView.buildPurchasedSnapshot();
+            if (!replaySnapshot.success) throw new Error(String(replaySnapshot.error));
+            resp.purchased = replaySnapshot.purchased;
+            resp.purchasedView = replaySnapshot.purchasedView;
+            resp.catalog = _root.UI系统.商城WebView.buildCatalog();
+        } catch (replayProjectionError) {
+            resp.refreshDeferred = true;
+            trace("[KShop] replay projection failed: " + replayProjectionError);
+        }
+        _root.UI系统.商城WebView.sendResponse(resp);
+        return;
+    }
+    // 2. replayOnly 无 prior → stale_state，立即返回：零写零 fence。
+    if (batchReplayOnly) { respondFailure("stale_state"); return; }
+    // 3. fresh token 校验；canonical snapshot；解析全部 fingerprint。
+    if (expectedBatchToken != String(_root.UI系统.商城WebView.purchasedToken)) {
+        respondFailure("stale_state");
+        return;
+    }
+    var batchSnapshot:Object = _root.UI系统.商城WebView.buildPurchasedSnapshot();
+    if (!batchSnapshot.success) {
+        respondFailure(String(batchSnapshot.error));
+        return;
+    }
+    var resolvedIndices:Array = [];
+    var lastResolvedIndex:Number = -1;
+    for (var resolveIndex:Number = 0; resolveIndex < requestRows.length; resolveIndex++) {
+        var resolvedHit = batchSnapshot.fingerprintIndex[requestRows[resolveIndex]];
+        if (resolvedHit == undefined) { respondFailure("unknown_row"); return; }
+        var resolvedPreIndex:Number = Number(resolvedHit);
+        // 顺序是 operation identity：必须严格递增，拒绝静默排序。
+        if (resolvedPreIndex <= lastResolvedIndex) {
+            respondFailure("row_order_invalid");
+            return;
+        }
+        lastResolvedIndex = resolvedPreIndex;
+        resolvedIndices.push(resolvedPreIndex);
+    }
+    // 4. aggregate acquire plan；ItemUtil.require 纯预检。任一容量不足整批
+    //    零写，且 token 不轮换。
+    var batchAcquireItems:Array = [];
+    var informationNeed:Object = {};
+    for (var planIndex:Number = 0; planIndex < resolvedIndices.length; planIndex++) {
+        var planRow:Object = batchSnapshot.purchased[Number(resolvedIndices[planIndex])];
+        var planItemName:String = String(planRow[1]);
+        var planQuantity:Number = Number(planRow[4]);
+        if (org.flashNight.arki.item.ItemUtil.isEquipment(planItemName)) {
+            for (var planInstance:Number = 0; planInstance < planQuantity; planInstance++) {
+                batchAcquireItems.push({name:planItemName, value:1});
+            }
+        } else {
+            batchAcquireItems.push({name:planItemName, value:planQuantity});
+        }
+        if (org.flashNight.arki.item.ItemUtil.isInformation(planItemName)) {
+            informationNeed[planItemName] =
+                Number(informationNeed[planItemName] || 0) + planQuantity;
+        }
+    }
+    var batchCapacityError:String = "inventory_full";
+    if (org.flashNight.arki.item.ItemUtil.require(batchAcquireItems) == null) {
+        for (var fullInformation:String in informationNeed) {
+            if (Number(informationNeed[fullInformation])
+                    > org.flashNight.arki.item.ItemUtil.getInformationRemaining(
+                        fullInformation)) {
+                batchCapacityError = "destination_full";
+                break;
+            }
+        }
+        respondFailure(batchCapacityError);
+        return;
+    }
+    // 128 上限非淘汰：满时新 batch fail-closed，单项 claim 不受影响。
+    if (!support.canRecordReceipt(batchLane)) {
+        respondFailure("batch_receipt_ledger_full");
+        return;
+    }
+    // 5. capture：玩家资产、原 purchased 数组、原 token、K receipt lane、dirty。
+    var batchContext:Object = {
+        source:"kshop_claim", reason:"legacy_claim_batch", mergeScope:"operation"
+    };
+    var batchAssetSnapshot:Object =
+        org.flashNight.arki.item.ItemUtil.capturePlayerAssetSnapshot();
+    var batchPurchasedBefore:Array = _root.商城已购买物品.slice();
+    var batchTokenBefore:String = String(_root.UI系统.商城WebView.purchasedToken);
+    var batchReceiptsBefore:Array = batchLane.receipts.slice();
+    var batchTransaction:Object =
+        org.flashNight.arki.item.PlayerAssetTransaction.begin(batchContext);
+    var batchAttemptToken:String = batchTokenBefore;
+    var batchSucceeded:Boolean = false;
+    try {
+        // 6. 标脏；在第一个可能 mutation 之前 rotate token。
+        org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
+            _root.存档系统);
+        batchAttemptToken = _root.UI系统.商城WebView.rotatePurchasedToken();
+        // 7. 一次 aggregate acquire；失败时 exact restore（含 token）。
+        if (!org.flashNight.arki.item.ItemUtil.acquire(batchAcquireItems, batchContext)) {
+            org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                batchAssetSnapshot);
+            _root.商城已购买物品 = batchPurchasedBefore;
+            _root.UI系统.商城WebView.purchasedToken = batchTokenBefore;
+            batchLane.receipts = batchReceiptsBefore;
+            org.flashNight.arki.item.PlayerAssetTransaction.rollback(batchTransaction);
+            resp.success = false;
+            resp.error = "acquire_failed";
+            resp.purchasedToken = batchTokenBefore;
+            _root.UI系统.商城WebView.sendResponse(resp);
+            return;
+        }
+        // 8. 按冻结 pre-index 降序 splice；响应顺序仍按请求顺序。
+        for (var spliceIndex:Number = resolvedIndices.length - 1;
+                spliceIndex >= 0; spliceIndex--) {
+            _root.商城已购买物品.splice(Number(resolvedIndices[spliceIndex]), 1);
+        }
+        // 9. 记录一个 batch receipt（与资产/list 同快照，先于 fence）。
+        if (!support.recordReceipt(batchLane, support.buildReceipt(
+                batchOperationId, expectedBatchToken, requestRows, batchAttemptToken))) {
+            throw new Error("kshop_batch_receipt_record_failed");
+        }
+        // 10. durable fence 恰好一次，先于 commit（存盘风暴止血专项 A① 同构）。
+        if (!org.flashNight.arki.item.PlayerAssetTransaction.flushStrongSaveNow()) {
+            // 11. false/throw：恢复 capture，丢弃未发布 PAT frame，commit_pending。
+            var batchFlushRestored:Boolean =
+                org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                    batchAssetSnapshot);
+            if (batchFlushRestored) {
+                _root.商城已购买物品 = batchPurchasedBefore;
+                _root.UI系统.商城WebView.purchasedToken = batchTokenBefore;
+                batchLane.receipts = batchReceiptsBefore;
+            }
+            org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+                batchTransaction, !batchFlushRestored);
+            resp.success = false;
+            resp.error = "commit_pending";
+            resp.purchasedToken = String(_root.UI系统.商城WebView.purchasedToken);
+            _root.UI系统.商城WebView.sendResponse(resp);
+            return;
+        }
+        // 12. true：操作已 durable，随后 commit；之后只做可降级投影。
+        org.flashNight.arki.item.PlayerAssetTransaction.commit(batchTransaction);
+        batchSucceeded = true;
+    } catch (batchAssetError) {
+        var batchRestored:Boolean =
+            org.flashNight.arki.item.ItemUtil.restorePlayerAssetSnapshot(
+                batchAssetSnapshot);
+        if (batchRestored) {
+            _root.商城已购买物品 = batchPurchasedBefore;
+            _root.UI系统.商城WebView.purchasedToken = batchTokenBefore;
+            batchLane.receipts = batchReceiptsBefore;
+        }
+        org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
+            batchTransaction, !batchRestored);
+        throw batchAssetError;
+    }
+    if (batchSucceeded) {
+        resp.success = true;
+        resp.v = 1;
+        resp.batchOperationId = batchOperationId;
+        resp.policy = "atomic";
+        resp.replayed = false;
+        resp.committedPurchasedToken = batchAttemptToken;
+        resp.resultRows = [];
+        for (var resultIndex:Number = 0; resultIndex < requestRows.length; resultIndex++) {
+            resp.resultRows.push({
+                rowFingerprint:String(requestRows[resultIndex]),
+                status:"claimed"
+            });
+        }
+        resp.purchasedToken = batchAttemptToken;
+        // durable 后的投影/埋点只走 unknown/reconcile，不做 pre-state rollback。
+        try {
+            var postSnapshot:Object = _root.UI系统.商城WebView.buildPurchasedSnapshot();
+            if (!postSnapshot.success) throw new Error(String(postSnapshot.error));
+            resp.purchased = postSnapshot.purchased;
+            resp.purchasedView = postSnapshot.purchasedView;
+            resp.catalog = _root.UI系统.商城WebView.buildCatalog();
+        } catch (batchProjectionError) {
+            resp.refreshDeferred = true;
+            trace("[KShop] post-commit claimBatch projection failed: "
+                + batchProjectionError);
+        }
+        try {
+            if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
+                org.flashNight.arki.achievement.AchievementMetrics.record(
+                    "商城领取次数", requestRows.length);
+            }
+        } catch (batchMetricError) {
+            trace("[KShop] post-commit claimBatch metric failed: " + batchMetricError);
+        }
+        _root.UI系统.商城WebView.sendResponse(resp);
+    }
 };
 
 // ========== 物品注释（Bridge 到 WebView） ==========

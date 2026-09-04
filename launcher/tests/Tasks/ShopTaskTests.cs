@@ -14,6 +14,8 @@ namespace CF7Launcher.Tests.Tasks
     {
         private const string OwnerA = "panel.kshop.owner-a";
         private const string OwnerB = "panel.kshop.owner-b";
+        private const string FingerprintA = "kpr1.0123456789abcdef.0";
+        private const string FingerprintB = "kpr1.2222222222222222.0";
 
         private static JObject Request(string json, string owner = OwnerA)
         {
@@ -83,8 +85,46 @@ namespace CF7Launcher.Tests.Tasks
                 ["item"] = "rule.alpha",
                 ["displayname"] = "展示 Beta",
                 ["icon"] = "icon.gamma",
-                ["quantity"] = 2
+                ["quantity"] = 2,
+                ["rowFingerprint"] = FingerprintA
             });
+        }
+
+        private static JArray PurchasedLegacyTwo()
+        {
+            return new JArray
+            {
+                new JArray("catalog.alpha", "rule.alpha", "测试专柜", 10, 2),
+                new JArray("catalog.beta", "rule.beta", "测试专柜", 5, 1)
+            };
+        }
+
+        private static JObject PurchasedViewBeta(int index)
+        {
+            return new JObject
+            {
+                ["purchasedIdx"] = index,
+                ["item"] = "rule.beta",
+                ["displayname"] = "展示 Gamma",
+                ["icon"] = "icon.delta",
+                ["quantity"] = 1,
+                ["rowFingerprint"] = FingerprintB
+            };
+        }
+
+        private static JArray PurchasedViewTwo()
+        {
+            return new JArray(
+                new JObject
+                {
+                    ["purchasedIdx"] = 0,
+                    ["item"] = "rule.alpha",
+                    ["displayname"] = "展示 Beta",
+                    ["icon"] = "icon.gamma",
+                    ["quantity"] = 2,
+                    ["rowFingerprint"] = FingerprintA
+                },
+                PurchasedViewBeta(1));
         }
 
         private static JObject CheckoutLine(int quantity = 1)
@@ -217,7 +257,9 @@ namespace CF7Launcher.Tests.Tasks
             {
                 SeedBulk(task, sent, callId + ".seed");
                 task.HandleWebRequest(cmd, Request(
-                    "{\"callId\":\"" + callId + "\",\"purchasedIdx\":0,\"expectedPurchasedToken\":\"shop.test.1\"}"));
+                    "{\"callId\":\"" + callId + "\",\"v\":1,\"purchasedIdx\":0,"
+                    + "\"expectedPurchasedToken\":\"shop.test.1\","
+                    + "\"expectedRowFingerprint\":\"" + FingerprintA + "\"}"));
                 return;
             }
             if (cmd == "checkout")
@@ -250,6 +292,7 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("checkoutCommit", "shopCheckoutCommit")]
         [InlineData("checkout", "shopCheckout")]
         [InlineData("claim", "shopClaim")]
+        [InlineData("claimBatch", "shopClaimBatch")]
         public void HandleWebRequest_KnownCommand_ForwardsTrustedAction(string cmd, string action)
         {
             var sent = new List<string>();
@@ -273,8 +316,18 @@ namespace CF7Launcher.Tests.Tasks
             if (cmd == "claim")
             {
                 SeedBulk(task, sent);
+                request["v"] = 1;
                 request["purchasedIdx"] = 0;
                 request["expectedPurchasedToken"] = "shop.test.1";
+                request["expectedRowFingerprint"] = FingerprintA;
+            }
+            if (cmd == "claimBatch")
+            {
+                SeedBulk(task, sent);
+                request["v"] = 1;
+                request["batchOperationId"] = "kcb.test.1";
+                request["expectedPurchasedToken"] = "shop.test.1";
+                request["rows"] = new JArray(FingerprintA);
             }
             if (cmd == "tooltip" || cmd == "saveCart"
                 || cmd == "checkoutPreview" || cmd == "checkout")
@@ -291,6 +344,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(action, (string)message["action"]);
             if (cmd == "saveCart" || cmd == "checkout" || cmd == "checkoutPreview")
                 Assert.Equal(2, (int)message["cart"][0]["qty"]);
+            if (cmd == "claimBatch")
+                Assert.False((bool)message["replayOnly"], "fresh bind injects replayOnly:false");
             Assert.Null(message["cmd"]);
             Assert.Null(message["panel"]);
             Assert.Null(message["panelInstanceId"]);
@@ -425,7 +480,7 @@ namespace CF7Launcher.Tests.Tasks
                 && item["domain"] == null);
 
             task.HandleWebRequest("claim", Request(
-                "{\"callId\":\"wb.s.1.2\",\"purchasedIdx\":0,\"expectedPurchasedToken\":\"shop.unknown.1\"}"));
+                "{\"callId\":\"wb.s.1.2\",\"v\":1,\"purchasedIdx\":0,\"expectedPurchasedToken\":\"shop.unknown.1\",\"expectedRowFingerprint\":\"" + FingerprintA + "\"}"));
             Assert.Contains(posted, item => (string)item["callId"] == "wb.s.1.2" && (string)item["error"] == "reconcile_required");
 
             task.HandleWebRequest("bulkQuery", Request("{\"callId\":\"wb.s.1.3\"}"));
@@ -435,7 +490,7 @@ namespace CF7Launcher.Tests.Tasks
 
             int before = sent.Count;
             task.HandleWebRequest("claim", Request(
-                "{\"callId\":\"wb.s.1.4\",\"purchasedIdx\":0,\"expectedPurchasedToken\":\"shop.test.1\"}"));
+                "{\"callId\":\"wb.s.1.4\",\"v\":1,\"purchasedIdx\":0,\"expectedPurchasedToken\":\"shop.test.1\",\"expectedRowFingerprint\":\"" + FingerprintA + "\"}"));
             Assert.Equal(before + 1, sent.Count);
         }
 
@@ -697,7 +752,7 @@ namespace CF7Launcher.Tests.Tasks
             task.HandleWebRequest("checkoutCommit", Request(
                 "{\"callId\":\"shop.bad.commit-token\",\"v\":1,\"expectedCheckoutToken\":7}"));
             task.HandleWebRequest("claim", Request(
-                "{\"callId\":\"shop.bad.claim-token\",\"purchasedIdx\":0,\"expectedPurchasedToken\":true}"));
+                "{\"callId\":\"shop.bad.claim-token\",\"v\":1,\"purchasedIdx\":0,\"expectedPurchasedToken\":true,\"expectedRowFingerprint\":\"" + FingerprintA + "\"}"));
             task.HandleWebRequest("checkoutPreview", Request(
                 "{\"callId\":\"shop.bad.quantity\",\"v\":1,\"cart\":[{\"idx\":0,\"qty\":\"1\"}]}"));
 
@@ -755,8 +810,9 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("invalid_response", (string)posted[0]["error"]);
             int before = sent.Count;
             task.HandleWebRequest("claim", Request(
-                "{\"callId\":\"shop.legacy-string.claim\",\"purchasedIdx\":0,"
-                + "\"expectedPurchasedToken\":\"shop.test.1\"}"));
+                "{\"callId\":\"shop.legacy-string.claim\",\"v\":1,\"purchasedIdx\":0,"
+                + "\"expectedPurchasedToken\":\"shop.test.1\",\"expectedRowFingerprint\":\""
+                + FingerprintA + "\"}"));
             Assert.Equal(before, sent.Count);
             Assert.Equal("stale_state", (string)posted[1]["error"]);
         }
@@ -819,7 +875,7 @@ namespace CF7Launcher.Tests.Tasks
             task.HandleWebRequest("tooltip", Request(
                 "{\"callId\":\"shop.unknown.tooltip\",\"idx\":9}"));
             task.HandleWebRequest("claim", Request(
-                "{\"callId\":\"shop.unknown.claim\",\"purchasedIdx\":9,\"expectedPurchasedToken\":\"shop.test.1\"}"));
+                "{\"callId\":\"shop.unknown.claim\",\"v\":1,\"purchasedIdx\":9,\"expectedPurchasedToken\":\"shop.test.1\",\"expectedRowFingerprint\":\"" + FingerprintA + "\"}"));
 
             Assert.Empty(sent);
             Assert.Equal(4, posted.Count);
@@ -1017,7 +1073,7 @@ namespace CF7Launcher.Tests.Tasks
             sent.Clear();
             posted.Clear();
             task.HandleWebRequest("claim", Request(
-                "{\"callId\":\"shop.claim.postcondition\",\"purchasedIdx\":0,\"expectedPurchasedToken\":\"shop.test.1\"}"));
+                "{\"callId\":\"shop.claim.postcondition\",\"v\":1,\"purchasedIdx\":0,\"expectedPurchasedToken\":\"shop.test.1\",\"expectedRowFingerprint\":\"" + FingerprintA + "\"}"));
             JObject response = ResponseFor(sent[0], true);
             response["purchased"] = PurchasedLegacy();
             response["purchasedView"] = PurchasedView();
@@ -1072,6 +1128,267 @@ namespace CF7Launcher.Tests.Tasks
                 + AuthorityLogFormatter.CreateReference("kcheckout.test.1"), flashLog);
             Assert.All(logs,
                 value => Assert.DoesNotContain("kcheckout.test.1", value));
+        }
+
+        private static ShopTask SeedTwoRowAuthority(List<string> sent, out List<JObject> posted)
+        {
+            var task = new ShopTask(
+                () => true,
+                payload => { sent.Add(payload); return true; });
+            var postedList = new List<JObject>();
+            task.SetPostToWeb(json => postedList.Add(JObject.Parse(json)));
+            posted = postedList;
+            task.HandleWebRequest("bulkQuery", Request("{\"callId\":\"shop.batch.seed\"}"));
+            JObject bulk = ResponseFor(sent[0], true);
+            bulk["purchased"] = PurchasedLegacyTwo();
+            bulk["purchasedView"] = PurchasedViewTwo();
+            task.HandleFlashResponse(bulk, _ => { });
+            sent.Clear();
+            posted.Clear();
+            return task;
+        }
+
+        private static JObject BatchRequest(
+            string callId, string operationId, string token, params string[] rows)
+        {
+            return Request(
+                "{\"callId\":\"" + callId + "\",\"v\":1,"
+                + "\"batchOperationId\":\"" + operationId + "\","
+                + "\"expectedPurchasedToken\":\"" + token + "\","
+                + "\"rows\":[\"" + string.Join("\",\"", rows) + "\"]}");
+        }
+
+        private static JObject BatchResponseFor(
+            string payload, bool replayed, JArray resultFingerprints,
+            JArray raw, JArray view, string committedToken, string currentToken)
+        {
+            var sent = ParseSent(payload);
+            var resultRows = new JArray();
+            foreach (JToken fingerprint in resultFingerprints)
+            {
+                resultRows.Add(new JObject
+                {
+                    ["rowFingerprint"] = fingerprint.Value<string>(),
+                    ["status"] = "claimed"
+                });
+            }
+            return new JObject
+            {
+                ["task"] = "shop_response",
+                ["callId"] = (int)sent["callId"],
+                ["success"] = true,
+                ["v"] = 1,
+                ["batchOperationId"] = (string)sent["batchOperationId"],
+                ["policy"] = "atomic",
+                ["replayed"] = replayed,
+                ["committedPurchasedToken"] = committedToken,
+                ["resultRows"] = resultRows,
+                ["purchased"] = raw,
+                ["purchasedView"] = view,
+                ["purchasedToken"] = currentToken,
+                ["catalog"] = new JArray(CatalogItem())
+            };
+        }
+
+        [Fact]
+        public void ClaimBatch_FreshSuccess_ProvesExactPostconditionAndUpdatesAuthority()
+        {
+            var sent = new List<string>();
+            List<JObject> posted;
+            using var task = SeedTwoRowAuthority(sent, out posted);
+
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.fresh", "kcb.test.fresh.1", "shop.test.1", FingerprintA));
+            Assert.Single(sent);
+            var command = ParseSent(sent[0]);
+            Assert.Equal("shopClaimBatch", (string)command["action"]);
+            Assert.False((bool)command["replayOnly"], "fresh bind injects replayOnly:false");
+            task.HandleFlashResponse(BatchResponseFor(
+                sent[0], false, new JArray(FingerprintA),
+                new JArray(PurchasedLegacyTwo()[1]),
+                new JArray(PurchasedViewBeta(0)),
+                "shop.test.2", "shop.test.2"), _ => { });
+
+            JObject response = Assert.Single(posted);
+            Assert.True((bool)response["success"]);
+            Assert.False((bool)response["replayed"]);
+            Assert.Equal("shop.test.2", (string)response["purchasedToken"]);
+            Assert.Equal("shop.test.2", (string)response["committedPurchasedToken"]);
+            // Host→Web 只投影 view；raw 五元组绝不进入 Web。
+            JObject soleRow = (JObject)Assert.Single((JArray)response["purchased"]);
+            Assert.Equal("rule.beta", (string)soleRow["item"]);
+            Assert.Equal(0, (int)soleRow["purchasedIdx"]);
+            Assert.Equal(FingerprintB, (string)soleRow["rowFingerprint"]);
+            Assert.Null(soleRow["purchased"]);
+
+            // authority 已推进到新 token：旧 token 再发只能 replayOnly 只读下发。
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.after", "kcb.test.fresh.2", "shop.test.1", FingerprintB));
+            Assert.Equal(2, sent.Count);
+            Assert.True((bool)ParseSent(sent[1])["replayOnly"],
+                "stale token after fresh success must downgrade to replay-only dispatch");
+        }
+
+        [Fact]
+        public void ClaimBatch_StaleRowsSameId_DispatchesReplayOnlyAndAcceptsExactReplay()
+        {
+            var sent = new List<string>();
+            List<JObject> posted;
+            using var task = SeedTwoRowAuthority(sent, out posted);
+
+            // 请求行已不在当前 view（FingerprintA 在 epoch 内不存在）→ 只能 replayOnly。
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.replay", "kcb.test.replay.1", "shop.old.epoch",
+                "kpr1.9999999999999999.0"));
+            Assert.Single(sent);
+            Assert.True((bool)ParseSent(sent[0])["replayOnly"],
+                "unbindable rows must force Host-injected replayOnly:true");
+            task.HandleFlashResponse(BatchResponseFor(
+                sent[0], true, new JArray("kpr1.9999999999999999.0"),
+                PurchasedLegacyTwo(), PurchasedViewTwo(),
+                "shop.older.epoch", "shop.test.1"), _ => { });
+
+            JObject response = Assert.Single(posted);
+            Assert.True((bool)response["success"]);
+            Assert.True((bool)response["replayed"]);
+            Assert.Equal("shop.older.epoch", (string)response["committedPurchasedToken"]);
+            Assert.Equal("shop.test.1", (string)response["purchasedToken"]);
+
+            // replay 后 authority 原样：同 token 的 fresh 行仍按 fresh 绑定。
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.still.fresh", "kcb.test.replay.2", "shop.test.1", FingerprintA));
+            Assert.Equal(2, sent.Count);
+            Assert.False((bool)ParseSent(sent[1])["replayOnly"]);
+        }
+
+        [Fact]
+        public void ClaimBatch_ReplayOnlyReturningFreshOrMutated_IsAmbiguousAndReconciles()
+        {
+            var sent = new List<string>();
+            List<JObject> posted;
+            using var task = SeedTwoRowAuthority(sent, out posted);
+
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.mode-mismatch", "kcb.test.mode.1", "shop.old.epoch",
+                "kpr1.9999999999999999.0"));
+            Assert.True((bool)ParseSent(sent[0])["replayOnly"]);
+            // replayOnly 下返回 replayed=false：畸形 write response，必须 reconcile。
+            task.HandleFlashResponse(BatchResponseFor(
+                sent[0], false, new JArray("kpr1.9999999999999999.0"),
+                PurchasedLegacyTwo(), PurchasedViewTwo(),
+                "shop.test.9", "shop.test.9"), _ => { });
+            Assert.Equal("reconcile_required", (string)Assert.Single(posted)["error"]);
+
+            // replayOnly 下 list 变化同样拒绝：对账成功的 bulk 解锁后才可再写。
+            task.HandleWebRequest("bulkQuery", Request("{\"callId\":\"shop.batch.reconcile\"}"));
+            task.HandleFlashResponse(ResponseFor(sent[1], true), _ => { });
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.mode-mismatch.2", "kcb.test.mode.2", "shop.old.epoch",
+                "kpr1.8888888888888888.0"));
+            Assert.True((bool)ParseSent(sent[2])["replayOnly"]);
+            task.HandleFlashResponse(BatchResponseFor(
+                sent[2], true, new JArray("kpr1.8888888888888888.0"),
+                new JArray(PurchasedLegacyTwo()[1]),
+                new JArray(PurchasedViewBeta(0)),
+                "shop.test.8", "shop.test.8"), _ => { });
+            Assert.Equal("reconcile_required", (string)posted[2]["error"]);
+        }
+
+        [Fact]
+        public void ClaimBatch_WebInjectedReplayOnlyOrBadEnvelope_NeverReachesFlash()
+        {
+            var sent = new List<string>();
+            List<JObject> posted;
+            using var task = SeedTwoRowAuthority(sent, out posted);
+
+            JObject injected = BatchRequest(
+                "shop.batch.injected", "kcb.test.inject.1", "shop.test.1", FingerprintA);
+            injected["replayOnly"] = true;
+            task.HandleWebRequest("claimBatch", injected);
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.bad-rows", "kcb.test.inject.2", "shop.test.1"));
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.dup-rows", "kcb.test.inject.3", "shop.test.1",
+                FingerprintA, FingerprintA));
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.bad-fp", "kcb.test.inject.4", "shop.test.1", "kpr1.ZZZZ.0"));
+
+            Assert.Empty(sent);
+            Assert.Equal(4, posted.Count);
+            Assert.All(posted, response =>
+                Assert.Equal("invalid_payload", (string)response["error"]));
+        }
+
+        [Fact]
+        public void ClaimBatch_NoAuthority_NeverDispatches()
+        {
+            var sent = new List<string>();
+            var posted = new List<JObject>();
+            using var task = new ShopTask(
+                () => true,
+                payload => { sent.Add(payload); return true; });
+            task.SetPostToWeb(json => posted.Add(JObject.Parse(json)));
+
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.no-authority", "kcb.test.none.1", "shop.test.1", FingerprintA));
+
+            Assert.Empty(sent);
+            Assert.Equal("stale_state", (string)Assert.Single(posted)["error"]);
+        }
+
+        [Theory]
+        [InlineData("batch_receipt_ledger_full")]
+        [InlineData("batch_lane_quarantined")]
+        [InlineData("operation_conflict")]
+        [InlineData("inventory_full")]
+        [InlineData("unknown_row")]
+        public void ClaimBatch_DefinitiveZeroWriteFailure_ReleasesGate(string error)
+        {
+            var sent = new List<string>();
+            List<JObject> posted;
+            using var task = SeedTwoRowAuthority(sent, out posted);
+
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.definitive", "kcb.test.fail.1", "shop.test.1", FingerprintA));
+            var failure = new JObject
+            {
+                ["task"] = "shop_response",
+                ["callId"] = (int)ParseSent(sent[0])["callId"],
+                ["success"] = false,
+                ["error"] = error,
+                ["purchasedToken"] = "shop.test.1"
+            };
+            task.HandleFlashResponse(failure, _ => { });
+            Assert.Equal(error, (string)Assert.Single(posted)["error"]);
+
+            int before = sent.Count;
+            task.HandleWebRequest("saveCart", Request(
+                "{\"callId\":\"shop.batch.after-fail\",\"cart\":[]}"));
+            Assert.Equal(before + 1, sent.Count);
+        }
+
+        [Fact]
+        public void ClaimBatch_CommitPending_IsAmbiguousAndRequiresReconcile()
+        {
+            var sent = new List<string>();
+            List<JObject> posted;
+            using var task = SeedTwoRowAuthority(sent, out posted);
+
+            task.HandleWebRequest("claimBatch", BatchRequest(
+                "shop.batch.pending", "kcb.test.pending.1", "shop.test.1", FingerprintA));
+            var pending = new JObject
+            {
+                ["task"] = "shop_response",
+                ["callId"] = (int)ParseSent(sent[0])["callId"],
+                ["success"] = false,
+                ["error"] = "commit_pending",
+                ["purchasedToken"] = "shop.test.1"
+            };
+            task.HandleFlashResponse(pending, _ => { });
+
+            JObject response = Assert.Single(posted);
+            Assert.Equal("reconcile_required", (string)response["error"]);
+            Assert.Equal("commit_pending", (string)response["cause"]);
         }
     }
 }

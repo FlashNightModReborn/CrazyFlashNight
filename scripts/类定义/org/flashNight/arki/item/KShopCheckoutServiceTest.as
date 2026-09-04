@@ -39,6 +39,23 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         testClaimFlushFailureRestoresAndReturnsCommitPending();
         testClaimFlushThrowRestoresAndReturnsCommitPending();
         testCheckoutFlushFailureRestoresAndReturnsCommitPending();
+        testFingerprintVectorsAndSnapshotProjection();
+        testSingleClaimFingerprintMismatchIsZeroWrite();
+        testSingleClaimUnsupportedVersionIsZeroWrite();
+        testClaimBatchSuccessK1K2K40();
+        testClaimBatchInvalidEnvelopeZeroWrite();
+        testClaimBatchIdentityCollisionFailsClosed();
+        testClaimBatchCapacityZeroWriteNoRotation();
+        testClaimBatchAcquireFalseRestoresAndReturnsAcquireFailed();
+        testClaimBatchListenerFaultRestoresExactSnapshot();
+        testClaimBatchReceiptCutRestoresExactSnapshot();
+        testClaimBatchFlushFailureRestoresAndReturnsCommitPending();
+        testClaimBatchPostFenceProjectionFaultKeepsDurableState();
+        testClaimBatchReplayAndConflict();
+        testClaimBatchReplayOnlyModes();
+        testClaimBatchDuplicateTupleOrdinalRebase();
+        testClaimBatchRestartKeepsDurableCut();
+        testClaimBatchLaneQuarantineOnlyBlocksBatch();
         trace("KShopCheckoutServiceTest Tests Passed: " + passed);
         trace("KShopCheckoutServiceTest Tests Failed: " + failed);
     }
@@ -132,6 +149,7 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         _root.商城购物车 = [["legacy-cart"]];
         _root.商城已购买物品 = [["legacy", "药剂", "消耗品", 40, 1]];
         _root.testKShopSaveCount = 0;
+        _root._saveExt = {};
         _root.UI系统.商城WebView.checkoutPlan = null;
         _root.kshop_list[0].price = "40";
         _root.server.sent = null;
@@ -412,8 +430,10 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         callSeq++;
         _root.gameCommands["shopClaim"]({
             callId:callSeq,
+            v:1,
             purchasedIdx:0,
-            expectedPurchasedToken:_root.UI系统.商城WebView.purchasedToken
+            expectedPurchasedToken:_root.UI系统.商城WebView.purchasedToken,
+            expectedRowFingerprint:FP_INTEL
         });
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
         check(response.success && _root.收集品栏.情报.getValue("测试情报") == 1
@@ -529,7 +549,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
             throw "kshop_claim_added_listener_failed";
         });
         var params:Object = {
-            callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
+            callId:++callSeq, v:1, purchasedIdx:0, expectedPurchasedToken:tokenBefore,
+            expectedRowFingerprint:FP_POTION
         };
         var fault = null;
         try {
@@ -578,7 +599,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         };
         var bag:ArrayInventory = _root.物品栏.背包;
         _root.gameCommands["shopClaim"]({
-            callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
+            callId:++callSeq, v:1, purchasedIdx:0, expectedPurchasedToken:tokenBefore,
+            expectedRowFingerprint:FP_POTION
         });
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
         check(!response.success && response.error == "commit_pending"
@@ -594,7 +616,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
 
         _root.存档系统.flushDurableNow = oldFlush;
         _root.gameCommands["shopClaim"]({
-            callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
+            callId:++callSeq, v:1, purchasedIdx:0, expectedPurchasedToken:tokenBefore,
+            expectedRowFingerprint:FP_POTION
         });
         var retry:Object = new LiteJSON().parse(String(_root.server.sent));
         check(retry.success === true && bag.getItem("0").value == 1
@@ -615,7 +638,8 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
         var oldFlush:Function = _root.存档系统.flushDurableNow;
         _root.存档系统.flushDurableNow = function(reason):Boolean { throw "kshop_claim_flush_failed"; return false; };
         _root.gameCommands["shopClaim"]({
-            callId:++callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore
+            callId:++callSeq, v:1, purchasedIdx:0, expectedPurchasedToken:tokenBefore,
+            expectedRowFingerprint:FP_POTION
         });
         var response:Object = new LiteJSON().parse(String(_root.server.sent));
         _root.存档系统.flushDurableNow = oldFlush;
@@ -661,6 +685,751 @@ class org.flashNight.arki.item.KShopCheckoutServiceTest {
             "checkout commit_pending leaves the cart submittable for one exact retry");
         PlayerAssetTransaction.resetForTests();
     }
+
+    // ==================== A② 行指纹 + shopClaimBatch（§7.2 矩阵） ====================
+    // 已知答案向量由与 AS2 实现独立的 Node 参考实现交叉生成（双 FNV-1a lane、
+    // 逐 UTF-16 code unit 喂 low/high byte）。
+    private static var FP_POTION:String = "kpr1.144fe49a5fae01d1.0";
+    private static var FP_INTEL:String = "kpr1.f6d429fe932c2121.0";
+    private static var FP_POTION29:String = "kpr1.720e3c1c3a59c277.0";
+
+    private static function seedTwoClaimRows():Void {
+        resetState();
+        _root.商城已购买物品 = [
+            ["legacy", "药剂", "消耗品", 40, 1],
+            ["intel", "测试情报", "研究专柜", 100, 1]
+        ];
+    }
+
+    private static function lastResponse():Object {
+        return new LiteJSON().parse(String(_root.server.sent));
+    }
+
+    private static function currentToken():String {
+        return String(_root.UI系统.商城WebView.purchasedToken);
+    }
+
+    private static function batchParams(id:String, token:String,
+            rows:Array, replayOnly:Boolean):Object {
+        callSeq++;
+        _root.server.sent = null;
+        var params:Object = {callId:callSeq, v:1, batchOperationId:id,
+            expectedPurchasedToken:token, rows:rows};
+        if (replayOnly) params.replayOnly = true;
+        return params;
+    }
+
+    private static function claimBatchLane():Object {
+        var state:Object =
+            org.flashNight.arki.item.KShopLegacyClaimSupport.ensureLane();
+        return state.ok ? state.lane : null;
+    }
+
+    private static function testFingerprintVectorsAndSnapshotProjection():Void {
+        resetState();
+        var support = org.flashNight.arki.item.KShopLegacyClaimSupport;
+        var canonical:String = support.canonicalTupleString(
+            "legacy", "药剂", "消耗品", 40, 1);
+        check(canonical == "S6:legacyS2:药剂S3:消耗品N2:40N1:1"
+            && support.canonicalTupleDigest(canonical) == "144fe49a5fae01d1"
+            && support.canonicalTupleDigest(support.canonicalTupleString(
+                "intel", "测试情报", "研究专柜", 100, 1)) == "f6d429fe932c2121"
+            && support.canonicalTupleString("a", "b", "", NaN, 1) == null
+            && support.canonicalTupleString("a", "b", "", Infinity, 1) == null
+            && support.canonicalTupleString("a", "b", "", 1, 0) == null
+            && support.canonicalTupleString("a", "b", "", 1, 1.5) == null
+            && support.parseRowFingerprint(FP_POTION) != null
+            && support.parseRowFingerprint("kpr1.144fe49a5fae01d1.9999") != null
+            && support.parseRowFingerprint("kpr1.144fe49a5fae01d1.10000") == null
+            && support.parseRowFingerprint("kpr1.144fe49a5fae01d1.01") == null
+            && support.parseRowFingerprint("kpr1.144FE49A5FAE01D1.0") == null
+            && support.parseRowFingerprint("kpr2.144fe49a5fae01d1.0") == null,
+            "row fingerprint canonical framing, dual-lane digest vectors and lexical gates hold");
+
+        _root.商城已购买物品 = [
+            ["legacy", "药剂", "消耗品", 40, 1],
+            ["legacy", "药剂", "消耗品", 40, 1],
+            ["legacy", "药剂", "消耗品", 40, 1]
+        ];
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var bulk:Object = lastResponse();
+        check(bulk.success
+            && bulk.purchasedView[0].rowFingerprint == "kpr1.144fe49a5fae01d1.0"
+            && bulk.purchasedView[1].rowFingerprint == "kpr1.144fe49a5fae01d1.1"
+            && bulk.purchasedView[2].rowFingerprint == "kpr1.144fe49a5fae01d1.2"
+            && _root.testKShopSaveCount == 0,
+            "identical five-tuples project consecutive occurrence ordinals without writes");
+    }
+
+    private static function testSingleClaimFingerprintMismatchIsZeroWrite():Void {
+        seedTwoClaimRows();
+        var tokenBefore:String = currentToken();
+        callSeq++;
+        _root.gameCommands["shopClaim"]({
+            callId:callSeq, v:1, purchasedIdx:0,
+            expectedPurchasedToken:tokenBefore,
+            expectedRowFingerprint:FP_INTEL
+        });
+        var rejected:Object = lastResponse();
+        check(!rejected.success && rejected.error == "stale_state"
+            && _root.商城已购买物品.length == 2
+            && _root.testKShopSaveCount == 0
+            && currentToken() == tokenBefore,
+            "single claim fingerprint mismatch is stale_state with zero write and no rotation");
+
+        callSeq++;
+        _root.gameCommands["shopClaim"]({
+            callId:callSeq, v:1, purchasedIdx:0,
+            expectedPurchasedToken:tokenBefore,
+            expectedRowFingerprint:FP_POTION
+        });
+        var accepted:Object = lastResponse();
+        check(accepted.success && _root.商城已购买物品.length == 1
+            && accepted.purchasedView[0].rowFingerprint == FP_INTEL
+            && _root.testKShopSaveCount == 1
+            && accepted.purchasedToken != tokenBefore,
+            "single claim v1 exact fingerprint echo claims once with one fence");
+    }
+
+    private static function testSingleClaimUnsupportedVersionIsZeroWrite():Void {
+        resetState();
+        var tokenBefore:String = currentToken();
+        callSeq++;
+        _root.gameCommands["shopClaim"]({
+            callId:callSeq, purchasedIdx:0, expectedPurchasedToken:tokenBefore,
+            expectedRowFingerprint:FP_POTION
+        });
+        var response:Object = lastResponse();
+        check(!response.success && response.error == "unsupported_version"
+            && _root.商城已购买物品.length == 1
+            && _root.testKShopSaveCount == 0
+            && currentToken() == tokenBefore,
+            "single claim without v1 envelope is rejected before any write");
+    }
+
+    private static function testClaimBatchSuccessK1K2K40():Void {
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+
+        seedTwoClaimRows();
+        var requestToken:String = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.test.k1", requestToken, [FP_POTION], false));
+        var k1:Object = lastResponse();
+        check(k1.success && k1.replayed === false && k1.policy == "atomic"
+            && k1.batchOperationId == "kcb.test.k1"
+            && k1.committedPurchasedToken == k1.purchasedToken
+            && k1.purchasedToken != requestToken
+            && k1.resultRows.length == 1
+            && k1.resultRows[0].rowFingerprint == FP_POTION
+            && k1.resultRows[0].status == "claimed"
+            && _root.商城已购买物品.length == 1
+            && _root.收集品栏.情报.getValue("测试情报") == 0
+            && _root.物品栏.背包.getItem(0).value == 1
+            && _root.testKShopSaveCount == 1
+            && claimBatchLane().receipts.length == 1
+            && receipts.length == 1,
+            "claimBatch K=1 fresh success: 1 fence, 1 K receipt, 1 PAT receipt, rotated token");
+
+        seedTwoClaimRows();
+        requestToken = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.test.k2", requestToken, [FP_POTION, FP_INTEL], false));
+        var k2:Object = lastResponse();
+        check(k2.success && k2.resultRows.length == 2
+            && k2.resultRows[1].rowFingerprint == FP_INTEL
+            && _root.商城已购买物品.length == 0
+            && _root.物品栏.背包.getItem(0).value == 1
+            && _root.收集品栏.情报.getValue("测试情报") == 1
+            && _root.testKShopSaveCount == 1
+            && claimBatchLane().receipts.length == 1
+            && receipts.length == 2,
+            "claimBatch K=2 fresh success: single fence and receipt for the whole batch");
+
+        resetState();
+        var rows:Array = [];
+        var fingerprints:Array = [];
+        for (var i:Number = 0; i < 40; i++) {
+            rows.push(["legacy", "药剂", "消耗品", 40, 1]);
+            fingerprints.push("kpr1.144fe49a5fae01d1." + i);
+        }
+        _root.商城已购买物品 = rows;
+        requestToken = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.test.k40", requestToken, fingerprints, false));
+        var k40:Object = lastResponse();
+        check(k40.success && k40.resultRows.length == 40
+            && k40.resultRows[39].rowFingerprint == "kpr1.144fe49a5fae01d1.39"
+            && _root.商城已购买物品.length == 0
+            && _root.物品栏.背包.getItem(0).value == 40
+            && _root.testKShopSaveCount == 1
+            && claimBatchLane().receipts.length == 1
+            && receipts.length == 3,
+            "claimBatch K=40 fresh success: ordinal ceiling, one fence, one receipt");
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimBatchInvalidEnvelopeZeroWrite():Void {
+        var tokenBefore:String;
+        var response:Object;
+
+        seedTwoClaimRows();
+        tokenBefore = currentToken();
+        var badVersion:Object = batchParams("kcb.bad.v", tokenBefore, [FP_POTION], false);
+        badVersion.v = 2;
+        _root.gameCommands["shopClaimBatch"](badVersion);
+        response = lastResponse();
+        check(!response.success && response.error == "unsupported_version"
+            && _root.testKShopSaveCount == 0 && currentToken() == tokenBefore
+            && _root.商城已购买物品.length == 2,
+            "claimBatch unsupported version: zero write, token unchanged");
+
+        seedTwoClaimRows();
+        tokenBefore = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("bad id!", tokenBefore, [FP_POTION], false));
+        response = lastResponse();
+        check(!response.success && response.error == "invalid_operation_id"
+            && _root.testKShopSaveCount == 0 && currentToken() == tokenBefore,
+            "claimBatch invalid operation id: zero write, token unchanged");
+
+        seedTwoClaimRows();
+        tokenBefore = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.bad.token", "bad token!", [FP_POTION], false));
+        response = lastResponse();
+        check(!response.success && response.error == "invalid_payload"
+            && _root.testKShopSaveCount == 0 && currentToken() == tokenBefore,
+            "claimBatch malformed token: zero write, token unchanged");
+
+        seedTwoClaimRows();
+        tokenBefore = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.bad.unknown", tokenBefore, ["kpr1.00000000000000ff.0"], false));
+        response = lastResponse();
+        check(!response.success && response.error == "unknown_row"
+            && _root.testKShopSaveCount == 0 && currentToken() == tokenBefore
+            && claimBatchLane().receipts.length == 0,
+            "claimBatch unknown fingerprint: zero write, zero receipt, token unchanged");
+
+        seedTwoClaimRows();
+        tokenBefore = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.bad.dup", tokenBefore, [FP_POTION, FP_POTION], false));
+        response = lastResponse();
+        check(!response.success && response.error == "row_duplicate"
+            && _root.testKShopSaveCount == 0 && currentToken() == tokenBefore,
+            "claimBatch duplicate fingerprint: zero write, token unchanged");
+
+        seedTwoClaimRows();
+        tokenBefore = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.bad.order", tokenBefore, [FP_INTEL, FP_POTION], false));
+        response = lastResponse();
+        check(!response.success && response.error == "row_order_invalid"
+            && _root.testKShopSaveCount == 0 && currentToken() == tokenBefore,
+            "claimBatch non-increasing snapshot order: zero write, never silently sorted");
+
+        seedTwoClaimRows();
+        tokenBefore = currentToken();
+        var support = org.flashNight.arki.item.KShopLegacyClaimSupport;
+        var lane:Object = claimBatchLane();
+        for (var fillIndex:Number = 0; fillIndex < support.MAX_RECEIPTS; fillIndex++) {
+            lane.receipts.push(support.buildReceipt("kcb.fill." + fillIndex,
+                "shop.fill", ["kpr1.0000000000000000.0"], "shop.fill.2"));
+        }
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.bad.full", tokenBefore, [FP_POTION], false));
+        response = lastResponse();
+        check(!response.success && response.error == "batch_receipt_ledger_full"
+            && _root.testKShopSaveCount == 0 && currentToken() == tokenBefore
+            && lane.receipts.length == support.MAX_RECEIPTS
+            && _root.商城已购买物品.length == 2
+            && _root.物品栏.背包.getIndexes().length == 0,
+            "claimBatch full receipt lane: fail-closed without FIFO eviction, single claim unaffected");
+    }
+
+    private static function testClaimBatchIdentityCollisionFailsClosed():Void {
+        seedTwoClaimRows();
+        var tokenBefore:String = currentToken();
+        // 合成碰撞：常数 digest 让两个不同五元组共享 digest base，只能 fail-closed。
+        var supportClass:Object = org.flashNight.arki.item.KShopLegacyClaimSupport;
+        var oldDigest:Function = supportClass.canonicalTupleDigest;
+        supportClass.canonicalTupleDigest = function(canonical:String):String {
+            return "00000000000000000000000000000000";
+        };
+        callSeq++;
+        _root.server.sent = null;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var bulk:Object = lastResponse();
+        // bulkQuery 入口即铸新 token；batch 的 expected token 必须取 bulk 之后的当前值，
+        // 否则撞上的是 stale_state 而非碰撞 fail-closed。
+        tokenBefore = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.collision.batch", tokenBefore, [FP_POTION], false));
+        var batch:Object = lastResponse();
+        supportClass.canonicalTupleDigest = oldDigest;
+        check(!bulk.success && bulk.error == "purchased_identity_collision"
+            && !batch.success && batch.error == "purchased_identity_collision"
+            && _root.testKShopSaveCount == 0
+            && currentToken() == tokenBefore
+            && _root.商城已购买物品.length == 2
+            && claimBatchLane().receipts.length == 0,
+            "digest collision across distinct tuples fails closed every projection, zero write");
+    }
+
+    private static function testClaimBatchCapacityZeroWriteNoRotation():Void {
+        seedTwoClaimRows();
+        _root.物品栏.背包 = new ArrayInventory(null, 1);
+        _root.物品栏.背包.add(0, BaseItem.create("测试手枪", 1));
+        // 药剂栏容量 0：同名药剂才有处可合并的误布景变成真实 inventory_full。
+        _root.物品栏.药剂栏 = new ArrayInventory(null, 0);
+        var tokenBefore:String = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.capacity.bag", tokenBefore, [FP_POTION], false));
+        var bagFull:Object = lastResponse();
+        check(!bagFull.success && bagFull.error == "inventory_full"
+            && _root.商城已购买物品.length == 2
+            && _root.testKShopSaveCount == 0
+            && currentToken() == tokenBefore
+            && claimBatchLane().receipts.length == 0
+            && _root.物品栏.背包.getItem(0).name == "测试手枪",
+            "claimBatch capacity shortfall: whole batch zero write and token NOT rotated");
+
+        seedTwoClaimRows();
+        _root.收集品栏.情报.add("测试情报", 1);
+        tokenBefore = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.capacity.intel", tokenBefore, [FP_INTEL], false));
+        var intelFull:Object = lastResponse();
+        check(!intelFull.success && intelFull.error == "destination_full"
+            && _root.商城已购买物品.length == 2
+            && _root.testKShopSaveCount == 0
+            && currentToken() == tokenBefore
+            && claimBatchLane().receipts.length == 0,
+            "claimBatch information destination full: zero write, token unchanged");
+    }
+
+    private static function testClaimBatchAcquireFalseRestoresAndReturnsAcquireFailed():Void {
+        seedTwoClaimRows();
+        _root.存档系统.dirtyMark = false;
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var tokenBefore:String = currentToken();
+        // 经 Object 别名替换类静态方法，绕过 CS6 对方法槽赋值的严格类型检查。
+        var itemUtilClass:Object = org.flashNight.arki.item.ItemUtil;
+        var oldAcquire:Function = itemUtilClass.acquire;
+        var acquireCalls:Number = 0;
+        itemUtilClass.acquire = function(items:Array, context:Object):Boolean {
+            acquireCalls++;
+            return false;
+        };
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.acquire.false", tokenBefore, [FP_POTION, FP_INTEL], false));
+        itemUtilClass.acquire = oldAcquire;
+        var response:Object = lastResponse();
+        check(!response.success && response.error == "acquire_failed"
+            && acquireCalls == 1
+            && response.purchasedToken == tokenBefore
+            && currentToken() == tokenBefore
+            && _root.商城已购买物品.length == 2
+            && _root.物品栏.背包.getIndexes().length == 0
+            && _root.收集品栏.情报.getValue("测试情报") == 0
+            && _root.存档系统.dirtyMark === false
+            && claimBatchLane().receipts.length == 0
+            && receipts.length == 0
+            && _root.testKShopSaveCount == 0
+            && PlayerAssetTransaction.current() == null,
+            "claimBatch aggregate acquire false: exact restore incl. token, definitive acquire_failed");
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimBatchListenerFaultRestoresExactSnapshot():Void {
+        seedTwoClaimRows();
+        _root.存档系统.dirtyMark = false;
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var tokenBefore:String = currentToken();
+        var bag:ArrayInventory = _root.物品栏.背包;
+        var holder:MovieClip = _root.createEmptyMovieClip(
+            "__kshopBatchListenerFault", _root.getNextHighestDepth());
+        var dispatcher:LifecycleEventDispatcher = new LifecycleEventDispatcher(holder);
+        bag.setDispatcher(dispatcher);
+        dispatcher.subscribe("ItemAdded", function():Void {
+            throw "kshop_batch_added_listener_failed";
+        });
+        var fault = null;
+        try {
+            _root.gameCommands["shopClaimBatch"](
+                batchParams("kcb.listener.fault", tokenBefore, [FP_POTION], false));
+        } catch (error) {
+            fault = error;
+        }
+        check(fault == "kshop_batch_added_listener_failed"
+            && bag.getItem("0") == null
+            && _root.商城已购买物品.length == 2
+            && currentToken() == tokenBefore
+            && _root.存档系统.dirtyMark === false
+            && claimBatchLane().receipts.length == 0
+            && receipts.length == 0
+            && _root.testKShopSaveCount == 0
+            && PlayerAssetTransaction.current() == null
+            && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "claimBatch acquire-cut listener fault: assets/list/token/lane/dirty exact restore");
+
+        bag.setDispatcher(null);
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.listener.retry", tokenBefore, [FP_POTION], false));
+        var retry:Object = lastResponse();
+        check(retry.success === true && bag.getItem("0").value == 1
+            && _root.商城已购买物品.length == 1
+            && receipts.length == 1
+            && PlayerAssetTransaction.current() == null,
+            "claimBatch listener fault leaves the next independent batch healthy");
+        holder.removeMovieClip();
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimBatchReceiptCutRestoresExactSnapshot():Void {
+        seedTwoClaimRows();
+        _root.存档系统.dirtyMark = false;
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var tokenBefore:String = currentToken();
+        var support = org.flashNight.arki.item.KShopLegacyClaimSupport;
+        var supportClass:Object = support;
+        var oldRecord:Function = supportClass.recordReceipt;
+        supportClass.recordReceipt = function(lane:Object, receipt:Object):Boolean {
+            throw "kshop_batch_receipt_cut";
+            return false;
+        };
+        var fault = null;
+        try {
+            _root.gameCommands["shopClaimBatch"](
+                batchParams("kcb.receipt.cut", tokenBefore, [FP_POTION], false));
+        } catch (error) {
+            fault = error;
+        }
+        supportClass.recordReceipt = oldRecord;
+        check(fault == "kshop_batch_receipt_cut"
+            && _root.物品栏.背包.getIndexes().length == 0
+            && _root.商城已购买物品.length == 2
+            && currentToken() == tokenBefore
+            && _root.存档系统.dirtyMark === false
+            && claimBatchLane().receipts.length == 0
+            && receipts.length == 0
+            && _root.testKShopSaveCount == 0
+            && PlayerAssetTransaction.current() == null,
+            "claimBatch receipt-append cut: assets/list/token/lane/dirty exact restore, zero fence");
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimBatchFlushFailureRestoresAndReturnsCommitPending():Void {
+        seedTwoClaimRows();
+        _root.存档系统.dirtyMark = false;
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var tokenBefore:String = currentToken();
+        var saveAttempts:Number = 0;
+        var oldFlush:Function = _root.存档系统.flushDurableNow;
+        _root.存档系统.flushDurableNow = function(reason):Boolean {
+            saveAttempts++;
+            _root.testKShopSaveCount++;
+            return false;
+        };
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.flush.false", tokenBefore, [FP_POTION, FP_INTEL], false));
+        var response:Object = lastResponse();
+        check(!response.success && response.error == "commit_pending"
+            && response.purchasedToken == tokenBefore
+            && _root.物品栏.背包.getIndexes().length == 0
+            && _root.收集品栏.情报.getValue("测试情报") == 0
+            && _root.商城已购买物品.length == 2
+            && currentToken() == tokenBefore
+            && _root.存档系统.dirtyMark === false
+            && claimBatchLane().receipts.length == 0
+            && receipts.length == 0 && saveAttempts == 1
+            && PlayerAssetTransaction.current() == null
+            && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "claimBatch fence false: one attempt, zero receipts, exact restore, commit_pending");
+
+        _root.存档系统.flushDurableNow = function(reason):Boolean {
+            saveAttempts++;
+            throw "kshop_batch_flush_failed";
+            return false;
+        };
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.flush.throw", tokenBefore, [FP_POTION], false));
+        var thrown:Object = lastResponse();
+        _root.存档系统.flushDurableNow = oldFlush;
+        check(!thrown.success && thrown.error == "commit_pending"
+            && _root.商城已购买物品.length == 2
+            && currentToken() == tokenBefore
+            && claimBatchLane().receipts.length == 0
+            && receipts.length == 0 && saveAttempts == 2
+            && PlayerAssetTransaction.current() == null,
+            "claimBatch fence throw is contained by the durable fence and answers commit_pending");
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimBatchPostFenceProjectionFaultKeepsDurableState():Void {
+        seedTwoClaimRows();
+        PlayerAssetTransaction.resetForTests();
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            receipts.push(receipt);
+        });
+        var tokenBefore:String = currentToken();
+        var oldCatalog:Function = _root.UI系统.商城WebView.buildCatalog;
+        _root.UI系统.商城WebView.buildCatalog = function():Array {
+            throw "kshop_batch_catalog_failed";
+            return null;
+        };
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.postfence.fault", tokenBefore, [FP_POTION], false));
+        var response:Object = lastResponse();
+        _root.UI系统.商城WebView.buildCatalog = oldCatalog;
+        check(response.success === true && response.refreshDeferred === true
+            && response.replayed === false
+            && _root.商城已购买物品.length == 1
+            && _root.物品栏.背包.getItem(0).value == 1
+            && currentToken() != tokenBefore
+            && claimBatchLane().receipts.length == 1
+            && receipts.length == 1
+            && _root.testKShopSaveCount == 1
+            && PlayerAssetTransaction.current() == null,
+            "claimBatch post-fence projection fault: durable state kept, degrades to refreshDeferred");
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimBatchReplayAndConflict():Void {
+        seedTwoClaimRows();
+        var requestToken:String = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.replay.base", requestToken, [FP_POTION, FP_INTEL], false));
+        var first:Object = lastResponse();
+        var savesAfterFirst:Number = _root.testKShopSaveCount;
+
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.replay.base", requestToken, [FP_POTION, FP_INTEL], false));
+        var replay:Object = lastResponse();
+        check(first.success && replay.success && replay.replayed === true
+            && replay.committedPurchasedToken == first.committedPurchasedToken
+            && replay.purchasedToken == currentToken()
+            && replay.resultRows.length == 2
+            && replay.resultRows[0].rowFingerprint == FP_POTION
+            && _root.商城已购买物品.length == 0
+            && _root.testKShopSaveCount == savesAfterFirst
+            && claimBatchLane().receipts.length == 1,
+            "same id + exact request: replayed first immutable result, zero fence, zero rotation");
+
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.replay.base", requestToken, [FP_POTION], false));
+        var conflictRows:Object = lastResponse();
+        check(!conflictRows.success && conflictRows.error == "operation_conflict"
+            && _root.testKShopSaveCount == savesAfterFirst
+            && _root.商城已购买物品.length == 0,
+            "same id + different rows: operation_conflict, zero fence");
+
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.replay.base", currentToken(), [FP_POTION, FP_INTEL], false));
+        var conflictToken:Object = lastResponse();
+        check(!conflictToken.success && conflictToken.error == "operation_conflict"
+            && _root.testKShopSaveCount == savesAfterFirst,
+            "same id + different token: operation_conflict, zero fence");
+    }
+
+    private static function testClaimBatchReplayOnlyModes():Void {
+        seedTwoClaimRows();
+        var requestToken:String = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.replayonly.miss", "shop.old.epoch", [FP_POTION], true));
+        var miss:Object = lastResponse();
+        check(!miss.success && miss.error == "stale_state"
+            && _root.testKShopSaveCount == 0
+            && currentToken() == requestToken
+            && _root.商城已购买物品.length == 2
+            && _root.物品栏.背包.getIndexes().length == 0,
+            "replayOnly without prior receipt: stale_state, zero write and zero fence");
+
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.replayonly.base", requestToken, [FP_POTION], false));
+        var first:Object = lastResponse();
+        var savesAfterFirst:Number = _root.testKShopSaveCount;
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.replayonly.base", requestToken, [FP_POTION], true));
+        var replay:Object = lastResponse();
+        check(first.success && replay.success && replay.replayed === true
+            && replay.committedPurchasedToken == first.committedPurchasedToken
+            && _root.testKShopSaveCount == savesAfterFirst
+            && claimBatchLane().receipts.length == 1,
+            "replayOnly with prior receipt: exact replay, zero write");
+
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.replayonly.base", requestToken, [FP_INTEL], true));
+        var conflict:Object = lastResponse();
+        check(!conflict.success && conflict.error == "operation_conflict"
+            && _root.testKShopSaveCount == savesAfterFirst,
+            "replayOnly same id + different rows: operation_conflict, zero fence");
+    }
+
+    private static function testClaimBatchDuplicateTupleOrdinalRebase():Void {
+        resetState();
+        _root.商城已购买物品 = [
+            ["legacy", "药剂", "消耗品", 40, 1],
+            ["legacy", "药剂", "消耗品", 40, 1],
+            ["legacy", "药剂", "消耗品", 40, 1]
+        ];
+        var requestToken:String = currentToken();
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.rebase.batch", requestToken,
+                ["kpr1.144fe49a5fae01d1.0", "kpr1.144fe49a5fae01d1.1"], false));
+        var batch:Object = lastResponse();
+        check(batch.success && _root.商城已购买物品.length == 1
+            && batch.purchasedView[0].rowFingerprint == "kpr1.144fe49a5fae01d1.0"
+            && batch.purchased.length == 1,
+            "claiming earlier duplicates rebases survivor ordinal in the new token epoch");
+
+        callSeq++;
+        _root.gameCommands["shopClaim"]({
+            callId:callSeq, v:1, purchasedIdx:0,
+            expectedPurchasedToken:currentToken(),
+            expectedRowFingerprint:"kpr1.144fe49a5fae01d1.2"
+        });
+        var stale:Object = lastResponse();
+        check(!stale.success && stale.error == "stale_state"
+            && _root.商城已购买物品.length == 1,
+            "old-epoch ordinal fingerprint cannot claim the rebased row");
+
+        callSeq++;
+        _root.gameCommands["shopClaim"]({
+            callId:callSeq, v:1, purchasedIdx:0,
+            expectedPurchasedToken:currentToken(),
+            expectedRowFingerprint:"kpr1.144fe49a5fae01d1.0"
+        });
+        var claimed:Object = lastResponse();
+        check(claimed.success && _root.商城已购买物品.length == 0
+            && _root.物品栏.背包.getItem(0).value == 3,
+            "rebased fingerprint claims the survivor exactly once");
+    }
+
+    private static function captureKshopSaveImage():Void {
+        var image:Object = {
+            saveExt:_root._saveExt,
+            purchased:_root.商城已购买物品,
+            bag:_root.物品栏.背包.toObject(),
+            information:_root.收集品栏.情报.toObject()
+        };
+        _root.__kshopSaveWire = new LiteJSON().stringifySafe(image);
+    }
+
+    private static function restartFromKshopSaveImage():Void {
+        var image:Object = new LiteJSON().parse(String(_root.__kshopSaveWire));
+        _root._saveExt = image.saveExt;
+        _root.商城已购买物品 = image.purchased;
+        _root.物品栏.背包 = new ArrayInventory(image.bag, 50);
+        _root.收集品栏.情报 = new DictCollection(image.information);
+        // 进程重启后 runtime token 丢失；新 epoch 由重新铸 token 模拟。
+        _root.UI系统.商城WebView.rotatePurchasedToken();
+    }
+
+    private static function testClaimBatchRestartKeepsDurableCut():Void {
+        seedTwoClaimRows();
+        PlayerAssetTransaction.resetForTests();
+        var requestToken:String = currentToken();
+        var oldFlush:Function = _root.存档系统.flushDurableNow;
+        _root.存档系统.flushDurableNow = function(reason):Boolean {
+            _root.testKShopSaveCount++;
+            captureKshopSaveImage();
+            return true;
+        };
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.restart.base", requestToken, [FP_POTION, FP_INTEL], false));
+        var first:Object = lastResponse();
+        var savesAfterFirst:Number = _root.testKShopSaveCount;
+
+        // 成功回包丢失 → 真实 save-image 重启（JSON wire 往返，非进程内 reset）。
+        restartFromKshopSaveImage();
+        var support = org.flashNight.arki.item.KShopLegacyClaimSupport;
+        var laneState:Object = support.ensureLane();
+        var receipt:Object = laneState.ok
+            ? support.lookupReceipt(laneState.lane, "kcb.restart.base") : null;
+        callSeq++;
+        _root.server.sent = null;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var bulk:Object = lastResponse();
+        check(first.success && receipt != null
+            && receipt.committedPurchasedToken == first.committedPurchasedToken
+            && _root.商城已购买物品.length == 0
+            && _root.物品栏.背包.getItem(0).value == 1
+            && _root.收集品栏.情报.getValue("测试情报") == 1
+            && bulk.success && bulk.purchased.length == 0,
+            "restart from durable save image shows only the atomic {0,K}=K cut, never a partial batch");
+
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.restart.base", requestToken, [FP_POTION, FP_INTEL], false));
+        var replay:Object = lastResponse();
+        _root.存档系统.flushDurableNow = oldFlush;
+        check(replay.success && replay.replayed === true
+            && replay.committedPurchasedToken == first.committedPurchasedToken
+            && _root.testKShopSaveCount == savesAfterFirst
+            && _root.商城已购买物品.length == 0,
+            "same-id request after restart replays the persisted receipt without another fence");
+        PlayerAssetTransaction.resetForTests();
+    }
+
+    private static function testClaimBatchLaneQuarantineOnlyBlocksBatch():Void {
+        seedTwoClaimRows();
+        var requestToken:String = currentToken();
+        _root._saveExt.kshopClaimBatch = {v:2, receipts:[]};
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.quarantine.future", requestToken, [FP_POTION], false));
+        var future:Object = lastResponse();
+        _root._saveExt.kshopClaimBatch = {v:1, receipts:[{broken:true}]};
+        _root.gameCommands["shopClaimBatch"](
+            batchParams("kcb.quarantine.malformed", requestToken, [FP_POTION], false));
+        var malformed:Object = lastResponse();
+        check(!future.success && future.error == "batch_lane_quarantined"
+            && !malformed.success && malformed.error == "batch_lane_quarantined"
+            && _root.testKShopSaveCount == 0
+            && currentToken() == requestToken
+            && _root.商城已购买物品.length == 2,
+            "future/malformed lane quarantines only the batch capability, zero write");
+
+        callSeq++;
+        _root.gameCommands["shopBulkQuery"]({callId:callSeq});
+        var bulk:Object = lastResponse();
+        var preview:Object = requestPreview([{idx:0, qty:1}]);
+        var commit:Object = requestCommit(preview.checkoutToken);
+        callSeq++;
+        _root.gameCommands["shopClaim"]({
+            callId:callSeq, v:1, purchasedIdx:0,
+            expectedPurchasedToken:currentToken(),
+            expectedRowFingerprint:FP_POTION
+        });
+        var claim:Object = lastResponse();
+        check(bulk.success && commit.success && claim.success
+            && _root.商城已购买物品.length == 1
+            && _root.testKShopSaveCount == 2,
+            "quarantined lane does not block bulkQuery, checkout or single claim");
+    }
+
 
     private static function requestPreview(cart:Array):Object {
         callSeq++;

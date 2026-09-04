@@ -160,6 +160,17 @@
         return typeof value === 'string' && /^[A-Za-z0-9._-]{1,160}$/.test(value);
     }
 
+    var ROW_FINGERPRINT_PATTERN = /^kpr1\.([0-9a-f]{16})\.(0|[1-9][0-9]{0,3})$/;
+    var BATCH_OPERATION_ID_PATTERN = /^[A-Za-z0-9._-]{1,96}$/;
+    var MAX_BATCH_ROWS = 40;
+
+    function parseRowFingerprint(value) {
+        if (typeof value !== 'string') return null;
+        var match = ROW_FINGERPRINT_PATTERN.exec(value);
+        if (!match) return null;
+        return {digest:match[1], ordinal:Number(match[2])};
+    }
+
     function exactKeys(value, required, optional) {
         if (!value || Object.prototype.toString.call(value) !== '[object Object]') return false;
         optional = optional || [];
@@ -206,10 +217,30 @@
         if (cmd === 'checkoutCommit') return exactKeys(payload, ['v','expectedCheckoutToken'])
             && payload.v === 1 && validToken(payload.expectedCheckoutToken)
             ? {v:1, expectedCheckoutToken:payload.expectedCheckoutToken} : null;
-        if (cmd === 'claim') return exactKeys(payload, ['purchasedIdx','expectedPurchasedToken'])
-            && isInteger(payload.purchasedIdx) && validToken(payload.expectedPurchasedToken)
-            ? {purchasedIdx:payload.purchasedIdx,
-                expectedPurchasedToken:payload.expectedPurchasedToken} : null;
+        if (cmd === 'claim') return exactKeys(payload,
+                ['v','purchasedIdx','expectedPurchasedToken','expectedRowFingerprint'])
+            && payload.v === 1 && isInteger(payload.purchasedIdx)
+            && validToken(payload.expectedPurchasedToken)
+            && !!parseRowFingerprint(payload.expectedRowFingerprint)
+            ? {v:1, purchasedIdx:payload.purchasedIdx,
+                expectedPurchasedToken:payload.expectedPurchasedToken,
+                expectedRowFingerprint:payload.expectedRowFingerprint} : null;
+        if (cmd === 'claimBatch') {
+            if (!exactKeys(payload,['v','batchOperationId','expectedPurchasedToken','rows'])
+                    || payload.v !== 1
+                    || !BATCH_OPERATION_ID_PATTERN.test(String(payload.batchOperationId || ''))
+                    || !validToken(payload.expectedPurchasedToken)
+                    || !Array.isArray(payload.rows)
+                    || payload.rows.length < 1 || payload.rows.length > MAX_BATCH_ROWS) return null;
+            var batchRows = [], seenRows = {};
+            for (var br = 0; br < payload.rows.length; br++) {
+                if (!parseRowFingerprint(payload.rows[br]) || seenRows[payload.rows[br]]) return null;
+                seenRows[payload.rows[br]] = true;
+                batchRows.push(payload.rows[br]);
+            }
+            return {v:1, batchOperationId:String(payload.batchOperationId),
+                expectedPurchasedToken:payload.expectedPurchasedToken, rows:batchRows};
+        }
         return null;
     }
 
@@ -398,12 +429,31 @@
         var result = [];
         for (var i = 0; i < value.length; i++) {
             var item = value[i];
-            if (!exactKeys(item,['purchasedIdx','item','displayname','icon','quantity'])
+            if (!exactKeys(item,['purchasedIdx','item','displayname','icon','quantity','rowFingerprint'])
                     || item.purchasedIdx !== i || !identityText(item.item,128)
                     || !identityText(item.displayname,256) || !identityText(item.icon,256)
-                    || !isInteger(item.quantity) || item.quantity < 1) return null;
+                    || !isInteger(item.quantity) || item.quantity < 1
+                    || !parseRowFingerprint(item.rowFingerprint)) return null;
             result.push({purchasedIdx:i,item:item.item,displayname:item.displayname,
-                icon:item.icon,quantity:item.quantity});
+                icon:item.icon,quantity:item.quantity,rowFingerprint:item.rowFingerprint});
+        }
+        return result;
+    }
+
+    // 删除指定行后重排 purchasedIdx，并按 digest base 组重算 occurrenceOrdinal。
+    // Web 只解析 fingerprint 词法，绝不重算 tuple hash。
+    function rebasePurchasedView(view, dropIndices) {
+        var ordinals = {}, result = [];
+        for (var i = 0; i < view.length; i++) {
+            if (dropIndices && dropIndices[i]) continue;
+            var parsed = parseRowFingerprint(view[i].rowFingerprint);
+            if (!parsed) return null;
+            var ordinal = ordinals[parsed.digest] || 0;
+            ordinals[parsed.digest] = ordinal + 1;
+            result.push({purchasedIdx:result.length, item:view[i].item,
+                displayname:view[i].displayname, icon:view[i].icon,
+                quantity:view[i].quantity,
+                rowFingerprint:'kpr1.' + parsed.digest + '.' + ordinal});
         }
         return result;
     }
@@ -609,13 +659,63 @@
                 || business.purchasedToken === authority.purchasedToken
                 || payload.expectedPurchasedToken !== authority.purchasedToken
                 || payload.purchasedIdx < 0 || payload.purchasedIdx >= authority.purchased.length) return null;
+        // wire v1 三重绑定：authority 在该 index 的 fingerprint 必须 exact echo。
+        if (authority.purchased[payload.purchasedIdx].rowFingerprint
+                !== payload.expectedRowFingerprint) return null;
         var catalog = sanitizeCatalog(business.catalog);
         var purchased = sanitizePurchased(business.purchased);
-        var expected = cloneJson(authority.purchased);
-        expected.splice(payload.purchasedIdx,1);
-        for (var i = 0; i < expected.length; i++) expected[i].purchasedIdx = i;
-        if (!catalog || !purchased || !purchasedEqual(purchased,expected)) return null;
+        var drop = {}; drop[payload.purchasedIdx] = true;
+        var expected = rebasePurchasedView(authority.purchased, drop);
+        if (!catalog || !purchased || !expected || !purchasedEqual(purchased,expected)) return null;
         return {success:true,catalog:catalog,purchased:purchased,purchasedToken:business.purchasedToken};
+    }
+
+    function sanitizeClaimBatchBusiness(business, payload, authority) {
+        if (!exactKeys(business,['success','v','batchOperationId','policy','replayed',
+                'committedPurchasedToken','resultRows','purchased','purchasedToken','catalog'])
+                || business.success !== true || business.v !== 1
+                || business.batchOperationId !== payload.batchOperationId
+                || business.policy !== 'atomic' || typeof business.replayed !== 'boolean'
+                || !validToken(business.committedPurchasedToken)
+                || !validToken(business.purchasedToken) || !authority) return null;
+        var resultRows = business.resultRows;
+        if (!Array.isArray(resultRows) || resultRows.length !== payload.rows.length) return null;
+        for (var i = 0; i < resultRows.length; i++) {
+            if (!exactKeys(resultRows[i],['rowFingerprint','status'])
+                    || resultRows[i].status !== 'claimed'
+                    || resultRows[i].rowFingerprint !== payload.rows[i]) return null;
+        }
+        var catalog = sanitizeCatalog(business.catalog);
+        var purchased = sanitizePurchased(business.purchased);
+        if (!catalog || !purchased) return null;
+        if (business.replayed === false) {
+            // fresh：从 Web 自己冻结的 authority view 删除请求 fingerprints、
+            // 重排 index/ordinal，与输出逐字段比较。
+            if (business.committedPurchasedToken !== business.purchasedToken
+                    || business.purchasedToken === payload.expectedPurchasedToken) return null;
+            var indexByFingerprint = {}, drop = {}, previous = -1;
+            for (var v = 0; v < authority.purchased.length; v++) {
+                indexByFingerprint[authority.purchased[v].rowFingerprint] = v;
+            }
+            for (var r = 0; r < payload.rows.length; r++) {
+                var hit = indexByFingerprint[payload.rows[r]];
+                if (hit === undefined || hit <= previous) return null;
+                previous = hit;
+                drop[hit] = true;
+            }
+            var expected = rebasePurchasedView(authority.purchased, drop);
+            if (!expected || !purchasedEqual(purchased,expected)) return null;
+        } else {
+            // replay：当前 view/token 必须与发起 replay 前 Web authority 相同；
+            // immutable resultRows 只用于展示首次结果。
+            if (business.purchasedToken !== authority.purchasedToken
+                    || !purchasedEqual(purchased,authority.purchased)) return null;
+        }
+        return {success:true,v:1,batchOperationId:business.batchOperationId,
+            policy:'atomic',replayed:business.replayed,
+            committedPurchasedToken:business.committedPurchasedToken,
+            resultRows:cloneJson(resultRows),purchased:purchased,
+            purchasedToken:business.purchasedToken,catalog:catalog};
     }
 
     function sanitizeResponse(cmd, payload, response, authority) {
@@ -638,6 +738,7 @@
         if (cmd === 'checkoutCommit' || cmd === 'checkout')
             return sanitizeCheckoutBusiness(business,cmd,payload,authority);
         if (cmd === 'claim') return sanitizeClaimBusiness(business,payload,authority);
+        if (cmd === 'claimBatch') return sanitizeClaimBatchBusiness(business,payload,authority);
         return null;
     }
 
@@ -745,7 +846,7 @@
         return true;
     };
 
-    KShopWriteCoordinator.prototype.claim = function(purchasedIdx, callback) {
+    KShopWriteCoordinator.prototype.claim = function(purchasedIdx, expectedRowFingerprint, callback) {
         if (!this._beginExclusive('claim')) return false;
         var self = this;
         this._ensureSaved(function(saveResult) {
@@ -754,8 +855,10 @@
                 return;
             }
             self._request('claim', {
+                v: 1,
                 purchasedIdx: purchasedIdx,
-                expectedPurchasedToken: String(self._getPurchasedToken() || '')
+                expectedPurchasedToken: String(self._getPurchasedToken() || ''),
+                expectedRowFingerprint: String(expectedRowFingerprint || '')
             }, function(response) {
                 if (response && response.success === false
                         && (response.error === 'item_not_found' || response.error === 'stale_state')) {
@@ -766,6 +869,39 @@
                     self._finishExclusive(response, callback);
                 } else {
                     self._startReconcile('claim', response, function(result) {
+                        self._finishExclusive(result, callback);
+                    });
+                }
+            });
+        });
+        return true;
+    };
+
+    // 整批原子收尾：冻结有序 fingerprints（顺序是 operation identity）；
+    // unknown 只走 bulkQuery 对账，绝不自动重放写命令。
+    KShopWriteCoordinator.prototype.claimBatch = function(batchOperationId, rows, callback) {
+        if (!this._beginExclusive('claimBatch')) return false;
+        var self = this;
+        this._ensureSaved(function(saveResult) {
+            if (!saveResult.success) {
+                self._finishExclusive(saveResult, callback);
+                return;
+            }
+            self._request('claimBatch', {
+                v: 1,
+                batchOperationId: String(batchOperationId || ''),
+                expectedPurchasedToken: String(self._getPurchasedToken() || ''),
+                rows: rows.slice()
+            }, function(response) {
+                if (response && response.success === false
+                        && (response.error === 'stale_state' || response.error === 'unknown_row')) {
+                    self._startReconcile('claimBatch', response, function(result) {
+                        self._finishExclusive(result, callback);
+                    });
+                } else if (self._isDefinitive('claimBatch', response)) {
+                    self._finishExclusive(response, callback);
+                } else {
+                    self._startReconcile('claimBatch', response, function(result) {
                         self._finishExclusive(result, callback);
                     });
                 }
@@ -949,6 +1085,14 @@
             if (cmd === 'claim') return Array.isArray(response.purchased)
                 && Array.isArray(response.catalog)
                 && typeof response.purchasedToken === 'string' && response.purchasedToken.length > 0;
+            if (cmd === 'claimBatch') return response.v === 1
+                && typeof response.batchOperationId === 'string' && response.batchOperationId.length > 0
+                && response.policy === 'atomic' && typeof response.replayed === 'boolean'
+                && typeof response.committedPurchasedToken === 'string'
+                && response.committedPurchasedToken.length > 0
+                && Array.isArray(response.resultRows) && Array.isArray(response.purchased)
+                && Array.isArray(response.catalog)
+                && typeof response.purchasedToken === 'string' && response.purchasedToken.length > 0;
             return false;
         }
         if (response.error === 'busy') return true;
@@ -958,7 +1102,13 @@
         // 预检在任何 mutate 前 return false），必须直接定论，避免白走一轮 bulkQuery 对账。
         if (cmd === 'claim') return response.error === 'inventory_full'
             || response.error === 'destination_full'
-            || response.error === 'acquire_failed';
+            || response.error === 'acquire_failed'
+            || response.error === 'unsupported_version';
+        if (cmd === 'claimBatch') return ['unsupported_version','invalid_payload',
+            'invalid_operation_id','row_duplicate','row_order_invalid',
+            'purchased_identity_collision','inventory_full','destination_full',
+            'acquire_failed','operation_conflict','batch_receipt_ledger_full',
+            'batch_lane_quarantined'].indexOf(response.error) >= 0;
         return false;
     };
 

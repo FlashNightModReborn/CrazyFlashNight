@@ -195,8 +195,9 @@ $productionBeginContracts = @(
         'catch (tradeInvalidateError)', 'buildPostCommitState = function(',
         'catch (postCommitStateError)', 'refreshDeferred:true',
         'capturePlayerAssetSnapshot()', 'restorePlayerAssetSnapshot(') },
-    @{ Name = 'kshop'; Path = $kshopPath; ExpectedBeginCount = 2; RequiredTokens = @(
+    @{ Name = 'kshop'; Path = $kshopPath; ExpectedBeginCount = 3; RequiredTokens = @(
         'catch (checkoutAssetError)', 'catch (claimAssetError)',
+        'catch (batchAssetError)', 'batchAttemptToken =',
         'settleAfterException(', 'catch (checkoutMetricError)',
         'catch (claimMetricError)', 'catch (checkoutSoundError)',
         'catch (checkoutCatalogError)', 'catch (claimProjectionError)',
@@ -224,7 +225,7 @@ $productionBeginContracts = @(
         'delete _root._saveExt.procurementPlans;',
         'var submitRestored:Boolean = false;',
         'assetTransaction, !submitRestored') },
-    @{ Name = 'item-use'; Path = $itemUsePath; ExpectedBeginCount = 1; RequiredTokens = @(
+    @{ Name = 'item-use'; Path = $itemUsePath; ExpectedBeginCount = 2; RequiredTokens = @(
         'catch (openError)', 'PlayerAssetTransaction.settleAfterException(',
         'restoreOpenState(', 'commit_pending') },
     @{ Name = 'item-util'; Path = $itemUtilPath; ExpectedBeginCount = 2; RequiredTokens = @(
@@ -310,8 +311,8 @@ foreach ($contract in $productionBeginContracts) {
         }
     }
 }
-if ($auditedProductionBeginCount -ne 24) {
-    throw "生产 PlayerAssetTransaction.begin 审计总数漂移: $auditedProductionBeginCount/24"
+if ($auditedProductionBeginCount -ne 26) {
+    throw "生产 PlayerAssetTransaction.begin 审计总数漂移: $auditedProductionBeginCount/26"
 }
 $expectedProductionBeginPaths = @($productionBeginContracts | ForEach-Object {
     [System.IO.Path]::GetFullPath($_.Path).Substring($projectRoot.Length + 1).Replace('\', '/')
@@ -401,6 +402,9 @@ $directAuthorityContracts = @(
     @{ Name='kshop-claim'; Path=$kshopPath; Start='_root.gameCommands["shopClaim"]';
         End='_root.gameCommands["shopSaveCart"]'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='ItemUtil.singleAcquire('; Catch='claimAssetError'; DirtyExact=1 },
+    @{ Name='kshop-claim-batch'; Path=$kshopPath; Start='_root.gameCommands["shopClaimBatch"]';
+        End='_root.gameCommands["shopTooltip"]'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+        FirstWrite='ItemUtil.acquire('; Catch='batchAssetError'; DirtyExact=1 },
     @{ Name='pet-adopt'; Path=$petPath; Start='public static function handleAdopt';
         End='public static function handleDeploy'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='_root.金钱 -= price;'; Catch='adoptError'; DirtyExact=1 },
@@ -471,11 +475,11 @@ foreach ($contract in $directAuthorityContracts) {
         }
     }
 }
-if ($directAuthorityContracts.Count -ne 21) {
-    throw "direct-authority caller 审计清单漂移: $($directAuthorityContracts.Count)/21"
+if ($directAuthorityContracts.Count -ne 22) {
+    throw "direct-authority caller 审计清单漂移: $($directAuthorityContracts.Count)/22"
 }
-if ($auditedDirectDirtyCount -ne 21) {
-    throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/21"
+if ($auditedDirectDirtyCount -ne 22) {
+    throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/22"
 }
 
 # Quest 多资源完成必须先交付、再写可恢复奖励、最后写进度/完成状态；升级
@@ -522,10 +526,10 @@ if ($petLevelBeginIndex -lt 0 -or $petLevelThresholdIndex -lt 0 `
 $kshopSource = Get-Content -LiteralPath $kshopPath -Raw -Encoding UTF8
 $npcShopSource = Get-Content -LiteralPath $npcShopPath -Raw -Encoding UTF8
 if (([regex]::Matches($kshopSource,
-            'PlayerAssetTransaction\.flushStrongSaveNow\s*\(')).Count -ne 2 -or
+            'PlayerAssetTransaction\.flushStrongSaveNow\s*\(')).Count -ne 3 -or
         ([regex]::Matches($kshopSource,
             'PlayerAssetTransaction\.requestStrongSave\s*\(')).Count -ne 0 -or
-        ([regex]::Matches($kshopSource, 'error\s*=\s*"commit_pending"')).Count -ne 2 -or
+        ([regex]::Matches($kshopSource, 'error\s*=\s*"commit_pending"')).Count -ne 3 -or
         $kshopSource -match '_root\.强制存盘\s*\(') {
     throw 'KShop checkout/claim 缺少 commit 前显式 durable fence 或 commit_pending 恢复出口'
 }

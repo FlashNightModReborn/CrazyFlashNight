@@ -293,6 +293,7 @@ function Get-Cf7ProductionChecks {
         'modules\kshop-views.js', 'modules\kshop-cart-controller.js',
         'modules\kshop-catalog-presenter.js', 'modules\kshop-owned-inventory-presenter.js',
         'modules\kshop-tooltip-presenter.js', 'modules\kshop-procurement-navigation.js',
+        'modules\kshop-claim-batch.js',
         'modules\inventory-workbench-config.js',
         'modules\inventory-workbench-preparation-menu.js',
         'modules\equipment-tuning-confirmation.js', 'modules\inventory-workbench-navigation.js',

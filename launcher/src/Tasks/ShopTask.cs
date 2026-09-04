@@ -49,6 +49,8 @@ namespace CF7Launcher.Tasks
             public JArray PurchasedViewBefore;
             public string PurchasedTokenBefore;
             public int ClaimIndex = -1;
+            public bool BatchReplayOnly;
+            public int[] BatchResolvedIndices;
         }
 
         private sealed class CheckoutAuthority
@@ -73,6 +75,13 @@ namespace CF7Launcher.Tasks
         private static readonly Regex ValidToken = new Regex(
             "^[A-Za-z0-9._-]{1,160}$",
             RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Regex ValidBatchOperationId = new Regex(
+            "^[A-Za-z0-9._-]{1,96}$",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private static readonly Regex ValidRowFingerprint = new Regex(
+            "^kpr1\\.([0-9a-f]{16})\\.(0|[1-9][0-9]{0,3})$",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        private const int MAX_BATCH_ROWS = 40;
 
         private readonly Func<bool> _isClientReady;
         private readonly Func<string, bool> _trySend;
@@ -306,6 +315,7 @@ namespace CF7Launcher.Tasks
 
             int fid = 0;
             string localError = null;
+            PendingRequest boundEntry = null;
             lock (_lock)
             {
                 if (_navigationLeaseToken != null)
@@ -351,6 +361,7 @@ namespace CF7Launcher.Tasks
                         fid = ++_seq;
                         _pending[fid] = entry;
                         _activeWebCallIds.Add(webCallId);
+                        boundEntry = entry;
                         if (isWrite)
                         {
                             _writeGate = WriteGateState.WritePending;
@@ -364,6 +375,13 @@ namespace CF7Launcher.Tasks
             {
                 RespondError(webCallId, cmd, ownerPanel, ownerPanelInstanceId, localError);
                 return;
+            }
+
+            // replayOnly 只能由 Host 在 Fresh|ReplayOnly 绑定后注入；Web 输入透传
+            // 会被 TryNormalizePayload 的 exact-keys 门拒绝，这里补的是 Host 决定。
+            if (boundEntry != null && boundEntry.WebCmd == "claimBatch")
+            {
+                normalizedPayload["replayOnly"] = boundEntry.BatchReplayOnly;
             }
 
             var timer = new Timer(delegate { HandleTimeout(fid); }, null, _timeoutMs, Timeout.Infinite);
@@ -501,6 +519,7 @@ namespace CF7Launcher.Tasks
                 case "checkoutCommit": action = "shopCheckoutCommit"; isWrite = true; return true;
                 case "checkout": action = "shopCheckout"; isWrite = true; return true;
                 case "claim": action = "shopClaim"; isWrite = true; return true;
+                case "claimBatch": action = "shopClaimBatch"; isWrite = true; return true;
                 default: action = null; return false;
             }
         }
@@ -560,15 +579,54 @@ namespace CF7Launcher.Tasks
             {
                 int index;
                 string token = input.Value<string>("expectedPurchasedToken");
+                string fingerprint = input.Value<string>("expectedRowFingerprint");
+                // 单项 claim wire v1：token+index+fingerprint 三重绑定 exact shape。
                 if (!HasOnlyRequestKeys(
-                        input, "purchasedIdx", "expectedPurchasedToken")
+                        input, "v", "purchasedIdx", "expectedPurchasedToken",
+                        "expectedRowFingerprint")
+                    || !HasExactInteger(input["v"], 1)
                     || !TryReadInteger(
                         input["purchasedIdx"], int.MinValue, int.MaxValue, out index)
                     || !IsStringToken(
                         input["expectedPurchasedToken"], 160, false)
-                    || !IsValidToken(token)) return false;
+                    || !IsValidToken(token)
+                    || !IsStringToken(input["expectedRowFingerprint"], 32, false)
+                    || !ValidRowFingerprint.IsMatch(fingerprint ?? "")) return false;
+                normalized["v"] = 1;
                 normalized["purchasedIdx"] = index;
                 normalized["expectedPurchasedToken"] = token;
+                normalized["expectedRowFingerprint"] = fingerprint;
+                return true;
+            }
+            if (cmd == "claimBatch")
+            {
+                string operationId = input.Value<string>("batchOperationId");
+                string batchToken = input.Value<string>("expectedPurchasedToken");
+                JArray rows = input["rows"] as JArray;
+                // replayOnly 不得来自 Web；Host 绑定后自行注入。
+                if (!HasOnlyRequestKeys(
+                        input, "v", "batchOperationId", "expectedPurchasedToken", "rows")
+                    || !HasExactInteger(input["v"], 1)
+                    || !IsStringToken(input["batchOperationId"], 96, false)
+                    || !ValidBatchOperationId.IsMatch(operationId ?? "")
+                    || !IsStringToken(input["expectedPurchasedToken"], 160, false)
+                    || !IsValidToken(batchToken)
+                    || rows == null || rows.Count < 1 || rows.Count > MAX_BATCH_ROWS)
+                    return false;
+                var cleanRows = new JArray();
+                var seenRows = new HashSet<string>(StringComparer.Ordinal);
+                foreach (JToken rowToken in rows)
+                {
+                    if (!IsStringToken(rowToken, 32, false)) return false;
+                    string fingerprint = rowToken.Value<string>();
+                    if (!ValidRowFingerprint.IsMatch(fingerprint)
+                        || !seenRows.Add(fingerprint)) return false;
+                    cleanRows.Add(fingerprint);
+                }
+                normalized["v"] = 1;
+                normalized["batchOperationId"] = operationId;
+                normalized["expectedPurchasedToken"] = batchToken;
+                normalized["rows"] = cleanRows;
                 return true;
             }
             return false;
@@ -715,10 +773,75 @@ namespace CF7Launcher.Tasks
                     error = "stale_state";
                     return false;
                 }
+                // wire v1 三重绑定：冻结 view 在该 index 的 fingerprint 必须 exact echo。
+                JObject claimView = _purchasedViewSnapshot[entry.ClaimIndex] as JObject;
+                string expectedFingerprint = entry.NormalizedPayload.Value<string>(
+                    "expectedRowFingerprint");
+                if (claimView == null
+                    || claimView.Value<string>("rowFingerprint") != expectedFingerprint)
+                {
+                    error = "stale_state";
+                    return false;
+                }
                 FreezePurchasedLocked(entry);
                 _checkoutAuthority = null;
                 return true;
             }
+            if (cmd == "claimBatch")
+            {
+                string batchToken = entry.NormalizedPayload.Value<string>(
+                    "expectedPurchasedToken");
+                JArray batchRows = entry.NormalizedPayload["rows"] as JArray;
+                // Host 没有当前 authority 时不下发写，先要求现有 bulk reconcile。
+                if (string.IsNullOrEmpty(_purchasedToken) || batchRows == null)
+                {
+                    error = "stale_state";
+                    return false;
+                }
+                // BatchBindMode = Fresh | ReplayOnly：fresh 要求 token 相等且全部
+                // fingerprint 在当前 Host view 唯一命中且顺序严格递增；否则只要
+                // Host 仍有当前 authority，就以 replayOnly:true 只读下发。
+                entry.BatchReplayOnly = true;
+                entry.BatchResolvedIndices = null;
+                int[] resolved;
+                if (batchToken == _purchasedToken
+                    && TryResolveBatchRowsLocked(batchRows, out resolved))
+                {
+                    entry.BatchReplayOnly = false;
+                    entry.BatchResolvedIndices = resolved;
+                }
+                FreezePurchasedLocked(entry);
+                _checkoutAuthority = null;
+                return true;
+            }
+            return true;
+        }
+
+        private bool TryResolveBatchRowsLocked(JArray rows, out int[] resolved)
+        {
+            resolved = null;
+            var indexByFingerprint = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int i = 0; i < _purchasedViewSnapshot.Count; i++)
+            {
+                JObject viewRow = _purchasedViewSnapshot[i] as JObject;
+                string fingerprint = viewRow != null
+                    ? viewRow.Value<string>("rowFingerprint") : null;
+                if (fingerprint == null || indexByFingerprint.ContainsKey(fingerprint))
+                    return false;
+                indexByFingerprint[fingerprint] = i;
+            }
+            var indices = new int[rows.Count];
+            int previous = -1;
+            for (int i = 0; i < rows.Count; i++)
+            {
+                int hit;
+                if (!indexByFingerprint.TryGetValue(
+                        rows[i].Value<string>(), out hit)
+                    || hit <= previous) return false;
+                indices[i] = hit;
+                previous = hit;
+            }
+            resolved = indices;
             return true;
         }
 
@@ -809,6 +932,9 @@ namespace CF7Launcher.Tasks
                 case "claim":
                     return TrySanitizeClaimSuccessLocked(
                         message, entry, out normalized);
+                case "claimBatch":
+                    return TrySanitizeClaimBatchSuccessLocked(
+                        message, entry, out normalized);
                 default:
                     return false;
             }
@@ -823,7 +949,7 @@ namespace CF7Launcher.Tasks
             string error = message.Value<string>("error");
             if (!IsStringToken(message["error"], 80, false)) return false;
             bool hasBalance = cmd == "checkout" && message.Property("balance") != null;
-            bool hasPurchasedToken = cmd == "claim"
+            bool hasPurchasedToken = (cmd == "claim" || cmd == "claimBatch")
                 && message.Property("purchasedToken") != null;
             if (hasBalance)
             {
@@ -1266,29 +1392,115 @@ namespace CF7Launcher.Tasks
             JArray purchased,
             JArray purchasedView)
         {
-            if (purchased.Count != entry.PurchasedBefore.Count - 1
-                || purchasedView.Count != entry.PurchasedViewBefore.Count - 1)
-                return false;
-            int outputIndex = 0;
-            for (int sourceIndex = 0;
-                sourceIndex < entry.PurchasedBefore.Count;
-                sourceIndex++)
+            var expectedRaw = DropPurchasedRawRows(
+                entry.PurchasedBefore, new HashSet<int> { entry.ClaimIndex });
+            var expectedView = RebasePurchasedView(
+                entry.PurchasedViewBefore, new HashSet<int> { entry.ClaimIndex });
+            return expectedView != null
+                && JToken.DeepEquals(purchased, expectedRaw)
+                && JToken.DeepEquals(purchasedView, expectedView);
+        }
+
+        private bool TrySanitizeClaimBatchSuccessLocked(
+            JObject message,
+            PendingRequest entry,
+            out JObject output)
+        {
+            output = null;
+            if (!HasExactKeys(message,
+                    "task", "callId", "success", "v", "batchOperationId",
+                    "policy", "replayed", "committedPurchasedToken", "resultRows",
+                    "purchased", "purchasedView", "purchasedToken", "catalog")
+                || !HasExactInteger(message["v"], 1)
+                || entry.PurchasedBefore == null
+                || entry.PurchasedViewBefore == null) return false;
+            string operationId = message.Value<string>("batchOperationId");
+            string policy = message.Value<string>("policy");
+            string committedToken = message.Value<string>("committedPurchasedToken");
+            string token = message.Value<string>("purchasedToken");
+            bool replayed;
+            JArray resultRows = message["resultRows"] as JArray;
+            JArray requestedRows = entry.NormalizedPayload["rows"] as JArray;
+            JArray catalog;
+            Dictionary<int, JObject> catalogByIndex;
+            JArray purchased;
+            JArray purchasedView;
+            if (!IsStringToken(message["batchOperationId"], 96, false)
+                || operationId != entry.NormalizedPayload.Value<string>("batchOperationId")
+                || !HasExactString(message["policy"], "atomic")
+                || !TryReadBoolean(message["replayed"], out replayed)
+                || !IsStringToken(
+                    message["committedPurchasedToken"], 160, false)
+                || !IsValidToken(committedToken)
+                || resultRows == null || requestedRows == null
+                || resultRows.Count != requestedRows.Count
+                || !TrySanitizeCatalog(
+                    message["catalog"] as JArray, out catalog, out catalogByIndex)
+                || !TrySanitizePurchased(
+                    message["purchased"] as JArray,
+                    message["purchasedView"] as JArray,
+                    out purchased,
+                    out purchasedView)
+                || !IsStringToken(message["purchasedToken"], 160, false)
+                || !IsValidToken(token)) return false;
+            // resultRows 长度、顺序、fingerprint 必须与请求 exact 相同；atomic
+            // 成功唯一合法 status 是 claimed。
+            for (int i = 0; i < resultRows.Count; i++)
             {
-                if (sourceIndex == entry.ClaimIndex) continue;
-                if (!JToken.DeepEquals(
-                        purchased[outputIndex], entry.PurchasedBefore[sourceIndex]))
-                    return false;
-                JObject actualView = purchasedView[outputIndex] as JObject;
-                JObject oldView = entry.PurchasedViewBefore[sourceIndex] as JObject;
-                if (actualView == null || oldView == null
-                    || actualView.Value<int>("purchasedIdx") != outputIndex
-                    || actualView.Value<string>("item") != oldView.Value<string>("item")
-                    || actualView.Value<string>("displayname") != oldView.Value<string>("displayname")
-                    || actualView.Value<string>("icon") != oldView.Value<string>("icon")
-                    || actualView.Value<int>("quantity") != oldView.Value<int>("quantity"))
-                    return false;
-                outputIndex++;
+                JObject resultRow = resultRows[i] as JObject;
+                if (!HasExactKeys(resultRow, "rowFingerprint", "status")
+                    || !HasExactString(resultRow["status"], "claimed")
+                    || resultRow.Value<string>("rowFingerprint")
+                        != requestedRows[i].Value<string>()) return false;
             }
+            string requestToken = entry.NormalizedPayload.Value<string>(
+                "expectedPurchasedToken");
+            if (!entry.BatchReplayOnly)
+            {
+                // fresh 证明：replayed=false；终态 token 改变且
+                // committedPurchasedToken == purchasedToken；用冻结 raw/view
+                // 删除请求行并 rebase ordinal 后逐字段一致。
+                if (replayed
+                    || committedToken != token
+                    || token == requestToken
+                    || entry.BatchResolvedIndices == null) return false;
+                var dropSet = new HashSet<int>(entry.BatchResolvedIndices);
+                var expectedRaw = DropPurchasedRawRows(entry.PurchasedBefore, dropSet);
+                var expectedView = RebasePurchasedView(
+                    entry.PurchasedViewBefore, dropSet);
+                if (expectedView == null
+                    || !JToken.DeepEquals(purchased, expectedRaw)
+                    || !JToken.DeepEquals(purchasedView, expectedView)) return false;
+                _catalogByIndex = catalogByIndex;
+                _purchasedSnapshot = purchased;
+                _purchasedViewSnapshot = purchasedView;
+                _purchasedToken = token;
+                _checkoutAuthority = null;
+            }
+            else
+            {
+                // replay 证明：返回的当前 raw/view/token 必须与下发 replay-only
+                // 前冻结的当前 authority 完全不变（该请求没有再次写）；
+                // committedPurchasedToken 合法，但允许不同于当前 token。
+                if (!replayed
+                    || token != entry.PurchasedTokenBefore
+                    || !JToken.DeepEquals(purchased, entry.PurchasedBefore)
+                    || !JToken.DeepEquals(purchasedView, entry.PurchasedViewBefore))
+                    return false;
+            }
+            output = new JObject
+            {
+                ["success"] = true,
+                ["v"] = 1,
+                ["batchOperationId"] = operationId,
+                ["policy"] = "atomic",
+                ["replayed"] = replayed,
+                ["committedPurchasedToken"] = committedToken,
+                ["resultRows"] = resultRows.DeepClone(),
+                ["purchased"] = (JArray)purchasedView.DeepClone(),
+                ["purchasedToken"] = token,
+                ["catalog"] = catalog
+            };
             return true;
         }
 
@@ -1453,6 +1665,11 @@ namespace CF7Launcher.Tasks
                 || legacy.Count > 10000) return false;
             var legacyOut = new JArray();
             var viewOut = new JArray();
+            // §4.3 raw↔view crosscheck：相同 raw 五元组必须同 digest base；
+            // 相同 digest base 不得对应不同 raw；ordinal 从 0 连续递增。
+            var digestRaw = new Dictionary<string, JArray>(StringComparer.Ordinal);
+            var tupleDigest = new Dictionary<string, string>(StringComparer.Ordinal);
+            var digestOrdinal = new Dictionary<string, int>(StringComparer.Ordinal);
             for (int i = 0; i < legacy.Count; i++)
             {
                 JArray row = legacy[i] as JArray;
@@ -1461,6 +1678,10 @@ namespace CF7Launcher.Tasks
                 double price;
                 int purchasedIndex;
                 int projectedQuantity;
+                string fingerprint = item != null
+                    ? item.Value<string>("rowFingerprint") : null;
+                Match fingerprintMatch = fingerprint == null
+                    ? Match.Empty : ValidRowFingerprint.Match(fingerprint);
                 if (row == null || row.Count != 5
                     || !IsStringToken(row[0], 128, false)
                     || !IsIdentityToken(row[1], 128)
@@ -1468,7 +1689,8 @@ namespace CF7Launcher.Tasks
                     || !TryReadNonNegativeNumber(row[3], out price)
                     || !TryReadInteger(row[4], 1, int.MaxValue, out quantity)
                     || !HasExactKeys(item,
-                        "purchasedIdx", "item", "displayname", "icon", "quantity")
+                        "purchasedIdx", "item", "displayname", "icon", "quantity",
+                        "rowFingerprint")
                     || !TryReadInteger(
                         item["purchasedIdx"], 0, 9999, out purchasedIndex)
                     || purchasedIndex != i
@@ -1478,22 +1700,92 @@ namespace CF7Launcher.Tasks
                     || !TryReadInteger(
                         item["quantity"], 1, int.MaxValue, out projectedQuantity)
                     || item.Value<string>("item") != row[1].Value<string>()
-                    || projectedQuantity != quantity) return false;
-                legacyOut.Add(new JArray(
+                    || projectedQuantity != quantity
+                    || !fingerprintMatch.Success) return false;
+                var normalizedRow = new JArray(
                     row[0].Value<string>(), row[1].Value<string>(),
-                    row[2].Value<string>(), price, quantity));
+                    row[2].Value<string>(), price, quantity);
+                string digest = fingerprintMatch.Groups[1].Value;
+                int ordinal = int.Parse(
+                    fingerprintMatch.Groups[2].Value,
+                    System.Globalization.CultureInfo.InvariantCulture);
+                string tupleKey = normalizedRow.ToString(Formatting.None);
+                string knownDigest;
+                if (tupleDigest.TryGetValue(tupleKey, out knownDigest)
+                    && knownDigest != digest) return false;
+                tupleDigest[tupleKey] = digest;
+                JArray knownRaw;
+                if (digestRaw.TryGetValue(digest, out knownRaw)
+                    && !JToken.DeepEquals(knownRaw, normalizedRow)) return false;
+                digestRaw[digest] = normalizedRow;
+                int expectedOrdinal;
+                digestOrdinal.TryGetValue(digest, out expectedOrdinal);
+                if (ordinal != expectedOrdinal) return false;
+                digestOrdinal[digest] = expectedOrdinal + 1;
+                legacyOut.Add(normalizedRow);
                 viewOut.Add(new JObject
                 {
                     ["purchasedIdx"] = purchasedIndex,
                     ["item"] = item.Value<string>("item"),
                     ["displayname"] = item.Value<string>("displayname"),
                     ["icon"] = item.Value<string>("icon"),
-                    ["quantity"] = projectedQuantity
+                    ["quantity"] = projectedQuantity,
+                    ["rowFingerprint"] = fingerprint
                 });
             }
             cleanLegacy = legacyOut;
             cleanView = viewOut;
             return true;
+        }
+
+        /// <summary>
+        /// 删除指定行后重排 purchasedIdx，并按 digest base 组重算 occurrenceOrdinal；
+        /// 与 AS2 新 token epoch 的 snapshot 重投影语义一致。Host 只解析 fingerprint
+        /// 词法，绝不重算 tuple hash。
+        /// </summary>
+        private static JArray RebasePurchasedView(
+            JArray viewBefore,
+            ISet<int> dropIndices)
+        {
+            var ordinalByDigest = new Dictionary<string, int>(StringComparer.Ordinal);
+            var result = new JArray();
+            for (int i = 0; i < viewBefore.Count; i++)
+            {
+                if (dropIndices != null && dropIndices.Contains(i)) continue;
+                JObject item = viewBefore[i] as JObject;
+                if (item == null) return null;
+                string fingerprint = item.Value<string>("rowFingerprint");
+                Match match = fingerprint == null
+                    ? Match.Empty : ValidRowFingerprint.Match(fingerprint);
+                if (!match.Success) return null;
+                string digest = match.Groups[1].Value;
+                int ordinal;
+                ordinalByDigest.TryGetValue(digest, out ordinal);
+                ordinalByDigest[digest] = ordinal + 1;
+                result.Add(new JObject
+                {
+                    ["purchasedIdx"] = result.Count,
+                    ["item"] = item.Value<string>("item"),
+                    ["displayname"] = item.Value<string>("displayname"),
+                    ["icon"] = item.Value<string>("icon"),
+                    ["quantity"] = item.Value<int>("quantity"),
+                    ["rowFingerprint"] = "kpr1." + digest + "." + ordinal
+                });
+            }
+            return result;
+        }
+
+        private static JArray DropPurchasedRawRows(
+            JArray rawBefore,
+            ISet<int> dropIndices)
+        {
+            var result = new JArray();
+            for (int i = 0; i < rawBefore.Count; i++)
+            {
+                if (dropIndices != null && dropIndices.Contains(i)) continue;
+                result.Add(rawBefore[i].DeepClone());
+            }
+            return result;
         }
 
         private static bool TrySanitizeCheckoutLines(
@@ -1760,7 +2052,18 @@ namespace CF7Launcher.Tasks
                     || error == "inventory_full"
                     || error == "destination_full"
                     || error == "acquire_failed"
-                    || error == "stale_state";
+                    || error == "stale_state"
+                    || error == "unsupported_version";
+            }
+            if (cmd == "claimBatch")
+            {
+                return IsOneOf(error,
+                    "unsupported_version", "invalid_payload", "invalid_operation_id",
+                    "stale_state", "unknown_row", "row_duplicate",
+                    "row_order_invalid", "purchased_identity_collision",
+                    "inventory_full", "destination_full", "acquire_failed",
+                    "operation_conflict", "batch_receipt_ledger_full",
+                    "batch_lane_quarantined");
             }
             return false;
         }

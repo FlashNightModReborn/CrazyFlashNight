@@ -241,7 +241,8 @@
         { "cmd": "checkoutPreview", "action": "shopCheckoutPreview", "capability": "transaction", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "checkoutCommit", "action": "shopCheckoutCommit", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
         { "cmd": "checkout", "action": "shopCheckout", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
-        { "cmd": "claim", "action": "shopClaim", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
+        { "cmd": "claim", "action": "shopClaim", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
+        { "cmd": "claimBatch", "action": "shopClaimBatch", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
       ],
       "numericFields": [
         {

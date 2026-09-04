@@ -29,7 +29,7 @@ const KSHOP_VIEWS_SOURCE = path.join(WEB_ROOT, 'modules', 'kshop-views.js');
 const KSHOP_MODULE_SOURCES = [
     'kshop-cart-controller.js', 'kshop-catalog-presenter.js',
     'kshop-owned-inventory-presenter.js', 'kshop-tooltip-presenter.js',
-    'kshop-procurement-navigation.js'
+    'kshop-procurement-navigation.js', 'kshop-claim-batch.js'
 ].map(name => path.join(WEB_ROOT, 'modules', name));
 const NPCSHOP_SECONDARY_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop-secondary-pages.js');
 const NPCSHOP_MATERIAL_NAVIGATION_SOURCE = path.join(WEB_ROOT, 'modules', 'npcshop-material-navigation.js');

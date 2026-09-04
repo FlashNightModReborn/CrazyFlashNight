@@ -145,6 +145,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 <script src="modules/kshop-owned-inventory-presenter.js"></script>
 <script src="modules/kshop-tooltip-presenter.js"></script>
 <script src="modules/kshop-procurement-navigation.js"></script>
+<script src="modules/kshop-claim-batch.js"></script>
 <script src="modules/kshop.js"></script>
 <script src="modules/inventory-workbench-navigation.js"></script>
 <script src="modules/inventory-workbench-header.js"></script>
@@ -177,12 +178,31 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             return clean;
         });
     }
+    // wire v1：fixture 行指纹与生产投影同构——digest 稳定绑定五元组，
+    // ordinal 按当前行序从 0 连续；splice 后重投影自然完成 epoch rebase。
+    function fixtureTupleDigest(row) {
+        var text=[String(row[0]),String(row[1]),String(row[2]),String(Number(row[3])),String(Number(row[4]))].join('');
+        function lane(seed) {
+            var h=2166136261^seed;
+            for (var i=0;i<text.length;i++) {
+                h=h^text.charCodeAt(i);
+                h=(h+(h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24))|0;
+            }
+            return ('0000000'+(h>>>0).toString(16)).slice(-8);
+        }
+        return lane(0x41)+lane(0x42);
+    }
     function strictKShopPurchased(value, catalog) {
+        var ordinals={};
         return (value || []).map(function(row,index) {
             var itemName=String(row[1]);
             var item=(catalog || []).find(function(entry){return entry.item===itemName;});
+            var digest=fixtureTupleDigest(row);
+            var ordinal=ordinals[digest]||0;
+            ordinals[digest]=ordinal+1;
             return {purchasedIdx:index,item:itemName,displayname:String(item.displayname),
-                icon:String(item.icon),quantity:Number(row[4])};
+                icon:String(item.icon),quantity:Number(row[4]),
+                rowFingerprint:'kpr1.'+digest+'.'+ordinal};
         });
     }
     function strictKShopCartSnapshot(value, catalog) {
