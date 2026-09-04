@@ -125,4 +125,4 @@ F1′: [A+P0]→[C0+P1]→[C1+P2]→…→[C(N-1)+T]          = N+1（每 child 
 - **R3b(reader-first)**:mydata.ext.saveClock{schema,incarnation,revision,writer}，内层权威外层速拒；equal revision 内容不同 → fail closed;revision 允许空洞；reset 必须保留 retirement/epoch;reader 先识别 legacy+clock 再开 emitter 再开 enforcement,`lastSaved` 降级为展示/legacy fallback。
 - **R4 否决的硬理由**:`hasPendingChanges()` 本身漏 `_settingsMigrationPending` 与 KeyManager;40+ setter 不能证明覆盖；`_doSaveAll()` 承担未必标脏的派生同步；SceneChanged 是刻意无条件安全网。未来只许另建 `requestSaveIfDirty()`/section-dirty 体系，不得改 `flushDurableNow` 定义。
 - **回归门要点**：八分桶保持兼容；新增 `_saveApiStats`(ingress/disposition/origin/strict outcome/flush lane/reason 注册表）；防语义偷换三门（clean strict 必 +1 物理、request 返回 Void 静态禁读值、frozen durable 文件禁现 request API);XFL 四层门（manifest/XML exact scanner/CS6 发布/FFDec+旅程 reason trace)。
-- **22 项明确否决**见回执 §八；R1 与 R3b 不得同补丁同开关；K店 batch 语义（专项 A③④⑤ 与礼包 openMany）作为下一轮裁决输入，已备 `tmp/kshop-batch-adjudication-input-20260904.md`。
+- **22 项明确否决**见回执 §八；恢复会话与后续施工统一从 [交接手册](交接-存盘风暴后路线与恢复指引-2026-09-04.md) 进入；R1 与 R3b 不得同补丁同开关；K店 batch 语义（专项 A③④⑤ 与礼包 openMany）作为下一轮裁决输入，已备 `tmp/kshop-batch-adjudication-input-20260904.md`。
