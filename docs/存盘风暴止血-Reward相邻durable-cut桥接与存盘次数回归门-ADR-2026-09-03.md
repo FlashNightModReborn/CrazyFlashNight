@@ -34,7 +34,7 @@
 - **基准病理（探针实测）**：奖励 claim root 车道 `claimBatch` 全量存盘次数 = **2N+1**(N=2/10/20 → 5/21/41)。机制：`RewardInboxService.advanceActiveRoot` 每条目两处 `persistRootProgress`(prepare :674、applied :730 → :789-798 各一次 `flushSave`)+ admission(A+P0)1 次 + finalize/terminal 1 次。**注意**:`LootClaimCommitCoordinator` 自身无 flush(GPT Pro 纠正）。
 - **附加 O(N²)**:`collectRootRemaining`(:981-989）每条目 N×全账簿扫描；每条目 `ObjectUtil.clone(root)`(:667/:680/:716)。
 - **同型循环放大源共 4 处**（审计3 全文）：奖励 root 车道（2N+1)、**标准 loot 逐格 claim**(`LootContainerService.as:2115-2121` 每格 `flushSaveVerified`,N 格 N 次）、K 店逐项 claim（一项一命令，N 次）、连开礼包(`ItemUseService.as:143`,N 包 N 次）。
-- **SaveManager 三结构结论**:①`强制存盘`=flushNow 立即全量、全游戏无合并（`SaveManager.as:447-478`);②带 300ms debounce 的 saveAll 仅 2 个生产调用点（商城关闭/购物车）;③dirtyMark 从不触发存盘，用药/拾取/合成/成就/战宠/佣兵/任务/Inventory 写全部 0 次/动作（战斗中捡钱不是风暴源）。
+- **SaveManager 三结构结论**:①`强制存盘`=flushNow 立即全量、全游戏无合并（`SaveManager.as:447-478`);②~~带 300ms debounce 的 saveAll 仅 2 个生产调用点~~ **勘误（2026-09-04，裁决包复核）**:`scripts/` 层仅 2 处（商城关闭/购物车），但 XFL 帧脚本层另有 13 处生产调用点（3 处 dirtyMark 守卫：淡出 frame16、新版物品栏/仓库关闭；10 处无条件），合计 15 处，详见 `tmp/adjudication-savemanager-api-20260904/callsites.md`;③dirtyMark 从不触发存盘，用药/拾取/合成/成就/战宠/佣兵/任务/Inventory 写全部 0 次/动作（战斗中捡钱不是风暴源）。
 - **物理放大**：一次逻辑存盘 ≈ AMF0+JSON 两次全量序列化 + ≥2 份磁盘产物（SOL+shadow)。
 - **崩溃归因（保留）**：存盘风暴是确定性性能缺陷与高可信崩溃放大器，但证据不足以宣称它是两次 0xC0000005 的唯一根因（300/300 只排除压力脚本下确定性死循环）。
 
@@ -113,8 +113,16 @@ F1′: [A+P0]→[C0+P1]→[C1+P2]→…→[C(N-1)+T]          = N+1（每 child 
 - 崩溃证据包:`logs/dumps/crash-20260903-191857/`(+README)、`crash-20260903-194839/`；若再崩溃,full dump 落 `logs\dumps\wer`。
 - GPT Pro 裁决包（含提示词模板）:`tmp/adjudication-save-storm-20260903/`（zip 同目录）。
 
-## 6. 后续路线
+## 6. 后续路线（2026-09-04 第二次 GPT Pro 裁决已落地）
 
-1. 本 ADR §4 Commit 0-5 顺序施工（K 店/礼包按专项 A/B 另行点名）。
-2. **SaveManager API 分层**(markDirty/requestSave/flushDurableNow/flushBeforeTransition + 逐调用点迁移 + shadow 合并的 latest-wins 审计）：完成 Commit 1-4 后，用 GPT Pro 做第二次路线裁决（参考 §3.2 F4 的否决理由作为输入）。
-3. 崩溃复核：修复落地后若仍有 hang→crash,full dump 分析定原生层根因（GC/JIT/Host 交互），届时单独立项。
+裁决回执：`tmp/adjudication-savemanager-api-20260904/gptpro.txt`(877 行，唯一权威；本节只是路由摘要）。
+
+**总决：R1 与 R3 分两条发布列车。R1 四层 API 分层采纳、19 步分片施工；R3 shadow 拆 R3a（无 schema 有序化止血）+ R3b(reader-first 持久化 incarnation+revision);R2 原案否决只吸收安全子集；R4 全局 dirty 早退明确否决。**
+
+- **R1 四层 API**:`markDirty()`(Void，置位不是存盘请求）/`requestSave(reason)`(Void,300ms trailing 单 timer,reason 注册表）/`flushDurableNow(reason)`(Boolean,strict 不合并不早退，true 仍只代表 SOL flush true)/`flushBeforeTransition(reason)`(Boolean，可阻止 transition 的 barrier，与 durable 同核不同 ingress/allowlist/测试）。新旧 public 入口各自进同一私有内核、**不得 public 级联**(ingress 双计数）；旧 shim 至少跨一个完整发布周期。
+- **19 步施工清单**（回执 §九为唯一工序表）:0 基线 manifest → 1 canonical dirty(`hasPendingChanges()` 补 `_settingsMigrationPending`+KeyManager，接通 3 处悬空 `存档系统.markDirty()`)→ 2 四层 API → 3 scheduler 正确性（in-flight 重挂、strict 重入不删 pending、callback 异常不逃逸 wheel)→ 4 `_saveApiStats` 语义桶（八分桶不动）→ **5 SafeExit 真序列门（现存缺口：Arm 后未记 sv:1，任意 sv:2 可提前授权退出，独立 C# 修复）** → 6 D1/D2（等 K店 A① WIP 定型）→ 7 B3/B4/B5 → 8 A1/A6/B2 → 9 A4/A5/A3(A3 后迁）→ 10 A2 Reward 最后迁（八 cut/N+1/两层计数全冻结）→ 11 B1 SceneChanged 单独迁（无条件、deactivateAll 前）→ 12 XFL E1-E13 → 13 XFL C1-C5（主/live 双份 parity)→ 14 C6（未证 dead 不删、不偷并双写）→ 15 R3a → 16/17 R3b reader-first → 18 legacy 收尾。
+- **R3a（可独立提前止血）**:archive 同槽操作单 FIFO executor;tombstone 检查/版本检查/写入/accepted-state 同一临界区；普通 shadow/seed/userEdit 不得清 tombstone，只有显式 recreate 换代；`_prevSnapshots` 只在写入成功且接受后更新。
+- **R3b(reader-first)**:mydata.ext.saveClock{schema,incarnation,revision,writer}，内层权威外层速拒；equal revision 内容不同 → fail closed;revision 允许空洞；reset 必须保留 retirement/epoch;reader 先识别 legacy+clock 再开 emitter 再开 enforcement,`lastSaved` 降级为展示/legacy fallback。
+- **R4 否决的硬理由**:`hasPendingChanges()` 本身漏 `_settingsMigrationPending` 与 KeyManager;40+ setter 不能证明覆盖；`_doSaveAll()` 承担未必标脏的派生同步；SceneChanged 是刻意无条件安全网。未来只许另建 `requestSaveIfDirty()`/section-dirty 体系，不得改 `flushDurableNow` 定义。
+- **回归门要点**：八分桶保持兼容；新增 `_saveApiStats`(ingress/disposition/origin/strict outcome/flush lane/reason 注册表）；防语义偷换三门（clean strict 必 +1 物理、request 返回 Void 静态禁读值、frozen durable 文件禁现 request API);XFL 四层门（manifest/XML exact scanner/CS6 发布/FFDec+旅程 reason trace)。
+- **22 项明确否决**见回执 §八；R1 与 R3b 不得同补丁同开关；K店 batch 语义（专项 A③④⑤ 与礼包 openMany）作为下一轮裁决输入，已备 `tmp/kshop-batch-adjudication-input-20260904.md`。
