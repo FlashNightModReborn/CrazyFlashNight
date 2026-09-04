@@ -103,7 +103,7 @@ F1′: [A+P0]→[C0+P1]→[C1+P2]→…→[C(N-1)+T]          = N+1（每 child 
 
 - **专项 A(K 店，独立立项）**:batch 前先裁决修正 ①`PlayerAssetTransaction.commit` strong-save false 时命令 finality（现只记 `strongSaveFlushed=false` 仍发 receipt、shopClaim 仍 `claimSucceeded=true`,PlayerAssetTransaction.as:223-236)②purchased row 稳定 identity vs 可变 purchasedIdx ③batch operationId/冻结列表/exact result 证明 ④unknown response reconcile ⑤batch partial failure 政策。未完成前只允许 UI 单飞/cooldown。
 - **专项 B（礼包 openMany，独立立项）**：先裁决产品语义——多包一个原子 command（则批尾一次 full save）还是保留每包 durable prefix（则需 root journal/mini-WAL)。不得靠 debounce。
-- **发布门**:648/648 基线全绿 ✅ + save-count 门全绿 ✅ + semantic fault-cut 全绿 ✅ + pending 无 mixed-cut 投影 ✅ + Reward happy path N+1 ✅ + 无 bridge true 前执行下一 child ✅(fault 切面 4/5 实证）+ root save/terminal ACK/shadow 分桶监控 ✅(Commit 0 两层计数）+ 弱机实测连续阻塞明显下降（**待测试员现场复验**,asLoader 已重发）。
+- **发布门**:648/648 基线全绿 ✅ + save-count 门全绿 ✅ + semantic fault-cut 全绿 ✅ + pending 无 mixed-cut 投影 ✅ + Reward happy path N+1 ✅ + 无 bridge true 前执行下一 child ✅(fault 切面 4/5 实证）+ root save/terminal ACK/shadow 分桶监控 ✅(Commit 0 两层计数）+ 弱机实测连续阻塞明显下降 ✅(2026-09-04 测试员现场复验：大量开箱无崩溃、耗时显著降低)。
 
 ## 5. 工程与收尾清单（勿忘）
 
