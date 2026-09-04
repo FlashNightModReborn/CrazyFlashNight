@@ -139,6 +139,7 @@ var REQUIRED_FILES = [
     'launcher/web/modules/character-build/character-build-item-use-channel.js',
     'launcher/web/modules/character-build/character-build-candidate-channel.js',
     'launcher/web/modules/character-build-session.js',
+    'launcher/web/modules/character-build/character-build-item-use-openmany-view.js',
     'launcher/web/modules/character-build-view.js',
     'launcher/web/modules/character-build.js',
     'launcher/web/modules/inventory-ui.js',
@@ -907,6 +908,8 @@ var moduleThresholds = {
     'launcher/web/modules/character-build/character-build-item-use-channel.js':260,
     'launcher/web/modules/character-build/character-build-candidate-channel.js':360,
     'launcher/web/modules/character-build-session.js':740,
+    // openMany 按钮生命周期拆出：view 回落至 760 阈值内，本模块只承载按钮同步/构造。
+    'launcher/web/modules/character-build/character-build-item-use-openmany-view.js':100,
     'launcher/web/modules/character-build-view.js':760,
     // 控制器仅保留 item-use 组合/锁态 seam，协议与换面编排均已拆分。
     'launcher/web/modules/character-build.js':640,
@@ -1161,6 +1164,7 @@ if (exists(registryRel)) {
         'modules/loadout-picker/loadout-picker-candidate-drag.js',
         'modules/loadout-picker/loadout-picker-candidate-pane.js',
         'modules/loadout-picker/loadout-picker.js',
+        'modules/character-build/character-build-item-use-openmany-view.js',
         'modules/character-build-view.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',

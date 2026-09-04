@@ -25,9 +25,12 @@
     var loadoutPresenter = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-loadout-presenter.js')
         : root && root.CharacterBuildLoadoutPresenter;
+    var openManyView = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-item-use-openmany-view.js')
+        : root && root.CharacterBuildItemUseOpenManyView;
     var api = factory(
         focus, components, facetCounts,
-        stats, preview, template, loadoutPresenter, loadoutPicker);
+        stats, preview, template, loadoutPresenter, loadoutPicker, openManyView);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -37,7 +40,7 @@
 })(typeof window !== 'undefined' ? window : globalThis,
 function(WorkbenchFocus, WorkbenchComponents,
         FacetCountsModule, StatsViewModule, DollPreviewModule, TemplateModule,
-        LoadoutPresenterModule, LoadoutPickerModule) {
+        LoadoutPresenterModule, LoadoutPickerModule, OpenManyViewModule) {
     'use strict';
     if (!WorkbenchFocus || typeof WorkbenchFocus.RovingGridFocus !== 'function') {
         throw new Error('character-build-view.js requires RovingGridFocus');
@@ -65,6 +68,10 @@ function(WorkbenchFocus, WorkbenchComponents,
     if (!LoadoutPickerModule || typeof LoadoutPickerModule.install !== 'function'
             || typeof LoadoutPickerModule.initState !== 'function') {
         throw new Error('character-build-view.js requires LoadoutPicker');
+    if (!OpenManyViewModule || typeof OpenManyViewModule.syncButton !== 'function'
+            || typeof OpenManyViewModule.tryUse !== 'function') {
+        throw new Error('character-build-view.js requires CharacterBuildItemUseOpenManyView');
+    }
     }
 
     var ARMOR_SLOTS = TemplateModule.armorSlots, WEAPON_SLOTS = TemplateModule.weaponSlots,
@@ -353,7 +360,7 @@ function(WorkbenchFocus, WorkbenchComponents,
             if (!button || button.disabled) return;
             var action = button.getAttribute('data-build-action');
             if (action === 'use') self._tryUseCandidate(self._selectedUseCandidate);
-            else if (action === 'useMany') self._tryUseCandidateMany(self._selectedUseCandidate);
+            else if (action === 'useMany') OpenManyViewModule.tryUse(self, self._selectedUseCandidate);
             else if (action === 'inbox') self._onOpenInbox();
         });
         listen(this._listeners, this.root, 'keydown', function(event) {
@@ -411,39 +418,6 @@ function(WorkbenchFocus, WorkbenchComponents,
         return this._onUseCandidate(candidate) !== false;
     };
 
-    /** 礼包数量 ≥2 时的批量打开入口；count 冻结为 min(数量, 64)。 */
-    CharacterBuildView.prototype._openManyQuantity = function(candidate, action) {
-        if (!candidate || !action || String(action.command || '') !== 'open') return 0;
-        var raw = candidate.raw || {};
-        var presentation = candidate.presentation || {};
-        var quantity = Number(raw.quantity != null
-            ? raw.quantity : presentation.quantity);
-        if (!isFinite(quantity) || Math.floor(quantity) !== quantity
-                || quantity < 2) return 0;
-        return Math.min(quantity, 64);
-    };
-
-    CharacterBuildView.prototype._tryUseCandidateMany = function(candidate) {
-        if (!candidate || !candidate.useAction) return false;
-        if (candidate.useBlockedReason) {
-            this._showStatusNotice('blocked', candidate.useBlockedReason);
-            return false;
-        }
-        if (this._itemUseState !== 'idle'
-                && this._itemUseState !== 'needs_reconcile') return false;
-        var count = this._openManyQuantity(candidate, candidate.useAction);
-        if (count < 2) return false;
-        var manyCandidate = {};
-        for (var key in candidate) {
-            if (Object.prototype.hasOwnProperty.call(candidate, key)) {
-                manyCandidate[key] = candidate[key];
-            }
-        }
-        manyCandidate.useAction = {command:'openMany',
-            label:'全部打开×' + count, count:count};
-        return this._onUseCandidate(manyCandidate) !== false;
-    };
-
     CharacterBuildView.prototype._syncItemUseActions = function() {
         if (!this._useButton || !this._inboxButton) return false;
         var candidate = this._selectedUseCandidate;
@@ -479,21 +453,10 @@ function(WorkbenchFocus, WorkbenchComponents,
                     ? pendingLabel.replace(/…$/, '') + String(candidate && candidate.name || '所选物品')
                 : action ? String(action.label || '使用') + String(candidate.name || '所选物品')
                     : '使用所选物品');
-        var manyQuantity = this._openManyQuantity(candidate, action);
-        if (this._useManyButton) {
-            this._useManyButton.hidden = manyQuantity < 2;
-            this._useManyButton.textContent = reconciling ? '重新确认'
-                : submitting || confirming ? pendingLabel
-                : '全部打开×' + manyQuantity;
-            this._useManyButton.disabled = manyQuantity < 2
-                || !!candidate.useBlockedReason
-                || (this._itemUseState !== 'idle' && !reconciling)
-                || (this._interactionState !== 'idle' && !reconciling);
-            this._useManyButton.setAttribute('aria-label', manyQuantity < 2
-                ? '打开全部所选礼包'
-                : '全部打开' + manyQuantity + ' 个'
-                    + String(candidate && candidate.name || '所选礼包'));
-        }
+        OpenManyViewModule.syncButton(this, {
+            candidate:candidate, action:action, reconciling:reconciling,
+            submitting:submitting, confirming:confirming, pendingLabel:pendingLabel
+        });
         if (candidate && candidate.useBlockedReason) {
             this._useButton.setAttribute('title', candidate.useBlockedReason);
         } else this._useButton.removeAttribute('title');

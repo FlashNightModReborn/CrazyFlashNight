@@ -47,18 +47,12 @@
         var raw = candidate && candidate.raw || {};
         var value = candidate && candidate.useAction || raw.useAction;
         var command = value && String(value.command || '');
-        if (command !== 'open' && command !== 'openMany' && command !== 'consume') return null;
-        var action = {
-            command:command,
-            label:String(value.label || (command === 'open' ? '打开'
-                : command === 'openMany' ? '全部打开' : '服用'))
-        };
-        if (command === 'openMany') {
-            // exact count 2..64 随 envelope 下发；1 继续走单包 open
-            var count = whole(value.count, 2, 64);
-            if (count === null) return null;
-            action.count = count;
-        }
+        // exact count 2..64 随 envelope 下发；1 继续走单包 open
+        var count = command === 'openMany' ? whole(value.count, 2, 64) : null;
+        if (command !== 'open' && command !== 'consume' && count === null) return null;
+        var action = {command:command, label:String(value.label
+            || (command === 'open' ? '打开' : command === 'openMany' ? '全部打开' : '服用'))};
+        if (count !== null) action.count = count;
         return action;
     }
     function exactSource(candidate) {
@@ -275,8 +269,7 @@
         }
         this._pending = null;
         this._state = 'idle';
-        if ((pending.command === 'open' || pending.command === 'openMany')
-                && response && response.success === true) {
+        if ((pending.command === 'open' || pending.command === 'openMany') && response && response.success === true) {
             this._acceptInbox(response);
         }
         this._emit(response && response.success === true

@@ -44,6 +44,7 @@
         'modules/loadout-picker/loadout-picker-candidate-drag.js',
         'modules/loadout-picker/loadout-picker-candidate-pane.js',
         'modules/loadout-picker/loadout-picker.js',
+        'modules/character-build/character-build-item-use-openmany-view.js',
         'modules/character-build-view.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',
