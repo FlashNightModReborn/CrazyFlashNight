@@ -18,6 +18,7 @@ namespace CF7Launcher.Tests.Guardian
     /// 5. button-level Down/Up 匹配：down idx=0 + up idx=1 → 不触发任何分发
     /// 6. s:0 → Disarm 完整复位
     /// 7. sv:3 只暴露取消/重试，第二按钮绝不派发 EXIT_CONFIRM
+    /// 8. Arm 后未见本轮 sv:1 的 sv:2（先前通用 requestSave 迟到的完成事件）不能置 Done、不能授权 EXIT_CONFIRM
     /// </summary>
     public class SafeExitPanelWidgetTests
     {
@@ -173,6 +174,70 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(w.IsDoneState);
         }
 
+        // ── 裁决 §5.6 机械门：Arm 后必须本轮 sv:1 → sv:2 才允许 Done / 授权退出 ──
+        [Fact]
+        public void Arm_ThenSv2WithoutSv1_DoesNotReachDoneOrAuthorizeExit()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            w.Arm();
+            Assert.False(w.SawSv1AfterArmForTest); // Arm 复位本轮 sv:1 见证位
+
+            // Host 已 Arm、AS2 safeExit 尚未开始（无本轮 sv:1）时直接来 sv:2
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
+
+            Assert.True(w.IsArmed);
+            Assert.True(w.IsSavingState); // 停留 Saving，不能提前 Done
+            Assert.False(w.IsDoneState);
+            router.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(0, cap.Exit); // 不可确认退出
+            Assert.True(w.IsArmed);    // 未消费，session 仍在
+        }
+
+        [Fact]
+        public void Arm_ThenSv1Sv2_AuthorizesExitConfirm()
+        {
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
+            Assert.True(w.SawSv1AfterArmForTest); // 本轮 sv:1 已见证
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
+
+            Assert.True(w.IsDoneState);
+            router.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(1, cap.Exit); // 可确认退出（exact-once 消费）
+            Assert.False(w.IsArmed);
+        }
+
+        [Fact]
+        public void Arm_ThenBackgroundSaveSv2_DoesNotAuthorizeExit_UntilRealSv1Sv2()
+        {
+            // 裁决 §5.6 目标场景：背景通用 requestSave 在 Arm 前已开始（其 sv:1 先于 Arm 推达），
+            // Arm 后该背景存盘的 sv:2 迟到完成——不得当作本轮 safeExit 的完成事件。
+            LauncherCommandRouter router; Capture cap;
+            SafeExitPanelWidget w = MakeWidget(out router, out cap);
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" }); // 背景存盘开始（未 Arm）
+            w.Arm(); // 玩家点 SAFEEXIT：复位 sawSv1AfterArm，背景 sv:1 不算本轮
+            Assert.False(w.SawSv1AfterArmForTest);
+
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" }); // 背景存盘迟到完成
+
+            Assert.True(w.IsArmed);
+            Assert.False(w.IsDoneState);
+            Assert.True(w.IsSavingState);
+            router.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(0, cap.Exit); // 不可确认退出
+
+            // 本轮 safeExit 真正的 sv:1 → sv:2 推达后，退出恢复正常（门不会锁死 session）
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
+            w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
+            Assert.True(w.IsDoneState);
+            router.Dispatch("EXIT_CONFIRM");
+            Assert.Equal(1, cap.Exit);
+            Assert.False(w.IsArmed);
+        }
+
         [Fact]
         public void FailedRetry_CanRepeatSv1ToSv3WithoutExiting()
         {
@@ -278,6 +343,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
 
             Assert.Equal(1, w.HitButtonForTest(203, 16, new System.Drawing.Rectangle(0, 0, 204, 32)));
@@ -289,6 +355,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
 
             Assert.Equal(5000, SafeExitPanelWidget.DoneAutoDismissMsForTest);
@@ -313,6 +380,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
 
             w.SetHoverForTest(1);
@@ -335,6 +403,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
             // 模拟：down + up 都命中 EXIT_CANCEL (idx 0)
             w.InternalDownIndex = 0;
@@ -358,6 +427,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
             w.InternalDownIndex = 1; // EXIT_CONFIRM
             SafeExitPanelWidget.ClickOutcome outcome = w.TryFireButtonClick(1);
@@ -423,6 +493,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
             // 玩家按住 EXIT_CANCEL（idx 0）拖到 EXIT_CONFIRM（idx 1）松开
             w.InternalDownIndex = 0;
@@ -438,6 +509,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
             w.InternalDownIndex = 1; // EXIT_CONFIRM
             SafeExitPanelWidget.ClickOutcome outcome = w.TryFireButtonClick(0); // 松开在 EXIT_CANCEL
@@ -452,6 +524,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
             // 按下不在 widget 内（_downIndex 默认 -1），松开命中 EXIT_CONFIRM
             SafeExitPanelWidget.ClickOutcome outcome = w.TryFireButtonClick(1);
@@ -468,6 +541,7 @@ namespace CF7Launcher.Tests.Guardian
             w.OnUiDataChanged(Snapshot("sv:3"), new HashSet<string> { "sv" });
             w.InternalDownIndex = 1;
 
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
 
             Assert.Equal(-1, w.InternalDownIndex);
@@ -484,6 +558,7 @@ namespace CF7Launcher.Tests.Guardian
             LauncherCommandRouter router; Capture cap;
             SafeExitPanelWidget w = MakeWidget(out router, out cap);
             w.Arm();
+            w.OnUiDataChanged(Snapshot("sv:1"), new HashSet<string> { "sv" });
             w.OnUiDataChanged(Snapshot("sv:2"), new HashSet<string> { "sv" });
             Assert.True(w.Visible);
             // 游戏切到未就绪

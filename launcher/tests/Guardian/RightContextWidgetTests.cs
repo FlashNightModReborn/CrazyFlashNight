@@ -301,6 +301,9 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(safeExit.SlotHitBoxActiveForTest);
 
             safeExit.OnUiDataChanged(
+                Snapshot("sv:1"),
+                new HashSet<string> { "sv" });
+            safeExit.OnUiDataChanged(
                 Snapshot("sv:2"),
                 new HashSet<string> { "sv" });
             safeExit.InternalDownIndex = 0;
@@ -764,6 +767,9 @@ namespace CF7Launcher.Tests.Guardian
 
                     // BoundsOrVisibilityChanged 的真实订阅把 transaction → notice 切回。
                     safeExit.OnUiDataChanged(
+                        Snapshot("sv:1"),
+                        new HashSet<string> { "sv" });
+                    safeExit.OnUiDataChanged(
                         Snapshot("sv:2"),
                         new HashSet<string> { "sv" });
                     safeExit.InternalDownIndex = 0;
@@ -880,6 +886,9 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.True(SlotHasVisiblePixels(safeExit, slot));
                 Assert.False(SlotHasVisiblePixels(right, slot));
 
+                safeExit.OnUiDataChanged(
+                    Snapshot("sv:1"),
+                    new HashSet<string> { "sv" });
                 safeExit.OnUiDataChanged(
                     Snapshot("sv:2"),
                     new HashSet<string> { "sv" });

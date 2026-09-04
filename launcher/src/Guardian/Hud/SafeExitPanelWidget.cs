@@ -43,6 +43,7 @@ namespace CF7Launcher.Guardian.Hud
         private volatile bool _gameReady;
         private volatile SaveState _state = SaveState.Idle;
         private volatile bool _armed;        // 仅由 SAFEEXIT click 路径置 true；通用 sv 推送不会显示面板
+        private volatile bool _sawSv1AfterArm; // Arm 后本轮是否已见 sv:1；sv:2 置 Done 的机械门（防背景存盘迟到完成事件提前授权退出）
         private volatile bool _dismissed;
         private volatile RightContextSlotOwner _slotOwner = RightContextSlotOwner.Hidden;
         private readonly object _exitAuthorizationGate =
@@ -90,11 +91,13 @@ namespace CF7Launcher.Guardian.Hud
 
         /// <summary>
         /// 由 LauncherCommandRouter SAFEEXIT case 调用：玩家显式点 SAFEEXIT 时进入"待存盘+待确认"状态。
-        /// 此后 sv:1 显示状态条，sv:2 显示按钮。复位条件：取消按钮 / s:0（游戏未就绪） / EXIT_CONFIRM 后。
+        /// 此后 sv:1 显示状态条，且只有本轮 sv:1 → sv:2 顺序推达才显示按钮（机械门见 _sawSv1AfterArm）。
+        /// 复位条件：取消按钮 / s:0（游戏未就绪） / EXIT_CONFIRM 后。
         /// </summary>
         public void Arm()
         {
             _armed = true;
+            _sawSv1AfterArm = false;
             _dismissed = false;
             _hoverIndex = -1;
             _downIndex = -1;
@@ -102,7 +105,8 @@ namespace CF7Launcher.Guardian.Hud
             // 无条件强制 Saving：sv 是通用存盘事件，普通自动存盘/商店关闭/升级会先把 unarmed widget 推到 Done。
             // 若不复位，玩家随后点 SAFEEXIT 时 Visible 看到旧 Done → 直接显示「取消/退出」按钮，
             // 早于本次 safeExit 真正的 sv:1/2，玩家可能在存盘还没完成时点退出（数据丢失风险）。
-            // 每次 Arm 都视作开新 session，重新等本轮 sv:1 → sv:2 推达。
+            // 每次 Arm 都视作开新 session（上面已复位 _sawSv1AfterArm），重新等本轮 sv:1 → sv:2 推达；
+            // Arm 后未见 sv:1 的 sv:2 会被 OnUiDataChanged 的门挡下，不能置 Done。
             _state = SaveState.Saving;
             FireBounds();
         }
@@ -156,6 +160,7 @@ namespace CF7Launcher.Guardian.Hud
 
         // ── 测试钩子（InternalsVisibleTo("Launcher.Tests")） ──
         internal bool IsArmed { get { return _armed; } }
+        internal bool SawSv1AfterArmForTest { get { return _sawSv1AfterArm; } }
         internal bool IsDismissed { get { return _dismissed; } }
         internal bool IsDoneState { get { return _state == SaveState.Done; } }
         internal bool IsSavingState { get { return _state == SaveState.Saving; } }
@@ -419,8 +424,19 @@ namespace CF7Launcher.Guardian.Hud
                 // 不在这里自动 _armed=true，否则普通存盘也会拉起面板（见 class doc）。
                 int sv = UiValueParser.ParseUiIntValue(piece, 0);
                 SaveState next = _state;
-                if (sv == 1) next = SaveState.Saving;
-                else if (sv == 2) next = SaveState.Done;
+                if (sv == 1)
+                {
+                    _sawSv1AfterArm = true;
+                    next = SaveState.Saving;
+                }
+                else if (sv == 2)
+                {
+                    // armed session 里只有本轮 sv:1 → sv:2 顺序推达才允许置 Done：
+                    // Arm 后尚未见过 sv:1 的 sv:2 是先前的通用 requestSave 迟到的完成事件，
+                    // 若照样置 Done 会在 AS2 safeExit 尚未开始执行时提前授权 EXIT_CONFIRM。
+                    // 未 armed 时保持旧的内部状态推进语义（面板不可见，Arm 会强制复位 Saving）。
+                    if (!_armed || _sawSv1AfterArm) next = SaveState.Done;
+                }
                 else if (sv == 3) next = SaveState.Failed;
                 else next = SaveState.Idle;
                 if (next != _state)
