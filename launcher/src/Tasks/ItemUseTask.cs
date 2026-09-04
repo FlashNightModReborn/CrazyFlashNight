@@ -69,6 +69,7 @@ namespace CF7Launcher.Tasks
                 "player_unavailable",
                 "no_available_lane",
                 "cooldown_unavailable",
+                "insufficient_quantity",
                 "operation_conflict",
                 "service_not_ready"
             };
@@ -334,8 +335,9 @@ namespace CF7Launcher.Tasks
             if (valid && current)
             {
                 JObject authority = sanitized["rewardAuthority"] as JObject;
-                if (authority != null
+            if (authority != null
                     && (entry.WebCommand == "open"
+                        || entry.WebCommand == "openMany"
                         || entry.WebCommand == "inboxSnapshot"))
                 {
                     StageRewardHandoff(
@@ -661,6 +663,7 @@ namespace CF7Launcher.Tasks
             string[] projection =
             {
                 "error", "consumed", "remaining", "selectedLane",
+                "replayed", "requestedCount", "packages",
                 "rewardReady", "rewardBatchId", "inboxSummary",
                 "rewardAuthority", "found", "receipt", "cooldownLanes"
             };
@@ -683,6 +686,10 @@ namespace CF7Launcher.Tasks
             {
                 case "open":
                     action = "itemUseOpen";
+                    isWrite = true;
+                    return true;
+                case "openMany":
+                    action = "itemUseOpenMany";
                     isWrite = true;
                     return true;
                 case "consume":
@@ -756,6 +763,27 @@ namespace CF7Launcher.Tasks
                 }
                 result["operationId"] = operationId;
                 result["source"] = source;
+            }
+            else if (command == "openMany")
+            {
+                // exact envelope：四键 source + count 整数 2..64（裁决 §5.2）
+                if (!IsExactObject(
+                        payload,
+                        "v", "operationId", "panelInstanceId",
+                        "sessionGeneration", "source", "count")
+                    || !TryReadOperationId(
+                        payload["operationId"], out operationId)
+                    || !TryNormalizeSource(
+                        payload["source"] as JObject,
+                        out JObject source)
+                    || !TryReadInteger(
+                        payload["count"], 2, InboxCapacity, out int count))
+                {
+                    return false;
+                }
+                result["operationId"] = operationId;
+                result["source"] = source;
+                result["count"] = count;
             }
             else if (command == "query")
             {
@@ -887,6 +915,10 @@ namespace CF7Launcher.Tasks
                     valid = TrySanitizeOpenSuccess(message, result);
                     definitiveWrite = valid;
                     break;
+                case "openMany":
+                    valid = TrySanitizeOpenManySuccess(message, result);
+                    definitiveWrite = valid;
+                    break;
                 case "consume":
                     valid = TrySanitizeConsumeSuccess(message, result);
                     definitiveWrite = valid;
@@ -950,6 +982,84 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        /// <summary>
+        /// openMany fresh/replay success（裁决 §5.5/§5.6）：exact keys；
+        /// requestedCount==consumed==K；packages 长度 K、ordinal 连续 0..K-1、
+        /// batchId 非空且互不重复、entryCount 0..64；summary/authority 走现有
+        /// sanitizer；replayed 为布尔（fresh=false，receipt replay=true）。
+        /// </summary>
+        private static bool TrySanitizeOpenManySuccess(
+            JObject message,
+            JObject result)
+        {
+            if (!HasExactResponseKeys(
+                    message,
+                    true,
+                    "replayed", "requestedCount", "consumed", "remaining",
+                    "packages", "rewardReady", "inboxSummary", "rewardAuthority")
+                || message["replayed"] == null
+                || message["replayed"].Type != JTokenType.Boolean
+                || !TryReadInteger(
+                    message["requestedCount"], 2, InboxCapacity,
+                    out int requestedCount)
+                || !TryReadInteger(
+                    message["consumed"], 2, InboxCapacity, out int consumed)
+                || consumed != requestedCount
+                || !TryReadLongInteger(
+                    message["remaining"], 0, MaxSafeInteger,
+                    out long remaining)
+                || !(message["packages"] is JArray packages)
+                || packages.Count != requestedCount
+                || message["rewardReady"] == null
+                || message["rewardReady"].Type != JTokenType.Boolean
+                || !TrySanitizeInboxSummary(
+                    message["inboxSummary"] as JObject, out JObject summary)
+                || !TrySanitizeRewardAuthority(
+                    message["rewardAuthority"], summary,
+                    out JObject authority))
+            {
+                return false;
+            }
+            var batchIds = new HashSet<string>(StringComparer.Ordinal);
+            var normalizedPackages = new JArray();
+            for (int i = 0; i < packages.Count; i++)
+            {
+                JObject row = packages[i] as JObject;
+                if (!IsExactObject(row, "ordinal", "batchId", "entryCount")
+                    || !TryReadInteger(row["ordinal"], i, i, out int ordinal)
+                    || !TryReadToken(row["batchId"], out string batchId)
+                    || !batchIds.Add(batchId)
+                    || !TryReadInteger(
+                        row["entryCount"], 0, InboxCapacity,
+                        out int entryCount))
+                {
+                    return false;
+                }
+                normalizedPackages.Add(new JObject
+                {
+                    ["ordinal"] = ordinal,
+                    ["batchId"] = batchId,
+                    ["entryCount"] = entryCount
+                });
+            }
+            bool rewardReady = message.Value<bool>("rewardReady");
+            if (rewardReady != (summary.Value<int>("remainingCount") > 0
+                    || summary.Value<bool>("recoveryRequired")))
+            {
+                return false;
+            }
+            result["replayed"] = message.Value<bool>("replayed");
+            result["requestedCount"] = requestedCount;
+            result["consumed"] = consumed;
+            result["remaining"] = remaining;
+            result["packages"] = normalizedPackages;
+            result["rewardReady"] = rewardReady;
+            result["inboxSummary"] = summary;
+            result["rewardAuthority"] = authority == null
+                ? JValue.CreateNull() : (JToken)authority;
+            return true;
+        }
+
         private static bool TrySanitizeConsumeSuccess(
             JObject message,
             JObject result)
@@ -978,6 +1088,7 @@ namespace CF7Launcher.Tasks
             JObject result)
         {
             if (expectedWriteCommand != "open"
+                && expectedWriteCommand != "openMany"
                 && expectedWriteCommand != "consume")
             {
                 return false;
@@ -1103,6 +1214,17 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        private static bool TryReadReceiptConsumed(
+            JObject receipt,
+            string expectedKind,
+            out int consumed)
+        {
+            return expectedKind == "openMany"
+                ? TryReadInteger(
+                    receipt["consumed"], 2, InboxCapacity, out consumed)
+                : TryReadInteger(receipt["consumed"], 1, 1, out consumed);
+        }
+
         private static bool TrySanitizeReceipt(
             JObject receipt,
             string expectedKind,
@@ -1111,7 +1233,9 @@ namespace CF7Launcher.Tasks
             sanitized = null;
             string[] specific = expectedKind == "open"
                 ? new[] { "rewardBatchId", "rewardReady" }
-                : new[] { "selectedLane" };
+                : expectedKind == "openMany"
+                    ? new[] { "requestedCount", "packages" }
+                    : new[] { "selectedLane" };
             var expected = new List<string>
             {
                 "kind", "status", "consumed", "remaining"
@@ -1120,7 +1244,7 @@ namespace CF7Launcher.Tasks
             if (!IsExactObject(receipt, expected.ToArray())
                 || ReadString(receipt["kind"]) != expectedKind
                 || ReadString(receipt["status"]) != "committed"
-                || !TryReadInteger(receipt["consumed"], 1, 1, out int consumed)
+                || !TryReadReceiptConsumed(receipt, expectedKind, out int consumed)
                 || !TryReadLongInteger(
                     receipt["remaining"], 0, MaxSafeInteger, out long remaining))
             {
@@ -1144,6 +1268,44 @@ namespace CF7Launcher.Tasks
                 }
                 result["rewardBatchId"] = rewardBatchId;
                 result["rewardReady"] = receipt.Value<bool>("rewardReady");
+            }
+            else if (expectedKind == "openMany")
+            {
+                // replay 投影必须与持久 receipt exact 同形（裁决 §5.6）
+                if (!TryReadInteger(
+                        receipt["requestedCount"], 2, InboxCapacity,
+                        out int requestedCount)
+                    || requestedCount != consumed
+                    || !(receipt["packages"] is JArray packages)
+                    || packages.Count != requestedCount)
+                {
+                    return false;
+                }
+                var batchIds = new HashSet<string>(StringComparer.Ordinal);
+                var normalizedPackages = new JArray();
+                for (int i = 0; i < packages.Count; i++)
+                {
+                    JObject row = packages[i] as JObject;
+                    if (!IsExactObject(row, "ordinal", "batchId", "entryCount")
+                        || !TryReadInteger(
+                            row["ordinal"], i, i, out int ordinal)
+                        || !TryReadToken(row["batchId"], out string batchId)
+                        || !batchIds.Add(batchId)
+                        || !TryReadInteger(
+                            row["entryCount"], 0, InboxCapacity,
+                            out int entryCount))
+                    {
+                        return false;
+                    }
+                    normalizedPackages.Add(new JObject
+                    {
+                        ["ordinal"] = ordinal,
+                        ["batchId"] = batchId,
+                        ["entryCount"] = entryCount
+                    });
+                }
+                result["requestedCount"] = requestedCount;
+                result["packages"] = normalizedPackages;
             }
             else
             {

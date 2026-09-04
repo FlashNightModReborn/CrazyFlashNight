@@ -22,10 +22,13 @@
         var candidate = pending.candidate || {};
         var itemName = String(candidate.name || '').trim();
         var subject = itemName ? '「' + itemName + '」' : '所选物品';
-        if (pending.command === 'open') {
+        if (pending.command === 'open' || pending.command === 'openMany') {
             var summary = response.inboxSummary || receipt.inboxSummary || {};
             var inboxRemaining = finiteWhole(summary.remainingCount);
-            return '已打开' + subject + '；奖励已转入待领取'
+            var opened = finiteWhole(response.consumed != null
+                ? response.consumed : receipt.consumed);
+            return '已打开'                + (pending.command === 'openMany' && opened !== null
+                    ? opened + ' 个' : '') + subject + '；奖励已转入待领取'
                 + (inboxRemaining !== null ? '（当前 ' + inboxRemaining + ' 件）' : '') + '。';
         }
         var lane = finiteWhole(response.selectedLane != null
@@ -217,7 +220,8 @@
                 this._rewardAuthority = response.rewardAuthority;
             }
             this._candidateCache = null;
-            var transitionToInbox = pending && pending.command === 'open'
+            var transitionToInbox = pending
+                && (pending.command === 'open' || pending.command === 'openMany')
                 && (response.rewardReady === true || receipt.rewardReady === true);
             var refreshCallId = this._session.refreshSnapshot(function(snapshot, accepted) {
                 if (accepted && self._view) self._applySnapshot(snapshot.payload, false);

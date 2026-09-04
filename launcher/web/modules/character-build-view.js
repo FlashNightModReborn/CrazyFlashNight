@@ -235,6 +235,7 @@ function(WorkbenchFocus, WorkbenchComponents,
         this._candidateFocusSummary = root.querySelector('[data-candidate-focus-summary]');
         this._useButton = root.querySelector('[data-build-action="use"]');
         this._inboxButton = root.querySelector('[data-build-action="inbox"]');
+        this._useManyButton = root.querySelector('[data-build-action="useMany"]');
         this._statsRoot = root.querySelector('.character-build-stats-page');
         this._statsScroll = root.querySelector('[data-scroll-region="stats"]');
         this._statsGrid = root.querySelector('[data-stats-grid]');
@@ -352,6 +353,7 @@ function(WorkbenchFocus, WorkbenchComponents,
             if (!button || button.disabled) return;
             var action = button.getAttribute('data-build-action');
             if (action === 'use') self._tryUseCandidate(self._selectedUseCandidate);
+            else if (action === 'useMany') self._tryUseCandidateMany(self._selectedUseCandidate);
             else if (action === 'inbox') self._onOpenInbox();
         });
         listen(this._listeners, this.root, 'keydown', function(event) {
@@ -409,6 +411,39 @@ function(WorkbenchFocus, WorkbenchComponents,
         return this._onUseCandidate(candidate) !== false;
     };
 
+    /** 礼包数量 ≥2 时的批量打开入口；count 冻结为 min(数量, 64)。 */
+    CharacterBuildView.prototype._openManyQuantity = function(candidate, action) {
+        if (!candidate || !action || String(action.command || '') !== 'open') return 0;
+        var raw = candidate.raw || {};
+        var presentation = candidate.presentation || {};
+        var quantity = Number(raw.quantity != null
+            ? raw.quantity : presentation.quantity);
+        if (!isFinite(quantity) || Math.floor(quantity) !== quantity
+                || quantity < 2) return 0;
+        return Math.min(quantity, 64);
+    };
+
+    CharacterBuildView.prototype._tryUseCandidateMany = function(candidate) {
+        if (!candidate || !candidate.useAction) return false;
+        if (candidate.useBlockedReason) {
+            this._showStatusNotice('blocked', candidate.useBlockedReason);
+            return false;
+        }
+        if (this._itemUseState !== 'idle'
+                && this._itemUseState !== 'needs_reconcile') return false;
+        var count = this._openManyQuantity(candidate, candidate.useAction);
+        if (count < 2) return false;
+        var manyCandidate = {};
+        for (var key in candidate) {
+            if (Object.prototype.hasOwnProperty.call(candidate, key)) {
+                manyCandidate[key] = candidate[key];
+            }
+        }
+        manyCandidate.useAction = {command:'openMany',
+            label:'全部打开×' + count, count:count};
+        return this._onUseCandidate(manyCandidate) !== false;
+    };
+
     CharacterBuildView.prototype._syncItemUseActions = function() {
         if (!this._useButton || !this._inboxButton) return false;
         var candidate = this._selectedUseCandidate;
@@ -421,7 +456,9 @@ function(WorkbenchFocus, WorkbenchComponents,
             ? (confirming ? '正在确认服用…' : '正在服用…')
             : actionCommand === 'open'
                 ? (confirming ? '正在确认开箱…' : '正在打开…')
-                : '处理中…';
+                : actionCommand === 'openMany'
+                    ? (confirming ? '正在确认批量开箱…' : '正在批量打开…')
+                    : '处理中…';
         var commit = this.root.querySelector('[data-build-action="commit"]');
         var tune = this.root.querySelector('[data-build-action="tune"]');
         var unequip = this.root.querySelector('[data-build-action="unequip"]');
@@ -442,6 +479,21 @@ function(WorkbenchFocus, WorkbenchComponents,
                     ? pendingLabel.replace(/…$/, '') + String(candidate && candidate.name || '所选物品')
                 : action ? String(action.label || '使用') + String(candidate.name || '所选物品')
                     : '使用所选物品');
+        var manyQuantity = this._openManyQuantity(candidate, action);
+        if (this._useManyButton) {
+            this._useManyButton.hidden = manyQuantity < 2;
+            this._useManyButton.textContent = reconciling ? '重新确认'
+                : submitting || confirming ? pendingLabel
+                : '全部打开×' + manyQuantity;
+            this._useManyButton.disabled = manyQuantity < 2
+                || !!candidate.useBlockedReason
+                || (this._itemUseState !== 'idle' && !reconciling)
+                || (this._interactionState !== 'idle' && !reconciling);
+            this._useManyButton.setAttribute('aria-label', manyQuantity < 2
+                ? '打开全部所选礼包'
+                : '全部打开' + manyQuantity + ' 个'
+                    + String(candidate && candidate.name || '所选礼包'));
+        }
         if (candidate && candidate.useBlockedReason) {
             this._useButton.setAttribute('title', candidate.useBlockedReason);
         } else this._useButton.removeAttribute('title');

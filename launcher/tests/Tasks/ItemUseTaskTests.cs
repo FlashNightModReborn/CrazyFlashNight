@@ -46,6 +46,7 @@ namespace CF7Launcher.Tests.Tasks
 
         [Theory]
         [InlineData("open", "itemUseOpen")]
+        [InlineData("openMany", "itemUseOpenMany")]
         [InlineData("consume", "itemUseConsume")]
         [InlineData("inboxSnapshot", "itemUseInboxSnapshot")]
         [InlineData("cooldownSnapshot", "itemUseCooldownSnapshot")]
@@ -69,12 +70,20 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Null(sent["panel"]);
                 Assert.Null(sent["cmd"]);
                 Assert.Null(sent["type"]);
-                if (command == "open" || command == "consume")
+                if (command == "open" || command == "openMany" || command == "consume")
                 {
                     Assert.Equal(
                         "operation." + command,
                         sent.Value<string>("operationId"));
                     Assert.Equal(4, ((JObject)sent["source"]).Count);
+                    if (command == "openMany")
+                    {
+                        Assert.Equal(3, sent.Value<int>("count"));
+                    }
+                    else
+                    {
+                        Assert.Null(sent["count"]);
+                    }
                 }
                 else
                 {
@@ -493,6 +502,125 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
+        [Fact]
+        public void OpenManySuccessProjectsExactPackagesAndStagesHandoff()
+        {
+            using (var harness = new Harness())
+            {
+                harness.Task.HandleWebRequest(
+                    "openMany", Request("openMany", "item.use.openmany.success"));
+                JObject sent = Assert.Single(harness.Flash);
+                Assert.Equal("itemUseOpenMany", sent.Value<string>("action"));
+                Assert.Equal(3, sent.Value<int>("count"));
+
+                harness.Task.HandleFlashResponse(
+                    OpenManySuccessResponse(sent.Value<int>("callId"), false),
+                    null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.True(web.Value<bool>("success"));
+                Assert.False(web.Value<bool>("replayed"));
+                Assert.Equal(3, web.Value<int>("requestedCount"));
+                Assert.Equal(3, web.Value<int>("consumed"));
+                Assert.Equal(12, web.Value<long>("remaining"));
+                var packages = (JArray)web["packages"];
+                Assert.Equal(3, packages.Count);
+                Assert.Equal(0, packages[0].Value<int>("ordinal"));
+                Assert.Equal("open.41", packages[0].Value<string>("batchId"));
+                Assert.Equal(0, packages[1].Value<int>("entryCount"));
+                Assert.Equal("idle", harness.Task.WriteState);
+                Assert.True(harness.Task.TryArmRewardNavigation(Panel, Generation));
+            }
+        }
+
+        [Fact]
+        public void OpenManyReplayResponseIsDefinitiveAndProjectsSamePackages()
+        {
+            using (var harness = new Harness())
+            {
+                harness.Task.HandleWebRequest(
+                    "openMany", Request("openMany", "item.use.openmany.replay"));
+                JObject sent = Assert.Single(harness.Flash);
+
+                harness.Task.HandleFlashResponse(
+                    OpenManySuccessResponse(sent.Value<int>("callId"), true),
+                    null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.True(web.Value<bool>("success"));
+                Assert.True(web.Value<bool>("replayed"));
+                Assert.Equal(3, web.Value<int>("requestedCount"));
+                Assert.Equal(3, ((JArray)web["packages"]).Count);
+                Assert.Equal("idle", harness.Task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void MalformedOpenManySuccessFreezesUntilCommittedQuery()
+        {
+            using (var harness = new Harness())
+            {
+                harness.Task.HandleWebRequest(
+                    "openMany", Request("openMany", "item.use.openmany.malformed"));
+                JObject sent = Assert.Single(harness.Flash);
+                JObject response = OpenManySuccessResponse(
+                    sent.Value<int>("callId"), false);
+                response["packages"][1]["ordinal"] = 2;
+
+                harness.Task.HandleFlashResponse(response, null);
+
+                Assert.Equal("needs_reconcile", harness.Task.WriteState);
+                JObject error = Assert.Single(harness.Web);
+                Assert.Equal("malformed_response", error.Value<string>("error"));
+
+                JObject queryRequest = Request("query", "item.use.openmany.query");
+                queryRequest["payload"]["operationId"] = "operation.openMany";
+                harness.Task.HandleWebRequest("query", queryRequest);
+                JObject query = harness.Flash[harness.Flash.Count - 1];
+                harness.Task.HandleFlashResponse(
+                    QueryCommittedOpenManyResponse(query.Value<int>("callId")),
+                    null);
+
+                JObject reconciled = harness.Web[harness.Web.Count - 1];
+                Assert.True(reconciled.Value<bool>("success"));
+                Assert.True(reconciled.Value<bool>("found"));
+                Assert.Equal("openMany", reconciled["receipt"].Value<string>("kind"));
+                Assert.Equal(3, reconciled["receipt"].Value<int>("requestedCount"));
+                Assert.Equal(3, reconciled["receipt"].Value<int>("consumed"));
+                Assert.Equal(
+                    3,
+                    ((JArray)reconciled["receipt"]["packages"]).Count);
+                Assert.Equal("idle", harness.Task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void OpenManyCountOutsideTwoToSixtyFourFailsClosed()
+        {
+            using (var harness = new Harness())
+            {
+                foreach (int bad in new[] { 0, 1, 65 })
+                {
+                    JObject request = Request(
+                        "openMany", "item.use.openmany.count." + bad);
+                    request["payload"]["count"] = bad;
+                    harness.Task.HandleWebRequest("openMany", request);
+                }
+                JObject missing = Request(
+                    "openMany", "item.use.openmany.count.missing");
+                ((JObject)missing["payload"]).Remove("count");
+                harness.Task.HandleWebRequest("openMany", missing);
+
+                Assert.Empty(harness.Flash);
+                Assert.Equal(4, harness.Web.Count);
+                foreach (JObject web in harness.Web)
+                {
+                    Assert.Equal("invalid_payload", web.Value<string>("error"));
+                }
+                Assert.Equal("idle", harness.Task.WriteState);
+            }
+        }
+
         private static JObject Request(string command, string callId)
         {
             var payload = new JObject
@@ -501,16 +629,17 @@ namespace CF7Launcher.Tests.Tasks
                 ["panelInstanceId"] = Panel,
                 ["sessionGeneration"] = Generation
             };
-            if (command == "open" || command == "consume")
+            if (command == "open" || command == "openMany" || command == "consume")
             {
                 payload["operationId"] = "operation." + command;
                 payload["source"] = new JObject
                 {
                     ["physicalSlot"] = 7,
                     ["slotLease"] = "lease.item.use.7",
-                    ["itemName"] = command == "open" ? "材料盒子" : "普通hp药剂",
+                    ["itemName"] = command == "consume" ? "普通hp药剂" : "材料盒子",
                     ["backpackVersion"] = 31
                 };
+                if (command == "openMany") payload["count"] = 3;
             }
             else if (command == "query")
             {
@@ -593,6 +722,49 @@ namespace CF7Launcher.Tests.Tasks
                 ["remaining"] = 2,
                 ["rewardBatchId"] = "reward.batch.1",
                 ["rewardReady"] = true
+            };
+            response["inboxSummary"] = InboxSummary();
+            return response;
+        }
+
+        private static JObject OpenManySuccessResponse(int callId, bool replayed)
+        {
+            JObject response = CommonResponse(
+                callId, "openMany", "operation.openMany", true);
+            response["replayed"] = replayed;
+            response["requestedCount"] = 3;
+            response["consumed"] = 3;
+            response["remaining"] = 12;
+            response["packages"] = new JArray
+            {
+                new JObject { ["ordinal"] = 0, ["batchId"] = "open.41", ["entryCount"] = 2 },
+                new JObject { ["ordinal"] = 1, ["batchId"] = "open.42", ["entryCount"] = 0 },
+                new JObject { ["ordinal"] = 2, ["batchId"] = "open.43", ["entryCount"] = 1 }
+            };
+            response["rewardReady"] = true;
+            response["inboxSummary"] = InboxSummary();
+            response["rewardAuthority"] = RewardAuthority();
+            return response;
+        }
+
+        private static JObject QueryCommittedOpenManyResponse(int callId)
+        {
+            JObject response = CommonResponse(
+                callId, "query", "operation.openMany", true);
+            response["found"] = true;
+            response["receipt"] = new JObject
+            {
+                ["kind"] = "openMany",
+                ["status"] = "committed",
+                ["consumed"] = 3,
+                ["remaining"] = 12,
+                ["requestedCount"] = 3,
+                ["packages"] = new JArray
+                {
+                    new JObject { ["ordinal"] = 0, ["batchId"] = "open.41", ["entryCount"] = 2 },
+                    new JObject { ["ordinal"] = 1, ["batchId"] = "open.42", ["entryCount"] = 0 },
+                    new JObject { ["ordinal"] = 2, ["batchId"] = "open.43", ["entryCount"] = 1 }
+                }
             };
             response["inboxSummary"] = InboxSummary();
             return response;

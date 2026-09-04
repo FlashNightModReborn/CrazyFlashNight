@@ -70,7 +70,7 @@ namespace CF7Launcher.Guardian
             new HashSet<string>(StringComparer.Ordinal)
             {
                 "close", "snapshot", "candidates", "preview", "commit", "tooltip", "detach",
-                "open", "consume", "query", "inboxSnapshot",
+                "open", "openMany", "consume", "query", "inboxSnapshot",
                 "bulkQuery", "saveCart", "checkoutPreview", "checkoutCommit",
                 "checkout", "claim", "materials", "materialDetail", "setPlan",
                 "open_npc_shop", "open_procurement_shop", "open_procurement_kshop",
@@ -99,7 +99,7 @@ namespace CF7Launcher.Guardian
                 "skillSnapshot", "skillLearnPreview", "skillLearnCommit",
                 "skillEquip", "skillUnequip", "skillMoveSlot", "skillSetPassive",
                 "skillReorder",
-                "itemUseOpen", "itemUseConsume", "itemUseQuery",
+                "itemUseOpen", "itemUseOpenMany", "itemUseConsume", "itemUseQuery",
                 "itemUseInboxSnapshot"
             };
 

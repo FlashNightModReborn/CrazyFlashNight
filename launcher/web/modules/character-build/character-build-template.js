@@ -62,6 +62,7 @@
             + '      <div class="character-build-candidate-actions" role="toolbar" aria-label="当前槽位与候选操作">'
             + '        <button type="button" data-build-action="inbox" aria-label="领取待领取物品" hidden disabled>待领取</button>'
             + '        <button type="button" data-build-action="use" aria-label="使用所选物品" hidden disabled>使用</button>'
+            + '        <button type="button" data-build-action="useMany" aria-label="打开全部所选礼包" hidden disabled>全部打开</button>'
             + '        <button type="button" data-build-action="commit" aria-label="装备所选候选" disabled>装备</button>'
             + '        <button type="button" data-build-action="tune" aria-label="调制当前装备" hidden disabled>调制</button>'
             + '        <button type="button" data-build-action="unequip" aria-label="卸下当前物品" disabled>卸下</button></div>'

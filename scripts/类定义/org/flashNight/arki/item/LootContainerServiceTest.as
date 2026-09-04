@@ -30,6 +30,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
     private static var MATERIAL:String = "S1测试材料";
     private static var INFORMATION:String = "S1测试情报";
     private static var MOD:String = "S1测试插件";
+    private static var PACK:String = "S1测试礼包";
     private static var _rewardPersistedSaveWire:String = "";
     private static var _rewardFlushCount:Number = 0;
     private static var _rewardFlushFailAt:Number = -1;
@@ -130,6 +131,14 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testRewardRootSaveCountRegressionGate();
         testRewardRootPendingResponseCarriesNoProjection();
         testItemUseConsumeReceiptFailureRestoresBackpack();
+        testItemUseOpenManyFreshCommitReplayAndConflict();
+        testItemUseOpenManyBoundaryK64AndZeroHitDescriptor();
+        testItemUseOpenManyRejectionsAreZeroWrite();
+        testItemUseOpenManyRecipeModesMatchSequentialOpens();
+        testItemUseOpenManyFaultCutsRestoreExactly();
+        testItemUseOpenManyFenceFalsePendingRetry();
+        testItemUseOpenManyResponseLossRestartQuery();
+        testItemUseOpenManyReceiptRetentionWindow();
 
         restoreMetadata();
         trace("LootContainerServiceTest Tests Passed: " + _passed);
@@ -5179,6 +5188,513 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         delete _root.使用药剂;
         delete _root.控制目标;
         delete _root.吃药冷却时间;
+    }
+
+    /** openMany 专项：固定槽位 20 的测试礼包世界与 exact envelope 构造。 */
+    private static function installGiftPack(recipe:Object, quantity:Number):Void {
+        resetWorld();
+        ItemUtil.itemDataDict[PACK] = {name:PACK, displayname:PACK, icon:PACK,
+            type:"消耗品", use:"礼包", price:10, description:"openMany",
+            data:{level:1, rewardPack:recipe}};
+        _root.物品栏.背包.add(20, BaseItem.create(PACK, quantity, 71001));
+        ItemUseService.setContextValidator(function(panelInstanceId:String,
+                                                    generation:Number):Object {
+            return {success:true, error:""};
+        });
+        // 先物化 Reward feature，后续 receipts.length 读取才是数字而非 undefined
+        RewardInboxService.ensureFeature();
+    }
+
+    private static function giftOpenManyParams(operationId:String, count:Number):Object {
+        var snap:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
+        return {task:"cmd", action:"itemUseOpenMany", callId:1, v:1,
+            operationId:operationId, panelInstanceId:"panel.openmany",
+            sessionGeneration:1,
+            source:{physicalSlot:20, slotLease:String(snap.slots[20].slotLease),
+                itemName:PACK, backpackVersion:Number(snap.containerVersion)},
+            count:count};
+    }
+
+    private static function giftOpenParams(operationId:String):Object {
+        var snap:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
+        return {task:"cmd", action:"itemUseOpen", callId:1, v:1,
+            operationId:operationId, panelInstanceId:"panel.openmany",
+            sessionGeneration:1,
+            source:{physicalSlot:20, slotLease:String(snap.slots[20].slotLease),
+                itemName:PACK, backpackVersion:Number(snap.containerVersion)}};
+    }
+
+    private static function giftQueryParams(operationId:String):Object {
+        return {task:"cmd", action:"itemUseQuery", callId:1, v:1,
+            operationId:operationId, panelInstanceId:"panel.openmany",
+            sessionGeneration:1};
+    }
+
+    private static function rewardBatchById(batchId:String):Object {
+        var batches:Array = _root._saveExt.rewardInbox.batches;
+        for (var i:Number = 0; i < batches.length; i++) {
+            if (String(batches[i].batchId) == batchId) return batches[i];
+        }
+        return null;
+    }
+
+    private static function packagesExact(left:Array, right:Array):Boolean {
+        if (left == null || right == null || left.length != right.length) return false;
+        for (var i:Number = 0; i < left.length; i++) {
+            if (Number(left[i].ordinal) != Number(right[i].ordinal)
+                    || String(left[i].batchId) != String(right[i].batchId)
+                    || Number(left[i].entryCount) != Number(right[i].entryCount)) return false;
+        }
+        return true;
+    }
+
+    private static function batchEntriesSignature(batch:Object):String {
+        if (batch == null || !(batch.entries instanceof Array)) return "";
+        var parts:Array = [];
+        for (var i:Number = 0; i < batch.entries.length; i++) {
+            parts.push(String(batch.entries[i].itemName)
+                + "#" + Number(batch.entries[i].quantity));
+        }
+        return parts.join(",");
+    }
+
+    private static function cleanupGiftContext():Void {
+        ItemUseService.setContextValidator(null);
+        ItemUseService.setRandomValuesForTests(null);
+        ItemUseService.setOpenManyFaultForTests("", -1);
+        org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(null);
+    }
+
+    private static function fixedGiftRecipe():Object {
+        return {mode:"fixed", entries:{entry:{itemName:STACK,
+            quantityMin:1, quantityMax:1}}};
+    }
+
+    /** §7.3.1/2/3：open 基线 fence、K=2 fresh/replay/conflict、query 投影。 */
+    private static function testItemUseOpenManyFreshCommitReplayAndConflict():Void {
+        installGiftPack(fixedGiftRecipe(), 5);
+        installRewardPersistedSaveHarness(-1, "");
+        var openSaves0:Number = Number(_root.__lootSaveCalls);
+        var single:Object = ItemUseService.execute("open",
+            giftOpenParams("openmany.gate.single"));
+        check(single.success && single.replayed == undefined
+                && Number(_root.__lootSaveCalls) - openSaves0 == 1
+                && rewardBackpackQuantity(PACK) == 4,
+            "openMany 门：既有 open 仍恰好 1 fence 且不携带 replayed 键");
+
+        var saves1:Number = Number(_root.__lootSaveCalls);
+        var receipts1:Number = _root._saveExt.rewardInbox.receipts.length;
+        var k2Params:Object = giftOpenManyParams("openmany.gate.k2", 2);
+        var fresh:Object = ItemUseService.execute("openMany", k2Params);
+        check(fresh.success && fresh.replayed === false
+                && Number(fresh.requestedCount) == 2 && Number(fresh.consumed) == 2
+                && Number(fresh.remaining) == 2
+                && fresh.packages.length == 2
+                && Number(fresh.packages[0].ordinal) == 0
+                && Number(fresh.packages[1].ordinal) == 1
+                && String(fresh.packages[0].batchId).length > 0
+                && String(fresh.packages[1].batchId).length > 0
+                && String(fresh.packages[0].batchId) != String(fresh.packages[1].batchId)
+                && Number(fresh.packages[0].entryCount) == 1
+                && Number(fresh.packages[1].entryCount) == 1
+                && Number(_root.__lootSaveCalls) - saves1 == 1
+                && _root._saveExt.rewardInbox.receipts.length == receipts1 + 1
+                && rewardBackpackQuantity(PACK) == 2
+                && RewardInboxService.inboxSummary().remainingCount == 3,
+            "openMany 门：K=2 fresh 恰好 1 fence、1 receipt、2 descriptors、背包恰扣 2");
+
+        var saves2:Number = Number(_root.__lootSaveCalls);
+        var replay:Object = ItemUseService.execute("openMany", k2Params);
+        check(replay.success && replay.replayed === true
+                && Number(replay.requestedCount) == 2 && Number(replay.consumed) == 2
+                && Number(replay.remaining) == 2
+                && packagesExact(replay.packages, fresh.packages)
+                && Number(_root.__lootSaveCalls) == saves2
+                && rewardBackpackQuantity(PACK) == 2,
+            "openMany 门：exact replay 0 fence 0 扣包且 packages 与首次 exact 相同");
+
+        var saves3:Number = Number(_root.__lootSaveCalls);
+        var countOnlyParams:Object = ObjectUtil.clone(k2Params);
+        countOnlyParams.count = 3;
+        var conflictedCount:Object = ItemUseService.execute("openMany",
+            countOnlyParams);
+        var conflictedSource:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.gate.k2", 2));
+        var kindClashOpen:Object = ItemUseService.execute("open",
+            giftOpenParams("openmany.gate.k2"));
+        var kindClashMany:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.gate.single", 2));
+        check(!conflictedCount.success
+                && conflictedCount.error == "operation_conflict"
+                && !conflictedSource.success
+                && conflictedSource.error == "operation_conflict"
+                && !kindClashOpen.success && kindClashOpen.error == "operation_conflict"
+                && !kindClashMany.success && kindClashMany.error == "operation_conflict"
+                && Number(_root.__lootSaveCalls) == saves3
+                && rewardBackpackQuantity(PACK) == 2,
+            "openMany 门：同 id 不同 count/source/kind 均 operation_conflict 且 0 fence");
+
+        var queried:Object = ItemUseService.execute("query",
+            giftQueryParams("openmany.gate.k2"));
+        check(queried.success && queried.found === true
+                && queried.receipt.kind == "openMany"
+                && queried.receipt.status == "committed"
+                && Number(queried.receipt.requestedCount) == 2
+                && Number(queried.receipt.consumed) == 2
+                && Number(queried.receipt.remaining) == 2
+                && packagesExact(queried.receipt.packages, fresh.packages)
+                && queried.receipt.fingerprint == undefined
+                && queried.receipt.rewardBatchId == undefined,
+            "openMany 门：query/projectReceipt 投影 requestedCount/consumed/remaining/packages 且无裸拼 fingerprint");
+        cleanupGiftContext();
+    }
+
+    /** §7.3.2 K=64 边界与 §7.3.6 零命中 descriptor。 */
+    private static function testItemUseOpenManyBoundaryK64AndZeroHitDescriptor():Void {
+        installGiftPack(fixedGiftRecipe(), 64);
+        installRewardPersistedSaveHarness(-1, "");
+        var saves0:Number = Number(_root.__lootSaveCalls);
+        var receipts0:Number = _root._saveExt.rewardInbox.receipts.length;
+        var big:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.gate.k64", 64));
+        var bigOk:Boolean = big.success && big.replayed === false
+            && Number(big.requestedCount) == 64 && Number(big.consumed) == 64
+            && Number(big.remaining) == 0 && big.packages.length == 64
+            && Number(_root.__lootSaveCalls) - saves0 == 1
+            && _root._saveExt.rewardInbox.receipts.length == receipts0 + 1
+            && rewardBackpackQuantity(PACK) == 0
+            && RewardInboxService.inboxSummary().remainingCount == 64;
+        var seen:Object = {};
+        var entrySum:Number = 0;
+        for (var i:Number = 0; bigOk && i < 64; i++) {
+            var row:Object = big.packages[i];
+            if (Number(row.ordinal) != i || String(row.batchId).length < 1
+                    || seen[String(row.batchId)] === true) {
+                bigOk = false;
+                break;
+            }
+            seen[String(row.batchId)] = true;
+            entrySum += Number(row.entryCount);
+        }
+        check(bigOk && entrySum == 64,
+            "openMany 门：K=64 边界 1 fence、64 descriptors、ordinal 连续、batchId 互不重复、背包恰扣 64");
+
+        installGiftPack({mode:"independent", entries:{entry:{itemName:STACK,
+            quantityMin:1, quantityMax:1, chanceNumerator:1, chanceDenominator:4}}}, 2);
+        installRewardPersistedSaveHarness(-1, "");
+        ItemUseService.setRandomValuesForTests([3, 0, 7]);
+        var zero:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.gate.zerohit", 2));
+        check(zero.success && zero.packages.length == 2
+                && Number(zero.packages[0].entryCount) == 0
+                && String(zero.packages[0].batchId).length > 0
+                && Number(zero.packages[1].entryCount) == 1
+                && rewardBatchById(String(zero.packages[0].batchId)) == null
+                && rewardBatchById(String(zero.packages[1].batchId)) != null
+                && RewardInboxService.inboxSummary().remainingCount == 1,
+            "openMany 门：0 命中包仍记 package descriptor，Reward pending batch 可不存在且 sequence/batchId 行为锁定");
+        cleanupGiftContext();
+    }
+
+    /** §7.3.4：六类拒绝全部 0 fence、0 扣包、0 receipt。 */
+    private static function testItemUseOpenManyRejectionsAreZeroWrite():Void {
+        installGiftPack(fixedGiftRecipe(), 3);
+        installRewardPersistedSaveHarness(-1, "");
+        var saves0:Number = Number(_root.__lootSaveCalls);
+        var receipts0:Number = _root._saveExt.rewardInbox.receipts.length;
+        var rejected0:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.reject.c0", 0));
+        var rejected1:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.reject.c1", 1));
+        var rejected65:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.reject.c65", 65));
+        var nanParams:Object = giftOpenManyParams("openmany.reject.cnan", 2);
+        nanParams.count = NaN;
+        var rejectedNaN:Object = ItemUseService.execute("openMany", nanParams);
+        var stringParams:Object = giftOpenManyParams("openmany.reject.cstr", 2);
+        stringParams.count = "2";
+        var rejectedString:Object = ItemUseService.execute("openMany", stringParams);
+        var extraParams:Object = giftOpenManyParams("openmany.reject.extra", 2);
+        extraParams.unexpected = true;
+        var rejectedExtra:Object = ItemUseService.execute("openMany", extraParams);
+        var missingParams:Object = giftOpenManyParams("openmany.reject.missing", 2);
+        delete missingParams.count;
+        var rejectedMissing:Object = ItemUseService.execute("openMany", missingParams);
+        check(!rejected0.success && rejected0.error == "invalid_payload"
+                && !rejected1.success && rejected1.error == "invalid_payload"
+                && !rejected65.success && rejected65.error == "invalid_payload"
+                && !rejectedNaN.success && rejectedNaN.error == "invalid_payload"
+                && !rejectedString.success && rejectedString.error == "invalid_payload"
+                && !rejectedExtra.success && rejectedExtra.error == "invalid_payload"
+                && !rejectedMissing.success && rejectedMissing.error == "invalid_payload"
+                && Number(_root.__lootSaveCalls) == saves0
+                && _root._saveExt.rewardInbox.receipts.length == receipts0
+                && rewardBackpackQuantity(PACK) == 3,
+            "openMany 门：count 0/1/65/NaN/字符串与 extra/missing 键均 invalid_payload 零写");
+
+        var insufficient:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.reject.insufficient", 4));
+        check(!insufficient.success && insufficient.error == "insufficient_quantity"
+                && Number(_root.__lootSaveCalls) == saves0
+                && _root._saveExt.rewardInbox.receipts.length == receipts0
+                && rewardBackpackQuantity(PACK) == 3,
+            "openMany 门：source 数量<K 拒绝且零写");
+
+        var staleParams:Object = giftOpenManyParams("openmany.reject.stale", 2);
+        staleParams.source.backpackVersion = Number(staleParams.source.backpackVersion) + 1;
+        var stale:Object = ItemUseService.execute("openMany", staleParams);
+        check(!stale.success && stale.error == "stale_source"
+                && Number(_root.__lootSaveCalls) == saves0
+                && rewardBackpackQuantity(PACK) == 3,
+            "openMany 门：stale source 拒绝且零写");
+
+        _root.物品栏.背包.add(21, stack(ANTIBIOTIC, 2, 71002));
+        var snapDrug:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
+        var unsupported:Object = ItemUseService.execute("openMany", {
+            task:"cmd", action:"itemUseOpenMany", callId:1, v:1,
+            operationId:"openmany.reject.unsupported",
+            panelInstanceId:"panel.openmany", sessionGeneration:1,
+            source:{physicalSlot:21, slotLease:String(snapDrug.slots[21].slotLease),
+                itemName:ANTIBIOTIC, backpackVersion:Number(snapDrug.containerVersion)},
+            count:2});
+        check(!unsupported.success && unsupported.error == "unsupported_item"
+                && Number(_root.__lootSaveCalls) == saves0,
+            "openMany 门：非礼包 unsupported_item 拒绝且零写");
+
+        ItemUtil.itemDataDict[PACK].data.rewardPack = {mode:"script",
+            entries:{entry:{itemName:STACK, quantityMin:1, quantityMax:1}}};
+        var invalidRecipe:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.reject.recipe", 2));
+        check(!invalidRecipe.success && invalidRecipe.error == "invalid_reward_pack"
+                && Number(_root.__lootSaveCalls) == saves0
+                && rewardBackpackQuantity(PACK) == 3,
+            "openMany 门：invalid recipe 拒绝且零写");
+
+        installGiftPack({mode:"fixed", entries:{entry:[
+            {itemName:STACK, quantityMin:1, quantityMax:1},
+            {itemName:ANTIBIOTIC, quantityMin:1, quantityMax:1}]}}, 40);
+        installRewardPersistedSaveHarness(-1, "");
+        var savesFull:Number = Number(_root.__lootSaveCalls);
+        var full:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.reject.full", 40));
+        check(!full.success && full.error == "reward_inbox_full"
+                && Number(_root.__lootSaveCalls) == savesFull
+                && _root._saveExt.rewardInbox.receipts.length == 0
+                && rewardBackpackQuantity(PACK) == 40,
+            "openMany 门：aggregate occurrence 超 64 容量预检拒绝且零写");
+        cleanupGiftContext();
+    }
+
+    /** §7.3.5：三 recipe 模式固定 RNG 下与连续 K 次 open 的 draw/ordinal/batchId 完全一致。 */
+    private static function testItemUseOpenManyRecipeModesMatchSequentialOpens():Void {
+        var modes:Array = [
+            {name:"fixed", recipe:{mode:"fixed", entries:{entry:{itemName:STACK,
+                quantityMin:1, quantityMax:2}}}, rng:[0, 1, 2]},
+            {name:"independent", recipe:{mode:"independent", entries:{entry:[
+                {itemName:STACK, quantityMin:1, quantityMax:2,
+                    chanceNumerator:1, chanceDenominator:2},
+                {itemName:ANTIBIOTIC, quantityMin:1, quantityMax:1,
+                    chanceNumerator:2, chanceDenominator:3}]}},
+             rng:[0, 1, 1, 0, 1, 2, 5, 3, 4]},
+            {name:"chooseOne", recipe:{mode:"chooseOne", entries:{entry:[
+                {itemName:STACK, quantityMin:1, quantityMax:1, weight:2},
+                {itemName:ANTIBIOTIC, quantityMin:1, quantityMax:1, weight:3}]}},
+             rng:[0, 9, 4, 9, 2, 9]}];
+        for (var m:Number = 0; m < modes.length; m++) {
+            var spec:Object = modes[m];
+            installGiftPack(spec.recipe, 3);
+            ItemUseService.setRandomValuesForTests(spec.rng);
+            var many:Object = ItemUseService.execute("openMany",
+                giftOpenManyParams("openmany.rng." + spec.name, 3));
+            var manyPkgs:Array = many != null && many.success === true
+                ? many.packages : [];
+            var manyIds:Array = [];
+            var manySigs:Array = [];
+            for (var pi:Number = 0; pi < manyPkgs.length; pi++) {
+                manyIds.push(String(manyPkgs[pi].batchId));
+                manySigs.push(batchEntriesSignature(
+                    rewardBatchById(String(manyPkgs[pi].batchId))));
+            }
+            installGiftPack(spec.recipe, 3);
+            ItemUseService.setRandomValuesForTests(spec.rng);
+            var openIds:Array = [];
+            for (var oi:Number = 0; oi < 3; oi++) {
+                var one:Object = ItemUseService.execute("open",
+                    giftOpenParams("openmany.rng." + spec.name + "." + oi));
+                if (one == null || one.success !== true) break;
+                openIds.push(String(one.rewardBatchId));
+            }
+            var openSigs:Array = [];
+            for (var sj:Number = 0; sj < openIds.length; sj++) {
+                openSigs.push(batchEntriesSignature(rewardBatchById(openIds[sj])));
+            }
+            check(manyPkgs.length == 3 && openIds.length == 3
+                    && manyIds.join("|") == openIds.join("|")
+                    && manySigs.join("|") == openSigs.join("|"),
+                "openMany 门：" + spec.name
+                    + " 固定 RNG 下 draw 顺序/ordinal/batchId/entry 与连续 3 次 open 完全一致");
+        }
+        cleanupGiftContext();
+    }
+
+    /** §7.3.7/8：append/receipt/fence fault-cut exact restore；重试不翻倍扣包。 */
+    private static function testItemUseOpenManyFaultCutsRestoreExactly():Void {
+        installGiftPack(fixedGiftRecipe(), 5);
+        installRewardPersistedSaveHarness(-1, "");
+        var published:Array = [];
+        org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(
+            function(receipt:Object):Void { published.push(receipt); });
+        RewardInboxService.ensureFeature();
+        var featureSnapshot:Object = new JSON(false).parse(
+            new JSON(false).stringify(_root._saveExt.rewardInbox));
+        ItemUseService.setOpenManyFaultForTests("append", 1);
+        var cutAppend:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.fault.append", 3));
+        check(!cutAppend.success && cutAppend.error == "commit_pending"
+                && rewardBackpackQuantity(PACK) == 5
+                && ObjectUtil.deepEquals(_root._saveExt.rewardInbox, featureSnapshot)
+                && _root.存档系统.dirtyMark === false
+                && RewardInboxService.lookupReceipt("openmany.fault.append") == null
+                && published.length == 0,
+            "openMany 门：第 1 次 append 前注入异常，bag/feature/dirty exact restore 且 PAT frame 清空");
+
+        ItemUseService.setOpenManyFaultForTests("receipt", -1);
+        var cutReceipt:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.fault.receipt", 3));
+        check(!cutReceipt.success && cutReceipt.error == "commit_pending"
+                && rewardBackpackQuantity(PACK) == 5
+                && ObjectUtil.deepEquals(_root._saveExt.rewardInbox, featureSnapshot)
+                && _root.存档系统.dirtyMark === false
+                && RewardInboxService.lookupReceipt("openmany.fault.receipt") == null
+                && published.length == 0,
+            "openMany 门：recordReceipt 前注入异常，bag/feature/dirty exact restore 且 PAT frame 清空");
+
+        ItemUseService.setOpenManyFaultForTests("", -1);
+        installRewardPersistedSaveHarness(1, "throw");
+        var saves0:Number = Number(_root.__lootSaveCalls);
+        var cutFence:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.fault.fence", 3));
+        check(!cutFence.success && cutFence.error == "commit_pending"
+                && Number(_root.__lootSaveCalls) - saves0 == 1
+                && rewardBackpackQuantity(PACK) == 5
+                && ObjectUtil.deepEquals(_root._saveExt.rewardInbox, featureSnapshot)
+                && _root.存档系统.dirtyMark === false
+                && RewardInboxService.lookupReceipt("openmany.fault.fence") == null
+                && published.length == 0,
+            "openMany 门：fence throw 领域 attempt 1、receipt 0、背包不扣、feature exact pre-state");
+
+        installRewardPersistedSaveHarness(-1, "");
+        var retryParams:Object = giftOpenManyParams("openmany.fault.fence", 3);
+        var retried:Object = ItemUseService.execute("openMany", retryParams);
+        var retriedReplay:Object = ItemUseService.execute("openMany", retryParams);
+        check(retried.success && Number(retried.consumed) == 3
+                && retried.packages.length == 3
+                && rewardBackpackQuantity(PACK) == 2
+                && retriedReplay.success && retriedReplay.replayed === true
+                && rewardBackpackQuantity(PACK) == 2,
+            "openMany 门：commit_pending 后同 operationId 重试只扣一次包（RNG 允许重新 roll，不断言结果相同）");
+        cleanupGiftContext();
+    }
+
+    /** §7.3.8：fence false/pending 语义的领域 attempt 与恢复。 */
+    private static function testItemUseOpenManyFenceFalsePendingRetry():Void {
+        installGiftPack(fixedGiftRecipe(), 5);
+        installRewardPersistedSaveHarness(1, "false");
+        RewardInboxService.ensureFeature();
+        var featureSnapshot:Object = new JSON(false).parse(
+            new JSON(false).stringify(_root._saveExt.rewardInbox));
+        var saves0:Number = Number(_root.__lootSaveCalls);
+        var falseCut:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.fault.false", 3));
+        check(!falseCut.success && falseCut.error == "commit_pending"
+                && Number(_root.__lootSaveCalls) - saves0 == 1
+                && rewardBackpackQuantity(PACK) == 5
+                && ObjectUtil.deepEquals(_root._saveExt.rewardInbox, featureSnapshot)
+                && RewardInboxService.lookupReceipt("openmany.fault.false") == null,
+            "openMany 门：fence false 领域 attempt 1、receipt 0、背包不扣、feature exact pre-state");
+
+        installRewardPersistedSaveHarness(1, "pending");
+        var saves1:Number = Number(_root.__lootSaveCalls);
+        var pendingCut:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.fault.pending", 3));
+        check(!pendingCut.success && pendingCut.error == "commit_pending"
+                && Number(_root.__lootSaveCalls) - saves1 == 1
+                && rewardBackpackQuantity(PACK) == 5
+                && ObjectUtil.deepEquals(_root._saveExt.rewardInbox, featureSnapshot)
+                && RewardInboxService.lookupReceipt("openmany.fault.pending") == null,
+            "openMany 门：fence pending 按非 true 处理，恢复粒度与 false 一致");
+
+        installRewardPersistedSaveHarness(-1, "");
+        var retried:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("openmany.fault.false", 3));
+        check(retried.success && Number(retried.consumed) == 3
+                && rewardBackpackQuantity(PACK) == 2,
+            "openMany 门：fence false 后新 envelope 重试只扣一次包");
+        cleanupGiftContext();
+    }
+
+    /** §7.3.9：fence 成功后响应丢失→真实 save-image restart→query 同 packages。 */
+    private static function testItemUseOpenManyResponseLossRestartQuery():Void {
+        installGiftPack(fixedGiftRecipe(), 4);
+        installRewardPersistedSaveHarness(-1, "");
+        var params:Object = giftOpenManyParams("openmany.restart.k3", 3);
+        var committed:Object = ItemUseService.execute("openMany", params);
+        var batchesBefore:Number = _root._saveExt.rewardInbox.batches.length;
+        var restarted:Boolean = restartFromRewardPersistedSave();
+        var queried:Object = ItemUseService.execute("query",
+            giftQueryParams("openmany.restart.k3"));
+        check(committed.success && restarted
+                && queried.success && queried.found === true
+                && Number(queried.receipt.requestedCount) == 3
+                && Number(queried.receipt.consumed) == 3
+                && Number(queried.receipt.remaining) == 1
+                && packagesExact(queried.receipt.packages, committed.packages)
+                && _root._saveExt.rewardInbox.batches.length == batchesBefore
+                && RewardInboxService.inboxSummary().remainingCount == 3,
+            "openMany 门：fence 成功后响应丢失，真实 restart 后 query 同 packages 且 batches 不重复");
+
+        var savesR:Number = Number(_root.__lootSaveCalls);
+        var replayed:Object = ItemUseService.execute("openMany", params);
+        check(replayed.success && replayed.replayed === true
+                && packagesExact(replayed.packages, committed.packages)
+                && Number(_root.__lootSaveCalls) == savesR
+                && rewardBackpackQuantity(PACK) == 1
+                && _root._saveExt.rewardInbox.batches.length == batchesBefore,
+            "openMany 门：restart 后 exact 重放仍 0 fence 0 扣包并返回 receipt packages");
+        cleanupGiftContext();
+    }
+
+    /** §7.3.10 + §5.7：Reward receipt FIFO 128 窗口内 exact replay，窗口外 fail-closed。 */
+    private static function testItemUseOpenManyReceiptRetentionWindow():Void {
+        installGiftPack(fixedGiftRecipe(), 2);
+        installRewardPersistedSaveHarness(-1, "");
+        var params:Object = giftOpenManyParams("openmany.retention.edge", 2);
+        var edge:Object = ItemUseService.execute("openMany", params);
+        for (var i:Number = 0; i < 127; i++) {
+            RewardInboxService.recordReceipt({
+                operationId:"openmany.retention.fill." + i, kind:"open",
+                status:"committed", fingerprint:"f" + i, consumed:1, remaining:0});
+        }
+        var inWindow:Object = ItemUseService.execute("openMany", params);
+        check(edge.success && inWindow.success && inWindow.replayed === true
+                && _root._saveExt.rewardInbox.receipts.length == 128
+                && packagesExact(inWindow.packages, edge.packages),
+            "openMany 门：窗口内第 128 条（最旧）receipt 仍 exact replay");
+
+        RewardInboxService.recordReceipt({
+            operationId:"openmany.retention.evictor", kind:"open",
+            status:"committed", fingerprint:"x", consumed:1, remaining:0});
+        var evictedQuery:Object = ItemUseService.execute("query",
+            giftQueryParams("openmany.retention.edge"));
+        var staleRetry:Object = ItemUseService.execute("openMany", params);
+        check(_root._saveExt.rewardInbox.receipts.length == 128
+                && RewardInboxService.lookupReceipt("openmany.retention.edge") == null
+                && RewardInboxService.lookupReceipt("openmany.retention.fill.0") != null
+                && evictedQuery.success && evictedQuery.found === false
+                && !staleRetry.success && staleRetry.error == "stale_source"
+                && rewardBackpackQuantity(PACK) == 0,
+            "openMany 门：第 129 条挤出最旧 receipt 后窗口外 fail-closed（stale source），不宣称永久返回首次结果");
+        cleanupGiftContext();
     }
 
     private static function check(condition:Boolean, message:String):Void {

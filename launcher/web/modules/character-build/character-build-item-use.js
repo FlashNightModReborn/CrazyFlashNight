@@ -47,11 +47,19 @@
         var raw = candidate && candidate.raw || {};
         var value = candidate && candidate.useAction || raw.useAction;
         var command = value && String(value.command || '');
-        if (command !== 'open' && command !== 'consume') return null;
-        return {
+        if (command !== 'open' && command !== 'openMany' && command !== 'consume') return null;
+        var action = {
             command:command,
-            label:String(value.label || (command === 'open' ? '打开' : '服用'))
+            label:String(value.label || (command === 'open' ? '打开'
+                : command === 'openMany' ? '全部打开' : '服用'))
         };
+        if (command === 'openMany') {
+            // exact count 2..64 随 envelope 下发；1 继续走单包 open
+            var count = whole(value.count, 2, 64);
+            if (count === null) return null;
+            action.count = count;
+        }
+        return action;
     }
     function exactSource(candidate) {
         var raw = candidate && candidate.raw || {};
@@ -238,10 +246,11 @@
             + (++this._operationSequence).toString(36);
         // An open write may replace the exact Loot authority. Do not let an
         // unknown result reuse an authority cached before this operation.
-        if (action.command === 'open') this._inbox = null;
+        if (action.command === 'open' || action.command === 'openMany') this._inbox = null;
         var payload = this._base();
         payload.operationId = operationId;
         payload.source = source;
+        if (action.count != null) payload.count = action.count;
         this._pending = {
             operationId:operationId,
             command:action.command,
@@ -266,7 +275,8 @@
         }
         this._pending = null;
         this._state = 'idle';
-        if (pending.command === 'open' && response && response.success === true) {
+        if ((pending.command === 'open' || pending.command === 'openMany')
+                && response && response.success === true) {
             this._acceptInbox(response);
         }
         this._emit(response && response.success === true

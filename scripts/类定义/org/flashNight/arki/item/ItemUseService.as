@@ -10,6 +10,8 @@ class org.flashNight.arki.item.ItemUseService {
     private static var _inited:Boolean = false;
     private static var _busy:Boolean = false;
     private static var _testRandomValues:Array = null;
+    private static var _testFaultCut:String = "";
+    private static var _testFaultOrdinal:Number = -1;
     private static var _contextValidator:Function = null;
     private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
 
@@ -25,6 +27,9 @@ class org.flashNight.arki.item.ItemUseService {
         if (_root.gameCommands == undefined) _root.gameCommands = {};
         _root.gameCommands["itemUseOpen"] = function(params) {
             org.flashNight.arki.item.ItemUseService.handle("open", params);
+        };
+        _root.gameCommands["itemUseOpenMany"] = function(params) {
+            org.flashNight.arki.item.ItemUseService.handle("openMany", params);
         };
         _root.gameCommands["itemUseConsume"] = function(params) {
             org.flashNight.arki.item.ItemUseService.handle("consume", params);
@@ -49,8 +54,9 @@ class org.flashNight.arki.item.ItemUseService {
 
     public static function execute(commandName:String, params:Object):Object {
         if (_busy) return commonFailure(commandName, params, "service_not_ready");
-        if (commandName != "open" && commandName != "consume"
-                && commandName != "query" && commandName != "inboxSnapshot"
+        if (commandName != "open" && commandName != "openMany"
+                && commandName != "consume" && commandName != "query"
+                && commandName != "inboxSnapshot"
                 && commandName != "cooldownSnapshot") {
             return commonFailure(commandName, params, "unsupported_cmd");
         }
@@ -81,6 +87,7 @@ class org.flashNight.arki.item.ItemUseService {
         if (commandName == "inboxSnapshot") return executeInboxSnapshot(params);
         if (commandName == "cooldownSnapshot") return executeCooldownSnapshot(params);
         if (commandName == "open") return executeOpen(params);
+        if (commandName == "openMany") return executeOpenMany(params);
         if (commandName == "consume") return executeConsume(params);
         return commonFailure(commandName, params, "unsupported_cmd");
     }
@@ -153,6 +160,110 @@ class org.flashNight.arki.item.ItemUseService {
         _busy = false;
         InventoryPanelService.invalidateExternalSlot("背包", Number(source.slot));
         return openSuccess(params, RewardInboxService.lookupReceipt(operationId));
+    }
+
+    /**
+     * openMany（第三轮裁决 §5）：独立多包原子命令，不在旧 itemUseOpen 上加
+     * count。lookup receipt 先于 source 校验；receipt 存 exact normalized
+     * request object 作为 conflict 证明，不复用裸 | 拼接 sourceFingerprint。
+     * fresh：normalize recipe 一次 → ordinal 0..K-1 连续 rollRecipe →
+     * Σ occurrences 一次 canAppendOccurrenceCount 预检 → capture(bag + 整个
+     * Reward feature + dirty) → PAT begin → 标脏 → 一次扣 K 并 exact 验证 →
+     * K 次 appendRewardBatch（0 命中也记 package descriptor）→ 一个
+     * kind:"openMany" receipt → flushSave 恰好一次。false/throw 整体恢复
+     * bag/feature/dirty 并丢弃 PAT frame 回 commit_pending；true 后 PAT
+     * commit，durable 后不回滚。RNG 无可恢复状态，失败重试可能重新 roll，
+     * 只保证不重复扣礼包、不重复 durable batch。
+     */
+    private static function executeOpenMany(params:Object):Object {
+        var operationId:String = String(params.operationId);
+        var request:Object = normalizedOpenManyRequest(params);
+        var prior:Object = RewardInboxService.lookupReceipt(operationId);
+        if (prior != null) {
+            if (prior.kind != "openMany"
+                    || !sameOpenManyRequest(prior.request, request)) {
+                return commonFailure("openMany", params, "operation_conflict");
+            }
+            return openManySuccess(params, prior, true);
+        }
+        var count:Number = Number(params.count);
+        var source:Object = validateBackpackSource(params.source);
+        if (!source.success) return commonFailure("openMany", params, source.error);
+        if (Number(source.item.value) < count) {
+            return commonFailure("openMany", params, "insufficient_quantity");
+        }
+        var itemData:Object = effectiveData(source.item);
+        if (itemData == null || itemData.use !== "礼包") {
+            return commonFailure("openMany", params, "unsupported_item");
+        }
+        var recipe:Object = normalizeRecipe(itemData.data == null
+            ? null : itemData.data.rewardPack);
+        if (!recipe.success) return commonFailure("openMany", params, "invalid_reward_pack");
+        var rolled:Array = [];
+        var totalOccurrences:Number = 0;
+        for (var ordinal:Number = 0; ordinal < count; ordinal++) {
+            var roll:Object = rollRecipe(recipe);
+            if (!roll.success) return commonFailure("openMany", params, "invalid_reward_pack");
+            rolled.push(roll.entries);
+            totalOccurrences += roll.entries.length;
+        }
+        if (!RewardInboxService.canAppendOccurrenceCount(totalOccurrences)) {
+            return commonFailure("openMany", params, "reward_inbox_full");
+        }
+
+        var bag:Object = source.inventory;
+        var bagBefore:Object = bag.toObject();
+        var feature:Object = RewardInboxService.ensureFeature();
+        if (feature == null) return commonFailure("openMany", params, "service_not_ready");
+        var featureBefore:Object = ObjectUtil.clone(feature);
+        var dirtyBefore = _root.存档系统 == null
+            ? undefined : _root.存档系统.dirtyMark;
+        var assetContext:Object = {source:"item_use", reason:"reward_pack_open_many",
+            operationId:operationId, mergeScope:"operation"};
+        var transaction:Object = PlayerAssetTransaction.begin(assetContext);
+        var remaining:Number = 0;
+        _busy = true;
+        try {
+            PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+            var before:Number = Number(source.item.value);
+            bag.addValue(String(source.slot), -count);
+            var afterItem:Object = bag.getItem(String(source.slot));
+            remaining = afterItem == null ? 0 : Number(afterItem.value);
+            if (before - remaining != count) throw "source_commit_mismatch";
+            PlayerAssetTransaction.recordEffect("loss", "item",
+                String(source.item.name), count, assetContext);
+            var packages:Array = [];
+            for (var i:Number = 0; i < count; i++) {
+                if (_testFaultCut == "append" && i == _testFaultOrdinal) {
+                    throw new Error("injected_openmany_append_fault");
+                }
+                var batch:Object = RewardInboxService.appendRewardBatch(
+                    String(source.item.name), operationId, rolled[i]);
+                if (batch == null || batch.success !== true) throw "batch_append_failed";
+                packages.push({ordinal:i, batchId:String(batch.batchId),
+                    entryCount:Number(batch.entryCount)});
+            }
+            var receipt:Object = {operationId:operationId, kind:"openMany",
+                status:"committed", request:request, consumed:count,
+                remaining:remaining, packages:packages};
+            if (_testFaultCut == "receipt") {
+                throw new Error("injected_openmany_receipt_fault");
+            }
+            if (!RewardInboxService.recordReceipt(receipt)) throw "receipt_conflict";
+            if (!flushSave()) throw "flush_failed";
+            PlayerAssetTransaction.commit(transaction);
+        } catch (openManyError) {
+            var restored:Boolean = restoreOpenState(
+                bag, bagBefore, featureBefore, dirtyBefore);
+            PlayerAssetTransaction.settleAfterException(transaction, !restored);
+            _busy = false;
+            InventoryPanelService.invalidateExternalSlot("背包", Number(source.slot));
+            return commonFailure("openMany", params, "commit_pending");
+        }
+        _busy = false;
+        InventoryPanelService.invalidateExternalSlot("背包", Number(source.slot));
+        return openManySuccess(params,
+            RewardInboxService.lookupReceipt(operationId), false);
     }
 
     private static function executeConsume(params:Object):Object {
@@ -304,6 +415,71 @@ class org.flashNight.arki.item.ItemUseService {
         response.rewardAuthority = response.rewardReady
             ? RewardInboxService.materializeAuthority() : null;
         return response;
+    }
+
+    /**
+     * §5.5 成功响应 exact keys；fresh replayed=false，receipt replay 时
+     * replayed=true 且 requestedCount/consumed/remaining/packages 与持久
+     * receipt exact 相同；rewardReady/inboxSummary/rewardAuthority 始终从
+     * 当前 Reward authority 重建，不写进 immutable receipt。
+     */
+    private static function openManySuccess(params:Object, receipt:Object,
+                                            replayed:Boolean):Object {
+        var projection:Object = projectOpenManyPackages(receipt);
+        var summary:Object = RewardInboxService.inboxSummary();
+        var response:Object = common("openMany", params, true, "");
+        response.replayed = replayed === true;
+        response.requestedCount = projection.requestedCount;
+        response.consumed = Number(receipt.consumed);
+        response.remaining = Number(receipt.remaining);
+        response.packages = projection.packages;
+        response.rewardReady = rewardSummaryReady(summary);
+        response.inboxSummary = summary;
+        response.rewardAuthority = response.rewardReady
+            ? RewardInboxService.materializeAuthority() : null;
+        return response;
+    }
+
+    /** §5.4：receipt 内存 exact normalized request object。 */
+    private static function normalizedOpenManyRequest(params:Object):Object {
+        var source:Object = params.source;
+        return {v:1, count:Number(params.count), source:{
+            physicalSlot:Number(source.physicalSlot),
+            slotLease:String(source.slotLease),
+            itemName:String(source.itemName),
+            backpackVersion:Number(source.backpackVersion)}};
+    }
+
+    /** 逐字段比较，兼容 receipt 经存档 JSON 往返后的对象形状。 */
+    private static function sameOpenManyRequest(stored:Object,
+                                                current:Object):Boolean {
+        if (stored == null || current == null) return false;
+        var storedSource:Object = stored.source;
+        var currentSource:Object = current.source;
+        return Number(stored.v) == 1
+            && Number(stored.count) == Number(current.count)
+            && storedSource != null && currentSource != null
+            && Number(storedSource.physicalSlot) == Number(currentSource.physicalSlot)
+            && String(storedSource.slotLease) == String(currentSource.slotLease)
+            && String(storedSource.itemName) == String(currentSource.itemName)
+            && Number(storedSource.backpackVersion) == Number(currentSource.backpackVersion);
+    }
+
+    /** 投影复制 packages 行，不回传 persisted receipt 的内部对象引用。 */
+    private static function projectOpenManyPackages(receipt:Object):Object {
+        var source:Array = receipt != null && receipt.packages instanceof Array
+            ? receipt.packages : [];
+        var packages:Array = [];
+        for (var i:Number = 0; i < source.length; i++) {
+            var row:Object = source[i];
+            if (row == null) continue;
+            packages.push({ordinal:Number(row.ordinal),
+                batchId:String(row.batchId),
+                entryCount:Number(row.entryCount)});
+        }
+        var requested:Number = receipt != null && receipt.request != null
+            ? Number(receipt.request.count) : Number(receipt.consumed);
+        return {requestedCount:requested, packages:packages};
     }
 
     private static function consumeSuccess(params:Object, receipt:Object):Object {
@@ -479,6 +655,7 @@ class org.flashNight.arki.item.ItemUseService {
                 || String(params.panelInstanceId).length < 1
                 || !positiveWhole(Number(params.sessionGeneration))) return false;
         var expectedAction:String = commandName == "open" ? "itemUseOpen"
+            : commandName == "openMany" ? "itemUseOpenMany"
             : commandName == "consume" ? "itemUseConsume"
             : commandName == "query" ? "itemUseQuery"
             : commandName == "inboxSnapshot" ? "itemUseInboxSnapshot"
@@ -491,16 +668,25 @@ class org.flashNight.arki.item.ItemUseService {
         if (!validOperationId(params.operationId)) return false;
         if (commandName == "query") return onlyKeys(params,
             ["task","action","callId","v","operationId","panelInstanceId","sessionGeneration"]);
-        if (!onlyKeys(params,["task","action","callId","v","operationId",
-                "panelInstanceId","sessionGeneration","source"])) return false;
+        var writeKeys:Array = ["task","action","callId","v","operationId",
+            "panelInstanceId","sessionGeneration","source"];
+        if (commandName == "openMany") writeKeys.push("count");
+        if (!onlyKeys(params, writeKeys)) return false;
         var source:Object = params.source;
-        return source != null && onlyKeys(source,
-            ["physicalSlot","slotLease","itemName","backpackVersion"])
-            && whole(Number(source.physicalSlot)) && Number(source.physicalSlot) >= 0
-            && Number(source.physicalSlot) < 50 && typeof source.slotLease == "string"
-            && String(source.slotLease).length > 0 && typeof source.itemName == "string"
-            && String(source.itemName).length > 0
-            && nonNegativeWhole(Number(source.backpackVersion));
+        if (source == null || !onlyKeys(source,
+                ["physicalSlot","slotLease","itemName","backpackVersion"])
+                || !whole(Number(source.physicalSlot)) || Number(source.physicalSlot) < 0
+                || Number(source.physicalSlot) >= 50 || typeof source.slotLease != "string"
+                || String(source.slotLease).length < 1 || typeof source.itemName != "string"
+                || String(source.itemName).length < 1
+                || !nonNegativeWhole(Number(source.backpackVersion))) return false;
+        if (commandName == "openMany") {
+            // §5.2：count 整数 2..64；1 继续走 itemUseOpen，0/65/NaN/Infinity 拒绝
+            var count:Number = Number(params.count);
+            return typeof params.count == "number"
+                && whole(count) && count >= 2 && count <= 64;
+        }
+        return true;
     }
 
     private static function onlyKeys(value:Object, allowed:Array):Boolean {
@@ -526,6 +712,11 @@ class org.flashNight.arki.item.ItemUseService {
         if (receipt.rewardBatchId != undefined) projected.rewardBatchId = String(receipt.rewardBatchId);
         if (receipt.selectedLane != undefined) projected.selectedLane = Number(receipt.selectedLane);
         if (receipt.rewardReady != undefined) projected.rewardReady = receipt.rewardReady === true;
+        if (receipt.kind == "openMany") {
+            var openMany:Object = projectOpenManyPackages(receipt);
+            projected.requestedCount = openMany.requestedCount;
+            projected.packages = openMany.packages;
+        }
         return projected;
     }
 
@@ -630,5 +821,11 @@ class org.flashNight.arki.item.ItemUseService {
 
     public static function setRandomValuesForTests(values:Array):Void {
         _testRandomValues = values == null ? null : values.concat();
+    }
+
+    /** 测试专用 openMany 语义 fault-cut；生产路径 _testFaultCut 恒为 ""。 */
+    public static function setOpenManyFaultForTests(cut:String, ordinal:Number):Void {
+        _testFaultCut = cut == null ? "" : String(cut);
+        _testFaultOrdinal = ordinal == null ? -1 : Number(ordinal);
     }
 }
