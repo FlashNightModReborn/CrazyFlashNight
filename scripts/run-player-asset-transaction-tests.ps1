@@ -6,6 +6,9 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+# PS 5.1 运运行时 chcp 不改变原生命令输出解码；本 runner 用 git grep 比对中文路径，
+# 必须显式把原生输出解码钉为 UTF-8，否则路径清单门在 GBK 机器上恒假漂移。
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $rootFacadePath = Join-Path $projectRoot 'scripts\引擎\引擎_鸡蛋_lsy_物品系统.as'
 $playerAssetTransactionPath = Join-Path $projectRoot `
@@ -25,6 +28,8 @@ $craftingPath = Join-Path $projectRoot `
     'scripts\类定义\org\flashNight\arki\item\CraftingPanelService.as'
 $itemUtilPath = Join-Path $projectRoot `
     'scripts\类定义\org\flashNight\arki\item\ItemUtil.as'
+$itemUsePath = Join-Path $projectRoot `
+    'scripts\类定义\org\flashNight\arki\item\ItemUseService.as'
 $drugPath = Join-Path $projectRoot `
     'scripts\类定义\org\flashNight\arki\unit\Action\Skill\DrugInputService.as'
 $petPath = Join-Path $projectRoot `
@@ -219,6 +224,9 @@ $productionBeginContracts = @(
         'delete _root._saveExt.procurementPlans;',
         'var submitRestored:Boolean = false;',
         'assetTransaction, !submitRestored') },
+    @{ Name = 'item-use'; Path = $itemUsePath; ExpectedBeginCount = 1; RequiredTokens = @(
+        'catch (openError)', 'PlayerAssetTransaction.settleAfterException(',
+        'restoreOpenState(', 'commit_pending') },
     @{ Name = 'item-util'; Path = $itemUtilPath; ExpectedBeginCount = 2; RequiredTokens = @(
         'catch (acquireError)', 'recoverAcquireDispatch();',
         'PlayerAssetTransaction.markDirtyRequired(',
@@ -231,7 +239,7 @@ $productionBeginContracts = @(
         'rawCommittedBag != expectedBagCommit',
         'rawCommittedMaterial != Number(value)',
         'return acquireExact;', 'return submitExact;') },
-    @{ Name = 'drug'; Path = $drugPath; ExpectedBeginCount = 1; RequiredTokens = @(
+    @{ Name = 'drug'; Path = $drugPath; ExpectedBeginCount = 2; RequiredTokens = @(
         'catch (useError)', 'PlayerAssetTransaction.settleAfterException(',
         'inventory.setIndexes(null)', 'catch (exhaustedMessageError)') },
     @{ Name = 'pet'; Path = $petPath; ExpectedBeginCount = 7; RequiredTokens = @(
@@ -302,8 +310,8 @@ foreach ($contract in $productionBeginContracts) {
         }
     }
 }
-if ($auditedProductionBeginCount -ne 22) {
-    throw "生产 PlayerAssetTransaction.begin 审计总数漂移: $auditedProductionBeginCount/22"
+if ($auditedProductionBeginCount -ne 24) {
+    throw "生产 PlayerAssetTransaction.begin 审计总数漂移: $auditedProductionBeginCount/24"
 }
 $expectedProductionBeginPaths = @($productionBeginContracts | ForEach-Object {
     [System.IO.Path]::GetFullPath($_.Path).Substring($projectRoot.Length + 1).Replace('\', '/')
@@ -325,7 +333,7 @@ if ($productionBeginPathDrift.Count -gt 0) {
         (($productionBeginPathDrift | Out-String).Trim()))
 }
 
-# 19 个直接持有领域 authority 的显式 caller 必须在首写前 fail-fast 标脏；
+# 21 个直接持有领域 authority 的显式 caller 必须在首写前 fail-fast 标脏；
 # preserve=true catch 的 receipt 已由逐写 finally 固化，因此异常清理必须先 settle，
 # 不能再让 dirty/receipt/索引修复异常把 frame 留给下一事务。装备调制仅投影已提交
 # receipt，不在本清单；制作拥有 exact snapshot，保留 restore -> finally settle(false)。
@@ -369,9 +377,15 @@ $directAuthorityContracts = @(
     @{ Name='crafting'; Path=$craftingPath; Start='private static function executeCommit';
         End='private static function restoreState'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='ItemUtil.submit('; Catch=$null; DirtyExact=1 },
-    @{ Name='drug'; Path=$drugPath; Start='public static function updateSlot';
-        End='public static function syncView'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+    @{ Name='item-use-open'; Path=$itemUsePath; Start='private static function executeOpen';
+        End='private static function executeConsume'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+        FirstWrite='bag.addValue(String(source.slot), -1);'; Catch=$null; DirtyExact=1 },
+    @{ Name='drug-slot'; Path=$drugPath; Start='public static function updateSlot';
+        End='public static function selectDirectUseLane'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='if (root && root.使用药剂)'; Catch='useError'; DirtyExact=1 },
+    @{ Name='drug-direct'; Path=$drugPath; Start='public static function consumeBackpackItem';
+        End='private static function recordDepletionAffinity'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+        FirstWrite='if (root.使用药剂)'; Catch='useError'; DirtyExact=1 },
     @{ Name='npc-buy'; Path=$npcShopPath; Start='NPC商店WebView.executeBuy = function';
         End='NPC商店WebView.validateCollectionSource = function'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='ItemUtil.singleAcquire('; Catch='buyAssetError'; DirtyExact=1 },
@@ -457,11 +471,11 @@ foreach ($contract in $directAuthorityContracts) {
         }
     }
 }
-if ($directAuthorityContracts.Count -ne 19) {
-    throw "direct-authority caller 审计清单漂移: $($directAuthorityContracts.Count)/19"
+if ($directAuthorityContracts.Count -ne 21) {
+    throw "direct-authority caller 审计清单漂移: $($directAuthorityContracts.Count)/21"
 }
-if ($auditedDirectDirtyCount -ne 19) {
-    throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/19"
+if ($auditedDirectDirtyCount -ne 21) {
+    throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/21"
 }
 
 # Quest 多资源完成必须先交付、再写可恢复奖励、最后写进度/完成状态；升级
@@ -502,14 +516,18 @@ if ($petLevelBeginIndex -lt 0 -or $petLevelThresholdIndex -lt 0 `
     throw '战宠升级下一阈值计算未前置到玩家物资 frame/扣石之前'
 }
 
-# checkout/交易 durability 必须在显式 frame 内请求，由 commit 隔离保存异常；
-# 已提交后直调强存盘会截断 success response 并诱发重放。
+# checkout/claim durability 必须在显式 frame 内、commit 之前用显式 durable fence
+# 确认落盘（存盘风暴止血专项 A①）；flush 失败必须 exact restore 并以
+# commit_pending 交 Web bulkQuery 对账，不得回到 receipt 先行、存盘后补的旧窗口。
 $kshopSource = Get-Content -LiteralPath $kshopPath -Raw -Encoding UTF8
 $npcShopSource = Get-Content -LiteralPath $npcShopPath -Raw -Encoding UTF8
 if (([regex]::Matches($kshopSource,
-            'PlayerAssetTransaction\.requestStrongSave\s*\(')).Count -ne 2 -or
+            'PlayerAssetTransaction\.flushStrongSaveNow\s*\(')).Count -ne 2 -or
+        ([regex]::Matches($kshopSource,
+            'PlayerAssetTransaction\.requestStrongSave\s*\(')).Count -ne 0 -or
+        ([regex]::Matches($kshopSource, 'error\s*=\s*"commit_pending"')).Count -ne 2 -or
         $kshopSource -match '_root\.强制存盘\s*\(') {
-    throw 'KShop checkout/claim 强存盘未完整收进显式玩家物资事务'
+    throw 'KShop checkout/claim 缺少 commit 前显式 durable fence 或 commit_pending 恢复出口'
 }
 if (([regex]::Matches($npcShopSource,
             'PlayerAssetTransaction\.requestStrongSave\s*\(')).Count -ne 1 -or
@@ -655,10 +673,10 @@ $focusedRun = @{
         'scripts\通信\通信_鸡蛋_任务系统.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^PlayerAssetTransactionTest Tests Passed: 113\r?$'
+        '(?m)^PlayerAssetTransactionTest Tests Passed: 117\r?$'
         '(?m)^PlayerAssetTransactionTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'PlayerAssetTransactionTest 113/113'
+    SuccessSummary = 'PlayerAssetTransactionTest 117/117'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
