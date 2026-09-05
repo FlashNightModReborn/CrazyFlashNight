@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "demo1-organizations",
+  "rulesVersion": "warlord.organization.v1",
+  "defaultFormationProfileRef": "line",
+  "unitTemplates": [
+    { "cardRef": 12, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 1, "apContribution": 1 },
+    { "cardRef": 13, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 1, "apContribution": 1 },
+    { "cardRef": 14, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 1, "apContribution": 1 },
+    { "cardRef": 15, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 2, "apContribution": 1 },
+    { "cardRef": 82, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 2, "apContribution": 1 },
+    { "cardRef": 83, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 2, "apContribution": 1 },
+    { "cardRef": 84, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 2, "apContribution": 1 },
+    { "cardRef": 85, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 3, "apContribution": 1 },
+    { "cardRef": 111, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 2, "apContribution": 1 },
+    { "cardRef": 112, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 2, "apContribution": 1 },
+    { "cardRef": 113, "commandLoad": 1, "deploymentSize": 1, "encounterCost": 3, "apContribution": 1 }
+  ],
+  "taskGroupTemplates": [
+    {
+      "id": "demo1.mixed-detachment",
+      "displayName": "混成任务编组",
+      "minimumMembers": 2,
+      "maximumMembers": 4,
+      "commandLoadDivisor": 1,
+      "formationProfileRefs": ["line", "column", "wedge", "shield", "grid"]
+    }
+  ],
+  "formationProfiles": [
+    { "id": "line", "displayName": "横列", "arenaFormationRef": "line", "slotRoles": ["vanguard", "flank", "fire_support", "reserve"] },
+    { "id": "column", "displayName": "纵队", "arenaFormationRef": "column", "slotRoles": ["vanguard", "reserve", "fire_support", "flank"] },
+    { "id": "wedge", "displayName": "楔形", "arenaFormationRef": "wedge", "slotRoles": ["vanguard", "flank", "flank", "fire_support", "reserve"] },
+    { "id": "shield", "displayName": "前盾后排", "arenaFormationRef": "shield", "slotRoles": ["vanguard", "vanguard", "fire_support", "reserve"] },
+    { "id": "grid", "displayName": "网格散点", "arenaFormationRef": "grid", "slotRoles": ["vanguard", "flank", "fire_support", "reserve"] }
+  ]
+}

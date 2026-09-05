@@ -417,6 +417,7 @@ namespace CF7Launcher.Guardian
         private readonly Action<Action> _testPumpDispatcher;
         private readonly Action<Action> _testClosedEventDispatcher;
         private Func<string, bool> _testExactReplacePoster;
+        private Action _testBeforeDoClose;
         private string _lastOpenPayloadForTest;
         /// <summary>测试线束（_testPumpDispatcher）路径下最后一次 DoOpen 的完整 open payload。</summary>
         internal string LastOpenPayloadForTest { get { return _lastOpenPayloadForTest; } }
@@ -793,6 +794,11 @@ namespace CF7Launcher.Guardian
             _testExactReplacePoster = poster;
         }
 
+        internal void SetBeforeDoCloseForTests(Action callback)
+        {
+            _testBeforeDoClose = callback;
+        }
+
         /// <summary>
         /// Retires the requested visual without ever closing a different instance. Unlike a
         /// generic exact close, this request is admitted behind an already-reserved tracked open
@@ -1112,6 +1118,23 @@ namespace CF7Launcher.Guardian
                         || !string.Equals(_trackedLeaseInstanceId, cmd.ReservedPanelInstanceId,
                             StringComparison.Ordinal))
                         return false;
+                }
+                else if (cmd.IsExactClose)
+                {
+                    // A tracked source may use the richer exact-close settlement
+                    // primitive, but only for its own lease.  This is what permits a
+                    // GameStage battle handoff to commit before DoClose without letting
+                    // a generic close consume or bypass a different tracked owner.
+                    if (_trackedOpenReserved || _exactReplaceReserved
+                        || (_trackedLeaseInstanceId != null
+                        && (!string.Equals(_trackedLeasePanelName, cmd.Name,
+                                StringComparison.Ordinal)
+                            || !string.Equals(_trackedLeaseInstanceId,
+                                cmd.ReservedPanelInstanceId,
+                                StringComparison.Ordinal))))
+                    {
+                        return false;
+                    }
                 }
                 else if (!cmd.IsVisualRetire
                     && (_trackedOpenReserved
@@ -1743,6 +1766,15 @@ namespace CF7Launcher.Guardian
                         _returnStack.Clear();
                 }
                 DoClose();
+                if (string.Equals(_trackedLeasePanelName, cmd.Name,
+                        StringComparison.Ordinal)
+                    && string.Equals(_trackedLeaseInstanceId,
+                        cmd.ReservedPanelInstanceId,
+                        StringComparison.Ordinal))
+                {
+                    _trackedLeasePanelName = null;
+                    _trackedLeaseInstanceId = null;
+                }
                 closed = true;
                 LogManager.Log(
                     AuthorityLogFormatter.FormatPanelExactCloseCompleted(
@@ -3068,6 +3100,9 @@ namespace CF7Launcher.Guardian
         {
             if (_testPumpDispatcher != null)
             {
+                Action testBeforeClose = _testBeforeDoClose;
+                _testBeforeDoClose = null;
+                if (testBeforeClose != null) testBeforeClose();
                 string testClosingName =
                     _activePanel;
                 string testClosingInstance =

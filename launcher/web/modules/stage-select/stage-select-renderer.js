@@ -199,6 +199,7 @@
     // 生命周期（对位 arena-shell：跨模块编排，领域规则仍在各模块内）
     // ════════════════════════════════════════════════════════════════════════════
     function onOpen(root, initData) {
+        S._catalogId = StageSelectData.activateCatalog(initData && initData.catalogId);
         var manifest = StageSelectData.getManifest();
         S._session += 1;
         S._pendingReq = {};
@@ -212,8 +213,12 @@
         S.DESIGN_W = manifest.designSize && manifest.designSize.width || 1024;
         S.DESIGN_H = manifest.designSize && manifest.designSize.height || 576;
         S._fixtureName = initData && initData.fixture || 'mixed';
-        S._currentFrameLabel = initData && initData.frameLabel || initData && initData.page || manifest.frameOrder[0];
-        S._returnFrameLabel = initData && initData.returnFrameLabel || S._currentFrameLabel;
+        var requestedFrameLabel = initData && (initData.frameLabel || initData.page) || '';
+        S._currentFrameLabel = requestedFrameLabel && StageSelectData.hasFrame(requestedFrameLabel)
+            ? requestedFrameLabel : manifest.frameOrder[0];
+        var requestedReturnFrameLabel = initData && initData.returnFrameLabel || '';
+        S._returnFrameLabel = requestedReturnFrameLabel && StageSelectData.hasFrame(requestedReturnFrameLabel)
+            ? requestedReturnFrameLabel : S._currentFrameLabel;
         applyFixture(S._fixtureName);
         if (S._fixtureSelectEl) S._fixtureSelectEl.value = S._fixtureName;
         if (S._el) S._el.classList.toggle('is-runtime', VM.isRuntimeMode());
@@ -237,14 +242,35 @@
 
     // Host 同名 reopen（DoRebind）：不重建 DOM/选中态，只换绑会话令牌并补一次快照。
     function onRebind(root, initData) {
+        var previousCatalogId = S._catalogId;
+        S._catalogId = StageSelectData.activateCatalog(initData && initData.catalogId);
+        var catalogChanged = previousCatalogId !== S._catalogId;
+        var manifest = StageSelectData.getManifest();
         S._panelInstanceId = StageSelectBridge.readInitInstanceId(initData);
         StageSelectBridge.invalidatePendingRequests('rebind');
         S._lastAppliedStateRevision = 0;
-        if (initData && initData.frameLabel && StageSelectData.getFrame(initData.frameLabel)) {
+        if (initData && initData.frameLabel && StageSelectData.hasFrame(initData.frameLabel)) {
             S._currentFrameLabel = initData.frameLabel;
+        } else if (catalogChanged || !StageSelectData.hasFrame(S._currentFrameLabel)) {
+            S._currentFrameLabel = manifest.frameOrder[0];
         }
-        if (initData && initData.returnFrameLabel && StageSelectData.getFrame(initData.returnFrameLabel)) {
+        if (initData && initData.returnFrameLabel && StageSelectData.hasFrame(initData.returnFrameLabel)) {
             S._returnFrameLabel = initData.returnFrameLabel;
+        } else if (catalogChanged || !StageSelectData.hasFrame(S._returnFrameLabel)) {
+            S._returnFrameLabel = S._currentFrameLabel;
+        }
+        if (catalogChanged) {
+            S.DESIGN_W = manifest.designSize && manifest.designSize.width || 1024;
+            S.DESIGN_H = manifest.designSize && manifest.designSize.height || 576;
+            S._runtimeSnapshot = null;
+            S._selectedStageId = '';
+            S._tabbableStageId = '';
+            S._hoverStageId = '';
+            S._cardHoverStageId = '';
+            S._focusStageId = '';
+            renderTabs();
+            attachScaleWatcher();
+            renderCurrentFrame();
         }
         StageSelectCore.logDev('session rebound: ' + (S._panelInstanceId || '(unbound)'));
         StageSelectBridge.requestSnapshot();
@@ -281,6 +307,10 @@
     // 幂等：任何关闭路径（requestClose→Panels.close / C# close / 切面板）都经此统一销毁
     function onClose() {
         setFrameMenuOpen(false);
+        // scoped 测试目录只在 stage-select 活跃期间生效。只有 Panels 已接受关闭并进入
+        // onClose 后才恢复 production；transport false/throw 时 requestClose 会提前返回，
+        // 因而不会让仍可见的测试页突然切换数据源。
+        S._catalogId = StageSelectData.activateCatalog(StageSelectData.DEFAULT_CATALOG_ID);
         // P2：检查器销毁幂等——清选中态并隐藏，元素保留待下次 open 复用
         StageSelectInspector.clearSelection();
         S._hoverStageId = '';
@@ -443,6 +473,7 @@
     }
 
     function renderHeader(frame) {
+        var manifest = StageSelectData.getManifest();
         var tabs = S._tabsEl ? S._tabsEl.querySelectorAll('.stage-select-tab') : [];
         var taskTargets = VM.getTaskTargets();
         var activeIndex = -1;
@@ -453,6 +484,12 @@
             if (isActive) activeIndex = i;
         }
         syncFrameTaskBadges(taskTargets);
+        var title = S._el.querySelector('.stage-select-title');
+        if (title) title.textContent = manifest.title || '选关';
+        if (S._el) {
+            S._el.setAttribute('data-catalog-id', S._catalogId || StageSelectData.DEFAULT_CATALOG_ID);
+            S._el.setAttribute('data-test-catalog', manifest.testOnly ? 'true' : 'false');
+        }
         var region = S._el.querySelector('#stage-select-region');
         if (region) region.textContent = frame.frameLabel;
         if (S._frameToggleLabelEl) S._frameToggleLabelEl.textContent = frame.frameLabel;
@@ -468,6 +505,9 @@
         if (S._frameToggleEl) {
             S._frameToggleEl.classList.toggle('has-task', taskTargets.total > 0);
             S._frameToggleEl.setAttribute('data-task-count', String(taskTargets.total || 0));
+            S._frameToggleEl.setAttribute('title', manifest.testOnly ? manifest.title : '切换区域');
+            S._frameToggleEl.setAttribute('aria-label', manifest.testOnly
+                ? manifest.title + '，切换区域' : '切换区域');
         }
         if (S._summaryEl) {
             S._summaryEl.innerHTML =

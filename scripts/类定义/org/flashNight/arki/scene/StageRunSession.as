@@ -23,7 +23,6 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
     // AVM1 random() 的跨度是有符号 32 位整数；safe integer 仍可能在这里回绕。
     private static var MAX_RANDOM_SPAN:Number = 2147483647;
-
     private static var _installed:Boolean = false;
     private static var _runSeq:Number = 0;
     private static var _run:Object = null;
@@ -124,6 +123,11 @@ class org.flashNight.arki.scene.StageRunSession {
 
     public static function canStartStage():Boolean {
         return getStageStartBlockReason() == "";
+    }
+
+    /** 当前 GameStage 的 opaque runId；仅供同一 AS2 外层 Warlord fencing 使用。 */
+    public static function getCurrentRunId():String {
+        return _run == null ? "" : String(_run.runId || "");
     }
 
     /** 新关卡 admission 的稳定错误码；UI 只展示，AS2 入口仍须重新裁决。 */
@@ -457,6 +461,10 @@ class org.flashNight.arki.scene.StageRunSession {
                 || (_run.life != "dead" && _run.outcome == "active")) {
             return {success:false, error:"return_base_unavailable"};
         }
+        return invokeReturnBaseLocal();
+    }
+
+    private static function invokeReturnBaseLocal():Object {
         if (typeof _root.返回基地 != "function") {
             return {success:false, error:"return_base_unavailable"};
         }
@@ -993,7 +1001,7 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     private static function handleAction(params:Object):Void {
-        if (!validateAction(params) || _run == null
+        if (!validateLegacyAction(params) || _run == null
                 || params.runId !== _run.runId
                 || Number(params.expectedRevision) != Number(_run.revision)) {
             pushState();
@@ -1027,7 +1035,7 @@ class org.flashNight.arki.scene.StageRunSession {
         pushState();
     }
 
-    private static function validateAction(params:Object):Boolean {
+    private static function validateLegacyAction(params:Object):Boolean {
         if (!hasOnlyKeys(params, ["task", "action", "v", "runId",
                 "expectedRevision", "intent", "intentId"])) return false;
         return params.task === "cmd" && params.action === "stageOutcomeAction"
@@ -1923,4 +1931,5 @@ class org.flashNight.arki.scene.StageRunSession {
         _testDeliverableResolver = resolver;
         _testDeliverableNavigator = navigator;
     }
+
 }

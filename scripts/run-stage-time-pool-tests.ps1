@@ -35,8 +35,8 @@ if (-not $stageManager.Contains(
     throw 'same-frame arbitration drift: StageManager terminal guards are missing.'
 }
 if (-not $xmlParser.Contains('data.TimePools == null') -or
-        -not $xmlParser.Contains(
-            'stageManager.initialize(data.SubStage, timePoolData)')) {
+        -not $xmlParser.Contains('managerInitialized = stageManager.initialize(') -or
+        -not $xmlParser.Contains('data.SubStage, timePoolData, stageStartToken,')) {
     throw 'GameStage XML TimePools wiring drifted from the focused contract.'
 }
 

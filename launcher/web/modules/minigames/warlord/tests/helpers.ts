@@ -1,5 +1,6 @@
 import type { BattleUnitSnapshot } from '../src/battle/types.js';
 import { applyCommand } from '../src/core/engine.js';
+import { requireFaction } from '../src/core/factions.js';
 import { getRuntimeStats } from '../src/core/math.js';
 import { removePieceInPlace } from '../src/core/pieces.js';
 import { createGame } from '../src/core/state.js';
@@ -18,15 +19,29 @@ export function setAction(state: GameState, factionId: FactionId = 'red', ap = 9
   state.phase = 'FIRST_FACTION_ACTION';
   state.initiativeFactionId = factionId;
   state.activeFactionId = factionId;
-  state.factions[factionId].actionPoints = ap;
-  state.factions[factionId].apGeneratedThisRound = ap;
+  const faction = requireFaction(state, factionId);
+  faction.apLedger = {
+    baseGenerated: ap,
+    baseRemaining: ap,
+    baseSpent: 0,
+    fieldGenerated: 0,
+    fieldRemaining: 0,
+    fieldSpent: 0,
+  };
+  faction.actionPoints = ap;
+  faction.apGeneratedThisRound = ap;
+  faction.apSpentThisRound = 0;
 }
 
 export function setPlanning(state: GameState): void {
   state.phase = 'SETTLEMENT_PLANNING';
   state.activeFactionId = null;
-  state.factions.red.planningCommitted = false;
-  state.factions.blue.planningCommitted = false;
+  requireFaction(state, 'red').planningCommitted = false;
+  requireFaction(state, 'blue').planningCommitted = false;
+}
+
+export function faction(state: GameState, factionId: FactionId) {
+  return requireFaction(state, factionId);
 }
 
 export function applyOk(state: GameState, command: GameCommand): GameState {

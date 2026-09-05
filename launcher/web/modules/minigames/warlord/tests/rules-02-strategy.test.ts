@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { requireNode } from '../src/core/access.js';
 import { applyCommand } from '../src/core/engine.js';
 import {
   isFactionEliminated,
@@ -12,12 +13,12 @@ import { hasStableSupplyPath, isNodeStable, piecesAtNode, stableProductionNodeId
 import type { GameState, ProductionOrder } from '../src/core/types.js';
 import { validateCommand } from '../src/core/validator.js';
 import { getCardDefinition } from '../src/data/cards.js';
-import { applyOk, clearAllPieces, makeState, moveCommand, setAction, setPlanning } from './helpers.js';
+import { applyOk, clearAllPieces, faction, makeState, moveCommand, setAction, setPlanning } from './helpers.js';
 
 function makeGuaranteedTwoBattleState(seed: string): GameState {
   const state = makeState(seed);
   clearAllPieces(state);
-  state.factions.red.cards[15].level = 50;
+  faction(state, 'red').cards[15].level = 50;
   const attacker = createPieceInPlace(state, 'red', 15, 'R-Supply', 1, { pieceId: 'red-veteran' });
   const first = createPieceInPlace(state, 'blue', 14, 'North-Choke', 1, { pieceId: 'blue-screen-1' });
   const second = createPieceInPlace(state, 'blue', 13, 'B-Supply', 1, { pieceId: 'blue-screen-2' });
@@ -42,8 +43,8 @@ test('AC-09 节点战斗在命令返回前写回，经验延迟，同一幸存�
   assert.equal(state.battles.length, 1);
   assert.equal(state.pieces['blue-screen-1'], undefined);
   assert.equal(state.casualtyLedger[0]?.settled, false);
-  assert.equal(state.factions.red.xpPool, 0);
-  assert.equal(state.factions.blue.xpPool, 0);
+  assert.equal(faction(state, 'red').xpPool, 0);
+  assert.equal(faction(state, 'blue').xpPool, 0);
   const hpAfterFirst = state.pieces['red-veteran']?.hp;
   assert.ok(hpAfterFirst && hpAfterFirst > 0);
   const second = applyCommand(state, moveCommand(state, ['red-veteran'], 'North-Choke', 'B-Supply'));
@@ -73,14 +74,14 @@ test('AC-10 失败攻击者当战略回合不能重攻同一节点', () => {
 test('AC-11 容量按有序列表截断；超出进攻宽度整条命令非法', () => {
   let state = makeState('ac-11');
   const extra = createPieceInPlace(state, 'red', 14, 'R-HQ', 1, { pieceId: 'red-extra' });
-  state.factions.red.actionPoints = 10;
+  setAction(state, 'red', 10);
   const ids = [...piecesAtNode(state, 'R-HQ', 'red').map((piece) => piece.pieceId)];
   assert.equal(ids.length, 5);
   const expectedMoved = ids.slice(0, 4);
   state = applyOk(state, moveCommand(state, ids, 'R-HQ', 'R-Supply'));
   assert.deepEqual(piecesAtNode(state, 'R-Supply', 'red').map((piece) => piece.pieceId), [...expectedMoved].sort());
   assert.equal(state.pieces[ids[4] ?? extra.pieceId]?.nodeId, 'R-HQ');
-  assert.equal(state.factions.red.actionPoints, 6);
+  assert.equal(faction(state, 'red').actionPoints, 6);
 
   createPieceInPlace(state, 'blue', 14, 'North-Choke', 1, { pieceId: 'width-defender' });
   const threeAttackers = piecesAtNode(state, 'R-Supply', 'red').slice(0, 3).map((piece) => piece.pieceId);
@@ -95,27 +96,30 @@ test('AC-12 经过但未在结算时停留的节点不会占领', () => {
   assert.ok(pieceId);
   state = applyOk(state, moveCommand(state, [pieceId], 'R-HQ', 'R-Economy'));
   state = applyOk(state, moveCommand(state, [pieceId], 'R-Economy', 'South-Depot'));
-  assert.equal(state.map.nodes['South-Depot'].ownerFactionId, null);
+  assert.equal(requireNode(state, 'South-Depot').ownerFactionId, null);
   state = applyOk(state, moveCommand(state, [pieceId], 'South-Depot', 'R-Economy'));
   state = applyOk(state, { type: 'END_ACTION', factionId: 'red' });
   state = applyOk(state, { type: 'END_ACTION', factionId: 'blue' });
-  assert.equal(state.map.nodes['South-Depot'].ownerFactionId, null);
+  assert.equal(requireNode(state, 'South-Depot').ownerFactionId, null);
 });
 
-test('AC-13 一次结算只按旧快照向外占领一层', () => {
-  const state = makeState('ac-13');
+test('AC-13 行动结束按驻点直接占领，不要求稳定或补给路径', () => {
+  let state = makeState('ac-13');
+  clearAllPieces(state);
   createPieceInPlace(state, 'red', 14, 'Center-Command', 1, { pieceId: 'capture-layer-1' });
   createPieceInPlace(state, 'red', 14, 'B-Supply', 1, { pieceId: 'capture-layer-2' });
-  runSettlementAutoInPlace(state);
-  assert.equal(state.map.nodes['Center-Command'].ownerFactionId, 'red');
-  assert.equal(state.map.nodes['Center-Command'].activeFromRound, 2);
-  assert.equal(state.map.nodes['B-Supply'].ownerFactionId, 'blue');
+  setAction(state, 'red');
+  state = applyOk(state, { type: 'END_ACTION', factionId: 'red' });
+  assert.equal(requireNode(state, 'Center-Command').ownerFactionId, 'red');
+  assert.equal(requireNode(state, 'Center-Command').activeFromRound, 2);
+  assert.equal(requireNode(state, 'B-Supply').ownerFactionId, 'red');
+  assert.equal(requireNode(state, 'B-Supply').activeFromRound, 2);
 });
 
 test('AC-14 敌军占据仍属己方的节点会立即切断补给路径和生产锚点', () => {
   const state = makeState('ac-14');
-  state.map.nodes['Center-Command'].ownerFactionId = 'red';
-  state.map.nodes['Center-Command'].activeFromRound = 1;
+  requireNode(state, 'Center-Command').ownerFactionId = 'red';
+  requireNode(state, 'Center-Command').activeFromRound = 1;
   createPieceInPlace(state, 'blue', 14, 'Center-Command', 1, { pieceId: 'cut-center' });
   createPieceInPlace(state, 'red', 14, 'B-Supply', 1, { pieceId: 'behind-lines' });
   assert.ok(!isNodeStable(state, 'Center-Command', 'red'));
@@ -124,38 +128,39 @@ test('AC-14 敌军占据仍属己方的节点会立即切断补给路径和生�
   createPieceInPlace(state, 'blue', 14, 'R-Supply', 1, { pieceId: 'cut-anchor' });
   assert.ok(!stableProductionNodeIds(state, 'red').includes('R-Supply'));
   runSettlementAutoInPlace(state);
-  assert.equal(state.map.nodes['B-Supply'].ownerFactionId, 'blue');
+  assert.equal(requireNode(state, 'B-Supply').ownerFactionId, 'blue');
 });
 
-test('AC-15 新夺节点按旧所有权只恢复三分之一差值且本轮不产出', () => {
-  const state = makeState('ac-15');
+test('AC-15 行动末新夺节点未激活，只恢复三分之一差值且本轮不产出', () => {
+  let state = makeState('ac-15');
   const piece = createPieceInPlace(state, 'red', 14, 'South-Depot', 1, { pieceId: 'depot-capturer' });
   piece.maxHp = 1000;
   piece.hp = 100;
-  state.factions.red.gold = 0;
-  runSettlementAutoInPlace(state);
-  assert.equal(piece.hp, 400);
-  assert.equal(state.map.nodes['South-Depot'].ownerFactionId, 'red');
-  assert.equal(state.map.nodes['South-Depot'].activeFromRound, 2);
+  faction(state, 'red').gold = 0;
+  state = applyOk(state, { type: 'END_ACTION', factionId: 'red' });
+  state = applyOk(state, { type: 'END_ACTION', factionId: 'blue' });
+  assert.equal(state.pieces[piece.pieceId]?.hp, 400);
+  assert.equal(requireNode(state, 'South-Depot').ownerFactionId, 'red');
+  assert.equal(requireNode(state, 'South-Depot').activeFromRound, 2);
   // Initial stable HQ + Economy yield 13G; the newly captured 6G depot must not pay this settlement.
-  assert.equal(state.factions.red.gold, 13);
+  assert.equal(faction(state, 'red').gold, 13);
 });
 
 test('AC-16 失稳生产节点取消订单：金币不退，全部预留人口原子释放', () => {
   let state = makeState('ac-16');
   setPlanning(state);
-  state.factions.red.gold = 100;
+  faction(state, 'red').gold = 100;
   state = applyOk(state, { type: 'ENQUEUE_PRODUCTION', factionId: 'red', nodeId: 'R-Supply', slotId: 'R-Supply:1', cardId: 14 });
-  const goldAfterOrder = state.factions.red.gold;
-  assert.equal(state.factions.red.populationReserved, 1);
+  const goldAfterOrder = faction(state, 'red').gold;
+  assert.equal(faction(state, 'red').populationReserved, 1);
   for (const node of Object.values(state.map.nodes)) node.goldIncome = 0;
   createPieceInPlace(state, 'blue', 14, 'R-Supply', 1, { pieceId: 'queue-raider' });
   state.phase = 'SECOND_FACTION_ACTION';
   state.activeFactionId = 'blue';
   runSettlementAutoInPlace(state);
-  assert.equal(state.factions.red.gold, goldAfterOrder);
-  assert.equal(state.factions.red.populationReserved, 0);
-  assert.equal(state.factions.red.productionQueues['R-Supply']?.[0]?.orders.length, 0);
+  assert.equal(faction(state, 'red').gold, goldAfterOrder);
+  assert.equal(faction(state, 'red').populationReserved, 0);
+  assert.equal(faction(state, 'red').productionQueues['R-Supply']?.[0]?.orders.length, 0);
 });
 
 test('AC-17 ROUND_START 先重算人口；超限同时阻止新订单和等待部署', () => {
@@ -163,22 +168,22 @@ test('AC-17 ROUND_START 先重算人口；超限同时阻止新订单和等待�
   // Initial 4 population + seven extra T1 = cap 11, while HQ still has one physical slot.
   for (let i = 0; i < 4; i += 1) createPieceInPlace(state, 'red', 14, 'R-Supply', 1, { pieceId: `pop-s-${i}` });
   for (let i = 0; i < 3; i += 1) createPieceInPlace(state, 'red', 14, 'R-Economy', 1, { pieceId: `pop-e-${i}` });
-  assert.equal(state.factions.red.populationUsed, 11);
+  assert.equal(faction(state, 'red').populationUsed, 11);
   const order: ProductionOrder = {
     orderId: 'waiting-pop', factionId: 'red', nodeId: 'R-HQ', slotId: 'R-HQ:1', cardId: 14,
     remainingRounds: 0, status: 'waiting_deployment', populationCost: 1, goldCost: 8, enqueuedRound: 1,
   };
-  const slot = state.factions.red.productionQueues['R-HQ']?.[0];
+  const slot = faction(state, 'red').productionQueues['R-HQ']?.[0];
   assert.ok(slot);
   slot.orders.push(order);
-  state.factions.red.populationReserved = 1;
-  state.factions.red.populationCap = 99;
+  faction(state, 'red').populationReserved = 1;
+  faction(state, 'red').populationCap = 99;
   startStrategicRoundInPlace(state);
-  assert.equal(state.factions.red.populationCap, 11);
+  assert.equal(faction(state, 'red').populationCap, 11);
   assert.equal(slot.orders[0]?.status, 'waiting_deployment');
-  assert.equal(state.factions.red.populationReserved, 1);
+  assert.equal(faction(state, 'red').populationReserved, 1);
   setPlanning(state);
-  state.factions.red.gold = 100;
+  faction(state, 'red').gold = 100;
   const enqueue = validateCommand(state, { type: 'ENQUEUE_PRODUCTION', factionId: 'red', nodeId: 'R-HQ', slotId: 'R-HQ:2', cardId: 14 });
   assert.ok(!enqueue.ok);
   assert.match(enqueue.error ?? '', /人口容量不足/);
@@ -188,10 +193,10 @@ test('AC-18 阵亡立即减少 populationUsed，且结算恢复不会复活', ()
   let state: GameState | null = null;
   for (let index = 0; index < 64; index += 1) {
     const candidate = makeGuaranteedTwoBattleState(`ac-18-${index}`);
-    const before = candidate.factions.blue.populationUsed;
+    const before = faction(candidate, 'blue').populationUsed;
     const result = applyCommand(candidate, moveCommand(candidate, ['red-veteran'], 'R-Supply', 'North-Choke'));
     if (result.ok && result.state.pieces['blue-screen-1'] === undefined) {
-      assert.equal(result.state.factions.blue.populationUsed, before - getCardDefinition(14).populationCost);
+      assert.equal(faction(result.state, 'blue').populationUsed, before - getCardDefinition(14).populationCost);
       state = result.state;
       break;
     }
@@ -203,7 +208,7 @@ test('AC-18 阵亡立即减少 populationUsed，且结算恢复不会复活', ()
 
 test('AC-19 待部署单位保留预留人口并堵塞生产槽，条件恢复后才部署', () => {
   const state = makeState('ac-19');
-  const slot = state.factions.red.productionQueues['R-HQ']?.[0];
+  const slot = faction(state, 'red').productionQueues['R-HQ']?.[0];
   assert.ok(slot);
   const head: ProductionOrder = {
     orderId: 'head', factionId: 'red', nodeId: 'R-HQ', slotId: slot.slotId, cardId: 14,
@@ -214,18 +219,18 @@ test('AC-19 待部署单位保留预留人口并堵塞生产槽，条件恢复�
     remainingRounds: 1, status: 'building', populationCost: 1, goldCost: 8, enqueuedRound: 1,
   };
   slot.orders.push(head, tail);
-  state.factions.red.populationReserved = 2;
+  faction(state, 'red').populationReserved = 2;
   // Fill the HQ's fifth slot so the waiting head cannot deploy.
   const blocker = createPieceInPlace(state, 'red', 14, 'R-HQ', 1, { pieceId: 'deployment-blocker' });
   progressProductionInPlace(state);
   assert.equal(slot.orders[0]?.orderId, 'head');
   assert.equal(slot.orders[1]?.remainingRounds, 1);
-  assert.equal(state.factions.red.populationReserved, 2);
+  assert.equal(faction(state, 'red').populationReserved, 2);
   removePieceInPlace(state, blocker.pieceId);
   progressProductionInPlace(state);
   assert.equal(slot.orders[0]?.orderId, 'tail');
   assert.equal(slot.orders[0]?.remainingRounds, 1);
-  assert.equal(state.factions.red.populationReserved, 1);
+  assert.equal(faction(state, 'red').populationReserved, 1);
 });
 
 test('AC-20 幸存 HP 被下一场节点战斗按精确值继承', () => {
@@ -268,9 +273,9 @@ test('AC-34 只有部队、待部署、有效队列与稳定生产能力同时�
   }
   assert.ok(!isFactionEliminated(state, 'blue'));
   for (const nodeId of ['B-HQ', 'B-Supply'] as const) {
-    state.map.nodes[nodeId].ownerFactionId = 'red';
-    state.map.nodes[nodeId].activeFromRound = 1;
-    for (const slot of state.factions.blue.productionQueues[nodeId] ?? []) slot.orders = [];
+    requireNode(state, nodeId).ownerFactionId = 'red';
+    requireNode(state, nodeId).activeFromRound = 1;
+    for (const slot of faction(state, 'blue').productionQueues[nodeId] ?? []) slot.orders = [];
   }
   assert.ok(isFactionEliminated(state, 'blue'));
   runSettlementAutoInPlace(state);

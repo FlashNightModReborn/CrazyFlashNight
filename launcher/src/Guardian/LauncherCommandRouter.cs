@@ -363,6 +363,16 @@ namespace CF7Launcher.Guardian
                 return false;
             }
 
+            // GameStage owns the outer binding and must adopt a newly reserved tracked
+            // instance.  The generic resume route has no such lease, so it is Phase C only.
+            if (string.Equals(safeInitData.Value<string>("source"), "game_stage",
+                    StringComparison.Ordinal))
+            {
+                LogManager.Log(
+                    "event=warlord_resume_open_rejected reason=stage_resume_requires_tracked_open");
+                return false;
+            }
+
             bool opened = OpenPanel(
                 "warlord",
                 safeInitData.ToString(Formatting.None));
@@ -372,19 +382,208 @@ namespace CF7Launcher.Guardian
             return opened;
         }
 
-        private static bool TryBuildWarlordResumeInitData(
+        /// <summary>
+        /// Reopens a GameStage-owned battle result under a fresh, reserved panel identity.
+        /// The caller's gate is Host-owned and must prove the retired owner, outer binding,
+        /// and one-shot battle handoff capability still match when this queued work executes.
+        /// </summary>
+        internal bool TryOpenWarlordStageResumePanel(
+            JObject initData,
+            Func<bool> executionGate,
+            Action<string, PanelHostController.TrackedOpenOutcome> completed)
+        {
+            JObject safeInitData;
+            string rejectionReason;
+            if (!TryBuildWarlordResumeInitData(
+                    initData,
+                    out safeInitData,
+                    out rejectionReason)
+                || !string.Equals(safeInitData.Value<string>("source"), "game_stage",
+                    StringComparison.Ordinal)
+                || !string.Equals(safeInitData.Value<string>("mode"), "stage-v1",
+                    StringComparison.Ordinal)
+                || safeInitData["stageOuterBinding"] == null
+                || string.IsNullOrEmpty(
+                    safeInitData.Value<string>("stageResumeFromPanelInstanceId")))
+            {
+                LogManager.Log(
+                    "event=warlord_stage_resume_open_rejected reason="
+                    + (rejectionReason ?? "stage_resume_contract"));
+                return false;
+            }
+            if (_panelHost == null || executionGate == null || completed == null
+                || !CanAdmitPanel("open:warlord-stage-resume"))
+            {
+                LogManager.Log(
+                    "event=warlord_stage_resume_open_rejected reason=host_gate");
+                return false;
+            }
+
+            string reservedPanelInstanceId = "warlord.stage.resume."
+                + Guid.NewGuid().ToString("N");
+            return _panelHost.TryOpenTrackedPanel(
+                "warlord",
+                safeInitData.ToString(Formatting.None),
+                reservedPanelInstanceId,
+                delegate
+                {
+                    return executionGate()
+                        && CanAdmitPanel("open:warlord-stage-resume-execute");
+                },
+                delegate(PanelHostController.TrackedOpenOutcome outcome)
+                {
+                    completed(reservedPanelInstanceId, outcome);
+                });
+        }
+
+        /// <summary>
+        /// GameStage 军阀 SubStage 的专用首开能力。它使用 tracked panel instance，
+        /// 不经过刻意拒绝 warlord 的通用 panel_request，也不复用 Phase C resume。
+        /// </summary>
+        internal bool TryOpenWarlordStagePanel(
+            JObject binding,
+            JObject playerAvatarPortrait,
+            JObject resumeCheckpoint,
+            string reservedPanelInstanceId,
+            Func<bool> executionGate,
+            Action<PanelHostController.TrackedOpenOutcome> completed)
+        {
+            JObject stageInitData;
+            string rejectionReason;
+            if (!TryBuildWarlordStageInitData(
+                    binding,
+                    playerAvatarPortrait,
+                    out stageInitData,
+                    out rejectionReason))
+            {
+                LogManager.Log(
+                    "event=warlord_stage_open_rejected reason="
+                    + rejectionReason);
+                return false;
+            }
+            JObject initData = stageInitData;
+            if (resumeCheckpoint != null)
+            {
+                JObject safeCheckpoint;
+                if (!TryBuildWarlordResumeInitData(
+                        resumeCheckpoint,
+                        out safeCheckpoint,
+                        out rejectionReason)
+                    || !string.Equals(
+                        safeCheckpoint.Value<string>("source"),
+                        "game_stage",
+                        StringComparison.Ordinal)
+                    || !JToken.DeepEquals(
+                        stageInitData["stageOuterBinding"],
+                        safeCheckpoint["stageOuterBinding"])
+                    || !JToken.DeepEquals(
+                        stageInitData["playerAvatarPortrait"],
+                        safeCheckpoint["playerAvatarPortrait"]))
+                {
+                    LogManager.Log(
+                        "event=warlord_stage_open_rejected reason="
+                        + (rejectionReason ?? "resume_checkpoint_mismatch"));
+                    return false;
+                }
+                initData = safeCheckpoint;
+            }
+            if (_panelHost == null
+                || string.IsNullOrEmpty(reservedPanelInstanceId)
+                || executionGate == null
+                || !CanAdmitPanel("open:warlord-stage"))
+            {
+                LogManager.Log(
+                    "event=warlord_stage_open_rejected reason=host_gate");
+                return false;
+            }
+
+            return _panelHost.TryOpenTrackedPanel(
+                "warlord",
+                initData.ToString(Formatting.None),
+                reservedPanelInstanceId,
+                delegate
+                {
+                    return executionGate()
+                        && CanAdmitPanel("open:warlord-stage-execute");
+                },
+                completed);
+        }
+
+        internal static bool TryBuildWarlordStageInitData(
+            JObject binding,
+            JObject playerAvatarPortrait,
+            out JObject output,
+            out string rejectionReason)
+        {
+            output = null;
+            JObject safeBinding;
+            if (!WarlordStageTask.TryNormalizeBinding(
+                    binding,
+                    out safeBinding,
+                    out rejectionReason))
+                return false;
+            JObject safePlayerAvatarPortrait;
+            if (!WarlordStageTask.TryNormalizePlayerAvatarPortrait(
+                    playerAvatarPortrait,
+                    out safePlayerAvatarPortrait,
+                    out rejectionReason))
+            {
+                return false;
+            }
+            string scenarioRef = safeBinding.Value<string>("scenarioRef");
+            if (!WarlordStageTask.IsAllowedScenarioRef(scenarioRef))
+            {
+                rejectionReason = "unsupported_scenario";
+                return false;
+            }
+
+            output = new JObject
+            {
+                ["source"] = "game_stage",
+                ["mode"] = "stage-v1",
+                ["seed"] = string.Equals(
+                        scenarioRef,
+                        WarlordStageTask.Demo2ScenarioRef,
+                        StringComparison.Ordinal)
+                    ? "warlord-demo2-v1-seed-001"
+                    : "warlord-tutorial-v1-seed-001",
+                ["preset"] = "standard",
+                ["difficulty"] = "normal",
+                ["mapTheme"] = "desert",
+                ["forceWebglFailure"] = false,
+                ["aiSeenTransitions"] = new JArray(),
+                ["productionWrites"] = false,
+                ["battleAuthority"] = "as2",
+                ["stageOuterBinding"] = safeBinding,
+                ["playerAvatarPortrait"] = safePlayerAvatarPortrait
+            };
+            rejectionReason = null;
+            return true;
+        }
+
+        internal static bool TryBuildWarlordResumeInitData(
             JObject input,
             out JObject output,
             out string rejectionReason)
         {
             output = null;
             rejectionReason = "invalid_envelope";
-            if (input == null || input.Count != 12)
+            bool hasPlayerAvatarPortrait = input != null
+                && input.Property("playerAvatarPortrait") != null;
+            bool hasStageResume = input != null
+                && (input.Property("stageOuterBinding") != null
+                    || input.Property("stageResumeFromPanelInstanceId") != null);
+            if (input == null || input.Count != 12
+                + (hasPlayerAvatarPortrait ? 1 : 0)
+                + (hasStageResume ? 2 : 0))
                 return false;
             if (!HasExactWarlordResumeRootProperties(input))
                 return false;
-            if (!IsExactString(input["mode"], "phase-c-as2")
-                || !IsExactString(input["source"], "as2_battle_resume")
+            bool stageResume = hasStageResume;
+            if (!IsExactString(input["mode"],
+                    stageResume ? "stage-v1" : "phase-c-as2")
+                || !IsExactString(input["source"],
+                    stageResume ? "game_stage" : "as2_battle_resume")
                 || !IsExactString(input["battleAuthority"], "as2")
                 || !IsExactBoolean(input["productionWrites"], false)
                 || !IsExactBoolean(input["as2BattleSession"], true))
@@ -426,8 +625,38 @@ namespace CF7Launcher.Guardian
             JObject resume = input["resume"] as JObject;
             bool hasHandoffError = resume != null
                 && resume.Property("handoffError") != null;
+            JObject safePlayerAvatarPortrait = null;
+            JObject safeStageOuterBinding = null;
+            string stageResumeFromPanelInstanceId = null;
+            if (hasPlayerAvatarPortrait
+                && !WarlordStageTask.TryNormalizePlayerAvatarPortrait(
+                    input["playerAvatarPortrait"] as JObject,
+                    out safePlayerAvatarPortrait,
+                    out rejectionReason))
+            {
+                return false;
+            }
+            if (stageResume)
+            {
+                if (input.Property("stageOuterBinding") == null
+                    || input.Property("stageResumeFromPanelInstanceId") == null
+                    || !WarlordStageTask.TryNormalizeBinding(
+                        input["stageOuterBinding"] as JObject,
+                        out safeStageOuterBinding,
+                        out rejectionReason)
+                    || !IsOpaqueToken(input.Value<string>(
+                        "stageResumeFromPanelInstanceId")))
+                {
+                    rejectionReason = rejectionReason ?? "stage_resume_contract";
+                    return false;
+                }
+                stageResumeFromPanelInstanceId = input.Value<string>(
+                    "stageResumeFromPanelInstanceId");
+            }
             if (resume == null
                 || resume.Count != (hasHandoffError ? 8 : 7)
+                    + (hasPlayerAvatarPortrait ? 1 : 0)
+                    + (stageResume ? 2 : 0)
                 || !HasRequiredWarlordResumeProperties(resume)
                 || !IsExactString(
                     resume["schema"],
@@ -442,6 +671,10 @@ namespace CF7Launcher.Guardian
             JObject command = resume["command"] as JObject;
             JObject receipt = resume["receipt"] as JObject;
             JObject resumeClientContext = resume["clientContext"] as JObject;
+            JObject resumePlayerAvatarPortrait =
+                resume["playerAvatarPortrait"] as JObject;
+            JObject resumeStageOuterBinding =
+                resume["stageOuterBinding"] as JObject;
             string digest = ReadBoundedWarlordString(
                 resume["inputDigest"],
                 71);
@@ -455,7 +688,7 @@ namespace CF7Launcher.Guardian
                     "warlord.as2-battle-request.v1")
                 || !IsExactString(
                     receipt["schema"],
-                    "warlord.as2-battle-receipt.v1")
+                    "warlord.as2-battle-receipt.v2")
                 || digest == null
                 || !digest.StartsWith("sha256:", StringComparison.Ordinal)
                 || digest.Length != 71
@@ -465,6 +698,8 @@ namespace CF7Launcher.Guardian
                     StringComparison.Ordinal)
                 || !JToken.DeepEquals(request["state"], state)
                 || !JToken.DeepEquals(request["command"], command)
+                || !JToken.DeepEquals(
+                    request["clientContext"], resumeClientContext)
                 || !string.Equals(
                     request.Value<string>("sessionId"),
                     receipt.Value<string>("sessionId"),
@@ -492,6 +727,27 @@ namespace CF7Launcher.Guardian
                     160) == null)
             {
                 rejectionReason = "resume_authority_contract";
+                return false;
+            }
+            if (hasPlayerAvatarPortrait
+                && (resumePlayerAvatarPortrait == null
+                    || !JToken.DeepEquals(
+                        safePlayerAvatarPortrait,
+                        resumePlayerAvatarPortrait)))
+            {
+                rejectionReason = "player_avatar_portrait_mismatch";
+                return false;
+            }
+            if (stageResume
+                && (resumeStageOuterBinding == null
+                    || !JToken.DeepEquals(
+                        safeStageOuterBinding, resumeStageOuterBinding)
+                    || !string.Equals(
+                        stageResumeFromPanelInstanceId,
+                        resume.Value<string>("stageResumeFromPanelInstanceId"),
+                        StringComparison.Ordinal)))
+            {
+                rejectionReason = "stage_resume_mismatch";
                 return false;
             }
 
@@ -522,13 +778,24 @@ namespace CF7Launcher.Guardian
                 ["forceWebglFailure"] = input.Value<bool>(
                     "forceWebglFailure"),
                 ["aiSeenTransitions"] = transitions.DeepClone(),
-                ["mode"] = "phase-c-as2",
-                ["source"] = "as2_battle_resume",
+                ["mode"] = stageResume ? "stage-v1" : "phase-c-as2",
+                ["source"] = stageResume ? "game_stage" : "as2_battle_resume",
                 ["productionWrites"] = false,
                 ["battleAuthority"] = "as2",
                 ["as2BattleSession"] = true,
                 ["resume"] = resume.DeepClone()
             };
+            if (safePlayerAvatarPortrait != null)
+            {
+                output["playerAvatarPortrait"] =
+                    safePlayerAvatarPortrait.DeepClone();
+            }
+            if (stageResume)
+            {
+                output["stageOuterBinding"] = safeStageOuterBinding.DeepClone();
+                output["stageResumeFromPanelInstanceId"] =
+                    stageResumeFromPanelInstanceId;
+            }
             rejectionReason = null;
             return true;
         }
@@ -2857,7 +3124,7 @@ namespace CF7Launcher.Guardian
                     }
                     break;
                 case "WARLORD_TEST":
-                    OpenPanel("warlord", "{\"mode\":\"phase-c-as2\",\"source\":\"runtime\",\"seed\":\"warlord-demo-seed-001\",\"preset\":\"standard\",\"difficulty\":\"normal\",\"mapTheme\":\"desert\",\"battleAuthority\":\"as2\",\"productionWrites\":false}");
+                    OpenPanel("stage-select", "{\"mode\":\"runtime\",\"catalogId\":\"warlord-game-stage-test\",\"frameLabel\":\"军阀演习测试\",\"source\":\"notch_warlord_test\",\"debug\":false}");
                     break;
                 case "INTELLIGENCE_TEST":
                     OpenPanel("intelligence", "{\"mode\":\"dev\",\"source\":\"runtime\",\"itemName\":\"资料\",\"value\":99,\"decryptLevel\":10,\"pcName\":\"测试玩家\",\"debug\":true}");

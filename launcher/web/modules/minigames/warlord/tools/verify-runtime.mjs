@@ -7,6 +7,16 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const manifestPath = resolve(root, 'runtime-manifest.json');
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
 if (manifest.schema !== 'cf7.warlord-sandtable-runtime.v1') throw new Error('runtime manifest schema mismatch');
+if (manifest.organization?.id !== 'demo1-organizations'
+    || manifest.organization?.rulesVersion !== 'warlord.organization.v1'
+    || !/^sha256:[A-F0-9]{64}$/.test(manifest.organization?.digest ?? '')) {
+  throw new Error('runtime organization identity mismatch');
+}
+if (manifest.encounter?.id !== 'demo1-encounter-distance'
+    || manifest.encounter?.rulesVersion !== 'warlord.encounter-distance.v1'
+    || manifest.encounter?.digest !== 'sha256:6D94E0ABCA11BE5AE1574219D30E4E8E1E3890293496FB2192E081AB24DFE29E') {
+  throw new Error('runtime encounter identity mismatch');
+}
 if (manifest.compiler?.version !== '5.8.3') throw new Error('runtime compiler version drift');
 if (manifest.renderer?.version !== '0.185.1' || manifest.renderer?.license !== 'MIT') {
   throw new Error('runtime renderer version/license drift');

@@ -821,10 +821,23 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("panelInstanceId: panelInstanceId", close);
             Assert.DoesNotContain("Panels.close()", close);
             Assert.Contains("closeTimer = setTimeout", close);
-            Assert.Contains("Launcher 尚未确认关闭，可再次尝试。", close);
+            Assert.Contains("session.quiesceForPanelClose();", close);
+            Assert.Contains("session.resumeAfterPanelCloseTimeout();", close);
+            Assert.Contains("关闭请求暂时没有响应，可以再次尝试。", close);
             Assert.Contains("generation !== localGeneration", close);
             Assert.Contains("clearCloseTimer();", Slice(
                 panel, "function onClose()", "function notifyHost("));
+
+            string host = File.ReadAllText(FindWebOverlaySource());
+            string hostClose = Slice(
+                host,
+                "private void TryHandleWarlordPanelClose(JObject parsed)",
+                "private void TryHandleWarlordStageTerminal(JObject parsed)");
+            Assert.Contains(
+                "CommitAcceptedPanelCloseEffects(\"warlord\", false, false);",
+                hostClose);
+            Assert.DoesNotContain("ConsumeReturnBaseOnFinalClose", hostClose);
+            Assert.DoesNotContain("arenaReturnBase", hostClose);
         }
 
         [Fact]
@@ -844,6 +857,28 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains(
                 "event=warlord_resume_dispatch_failed reason=ui_invoke",
                 wiring);
+        }
+
+        [Fact]
+        public void WarlordBattleHandoff_ReleasesPauseOnlyInsideAtomicAs2Admission()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string handoff = Slice(
+                source,
+                "private void HandleWarlordBattleStart(JObject parsed)",
+                "private void HandlePanelMessage(string json)");
+
+            Assert.DoesNotContain("TryReleaseGenericWebPanelPause", handoff);
+            Assert.DoesNotContain(
+                "TrySendGameCommand(\"webPanelUnpause\")",
+                handoff);
+            Assert.Contains(
+                "CommitAcceptedPanelCloseEffects(\n                        \"warlord\",\n                        false,\n                        true);",
+                handoff.Replace("\r\n", "\n"));
+            Assert.Contains(
+                "CommitAcceptedPanelCloseEffects(\"warlord\", false, true);",
+                handoff);
+            Assert.Contains("_warlordBattleTask.StartPrepared(prepared);", handoff);
         }
 
         [Fact]
@@ -1034,6 +1069,61 @@ namespace CF7Launcher.Tests.Guardian
             Assert.DoesNotContain(
                 "_characterBuildTask.HandleDisconnect(",
                 disconnect);
+        }
+
+        [Fact]
+        public void WarlordDisconnectUsesSynchronousSocketOwnerBeforeGenerationUiCleanup()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string disconnect = Slice(
+                source,
+                "public void OnSocketDisconnected(int closedGeneration)",
+                "public void OnSocketReconnected(int readyGeneration)");
+            string program = File.ReadAllText(FindRepositoryFile(
+                "launcher", "src", "Program.cs"));
+            string normalizedProgram = program.Replace("\r\n", "\n");
+            const string stageSubscription =
+                "socketServer.OnClientDisconnected +=\n"
+                + "            warlordStageTask.HandleTransportDisconnected;";
+            const string battleSubscription =
+                "socketServer.OnClientDisconnected +=\n"
+                + "            warlordBattleTask.HandleTransportDisconnected;";
+
+            Assert.Equal(
+                1,
+                CountOccurrences(normalizedProgram, stageSubscription));
+            Assert.Equal(
+                1,
+                CountOccurrences(normalizedProgram, battleSubscription));
+            Assert.DoesNotContain(
+                "_warlordBattleTask.HandleTransportDisconnected(",
+                disconnect);
+            Assert.DoesNotContain(
+                "_warlordStageTask.HandleTransportDisconnected(",
+                disconnect);
+            Assert.DoesNotContain(
+                "NotifyWarlordTransportDisconnected",
+                source);
+            Assert.Contains(
+                "&& _panelHost.HasTrackedPanelLease;",
+                disconnect);
+            Assert.Contains(
+                "_panelHost.TryCloseTrackedPanelExact(",
+                disconnect);
+
+            int stageOwner = normalizedProgram.IndexOf(
+                stageSubscription,
+                StringComparison.Ordinal);
+            int battleOwner = normalizedProgram.IndexOf(
+                battleSubscription,
+                StringComparison.Ordinal);
+            int generationUi = normalizedProgram.IndexOf(
+                "socketServer.OnClientDisconnectedForGeneration += webOverlay.OnSocketDisconnected;",
+                StringComparison.Ordinal);
+            Assert.True(
+                stageOwner >= 0
+                && battleOwner > stageOwner
+                && generationUi > battleOwner);
         }
 
         [Fact]
@@ -1946,6 +2036,23 @@ namespace CF7Launcher.Tests.Guardian
                 endMarker, start, StringComparison.Ordinal);
             Assert.True(end > start);
             return source.Substring(start, end - start);
+        }
+
+        private static int CountOccurrences(
+            string source,
+            string value)
+        {
+            int count = 0;
+            int index = 0;
+            while ((index = source.IndexOf(
+                value,
+                index,
+                StringComparison.Ordinal)) >= 0)
+            {
+                count++;
+                index += value.Length;
+            }
+            return count;
         }
 
         private static string FindWebOverlaySource()

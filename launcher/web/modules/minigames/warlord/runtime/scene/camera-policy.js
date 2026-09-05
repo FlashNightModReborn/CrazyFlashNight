@@ -1,3 +1,47 @@
+export class ActionCameraLeaseRegistry {
+    serial = 0;
+    active = null;
+    begin(returnView) {
+        const token = ++this.serial;
+        this.active = { token, returnView: { ...returnView }, cancelled: false };
+        return token;
+    }
+    /**
+     * Consecutive AI movements share one presentation lease. The first movement
+     * captures the player's complete view; later movements retain both that
+     * token and that immutable return target instead of treating the followed
+     * camera position as a new player view.
+     */
+    beginOrContinue(returnView) {
+        if (this.active && !this.active.cancelled) {
+            return { token: this.active.token, continued: true };
+        }
+        return { token: this.begin(returnView), continued: false };
+    }
+    cancel(token) {
+        if (!this.active || (token !== undefined && this.active.token !== token))
+            return false;
+        this.active.cancelled = true;
+        return true;
+    }
+    returnView(token) {
+        if (!this.active || this.active.token !== token || this.active.cancelled)
+            return null;
+        return { ...this.active.returnView };
+    }
+    isCancelled(token) {
+        return this.active?.token === token && this.active.cancelled;
+    }
+    release(token) {
+        if (!this.active || this.active.token !== token)
+            return false;
+        this.active = null;
+        return true;
+    }
+    activeToken() {
+        return this.active?.token ?? null;
+    }
+}
 const MIN_SPAN = 1;
 function finite(value, fallback) {
     return Number.isFinite(value) ? value : fallback;
@@ -93,14 +137,53 @@ export function zoomCameraView(view, zoomFactor, limits) {
         halfHeight: Math.min(limits.maxHalfHeight, Math.max(limits.minHalfHeight, view.halfHeight / factor)),
     };
 }
+function closestComfortCenter(current, coordinates, comfortableHalfSpan) {
+    let lower = -Infinity;
+    let upper = Infinity;
+    for (const coordinate of coordinates) {
+        lower = Math.max(lower, coordinate - comfortableHalfSpan);
+        upper = Math.min(upper, coordinate + comfortableHalfSpan);
+    }
+    if (lower <= upper)
+        return Math.min(upper, Math.max(lower, current));
+    // An unusually long authored path cannot fit at the player's current zoom.
+    // Prefer the command target (the last point) while still moving only as far
+    // as necessary to bring that target into the comfort frame.
+    const target = coordinates[coordinates.length - 1] ?? current;
+    return Math.min(target + comfortableHalfSpan, Math.max(target - comfortableHalfSpan, current));
+}
+/**
+ * Returns a same-zoom camera view that contains an action path inside a central
+ * comfort frame. The current center is retained whenever possible; otherwise
+ * each axis moves only to the nearest valid boundary. Passive action following
+ * is intentionally disabled under reduced-motion instead of snapping.
+ */
+export function actionCameraViewForPoints(view, points, options) {
+    if (options.reducedMotion)
+        return { ...view };
+    const validPoints = points.filter((point) => Number.isFinite(point.x) && Number.isFinite(point.z));
+    if (validPoints.length === 0)
+        return { ...view };
+    const aspect = Math.max(0.1, finite(options.aspect, 1));
+    const comfortRatio = Math.min(0.9, Math.max(0.4, finite(options.comfortRatio ?? 0.7, 0.7)));
+    const halfHeight = Math.max(0.0001, finite(view.halfHeight, 0.5));
+    const comfortableHalfHeight = halfHeight * comfortRatio;
+    const comfortableHalfWidth = halfHeight * aspect * comfortRatio;
+    return {
+        centerX: closestComfortCenter(finite(view.centerX, 0), validPoints.map((point) => point.x), comfortableHalfWidth),
+        centerZ: closestComfortCenter(finite(view.centerZ, 0), validPoints.map((point) => point.z), comfortableHalfHeight),
+        halfHeight: view.halfHeight,
+    };
+}
 export function cameraZoomPercent(view, limits) {
     return Math.round((limits.fitHalfHeight / Math.max(0.0001, view.halfHeight)) * 100);
 }
 export function tacticalMarkerScale(zoomPercent) {
     const zoomRatio = Math.max(1, finite(zoomPercent, 100) / 100);
-    // Art remains worth inspecting: screen size follows sqrt(zoom) through the
-    // ordinary tactical range, then caps before extreme zoom can bury a node.
-    const screenGrowth = Math.min(1.8, Math.sqrt(zoomRatio));
+    // Overview stays compact, while deliberate close inspection reveals enough
+    // portrait art to identify a commander. The cap still prevents a token from
+    // consuming the whole tactical viewport at maximum zoom.
+    const screenGrowth = Math.min(3.4, Math.pow(zoomRatio, 0.72));
     return Math.min(1, screenGrowth / zoomRatio);
 }
 export function cameraDetailTier(nodeCount, zoomPercent) {

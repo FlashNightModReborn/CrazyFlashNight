@@ -19,8 +19,17 @@ export const CARD_IDS = Object.freeze(
     .map((card) => card.cardId),
 ) as readonly CardId[];
 
+/** 唯一指挥官卡只由 Commander ledger 重建，不进入普通兵种排产。 */
+export const PRODUCTION_CARD_IDS = Object.freeze(
+  CARD_IDS.filter((cardId) => !CARD_DEFINITIONS[cardId]?.tags.includes('commander')),
+) as readonly CardId[];
+
 export function getCardDefinition(cardId: CardId): Readonly<CardDefinition> {
   const card = CARD_DEFINITIONS[cardId];
   if (!card) throw new Error(`Unknown cardId ${cardId}`);
   return card;
+}
+
+export function isCommanderCard(cardId: CardId): boolean {
+  return getCardDefinition(cardId).tags.includes('commander');
 }

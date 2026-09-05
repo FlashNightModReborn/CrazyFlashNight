@@ -219,6 +219,52 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("_activePanelInstanceId", lifetime);
         }
 
+        [Fact]
+        public void NativeHideAndShowPairControllerVisibilityWithoutGeometryRevealingIt()
+        {
+            string source = File.ReadAllText(FindRepositoryFile(
+                "launcher", "src", "Guardian", "WebOverlayForm.cs"));
+            string idle = Slice(source, "private void DoFullIdleSuspend(",
+                "private void SuspendWebTimers()");
+            Assert.True(idle.IndexOf("SetWebViewControllerVisible(false,", StringComparison.Ordinal)
+                < idle.IndexOf("ShowWindow(this.Handle, SW_HIDE)", StringComparison.Ordinal));
+
+            string resume = Slice(source, "public bool ResumeForPanel(",
+                "private void QueuePanelFocusRestore(");
+            Assert.True(resume.IndexOf("SetWebViewControllerVisible(false,", StringComparison.Ordinal)
+                < resume.IndexOf("this.TransparencyKey = Color.Empty", StringComparison.Ordinal));
+            Assert.True(resume.IndexOf("SetWindowPos(_webView.Handle", StringComparison.Ordinal)
+                < resume.IndexOf("SetWebViewControllerVisible(true,", StringComparison.Ordinal));
+            Assert.Contains("if (formPresented)", resume);
+
+            string geometry = Slice(source, "private void SyncWebViewViewportBounds(",
+                "private void SyncPosition(string reason)");
+            Assert.DoesNotContain("controller.IsVisible = true", geometry);
+
+            string replay = Slice(source, "internal bool ReplayCommittedPanelPresentation(",
+                "internal PanelGeometryMeasurement MeasureCurrentAnchorScreenRect()");
+            Assert.Contains("SetWebViewControllerVisible(false,", replay);
+            Assert.Contains("SetWebViewControllerVisible(true,", replay);
+        }
+
+        [Fact]
+        public void BattleReturnDiagnosticIsBoundedReadOnlyAndExactInstanceScoped()
+        {
+            string source = File.ReadAllText(FindRepositoryFile(
+                "launcher", "src", "Guardian", "WebOverlayForm.cs"));
+            string probe = Slice(source, "private bool IsCurrentWarlordPresentation(",
+                "private void QueueWarlordStageTerminalClose(");
+            Assert.Contains("generation == _panelSessionGeneration", probe);
+            Assert.Contains("_panelHost.ActivePanelInstanceId, instanceId", probe);
+            Assert.Contains("Task.Delay(1500)", probe);
+            Assert.Contains("sample.Length > 8192", probe);
+            Assert.Contains("WarlordPanelDiagnostics.read()", probe);
+            Assert.DoesNotContain("Capture", probe);
+            Assert.DoesNotContain("ResumeForPanel(", probe);
+            Assert.DoesNotContain("while (", probe);
+            Assert.DoesNotContain("SetForegroundWindow", probe);
+        }
+
         private static string Slice(
             string source,
             string startMarker,

@@ -1,14 +1,19 @@
-import { DIFFICULTY_GOLD_MULTIPLIER, MAX_STRATEGIC_ROUNDS } from '../data/config.js';
 import { getCardDefinition } from '../data/cards.js';
+import { DIFFICULTY_GOLD_MULTIPLIER, MAX_STRATEGIC_ROUNDS } from '../data/config.js';
+import { requireNode } from './access.js';
+import { evacuateDownedPlayerAvatarsInPlace, fieldCommanderAp, progressCommanderProductionInPlace, } from './commanders.js';
 import { addGameEvent } from './events.js';
+import { activeFactionIds, defeatFactionInPlace, factionIds, isFactionDefeated, refreshFactionActionPoints, requireFaction, } from './factions.js';
+import { deploymentSizeForCard, memberApContribution, nodeDeploymentSize, } from './organization.js';
+import { applyGameResultInPlace, captureCommandPostInPlace, evaluateVictoryGroupsInPlace, makeRoundLimitResult, } from './objectives.js';
 import { createPieceInPlace, syncAllPieceStatsInPlace } from './pieces.js';
-import { hasStableSupplyPath, isNodeActive, isNodeStable, nodeOccupyingFactions, stableNodeIds, stableProductionNodeIds, } from './selectors.js';
+import { adjacentNodeIds, isNodeActive, nodeOccupyingFactions, stableNodeIds, stableProductionNodeIds, } from './selectors.js';
 function ensureProductionSlots(state, factionId, nodeId) {
-    const faction = state.factions[factionId];
+    const faction = requireFaction(state, factionId);
     const existing = faction.productionQueues[nodeId];
     if (existing)
         return existing;
-    const count = state.map.nodes[nodeId].productionSlots;
+    const count = requireNode(state, nodeId).productionSlots;
     const slots = Array.from({ length: count }, (_, index) => ({
         slotId: `${nodeId}:${index + 1}`,
         nodeId,
@@ -18,19 +23,19 @@ function ensureProductionSlots(state, factionId, nodeId) {
     return slots;
 }
 export function recomputePopulationCapInPlace(state) {
-    for (const factionId of ['red', 'blue']) {
-        const faction = state.factions[factionId];
+    for (const factionId of factionIds(state)) {
+        const faction = requireFaction(state, factionId);
         faction.populationCap = faction.scenarioPopulationBonus + stableNodeIds(state, factionId)
-            .reduce((sum, nodeId) => sum + state.map.nodes[nodeId].population, 0);
+            .reduce((sum, nodeId) => sum + requireNode(state, nodeId).population, 0);
     }
 }
 function deployHeadIfPossible(state, factionId, slot) {
     const order = slot.orders[0];
     if (!order || order.status !== 'waiting_deployment')
         return false;
-    const node = state.map.nodes[order.nodeId];
-    const faction = state.factions[factionId];
-    if (node.pieceIds.length >= node.capacity)
+    const node = requireNode(state, order.nodeId);
+    const faction = requireFaction(state, factionId);
+    if (nodeDeploymentSize(state, order.nodeId) + deploymentSizeForCard(order.cardId) > node.capacity)
         return false;
     if (faction.populationUsed + order.populationCost > faction.populationCap)
         return false;
@@ -48,7 +53,8 @@ function deployHeadIfPossible(state, factionId, slot) {
     return true;
 }
 export function progressProductionInPlace(state) {
-    for (const factionId of ['red', 'blue']) {
+    progressCommanderProductionInPlace(state);
+    for (const factionId of activeFactionIds(state)) {
         for (const nodeId of stableProductionNodeIds(state, factionId)) {
             const slots = ensureProductionSlots(state, factionId, nodeId);
             for (const slot of slots) {
@@ -73,20 +79,55 @@ export function progressProductionInPlace(state) {
     }
 }
 export function computeActionPointsInPlace(state) {
-    for (const factionId of ['red', 'blue']) {
-        const pieceAp = Object.values(state.pieces).filter((piece) => (piece.factionId === factionId
+    const commanderPieceIds = new Set(Object.values(state.commanders)
+        .map((commander) => commander.pieceInstanceId)
+        .filter((pieceId) => pieceId !== null));
+    for (const factionId of factionIds(state)) {
+        const faction = requireFaction(state, factionId);
+        if (faction.defeatedAtRound !== null) {
+            faction.apLedger = {
+                baseGenerated: 0,
+                fieldGenerated: 0,
+                baseRemaining: 0,
+                fieldRemaining: 0,
+                baseSpent: 0,
+                fieldSpent: 0,
+            };
+            refreshFactionActionPoints(faction);
+            continue;
+        }
+        const pieceAp = Object.values(state.pieces)
+            .filter((piece) => (piece.factionId === factionId
             && piece.hp > 0
-            && piece.commandReadyFromRound <= state.strategicRound)).length;
+            && piece.commandReadyFromRound <= state.strategicRound
+            && !commanderPieceIds.has(piece.pieceId)))
+            .reduce((sum, piece) => sum + memberApContribution(state, piece.pieceId), 0);
         const nodeAp = stableNodeIds(state, factionId)
-            .reduce((sum, nodeId) => sum + state.map.nodes[nodeId].apBonus, 0);
-        const total = pieceAp + nodeAp;
-        const faction = state.factions[factionId];
-        faction.actionPoints = total;
-        faction.apGeneratedThisRound = total;
-        faction.apSpentThisRound = 0;
+            .reduce((sum, nodeId) => sum + requireNode(state, nodeId).apBonus, 0);
+        const base = state.scenarioBaseAp + pieceAp + nodeAp;
+        const field = fieldCommanderAp(state, factionId);
+        faction.apLedger = {
+            baseGenerated: base,
+            fieldGenerated: field,
+            baseRemaining: base,
+            fieldRemaining: field,
+            baseSpent: 0,
+            fieldSpent: 0,
+        };
+        refreshFactionActionPoints(faction);
     }
 }
-export function startStrategicRoundInPlace(state) {
+export function startStrategicRoundInPlace(state, captureBeforeFirstFactionAction = false) {
+    if (captureBeforeFirstFactionAction) {
+        const firstActiveFactionId = state.turnOrder.find((factionId) => !isFactionDefeated(state, factionId));
+        if (firstActiveFactionId === undefined) {
+            evaluateVictoryGroupsInPlace(state, 'VictoryGroupEliminated');
+            return;
+        }
+        captureEncircledNodesAtTurnStartInPlace(state, firstActiveFactionId);
+        if (state.result)
+            return;
+    }
     recomputePopulationCapInPlace(state);
     progressProductionInPlace(state);
     computeActionPointsInPlace(state);
@@ -96,22 +137,37 @@ export function startStrategicRoundInPlace(state) {
         piece.battlesThisRound = 0;
         piece.maxDistanceInRound = 0;
     }
-    for (const factionId of ['red', 'blue']) {
-        state.factions[factionId].planningCommitted = false;
-        for (const card of Object.values(state.factions[factionId].cards))
+    for (const factionId of factionIds(state)) {
+        const faction = requireFaction(state, factionId);
+        faction.planningCommitted = faction.defeatedAtRound !== null;
+        for (const card of Object.values(faction.cards))
             card.promotedThisSettlement = false;
     }
-    state.initiativeFactionId = state.strategicRound % 2 === 1 ? 'red' : 'blue';
-    state.activeFactionId = state.initiativeFactionId;
-    state.phase = 'FIRST_FACTION_ACTION';
+    const firstActiveIndex = state.turnOrder.findIndex((factionId) => !isFactionDefeated(state, factionId));
+    if (firstActiveIndex < 0) {
+        evaluateVictoryGroupsInPlace(state, 'VictoryGroupEliminated');
+        return;
+    }
+    const firstFactionId = state.turnOrder[firstActiveIndex];
+    if (firstFactionId === undefined)
+        throw new Error('Turn order lost its first active faction.');
+    state.activeTurnIndex = firstActiveIndex;
+    state.initiativeFactionId = firstFactionId;
+    state.activeFactionId = firstFactionId;
+    state.phase = firstActiveIndex === 0 ? 'FIRST_FACTION_ACTION' : 'SECOND_FACTION_ACTION';
     addGameEvent(state, {
         type: 'round_started',
-        message: `战略回合 ${state.strategicRound} 开始，${state.factions[state.initiativeFactionId].displayName}先手。`,
+        message: `战略回合 ${state.strategicRound} 开始，${requireFaction(state, firstFactionId).displayName}率先行动。`,
         data: {
-            redAp: state.factions.red.actionPoints,
-            blueAp: state.factions.blue.actionPoints,
-            redPopulationCap: state.factions.red.populationCap,
-            bluePopulationCap: state.factions.blue.populationCap,
+            factionOrder: [...state.turnOrder],
+            factionAp: Object.fromEntries(factionIds(state).map((factionId) => [
+                factionId,
+                requireFaction(state, factionId).actionPoints,
+            ])),
+            redAp: state.factions.red?.actionPoints ?? 0,
+            blueAp: state.factions.blue?.actionPoints ?? 0,
+            redPopulationCap: state.factions.red?.populationCap ?? 0,
+            bluePopulationCap: state.factions.blue?.populationCap ?? 0,
         },
     });
 }
@@ -119,12 +175,12 @@ function settleCasualtyXpInPlace(state) {
     for (const entry of state.casualtyLedger) {
         if (entry.settled)
             continue;
-        state.factions[entry.killerFactionId].xpPool += entry.killerXp;
-        state.factions[entry.deadFactionId].xpPool += entry.loserXp;
+        requireFaction(state, entry.killerFactionId).xpPool += entry.killerXp;
+        requireFaction(state, entry.deadFactionId).xpPool += entry.loserXp;
         entry.settled = true;
     }
     const current = state.casualtyLedger.filter((entry) => entry.strategicRound === state.strategicRound);
-    for (const factionId of ['red', 'blue']) {
+    for (const factionId of factionIds(state)) {
         const amount = current.reduce((sum, entry) => {
             if (entry.killerFactionId === factionId)
                 sum += entry.killerXp;
@@ -135,21 +191,19 @@ function settleCasualtyXpInPlace(state) {
         if (amount > 0) {
             addGameEvent(state, {
                 type: 'xp_settled', factionId, amount,
-                message: `${state.factions[factionId].displayName}获得 ${amount} 点待分配经验。`,
+                message: `${requireFaction(state, factionId).displayName}获得 ${amount} 点待分配经验。`,
             });
         }
     }
 }
 function recoverPiecesInPlace(state) {
     for (const piece of Object.values(state.pieces)) {
-        const node = state.map.nodes[piece.nodeId];
+        const node = requireNode(state, piece.nodeId);
         const before = piece.hp;
-        if (node.ownerFactionId === piece.factionId) {
+        if (node.ownerFactionId === piece.factionId && isNodeActive(state, piece.nodeId))
             piece.hp = piece.maxHp;
-        }
-        else {
+        else
             piece.hp = Math.min(piece.maxHp, piece.hp + Math.ceil((piece.maxHp - piece.hp) / 3));
-        }
         if (piece.hp !== before) {
             addGameEvent(state, {
                 type: 'recovery', factionId: piece.factionId, nodeId: piece.nodeId, pieceId: piece.pieceId,
@@ -159,52 +213,68 @@ function recoverPiecesInPlace(state) {
         }
     }
 }
-function makeSettlementSnapshot(state) {
-    const nodeIds = Object.keys(state.map.nodes);
-    return {
-        stable: {
-            red: new Set(nodeIds.filter((nodeId) => isNodeStable(state, nodeId, 'red'))),
-            blue: new Set(nodeIds.filter((nodeId) => isNodeStable(state, nodeId, 'blue'))),
-        },
-        occupants: Object.fromEntries(nodeIds.map((nodeId) => [nodeId, nodeOccupyingFactions(state, nodeId)])),
-        owners: Object.fromEntries(nodeIds.map((nodeId) => [nodeId, state.map.nodes[nodeId].ownerFactionId])),
-    };
-}
-function canCaptureFromSnapshot(state, snapshot, factionId, targetNodeId) {
-    const adjacentStable = state.map.edges
-        .flatMap((edge) => edge.a === targetNodeId ? [edge.b] : edge.b === targetNodeId ? [edge.a] : [])
-        .filter((nodeId) => snapshot.stable[factionId].has(nodeId));
-    return adjacentStable.some((nodeId) => hasStableSupplyPath(state, factionId, nodeId, snapshot.stable[factionId]));
-}
-function captureNodesInPlace(state, snapshot) {
-    for (const nodeId of Object.keys(state.map.nodes).sort()) {
-        const occupiers = snapshot.occupants[nodeId];
-        if (occupiers.length !== 1)
-            continue;
-        const occupier = occupiers[0];
-        if (!occupier || snapshot.owners[nodeId] === occupier)
-            continue;
-        if (!canCaptureFromSnapshot(state, snapshot, occupier, nodeId))
-            continue;
-        const node = state.map.nodes[nodeId];
-        const previousOwner = node.ownerFactionId;
-        node.ownerFactionId = occupier;
+function applyNodeCaptureBatchInPlace(state, factionId, captures, captureCause) {
+    if (captures.length === 0)
+        return;
+    // Eligibility is frozen before any write. Apply the full ownership batch first
+    // so a captured command post cannot interrupt or influence sibling captures.
+    for (const capture of captures) {
+        const node = requireNode(state, capture.nodeId);
+        node.ownerFactionId = factionId;
         node.activeFromRound = state.strategicRound + 1;
+    }
+    for (const capture of captures) {
+        const node = requireNode(state, capture.nodeId);
         addGameEvent(state, {
-            type: 'node_captured', factionId: occupier, nodeId,
-            message: `${state.factions[occupier].displayName}占领 ${node.displayName}；下一战略回合激活。`,
-            data: { previousOwner },
+            type: 'node_captured', factionId, nodeId: capture.nodeId, captureCause,
+            message: captureCause === 'direct_end_turn'
+                ? `${requireFaction(state, factionId).displayName}驻军占领 ${node.displayName}；下一战略回合激活。`
+                : `${requireFaction(state, factionId).displayName}包围占领 ${node.displayName}；下一战略回合激活。`,
+            data: { previousOwner: capture.previousOwner, captureCause },
         });
     }
+    // Objective effects are another boundary step after the atomic color change.
+    // Process every captured command post even if an earlier one forms a result.
+    for (const capture of captures)
+        captureCommandPostInPlace(state, factionId, capture.nodeId);
+}
+export function captureOccupiedNodesAtActionEndInPlace(state, factionId) {
+    const captures = Object.keys(state.map.nodes)
+        .sort()
+        .flatMap((nodeId) => {
+        const previousOwner = requireNode(state, nodeId).ownerFactionId;
+        if (previousOwner === factionId)
+            return [];
+        const occupiers = nodeOccupyingFactions(state, nodeId);
+        return occupiers.length === 1 && occupiers[0] === factionId
+            ? [{ nodeId, previousOwner }]
+            : [];
+    });
+    applyNodeCaptureBatchInPlace(state, factionId, captures, 'direct_end_turn');
+}
+export function captureEncircledNodesAtTurnStartInPlace(state, factionId) {
+    const nodeIds = Object.keys(state.map.nodes).sort();
+    const owners = new Map(nodeIds.map((nodeId) => [nodeId, requireNode(state, nodeId).ownerFactionId]));
+    const captures = nodeIds.flatMap((nodeId) => {
+        const previousOwner = owners.get(nodeId) ?? null;
+        if (previousOwner === factionId)
+            return [];
+        const adjacent = adjacentNodeIds(state, nodeId);
+        if (adjacent.length === 0 || !adjacent.every((neighborId) => owners.get(neighborId) === factionId))
+            return [];
+        return [{ nodeId, previousOwner }];
+    });
+    applyNodeCaptureBatchInPlace(state, factionId, captures, 'encirclement_turn_start');
 }
 function cancelInvalidProductionInPlace(state) {
-    for (const factionId of ['red', 'blue']) {
-        const faction = state.factions[factionId];
+    for (const factionId of factionIds(state)) {
+        const faction = requireFaction(state, factionId);
         for (const [nodeKey, slots] of Object.entries(faction.productionQueues)) {
             const nodeId = nodeKey;
             if (!slots)
                 continue;
-            const invalid = state.map.nodes[nodeId].ownerFactionId !== factionId
+            const node = requireNode(state, nodeId);
+            const invalid = node.ownerFactionId !== factionId
                 || nodeOccupyingFactions(state, nodeId).some((occupier) => occupier !== factionId);
             if (!invalid)
                 continue;
@@ -222,33 +292,36 @@ function cancelInvalidProductionInPlace(state) {
                 addGameEvent(state, {
                     type: 'production_cancelled', factionId, nodeId,
                     amount: released,
-                    message: `${state.map.nodes[nodeId].displayName}失稳，取消 ${count} 个订单；金币不退，释放 ${released} 预留人口。`,
+                    message: `${node.displayName}失稳，取消 ${count} 个订单；金币不退，释放 ${released} 预留人口。`,
                 });
             }
         }
     }
 }
 function settleIncomeInPlace(state) {
-    for (const factionId of ['red', 'blue']) {
+    for (const factionId of activeFactionIds(state)) {
+        const faction = requireFaction(state, factionId);
         const baseIncome = stableNodeIds(state, factionId)
             .filter((nodeId) => isNodeActive(state, nodeId))
-            .reduce((sum, nodeId) => sum + state.map.nodes[nodeId].goldIncome, 0);
-        const multiplier = factionId === 'blue' ? DIFFICULTY_GOLD_MULTIPLIER[state.difficulty] : 1;
+            .reduce((sum, nodeId) => sum + requireNode(state, nodeId).goldIncome, 0);
+        const multiplier = faction.controller === 'ai' ? DIFFICULTY_GOLD_MULTIPLIER[state.difficulty] : 1;
         const income = Math.floor(baseIncome * multiplier);
-        state.factions[factionId].gold += income;
+        faction.gold += income;
         addGameEvent(state, {
             type: 'income', factionId, amount: income,
-            message: `${state.factions[factionId].displayName}结算 ${income}G（基础 ${baseIncome}G，倍率 ${multiplier.toFixed(2)}）。`,
+            message: `${faction.displayName}结算 ${income}G（基础 ${baseIncome}G，倍率 ${multiplier.toFixed(2)}）。`,
         });
     }
 }
 function hasWaitingUnit(state, factionId) {
-    return Object.values(state.factions[factionId].productionQueues).some((slots) => (slots?.some((slot) => slot.orders.some((order) => order.status === 'waiting_deployment')) ?? false));
+    return Object.values(requireFaction(state, factionId).productionQueues).some((slots) => (slots?.some((slot) => slot.orders.some((order) => order.status === 'waiting_deployment')) ?? false));
 }
 function hasValidQueue(state, factionId) {
-    return stableProductionNodeIds(state, factionId).some((nodeId) => (state.factions[factionId].productionQueues[nodeId]?.some((slot) => slot.orders.length > 0) ?? false));
+    return stableProductionNodeIds(state, factionId).some((nodeId) => (requireFaction(state, factionId).productionQueues[nodeId]?.some((slot) => slot.orders.length > 0) ?? false));
 }
 export function isFactionEliminated(state, factionId) {
+    if (isFactionDefeated(state, factionId))
+        return true;
     const hasPieces = Object.values(state.pieces).some((piece) => piece.factionId === factionId && piece.hp > 0);
     const hasProduction = stableProductionNodeIds(state, factionId).length > 0;
     return !hasPieces && !hasWaitingUnit(state, factionId) && !hasValidQueue(state, factionId) && !hasProduction;
@@ -256,76 +329,54 @@ export function isFactionEliminated(state, factionId) {
 function roundLimitScore(state, factionId) {
     const stableProduction = stableProductionNodeIds(state, factionId).length;
     const strategicValue = stableNodeIds(state, factionId)
-        .reduce((sum, nodeId) => sum + state.map.nodes[nodeId].strategicValue, 0);
+        .reduce((sum, nodeId) => sum + requireNode(state, nodeId).strategicValue, 0);
     const armyValue = Object.values(state.pieces)
         .filter((piece) => piece.factionId === factionId)
         .reduce((sum, piece) => sum + piece.productionGoldValue, 0);
-    return [stableProduction, strategicValue, armyValue, state.factions[factionId].gold];
-}
-function compareScore(a, b) {
-    for (let i = 0; i < a.length; i += 1) {
-        const av = a[i] ?? 0;
-        const bv = b[i] ?? 0;
-        if (av !== bv)
-            return av - bv;
-    }
-    return 0;
-}
-function setGameOverInPlace(state, result) {
-    state.result = result;
-    state.phase = 'GAME_OVER';
-    state.activeFactionId = null;
-    addGameEvent(state, {
-        type: 'game_over',
-        factionId: result.winner === 'draw' ? undefined : result.winner,
-        message: result.winner === 'draw'
-            ? `战略回合 ${result.decidedAtRound} 结束，双方平局。`
-            : `${state.factions[result.winner].displayName}获胜（${result.reason === 'elimination' ? '彻底消灭' : '回合上限判定'}）。`,
-    });
+    return [stableProduction, strategicValue, armyValue, requireFaction(state, factionId).gold];
 }
 function checkVictoryInPlace(state) {
-    const redEliminated = isFactionEliminated(state, 'red');
-    const blueEliminated = isFactionEliminated(state, 'blue');
-    if (redEliminated || blueEliminated) {
-        const winner = redEliminated && blueEliminated ? 'draw' : redEliminated ? 'blue' : 'red';
-        setGameOverInPlace(state, { winner, reason: 'elimination', decidedAtRound: state.strategicRound });
-        return true;
+    for (const factionId of factionIds(state)) {
+        if (!isFactionDefeated(state, factionId) && isFactionEliminated(state, factionId)) {
+            defeatFactionInPlace(state, factionId, 'eliminated');
+        }
     }
+    if (evaluateVictoryGroupsInPlace(state))
+        return true;
     if (state.strategicRound >= MAX_STRATEGIC_ROUNDS) {
-        const red = roundLimitScore(state, 'red');
-        const blue = roundLimitScore(state, 'blue');
-        const comparison = compareScore(red, blue);
-        setGameOverInPlace(state, {
-            winner: comparison > 0 ? 'red' : comparison < 0 ? 'blue' : 'draw',
-            reason: 'round_limit',
-            decidedAtRound: state.strategicRound,
-            score: { red, blue },
-        });
+        const score = Object.fromEntries(factionIds(state).map((factionId) => [
+            factionId,
+            roundLimitScore(state, factionId),
+        ]));
+        applyGameResultInPlace(state, makeRoundLimitResult(state, score));
         return true;
     }
     return false;
 }
 export function runSettlementAutoInPlace(state) {
-    const snapshot = makeSettlementSnapshot(state);
     settleCasualtyXpInPlace(state);
     recoverPiecesInPlace(state);
-    captureNodesInPlace(state, snapshot);
+    evacuateDownedPlayerAvatarsInPlace(state);
+    if (state.result)
+        return;
     cancelInvalidProductionInPlace(state);
     settleIncomeInPlace(state);
     if (checkVictoryInPlace(state))
         return;
     state.phase = 'SETTLEMENT_PLANNING';
     state.activeFactionId = null;
-    state.factions.red.planningCommitted = false;
-    state.factions.blue.planningCommitted = false;
+    for (const factionId of factionIds(state)) {
+        const faction = requireFaction(state, factionId);
+        faction.planningCommitted = faction.defeatedAtRound !== null;
+    }
 }
 export function finishPlanningAndAdvanceInPlace(state) {
     syncAllPieceStatsInPlace(state);
-    for (const factionId of ['red', 'blue']) {
-        for (const card of Object.values(state.factions[factionId].cards))
+    for (const factionId of factionIds(state)) {
+        for (const card of Object.values(requireFaction(state, factionId).cards))
             card.promotedThisSettlement = false;
     }
     state.strategicRound += 1;
-    startStrategicRoundInPlace(state);
+    startStrategicRoundInPlace(state, true);
 }
 //# sourceMappingURL=lifecycle.js.map

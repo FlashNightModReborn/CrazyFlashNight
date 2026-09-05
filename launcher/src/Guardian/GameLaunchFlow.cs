@@ -177,6 +177,14 @@ namespace CF7Launcher.Guardian
         private bool _revealWaitingJs;
         private bool _revealWaitingFlash;
         private bool _revealPerformed;
+        // Reveal crosses one UI message-pump turn before retiring Bootstrap's
+        // WebView2.  The reservation is attempt + generation bound so Reset or a
+        // replacement attempt can invalidate an already queued callback without
+        // letting it expose the wrong Flash process.
+        private bool _revealScheduled;
+        private int _revealScheduleGeneration;
+        private string _revealScheduledAttemptId;
+        internal Func<Action, bool> RevealNextTickDispatcherForTests;
         private System.Threading.Timer _flashRevealWatchdog;
         internal const int FLASH_REVEAL_WATCHDOG_DEFAULT_MS = 45000;
         private readonly int _flashRevealWatchdogMs;
@@ -677,6 +685,7 @@ namespace CF7Launcher.Guardian
                 else
                 {
                     // Phase 2b-ext: defer reveal flags 在 attempt 入口 set (三条成功分支共用).
+                    InvalidateRevealScheduleLocked();
                     _revealWaitingJs = deferJsReveal;
                     _revealWaitingFlash = requireFlashReveal || frontdoorMode != null;
                     _revealPerformed = false;
@@ -739,6 +748,7 @@ namespace CF7Launcher.Guardian
                                 && _state != State.WaitingConnect
                                 && _state != State.WaitingHandshake) return false;
 
+                            InvalidateRevealScheduleLocked();
                             _revealWaitingJs = deferJsReveal;
                             _revealWaitingFlash = requireFlashReveal || frontdoorMode != null;
                             _revealPerformed = false;
@@ -2219,6 +2229,7 @@ namespace CF7Launcher.Guardian
                 // reuse a receipt from the attempt being torn down.
                 _acceptedTitleAttemptId = null;
                 ClearFrontdoorAttemptLocked();
+                InvalidateRevealScheduleLocked();
 
                 if (_state == State.Idle && !_resetInFlight)
                 {
@@ -2518,20 +2529,114 @@ namespace CF7Launcher.Guardian
             TryPerformRevealLocked();
         }
 
-        /// <summary>两个 reveal flag 都清且未执行时, 锁内触发真正的 panel swap.</summary>
+        /// <summary>全部 reveal gate 都清且未执行时，在锁内保留一次 exact-attempt UI 投递。</summary>
         private void TryPerformRevealLocked()
         {
             if (_revealPerformed) return;
+            if (_revealScheduled) return;
             if (_state != State.Ready) return;   // 只在 Ready 态有意义; 未 Ready 时被外部 clear 也只是占位
             if (_revealWaitingJs) return;
             if (_revealWaitingFlash) return;
             if (_revealWaitingScene) return;
-            _revealPerformed = true;
-            CancelFlashRevealWatchdogLocked();
-            CancelFrontdoorSceneWatchdogLocked();
-            PerfTrace.Mark("launch.reveal_start", "attemptId=" + _currentAttemptId);
-            LogManager.Log("[LaunchFlow] performing reveal (panel swap)");
-            RunOnUi(delegate { DoPerformReveal(); });
+            string attemptId = _currentAttemptId;
+            int scheduleGeneration = NextRevealScheduleGenerationLocked();
+            _revealScheduled = true;
+            _revealScheduledAttemptId = attemptId;
+            // BeginInvoke 只证明消息已排队，不证明回调最终执行。复用现有有界
+            // watchdog 覆盖 handle-destroy/drop；真正 commit 后才取消它。
+            ArmFlashRevealWatchdogLocked(attemptId);
+            // reveal_ok can arrive on BootstrapPanel.WebMessageReceived's UI callback.
+            // Always cross one message-pump boundary before retiring that WebView2;
+            // disposing the event source re-entrantly from its own callback is a
+            // WebView2/COM lifecycle hazard.  The actual handoff remains ordered:
+            // Bootstrap retirement still completes before FlashHostPanel is shown.
+            bool queued = RunOnUiNextTick(delegate
+            {
+                CommitRevealOnUi(attemptId, scheduleGeneration);
+            });
+            if (!queued
+                && _revealScheduled
+                && _revealScheduleGeneration == scheduleGeneration
+                && string.Equals(
+                    _revealScheduledAttemptId,
+                    attemptId,
+                    StringComparison.Ordinal))
+            {
+                // Keep the watchdog armed. It will retry the next-pump reservation
+                // for this exact attempt; a Reset/new attempt invalidates it first.
+                _revealScheduled = false;
+                _revealScheduledAttemptId = null;
+                LogManager.Log(
+                    "[LaunchFlow] reveal next-tick dispatch not queued; watchdog retained attemptId="
+                    + (attemptId ?? "<null>"));
+            }
+        }
+
+        private int NextRevealScheduleGenerationLocked()
+        {
+            _revealScheduleGeneration =
+                _revealScheduleGeneration == int.MaxValue
+                    ? 1
+                    : _revealScheduleGeneration + 1;
+            return _revealScheduleGeneration;
+        }
+
+        private void InvalidateRevealScheduleLocked()
+        {
+            _revealScheduled = false;
+            _revealScheduledAttemptId = null;
+            NextRevealScheduleGenerationLocked();
+        }
+
+        private void CommitRevealOnUi(
+            string attemptId,
+            int scheduleGeneration)
+        {
+            lock (_stateLock)
+            {
+                if (!_revealScheduled
+                    || _revealScheduleGeneration != scheduleGeneration
+                    || !string.Equals(
+                        _revealScheduledAttemptId,
+                        attemptId,
+                        StringComparison.Ordinal)
+                    || !string.Equals(
+                        _currentAttemptId,
+                        attemptId,
+                        StringComparison.Ordinal)
+                    || _state != State.Ready
+                    || _revealWaitingJs
+                    || _revealWaitingFlash
+                    || _revealWaitingScene
+                    || _revealPerformed)
+                {
+                    LogManager.Log(
+                        "[LaunchFlow] stale reveal next-tick callback ignored attemptId="
+                        + (attemptId ?? "<null>"));
+                    return;
+                }
+
+                _revealScheduled = false;
+                _revealScheduledAttemptId = null;
+                _revealPerformed = true;
+                CancelFlashRevealWatchdogLocked();
+                CancelFrontdoorSceneWatchdogLocked();
+                PerfTrace.Mark(
+                    "launch.reveal_start",
+                    "attemptId=" + attemptId);
+                LogManager.Log("[LaunchFlow] performing reveal (panel swap)");
+            }
+
+            try { DoPerformReveal(); }
+            catch (Exception ex)
+            {
+                // Preserve RunOnUi's historical exception boundary: a reveal-side
+                // presentation failure must be diagnosed without escaping through
+                // the WinForms message pump after the ownership latch has committed.
+                LogManager.Log(
+                    "[LaunchFlow] reveal UI commit error: "
+                    + ex.Message);
+            }
         }
 
         /// <summary>真正的 reveal 副作用: readyWiring + BootstrapPanel 隐藏 + FlashHostPanel 显示 + hotkey guard 启动.
@@ -2787,6 +2892,20 @@ namespace CF7Launcher.Guardian
                 if (!_revealWaitingFlash)
                 {
                     CancelFlashRevealWatchdogLocked();
+                    if (!_revealPerformed
+                        && !_revealWaitingJs
+                        && !_revealWaitingScene)
+                    {
+                        // BeginInvoke may have been accepted and later dropped during
+                        // handle teardown, or the initial post may have failed. Retire
+                        // that exact reservation and retry through a fresh UI-pump turn.
+                        if (_revealScheduled)
+                            InvalidateRevealScheduleLocked();
+                        LogManager.Log(
+                            "[LaunchFlow] reveal next-tick watchdog retry attemptId="
+                            + (attemptIdSnap ?? "<null>"));
+                        TryPerformRevealLocked();
+                    }
                     return;
                 }
                 if (_frontdoorMode != null && _revealWaitingScene)
@@ -2888,6 +3007,7 @@ namespace CF7Launcher.Guardian
                 CancelFrontdoorSceneWatchdogLocked();
                 CancelCharacterCreateSnapshotTimerLocked();
                 CancelCharacterCreateDefinitiveTimerLocked();
+                InvalidateRevealScheduleLocked();
                 previousState = _state;
                 attemptId = _currentAttemptId;
                 pendingSlot = _pendingSlot;
@@ -3572,6 +3692,81 @@ namespace CF7Launcher.Guardian
             }
             try { action(); }
             catch (Exception ex) { LogManager.Log("[LaunchFlow] RunOnUi error: " + ex.Message); }
+        }
+
+        /// <summary>
+        /// Dispatches an action onto the next UI message-pump turn even when the
+        /// caller is already on the UI thread.  Use this when the action may retire
+        /// the control that originated the current callback.
+        /// </summary>
+        private bool RunOnUiNextTick(Action action)
+        {
+            if (action == null) return false;
+            Func<Action, bool> testDispatcher =
+                RevealNextTickDispatcherForTests;
+            if (testDispatcher != null)
+            {
+                try { return testDispatcher(action); }
+                catch (Exception ex)
+                {
+                    LogManager.Log(
+                        "[LaunchFlow] RunOnUiNextTick test dispatcher failed: "
+                        + ex.Message);
+                    return false;
+                }
+            }
+            // BootstrapPanel is deliberately retired by this callback. Dispatch
+            // through the long-lived owner Form so the event source never owns the
+            // message that disposes it.
+            Control target = _form;
+            if (target == null)
+            {
+                if (_bootstrapPanel == null)
+                {
+                    // Headless hosts have neither a WebView event source nor a UI
+                    // pump to retire. Preserve their synchronous lifecycle semantics;
+                    // production Bootstrap always supplies the owner Form.
+                    try
+                    {
+                        action();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log(
+                            "[LaunchFlow] RunOnUiNextTick headless dispatch failed: "
+                            + ex.Message);
+                        return false;
+                    }
+                }
+                LogManager.Log("[LaunchFlow] RunOnUiNextTick drop: no target");
+                return false;
+            }
+            if (target.IsDisposed)
+            {
+                LogManager.Log("[LaunchFlow] RunOnUiNextTick drop: target disposed");
+                return false;
+            }
+            if (!target.IsHandleCreated)
+            {
+                EnqueuePendingUi(target, action);
+                return true;
+            }
+            try
+            {
+                target.BeginInvoke(action);
+                return true;
+            }
+            catch (ObjectDisposedException)
+            {
+                LogManager.Log("[LaunchFlow] RunOnUiNextTick drop: disposed mid-invoke");
+                return false;
+            }
+            catch (InvalidOperationException)
+            {
+                LogManager.Log("[LaunchFlow] RunOnUiNextTick drop: invalid invoke");
+                return false;
+            }
         }
 
         /// <summary>

@@ -25,7 +25,7 @@ namespace CF7Launcher.Guardian
         private readonly bool _webView2DeveloperMode;
         private WebView2 _webView;
         private bool _disposed;
-        private bool _webViewSuspended;
+        private bool _webViewRetired;
         private Func<IDisposable>
             _humanOnlySecurityScopeFactory;
 
@@ -293,67 +293,50 @@ namespace CF7Launcher.Guardian
 
             if (visible)
             {
-                ResumeWebViewIfNeeded();
+                if (_webViewRetired)
+                {
+                    LogManager.Log("[Bootstrap] reveal request ignored after one-way retirement");
+                    return;
+                }
                 this.Visible = true;
             }
             else
             {
+                // Bootstrap → Flash 是单向生命周期；仓库没有回显启动页的调用。
+                // 在 FlashHostPanel 显示前同步销毁 WebView2 owner，避免异步
+                // ExecuteScript/TrySuspend 留下最长数秒的双 GPU context 重叠窗。
+                RetireWebViewForGameplay();
                 this.Visible = false;
-                SuspendWebViewIfPossible();
             }
         }
 
-        private async void SuspendWebViewIfPossible()
+        private void RetireWebViewForGameplay()
         {
-            CoreWebView2 core = TryGetCoreWebView2();
-            if (core == null || _webViewSuspended)
+            if (_webViewRetired)
                 return;
-
+            _webViewRetired = true;
+            WebView2 retired = _webView;
+            _webView = null;
+            LogManager.Log("[Bootstrap] one-way WebView2 retirement start");
             try
             {
-                bool ok = await core.TrySuspendAsync();
-                _webViewSuspended = ok;
-                LogManager.Log("[Bootstrap] WebView2 suspend requested, ok=" + ok);
+                if (retired != null)
+                    retired.Visible = false;
             }
-            catch (Exception ex)
-            {
-                if (IsWebViewDisposeRace(ex))
-                    return;
-                LogManager.Log("[Bootstrap] WebView2 suspend failed: " + ex.Message);
-            }
-        }
-
-        private void ResumeWebViewIfNeeded()
-        {
-            CoreWebView2 core = TryGetCoreWebView2();
-            if (core == null || !_webViewSuspended)
-                return;
-
+            catch (Exception ex) { LogManager.Log("[Bootstrap] hide before retirement failed: " + ex.Message); }
             try
             {
-                core.Resume();
-                _webViewSuspended = false;
-                LogManager.Log("[Bootstrap] WebView2 resumed");
+                if (retired != null)
+                    this.Controls.Remove(retired);
             }
-            catch (Exception ex)
+            catch (Exception ex) { LogManager.Log("[Bootstrap] detach before retirement failed: " + ex.Message); }
+            try
             {
-                if (IsWebViewDisposeRace(ex))
-                    return;
-                LogManager.Log("[Bootstrap] WebView2 resume failed: " + ex.Message);
+                if (retired != null)
+                    retired.Dispose();
             }
-        }
-
-        private bool IsWebViewDisposeRace(Exception ex)
-        {
-            if (_disposed || _webView == null)
-                return true;
-            try { if (_webView.IsDisposed) return true; } catch { return true; }
-            if (ex is ObjectDisposedException)
-                return true;
-            InvalidOperationException invalid = ex as InvalidOperationException;
-            return invalid != null
-                && invalid.Message != null
-                && invalid.Message.IndexOf("disposed", StringComparison.OrdinalIgnoreCase) >= 0;
+            catch (Exception ex) { LogManager.Log("[Bootstrap] WebView2 retirement failed: " + ex.Message); }
+            LogManager.Log("[Bootstrap] one-way WebView2 retirement completed");
         }
 
         private CoreWebView2 TryGetCoreWebView2()

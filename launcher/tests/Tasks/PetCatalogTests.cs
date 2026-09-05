@@ -268,6 +268,40 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(0, (int)projectedT800["kprice"]);
         }
 
+        [Fact]
+        public void RepositoryCatalog_WarlordCommanders_UseChineseNamesEncounterGatesAndPremiumPrice()
+        {
+            string projectRoot = FindProjectRoot();
+            PetCatalog catalog = PetCatalogLoader.Load(projectRoot);
+            PetCatalog.PetCategory warlordCategory = catalog.Categories.Find(
+                category => category.Name == "军阀");
+            Assert.NotNull(warlordCategory);
+
+            int[] ids = { 111, 112, 113 };
+            string[] names = { "吴豫", "阎凝儿", "袁望" };
+            string[] identifiers = { "敌人-Itinerant", "敌人-Gazer", "敌人-Surveyor" };
+            int[] heights = { 175, 180, 180 };
+            int[] unlockTasks = { 28, 43, 28 };
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                PetDef commander;
+                Assert.True(catalog.PetsById.TryGetValue(ids[i], out commander));
+                Assert.Equal(names[i], commander.Name);
+                Assert.Equal(identifiers[i], commander.Identifier);
+                Assert.Equal("partner", commander.RosterType);
+                Assert.Equal(heights[i], commander.Height);
+                Assert.Equal(1, commander.InitialLevel);
+                Assert.Equal(1, commander.UnlockLevel);
+                Assert.Equal(unlockTasks[i], commander.UnlockTask);
+                Assert.True(commander.Unique);
+                Assert.Equal(0, commander.Price);
+                Assert.Equal(12000, commander.KPrice);
+                Assert.Equal(0, commander.IncreasePrice);
+                Assert.Contains(warlordCategory.Rows, row => row.Contains(ids[i]));
+            }
+        }
+
         private static void Bind(PetTask task)
         {
             Assert.True(task.BindPanelInstance(PanelInstanceId));

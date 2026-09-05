@@ -1258,6 +1258,8 @@ namespace CF7Launcher.Guardian
         private StageSelectTask _stageSelectTask;
         private ArenaTask _arenaTask;
         private WarlordBattleTask _warlordBattleTask;
+        private WarlordStageTask _warlordStageTask;
+        private int _warlordPresentationProbeGeneration;
         private PetTask _petTask;
         private MercTask _mercTask;
         private TaskTask _taskTask;
@@ -2062,6 +2064,26 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        // Native ShowWindow/SetWindowPos does not update WebView2 visibility.
+        // Keep the controller hidden across HWND/style changes, then reveal it
+        // only after the parent and child have their final visible geometry.
+        private void SetWebViewControllerVisible(bool visible, string reason)
+        {
+            CoreWebView2Controller controller = TryGetWebViewController();
+            if (controller == null) return;
+            try
+            {
+                controller.IsVisible = visible;
+                LogManager.Log("[WebOverlay] controller visibility reason=" + reason
+                    + " requested=" + visible + " actual=" + controller.IsVisible);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] controller visibility failed reason="
+                    + reason + " error=" + ex.GetType().Name);
+            }
+        }
+
         /// <summary>
         /// 强制产生一次真实的 controller bounds 变化，踢醒 WebView2 合成链。
         /// SW_HIDE / OS 级隐藏（owned 窗口随 owner 最小化被一并隐藏）之后，WebView2 的
@@ -2134,8 +2156,8 @@ namespace CF7Launcher.Guardian
                 controller.SetBoundsAndZoomFactor(localBounds, zoom);
                 controller.NotifyParentWindowPositionChanged();
                 PerfTrace.Counter("webOverlay.controllerBoundsSync");
-                if (_panelMode)
-                    controller.IsVisible = true;
+                // Geometry synchronization must not reveal a hidden controller:
+                // pre-show sync also runs while its parent HWND is still hidden.
                 if (forceLog || IsPanelMetricsReason(reason))
                     LogManager.Log("[WebOverlay] controller bounds sync: reason=" + reason
                         + " bounds=" + localBounds
@@ -4067,8 +4089,10 @@ namespace CF7Launcher.Guardian
                             "event=warlord_resume_dispatch_failed reason=handle_unavailable");
                         return;
                     }
-                    if (this.InvokeRequired) this.BeginInvoke(action);
-                    else action();
+                    // Resume can be raised synchronously from an exact-close completion.
+                    // Always post it, even when already on the UI thread, so PanelHost first
+                    // clears _processing and a GameStage tracked reopen can be admitted.
+                    this.BeginInvoke(action);
                 }
                 catch (Exception ex)
                 {
@@ -4077,7 +4101,9 @@ namespace CF7Launcher.Guardian
                         + ex.GetType().Name);
                 }
             });
-            task.SetResumeOpenHandler(delegate(JObject initData)
+            task.SetResumeOpenHandler(delegate(
+                JObject initData,
+                WarlordBattleTask.PreparedBattle prepared)
             {
                 LauncherCommandRouter router = _commandRouter;
                 if (router == null)
@@ -4086,8 +4112,73 @@ namespace CF7Launcher.Guardian
                         "event=warlord_resume_open_rejected reason=router_unavailable");
                     return;
                 }
-                router.TryOpenWarlordResumePanel(initData);
+                WarlordStageTask stageTask = _warlordStageTask;
+                if (prepared == null || prepared.StageOuterBinding == null)
+                {
+                    // Phase C has no GameStage owner and remains compatible with the
+                    // normal resume route.  A Web-supplied stage marker is not authority.
+                    router.TryOpenWarlordResumePanel(initData);
+                    return;
+                }
+
+                JObject binding = (JObject)prepared.StageOuterBinding.DeepClone();
+                string retiredInstance = prepared.PanelInstanceId;
+                string handoffToken = prepared.StageHandoffToken;
+                if (stageTask == null || string.IsNullOrEmpty(handoffToken))
+                {
+                    LogManager.Log(
+                        "event=warlord_stage_resume_open_rejected reason=handoff_owner_unavailable");
+                    return;
+                }
+
+                bool queued = router.TryOpenWarlordStageResumePanel(
+                    initData,
+                    delegate
+                    {
+                        return stageTask.CanAdoptBattleResumePanel(
+                            binding, retiredInstance, handoffToken);
+                    },
+                    delegate(
+                        string resumedInstance,
+                        PanelHostController.TrackedOpenOutcome outcome)
+                    {
+                        if (outcome == PanelHostController.TrackedOpenOutcome.OpenPosted
+                            && stageTask.TryAdoptBattleResumePanel(
+                                binding,
+                                retiredInstance,
+                                resumedInstance,
+                                handoffToken,
+                                initData)) return;
+
+                        stageTask.FreezeBattleResumeUnknown(
+                            binding,
+                            retiredInstance,
+                            handoffToken,
+                            outcome == PanelHostController.TrackedOpenOutcome.OpenPosted
+                                ? "stage.battle-resume-adoption-failed"
+                                : "stage.battle-resume-open-failed");
+                        if (outcome == PanelHostController.TrackedOpenOutcome.OpenPosted
+                            && _panelHost != null)
+                        {
+                            _panelHost.TryClosePanelExact(
+                                "warlord", resumedInstance, false,
+                                delegate(bool ignored) { });
+                        }
+                    });
+                if (!queued)
+                {
+                    stageTask.FreezeBattleResumeUnknown(
+                        binding,
+                        retiredInstance,
+                        handoffToken,
+                        "stage.battle-resume-not-queued");
+                }
             });
+        }
+
+        public void SetWarlordStageTask(WarlordStageTask task)
+        {
+            _warlordStageTask = task;
         }
 
         public void SetPetTask(PetTask task)
@@ -4347,6 +4438,8 @@ namespace CF7Launcher.Guardian
             _nativeHudIdleSuspendPending = false;
             _panelViewportRepairAttempts = 0;
 
+            SetWebViewControllerVisible(false, "panel_resume_begin");
+
             // 唤醒 CoreWebView2（如果之前 DoFullIdleSuspend 调过 TrySuspendAsync）
             // SDK 1.0.3856.49 有 Resume()；suspend 状态下未 Resume 调 ExecScript 可能丢弃
             try
@@ -4414,6 +4507,8 @@ namespace CF7Launcher.Guardian
                         Math.Max(1, this.ClientSize.Width),
                         Math.Max(1, this.ClientSize.Height),
                         SWP_NOACTIVATE | SWP_SHOWWINDOW);
+                    if (formPresented)
+                        SetWebViewControllerVisible(true, "panel_resume_post_show");
                 }
                 LogManager.Log("[Panel] ResumeForPanel applied form=" + this.Bounds
                     + " client=" + this.ClientSize.Width + "x" + this.ClientSize.Height
@@ -4686,6 +4781,7 @@ namespace CF7Launcher.Guardian
                 : reason;
             try
             {
+                SetWebViewControllerVisible(false, "panel_restore_replay_begin");
                 this.Bounds = committedRect;
                 this.ClientSize = new Size(
                     committedRect.Width,
@@ -4727,6 +4823,8 @@ namespace CF7Launcher.Guardian
                         committedRect.Width,
                         committedRect.Height,
                         SWP_NOACTIVATE | SWP_SHOWWINDOW);
+                    if (formPresented)
+                        SetWebViewControllerVisible(true, "panel_restore_replay_post_show");
                 }
                 PostToWeb("{\"type\":\"panel_viewport_set\",\"w\":"
                     + committedRect.Width + ",\"h\":"
@@ -5254,7 +5352,11 @@ namespace CF7Launcher.Guardian
             _frozenForIdle = true;
             LogIdleStepDuration("full.freeze_ui_data", panelTag, stepStart, 25.0);
 
-            // 3) SW_HIDE
+            // 3) Retire browser presentation before hiding the native parent.
+            // Otherwise Chromium keeps a visible controller behind a hidden HWND;
+            // reopening with IsVisible=true is then only a same-value write.
+            SetWebViewControllerVisible(false, "panel_idle_pre_hide");
+            // SW_HIDE
             stepStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("webOverlay.idle.full.sw_hide.start", panelTag);
             SessionForegroundSnapshot hideBefore =
@@ -5605,6 +5707,34 @@ namespace CF7Launcher.Guardian
                     "[Warlord] rejected stale/malformed exact close envelope");
                 return;
             }
+
+            WarlordStageTask stageTask = _warlordStageTask;
+            if (stageTask != null
+                && stageTask.OwnsPanelInstance(activeInstance))
+            {
+                WarlordStageTask.PreparedTerminal prepared;
+                string rejectionReason;
+                WarlordStageTask.TerminalPrepareDisposition disposition =
+                    stageTask.TryPrepareSuspendedClose(
+                        activeInstance,
+                        out prepared,
+                        out rejectionReason);
+                if (disposition
+                    == WarlordStageTask.TerminalPrepareDisposition.Prepared)
+                {
+                    QueueWarlordStageTerminalClose(prepared);
+                }
+                else
+                {
+                    LogManager.Log(
+                        "event=warlord_stage_close_rejected disposition="
+                        + disposition.ToString().ToLowerInvariant()
+                        + " reason="
+                        + (rejectionReason ?? "duplicate"));
+                }
+                return;
+            }
+
             bool closeQueued = _panelHost.TryClosePanelExact(
                 "warlord", activeInstance, false,
                 delegate(bool closed)
@@ -5615,14 +5745,166 @@ namespace CF7Launcher.Guardian
                             "[Warlord] stale exact close ignored after replacement");
                         return;
                     }
-                    bool returnBase = _warlordBattleTask != null
-                        && _warlordBattleTask.ConsumeReturnBaseOnFinalClose();
-                    CommitAcceptedPanelCloseEffects(
-                        "warlord", returnBase, false);
+                    // Warlord terminal close has no hidden Phase-C navigation policy.
+                    // Outer GameStage settlement and explicit player navigation keep
+                    // their own authorities; this close only retires UI and pause state.
+                    CommitAcceptedPanelCloseEffects("warlord", false, false);
                 });
             if (!closeQueued)
                 LogManager.Log(
                     "[Warlord] exact Host close was not queued");
+        }
+
+        private void TryHandleWarlordStageTerminal(JObject parsed)
+        {
+            WarlordStageTask task = _warlordStageTask;
+            string activeName = _panelHost != null
+                ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId : null;
+            if (task == null || _panelHost == null)
+            {
+                LogManager.Log(
+                    "event=warlord_stage_terminal_rejected reason=host_unavailable");
+                return;
+            }
+
+            WarlordStageTask.PreparedTerminal prepared;
+            string rejectionReason;
+            WarlordStageTask.TerminalPrepareDisposition disposition =
+                task.TryPrepareWebTerminal(
+                    parsed,
+                    activeName,
+                    activeInstance,
+                    out prepared,
+                    out rejectionReason);
+            if (disposition
+                == WarlordStageTask.TerminalPrepareDisposition.Prepared)
+            {
+                QueueWarlordStageTerminalClose(prepared);
+                return;
+            }
+
+            LogManager.Log(
+                "event=warlord_stage_terminal_rejected disposition="
+                + disposition.ToString().ToLowerInvariant()
+                + " reason=" + (rejectionReason ?? "duplicate"));
+        }
+
+        private void TryHandleWarlordBattleResumeApplied(JObject parsed)
+        {
+            WarlordStageTask task = _warlordStageTask;
+            string activeName = _panelHost != null
+                ? _panelHost.ActivePanelName : null;
+            string activeInstance = _panelHost != null
+                ? _panelHost.ActivePanelInstanceId : null;
+            string rejectionReason = null;
+            bool accepted = task != null
+                && task.TryAcceptBattleResumeApplied(
+                    parsed,
+                    activeName,
+                    activeInstance,
+                    out rejectionReason);
+            LogManager.Log(
+                "event=warlord_battle_resume_applied disposition="
+                + (accepted ? "accepted" : "rejected")
+                + " reason="
+                + (accepted ? "none" : rejectionReason ?? "host_unavailable"));
+            if (accepted && _warlordPresentationProbeGeneration != _panelSessionGeneration)
+            {
+                _warlordPresentationProbeGeneration = _panelSessionGeneration;
+                _ = TraceWarlordPresentationAsync(activeInstance, _panelSessionGeneration);
+            }
+        }
+
+        private bool IsCurrentWarlordPresentation(string instanceId, int generation)
+        {
+            return !_disposed && _panelMode && _webView?.CoreWebView2 != null
+                && generation == _panelSessionGeneration
+                && _panelHost?.ActivePanelName == "warlord"
+                && string.Equals(_panelHost.ActivePanelInstanceId, instanceId,
+                    StringComparison.Ordinal);
+        }
+
+        // One metadata-only sample after strategic apply. Never a success gate,
+        // screenshot, polling loop, business retry or scene reconstruction.
+        private async System.Threading.Tasks.Task TraceWarlordPresentationAsync(
+            string instanceId, int generation)
+        {
+            try
+            {
+                await System.Threading.Tasks.Task.Delay(150);
+                if (!IsCurrentWarlordPresentation(instanceId, generation)) return;
+                var probe = _webView.CoreWebView2.ExecuteScriptAsync(
+                    "window.WarlordPanelDiagnostics ? WarlordPanelDiagnostics.read() : null");
+                var completed = await System.Threading.Tasks.Task.WhenAny(
+                    probe, System.Threading.Tasks.Task.Delay(1500));
+                if (!IsCurrentWarlordPresentation(instanceId, generation)) return;
+                string sample = completed == probe ? await probe : "timeout";
+                if (sample != null && sample.Length > 8192) sample = "oversize";
+                LogManager.Log("event=warlord_presentation_sample generation="
+                    + generation + " instance=" + instanceId
+                    + " " + DescribeWebViewController() + " dom=" + sample);
+            }
+            catch (Exception ex)
+            {
+                if (IsCurrentWarlordPresentation(instanceId, generation))
+                    LogManager.Log("event=warlord_presentation_sample error="
+                        + ex.GetType().Name);
+            }
+        }
+
+        private void QueueWarlordStageTerminalClose(
+            WarlordStageTask.PreparedTerminal prepared)
+        {
+            WarlordStageTask task = _warlordStageTask;
+            if (task == null || _panelHost == null || prepared == null)
+            {
+                if (task != null && prepared != null)
+                    task.FreezePreparedCloseUnknown(
+                        prepared,
+                        "stage.close-host-unavailable");
+                return;
+            }
+
+            bool queued = _panelHost.TryCloseTrackedPanelExact(
+                "warlord",
+                prepared.PanelInstanceId,
+                delegate(bool closed)
+                {
+                    if (!closed)
+                    {
+                        task.FreezePreparedCloseUnknown(
+                            prepared,
+                            "stage.exact-close-failed");
+                        return;
+                    }
+
+                    try
+                    {
+                        // Stage mode owns neither Phase C return-base state nor the
+                        // arena return command. It only releases the generic pause.
+                        CommitAcceptedPanelCloseEffects(
+                            "warlord",
+                            false,
+                            false);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log(
+                            "event=warlord_stage_close_effects_failed type="
+                            + ex.GetType().Name);
+                    }
+                    // The exact tracked visual is now retired. Only this proof is
+                    // allowed to commit the previously prepared outer terminal.
+                    task.CommitPreparedTerminal(prepared);
+                });
+            if (!queued)
+            {
+                task.FreezePreparedCloseUnknown(
+                    prepared,
+                    "stage.exact-close-not-queued");
+            }
         }
 
         private void HandleWarlordBattleStart(JObject parsed)
@@ -5648,21 +5930,108 @@ namespace CF7Launcher.Guardian
             }
 
             WarlordBattleTask.PreparedBattle prepared;
+            string outerRunId = null;
+            JObject playerAvatarPortrait = null;
+            JObject stageOuterBinding = null;
+            bool stageOwned = false;
+            if (_warlordStageTask != null
+                && _warlordStageTask.OwnsPanelInstance(activeInstance))
+            {
+                stageOwned = true;
+                if (!_warlordStageTask.TryGetActiveOuterRunId(
+                        activeInstance,
+                        out outerRunId)
+                    || !_warlordStageTask.TryGetActivePlayerAvatarPortrait(
+                        activeInstance,
+                        out playerAvatarPortrait)
+                    || !_warlordStageTask.TryGetActiveBinding(
+                        activeInstance,
+                        out stageOuterBinding))
+                {
+                    RespondPanelDomainError(
+                        parsed,
+                        "warlord_outer_run_unavailable");
+                    return;
+                }
+                if (!_warlordStageTask.IsPanelReadyForGameplay(
+                        activeInstance))
+                {
+                    RespondPanelDomainError(
+                        parsed,
+                        "stage_resume_apply_pending");
+                    return;
+                }
+            }
             JObject response = _warlordBattleTask.Prepare(
                 parsed,
                 activeInstance,
+                outerRunId,
+                stageOuterBinding,
+                playerAvatarPortrait,
                 out prepared);
             PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
-            if (response.Value<bool?>("success") != true || prepared == null) return;
+            if (response.Value<bool?>("success") != true || prepared == null)
+            {
+                LogManager.Log(
+                    "event=warlord_battle_prepare_rejected reason="
+                    + (response.Value<string>("error") ?? "prepared_unavailable"));
+                return;
+            }
 
-            bool closeQueued = _panelHost.TryClosePanelExact(
+            string stageHandoffToken = null;
+            if (stageOwned && !_warlordStageTask.TryPermitBattleHandoffClose(
+                    activeInstance, stageOuterBinding, out stageHandoffToken))
+            {
+                _warlordBattleTask.CancelPrepared(
+                    prepared, "stage_handoff_close_not_permitted");
+                RespondPanelDomainError(parsed, "stage_handoff_close_not_permitted");
+                return;
+            }
+            if (stageOwned) prepared.StageHandoffToken = stageHandoffToken;
+            bool stageHandoffCommitted = false;
+
+            bool closeQueued = stageOwned
+                ? _panelHost.TryClosePanelExact(
                 "warlord",
                 activeInstance,
                 false,
+                delegate
+                {
+                    stageHandoffCommitted = _warlordStageTask.TryCommitBattleHandoffClose(
+                        activeInstance,
+                        stageOuterBinding,
+                        stageHandoffToken);
+                    return stageHandoffCommitted;
+                },
+                delegate
+                {
+                    // The execution gate already consumed the one-shot Host capability
+                    // atomically.  Keep PanelHost's commit callback no-fail and side-effect
+                    // free so a transport race cannot authorize DoClose after a failed commit.
+                },
                 delegate(bool closed)
                 {
                     if (!closed)
                     {
+                        if (stageOwned)
+                        {
+                            if (stageHandoffCommitted)
+                            {
+                                // DoClose failed after the Host capability was consumed.
+                                // It cannot safely revert to a live panel or start AS2;
+                                // freeze the outer stage and leave the Web battle cancelled.
+                                _warlordStageTask.FreezeBattleResumeUnknown(
+                                    stageOuterBinding,
+                                    activeInstance,
+                                    stageHandoffToken,
+                                    "stage.battle-handoff-close-failed");
+                            }
+                            else
+                            {
+                                _warlordStageTask.CancelBattleHandoffClosePermit(
+                                    activeInstance, stageOuterBinding, stageHandoffToken);
+                            }
+                        }
                         if (_warlordBattleTask.CancelPrepared(
                             prepared, "exact_visual_close_superseded"))
                         {
@@ -5681,23 +6050,52 @@ namespace CF7Launcher.Guardian
                         return;
                     }
 
-                    bool pauseReleased = TryReleaseGenericWebPanelPause();
+                    // The single AS2 Action admission command releases the exact Web-panel
+                    // pause lease before it asks StageManager to enter the encounter.  Sending a
+                    // separate webPanelUnpause here recreates the one-of-two packet cliff that
+                    // caused the r11 sustained-battle freeze.
                     CommitAcceptedPanelCloseEffects(
                         "warlord",
                         false,
                         true);
-                    if (!pauseReleased)
-                    {
-                        _warlordBattleTask.CancelAndResume(
-                            prepared,
-                            "pause_release_failed",
-                            "Host 无法释放 Web 面板暂停租约；真实战斗未启动。");
-                        return;
-                    }
                     _warlordBattleTask.StartPrepared(prepared);
-                });
+                })
+                : _panelHost.TryClosePanelExact(
+                    "warlord",
+                    activeInstance,
+                    false,
+                    delegate(bool closed)
+                    {
+                        if (!closed)
+                        {
+                            if (_warlordBattleTask.CancelPrepared(
+                                prepared, "exact_visual_close_superseded"))
+                            {
+                                PostToWeb(new JObject
+                                {
+                                    ["success"] = false,
+                                    ["ok"] = false,
+                                    ["type"] = "panel_resp",
+                                    ["panel"] = "warlord",
+                                    ["cmd"] = "battle_start",
+                                    ["callId"] = prepared.WebCallId,
+                                    ["error"] = "exact_visual_close_superseded",
+                                    ["message"] = "军阀演习实例已被替换；真实战斗未启动。"
+                                }.ToString(Newtonsoft.Json.Formatting.None));
+                            }
+                            return;
+                        }
+
+                        // Pause release and Action admission are one AS2 command; see the
+                        // stage-owned branch above.
+                        CommitAcceptedPanelCloseEffects("warlord", false, true);
+                        _warlordBattleTask.StartPrepared(prepared);
+                    });
             if (!closeQueued)
             {
+                if (stageOwned)
+                    _warlordStageTask.CancelBattleHandoffClosePermit(
+                        activeInstance, stageOuterBinding, stageHandoffToken);
                 if (_warlordBattleTask.CancelPrepared(
                     prepared, "exact_visual_close_not_queued"))
                 {
@@ -7217,6 +7615,25 @@ namespace CF7Launcher.Guardian
                         }
                         else if (string.Equals(game, "warlord", StringComparison.OrdinalIgnoreCase))
                         {
+                            JObject sessionPayload = payload as JObject;
+                            if (sessionPayload != null
+                                && string.Equals(
+                                    sessionPayload.Value<string>("kind"),
+                                    "stage_terminal",
+                                    StringComparison.Ordinal))
+                            {
+                                TryHandleWarlordStageTerminal(parsed);
+                                break;
+                            }
+                            if (sessionPayload != null
+                                && string.Equals(
+                                    sessionPayload.Value<string>("kind"),
+                                    "battle_resume_applied",
+                                    StringComparison.Ordinal))
+                            {
+                                TryHandleWarlordBattleResumeApplied(parsed);
+                                break;
+                            }
                             LogManager.Log("[Warlord] minigame_session payload=redacted");
                             break;
                         }
@@ -7812,37 +8229,59 @@ namespace CF7Launcher.Guardian
                         ? disconnectingBuild.PanelInstanceId
                         : null);
 
+            // Warlord task ownership is retired synchronously by XmlSocketServer's generic
+            // disconnect event before this generation callback can be posted to the UI thread.
+            // Snapshot only PanelHost's independent visual lease here: consulting StageTask after
+            // its synchronous freeze would lose the distinction between tracked Stage and Phase C.
+            bool trackedPanelOpen = _panelHost != null
+                && _panelHost.IsPanelOpen;
+            string trackedPanel = trackedPanelOpen
+                ? _panelHost.ActivePanelName : null;
+            string trackedPanelInstance = trackedPanelOpen
+                ? _panelHost.ActivePanelInstanceId : null;
+            bool trackedWarlordStage = trackedPanelOpen
+                && string.Equals(
+                    trackedPanel,
+                    "warlord",
+                    StringComparison.Ordinal)
+                && _panelHost.HasTrackedPanelLease;
+
             // PanelHost 接管路径：联动关闭，确保 backdrop/HUD/Shield 都拨回 idle
-            bool trackedLootDetach = _panelHost != null && _panelHost.IsPanelOpen
-                && _panelHost.ActivePanelName == "loot" && _lootPanelCoordinator != null;
+            bool trackedLootDetach = trackedPanelOpen
+                && trackedPanel == "loot"
+                && _lootPanelCoordinator != null;
             if (trackedLootDetach)
             {
                 PostToWeb(BuildPanelForceClosePayload("loot",
-                    _panelHost.ActivePanelInstanceId, "disconnected"));
+                    trackedPanelInstance, "disconnected"));
                 if (_lootTask != null)
                     _lootTask.OnSocketTransportDetached(closedGeneration);
                 _lootPanelCoordinator.ForceDetach("socket_disconnected");
             }
-            else if (_panelHost != null && _panelHost.IsPanelOpen)
+            else if (trackedPanelOpen)
             {
-                string trackedPanel = _panelHost.ActivePanelName;
-                string trackedPanelInstance = _panelHost.ActivePanelInstanceId;
-                if (_panelHost.ActivePanelName == "skills" && _skillTask != null)
+                if (trackedPanel == "skills" && _skillTask != null)
                 {
                     _skillTask.HandleAuthoritativePanelClosed(trackedPanelInstance);
                 }
-                if (_panelHost.ActivePanelName == "kshop") _pauseNeedsRestore = true;
+                if (trackedPanel == "kshop") _pauseNeedsRestore = true;
                 string forceClose = BuildPanelForceClosePayload(
                     trackedPanel, trackedPanelInstance, "disconnected");
                 if (forceClose != null) PostToWeb(forceClose);
                 else LogManager.Log("[Workbench] exact force_close suppressed: missing tracked instance");
                 // 断线属异常路径，不要让 returnTo 链路在已经混乱的状态上又拉起上层 panel。
                 _panelHost.ClearReturnStack();
-                if (!characterVisualRetirePending
-                    && !_panelHost.TryClosePanelExact(
-                        trackedPanel,
-                        trackedPanelInstance,
-                        null))
+                bool disconnectCloseQueued = characterVisualRetirePending
+                    || (trackedWarlordStage
+                        ? _panelHost.TryCloseTrackedPanelExact(
+                            trackedPanel,
+                            trackedPanelInstance,
+                            null)
+                        : _panelHost.TryClosePanelExact(
+                            trackedPanel,
+                            trackedPanelInstance,
+                            null));
+                if (!disconnectCloseQueued)
                 {
                     LogManager.Log(
                         "[PanelHost] disconnect exact close was not queued");

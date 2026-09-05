@@ -1,12 +1,15 @@
 import { hasStableSupplyPath, isNodeActive, isNodeStable, nodeOccupyingFactions } from '../core/selectors.js';
+import { requireNode } from '../core/access.js';
+import { requireFaction } from '../core/factions.js';
 import { validateCommand } from '../core/validator.js';
 import { getCardDefinition } from '../data/cards.js';
+import { playerReasonSummary } from './player-text-catalog.js';
 function slotNumber(slotId, fallback) {
     const parsed = Number(slotId.split(':').at(-1));
     return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
 }
 function nodePauseReasons(state, factionId, nodeId) {
-    const node = state.map.nodes[nodeId];
+    const node = requireNode(state, nodeId);
     if (node.ownerFactionId !== factionId)
         return ['据点已失守'];
     if (nodeOccupyingFactions(state, nodeId).some((occupier) => occupier !== factionId))
@@ -18,11 +21,11 @@ function nodePauseReasons(state, factionId, nodeId) {
     return isNodeStable(state, nodeId, factionId) ? [] : ['据点失稳'];
 }
 function deploymentBlockers(state, factionId, order) {
-    const node = state.map.nodes[order.nodeId];
-    const faction = state.factions[factionId];
+    const node = requireNode(state, order.nodeId);
+    const faction = requireFaction(state, factionId);
     const blockers = nodePauseReasons(state, factionId, order.nodeId);
     if (node.pieceIds.length >= node.capacity)
-        blockers.push(`驻军容量 ${node.pieceIds.length}/${node.capacity}`);
+        blockers.push(`驻军 ${node.pieceIds.length} / 上限 ${node.capacity}`);
     if (faction.populationUsed + order.populationCost > faction.populationCap) {
         blockers.push(`人口 ${faction.populationUsed}+${order.populationCost}/${faction.populationCap}`);
     }
@@ -54,7 +57,9 @@ function projectOrder(state, factionId, order, queuePosition) {
         goldCost: order.goldCost,
         populationCost: order.populationCost,
         cancellable: cancellation.ok,
-        cancelReason: cancellation.error ?? null,
+        cancelReason: cancellation.ok
+            ? null
+            : playerReasonSummary(cancellation.reasonCode, cancellation.reasonParams),
     };
 }
 function projectLane(state, factionId, slot, index) {
@@ -96,13 +101,13 @@ function projectLane(state, factionId, slot, index) {
 export function projectProductionNodes(state, factionId) {
     return Object.keys(state.map.nodes)
         .filter((nodeId) => {
-        const node = state.map.nodes[nodeId];
+        const node = requireNode(state, nodeId);
         return node.productionSlots > 0
-            && (node.ownerFactionId === factionId || (state.factions[factionId].productionQueues[nodeId]?.length ?? 0) > 0);
+            && (node.ownerFactionId === factionId || (requireFaction(state, factionId).productionQueues[nodeId]?.length ?? 0) > 0);
     })
         .map((nodeId) => {
-        const node = state.map.nodes[nodeId];
-        const slots = state.factions[factionId].productionQueues[nodeId] ?? [];
+        const node = requireNode(state, nodeId);
+        const slots = requireFaction(state, factionId).productionQueues[nodeId] ?? [];
         const lanes = slots.map((slot, index) => projectLane(state, factionId, slot, index));
         return {
             nodeId,
@@ -177,7 +182,8 @@ function choiceFrom(state, factionId, cardId, mode, nodeId, slotId, reason) {
     });
     return {
         ok: validation.ok,
-        error: validation.error ?? null,
+        reasonCode: validation.reasonCode ?? null,
+        reasonParams: validation.reasonParams ?? {},
         mode,
         nodeId,
         slotId,

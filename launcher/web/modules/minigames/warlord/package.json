@@ -10,7 +10,7 @@
   "scripts": {
     "build": "node tools/build-runtime.mjs",
     "test": "node tools/build-runtime.mjs && node tools/verify-runtime.mjs && node tools/run-tests.mjs",
-    "test:browser": "node --experimental-websocket tools/run-browser-qa.mjs",
+    "test:browser": "node tools/build-runtime.mjs && node tools/verify-runtime.mjs && node --experimental-websocket tools/run-browser-qa.mjs",
     "verify:runtime": "node tools/verify-runtime.mjs",
     "simulate": "node tools/build-runtime.mjs && node runtime/simulation/cli.js",
     "serve": "node dev/server.mjs"

@@ -185,6 +185,7 @@ const summary = {
   productionView: null,
   productionExactView: null,
   tacticalView: null,
+  tacticalMaxView: null,
   themePreview: null,
   viewports: [],
   network: { requests: [], responses: [], failures: [], externalRequests: [] },
@@ -292,19 +293,37 @@ try {
     return result.result?.value;
   };
 
+  // `--window-size` still leaves browser-chrome-dependent content bounds in
+  // some headless Edge builds. Fix the CSS viewport before navigation so the
+  // in-page geometry and hit-testing gates truly run at the declared 1024x576.
+  await cdp.send('Emulation.setDeviceMetricsOverride', {
+    width: 1024,
+    height: 576,
+    deviceScaleFactor: 1,
+    mobile: false,
+  });
   await cdp.send('Page.navigate', { url: harnessUrl });
-  const qaDeadline = Date.now() + 35_000;
+  // The 29-check contract includes stage-v1 terminal/close generation, encounter
+  // distance guidance, TaskGroup representative tokens, and bounded AS2 rejection recovery alongside camera/full-turn paths. Keep a
+  // bounded margin above the observed ~34 s baseline plus the 30-cycle modal
+  // lifecycle stress. Software-rendered/headless WebGL can spend close to two
+  // minutes rebuilding and retiring those contexts, so the runner deadline
+  // must not race a still-progressing final cycle.
+  const qaDeadline = Date.now() + 180_000;
   let qaState = 'pending';
   while (Date.now() < qaDeadline) {
     qaState = await evaluate('document.documentElement.getAttribute("data-warlord-qa") || "pending"');
     if (qaState === 'passed' || qaState === 'failed') break;
     await delay(100);
   }
-  assert(qaState !== 'pending', 'Harness QA did not reach a terminal state.');
+  if (qaState === 'pending') {
+    const progress = await evaluate('window.__WARLORD_QA_PROGRESS__ || null');
+    throw new Error(`Harness QA did not reach a terminal state; progress=${JSON.stringify(progress)}.`);
+  }
   summary.qa = await evaluate('window.__WARLORD_QA_RESULTS__ || null');
   assert(Array.isArray(summary.qa), 'Harness did not expose QA results.');
   assert(qaState === 'passed', `Harness QA ended in ${qaState}.`);
-  assert(summary.qa.length === 19 && summary.qa.every((check) => check.pass === true), 'Harness QA results contain a failure or the 19-check contract drifted.');
+  assert(summary.qa.length === 29 && summary.qa.every((check) => check.pass === true), 'Harness QA results contain a failure or the 29-check contract drifted.');
   await evaluate('document.getElementById("qa-results").hidden = true');
 
   await cdp.send('Emulation.setDeviceMetricsOverride', {
@@ -472,6 +491,7 @@ try {
       cameraExpanded: hud?.getAttribute('data-expanded') || null,
       pieceVisualStyle: host?.getAttribute('data-piece-visual-style') || null,
       pieceScalePolicy: host?.getAttribute('data-piece-scale-policy') || null,
+      pieceScale: Number(host?.getAttribute('data-piece-scale')),
       pieceScreenGrowth: Number(host?.getAttribute('data-piece-screen-growth')),
       visibleCameraControls: Array.from(hud?.querySelectorAll('.warlord-camera-controls button') || []).filter((button) => {
         const style = getComputedStyle(button);
@@ -482,9 +502,9 @@ try {
   assert(tacticalState.zoomPercent >= 200, 'Dedicated tactical screenshot did not reach tactical magnification.');
   assert(tacticalState.cameraExpanded === 'true' && tacticalState.visibleCameraControls === 4, 'Tactical activity screenshot did not expose camera details.');
   assert(tacticalState.pieceVisualStyle === 'tactical-badge-v1'
-    && tacticalState.pieceScalePolicy === 'progressive-art-detail-v1'
-    && tacticalState.pieceScreenGrowth >= 1.47
-    && tacticalState.pieceScreenGrowth <= 1.5, 'Tactical badge art-growth contract failed.');
+    && tacticalState.pieceScalePolicy === 'progressive-art-detail-v2'
+    && tacticalState.pieceScreenGrowth >= 1.75
+    && tacticalState.pieceScreenGrowth <= 1.78, 'Tactical badge art-growth contract failed.');
   const tacticalScreenshotName = 'warlord-1024x576-tactical.png';
   const tacticalCapture = await cdp.send('Page.captureScreenshot', {
     format: 'png',
@@ -493,6 +513,42 @@ try {
   });
   writeFileSync(resolve(artifactRoot, tacticalScreenshotName), Buffer.from(tacticalCapture.data, 'base64'));
   summary.tacticalView = { ...tacticalState, screenshot: tacticalScreenshotName };
+
+  const tacticalMaxState = await evaluate(`(async () => {
+    const zoomIn = document.querySelector('[data-action="camera-zoom-in"]');
+    for (let index = 0; index < 6; index += 1) {
+      zoomIn?.click();
+      await new Promise((complete) => setTimeout(complete, 290));
+    }
+    document.querySelector('[data-action="camera-focus"]')?.click();
+    await new Promise((complete) => setTimeout(complete, 450));
+    const host = document.querySelector('.warlord-scene-host');
+    return {
+      zoomPercent: Number(host?.getAttribute('data-camera-zoom')),
+      selectedNode: document.querySelector('.warlord-scale-shell')?.getAttribute('data-selected-node') || null,
+      cameraX: Number(host?.getAttribute('data-camera-x')),
+      cameraZ: Number(host?.getAttribute('data-camera-z')),
+      pieceScalePolicy: host?.getAttribute('data-piece-scale-policy') || null,
+      pieceScale: Number(host?.getAttribute('data-piece-scale')),
+      pieceScreenGrowth: Number(host?.getAttribute('data-piece-screen-growth')),
+    };
+  })()`);
+  assert(tacticalMaxState.zoomPercent >= 600 && tacticalMaxState.selectedNode === 'R-HQ',
+    'Maximum tactical screenshot did not reach the close-inspection range.');
+  assert(tacticalMaxState.pieceScalePolicy === 'progressive-art-detail-v2'
+    && tacticalMaxState.pieceScale >= 0.54
+    && tacticalMaxState.pieceScale <= 0.55
+    && tacticalMaxState.pieceScreenGrowth >= 3.39
+    && tacticalMaxState.pieceScreenGrowth < 3.401,
+  'Maximum tactical badge is not large enough for portrait inspection.');
+  const tacticalMaxScreenshotName = 'warlord-1024x576-tactical-max.png';
+  const tacticalMaxCapture = await cdp.send('Page.captureScreenshot', {
+    format: 'png',
+    fromSurface: true,
+    captureBeyondViewport: false,
+  });
+  writeFileSync(resolve(artifactRoot, tacticalMaxScreenshotName), Buffer.from(tacticalMaxCapture.data, 'base64'));
+  summary.tacticalMaxView = { ...tacticalMaxState, screenshot: tacticalMaxScreenshotName };
   await evaluate(`document.querySelector('[data-action="select-node"][data-node="R-HQ"]')?.click()`);
   await evaluate('document.querySelector(\'[data-action="camera-fit"]\')?.click()');
   await delay(1650);
@@ -621,6 +677,7 @@ try {
   console.log(`Summary: ${summaryPath}`);
   if (summary.commandView) console.log(`Screenshot command: ${resolve(artifactRoot, summary.commandView.screenshot)}`);
   if (summary.tacticalView) console.log(`Screenshot tactical: ${resolve(artifactRoot, summary.tacticalView.screenshot)}`);
+  if (summary.tacticalMaxView) console.log(`Screenshot tactical max: ${resolve(artifactRoot, summary.tacticalMaxView.screenshot)}`);
   if (summary.productionView) console.log(`Screenshot production: ${resolve(artifactRoot, summary.productionView.screenshot)}`);
   if (summary.productionExactView) console.log(`Screenshot production exact: ${resolve(artifactRoot, summary.productionExactView.screenshot)}`);
   if (summary.themePreview) console.log(`Screenshot theme preview: ${resolve(artifactRoot, summary.themePreview.screenshot)}`);

@@ -12,12 +12,12 @@
     "lineNumberNote": "本 manifest 全部行号以 headCommit 工作树为准。相对 callsites.md 封包基线 776db2ae26 的已确认漂移：A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）；D2 商城系统_WebView.as 721→749。",
     "swf": {
       "scripts/asLoader.swf": {
-        "sha256": "b63c7ffb54b44e395ed316b484124166a1ff9d91d47ef462408d4f17925ca70f",
-        "sizeBytes": 1236813,
-        "functions": 10953,
+        "sha256": "1e6cc63b5b1d173ba25178073f10e4c196ed47f62bff129f5e5a074775d67e14",
+        "sizeBytes": 1266843,
+        "functions": 11205,
         "maxFunctionBytes": 55767,
         "functionSizeGate": "node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 15（未发现 codeSize >= 60000 B 近墙项）",
-        "republishNote": "2026-09-04 R1 步骤 6-9 调用点迁移后按 README 漂移流程重发布刷新；行为证据见当轮 character-build 334/334、map-loot 648/648、K 店 37/37、PAT 117/117、settings 47/47、建角 40/40、NPC 66/66 fresh trace"
+        "republishNote": "2026-09-05 军阀工作树对齐上游 4ae00a1762 后按 README 漂移流程重发布；Compiler 0/0，11205 函数最大 55767B。仅更新产物与调用点行号，不改变存盘 API 语义；本轮行为覆盖 Action 97/97、Host wire 16/16、SubStage 78/78，不冒称重跑 R1 各业务旅程。"
       },
       "CRAZYFLASHER7MercenaryEmpire.swf": {
         "sha256": "e00cffb55e76a903e9f4457eb346c4f218968d4c2574a29589d546a178755cff",
@@ -104,7 +104,7 @@
     },
     {
       "callsiteId": "A4", "physicalId": "A4", "layer": "scripts",
-      "sourcePath": "scripts/类定义/org/flashNight/arki/item/ItemUseService.as", "line": 597, "frame": null,
+      "sourcePath": "scripts/类定义/org/flashNight/arki/item/ItemUseService.as", "line": 788, "frame": null,
       "legacyEntry": "apiFlushDurableNow", "legacyApi": "_root.存档系统.flushDurableNow(\"item_use.open_commit\")",
       "targetApi": "flushDurableNow", "reasonId": ["item_use.open_commit"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
@@ -128,7 +128,7 @@
     },
     {
       "callsiteId": "A6", "physicalId": "A6", "layer": "scripts",
-      "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as", "line": 523, "frame": null,
+      "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as", "line": 531, "frame": null,
       "legacyEntry": "apiFlushBeforeTransition", "legacyApi": "_root.存档系统.flushBeforeTransition(\"stage.return_base\")",
       "targetApi": "flushBeforeTransition", "reasonId": ["stage.return_base"],
       "returnConsumed": true, "duplicateGroup": null, "pairRole": "sole",
@@ -304,7 +304,7 @@
     },
     {
       "callsiteId": "D1", "physicalId": "D1", "layer": "scripts",
-      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 199, "frame": null,
+      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 216, "frame": null,
       "legacyEntry": "apiRequestSave", "legacyApi": "_root.存档系统.requestSave(\"shop.panel_close\")",
       "targetApi": "requestSave", "reasonId": ["shop.panel_close"],
       "returnConsumed": false, "duplicateGroup": null, "pairRole": "sole",
@@ -315,7 +315,7 @@
     },
     {
       "callsiteId": "D2", "physicalId": "D2.requestSave", "layer": "scripts",
-      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 750, "frame": null,
+      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 782, "frame": null,
       "legacyEntry": "apiRequestSave", "legacyApi": "_root.存档系统.requestSave(\"shop.cart_edit\")",
       "targetApi": "markDirty+requestSave", "reasonId": ["shop.cart_edit"],
       "returnConsumed": false, "duplicateGroup": null, "pairRole": "sole",
@@ -326,7 +326,7 @@
     },
     {
       "callsiteId": "D2", "physicalId": "D2.markDirty", "layer": "scripts",
-      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 749, "frame": null,
+      "sourcePath": "scripts/逻辑系统分区/商城系统_WebView.as", "line": 781, "frame": null,
       "legacyEntry": "apiMarkDirty", "legacyApi": "_root.存档系统.markDirty()",
       "targetApi": "markDirty", "reasonId": ["shop.cart_edit"],
       "returnConsumed": false, "duplicateGroup": null, "pairRole": "sole",
@@ -486,7 +486,7 @@
       "notes": "Slice 1（2026-09-04）已由 installSaveApiShims() 接通为 canonical markDirty()（原 dangling：typeof 守卫恒 no-op，实际标脏由前行 dirtyMark = true 完成）。"
     },
     {
-      "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as", "line": 1345,
+      "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as", "line": 1353,
       "api": "_root.存档系统.markDirty()", "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839；typeof 守卫在 :1344。"
     },

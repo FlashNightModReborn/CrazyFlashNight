@@ -133,6 +133,42 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void ExactClose_TrackedSourceCommitsBeforeCloseAndReleasesLease()
+        {
+            using var harness = new Harness();
+            PanelHostController.TrackedOpenOutcome? opened = null;
+            Assert.True(harness.Host.TryOpenTrackedPanel(
+                "warlord", "{}", "warlord.stage.old",
+                () => true, value => opened = value));
+            harness.Pump();
+            Assert.Equal(PanelHostController.TrackedOpenOutcome.OpenPosted, opened);
+            Assert.True(harness.Host.HasTrackedPanelLease);
+
+            var order = new List<string>();
+            bool? closed = null;
+            Assert.True(harness.Host.TryClosePanelExact(
+                "warlord",
+                "warlord.stage.old",
+                false,
+                () => { order.Add("gate"); return true; },
+                () => order.Add("commit"),
+                value => closed = value));
+            harness.Pump();
+
+            Assert.Equal(new[] { "gate", "commit" }, order);
+            Assert.True(closed);
+            Assert.False(harness.Host.IsPanelOpen);
+            Assert.False(harness.Host.HasTrackedPanelLease);
+
+            PanelHostController.TrackedOpenOutcome? resumed = null;
+            Assert.True(harness.Host.TryOpenTrackedPanel(
+                "warlord", "{}", "warlord.stage.resume",
+                () => true, value => resumed = value));
+            harness.Pump();
+            Assert.Equal(PanelHostController.TrackedOpenOutcome.OpenPosted, resumed);
+        }
+
+        [Fact]
         public void GateRejection_AbortsOnceAndPreservesSource()
         {
             using var harness = new Harness();

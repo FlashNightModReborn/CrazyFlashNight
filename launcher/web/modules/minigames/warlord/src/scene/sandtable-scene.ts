@@ -1,9 +1,12 @@
-import type { GameState, NodeId, NodeKind, PieceState } from '../core/types.js';
+import type { FactionId, GameState, NodeId, NodeKind, PieceState } from '../core/types.js';
 import { getCardDefinition } from '../data/cards.js';
 import {
   getEnemyPortraitResolver,
+  normalizePlayerAvatarPortrait,
+  renderPlayerAvatarPortraitDataUrl,
   resolvePortraitDescriptors,
   textureUrlsFor,
+  type PlayerAvatarPortrait,
 } from '../assets/portrait-texture-source.js';
 import { projectNodes, type ActionPreview, type NodeProjection } from '../app/presenter.js';
 import { GenerationFence } from '../app/lifecycle.js';
@@ -12,6 +15,8 @@ import {
   type ScreenSelectionCandidate,
 } from '../app/selection-policy.js';
 import {
+  ActionCameraLeaseRegistry,
+  actionCameraViewForPoints,
   cameraDetailTier,
   cameraLimitsFor,
   cameraZoomPercent,
@@ -25,7 +30,7 @@ import {
   type CameraView,
   type WorldBounds,
 } from './camera-policy.js';
-import { MAP_THEMES, type MapTheme, type MapThemeId } from './map-theme.js';
+import { factionVisualStyle, MAP_THEMES, type MapTheme, type MapThemeId } from './map-theme.js';
 import THREE from '../vendor/three-runtime.js';
 
 interface PieceVisual {
@@ -48,6 +53,7 @@ interface PieceVisual {
 interface NodeVisual {
   group: any;
   hit: any;
+  overviewIndex: number;
   bodyMaterial: any;
   capMaterial: any;
   landmarkMaterial: any;
@@ -59,10 +65,15 @@ interface NodeVisual {
 interface RouteVisual {
   a: NodeId;
   b: NodeId;
-  bodyMaterial: any;
-  markMaterial: any;
-  markTexture: any | null;
-  flow: boolean;
+}
+
+interface RouteBatchBuffer {
+  geometry: any;
+  positions: Float32Array;
+  uvs: Float32Array;
+  colors: Float32Array | null;
+  indices: Uint16Array | Uint32Array;
+  maxEdges: number;
 }
 
 interface DragState {
@@ -86,9 +97,21 @@ export interface SandtableCameraSnapshot {
   nodeCount: number;
 }
 
+/**
+ * 阻塞式战斗会主动销毁整个 Three 场景。连续 AI 行动若在这一步跨过
+ * 战斗弹层，只携带恢复镜头所需的最小展示态；它不属于战略 state、
+ * replay、digest 或 Host receipt。
+ */
+export interface SandtableActionFollowCarry {
+  currentView: CameraView;
+  returnView: CameraView;
+  followCount: number;
+}
+
 export interface SandtableOptions {
   reducedMotion: boolean;
   mapTheme: MapThemeId;
+  playerAvatarPortrait?: PlayerAvatarPortrait | null;
   onNodePicked(nodeId: NodeId): void;
   onPiecePicked(pieceId: string, additive: boolean): void;
   onNodeDoublePicked(nodeId: NodeId): void;
@@ -108,6 +131,29 @@ export interface SandtableOptions {
   onError(message: string): void;
 }
 
+interface ActionCameraRuntimeLease {
+  token: number;
+  phase: 'following' | 'waiting-movement' | 'holding' | 'returning';
+  completion: Promise<boolean> | null;
+  resolve: ((returned: boolean) => void) | null;
+  movementCompletion: Promise<boolean> | null;
+  resolveMovement: ((settled: boolean) => void) | null;
+  followCount: number;
+}
+
+export const PLAYER_AVATAR_PORTRAIT_IDENTIFIER = 'warlord.player-avatar';
+
+export function portraitIdentifierForPiece(state: GameState, piece: PieceState): string {
+  const isPlayerAvatar = Object.values(state.commanders).some((commander) => (
+    commander.role === 'player_avatar'
+    && commander.status === 'fielded'
+    && commander.pieceInstanceId === piece.pieceId
+  ));
+  return isPlayerAvatar
+    ? PLAYER_AVATAR_PORTRAIT_IDENTIFIER
+    : getCardDefinition(piece.cardId).identifier;
+}
+
 function deterministicHeight(x: number, z: number): number {
   return Math.sin(x * 1.17 + z * 0.41) * 0.13
     + Math.cos(z * 1.43 - x * 0.23) * 0.09
@@ -119,18 +165,90 @@ function deterministicShade(x: number, z: number): number {
     + Math.cos(x * 1.43 - z * 0.29) * 0.018;
 }
 
-function ownerColor(owner: 'red' | 'blue' | null, neutralColor: number): number {
-  return owner === 'red' ? 0xa64331 : owner === 'blue' ? 0x2f6f91 : neutralColor;
+function ownerColor(owner: FactionId | null, neutralColor: number): number {
+  return owner === null ? neutralColor : factionVisualStyle(owner).base;
 }
 
-function landmarkColor(owner: 'red' | 'blue' | null, theme: MapTheme): number {
+export interface SandtableBatchPlan {
+  nodeCount: number;
+  edgeCount: number;
+  legacyRouteDrawCalls: number;
+  routeGeometryCount: number;
+  routeTextureCount: number;
+  routeStaticDrawCalls: number;
+  routeDynamicDrawCallUpperBound: number;
+  routeDrawCallUpperBound: number;
+  routeVertexCapacity: number;
+  routeIndexCapacity: number;
+  overviewNodeInstancing: boolean;
+  overviewNodeInstanceDrawCalls: number;
+}
+
+export interface SandtableResourceSnapshot extends SandtableBatchPlan {
+  liveGeometryCount: number;
+  liveMaterialCount: number;
+  liveTextureCount: number;
+  overviewLodActive: boolean;
+  disposed: boolean;
+}
+
+const ROUTE_SEGMENTS = 32;
+const ROUTE_VERTICES_PER_EDGE = (ROUTE_SEGMENTS + 1) * 2;
+const ROUTE_INDICES_PER_EDGE = ROUTE_SEGMENTS * 6;
+const LARGE_MAP_OVERVIEW_NODE_THRESHOLD = 48;
+const ACTION_MOVE_DURATION_MS = 420;
+const CAMERA_TWEEN_DURATION_MS = 240;
+const FRAME_STARVATION_GRACE_MS = 60;
+
+/**
+ * Structural GPU budget used by both the actual renderer and headless tests.
+ * Route batches stay constant as map edges grow; the old path needed two
+ * meshes (and therefore two draw calls) for every edge.
+ */
+export function planSandtableBatches(nodeCount: number, edgeCount: number): SandtableBatchPlan {
+  const safeNodeCount = Math.max(0, Math.trunc(nodeCount));
+  const safeEdgeCount = Math.max(0, Math.trunc(edgeCount));
+  return {
+    nodeCount: safeNodeCount,
+    edgeCount: safeEdgeCount,
+    legacyRouteDrawCalls: safeEdgeCount * 2,
+    routeGeometryCount: safeEdgeCount > 0 ? 3 : 0,
+    routeTextureCount: safeEdgeCount > 0 ? 2 : 0,
+    routeStaticDrawCalls: safeEdgeCount > 0 ? 2 : 0,
+    routeDynamicDrawCallUpperBound: safeEdgeCount > 0 ? 2 : 0,
+    routeDrawCallUpperBound: safeEdgeCount > 0 ? 4 : 0,
+    routeVertexCapacity: safeEdgeCount * ROUTE_VERTICES_PER_EDGE * 3,
+    routeIndexCapacity: safeEdgeCount * ROUTE_INDICES_PER_EDGE * 3,
+    overviewNodeInstancing: safeNodeCount >= LARGE_MAP_OVERVIEW_NODE_THRESHOLD,
+    overviewNodeInstanceDrawCalls: safeNodeCount >= LARGE_MAP_OVERVIEW_NODE_THRESHOLD ? 2 : 0,
+  };
+}
+
+/** Dispose every unique GPU resource once and empty the owning collections. */
+export function disposeSandtableResourceGroups(
+  groups: Array<Array<{ dispose?: () => void }>>,
+): number {
+  const resources = new Set<{ dispose?: () => void }>();
+  for (const group of groups) {
+    for (const resource of group) resources.add(resource);
+  }
+  // 一个第三方/驱动包装资源的 dispose 失败，不得阻断其余 owner 清空，
+  // 更不能阻断调用方随后执行 renderer.forceContextLoss。
+  for (const resource of resources) {
+    try { resource.dispose?.(); } catch { /* best-effort retirement */ }
+  }
+  for (const group of groups) group.splice(0);
+  return resources.size;
+}
+
+function landmarkColor(owner: FactionId | null, theme: MapTheme): number {
   return new THREE.Color(ownerColor(owner, theme.neutralNode))
     .lerp(new THREE.Color(theme.neutralBeacon), owner ? 0.2 : 0.28)
     .getHex();
 }
 
 // 地标点缀色：在主色基础上向信标色再靠一档，作为屋顶 / 闸门 / 管线等高光构件
-function landmarkAccentColor(owner: 'red' | 'blue' | null, theme: MapTheme): number {
+function landmarkAccentColor(owner: FactionId | null, theme: MapTheme): number {
   return new THREE.Color(landmarkColor(owner, theme))
     .lerp(new THREE.Color(theme.neutralBeacon), 0.4)
     .getHex();
@@ -252,14 +370,15 @@ function makeFallbackTexture(identifier: string): any {
   return texture;
 }
 
-function makeTacticalBadgeTexture(factionId: 'red' | 'blue'): any {
+function makeTacticalBadgeTexture(factionId: FactionId): any {
   const canvas = document.createElement('canvas');
   canvas.width = 192;
   canvas.height = 240;
   const context = canvas.getContext('2d');
   if (!context) return null;
-  const accent = factionId === 'red' ? '#bd4735' : '#3d82aa';
-  const edge = factionId === 'red' ? '#f0a17e' : '#8fd6f1';
+  const style = factionVisualStyle(factionId);
+  const accent = cssColor(style.accent, 1);
+  const edge = cssColor(style.edge, 1);
   const points: Array<readonly [number, number]> = [
     [22, 16], [170, 16], [184, 34], [178, 180], [96, 228], [14, 180], [8, 34],
   ];
@@ -288,7 +407,12 @@ function makeTacticalBadgeTexture(factionId: 'red' | 'blue'): any {
   context.stroke();
   context.lineWidth = 5;
   context.strokeStyle = accent;
+  context.setLineDash(style.markerIndex === 0 ? []
+    : style.markerIndex === 1 ? [20, 7]
+      : style.markerIndex === 2 ? [8, 7]
+        : [24, 6, 6, 6]);
   context.stroke();
+  context.setLineDash([]);
   traceBadge(9);
   const panel = context.createLinearGradient(0, 28, 0, 208);
   panel.addColorStop(0, 'rgba(50, 50, 47, .96)');
@@ -321,6 +445,11 @@ function makeTacticalBadgeTexture(factionId: 'red' | 'blue'): any {
     context.fillStyle = edge;
     context.fill();
   }
+  context.font = '700 18px sans-serif';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillStyle = edge;
+  context.fillText(style.shortMark, 96, 49);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -418,8 +547,16 @@ export class SandtableScene {
   private readonly sharedMaterials: any[] = [];
   private readonly sharedTextures: any[] = [];
   private readonly landmarkGeometry = new Map<string, any>();
-  private readonly pieceBadgeTextures = new Map<'red' | 'blue', any>();
+  private readonly pieceBadgeTextures = new Map<FactionId, any>();
   private readonly textureFence = new GenerationFence();
+  private readonly playerAvatarTextureFence = new GenerationFence();
+  private routeLegalBatch: RouteBatchBuffer | null = null;
+  private routePassiveBatch: RouteBatchBuffer | null = null;
+  private routeFlowTexture: any | null = null;
+  private routeFlowActive = false;
+  private overviewBodyMesh: any | null = null;
+  private overviewCapMesh: any | null = null;
+  private overviewLodActive = false;
   private pieceBaseGeometry: any | null = null;
   private pieceCapGeometry: any | null = null;
   private pieceSupportGeometry: any | null = null;
@@ -444,10 +581,15 @@ export class SandtableScene {
   private mapBounds: WorldBounds = computeWorldBounds([]);
   private cameraLimits: CameraLimits = cameraLimitsFor(this.mapBounds, this.viewportAspect);
   private cameraView: CameraView = fitCameraToBounds(this.mapBounds, this.viewportAspect);
+  private readonly actionCameraLeases = new ActionCameraLeaseRegistry();
+  private actionCameraLease: ActionCameraRuntimeLease | null = null;
+  private cameraInputRejectCount = 0;
+  private actionCameraReturnCount = 0;
   private drag: DragState | null = null;
   private lastPieceTap: { pieceId: string; time: number } | null = null;
-  // 程序性相机运镜：三通道插值快照，拖拽/滚轮入场即取消
+  // 程序性相机运镜：三通道插值快照；AI 镜头段持有期间直接输入被拒绝
   private cameraTween: {
+    kind: 'navigation' | 'action-follow' | 'action-return';
     startX: number;
     startZ: number;
     startHalfHeight: number;
@@ -456,8 +598,10 @@ export class SandtableScene {
     targetHalfHeight: number;
     startedAt: number | null;
     duration: number;
+    onSettled?: () => void;
   } | null = null;
   private cameraTweenTimer: number | null = null;
+  private actionMovementTimer: number | null = null;
   private lastLayoutWidth = 0;
   private lastLayoutHeight = 0;
 
@@ -481,9 +625,13 @@ export class SandtableScene {
     this.renderer.domElement.className = 'warlord-sandtable-canvas';
     this.renderer.domElement.tabIndex = 0;
     this.renderer.domElement.setAttribute('role', 'application');
-    this.renderer.domElement.setAttribute('aria-label', '战术沙盘。点击棋子选择，Shift 拖拽框选，点击高亮据点下令；普通拖拽平移，滚轮缩放。');
+    this.renderer.domElement.setAttribute('aria-label', '战术沙盘。点击棋子选择，按住上档键拖拽框选，点击高亮据点下令；普通拖拽平移，滚轮缩放。');
     this.renderer.domElement.style.touchAction = 'none';
     this.container.append(this.renderer.domElement);
+    this.container.dataset.cameraInputLocked = 'false';
+    this.container.dataset.cameraInputRejectCount = '0';
+    this.container.dataset.actionReturnCount = '0';
+    this.container.dataset.renderSuspended = 'false';
     this.marqueeElement = document.createElement('div');
     this.marqueeElement.className = 'warlord-selection-marquee';
     this.marqueeElement.hidden = true;
@@ -525,6 +673,7 @@ export class SandtableScene {
     this.resizeObserver.observe(this.container);
     this.resize();
     void this.loadPortraitTextures();
+    void this.loadPlayerAvatarPortraitTexture();
   }
 
   private buildLights(): void {
@@ -830,20 +979,44 @@ export class SandtableScene {
 
   // 贴地行军带：沿曲线路径采样，切线法向 offsets 出左右顶点，TriangleStrip 成带；
   // 每顶点按落点重算地形高度，中段不再穿透地形起伏
-  private buildRouteRibbon(a: any, b: any, halfWidth: number): any {
+  private createRouteBatchBuffer(maxEdges: number, withColors: boolean): RouteBatchBuffer {
+    const vertexCapacity = maxEdges * ROUTE_VERTICES_PER_EDGE;
+    const positions = new Float32Array(vertexCapacity * 3);
+    const uvs = new Float32Array(vertexCapacity * 2);
+    const colors = withColors ? new Float32Array(vertexCapacity * 3) : null;
+    const indices = vertexCapacity <= 65_535
+      ? new Uint16Array(maxEdges * ROUTE_INDICES_PER_EDGE)
+      : new Uint32Array(maxEdges * ROUTE_INDICES_PER_EDGE);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+    if (colors) geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+    geometry.setDrawRange(0, 0);
+    return { geometry, positions, uvs, colors, indices, maxEdges };
+  }
+
+  private writeRouteBatchEdge(
+    batch: RouteBatchBuffer,
+    edgeIndex: number,
+    a: any,
+    b: any,
+    halfWidth: number,
+    colorHex?: number,
+  ): void {
+    if (edgeIndex < 0 || edgeIndex >= batch.maxEdges) return;
     const midpoint = a.clone().lerp(b, 0.5);
     midpoint.y += 0.16;
     const curve = new THREE.CatmullRomCurve3([a.clone(), midpoint, b.clone()]);
-    const segments = 32;
-    const samples = curve.getPoints(segments);
-    const positions: number[] = [];
-    const uvs: number[] = [];
-    const indices: number[] = [];
+    const samples = curve.getPoints(ROUTE_SEGMENTS);
+    const vertexBase = edgeIndex * ROUTE_VERTICES_PER_EDGE;
+    const indexBase = edgeIndex * ROUTE_INDICES_PER_EDGE;
+    const routeColor = colorHex === undefined ? null : new THREE.Color(colorHex);
     let length = 0;
-    for (let index = 0; index <= segments; index += 1) {
+    for (let index = 0; index <= ROUTE_SEGMENTS; index += 1) {
       const point = samples[index];
       const before = samples[Math.max(0, index - 1)];
-      const after = samples[Math.min(segments, index + 1)];
+      const after = samples[Math.min(ROUTE_SEGMENTS, index + 1)];
       if (index > 0) length += Math.hypot(point.x - before.x, point.z - before.z);
       let tangentX = after.x - before.x;
       let tangentZ = after.z - before.z;
@@ -852,23 +1025,45 @@ export class SandtableScene {
       tangentZ /= tangentLength;
       const normalX = -tangentZ;
       const normalZ = tangentX;
-      for (const side of [-1, 1]) {
+      for (let sideIndex = 0; sideIndex < 2; sideIndex += 1) {
+        const side = sideIndex === 0 ? -1 : 1;
         const x = point.x + normalX * halfWidth * side;
         const z = point.z + normalZ * halfWidth * side;
-        positions.push(x, deterministicHeight(x, z) + 0.16, z);
-        uvs.push(length / 0.55, side * 0.5 + 0.5);
+        const vertexIndex = vertexBase + index * 2 + sideIndex;
+        const positionOffset = vertexIndex * 3;
+        const uvOffset = vertexIndex * 2;
+        batch.positions[positionOffset] = x;
+        batch.positions[positionOffset + 1] = deterministicHeight(x, z) + 0.16;
+        batch.positions[positionOffset + 2] = z;
+        batch.uvs[uvOffset] = length / 0.55;
+        batch.uvs[uvOffset + 1] = sideIndex;
+        if (batch.colors && routeColor) {
+          batch.colors[positionOffset] = routeColor.r;
+          batch.colors[positionOffset + 1] = routeColor.g;
+          batch.colors[positionOffset + 2] = routeColor.b;
+        }
       }
-      if (index < segments) {
-        const base = index * 2;
-        indices.push(base, base + 1, base + 2, base + 1, base + 3, base + 2);
+      if (index < ROUTE_SEGMENTS) {
+        const base = vertexBase + index * 2;
+        const offset = indexBase + index * 6;
+        batch.indices[offset] = base;
+        batch.indices[offset + 1] = base + 1;
+        batch.indices[offset + 2] = base + 2;
+        batch.indices[offset + 3] = base + 1;
+        batch.indices[offset + 4] = base + 3;
+        batch.indices[offset + 5] = base + 2;
       }
     }
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-    geometry.setIndex(indices);
-    geometry.computeVertexNormals();
-    return geometry;
+  }
+
+  private finishRouteBatch(batch: RouteBatchBuffer, edgeCount: number, staticBounds = false): void {
+    const count = Math.max(0, Math.min(batch.maxEdges, edgeCount));
+    batch.geometry.setDrawRange(0, count * ROUTE_INDICES_PER_EDGE);
+    batch.geometry.attributes.position.needsUpdate = true;
+    batch.geometry.attributes.uv.needsUpdate = true;
+    if (batch.colors) batch.geometry.attributes.color.needsUpdate = true;
+    batch.geometry.index.needsUpdate = true;
+    if (staticBounds && count > 0) batch.geometry.computeBoundingSphere();
   }
 
   private buildRoutesAndNodes(state: GameState, projections: NodeProjection[]): void {
@@ -879,42 +1074,121 @@ export class SandtableScene {
       );
     }
 
-    for (const edge of state.map.edges) {
-      const a = this.nodePositions.get(edge.a);
-      const b = this.nodePositions.get(edge.b);
-      if (!a || !b) continue;
-      // 底带 + 箭头纹带共用同一份带几何，纹带抬高 0.008 防共面
-      const geometry = this.buildRouteRibbon(a, b, 0.07);
+    const installedEdges = state.map.edges.filter((edge) => (
+      this.nodePositions.has(edge.a) && this.nodePositions.has(edge.b)
+    ));
+    if (installedEdges.length > 0) {
+      const staticBatch = this.createRouteBatchBuffer(installedEdges.length, false);
+      installedEdges.forEach((edge, edgeIndex) => {
+        this.writeRouteBatchEdge(
+          staticBatch,
+          edgeIndex,
+          this.nodePositions.get(edge.a),
+          this.nodePositions.get(edge.b),
+          0.07,
+        );
+        this.routeVisuals.push({ a: edge.a, b: edge.b });
+      });
+      this.finishRouteBatch(staticBatch, installedEdges.length, true);
+
       const bodyMaterial = new THREE.MeshBasicMaterial({
         color: this.theme.routeBase,
         transparent: true,
         opacity: 0.34,
         depthWrite: false,
       });
-      const markTexture = makeRouteMarkTexture();
+      const staticMarkTexture = makeRouteMarkTexture();
       const markMaterial = new THREE.MeshBasicMaterial({
         color: this.theme.route,
-        map: markTexture,
+        map: staticMarkTexture,
         transparent: true,
-        opacity: 0.5,
+        opacity: 0.46,
         depthWrite: false,
       });
-      const body = new THREE.Mesh(geometry, bodyMaterial);
-      const mark = new THREE.Mesh(geometry, markMaterial);
+      const body = new THREE.Mesh(staticBatch.geometry, bodyMaterial);
+      const mark = new THREE.Mesh(staticBatch.geometry, markMaterial);
       mark.position.y += 0.008;
       this.scene.add(body, mark);
-      this.sharedGeometry.push(geometry);
-      this.sharedMaterials.push(bodyMaterial, markMaterial);
-      if (markTexture) this.sharedTextures.push(markTexture);
-      this.routeVisuals.push({ a: edge.a, b: edge.b, bodyMaterial, markMaterial, markTexture, flow: false });
+
+      this.routeLegalBatch = this.createRouteBatchBuffer(installedEdges.length, true);
+      this.routePassiveBatch = this.createRouteBatchBuffer(installedEdges.length, true);
+      this.routeFlowTexture = makeRouteMarkTexture();
+      const legalMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        map: this.routeFlowTexture,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.98,
+        depthWrite: false,
+      });
+      const passiveMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        map: staticMarkTexture,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.72,
+        depthWrite: false,
+      });
+      const legalHighlights = new THREE.Mesh(this.routeLegalBatch.geometry, legalMaterial);
+      const passiveHighlights = new THREE.Mesh(this.routePassiveBatch.geometry, passiveMaterial);
+      legalHighlights.position.y += 0.016;
+      passiveHighlights.position.y += 0.014;
+      // Dynamic geometry changes location with selection, so it intentionally
+      // bypasses stale bounding-sphere culling while keeping one mesh per batch.
+      legalHighlights.frustumCulled = false;
+      passiveHighlights.frustumCulled = false;
+      this.scene.add(legalHighlights, passiveHighlights);
+
+      this.sharedGeometry.push(
+        staticBatch.geometry,
+        this.routeLegalBatch.geometry,
+        this.routePassiveBatch.geometry,
+      );
+      this.sharedMaterials.push(bodyMaterial, markMaterial, legalMaterial, passiveMaterial);
+      if (staticMarkTexture) this.sharedTextures.push(staticMarkTexture);
+      if (this.routeFlowTexture) this.sharedTextures.push(this.routeFlowTexture);
     }
+
+    const batchPlan = planSandtableBatches(projections.length, installedEdges.length);
+    this.container.dataset.routeBatchMode = 'static-2-dynamic-2-v1';
+    this.container.dataset.routeEdgeCount = String(batchPlan.edgeCount);
+    this.container.dataset.routeGeometryCount = String(batchPlan.routeGeometryCount);
+    this.container.dataset.routeTextureCount = String(batchPlan.routeTextureCount);
+    this.container.dataset.routeDrawCallUpperBound = String(batchPlan.routeDrawCallUpperBound);
+    this.container.dataset.routeLegacyDrawCalls = String(batchPlan.legacyRouteDrawCalls);
+    this.container.dataset.renderResourceState = 'installed';
 
     const bodyGeometry = new THREE.CylinderGeometry(0.68, 0.84, 0.22, 6);
     const capGeometry = new THREE.CylinderGeometry(0.47, 0.6, 0.09, 6);
     const ringGeometry = new THREE.TorusGeometry(0.9, 0.045, 6, 36);
     const beaconGeometry = new THREE.CylinderGeometry(0.035, 0.055, 0.58, 8);
     this.sharedGeometry.push(bodyGeometry, capGeometry, ringGeometry, beaconGeometry);
-    for (const projection of projections) {
+    if (projections.length >= LARGE_MAP_OVERVIEW_NODE_THRESHOLD) {
+      const overviewBodyMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        roughness: 0.62,
+        metalness: 0.34,
+        envMapIntensity: 0.6,
+      });
+      const overviewCapMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        roughness: 0.48,
+        metalness: 0.42,
+        envMapIntensity: 0.7,
+      });
+      this.overviewBodyMesh = new THREE.InstancedMesh(bodyGeometry, overviewBodyMaterial, projections.length);
+      this.overviewCapMesh = new THREE.InstancedMesh(capGeometry, overviewCapMaterial, projections.length);
+      this.overviewBodyMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      this.overviewCapMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      this.overviewBodyMesh.visible = false;
+      this.overviewCapMesh.visible = false;
+      this.overviewBodyMesh.frustumCulled = false;
+      this.overviewCapMesh.frustumCulled = false;
+      this.scene.add(this.overviewBodyMesh, this.overviewCapMesh);
+      this.sharedMaterials.push(overviewBodyMaterial, overviewCapMaterial);
+    }
+    for (let overviewIndex = 0; overviewIndex < projections.length; overviewIndex += 1) {
+      const projection = projections[overviewIndex]!;
       const position = this.nodePositions.get(projection.nodeId);
       if (!position) continue;
       const baseColor = ownerColor(projection.ownerFactionId, this.theme.neutralNode);
@@ -983,6 +1257,7 @@ export class SandtableScene {
       this.nodeVisuals.set(projection.nodeId, {
         group,
         hit: body,
+        overviewIndex,
         bodyMaterial,
         capMaterial,
         landmarkMaterial,
@@ -1063,30 +1338,48 @@ export class SandtableScene {
         : commandTarget?.ok ? (hovered ? 1 : 0.84)
           : commandTarget ? (hovered ? 0.62 : 0.24)
             : hovered ? 0.62 : projection.contested ? 0.48 : 0.14;
-      visual.beaconMaterial.color.setHex(projection.ownerFactionId === 'red' ? 0xff6c4f : projection.ownerFactionId === 'blue' ? 0x69b8e8 : this.theme.neutralBeacon);
+      visual.beaconMaterial.color.setHex(
+        projection.ownerFactionId === null
+          ? this.theme.neutralBeacon
+          : factionVisualStyle(projection.ownerFactionId).beacon,
+      );
       visual.beaconMaterial.opacity = projection.active ? (selected ? 0.95 : 0.58) : 0.2;
       visual.group.userData.active = projection.active;
       visual.group.userData.commandState = commandTarget?.ok
         ? commandTarget.isBattle ? 'attack' : commandPartial ? 'partial' : 'move'
         : commandTarget ? 'invalid' : 'none';
     }
-    for (const route of this.routeVisuals) {
-      const target = route.a === this.selectedNodeId
-        ? this.commandTargets.get(route.b)
-        : route.b === this.selectedNodeId ? this.commandTargets.get(route.a) : undefined;
-      const relevant = route.a === this.selectedNodeId || route.b === this.selectedNodeId;
-      route.markMaterial.color.setHex(target?.ok
-        ? target.isBattle ? 0xdf665b : 0x78bc73
-        : target ? 0x7d4641
-          : relevant ? 0xf2c466 : this.theme.route);
-      route.markMaterial.opacity = target?.ok ? 0.98 : target ? 0.28 : relevant ? 0.94 : 0.46;
-      route.bodyMaterial.opacity = target?.ok ? 0.62 : relevant ? 0.52 : 0.34;
-      // 蚂蚁线只在指令合法高亮时滚动，纹向始终指向目标节点；reducedMotion 全程定格
-      route.flow = target?.ok === true && !this.options.reducedMotion;
-      if (route.markTexture) {
-        route.markTexture.repeat.x = route.a === this.selectedNodeId ? 1 : -1;
+    let legalRouteCount = 0;
+    let passiveRouteCount = 0;
+    if (this.routeLegalBatch && this.routePassiveBatch) {
+      for (const route of this.routeVisuals) {
+        const selectedAtA = route.a === this.selectedNodeId;
+        const selectedAtB = route.b === this.selectedNodeId;
+        if (!selectedAtA && !selectedAtB) continue;
+        const targetNodeId = selectedAtA ? route.b : route.a;
+        const target = this.commandTargets.get(targetNodeId);
+        const from = this.nodePositions.get(this.selectedNodeId);
+        const to = this.nodePositions.get(targetNodeId);
+        if (!from || !to) continue;
+        const partial = target?.ok === true
+          && target.actualPieceIds.length < this.selectedPieceIds.size;
+        const color = target?.ok
+          ? target.isBattle ? 0xdf665b : partial ? 0xe5a64d : 0x78bc73
+          : target ? 0x7d4641 : 0xf2c466;
+        if (target?.ok) {
+          this.writeRouteBatchEdge(this.routeLegalBatch, legalRouteCount, from, to, 0.08, color);
+          legalRouteCount += 1;
+        } else {
+          this.writeRouteBatchEdge(this.routePassiveBatch, passiveRouteCount, from, to, 0.08, color);
+          passiveRouteCount += 1;
+        }
       }
+      this.finishRouteBatch(this.routeLegalBatch, legalRouteCount);
+      this.finishRouteBatch(this.routePassiveBatch, passiveRouteCount);
     }
+    this.routeFlowActive = legalRouteCount > 0 && !this.options.reducedMotion;
+    this.container.dataset.routeLegalBatchEdges = String(legalRouteCount);
+    this.container.dataset.routePassiveBatchEdges = String(passiveRouteCount);
     this.updateVisualScale(this.getCameraState().zoomPercent);
   }
 
@@ -1109,7 +1402,18 @@ export class SandtableScene {
   }
 
   private updatePieces(state: GameState): void {
-    const alive = new Set(Object.keys(state.pieces));
+    // The tactical map renders one representative token per active CommandElement.
+    // Members remain authoritative battle actors, but never appear beside their
+    // task-group parent as separately selectable strategic tokens.
+    const visiblePieces: PieceState[] = [];
+    const elements = Object.values(state.organization.commandElements)
+      .sort((left, right) => left.elementId.localeCompare(right.elementId));
+    for (const element of elements) {
+      const representativeId = element.memberIds[0];
+      const representative = representativeId ? state.pieces[representativeId] : undefined;
+      if (representative && representative.hp > 0) visiblePieces.push(representative);
+    }
+    const alive = new Set(visiblePieces.map((piece) => piece.pieceId));
     for (const [pieceId, visual] of this.pieceVisuals) {
       if (alive.has(pieceId)) continue;
       visual.group.removeFromParent();
@@ -1118,7 +1422,7 @@ export class SandtableScene {
     }
 
     const byNode = new Map<NodeId, PieceState[]>();
-    for (const piece of Object.values(state.pieces).sort((a, b) => a.pieceId.localeCompare(b.pieceId))) {
+    for (const piece of visiblePieces) {
       const list = byNode.get(piece.nodeId) ?? [];
       list.push(piece);
       byNode.set(piece.nodeId, list);
@@ -1147,6 +1451,8 @@ export class SandtableScene {
     }
     this.container.dataset.pieceVisualStyle = 'tactical-badge-v1';
     this.container.dataset.pieceBadgeCount = String(this.pieceVisuals.size);
+    this.container.dataset.commandElementBadgeCount = String(elements.length);
+    this.container.dataset.taskGroupBadgeCount = String(elements.filter((element) => element.kind === 'task_group').length);
     this.updateVisualScale(this.getCameraState().zoomPercent);
   }
 
@@ -1166,6 +1472,55 @@ export class SandtableScene {
     }
   }
 
+  private updateOverviewNodeLod(
+    detailTier: 'overview' | 'operational' | 'tactical',
+    nodeCompensation: number,
+  ): void {
+    const active = this.nodeVisuals.size >= LARGE_MAP_OVERVIEW_NODE_THRESHOLD
+      && detailTier === 'overview'
+      && this.overviewBodyMesh !== null
+      && this.overviewCapMesh !== null;
+    this.overviewLodActive = active;
+    if (this.overviewBodyMesh) this.overviewBodyMesh.visible = active;
+    if (this.overviewCapMesh) this.overviewCapMesh.visible = active;
+
+    const quaternion = new THREE.Quaternion();
+    const matrix = new THREE.Matrix4();
+    const position = new THREE.Vector3();
+    const scale = new THREE.Vector3();
+    let detailedCount = 0;
+    for (const [nodeId, visual] of this.nodeVisuals) {
+      const keepDetail = !active
+        || nodeId === this.selectedNodeId
+        || nodeId === this.hoveredNodeId
+        || this.commandTargets.has(nodeId);
+      visual.group.visible = keepDetail;
+      if (!active || !this.overviewBodyMesh || !this.overviewCapMesh) continue;
+      if (keepDetail) detailedCount += 1;
+      const instanceScale = keepDetail
+        ? 0
+        : nodeCompensation * (visual.group.userData.active === false ? 0.8 : 1);
+      position.copy(visual.group.position);
+      scale.setScalar(instanceScale);
+      matrix.compose(position, quaternion, scale);
+      this.overviewBodyMesh.setMatrixAt(visual.overviewIndex, matrix);
+      position.y += 0.14 * instanceScale;
+      matrix.compose(position, quaternion, scale);
+      this.overviewCapMesh.setMatrixAt(visual.overviewIndex, matrix);
+      this.overviewBodyMesh.setColorAt(visual.overviewIndex, visual.bodyMaterial.color);
+      this.overviewCapMesh.setColorAt(visual.overviewIndex, visual.capMaterial.color);
+    }
+    if (active && this.overviewBodyMesh && this.overviewCapMesh) {
+      this.overviewBodyMesh.instanceMatrix.needsUpdate = true;
+      this.overviewCapMesh.instanceMatrix.needsUpdate = true;
+      if (this.overviewBodyMesh.instanceColor) this.overviewBodyMesh.instanceColor.needsUpdate = true;
+      if (this.overviewCapMesh.instanceColor) this.overviewCapMesh.instanceColor.needsUpdate = true;
+    }
+    this.container.dataset.nodeLodMode = active ? 'overview-instanced-v1' : 'detailed-v1';
+    this.container.dataset.nodeInstanceDrawCalls = active ? '2' : '0';
+    this.container.dataset.nodeDetailedExceptionCount = String(active ? detailedCount : this.nodeVisuals.size);
+  }
+
   private updateVisualScale(zoomPercent: number): void {
     // Keep operational markers readable without letting them consume the
     // tactical viewport. They still grow slightly on screen as detail rises.
@@ -1183,9 +1538,13 @@ export class SandtableScene {
     for (const visual of this.pieceVisuals.values()) {
       visual.group.scale.setScalar(pieceCompensation);
     }
+    this.updateOverviewNodeLod(
+      cameraDetailTier(this.nodeVisuals.size, zoomPercent),
+      nodeCompensation,
+    );
     this.container.dataset.pieceScale = pieceCompensation.toFixed(3);
     this.container.dataset.pieceScreenGrowth = (pieceCompensation * Math.max(1, zoomPercent / 100)).toFixed(3);
-    this.container.dataset.pieceScalePolicy = 'progressive-art-detail-v1';
+    this.container.dataset.pieceScalePolicy = 'progressive-art-detail-v2';
   }
 
   private createPieceVisual(piece: PieceState, position: any): PieceVisual {
@@ -1210,16 +1569,17 @@ export class SandtableScene {
       this.pieceSelectionGeometry = new THREE.TorusGeometry(0.35, 0.026, 5, 28);
       this.sharedGeometry.push(this.pieceSelectionGeometry);
     }
-    const factionId = piece.factionId === 'blue' ? 'blue' : 'red';
+    const factionId = piece.factionId;
+    const factionStyle = factionVisualStyle(factionId);
     const baseMaterial = new THREE.MeshStandardMaterial({
-      color: factionId === 'red' ? 0x7c271f : 0x214f6d,
+      color: factionStyle.base,
       emissive: 0x000000,
       roughness: 0.38,
       metalness: 0.64,
       envMapIntensity: 0.65,
     });
     const accentMaterial = new THREE.MeshStandardMaterial({
-      color: factionId === 'red' ? 0xd95a3e : 0x4d9bc5,
+      color: factionStyle.accent,
       emissive: 0x000000,
       roughness: 0.32,
       metalness: 0.7,
@@ -1268,7 +1628,9 @@ export class SandtableScene {
     selection.position.y = 0.025;
     selection.renderOrder = 2;
     group.add(selection);
-    const identifier = getCardDefinition(piece.cardId).identifier;
+    const identifier = this.currentState
+      ? portraitIdentifierForPiece(this.currentState, piece)
+      : getCardDefinition(piece.cardId).identifier;
     const texture = this.portraitTextures.get(identifier) ?? makeFallbackTexture(identifier);
     if (texture && !this.portraitTextures.has(identifier)) this.portraitTextures.set(identifier, texture);
     let badgeTexture = this.pieceBadgeTextures.get(factionId);
@@ -1377,6 +1739,34 @@ export class SandtableScene {
     }
   }
 
+  private async loadPlayerAvatarPortraitTexture(): Promise<void> {
+    const portrait = normalizePlayerAvatarPortrait(this.options.playerAvatarPortrait);
+    if (!portrait) return;
+    const generation = this.playerAvatarTextureFence.next();
+    try {
+      const url = await renderPlayerAvatarPortraitDataUrl(portrait, 256);
+      if (!url || !this.playerAvatarTextureFence.isCurrent(generation) || this.disposed) return;
+      const texture = await this.loadTexture(url);
+      if (!this.playerAvatarTextureFence.isCurrent(generation) || this.disposed) {
+        texture.dispose();
+        return;
+      }
+      texture.colorSpace = THREE.SRGBColorSpace;
+      const previous = this.portraitTextures.get(PLAYER_AVATAR_PORTRAIT_IDENTIFIER);
+      if (previous) previous.dispose();
+      this.portraitTextures.set(PLAYER_AVATAR_PORTRAIT_IDENTIFIER, texture);
+      for (const visual of this.pieceVisuals.values()) {
+        if (visual.identifier !== PLAYER_AVATAR_PORTRAIT_IDENTIFIER) continue;
+        visual.portraitMaterial.map = texture;
+        visual.portraitMaterial.needsUpdate = true;
+      }
+      this.requestRender();
+    } catch {
+      // The commander remains a non-authoritative tactical badge if the local
+      // presentation renderer is unavailable; never substitute an enemy card.
+    }
+  }
+
   private loadTexture(url: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const loader = new THREE.TextureLoader();
@@ -1438,7 +1828,7 @@ export class SandtableScene {
     // 悬停钩子只在目标变化时发射一次；anchor 取发射时刻的指针位置，不随同目标内移动重复推送
     if (changed) this.emitHoverInfo(clientX, clientY);
     const target = nextNodeId ? this.commandTargets.get(nextNodeId) : undefined;
-    this.renderer.domElement.style.cursor = piece?.factionId === 'red'
+    this.renderer.domElement.style.cursor = piece?.factionId === this.currentState?.playerFactionId
       ? 'pointer'
       : target?.ok ? 'crosshair'
         : target ? 'not-allowed'
@@ -1494,8 +1884,10 @@ export class SandtableScene {
     if (this.disposed || (event.button !== 0 && event.button !== 1 && event.button !== 2)) return;
     event.preventDefault();
     this.renderer.domElement.focus({ preventScroll: true });
-    // 任何直接输入都打断进行中的运镜，以当前实际位置继续
-    this.cameraTween = null;
+    // 敌方连续行动共享同一镜头段。段内拒绝直接输入，避免玩家平移/缩放
+    // 与自动跟随争夺相机；镜头归位后输入自然恢复。
+    if (this.rejectLockedCameraInput('pointer')) return;
+    this.interruptActionCameraLease();
     this.drag = {
       pointerId: event.pointerId,
       button: event.button,
@@ -1598,8 +1990,9 @@ export class SandtableScene {
   private readonly onWheel = (event: WheelEvent): void => {
     if (this.disposed || !this.mapInstalled) return;
     event.preventDefault();
-    // 滚轮缩放保持即时手感，直接取消进行中的运镜
-    this.cameraTween = null;
+    if (this.rejectLockedCameraInput('wheel')) return;
+    // 非自动运镜期间，滚轮缩放保持即时手感
+    this.interruptActionCameraLease();
     const factor = Math.exp(-Math.max(-240, Math.min(240, event.deltaY)) * 0.0018);
     this.zoomAt(factor, event.clientX, event.clientY);
   };
@@ -1612,6 +2005,14 @@ export class SandtableScene {
   private readonly onKeyDown = (event: KeyboardEvent): void => {
     if (this.disposed || !this.mapInstalled) return;
     const key = event.key.toLowerCase();
+    const cameraKey = key === '+' || key === '=' || key === '-' || key === '_'
+      || key === '0' || key === 'home'
+      || key === 'arrowleft' || key === 'a' || key === 'arrowright' || key === 'd'
+      || key === 'arrowup' || key === 'w' || key === 'arrowdown' || key === 's';
+    if (cameraKey && this.rejectLockedCameraInput('keyboard')) {
+      event.preventDefault();
+      return;
+    }
     const panStep = this.cameraView.halfHeight * (event.shiftKey ? 0.28 : 0.12);
     let handled = true;
     if (key === '+' || key === '=') this.zoomBy(1.25);
@@ -1690,7 +2091,228 @@ export class SandtableScene {
 
   // 程序性相机移动统一走 240ms ease-out 运镜；目标先过 clamp，新目标以当前实际位置为起点，
   // reducedMotion 与零距离目标直接跳变。过渡期间逐帧 applyCamera 连发快照属预期
-  private glideCameraTo(target: CameraView, notify = true): void {
+  private cancelCameraTween(reason = 'unspecified'): void {
+    if (this.cameraTween) {
+      this.container.dataset.cameraTweenCancelledKind = this.cameraTween.kind;
+      this.container.dataset.cameraTweenCancelReason = reason;
+      this.container.dataset.cameraTweenCancelCount = String(
+        Number(this.container.dataset.cameraTweenCancelCount ?? 0) + 1,
+      );
+    }
+    this.cameraTween = null;
+    if (this.cameraTweenTimer !== null) window.clearTimeout(this.cameraTweenTimer);
+    this.cameraTweenTimer = null;
+  }
+
+  private actionCameraCompletion(lease: ActionCameraRuntimeLease): Promise<boolean> {
+    if (!lease.completion) {
+      lease.completion = new Promise<boolean>((resolve) => { lease.resolve = resolve; });
+    }
+    return lease.completion;
+  }
+
+  private actionMovementCompletion(lease: ActionCameraRuntimeLease): Promise<boolean> {
+    if (!lease.movementCompletion) {
+      lease.movementCompletion = new Promise<boolean>((resolve) => { lease.resolveMovement = resolve; });
+    }
+    return lease.movementCompletion;
+  }
+
+  private clearActionMovementTimer(): void {
+    if (this.actionMovementTimer !== null) window.clearTimeout(this.actionMovementTimer);
+    this.actionMovementTimer = null;
+  }
+
+  private finishActionMovementHold(lease: ActionCameraRuntimeLease, settled: boolean): void {
+    if (this.actionCameraLease !== lease) return;
+    this.clearActionMovementTimer();
+    lease.phase = settled ? 'holding' : lease.phase;
+    if (settled) {
+      this.container.dataset.actionFollowState = 'holding';
+      this.container.dataset.actionReturnState = 'deferred';
+    }
+    const resolve = lease.resolveMovement;
+    lease.resolveMovement = null;
+    lease.movementCompletion = null;
+    resolve?.(settled);
+  }
+
+  private settleActionMovementFallback(lease: ActionCameraRuntimeLease): void {
+    if (this.disposed || this.actionCameraLease !== lease || lease.phase !== 'waiting-movement') return;
+    if (this.animationFrame !== null) {
+      cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = null;
+    }
+    for (const [pieceId, visual] of this.pieceVisuals) {
+      visual.current.copy(visual.target);
+      visual.group.position.copy(visual.target);
+      if (this.selectedPieceIds.has(pieceId)) {
+        visual.selectionMaterial.opacity = visual.selectionBaseOpacity;
+        visual.selection.scale.setScalar(1);
+      }
+    }
+    this.container.dataset.actionMovementFallbackCount = String(
+      Number(this.container.dataset.actionMovementFallbackCount ?? 0) + 1,
+    );
+    this.container.dataset.actionMovementState = 'settled-by-fallback';
+    this.finishActionMovementHold(lease, true);
+    this.requestRender();
+  }
+
+  private setActionCameraInputLocked(locked: boolean): void {
+    this.container.dataset.cameraInputLocked = locked ? 'true' : 'false';
+    this.renderer.domElement.setAttribute('aria-description', locked
+      ? '敌方连续行动运镜期间，相机平移和缩放暂时锁定。'
+      : '可拖拽平移并使用滚轮或按键缩放。');
+    this.options.onCameraChanged?.(this.getCameraState());
+  }
+
+  private rejectLockedCameraInput(source: 'pointer' | 'wheel' | 'keyboard' | 'control'): boolean {
+    if (!this.actionCameraLease) return false;
+    this.cameraInputRejectCount += 1;
+    this.container.dataset.cameraInputRejected = source;
+    this.container.dataset.cameraInputRejectCount = String(this.cameraInputRejectCount);
+    return true;
+  }
+
+  private finishActionCameraLease(lease: ActionCameraRuntimeLease, returned: boolean): void {
+    if (this.actionCameraLease !== lease) return;
+    if (lease.resolveMovement) this.finishActionMovementHold(lease, false);
+    this.actionCameraLeases.release(lease.token);
+    this.actionCameraLease = null;
+    this.setActionCameraInputLocked(false);
+    if (returned) {
+      this.actionCameraReturnCount += 1;
+      this.container.dataset.actionReturnCount = String(this.actionCameraReturnCount);
+      this.container.dataset.actionFollowState = 'returned';
+      this.container.dataset.actionReturnState = 'returned';
+      this.container.dataset.actionReturnToken = String(lease.token);
+      this.container.dataset.actionReturnX = this.cameraView.centerX.toFixed(4);
+      this.container.dataset.actionReturnZ = this.cameraView.centerZ.toFixed(4);
+      this.container.dataset.actionReturnHalfHeight = this.cameraView.halfHeight.toFixed(4);
+      this.container.dataset.actionReturnZoom = String(this.getCameraState().zoomPercent);
+    } else if (this.container.dataset.actionFollowState !== 'interrupted') {
+      this.container.dataset.actionFollowState = 'cancelled';
+      this.container.dataset.actionReturnState = 'cancelled';
+    }
+    const resolve = lease.resolve;
+    lease.resolve = null;
+    resolve?.(returned);
+  }
+
+  private interruptActionCameraLease(): void {
+    const lease = this.actionCameraLease;
+    this.cancelCameraTween('action-lease-interrupted');
+    if (!lease) return;
+    this.actionCameraLeases.cancel(lease.token);
+    this.container.dataset.actionFollowState = 'interrupted';
+    this.container.dataset.actionReturnState = 'cancelled';
+    this.container.dataset.actionCancelToken = String(lease.token);
+    // Direct input during the piece tween cancels the eventual return but keeps
+    // the presentation barrier until the 420ms movement itself has settled.
+    if (lease.phase !== 'waiting-movement') this.finishActionCameraLease(lease, false);
+  }
+
+  public cancelActionFollow(token: number): boolean {
+    const lease = this.actionCameraLease;
+    if (!lease || lease.token !== token) return false;
+    this.actionCameraLeases.cancel(token);
+    this.cancelCameraTween('action-follow-cancelled');
+    this.container.dataset.actionFollowState = 'cancelled';
+    this.container.dataset.actionReturnState = 'cancelled';
+    this.finishActionCameraLease(lease, false);
+    return true;
+  }
+
+  /**
+   * 在销毁 WebGL 场景前转移连续行动镜头。调用者必须紧接着 dispose；
+   * 本方法不把资源、计时器或 scene-local token 带出当前场景。
+   */
+  public detachActionFollow(token: number): SandtableActionFollowCarry | null {
+    const lease = this.actionCameraLease;
+    if (!lease || lease.token !== token || this.disposed || lease.phase === 'returning') return null;
+    const returnView = this.actionCameraLeases.returnView(token);
+    if (!returnView) return null;
+    const currentView = { ...this.cameraIntentView() };
+    this.cancelCameraTween('action-follow-detached');
+    if (lease.resolveMovement) this.finishActionMovementHold(lease, true);
+    this.actionCameraLeases.release(token);
+    this.actionCameraLease = null;
+    this.container.dataset.cameraInputLocked = 'false';
+    this.container.dataset.actionFollowState = 'detached';
+    this.container.dataset.actionReturnState = 'carried';
+    return {
+      currentView,
+      returnView,
+      followCount: lease.followCount,
+    };
+  }
+
+  /** Rebuild a scene-local lease from session-local presentation carry. */
+  public restoreActionFollow(carry: SandtableActionFollowCarry): number | null {
+    if (!this.mapInstalled || this.disposed || this.actionCameraLease || this.options.reducedMotion) return null;
+    const token = this.actionCameraLeases.begin(carry.returnView);
+    const lease: ActionCameraRuntimeLease = {
+      token,
+      phase: 'holding',
+      completion: null,
+      resolve: null,
+      movementCompletion: null,
+      resolveMovement: null,
+      followCount: Math.max(1, Math.floor(carry.followCount)),
+    };
+    this.actionCameraLease = lease;
+    this.cameraView = clampCameraView(
+      carry.currentView,
+      this.mapBounds,
+      this.viewportAspect,
+      this.cameraLimits,
+      this.cameraEdgeMargin(),
+    );
+    this.container.dataset.actionFollowToken = String(token);
+    this.container.dataset.actionFollowCount = String(lease.followCount);
+    this.container.dataset.actionBatchState = 'restored';
+    this.container.dataset.actionFollowState = 'holding';
+    this.container.dataset.actionReturnState = 'deferred';
+    this.setActionCameraInputLocked(true);
+    this.applyCamera();
+    return token;
+  }
+
+  private settleCameraTween(
+    tween: NonNullable<SandtableScene['cameraTween']>,
+    notify = true,
+    retireStarvedFrame = false,
+  ): void {
+    if (this.cameraTween !== tween) return;
+    if (retireStarvedFrame && this.animationFrame !== null) {
+      cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = null;
+    }
+    this.cameraTween = null;
+    if (this.cameraTweenTimer !== null) window.clearTimeout(this.cameraTweenTimer);
+    this.cameraTweenTimer = null;
+    this.container.dataset.cameraTweenState = 'settled';
+    this.container.dataset.cameraTweenSettledKind = tween.kind;
+    this.cameraView = {
+      centerX: tween.targetX,
+      centerZ: tween.targetZ,
+      halfHeight: tween.targetHalfHeight,
+    };
+    if (tween.kind === 'action-follow') this.container.dataset.actionFollowState = 'settled';
+    this.applyCamera(notify);
+    tween.onSettled?.();
+    // fallback 能先于一个被 Chromium 节流的 rAF 回调到达。此时旧 handle
+    // 不能继续占住唯一渲染槽；用新的一帧投影已经落位的最终视图。
+    if (retireStarvedFrame) this.requestRender(true);
+  }
+
+  private glideCameraTo(
+    target: CameraView,
+    notify = true,
+    kind: 'navigation' | 'action-follow' | 'action-return' = 'navigation',
+    onSettled?: () => void,
+  ): void {
     const clamped = clampCameraView(
       target,
       this.mapBounds,
@@ -1698,16 +2320,20 @@ export class SandtableScene {
       this.cameraLimits,
       this.cameraEdgeMargin(),
     );
-    this.cameraTween = null;
+    if (kind === 'navigation') this.interruptActionCameraLease();
+    else this.cancelCameraTween(`superseded-by-${kind}`);
     const settled = Math.abs(clamped.centerX - this.cameraView.centerX) < 0.0001
       && Math.abs(clamped.centerZ - this.cameraView.centerZ) < 0.0001
       && Math.abs(clamped.halfHeight - this.cameraView.halfHeight) < 0.0001;
     if (this.options.reducedMotion || settled) {
       this.cameraView = clamped;
+      if (kind === 'action-follow') this.container.dataset.actionFollowState = 'settled';
       this.applyCamera(notify);
+      onSettled?.();
       return;
     }
     this.cameraTween = {
+      kind,
       startX: this.cameraView.centerX,
       startZ: this.cameraView.centerZ,
       startHalfHeight: this.cameraView.halfHeight,
@@ -1715,8 +2341,12 @@ export class SandtableScene {
       targetZ: clamped.centerZ,
       targetHalfHeight: clamped.halfHeight,
       startedAt: null,
-      duration: 240,
+      duration: CAMERA_TWEEN_DURATION_MS,
+      onSettled,
     };
+    this.container.dataset.cameraTweenState = 'running';
+    this.container.dataset.cameraTweenKind = kind;
+    if (kind === 'action-follow') this.container.dataset.actionFollowState = 'tracking';
     // 帧饥饿环境（headless QA / 后台标签节流）下 rAF 可能长期不流动；
     // 兜底计时器保证运镜在真实时间内落位，data-camera-* 快照消费者得以收敛。
     // 正常浏览器中 rAF 先完成，本回调因 identity 失配直接空转
@@ -1725,10 +2355,12 @@ export class SandtableScene {
     this.cameraTweenTimer = window.setTimeout(() => {
       this.cameraTweenTimer = null;
       if (this.disposed || this.cameraTween !== tween) return;
-      this.cameraTween = null;
-      this.cameraView = { centerX: tween.targetX, centerZ: tween.targetZ, halfHeight: tween.targetHalfHeight };
-      this.applyCamera();
-    }, tween.duration + 60);
+      this.container.dataset.cameraTweenFallbackCount = String(
+        Number(this.container.dataset.cameraTweenFallbackCount ?? 0) + 1,
+      );
+      this.container.dataset.cameraTweenFallbackKind = tween.kind;
+      this.settleCameraTween(tween, true, true);
+    }, tween.duration + FRAME_STARVATION_GRACE_MS);
     this.requestRender();
   }
 
@@ -1743,11 +2375,13 @@ export class SandtableScene {
 
   public zoomBy(factor: number): void {
     if (!this.mapInstalled || this.disposed) return;
+    if (this.rejectLockedCameraInput('control')) return;
     this.glideCameraTo(zoomCameraView(this.cameraIntentView(), factor, this.cameraLimits));
   }
 
   public panBy(deltaX: number, deltaZ: number): void {
     if (!this.mapInstalled || this.disposed) return;
+    if (this.rejectLockedCameraInput('control')) return;
     const base = this.cameraIntentView();
     this.glideCameraTo({
       ...base,
@@ -1758,11 +2392,13 @@ export class SandtableScene {
 
   public fitToMap(notify = true): void {
     if (!this.mapInstalled || this.disposed) return;
+    if (this.rejectLockedCameraInput('control')) return;
     this.glideCameraTo(fitCameraToBounds(expandWorldBounds(this.mapBounds, 1.2), this.viewportAspect), notify);
   }
 
   public focusNode(nodeId: NodeId): void {
     if (!this.mapInstalled || this.disposed) return;
+    if (this.rejectLockedCameraInput('control')) return;
     const point = this.nodePositions.get(nodeId);
     if (!point) return;
     const base = this.cameraIntentView();
@@ -1772,6 +2408,137 @@ export class SandtableScene {
       centerZ: point.z,
       halfHeight: Math.min(base.halfHeight, this.cameraLimits.fitHalfHeight / 2.2),
     });
+  }
+
+  public isActionCameraInputLocked(): boolean {
+    return this.actionCameraLease !== null;
+  }
+
+  public followActionPath(nodeIds: readonly NodeId[]): number | null {
+    if (!this.mapInstalled || this.disposed) return null;
+    this.container.dataset.actionFollowNodes = nodeIds.join(',');
+    if (this.options.reducedMotion) {
+      this.container.dataset.actionFollowState = 'reduced-motion';
+      this.container.dataset.actionReturnState = 'disabled';
+      return null;
+    }
+    // AI 尚未取得镜头段时，已经在途的玩家导航优先；镜头段开始后则由
+    // 整个连续 AI 行动共享同一 token 和最初的玩家返回视图。
+    if (!this.actionCameraLease && this.cameraTween?.kind === 'navigation') {
+      this.container.dataset.actionFollowState = 'manual-navigation';
+      return null;
+    }
+    const points = nodeIds
+      .map((nodeId) => this.nodePositions.get(nodeId))
+      .filter((point): point is { x: number; z: number } => point !== undefined)
+      .map((point) => ({ x: point.x, z: point.z }));
+    if (points.length === 0) {
+      this.container.dataset.actionFollowState = 'missing-target';
+      return null;
+    }
+    const baseView = this.actionCameraLease ? this.cameraIntentView() : this.cameraView;
+    const target = actionCameraViewForPoints(baseView, points, {
+      aspect: this.viewportAspect,
+      reducedMotion: false,
+    });
+    const clamped = clampCameraView(
+      target,
+      this.mapBounds,
+      this.viewportAspect,
+      this.cameraLimits,
+      this.cameraEdgeMargin(),
+    );
+    const settled = Math.abs(clamped.centerX - baseView.centerX) < 0.0001
+      && Math.abs(clamped.centerZ - baseView.centerZ) < 0.0001;
+    if (!this.actionCameraLease && settled) {
+      this.container.dataset.actionFollowState = 'comfortable';
+      return null;
+    }
+
+    let lease = this.actionCameraLease;
+    const registration = this.actionCameraLeases.beginOrContinue(this.cameraView);
+    if (!lease || lease.token !== registration.token) {
+      lease = {
+        token: registration.token,
+        phase: 'following',
+        completion: null,
+        resolve: null,
+        movementCompletion: null,
+        resolveMovement: null,
+        followCount: 0,
+      };
+      this.actionCameraLease = lease;
+      this.setActionCameraInputLocked(true);
+    } else {
+      if (lease.resolveMovement) this.finishActionMovementHold(lease, false);
+      lease.phase = 'following';
+    }
+    lease.followCount += 1;
+    this.container.dataset.actionFollowToken = String(lease.token);
+    this.container.dataset.actionFollowCount = String(lease.followCount);
+    this.container.dataset.actionBatchState = registration.continued ? 'continued' : 'started';
+    this.container.dataset.actionReturnState = 'waiting-action';
+    if (settled) {
+      this.container.dataset.actionFollowState = 'comfortable';
+    } else {
+      this.glideCameraTo(clamped, true, 'action-follow');
+    }
+    return lease.token;
+  }
+
+  private beginActionCameraReturn(lease: ActionCameraRuntimeLease): Promise<boolean> {
+    const completion = this.actionCameraCompletion(lease);
+    if (lease.phase === 'returning') return completion;
+    const returnView = this.actionCameraLeases.returnView(lease.token);
+    if (!returnView) {
+      this.finishActionCameraLease(lease, false);
+      return completion;
+    }
+    lease.phase = 'returning';
+    this.container.dataset.actionFollowState = 'returning';
+    this.container.dataset.actionReturnState = 'returning';
+    this.glideCameraTo(returnView, true, 'action-return', () => {
+      if (this.actionCameraLease === lease) this.finishActionCameraLease(lease, true);
+    });
+    return completion;
+  }
+
+  public holdActionFollowAfterMovement(token: number): Promise<boolean> {
+    const lease = this.actionCameraLease;
+    if (!lease || lease.token !== token || this.disposed) return Promise.resolve(false);
+    if (lease.phase === 'holding') return Promise.resolve(true);
+    if (lease.phase === 'waiting-movement') return this.actionMovementCompletion(lease);
+    if (lease.phase === 'returning') return Promise.resolve(false);
+    lease.phase = 'waiting-movement';
+    this.container.dataset.actionReturnState = 'waiting-movement';
+    this.container.dataset.actionMovementState = 'waiting';
+    const completion = this.actionMovementCompletion(lease);
+    this.clearActionMovementTimer();
+    this.actionMovementTimer = window.setTimeout(() => {
+      this.actionMovementTimer = null;
+      this.settleActionMovementFallback(lease);
+    }, ACTION_MOVE_DURATION_MS + FRAME_STARVATION_GRACE_MS);
+    this.requestRender(true);
+    return completion;
+  }
+
+  public returnActionFollowAfterMovement(token: number): Promise<boolean> {
+    return this.holdActionFollowAfterMovement(token).then((settled) => (
+      settled ? this.returnActionFollow(token) : false
+    ));
+  }
+
+  public returnActionFollow(token: number): Promise<boolean> {
+    const lease = this.actionCameraLease;
+    if (!lease || lease.token !== token || this.disposed) return Promise.resolve(false);
+    if (lease.phase === 'waiting-movement') {
+      return this.actionMovementCompletion(lease).then((settled) => (
+        settled && this.actionCameraLease === lease
+          ? this.beginActionCameraReturn(lease)
+          : false
+      ));
+    }
+    return this.beginActionCameraReturn(lease);
   }
 
   public getCameraState(): SandtableCameraSnapshot {
@@ -1788,6 +2555,17 @@ export class SandtableScene {
     };
   }
 
+  public getResourceSnapshot(): SandtableResourceSnapshot {
+    return {
+      ...planSandtableBatches(this.nodeVisuals.size, this.routeVisuals.length),
+      liveGeometryCount: this.sharedGeometry.length,
+      liveMaterialCount: this.sharedMaterials.length,
+      liveTextureCount: this.sharedTextures.length + this.portraitTextures.size,
+      overviewLodActive: this.overviewLodActive,
+      disposed: this.disposed,
+    };
+  }
+
   public resize(): void {
     if (this.disposed) return;
     const width = Math.max(1, this.container.clientWidth || 720);
@@ -1798,7 +2576,7 @@ export class SandtableScene {
     this.lastLayoutWidth = width;
     this.lastLayoutHeight = height;
     // 布局变化直接落位，不与进行中的运镜争夺 halfHeight
-    this.cameraTween = null;
+    this.interruptActionCameraLease();
     const previousAspect = this.viewportAspect;
     this.viewportAspect = width / height;
     this.renderer.setSize(width, height, false);
@@ -1838,10 +2616,13 @@ export class SandtableScene {
       this.cameraView.centerX = tween.startX + (tween.targetX - tween.startX) * cameraEased;
       this.cameraView.centerZ = tween.startZ + (tween.targetZ - tween.startZ) * cameraEased;
       this.cameraView.halfHeight = tween.startHalfHeight + (tween.targetHalfHeight - tween.startHalfHeight) * cameraEased;
-      if (cameraProgress >= 1) this.cameraTween = null;
-      this.applyCamera();
+      if (cameraProgress >= 1) {
+        this.settleCameraTween(tween);
+      } else {
+        this.applyCamera();
+      }
     }
-    const moveDuration = reducedMotion ? 1 : 420;
+    const moveDuration = reducedMotion ? 1 : ACTION_MOVE_DURATION_MS;
     // 选择环脉冲窗口比移动补间长，但同样有限，窗结束即回静态
     const pulseDuration = reducedMotion ? 1 : 900;
     // 与相机运镜同一 rAF 帧时钟：update() 只把起点置 null，在首帧闩锁
@@ -1867,11 +2648,20 @@ export class SandtableScene {
         visual.selection.scale.setScalar(pulse);
       }
     }
-    // 蚂蚁线：只在有界渲染窗内滚动，窗结束 offset 定格在最后一帧
-    if (!reducedMotion && pulseStep < 1) {
-      for (const route of this.routeVisuals) {
-        if (route.flow && route.markTexture) route.markTexture.offset.x = -elapsed * 0.0011;
+    const actionLease = this.actionCameraLease;
+    if (actionLease?.phase === 'waiting-movement' && moveStep >= 1) {
+      if (this.actionCameraLeases.isCancelled(actionLease.token)) {
+        this.finishActionCameraLease(actionLease, false);
+      } else {
+        // 棋子落位只解除下一条 AI 命令的播放屏障，不在每条命令后归位。
+        // 整个连续非玩家行动段结束时，session 才显式请求一次 return。
+        this.finishActionMovementHold(actionLease, true);
+        this.container.dataset.actionMovementState = 'settled-by-frame';
       }
+    }
+    // 蚂蚁线：只在有界渲染窗内滚动，窗结束 offset 定格在最后一帧
+    if (!reducedMotion && pulseStep < 1 && this.routeFlowActive && this.routeFlowTexture) {
+      this.routeFlowTexture.offset.x = -elapsed * 0.0011;
     }
     this.renderer.render(this.scene, this.camera);
     if (moving || this.cameraTween !== null || (animate && pulseStep < 1)) this.requestRender(true);
@@ -1880,11 +2670,16 @@ export class SandtableScene {
   public dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    if (this.actionCameraLease) {
+      try { this.cancelActionFollow(this.actionCameraLease.token); } catch { /* continue teardown */ }
+    }
     this.textureFence.dispose();
+    this.playerAvatarTextureFence.dispose();
     if (this.animationFrame !== null) cancelAnimationFrame(this.animationFrame);
     this.animationFrame = null;
     if (this.cameraTweenTimer !== null) window.clearTimeout(this.cameraTweenTimer);
     this.cameraTweenTimer = null;
+    this.clearActionMovementTimer();
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
     this.renderer.domElement.removeEventListener('pointerdown', this.onPointerDown);
@@ -1897,25 +2692,51 @@ export class SandtableScene {
     this.container.classList.remove('is-panning');
     this.container.classList.remove('is-selecting');
     this.marqueeElement.remove();
+
+    // GPU owner 先退役。后面的材质/纹理逐项清理即使遇到异常，也已经
+    // 不可能留下一个失去 session 引用但仍活跃的 WebGL context。
+    try { this.renderer.setAnimationLoop?.(null); } catch { /* continue teardown */ }
+    try { this.renderer.renderLists?.dispose?.(); } catch { /* continue teardown */ }
+    try { this.renderer.dispose(); } catch { /* forceContextLoss still runs */ }
+    try { this.renderer.forceContextLoss?.(); } catch { /* canvas removal still runs */ }
+    try {
+      this.renderer.domElement.width = 1;
+      this.renderer.domElement.height = 1;
+    } catch { /* canvas removal still runs */ }
+    this.renderer.domElement.remove();
+
     for (const visual of this.pieceVisuals.values()) {
-      for (const material of new Set(visual.materials)) material.dispose();
+      for (const material of new Set(visual.materials)) {
+        try { material.dispose(); } catch { /* continue teardown */ }
+      }
     }
     this.pieceVisuals.clear();
-    for (const geometry of new Set(this.sharedGeometry)) geometry.dispose?.();
-    for (const material of new Set(this.sharedMaterials)) material.dispose?.();
-    for (const texture of new Set(this.sharedTextures)) texture.dispose?.();
-    for (const texture of new Set(this.portraitTextures.values())) texture.dispose?.();
+    const portraitResources = Array.from(this.portraitTextures.values());
+    disposeSandtableResourceGroups([
+      this.sharedGeometry,
+      this.sharedMaterials,
+      this.sharedTextures,
+      portraitResources,
+    ]);
     this.portraitTextures.clear();
+    this.landmarkGeometry.clear();
+    this.pieceBadgeTextures.clear();
     this.scene.environment = null;
-    this.environmentTarget?.dispose?.();
+    try { this.environmentTarget?.dispose?.(); } catch { /* continue teardown */ }
     this.environmentTarget = null;
-    this.renderer.renderLists?.dispose?.();
-    this.renderer.setAnimationLoop?.(null);
-    this.renderer.dispose();
-    this.renderer.forceContextLoss?.();
-    this.renderer.domElement.remove();
+    try { this.scene.clear?.(); } catch { /* continue teardown */ }
     this.nodeVisuals.clear();
     this.nodePositions.clear();
     this.routeVisuals.splice(0);
+    this.routeLegalBatch = null;
+    this.routePassiveBatch = null;
+    this.routeFlowTexture = null;
+    this.overviewBodyMesh = null;
+    this.overviewCapMesh = null;
+    this.overviewLodActive = false;
+    this.container.dataset.renderResourceState = 'disposed';
+    this.container.dataset.routeEdgeCount = '0';
+    this.container.dataset.routeGeometryCount = '0';
+    this.container.dataset.routeTextureCount = '0';
   }
 }

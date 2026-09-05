@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { requireNode } from '../src/core/access.js';
 import { completePlayback, skipPlayback } from '../src/battle/playback.js';
 import { resolveBattle } from '../src/battle/resolver.js';
 import type { BattleResult, ResolveBattleInput } from '../src/battle/types.js';
@@ -167,8 +168,8 @@ test('AC-33 双方狙击先制互灭时节点保持原所有者且为空，不�
     }
   }
   assert.ok(finalState);
-  assert.equal(finalState.map.nodes['North-Choke'].ownerFactionId, null);
-  assert.equal(finalState.map.nodes['North-Choke'].pieceIds.length, 0);
+  assert.equal(requireNode(finalState, 'North-Choke').ownerFactionId, null);
+  assert.equal(requireNode(finalState, 'North-Choke').pieceIds.length, 0);
   assert.equal(Object.values(finalState.pieces).filter((piece) => piece.failedAssaultLocks.length > 0).length, 0);
 });
 

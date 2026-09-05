@@ -1,5 +1,12 @@
-import type { BattleRecord } from '../battle/types.js';
-import { isNodeActive, isNodeStable, nodeOccupyingFactions, piecesAtNode } from '../core/selectors.js';
+import type { BattleRecord, BattleUnitSnapshot } from '../battle/types.js';
+import { requireNode } from '../core/access.js';
+import { relationBetween, requireFaction } from '../core/factions.js';
+import {
+  selectedCommandElements,
+  selectionOrganizationMetrics,
+  type OrganizationMetrics,
+} from '../core/organization.js';
+import { adjacentNodeIds, isNodeActive, isNodeStable, nodeOccupyingFactions, piecesAtNode } from '../core/selectors.js';
 import type {
   CardId,
   FactionId,
@@ -8,10 +15,13 @@ import type {
   NodeId,
   NodeKind,
   PromotionId,
+  ValidationReasonCode,
+  ValidationReasonParams,
 } from '../core/types.js';
 import { validateCommand } from '../core/validator.js';
 import { getCardDefinition } from '../data/cards.js';
-import { adjacentNodeIds } from '../data/map.js';
+import type { EncounterDistanceBand } from '../strategy/definitions.js';
+import { playerBehaviorName, playerFactionName, playerOwnerName } from './player-text-catalog.js';
 
 export const PHASE_LABEL: Record<GameState['phase'], string> = {
   FIRST_FACTION_ACTION: '先手行动',
@@ -28,19 +38,39 @@ export interface NodeProjection {
   ownerLabel: string;
   active: boolean;
   stable: boolean;
+  playerCount: number;
+  alliedCount: number;
+  neutralCount: number;
+  hostileCount: number;
+  factionCounts: Readonly<Record<FactionId, number>>;
+  /** Compatibility alias: playerCount (identical to redCount in Demo 1). */
   redCount: number;
+  /** Compatibility alias: hostileCount (identical to blueCount in Demo 1). */
   blueCount: number;
   contested: boolean;
+  encounterProfileRef: string;
+  distanceBand: EncounterDistanceBand;
+  spawnDistance: number;
   x: number;
   z: number;
 }
 
 export interface ActionPreview {
   targetNodeId: NodeId;
+  viaNodeId?: NodeId;
   targetName: string;
   ok: boolean;
-  error: string | null;
+  reasonCode: ValidationReasonCode | null;
+  reasonParams: ValidationReasonParams;
   actualPieceIds: string[];
+  actualCommandElementCount: number;
+  commandLoad: number;
+  deploymentSize: number;
+  encounterCost: number;
+  encounterProfileRef: string;
+  distanceBand: EncounterDistanceBand;
+  spawnDistance: number;
+  /** Compatibility alias for older UI callers; equals commandLoad. */
   apCost: number;
   isBattle: boolean;
 }
@@ -63,12 +93,49 @@ export interface BattleVisualUnit {
   lastStatus: string;
 }
 
-export function ownerLabel(owner: FactionId | null): string {
-  return owner === 'red' ? 'R 红方' : owner === 'blue' ? 'B 蓝方' : 'N 中立';
+export function ownerLabel(owner: FactionId | null, state?: GameState): string {
+  if (!state || owner === null) return playerOwnerName(owner);
+  const faction = requireFaction(state, owner);
+  if (owner === state.playerFactionId) return `我方 · ${faction.displayName}`;
+  const relation = relationBetween(state, state.playerFactionId, owner);
+  const relationLabel = relation === 'allied' ? '盟军' : relation === 'neutral' ? '中立' : '敌方';
+  return `${relationLabel} · ${faction.displayName}`;
 }
 
-export function factionLabel(faction: FactionId): string {
-  return faction === 'red' ? '红方' : '蓝方';
+export interface BattleUnitPresentation {
+  displayName: string;
+  roleLabel: string;
+  portraitKind: 'catalog' | 'player_avatar';
+  portraitIdentifier: string | null;
+}
+
+/**
+ * BattleRecord keeps cardId for strategic HP/economy settlement. Presentation
+ * instead follows the independently frozen encounter identity so the player's
+ * paper-doll avatar cannot be rendered as card 83 (精锐狙击兵).
+ */
+export function projectBattleUnitPresentation(
+  snapshot: BattleUnitSnapshot,
+): BattleUnitPresentation {
+  if (snapshot.encounterProjectionKind === 'player_avatar') {
+    return {
+      displayName: '我方主角',
+      roleLabel: '主角指挥官',
+      portraitKind: 'player_avatar',
+      portraitIdentifier: null,
+    };
+  }
+  return {
+    displayName: snapshot.displayName,
+    roleLabel: playerBehaviorName(snapshot.behaviorId),
+    portraitKind: 'catalog',
+    portraitIdentifier: getCardDefinition(snapshot.cardId).identifier,
+  };
+}
+
+export function factionLabel(faction: FactionId, state?: GameState): string {
+  if (!state) return playerFactionName(faction);
+  return ownerLabel(faction, state);
 }
 
 export interface MapProjectionFrame {
@@ -107,19 +174,43 @@ export function mapProjectionFrame(state: GameState): MapProjectionFrame {
 export function projectNodes(state: GameState): NodeProjection[] {
   const frame = mapProjectionFrame(state);
   return (Object.keys(state.map.nodes) as NodeId[]).map((nodeId) => {
-    const node = state.map.nodes[nodeId];
+    const node = requireNode(state, nodeId);
     const occupiers = nodeOccupyingFactions(state, nodeId);
+    const factionCounts: Record<FactionId, number> = Object.create(null) as Record<FactionId, number>;
+    for (const factionId of state.turnOrder) {
+      factionCounts[factionId] = piecesAtNode(state, nodeId, factionId).length;
+    }
+    const playerCount = factionCounts[state.playerFactionId] ?? 0;
+    let alliedCount = 0;
+    let neutralCount = 0;
+    let hostileCount = 0;
+    for (const factionId of state.turnOrder) {
+      if (factionId === state.playerFactionId) continue;
+      const count = factionCounts[factionId] ?? 0;
+      const relation = relationBetween(state, state.playerFactionId, factionId);
+      if (relation === 'allied') alliedCount += count;
+      else if (relation === 'neutral') neutralCount += count;
+      else hostileCount += count;
+    }
     return {
       nodeId,
       displayName: node.displayName,
       kind: node.kind,
       ownerFactionId: node.ownerFactionId,
-      ownerLabel: ownerLabel(node.ownerFactionId),
+      ownerLabel: ownerLabel(node.ownerFactionId, state),
       active: isNodeActive(state, nodeId),
       stable: node.ownerFactionId ? isNodeStable(state, nodeId, node.ownerFactionId) : false,
-      redCount: piecesAtNode(state, nodeId, 'red').length,
-      blueCount: piecesAtNode(state, nodeId, 'blue').length,
+      playerCount,
+      alliedCount,
+      neutralCount,
+      hostileCount,
+      factionCounts,
+      redCount: playerCount,
+      blueCount: hostileCount,
       contested: !!node.ownerFactionId && occupiers.some((faction) => faction !== node.ownerFactionId),
+      encounterProfileRef: node.encounterProfileRef,
+      distanceBand: node.distanceBand,
+      spawnDistance: node.spawnDistance,
       x: (node.x - frame.centerX) * frame.worldUnitsPerMapX,
       z: (node.y - frame.centerY) * frame.worldUnitsPerMapY,
     };
@@ -131,23 +222,80 @@ export function buildActionPreviews(
   selectedNodeId: NodeId,
   selectedPieceIds: string[],
 ): ActionPreview[] {
-  return adjacentNodeIds(selectedNodeId).map((targetNodeId) => {
+  const emptyMetrics: OrganizationMetrics = {
+    commandLoad: 0,
+    deploymentSize: 0,
+    encounterCost: 0,
+    apContribution: 0,
+    memberCount: 0,
+  };
+  let requestedMetrics = emptyMetrics;
+  if (selectedPieceIds.length > 0) {
+    try {
+      requestedMetrics = selectionOrganizationMetrics(state, selectedPieceIds);
+    } catch {
+      // Validator owns the typed rejection for a partial/invalid command element selection.
+    }
+  }
+  const directTargets = adjacentNodeIds(state, selectedNodeId)
+    .sort((left, right) => String(left).localeCompare(String(right)));
+  const directTargetSet = new Set(directTargets);
+  const paths: Array<{ readonly targetNodeId: NodeId; readonly viaNodeId?: NodeId }> = directTargets
+    .map((targetNodeId) => ({ targetNodeId }));
+  const seenTransitTargets = new Set<NodeId>();
+  for (const viaNodeId of directTargets) {
+    const occupiers = nodeOccupyingFactions(state, viaNodeId);
+    if (occupiers.length !== 1
+      || occupiers[0] === state.playerFactionId
+      || relationBetween(state, state.playerFactionId, occupiers[0] ?? state.playerFactionId) !== 'allied') continue;
+    for (const targetNodeId of adjacentNodeIds(state, viaNodeId)
+      .sort((left, right) => String(left).localeCompare(String(right)))) {
+      if (targetNodeId === selectedNodeId
+        || directTargetSet.has(targetNodeId)
+        || seenTransitTargets.has(targetNodeId)) continue;
+      seenTransitTargets.add(targetNodeId);
+      paths.push({ targetNodeId, viaNodeId });
+    }
+  }
+  return paths.map(({ targetNodeId, viaNodeId }) => {
+    const targetNode = requireNode(state, targetNodeId);
     const command: GameCommand = {
       type: 'MOVE_OR_ATTACK',
-      factionId: 'red',
+      factionId: state.playerFactionId,
       pieceIds: [...selectedPieceIds],
       originNodeId: selectedNodeId,
       targetNodeId,
+      ...(viaNodeId ? { viaNodeId } : {}),
     };
     const validation = validateCommand(state, command);
     const actualPieceIds = validation.actualPieceIds ?? [];
+    let projectedMetrics = requestedMetrics;
+    if (actualPieceIds.length > 0) {
+      try {
+        projectedMetrics = selectionOrganizationMetrics(state, actualPieceIds);
+      } catch {
+        // Keep the requested projection so invalid previews still expose useful totals.
+      }
+    }
+    const commandLoad = validation.commandLoad ?? projectedMetrics.commandLoad;
+    const deploymentSize = validation.deploymentSize ?? projectedMetrics.deploymentSize;
+    const encounterCost = validation.encounterCost ?? projectedMetrics.encounterCost;
     return {
       targetNodeId,
-      targetName: state.map.nodes[targetNodeId].displayName,
+      ...(viaNodeId ? { viaNodeId } : {}),
+      targetName: targetNode.displayName,
       ok: validation.ok,
-      error: validation.error ?? null,
+      reasonCode: validation.reasonCode ?? null,
+      reasonParams: validation.reasonParams ?? {},
       actualPieceIds,
-      apCost: actualPieceIds.length || selectedPieceIds.length,
+      actualCommandElementCount: selectedCommandElements(state, actualPieceIds).elements.length,
+      commandLoad,
+      deploymentSize,
+      encounterCost,
+      encounterProfileRef: targetNode.encounterProfileRef,
+      distanceBand: targetNode.distanceBand,
+      spawnDistance: targetNode.spawnDistance,
+      apCost: commandLoad,
       isBattle: validation.isBattle === true,
     };
   });
@@ -160,7 +308,7 @@ export function nextPromotionFor(
 ): PromotionId | null {
   const definition = getCardDefinition(cardId);
   return definition.allowedPromotions[
-    game.factions[factionId].cards[cardId].purchasedPromotions.length
+    requireFaction(game, factionId).cards[cardId].purchasedPromotions.length
   ] ?? null;
 }
 
@@ -197,9 +345,9 @@ export function projectBattleVisual(record: BattleRecord, eventCount: number): M
       actor.reloading = false;
       actor.suppressionPending = false;
       actor.nextAttackRound = event.battleRound + attackInterval(actor.snapshot.behaviorId);
-      actor.lastStatus = event.phase === 'opening_volley' ? '狙击先制' : `R${event.battleRound} 已攻击`;
+      actor.lastStatus = event.phase === 'opening_volley' ? '狙击先制' : `第 ${event.battleRound} 轮已攻击`;
     }
-    if (event.type === 'miss' && actor) actor.lastStatus = `R${event.battleRound} 未命中`;
+    if (event.type === 'miss' && actor) actor.lastStatus = `第 ${event.battleRound} 轮未命中`;
     if ((event.type === 'damage' || event.type === 'special') && target) {
       target.hp = typeof event.hpAfter === 'number' ? event.hpAfter : Math.max(0, target.hp - (event.damage ?? 0));
       target.lastStatus = event.type === 'special' ? '遭受特攻' : '遭受伤害';
@@ -207,7 +355,7 @@ export function projectBattleVisual(record: BattleRecord, eventCount: number): M
     if (event.type === 'suppression' && target) {
       target.suppressionPending = true;
       target.nextAttackRound += 1;
-      target.lastStatus = `受压制至 R${target.nextAttackRound}`;
+      target.lastStatus = `受压制至第 ${target.nextAttackRound} 轮`;
     }
     if (event.type === 'death' && target) {
       target.hp = 0;
@@ -241,5 +389,14 @@ export function stateProjectionDigest(state: GameState): string {
       node: piece.nodeId,
       hp: piece.hp,
     })).sort((a, b) => a.id.localeCompare(b.id)),
+    organization: Object.values(state.organization.commandElements).map((element) => ({
+      id: element.elementId,
+      kind: element.kind,
+      faction: element.factionId,
+      node: element.nodeId,
+      members: [...element.memberIds].sort((left, right) => left.localeCompare(right)),
+      formation: element.formationProfileId,
+      template: element.taskGroupTemplateId,
+    })).sort((left, right) => left.id.localeCompare(right.id)),
   });
 }

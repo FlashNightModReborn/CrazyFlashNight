@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { requireFaction } from '../src/core/factions.js';
 import { createPieceInPlace } from '../src/core/pieces.js';
 import type { ProductionOrder } from '../src/core/types.js';
 import { getCardDefinition } from '../src/data/cards.js';
@@ -46,11 +47,12 @@ test('PHASE-A-PRODUCTION initial network is read-only and recommends an empty si
 test('PHASE-A-PRODUCTION automatic choice balances the whole network while exact mode keeps authority', () => {
   const state = makeState('production-balancing');
   setPlanning(state);
-  state.factions.red.gold = 100;
-  state.factions.red.productionQueues['R-Supply']?.[0]?.orders.push(order({
+  const red = requireFaction(state, 'red');
+  red.gold = 100;
+  red.productionQueues['R-Supply']?.[0]?.orders.push(order({
     orderId: 'supply-head', nodeId: 'R-Supply', slotId: 'R-Supply:1', remainingRounds: 2,
   }));
-  state.factions.red.productionQueues['R-Supply']?.[1]?.orders.push(order({
+  red.productionQueues['R-Supply']?.[1]?.orders.push(order({
     orderId: 'supply-second', nodeId: 'R-Supply', slotId: 'R-Supply:2', remainingRounds: 1,
   }));
   const automatic = resolveProductionChoice(state, 'red', 14, 'auto', 'R-Supply', 'R-Supply:1');
@@ -68,20 +70,21 @@ test('PHASE-A-PRODUCTION automatic choice balances the whole network while exact
 
 test('PHASE-A-PRODUCTION waiting head exposes both deployment blockers and freezes the tail', () => {
   const state = makeState('production-blockers');
-  const slot = state.factions.red.productionQueues['R-HQ']?.[0];
+  const red = requireFaction(state, 'red');
+  const slot = red.productionQueues['R-HQ']?.[0];
   assert.ok(slot);
   slot.orders.push(
     order({ orderId: 'waiting-head', remainingRounds: 0, status: 'waiting_deployment' }),
     order({ orderId: 'queued-tail', cardId: 13, remainingRounds: 2 }),
   );
   createPieceInPlace(state, 'red', 14, 'R-HQ', 1, { pieceId: 'capacity-blocker' });
-  state.factions.red.populationCap = state.factions.red.populationUsed;
+  red.populationCap = red.populationUsed;
   const node = projectProductionNodes(state, 'red').find((candidate) => candidate.nodeId === 'R-HQ');
   const lane = node?.lanes[0];
   assert.ok(lane);
   assert.equal(lane.state, 'waiting_deployment');
   assert.equal(lane.blocked, true);
-  assert.deepEqual(lane.blockerLabels, ['驻军容量 5/5', '人口 5+1/5']);
+  assert.deepEqual(lane.blockerLabels, ['驻军 5 / 上限 5', '人口 5+1/5']);
   assert.equal(lane.head?.phaseLabel, '等待部署');
   assert.equal(lane.head?.progressPercent, 100);
   assert.equal(lane.tail[0]?.phaseLabel, '待开工');
@@ -102,21 +105,23 @@ test('PHASE-A-PRODUCTION waiting head exposes both deployment blockers and freez
 test('PHASE-A-PRODUCTION canonical validator remains the only legality source', () => {
   const state = makeState('production-validation');
   setPlanning(state);
-  state.factions.red.gold = 0;
+  const red = requireFaction(state, 'red');
+  red.gold = 0;
   const noGold = resolveProductionChoice(state, 'red', 14, 'auto', 'R-HQ', 'R-HQ:1');
   assert.equal(noGold.ok, false);
-  assert.equal(noGold.error, '金币不足，需要 8G。');
+  assert.equal(noGold.reasonCode, 'military_funds_insufficient');
+  assert.deepEqual(noGold.reasonParams, { required: 8, available: 0 });
 
-  state.factions.red.gold = 100;
+  red.gold = 100;
   const nonProduction = resolveProductionChoice(state, 'red', 14, 'exact', 'R-Economy', 'R-Economy:1');
   assert.equal(nonProduction.ok, false);
-  assert.equal(nonProduction.error, '目标节点不是生产节点。');
+  assert.equal(nonProduction.reasonCode, 'production_node_invalid');
 });
 
 test('PHASE-A-PRODUCTION cancellation affordance is projected only for canonical unstarted orders', () => {
   let state = makeState('production-cancel-projection');
   setPlanning(state);
-  state.factions.red.gold = 100;
+  requireFaction(state, 'red').gold = 100;
   state = applyOk(state, {
     type: 'ENQUEUE_PRODUCTION', factionId: 'red', nodeId: 'R-Supply', slotId: 'R-Supply:1', cardId: 14,
   });
@@ -127,9 +132,9 @@ test('PHASE-A-PRODUCTION cancellation affordance is projected only for canonical
   assert.equal(lane?.head?.goldCost, 8);
   assert.equal(lane?.head?.populationCost, 1);
 
-  state.factions.red.planningCommitted = true;
+  requireFaction(state, 'red').planningCommitted = true;
   lane = projectProductionNodes(state, 'red')
     .find((node) => node.nodeId === 'R-Supply')?.lanes[0];
   assert.equal(lane?.head?.cancellable, false);
-  assert.equal(lane?.head?.cancelReason, '该阵营已经提交规划。');
+  assert.equal(lane?.head?.cancelReason, '本轮结算安排已经提交。 等待下一回合开始。');
 });

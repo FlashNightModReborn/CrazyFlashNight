@@ -446,6 +446,8 @@ namespace CF7Launcher.Bus
             ToastTask toast,
             FrameTask frame,
             StageOutcomeTask stageOutcomeTask,
+            WarlordStageTask warlordStageTask,
+            WarlordBattleTask warlordBattleTask,
             DataQueryTask dataQuery,
             AudioTask audio,
             IconBakeTask iconBake,
@@ -486,6 +488,27 @@ namespace CF7Launcher.Bus
             router.RegisterSync("toast", toast.Handle);
             if (stageOutcomeTask != null)
                 router.RegisterSync("stage_outcome", stageOutcomeTask.Handle);
+            if (warlordStageTask != null)
+            {
+                router.RegisterSync(
+                    "warlord_stage_start",
+                    warlordStageTask.HandleStart);
+                router.RegisterSync(
+                    "warlord_stage_outer_cancelled",
+                    warlordStageTask.HandleOuterCancellation);
+            }
+            if (warlordBattleTask != null)
+            {
+                router.RegisterSync(
+                    "warlord_action_encounter_admitted",
+                    warlordBattleTask.HandleActionEncounterAdmission);
+                router.RegisterSync(
+                    "warlord_action_encounter_terminal",
+                    warlordBattleTask.HandleActionEncounterTerminal);
+                router.RegisterSync(
+                    "warlord_action_encounter_cancelled",
+                    warlordBattleTask.HandleActionEncounterCancellation);
+            }
             // loot feed（左下双向玩家物资/击杀播报）：与地图战利品箱的 "loot_response" 回包是两个域。
             // 仅 native HUD 路径构造了 widget/task；fallback 模式不注册，事件自然无路由。
             if (lootFeedTask != null)
@@ -799,6 +822,11 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "frame",          "fast_lane", "AS2->C#", false, first);
             first = AppendTask(sb, "hn_reset",       "fast_lane", "AS2->C#", false, first);
             first = AppendTask(sb, "toast",          "json_sync", "AS2->C#", true,  first);
+            first = AppendTask(sb, "warlord_stage_start", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "warlord_stage_outer_cancelled", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "warlord_action_encounter_admitted", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "warlord_action_encounter_terminal", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "warlord_action_encounter_cancelled", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "loot",           "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "gomoku_eval",    "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "data_query",     "json_async","AS2<->C#",true,  first);

@@ -1,13 +1,13 @@
 // Generated from the authoritative snapshot; do not edit by hand.
 const snapshot = {
     "schemaVersion": 1,
-    "snapshotVersion": "warlord-card-snapshot-v0.1",
-    "rulesVersion": "wargame-demo-v0.1",
+    "snapshotVersion": "warlord-card-snapshot-v0.2",
+    "rulesVersion": "wargame-demo-v0.1.1",
     "spec": {
         "path": "docs/军阀战术演习-Web-Demo-产品规格书-v0.1-draft.md",
         "sha256": "C07FA51F78852899901F6F38031663227F7067CD8E3B48CCDBF70F52417D3A18"
     },
-    "snapshotExtractedAt": "2026-08-02",
+    "snapshotExtractedAt": "2026-09-01",
     "runtimeContract": {
         "currency": "gold",
         "cardLevelMin": 1,
@@ -25,11 +25,15 @@ const snapshot = {
     "sourceFiles": [
         {
             "path": "data/merc/pets.xml",
-            "sha256": "7B17B21FB1B97F56F86D9AC4D0FBEB60AF562CABD3971CFADFE6881AFB96B70A"
+            "sha256": "12BB123E5508C2B02AE32F2DEDC490C2CC72C541FD2015121FD16A98EB62A2A9"
         },
         {
             "path": "data/units/units.json",
-            "sha256": "08F64AC4730557CD5B6E090AF692540851A8BF4CF4865BFF79DC39C3824D88DE"
+            "sha256": "BF6A302B4521F26B68CB27A212C8E52CB6A04F2A09924289EDCB3FA2F6177120"
+        },
+        {
+            "path": "data/enemy_properties/军阀新人物.xml",
+            "sha256": "7B9FCFDB0A66E98457B4F9DF615D5B743F1BDB9FD708694BBF5580EBD79B1A99"
         },
         {
             "path": "data/enemy_properties/原版敌人 2011-2012.xml",
@@ -41,7 +45,7 @@ const snapshot = {
         },
         {
             "path": "scripts/逻辑/单位函数/单位函数_aka_战宠进阶.as",
-            "sha256": "33A7D921F3A8EF8F1083432906F89C88066F94A66FD5229E1BA79DC90E29189F"
+            "sha256": "FC732F1146B410730528D2A27F7862A90EDE7B958C98B43E6C357A3F14A6C630"
         }
     ],
     "cards": [
@@ -52,22 +56,50 @@ const snapshot = {
             "displayName": "狙击兵",
             "sourceCategory": "普通",
             "powerTier": "T1 基础兵",
-            "tags": ["human"],
+            "tags": [
+                "human"
+            ],
             "statRanges": {
-                "hp": { "min": 1000, "max": 2000 },
-                "unarmedAttack": { "min": 15, "max": 120 },
-                "baseDefense": { "min": 100, "max": 300 },
-                "speed": { "min": 18, "max": 30 }
+                "hp": {
+                    "min": 1000,
+                    "max": 2000
+                },
+                "unarmedAttack": {
+                    "min": 15,
+                    "max": 120
+                },
+                "baseDefense": {
+                    "min": 100,
+                    "max": 300
+                },
+                "speed": {
+                    "min": 18,
+                    "max": 30
+                }
             },
-            "expRange": { "min": 46, "max": 400 },
+            "expRange": {
+                "min": 46,
+                "max": 400
+            },
             "auditOnlyStats": {
-                "dodgeRate": { "min": 30, "max": 15 },
+                "dodgeRate": {
+                    "min": 30,
+                    "max": 15
+                },
                 "toughness": 0.6,
-                "magicResistance": { "人类": 10, "统合": 10, "凡俗": 15 },
+                "magicResistance": {
+                    "人类": 10,
+                    "统合": 10,
+                    "凡俗": 15
+                },
                 "equipmentDefense": 0,
                 "weight": 80
             },
-            "allowedPromotions": ["基础训练", "强化药剂", "超级血清"],
+            "allowedPromotions": [
+                "基础训练",
+                "强化药剂",
+                "超级血清"
+            ],
             "productionCost": 8,
             "populationCost": 1,
             "buildRounds": 1,
@@ -81,8 +113,16 @@ const snapshot = {
             ],
             "snapshotExtractedAt": "2026-08-02",
             "sourceAudit": {
-                "sourceAllowedPromotions": ["基础训练", "强化药剂", "超级血清", "常驻淬毒"],
-                "unitTemplate": { "level": 20, "height": 175 }
+                "sourceAllowedPromotions": [
+                    "基础训练",
+                    "强化药剂",
+                    "超级血清",
+                    "常驻淬毒"
+                ],
+                "unitTemplate": {
+                    "level": 20,
+                    "height": 175
+                }
             }
         },
         {
@@ -92,22 +132,50 @@ const snapshot = {
             "displayName": "弹药兵",
             "sourceCategory": "普通",
             "powerTier": "T1 基础兵",
-            "tags": ["human"],
+            "tags": [
+                "human"
+            ],
             "statRanges": {
-                "hp": { "min": 1000, "max": 2000 },
-                "unarmedAttack": { "min": 15, "max": 120 },
-                "baseDefense": { "min": 100, "max": 300 },
-                "speed": { "min": 18, "max": 30 }
+                "hp": {
+                    "min": 1000,
+                    "max": 2000
+                },
+                "unarmedAttack": {
+                    "min": 15,
+                    "max": 120
+                },
+                "baseDefense": {
+                    "min": 100,
+                    "max": 300
+                },
+                "speed": {
+                    "min": 18,
+                    "max": 30
+                }
             },
-            "expRange": { "min": 46, "max": 400 },
+            "expRange": {
+                "min": 46,
+                "max": 400
+            },
             "auditOnlyStats": {
-                "dodgeRate": { "min": 30, "max": 15 },
+                "dodgeRate": {
+                    "min": 30,
+                    "max": 15
+                },
                 "toughness": 0.6,
-                "magicResistance": { "人类": 20, "统合": 10, "凡俗": 10 },
+                "magicResistance": {
+                    "人类": 20,
+                    "统合": 10,
+                    "凡俗": 10
+                },
                 "equipmentDefense": 0,
                 "weight": 100
             },
-            "allowedPromotions": ["基础训练", "强化药剂", "超级血清"],
+            "allowedPromotions": [
+                "基础训练",
+                "强化药剂",
+                "超级血清"
+            ],
             "productionCost": 9,
             "populationCost": 1,
             "buildRounds": 1,
@@ -121,8 +189,16 @@ const snapshot = {
             ],
             "snapshotExtractedAt": "2026-08-02",
             "sourceAudit": {
-                "sourceAllowedPromotions": ["基础训练", "强化药剂", "超级血清", "常驻淬毒"],
-                "unitTemplate": { "level": 20, "height": 175 }
+                "sourceAllowedPromotions": [
+                    "基础训练",
+                    "强化药剂",
+                    "超级血清",
+                    "常驻淬毒"
+                ],
+                "unitTemplate": {
+                    "level": 20,
+                    "height": 175
+                }
             }
         },
         {
@@ -132,22 +208,50 @@ const snapshot = {
             "displayName": "突击兵",
             "sourceCategory": "普通",
             "powerTier": "T1 基础兵",
-            "tags": ["human"],
+            "tags": [
+                "human"
+            ],
             "statRanges": {
-                "hp": { "min": 1000, "max": 2000 },
-                "unarmedAttack": { "min": 15, "max": 120 },
-                "baseDefense": { "min": 100, "max": 300 },
-                "speed": { "min": 18, "max": 30 }
+                "hp": {
+                    "min": 1000,
+                    "max": 2000
+                },
+                "unarmedAttack": {
+                    "min": 15,
+                    "max": 120
+                },
+                "baseDefense": {
+                    "min": 100,
+                    "max": 300
+                },
+                "speed": {
+                    "min": 18,
+                    "max": 30
+                }
             },
-            "expRange": { "min": 46, "max": 400 },
+            "expRange": {
+                "min": 46,
+                "max": 400
+            },
             "auditOnlyStats": {
-                "dodgeRate": { "min": 30, "max": 15 },
+                "dodgeRate": {
+                    "min": 30,
+                    "max": 15
+                },
                 "toughness": 0.8,
-                "magicResistance": { "人类": 25, "统合": 15, "凡俗": 20 },
+                "magicResistance": {
+                    "人类": 25,
+                    "统合": 15,
+                    "凡俗": 20
+                },
                 "equipmentDefense": 0,
                 "weight": 100
             },
-            "allowedPromotions": ["基础训练", "强化药剂", "超级血清"],
+            "allowedPromotions": [
+                "基础训练",
+                "强化药剂",
+                "超级血清"
+            ],
             "productionCost": 8,
             "populationCost": 1,
             "buildRounds": 1,
@@ -161,8 +265,16 @@ const snapshot = {
             ],
             "snapshotExtractedAt": "2026-08-02",
             "sourceAudit": {
-                "sourceAllowedPromotions": ["基础训练", "强化药剂", "超级血清", "常驻淬毒"],
-                "unitTemplate": { "level": 20, "height": 175 }
+                "sourceAllowedPromotions": [
+                    "基础训练",
+                    "强化药剂",
+                    "超级血清",
+                    "常驻淬毒"
+                ],
+                "unitTemplate": {
+                    "level": 20,
+                    "height": 175
+                }
             }
         },
         {
@@ -172,22 +284,52 @@ const snapshot = {
             "displayName": "重装兵",
             "sourceCategory": "普通",
             "powerTier": "T2 精锐级",
-            "tags": ["human", "elite"],
+            "tags": [
+                "human",
+                "elite"
+            ],
             "statRanges": {
-                "hp": { "min": 3000, "max": 6000 },
-                "unarmedAttack": { "min": 60, "max": 400 },
-                "baseDefense": { "min": 200, "max": 500 },
-                "speed": { "min": 18, "max": 30 }
+                "hp": {
+                    "min": 3000,
+                    "max": 6000
+                },
+                "unarmedAttack": {
+                    "min": 60,
+                    "max": 400
+                },
+                "baseDefense": {
+                    "min": 200,
+                    "max": 500
+                },
+                "speed": {
+                    "min": 18,
+                    "max": 30
+                }
             },
-            "expRange": { "min": 125, "max": 360 },
+            "expRange": {
+                "min": 125,
+                "max": 360
+            },
             "auditOnlyStats": {
-                "dodgeRate": { "min": 20, "max": 10 },
+                "dodgeRate": {
+                    "min": 20,
+                    "max": 10
+                },
                 "toughness": 20,
-                "magicResistance": { "人类": 40, "装甲": 25, "统合": 20, "精英": 20 },
+                "magicResistance": {
+                    "人类": 40,
+                    "装甲": 25,
+                    "统合": 20,
+                    "精英": 20
+                },
                 "equipmentDefense": 0,
                 "weight": 200
             },
-            "allowedPromotions": ["基础训练", "强化药剂", "超级血清"],
+            "allowedPromotions": [
+                "基础训练",
+                "强化药剂",
+                "超级血清"
+            ],
             "productionCost": 60,
             "populationCost": 2,
             "buildRounds": 2,
@@ -201,8 +343,16 @@ const snapshot = {
             ],
             "snapshotExtractedAt": "2026-08-02",
             "sourceAudit": {
-                "sourceAllowedPromotions": ["基础训练", "强化药剂", "超级血清", "常驻淬毒"],
-                "unitTemplate": { "level": 20, "height": 210 }
+                "sourceAllowedPromotions": [
+                    "基础训练",
+                    "强化药剂",
+                    "超级血清",
+                    "常驻淬毒"
+                ],
+                "unitTemplate": {
+                    "level": 20,
+                    "height": 210
+                }
             }
         },
         {
@@ -212,22 +362,50 @@ const snapshot = {
             "displayName": "精锐突击兵",
             "sourceCategory": "精锐",
             "powerTier": "T2 精锐级",
-            "tags": ["human", "elite"],
+            "tags": [
+                "human",
+                "elite"
+            ],
             "statRanges": {
-                "hp": { "min": 2800, "max": 5000 },
-                "unarmedAttack": { "min": 280, "max": 550 },
-                "baseDefense": { "min": 220, "max": 500 },
-                "speed": { "min": 20, "max": 35 }
+                "hp": {
+                    "min": 2800,
+                    "max": 5000
+                },
+                "unarmedAttack": {
+                    "min": 280,
+                    "max": 550
+                },
+                "baseDefense": {
+                    "min": 220,
+                    "max": 500
+                },
+                "speed": {
+                    "min": 20,
+                    "max": 35
+                }
             },
-            "expRange": { "min": 380, "max": 1300 },
+            "expRange": {
+                "min": 380,
+                "max": 1300
+            },
             "auditOnlyStats": {
-                "dodgeRate": { "min": 12, "max": 10 },
+                "dodgeRate": {
+                    "min": 12,
+                    "max": 10
+                },
                 "toughness": 7,
-                "magicResistance": { "人类": 30, "统合": 20, "精英": 20 },
+                "magicResistance": {
+                    "人类": 30,
+                    "统合": 20,
+                    "精英": 20
+                },
                 "equipmentDefense": 0,
                 "weight": 80
             },
-            "allowedPromotions": ["强化药剂", "超级血清"],
+            "allowedPromotions": [
+                "强化药剂",
+                "超级血清"
+            ],
             "productionCost": 60,
             "populationCost": 2,
             "buildRounds": 2,
@@ -241,8 +419,15 @@ const snapshot = {
             ],
             "snapshotExtractedAt": "2026-08-02",
             "sourceAudit": {
-                "sourceAllowedPromotions": ["强化药剂", "超级血清", "常驻淬毒"],
-                "unitTemplate": { "level": 30, "height": 175 }
+                "sourceAllowedPromotions": [
+                    "强化药剂",
+                    "超级血清",
+                    "常驻淬毒"
+                ],
+                "unitTemplate": {
+                    "level": 30,
+                    "height": 175
+                }
             }
         },
         {
@@ -252,22 +437,50 @@ const snapshot = {
             "displayName": "精锐狙击兵",
             "sourceCategory": "精锐",
             "powerTier": "T2 精锐级",
-            "tags": ["human", "elite"],
+            "tags": [
+                "human",
+                "elite"
+            ],
             "statRanges": {
-                "hp": { "min": 2000, "max": 5000 },
-                "unarmedAttack": { "min": 300, "max": 500 },
-                "baseDefense": { "min": 120, "max": 360 },
-                "speed": { "min": 16, "max": 30 }
+                "hp": {
+                    "min": 2000,
+                    "max": 5000
+                },
+                "unarmedAttack": {
+                    "min": 300,
+                    "max": 500
+                },
+                "baseDefense": {
+                    "min": 120,
+                    "max": 360
+                },
+                "speed": {
+                    "min": 16,
+                    "max": 30
+                }
             },
-            "expRange": { "min": 380, "max": 1300 },
+            "expRange": {
+                "min": 380,
+                "max": 1300
+            },
             "auditOnlyStats": {
-                "dodgeRate": { "min": 30, "max": 15 },
+                "dodgeRate": {
+                    "min": 30,
+                    "max": 15
+                },
                 "toughness": 1,
-                "magicResistance": { "人类": 15, "统合": 15, "精英": 15 },
+                "magicResistance": {
+                    "人类": 15,
+                    "统合": 15,
+                    "精英": 15
+                },
                 "equipmentDefense": 0,
                 "weight": 80
             },
-            "allowedPromotions": ["强化药剂", "超级血清"],
+            "allowedPromotions": [
+                "强化药剂",
+                "超级血清"
+            ],
             "productionCost": 60,
             "populationCost": 2,
             "buildRounds": 2,
@@ -281,8 +494,15 @@ const snapshot = {
             ],
             "snapshotExtractedAt": "2026-08-02",
             "sourceAudit": {
-                "sourceAllowedPromotions": ["强化药剂", "超级血清", "常驻淬毒"],
-                "unitTemplate": { "level": 30, "height": 175 }
+                "sourceAllowedPromotions": [
+                    "强化药剂",
+                    "超级血清",
+                    "常驻淬毒"
+                ],
+                "unitTemplate": {
+                    "level": 30,
+                    "height": 175
+                }
             }
         },
         {
@@ -292,22 +512,50 @@ const snapshot = {
             "displayName": "精锐弹药兵",
             "sourceCategory": "精锐",
             "powerTier": "T2 精锐级",
-            "tags": ["human", "elite"],
+            "tags": [
+                "human",
+                "elite"
+            ],
             "statRanges": {
-                "hp": { "min": 2500, "max": 5000 },
-                "unarmedAttack": { "min": 50, "max": 250 },
-                "baseDefense": { "min": 120, "max": 360 },
-                "speed": { "min": 35, "max": 60 }
+                "hp": {
+                    "min": 2500,
+                    "max": 5000
+                },
+                "unarmedAttack": {
+                    "min": 50,
+                    "max": 250
+                },
+                "baseDefense": {
+                    "min": 120,
+                    "max": 360
+                },
+                "speed": {
+                    "min": 35,
+                    "max": 60
+                }
             },
-            "expRange": { "min": 380, "max": 1300 },
+            "expRange": {
+                "min": 380,
+                "max": 1300
+            },
             "auditOnlyStats": {
-                "dodgeRate": { "min": 30, "max": 15 },
+                "dodgeRate": {
+                    "min": 30,
+                    "max": 15
+                },
                 "toughness": 1,
-                "magicResistance": { "人类": 25, "统合": 15, "精英": 10 },
+                "magicResistance": {
+                    "人类": 25,
+                    "统合": 15,
+                    "精英": 10
+                },
                 "equipmentDefense": 0,
                 "weight": 100
             },
-            "allowedPromotions": ["强化药剂", "超级血清"],
+            "allowedPromotions": [
+                "强化药剂",
+                "超级血清"
+            ],
             "productionCost": 60,
             "populationCost": 2,
             "buildRounds": 2,
@@ -321,8 +569,15 @@ const snapshot = {
             ],
             "snapshotExtractedAt": "2026-08-02",
             "sourceAudit": {
-                "sourceAllowedPromotions": ["强化药剂", "超级血清", "常驻淬毒"],
-                "unitTemplate": { "level": 30, "height": 175 }
+                "sourceAllowedPromotions": [
+                    "强化药剂",
+                    "超级血清",
+                    "常驻淬毒"
+                ],
+                "unitTemplate": {
+                    "level": 30,
+                    "height": 175
+                }
             }
         },
         {
@@ -332,22 +587,51 @@ const snapshot = {
             "displayName": "精锐重装兵",
             "sourceCategory": "精锐",
             "powerTier": "T3 Boss级",
-            "tags": ["human", "elite", "boss"],
+            "tags": [
+                "human",
+                "elite",
+                "boss"
+            ],
             "statRanges": {
-                "hp": { "min": 7600, "max": 11000 },
-                "unarmedAttack": { "min": 300, "max": 600 },
-                "baseDefense": { "min": 620, "max": 950 },
-                "speed": { "min": 12, "max": 18 }
+                "hp": {
+                    "min": 7600,
+                    "max": 11000
+                },
+                "unarmedAttack": {
+                    "min": 300,
+                    "max": 600
+                },
+                "baseDefense": {
+                    "min": 620,
+                    "max": 950
+                },
+                "speed": {
+                    "min": 12,
+                    "max": 18
+                }
             },
-            "expRange": { "min": 950, "max": 2600 },
+            "expRange": {
+                "min": 950,
+                "max": 2600
+            },
             "auditOnlyStats": {
-                "dodgeRate": { "min": 10, "max": 8 },
+                "dodgeRate": {
+                    "min": 10,
+                    "max": 8
+                },
                 "toughness": 30,
-                "magicResistance": { "人类": 50, "装甲": 35, "统合": 30, "精英": 30 },
+                "magicResistance": {
+                    "人类": 50,
+                    "装甲": 35,
+                    "统合": 30,
+                    "精英": 30
+                },
                 "equipmentDefense": 0,
                 "weight": 200
             },
-            "allowedPromotions": ["超级血清"],
+            "allowedPromotions": [
+                "超级血清"
+            ],
             "productionCost": 180,
             "populationCost": 5,
             "buildRounds": 4,
@@ -361,8 +645,237 @@ const snapshot = {
             ],
             "snapshotExtractedAt": "2026-08-02",
             "sourceAudit": {
-                "sourceAllowedPromotions": ["超级血清", "凑数组的", "常驻淬毒"],
-                "unitTemplate": { "level": 30, "height": 210 }
+                "sourceAllowedPromotions": [
+                    "超级血清",
+                    "凑数组的",
+                    "常驻淬毒"
+                ],
+                "unitTemplate": {
+                    "level": 30,
+                    "height": 210
+                }
+            }
+        },
+        {
+            "cardId": 111,
+            "unitTypeId": 371,
+            "identifier": "敌人-Itinerant",
+            "displayName": "吴豫",
+            "sourceCategory": "指挥官",
+            "powerTier": "T3 Boss级",
+            "tags": [
+                "human",
+                "boss",
+                "commander"
+            ],
+            "statRanges": {
+                "hp": {
+                    "min": 12000,
+                    "max": 35000
+                },
+                "unarmedAttack": {
+                    "min": 200,
+                    "max": 360
+                },
+                "baseDefense": {
+                    "min": 250,
+                    "max": 900
+                },
+                "speed": {
+                    "min": 50,
+                    "max": 55
+                }
+            },
+            "expRange": {
+                "min": 15000,
+                "max": 30000
+            },
+            "auditOnlyStats": {
+                "dodgeRate": {
+                    "min": 1.25,
+                    "max": 1.25
+                },
+                "toughness": 5,
+                "magicResistance": {
+                    "首领": 25,
+                    "人类": 25,
+                    "统合": 40
+                },
+                "equipmentDefense": 0,
+                "weight": 60
+            },
+            "allowedPromotions": [],
+            "productionCost": 60,
+            "populationCost": 2,
+            "buildRounds": 2,
+            "deploymentLevel": 10,
+            "behaviorId": "assault",
+            "formationRank": 1,
+            "sourceRefs": [
+                "data/enemy_properties/军阀新人物.xml#敌人-Itinerant",
+                "data/units/units.json#id=371",
+                "data/merc/pets.xml#id=111"
+            ],
+            "snapshotExtractedAt": "2026-09-01",
+            "sourceAudit": {
+                "sourceAllowedPromotions": [],
+                "unitTemplate": {
+                    "level": 20,
+                    "height": 175
+                },
+                "petEconomy": {
+                    "price": 0,
+                    "kPrice": 12000,
+                    "increasePrice": 0
+                }
+            }
+        },
+        {
+            "cardId": 112,
+            "unitTypeId": 366,
+            "identifier": "敌人-Gazer",
+            "displayName": "阎凝儿",
+            "sourceCategory": "指挥官",
+            "powerTier": "T3 Boss级",
+            "tags": [
+                "human",
+                "boss",
+                "commander"
+            ],
+            "statRanges": {
+                "hp": {
+                    "min": 10000,
+                    "max": 30000
+                },
+                "unarmedAttack": {
+                    "min": 150,
+                    "max": 300
+                },
+                "baseDefense": {
+                    "min": 200,
+                    "max": 700
+                },
+                "speed": {
+                    "min": 50,
+                    "max": 70
+                }
+            },
+            "expRange": {
+                "min": 10000,
+                "max": 20000
+            },
+            "auditOnlyStats": {
+                "dodgeRate": {
+                    "min": 1.25,
+                    "max": 1.25
+                },
+                "toughness": 5,
+                "magicResistance": {
+                    "首领": 10,
+                    "人类": 50,
+                    "统合": 50
+                },
+                "equipmentDefense": 0,
+                "weight": 60
+            },
+            "allowedPromotions": [],
+            "productionCost": 60,
+            "populationCost": 2,
+            "buildRounds": 2,
+            "deploymentLevel": 10,
+            "behaviorId": "sniper",
+            "formationRank": 3,
+            "sourceRefs": [
+                "data/enemy_properties/军阀新人物.xml#敌人-Gazer",
+                "data/units/units.json#id=366",
+                "data/merc/pets.xml#id=112"
+            ],
+            "snapshotExtractedAt": "2026-09-01",
+            "sourceAudit": {
+                "sourceAllowedPromotions": [],
+                "unitTemplate": {
+                    "level": 20,
+                    "height": 180
+                },
+                "petEconomy": {
+                    "price": 0,
+                    "kPrice": 12000,
+                    "increasePrice": 0
+                }
+            }
+        },
+        {
+            "cardId": 113,
+            "unitTypeId": 365,
+            "identifier": "敌人-Surveyor",
+            "displayName": "袁望",
+            "sourceCategory": "指挥官",
+            "powerTier": "T3 Boss级",
+            "tags": [
+                "human",
+                "boss",
+                "commander"
+            ],
+            "statRanges": {
+                "hp": {
+                    "min": 13000,
+                    "max": 36000
+                },
+                "unarmedAttack": {
+                    "min": 50,
+                    "max": 375
+                },
+                "baseDefense": {
+                    "min": 100,
+                    "max": 750
+                },
+                "speed": {
+                    "min": 30,
+                    "max": 50
+                }
+            },
+            "expRange": {
+                "min": 20000,
+                "max": 35000
+            },
+            "auditOnlyStats": {
+                "dodgeRate": {
+                    "min": 1.25,
+                    "max": 1.25
+                },
+                "toughness": 5,
+                "magicResistance": {
+                    "首领": 25,
+                    "人类": 40,
+                    "统合": 25
+                },
+                "equipmentDefense": 0,
+                "weight": 120
+            },
+            "allowedPromotions": [],
+            "productionCost": 180,
+            "populationCost": 5,
+            "buildRounds": 4,
+            "deploymentLevel": 25,
+            "behaviorId": "ammo",
+            "formationRank": 2,
+            "sourceRefs": [
+                "data/enemy_properties/军阀新人物.xml#敌人-Surveyor",
+                "data/units/units.json#id=365",
+                "data/merc/pets.xml#id=113"
+            ],
+            "snapshotExtractedAt": "2026-09-01",
+            "sourceAudit": {
+                "sourceAllowedPromotions": [],
+                "unitTemplate": {
+                    "level": 20,
+                    "height": 180
+                },
+                "petEconomy": {
+                    "price": 0,
+                    "kPrice": 12000,
+                    "increasePrice": 0
+                }
             }
         }
     ]

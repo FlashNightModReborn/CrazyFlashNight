@@ -394,8 +394,11 @@ export class PrimeMagicGridRenderer {
       throw new Error("WebGL2 buffer/VAO allocation failed");
     }
     this.vertexArray = vertexArray;
+    this.cornerBuffer = cornerBuffer;
+    this.cellBuffer = cellBuffer;
     this.valueBuffers = [valueBuffer0, valueBuffer1];
     this.activeValueBuffer = 0;
+    this.disposed = false;
 
     gl.bindVertexArray(vertexArray);
     gl.bindBuffer(gl.ARRAY_BUFFER, cornerBuffer);
@@ -499,5 +502,19 @@ export class PrimeMagicGridRenderer {
   setVisualEffects(enabled) {
     this.gl.useProgram(this.program);
     this.gl.uniform1i(this.effectsUniform, enabled ? 1 : 0);
+  }
+
+  dispose() {
+    if (this.disposed) return;
+    this.disposed = true;
+    const gl = this.gl;
+    gl.deleteTexture(this.glyphAtlas);
+    gl.deleteBuffer(this.cornerBuffer);
+    gl.deleteBuffer(this.cellBuffer);
+    for (const buffer of this.valueBuffers) gl.deleteBuffer(buffer);
+    gl.deleteVertexArray(this.vertexArray);
+    gl.deleteProgram(this.program);
+    const loseContext = gl.getExtension("WEBGL_lose_context");
+    if (loseContext) loseContext.loseContext();
   }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using CF7Launcher.Bus;
@@ -148,6 +149,117 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Null(Watchdog(harness.Flow));
         }
 
+        [Fact]
+        public void RevealNextTick_CommitsOnlyWhenExactQueuedCallbackRuns()
+        {
+            using var harness = new Harness(60000, true);
+            const string attemptId = "attempt-next-tick";
+            harness.ArmReady(attemptId);
+
+            harness.SendRevealReady(attemptId);
+
+            Assert.False(RevealPerformed(harness.Flow));
+            Assert.True(RevealScheduled(harness.Flow));
+            Assert.NotNull(Watchdog(harness.Flow));
+            Assert.Equal(1, harness.PendingRevealDispatches);
+
+            harness.RunNextRevealDispatch();
+
+            Assert.True(RevealPerformed(harness.Flow));
+            Assert.False(RevealScheduled(harness.Flow));
+            Assert.Null(Watchdog(harness.Flow));
+        }
+
+        [Fact]
+        public void RevealNextTick_StaleAttemptCallbackCannotCommitReplacement()
+        {
+            using var harness = new Harness(60000, true);
+            harness.ArmReady("attempt-old");
+            harness.SendRevealReady("attempt-old");
+            harness.ArmReady("attempt-new");
+            harness.SendRevealReady("attempt-new");
+
+            Assert.Equal(2, harness.PendingRevealDispatches);
+            harness.RunNextRevealDispatch();
+
+            Assert.False(RevealPerformed(harness.Flow));
+            Assert.True(RevealScheduled(harness.Flow));
+
+            harness.RunNextRevealDispatch();
+
+            Assert.True(RevealPerformed(harness.Flow));
+            Assert.False(RevealScheduled(harness.Flow));
+            Assert.Null(Watchdog(harness.Flow));
+        }
+
+        [Fact]
+        public void RevealNextTick_DispatchFailureKeepsWatchdogAndRetries()
+        {
+            using var harness = new Harness(60000);
+            const string attemptId = "attempt-dispatch-retry";
+            harness.RejectNextRevealDispatch();
+            harness.ArmReady(attemptId);
+
+            harness.SendRevealReady(attemptId);
+
+            Assert.False(RevealPerformed(harness.Flow));
+            Assert.False(RevealScheduled(harness.Flow));
+            Assert.NotNull(Watchdog(harness.Flow));
+
+            InvokePrivate(
+                harness.Flow,
+                "OnFlashRevealWatchdogFired",
+                attemptId);
+
+            Assert.True(RevealPerformed(harness.Flow));
+            Assert.False(RevealScheduled(harness.Flow));
+            Assert.Null(Watchdog(harness.Flow));
+        }
+
+        [Fact]
+        public void RevealNextTick_AcceptedButDroppedCallbackIsRetriedByWatchdog()
+        {
+            using var harness = new Harness(60000, true);
+            const string attemptId = "attempt-accepted-drop";
+            harness.ArmReady(attemptId);
+            harness.SendRevealReady(attemptId);
+
+            Assert.True(RevealScheduled(harness.Flow));
+            Assert.Equal(1, harness.PendingRevealDispatches);
+
+            InvokePrivate(
+                harness.Flow,
+                "OnFlashRevealWatchdogFired",
+                attemptId);
+
+            Assert.True(RevealScheduled(harness.Flow));
+            Assert.Equal(2, harness.PendingRevealDispatches);
+            harness.RunNextRevealDispatch();
+            Assert.False(RevealPerformed(harness.Flow));
+
+            harness.RunNextRevealDispatch();
+            Assert.True(RevealPerformed(harness.Flow));
+            Assert.False(RevealScheduled(harness.Flow));
+            Assert.Null(Watchdog(harness.Flow));
+        }
+
+        [Fact]
+        public void RevealNextTick_ResetInvalidatesAlreadyQueuedCallback()
+        {
+            using var harness = new Harness(60000, true);
+            const string attemptId = "attempt-reset-next-tick";
+            harness.ArmReady(attemptId);
+            harness.SendRevealReady(attemptId);
+            Assert.True(RevealScheduled(harness.Flow));
+
+            harness.Flow.Reset(null, "reveal_next_tick_reset_test");
+            harness.RunNextRevealDispatch();
+
+            Assert.False(RevealPerformed(harness.Flow));
+            Assert.False(RevealScheduled(harness.Flow));
+            Assert.Null(Watchdog(harness.Flow));
+        }
+
         private static bool WaitingForFlash(GameLaunchFlow flow)
         {
             return GetPrivateField<bool>(flow, "_revealWaitingFlash");
@@ -156,6 +268,11 @@ namespace CF7Launcher.Tests.Guardian
         private static bool RevealPerformed(GameLaunchFlow flow)
         {
             return GetPrivateField<bool>(flow, "_revealPerformed");
+        }
+
+        private static bool RevealScheduled(GameLaunchFlow flow)
+        {
+            return GetPrivateField<bool>(flow, "_revealScheduled");
         }
 
         private static Timer Watchdog(GameLaunchFlow flow)
@@ -198,8 +315,14 @@ namespace CF7Launcher.Tests.Guardian
 
         private sealed class Harness : IDisposable
         {
-            public Harness(int watchdogMs)
+            private readonly Queue<Action> _revealDispatches =
+                new Queue<Action>();
+            private readonly bool _deferRevealDispatch;
+            private bool _rejectNextRevealDispatch;
+
+            public Harness(int watchdogMs, bool deferRevealDispatch = false)
             {
+                _deferRevealDispatch = deferRevealDispatch;
                 Router = new MessageRouter();
                 Server = new XmlSocketServer(
                     Router,
@@ -218,15 +341,33 @@ namespace CF7Launcher.Tests.Guardian
                     null,
                     null,
                     watchdogMs);
+                Flow.RevealNextTickDispatcherForTests =
+                    DispatchRevealNextTick;
             }
 
             public MessageRouter Router { get; }
             public XmlSocketServer Server { get; }
             public ProcessManager ProcessManager { get; }
             public GameLaunchFlow Flow { get; }
+            public int PendingRevealDispatches
+            {
+                get { return _revealDispatches.Count; }
+            }
+
+            public void RejectNextRevealDispatch()
+            {
+                _rejectNextRevealDispatch = true;
+            }
+
+            public void RunNextRevealDispatch()
+            {
+                Assert.NotEmpty(_revealDispatches);
+                _revealDispatches.Dequeue()();
+            }
 
             public void ArmReady(string attemptId)
             {
+                InvokePrivate(Flow, "InvalidateRevealScheduleLocked");
                 SetPrivateField(
                     Flow,
                     "_state",
@@ -259,6 +400,22 @@ namespace CF7Launcher.Tests.Guardian
                 }
                 ProcessManager.Dispose();
                 Server.Dispose();
+            }
+
+            private bool DispatchRevealNextTick(Action action)
+            {
+                if (_rejectNextRevealDispatch)
+                {
+                    _rejectNextRevealDispatch = false;
+                    return false;
+                }
+                if (_deferRevealDispatch)
+                {
+                    _revealDispatches.Enqueue(action);
+                    return true;
+                }
+                action();
+                return true;
             }
 
             private string Send(string task, string attemptId)

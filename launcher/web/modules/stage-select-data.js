@@ -11,6 +11,11 @@
 var StageSelectData = (function() {
     'use strict';
 
+    // catalogId 只接受此处固定白名单。常规选关不传 catalogId；未知值（包括对象）
+    // 必须回落生产目录，禁止 initData 直接注入 manifest / frame / button 数据。
+    var DEFAULT_CATALOG_ID = 'production';
+    var WARLORD_TEST_CATALOG_ID = 'warlord-game-stage-test';
+
     var manifest = {
         "version": 1,
         "schema": "stage-select-manifest-v1",
@@ -6169,10 +6174,112 @@ var StageSelectData = (function() {
 
     };
 
+    // 「其他 -> 测试 -> 军阀演习测试」专用的隔离目录。两个按钮只存在于本 catalog，
+    // stageName 保持 StageInfo 精确名称；displayName 仅缩短地图节点文案。
+    var warlordTestManifest = {
+        "catalogId": WARLORD_TEST_CATALOG_ID,
+        "title": "测试目录 · 军阀演习测试",
+        "testOnly": true,
+        "version": 1,
+        "schema": "stage-select-manifest-v1",
+        "designSize": {
+            "width": 1024,
+            "height": 576
+        },
+        "frameOrder": [
+            "军阀演习测试"
+        ],
+        "frames": [
+            {
+                "frameLabel": "军阀演习测试",
+                "background": {
+                    "type": "image",
+                    "mode": "derived",
+                    "assetUrl": "assets/stage-select/backgrounds/wormhole-cave.jpg",
+                    "assetName": "wormhole-cave.jpg",
+                    "rect": {
+                        "x": -6.5,
+                        "y": -105.55,
+                        "w": 1030.7,
+                        "h": 677.69
+                    }
+                },
+                "decorations": [],
+                "stageButtons": [
+                    {
+                        "id": "warlord_test_demo_1",
+                        "frameLabel": "军阀演习测试",
+                        "stageName": "军阀战术演习",
+                        "displayName": "九节点教学",
+                        "detail": "军阀玩法 Demo 1：九节点教学关。",
+                        "x": 340,
+                        "y": 210,
+                        "sourceKind": "testCatalog",
+                        "entryKind": "difficulty",
+                        "visualKind": "standard",
+                        "stageType": "无限过图",
+                        "stageArea": "副本任务",
+                        "rootFadeTransitionFrame": "",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-c1b22248.jpg",
+                        "previewAssetName": "derived/stage-derived-c1b22248.jpg",
+                        "previewSource": "derived",
+                        "previewMissing": false
+                    },
+                    {
+                        "id": "warlord_test_demo_2",
+                        "frameLabel": "军阀演习测试",
+                        "stageName": "军阀四方大战役（Slice 6 验收候选）",
+                        "displayName": "四方大战役",
+                        "detail": "军阀玩法 Demo 2：四方指挥官大地图验收候选。",
+                        "x": 684,
+                        "y": 210,
+                        "sourceKind": "testCatalog",
+                        "entryKind": "difficulty",
+                        "visualKind": "standard",
+                        "stageType": "无限过图",
+                        "stageArea": "副本任务",
+                        "rootFadeTransitionFrame": "",
+                        "previewUrl": "assets/stage-select/previews/derived/stage-derived-ca709c3c.jpg",
+                        "previewAssetName": "derived/stage-derived-ca709c3c.jpg",
+                        "previewSource": "derived",
+                        "previewMissing": false
+                    }
+                ],
+                "navButtons": []
+            }
+        ],
+        "stageNames": [
+            "军阀战术演习",
+            "军阀四方大战役（Slice 6 验收候选）"
+        ]
+    };
+
+    var activeCatalogId = DEFAULT_CATALOG_ID;
+
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
-    function getManifest() { return manifest; }
+    function resolveCatalogId(catalogId) {
+        return typeof catalogId === 'string' && catalogId === WARLORD_TEST_CATALOG_ID
+            ? WARLORD_TEST_CATALOG_ID
+            : DEFAULT_CATALOG_ID;
+    }
+    function catalogById(catalogId) {
+        return resolveCatalogId(catalogId) === WARLORD_TEST_CATALOG_ID ? warlordTestManifest : manifest;
+    }
+    function activateCatalog(catalogId) {
+        activeCatalogId = resolveCatalogId(catalogId);
+        return activeCatalogId;
+    }
+    function getActiveCatalogId() { return activeCatalogId; }
+    function getCatalog(catalogId) { return catalogById(catalogId); }
+    function getManifest() { return catalogById(activeCatalogId); }
+    function hasFrame(label) {
+        var frames = getManifest().frames || [];
+        var i;
+        for (i = 0; i < frames.length; i += 1) if (frames[i].frameLabel === label) return true;
+        return false;
+    }
     function getFrame(label) {
-        var frames = manifest.frames || [];
+        var frames = getManifest().frames || [];
         var i;
         for (i = 0; i < frames.length; i += 1) if (frames[i].frameLabel === label) return frames[i];
         return frames.length ? frames[0] : null;
@@ -6184,12 +6291,22 @@ var StageSelectData = (function() {
         var fixtures = (typeof StageSelectFixtures !== 'undefined' && StageSelectFixtures) || {};
         return clone(fixtures[name] || fixtures.mixed || fixtures.allUnlocked || { name: name || '', challenge: false, stages: {} });
     }
+    // 审计/导出默认生产目录，不能因页面曾打开测试目录而改变结果。
     function exportManifest() { return clone(manifest); }
+    function exportCatalog(catalogId) { return clone(catalogById(catalogId)); }
 
     return {
+        DEFAULT_CATALOG_ID: DEFAULT_CATALOG_ID,
+        WARLORD_TEST_CATALOG_ID: WARLORD_TEST_CATALOG_ID,
+        resolveCatalogId: resolveCatalogId,
+        activateCatalog: activateCatalog,
+        getActiveCatalogId: getActiveCatalogId,
+        getCatalog: getCatalog,
         getManifest: getManifest,
+        hasFrame: hasFrame,
         getFrame: getFrame,
         getFixture: getFixture,
-        exportManifest: exportManifest
+        exportManifest: exportManifest,
+        exportCatalog: exportCatalog
     };
 })();

@@ -1382,6 +1382,51 @@ var MapPanelHarnessQA = (function() {
                 }
             },
             {
+                id: 'map-ui24-test-catalog-isolation',
+                title: 'cold map hotspot cache always consumes production stage-select catalog',
+                run: function() {
+                    var restore = function() {
+                        if (window.StageSelectData && StageSelectData.activateCatalog) {
+                            StageSelectData.activateCatalog(StageSelectData.DEFAULT_CATALOG_ID);
+                        }
+                        if (window.MapPanel && MapPanel._debugResetStageSelectHotspotIndex) {
+                            MapPanel._debugResetStageSelectHotspotIndex();
+                        }
+                    };
+                    StageSelectData.activateCatalog(StageSelectData.WARLORD_TEST_CATALOG_ID);
+                    MapPanel._debugResetStageSelectHotspotIndex();
+                    var probe = bootMap(api, host, {
+                        defaultPageId: 'faction',
+                        currentHotspotId: 'rock_park'
+                    }).then(function() {
+                        clickByHitTest(api, getFilterButton('rock'), 'rock filter under test catalog');
+                        return api.waitFor(function() {
+                            var state = currentState();
+                            return state && state.activeFilterId === 'rock' ? state : null;
+                        }, 1500, 'production hotspot cache under test catalog');
+                    }).then(function(state) {
+                        api.assertEqual(StageSelectData.getActiveCatalogId(), StageSelectData.WARLORD_TEST_CATALOG_ID,
+                            'probe keeps test catalog active while map resolves hotspots');
+                        api.assert(state.stageSelectHotspotIds.indexOf('rock_park') >= 0,
+                            'production rock_park shortcut survives cold cache build');
+                        api.assert(state.stageSelectHotspotIds.indexOf('rock_rehearsal') < 0,
+                            'non-stage rock rehearsal remains excluded');
+                        var action = document.querySelector('.map-rail-stage-select-btn[data-hotspot-id="rock_park"]');
+                        api.assert(!!action, 'production stage-select shortcut remains rendered');
+                        api.assertEqual(action.getAttribute('data-stage-select-frame'), '基地车库',
+                            'hotspot cache contains production frame, never virtual test frame');
+                        return 'test catalog ignored; production hotspot cache intact';
+                    });
+                    return probe.then(function(result) {
+                        restore();
+                        return result;
+                    }, function(error) {
+                        restore();
+                        throw error;
+                    });
+                }
+            },
+            {
                 id: 'map-ui24a',
                 title: 'stage lifecycle lock stays readable and blocks map plus stage-select sends with feedback',
                 run: function() {
