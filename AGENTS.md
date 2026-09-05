@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：release source commit `5a9d06210244bedebac41d19579ca1921c362182`（2026-09-05；tag `runtime-build-v2/20260905-r1-reward-save-feedback-v1`）。R1 存盘接口迁移、礼包奖励合并、领取续查修复与 × 保存反馈已合并上游军阀闭环，完成双 signer / 双故障域共识、40/40 production policy 与原子 promotion。正式产物、签名身份、部署提交和远端审计统一见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。
+**最后核对代码基线**：release source commit `3e395d5db66a931cec0e1e67c2257cbca7d38051`（2026-09-05；tag `runtime-build-v2/20260905-r1-reward-save-feedback-v2`）。R1 存盘接口迁移、礼包奖励合并、领取续查修复与 × 保存反馈已合并上游军阀闭环及新增武器，完成双 signer / 双故障域共识、40/40 production policy 与原子 promotion。正式产物、签名身份、部署提交和远端审计统一见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。
 
 本轮状态为 `promoted / FIELD_REVALIDATION_PENDING`：合并前反馈与自动检查见 [R1 收尾记录](docs/R1存盘API迁移收尾-2026-09-05.md)，尚未以合并后的正式入口重跑业务旅程，不称 R1 专项 `standard_entry_verified`。完整性验证不替代批量领奖、手动保存及现役 Flash UI 的现场复验。
 
