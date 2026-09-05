@@ -25,6 +25,7 @@
           <DOMFolderItem name="1主武器/Milkor MGL榴弹发射器" itemID="672b755b-000000fe"/>
           <DOMFolderItem name="1主武器/Milkor MGL榴弹发射器/部件" itemID="672b7aa3-000000ee"/>
           <DOMFolderItem name="1主武器/Milkor MGL榴弹发射器/长枪" itemID="672b7510-000000e9"/>
+          <DOMFolderItem name="1主武器/mini14" itemID="6a9b89bf-000000e3" isExpanded="true"/>
           <DOMFolderItem name="1主武器/NA45" itemID="69730052-00000427"/>
           <DOMFolderItem name="1主武器/NA45/na 45素材" itemID="6972eb56-0000022c"/>
           <DOMFolderItem name="1主武器/rpg武器" itemID="686ce11c-00001295"/>
@@ -40,6 +41,7 @@
           <DOMFolderItem name="1主武器/巴雷特印花集/未命名文件夹 1" itemID="672260cd-000001ff"/>
           <DOMFolderItem name="1主武器/巴雷特印花集/长枪" itemID="6707c512-000007cd"/>
           <DOMFolderItem name="1主武器/反坦克炮" itemID="69e990e5-000003ca"/>
+          <DOMFolderItem name="1主武器/杠杆式霰弹枪" itemID="6a9b98df-0000054c"/>
           <DOMFolderItem name="1主武器/人物对位置" itemID="69e74eb8-000017b6"/>
           <DOMFolderItem name="1主武器/人物对位置/其他" itemID="69e74eb8-000017b7"/>
           <DOMFolderItem name="1主武器/人物对位置/其他/shape" itemID="69e74eb8-000017b8"/>
@@ -98,6 +100,7 @@
           <DOMFolderItem name="2副武器" itemID="6976d736-00001fef" isExpanded="true"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮" itemID="69e73845-00000426"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件" itemID="69e7381b-00000417"/>
+          <DOMFolderItem name="2副武器/大赦" itemID="6a9b8c1f-0000052d" isExpanded="true"/>
           <DOMFolderItem name="2副武器/短剑印花集" itemID="67225fe2-00000128"/>
           <DOMFolderItem name="2副武器/短剑印花集/部件1" itemID="67225fe2-00000129"/>
           <DOMFolderItem name="2副武器/短剑印花集/其他" itemID="6976d5a3-000019ad"/>
@@ -137,8 +140,8 @@
           <DOMFolderItem name="2副武器/一部分武器1/武器本体/MP7极品战术版/武器本体/武器配件/瞄准镜/光学瞄准镜/ACOG" itemID="6976d55b-0000193d"/>
           <DOMFolderItem name="2副武器/一部分武器1/武器本体/MP7极品战术版/武器本体/武器配件/枪托" itemID="6976d55b-0000193e"/>
           <DOMFolderItem name="2副武器/一部分武器1/武器本体/MP7极品战术版/武器本体/武器配件/握把" itemID="6976d55b-0000193f"/>
-          <DOMFolderItem name="2副武器/狱之流火铳" itemID="6971c414-000001ac" isExpanded="true"/>
-          <DOMFolderItem name="2副武器/狱之流火铳简装版" itemID="69f8209e-00000502" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/狱之流火铳" itemID="6971c414-000001ac"/>
+          <DOMFolderItem name="2副武器/狱之流火铳简装版" itemID="69f8209e-00000502"/>
           <DOMFolderItem name="3冷兵器" itemID="6976d739-00001ff0"/>
           <DOMFolderItem name="3冷兵器/汉剑部分" itemID="6976cccc-0000100b"/>
           <DOMFolderItem name="3冷兵器/汉剑部分/图标" itemID="660c787b-000004f7"/>
@@ -412,6 +415,13 @@
           <Include href="1主武器/Milkor MGL榴弹发射器/长枪/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="672b7510-000000f8" lastModified="1720533000"/>
           <Include href="1主武器/Milkor MGL榴弹发射器/长枪/枪-长枪-AK74.xml" itemID="672b7510-000000f9" lastModified="1730991276"/>
           <Include href="1主武器/Milkor MGL榴弹发射器/长枪/图标-AK74.xml" itemID="672b7510-000000f3" lastModified="1731210947"/>
+          <Include href="1主武器/mini14/mini14 副本.xml" itemIcon="1" loadImmediate="false" itemID="6a9b89f9-000000e9" lastModified="1788577939"/>
+          <Include href="1主武器/mini14/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6a9b8c05-0000051b" lastModified="1720533000"/>
+          <Include href="1主武器/mini14/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6a9b8c05-0000051a" lastModified="1720533000"/>
+          <Include href="1主武器/mini14/Symbol 13.xml" loadImmediate="false" itemID="6a9b8c05-00000519" lastModified="1720533000"/>
+          <Include href="1主武器/mini14/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6a9b8c05-0000051c" lastModified="1720533000"/>
+          <Include href="1主武器/mini14/枪-长枪-mini14.xml" itemID="6a9b8ccb-0000054a" lastModified="1788582944"/>
+          <Include href="1主武器/mini14/图标-mini14.xml" itemID="6a9b8cc9-00000549" lastModified="1788579017"/>
           <Include href="1主武器/NA45/na 45素材/na45.xml" itemIcon="1" loadImmediate="false" itemID="68fb92eb-0000014f" lastModified="1761317611"/>
           <Include href="1主武器/NA45/na 45素材/元件 2.xml" itemIcon="1" loadImmediate="false" itemID="68f9fe12-00000125" lastModified="1769398221"/>
           <Include href="1主武器/NA45/na 45素材/元件 3.xml" itemIcon="1" loadImmediate="false" itemID="68fa2571-00000134" lastModified="1761314540"/>
@@ -441,7 +451,7 @@
           <Include href="1主武器/巴雷特印花集/长枪/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="67226495-00000477" lastModified="1720533000"/>
           <Include href="1主武器/巴雷特印花集/长枪/Symbol 13.xml" loadImmediate="false" itemID="67226495-00000476" lastModified="1720533000"/>
           <Include href="1主武器/巴雷特印花集/长枪/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="67226495-00000474" lastModified="1731210672"/>
-          <Include href="1主武器/巴雷特印花集/长枪/枪-长枪-AK74.xml" itemID="67226495-00000475" lastModified="1769395638"/>
+          <Include href="1主武器/巴雷特印花集/长枪/枪-长枪-AK74.xml" itemID="67226495-00000475" lastModified="1778759493"/>
           <Include href="1主武器/巴雷特印花集/长枪/图标-AK74.xml" itemID="67226495-0000046f" lastModified="1731210801"/>
           <Include href="1主武器/反坦克炮/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="69e990b7-000003bc" lastModified="1720533000"/>
           <Include href="1主武器/反坦克炮/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="69e990b7-000003bb" lastModified="1720533000"/>
@@ -449,6 +459,13 @@
           <Include href="1主武器/反坦克炮/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="69e990b7-000003bd" lastModified="1720533000"/>
           <Include href="1主武器/反坦克炮/枪-长枪-反坦克炮.xml" itemID="69e990e9-000003cc" lastModified="1776914671"/>
           <Include href="1主武器/反坦克炮/图标-反坦克炮.xml" itemID="69e990eb-000003cd" lastModified="1776914942"/>
+          <Include href="1主武器/杠杆式霰弹枪/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6a9b8c2c-00000543" lastModified="1720533000"/>
+          <Include href="1主武器/杠杆式霰弹枪/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6a9b8c2c-00000542" lastModified="1720533000"/>
+          <Include href="1主武器/杠杆式霰弹枪/Symbol 13.xml" loadImmediate="false" itemID="6a9b8c2c-00000541" lastModified="1720533000"/>
+          <Include href="1主武器/杠杆式霰弹枪/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6a9b8c2c-00000544" lastModified="1720533000"/>
+          <Include href="1主武器/杠杆式霰弹枪/杠杆式霰弹枪素材.xml" itemIcon="1" loadImmediate="false" itemID="6a9b98ee-00000550" lastModified="1788582126"/>
+          <Include href="1主武器/杠杆式霰弹枪/枪-长枪-杠杆式霰弹枪.xml" itemID="6a9b98e6-0000054e" lastModified="1788582924"/>
+          <Include href="1主武器/杠杆式霰弹枪/图标-杠杆式霰弹枪.xml" itemID="6a9b98e8-0000054f" lastModified="1788582120"/>
           <Include href="1主武器/人物对位置/其他/shape/Symbol 566.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ac6" lastModified="1770289730"/>
           <Include href="1主武器/人物对位置/其他/shape/Symbol 570.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ac7" lastModified="1770289907"/>
           <Include href="1主武器/人物对位置/其他/shape/Symbol 573.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ac8" lastModified="1770289914"/>
@@ -581,6 +598,11 @@
           <Include href="2副武器/沧蓝陨铁手炮/枪-手枪-沧蓝陨铁手炮.xml" itemID="69e73840-00000425" lastModified="1776760950"/>
           <Include href="2副武器/沧蓝陨铁手炮/图标-沧蓝陨铁手炮.xml" itemID="69e7383c-00000424" lastModified="1776915105"/>
           <Include href="2副武器/沧蓝陨铁手炮/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="69e73956-000008ee" lastModified="1776915122"/>
+          <Include href="2副武器/大赦/大赦左轮素材.xml" itemIcon="1" loadImmediate="false" itemID="6a9b8aea-00000114" lastModified="1788578538"/>
+          <Include href="2副武器/大赦/判定使用.xml" itemID="6a9b8c15-00000529" lastModified="1720540686"/>
+          <Include href="2副武器/大赦/枪-手枪-大赦.xml" itemID="6a9b8b0b-00000117" lastModified="1788582947"/>
+          <Include href="2副武器/大赦/图标-大赦.xml" itemID="6a9b8b09-00000116" lastModified="1788580943"/>
+          <Include href="2副武器/大赦/阴影所用.xml" itemIcon="1" itemID="6a9b8c15-0000052b" lastModified="1720539430"/>
           <Include href="2副武器/短剑印花集/部件1/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="67225fe2-00000134" lastModified="1728315431"/>
           <Include href="2副武器/短剑印花集/部件1/元件 1.xml" loadImmediate="false" itemID="67225fe2-0000013a" lastModified="1730308187"/>
           <Include href="2副武器/短剑印花集/部件1/元件 3.xml" loadImmediate="false" itemID="67225fe2-00000136" lastModified="1728314106"/>
@@ -1246,6 +1268,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1912488" publishTime="1788581712"/>
+          <PublishItem publishSize="1912488" publishTime="1788580130"/>
           <PublishItem publishSize="1888977" publishTime="1777874534"/>
           <PublishItem publishSize="1893173" publishTime="1777869829"/>
           <PublishItem publishSize="1893168" publishTime="1777869759"/>
@@ -1264,7 +1288,5 @@
           <PublishItem publishSize="1886987" publishTime="1777216776"/>
           <PublishItem publishSize="1886326" publishTime="1777216705"/>
           <PublishItem publishSize="1886964" publishTime="1777216220"/>
-          <PublishItem publishSize="1886999" publishTime="1777216035"/>
-          <PublishItem publishSize="1886980" publishTime="1777215950"/>
      </publishHistory>
 </DOMDocument>

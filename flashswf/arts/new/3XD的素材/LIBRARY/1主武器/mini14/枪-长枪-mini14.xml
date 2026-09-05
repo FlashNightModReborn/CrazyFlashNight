@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/mini14/枪-长枪-mini14" itemID="6a9b8ccb-0000054a" linkageExportForAS="true" linkageIdentifier="枪-长枪-mini14" lastModified="1788582944">
+  <timeline>
+    <DOMTimeline name="枪-长枪-mini14">
+      <layers>
+        <DOMLayer name="mini14" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/mini14/mini14 副本" symbolType="graphic" centerPoint3DX="60.25" centerPoint3DY="-24" loop="loop">
+                  <matrix>
+                    <Matrix a="0.869857788085938" b="-0.0120086669921875" c="0.0120086669921875" d="0.869857788085938" tx="-139.45" ty="-58.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="149.9" y="53.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#8FF6A0" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/mini14/Symbol 13" name="枪口位置" centerPoint3DX="289.4" centerPoint3DY="-41.95">
+                  <matrix>
+                    <Matrix tx="276.9" ty="-54.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
