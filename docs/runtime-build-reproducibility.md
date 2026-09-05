@@ -18,6 +18,10 @@
 
 首次本机 promotion 后，实际运行根 CMD 发现从 PowerShell 7 经 CMD 调用 Windows PowerShell 5.1 时会继承 7 的 `PSModulePath`，错误加载 Utility 7.0 而无法解析 `Get-FileHash`；直接调用 5.1 的同一探针正常加载 Utility 3.1。两个诊断 CMD 现仅在 `setlocal` 范围固定系统 5.1 模块目录并使用绝对 `powershell.exe` 路径，不改父进程或系统环境。修复后实际正式进程 PID `6088` / session `c3103405d1e24f9089fe4c291dc357fb` 打开启动页，Computer Use 正常关闭后自动生成 9 文件 ZIP，另在运行中即时采集 8 文件 ZIP；ZIP CRC、逐文件 SHA-256、进程路径与正式 Core/asLoader 哈希均通过。Host 本轮 9 条连续事件含 `trace.start` / `trace.stop`，未进入存档或宣称 AS2 返回旅程验收。正式启停包 SHA-256 `5E5999DFE8E2441A7A029F84C337BD2D67CCA85F90424DC6A005C049732AD5DB`。CMD 修复已纳入 v2 冻结源，重新取得 40/40 production policy receipt 和对应云端证明并完成原子 promotion；前三构建域和实际 payload 未改变，保留上述启停证据，不重复解释为返回基地业务验收。
 
+部署提交 `03871bf0bb9dd1a8f6ab0a6d9aa00e1bfe24a180` 已快进推送到 main。暂存态 33-file bundle、signed consensus 与绑定 v2 冻结源的 GitHub proof replay 全通过。最终部署后另一次即时采集 ZIP 与磁盘 v2 consensus 字节完全一致，CRC 和逐文件哈希通过；该只采集模式不冒充实际启动会话。
+
+首次远端部署审计 [run 33960950366](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/33960950366) 成功，于 `2026-09-05T10:36:13.3472680Z` 精确输出 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `6fd5c4065137975e8c2fac9f125ffae465eead17` → head `03871bf0bb9dd1a8f6ab0a6d9aa00e1bfe24a180`；33-file closure、2 signers / 2 faultDomains 与 v2 source proof replay 全部通过。发布完整性收尾完成，焦点故障仍待原测试员从诊断入口采集现场。
+
 首个 v1 source `7a4bf414df860ddc4cddcd860dcb432b49a17b43`、tag `runtime-build-v2/20260905-focus-diagnostic-v1`、request `D291E51BA909AD56A11228C29D37E12C54446B00F55B5DD507B7A735E8523673` 与 [cloud run 33957634090](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/33957634090) 保持不可变。v1 曾于本机 promotion，未作为最终主线部署单独推送；失败入口日志与恢复副本均保留，v2 取代其发布政策绑定。
 
 ## 2026-09-05 上一正式发布：R1 存盘迁移、领取续查与保存反馈
