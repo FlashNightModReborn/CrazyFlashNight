@@ -661,4 +661,35 @@
       </attr_0>
     </lifecycle>
   </item>
+    <item weapontype="战斗步枪">
+    <name>mini14</name>
+    <displayname>mini14</displayname>
+    <icon>mini14</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>78000</price>
+    <description>相比于M14那种需要力量基础才能驾驭的后坐力，Mini-14明显亲和得多，适合缺乏专业训练或身体条件一般的普通幸存者，也适合中近距离的侦查与警戒任务。因为弹药规格与多数轻武器通用，这使得Mini-14在末日环境下拥有极高的补给弹性。无论是战利品拾取、以物易物的交易市场，还是从敌对幸存者身上缴获，弹药来源都非常广泛。</description>
+    <data>
+      <level>13</level>
+      <weight>3</weight>
+      <dressup>枪-长枪-mini14</dressup>
+      <capacity>15</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>270</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>37</velocity>
+      <bullet>次级穿刺子弹</bullet>
+      <sound>mini14.wav</sound>
+      <muzzle>战斗步枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>32</bulletsize>
+      <power>350</power>
+      <impact>10</impact>
+      <accuracy>15</accuracy>
+      <criticalhit>满血暴击</criticalhit>
+      <reloadPenalty>17</reloadPenalty>
+    </data>
+  </item>
 </root>

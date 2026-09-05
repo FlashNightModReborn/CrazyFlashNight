@@ -71,13 +71,13 @@
     <icon>雷明登870</icon>
     <type>武器</type>
     <use>长枪</use>
-    <price>46800</price>
+    <price>49800</price>
     <description>雷明登870是由A国雷明登制造的泵动霰弹枪，在军队、警队及民间市场颇为常见。</description>
     <data>
       <level>8</level>
       <weight>4</weight>
       <dressup>枪-长枪-雷明登870</dressup>
-      <capacity>5</capacity>
+      <capacity>8</capacity>
       <split>7</split>
       <diffusion>10</diffusion>
       <interval>700</interval>
@@ -90,7 +90,7 @@
       <bullethit>火花</bullethit>
       <clipname>12号霰弹弹药</clipname>
       <bulletsize>30</bulletsize>
-      <power>180</power>
+      <power>200</power>
       <impact>20</impact>
       <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
@@ -958,6 +958,37 @@
       <impact>12</impact>
       <damagetype>魔法</damagetype>
       <magictype>能</magictype>
+      <reloadPenalty>0</reloadPenalty>
+    </data>
+  </item>
+   <item weapontype="霰弹枪">
+    <name>杠杆式霰弹枪</name>
+    <displayname>杠杆式霰弹枪</displayname>
+    <icon>杠杆式霰弹枪</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>46800</price>
+    <description>末日前该型枪械在民间狩猎与运动射击领域保有量极大，各口径型号遍布全球民用市场。末日爆发后，大量民用库存未受军事管制影响，自然流入幸存者手中。废土上现存的该型霰弹枪中，绝大多数并非末日后的新造品，而是经过多次转手、修补的末日前的遗存。</description>
+    <data>
+      <level>8</level>
+      <weight>4</weight>
+      <dressup>枪-长枪-杠杆式霰弹枪</dressup>
+      <capacity>6</capacity>
+      <split>7</split>
+      <diffusion>10</diffusion>
+      <interval>700</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>15</velocity>
+      <bullet>横向联弹-普通子弹</bullet>
+      <bulletrename>普通子弹</bulletrename>
+      <sound>re_shotgun_m870.wav</sound>
+      <muzzle>霰弹枪枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>12号霰弹弹药</clipname>
+      <bulletsize>30</bulletsize>
+      <power>180</power>
+      <impact>20</impact>
+      <reloadType>tube</reloadType>
       <reloadPenalty>0</reloadPenalty>
     </data>
   </item>

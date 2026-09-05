@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1主武器/杠杆式霰弹枪/枪-长枪-杠杆式霰弹枪" itemID="6a9b98e6-0000054e" linkageExportForAS="true" linkageIdentifier="枪-长枪-杠杆式霰弹枪" lastModified="1788582924">
+  <timeline>
+    <DOMTimeline name="枪-长枪-杠杆式霰弹枪">
+      <layers>
+        <DOMLayer name="杠杆式散弹枪" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/杠杆式霰弹枪/杠杆式霰弹枪素材" symbolType="graphic" centerPoint3DX="73" centerPoint3DY="-12.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.80987548828125" b="-0.0113067626953125" c="0.0113067626953125" d="0.80987548828125" tx="-112.2" ty="-47.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="110.55" y="44.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#8FF6A0" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1主武器/杠杆式霰弹枪/Symbol 13" name="枪口位置" centerPoint3DX="278.4" centerPoint3DY="-42">
+                  <matrix>
+                    <Matrix tx="265.9" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

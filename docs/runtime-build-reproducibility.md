@@ -10,10 +10,12 @@
 - build identity `9F1B2BF9AB9AACF23FFC34924A66137376EE9CE232A98BFB7B45AD6950444B4D`；33-file payload closure `E3AC8562C7CE83DAABCF8D329D31A472D6970B99074A3A58871C4928072C188E`；正式 Core DLL SHA-256 `B86236D9B67DF20E46E1C9E3D9AE437D90502DE601A22D9E455C6221FB5F069C`。
 - 本地 X509 `builder-local-c / physical-host-c`，keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `47668032A22DA24C1AD5B651D4D46284C6E000B7F099DB536BEC31557B003B23`，[cloud run 33945207841](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/33945207841)。云端获取签名小包后，对真实本地 CAS candidate 全量 replay；两端同一身份和逐文件闭包满足双 signer / 双 faultDomain，没有复制凭据或把开发候选当作 builder 票。
 - production policy **40/40**，receipt SHA-256 `DC798B6BFF338707E7ABED5E0E41CBF1987B63FB7A84DA8820E9865057B344C9`；manifest SHA-256 `2BB68BFE20D52ED231758F0000A1328E11F6372887CD8F671343E6449D2CE6CF`；promotion 后磁盘 consensus SHA-256 `5B6712C6351033101B47F09E730CBF24D20515CD830C0CB145B3283BEBD1F967`。Git 换行过滤后的 blob 身份与磁盘 SHA 是不同口径。
-- `2026-09-05T04:47:43.140698Z` 完成原子 promotion。正式运行库、签名共识、GitHub proof replay 与正式根 bootstrap `--verify-only` 通过；旧 bundle 保留在 `tmp/runtime-promotions/20260905T044715246Z-39e417003c4e4b919b230a5489a07dd5/previous`。部署提交与 post-promotion Audit 待回填。
+- `2026-09-05T04:47:43.140698Z` 完成原子 promotion。正式运行库、签名共识、GitHub proof replay 与正式根 bootstrap `--verify-only` 通过；旧 bundle 保留在 `tmp/runtime-promotions/20260905T044715246Z-39e417003c4e4b919b230a5489a07dd5/previous`。部署产物先提交为 `6842a72442005ca8154731dda4a89dbb8e108f24`；最终合流部署提交与 post-promotion Audit 待回填。
 - 合并后重新由 CS6 发布 asLoader；完整 Launcher runner **4,713 通过 / 3 既有跳过 / 0 失败**，AS2 map-loot **684/684**、Web loot state **80/80**。源与 SWF 归属、旧 UI 不刷新的依据和精确证据见 [R1 收尾记录](R1存盘API迁移收尾-2026-09-05.md)。本轮为 **promoted / FIELD_REVALIDATION_PENDING**；用户对合并前方案反馈“可行”并授权发布，没有在合并后的正式入口重跑游戏旅程，不称业务 `standard_entry_verified`，不覆盖既有专项边界，也不代表新稳定整包。
 
 源码推送审计 [run 33945185729](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/33945185729) 成功，精确输出 `state=source-ahead / deploymentChanged=false`，base `bbdb1fac1de053f195c3d041f534edbc7a30cb7a` → source `5a9d06210244bedebac41d19579ca1921c362182`。它不替代部署提交的审计。
+
+构建期间上游追加 `00c4ee2860e33c41e6a4ab489c81f5affc8a88a2`（3 份武器 XML、3XD 素材库及其 SWF、mini14 音效，共 526 个文件），随后与部署提交无冲突合流。新增上游不触及前三构建域或本次 33-file payload；但生成器补齐存档修复字典的 3 个新增名称（1628 items）后，四域复核准确检出 `policyHash` 变化，因此启动 `runtime-build-v2/20260905-r1-reward-save-feedback-v2` 的新 request、production receipt 与云端 source 绑定。v1 tag 保持不可变，已有本机 promotion 保留历史，尚未向 main 推送部署；旧 receipt 不覆盖新字典。材料字典只更新 raw-source provenance、正式字典 SHA 未变；材料目录、存档字典、任务与成就目录检查通过。未改写上游武器数值、素材或音效，没有重新发布无变更的 R1 SWF。
 
 ## 2026-09-05 上一正式发布：军阀基础闭环与战后黑屏修复
 
