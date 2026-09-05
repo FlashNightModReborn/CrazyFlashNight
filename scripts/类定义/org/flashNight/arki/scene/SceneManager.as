@@ -170,6 +170,14 @@ class org.flashNight.arki.scene.SceneManager {
         // gameworld 存活，让 socket/query 与下一帧重试仍有机会完成权威事务。
         var lootExpiry:Object = LootContainerService.expireScene("scene_cleanup");
         if (lootExpiry == null || lootExpiry.success !== true) {
+            if (gameworld != null
+                    && gameworld.__sceneCleanupBlockedReported !== true) {
+                gameworld.__sceneCleanupBlockedReported = true;
+                publishSceneLifecycleDiagnostic("cleanup_blocked",
+                    lootExpiry == null ? "null"
+                        : String(lootExpiry.error || lootExpiry.reason
+                            || lootExpiry.state || "unknown"));
+            }
             return false;
         }
 
@@ -183,6 +191,10 @@ class org.flashNight.arki.scene.SceneManager {
         // 幂等检查
         if (gameworld == null) {
             return true;
+        }
+
+        if (gameworld.__sceneCleanupBlockedReported === true) {
+            publishSceneLifecycleDiagnostic("cleanup_resumed", "ok");
         }
 
         BoxInteractionArbiter.cleanup(gameworld);
@@ -228,6 +240,19 @@ class org.flashNight.arki.scene.SceneManager {
         DepthManager.instance = null;
         gameworld = null;
         return true;
+    }
+
+    /**
+     * 场景切换阻塞属于跨帧故障，release Flash 的 trace 不可见。这里只在每个
+     * gameworld 首次阻塞及随后恢复时各发布一次，避免重试热路径刷屏。
+     */
+    private function publishSceneLifecycleDiagnostic(
+            code:String, detail:String):Void {
+        var logger:Object = _root.服务器;
+        if (logger == undefined
+                || typeof logger.发布服务器消息 != "function") return;
+        logger.发布服务器消息("[SceneLifecycle] " + code
+            + " detail=" + detail);
     }
 
     /**

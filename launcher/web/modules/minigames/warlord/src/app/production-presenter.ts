@@ -1,4 +1,6 @@
 import { hasStableSupplyPath, isNodeActive, isNodeStable, nodeOccupyingFactions } from '../core/selectors.js';
+import { requireNode } from '../core/access.js';
+import { requireFaction } from '../core/factions.js';
 import type {
   CardId,
   FactionId,
@@ -6,9 +8,12 @@ import type {
   NodeId,
   ProductionOrder,
   ProductionSlot,
+  ValidationReasonCode,
+  ValidationReasonParams,
 } from '../core/types.js';
 import { validateCommand } from '../core/validator.js';
 import { getCardDefinition } from '../data/cards.js';
+import { playerReasonSummary } from './player-text-catalog.js';
 
 export type ProductionControlMode = 'auto' | 'exact';
 export type ProductionLaneState = 'idle' | 'building' | 'waiting_deployment' | 'paused';
@@ -70,7 +75,8 @@ export interface ProductionLaneRecommendation {
 
 export interface ProductionChoice {
   ok: boolean;
-  error: string | null;
+  reasonCode: ValidationReasonCode | null;
+  reasonParams: ValidationReasonParams;
   mode: ProductionControlMode;
   nodeId: NodeId | null;
   slotId: string | null;
@@ -85,7 +91,7 @@ function slotNumber(slotId: string, fallback: number): number {
 }
 
 function nodePauseReasons(state: GameState, factionId: FactionId, nodeId: NodeId): string[] {
-  const node = state.map.nodes[nodeId];
+  const node = requireNode(state, nodeId);
   if (node.ownerFactionId !== factionId) return ['据点已失守'];
   if (nodeOccupyingFactions(state, nodeId).some((occupier) => occupier !== factionId)) return ['敌军占据'];
   if (!isNodeActive(state, nodeId)) return ['据点尚未激活'];
@@ -98,10 +104,10 @@ function deploymentBlockers(
   factionId: FactionId,
   order: ProductionOrder,
 ): string[] {
-  const node = state.map.nodes[order.nodeId];
-  const faction = state.factions[factionId];
+  const node = requireNode(state, order.nodeId);
+  const faction = requireFaction(state, factionId);
   const blockers = nodePauseReasons(state, factionId, order.nodeId);
-  if (node.pieceIds.length >= node.capacity) blockers.push(`驻军容量 ${node.pieceIds.length}/${node.capacity}`);
+  if (node.pieceIds.length >= node.capacity) blockers.push(`驻军 ${node.pieceIds.length} / 上限 ${node.capacity}`);
   if (faction.populationUsed + order.populationCost > faction.populationCap) {
     blockers.push(`人口 ${faction.populationUsed}+${order.populationCost}/${faction.populationCap}`);
   }
@@ -139,7 +145,9 @@ function projectOrder(
     goldCost: order.goldCost,
     populationCost: order.populationCost,
     cancellable: cancellation.ok,
-    cancelReason: cancellation.error ?? null,
+    cancelReason: cancellation.ok
+      ? null
+      : playerReasonSummary(cancellation.reasonCode, cancellation.reasonParams),
   };
 }
 
@@ -186,13 +194,13 @@ function projectLane(
 export function projectProductionNodes(state: GameState, factionId: FactionId): ProductionNodeProjection[] {
   return (Object.keys(state.map.nodes) as NodeId[])
     .filter((nodeId) => {
-      const node = state.map.nodes[nodeId];
+      const node = requireNode(state, nodeId);
       return node.productionSlots > 0
-        && (node.ownerFactionId === factionId || (state.factions[factionId].productionQueues[nodeId]?.length ?? 0) > 0);
+        && (node.ownerFactionId === factionId || (requireFaction(state, factionId).productionQueues[nodeId]?.length ?? 0) > 0);
     })
     .map((nodeId) => {
-      const node = state.map.nodes[nodeId];
-      const slots = state.factions[factionId].productionQueues[nodeId] ?? [];
+      const node = requireNode(state, nodeId);
+      const slots = requireFaction(state, factionId).productionQueues[nodeId] ?? [];
       const lanes = slots.map((slot, index) => projectLane(state, factionId, slot, index));
       return {
         nodeId,
@@ -288,7 +296,8 @@ function choiceFrom(
   });
   return {
     ok: validation.ok,
-    error: validation.error ?? null,
+    reasonCode: validation.reasonCode ?? null,
+    reasonParams: validation.reasonParams ?? {},
     mode,
     nodeId,
     slotId,

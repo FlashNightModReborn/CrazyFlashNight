@@ -1,15 +1,17 @@
 import { resolveBattle } from '../battle/resolver.js';
 import type { BattleUnitSnapshot } from '../battle/types.js';
 import { getCardDefinition } from '../data/cards.js';
-import { adjacentNodeIds } from '../data/map.js';
+import { requireNode } from '../core/access.js';
+import { areHostile, requireFaction } from '../core/factions.js';
 import { getRuntimeStats } from '../core/math.js';
-import { piecesAtNode } from '../core/selectors.js';
+import { adjacentNodeIds, piecesAtNode } from '../core/selectors.js';
 import type { FactionId, GameState, NodeId } from '../core/types.js';
 
 function snapshot(state: GameState, pieceId: string): BattleUnitSnapshot {
   const piece = state.pieces[pieceId];
   if (!piece) throw new Error(`Missing piece ${pieceId}`);
-  const card = state.factions[piece.factionId].cards[piece.cardId];
+  const card = requireFaction(state, piece.factionId).cards[piece.cardId];
+  if (!card) throw new Error(`Missing card state ${piece.factionId}/${piece.cardId}`);
   const definition = getCardDefinition(piece.cardId);
   const stats = getRuntimeStats(piece.cardId, card);
   return {
@@ -48,29 +50,49 @@ function findMatchup(state: GameState, selectedNodeId: NodeId): {
 } | null {
   const selected = piecesAtNode(state, selectedNodeId);
   if (selected[0]) {
-    for (const adjacent of adjacentNodeIds(selectedNodeId)) {
+    for (const adjacent of adjacentNodeIds(state, selectedNodeId)) {
       const defenders = piecesAtNode(state, adjacent);
-      if (defenders[0] && defenders[0].factionId !== selected[0].factionId) {
+      const defender = defenders.find((piece) => areHostile(state, selected[0]!.factionId, piece.factionId));
+      if (defender) {
         return {
           attackerNode: selectedNodeId,
           defenderNode: adjacent,
           attackerFaction: selected[0].factionId,
-          defenderFaction: defenders[0].factionId,
+          defenderFaction: defender.factionId,
         };
       }
     }
   }
-  const redNode = (Object.keys(state.map.nodes) as NodeId[]).find((nodeId) => piecesAtNode(state, nodeId, 'red').length > 0);
-  const blueNode = (Object.keys(state.map.nodes) as NodeId[]).find((nodeId) => piecesAtNode(state, nodeId, 'blue').length > 0);
-  if (!redNode || !blueNode) return null;
-  return { attackerNode: redNode, defenderNode: blueNode, attackerFaction: 'red', defenderFaction: 'blue' };
+  const factionOrder = [
+    state.playerFactionId,
+    ...state.turnOrder.filter((factionId) => factionId !== state.playerFactionId),
+  ];
+  const nodeIds = (Object.keys(state.map.nodes) as NodeId[]).sort();
+  for (const attackerFaction of factionOrder) {
+    for (const attackerNode of nodeIds) {
+      if (piecesAtNode(state, attackerNode, attackerFaction).length === 0) continue;
+      for (const defenderNode of adjacentNodeIds(state, attackerNode)) {
+        const defender = piecesAtNode(state, defenderNode)
+          .find((piece) => areHostile(state, attackerFaction, piece.factionId));
+        if (defender) {
+          return {
+            attackerNode,
+            defenderNode,
+            attackerFaction,
+            defenderFaction: defender.factionId,
+          };
+        }
+      }
+    }
+  }
+  return null;
 }
 
 export function runQuickBattle(state: GameState, selectedNodeId: NodeId, runs = 100): QuickBattleStats {
   const matchup = findMatchup(state, selectedNodeId);
   if (!matchup) throw new Error('当前棋盘缺少可用于快测的双方编队。');
   const attackerUnits = piecesAtNode(state, matchup.attackerNode, matchup.attackerFaction)
-    .slice(0, state.map.nodes[matchup.defenderNode].attackWidth)
+    .slice(0, requireNode(state, matchup.defenderNode).attackWidth)
     .map((piece) => snapshot(state, piece.pieceId));
   const defenderUnits = piecesAtNode(state, matchup.defenderNode, matchup.defenderFaction)
     .map((piece) => snapshot(state, piece.pieceId));
@@ -88,7 +110,7 @@ export function runQuickBattle(state: GameState, selectedNodeId: NodeId, runs = 
       strategicRound: state.strategicRound,
       commandSequence: state.commandSequence,
       nodeId: matchup.defenderNode,
-      nodeDefenseBonus: state.map.nodes[matchup.defenderNode].defenseBonus,
+      nodeDefenseBonus: requireNode(state, matchup.defenderNode).defenseBonus,
       attackerOriginNodeId: matchup.attackerNode,
       attackerUnits,
       defenderUnits,
@@ -100,7 +122,7 @@ export function runQuickBattle(state: GameState, selectedNodeId: NodeId, runs = 
     defenderHp += result.pieceResults.filter((piece) => piece.factionId === matchup.defenderFaction).reduce((sum, piece) => sum + piece.hpAfter, 0);
   }
   return {
-    source: `${state.map.nodes[matchup.attackerNode].displayName} → ${state.map.nodes[matchup.defenderNode].displayName}`,
+    source: `${requireNode(state, matchup.attackerNode).displayName} → ${requireNode(state, matchup.defenderNode).displayName}`,
     runs,
     attackerWins,
     defenderWins,

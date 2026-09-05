@@ -98,7 +98,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         // —— 原有刷新逻辑 ——
         ImpactUpdater.update(target);
         InformationComponentUpdater.update(target);
-        target.unitAI.update();
+        // 战旗动作战在淡出/纸娃娃初始化完成前按单位冻结 AI，避免黑幕下
+        // 自主索敌和提前结算；武装完成后由 encounter service 一次性放行。
+        if (target._warlordActionAiHeld !== true) {
+            target.unitAI.update();
+        }
         target.buffManager.update(4);
         target.shield.update(4); // 护盾更新（与buff同步，每4帧驱动一次）
         WatchDogUpdater.update(target);

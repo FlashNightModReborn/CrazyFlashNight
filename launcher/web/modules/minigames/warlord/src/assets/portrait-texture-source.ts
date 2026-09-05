@@ -21,11 +21,113 @@ export interface EnemyPortraitResolver {
   fallbackUrl?: () => string;
 }
 
+export interface PlayerAvatarPortrait {
+  schema: 'warlord.player-avatar-portrait.v1';
+  gender: '男' | '女';
+  face: string;
+  hair: string;
+  equipment: {
+    head: string;
+    body: string;
+    hand: string;
+    leg: string;
+    foot: string;
+    neck: string;
+  };
+}
+
+interface MercPortraitRenderer {
+  mount(
+    container: HTMLElement,
+    image: HTMLImageElement,
+    merc: MercPortraitActor,
+    options?: { variant?: string; size?: number; alt?: string },
+  ): Promise<unknown>;
+  renderDataUrl(
+    merc: MercPortraitActor,
+    options?: { size?: number; zoom?: number; margin?: number; vAlign?: string },
+  ): Promise<string>;
+}
+
+export interface MercPortraitActor {
+  gender: string;
+  face: string;
+  hair: string;
+  equipment: Record<string, string>;
+}
+
 declare global {
   interface Window {
     EnemyPortraits?: EnemyPortraitResolver;
     PortraitResolver?: EnemyPortraitResolver;
+    MercPortraits?: MercPortraitRenderer;
   }
+}
+
+const PLAYER_AVATAR_KEYS = ['schema', 'gender', 'face', 'hair', 'equipment'] as const;
+const PLAYER_AVATAR_EQUIPMENT_KEYS = ['head', 'body', 'hand', 'leg', 'foot', 'neck'] as const;
+
+function hasExactKeys(value: Record<string, unknown>, expected: readonly string[]): boolean {
+  const keys = Object.keys(value).sort();
+  return keys.length === expected.length
+    && keys.every((key, index) => key === expected.slice().sort()[index]);
+}
+
+function portraitText(value: unknown): string | null {
+  if (typeof value !== 'string' || value.length > 128) return null;
+  return /[\u0000-\u001f\\"]/u.test(value) ? null : value;
+}
+
+/** Host/AS2 tuple 仅为纸娃娃输入，不含资源 URL、战斗属性或任何卡牌身份。 */
+export function normalizePlayerAvatarPortrait(value: unknown): PlayerAvatarPortrait | null {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  if (!hasExactKeys(input, PLAYER_AVATAR_KEYS)
+    || input.schema !== 'warlord.player-avatar-portrait.v1'
+    || (input.gender !== '男' && input.gender !== '女')) return null;
+  const face = portraitText(input.face);
+  const hair = portraitText(input.hair);
+  if (face === null || hair === null
+    || input.equipment === null || typeof input.equipment !== 'object'
+    || Array.isArray(input.equipment)) return null;
+  const equipmentInput = input.equipment as Record<string, unknown>;
+  if (!hasExactKeys(equipmentInput, PLAYER_AVATAR_EQUIPMENT_KEYS)) return null;
+  const equipment = {} as PlayerAvatarPortrait['equipment'];
+  for (const key of PLAYER_AVATAR_EQUIPMENT_KEYS) {
+    const entry = portraitText(equipmentInput[key]);
+    if (entry === null) return null;
+    equipment[key] = entry;
+  }
+  return {
+    schema: 'warlord.player-avatar-portrait.v1',
+    gender: input.gender,
+    face,
+    hair,
+    equipment,
+  };
+}
+
+/** Converts the Host-approved tuple into the shared MercPortraits actor shape. */
+export function mercActorFromPlayerAvatarPortrait(value: unknown): MercPortraitActor | null {
+  const portrait = normalizePlayerAvatarPortrait(value);
+  if (!portrait) return null;
+  return {
+    gender: portrait.gender,
+    face: portrait.face,
+    hair: portrait.hair,
+    equipment: { ...portrait.equipment },
+  };
+}
+
+/**
+ * The sandtable consumes the exact same paper-doll renderer as commander cards.
+ * This is presentation-only: the Host tuple remains the sole appearance input.
+ */
+export async function renderPlayerAvatarPortraitDataUrl(value: unknown, size = 256): Promise<string> {
+  const actor = mercActorFromPlayerAvatarPortrait(value);
+  if (!actor || !window.MercPortraits?.renderDataUrl) return '';
+  const url = await window.MercPortraits.renderDataUrl(actor, { size });
+  return typeof url === 'string' && url.startsWith('data:image/png;base64,') ? url : '';
 }
 
 export const WARLORD_PORTRAIT_IDENTIFIERS = CARD_IDS.map(
@@ -62,14 +164,27 @@ export function textureUrlsFor(descriptor: PortraitDescriptor | null): string[] 
     .filter((url): url is string => typeof url === 'string' && url.length > 0))];
 }
 
-export async function mountPortraits(root: ParentNode): Promise<void> {
+export async function mountPortraits(
+  root: ParentNode,
+  playerAvatarPortrait?: PlayerAvatarPortrait | null,
+): Promise<void> {
   const resolver = getEnemyPortraitResolver();
-  if (!resolver?.mount) return;
   const containers = Array.from(root.querySelectorAll<HTMLElement>('[data-warlord-portrait]'));
-  await Promise.all(containers.map(async (container) => {
+  const enemyMounts = !resolver?.mount ? [] : containers.map(async (container) => {
     const identifier = container.dataset.warlordPortrait;
     const image = container.querySelector<HTMLImageElement>('img');
     if (!identifier || !image) return;
     await resolver.mount?.(container, image, { portraitRef: identifier, identifier });
-  }));
+  });
+  const playerAvatarActor = mercActorFromPlayerAvatarPortrait(playerAvatarPortrait);
+  const mercMounts = !playerAvatarActor || !window.MercPortraits?.mount ? []
+    : Array.from(root.querySelectorAll<HTMLElement>('[data-warlord-player-avatar]')).map(async (container) => {
+      const image = container.querySelector<HTMLImageElement>('img');
+      if (!image) return;
+      container.dataset.warlordPortraitKind = 'player_avatar';
+      await window.MercPortraits?.mount(container, image, {
+        ...playerAvatarActor,
+      }, { variant: 'card', size: 112, alt: '' });
+    });
+  await Promise.all([...enemyMounts, ...mercMounts]);
 }

@@ -2,3 +2,4 @@
 // 详细实现见 org.flashNight.arki.merc.ArenaPanelService。
 ArenaPanelService.install();
 ArenaCalibrationService.install();
+org.flashNight.arki.scene.WarlordActionEncounterService.install();

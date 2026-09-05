@@ -1,11 +1,19 @@
-import { CARD_IDS, getCardDefinition } from '../data/cards.js';
+import { PRODUCTION_CARD_IDS, getCardDefinition } from '../data/cards.js';
 import { PROMOTIONS } from '../data/config.js';
-import { adjacentNodeIds } from '../data/map.js';
+import { requireNode } from '../core/access.js';
 import { applyCommand } from '../core/engine.js';
+import { enumerateLocalMoveOrAttackCommands } from '../core/command-enumerator.js';
+import { relationBetween, requireFaction } from '../core/factions.js';
 import { getRuntimeStats, needXp } from '../core/math.js';
-import { piecesAtNode } from '../core/selectors.js';
+import {
+  commandElementMetrics,
+  commandElementsAtNode,
+  nodeDeploymentSize,
+} from '../core/organization.js';
+import { adjacentNodeIds, piecesAtNode } from '../core/selectors.js';
 import type {
   CardId,
+  CommandElementState,
   EnqueueProductionCommand,
   FactionId,
   GameCommand,
@@ -24,16 +32,75 @@ export interface AiRunResult {
 function unitPower(state: GameState, pieceId: string): number {
   const piece = state.pieces[pieceId];
   if (!piece) return 0;
-  const stats = getRuntimeStats(piece.cardId, state.factions[piece.factionId].cards[piece.cardId]);
+  const stats = getRuntimeStats(piece.cardId, requireFaction(state, piece.factionId).cards[piece.cardId]);
   const definition = getCardDefinition(piece.cardId);
   const behaviorFactor = definition.behaviorId === 'sniper' ? 1.15 : definition.behaviorId === 'ammo' ? 1.05 : 1;
   return (piece.hp + stats.attack * 8 + stats.defense * 2) * behaviorFactor;
 }
 
-function chooseGroup(state: GameState, pieceIds: string[], limit: number): string[] {
-  return [...pieceIds]
-    .sort((a, b) => unitPower(state, b) - unitPower(state, a) || a.localeCompare(b))
-    .slice(0, Math.max(0, limit));
+interface CommandElementSelectionLimits {
+  commandLoad: number;
+  deploymentSize: number;
+  encounterCost: number;
+  maximumElements?: number;
+}
+
+function elementPower(state: GameState, element: CommandElementState): number {
+  return element.memberIds.reduce((sum, memberId) => sum + unitPower(state, memberId), 0);
+}
+
+function chooseCommandElements(
+  state: GameState,
+  elements: readonly CommandElementState[],
+  limits: CommandElementSelectionLimits,
+): string[] {
+  const ranked = [...elements].sort((left, right) => (
+    elementPower(state, right) - elementPower(state, left)
+    || left.elementId.localeCompare(right.elementId)
+  ));
+  const selected: string[] = [];
+  let commandLoad = 0;
+  let deploymentSize = 0;
+  let encounterCost = 0;
+  let selectedElements = 0;
+  for (const element of ranked) {
+    if (selectedElements >= (limits.maximumElements ?? Number.POSITIVE_INFINITY)) break;
+    const metrics = commandElementMetrics(state, element);
+    if (commandLoad + metrics.commandLoad > limits.commandLoad
+      || deploymentSize + metrics.deploymentSize > limits.deploymentSize
+      || encounterCost + metrics.encounterCost > limits.encounterCost) {
+      continue;
+    }
+    selected.push(...element.memberIds);
+    commandLoad += metrics.commandLoad;
+    deploymentSize += metrics.deploymentSize;
+    encounterCost += metrics.encounterCost;
+    selectedElements += 1;
+  }
+  return selected;
+}
+
+function chooseUniformFormationCommandElements(
+  state: GameState,
+  elements: readonly CommandElementState[],
+  limits: CommandElementSelectionLimits,
+): string[] {
+  const buckets = new Map<CommandElementState['formationProfileId'], CommandElementState[]>();
+  for (const element of elements) {
+    const bucket = buckets.get(element.formationProfileId) ?? [];
+    bucket.push(element);
+    buckets.set(element.formationProfileId, bucket);
+  }
+  const candidates = [...buckets.entries()].map(([formationProfileId, bucket]) => {
+    const pieceIds = chooseCommandElements(state, bucket, limits);
+    return {
+      pieceIds,
+      power: pieceIds.reduce((sum, pieceId) => sum + unitPower(state, pieceId), 0),
+      key: `${formationProfileId}|${pieceIds.join(',')}`,
+    };
+  }).filter((candidate) => candidate.pieceIds.length > 0);
+  candidates.sort((left, right) => right.power - left.power || left.key.localeCompare(right.key));
+  return candidates[0]?.pieceIds ?? [];
 }
 
 interface ScoredMove {
@@ -43,8 +110,14 @@ interface ScoredMove {
 }
 
 function progressValue(state: GameState, factionId: FactionId, nodeId: NodeId): number {
-  const x = state.map.nodes[nodeId].x;
-  return factionId === 'red' ? x : -x;
+  const node = requireNode(state, nodeId);
+  const hostilePosts = state.turnOrder
+    .filter((otherFactionId) => otherFactionId !== factionId
+      && relationBetween(state, factionId, otherFactionId) === 'hostile')
+    .map((otherFactionId) => requireNode(state, requireFaction(state, otherFactionId).commandPostNodeId));
+  if (hostilePosts.length === 0) return node.strategicValue * 10;
+  const nearest = Math.min(...hostilePosts.map((target) => Math.hypot(target.x - node.x, target.y - node.y)));
+  return -nearest + node.strategicValue * 4;
 }
 
 function generateMoveCandidates(
@@ -52,51 +125,43 @@ function generateMoveCandidates(
   factionId: FactionId,
   seenTransitions: Set<string>,
 ): ScoredMove[] {
-  const faction = state.factions[factionId];
   const candidates: ScoredMove[] = [];
-  for (const originNodeId of (Object.keys(state.map.nodes) as NodeId[]).sort()) {
-    const ownPieces = piecesAtNode(state, originNodeId, factionId).map((piece) => piece.pieceId);
-    if (ownPieces.length === 0) continue;
-    for (const targetNodeId of adjacentNodeIds(originNodeId)) {
-      const enemies = piecesAtNode(state, targetNodeId).filter((piece) => piece.factionId !== factionId);
-      const target = state.map.nodes[targetNodeId];
-      if (enemies.length > 0) {
-        const limit = Math.min(target.attackWidth, faction.actionPoints, ownPieces.length);
-        if (limit <= 0) continue;
-        const selected = chooseGroup(state, ownPieces.filter((pieceId) => !state.pieces[pieceId]?.failedAssaultLocks.includes(targetNodeId)), limit);
-        if (selected.length === 0) continue;
-        const attackerPower = selected.reduce((sum, id) => sum + unitPower(state, id), 0);
-        const defenderPower = enemies.reduce((sum, piece) => sum + unitPower(state, piece.pieceId), 0)
-          * (1 + target.defenseBonus);
-        const ratio = defenderPower > 0 ? attackerPower / defenderPower : 10;
-        const productionThreat = target.productionSlots > 0 ? 45 : 0;
-        const score = 120 + target.strategicValue * 15 + productionThreat + Math.min(60, ratio * 25) - (ratio < 0.55 ? 100 : 0);
-        const command: MoveOrAttackCommand = {
-          type: 'MOVE_OR_ATTACK', factionId, pieceIds: selected, originNodeId, targetNodeId,
-        };
-        const validation = validateCommand(state, command);
-        if (validation.ok) candidates.push({ score, command, key: `${targetNodeId}|${originNodeId}|${selected.join(',')}` });
-        continue;
-      }
-
-      const available = target.capacity - target.pieceIds.length;
-      if (available <= 0 || faction.actionPoints <= 0) continue;
-      const selected = chooseGroup(state, ownPieces, 1);
-      const pieceId = selected[0];
-      if (!pieceId) continue;
-      const transitionKey = `${pieceId}:${originNodeId}->${targetNodeId}`;
-      const reverseKey = `${pieceId}:${targetNodeId}->${originNodeId}`;
-      if (seenTransitions.has(transitionKey) || seenTransitions.has(reverseKey)) continue;
+  const enumeration = enumerateLocalMoveOrAttackCommands(state, factionId);
+  if (enumeration.work.guardHit) state.diagnostics.maxCommandsGuardHit = true;
+  for (const entry of enumeration.legalCommands) {
+    const command = entry.command;
+    const { originNodeId, targetNodeId } = command;
+    if (!entry.validation.isBattle && command.pieceIds.some((pieceId) => (
+      seenTransitions.has(`${pieceId}:${originNodeId}->${targetNodeId}`)
+      || seenTransitions.has(`${pieceId}:${targetNodeId}->${originNodeId}`)
+    ))) continue;
+    const target = requireNode(state, targetNodeId);
+    let score: number;
+    if (entry.validation.isBattle) {
+      const enemies = piecesAtNode(state, targetNodeId).filter((piece) => (
+        piece.factionId !== factionId
+        && relationBetween(state, factionId, piece.factionId) === 'hostile'
+      ));
+      const attackerPower = command.pieceIds.reduce((sum, id) => sum + unitPower(state, id), 0);
+      const defenderPower = enemies.reduce((sum, piece) => sum + unitPower(state, piece.pieceId), 0)
+        * (1 + target.defenseBonus);
+      const ratio = defenderPower > 0 ? attackerPower / defenderPower : 10;
+      const productionThreat = target.productionSlots > 0 ? 45 : 0;
+      score = 120 + target.strategicValue * 15 + productionThreat
+        + Math.min(60, ratio * 25) - (ratio < 0.55 ? 100 : 0);
+    } else {
       const ownershipScore = target.ownerFactionId === factionId ? 0 : target.ownerFactionId === null ? 55 : 75;
-      const functionScore = target.goldIncome * 3 + target.population * 2 + target.apBonus * 12 + target.strategicValue * 8;
-      const advance = progressValue(state, factionId, targetNodeId) - progressValue(state, factionId, originNodeId);
-      const score = ownershipScore + functionScore + advance * 0.08;
-      const command: MoveOrAttackCommand = {
-        type: 'MOVE_OR_ATTACK', factionId, pieceIds: [pieceId], originNodeId, targetNodeId,
-      };
-      const validation = validateCommand(state, command);
-      if (validation.ok) candidates.push({ score, command, key: `${targetNodeId}|${originNodeId}|${pieceId}` });
+      const functionScore = target.goldIncome * 3 + target.population * 2
+        + target.apBonus * 12 + target.strategicValue * 8;
+      const advance = progressValue(state, factionId, targetNodeId)
+        - progressValue(state, factionId, originNodeId);
+      score = ownershipScore + functionScore + advance * 0.08;
     }
+    candidates.push({
+      score,
+      command,
+      key: `${targetNodeId}|${originNodeId}|${command.pieceIds.join(',')}`,
+    });
   }
   return candidates.sort((a, b) => b.score - a.score || a.key.localeCompare(b.key));
 }
@@ -106,7 +171,7 @@ export function generateNextAiAction(
   factionId: FactionId,
   seenTransitions: Set<string> = new Set(),
 ): MoveOrAttackCommand | null {
-  if (state.activeFactionId !== factionId || state.factions[factionId].actionPoints <= 0) return null;
+  if (state.activeFactionId !== factionId || requireFaction(state, factionId).actionPoints <= 0) return null;
   return generateMoveCandidates(state, factionId, seenTransitions)[0]?.command ?? null;
 }
 
@@ -160,8 +225,8 @@ function xpToReachLevel(cardId: CardId, currentLevel: number, xpIntoLevel: numbe
 }
 
 function chooseXpCard(state: GameState, factionId: FactionId): CardId {
-  const faction = state.factions[factionId];
-  const locked = CARD_IDS
+  const faction = requireFaction(state, factionId);
+  const locked = PRODUCTION_CARD_IDS
     .filter((cardId) => faction.cards[cardId].level < getCardDefinition(cardId).deploymentLevel)
     .map((cardId) => ({
       cardId,
@@ -174,7 +239,7 @@ function chooseXpCard(state: GameState, factionId: FactionId): CardId {
     }))
     .sort((a, b) => a.needed - b.needed || a.cardId - b.cardId);
   if (locked[0]) return locked[0].cardId;
-  return [...CARD_IDS].sort((a, b) => (
+  return [...PRODUCTION_CARD_IDS].sort((a, b) => (
     faction.cards[a].level - faction.cards[b].level || a - b
   ))[0] ?? 14;
 }
@@ -184,7 +249,7 @@ function roleCounts(state: GameState, factionId: FactionId): Record<string, numb
   for (const piece of Object.values(state.pieces)) {
     if (piece.factionId === factionId) counts[getCardDefinition(piece.cardId).behaviorId] = (counts[getCardDefinition(piece.cardId).behaviorId] ?? 0) + 1;
   }
-  for (const slots of Object.values(state.factions[factionId].productionQueues)) {
+  for (const slots of Object.values(requireFaction(state, factionId).productionQueues)) {
     for (const slot of slots ?? []) {
       for (const order of slot.orders) {
         const behavior = getCardDefinition(order.cardId).behaviorId;
@@ -201,13 +266,13 @@ function tierRank(cardId: CardId): number {
 }
 
 function chooseProductionCard(state: GameState, factionId: FactionId): CardId | null {
-  const faction = state.factions[factionId];
+  const faction = requireFaction(state, factionId);
   const counts = roleCounts(state, factionId);
   const fitsPopulation = (cardId: CardId): boolean => {
     const definition = getCardDefinition(cardId);
     return faction.populationUsed + faction.populationReserved + definition.populationCost <= faction.populationCap;
   };
-  const unlocked = CARD_IDS.filter((cardId) => {
+  const unlocked = PRODUCTION_CARD_IDS.filter((cardId) => {
     const definition = getCardDefinition(cardId);
     return faction.cards[cardId].level >= definition.deploymentLevel && fitsPopulation(cardId);
   });
@@ -262,7 +327,7 @@ function chooseProductionCard(state: GameState, factionId: FactionId): CardId | 
 }
 
 export function generateAiPlanningCommands(state: GameState, factionId: FactionId): GameCommand[] {
-  if (state.phase !== 'SETTLEMENT_PLANNING' || state.factions[factionId].planningCommitted) return [];
+  if (state.phase !== 'SETTLEMENT_PLANNING' || requireFaction(state, factionId).planningCommitted) return [];
   let shadow = state;
   const commands: GameCommand[] = [];
   const applyIfLegal = (command: GameCommand): boolean => {
@@ -274,27 +339,42 @@ export function generateAiPlanningCommands(state: GameState, factionId: FactionI
     return true;
   };
 
-  const xpPool = shadow.factions[factionId].xpPool;
+  const xpPool = requireFaction(shadow, factionId).xpPool;
+  const availableBossCommander = Object.values(shadow.commanders)
+    .filter((commander) => (
+      commander.factionId === factionId
+      && commander.role === 'boss_unique'
+      && commander.status === 'available'
+    ))
+    .sort((left, right) => left.commanderId.localeCompare(right.commanderId))[0];
+  if (availableBossCommander) {
+    applyIfLegal({
+      type: 'ENQUEUE_COMMANDER_PRODUCTION',
+      factionId,
+      commanderId: availableBossCommander.commanderId,
+    });
+  }
+
   if (xpPool > 0) {
     applyIfLegal({ type: 'ALLOCATE_XP', factionId, cardId: chooseXpCard(shadow, factionId), amount: xpPool });
   }
 
-  for (const cardId of CARD_IDS) {
-    const card = shadow.factions[factionId].cards[cardId];
+  for (const cardId of PRODUCTION_CARD_IDS) {
+    const card = requireFaction(shadow, factionId).cards[cardId];
     const nextPromotion = getCardDefinition(cardId).allowedPromotions[card.purchasedPromotions.length];
     if (!nextPromotion) continue;
     const promo = PROMOTIONS[nextPromotion];
-    if (card.level >= promo.level && shadow.factions[factionId].gold >= promo.cost) {
+    if (card.level >= promo.level && requireFaction(shadow, factionId).gold >= promo.cost) {
       applyIfLegal({ type: 'PURCHASE_PROMOTION', factionId, cardId, promotionId: nextPromotion });
       break;
     }
   }
 
   const productionNodes = (Object.keys(shadow.map.nodes) as NodeId[])
-    .filter((nodeId) => shadow.factions[factionId].productionQueues[nodeId])
+    .filter((nodeId) => requireFaction(shadow, factionId).productionQueues[nodeId])
     .sort();
   for (const nodeId of productionNodes) {
-    const slots = shadow.factions[factionId].productionQueues[nodeId] ?? [];
+    const slots = requireFaction(shadow, factionId).productionQueues[nodeId] ?? [];
     for (const slot of slots) {
       if (slot.orders.length > 0) continue;
       const cardId = chooseProductionCard(shadow, factionId);

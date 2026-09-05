@@ -44,6 +44,7 @@
     state._frameToggleLabelEl = undefined;
     state._frameToggleCounterEl = undefined;
     state._frameToggleTaskBadgeEl = undefined;
+    state._catalogId = 'production';
     state._currentFrameLabel = '';
     state._returnFrameLabel = '';
     state._fixtureName = 'mixed';

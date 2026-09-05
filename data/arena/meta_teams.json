@@ -2,7 +2,7 @@
   "generatedBy": "tools/derive-arena-meta-teams.js",
   "granularity": "subwave",
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
-  "stageFilesScanned": 212,
+  "stageFilesScanned": 214,
   "stagesWithTeams": 196,
   "teamCount": 2078,
   "mercenaryCount": 199,

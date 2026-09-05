@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "demo1-encounter-distance",
+  "rulesVersion": "warlord.encounter-distance.v1",
+  "profiles": [
+    { "id": "encounter.near", "distanceBand": "near", "spawnDistance": 180 },
+    { "id": "encounter.medium", "distanceBand": "medium", "spawnDistance": 360 },
+    { "id": "encounter.far", "distanceBand": "far", "spawnDistance": 650 }
+  ]
+}

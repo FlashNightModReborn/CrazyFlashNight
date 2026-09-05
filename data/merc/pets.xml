@@ -34,6 +34,7 @@
             <Name>军阀</Name>
             <List>14,12,13,15</List>
             <List>82,83,84,85</List>
+            <List>111,112,113</List>
         </Category>
         <Category>
             <Name>通缉犯</Name>
@@ -1991,5 +1992,48 @@
             <Item>凑数组的</Item>
             <Item>常驻淬毒</Item>
         </Promotion>
+    </Pet>
+    <!-- 正式中文名取自军阀新人物.xml 注释；Height 取 units.json 对应登场兵种配置。 -->
+    <Pet>
+        <id>111</id>
+        <Name>吴豫</Name>
+        <Identifier>敌人-Itinerant</Identifier>
+        <RosterType>partner</RosterType>
+        <Height>175</Height>
+        <InitialLevel>1</InitialLevel>
+        <UnlockLevel>1</UnlockLevel>
+        <UnlockTask>28</UnlockTask>
+        <Unique>true</Unique>
+        <Price>0</Price>
+        <KPrice>12000</KPrice>
+        <IncreasePrice>0</IncreasePrice>
+    </Pet>
+    <Pet>
+        <id>112</id>
+        <Name>阎凝儿</Name>
+        <Identifier>敌人-Gazer</Identifier>
+        <RosterType>partner</RosterType>
+        <Height>180</Height>
+        <InitialLevel>1</InitialLevel>
+        <UnlockLevel>1</UnlockLevel>
+        <UnlockTask>43</UnlockTask>
+        <Unique>true</Unique>
+        <Price>0</Price>
+        <KPrice>12000</KPrice>
+        <IncreasePrice>0</IncreasePrice>
+    </Pet>
+    <Pet>
+        <id>113</id>
+        <Name>袁望</Name>
+        <Identifier>敌人-Surveyor</Identifier>
+        <RosterType>partner</RosterType>
+        <Height>180</Height>
+        <InitialLevel>1</InitialLevel>
+        <UnlockLevel>1</UnlockLevel>
+        <UnlockTask>28</UnlockTask>
+        <Unique>true</Unique>
+        <Price>0</Price>
+        <KPrice>12000</KPrice>
+        <IncreasePrice>0</IncreasePrice>
     </Pet>
 </Pets>

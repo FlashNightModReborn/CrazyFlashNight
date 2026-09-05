@@ -52,7 +52,7 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     private static var CALIBRATION_YMAX:Number = 620;
     private static var CALIBRATION_BG_WIDTH:Number = 1688;
     private static var CALIBRATION_BG_HEIGHT:Number = 640;
-    private static var CALIBRATION_MIN_SPAWN_DISTANCE:Number = 360;
+    private static var CALIBRATION_MIN_SPAWN_DISTANCE:Number = 180;
     private static var CALIBRATION_SPAWN_EDGE_RESERVE:Number = 290;
     private static var CALIBRATION_DEFAULT_FORMATION:String = "line";
     private static var CALIBRATION_DEFAULT_FORMATION_SPACING:Number = 54;
@@ -83,6 +83,40 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         _pendingRun = params;
         _pendingStageRequest = undefined;
         _transitionStarted = false;
+    }
+
+    /** focused TestLoader 专用：纯函数投影阵型坐标，不读写 gameworld。 */
+    public static function testOnlyProjectFormation(formation:String, side:String,
+            total:Number, anchorX:Number, anchorY:Number, spacing:Number):Array {
+        var count:Number = Math.floor(Number(total));
+        if (isNaN(count) || count < 0) count = 0;
+        var positions:Array = [];
+        for (var i:Number = 0; i < count; i++) {
+            positions.push(resolveFormationPosition(
+                formation, side, i, count, anchorX, anchorY, spacing));
+        }
+        return positions;
+    }
+
+    /** focused TestLoader 专用：纯投影实际距离与双方阵型，不读写 gameworld。 */
+    public static function testOnlyProjectArenaDeployment(spawnDistance:Number,
+            formation:String, total:Number, spacing:Number,
+            centerX:Number, centerY:Number):Object {
+        var origin:Object = resolveOriginProjection(
+            spawnDistance, centerX, centerY);
+        var actualSpacing:Number = resolveFormationSpacing(
+            {formationSpacing:spacing});
+        return {
+            spawnDistance:origin.spawnDistance,
+            blueX:origin.blueX,
+            redX:origin.redX,
+            y:origin.y,
+            formationSpacing:actualSpacing,
+            blue:testOnlyProjectFormation(formation, "blue", total,
+                origin.blueX, origin.y, actualSpacing),
+            red:testOnlyProjectFormation(formation, "red", total,
+                origin.redX, origin.y, actualSpacing)
+        };
     }
 
     public static function handleRun(params:Object):Void {
@@ -872,20 +906,45 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             x = anchorX;
             y = resolveFormationY(anchorY, index, total, spacing);
         } else if (formation == "wedge") {
+            // 两人时原递增行会与横列同坐标；保留前锋锥尖，将第二人斜置于后翼。
+            if (total == 2) {
+                x = anchorX + direction * index * resolveFormationDepthStep(
+                    side, anchorX, spacing, 2);
+                y = index == 0 ? anchorY : anchorY - spacing;
+                return {
+                    x: clampNumber(Math.round(x), CALIBRATION_XMIN, CALIBRATION_XMAX),
+                    y: clampNumber(Math.round(y), CALIBRATION_YMIN, CALIBRATION_YMAX)
+                };
+            }
             var wedge:Object = resolveWedgeSlot(index, total, maxVertical);
             var wedgeStep:Number = resolveFormationDepthStep(side, anchorX, spacing, wedge.depthSlots);
             x = anchorX + direction * wedge.row * wedgeStep;
             y = resolveFormationY(anchorY, wedge.lane, wedge.laneCount, spacing);
         } else if (formation == "shield") {
-            var frontCount:Number = Math.min(5, total);
-            if (index < frontCount) {
-                x = anchorX;
-                y = resolveFormationY(anchorY, index, frontCount, spacing);
+            // 2–4 人小队用「前盾 + 后卫」模板，避免全员塞进前排后退化为纵队。
+            if (total >= 2 && total <= 4) {
+                var smallFrontCount:Number = total - 1;
+                if (index < smallFrontCount) {
+                    x = anchorX;
+                    var smallFrontSpacing:Number = total == 3 ? spacing * 2 : spacing;
+                    y = resolveFormationY(
+                        anchorY, index, smallFrontCount, smallFrontSpacing);
+                } else {
+                    x = anchorX + direction * resolveFormationDepthStep(
+                        side, anchorX, spacing, 2);
+                    y = total == 2 ? anchorY + spacing * 0.5 : anchorY;
+                }
             } else {
-                var shieldAnchorX:Number = anchorX + direction * resolveFormationDepthStep(side, anchorX, spacing, Math.ceil((total - frontCount) / maxVertical) + 1);
-                var shieldPos:Object = resolveGridPosition(side, index - frontCount, total - frontCount, shieldAnchorX, anchorY, spacing, maxVertical);
-                x = shieldPos.x;
-                y = shieldPos.y;
+                var frontCount:Number = Math.min(5, total);
+                if (index < frontCount) {
+                    x = anchorX;
+                    y = resolveFormationY(anchorY, index, frontCount, spacing);
+                } else {
+                    var shieldAnchorX:Number = anchorX + direction * resolveFormationDepthStep(side, anchorX, spacing, Math.ceil((total - frontCount) / maxVertical) + 1);
+                    var shieldPos:Object = resolveGridPosition(side, index - frontCount, total - frontCount, shieldAnchorX, anchorY, spacing, maxVertical);
+                    x = shieldPos.x;
+                    y = shieldPos.y;
+                }
             }
         } else if (formation == "grid") {
             var gridPos:Object = resolveGridPosition(side, index, total, anchorX, anchorY, spacing, maxVertical);
@@ -2002,8 +2061,16 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             if (!isNaN(Number(_root.gameworld.出生地._y))) centerY = Number(_root.gameworld.出生地._y);
         }
 
+        return resolveOriginProjection(
+            params != undefined ? params.spawnDistance : undefined,
+            centerX,
+            centerY);
+    }
+
+    private static function resolveOriginProjection(requestedDistanceValue,
+            centerX:Number, centerY:Number):Object {
         var defaultDistance:Number = CALIBRATION_DEFAULT_SPAWN_DISTANCE;
-        var requestedDistance:Number = Number(params != undefined ? params.spawnDistance : undefined);
+        var requestedDistance:Number = Number(requestedDistanceValue);
         if (isNaN(requestedDistance) || requestedDistance <= 0) {
             requestedDistance = defaultDistance;
         }

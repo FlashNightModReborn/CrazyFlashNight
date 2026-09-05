@@ -132,7 +132,7 @@ namespace CF7Launcher.Tests.Guardian
             string digest = WarlordBattleTask.Sha256OfToken(request);
             JObject receipt = new JObject
             {
-                ["schema"] = "warlord.as2-battle-receipt.v1",
+                ["schema"] = "warlord.as2-battle-receipt.v2",
                 ["status"] = "accepted",
                 ["sessionId"] = "warlord.router.session.1",
                 ["requestId"] = "warlord.router.request.1",
@@ -155,6 +155,42 @@ namespace CF7Launcher.Tests.Guardian
             initData["battleAuthority"] = "as2";
             initData["as2BattleSession"] = true;
             initData["resume"] = resume;
+            return initData;
+        }
+
+        private static JObject BuildWarlordStageResumeInitDataForRouterTest()
+        {
+            JObject initData = BuildWarlordResumeInitDataForRouterTest();
+            JObject binding = new JObject
+            {
+                ["schema"] = WarlordStageTask.BindingSchema,
+                ["runId"] = "stage.router.run.1",
+                ["subStageId"] = "stage.router.substage.1",
+                ["scenarioRef"] = WarlordStageTask.AllowedScenarioRef,
+                ["callId"] = "stage.router.call.1",
+                ["revision"] = 0
+            };
+            JObject portrait = new JObject
+            {
+                ["schema"] = WarlordStageTask.PlayerAvatarPortraitSchema,
+                ["gender"] = "男",
+                ["face"] = "faceA",
+                ["hair"] = "hairA",
+                ["equipment"] = new JObject
+                {
+                    ["head"] = "", ["body"] = "", ["hand"] = "",
+                    ["leg"] = "", ["foot"] = "", ["neck"] = ""
+                }
+            };
+            initData["source"] = "game_stage";
+            initData["mode"] = "stage-v1";
+            initData["playerAvatarPortrait"] = portrait.DeepClone();
+            initData["stageOuterBinding"] = binding.DeepClone();
+            initData["stageResumeFromPanelInstanceId"] = "warlord.stage.retired";
+            JObject resume = (JObject)initData["resume"];
+            resume["playerAvatarPortrait"] = portrait.DeepClone();
+            resume["stageOuterBinding"] = binding.DeepClone();
+            resume["stageResumeFromPanelInstanceId"] = "warlord.stage.retired";
             return initData;
         }
 
@@ -2328,24 +2364,31 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void WARLORD_TEST_OpenPanel_IsDeterministicAndReadOnly()
+        public void WARLORD_TEST_OpensScopedStageSelectCatalogWithoutDirectWarlordInit()
         {
             Capture c = new Capture();
             LauncherCommandRouter r = MakeRouter(c);
             using var harnessR = new HostHarness(r);
             r.Dispatch("WARLORD_TEST");
             JObject open = harnessR.LastOpenPayload;
-            Assert.Equal("warlord", (string)open["panel"]);
+            Assert.Equal("stage-select", (string)open["panel"]);
             JObject initData = open["initData"] as JObject;
             Assert.NotNull(initData);
-            Assert.Equal("phase-c-as2", (string)initData["mode"]);
-            Assert.Equal("runtime", (string)initData["source"]);
-            Assert.Equal("warlord-demo-seed-001", (string)initData["seed"]);
-            Assert.Equal("standard", (string)initData["preset"]);
-            Assert.Equal("normal", (string)initData["difficulty"]);
-            Assert.Equal("desert", (string)initData["mapTheme"]);
-            Assert.Equal("as2", (string)initData["battleAuthority"]);
-            Assert.False((bool)initData["productionWrites"]);
+            // PanelHostController additionally injects its opaque instance identity;
+            // every caller-authored field remains the exact scoped catalog envelope.
+            Assert.Equal(6, initData.Count);
+            Assert.Equal("runtime", (string)initData["mode"]);
+            Assert.Equal("warlord-game-stage-test", (string)initData["catalogId"]);
+            Assert.Equal("军阀演习测试", (string)initData["frameLabel"]);
+            Assert.Equal("notch_warlord_test", (string)initData["source"]);
+            Assert.False((bool)initData["debug"]);
+            Assert.False(string.IsNullOrEmpty((string)initData["panelInstanceId"]));
+            Assert.Null(initData["seed"]);
+            Assert.Null(initData["preset"]);
+            Assert.Null(initData["difficulty"]);
+            Assert.Null(initData["mapTheme"]);
+            Assert.Null(initData["battleAuthority"]);
+            Assert.Null(initData["productionWrites"]);
         }
 
         [Fact]
@@ -3393,6 +3436,37 @@ namespace CF7Launcher.Tests.Guardian
                         .Value<bool?>(
                             "preparationNavigationV1"));
             }
+        }
+
+        [Fact]
+        public void WarlordStageResume_UsesFreshTrackedIdentityAndExecutionGate()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router = MakeRouter(c);
+            using var harness = new HostHarness(router);
+            bool gateCalled = false;
+            string resumedInstance = null;
+            PanelHostController.TrackedOpenOutcome? outcome = null;
+
+            Assert.True(router.TryOpenWarlordStageResumePanel(
+                BuildWarlordStageResumeInitDataForRouterTest(),
+                delegate { gateCalled = true; return true; },
+                delegate(string instance, PanelHostController.TrackedOpenOutcome value)
+                {
+                    resumedInstance = instance;
+                    outcome = value;
+                }));
+
+            Assert.True(gateCalled);
+            Assert.Equal(PanelHostController.TrackedOpenOutcome.OpenPosted, outcome);
+            Assert.False(string.IsNullOrEmpty(resumedInstance));
+            Assert.NotEqual("warlord.stage.retired", resumedInstance);
+            Assert.Equal(resumedInstance, harness.Host.ActivePanelInstanceId);
+            Assert.True(harness.Host.HasTrackedPanelLease);
+            Assert.Equal("game_stage",
+                (string)harness.LastOpenPayload["initData"]["source"]);
+            Assert.Equal("stage-v1",
+                (string)harness.LastOpenPayload["initData"]["mode"]);
         }
 
         [Fact]

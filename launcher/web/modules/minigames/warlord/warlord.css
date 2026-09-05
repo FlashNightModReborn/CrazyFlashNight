@@ -73,7 +73,9 @@
     width: 1024px;
     height: 576px;
     display: grid;
-    grid-template-rows: 58px 382px 136px;
+    /* 蓝图卡固定内容恰需 108px；120px 底栏含边框/内边距即可完整容纳，
+       将旧底栏多出的 16px 归还战区主区。 */
+    grid-template-rows: 58px minmax(0, 1fr) 120px;
     overflow: hidden;
     background:
         radial-gradient(ellipse at 52% 34%, color-mix(in srgb, var(--wl-accent) 7%, transparent), transparent 44%),
@@ -82,6 +84,8 @@
     color: var(--wl-copy);
     font-size: 12px;
 }
+
+.warlord-app[data-roster-collapsed="true"] { grid-template-rows: 58px minmax(0, 1fr) 32px; }
 
 .warlord-app[data-map-theme="tundra"] {
     --wl-bg: #071015;
@@ -106,7 +110,7 @@
 .warlord-command-bar {
     z-index: 8;
     display: grid;
-    grid-template-columns: 190px 166px 1fr 58px 42px;
+    grid-template-columns: 176px 184px minmax(0, 1fr) max-content max-content 42px;
     align-items: stretch;
     border-bottom: 1px solid var(--wl-line-strong);
     background:
@@ -126,26 +130,64 @@
 
 .warlord-brand b { display: block; color: var(--wl-sand); font-size: 17px; letter-spacing: .08em; }
 .warlord-brand span { display: block; margin-top: 2px; color: color-mix(in srgb, var(--wl-copy) 62%, var(--wl-bg)); font-size: 8px; letter-spacing: .12em; }
+.warlord-brand b,
+.warlord-brand span,
+.warlord-round > b,
+.warlord-round > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .warlord-round {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: grid;
+    align-content: center;
+    gap: 2px;
     padding: 7px 10px;
     border-right: 1px solid var(--wl-line-mid);
 }
 
-.warlord-round > b { color: var(--wl-accent); font-size: 25px; line-height: 1; font-family: "Consolas", "Cascadia Mono", monospace; }
+.warlord-round > b { color: var(--wl-accent); font-size: 16px; line-height: 1.1; }
 .warlord-round > b small { font-size: 10px; color: var(--wl-ink-lo); }
 .warlord-round > span { min-width: 0; color: color-mix(in srgb, var(--wl-copy) 76%, var(--wl-bg)); font-size: 8px; line-height: 1.3; white-space: nowrap; }
 
-.warlord-factions { display: grid; grid-template-columns: 1fr 1fr; }
-.warlord-faction { display: grid; grid-template-columns: 34px 1fr; align-items: center; padding: 6px 12px; border-right: 1px solid var(--wl-line-soft); }
-.warlord-faction > b { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid currentColor; clip-path: polygon(15% 0, 85% 0, 100% 25%, 100% 75%, 85% 100%, 15% 100%, 0 75%, 0 25%); }
+.warlord-factions { min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: minmax(0, 1fr); overflow: hidden; }
+.warlord-faction { display: grid; grid-template-columns: 38px 1fr; align-items: center; padding: 6px 8px; border-right: 1px solid var(--wl-line-soft); }
+.warlord-faction > b { display: grid; place-items: center; width: 34px; height: 28px; overflow: hidden; border: 1px solid currentColor; clip-path: polygon(10% 0, 90% 0, 100% 25%, 100% 75%, 90% 100%, 10% 100%, 0 75%, 0 25%); font-size: 8px; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
 .warlord-faction.red > b { color: var(--wl-rust); }
 .warlord-faction.blue > b { color: var(--wl-blue); }
+.warlord-faction.player > b { color: var(--wl-rust); border-style: solid; }
+.warlord-faction.boss-pact-a > b { color: #69b8e8; border-style: double; }
+.warlord-faction.boss-independent > b { color: #85cf91; border-style: dashed; }
+.warlord-faction.boss-pact-b > b { color: #c291dc; border-style: dotted; }
 .warlord-faction > span { display: flex; flex-wrap: wrap; gap: 3px 9px; }
 .warlord-faction em { color: color-mix(in srgb, var(--wl-copy) 80%, var(--wl-bg)); font-size: 10px; font-style: normal; font-family: "Consolas", "Cascadia Mono", monospace; }
+.warlord-faction:is(.player, .boss-pact-a, .boss-independent, .boss-pact-b) {
+    min-width: 0;
+    min-height: 0;
+    grid-template-columns: 38px minmax(0, 1fr);
+    padding: 2px 4px;
+    overflow: hidden;
+}
+
+.warlord-faction:is(.player, .boss-pact-a, .boss-independent, .boss-pact-b) > b {
+    width: 34px;
+    height: 21px;
+    overflow: hidden;
+    font-size: 7px;
+    line-height: 1;
+    white-space: nowrap;
+}
+.warlord-faction:is(.player, .boss-pact-a, .boss-independent, .boss-pact-b) > span {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: .75fr 1.35fr .9fr;
+    gap: 2px;
+    overflow: hidden;
+}
+.warlord-faction:is(.player, .boss-pact-a, .boss-independent, .boss-pact-b) em {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 .warlord-icon-button,
 :where(.warlord-panel button) {
@@ -157,14 +199,17 @@
     transition: border-color var(--wb-motion-micro, 100ms), background var(--wb-motion-micro, 100ms), transform var(--wb-motion-micro, 100ms);
 }
 
-:where(.warlord-panel button):hover:not(:disabled) { border-color: var(--wl-sand); background: color-mix(in srgb, var(--wl-surface) 72%, var(--wl-sand) 16%); }
-:where(.warlord-panel button):active:not(:disabled) { transform: translateY(1px); }
+:where(.warlord-panel button):hover:not(:disabled):not([aria-disabled="true"]) { border-color: var(--wl-sand); background: color-mix(in srgb, var(--wl-surface) 72%, var(--wl-sand) 16%); }
+:where(.warlord-panel button):active:not(:disabled):not([aria-disabled="true"]) { transform: translateY(1px); }
 .warlord-panel button:focus-visible,
 .warlord-panel input:focus-visible,
 .warlord-panel select:focus-visible { outline: 2px solid var(--wl-focus); outline-offset: 1px; }
 :where(.warlord-panel button):disabled { cursor: not-allowed; opacity: .38; }
+:where(.warlord-panel button[aria-disabled="true"]) { cursor: not-allowed; opacity: .52; }
 
 .warlord-icon-button { border-width: 0 0 0 1px; border-radius: 0; font-size: 10px; letter-spacing: .08em; }
+.warlord-help-button { min-width: 68px; padding: 0 10px; }
+.warlord-dev-spacer { width: 0; }
 .warlord-panel-close { font-size: 17px; line-height: 1; letter-spacing: 0; }
 
 .warlord-main {
@@ -183,6 +228,11 @@
     background:
         linear-gradient(145deg, color-mix(in srgb, var(--wl-sand) 4%, transparent), transparent 30%),
         linear-gradient(150deg, color-mix(in srgb, var(--wl-surface) 92%, transparent), color-mix(in srgb, var(--wl-bg) 96%, transparent));
+}
+
+.warlord-force-rail {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
 }
 
 .warlord-action-rail { display: flex; flex-direction: column; }
@@ -229,7 +279,7 @@
 .warlord-action-rail > header b { color: var(--wl-sand); font-size: 12px; }
 .warlord-force-rail > header small { color: color-mix(in srgb, var(--wl-copy) 64%, var(--wl-bg)); font-size: 8px; }
 
-.warlord-force-list { height: 273px; overflow-y: auto; padding: 6px; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--wl-cyan) 52%, var(--wl-surface)) var(--wl-bg); }
+.warlord-force-list { min-height: 0; overflow-y: auto; padding: 6px; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--wl-cyan) 52%, var(--wl-surface)) var(--wl-bg); }
 .warlord-empty { color: var(--wl-ink-lo); text-align: center; margin: 36px 0; }
 
 .warlord-piece {
@@ -256,6 +306,8 @@
 .warlord-piece small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .warlord-piece b { font-size: 10px; }
 .warlord-piece small { color: var(--wl-ink-lo); font-size: 8px; }
+.warlord-piece.is-commander { border-left-width: 4px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-warning) 28%, transparent); }
+.warlord-piece .warlord-commander-badge { color: var(--wl-warning); font-size: 7px; letter-spacing: .04em; }
 .warlord-piece i,
 .warlord-battle-dialog article i { display: block; height: 3px; margin-top: 4px; background: color-mix(in srgb, var(--wl-bg) 70%, var(--wl-copy)); overflow: hidden; }
 .warlord-piece i em,
@@ -326,7 +378,8 @@
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--wl-bg) 68%, transparent), inset 0 0 12px color-mix(in srgb, var(--wl-focus) 12%, transparent);
 }
 .warlord-selection-marquee[hidden] { display: none; }
-.warlord-map-caption { position: absolute; top: 9px; left: 11px; right: 11px; z-index: 5; display: flex; justify-content: space-between; pointer-events: none; color: color-mix(in srgb, var(--wl-copy) 70%, transparent); font-size: 6px; letter-spacing: .1em; text-shadow: 0 1px 4px var(--wl-bg); }
+.warlord-map-caption { position: absolute; top: 9px; left: 11px; right: 11px; z-index: 5; display: flex; justify-content: space-between; gap: 12px; pointer-events: none; color: color-mix(in srgb, var(--wl-copy) 70%, transparent); font-size: 6px; letter-spacing: .1em; text-shadow: 0 1px 4px var(--wl-bg); }
+.warlord-map-caption span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .warlord-map-caption span:first-child { color: color-mix(in srgb, var(--wl-sand) 92%, white); }
 
 .warlord-compass {
@@ -358,9 +411,9 @@
     width: 108px;
     overflow: hidden;
     border: 1px solid var(--wl-line-strong);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--wl-surface) 90%, transparent), var(--wl-glass));
+    background: linear-gradient(135deg, color-mix(in srgb, var(--wl-surface) 97%, var(--wl-bg)), var(--wl-glass));
     box-shadow: var(--wb-shadow-overlay);
-    backdrop-filter: blur(4px);
+    backdrop-filter: none;
     transition: width 160ms var(--wb-ease-standard, cubic-bezier(.2,.8,.25,1)), border-color var(--wb-motion-micro, 100ms) ease, box-shadow var(--wb-motion-micro, 100ms) ease;
 }
 .warlord-camera-hud[data-expanded="true"],
@@ -370,7 +423,7 @@
 .warlord-camera-hud[data-expanded="true"] .warlord-camera-readout,
 .warlord-camera-hud:hover .warlord-camera-readout,
 .warlord-camera-hud:focus-within .warlord-camera-readout { max-height: 35px; padding: 5px 7px 4px; border-bottom-color: var(--wl-line-soft); opacity: 1; transform: translateY(0); transition-duration: 140ms; }
-.warlord-camera-readout::before { content: "CAM"; position: absolute; top: 3px; right: 46px; color: color-mix(in srgb, var(--wl-accent) 30%, transparent); font-size: 6px; letter-spacing: .16em; }
+.warlord-camera-readout::before { content: "镜头"; position: absolute; top: 3px; right: 46px; color: color-mix(in srgb, var(--wl-accent) 30%, transparent); font-size: 6px; letter-spacing: .16em; }
 .warlord-camera-readout span { color: var(--wl-sand); font-size: 8px; letter-spacing: .08em; line-height: 1.4; }
 .warlord-camera-readout b { grid-row: 1 / 3; grid-column: 2; align-self: center; color: var(--wl-accent); font-size: 12px; font-variant-numeric: tabular-nums; }
 .warlord-camera-readout small { color: color-mix(in srgb, var(--wl-copy) 56%, var(--wl-bg)); font-size: 6px; font-variant-numeric: tabular-nums; line-height: 1.4; }
@@ -407,6 +460,40 @@
 .warlord-command-intent span { min-width: 0; overflow: hidden; color: color-mix(in srgb, var(--wl-copy) 76%, var(--wl-bg)); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
 .warlord-command-intent small { color: var(--wl-ink-lo); font-size: 6px; white-space: nowrap; }
 
+.warlord-large-map-tools {
+    position: absolute;
+    right: 3px;
+    bottom: 51px;
+    left: 3px;
+    z-index: 7;
+    width: auto;
+    max-height: calc(100% - 54px);
+    display: grid;
+    gap: 3px;
+    padding: 5px;
+    overflow: hidden;
+    border: 1px solid var(--wl-line-mid);
+    background: color-mix(in srgb, var(--wl-bg) 91%, transparent);
+    box-shadow: var(--wb-shadow-raised);
+}
+.warlord-large-map-tools[hidden] { display: none; }
+.warlord-large-map-search { display: grid; grid-template-columns: minmax(90px, .9fr) minmax(130px, 1.2fr) 42px; gap: 3px; }
+.warlord-large-map-search label { min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 3px; color: var(--wl-ink-lo); font-size: 7px; }
+.warlord-large-map-search label > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-large-map-search select,
+.warlord-large-map-search input { min-width: 0; height: 20px; padding: 1px 3px; font-size: 7px; }
+.warlord-large-map-search button { min-width: 0; padding: 1px 3px; color: var(--wl-accent); font-size: 7px; }
+.warlord-large-map-alerts { min-width: 0; display: flex; gap: 3px; overflow-x: auto; scrollbar-width: thin; }
+.warlord-large-map-alerts > span { color: var(--wl-ink-lo); font-size: 7px; }
+.warlord-large-map-alerts button { min-width: 92px; display: grid; justify-items: start; gap: 1px; padding: 2px 4px; overflow: hidden; border-left: 2px solid var(--wl-warning); }
+.warlord-large-map-alerts button b { max-width: 100%; overflow: hidden; color: var(--wl-warning); font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-large-map-alerts button span { max-width: 105px; overflow: hidden; color: var(--wl-copy); font-size: 6px; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-large-map-commanders { min-width: 0; display: flex; gap: 7px; overflow: hidden; color: var(--wl-ink-lo); font-size: 6px; white-space: nowrap; }
+.warlord-large-map-commanders [data-commander-status="downed"],
+.warlord-large-map-commanders [data-commander-status="available"] { color: var(--wl-danger); }
+.warlord-large-map-commanders [data-commander-status="rear"],
+.warlord-large-map-commanders [data-commander-status="queued"] { color: var(--wl-warning); }
+
 .warlord-node-strip {
     position: absolute;
     left: 0;
@@ -424,6 +511,7 @@
     border-top: 1px solid var(--wl-line-mid);
     box-shadow: 0 -8px 18px color-mix(in srgb, var(--wl-bg) 52%, transparent);
 }
+.warlord-node-strip[data-large-map="true"] { grid-template-columns: 44px 54px minmax(0, 1fr); }
 
 .warlord-node-index {
     min-width: 0;
@@ -440,6 +528,12 @@
 .warlord-node-pager { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; }
 .warlord-node-pager[hidden] { display: none; }
 .warlord-node-pager button { min-width: 0; padding: 0; color: var(--wl-accent); font-size: 12px; line-height: 1; }
+.warlord-large-map-toggle { min-width: 0; display: grid; align-content: center; gap: 1px; padding: 2px; color: var(--wl-focus); }
+.warlord-large-map-toggle b,
+.warlord-large-map-toggle span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-large-map-toggle b { font-size: 8px; line-height: 1.15; letter-spacing: .08em; }
+.warlord-large-map-toggle span { color: var(--wl-ink-lo); font-size: 6px; line-height: 1.1; }
+.warlord-large-map-toggle[aria-expanded="true"] { border-color: var(--wl-focus); background: color-mix(in srgb, var(--wl-focus) 12%, var(--wl-surface)); }
 .warlord-node-window { min-width: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; }
 .warlord-node-card { position: relative; min-width: 0; min-height: 40px; padding: 3px 4px 2px; display: grid; align-content: center; gap: 2px; border-color: color-mix(in srgb, var(--wl-muted) 42%, transparent); transition: background 120ms ease, box-shadow 120ms ease, border-color 120ms ease; }
 .warlord-node-card b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 8px; line-height: 1.15; }
@@ -448,6 +542,10 @@
 .warlord-node-meta i { overflow: hidden; text-overflow: ellipsis; font-style: normal; }
 .warlord-node-card.owner-red { border-top: 2px solid var(--wl-rust); }
 .warlord-node-card.owner-blue { border-top: 2px solid var(--wl-blue); }
+.warlord-node-card.owner-player { border-top: 2px solid var(--wl-rust); }
+.warlord-node-card.owner-boss-pact-a { border-top: 3px double #69b8e8; }
+.warlord-node-card.owner-boss-independent { border-top: 2px dashed #85cf91; }
+.warlord-node-card.owner-boss-pact-b { border-top: 2px dotted #c291dc; }
 .warlord-node-card.owner-neutral { border-top: 2px dashed var(--wl-sand); }
 .warlord-node-card.selected { background: linear-gradient(180deg, color-mix(in srgb, var(--wl-focus) 22%, var(--wl-surface)), color-mix(in srgb, var(--wl-focus) 8%, var(--wl-surface))); box-shadow: inset 0 0 0 1px var(--wl-focus), 0 0 10px color-mix(in srgb, var(--wl-focus) 14%, transparent); }
 .warlord-node-card.command-move:not(.selected) { background: color-mix(in srgb, var(--wl-surface) 84%, var(--wl-success) 16%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wl-success) 72%, transparent), 0 0 8px color-mix(in srgb, var(--wl-success) 12%, transparent); }
@@ -703,7 +801,7 @@
 
 .warlord-event-feed { min-height: 0; flex: 1; overflow: hidden; margin-top: 2px; padding: 5px 7px; border-top: 1px solid var(--wl-panel-l2-border); }
 .warlord-event-feed h3 { margin: 0 0 4px; color: var(--wl-sand); font-size: 10px; letter-spacing: .08em; }
-.warlord-event-feed p { display: grid; grid-template-columns: 24px 1fr; gap: 4px; margin: 0 0 4px; color: color-mix(in srgb, var(--wl-copy) 67%, var(--wl-bg)); font-size: 8px; line-height: 1.25; }
+.warlord-event-feed p { display: grid; grid-template-columns: 44px 1fr; gap: 4px; margin: 0 0 4px; color: color-mix(in srgb, var(--wl-copy) 67%, var(--wl-bg)); font-size: 8px; line-height: 1.25; }
 .warlord-event-feed time { color: var(--wl-accent); font-family: "Consolas", "Cascadia Mono", monospace; }
 
 .warlord-roster {
@@ -716,10 +814,20 @@
     background: color-mix(in srgb, var(--wl-bg) 94%, var(--wl-surface));
 }
 
-.warlord-roster-label { display: grid; align-content: center; gap: 4px; padding: 6px; border-right: 1px solid var(--wl-line-soft); }
-.warlord-roster-label b { color: var(--wl-sand); font-size: 12px; }
-.warlord-roster-label span { color: var(--wl-ink-lo); font-size: 8px; line-height: 1.4; }
+.warlord-roster-label { min-width: 0; display: grid; align-content: center; gap: 3px; padding: 4px; overflow: hidden; border-right: 1px solid var(--wl-line-soft); }
+.warlord-roster-label > span { min-width: 0; overflow: hidden; color: var(--wl-ink-lo); font-size: 8px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-roster-toggle { min-width: 0; min-height: 30px; display: grid; align-content: center; gap: 1px; padding: 2px 4px; overflow: hidden; text-align: left; }
+.warlord-roster-toggle b,
+.warlord-roster-toggle span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-roster-toggle b { color: var(--wl-sand); font-size: 11px; }
+.warlord-roster-toggle span { color: var(--wl-focus); font-size: 7px; line-height: 1.2; }
 .warlord-card-track { min-width: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; }
+.warlord-card-track[hidden] { display: none; }
+.warlord-roster[data-collapsed="true"] { grid-template-columns: 1fr; gap: 0; padding: 2px 6px; }
+.warlord-roster[data-collapsed="true"] .warlord-roster-label { padding: 0; border-right: 0; }
+.warlord-roster[data-collapsed="true"] .warlord-roster-label > span,
+.warlord-roster[data-collapsed="true"] .warlord-roster-hint { display: none; }
+.warlord-roster[data-collapsed="true"] .warlord-roster-toggle { min-height: 26px; grid-template-columns: auto minmax(0, 1fr); align-items: center; align-content: stretch; gap: 8px; padding: 1px 8px; }
 .warlord-card { min-width: 0; display: grid; grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 67px 28px; gap: 3px 4px; padding: 3px; border: 1px solid var(--wl-line-mid); border-top: 3px solid var(--wl-sand); background: color-mix(in srgb, var(--wl-surface) 91%, transparent); overflow: hidden; }
 .warlord-card { transition: border-color var(--wb-motion-micro, 100ms), background var(--wb-motion-micro, 100ms); }
 .warlord-card:hover { border-color: color-mix(in srgb, var(--wl-sand) 48%, transparent); background: color-mix(in srgb, var(--wl-surface) 84%, var(--wl-sand) 7%); }
@@ -732,12 +840,14 @@
 .warlord-card-copy small { overflow: hidden; text-overflow: ellipsis; }
 .warlord-card-copy b { font-size: 10px; line-height: 1.2; white-space: nowrap; }
 .warlord-card-copy small { color: var(--wl-ink-lo); font-size: 8px; line-height: 1.25; }
-.warlord-card-stats { display: flex; gap: 3px; white-space: nowrap; }
+.warlord-card-stats { min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 3px; white-space: nowrap; }
 .warlord-card-stats strong { color: color-mix(in srgb, var(--wl-copy) 86%, var(--wl-bg)); font-weight: 500; }
+.warlord-card-stats strong,
+.warlord-card-stats em { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .warlord-card-stats em { font-style: normal; }
 .warlord-card-actions { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-.warlord-card-actions button { min-width: 0; padding: 2px 0; font-size: 8px; }
-.warlord-scale-shell[data-phase="SETTLEMENT_PLANNING"] .warlord-card-production:not(:disabled) { border-color: var(--wl-accent); background: color-mix(in srgb, var(--wl-accent) 14%, var(--wl-surface)); color: color-mix(in srgb, var(--wl-copy) 90%, white); }
+.warlord-card-actions button { min-width: 0; padding: 2px 0; overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-scale-shell[data-phase="SETTLEMENT_PLANNING"] .warlord-card-production:not(:disabled):not([aria-disabled="true"]) { border-color: var(--wl-accent); background: color-mix(in srgb, var(--wl-accent) 14%, var(--wl-surface)); color: color-mix(in srgb, var(--wl-copy) 90%, white); }
 
 .warlord-map-fallback { z-index: 4; padding: 38px 12px 10px; background: color-mix(in srgb, var(--wl-bg) 96%, var(--wl-danger) 4%); }
 .warlord-fallback-notice { display: grid; gap: 3px; margin-bottom: 12px; text-align: center; }
@@ -748,21 +858,54 @@
 .warlord-fallback-grid button { min-height: 58px; display: grid; place-content: center; gap: 4px; }
 .warlord-fallback-grid button.owner-red { border-left: 4px solid var(--wl-rust); }
 .warlord-fallback-grid button.owner-blue { border-left: 4px solid var(--wl-blue); }
+.warlord-fallback-grid button.owner-player { border-left: 4px solid var(--wl-rust); }
+.warlord-fallback-grid button.owner-boss-pact-a { border-left: 5px double #69b8e8; }
+.warlord-fallback-grid button.owner-boss-independent { border-left: 4px dashed #85cf91; }
+.warlord-fallback-grid button.owner-boss-pact-b { border-left: 4px dotted #c291dc; }
 .warlord-fallback-grid button.owner-neutral { border-left: 4px dashed var(--wl-sand); }
 .warlord-fallback-grid button.selected { box-shadow: inset 0 0 0 1px var(--wl-focus); }
 .warlord-fallback-grid span { color: var(--wl-ink-lo); font-size: 8px; }
 
 .warlord-battle-layer,
-.warlord-config-layer { position: absolute; inset: 0; z-index: 30; display: grid; place-items: center; background: color-mix(in srgb, var(--wl-bg) 78%, transparent); backdrop-filter: blur(3px); }
+.warlord-config-layer,
+.warlord-help-layer { position: absolute; inset: 0; z-index: 30; display: grid; place-items: center; }
+.warlord-config-layer,
+.warlord-help-layer { background: color-mix(in srgb, var(--wl-bg) 97%, var(--wl-surface)); backdrop-filter: none; }
+/* 战斗结算遮住整张沙盘，不需要读取并模糊其像素。使用不透明底色可让
+   Chromium 直接剔除后层，避免大地图与头像纹理继续进入合成管线。 */
+.warlord-battle-layer { background: color-mix(in srgb, var(--wl-bg) 97%, var(--wl-surface)); backdrop-filter: none; }
 .warlord-battle-layer[hidden],
-.warlord-config-layer[hidden] { display: none; }
-.warlord-battle-dialog { position: relative; width: 790px; max-height: 510px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--wl-sand) 58%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 58%, transparent), transparent 42%), var(--wl-glass); box-shadow: 0 18px 60px color-mix(in srgb, var(--wl-bg) 90%, transparent), inset 0 0 28px color-mix(in srgb, var(--wl-sand) 7%, transparent); }
+.warlord-config-layer[hidden],
+.warlord-help-layer[hidden] { display: none; }
+.warlord-help-layer { z-index: 34; }
+.warlord-help-dialog { width: min(840px, calc(100% - 32px)); max-height: calc(100% - 28px); display: grid; grid-template-rows: auto auto minmax(0, 1fr); overflow: hidden; border: 1px solid color-mix(in srgb, var(--wl-focus) 58%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 70%, var(--wl-focus) 4%), var(--wl-bg)); box-shadow: 0 18px 60px color-mix(in srgb, var(--wl-bg) 92%, transparent); }
+.warlord-help-dialog > header { min-height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--wl-line-mid); }
+.warlord-help-dialog > header span { display: grid; gap: 2px; }
+.warlord-help-dialog > header b { color: var(--wl-focus); font-size: 18px; }
+.warlord-help-dialog > header small { color: var(--wl-ink-lo); font-size: 9px; }
+.warlord-help-dialog > header button { width: 32px; height: 32px; }
+.warlord-help-quick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; border-bottom: 1px solid var(--wl-line-mid); background: var(--wl-line-soft); }
+.warlord-help-quick > span { min-width: 0; display: grid; gap: 3px; padding: 8px 10px; background: var(--wl-surface); }
+.warlord-help-quick b { color: var(--wl-accent); font-size: 10px; }
+.warlord-help-quick small { color: color-mix(in srgb, var(--wl-copy) 78%, var(--wl-bg)); font-size: 9px; line-height: 1.45; }
+.warlord-help-body { min-height: 0; display: grid; grid-template-columns: 180px minmax(0, 1fr); }
+.warlord-help-body nav { min-height: 0; overflow-y: auto; padding: 8px; border-right: 1px solid var(--wl-line-mid); }
+.warlord-help-body nav button { width: 100%; min-height: 34px; margin-bottom: 4px; padding: 5px 8px; text-align: left; }
+.warlord-help-body nav button[aria-current="page"] { border-color: var(--wl-focus); color: var(--wl-focus); background: color-mix(in srgb, var(--wl-focus) 10%, var(--wl-surface)); }
+.warlord-help-body article { min-height: 0; overflow-y: auto; padding: 16px 20px 20px; }
+.warlord-help-body h2 { margin: 0 0 8px; color: var(--wl-sand); font-size: 19px; }
+.warlord-help-body p,
+.warlord-help-body li { color: color-mix(in srgb, var(--wl-copy) 82%, var(--wl-bg)); font-size: 11px; line-height: 1.75; }
+.warlord-help-body ul { margin: 10px 0 16px; padding-left: 20px; }
+.warlord-help-body article > button { min-height: 34px; padding: 6px 12px; color: var(--wl-focus); }
+.warlord-battle-dialog { position: relative; width: min(790px, calc(100% - 32px)); height: min(510px, calc(100% - 28px)); display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto auto; overflow: hidden; border: 1px solid color-mix(in srgb, var(--wl-sand) 58%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 58%, transparent), transparent 42%), var(--wl-glass); box-shadow: 0 18px 60px color-mix(in srgb, var(--wl-bg) 90%, transparent), inset 0 0 28px color-mix(in srgb, var(--wl-sand) 7%, transparent); }
 .warlord-battle-dialog > header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--wl-line-mid); background: linear-gradient(90deg, color-mix(in srgb, var(--wl-rust) 8%, transparent), transparent 34%, transparent 66%, color-mix(in srgb, var(--wl-blue) 7%, transparent)), linear-gradient(180deg, color-mix(in srgb, var(--wl-surface) 92%, var(--wl-sand) 5%), color-mix(in srgb, var(--wl-bg) 88%, transparent)); }
 .warlord-battle-dialog > header span { display: grid; gap: 2px; }
 .warlord-battle-dialog > header b { color: var(--wl-sand); font-size: 17px; }
 .warlord-battle-dialog > header small { color: var(--wl-ink-lo); font-size: 8px; }
 .warlord-battle-dialog > header strong { color: var(--wl-accent); font-size: 17px; }
-.warlord-battle-formations { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
+.warlord-battle-formations { min-height: 0; display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 12px; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: 10px; }
+.warlord-battle-formations section { min-width: 0; }
 .warlord-battle-formations section > h3 { margin: 0 0 6px; color: var(--wl-ink-lo); font-size: 10px; letter-spacing: .12em; }
 .warlord-battle-dialog article { display: grid; grid-template-columns: 42px 1fr; gap: 6px; min-height: 60px; margin-bottom: 4px; padding: 4px; border-left: 3px solid var(--wl-rust); background: var(--wl-surface); }
 .warlord-battle-dialog article.blue { border-left-color: var(--wl-blue); }
@@ -777,7 +920,7 @@
 .warlord-battle-event p { margin: 3px 0 0; color: color-mix(in srgb, var(--wl-copy) 78%, var(--wl-bg)); font-size: 10px; }
 .warlord-battle-controls { display: flex; justify-content: flex-end; gap: 5px; padding: 9px 10px; }
 .warlord-battle-controls button { padding: 5px 9px; }
-.warlord-battle-log { max-height: 105px; overflow-y: auto; margin: 0 10px 10px; padding: 5px; background: var(--wl-surface); }
+.warlord-battle-log { min-height: 0; max-height: 105px; overflow-y: auto; overscroll-behavior: contain; margin: 0 10px 10px; padding: 5px; background: var(--wl-surface); }
 .warlord-battle-log p { display: grid; grid-template-columns: 28px 1fr; margin: 0 0 3px; font-size: 8px; }
 .warlord-battle-log span { color: var(--wl-accent); }
 
@@ -905,7 +1048,7 @@
 .warlord-hover-chip b { color: var(--wl-sand); font-size: 10px; white-space: nowrap; }
 .warlord-hover-chip span { color: color-mix(in srgb, var(--wl-copy) 76%, var(--wl-bg)); font-size: 8px; white-space: nowrap; }
 
-/* 首次引导教练点：左上固定；意图条脉冲同动画；reduced-motion 由全局规则降级 */
+/* 首次引导教练点：静态高亮，避免闲置与结算遮挡期间仍循环重绘阴影。 */
 .warlord-coach-tip {
     position: absolute;
     top: 30px;
@@ -918,14 +1061,15 @@
     color: color-mix(in srgb, var(--wl-focus) 84%, white);
     font-size: 8px;
     letter-spacing: .04em;
-    pointer-events: none;
-    animation: warlord-coach-pulse var(--wb-motion-ambient, 1800ms) ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--wl-focus) 34%, transparent);
 }
 .warlord-coach-tip[hidden] { display: none; }
-.warlord-command-intent.is-coach { animation: warlord-coach-pulse var(--wb-motion-ambient, 1800ms) ease-in-out infinite; }
-@keyframes warlord-coach-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--wl-focus) 34%, transparent); }
-    50% { box-shadow: 0 0 0 5px transparent; }
+.warlord-coach-tip button { min-height: 24px; padding: 2px 7px; color: var(--wl-focus); font-size: 8px; }
+.warlord-command-intent.is-coach {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--wl-focus) 34%, transparent);
 }
 
 /* 进攻二次确认：意图条转红色警示 */
@@ -936,10 +1080,32 @@
 }
 .warlord-command-intent.is-armed b { color: color-mix(in srgb, var(--wl-danger) 84%, white); }
 
-/* 驻军栏"全选本据点"：独立工具条行，40px 命中；列表让出对应高度 */
-.warlord-force-toolbar { display: flex; padding: 3px 6px 0; }
-.warlord-select-all { flex: 1; min-height: 40px; color: var(--wl-focus); font-size: 10px; letter-spacing: .08em; }
-.warlord-force-list { height: 229px; }
+/* 驻军栏编组工具：保持单行 40px 命中，详情占满主区余量并在内部滚动。 */
+.warlord-force-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px 6px 0; }
+.warlord-force-toolbar button { min-width: 0; min-height: 40px; padding: 3px; font-size: 8px; line-height: 1.25; }
+.warlord-select-all { color: var(--wl-focus); letter-spacing: .04em; }
+
+.warlord-command-element .warlord-element-metrics { color: var(--wl-accent); font-variant-numeric: tabular-nums; }
+.warlord-task-group {
+    margin-bottom: 6px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--wl-focus) 30%, var(--wl-line-mid));
+    background: color-mix(in srgb, var(--wl-surface) 90%, var(--wl-focus) 5%);
+}
+.warlord-task-group > .warlord-piece { margin-bottom: 0; border-bottom: 1px solid var(--wl-line-soft); }
+.warlord-task-group-controls { display: grid; gap: 5px; padding: 5px; }
+.warlord-task-group-controls fieldset { min-width: 0; margin: 0; padding: 4px; border: 1px solid var(--wl-line-soft); }
+.warlord-task-group-controls legend { padding: 0 3px; color: var(--wl-focus); font-size: 8px; }
+.warlord-formation-picker > div { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.warlord-formation-picker label,
+.warlord-task-group-members label { min-width: 0; display: flex; align-items: center; gap: 3px; color: var(--wl-copy); font-size: 8px; }
+.warlord-formation-picker input,
+.warlord-task-group-members input { flex: none; margin: 0; accent-color: var(--wl-focus); }
+.warlord-formation-picker span,
+.warlord-task-group-members span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.warlord-formation-picker p { margin: 4px 0 0; color: var(--wl-ink-lo); font-size: 7px; line-height: 1.35; }
+.warlord-task-group-members { display: grid; gap: 3px; }
+.warlord-task-group-controls > button { min-height: 28px; color: var(--wl-focus); font-size: 8px; }
 
 /* 排产阶段微文案：行动阶段提示排产/升阶在统一结算开放 */
 .warlord-roster-hint { color: var(--wl-warning); font-size: 8px; line-height: 1.4; }

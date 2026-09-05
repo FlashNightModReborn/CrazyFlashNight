@@ -1,11 +1,17 @@
 import { applyCommand } from '../core/engine.js';
 import { createGame } from '../core/state.js';
 import type { Difficulty, GameCommand, GameState, PresetId } from '../core/types.js';
+import { runtimeMapBundleForScenarioRef } from '../data/map.js';
 
 export interface ReplayFile {
   schemaVersion: 1;
   rulesVersion: string;
   configDigest: string;
+  scenarioId: string;
+  mapDefinitionId: string;
+  mapPresentationId: string;
+  organizationConfigDigest: string;
+  encounterConfigDigest: string;
   gameSeed: string;
   difficulty: Difficulty;
   preset: PresetId;
@@ -18,10 +24,20 @@ export interface ReplayFile {
 }
 
 export function makeReplay(state: GameState): ReplayFile {
+  const completeHistory = state.commandHistory.length === state.commandSequence
+    && state.commandHistory.every((record, index) => record.sequence === index + 1);
+  if (!completeHistory) {
+    throw new Error('当前战局缺少从第 1 条开始的完整命令历史，不能导出完整录像。');
+  }
   return {
     schemaVersion: 1,
     rulesVersion: state.rulesVersion,
     configDigest: state.configDigest,
+    scenarioId: state.scenarioId,
+    mapDefinitionId: state.mapDefinitionId,
+    mapPresentationId: state.mapPresentationId,
+    organizationConfigDigest: state.organization.configDigest,
+    encounterConfigDigest: state.encounter.configDigest,
     gameSeed: state.gameSeed,
     difficulty: state.difficulty,
     preset: state.preset,
@@ -43,13 +59,40 @@ export function parseReplay(json: string): ReplayFile {
   if (parsed.schemaVersion !== 1) throw new Error('不支持的录像 schemaVersion。');
   if (typeof parsed.gameSeed !== 'string' || !Array.isArray(parsed.commands)) throw new Error('录像缺少种子或命令列表。');
   if (!parsed.rulesVersion || !parsed.configDigest || !parsed.difficulty || !parsed.preset) throw new Error('录像版本字段不完整。');
+  if (typeof parsed.scenarioId !== 'string' || parsed.scenarioId.length === 0
+    || typeof parsed.mapDefinitionId !== 'string' || parsed.mapDefinitionId.length === 0
+    || typeof parsed.mapPresentationId !== 'string' || parsed.mapPresentationId.length === 0) {
+    throw new Error('旧录像缺少关卡与地图身份，不能在多阵营规则下静默重放。');
+  }
+  if (typeof parsed.organizationConfigDigest !== 'string' || parsed.organizationConfigDigest.length === 0) {
+    throw new Error('旧录像缺少编制配置摘要，不能在新编制规则下静默重放。');
+  }
+  if (typeof parsed.encounterConfigDigest !== 'string' || parsed.encounterConfigDigest.length === 0) {
+    throw new Error('旧录像缺少接敌距离配置摘要，不能在新接敌距离规则下静默重放。');
+  }
   return parsed as ReplayFile;
 }
 
 export function replayGame(replay: ReplayFile): GameState {
-  let state = createGame({ seed: replay.gameSeed, difficulty: replay.difficulty, preset: replay.preset });
+  let state = createGame({
+    seed: replay.gameSeed,
+    difficulty: replay.difficulty,
+    preset: replay.preset,
+    runtimeBundle: runtimeMapBundleForScenarioRef(replay.scenarioId),
+  });
   if (state.rulesVersion !== replay.rulesVersion) throw new Error(`录像规则版本不匹配：${replay.rulesVersion} != ${state.rulesVersion}`);
   if (state.configDigest !== replay.configDigest) throw new Error('录像配置摘要不匹配。');
+  if (state.scenarioId !== replay.scenarioId
+    || state.mapDefinitionId !== replay.mapDefinitionId
+    || state.mapPresentationId !== replay.mapPresentationId) {
+    throw new Error('录像关卡或地图身份不匹配。');
+  }
+  if (state.organization.configDigest !== replay.organizationConfigDigest) {
+    throw new Error('录像编制配置摘要不匹配。');
+  }
+  if (state.encounter.configDigest !== replay.encounterConfigDigest) {
+    throw new Error('录像接敌距离配置摘要不匹配。');
+  }
   for (const [index, command] of replay.commands.entries()) {
     const result = applyCommand(state, command);
     if (!result.ok) throw new Error(`录像命令 ${index + 1} 非法：${result.error}`);

@@ -1,8 +1,7 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source commit `0b71d91987bee27f399bedc90a2c648a8bcbf44e`（2026-09-03，Reward 根事务与黑市软锁观测；deployment `95ea7e8f7c862ea28f6b8c7c906173a701d71336`，Audit `33702253144`）。动态 identity/closure、发布审计与当前 release state 只读下列 manifest、consensus 与 runtime 文档。
-W/B0 保持 `HUMAN_ACCEPTANCE_PASSED / promoted`，正式业务旅程待复验；A/A1 与 S/O1 已通过 H-A/H-S、双故障域共识、原子 promotion、部署推送与 Audit，现为 `HUMAN_ACCEPTANCE_PASSED / promoted / FORMAL_BUSINESS_REVALIDATION_PENDING`，不称 A/S 专项 `standard_entry_verified`。
+**最后核对代码基线**：上游 source `565d8e09ce364c23ad543e821d2957f011315cfd`、deployment `14c569d1ef856faa05388af090f796f7299bd45a`；军阀工作树已对齐 `4ae00a1762`。正式发布状态只读 manifest、consensus 与 runtime 文档；军阀候选另见[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)，不等同正式部署。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：
@@ -97,7 +96,7 @@ bootstrap preflight
 | 通道 | 用途 | 约束 |
 |---|---|---|
 | WebView2 message | Bootstrap、Overlay、Panel 控制与展示 | Host 校验命令和 payload；Web 不拥有业务写权限。Character Build `item_use` 只转发严格闭集，AS2 独占物资裁决与四条药剂帧冷却；Web 的格内冷却阴影仅采样 `cooldownSnapshot`，不按现实时间续算，也不新增独立排版行。Reward Inbox 结束先经 AS2 nonce preflight，再由 PanelHost 原位换成全新构筑会话并继承 pause lease，失败才 exact close/unpause 后从 idle 重试 |
-| XMLSocket | Flash ↔ Host 任务消息 | 连接、握手和业务回包分别判定，裸 socket 不能代签 Flash 建连；GameStage `T+|id|seconds|label` / `T-|id` / `T!` 仅投影 keyed 计时 HUD，AS2 独占倒计时和失败裁决，断连清理 |
+| XMLSocket | Flash ↔ Host 任务消息 | 连接、握手、业务回包分别判定；军阀 `warlord_stage_start` 使用 exact binding，Host 只在 tracked close 后回送 AS2，不放宽 `panel_request`。outer `not_started` 是吸收性父启动失败，整局恢复面已移除；父退出只用 outer cancellation 退休 Host owner |
 | HTTP | 兼容查询、资源与受限控制面 | legacy automation 不是 Agent Runtime 的信任边界 |
 | V8 | 搓招 `GameInput` DFA | 单 engine/单锁，模块源与加载闭包必须可复验；不再持有伤害数字状态或渲染描述符 |
 | named pipe / MCP | CF7 Agent Runtime | 观察 grant 与 write lease 分离，绑定 peer/session/frame/generation |
@@ -152,12 +151,10 @@ Agent Runtime 的 wire、受信 runner、credential bootstrap、30 秒预算和 
 
 ## 构建、候选与发布
 
-**最后核对代码基线**：commit `04718fa57afb64836e95893f0c4ff821d25ca043`（2026-08-16）。
-
+**最后核对代码基线**：commit `dff0c4390b5788151f75954cde397d54fba54257`（2026-08-31）；2026-09-01 vNext 施工仍在未提交工作树。
 ### 日常开发
 
 推荐使用仓库级开发入口：
-
 ```powershell
 chcp.com 65001 | Out-Null
 powershell -File automation/dev.ps1
@@ -398,7 +395,10 @@ Panel 的共同边界：
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。
 Minigame 专项说明分别位于 [lockbox](web/modules/minigames/lockbox/README.md)、[pinalign](web/modules/minigames/pinalign/README.md)、[gobang](web/modules/minigames/gobang/README.md)、[黑市全目录影子版](web/modules/minigames/blackmarket/README.md)和[军阀战术演习](web/modules/minigames/warlord/README.md)。
 `blackmarket` 保持 `dev + shadowOnly`、匿名表面与 `productionWrites=false`；close 绑定 exact instance。临时 O1 仅在 `CF7_BLACKMARKET_SOFTLOCK_OBSERVATION=1` 时由 Web/Host 双重放行：立即一次后每 10 秒发 heartbeat，每生命周期最多记录 64 条脱敏 tuple 并发送只读 AS2 probe；无 timeout、retry、watchdog、自动 close 或修复，默认关闭。测试见 [testing guide](../agentsDoc/testing-guide.md)。
-`warlord` 为 `1024×576` 全锚、`productionWrites=false / battleAuthority=as2`；卡牌隔离战宠，JS resolver 仅供 fixture，恢复只走 Host 内部专用路由。维护者已确认 c4 战后返回；正式列车已 promotion/audit/identity smoke，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`，未重跑部署后军阀业务。详见[军阀演习 ADR](../docs/军阀战术演习-3D沙盘UI-ADR-2026-08-24.md)。
+`warlord` vNext 已贯通 `stage-v1`、通用九节点、编组、五阵型和三档距离，并将规则泛化为 opaque N 阵营；Demo 2 是 80 节点“厚 ×”、四阵营、三个胜利组和四名指挥官。两关只由 `其他 → 测试 → 军阀演习测试` 暴露，默认生产目录不含军阀条目。
+Slice 6.1 已按 `APPROVE_COLLAPSE / PREFER_B` 收敛：`StageManager` 物化临时普通 `StageInfo` 并与标准 `wuxianguotu_1` / frame 209 独占场景生命周期；`SceneManager` 仅物理 init/remove，`StageRunSession` 仅父 GameStage，runner 仅 outer binding/result，service 仅战斗事实。
+Action 使用有界 handoff；Host 在捕获的同一 socket generation、同一 binding 上有限重发，AS2 duplicate 不重建场景，terminal 优先重投。玩家操控侧仅从实际参战的可信主角投影推导；普通部队交战使用 `none` 旁观，不按战略阵营授予操控权。
+整局 recovery 不承担第二套场景生命周期。交接、结算及面板关闭时释放隐藏沙盘，AS2 resume 显示静态终局，game reveal 后退休 Bootstrap WebView2。当前候选、历史失败、自动证据与人类验收只维护于[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)。
 ## 存档编辑与诊断
 
 Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原始编辑、diff、搜索和诊断包导出。字段权威是 [save_schema.json](data/save_schema.json)，业务读写仍经过 Host handler 和存档安全策略。
@@ -411,7 +411,7 @@ Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原�
 | Core 已起但未 reveal | `logs/launcher.log` 的 WebView2、Flash title receipt、LaunchFlow 状态 |
 | Flash 未连总线 | `WaitingConnect → WaitingHandshake`、FlashPlayerTrust 和真实 Launcher 进程 |
 | Panel 打不开或立即关闭 | open/admission、instance/generation、focus/lifecycle 和 Web console |
-| Web 画面黑屏 | hot reload、WebView2 process failure、overlay suspend/resume；不要先把 watcher 打开 |
+| Web 画面黑屏 | HWND/controller 成对显隐：先 `IsVisible=false` 再隐藏父窗，父子窗恢复后才 `true`，几何同步不能提前显露。军阀 `warlord_presentation_sample` 每实例只读一次 DOM 几何/可见性/按钮命中，无截图、轮询、重试或新结算门。再查 process failure/hot reload，不要先开 watcher |
 | Audio 无声 | Host audio 状态、存档音量、endpoint generation；H2 按专项流程处理 |
 | candidate/正式身份不符 | verifier 输出、process path、manifest、identity、closure 和 consensus |
 Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../scripts/FlashCS6自动化编译.md)；没有新鲜 trace、Output Panel 或 IDE 复核时，不声称“已编译通过”。

@@ -181,6 +181,9 @@ let rafId = 0;
 let paused = false;
 let characterCreateActive = false;
 let bodyClassObserver = null;
+let retired = false;
+let confirmButton = null;
+const messageUnsubscribers = [];
 let lastFrameAt = -Infinity; // 上一实际渲染帧时刻（限帧用）
 let sawFirstListResp = false;
 let lastState = null;
@@ -200,6 +203,7 @@ const readout = {
 
 // 叙事日志运行态（DOM 运行时注入，teardown 移除）
 const logBox = { style: null, root: null, lines: 0 };
+const logTimers = new Set();
 
 // prefers-reduced-motion 降级运行态
 let reducedMedia = null;
@@ -213,10 +217,10 @@ function clearPhaseTimers() {
 }
 
 function startSwapLoop() {
-  if (swapTimer !== null || engine === null || renderer === null) return;
+  if (retired || swapTimer !== null || engine === null || renderer === null) return;
   const step = () => {
     swapTimer = null;
-    if (!SWAP_PHASES.has(machine.phase)) return; // 相位已切走，链自然终止
+    if (retired || !SWAP_PHASES.has(machine.phase)) return; // 相位已切走，链自然终止
     engine.nextInto(board);
     renderer.updateValues(board);
     swapTimer = setTimeout(step, nextSwapDelay());
@@ -241,6 +245,7 @@ function stopSwapLoop() {
 }
 
 function enterPhase(phase, options = {}) {
+  if (retired) return;
   const {
     duration = Infinity,
     fault = machine.fault,
@@ -326,9 +331,11 @@ function requestSynchronized() {
 }
 
 function enterAmbient() {
+  if (retired) return;
   enterPhase(PHASE.SCRAMBLE, { fault: FAULT_AMBIENT });
   ambientTimer = setTimeout(() => {
     ambientTimer = null;
+    if (retired) return;
     // 二面体变轨间奏：约每 2–4 个插播周期一次（prefers-reduced-motion 降级下禁用）
     if (!reducedMotion) {
       spinCountdown -= 1;
@@ -522,9 +529,20 @@ function createLog() {
 }
 
 function removeLog() {
+  for (const timer of logTimers) clearTimeout(timer);
+  logTimers.clear();
   if (logBox.root !== null) { logBox.root.remove(); logBox.root = null; }
   if (logBox.style !== null) { logBox.style.remove(); logBox.style = null; }
   logBox.lines = 0;
+}
+
+function scheduleLogTimeout(callback, delay) {
+  const timer = setTimeout(() => {
+    logTimers.delete(timer);
+    callback();
+  }, delay);
+  logTimers.add(timer);
+  return timer;
 }
 
 // tone: "" 默认信息 / "ok" 锁定与就绪 / "err" 敌对故障
@@ -544,12 +562,15 @@ function narrativeLog(text, tone = "") {
   while (items.length > LOG_MAX_LINES) {
     const oldest = items[0];
     oldest.classList.add("fade");
-    setTimeout(() => oldest.remove(), 650);
+    scheduleLogTimeout(() => oldest.remove(), 650);
     if (items.length > LOG_MAX_LINES * 2) oldest.remove(); // 兜底防堆积
     break;
   }
   for (let i = 0; i < items.length - 1; i += 1) items[i].classList.add("old");
-  setTimeout(() => { line.classList.add("fade"); setTimeout(() => line.remove(), 650); }, LOG_LINE_TTL_MS);
+  scheduleLogTimeout(() => {
+    line.classList.add("fade");
+    scheduleLogTimeout(() => line.remove(), 650);
+  }, LOG_LINE_TTL_MS);
   logBox.lines += 1;
 }
 
@@ -664,18 +685,31 @@ function tick(now) {
   } catch (error) {
     // 渲染期异常（如 GPU context lost）：静默撤下，绝不上抛到全局
     console.warn("[bg-gl] 渲染循环异常，背景层已撤下:", error);
-    teardown();
+    teardown("render-failed");
     return;
   }
   rafId = requestAnimationFrame(tick);
 }
 
 function isPaused() {
-  return document.hidden || document.body.classList.contains("intro-video");
+  // WebView2/WinForms 仅隐藏宿主 Control 时不保证 document.hidden 更新。
+  // BootstrapPanel 在游戏 reveal 前先设置 cf7-host-hidden，让这一条 30fps
+  // WebGL rAF 链真正停下，随后 Host 才请求 CoreWebView2 suspend。
+  return document.hidden
+    || document.body.classList.contains("intro-video")
+    || document.body.classList.contains("cf7-host-hidden");
 }
 
 function updatePause() {
+  // Ready reveal 是单向的 Bootstrap → Flash 权威交接。BootstrapPanel 虽仍可
+  // 保留为可诊断的 DOM，但背景 GPU 资源没有恢复价值；彻底销毁比仅停 rAF
+  // 更可靠，也覆盖换盘 timer 在 reveal race 中仍可能写 GPU buffer 的情况。
+  if (document.body.classList.contains("cf7-host-hidden")) {
+    teardown("host-retired");
+    return;
+  }
   const shouldPause = isPaused();
+  document.body.dataset.bgGlLifecycle = shouldPause ? "paused" : "active";
   if (shouldPause === paused) return;
   paused = shouldPause;
   if (paused) {
@@ -693,6 +727,7 @@ function isCharacterCreateActive() {
 // 建角期间沿用 PM19 自身的环境相位，不额外叠加另一套“幻方”图形。
 // Ready 仍被记住；退出建角后回到同一同步终态。
 function updateCharacterCreateMode() {
+  if (retired) return;
   const next = isCharacterCreateActive();
   if (next === characterCreateActive) return;
   characterCreateActive = next;
@@ -708,10 +743,17 @@ function updateCharacterCreateMode() {
 
 function updateBodyState() {
   updatePause();
+  // updatePause 可能因 cf7-host-hidden 同步退休整个页面；同一批 class
+  // mutation 不能再进入建角相位并复活 timer 链。
+  if (retired) return;
   updateCharacterCreateMode();
 }
 
-function teardown() {
+function teardown(reason = "retired") {
+  if (retired) return;
+  document.body.dataset.bgGlLifecycle = reason;
+  retired = true;
+  paused = true;
   clearPhaseTimers();
   stopSwapLoop();
   spin.active = false;
@@ -722,13 +764,33 @@ function teardown() {
   reducedMedia = null;
   if (bodyClassObserver !== null) bodyClassObserver.disconnect();
   bodyClassObserver = null;
+  document.removeEventListener("visibilitychange", updatePause);
+  if (confirmButton !== null) confirmButton.removeEventListener("click", onConfirmStart, true);
+  confirmButton = null;
+  for (const unsubscribe of messageUnsubscribers.splice(0)) {
+    try { unsubscribe(); }
+    catch (error) { console.warn("[bg-gl] 消息退订异常，继续退休背景:", error); }
+  }
   removeReadout();
   removeLog();
   if (rafId !== 0) { cancelAnimationFrame(rafId); rafId = 0; }
   const canvas = document.getElementById("bg-gl");
+  if (renderer !== null && typeof renderer.dispose === "function") {
+    try {
+      renderer.dispose();
+    } catch (error) {
+      console.warn("[bg-gl] 背景资源回收异常，继续撤下挂载点:", error);
+    }
+  }
   if (canvas) canvas.remove();
   renderer = null;
   engine = null;
+}
+
+function onConfirmStart() {
+  if (retired) return;
+  narrativeLog("操作员确认 · 双对角锁定开始");
+  enterDiagonalLock();
 }
 
 // ───────────────────── 装配 ─────────────────────
@@ -736,6 +798,10 @@ function teardown() {
 async function main() {
   const canvas = document.getElementById("bg-gl");
   if (!(canvas instanceof HTMLCanvasElement)) return; // 无挂载点，静默退出
+  if (document.body.classList.contains("cf7-host-hidden")) {
+    teardown("host-retired");
+    return;
+  }
 
   // 1) 加载种子库（8 张 verified seed，fetch + SHA-256 校验由引擎完成）。
   //    vendored manifest 的 url 是 /web/assets/... 站点绝对路径，在内存中重映射到
@@ -746,6 +812,10 @@ async function main() {
     url: new URL(entry.url.slice(entry.url.lastIndexOf("/") + 1), SEED_BANK_URL).href,
   }));
   const seeds = await Promise.all(entries.map(loadPrimeMagicSeed));
+  if (retired || document.body.classList.contains("cf7-host-hidden")) {
+    teardown("host-retired");
+    return;
+  }
 
   // 2) 引擎：随机种子取自 Web Crypto，避免固定轨道序列
   const randomSeed = crypto.getRandomValues(new BigUint64Array(1))[0];
@@ -784,21 +854,20 @@ async function main() {
   // 5) 事件订阅：BootstrapApp 可能尚未定义，缺失时退化为 DOM 事件 + 环境循环
   const app = window.BootstrapApp;
   if (app && typeof app.onMessage === "function") {
-    app.onMessage("list_resp", onFirstListResp, { replayLatest: true });
-    app.onMessage("state", onLaunchState, { replayLatest: true });
-    app.onMessage("flash_ready", requestSynchronized, { replayLatest: true });
-    app.onMessage("flash_ready", () => narrativeLog("封面帧到达 · 黑铁通路打开", "ok"), { replayLatest: true });
+    messageUnsubscribers.push(
+      app.onMessage("list_resp", onFirstListResp, { replayLatest: true }),
+      app.onMessage("state", onLaunchState, { replayLatest: true }),
+      app.onMessage("flash_ready", requestSynchronized, { replayLatest: true }),
+      app.onMessage("flash_ready", () => narrativeLog("封面帧到达 · 黑铁通路打开", "ok"), { replayLatest: true }),
+    );
   } else {
     console.warn("[bg-gl] BootstrapApp 未就绪，仅使用 DOM 事件 + 环境循环");
     enterAmbient();
   }
 
-  const confirmButton = document.getElementById("btn-confirm-start");
+  confirmButton = document.getElementById("btn-confirm-start");
   if (confirmButton) {
-    confirmButton.addEventListener("click", () => {
-      narrativeLog("操作员确认 · 双对角锁定开始");
-      enterDiagonalLock();
-    }, true);
+    confirmButton.addEventListener("click", onConfirmStart, true);
   }
 
   // 6) 暂停/恢复：页面隐藏或片头视频（body.intro-video）期间停 rAF
@@ -812,5 +881,5 @@ async function main() {
 main().catch((error) => {
   // 静默回退总闸：种子/引擎/双渲染器任一失败，撤下 canvas 并告警，绝不影响主流程
   console.warn("[bg-gl] 背景层初始化失败，已静默撤下:", error);
-  teardown();
+  teardown("failed");
 });

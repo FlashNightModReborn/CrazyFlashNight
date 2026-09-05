@@ -631,7 +631,57 @@ if (loader.isLoaded()) {
 
 ---
 
-## 7. 新增数据文件流程
+## 7. 军阀 vNext 契约与 Slice 1～6
+
+`launcher/web/modules/minigames/warlord/src/strategy/**` 现包含 TypeScript `MapDefinition / WarlordScenario / MapVisualDefinition / OrganizationDefinition / EncounterDefinition` v1 的归一化、严格静态/语义校验、索引、拓扑指标和摘要。它不是 `data/warlord/` 的正式 XML schema；Demo 1 九节点教程与 Demo 2 八十节点候选均由受校验 Map/Scenario/Visual 配置驱动 `createGame`、地图访问、AI、Three/DOM 和 replay adapter，Organization 与目标节点 Encounter sidecar 继续分别冻结编制和实际交战距离。
+
+- Map/Node/Edge/EncounterProfile 引用使用最长 160 字符的 opaque string ID；合法字符为 ASCII 字母、数字、`.`、`_`、`~`、`-`，不得把 `"007"` 数值化。
+- `nodes` / `edges` 接受单项或数组输入，归一化后才校验；未知字段、未知 schemaVersion、重复 ID、无向重复边、自环、未知节点、空图、断图及 `attackWidth > garrisonCapacity` 全部 fail closed。
+- 失败只返回稳定 `{reasonCode,path,params}`，不把开发者错误句子直接显示给玩家。
+- 规则定义不含 `x/y`、theme 或模型锚点；规则与 presentation 分别生成 SHA-256 digest，MapVisualDefinition 以 nodeRef 严格闭合地图节点。
+- 9 节点 Demo 1 与 `demo2-thick-x-80` 都进入通用 parser/index 和运行时地图选择；约 24 节点桥接及 96/128 节点压力夹具仍只证明各自的解析/拓扑合同，不把合成夹具冒充产品地图或真人性能证据。
+- Scenario schema 保存 opaque faction 引用、固定 turnOrder、初始控制与驻军；Slice 4 的 `GameState` 已泛化为 N 阵营，并保存对称 `allied / neutral / hostile` 关系矩阵、VictoryGroup 与 Commander。Demo 2 固定四阵营、三个胜利组、四名指挥官：玩家使用真实主角；`boss-pact-a = 吴豫 / Itinerant / cardId 111`，`boss-independent = 袁望 / Surveyor / cardId 113`，`boss-pact-b = 阎凝儿 / Gazer / cardId 112`。吴豫与阎凝儿同盟；袁望是政治独立势力，但本局与其余三方关系均为 hostile。
+- Demo 2 地图由四角各 14 个本土节点、16 个争夺臂节点和中央 8 节点工业环组成。导航按中文搜索/告警和六节点窗口投影，Three 使用三级 LOD、路线批处理与 overview instancing；AI 只经受预算约束的局部命令枚举器生成候选，不扫描整图笛卡尔命令集。
+
+Slice 3 的 `src/data/organization-manifest.json` 是当前 Web runtime 的编制真源，构建时与 `src/data/organization.ts` 规范化结果逐字节摘要闭合：
+
+- UnitTemplate、TaskGroupTemplate、FormationProfile 均 exact-key；未知字段、ID/引用、非安全整数、负值或非法 divisor 全部 fail closed。
+- 当前 OrganizationDefinition 共 11 个 UnitTemplate：8 张普通兵卡继续进入底栏和生产目录，cardId `111/112/113` 是三张唯一指挥官卡，只能由 Commander ledger 重建，不能普通排产。实现常量固定为 `CARD_IDS=11`、`PRODUCTION_CARD_IDS=8`；当前 `organizationConfigDigest` 为 `sha256:7FBBFE6B24592A7356B6AC9CACB14D49803FBA2214D8A9FFBD71599211114DA3`。
+- `data/merc/pets.xml` 的军阀分类同步登记 `111=吴豫/敌人-Itinerant`、`112=阎凝儿/敌人-Gazer`、`113=袁望/敌人-Surveyor`；Height 分别取登场单位数据 `175/180/180`，三者 `KPrice=12000`、`IncreasePrice=0`、`Unique=true`。它们是卡牌与 AS2 roster 的合法战宠投影目录项，不因此获得普通排产权。
+- 每个存活 member 恰好属于一个 active CommandElement；TaskGroup 只保存 member 引用和 Formation，不复制 `PieceState`、HP、身份或位置权威。
+- Demo 1 member 的 `commandLoad/deploymentSize/apContribution=1`，TaskGroup `commandLoadDivisor=1`，以保持 Host v1 `pieceIds.Count` 与新三量一致。非 1 divisor 在 Host wire 升级前不得用于产品场景。
+- `line/column/wedge/shield/grid` 复用既有战斗阵型语义引用与 slotRoles，不保存像素、Three 坐标或 AS2 出生坐标；当前 fresh Action 产品桥仍按每方统一阵型投影，逐成员 DeploymentPlan 属于后续扩展。
+- runtime manifest 与 replay 都必须绑定 `organizationConfigDigest`；旧 replay 缺摘要拒绝，旧 frozen state 只有在整个 organization 缺失时才可确定性补 singleton，畸形 present sidecar 不迁移。
+
+Slice 3.1 的 `src/data/encounter-manifest.json` 是三档距离真源，身份固定为 `demo1-encounter-distance / warlord.encounter-distance.v1`，规范 LF 字节 SHA-256 固定为 `sha256:6D94E0ABCA11BE5AE1574219D30E4E8E1E3890293496FB2192E081AB24DFE29E`：
+
+- profile catalog 只允许 `encounter.near / near / 180`、`encounter.medium / medium / 360`、`encounter.far / far / 650`；未知 profile、重复档位、数值越界或 profile/档位/数值错配全部 fail closed。
+- MapDefinition 必须以 `encounterDefinitionRef` 绑定定义，每个节点必须有 `encounterProfileRef`；构建出的节点同时保存解析后的 `distanceBand/spawnDistance`，但作者配置不在每个节点重复写裸数值。
+- Demo 1 九节点精确覆盖为总部 near、双方补给/经济 medium、中央三节点 far；目标节点决定交战距离，起点、Formation 与兵种不改写它。
+- Demo 2 复用同一冻结 profile catalog；其 80 个 runtime 节点逐一保存 `encounterProfileRef/distanceBand/spawnDistance`。Host 按独立 exact 目标目录重算，未知节点、缺 sidecar 或 profile/档位/距离错配均在启动 AS2 前拒绝。
+- GameState encounter sidecar 精确保存 `definitionId/rulesVersion/configDigest`；尚无稳定 config digest 的仅是 Demo 2 Scenario/Map 战略 authoring，不包括已稳定的 Organization 与 Encounter 定义。其临时 Host 权限边界是 exact `scenarioRef + rulesVersion + mapId`，不得冒用 Demo 1 digest，也不得把浏览器自报摘要称为已验证。
+- 旧 v1 只有在整个 encounter sidecar 与所有节点 encounter 字段都缺失时兼容为 `far/650`；任一新字段 present 后的缺失、未知、错配或摘要漂移必须拒绝，不能半迁移。
+- 本纵切不包含通用 `scenePoolRef/directorRef/EncounterBudget`；这些字段与正式 XML 映射保留为后续扩展，不属于本轮 Slice 5 fresh-world 产品桥放行范围。
+
+Slice 1 已允许一种窄 GameStage 形状：根仍直接包含 `SubStage`，不增加 `<SubStages>` wrapper；文件必须只含一个 `<SubStage id="..." driver="Warlord" scenarioRef="..." />`，三个属性必须是 exact own-key set，opaque 值匹配 `^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$`。该 Warlord SubStage 不得出现 `TimePools`、`TimePoolRef`、`BasicInformation` 或其他 Action 字段。Host 当前只接受 catalog 中的 `warlord_tutorial_v1` 与 `warlord_demo_02_v1`，两者各有独立 GameStage XML；AS2 `StageInfo` 内部索引包含两关，但默认 Web Stage Select 不暴露它们。Slice 6 只允许固定 `catalogId=warlord-game-stage-test` 的测试菜单目录选择 Demo 1/2，未知值回落生产目录；正式入口留给 Slice 7。无 `driver` 的旧 SubStage 继续按 Action 解释；混合 Action/Warlord、未知 driver 与多个 Warlord 均 fail closed。
+
+外层 wire 使用 exact 六键 binding：`schema=warlord.stage-outer-binding.v1` 加 `runId/subStageId/scenarioRef/callId/revision`；terminal 与 attempt 分别使用独立 schema，且未知字段一律拒绝。outer `not_started` 是本父 GameStage 的吸收性启动失败，后续 terminal/attempt 都按 late event 拒绝，不得保留 binding 重试或创建 revision+1/new callId。Suspended/Unknown 只保留冻结诊断事实，同样不可复活。这里不得与 inner Action `battle_start` 的 definitively `not_started` 混淆：后者仍允许玩家回到原战略态重新选兵，AI 只收束一次。
+
+Slice 5 的 inner Action 合同不修改战略 battle request，也不再建立 lease。Host→AS2 命令 exact own-key set 为 `task/action/binding/encounter`，其中 `task=cmd`、`action=warlord_action_encounter_start`；binding 使用 `schema=warlord.action-encounter-binding.v2`，exact keys 为 `schema/outerRunId/encounterId/requestId/inputDigest`。`warlord.action-encounter-control.v2` 的 roster 以 `projectionKind=player_avatar|pet_projection` 分流；真实玩家主角固定为 `commander.player / character.player-avatar / player / cardId 83`，控制侧只允许 `blue|red|none`，三名 Boss 仍经 `pets.xml` 投影。主角头像另由 Host 绑定 `warlord.player-avatar-portrait.v1` tuple，只允许 `gender/face/hair` 与 `head/body/hand/leg/foot/neck` 六个装备槽；Web 经共享 `MercPortraits` 消费，拒绝 URL、战斗属性或浏览器自报外观。战斗快照另冻结 `encounterProjectionKind=player_avatar|pet_projection`，结算 presenter 必须据此保留真实主角/纸娃娃身份，不能由 cardId 83 重建为精锐狙击。AS2→Host terminal message 的 exact own-key set 为 `task/payload`，其中 `task=warlord_action_encounter_terminal`；payload 使用 `schema=warlord.action-encounter-terminal.v2`，exact keys 为 `schema/outerRunId/encounterId/requestId/inputDigest/status/reasonCode/result`，status 仅 `completed|not_started|unknown`；`completed` 必须带 object result，其余两态必须 `result=null`。binding/terminal 均无 `leaseGeneration/leaseToken/worldGeneration/worldToken/teardown`，任一未知字段拒绝；Host 只校验、关联和幂等，不能改写 terminal，Web 只消费 accepted terminal 做一次战略提交。若父退出时存在 active Action slot，AS2 仍可独立发送 exact `{task:"warlord_action_encounter_cancelled",payload}`；payload 为 `schema=warlord.action-encounter-cancellation.v1`，exact keys 为 `schema/actionBinding/stageOuterBinding/reasonCode`，reasonCode 只允许 `parent_return_base|parent_restart|stage_exit`，且 `actionBinding.outerRunId` 必须等于 `stageOuterBinding.runId`。它只退休 Action correlation 并吸收匹配的晚到 Action terminal；不得借此退休 outer owner。
+
+r12 新增的 admission 也是 exact `{task,payload}`，其中 `task=warlord_action_encounter_admitted`；payload 使用 `schema=warlord.action-encounter-admission.v1`，exact keys 为 `schema/binding/disposition/phase`。`binding` 必须逐字段等于请求的 v2 binding；`disposition` 只允许 `accepted|duplicate`；`phase` 只允许 `prepared|entering|activating|active|returning|terminal`。Host 在 exact close 后只捕获一次 ready socket generation；首次发送加重试总计最多 4 次、间隔 1 秒，且每次必须使用同一 binding 和 generation。只有 exact admission 或 matching terminal 才确认 AS2 已接纳，本地 socket write/flush 不构成 receipt；耗尽后只 fence 捕获的 generation。AS2 对同 binding duplicate 不建立第二个临时 `StageInfo`，已冻结 terminal 优先于 admission；新 binding B 已 active 时晚到的旧 A 会由 `encounter_active` 分支作为 stale 丢弃，既不生成 A terminal，也不改变 B 的 pending/absorbing terminal。
+
+Web handoff 中的 `state` 是当前战斗复验所需的有界投影，不是完整 replay：`battles=[]`、`commandHistory=[]`、`eventLog` 最多保留末尾 32 条、`casualtyLedger` 只保留未结算项，同时保留 round/command/battle 等单调身份计数。软门按序列化后的真实 UTF-8 字节数计算，最大 `384 KiB`；超过时不得发送。由于历史被有意裁剪，replay 只有在命令历史从 1 连续覆盖当前 `commandSequence` 时才可导出，否则 fail closed，不能用等长但断裂的数组伪装完整历史。
+
+父 GameStage 的唯一 outer 退役消息是 exact `{task:"warlord_stage_outer_cancelled",payload}`。payload exact keys 为 `schema/binding/reasonCode`，其中 `schema=warlord.stage-outer-cancellation.v1`，`binding` 必须是上文完整六键 outer binding，`reasonCode` 必须是 opaque ID。`StageManager` 在 clear、返回基地、restart、reinitialize 与 setup/admission/calibration failure 中先发送该消息，再 dispose runner；它不依赖 Action slot。Host 只按 exact binding 幂等退休当前 outer owner，foreign/late/duplicate 不污染 fresh run；不生成或回送业务 terminal，不裁决场景/战略，也不与通用 `stage_outcome` 或 Action cancellation 耦合。
+
+Slice 4 与 Slice 6 地图/规则仍保留既有机器证据；初始至 r12 候选均固定为 `FAILED / SUPERSEDED / NOT_DEPLOYED`。2026-09-02 的外部审查结论 `APPROVE_COLLAPSE / PREFER_B` 冻结 `StageManager + 临时普通 StageInfo + 标准 wuxianguotu_1/frame209` 独占场景生命周期，`SceneManager` 只做物理 init/remove，`StageRunSession` 只拥有父 GameStage，`WarlordSubStageRunner` 只拥有 outer binding/result，service 只拥有战斗事实；复杂度预算为 `owners=4 / clocks=1 / leases=0 / terminal rewrites=0`。r12 已通过既有 Web/Host/Flash 门并能完成 Action terminal，但真人 7/7 结算暴露固定高度裁掉 controls，播放期间还反复唤醒被 modal 遮挡的沙盘，现场 Intel 核显约 `93%`。r13 不改变 wire/schema：只把编队列表改为内部滚动，并在 battle modal 期间暂停沙盘 rAF/update；fresh Web `199/199`、Edge/CDP `26/26` 后，隔离 candidate `warlord-s6-settle-r13` 已由根入口启动至 Ready。准确状态为 `R13_SOURCE_MACHINE_VERIFIED / R13_CANDIDATE_EXECUTED / HUMAN_ACCEPTANCE_PENDING / NOT_DEPLOYED`；持续战斗、结算操作可达性与 GPU 仍待维护者验收，正式 runtime 未改变。
+
+整局 recovery/retry/revision+1 协议已删除：Host 不再发送 `warlordStageRecoverySync/v1`，TaskRegistry 不再注册 `warlord_stage_recovery`，Native HUD 不再展示“重试演习/恢复演习”，`stageOutcomeAction v2` 也不再承载 Warlord restore intent。`stage_outcome v1` 保持通用关卡/HUD 投影职责，但它是 best-effort 且没有 owner-retirement ACK，不能用来释放 Warlord outer owner。耐久 checkpoint/continue 仍是后续独立能力，不得借冻结诊断态恢复当前父 run。
+
+独立 GameStage 入口 XML 已存在，但 `Scenario/Map/Organization/Profile/Asset/Help` 的正式数据归属、引用完整性和 XML→对象映射仍需另轮冻结。当前 Demo 1、Demo 2 与 Organization 是 Web module 内的严格 JSON/TypeScript 配置，不冒充正式战略 XML。ADR 中旧 `<SubStages>` wrapper 不得在未同步 loader、fixture 与 TimePool 校验器时单独落盘；稳定 `stageId` 仍需与现役本地化 `StageInfo.Name` 分离。
+
+## 8. 新增数据文件流程
 
 ### data/merc/pets.xml 战队分类
 

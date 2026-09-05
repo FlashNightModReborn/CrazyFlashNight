@@ -32,6 +32,7 @@
 | 选关名称、解锁、说明 | `目录/__list__.xml/StageInfo` | 第 4 节 |
 | 通关奖励 | `GameStage/Rewards/Reward` | 第 6 节 |
 | 跨子图总时限 | `GameStage/TimePools` + `SubStage/TimePoolRef` | 第 7 节 |
+| 军阀战棋子关 | `SubStage[@driver='Warlord']` | 第 8 节 |
 | 玩家出生点、背景、BGM | `SubStage/BasicInformation` | 第 8 节 |
 | 箱子和地图元件 | `SubStage/Instances/Instance` | 第 9 节 |
 | 敌人出生点 | `SubStage/SpawnPoint/Point` | 第 10 节 |
@@ -348,7 +349,26 @@ data/stages/list.xml
 
 ## 8. `SubStage` 与 `BasicInformation`
 
-`SubStage` 表示一张实际战斗子图。运行时按 XML 物理顺序进入各子图；`id` 建议从 0 连续递增，仅用于保持可读性和兼容既有结构。
+缺省 `driver` 的 `SubStage` 表示一张实际 Action 战斗子图。运行时按 XML 物理顺序进入各子图；旧 Action 的 `id` 建议从 0 连续递增，仅用于保持可读性和兼容既有结构。
+
+### Slice 1：单 Warlord SubStage
+
+当前工作树允许一个窄的军阀战棋关卡：
+
+```xml
+<GameStage>
+    <SubStage id="warlord_tutorial" driver="Warlord"
+              scenarioRef="warlord_tutorial_v1" />
+</GameStage>
+```
+
+- 整个 `GameStage` 必须恰好只有这一个 Warlord SubStage；Action/Warlord 混排、未知 driver 与多个 Warlord 当前全部拒绝。
+- Warlord SubStage 只允许 `id`、`driver`、`scenarioRef` 三个属性，不写 `BasicInformation`、`Wave`、`TimePoolRef` 或其他 Action 字段；根也不写 `TimePools`。
+- `id` 与 `scenarioRef` 是最多 160 字符的 opaque ASCII ID，合法字符为字母、数字、`.`、`_`、`~`、`-`，不得依赖显示名或 XML 物理序号。
+- 当前唯一允许的 `scenarioRef` 是 `warlord_tutorial_v1`，仍运行旧红蓝九节点规则；不要据此新建第二个内容关卡。
+- `not_started` 不自动重试；安全冻结后只能由 Native HUD 的显式动作带回当前 outer session revision 与 exact 六字段 binding。旧 `stage_outcome v1` 返回不能绕过这层栅栏。
+- Warlord 返回基地若已冻结结算、但场景淡出未接受，仍保留同一 binding 供 fresh v2 动作重试；不得重新 roll 奖励或自动重开面板。
+- 该语法已接入 AS2/Host/Web 源码，并通过 fresh TestLoader 行为、合并源码 `asLoader.swf` 发布与隔离 candidate build；当前为 `candidate_built / NOT_DEPLOYED`，在完成真实 GameStage 旅程前仍不是已上线作者面。
 
 ### `BasicInformation` 常用字段
 

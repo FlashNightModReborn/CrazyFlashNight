@@ -20,6 +20,12 @@ const vendor = resolve(root, 'vendor');
 const configManifestPath = resolve(root, 'src/data/config-manifest.json');
 const configManifestBytes = readFileSync(configManifestPath);
 const configManifest = JSON.parse(configManifestBytes.toString('utf8'));
+const organizationManifestPath = resolve(root, 'src/data/organization-manifest.json');
+const organizationManifestBytes = readFileSync(organizationManifestPath);
+const organizationManifest = JSON.parse(organizationManifestBytes.toString('utf8'));
+const encounterManifestPath = resolve(root, 'src/data/encounter-manifest.json');
+const encounterManifestBytes = readFileSync(encounterManifestPath);
+const encounterManifest = JSON.parse(encounterManifestBytes.toString('utf8'));
 
 function assertInside(candidate, parent, label) {
   const rel = relative(parent, candidate);
@@ -71,6 +77,62 @@ function verifyFrozenConfig() {
   }
 }
 
+function verifyFrozenOrganization() {
+  const organizationSourcePath = resolve(root, 'src/data/organization.ts');
+  const canonicalManifestBytes = Buffer.from(
+    organizationManifestBytes.toString('utf8').replaceAll('\r\n', '\n'),
+    'utf8',
+  );
+  const computedDigest = `sha256:${sha256(canonicalManifestBytes)}`;
+  const organizationSource = readFileSync(organizationSourcePath, 'utf8');
+  const declaredDigest = organizationSource.match(/ORGANIZATION_CONFIG_DIGEST = '([^']+)'/)?.[1];
+  if (declaredDigest !== computedDigest) {
+    throw new Error(`organization config digest mismatch: declared ${declaredDigest ?? '<missing>'}, computed ${computedDigest}`);
+  }
+  if (!organizationManifest.id || !organizationManifest.rulesVersion) {
+    throw new Error('organization manifest identity is incomplete');
+  }
+  return computedDigest;
+}
+
+function verifyFrozenEncounter() {
+  const encounterSourcePath = resolve(root, 'src/data/encounter.ts');
+  const canonicalManifestBytes = Buffer.from(
+    encounterManifestBytes.toString('utf8').replaceAll('\r\n', '\n'),
+    'utf8',
+  );
+  const computedDigest = `sha256:${sha256(canonicalManifestBytes)}`;
+  const encounterSource = readFileSync(encounterSourcePath, 'utf8');
+  const declaredDigest = encounterSource.match(/ENCOUNTER_CONFIG_DIGEST = '([^']+)'/)?.[1];
+  if (declaredDigest !== computedDigest) {
+    throw new Error(`encounter config digest mismatch: declared ${declaredDigest ?? '<missing>'}, computed ${computedDigest}`);
+  }
+  if (encounterManifest.schemaVersion !== 1
+    || encounterManifest.id !== 'demo1-encounter-distance'
+    || encounterManifest.rulesVersion !== 'warlord.encounter-distance.v1') {
+    throw new Error('encounter manifest identity is incomplete or unsupported');
+  }
+  const exactProfiles = [
+    ['encounter.near', 'near', 180],
+    ['encounter.medium', 'medium', 360],
+    ['encounter.far', 'far', 650],
+  ];
+  if (!Array.isArray(encounterManifest.profiles)
+    || encounterManifest.profiles.length !== exactProfiles.length) {
+    throw new Error('encounter manifest profile catalog must contain exactly three profiles');
+  }
+  for (const [id, distanceBand, spawnDistance] of exactProfiles) {
+    const profile = encounterManifest.profiles.find((entry) => entry?.id === id);
+    if (!profile
+      || Object.keys(profile).sort().join(',') !== 'distanceBand,id,spawnDistance'
+      || profile.distanceBand !== distanceBand
+      || profile.spawnDistance !== spawnDistance) {
+      throw new Error(`encounter manifest profile mismatch for ${id}`);
+    }
+  }
+  return computedDigest;
+}
+
 function runTsc(config) {
   const tsc = resolve(root, 'node_modules/typescript/lib/tsc.js');
   if (!existsSync(tsc)) throw new Error('node_modules missing; run npm ci first');
@@ -92,6 +154,8 @@ function collectFiles(path) {
 }
 
 verifyFrozenConfig();
+const organizationConfigDigest = verifyFrozenOrganization();
+const encounterConfigDigest = verifyFrozenEncounter();
 resetDirectory(runtime, 'runtime output');
 resetDirectory(testDist, 'test output');
 mkdirSync(vendor, { recursive: true });
@@ -128,6 +192,16 @@ const files = trackedRoots.flatMap(collectFiles)
 const manifest = {
   schema: 'cf7.warlord-sandtable-runtime.v1',
   rulesVersion: configManifest.rulesVersion,
+  organization: {
+    id: organizationManifest.id,
+    rulesVersion: organizationManifest.rulesVersion,
+    digest: organizationConfigDigest,
+  },
+  encounter: {
+    id: encounterManifest.id,
+    rulesVersion: encounterManifest.rulesVersion,
+    digest: encounterConfigDigest,
+  },
   nodeEngine: '>=22.0.0',
   compiler: { name: 'typescript', version: '5.8.3' },
   renderer: { name: 'three', version: '0.185.1', license: 'MIT' },

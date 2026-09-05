@@ -6,6 +6,12 @@ export interface BattleUnitSnapshot {
   pieceId: string;
   factionId: FactionId;
   cardId: CardId;
+  /**
+   * Encounter presentation identity frozen from the validated AS2 receipt.
+   * `cardId` remains the strategic balance/economy surrogate and must not be
+   * used to turn the real player avatar back into that surrogate's card art.
+   */
+  encounterProjectionKind?: 'pet_projection' | 'player_avatar';
   displayName: string;
   behaviorId: BehaviorId;
   tags: string[];
@@ -95,7 +101,7 @@ export interface BattleResult {
 export interface BattleAuthorityAudit {
   authority: 'as2';
   requestSchema: 'warlord.as2-battle-request.v1';
-  receiptSchema: 'warlord.as2-battle-receipt.v1';
+  receiptSchema: 'warlord.as2-battle-receipt.v2';
   sessionId: string;
   requestId: string;
   inputDigest: string;

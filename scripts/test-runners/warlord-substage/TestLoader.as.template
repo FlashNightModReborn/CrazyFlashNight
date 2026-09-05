@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId warlord-substage Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.StageSubStageCoordinatorTest.runAllTests();
+trace("FocusedTestRunId warlord-substage Complete: __FOCUSED_RUN_ID__");

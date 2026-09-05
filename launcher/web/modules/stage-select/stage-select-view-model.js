@@ -171,6 +171,7 @@ var StageSelectViewModel = (function() {
     function getStageDisplayName(button) {
         var directText = button && button.directLayout && button.directLayout.text && button.directLayout.text.label || '';
         if ((button && button.entryKind) === 'map' && directText) return directText;
+        if (button && typeof button.displayName === 'string' && button.displayName) return button.displayName;
         var name = button && button.stageName || '';
         if ((button && button.entryKind) === 'map' && name.indexOf('外交-') === 0) {
             return name.substr(3);
@@ -260,7 +261,8 @@ var StageSelectViewModel = (function() {
     // frame 路由（纯状态半）：label 无效（manifest 无此 frame）时拒绝并返回 false。
     // 路由成功的重渲染 / 日志由 renderer 编排。
     function tryRouteFrame(label) {
-        if (!StageSelectData.getFrame(label)) return false;
+        if (StageSelectData.hasFrame && !StageSelectData.hasFrame(label)) return false;
+        if (!StageSelectData.hasFrame && !StageSelectData.getFrame(label)) return false;
         S._currentFrameLabel = label;
         return true;
     }
@@ -275,10 +277,12 @@ var StageSelectViewModel = (function() {
     function applySnapshot(snapshot) {
         S._runtimeSnapshot = snapshot || {};
         S._lastError = '';
-        if (S._runtimeSnapshot.currentFrameLabel && StageSelectData.getFrame(S._runtimeSnapshot.currentFrameLabel)) {
+        if (S._runtimeSnapshot.currentFrameLabel
+                && (!StageSelectData.hasFrame || StageSelectData.hasFrame(S._runtimeSnapshot.currentFrameLabel))) {
             S._currentFrameLabel = S._runtimeSnapshot.currentFrameLabel;
         }
-        if (S._runtimeSnapshot.returnFrameLabel) {
+        if (S._runtimeSnapshot.returnFrameLabel
+                && (!StageSelectData.hasFrame || StageSelectData.hasFrame(S._runtimeSnapshot.returnFrameLabel))) {
             S._returnFrameLabel = S._runtimeSnapshot.returnFrameLabel;
         }
     }

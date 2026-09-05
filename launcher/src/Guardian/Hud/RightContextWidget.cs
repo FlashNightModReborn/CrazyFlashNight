@@ -93,6 +93,7 @@ namespace CF7Launcher.Guardian.Hud
         private struct StageActionGestureToken
         {
             public bool Valid;
+            public string Source;
             public string ActionId;
             public string RunId;
             public int Revision;
@@ -402,7 +403,7 @@ namespace CF7Launcher.Guardian.Hud
             get
             {
                 return _gameReady && _stageBridgeReady
-                    && ShouldPresentStageDecision(_stageOutcomeState);
+                    && ShouldPresentStageDecision();
             }
         }
 
@@ -781,7 +782,9 @@ namespace CF7Launcher.Guardian.Hud
         private void PaintStageDecision(Graphics g, Rectangle r, float scale)
         {
             StageOutcomeState state = _stageOutcomeState;
-            if (state == null || r.Width <= 0 || r.Height <= 0) return;
+            if (!ShouldPresentStageOutcome(state)
+                || r.Width <= 0 || r.Height <= 0)
+                return;
 
             Color accent = StageAccent(state);
             NativeHudTheme.DrawPanel(g, r, scale,
@@ -802,13 +805,17 @@ namespace CF7Launcher.Guardian.Hud
                 NativeHudTheme.DrawSeparator(g, iconRect.Right,
                     r.Y + WidgetScaler.Px(4, scale),
                     r.Bottom - WidgetScaler.Px(4, scale), scale);
-                g.DrawString(StageIcon(state), _fontNoticeJuke11,
+                g.DrawString(
+                    StageIcon(state),
+                    _fontNoticeJuke11,
                     accentBrush, iconRect, FMT_CENTER);
                 if (ShouldShowReviveBalance(state))
                     PaintReviveBalance(
                         g, state, textRect, scale, textBrush);
                 else
-                    g.DrawString(StageDecisionText(state), _fontNoticeJuke11,
+                    g.DrawString(
+                        StageDecisionText(state),
+                        _fontNoticeJuke11,
                         textBrush, textRect, FMT_NEAR_NOWRAP_ELLIPSIS);
             }
 
@@ -1203,14 +1210,17 @@ namespace CF7Launcher.Guardian.Hud
         private void DispatchStageAction(int index)
         {
             StageOutcomeState state = _stageOutcomeState;
-            if (state == null || index < 0 || index >= _stageActions.Count)
+            if (index < 0 || index >= _stageActions.Count)
                 return;
             StageActionSpec action = _stageActions[index];
             if (!action.Enabled) return;
 
-            Action<string, string, int> handler = IntentRequested;
-            if (handler != null && !string.IsNullOrEmpty(action.Intent))
-                handler(action.Intent, state.RunId, state.Revision);
+            if (ShouldPresentStageOutcome(state))
+            {
+                Action<string, string, int> handler = IntentRequested;
+                if (handler != null && !string.IsNullOrEmpty(action.Intent))
+                    handler(action.Intent, state.RunId, state.Revision);
+            }
         }
 
         private void SetHover(HitInfo hit)
@@ -1269,7 +1279,12 @@ namespace CF7Launcher.Guardian.Hud
             return true;
         }
 
-        private bool ShouldPresentStageDecision(StageOutcomeState state)
+        private bool ShouldPresentStageDecision()
+        {
+            return ShouldPresentStageOutcome(_stageOutcomeState);
+        }
+
+        private static bool ShouldPresentStageOutcome(StageOutcomeState state)
         {
             return state != null && state.ShouldDisplay;
         }
@@ -1280,7 +1295,7 @@ namespace CF7Launcher.Guardian.Hud
             try
             {
                 StageOutcomeState state = _stageOutcomeState;
-                if (!ShouldPresentStageDecision(state)) return;
+                if (!ShouldPresentStageOutcome(state)) return;
                 if (state.Settlement == "rewards_pending")
                 {
                     AddStageAction("resume",
@@ -1755,15 +1770,21 @@ namespace CF7Launcher.Guardian.Hud
                 return;
             }
             if (hit.Kind != HitKind.StageAction
-                || hit.Index < 0 || hit.Index >= _stageActions.Count
-                || _stageOutcomeState == null)
+                || hit.Index < 0 || hit.Index >= _stageActions.Count)
                 return;
 
             StageActionSpec action = _stageActions[hit.Index];
             _downStageActionToken.Valid = true;
             _downStageActionToken.ActionId = action.Id;
-            _downStageActionToken.RunId = _stageOutcomeState.RunId;
-            _downStageActionToken.Revision = _stageOutcomeState.Revision;
+            if (ShouldPresentStageOutcome(_stageOutcomeState))
+            {
+                _downStageActionToken.Source = "stage_outcome";
+                _downStageActionToken.RunId = _stageOutcomeState.RunId;
+                _downStageActionToken.Revision =
+                    _stageOutcomeState.Revision;
+                return;
+            }
+            _downStageActionToken = default(StageActionGestureToken);
         }
 
         private void ClearPointerDown()
@@ -1786,16 +1807,31 @@ namespace CF7Launcher.Guardian.Hud
                         current.PayloadSignature, StringComparison.Ordinal);
             }
             if (hit.Kind != HitKind.StageAction) return true;
-            if (!_downStageActionToken.Valid || _stageOutcomeState == null
+            if (!_downStageActionToken.Valid
                 || hit.Index < 0 || hit.Index >= _stageActions.Count)
                 return false;
 
             StageActionSpec action = _stageActions[hit.Index];
-            return string.Equals(_downStageActionToken.ActionId, action.Id,
-                    StringComparison.Ordinal)
-                && string.Equals(_downStageActionToken.RunId,
-                    _stageOutcomeState.RunId, StringComparison.Ordinal)
-                && _downStageActionToken.Revision == _stageOutcomeState.Revision;
+            if (!string.Equals(
+                    _downStageActionToken.ActionId,
+                    action.Id,
+                    StringComparison.Ordinal))
+                return false;
+
+            if (ShouldPresentStageOutcome(_stageOutcomeState))
+            {
+                return string.Equals(
+                        _downStageActionToken.Source,
+                        "stage_outcome",
+                        StringComparison.Ordinal)
+                    && string.Equals(
+                        _downStageActionToken.RunId,
+                        _stageOutcomeState.RunId,
+                        StringComparison.Ordinal)
+                    && _downStageActionToken.Revision
+                        == _stageOutcomeState.Revision;
+            }
+            return false;
         }
 
         private NoticeGestureToken CurrentNoticeGestureToken()
@@ -1892,7 +1928,11 @@ namespace CF7Launcher.Guardian.Hud
         }
         internal string StageDecisionTextForTest
         {
-            get { return StageDecisionText(_stageOutcomeState); }
+            get
+            {
+                return ShouldPresentStageOutcome(_stageOutcomeState)
+                    ? StageDecisionText(_stageOutcomeState) : null;
+            }
         }
         internal Rectangle StageActionBoundsForTest(int index)
         {

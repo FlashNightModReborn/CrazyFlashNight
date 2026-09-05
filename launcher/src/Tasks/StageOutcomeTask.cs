@@ -89,7 +89,8 @@ namespace CF7Launcher.Tasks
 
         internal void HandleTransportDisconnected()
         {
-            if (!_disposed) _presenter.ResetState();
+            if (_disposed) return;
+            _presenter.ResetState();
         }
 
         private void SendSync()

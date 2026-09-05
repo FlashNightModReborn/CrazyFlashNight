@@ -15,6 +15,39 @@ var StageSelectHarnessQA = (function() {
         }, 2000, 'stage-select runtime snapshot');
     }
 
+    // 连续换帧用例必须等当前背景完成，再切下一帧。否则 Edge 会把被替换的正常在途图片
+    // 上报为 net::ERR_ABORTED，使网络严格门在所有 DOM 断言通过后仍 exit 1。
+    function waitBackgroundReady(api, frame) {
+        var assetUrl = frame && frame.background && frame.background.assetUrl || '';
+        return api.waitFor(function() {
+            var bg = document.getElementById('stage-select-bg');
+            if (!bg || !bg.complete || bg.naturalWidth <= 0) return null;
+            return !assetUrl || bg.src.indexOf(assetUrl) >= 0 ? bg : null;
+        }, 2000, 'background ready: ' + (frame && frame.frameLabel || assetUrl));
+    }
+
+    function forEachFrameSettled(api, manifest, source, inspect) {
+        var chain = Promise.resolve();
+        manifest.frameOrder.forEach(function(label) {
+            chain = chain.then(function() {
+                StageSelectPanel._debugSetFrame(label, source);
+                var frame = StageSelectData.getFrame(label);
+                return waitBackgroundReady(api, frame).then(function() {
+                    inspect(label, frame);
+                });
+            });
+        });
+        return chain;
+    }
+
+    function waitCurrentBackgroundReady(api) {
+        var bg = document.getElementById('stage-select-bg');
+        if (!bg || !bg.getAttribute('src')) return Promise.resolve();
+        return api.waitFor(function() {
+            return bg.complete && bg.naturalWidth > 0;
+        }, 2000, 'current background before next QA case');
+    }
+
     function runSuite(api, host, onlyCase) {
         var cases = [
             ['open-close', 'open and close lifecycle', function() {
@@ -30,18 +63,120 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
+            ['scoped-warlord-test-catalog', 'test-only warlord catalog stays isolated and enters exact stageName', function() {
+                var demo1 = '军阀战术演习';
+                var demo2 = '军阀四方大战役（Slice 6 验收候选）';
+                var productionManifest = StageSelectData.exportManifest();
+                var productionNames = {};
+                (productionManifest.frames || []).forEach(function(frame) {
+                    (frame.stageButtons || []).forEach(function(button) {
+                        productionNames[button.stageName || ''] = true;
+                    });
+                });
+                api.assert(!productionNames[demo1] && !productionNames[demo2],
+                    'production catalog contains no warlord test entry');
+                api.assertEqual(StageSelectData.resolveCatalogId({ frames: [{ stageName: demo2 }] }),
+                    StageSelectData.DEFAULT_CATALOG_ID, 'object catalog injection rejected');
+
+                host.open({ catalogId: 'unknown-catalog-id', frameLabel: '军阀演习测试' });
+                return waitReady(api).then(function() {
+                    api.assertEqual(StageSelectData.getActiveCatalogId(), StageSelectData.DEFAULT_CATALOG_ID,
+                        'unknown catalogId falls back to production');
+                    api.assertEqual(document.querySelectorAll('.stage-select-stage-button[data-stage-name="' + demo1 + '"]').length,
+                        0, 'unknown catalog cannot reveal Demo 1');
+                    api.assertEqual(document.querySelectorAll('.stage-select-stage-button[data-stage-name="' + demo2 + '"]').length,
+                        0, 'unknown catalog cannot reveal Demo 2');
+
+                    host.enterMessages.length = 0;
+                    host.sentMessages.length = 0;
+                    host.open({ catalogId: StageSelectData.WARLORD_TEST_CATALOG_ID, frameLabel: '军阀演习测试', mode: 'runtime' });
+                    return waitRuntime(api);
+                }).then(function(state) {
+                    var catalog = StageSelectData.getManifest();
+                    var nodes = document.querySelectorAll('.stage-select-stage-button');
+                    var snapshotMessages = host.sentMessages.filter(function(message) { return message.cmd === 'snapshot'; });
+                    api.assertEqual(StageSelectData.getActiveCatalogId(), 'warlord-game-stage-test',
+                        'strict test catalog activated');
+                    api.assertEqual(catalog.title, '测试目录 · 军阀演习测试', 'test catalog title');
+                    api.assertEqual(state.frameLabel, '军阀演习测试', 'C# fixed frameLabel retained exactly');
+                    api.assertEqual(nodes.length, 2, 'test catalog renders exactly two nodes');
+                    api.assertEqual(nodes[0].getAttribute('data-stage-name'), demo1, 'Demo 1 exact stageName');
+                    api.assertEqual(nodes[1].getAttribute('data-stage-name'), demo2, 'Demo 2 exact stageName');
+                    api.assertEqual(nodes[0].getAttribute('data-entry-kind'), 'difficulty', 'Demo 1 uses difficulty entry');
+                    api.assertEqual(nodes[1].getAttribute('data-entry-kind'), 'difficulty', 'Demo 2 uses difficulty entry');
+                    api.assertEqual(nodes[0].querySelector('.stage-select-stage-name').textContent, '九节点教学',
+                        'Demo 1 uses short displayName');
+                    api.assertEqual(nodes[1].querySelector('.stage-select-stage-name').textContent, '四方大战役',
+                        'Demo 2 uses short displayName');
+                    api.assertEqual(document.querySelector('#stage-select-frame-toggle-label').textContent,
+                        '军阀演习测试', 'runtime title visibly identifies test catalog');
+                    api.assertEqual(document.querySelector('.stage-select-frame-toggle').getAttribute('title'),
+                        '测试目录 · 军阀演习测试', 'test-only boundary is persistent in title');
+                    api.assertEqual(snapshotMessages.length, 1, 'test catalog sends one snapshot request');
+                    api.assertEqual(snapshotMessages[0].stageNames.join('|'), demo1 + '|' + demo2,
+                        'snapshot requests only the two exact test stageNames');
+                    api.assertEqual(typeof snapshotMessages[0].frameLabel, 'undefined',
+                        'test snapshot omits virtual current frame key');
+                    api.assertEqual(typeof snapshotMessages[0].returnFrameLabel, 'undefined',
+                        'test snapshot omits virtual return frame key');
+
+                    nodes[0].click();
+                    var demo1Difficulty = document.querySelector('#stage-select-inspector .stage-select-difficulty');
+                    api.assertEqual(demo1Difficulty.getAttribute('data-stage-name'), demo1,
+                        'Demo 1 difficulty keeps exact stageName');
+                    nodes[1].click();
+                    var difficulty = document.querySelector('#stage-select-inspector .stage-select-difficulty');
+                    api.assert(!!difficulty, 'Demo 2 inspector exposes difficulty buttons');
+                    api.assertEqual(difficulty.getAttribute('data-stage-name'), demo2,
+                        'Demo 2 difficulty keeps exact stageName');
+                    difficulty.click();
+                    api.assertEqual(host.enterMessages.length, 1, 'one enter message sent');
+                    api.assertEqual(host.enterMessages[0].stageName, demo2, 'enter keeps Demo 2 exact stageName');
+                    api.assertEqual(host.enterMessages[0].entryKind, 'difficulty', 'enter remains normal difficulty route');
+                    return api.waitFor(function() {
+                        return StageSelectData.getActiveCatalogId() === StageSelectData.DEFAULT_CATALOG_ID
+                            && (!Panels.getActive || Panels.getActive() !== 'stage-select');
+                    }, 1500, 'test enter closes and restores production catalog').then(function() {
+                        return 'production isolated; strict test catalog 2/2; exact enter ok';
+                    });
+                });
+            }],
+            ['scoped-warlord-test-close-gate', 'test catalog resets only after close transport is accepted', function() {
+                host.open({
+                    catalogId: StageSelectData.WARLORD_TEST_CATALOG_ID,
+                    frameLabel: '军阀演习测试',
+                    mode: 'runtime'
+                });
+                return waitRuntime(api).then(function() {
+                    var rejected = host.withBridgeSendFault('false', function() {
+                        return StageSelectRenderer.requestClose('button');
+                    });
+                    api.assertEqual(rejected, false, 'rejected close returns false');
+                    api.assert(Panels.getActive && Panels.getActive() === 'stage-select',
+                        'rejected close keeps test panel visible');
+                    api.assertEqual(StageSelectData.getActiveCatalogId(), StageSelectData.WARLORD_TEST_CATALOG_ID,
+                        'rejected close keeps test catalog active');
+
+                    api.assertEqual(StageSelectRenderer.requestClose('button'), true,
+                        'accepted retry closes test panel');
+                    api.assert(!Panels.getActive || Panels.getActive() !== 'stage-select',
+                        'accepted close removes test panel');
+                    api.assertEqual(StageSelectData.getActiveCatalogId(), StageSelectData.DEFAULT_CATALOG_ID,
+                        'accepted close restores production catalog');
+                    return 'false preserved test; accepted close restored production';
+                });
+            }],
             ['frame-tabs', 'all frame labels route', function() {
                 host.open();
-                return waitReady(api).then(function() {
+                return waitRuntime(api).then(function() {
                     var manifest = StageSelectData.getManifest();
-                    manifest.frameOrder.forEach(function(label) {
-                        StageSelectPanel._debugSetFrame(label, 'qa');
+                    return forEachFrameSettled(api, manifest, 'qa', function(label, frame) {
                         var state = StageSelectPanel._debugGetState();
-                        var frame = StageSelectData.getFrame(label);
                         api.assertEqual(state.frameLabel, label, 'frame routed');
                         api.assertEqual(state.stageButtonCount, frame.stageButtons.length, 'stage button count for ' + label);
+                    }).then(function() {
+                        return manifest.frameOrder.length + ' frames routed';
                     });
-                    return manifest.frameOrder.length + ' frames routed';
                 });
             }],
             ['fixtures', 'fixture states render', function() {
@@ -860,11 +995,9 @@ var StageSelectHarnessQA = (function() {
             }],
             ['background-rects', 'background rect follows manifest matrix', function() {
                 host.open();
-                return waitReady(api).then(function() {
+                return waitRuntime(api).then(function() {
                     var manifest = StageSelectData.getManifest();
-                    manifest.frameOrder.forEach(function(label) {
-                        StageSelectPanel._debugSetFrame(label, 'qa-bg');
-                        var frame = StageSelectData.getFrame(label);
+                    return forEachFrameSettled(api, manifest, 'qa-bg', function(label, frame) {
                         var expected = frame.background && frame.background.rect;
                         var bg = document.getElementById('stage-select-bg');
                         api.assert(!!expected, 'background rect missing for ' + label);
@@ -872,18 +1005,17 @@ var StageSelectHarnessQA = (function() {
                         assertNear(api, parseFloat(bg.style.top), expected.y, 0.51, 'bg y ' + label);
                         assertNear(api, parseFloat(bg.style.width), expected.w, 0.51, 'bg w ' + label);
                         assertNear(api, parseFloat(bg.style.height), expected.h, 0.51, 'bg h ' + label);
+                    }).then(function() {
+                        return manifest.frameOrder.length + ' background rects checked';
                     });
-                    return manifest.frameOrder.length + ' background rects checked';
                 });
             }],
             ['button-anchors', 'button anchors follow manifest positions', function() {
                 host.open();
-                return waitReady(api).then(function() {
+                return waitRuntime(api).then(function() {
                     var manifest = StageSelectData.getManifest();
                     var checked = 0;
-                    manifest.frameOrder.forEach(function(label) {
-                        StageSelectPanel._debugSetFrame(label, 'qa-anchor');
-                        var frame = StageSelectData.getFrame(label);
+                    return forEachFrameSettled(api, manifest, 'qa-anchor', function(label, frame) {
                         (frame.stageButtons || []).forEach(function(button) {
                             if (button.entryKind === 'map' || button.entryKind === 'task') return;
                             var node = document.querySelector('.stage-select-stage-button[data-stage-id="' + button.id + '"]');
@@ -892,8 +1024,9 @@ var StageSelectHarnessQA = (function() {
                             assertNear(api, parseFloat(node.style.top), button.y, 0.01, 'button y ' + button.id);
                             checked += 1;
                         });
+                    }).then(function() {
+                        return checked + ' anchors checked';
                     });
-                    return checked + ' anchors checked';
                 });
             }],
             ['hit-test', 'top controls and sample stage buttons are usable', function() {
@@ -1359,6 +1492,10 @@ var StageSelectHarnessQA = (function() {
                     api.assertEqual(snapshotMsg.catalogVersion, manifest.version, 'snapshot carries catalog version');
                     api.assertEqual(snapshotMsg.catalogSchema, manifest.schema, 'snapshot carries catalog schema');
                     api.assert(snapshotMsg.stageNames.length > 0, 'stageNames still full set');
+                    api.assertEqual(snapshotMsg.frameLabel, state.frameLabel,
+                        'production snapshot explicitly carries current frame');
+                    api.assertEqual(snapshotMsg.returnFrameLabel, state.returnFrameLabel,
+                        'production snapshot explicitly carries return frame');
                     return 'envelope ok, session=' + state.sessionGeneration;
                 });
             }],
@@ -1616,8 +1753,19 @@ var StageSelectHarnessQA = (function() {
         cases.forEach(function(item) {
             chain = chain.then(function(results) {
                 return api.runCase(item[0], item[1], item[2]).then(function(result) {
-                    results.push(result);
-                    return results;
+                    // 用例完成不等于图片请求已完成；下一用例会 reopen/换帧。这里保持严格网络门，
+                    // 先等当前背景落稳再推进，避免把 QA 自己的导航竞争误记为请求失败。
+                    return waitCurrentBackgroundReady(api).then(function() {
+                        results.push(result);
+                        return results;
+                    }).catch(function(error) {
+                        if (result.pass) {
+                            result.pass = false;
+                            result.detail = error && error.message ? error.message : String(error);
+                        }
+                        results.push(result);
+                        return results;
+                    });
                 });
             });
         });

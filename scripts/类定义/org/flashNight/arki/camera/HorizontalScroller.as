@@ -201,6 +201,25 @@ class org.flashNight.arki.camera.HorizontalScroller {
         instance.switchFollowToInternal(target);
     }
 
+    /**
+     * fresh Action encounter teardown 专用：只释放 exact 当前 scene 的全部相机强引用。
+     * 不接受 foreign world，避免迟到 teardown 清掉已经切换到的新场景。
+     */
+    public static function releaseScene(expectedWorld:MovieClip):Boolean {
+        if (!instance) return true;
+        if (instance.gameWorld !== expectedWorld) return false;
+        instance.scrollObj = undefined;
+        instance.defaultFollowTarget = undefined;
+        instance.currentFocus = undefined;
+        instance.focusStack = [];
+        instance.gameWorld = undefined;
+        instance.bgLayer = undefined;
+        instance.frameTimer = undefined;
+        instance.updateFunction = undefined;
+        instance.cachedBoundsScale = -1;
+        return true;
+    }
+
     //================================================================================
     // 核心更新逻辑
     //================================================================================

@@ -48,6 +48,12 @@ export class PrimeMagicCanvasRenderer {
   // main.mjs 仍会在动画结束瞬间把棋盘替换为旋转 / 镜像后的合法幻方，视觉为瞬时切换。
   setDihedralTransform(_spinRadians, _mirror) {}
 
+  dispose() {
+    this.canvas.width = 1;
+    this.canvas.height = 1;
+    this.values = new Uint32Array(0);
+  }
+
   render(timeSeconds) {
     const pixelRatio = Math.min(window.devicePixelRatio || 1, this.maxDevicePixelRatio) * this.renderScale;
     const width = Math.max(1, Math.round(this.canvas.clientWidth * pixelRatio));

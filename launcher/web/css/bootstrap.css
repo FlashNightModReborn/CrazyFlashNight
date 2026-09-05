@@ -534,3 +534,12 @@ h1 { color: #4da6ff; margin: 0 0 4px 0; font-size: calc(22px * var(--fs-scale));
   --term-btn-border: var(--rust, #b83a2e);
   --term-btn-color: var(--rust, #b83a2e);
 }
+
+/* Flash 接管前 Host 会先标记页面退役；即使 WebView2 suspend 还在等待，
+   也不让隐藏的 Bootstrap DOM 继续插值与重绘。 */
+body.cf7-host-hidden *,
+body.cf7-host-hidden *::before,
+body.cf7-host-hidden *::after {
+  animation: none !important;
+  transition: none !important;
+}

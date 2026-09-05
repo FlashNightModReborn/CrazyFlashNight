@@ -280,6 +280,10 @@
     // 不把 Three/vendor 或单位头像复制进 boot 闭包。
     Panels.registerLazy('warlord',
         ['modules/minigames/shared/host-bridge.js',
+         'modules/asset-timeline.js',
+         'modules/dressup-doll-renderer.js',
+         'modules/merc-data.js',
+         'modules/merc-portrait-renderer.js',
          'modules/portrait-resolver.js',
          'modules/minigames/warlord/warlord-panel.js'],
         noop);

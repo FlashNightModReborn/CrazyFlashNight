@@ -4,6 +4,10 @@ declare module 'node:fs' {
   export function readFileSync(path: string, options?: { encoding?: string } | string): string | Uint8Array;
 }
 
+declare module 'node:vm' {
+  export function runInNewContext(code: string, context: Record<string, unknown>): unknown;
+}
+
 declare module 'node:path' {
   export function resolve(...paths: string[]): string;
   export function join(...paths: string[]): string;

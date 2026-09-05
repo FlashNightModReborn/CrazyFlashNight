@@ -26,9 +26,10 @@ namespace CF7Launcher.Tests.Tasks
                 Action<string, string, int> handler = IntentRequested;
                 if (handler != null) handler(intent, runId, revision);
             }
+
         }
 
-        private static JObject Message()
+        private static JObject Message(string outcome = "victory")
         {
             return new JObject
             {
@@ -40,7 +41,7 @@ namespace CF7Launcher.Tests.Tasks
                     ["revision"] = 4,
                     ["stageName"] = "测试关卡",
                     ["difficulty"] = "挑战",
-                    ["outcome"] = "victory",
+                    ["outcome"] = outcome,
                     ["life"] = "dead",
                     ["activeFrames"] = 3723,
                     ["reviveCoins"] = 2,
@@ -49,6 +50,56 @@ namespace CF7Launcher.Tests.Tasks
                     ["canReturnBase"] = true,
                     ["settlement"] = "none",
                     ["remainingRewards"] = 0
+                }
+            };
+        }
+
+        private static JObject WarlordStart(string runId, string callId)
+        {
+            return new JObject
+            {
+                ["task"] = "warlord_stage_start",
+                ["payload"] = new JObject
+                {
+                    ["binding"] = new JObject
+                    {
+                        ["schema"] = WarlordStageTask.BindingSchema,
+                        ["runId"] = runId,
+                        ["subStageId"] = "sub.task.1",
+                        ["scenarioRef"] = WarlordStageTask.AllowedScenarioRef,
+                        ["callId"] = callId,
+                        ["revision"] = 0
+                    },
+                    ["playerAvatarPortrait"] = new JObject
+                    {
+                        ["schema"] = WarlordStageTask.PlayerAvatarPortraitSchema,
+                        ["gender"] = "男",
+                        ["face"] = "",
+                        ["hair"] = "",
+                        ["equipment"] = new JObject
+                        {
+                            ["head"] = "",
+                            ["body"] = "",
+                            ["hand"] = "",
+                            ["leg"] = "",
+                            ["foot"] = "",
+                            ["neck"] = ""
+                        }
+                    }
+                }
+            };
+        }
+
+        private static JObject OuterCancellation(JObject binding)
+        {
+            return new JObject
+            {
+                ["task"] = WarlordStageTask.OuterCancellationTaskName,
+                ["payload"] = new JObject
+                {
+                    ["schema"] = WarlordStageTask.OuterCancellationSchema,
+                    ["binding"] = binding.DeepClone(),
+                    ["reasonCode"] = "stage.parent-return-base"
                 }
             };
         }
@@ -74,6 +125,81 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
+        [Theory]
+        [InlineData("victory")]
+        [InlineData("failure")]
+        [InlineData("retreat")]
+        public void GenericTerminalDoesNotRetireWarlordOwner_OuterCancellationDoes(
+            string outcome)
+        {
+            var overlay = new FakePresenter();
+            var owner = new WarlordStageTask(delegate { return true; });
+            int opens = 0;
+            string firstPanel = null;
+            owner.SetOpenHandler(delegate(
+                JObject binding,
+                JObject portrait,
+                JObject resume,
+                string panelInstanceId,
+                Func<bool> executionGate,
+                Action<PanelHostController.TrackedOpenOutcome> completed)
+            {
+                opens++;
+                if (firstPanel == null) firstPanel = panelInstanceId;
+                Assert.True(executionGate());
+                completed(PanelHostController.TrackedOpenOutcome.OpenPosted);
+                return true;
+            });
+            JObject start = WarlordStart("run.task.1", "call.task.1");
+            owner.HandleStart(start);
+            Assert.True(owner.IsPanelReadyForGameplay(firstPanel));
+
+            using (var task = new StageOutcomeTask(payload => true, overlay))
+            {
+                task.Handle(Message(outcome));
+            }
+
+            Assert.True(owner.IsPanelReadyForGameplay(firstPanel));
+            owner.HandleOuterCancellation(
+                OuterCancellation((JObject)start["payload"]["binding"]));
+            Assert.False(owner.IsPanelReadyForGameplay(firstPanel));
+            Assert.Equal(1, opens);
+        }
+
+        [Fact]
+        public void LateGenericTerminalAfterOuterCancellation_CannotRetireFreshRun()
+        {
+            var overlay = new FakePresenter();
+            var owner = new WarlordStageTask(delegate { return true; });
+            string panel = null;
+            owner.SetOpenHandler(delegate(
+                JObject binding,
+                JObject portrait,
+                JObject resume,
+                string panelInstanceId,
+                Func<bool> executionGate,
+                Action<PanelHostController.TrackedOpenOutcome> completed)
+            {
+                panel = panelInstanceId;
+                Assert.True(executionGate());
+                completed(PanelHostController.TrackedOpenOutcome.OpenPosted);
+                return true;
+            });
+            JObject oldStart = WarlordStart("run.task.1", "call.task.1");
+            owner.HandleStart(oldStart);
+            owner.HandleOuterCancellation(
+                OuterCancellation((JObject)oldStart["payload"]["binding"]));
+
+            owner.HandleStart(WarlordStart("run.task.fresh", "call.task.fresh"));
+            string freshPanel = panel;
+            Assert.True(owner.IsPanelReadyForGameplay(freshPanel));
+
+            using (var task = new StageOutcomeTask(payload => true, overlay))
+                task.Handle(Message("victory"));
+
+            Assert.True(owner.IsPanelReadyForGameplay(freshPanel));
+        }
+
         [Fact]
         public void ReadyAndAllowedIntents_EmitExactNullTerminatedCommands()
         {
@@ -92,7 +218,6 @@ namespace CF7Launcher.Tests.Tasks
                     ["action"] = "stageOutcomeSync",
                     ["v"] = 1
                 }, JObject.Parse(sent[0].TrimEnd('\0')));
-
                 overlay.Raise("revive", "run.task.1", 4);
                 overlay.Raise("return_base", "run.task.1", 4);
                 overlay.Raise("return_deliverable", "run.task.1", 4);

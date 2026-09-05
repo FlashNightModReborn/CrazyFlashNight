@@ -1,13 +1,15 @@
-import { adjacentNodeIds } from '../data/map.js';
+import { requireNode } from './access.js';
 import type { FactionId, GameState, NodeId, PieceState } from './types.js';
 
-export function otherFaction(factionId: FactionId): FactionId {
-  return factionId === 'red' ? 'blue' : 'red';
+export function adjacentNodeIds(state: GameState, nodeId: NodeId): NodeId[] {
+  return state.map.edges
+    .flatMap((edge) => edge.a === nodeId ? [edge.b] : edge.b === nodeId ? [edge.a] : [])
+    .sort();
 }
 
 export function nodeOccupyingFactions(state: GameState, nodeId: NodeId): FactionId[] {
   const factions = new Set<FactionId>();
-  for (const pieceId of state.map.nodes[nodeId].pieceIds) {
+  for (const pieceId of requireNode(state, nodeId).pieceIds) {
     const piece = state.pieces[pieceId];
     if (piece && piece.hp > 0) factions.add(piece.factionId);
   }
@@ -19,21 +21,21 @@ export function nodeOccupiedByEnemy(state: GameState, nodeId: NodeId, factionId:
 }
 
 export function isNodeActive(state: GameState, nodeId: NodeId): boolean {
-  const node = state.map.nodes[nodeId];
+  const node = requireNode(state, nodeId);
   return node.ownerFactionId !== null
     && node.activeFromRound !== null
     && state.strategicRound >= node.activeFromRound;
 }
 
 export function isNodeStable(state: GameState, nodeId: NodeId, factionId: FactionId): boolean {
-  const node = state.map.nodes[nodeId];
+  const node = requireNode(state, nodeId);
   return node.ownerFactionId === factionId
     && isNodeActive(state, nodeId)
     && !nodeOccupiedByEnemy(state, nodeId, factionId);
 }
 
 export function isProductionNode(state: GameState, nodeId: NodeId): boolean {
-  return state.map.nodes[nodeId].productionSlots > 0;
+  return requireNode(state, nodeId).productionSlots > 0;
 }
 
 export function stableNodeIds(state: GameState, factionId: FactionId): NodeId[] {
@@ -55,7 +57,7 @@ export function hasStableSupplyPath(
   const stable = stableOverride ?? new Set(stableNodeIds(state, factionId));
   if (!stable.has(fromNodeId)) return false;
   const productionTargets = new Set(
-    [...stable].filter((nodeId) => state.map.nodes[nodeId].productionSlots > 0),
+    [...stable].filter((nodeId) => requireNode(state, nodeId).productionSlots > 0),
   );
   if (productionTargets.has(fromNodeId)) return true;
 
@@ -64,7 +66,7 @@ export function hasStableSupplyPath(
   while (queue.length > 0) {
     const current = queue.shift();
     if (!current) break;
-    for (const next of adjacentNodeIds(current)) {
+    for (const next of adjacentNodeIds(state, current)) {
       if (!stable.has(next) || visited.has(next)) continue;
       if (productionTargets.has(next)) return true;
       visited.add(next);
@@ -75,7 +77,7 @@ export function hasStableSupplyPath(
 }
 
 export function piecesAtNode(state: GameState, nodeId: NodeId, factionId?: FactionId): PieceState[] {
-  return state.map.nodes[nodeId].pieceIds
+  return requireNode(state, nodeId).pieceIds
     .map((pieceId) => state.pieces[pieceId])
     .filter((piece): piece is PieceState => Boolean(piece && piece.hp > 0))
     .filter((piece) => factionId === undefined || piece.factionId === factionId)
@@ -93,6 +95,6 @@ export function factionPieceIds(state: GameState, factionId: FactionId): string[
     .sort();
 }
 
-export function nodeIsAdjacent(a: NodeId, b: NodeId): boolean {
-  return adjacentNodeIds(a).includes(b);
+export function nodeIsAdjacent(state: GameState, a: NodeId, b: NodeId): boolean {
+  return adjacentNodeIds(state, a).includes(b);
 }

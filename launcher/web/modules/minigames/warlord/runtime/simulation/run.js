@@ -1,4 +1,5 @@
 import { runAiActionPhase, runAiPlanning } from '../ai/heuristic.js';
+import { requireFaction } from '../core/factions.js';
 import { createGame } from '../core/state.js';
 import { CARD_IDS } from '../data/cards.js';
 import { AI_POLICY_VERSION, TUNING_VERSION } from '../data/config.js';
@@ -7,10 +8,9 @@ function deployedCount(state, factionId) {
     return Object.values(state.pieces).filter((piece) => piece.factionId === factionId).length;
 }
 function canRebuild(state, factionId) {
-    const faction = state.factions[factionId];
+    const faction = requireFaction(state, factionId);
     const queueExists = Object.values(faction.productionQueues).some((slots) => slots?.some((slot) => slot.orders.length > 0));
-    const productionNodeExists = Object.keys(state.map.nodes).some((nodeId) => {
-        const node = state.map.nodes[nodeId];
+    const productionNodeExists = Object.values(state.map.nodes).some((node) => {
         return node.ownerFactionId === factionId && node.productionSlots > 0 && node.activeFromRound !== null && node.activeFromRound <= state.strategicRound;
     });
     return queueExists || productionNodeExists;
@@ -19,8 +19,8 @@ export function runSingleSimulation(seed, difficulty = 'normal', preset = 'stand
     let state = createGame({ seed, difficulty, preset });
     let invalidCommands = 0;
     let guard = 0;
-    const wipedWithRebuildPotential = { red: false, blue: false };
-    const rebuilds = { red: 0, blue: 0 };
+    const wipedWithRebuildPotential = Object.fromEntries(state.turnOrder.map((factionId) => [factionId, false]));
+    const rebuilds = Object.fromEntries(state.turnOrder.map((factionId) => [factionId, 0]));
     const telemetry = {
         battleCount: 0,
         battleRounds: 0,
@@ -60,12 +60,12 @@ export function runSingleSimulation(seed, difficulty = 'normal', preset = 'stand
     };
     while (!state.result && guard < 5_000) {
         guard += 1;
-        for (const factionId of ['red', 'blue']) {
+        for (const factionId of state.turnOrder) {
             const count = deployedCount(state, factionId);
             if (count === 0 && canRebuild(state, factionId))
                 wipedWithRebuildPotential[factionId] = true;
             if (count > 0 && wipedWithRebuildPotential[factionId]) {
-                rebuilds[factionId] += 1;
+                rebuilds[factionId] = (rebuilds[factionId] ?? 0) + 1;
                 wipedWithRebuildPotential[factionId] = false;
             }
         }
@@ -82,15 +82,9 @@ export function runSingleSimulation(seed, difficulty = 'normal', preset = 'stand
             continue;
         }
         if (state.phase === 'SETTLEMENT_PLANNING') {
-            if (!state.factions.red.planningCommitted) {
-                const result = runAiPlanning(state, 'red');
-                state = result.state;
-                invalidCommands += result.invalidGenerated;
-                collectTelemetry();
-                continue;
-            }
-            if (!state.factions.blue.planningCommitted) {
-                const result = runAiPlanning(state, 'blue');
+            const pendingFactionId = state.turnOrder.find((factionId) => !requireFaction(state, factionId).planningCommitted);
+            if (pendingFactionId) {
+                const result = runAiPlanning(state, pendingFactionId);
                 state = result.state;
                 invalidCommands += result.invalidGenerated;
                 collectTelemetry();
@@ -109,14 +103,14 @@ export function runBatchSimulation(gameCount = 32) {
     const results = seeds.map((seed, index) => runSingleSimulation(seed, 'normal', 'standard', index !== 0));
     const states = results.map((result) => result.state);
     const completed = states.filter((state) => state.result !== null);
-    const winners = { red: 0, blue: 0, draw: 0 };
+    const winners = { draw: 0 };
     const terminalReasons = { elimination: 0, round_limit: 0, incomplete: 0 };
     for (const state of states) {
         if (!state.result) {
             terminalReasons.incomplete = (terminalReasons.incomplete ?? 0) + 1;
             continue;
         }
-        winners[state.result.winner] += 1;
+        winners[state.result.winner] = (winners[state.result.winner] ?? 0) + 1;
         terminalReasons[state.result.reason] = (terminalReasons[state.result.reason] ?? 0) + 1;
     }
     const cardStats = Object.fromEntries(CARD_IDS.map((cardId) => {
@@ -124,9 +118,13 @@ export function runBatchSimulation(gameCount = 32) {
         let lost = 0;
         let levels = 0;
         let promotions = 0;
+        let samples = 0;
         for (const state of states) {
-            for (const factionId of ['red', 'blue']) {
-                const card = state.factions[factionId].cards[cardId];
+            for (const factionId of state.turnOrder) {
+                const card = requireFaction(state, factionId).cards[cardId];
+                if (!card)
+                    continue;
+                samples += 1;
                 produced += card.producedCount;
                 lost += card.lostCount;
                 levels += card.level;
@@ -136,7 +134,7 @@ export function runBatchSimulation(gameCount = 32) {
         return [String(cardId), {
                 produced,
                 lost,
-                finalAverageLevel: states.length > 0 ? levels / (states.length * 2) : 0,
+                finalAverageLevel: samples > 0 ? levels / samples : 0,
                 promotionsPurchased: promotions,
             }];
     }));
@@ -151,13 +149,17 @@ export function runBatchSimulation(gameCount = 32) {
             || !Number.isFinite(faction.populationUsed)
             || faction.populationUsed < 0
             || faction.populationReserved < 0))).length;
-    const rebuilds = {
-        red: results.reduce((sum, result) => sum + result.rebuilds.red, 0),
-        blue: results.reduce((sum, result) => sum + result.rebuilds.blue, 0),
-    };
+    const rebuilds = Object.create(null);
+    for (const result of results) {
+        for (const [factionId, count] of Object.entries(result.rebuilds)) {
+            rebuilds[factionId] = (rebuilds[factionId] ?? 0) + count;
+        }
+    }
     const denominator = Math.max(1, completed.length);
-    const redRate = winners.red / denominator;
-    const blueRate = winners.blue / denominator;
+    const firstFactionId = states[0]?.turnOrder[0] ?? 'red';
+    const secondFactionId = states[0]?.turnOrder[1] ?? 'blue';
+    const firstRate = (winners[firstFactionId] ?? 0) / denominator;
+    const secondRate = (winners[secondFactionId] ?? 0) / denominator;
     const summary = {
         schemaVersion: 1,
         rulesVersion: states[0]?.rulesVersion ?? 'wargame-demo-v0.1.1',
@@ -169,12 +171,13 @@ export function runBatchSimulation(gameCount = 32) {
         completedGames: completed.length,
         terminalReasons,
         winners,
-        mirrorWinRate: { red: redRate, blue: blueRate, draw: winners.draw / denominator },
+        // Demo 1 compatibility fields; values mean initial first/second faction.
+        mirrorWinRate: { red: firstRate, blue: secondRate, draw: (winners.draw ?? 0) / denominator },
         firstSecondBias: {
-            initialFirstFaction: 'red',
-            initialFirstWinRate: redRate,
-            initialSecondWinRate: blueRate,
-            delta: redRate - blueRate,
+            initialFirstFaction: firstFactionId,
+            initialFirstWinRate: firstRate,
+            initialSecondWinRate: secondRate,
+            delta: firstRate - secondRate,
         },
         averageStrategicRound: completed.length > 0
             ? completed.reduce((sum, state) => sum + state.strategicRound, 0) / completed.length

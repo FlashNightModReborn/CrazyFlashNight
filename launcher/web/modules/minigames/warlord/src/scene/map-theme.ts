@@ -1,4 +1,57 @@
+import type { FactionId } from '../core/types.js';
+
 export type MapThemeId = 'desert' | 'tundra';
+
+export interface FactionVisualStyle {
+  base: number;
+  accent: number;
+  edge: number;
+  beacon: number;
+  markerIndex: 0 | 1 | 2 | 3;
+  shortMark: string;
+}
+
+const FACTION_STYLE_PALETTE: readonly FactionVisualStyle[] = Object.freeze([
+  { base: 0xa64331, accent: 0xd95a3e, edge: 0xf0a17e, beacon: 0xff6c4f, markerIndex: 0, shortMark: '我' },
+  { base: 0x2f6f91, accent: 0x4d9bc5, edge: 0x8fd6f1, beacon: 0x69b8e8, markerIndex: 1, shortMark: '甲' },
+  { base: 0x47724f, accent: 0x6ba575, edge: 0xb0dab3, beacon: 0x85cf91, markerIndex: 2, shortMark: '独' },
+  { base: 0x79558d, accent: 0xa577bd, edge: 0xd8b3e8, beacon: 0xc291dc, markerIndex: 3, shortMark: '乙' },
+  { base: 0x9a6b28, accent: 0xc8953e, edge: 0xf0ca80, beacon: 0xe8b657, markerIndex: 0, shortMark: '戊' },
+  { base: 0x376e6d, accent: 0x52a09e, edge: 0x99d6d2, beacon: 0x6fc5c1, markerIndex: 1, shortMark: '己' },
+]);
+
+const DEMO_FACTION_STYLE_INDEX: Readonly<Record<string, number>> = Object.freeze({
+  red: 0,
+  blue: 1,
+  player: 0,
+  'boss-pact-a': 1,
+  'boss-independent': 2,
+  'boss-pact-b': 3,
+});
+
+function stableFactionHash(factionId: string): number {
+  let hash = 2166136261;
+  for (let index = 0; index < factionId.length; index += 1) {
+    hash ^= factionId.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+/**
+ * Opaque faction ids receive deterministic, non-order-dependent visuals.
+ * Demo 1 keeps its historical red/blue palette while Demo 2 has four distinct
+ * colors and line patterns. The marker index and short mark are deliberately
+ * independent of hue so the map does not rely on colour recognition alone.
+ */
+export function factionVisualStyle(factionId: FactionId): FactionVisualStyle {
+  const knownIndex = DEMO_FACTION_STYLE_INDEX[factionId];
+  const index = knownIndex ?? (stableFactionHash(factionId) % FACTION_STYLE_PALETTE.length);
+  const source = FACTION_STYLE_PALETTE[index]!;
+  if (knownIndex !== undefined) return source;
+  const normalized = factionId.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  return { ...source, shortMark: normalized.slice(0, 2) || source.shortMark };
+}
 
 export interface MapTheme {
   id: MapThemeId;

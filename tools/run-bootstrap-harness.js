@@ -225,6 +225,18 @@ async function main() {
             return 'list/state/flash_ready replayed once after delayed PM19 initialization';
         });
 
+        await check('host-reveal-retires-gpu-background', async () => {
+            if (await page.locator('#bg-gl').count() !== 1) {
+                throw new Error('PM19 canvas was not active before host reveal');
+            }
+            await page.evaluate(() => document.body.classList.add('cf7-host-hidden'));
+            await page.waitForFunction(() => document.body.dataset.bgGlLifecycle === 'host-retired'
+                && !document.getElementById('bg-gl')
+                && !document.getElementById('bg-gl-readout')
+                && !document.getElementById('bg-gl-log'), null, { timeout: 3000 });
+            return 'host reveal cancels timers/rAF, releases the renderer context, and removes PM19 layers';
+        });
+
         await check('tooltip-binding', async () => {
             await page.locator('#btn-about').hover();
             await page.waitForTimeout(380);

@@ -1365,7 +1365,9 @@ var MapPanel = (function() {
             return index;
         }
 
-        var manifest = StageSelectData.getManifest();
+        // 地图热点永远消费默认生产选关真源，不能受临时测试 catalog 的活动状态影响。
+        var manifest = typeof StageSelectData.exportManifest === 'function'
+            ? StageSelectData.exportManifest() : StageSelectData.getManifest();
         (manifest.frames || []).forEach(function(frame) {
             if (frame.frameLabel) {
                 index[frame.frameLabel] = {
@@ -3111,6 +3113,7 @@ var MapPanel = (function() {
         _debugSetFilter: setActiveFilter,
         _debugRequestSnapshot: requestSnapshot,
         _debugSyncLayout: syncStageLayout,
-        _debugFlushCoordinateReadout: flushPendingCoordinateReadoutForDebug
+        _debugFlushCoordinateReadout: flushPendingCoordinateReadoutForDebug,
+        _debugResetStageSelectHotspotIndex: function() { _stageSelectHotspotIndex = null; }
     };
 })();

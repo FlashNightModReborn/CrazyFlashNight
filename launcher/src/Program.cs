@@ -2057,8 +2057,18 @@ class Program
         ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
         WarlordBattleTask warlordBattleTask = new WarlordBattleTask(
-            arenaCalibrationTask,
+            socketServer,
             projectRoot);
+        WarlordStageTask warlordStageTask = new WarlordStageTask(socketServer);
+        warlordStageTask.SetOpenHandler(
+            commandRouter.TryOpenWarlordStagePanel);
+        webOverlay.SetWarlordStageTask(warlordStageTask);
+        panelHost.PanelClosed +=
+            warlordStageTask.HandleAuthoritativePanelClosed;
+        socketServer.OnClientDisconnected +=
+            warlordStageTask.HandleTransportDisconnected;
+        socketServer.OnClientDisconnected +=
+            warlordBattleTask.HandleTransportDisconnected;
         agentControlTask = new AgentControlTask(
             delegate { return socketServer.HasClient; },
             delegate
@@ -2170,7 +2180,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

@@ -134,19 +134,25 @@
             StageSelectCore.clearError();
             StageSelectRenderer.applyRuntimeSnapshot(resp.snapshot || {});
         };
-        return sendPendingRequest(reqId, {
+        var snapshotRequest = {
             type: 'panel',
             panel: 'stage-select',
             cmd: 'snapshot',
             callId: reqId,
-            frameLabel: S._currentFrameLabel,
-            returnFrameLabel: S._returnFrameLabel,
             panelInstanceId: S._panelInstanceId,
             sessionGeneration: S._session,
             catalogVersion: manifest.version,
             catalogSchema: manifest.schema,
             stageNames: StageSelectViewModel.getManifestStageNames()
-        }, 'snapshot', function() {
+        };
+        // 非生产目录的 frameLabel 是 Web 内部虚拟页，不得写进 AS2 的
+        // Web选关当前帧值/返回帧值。空串也不能发送：AS2 resolver 会把它归一为基地门口，
+        // 因此 scoped snapshot 必须完全省略两键；生产目录继续显式携带两键。
+        if (S._catalogId === StageSelectData.DEFAULT_CATALOG_ID) {
+            snapshotRequest.frameLabel = S._currentFrameLabel;
+            snapshotRequest.returnFrameLabel = S._returnFrameLabel;
+        }
+        return sendPendingRequest(reqId, snapshotRequest, 'snapshot', function() {
             if (currentSession !== S._session) return;
             StageSelectCore.showError('send_failed');
         });

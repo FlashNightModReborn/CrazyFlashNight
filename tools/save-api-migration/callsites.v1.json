@@ -9,16 +9,16 @@
     "publicationScope": "docs/R1存盘API迁移收尾-2026-09-05.md（2026-09-05 对交接 commit 4ae00a176265b7d00ea38364d545d29cbe601efa 工作树实际入口复核）"
   },
   "baseline": {
-    "headCommit": "4ae00a176265b7d00ea38364d545d29cbe601efa",
-    "lineNumberNote": "本 manifest 全部行号以 headCommit 及当前 R1 迁移工作树为准。历次已确认漂移（均为行号漂移，数量不变）：相对 callsites.md 封包基线 776db2ae26——A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）、D2 商城系统_WebView.as 721→749。相对 af69c795c3（2026-09-04 步骤 10 开工前校准时发现，K店 batch/openMany 两列车合入所致）——A4 ItemUseService.as 597→788、D1 商城系统_WebView.as 199→216、D2.requestSave 750→782、D2.markDirty 749→781；四项经 check-callsites.js 报「未命中 / 不在 manifest」后逐一定位，扫描计数与 manifest counts 全项一致，无任何调用点增删。 2026-09-05 现场反馈增量：Reward 分段与 ItemUse 合并仅引起 A2/A4 wrapper 行号漂移，调用点和 reason 不变。",
+    "headCommit": "bbdb1fac1de053f195c3d041f534edbc7a30cb7a",
+    "lineNumberNote": "本 manifest 全部行号以 headCommit 及当前 R1 迁移工作树为准。历次已确认漂移（均为行号漂移，数量不变）：相对 callsites.md 封包基线 776db2ae26——A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）、D2 商城系统_WebView.as 721→749。相对 af69c795c3（2026-09-04 步骤 10 开工前校准时发现，K店 batch/openMany 两列车合入所致）——A4 ItemUseService.as 597→788、D1 商城系统_WebView.as 199→216、D2.requestSave 750→782、D2.markDirty 749→781；四项经 check-callsites.js 报「未命中 / 不在 manifest」后逐一定位，扫描计数与 manifest counts 全项一致，无任何调用点增删。 2026-09-05 现场反馈增量：Reward 分段与 ItemUse 合并仅引起 A2/A4 wrapper 行号漂移，调用点和 reason 不变。 合并上游 bbdb1fac1d：军阀返回基地路径使 A6 行号 523→531；A4 保留本轮合并结果后的 832，不退回上游旧值 788。 同文件已有 markDirty 仅随上游插入漂移 1345→1353，无新增调用。",
     "swf": {
       "scripts/asLoader.swf": {
-        "sha256": "8026a67116070a1ffcf05893606f585780d1bbf831a737ac2d36d062500ca37b",
-        "sizeBytes": 1242629,
-        "functions": 10988,
+        "sha256": "af8b9566ba6eafd49dbd8820b49aed7568eae7c84472766ad136efaad0fc2ec5",
+        "sizeBytes": 1267316,
+        "functions": 11207,
         "maxFunctionBytes": 55798,
         "functionSizeGate": "node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 15（未发现 codeSize >= 60000 B 近墙项）",
-        "republishNote": "2026-09-05 R1 现场反馈增量 fresh CS6 publish：开包冻结结果合并 + Reward 分段续查；map-loot 684/684、Web 80/80、Edge 104/104、lazy cancel 6/6。此前 R1 character-build 824、PAT 117、KShop 75、NPC 66 作为对应未变路径的基线证据。",
+        "republishNote": "2026-09-05 合并上游 bbdb1fac1d 军阀基础闭环与本轮 R1/奖励合并续查后 fresh CS6 publish：Compiler 0/0，11207 函数最大 55798B；合并后 map-loot 684/684，runId 3281edd87ba04c3ea8fac8f441cf2d65。",
         "r1Disposition": "published",
         "r1Reason": "Reward/SceneChanged 现役 AS2 服务；本轮生产逻辑入口。"
       },
@@ -283,7 +283,7 @@
       "physicalId": "A6",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
-      "line": 523,
+      "line": 531,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "_root.存档系统.flushBeforeTransition(\"stage.return_base\")",
@@ -1093,7 +1093,7 @@
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
-      "line": 1345,
+      "line": 1353,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839；typeof 守卫在 :1344。"
