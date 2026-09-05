@@ -523,10 +523,17 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
             Assert.Equal(
                 "input_not_quiescent",
                 reasonCode);
+            // The guard's preemption worker may revoke this rejected lease
+            // before the test thread reaches cleanup.  Revoke is deliberately
+            // one-shot, so either this call wins or the same lease must already
+            // be observably revoked.
             Assert.True(
                 fixture.Leases.Revoke(
                     lease.LeaseId,
-                    reasonCode));
+                    reasonCode)
+                || SpinWait.SpinUntil(
+                    () => lease.State == WriteLeaseState.Revoked,
+                    TimeSpan.FromSeconds(3)));
         }
 
         [Fact]
