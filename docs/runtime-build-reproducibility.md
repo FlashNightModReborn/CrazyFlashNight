@@ -2,9 +2,25 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-05 当前正式发布：R1 存盘迁移、领取续查与保存反馈
+## 2026-09-05 当前正式发布：返回基地焦点诊断与测试员采集入口
 
-本节为当前发布锚点；后续带较早日期的列车记录均是历史，保留其当时状态，不覆盖本节。
+本节为当前发布锚点；后续列车记录均是历史，保留其当时状态，不覆盖本节。用户在确认本机未复现后明确授权共识构建、部署和推送，以便原测试员取得失败现场。
+
+- implementation `948acc4c8481c6eb28b1a8931043508fc761621b`；release source `7a4bf414df860ddc4cddcd860dcb432b49a17b43`；不可变 tag `runtime-build-v2/20260905-focus-diagnostic-v1`；release tree `a0bae75aba3b8312d12f424f453f552dde740f55`；request `D291E51BA909AD56A11228C29D37E12C54446B00F55B5DD507B7A735E8523673`。本轮仅增加有界观察与正式诊断入口，保留既有焦点和返回业务行为。
+- build identity `9FBD4D58B6DB76ED661886CF9148DA392C9955ED444C4B10D20615AE9AFE585C`；33-file payload closure `291314109FC89A8102781940B052377ED2921ED23B9B740A81761E994C555DEA`；正式 Core DLL SHA-256 `2185BF2E70BAADDDC705851B8E100B19212AF370C83CF3F97D056580D17EAB4C`。
+- 本地 X509 `builder-local-c / physical-host-c`，keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `3BB1808AEDA0B40ADDE02F2ECD9F977CCEFD686494F79DE11B681A6EC04850D7`，[cloud run 33957634090](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/33957634090)。两端独立构建同一冻结源，取得相同身份与逐文件闭包；promotion 对真实本地 CAS candidate 完整重放云端证明。
+- production policy **40/40**，policy hash `3DC74221B47B100AF792C0BDF09EBEDB8E0C170182AFE5C870CE032E12AE9C9B`，receipt SHA-256 `D036A426B0D876DCE76E0579CBE7A265BCF61B5674AAD3148B21A8DCAD6C256F`；manifest SHA-256 `202C90DF14452EBAC986333930C2F5A304F20C49E75A4EC4587BA2D80463D02C`；promotion 后磁盘 consensus SHA-256 `EE7C8AE00A60F056FEFB8614A4A7951DAF3FA18FB6AF6BF07A9954FE89EA641A`。Git 换行过滤后的 blob 身份与磁盘 SHA 是不同口径。
+- `2026-09-05T09:47:12.9887982Z` 写入本轮 promotion 记录；原子部署、正式 bundle、2 signers / 2 faultDomains 的 signed consensus 和根 bootstrap `--verify-only` 均通过。上一个正式 bundle 保留在 `tmp/runtime-promotions/20260905T094644512Z-de1ad1920f5046ca9d95a25e72faaba5/previous`。发布证明链均使用 Windows PowerShell 5.1；最初误用 pwsh 7 的本地 worker 在 clone 阶段失败，保留失败记录后以同一 request 重试成功，没有变更生产源码或伪装一次成功。
+- Launcher 全量 **4,722 passed / 3 opt-in skipped / 0 failed**，fresh AS2 aggregate **696 passed**、Compiler **0/0**；asLoader SHA-256 `7EEB21C7B8615A98F8D54E9DB1B12123E15ABE81C7DE20EB51619197BB8D868A`。协议、预算和本机实操分析见 [焦点诊断 §9.10](焦点管理-诊断与卡顿排查-2026-05-24.md#910-2026-09-05物理手势到-as2-结果的有界观察)。
+- 早期 `focus-diag-0905-b` 人工候选的 closure 为 `BC38A582240744EAE9326B25550EFFE99C255971ECD01C4090DC0FE0DCE8A950`，不作为 builder 票或本轮正式字节验收。仅 Core DLL/apphost 与正式 producer 不同：嵌入 manifest 的 LF/CRLF 及其派生标识/PE 布局；DLL `.text` 除 16 字节 Module GUID 外一致，其他资源一致。本轮两端正式构建自身逐字节一致。
+
+当前焦点专项为 **promoted / FIELD_REVALIDATION_PENDING**。本机旧候选的七次真实返回全链成功不能复现原投诉，QQ 前台记录不能证明第三方软件主动抢焦。根目录 `焦点诊断启动.cmd` 为测试员开启本轮 30 分钟观察，正常退出自动生成 `logs/focus-diagnostic/<时间>.zip`；运行中可用 `收集焦点诊断日志.cmd` 立即采集。失败发生时间、一次失败点击和原恢复办法仍须原测试员提供，不称焦点根治或 `standard_entry_verified`。
+
+首次本机 promotion 后，实际运行根 CMD 发现从 PowerShell 7 经 CMD 调用 Windows PowerShell 5.1 时会继承 7 的 `PSModulePath`，错误加载 Utility 7.0 而无法解析 `Get-FileHash`；直接调用 5.1 的同一探针正常加载 Utility 3.1。两个诊断 CMD 现仅在 `setlocal` 范围固定系统 5.1 模块目录并使用绝对 `powershell.exe` 路径，不改父进程或系统环境。修复后实际正式进程 PID `6088` / session `c3103405d1e24f9089fe4c291dc357fb` 打开启动页，Computer Use 正常关闭后自动生成 9 文件 ZIP，另在运行中即时采集 8 文件 ZIP；ZIP CRC、逐文件 SHA-256、进程路径与正式 Core/asLoader 哈希均通过。Host 本轮 9 条连续事件含 `trace.start` / `trace.stop`，未进入存档或宣称 AS2 返回旅程验收。正式启停包 SHA-256 `5E5999DFE8E2441A7A029F84C337BD2D67CCA85F90424DC6A005C049732AD5DB`。首次 v1 证明及失败日志保留；主线尚未推送，CMD 修复纳入 v2 冻结源后重新取得政策 receipt 和对应云端证明。
+
+## 2026-09-05 上一正式发布：R1 存盘迁移、领取续查与保存反馈
+
+本节保留上一列车的发布证据与当时验收边界。
 
 - implementation `962dbbb701`，首次合并上游 `bbdb1fac1de053f195c3d041f534edbc7a30cb7a` 的 merge commit `5891ce2631`；再合并并行上游 `00c4ee2860e33c41e6a4ab489c81f5affc8a88a2` 后，release source 为 `3e395d5db66a931cec0e1e67c2257cbca7d38051`，不可变 tag `runtime-build-v2/20260905-r1-reward-save-feedback-v2`；release tree `3ca8300a3bde44040226873b81df46f3db231ca6`；request `4E2DD084A31A4A76662ECCBBEE22366C3AB26A823ACFBC3ED1170A71ED48FCEF`。存档修复字典补齐 3 个新增武器名称，最终共 1628 items。
 - build identity `9F1B2BF9AB9AACF23FFC34924A66137376EE9CE232A98BFB7B45AD6950444B4D`；33-file payload closure `E3AC8562C7CE83DAABCF8D329D31A472D6970B99074A3A58871C4928072C188E`；正式 Core DLL SHA-256 `B86236D9B67DF20E46E1C9E3D9AE437D90502DE601A22D9E455C6221FB5F069C`。
@@ -21,7 +37,7 @@
 
 首个 v1 tag `runtime-build-v2/20260905-r1-reward-save-feedback-v1`、source `5a9d06210244bedebac41d19579ca1921c362182`、request `089854B6A952C942254B54FABB2C4618142AEBD0AF17EC9536B7741E023F0F16` 与 [cloud run 33945207841](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/33945207841) 保持不可变。v1 已于 `2026-09-05T04:47:43.140698Z` 完成本机 promotion，但没有作为主线最终部署单独推送；v2 承接相同 native payload 和更新后的 policy。最初军阀 bundle 的恢复副本仍在 `tmp/runtime-promotions/20260905T044715246Z-39e417003c4e4b919b230a5489a07dd5/previous`。
 
-## 2026-09-05 上一正式发布：军阀基础闭环与战后黑屏修复
+## 2026-09-05 较早正式发布：军阀基础闭环与战后黑屏修复
 
 本节保留上一次正式发布及其当时验收边界。
 
