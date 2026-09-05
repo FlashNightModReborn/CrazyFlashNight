@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "calibrationId": "things0-male-175cm-20260905",
+  "evidence": "docs/装备素材度量衡-175cm人模标尺-2026-09-05.md",
+  "evidenceSourceCommit": "6fd5c4065137975e8c2fac9f125ffae465eead17",
+  "heightCm": 175,
+  "gender": "男",
+  "referenceState": "空手站立",
+  "profiles": {
+    "weapon": {"label": "直接挂载的武器外层", "pixelsPerMeter": 300},
+    "body": {"label": "直接挂载的身体与四肢外层", "pixelsPerMeter": 350},
+    "head": {"label": "直接挂载的脸型与面具外层", "pixelsPerMeter": 300}
+  }
+}

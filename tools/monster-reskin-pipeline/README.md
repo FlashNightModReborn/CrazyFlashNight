@@ -2,6 +2,8 @@
 
 只读导出 Flash 怪物的整套动作、关键姿势和叶子零件，组装成人类重绘 / img2img 参考包；已有 Web Dressup 纸娃娃可作为人形装备换皮的整机参考上游。工具不会写 XFL、FLA 或 SWF，也不会代替 Flash CS6 发布。
 
+现实原型尺寸、装备缩放与注册点的前置判断见 [美术资产装配](../../agentsDoc/art-asset-assembly.md)；需要换算厘米、测量元件或复算人模时调用 [asset-metrology](../asset-metrology/README.md)，随后复用本文的逐件与整机预览流程。
+
 ## 边界
 
 - 输入：现有 XFL/SWF、linkage 对应的 SWF character ID、待导出的叶子 shape ID。

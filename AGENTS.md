@@ -40,7 +40,8 @@
 
 先判定**主责子栈**，再只读对应文档；跨栈任务先跟主责子栈走，再按依赖补读。
 
-- **AS2 / Flash CS6**：先读 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 [FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)（有编译 / smoke 验证 SWF 需求时即补读）、[coding-standards.md](agentsDoc/coding-standards.md)、[as2-performance.md](agentsDoc/as2-performance.md)、[game-systems.md](agentsDoc/game-systems.md)、[asLoader-README.md](docs/asLoader-README.md)（asLoader 启动序列 / 单帧塌缩 + BootSequencer 任务）；怪物 / 人形装备换皮参考包见 [monster-reskin-pipeline](tools/monster-reskin-pipeline/README.md)，装备生命周期脚本（新增 / 改装备）见 [装备函数 README](scripts/逻辑/装备函数/README.md)
+- **美术资产 / XFL 装配**：现实原型导入、装备尺度、注册点、分件换皮或素材库装配先读 [art-asset-assembly.md](agentsDoc/art-asset-assembly.md)，再按其中路由调用度量衡、换皮预览与 XFL 治理工具
+- **AS2 / Flash CS6**：先读 [as2-anti-hallucination.md](agentsDoc/as2-anti-hallucination.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 [FlashCS6自动化编译.md](scripts/FlashCS6自动化编译.md)（有编译 / smoke 验证 SWF 需求时即补读）、[coding-standards.md](agentsDoc/coding-standards.md)、[as2-performance.md](agentsDoc/as2-performance.md)、[game-systems.md](agentsDoc/game-systems.md)、[asLoader-README.md](docs/asLoader-README.md)（asLoader 启动序列 / 单帧塌缩 + BootSequencer 任务）；装备生命周期脚本（新增 / 改装备）见 [装备函数 README](scripts/逻辑/装备函数/README.md)
 - **AS2 UI → Web Panel 迁移**：先读 [as2-web-panel-migration.md](agentsDoc/as2-web-panel-migration.md) + [launcher/README.md](launcher/README.md) + [testing-guide.md](agentsDoc/testing-guide.md)；按需补 AS2 / Launcher Host / Launcher Web 对应文档
 - **XML / 数据与游戏设计**：先读 [data-schemas.md](agentsDoc/data-schemas.md)；按需补 [game-design.md](agentsDoc/game-design.md)、[testing-guide.md](agentsDoc/testing-guide.md)、`0.说明文件与教程/`；**武器 / 技能数值平衡**以 [balance 落盘与复现契约](tools/cf7-balance-tool/docs/agent-balance-record-design.md) 为入口，具体取值查 [武器平衡规则表](tools/cf7-balance-tool/docs/weapon-balance-rulebook.md)；公式最高权威仍是注明的 XLSX，仓库工具只作派生计算与辅助验证
 - **Launcher Host（C# / WinForms / WebView2 / Bus）**：先读 [launcher/README.md](launcher/README.md) + [architecture.md](agentsDoc/architecture.md)；原生音频引擎、格式能力、桥接或真实端点验证施工/评审另读 [Audio Platform v2 ADR](docs/原生音频平台-v2-格式能力桥接契约与可观测性-ADR-2026-08-09.md)；玩家信息 NativeHud 的 SVG 真源/渲染基座施工另读 [PlayerInfo B0 专项 ADR](docs/玩家信息界面-NativeHud-SVG真源与程序化动效-B0-ADR与分片施工计划-2026-07-28.md)；CF7 Agent Runtime / Wings Network 有施工、协议评审或范围变更时必读 [一期范围冻结 ADR](docs/CF7-Agent-Runtime与Wings-Network一期-范围冻结-ADR-2026-07-30.md)；按需补 [coding-standards.md](agentsDoc/coding-standards.md)、[testing-guide.md](agentsDoc/testing-guide.md)、[tech-stack-rationalization.md](docs/tech-stack-rationalization.md)、[cfn-cli.sh](tools/cfn-cli.sh)
@@ -56,6 +57,7 @@
 - [AGENTS.md](AGENTS.md)：只写路由、硬约束、触发器
 - [README.md](README.md)：人类维护者总览
 - [agentsDoc/architecture.md](agentsDoc/architecture.md)：系统拓扑 canonical doc
+- [agentsDoc/art-asset-assembly.md](agentsDoc/art-asset-assembly.md)：美术导入、尺度与注册点、装配工具路由 canonical doc
 - [agentsDoc/testing-guide.md](agentsDoc/testing-guide.md)：验证矩阵 canonical doc
 - [agentsDoc/as2-web-panel-migration.md](agentsDoc/as2-web-panel-migration.md)：AS2 UI → Web Panel 迁移护栏 canonical doc
 - [agentsDoc/agent-harness.md](agentsDoc/agent-harness.md)：Agent 协作与任务粒度 canonical doc
