@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：release source commit `7a4bf414df860ddc4cddcd860dcb432b49a17b43`（2026-09-05；tag `runtime-build-v2/20260905-focus-diagnostic-v1`）。返回基地焦点诊断增量与测试员启动/日志收集入口已完成双 signer / 双故障域共识、40/40 production policy 与原子 promotion。正式产物、签名身份、部署提交和远端审计统一见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。
+**最后核对代码基线**：release source commit `f86f5dcec928885758321e6635a02be5750d9b05`（2026-09-05；tag `runtime-build-v2/20260905-focus-diagnostic-v2`）。返回基地焦点诊断增量与测试员启动/日志收集入口已完成双 signer / 双故障域共识、40/40 production policy 与原子 promotion。正式产物、签名身份、部署提交和远端审计统一见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。
 
 本轮焦点诊断状态为 `promoted / FIELD_REVALIDATION_PENDING`：默认关闭观察，测试员通过根目录 `焦点诊断启动.cmd` 采集失败现场，证据契约见 [焦点诊断 §9.10](docs/焦点管理-诊断与卡顿排查-2026-05-24.md#910-2026-09-05物理手势到-as2-结果的有界观察)。本机七次返回成功不证明原故障已根治。前一 R1 列车仍待合并后的正式入口业务复验，边界见 [R1 收尾记录](docs/R1存盘API迁移收尾-2026-09-05.md)，不称 R1 专项 `standard_entry_verified`。
 
