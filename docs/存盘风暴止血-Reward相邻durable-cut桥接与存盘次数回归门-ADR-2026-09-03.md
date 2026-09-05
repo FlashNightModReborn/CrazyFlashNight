@@ -101,7 +101,7 @@ F1′: [A+P0]→[C0+P1]→[C1+P2]→…→[C(N-1)+T]          = N+1（每 child 
 
 **回归门基线变更**:map-loot 链 634 → **648**(service 217→231、planner 12、stage 405),`run-map-loot-tests.ps1` 与 testing-guide.md 已同步；SaveManagerTest 为自校验计数（fixture 对齐后 239/239)。
 
-- **专项 A(K 店，第一阶段+第三轮裁决已完成）**:A① durable finality 已修复入主线 `8dc2940e6c`(flush 先于 commit，失败 exact restore 回 `commit_pending`)。第三轮裁决（回执 `tmp/adjudication-kshop-batch-20260904/gptpro.txt` 774 行）终裁：**batch 只做 legacy 存量收尾的原子命令 `shopClaimBatch`**(durable unit `{0,K}`，全或无；token-epoch 行指纹 `(purchasedToken, rowFingerprint)`，双 FNV-1a lane 64-bit + 碰撞 fail-closed；专用 receipt lane `_saveExt.kshopClaimBatch` 上限 128 非淘汰，满则 `batch_receipt_ledger_full` 单项 claim 兜底；Host stale 请求必须 `replayOnly` 只读模式；unknown 复用 bulkQuery 不自动重放，不新增恢复命令）。A② 行指纹条件采纳（digest 只覆盖 canonical 五元组，occurrenceOrdinal 独立尾部）。A⑤-a 有序前缀、A⑤-c best effort、通用批框架、共用 Reward receipt、五元组 schema 变更均否决。
+- **专项 A(K 店，第一阶段+第三轮裁决已完成）**:A① durable finality 已修复入主线 `8dc2940e6c`(flush 先于 commit，失败 exact restore 回 `commit_pending`)。第三轮裁决（回执 [持久裁决原文](裁决存档/K店批量领取与礼包多开-2026-09-04.md)）终裁：**batch 只做 legacy 存量收尾的原子命令 `shopClaimBatch`**(durable unit `{0,K}`，全或无；token-epoch 行指纹 `(purchasedToken, rowFingerprint)`，双 FNV-1a lane 64-bit + 碰撞 fail-closed；专用 receipt lane `_saveExt.kshopClaimBatch` 上限 128 非淘汰，满则 `batch_receipt_ledger_full` 单项 claim 兜底；Host stale 请求必须 `replayOnly` 只读模式；unknown 复用 bulkQuery 不自动重放，不新增恢复命令）。A② 行指纹条件采纳（digest 只覆盖 canonical 五元组，occurrenceOrdinal 独立尾部）。A⑤-a 有序前缀、A⑤-c best effort、通用批框架、共用 Reward receipt、五元组 schema 变更均否决。
 - **专项 B（礼包 openMany，第三轮裁决终裁）**:**新增显式命令 `itemUseOpenMany`**（不在旧 `itemUseOpen` 加 optional count):K 次 rollRecipe/appendRewardBatch、一次扣 K、一个 `kind:"openMany"` receipt、一次 fence，全或无；失败 exact restore 但不承诺重试同随机结果；F2 mini-WAL 继续否决。**排期约束（裁决 §6)**:R1 步骤 6 先清 D1/D2 → A②/batch/openMany 居中（业务只调领域 wrapper) → **R1 步骤 9 最后统一 wrapper retarget**；若步骤 9 提前落地不回滚，但业务 handler 严禁直调 R1 新 API。施工边界按裁决 §九 11 步与 9 个提交切分。
 - **发布门**:648/648 基线全绿 ✅ + save-count 门全绿 ✅ + semantic fault-cut 全绿 ✅ + pending 无 mixed-cut 投影 ✅ + Reward happy path N+1 ✅ + 无 bridge true 前执行下一 child ✅(fault 切面 4/5 实证）+ root save/terminal ACK/shadow 分桶监控 ✅(Commit 0 两层计数）+ 弱机实测连续阻塞明显下降 ✅(2026-09-04 测试员现场复验：大量开箱无崩溃、耗时显著降低)。
 
@@ -115,7 +115,7 @@ F1′: [A+P0]→[C0+P1]→[C1+P2]→…→[C(N-1)+T]          = N+1（每 child 
 
 ## 6. 后续路线（2026-09-04 第二次 GPT Pro 裁决已落地）
 
-裁决回执：`tmp/adjudication-savemanager-api-20260904/gptpro.txt`(877 行，唯一权威；本节只是路由摘要）。
+裁决回执：[SaveManager API 分层路线原始裁决](裁决存档/SaveManager-API分层路线-2026-09-04.md)（原文完整保留并记录 SHA-256；本节为路由摘要）。K店 batch/openMany 的第三轮回执同样已归档为 [K店批量领取与礼包多开](裁决存档/K店批量领取与礼包多开-2026-09-04.md)。本轮裁决恢复不再依赖 tmp 或工具私有记忆；历史 XFL live 推断须以当前生产入口复核结果覆盖。
 
 **总决：R1 与 R3 分两条发布列车。R1 四层 API 分层采纳、19 步分片施工；R3 shadow 拆 R3a（无 schema 有序化止血）+ R3b(reader-first 持久化 incarnation+revision);R2 原案否决只吸收安全子集；R4 全局 dirty 早退明确否决。**
 
@@ -126,3 +126,11 @@ F1′: [A+P0]→[C0+P1]→[C1+P2]→…→[C(N-1)+T]          = N+1（每 child 
 - **R4 否决的硬理由**:`hasPendingChanges()` 本身漏 `_settingsMigrationPending` 与 KeyManager;40+ setter 不能证明覆盖；`_doSaveAll()` 承担未必标脏的派生同步；SceneChanged 是刻意无条件安全网。未来只许另建 `requestSaveIfDirty()`/section-dirty 体系，不得改 `flushDurableNow` 定义。
 - **回归门要点**：八分桶保持兼容；新增 `_saveApiStats`(ingress/disposition/origin/strict outcome/flush lane/reason 注册表）；防语义偷换三门（clean strict 必 +1 物理、request 返回 Void 静态禁读值、frozen durable 文件禁现 request API);XFL 四层门（manifest/XML exact scanner/CS6 发布/FFDec+旅程 reason trace)。
 - **22 项明确否决**见回执 §八；恢复会话与后续施工统一从 [交接手册](交接-存盘风暴后路线与恢复指引-2026-09-04.md) 进入；R1 与 R3b 不得同补丁同开关；K店 batch 语义（专项 A③④⑤ 与礼包 openMany）作为下一轮裁决输入，已备 `tmp/kshop-batch-adjudication-input-20260904.md`。
+
+**2026-09-05 R1 步骤 10–14 接手收尾**：Reward/SceneChanged 与 XFL 入口迁移、错误 transition API 修正、canonical dirty 与原 guard 保留、C6 partial→full 失败语义、旧 shim 生命周期及分层验证状态见 [R1 收尾记录](R1存盘API迁移收尾-2026-09-05.md)。R3b 仍是独立阶段。
+
+**后续范围修正**：R3b 的内层 clock 权威、同版本冲突 fail closed、revision 空洞、SOL 成功后才发 shadow、seed 保留来源 clock、活动 writer 下 userEdit/repair 拒绝或显式换代，以及 reset retirement 均按上述持久裁决 §4.5 执行；六阶段 reader-first 与 reader 不回退见 §4.6。`SaveAutoRepairService` 启动期直写也须纳入 R3b 同一仲裁，不能继续沿用 R3a 的阶段性缺口。NPC `requestStrongSave()` 已经 A3 wrapper 迁移，不是漏迁；是否增加独立 precommit fence 另行立项。已部署 loot 观测的主线 39/奖励/toast 复验仍独立待办，不能由本轮自动门代签。R1 本轮只保留 5 个实际所需 SWF 更新，旧 Web 迁移界面的源码 parity 不再强制全量发布与人工找按钮。
+
+## 7. 2026-09-05 大量开包现场反馈
+
+用户确认可恢复的“需要核对”反复出现。当前日志显示多项 claimBatch 超过 Host 10 秒等待，重复可堆叠奖励占主要条目；本轮按用户建议先在开包结果冻结后归并，减少 N，再用 durable child 边界分段 query 避免一个请求占满整个 root。N+1 不变，R3b 与通用保存时钟不扩张。归并后 package entryCount 口径、旧 receipt 兼容与验证记录统一见 [R1 收尾记录](R1存盘API迁移收尾-2026-09-05.md)“验收反馈增量”；原裁决全文保持历史内容，不把新版分组假装成原协议已经承诺的行为。

@@ -365,6 +365,10 @@
         this._unknown = null;
         this._lastError = '';
         this._detached = false;
+        this._setTimer = options.setTimer || function(fn, delay) { return setTimeout(fn, delay); };
+        this._clearTimer = options.clearTimer || function(timer) { clearTimeout(timer); };
+        this._rewardContinuation = null;
+        this._rewardContinueTimer = null;
         this._rewardRoot = this.identity.source === 'reward_inbox' ? {
             rootOperationId:String(options.recoverableRootOperationId||''),
             rootStatus:String(options.recoverableRootStatus||'not_started'),
@@ -488,6 +492,65 @@
         if (root.rootStatus==='committed'||root.rootStatus==='terminal_failure')
             this._ackRewardTerminal(root.rootOperationId);
         return {root:root,settled:true,success:root.rootStatus==='committed'};
+    };
+
+    Coordinator.prototype._clearRewardContinuation = function() {
+        if (this._rewardContinueTimer !== null) this._clearTimer(this._rewardContinueTimer);
+        this._rewardContinueTimer = null;
+        this._rewardContinuation = null;
+    };
+
+    // A healthy durable prefix is still the original operation. Yield one browser turn,
+    // then query that exact root; never reissue claim/claimBatch or publish partial assets.
+    Coordinator.prototype._continueRewardRoot = function(outcome, rootId, respond) {
+        var root = outcome && outcome.root;
+        if (!root || root.rootOperationId !== rootId || root.rootStatus !== 'pending'
+                || root.error || root.stopReason || this._detached) return false;
+        var progress = root.appliedCount + root.result.blockedEntries.length;
+        var continuation = this._rewardContinuation;
+        if (!continuation || continuation.rootId !== rootId) {
+            continuation = {rootId:rootId, progress:-1, stalled:0, queries:0};
+            this._rewardContinuation = continuation;
+        }
+        if (progress < continuation.progress) return false;
+        continuation.stalled = progress > continuation.progress ? 0 : continuation.stalled + 1;
+        continuation.progress = progress;
+        // Valid roots contain at most 50 entries. No progress, a persistent fault or
+        // disconnect must end in explicit reconciliation rather than an endless poll.
+        if (continuation.stalled >= 3 || continuation.queries >= 64) return false;
+        var self = this, generation = this._generation;
+        this._phase = 'write_pending';
+        this._pending = {kind:'reward_continue', operationId:rootId, callId:''};
+        this._lastError = '';
+        this._emit();
+        this._rewardContinueTimer = this._setTimer(function() {
+            self._rewardContinueTimer = null;
+            if (self._detached || self._generation !== generation
+                    || self._rewardContinuation !== continuation) return;
+            continuation.queries++;
+            var callback = function(response, entry) {
+                if (self._detached || self._generation !== generation
+                        || self._rewardContinuation !== continuation) return;
+                respond(response, entry);
+            };
+            var callId;
+            try {
+                callId = self._request('query', {rootOperationId:rootId}, {
+                    kind:'reward_continue', singleFlight:true, operationId:rootId,
+                    onIssued:function(entry) {
+                        if (self._pending) self._pending.callId = entry.callId;
+                    }
+                }, callback);
+            } catch (error) {
+                callback({clientSynthetic:true,error:'disconnected'}, {callId:''});
+                return;
+            }
+            if (!callId && self._rewardContinuation === continuation
+                    && self._phase === 'write_pending') {
+                callback({clientSynthetic:true,error:'disconnected'}, {callId:''});
+            }
+        }, Math.min(1000, 50 * Math.pow(2, continuation.stalled)));
+        return true;
     };
 
     Coordinator.prototype._ackRewardTerminal = function(rootId) {
@@ -795,11 +858,13 @@
         var callId = this._request('claim', claimPayload, {
             kind:'write', singleFlight:true, write:true, operationId:opId,
             onIssued:function(entry) { if (self._pending) self._pending.callId = entry.callId; }
-        }, function(response, entry) {
+        }, function onClaimResponse(response, entry) {
             if (generation !== self._generation || self._detached) return;
             if (self._rewardRoot) {
                 var rootOutcome=response&&!response.clientSynthetic
                     ?self._consumeRewardRoot(response,opId):null;
+                if (self._continueRewardRoot(rootOutcome,opId,onClaimResponse)) return;
+                self._clearRewardContinuation();
                 if(rootOutcome){
                     if(typeof callback==='function')callback(rootOutcome.success,response);
                     return;
@@ -881,11 +946,13 @@
         var callId=this._request('claimBatch',batchPayload,{
             kind:'write',singleFlight:true,write:true,operationId:opId,
             onIssued:function(entry){if(self._pending)self._pending.callId=entry.callId;}
-        },function(response,entry){
+        },function onBatchResponse(response,entry){
             if(generation!==self._generation||self._detached)return;
             if(self._rewardRoot){
                 var rootOutcome=response&&!response.clientSynthetic
                     ?self._consumeRewardRoot(response,opId):null;
+                if(self._continueRewardRoot(rootOutcome,opId,onBatchResponse))return;
+                self._clearRewardContinuation();
                 if(rootOutcome){
                     if(typeof callback==='function')callback(rootOutcome.success,response);
                     return;
@@ -1010,11 +1077,13 @@
         var callId=this._request('query',{rootOperationId:rootId},{kind:'query',
             singleFlight:true,latestWins:true,operationId:rootId,
             onIssued:function(entry){if(self._pending)self._pending.callId=entry.callId;}},
-        function(response){
+        function onRootQueryResponse(response,entry){
             if(generation!==self._generation||self._detached)return;
             self._pending=null;
             var outcome=response&&!response.clientSynthetic
                 ?self._consumeRewardRoot(response,rootId):null;
+            if(self._continueRewardRoot(outcome,rootId,onRootQueryResponse))return;
+            self._clearRewardContinuation();
             if(!outcome){
                 self._phase='reconcile_required';self._unknown=unknown;
                 self._lastError=response&&response.error||'reconcile_failed';self._emit();
@@ -1125,6 +1194,7 @@
     Coordinator.prototype.forceDetach = function() {
         if (this._detached) return false;
         this._detached = true; this._generation++;
+        this._clearRewardContinuation();
         this._pending = null;
         this._phase = 'detached';
         this._emit();

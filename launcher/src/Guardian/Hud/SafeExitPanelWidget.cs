@@ -176,24 +176,20 @@ namespace CF7Launcher.Guardian.Hud
         internal void SetHoverForTest(int index) { SetHover(index); }
 
         /// <summary>
-        /// 本 widget 是 Host 权威但不自渲染；UiData tee 只把 packet delta 转发到这里；
-        /// 本 consumer 只读变化键，因此不需要第二份进程级快照。
+        /// NativeHud 主路与降级 UiData tee 共用此 Host 权威入口；
+        /// s / sv 按原始顺序消费，不经过终值快照或跨包去重；一包只提交一次显示变化。
         /// </summary>
         internal void HandleUiData(UiDataPacket packet)
         {
             if (packet == null || packet.IsLegacy) return;
-            var delta =
-                new Dictionary<string, string>();
-            var changed =
-                new HashSet<string>();
+            bool wasTicking = WantsAnimationTick;
+            bool boundsDirty = false;
             foreach (KeyValuePair<string, string> pair
                 in UiDataPacketParser.ParseFrom(packet))
             {
-                delta[pair.Key] = pair.Value;
-                changed.Add(pair.Key);
+                boundsDirty |= ApplyUiDataPiece(pair.Key, pair.Value);
             }
-            if (changed.Count != 0)
-                OnUiDataChanged(delta, changed);
+            CompleteUiDataUpdate(wasTicking, boundsDirty);
         }
 
         /// <summary>
@@ -406,19 +402,27 @@ namespace CF7Launcher.Guardian.Hud
         {
             bool wasTicking = WantsAnimationTick;
             bool boundsDirty = false;
-            bool repaintDirty = false;
             string piece;
             if (changedKeys.Contains("s") && snapshot.TryGetValue("s", out piece))
+                boundsDirty |= ApplyUiDataPiece("s", piece);
+            if (changedKeys.Contains("sv") && snapshot.TryGetValue("sv", out piece))
+                boundsDirty |= ApplyUiDataPiece("sv", piece);
+            CompleteUiDataUpdate(wasTicking, boundsDirty);
+        }
+
+        private bool ApplyUiDataPiece(string key, string piece)
+        {
+            if (key == "s")
             {
                 bool ready = UiValueParser.ParseUiBoolValue(piece);
                 if (ready != _gameReady)
                 {
                     _gameReady = ready;
                     if (!ready) Disarm(); // 游戏未就绪：彻底复位
-                    boundsDirty = true;
+                    return true;
                 }
             }
-            if (changedKeys.Contains("sv") && snapshot.TryGetValue("sv", out piece))
+            if (key == "sv")
             {
                 // sv 是通用存盘事件（自动存盘 / 商店关闭 / 升级），仅更新内部状态。
                 // 不在这里自动 _armed=true，否则普通存盘也会拉起面板（见 class doc）。
@@ -447,13 +451,15 @@ namespace CF7Launcher.Guardian.Hud
                     _doneAutoDismissRemainingMs = next == SaveState.Done && _armed
                         ? DONE_AUTO_DISMISS_MS
                         : 0;
-                    // 已 armed 时状态推进影响显示内容（状态条 vs 按钮行 → 高度变化）
-                    if (_armed) boundsDirty = true;
-                    else repaintDirty = false; // 未 armed：不可见，无需 repaint
+                    return _armed; // 未 armed 时只推进内部状态，不触发重绘。
                 }
             }
+            return false;
+        }
+
+        private void CompleteUiDataUpdate(bool wasTicking, bool boundsDirty)
+        {
             if (boundsDirty) FireBounds();
-            else if (repaintDirty) FireRepaint();
             if (wasTicking != WantsAnimationTick) FireAnimationStateChanged();
         }
 

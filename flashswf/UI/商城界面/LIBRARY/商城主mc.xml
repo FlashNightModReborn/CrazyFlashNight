@@ -419,7 +419,7 @@ function 关闭商城(){
 	_root.商城主mc = null;
 	_root.卸载全屏UI();
 	// Plan A: 商城关闭必达，绕过 debounce 立即同步落盘
-	_root.强制存盘();
+	_root.存档系统.flushDurableNow("shop_legacy.close");
 }
 
 购物倍数 = 1;

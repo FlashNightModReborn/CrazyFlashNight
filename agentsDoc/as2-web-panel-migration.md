@@ -9,6 +9,8 @@
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
+**XFL 维护归属复核（2026-09-05；commit `4ae00a176265b7d00ea38364d545d29cbe601efa` 加 R1 工作树）**：改到历史库源码不等于需要刷新其 SWF。先核对 Host 派发、AS2 opener、主时间轴实例及共享导入，再选择编译目标；`pairRole=live`、linkage 登记和孤立命令定义不能证明正式入口可达。商城/战宠/任务/设置与物品工作台已走 Web；TABLET 仍派发 Flash `toggleTablet`，医务室整形仍是 Flash（不能与 Web 理发师混同），奖励物品共享库仍被 main 实例导入；玩家信息 NativeHud B0 不代表整座 Flash HUD 已退役。R1 的逐产物证据与收窄范围见 [收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。已由 Web 接管的旧按钮不应重新成为必须寻找的人工旅程；保留的源码 parity 与 shim 不因此删除。
+
 ### 2026-08-29 主时间轴 82–125 启动前门收尾
 
 主 XFL 作者帧 82–125 的封面、存档入口与角色创建可见 UI 已迁到 Launcher Bootstrap 的第三个顶级 Web view；作者帧 126–135 只保留无可见内容的 AS2 读盘/转场网关。`封面` 标签与 `bootstrap_reveal_ready` 继续作为“资源与 AS2 初始化已到达”的无头检查点，但它不再证明可进入游戏，也不得单独触发 `BootstrapPanel → FlashHostPanel`。正式 Web 前门必须再取得当前 attempt 的精确 `s:1|ga:<attemptId>`；普通读档与新角色都只在真实受控角色已经生成的 `SceneReady` 后发布该证明。标题帧、watchdog、OP/reveal 结束、`bootstrap_ready` 或人工延时均不能替代它。
@@ -416,6 +418,10 @@ Character recovery 期间，loot admission 必须在预入队、execution lease 
 
 安全退出不是 `SAFEEXIT → ForceExit`。显式 `SAFEEXIT` 先 Arm UI，再尝试投递 AS2 `safeExit`；投递返回 false 或抛异常必须进入 Failed，并同步 Web fallback 的 `safe_exit_failed`，不能停在 Saving。AS2 `SaveManager.flushNow()` 用 `sv:1` 表示本次尝试开始、`sv:2` 表示成功、`sv:3` 表示失败；禁存、已有 save in-flight、写入 false 或异常都必须得到失败终态，失败不得设置存盘成功标志，dirty 继续保留。重复重试仍要产生一组新的 `sv:1 → sv:2|sv:3`，不能被旧状态去重。
 
+`FrameBroadcaster` 会把一次同步保存的 `sv:1` 与 `sv:2|sv:3` 合在同一帧包中。SafeExit 必须按原始 `s/sv` 顺序消费，不能经终值字典覆盖或跨包相同值去重；NativeHud 主路与 fallback 共用同一有序消费入口，每包只通知一次显示变化。其他 HUD 状态仍保留快照去重。确认退出继续要求显式 Arm 后看见 `sv:1 → sv:2`，不能靠放宽此门修复“存盘中”卡住；失败、反序与游戏未就绪事件仍阻止退出。合包、重复尝试和真实 NativeHud 分发回归在 `SafeExitPanelWidgetTests.BatchedPacket_*`。
+
+NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影保存事实：`sv:1` 静止琥珀提示，`sv:2` 绿色亮起/保持/淡出后于 1.2 秒清除，`sv:3` 静止未确认警示。`SaveFeedbackState` 同样消费原始有序事件，连续成功合并视觉但逐次计数；悬停显示最后成功时间及本次就绪阶段已观测的完整保存成功次数，`s:0` 清空。它不发保存命令、不授予退出权限，也不把 `sv:2` 外推为云备份或 shadow 镜像完成。无新窗口、合成范围或命中区；成功周期只在四个阶段申请重绘，空闲/未确认无动画 tick。Web 遮挡期间按单调时钟自然过期，恢复 HUD 后不补播旧成功；失败仍静止保留。状态/成本与真实 NativeHud 分发测试见 `SaveFeedbackStateTests`、`RightContextWidgetTests.NativeSaveFeedback_*`。
+
 ### 2.7 游戏设置 Web Panel 冻结边界（2026-08-21）
 
 设置入口采用单路 Web-only：NativeHud `GAMESETTINGS` 与 AS2 `openSettings` 都只请求 `panel=settings`；旧 Flash 设置 MovieClip 保留为不可达归档，不设 fallback、双协议或兼容分流。面板使用 `1024×576` 逻辑画布与 `PanelScale`，在 Host anchor 内走 `inset:0` 全屏布局。设置专门复用游戏启动前 Launcher bootstrap Web 壳的 `DLS cyan / launcher rust / bone` 令牌、品牌铭牌、终端状态与切角结构；不得使用双栏 Workbench shell 冒充 Launcher 语言，也不建立第二套绿色卡片视觉系统。顶层只保留“游戏 / 键位 / 本机与 Web”三页，切换按钮与品牌、状态同处 Launcher 顶栏，不再另占一行；作弊码并入游戏首页而非第四个顶层页面。默认“游戏”页把流程救援、声音试听、画面/性能和紧凑作弊码入口聚合为一个首屏常用区；镜头缩放作为其后的二级专项入口，不得用内联预览挤压高频控制。面向玩家的常态文案只保留动作和状态，解释性内容通过项目通用 `PanelTooltip` 的 `simple-tooltip` profile 在鼠标与键盘聚焦时提供，禁止回退原生 `title` 或另建注释系统。Host 拥有 mount、exact `panelInstanceId`、关闭确认与本机偏好落盘；AS2 的 `GameSettingsPanelService` 仍是 14 项游戏设置、35 项逻辑键位、作弊命令与流程救援的最终裁决者，Web 不直接写 `_root`，也不得访问 localhost `/console`。
@@ -614,3 +620,11 @@ Launcher 状态：compiled / candidate_built / candidate_executed / e2e_verified
 ### 2026-08-14 材料导航基建分档（现役）
 
 材料 v2 catalog 以 exact `navigationAccess:{shop,crafting}` 暴露便捷导航能力：拥有自行车、摩托车或越野车可“前往商店”；拥有摩托车或越野车可“前往合成”。按钮保持可见，锁定态分别显示“需自行车”“需摩托车”，避免把能力隐藏成内容缺失。Web 只负责展示；商店继续走既有专用 authority，配方继续走既有 snapshot 路径并绑定当前材料 session，AS2 在执行瞬间重验现役基建。普通世界 snapshot 与材料内“查看装备”不受该分档影响。
+
+## 2026-09-05 礼包待领取条目合并与分段恢复
+
+礼包 `open/openMany` 的 RNG 顺序保持不变；AS2 在本次操作全部随机结果冻结后、容量预检与事务写入前合并同名数值型消耗品/收集品。装备与安全整数相加会越界的条目不合并。合并只作用于新操作，既有 ledger/root/receipt 不做身份迁移。`openMany.packages` 仍按 K 个 ordinal/唯一 batchId 返回，`entryCount` 为归并后归属该包的实际新增条目数，0 也可表示并入更早的包；单开 capability 与入箱 64 条上限按合并后计数。保持一个回执、一次扣包、一次 fence 与失败整体恢复；旧回执保持原值 replay。
+
+Reward root 的 `pending/in_progress`、空 `error/stopReason` 表示健康 durable 前缀，AS2 每次 advance 以 750ms 为让出预算，Web 保持 busy 并仅以同一 `rootOperationId` query 继续。pending 仍无资产投影，N+1 cut 不增加。真实 `commit_pending`、断连、隔离、倒退或连续 3 次无进展停止自动续办；最多 64 次续查，detach 清定时器并拒绝迟到回包。字段/schema 不变，Host 默认 10 秒与 Web 12 秒超时不放宽。现场依据、包回执口径变更与验证见 [R1 收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。
+
+Host 收到经 sanitizer 验证、属于同一 binding/未知 root、且 revision 不低于 freshness watermark 的 `pending` query 时，须转发原始进度和真实 error；不能用通用 `reconcile_required` 覆盖健康进度，否则 Web 第二轮后会停止。允许转发不等于已消除未知状态：写栅栏、资产投影限制与关闭证明继续保留到 terminal；错误 root、过期回包、pending 混合资产投影及 detached 路径不能借此通过。`LootTaskTests.RewardInbox_Pending*` 覆盖多轮前缀、terminal、错误与拒绝分支；Host 的 request/reply 日志以 callId 关联，并记录 rootStatus/applied/error/forwarded，避免仅凭旧界面推断资产没写入。

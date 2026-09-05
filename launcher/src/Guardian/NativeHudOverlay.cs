@@ -678,6 +678,7 @@ namespace CF7Launcher.Guardian
 
             if (_uiDataConsumerCount == 0) return;
 
+            bool hasSaveEvents = false;
             HashSet<string> changedKeys = new HashSet<string>();
             Dictionary<string, string> snapshotCopy;
             lock (_uiDataLock)
@@ -685,6 +686,7 @@ namespace CF7Launcher.Guardian
                 foreach (KeyValuePair<string, string> kv in UiDataPacketParser.ParseFrom(pkt))
                 {
                     string key = kv.Key;
+                    if (key == "s" || key == "sv") hasSaveEvents = true;
                     string fullPiece = kv.Value;
                     string prev;
                     if (!_uiDataSnapshot.TryGetValue(key, out prev) || prev != fullPiece)
@@ -693,7 +695,8 @@ namespace CF7Launcher.Guardian
                         changedKeys.Add(key);
                     }
                 }
-                if (changedKeys.Count == 0) return;
+                // 保存反馈和 SafeExit 消费有序事件；相同终态也可能属于新的保存尝试。
+                if (changedKeys.Count == 0 && !hasSaveEvents) return;
                 // 拷贝快照传给 UI 线程，避免 socket 线程后续修改时 widget 读到并发状态
                 snapshotCopy = new Dictionary<string, string>(_uiDataSnapshot);
             }
@@ -705,13 +708,13 @@ namespace CF7Launcher.Guardian
             {
                 this.BeginInvoke(new Action(delegate
                 {
-                    DispatchUiDataToWidgets(snapshotCopy, changedKeys);
+                    DispatchUiDataToWidgets(pkt, snapshotCopy, changedKeys, hasSaveEvents);
                 }));
             }
             catch { }
         }
 
-        private void DispatchUiDataToWidgets(Dictionary<string, string> snapshot, HashSet<string> changedKeys)
+        private void DispatchUiDataToWidgets(UiDataPacket packet, Dictionary<string, string> snapshot, HashSet<string> changedKeys, bool hasSaveEvents)
         {
             INativeHudWidget[] widgetSnapshot;
             lock (_widgetsLock) { widgetSnapshot = _widgets.ToArray(); }
@@ -719,6 +722,23 @@ namespace CF7Launcher.Guardian
             int dispatched = 0;
             for (int i = 0; i < widgetSnapshot.Length; i++)
             {
+                SafeExitPanelWidget safeExit = widgetSnapshot[i] as SafeExitPanelWidget;
+                if (safeExit != null)
+                {
+                    if (!hasSaveEvents) continue;
+                    // 只投递原始序列一次；终值快照会吞掉同帧 sv:1 → sv:2。
+                    dispatched++;
+                    try { safeExit.HandleUiData(packet); }
+                    catch (Exception ex) { LogManager.Log("[NativeHud] SafeExit UiData throw: " + ex.Message); }
+                    continue;
+                }
+                RightContextWidget right = widgetSnapshot[i] as RightContextWidget;
+                if (hasSaveEvents && right != null)
+                {
+                    try { right.HandleSaveUiData(packet); }
+                    catch (Exception ex) { LogManager.Log("[NativeHud] Save feedback UiData throw: " + ex.Message); }
+                }
+                if (changedKeys.Count == 0) continue;
                 IUiDataConsumer consumer = widgetSnapshot[i] as IUiDataConsumer;
                 if (consumer == null) continue;
                 dispatched++;

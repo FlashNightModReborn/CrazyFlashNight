@@ -567,6 +567,115 @@ namespace CF7Launcher.Tests.Tasks
             return response;
         }
 
+        private static JObject PendingRewardPrefix(JObject flash, string rootId,
+            int applied, bool query, string error = "", int revision = 2)
+        {
+            JObject response = RewardRootResponse(flash, rootId,
+                rootStatus: "pending", resultKind: "in_progress", hasLoot: true,
+                success: query, error: error, appliedCount: applied, revision: revision);
+            response["snapshots"] = new JArray();
+            response["closeLease"] = "";
+            return response;
+        }
+
+        [Fact]
+        public void RewardInbox_PendingQueriesForwardEveryPrefixWhileWritesStayFenced()
+        {
+            using var harness = new Harness(rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.continuation.1";
+            JObject claim = RewardRequest("claimBatch", "batch.continuation", rootId);
+            claim["expectedAuthorityRevision"] = 1;
+            claim["sources"][0]["expectedLease"] = "reward.loot.slot.1";
+            harness.Task.HandleWebRequest(claim);
+            harness.Task.HandleFlashResponse(
+                PendingRewardPrefix(harness.SentAt(1), rootId, 3, false, revision: 2), null);
+
+            int[] progress = {5, 8, 10};
+            for (int i = 0; i < progress.Length; i++)
+            {
+                harness.Task.HandleWebRequest(RewardRequest(
+                    "query", "query.continuation." + i, rootId));
+                JObject query = harness.SentAt(i + 2);
+                harness.Task.HandleFlashResponse(
+                    PendingRewardPrefix(query, rootId, progress[i], true, revision: i + 3), null);
+                JObject posted = harness.PostedAt(i + 2);
+                Assert.Equal("pending", posted.Value<string>("rootStatus"));
+                Assert.Equal(progress[i], posted.Value<int>("appliedCount"));
+                Assert.Equal("", posted.Value<string>("error"));
+                Assert.Empty((JArray)posted["snapshots"]);
+                Assert.Equal("", posted.Value<string>("closeLease"));
+                Assert.Equal("reconcile_required", harness.Task.WriteState);
+                Assert.Equal(rootId, harness.Task.UnknownOperationId);
+            }
+
+            int sentBeforeWrite = harness.Sent.Count;
+            harness.Task.HandleWebRequest(RewardRequest("claim", "claim.during.prefix", "another.root"));
+            Assert.Equal(sentBeforeWrite, harness.Sent.Count);
+            Assert.Equal("reconcile_required", harness.PostedAt(5).Value<string>("error"));
+
+            harness.Task.HandleWebRequest(RewardRequest("query", "query.terminal", rootId));
+            harness.Task.HandleFlashResponse(RewardRootResponse(harness.SentAt(5), rootId,
+                appliedCount: 14, revision: 6), null);
+            Assert.Equal("committed", harness.PostedAt(6).Value<string>("rootStatus"));
+            Assert.Equal("idle", harness.Task.WriteState);
+            Assert.Equal(1, harness.Sent.Count(p => p.Value<string>("action") == "lootClaimBatch"));
+        }
+
+        [Theory]
+        [InlineData("commit_pending")]
+        [InlineData("")]
+        public void RewardInbox_PendingQueryPreservesAuthorityError(string error)
+        {
+            using var harness = new Harness(rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.query.error";
+            JObject claim = RewardRequest("claim", "claim.query.error", rootId);
+            claim["expectedAuthorityRevision"] = 1;
+            claim["source"]["expectedLease"] = "reward.loot.slot.1";
+            harness.Task.HandleWebRequest(claim);
+            harness.Task.HandleFlashResponse(
+                PendingRewardPrefix(harness.SentAt(1), rootId, 0, false), null);
+            harness.Task.HandleWebRequest(RewardRequest("query", "query.error", rootId));
+            harness.Task.HandleFlashResponse(
+                PendingRewardPrefix(harness.SentAt(2), rootId, 0, true, error, 3), null);
+
+            Assert.Equal("pending", harness.PostedAt(2).Value<string>("rootStatus"));
+            Assert.Equal(error, harness.PostedAt(2).Value<string>("error"));
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+            Assert.Equal(rootId, harness.Task.UnknownOperationId);
+        }
+
+        [Theory]
+        [InlineData("foreign")]
+        [InlineData("stale")]
+        [InlineData("mixed")]
+        public void RewardInbox_PendingQueryCannotBypassRootOrProjectionProof(string corruption)
+        {
+            using var harness = new Harness(rewardInbox: true);
+            PrimeRewardActiveAuthority(harness, true);
+            const string rootId = "reward.root.query.proof";
+            JObject claim = RewardRequest("claim", "claim.query.proof", rootId);
+            claim["expectedAuthorityRevision"] = 1;
+            claim["source"]["expectedLease"] = "reward.loot.slot.1";
+            harness.Task.HandleWebRequest(claim);
+            harness.Task.HandleFlashResponse(
+                PendingRewardPrefix(harness.SentAt(1), rootId, 0, false, revision: 4), null);
+            string queriedRoot = corruption == "foreign" ? "foreign.root" : rootId;
+            harness.Task.HandleWebRequest(RewardRequest("query", "query.proof", queriedRoot));
+            JObject query = harness.SentAt(2);
+            JObject response = PendingRewardPrefix(query, queriedRoot, 1, true,
+                revision: corruption == "stale" ? 2 : 5);
+            if (corruption == "mixed")
+                response["snapshots"] = RewardRootResponse(query, queriedRoot)["snapshots"];
+            harness.Task.HandleFlashResponse(response, null);
+
+            Assert.Null(harness.PostedAt(2)["rootStatus"]);
+            Assert.Equal("reconcile_required", harness.Task.WriteState);
+            Assert.Equal(rootId, harness.Task.UnknownOperationId);
+        }
+
+
         private static JObject ErrorResponse(JObject flash, string error = "stale_state")
         {
             return new JObject

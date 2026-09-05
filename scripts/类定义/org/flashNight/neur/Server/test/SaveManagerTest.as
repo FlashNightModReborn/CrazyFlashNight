@@ -114,6 +114,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_saveApi_flush_lane_read_migration_and_preload_tombstone();
         test_saveApi_reason_registry_clamps_dynamic_text();
         test_saveApi_stats_snapshot_isolation_reset_and_trace();
+        test_reward_wrapper_physical_counts();
+        test_scene_safety_net_clean_and_pending();
     }
 
     private static function runLoadFromMydataTests():Void {
@@ -3355,6 +3357,91 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
     }
 
     // ── R1 Slice 2：四层 API ──
+
+
+    /** 领域 wrapper 真委托到 SaveManager + SOL；与 map-loot 的领域成像门组合。 */
+    private static function test_reward_wrapper_physical_counts():Void {
+        var reward:Object = RewardInboxService;
+        var oldAttempt:Function = reward["_durableCutAttemptProbe"];
+        var oldResult:Function = reward["_durableCutProbe"];
+        var sizes:Array = [1, 2, 20, 50];
+        for (var s:Number = 0; s < sizes.length; s++) {
+            var saved:Object = beginSaveFlowTest();
+            var originalSaveSystem:Object = _root.存档系统;
+            try {
+                _root.存档系统 = {dirtyMark:false};
+                var sm:SaveManager = SaveManager.getInstance();
+                sm.installSaveApiShims();
+                sm._resetSavePhysicalStatsForTest();
+                sm._resetSaveApiStatsForTest();
+                var attempts:Number = 0;
+                var results:Number = 0;
+                var allOk:Boolean = true;
+                RewardInboxService.setDurableCutAttemptProbe(function(cut:String):Void {
+                    attempts++;
+                });
+                RewardInboxService.setDurableCutProbe(function(cut:String, ok:Boolean):Void {
+                    results++;
+                    allOk = allOk && ok;
+                });
+                var n:Number = Number(sizes[s]);
+                for (var i:Number = 0; i <= n; i++) {
+                    var cut:String = i == 0 ? "root_admission"
+                        : (i == n ? "terminal" : "child_bridge");
+                    // AS2 private 在运行时仍是属性；测试不扩张生产 public API。
+                    allOk = reward["flushSave"](cut) === true && allOk;
+                }
+                var api:Object = sm._getSaveApiStatsForTest();
+                var physical:Object = sm._getSavePhysicalStatsForTest();
+                assert(allOk && attempts == n + 1 && results == n + 1
+                       && api.ingress.flushDurableNow == n + 1
+                       && api.ingress.legacyFlushNow == 0 && api.ingress.flushBeforeTransition == 0,
+                       "reward_physical N=" + n + ": domain probes and durable ingress exactly N+1");
+                assert(physical.doSaveAll == n + 1 && physical.packGameState == n + 1
+                       && physical.flushAttempt == n + 1 && physical.flushSuccess == n + 1,
+                       "reward_physical N=" + n + ": real pack/doSaveAll/SOL flush exactly N+1");
+                assert(SharedObject.getLocal(TEST_SLOT).data["test"] != undefined
+                       && api.reasons["reward.root_admission"] == 1
+                       && api.reasons["reward.child_bridge"] == n - 1
+                       && api.reasons["reward.terminal"] == 1 && api.reasonUnregistered == 0,
+                       "reward_physical N=" + n + ": durable image and registered cut counts preserved");
+            } finally {
+                RewardInboxService.setDurableCutAttemptProbe(oldAttempt);
+                RewardInboxService.setDurableCutProbe(oldResult);
+                _root.存档系统 = originalSaveSystem;
+                endSaveFlowTest(saved);
+            }
+        }
+    }
+
+    private static function test_scene_safety_net_clean_and_pending():Void {
+        for (var pending:Number = 0; pending < 2; pending++) {
+            var saved:Object = beginSaveFlowTest();
+            try {
+                var sm:SaveManager = SaveManager.getInstance();
+                sm._resetSavePhysicalStatsForTest();
+                sm._resetSaveApiStatsForTest();
+                if (pending == 1) sm.requestSave("ui.fade_out");
+                var clean:Boolean = !sm.hasPendingChanges();
+                var committed:Boolean = sm.flushDurableNow("scene.changed_safety_net");
+                var physical:Object = sm._getSavePhysicalStatsForTest();
+                assert(clean && committed && physical.doSaveAll == 1
+                       && physical.packGameState == 1 && physical.flushSuccess == 1,
+                       "scene_safety_net pending=" + pending + ": clean state still durably saves once");
+                var api:Object = sm._getSaveApiStatsForTest();
+                assert(!sm._hasPendingSaveRequestForTest()
+                       && api.request.requestAbsorbedByFence == pending
+                       && api.reasons["scene.changed_safety_net"] == 1,
+                       "scene_safety_net pending=" + pending + ": pending absorbed before wheel teardown");
+                org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel.I().deactivateAll();
+                sm._advanceDebounceWheelForTest();
+                assert(sm._getSavePhysicalStatsForTest().doSaveAll == 1,
+                       "scene_safety_net pending=" + pending + ": teardown leaves no delayed duplicate");
+            } finally {
+                endSaveFlowTest(saved);
+            }
+        }
+    }
 
     private static function test_flushDurableNow_clean_state_commits_immediately():Void {
         var saved:Object = beginSaveFlowTest();

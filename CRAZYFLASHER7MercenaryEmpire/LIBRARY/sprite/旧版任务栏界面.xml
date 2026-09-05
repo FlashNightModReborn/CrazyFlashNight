@@ -172,7 +172,8 @@ _root.全部翻译(this);
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   _root.自动存盘();
+   if (_root.__saveApiReasonProbeEnabled === true) trace("[SaveApiReason] E3|requestSave|ui.taskbar_legacy_close");
+   _root.存档系统.requestSave("ui.taskbar_legacy_close");
    this._visible = 0;
 }
 ]]></script>

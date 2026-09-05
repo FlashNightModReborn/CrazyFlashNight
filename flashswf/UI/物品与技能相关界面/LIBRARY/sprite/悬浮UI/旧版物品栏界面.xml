@@ -2166,7 +2166,8 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   _root.自动存盘();
+   if (_root.__saveApiReasonProbeEnabled === true) trace("[SaveApiReason] E12|requestSave|ui.inventory_legacy_close");
+   _root.存档系统.requestSave("ui.inventory_legacy_close");
    this._visible = 0;
 }
 ]]></script>

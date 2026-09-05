@@ -45,8 +45,9 @@ class org.flashNight.arki.item.RewardInboxService {
     }
 
     /** durable-cut attempt 预通知（语义故障注入专用）：flushSave 在真实调用
-     * _root.强制存盘 前以 cutName 回调，使测试能在真实存盘边界按语义名注入
-     * 失败；探针异常绝不影响存盘路径，生产永远为 null。 */
+     * _root.存档系统.flushDurableNow("reward." + cutName) 前以 cutName 回调，
+     * 使测试能在真实存盘边界按语义名注入失败；探针异常绝不影响存盘路径，
+     * 生产永远为 null。 */
     public static function setDurableCutAttemptProbe(probe:Function):Void {
         _durableCutAttemptProbe = probe;
     }
@@ -515,14 +516,15 @@ class org.flashNight.arki.item.RewardInboxService {
                 return exactRootResponse(record, visibleActiveRoot(feature), false,
                     "operation_conflict", false);
             }
-            advanceActiveRoot(record, feature);
+            var duplicateAdvanced:Boolean = advanceActiveRoot(record, feature);
             var duplicateCurrent:Object = feature.activeClaimRoot != null
                 ? visibleActiveRoot(feature) : feature.claimRootTerminal;
             var duplicatePending:Boolean = duplicateCurrent != null
                 && duplicateCurrent.rootStatus == "pending";
             return exactRootResponse(record, duplicateCurrent,
                 duplicateCurrent != null && duplicateCurrent.rootStatus == "committed",
-                _rootPersistPending || duplicatePending ? "commit_pending" : "", false);
+                _rootPersistPending || duplicatePending && !duplicateAdvanced
+                    ? "commit_pending" : "", false);
         }
         if (terminal != null && String(terminal.rootOperationId) == operationId) {
             var terminalFingerprint:String = fingerprintExistingRequest(
@@ -596,13 +598,13 @@ class org.flashNight.arki.item.RewardInboxService {
             if (_root.存档系统 != null) _root.存档系统.dirtyMark = dirtyBefore;
             return durableFailureFor(record, operationId, "commit_pending");
         }
-        advanceActiveRoot(record, feature);
+        var advanced:Boolean = advanceActiveRoot(record, feature);
         var current:Object = feature.activeClaimRoot != null
             ? visibleActiveRoot(feature) : feature.claimRootTerminal;
         var currentPending:Boolean = current != null && current.rootStatus == "pending";
         return exactRootResponse(record, current,
             current != null && current.rootStatus == "committed",
-            _rootPersistPending || currentPending
+            _rootPersistPending || currentPending && !advanced
                 ? "commit_pending" : String(current.error || ""), false);
     }
 
@@ -632,11 +634,13 @@ class org.flashNight.arki.item.RewardInboxService {
         if (active != null && String(active.rootOperationId) == rootId) {
             if (hasAck) return exactRootResponse(record, visibleActiveRoot(feature), false,
                 "invalid_terminal_ack", true);
-            advanceActiveRoot(record, feature);
+            var advanced:Boolean = advanceActiveRoot(record, feature);
             var current:Object = feature.activeClaimRoot != null
                 ? visibleActiveRoot(feature) : feature.claimRootTerminal;
             return exactRootResponse(record, current, true,
-                _rootPersistPending ? "commit_pending" : "", true);
+                _rootPersistPending || current != null
+                    && current.rootStatus == "pending" && !advanced
+                    ? "commit_pending" : "", true);
         }
         var terminal:Object = feature.claimRootTerminal;
         if (terminal != null && String(terminal.rootOperationId) == rootId) {
@@ -669,7 +673,13 @@ class org.flashNight.arki.item.RewardInboxService {
      * 下一 child。admission(A+P0) 与 quarantine 的独立强存盘不变，事件发布仍在
      * durable save 之后。
      */
+    private static function advanceClock():Number { return getTimer(); }
+
     private static function advanceActiveRoot(record:Object, feature:Object):Boolean {
+        // 单次总线请求按 750ms 预算在已 durable 的 child 边界让出；至少推进一项。
+        // true 也可表示健康让出，pending + 空 error 由 Web 沿同一 root 自动 query。
+        // 不增加保存，不中断 child，不把未落盘的投影提前回给客户端。
+        var startedAt:Number = advanceClock();
         var root:Object = feature.activeClaimRoot;
         if (root == null) return true;
         if (_rootPersistPending
@@ -684,6 +694,7 @@ class org.flashNight.arki.item.RewardInboxService {
         var ledgerIndex:Object = buildLedgerIndex(feature);
         var guard:Number = 0;
         while (root != null && guard < 64) {
+            if (guard > 0 && advanceClock() - startedAt >= 750) return true;
             guard++;
             var cursor:Number = Number(root.cursor);
             if (cursor >= root.orderedEntries.length) {
@@ -1982,8 +1993,13 @@ class org.flashNight.arki.item.RewardInboxService {
             catch (attemptProbeError) { }
         }
         var ok:Boolean = false;
-        if (typeof _root.强制存盘 == "function") {
-            try { ok = _root.强制存盘() === true; }
+        // R1 步骤 10：durable cut 内核换 flushDurableNow，只换调用目标。
+        // wrapper 形状全冻结：cutName 入参、attempt/result 探针、false/异常 →
+        // ok=false → 调用方 commit_pending 的失败语义一律不变。
+        // 守卫形态与 A4/A5 对齐：_root.存档系统 缺失或无该函数时 ok 保持 false，
+        // 与旧 `typeof _root.强制存盘 == "function"` 的失败路径一致。
+        if (_root.存档系统 != null && typeof _root.存档系统.flushDurableNow == "function") {
+            try { ok = _root.存档系统.flushDurableNow("reward." + cutName) === true; }
             catch (saveError) { ok = false; }
         }
         if (_durableCutProbe != null) {

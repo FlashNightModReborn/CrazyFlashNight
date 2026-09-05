@@ -113,7 +113,9 @@ class org.flashNight.arki.item.ItemUseService {
         if (!recipe.success) return commonFailure("open", params, "invalid_reward_pack");
         var rolled:Object = rollRecipe(recipe);
         if (!rolled.success) return commonFailure("open", params, "invalid_reward_pack");
-        if (!RewardInboxService.canAppendOccurrenceCount(rolled.entries.length)) {
+        var compacted:Object = compactRolledPackages([rolled.entries]);
+        rolled.entries = compacted.packages[0];
+        if (!RewardInboxService.canAppendOccurrenceCount(compacted.totalOccurrences)) {
             return commonFailure("open", params, "reward_inbox_full");
         }
 
@@ -167,9 +169,9 @@ class org.flashNight.arki.item.ItemUseService {
      * count。lookup receipt 先于 source 校验；receipt 存 exact normalized
      * request object 作为 conflict 证明，不复用裸 | 拼接 sourceFingerprint。
      * fresh：normalize recipe 一次 → ordinal 0..K-1 连续 rollRecipe →
-     * Σ occurrences 一次 canAppendOccurrenceCount 预检 → capture(bag + 整个
+     * 冻结结果按可堆叠物品合并 → 合并后 occurrences 一次容量预检 → capture(bag + 整个
      * Reward feature + dirty) → PAT begin → 标脏 → 一次扣 K 并 exact 验证 →
-     * K 次 appendRewardBatch（0 命中也记 package descriptor）→ 一个
+     * K 次 appendRewardBatch（0 命中或全部并入前包仍记 descriptor）→ 一个
      * kind:"openMany" receipt → flushSave 恰好一次。false/throw 整体恢复
      * bag/feature/dirty 并丢弃 PAT frame 回 commit_pending；true 后 PAT
      * commit，durable 后不回滚。RNG 无可恢复状态，失败重试可能重新 roll，
@@ -200,14 +202,15 @@ class org.flashNight.arki.item.ItemUseService {
             ? null : itemData.data.rewardPack);
         if (!recipe.success) return commonFailure("openMany", params, "invalid_reward_pack");
         var rolled:Array = [];
-        var totalOccurrences:Number = 0;
         for (var ordinal:Number = 0; ordinal < count; ordinal++) {
             var roll:Object = rollRecipe(recipe);
             if (!roll.success) return commonFailure("openMany", params, "invalid_reward_pack");
             rolled.push(roll.entries);
-            totalOccurrences += roll.entries.length;
         }
-        if (!RewardInboxService.canAppendOccurrenceCount(totalOccurrences)) {
+        // 保持所有 draw 的原始顺序；只压缩已经冻结的本次结果，不碰旧账簿。
+        var compacted:Object = compactRolledPackages(rolled);
+        rolled = compacted.packages;
+        if (!RewardInboxService.canAppendOccurrenceCount(compacted.totalOccurrences)) {
             return commonFailure("openMany", params, "reward_inbox_full");
         }
 
@@ -575,9 +578,50 @@ class org.flashNight.arki.item.ItemUseService {
             }
             entries.push(normalized);
         }
+        var maximumEntries:Array = [];
+        for (var mi:Number = 0; mi < entries.length; mi++) {
+            maximumEntries.push({itemName:String(entries[mi].itemName),
+                quantity:Number(entries[mi].quantityMax)});
+        }
         return {success:true, mode:mode, entries:entries,
-            totalWeight:totalWeight,
-            maxOccurrences:mode == "chooseOne" ? 1 : entries.length};
+            totalWeight:totalWeight, maxOccurrences:mode == "chooseOne" ? 1
+                : Number(compactRolledPackages([maximumEntries]).totalOccurrences)};
+    }
+
+    /**
+     * 只合并本次操作中已经 roll 完的数值型消耗品/收集品；装备逐件保留。
+     * 归属保留在首次出现的 package/位置，后续包可为 0 个新增条目。
+     * K 个 ordinal/batchId 与一个原子 receipt 不变，不引入跨操作身份迁移。
+     */
+    private static function compactRolledPackages(rolled:Array):Object {
+        var packages:Array = [];
+        var owners:Object = {};
+        var totalOccurrences:Number = 0;
+        for (var p:Number = 0; p < rolled.length; p++) {
+            var entries:Array = [];
+            packages.push(entries);
+            for (var i:Number = 0; i < rolled[p].length; i++) {
+                var entry:Object = rolled[p][i];
+                var name:String = String(entry.itemName);
+                var quantity:Number = Number(entry.quantity);
+                var data:Object = ItemUtil.getItemData(name);
+                var stackable:Boolean = !ItemUtil.isEquipment(name) && data != null
+                    && (data.type == "消耗品" || data.type == "收集品");
+                // 前缀使物品名不能访问 Object 的内建原型字段。
+                var key:String = "$" + name;
+                var owner:Object = stackable ? owners[key] : null;
+                if (owner != null
+                        && Number(owner.quantity) <= MAX_SAFE_INTEGER - quantity) {
+                    owner.quantity = Number(owner.quantity) + quantity;
+                    continue;
+                }
+                var copy:Object = {itemName:name, quantity:quantity};
+                entries.push(copy);
+                totalOccurrences++;
+                if (stackable) owners[key] = copy;
+            }
+        }
+        return {packages:packages, totalOccurrences:totalOccurrences};
     }
 
     private static function rollRecipe(recipe:Object):Object {

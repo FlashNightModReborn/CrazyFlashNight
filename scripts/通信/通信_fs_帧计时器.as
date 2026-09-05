@@ -736,7 +736,10 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     // **无条件 flushNow**：unconditional 是 audit 漏标 mutator 的 safety net——
     // 即使 audit 漏掉某 mutator 没设 dirtyMark，本 hook 也会保存当前 mydata，
     // 数据不丢。代价：每次场景切换 1 次落盘（与 baseline 淡出 unconditional 相同）。
-    SaveManager.getInstance().flushNow();
+    // R1 步骤 11：内核换 flushDurableNow("scene.changed_safety_net")，只换调用目标。
+    // 冻结项：仍无条件（不加 dirty 守卫）、仍严格位于 deactivateAll() 之前；
+    // 它不是 transition API（scene change 已发生），故不得改用 flushBeforeTransition。
+    SaveManager.getInstance().flushDurableNow("scene.changed_safety_net");
     // 失活上一场景遗留的射击/特效循环任务，避免绑定已销毁单位的"孤儿循环"跨场景累积。
     // 用 deactivateAll 而非 reset：不误伤与之共享底层 CooldownWheel 的 UI 冷却等任务。
     EnhancedCooldownWheel.I().deactivateAll();

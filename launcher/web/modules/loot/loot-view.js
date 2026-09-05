@@ -1300,6 +1300,11 @@ var LootView = (function() {
                 :'游戏已确认保留同一箱内的剩余战利品。',
             state:'success',disabled:true
         };
+        if (state.phase==='write_pending' && state.pending
+                && state.pending.kind==='reward_continue') return {
+            label:claimAll?'批量领取中':'领取中',status:'正在领取奖励，请稍候。',
+            state:'busy',disabled:true,busy:true
+        };
         if (state.phase!=='active') return {
             label:'同步中',status:isSettlement?'正在读取游戏中的关卡奖励快照…'
                 :isRewardInbox?'正在读取游戏中的待领取物品快照…'

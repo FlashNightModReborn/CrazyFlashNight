@@ -334,7 +334,7 @@ if ($productionBeginPathDrift.Count -gt 0) {
         (($productionBeginPathDrift | Out-String).Trim()))
 }
 
-# 21 个直接持有领域 authority 的显式 caller 必须在首写前 fail-fast 标脏；
+# 23 个直接持有领域 authority 的显式 caller 必须在首写前 fail-fast 标脏；
 # preserve=true catch 的 receipt 已由逐写 finally 固化，因此异常清理必须先 settle，
 # 不能再让 dirty/receipt/索引修复异常把 frame 留给下一事务。装备调制仅投影已提交
 # receipt，不在本清单；制作拥有 exact snapshot，保留 restore -> finally settle(false)。
@@ -379,8 +379,11 @@ $directAuthorityContracts = @(
         End='private static function restoreState'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='ItemUtil.submit('; Catch=$null; DirtyExact=1 },
     @{ Name='item-use-open'; Path=$itemUsePath; Start='private static function executeOpen';
-        End='private static function executeConsume'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+        End='private static function executeOpenMany'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='bag.addValue(String(source.slot), -1);'; Catch=$null; DirtyExact=1 },
+    @{ Name='item-use-open-many'; Path=$itemUsePath; Start='private static function executeOpenMany';
+        End='private static function executeConsume'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
+        FirstWrite='bag.addValue(String(source.slot), -count);'; Catch=$null; DirtyExact=1 },
     @{ Name='drug-slot'; Path=$drugPath; Start='public static function updateSlot';
         End='public static function selectDirectUseLane'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='if (root && root.使用药剂)'; Catch='useError'; DirtyExact=1 },
@@ -475,11 +478,11 @@ foreach ($contract in $directAuthorityContracts) {
         }
     }
 }
-if ($directAuthorityContracts.Count -ne 22) {
-    throw "direct-authority caller 审计清单漂移: $($directAuthorityContracts.Count)/22"
+if ($directAuthorityContracts.Count -ne 23) {
+    throw "direct-authority caller 审计清单漂移: $($directAuthorityContracts.Count)/23"
 }
-if ($auditedDirectDirtyCount -ne 22) {
-    throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/22"
+if ($auditedDirectDirtyCount -ne 23) {
+    throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/23"
 }
 
 # Quest 多资源完成必须先交付、再写可恢复奖励、最后写进度/完成状态；升级

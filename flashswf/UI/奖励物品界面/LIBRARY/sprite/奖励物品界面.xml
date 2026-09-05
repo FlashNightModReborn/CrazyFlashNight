@@ -327,8 +327,8 @@ _root.全部翻译(this);
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	// Plan A: 奖励弹窗关闭必达；储存数据库存盘/保存仓库数据 全局未定义（dead code），已清
-	_root.强制存盘();
+	// R1：奖励弹窗关闭必达，走 flushDurableNow 绕过 debounce 立即同步落盘
+	_root.存档系统.flushDurableNow("reward_ui.item_panel_close");
 	_root.存储金钱界面._visible = 0;
 	this._visible = 0;
 	_root.是否达成任务检测();
@@ -412,8 +412,8 @@ on (release) {
 	gotoAndStop(1);
 	if (_parent.一键领取全部())
 	{
-		// Plan A: 一键领取全部必达；储存数据库存盘/保存仓库数据 全局未定义（dead code），已清
-		_root.强制存盘();
+		// R1：一键领取全部必达，走 flushDurableNow 绕过 debounce 立即同步落盘
+		_root.存档系统.flushDurableNow("reward_ui.claim_all_close");
 		_root.存储金钱界面._visible = 0;
 		_parent._visible = 0;
 		_root.是否达成任务检测();

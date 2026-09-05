@@ -313,7 +313,8 @@ on (rollOut) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.自动存盘();
+	if (_root.__saveApiReasonProbeEnabled === true) trace("[SaveApiReason] E11|requestSave|ui.warehouse_legacy_close");
+	_root.存档系统.requestSave("ui.warehouse_legacy_close");
 	_root.存储金钱界面._visible = 0;
 	this._visible = 0;
 }]]></script>

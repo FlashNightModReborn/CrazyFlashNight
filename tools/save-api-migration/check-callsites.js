@@ -2,7 +2,7 @@
 /*
  * check-callsites.js — SaveManager API 分层 R1 Slice 0 调用点回归门
  *
- * 依据 tmp/adjudication-savemanager-api-20260904/gptpro.txt §3.2 Slice 0 / §5.5：
+ * 依据 docs/裁决存档/SaveManager-API分层路线-2026-09-04.md §3.2 Slice 0 / §5.5：
  *   - scripts/ 层 17 strict 逻辑点（A1-A6 + B1-B5 + C1-C6 中的 scripts 部分 = 11 物理点）、
  *     15 debounce 逻辑点中的 scripts 部分（D1/D2 = 2 物理点）数量精确；
  *   - XFL 10 strict 物理点、13 debounce 物理点数量精确；
@@ -99,6 +99,7 @@ function xflXmlFiles() {
 // 不处理字符串字面量内的 // 或 /*：当前目标 pattern 命中区域无此形态；
 // 若未来引入会产生多计（安全方向，报警后人工复核并更新本口径）。
 function effectiveCodeLines(text, isXml) {
+  if (isXml) text = scriptCdataOnly(text);
   const result = new Map(); // lineNo -> 去注释后的行文本
   let inBlock = false;      // /* */
   let inXmlComment = false; // <!-- -->
@@ -129,6 +130,40 @@ function effectiveCodeLines(text, isXml) {
     if (out.trim().length > 0) result.set(i + 1, out);
   }
   return result;
+}
+
+// 只扫描脚本 CDATA；空白填充保留 XML 的原始行号，元数据/注释不能冒充调用点。
+function scriptCdataOnly(xml) {
+  let end = 0;
+  let result = '';
+  const blank = value => value.replace(/[^\r\n]/g, ' ');
+  xml = xml.replace(/<!--[\s\S]*?-->/g, blank);
+  const pattern = /<script\b[^>]*>\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*<\/script>/g;
+  for (const match of xml.matchAll(pattern)) {
+    const start = match.index + match[0].indexOf('<![CDATA[') + 9;
+    result += blank(xml.slice(end, start)) + match[1];
+    end = start + match[1].length;
+  }
+  return result + blank(xml.slice(end));
+}
+
+function validateXflCallsite(cs, source) {
+  const api = {apiMarkDirty:'markDirty', apiRequestSave:'requestSave',
+    apiFlushDurableNow:'flushDurableNow', apiFlushBeforeTransition:'flushBeforeTransition'}[cs.legacyEntry];
+  if (!api) return [];
+  const errors = [];
+  const line = effectiveCodeLines(source, true).get(cs.line) || '';
+  const compact = value => value.replace(/\s+/g, '');
+  const target = cs.targetApi === 'markDirty+requestSave' ? 'requestSave' : cs.targetApi;
+  if (api !== target) errors.push('API 与冻结 targetApi 不一致');
+  const reason = api === 'markDirty' ? '' : JSON.stringify(cs.reasonId[0]);
+  const guard = cs.dirtyGuard ? 'if(_root.存档系统.dirtyMark)' :
+    (cs.physicalId === 'E6.markDirty' ? 'if(_root.存档系统!=undefined)' : '');
+  const expected = guard + '_root.存档系统.' + api + '(' + reason + ');';
+  if (compact(line) !== compact(expected)) {
+    errors.push('CDATA 调用的 API/reason/dirty guard/裸语句与冻结合同不一致');
+  }
+  return errors;
 }
 
 // ---------- 扫描 ----------
@@ -227,8 +262,8 @@ function main() {
   assertEq('scripts/ 生产 requestSave() 物理点', scriptsHits.apiRequestSave.length, counts.scriptsApiRequestSavePhysical);
   assertEq('scripts/ 生产 flushDurableNow() 物理点', scriptsHits.apiFlushDurableNow.length, counts.scriptsApiFlushDurableNowPhysical);
   assertEq('scripts/ 生产 flushBeforeTransition() 物理点', scriptsHits.apiFlushBeforeTransition.length, counts.scriptsApiFlushBeforeTransitionPhysical);
-  assertEq('XFL _root.强制存盘() 物理点', xflHits.forceSave.length, counts.xflStrictPhysical);
-  assertEq('XFL _root.自动存盘() 物理点', xflHits.autoSave.length, counts.xflDebouncePhysical);
+  assertEq('XFL _root.强制存盘() 物理点', xflHits.forceSave.length, counts.xflForceSavePhysical);
+  assertEq('XFL _root.自动存盘() 物理点', xflHits.autoSave.length, counts.xflAutoSavePhysical);
   assertEq('XFL _root.本地存盘() 物理点', xflHits.localSave.length, counts.xflLocalSavePhysical);
   assertEq('XFL canonical 存档系统.markDirty() 物理点', xflHits.apiMarkDirty.length, counts.xflApiMarkDirtyPhysical);
   assertEq('XFL requestSave() 物理点', xflHits.apiRequestSave.length, counts.xflApiRequestSavePhysical);
@@ -259,6 +294,11 @@ function main() {
     if (!fam.re.test(line)) {
       fail(cs.physicalId + '：' + cs.sourcePath + ':' + cs.line + ' 不含 ' + cs.legacyApi +
         '（family=' + cs.legacyEntry + '），实际内容: ' + line.trim().slice(0, 120));
+    }
+    if (isXml) {
+      for (const problem of validateXflCallsite(cs, fs.readFileSync(path.join(ROOT, cs.sourcePath), 'utf8'))) {
+        fail(cs.physicalId + '：' + problem);
+      }
     }
     const expectSwfLayer = cs.layer === 'scripts' ? 'scripts'
       : (cs.sourcePath.startsWith('flashswf/UI/') ? 'xfl-live' : 'xfl-main');
@@ -427,8 +467,8 @@ function main() {
     console.log('  scripts/ requestSave()         = ' + scriptsHits.apiRequestSave.length + '（期望 ' + counts.scriptsApiRequestSavePhysical + '）');
     console.log('  scripts/ flushDurableNow()     = ' + scriptsHits.apiFlushDurableNow.length + '（期望 ' + counts.scriptsApiFlushDurableNowPhysical + '）');
     console.log('  scripts/ flushBeforeTransition() = ' + scriptsHits.apiFlushBeforeTransition.length + '（期望 ' + counts.scriptsApiFlushBeforeTransitionPhysical + '）');
-    console.log('  XFL      _root.强制存盘()      = ' + xflHits.forceSave.length + '（期望 ' + counts.xflStrictPhysical + '）');
-    console.log('  XFL      _root.自动存盘()      = ' + xflHits.autoSave.length + '（期望 ' + counts.xflDebouncePhysical + '）');
+    console.log('  XFL      _root.强制存盘()      = ' + xflHits.forceSave.length + '（期望 ' + counts.xflForceSavePhysical + '）');
+    console.log('  XFL      _root.自动存盘()      = ' + xflHits.autoSave.length + '（期望 ' + counts.xflAutoSavePhysical + '）');
     console.log('  XFL      _root.本地存盘()      = ' + xflHits.localSave.length + '（期望 ' + counts.xflLocalSavePhysical + '）');
     console.log('  XFL      四层 API 物理点        = markDirty ' + xflHits.apiMarkDirty.length + ' / requestSave ' + xflHits.apiRequestSave.length +
       ' / flushDurableNow ' + xflHits.apiFlushDurableNow.length + ' / flushBeforeTransition ' + xflHits.apiFlushBeforeTransition.length + '（期望 ' +
@@ -465,4 +505,5 @@ function main() {
   process.exit(errors.length === 0 ? 0 : 1);
 }
 
-main();
+if (require.main === module) main();
+module.exports = {effectiveCodeLines, validateXflCallsite};

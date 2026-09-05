@@ -89,7 +89,7 @@ bootstrap preflight
 `publish_done.marker`、进程存在或页面加载完成都不能单独代表成功。真实启动结论必须绑定新鲜日志、实际进程路径和对应 runtime identity。
 ### 窗口与输入所有权
 
-`GuardianForm` 是主窗口与 Flash 容器。运行态 UI 由 Native HUD、Web Overlay、Panel backdrop/input shield 和原生 cursor 按状态组合；Panel 打开时由 `PanelHostController` 统一协调 snapshot、焦点、输入屏障、Native HUD suspend/resume 和 WebView2 几何。
+`GuardianForm` 是主窗口与 Flash 容器。运行态 UI 由 Native HUD、Web Overlay、Panel backdrop/input shield 和原生 cursor 按状态组合；Panel 打开时由 `PanelHostController` 统一协调 snapshot、焦点、输入屏障、Native HUD suspend/resume 和 WebView2 几何。右上 × 保留退出并在按钮内显示保存状态：成功短暂亮起/淡出，未确认静止，空闲无动画；不扩大合成/命中区。见 [R1 收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。
 
 正式 Panel 路由由 `LauncherCommandRouter` 与领域 handler 授权。Web 不得凭本地 DOM 状态制造业务能力；AS2 仍是需要游戏状态或存档写入的最终裁决方。跨层请求必须遵守 exact envelope、instance/session、generation、nonce/token、revision 和迟到回包 fence，具体以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
 ### 通信面
@@ -346,7 +346,7 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 |---|---|---|
 | `kshop` | 工作台 | `modules/kshop.js` |
 | `workbench` | 工作台 | `modules/inventory-workbench.js` |
-| `loot` | 工作台 | `modules/loot/loot-panel.js` |
+| `loot` | 工作台；奖励归并与原 root 分段续查见[迁移护栏](../agentsDoc/as2-web-panel-migration.md) | `modules/loot/loot-panel.js` |
 | `npcshop` | 工作台 | `modules/npcshop.js` |
 | `crafting` | 工作台 | `modules/crafting.js` |
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -485,6 +486,137 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(1, cap.Exit);
             Assert.False(w.IsArmed);
         }
+
+        private sealed class PacketRoute : IDisposable
+        {
+            private readonly SafeExitPanelWidget _widget;
+            private readonly Form _owner;
+            private readonly Control _anchor;
+            private readonly NativeHudOverlay _hud;
+
+            public PacketRoute(SafeExitPanelWidget widget, bool native)
+            {
+                _widget = widget;
+                if (!native) return;
+                _owner = new Form();
+                _anchor = new Control();
+                _hud = new NativeHudOverlay(_owner, _anchor);
+                _hud.AddWidget(widget);
+                // 仅创建隐藏窗口和消息队列，走真实 HandleUiData / BeginInvoke 分发。
+                _ = _hud.Handle;
+            }
+
+            public void Send(string raw)
+            {
+                var packet = new UiDataPacket(raw);
+                if (_hud == null) _widget.HandleUiData(packet);
+                else
+                {
+                    _hud.HandleUiData(packet);
+                    Application.DoEvents();
+                }
+            }
+
+            public void Dispose()
+            {
+                _hud?.Dispose();
+                _anchor?.Dispose();
+                _owner?.Dispose();
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void BatchedPacket_RepeatedManualSavesConfirmExactlyOnce(bool native)
+        {
+            LauncherCommandRouter router; Capture cap;
+            var w = MakeWidget(out router, out cap);
+            router.SetGameCommandSenderForTests(delegate { return true; });
+            using (var route = new PacketRoute(w, native))
+            {
+                for (int attempt = 0; attempt < 3; attempt++)
+                {
+                    router.Dispatch("SAFEEXIT");
+                    // 2026-09-05 10:29 现场 Frame:UI 原始合批顺序。
+                    route.Send("sv:1|sv:1|q:77|sv:2|q:77");
+                    Assert.True(w.SawSv1AfterArmForTest);
+                    Assert.True(w.IsDoneState);
+                    router.Dispatch("EXIT_CONFIRM");
+                    router.Dispatch("EXIT_CONFIRM");
+                    Assert.Equal(attempt + 1, cap.Exit);
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData(false, "sv:2|sv:1", false, false)]
+        [InlineData(true, "sv:2|sv:1", false, false)]
+        [InlineData(false, "sv:1|sv:2|sv:3", false, true)]
+        [InlineData(true, "sv:1|sv:2|sv:3", false, true)]
+        [InlineData(false, "sv:1|sv:3|sv:1|sv:2", true, false)]
+        [InlineData(true, "sv:1|sv:3|sv:1|sv:2", true, false)]
+        [InlineData(false, "sv:1|sv:2|s:0|s:1", false, false)]
+        [InlineData(true, "sv:1|sv:2|s:0|s:1", false, false)]
+        public void BatchedPacket_PreservesSaveAndReadinessOrder(
+            bool native, string raw, bool done, bool failed)
+        {
+            LauncherCommandRouter router; Capture cap;
+            var w = MakeWidget(out router, out cap);
+            using (var route = new PacketRoute(w, native))
+            {
+                w.Arm();
+                route.Send(raw);
+                Assert.Equal(done, w.IsDoneState);
+                Assert.Equal(failed, w.IsFailedState);
+                Assert.Equal(done, w.TryAuthorizeExitConfirm());
+                Assert.False(w.TryAuthorizeExitConfirm());
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void BatchedPacket_RepeatedTerminalEventsAreNotSnapshotDeduplicated(bool native)
+        {
+            LauncherCommandRouter router; Capture cap;
+            var w = MakeWidget(out router, out cap);
+            using (var route = new PacketRoute(w, native))
+            {
+                route.Send("sv:2");
+                w.Arm();
+                route.Send("sv:2");
+                Assert.True(w.IsSavingState);
+                Assert.False(w.TryAuthorizeExitConfirm());
+                route.Send("sv:3");
+                Assert.True(w.IsFailedState);
+                w.Arm();
+                route.Send("sv:3");
+                Assert.True(w.IsFailedState);
+                Assert.False(w.TryAuthorizeExitConfirm());
+            }
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void BatchedPacket_CoalescesPresentationButNotStateTransitions(bool native)
+        {
+            LauncherCommandRouter router; Capture cap;
+            var w = MakeWidget(out router, out cap);
+            using (var route = new PacketRoute(w, native))
+            {
+                route.Send("sv:1|sv:2");
+                Assert.False(w.Visible);
+                w.Arm();
+                int presentations = 0;
+                w.BoundsOrVisibilityChanged += delegate { presentations++; };
+                route.Send("sv:1|sv:2|sv:1|sv:3|sv:1|sv:2");
+                Assert.True(w.IsDoneState);
+                Assert.Equal(1, presentations);
+            }
+        }
+
 
         // ── MED 回归：button-level Down/Up 必须匹配 ──
         [Fact]

@@ -53,6 +53,7 @@ window.Bridge={
     __sent.push(JSON.parse(JSON.stringify(message)));
     __events.push('send:'+String(message.cmd||message.type||''));
     if(message.type==='task'&&message.task==='loot_request')setTimeout(function(){respond(message)},
+      __mode==='reward_root_sliced'&&message.cmd==='query'?60:
       __mode==='delayed_claim'&&(message.cmd==='claim'||message.cmd==='claimBatch')?90:0);
     if(message.type==='panel'&&message.domain==='inventory')setTimeout(function(){respondInventory(message)},
       __delayInventoryWrite&&message.cmd!=='snapshot'?90:0);
@@ -123,6 +124,7 @@ function activeResponse(message){var response=common(message);response.snapshots
     response.rootOperationId=root.rootOperationId;response.rootStatus=root.rootStatus;
     response.resultKind=root.resultKind;response.result=JSON.parse(JSON.stringify(root.result));
     response.appliedCount=root.appliedCount;response.stopReason=root.stopReason;
+    if(root.rootStatus==='pending'){response.snapshots=[];response.closeLease=''}
     return response
   }
   function respond(message){
@@ -134,6 +136,13 @@ function activeResponse(message){var response=common(message);response.snapshots
   if(message.cmd==='tooltip'){var tip=common(message);tip.tooltip={iconName:'强化石',itemType:'材料',introHTML:'地图资源箱',descHTML:'权威物品说明'};emit(tip);return}
   if(message.cmd==='claimBatch'){
     var batchSources=Array.isArray(message.sources)?message.sources:[];
+    if(__mode==='reward_root_sliced'){
+      authority.loot[0]=empty(0);authority.revision=2;authority.version=2;
+      authority.rewardTerminal={rootOperationId:message.operationId,rootStatus:'pending',
+        resultKind:'in_progress',result:{appliedEntryIds:['reward.entry.1'],blockedEntries:[],
+          remainingEntryIds:['reward.entry.2']},appliedCount:1,error:'',stopReason:''};
+      emit(exactRewardRootResponse(message));return
+    }
     if(__mode==='reward_root_partial'){
       authority.loot[0]=empty(0);
       authority.loot[1]=occupied(1,'容量保留奖励','lease.reward.rotated.1');
@@ -201,6 +210,14 @@ function activeResponse(message){var response=common(message);response.snapshots
     emit(activeResponse(message));return
   }
   if(message.cmd==='query'){
+    if(__mode==='reward_root_sliced'&&authority.rewardTerminal){
+      var sliced=authority.rewardTerminal;
+      sliced.rootStatus='committed';sliced.resultKind='all_applied';sliced.appliedCount=2;
+      sliced.result={appliedEntryIds:['reward.entry.1','reward.entry.2'],blockedEntries:[],remainingEntryIds:[]};
+      authority.loot=[empty(0),empty(1)];authority.revision=3;authority.version=3;
+      authority.lastOperation=sliced.rootOperationId;authority.closeLease='close.3';
+      emit(exactRewardRootResponse(message));return
+    }
     if(__mode==='reward_root_partial'&&authority.rewardTerminal){
       emit(exactRewardRootResponse(message));return
     }
@@ -914,6 +931,26 @@ function activeResponse(message){var response=common(message);response.snapshots
     await waitFor(function(){return Panels.getActive()===null&&authority.suspended});
     ok('backdrop uses the same non-abandon suspend path',
       tasks('close').length===backdropClosesBefore+1&&tasks('close').slice(-1)[0].abandon===false);
+
+    resetRewardRootPartialAuthority();__mode='reward_root_sliced';
+    var slicedWritesBefore=tasks('claimBatch').length,slicedQueriesBefore=tasks('query').length;
+    Panels.open('loot',rewardInit('reward-root-sliced'));
+    await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    document.querySelector('[data-commit-primary]').click();
+    await waitFor(function(){return authority.rewardTerminal&&authority.rewardTerminal.rootStatus==='pending'});
+    ok('healthy reward prefix keeps the visible panel busy with its previous projection',
+      LootPanel.debugState().phase==='write_pending'&&LootPanel.debugState().remainingCount===2
+      &&document.querySelector('[data-commit-primary]').disabled
+      &&document.querySelector('[data-commit-primary]').textContent.indexOf('批量领取中')>=0,
+      JSON.stringify({state:LootPanel.debugState(),button:document.querySelector('[data-commit-primary]').textContent}));
+    await waitFor(function(){return Panels.getActive()===null&&authority.terminal&&authority.terminal.kind==='CONSUMED'});
+    var slicedQueries=tasks('query').slice(slicedQueriesBefore);
+    ok('healthy reward continuation finishes and closes without a second claim or human recheck',
+      tasks('claimBatch').length===slicedWritesBefore+1&&slicedQueries.length===2
+      &&slicedQueries.every(function(q){return q.rootOperationId===authority.rewardTerminal.rootOperationId})
+      &&authority.rewardTerminal.appliedCount===2&&remaining()===0,
+      JSON.stringify({state:LootPanel.debugState(),queries:slicedQueries,
+        writes:tasks('claimBatch').slice(slicedWritesBefore),authority:authority.rewardTerminal}));
 
     resetRewardRootPartialAuthority();__mode='reward_root_partial';
     var rewardRootBatchesBefore=tasks('claimBatch').length;

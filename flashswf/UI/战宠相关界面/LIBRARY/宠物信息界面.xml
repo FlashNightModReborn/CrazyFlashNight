@@ -152,7 +152,7 @@ this._visible = false;]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   _root.自动存盘();
+   _root.存档系统.requestSave("ui.pet_info_close");
    this._visible = 0;
 }
 ]]></script>

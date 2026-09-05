@@ -276,7 +276,7 @@ on (rollOut) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	if(_root.存档系统.dirtyMark) _root.自动存盘();
+	if(_root.存档系统.dirtyMark) _root.存档系统.requestSave("ui.warehouse_close");
 	_root.存储金钱界面._visible = false;
 	this.关闭();
 }]]></script>

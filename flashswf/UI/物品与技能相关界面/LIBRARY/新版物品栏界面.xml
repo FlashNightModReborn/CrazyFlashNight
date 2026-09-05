@@ -1641,7 +1641,7 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                      <script><![CDATA[on (release) {
-	if(_root.存档系统.dirtyMark) _root.自动存盘();
+	if(_root.存档系统.dirtyMark) _root.存档系统.requestSave("ui.inventory_close");
 	this.关闭();
 }]]></script>
                   </Actionscript>

@@ -488,7 +488,8 @@ namespace CF7Launcher.Tasks
             }
 
             JObject flash = PanelBridge.BuildFlashCommand(action, entry.FlashCallId, normalized);
-            LogManager.Log("event=loot_request_forwarded cmd=" + cmd + " pending=" + PendingCount);
+            LogManager.Log("event=loot_request_forwarded cmd=" + cmd
+                + " callId=" + entry.FlashCallId + " pending=" + PendingCount);
             bool sent = false;
             try { sent = _trySend(flash.ToString(Formatting.None) + "\0"); }
             catch (Exception ex)
@@ -520,6 +521,7 @@ namespace CF7Launcher.Tasks
             bool suspendedCloseProven = false;
             bool terminalCloseProven = false;
             bool unprovenUnknownQuery = false;
+            bool forwardPendingRewardRoot = false;
             int readyGeneration = SafeReadyGeneration();
             lock (_sync)
             {
@@ -606,6 +608,8 @@ namespace CF7Launcher.Tasks
                         unprovenUnknownQuery = entry.WebCmd == "query"
                             && _writeState == "reconcile_required"
                             && !queryReconcilesUnknown;
+                        forwardPendingRewardRoot = unprovenUnknownQuery
+                            && QueryReportsPendingRewardRootLocked(entry, sanitized);
                         if (unprovenUnknownQuery)
                             RaiseUnknownFreshnessWatermarkLocked(entry,
                                 sanitized.Value<int>("authorityRevision"));
@@ -687,7 +691,14 @@ namespace CF7Launcher.Tasks
 
             if (!entry.IsDetachedReconcile && _coordinator.IsCurrentExact(entry.Binding))
             {
-                if (unprovenUnknownQuery)
+                if (IsRewardRootRequest(entry))
+                    LogManager.Log("event=loot_reward_root_reply callId=" + fid
+                        + " cmd=" + entry.WebCmd
+                        + " rootStatus=" + sanitized.Value<string>("rootStatus")
+                        + " applied=" + sanitized.Value<int>("appliedCount")
+                        + " error=" + sanitized.Value<string>("error")
+                        + " forwarded=" + (!unprovenUnknownQuery || forwardPendingRewardRoot));
+                if (unprovenUnknownQuery && !forwardPendingRewardRoot)
                     RespondError(entry.Binding, entry.WebCallId, entry.WebCmd,
                         "reconcile_required");
                 else
@@ -1135,6 +1146,19 @@ namespace CF7Launcher.Tasks
             _detachedReconcileBinding = null;
             _detachedReconcileRequired = false;
             _detachedReconcileExpectedAuthorityRevision = 0;
+        }
+
+        // 进度可以转发，但 pending 不能解除未知写栅栏，也不能授权资产投影/关闭。
+        private bool QueryReportsPendingRewardRootLocked(PendingRequest entry, JObject sanitized)
+        {
+            return IsRewardRootRequest(entry) && entry.WebCmd == "query"
+                && !entry.IsDetachedReconcile
+                && ReferenceEquals(_unknownBinding, entry.Binding)
+                && !string.IsNullOrEmpty(_unknownOperationId)
+                && string.Equals(sanitized.Value<string>("rootOperationId"),
+                    _unknownOperationId, StringComparison.Ordinal)
+                && sanitized.Value<string>("rootStatus") == "pending"
+                && sanitized.Value<int>("authorityRevision") >= _unknownFreshnessWatermark;
         }
 
         private bool QueryReconcilesUnknownLocked(PendingRequest entry, JObject sanitized)

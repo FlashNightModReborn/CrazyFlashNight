@@ -1542,4 +1542,110 @@ test('organizer tooltip scope releases replaced trees and is disposed with the p
     assert(source.includes("options.tooltip.createScope('loot-organizer', {profile:'simple-tooltip'})"));
 });
 
+function slicedRewardFixture(command) {
+    const wire=fakeTransport(), timers=new Map();
+    let sequence=0, settled=[];
+    const model=new LootState.Coordinator({
+        identity:Object.assign({},identity,{source:'reward_inbox'}), capacity:2,
+        request:wire.request,
+        setTimer(fn,delay) { const id=++sequence; timers.set(id,{fn,delay}); return id; },
+        clearTimer(id) { timers.delete(id); }
+    });
+    model.open(); wire.respond(0,active(1,[slot(0,'补给','lease.a'),slot(1,'材料','lease.b')]));
+    const selected=model.projection().loot.slots;
+    if(command==='claim') model.claim(selected[0],ok=>settled.push(ok));
+    else model.claimBatch(selected,ok=>settled.push(ok));
+    const rootId=wire.calls[1].fields.operationId;
+    function pending(applied,error) {
+        return rewardRoot({snapshots:[]},rootId,'pending','in_progress',{
+            appliedEntryIds:applied?['a']:[],remainingEntryIds:applied?['b']:['a','b'],error:error||''
+        });
+    }
+    function finish() {
+        return rewardRoot(active(3,[slot(0),slot(1)]),rootId,'committed','all_applied',
+            {appliedEntryIds:['a','b']});
+    }
+    function next() {
+        const [id,timer]=timers.entries().next().value || [];
+        assert(timer,'expected a queued continuation'); timers.delete(id); timer.fn();
+    }
+    return {wire,model,timers,settled,rootId,pending,finish,next};
+}
+
+['claim','claimBatch'].forEach(command=>test('healthy '+command+' prefix continues the exact root until one final callback',()=>{
+    const f=slicedRewardFixture(command), before=f.model.projection();
+    f.wire.respond(1,f.pending(1));
+    assert.strictEqual(f.model.debugState().phase,'write_pending');
+    assert.deepStrictEqual(f.model.projection(),before);
+    assert.deepStrictEqual(f.settled,[]);
+    assert.strictEqual(f.model.claimBatch(before.loot.slots),false);
+    f.next();
+    assert.strictEqual(f.wire.calls[2].cmd,'query');
+    assert.deepStrictEqual(f.wire.calls[2].fields,{rootOperationId:f.rootId});
+    f.wire.respond(2,f.finish());
+    assert.deepStrictEqual(f.settled,[true]);
+    assert.strictEqual(f.model.debugState().phase,'active');
+    assert.strictEqual(f.timers.size,0);
+    assert.strictEqual(f.wire.calls.filter(c=>c.cmd===command).length,1);
+    assert.strictEqual(f.wire.calls[3].fields.acknowledgeTerminalRootOperationId,f.rootId);
+}));
+
+test('healthy continuation has a bounded no-progress fallback',()=>{
+    const f=slicedRewardFixture(); f.wire.respond(1,f.pending(1));
+    for(let i=0;i<3;i++) { f.next(); f.wire.respond(2+i,f.pending(1)); }
+    assert.strictEqual(f.model.debugState().phase,'reconcile_required');
+    assert.strictEqual(f.timers.size,0);
+    assert.deepStrictEqual(f.settled,[false]);
+    assert.strictEqual(f.wire.calls.filter(c=>c.cmd==='claimBatch').length,1);
+});
+
+test('a real commit_pending never starts automatic continuation',()=>{
+    const f=slicedRewardFixture(); f.wire.respond(1,f.pending(1,'commit_pending'));
+    assert.strictEqual(f.model.debugState().phase,'reconcile_required');
+    assert.strictEqual(f.timers.size,0);
+    assert.deepStrictEqual(f.settled,[false]);
+});
+
+test('detach cancels a scheduled continuation and ignores an in-flight reply',()=>{
+    [false,true].forEach(inFlight=>{
+        const f=slicedRewardFixture(); f.wire.respond(1,f.pending(1));
+        if(inFlight) f.next();
+        f.model.forceDetach();
+        if(inFlight) f.wire.respond(2,f.pending(1));
+        assert.strictEqual(f.timers.size,0);
+        assert.deepStrictEqual(f.settled,[]);
+        assert.strictEqual(f.wire.calls.filter(c=>c.cmd==='claimBatch').length,1);
+    });
+});
+
+test('manual recovery also continues healthy prefixes without a new write',()=>{
+    const f=slicedRewardFixture();
+    f.wire.respond(1,{clientSynthetic:true,error:'client_timeout'});
+    const recovered=[];
+    assert(f.model.query(ok=>recovered.push(ok)));
+    f.wire.respond(2,f.pending(1)); f.next(); f.wire.respond(3,f.finish());
+    assert.deepStrictEqual(recovered,[true]);
+    assert.strictEqual(f.wire.calls.filter(c=>c.cmd==='claimBatch').length,1);
+    assert(f.wire.calls.slice(2).every(c=>c.fields.rootOperationId===f.rootId));
+});
+
+test('continuation transport failure settles once and preserves reconciliation',()=>{
+    [()=>null,()=>{throw Error('offline');}].forEach(fail=>{
+        const f=slicedRewardFixture(); f.wire.respond(1,f.pending(1));
+        f.model._request=fail; f.next();
+        assert.deepStrictEqual(f.settled,[false]);
+        assert.strictEqual(f.model.debugState().phase,'reconcile_required');
+        assert.strictEqual(f.timers.size,0);
+    });
+});
+
+test('regressing root progress stops continuation without publishing a projection',()=>{
+    const f=slicedRewardFixture(), before=f.model.projection();
+    f.wire.respond(1,f.pending(1)); f.next(); f.wire.respond(2,f.pending(0));
+    assert.strictEqual(f.model.debugState().phase,'reconcile_required');
+    assert.strictEqual(f.timers.size,0);
+    assert.deepStrictEqual(f.model.projection(),before);
+    assert.deepStrictEqual(f.settled,[false]);
+});
+
 console.log('loot state ' + checks.length + '/' + checks.length + ' passed');

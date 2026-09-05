@@ -95,8 +95,8 @@ on (press, rollOut) {
                     <script><![CDATA[on (release) {
 	if (控制窗体 == "物品栏界面")
 	{
-		// Plan A: 保存仓库数据 全局未定义（dead code），已清；保留 自动存盘 走 debounce
-		_root.自动存盘();
+		// R1：保留 debounce 路径，走 requestSave 替换旧 自动存盘
+		_root.存档系统.requestSave("ui.player_info_inventory_close");
 		_root.存储金钱界面._visible = 0;
 	}
 	if (控制窗体 == "任务栏界面")

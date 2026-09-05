@@ -61,6 +61,8 @@ namespace CF7Launcher.Guardian.Hud
             "安全退出"
         };
         private const int IDX_PAUSE = 4;
+        private const int IDX_SAFEEXIT = 5;
+        private readonly SaveFeedbackState _saveFeedback = new SaveFeedbackState();
 
         private static readonly string[] LEGACY_TYPES = { "task", "announce" };
 
@@ -502,6 +504,7 @@ namespace CF7Launcher.Guardian.Hud
             get
             {
                 if (!Visible) return false;
+                if (_saveFeedback.NeedsTick) return true;
                 if (RequestsStageDecision) return false;
                 if (!string.IsNullOrEmpty(_stageBroadcastText)) return true;
                 if (_activeFlash != null) return true;
@@ -512,11 +515,17 @@ namespace CF7Launcher.Guardian.Hud
         public void Tick(int deltaMs)
         {
             if (!Visible) return;
-            bool repaint = false;
-            bool tickDirty = false;
+            bool feedbackWasTicking = _saveFeedback.NeedsTick;
+            bool repaint = _saveFeedback.Tick();
+            bool tickDirty = feedbackWasTicking != _saveFeedback.NeedsTick;
 
             // 决策问询必须稳定停留；普通播报及其计时在决策期间冻结。
-            if (RequestsStageDecision) return;
+            if (RequestsStageDecision)
+            {
+                if (repaint) FireRepaint();
+                if (tickDirty) FireAnimState();
+                return;
+            }
 
             if (!string.IsNullOrEmpty(_stageBroadcastText))
             {
@@ -607,6 +616,7 @@ namespace CF7Launcher.Guardian.Hud
                 bool danger = i == TOOL_KEYS.Length - 1;
                 Brush fgBrush = paused ? BR_TOOLS_FG_PAUSED : (hover ? BR_TOOLS_FG_HOVER : (Brush)BR_TOOLS_FG);
                 NativeHudTheme.DrawButton(g, btn, scale, hover, pressed, paused, danger);
+                if (i == IDX_SAFEEXIT) SaveFeedbackState.PaintAccent(g, btn, scale, _saveFeedback.Visual);
                 g.DrawString(labels[i], font, fgBrush, btn, fmt);
             }
         }
@@ -617,7 +627,7 @@ namespace CF7Launcher.Guardian.Hud
             if (index < 0 || index >= TOOL_TOOLTIPS.Length || r.Width <= 0 || r.Height <= 0) return;
             NativeHudTheme.DrawPanel(g, r, scale, NativeHudTheme.PanelFillDense,
                 Color.Empty, true);
-            g.DrawString(TOOL_TOOLTIPS[index], _fontNoticeJuke11, BR_QUEST_FG, r, FMT_CENTER_ELLIPSIS);
+            g.DrawString(ResolveActionHint(index), _fontNoticeJuke11, BR_QUEST_FG, r, FMT_CENTER_ELLIPSIS);
         }
 
         private void PaintMapCard(Graphics g, Rectangle card, float scale)
@@ -1445,6 +1455,17 @@ namespace CF7Launcher.Guardian.Hud
             _stageBroadcastElapsedMs = 0;
         }
 
+        internal void HandleSaveUiData(UiDataPacket packet)
+        {
+            bool wasTicking = _saveFeedback.NeedsTick;
+            long savedBefore = _saveFeedback.CompletedSaveCount;
+            bool repaint = _saveFeedback.HandlePacket(packet);
+            if (repaint || savedBefore != _saveFeedback.CompletedSaveCount
+                    && _hover.Kind == HitKind.Tool && _hover.Index == IDX_SAFEEXIT)
+                FireRepaint();
+            if (wasTicking != _saveFeedback.NeedsTick) FireAnimState();
+        }
+
         public void OnUiDataChanged(IReadOnlyDictionary<string, string> snapshot, ISet<string> changedKeys)
         {
             bool boundsDirty = false;
@@ -1554,6 +1575,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private void ResetForNotReady()
         {
+            _saveFeedback.Reset();
             lock (_flashLock) { _flashQueue.Clear(); }
             _activeFlash = null;
             _flashElapsedMs = 0;
@@ -2064,6 +2086,8 @@ namespace CF7Launcher.Guardian.Hud
         }
         internal string ResolveActionHint(int index)
         {
+            if (index == IDX_SAFEEXIT && !string.IsNullOrEmpty(_saveFeedback.Hint))
+                return "安全退出 · " + _saveFeedback.Hint;
             return index >= 0 && index < TOOL_TOOLTIPS.Length ? TOOL_TOOLTIPS[index] : null;
         }
         internal void ForceHoveredToolForTest(int index)

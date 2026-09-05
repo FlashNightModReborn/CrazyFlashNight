@@ -129,6 +129,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         stressMaterialBoxOpenClaimLoop();
         probeSaveCallsPerClaim();
         testRewardRootSaveCountRegressionGate();
+        testRewardRootTimeSliceRestart();
         testRewardRootPendingResponseCarriesNoProjection();
         testItemUseConsumeReceiptFailureRestoresBackpack();
         testItemUseOpenManyFreshCommitReplayAndConflict();
@@ -139,6 +140,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testItemUseOpenManyFenceFalsePendingRetry();
         testItemUseOpenManyResponseLossRestartQuery();
         testItemUseOpenManyReceiptRetentionWindow();
+        testItemUseCompactionConservesAssetsAndCuts();
 
         restoreMetadata();
         trace("LootContainerServiceTest Tests Passed: " + _passed);
@@ -4010,7 +4012,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
      * _rewardSaveImageCaptures（物理层 save-image 全量序列化成像次数）。
      */
     private static function testRewardRootSaveCountRegressionGate():Void {
-        var appliedSizes:Array = [1, 2, 20];
+        var appliedSizes:Array = [1, 2, 20, 50];
         for (var s:Number = 0; s < appliedSizes.length; s++) {
             var n:Number = Number(appliedSizes[s]);
             var entries:Array = [];
@@ -4026,6 +4028,10 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             expectedCuts.push("terminal:ok");
             var applied:Object = LootContainerService.execute("claimBatch",
                 rewardRootClaimParams(fixture, "gate.applied." + n, true, ""));
+            for (var q:Number = 0; applied.rootStatus == "pending"
+                    && applied.error == "" && q < 64; q++) {
+                applied = queryRewardRoot("gate.applied." + n, "");
+            }
             check(fixture.success && applied.rootStatus == "committed"
                     && applied.resultKind == "all_applied"
                     && Number(applied.appliedCount) == n
@@ -5296,11 +5302,11 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && String(fresh.packages[1].batchId).length > 0
                 && String(fresh.packages[0].batchId) != String(fresh.packages[1].batchId)
                 && Number(fresh.packages[0].entryCount) == 1
-                && Number(fresh.packages[1].entryCount) == 1
+                && Number(fresh.packages[1].entryCount) == 0
                 && Number(_root.__lootSaveCalls) - saves1 == 1
                 && _root._saveExt.rewardInbox.receipts.length == receipts1 + 1
                 && rewardBackpackQuantity(PACK) == 2
-                && RewardInboxService.inboxSummary().remainingCount == 3,
+                && RewardInboxService.inboxSummary().remainingCount == 2,
             "openMany 门：K=2 fresh 恰好 1 fence、1 receipt、2 descriptors、背包恰扣 2");
 
         var saves2:Number = Number(_root.__lootSaveCalls);
@@ -5363,7 +5369,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             && Number(_root.__lootSaveCalls) - saves0 == 1
             && _root._saveExt.rewardInbox.receipts.length == receipts0 + 1
             && rewardBackpackQuantity(PACK) == 0
-            && RewardInboxService.inboxSummary().remainingCount == 64;
+            && RewardInboxService.inboxSummary().remainingCount == 1;
         var seen:Object = {};
         var entrySum:Number = 0;
         for (var i:Number = 0; bigOk && i < 64; i++) {
@@ -5376,8 +5382,9 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             seen[String(row.batchId)] = true;
             entrySum += Number(row.entryCount);
         }
-        check(bigOk && entrySum == 64,
-            "openMany 门：K=64 边界 1 fence、64 descriptors、ordinal 连续、batchId 互不重复、背包恰扣 64");
+        check(bigOk && entrySum == 1
+                && rewardBatchById(String(big.packages[0].batchId)).entries[0].quantity == 64,
+            "openMany 门：K=64 合并为一叠 64，仍 1 fence、64 descriptors、ordinal/batchId 唯一且恰扣 64");
 
         installGiftPack({mode:"independent", entries:{entry:{itemName:STACK,
             quantityMin:1, quantityMax:1, chanceNumerator:1, chanceDenominator:4}}}, 2);
@@ -5471,8 +5478,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             "openMany 门：invalid recipe 拒绝且零写");
 
         installGiftPack({mode:"fixed", entries:{entry:[
-            {itemName:STACK, quantityMin:1, quantityMax:1},
-            {itemName:ANTIBIOTIC, quantityMin:1, quantityMax:1}]}}, 40);
+            {itemName:EQUIPMENT, quantityMin:1, quantityMax:1},
+            {itemName:EQUIPMENT, quantityMin:1, quantityMax:1}]}}, 40);
         installRewardPersistedSaveHarness(-1, "");
         var savesFull:Number = Number(_root.__lootSaveCalls);
         var full:Object = ItemUseService.execute("openMany",
@@ -5481,7 +5488,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && Number(_root.__lootSaveCalls) == savesFull
                 && _root._saveExt.rewardInbox.receipts.length == 0
                 && rewardBackpackQuantity(PACK) == 40,
-            "openMany 门：aggregate occurrence 超 64 容量预检拒绝且零写");
+            "openMany 门：不可合并的装备 occurrence 超 64 容量预检拒绝且零写");
         cleanupGiftContext();
     }
 
@@ -5509,11 +5516,12 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             var manyPkgs:Array = many != null && many.success === true
                 ? many.packages : [];
             var manyIds:Array = [];
-            var manySigs:Array = [];
+            var manyTotals:Object = pendingRewardTotals();
+            var useService:Object = ItemUseService;
+            var manyRng:Array = useService._testRandomValues.concat();
             for (var pi:Number = 0; pi < manyPkgs.length; pi++) {
                 manyIds.push(String(manyPkgs[pi].batchId));
-                manySigs.push(batchEntriesSignature(
-                    rewardBatchById(String(manyPkgs[pi].batchId))));
+
             }
             installGiftPack(spec.recipe, 3);
             ItemUseService.setRandomValuesForTests(spec.rng);
@@ -5524,15 +5532,13 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 if (one == null || one.success !== true) break;
                 openIds.push(String(one.rewardBatchId));
             }
-            var openSigs:Array = [];
-            for (var sj:Number = 0; sj < openIds.length; sj++) {
-                openSigs.push(batchEntriesSignature(rewardBatchById(openIds[sj])));
-            }
+            var openTotals:Object = pendingRewardTotals();
             check(manyPkgs.length == 3 && openIds.length == 3
                     && manyIds.join("|") == openIds.join("|")
-                    && manySigs.join("|") == openSigs.join("|"),
+                    && ObjectUtil.deepEquals(manyTotals, openTotals)
+                    && ObjectUtil.deepEquals(manyRng, useService._testRandomValues),
                 "openMany 门：" + spec.name
-                    + " 固定 RNG 下 draw 顺序/ordinal/batchId/entry 与连续 3 次 open 完全一致");
+                    + " 合并后总数量、剩余 RNG、ordinal/batchId 与连续 3 次 open 完全一致");
         }
         cleanupGiftContext();
     }
@@ -5650,7 +5656,8 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && Number(queried.receipt.remaining) == 1
                 && packagesExact(queried.receipt.packages, committed.packages)
                 && _root._saveExt.rewardInbox.batches.length == batchesBefore
-                && RewardInboxService.inboxSummary().remainingCount == 3,
+                && RewardInboxService.inboxSummary().remainingCount == 1
+                && pendingRewardTotals()["$" + STACK] == 3,
             "openMany 门：fence 成功后响应丢失，真实 restart 后 query 同 packages 且 batches 不重复");
 
         var savesR:Number = Number(_root.__lootSaveCalls);
@@ -5694,6 +5701,120 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                 && !staleRetry.success && staleRetry.error == "stale_source"
                 && rewardBackpackQuantity(PACK) == 0,
             "openMany 门：第 129 条挤出最旧 receipt 后窗口外 fail-closed（stale source），不宣称永久返回首次结果");
+        cleanupGiftContext();
+    }
+
+    /** 真实序列化 save-image 跨分段重启，既有 50 项账簿仍保持 N+1。 */
+    private static function testRewardRootTimeSliceRestart():Void {
+        var entries:Array = [];
+        for (var i:Number = 0; i < 50; i++) entries.push({itemName:STACK, quantity:1});
+        var fixture:Object = makeRewardRootFixture(entries, 0);
+        installRewardPersistedSaveHarness(-1, "");
+        var rewardClass:Object = RewardInboxService;
+        var savedClock:Function = rewardClass.advanceClock;
+        var tick:Number = 0;
+        rewardClass.advanceClock = function():Number { tick += 1000; return tick; };
+        try {
+            var rootId:String = "reward.slice.restart.50";
+            var response:Object = LootContainerService.execute("claimBatch",
+                rewardRootClaimParams(fixture, rootId, true, ""));
+            check(response.rootStatus == "pending" && response.error == ""
+                    && response.appliedCount == 1 && response.snapshots.length == 0
+                    && Number(_root.__lootSaveCalls) == 2,
+                "Reward 分段：一项 durable 后健康 pending，不投影资产且不增加保存");
+            var restarted:Boolean = restartFromRewardPersistedSave();
+            var queries:Number = 0;
+            while (response.rootStatus == "pending" && queries < 55) {
+                response = queryRewardRoot(rootId, "");
+                queries++;
+            }
+            check(restarted && response.rootStatus == "committed"
+                    && response.appliedCount == 50 && queries == 49
+                    && rewardBackpackQuantity(STACK) == 50
+                    && Number(_root.__lootSaveCalls) == 51
+                    && _rewardSaveImageCaptures == 51,
+                "Reward 分段：重启后 exact query 完成原 root，50 项仍恰好 51 次保存且无重复资产");
+            var saves:Number = Number(_root.__lootSaveCalls);
+            queryRewardRoot(rootId, "");
+            check(Number(_root.__lootSaveCalls) == saves && rewardBackpackQuantity(STACK) == 50,
+                "Reward 分段：完成后重复 query 不增加保存或奖励");
+        } finally { rewardClass.advanceClock = savedClock; }
+    }
+
+    private static function pendingRewardTotals():Object {
+        var totals:Object = {};
+        var batches:Array = _root._saveExt.rewardInbox.batches;
+        for (var b:Number = 0; b < batches.length; b++) {
+            for (var e:Number = 0; e < batches[b].entries.length; e++) {
+                var entry:Object = batches[b].entries[e];
+                var key:String = "$" + String(entry.itemName);
+                totals[key] = (totals[key] == undefined ? 0 : Number(totals[key]))
+                    + Number(entry.remaining);
+            }
+        }
+        return totals;
+    }
+
+    private static function testItemUseCompactionConservesAssetsAndCuts():Void {
+        var recipe:Object = {mode:"fixed", entries:{entry:[
+            {itemName:STACK, quantityMin:1, quantityMax:1},
+            {itemName:STACK, quantityMin:3, quantityMax:3},
+            {itemName:MATERIAL, quantityMin:2, quantityMax:2},
+            {itemName:EQUIPMENT, quantityMin:1, quantityMax:1}]}};
+        installGiftPack(recipe, 10);
+        installRewardPersistedSaveHarness(-1, "");
+        var opened:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("compact.mixed.10", 10));
+        var totals:Object = pendingRewardTotals();
+        check(opened.success && opened.packages.length == 10
+                && RewardInboxService.inboxSummary().remainingCount == 12
+                && totals["$" + STACK] == 40 && totals["$" + MATERIAL] == 20
+                && totals["$" + EQUIPMENT] == 10
+                && Number(_root.__lootSaveCalls) == 1,
+            "奖励合并：40 个原始条目压为 2 叠与 10 件装备，总数量守恒、开包仅一次保存");
+        var fixture:Object = materializeCurrentRewardFixture();
+        var saves:Number = Number(_root.__lootSaveCalls);
+        var claimed:Object = LootContainerService.execute("claimBatch",
+            rewardRootClaimParams(fixture, "compact.claim.12", true, ""));
+        for (var cq:Number = 0; claimed.rootStatus == "pending"
+                && claimed.error == "" && cq < 64; cq++) {
+            claimed = queryRewardRoot("compact.claim.12", "");
+        }
+        check(claimed.rootStatus == "committed" && claimed.appliedCount == 12
+                && Number(_root.__lootSaveCalls) - saves == 13
+                && rewardBackpackQuantity(STACK) == 40
+                && rewardBackpackQuantity(EQUIPMENT) == 10
+                && _root.收集品栏.材料.getValue(MATERIAL) == 20,
+            "奖励合并：领取保存由 41 次降为 13 次，背包与材料栏到账数量精确");
+
+        installGiftPack({mode:"fixed", entries:{entry:[
+            {itemName:STACK, quantityMin:1, quantityMax:1},
+            {itemName:ANTIBIOTIC, quantityMin:2, quantityMax:2}]}}, 40);
+        installRewardPersistedSaveHarness(-1, "");
+        var many:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("compact.capacity.80", 40));
+        check(many.success && RewardInboxService.inboxSummary().remainingCount == 2
+                && Number(_root.__lootSaveCalls) == 1
+                && pendingRewardTotals()["$" + STACK] == 40
+                && pendingRewardTotals()["$" + ANTIBIOTIC] == 80,
+            "奖励合并：80 个可合并原始条目按 2 个真实槽位准入，不再误报收件箱满");
+
+        installGiftPack(recipe, 2);
+        ItemUseService.execute("open", giftOpenParams("compact.single.1"));
+        check(RewardInboxService.inboxSummary().remainingCount == 3
+                && pendingRewardTotals()["$" + STACK] == 4
+                && ItemUseService.normalizeRecipe(recipe).maxOccurrences == 3,
+            "奖励合并：单包重复条目同步合并，使用入口容量上界也按合并后计算");
+
+        var high:Number = 9007199254740991;
+        installGiftPack({mode:"fixed", entries:{entry:
+            {itemName:STACK, quantityMin:high, quantityMax:high}}}, 2);
+        var huge:Object = ItemUseService.execute("openMany",
+            giftOpenManyParams("compact.safe.integer", 2));
+        check(huge.success && RewardInboxService.inboxSummary().remainingCount == 2
+                && rewardBatchById(String(huge.packages[0].batchId)).entries[0].quantity == high
+                && rewardBatchById(String(huge.packages[1].batchId)).entries[0].quantity == high,
+            "奖励合并：相加将超安全整数时保留两叠，绝不舍入吞掉数量");
         cleanupGiftContext();
     }
 

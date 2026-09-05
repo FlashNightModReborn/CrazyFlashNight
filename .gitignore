@@ -69,10 +69,13 @@ scripts/screenshot.png
 # doc.publish() 按发布设置附带产出的 HTML 包装（运行时不用，弃）
 CRAZYFLASHER7MercenaryEmpire.html
 flashswf/arts/things0.html
+/flashswf/UI/*.html
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+# WorkBuddy 会话记忆属于本机状态；持久决策与工具分别归 docs/ 和 tools/。
+/.workbuddy-ai/
 scripts/TestLoader.as
 scripts/testloader_options.txt
 scripts/compile_output.txt
@@ -172,6 +175,3 @@ launcher/web/assets/cursor/native/review/
 
 # linkage_scanner 缓存输出 (跑一次 scan_linkage.py 即重新生成)
 tools/linkage_scanner/_last_output.txt
-
-# Flash publish 生成的 HTML 包装页（与 CRAZYFLASHER7MercenaryEmpire.html、things0.html 同为 byproduct）
-flashswf/UI/奖励物品界面.html

@@ -937,6 +937,61 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Fact]
+        public void NativeSaveFeedback_PreservesBoundsRoutesAndManualExitAuthority()
+        {
+            using (var owner = new Form())
+            using (var anchor = new Panel { Bounds = new Rectangle(0, 0, 1024, 576) })
+            {
+                owner.Controls.Add(anchor);
+                _ = anchor.Handle;
+                var router = new LauncherCommandRouter(null, k => { }, () => { },
+                    () => { }, () => { }, s => { });
+                var right = new RightContextWidget(anchor, router,
+                    MapHudDataCatalog.FromPayload(BuildPayload()), MapDisplayPreference.Compact);
+                var safeExit = new SafeExitPanelWidget(anchor, router);
+                using (var hud = new NativeHudOverlay(owner, anchor))
+                {
+                    hud.AddWidget(right);
+                    hud.AddWidget(safeExit);
+                    _ = hud.Handle;
+                    void Send(string raw)
+                    {
+                        hud.HandleUiData(new UiDataPacket(raw));
+                        Application.DoEvents();
+                    }
+                    Send("s:1");
+                    Rectangle visual = right.ScreenBounds, composite = right.CompositeBounds;
+                    Assert.True(visual.Width > 0 && visual.Height > 0);
+                    int boundsChanges = 0;
+                    right.BoundsOrVisibilityChanged += delegate { boundsChanges++; };
+                    Send("sv:1|sv:1|sv:2");
+                    Assert.Contains("1 次", right.ResolveActionHint(5));
+                    Send("sv:2"); // 最后值未变，仍须投递新的成功事件。
+                    Assert.Contains("2 次", right.ResolveActionHint(5));
+                    Assert.Equal(visual, right.ScreenBounds);
+                    Assert.Equal(composite, right.CompositeBounds);
+                    Assert.Equal(0, boundsChanges);
+                    Assert.Equal("SAFEEXIT", right.ResolveActionRoute(5));
+                    Assert.False(safeExit.IsArmed);
+                    Assert.False(safeExit.TryAuthorizeExitConfirm());
+                    Assert.True(right.WantsAnimationTick);
+                    Send("sv:3");
+                    Assert.Contains("保存未确认", right.ResolveActionHint(5));
+                    Assert.False(right.WantsAnimationTick);
+                    safeExit.Arm();
+                    Send("sv:2");
+                    Assert.False(safeExit.TryAuthorizeExitConfirm());
+                    Send("sv:1|sv:2");
+                    Assert.True(safeExit.TryAuthorizeExitConfirm());
+                    Assert.False(safeExit.TryAuthorizeExitConfirm());
+                    Send("s:0|s:1");
+                    Assert.Equal("安全退出", right.ResolveActionHint(5));
+                    Assert.False(right.WantsAnimationTick);
+                }
+            }
+        }
+
         private static bool SlotHasVisiblePixels(
             INativeHudWidget widget,
             Rectangle slot)

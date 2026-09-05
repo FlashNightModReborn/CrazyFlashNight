@@ -82,6 +82,8 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flash
 
 独立资源 XFL 的输出位置通常不在该 XFL 子目录的 `bin/` 下；`bin/` 多为 XFL cache。以 `flashswf/UI/玩家信息界面` 为例，源入口是 `flashswf/UI/玩家信息界面/玩家信息界面.xfl`，发布产物由 `PublishSettings.xml` 指向 `flashswf/UI/玩家信息界面.swf`。改 `LIBRARY/*.xml` 后，主文件 `-Target main` 刷新不代表这个 SWF 已刷新。
 
+**先确认是否需要发布，再定位编译单元**：上述归属规则适用于实际需要交付的运行时改动。已迁 Web 的历史 UI、未进入时间轴/export 闭包的库副本，可以保留源码修正而不刷新旧 SWF；shared import 的本地脚本副本也不会编进 importer。不得把一次静态全库扫描直接展开为全量 CS6 弹窗队列。生产入口与 RSL 实例的核对方式、R1 从 11 项试编收窄到 5 项交付的实例见 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)与 [R1 收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。Flash 在 fresh Compiler/SWF 检查完成后按 `-QuitFlashAfterPublish` 退出属正常终态，不需要重新打开补编。
+
 **test 与 publish-only 的差别**：`test/testloader` 走 `doc.testMovie()`；`publish/asloader` 与 `main/mainfile/empire` 别名都隐式走 `doc.publish()`，任意显式路径则只有加 `-PublishOnly` 才切到该模式。此前 `publish/asloader` 别名只自动设置 `VerifySwf`、却误走 testMovie，现已修复为在解析别名时同时写入 publish mode。publish 只编译产出 SWF + 填充 Compiler Errors，不启动测试播放器；主文件 testMovie 会启动整套游戏并可能因 launcher socket / 反盗版层留下僵尸窗口。模式由 `compile_test.ps1` 写 `scripts/compile_mode.cfg`（`publish`/缺省 `test`），`compile_action.jsfl` 读取后选 `publish()` vs `testMovie()`，一次性指令读到即删。publish-only 不产新鲜行为 trace，`flashlog.txt 未刷新` 属正常；判据是本轮 `compiler_errors.txt` 与 `-VerifySwf` 刷新门。预编译 BOM 门已扩展覆盖主文件 classpath 高频迁移类子树 `arki\task`/`arki\merc`/`arki\stageSelect`。
 
 ### Bash

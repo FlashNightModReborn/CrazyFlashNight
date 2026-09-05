@@ -28,7 +28,7 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.自动存盘();
+	_root.存档系统.requestSave("ui.tablet_close");
 	if (_parent.进入基建界面 == true && _parent.按钮占用 == true)
 	{
 		_parent.gotoAndPlay("进入基建后关闭界面");

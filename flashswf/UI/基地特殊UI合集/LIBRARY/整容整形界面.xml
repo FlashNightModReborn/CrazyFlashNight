@@ -32,14 +32,14 @@ function 虚拟币支付(amount, 商品编号)
 		_root.记录玩家货币变化(
 			0, -Number(amount),
 			{source:"appearance_service", reason:"plastic_surgery", mergeScope:"operation"});
-		if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
+		if (_root.存档系统 != undefined) _root.存档系统.markDirty();
 		_root.发布消息(_root.获得翻译("支付成功！"));
 		_root.播放音效("收银机.mp3");
 		整形();
 		gotoAndStop(3);
 		mytext.text = _root.获得翻译("整形成功，重新登录或出门后换一下装备即可刷新性别。");
 		_root.获取虚拟币值();
-		_root.自动存盘();
+		_root.存档系统.requestSave("ui.plastic_surgery_paid");
 	}
 	else
 	{
