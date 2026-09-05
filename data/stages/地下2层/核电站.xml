@@ -11,7 +11,6 @@
         </TimePool>
     </TimePools>
     <SubStage id="0">
-        <TimePoolRef>nuclear_escape</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/核电站通路1.swf</Background>
         </BasicInformation>
@@ -24,7 +23,6 @@
         </Wave>
     </SubStage>
     <SubStage id="1">
-        <TimePoolRef>nuclear_escape</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/核电站通路2.swf</Background>
         </BasicInformation>
@@ -37,7 +35,6 @@
         </Wave>
     </SubStage>
     <SubStage id="2">
-        <TimePoolRef>nuclear_escape</TimePoolRef>
         <BasicInformation>
             <Background>flashswf/backgrounds/核电站通路3.swf</Background>
         </BasicInformation>
@@ -48,7 +45,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种1</Type>
+                        <Type>兵种4</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>

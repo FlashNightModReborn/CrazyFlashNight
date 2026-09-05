@@ -3218,7 +3218,7 @@
         <Horizon>0</Horizon>
         <Skybox>
             <url>核电站冷却池远景.swf</url>
-            <SpeedRate>5</SpeedRate>
+            <SpeedRate>3</SpeedRate>
         </Skybox>
     </Environment>
     <Environment>
@@ -3233,11 +3233,11 @@
         <Door>
             <Index>1</Index>
             <Direction>上</Direction>
-            <x0>890</x0>
+            <x0>895</x0>
             <y0>280</y0>
-            <x1>1056</x1>
+            <x1>1060</x1>
             <y1>300</y1>
-            <Identifier>关卡出口-核电站门</Identifier>
+            <Identifier>关卡出口-核电站大门</Identifier>
         </Door>
         <SpaceCondition>室内</SpaceCondition>
     </Environment>

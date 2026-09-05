@@ -1,0 +1,95 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="关卡出口-核电站大门" itemID="6a9c10f3-00000381" linkageExportForAS="true" linkageIdentifier="关卡出口-核电站大门" lastModified="1788613477" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="关卡出口-核电站大门">
+      <layers>
+        <DOMLayer name="as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_root.gameworld.dispatcher.subscribeOnce("StageFinished", function() {
+    this.play();
+}, this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("电梯开门.wav");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#9933CC" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1884 -5141|1884 3!1884 3|-2040 3!-2040 3|-2040 -5141!-2040 -5141|1884 -5141"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="2" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="核电站大门素材" centerPoint3DX="-3.9" centerPoint3DY="-128.45">
+                  <matrix>
+                    <Matrix tx="-102" ty="-257.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.1" y="128.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="核电站大门素材" centerPoint3DX="194.1" centerPoint3DY="-128.45">
+                  <matrix>
+                    <Matrix tx="96" ty="-257.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.1" y="128.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

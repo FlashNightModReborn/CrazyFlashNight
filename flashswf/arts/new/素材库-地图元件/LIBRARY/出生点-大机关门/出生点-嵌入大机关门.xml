@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="出生点-大机关门/出生点-嵌入大机关门" itemID="66aa1cb3-0000023b" linkageExportForAS="true" linkageIdentifier="出生点-嵌入大机关门" lastModified="1722425931">
   <timeline>
-    <DOMTimeline name="出生点-嵌入大机关门" currentFrame="39">
+    <DOMTimeline name="出生点-嵌入大机关门" currentFrame="1">
       <layers>
         <DOMLayer name="label" color="#808080" locked="true" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#4F80FF" locked="true" autoNamed="false">
+        <DOMLayer name="as" color="#4F80FF" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -285,7 +285,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements>
@@ -317,8 +317,6 @@ Z轴坐标 = this._y;
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="4" edges="!2700 -1800|2700 -1600"/>
-                    <Edge fillStyle1="3" edges="!2700 -1600|2700 -1360"/>
                     <Edge fillStyle1="5" edges="!2700 -1360|2700 -1040"/>
                     <Edge fillStyle1="2" edges="!2700 -1040|2700 -700"/>
                     <Edge fillStyle1="2" strokeStyle="1" edges="!2700 -700|-2700 -700"/>
@@ -327,10 +325,12 @@ Z轴坐标 = this._y;
                     <Edge fillStyle1="3" edges="!-2700 -1360|-2700 -1600"/>
                     <Edge fillStyle1="4" edges="!-2700 -1600|-2700 -1800"/>
                     <Edge fillStyle1="1" edges="!-2700 -1800|-2700 -5800!-2700 -5800|2700 -5800!2700 -5800|2700 -1800"/>
-                    <Edge fillStyle0="4" fillStyle1="1" edges="!2700 -1800|-2700 -1800"/>
-                    <Edge fillStyle0="4" fillStyle1="3" edges="!-2700 -1600|2700 -1600"/>
-                    <Edge fillStyle0="5" fillStyle1="2" edges="!-2700 -1040|2700 -1040"/>
+                    <Edge fillStyle1="4" edges="!2700 -1800|2700 -1600"/>
+                    <Edge fillStyle1="3" edges="!2700 -1600|2700 -1360"/>
                     <Edge fillStyle0="5" fillStyle1="3" edges="!2700 -1360|-2700 -1360"/>
+                    <Edge fillStyle0="5" fillStyle1="2" edges="!-2700 -1040|2700 -1040"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!-2700 -1600|2700 -1600"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!2700 -1800|-2700 -1800"/>
                   </edges>
                 </DOMShape>
               </elements>

@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="核电站大门素材" itemID="6a9c0fe8-00000369" lastModified="1788612584" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="核电站大门素材">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="门2" selected="true" centerPoint3DX="98.1" centerPoint3DY="128.6">
+                  <matrix>
+                    <Matrix a="1.32574462890625" d="1.32574462890625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74" y="97.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="门灯光+排气扇" selected="true" centerPoint3DX="79" centerPoint3DY="39.95">
+                  <matrix>
+                    <Matrix a="1.32574462890625" d="1.32574462890625" tx="12.6" ty="12.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.1" y="20.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

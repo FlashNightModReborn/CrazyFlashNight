@@ -74,7 +74,7 @@
           <Include href="出生点-地铁门/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="683dbd90-00000206" lastModified="1748346493"/>
           <Include href="出生点-地铁门/出生点-地铁门.xml" itemID="683dc091-00000344" lastModified="1748878108"/>
           <Include href="出生点-防御地带/出生点-防御地带内部大门.xml" itemID="6826e0af-000002be" lastModified="1776003019"/>
-          <Include href="出生点-防御地带/出生点-防御地带内部入口.xml" itemID="6826dc87-0000031d" lastModified="1776002985"/>
+          <Include href="出生点-防御地带/出生点-防御地带内部入口.xml" itemID="6826dc87-0000031d" lastModified="1788612565"/>
           <Include href="出生点-防御地带/防御地带内部入口门右.xml" itemIcon="1" loadImmediate="false" itemID="678f66f6-00000a3c" lastModified="1747376780"/>
           <Include href="出生点-防御地带/防御地带内部入口门左.xml" itemIcon="1" loadImmediate="false" itemID="678f66ef-00000a38" lastModified="1747376780"/>
           <Include href="出生点-改造僵尸管道/Symbol 44.xml" itemIcon="1" loadImmediate="false" itemID="664b139d-0000024b" lastModified="1716196694"/>
@@ -142,6 +142,8 @@
           <Include href="歌留多/歌留多左大腿.xml" itemIcon="1" loadImmediate="false" itemID="67096491-00000038" lastModified="1728926122"/>
           <Include href="歌留多/歌留多左小臂.xml" itemIcon="1" loadImmediate="false" itemID="67096488-00000035" lastModified="1728926122"/>
           <Include href="歌留多/髅髅宫歌留多-站立动画.xml" itemID="670cf4d1-000003f7" lastModified="1728926159"/>
+          <Include href="关卡出口-核电站大门.xml" itemID="6a9c10f3-00000381" lastModified="1788613477"/>
+          <Include href="核电站大门素材.xml" loadImmediate="false" itemID="6a9c0fe8-00000369" lastModified="1788612584"/>
           <Include href="黑铁会烟雾特效.xml" itemIcon="1" loadImmediate="false" itemID="6a4234a6-00000f5d" lastModified="1782723750"/>
           <Include href="互动提示/互动提示-高亮.xml" itemIcon="1" loadImmediate="false" itemID="676c09fa-00000f73" lastModified="1737857518"/>
           <Include href="货架/货架A/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="66751e0b-00000628" lastModified="1750497506"/>
@@ -155,9 +157,11 @@
           <Include href="路障与通关门/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="674d9efc-000001f6" lastModified="1727496595"/>
           <Include href="路障与通关门/防御地带内部大门右.xml" loadImmediate="false" itemID="678f644a-00000a14" lastModified="1737450570"/>
           <Include href="路障与通关门/防御地带内部大门左.xml" loadImmediate="false" itemID="678f6443-00000a10" lastModified="1776002837"/>
-          <Include href="路障与通关门/关卡出口-防御地带内部大门.xml" itemID="6826e09a-000002b5" lastModified="1776002834"/>
+          <Include href="路障与通关门/关卡出口-防御地带内部大门.xml" itemID="6826e09a-000002b5" lastModified="1788613632"/>
           <Include href="路障与通关门/横向地图路障.xml" itemID="674d9fbe-00000205" lastModified="1750478749"/>
           <Include href="路障与通关门/纵向地图路障.xml" itemID="674da209-000002ab" lastModified="1750478756"/>
+          <Include href="门2.xml" loadImmediate="false" itemID="6a9c0f7a-00000354" lastModified="1788612474"/>
+          <Include href="门灯光+排气扇.xml" loadImmediate="false" itemID="65e7e1c0-000000d1" lastModified="1709696258"/>
           <Include href="汽车炸弹/zsgdrxtjyuh.xml" itemIcon="1" loadImmediate="false" itemID="4b4a8548-00000123" lastModified="1750188039"/>
           <Include href="汽车炸弹/爆了.xml" loadImmediate="false" itemID="683affa2-00000225" lastModified="1776002639"/>
           <Include href="汽车炸弹/变形动画/部件1.xml" itemIcon="1" loadImmediate="false" itemID="683be9a4-00000a62" lastModified="1748756900"/>
@@ -203,7 +207,7 @@
           <Include href="生存战素材/Symbol 36.xml" loadImmediate="false" itemID="65c24a9a-00000cdc" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 37.xml" itemIcon="1" loadImmediate="false" itemID="65c24a9a-00000cdd" lastModified="1699960314"/>
           <Include href="生存战素材/Symbol 38.xml" loadImmediate="false" itemID="65c24a9a-00000cde" lastModified="1699960314"/>
-          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1782724639"/>
+          <Include href="素材库-地图元件.xml" itemID="65c24b72-00000cf2" lastModified="1788613620"/>
           <Include href="投影召唤器/投影召唤器.xml" itemID="687f5035-00004c64" lastModified="1753238678"/>
           <Include href="投影召唤器element.xml" loadImmediate="false" itemID="68803dd5-0000725e" lastModified="1753235024"/>
           <Include href="投影召唤器底座.xml" itemIcon="1" loadImmediate="false" itemID="68803cfe-00007256" lastModified="1753234686"/>
@@ -1199,6 +1203,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="431534" publishTime="1788613484"/>
+          <PublishItem publishSize="431529" publishTime="1788613233"/>
+          <PublishItem publishSize="431446" publishTime="1788612863"/>
+          <PublishItem publishSize="431427" publishTime="1788612737"/>
           <PublishItem publishSize="422684" publishTime="1781368684"/>
           <PublishItem publishSize="422811" publishTime="1781368193"/>
           <PublishItem publishSize="418809" publishTime="1769712498"/>
@@ -1215,9 +1223,5 @@
           <PublishItem publishSize="418916" publishTime="1754995433"/>
           <PublishItem publishSize="418882" publishTime="1754995113"/>
           <PublishItem publishSize="418942" publishTime="1754995030"/>
-          <PublishItem publishSize="418879" publishTime="1754994926"/>
-          <PublishItem publishSize="419111" publishTime="1754994629"/>
-          <PublishItem publishSize="419107" publishTime="1754994248"/>
-          <PublishItem publishSize="419110" publishTime="1754994240"/>
      </publishHistory>
 </DOMDocument>
