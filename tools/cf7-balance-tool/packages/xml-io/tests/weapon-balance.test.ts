@@ -172,6 +172,16 @@ describe("weapon balance v1 profile resolver and sync", () => {
     expect(parsed).toEqual(ledger());
   });
 
+  it("preserves independent priceLayers in the ledger without adding runtime inputs", () => {
+    const value = ledger();
+    value.records[0]!.priceLayers = 1;
+    const parsed = parseWeaponBalanceAuditLedgerFromXml(serializeWeaponBalanceAuditLedgerXml(value));
+    expect(parsed).toEqual(value);
+    const applied = applyWeaponBalanceSyncPlansToXml(itemXml, parsed);
+    expect(applied.source).not.toContain("<priceLayers>");
+    expect(applied.plans[0]!.updatedAuditRecords[0]!.priceLayers).toBe(1);
+  });
+
   it("rejects generation if any active profile lacks a ledger truth record", () => {
     const item = parseFixtureItemObject(itemXml);
     const missing = ledger();

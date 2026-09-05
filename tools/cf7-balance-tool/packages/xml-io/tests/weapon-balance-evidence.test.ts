@@ -7,7 +7,8 @@ import { describe, expect, it } from "vitest";
 import type { WeaponBalanceAuditRecord } from "@cf7-balance-tool/core";
 import {
   buildWeaponAcquisitionIndex,
-  validateWeaponBalanceEvidence
+  validateWeaponBalanceEvidence,
+  type WeaponPriceEvidenceContext
 } from "../src/index.js";
 
 function createRecord(
@@ -64,6 +65,80 @@ function createRecord(
 }
 
 describe("weapon balance project evidence", () => {
+  function highPriceFixture(root: string) {
+    writeJson(root, "data/shops/npcs/Pig.json", { catalog: { "53": "QJZ171" } });
+    const record = createRecord("acquisition.high-price", "data/shops/npcs/Pig.json#catalog.53");
+    record.itemName = "QJZ171";
+    record.priceLayers = 1;
+    record.category = 2;
+    for (const [id, target] of [
+      ["WBR-MAP-002", "pricing.priceLayers"], ["WBR-PL-001", "pricing.priceLayers"],
+      ["WBR-PL-003", "pricing.priceLayers"], ["WBR-PRICE-001", "pricing.goldPrice"],
+      ["WBR-PRICE-002", "pricing.priceRatio"], ["WBR-PRICE-003", "pricing.priceLayers"]
+    ] as const) record.ruleRefs.push({ id, target, evidenceRef: "data/shops/npcs/Pig.json" });
+    const context: WeaponPriceEvidenceContext = {
+      itemName: "QJZ171", profileKey: "data", itemUse: "长枪", itemPrice: 460000,
+      runtimeInputs: { level: 37, power: 888, interval: 240, capacity: 60, weight: 24, impact: 4 }
+    };
+    return { record, context };
+  }
+
+  it("confirms independent gold price mapping against current acquisition and price", () => {
+    withFixtureRepository((root) => {
+      const { record, context } = highPriceFixture(root);
+      writeJson(root, "data/items/test.json", { item: { name: "QJZ171", type: "武器" } });
+      expect(validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root), context))
+        .toEqual({ valid: true, displayEligible: true, issues: [] });
+      const cheap = validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root),
+        { ...context, itemPrice: 280000 });
+      expect(cheap.issues.map((issue) => issue.code)).toContain("high_price_outside_audit_band");
+      const expensive = validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root),
+        { ...context, itemPrice: 600000 });
+      expect(expensive.displayEligible).toBe(false);
+      delete record.priceLayers;
+      expect(validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root), context)
+        .issues.map((issue) => issue.code)).toContain("high_price_mapping_unverified");
+    });
+  });
+
+  it("uses price dual wield 1.5, independently of DPS dual wield 2", () => {
+    withFixtureRepository((root) => {
+      const { record, context } = highPriceFixture(root);
+      record.dualWield = 2;
+      context.itemUse = "手枪";
+      context.itemPrice = 370000; // 1.5 yields ratio 1.202; DPS divisor 2 would incorrectly reject.
+      expect(validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root), context).valid)
+        .toBe(true);
+    });
+  });
+
+  it.each([
+    ["data/crafting/recipe.json", [{ name: "QJZ171" }]],
+    ["data/kshop/shop.json", [{ item: "QJZ171" }]],
+    ["data/tasks/reward.json", { rewards: [["QJZ171", 1]] }],
+    ["data/items/gift.json", { name: "赠品包", type: "消耗品", items: ["QJZ171"] }]
+  ])("rejects other or unreviewed acquisition at %s", (file, value) => {
+    withFixtureRepository((root) => {
+      const { record, context } = highPriceFixture(root);
+      writeJson(root, file, value);
+      const result = validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root), context);
+      expect(result.displayEligible).toBe(false);
+      expect(result.issues.map((issue) => issue.code)).toContain("high_price_unreviewed_acquisition");
+    });
+  });
+
+  it("rejects the wrong vendor or missing live price context despite valid mapping", () => {
+    withFixtureRepository((root) => {
+      const { record, context } = highPriceFixture(root);
+      writeJson(root, "data/shops/npcs/other.json", { catalog: { "53": "另一把枪" } });
+      record.budgetBreakdown[0]!.evidenceRef = "data/shops/npcs/other.json";
+      expect(validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root), context)
+        .issues.map((issue) => issue.code)).toContain("high_price_gold_shop_mismatch");
+      expect(validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root))
+        .issues.map((issue) => issue.code)).toContain("high_price_context_invalid");
+    });
+  });
+
   it("verifies an exact crafting output and repository evidence path", () => {
     withFixtureRepository((root) => {
       writeJson(root, "data/crafting/武器合成.json", [

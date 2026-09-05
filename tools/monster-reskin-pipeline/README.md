@@ -8,7 +8,7 @@
 
 - 输入：现有 XFL/SWF、linkage 对应的 SWF character ID、待导出的叶子 shape ID。
 - 输出：只允许写入 `tmp/monster-reskin/<项目>/` 下的 PNG、SVG、清单和绘制护栏；拒绝把仓库根目录或任意外部目录当成清理目标。
-- FFDec 产物只作参考；最终矢量仍应在原叶子元件的副本中人工重绘。
+- FFDec 产物只作参考；最终矢量在原叶子元件副本中回填；可由人类编辑或按装配入口进行确定性 XFL 编辑，本只读工具不承担写入。
 - 保持局部原点、关节重叠区、装配矩阵、动作标签和碰撞/攻击点；新皮肤使用新 linkage，不覆盖原怪。
 - 本工具属于只读参考层，不扩张为 XFL 自动写入器。
 
@@ -105,7 +105,7 @@ preset 的 `rigReuseConstraints` 保存这组机器可读约束；默认使用 b
 - 银色最多三档，黑色/红色最多两档；每块主板最多一个大高光面。
 - 只保留外轮廓、关节接口、宏观板块、必要结构缝、少量大紧固件和识别灯。
 - 禁止拉丝/噪点、细碎铆钉、连续多级倒角、同心微环、照片级反射与装饰性微面板。
-- 低细节 PNG 仍只是人工重画参考，不应直接自动描摹后当成最终 Flash 矢量。
+- 低细节 PNG 仍只是回填参考；自动描摹或生成矢量后，须检查原生结构、细节密度、注册点及 CS6 发布结果，不能仅凭转换完成就认定可用。
 
 历史高漂移轮可以走同一预算作为**形态素材池支线**，但必须和当前 battle 几何分开保存。对比时记录“可借用的宏观分区”，再把它投影回当前源朝向件；禁止直接拼接不同视角的 PNG，也不得让参考支线冒充通过回装的主清单。主线 12 件完成语义检查后仍须执行下方六状态强制门。
 
@@ -144,7 +144,7 @@ python tools/monster-reskin-pipeline/audit_dressup_reskin.py `
   --browser edge
 ```
 
-正式验收固定覆盖空手、长枪、手枪、手枪2、双枪和兵器六态。重点查看 `audit.json`、`README.md` 与 `sheets/all-states-assembly-review.png`；高漂移组件完成修订且下述 battle rig 强制门通过后，才进入 Flash 叶子元件人工矢量回填。
+正式验收固定覆盖空手、长枪、手枪、手枪2、双枪和兵器六态。重点查看 `audit.json`、`README.md` 与 `sheets/all-states-assembly-review.png`；高漂移组件完成修订且下述 battle rig 强制门通过后，才进入 Flash 叶子元件矢量回填。
 
 默认命令现在是 **battle rig 强制验收门**，不是可选预览。返回码 0 必须同时满足：manifest 的人工语义门通过；preset 明确声明 `rig="battle"`；`verifiedStateLabels` 与固定六态完整且顺序一致；当前性别恰好闭包到 12 个唯一 skinKey / 15 次部件 holder 放置；baseline、`fit`、`masked` 三套 Canvas 在每个姿态都非空且 `missing=0`；两种回填的 12 个 override 在每个姿态全部实际命中；六张姿态审计图与总览图均成功落盘。结果写入 schema 2 的 `gate.semanticComponentReviewPassed`、`gate.battleRigReassemblyPassed` 与 `battleRigAcceptance`，只有前两者均为 `true` 才算通过该门；`technicalAssemblyPassed` 保留为较低层兼容信号，`geometryReviewRequired` 仍是独立的人工几何提醒。
 
@@ -156,7 +156,7 @@ python tools/monster-reskin-pipeline/audit_dressup_reskin.py `
 
 随后按依赖链重新生成分件：`身体/骨盆 → 共享上臂/共享小腿 → 左右下臂/左右大腿 → 左右手/共享鞋 → 头部`。每件必须同时参考相邻已冻结部件和至少两个能看到该接口的整机姿态；完成后再回到六态 battle rig 强制门。也就是说，`masked` 负责暴露问题，整机再生成负责建立连续结构，最终分件回装才负责验收，三者不能互相替代。
 
-Web PNG/manifest 是参考派生产物，不是 Flash 美术源。钛合金61原 linkage 位于 `flashswf/arts/things/things.xfl` 的 `0.防具相关/92&61套装/`；替换原套装时在对应叶子元件中人工重绘，新增并存皮肤则按仓库治理通过 `flashswf/arts/things-new.fla` 挂载新 linkage。两种路线都要保留原注册点/holder 语义，并在 Flash 发布后重新烘焙 Dressup manifest 做整机回归。
+Web PNG/manifest 是参考派生产物，不是 Flash 美术源。钛合金61原 linkage 位于 `flashswf/arts/things/things.xfl` 的 `0.防具相关/92&61套装/`；替换原套装时在对应叶子元件副本中回填原生矢量，新增并存皮肤则按仓库治理通过 `flashswf/arts/things-new.fla` 挂载新 linkage。两种路线都要保留原注册点/holder 语义，并在 Flash 发布后重新烘焙 Dressup manifest 做整机回归。
 
 ## 验证
 

@@ -1,0 +1,9 @@
+# Art contract
+
+Approved shape: assets/reference/approved-v07.png (relative to package root), 1898 × 829. Use same absolute coordinates and muzzle-left true side projection.
+Final native stage will normalize gun length near 900 px; author source at approved 1898 × 829 to keep reference coordinates easy.
+Style match assets/reference/ar-style-reference.png: black clear contours, clean dark neutral metal, restrained smooth gradients on cylindrical forms, flat bevel facets elsewhere. No image texture/noise, no auto trace polygons. Gun edges crisp but not angular everywhere. Outer contours stroke #101010 2.6 px at 1898 canvas, internal panel borders 1.6–2 px, minor highlight 1 px. Source-scale stroke widths will be halved when normalized.
+Palette: outline #101010; recess #181819; shadow #29292B; dark face #39393B; main face #48484B; light facet #616164; selective edge #828284. Neutral warm/slightly warm gray comparable to the AR steel. Avoid blue saturation and pure white glints.
+SVG standalone files: viewBox="0 0 1898 829", transparent background. All coordinates absolute; no transforms if avoidable. Supported author tags path M/L/H/V/Q/C/Z; rect with optional rx; ellipse/circle/polygon/polyline/line. Explicit fill/stroke attrs; simple named linearGradient in defs with gradientUnits userSpaceOnUse; stop offsets 0..1 + stop-color. Groups id meaningful, direct children groups for editable layers. No filters, masks, clipPaths, bitmap/text, CSS or use. Holes true compound-path holes with fill-rule evenodd, never white fill.
+Part groups represent semantically editable graphic symbols. Fine visual layers use id silhouette, planes, recesses, bevels, fasteners etc.
+No dangling cylindrical foregrip or rod. Keep actual trigger-guard-front small rectangular block. Bipod side silhouette stays a single near-overlapping vertical leg. All holes/circular pivots have a common side-facing projection, no artificial 3D front face.

@@ -33,6 +33,7 @@ export interface ResolvedWeaponItemProfile {
   itemName: string;
   profileKey: string;
   itemUse: string | undefined;
+  itemPrice: number;
   effectiveData: Record<string, unknown>;
   effectiveSkill: unknown;
   effectiveLifecycle: unknown;
@@ -190,6 +191,7 @@ export function resolveWeaponItemEffectiveProfile(
     itemName,
     profileKey,
     itemUse,
+    itemPrice: toFiniteNumber(item.price),
     effectiveData,
     effectiveSkill,
     effectiveLifecycle,
@@ -464,6 +466,9 @@ export function serializeWeaponBalanceAuditLedgerXml(
       "formula"
     ] as const) {
       lines.push(`      <${key}>${record[key]}</${key}>`);
+    }
+    if (record.priceLayers !== undefined) {
+      lines.push(`      <priceLayers>${record.priceLayers}</priceLayers>`);
     }
     lines.push(
       `      <status>${record.status}</status>`,

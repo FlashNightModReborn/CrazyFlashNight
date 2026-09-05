@@ -305,6 +305,57 @@
     </data>
   </item>
   <item weapontype="机枪">
+    <name>QJZ171</name>
+    <displayname>QJZ171</displayname>
+    <icon>Codex-QJZ171</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <price>460000</price>
+    <description>C国新一代12.7毫米山地重机枪，采用轻量化结构与60发弹箱，将大口径火力带入步兵能够抵达的阵地。
+    这款佣兵用改装型放缓了连射节奏，每发重弹都保留充足的贯穿力与冲击。沉重的枪身和较长的换弹时间要求使用者稳住阵脚，以短促而有力的连射撕开敌群。</description>
+    <data>
+      <level>37</level>
+      <weight>24</weight>
+      <dressup>枪-长枪-Codex-QJZ171</dressup>
+      <capacity>60</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>240</interval>
+      <velocity>80</velocity>
+      <bullet>巴雷特子弹</bullet>
+      <bulletrename>强力穿刺子弹</bulletrename>
+      <sound>re_sniper_Barret.wav</sound>
+      <muzzle>巴雷特枪火</muzzle>
+      <bullethit>战术巴雷特击中特效</bullethit>
+      <clipname>机枪贫铀穿甲弹</clipname>
+      <bulletsize>55</bulletsize>
+      <power>888</power>
+      <impact>4</impact>
+      <reloadPenalty>50</reloadPenalty>
+    </data>
+    <balance>
+      <formulaFamily>weapon</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <workbookVersion>1</workbookVersion>
+      <profiles>
+        <data>
+          <dualWield>1</dualWield>
+          <pierce>2</pierce>
+          <damageType>1</damageType>
+          <shotgun>1</shotgun>
+          <magPrice>8000</magPrice>
+          <weightLayers>1</weightLayers>
+          <category>2</category>
+          <formula>1</formula>
+          <status>confirmed</status>
+          <displayEligible>true</displayEligible>
+          <inputDigest>fnv1a32:6489b482</inputDigest>
+          <auditRef>weapon:QJZ171:data</auditRef>
+        </data>
+      </profiles>
+    </balance>
+  </item>
+  <item weapontype="机枪">
     <name>ZB-26</name>
     <displayname>ZB-26</displayname>
     <icon>ZB-26</icon>

@@ -279,8 +279,9 @@ function Register-CompileTask {
     Register-ScheduledTask -TaskName 'FlashCS6Task' -Action $flashAction -Principal $principal -Settings $flashSettings -Description 'Launch Flash CS6 without UAC prompt' -Force | Out-Null
 
     $compileSettings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Seconds 30)
-    $compileAction = New-ScheduledTaskAction -Execute 'cmd.exe' -Argument ('/c start "" "{0}"' -f $LoaderPath)
-    Register-ScheduledTask -TaskName 'CompileTriggerTask' -Action $compileAction -Principal $principal -Settings $compileSettings -Description 'Trigger Flash CS6 compile by opening the CF7 loader JSFL directly' -Force | Out-Null
+    # 显式指定 CS6，避免 ShellExecute 经 .jsfl 默认关联转到 Animate / 打开方式选择器。
+    $compileAction = New-ScheduledTaskAction -Execute $FlashExe -Argument ('"{0}"' -f $LoaderPath)
+    Register-ScheduledTask -TaskName 'CompileTriggerTask' -Action $compileAction -Principal $principal -Settings $compileSettings -Description 'Run the CF7 loader JSFL with the configured Flash CS6 executable' -Force | Out-Null
 }
 
 function Write-CompileEnvSh {
@@ -342,9 +343,10 @@ function Assert-SetupHealthy {
     try {
         $compileTask = Get-ScheduledTask -TaskName 'CompileTriggerTask' -ErrorAction Stop
         $compileAction = $compileTask.Actions | Select-Object -First 1
-        $expectedArgs = '/c start "" "{0}"' -f $LoaderPath
-        if ($compileAction.Execute -ne 'cmd.exe' -or $compileAction.Arguments -ne $expectedArgs) {
-            $issues += 'CompileTriggerTask 不是期望的直开 JSFL 动作'
+        $expectedArgs = '"{0}"' -f $LoaderPath
+        if ($compileAction.Execute -ne $FlashExe -or $compileAction.Arguments -ne $expectedArgs -or
+            $compileTask.Principal.RunLevel -ne 'Highest') {
+            $issues += 'CompileTriggerTask 必须以 Highest 权限直接调用当前 Flash.exe 和 CF7 Loader'
         }
     } catch {
         $issues += 'CompileTriggerTask 不存在'

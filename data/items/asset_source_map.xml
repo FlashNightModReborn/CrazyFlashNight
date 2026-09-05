@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5652 unique assets -->
+  <!-- 5661 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -24,6 +24,7 @@
   <asset id="Au的素材" swf="flashswf/arts/new/Au的素材.swf" symbolName="男变装-大圣上装身体" />
   <asset id="BBPLAYER手雷" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/BBPLAYER手雷" />
   <asset id="BBPLAYER炸弹" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/BBPLAYER炸弹" />
+  <asset id="Codex专用素材" swf="flashswf/arts/new/Codex专用素材.swf" />
   <asset id="GM6j击杀特效" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/GM6_LYNX/GM6j击杀特效" />
   <asset id="HUD物品图标" swf="flashswf/UI/玩家信息界面.swf" symbolName="sprite/物品栏/物品图标位置示意" />
   <asset id="JK次元斩" swf="flashswf/arts/new/武装JK.swf" symbolName="特效与子弹/次元斩1" />
@@ -46,7 +47,6 @@
   <asset id="g1开火" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/g1开火文件/g1开火" />
   <asset id="g1炮弹" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/g1炮弹素材/g1炮弹" />
   <asset id="g1炮弹击中" swf="flashswf/arts/new/lady.swf" symbolName="特效文件存放/g1炮弹击中素材/g1炮弹击中" />
-  <asset id="gameworld_pk" swf="flashswf/arts/things-new.swf" symbolName="Symbol 21" orphan="true" />
   <asset id="o" swf="flashswf/arts/new/3XD的素材.swf" symbolName="4人物服饰外观/战术JK套装/素材/灰色裙子/1Symbol 2354" />
   <asset id="p" swf="flashswf/arts/new/3XD的素材.swf" symbolName="4人物服饰外观/战术JK套装/素材/灰色裙子/1Symbol 2350" />
   <asset id="pkm" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/pkm" />
@@ -114,6 +114,7 @@
   <asset id="公共素材位7" swf="flashswf/arts/new/公共素材位7.swf" />
   <asset id="公共素材位8" swf="flashswf/arts/new/公共素材位8.swf" />
   <asset id="公共素材位9" swf="flashswf/arts/new/公共素材位9.swf" />
+  <asset id="关卡出口-核电站大门" swf="flashswf/arts/new/素材库-地图元件.swf" />
   <asset id="关卡出口-防御地带内部大门" swf="flashswf/arts/new/素材库-地图元件.swf" symbolName="路障与通关门/关卡出口-防御地带内部大门" />
   <asset id="兵器攻击容器-1连招" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/平A/兵器攻击容器-1连招" />
   <asset id="兵器攻击容器-交叉斩" swf="flashswf/arts/things0.swf" symbolName="容器/兵器攻击容器/兵器攻击容器-交叉斩" />
@@ -698,6 +699,7 @@
   <asset id="图标-CAR" swf="flashswf/arts/new/3102&amp;Leave.swf" symbolName="TTF2/图标-CAR" />
   <asset id="图标-CF手斧" swf="flashswf/arts/new/3XD的素材.swf" symbolName="3冷兵器/一部分武器/武器本体/图标-CF手斧" />
   <asset id="图标-COLT PYTHON" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/图标-COLT PYTHON" />
+  <asset id="图标-Codex-QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171/图标-Codex-QJZ171" />
   <asset id="图标-C级防化服上装" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/图标-C级防化服上装" />
   <asset id="图标-C级防化服下装" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/图标-C级防化服下装" />
   <asset id="图标-C级防化服手套" swf="flashswf/arts/new/公共素材位2.swf" symbolName="5.参考防具/C级防化服套装/图标-C级防化服手套" />
@@ -945,6 +947,7 @@
   <asset id="图标-m14" swf="flashswf/arts/things切割.swf" symbolName="长枪/M14/图标-m14" />
   <asset id="图标-m9" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/图标-m9" />
   <asset id="图标-maddog疯狗刀" swf="flashswf/arts/new/3XD的素材.swf" symbolName="3冷兵器/一部分武器/武器本体/图标-maddog疯狗刀" />
+  <asset id="图标-mini14" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/mini14/图标-mini14" />
   <asset id="图标-pencil" swf="flashswf/arts/new/PTXOA馆长_JohnWick系列.swf" symbolName="JohnWick内容/刀剑/pencil/图标-pencil" />
   <asset id="图标-pig套装包" swf="flashswf/arts/things.swf" symbolName="消耗道具相关/图标-pig套装包" />
   <asset id="图标-pig装墨绿军用下装" swf="flashswf/arts/things.swf" symbolName="废弃NPC套装/Symbol 3563" orphan="true" />
@@ -1247,6 +1250,7 @@
   <asset id="图标-大礼包" swf="flashswf/arts/things.swf" symbolName="消耗道具相关/4.礼包类/图标-大礼包" />
   <asset id="图标-大米" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="食材相关/图标-大米" />
   <asset id="图标-大蒜" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="食材相关/图标-大蒜" />
+  <asset id="图标-大赦" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/大赦/图标-大赦" />
   <asset id="图标-天使铳" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" symbolName="图标/天使铳图标" />
   <asset id="图标-天使铳的子弹" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" symbolName="图标/天使铳的子弹图标" />
   <asset id="图标-天山黑侠上装" swf="flashswf/arts/things.swf" symbolName="0.防具相关/天山黑侠/图标-天山黑侠上装" />
@@ -1454,6 +1458,7 @@
   <asset id="图标-杀戮风暴" swf="flashswf/arts/new/公共素材位2.swf" symbolName="2.参考武器-冷兵/杀戮风暴/图标-杀戮风暴" />
   <asset id="图标-材料盒子" swf="flashswf/arts/things.swf" symbolName="消耗道具相关/4.礼包类/图标-材料盒子" />
   <asset id="图标-杜兰达尔" swf="flashswf/arts/new/3102&amp;Leave.swf" symbolName="近战/图标-杜兰达尔" />
+  <asset id="图标-杠杆式霰弹枪" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/杠杆式霰弹枪/图标-杠杆式霰弹枪" />
   <asset id="图标-杰森面具" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/图标-杰森面具" />
   <asset id="图标-极品UZI战术版" swf="flashswf/arts/things切割.swf" symbolName="手枪/极品&amp;UZI战术版/图标-极品UZI战术版" />
   <asset id="图标-极品巨兽" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/长枪/极品巨兽/图标-极品巨兽" />
@@ -3771,6 +3776,7 @@
   <asset id="枪-手枪-双管猎枪" swf="flashswf/arts/new/公共素材位0.swf" symbolName="其他武器/枪-手枪-双管猎枪" />
   <asset id="枪-手枪-土制转管手枪" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="枪-手枪-圣诞糖果枪" swf="flashswf/arts/things切割.swf" symbolName="手枪/圣诞糖果枪/枪-手枪-圣诞糖果枪" />
+  <asset id="枪-手枪-大赦" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/大赦/枪-手枪-大赦" />
   <asset id="枪-手枪-御天敌V-1" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="2.热兵器/御天敌/枪-手枪-御天敌V-1" />
   <asset id="枪-手枪-恒宇红星" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="2.热兵器/恒宇红星/枪-手枪-恒宇红星" />
   <asset id="枪-手枪-恒宇银星" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="2.热兵器/恒宇银星/枪-手枪-恒宇银星" />
@@ -3834,6 +3840,7 @@
   <asset id="枪-长枪-AWP" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/长枪/枪-长枪-AWP" />
   <asset id="枪-长枪-Benelli-M4-Select" swf="flashswf/arts/new/黑洞军工.swf" symbolName="1.长枪/枪-长枪-Benelli-M4-Select" />
   <asset id="枪-长枪-CAR" swf="flashswf/arts/new/3102&amp;Leave.swf" symbolName="TTF2/枪-长枪-CAR" />
+  <asset id="枪-长枪-Codex-QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171/枪-长枪-Codex-QJZ171" />
   <asset id="枪-长枪-DBHshotgun" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="枪-长枪-DD MK18" swf="flashswf/arts/new/Au的素材.swf" symbolName="枪械/枪-长枪-DD MK18" />
   <asset id="枪-长枪-DD MK18 Mod1" swf="flashswf/arts/new/Au的素材.swf" symbolName="枪械/枪-长枪-DD MK18 Mod1" />
@@ -3966,6 +3973,7 @@
   <asset id="枪-长枪-ZB-26" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/ZB-26/ZB-26" />
   <asset id="枪-长枪-ZUX197" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
   <asset id="枪-长枪-m14" swf="flashswf/arts/things切割.swf" symbolName="长枪/M14/枪-长枪-m14" />
+  <asset id="枪-长枪-mini14" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/mini14/枪-长枪-mini14" />
   <asset id="枪-长枪-wa90变形款" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/wa90/wa90变形款" />
   <asset id="枪-长枪-‌Noveske N4 突击步枪" swf="flashswf/arts/new/Au的素材.swf" symbolName="枪械/枪-长枪-‌Noveske N4 突击步枪" />
   <asset id="枪-长枪-中国88式狙击步枪" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/88/中国88式狙击步枪" />
@@ -4001,6 +4009,7 @@
   <asset id="枪-长枪-战术版FIM92" swf="flashswf/arts/things切割.swf" symbolName="长枪/战术版FIM92/枪-长枪-战术版FIM92" />
   <asset id="枪-长枪-战术版喷火器" swf="flashswf/arts/things切割.swf" symbolName="长枪/战术版喷火器/枪-长枪-战术版喷火器" />
   <asset id="枪-长枪-日奈机枪" swf="flashswf/arts/new/灰烬晨星的设定书架.swf" symbolName="日奈机枪/枪-长枪-日奈机枪" />
+  <asset id="枪-长枪-杠杆式霰弹枪" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/杠杆式霰弹枪/枪-长枪-杠杆式霰弹枪" />
   <asset id="枪-长枪-极品巨兽" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/长枪/极品巨兽/枪-长枪-极品巨兽" />
   <asset id="枪-长枪-毒蛛" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="2.热兵器/毒液/枪-长枪-毒蛛" />
   <asset id="枪-长枪-毛瑟98k" swf="flashswf/arts/new/公共素材位1.swf" symbolName="7.飞龙素材/毛瑟98k/枪-长枪-毛瑟98k" />
@@ -5764,6 +5773,7 @@
     <source swf="flashswf/arts/things切割.swf" symbolName="冷兵/锐器-重/黑铁重剑/刀-黑铁重剑" />
   </conflict>
   <conflict id="判定使用">
+    <source swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/大赦/判定使用" />
     <source swf="flashswf/arts/new/变体武器.swf" />
     <source swf="flashswf/arts/new/拼命之王.swf" symbolName="1.属性标签标志元件/判定使用" />
     <source swf="flashswf/arts/new/新的动作.swf" symbolName="1.冷兵器/判定使用" />
@@ -6102,6 +6112,7 @@
     <source swf="flashswf/arts/new/齐天大圣.swf" symbolName="子弹/闪光金箍棒" />
   </conflict>
   <conflict id="阴影所用">
+    <source swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/大赦/阴影所用" />
     <source swf="flashswf/arts/new/Au的素材.swf" symbolName="约翰威克/阴影所用" />
     <source swf="flashswf/arts/things切割.swf" />
   </conflict>

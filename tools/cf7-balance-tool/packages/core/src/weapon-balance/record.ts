@@ -89,6 +89,8 @@ export interface WeaponBalanceRuleReference {
 
 /** ledger record 是完整审计真源；inline profile 必须由它派生。 */
 export interface WeaponBalanceAuditRecord extends WeaponBalanceFormulaInputs {
+  /** 仅供价格证据反验；不属于 DPS 输入，不投影到物品 balance。 */
+  priceLayers?: number;
   auditRef: string;
   itemName: string;
   profileKey: string;
@@ -285,6 +287,7 @@ export function parseWeaponBalanceAuditRecord(
     "itemName",
     "profileKey",
     ...WEAPON_BALANCE_FORMULA_INPUT_KEYS,
+    "priceLayers",
     "status",
     "displayEligible",
     "inputDigest",
@@ -311,6 +314,9 @@ export function parseWeaponBalanceAuditRecord(
   };
   const note = readOptionalString(source, "note");
   if (note !== undefined) record.note = note;
+  if (readRawValue(source, "priceLayers") !== undefined) {
+    record.priceLayers = readRequiredFiniteNumber(source, "priceLayers", path);
+  }
   return record;
 }
 

@@ -113,6 +113,7 @@ compile_test.ps1 / compile_test.sh
   → 取得仓库级 CF7_FlashCompile mutex（scratch 父 runner持同一把锁，并以持久事务 marker + exact-match lease 允许子进程复用）
   → 显式 TestLoader 目标先检查 node + swf-function-sizes.js；缺失则不触发 Flash
   → Start-ScheduledTask 'CompileTriggerTask'
+    → 已配置的 Flash.exe "<CF7 Loader 路径>"（Highest，不依赖 .jsfl 默认关联）
     → cf7_compile_loader.jsfl
       → compile_action.jsfl
         → 目标已打开时关闭并写 compile_reopen.marker 后返回
@@ -213,10 +214,14 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 
 ### 仍然弹 UAC
 
-- **`CompileTriggerTask` / `FlashCS6Task` 必须 `RunLevel=Highest`**（`setup_compile_env.ps1::Register-CompileTask` 的默认值）。Task Scheduler 服务在 SYSTEM 上下文预置 elevation 令牌，子进程 cmd 已经 elevated，再唤起 Flash 不跨 UAC 边界。改成 `RunLevel=Limited` 反而让 cmd 没 elevated，碰到 `Flash.exe` 的 AppCompat `RUNASADMIN` 标志被强制弹 UAC
+- **`CompileTriggerTask` / `FlashCS6Task` 必须 `RunLevel=Highest`**（`setup_compile_env.ps1::Register-CompileTask` 的默认值），并且编译任务直接执行已配置的 `Flash.exe`，参数为带引号的 CF7 Loader 绝对路径。旧版 `cmd /c start` 仍会经过 `.jsfl` 文件关联；与 Animate 共存时可能弹出打开方式选择器，并在选择程序后再次请求 UAC，不能仅凭 Highest 判定整条链路免弹窗。
 - Flash CS6 在某些机器上必须保留 HKLM `SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers` 下 `Flash.exe = ~ RUNASADMIN ...` 才能启动（去掉直接运行失败），所以这条 AppCompat 不能简单清空
-- 旧计划任务残留概率次高
-- 重新运行 `scripts/setup_compile_env.bat`（`Register-ScheduledTask -Force` 会把 RunLevel 重置回 Highest，覆盖任何手工降级）
+- 以管理员身份重新运行 `scripts/setup_compile_env.bat -SkipCleanup`，一次性更新两个已有任务并保留编译诊断；这次安装需要人类确认 UAC。日常触发使用计划任务，避免直接从未提升终端启动 Flash.exe。
+- 核对任务 Execute / Arguments / RunLevel 后实际触发 JSFL，再用新鲜 Compiler Errors 和 SWF 刷新验证。兼容读取旧任务不代表已修复；无需修改系统默认应用或关闭 UAC。
+
+### 打开文档时弹出缺失字体
+
+字体弹窗属于文档依赖，显式调用 CS6 不会自动消除它。先定位 XFL 的 `DOMTextAttrs.face` 和实际文本：真实素材应补齐原字体或核对替代效果；共享库的编辑器占位标签可使用本机已有字体。本轮 `things-new.fla` 中 `敌人-诺艾尔` 的两个中文导入标签从缺失的 Broadway 改用 MicrosoftYaHei，保留原 `linkageImportForRS` / `linkageURL`，不改实际敌人 SWF。新 Codex 武器库采用原生矢量形状，不引入字体。未知弹窗仍须观察后处理，不能用超时重试或统一回车掩盖。
 
 ## 9. 相关文档
 

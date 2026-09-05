@@ -1,14 +1,14 @@
 # XFL 命名 / 引用治理工具（XFL 工具栈 Layer 0 · 校准层）
 
 > **本目录定位**：[docs/xfl-agent-工具栈-长期路线-2026-05-24.md](../../../docs/xfl-agent-工具栈-长期路线-2026-05-24.md) 中的 **Layer 0 校准层**。
-> 角色：每次 FLA 施工后跑一遍，做内部一致性体检 + 明确无歧义的修复。不做创造性操作。Layer 1+ 见路线图，未到触发条件不建。
+> 角色：每次 FLA 施工后跑一遍，做内部一致性体检 + 明确无歧义的修复。本目录工具只负责一致性；原生形状、图标与素材库装配按 [美术资产装配](../../../agentsDoc/art-asset-assembly.md) 执行，通用工具建设见路线图。
 >
 > 一次性脚手架不进这里。这里只放每次 FLA 施工后能直接跑、跑了不会出错的工具。
 > 治理对象：任意 XFL 目录（`flashswf/arts/things/`、`flashswf/arts/things2/`、`flashswf/arts/new/<某目录>/` 等），即任何含 `DOMDocument.xml` + `LIBRARY/` 的目录。
 
 ## 标准流程
 
-每次在 Flash CS6 里改 FLA 后（保存为 XFL 后）：
+每次修改 FLA / XFL 后（FLA 先保存为 XFL）：
 
 ```bash
 ROOT=flashswf/arts/things   # 改成本次施工的 XFL 目录
@@ -31,13 +31,13 @@ python scripts/tools/xfl/audit.py $ROOT
 python tools/linkage_scanner/scan_linkage.py --xml-only   # 重写 data/items/asset_source_map.xml
 ```
 
-退出码：所有脚本在「干净」时返回 0，「需要后续处理」时返回非 0；CI / agent 都可以靠 `$?` 判定。
+退出码：结构检查通过时返回 0，需要结构修复时返回非 0。audit 第 7 项孤儿、第 8 项同名 FLA/XFL 并存为提醒，不改变退出码，也不自动删除文件。并存源的去留按 [单一编辑源约定](../../../agentsDoc/art-asset-assembly.md#单一编辑源fla-转-xfl-后收尾) 核对维护历史、引用和发布证据；旧 FLA 与现役 XFL 不同不等于旧 FLA 仍在维护。
 
 ## 三个脚本
 
 | 脚本 | 改文件？ | 用途 |
 |---|---|---|
-| [audit.py](audit.py) | 否 | 只读检查 7 项：残留 Symbol NNN / 重名 / linkageId 撞车 / 失效 Include / Include↔itemID 错配 / 失效 libraryItemName / 孤儿 LIBRARY 文件 |
+| [audit.py](audit.py) | 否 | 只读检查 8 项：残留 Symbol NNN / 重名 / linkageId 撞车 / 失效 Include / Include↔itemID 错配 / 失效 libraryItemName / 孤儿 LIBRARY 文件 / 同名 FLA/XFL 并存 |
 | [rename_a_class.py](rename_a_class.py) | 是 | A 类符号 `Symbol NNN` → `linkageIdentifier`；同步 DOMSymbolItem.name、DOMTimeline.name、文件路径、全部 libraryItemName 引用；自动跳过冲突 |
 | [fix_includes.py](fix_includes.py) | 是 | 按 itemID 把 DOMDocument.xml 中失效的 `<Include href=...>` 重映射到当前文件位置 |
 
@@ -52,6 +52,6 @@ python tools/linkage_scanner/scan_linkage.py --xml-only   # 重写 data/items/as
 
 ## 已知不足
 
-- 不识别 `linkageImportForRS` / 共享库符号（项目里没用到）。
+- 不核验 `linkageImportForRS` 的跨库加载闭包；项目现役 things-new 共享库仍须按装配入口检查实际 SWF 导入/导出。
 - 不动 `Layer 1` / `图层 1` 一类的中文图层名规范化（目前没需求）。
 - 多 XFL 一次扫还没做（每次只针对一个根目录）。如果需要，写个 shell wrapper 比改脚本干净。

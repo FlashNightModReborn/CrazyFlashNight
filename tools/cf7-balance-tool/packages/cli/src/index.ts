@@ -979,7 +979,7 @@ function runBalanceCheck(args: string[]): void {
         runtimeInputs: item.runtimeInputs
       });
       const evidence = auditRecord
-        ? validateWeaponBalanceEvidence(item.itemName, auditRecord, acquisitionIndex)
+        ? validateWeaponBalanceEvidence(item.itemName, auditRecord, acquisitionIndex, item)
         : { displayEligible: false, issues: [] };
       const localErrors = [
         ...validation.issues.filter((issue) => issue.severity === "error"),
@@ -1171,7 +1171,8 @@ function runBalanceSync(args: string[]): void {
       const evidence = validateWeaponBalanceEvidence(
         item.itemName,
         auditRecord,
-        acquisitionIndex
+        acquisitionIndex,
+        item
       );
       proposedErrors.push(
         ...evidence.issues

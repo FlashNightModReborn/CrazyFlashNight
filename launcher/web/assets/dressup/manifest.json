@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dressup-manifest-v1",
-  "generatedAt": "2026-08-09T20:11:02+0800",
+  "generatedAt": "2026-09-05T22:16:13+0800",
   "genders": [
     "男",
     "女"
@@ -5246,6 +5246,23 @@
       },
       "sourceFile": "武器_手枪_大威力手枪.xml"
     },
+    "大赦": {
+      "use": "手枪",
+      "icon": "大赦",
+      "dressup": "枪-手枪-大赦",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-大赦",
+          "手枪2_装扮": "枪-手枪-大赦"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-大赦",
+          "手枪2_装扮": "枪-手枪-大赦"
+        }
+      },
+      "sourceFile": "武器_手枪_大威力手枪.xml"
+    },
     "鲁格MK3": {
       "use": "手枪",
       "icon": "鲁格MK3",
@@ -7136,6 +7153,21 @@
       },
       "sourceFile": "武器_长枪_战斗步枪.xml"
     },
+    "mini14": {
+      "use": "长枪",
+      "icon": "mini14",
+      "dressup": "枪-长枪-mini14",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-mini14"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-mini14"
+        }
+      },
+      "sourceFile": "武器_长枪_战斗步枪.xml"
+    },
     "M1915Chauchat": {
       "use": "长枪",
       "icon": "M1915Chauchat",
@@ -7252,6 +7284,21 @@
         },
         "女": {
           "长枪_装扮": "枪-长枪-ValmetM78"
+        }
+      },
+      "sourceFile": "武器_长枪_机枪.xml"
+    },
+    "QJZ171": {
+      "use": "长枪",
+      "icon": "Codex-QJZ171",
+      "dressup": "枪-长枪-Codex-QJZ171",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-Codex-QJZ171"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-Codex-QJZ171"
         }
       },
       "sourceFile": "武器_长枪_机枪.xml"
@@ -9011,125 +9058,20 @@
       },
       "sourceFile": "武器_长枪_霰弹枪.xml"
     },
-    "新手礼包": {
-      "use": "手雷",
-      "icon": "新手礼包",
-      "dressup": "手雷-自制燃烧弹",
+    "杠杆式霰弹枪": {
+      "use": "长枪",
+      "icon": "杠杆式霰弹枪",
+      "dressup": "枪-长枪-杠杆式霰弹枪",
       "helmet": false,
       "fieldsByGender": {
         "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
+          "长枪_装扮": "枪-长枪-杠杆式霰弹枪"
         },
         "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
+          "长枪_装扮": "枪-长枪-杠杆式霰弹枪"
         }
       },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "pig套装包": {
-      "use": "手雷",
-      "icon": "pig套装包",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "战宠灵石大盒": {
-      "use": "手雷",
-      "icon": "战宠灵石大盒",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "感恩节礼包": {
-      "use": "手雷",
-      "icon": "感恩节礼包",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "92套装盒子": {
-      "use": "手雷",
-      "icon": "92套装盒子",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "普通K点装备盒子": {
-      "use": "手雷",
-      "icon": "普通K点装备盒子",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "回馈大礼包": {
-      "use": "手雷",
-      "icon": "回馈大礼包",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "the girl套装包": {
-      "use": "手雷",
-      "icon": "the girl套装包",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
+      "sourceFile": "武器_长枪_霰弹枪.xml"
     },
     "鞭炮": {
       "use": "手雷",
@@ -9142,36 +9084,6 @@
         },
         "女": {
           "手雷_装扮": "手雷-鞭炮"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "强化石小盒": {
-      "use": "手雷",
-      "icon": "强化石小盒",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "强化石大盒": {
-      "use": "手雷",
-      "icon": "强化石大盒",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
         }
       },
       "sourceFile": "消耗品_手雷.xml"
@@ -9191,36 +9103,6 @@
       },
       "sourceFile": "消耗品_手雷.xml"
     },
-    "大礼包": {
-      "use": "手雷",
-      "icon": "大礼包",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "材料盒子": {
-      "use": "手雷",
-      "icon": "材料盒子",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
     "砖": {
       "use": "手雷",
       "icon": "砖",
@@ -9232,21 +9114,6 @@
         },
         "女": {
           "手雷_装扮": "手雷-砖"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "红包": {
-      "use": "手雷",
-      "icon": "红包",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
         }
       },
       "sourceFile": "消耗品_手雷.xml"
@@ -9344,21 +9211,6 @@
     "谜之胶囊": {
       "use": "手雷",
       "icon": "谜之胶囊",
-      "dressup": "手雷-自制燃烧弹",
-      "helmet": false,
-      "fieldsByGender": {
-        "男": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        },
-        "女": {
-          "手雷_装扮": "手雷-自制燃烧弹"
-        }
-      },
-      "sourceFile": "消耗品_手雷.xml"
-    },
-    "福袋": {
-      "use": "手雷",
-      "icon": "福袋",
       "dressup": "手雷-自制燃烧弹",
       "helmet": false,
       "fieldsByGender": {
@@ -9776,6 +9628,142 @@
       },
       "sourceFile": "消耗品_手雷.xml"
     },
+    "战宠灵石大盒": {
+      "use": "礼包",
+      "icon": "战宠灵石大盒",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "感恩节礼包": {
+      "use": "礼包",
+      "icon": "感恩节礼包",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "92套装盒子": {
+      "use": "礼包",
+      "icon": "92套装盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "普通K点装备盒子": {
+      "use": "礼包",
+      "icon": "普通K点装备盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "回馈大礼包": {
+      "use": "礼包",
+      "icon": "回馈大礼包",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "the girl套装包": {
+      "use": "礼包",
+      "icon": "the girl套装包",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "强化石小盒": {
+      "use": "礼包",
+      "icon": "强化石小盒",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "强化石大盒": {
+      "use": "礼包",
+      "icon": "强化石大盒",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "大礼包": {
+      "use": "礼包",
+      "icon": "大礼包",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "材料盒子": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "红包": {
+      "use": "礼包",
+      "icon": "红包",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "福袋": {
+      "use": "礼包",
+      "icon": "福袋",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "在线补给包·Ⅰ": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "在线补给包·Ⅱ": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "在线补给包·Ⅲ": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "在线补给包·Ⅳ": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
+    "在线补给包·Ⅴ": {
+      "use": "礼包",
+      "icon": "材料盒子",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_礼包.xml"
+    },
     "普通hp药剂": {
       "use": "药剂",
       "icon": "普通hp药剂",
@@ -9911,6 +9899,206 @@
       "helmet": false,
       "fieldsByGender": {},
       "sourceFile": "消耗品_药剂.xml"
+    },
+    "狻猊·一型": {
+      "use": "药剂",
+      "icon": "普通hp药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "狻猊·二型": {
+      "use": "药剂",
+      "icon": "普通hp药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "狻猊·三型": {
+      "use": "药剂",
+      "icon": "普通hp药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "囚牛·一型": {
+      "use": "药剂",
+      "icon": "普通mp药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "囚牛·二型": {
+      "use": "药剂",
+      "icon": "普通mp药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "囚牛·三型": {
+      "use": "药剂",
+      "icon": "普通mp药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "赑屃·一型": {
+      "use": "药剂",
+      "icon": "抗生素",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "赑屃·二型": {
+      "use": "药剂",
+      "icon": "抗生素",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "赑屃·三型": {
+      "use": "药剂",
+      "icon": "抗生素",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "螭吻·一型": {
+      "use": "药剂",
+      "icon": "净化药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "螭吻·二型": {
+      "use": "药剂",
+      "icon": "净化药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "螭吻·三型": {
+      "use": "药剂",
+      "icon": "净化药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "睚眦·一型": {
+      "use": "药剂",
+      "icon": "肾上腺素",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "睚眦·二型": {
+      "use": "药剂",
+      "icon": "肾上腺素",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "睚眦·三型": {
+      "use": "药剂",
+      "icon": "肾上腺素",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "蒲牢·一型": {
+      "use": "药剂",
+      "icon": "加强抗生素药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "蒲牢·二型": {
+      "use": "药剂",
+      "icon": "加强抗生素药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "蒲牢·三型": {
+      "use": "药剂",
+      "icon": "加强抗生素药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "嘲风·一型": {
+      "use": "药剂",
+      "icon": "加强MP药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "嘲风·二型": {
+      "use": "药剂",
+      "icon": "加强MP药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "嘲风·三型": {
+      "use": "药剂",
+      "icon": "加强MP药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "狴犴·一型": {
+      "use": "药剂",
+      "icon": "战队药箱",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "狴犴·二型": {
+      "use": "药剂",
+      "icon": "战队药箱",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "狴犴·三型": {
+      "use": "药剂",
+      "icon": "战队药箱",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
+    },
+    "狴犴·零型": {
+      "use": "药剂",
+      "icon": "净化药剂",
+      "dressup": "",
+      "helmet": false,
+      "fieldsByGender": {},
+      "sourceFile": "消耗品_药剂_九龙.xml"
     },
     "饮用水易拉罐": {
       "use": "药剂",
@@ -77500,10 +77688,7 @@
         "手雷"
       ],
       "items": [
-        "92套装盒子",
         "M24手榴弹",
-        "pig套装包",
-        "the girl套装包",
         "压缩胶囊之61套士兵",
         "压缩胶囊之A兵团士兵",
         "压缩胶囊之boss大僵尸",
@@ -77522,19 +77707,8 @@
         "压缩胶囊之魔女",
         "压缩胶囊之黑铁",
         "压缩胶囊之黑龙",
-        "回馈大礼包",
-        "大礼包",
-        "强化石大盒",
-        "强化石小盒",
-        "感恩节礼包",
-        "战宠灵石大盒",
-        "新手礼包",
-        "普通K点装备盒子",
         "普通手雷",
-        "材料盒子",
         "满是划痕的手雷",
-        "福袋",
-        "红包",
         "谜之胶囊"
       ],
       "sourceFiles": [
@@ -80850,6 +81024,24 @@
         }
       ]
     },
+    "枪-手枪-大赦": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "2副武器/大赦/枪-手枪-大赦",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "大赦"
+      ],
+      "sourceFiles": [
+        "武器_手枪_大威力手枪.xml"
+      ]
+    },
     "枪-手枪-御天敌V-1": {
       "covered": true,
       "asset": {
@@ -83055,6 +83247,50 @@
           "height": 231,
           "originX": 212.3,
           "originY": 146.6
+        }
+      ]
+    },
+    "枪-长枪-Codex-QJZ171": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/QJZ171/枪-长枪-Codex-QJZ171",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "QJZ171"
+      ],
+      "sourceFiles": [
+        "武器_长枪_机枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/cfe741d4_1.png",
+        "width": 919,
+        "height": 251,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/cfe741d4_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 919,
+          "height": 251,
+          "originX": 148.1,
+          "originY": 143.2
         }
       ]
     },
@@ -87425,7 +87661,7 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/cf1d4f9f_1.png",
         "width": 814,
@@ -87779,6 +88015,24 @@
           "originX": 246,
           "originY": 117.7
         }
+      ]
+    },
+    "枪-长枪-mini14": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "1主武器/mini14/枪-长枪-mini14",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "mini14"
+      ],
+      "sourceFiles": [
+        "武器_长枪_战斗步枪.xml"
       ]
     },
     "枪-长枪-wa90变形款": {
@@ -89259,6 +89513,24 @@
           "originX": 485.7,
           "originY": 264.2
         }
+      ]
+    },
+    "枪-长枪-杠杆式霰弹枪": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "1主武器/杠杆式霰弹枪/枪-长枪-杠杆式霰弹枪",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "杠杆式霰弹枪"
+      ],
+      "sourceFiles": [
+        "武器_长枪_霰弹枪.xml"
       ]
     },
     "枪-长枪-极品巨兽": {

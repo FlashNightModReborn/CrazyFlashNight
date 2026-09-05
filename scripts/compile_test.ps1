@@ -153,12 +153,15 @@ function Get-TaskMode {
     $executeName = [System.IO.Path]::GetFileName(($action.Execute | Out-String).Trim())
     $arguments = ($action.Arguments | Out-String).Trim()
 
+    $isNative = $executeName -ieq 'Flash.exe' -and $arguments -eq ('"{0}"' -f $ExpectedLoaderPath) -and
+        (Test-Path -LiteralPath $action.Execute -PathType Leaf)
     $isDirect = $executeName -ieq 'cmd.exe' -and $arguments -eq ('/c start "" "{0}"' -f $ExpectedLoaderPath)
     $isLegacy = $executeName -ieq 'powershell.exe' -and $arguments -match 'trigger_compile\.ps1'
 
     return [pscustomobject]@{
         Execute   = $action.Execute
         Arguments = $arguments
+        IsNative  = $isNative
         IsDirect  = $isDirect
         IsLegacy  = $isLegacy
     }
@@ -206,15 +209,15 @@ try {
 }
 
 $taskMode = Get-TaskMode -Task $task -ExpectedLoaderPath $loaderPath
-if (-not ($taskMode.IsDirect -or $taskMode.IsLegacy)) {
+if (-not ($taskMode.IsNative -or $taskMode.IsDirect -or $taskMode.IsLegacy)) {
     Write-Host '[ERROR] CompileTriggerTask 不是受支持的触发方式，请重新运行 scripts/setup_compile_env.bat'
     Write-Host ('        Execute  : {0}' -f $taskMode.Execute)
     Write-Host ('        Arguments: {0}' -f $taskMode.Arguments)
     exit 1
 }
 
-if ($taskMode.IsLegacy) {
-    Write-Host '[WARN] CompileTriggerTask 仍在使用旧版 trigger_compile.ps1 包装器。当前仓库已兼容，但建议重新运行 setup 以切到直开 JSFL。'
+if (-not $taskMode.IsNative) {
+    Write-Host '[WARN] CompileTriggerTask 仍依赖 .jsfl 文件关联，可能弹出打开方式或 UAC。以管理员身份重跑 setup 可切到显式调用 CS6。'
 }
 
 # 所有编译目标共用 compile_target/mode cfg、marker 与诊断文件；跨进程并发会串目标或伪造新鲜证据。

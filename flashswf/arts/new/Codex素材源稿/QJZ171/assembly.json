@@ -1,0 +1,73 @@
+{
+  "sourceSha256": "e04b6a703c6569beb77fbaf65ab0908c2241da8c1d295453d58c1b885d5d60f3",
+  "sourceGripPx": [
+    1535,
+    447
+  ],
+  "nativeScale": 0.5,
+  "gameScale": 0.48,
+  "assemblyMatrix": {
+    "a": -0.48,
+    "d": 0.48,
+    "tx": 140.64,
+    "ty": -7.68
+  },
+  "muzzleMatrix": {
+    "tx": 360.72,
+    "ty": -34.08
+  },
+  "matrixNote": "记录设计输入；CS6 保存后会按 twip / 定点精度量化。",
+  "sizeBasis": "约 435 个局部像素全长，首轮试装比例，非原型实测标定。",
+  "nativeShapes": 402,
+  "partCount": 14,
+  "exports": [
+    "Codex专用素材",
+    "枪-长枪-Codex-QJZ171",
+    "图标-Codex-QJZ171"
+  ],
+  "iconFrame1Matrix": {
+    "a": -0.10182337649086283,
+    "b": 0.10182337649086283,
+    "c": 0.10182337649086283,
+    "d": 0.10182337649086283,
+    "tx": 24.437610357807078,
+    "ty": -16.291740238538054
+  },
+  "iconFrame2Matrix": {
+    "a": -0.13196029239509288,
+    "d": 0.13196029239509288,
+    "tx": -0.7587716812717841,
+    "ty": 0.296910657888959
+  },
+  "iconMask": {
+    "sizePx": [
+      24,
+      24
+    ],
+    "boundsPx": [
+      -12,
+      -12,
+      12,
+      12
+    ],
+    "template": "长枪/XM214/图标-XM214-CageFrame",
+    "focusNativePx": [
+      200.0,
+      -40.0
+    ]
+  },
+  "dropSizing": {
+    "referenceState": "空手站立",
+    "holderScaleX": 0.27491727582311015,
+    "holderPath": [
+      "主角-男@2",
+      "sprite/空手待机@52",
+      "主角肢体素材/长枪",
+      "sprite/Symbol 8"
+    ],
+    "oldSourceScale": 0.066986083984375,
+    "sourceScale": 0.13196029239509288,
+    "targetLengthPx": 119.35808447136151,
+    "basis": "采用纸娃娃画稿倍率乘以背负长枪 holder 的纵轴长度倍率；图标第 2 帧用于地面掉落。"
+  }
+}

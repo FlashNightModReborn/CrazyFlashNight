@@ -140,6 +140,18 @@
 - `unresolved/invalid` 必须 `displayEligible=false` 并提供非空 `note`；`confirmed` 的普通说明由结构化记录生成，`note` 可省。
 - v1 不再存在 `rationale` 字段。DPS、残差、条款列表、SHA 和路径均可机械生成，不在每个 item 中复述。
 
+### 4.2 独立价格层与高价金币证据
+
+完整台账可选填有限数值 `priceLayers`，它是 **audit-only**，与原有八个 DPS/业务输入分开；不写入物品 compact balance，不改变 AS2 inputDigest 或 wire schema。未明确映射的记录省略该字段，不能默认从 weightLayers 复制。
+
+当前 evidence 检查器支持“购买限定金币 +1”：必须显式 `priceLayers=1`、`acquisition.high-price.delta=1`，并引用 WBR-MAP-002、WBR-PL-001/003 与 WBR-PRICE-001/002/003 的具体价格 target。检查时从当前物品读取 price、use 和有效等级，按价格双枪系数（长枪 1，短枪 1.5）反验 0.8–1.25；不用 DPS 短枪系数 2。其他价格层映射仍不自动确认。
+
+来源必须是精确 NPC 金币商店条目；合成或 K 点来源阻止本项确认。额外扫描 data/config/scripts 的 XML/JSON 精确物品名与 AS 具名引用，排除定义自身、派生字典和资产索引，其余引用须先复核。它是保守的具名检查，不能证明动态拼名或通用随机池不存在；WBR-PL-003 的证据仍须说明这些入口。price 和获取文件在每次工具检查时重新读取，不谎称 AS2 的 inputDigest 会实时绑定商店价格。
+
+首件确认案例见 [QJZ171](../../../docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md)：37 级、888 威力、独立价格层 1、金币 460000，DPS 残差 +3.7824%。其中 impact 传 XML 原值 4；玩家面板由 `floor(500 / impact)` 显示 125。
+
+工作簿版本绑定冻结文件 SHA，不能用工作区当前整文件 SHA 静默替换。本案例记录冻结 Git blob 与当前文件的两张相关工作表逐单元格比较：值和公式均一致；只证明本次所用规则未漂移。
+
 ## 5. 两种 digest
 
 ### 5.1 `inputDigest`：工具与 AS2 共验
@@ -210,6 +222,8 @@ balanceSummary = {
 - 内部条款可以生成受控解释文案，但常态 UI 不直接展示条款编号或自由证据文本，避免信息过载。
 
 ## 8. 验证矩阵
+
+换机器或依赖落后时先按 lock 执行 `npm ci`；只运行 CLI/静态检查可加 `--ignore-scripts` 避免启动 Electron 安装步骤。若已有 tsbuildinfo 但 dist 导出落后，先执行 `npx tsc -b packages/core packages/xml-io packages/cli --force` 重建，不用旧声明文件的错误推断源码缺失。本次已补齐 lock 中原先遗漏的 fast-xml-parser 依赖闭包。
 
 在 `tools/cf7-balance-tool` 下运行：
 

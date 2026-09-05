@@ -1,0 +1,131 @@
+{
+  "scale": 0.5,
+  "stage": [
+    949,
+    415
+  ],
+  "assembly": "QJZ171/00_总装",
+  "assembly_origin": [
+    474.5,
+    207.5
+  ],
+  "names": {
+    "muzzle_brake": "01_制退器",
+    "barrel": "02_长枪管",
+    "lower_tube": "03_下管与套环",
+    "front_sight": "04_准星与前夹座",
+    "bipod": "05_脚架侧面投影",
+    "forward_receiver": "06_前连接座",
+    "main_receiver": "07_机匣主体",
+    "upper_jacket": "08_上方筒罩",
+    "top_cover": "09_上盖与照门",
+    "rear_receiver": "10_后机匣",
+    "carry_handle": "11_横提把",
+    "side_lever": "12_开孔侧杆",
+    "grip_trigger": "13_握把与护圈",
+    "stock": "14_镂空枪托"
+  },
+  "layer_names": {
+    "stock_silhouette": "枪托底形与镂空",
+    "stock_open_frame": "骨架内沿",
+    "stock_cheek_rest": "上方贴腮面",
+    "stock_horizontal_beam": "水平托梁",
+    "stock_heel_collar": "后端连接箍",
+    "stock_butt_pad": "托底垫",
+    "stock_hinge_and_fasteners": "前铰接与螺钉",
+    "grip_mount_silhouette": "护圈连接座",
+    "trigger_guard": "扳机护圈",
+    "trigger": "扳机",
+    "pistol_grip_silhouette": "握把底形",
+    "pistol_grip_panel": "握把侧面",
+    "front_rectangular_block": "护圈前小矩形块",
+    "grip_fasteners": "握把螺钉",
+    "silhouette": "底形轮廓",
+    "machined_planes": "金属分面",
+    "cut_faces": "窗口与切面",
+    "tube_rings": "套环与亮带",
+    "fasteners": "螺钉",
+    "body_silhouette": "主体底形",
+    "side_panels": "侧板与接缝",
+    "lower_slide": "下沿长条",
+    "fasteners_and_latches": "轴头与扣件",
+    "outer_shell": "外壳底形",
+    "jacket_planes": "筒罩分面",
+    "cover_silhouette": "上盖轮廓",
+    "cover_planes": "上盖分面",
+    "rear_sight": "照门",
+    "outline": "底形轮廓",
+    "collar_steps": "前端层叠",
+    "side_face": "侧面面板",
+    "upper_rail": "顶部短轨",
+    "stock_joint_band": "尾部连接箍",
+    "sight_faces": "准星细节",
+    "leg_silhouette": "重叠腿与脚掌_底形",
+    "leg_planes": "重叠腿与脚掌_分面",
+    "upper_strap": "上端窄连接带",
+    "support": "提把支架",
+    "grip": "横向握持段",
+    "lever_outline": "外形与透明孔",
+    "bevels": "侧杆倒角",
+    "pivot_and_fasteners": "转轴与螺钉"
+  },
+  "pivots": {
+    "barrel": [
+      980,
+      305
+    ],
+    "muzzle_brake": [
+      207,
+      305
+    ],
+    "lower_tube": [
+      980,
+      362
+    ],
+    "front_sight": [
+      465,
+      306
+    ],
+    "bipod": [
+      905,
+      350
+    ],
+    "forward_receiver": [
+      997,
+      337
+    ],
+    "main_receiver": [
+      1207,
+      328
+    ],
+    "upper_jacket": [
+      1040,
+      278
+    ],
+    "top_cover": [
+      1368,
+      246
+    ],
+    "rear_receiver": [
+      1484,
+      307
+    ],
+    "carry_handle": [
+      975,
+      273
+    ],
+    "side_lever": [
+      1305,
+      226
+    ],
+    "stock": [
+      1578,
+      306
+    ],
+    "grip_trigger": [
+      1511,
+      391
+    ]
+  },
+  "asset_name": "QJZ171"
+}

@@ -15,6 +15,8 @@ Checks (read-only, exits 0 if clean, 1 if any issue found):
   6. libraryItemName="..." references that don't resolve to any symbol.
   7. LIBRARY/*.xml files NOT included in DOMDocument.xml (orphans —
      not packed into the SWF; informational, not a failure).
+  8. A same-named sibling FLA beside the XFL source (source ownership
+     warning only; coexistence does not prove identical content).
 
 Designed for agent use: positional arg, deterministic stdout, exit code
 reflects "issues found".
@@ -129,6 +131,16 @@ def main(argv):
         print(f'    {o}')
     if len(orphans) > 20:
         print(f'    ...{len(orphans) - 20} more')
+
+    # 8. A converted project should normally retain one editable source.
+    # This is advisory: a historical FLA can contain unmerged content.
+    sibling_fla = xfl + '.fla'
+    duplicate_source = os.path.isfile(sibling_fla)
+    print(f'\n[8] 同名 FLA 与 XFL 并存（来源提醒）: {int(duplicate_source)}')
+    if duplicate_source:
+        print(f'    {sibling_fla}')
+        print('    核对内容与发布路径；XFL 接替并验证后移出旧 FLA，避免误开与搜索污染。')
+        print('    工具不自动删除；同名不能证明两份内容相同。')
 
     print(f'\n=== {"CLEAN" if issues == 0 else f"{issues} issue category(s)"} ===')
     return 0 if issues == 0 else 1

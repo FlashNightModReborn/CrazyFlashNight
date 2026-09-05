@@ -4,6 +4,7 @@ import {
   CURRENT_WEAPON_BALANCE_WORKBOOK_SHA256,
   CURRENT_WEAPON_BALANCE_WORKBOOK_VERSION,
   parseWeaponBalanceAuditLedger,
+  parseWeaponBalanceAuditRecord,
   parseWeaponBalanceContainer,
   WeaponBalanceParseError
 } from "../../src/index.js";
@@ -29,6 +30,16 @@ function profile() {
 }
 
 describe("strict weapon balance v1 parsing", () => {
+  it("accepts finite audit-only priceLayers and rejects it in runtime profiles", () => {
+    const record = { ...profile(), itemName: "测试手枪", profileKey: "data",
+      sourceDigest: `sha256:${"a".repeat(64)}`, budgetBreakdown: {}, ruleRefs: {}, priceLayers: 1 };
+    expect(parseWeaponBalanceAuditRecord(record).priceLayers).toBe(1);
+    for (const value of [true, "", [1, 1], "NaN", Infinity]) {
+      expect(() => parseWeaponBalanceAuditRecord({ ...record, priceLayers: value })).toThrow();
+    }
+    expect(() => parseWeaponBalanceContainer({ formulaFamily: "weapon", schemaVersion: 1,
+      workbookVersion, profiles: { data: { ...profile(), priceLayers: 1 } } })).toThrow(/unexpected field/);
+  });
   it("parses profiles keyed by effective data tags without duplicating key", () => {
     const container = parseWeaponBalanceContainer({
       formulaFamily: "weapon",
