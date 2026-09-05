@@ -157,7 +157,10 @@ namespace CF7Launcher.Guardian
                 if (owner.WindowState == FormWindowState.Minimized)
                     OnOwnerDeactivated();
                 else
+                {
+                    TraceFocusLifecycle("owner_resize_before_activate");
                     OnOwnerActivated();
+                }
             };
             _anchorResizeHandler = delegate { SafeOnPositionChanged(); };
             owner.Move += _ownerMoveHandler;
@@ -223,6 +226,7 @@ namespace CF7Launcher.Guardian
                 ShowWindow(handle, SW_SHOWNOACTIVATE);
                 OnOwnerBecameVisible();
             }
+            TraceFocusLifecycle("owner_activate");
         }
 
         private void OnOwnerDeactivated()
@@ -245,6 +249,7 @@ namespace CF7Launcher.Guardian
                 HideOverlay();
             if (!this.IsDisposed && !this.Disposing)
                 OnOwnerBecameHidden();
+            TraceFocusLifecycle("owner_deactivate");
         }
 
         private static void LogVisibilityHookFailure(string transition, Exception ex)
@@ -293,6 +298,7 @@ namespace CF7Launcher.Guardian
                 SetWindowPos(handle, HWND_TOP, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             }
+            TraceFocusLifecycle("show");
         }
 
         /// <summary>
@@ -319,6 +325,7 @@ namespace CF7Launcher.Guardian
                 SetWindowPos(handle, insertAfter, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             }
+            TraceFocusLifecycle("show_below");
         }
 
         /// <summary>
@@ -330,6 +337,7 @@ namespace CF7Launcher.Guardian
             IntPtr handle;
             if (!TryGetExistingHandle(out handle)) return;
             ShowWindow(handle, SW_HIDE);
+            TraceFocusLifecycle("hide");
             // 注意：不改 _shown
         }
 
@@ -343,6 +351,27 @@ namespace CF7Launcher.Guardian
             IntPtr handle;
             if (!TryGetExistingHandle(out handle)) return;
             ShowWindow(handle, SW_HIDE);
+            TraceFocusLifecycle("dismiss");
+        }
+
+        private string _lastFocusLifecycle;
+        private void TraceFocusLifecycle(string reason)
+        {
+            if (!CF7Launcher.Diagnostic.FocusTrace.Enabled || !(this is NativeHudOverlay)) return;
+            IntPtr handle;
+            if (!TryGetExistingHandle(out handle)) return;
+            try
+            {
+                bool visible = CF7Launcher.Diagnostic.FocusWindowSnapshot.IsWindowVisible(handle);
+                string key = reason + ":" + _shown + ":" + _ownerVisible + ":" + visible;
+                if (key == _lastFocusLifecycle && reason == "dismiss") return;
+                _lastFocusLifecycle = key;
+                CF7Launcher.Diagnostic.FocusTrace.Record("hud.lifecycle", new {
+                    reason, shown = _shown, ownerVisible = _ownerVisible, canShow = CanShowOverlayNow,
+                    visible, window = CF7Launcher.Diagnostic.FocusWindowSnapshot.Describe(handle),
+                    windows = CF7Launcher.Diagnostic.FocusWindowSnapshot.At(Cursor.Position) });
+            }
+            catch { /* 生命周期结束时，诊断不能重新创建窗口或阻断关闭。 */ }
         }
 
         #endregion

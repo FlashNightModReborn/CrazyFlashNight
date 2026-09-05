@@ -258,6 +258,7 @@ Web/Node、真实 Edge harness、AS2 runner、Flash CS6 publish-only smoke、can
 | `preparationNavigationV1` | `true` / `true` | — | 整备导航 presentation；显式 false 或非法值回退旧 presentation |
 | `useDesktopCursorOverlay` | `true` / 缺省 | `CF7_DESKTOP_CURSOR` | desktop ULW cursor；false 使用旧 anchor-bound 路径 |
 | `webOverlayPanelTakeForeground` | `true` / 缺省 | `CF7_PANEL_TAKE_FG` | Panel 前台与 WebView 焦点接管 |
+| 焦点边界观察 | 关闭 | `CF7_FOCUS_TRACE=1` | 有界 HUD→AS2 诊断，格式与人工边界见[焦点管理 §9.10](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#910-2026-09-05物理手势到-as2-结果的有界观察) |
 | `diagLayerAudit` | `false` / `false` | `CF7_DIAG_LAYER_AUDIT` | 顶层 HWND 结构快照 |
 | `diagUlwMonitor` | `false` / `false` | `CF7_DIAG_ULW_MONITOR` | ULW commit 频率与延迟 |
 | `diagEtwDwm` | `false` / `false` | `CF7_DIAG_ETW_DWM` | DWM ETW 计数，需要管理员 |
@@ -424,7 +425,6 @@ Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../s
 - 测试分区、runner、SDK/包版本真源或验证入口变化；
 - Host/Web/AS2 协议、权威、生命周期或旧 UI 退役边界变化；
 - runtime 构建、候选、promotion 或正式入口术语变化；发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。
-
 ```powershell
 chcp.com 65001 | Out-Null; node tools/validate-doc-governance.js; git diff --check
 ```

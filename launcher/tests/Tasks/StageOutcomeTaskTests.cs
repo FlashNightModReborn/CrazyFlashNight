@@ -201,6 +201,39 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void ObservationCorrelatesIntentWithoutChangingSchemaOrReplayingFailedSend()
+        {
+            var rows = new List<string>();
+            var sent = new List<JObject>();
+            var presenter = new FakePresenter();
+            CF7Launcher.Diagnostic.FocusTrace.Start(rows.Add, false);
+            try
+            {
+                using (var task = new StageOutcomeTask(payload => {
+                    sent.Add(JObject.Parse(payload.TrimEnd('\0')));
+                    return false;
+                }, presenter))
+                {
+                    task.SetReady();
+                    using (CF7Launcher.Diagnostic.FocusTrace.UseGesture("hud.fixture"))
+                        presenter.Raise("return_base", "run.fixture", 7);
+                }
+                CF7Launcher.Diagnostic.FocusTrace.Flush();
+                Assert.Equal(3, sent.Count);
+                Assert.Equal("stageOutcomeObserve", (string)sent[0]["action"]);
+                Assert.Equal("stageOutcomeSync", (string)sent[1]["action"]);
+                Assert.Equal(7, sent[2].Count);
+                Assert.Null(sent[2]["gestureId"]);
+                Assert.Null(sent[2]["session"]);
+                string trace = string.Join("\n", rows);
+                Assert.Contains((string)sent[2]["intentId"], trace);
+                Assert.Contains("hud.fixture", trace);
+                Assert.Contains("\"sent\":false", trace);
+            }
+            finally { CF7Launcher.Diagnostic.FocusTrace.Stop(); }
+        }
+
+        [Fact]
         public void ReadyAndAllowedIntents_EmitExactNullTerminatedCommands()
         {
             var sent = new List<string>();

@@ -2469,6 +2469,9 @@ class Program
             StartupDiagnostics.Warn("hotkey_guard.missing", guardExe);
         }
 
+        if (FocusTrace.Enabled)
+            FocusWindowSnapshot.FlashWindow = () => windowManager.FlashHwnd;
+
         // 守护进程核心（windowManager 已在 WebOverlay 构造前 early-declared，flashFocusRestorer 依赖它）
         ProcessManager processManager = new ProcessManager(
             config.FlashPlayerPath, config.SwfPath);

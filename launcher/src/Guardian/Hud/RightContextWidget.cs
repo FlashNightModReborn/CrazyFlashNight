@@ -1,4 +1,5 @@
 using System;
+using CF7Launcher.Diagnostic;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -1107,13 +1108,16 @@ namespace CF7Launcher.Guardian.Hud
                     break;
                 case MouseEventKind.Down:
                     SetPointerDown((e.Button == MouseButtons.Left) ? hit : NoHit());
+                    TracePointer("widget.down", hit);
                     FireRepaint();
                     break;
                 case MouseEventKind.Up:
                     FireRepaint();
                     break;
                 case MouseEventKind.Click:
-                    if (PointerDownMatches(hit)) DispatchHit(hit);
+                    bool matches = PointerDownMatches(hit);
+                    TracePointer(matches ? "widget.click_match" : "widget.click_reject", hit);
+                    if (matches) DispatchHit(hit);
                     ClearPointerDown();
                     FireRepaint();
                     break;
@@ -1250,6 +1254,9 @@ namespace CF7Launcher.Guardian.Hud
             if (!string.Equals(previousRun, state.RunId,
                     StringComparison.Ordinal))
                 ClearStageBroadcast();
+            if (FocusTrace.Enabled) FocusTrace.Record("state.ui_apply", new {
+                previous = _stageOutcomeState, next = state,
+                pointerDown = _down.Kind.ToString(), token = _downStageActionToken }, _downFocusGesture);
             _stageOutcomeState = state;
             _hover = NoHit();
             ClearPointerDown();
@@ -1759,8 +1766,21 @@ namespace CF7Launcher.Guardian.Hud
             return a.Kind == b.Kind && a.Index == b.Index;
         }
 
+        private string _downFocusGesture;
+
+        private void TracePointer(string name, HitInfo hit)
+        {
+            if (!FocusTrace.Enabled) return;
+            FocusTrace.Record(name, new { hit = hit.Kind.ToString(), hit.Index,
+                action = hit.Kind == HitKind.StageAction && hit.Index >= 0 && hit.Index < _stageActions.Count
+                    ? _stageActions[hit.Index].Id : null,
+                down = _down.Kind.ToString(), token = _downStageActionToken,
+                runId = _stageOutcomeState?.RunId, revision = _stageOutcomeState?.Revision }, _downFocusGesture);
+        }
+
         private void SetPointerDown(HitInfo hit)
         {
+            if (FocusTrace.Enabled) _downFocusGesture = FocusTrace.Gesture;
             _down = hit;
             _downStageActionToken = default(StageActionGestureToken);
             _downNoticeToken = default(NoticeGestureToken);
@@ -1787,8 +1807,12 @@ namespace CF7Launcher.Guardian.Hud
             _downStageActionToken = default(StageActionGestureToken);
         }
 
-        private void ClearPointerDown()
+        private void ClearPointerDown([System.Runtime.CompilerServices.CallerMemberName] string reason = null)
         {
+            if (FocusTrace.Enabled && _down.Kind != HitKind.None)
+                FocusTrace.Record("widget.pointer_clear", new { reason, down = _down.Kind.ToString(),
+                    token = _downStageActionToken }, _downFocusGesture);
+            _downFocusGesture = null;
             _down = NoHit();
             _downStageActionToken = default(StageActionGestureToken);
             _downNoticeToken = default(NoticeGestureToken);

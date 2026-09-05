@@ -515,6 +515,35 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Empty(intents);
         }
 
+        [Theory]
+        [InlineData(7)]
+        [InlineData(8)]
+        public void ObservationShowsActualUiApplyClearingPendingGestureEvenForSameRevision(int revision)
+        {
+            var trace = new List<string>();
+            CF7Launcher.Diagnostic.FocusTrace.Start(trace.Add, false);
+            try
+            {
+                Capture cap;
+                RightContextWidget right = MakeWidget(out cap);
+                int dispatches = 0;
+                right.IntentRequested += (intent, run, rev) => dispatches++;
+                right.SetReady();
+                right.ApplyState(StageState("victory", "alive", "none", revision: 7));
+                using (CF7Launcher.Diagnostic.FocusTrace.UseGesture("hud.pending"))
+                    right.SetStageActionDownForTest(0);
+                right.ApplyState(StageState("victory", "alive", "none", revision: revision));
+                right.ClickStageActionGestureForTest(0);
+                CF7Launcher.Diagnostic.FocusTrace.Flush();
+                Assert.Equal(0, dispatches);
+                string evidence = string.Join("\n", trace);
+                Assert.Contains("state.ui_apply", evidence);
+                Assert.Contains("hud.pending", evidence);
+                Assert.Contains("\"reason\":\"ApplyState\"", evidence);
+            }
+            finally { CF7Launcher.Diagnostic.FocusTrace.Stop(); }
+        }
+
         [Fact]
         public void NoticeGesture_CommandAndPayloadCannotRetargetInSameSlot()
         {

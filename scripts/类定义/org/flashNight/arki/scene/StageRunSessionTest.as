@@ -62,6 +62,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testReturnAvailabilityAndRetreat();
         testDeliverableReturnWaitsForSettlementVisualClose();
         testHostIntentRevisionAndIdempotency();
+        testFocusObservationIsBoundedAndNonAuthoritative();
         testLifecycleAdmissionAndReservation();
         testStageManagerReservationAuthority();
         testStageLoaderRootExactlyOnce();
@@ -3102,6 +3103,72 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         };
         _root.gameCommands.stageOutcomeAction(stale);
         assertEquals(1, ItemUtil.getTotal(REVIVE), "new id with stale revision is also zero-write");
+    }
+
+    private static function testFocusObservationIsBoundedAndNonAuthoritative():Void {
+        resetWorld(0);
+        StageRunSession.begin("焦点观察", "简单");
+        StageRunSession.finish("victory");
+        var before:Object = StageRunSession.testOnlySnapshot();
+        var lines:Array = [];
+        var calls:Number = 0;
+        var sink:Function = function(message:String):Void { lines.push(message); };
+        _root.server = {isSocketConnected:true, sendServerMessage:sink,
+            sendTaskToNode:function():Boolean { return true; }};
+        var command:Object = {task:"cmd", action:"stageOutcomeAction", v:1,
+            runId:String(before.runId), expectedRevision:Number(before.revision),
+            intent:"return_base", intentId:"host.observation.1"};
+        _root.gameCommands.stageOutcomeAction({});
+        assertEquals(0, lines.length, "focus observation defaults off");
+        _root.gameCommands.stageOutcomeObserve({task:"cmd", action:"stageOutcomeObserve",
+            v:1, session:"bad", extra:true});
+        _root.gameCommands.stageOutcomeAction({});
+        assertEquals(0, lines.length, "observation configuration rejects extra keys");
+        var configure:Object = {task:"cmd", action:"stageOutcomeObserve", v:1, session:"focus.fixture"};
+        _root.gameCommands.stageOutcomeObserve(configure);
+        assertTrue(lines.length == 1 && String(lines[0]).indexOf("observe_ready") >= 0,
+            "AS2 explicitly acknowledges a diagnostic session");
+        _root.返回基地 = function():Boolean { calls++; return false; };
+        _root.gameCommands.stageOutcomeAction(command);
+        assertEquals(1, calls, "observation leaves one business dispatch");
+        assertTrue(lines.join(";").indexOf("event=action_local_result intentId=host.observation.1 detail=settlement_prepare_failed") >= 0,
+            "local rejection is correlated to existing intent id");
+        _root.gameCommands.stageOutcomeAction(command);
+        assertEquals(1, calls, "diagnostics do not replay duplicate business intent");
+        command.intentId = "host.observation.extra";
+        command.gestureId = "forbidden";
+        _root.gameCommands.stageOutcomeAction(command);
+        delete command.gestureId;
+        assertEquals(1, calls, "stageOutcomeAction still rejects diagnostic envelope fields");
+        command.expectedRevision = Number(before.revision) + 100;
+        _root.gameCommands.stageOutcomeAction(command);
+        assertTrue(lines.join(";").indexOf("detail=revision_mismatch") >= 0 && calls == 1,
+            "stale revision remains zero write with a rejection reason");
+        command.expectedRevision = Number(before.revision);
+        command.intentId = "host.observation.sink-failure";
+        _root.server.sendServerMessage = function():Void { throw new Error("diagnostic_sink_failure"); };
+        _root.gameCommands.stageOutcomeAction(command);
+        assertEquals(2, calls, "diagnostic sink failure cannot interrupt the business handler");
+        _root.server.sendServerMessage = sink;
+        _root.返回基地 = function():Boolean {
+            calls++;
+            if (!StageRunSession.onReturnBaseStarted()) return false;
+            StageRunSession.onSceneReady();
+            return true;
+        };
+        command.intentId = "host.observation.transition";
+        _root.gameCommands.stageOutcomeAction(command);
+        var text:String = lines.join(";");
+        assertTrue(text.indexOf("event=return_gate intentId=host.observation.transition detail=durable") >= 0
+                && text.indexOf("event=scene_ready_enter intentId=host.observation.transition") >= 0
+                && text.indexOf("event=scene_ready_enter") < text.lastIndexOf("event=action_local_result"),
+            "scene correlation is fixed before returning from transition dispatch");
+        for (var i:Number = 0; i < 600; i++) _root.gameCommands.stageOutcomeAction({});
+        // 两条投递给 throwing sink 的记录同样消耗预算。
+        assertEquals(510, lines.length, "AS2 observation budget includes failed sink delivery and is bounded");
+        _root.gameCommands.stageOutcomeObserve(configure);
+        _root.gameCommands.stageOutcomeAction({});
+        assertEquals(510, lines.length, "duplicate diagnostic configuration cannot rearm the budget");
     }
 
     private static function testSoftlockObservationOwnerIsReadOnly():Void {

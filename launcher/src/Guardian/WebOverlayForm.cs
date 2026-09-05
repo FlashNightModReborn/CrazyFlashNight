@@ -2950,6 +2950,10 @@ namespace CF7Launcher.Guardian
                 if (IsCursorHookMessage(message))
                 {
                     MSLLHOOKSTRUCT info = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                    if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
+                        CF7Launcher.Diagnostic.FocusTrace.PhysicalEdge(message,
+                            new Point(info.pt.X, info.pt.Y), info.flags, info.time,
+                            _panelSessionGeneration);
                     QueueHookCursorSample(info.pt.X, info.pt.Y);
                     if (message == WM_LBUTTONUP)
                         QueuePhysicalCursorRelease();
@@ -4430,6 +4434,8 @@ namespace CF7Launcher.Guardian
             ClearCommittedPanelGeometry("panel_resume_begin");
             _panelMode = true;
             _panelSessionGeneration = _panelFocusRestoreGate.BeginPanel();
+            if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
+                CF7Launcher.Diagnostic.FocusTrace.Record("panel.begin", new { generation = _panelSessionGeneration });
             _panelCloseFocusGeneration = 0;
             _panelCloseFocusEligibilityCaptured = false;
             _panelCloseFocusEligible = false;

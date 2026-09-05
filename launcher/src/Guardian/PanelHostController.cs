@@ -3172,6 +3172,8 @@ namespace CF7Launcher.Guardian
             // Step 2: WebOverlay 收尾（Phase 1 stub：SW_HIDE）
             // closingName 传给 SuspendAfterPanel 用于 [FocusRestore] 日志归因——
             // WebOverlay._activePanel 此时可能已被 HandlePanelMessage 置 null。
+            if (FocusTrace.Enabled) FocusTrace.Record("panel.close_handoff", new {
+                panel = closingName, instance = closingInstance, generation = _web.PanelSessionGeneration });
             try { _web.SuspendAfterPanel(closingName); }
             catch (Exception ex) { LogManager.Log("[PanelHost] SuspendAfterPanel failed: " + ex.Message); }
             // Step 3: Shield 退 telemetry
@@ -3208,6 +3210,9 @@ namespace CF7Launcher.Guardian
             // 面板已关闭却无法与游戏 UI 交互。
             try { _web.RestoreFlashInputFocusAfterPanelClose(closingName); }
             catch (Exception ex) { LogManager.Log("[PanelHost] settled focus restore failed: " + ex.Message); }
+            if (FocusTrace.Enabled) FocusTrace.Record("panel.close_settled", new {
+                panel = closingName, instance = closingInstance, generation = _web.PanelSessionGeneration,
+                windows = FocusWindowSnapshot.At(System.Windows.Forms.Cursor.Position) });
             LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
             PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
             PerfTrace.FlushCounters("panel_close:" + (closingName ?? "<null>"));

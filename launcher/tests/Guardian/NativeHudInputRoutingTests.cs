@@ -112,6 +112,31 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void DiagnosticRealHwndDirectMessageDoesNotInventPhysicalReceiverProof()
+        {
+            var trace = new List<string>();
+            CF7Launcher.Diagnostic.FocusTrace.Start(trace.Add, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+                {
+                    Point center = Center(widget.ScreenBounds);
+                    SendMouse(hud, WM_LBUTTONDOWN, center);
+                    SendMouse(hud, WM_LBUTTONUP, center);
+                    CF7Launcher.Diagnostic.FocusTrace.Flush();
+                    Assert.Equal(new[] { MouseEventKind.Down, MouseEventKind.Up, MouseEventKind.Click }, widget.Events);
+                    string evidence = string.Join("\n", trace);
+                    Assert.Contains("hud.down", evidence);
+                    Assert.Contains("hud.up", evidence);
+                    Assert.Contains("\"correlation\":\"unobserved\"", evidence);
+                    Assert.DoesNotContain("mouse.down", evidence);
+                }
+            }
+            finally { CF7Launcher.Diagnostic.FocusTrace.Stop(); }
+        }
+
+        [Fact]
         public void RealHwnd_UpOutsideCancelsOriginalWidgetWithoutClick()
         {
             using (Form owner = CreateOwner())

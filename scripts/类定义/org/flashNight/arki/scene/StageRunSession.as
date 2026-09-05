@@ -38,6 +38,14 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _stageStartReservation:Object = null;
     private static var _testDeliverableResolver:Function = null;
     private static var _testDeliverableNavigator:Function = null;
+    // 仅诊断：不进入存档、processedIntents 或业务 envelope；30 分钟/512 条后自动停止。
+    private static var _focusSession:String = "";
+    private static var _focusUntil:Number = 0;
+    private static var _focusCount:Number = 0;
+    private static var _focusHandlingIntent:String = "";
+    private static var _focusReturnIntent:String = "";
+    private static var _focusReturnRun:String = "";
+    private static var _focusSceneSeen:Boolean = false;
 
     public static function install():Void {
         if (_installed) return;
@@ -47,6 +55,9 @@ class org.flashNight.arki.scene.StageRunSession {
         };
         _root.gameCommands["stageOutcomeSync"] = function(params:Object):Void {
             org.flashNight.arki.scene.StageRunSession.handleSync(params);
+        };
+        _root.gameCommands["stageOutcomeObserve"] = function(params:Object):Void {
+            org.flashNight.arki.scene.StageRunSession.handleObserve(params);
         };
         _installed = true;
     }
@@ -521,18 +532,33 @@ class org.flashNight.arki.scene.StageRunSession {
             _run.outcome = "retreat";
             bumpRevision();
         }
-        if (!prepareSettlement()) return false;
+        if (!prepareSettlement()) {
+            observeFocus("return_gate", _focusHandlingIntent, "prepare_failed");
+            return false;
+        }
         // 奖励 manifest 已冻结并写入 _saveExt 后，仍必须确认整档真实落盘，
         // 才能让场景跳转/cleanup 开始。缺失函数、异常约定值和 false 均 fail-closed；
         // 失败时保留同一 prepared/pending，下一次请求只重试持久化与 flush，绝不重 roll。
-        if (_root.存档系统 == null || typeof _root.存档系统.flushBeforeTransition != "function") return false;
+        if (_root.存档系统 == null || typeof _root.存档系统.flushBeforeTransition != "function") {
+            observeFocus("return_gate", _focusHandlingIntent, "flush_missing");
+            return false;
+        }
         var durable:Boolean = false;
         try {
             durable = (_root.存档系统.flushBeforeTransition("stage.return_base") === true);
         } catch (flushError) {
             durable = false;
         }
-        if (!durable) return false;
+        if (!durable) {
+            observeFocus("return_gate", _focusHandlingIntent, "flush_failed");
+            return false;
+        }
+        if (focusObservationActive()) {
+            _focusReturnIntent = _focusHandlingIntent;
+            _focusReturnRun = String(_run.runId);
+            _focusSceneSeen = false;
+            observeFocus("return_gate", _focusReturnIntent, "durable");
+        }
         _returnRequested = true;
         bumpRevision();
         pushState();
@@ -568,17 +594,26 @@ class org.flashNight.arki.scene.StageRunSession {
 
     /** 基地人物真正加载完成后才打开 Web；转场和 gameworld cleanup 阶段没有 Web lease。 */
     public static function onSceneReady():Void {
+        if (focusObservationActive() && !_focusSceneSeen && _focusReturnRun != ""
+                && _run != null && _focusReturnRun == _run.runId) {
+            _focusSceneSeen = true;
+            observeFocus("scene_ready_enter", _focusReturnIntent,
+                "battle_" + String(_root.当前为战斗地图 === true));
+        }
         if (_run == null || !_returnRequested || _preparedInventory == null
                 || _preparedReport == null || _root.当前为战斗地图 === true) return;
         if (_settlementStarted) return;
+        observeFocus("scene_ready_eligible", _focusReturnIntent, "begin_settlement");
         var begun:Object = LootContainerService.beginStageSettlement(
             _preparedInventory, _preparedReport);
         if (begun == null || begun.success !== true) {
+            observeFocus("scene_ready_result", _focusReturnIntent, "rewards_pending");
             _run.settlement = "rewards_pending";
             bumpRevision();
             pushState();
             return;
         }
+        observeFocus("scene_ready_result", _focusReturnIntent, "web_active");
         _settlementStarted = true;
         _run.settlement = "web_active";
         _run.remainingRewards = Number(_preparedInventory.size());
@@ -1001,30 +1036,75 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     private static function handleAction(params:Object):Void {
-        if (!validateLegacyAction(params) || _run == null
-                || params.runId !== _run.runId
-                || Number(params.expectedRevision) != Number(_run.revision)) {
+        var valid:Boolean = validateLegacyAction(params);
+        var rejection:String = !valid ? "schema" : _run == null ? "no_run"
+            : params.runId !== _run.runId ? "run_mismatch"
+            : Number(params.expectedRevision) != Number(_run.revision) ? "revision_mismatch" : "";
+        if (rejection != "") {
+            observeFocus("action_reject", valid ? String(params.intentId) : "", rejection);
             pushState();
             return;
         }
         var intentId:String = String(params.intentId);
         var journalKey:String = "$" + intentId;
         if (_processedIntents[journalKey] === true) {
+            observeFocus("action_reject", intentId, "duplicate");
             pushState();
             return;
         }
         _processedIntents[journalKey] = true;
+        if (focusObservationActive()) _focusHandlingIntent = intentId;
+        // 在调用可能切帧的业务函数之前固定关联，不能依赖转场后当前帧继续执行。
+        observeFocus("action_accept", intentId, String(params.intent));
+        var localResult:Object = null;
         if (params.intent === "revive") {
-            requestReviveLocal("stage_outcome");
+            localResult = requestReviveLocal("stage_outcome");
         } else if (params.intent === "return_base") {
-            requestReturnBaseLocal("stage_outcome");
+            localResult = requestReturnBaseLocal("stage_outcome");
         } else if (params.intent === "return_deliverable") {
-            requestReturnDeliverableLocal("stage_outcome");
+            localResult = requestReturnDeliverableLocal("stage_outcome");
         } else if (params.intent === "resume_rewards") {
             if (_run.settlement == "rewards_pending") {
                 if (_settlementStarted) LootContainerService.resumeStageSettlement();
                 else onSceneReady();
             }
+        }
+        observeFocus("action_local_result", intentId, localResult == null ? "no_return_value"
+            : localResult.success === true ? "accepted" : String(localResult.error));
+        _focusHandlingIntent = "";
+    }
+
+    private static function handleObserve(params:Object):Void {
+        if (params == null || !hasOnlyKeys(params, ["task", "action", "v", "session"])
+                || params.task !== "cmd" || params.action !== "stageOutcomeObserve"
+                || params.v !== 1 || typeof params.session != "string"
+                || !isSafeToken(params.session, 96)) return;
+        if (_focusSession == params.session) return; // ready/sync 重复回调不能延长或清零预算。
+        _focusSession = params.session;
+        _focusUntil = getTimer() + 1800000;
+        _focusCount = 0;
+        _focusHandlingIntent = _focusReturnIntent = _focusReturnRun = "";
+        observeFocus("observe_ready", "", "bounded_512_30min");
+    }
+
+    private static function focusObservationActive():Boolean {
+        return _focusSession != "" && _focusCount < 512 && getTimer() < _focusUntil;
+    }
+
+    private static function observeFocus(eventName:String, intentId:String, detail:String):Void {
+        if (!focusObservationActive() || _root.server.isSocketConnected !== true
+                || typeof _root.server.sendServerMessage != "function") return;
+        _focusCount++;
+        // 诊断 sink 的异常必须留在观察边界，不能中断既有转场/结算调用。
+        try {
+            _root.server.sendServerMessage("[FocusTraceAS2] session=" + _focusSession
+            + " seq=" + _focusCount + " timer=" + getTimer() + " event=" + eventName
+            + " intentId=" + intentId + " detail=" + detail
+            + " runId=" + (_run == null ? "" : _run.runId)
+            + " revision=" + (_run == null ? 0 : _run.revision)
+            + " returnRequested=" + _returnRequested + " remaining=" + (512 - _focusCount));
+        } catch (observationError) {
+            // 丢失观测不触发重发或业务重试。
         }
     }
 

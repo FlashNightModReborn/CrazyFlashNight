@@ -29,6 +29,7 @@ namespace CF7Launcher.Diagnostic
         {
             if (_initDone) return;
             _initDone = true;
+            FocusTrace.StartFromEnvironment();
 
             _layerAudit  = layerAudit;
             _ulwMonitor  = ulwMonitor;
@@ -69,6 +70,7 @@ namespace CF7Launcher.Diagnostic
 
         public static void Shutdown()
         {
+            FocusTrace.Stop();
             if (_etwDwm)
             {
                 try { DwmEtwMonitor.Stop(); } catch { }

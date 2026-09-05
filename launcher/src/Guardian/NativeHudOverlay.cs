@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Diagnostic;
 
 namespace CF7Launcher.Guardian
 {
@@ -97,6 +98,11 @@ namespace CF7Launcher.Guardian
         public NativeHudOverlay(Form owner, Control anchor)
             : base(owner, anchor, 1024f, 576f)
         {
+            if (FocusTrace.Enabled)
+            {
+                FocusWindowSnapshot.Hud = Handle;
+                FocusWindowSnapshot.Owner = owner.Handle;
+            }
             _animTick = new Timer();
             _animTick.Interval = 16;
             _animTick.Tick += OnAnimTick;
@@ -128,7 +134,8 @@ namespace CF7Launcher.Guardian
         /// <summary>Panel 态调用：SW_HIDE + 停 tick。</summary>
         public void Suspend()
         {
-            CancelPointerGesture();
+            CancelPointerGesture("panel_suspend");
+            if (FocusTrace.Enabled) FocusTrace.Record("hud.suspend");
             _suspendedForPanel = true;
             if (_animTick != null) _animTick.Stop();
             _lastTickMs = 0;
@@ -141,6 +148,7 @@ namespace CF7Launcher.Guardian
         public void Resume()
         {
             _suspendedForPanel = false;
+            if (FocusTrace.Enabled) FocusTrace.Record("hud.resume");
             RecomputeBounds();
         }
 
@@ -373,6 +381,8 @@ namespace CF7Launcher.Guardian
         private void RecomputeBounds()
         {
             ReconcileRightContextSlotOwner();
+            if (FocusTrace.Enabled && _rightContextWidget != null)
+                FocusTrace.SetTarget(_rightContextWidget.ScreenBounds);
             if (!_ready || _suspendedForPanel) return;
 
             INativeHudWidget[] snapshot;
@@ -399,6 +409,8 @@ namespace CF7Launcher.Guardian
 
             if (windowPlacementChanged)
             {
+                if (FocusTrace.Enabled) FocusTrace.Record("hud.placement",
+                    new { hudRect, shown = _shown, suspended = _suspendedForPanel, insertAfter = insertAfter.ToInt64() });
                 // z-order：插在 _zOrderInsertAfter（HitNumber.Handle）之后，让 NativeHud 沉到
                 // HitNumber/Cursor 之下。高频 repaint 不重复 SetWindowPos/ShowWindow，避免 combo 输入期整层闪烁。
                 SetWindowPos(this.Handle, insertAfter, hudRect.X, hudRect.Y, hudRect.Width, hudRect.Height,
@@ -810,8 +822,12 @@ namespace CF7Launcher.Guardian
         private INativeHudWidget _lastHoverWidget;
         private bool _handlingMouseUp;
 
-        internal void CancelPointerGesture()
+        private string _focusGesture;
+
+        internal void CancelPointerGesture(string reason = "explicit")
         {
+            if (FocusTrace.Enabled && _leftDownWidget != null)
+                FocusTrace.Record("hud.cancel", new { reason, widget = _leftDownWidget.GetType().Name }, _focusGesture);
             INativeHudWidget down = _leftDownWidget;
             INativeHudWidget hover = _lastHoverWidget;
             _leftDownWidget = null;
@@ -834,14 +850,16 @@ namespace CF7Launcher.Guardian
         protected override void OnOwnerVisibilityChanged(bool ownerVisible)
         {
             base.OnOwnerVisibilityChanged(ownerVisible);
-            if (!ownerVisible) CancelPointerGesture();
+            if (!ownerVisible) CancelPointerGesture("owner_hidden");
         }
 
         protected override void OnMouseCaptureChanged(EventArgs e)
         {
             base.OnMouseCaptureChanged(e);
+            if (FocusTrace.Enabled && _leftDownWidget != null)
+                FocusTrace.Record("hud.capture_changed", new { capture = Capture, handlingUp = _handlingMouseUp }, _focusGesture);
             if (!_handlingMouseUp && !Capture)
-                CancelPointerGesture();
+                CancelPointerGesture("capture_lost");
         }
 
         private INativeHudWidget HitTestScreen(Point screenPt)
@@ -893,9 +911,18 @@ namespace CF7Launcher.Guardian
             base.OnMouseDown(e);
             Point screenPt = this.PointToScreen(e.Location);
             INativeHudWidget hit = HitTestScreen(screenPt);
-            if (e.Button == MouseButtons.Left) _leftDownWidget = hit;
+            if (e.Button == MouseButtons.Left)
+            {
+                _leftDownWidget = hit;
+                if (FocusTrace.Enabled)
+                    _focusGesture = FocusTrace.HudDown(screenPt, Handle, hit?.GetType().Name);
+            }
             if (hit == null) return;
-            try { hit.OnMouseEvent(new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta), MouseEventKind.Down); }
+            try
+            {
+                using (FocusTrace.Enabled ? FocusTrace.UseGesture(_focusGesture) : null)
+                    hit.OnMouseEvent(new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta), MouseEventKind.Down);
+            }
             catch (Exception ex) { LogManager.Log("[NativeHud] widget Down throw: " + ex.Message); }
         }
 
@@ -908,11 +935,14 @@ namespace CF7Launcher.Guardian
                 Point screenPt = this.PointToScreen(e.Location);
                 INativeHudWidget hit = HitTestScreen(screenPt);
                 INativeHudWidget downWidget = _leftDownWidget;
+                if (FocusTrace.Enabled) FocusTrace.Record("hud.up", new {
+                    receiver = Handle.ToInt64(), screenPt, widget = hit?.GetType().Name,
+                    downWidget = downWidget?.GetType().Name, windows = FocusWindowSnapshot.At(screenPt) }, _focusGesture);
 
                 if (e.Button == MouseButtons.Left
                     && (hit == null || (downWidget != null && hit != downWidget)))
                 {
-                    CancelPointerGesture();
+                    CancelPointerGesture("up_widget_mismatch");
                     return;
                 }
 
@@ -926,11 +956,15 @@ namespace CF7Launcher.Guardian
                 // widget 内部如需 button-level 匹配（e.g. SafeExitPanel 的取消/退出），自行用 Down/Up 跟踪 _downIndex。
                 if (e.Button == MouseButtons.Left && hit == downWidget)
                 {
-                    try { hit.OnMouseEvent(sArgs, MouseEventKind.Click); }
+                    try
+                    {
+                        using (FocusTrace.Enabled ? FocusTrace.UseGesture(_focusGesture) : null)
+                            hit.OnMouseEvent(sArgs, MouseEventKind.Click);
+                    }
                     catch (Exception ex) { LogManager.Log("[NativeHud] widget Click throw: " + ex.Message); }
                 }
             }
-            finally { _handlingMouseUp = false; }
+            finally { _handlingMouseUp = false; _focusGesture = null; }
         }
 
         #endregion

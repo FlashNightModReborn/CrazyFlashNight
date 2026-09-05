@@ -1,5 +1,7 @@
 using System;
 using System.Threading;
+using System.Diagnostics;
+using CF7Launcher.Diagnostic;
 using CF7Launcher.Bus;
 using CF7Launcher.Guardian;
 using Newtonsoft.Json;
@@ -71,6 +73,7 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("event=stage_outcome_rejected reason=" + error);
                 return null;
             }
+            if (FocusTrace.Enabled) FocusTrace.Record("state.received", state);
             _presenter.ApplyState(state);
             return null;
         }
@@ -95,6 +98,13 @@ namespace CF7Launcher.Tasks
 
         private void SendSync()
         {
+            if (FocusTrace.Enabled)
+            {
+                bool observationSent = TrySend(new JObject {
+                    ["task"] = "cmd", ["action"] = "stageOutcomeObserve",
+                    ["v"] = 1, ["session"] = FocusTrace.Session });
+                FocusTrace.Record("as2.observe_send", new { sent = observationSent });
+            }
             JObject command = new JObject
             {
                 ["task"] = "cmd",
@@ -122,7 +132,12 @@ namespace CF7Launcher.Tasks
                 ["intent"] = intent,
                 ["intentId"] = intentId
             };
-            TrySend(command);
+            long started = FocusTrace.Enabled ? Stopwatch.GetTimestamp() : 0;
+            if (FocusTrace.Enabled) FocusTrace.Record("intent.created", new { intentId, intent, runId, expectedRevision });
+            bool sent = TrySend(command);
+            if (started != 0) FocusTrace.Record("intent.send_result", new { intentId, sent,
+                elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency,
+                proof = "local_socket_write_only" });
         }
 
         private bool TrySend(JObject command)
