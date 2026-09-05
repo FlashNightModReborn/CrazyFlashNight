@@ -2,9 +2,22 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-05 当前正式发布：军阀基础闭环与战后黑屏修复
+## 2026-09-05 当前正式发布：R1 存盘迁移、领取续查与保存反馈
 
 本节为当前发布锚点；后续带较早日期的列车记录均是历史，保留其当时状态，不覆盖本节。
+
+- implementation `962dbbb701`，合并上游 `bbdb1fac1de053f195c3d041f534edbc7a30cb7a` 的 merge commit `5891ce2631`；release source `5a9d06210244bedebac41d19579ca1921c362182`，不可变 tag `runtime-build-v2/20260905-r1-reward-save-feedback-v1`；release tree `4499716f3ca13ccd058d25b08b51c58b93d1bfe5`；request `089854B6A952C942254B54FABB2C4618142AEBD0AF17EC9536B7741E023F0F16`。最后一次派生字典变更仅刷新排序与生成元数据，物品/发型集合未变。
+- build identity `9F1B2BF9AB9AACF23FFC34924A66137376EE9CE232A98BFB7B45AD6950444B4D`；33-file payload closure `E3AC8562C7CE83DAABCF8D329D31A472D6970B99074A3A58871C4928072C188E`；正式 Core DLL SHA-256 `B86236D9B67DF20E46E1C9E3D9AE437D90502DE601A22D9E455C6221FB5F069C`。
+- 本地 X509 `builder-local-c / physical-host-c`，keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `47668032A22DA24C1AD5B651D4D46284C6E000B7F099DB536BEC31557B003B23`，[cloud run 33945207841](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/33945207841)。云端获取签名小包后，对真实本地 CAS candidate 全量 replay；两端同一身份和逐文件闭包满足双 signer / 双 faultDomain，没有复制凭据或把开发候选当作 builder 票。
+- production policy **40/40**，receipt SHA-256 `DC798B6BFF338707E7ABED5E0E41CBF1987B63FB7A84DA8820E9865057B344C9`；manifest SHA-256 `2BB68BFE20D52ED231758F0000A1328E11F6372887CD8F671343E6449D2CE6CF`；promotion 后磁盘 consensus SHA-256 `5B6712C6351033101B47F09E730CBF24D20515CD830C0CB145B3283BEBD1F967`。Git 换行过滤后的 blob 身份与磁盘 SHA 是不同口径。
+- `2026-09-05T04:47:43.140698Z` 完成原子 promotion。正式运行库、签名共识、GitHub proof replay 与正式根 bootstrap `--verify-only` 通过；旧 bundle 保留在 `tmp/runtime-promotions/20260905T044715246Z-39e417003c4e4b919b230a5489a07dd5/previous`。部署提交与 post-promotion Audit 待回填。
+- 合并后重新由 CS6 发布 asLoader；完整 Launcher runner **4,713 通过 / 3 既有跳过 / 0 失败**，AS2 map-loot **684/684**、Web loot state **80/80**。源与 SWF 归属、旧 UI 不刷新的依据和精确证据见 [R1 收尾记录](R1存盘API迁移收尾-2026-09-05.md)。本轮为 **promoted / FIELD_REVALIDATION_PENDING**；用户对合并前方案反馈“可行”并授权发布，没有在合并后的正式入口重跑游戏旅程，不称业务 `standard_entry_verified`，不覆盖既有专项边界，也不代表新稳定整包。
+
+源码推送审计 [run 33945185729](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/33945185729) 成功，精确输出 `state=source-ahead / deploymentChanged=false`，base `bbdb1fac1de053f195c3d041f534edbc7a30cb7a` → source `5a9d06210244bedebac41d19579ca1921c362182`。它不替代部署提交的审计。
+
+## 2026-09-05 上一正式发布：军阀基础闭环与战后黑屏修复
+
+本节保留上一次正式发布及其当时验收边界。
 
 - implementation `29157bff9a`；release source `41a8bdc9d55bc153d9f9678aa646c34eb7691883`；不可变 tag `runtime-build-v2/20260905-warlord-basic-loop-v1`；release tree `a9a0d3f899e459ec13f5e60370d0c3b2ea930744`；request `89508212BBC4C24CC7E70D5871C9858FC86A83791E2CA18A33353F843554660A`。派生字典仅有排序与生成元数据刷新，没有修改存档内容或修复语义。
 - build identity `7902F8DFCE50E3F09C245E0F849E9AC3E3D7B07791D66C543C60E38472A59CAE`；33-file payload closure `09E8754A6E8DEE9ABB4A389AA7F578AC92E19650268912EC42B44FE9E63601A3`；正式 Core DLL SHA-256 `27AF835FA33C71E0E9CE0FE82A96D54D0D4270226DD0CC053814DC5A98CE1B55`。两端产物均与人类已验收的 `warlord-s61-visible-r16` 逐字节一致。
