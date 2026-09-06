@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：release source commit `a8d7b4ea100684eff1ad47c7f2494d9366c9dba9`（2026-09-06；tag `runtime-build-v2/20260906-asset-workbench-v2`）。物品素材工作台与旧烘焙链退役已完成双 signer / 双故障域共识、40/40 production policy 与原子 promotion，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`。正式入口的生成/应用/撤回旅程尚未在部署后重跑。正式产物、签名身份、部署提交和远端审计统一见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。
+**最后核对代码基线**：release source commit `049eb27e3ed6c5ee264d38b29806ad219267e6d2`（2026-09-06；tag `runtime-build-v2/20260906-map-workbench-phase1-v1`）。地图维护工作台第一阶段已完成双 signer / 双故障域共识、40/40 production policy 与原子 promotion，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`。测试地图改动已恢复；部署后尚未从正式入口重跑编辑/保存/导航旅程。第二阶段内容创作仍为[待施工设计](docs/地图内容创作工作台-第二阶段产品与CSharp权威收束-ADR-2026-09-06.md)。正式产物、签名身份、部署提交和远端审计统一见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。
 
 此前焦点诊断状态为 `promoted / FIELD_REVALIDATION_PENDING`：默认关闭观察，测试员通过根目录 `焦点诊断启动.cmd` 采集失败现场，证据契约见 [焦点诊断 §9.10](docs/焦点管理-诊断与卡顿排查-2026-05-24.md#910-2026-09-05物理手势到-as2-结果的有界观察)。本机七次返回成功不证明原故障已根治。前一 R1 列车仍待合并后的正式入口业务复验，边界见 [R1 收尾记录](docs/R1存盘API迁移收尾-2026-09-05.md)，不称 R1 专项 `standard_entry_verified`。
 
