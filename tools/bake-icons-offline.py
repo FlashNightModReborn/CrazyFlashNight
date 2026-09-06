@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import xml.etree.ElementTree as ET
 import zlib
@@ -534,20 +535,36 @@ def run_command(
     timeout_seconds: int | None = None,
 ) -> subprocess.CompletedProcess[str]:
     timeout = timeout_seconds if timeout_seconds and timeout_seconds > 0 else None
-    try:
-        return subprocess.run(
+    # Windows 的 .bat 会再启动 Java。先清理进程树，再结束父进程；
+    # 临时文件承接输出，避免孤儿进程持有 PIPE 让超时后的 communicate 永久等待。
+    with tempfile.TemporaryFile() as output:
+        process = subprocess.Popen(
             args,
             cwd=str(cwd),
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            stdout=subprocess.PIPE,
+            stdout=output,
             stderr=subprocess.STDOUT,
-            timeout=timeout,
+            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
         )
-    except subprocess.TimeoutExpired as exc:
-        output = exc.stdout if isinstance(exc.stdout, str) else ""
-        return subprocess.CompletedProcess(args, 124, output + f"\n[timeout after {timeout_seconds}s]")
+        timed_out = False
+        try:
+            process.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            if sys.platform == "win32":
+                try:
+                    subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                   creationflags=subprocess.CREATE_NO_WINDOW, timeout=10)
+                except (OSError, subprocess.TimeoutExpired):
+                    pass
+            if process.poll() is None:
+                process.kill()
+            process.wait(timeout=10)
+        output.seek(0)
+        text = output.read().decode("utf-8", errors="replace")
+        if timed_out:
+            text += f"\n[timeout after {timeout_seconds}s]"
+        return subprocess.CompletedProcess(args, 124 if timed_out else process.returncode, text)
 
 
 def remove_tree(path: Path, *, retries: int = 3, delay_seconds: float = 0.2) -> bool:
@@ -1653,7 +1670,7 @@ def normalize_icon_image(
     # ANIMATED_ICON_SIZE so long animations render at a display-appropriate, byte-budget-friendly
     # resolution; the composed canvas is still LANCZOS-resampled, so quality scales cleanly.
     #
-    # FFDec sprite PNGs often include a large symbol-stage canvas. AS2 BitmapExporter builds
+    # FFDec sprite PNGs often include a large symbol-stage canvas. The retired AS2 bitmap exporter built
     # its matrix from MovieClip.getBounds(mc), so the offline static path must use the alpha
     # content bounds rather than the exported PNG dimensions. Nested/layered canvas paths pass
     # preserve_canvas=True because their offsets are meaningful inside the parent canvas.

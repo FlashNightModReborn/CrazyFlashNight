@@ -17,6 +17,10 @@
     "activation": "explicit-e-batch-handshake",
     "productionCalls": [
       {
+        "file": "launcher/web/modules/asset-workbench.js",
+        "count": 1
+      },
+      {
         "file": "launcher/web/modules/arena/arena-shell.js",
         "count": 1
       },

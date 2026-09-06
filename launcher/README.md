@@ -354,6 +354,7 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 | `jukebox` | 工具 Panel | `modules/jukebox/jukebox-panel.js` |
 | `cutscene-test` | 开发 Panel | `modules/cutscene-test.js` |
 | `dressup` | 工具 Panel | `modules/dressup/dressup-panel.js` |
+| `asset-workbench` | [美术维护工作台](../tools/asset-workbench/README.md) | `modules/asset-workbench.js` |
 | `map` | 业务 Panel | `modules/map-panel.js` |
 | `stage-select` | 业务 Panel | `modules/stage-select-panel.js` |
 | `lockbox` | minigame | `modules/minigames/lockbox/lockbox-panel.js` |
@@ -366,8 +367,7 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 | `team` | 工作台 | `modules/team/team-panel.js` |
 | `tasks` | 业务 Panel | `modules/tasks/task-panel.js` |
 <!-- launcher-panel-registry:end -->
-Panel 的共同边界：
-- Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。
+- 所有 Panel：Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。素材工作台从 **其他 → 工具** 打开，当前实例调用固定 Python 内核，候选图片映射 `asset-workbench.local`；旧 `icon_bake` 和三项旧烘焙菜单已退役。
 - NPC 商店价格 wire 使用整数 `buyRatePermille` 与 safe-integer 金额；AS2/Host 按 `floor((basePrice × quantity) × rate / 1000)` 的同一顺序复验，Web 不重算价格。旧浮点 `buyMultiplier` 不兼容，Host、asLoader、Web 与 harness 必须进入同一 immutable candidate 原子交付；完整字段与 blocked-preview 边界见 [AS2 UI → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)。
 - Team 内嵌 `pets` / `mercs` 的全部请求（含 T800 武器命令与佣兵装备 tooltip）携 active `panelInstanceId`；Web 回包精确匹配 instance/callId/cmd，Host 拒绝 inactive/foreign/stale owner，replacement 清退旧 pending，迟到响应不可跨实例采用。业务写仍由白名单、revision/lease/token 与 AS2/Host 裁决，未知结果进入对账；T800 详见[施工记录](../docs/终结者T800-托管长枪与射击核心-施工-2026-08-22.md)。
 - LoadoutPicker 候选只接受装备槽、药剂槽或无 selector 背包总览三种 target。Character `equipmentEligibility` 在两种 scope 由 Host 复验；Merc `eligibleSlots` 由 AS2 两种 scope 签发。scope 只筛候选，白名单裁决 drop target，写后保留原 scope/anchor；Merc 按新 revision 恰好刷新一次 authority。详见[迁移护栏](../agentsDoc/as2-web-panel-migration.md)。

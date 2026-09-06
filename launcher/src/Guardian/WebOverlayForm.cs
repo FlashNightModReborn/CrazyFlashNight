@@ -27,6 +27,35 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class WebOverlayForm : Form, IToastSink, INotchSink, IDisposable
     {
+        private AssetWorkbenchTask _assetWorkbenchTask;
+
+        private async void HandleAssetWorkbenchMessage(string json, string source)
+        {
+            if (!CanAcceptPanelDocumentMessages || _panelHost == null
+                || !Uri.TryCreate(source, UriKind.Absolute, out var origin)
+                || origin.Scheme != "https" || origin.Host != "overlay.local"
+                || !origin.IsDefaultPort
+                || !AssetWorkbenchTask.TryReadRequest(json, _panelHost.ActivePanelName,
+                    _panelHost.ActivePanelInstanceId, out var message, out var request)) return;
+            string instance = message.Value<string>("panelInstanceId");
+            if (message.Value<string>("cmd") == "close")
+            {
+                _panelHost.TryClosePanelExact(AssetWorkbenchTask.Panel, instance, null);
+                return;
+            }
+            _assetWorkbenchTask ??= new AssetWorkbenchTask(_projectRoot);
+            var response = await _assetWorkbenchTask.ExecuteAsync(request);
+            if (IsDisposed || Disposing || _panelHost.ActivePanelName != AssetWorkbenchTask.Panel
+                || _panelHost.ActivePanelInstanceId != instance) return;
+            response["type"] = "panel_resp";
+            response["panel"] = AssetWorkbenchTask.Panel;
+            response["domain"] = AssetWorkbenchTask.Domain;
+            response["cmd"] = message["cmd"];
+            response["callId"] = message["callId"];
+            response["panelInstanceId"] = instance;
+            PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
+        }
+
         #region Win32
 
         [DllImport("user32.dll")]
@@ -1331,7 +1360,7 @@ namespace CF7Launcher.Guardian
             };
 
         // Web 资源热重载：监听 webDir 文件变化，去抖后自动 Reload
-        // 仅在 config.toml webOverlayHotReload=true 时启用；玩家版必须 false（IconBakeTask
+        // 仅在 config.toml webOverlayHotReload=true 时启用；玩家版必须 false（素材工作台
         // 自身就会往 web/icons/ 写 PNG 引发 self-trigger，外加杀软扫描也会触发 reload）。
         private FileSystemWatcher _webWatcher;
         private System.Threading.Timer _reloadDebounce;
@@ -1594,6 +1623,11 @@ namespace CF7Launcher.Guardian
                     "overlay.local", webDir,
                     CoreWebView2HostResourceAccessKind.Allow);
 
+                string assetJobs = Path.Combine(_projectRoot, "tmp", "asset-workbench", "jobs");
+                Directory.CreateDirectory(assetJobs);
+                _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                    "asset-workbench.local", assetJobs, CoreWebView2HostResourceAccessKind.Allow);
+
                 // 字体只允许通过 catalog exact-set handler 暴露；不再映射可枚举目录。
                 RuntimeFontCatalog.RegisterWebResources(_webView.CoreWebView2, "WebOverlayForm");
 
@@ -1734,7 +1768,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// 监听 webDir 文件变化，去抖后自动 Reload WebView2。仅在 config webOverlayHotReload=true
-        /// 时启用，默认 false（玩家版避免 IconBakeTask self-trigger + 杀软扫描 touch 触发 reload
+        /// 时启用，默认 false（玩家版避免素材应用 self-trigger + 杀软扫描 touch 触发 reload
         /// 把正在显示的 panel 黑屏）。开启时仍 exclude launcher/web/icons/ 子树，防止 self-trigger。
         /// </summary>
         private void StartWebWatcher(string webDir)
@@ -2319,6 +2353,13 @@ namespace CF7Launcher.Guardian
                     type = parsed.Value<string>("type");
                 }
                 catch { }
+
+                if (parsed?.Value<string>("panel") == AssetWorkbenchTask.Panel
+                    || parsed?.Value<string>("domain") == AssetWorkbenchTask.Domain)
+                {
+                    HandleAssetWorkbenchMessage(json, args.Source);
+                    return;
+                }
 
                 if (type == "viewportMetrics")
                 {

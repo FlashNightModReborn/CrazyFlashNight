@@ -14,7 +14,7 @@ namespace CF7Launcher.Tasks
     /// requestId 必须与当前 key 的在飞请求 exact 匹配；本 task 完整解码并确认 256×256
     /// 后才原子写入运行时缓存目录 launcher/data/doll-portraits/&lt;hex&gt;.png。
     ///
-    /// 与 IconBakeTask 的差异：无 begin/chunk/end 分块（web 单次 toDataURL 回传）、
+    /// 这是运行时头像缓存：无位图分块传输（web 单次 toDataURL 回传）、
     /// 无 manifest（文件存在即注册，LootIconCatalog 第四源按 纸娃娃-&lt;hex&gt; ref 直读）。
     /// key 必须匹配 ^纸娃娃-[0-9a-f]{8}$（路径穿越防护；前缀只进 name/日志，文件名只用 hex）。
     /// 已存在且字节一致跳过；任何失败回 error JSON 并记日志，绝不抛出影响其它 task。

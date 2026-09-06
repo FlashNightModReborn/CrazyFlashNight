@@ -99,7 +99,7 @@ function selectIconFrame(entry, category) {
             rejectReason: first ? null : "missing_icon_manifest_entry" };
     }
 
-    // IconBakeTask 的现役契约：f1=背包图标，f2=掉落物。黑市隐藏态不得显示 f1 的品质底色。
+    // 离线图标清单的现役契约：f1=背包图标，f2=掉落物。黑市隐藏态不得显示 f1 的品质底色。
     const second = frameIconUri(entry, 2);
     if (second) {
         if (!webpDeclaresAlpha(second)) {

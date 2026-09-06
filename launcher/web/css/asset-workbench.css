@@ -1,0 +1,71 @@
+.asset-workbench-panel{color:var(--wb-text);font-family:var(--font-ui,sans-serif)}
+.asset-workbench-panel .workbench-shell{--aw-accent:color-mix(in srgb,var(--wb-semantic-success) 72%,var(--dls-crystal));--aw-muted:color-mix(in srgb,var(--wb-text) 65%,var(--wb-surface));height:100%;--wb-accent:var(--aw-accent)}
+.asset-workbench-panel .aw-library,.asset-workbench-panel .aw-inspector{height:100%;min-height:0;display:flex;flex-direction:column;gap:8px;padding:12px;box-sizing:border-box}
+.asset-workbench-panel .aw-library{background:color-mix(in srgb,var(--wb-bg) 90%,var(--dls-crystal))}
+.asset-workbench-panel .aw-inspector{background:color-mix(in srgb,var(--wb-surface) 90%,var(--dls-crystal));gap:6px}
+.asset-workbench-panel button,.asset-workbench-panel select,.asset-workbench-panel input{font:inherit;font-size:12px}
+.asset-workbench-panel .aw-toolbar{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.asset-workbench-panel .aw-button,.asset-workbench-panel .aw-select,.asset-workbench-panel .aw-search{border:1px solid var(--wb-line-strong);border-radius:5px;background:color-mix(in srgb,var(--wb-surface-2) 88%,var(--dls-crystal));color:var(--wb-text);padding:7px 10px;min-height:32px;box-sizing:border-box}
+.asset-workbench-panel .aw-button{cursor:pointer;white-space:nowrap}
+.asset-workbench-panel .aw-button:hover{background:color-mix(in srgb,var(--wb-surface-2) 80%,var(--dls-crystal))}
+.asset-workbench-panel .aw-primary{background:var(--aw-accent);color:var(--wb-bg);border-color:var(--aw-accent);font-weight:700}
+.asset-workbench-panel .aw-primary:hover{background:color-mix(in srgb,var(--aw-accent) 85%,var(--wb-text))}
+.asset-workbench-panel :disabled{opacity:.4;cursor:default}
+.asset-workbench-panel :focus-visible{outline:2px solid var(--wb-role-focus);outline-offset:2px}
+.asset-workbench-panel .aw-select{flex:1;min-width:0}
+.asset-workbench-panel .aw-search{width:100%;flex-shrink:0}
+.asset-workbench-panel .aw-list{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.asset-workbench-panel :is(.aw-list,.aw-help-doc,.aw-diagnostics){scrollbar-gutter:stable;overscroll-behavior:contain}
+.asset-workbench-panel :is(.aw-list,.aw-help-doc,.aw-diagnostics)::-webkit-scrollbar{width:8px;height:8px}
+.asset-workbench-panel :is(.aw-list,.aw-help-doc,.aw-diagnostics)::-webkit-scrollbar-track{background:var(--wb-scrollbar-track);border-radius:5px}
+.asset-workbench-panel :is(.aw-list,.aw-help-doc,.aw-diagnostics)::-webkit-scrollbar-thumb{background:var(--wb-scrollbar-thumb);border:1px solid var(--wb-scrollbar-thumb-border);border-radius:5px}
+.asset-workbench-panel :is(.aw-list,.aw-help-doc,.aw-diagnostics)::-webkit-scrollbar-thumb:hover{background:var(--wb-scrollbar-thumb-hover)}
+.asset-workbench-panel :is(.aw-list,.aw-help-doc,.aw-diagnostics)::-webkit-scrollbar-button{display:none;width:0;height:0}
+.asset-workbench-panel :is(.aw-list,.aw-help-doc,.aw-diagnostics)::-webkit-scrollbar-corner{background:var(--wb-scrollbar-track)}
+.asset-workbench-panel .aw-item{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:8px;flex-shrink:0;padding:13px 12px;border:1px solid var(--wb-line);border-radius:6px;background:color-mix(in srgb,var(--wb-surface-2) 92%,var(--dls-crystal));color:var(--wb-text);cursor:pointer}
+.asset-workbench-panel .aw-item:hover{background:color-mix(in srgb,var(--wb-surface-2) 86%,var(--dls-crystal))}
+.asset-workbench-panel .aw-item[aria-pressed=true]{border-color:var(--aw-accent);background:color-mix(in srgb,var(--wb-surface-2) 82%,var(--aw-accent));box-shadow:inset 3px 0 var(--aw-accent)}
+.asset-workbench-panel .aw-item-title{font-size:15px;font-weight:600}
+.asset-workbench-panel .aw-item-title small{display:block;font-size:11px;font-weight:400;color:var(--aw-muted);margin-top:5px}
+.asset-workbench-panel .aw-item-status{font-size:11px;color:var(--aw-muted);white-space:nowrap}
+.asset-workbench-panel .is-missing{color:var(--wb-semantic-warning)}
+.asset-workbench-panel .aw-count{flex:1;font-size:11px;color:var(--aw-muted)}
+.asset-workbench-panel .aw-note{font-size:11px;color:var(--aw-muted);line-height:1.5;margin:0;min-height:32px}
+.asset-workbench-panel .aw-environment{color:var(--aw-accent);font-size:11px}
+.asset-workbench-panel .aw-heading{flex-shrink:0}
+.asset-workbench-panel h2{font-size:20px;line-height:24px;margin:0}
+.asset-workbench-panel .aw-source{font-size:10px;color:var(--aw-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:4px 0 0}
+.asset-workbench-panel .aw-stage{position:relative;display:flex;align-items:center;justify-content:center;flex:1;min-height:105px;border:1px solid var(--wb-line-strong);border-radius:5px;overflow:hidden;background-color:color-mix(in srgb,var(--wb-surface-2) 92%,var(--dls-crystal));background-image:linear-gradient(45deg,color-mix(in srgb,var(--wb-surface-2) 86%,var(--dls-crystal)) 25%,transparent 25%),linear-gradient(-45deg,color-mix(in srgb,var(--wb-surface-2) 86%,var(--dls-crystal)) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,color-mix(in srgb,var(--wb-surface-2) 86%,var(--dls-crystal)) 75%),linear-gradient(-45deg,transparent 75%,color-mix(in srgb,var(--wb-surface-2) 86%,var(--dls-crystal)) 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+.asset-workbench-panel .aw-canvas{width:100%;height:100%;position:absolute;inset:0}
+.asset-workbench-panel .aw-picture{max-width:90%;max-height:calc(100% - 36px);object-fit:contain}
+.asset-workbench-panel .aw-icon-host{width:128px;height:128px;flex-shrink:0}
+.asset-workbench-panel .aw-icon-image{width:100%;height:100%}
+.asset-workbench-panel .aw-preview-label{position:absolute;bottom:0;left:0;right:0;background:color-mix(in srgb,var(--wb-bg) 88%,transparent);padding:5px 8px;font-size:10px;color:var(--wb-text);pointer-events:none}
+.asset-workbench-panel .aw-empty{font-size:12px;color:var(--aw-muted);text-align:center}
+.asset-workbench-panel .aw-animate{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap}
+.asset-workbench-panel .aw-status{display:flex;gap:8px;justify-content:space-between;font-size:11px;min-height:15px}
+.asset-workbench-panel .aw-job-info{color:var(--aw-muted);font-size:11px;max-width:50%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.asset-workbench-panel .aw-phase{color:var(--aw-accent)}
+.asset-workbench-panel .aw-diagnostics{font-size:11px;color:var(--wb-semantic-warning);max-height:85px;overflow:auto;flex-shrink:0}
+.asset-workbench-panel .aw-diagnostics pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;margin:5px 0}
+.asset-workbench-panel [hidden]{display:none!important}
+.asset-workbench-panel .aw-help-page{gap:12px}
+.asset-workbench-panel .aw-help-header,.asset-workbench-panel .aw-help-footer{display:flex;align-items:center;gap:12px}
+.asset-workbench-panel .aw-help-header h2{flex:1;text-align:center;font-size:18px}
+.asset-workbench-panel .aw-help-layout{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;min-height:0}
+.asset-workbench-panel .aw-help-nav{display:flex;flex-direction:column;gap:8px}
+.asset-workbench-panel .aw-help-nav button{text-align:left}
+.asset-workbench-panel .aw-help-nav [aria-pressed=true]{border-color:var(--aw-accent);background:color-mix(in srgb,var(--wb-surface-2) 82%,var(--aw-accent))}
+.asset-workbench-panel .aw-help-doc{overflow:auto;min-height:0;padding:2px 12px 16px 2px;font-size:13px;line-height:1.7;user-select:text;overflow-wrap:anywhere}
+.asset-workbench-panel .aw-help-doc h2{margin:0 0 12px}
+.asset-workbench-panel .aw-help-doc h3{font-size:15px;margin:20px 0 6px;color:var(--aw-accent)}
+.asset-workbench-panel .aw-help-doc p{margin:6px 0 12px}
+.asset-workbench-panel .aw-help-doc ul{padding-left:22px}
+.asset-workbench-panel .aw-help-doc li{margin:6px 0}
+.asset-workbench-panel .aw-help-doc pre{white-space:pre-wrap;padding:10px 12px;border:1px solid var(--wb-line);background:var(--wb-surface);border-radius:5px;margin:5px 0 16px}
+.asset-workbench-panel .aw-help-doc code{font:12px/1.7 var(--font-mono,monospace)}
+.asset-workbench-panel .aw-help-doc table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.asset-workbench-panel .aw-help-doc th,.asset-workbench-panel .aw-help-doc td{border:1px solid var(--wb-line);padding:6px 8px;text-align:left}
+.asset-workbench-panel .aw-help-message{font-size:11px;color:var(--aw-muted)}
+.asset-workbench-panel .aw-help-footer{flex-wrap:wrap}
+.asset-workbench-panel .aw-help-copy-fallback{flex-basis:100%;height:68px;resize:none;background:var(--wb-surface);color:var(--wb-text);border:1px solid var(--wb-line);font:12px/1.5 var(--font-mono,monospace)}

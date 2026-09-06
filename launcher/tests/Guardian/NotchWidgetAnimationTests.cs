@@ -91,7 +91,7 @@ namespace CF7Launcher.Tests.Guardian
                 widget.OpenOtherMenuForTest(1);
                 Assert.Equal(9, widget.OtherMenuItemCountForTest);
                 widget.OpenOtherMenuForTest(2);
-                Assert.Equal(4, widget.OtherMenuItemCountForTest);
+                Assert.Equal(2, widget.OtherMenuItemCountForTest);
 
                 widget.BeginCollapseForTest();
                 Assert.False(widget.IsOtherMenuOpenForTest);

@@ -262,7 +262,7 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 40,
-          "weight": 90
+          "weight": 91
         },
         {
           "type": "兵种394",
@@ -418,15 +418,6 @@
           "weight": 38
         },
         {
-          "type": "兵种1",
-          "name": "僵尸",
-          "spritename": "敌人-金发女僵尸1",
-          "isHostile": true,
-          "minLevel": 2,
-          "maxLevel": 40,
-          "weight": 33
-        },
-        {
           "type": "兵种425",
           "name": "巨臂僵尸",
           "spritename": "敌人-巨臂僵尸",
@@ -434,6 +425,15 @@
           "minLevel": 25,
           "maxLevel": 50,
           "weight": 33
+        },
+        {
+          "type": "兵种1",
+          "name": "僵尸",
+          "spritename": "敌人-金发女僵尸1",
+          "isHostile": true,
+          "minLevel": 2,
+          "maxLevel": 40,
+          "weight": 32
         },
         {
           "type": "兵种287",
@@ -45119,10 +45119,10 @@
       "factionConfidence": "rule",
       "members": [
         {
-          "type": "兵种1",
-          "id": 1,
+          "type": "兵种4",
+          "id": 4,
           "name": "僵尸",
-          "spritename": "敌人-金发女僵尸1",
+          "spritename": "敌人-金发红衣服女僵尸1",
           "level": 40,
           "count": 1,
           "random": false,

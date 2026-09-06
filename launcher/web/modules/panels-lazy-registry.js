@@ -25,6 +25,14 @@
     // 所以 registerFn 在大多数情况下是空 noop。
     function noop() {}
 
+    Panels.registerLazy('asset-workbench',
+          ['modules/panel-runtime.js', 'modules/workbench-lifecycle.js',
+         'modules/workbench-focus.js', 'modules/workbench-primitives.js',
+         'modules/workbench-profile.js', 'modules/workbench.js',
+           'modules/workbench-components.js', 'modules/asset-workbench-help.js',
+           'modules/asset-timeline.js', 'modules/icons.js', 'modules/dressup-doll-renderer.js',
+         'modules/asset-workbench.js'], noop);
+
     // ── kshop ──
     Panels.registerLazy('kshop',
         ['modules/panel-runtime.js',

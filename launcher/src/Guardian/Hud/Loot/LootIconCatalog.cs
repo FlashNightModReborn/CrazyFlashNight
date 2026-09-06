@@ -15,7 +15,7 @@ using Svg.Skia;
 namespace CF7Launcher.Guardian.Hud.Loot
 {
     /// <summary>
-    /// NativeHud 侧物品图标目录：读 launcher/web/icons/manifest.json（IconBakeTask 烘焙产物），
+    /// NativeHud 侧物品图标目录：读 launcher/web/icons/manifest.json（离线图标烘焙产物），
     /// 把图标名解析为帧集（静态 1 帧 / png-sequence 动画 N 帧 / webp-animated 动画 N 帧），
     /// 经 MapHudImageDecoder（单帧）或 SKCodec 逐帧合成（webp-animated）全尺寸解码后
     /// 用 GDI+ 高质量缩放为 64px 缩略图（不依赖 SKCodec 缩放——PNG 源在 Skia 下不支持任意采样比，

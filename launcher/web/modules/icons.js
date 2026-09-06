@@ -478,7 +478,71 @@ var Icons = (function() {
         return html;
     }
 
+    // 显式 manifest entry 的局部预览，供素材工具查看当前/候选版本。
+    // 不读取或替换全局 _map，不注册 observer，也不刷新其他消费者。
+    function createPreview(host, iconEntry, options) {
+        options = options || {};
+        var animated = isWebpAnimated(iconEntry) || shouldAnimate(iconEntry);
+        var playing = animated && options.animate === true;
+        var node = document.createElement('span'), images = [], tracks = [], raf = 0, disposed = false, startedAt = null;
+        node.className = options.className || '';
+        node.style.position = 'relative'; node.style.display = 'inline-block';
+        node.style.overflow = 'hidden'; node.style.lineHeight = '0';
+        node.setAttribute('role', 'img'); node.setAttribute('aria-label', options.label || '物品图标预览');
+        node.setAttribute('data-icon-preview', playing ? 'playing' : 'still');
+        function image(url) {
+            var img = document.createElement('img'); img.alt = '';
+            img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'contain';
+            img.style.display = 'block';
+            if (options.onError) img.onerror = function() { if (!disposed) options.onError(); };
+            if (url) img.setAttribute('src', url);
+            node.appendChild(img); images.push(img); return img;
+        }
+        var frames = normalizeFrames(iconEntry), url = null;
+        if (playing && isWebpAnimated(iconEntry)) {
+            url = webpAnimatedUrl(iconEntry); image(url);
+        } else if (isLayeredEntry(iconEntry) && (playing || !iconEntry.f1)) {
+            url = layeredBaseUrl(iconEntry); image(url);
+            nestedLayers(iconEntry).forEach(function(layer) {
+                var layerFrames = normalizeLayerFrames(layer);
+                if (!layerFrames.length) return;
+                var img = image(null); applyLayerFrame(img, layerFrames[0]);
+                tracks.push({node:img, frames:layerFrames, fps:fpsForEntry(layer, fpsForEntry(iconEntry)), layer:true});
+            });
+        } else {
+            url = playing && frames.length ? frames[0].url : iconEntry && iconEntry.f1 ? iconUrl(iconEntry.f1) :
+                !isWebpAnimated(iconEntry) && frames.length ? frames[0].url : null;
+            var img = image(url);
+            if (playing) tracks.push({node:img, frames:frames, fps:fpsForEntry(iconEntry)});
+        }
+        host.appendChild(node);
+        function tick(now) {
+            raf = 0;
+            if (disposed) return;
+            if (startedAt === null) startedAt = now;
+            tracks.forEach(function(track) {
+                var frame = selectedFrame(track.frames, now - startedAt, track.fps);
+                if (track.layer) applyLayerFrame(track.node, frame);
+                else if (frame && track.node.getAttribute('src') !== frame.url) track.node.setAttribute('src', frame.url);
+            });
+            raf = window.requestAnimationFrame(tick);
+        }
+        if (playing && tracks.length) raf = window.requestAnimationFrame(tick);
+        return {
+            animated: animated,
+            available: !!url,
+            destroy: function() {
+                if (disposed) return;
+                disposed = true;
+                if (raf) window.cancelAnimationFrame(raf);
+                images.forEach(function(img) { img.onerror = null; img.removeAttribute('src'); });
+                if (node.parentNode) node.parentNode.removeChild(node);
+            }
+        };
+    }
+
     return {
+        createPreview: createPreview,
         load: function(cb) {
             if (_map) {
                 if (typeof cb === 'function') cb();

@@ -254,13 +254,7 @@ _root.gameCommands["setBGMVolume"] = function(params) {
 _root.gameCommands["audioV2QualificationStimulus"] = function(params) {
     org.flashNight.arki.audio.AudioQualificationStimulus.handle(params);
 };
-_root.gameCommands["bakeIcons"] = function(params) {
-    var maxCount:Number = Number(params.maxCount);
-    org.flashNight.arki.item.IconBaker.start(isNaN(maxCount) ? 0 : maxCount);
-};
-_root.gameCommands["bakeSkillIcons"] = function(params) {
-    org.flashNight.arki.item.IconBaker.startSkillIcons();
-};
+// 素材烘焙已迁移至其他 → 工具 → 物品素材工作台。
 
 // ============================================================
 // 游戏状态通知 → WebView 按钮可见性

@@ -14,6 +14,10 @@
 
 本文未带状态标签的规范句只描述已经落地并由现役门保护的稳定规则；仍属前向目标的规则必须逐条标为“目标态（未实装；见 ADR 对应批次）”。实现与验证没有同轮闭合前，不得仅凭 ADR 接受状态把未来 API、参数或 fail-closed 门写成现役事实。
 
+美术维护入口 `asset-workbench` 复用 `archive-reference` 双栏 profile、全 anchor 容器和 `.panel-scale-shell + PanelScale.attach()`，并已登记 direct shell 调用清单；它以显式命令驱动候选预览和素材应用。物品图标局部预览使用 `Icons.createPreview()`，销毁时释放自身动画，不替换全局清单；操作契约见 [物品素材工作台](../tools/asset-workbench/README.md)。
+
+其帮助页复用 `WorkbenchComponents.SecondaryPage` 的 underlay inert、Escape 返回和焦点归还，正文直接渲染版本化的 `launcher/web/help/asset-workbench.md`。帮助只做阅读与显式复制；打开时暂停预览动画，返回原选择后恢复，不新增 Host 命令。
+
 ## 1. 不变量与职责边界
 
 - 工作台逻辑画布固定为 `1024×576`，生产入口使用 `.panel-scale-shell + PanelScale.attach()` 等比铺满全 anchor；禁止在各面板复制缩放算法。

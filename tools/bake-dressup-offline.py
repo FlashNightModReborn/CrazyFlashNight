@@ -98,6 +98,7 @@ BATTLE_FEMALE_FALLBACKS = {
 
 DEFAULT_GENDERS = ("男", "女")
 IGNORED_ITEM_XML = {"asset_source_map.xml", "list.xml", "bullets_cases.xml", "missileConfigs.xml"}
+ASSET_MAP_OVERRIDE: Path | None = None
 # units.json still contains one historical Arena template whose four armor
 # names are no longer item records, although their exact linkage assets remain
 # registered in asset_source_map.xml. Keep this compatibility surface narrow:
@@ -439,6 +440,8 @@ def parse_args() -> argparse.Namespace:
         help="Timeout for each FFDec subprocess. Use 0 to disable. Default: 120.",
     )
     parser.add_argument("--keep-tmp", action="store_true", help="Keep temporary FFDec exports after completion.")
+    parser.add_argument("--asset-map", default="", help="Optional source-map snapshot, used by the asset workbench.")
+    parser.add_argument("--skip-basic-assets", action="store_true", help="Reuse existing rig basic exports during a selected-skin bake.")
     return parser.parse_args()
 
 
@@ -638,7 +641,7 @@ def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, 
 
 
 def load_asset_map(project_root: Path) -> dict[str, dict[str, Any]]:
-    path = project_root / "data" / "items" / "asset_source_map.xml"
+    path = ASSET_MAP_OVERRIDE or project_root / "data" / "items" / "asset_source_map.xml"
     root = xml_root(path)
     sources: dict[str, list[dict[str, str]]] = defaultdict(list)
     for asset in root.findall("asset"):
@@ -1377,7 +1380,7 @@ def finalize_skin_keys(skin_keys: dict[str, dict[str, Any]], assets: dict[str, d
 
 
 def load_asset_source_index(project_root: Path) -> dict[str, list[dict[str, Any]]]:
-    path = project_root / "data" / "items" / "asset_source_map.xml"
+    path = ASSET_MAP_OVERRIDE or project_root / "data" / "items" / "asset_source_map.xml"
     root = xml_root(path)
     index: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for tag in ("asset", "conflict", "duplicate"):
@@ -3157,6 +3160,7 @@ def export_skin_assets(
     fps: float,
     static_stop_policy: str,
     timeout_seconds: int,
+    export_basics: bool = True,
 ) -> None:
     if not ffdec.exists():
         raise SystemExit(f"Missing FFDec CLI: {ffdec}")
@@ -3612,20 +3616,21 @@ def export_skin_assets(
             export_report["exportedSkinKeys"] += 1
             export_report["exportedFrames"] += len(frame_entries)
 
-    export_basic_assets(
-        manifest,
-        export_report,
-        project_root,
-        asset_dir,
-        asset_dir_name,
-        tmp_dir,
-        ffdec,
-        zoom,
-        no_write,
-        fps,
-        symbol_maps,
-        timeout_seconds,
-    )
+    if export_basics:
+        export_basic_assets(
+            manifest,
+            export_report,
+            project_root,
+            asset_dir,
+            asset_dir_name,
+            tmp_dir,
+            ffdec,
+            zoom,
+            no_write,
+            fps,
+            symbol_maps,
+            timeout_seconds,
+        )
 
     for list_key in (
         "missingSymbol",
@@ -3967,6 +3972,8 @@ def prune_orphan_asset_files(
 def main() -> int:
     args = parse_args()
     project_root = Path(__file__).resolve().parents[1]
+    global ASSET_MAP_OVERRIDE
+    ASSET_MAP_OVERRIDE = resolve_path(args.asset_map, project_root) if args.asset_map else None
     output_dir = resolve_path(args.output_dir, project_root)
     genders = genders_from_arg(args.genders)
     manifest, report = build_manifest(project_root, genders)
@@ -4017,6 +4024,7 @@ def main() -> int:
             args.fps,
             args.static_stop_policy,
             args.ffdec_timeout_seconds,
+            export_basics=not args.skip_basic_assets,
         )
         if preserved_skin_exports:
             report.setdefault("assetExport", {})["preservedSkinKeyExports"] = preserved_skin_exports

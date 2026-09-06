@@ -1,4 +1,4 @@
-// CF7:ME Guardian Process — 入口
+﻿// CF7:ME Guardian Process — 入口
 // C# 5 语法
 
 using System;
@@ -1682,7 +1682,7 @@ class Program
             nativeHud.AddWidget(toastWidget);
             // LootFeedWidget：左下血条上方的双向玩家物资/击杀播报卡（loot feed）。
             // 图标目录与 ToastWidget 一样属 native 单渲染端资产；launcher/web/icons 自此
-            // 同时是 NativeHud 图标源（IconBakeTask 烘焙产物的首个运行时消费者）。
+            // 同时是 NativeHud 图标源（离线图标烘焙产物的首个运行时消费者）。
             // doll-portraits 为运行时纸娃娃胸像缓存（DollBakeTask 落盘），
             // 解析 "纸娃娃-<hex>" ref，负缓存 2s TTL 等待异步烘焙落盘。
             lootFeedWidget =
@@ -1808,11 +1808,6 @@ class Program
             dataCache = new DataCache(projectRoot);
         }
         DataQueryTask dataQueryTask = new DataQueryTask(dataCache);
-        IconBakeTask iconBakeTask;
-        using (PerfTrace.Scope("task.icon_bake_init"))
-        {
-            iconBakeTask = new IconBakeTask(projectRoot, notchSink);
-        }
         // 纸娃娃烘焙结果接收：web 渲染回传 → 原子落盘 launcher/data/doll-portraits/
         DollBakeTask dollBakeTask = new DollBakeTask(projectRoot, dollBakeService);
         ShopTask shopTask = new ShopTask(socketServer);
@@ -2180,7 +2175,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, iconBakeTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

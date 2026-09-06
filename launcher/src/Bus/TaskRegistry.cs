@@ -23,7 +23,6 @@ namespace CF7Launcher.Bus
     ///   sfx          快车道 S 前缀   AS2→C#  (XmlSocketServer 直分发，不经 MessageRouter)
     ///   console      JSON push      C#→AS2  (HttpApiServer /console 专用端点)
     ///   console_result  JSON event  AS2→C#  (内部事件，触发 OnConsoleResult)
-    ///   icon_bake       JSON sync   AS2↔C#  (图标烘焙：begin/chunk/end/complete)
     ///   archive         JSON async  AS2↔C#  httpCallable=true  (存档shadow备份/读取)
     ///   panel_request   JSON sync   AS2→C#  (旧 Flash UI 请求 WebView 打开面板: map / stage-select)
     ///   stage_select_response JSON async AS2↔C# (选关 Web panel 测试入口)
@@ -450,7 +449,6 @@ namespace CF7Launcher.Bus
             WarlordBattleTask warlordBattleTask,
             DataQueryTask dataQuery,
             AudioTask audio,
-            IconBakeTask iconBake,
             DollBakeTask dollBakeTask,
             ShopTask shopTask,
             InventoryTask inventoryTask,
@@ -514,7 +512,6 @@ namespace CF7Launcher.Bus
             if (lootFeedTask != null)
                 router.RegisterSync("loot", lootFeedTask.Handle);
             RegisterAudioV2(router, audio);
-            router.RegisterSync("icon_bake", iconBake.Handle);
             // 纸娃娃烘焙结果（web→C#）：overlay doll-bake.js 渲染回传 → 原子落盘。
             // 与 loot feed 同域的运行时缓存写入；Web ingress 由 IsWebTaskRouterIngressAllowed 放行。
             if (dollBakeTask != null)
@@ -834,7 +831,6 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "sfx",            "fast_lane", "AS2->C#", false, first);
             first = AppendTask(sb, "console",        "json_push", "C#->AS2", false, first);
             first = AppendTask(sb, "console_result", "json_event","AS2->C#", false, first);
-            first = AppendTask(sb, "icon_bake",      "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "shop_response",  "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "inventory_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "loot_response",     "json_async","AS2<->C#",false, first);

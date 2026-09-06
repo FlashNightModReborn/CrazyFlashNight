@@ -52,7 +52,7 @@ namespace CF7Launcher.Config
         public int DiagReportIntervalSec { get; private set; }
         /// <summary>
         /// 开发专用：监视 launcher/web 文件变化并自动 Reload WebView2。玩家版必须 false ——
-        /// IconBakeTask 自身就会往 launcher/web/icons/ 写 PNG，外加杀软扫描 / Steam 校验
+        /// 素材工作台会往 launcher/web/icons/ 写图片，外加杀软扫描 / Steam 校验
         /// touch 文件都会触发 reload，正在显示的 panel 直接黑屏 1-2 秒。开启时 watcher 仍
         /// exclude icons/ 子树规避 self-trigger。env: CF7_WEB_HOTRELOAD=1 一次性覆盖。
         /// </summary>

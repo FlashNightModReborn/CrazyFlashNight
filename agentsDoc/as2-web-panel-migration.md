@@ -71,6 +71,8 @@ Skill 页切换把 `Bridge.send` 严格定义为本地 transport 投递结果：
 
 结构门先跑 `node tools/test-audit-main-legacy-ui-reachability.js`；编辑 XFL 后、发布前跑 `node tools/audit-main-legacy-ui-reachability.js --source-only`，CS6 重新发布主 SWF 后跑 `node tools/audit-main-legacy-ui-reachability.js --require-swf`，后者用 FFDec 检查实际 ImportAssets、linkage 与 PlaceObject。该门故意不把注释、AS2 字符串池或 orphan XML 当作可达证据，因而不能替代 XFL 三件套、linkage scanner、fresh Compiler Errors/Output Panel 与游戏内入口/失败链手测。本轮五类入口、失败链与 GUI 人工验收已通过；这只完成部署前放行条件，后续仍须另行冻结 immutable Git-tree request、构建本地 X509 + GitHub Hosted OIDC/Sigstore 的双 signer/双 faultDomain 共识并执行正式 DLL promotion，当前不得称已部署。
 
+物品素材维护面板 `asset-workbench` 使用独立 `asset_workbench` 域，由 Host 绑定当前面板实例后调用本机共享内核；不经过 AS2 业务请求，也不改存档。旧 `bakeIcons/bakeSkillIcons` 命令与 `icon_bake` 写入 task 已退役；详见 [素材工作台](../tools/asset-workbench/README.md)。
+
 ## 1. 迁移分级
 
 | 分级 | 判断标准 | 不允许声称 |

@@ -3089,9 +3089,7 @@ namespace CF7Launcher.Guardian
                         PostToWeb("{\"type\":\"toast\",\"text\":\"技能面板暂时不可用，请稍后重试\"}");
                     }
                     break;
-                case "BAKE": SendGameCommand("bakeIcons"); break;
-                case "BAKE10": SendGameCommand("bakeIcons", "\"maxCount\":10"); break;
-                case "BAKE_SKILL": SendGameCommand("bakeSkillIcons"); break;
+                case "ASSET_WORKBENCH": OpenPanel("asset-workbench", "{}"); break;
                 case "LOCKBOX_TEST":
                     {
                         uint familySeed = unchecked((uint)Environment.TickCount);

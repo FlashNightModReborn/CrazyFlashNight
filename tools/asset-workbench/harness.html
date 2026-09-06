@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>物品素材工作台 · 开发验收</title>
+<link rel="stylesheet" href="/css/panels.css"><link rel="stylesheet" href="/css/asset-workbench.css">
+<style>html,body{margin:0;width:100%;height:100%;background:#0a1217}#reopen{position:absolute;top:10px;left:10px}</style></head><body>
+<button id="reopen">打开素材工作台</button><div id="panel-container" data-panel="asset-workbench"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+<script>
+var callbacks={}, definition, instance=0;
+var Bridge={on:function(type,cb){(callbacks[type]||(callbacks[type]=[])).push(cb);},off:function(type,cb){callbacks[type]=(callbacks[type]||[]).filter(function(x){return x!==cb;});},send:function(message){
+    if(message.cmd==='close'){definition.onClose();document.querySelector('#panel-container').hidden=true;return true;}
+    var request=Object.assign({op:message.cmd},message.payload);
+    fetch('/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(request)}).then(function(r){return r.json();}).then(function(result){
+        Object.assign(result,{type:'panel_resp',panel:message.panel,domain:message.domain,cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId});
+        (callbacks.panel_resp||[]).forEach(function(cb){cb(result);});
+    });return true;
+}};
+var Panels={register:function(id,panel){definition=panel;}};
+</script>
+<script src="/modules/panel-runtime.js"></script><script src="/modules/panel-scale.js"></script>
+<script src="/modules/workbench-lifecycle.js"></script><script src="/modules/workbench-focus.js"></script><script src="/modules/workbench-primitives.js"></script><script src="/modules/workbench-profile.js"></script><script src="/modules/workbench.js"></script>
+<script src="/lib/marked.min.js"></script><script src="/modules/workbench-components.js"></script><script src="/modules/asset-workbench-help.js"></script>
+<script src="/modules/asset-timeline.js"></script><script src="/modules/icons.js"></script><script src="/modules/dressup-doll-renderer.js"></script><script src="/modules/asset-workbench.js"></script>
+<script>
+var panel=definition.create();document.querySelector('#panel-content').appendChild(panel);
+function openPanel(){document.querySelector('#panel-container').hidden=false;definition.onOpen(panel,{panelInstanceId:'harness-'+(++instance)});}
+document.querySelector('#reopen').onclick=openPanel;
+document.addEventListener('keydown',function(event){if(event.key==='Escape')definition.onRequestClose();});openPanel();
+</script></body></html>

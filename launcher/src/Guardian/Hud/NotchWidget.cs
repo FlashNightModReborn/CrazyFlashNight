@@ -179,9 +179,7 @@ namespace CF7Launcher.Guardian.Hud
         };
         private static readonly NotchButtonDef[] OtherToolButtons = {
             new NotchButtonDef("动画测试", "CUTSCENE_TEST", Keys.None, false, false),
-            new NotchButtonDef("烘焙图标", "BAKE", Keys.None, false, false),
-            new NotchButtonDef("烘焙测试(10)", "BAKE10", Keys.None, false, false),
-            new NotchButtonDef("烘焙技能图标", "BAKE_SKILL", Keys.None, false, false)
+            new NotchButtonDef("物品素材工作台", "ASSET_WORKBENCH", Keys.None, false, false)
         };
         private static readonly NotchButtonDef[][] OtherButtonGroups = {
             OtherControlButtons,

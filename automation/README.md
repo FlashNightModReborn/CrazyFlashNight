@@ -64,6 +64,8 @@ cd "<项目根目录>\\automation"
 
 本地日常开发推荐显式走 `dev.ps1`，或双击项目根的 `本地开发启动.cmd`。该入口计算当前 Worktree build identity，只精确复用同身份 candidate；无命中时在本机生成隔离 candidate，但始终报告 `NOT_DEPLOYED`，不会写根 bootstrap 或正式 `runtime/`。
 
+物品素材工作台本轮人工体验使用根目录 [素材工作台测试启动.cmd](../素材工作台测试启动.cmd)，指向已构建的 `asset-workbench-ready` 隔离候选；操作和验证边界见 [工作台说明](../tools/asset-workbench/README.md)。CMD 在本次子进程限定 Windows PowerShell 模块目录，避免从 PowerShell 7 / Agent 终端继承不兼容模块，再调用原有 `start.ps1`；完整产物验证与启动护栏仍由原有入口执行。
+
 ```powershell
 cd "<项目根目录>"
 .\automation\dev.ps1
