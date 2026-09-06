@@ -21,12 +21,14 @@
           <DOMFolderItem name="NPC/NPC-大圣/正常大圣" itemID="68c845d1-000024f7"/>
           <DOMFolderItem name="NPC/NPC-歌留多" itemID="69127c65-000003b8" isExpanded="true"/>
           <DOMFolderItem name="NPC/NPC-歌留多/素材" itemID="69127c32-000003b6"/>
+          <DOMFolderItem name="NPC/NPC-虎妙" itemID="6a9d8fb8-0000134a" isExpanded="true"/>
+          <DOMFolderItem name="NPC/NPC-虎妙/素材" itemID="6a9d90c1-000020c8" isExpanded="true"/>
           <DOMFolderItem name="NPC/NPC-诺艾尔" itemID="69127c8a-000003bf"/>
           <DOMFolderItem name="NPC/NPC-诺艾尔/素材" itemID="69127c7c-000003be"/>
           <DOMFolderItem name="NPC/NPC-尾上世莉架" itemID="69127d94-000003d6"/>
           <DOMFolderItem name="NPC/NPC-尾上世莉架/人物组件" itemID="6561b66a-0000027c"/>
           <DOMFolderItem name="NPC/NPC-尾上世莉架/人物组件/动作用" itemID="6552eb65-0000003c"/>
-          <DOMFolderItem name="NPC/NPC-文天" itemID="69127cb4-000003c8"/>
+          <DOMFolderItem name="NPC/NPC-文天" itemID="69127cb4-000003c8" isExpanded="true"/>
           <DOMFolderItem name="NPC/NPC-文天/素材" itemID="69127c98-000003c4"/>
           <DOMFolderItem name="NPC/NPC-文天/素材/光子破坏炮" itemID="660f9cb9-000005e5"/>
           <DOMFolderItem name="NPC/NPC-文天/素材/人物发型" itemID="64e8c230-0000041c"/>
@@ -249,6 +251,21 @@
           <Include href="NPC/NPC-歌留多/素材/歌留多左小臂.xml" itemIcon="1" loadImmediate="false" itemID="67096488-00000035" lastModified="1728926280"/>
           <Include href="NPC/NPC-歌留多/素材/髅髅宫歌留多.xml" itemIcon="1" loadImmediate="false" itemID="6709f658-00000196" lastModified="1728926280"/>
           <Include href="NPC/NPC-歌留多/素材/髅髅宫歌留多-站立动画.xml" loadImmediate="false" itemID="670cf4d1-000003f7" lastModified="1762833755"/>
+          <Include href="NPC/NPC-虎妙/NPC-虎妙.xml" loadImmediate="false" itemID="6a9d8fc0-0000134c" lastModified="1788713101"/>
+          <Include href="NPC/NPC-虎妙/虎妙.xml" loadImmediate="false" itemID="6a9d8fe3-00001572" lastModified="1788713235"/>
+          <Include href="NPC/NPC-虎妙/素材/猫下臂装备.xml" loadImmediate="false" itemID="6980fbb3-000042c7" lastModified="1770061971"/>
+          <Include href="NPC/NPC-虎妙/素材/猫妖背心上臂.xml" itemIcon="1" loadImmediate="false" itemID="6980ec30-00004247" lastModified="1770590037"/>
+          <Include href="NPC/NPC-虎妙/素材/猫妖背心身体.xml" itemIcon="1" loadImmediate="false" itemID="6980ed19-0000427d" lastModified="1770590148"/>
+          <Include href="NPC/NPC-虎妙/素材/猫妖皮鞋.xml" loadImmediate="false" itemID="6a9d941a-00002945" lastModified="1788711962"/>
+          <Include href="NPC/NPC-虎妙/素材/猫妖头.xml" loadImmediate="false" itemID="6a9d9174-000026da" lastModified="1788711370"/>
+          <Include href="NPC/NPC-虎妙/素材/猫妖右下臂.xml" itemIcon="1" loadImmediate="false" itemID="6a9d907c-000020c2" lastModified="1788711036"/>
+          <Include href="NPC/NPC-虎妙/素材/猫妖左下臂.xml" itemIcon="1" loadImmediate="false" itemID="6a9d9084-000020c3" lastModified="1788711044"/>
+          <Include href="NPC/NPC-虎妙/素材/屁股.xml" itemIcon="1" loadImmediate="false" itemID="6981179a-00004bf8" lastModified="1770070580"/>
+          <Include href="NPC/NPC-虎妙/素材/小腿.xml" itemIcon="1" loadImmediate="false" itemID="69811866-00004bfb" lastModified="1770071595"/>
+          <Include href="NPC/NPC-虎妙/素材/右大腿.xml" itemIcon="1" loadImmediate="false" itemID="698116c3-00004bf1" lastModified="1770070588"/>
+          <Include href="NPC/NPC-虎妙/素材/右手.xml" loadImmediate="false" itemID="6a9d9739-000029a5" lastModified="1788712761"/>
+          <Include href="NPC/NPC-虎妙/素材/左大腿.xml" itemIcon="1" loadImmediate="false" itemID="698116b3-00004bf0" lastModified="1770071116"/>
+          <Include href="NPC/NPC-虎妙/素材/左手.xml" loadImmediate="false" itemID="6a9d973b-000029a6" lastModified="1788712763"/>
           <Include href="NPC/NPC-诺艾尔/NPC-诺艾尔.xml" loadImmediate="false" itemID="69127c76-000003ba" lastModified="1762819204"/>
           <Include href="NPC/NPC-诺艾尔/素材/Symbol 51623.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b66" lastModified="1728926454"/>
           <Include href="NPC/NPC-诺艾尔/素材/Symbol 51625.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b69" lastModified="1728926454"/>
@@ -350,8 +367,11 @@
           <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1720795931"/>
           <Include href="UI重构/商店相关/npc商店名称框.xml" loadImmediate="false" itemID="668a5ba5-000008ed" lastModified="1720349306"/>
           <Include href="UI重构/商店相关/购物图标UI.xml" loadImmediate="false" itemID="668a7428-00000c8d" lastModified="1720349737"/>
+          <Include href="补间 5.xml" itemIcon="1" loadImmediate="false" itemID="6a9d97bd-000029a8" lastModified="1788712893"/>
+          <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="6a9d97bd-000029aa" lastModified="1788712893"/>
+          <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6a9d97d7-000029ac" lastModified="1788712919"/>
           <Include href="场景门.xml" loadImmediate="false" itemID="66f5a03f-00000e56" lastModified="1762819594"/>
-          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1762833980"/>
+          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1788713196"/>
           <Include href="所有素材/1.冷兵器/锐器/石中剑/石中剑.xml" loadImmediate="false" itemID="6565f5fa-00000027" lastModified="1702565773"/>
           <Include href="所有素材/1.冷兵器/重锐器/轮盘重工/未命名文件夹 1/Symbol 4834.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001eb6" lastModified="1702237154"/>
           <Include href="所有素材/1.冷兵器/重锐器/勇气灵剑/勇气灵剑.xml" itemIcon="1" loadImmediate="false" itemID="65f6e6b6-00001d6b" lastModified="1710679780"/>
@@ -530,7 +550,7 @@
           <Include href="所有素材/重复项目文件夹/元件 8.xml" loadImmediate="false" itemID="65fbf7df-00000897" lastModified="1711011748"/>
           <Include href="所有素材/装备/西风大剑/西风大剑.xml" itemIcon="1" loadImmediate="false" itemID="65f6f751-00001efc" lastModified="1710683985"/>
           <Include href="所有素材/字母串1.xml" loadImmediate="false" itemID="65fbdc7f-00000273" lastModified="1711004799"/>
-          <Include href="所有素材/字母串2.xml" loadImmediate="false" itemID="65fbdc7a-00000270" lastModified="1711004794"/>
+          <Include href="所有素材/字母串2.xml" loadImmediate="false" itemID="65fbdc7a-00000270" lastModified="1788711343"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">

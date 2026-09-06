@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1762833980" lastUniqueIdentifier="58">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1788713196" lastUniqueIdentifier="59">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -156,7 +156,7 @@ _root.配置场景环境信息();]]></script>
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/NPC-BLACK-L" selected="true" centerPoint3DX="2176" centerPoint3DY="602.65">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-BLACK-L/NPC-BLACK-L" centerPoint3DX="2176" centerPoint3DY="602.65">
                   <matrix>
                     <Matrix tx="2171.3" ty="670.45"/>
                   </matrix>
@@ -170,6 +170,33 @@ _root.配置场景环境信息();]]></script>
 	性别 = "男";
 	方向 = "右";
 	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/NPC-虎妙" selected="true" centerPoint3DX="595.2" centerPoint3DY="594.15">
+                  <matrix>
+                    <Matrix tx="578" ty="523.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	任务需求 = 77;
+	任务需求支线 = [1000081];
+	名字 = "虎妙";
+	身高 = 175;
+	性别 = "女";
+	方向 = "右";
+	if (_root.tasks_finished[String(1000082)])
+	{
+		目标.stop();
+		目标._visible = false;
+	}
+	else
+	{
+		_root.初始化NPC(this);
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

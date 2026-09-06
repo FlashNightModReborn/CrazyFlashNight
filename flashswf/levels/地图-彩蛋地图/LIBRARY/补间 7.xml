@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 7" itemID="6a9d97d7-000029ac" symbolType="graphic" lastModified="1788712919">
+  <timeline>
+    <DOMTimeline name="补间 7">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/屁股" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.980239868164063" b="-0.025390625" c="-0.0258941650390625" d="0.999664306640625" tx="-69.65" ty="-114.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.55" y="-33.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.990936279296875" b="0.13433837890625" c="0.13433837890625" d="0.990936279296875" tx="-91.2" ty="73.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.6" y="4.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1763049418" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1788710787" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="地图-幸存者营地">
       <layers>
@@ -227,7 +227,7 @@ onClipEvent (load) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc女仆黑" centerPoint3DX="2347.35" centerPoint3DY="171.95">
+                <DOMSymbolInstance libraryItemName="NPC/npc女仆黑" centerPoint3DX="2347.35" centerPoint3DY="171.95">
                   <matrix>
                     <Matrix tx="2320.05" ty="197.15"/>
                   </matrix>
@@ -272,7 +272,7 @@ onClipEvent (load) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc女仆白" centerPoint3DX="2167.35" centerPoint3DY="130.5">
+                <DOMSymbolInstance libraryItemName="NPC/npc女仆白" centerPoint3DX="2167.35" centerPoint3DY="130.5">
                   <matrix>
                     <Matrix tx="2090.85" ty="156.25"/>
                   </matrix>
@@ -295,11 +295,47 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="混沌王" color="#9933CC" parentLayerIndex="9" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/npc混沌王" selected="true" centerPoint3DX="2263.95" centerPoint3DY="853.35">
+                  <matrix>
+                    <Matrix tx="2216.05" ty="776.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="-8.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	任务需求 = 77;
+	任务需求支线 = [1000081];
+	名字 = "混沌王";
+	身高 = 175;
+	性别 = "男";
+	方向 = "左";
+	NPC任务_任务_关卡路径 = "挑战混沌王";
+	if (_root.tasks_finished[String(1000082)])
+	{
+		目标.stop();
+		目标._visible = false;
+	}
+	else
+	{
+		_root.初始化NPC(this);
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="JK" color="#D2FD7B" parentLayerIndex="9" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc武装jk" centerPoint3DX="1375.15" centerPoint3DY="327.6">
+                <DOMSymbolInstance libraryItemName="NPC/npc武装jk" centerPoint3DX="1375.15" centerPoint3DY="327.6">
                   <matrix>
                     <Matrix tx="1327.25" ty="250.5"/>
                   </matrix>
@@ -425,11 +461,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#A65995" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="背景" color="#A65995" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地背景图" name="背景" selected="true" centerPoint3DX="2421.1" centerPoint3DY="693.25">
+                <DOMSymbolInstance libraryItemName="新地图素材/幸存者营地背景图" name="背景" centerPoint3DX="2421.1" centerPoint3DY="693.25">
                   <matrix>
                     <Matrix tx="1732.05" ty="230.5"/>
                   </matrix>

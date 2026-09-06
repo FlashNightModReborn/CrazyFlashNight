@@ -2,15 +2,17 @@
      <folders>
           <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
-          <DOMFolderItem name="NPC" itemID="66a62697-00005e1f"/>
-          <DOMFolderItem name="NPC/杰克霜精" itemID="66a62697-00005e20" isExpanded="true"/>
+          <DOMFolderItem name="NPC" itemID="66a62697-00005e1f" isExpanded="true"/>
+          <DOMFolderItem name="NPC/杰克霜精" itemID="66a62697-00005e20"/>
           <DOMFolderItem name="NPC/杰克霜精/零件" itemID="65f482a0-00001ef3"/>
+          <DOMFolderItem name="NPC/人修罗" itemID="6a9d8c2d-00000d5b"/>
+          <DOMFolderItem name="NPC/人修罗/人物素材" itemID="6a9d8c2d-00000d5c"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="66055aed-000010ea"/>
           <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
           <DOMFolderItem name="动画" itemID="65f7e940-00000bc1"/>
           <DOMFolderItem name="新地图素材" itemID="65c7a080-00000f7d"/>
-          <DOMFolderItem name="新地图素材/居合" itemID="65957bd7-00000748" isExpanded="true"/>
+          <DOMFolderItem name="新地图素材/居合" itemID="65957bd7-00000748"/>
           <DOMFolderItem name="新地图素材/女仆白" itemID="6577dc70-000004fb"/>
           <DOMFolderItem name="新地图素材/女仆黑" itemID="65b649c3-00003bb4"/>
           <DOMFolderItem name="新地图素材/女仆黑/步枪" itemID="6577c619-00000709"/>
@@ -34,6 +36,10 @@
           <Include href="button/Symbol 3042.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000e05" lastModified="1704196122"/>
           <Include href="button/Symbol 51651.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b8f" lastModified="1704196122"/>
           <Include href="button/Symbol 51820.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c70" lastModified="1704196122"/>
+          <Include href="NPC/npc混沌王.xml" loadImmediate="false" itemID="6a9d8a1c-000005e8" lastModified="1788710074"/>
+          <Include href="NPC/npc女仆白.xml" loadImmediate="false" itemID="65b6452d-00003a51" lastModified="1740635210"/>
+          <Include href="NPC/npc女仆黑.xml" loadImmediate="false" itemID="65b649a8-00003bb2" lastModified="1740635197"/>
+          <Include href="NPC/npc武装jk.xml" loadImmediate="false" itemID="65b64071-00002d13" lastModified="1746437984"/>
           <Include href="NPC/杰克霜精/杰克霜精npc.xml" loadImmediate="false" itemID="65f7fd50-00000fdb" lastModified="1710752626"/>
           <Include href="NPC/杰克霜精/零件/带帽霜精头.xml" loadImmediate="false" itemID="65e99d6c-00000204" lastModified="1709809004"/>
           <Include href="NPC/杰克霜精/零件/霜精臂膀.xml" loadImmediate="false" itemID="65e9853a-000001ee" lastModified="1709808577"/>
@@ -45,6 +51,39 @@
           <Include href="NPC/杰克霜精/零件/霜精头.xml" loadImmediate="false" itemID="65e968e9-000001db" lastModified="1709829788"/>
           <Include href="NPC/杰克霜精/零件/霜精右靴子.xml" loadImmediate="false" itemID="65e9adc0-000001e9" lastModified="1709821405"/>
           <Include href="NPC/杰克霜精/零件/霜精左靴子.xml" loadImmediate="false" itemID="65e9adb3-000001e4" lastModified="1709830293"/>
+          <Include href="NPC/人修罗/人物素材/ 人修罗上半身.xml" loadImmediate="false" itemID="6614e712-0000063d" lastModified="1712906818"/>
+          <Include href="NPC/人修罗/人物素材/ 左下臂花纹.xml" loadImmediate="false" itemID="6614eb77-00000660" lastModified="1712647031"/>
+          <Include href="NPC/人修罗/人物素材/大腿.xml" loadImmediate="false" itemID="6614fe9c-00000750" lastModified="1712654277"/>
+          <Include href="NPC/人修罗/人物素材/大腿花纹.xml" loadImmediate="false" itemID="6614fe47-0000074c" lastModified="1712651910"/>
+          <Include href="NPC/人修罗/人物素材/耳朵.xml" loadImmediate="false" itemID="6615183c-00000222" lastModified="1712658492"/>
+          <Include href="NPC/人修罗/人物素材/发型.xml" loadImmediate="false" itemID="6614d2bf-000001ec" lastModified="1712923303"/>
+          <Include href="NPC/人修罗/人物素材/脸部花纹.xml" loadImmediate="false" itemID="6614d658-00000201" lastModified="1712641624"/>
+          <Include href="NPC/人修罗/人物素材/裸上身.xml" loadImmediate="false" itemID="6614e631-00000639" lastModified="1712645681"/>
+          <Include href="NPC/人修罗/人物素材/人修罗大腿.xml" loadImmediate="false" itemID="6614fea9-00000754" lastModified="1712651945"/>
+          <Include href="NPC/人修罗/人物素材/人修罗裤头.xml" loadImmediate="false" itemID="6614f8b0-0000073c" lastModified="1712661216"/>
+          <Include href="NPC/人修罗/人物素材/人修罗头.xml" loadImmediate="false" itemID="6614d6de-0000020f" lastModified="1712923333"/>
+          <Include href="NPC/人修罗/人物素材/人修罗小腿.xml" loadImmediate="false" itemID="66150d73-00000781" lastModified="1712736651"/>
+          <Include href="NPC/人修罗/人物素材/人修罗右上臂.xml" loadImmediate="false" itemID="6614f1d2-000006cd" lastModified="1712736876"/>
+          <Include href="NPC/人修罗/人物素材/人修罗右手.xml" loadImmediate="false" itemID="6614f4bf-000006f7" lastModified="1712649407"/>
+          <Include href="NPC/人修罗/人物素材/人修罗右下臂.xml" loadImmediate="false" itemID="6614f4e6-00000717" lastModified="1712736891"/>
+          <Include href="NPC/人修罗/人物素材/人修罗左上臂.xml" loadImmediate="false" itemID="6614e9d4-00000650" lastModified="1712736753"/>
+          <Include href="NPC/人修罗/人物素材/人修罗左下臂.xml" loadImmediate="false" itemID="6614ebae-00000692" lastModified="1712736715"/>
+          <Include href="NPC/人修罗/人物素材/上半身花纹.xml" loadImmediate="false" itemID="6614e52e-00000634" lastModified="1712906803"/>
+          <Include href="NPC/人修罗/人物素材/手势.xml" loadImmediate="false" itemID="66152992-00000242" lastModified="1712736690"/>
+          <Include href="NPC/人修罗/人物素材/手势花纹.xml" loadImmediate="false" itemID="66152975-0000023e" lastModified="1712662901"/>
+          <Include href="NPC/人修罗/人物素材/头.xml" loadImmediate="false" itemID="6614d6c0-0000020b" lastModified="1712660445"/>
+          <Include href="NPC/人修罗/人物素材/五官.xml" loadImmediate="false" itemID="6614d693-00000207" lastModified="1713330369"/>
+          <Include href="NPC/人修罗/人物素材/下臂.xml" loadImmediate="false" itemID="6614f1f8-000006d7" lastModified="1712648696"/>
+          <Include href="NPC/人修罗/人物素材/小腿花纹.xml" loadImmediate="false" itemID="66150bfa-0000076e" lastModified="1712655698"/>
+          <Include href="NPC/人修罗/人物素材/鞋子.xml" loadImmediate="false" itemID="6615149f-00001719" lastModified="1712937496"/>
+          <Include href="NPC/人修罗/人物素材/右上臂.xml" loadImmediate="false" itemID="6614f122-000006c5" lastModified="1712735608"/>
+          <Include href="NPC/人修罗/人物素材/右上臂花纹.xml" loadImmediate="false" itemID="6614f1c2-000006c9" lastModified="1712648642"/>
+          <Include href="NPC/人修罗/人物素材/右手.xml" loadImmediate="false" itemID="6614f4b8-000006f3" lastModified="1712649400"/>
+          <Include href="NPC/人修罗/人物素材/右手花纹.xml" loadImmediate="false" itemID="6614f4a8-000006ef" lastModified="1712651489"/>
+          <Include href="NPC/人修罗/人物素材/右下臂花纹.xml" loadImmediate="false" itemID="6614f2d7-000006eb" lastModified="1712649524"/>
+          <Include href="NPC/人修罗/人物素材/左上臂.xml" loadImmediate="false" itemID="6614e9cb-0000064c" lastModified="1712735613"/>
+          <Include href="NPC/人修罗/人物素材/左上臂花纹.xml" loadImmediate="false" itemID="6614e98d-00000648" lastModified="1712657962"/>
+          <Include href="NPC/人修罗元件.xml" loadImmediate="false" itemID="6a9d8c53-00000d81" lastModified="1788710087"/>
           <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
           <Include href="shape/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
           <Include href="shape/Symbol 482.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a9" lastModified="1704196122"/>
@@ -58,7 +97,7 @@
           <Include href="sprite/Symbol 3044.xml" loadImmediate="false" itemID="6597607e-00000e07" lastModified="1704196122"/>
           <Include href="sprite/场景门.xml" loadImmediate="false" itemID="66f59fc0-00000c5a" lastModified="1727373261"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
-          <Include href="地图-幸存者营地.xml" itemID="65c7a0f5-0000109e" lastModified="1763049418"/>
+          <Include href="地图-幸存者营地.xml" itemID="65c7a0f5-0000109e" lastModified="1788710787"/>
           <Include href="叠底门.xml" loadImmediate="false" itemID="6605761b-00001057" lastModified="1711633947"/>
           <Include href="动画/待机.xml" loadImmediate="false" itemID="65f4431c-00000940" lastModified="1710749398"/>
           <Include href="垃圾堆2.xml" loadImmediate="false" itemID="65df2759-00000043" lastModified="1709123417"/>
@@ -66,9 +105,6 @@
           <Include href="门框.xml" loadImmediate="false" itemID="66055908-00000711" lastModified="1712303187"/>
           <Include href="提示箭头.xml" loadImmediate="false" itemID="660d39b9-00001fe8" lastModified="1712142777"/>
           <Include href="新地图素材/6 2 复制 2.xml" itemIcon="1" loadImmediate="false" itemID="635124fe-00001a82" lastModified="1150130308"/>
-          <Include href="新地图素材/npc女仆白.xml" loadImmediate="false" itemID="65b6452d-00003a51" lastModified="1740635210"/>
-          <Include href="新地图素材/npc女仆黑.xml" loadImmediate="false" itemID="65b649a8-00003bb2" lastModified="1740635197"/>
-          <Include href="新地图素材/npc武装jk.xml" loadImmediate="false" itemID="65b64071-00002d13" lastModified="1746437984"/>
           <Include href="新地图素材/shape 1.xml" itemIcon="1" loadImmediate="false" itemID="65982a73-00000001" lastModified="1704471155"/>
           <Include href="新地图素材/shape 3.xml" itemIcon="1" loadImmediate="false" itemID="65982a73-00000003" lastModified="1704471155"/>
           <Include href="新地图素材/shape 5.xml" itemIcon="1" loadImmediate="false" itemID="65982a73-00000005" lastModified="1704471155"/>
@@ -250,7 +286,7 @@
           <Include href="新地图素材/女仆黑/步枪/狙击步枪/Revision 4/Revision 4握把.xml" loadImmediate="false" itemID="56a19f05-00000126" lastModified="1453468880"/>
           <Include href="新地图素材/女仆黑/弹药/12.7×99mm(.50 BMG).xml" loadImmediate="false" itemID="56a21c60-00000083" lastModified="1453464672"/>
           <Include href="新地图素材/女仆黑/元件 1.xml" loadImmediate="false" itemID="6577c61e-00000717" lastModified="1702353874"/>
-          <Include href="新地图素材/武装jk.xml" loadImmediate="false" itemID="65b642d6-000033af" lastModified="1706812835"/>
+          <Include href="新地图素材/武装jk.xml" loadImmediate="false" itemID="65b642d6-000033af" lastModified="1788710079"/>
           <Include href="新地图素材/幸存者营地背景图.xml" loadImmediate="false" itemID="65b62838-00001528" lastModified="1763049513"/>
           <Include href="新地图素材/幸存者营地地图行动范围.xml" loadImmediate="false" itemID="65b68f0d-000015e2" lastModified="1749723939"/>
           <Include href="新地图素材/幸存者营地墙走廊.xml" loadImmediate="false" itemID="65bbd43b-00000c37" lastModified="1706809950"/>
@@ -294,6 +330,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="365821" publishTime="1788710567"/>
           <PublishItem publishSize="329689" publishTime="1761325514"/>
           <PublishItem publishSize="329689" publishTime="1761325451"/>
           <PublishItem publishSize="329689" publishTime="1761325396"/>
@@ -313,6 +350,5 @@
           <PublishItem publishSize="347756" publishTime="1711633693"/>
           <PublishItem publishSize="347787" publishTime="1711633627"/>
           <PublishItem publishSize="345223" publishTime="1711522662"/>
-          <PublishItem publishSize="345219" publishTime="1711522560"/>
      </publishHistory>
 </DOMDocument>

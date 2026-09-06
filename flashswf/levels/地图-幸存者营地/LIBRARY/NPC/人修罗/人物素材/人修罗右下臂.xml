@@ -1,0 +1,65 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/人修罗/人物素材/人修罗右下臂" itemID="6614f4e6-00000717" lastModified="1712736891" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="人修罗右下臂">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#DAB094"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2 2526S6[-21 583 183 116!183 116|178 115!178 115|205 97"/>
+                    <Edge fillStyle1="1" edges="!205 97S2|302 25!302 25[432 -67 722 173"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!722 173S6[905 691 687 1291!687 1291|499 2537"/>
+                    <Edge fillStyle1="1" edges="!499 2537S2[235 2707 2 2526"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/下臂" centerPoint3DX="20.15" centerPoint3DY="65.45">
+                  <matrix>
+                    <Matrix a="-1" tx="40.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.15" y="65.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/右下臂花纹" centerPoint3DX="8.25" centerPoint3DY="81.25">
+                  <matrix>
+                    <Matrix ty="31.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.4" y="49.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#009999"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
