@@ -5,14 +5,18 @@
   混沌王出生在 (600,600)，间距约 500。
   时间线（以波次倒计时实现，敌人未死则顺延）：
     0~30秒   波次0：只有混沌王；
-    30秒时   WaveFinished(0)：虎妙(兵种330, 友方)入场 + 对话；
+    30秒时   WaveFinished(0)：虎妙(兵种330, 友方)入场 + 对话（场上存活敌人<1 则不触发）；
     30~60秒  波次1：空波次计时；
-    60秒时   WaveFinished(1)：虎妙撤退对话（XML无法移除场上友军，撤退仅为剧情表现，由虎妙主动停手承担，需实机验证观感）；
+    60秒时   WaveFinished(1)：撤退对话（场上存活敌人<1 则不触发）；
+             虎妙自身带 退场时间:32000（入场后32秒，即约62秒时刻），由 真九命猫妖初始化
+             的帧计时器到时触发 状态改变("血腥死") 完成真实撤退；
     60~180秒 波次2：空波次计时；
-    180秒时  WaveFinished(2)：虎妙重新入场 + 对话；
+    180秒时  WaveFinished(2)：虎妙重新入场 + 对话（场上存活敌人<1 则不触发）；
     180秒后  波次3：无限时波次，直到混沌王死亡；
     混沌王死亡 UnitDeath(混沌王)：结束对话 + StageProgress Finish 立即结算，
     因此无论玩家在第几秒击杀，都会跳过后续定时节点直接收尾。
+  MinAliveEnemies 为 StageEvent 可选通用条件：<MinAliveEnemies>n</MinAliveEnemies>，
+  场上存活敌人数 >= n 时事件才允许触发（缺失/<=0 = 不限制）。
 -->
 <GameStage>
     <Rewards>
@@ -82,6 +86,7 @@
         <Event>
             <EventName>WaveFinished</EventName>
             <Parameter>0</Parameter>
+            <MinAliveEnemies>1</MinAliveEnemies>
             <Dialogue id="0">
                 <Name>虎妙</Name>
                 <Title>九命猫妖</Title>
@@ -109,6 +114,7 @@
         <Event>
             <EventName>WaveFinished</EventName>
             <Parameter>1</Parameter>
+            <MinAliveEnemies>1</MinAliveEnemies>
             <Dialogue id="0">
                 <Name>虎妙</Name>
                 <Title>九命猫妖</Title>
@@ -125,6 +131,7 @@
         <Event>
             <EventName>WaveFinished</EventName>
             <Parameter>2</Parameter>
+            <MinAliveEnemies>1</MinAliveEnemies>
             <Dialogue id="0">
                 <Name>虎妙</Name>
                 <Title>九命猫妖</Title>
