@@ -1285,11 +1285,13 @@ _root.主角函数.随机切换攻击模式 = function() {
 
 _root.主角函数.攻击呐喊 = function() {
     var arr:Array = 性别 === "女" ? 女_攻击呐喊_库 : 男_攻击呐喊_库;
+    if (arr == null || arr.length == 0) return; // 声库为空 = 静音（独立声库参数显式置空时）
     _root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
 
 _root.主角函数.中招呐喊 = function() {
     var arr:Array = 性别 === "女" ? 女_中招呐喊_库 : 男_中招呐喊_库;
+    if (arr == null || arr.length == 0) return; // 声库为空 = 静音（独立声库参数显式置空时）
     _root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
 
@@ -1299,6 +1301,7 @@ _root.主角函数.击倒呐喊 = function() {
         return; // 击倒呐喊的最低间隔为300毫秒
     this.上次击倒呐喊时间 = time;
     var arr:Array = 性别 === "女" ? 女_击倒呐喊_库 : 男_击倒呐喊_库;
+    if (arr == null || arr.length == 0) return; // 声库为空 = 静音（独立声库参数显式置空时，如虎妙）
     _root.soundEffectManager.playSound(LinearCongruentialEngine.instance.getRandomArrayElement(arr));
 };
 
