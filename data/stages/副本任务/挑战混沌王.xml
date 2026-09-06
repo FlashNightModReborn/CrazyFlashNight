@@ -78,18 +78,6 @@
                 <Char>混沌王</Char>
                 <Text>来了。别磨蹭，我对等待没有兴趣。</Text>
             </Dialogue>
-            <Dialogue id="1">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>（他就是那个人修罗……记住阿卡的话：看到蓄力的杀招，能跑多远就跑多远。）</Text>
-            </Dialogue>
-            <Dialogue id="2">
-                <Name>混沌王</Name>
-                <Title>人修罗</Title>
-                <Char>混沌王</Char>
-                <Text>让我看看，你和你身后那些人的底气，到底值多少。</Text>
-            </Dialogue>
         </Event>
         <Event>
             <EventName>WaveFinished</EventName>
