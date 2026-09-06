@@ -235,7 +235,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 | `StageInfoLoader` | `data/stages/list.xml`（级联子目录） | 关卡元信息 |
 | `SceneEnvironmentLoader` | `data/environment/scene_environment.xml` | 场景环境 |
 | `InputCommandRuntimeConfigLoader` | `data/config/InputCommandRuntimeConfig.xml` | 指令 DFA 运行时参数 |
-| `MapAvatarVisibilityLoader` | `data/map/map_panel.xml` | WebView 地图面板的 `avatar_visibility` 门控规则（瘦身后 map_panel.xml 仅剩此段；缺失=空表=默认全可见，仅影响头像门控，不阻塞）。**groups/hotspots 已迁出本文件**，真相源 = launcher/web/modules/map-panel-data.js，build.ps1 Step 1c 派生为 `data/map/map_catalog.json`，AS2 经 `DataQueryService("map_catalog")` → `MapPanelCatalog.applyFromCatalogJson` 启动期拉取（导航权威，失败硬报错不降级）。`task_npcs/aliases` 同样迁出，走 `DataQueryTask("task_npc_registry")`（NPC→hotspot 映射，**同时驱动**：① 地图任务红点 ② 任务面板「前往交付」按钮可达态 `finishNavigable` 与 `navigateFinish` 跳转执行路径。失败/未就绪 = 静默降级：红点不亮 + 面板「前往交付」按钮禁用 + `navigateFinish` 回 `not_navigable`，均不阻塞游戏进入与正常交付）|
+| `MapAvatarVisibilityLoader` | `data/map/map_panel.xml` | WebView 地图面板的 `avatar_visibility` 门控规则（瘦身后 map_panel.xml 仅剩此段；缺失=空表=默认全可见，仅影响头像门控，不阻塞）。**groups/hotspots 已迁出本文件**，定义真源 = data/map/map_definition.json（Web 数据 API 仅作适配），build.ps1 Step 1c 派生为 `data/map/map_catalog.json`，AS2 经 `DataQueryService("map_catalog")` → `MapPanelCatalog.applyFromCatalogJson` 启动期拉取（导航权威，失败硬报错不降级）。`task_npcs/aliases` 同样迁出，走 `DataQueryTask("task_npc_registry")`（NPC→hotspot 映射，**同时驱动**：① 地图任务红点 ② 任务面板「前往交付」按钮可达态 `finishNavigable` 与 `navigateFinish` 跳转执行路径。失败/未就绪 = 静默降级：红点不亮 + 面板「前往交付」按钮禁用 + `navigateFinish` 回 `not_navigable`，均不阻塞游戏进入与正常交付）|
 | `InformationDictionaryLoader` | `data/dictionaries/information_dictionary.xml` | 情报条目元数据；Launcher Web 情报面板由 C# `IntelligenceTask` 读取同一 XML，并按字典白名单读取 `data/intelligence_h5/<itemName>.json` |
 
 > 完整列表见 `org/flashNight/gesh/xml/LoadXml/`。另有 `BaseStageXMLLoader`（按路径加载单个关卡 XML）和 `StageXMLLoader`（非单例，支持 CaseSwitch 条件值解析）。
@@ -405,6 +405,8 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 
 ### map_panel.xml schema 摘要（拓扑收束后，2026-06：仅剩 avatar_visibility）
 
+2026-09-06 地图维护第一阶段：布局、热点、筛选、头像和 XFL 校准的人工真源已抽到 `data/map/map_definition.json`。旧 `map-panel-data.js / map-avatar-source-data.js` 只提供展示 API，下文派生脚本通过该 API 读取同一 JSON。C# 内核只开放图块矩形、头像相对位置/尺寸、筛选按钮与显示标题；不能改 NPC 身份或导航条件。NativeHud 改为直接消费 C# 定义投影，旧 HUD JSON 暂留作构建兼容与对照。见[地图工作台](../tools/map-workbench/README.md)。
+
 > groups/hotspots 已迁出本文件 → 见下方 `## map_catalog.json schema`。task_npcs/aliases 见 `## task_npc_registry.json schema`。
 
 ```xml
@@ -429,7 +431,7 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
   - 同一 avatarId 不可指向不同 npc；avatarId 必须命中 launcher staticAvatars/dynamicAvatars id 集
   - 外部 validator：`node tools/audit-map-avatar-visibility.js`
 - **groups/hotspots 不再硬编码 REQUIRED 白名单**：集合正确性由 build.ps1 Step 1c 的 `tools/derive-map-catalog.js` 派生期 gate 保证；`MapPanelCatalog.applyFromCatalogJson` 运行期只做结构校验（id/group/frame 齐全、group 已声明、page 合法、非 base 组有 lockedReason、id 不重复）。
-- **新增/改 hotspot 拓扑**：只需在 `launcher/web/modules/map-panel-data.js` 编辑，跑 build/derive 刷新 `map_catalog.json` 即可；**不再需要回写本 XML、不再需要改 AS2 REQUIRED 列表、不再需要重编译 SWF**（asLoader.xml boot 仍编译进 asLoader.swf，但拓扑数据本身是运行期 query）。
+- **既有页面/分组内新增或改 hotspot 拓扑**：定义位于 `data/map/map_definition.json`，通过 Web 数据 API 派生并刷新 `map_catalog.json`；纯拓扑数据不需回写本 XML 或重编译 SWF。第一阶段 GUI 仅维护已有对象，新增页面/分组和创建操作须随第二阶段消费者切流开放，不能忽略现有四页准入边界。
 - **新增任务 NPC**：在 staticAvatars/dynamicAvatars 加 entry，build.ps1 Step 1b 自动派生 `task_npc_registry.json`。
 
 ### map_catalog.json schema（派生产物，禁手改）
@@ -519,7 +521,7 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 }
 ```
 
-`launcher/web/modules/map-panel-data.js` 的 `dynamicAvatars` 也走同样的相对坐标 schema（室友独占该路径）：
+`data/map/map_definition.json` 各页面的 `dynamicAvatars` 也走同样的相对坐标 schema（室友独占该路径）：
 
 ```js
 { id: 'roommate', label: '室友', kind: 'roommateGender',

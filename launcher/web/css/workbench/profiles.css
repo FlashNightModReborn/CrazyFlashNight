@@ -1,4 +1,18 @@
 /* Closed DualPaneShell macro layouts. Feature CSS owns only pane-internal composition. */
+.workbench-shell[data-profile="canvas-editor"],
+.workbench-shell[data-profile="canvas-editor-focus"] {
+    grid-template-rows:var(--wb-header-height) minmax(0,1fr);
+}
+.workbench-shell[data-profile="canvas-editor"] > .workbench-body {
+    grid-template-columns:228px minmax(0,1fr);
+    gap:8px;
+}
+.workbench-shell[data-profile="canvas-editor-focus"] > .workbench-body {
+    grid-template-columns:minmax(0,1fr);
+}
+.workbench-shell[data-profile="canvas-editor"] > .workbench-body > .workbench-flow-rail,
+.workbench-shell[data-profile="canvas-editor-focus"] > .workbench-body > .workbench-flow-rail,
+.workbench-shell[data-profile="canvas-editor-focus"] > .workbench-body > .workbench-slot[data-slot="L"] { display:none; }
 .workbench-shell[data-profile="catalog-decision"],
 .workbench-shell[data-profile="archive-reference"],
 .workbench-shell[data-profile="transfer-pair"],

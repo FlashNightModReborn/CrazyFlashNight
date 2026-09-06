@@ -60,6 +60,7 @@ function printHelp(exitCode, error) {
 function loadMapData() {
     const sandbox = { console };
     vm.createContext(sandbox);
+    sandbox.MapDefinitionData = JSON.parse(fs.readFileSync(path.join(projectRoot, 'data/map/map_definition.json'), 'utf8'));
     // avatar source 先载入（map-panel-data.js 末尾 exportManifest 会引用；缺失时 graceful-null，
     // 但与 derive-task-npc-registry.js 保持一致以防未来强依赖）。
     if (fs.existsSync(avatarSourceFile)) {

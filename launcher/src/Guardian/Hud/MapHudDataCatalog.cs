@@ -21,6 +21,20 @@ namespace CF7Launcher.Guardian.Hud
     {
         public const int SUPPORTED_PROTOCOL_VERSION = 1;
 
+        public static MapHudDataCatalog LoadFromDefinition(string projectRoot)
+        {
+            try
+            {
+                var definition = CF7Launcher.Data.MapDefinition.Load(projectRoot);
+                return FromPayload(CF7Launcher.Data.MapDefinition.Hud(definition).ToObject<MapHudPayload>());
+            }
+            catch (Exception error)
+            {
+                LogManager.Log("[MapHudCatalog] map definition unavailable: " + error.Message);
+                return FromPayload(null);
+            }
+        }
+
         // P2-2 perf：catalog 支持"后台异步填充"模式。LoadAsync 立即返回空 catalog，
         // 后台线程读 JSON 完成后原子替换 _byId / metadata。GetEntry 在加载前返回 null
         // —— widget 已能处理 null（`if (_mapEntry == null) return`），不渲染地图直到加载完成。

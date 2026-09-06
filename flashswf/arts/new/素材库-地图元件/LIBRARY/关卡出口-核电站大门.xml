@@ -1,13 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="关卡出口-核电站大门" itemID="6a9c10f3-00000381" linkageExportForAS="true" linkageIdentifier="关卡出口-核电站大门" lastModified="1788613477" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="关卡出口-核电站大门" itemID="6a9c10f3-00000381" linkageExportForAS="true" linkageIdentifier="关卡出口-核电站大门" lastModified="1788685976" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="关卡出口-核电站大门">
       <layers>
-        <DOMLayer name="as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="39" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-_root.gameworld.dispatcher.subscribeOnce("StageFinished", function() {
+_root.gameworld.dispatcher.subscribeOnce("Clear", function() {
     this.play();
 }, this);]]></script>
               </Actionscript>
@@ -34,7 +34,7 @@ _root.gameworld.dispatcher.subscribeOnce("StageFinished", function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="遮罩" color="#9933CC" locked="true" autoNamed="false" layerType="mask">
+        <DOMLayer name="遮罩" color="#9933CC" locked="true" autoNamed="false" visible="false" layerType="mask">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements>
@@ -54,14 +54,14 @@ _root.gameworld.dispatcher.subscribeOnce("StageFinished", function() {
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!1884 -5141|1884 3!1884 3|-2040 3!-2040 3|-2040 -5141!-2040 -5141|1884 -5141"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1884 3|-2040 3!-2040 3|-2040 -5141!-2040 -5141|1884 -5141!1884 -5141|1884 3"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="2" locked="true">
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="2" locked="true" current="true" isSelected="true" visible="false">
           <frames>
             <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

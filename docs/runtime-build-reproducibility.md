@@ -2,7 +2,24 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-06 当前正式发布：物品素材工作台与旧烘焙链退役
+## 2026-09-06 当前正式发布：地图维护工作台第一阶段
+
+正式入口为 **其他 → 工具 → 地图工作台**。地图定义成为 C# 维护内核、Web 启动快照与 NativeHud 的共同输入；作者画布直接复用生产 MapPanel，支持布局编辑、缩放/平移、对比、保存与精确撤回。测试产生的地图数据已恢复初始字节，AS2 解锁、任务及场景执行权威未迁移，未改 AS2 / SWF。
+
+- 实现提交 `4ae851e8fcfd755930cdcacdf167f5c1a3f9988d`；最终 release source `049eb27e3ed6c5ee264d38b29806ad219267e6d2`；tag `runtime-build-v2/20260906-map-workbench-phase1-v1`；release tree `ef7ca08a8efaabdf2e5b593b0dc92af069632dd1`；request `D6065B1E49E664C1F4484F667D57801617728F53710737093C03B419B52045AB`。
+- build identity `F623E762CF4BD86A83A21FF1C01483DDBEB1FB0630548E4F63BF5FB4A2E02AD5`；33-file payload closure `2FB0874A547FB41671EAF55D5470877710CA4E389F836AA061077EECEECD5065`；Core DLL SHA-256 `B1BD5DF242271C8520369555BC8889E48AF8063BD0600D6B12A17C90A2ABF45A`，与已体验开发候选逐字节一致。
+- 本地 X509 `builder-local-a / physical-host-a`，keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `77791D45CEC61BBEA0DBD3C98FA197973E122B9A6FF8699582B61A98F8E67909`，[cloud run 34015051061](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34015051061)。两端身份与逐文件闭包一致；promotion 已将云端证明对真实本地 CAS candidate 完整重放，没有复制私钥或伪造第二生产者。
+- production policy **40/40**；policy hash `47A4C1B660DC2E41748C773CBA87A3E08F77C0438319C66D503566E92448CED6`；receipt SHA-256 `FFA5496FE44066110EB7984B32C90227AA749A0371EC3A07B63F4A2BA9CC93DC`；manifest SHA-256 `FFF97496839A26DB7202AAEAB9A93FE12F573C4B5C271CA8D9A3803F88D40AAE`；promotion 后磁盘 consensus SHA-256 `AED076A58BE88DB9718E2540F99EFE161151631DCDB9C67942C302DF7D4F79AD`。
+- `2026-09-06T06:01:02.9274360Z` 完成原子 promotion；正式 33-file bundle、2 signers / 2 faultDomains consensus 与根 bootstrap `--verify-only` 通过。上一 bundle 保留于 `tmp/runtime-promotions/20260906T060041953Z-6ee63cdff11e4ce0bb3bea914b397929/previous`。暂存态 bundle、signed consensus 与独立 GitHub proof replay 再次通过；部署提交 `fc9b650bfc3aff794dcbd8d4381c35e24e44c2f2` 已快进推送到 main。
+- 机器验证：Launcher canonical runner **4,742 passed / 3 existing skipped / 0 failed**、SDK 解析 7/7；地图 C# 内核 17/17、现役地图浏览器 52/52、真实 C# 后端保存/重载/撤回与多分辨率画布检查、实际 WebView2 生产页面和作者子文档隔离通过；Workbench strict **0 error / 0 warning**。具体作用域见[两阶段施工记录](地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
+
+首次 request `404F1028F806E487D602FE4958B6B939B812A656C75CCA45C7A018E62973B298` 在本地 policy 商店头像来源检查失败后被 supersede，未创建远端标签、启动云构建或部署。`Pig.json` 混合换行导致来源记录与 Git LF 原文不同；既有刷新工具只更新来源/回执，34 张原头像与 runtime manifest 保持原字节，并为该源固定 LF。recipe 因此变化，最终请求已重新构建并签名，未放宽任何保护门。
+
+当前状态为 **HUMAN_ACCEPTANCE_PASSED / promoted**：维护者已确认维护与生产 UI 预览可用并授权发布；测试定义按真实操作回执恢复为 `E53C5699D41FC08D54FEF0E2FC3F000669EED60EAF2F41696452AFC322FFD420`。部署后尚未从正式入口重跑编辑/保存/撤回及地图/任务导航旅程，不称地图专项 `standard_entry_verified`。第二阶段仅完成[内容创作设计](地图内容创作工作台-第二阶段产品与CSharp权威收束-ADR-2026-09-06.md)，不是本次已发布能力。
+
+首次远端部署审计 [run 34015714902](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34015714902) 成功，于 `2026-09-06T06:12:47.0250779Z` 精确输出 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `7187d793b381aab8af86e95f894677b11600059e` → head `fc9b650bfc3aff794dcbd8d4381c35e24e44c2f2`；33-file closure、2 signers / 2 faultDomains 与绑定 v2 冻结源的 GitHub proof replay 全部通过。
+
+## 2026-09-06 上一正式发布：物品素材工作台与旧烘焙链退役
 
 正式入口为 **其他 → 工具 → 物品素材工作台**。GUI 与 CLI 共用导出、预览、应用和撤回内核，旧 Flash 图标烘焙与位图分块传输退役。本轮包含动画预览、全屏布局、状态与 SWF 筛选、连续滚动、共用帮助，以及三件 3XD 素材的实操产物。发布监听、其他消费者缓存刷新和 CS6 发布包装不在范围内。
 

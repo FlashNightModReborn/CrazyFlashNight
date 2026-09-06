@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="路障与通关门/关卡出口-防御地带内部大门" itemID="6826e09a-000002b5" linkageExportForAS="true" linkageIdentifier="关卡出口-防御地带内部大门" lastModified="1788613632" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="路障与通关门/关卡出口-防御地带内部大门" itemID="6826e09a-000002b5" linkageExportForAS="true" linkageIdentifier="关卡出口-防御地带内部大门" lastModified="1788685868" lastUniqueIdentifier="6">
   <timeline>
     <DOMTimeline name="关卡出口-防御地带内部大门">
       <layers>
@@ -7,7 +7,7 @@
             <DOMFrame index="0" duration="39" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
-_root.gameworld.dispatcher.subscribeOnce("StageFinished", function() {
+_root.gameworld.dispatcher.subscribeOnce("Clear", function() {
     this.play();
 }, this);]]></script>
               </Actionscript>

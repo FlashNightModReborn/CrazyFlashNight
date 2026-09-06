@@ -3,9 +3,8 @@
 
 // Build-time export: map-panel-data.js → launcher/data/map_hud_data.json
 //
-// MapHudWidget (C# native HUD, see launcher/src/Guardian/Hud/MapHudWidget.cs)
-// loads this JSON at startup and serves outlines by hotspotId. Runtime keeps
-// zero dependency on the JS file; this script is the sync seam.
+// 新 Host 从 MapDefinition 直接生成内存投影；此文件保留旧构建兼容产物。
+// 导出的纯函数用于对照 C# 与 Web 对当前定义的投影，不增加生产消费者。
 //
 // Run after edits to map-panel-data.js or before launcher build:
 //   node tools/export-maphud-data.js
@@ -35,6 +34,7 @@ function loadMapData() {
     const source = fs.readFileSync(dataFile, 'utf8');
     const sandbox = { console };
     vm.createContext(sandbox);
+    sandbox.MapDefinitionData = JSON.parse(fs.readFileSync(path.join(projectRoot, 'data/map/map_definition.json'), 'utf8'));
     vm.runInContext(source, sandbox, { filename: dataFile });
     if (!sandbox.MapPanelData) {
         throw new Error('MapPanelData not found in ' + dataFile);
@@ -146,4 +146,5 @@ function main() {
     console.log('[export-maphud] hotspots exported: ' + exported + ' (skipped: ' + skipped + ')');
 }
 
-main();
+if (require.main === module) main();
+module.exports = { loadMapData, buildHotspotEntry };

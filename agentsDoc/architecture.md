@@ -118,6 +118,8 @@
 
 ## 3. 通信与边界
 
+地图维护第一阶段：`data/map/map_definition.json → MapDefinition → Web 启动数据 / NativeHud outline`；`MapAuthoringStore` 是 GUI/CLI 共用文件内核。Host 在页面创建前注入 C# 校验后的启动快照，不持久化 JS 数据副本。AS2 解锁、任务和场景执行保持现役权威；切流见[两阶段施工](../docs/地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
+
 ### Flash ↔ Launcher
 
 - 主通道：XMLSocket（快车道前缀 + JSON 路由）。standard normal 在 accepted loopback tuple 上解析 owner，并只接受 GameLaunchFlow 当前 exact Flash PID/start-time/path；校验先于旧连接替换、generation/ready 与 dispatch。显式 legacy/`--bus-only` 才使用 loopback compatibility authority。

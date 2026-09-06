@@ -49,8 +49,6 @@ compiled → candidate_built → candidate_executed → e2e_verified → promote
 | Native | C++ bootstrap、HotkeyGuard、miniaudio side-car | [native](native/) |
 | Tests | xUnit、Node browser/harness、专项 PowerShell/Python gate | [tests](tests/) 与 [testing guide](../agentsDoc/testing-guide.md) |
 
-不要在本文件手写 NuGet 版本、runtime 文件数或产物大小；这些值分别从版本真源和 manifest 读取。
-
 ## 运行架构
 
 ### 入口与进程
@@ -236,7 +234,7 @@ Web/Node、真实 Edge harness、AS2 runner、Flash CS6 publish-only smoke、can
 
 ## 运行时配置
 
-`config.toml` 是机器级、随仓、启动时只读配置；`launcher_user_prefs.json` 是用户级偏好。配置解析权威为 [AppConfig.cs](src/Config/AppConfig.cs)，注释和 shipped value 权威为 [config.toml](../config.toml)。
+地图定义和维护内核见[地图工作台](../tools/map-workbench/README.md)；`config.toml` 是机器级启动配置，`launcher_user_prefs.json` 是用户偏好。解析权威为 [AppConfig.cs](src/Config/AppConfig.cs)，shipped value 见 [config.toml](../config.toml)。
 
 下表完整登记 `AppConfig` 当前识别的 key。`代码默认 / shipped` 不一致时必须同时写清，避免把缺 key 行为误当随仓配置。
 
@@ -355,6 +353,7 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 | `cutscene-test` | 开发 Panel | `modules/cutscene-test.js` |
 | `dressup` | 工具 Panel | `modules/dressup/dressup-panel.js` |
 | `asset-workbench` | [美术维护工作台](../tools/asset-workbench/README.md) | `modules/asset-workbench.js` |
+| `map-workbench` | [地图维护工作台](../tools/map-workbench/README.md) | `modules/map-workbench.js` |
 | `map` | 业务 Panel | `modules/map-panel.js` |
 | `stage-select` | 业务 Panel | `modules/stage-select-panel.js` |
 | `lockbox` | minigame | `modules/minigames/lockbox/lockbox-panel.js` |

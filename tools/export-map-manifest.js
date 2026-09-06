@@ -54,6 +54,7 @@ function printHelp(exitCode, error) {
 function loadMapData() {
     const sandbox = { console };
     vm.createContext(sandbox);
+    sandbox.MapDefinitionData = JSON.parse(fs.readFileSync(path.join(projectRoot, 'data/map/map_definition.json'), 'utf8'));
     // 先加载 source-data, 让 panel-data 内部 exportPage 能解出 avatar marker rect
     // (panel-data 的 exportManifest 在 IIFE 末尾立即跑, 期间会访问 MapAvatarSourceData)
     vm.runInContext(fs.readFileSync(avatarSourceFile, 'utf8'), sandbox, { filename: avatarSourceFile });

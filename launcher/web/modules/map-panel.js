@@ -67,6 +67,10 @@ var MapPanel = (function() {
     var _canvasSyncScheduled = false;   // 微任务合并: 同一同步批次多次 sync 只 setState 一次
     var _canvasRevision = 0;
     var _canvasRenderCache = {};
+    // 作者预览运行在独立子文档，桥接器只返回设计快照，不连接游戏导航。
+    var _authoringEnabled = typeof window !== 'undefined' && window.MapAuthoringPreview === true && window.parent !== window;
+    var _authoringCamera = { zoom: 1, x: 0, y: 0 };
+    var _authoringRasterScale = 1;
     var _lastCoordinateReadout = null;
     var _pendingCoordinatePointer = null;
     var _coordinateRaf = 0;
@@ -495,6 +499,7 @@ var MapPanel = (function() {
     }
 
     function applyPage(pageId) {
+        if (_authoringEnabled && _activePage && _activePage.id !== pageId) _authoringCamera = { zoom: 1, x: 0, y: 0 };
         _activePage = MapPanelData.getPage(pageId);
         _hoverHotspotId = '';
         resetCoordinateReadout();
@@ -2190,6 +2195,7 @@ var MapPanel = (function() {
             contentFitScale: _contentFitScale,
             contentFitOffsetX: _contentFitOffsetX,
             contentFitOffsetY: _contentFitOffsetY,
+            rasterScale: _authoringEnabled ? _authoringRasterScale : 1,
             lowEffects: isLowEffectsMode(),
             anomalyActive: !!(_activePage && _activePage.id === 'defense' && activeFilter && activeFilter.id === 'restricted'),
             sceneVisuals: getCanvasRenderSlice('sceneVisuals', visibleKey, function() {
@@ -2549,6 +2555,11 @@ var MapPanel = (function() {
     }
 
     function applyContentFit(scale, offsetX, offsetY, bounds, stageWidth, stageHeight, fitMeta) {
+        if (_authoringEnabled) {
+            offsetX = stageWidth / 2 + (offsetX - stageWidth / 2) * _authoringCamera.zoom + _authoringCamera.x;
+            offsetY = stageHeight / 2 + (offsetY - stageHeight / 2) * _authoringCamera.zoom + _authoringCamera.y;
+            scale *= _authoringCamera.zoom;
+        }
         _contentFitScale = scale;
         _contentFitOffsetX = offsetX;
         _contentFitOffsetY = offsetY;
@@ -2571,6 +2582,7 @@ var MapPanel = (function() {
                 'translate3d(' + offsetX.toFixed(2) + 'px, ' + offsetY.toFixed(2) + 'px, 0) scale(' + scale.toFixed(4) + ')';
         }
         syncCanvasStage();
+        if (_authoringEnabled) document.dispatchEvent(new CustomEvent('map-authoring-layout'));
     }
 
     function measureContentBounds() {
@@ -3108,6 +3120,32 @@ var MapPanel = (function() {
     });
 
     return {
+        authoring: _authoringEnabled ? {
+            setFilter: function(id) { setActiveFilter(id); },
+            setDefinition: function(definition, snapshot, rasterScale) {
+                MapDefinitionData = definition;
+                MapAvatarSourceData = MapAvatarSourceData.create(definition);
+                MapPanelData = MapPanelData.create(definition);
+                MapManifest = MapPanelData.exportManifest();
+                _authoringRasterScale = Math.max(0.5, Math.min(3, Number(rasterScale) || 1));
+                resetCanvasRenderCache();
+                buildPageTabs();
+                _requestedInitialPageId = snapshot.defaultPageId;
+                applySnapshot(snapshot);
+                setLoading(false);
+            },
+            setCamera: function(camera) {
+                _authoringCamera = { zoom: Math.max(0.5, Math.min(6, Number(camera.zoom) || 1)), x: Number(camera.x) || 0, y: Number(camera.y) || 0 };
+                syncStageLayout('authoring_camera');
+            },
+            getView: function() {
+                var filter = getActiveFilter(_activePage);
+                return { pageId: _activePage && _activePage.id, filterId: filter && filter.id, scale: _stageScale * _contentFitScale,
+                    offsetX: _contentFitOffsetX, offsetY: _contentFitOffsetY,
+                    width: _stageEl && _stageEl.clientWidth, height: _stageEl && _stageEl.clientHeight,
+                    camera: { zoom: _authoringCamera.zoom, x: _authoringCamera.x, y: _authoringCamera.y } };
+            }
+        } : null,
         _debugGetState: getDebugState,
         _debugApplySnapshot: applySnapshot,
         _debugSetFilter: setActiveFilter,

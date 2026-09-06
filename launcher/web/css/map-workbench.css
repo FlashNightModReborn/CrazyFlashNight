@@ -1,0 +1,25 @@
+.map-workbench-panel { position:absolute; inset:0; color:var(--wb-text); }
+.mw-library,.mw-editor { height:100%; min-height:0; min-width:0; box-sizing:border-box; padding:8px; }
+.mw-library { display:flex; flex-direction:column; gap:7px; overflow-y:auto; }
+.mw-editor { display:flex; flex-direction:column; gap:4px; padding:4px; overflow:hidden; }
+.mw-library h2,.mw-status { margin:0; }
+.mw-library h2 { font-size:15px; }
+.mw-identity,.mw-caption { color:var(--wb-text-muted); font-size:11px; overflow-wrap:anywhere; }
+.map-workbench-panel select,.map-workbench-panel input,.mw-button { color:var(--wb-text); background:var(--wb-surface-2); border:1px solid var(--wb-line-strong); padding:5px; font:inherit; font-size:12px; min-width:0; box-sizing:border-box; }
+.mw-library select { width:100%; flex-shrink:0; }
+.mw-button { cursor:pointer; }
+.mw-primary { border-color:var(--wb-accent); background:var(--wb-surface); }
+.map-workbench-panel :disabled { opacity:.5; cursor:default; }
+.mw-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:5px; flex-shrink:0; font-size:12px; }
+.mw-toolbar label { display:flex; align-items:center; gap:2px; white-space:nowrap; }
+.mw-preview { flex:1; width:100%; min-height:0; border:0; display:block; background:var(--wb-bg); }
+.mw-fields,.mw-save-actions { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:6px; }
+.mw-fields label { display:flex; flex-direction:column; gap:3px; font-size:12px; min-width:0; }
+.mw-fields input { width:100%; }
+.mw-fields label:has(input[type=text]),.mw-fields label:has(#mw-order) { grid-column:1 / -1; }
+.mw-save-actions .mw-primary,.mw-save-actions button:nth-child(3) { grid-column:1 / -1; }
+.mw-history { display:flex; flex-direction:column; gap:5px; }
+.mw-help,.mw-status { font-size:12px; line-height:1.5; white-space:pre-wrap; }
+.mw-help { padding:8px; border:1px solid var(--wb-line-strong); background:var(--wb-surface); }
+.mw-count,.mw-zoom { font-size:12px; }
+.mw-library { scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track); scrollbar-width:thin; }

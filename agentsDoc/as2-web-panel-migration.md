@@ -446,6 +446,8 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 
 ## 3. C# 接入清单
 
+地图维护第一阶段的 `map-workbench / map_workbench` 是 Host 本地 authoring 域，不经过 AS2。生产地图在页面创建前由 C# 注入唯一 JSON 定义的校验快照，NativeHud 使用同一 C# 投影；AS2 兼容目录和解锁/导航协议保持不变。保存/撤回只影响下次启动。编辑器在隔离子文档中复用生产 MapPanel，`map-authoring-input / map-authoring-preview` 仅接受 exact 父子 Window、同源与本轮 session；子文档使用无游戏写出的设计快照桥。缩放/平移和草稿不修改运行中游戏目录。见[地图工作台](../tools/map-workbench/README.md)。
+
 新增生产 panel 的 C# 最小接入面：
 
 - `launcher/src/Tasks/*Task.cs`：NpcShop/Crafting 是两个冻结参考消费者，Hairdresser 与 Settings 是后续真实消费者，四者组合同一 `PanelPendingCallTracker<TContext>`；不得另建 pending map、timer、backend callId mux 或第二套 transport cleanup。领域 Task 仍独占 payload/response 白名单、写门和 reconcile 裁决。四个消费者只是组合式先例，不是通用基类或批量迁移授权；未来领域须先以真实生命周期证明同构，并在冻结 Web-only 的同轮删除旧 renderer/fallback 与重复 pending 机制，不能先抽象后找用途。`MaterialShopAccessTask` 是 dedicated Host→AS2 authorization bridge，只持 fid/correlation，不是领域 pending tracker，也不持 transition timer；唯一 deadline 归 `MaterialShopNavigationCoordinator`。

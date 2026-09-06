@@ -3090,6 +3090,7 @@ namespace CF7Launcher.Guardian
                     }
                     break;
                 case "ASSET_WORKBENCH": OpenPanel("asset-workbench", "{}"); break;
+                case "MAP_WORKBENCH": OpenPanel("map-workbench", "{}"); break;
                 case "LOCKBOX_TEST":
                     {
                         uint familySeed = unchecked((uint)Environment.TickCount);

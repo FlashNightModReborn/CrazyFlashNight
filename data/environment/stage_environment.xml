@@ -2017,10 +2017,10 @@
         <Door>
             <Index>1</Index>
             <Direction>上</Direction>
-            <x0>1020</x0>
-            <y0>170</y0>
-            <x1>1120</x1>
-            <y1>240</y1>
+            <x0>1013</x0>
+            <y0>145</y0>
+            <x1>1123</x1>
+            <y1>225</y1>
             <Identifier>关卡出口-防御地带内部大门</Identifier>
         </Door>
     </Environment>
@@ -3211,14 +3211,14 @@
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
         <Xmax>1800</Xmax>
-        <Ymin>280</Ymin>
+        <Ymin>250</Ymin>
         <Ymax>550</Ymax>
         <Width>1800</Width>
         <Height>550</Height>
         <Horizon>0</Horizon>
         <Skybox>
             <url>核电站冷却池远景.swf</url>
-            <SpeedRate>3</SpeedRate>
+            <SpeedRate>2</SpeedRate>
         </Skybox>
     </Environment>
     <Environment>
@@ -3226,17 +3226,17 @@
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
         <Xmax>1800</Xmax>
-        <Ymin>280</Ymin>
+        <Ymin>250</Ymin>
         <Ymax>550</Ymax>
         <Width>1800</Width>
         <Height>550</Height>
         <Door>
             <Index>1</Index>
             <Direction>上</Direction>
-            <x0>895</x0>
-            <y0>280</y0>
-            <x1>1060</x1>
-            <y1>300</y1>
+            <x0>908</x0>
+            <y0>230</y0>
+            <x1>1068</x1>
+            <y1>265</y1>
             <Identifier>关卡出口-核电站大门</Identifier>
         </Door>
         <SpaceCondition>室内</SpaceCondition>

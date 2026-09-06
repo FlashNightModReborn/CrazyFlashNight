@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
@@ -28,6 +29,23 @@ namespace CF7Launcher.Guardian
     public class WebOverlayForm : Form, IToastSink, INotchSink, IDisposable
     {
         private AssetWorkbenchTask _assetWorkbenchTask;
+        private MapWorkbenchTask _mapWorkbenchTask;
+
+        private async void HandleMapWorkbenchMessage(string json, string source)
+        {
+            if (!CanAcceptPanelDocumentMessages || _panelHost == null
+                || !Uri.TryCreate(source, UriKind.Absolute, out var origin)
+                || origin.Scheme != "https" || origin.Host != "overlay.local" || !origin.IsDefaultPort
+                || !MapWorkbenchTask.TryReadRequest(json, _panelHost.ActivePanelName, _panelHost.ActivePanelInstanceId, out var message, out var request)) return;
+            string instance = (string)message["panelInstanceId"];
+            if ((string)message["cmd"] == "close") { _panelHost.TryClosePanelExact(MapWorkbenchTask.Panel, instance, null); return; }
+            _mapWorkbenchTask ??= new MapWorkbenchTask(_projectRoot);
+            var response = await _mapWorkbenchTask.ExecuteAsync(request);
+            if (IsDisposed || Disposing || _panelHost.ActivePanelName != MapWorkbenchTask.Panel || _panelHost.ActivePanelInstanceId != instance) return;
+            response["type"] = "panel_resp"; response["panel"] = MapWorkbenchTask.Panel; response["domain"] = MapWorkbenchTask.Domain;
+            response["cmd"] = message["cmd"]; response["callId"] = message["callId"]; response["panelInstanceId"] = instance;
+            PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
+        }
 
         private async void HandleAssetWorkbenchMessage(string json, string source)
         {
@@ -1623,6 +1641,13 @@ namespace CF7Launcher.Guardian
                     "overlay.local", webDir,
                     CoreWebView2HostResourceAccessKind.Allow);
 
+                // 虚拟主机资源不会触发 WebResourceRequested；启动快照必须在页面脚本前注入。
+                // 本次进程内固定快照，工作台保存后的生产地图与 NativeHud 统一在重启后更新。
+                string mapScript;
+                try { mapScript = CF7Launcher.Data.MapDefinition.BootstrapScript(CF7Launcher.Data.MapDefinition.Load(_projectRoot)); }
+                catch (Exception error) { LogManager.Log("[MapDefinition] " + error.Message); mapScript = "window.MapDefinitionLoadError='地图定义加载失败，请检查 data/map/map_definition.json';"; }
+                await _webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(mapScript);
+
                 string assetJobs = Path.Combine(_projectRoot, "tmp", "asset-workbench", "jobs");
                 Directory.CreateDirectory(assetJobs);
                 _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
@@ -2358,6 +2383,12 @@ namespace CF7Launcher.Guardian
                     || parsed?.Value<string>("domain") == AssetWorkbenchTask.Domain)
                 {
                     HandleAssetWorkbenchMessage(json, args.Source);
+                    return;
+                }
+
+                if (parsed?.Value<string>("panel") == MapWorkbenchTask.Panel || parsed?.Value<string>("domain") == MapWorkbenchTask.Domain)
+                {
+                    HandleMapWorkbenchMessage(json, args.Source);
                     return;
                 }
 

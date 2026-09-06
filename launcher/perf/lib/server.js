@@ -31,6 +31,12 @@ function startServer(rootDir, port = 0) {
                 let pathname = decodeURIComponent(url.parse(req.url).pathname);
                 if (pathname === '/') pathname = '/overlay.html';
                 const file = path.join(rootDir, pathname);
+                if (pathname.endsWith('/modules/map-definition.js')) {
+                    const repo = fs.existsSync(path.join(rootDir, 'data/map/map_definition.json')) ? rootDir : path.resolve(rootDir, '../..');
+                    const definition = JSON.parse(fs.readFileSync(path.join(repo, 'data/map/map_definition.json'), 'utf8'));
+                    res.writeHead(200, {'content-type':'application/javascript; charset=utf-8','cache-control':'no-store'});
+                    res.end('var MapDefinitionData = ' + JSON.stringify(definition).replace(/</g, '\\u003c') + ';'); return;
+                }
                 const rel = path.relative(rootDir, file);
                 if (rel.startsWith('..') || path.isAbsolute(rel)) {
                     res.writeHead(403); res.end('forbidden'); return;

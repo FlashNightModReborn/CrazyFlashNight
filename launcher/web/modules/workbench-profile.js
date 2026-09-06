@@ -13,7 +13,9 @@
         'transfer-pair': true,
         'library-action-strip': true,
         'library-decision': true,
-        'character-build': true
+        'character-build': true,
+        'canvas-editor': true,
+        'canvas-editor-focus': true
     };
     var VALID_PROFILE_NAMES = Object.freeze(Object.keys(VALID_PROFILES));
 

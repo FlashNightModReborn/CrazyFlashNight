@@ -65,6 +65,7 @@ function evaluateScript(filePath, globalName) {
     const source = fs.readFileSync(filePath, 'utf8');
     const sandbox = { console };
     vm.createContext(sandbox);
+    sandbox.MapDefinitionData = JSON.parse(fs.readFileSync(path.join(projectRoot, 'data/map/map_definition.json'), 'utf8'));
     vm.runInContext(source, sandbox, { filename: filePath });
     if (!sandbox[globalName]) {
         throw new Error(globalName + ' not found in ' + filePath);

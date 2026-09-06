@@ -54,6 +54,7 @@ function printHelp(exitCode, error) {
 function loadMapData() {
     const sandbox = { console };
     vm.createContext(sandbox);
+    sandbox.MapDefinitionData = JSON.parse(fs.readFileSync(path.join(projectRoot, 'data/map/map_definition.json'), 'utf8'));
     vm.runInContext(fs.readFileSync(avatarSourceFile, 'utf8'), sandbox, { filename: avatarSourceFile });
     vm.runInContext(fs.readFileSync(dataFile, 'utf8'), sandbox, { filename: dataFile });
     if (!sandbox.MapPanelData) {
