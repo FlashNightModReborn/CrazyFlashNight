@@ -349,6 +349,13 @@ layers:
       - "fscommand/**"
     exclude: []
 
+  - name: docs-story
+    description: "剧情设定文档（docs/story 开发稿，随每日包分发给协作/评审）"
+    source: "docs/"
+    include:
+      - "story/**"
+    exclude: []
+
 globalExclude:
   - "**/.DS_Store"
   - "**/Thumbs.db"
