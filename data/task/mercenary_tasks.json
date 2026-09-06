@@ -1252,6 +1252,29 @@
       },
 
       "chain": "委托"
+    },
+    {
+      "id": 20071,
+      "title": "挑战混沌王",
+      "description": "讨伐闯入这片区域的强大个体——人修罗",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_HCW_GET",
+      "get_npc": "混沌王",
+
+      "finish_requirements": ["挑战混沌王#地狱"],
+      "finish_conversation": "$GEM_PK_HCW_FINISH",
+      "finish_npc": "阿卡",
+      "recommended_level": "100",
+      "restricted_level": 10,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#3000000"
+      ],
+
+      "chain": "委托"
     }
   ]
 }

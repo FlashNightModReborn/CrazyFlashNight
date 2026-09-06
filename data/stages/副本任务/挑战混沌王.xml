@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  人修罗支线挑战副本：挑战混沌王。
+  背景沿用魔神锡蒙利Lv16（ciyuanta_魔神图专用.swf）；玩家出生点约 (100,600)，
+  混沌王出生在 (600,600)，间距约 500。
+  时间线（以波次倒计时实现，敌人未死则顺延）：
+    0~30秒   波次0：只有混沌王；
+    30秒时   WaveFinished(0)：虎妙(兵种330, 友方)入场 + 对话；
+    30~60秒  波次1：空波次计时；
+    60秒时   WaveFinished(1)：虎妙撤退对话（XML无法移除场上友军，撤退仅为剧情表现，由虎妙主动停手承担，需实机验证观感）；
+    60~180秒 波次2：空波次计时；
+    180秒时  WaveFinished(2)：虎妙重新入场 + 对话；
+    180秒后  波次3：无限时波次，直到混沌王死亡；
+    混沌王死亡 UnitDeath(混沌王)：结束对话 + StageProgress Finish 立即结算，
+    因此无论玩家在第几秒击杀，都会跳过后续定时节点直接收尾。
+-->
+<GameStage>
+    <Rewards>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/ciyuanta_魔神图专用.swf</Background>
+            <PlayerX>100</PlayerX>
+            <PlayerY>600</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Fate (斎祀)</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>30</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种348</Type>
+                        <InstanceName>混沌王</InstanceName>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <x>600</x>
+                        <y>600</y>
+                        <Parameters>称号:人修罗,不掉钱:true,不掉装备:true</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>30</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup></EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>120</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup></EnemyGroup>
+            </SubWave>
+            <SubWave id="3">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup></EnemyGroup>
+            </SubWave>
+        </Wave>
+        <Event>
+            <EventName>WaveStarted</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>来了。别磨蹭，我对等待没有兴趣。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>（他就是那个人修罗……记住阿卡的话：看到蓄力的杀招，能跑多远就跑多远。）</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>让我看看，你和你身后那些人的底气，到底值多少。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>你还好吧？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>谁？</Text>
+            </Dialogue>
+            <Enemy id="0">
+                <Type>兵种330</Type>
+                <InstanceName>虎妙</InstanceName>
+                <Interval>300</Interval>
+                <Quantity>1</Quantity>
+                <Level>100</Level>
+                <x>250</x>
+                <y>600</y>
+                <IsHostile>false</IsHostile>
+                <Parameters>不掉钱:true,不掉装备:true</Parameters>
+            </Enemy>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>看起来可不像是好对付的对手啊……加油，相信你能撑住。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>啊？</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
+            <Dialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>有段时间没干老本行了，业务有点生疏，重新活动了下筋骨，见谅。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你在逗我吗？</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>放心吧，我会完成委托的，现在他看起来很虚弱。</Text>
+            </Dialogue>
+            <Enemy id="0">
+                <Type>兵种330</Type>
+                <InstanceName>虎妙</InstanceName>
+                <Interval>300</Interval>
+                <Quantity>1</Quantity>
+                <Level>100</Level>
+                <x>250</x>
+                <y>600</y>
+                <IsHostile>false</IsHostile>
+                <Parameters>不掉钱:true,不掉装备:true</Parameters>
+            </Enemy>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>混沌王</Parameter>
+            <Dialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>好了，回去找那个牛头人领报酬吧。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你也有报酬吗？</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>当然，没钱的活我可不随便接。</Text>
+            </Dialogue>
+            <StageProgress>Finish</StageProgress>
+        </Event>
+    </SubStage>
+</GameStage>
