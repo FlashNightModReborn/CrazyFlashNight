@@ -1,0 +1,3363 @@
+[
+  {
+    "id": "barrelMetal",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "barrelMetal",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "284",
+      "x2": "0",
+      "y2": "325"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#0C0C0C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.12",
+        "stop-color": "#202020",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.32",
+        "stop-color": "#4C4C4C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.38",
+        "stop-color": "#565657",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.66",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.89",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#080808",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "barrel",
+        "part_name": "02_长枪管",
+        "shape": "barrel__silhouette__00",
+        "source_element_index": 2
+      },
+      {
+        "part": "barrel",
+        "part_name": "02_长枪管",
+        "shape": "barrel__machined_planes__03",
+        "source_element_index": 4
+      },
+      {
+        "part": "barrel",
+        "part_name": "02_长枪管",
+        "shape": "barrel__machined_planes__05",
+        "source_element_index": 5
+      },
+      {
+        "part": "barrel",
+        "part_name": "02_长枪管",
+        "shape": "barrel__machined_planes__07",
+        "source_element_index": 6
+      },
+      {
+        "part": "muzzle_brake",
+        "part_name": "01_制退器",
+        "shape": "muzzle_brake__cut_faces__11",
+        "source_element_index": 15
+      },
+      {
+        "part": "muzzle_brake",
+        "part_name": "01_制退器",
+        "shape": "muzzle_brake__cut_faces__12",
+        "source_element_index": 16
+      },
+      {
+        "part": "forward_receiver",
+        "part_name": "06_前连接座",
+        "shape": "forward_receiver__machined_planes__00",
+        "source_element_index": 4
+      }
+    ]
+  },
+  {
+    "id": "tubeMetal",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "tubeMetal",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "342",
+      "x2": "0",
+      "y2": "382"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#111111",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.16",
+        "stop-color": "#262626",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.36",
+        "stop-color": "#444444",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.42",
+        "stop-color": "#474747",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.69",
+        "stop-color": "#242424",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#0D0D0D",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__silhouette__00",
+        "source_element_index": 2
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__01",
+        "source_element_index": 5
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__02",
+        "source_element_index": 6
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__05",
+        "source_element_index": 8
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__08",
+        "source_element_index": 10
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__11",
+        "source_element_index": 12
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__14",
+        "source_element_index": 14
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__16",
+        "source_element_index": 15
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__18",
+        "source_element_index": 16
+      },
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__20",
+        "source_element_index": 17
+      }
+    ]
+  },
+  {
+    "id": "collarMetal",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "collarMetal",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "276",
+      "x2": "0",
+      "y2": "335"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.14",
+        "stop-color": "#313131",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#757575",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.4",
+        "stop-color": "#7E7E7E",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.64",
+        "stop-color": "#424242",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.89",
+        "stop-color": "#1F1F1F",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "muzzle_brake",
+        "part_name": "01_制退器",
+        "shape": "muzzle_brake__silhouette__00",
+        "source_element_index": 2
+      },
+      {
+        "part": "muzzle_brake",
+        "part_name": "01_制退器",
+        "shape": "muzzle_brake__cut_faces__09",
+        "source_element_index": 13
+      },
+      {
+        "part": "muzzle_brake",
+        "part_name": "01_制退器",
+        "shape": "muzzle_brake__cut_faces__10",
+        "source_element_index": 14
+      },
+      {
+        "part": "front_sight",
+        "part_name": "04_准星与前夹座",
+        "shape": "front_sight__sight_faces__18",
+        "source_element_index": 20
+      }
+    ]
+  },
+  {
+    "id": "socketMetal",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "socketMetal",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "338",
+      "x2": "0",
+      "y2": "385"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#141414",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.2",
+        "stop-color": "#4C4C4C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#939393",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.4",
+        "stop-color": "#A1A1A1",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.59",
+        "stop-color": "#525252",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#161616",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__tube_rings__00",
+        "source_element_index": 4
+      }
+    ]
+  },
+  {
+    "id": "bodyVertical",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "bodyVertical",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "252",
+      "x2": "0",
+      "y2": "391"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#202020",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.19",
+        "stop-color": "#333333",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.47",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.83",
+        "stop-color": "#222222",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#141414",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "forward_receiver",
+        "part_name": "06_前连接座",
+        "shape": "forward_receiver__silhouette__00",
+        "source_element_index": 2
+      },
+      {
+        "part": "rear_receiver",
+        "part_name": "10_后机匣",
+        "shape": "rear_receiver__outline__00",
+        "source_element_index": 2
+      },
+      {
+        "part": "rear_receiver",
+        "part_name": "10_后机匣",
+        "shape": "rear_receiver__stock_joint_band__00",
+        "source_element_index": 40
+      },
+      {
+        "part": "front_sight",
+        "part_name": "04_准星与前夹座",
+        "shape": "front_sight__sight_faces__25",
+        "source_element_index": 26
+      }
+    ]
+  },
+  {
+    "id": "legVertical",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "legVertical",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "893",
+      "y1": "0",
+      "x2": "916",
+      "y2": "0"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#121212"
+      },
+      {
+        "offset": "0.13",
+        "stop-color": "#383838"
+      },
+      {
+        "offset": "0.22",
+        "stop-color": "#3C3C3C"
+      },
+      {
+        "offset": "0.28",
+        "stop-color": "#303030"
+      },
+      {
+        "offset": "0.82",
+        "stop-color": "#2D2D2D"
+      },
+      {
+        "offset": "0.94",
+        "stop-color": "#1B1B1B"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#121212"
+      }
+    ],
+    "uses": [
+      {
+        "part": "bipod",
+        "part_name": "05_脚架侧面投影",
+        "shape": "bipod__leg_silhouette__00",
+        "source_element_index": 2
+      }
+    ]
+  },
+  {
+    "id": "bodyTube",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "bodyTube",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "347",
+      "x2": "0",
+      "y2": "382"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#1B1B1B"
+      },
+      {
+        "offset": "0.17",
+        "stop-color": "#363636"
+      },
+      {
+        "offset": "0.28",
+        "stop-color": "#3C3C3C"
+      },
+      {
+        "offset": "0.74",
+        "stop-color": "#393939"
+      },
+      {
+        "offset": "0.89",
+        "stop-color": "#2A2A2A"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1D1D1D"
+      }
+    ],
+    "uses": [
+      {
+        "part": "forward_receiver",
+        "part_name": "06_前连接座",
+        "shape": "forward_receiver__machined_planes__01",
+        "source_element_index": 5
+      },
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__lower_slide__00",
+        "source_element_index": 13
+      }
+    ]
+  },
+  {
+    "id": "upperRailMetal",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "upperRailMetal",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "247",
+      "x2": "0",
+      "y2": "284"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#161616",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.19",
+        "stop-color": "#3C3C3C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.31",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.38",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.64",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#111111",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "upper_jacket",
+        "part_name": "08_上方筒罩",
+        "shape": "upper_jacket__outer_shell__00",
+        "source_element_index": 2
+      }
+    ]
+  },
+  {
+    "id": "handleMetal",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "handleMetal",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "198",
+      "x2": "0",
+      "y2": "237"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#111111",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.18",
+        "stop-color": "#242424",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.37",
+        "stop-color": "#3C3C3C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.59",
+        "stop-color": "#282828",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#0A0A0A",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "carry_handle",
+        "part_name": "11_横提把",
+        "shape": "carry_handle__grip__00",
+        "source_element_index": 6
+      },
+      {
+        "part": "carry_handle",
+        "part_name": "11_横提把",
+        "shape": "carry_handle__grip__01",
+        "source_element_index": 7
+      },
+      {
+        "part": "carry_handle",
+        "part_name": "11_横提把",
+        "shape": "carry_handle__grip__04",
+        "source_element_index": 8
+      },
+      {
+        "part": "carry_handle",
+        "part_name": "11_横提把",
+        "shape": "carry_handle__grip__07",
+        "source_element_index": 9
+      },
+      {
+        "part": "carry_handle",
+        "part_name": "11_横提把",
+        "shape": "carry_handle__grip__10",
+        "source_element_index": 10
+      },
+      {
+        "part": "carry_handle",
+        "part_name": "11_横提把",
+        "shape": "carry_handle__grip__13",
+        "source_element_index": 11
+      },
+      {
+        "part": "carry_handle",
+        "part_name": "11_横提把",
+        "shape": "carry_handle__grip__15",
+        "source_element_index": 12
+      }
+    ]
+  },
+  {
+    "id": "leverFace",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "leverFace",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1213",
+      "y1": "251",
+      "x2": "1307",
+      "y2": "309"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#222222",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.16",
+        "stop-color": "#424242",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.37",
+        "stop-color": "#666666",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.46",
+        "stop-color": "#656565",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.72",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#222222",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "side_lever",
+        "part_name": "12_开孔侧杆",
+        "shape": "side_lever__lever_outline__00",
+        "source_element_index": 2
+      }
+    ]
+  },
+  {
+    "id": "rear_stock_upper",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "rear_stock_upper",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "253",
+      "x2": "0",
+      "y2": "293"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.33",
+        "stop-color": "#303030",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.6",
+        "stop-color": "#282828",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.84",
+        "stop-color": "#191919",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_cheek_rest__00",
+        "source_element_index": 15
+      }
+    ]
+  },
+  {
+    "id": "rear_beam",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "rear_beam",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "288",
+      "x2": "0",
+      "y2": "321"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.24",
+        "stop-color": "#353535",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.36",
+        "stop-color": "#444444",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.46",
+        "stop-color": "#414141",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#222222",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#111111",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_horizontal_beam__00",
+        "source_element_index": 20
+      }
+    ]
+  },
+  {
+    "id": "rear_pad",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "rear_pad",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1803",
+      "y1": "0",
+      "x2": "1843",
+      "y2": "0"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#111111",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.68",
+        "stop-color": "#202020",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_butt_pad__00",
+        "source_element_index": 35
+      }
+    ]
+  },
+  {
+    "id": "rear_mount",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "rear_mount",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "380",
+      "x2": "0",
+      "y2": "400"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#202020",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#383838",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.42",
+        "stop-color": "#383838",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1C1C1C",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__grip_mount_silhouette__07",
+        "source_element_index": 7
+      }
+    ]
+  },
+  {
+    "id": "rubberFoot",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "rubberFoot",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "659",
+      "x2": "0",
+      "y2": "671"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#353535",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.4",
+        "stop-color": "#262626",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#0F0F0F",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "bipod",
+        "part_name": "05_脚架侧面投影",
+        "shape": "bipod__leg_planes__05",
+        "source_element_index": 5
+      }
+    ]
+  },
+  {
+    "id": "strapFace",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "strapFace",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "890",
+      "y1": "0",
+      "x2": "921",
+      "y2": "0"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#191919"
+      },
+      {
+        "offset": "0.15",
+        "stop-color": "#3D3D3D"
+      },
+      {
+        "offset": "0.24",
+        "stop-color": "#424242"
+      },
+      {
+        "offset": "0.31",
+        "stop-color": "#373737"
+      },
+      {
+        "offset": "0.84",
+        "stop-color": "#343434"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1D1D1D"
+      }
+    ],
+    "uses": [
+      {
+        "part": "bipod",
+        "part_name": "05_脚架侧面投影",
+        "shape": "bipod__upper_strap__00",
+        "source_element_index": 8
+      },
+      {
+        "part": "bipod",
+        "part_name": "05_脚架侧面投影",
+        "shape": "bipod__upper_strap__03",
+        "source_element_index": 11
+      }
+    ]
+  },
+  {
+    "id": "receiverMain",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "receiverMain",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "274",
+      "x2": "0",
+      "y2": "383"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#1B1B1B",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.16",
+        "stop-color": "#303030",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.39",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.8",
+        "stop-color": "#222222",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#151515",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__body_silhouette__00",
+        "source_element_index": 2
+      }
+    ]
+  },
+  {
+    "id": "receiverSide",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "receiverSide",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "289",
+      "x2": "0",
+      "y2": "353"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#292929"
+      },
+      {
+        "offset": "0.22",
+        "stop-color": "#373737"
+      },
+      {
+        "offset": "0.58",
+        "stop-color": "#313131"
+      },
+      {
+        "offset": "0.89",
+        "stop-color": "#292929"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1D1D1D"
+      }
+    ],
+    "uses": [
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__side_panels__00",
+        "source_element_index": 4
+      }
+    ]
+  },
+  {
+    "id": "receiverPressed",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "receiverPressed",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "292",
+      "x2": "0",
+      "y2": "326"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#242424"
+      },
+      {
+        "offset": "0.16",
+        "stop-color": "#353535"
+      },
+      {
+        "offset": "0.28",
+        "stop-color": "#3C3C3C"
+      },
+      {
+        "offset": "0.67",
+        "stop-color": "#393939"
+      },
+      {
+        "offset": "0.9",
+        "stop-color": "#303030"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#252525"
+      }
+    ],
+    "uses": [
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__side_panels__01",
+        "source_element_index": 5
+      }
+    ]
+  },
+  {
+    "id": "chargingSlide",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "chargingSlide",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "326",
+      "x2": "0",
+      "y2": "343"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#181818"
+      },
+      {
+        "offset": "0.24",
+        "stop-color": "#393939"
+      },
+      {
+        "offset": "0.41",
+        "stop-color": "#595959"
+      },
+      {
+        "offset": "0.5",
+        "stop-color": "#595959"
+      },
+      {
+        "offset": "0.77",
+        "stop-color": "#343434"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1B1B1B"
+      }
+    ],
+    "uses": [
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__side_panels__06",
+        "source_element_index": 7
+      }
+    ]
+  },
+  {
+    "id": "receiverRearRecess",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "receiverRearRecess",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(28.0,0.0,-0.0,16.0,1371,303)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#333333",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.38",
+        "stop-color": "#2C2C2C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.8",
+        "stop-color": "#1E1E1E",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#151515",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__side_panels__13",
+        "source_element_index": 11
+      }
+    ]
+  },
+  {
+    "id": "topCoverMain",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "topCoverMain",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "199",
+      "x2": "0",
+      "y2": "280"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#303030",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.16",
+        "stop-color": "#393939",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.38",
+        "stop-color": "#2B2B2B",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#181818",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "top_cover",
+        "part_name": "09_上盖与照门",
+        "shape": "top_cover__cover_silhouette__00",
+        "source_element_index": 2
+      }
+    ]
+  },
+  {
+    "id": "coverSlope",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "coverSlope",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1196",
+      "y1": "265",
+      "x2": "1270",
+      "y2": "215"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#1A1A1A",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.42",
+        "stop-color": "#323232",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.58",
+        "stop-color": "#363636",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "top_cover",
+        "part_name": "09_上盖与照门",
+        "shape": "top_cover__cover_planes__01",
+        "source_element_index": 4
+      }
+    ]
+  },
+  {
+    "id": "coverBroadFace",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "coverBroadFace",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "214",
+      "x2": "0",
+      "y2": "277"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#202020",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#323232",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.65",
+        "stop-color": "#282828",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#191919",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "top_cover",
+        "part_name": "09_上盖与照门",
+        "shape": "top_cover__cover_planes__03",
+        "source_element_index": 5
+      }
+    ]
+  },
+  {
+    "id": "coverRaisedFace",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "coverRaisedFace",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "217",
+      "x2": "0",
+      "y2": "267"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#1B1B1B",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.19",
+        "stop-color": "#383838",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.33",
+        "stop-color": "#3E3E3E",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.64",
+        "stop-color": "#282828",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#191919",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "top_cover",
+        "part_name": "09_上盖与照门",
+        "shape": "top_cover__cover_planes__04",
+        "source_element_index": 6
+      }
+    ]
+  },
+  {
+    "id": "rearReceiverMain",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "rearReceiverMain",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "275",
+      "x2": "0",
+      "y2": "353"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.27",
+        "stop-color": "#363636",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.57",
+        "stop-color": "#2D2D2D",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.82",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#141414",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "rear_receiver",
+        "part_name": "10_后机匣",
+        "shape": "rear_receiver__side_face__00",
+        "source_element_index": 17
+      }
+    ]
+  },
+  {
+    "id": "rearInsetLip",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "rearInsetLip",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "294",
+      "x2": "0",
+      "y2": "341"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.1",
+        "stop-color": "#2D2D2D",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.21",
+        "stop-color": "#373737",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.8",
+        "stop-color": "#1B1B1B",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#0C0C0C",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "rear_receiver",
+        "part_name": "10_后机匣",
+        "shape": "rear_receiver__side_face__04",
+        "source_element_index": 20
+      }
+    ]
+  },
+  {
+    "id": "rearInsetFace",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "rearInsetFace",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(91.0,0.0,-0.0,41.0,1491,310)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#323232",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.45",
+        "stop-color": "#2F2F2F",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.83",
+        "stop-color": "#222222",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1B1B1B",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "rear_receiver",
+        "part_name": "10_后机匣",
+        "shape": "rear_receiver__side_face__05",
+        "source_element_index": 21
+      }
+    ]
+  },
+  {
+    "id": "handleSupportBevel",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "handleSupportBevel",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "953",
+      "y1": "260",
+      "x2": "974",
+      "y2": "235"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#1C1C1C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.45",
+        "stop-color": "#474747",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#222222",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "carry_handle",
+        "part_name": "11_横提把",
+        "shape": "carry_handle__support__01",
+        "source_element_index": 3
+      }
+    ]
+  },
+  {
+    "id": "leverPivot",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "leverPivot",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(12.0,0.0,-0.0,12.0,1302,223)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.25",
+        "stop-color": "#4A4A4A",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.68",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "side_lever",
+        "part_name": "12_开孔侧杆",
+        "shape": "side_lever__pivot_and_fasteners__00",
+        "source_element_index": 11
+      }
+    ]
+  },
+  {
+    "id": "leverPin",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "leverPin",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1301",
+      "y1": "0",
+      "x2": "1311",
+      "y2": "0"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.14",
+        "stop-color": "#313131",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#757575",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.4",
+        "stop-color": "#7E7E7E",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.64",
+        "stop-color": "#424242",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.89",
+        "stop-color": "#1F1F1F",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "side_lever",
+        "part_name": "12_开孔侧杆",
+        "shape": "side_lever__pivot_and_fasteners__01",
+        "source_element_index": 13
+      }
+    ]
+  },
+  {
+    "id": "stockFrame",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "stockFrame",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "309",
+      "x2": "0",
+      "y2": "409"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.29",
+        "stop-color": "#2B2B2B",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.56",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#121212",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_silhouette__00",
+        "source_element_index": 2
+      }
+    ]
+  },
+  {
+    "id": "stockLowerRoll",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "stockLowerRoll",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "321",
+      "x2": "0",
+      "y2": "403"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#131313",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.36",
+        "stop-color": "#2E2E2E",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.59",
+        "stop-color": "#303030",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.86",
+        "stop-color": "#1D1D1D",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_open_frame__00",
+        "source_element_index": 4
+      },
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_open_frame__01",
+        "source_element_index": 5
+      }
+    ]
+  },
+  {
+    "id": "stockBackWeb",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "stockBackWeb",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1740",
+      "y1": "0",
+      "x2": "1790",
+      "y2": "0"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.33",
+        "stop-color": "#303030",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.6",
+        "stop-color": "#282828",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.84",
+        "stop-color": "#191919",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_open_frame__04",
+        "source_element_index": 8
+      }
+    ]
+  },
+  {
+    "id": "stockBackInset",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "stockBackInset",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(26.0,0.0,-0.0,37.0,1768,342)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#272727",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.5",
+        "stop-color": "#232323",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#141414",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_open_frame__05",
+        "source_element_index": 9
+      }
+    ]
+  },
+  {
+    "id": "stockCheekCrown",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "stockCheekCrown",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "259",
+      "x2": "0",
+      "y2": "283"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#262626",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#363636",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.6",
+        "stop-color": "#2C2C2C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#191919",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_cheek_rest__01",
+        "source_element_index": 16
+      }
+    ]
+  },
+  {
+    "id": "stockCollarRoll",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "stockCollarRoll",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(15.0,0.0,-0.0,107.0,1794,322)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#2D2D2D",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.46",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#141414",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_heel_collar__00",
+        "source_element_index": 25
+      }
+    ]
+  },
+  {
+    "id": "pistolGripCoat",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "pistolGripCoat",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1513",
+      "y1": "464",
+      "x2": "1592",
+      "y2": "431"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#101010",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.2",
+        "stop-color": "#242424",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.41",
+        "stop-color": "#353535",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.6",
+        "stop-color": "#2C2C2C",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#111111",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__pistol_grip_silhouette__00",
+        "source_element_index": 20
+      },
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__pistol_grip_silhouette__01",
+        "source_element_index": 21
+      }
+    ]
+  },
+  {
+    "id": "gripNeck",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "gripNeck",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "397",
+      "x2": "0",
+      "y2": "433"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#202020",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#383838",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.42",
+        "stop-color": "#383838",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1C1C1C",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__pistol_grip_silhouette__02",
+        "source_element_index": 22
+      }
+    ]
+  },
+  {
+    "id": "gripInset",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "gripInset",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(21.865493,-12.120241,21.331623,38.483267,1556,463)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#282828",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.47",
+        "stop-color": "#252525",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#202020",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__pistol_grip_panel__00",
+        "source_element_index": 27
+      },
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__pistol_grip_panel__01",
+        "source_element_index": 28
+      }
+    ]
+  },
+  {
+    "id": "guardRoll",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "guardRoll",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "436",
+      "x2": "0",
+      "y2": "451"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#303030",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.32",
+        "stop-color": "#3A3A3A",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.61",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#111111",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__trigger_guard__00",
+        "source_element_index": 12
+      },
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__trigger_guard__01",
+        "source_element_index": 13
+      }
+    ]
+  },
+  {
+    "id": "frontBlockFace",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "frontBlockFace",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1424",
+      "y1": "0",
+      "x2": "1468",
+      "y2": "0"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#171717"
+      },
+      {
+        "offset": "0.1",
+        "stop-color": "#393939"
+      },
+      {
+        "offset": "0.17",
+        "stop-color": "#353535"
+      },
+      {
+        "offset": "0.24",
+        "stop-color": "#303030"
+      },
+      {
+        "offset": "0.88",
+        "stop-color": "#2D2D2D"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1B1B1B"
+      }
+    ],
+    "uses": [
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__front_rectangular_block__00",
+        "source_element_index": 31
+      },
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__front_rectangular_block__01",
+        "source_element_index": 32
+      }
+    ]
+  },
+  {
+    "id": "stock__stock_hinge_and_fasteners__04_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "stock__stock_hinge_and_fasteners__04_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(2.128,0.0,-0.0,2.128,1825.582,258.468)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "stock",
+        "part_name": "14_镂空枪托",
+        "shape": "stock__stock_hinge_and_fasteners__04",
+        "source_element_index": 48
+      }
+    ]
+  },
+  {
+    "id": "grip_trigger__grip_fasteners__01_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "grip_trigger__grip_fasteners__01_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(3.024,0.0,-0.0,3.024,1476.406,389.944)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "grip_trigger",
+        "part_name": "13_握把与护圈",
+        "shape": "grip_trigger__grip_fasteners__01",
+        "source_element_index": 37
+      }
+    ]
+  },
+  {
+    "id": "lower_tube__fasteners__01_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "lower_tube__fasteners__01_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(2.016,0.0,-0.0,2.016,513.304,363.096)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "lower_tube",
+        "part_name": "03_下管与套环",
+        "shape": "lower_tube__fasteners__01",
+        "source_element_index": 20
+      }
+    ]
+  },
+  {
+    "id": "forward_receiver__machined_planes__08_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "forward_receiver__machined_planes__08_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(2.016,0.0,-0.0,2.016,1002.304,337.096)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "forward_receiver",
+        "part_name": "06_前连接座",
+        "shape": "forward_receiver__machined_planes__08",
+        "source_element_index": 12
+      }
+    ]
+  },
+  {
+    "id": "main_receiver__fasteners_and_latches__02_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "main_receiver__fasteners_and_latches__02_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(2.7552,0.0,-0.0,2.7552,1125.1588,334.9112)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__fasteners_and_latches__02",
+        "source_element_index": 20
+      }
+    ]
+  },
+  {
+    "id": "main_receiver__fasteners_and_latches__19_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "main_receiver__fasteners_and_latches__19_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(1.8816,0.0,-0.0,1.8816,1268.3304,349.1296)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__fasteners_and_latches__19",
+        "source_element_index": 37
+      }
+    ]
+  },
+  {
+    "id": "top_cover__cover_planes__10_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "top_cover__cover_planes__10_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(5.376,0.0,-0.0,5.376,1206.944,253.656)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "top_cover",
+        "part_name": "09_上盖与照门",
+        "shape": "top_cover__cover_planes__10",
+        "source_element_index": 10
+      }
+    ]
+  },
+  {
+    "id": "rear_receiver__stock_joint_band__04_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "rear_receiver__stock_joint_band__04_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(2.016,0.0,-0.0,2.016,1575.304,330.096)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "rear_receiver",
+        "part_name": "10_后机匣",
+        "shape": "rear_receiver__stock_joint_band__04",
+        "source_element_index": 43
+      }
+    ]
+  },
+  {
+    "id": "front_sight__sight_faces__21_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "front_sight__sight_faces__21_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(4.928,0.0,-0.0,4.928,463.032,283.768)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "front_sight",
+        "part_name": "04_准星与前夹座",
+        "shape": "front_sight__sight_faces__21",
+        "source_element_index": 23
+      }
+    ]
+  },
+  {
+    "id": "front_sight__sight_faces__28_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "front_sight__sight_faces__28_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(1.8816,0.0,-0.0,1.8816,486.3304,343.1296)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "front_sight",
+        "part_name": "04_准星与前夹座",
+        "shape": "front_sight__sight_faces__28",
+        "source_element_index": 29
+      }
+    ]
+  },
+  {
+    "id": "front_sight__sight_faces__31_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "front_sight__sight_faces__31_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(1.8816,0.0,-0.0,1.8816,486.3304,360.1296)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "front_sight",
+        "part_name": "04_准星与前夹座",
+        "shape": "front_sight__sight_faces__31",
+        "source_element_index": 31
+      }
+    ]
+  },
+  {
+    "id": "front_sight__sight_faces__34_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "front_sight__sight_faces__34_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(1.8144,0.0,-0.0,1.8144,486.3436,385.1464)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "front_sight",
+        "part_name": "04_准星与前夹座",
+        "shape": "front_sight__sight_faces__34",
+        "source_element_index": 34
+      }
+    ]
+  },
+  {
+    "id": "bipod__upper_strap__11_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "bipod__upper_strap__11_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(1.8816,0.0,-0.0,1.8816,905.3304,332.1296)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "bipod",
+        "part_name": "05_脚架侧面投影",
+        "shape": "bipod__upper_strap__11",
+        "source_element_index": 17
+      }
+    ]
+  },
+  {
+    "id": "bipod__upper_strap__14_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "bipod__upper_strap__14_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(2.016,0.0,-0.0,2.016,904.304,389.096)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "bipod",
+        "part_name": "05_脚架侧面投影",
+        "shape": "bipod__upper_strap__14",
+        "source_element_index": 20
+      }
+    ]
+  },
+  {
+    "id": "side_lever__pivot_and_fasteners__05_specular",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "side_lever__pivot_and_fasteners__05_specular",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "0",
+      "cy": "0",
+      "r": "1",
+      "gradientTransform": "matrix(1.8816,0.0,-0.0,1.8816,1283.3304,231.1296)"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#626262",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#454545",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "0.78",
+        "stop-color": "#292929",
+        "stop-opacity": "1"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#171717",
+        "stop-opacity": "1"
+      }
+    ],
+    "uses": [
+      {
+        "part": "side_lever",
+        "part_name": "12_开孔侧杆",
+        "shape": "side_lever__pivot_and_fasteners__05",
+        "source_element_index": 17
+      }
+    ]
+  },
+  {
+    "id": "rearJunction",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "rearJunction",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1362",
+      "y1": "246",
+      "x2": "1392",
+      "y2": "290"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#222222"
+      },
+      {
+        "offset": "0.24",
+        "stop-color": "#313131"
+      },
+      {
+        "offset": "0.62",
+        "stop-color": "#2C2C2C"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1C1C1C"
+      }
+    ],
+    "uses": [
+      {
+        "part": "rear_receiver",
+        "part_name": "10_后机匣",
+        "shape": "rear_receiver__collar_steps__00",
+        "source_element_index": 4
+      }
+    ]
+  },
+  {
+    "id": "junctionSmallFace",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "junctionSmallFace",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1347",
+      "y1": "295",
+      "x2": "1390",
+      "y2": "322"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#242424"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#373737"
+      },
+      {
+        "offset": "0.72",
+        "stop-color": "#2E2E2E"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#202020"
+      }
+    ],
+    "uses": [
+      {
+        "part": "main_receiver",
+        "part_name": "07_机匣主体",
+        "shape": "main_receiver__side_panels__12",
+        "source_element_index": 10
+      }
+    ]
+  },
+  {
+    "id": "sightSeatFace",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "sightSeatFace",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "0",
+      "y1": "234",
+      "x2": "0",
+      "y2": "257"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#202020"
+      },
+      {
+        "offset": "0.26",
+        "stop-color": "#383838"
+      },
+      {
+        "offset": "0.64",
+        "stop-color": "#323232"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#262626"
+      }
+    ],
+    "uses": [
+      {
+        "part": "front_sight",
+        "part_name": "04_准星与前夹座",
+        "shape": "front_sight__sight_faces__08",
+        "source_element_index": 11
+      }
+    ]
+  },
+  {
+    "id": "leverPivotInsetShadow",
+    "type": "radialGradient",
+    "coordinates": {
+      "id": "leverPivotInsetShadow",
+      "gradientUnits": "userSpaceOnUse",
+      "cx": "1305",
+      "cy": "226",
+      "r": "9.8"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#000000",
+        "stop-opacity": "0"
+      },
+      {
+        "offset": "0.5",
+        "stop-color": "#000000",
+        "stop-opacity": "0"
+      },
+      {
+        "offset": "0.76",
+        "stop-color": "#000000",
+        "stop-opacity": "0.16"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#000000",
+        "stop-opacity": "0.32"
+      }
+    ],
+    "uses": [
+      {
+        "part": "side_lever",
+        "part_name": "12_开孔侧杆",
+        "shape": "side_lever__pivot_and_fasteners__soft_rim",
+        "source_element_index": 12
+      }
+    ]
+  },
+  {
+    "id": "ab01_shell",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_shell",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1240.0",
+      "y1": "330",
+      "x2": "1460.0",
+      "y2": "330"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#101112"
+      },
+      {
+        "offset": "0.07",
+        "stop-color": "#232426"
+      },
+      {
+        "offset": "0.33",
+        "stop-color": "#2C2D2F"
+      },
+      {
+        "offset": "0.68",
+        "stop-color": "#292A2C"
+      },
+      {
+        "offset": "0.94",
+        "stop-color": "#212224"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#0E0F10"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 3
+      }
+    ]
+  },
+  {
+    "id": "ab01_face",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_face",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1308.095",
+      "y1": "204",
+      "x2": "1376.19",
+      "y2": "466"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#27282A"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#303133"
+      },
+      {
+        "offset": "0.57",
+        "stop-color": "#2B2C2E"
+      },
+      {
+        "offset": "0.83",
+        "stop-color": "#242527"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1C1D1F"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 4
+      }
+    ]
+  },
+  {
+    "id": "ab01_leftedge",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_leftedge",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1244.19",
+      "y1": "320",
+      "x2": "1260.952",
+      "y2": "320"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#1D1E20"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#3A3B3D"
+      },
+      {
+        "offset": "0.64",
+        "stop-color": "#303133"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#1F2022"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 6
+      }
+    ]
+  },
+  {
+    "id": "ab01_rightedge",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_rightedge",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1439.048",
+      "y1": "320",
+      "x2": "1456.857",
+      "y2": "320"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#212224"
+      },
+      {
+        "offset": "0.45",
+        "stop-color": "#2E2F31"
+      },
+      {
+        "offset": "0.75",
+        "stop-color": "#28292B"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#111214"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 7
+      }
+    ]
+  },
+  {
+    "id": "ab01_bottom",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_bottom",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1334.286",
+      "y1": "455",
+      "x2": "1334.286",
+      "y2": "477"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#18191B"
+      },
+      {
+        "offset": "0.16",
+        "stop-color": "#292A2C"
+      },
+      {
+        "offset": "0.23",
+        "stop-color": "#303133"
+      },
+      {
+        "offset": "0.33",
+        "stop-color": "#242527"
+      },
+      {
+        "offset": "0.62",
+        "stop-color": "#1A1B1D"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101113"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 13
+      }
+    ]
+  },
+  {
+    "id": "ab01_bottomlip",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_bottomlip",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1334.286",
+      "y1": "468",
+      "x2": "1334.286",
+      "y2": "477"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#252628"
+      },
+      {
+        "offset": "0.21",
+        "stop-color": "#303133"
+      },
+      {
+        "offset": "0.4",
+        "stop-color": "#202123"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#111214"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 14
+      }
+    ]
+  },
+  {
+    "id": "ab01_lid",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_lid",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1334.286",
+      "y1": "187",
+      "x2": "1334.286",
+      "y2": "206"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#242527"
+      },
+      {
+        "offset": "0.19",
+        "stop-color": "#4B4C4E"
+      },
+      {
+        "offset": "0.3",
+        "stop-color": "#3E3F41"
+      },
+      {
+        "offset": "0.5",
+        "stop-color": "#303133"
+      },
+      {
+        "offset": "0.82",
+        "stop-color": "#1E1F21"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#121315"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 22
+      }
+    ]
+  },
+  {
+    "id": "ab01_lidedge",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_lidedge",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1334.286",
+      "y1": "188",
+      "x2": "1334.286",
+      "y2": "194"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#343537"
+      },
+      {
+        "offset": "0.35",
+        "stop-color": "#535456"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#313234"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 23
+      }
+    ]
+  },
+  {
+    "id": "ab01_handle",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_handle",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1338.204",
+      "y1": "170.833",
+      "x2": "1353.415",
+      "y2": "170.833"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#111214"
+      },
+      {
+        "offset": "0.22",
+        "stop-color": "#2D2E30"
+      },
+      {
+        "offset": "0.41",
+        "stop-color": "#4C4D4F"
+      },
+      {
+        "offset": "0.55",
+        "stop-color": "#434446"
+      },
+      {
+        "offset": "0.75",
+        "stop-color": "#292A2C"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#141517"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 34
+      }
+    ]
+  },
+  {
+    "id": "ab01_handlecap",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_handlecap",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1345.118",
+      "y1": "155.833",
+      "x2": "1345.118",
+      "y2": "169.167"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#252628"
+      },
+      {
+        "offset": "0.34",
+        "stop-color": "#555658"
+      },
+      {
+        "offset": "0.65",
+        "stop-color": "#414244"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#202123"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 35
+      }
+    ]
+  },
+  {
+    "id": "ab01_seat",
+    "type": "linearGradient",
+    "coordinates": {
+      "id": "ab01_seat",
+      "gradientUnits": "userSpaceOnUse",
+      "x1": "1338.204",
+      "y1": "182.5",
+      "x2": "1338.204",
+      "y2": "191.667"
+    },
+    "stops": [
+      {
+        "offset": "0",
+        "stop-color": "#363739"
+      },
+      {
+        "offset": "0.28",
+        "stop-color": "#47484A"
+      },
+      {
+        "offset": "0.57",
+        "stop-color": "#2B2C2E"
+      },
+      {
+        "offset": "1",
+        "stop-color": "#101113"
+      }
+    ],
+    "uses": [
+      {
+        "part": "ammo_box",
+        "part_name": "15_弹药箱_远侧",
+        "shape": null,
+        "source_element_index": 30
+      }
+    ]
+  }
+]

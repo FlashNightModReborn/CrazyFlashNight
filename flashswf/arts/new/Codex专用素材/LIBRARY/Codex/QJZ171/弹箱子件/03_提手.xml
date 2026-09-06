@@ -1,0 +1,164 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171/弹箱子件/03_提手" itemID="660e2c8a-7904f6aa" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="03_提手">
+      <layers>
+        <DOMLayer name="提手窄侧轮廓" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.004638671875" d="0.004638671875" ty="-7.55"/>
+                        </matrix>
+                        <GradientEntry color="#111214" ratio="0"/>
+                        <GradientEntry color="#2D2E30" ratio="0.219607843137255"/>
+                        <GradientEntry color="#4C4D4F" ratio="0.411764705882353"/>
+                        <GradientEntry color="#434446" ratio="0.549019607843137"/>
+                        <GradientEntry color="#292A2C" ratio="0.749019607843137"/>
+                        <GradientEntry color="#141517" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.8">
+                        <fill>
+                          <SolidColor color="#101113"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!0 -310[-34 -310 -55 -277!-55 -277[-83 -235 -69 -143!-69 -143|-48 -10!-48 -10[-28 15 0 15!0 15[28 15 42 -10!42 -10|62 -135!62 -135[83 -227 62 -268!62 -268[42 -310 0 -310"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.004058837890625" c="-0.004058837890625" d="0" tx="-0.3" ty="-11.75"/>
+                        </matrix>
+                        <GradientEntry color="#252628" ratio="0"/>
+                        <GradientEntry color="#555658" ratio="0.341176470588235"/>
+                        <GradientEntry color="#414244" ratio="0.650980392156863"/>
+                        <GradientEntry color="#202123" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!0 -293[-34 -293 -48 -260!-48 -260|-62 -218!-62 -218[-7 -193 55 -218!55 -218|49 -260!49 -260[35 -293 0 -293"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.45">
+                        <fill>
+                          <SolidColor color="#4F5052"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-41 -177[-34 -93 -21 -27"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor color="#121315"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!49 -185|28 -35!28 -35[21 -18 7 -18"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.45">
+                        <fill>
+                          <SolidColor color="#333436"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-28 -2[0 7 28 -10"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="提手连接座侧影" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0027923583984375" c="-0.0027923583984375" d="0" tx="-3.8" ty="0.5"/>
+                        </matrix>
+                        <GradientEntry color="#363739" ratio="0"/>
+                        <GradientEntry color="#47484A" ratio="0.27843137254902"/>
+                        <GradientEntry color="#2B2C2E" ratio="0.568627450980392"/>
+                        <GradientEntry color="#101113" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.6">
+                        <fill>
+                          <SolidColor color="#101113"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!49 -35|-41 -35!-41 -35[-62 -35 -69 -18!-69 -18|-83 40!-83 40|83 40!83 40|76 -2!76 -2[69 -35 49 -35"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.35">
+                        <fill>
+                          <SolidColor color="#555658"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-55 -18|55 -18"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1A1B1D"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!62 7|-62 7!-62 7|-62 40!-62 40|62 40!62 40|62 7"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -4,7 +4,7 @@
     949,
     415
   ],
-  "assembly": "QJZ171/00_总装",
+  "assembly": "QJZ171_质感升级/00_总装",
   "assembly_origin": [
     474.5,
     207.5
@@ -23,7 +23,8 @@
     "carry_handle": "11_横提把",
     "side_lever": "12_开孔侧杆",
     "grip_trigger": "13_握把与护圈",
-    "stock": "14_镂空枪托"
+    "stock": "14_镂空枪托",
+    "ammo_box": "15_弹药箱_远侧"
   },
   "layer_names": {
     "stock_silhouette": "枪托底形与镂空",
@@ -67,7 +68,14 @@
     "grip": "横向握持段",
     "lever_outline": "外形与透明孔",
     "bevels": "侧杆倒角",
-    "pivot_and_fasteners": "转轴与螺钉"
+    "pivot_and_fasteners": "转轴与螺钉",
+    "box_shell_complete": "完整箱壳底形",
+    "inward_face_and_reinforced_edges": "朝枪侧箱壁与加强边",
+    "bottom_moulding": "底部成型保护带",
+    "lid_seal_and_lower_skirt": "盖缘密封线与下裙",
+    "lid_closed_edge_profile": "闭合上盖边缘",
+    "handle_mounts_side_projection": "提手连接座侧影",
+    "raised_handle_narrow_side_profile": "提手窄侧轮廓"
   },
   "pivots": {
     "barrel": [
@@ -125,7 +133,34 @@
     "grip_trigger": [
       1511,
       391
+    ],
+    "ammo_box": [
+      1350,
+      300
     ]
   },
-  "asset_name": "QJZ171"
+  "asset_name": "QJZ171_质感升级",
+  "ammo_children": {
+    "ammo_body": {
+      "name": "01_箱体",
+      "pivot": [
+        1350,
+        337
+      ]
+    },
+    "ammo_lid": {
+      "name": "02_闭合上盖",
+      "pivot": [
+        1350,
+        201
+      ]
+    },
+    "ammo_handle": {
+      "name": "03_提手",
+      "pivot": [
+        1345.8,
+        186
+      ]
+    }
+  }
 }

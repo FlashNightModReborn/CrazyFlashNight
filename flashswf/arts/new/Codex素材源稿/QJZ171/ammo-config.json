@@ -1,0 +1,38 @@
+{
+  "pivot": [
+    1350,
+    300
+  ],
+  "children": {
+    "ammo_body": {
+      "name": "01_箱体",
+      "pivot": [
+        1350,
+        337
+      ]
+    },
+    "ammo_lid": {
+      "name": "02_闭合上盖",
+      "pivot": [
+        1350,
+        201
+      ]
+    },
+    "ammo_handle": {
+      "name": "03_提手",
+      "pivot": [
+        1345.8,
+        186
+      ]
+    }
+  },
+  "layer_names": {
+    "box_shell_complete": "完整箱壳底形",
+    "inward_face_and_reinforced_edges": "朝枪侧箱壁与加强边",
+    "bottom_moulding": "底部成型保护带",
+    "lid_seal_and_lower_skirt": "盖缘密封线与下裙",
+    "lid_closed_edge_profile": "闭合上盖边缘",
+    "handle_mounts_side_projection": "提手连接座侧影",
+    "raised_handle_narrow_side_profile": "提手窄侧轮廓"
+  }
+}

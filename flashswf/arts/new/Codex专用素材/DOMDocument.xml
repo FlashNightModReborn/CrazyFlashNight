@@ -2,12 +2,16 @@
      <folders>
           <DOMFolderItem name="Codex" itemID="6a9bf5b1-000012c0" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171" itemID="6a9bf5b1-000012c1" isExpanded="true"/>
+          <DOMFolderItem name="Codex/QJZ171/弹箱子件" itemID="7bdfe639-00002001" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171/分件" itemID="6a9bf5b1-000012c2" isExpanded="true"/>
           <DOMFolderItem name="Codex/接口" itemID="6a9bf5b1-000012c3" isExpanded="true"/>
           <DOMFolderItem name="Codex/图标" itemID="6a9c04a3-00001524"/>
      </folders>
      <symbols>
-          <Include href="Codex/QJZ171/00_总装.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012c4"/>
+          <Include href="Codex/QJZ171/00_总装.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012c4" lastModified="1788661007"/>
+          <Include href="Codex/QJZ171/弹箱子件/01_箱体.xml" itemIcon="1" loadImmediate="false" itemID="7a722291-4c0de0cc"/>
+          <Include href="Codex/QJZ171/弹箱子件/02_闭合上盖.xml" itemIcon="1" loadImmediate="false" itemID="37b40e23-7fffffff"/>
+          <Include href="Codex/QJZ171/弹箱子件/03_提手.xml" itemIcon="1" loadImmediate="false" itemID="660e2c8a-7904f6aa"/>
           <Include href="Codex/QJZ171/动画.xml" loadImmediate="false" itemID="6a9bfad5-0000147f"/>
           <Include href="Codex/QJZ171/分件/01_制退器.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012cf"/>
           <Include href="Codex/QJZ171/分件/02_长枪管.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012d0"/>
@@ -23,6 +27,7 @@
           <Include href="Codex/QJZ171/分件/12_开孔侧杆.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012c5"/>
           <Include href="Codex/QJZ171/分件/13_握把与护圈.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012d1"/>
           <Include href="Codex/QJZ171/分件/14_镂空枪托.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012d2"/>
+          <Include href="Codex/QJZ171/分件/15_弹药箱_远侧.xml" itemIcon="1" loadImmediate="false" itemID="336f657a-68e3da32" lastModified="1788661007"/>
           <Include href="Codex/QJZ171/枪-长枪-Codex-QJZ171.xml" itemID="6a9bf5b1-000012d5"/>
           <Include href="Codex/QJZ171/图标-Codex-QJZ171.xml" itemID="6a9bf5b1-000012d6"/>
           <Include href="Codex/接口/枪口标记.xml" loadImmediate="false" itemID="6a9bf5b1-000012d4"/>

@@ -1,9 +1,13 @@
-# Art contract
+# QJZ171 当前稿件与装配约定
 
-Approved shape: assets/reference/approved-v07.png (relative to package root), 1898 × 829. Use same absolute coordinates and muzzle-left true side projection.
-Final native stage will normalize gun length near 900 px; author source at approved 1898 × 829 to keep reference coordinates easy.
-Style match assets/reference/ar-style-reference.png: black clear contours, clean dark neutral metal, restrained smooth gradients on cylindrical forms, flat bevel facets elsewhere. No image texture/noise, no auto trace polygons. Gun edges crisp but not angular everywhere. Outer contours stroke #101010 2.6 px at 1898 canvas, internal panel borders 1.6–2 px, minor highlight 1 px. Source-scale stroke widths will be halved when normalized.
-Palette: outline #101010; recess #181819; shadow #29292B; dark face #39393B; main face #48484B; light facet #616164; selective edge #828284. Neutral warm/slightly warm gray comparable to the AR steel. Avoid blue saturation and pure white glints.
-SVG standalone files: viewBox="0 0 1898 829", transparent background. All coordinates absolute; no transforms if avoidable. Supported author tags path M/L/H/V/Q/C/Z; rect with optional rx; ellipse/circle/polygon/polyline/line. Explicit fill/stroke attrs; simple named linearGradient in defs with gradientUnits userSpaceOnUse; stop offsets 0..1 + stop-color. Groups id meaningful, direct children groups for editable layers. No filters, masks, clipPaths, bitmap/text, CSS or use. Holes true compound-path holes with fill-rule evenodd, never white fill.
-Part groups represent semantically editable graphic symbols. Fine visual layers use id silhouette, planes, recesses, bevels, fasteners etc.
-No dangling cylindrical foregrip or rod. Keep actual trigger-guard-front small rectangular block. Bipod side silhouette stays a single near-overlapping vertical leg. All holes/circular pivots have a common side-facing projection, no artificial 3D front face.
+当前版本来自 `QJZ171-Closed-Ammo-Box.zip`（2026-09-06）；完整包 SHA-256 与导入元件对应关系见 `assembly.json`。首轮无箱稿与原说明可从 Git 历史回溯。
+
+`qjz171-master.svg` 保留枪身材质升级稿，`ammo-box.svg` 保留完整闭盖弹箱稿；原画朝左，游戏外壳负责镜像朝右。`layout.json` 记录 0.5 倍原生布局、949×415 舞台、原有 14 个分件与新弹箱的枢轴；弹箱子件布局另见 `ammo-config.json` 和 `ammo-pivots.json`。`material-recipes.json` 是本次美术材料参数来源资料。
+
+原生美术共 19 个图形元件：总装、14 个枪身分件、弹箱包装及箱内 3 个子件。341 个形状、106 个渐变、54 个细节层均保留可编辑性。完整弹箱位于总装最下层，由前景枪身形成遮挡；箱体、窄侧影闭合上盖和提手可以分别修改。没有弹链动画。
+
+装配沿用已有握持点、枪口、`动画` MovieClip 和两帧图标接口。原有分件的局部矩阵保持，新增弹箱实例为 `tx=200.5, ty=-57.5`。第一帧继续使用 24×24 遮罩内特写与底影，第二帧继续承担完整展示和地面掉落。增加弹箱时保留原比例；随后按用户指定的 1.6 m 全长，将武器外层以握持点为中心放大约 10.56%，同步枪口标记及掉落帧，第一帧取景和分件局部运动轨迹保持。当前原生总装倍率为 0.530685，排除枪口标记后的全长为 480.005 px，对应 `weapon=300 px/m` 的 1.60002 m；保存后的准确矩阵见 `assembly.json`。
+
+日常编辑真源仍为旁边 `Codex专用素材/Codex专用素材.xfl` 及完整 XFL 目录。以上作者源不另造现役 FLA；导出物只由 CS6 发布与项目素材烘焙工具生成。Mac Animate 的原交接验收与 Windows CS6 的本机检查分别记录，不互相代替。
+
+射击动画由静态总装和 [运动 profile](../../../../../tools/weapon-animation/profiles/qjz171.json) 生成到既有 `动画` MovieClip，四件枪管前部成组后坐、复进，其余分件保持静态。不要直接改生成后的逐帧矩阵后遗漏 profile；方法与本机证据见 [动画案例](../../../../../docs/QJZ171-枪管动画与可复用制作流程-2026-09-06.md)。

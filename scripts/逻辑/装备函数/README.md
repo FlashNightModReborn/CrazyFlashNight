@@ -59,6 +59,8 @@ asLoader.swf
 7. **自检**：`node tools/validate-equip-fn-coverage.js` 应 `ok`。
 8. **重编**：仅改外置 `.as` 时直接运行 `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180`，再重启游戏（物品 XML 在 boot 阶段加载）；只有改动 asLoader XFL 时间轴 / symbol 结构时才关闭并重开 FLA。没有新鲜 trace、Output Panel 副本或 IDE 复核时，不声称“编译通过”。
 
+游戏内表现异常时，先直接在生命周期初始化、周期和事件回调记录现场，再根据日志扩大排查范围。动画需同时看期望帧、实际帧、目标 MovieClip 引用和版本；下一周期开始时的读数能帮助发现写入后又被重置的情况。`枪械射击动画.as` 已提供默认关闭的 `initParam.debug`，具体用法见 [动画工具](../../../tools/weapon-animation/README.md#原生脚本与验证边界)。
+
 > 生成器会用 canonical LF、剥 BOM 的口径报告源闭包；`70,000 B` 只是人工复核提示线，不是修改防增长 hard gate，也不维护 exact no-growth 表。当前 `f37_7=76,380 B` 属于优先调查候选：修改时应结合实际 `codeSize`、副作用边界与 fresh 行为证据判断是否移到更空的 `f37_N` 或继续拆分，不能仅因注释 / 格式增长阻断构建。
 
 ---
@@ -148,6 +150,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 通用行为（直接在 XML 指为 initRoutines/cycleRoutines，多数装备无需写新 .as）：
 - `初期特效初始化` / `初期特效周期` — 兵器攻击按概率发 `MuzzleWorldShoot` + 子弹
 - `通用变形初始化` / `通用变形周期` — 动画帧驱动的形态切换（配 `config`）
+- `长枪射击动画初始化` / `长枪射击动画周期` — 成功主长枪射击驱动的有限帧动作（配 `fireStart` / `fireEnd` / 可选 `animationTarget` / `instanceContainer`）；制作和原生验证见 [weapon-animation](../../../tools/weapon-animation/README.md)
 - `自机状态检测` / `自机状态更新` / `反转自机属性` — 状态判定 + 按键触发 + 持久化到 item.value
 - `通用刀光周期` / `通用拖影周期` / `通用特效刀口初始化`+`通用特效刀口周期`
 
@@ -185,6 +188,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 
 ### A. 加特林连射族（转轴/转盘连续旋转）
 - `M134.as` — M134加特林 · 成功 `processShot`/旧射击事件产生主长枪旋转意图，旋转控制器驱动当前活动 `man` 的规范装扮引用，射击加速/停射衰减；副武器隔离
+- `枪械射击动画.as` — 可复用的主长枪有限射击动画；按游戏帧时钟推进、连发重新对齐、切姿态回位、placement 同步及换装精确退订，首个配置为 QJZ171
 - `M134暴力版.as` — M134加特林（NPC自动版） · 非玩家单位按时间间隔自动射击 + 距离判定
 - `XM214-CageFrame.as` — XM214 笼式框架加特林 · 霰弹值驱动转速，自动衰减 + 双环抖动反馈
 - `XM556_Microgun.as` — XM556 微型加特林 · 转盘连续旋转，射击加速/停射减速的视觉惯性

@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171/分件/15_弹药箱_远侧" itemID="336f657a-68e3da32" symbolType="graphic" lastModified="1788661007">
+  <timeline>
+    <DOMTimeline name="15_弹药箱_远侧">
+      <layers>
+        <DOMLayer name="03_提手" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/QJZ171/弹箱子件/03_提手" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-2.1" ty="-57"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="02_闭合上盖" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/QJZ171/弹箱子件/02_闭合上盖" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix ty="-49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="01_箱体" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/QJZ171/弹箱子件/01_箱体" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix ty="18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

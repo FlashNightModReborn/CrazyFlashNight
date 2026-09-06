@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__TITLE__ · 射击动画审阅</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#131b21;color:#e8edf1;font:16px/1.6 system-ui,"Microsoft YaHei",sans-serif}main{max-width:1140px;margin:auto;padding:34px 24px}h1{font-size:28px;margin:0 0 4px}.muted{color:#a5b6c2}.stage{margin:24px 0;background:#dce3e7;border-radius:12px;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden}.stage img{display:block;max-width:96%;max-height:440px}button{border:1px solid #557185;border-radius:7px;padding:10px 18px;background:#253c4a;color:#fff;cursor:pointer}button:hover{background:#345466}.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}input{flex:1;min-width:180px}.phase{color:#84dbbf;font-weight:650;min-width:150px}footer{margin-top:20px;font-size:13px;color:#a5b6c2}.frames{display:flex;gap:8px;margin-top:16px}.frames button{flex:1;padding:8px}.frames button[aria-pressed=true]{border-color:#84dbbf;background:#305748}
+</style>
+<main>
+<h1>__TITLE__ · 射击动画</h1>
+<div class="muted">后坐 → 复进 → 回位 · 来自已发布 SWF 的真实画面</div>
+<div class="stage"><img id="frame" alt="枪械动画当前帧"></div>
+<div class="controls">
+ <button id="shot">单发预览</button><button id="auto">连发预览</button><button id="reset">停火复位</button>
+ <input id="scrub" type="range" min="1" step="1" value="1" aria-label="逐帧查看">
+ <span id="phase" class="phase" aria-live="polite"></span>
+</div>
+<div id="frames" class="frames" aria-label="关键帧"></div>
+<footer><span id="timing"></span><br>位移幅度为游戏美术取值。此页用于检查分件、遮挡和复位；射击事件、换装与姿态切换由 AS2 聚焦测试另行验证。</footer>
+</main>
+<script>
+const data=__DATA__,picture=document.querySelector('#frame'),scrub=document.querySelector('#scrub'),phase=document.querySelector('#phase'),strip=document.querySelector('#frames');
+const images=data.frames.map(src=>{const img=new Image();img.src=src;return img;});
+document.querySelector('#timing').textContent=`基础间隔 ${data.nominalIntervalMs} ms；按 ${data.fps} FPS 调度取整为 ${Math.round(data.intervalMs*data.fps/1000)} 帧，约 ${Math.round(data.intervalMs)} ms（无射速加成）。`;
+let index=0,timer=null,automatic=false;
+if(data.mirror)picture.style.transform='scaleX(-1)';scrub.max=data.frames.length;
+function show(value){index=value;picture.src=data.frames[index];scrub.value=index+1;phase.textContent=`第 ${index+1} 帧 · ${data.labels[index]||''}`;strip.querySelectorAll('button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));}
+function stop(){clearTimeout(timer);timer=null;automatic=false;document.querySelector('#auto').textContent='连发预览';}
+function step(){if(index<data.frames.length-1){show(index+1);timer=setTimeout(step,1000/data.fps);}else{show(0);if(automatic)timer=setTimeout(fire,Math.max(0,data.intervalMs-(data.frames.length-data.fireStart+1)*1000/data.fps));}}
+function fire(){show(data.fireStart-1);timer=setTimeout(step,1000/data.fps);}
+data.frames.forEach((_,i)=>{const button=document.createElement('button');button.textContent=String(i+1);button.setAttribute('aria-label',`查看第 ${i+1} 帧`);button.onclick=()=>{stop();show(i);};strip.append(button);});
+document.querySelector('#shot').onclick=()=>{stop();fire();};
+document.querySelector('#auto').onclick=()=>{stop();automatic=true;document.querySelector('#auto').textContent='连发中';fire();};
+document.querySelector('#reset').onclick=()=>{stop();show(0);};
+scrub.oninput=()=>{stop();show(Number(scrub.value)-1);};window.addEventListener('pagehide',stop);show(0);
+</script>
+</html>

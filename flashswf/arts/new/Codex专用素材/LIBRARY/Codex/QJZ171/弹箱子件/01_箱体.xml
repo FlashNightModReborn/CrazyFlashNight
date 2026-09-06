@@ -1,0 +1,226 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171/弹箱子件/01_箱体" itemID="7a722291-4c0de0cc" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="01_箱体">
+      <layers>
+        <DOMLayer name="底部成型保护带" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0067138671875" c="-0.0067138671875" d="0" tx="-7.85" ty="64.5"/>
+                        </matrix>
+                        <GradientEntry color="#18191B" ratio="0"/>
+                        <GradientEntry color="#292A2C" ratio="0.16078431372549"/>
+                        <GradientEntry color="#303133" ratio="0.231372549019608"/>
+                        <GradientEntry color="#242527" ratio="0.329411764705882"/>
+                        <GradientEntry color="#1A1B1D" ratio="0.619607843137255"/>
+                        <GradientEntry color="#101113" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!911 1210|-911 1210!-911 1210[-1006 1200 -1058 1130!-1058 1130|-1058 1190!-1058 1190[-1048 1320 -964 1380!-964 1380|964 1380!964 1380[1048 1320 1058 1190!1058 1190|1058 1130!1058 1130[995 1200 911 1210"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0027313232421875" c="-0.0027313232421875" d="0" tx="-7.85" ty="67.75"/>
+                        </matrix>
+                        <GradientEntry color="#252628" ratio="0"/>
+                        <GradientEntry color="#303133" ratio="0.211764705882353"/>
+                        <GradientEntry color="#202123" ratio="0.4"/>
+                        <GradientEntry color="#111214" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!859 1340|-859 1340!-859 1340[-922 1340 -964 1320!-964 1320|-943 1390!-943 1390|943 1390!943 1390|964 1320!964 1320[922 1340 859 1340"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.4">
+                        <fill>
+                          <SolidColor color="#101113"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-901 1350|890 1350"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="朝枪侧箱壁与加强边" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0051116943359375" d="0.0051116943359375" tx="-48.7" ty="-8.5"/>
+                        </matrix>
+                        <GradientEntry color="#1D1E20" ratio="0"/>
+                        <GradientEntry color="#3A3B3D" ratio="0.349019607843137"/>
+                        <GradientEntry color="#303133" ratio="0.63921568627451"/>
+                        <GradientEntry color="#1F2022" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!-1027 -1290|-1027 1040!-1027 1040[-1027 1160 -943 1220!-943 1220|-880 1190!-880 1190[-943 1150 -943 1050!-943 1050|-943 -1290!-943 -1290|-1027 -1290"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.00543212890625" d="0.00543212890625" tx="48.95" ty="-8.5"/>
+                        </matrix>
+                        <GradientEntry color="#212224" ratio="0"/>
+                        <GradientEntry color="#2E2F31" ratio="0.450980392156863"/>
+                        <GradientEntry color="#28292B" ratio="0.749019607843137"/>
+                        <GradientEntry color="#111214" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!932 -1290|932 1060!932 1060[932 1140 880 1190!880 1190|943 1220!943 1220[1027 1160 1027 1040!1027 1040|1027 -1290!1027 -1290|932 -1290"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.65">
+                        <fill>
+                          <SolidColor color="#18191B"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-890 -1190[-890 -1230 -849 -1230!-849 -1230|828 -1230!828 -1230[870 -1230 870 -1190"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.35">
+                        <fill>
+                          <SolidColor color="#353638"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-880 -1210[-870 -1220 -838 -1220!-838 -1220|807 -1220"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.55">
+                        <fill>
+                          <SolidColor color="#17181A"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-901 940|-901 1080!-901 1080[-901 1150 -849 1170!-849 1170|828 1170!828 1170[880 1150 880 1080!880 1080|880 940"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.35">
+                        <fill>
+                          <SolidColor color="#353638"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-838 1180[0 1200 817 1180"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整箱壳底形" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.067138671875" d="0.067138671875" ty="-3.5"/>
+                        </matrix>
+                        <GradientEntry color="#101112" ratio="0"/>
+                        <GradientEntry color="#232426" ratio="0.0705882352941176"/>
+                        <GradientEntry color="#2C2D2F" ratio="0.329411764705882"/>
+                        <GradientEntry color="#292A2C" ratio="0.67843137254902"/>
+                        <GradientEntry color="#212224" ratio="0.941176470588235"/>
+                        <GradientEntry color="#0E0F10" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="1.1">
+                        <fill>
+                          <SolidColor color="#090A0B"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1027 -1370|-1037 -1370!-1037 -1370[-1079 -1370 -1079 -1310!-1079 -1310|-1079 1160!-1079 1160[-1079 1310 -995 1380!-995 1380[-974 1400 -932 1400!-932 1400|932 1400!932 1400[985 1400 1016 1360!1016 1360[1079 1270 1079 1160!1079 1160|1079
+ -1310!1079 -1310[1079 -1370 1027 -1370"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0207672119140625" b="0.0799560546875" c="-0.0799560546875" d="0.0207672119140625" tx="-3.9" ty="-1"/>
+                        </matrix>
+                        <GradientEntry color="#27282A" ratio="0"/>
+                        <GradientEntry color="#303133" ratio="0.301960784313725"/>
+                        <GradientEntry color="#2B2C2E" ratio="0.568627450980392"/>
+                        <GradientEntry color="#242527" ratio="0.831372549019608"/>
+                        <GradientEntry color="#1C1D1F" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!911 -1290|-922 -1290!-922 -1290[-974 -1290 -974 -1220!-974 -1220|-974 1110!-974 1110[-974 1200 -901 1240!-901 1240|901 1240!901 1240[964 1200 964 1110!964 1110|964 -1230!964 -1230[964 -1290 911 -1290"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -3487,8 +3487,8 @@
       <priceLayers>1</priceLayers>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:6489b482</inputDigest>
-      <sourceDigest>sha256:42ea31d0adfc6659b9af5ec44aa1084ee7bd0f742d87f10eb85c1872ebbf3c20</sourceDigest>
+      <inputDigest>fnv1a32:d418f929</inputDigest>
+      <sourceDigest>sha256:cc9fc1f80d41edf5fbf18aed935a482aad1997cfd568b43e4d6de19f88b44889</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.high-price</code>
@@ -3546,7 +3546,7 @@
         <ref>
           <id>WBR-FIRE-001</id>
           <target>mechanic.fireMode</target>
-          <evidenceRef>data/items/武器_长枪_机枪.xml#item=QJZ171/data;singleshoot=absent;interval=240</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_机枪.xml#item=QJZ171/data;singleshoot=absent;interval=270</evidenceRef>
         </ref>
         <ref>
           <id>WBR-MAP-002</id>
@@ -3586,17 +3586,32 @@
         <ref>
           <id>WBR-DPS-002</id>
           <target>metric.residualRatio</target>
-          <evidenceRef>docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md#公式标定</evidenceRef>
+          <evidenceRef>docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md#2026-09-06-冲击力与自带暴击补偿</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-LAYER-001</id>
-          <target>mechanic.variant</target>
-          <evidenceRef>data/items/武器_长枪_机枪.xml#item=QJZ171;data_variants=absent;lifecycle=absent;skill=absent</evidenceRef>
+          <id>WBR-LAYER-002</id>
+          <target>mechanic.lifecycle</target>
+          <evidenceRef>scripts/逻辑/装备函数/枪械射击动画.as#长枪射击动画初始化;只写动画帧;不改伤害或射击间隔;data_variants=absent;skill=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-TRIAGE-001</id>
           <target>audit.status</target>
-          <evidenceRef>docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md#公式标定</evidenceRef>
+          <evidenceRef>docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md#2026-09-06-冲击力与自带暴击补偿</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-LAYER-003</id>
+          <target>mechanic.innateCritical</target>
+          <evidenceRef>docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md#2026-09-06-冲击力与自带暴击补偿</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-008</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md#2026-09-06-冲击力与自带暴击补偿</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DPS-003</id>
+          <target>metric.criticalExpectation</target>
+          <evidenceRef>docs/QJZ171-独立物品与Flash资产流程标定-2026-09-05.md#2026-09-06-冲击力与自带暴击补偿</evidenceRef>
         </ref>
       </ruleRefs>
     </record>

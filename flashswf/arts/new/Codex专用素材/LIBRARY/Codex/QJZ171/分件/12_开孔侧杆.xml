@@ -9,14 +9,22 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#444447"/>
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0073089599609375" d="0.0073089599609375" tx="-1.5" ty="-1.5"/>
+                        </matrix>
+                        <GradientEntry color="#626262" ratio="0"/>
+                        <GradientEntry color="#4A4A4A" ratio="0.250980392156863"/>
+                        <GradientEntry color="#292929" ratio="0.67843137254902"/>
+                        <GradientEntry color="#101010" ratio="1"/>
+                      </RadialGradient>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.9">
                         <fill>
-                          <SolidColor color="#141416"/>
+                          <SolidColor color="#0C0C0C"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -28,14 +36,43 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#67676A"/>
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0059661865234375" d="0.0059661865234375"/>
+                        </matrix>
+                        <GradientEntry alpha="0" ratio="0"/>
+                        <GradientEntry alpha="0" ratio="0.501960784313725"/>
+                        <GradientEntry alpha="0.16078431372549" ratio="0.76078431372549"/>
+                        <GradientEntry alpha="0.32156862745098" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!0 -98[-42 -97 -69 -69!-69 -69[-97 -42 -98 0!-98 0[-97 42 -69 69!-69 69[-42 97 0 98!0 98[42 97 69 69!69 69[97 42 98 0!98 0[97 -42 69 -69!69 -69[42 -97 0 -98"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0030364990234375" d="0.0030364990234375" tx="0.5" ty="-113"/>
+                        </matrix>
+                        <GradientEntry color="#171717" ratio="0"/>
+                        <GradientEntry color="#313131" ratio="0.141176470588235"/>
+                        <GradientEntry color="#757575" ratio="0.349019607843137"/>
+                        <GradientEntry color="#7E7E7E" ratio="0.4"/>
+                        <GradientEntry color="#424242" ratio="0.63921568627451"/>
+                        <GradientEntry color="#1F1F1F" ratio="0.890196078431373"/>
+                        <GradientEntry color="#101010" ratio="1"/>
+                      </LinearGradient>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.6">
                         <fill>
-                          <SolidColor color="#29292B"/>
+                          <SolidColor color="#191919"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -49,7 +86,7 @@
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.8">
                         <fill>
-                          <SolidColor color="#252527"/>
+                          <SolidColor color="#171717"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -63,7 +100,7 @@
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.55">
                         <fill>
-                          <SolidColor color="#949496"/>
+                          <SolidColor color="#6B6B6B"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -75,14 +112,14 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#1D1D1F"/>
+                      <SolidColor color="#131313"/>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.7">
                         <fill>
-                          <SolidColor color="#0E0E0F"/>
+                          <SolidColor color="#070707"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -94,14 +131,22 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#5B5B5D"/>
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0011444091796875" d="0.0011444091796875" tx="-10.8" ty="2.55"/>
+                        </matrix>
+                        <GradientEntry color="#626262" ratio="0"/>
+                        <GradientEntry color="#454545" ratio="0.301960784313725"/>
+                        <GradientEntry color="#292929" ratio="0.780392156862745"/>
+                        <GradientEntry color="#171717" ratio="1"/>
+                      </RadialGradient>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.35">
                         <fill>
-                          <SolidColor color="#353537"/>
+                          <SolidColor color="#212121"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -115,7 +160,7 @@
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.5">
                         <fill>
-                          <SolidColor color="#151516"/>
+                          <SolidColor color="#0D0D0D"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -127,14 +172,14 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#1D1D1F"/>
+                      <SolidColor color="#131313"/>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.7">
                         <fill>
-                          <SolidColor color="#0E0E0F"/>
+                          <SolidColor color="#070707"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -146,14 +191,14 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#5B5B5D"/>
+                      <SolidColor color="#3A3A3A"/>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.35">
                         <fill>
-                          <SolidColor color="#353537"/>
+                          <SolidColor color="#212121"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -167,7 +212,7 @@
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.5">
                         <fill>
-                          <SolidColor color="#151516"/>
+                          <SolidColor color="#0D0D0D"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -179,14 +224,14 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#1D1D1F"/>
+                      <SolidColor color="#131313"/>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.7">
                         <fill>
-                          <SolidColor color="#0E0E0F"/>
+                          <SolidColor color="#070707"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -198,14 +243,14 @@
                 <DOMShape isFloating="true">
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#5B5B5D"/>
+                      <SolidColor color="#3A3A3A"/>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.35">
                         <fill>
-                          <SolidColor color="#353537"/>
+                          <SolidColor color="#212121"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -219,7 +264,7 @@
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.5">
                         <fill>
-                          <SolidColor color="#151516"/>
+                          <SolidColor color="#0D0D0D"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -239,9 +284,9 @@
                 <DOMShape isFloating="true">
                   <strokes>
                     <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal" weight="0.65">
+                      <SolidStroke scaleMode="normal" weight="0.45">
                         <fill>
-                          <SolidColor color="#969698"/>
+                          <SolidColor color="#6D6D6D" alpha="0.4"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -255,7 +300,7 @@
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.75">
                         <fill>
-                          <SolidColor color="#2B2B2D"/>
+                          <SolidColor color="#1B1B1B"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -269,7 +314,7 @@
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.7">
                         <fill>
-                          <SolidColor color="#2A2A2C"/>
+                          <SolidColor color="#1A1A1A"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -281,9 +326,9 @@
                 <DOMShape isFloating="true">
                   <strokes>
                     <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal" weight="0.55">
+                      <SolidStroke scaleMode="normal" weight="0.45">
                         <fill>
-                          <SolidColor color="#949497"/>
+                          <SolidColor color="#6C6C6C" alpha="0.4"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -297,27 +342,27 @@
                     <StrokeStyle index="1">
                       <SolidStroke scaleMode="normal" weight="0.6">
                         <fill>
-                          <SolidColor color="#2B2B2D"/>
+                          <SolidColor color="#1B1B1B"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!-240 220[-190 180 -140 210!-370 430|-320 430!-490 690|-490 770"/>
+                    <Edge strokeStyle="1" edges="!-490 690|-490 770!-370 430|-320 430!-240 220[-190 180 -140 210"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isFloating="true">
                   <strokes>
                     <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal" weight="0.5">
+                      <SolidStroke scaleMode="normal" weight="0.45">
                         <fill>
-                          <SolidColor color="#9A9A9C"/>
+                          <SolidColor color="#717171" alpha="0.4"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!-260 360[-200 410 -150 360!-380 580[-320 640 -270 590!-480 900|-440 940!-440 940|-400 910"/>
+                    <Edge strokeStyle="1" edges="!-480 900|-440 940!-440 940|-400 910!-380 580[-320 640 -270 590!-260 360[-200 410 -150 360"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -333,20 +378,22 @@
                     <FillStyle index="1">
                       <LinearGradient>
                         <matrix>
-                          <Matrix a="0" b="0.05401611328125" c="-0.05401611328125" d="0" tx="-652.5" ty="35.75"/>
+                          <Matrix a="0.0286712646484375" b="0.0176849365234375" c="-0.0176849365234375" d="0.0286712646484375" tx="-22.5" ty="27"/>
                         </matrix>
-                        <GradientEntry color="#808082" ratio="0"/>
-                        <GradientEntry color="#6D6D6F" ratio="0.4"/>
-                        <GradientEntry color="#79797B" ratio="0.72156862745098"/>
-                        <GradientEntry color="#5C5C5E" ratio="1"/>
+                        <GradientEntry color="#222222" ratio="0"/>
+                        <GradientEntry color="#424242" ratio="0.16078431372549"/>
+                        <GradientEntry color="#666666" ratio="0.368627450980392"/>
+                        <GradientEntry color="#656565" ratio="0.458823529411765"/>
+                        <GradientEntry color="#454545" ratio="0.72156862745098"/>
+                        <GradientEntry color="#222222" ratio="1"/>
                       </LinearGradient>
                     </FillStyle>
                   </fills>
                   <strokes>
                     <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal" weight="1.3">
+                      <SolidStroke scaleMode="normal" weight="1.5">
                         <fill>
-                          <SolidColor color="#101010"/>
+                          <SolidColor color="#080808"/>
                         </fill>
                       </SolidStroke>
                     </StrokeStyle>
@@ -354,9 +401,9 @@
                   <edges>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!40 -180[-50 -270 -180 -250!-180 -250[-290 -170 -300 -60!-300 -60|-380 130!-380 130|-610 610!-610 610|-700 770!-700 770|-940 830!-940 830[-1070 890 -1130 1030!-1130 1030|-1250 1310!-1250 1310|-1290 1510!-1290 1510[-1300 1600 -1220 1600
 !-1220 1600[-1170 1610 -1140 1560!-1140 1560|-1070 1390!-1070 1390|-1000 1200!-1000 1200|-890 1020!-890 1020[-820 920 -690 920!-690 920|-560 950!-560 950[-490 1000 -460 1110!-460 1110|-460 1290!-460 1290|-570 1440!-570 1440|-670 1540
-!-670 1540|-640 1610!-640 1610[-600 1660 -550 1610!-550 1610|-380 1450!-380 1450[-300 1350 -320 1250!-320 1250|-350 1110!-350 1110[-350 990 -310 920!-310 920|10 270!10 270|80 180!80 180|140 40!140 40[160 -70 90 -110!90 -110|40 -180!-160
- 360[-210 390 -270 340!-270 340[-310 300 -240 210!-240 210[-180 150 -120 190!-120 190[-60 230 -120 310!-120 310|-160 360!-340 400|-230 440!-230 440[-190 470 -220 520!-220 520|-270 590!-270 590[-310 630 -360 600!-360 600|-400 560!-400
- 560[-430 530 -400 470!-400 470|-340 400!-490 650[-450 620 -400 650!-400 650|-340 690!-340 690[-310 720 -340 770!-340 770|-370 820!-370 820|-400 900!-400 900[-430 940 -470 910!-470 910|-520 860!-520 860[-550 830 -520 770!-520 770|-490
+!-670 1540|-640 1610!-640 1610[-600 1660 -550 1610!-550 1610|-380 1450!-380 1450[-300 1350 -320 1250!-320 1250|-350 1110!-350 1110[-350 990 -310 920!-310 920|10 270!10 270|80 180!80 180|140 40!140 40[160 -70 90 -110!90 -110|40 -180!-340
+ 400|-230 440!-230 440[-190 470 -220 520!-220 520|-270 590!-270 590[-310 630 -360 600!-360 600|-400 560!-400 560[-430 530 -400 470!-400 470|-340 400!-160 360[-210 390 -270 340!-270 340[-310 300 -240 210!-240 210[-180 150 -120 190!-120
+ 190[-60 230 -120 310!-120 310|-160 360!-490 650[-450 620 -400 650!-400 650|-340 690!-340 690[-310 720 -340 770!-340 770|-370 820!-370 820|-400 900!-400 900[-430 940 -470 910!-470 910|-520 860!-520 860[-550 830 -520 770!-520 770|-490
  650"/>
                   </edges>
                 </DOMShape>

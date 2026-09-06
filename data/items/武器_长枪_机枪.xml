@@ -312,15 +312,15 @@
     <use>长枪</use>
     <price>460000</price>
     <description>C国新一代12.7毫米山地重机枪，采用轻量化结构与60发弹箱，将大口径火力带入步兵能够抵达的阵地。
-    这款佣兵用改装型放缓了连射节奏，每发重弹都保留充足的贯穿力与冲击。沉重的枪身和较长的换弹时间要求使用者稳住阵脚，以短促而有力的连射撕开敌群。</description>
+    这款佣兵用改装型放缓了连射节奏，每发重弹都保留充足的贯穿力与冲击。轻量化枪身减轻了携行负担，较长的换弹时间仍要求使用者把握开火时机，以短促而有力的连射撕开敌群。</description>
     <data>
       <level>37</level>
-      <weight>24</weight>
+      <weight>20</weight>
       <dressup>枪-长枪-Codex-QJZ171</dressup>
       <capacity>60</capacity>
       <split>1</split>
       <diffusion>5</diffusion>
-      <interval>240</interval>
+      <interval>270</interval>
       <velocity>80</velocity>
       <bullet>巴雷特子弹</bullet>
       <bulletrename>强力穿刺子弹</bulletrename>
@@ -330,7 +330,8 @@
       <clipname>机枪贫铀穿甲弹</clipname>
       <bulletsize>55</bulletsize>
       <power>888</power>
-      <impact>4</impact>
+      <impact>2</impact>
+      <criticalhit>5</criticalhit>
       <reloadPenalty>50</reloadPenalty>
     </data>
     <balance>
@@ -349,11 +350,26 @@
           <formula>1</formula>
           <status>confirmed</status>
           <displayEligible>true</displayEligible>
-          <inputDigest>fnv1a32:6489b482</inputDigest>
+          <inputDigest>fnv1a32:d418f929</inputDigest>
           <auditRef>weapon:QJZ171:data</auditRef>
         </data>
       </profiles>
     </balance>
+    <!-- 纯视觉：由成功主长枪射击触发，帧区间与 tools/weapon-animation/profiles/qjz171.json 对齐。 -->
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>长枪射击动画初始化</initRoutines>
+          <initParam>
+            <fireStart>2</fireStart>
+            <fireEnd>10</fireEnd>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>长枪射击动画周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item weapontype="机枪">
     <name>ZB-26</name>

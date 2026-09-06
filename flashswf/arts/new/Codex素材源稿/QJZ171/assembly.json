@@ -1,43 +1,43 @@
 {
-  "sourceSha256": "e04b6a703c6569beb77fbaf65ab0908c2241da8c1d295453d58c1b885d5d60f3",
+  "sourceSha256": "3baa8720db4f52738401126ce70b4e36a5a8bb2dca4942910cdab60ee94ffe90",
   "sourceGripPx": [
     1535,
     447
   ],
   "nativeScale": 0.5,
-  "gameScale": 0.48,
+  "gameScale": 0.5306854248046875,
   "assemblyMatrix": {
-    "a": -0.48,
-    "d": 0.48,
-    "tx": 140.64,
-    "ty": -7.68
+    "a": -0.5306854248046875,
+    "d": 0.5306854248046875,
+    "tx": 155.45,
+    "ty": -8.45
   },
   "muzzleMatrix": {
-    "tx": 360.72,
-    "ty": -34.08
+    "tx": 398.8,
+    "ty": -37.65
   },
-  "matrixNote": "记录设计输入；CS6 保存后会按 twip / 定点精度量化。",
-  "sizeBasis": "约 435 个局部像素全长，首轮试装比例，非原型实测标定。",
-  "nativeShapes": 402,
-  "partCount": 14,
+  "matrixNote": "当前 CS6 保存值；平移按 twip、缩放按 16.16 定点精度量化。",
+  "sizeBasis": "用户指定整枪全长 1.6 m，按 weapon=300 px/m 制作档位；1.6 m 来自公开估值，不声称为制造方实测规格。",
+  "nativeShapes": 341,
+  "partCount": 15,
   "exports": [
     "Codex专用素材",
     "枪-长枪-Codex-QJZ171",
     "图标-Codex-QJZ171"
   ],
   "iconFrame1Matrix": {
-    "a": -0.10182337649086283,
-    "b": 0.10182337649086283,
-    "c": 0.10182337649086283,
-    "d": 0.10182337649086283,
-    "tx": 24.437610357807078,
-    "ty": -16.291740238538054
+    "a": -0.101821899414063,
+    "b": 0.101821899414063,
+    "c": 0.101821899414063,
+    "d": 0.101821899414063,
+    "tx": 24.4,
+    "ty": -16.25
   },
   "iconFrame2Matrix": {
-    "a": -0.13196029239509288,
-    "d": 0.13196029239509288,
-    "tx": -0.7587716812717841,
-    "ty": 0.296910657888959
+    "a": -0.145889282226563,
+    "d": 0.145889282226563,
+    "tx": -0.85,
+    "ty": 0.35
   },
   "iconMask": {
     "sizePx": [
@@ -66,8 +66,201 @@
       "sprite/Symbol 8"
     ],
     "oldSourceScale": 0.066986083984375,
-    "sourceScale": 0.13196029239509288,
-    "targetLengthPx": 119.35808447136151,
-    "basis": "采用纸娃娃画稿倍率乘以背负长枪 holder 的纵轴长度倍率；图标第 2 帧用于地面掉落。"
+    "sourceScale": 0.1458892822265625,
+    "targetLengthPx": 131.95685577392578,
+    "basis": "沿用背负长枪 holder 的纵轴长度标尺，随武器外层按相同倍率放大；图标第 2 帧用于地面掉落，记录 CS6 保存后的长度。",
+    "previousSourceScale": 0.1319580078125
+  },
+  "nativeSymbols": 19,
+  "nativeGradients": 106,
+  "refresh": {
+    "date": "2026-09-06",
+    "handoff": "QJZ171-Closed-Ammo-Box.zip",
+    "handoffSha256": "6aac1b9f9ce8238b39757c7e9e4b2c371b5b8606cf60c7084bbfd56bd7296a93",
+    "artworkSource": "XFL/LIBRARY/QJZ171_质感升级",
+    "scope": "整枪材质升级与闭盖弹药箱；保留已有游戏外壳、握持点、枪口、两帧图标矩阵及物品数值。",
+    "ammoSymbol": "Codex/QJZ171/分件/15_弹药箱_远侧",
+    "ammoChildren": [
+      "Codex/QJZ171/弹箱子件/01_箱体",
+      "Codex/QJZ171/弹箱子件/02_闭合上盖",
+      "Codex/QJZ171/弹箱子件/03_提手"
+    ],
+    "placement": {
+      "tx": 200.5,
+      "ty": -57.5,
+      "layer": "原枪身后层"
+    },
+    "existingPartMatricesUnchanged": 14,
+    "files": [
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/00_总装.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/00_总装.xml",
+        "sourceSha256": "015bf921e7335debeeb5f841714ec477a72152ecb496d4a8973767459f917573",
+        "itemID": "6a9bf5b1-000012c4"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/01_制退器.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/01_制退器.xml",
+        "sourceSha256": "388839712d434ab94bc5554e5e6b8dda34046f74f1e3b126f7995db5d37fa814",
+        "itemID": "6a9bf5b1-000012cf"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/02_长枪管.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/02_长枪管.xml",
+        "sourceSha256": "5e3d5894de595d958e3942d0d84af3ca7a57475fa66bf6982660e1fed5c25eee",
+        "itemID": "6a9bf5b1-000012d0"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/03_下管与套环.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/03_下管与套环.xml",
+        "sourceSha256": "34e5dfc31f2c2c629dd82843cd9ea7c2b5df46208395cf4afdefbd3d82011fbe",
+        "itemID": "6a9bf5b1-000012ce"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/04_准星与前夹座.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/04_准星与前夹座.xml",
+        "sourceSha256": "113b8b85d879c9ddc2415df5a7bf1e842395778a9dd7a67b2e10962e3a53162b",
+        "itemID": "6a9bf5b1-000012c8"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/05_脚架侧面投影.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/05_脚架侧面投影.xml",
+        "sourceSha256": "576bca40008b06829df59718d47ac2879fde3241840c669a9896b66f558be840",
+        "itemID": "6a9bf5b1-000012c7"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/06_前连接座.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/06_前连接座.xml",
+        "sourceSha256": "23684b23f699d853d1324c98253031a81124f6c48b25b1dfeb97651c6bfa14df",
+        "itemID": "6a9bf5b1-000012cd"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/07_机匣主体.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/07_机匣主体.xml",
+        "sourceSha256": "4844e4a7a07d2e73883e5ff25397e5d74d7f512841ecde3d5e2968abb1e86695",
+        "itemID": "6a9bf5b1-000012cc"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/08_上方筒罩.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/08_上方筒罩.xml",
+        "sourceSha256": "3e08d19b95155313fc287001783d17287cfba5cb57100255e9aaa063f533df3b",
+        "itemID": "6a9bf5b1-000012cb"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/09_上盖与照门.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/09_上盖与照门.xml",
+        "sourceSha256": "76f94b908afc8087a9a60f605d0514cc8862c3e7347c208c357a7f62adf63edd",
+        "itemID": "6a9bf5b1-000012ca"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/10_后机匣.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/10_后机匣.xml",
+        "sourceSha256": "886dc6eb42a85fcba76481f153c0696e5d1aed63db5ef5951b787291897d86c0",
+        "itemID": "6a9bf5b1-000012c9"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/11_横提把.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/11_横提把.xml",
+        "sourceSha256": "cab1ff837cbae73b90985e9e9699d5bcfdc861bc6269233b766a0666206b3ba4",
+        "itemID": "6a9bf5b1-000012c6"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/12_开孔侧杆.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/12_开孔侧杆.xml",
+        "sourceSha256": "78f7361c49632f4de73550e537be55b697b566dd754efa8c01f1e9866c6a687e",
+        "itemID": "6a9bf5b1-000012c5"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/13_握把与护圈.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/13_握把与护圈.xml",
+        "sourceSha256": "df48cdebd4e2e011367b85b0469e0fd877cce29e89f621c22535ff1288116633",
+        "itemID": "6a9bf5b1-000012d1"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/14_镂空枪托.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/14_镂空枪托.xml",
+        "sourceSha256": "17f5b74b9b87aeb2f6f0545a7cce8f18dbba589f9270b836db5040f3c3998762",
+        "itemID": "6a9bf5b1-000012d2"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/分件/15_弹药箱_远侧.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/分件/15_弹药箱_远侧.xml",
+        "sourceSha256": "1bf2de1b618b5e74a16431481f8c37643e203e56e016b029ab0d4b4eb8a0829a",
+        "itemID": "336f657a-68e3da32"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/弹箱子件/01_箱体.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/弹箱子件/01_箱体.xml",
+        "sourceSha256": "8d672afbd3b57c2c048d14c2f87ac59b0535758bfd5b5a9822a027d8e29f3f05",
+        "itemID": "7a722291-4c0de0cc"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/弹箱子件/02_闭合上盖.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/弹箱子件/02_闭合上盖.xml",
+        "sourceSha256": "37f712926a081e3d5df5e2889b44d36c225addccfe3a1be9d4962a085bccc499",
+        "itemID": "37b40e23-982b0560"
+      },
+      {
+        "source": "XFL/LIBRARY/QJZ171_质感升级/弹箱子件/03_提手.xml",
+        "target": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/QJZ171/弹箱子件/03_提手.xml",
+        "sourceSha256": "75c978c56fdbc99da39399943039e1293d7325ed48382e5bba143391417d5210",
+        "itemID": "660e2c8a-7904f6aa"
+      }
+    ],
+    "nativeVerification": {
+      "application": "Adobe Flash Professional CS6 WIN 12,0,0,481",
+      "assemblyPartsMovedAndRestored": 15,
+      "ammoChildrenMovedAndRestored": 3,
+      "ammoChildDetailLayers": [
+        3,
+        2,
+        2
+      ],
+      "savedAs": "XFL",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "geometryAndFillBoundariesPreserved": true,
+      "gradientMatrixMaxQuantizationDelta": 1.52587890625e-05,
+      "verificationScope": "原生分件编辑、XFL 保存、SWF 发布及几何材质比较；不代表游戏内人工体验验收。"
+    }
+  },
+  "animation": {
+    "profile": "tools/weapon-animation/profiles/qjz171.json",
+    "sourceSymbol": "Codex/QJZ171/00_总装",
+    "targetSymbol": "Codex/QJZ171/动画",
+    "runtime": "scripts/逻辑/装备函数/枪械射击动画.as",
+    "frames": 10,
+    "fps": 30,
+    "fireStart": 2,
+    "nativeMaxOffsetPx": 48,
+    "movementBasis": "前部可见分件的游戏后坐/复进表现，非实枪行程测量",
+    "case": "docs/QJZ171-枪管动画与可复用制作流程-2026-09-06.md"
+  },
+  "sizeCalibration": {
+    "date": "2026-09-06",
+    "targetLengthCm": 160,
+    "pixelsPerMeter": 300,
+    "metrologyProfile": "tools/asset-metrology/profiles.json#profiles.weapon",
+    "basis": "用户采纳公开的 160 cm 全长估值作为制作目标",
+    "reference": "https://modernfirearms.net/en/machineguns/china-machineguns/qjz171-12-7mm-2/",
+    "rawAssemblyWidthPx": 904.5,
+    "realizedWidthPx": 480.00496673583984,
+    "realizedLengthCm": 160.00165557861328,
+    "previousGameScale": 0.479995727539063,
+    "resizeFactor": 1.1056044759512975,
+    "preservedNativeGripPx": [
+      292.9192739294907,
+      15.937641860317243
+    ],
+    "rootGripResidualPx": [
+      0.0020106812475830793,
+      0.00787424102742662
+    ],
+    "iconFrame1Framing": "preserved",
+    "localAnimationTrajectory": "preserved",
+    "case": "docs/QJZ171-枪管动画与可复用制作流程-2026-09-06.md",
+    "measurement": "tmp/asset-metrology/qjz171-160cm/weapon/result.json",
+    "swfSha256": "481dd20be7ad7f264b41dcc32d2dbabea5565f64486f7c13836fb2f3d1165d69",
+    "workbenchJobId": "ab00109a74d54f87a5bbdcb1c37aff37"
   }
 }

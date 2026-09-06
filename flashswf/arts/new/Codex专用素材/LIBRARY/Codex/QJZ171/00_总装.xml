@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171/00_总装" itemID="6a9bf5b1-000012c4" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171/00_总装" itemID="6a9bf5b1-000012c4" symbolType="graphic" lastModified="1788661007">
   <timeline>
     <DOMTimeline name="00_总装">
       <layers>
-        <DOMLayer name="12_开孔侧杆" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="12_开孔侧杆" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -217,6 +217,22 @@
                 <DOMSymbolInstance libraryItemName="Codex/QJZ171/分件/14_镂空枪托" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="314.5" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="15_弹药箱_远侧" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/QJZ171/分件/15_弹药箱_远侧" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="200.5" ty="-57.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
