@@ -1,14 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-虎妙/虎妙" itemID="6a9d8fe3-00001572" lastModified="1788715511" lastUniqueIdentifier="149">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-虎妙/虎妙" itemID="6a9d8fe3-00001572" lastModified="1788718769" lastUniqueIdentifier="149">
   <timeline>
-    <DOMTimeline name="虎妙" currentFrame="70">
+    <DOMTimeline name="虎妙">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.874282836914063" b="-0.098480224609375" c="-0.098480224609375" d="0.874282836914063" tx="263.55" ty="55.45"/>
+                    <Matrix a="-0.933731079101563" b="-0.105178833007813" c="-0.105178833007813" d="0.933731079101563" tx="266.45" ty="45.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -20,7 +20,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.874282836914063" b="-0.098480224609375" c="-0.098480224609375" d="0.874282836914063" tx="263.55" ty="53.25"/>
+                    <Matrix a="-0.933731079101563" b="-0.105178833007813" c="-0.105178833007813" d="0.933731079101563" tx="266.45" ty="42.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -32,7 +32,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.874282836914063" b="-0.098480224609375" c="-0.098480224609375" d="0.874282836914063" tx="263.55" ty="53.25"/>
+                    <Matrix a="-0.933731079101563" b="-0.105178833007813" c="-0.105178833007813" d="0.933731079101563" tx="266.45" ty="42.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -44,7 +44,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.874282836914063" b="-0.098480224609375" c="-0.098480224609375" d="0.874282836914063" tx="263.55" ty="55.45"/>
+                    <Matrix a="-0.933731079101563" b="-0.105178833007813" c="-0.105178833007813" d="0.933731079101563" tx="266.45" ty="45.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -58,21 +58,21 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="287.4" centerPoint3DY="288.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="289.1" centerPoint3DY="286.15">
                   <matrix>
-                    <Matrix a="0.774993896484375" b="-0.1651611328125" c="0.1651611328125" d="0.774993896484375" tx="259.3" ty="273.3"/>
+                    <Matrix a="0.783523559570313" b="-0.166976928710938" c="0.166976928710938" d="0.783523559570313" tx="260.7" ty="270.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="30.5" y="27.4"/>
+                    <Point x="30.45" y="27.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="287.4" centerPoint3DY="284.95">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="289.1" centerPoint3DY="282.15">
                   <matrix>
-                    <Matrix a="0.774993896484375" b="-0.1651611328125" c="0.1651611328125" d="0.774993896484375" tx="259.3" ty="269"/>
+                    <Matrix a="0.783523559570313" b="-0.166976928710938" c="0.166976928710938" d="0.783523559570313" tx="260.7" ty="265.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="30.5" y="27.35"/>
@@ -82,9 +82,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="287.4" centerPoint3DY="284.95">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="289.1" centerPoint3DY="282.15">
                   <matrix>
-                    <Matrix a="0.774993896484375" b="-0.1651611328125" c="0.1651611328125" d="0.774993896484375" tx="259.3" ty="269"/>
+                    <Matrix a="0.783523559570313" b="-0.166976928710938" c="0.166976928710938" d="0.783523559570313" tx="260.7" ty="265.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="30.5" y="27.35"/>
@@ -94,12 +94,12 @@
             </DOMFrame>
             <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="287.4" centerPoint3DY="288.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="289.1" centerPoint3DY="286.15">
                   <matrix>
-                    <Matrix a="0.774993896484375" b="-0.1651611328125" c="0.1651611328125" d="0.774993896484375" tx="259.3" ty="273.3"/>
+                    <Matrix a="0.783523559570313" b="-0.166976928710938" c="0.166976928710938" d="0.783523559570313" tx="260.7" ty="270.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="30.5" y="27.4"/>
+                    <Point x="30.45" y="27.4"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -112,7 +112,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.7884521484375" b="-0.0790252685546875" c="-0.0790252685546875" d="0.7884521484375" tx="289.4" ty="234.3"/>
+                    <Matrix a="-0.797119140625" b="-0.07989501953125" c="-0.07989501953125" d="0.797119140625" tx="291.15" ty="230.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.2"/>
@@ -124,7 +124,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.7884521484375" b="-0.0790252685546875" c="-0.0790252685546875" d="0.7884521484375" tx="289.4" ty="229.95"/>
+                    <Matrix a="-0.797119140625" b="-0.07989501953125" c="-0.07989501953125" d="0.797119140625" tx="291.15" ty="226.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.2"/>
@@ -136,7 +136,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.7884521484375" b="-0.0790252685546875" c="-0.0790252685546875" d="0.7884521484375" tx="289.4" ty="229.95"/>
+                    <Matrix a="-0.797119140625" b="-0.07989501953125" c="-0.07989501953125" d="0.797119140625" tx="291.15" ty="226.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.2"/>
@@ -148,7 +148,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.7884521484375" b="-0.0790252685546875" c="-0.0790252685546875" d="0.7884521484375" tx="289.4" ty="234.3"/>
+                    <Matrix a="-0.797119140625" b="-0.07989501953125" c="-0.07989501953125" d="0.797119140625" tx="291.15" ty="230.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.2"/>
@@ -164,10 +164,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.788162231445313" b="-0.0816497802734375" c="-0.0816497802734375" d="0.788162231445313" tx="297.15" ty="154.3"/>
+                    <Matrix a="-0.796829223632813" b="-0.082550048828125" c="-0.082550048828125" d="0.796829223632813" tx="298.95" ty="149.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.25" y="-27.8"/>
+                    <Point x="1.2" y="-27.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -176,10 +176,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.788162231445313" b="-0.0816497802734375" c="-0.0816497802734375" d="0.788162231445313" tx="297.15" ty="149.95"/>
+                    <Matrix a="-0.796829223632813" b="-0.082550048828125" c="-0.082550048828125" d="0.796829223632813" tx="298.95" ty="145.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.25" y="-27.8"/>
+                    <Point x="1.2" y="-27.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -188,10 +188,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.788162231445313" b="-0.0816497802734375" c="-0.0816497802734375" d="0.788162231445313" tx="297.15" ty="149.95"/>
+                    <Matrix a="-0.796829223632813" b="-0.082550048828125" c="-0.082550048828125" d="0.796829223632813" tx="298.95" ty="145.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.25" y="-27.8"/>
+                    <Point x="1.2" y="-27.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -200,10 +200,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.788162231445313" b="-0.0816497802734375" c="-0.0816497802734375" d="0.788162231445313" tx="297.15" ty="154.3"/>
+                    <Matrix a="-0.796829223632813" b="-0.082550048828125" c="-0.082550048828125" d="0.796829223632813" tx="298.95" ty="149.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.25" y="-27.8"/>
+                    <Point x="1.2" y="-27.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -214,48 +214,48 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="225.75" centerPoint3DY="491.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="226.95" centerPoint3DY="491.15">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="196.65" ty="470.15"/>
+                    <Matrix a="0.801101684570313" d="0.81365966796875" tx="197.35" ty="469.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="36.7" y="26.7"/>
+                    <Point x="36.75" y="26.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="225.75" centerPoint3DY="491.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="226.95" centerPoint3DY="491.15">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="196.65" ty="470.15"/>
+                    <Matrix a="0.801101684570313" d="0.81365966796875" tx="197.35" ty="469.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="36.7" y="26.7"/>
+                    <Point x="36.75" y="26.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="225.75" centerPoint3DY="491.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="226.95" centerPoint3DY="491.15">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="196.65" ty="470.15"/>
+                    <Matrix a="0.801101684570313" d="0.81365966796875" tx="197.35" ty="469.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="36.7" y="26.7"/>
+                    <Point x="36.75" y="26.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="225.75" centerPoint3DY="491.8">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="226.95" centerPoint3DY="491.15">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="196.65" ty="470.15"/>
+                    <Matrix a="0.801101684570313" d="0.81365966796875" tx="197.35" ty="469.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="36.7" y="26.7"/>
+                    <Point x="36.75" y="26.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -268,10 +268,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.764724731445313" b="0.2108154296875" c="0.20758056640625" d="0.776718139648438" tx="183.65" ty="408.6"/>
+                    <Matrix a="-0.77313232421875" b="0.213134765625" c="0.209869384765625" d="0.785263061523438" tx="184.2" ty="407.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="4.25" y="64.75"/>
+                    <Point x="4.2" y="64.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -280,10 +280,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.764724731445313" b="0.2108154296875" c="0.20758056640625" d="0.776718139648438" tx="183.65" ty="408.6"/>
+                    <Matrix a="-0.77313232421875" b="0.213134765625" c="0.209869384765625" d="0.785263061523438" tx="184.2" ty="407.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="4.25" y="64.75"/>
+                    <Point x="4.2" y="64.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -292,10 +292,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.764724731445313" b="0.2108154296875" c="0.20758056640625" d="0.776718139648438" tx="183.65" ty="408.6"/>
+                    <Matrix a="-0.77313232421875" b="0.213134765625" c="0.209869384765625" d="0.785263061523438" tx="184.2" ty="407.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="4.25" y="64.75"/>
+                    <Point x="4.2" y="64.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -304,10 +304,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.764724731445313" b="0.2108154296875" c="0.20758056640625" d="0.776718139648438" tx="183.65" ty="408.6"/>
+                    <Matrix a="-0.77313232421875" b="0.213134765625" c="0.209869384765625" d="0.785263061523438" tx="184.2" ty="407.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="4.25" y="64.75"/>
+                    <Point x="4.2" y="64.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -320,10 +320,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.721450805664063" b="0.452835083007813" c="-0.416580200195313" d="0.684600830078125" tx="242.3" ty="320.05"/>
+                    <Matrix a="0.729385375976563" b="0.457809448242188" c="-0.421157836914063" d="0.692138671875" tx="243.5" ty="317.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.85" y="-51.6"/>
+                    <Point x="-0.8" y="-51.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -332,10 +332,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.721450805664063" b="0.452835083007813" c="-0.416580200195313" d="0.684600830078125" tx="242.3" ty="320.05"/>
+                    <Matrix a="0.729385375976563" b="0.457809448242188" c="-0.421157836914063" d="0.692138671875" tx="243.5" ty="317.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.85" y="-51.6"/>
+                    <Point x="-0.8" y="-51.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -344,10 +344,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.721450805664063" b="0.452835083007813" c="-0.416580200195313" d="0.684600830078125" tx="242.3" ty="320.05"/>
+                    <Matrix a="0.729385375976563" b="0.457809448242188" c="-0.421157836914063" d="0.692138671875" tx="243.5" ty="317.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.85" y="-51.6"/>
+                    <Point x="-0.8" y="-51.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -356,10 +356,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.721450805664063" b="0.452835083007813" c="-0.416580200195313" d="0.684600830078125" tx="242.3" ty="320.05"/>
+                    <Matrix a="0.729385375976563" b="0.457809448242188" c="-0.421157836914063" d="0.692138671875" tx="243.5" ty="317.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.85" y="-51.6"/>
+                    <Point x="-0.8" y="-51.55"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -372,7 +372,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="补间 5" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="298.35" ty="356.85"/>
+                    <Matrix a="0.801101684570313" d="0.81365966796875" tx="300.2" ty="354.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -384,7 +384,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="298.35" ty="356.85"/>
+                    <Matrix a="0.801101684570313" d="0.81365966796875" tx="300.2" ty="354.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -396,7 +396,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="298.35" ty="356.85"/>
+                    <Matrix a="0.801101684570313" d="0.81365966796875" tx="300.2" ty="354.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -408,7 +408,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="补间 7" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="298.35" ty="356.85"/>
+                    <Matrix a="0.801101684570313" d="0.81365966796875" tx="300.2" ty="354.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -424,7 +424,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.788787841796875" b="-0.0754241943359375" c="-0.0754241943359375" d="0.788787841796875" tx="257.45" ty="158.15"/>
+                    <Matrix a="-0.797470092773438" b="-0.0762481689453125" c="-0.0762481689453125" d="0.797470092773438" tx="258.85" ty="153.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-1.05" y="8.45"/>
@@ -436,10 +436,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.788787841796875" b="-0.0754241943359375" c="-0.0754241943359375" d="0.788787841796875" tx="257.45" ty="155.15"/>
+                    <Matrix a="-0.797470092773438" b="-0.0762481689453125" c="-0.0762481689453125" d="0.797470092773438" tx="258.85" ty="150.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-1.05" y="8.4"/>
+                    <Point x="-1.05" y="8.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -448,10 +448,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.788787841796875" b="-0.0754241943359375" c="-0.0754241943359375" d="0.788787841796875" tx="257.45" ty="155.15"/>
+                    <Matrix a="-0.797470092773438" b="-0.0762481689453125" c="-0.0762481689453125" d="0.797470092773438" tx="258.85" ty="150.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-1.05" y="8.4"/>
+                    <Point x="-1.05" y="8.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -460,7 +460,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.788787841796875" b="-0.0754241943359375" c="-0.0754241943359375" d="0.788787841796875" tx="257.45" ty="158.15"/>
+                    <Matrix a="-0.797470092773438" b="-0.0762481689453125" c="-0.0762481689453125" d="0.797470092773438" tx="258.85" ty="153.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-1.05" y="8.45"/>
@@ -476,10 +476,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.735336303710938" b="-0.413116455078125" c="-0.383514404296875" d="0.704254150390625" tx="190.8" ty="314.35"/>
+                    <Matrix a="-0.743423461914063" b="-0.41766357421875" c="-0.387741088867188" d="0.712005615234375" tx="191.45" ty="311.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-10.65" y="-68"/>
+                    <Point x="-10.65" y="-67.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -488,10 +488,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.735336303710938" b="-0.413116455078125" c="-0.383514404296875" d="0.704254150390625" tx="190.8" ty="314.35"/>
+                    <Matrix a="-0.743423461914063" b="-0.41766357421875" c="-0.387741088867188" d="0.712005615234375" tx="191.45" ty="311.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-10.65" y="-68"/>
+                    <Point x="-10.65" y="-67.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -500,10 +500,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.735336303710938" b="-0.413116455078125" c="-0.383514404296875" d="0.704254150390625" tx="190.8" ty="314.35"/>
+                    <Matrix a="-0.743423461914063" b="-0.41766357421875" c="-0.387741088867188" d="0.712005615234375" tx="191.45" ty="311.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-10.65" y="-68"/>
+                    <Point x="-10.65" y="-67.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -512,10 +512,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.735336303710938" b="-0.413116455078125" c="-0.383514404296875" d="0.704254150390625" tx="190.8" ty="314.35"/>
+                    <Matrix a="-0.743423461914063" b="-0.41766357421875" c="-0.387741088867188" d="0.712005615234375" tx="191.45" ty="311.75"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-10.65" y="-68"/>
+                    <Point x="-10.65" y="-67.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -526,9 +526,9 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="199.5" centerPoint3DY="481.4">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="200.3" centerPoint3DY="480.65">
                   <matrix>
-                    <Matrix a="0.688262939453125" b="-0.398773193359375" c="0.392623901367188" d="0.699050903320313" tx="163.35" ty="478.1"/>
+                    <Matrix a="0.695831298828125" b="-0.403167724609375" c="0.396942138671875" d="0.706741333007813" tx="163.7" ty="477.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="54" y="6.35"/>
@@ -538,9 +538,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="199.5" centerPoint3DY="481.4">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="200.3" centerPoint3DY="480.65">
                   <matrix>
-                    <Matrix a="0.688262939453125" b="-0.398773193359375" c="0.392623901367188" d="0.699050903320313" tx="163.35" ty="478.1"/>
+                    <Matrix a="0.695831298828125" b="-0.403167724609375" c="0.396942138671875" d="0.706741333007813" tx="163.7" ty="477.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="54" y="6.35"/>
@@ -550,9 +550,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="199.5" centerPoint3DY="481.4">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="200.3" centerPoint3DY="480.65">
                   <matrix>
-                    <Matrix a="0.688262939453125" b="-0.398773193359375" c="0.392623901367188" d="0.699050903320313" tx="163.35" ty="478.1"/>
+                    <Matrix a="0.695831298828125" b="-0.403167724609375" c="0.396942138671875" d="0.706741333007813" tx="163.7" ty="477.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="54" y="6.35"/>
@@ -562,9 +562,9 @@
             </DOMFrame>
             <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="199.5" centerPoint3DY="481.4">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="200.3" centerPoint3DY="480.65">
                   <matrix>
-                    <Matrix a="0.688262939453125" b="-0.398773193359375" c="0.392623901367188" d="0.699050903320313" tx="163.35" ty="478.1"/>
+                    <Matrix a="0.695831298828125" b="-0.403167724609375" c="0.396942138671875" d="0.706741333007813" tx="163.7" ty="477.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="54" y="6.35"/>
@@ -578,48 +578,48 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="195.4" centerPoint3DY="269.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="196.1" centerPoint3DY="266.8">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.792388916015625" tx="170.15" ty="248.1"/>
+                    <Matrix a="0.801101684570313" d="0.801101684570313" tx="170.55" ty="244.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="31.8" y="27.55"/>
+                    <Point x="31.85" y="27.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="195.4" centerPoint3DY="265.7">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="196.1" centerPoint3DY="262.55">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.792388916015625" tx="170.15" ty="243.8"/>
+                    <Matrix a="0.801101684570313" d="0.801101684570313" tx="170.55" ty="240.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="31.8" y="27.5"/>
+                    <Point x="31.85" y="27.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="195.4" centerPoint3DY="265.7">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="196.1" centerPoint3DY="262.55">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.792388916015625" tx="170.15" ty="243.8"/>
+                    <Matrix a="0.801101684570313" d="0.801101684570313" tx="170.55" ty="240.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="31.8" y="27.5"/>
+                    <Point x="31.85" y="27.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="195.4" centerPoint3DY="269.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="196.1" centerPoint3DY="266.8">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.792388916015625" tx="170.15" ty="248.1"/>
+                    <Matrix a="0.801101684570313" d="0.801101684570313" tx="170.55" ty="244.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="31.8" y="27.55"/>
+                    <Point x="31.85" y="27.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -632,7 +632,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.783737182617188" b="0.116806030273438" c="-0.116806030273438" d="0.783737182617188" tx="219.2" ty="231.85"/>
+                    <Matrix a="0.7923583984375" b="0.118087768554688" c="-0.118087768554688" d="0.7923583984375" tx="220.15" ty="228.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.25" y="-0.05"/>
@@ -644,7 +644,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.783737182617188" b="0.116806030273438" c="-0.116806030273438" d="0.783737182617188" tx="219.2" ty="227.55"/>
+                    <Matrix a="0.7923583984375" b="0.118087768554688" c="-0.118087768554688" d="0.7923583984375" tx="220.15" ty="224"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.25" y="-0.05"/>
@@ -656,7 +656,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.783737182617188" b="0.116806030273438" c="-0.116806030273438" d="0.783737182617188" tx="219.2" ty="227.55"/>
+                    <Matrix a="0.7923583984375" b="0.118087768554688" c="-0.118087768554688" d="0.7923583984375" tx="220.15" ty="224"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.25" y="-0.05"/>
@@ -668,7 +668,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.783737182617188" b="0.116806030273438" c="-0.116806030273438" d="0.783737182617188" tx="219.2" ty="231.85"/>
+                    <Matrix a="0.7923583984375" b="0.118087768554688" c="-0.118087768554688" d="0.7923583984375" tx="220.15" ty="228.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="0.25" y="-0.05"/>
@@ -684,10 +684,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.7911376953125" b="-0.04461669921875" c="0.04461669921875" d="0.7911376953125" tx="223.25" ty="148.45"/>
+                    <Matrix a="0.799835205078125" b="-0.04510498046875" c="0.04510498046875" d="0.799835205078125" tx="224.25" ty="144.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-6.3" y="7.3"/>
+                    <Point x="-6.3" y="7.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -696,10 +696,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.7911376953125" b="-0.04461669921875" c="0.04461669921875" d="0.7911376953125" tx="223.25" ty="144.1"/>
+                    <Matrix a="0.799835205078125" b="-0.04510498046875" c="0.04510498046875" d="0.799835205078125" tx="224.25" ty="139.65"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-6.3" y="7.25"/>
+                    <Point x="-6.3" y="7.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -708,10 +708,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.7911376953125" b="-0.04461669921875" c="0.04461669921875" d="0.7911376953125" tx="223.25" ty="144.1"/>
+                    <Matrix a="0.799835205078125" b="-0.04510498046875" c="0.04510498046875" d="0.799835205078125" tx="224.25" ty="139.65"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-6.3" y="7.25"/>
+                    <Point x="-6.3" y="7.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -720,23 +720,23 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.7911376953125" b="-0.04461669921875" c="0.04461669921875" d="0.7911376953125" tx="223.25" ty="148.45"/>
+                    <Matrix a="0.799835205078125" b="-0.04510498046875" c="0.04510498046875" d="0.799835205078125" tx="224.25" ty="144.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-6.3" y="7.3"/>
+                    <Point x="-6.3" y="7.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.2" centerPoint3DY="528.6">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.5" centerPoint3DY="528.35">
                   <matrix>
-                    <Matrix a="-0.967391967773438" b="-0.259201049804688" c="-0.07470703125" d="0.27880859375" tx="221.2" ty="501.9"/>
+                    <Matrix a="-0.97802734375" b="-0.262054443359375" c="-0.075531005859375" d="0.281875610351563" tx="222.2" ty="501.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -759,9 +759,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.2" centerPoint3DY="528.6">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.5" centerPoint3DY="528.35">
                   <matrix>
-                    <Matrix a="-0.967391967773438" b="-0.259201049804688" c="-0.07470703125" d="0.27880859375" tx="221.2" ty="501.9"/>
+                    <Matrix a="-0.97802734375" b="-0.262054443359375" c="-0.075531005859375" d="0.281875610351563" tx="222.2" ty="501.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -784,9 +784,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.2" centerPoint3DY="528.6">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.5" centerPoint3DY="528.35">
                   <matrix>
-                    <Matrix a="-0.967391967773438" b="-0.259201049804688" c="-0.07470703125" d="0.27880859375" tx="221.2" ty="501.9"/>
+                    <Matrix a="-0.97802734375" b="-0.262054443359375" c="-0.075531005859375" d="0.281875610351563" tx="222.2" ty="501.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -809,9 +809,9 @@
             </DOMFrame>
             <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.2" centerPoint3DY="528.6">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.5" centerPoint3DY="528.35">
                   <matrix>
-                    <Matrix a="-0.967391967773438" b="-0.259201049804688" c="-0.07470703125" d="0.27880859375" tx="221.2" ty="501.9"/>
+                    <Matrix a="-0.97802734375" b="-0.262054443359375" c="-0.075531005859375" d="0.281875610351563" tx="222.2" ty="501.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
