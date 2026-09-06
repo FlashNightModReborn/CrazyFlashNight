@@ -1,6 +1,6 @@
 # 物品素材工作台：本轮体验交接
 
-2026-09-06。人类已确认工作台和连续滚动修正有效，并授权提交、云端共识、构建部署与推送。当前体验状态为 **HUMAN_ACCEPTANCE_PASSED / candidate_executed**，正式发布正在执行；最终发布身份与审计统一见 [runtime 发布记录](../../docs/runtime-build-reproducibility.md)。工作区中三件 3XD 素材的图标和装扮实操产物一并纳入本次发布；机器没有代签所有素材的美术质量验收。
+2026-09-06。人类已确认工作台和连续滚动修正有效；本轮已完成双构建共识、40/40 发布政策检查、原子 promotion 和部署推送，状态为 **HUMAN_ACCEPTANCE_PASSED / promoted**。最终身份和远端审计统一见 [runtime 发布记录](../../docs/runtime-build-reproducibility.md)。三件 3XD 素材的图标和装扮实操产物已纳入发布；机器没有代签所有素材的美术质量验收。部署后尚未从正式入口重跑生成/应用/撤回旅程，不称业务 `standard_entry_verified`。
 
 后续真实素材导出与完整工作流体验交由画师实操。工作台标题栏已提供 **帮助**，与 Agent 共读 [同一份指南](../../launcher/web/help/asset-workbench.md)，覆盖三步上手、CLI 对应操作和问题交接；以下机器证据只作为技术基线，不代签画师实操通过。
 

@@ -2,9 +2,28 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-05 当前正式发布：返回基地焦点诊断与测试员采集入口
+## 2026-09-06 当前正式发布：物品素材工作台与旧烘焙链退役
 
-本节为当前发布锚点；后续列车记录均是历史，保留其当时状态，不覆盖本节。用户在确认本机未复现后明确授权共识构建、部署和推送，以便原测试员取得失败现场。
+正式入口为 **其他 → 工具 → 物品素材工作台**。GUI 与 CLI 共用导出、预览、应用和撤回内核，旧 Flash 图标烘焙与位图分块传输退役。本轮包含动画预览、全屏布局、状态与 SWF 筛选、连续滚动、共用帮助，以及三件 3XD 素材的实操产物。发布监听、其他消费者缓存刷新和 CS6 发布包装不在范围内。
+
+- 实现提交 `ac1c2f5e76b89401a9716f2a0077d6172a154ab4`；最终 release source `a8d7b4ea100684eff1ad47c7f2494d9366c9dba9`；tag `runtime-build-v2/20260906-asset-workbench-v2`；release tree `c58d59a973f2bef1caeeee45d162659e4e10d7d4`；request `982BC24DF6E38B84185A3E10BFDD3835BC8B1185C4C31635DF240F680D997931`。
+- build identity `930AC856C5E19D629728F4AF047E7C7034A6034ABB59FE01FE8E7274B17B6B39`；33-file payload closure `76D45E5AF34244CC9614AB7731ACC0AD1F2E1A8E243D2E8B1EE53AF1B4CEE25C`；Core DLL SHA-256 `AB110F95C4877FC37178F21CD8995C87024A85A10C01027BF0CC0532A525F036`。
+- 本地 X509 `builder-local-c / physical-host-c`，keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `9CEDA99D3C438EC1C99BB4F279A36D00C6D7FEF1C7DF1111BE519801857BD586`，[cloud run 34003786139](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34003786139)。两端最终身份与逐文件闭包一致；promotion 已将云端证明对真实本地 CAS candidate 完整重放。
+- production policy **40/40**；policy hash `54CDBC162275712FF0968C16390FB971C3D94C7222DCC81C48D3BA6B0E93E238`；receipt SHA-256 `A1F21B17A501F32C32E3681633F70CC3E1DBF6182AE032D76BC97AB08BBAE5A5`；manifest SHA-256 `D6D095A7C41EF168E9363B97DECEDB85B07A0A0A96A19B771B8BB96B897DE5C3`；promotion 后磁盘 consensus SHA-256 `D30D1326B8FF66CA53520031CB605B28EEE440A3BF0D023D251CB08EF260F153`。
+- `2026-09-06T01:46:30.7176928Z` 完成原子 promotion，正式 bundle、2 signers / 2 faultDomains 的 consensus 与根 bootstrap `--verify-only` 通过。部署提交 `382e9399de1ab2e71b87f51ea05715023593f2d8` 已快进推送；上一 bundle 保留于 `tmp/runtime-promotions/20260906T014602746Z-cc658489213f435ea25ed0d92f150ee7/previous`。
+- Launcher 全量 **4,730 passed / 3 opt-in skipped / 0 failed**；完整工作台审计 **0 error / 0 warning**、规则回归 **67/67**。旧链退役阶段实际 CS6 发布 asLoader，Compiler **0/0**；本次保留该 SWF，SHA-256 `9B4A5F1319E1788DD644495C80370FEA6B56B03DAB8422DA9ACEF8D29A9827C7`。分轮机器验证与画师实操边界见 [工作台交接](../tools/asset-workbench/ACCEPTANCE.md)。
+
+发布门发现上游 `Pig.json` 新增商品后头像来源摘要过期。[来源刷新入口](../tools/shop-portraits/README.md) 仅重算商店文件对 `shopId` 目录的贡献，完整校验身份、渲染配方、SWF/XFL 与输出图片，34 张头像和 runtime manifest 均逐字节保留。两次隔离重放存在像素差异，未应用其产物或声称原图重现成功。开发候选与正式 Core 的差异另已定位为 Windows manifest 的 LF/CRLF 及派生 PE/Module GUID；托管代码和资源一致，正式双构建自身逐字节一致。
+
+v1 tag 与 request `5150DC744B9B13ADCE2650EA0A64A7AE63504BD7AD38B77B3E81FD85AEA63FB9` 保留为 superseded / NOT_DEPLOYED，未触发 v1 云端构建。来源刷新工具的 LF 约束改变 producer recipe，最终 v2 已重新取得本地签名，未复用旧身份的票或未完成的政策回执。
+
+当前工作台状态为 **HUMAN_ACCEPTANCE_PASSED / promoted**。维护者已确认功能、大赦导出和连续滚动修正有效，并授权完整发布；部署后只执行安装完整性与供应链验证，尚未从正式入口重跑生成/应用/撤回旅程，不称业务 `standard_entry_verified`。
+
+首次远端部署审计 [run 34004874163](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34004874163) 成功，于 `2026-09-06T01:53:48.8700687Z` 输出 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `a8d7b4ea100684eff1ad47c7f2494d9366c9dba9` → head `382e9399de1ab2e71b87f51ea05715023593f2d8`；33-file closure、2 signers / 2 faultDomains 与 v2 source proof replay 全部通过。
+
+## 2026-09-05 上一正式发布：返回基地焦点诊断与测试员采集入口
+
+本节保留当时发布状态，当前发布锚点见上节。用户在确认本机未复现后明确授权共识构建、部署和推送，以便原测试员取得失败现场。
 
 - implementation `948acc4c8481c6eb28b1a8931043508fc761621b`；release source `f86f5dcec928885758321e6635a02be5750d9b05`；不可变 tag `runtime-build-v2/20260905-focus-diagnostic-v2`；release tree `03e5f3e9ab791a1a7f48290cb2914d6480f9c770`；request `B412FB54CB8F45DA69C3A82FB6A991F0836FCA5E5C7E85E4C3EF70DECF71C5D3`。本轮仅增加有界观察与正式诊断入口，保留既有焦点和返回业务行为。
 - build identity `9FBD4D58B6DB76ED661886CF9148DA392C9955ED444C4B10D20615AE9AFE585C`；33-file payload closure `291314109FC89A8102781940B052377ED2921ED23B9B740A81761E994C555DEA`；正式 Core DLL SHA-256 `2185BF2E70BAADDDC705851B8E100B19212AF370C83CF3F97D056580D17EAB4C`。
