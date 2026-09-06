@@ -17,6 +17,11 @@
     因此无论玩家在第几秒击杀，都会跳过后续定时节点直接收尾。
   MinAliveEnemies 为 StageEvent 可选通用条件：<MinAliveEnemies>n</MinAliveEnemies>，
   场上存活敌人数 >= n 时事件才允许触发（缺失/<=0 = 不限制）。
+  虎妙声库：两个虎妙均带 声库攻击:/声库中招:/声库击倒: 空值 = 三库置空即静音（不出女玩家模板的呐喊），
+  由 真九命猫妖初始化 消费；后续想换配音时把空值换成竖线分隔的文件名即可，
+  例如武装JK配音（素材已在 sounds/export/人物/）：
+    声库攻击:Jk_att_H_1.wav|Jk_att_H_2.wav|Jk_att_H_3.wav,声库中招:Jk_hit_L_1.wav|Jk_hit_L_2.wav|Jk_hit_L_3.wav|Jk_hit_L_4.wav|Jk_hit_L_5.wav,声库击倒:Jk_die_1.wav|Jk_die_2.wav
+  注意不能用逗号分隔文件名（Parameters 的逗号/冒号是保留分隔符），须用竖线 |。
 -->
 <GameStage>
     <Rewards>
@@ -108,7 +113,7 @@
                 <x>250</x>
                 <y>600</y>
                 <IsHostile>false</IsHostile>
-                <Parameters>不掉钱:true,不掉装备:true,退场时间:32000</Parameters>
+                <Parameters>不掉钱:true,不掉装备:true,退场时间:32000,声库攻击:,声库中招:,声库击倒:</Parameters>
             </Enemy>
         </Event>
         <Event>
@@ -159,7 +164,7 @@
                 <x>250</x>
                 <y>600</y>
                 <IsHostile>false</IsHostile>
-                <Parameters>不掉钱:true,不掉装备:true</Parameters>
+                <Parameters>不掉钱:true,不掉装备:true,声库攻击:,声库中招:,声库击倒:</Parameters>
             </Enemy>
         </Event>
         <Event>

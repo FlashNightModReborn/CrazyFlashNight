@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1788710787" lastUniqueIdentifier="32">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-幸存者营地" itemID="65c7a0f5-0000109e" linkageExportForAS="true" linkageIdentifier="地图-幸存者营地" lastModified="1788721272" lastUniqueIdentifier="32">
   <timeline>
     <DOMTimeline name="地图-幸存者营地">
       <layers>
@@ -317,8 +317,8 @@ onClipEvent (load) {
 	NPC任务_任务_关卡路径 = "挑战混沌王";
 	if (_root.tasks_finished[String(1000082)])
 	{
-		目标.stop();
-		目标._visible = false;
+		this.stop();
+		this._visible = false;
 	}
 	else
 	{

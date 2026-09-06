@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1788713196" lastUniqueIdentifier="59">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1788721242" lastUniqueIdentifier="59">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -190,8 +190,8 @@ _root.配置场景环境信息();]]></script>
 	方向 = "右";
 	if (_root.tasks_finished[String(1000082)])
 	{
-		目标.stop();
-		目标._visible = false;
+		this.stop();
+		this._visible = false;
 	}
 	else
 	{
