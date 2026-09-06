@@ -1,4 +1,4 @@
-var MapAvatarLayer = (function() {
+var MapAvatarLayer = (function createMapAvatarLayer() {
     'use strict';
 
     // ================================================================
@@ -205,6 +205,7 @@ var MapAvatarLayer = (function() {
     }
 
     return {
+        create: createMapAvatarLayer,
         mount: mount,
         destroy: destroy,
         syncPage: syncPage,

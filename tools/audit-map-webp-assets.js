@@ -8,6 +8,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const webRoot = path.join(projectRoot, 'launcher', 'web');
 const mapRoot = path.join(webRoot, 'assets', 'map');
 const runtimeSources = [
+    path.join(projectRoot, 'data/map/map_definition.json'),
     path.join(webRoot, 'modules', 'map-panel-data.js'),
     path.join(webRoot, 'modules', 'map-avatar-source-data.js'),
     path.join(webRoot, 'modules', 'map-fit-presets.js'),

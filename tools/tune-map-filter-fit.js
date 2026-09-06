@@ -209,6 +209,7 @@ function computeFilterSourceCeiling(mapData, pageId, filterId) {
 function loadMapBundle() {
     const sandbox = { console };
     vm.createContext(sandbox);
+    sandbox.MapDefinitionData = JSON.parse(fs.readFileSync(path.join(projectRoot, 'data/map/map_definition.json'), 'utf8'));
     // C 阶段后 panel-data 的 exportManifest 在 IIFE 末尾访问 MapAvatarSourceData,
     // 必须先加载 source-data 才能让 staticAvatar marker rect 派生正确。
     vm.runInContext(fs.readFileSync(avatarSourceFile, 'utf8'), sandbox, { filename: avatarSourceFile });
@@ -273,10 +274,10 @@ function resolveStaticAvatarBoundsRect(mapData, avatarSource, pageId, slot) {
     const hotspot = mapData.findHotspot(pageId, hotspotId);
     if (!hotspot || !hotspot.rect) return null;
     return {
-        x: hotspot.rect.x + sourceSlot.relX,
-        y: hotspot.rect.y + sourceSlot.relY,
-        w: sourceSlot.size.w,
-        h: sourceSlot.size.h
+        x: hotspot.rect.x + (slot.relX !== undefined ? slot.relX : sourceSlot.relX),
+        y: hotspot.rect.y + (slot.relY !== undefined ? slot.relY : sourceSlot.relY),
+        w: slot.w !== undefined ? slot.w : sourceSlot.size.w,
+        h: slot.h !== undefined ? slot.h : sourceSlot.size.h
     };
 }
 

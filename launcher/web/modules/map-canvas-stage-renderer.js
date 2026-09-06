@@ -216,7 +216,7 @@ var MapCanvasStageRenderer = (function() {
     Renderer.prototype.syncCanvasSize = function() {
         var state = this.state;
         var page = state.page;
-        var dpr = getDpr();
+        var dpr = Math.max(1, Math.min(3, getDpr() * (Number(state.rasterScale) || 1)));
         var dynamicDpr = getDynamicDpr(dpr, !!state.lowEffects);
         // 只认画布自身布局尺寸: 面板隐藏时 clientWidth 为 0 → 返回 null → 循环停。
         // 不回退 state.stageWidth (上次 setState 的快照) — 该值在面板隐藏后仍为非 0,

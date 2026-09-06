@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>地图工作台 · 本机开发</title>
+<link rel="stylesheet" href="/css/panels.css"><link rel="stylesheet" href="/css/map-workbench.css">
+<style>html,body{margin:0;width:100%;height:100%;background:#0b151e}</style></head><body>
+<button id="reopen">打开地图工作台</button><div id="panel-container" data-panel="map-workbench"><div id="panel-backdrop"></div><div id="panel-content"></div></div>
+<script>
+var definition,instance=0,handlers={};var Bridge={on:function(t,c){(handlers[t]||(handlers[t]=[])).push(c);},off:function(t,c){handlers[t]=(handlers[t]||[]).filter(function(x){return x!==c;});},send:function(m){
+if(m.cmd==='close'){definition.onClose();document.getElementById('panel-container').hidden=true;return true;}
+fetch('/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({op:m.cmd},m.payload))}).then(function(r){return r.json();}).then(function(r){Object.assign(r,{type:'panel_resp',panel:m.panel,domain:m.domain,cmd:m.cmd,callId:m.callId,panelInstanceId:m.panelInstanceId});(handlers.panel_resp||[]).forEach(function(c){c(r);});});return true;}};
+var Panels={register:function(id,p){definition=p;}};
+</script>
+<script src="/modules/panel-runtime.js"></script><script src="/modules/panel-scale.js"></script>
+<script src="/modules/workbench-lifecycle.js"></script><script src="/modules/workbench-focus.js"></script><script src="/modules/workbench-primitives.js"></script><script src="/modules/workbench-profile.js"></script><script src="/modules/workbench.js"></script>
+<script src="/modules/map-canvas-stage-renderer.js"></script><script src="/modules/map/map-avatar-layer.js"></script><script src="/modules/map-workbench.js"></script>
+<script>var panel=definition.create();document.getElementById('panel-content').appendChild(panel);function open(){document.getElementById('panel-container').hidden=false;definition.onOpen(panel,{panelInstanceId:'map-dev-'+(++instance)});}document.getElementById('reopen').onclick=open;document.addEventListener('keydown',function(e){if(e.key==='Escape')definition.onRequestClose();});open();</script>
+</body></html>

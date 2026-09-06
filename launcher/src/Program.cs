@@ -1644,7 +1644,7 @@ class Program
             // ~30-80ms 的 JSON parse 全藏在 Flash 启动等待里。
             string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
             CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
-                CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromFileAsync(mapHudJsonPath);
+                CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromDefinition(projectRoot);
             // 复用 NativeHud 的既有物品图标目录：RightContext 只借用复活币帧，
             // LootFeedWidget 保持目录唯一所有者并在 HUD teardown 时释放。
             CF7Launcher.Guardian.Hud.Loot.LootIconCatalog lootIconCatalog =

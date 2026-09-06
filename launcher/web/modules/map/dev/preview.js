@@ -1570,10 +1570,11 @@ var MapPreview = (function() {
             page.hotspots[i].layoutAudit = computeAudit(page.id, page.hotspots[i].id, page.hotspots[i].rect);
         }
 
-        for (i = 0; i < page.filters.length; i += 1) {
-            var filterDraft = getDraftFilterRect(page.id, page.filters[i].id);
+        var filters = page.sceneNodes.filter(function(node) { return node.kind === 'filter'; });
+        for (i = 0; i < filters.length; i += 1) {
+            var filterDraft = getDraftFilterRect(page.id, filters[i].id);
             if (!filterDraft) continue;
-            page.filters[i].buttonRect = roundRect(filterDraft);
+            filters[i].buttonRect = roundRect(filterDraft);
         }
 
         return page;

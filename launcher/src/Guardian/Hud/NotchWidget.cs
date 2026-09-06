@@ -180,6 +180,7 @@ namespace CF7Launcher.Guardian.Hud
         private static readonly NotchButtonDef[] OtherToolButtons = {
             new NotchButtonDef("动画测试", "CUTSCENE_TEST", Keys.None, false, false),
             new NotchButtonDef("物品素材工作台", "ASSET_WORKBENCH", Keys.None, false, false)
+            ,new NotchButtonDef("地图工作台", "MAP_WORKBENCH", Keys.None, false, false)
         };
         private static readonly NotchButtonDef[][] OtherButtonGroups = {
             OtherControlButtons,

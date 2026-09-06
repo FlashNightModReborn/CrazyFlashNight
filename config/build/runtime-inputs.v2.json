@@ -91,6 +91,7 @@
         "config/build/runtime-v2-migration-bootstrap.json",
         "CrazyFlashNight.sln",
         "本地开发启动.cmd",
+        "地图工作台测试启动.cmd",
         "launcher/build.ps1",
         "launcher/contracts/panel-contracts.v2.json",
         "launcher/src/AgentRuntime/Contracts/README.md",
@@ -163,6 +164,13 @@
         "tools/verify-runtime-consensus.ps1",
         "tools/verify-runtime-github-attestation.ps1",
         "data/map/task_npc_registry.json",
+        "data/map/map_definition.json",
+        "launcher/web/modules/map-definition.js",
+        "launcher/web/modules/map-workbench.js",
+        "launcher/web/modules/map/authoring/preview.html",
+        "launcher/web/modules/map/authoring/preview-host.js",
+        "launcher/web/css/map-workbench.css",
+        "launcher/web/css/map-authoring-preview.css",
         "data/map/map_catalog.json",
         "data/arena/arena_calibrated_rosters.json",
         "data/arena/arena_config.xml",
@@ -198,6 +206,15 @@
           "includeExtensions": [".js", ".json", ".py"],
           "excludePaths": [],
           "excludePrefixes": ["tools/fontctl/tests/"]
+        },
+        {
+          "path": "tools/map-workbench",
+          "includeExtensions": [".cs", ".csproj", ".props", ".js", ".json", ".html", ".ps1"],
+          "excludePaths": [],
+          "excludePrefixes": [
+            "tools/map-workbench/bin/", "tools/map-workbench/obj/",
+            "tools/map-workbench/webview-smoke/bin/", "tools/map-workbench/webview-smoke/obj/"
+          ]
         },
         {
           "path": "launcher/native/tests",

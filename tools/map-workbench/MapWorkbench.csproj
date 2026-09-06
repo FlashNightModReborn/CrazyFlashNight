@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="webview-smoke/**/*.cs" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <Compile Include="../../launcher/src/Data/MapDefinition.cs" Link="MapDefinition.cs" />
+    <Compile Include="../../launcher/src/Data/MapAuthoringStore.cs" Link="MapAuthoringStore.cs" />
+  </ItemGroup>
+</Project>

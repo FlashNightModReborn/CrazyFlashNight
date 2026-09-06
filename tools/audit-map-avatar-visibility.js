@@ -54,6 +54,7 @@ function loadMapPanelData() {
     const source = fs.readFileSync(mapDataFile, 'utf8');
     const sandbox = { console };
     vm.createContext(sandbox);
+    sandbox.MapDefinitionData = JSON.parse(fs.readFileSync(path.join(projectRoot, 'data/map/map_definition.json'), 'utf8'));
     vm.runInContext(source, sandbox, { filename: mapDataFile });
     if (!sandbox.MapPanelData) throw new Error('MapPanelData not found');
     return sandbox.MapPanelData;

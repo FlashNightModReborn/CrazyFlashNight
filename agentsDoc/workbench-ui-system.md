@@ -20,6 +20,8 @@
 
 ## 1. 不变量与职责边界
 
+地图维护工作台 `map-workbench` 使用 `canvas-editor / canvas-editor-focus` 壳与 PanelRequestMux，在隔离子文档中直接运行生产 MapPanel、CSS、分层筛选和自动取景；编辑边框叠加于生产坐标变换。草稿、当前配置与运行中的游戏目录分离；相机只用于观察，设计快照不执行导航。字段与验收见[地图工作台](../tools/map-workbench/README.md)。
+
 - 工作台逻辑画布固定为 `1024×576`，生产入口使用 `.panel-scale-shell + PanelScale.attach()` 等比铺满全 anchor；禁止在各面板复制缩放算法。
 - Web 只呈现权威状态、收集 UI intent；价格、余额、材料、槽位、lease、token、可提交性和写入结果由 Host / AS2 领域链裁决。
 - 共享层负责壳、可访问性、生命周期、视觉状态和机械交互；领域层负责 ViewModel、能力、文案、authority envelope 与 reconcile 规则。
@@ -39,6 +41,7 @@
 | `transfer-pair` | 背包—战备箱、背包—仓库 | 两个可操作容器近似对称；容量差异只能做受控 token 覆盖 |
 | `library-action-strip` | 技能管理 | 全宽库 + 固定 Hotbar；密度只作用技能库 |
 | `library-decision` | 技能教师、独立装备调制 | 目录/候选 + 固定信息量的预览提交区 |
+| `canvas-editor` / `canvas-editor-focus` | 地图等空间编辑器 | 最低 1024×576；普通态 228px 属性栏 + 弹性生产画布，专注态隐藏属性栏；只由 Shell.setProfile 切换。地图真实 iframe fixture 覆盖页签/分层、缩放/平移、聚焦对象、拖动、保存重启与关闭重开；缩放不放大 backing canvas 分配面积 |
 | `character-build` | 角色构筑 | 左右固定 `55:45`；左侧内层为弹性单 Canvas + 按内容收缩并贴右的 11 装备槽/4 药剂槽，不能把槽区右侧空白保留成无效列宽；右侧候选/调制决策区不得窄于 `360px`；55% 是 1024 下仍保持三列完整候选和八列紧凑图标的左倾上限；详细属性以全 body SecondaryPage 与编辑态互斥 |
 
 `character-build` 的最低画布为 1024×576；“当前装备/候选预览”只改变同一个 Canvas 的合成输入，不生成第二个并排 Canvas。Character Build 每次从当前权威纸娃娃状态重新测量 `空手/长枪/手枪/手枪2/双枪/兵器/手雷` 七种 battle pose，合并一个带留白的结构骨架 envelope：`身体/脸型/发型/面具/屁股/大腿/小腿/脚` 参与取景，横向变化最大的手臂、手与武器只绘制、不参与缩小人物。`手雷站立` 已由 battle rig 的真实 `手雷_装扮` holder 承载，不再是映射到空手姿态的兼容缺口。武器装扮字段按槽位隔离合并（对齐 AS2 `DressupInitializer` 逐槽赋值、空槽不挂载）：`手枪` 槽只贡献 `手枪_装扮`、`手枪2` 槽只贡献 `手枪2_装扮`，空槽不产出任何武器层；烘焙层对手枪类物品固定写 `手枪_装扮+手枪2_装扮` 双字段，那是槽位无关数据，不构成双持或腿侧枪套幻影的依据。刀同槽多字段（刀身/刀鞘/复合部件）为 AS2 `dressup/dressup2/dressup3` 的合法语义，不在隔离之列。相同身体投影下，切槽、武器候选、嵌入/放大迁移和 resize 使用同一几何结果；装备或外观权威变化必须重新测量，禁止复用只按 `panelInstanceId + gender` 建立的陈旧缓存。嵌入态允许姿态末端受控裁切，完整武器/动作查看由放大页的平移和缩放承担。该能力是 renderer 的 opt-in 输入；未传 envelope 的对话、佣兵与独立 dressup 页面仍保持逐次内容自适应。需要更大构图时，`character-build-doll-preview.js` 只把现有 `.character-build-doll-stage` 与 exact Canvas 临时迁入全 body SecondaryPage；不得复制 renderer、Canvas 或 current/preview state。打开时底层 body/header inert，Esc 后按原顺序放回 stage 并恢复 opener。放大页复用 `workbench-inspection-viewport.js` 的瞬态相机：滚轮或 `+/-` 缩放、主键拖拽或方向键平移、“全貌”/`Home` 复位；transform 只作用 exact Canvas，不作用 stage、候选覆盖层或 renderer 输入。关闭必须清零缩放/位移；嵌入态停用相机且不得吞掉 pointer、wheel 或键盘输入。该 profile 必须覆盖满 11+8（药剂两排四列）、空/blocked、长中文、未知性别/缺素材、stats SecondaryPage 与完整键盘路径。stats 在最低画布下不得靠缩小中文字号硬塞：标题/footer 固定，正文使用单一、可聚焦的纵向滚动区，保留可见滚动提示、滚轮与键盘滚动，并在关闭后把焦点还给入口。任何新 profile 都必须先进入本文，说明适用角色、最小画布和验证样本；禁止只在单个 feature CSS 中创造隐式结构。
