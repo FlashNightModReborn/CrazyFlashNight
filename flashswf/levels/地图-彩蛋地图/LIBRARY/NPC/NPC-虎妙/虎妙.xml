@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-虎妙/虎妙" itemID="6a9d8fe3-00001572" lastModified="1788713235" lastUniqueIdentifier="149">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-虎妙/虎妙" itemID="6a9d8fe3-00001572" lastModified="1788715511" lastUniqueIdentifier="149">
   <timeline>
-    <DOMTimeline name="虎妙">
+    <DOMTimeline name="虎妙" currentFrame="70">
       <layers>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.874282836914063" b="-0.098480224609375" c="-0.098480224609375" d="0.874282836914063" tx="263.55" ty="55.45"/>
                   </matrix>
@@ -18,7 +18,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.874282836914063" b="-0.098480224609375" c="-0.098480224609375" d="0.874282836914063" tx="263.55" ty="53.25"/>
                   </matrix>
@@ -30,7 +30,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.874282836914063" b="-0.098480224609375" c="-0.098480224609375" d="0.874282836914063" tx="263.55" ty="53.25"/>
                   </matrix>
@@ -40,9 +40,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖头" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.874282836914063" b="-0.098480224609375" c="-0.098480224609375" d="0.874282836914063" tx="263.55" ty="55.45"/>
                   </matrix>
@@ -58,7 +58,7 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" selected="true" centerPoint3DX="287.4" centerPoint3DY="288.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="287.4" centerPoint3DY="288.9">
                   <matrix>
                     <Matrix a="0.774993896484375" b="-0.1651611328125" c="0.1651611328125" d="0.774993896484375" tx="259.3" ty="273.3"/>
                   </matrix>
@@ -70,7 +70,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" selected="true" centerPoint3DX="287.4" centerPoint3DY="284.95">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="287.4" centerPoint3DY="284.95">
                   <matrix>
                     <Matrix a="0.774993896484375" b="-0.1651611328125" c="0.1651611328125" d="0.774993896484375" tx="259.3" ty="269"/>
                   </matrix>
@@ -82,7 +82,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" selected="true" centerPoint3DX="287.4" centerPoint3DY="284.95">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="287.4" centerPoint3DY="284.95">
                   <matrix>
                     <Matrix a="0.774993896484375" b="-0.1651611328125" c="0.1651611328125" d="0.774993896484375" tx="259.3" ty="269"/>
                   </matrix>
@@ -92,9 +92,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" selected="true" centerPoint3DX="287.4" centerPoint3DY="288.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右手" centerPoint3DX="287.4" centerPoint3DY="288.9">
                   <matrix>
                     <Matrix a="0.774993896484375" b="-0.1651611328125" c="0.1651611328125" d="0.774993896484375" tx="259.3" ty="273.3"/>
                   </matrix>
@@ -110,7 +110,7 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.7884521484375" b="-0.0790252685546875" c="-0.0790252685546875" d="0.7884521484375" tx="289.4" ty="234.3"/>
                   </matrix>
@@ -122,7 +122,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.7884521484375" b="-0.0790252685546875" c="-0.0790252685546875" d="0.7884521484375" tx="289.4" ty="229.95"/>
                   </matrix>
@@ -134,7 +134,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.7884521484375" b="-0.0790252685546875" c="-0.0790252685546875" d="0.7884521484375" tx="289.4" ty="229.95"/>
                   </matrix>
@@ -144,9 +144,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖右下臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.7884521484375" b="-0.0790252685546875" c="-0.0790252685546875" d="0.7884521484375" tx="289.4" ty="234.3"/>
                   </matrix>
@@ -162,7 +162,7 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.788162231445313" b="-0.0816497802734375" c="-0.0816497802734375" d="0.788162231445313" tx="297.15" ty="154.3"/>
                   </matrix>
@@ -174,7 +174,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.788162231445313" b="-0.0816497802734375" c="-0.0816497802734375" d="0.788162231445313" tx="297.15" ty="149.95"/>
                   </matrix>
@@ -186,7 +186,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.788162231445313" b="-0.0816497802734375" c="-0.0816497802734375" d="0.788162231445313" tx="297.15" ty="149.95"/>
                   </matrix>
@@ -196,9 +196,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.788162231445313" b="-0.0816497802734375" c="-0.0816497802734375" d="0.788162231445313" tx="297.15" ty="154.3"/>
                   </matrix>
@@ -214,48 +214,48 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" selected="true" centerPoint3DX="225.75" centerPoint3DY="502">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="225.75" centerPoint3DY="491.8">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.835769653320313" tx="196.65" ty="479.4"/>
+                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="196.65" ty="470.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="36.7" y="26.75"/>
+                    <Point x="36.7" y="26.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" selected="true" centerPoint3DX="225.75" centerPoint3DY="502">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="225.75" centerPoint3DY="491.8">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.835769653320313" tx="196.65" ty="479.4"/>
+                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="196.65" ty="470.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="36.7" y="26.75"/>
+                    <Point x="36.7" y="26.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" selected="true" centerPoint3DX="225.75" centerPoint3DY="502">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="225.75" centerPoint3DY="491.8">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.835769653320313" tx="196.65" ty="479.4"/>
+                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="196.65" ty="470.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="36.7" y="26.75"/>
+                    <Point x="36.7" y="26.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" selected="true" centerPoint3DX="225.75" centerPoint3DY="502">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="225.75" centerPoint3DY="491.8">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.835769653320313" tx="196.65" ty="479.4"/>
+                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="196.65" ty="470.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="36.7" y="26.75"/>
+                    <Point x="36.7" y="26.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -266,9 +266,9 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.764724731445313" b="0.21893310546875" c="0.20758056640625" d="0.806594848632813" tx="183.65" ty="415.5"/>
+                    <Matrix a="-0.764724731445313" b="0.2108154296875" c="0.20758056640625" d="0.776718139648438" tx="183.65" ty="408.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.25" y="64.75"/>
@@ -278,9 +278,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.764724731445313" b="0.21893310546875" c="0.20758056640625" d="0.806594848632813" tx="183.65" ty="415.5"/>
+                    <Matrix a="-0.764724731445313" b="0.2108154296875" c="0.20758056640625" d="0.776718139648438" tx="183.65" ty="408.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.25" y="64.75"/>
@@ -290,9 +290,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.764724731445313" b="0.21893310546875" c="0.20758056640625" d="0.806594848632813" tx="183.65" ty="415.5"/>
+                    <Matrix a="-0.764724731445313" b="0.2108154296875" c="0.20758056640625" d="0.776718139648438" tx="183.65" ty="408.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.25" y="64.75"/>
@@ -300,11 +300,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.764724731445313" b="0.21893310546875" c="0.20758056640625" d="0.806594848632813" tx="183.65" ty="415.5"/>
+                    <Matrix a="-0.764724731445313" b="0.2108154296875" c="0.20758056640625" d="0.776718139648438" tx="183.65" ty="408.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.25" y="64.75"/>
@@ -318,48 +318,48 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.721450805664063" b="0.470260620117188" c="-0.416580200195313" d="0.7109375" tx="242.3" ty="323.55"/>
+                    <Matrix a="0.721450805664063" b="0.452835083007813" c="-0.416580200195313" d="0.684600830078125" tx="242.3" ty="320.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.85" y="-51.65"/>
+                    <Point x="-0.85" y="-51.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.721450805664063" b="0.470260620117188" c="-0.416580200195313" d="0.7109375" tx="242.3" ty="323.55"/>
+                    <Matrix a="0.721450805664063" b="0.452835083007813" c="-0.416580200195313" d="0.684600830078125" tx="242.3" ty="320.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.85" y="-51.65"/>
+                    <Point x="-0.85" y="-51.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.721450805664063" b="0.470260620117188" c="-0.416580200195313" d="0.7109375" tx="242.3" ty="323.55"/>
+                    <Matrix a="0.721450805664063" b="0.452835083007813" c="-0.416580200195313" d="0.684600830078125" tx="242.3" ty="320.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.85" y="-51.65"/>
+                    <Point x="-0.85" y="-51.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.721450805664063" b="0.470260620117188" c="-0.416580200195313" d="0.7109375" tx="242.3" ty="323.55"/>
+                    <Matrix a="0.721450805664063" b="0.452835083007813" c="-0.416580200195313" d="0.684600830078125" tx="242.3" ty="320.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.85" y="-51.65"/>
+                    <Point x="-0.85" y="-51.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -370,9 +370,9 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 5" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="补间 5" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.835769653320313" tx="298.35" ty="361.75"/>
+                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="298.35" ty="356.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -382,9 +382,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 6" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.835769653320313" tx="298.35" ty="361.75"/>
+                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="298.35" ty="356.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -394,9 +394,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 6" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="补间 6" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.835769653320313" tx="298.35" ty="361.75"/>
+                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="298.35" ty="356.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -404,11 +404,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="补间 7" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="补间 7" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.792388916015625" d="0.835769653320313" tx="298.35" ty="361.75"/>
+                    <Matrix a="0.792388916015625" d="0.8048095703125" tx="298.35" ty="356.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -422,7 +422,7 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.788787841796875" b="-0.0754241943359375" c="-0.0754241943359375" d="0.788787841796875" tx="257.45" ty="158.15"/>
                   </matrix>
@@ -434,7 +434,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.788787841796875" b="-0.0754241943359375" c="-0.0754241943359375" d="0.788787841796875" tx="257.45" ty="155.15"/>
                   </matrix>
@@ -446,7 +446,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.788787841796875" b="-0.0754241943359375" c="-0.0754241943359375" d="0.788787841796875" tx="257.45" ty="155.15"/>
                   </matrix>
@@ -456,9 +456,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心身体" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.788787841796875" b="-0.0754241943359375" c="-0.0754241943359375" d="0.788787841796875" tx="257.45" ty="158.15"/>
                   </matrix>
@@ -474,9 +474,9 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.735336303710938" b="-0.42901611328125" c="-0.383514404296875" d="0.731353759765625" tx="190.8" ty="317.6"/>
+                    <Matrix a="-0.735336303710938" b="-0.413116455078125" c="-0.383514404296875" d="0.704254150390625" tx="190.8" ty="314.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-10.65" y="-68"/>
@@ -486,9 +486,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.735336303710938" b="-0.42901611328125" c="-0.383514404296875" d="0.731353759765625" tx="190.8" ty="317.6"/>
+                    <Matrix a="-0.735336303710938" b="-0.413116455078125" c="-0.383514404296875" d="0.704254150390625" tx="190.8" ty="314.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-10.65" y="-68"/>
@@ -498,9 +498,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.735336303710938" b="-0.42901611328125" c="-0.383514404296875" d="0.731353759765625" tx="190.8" ty="317.6"/>
+                    <Matrix a="-0.735336303710938" b="-0.413116455078125" c="-0.383514404296875" d="0.704254150390625" tx="190.8" ty="314.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-10.65" y="-68"/>
@@ -508,11 +508,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/右大腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.735336303710938" b="-0.42901611328125" c="-0.383514404296875" d="0.731353759765625" tx="190.8" ty="317.6"/>
+                    <Matrix a="-0.735336303710938" b="-0.413116455078125" c="-0.383514404296875" d="0.704254150390625" tx="190.8" ty="314.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-10.65" y="-68"/>
@@ -526,9 +526,9 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" selected="true" centerPoint3DX="199.5" centerPoint3DY="491.2">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="199.5" centerPoint3DY="481.4">
                   <matrix>
-                    <Matrix a="0.688262939453125" b="-0.414108276367188" c="0.392623901367188" d="0.7259521484375" tx="163.35" ty="487.65"/>
+                    <Matrix a="0.688262939453125" b="-0.398773193359375" c="0.392623901367188" d="0.699050903320313" tx="163.35" ty="478.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="54" y="6.35"/>
@@ -538,9 +538,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" selected="true" centerPoint3DX="199.5" centerPoint3DY="491.2">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="199.5" centerPoint3DY="481.4">
                   <matrix>
-                    <Matrix a="0.688262939453125" b="-0.414108276367188" c="0.392623901367188" d="0.7259521484375" tx="163.35" ty="487.65"/>
+                    <Matrix a="0.688262939453125" b="-0.398773193359375" c="0.392623901367188" d="0.699050903320313" tx="163.35" ty="478.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="54" y="6.35"/>
@@ -550,9 +550,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" selected="true" centerPoint3DX="199.5" centerPoint3DY="491.2">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="199.5" centerPoint3DY="481.4">
                   <matrix>
-                    <Matrix a="0.688262939453125" b="-0.414108276367188" c="0.392623901367188" d="0.7259521484375" tx="163.35" ty="487.65"/>
+                    <Matrix a="0.688262939453125" b="-0.398773193359375" c="0.392623901367188" d="0.699050903320313" tx="163.35" ty="478.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="54" y="6.35"/>
@@ -560,11 +560,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" selected="true" centerPoint3DX="199.5" centerPoint3DY="491.2">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖皮鞋" centerPoint3DX="199.5" centerPoint3DY="481.4">
                   <matrix>
-                    <Matrix a="0.688262939453125" b="-0.414108276367188" c="0.392623901367188" d="0.7259521484375" tx="163.35" ty="487.65"/>
+                    <Matrix a="0.688262939453125" b="-0.398773193359375" c="0.392623901367188" d="0.699050903320313" tx="163.35" ty="478.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="54" y="6.35"/>
@@ -578,7 +578,7 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" selected="true" centerPoint3DX="195.4" centerPoint3DY="269.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="195.4" centerPoint3DY="269.9">
                   <matrix>
                     <Matrix a="0.792388916015625" d="0.792388916015625" tx="170.15" ty="248.1"/>
                   </matrix>
@@ -590,7 +590,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" selected="true" centerPoint3DX="195.4" centerPoint3DY="265.7">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="195.4" centerPoint3DY="265.7">
                   <matrix>
                     <Matrix a="0.792388916015625" d="0.792388916015625" tx="170.15" ty="243.8"/>
                   </matrix>
@@ -602,7 +602,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" selected="true" centerPoint3DX="195.4" centerPoint3DY="265.7">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="195.4" centerPoint3DY="265.7">
                   <matrix>
                     <Matrix a="0.792388916015625" d="0.792388916015625" tx="170.15" ty="243.8"/>
                   </matrix>
@@ -612,9 +612,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" selected="true" centerPoint3DX="195.4" centerPoint3DY="269.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/左手" centerPoint3DX="195.4" centerPoint3DY="269.9">
                   <matrix>
                     <Matrix a="0.792388916015625" d="0.792388916015625" tx="170.15" ty="248.1"/>
                   </matrix>
@@ -630,7 +630,7 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.783737182617188" b="0.116806030273438" c="-0.116806030273438" d="0.783737182617188" tx="219.2" ty="231.85"/>
                   </matrix>
@@ -642,7 +642,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.783737182617188" b="0.116806030273438" c="-0.116806030273438" d="0.783737182617188" tx="219.2" ty="227.55"/>
                   </matrix>
@@ -654,7 +654,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.783737182617188" b="0.116806030273438" c="-0.116806030273438" d="0.783737182617188" tx="219.2" ty="227.55"/>
                   </matrix>
@@ -664,9 +664,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖左下臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.783737182617188" b="0.116806030273438" c="-0.116806030273438" d="0.783737182617188" tx="219.2" ty="231.85"/>
                   </matrix>
@@ -682,7 +682,7 @@
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.7911376953125" b="-0.04461669921875" c="0.04461669921875" d="0.7911376953125" tx="223.25" ty="148.45"/>
                   </matrix>
@@ -694,7 +694,7 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.7911376953125" b="-0.04461669921875" c="0.04461669921875" d="0.7911376953125" tx="223.25" ty="144.1"/>
                   </matrix>
@@ -706,7 +706,7 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.7911376953125" b="-0.04461669921875" c="0.04461669921875" d="0.7911376953125" tx="223.25" ty="144.1"/>
                   </matrix>
@@ -716,9 +716,9 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/素材/猫妖背心上臂" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.7911376953125" b="-0.04461669921875" c="0.04461669921875" d="0.7911376953125" tx="223.25" ty="148.45"/>
                   </matrix>
@@ -730,13 +730,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" selected="true" centerPoint3DX="157.6" centerPoint3DY="558.95">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.2" centerPoint3DY="528.6">
                   <matrix>
-                    <Matrix a="-1.00151062011719" d="0.299758911132813" tx="221.2" ty="512.4"/>
+                    <Matrix a="-0.967391967773438" b="-0.259201049804688" c="-0.07470703125" d="0.27880859375" tx="221.2" ty="501.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -759,9 +759,9 @@
             </DOMFrame>
             <DOMFrame index="20" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" selected="true" centerPoint3DX="157.6" centerPoint3DY="558.95">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.2" centerPoint3DY="528.6">
                   <matrix>
-                    <Matrix a="-1.00151062011719" d="0.299758911132813" tx="221.2" ty="512.4"/>
+                    <Matrix a="-0.967391967773438" b="-0.259201049804688" c="-0.07470703125" d="0.27880859375" tx="221.2" ty="501.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -784,9 +784,9 @@
             </DOMFrame>
             <DOMFrame index="32" duration="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" selected="true" centerPoint3DX="157.6" centerPoint3DY="558.95">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.2" centerPoint3DY="528.6">
                   <matrix>
-                    <Matrix a="-1.00151062011719" d="0.299758911132813" tx="221.2" ty="512.4"/>
+                    <Matrix a="-0.967391967773438" b="-0.259201049804688" c="-0.07470703125" d="0.27880859375" tx="221.2" ty="501.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -807,11 +807,11 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="45" duration="11" keyMode="9728">
+            <DOMFrame index="45" duration="26" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" selected="true" centerPoint3DX="157.6" centerPoint3DY="558.95">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-文天/素材/尚未整理/Symbol 3" centerPoint3DX="148.2" centerPoint3DY="528.6">
                   <matrix>
-                    <Matrix a="-1.00151062011719" d="0.299758911132813" tx="221.2" ty="512.4"/>
+                    <Matrix a="-0.967391967773438" b="-0.259201049804688" c="-0.07470703125" d="0.27880859375" tx="221.2" ty="501.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

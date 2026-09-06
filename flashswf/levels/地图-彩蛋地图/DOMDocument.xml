@@ -109,7 +109,7 @@
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/Bitmap 9" itemID="688f4a68-00000f98" sourceExternalFilepath="Bitmap 9.png" sourceLastImported="1754221160" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/Bitmap 9.png" bitmapDataHRef="M 13 1757955538.dat" frameRight="8900" frameBottom="12100"/>
           <DOMBitmapItem name="所有素材/bitmap1.png" itemID="65fb1448-000039bf" sourceExternalFilepath="./LIBRARY/所有素材/bitmap1.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap1.png" bitmapDataHRef="M 3 1710953628.dat" frameRight="5540" frameBottom="4480"/>
           <DOMBitmapItem name="所有素材/bitmap37.png" itemID="65fb1448-000039c9" sourceExternalFilepath="./LIBRARY/所有素材/bitmap37.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap37.png" bitmapDataHRef="M 1 1710953628.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="所有素材/bitmap6.jpg" itemID="65fb1448-000039c4" sourceExternalFilepath="./LIBRARY/所有素材/bitmap6.jpg" sourceLastImported="1710953544" quality="50" href="所有素材/bitmap6.jpg" bitmapDataHRef="M 2 1710953628.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="所有素材/bitmap6.jpg" itemID="65fb1448-000039c4" sourceExternalFilepath="./LIBRARY/所有素材/bitmap6.jpg" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap6.jpg" bitmapDataHRef="M 2 1710953628.dat" frameRight="4000" frameBottom="4000"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣大腿左" itemID="68987c8f-000001da" sourceExternalFilepath="Bitmap 17.png" sourceLastImported="1754823823" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣大腿左.png" bitmapDataHRef="M 24 1757955538.dat" frameRight="8280" frameBottom="13540"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣头" itemID="68987b8a-00000179" sourceExternalFilepath="Bitmap 1.png" sourceLastImported="1754823562" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣头.png" bitmapDataHRef="M 29 1757955538.dat" frameRight="23140" frameBottom="24780"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣下半身" itemID="68987b8e-0000017a" sourceExternalFilepath="Bitmap 7.png" sourceLastImported="1754823566" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣下半身.png" bitmapDataHRef="M 20 1757955538.dat" frameRight="10620" frameBottom="18760"/>
@@ -252,7 +252,7 @@
           <Include href="NPC/NPC-歌留多/素材/髅髅宫歌留多.xml" itemIcon="1" loadImmediate="false" itemID="6709f658-00000196" lastModified="1728926280"/>
           <Include href="NPC/NPC-歌留多/素材/髅髅宫歌留多-站立动画.xml" loadImmediate="false" itemID="670cf4d1-000003f7" lastModified="1762833755"/>
           <Include href="NPC/NPC-虎妙/NPC-虎妙.xml" loadImmediate="false" itemID="6a9d8fc0-0000134c" lastModified="1788713101"/>
-          <Include href="NPC/NPC-虎妙/虎妙.xml" loadImmediate="false" itemID="6a9d8fe3-00001572" lastModified="1788713235"/>
+          <Include href="NPC/NPC-虎妙/虎妙.xml" loadImmediate="false" itemID="6a9d8fe3-00001572" lastModified="1788715511"/>
           <Include href="NPC/NPC-虎妙/素材/猫下臂装备.xml" loadImmediate="false" itemID="6980fbb3-000042c7" lastModified="1770061971"/>
           <Include href="NPC/NPC-虎妙/素材/猫妖背心上臂.xml" itemIcon="1" loadImmediate="false" itemID="6980ec30-00004247" lastModified="1770590037"/>
           <Include href="NPC/NPC-虎妙/素材/猫妖背心身体.xml" itemIcon="1" loadImmediate="false" itemID="6980ed19-0000427d" lastModified="1770590148"/>
@@ -830,6 +830,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4845675" publishTime="1788713355"/>
+          <PublishItem publishSize="4845723" publishTime="1788713284"/>
           <PublishItem publishSize="4806009" publishTime="1762834143"/>
           <PublishItem publishSize="4806028" publishTime="1762834005"/>
           <PublishItem publishSize="4780823" publishTime="1757958910"/>
@@ -848,7 +850,5 @@
           <PublishItem publishSize="1239806" publishTime="1724409057"/>
           <PublishItem publishSize="1239452" publishTime="1720795690"/>
           <PublishItem publishSize="1239485" publishTime="1720353000"/>
-          <PublishItem publishSize="1239859" publishTime="1712334916"/>
-          <PublishItem publishSize="1239862" publishTime="1712332827"/>
      </publishHistory>
 </DOMDocument>
