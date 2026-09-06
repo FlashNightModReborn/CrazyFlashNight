@@ -335,6 +335,24 @@ _root.初始化NPC = function(目标) {
         目标._visible = false;
         return;
     }
+    // 支线任务需求（可选）：元件上设置 任务需求支线 = [任务ID, ...]，列表内所有任务都完成（>=1次）才会初始化显示
+    if (目标.任务需求支线 != undefined && 目标.任务需求支线 != null && 目标.任务需求支线.length > 0) {
+        var 支线需求:Array = 目标.任务需求支线;
+        var 支线未完成:Boolean = false;
+        for (var ri:Number = 0; ri < 支线需求.length; ri++) {
+            var 支线任务ID:Number = Number(支线需求[ri]);
+            if (isNaN(支线任务ID)) continue;
+            if (isNaN(_root.tasks_finished[String(支线任务ID)]) || _root.tasks_finished[String(支线任务ID)] < 1) {
+                支线未完成 = true;
+                break;
+            }
+        }
+        if (支线未完成) {
+            目标.stop();
+            目标._visible = false;
+            return;
+        }
+    }
     var npcBaseName:String = String(目标.名字);
     var npcDialogueName:String = npcBaseName;
     var npcTaskName:String = npcBaseName;
