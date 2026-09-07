@@ -19,7 +19,7 @@
 
 当前为 **HUMAN_ACCEPTANCE_PASSED / promoted**；上述 **正式入口配置录制→正常退出→自动成包** 的窄范围复验通过。`businessJourneyExecuted=false`、`as2ObserveReadySeen=false`：本轮停在启动页，没有进入存档、执行关卡返回或结算按钮流程，不外推焦点业务链或完整产品 `standard_entry_verified`。原失灵问题仍待测试员提供新版失败现场。
 
-部署推送与首次远端审计结果在本节完成后追加。
+部署提交 `5fc24ecedfbcb081368472e19414de20f92895d6` 已快进推送到 `main`。首次远端部署审计 [run 34090069626](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34090069626) 成功，于 `2026-09-07T06:20:43.2242086Z` 精确输出 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `95717cd45db410f70c4d69f64d23b156221ad12a` → head `5fc24ecedfbcb081368472e19414de20f92895d6`；33-file closure、2 signers / 2 faultDomains 与绑定最终 source tag 的 GitHub proof replay 全部通过。
 
 ## 2026-09-06 上一正式发布：地图维护工作台第一阶段
 
