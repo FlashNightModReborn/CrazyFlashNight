@@ -115,7 +115,7 @@ output:
 | runtime-installer | 缺运行时时由 bootstrap 拉起的 Windows Desktop Runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe` |
 | launcher-web | WebView2 overlay 前端：bootstrap/overlay/config/css/assets/data/lib/modules/help + `icons/**`（WebP 化后整目录收，含 .webp）；含 XML 生成的字体投影，排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README、`assets/**/_copy_bg.py` 开发脚本、`assets/**/report.json` 烘焙审计报告 |
 | runtime-fonts | 根 `fonts/` 的 XML/XSD、许可证、README 与 `permanent/runtime/` 常驻字体；严格排除 `temporary/**` |
-| launcher-data | Launcher 运行时数据：`map_hud_data.json`（MapHud catalog）/ `save_repair_dict.json`（SaveAutoRepairService 字典）/ `save_schema.json`（存档编辑器 diff 基线） |
+| launcher-data | Launcher 运行时数据：`save_repair_dict.json`（修复字典）／`save_schema.json`（存档编辑器基线）；地图从 v2 定义经 C# 内存投影，不再打包 HUD sidecar |
 | launcher-agent-assets | 精确收编 Wings 运行时直接读取的 `launcher/agent-assets/lore/public-companion.v1.json`；schema 与 fixtures 仍留在开发/测试链 |
 | launcher-scripts | V8 运行时 bundle（历史兼容名 `launcher/scripts/dist/hit-number-bundle.js`；现役仅含搓招 `GameInput` DFA） |
 | rapfi | 五子棋引擎与权重文件：5 个 Windows CPU 变体 + `*.bin` / `*.bin.lz4` 权重 + `config.toml` + `AUTHORS`（`tools/rapfi/`） |

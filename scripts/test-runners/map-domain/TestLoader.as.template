@@ -1,0 +1,6 @@
+﻿/**
+ * 地图桥与真实 NPC presence 的独立 focused 入口。
+ */
+trace("FocusedTestRunId map-domain Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.map.MapDomainBridgeTest.runAllTests();
+trace("FocusedTestRunId map-domain Complete: __FOCUSED_RUN_ID__");

@@ -54,7 +54,7 @@ _root.任务栏UI函数.打印任务明细 = function(id):String{
 		str += "- 持有物品 -\n";
 		str += _root.任务栏UI函数.打印物品列表(taskData.finish_contain_items);
 	}
-	str += "提交NPC：" + taskData.finish_npc + "\n";
+	str += "提交NPC：" + org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(String(taskData.id), "finish") + "\n";
 	//奖励
 	str += "- 奖励 -\n";
 	str += _root.任务栏UI函数.打印物品列表(taskData.rewards);
@@ -202,14 +202,13 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 	//奖励
 	this.任务奖励.rewards = taskData.rewards;
 	this.任务奖励.refresh();
-	// this.任务奖励.taskFinishNPC.htmlText = "提交NPC：" + taskData.finish_npc;
-	this.提交NPC界面.finish_npc = taskData.finish_npc;
+	this.提交NPC界面.finish_npc = org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(String(taskData.id), "finish");
 
 	var NPC头像框:MovieClip = this.提交NPC界面.提交NPC.NPC头像框;
 	NPC头像框._visible = false;
 	_root.帧计时器.添加单次任务(function() {
 		NPC头像框._visible = true;
-		_root.对话框UI.刷新NPC头像(NPC头像框, taskData.finish_npc);
+		_root.对话框UI.刷新NPC头像(NPC头像框, org.flashNight.arki.map.MapDomainBridge.taskNpcRuntimeName(String(taskData.id), "finish"));
 	}, 33)
 	
 }

@@ -11,10 +11,10 @@ namespace CF7Launcher.Tests.Guardian
     /// MapHudPayload + MapHudDataCatalog parse 回归。
     ///
     /// 关键不变量：
-    /// 1. protocolVersion=1 是 supported；missing/不一致只 log warning，不抛
+    /// 1. 内存协议字段保持兼容，生产投影版本由地图域固定
     /// 2. list 字段保持 nullable，区分 "JSON 空数组" vs "字段缺失"
     /// 3. catalog 找不到 hotspot 返回 null（不抛）；空 hotspots → IsAvailable=false
-    /// 4. 文件不存在 → IsAvailable=false（不抛）
+    /// 4. 尚无已确认事实 → 空 payload，IsAvailable=false（不抛）
     /// 5. group 缺失（base 等）→ Meta.Group=null/空，widget 自行 fallback 主题
     ///
     /// fixture 通过 csproj &lt;CopyToOutputDirectory&gt; 拷到 bin/Debug/Fixtures/MapHud；
@@ -105,7 +105,7 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void Catalog_LoadBasic_AvailableAndQueryable()
         {
-            MapHudDataCatalog cat = MapHudDataCatalog.LoadFromFile(FixturePath("payload-v1-basic.json"));
+            MapHudDataCatalog cat = ReadFixture("payload-v1-basic.json");
             Assert.True(cat.IsAvailable);
             Assert.Equal(1, cat.HotspotCount);
             MapHudHotspotEntry e = cat.GetEntry("warlord_base");
@@ -116,7 +116,7 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void Catalog_UnknownHotspot_Null()
         {
-            MapHudDataCatalog cat = MapHudDataCatalog.LoadFromFile(FixturePath("payload-v1-basic.json"));
+            MapHudDataCatalog cat = ReadFixture("payload-v1-basic.json");
             Assert.Null(cat.GetEntry("nonexistent"));
             Assert.Null(cat.GetEntry(""));
             Assert.Null(cat.GetEntry(null));
@@ -125,27 +125,39 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void Catalog_EmptyHotspots_NotAvailable()
         {
-            MapHudDataCatalog cat = MapHudDataCatalog.LoadFromFile(FixturePath("payload-v1-empty-hotspots.json"));
+            MapHudDataCatalog cat = ReadFixture("payload-v1-empty-hotspots.json");
             Assert.False(cat.IsAvailable);
             Assert.Equal(0, cat.HotspotCount);
         }
 
         [Fact]
-        public void Catalog_MissingFile_NotAvailableNoThrow()
+        public void Catalog_NoAcceptedProjection_NotAvailableNoThrow()
         {
-            MapHudDataCatalog cat = MapHudDataCatalog.LoadFromFile(Path.Combine(FixtureDir, "DOES_NOT_EXIST.json"));
+            MapHudDataCatalog cat = MapHudDataCatalog.FromPayload(null);
             Assert.False(cat.IsAvailable);
             Assert.Null(cat.GetEntry("anything"));
         }
 
         [Fact]
-        public void Catalog_LegacyV0_StillLoadsWithWarning()
+        public void Catalog_LegacyPayload_PreservesMissingProtocol()
         {
-            // protocolVersion 缺失只 log warning，不阻塞加载
-            MapHudDataCatalog cat = MapHudDataCatalog.LoadFromFile(FixturePath("payload-v0-legacy.json"));
+            MapHudDataCatalog cat = ReadFixture("payload-v0-legacy.json");
             Assert.True(cat.IsAvailable);
             Assert.Null(cat.ProtocolVersion);
             Assert.NotNull(cat.GetEntry("school_dorm"));
+        }
+        private static MapHudDataCatalog ReadFixture(string name) => MapHudDataCatalog.FromPayload(
+            JsonConvert.DeserializeObject<MapHudPayload>(File.ReadAllText(FixturePath(name))));
+        [Fact]
+        public void Catalog_ReplaceSnapshotDoesNotMutatePreviouslyReadEntry()
+        {
+            var catalog = ReadFixture("payload-v1-basic.json"); var oldEntry = catalog.GetEntry("warlord_base");
+            var next = JsonConvert.DeserializeObject<MapHudPayload>(File.ReadAllText(FixturePath("payload-v1-basic.json")));
+            next.Hotspots["warlord_base"].Meta.Label = "新投影";
+            catalog.ReplacePayload(next);
+            Assert.NotSame(oldEntry, catalog.GetEntry("warlord_base"));
+            catalog.ReplacePayload(null); Assert.False(catalog.IsAvailable); Assert.Null(catalog.GetEntry("warlord_base"));
+            Assert.NotNull(oldEntry);
         }
     }
 }

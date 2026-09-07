@@ -313,6 +313,8 @@ function Get-Cf7ProductionChecks {
         'modules\map-scale-policy.js', 'modules\map-canvas-stage-renderer.js', 'modules\map-panel.js',
         'modules\map-definition.js', 'modules\map-workbench.js',
         'modules\map\authoring\preview.html', 'modules\map\authoring\preview-host.js',
+        'modules\map\authoring\controls.js', 'modules\map\authoring\editors.js',
+        'modules\map\authoring\help.js', 'help\map-workbench.md',
         'css\map-workbench.css', 'css\map-authoring-preview.css',
         'modules\stage-select-data.js', 'modules\stage-select-panel.js',
         'modules\pet-panel.js', 'modules\merc-data.js', 'modules\merc-panel.js',
@@ -371,7 +373,7 @@ function Get-Cf7ProductionChecks {
         -Arguments @((Join-Path $ProjectRoot 'tools\audit-native-cursor-assets.js')) -WorkingDirectory $ProjectRoot
     $checks += New-Cf7RequiredPathsCheck -Name 'required-launcher-data-assets' `
         -Root (Join-Path $ProjectRoot 'launcher\data') `
-        -Paths @('map_hud_data.json', 'save_repair_dict.json', 'save_schema.json')
+        -Paths @('save_repair_dict.json', 'save_schema.json')
     $checks += New-Cf7RequiredPathsCheck -Name 'required-font-runtime-assets' `
         -Root (Join-Path $ProjectRoot 'fonts') `
         -Paths @(

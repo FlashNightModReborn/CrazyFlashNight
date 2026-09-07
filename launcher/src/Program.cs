@@ -1419,6 +1419,8 @@ class Program
         LogManager.Log("[WebView2] Runtime found: " + wv2ver);
         StartupDiagnostics.Mark("webview2.runtime_check_ok", "version=" + wv2ver);
         string webDir = Path.Combine(projectRoot, "launcher", "web");
+        // 磁盘批次恢复先于三个运行时消费者；进程内固定同一内容，作者应用后重启切换。
+        var mapRuntimeContent = new CF7Launcher.Data.MapRuntimeContent(projectRoot);
         // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
         // 因为后续 PanelHostController 也复用同一份。WebOverlay 自身的焦点回推走 flashFocusRestorer。
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
@@ -1445,7 +1447,7 @@ class Program
                 config.WebView2DeveloperMode,
                 config.WebOverlayPanelTakeForeground,
                 config.WebOverlayHotReload,
-                flashFocusRestorer);
+                flashFocusRestorer, mapRuntimeContent.Definition);
         }
         StartupDiagnostics.Mark("web_overlay.construct_ok");
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
@@ -1551,6 +1553,7 @@ class Program
         NativePanelBackdrop backdrop = null;
         PanelHostController panelHost = null;
         CF7Launcher.Guardian.Hud.RightContextWidget rightContext = null;
+        CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog = CF7Launcher.Guardian.Hud.MapHudDataCatalog.FromPayload(null);
         CF7Launcher.Guardian.Hud.Loot.LootFeedWidget lootFeedWidget = null;
         CF7Launcher.Guardian.Hud.PlayerInfo.PlayerInfoSplitSurface
             playerInfoSurface = null;
@@ -1644,9 +1647,7 @@ class Program
             // P2-2 perf：catalog 异步加载（162 KB JSON 反序列化挪到后台）。
             // 加载完成前 GetEntry 返回 null，widget 静默不渲染地图，无错位；
             // ~30-80ms 的 JSON parse 全藏在 Flash 启动等待里。
-            string mapHudJsonPath = Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json");
-            CF7Launcher.Guardian.Hud.MapHudDataCatalog mapCatalog =
-                CF7Launcher.Guardian.Hud.MapHudDataCatalog.LoadFromDefinition(projectRoot);
+            // 第一次有界事实投影到达后，由 map_domain 更新同一 catalog；未就绪时不展示猜测地图。
             // 复用 NativeHud 的既有物品图标目录：RightContext 只借用复活币帧，
             // LootFeedWidget 保持目录唯一所有者并在 HUD teardown 时释放。
             CF7Launcher.Guardian.Hud.Loot.LootIconCatalog lootIconCatalog =
@@ -2050,6 +2051,8 @@ class Program
             }
         });
         MapTask mapTask = new MapTask(socketServer);
+        MapDomainTask mapDomainTask = new MapDomainTask(socketServer, mapRuntimeContent, mapCatalog);
+        webOverlay.SetMapDomain(mapRuntimeContent, mapDomainTask);
         ArenaTask arenaTask = new ArenaTask(socketServer, projectRoot);
         ArenaCalibrationTask arenaCalibrationTask = new ArenaCalibrationTask(socketServer, projectRoot);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
@@ -2177,7 +2180,7 @@ class Program
         }
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2345,6 +2348,7 @@ class Program
             itemUseTask.Dispose();
             characterBuildTask.Dispose();
             mapTask.Dispose();
+            mapDomainTask.Dispose();
             stageSelectTask.Dispose();
             intelligenceTask.Dispose();
             blackMarketTask.Dispose();
@@ -2418,6 +2422,7 @@ class Program
             try { characterBuildTask.Dispose(); } catch { }
             try { skillTask.Dispose(); } catch { }
             try { mapTask.Dispose(); } catch { }
+            try { mapDomainTask.Dispose(); } catch { }
             try { stageSelectTask.Dispose(); } catch { }
             try { socketServer.Dispose(); } catch { }
             try { httpServer.Dispose(); } catch { }
@@ -3304,6 +3309,7 @@ class Program
         try { itemUseTask.Dispose(); } catch { }
         try { characterBuildTask.Dispose(); } catch { }
         try { mapTask.Dispose(); } catch { }
+        try { mapDomainTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }
         try { intelligenceTask.Dispose(); } catch { }
         try { blackMarketTask.Dispose(); } catch { }

@@ -174,6 +174,8 @@ function readImageSize(absPath) {
 }
 
 function computeFilterSourceCeiling(mapData, pageId, filterId) {
+    var projected = typeof mapData.getAssetCapability === 'function' ? mapData.getAssetCapability(pageId, filterId) : null;
+    if (projected) return { sourceRatio: projected.sourceRatio, worstAsset: projected.worstAsset ? {assetUrl:projected.worstAsset,ratio:projected.sourceRatio} : null };
     // 取 filter 下所有可见 sceneVisual 的运行时图像采样率，返回最严（最小）的 ratio；
     // 即“源图能支撑的最大逻辑放大倍数”。filter 里只要有一张低清素材，整张 fit 上限就被它锁死。
     const visuals = mapData.getVisibleSceneVisuals(pageId, filterId || '');
@@ -209,7 +211,7 @@ function computeFilterSourceCeiling(mapData, pageId, filterId) {
 function loadMapBundle() {
     const sandbox = { console };
     vm.createContext(sandbox);
-    sandbox.MapDefinitionData = JSON.parse(fs.readFileSync(path.join(projectRoot, 'data/map/map_definition.json'), 'utf8'));
+    sandbox.MapDefinitionData = require('./lib/map-domain.js').loadRenderDefinition(projectRoot);
     // C 阶段后 panel-data 的 exportManifest 在 IIFE 末尾访问 MapAvatarSourceData,
     // 必须先加载 source-data 才能让 staticAvatar marker rect 派生正确。
     vm.runInContext(fs.readFileSync(avatarSourceFile, 'utf8'), sandbox, { filename: avatarSourceFile });
@@ -702,7 +704,9 @@ function buildRuntimeFile(runtimePresets) {
         '',
         '    var _defaults = ' + JSON.stringify(runtimePresets.defaults, null, 4).replace(/\n/g, '\n    ') + ';',
         '    var _presets = ' + JSON.stringify(runtimePresets.presets, null, 4).replace(/\n/g, '\n    ') + ';',
-        '    var _capabilities = ' + JSON.stringify(runtimePresets.capabilities, null, 4).replace(/\n/g, '\n    ') + ';',
+        '    function currentCapabilities() {',
+        '        return typeof MapDefinitionData !== "undefined" && MapDefinitionData.version >= 2 ? (MapDefinitionData.assetCapabilities || {}) : {};',
+        '    }',
         '    var _experienceProfiles = ' + JSON.stringify(runtimePresets.experienceProfiles, null, 4).replace(/\n/g, '\n    ') + ';',
         '    var _filterExperienceProfiles = ' + JSON.stringify(runtimePresets.filterExperienceProfiles, null, 4).replace(/\n/g, '\n    ') + ';',
         '',
@@ -741,14 +745,14 @@ function buildRuntimeFile(runtimePresets) {
         '        return {',
         '            defaults: copy(_defaults),',
         '            presets: copy(_presets),',
-        '            capabilities: copy(_capabilities),',
+        '            capabilities: copy(currentCapabilities()),',
         '            experienceProfiles: copy(_experienceProfiles),',
         '            filterExperienceProfiles: copy(_filterExperienceProfiles)',
         '        };',
         '    }',
         '',
         '    function resolveCapability(pageId, filterId) {',
-        '        var pageCapabilities = _capabilities[pageId] || null;',
+        '        var pageCapabilities = currentCapabilities()[pageId] || null;',
         '        var capability = pageCapabilities ? (pageCapabilities[filterId] || pageCapabilities["*"]) : null;',
         '        return capability ? copy(capability) : { sourceRatio: 1, worstAsset: "" };',
         '    }',

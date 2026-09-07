@@ -74,7 +74,7 @@ async function main() {
     console.log('[map-harness] navigate', harnessUrl);
     console.log('[map-harness] browser', opts.browser, executablePath);
 
-    const browser = await chromium.launch({ executablePath, headless: opts.headless });
+    const browser = await chromium.launch({ executablePath, headless: opts.headless, args: ['--disable-gpu'] });
     const context = await browser.newContext({ viewport });
     const page = await context.newPage();
 

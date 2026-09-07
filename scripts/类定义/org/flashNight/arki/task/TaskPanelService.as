@@ -39,7 +39,7 @@
  *
  * 前往交付（便利增强 taskNavigateFinish）：
  *   非远程任务面板按钮变为「前往交付」——复用地图跳转把玩家直送到 finish_npc 的地图位置
- *   （MapTaskNpcRegistry.findMarker → MapPanelService.canNavigateToHotspot/navigateToHotspot）。
+ *   （C# 地图域的任务端点投影与 fresh navigate 准入）。
  *   只负责"前往"，到达后仍由玩家点击 NPC 正常交付。可达性 = 非战斗地图 + 热点已登记 + 所在组解锁；
  *   不可达（或注册/目录未就绪）则按钮禁用、服务端回 not_navigable。handleDetail 回 finishNavigable。
  */
@@ -160,7 +160,7 @@ class org.flashNight.arki.task.TaskPanelService {
                 taskId: taskId,
                 title: title,
                 type: type,
-                npcName: taskData.get_npc != undefined ? String(taskData.get_npc) : "",
+                npcName: org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(String(taskData.id), "get"),
                 satisfied: satisfied
             });
         }
@@ -228,22 +228,26 @@ class org.flashNight.arki.task.TaskPanelService {
     // handleDetail — 返回单个任务详细信息
     // ═══════════════════════════════════════════════════════════
     public static function handleDetail(params:Object):Void {
-        var callId = params.callId;
-        var index:Number = params.index;
-
-        var tasksToDo:Array = _root.tasks_to_do;
-        if (tasksToDo == undefined || index == undefined || isNaN(index) || index < 0 || index >= tasksToDo.length) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "invalid_index" });
-            return;
+        var callId:String = String(params.callId);
+        var index:Number = Number(params.index);
+        if (isNaN(index) || index < 0 || index >= _root.tasks_to_do.length || _root.tasks_to_do[index] == undefined) {
+            sendResponse({task:"task_response", callId:callId, success:false, error:"invalid_index"}); return;
         }
-
-        var entry:Object = tasksToDo[index];
-        if (entry == undefined) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "entry_not_found" });
-            return;
+        var taskId:String = String(_root.tasks_to_do[index].id);
+        org.flashNight.arki.map.MapDomainBridge.snapshot(function(ok:Boolean, error:String):Void {
+            if (!ok) {
+                org.flashNight.arki.task.TaskPanelService.sendResponse({task:"task_response", callId:callId, success:false, error:error}); return;
+            }
+            org.flashNight.arki.task.TaskPanelService.handleDetailFresh(callId, taskId);
+        }, [taskId]);
+    }
+    private static function handleDetailFresh(callId:String, taskId:String):Void {
+        // 等待地图事实时 tasks_to_do 可以变化，必须按 taskId 重新定位，不复用旧 index。
+        var index:Number = resolveIndexByTaskId(taskId);
+        if (index < 0) {
+            sendResponse({task:"task_response", callId:callId, success:false, error:"task_not_found"}); return;
         }
-
-        var taskId = entry.id;
+        var entry:Object = _root.tasks_to_do[index];
         var taskData:Object = TaskUtil.tasks[taskId];
         if (taskData == undefined) {
             sendResponse({ task: "task_response", callId: callId, success: false, error: "task_data_not_found" });
@@ -274,23 +278,10 @@ class org.flashNight.arki.task.TaskPanelService {
             itemReqs = itemReqs.concat(parseItemStacks(taskData.finish_contain_items, "contain"));
         }
 
-        // 解析提交NPC
-        var npcName:String = taskData.finish_npc != undefined ? String(taskData.finish_npc) : "";
-        var npcHotspot:String = taskData.finish_npc_hotspot != undefined ? String(taskData.finish_npc_hotspot) : "";
-
-        // 解析奖励 (rewards: ["itemName#quantity", ...])
+        var endpoint:Object = org.flashNight.arki.map.MapDomainBridge.endpoint(taskId, "finish");
+        var npcName:String = org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(String(taskId), "finish");
         var rewards:Array = parseItemStacks(taskData.rewards, undefined);
-
-        // 前往交付可达性：finish_npc → marker.hotspotId（MapTaskNpcRegistry）→ 可否直接跳转
-        // （MapPanelService.canNavigateToHotspot：非战斗地图 + NAVIGATE_TARGETS 命中 + 所在组已解锁）。
-        // 面板据此对「非远程但可前往」的任务把按钮变为可点的「前往交付」。注册/目录未就绪时回 false（优雅降级）。
-        var finishNavigable:Boolean = false;
-        if (npcName != "") {
-            var navMarker:Object = org.flashNight.arki.map.MapTaskNpcRegistry.findMarker(npcName, npcHotspot);
-            if (navMarker != undefined) {
-                finishNavigable = org.flashNight.arki.map.MapPanelService.canNavigateToHotspot(String(navMarker.hotspotId));
-            }
-        }
+        var finishNavigable:Boolean = endpoint.navigable === true;
 
         var dto:Object = {
             taskId: taskId,
@@ -310,7 +301,8 @@ class org.flashNight.arki.task.TaskPanelService {
             // 远程交付开关：仅 finish_remote==true 的任务允许面板直接交付，否则须前往 NPC
             finishRemote: (taskData.finish_remote == true),
             // 前往交付：该任务 finish_npc 当前是否可一键跳转到其地图位置
-            finishNavigable: finishNavigable
+            finishNavigable: finishNavigable,
+            finishNavigationReason: String(endpoint.reason || "")
         };
 
         sendResponse({ task: "task_response", callId: callId, success: true, taskData: dto });
@@ -434,46 +426,20 @@ class org.flashNight.arki.task.TaskPanelService {
 
     // ═══════════════════════════════════════════════════════════
     // handleNavigateFinish — 前往交付（复用地图跳转，便利性增强）
-    //   按 taskId 解析 finish_npc → MapTaskNpcRegistry 找 hotspot → MapPanelService 跳转。
+    //   按 taskId 由 C# 解析当前端点；AS2 在新鲜准入与当前任务复核之后跳转。
     //   成功回 closePanel:true（与地图面板 navigate 同语义，前端关面板让场景淡出跳转）。
     //   实际交付仍由玩家到达后点击 NPC 完成（本功能只负责"前往"，不自动交付）。
     // ═══════════════════════════════════════════════════════════
     public static function handleNavigateFinish(params:Object):Void {
-        var callId = params.callId;
-        var index:Number = resolveIndexByTaskId(params.taskId);
-        if (index < 0) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "task_not_found", tasks: buildTaskList() });
-            return;
+        var callId:String = String(params.callId);
+        var taskId:String = String(params.taskId);
+        if (resolveIndexByTaskId(taskId) < 0) {
+            sendResponse({task:"task_response", callId:callId, success:false, error:"task_not_found", tasks:buildTaskList()}); return;
         }
-
-        var taskData:Object = TaskUtil.tasks[_root.tasks_to_do[index].id];
-        var npc:String = (taskData != undefined && taskData.finish_npc != undefined) ? String(taskData.finish_npc) : "";
-        var npcHotspot:String = (taskData != undefined && taskData.finish_npc_hotspot != undefined) ? String(taskData.finish_npc_hotspot) : "";
-        if (npc == "") {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "npc_not_on_map" });
-            return;
-        }
-
-        var marker:Object = org.flashNight.arki.map.MapTaskNpcRegistry.findMarker(npc, npcHotspot);
-        if (marker == undefined) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "npc_not_on_map" });
-            return;
-        }
-
-        var hid:String = String(marker.hotspotId);
-        // 二次硬门控：可达性按当前游戏态实时判定（战斗地图/未解锁/目录未就绪都拒绝）
-        if (!org.flashNight.arki.map.MapPanelService.canNavigateToHotspot(hid)) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "not_navigable" });
-            return;
-        }
-
-        var ok:Boolean = org.flashNight.arki.map.MapPanelService.navigateToHotspot(hid);
-        sendResponse({
-            task: "task_response",
-            callId: callId,
-            success: ok,
-            closePanel: ok,
-            error: ok ? undefined : "navigate_failed"
+        org.flashNight.arki.map.MapPanelService.navigateToTask(taskId, function(ok:Boolean, error:String):Void {
+            org.flashNight.arki.task.TaskPanelService.sendResponse({task:"task_response", callId:callId, success:ok, closePanel:ok, error:error});
+        }, function():Boolean {
+            return org.flashNight.arki.task.TaskPanelService.resolveIndexByTaskId(taskId) > -1;
         });
     }
 
@@ -775,7 +741,7 @@ class org.flashNight.arki.task.TaskPanelService {
                 stageFound: stageInfo != undefined,
                 title: String(TaskUtil.getTaskText(taskData.title)),
                 description: String(TaskUtil.getTaskText(taskData.description)),
-                npcName: String(taskData.get_npc != undefined ? taskData.get_npc : ""),
+                npcName: org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(String(taskData.id), "get"),
                 rewards: parseItemStacks(taskData.rewards, undefined),
                 imageurl: taskData.imageurl != undefined ? String(taskData.imageurl) : "",
                 normalLimits: stageInfo != undefined ? limitationArray(stageInfo.Limitation) : [],
@@ -1332,7 +1298,7 @@ class org.flashNight.arki.task.TaskPanelService {
                 // 展示字段（让 web 副本视图单次 dungeonDetail 自洽，不依赖静态 catalog）
                 title: String(TaskUtil.getTaskText(taskData.title)),
                 description: String(TaskUtil.getTaskText(taskData.description)),
-                npcName: String(taskData.get_npc != undefined ? taskData.get_npc : (taskData.finish_npc != undefined ? taskData.finish_npc : "")),
+                npcName: org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(String(taskData.id), "get"),
                 rewards: parseItemStacks(taskData.rewards, undefined),
                 imageurl: (taskData.imageurl != undefined ? String(taskData.imageurl) : ""),
                 hasChallenge: hasChallenge,

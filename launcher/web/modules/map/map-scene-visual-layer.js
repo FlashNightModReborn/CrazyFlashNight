@@ -177,6 +177,7 @@ var MapSceneVisualLayer = (function() {
             isFocus = isCurrent || isHover;
 
             visible = inFilter && isFocus;
+            if (args.visualVisibility && args.visualVisibility[w.visualId] !== true) visible = false;
 
             // 用 className 整体重写 (一次回流) 避免逐 toggle 多次属性写
             var cls = 'map-scene-visual';

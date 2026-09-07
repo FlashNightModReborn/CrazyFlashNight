@@ -261,6 +261,8 @@ window.BootstrapAudio = (function() {
         buildSnapshot: function() {
             var disabledLookup = {};
             var unlocks = MapPanelData.normalizeUnlockFlags({});
+            // Renderer-only synthetic projection. Story acceptance uses the C# authoring preview, never this mock.
+            Object.keys(unlocks).forEach(function(id) { unlocks[id] = true; });
             var i;
             var requestedHotspotId = this.state.currentHotspotId || '';
             var currentPageId = resolvePageIdForHotspotId(requestedHotspotId) || this.state.defaultPageId;
@@ -278,6 +280,7 @@ window.BootstrapAudio = (function() {
             }
             hotspotStates = MapPanelData.buildHotspotStates(unlocks);
             for (var hotspotId in hotspotStates) {
+                hotspotStates[hotspotId].visible = hotspotStates[hotspotId].enabled;
                 if (disabledLookup[hotspotId]) {
                     hotspotStates[hotspotId].enabled = false;
                     hotspotStates[hotspotId].lockedReason = hotspotStates[hotspotId].lockedReason || '调试禁用热点';
@@ -327,8 +330,27 @@ window.BootstrapAudio = (function() {
                 tone: 'accent'
             }] : [];
 
+            var pageStates = {}, visualVisibility = {}, visualAssetUrls = {}, avatarVisibility = {}, avatarAssetUrls = {};
+            MapPanelData.getPageOrder().forEach(function(pageId) {
+                var page = MapPanelData.getPage(pageId); visualVisibility[pageId] = {}; visualAssetUrls[pageId] = {};
+                page.hotspots.forEach(function(h) { hotspotStates[h.id].locationId = h.locationId; hotspotStates[h.id].pageId = pageId; });
+                pageStates[pageId] = {visible:pageId === 'base' || page.hotspots.some(function(h) { return hotspotStates[h.id].visible; })};
+                page.sceneVisuals.forEach(function(v) { visualAssetUrls[pageId][v.id] = v.assetUrl; visualVisibility[pageId][v.id] = pageStates[pageId].visible && (!v.hotspotIds.length || v.hotspotIds.some(function(id) { return hotspotStates[id].visible; })); });
+                (page.staticAvatars || []).concat(page.dynamicAvatars || []).forEach(function(a) {
+                    avatarAssetUrls[a.id] = a.kind === 'roommateGender' ? (host.state.roommateGender === 'male' || host.state.roommateGender === '男' ? 'assets/map/roommate-male.webp' : host.state.roommateGender === 'female' || host.state.roommateGender === '女' ? 'assets/map/roommate-female.webp' : '') : a.assetUrl;
+                    avatarVisibility[a.id] = hotspotStates[a.hotspotId].visible && !!avatarAssetUrls[a.id];
+                    taskMarkers.forEach(function(m) { if (m.pageId === pageId && m.hotspotId === a.hotspotId && !m.placementId) m.placementId = a.placementId; });
+                });
+            });
+            var current = currentHotspotId && MapPanelData.findHotspot(currentPageId, currentHotspotId);
             return {
-                version: 2,
+                version: 4,
+                pageStates: pageStates,
+                visualVisibility: visualVisibility,
+                visualAssetUrls: visualAssetUrls,
+                avatarVisibility: avatarVisibility,
+                avatarAssetUrls: avatarAssetUrls,
+                currentLocationId: current ? current.locationId : '',
                 defaultPageId: currentPageId,
                 regionId: currentPageId,
                 currentHotspotId: currentHotspotId,
@@ -338,6 +360,7 @@ window.BootstrapAudio = (function() {
                 unlocks: unlocks,
                 hotspotStates: hotspotStates,
                 enabledHotspotIds: enabledHotspotIds,
+                visibleHotspotIds: enabledHotspotIds.slice(),
                 dynamicAvatarState: {
                     roommateGender: this.state.roommateGender
                 },

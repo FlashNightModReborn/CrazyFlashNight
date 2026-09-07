@@ -149,7 +149,7 @@ var MapAvatarLayer = (function createMapAvatarLayer() {
             }
             if (w.id && Object.prototype.hasOwnProperty.call(avatarVisibility, w.id)
                 && avatarVisibility[w.id] === false) visible = false;
-            if (!w.assetUrl) visible = false;
+            if (!w.assetUrl && args.allowMissingAsset !== true) visible = false;
 
             // focus / muted: 与 canvas drawAvatar 一致
             isCurrent = !!w.hotspotId && w.hotspotId === currentHotspotId;

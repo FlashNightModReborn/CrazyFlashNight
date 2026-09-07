@@ -478,11 +478,13 @@ namespace CF7Launcher.Bus
             BenchTask benchTask,
             FontPackTask fontPackTask,
             WebOverlayForm webOverlay,
-            LauncherCommandRouter commandRouter)
+            LauncherCommandRouter commandRouter,
+            MapDomainTask mapDomainTask = null)
         {
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);
             router.RegisterAsync("data_query", dataQuery.HandleAsync);
+            if (mapDomainTask != null) router.RegisterAsync("map_domain", mapDomainTask.HandleAsync);
             router.RegisterSync("toast", toast.Handle);
             if (stageOutcomeTask != null)
                 router.RegisterSync("stage_outcome", stageOutcomeTask.Handle);
@@ -844,6 +846,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "item_use_response", "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "skill_response",    "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "map_response",   "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "map_domain",     "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "stage_select_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "arena_response",       "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "arena_calibration",    "json_sync", "AS2<->C#",true,  first);

@@ -26,7 +26,8 @@
     function noop() {}
     Panels.registerLazy('map-workbench',
         ['modules/panel-runtime.js', 'modules/workbench-lifecycle.js', 'modules/workbench-focus.js',
-         'modules/workbench-primitives.js', 'modules/workbench-profile.js', 'modules/workbench.js', 'modules/map-workbench.js'], noop);
+         'modules/workbench-primitives.js', 'modules/workbench-profile.js', 'modules/workbench.js', 'modules/workbench-components.js',
+         'modules/map/authoring/controls.js', 'modules/map/authoring/editors.js', 'modules/map/authoring/help.js', 'modules/map-workbench.js'], noop);
 
     Panels.registerLazy('asset-workbench',
           ['modules/panel-runtime.js', 'modules/workbench-lifecycle.js',

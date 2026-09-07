@@ -446,7 +446,7 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 
 ## 3. C# 接入清单
 
-地图维护第一阶段的 `map-workbench / map_workbench` 是 Host 本地 authoring 域，不经过 AS2。生产地图在页面创建前由 C# 注入唯一 JSON 定义的校验快照，NativeHud 使用同一 C# 投影；AS2 兼容目录和解锁/导航协议保持不变。保存/撤回只影响下次启动。编辑器在隔离子文档中复用生产 MapPanel，`map-authoring-input / map-authoring-preview` 仅接受 exact 父子 Window、同源与本轮 session；子文档使用无游戏写出的设计快照桥。缩放/平移和草稿不修改运行中游戏目录。见[地图工作台](../tools/map-workbench/README.md)。
+地图内容工作台的 `map-workbench / map_workbench` 是 Host 本地 authoring 域；定义／人物／驻点／规则与素材由同一 C# 内核维护，任务端点只补丁写原任务 JSON。生产地图在页面创建前注入 C# 校验后的定义，运行时 snapshot v4、HUD outline、当前地点、任务与 NPC 投影由同一 C# 地图域基于有限 AS2 事实计算。`map_domain` 仅 XMLSocket，Web/HTTP 不能上传实时事实；AS2 执行导航前再检查会话／内容／事实 revision／scene epoch 与生命周期，不保留旧解锁 switch、别名或选址 fallback。结算后前往只记录意图，终态、exact close、pause lease 释放后才 fresh resolve。作者预览在隔离子文档复用生产 MapPanel，消息受 exact Window／同源／本轮 session 限制，直接使用 C# 原因树和方案 A/B；没有全解锁伪状态，也不执行游戏写入。应用／撤回是有摘要与恢复记录的多文件批次，重启生效，不是多文件系统原子事务。见[地图内容工作台](../tools/map-workbench/README.md)。
 
 新增生产 panel 的 C# 最小接入面：
 

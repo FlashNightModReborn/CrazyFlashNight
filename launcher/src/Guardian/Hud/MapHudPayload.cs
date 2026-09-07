@@ -4,8 +4,8 @@ using Newtonsoft.Json;
 namespace CF7Launcher.Guardian.Hud
 {
     /// <summary>
-    /// 顶层文档：tools/export-maphud-data.js 输出的 launcher/data/map_hud_data.json schema。
-    /// MapHudDataCatalog 反序列化此结构，供 MapHudWidget 按 hotspotId 查询。
+    /// C# MapDefinition.Hud 从同一地图域事实生成的内存投影。
+    /// MapHudDataCatalog 整体替换此结构，供 MapHudWidget / RightContextWidget 查询。
     ///
     /// missing-field policy（与计划硬约束 #6 / Phase 4.7.2 对齐）：
     /// - 所有 list 字段保持 null 而非默认 new List，区分"JSON 空数组 []"vs"字段缺失"

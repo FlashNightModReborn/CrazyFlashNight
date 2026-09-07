@@ -33,6 +33,7 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _returnRequested:Boolean = false;
     private static var _victoryCompletionCommitted:Boolean = false;
     private static var _deliverAfterSettlement:Boolean = false;
+    private static var _deliverNavigationFlight:Object = null;
     // 场景淡出与 StageManager.initialize 之间存在异步窗口。入口必须先取得唯一 reservation，
     // initialize/begin 再按目标关卡消费；这样第二个入口不能在旧 run 尚未建立时重复获准。
     private static var _stageStartSeq:Number = 0;
@@ -131,6 +132,7 @@ class org.flashNight.arki.scene.StageRunSession {
         _returnRequested = false;
         _victoryCompletionCommitted = false;
         _deliverAfterSettlement = false;
+        _deliverNavigationFlight = null;
         pushState();
         return true;
     }
@@ -503,20 +505,13 @@ class org.flashNight.arki.scene.StageRunSession {
 
     /**
      * 胜利后的便利入口：仍走完整返回基地与奖励结算，只登记“结算关闭后前往交付”。
-     * 目标不由 C# 携带；AS2 在登记时和最终跳转前都从当前已达成任务重新解析。
+     * 这里只登记意图；结算终态、exact close 和 pause 释放后，C# 根据新事实选址。
      */
     public static function requestReturnDeliverableLocal(source:String):Object {
         if (_run == null || _returnRequested || _run.outcome != "victory"
                 || _run.life != "alive" || _run.settlement != "none") {
             return {success:false, error:"return_deliverable_unavailable"};
         }
-        var deliverable:Object = resolveDeliverableState();
-        if (deliverable == null || deliverable.returnNavigable !== true
-                || deliverable.hotspotId == undefined
-                || String(deliverable.hotspotId).length == 0) {
-            return {success:false, error:"deliverable_unavailable"};
-        }
-
         _deliverAfterSettlement = true;
         var returned:Object = requestReturnBaseLocal(source);
         if (returned == null || returned.success !== true) {
@@ -1018,34 +1013,37 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     private static function tryCompletePendingDeliverNavigation():Boolean {
-        if (!_deliverAfterSettlement || _run == null) return false;
-        if (_root._webPanelPauseLease != undefined
-                || _root.当前为战斗地图 === true) return false;
-        if (_run.settlement != "claimed" && _run.settlement != "abandoned"
-                && _run.settlement != "error") return false;
-
-        var deliverable:Object = resolveDeliverableState();
-        _deliverAfterSettlement = false;
-        if (deliverable == null || deliverable.navigable !== true
-                || deliverable.hotspotId == undefined
-                || String(deliverable.hotspotId).length == 0) return false;
-        try {
-            return navigateToDeliverable(String(deliverable.hotspotId));
-        } catch (navigateError) {
-            return false;
+        if (!_deliverAfterSettlement || _run == null || _deliverNavigationFlight != null) return false;
+        if (_root._webPanelPauseLease != undefined || _root.当前为战斗地图 === true) return false;
+        if (_run.settlement != "claimed" && _run.settlement != "abandoned" && _run.settlement != "error") return false;
+        var flight:Object = {run:_run};
+        _deliverNavigationFlight = flight;
+        // 测试适配器只模拟域回调；生产永不在这里保留地图选址或解锁规则。
+        if (_testDeliverableResolver != null && _testDeliverableNavigator != null) {
+            var simulated:Object = _testDeliverableResolver();
+            var completed:Boolean = simulated.navigable === true && _testDeliverableNavigator(String(simulated.hotspotId)) === true;
+            completeDeliverNavigation(flight, completed, "");
+            return completed;
         }
+        org.flashNight.arki.map.MapDomainBridge.invalidate();
+        org.flashNight.arki.map.MapPanelService.navigateToDeliverable(function(ok:Boolean, error:String):Void {
+            org.flashNight.arki.scene.StageRunSession.completeDeliverNavigation(flight, ok, error);
+        }, function():Boolean {
+            return org.flashNight.arki.scene.StageRunSession.isDeliverNavigationCurrent(flight);
+        });
+        return true;
     }
-
-    private static function resolveDeliverableState():Object {
-        if (_testDeliverableResolver != null)
-            return _testDeliverableResolver();
-        return org.flashNight.arki.map.MapPanelService.resolveDeliverableState();
+    private static function isDeliverNavigationCurrent(flight:Object):Boolean {
+        return _deliverNavigationFlight === flight && flight.run === _run && _deliverAfterSettlement
+            && _root._webPanelPauseLease == undefined && _root.当前为战斗地图 !== true
+            && (_run.settlement == "claimed" || _run.settlement == "abandoned" || _run.settlement == "error");
     }
-
-    private static function navigateToDeliverable(hotspotId:String):Boolean {
-        if (_testDeliverableNavigator != null)
-            return _testDeliverableNavigator(hotspotId) === true;
-        return org.flashNight.arki.map.MapPanelService.navigateToHotspot(hotspotId);
+    private static function completeDeliverNavigation(flight:Object, ok:Boolean, error:String):Void {
+        if (_deliverNavigationFlight !== flight) return;
+        _deliverNavigationFlight = null;
+        if (flight.run !== _run) return;
+        _deliverAfterSettlement = false;
+        if (!ok && error != "") org.flashNight.arki.map.MapPanelService.navigationWarning(error);
     }
 
     private static function handleAction(params:Object):Void {
@@ -2022,6 +2020,7 @@ class org.flashNight.arki.scene.StageRunSession {
         _stageStartReservation = null;
         _testDeliverableResolver = null;
         _testDeliverableNavigator = null;
+        _deliverNavigationFlight = null;
     }
 
     public static function testOnlySetDeliverableHooks(

@@ -413,7 +413,7 @@ namespace CF7Launcher.Guardian.Hud
             if (changedKeys.Contains("mh") && snapshot.TryGetValue("mh", out piece))
             {
                 string nextHotspot = StripPrefix(piece, "mh") ?? "";
-                if (nextHotspot != _hotspotId)
+                if (nextHotspot != _hotspotId || changedKeys.Contains("mr"))
                 {
                     _hotspotId = nextHotspot;
                     _entry = string.IsNullOrEmpty(_hotspotId) ? null : _catalog.GetEntry(_hotspotId);
@@ -424,6 +424,10 @@ namespace CF7Launcher.Guardian.Hud
                     }
                     dirty = true;
                 }
+            }
+            if (changedKeys.Contains("mr"))
+            {
+                _entry = string.IsNullOrEmpty(_hotspotId) ? null : _catalog.GetEntry(_hotspotId); PrewarmEntry(_entry); dirty = true;
             }
             if (dirty) FireBounds();
         }

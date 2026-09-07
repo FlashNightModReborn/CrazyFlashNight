@@ -254,7 +254,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 | `StageInfoLoader` | `data/stages/list.xml`（级联子目录） | 关卡元信息 |
 | `SceneEnvironmentLoader` | `data/environment/scene_environment.xml` | 场景环境 |
 | `InputCommandRuntimeConfigLoader` | `data/config/InputCommandRuntimeConfig.xml` | 指令 DFA 运行时参数 |
-| `MapAvatarVisibilityLoader` | `data/map/map_panel.xml` | WebView 地图面板的 `avatar_visibility` 门控规则（瘦身后 map_panel.xml 仅剩此段；缺失=空表=默认全可见，仅影响头像门控，不阻塞）。**groups/hotspots 已迁出本文件**，定义真源 = data/map/map_definition.json（Web 数据 API 仅作适配），build.ps1 Step 1c 派生为 `data/map/map_catalog.json`，AS2 经 `DataQueryService("map_catalog")` → `MapPanelCatalog.applyFromCatalogJson` 启动期拉取（导航权威，失败硬报错不降级）。`task_npcs/aliases` 同样迁出，走 `DataQueryTask("task_npc_registry")`（NPC→hotspot 映射，**同时驱动**：① 地图任务红点 ② 任务面板「前往交付」按钮可达态 `finishNavigable` 与 `navigateFinish` 跳转执行路径。失败/未就绪 = 静默降级：红点不亮 + 面板「前往交付」按钮禁用 + `navigateFinish` 回 `not_navigable`，均不阻塞游戏进入与正常交付）|
+| `MapDomainBridge`（非 XML loader） | `data/map/map_definition.json` v2 + 原任务 JSON，由 C# 统一读取 | 静态 bootstrap 与有限事实经仅 XMLSocket 的 `map_domain`；C# 投影地图、人物驻点、任务端点与 HUD。AS2 执行前复核新鲜度与生命周期。旧 XML／catalog／NPC registry／HUD sidecar 已退役，缺少新域时不回退旧地图规则。 |
 | `InformationDictionaryLoader` | `data/dictionaries/information_dictionary.xml` | 情报条目元数据；Launcher Web 情报面板由 C# `IntelligenceTask` 读取同一 XML，并按字典白名单读取 `data/intelligence_h5/<itemName>.json` |
 
 > 完整列表见 `org/flashNight/gesh/xml/LoadXml/`。另有 `BaseStageXMLLoader`（按路径加载单个关卡 XML）和 `StageXMLLoader`（非单例，支持 CaseSwitch 条件值解析）。
@@ -422,89 +422,35 @@ Launcher Web 情报面板不开放 WebView2 对 `data/` 或项目根的 fetch �
 
 H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5.js --allow-missing`，正式全量门禁使用 `node tools/validate-intelligence-h5.js --strict`。批量迁移给 KimiCode 的自包含 prompt 由 `node tools/generate-intelligence-h5-prompts.js --batch-size 10` 生成；该工具只产出 `tmp/intelligence-h5-prompts/`，实际施工范围限定在 `data/intelligence_h5/`。创作层表达增强可用 `node tools/enhance-intelligence-h5-expression.js` 重新应用当前人工固化的示范组合；`幻层残响` 当前刻意保持生成基线，避免额外组件稀释原文本高信息密度。
 
-### map_panel.xml schema 摘要（拓扑收束后，2026-06：仅剩 avatar_visibility）
+### map_definition.json v2：地图内容与有限领域规则
 
-2026-09-06 地图维护第一阶段：布局、热点、筛选、头像和 XFL 校准的人工真源已抽到 `data/map/map_definition.json`。旧 `map-panel-data.js / map-avatar-source-data.js` 只提供展示 API，下文派生脚本通过该 API 读取同一 JSON。C# 内核只开放图块矩形、头像相对位置/尺寸、筛选按钮与显示标题；不能改 NPC 身份或导航条件。NativeHud 改为直接消费 C# 定义投影，旧 HUD JSON 暂留作构建兼容与对照。见[地图工作台](../tools/map-workbench/README.md)。
+人工真源为 `data/map/map_definition.json`；制作入口、完整约束和恢复语义见[地图内容工作台](../tools/map-workbench/README.md)。C# `MapDomainDefinition / MapRuleEvaluator / MapDomainService` 是同一验证与投影入口；Web 的数据 API 只是内存适配。旧 `map_panel.xml / map_catalog.json / task_npc_registry.json / map_hud_data.json` 及其加载、DataCache、生成步骤已退役；不能继续按旧 schema 制作或恢复旧加载器。
 
-> groups/hotspots 已迁出本文件 → 见下方 `## map_catalog.json schema`。task_npcs/aliases 见 `## task_npc_registry.json schema`。
+- `pages / pageOrder` 保存页面、图块、分层、头像和表现矩形；最多 32 页，没有固定四页准入。
+- `locations` 保存稳定物理地点、唯一 `sceneName`、启用状态及 `visibleWhen / enterWhen`；页面的 `hotspots[].locationId` 只引用地点，不保存第二份场景名。复制页面重建表现 ID、复用地点／人物／驻点。
+- `npcs` 保存稳定身份、显示名、现场检索名／历史别名与 `placementPolicy`；`placements` 保存人物、地点、`presenceWhen` 和可选真实实例绑定。地图头像不等于可交互 NPC。
+- `rules` 保存有界条件树：`always / all / any / rule / chain / task / infra / flag`。任务／链／基建必须来自现役目录；目前世界 flag 注册集合为空，不能编造 `_root` 事实。未知事实不放行，循环、超深和越界拒绝。
+- `assets` 记录真实解码后的静态 WebP 摘要、像素尺寸、格式、编码与来源。图块／头像可有最多 16 条按顺序命中的 `variants`；更靠前的条件未知时隐藏，不跳过未知分支猜测后续图片。
+- `sceneBinding / worldBinding.runtime` 由作者内核根据真实 XFL／FLA 和已发布 SWF 来源闭包生成。运行时只验证发布 SWF，不依赖制作源文件。
 
-```xml
-<map_panel>
-  <avatar_visibility>
-    <!-- 静态 NPC 头像的进度/基建门控声明。无对应 rule = 默认可见。
-         同 avatarId 多条 rule = AND；rule 内部 chain/min（配对）+ requireInfra（"A|B" = OR）三类 AND。 -->
-    <rule avatarId="…（必须命中 launcher staticAvatars/dynamicAvatars id）"
-          npc="…（AS2 字典 key；建议命中 task_npcs/npc.name）"
-          chain="主线|引导|支线|挑战|废城|彩蛋|异形|大学|后勤|预览|铁枪会"
-          min="<非负整数>"
-          requireInfra="自行车|摩托车|越野车"/>
-  </avatar_visibility>
-</map_panel>
-```
-
-**硬约束**：
-- `avatar_visibility` 由 `MapPanelCatalog.applyAvatarVisibilityFromXml`（经 `MapAvatarVisibilityLoader`）解析；整段缺失 = 空表 = 全部默认可见（合法，不报错）；解析/校验失败 → trace + reset avatar 表 + 返回 false。
-  - rule 必须有 avatarId + npc；chain/min 必须配对出现（要么都有要么都没）
-  - chain ∈ `VALID_CHAIN_NAMES`（task_chain canonical，与 `SaveManager.REPAIR_DICT_TASK_CHAINS` 同步）
-  - requireInfra="A|B" 切分后每项 ∈ `VALID_INFRA_NAMES`（自行车/摩托车/越野车）
-  - 同一 avatarId 不可指向不同 npc；avatarId 必须命中 launcher staticAvatars/dynamicAvatars id 集
-  - 外部 validator：`node tools/audit-map-avatar-visibility.js`
-- **groups/hotspots 不再硬编码 REQUIRED 白名单**：集合正确性由 build.ps1 Step 1c 的 `tools/derive-map-catalog.js` 派生期 gate 保证；`MapPanelCatalog.applyFromCatalogJson` 运行期只做结构校验（id/group/frame 齐全、group 已声明、page 合法、非 base 组有 lockedReason、id 不重复）。
-- **既有页面/分组内新增或改 hotspot 拓扑**：定义位于 `data/map/map_definition.json`，通过 Web 数据 API 派生并刷新 `map_catalog.json`；纯拓扑数据不需回写本 XML 或重编译 SWF。第一阶段 GUI 仅维护已有对象，新增页面/分组和创建操作须随第二阶段消费者切流开放，不能忽略现有四页准入边界。
-- **新增任务 NPC**：在 staticAvatars/dynamicAvatars 加 entry，build.ps1 Step 1b 自动派生 `task_npc_registry.json`。
-
-### map_catalog.json schema（派生产物，禁手改）
-
-`data/map/map_catalog.json` 由 `tools/derive-map-catalog.js` 从 launcher web manifest 派生，build.ps1 Step 1c 自动跑。AS2 端 `MapPanelCatalog.applyFromCatalogJson` 经 `DataQueryService.query("map_catalog", ...)` 启动期消费（C# 侧 `DataQueryTask("map_catalog")` → `DataCache.GetMapCatalog` → `XmlDataLoader.LoadMapCatalog`）。
+任务端点仍只写该任务原有 JSON，不另建地图 taskBindings：
 
 ```json
 {
-  "_generatedAt": "<ISO timestamp>",
-  "_source": "launcher/web/modules/map-panel-data.js",
-  "_note": "generated by tools/derive-map-catalog.js, do not hand-edit",
-  "groups": [
-    { "id": "base", "page": "base", "label": "基地" },
-    { "id": "…", "page": "base|faction|defense|school", "label": "…", "lockedReason": "…（非 base 必填）" }
-  ],
-  "hotspots": [
-    { "id": "…", "group": "…（必须在 groups 里声明）", "frame": "…（帧名 / sceneName）" }
-  ]
+  "get_endpoint": { "mode": "followCurrent", "npcId": "npc_example" },
+  "finish_endpoint": { "mode": "fixed", "npcId": "npc_example", "placementId": "place_example" }
 }
 ```
 
-派生时校验（失败 → build exit 1）：非 base 页 hotspot 必有 unlock group + base 页 hotspot 一律 group=base；group→page 反查唯一；hotspot/group id 全局唯一；frame 非空；group.page 合法。
-**失败语义（与 task_npc_registry 不同）**：map_catalog 是导航权威 → C# 缺失/坏 JSON → `success:false`；AS2 boot（asLoader.xml）收到 false 必须明确报错（`_root.发布消息`）+ 地图面板不可用，**绝不静默降级**。
+同一 role 迁移后删除旧 `get_npc / get_npc_hotspot` 或 `finish_npc / finish_npc_hotspot`；未迁移 role 保留原字段。固定驻点不在场时不可达；跟随必须在当前事实下唯一且真实实例就绪。旧任务空 hotspot 保留“任意同名现场”语义，不强行固定；已填写的 hotspot 按同一物理地点解析。任务增删、ID、前置、奖励、对白、`finish_remote` 均不属于地图编辑范围。显示名与旧头像检索名分别由同一 C# 人物身份生成，不把显示名当图片身份。
 
-### task_npc_registry.json schema（派生产物，禁手改）
+AS2 `MapFactsSampler` 提供链进度、正历史次数、按现役 `taskCompleteCheck` 采样的活动／交付状态、有限可接取状态、基建等级、四源场景和生命周期阻止原因；`tasks_finished > 0` 不代表可交付，链最大序号不代表之前全部完成。C# 通过仅 XMLSocket 的 `map_domain` 返回 snapshot v4；会话／内容／事实 revision／scene epoch 及 AS2 执行前同帧复核共同拒绝迟到导航。纯内容应用后重启，具体关卡解锁仍由现役关卡系统裁决。
 
-`data/map/task_npc_registry.json` 由 `tools/derive-task-npc-registry.js` 从 launcher web manifest 派生，build.ps1 Step 1b 自动跑。AS2 端 `MapTaskNpcRegistry.applyFromQuery` 通过 `DataQueryService.query("task_npc_registry", ...)` 启动期消费。
-
-```json
-{
-  "_generatedAt": "<ISO timestamp>",
-  "_source": "launcher/web/modules/map-panel-data.js",
-  "_note": "generated by tools/derive-task-npc-registry.js, do not hand-edit",
-  "task_npcs": [
-    {
-      "name": "…（canonical NPC 全名，跟 staticAvatars.label 一致；允许同名多 placement）",
-      "hotspot": "…（必须在 map_catalog hotspots 里）",
-      "placement": "…（默认 name@hotspot；同名 NPC 的稳定 placement 键）",
-      "avatarId": "…（launcher staticAvatars/dynamicAvatars slot id）"
-    }
-  ],
-  "aliases": [
-    { "name": "…（任务字符串非正式拼写）", "canonical": "…（必须命中 task_npcs.name）" }
-  ]
-}
-```
-
-派生时校验：同一 `name+hotspot` placement 不重复、`placement` 不重复、大小写折叠只允许同一原名、hotspot 命中 Catalog.HOTSPOT_PAGES、alias.canonical 命中 task_npcs。AS2 端校验等价。失败 → AS2 静默降级（任务红点列表为空），错误走 `_root.服务器.发布服务器消息` 留痕。
-
-任务数据新增 placement 字段：`get_npc_hotspot` / `finish_npc_hotspot` 可选；当 `get_npc` 或 `finish_npc` 在 registry 中有多个地图 placement（例如同一个 `武器大师` 分别位于 `gym` 与 `first_defense`）时，必须填写对应 hotspot。`tools/derive-task-catalog.js` 会在 build Step 1e 校验该字段命中 registry；运行时 `NPCTaskCheck`、任务红点、HUD 交付、任务面板 `finishNavigable/navigateFinish` 都按 `NPC 名 + hotspot` 解析。旧任务未填写 hotspot 时保持 name-only 兼容。
+`node tools/audit-map-taskmarkers.js`、`node tools/audit-map-avatar-visibility.js` 和 task catalog 的端点校验均调用同一 C# `validate-content`，不各自保存名称、别名、阈值副本。
 
 ### task-catalog.json schema（派生产物，禁手改；WS6 事件日志/任务树）
 
-`launcher/web/modules/tasks/task-catalog.json` 由 `tools/derive-task-catalog.js` 从 **`data/task/*.json` + `data/task/text/*.json`**（游戏权威任务源，AS2 也读它）派生，build.ps1 **Step 1e** 自动跑。与 map_catalog 方向相反：map 是 web JS→AS2 JSON，task 是**游戏 JSON→web JSON**，web 拿同源只读投影（无 AS2/web 双源漂移）。**消费方 = web 任务面板「事件日志」tab 直读**（非 AS2，非 DataQueryService；web `fetch('modules/tasks/task-catalog.json')`）。
+`launcher/web/modules/tasks/task-catalog.json` 仍由 `tools/derive-task-catalog.js` 从 **`data/task/*.json` + `data/task/text/*.json`** 派生，`prepare-launcher-release-assets.ps1` 自动执行。端点引用校验与 NPC 显示名调用同一 C# 地图域；不再读取 NPC registry。它是原任务源的只读展示投影，消费方仍为 Web 任务面板“事件日志”tab（`fetch('modules/tasks/task-catalog.json')`），不是运行时任务／导航权威。
 
 形状：`{ version, taskCount, tasks:{ "<id>":{ id, chain:[name,seq|null], type, title, description, npcName, stageReq, itemReqs, rewards, req:[前置id...], hasGetConv, hasFinishConv } }, chains:{ name:[id...按seq升序] }, chainsUnsequenced:{ name:[id...] } }`。`req`=get_requirements（前置任务 id），供图表视图画前置依赖连线 + 算拓扑深度（约 +3KB；多数任务 0-1 个前置）。
 
@@ -520,42 +466,16 @@ H5 数据门禁：示范/迁移期可运行 `node tools/validate-intelligence-h5
 
 `replayDialogue` 防剧透硬门控（服务端权威，AS2 `TaskPanelService.handleReplayDialogue`，不依赖前端隐藏按钮）：接取对话仅 active(`tasks_to_do`)/finished(`tasks_finished>0`) 才回，完成对话仅 finished 才回，否则回 `error:"locked"`（绝不吐对话本体）。web 渲染对话行经 `PanelTooltip.convertAS2Html` 真·标签+属性白名单清洗（DOM 重建，丢弃未知标签/事件属性，防 `$PC`→存档角色名等玩家可控输入造成 XSS）。图表视图同口径只画已接取节点、未接取详情遮罩（防剧透）。
 
-派生时校验（失败 → build exit 1）：**闭包性**——任务的 `title/description/get_conversation/finish_conversation` 若值以 `$` 开头，该键必须存在于合并 `task_texts`（防 `$KEY` 缺失运行期显示原始键，亦为审计 Phase1 description 下沉前置门控）；dup-id 守卫；chain 序号无重复；多 placement 地图 NPC 必须用 `get_npc_hotspot` / `finish_npc_hotspot` 显式命中 registry。干跑校验：`node tools/derive-task-catalog.js --check`。
+派生时校验（失败 → build exit 1）：`title/description/get_conversation/finish_conversation` 的 `$` 引用必须命中文本全集，任务 ID 不重复、链序号不冲突；地图条件和结构化端点调用同一 C# 检查。旧空 hotspot 保留任意同名现场，不强迫所有多驻点人物固定选址。干跑：`node tools/derive-task-catalog.js --check`。
 **进度叠加**（哪些已完成/进行中）不在本目录——走只读命令 `taskTreeState` 实时读 `_root.task_chains_progress`/`tasks_finished`/`tasks_to_do`（存档态可变，绝不缓存进目录）。详见 [task 系统 AS2 内存驻留审计](../docs/web-task-panel-WS6-事件日志任务树-设计-2026-06-09.md)。
 
-### launcher/web 端 NPC 头像坐标 schema (Stage C 以后 hotspot-relative)
+### 地图头像的表现坐标
 
-`launcher/web/modules/map-avatar-source-data.js`（手工维护 IIFE）每个 entry 不再带绝对坐标 `center/rect`，而是相对所属 hotspot 的 runtime rect 左上角偏移：
+v2 的人工坐标位于 `pages.<pageId>.staticAvatars / dynamicAvatars`，每项包含稳定表现 ID、`placementId`、`hotspotId`、`relX / relY / w / h`、`visibleWhen`，静态头像另有 `assetUrl`。位置相对地点表现矩形左上角；图块变更由 C# 重算关联 hotspot 并集，头像随地点移动。室友的 `kind:"roommateGender"` 保留动态事实适配，未知性别不猜测图片。
 
-```jsonc
-{
-  "symbolName": "<XFL 头像 MovieClip 名>",
-  "assetUrl": "assets/map/avatars/<symbolName>.webp",
-  "hotspotId": "<launcher map-panel-data hotspot id>",
-  "relX": <number>,            // 头像 rect 左上角 X 偏移
-  "relY": <number>,            // 头像 rect 左上角 Y 偏移
-  "size":     { "w": 44, "h": 44 },    // 渲染尺寸 (px); 室友 dynamic = 48
-  "crop":     { "scaleX": 1.0, "scaleY": 1.0, "tx": -0.5, "ty": 0.5 },  // XFL 不可重算元数据, debug-only
-  "assetSize": { "w": 44, "h": 44 }    // PNG 实际尺寸; 审计用
-}
-```
+`avatarSources` 中的原 XFL crop／symbol 信息只作导入来源参考，不拥有另一套现役坐标。`map-avatar-source-data.js` 是薄 API，由 C# 启动投影重建所需源记录；不要直接编辑该 JS。普通地图只渲染，工作台通过同一内核维护坐标和素材。
 
-`data/map/map_definition.json` 各页面的 `dynamicAvatars` 也走同样的相对坐标 schema（室友独占该路径）：
-
-```js
-{ id: 'roommate', label: '室友', kind: 'roommateGender',
-  hotspotId: 'school_dormitory', relX: 20.7, relY: 17.65, w: 48, h: 48 }
-```
-
-**渲染流程**：`resolveStaticAvatarRect` / `resolveDynamicAvatarRect` 通过 `MapPanelData.findHotspot(pageId, hotspotId)` 取 **runtime rect**（经 `applyXflLayoutOverrides` + `syncCompositeHotspotRects` 两道覆盖后的最终值），再加 `relX/relY` 得到屏幕坐标。调 hotspot rect 时 NPC 头像自动跟随，无需手动重算坐标。
-
-**`MapManifest.markers[*].rect` 在 overlay 生产运行时为 `null`**：`map-avatar-source-data.js` 走 [panels-lazy-registry.js](../launcher/web/modules/panels-lazy-registry.js) 懒加载（map panel 首次打开时才注入），而 [map-panel-data.js](../launcher/web/modules/map-panel-data.js) 末尾 `var MapManifest = MapPanelData.exportManifest()` 在 boot 期立刻跑，此时 `MapAvatarSourceData === undefined`，`resolveStaticAvatarExportRect` / `resolveDynamicAvatarExportRect` 走 graceful-null 分支。**消费方约束**：不要直接读 `MapManifest.markers[k].rect`，rect 由 map-panel 渲染期 `resolveStaticAvatarRect` / `resolveDynamicAvatarRect` 动态派生；如确需 manifest 形式带 rect 的导出，走 Node 工具（`tools/export-map-manifest.js` 已预加载 source-data，输出包含正确 rect）。harness.html / preview.html 因为 `<script>` 标签把 source-data 显式放在 panel-data 之前，dev 工具读 MapManifest 也是带 rect 的。
-
-**调位置**：
-- 调一个 NPC 位置：只改 source-data.js（static）或 panel-data.js dynamicAvatars（动态）的 `relX/relY`
-- 调一个 hotspot 位置：按 effective rect 来源改 `_pages.<page>.hotspots[].rect` / `_xflLayoutOverrides` / `_pages.<page>.sceneVisuals[].rect`（参考 `MapPanelData.findHotspot` 返回值跟哪个静态源数字最接近，那就是 effective 来源）
-
-**跨边界 NPC**（理科教授 / 文科老师）：保留 `qa-suite.js` reviewOnly 白名单豁免；如需根治需要美术介入。
+`MapManifest.markers[*].rect` 不作为生产位置权威；实际渲染从 slot 的显式尺寸／偏移与当前 hotspot 矩形计算。导出检查可使用 `node tools/export-map-manifest.js`，该工具先取得同一 C# Web 投影，再加载生产展示 API，不发布数据副本。既有理科教授／文科老师的跨边界视觉债务仍保留在生产 QA，不能通过放宽地图规则掩盖。
 
 ### 怪物头像 Pilot 审计 schema（非生产）
 

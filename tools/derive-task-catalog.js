@@ -2,13 +2,8 @@
 'use strict';
 
 // 从 data/task/*.json（游戏权威任务源）派生 web 任务面板「事件日志/任务树」(WS6) 直读的
-// 静态目录 task-catalog.json。对标 tools/derive-map-catalog.js（build.ps1 Step 1c）：
-// 读源 → 校验 → 写派生 JSON，失败 exit 1 在 build 阶段拦截。
-//
-// 与 map 派生的方向差异：
-//   - map 的 SOT 是 web JS（map-panel-data.js）→ 派生 AS2 JSON。
-//   - task 的 SOT 是游戏 JSON（data/task/*.json，AS2 也读它）→ 派生 web JSON。
-//     因此 web 拿到的是同一源的【只读投影】，不存在 AS2/web 双源漂移（设计 C1）。
+// 静态目录 task-catalog.json。任务领域仍由现役任务源拥有；端点引用与人物显示名
+// 调用同一 C# 地图域检查和投影，不再生成或读取 NPC registry sidecar。
 //
 // 读取（按 manifest，天然不含死数据 mercenary_tasks_old / easteregg_*）：
 //   data/task/list.xml       → 各 *_tasks.json 的 .tasks 数组合并
@@ -33,7 +28,6 @@ const projectRoot = path.resolve(__dirname, '..');
 const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
 const defaultTaskDir = path.join(projectRoot, 'data', 'task');
 const defaultOutput = path.join(projectRoot, 'launcher', 'web', 'modules', 'tasks', 'task-catalog.json');
-const taskNpcRegistryFile = path.join(projectRoot, 'data', 'map', 'task_npc_registry.json');
 let taskDir = defaultTaskDir;            // --task-dir 可覆盖（测试夹具用，见 tools/test-derive-task-conditions.js）
 let textDir = path.join(defaultTaskDir, 'text');
 let itemMetaByName = null;
@@ -145,64 +139,9 @@ function parseNameCount(entry, kind) {
     return itemMetaByName ? attachIcon(o, itemMetaByName) : o;
 }
 
-function loadTaskNpcPlacementIndex() {
-    if (path.resolve(taskDir) !== path.resolve(defaultTaskDir)) return null;
-    const registry = readJson(taskNpcRegistryFile);
-    const byName = {};
-    const byNameHotspot = {};
-    const lowerName = {};
-    const aliases = {};
-    const list = Array.isArray(registry.task_npcs) ? registry.task_npcs : [];
-    for (let i = 0; i < list.length; i += 1) {
-        const n = list[i] || {};
-        if (typeof n.name !== 'string' || typeof n.hotspot !== 'string') continue;
-        if (!byName[n.name]) byName[n.name] = [];
-        byName[n.name].push(n.hotspot);
-        byNameHotspot[n.name + '\n' + n.hotspot] = true;
-        if (lowerName[n.name.toLowerCase()] === undefined) lowerName[n.name.toLowerCase()] = n.name;
-    }
-    const aliasList = Array.isArray(registry.aliases) ? registry.aliases : [];
-    for (let i = 0; i < aliasList.length; i += 1) {
-        const a = aliasList[i] || {};
-        if (typeof a.name === 'string' && typeof a.canonical === 'string') aliases[a.name] = a.canonical;
-    }
-    return { byName, byNameHotspot, lowerName, aliases };
-}
-
-function resolveRegistryNpcName(index, rawName) {
-    const name = String(rawName || '');
-    if (index.byName[name]) return name;
-    if (index.aliases[name] !== undefined) return index.aliases[name];
-    const lower = name.toLowerCase();
-    if (index.lowerName[lower] !== undefined) return index.lowerName[lower];
-    return name;
-}
-
-function validateTaskNpcEndpoint(t, role, ctx, placementIndex) {
-    if (!placementIndex) return;
-    const nameField = role === 'get' ? 'get_npc' : 'finish_npc';
-    const hotspotField = role === 'get' ? 'get_npc_hotspot' : 'finish_npc_hotspot';
-    if (typeof t[nameField] !== 'string' || t[nameField] === '') return;
-
-    const resolvedName = resolveRegistryNpcName(placementIndex, t[nameField]);
-    const placements = placementIndex.byName[resolvedName] || [];
-    const hotspot = typeof t[hotspotField] === 'string' ? t[hotspotField] : '';
-
-    if (hotspot !== '') {
-        if (!placementIndex.byNameHotspot[resolvedName + '\n' + hotspot]) {
-            fail(ctx + ': ' + hotspotField + '="' + hotspot + '" does not match registry placement for ' + nameField + '="' + t[nameField] + '"');
-        }
-        return;
-    }
-
-    if (placements.length > 1) {
-        fail(ctx + ': ' + nameField + '="' + t[nameField] + '" has multiple map placements (' + placements.join(', ') + '); add ' + hotspotField);
-    }
-}
-
 function buildCatalog(rawTasks, taskTexts) {
     const tasks = {};
-    const npcPlacementIndex = loadTaskNpcPlacementIndex();
+    const mapLabels = path.resolve(taskDir) === path.resolve(defaultTaskDir) ? require('./lib/map-domain.js').validateContent(projectRoot).taskNpcLabels : null;
     // conditions 校验（任务-成就判定层共享，可选字段；设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）。
     // economyCount 白名单惰性解析：仅当数据真用到 economyCount 才读 AchievementMetrics.as。
     let economyCounters = null;
@@ -232,8 +171,6 @@ function buildCatalog(rawTasks, taskTexts) {
         }
 
         const ctx = 'task ' + idKey;
-        validateTaskNpcEndpoint(t, 'get', ctx, npcPlacementIndex);
-        validateTaskNpcEndpoint(t, 'finish', ctx, npcPlacementIndex);
 
         // conditions（可选）：逐条过共享校验器（类型枚举/target/label/params/sinceAccept 单调限定）
         if (t.conditions !== undefined) {
@@ -303,7 +240,7 @@ function buildCatalog(rawTasks, taskTexts) {
             type: chainName,
             title: title != null ? String(title) : '',
             description: description != null ? String(description) : '',
-            npcName: t.finish_npc !== undefined ? String(t.finish_npc) : '',
+            npcName: mapLabels ? mapLabels[idKey].finish : t.finish_npc !== undefined ? String(t.finish_npc) : '',
             stageReq: stageReq,
             itemReqs: itemReqs,
             rewards: rewards,
@@ -326,7 +263,7 @@ function buildCatalog(rawTasks, taskTexts) {
                 : null;
             tasks[idKey].dungeon = {
                 imageurl: t.imageurl != null ? String(t.imageurl) : '',
-                getNpc: t.get_npc != null ? String(t.get_npc) : '',
+                getNpc: mapLabels ? mapLabels[idKey].get : t.get_npc != null ? String(t.get_npc) : '',
                 deposit: Number(t.deposit) || 0,
                 kDeposit: Number(t.Kdeposit) || 0,
                 restrictedLevel: Number(t.restricted_level) || 0,

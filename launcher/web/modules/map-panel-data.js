@@ -115,7 +115,7 @@ var MapPanelData = (function createMapPanelData(definition) {
         unlocks = unlocks || {};
 
         for (groupId in _unlockGroups) {
-            normalized[groupId] = unlocks[groupId] !== undefined ? !!unlocks[groupId] : true;
+            normalized[groupId] = unlocks[groupId] === true;
         }
 
         return normalized;
@@ -133,7 +133,7 @@ var MapPanelData = (function createMapPanelData(definition) {
             }
         }
 
-        return true;
+        return false;
     }
 
     function buildPageDisplayConditions(pageId) {
@@ -282,7 +282,8 @@ var MapPanelData = (function createMapPanelData(definition) {
     }
 
     function isLayerRelationFilter(pageId, filterId) {
-        return resolvePageId(pageId) === 'base' && filterId === 'hierarchy';
+        var filter = findFilter(pageId, filterId);
+        return !!(filter && filter.viewMode === 'hierarchy');
     }
 
     function getManifest() {
@@ -395,7 +396,7 @@ var MapPanelData = (function createMapPanelData(definition) {
         for (i = 0; i < filters.length; i++) {
             ids = filters[i] && filters[i].hotspotIds ? filters[i].hotspotIds : [];
             if (!ids.length || ids.indexOf(hotspotId) < 0) continue;
-            if (filters[i].id === 'all' || filters[i].id === 'hierarchy') continue;
+            if (filters[i].id === 'all' || filters[i].id === 'hierarchy' || filters[i].viewMode === 'hierarchy') continue;
             if (ids.length >= hotspotCount) continue;
 
             if (!best || ids.length < best.hotspotIds.length) {
@@ -785,8 +786,15 @@ var MapPanelData = (function createMapPanelData(definition) {
         };
     }
 
+    function getAssetCapability(pageId, filterId) {
+        if (_definition.version < 2) return null; // 只供冻结的一阶段测试夹具使用旧几何。
+        var page = (_definition.assetCapabilities || {})[pageId] || {};
+        return JSON.parse(JSON.stringify(page[filterId || '*'] || page['*'] || {sourceRatio:1,verified:false,worstAsset:''}));
+    }
+
     return {
         create: createMapPanelData,
+        getAssetCapability: getAssetCapability,
         getManifest: getManifest,
         getPage: getPage,
         getPageOrder: getPageOrder,

@@ -41,13 +41,17 @@ internal sealed class MapWebViewSmoke : Form
             deadline.Start();
             try
             {
-                expected = MapDefinition.Load(root);
-                var env = await CoreWebView2Environment.CreateAsync(null, Path.Combine(root, "tmp/map-workbench/webview-smoke-userdata"));
+                var definition = MapDefinition.Load(root); expected = MapDomainDefinition.WebProjection(definition);
+                var catalog = MapTaskCatalog.Load(root);
+                var snapshot = MapDomainService.Project(definition, MapAuthoringStore.InitialFacts(definition, catalog), catalog.Tasks, new MapRuntimeWorld(root, definition).Occurrences)["snapshot"];
+                var env = await CoreWebView2Environment.CreateAsync(null, Path.Combine(root, "tmp/map-workbench/webview-smoke-userdata"),
+                    new CoreWebView2EnvironmentOptions("--disable-gpu"));
                 await view.EnsureCoreWebView2Async(env);
                 foreach (var host in new[] { "overlay.local", "map-probe.local" })
                     view.CoreWebView2.SetVirtualHostNameToFolderMapping(host, Path.Combine(root, "launcher/web"), CoreWebView2HostResourceAccessKind.Allow);
                 await view.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync("window.__mapBootErrors=[];addEventListener('error',function(e){__mapBootErrors.push(e.message+' @ '+e.filename);});");
-                await view.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(MapDefinition.BootstrapScript(expected));
+                await view.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(MapDefinition.BootstrapScript(definition));
+                await view.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync("if(window===window.top&&location.origin==='https://overlay.local')window.__mapAuthoringSnapshot=" + snapshot.ToString(Newtonsoft.Json.Formatting.None) + ";");
                 view.CoreWebView2.NavigationCompleted += CheckNavigation;
                 view.CoreWebView2.Navigate("https://overlay.local/overlay.html");
             }
@@ -64,9 +68,9 @@ internal sealed class MapWebViewSmoke : Form
             {
                 var actual = JObject.Parse(await view.CoreWebView2.ExecuteScriptAsync("({definition:MapDefinitionData,hotspots:MapPanelData.getAllHotspotIds().length,pages:MapPanelData.getPageOrder().length,errors:__mapBootErrors})"));
                 // JSON 290 与 290.0 在 JS 中是同一个 Number；精确比较数值，不使用误差容限。
-                if (!JToken.DeepEquals(NumberSemantics(expected), NumberSemantics(actual["definition"])) || actual.Value<int>("hotspots") != 40 || actual.Value<int>("pages") != 4 || ((JArray)actual["errors"]).Count != 0)
+                if (!JToken.DeepEquals(NumberSemantics(expected), NumberSemantics(actual["definition"])) || actual.Value<int>("hotspots") != MapDefinition.Pages(expected).Sum(p => ((JArray)p["hotspots"]).Count) || actual.Value<int>("pages") != ((JArray)expected["pageOrder"]).Count || ((JArray)actual["errors"]).Count != 0)
                     throw new Exception("生产页面启动快照或脚本异常：pages=" + actual["pages"] + " hotspots=" + actual["hotspots"] + " errors=" + actual["errors"]);
-                Console.WriteLine("PASS 真实 WebView2：生产 overlay.html 的启动数据逐字段等价，4 页 / 40 地点，零脚本错误。");
+                Console.WriteLine("PASS 真实 WebView2：生产 overlay.html 的 C# v2 启动投影逐字段等价，零脚本错误；软件渲染。");
                 await CheckAuthoringFrame();
                 phase = 1;
                 view.CoreWebView2.Navigate("https://map-probe.local/overlay.html");
@@ -87,13 +91,13 @@ internal sealed class MapWebViewSmoke : Form
             var frame=document.createElement('iframe');frame.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0';
             window.addEventListener('message',function inspect(e){
                 if(e.source!==frame.contentWindow||e.origin!==location.origin||!e.data||e.data.type!=='map-authoring-preview')return;
-                if(e.data.event==='ready')frame.contentWindow.postMessage({type:'map-authoring-input',action:'state',session:'native-smoke',definition:MapDefinitionData,pageId:'base',kind:'scene',id:MapDefinitionData.pages.base.sceneVisuals[0].id,gender:'male',editing:true,rasterScale:1},location.origin);
+                if(e.data.event==='ready'){var pageId=MapDefinitionData.pageOrder[0],visual=MapDefinitionData.pages[pageId].sceneVisuals[0];frame.contentWindow.postMessage({type:'map-authoring-input',action:'state',session:'native-smoke',definition:MapDefinitionData,snapshot:window.__mapAuthoringSnapshot,pageId:pageId,kind:'scene',id:visual?visual.id:'',viewMode:'author',editing:true,rasterScale:1},location.origin);}
                 if(e.data.event==='error')window.__authoringProbe={pass:false,error:e.data.message};
                 if(e.data.event==='loaded'){
-                    var child=frame.contentWindow,x=MapDefinitionData.pages.base.sceneVisuals[0].rect.x;
+                    var child=frame.contentWindow,pageId=MapDefinitionData.pageOrder[0],title=MapDefinitionData.pages[pageId].title;
                     var equal=JSON.stringify(child.MapDefinitionData)===JSON.stringify(MapDefinitionData);
-                    child.MapDefinitionData.pages.base.sceneVisuals[0].rect.x+=1;
-                    window.__authoringProbe={pass:equal&&MapDefinitionData.pages.base.sceneVisuals[0].rect.x===x&&child.document.querySelectorAll('.map-page-tab').length===4&&!!child.MapPanel.authoring};
+                    child.MapDefinitionData.pages[pageId].title='isolated probe';
+                    window.__authoringProbe={pass:equal&&MapDefinitionData.pages[pageId].title===title&&child.MapDefinitionData.pageOrder.length===MapDefinitionData.pageOrder.length&&child.MapPanel.authoring.getView().viewMode==='author'};
                     window.removeEventListener('message',inspect);
                 }
             });
@@ -105,7 +109,7 @@ internal sealed class MapWebViewSmoke : Form
             string json = await view.CoreWebView2.ExecuteScriptAsync("window.__authoringProbe");
             if (json == "null") continue;
             if (!JObject.Parse(json).Value<bool>("pass")) throw new Exception("作者预览子文档验证失败：" + json);
-            Console.WriteLine("PASS 真实 WebView2：生产地图作者子文档加载，四页 UI 同源，草稿与父文档隔离。");
+            Console.WriteLine("PASS 真实 WebView2：作者子文档消费同一 snapshot v4，全部页面定义同源，草稿与父文档隔离。");
             return;
         }
         throw new TimeoutException("作者预览子文档未就绪。");

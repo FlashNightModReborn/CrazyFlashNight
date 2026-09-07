@@ -1,5 +1,5 @@
 ﻿// [stage-wrap chunked<70000B] frame36 折叠中间态：帧顶联合头(lint --fold-specific 子集,0 碰撞)
-//   + staged 函数(10 chunk 绕 AVM1 64KB 函数体上限,见 swf-function-sizes 门) + 内联调用。
+//   + staged 函数(11 chunk 绕 AVM1 64KB 函数体上限,见 swf-function-sizes 门) + 内联调用。
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Buff.*;
@@ -72,6 +72,9 @@ _root.__boot.f36_8 = function() {
 _root.__boot.f36_9 = function() {
     #include "../逻辑/单位函数/单位函数_aka_战宠进阶.as"
 };
+_root.__boot.f36_11 = function() {
+    #include "../逻辑/单位函数/单位函数_aka_战宠进阶_扩展.as"
+};
 _root.__boot.f36_10 = function() {
     #include "../逻辑/单位函数/单位函数_fs_护盾函数.as"
 };
@@ -84,4 +87,5 @@ _root.__boot.f36_6();
 _root.__boot.f36_7();
 _root.__boot.f36_8();
 _root.__boot.f36_9();
+_root.__boot.f36_11();
 _root.__boot.f36_10();

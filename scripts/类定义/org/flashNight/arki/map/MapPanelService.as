@@ -1,470 +1,85 @@
 ﻿/**
- * 文件：org/flashNight/arki/map/MapPanelService.as
- * 说明：WebView 地图面板的主服务类。
- *
- * 职责：
- *   - install(): 注册 4 个 gameCommands 入口（snapshot/navigate/close/openWebMap）
- *   - UnlockPolicy: 根据任务进度 + 基建状态判断 8 个分组的解锁状态
- *   - SnapshotBuilder: 组装面板快照（版本、默认页、热点状态、marker、tips 等）
- *   - 4 个 handler: 对外 gameCommand 业务实现
- *
- * 所有 handler 依赖 MapPanelCatalog / MapTaskNpcRegistry / MapHotspotResolver。
- * 响应协议：{ task:"map_response", callId, success, ... }
+ * 地图命令薄适配：C# 拥有规则与选址，AS2 只执行新鲜准入后的场景跳转。
  */
-
-import org.flashNight.arki.map.MapPanelCatalog;
-import org.flashNight.arki.map.MapTaskNpcRegistry;
-import org.flashNight.arki.map.MapHotspotResolver;
+import org.flashNight.arki.map.MapDomainBridge;
 import org.flashNight.arki.ui.PanelRequestEnvelope;
 
 class org.flashNight.arki.map.MapPanelService {
     private static var _json:LiteJSON;
     private static var _inited:Boolean = false;
 
-    /** 帧脚本唯一入口：创建 LiteJSON + 注册 4 个 gameCommands */
     public static function install():Void {
         if (_inited) return;
         _json = new LiteJSON();
         if (_root.gameCommands == undefined) _root.gameCommands = {};
-
-        _root.gameCommands["mapPanelSnapshot"] = function(params) {
-            org.flashNight.arki.map.MapPanelService.handleSnapshot(params);
-        };
-        _root.gameCommands["mapPanelNavigate"] = function(params) {
-            org.flashNight.arki.map.MapPanelService.handleNavigate(params);
-        };
-        _root.gameCommands["mapPanelClose"] = function(params) {
-            org.flashNight.arki.map.MapPanelService.handleClose(params);
-        };
-        _root.gameCommands["openWebMap"] = function(params) {
-            org.flashNight.arki.map.MapPanelService.handleOpenWebMap(params);
-        };
-        _root.gameCommands["navigateToHotspot"] = function(params) {
-            org.flashNight.arki.map.MapPanelService.navigateToHotspot(String(params.targetId));
-        };
-
+        _root.gameCommands["mapPanelSnapshot"] = function(params) { org.flashNight.arki.map.MapPanelService.handleSnapshot(params); };
+        _root.gameCommands["mapPanelNavigate"] = function(params) { org.flashNight.arki.map.MapPanelService.handleNavigate(params); };
+        _root.gameCommands["mapPanelClose"] = function(params) { org.flashNight.arki.map.MapPanelService.handleClose(params); };
+        _root.gameCommands["openWebMap"] = function(params) { org.flashNight.arki.map.MapPanelService.handleOpenWebMap(params); };
+        _root.gameCommands["navigateToHotspot"] = function(params) { org.flashNight.arki.map.MapPanelService.navigateToHotspot(String(params.targetId)); };
         _inited = true;
     }
 
-    // ─────────────────────────────────────────────
-    // 对外：任务交付直传入口（供 launcher 侧 TASK_DELIVER 点击调用）
-    // ─────────────────────────────────────────────
-
-    /**
-     * hotspotId 是否可直接跳转：关卡会话允许离场 + NAVIGATE_TARGETS 命中 +
-     * 所在组已解锁（base 永解锁）。不能只信 当前为战斗地图；旁路跳帧可能留下 stale run。
-     */
+    /** 仅供展示；执行不得把这个缓存布尔值当准入凭证。 */
     public static function canNavigateToHotspot(hotspotId:String):Boolean {
-        if (!org.flashNight.arki.scene.StageRunSession.canNavigateAwayFromStage()) return false;
-        return canRouteToHotspotAfterReturn(hotspotId);
+        return org.flashNight.arki.scene.StageRunSession.canNavigateAwayFromStage()
+            && canRouteToHotspotAfterReturn(hotspotId);
     }
-
-    /**
-     * 返回基地后是否具备直达资格。这里只校验目录与解锁状态，刻意忽略当前仍在战斗地图；
-     * 真正跳转仍必须在 Web 结算 exact close 后重新通过 canNavigateToHotspot。
-     */
     public static function canRouteToHotspotAfterReturn(hotspotId:String):Boolean {
-        if (hotspotId == undefined || hotspotId == "") return false;
-        if (MapPanelCatalog.NAVIGATE_TARGETS[hotspotId] == undefined) return false;
-
-        var groupName:String = resolveHotspotGroup(hotspotId);
-        if (groupName == "") return false;
-        if (groupName == "base") return true;
-        return isUnlocked(groupName);
+        return MapDomainBridge.getProjection().snapshot.hotspotStates[hotspotId].enabled === true;
     }
-
-    /**
-     * 聚合 HUD 交付按钮所需状态：扫描全部已达成任务，依次优先当前可导航、
-     * 返回基地后可导航的 hotspot；两者都没有才回落首个目标用于普通任务提示。
-     * @return { hotspotId:String, navigable:Boolean, returnNavigable:Boolean }
-     */
     public static function resolveDeliverableState():Object {
-        var ids:Array = MapTaskNpcRegistry.collectDeliverableHotspotIds();
-        if (ids.length == 0) {
-            return { hotspotId:"", navigable:false, returnNavigable:false };
-        }
-
-        var returnTarget:String = "";
-        for (var i:Number = 0; i < ids.length; i++) {
-            if (canNavigateToHotspot(ids[i])) {
-                return {
-                    hotspotId:ids[i], navigable:true, returnNavigable:true
-                };
-            }
-            if (returnTarget == "" && canRouteToHotspotAfterReturn(ids[i]))
-                returnTarget = String(ids[i]);
-        }
-        if (returnTarget != "") {
-            return {
-                hotspotId:returnTarget, navigable:false, returnNavigable:true
-            };
-        }
-        return {
-            hotspotId:ids[0], navigable:false, returnNavigable:false
-        };
+        var state:Object = MapDomainBridge.getProjection().delivery;
+        return state == undefined ? {hotspotId:"", navigable:false, returnNavigable:false} : state;
     }
-
-    /**
-     * 直接跳转到指定 hotspot。调用方需自行保证 canNavigateToHotspot == true。
-     * 无 callId/无响应，副作用与 handleNavigate 一致。
-     * @return Boolean 是否发起了跳转
-     */
-    public static function navigateToHotspot(hotspotId:String):Boolean {
-        if (!canNavigateToHotspot(hotspotId)) {
-            log("navigateToHotspot rejected hotspotId=" + hotspotId);
-            return false;
-        }
-        var targetFrame:String = MapPanelCatalog.NAVIGATE_TARGETS[hotspotId];
-        log("navigateToHotspot hotspotId=" + hotspotId + " frame=" + targetFrame);
-        MapHotspotResolver.beginPending(hotspotId);
-        performNavigate(targetFrame);
+    public static function publishDeliveryHint():Void {
+        var projection:Object = MapDomainBridge.getProjection();
+        var state:Object = resolveDeliverableState();
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState(
+            "td:" + (projection.hasDeliverable === true ? "1" : "0") + "|tdh:" + String(state.hotspotId)
+                + "|tdn:" + (state.navigable === true ? "1" : "0") + "|tdr:" + (state.returnNavigable === true ? "1" : "0"));
+    }
+    /** Boolean 仅表示已受理请求；真正执行结果通过 callback，所有调用方不得据此提前关闭。 */
+    public static function navigateToHotspot(hotspotId:String, callback:Function, guard:Function):Boolean {
+        if (callback == undefined) callback = function(ok:Boolean, error:String):Void {
+            if (!ok) org.flashNight.arki.map.MapPanelService.navigationWarning(error);
+        };
+        MapDomainBridge.navigate({kind:"navigate", targetId:hotspotId}, callback, guard);
         return true;
     }
-
-    /** 反查 hotspotId 所属组名；未命中返回空串 */
-    private static function resolveHotspotGroup(hotspotId:String):String {
-        var i:Number;
-        for (i = 0; i < MapPanelCatalog.BASE_HOTSPOT_IDS.length; i++) {
-            if (MapPanelCatalog.BASE_HOTSPOT_IDS[i] == hotspotId) return "base";
-        }
-        for (var g:String in MapPanelCatalog.GROUPED_HOTSPOT_IDS) {
-            var list:Array = MapPanelCatalog.GROUPED_HOTSPOT_IDS[g];
-            for (i = 0; i < list.length; i++) {
-                if (list[i] == hotspotId) return g;
-            }
-        }
-        return "";
+    public static function navigateToDeliverable(callback:Function, guard:Function):Void {
+        MapDomainBridge.navigate({kind:"deliverable"}, callback, guard);
     }
-
-    // ─────────────────────────────────────────────
-    // gameCommand handlers
-    // ─────────────────────────────────────────────
-
+    public static function navigateToTask(taskId:String, callback:Function, guard:Function):Void {
+        MapDomainBridge.navigate({kind:"task_finish", taskId:taskId}, callback, guard);
+    }
+    public static function navigationWarning(error:String):Void {
+        log("导航未执行：" + error);
+        _root.发布消息("地图状态已变化或当前不能离开，请刷新后重试。");
+    }
+    // 用工厂形参保存请求编号；CS6 会把普通局部变量放进寄存器，异步回调按变量名读取时会丢失。
+    private static function makeResponse(responseCallId:Number, navigation:Boolean):Function {
+        return function(ok:Boolean, error:String):Void {
+            var response:Object = {task:"map_response", callId:responseCallId, success:ok, error:error};
+            if (navigation) response.closePanel = ok;
+            else response.snapshot = ok ? org.flashNight.arki.map.MapDomainBridge.getProjection().snapshot : null;
+            org.flashNight.arki.map.MapPanelService.sendResponse(response);
+        };
+    }
     public static function handleSnapshot(params:Object):Void {
-        var callId = params.callId;
-        log("mapPanelSnapshot callId=" + callId);
-
-        sendResponse({
-            task: "map_response",
-            callId: callId,
-            success: true,
-            snapshot: buildSnapshot()
-        });
+        MapDomainBridge.snapshot(makeResponse(Number(params.callId), false));
     }
-
     public static function handleNavigate(params:Object):Void {
-        var callId = params.callId;
-        var targetId:String = String(params.targetId);
-        var targetFrame:String = MapPanelCatalog.NAVIGATE_TARGETS[targetId];
-        log("mapPanelNavigate callId=" + callId + " targetId=" + targetId + " frame=" + targetFrame);
-
-        var resp:Object = {
-            task: "map_response",
-            callId: callId
-        };
-
-        if (targetFrame == undefined) {
-            resp.success = false;
-            resp.error = "invalid_target";
-            sendResponse(resp);
-            return;
-        }
-
-        if (!canNavigateToHotspot(targetId)) {
-            resp.success = false;
-            // 保持既有 response error 契约；只读原因通过 v3 snapshot additive 字段下发。
-            resp.error = "not_navigable";
-            sendResponse(resp);
-            return;
-        }
-
-        // 复用 AS2 权威 helper，避免 Web handler 与任务交付入口再次分叉。
-        if (!navigateToHotspot(targetId)) {
-            resp.success = false;
-            resp.error = "not_navigable";
-            sendResponse(resp);
-            return;
-        }
-
-        resp.success = true;
-        resp.closePanel = true;
-        sendResponse(resp);
+        MapDomainBridge.navigate({kind:"navigate", targetId:String(params.targetId)}, makeResponse(Number(params.callId), true));
     }
-
-    public static function handleClose(params:Object):Void {
-        log("mapPanelClose");
-    }
-
-    /**
-     * 所有旧地图入口统一走此入口，接入 WebView 新地图面板。
-     * params.pageId 可选（base/faction/defense/school），指定面板打开时默认页。
-     */
+    public static function handleClose(params:Object):Void { log("mapPanelClose"); }
     public static function handleOpenWebMap(params:Object):Void {
-        var source:String = (params != undefined && params.source != undefined)
-            ? String(params.source)
-            : "as2_legacy_button";
-        var pageId:String = (params != undefined && params.pageId != undefined)
-            ? String(params.pageId)
-            : "";
-        log("openWebMap request source=" + source + " pageId=" + pageId);
-
-        if (_root.server == undefined || _root.server.sendSocketMessage == undefined) {
-            log("openWebMap failed: server/sendSocketMessage unavailable");
-            return;
-        }
-
+        var source:String = params.source == undefined ? "as2_legacy_button" : String(params.source);
+        var pageId:String = String(params.pageId || "");
+        if (_root.server.sendSocketMessage == undefined) return;
         var fields:Array = pageId == "" ? [] : [{name:"pageId", value:pageId}];
-        var payload:String = org.flashNight.arki.ui.PanelRequestEnvelope.build("map", source, fields, []);
-        _root.server.sendSocketMessage(payload);
+        _root.server.sendSocketMessage(PanelRequestEnvelope.build("map", source, fields, []));
     }
-
-    // ─────────────────────────────────────────────
-    // UnlockPolicy（Phase 1 内联为 private static，未来可抽出为独立类）
-    // ─────────────────────────────────────────────
-
-    private static function getInfrastructure():Object {
-        if (_root.基建系统 == undefined) return undefined;
-        return _root.基建系统.infrastructure;
-    }
-
-    private static function isUnlocked(groupName:String):Boolean {
-        var progress = _root.task_chains_progress;
-        var p_main = (progress != undefined) ? progress.主线 : undefined;
-        var p_uni = (progress != undefined) ? progress.大学 : undefined;
-        var infra = getInfrastructure();
-
-        switch (groupName) {
-            case "warlord":
-                return (p_main != undefined && infra != undefined && p_main >= 75 && infra.越野车);
-            case "rock":
-                return (p_main != undefined && infra != undefined && p_main >= 74 && (infra.摩托车 || infra.越野车));
-            case "blackiron":
-                return (p_main != undefined && infra != undefined && p_main >= 72 && (infra.摩托车 || infra.越野车));
-            case "fallen":
-                // 主线门 28 = max(外交-堕落城商业街 UC=28, 外交-堕落城酒吧 UC=29) 的较低者，
-                // 让页级解锁 = "至少能开商业街"；酒吧再差 1 级由 stage 层 isStageUnlocked 接力锁住。
-                return (p_main != undefined && infra != undefined && p_main >= 28 && (infra.摩托车 || infra.越野车));
-            case "defense":
-                return (p_main != undefined && infra != undefined && p_main >= 14 && (infra.自行车 || infra.摩托车 || infra.越野车));
-            case "restricted":
-                return (p_main != undefined && infra != undefined && p_main >= 76 && infra.越野车);
-            case "schoolOutside":
-                if (p_uni != undefined && p_uni >= 7) return true;
-                return (p_main != undefined && infra != undefined && p_main >= 28 && (infra.摩托车 || infra.越野车));
-            case "schoolInside":
-                return (p_uni != undefined && p_uni >= 7);
-            default:
-                return false;
-        }
-    }
-
-    private static function buildUnlockFlags():Object {
-        return {
-            warlord: isUnlocked("warlord"),
-            rock: isUnlocked("rock"),
-            blackiron: isUnlocked("blackiron"),
-            fallen: isUnlocked("fallen"),
-            defense: isUnlocked("defense"),
-            restricted: isUnlocked("restricted"),
-            schoolOutside: isUnlocked("schoolOutside"),
-            schoolInside: isUnlocked("schoolInside")
-        };
-    }
-
-    private static function pushList(target:Array, source:Array):Void {
-        for (var i:Number = 0; i < source.length; i++) {
-            target.push(source[i]);
-        }
-    }
-
-    private static function buildEnabledHotspotIds():Array {
-        var unlocks:Object = buildUnlockFlags();
-        var enabled:Array = [];
-
-        pushList(enabled, MapPanelCatalog.BASE_HOTSPOT_IDS);
-
-        if (unlocks.warlord) pushList(enabled, MapPanelCatalog.GROUPED_HOTSPOT_IDS.warlord);
-        if (unlocks.rock) pushList(enabled, MapPanelCatalog.GROUPED_HOTSPOT_IDS.rock);
-        if (unlocks.blackiron) pushList(enabled, MapPanelCatalog.GROUPED_HOTSPOT_IDS.blackiron);
-        if (unlocks.fallen) pushList(enabled, MapPanelCatalog.GROUPED_HOTSPOT_IDS.fallen);
-        if (unlocks.defense) pushList(enabled, MapPanelCatalog.GROUPED_HOTSPOT_IDS.defense);
-        if (unlocks.restricted) pushList(enabled, MapPanelCatalog.GROUPED_HOTSPOT_IDS.restricted);
-        if (unlocks.schoolOutside) pushList(enabled, MapPanelCatalog.GROUPED_HOTSPOT_IDS.schoolOutside);
-        if (unlocks.schoolInside) pushList(enabled, MapPanelCatalog.GROUPED_HOTSPOT_IDS.schoolInside);
-
-        return enabled;
-    }
-
-    private static function buildHotspotStates(unlocks:Object):Object {
-        var states:Object = {};
-        var hotspotId:String;
-        var groupName:String;
-        var enabled:Boolean;
-        var meta:Object;
-
-        for (var i:Number = 0; i < MapPanelCatalog.BASE_HOTSPOT_IDS.length; i++) {
-            hotspotId = MapPanelCatalog.BASE_HOTSPOT_IDS[i];
-            states[hotspotId] = {
-                enabled: true,
-                unlockGroup: "",
-                lockedReason: ""
-            };
-        }
-
-        for (groupName in MapPanelCatalog.GROUPED_HOTSPOT_IDS) {
-            enabled = !!unlocks[groupName];
-            meta = MapPanelCatalog.UNLOCK_META[groupName];
-            var group:Array = MapPanelCatalog.GROUPED_HOTSPOT_IDS[groupName];
-            for (var j:Number = 0; j < group.length; j++) {
-                hotspotId = group[j];
-                states[hotspotId] = {
-                    enabled: enabled,
-                    unlockGroup: groupName,
-                    lockedReason: enabled ? "" : (meta != undefined ? meta.lockedReason : "区域尚未开放")
-                };
-            }
-        }
-
-        return states;
-    }
-
-    // ─────────────────────────────────────────────
-    // SnapshotBuilder
-    // ─────────────────────────────────────────────
-
-    private static function buildMarkers(currentHotspotId:String):Array {
-        var markers:Array = MapTaskNpcRegistry.buildTaskNpcMarkers();
-        if (currentHotspotId == undefined || currentHotspotId == "") return markers;
-
-        markers.push({
-            id: "current_location",
-            kind: "currentLocation",
-            pageId: MapPanelCatalog.resolvePageId(currentHotspotId),
-            hotspotId: currentHotspotId,
-            label: "当前位置",
-            tone: "accent"
-        });
-
-        return markers;
-    }
-
-    private static function buildTips(currentHotspotId:String):Array {
-        var tips:Array = [];
-        if (currentHotspotId == undefined || currentHotspotId == "") return tips;
-
-        tips.push({
-            id: "current_scene",
-            pageId: MapPanelCatalog.resolvePageId(currentHotspotId),
-            hotspotId: currentHotspotId,
-            label: "当前位置",
-            tone: "accent"
-        });
-
-        return tips;
-    }
-
-    private static function buildSnapshot():Object {
-        var roommateGender:String = "";
-        var currentHotspotId:String = MapHotspotResolver.resolveCurrent();
-        var currentPageId:String = MapPanelCatalog.resolvePageId(currentHotspotId);
-        var unlocks:Object = buildUnlockFlags();
-        var navigationLockReason:String =
-            org.flashNight.arki.scene.StageRunSession.getSceneExitBlockReason();
-        if (_root.性别 != undefined) {
-            roommateGender = String(_root.性别);
-        }
-
-        return {
-            // v3 保持兼容；navigationLocked/reason 是可选 additive 字段，旧消费者可忽略。
-            version: 3,
-            defaultPageId: currentPageId,
-            regionId: currentPageId,
-            currentHotspotId: currentHotspotId,
-            navigationLocked: navigationLockReason != "",
-            navigationLockReason: navigationLockReason,
-            unlocks: unlocks,
-            enabledHotspotIds: buildEnabledHotspotIds(),
-            hotspotStates: buildHotspotStates(unlocks),
-            dynamicAvatarState: {
-                roommateGender: roommateGender
-            },
-            markers: buildMarkers(currentHotspotId),
-            tips: buildTips(currentHotspotId),
-            // ── v3 新增字段 ──
-            // taskChains: task_chain 全量进度（SaveManager.REPAIR_DICT_TASK_CHAINS 一致）
-            // infrastructure: 3 项基建状态
-            // avatarVisibility: { launcher slot id → boolean }，由 MapPanelCatalog.isAvatarVisible 派生
-            taskChains: buildTaskChainsSnapshot(),
-            infrastructure: buildInfrastructureSnapshot(),
-            avatarVisibility: buildAvatarVisibilitySnapshot()
-        };
-    }
-
-    private static var TASK_CHAIN_NAMES:Array = [
-        "主线", "引导", "支线", "挑战", "废城",
-        "彩蛋", "异形", "大学", "后勤", "预览", "铁枪会"
-    ];
-    private static var INFRA_KEYS:Array = ["自行车", "摩托车", "越野车"];
-
-    private static function buildTaskChainsSnapshot():Object {
-        var snap:Object = {};
-        var progress:Object = _root.task_chains_progress;
-        if (progress == undefined) return snap;
-        for (var i:Number = 0; i < TASK_CHAIN_NAMES.length; i++) {
-            var k:String = TASK_CHAIN_NAMES[i];
-            var v:Number = Number(progress[k]);
-            snap[k] = isNaN(v) ? 0 : v;
-        }
-        return snap;
-    }
-
-    private static function buildInfrastructureSnapshot():Object {
-        var snap:Object = {};
-        var infra:Object = getInfrastructure();
-        if (infra == undefined) return snap;
-        for (var i:Number = 0; i < INFRA_KEYS.length; i++) {
-            var k:String = INFRA_KEYS[i];
-            snap[k] = !!infra[k];
-        }
-        return snap;
-    }
-
-    /**
-     * 枚举 MapPanelCatalog.AVATAR_ID_TO_NPC 中所有声明了 visibility rule 的 avatar,
-     * 调用 isAvatarVisible 求值，结果以 slot id 作 key 下发。
-     * 没有 rule 的 avatar 不出现在 map → Web 端按"缺失=可见"兜底（保留 v2 行为）。
-     */
-    private static function buildAvatarVisibilitySnapshot():Object {
-        var result:Object = {};
-        var idMap:Object = MapPanelCatalog.AVATAR_ID_TO_NPC;
-        for (var avatarId:String in idMap) {
-            var npcName:String = String(idMap[avatarId]);
-            result[avatarId] = MapPanelCatalog.isAvatarVisibleById(avatarId, npcName);
-        }
-        return result;
-    }
-
-    // ─────────────────────────────────────────────
-    // 私有工具
-    // ─────────────────────────────────────────────
-
-    private static function log(msg:String):Void {
-        if (_root.server != undefined) {
-            _root.server.sendServerMessage("[MapWV] " + msg);
-        }
-    }
-
-    private static function sendResponse(resp:Object):Void {
-        _root.server.sendSocketMessage(_json.stringifySafe(resp));
-    }
-
-    /**
-     * navigate 的 4 个副作用集中在此，便于未来替换跳转实现。
-     * 顺序与原帧脚本严格一致。
-     */
-    private static function performNavigate(targetFrame:String):Void {
-        _root.关卡结束界面._visible = 0;
-        _root.场景进入位置名 = "出生地";
-        _root.淡出动画.淡出跳转帧(targetFrame);
-    }
+    private static function log(msg:String):Void { _root.server.sendServerMessage("[MapWV] " + msg); }
+    private static function sendResponse(resp:Object):Void { _root.server.sendSocketMessage(_json.stringifySafe(resp)); }
 }

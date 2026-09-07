@@ -7,9 +7,10 @@ var definition,instance=0,handlers={};var Bridge={on:function(t,c){(handlers[t]|
 if(m.cmd==='close'){definition.onClose();document.getElementById('panel-container').hidden=true;return true;}
 fetch('/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({op:m.cmd},m.payload))}).then(function(r){return r.json();}).then(function(r){Object.assign(r,{type:'panel_resp',panel:m.panel,domain:m.domain,cmd:m.cmd,callId:m.callId,panelInstanceId:m.panelInstanceId});(handlers.panel_resp||[]).forEach(function(c){c(r);});});return true;}};
 var Panels={register:function(id,p){definition=p;}};
+var MapWorkbenchDevApi={uploadImage:async function(file){var response=await fetch('/asset-upload',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Map-File-Name':encodeURIComponent(file.name)},body:file});var value=await response.json();if(!value.success)throw new Error(value.error||'导入失败');return value.data;}};
 </script>
 <script src="/modules/panel-runtime.js"></script><script src="/modules/panel-scale.js"></script>
 <script src="/modules/workbench-lifecycle.js"></script><script src="/modules/workbench-focus.js"></script><script src="/modules/workbench-primitives.js"></script><script src="/modules/workbench-profile.js"></script><script src="/modules/workbench.js"></script>
-<script src="/modules/map-canvas-stage-renderer.js"></script><script src="/modules/map/map-avatar-layer.js"></script><script src="/modules/map-workbench.js"></script>
+<script src="/lib/marked.min.js"></script><script src="/modules/workbench-components.js"></script><script src="/modules/map/authoring/controls.js"></script><script src="/modules/map/authoring/editors.js"></script><script src="/modules/map/authoring/help.js"></script><script src="/modules/map-workbench.js"></script>
 <script>var panel=definition.create();document.getElementById('panel-content').appendChild(panel);function open(){document.getElementById('panel-container').hidden=false;definition.onOpen(panel,{panelInstanceId:'map-dev-'+(++instance)});}document.getElementById('reopen').onclick=open;document.addEventListener('keydown',function(e){if(e.key==='Escape')definition.onRequestClose();});open();</script>
 </body></html>

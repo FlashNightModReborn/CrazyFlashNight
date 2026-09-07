@@ -118,7 +118,7 @@
 
 ## 3. 通信与边界
 
-地图维护第一阶段：`data/map/map_definition.json → MapDefinition → Web 启动数据 / NativeHud outline`；`MapAuthoringStore` 是 GUI/CLI 共用文件内核。Host 在页面创建前注入 C# 校验后的启动快照，不持久化 JS 数据副本。AS2 解锁、任务和场景执行保持现役权威；切流见[两阶段施工](../docs/地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
+地图内容域：`map_definition.json v2 + 原任务 JSON → MapRuntimeContent → MapDomainService → Web snapshot v4 / NativeHud / 端点与驻点投影`。AS2 `MapFactsSampler → MapDomainBridge` 只提供窄事实并在执行前复核会话、内容、revision、scene epoch 与生命周期；任务接取／完成、奖励、存档和场景执行仍归 AS2。仅 XMLSocket 的 `map_domain` 不接受 Web/HTTP 冒充事实。`MapAuthoringStore` 为 GUI/CLI 共用可恢复多文件维护内核，素材先进入候选；生产与作者预览使用同一求值器。旧地图 XML、catalog／NPC registry／HUD sidecar 及其加载／生成链已退役，不留地图规则 fallback。状态和边界见[两阶段施工](../docs/地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
 
 ### Flash ↔ Launcher
 

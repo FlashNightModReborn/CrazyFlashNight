@@ -30,6 +30,11 @@ namespace CF7Launcher.Guardian
     {
         private AssetWorkbenchTask _assetWorkbenchTask;
         private MapWorkbenchTask _mapWorkbenchTask;
+        private JObject _mapFrozenDefinition;
+        public void SetMapDomain(CF7Launcher.Data.MapRuntimeContent content, MapDomainTask domain)
+        {
+            _mapWorkbenchTask = new MapWorkbenchTask(_projectRoot, content, domain);
+        }
 
         private async void HandleMapWorkbenchMessage(string json, string source)
         {
@@ -40,8 +45,21 @@ namespace CF7Launcher.Guardian
             string instance = (string)message["panelInstanceId"];
             if ((string)message["cmd"] == "close") { _panelHost.TryClosePanelExact(MapWorkbenchTask.Panel, instance, null); return; }
             _mapWorkbenchTask ??= new MapWorkbenchTask(_projectRoot);
-            var response = await _mapWorkbenchTask.ExecuteAsync(request);
+            JObject response;
+            if ((string)message["cmd"] == "asset-pick")
+            {
+                using var picker = new OpenFileDialog { Title = "选择地图图块或头像", Filter = "图片|*.png;*.webp;*.jpg;*.jpeg", Multiselect = false, CheckFileExists = true };
+                response = picker.ShowDialog(this) == DialogResult.OK
+                    ? await _mapWorkbenchTask.StageFileAsync(picker.FileName)
+                    : new JObject { ["success"] = true, ["data"] = new JObject { ["cancelled"] = true } };
+            }
+            else response = await _mapWorkbenchTask.ExecuteAsync(request);
             if (IsDisposed || Disposing || _panelHost.ActivePanelName != MapWorkbenchTask.Panel || _panelHost.ActivePanelInstanceId != instance) return;
+            if ((string)message["cmd"] == "open-source" && response.Value<bool>("success"))
+            {
+                try { Process.Start(new ProcessStartInfo((string)response["data"]["entry"]) { UseShellExecute = true }); }
+                catch (Exception error) { response["success"] = false; response["error"] = "制作源已定位，但未能打开：" + error.Message; }
+            }
             response["type"] = "panel_resp"; response["panel"] = MapWorkbenchTask.Panel; response["domain"] = MapWorkbenchTask.Domain;
             response["cmd"] = message["cmd"]; response["callId"] = message["callId"]; response["panelInstanceId"] = instance;
             PostToWeb(response.ToString(Newtonsoft.Json.Formatting.None));
@@ -1413,8 +1431,9 @@ namespace CF7Launcher.Guardian
             bool webView2DisableGpu, string webView2AdditionalArgs,
             bool webView2DeveloperMode,
             bool panelTakeForeground, bool hotReloadEnabled,
-            Func<string, bool> flashFocusRestorer)
+            Func<string, bool> flashFocusRestorer, JObject mapDefinition = null)
         {
+            _mapFrozenDefinition = mapDefinition == null ? null : (JObject)mapDefinition.DeepClone();
             _hotReloadEnabled = hotReloadEnabled;
             _owner = owner;
             _anchor = anchor;
@@ -1644,7 +1663,7 @@ namespace CF7Launcher.Guardian
                 // 虚拟主机资源不会触发 WebResourceRequested；启动快照必须在页面脚本前注入。
                 // 本次进程内固定快照，工作台保存后的生产地图与 NativeHud 统一在重启后更新。
                 string mapScript;
-                try { mapScript = CF7Launcher.Data.MapDefinition.BootstrapScript(CF7Launcher.Data.MapDefinition.Load(_projectRoot)); }
+                try { mapScript = CF7Launcher.Data.MapDefinition.BootstrapScript(_mapFrozenDefinition ?? CF7Launcher.Data.MapDefinition.Load(_projectRoot)); }
                 catch (Exception error) { LogManager.Log("[MapDefinition] " + error.Message); mapScript = "window.MapDefinitionLoadError='地图定义加载失败，请检查 data/map/map_definition.json';"; }
                 await _webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(mapScript);
 

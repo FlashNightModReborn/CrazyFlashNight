@@ -20,6 +20,11 @@ var MapPanel = (function() {
     var _snapshotTips = [];
     // v3 snapshot 新增字段缓存（v2 snapshot 时全部为空 = 不门控，等价默认可见）
     var _avatarVisibility = {};       // { avatarId: boolean }；缺 key = 默认可见
+    var _pageStateLookup = {};
+    var _visualVisibility = {};
+    var _avatarAssetUrls = {};
+    var _visualAssetUrls = {};
+    var _currentLocationId = '';
     var _snapshotTaskChains = {};     // 仅用于 dev/qa 调试，渲染路径不读
     var _snapshotInfrastructure = {}; // 同上
     // 任务红点聚合 lookup（applySnapshot 末尾、_enabledLookup 就绪后重建）
@@ -69,6 +74,8 @@ var MapPanel = (function() {
     var _canvasRenderCache = {};
     // 作者预览运行在独立子文档，桥接器只返回设计快照，不连接游戏导航。
     var _authoringEnabled = typeof window !== 'undefined' && window.MapAuthoringPreview === true && window.parent !== window;
+    var _authoringViewMode = _authoringEnabled && window.MapAuthoringViewMode === 'author' ? 'author' : 'player';
+    function showHiddenForAuthor() { return _authoringEnabled && _authoringViewMode === 'author'; }
     var _authoringCamera = { zoom: 1, x: 0, y: 0 };
     var _authoringRasterScale = 1;
     var _lastCoordinateReadout = null;
@@ -190,7 +197,7 @@ var MapPanel = (function() {
                 getCurrentPageId: function() { return _activeHitmapKey; },
                 getCurrentPage: function() { return _activePage; },
                 getVisibleLookup: function() { return buildVisibleLookup(_activePage); },
-                getEnabledLookup: function() { return _enabledLookup; },
+                getEnabledLookup: function() { return _snapshotVersion >= 4 ? buildVisibleLookup(_activePage) : _enabledLookup; },
                 getBusyLookup: function() { return _busyLookup; },
                 onHover: function(id, isHover) { setHotspotHover(id, isHover); },
                 onClick: function(id) {
@@ -426,7 +433,7 @@ var MapPanel = (function() {
     function hitmapKeyFor(pageId, visuals) {
         var ids = [];
         for (var i = 0; i < visuals.length; i += 1) {
-            ids.push(visuals[i].id || ('v' + i));
+            ids.push((visuals[i].id || ('v' + i)) + ':' + visuals[i].assetUrl + ':' + JSON.stringify(visuals[i].rect));
         }
         return pageId + '::' + ids.join('|');
     }
@@ -435,7 +442,7 @@ var MapPanel = (function() {
         if (!page) return null;
         var activeFilter = getActiveFilter(page);
         var filterId = activeFilter ? activeFilter.id : '';
-        var visuals = MapPanelData.getVisibleSceneVisuals(page.id, filterId);
+        var visuals = projectSceneVisuals(page, MapPanelData.getVisibleSceneVisuals(page.id, filterId));
         return {
             id: hitmapKeyFor(page.id, visuals),
             width: page.width,
@@ -501,6 +508,13 @@ var MapPanel = (function() {
     function applyPage(pageId) {
         if (_authoringEnabled && _activePage && _activePage.id !== pageId) _authoringCamera = { zoom: 1, x: 0, y: 0 };
         _activePage = MapPanelData.getPage(pageId);
+        if (_snapshotVersion >= 4) {
+            _currentHotspotId = '';
+            for (var ci = 0; ci < _activePage.hotspots.length; ci += 1) {
+                var currentView = _activePage.hotspots[ci];
+                if (currentView.locationId === _currentLocationId && hotspotIsVisible(currentView.id)) { _currentHotspotId = currentView.id; break; }
+            }
+        }
         _hoverHotspotId = '';
         resetCoordinateReadout();
         ensurePageFilterState(_activePage);
@@ -508,9 +522,7 @@ var MapPanel = (function() {
         // assembled 新地图页的 backgroundUrl 是旧 Flash 地图对照底图，右侧带旧按钮/关闭区。
         // 只允许非 assembled fallback 页把它铺到 shell；新地图页的 letterbox 区走 CSS 环境底，避免窗口缩放时露旧 UI。
         if (_stageShellEl) {
-            var _bgExtUrl = (_activePage && _activePage.backgroundUrl && !useAssembledVisuals(_activePage))
-                ? resolveAssetUrl(_activePage.backgroundUrl)
-                : '';
+            var _bgExtUrl = pageBackgroundUrl(_activePage);
             _stageShellEl.style.backgroundImage = _bgExtUrl ? 'url("' + _bgExtUrl + '")' : '';
         }
         // 像素级 hittest 构建 (lazy):
@@ -525,7 +537,7 @@ var MapPanel = (function() {
         // 必须在 renderStageBackdrop → syncCanvasStage 之前, 因为 buildCanvasRenderState
         // 会 syncState 拿 domVisibleVisualIds 喂 canvasSkipVisualIds
         if (typeof MapSceneVisualLayer !== 'undefined' && _activePage) {
-            MapSceneVisualLayer.syncPage(_activePage);
+            MapSceneVisualLayer.syncPage(Object.assign({}, _activePage, { sceneVisuals: projectSceneVisuals(_activePage, _activePage.sceneVisuals || []) }));
         }
         // avatar DOM 层重建 (整页全部 slots, 与 filter 无关).
         // syncPage 内有 fingerprint 防重建闪烁; _dynamicAvatarState 变化时
@@ -551,7 +563,11 @@ var MapPanel = (function() {
     }
 
     function useAssembledVisuals(page) {
-        return !!(page && page.renderMode === 'assembled' && page.sceneVisuals && page.sceneVisuals.length);
+        return !!(page && page.renderMode === 'assembled');
+    }
+    function pageBackgroundUrl(page) {
+        if (page && page.backgroundAssetUrl) return resolveAssetUrl(page.backgroundAssetUrl);
+        return page && page.backgroundUrl && !useAssembledVisuals(page) ? resolveAssetUrl(page.backgroundUrl) : '';
     }
 
     // accent 主题 (第四节): 面板 chrome 随页面/派系换色。
@@ -604,6 +620,7 @@ var MapPanel = (function() {
 
     // 整页是否有任一 hotspot 解锁。base 永远 true（base hotspots 全部默认 enabled）。
     function pageHasAnyEnabled(pageId) {
+        if (_snapshotVersion >= 4) return !!(_pageStateLookup[pageId] && _pageStateLookup[pageId].visible === true);
         var page = MapPanelData.getPage(pageId);
         if (!page || !page.hotspots) return false;
         for (var i = 0; i < page.hotspots.length; i++) {
@@ -618,7 +635,12 @@ var MapPanel = (function() {
         var btns = _pageTabsEl.querySelectorAll('.map-page-tab');
         for (var i = 0; i < btns.length; i++) {
             var pageId = btns[i].getAttribute('data-page-id');
-            btns[i].style.display = pageHasAnyEnabled(pageId) ? '' : 'none';
+            var hidden = !pageHasAnyEnabled(pageId), author = showHiddenForAuthor();
+            btns[i].style.display = author || !hidden ? '' : 'none';
+            if (_authoringEnabled) {
+                btns[i].classList.toggle('is-authoring-hidden', author && hidden);
+                btns[i].setAttribute('aria-label', MapPanelData.getPage(pageId).tabLabel + (author && hidden ? '（当前方案隐藏，仍可编辑）' : ''));
+            }
         }
     }
 
@@ -930,7 +952,15 @@ var MapPanel = (function() {
     function getVisibleSceneVisuals(page) {
         if (!page) return [];
         var activeFilter = getActiveFilter(page);
-        return MapPanelData.getVisibleSceneVisuals(page.id, activeFilter ? activeFilter.id : '');
+        return projectSceneVisuals(page, MapPanelData.getVisibleSceneVisuals(page.id, activeFilter ? activeFilter.id : ''));
+    }
+    function projectSceneVisuals(page, visuals) {
+        if (_snapshotVersion < 4) return visuals;
+        var visible = _visualVisibility[page.id] || {}, assets = _visualAssetUrls[page.id] || {};
+        var author = showHiddenForAuthor();
+        return visuals.filter(function(v) { return author || visible[v.id] === true; }).map(function(v) {
+            return Object.assign({}, v, { assetUrl: assets[v.id] || (author ? v.assetUrl : '') });
+        });
     }
 
     function syncSceneNodeStates() {
@@ -1013,7 +1043,7 @@ var MapPanel = (function() {
 
             if (!resp.success) {
                 if (typeof Toast !== 'undefined') {
-                    Toast.add('地图跳转失败: ' + (resp.error || 'unknown_error'));
+                    Toast.add(normalizeError(resp.error));
                 }
                 setHotspotBusy(hotspot.id, false);
                 return;
@@ -1172,14 +1202,23 @@ var MapPanel = (function() {
     }
 
     function applySnapshot(snapshot) {
+        if (typeof MapDefinitionData !== 'undefined' && MapDefinitionData.version >= 2 && snapshot.version !== 4) {
+            showError('地图内容与运行时版本不一致，请重启游戏。'); return;
+        }
         var enabledIds = snapshot.enabledHotspotIds || [];
         _unlockFlags = MapPanelData.normalizeUnlockFlags(snapshot.unlocks || {});
-        _hotspotStateLookup = MapPanelData.buildHotspotStates(_unlockFlags);
+        _hotspotStateLookup = snapshot.version === 4 ? {} : MapPanelData.buildHotspotStates(_unlockFlags);
         _enabledLookup = {};
         _dynamicAvatarState = snapshot.dynamicAvatarState || {};
         _snapshotMarkers = snapshot.markers || [];
         _snapshotTips = snapshot.tips || [];
         _currentHotspotId = snapshot.currentHotspotId || resolveCurrentHotspotId(_snapshotMarkers) || '';
+        _currentLocationId = snapshot.currentLocationId || '';
+        _pageStateLookup = snapshot.pageStates || {};
+        _visualVisibility = snapshot.visualVisibility || {};
+        _avatarAssetUrls = snapshot.avatarAssetUrls || {};
+        _visualAssetUrls = snapshot.visualAssetUrls || {};
+        resetCanvasRenderCache();
         // v3 字段：v2 snapshot 没有这些 key，缺 = 默认可见（保留向后兼容）
         _snapshotVersion = Number(snapshot.version) || 2;
         _navigationLocked = snapshot.navigationLocked === true;
@@ -1215,7 +1254,7 @@ var MapPanel = (function() {
         _requestedInitialPageId = '';
         var targetPageId = requestedPageId || snapshot.defaultPageId || resolvePageIdForHotspot(_currentHotspotId) || (_activePage ? _activePage.id : '');
         // 目标页若全锁 → 回落到首个 live page（避免打开后看到空页）
-        if (targetPageId && !pageHasAnyEnabled(targetPageId)) {
+        if (targetPageId && !pageHasAnyEnabled(targetPageId) && !_authoringEnabled) {
             targetPageId = resolveFirstLivePageId();
         }
         if (targetPageId) {
@@ -1245,19 +1284,19 @@ var MapPanel = (function() {
             var enabled = !!hotspotState.enabled;
             // 锁定 hotspot 整体不渲染（剧透防护）。彻底不可见 + 不可点；
             // 解锁原因通过 group 级 filter 按钮自身在解锁前的隐藏来表达。
-            if (!enabled) continue;
+            if (!hotspotIsVisible(hotspot.id)) continue;
             var btn = document.createElement('button');
 
             btn.className = 'map-hotspot' + (_currentHotspotId === hotspot.id ? ' is-current' : '');
             btn.type = 'button';
             btn.setAttribute('data-hotspot-id', hotspot.id);
-            btn.setAttribute('data-audio-cue', 'navigate');
+            btn.setAttribute('data-audio-cue', enabled ? 'navigate' : 'illegal');
             btn.style.left = toPercent(rect.x, _activePage.width);
             btn.style.top = toPercent(rect.y, _activePage.height);
             btn.style.width = toPercent(rect.w, _activePage.width);
             btn.style.height = toPercent(rect.h, _activePage.height);
-            btn.setAttribute('aria-disabled', 'false');
-            btn.setAttribute('aria-label', hotspot.label);
+            btn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+            btn.setAttribute('aria-label', hotspot.label + (enabled ? '' : '，尚未开放：' + hotspotState.lockedReason));
             // Phase 2: .map-hotspot-sheen span 删除; 视觉装饰已迁 .map-scene-visual / .map-avatar.
 
             attachHotspotHandler(btn, hotspot);
@@ -1305,7 +1344,10 @@ var MapPanel = (function() {
             var isLocked = !!(filterMeta && !_unlockFlags[filterMeta.unlockGroup]);
             // 锁定的 group-mapped filter 整个按钮不渲染（剧透防护）；
             // meta filter（all/hierarchy）和无 group 关联的 filter 保留。
-            if (isLocked) continue;
+            if (_snapshotVersion >= 4) {
+                isLocked = false;
+                if (!showHiddenForAuthor() && filter.id !== 'all' && filter.id !== 'hierarchy' && (filter.hotspotIds || []).length && !(filter.hotspotIds || []).some(hotspotIsVisible)) continue;
+            } else if (isLocked) continue;
             var btn = document.createElement('button');
             btn.className = 'map-filter-hotspot';
             btn.type = 'button';
@@ -1316,6 +1358,9 @@ var MapPanel = (function() {
             btn.classList.toggle('is-active', !!activeFilter && activeFilter.id === filter.id);
             btn.classList.toggle('is-empty', enabledCount === 0);
             btn.classList.toggle('is-locked', isLocked);
+            var authorHidden = showHiddenForAuthor() && (filter.hotspotIds || []).length > 0 && !(filter.hotspotIds || []).some(function(id) { return getHotspotState(id).visible === true; });
+            btn.classList.toggle('is-authoring-hidden', authorHidden);
+            if (authorHidden) btn.setAttribute('aria-label', buildFilterTitle(filter, enabledCount, filterMeta, isLocked) + '（当前方案隐藏，仍可编辑）');
             // 任务红点 badge：只在该 filter 有"已解锁且有可交付任务"hotspot 时显示
             var questCount = (_taskBadge.byFilter[_activePage.id] && _taskBadge.byFilter[_activePage.id][filter.id]) || 0;
             var questBadgeHtml = questCount > 0
@@ -1417,6 +1462,7 @@ var MapPanel = (function() {
             var hotspotId = ids[i];
             var hotspot = findHotspotById(_activePage, hotspotId);
             if (!hotspot) continue;
+            if (!hotspotIsVisible(hotspotId)) continue;
             var state = getHotspotState(hotspotId);
             var enabled = !!_enabledLookup[hotspotId];
             var isCurrent = _currentHotspotId === hotspotId;
@@ -1485,7 +1531,7 @@ var MapPanel = (function() {
         btn.addEventListener('click', function() {
             if (!_activePage) return;
             var filterMeta = getFilterMeta(_activePage.id, filterId);
-            var isLocked = !!(filterMeta && !_unlockFlags[filterMeta.unlockGroup]);
+            var isLocked = !showHiddenForAuthor() && _snapshotVersion < 4 && !!(filterMeta && !_unlockFlags[filterMeta.unlockGroup]);
             if (isLocked) {
                 // 锁定 filter 只显示原因, 不切换状态; cue 已由 overlay click 代理按 data-audio-cue='illegal' 播过
                 if (filterMeta && filterMeta.lockedReason && typeof Toast !== 'undefined' && Toast && typeof Toast.add === 'function') {
@@ -1567,7 +1613,7 @@ var MapPanel = (function() {
             // 锁定 hotspot 不渲染标签（剧透防护：与 renderHotspots 口径一致，
             // 锁定区域彻底无 DOM，不靠 content-fit 裁剪来隐藏 — 否则未自适应缩放时
             // 锁定地点名会以 is-muted 0.28 透明度泄露出来）
-            if (!hotspotState.enabled) continue;
+            if (!hotspotIsVisible(hotspot.id)) continue;
             var rect = hotspot.rect;
             var stageSelectEntry = resolveStageSelectEntryForHotspot(hotspot);
             var hasQuest = !!_taskBadge.byHotspot[hotspot.id];
@@ -1583,7 +1629,7 @@ var MapPanel = (function() {
                     '<span class="map-hotspot-overlay-label-text">' + escHtml(hotspot.label || hotspot.id) + '</span>' +
                 '</span>';
             // 可选关: 加大尺寸的 "前往选关" 按钮独占一行, 避免与 hotspot 整块点击区争抢命中
-            if (stageSelectEntry) {
+            if (stageSelectEntry && hotspotState.enabled) {
                 var actions = document.createElement('div');
                 actions.className = 'map-hotspot-overlay-actions';
                 var action = document.createElement('button');
@@ -1631,6 +1677,7 @@ var MapPanel = (function() {
     }
 
     function shouldRenderFlashHint(hint) {
+        if (_snapshotVersion >= 4) return false;
         if (!hint) return false;
         if (hint.pageId && _activePage.id !== hint.pageId) return false;
         if (!hint.conditionId) return true;
@@ -1667,6 +1714,7 @@ var MapPanel = (function() {
 
     function getMarkerNpcKey(marker) {
         if (!marker) return '';
+        if (_snapshotVersion >= 4) return String(marker.placementId || '');
         if (marker.placementId) return normalizeNpcMarkerKey(marker.placementId);
         if (marker.npcName) return normalizeNpcMarkerKey(marker.npcName);
         if (marker.id) return normalizeNpcMarkerKey(marker.id);
@@ -1677,13 +1725,13 @@ var MapPanel = (function() {
     function getSlotNpcKeys(slot) {
         var keys = [];
         if (!slot) return keys;
+        if (_snapshotVersion >= 4) return slot.placementId ? [String(slot.placementId)] : [];
 
         if (slot.placementId) keys.push(normalizeNpcMarkerKey(slot.placementId));
         if (slot.label && slot.hotspotId) keys.push(normalizeNpcMarkerKey(slot.label + '@' + slot.hotspotId));
         if (slot.label) keys.push(normalizeNpcMarkerKey(slot.label));
         if (slot.id) keys.push(normalizeNpcMarkerKey(slot.id));
         if (slot.assetUrl) keys.push(normalizeNpcMarkerKey(slot.assetUrl));
-        if (slot.label === '杀马特') keys.push(normalizeNpcMarkerKey('∞天ㄙ★使的剪∞'));
 
         return keys;
     }
@@ -1770,6 +1818,7 @@ var MapPanel = (function() {
 
     function resolveAssetUrl(assetUrl) {
         var value = String(assetUrl || '');
+        if (_authoringEnabled && window.MapAuthoringAssets && Object.prototype.hasOwnProperty.call(window.MapAuthoringAssets, value)) return window.MapAuthoringAssets[value];
         var href = '';
         var marker = '/launcher/web/';
         var idx = -1;
@@ -1789,6 +1838,7 @@ var MapPanel = (function() {
 
     function resolveDynamicAvatarUrl(slot) {
         if (!slot) return '';
+        if (_snapshotVersion >= 4) return _avatarAssetUrls[slot.id] || '';
 
         if (slot.kind === 'roommateGender') {
             var gender = String(_dynamicAvatarState.roommateGender || '').toLowerCase();
@@ -1805,6 +1855,8 @@ var MapPanel = (function() {
         var hotspotId;
         for (hotspotId in hotspotStates) {
             _hotspotStateLookup[hotspotId] = {
+                visible: _snapshotVersion >= 4 ? hotspotStates[hotspotId].visible === true : hotspotStates[hotspotId].enabled === true,
+                locationId: hotspotStates[hotspotId].locationId || '',
                 enabled: hotspotStates[hotspotId].enabled !== undefined ? !!hotspotStates[hotspotId].enabled : !!_enabledLookup[hotspotId],
                 unlockGroup: hotspotStates[hotspotId].unlockGroup || (_hotspotStateLookup[hotspotId] ? _hotspotStateLookup[hotspotId].unlockGroup : ''),
                 lockedReason: hotspotStates[hotspotId].lockedReason || (_hotspotStateLookup[hotspotId] ? _hotspotStateLookup[hotspotId].lockedReason : '')
@@ -1883,7 +1935,11 @@ var MapPanel = (function() {
     function getVisibleHotspots(page) {
         if (!page) return [];
         var activeFilter = getActiveFilter(page);
-        return MapPanelData.getVisibleHotspots(page.id, activeFilter ? activeFilter.id : '');
+        return MapPanelData.getVisibleHotspots(page.id, activeFilter ? activeFilter.id : '').filter(function(h) { return hotspotIsVisible(h.id); });
+    }
+    function hotspotIsVisible(id) {
+        if (showHiddenForAuthor()) return true;
+        return _snapshotVersion >= 4 ? !!(_hotspotStateLookup[id] && _hotspotStateLookup[id].visible === true) : !!_enabledLookup[id];
     }
 
     function buildVisibleLookup(page) {
@@ -2152,6 +2208,7 @@ var MapPanel = (function() {
         var canvasSkipVisualIds = [];
         if (typeof MapSceneVisualLayer !== 'undefined') {
             var syncResult = MapSceneVisualLayer.syncState({
+                visualVisibility: _snapshotVersion >= 4 && !showHiddenForAuthor() ? (_visualVisibility[pageId] || {}) : null,
                 viewMode: viewMode,
                 activeFilterId: filterId,
                 currentHotspotId: _currentHotspotId,
@@ -2165,8 +2222,9 @@ var MapPanel = (function() {
         if (typeof MapAvatarLayer !== 'undefined' && _activePage) {
             MapAvatarLayer.syncState({
                 visibleLookup: buildVisibleLookup(_activePage),
-                enabledLookup: _enabledLookup,
-                avatarVisibility: _avatarVisibility,
+                enabledLookup: _snapshotVersion >= 4 ? null : _enabledLookup,
+                avatarVisibility: showHiddenForAuthor() ? {} : _avatarVisibility,
+                allowMissingAsset: showHiddenForAuthor(),
                 focusHotspotId: getFocusHotspotId(_activePage),
                 currentHotspotId: _currentHotspotId,
                 hoverHotspotId: _hoverHotspotId,
@@ -2178,9 +2236,7 @@ var MapPanel = (function() {
             revision: _canvasRevision,
             page: _activePage,
             // background 渲染模式的页面: 把底图 PNG 交给 canvas 作底层绘制 (assembled 页面恒为空)
-            backgroundImageUrl: (_activePage && _activePage.backgroundUrl && !useAssembledVisuals(_activePage))
-                ? resolveAssetUrl(_activePage.backgroundUrl)
-                : '',
+            backgroundImageUrl: pageBackgroundUrl(_activePage),
             activeFilterId: filterId,
             activeViewMode: viewMode,
             focusHotspotId: getFocusHotspotId(_activePage),
@@ -2304,7 +2360,7 @@ var MapPanel = (function() {
             ids = visuals[i].hotspotIds || [];
             hasEnabledHotspot = ids.length === 0;
             for (j = 0; j < ids.length; j++) {
-                if (_enabledLookup[ids[j]]) {
+                if (hotspotIsVisible(ids[j])) {
                     hasEnabledHotspot = true;
                     break;
                 }
@@ -2347,7 +2403,7 @@ var MapPanel = (function() {
                 label: slot.label || '',
                 hotspotId: slot.hotspotId || '',
                 rect: cloneRect(rect),
-                assetUrl: resolveAssetUrl(slot.assetUrl),
+                assetUrl: resolveAssetUrl(_snapshotVersion >= 4 ? (_avatarAssetUrls[slot.id] || (showHiddenForAuthor() ? slot.assetUrl : '')) : slot.assetUrl),
                 fallbackChar: avatarFallbackChar(slot.label)
             });
         }
@@ -2356,7 +2412,7 @@ var MapPanel = (function() {
             slot = dynamicSlots[i];
             if (!slot) continue;
             url = resolveDynamicAvatarUrl(slot);
-            if (!url) continue;
+            if (!url && !showHiddenForAuthor()) continue;
             rect = resolveDynamicAvatarRect(slot);
             if (!rect) continue;
             out.push({
@@ -2382,16 +2438,16 @@ var MapPanel = (function() {
         for (i = 0; i < slots.length; i++) {
             slot = slots[i];
             if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
-            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
+            if (slot.hotspotId && !hotspotIsVisible(slot.hotspotId)) continue;
             if (!slot.assetUrl) continue;
-            if (slot.id && _avatarVisibility.hasOwnProperty(slot.id) && _avatarVisibility[slot.id] === false) continue;
+            if (!showHiddenForAuthor() && slot.id && _avatarVisibility.hasOwnProperty(slot.id) && _avatarVisibility[slot.id] === false) continue;
             rect = resolveStaticAvatarRect(slot);
             if (!rect) continue;
             out.push({
                 id: slot.id || '',
                 label: slot.label || '',
                 hotspotId: slot.hotspotId || '',
-                assetUrl: resolveAssetUrl(slot.assetUrl),
+                assetUrl: resolveAssetUrl(_snapshotVersion >= 4 ? (_avatarAssetUrls[slot.id] || (showHiddenForAuthor() ? slot.assetUrl : '')) : slot.assetUrl),
                 rect: cloneRect(rect)
             });
         }
@@ -2409,9 +2465,9 @@ var MapPanel = (function() {
         for (i = 0; i < slots.length; i++) {
             slot = slots[i];
             if (slot.hotspotId && !visibleLookup[slot.hotspotId]) continue;
-            if (slot.hotspotId && !_enabledLookup[slot.hotspotId]) continue;
+            if (slot.hotspotId && !hotspotIsVisible(slot.hotspotId)) continue;
             assetUrl = resolveDynamicAvatarUrl(slot);
-            if (!assetUrl) continue;
+            if (!assetUrl && !showHiddenForAuthor()) continue;
             rect = resolveDynamicAvatarRect(slot);
             if (!rect) continue;
             out.push({
@@ -2598,7 +2654,7 @@ var MapPanel = (function() {
         for (i = 0; i < scenes.length; i++) rects.push(scenes[i].rect);
         for (i = 0; i < hotspots.length; i++) {
             // 仅计入实际会渲染的解锁 hotspot；锁定区域不渲染也不参与取景包围盒（剧透防护一致性）
-            if (_enabledLookup[hotspots[i].id]) {
+            if (hotspotIsVisible(hotspots[i].id)) {
                 rects.push(hotspots[i].rect);
             }
         }
@@ -2943,6 +2999,10 @@ var MapPanel = (function() {
         var capability = (typeof MapFitPresets !== 'undefined' && MapFitPresets && typeof MapFitPresets.resolveCapability === 'function')
             ? MapFitPresets.resolveCapability(_activePage.id, activeFilter ? activeFilter.id : '')
             : null;
+        if (typeof MapDefinitionData !== 'undefined' && MapDefinitionData.version >= 2) {
+            var pageCapabilities = (MapDefinitionData.assetCapabilities || {})[_activePage.id] || {};
+            capability = pageCapabilities[activeFilter ? activeFilter.id : '*'] || pageCapabilities['*'] || { sourceRatio: 1, verified: false };
+        }
         _stageScalePolicy = (typeof MapScalePolicy !== 'undefined' && MapScalePolicy && typeof MapScalePolicy.resolve === 'function')
             ? MapScalePolicy.resolve({
                 pageWidth: _activePage.width,
@@ -2996,8 +3056,21 @@ var MapPanel = (function() {
             case 'timeout': return '启动器等待地图状态响应超时。';
             case 'disconnected': return '当前未连接到游戏运行时。';
             case 'invalid_target': return '目标区域无效或暂不可达。';
+            case 'map_domain_not_ready':
+            case 'game_not_ready': return '游戏地图状态尚未就绪，请稍后刷新。';
+            case 'map_facts_stale':
+            case 'stale_facts':
+            case 'invalid_session': return '地图或任务状态已变化，请刷新后重试。';
+            case 'navigation_busy': return '正在切换场景，请等待当前跳转完成。';
+            case 'npc_absent': return '该人物当前不在目标驻点，请查看剧情条件。';
+            case 'ambiguous_placement': return '该人物当前有多个驻点，需要在内容工作台指定固定目标。';
+            case 'world_binding_required': return '该人物的真实场景接入尚未就绪，请检查内容绑定。';
+            case 'not_navigable': return '当前暂不能前往，请刷新地图查看地点和人物条件。';
+            case 'stage_run_active':
+            case 'combat_active': return '当前仍在战斗流程中，请先按正常流程返回。';
+            case 'pending_stage_settlement': return '请先完成或关闭本次奖励结算，再前往目标。';
             case 'canvas_unavailable': return '当前 WebView2 不支持地图 Canvas 渲染。';
-            default: return '地图桥接返回错误: ' + String(errorText || 'unknown_error');
+            default: return '暂时无法取得地图状态，请刷新；若持续失败，请退出启动器后重新打开。';
         }
     }
 
@@ -3122,7 +3195,9 @@ var MapPanel = (function() {
     return {
         authoring: _authoringEnabled ? {
             setFilter: function(id) { setActiveFilter(id); },
-            setDefinition: function(definition, snapshot, rasterScale) {
+            setDefinition: function(definition, snapshot, rasterScale, viewMode) {
+                _authoringViewMode = viewMode === 'author' ? 'author' : 'player';
+                _el.setAttribute('data-authoring-view', _authoringViewMode);
                 MapDefinitionData = definition;
                 MapAvatarSourceData = MapAvatarSourceData.create(definition);
                 MapPanelData = MapPanelData.create(definition);
@@ -3140,7 +3215,8 @@ var MapPanel = (function() {
             },
             getView: function() {
                 var filter = getActiveFilter(_activePage);
-                return { pageId: _activePage && _activePage.id, filterId: filter && filter.id, scale: _stageScale * _contentFitScale,
+                return { pageId: _activePage && _activePage.id, filterId: filter && filter.id, viewMode: _authoringViewMode,
+                    visibleInScenario: !!(_activePage && pageHasAnyEnabled(_activePage.id)), scale: _stageScale * _contentFitScale,
                     offsetX: _contentFitOffsetX, offsetY: _contentFitOffsetY,
                     width: _stageEl && _stageEl.clientWidth, height: _stageEl && _stageEl.clientHeight,
                     camera: { zoom: _authoringCamera.zoom, x: _authoringCamera.x, y: _authoringCamera.y } };

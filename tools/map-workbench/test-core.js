@@ -5,7 +5,8 @@ const work=fs.mkdtempSync(path.join(tmp,'map-core-test-'));
 const dotnet=process.env.CF7_DOTNET||path.join(process.env.LOCALAPPDATA,'Microsoft/dotnet/dotnet.exe');
 const dll=path.join(__dirname,'bin/Release/net10.0/MapWorkbench.dll');
 const file=path.join(work,'data/map/map_definition.json');fs.mkdirSync(path.dirname(file),{recursive:true});
-const original=fs.readFileSync(path.join(root,'data/map/map_definition.json'));fs.writeFileSync(file,original);
+// Frozen V1 receipt compatibility only; V2 content journeys live in test-ui-* and C# tests.
+const original=cp.execFileSync('git',['show','3ac9227cbdfdeb6d73f99e408414b03bfc338b5d:data/map/map_definition.json'],{cwd:root});fs.writeFileSync(file,original);
 let checks=0;function check(label,fn){fn();checks++;console.log('PASS '+label);}
 function api(request){const r=cp.spawnSync(dotnet,[dll,'api',work],{input:JSON.stringify(request),encoding:'utf8',maxBuffer:4e6});if(r.error)throw r.error;return JSON.parse(r.stdout);}
 try {
@@ -32,8 +33,15 @@ try {
  check('撤回重试幂等',()=>assert.equal(api({op:'undo',operationId}).data.state,'original'));
  check('拒绝目录穿越操作编号',()=>assert.equal(api({op:'query',operationId:'../elsewhere'}).success,false));
  const native=cp.spawnSync(dotnet,[dll,'hud',work],{encoding:'utf8',maxBuffer:4e6});const actual=JSON.parse(native.stdout).hotspots;
- const legacy=require('../export-maphud-data.js'),web=legacy.loadMapData(),expected={};
+ const legacy=require('./renderer-contract.js'),web=legacy.loadMapData(d),expected={};
  web.getAllHotspotIds().forEach(id=>{expected[id]=legacy.buildHotspotEntry(web,id);});
  check('C# NativeHud 与生产地图的当前定义投影逐字段一致',()=>assert.deepStrictEqual(actual,JSON.parse(JSON.stringify(expected))));
+ check('改名后的层级筛选不改变 HUD 聚焦',()=>{
+  const renamed=JSON.parse(JSON.stringify(d)),page=renamed.pages.base,layer=page.filters.find(f=>f.id==='hierarchy');
+  assert(layer,'frozen base hierarchy filter is required');
+  layer.id='copied-layer-view';layer.viewMode='hierarchy';layer.hotspotIds=[page.hotspots[0].id];
+  const renamedWeb=legacy.loadMapData(renamed);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(legacy.buildHotspotEntry(renamedWeb,page.hotspots[0].id))),JSON.parse(JSON.stringify(expected[page.hotspots[0].id])));
+ });
  console.log(checks+' map core checks passed');
 } finally {assert(work.startsWith(path.resolve(tmp)+path.sep));fs.rmSync(work,{recursive:true});}

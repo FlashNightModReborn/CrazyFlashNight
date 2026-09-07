@@ -213,13 +213,16 @@ if ($autoLevelFact -lt 0 -or $autoLevelThreshold -le $autoLevelFact -or
 }
 $advanceLogicPath = Join-Path $repoRoot 'scripts\逻辑\单位函数\单位函数_aka_战宠进阶.as'
 $advanceLogicSource = Get-Content -LiteralPath $advanceLogicPath -Raw -Encoding UTF8
+$advanceExtensionPath = Join-Path $repoRoot 'scripts\逻辑\单位函数\单位函数_aka_战宠进阶_扩展.as'
+$advanceLogicSource += "`n" + (Get-Content -LiteralPath $advanceExtensionPath -Raw -Encoding UTF8)
 $managedTemplatePath = Join-Path $repoRoot 'scripts\test-runners\managed-longgun\TestLoader.as.template'
 $managedTemplateSource = Get-Content -LiteralPath $managedTemplatePath -Raw -Encoding UTF8
 $templatePetEngine = $managedTemplateSource.IndexOf('#include "引擎/引擎_lsy_战宠系统.as"')
 $templatePetLevel = $managedTemplateSource.IndexOf('#include "引擎/引擎_lsy_等级与经验值.as"')
 $templatePetAdvance = $managedTemplateSource.IndexOf('#include "逻辑/单位函数/单位函数_aka_战宠进阶.as"')
+$templatePetAdvanceExtension = $managedTemplateSource.IndexOf('#include "逻辑/单位函数/单位函数_aka_战宠进阶_扩展.as"')
 if ($templatePetEngine -lt 0 -or $templatePetLevel -le $templatePetEngine -or
-    $templatePetAdvance -le $templatePetLevel) {
+    $templatePetAdvance -le $templatePetLevel -or $templatePetAdvanceExtension -le $templatePetAdvance) {
     throw 'Managed-longgun focused template must load pet engine, level engine and pet advance logic in production order.'
 }
 if ($advanceLogicSource -match '(?m)^\s*刷新当前宠物\s*\(\s*\)\s*;\s*$') {
@@ -341,6 +344,7 @@ $focusedRun = @{
         'scripts\引擎\引擎_lsy_战宠系统.as'
         'scripts\引擎\引擎_lsy_等级与经验值.as'
         'scripts\逻辑\单位函数\单位函数_aka_战宠进阶.as'
+        'scripts\逻辑\单位函数\单位函数_aka_战宠进阶_扩展.as'
     )
     ExpectedTracePatterns = @(
         '(?m)^ManagedLongGunServiceTest Tests Passed: 126\r?$'

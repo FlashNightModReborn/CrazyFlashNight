@@ -676,15 +676,15 @@ var MapPanelHarnessQA = (function() {
             },
             {
                 id: 'map-ui9',
-                title: 'locked groups stay spoiler-safe: locked hotspot hidden, hint still surfaces',
+                title: 'locked groups stay spoiler-safe: hidden hotspot and no obsolete Flash hint',
                 run: function() {
                     return bootMap(api, host, { defaultPageId: 'school', lockedGroups: ['schoolInside'] }).then(function(state) {
                         var hotspot = document.querySelector('.map-hotspot[data-hotspot-id="school_dormitory"]');
-                        api.assert(state.lockedHotspotIds.indexOf('school_dormitory') >= 0, 'school dormitory should be locked');
+                        api.assert(host.buildSnapshot().hotspotStates.school_dormitory.enabled === false, 'school dormitory should be locked');
                         // 剧透防护: 锁定 hotspot 整体不渲染 (无按钮 / 无轮廓 / 无可达标签)
                         api.assert(!hotspot, 'locked hotspot must not render (spoiler protection)');
-                        // 未开放原因仍通过 canvas 上的 flash hint 表达, 玩家可感知
-                        api.assert(state.canvasLastDrawSummary.flashHintCount > 0, 'locked filter hint missing from canvas');
+                        // v4 隐藏区域不绘制旧 Flash 提示；真实作者原因来自独立 C# 原因树。
+                        api.assertEqual(state.canvasLastDrawSummary.flashHintCount, 0, 'v4 must not restore legacy Flash hints');
                         return 'lockedHotspotHidden flashHints=' + state.canvasLastDrawSummary.flashHintCount;
                     });
                 }
@@ -786,6 +786,7 @@ var MapPanelHarnessQA = (function() {
                                 id: 'task_npc_室友',
                                 kind: 'taskNpc',
                                 npcName: '室友',
+                                placementId: slot.placementId,
                                 pageId: 'school',
                                 hotspotId: 'school_dormitory',
                                 point: { x: 130.3, y: 347.3 }
@@ -890,9 +891,9 @@ var MapPanelHarnessQA = (function() {
                             var enabledHs = document.querySelector('.map-hotspot[data-hotspot-id="base_entrance"]');
                             api.assert(enabledHs && enabledHs.getAttribute('data-audio-cue') === 'navigate', 'enabled hotspot should route navigate');
 
-                            // 剧透防护: 禁用 hotspot 整体不渲染, 不可点 (#1)
+                            // v4 分开“隐藏”和“可见但不可进入”；此夹具只禁用导航，仍可点击查看原因。
                             var disabledHs = document.querySelector('.map-hotspot[data-hotspot-id="base_lobby"]');
-                            api.assert(!disabledHs, 'disabled hotspot must not render (spoiler protection)');
+                            api.assert(disabledHs && disabledHs.getAttribute('data-audio-cue') === 'illegal', 'visible locked hotspot should route illegal cue');
 
                             api.assert(!document.querySelector('.map-scene-chip'), 'scene chip strip removed; right rail owns filter/floor navigation now');
                             api.assert(!document.querySelector('.map-scene-strip'), 'scene chip strip container should not be in DOM');
@@ -900,6 +901,10 @@ var MapPanelHarnessQA = (function() {
                             // 单次触发断言: overlay click 代理 + 面板 playCue 不可同时响
                             var BA = window.BootstrapAudio;
                             api.assert(!!BA && typeof BA._resetCounts === 'function', 'harness BootstrapAudio counter stub required');
+                            var beforeLockedClick = host.getMessages().filter(function(m) { return m.cmd === 'navigate'; }).length;
+                            BA._resetCounts(); disabledHs.click();
+                            api.assertEqual(BA._counts.Error || 0, 1, 'visible locked click should fire Error once');
+                            api.assertEqual(host.getMessages().filter(function(m) { return m.cmd === 'navigate'; }).length, beforeLockedClick, 'visible locked click must not navigate');
 
                             // 1) 启用 hotspot click → 只响一次 Transition (面板 requestNavigate 已不再直接播 cue)
                             BA._resetCounts();
@@ -2419,8 +2424,9 @@ var MapPanelHarnessQA = (function() {
                             return api.waitFor(function() {
                                 var s = currentState();
                                 if (!s || !s.sceneVisualLayer) return null;
-                                return s.sceneVisualLayer.domVisibleCount === 2 ? s : null;
-                            }, 1500, 'two DOM visuals visible (current + hover)').then(function() {
+                                // DOM 同步更新，canvas 在下一次 RAF 才提交；双绘断言必须对齐同一 revision。
+                                return s.sceneVisualLayer.domVisibleCount === 2 && isCanvasCurrent(s) ? s : null;
+                            }, 1500, 'two DOM visuals visible and canvas current (current + hover)').then(function() {
                                 var state = currentState();
                                 api.assertEqual(state.sceneVisualLayer.domVisibleCount, 2, 'DOM 显两张 (current=base_lobby + hover=base_entrance)');
 

@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "pageOrder": [
     "base",
     "faction",
@@ -17,110 +17,6 @@
     "xflDir": "flashswf/UI/地图界面",
     "domDocument": "flashswf/UI/地图界面/DOMDocument.xml",
     "ffdecCli": "tools/ffdec/ffdec-cli.exe"
-  },
-  "unlockGroups": {
-    "warlord": {
-      "id": "warlord",
-      "conditionId": "unlock.warlord",
-      "label": "军阀线路",
-      "lockedReason": "军阀线路尚未开放"
-    },
-    "rock": {
-      "id": "rock",
-      "conditionId": "unlock.rock",
-      "label": "摇滚线路",
-      "lockedReason": "摇滚线路尚未开放"
-    },
-    "blackiron": {
-      "id": "blackiron",
-      "conditionId": "unlock.blackiron",
-      "label": "黑铁会线路",
-      "lockedReason": "黑铁会线路尚未开放"
-    },
-    "fallen": {
-      "id": "fallen",
-      "conditionId": "unlock.fallen",
-      "label": "堕落城线路",
-      "lockedReason": "堕落城线路尚未开放"
-    },
-    "defense": {
-      "id": "defense",
-      "conditionId": "unlock.defense",
-      "label": "第一防线",
-      "lockedReason": "第一防线尚未开放"
-    },
-    "restricted": {
-      "id": "restricted",
-      "conditionId": "unlock.restricted",
-      "label": "禁区",
-      "lockedReason": "禁区尚未开放"
-    },
-    "schoolOutside": {
-      "id": "schoolOutside",
-      "conditionId": "unlock.schoolOutside",
-      "label": "学校外部",
-      "lockedReason": "学校外部尚未开放"
-    },
-    "schoolInside": {
-      "id": "schoolInside",
-      "conditionId": "unlock.schoolInside",
-      "label": "学校内部",
-      "lockedReason": "学校内部尚未开放"
-    }
-  },
-  "pageUnlockGroups": {
-    "faction": {
-      "filters": {
-        "warlord": "warlord",
-        "rock": "rock",
-        "blackiron": "blackiron",
-        "fallen": "fallen"
-      },
-      "hotspots": {
-        "warlord_base": "warlord",
-        "warlord_tent": "warlord",
-        "firing_range": "warlord",
-        "rock_park": "rock",
-        "rock_rehearsal": "rock",
-        "blackiron_training": "blackiron",
-        "blackiron_pavilion": "blackiron",
-        "fallen_bar": "fallen",
-        "fallen_street": "fallen",
-        "fallen_entrance": "fallen"
-      }
-    },
-    "defense": {
-      "filters": {
-        "first_line": "defense",
-        "restricted": "restricted"
-      },
-      "hotspots": {
-        "first_defense": "defense",
-        "subway": "defense",
-        "alliance_dock": "restricted",
-        "alliance_corridor": "restricted"
-      }
-    },
-    "school": {
-      "filters": {
-        "inside": "schoolInside",
-        "outside": "schoolOutside"
-      },
-      "hotspots": {
-        "workshop": "schoolInside",
-        "university_interior": "schoolInside",
-        "university_playground": "schoolInside",
-        "dorm_downstairs": "schoolInside",
-        "school_dormitory": "schoolInside",
-        "office": "schoolInside",
-        "kendo_club": "schoolInside",
-        "science_class": "schoolInside",
-        "arts_class": "schoolInside",
-        "teaching_interior": "schoolInside",
-        "teaching_right": "schoolInside",
-        "union_university": "schoolOutside"
-      }
-    }
   },
   "handTunedLayoutIds": {
     "base_roof": true,
@@ -142,7 +38,24 @@
     "firing_range": true,
     "subway": true,
     "alliance_dock": true,
-    "alliance_corridor": true
+    "alliance_corridor": true,
+    "rock_park": true,
+    "rock_rehearsal": true,
+    "blackiron_training": true,
+    "blackiron_pavilion": true,
+    "fallen_street": true,
+    "fallen_entrance": true,
+    "fallen_bar": true,
+    "first_defense": true,
+    "workshop": true,
+    "university_interior": true,
+    "university_playground": true,
+    "dorm_downstairs": true,
+    "school_dormitory": true,
+    "office": true,
+    "kendo_club": true,
+    "science_class": true,
+    "arts_class": true
   },
   "xflSourceRects": {
     "base": {
@@ -410,10 +323,10 @@
           "label": "基地屋顶",
           "assetUrl": "assets/map/composite/base/base-roof.webp",
           "rect": {
-            "x": 211.6,
-            "y": 95.25,
+            "h": 179.25,
             "w": 471.05,
-            "h": 179.25
+            "x": 222.03,
+            "y": 55.19
           },
           "filterIds": [
             "roof",
@@ -448,10 +361,10 @@
           "label": "医务室",
           "assetUrl": "assets/map/composite/base/infirmary.webp",
           "rect": {
-            "x": 496.55,
-            "y": 95.2,
+            "h": 123.5,
             "w": 156.52,
-            "h": 123.5
+            "x": 496.55,
+            "y": 95.2
           },
           "filterIds": [
             "first_floor",
@@ -505,10 +418,10 @@
           "label": "基地大厅",
           "assetUrl": "assets/map/composite/base/base-lobby.webp",
           "rect": {
-            "x": 223.35,
-            "y": 146.7,
+            "h": 142.76,
             "w": 441.94,
-            "h": 142.76
+            "x": 223.35,
+            "y": 146.7
           },
           "filterIds": [
             "first_floor",
@@ -524,10 +437,10 @@
           "label": "基地门口",
           "assetUrl": "assets/map/composite/base/base-entrance.webp",
           "rect": {
-            "x": 622.65,
-            "y": 151.3,
+            "h": 137.49,
             "w": 289.54,
-            "h": 137.49
+            "x": 622.65,
+            "y": 151.3
           },
           "filterIds": [
             "first_floor",
@@ -619,10 +532,10 @@
           "label": "走廊",
           "assetUrl": "assets/map/composite/base/corridor.webp",
           "rect": {
-            "x": 329,
-            "y": 348.55,
+            "h": 121.66,
             "w": 197.46,
-            "h": 121.66
+            "x": 329,
+            "y": 348.55
           },
           "filterIds": [
             "basement2",
@@ -638,10 +551,10 @@
           "label": "实验室",
           "assetUrl": "assets/map/composite/base/lab.webp",
           "rect": {
-            "x": 496.1,
-            "y": 317.35,
+            "h": 153.01,
             "w": 219.99,
-            "h": 153.01
+            "x": 465.59,
+            "y": 318.09
           },
           "filterIds": [
             "basement2",
@@ -677,127 +590,295 @@
           "id": "pig_avatar",
           "label": "Pig",
           "hotspotId": "base_garage",
-          "assetUrl": "assets/map/avatars/pig头像.webp"
+          "assetUrl": "assets/map/avatars/pig头像.webp",
+          "placementId": "place_dbe5b0458c2539d0",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 88.2,
+          "relY": 33.75,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "boy_avatar",
           "label": "Boy",
           "hotspotId": "base_garage",
-          "assetUrl": "assets/map/avatars/boy头像.webp"
+          "assetUrl": "assets/map/avatars/boy头像.webp",
+          "placementId": "place_042569a5864d3d91",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 129.5,
+          "relY": 61.6,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "king_avatar",
           "label": "King",
           "hotspotId": "base_garage",
-          "assetUrl": "assets/map/avatars/king头像.webp"
+          "assetUrl": "assets/map/avatars/king头像.webp",
+          "placementId": "place_58810d99bc81c80d",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 181.85,
+          "relY": 33.5,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "weapon_merchant_avatar",
           "label": "冷兵器商人",
           "hotspotId": "base_garage",
-          "assetUrl": "assets/map/avatars/冷兵器商人头像.webp"
+          "assetUrl": "assets/map/avatars/冷兵器商人头像.webp",
+          "placementId": "place_275ffbfa1f4de946",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 37.15,
+          "relY": 37.7,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "shamate_avatar",
           "label": "杀马特",
           "hotspotId": "base_lobby",
-          "assetUrl": "assets/map/avatars/∞天ㄙ★使的剪∞头像.webp"
+          "assetUrl": "assets/map/avatars/∞天ㄙ★使的剪∞头像.webp",
+          "placementId": "place_e215f9de19a91e1c",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 92.35,
+          "relY": 20.8,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "bartender_avatar",
           "label": "酒保",
           "hotspotId": "merc_bar",
-          "assetUrl": "assets/map/avatars/酒保头像.webp"
+          "assetUrl": "assets/map/avatars/酒保头像.webp",
+          "placementId": "place_4522b2c356d5ee38",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 99.55,
+          "relY": 20,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "wizard_avatar",
           "label": "格格巫",
           "hotspotId": "infirmary",
-          "assetUrl": "assets/map/avatars/格格巫头像.webp"
+          "assetUrl": "assets/map/avatars/格格巫头像.webp",
+          "placementId": "place_964a739ea3fc7a5b",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 20.35,
+          "relY": 28.45,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "lilith_avatar",
           "label": "丽丽丝",
           "hotspotId": "infirmary",
-          "assetUrl": "assets/map/avatars/丽丽丝头像.webp"
+          "assetUrl": "assets/map/avatars/丽丽丝头像.webp",
+          "placementId": "place_621c0948de33cd86",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 75,
+          "relY": 28.25,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "dancer_avatar",
           "label": "舞女",
           "hotspotId": "merc_bar",
-          "assetUrl": "assets/map/avatars/舞女头像.webp"
+          "assetUrl": "assets/map/avatars/舞女头像.webp",
+          "placementId": "place_d5deb78f23386ebd",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 44.55,
+          "relY": 24.2,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "gem_contact_avatar",
           "label": "宝石线人",
           "hotspotId": "base_lobby",
-          "assetUrl": "assets/map/avatars/宝石线人头像.webp"
+          "assetUrl": "assets/map/avatars/宝石线人头像.webp",
+          "placementId": "place_b73a817e83041d09",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 291.35,
+          "relY": 53.2,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "sheriff_avatar",
           "label": "前治安官",
           "hotspotId": "base_lobby",
-          "assetUrl": "assets/map/avatars/前治安官头像.webp"
+          "assetUrl": "assets/map/avatars/前治安官头像.webp",
+          "placementId": "place_1ada58a20da44c3f",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 352.25,
+          "relY": 40.5,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "diplomat_avatar",
           "label": "黑铁会外交部长",
           "hotspotId": "base_lobby",
-          "assetUrl": "assets/map/avatars/黑铁会外交部长头像.webp"
+          "assetUrl": "assets/map/avatars/黑铁会外交部长头像.webp",
+          "placementId": "place_c7e60636436b3d3e",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 89.65,
+          "relY": 67.9,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "schoolgirl_avatar",
           "label": "学生妹",
           "hotspotId": "base_lobby",
-          "assetUrl": "assets/map/avatars/学生妹头像.webp"
+          "assetUrl": "assets/map/avatars/学生妹头像.webp",
+          "placementId": "place_d2deebcae24e8198",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 140.6,
+          "relY": 48.6,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "veteran_avatar",
           "label": "幸存老兵",
           "hotspotId": "base_lobby",
-          "assetUrl": "assets/map/avatars/幸存老兵头像.webp"
+          "assetUrl": "assets/map/avatars/幸存老兵头像.webp",
+          "placementId": "place_53ab64285f9bb4f8",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 193,
+          "relY": 62.5,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "thegirl_avatar",
           "label": "The Girl",
           "hotspotId": "basement1",
-          "assetUrl": "assets/map/avatars/the girl头像.webp"
+          "assetUrl": "assets/map/avatars/the girl头像.webp",
+          "placementId": "place_25f9ea41590b44ef",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 48.55,
+          "relY": 25.1,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "andy_avatar",
           "label": "Andy Law",
           "hotspotId": "basement1",
-          "assetUrl": "assets/map/avatars/andy头像.webp"
+          "assetUrl": "assets/map/avatars/andy头像.webp",
+          "placementId": "place_72809bc934c7be85",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 109.85,
+          "relY": 21.85,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "shopgirl_avatar",
           "label": "Shop Girl",
           "hotspotId": "armory",
-          "assetUrl": "assets/map/avatars/shopgirl头像.webp"
+          "assetUrl": "assets/map/avatars/shopgirl头像.webp",
+          "placementId": "place_1aa3bb70610d10bc",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 40.15,
+          "relY": 23.15,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "blue_avatar",
           "label": "Blue",
           "hotspotId": "basement1",
-          "assetUrl": "assets/map/avatars/blue头像.webp"
+          "assetUrl": "assets/map/avatars/blue头像.webp",
+          "placementId": "place_473b37508198574e",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 233.2,
+          "relY": 29.25,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "xiaof_avatar",
           "label": "小F",
           "hotspotId": "armory",
-          "assetUrl": "assets/map/avatars/小F头像.webp"
+          "assetUrl": "assets/map/avatars/小F头像.webp",
+          "placementId": "place_99febdc4b779ecce",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 99.65,
+          "relY": 12.05,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "chef_avatar",
           "label": "厨师",
           "hotspotId": "cafeteria",
-          "assetUrl": "assets/map/avatars/厨师头像.webp"
+          "assetUrl": "assets/map/avatars/厨师头像.webp",
+          "placementId": "place_4832d2133313a32c",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 228.55,
+          "relY": 72.2,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "master_swordman_gym_avatar",
           "label": "武器大师",
           "hotspotId": "gym",
-          "assetUrl": "assets/map/avatars/武器大师头像.webp"
+          "assetUrl": "assets/map/avatars/武器大师头像.webp",
+          "placementId": "place_d8c6c15318122aa2",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 100,
+          "relY": 20,
+          "w": 44,
+          "h": 44
         }
       ],
       "filters": [
@@ -812,7 +893,8 @@
             "y": 108,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "base"
         },
         {
           "id": "first_floor",
@@ -830,7 +912,8 @@
             "y": 151,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "base"
         },
         {
           "id": "basement1",
@@ -845,7 +928,8 @@
             "y": 194,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "base"
         },
         {
           "id": "basement2",
@@ -860,7 +944,8 @@
             "y": 238,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "base"
         },
         {
           "id": "water",
@@ -873,7 +958,8 @@
             "y": 281,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "base"
         },
         {
           "id": "all",
@@ -889,9 +975,9 @@
             "basement1",
             "gym",
             "armory",
-            "lab",
-            "corridor",
             "cafeteria",
+            "corridor",
+            "lab",
             "underground_water"
           ],
           "buttonRect": {
@@ -899,7 +985,8 @@
             "y": 341,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "base"
         },
         {
           "id": "hierarchy",
@@ -925,7 +1012,9 @@
             "y": 384,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "base",
+          "viewMode": "hierarchy"
         }
       ],
       "defaultFilterId": "all",
@@ -933,158 +1022,162 @@
         {
           "id": "base_roof",
           "label": "基地屋顶",
-          "sceneName": "基地房顶",
           "rect": {
-            "x": 211.6,
-            "y": 95.25,
+            "x": 222.03,
+            "y": 55.19,
             "w": 471.05,
             "h": 179.25
-          }
+          },
+          "locationId": "base_roof"
         },
         {
           "id": "base_lobby",
           "label": "基地大厅",
-          "sceneName": "基地1层",
           "rect": {
             "x": 223.35,
             "y": 146.7,
             "w": 441.94,
             "h": 142.76
-          }
+          },
+          "locationId": "base_lobby"
         },
         {
           "id": "base_entrance",
           "label": "基地门口",
-          "sceneName": "基地门口",
           "rect": {
             "x": 622.65,
             "y": 151.3,
             "w": 289.54,
             "h": 137.49
-          }
+          },
+          "locationId": "base_entrance"
         },
         {
           "id": "base_garage",
           "label": "基地车库",
-          "sceneName": "基地车库",
           "rect": {
             "x": 33.3,
             "y": 134.25,
-            "w": 290,
+            "w": 290.0,
             "h": 156.87
-          }
+          },
+          "locationId": "base_garage"
         },
         {
           "id": "merc_bar",
           "label": "佣兵酒吧",
-          "sceneName": "佣兵酒吧",
           "rect": {
             "x": 295.1,
             "y": 65.9,
             "w": 216.25,
             "h": 125.44
-          }
+          },
+          "locationId": "merc_bar"
         },
         {
           "id": "infirmary",
           "label": "医务室",
-          "sceneName": "医务室",
           "rect": {
             "x": 496.55,
             "y": 95.2,
             "w": 156.52,
             "h": 123.5
-          }
+          },
+          "locationId": "infirmary"
         },
         {
           "id": "dormitory",
           "label": "宿舍",
-          "sceneName": "房间",
           "rect": {
             "x": 475.85,
             "y": 56.2,
             "w": 133.93,
             "h": 100.91
-          }
+          },
+          "locationId": "dormitory"
         },
         {
           "id": "basement1",
           "label": "地下一层",
-          "sceneName": "地下室1层",
           "rect": {
             "x": 337.55,
             "y": 257.4,
             "w": 333.2,
             "h": 121.98
-          }
+          },
+          "locationId": "basement1"
         },
         {
           "id": "gym",
           "label": "健身房",
-          "sceneName": "健身房",
           "rect": {
             "x": 221.25,
             "y": 257.4,
             "w": 199.87,
             "h": 120.98
-          }
+          },
+          "locationId": "gym"
         },
         {
           "id": "armory",
           "label": "武器库",
-          "sceneName": "武器库",
           "rect": {
             "x": 459.65,
             "y": 217.9,
             "w": 198.61,
             "h": 120.98
-          }
+          },
+          "locationId": "armory"
         },
         {
           "id": "cafeteria",
           "label": "食堂",
-          "sceneName": "地图-食堂",
           "rect": {
             "x": 44.6,
             "y": 314.05,
             "w": 399.62,
             "h": 159.39
-          }
+          },
+          "locationId": "cafeteria"
         },
         {
           "id": "corridor",
           "label": "走廊",
-          "sceneName": "地图-走廊",
           "rect": {
-            "x": 329,
+            "x": 329.0,
             "y": 348.55,
             "w": 197.46,
             "h": 121.66
-          }
+          },
+          "locationId": "corridor"
         },
         {
           "id": "lab",
           "label": "实验室",
-          "sceneName": "地图-实验室",
           "rect": {
-            "x": 496.1,
-            "y": 317.35,
+            "x": 465.59,
+            "y": 318.09,
             "w": 219.99,
             "h": 153.01
-          }
+          },
+          "locationId": "lab"
         },
         {
           "id": "underground_water",
           "label": "地下水",
-          "sceneName": "地下2层",
           "rect": {
             "x": 328.25,
             "y": 418.65,
             "w": 170.17,
             "h": 113.41
-          }
+          },
+          "locationId": "underground_water"
         }
-      ]
+      ],
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base"
     },
     "faction": {
       "id": "faction",
@@ -1173,10 +1266,10 @@
           "label": "摇滚排练室",
           "assetUrl": "assets/map/composite/faction/rock-rehearsal.webp",
           "rect": {
-            "x": 318.3,
-            "y": 193.7,
+            "h": 127,
             "w": 262,
-            "h": 127
+            "x": 305.93,
+            "y": 189.58
           },
           "filterIds": [
             "rock",
@@ -1263,10 +1356,10 @@
           "label": "堕落城酒吧",
           "assetUrl": "assets/map/composite/faction/fallen-bar.webp",
           "rect": {
-            "x": 557,
-            "y": 389.15,
+            "h": 138,
             "w": 240,
-            "h": 138
+            "x": 551.85,
+            "y": 396.36
           },
           "filterIds": [
             "fallen",
@@ -1282,103 +1375,239 @@
           "id": "general_avatar",
           "label": "general",
           "hotspotId": "warlord_base",
-          "assetUrl": "assets/map/avatars/general头像.webp"
+          "assetUrl": "assets/map/avatars/general头像.webp",
+          "placementId": "place_b59c552dcd29ba18",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 142.25,
+          "relY": 34.55,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "gazer_avatar",
           "label": "gazer",
           "hotspotId": "warlord_base",
-          "assetUrl": "assets/map/avatars/gazer头像.webp"
+          "assetUrl": "assets/map/avatars/gazer头像.webp",
+          "placementId": "place_7bd4f4b324b01105",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 33.15,
+          "relY": 32.75,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "director_avatar",
           "label": "director",
           "hotspotId": "warlord_tent",
-          "assetUrl": "assets/map/avatars/director头像.webp"
+          "assetUrl": "assets/map/avatars/director头像.webp",
+          "placementId": "place_afb341761435906e",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 80.85,
+          "relY": 42.25,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "itinerant_avatar",
           "label": "itinerant",
           "hotspotId": "firing_range",
-          "assetUrl": "assets/map/avatars/itinerant头像.webp"
+          "assetUrl": "assets/map/avatars/itinerant头像.webp",
+          "placementId": "place_528de4cba7039a14",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 63.85,
+          "relY": 73.15,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "surveyor_avatar",
           "label": "surveyor",
           "hotspotId": "firing_range",
-          "assetUrl": "assets/map/avatars/surveyor头像.webp"
+          "assetUrl": "assets/map/avatars/surveyor头像.webp",
+          "placementId": "place_702674b08b55ac14",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 164.25,
+          "relY": 43.9,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "singer_avatar",
           "label": "singer",
           "hotspotId": "rock_park",
-          "assetUrl": "assets/map/avatars/singer头像.webp"
+          "assetUrl": "assets/map/avatars/singer头像.webp",
+          "placementId": "place_f6fb5f79eb0c6235",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 112.45,
+          "relY": 53.7,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "keyboard_avatar",
           "label": "keyboard",
           "hotspotId": "rock_park",
-          "assetUrl": "assets/map/avatars/keyboard头像.webp"
+          "assetUrl": "assets/map/avatars/keyboard头像.webp",
+          "placementId": "place_fbd7b68d9a8f944e",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 176.85,
+          "relY": 81.7,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "guitar_avatar",
           "label": "guitar",
           "hotspotId": "rock_park",
-          "assetUrl": "assets/map/avatars/guitar头像.webp"
+          "assetUrl": "assets/map/avatars/guitar头像.webp",
+          "placementId": "place_b12d379745d98578",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 50.55,
+          "relY": 81.7,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "firephoenix_avatar",
           "label": "火凤",
           "hotspotId": "blackiron_training",
-          "assetUrl": "assets/map/avatars/火凤头像.webp"
+          "assetUrl": "assets/map/avatars/火凤头像.webp",
+          "placementId": "place_5e1d68fd9159ef80",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 73.12,
+          "relY": 20.54,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "wingtiger_avatar",
           "label": "翅虎",
           "hotspotId": "blackiron_training",
-          "assetUrl": "assets/map/avatars/翅虎头像.webp"
+          "assetUrl": "assets/map/avatars/翅虎头像.webp",
+          "placementId": "place_a55b171b7719d416",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 165.38,
+          "relY": 8.07,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "blackdragon_avatar",
           "label": "黑龙",
           "hotspotId": "blackiron_training",
-          "assetUrl": "assets/map/avatars/黑龙头像.webp"
+          "assetUrl": "assets/map/avatars/黑龙头像.webp",
+          "placementId": "place_53189388d7a4e99c",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 209.28,
+          "relY": 28.21,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "blackiron_avatar",
           "label": "黑铁",
           "hotspotId": "blackiron_pavilion",
-          "assetUrl": "assets/map/avatars/黑铁头像.webp"
+          "assetUrl": "assets/map/avatars/黑铁头像.webp",
+          "placementId": "place_a33b5a67711b7a05",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 104.14,
+          "relY": 35.27,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "cowboy_avatar",
           "label": "牛仔",
           "hotspotId": "fallen_bar",
-          "assetUrl": "assets/map/avatars/牛仔头像.webp"
+          "assetUrl": "assets/map/avatars/牛仔头像.webp",
+          "placementId": "place_da2d97fafcf786c3",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 114.7,
+          "relY": 32.25,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "cyborg_sage_avatar",
           "label": "假肢仙人",
           "hotspotId": "fallen_street",
-          "assetUrl": "assets/map/avatars/假肢仙人头像.webp"
+          "assetUrl": "assets/map/avatars/假肢仙人头像.webp",
+          "placementId": "place_43f1143a01ee35ca",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 105.55,
+          "relY": 46.25,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "hitler_avatar",
           "label": "吸特乐",
           "hotspotId": "fallen_street",
-          "assetUrl": "assets/map/avatars/吸特乐头像.webp"
+          "assetUrl": "assets/map/avatars/吸特乐头像.webp",
+          "placementId": "place_1e88cbde1b53104c",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 28.55,
+          "relY": 39.25,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "researcher_avatar",
           "label": "researcher",
           "hotspotId": "fallen_street",
-          "assetUrl": "assets/map/avatars/researcher头像.webp"
+          "assetUrl": "assets/map/avatars/researcher头像.webp",
+          "placementId": "place_df81c0a39b4cde1c",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 160.1,
+          "relY": 57.85,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "bartender_fallen_avatar",
           "label": "调酒师",
           "hotspotId": "fallen_bar",
-          "assetUrl": "assets/map/avatars/调酒师头像.webp"
+          "assetUrl": "assets/map/avatars/调酒师头像.webp",
+          "placementId": "place_4d6adb5ead347b90",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 65,
+          "relY": 59.25,
+          "w": 44,
+          "h": 44
         }
       ],
       "filters": [
@@ -1395,7 +1624,8 @@
             "y": 108,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "warlord"
         },
         {
           "id": "rock",
@@ -1409,7 +1639,8 @@
             "y": 168,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "rock"
         },
         {
           "id": "blackiron",
@@ -1423,7 +1654,8 @@
             "y": 228,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "blackiron"
         },
         {
           "id": "fallen",
@@ -1438,7 +1670,8 @@
             "y": 288,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "fallen"
         },
         {
           "id": "all",
@@ -1451,16 +1684,17 @@
             "rock_rehearsal",
             "blackiron_training",
             "blackiron_pavilion",
-            "fallen_bar",
+            "fallen_street",
             "fallen_entrance",
-            "fallen_street"
+            "fallen_bar"
           ],
           "buttonRect": {
             "x": 895,
             "y": 348,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "base"
         }
       ],
       "defaultFilterId": "all",
@@ -1468,114 +1702,136 @@
         {
           "id": "warlord_base",
           "label": "军阀基地",
-          "sceneName": "地图-军阀基地",
           "rect": {
             "x": 26.35,
             "y": 85.4,
             "w": 240.25,
             "h": 125.08
-          }
+          },
+          "locationId": "warlord_base"
         },
         {
           "id": "warlord_tent",
           "label": "军阀帐篷",
-          "sceneName": "地图-军阀帐篷",
           "rect": {
             "x": 40.6,
             "y": 33.15,
             "w": 193.16,
             "h": 115.48
-          }
+          },
+          "locationId": "warlord_tent"
         },
         {
           "id": "firing_range",
           "label": "靶场",
-          "sceneName": "地图-靶场",
           "rect": {
             "x": 20.75,
             "y": 170.05,
             "w": 248.3,
             "h": 148.26
-          }
+          },
+          "locationId": "firing_range"
         },
         {
           "id": "rock_park",
           "label": "摇滚公园",
-          "sceneName": "地图-摇滚公园",
           "rect": {
             "x": 305.05,
-            "y": 55,
-            "w": 284,
-            "h": 145
-          }
+            "y": 55.0,
+            "w": 284.0,
+            "h": 145.0
+          },
+          "locationId": "rock_park"
         },
         {
           "id": "rock_rehearsal",
           "label": "摇滚排练室",
-          "sceneName": "地图-摇滚排练室",
           "rect": {
-            "x": 318.3,
-            "y": 193.7,
-            "w": 262,
-            "h": 127
-          }
+            "x": 305.93,
+            "y": 189.58,
+            "w": 262.0,
+            "h": 127.0
+          },
+          "locationId": "rock_rehearsal"
         },
         {
           "id": "blackiron_training",
           "label": "黑铁会修炼场",
-          "sceneName": "地图-黑铁会修炼场",
           "rect": {
-            "x": 600,
-            "y": 50,
-            "w": 280,
-            "h": 94
-          }
+            "x": 600.0,
+            "y": 50.0,
+            "w": 280.0,
+            "h": 94.0
+          },
+          "locationId": "blackiron_training"
         },
         {
           "id": "blackiron_pavilion",
           "label": "黑铁阁",
-          "sceneName": "地图-黑铁阁",
           "rect": {
-            "x": 600,
-            "y": 160,
-            "w": 280,
-            "h": 127
-          }
+            "x": 600.0,
+            "y": 160.0,
+            "w": 280.0,
+            "h": 127.0
+          },
+          "locationId": "blackiron_pavilion"
         },
         {
           "id": "fallen_street",
           "label": "堕落城商业街",
-          "sceneName": "地图-堕落城商业街",
           "rect": {
-            "x": 20,
+            "x": 20.0,
             "y": 392.15,
-            "w": 212,
-            "h": 139
-          }
+            "w": 212.0,
+            "h": 139.0
+          },
+          "locationId": "fallen_street"
         },
         {
           "id": "fallen_entrance",
           "label": "堕落城酒吧门口",
-          "sceneName": "地图-堕落城酒吧门口",
           "rect": {
-            "x": 257,
-            "y": 395,
-            "w": 275,
-            "h": 140
-          }
+            "x": 257.0,
+            "y": 395.0,
+            "w": 275.0,
+            "h": 140.0
+          },
+          "locationId": "fallen_entrance"
         },
         {
           "id": "fallen_bar",
           "label": "堕落城酒吧",
-          "sceneName": "地图-堕落城酒吧",
           "rect": {
-            "x": 557,
-            "y": 389.15,
-            "w": 240,
-            "h": 138
-          }
+            "x": 551.85,
+            "y": 396.36,
+            "w": 240.0,
+            "h": 138.0
+          },
+          "locationId": "fallen_bar"
         }
-      ]
+      ],
+      "visibleWhen": {
+        "type": "any",
+        "children": [
+          {
+            "type": "rule",
+            "key": "unlock.warlord"
+          },
+          {
+            "type": "rule",
+            "key": "unlock.rock"
+          },
+          {
+            "type": "rule",
+            "key": "unlock.blackiron"
+          },
+          {
+            "type": "rule",
+            "key": "unlock.fallen"
+          }
+        ]
+      },
+      "tone": "base"
     },
     "defense": {
       "id": "defense",
@@ -1665,13 +1921,29 @@
           "id": "artist_avatar",
           "label": "artist",
           "hotspotId": "first_defense",
-          "assetUrl": "assets/map/avatars/artist头像.webp"
+          "assetUrl": "assets/map/avatars/artist头像.webp",
+          "placementId": "place_17b2e11463ff863e",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 51.35,
+          "relY": 10.15,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "soldier_avatar",
           "label": "soldier",
           "hotspotId": "first_defense",
-          "assetUrl": "assets/map/avatars/soldier头像.webp"
+          "assetUrl": "assets/map/avatars/soldier头像.webp",
+          "placementId": "place_a6329d0a201bcf03",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 140.55,
+          "relY": 17.55,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "sheriff_first_defense_avatar",
@@ -1679,37 +1951,83 @@
           "hotspotId": "first_defense",
           "assetUrl": "assets/map/avatars/前治安官头像.webp",
           "relX": 220,
-          "relY": 55
+          "relY": 55,
+          "placementId": "place_fc2fe87bdccc84de",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "w": 44,
+          "h": 44
         },
         {
           "id": "master_swordman_first_defense_avatar",
           "label": "武器大师",
           "hotspotId": "first_defense",
-          "assetUrl": "assets/map/avatars/武器大师头像第一防线.webp"
+          "assetUrl": "assets/map/avatars/武器大师头像第一防线.webp",
+          "placementId": "place_5cdfe16d02943d62",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 95,
+          "relY": 10,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "paigu_avatar",
           "label": "排骨",
           "hotspotId": "alliance_dock",
-          "assetUrl": "assets/map/avatars/排骨头像.webp"
+          "assetUrl": "assets/map/avatars/排骨头像.webp",
+          "placementId": "place_7345411d281d48f3",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 48.7,
+          "relY": 22.05,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "jige_avatar",
           "label": "机哥",
           "hotspotId": "alliance_dock",
-          "assetUrl": "assets/map/avatars/机哥头像.webp"
+          "assetUrl": "assets/map/avatars/机哥头像.webp",
+          "placementId": "place_65e8144644551786",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 101,
+          "relY": 24.2,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "abo_avatar",
           "label": "阿波",
           "hotspotId": "alliance_dock",
-          "assetUrl": "assets/map/avatars/阿波头像.webp"
+          "assetUrl": "assets/map/avatars/阿波头像.webp",
+          "placementId": "place_57197be38e1ab231",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 150.6,
+          "relY": 20.85,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "prophet_avatar",
           "label": "PROPHET",
           "hotspotId": "alliance_corridor",
-          "assetUrl": "assets/map/avatars/PROPHET头像.webp"
+          "assetUrl": "assets/map/avatars/PROPHET头像.webp",
+          "placementId": "place_5b287df8be57d99a",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 131.95,
+          "relY": 43.3,
+          "w": 44,
+          "h": 44
         }
       ],
       "filters": [
@@ -1725,7 +2043,8 @@
             "y": 201,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "defense"
         },
         {
           "id": "restricted",
@@ -1739,7 +2058,8 @@
             "y": 261,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "restricted"
         },
         {
           "id": "all",
@@ -1755,7 +2075,8 @@
             "y": 321,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "defense"
         }
       ],
       "defaultFilterId": "all",
@@ -1763,48 +2084,62 @@
         {
           "id": "first_defense",
           "label": "第一防线",
-          "sceneName": "地图-第一防线防区",
           "rect": {
-            "x": 60,
+            "x": 60.0,
             "y": 94.7,
-            "w": 285,
-            "h": 116
-          }
+            "w": 285.0,
+            "h": 116.0
+          },
+          "locationId": "first_defense"
         },
         {
           "id": "subway",
           "label": "隧道据点",
-          "sceneName": "地图-隧道据点",
           "rect": {
-            "x": 360,
+            "x": 360.0,
             "y": 94.7,
-            "w": 270,
-            "h": 102
-          }
+            "w": 270.0,
+            "h": 102.0
+          },
+          "locationId": "subway"
         },
         {
           "id": "alliance_dock",
           "label": "同盟卸货站",
-          "sceneName": "地图-同盟卸货站",
           "rect": {
             "x": 38.75,
             "y": 260.4,
-            "w": 270,
-            "h": 128
-          }
+            "w": 270.0,
+            "h": 128.0
+          },
+          "locationId": "alliance_dock"
         },
         {
           "id": "alliance_corridor",
           "label": "同盟通路",
-          "sceneName": "地图-同盟通路",
           "rect": {
             "x": 46.4,
             "y": 299.1,
-            "w": 277,
-            "h": 202
-          }
+            "w": 277.0,
+            "h": 202.0
+          },
+          "locationId": "alliance_corridor"
         }
-      ]
+      ],
+      "visibleWhen": {
+        "type": "any",
+        "children": [
+          {
+            "type": "rule",
+            "key": "unlock.defense"
+          },
+          {
+            "type": "rule",
+            "key": "unlock.restricted"
+          }
+        ]
+      },
+      "tone": "defense"
     },
     "school": {
       "id": "school",
@@ -2038,73 +2373,169 @@
           "id": "heizi_avatar",
           "label": "黑仔",
           "hotspotId": "union_university",
-          "assetUrl": "assets/map/avatars/黑仔头像.webp"
+          "assetUrl": "assets/map/avatars/黑仔头像.webp",
+          "placementId": "place_bb669e6337a72a39",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 5.35,
+          "relY": 15.15,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "bat_avatar",
           "label": "Bat",
           "hotspotId": "union_university",
-          "assetUrl": "assets/map/avatars/Bat头像.webp"
+          "assetUrl": "assets/map/avatars/Bat头像.webp",
+          "placementId": "place_1abc0f523f3b1638",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 44.85,
+          "relY": 35.8,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "tomboy_avatar",
           "label": "Tomboy",
           "hotspotId": "union_university",
-          "assetUrl": "assets/map/avatars/Tomboy头像.webp"
+          "assetUrl": "assets/map/avatars/Tomboy头像.webp",
+          "placementId": "place_de645bae86a2650d",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 91.85,
+          "relY": 19.7,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "weapon_order_avatar",
           "label": "武器订购系统",
           "hotspotId": "union_university",
-          "assetUrl": "assets/map/avatars/武器订购系统头像.webp"
+          "assetUrl": "assets/map/avatars/武器订购系统头像.webp",
+          "placementId": "place_8c00fb6cd5c69c9c",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 145.35,
+          "relY": 23.15,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "pe_teacher_avatar",
           "label": "体育老师",
           "hotspotId": "university_interior",
-          "assetUrl": "assets/map/avatars/体育老师头像.webp"
+          "assetUrl": "assets/map/avatars/体育老师头像.webp",
+          "placementId": "place_2f022fbb7af02fe8",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 124.75,
+          "relY": 29.2,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "chengzheng_avatar",
           "label": "程铮",
           "hotspotId": "teaching_interior",
-          "assetUrl": "assets/map/avatars/程铮头像.webp"
+          "assetUrl": "assets/map/avatars/程铮头像.webp",
+          "placementId": "place_686ce69646ea79fb",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 13.8,
+          "relY": 4.2,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "kendo_president_avatar",
           "label": "剑道社长",
           "hotspotId": "kendo_club",
-          "assetUrl": "assets/map/avatars/剑道社长头像.webp"
+          "assetUrl": "assets/map/avatars/剑道社长头像.webp",
+          "placementId": "place_6a1f87bb4886452d",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 78,
+          "relY": 2.35,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "fengyouquan_avatar",
           "label": "冯佑权",
           "hotspotId": "kendo_club",
-          "assetUrl": "assets/map/avatars/冯佑权头像.webp"
+          "assetUrl": "assets/map/avatars/冯佑权头像.webp",
+          "placementId": "place_146ee5dad081024d",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 8.25,
+          "relY": 1.45,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "science_prof_avatar",
           "label": "理科教授",
           "hotspotId": "science_class",
-          "assetUrl": "assets/map/avatars/理科教授头像.webp"
+          "assetUrl": "assets/map/avatars/理科教授头像.webp",
+          "placementId": "place_179a3cebb4eb1455",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 12.75,
+          "relY": -2.5,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "arts_teacher_avatar",
           "label": "文科老师",
           "hotspotId": "arts_class",
-          "assetUrl": "assets/map/avatars/文科老师头像.webp"
+          "assetUrl": "assets/map/avatars/文科老师头像.webp",
+          "placementId": "place_26ea7fc220b9c22f",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 12.2,
+          "relY": -1.6,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "vanshuther_avatar",
           "label": "Vanshuther",
           "hotspotId": "workshop",
-          "assetUrl": "assets/map/avatars/Vanshuther头像.webp"
+          "assetUrl": "assets/map/avatars/Vanshuther头像.webp",
+          "placementId": "place_dba01b0ed3a399ed",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 83.9,
+          "relY": 18.2,
+          "w": 44,
+          "h": 44
         },
         {
           "id": "dean_avatar",
           "label": "教导主任",
           "hotspotId": "office",
-          "assetUrl": "assets/map/avatars/教导主任头像.webp"
+          "assetUrl": "assets/map/avatars/教导主任头像.webp",
+          "placementId": "place_92468147db04afdf",
+          "visibleWhen": {
+            "type": "always"
+          },
+          "relX": 76.75,
+          "relY": 5.95,
+          "w": 44,
+          "h": 44
         }
       ],
       "filters": [
@@ -2129,7 +2560,8 @@
             "y": 201,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "schoolInside"
         },
         {
           "id": "outside",
@@ -2142,7 +2574,8 @@
             "y": 261,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "schoolOutside"
         },
         {
           "id": "all",
@@ -2166,7 +2599,8 @@
             "y": 321,
             "w": 132,
             "h": 42
-          }
+          },
+          "tone": "schoolOutside"
         }
       ],
       "defaultFilterId": "all",
@@ -2179,143 +2613,161 @@
           "relX": 20.7,
           "relY": 17.65,
           "w": 48,
-          "h": 48
+          "h": 48,
+          "placementId": "place_916b7d0068ddc91a",
+          "visibleWhen": {
+            "type": "always"
+          }
         }
       ],
       "hotspots": [
         {
           "id": "workshop",
           "label": "大学地下工坊",
-          "sceneName": "地图-大学地下工坊",
           "rect": {
             "x": 423.05,
             "y": 259.2,
-            "w": 147,
-            "h": 73
-          }
+            "w": 147.0,
+            "h": 73.0
+          },
+          "locationId": "workshop"
         },
         {
           "id": "union_university",
           "label": "联合大学",
-          "sceneName": "地图-联合大学",
           "rect": {
             "x": 375.2,
             "y": 443.2,
             "w": 246.12,
             "h": 106.9
-          }
+          },
+          "locationId": "union_university"
         },
         {
           "id": "university_interior",
           "label": "大学内部",
-          "sceneName": "地图-大学内部",
           "rect": {
             "x": 364.15,
             "y": 350.6,
-            "w": 189,
-            "h": 117
-          }
+            "w": 189.0,
+            "h": 117.0
+          },
+          "locationId": "university_interior"
         },
         {
           "id": "university_playground",
           "label": "大学操场",
-          "sceneName": "地图-大学操场",
           "rect": {
             "x": 591.85,
             "y": 378.3,
-            "w": 193,
-            "h": 65
-          }
+            "w": 193.0,
+            "h": 65.0
+          },
+          "locationId": "university_playground"
         },
         {
           "id": "dorm_downstairs",
           "label": "大学宿舍楼下",
-          "sceneName": "地图-大学宿舍楼下",
           "rect": {
             "x": 195.75,
             "y": 340.25,
-            "w": 185,
-            "h": 105
-          }
+            "w": 185.0,
+            "h": 105.0
+          },
+          "locationId": "dorm_downstairs"
         },
         {
           "id": "school_dormitory",
           "label": "大学宿舍",
-          "sceneName": "地图-大学宿舍",
           "rect": {
             "x": 57.3,
             "y": 276.35,
-            "w": 148,
-            "h": 85
-          }
+            "w": 148.0,
+            "h": 85.0
+          },
+          "locationId": "school_dormitory"
         },
         {
           "id": "office",
           "label": "教学楼办公室",
-          "sceneName": "地图-教学楼办公室",
           "rect": {
             "x": 412.15,
             "y": 47.6,
-            "w": 132,
-            "h": 66
-          }
+            "w": 132.0,
+            "h": 66.0
+          },
+          "locationId": "office"
         },
         {
           "id": "kendo_club",
           "label": "剑道社",
-          "sceneName": "地图-剑道社",
           "rect": {
             "x": 534.95,
             "y": 160.5,
-            "w": 134,
-            "h": 68
-          }
+            "w": 134.0,
+            "h": 68.0
+          },
+          "locationId": "kendo_club"
         },
         {
           "id": "science_class",
           "label": "理科教室",
-          "sceneName": "地图-理科教室",
           "rect": {
             "x": 681.75,
             "y": 164.45,
-            "w": 67,
-            "h": 45
-          }
+            "w": 67.0,
+            "h": 45.0
+          },
+          "locationId": "science_class"
         },
         {
           "id": "arts_class",
           "label": "文科教室",
-          "sceneName": "地图-文科教室",
           "rect": {
             "x": 748.85,
             "y": 164.45,
-            "w": 67,
-            "h": 45
-          }
+            "w": 67.0,
+            "h": 45.0
+          },
+          "locationId": "arts_class"
         },
         {
           "id": "teaching_interior",
           "label": "教学楼内部",
-          "sceneName": "地图-教学楼内部",
           "rect": {
             "x": 423.05,
             "y": 201.75,
             "w": 230.4,
             "h": 76.4
-          }
+          },
+          "locationId": "teaching_interior"
         },
         {
           "id": "teaching_right",
           "label": "教学楼内部右侧",
-          "sceneName": "地图-教学楼内部右侧",
           "rect": {
             "x": 652.95,
             "y": 200.1,
             "w": 162.49,
             "h": 81.25
-          }
+          },
+          "locationId": "teaching_right"
         }
-      ]
+      ],
+      "visibleWhen": {
+        "type": "any",
+        "children": [
+          {
+            "type": "rule",
+            "key": "unlock.schoolInside"
+          },
+          {
+            "type": "rule",
+            "key": "unlock.schoolOutside"
+          }
+        ]
+      },
+      "tone": "schoolOutside"
     }
   },
   "avatarSources": {
@@ -3515,6 +3967,2888 @@
         "w": 44,
         "h": 44
       }
+    }
+  },
+  "rules": {
+    "unlock.warlord": {
+      "label": "军阀线路",
+      "tone": "warlord",
+      "condition": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 75
+          },
+          {
+            "type": "infra",
+            "key": "越野车",
+            "min": 1
+          }
+        ]
+      }
+    },
+    "unlock.rock": {
+      "label": "摇滚线路",
+      "tone": "rock",
+      "condition": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 74
+          },
+          {
+            "type": "any",
+            "children": [
+              {
+                "type": "infra",
+                "key": "摩托车",
+                "min": 1
+              },
+              {
+                "type": "infra",
+                "key": "越野车",
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "unlock.blackiron": {
+      "label": "黑铁会线路",
+      "tone": "blackiron",
+      "condition": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 72
+          },
+          {
+            "type": "any",
+            "children": [
+              {
+                "type": "infra",
+                "key": "摩托车",
+                "min": 1
+              },
+              {
+                "type": "infra",
+                "key": "越野车",
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "unlock.fallen": {
+      "label": "堕落城线路",
+      "tone": "fallen",
+      "condition": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 28
+          },
+          {
+            "type": "any",
+            "children": [
+              {
+                "type": "infra",
+                "key": "摩托车",
+                "min": 1
+              },
+              {
+                "type": "infra",
+                "key": "越野车",
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "unlock.defense": {
+      "label": "第一防线",
+      "tone": "defense",
+      "condition": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 14
+          },
+          {
+            "type": "any",
+            "children": [
+              {
+                "type": "infra",
+                "key": "自行车",
+                "min": 1
+              },
+              {
+                "type": "infra",
+                "key": "摩托车",
+                "min": 1
+              },
+              {
+                "type": "infra",
+                "key": "越野车",
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "unlock.restricted": {
+      "label": "禁区",
+      "tone": "restricted",
+      "condition": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 76
+          },
+          {
+            "type": "infra",
+            "key": "越野车",
+            "min": 1
+          }
+        ]
+      }
+    },
+    "unlock.schoolOutside": {
+      "label": "学校外部",
+      "tone": "schoolOutside",
+      "condition": {
+        "type": "any",
+        "children": [
+          {
+            "type": "chain",
+            "key": "大学",
+            "min": 7
+          },
+          {
+            "type": "all",
+            "children": [
+              {
+                "type": "chain",
+                "key": "主线",
+                "min": 28
+              },
+              {
+                "type": "any",
+                "children": [
+                  {
+                    "type": "infra",
+                    "key": "摩托车",
+                    "min": 1
+                  },
+                  {
+                    "type": "infra",
+                    "key": "越野车",
+                    "min": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "unlock.schoolInside": {
+      "label": "学校内部",
+      "tone": "schoolInside",
+      "condition": {
+        "type": "chain",
+        "key": "大学",
+        "min": 7
+      }
+    }
+  },
+  "locations": {
+    "base_roof": {
+      "label": "基地屋顶",
+      "sceneName": "基地房顶",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-基地房顶"
+      }
+    },
+    "base_lobby": {
+      "label": "基地大厅",
+      "sceneName": "基地1层",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-基地1层"
+      }
+    },
+    "base_entrance": {
+      "label": "基地门口",
+      "sceneName": "基地门口",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-基地门口"
+      }
+    },
+    "base_garage": {
+      "label": "基地车库",
+      "sceneName": "基地车库",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-基地车库"
+      }
+    },
+    "merc_bar": {
+      "label": "佣兵酒吧",
+      "sceneName": "佣兵酒吧",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-佣兵酒吧"
+      }
+    },
+    "infirmary": {
+      "label": "医务室",
+      "sceneName": "医务室",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-医务室"
+      }
+    },
+    "dormitory": {
+      "label": "宿舍",
+      "sceneName": "房间",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-房间"
+      }
+    },
+    "basement1": {
+      "label": "地下一层",
+      "sceneName": "地下室1层",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-地下室1层"
+      }
+    },
+    "gym": {
+      "label": "健身房",
+      "sceneName": "健身房",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-健身房"
+      }
+    },
+    "armory": {
+      "label": "武器库",
+      "sceneName": "武器库",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-武器库"
+      }
+    },
+    "cafeteria": {
+      "label": "食堂",
+      "sceneName": "地图-食堂",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-食堂.swf",
+        "linkage": "地图-食堂"
+      }
+    },
+    "corridor": {
+      "label": "走廊",
+      "sceneName": "地图-走廊",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-走廊.swf",
+        "linkage": "地图-走廊"
+      }
+    },
+    "lab": {
+      "label": "实验室",
+      "sceneName": "地图-实验室",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-实验室.swf",
+        "linkage": "地图-实验室"
+      }
+    },
+    "underground_water": {
+      "label": "地下水",
+      "sceneName": "地下2层",
+      "sceneKind": "base",
+      "enabled": true,
+      "enterWhen": {
+        "type": "always"
+      },
+      "visibleWhen": {
+        "type": "always"
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/基地场景合集.swf",
+        "linkage": "基地场景-地下2层"
+      }
+    },
+    "warlord_base": {
+      "label": "军阀基地",
+      "sceneName": "地图-军阀基地",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.warlord"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.warlord"
+      },
+      "tone": "warlord",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-军阀基地.swf",
+        "linkage": "地图-军阀基地"
+      }
+    },
+    "warlord_tent": {
+      "label": "军阀帐篷",
+      "sceneName": "地图-军阀帐篷",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.warlord"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.warlord"
+      },
+      "tone": "warlord",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-军阀帐篷.swf",
+        "linkage": "地图-军阀帐篷"
+      }
+    },
+    "firing_range": {
+      "label": "靶场",
+      "sceneName": "地图-靶场",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.warlord"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.warlord"
+      },
+      "tone": "warlord",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-靶场.swf",
+        "linkage": "地图-靶场"
+      }
+    },
+    "rock_park": {
+      "label": "摇滚公园",
+      "sceneName": "地图-摇滚公园",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.rock"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.rock"
+      },
+      "tone": "rock",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-摇滚公园.swf",
+        "linkage": "地图-摇滚公园"
+      }
+    },
+    "rock_rehearsal": {
+      "label": "摇滚排练室",
+      "sceneName": "地图-摇滚排练室",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.rock"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.rock"
+      },
+      "tone": "rock",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-摇滚排练室.swf",
+        "linkage": "地图-摇滚排练室"
+      }
+    },
+    "blackiron_training": {
+      "label": "黑铁会修炼场",
+      "sceneName": "地图-黑铁会修炼场",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.blackiron"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.blackiron"
+      },
+      "tone": "blackiron",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-黑铁会修炼场.swf",
+        "linkage": "地图-黑铁会修炼场"
+      }
+    },
+    "blackiron_pavilion": {
+      "label": "黑铁阁",
+      "sceneName": "地图-黑铁阁",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.blackiron"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.blackiron"
+      },
+      "tone": "blackiron",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-黑铁阁.swf",
+        "linkage": "地图-黑铁阁"
+      }
+    },
+    "fallen_street": {
+      "label": "堕落城商业街",
+      "sceneName": "地图-堕落城商业街",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.fallen"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.fallen"
+      },
+      "tone": "fallen",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-堕落城商业街.swf",
+        "linkage": "地图-堕落城商业街"
+      }
+    },
+    "fallen_entrance": {
+      "label": "堕落城酒吧门口",
+      "sceneName": "地图-堕落城酒吧门口",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.fallen"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.fallen"
+      },
+      "tone": "fallen",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-堕落城酒吧门口.swf",
+        "linkage": "地图-堕落城酒吧门口"
+      }
+    },
+    "fallen_bar": {
+      "label": "堕落城酒吧",
+      "sceneName": "地图-堕落城酒吧",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.fallen"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.fallen"
+      },
+      "tone": "fallen",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-堕落城酒吧.swf",
+        "linkage": "地图-堕落城酒吧"
+      }
+    },
+    "first_defense": {
+      "label": "第一防线",
+      "sceneName": "地图-第一防线防区",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.defense"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.defense"
+      },
+      "tone": "defense",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-第一防线防区.swf",
+        "linkage": "地图-第一防线防区"
+      }
+    },
+    "subway": {
+      "label": "隧道据点",
+      "sceneName": "地图-隧道据点",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.defense"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.defense"
+      },
+      "tone": "defense",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-隧道据点.swf",
+        "linkage": "地图-隧道据点"
+      }
+    },
+    "alliance_dock": {
+      "label": "同盟卸货站",
+      "sceneName": "地图-同盟卸货站",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "tone": "restricted",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-同盟卸货站.swf",
+        "linkage": "地图-同盟卸货站"
+      }
+    },
+    "alliance_corridor": {
+      "label": "同盟通路",
+      "sceneName": "地图-同盟通路",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.restricted"
+      },
+      "tone": "restricted",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-同盟通路.swf",
+        "linkage": "地图-同盟通路"
+      }
+    },
+    "workshop": {
+      "label": "大学地下工坊",
+      "sceneName": "地图-大学地下工坊",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-大学地下工坊.swf",
+        "linkage": "地图-大学地下工坊"
+      }
+    },
+    "union_university": {
+      "label": "联合大学",
+      "sceneName": "地图-联合大学",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolOutside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolOutside"
+      },
+      "tone": "schoolOutside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-联合大学.swf",
+        "linkage": "地图-联合大学"
+      }
+    },
+    "university_interior": {
+      "label": "大学内部",
+      "sceneName": "地图-大学内部",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-大学内部.swf",
+        "linkage": "地图-大学内部"
+      }
+    },
+    "university_playground": {
+      "label": "大学操场",
+      "sceneName": "地图-大学操场",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-大学操场.swf",
+        "linkage": "地图-大学操场"
+      }
+    },
+    "dorm_downstairs": {
+      "label": "大学宿舍楼下",
+      "sceneName": "地图-大学宿舍楼下",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-大学宿舍楼下.swf",
+        "linkage": "地图-大学宿舍楼下"
+      }
+    },
+    "school_dormitory": {
+      "label": "大学宿舍",
+      "sceneName": "地图-大学宿舍",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-大学宿舍.swf",
+        "linkage": "地图-大学宿舍"
+      }
+    },
+    "office": {
+      "label": "教学楼办公室",
+      "sceneName": "地图-教学楼办公室",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-教学楼办公室.swf",
+        "linkage": "地图-教学楼办公室"
+      }
+    },
+    "kendo_club": {
+      "label": "剑道社",
+      "sceneName": "地图-剑道社",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-剑道社.swf",
+        "linkage": "地图-剑道社"
+      }
+    },
+    "science_class": {
+      "label": "理科教室",
+      "sceneName": "地图-理科教室",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-教学楼内部.swf",
+        "linkage": "地图-理科教室"
+      }
+    },
+    "arts_class": {
+      "label": "文科教室",
+      "sceneName": "地图-文科教室",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-教学楼内部.swf",
+        "linkage": "地图-文科教室"
+      }
+    },
+    "teaching_interior": {
+      "label": "教学楼内部",
+      "sceneName": "地图-教学楼内部",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-教学楼内部.swf",
+        "linkage": "地图-教学楼内部"
+      }
+    },
+    "teaching_right": {
+      "label": "教学楼内部右侧",
+      "sceneName": "地图-教学楼内部右侧",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "visibleWhen": {
+        "type": "rule",
+        "key": "unlock.schoolInside"
+      },
+      "tone": "schoolInside",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-教学楼内部.swf",
+        "linkage": "地图-教学楼内部右侧"
+      }
+    }
+  },
+  "npcs": {
+    "npc_69243f2eec872aed": {
+      "label": "Pig",
+      "runtimeNames": [
+        "Pig"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_96c58bfd568d486e": {
+      "label": "Boy",
+      "runtimeNames": [
+        "Boy"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_13166b63aaa73022": {
+      "label": "King",
+      "runtimeNames": [
+        "King"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_6e6ee9232bd2f3bf": {
+      "label": "冷兵器商人",
+      "runtimeNames": [
+        "冷兵器商人"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_53b5e75fcf3da39e": {
+      "label": "杀马特",
+      "runtimeNames": [
+        "杀马特"
+      ],
+      "aliases": [
+        "∞天ㄙ★使的剪∞"
+      ],
+      "placementPolicy": "multiple"
+    },
+    "npc_b829748c427f1110": {
+      "label": "酒保",
+      "runtimeNames": [
+        "酒保"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_7fb38bbfb945fe58": {
+      "label": "格格巫",
+      "runtimeNames": [
+        "格格巫"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_ccde69f6a9af8faa": {
+      "label": "丽丽丝",
+      "runtimeNames": [
+        "丽丽丝"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_8201acde93b9416d": {
+      "label": "舞女",
+      "runtimeNames": [
+        "舞女"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_57118824261952e0": {
+      "label": "宝石线人",
+      "runtimeNames": [
+        "宝石线人"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_b520921bd3cfbcb4": {
+      "label": "前治安官",
+      "runtimeNames": [
+        "前治安官"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_6350237122b712a0": {
+      "label": "黑铁会外交部长",
+      "runtimeNames": [
+        "黑铁会外交部长"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_75b7be6f7ea6e165": {
+      "label": "学生妹",
+      "runtimeNames": [
+        "学生妹"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_f206053566626056": {
+      "label": "幸存老兵",
+      "runtimeNames": [
+        "幸存老兵"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_8b503ee4dd6da702": {
+      "label": "The Girl",
+      "runtimeNames": [
+        "The Girl"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_9554a3c06dd168cc": {
+      "label": "Andy Law",
+      "runtimeNames": [
+        "Andy Law"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_782ff93f562f11e5": {
+      "label": "Shop Girl",
+      "runtimeNames": [
+        "Shop Girl"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_ec7d56a01607001e": {
+      "label": "Blue",
+      "runtimeNames": [
+        "Blue"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_acffcf84e120e4a6": {
+      "label": "小F",
+      "runtimeNames": [
+        "小F"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_f3b0cec1fb28bb53": {
+      "label": "厨师",
+      "runtimeNames": [
+        "厨师"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_79ed59d9501cca73": {
+      "label": "武器大师",
+      "runtimeNames": [
+        "武器大师"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_0feae16d55365acf": {
+      "label": "general",
+      "runtimeNames": [
+        "general"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_d57e3d750d0b7757": {
+      "label": "gazer",
+      "runtimeNames": [
+        "gazer"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_ef7d74898c22a4bf": {
+      "label": "director",
+      "runtimeNames": [
+        "director"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_4cc03e587a40eea9": {
+      "label": "itinerant",
+      "runtimeNames": [
+        "itinerant"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_f6997950a4917e18": {
+      "label": "surveyor",
+      "runtimeNames": [
+        "surveyor"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_92d74bb8bddbbb9c": {
+      "label": "singer",
+      "runtimeNames": [
+        "singer"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_91f060a9ad4b39eb": {
+      "label": "keyboard",
+      "runtimeNames": [
+        "keyboard"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_d081f5e402980b26": {
+      "label": "guitar",
+      "runtimeNames": [
+        "guitar"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_68127be21042e3f2": {
+      "label": "火凤",
+      "runtimeNames": [
+        "火凤"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_aa05ec1894b438e7": {
+      "label": "翅虎",
+      "runtimeNames": [
+        "翅虎"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_6e008c50942a4c65": {
+      "label": "黑龙",
+      "runtimeNames": [
+        "黑龙"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_391426bd516dd01b": {
+      "label": "黑铁",
+      "runtimeNames": [
+        "黑铁"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_cd4a8b441809ec4a": {
+      "label": "牛仔",
+      "runtimeNames": [
+        "牛仔"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_8957c1efe7c390fe": {
+      "label": "假肢仙人",
+      "runtimeNames": [
+        "假肢仙人"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_a2d210638961ba7f": {
+      "label": "吸特乐",
+      "runtimeNames": [
+        "吸特乐"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_3588bb7219b1faa3": {
+      "label": "researcher",
+      "runtimeNames": [
+        "researcher"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_b55b5d6248bdd806": {
+      "label": "调酒师",
+      "runtimeNames": [
+        "调酒师"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_70b1e8e06785cae4": {
+      "label": "artist",
+      "runtimeNames": [
+        "artist"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_e0c08c2b1f538cd0": {
+      "label": "soldier",
+      "runtimeNames": [
+        "soldier"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_5e7120bf23740d37": {
+      "label": "排骨",
+      "runtimeNames": [
+        "排骨"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_f0e4de1b0cc727a9": {
+      "label": "机哥",
+      "runtimeNames": [
+        "机哥"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_944dfed6dc32bb52": {
+      "label": "阿波",
+      "runtimeNames": [
+        "阿波"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_d76a4656d3f0bbe0": {
+      "label": "PROPHET",
+      "runtimeNames": [
+        "PROPHET"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_802365413ca830c9": {
+      "label": "黑仔",
+      "runtimeNames": [
+        "黑仔"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_f2813a523c21f665": {
+      "label": "Bat",
+      "runtimeNames": [
+        "Bat"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_0350789d5825940b": {
+      "label": "Tomboy",
+      "runtimeNames": [
+        "Tomboy"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_401bff4c57e3a382": {
+      "label": "武器订购系统",
+      "runtimeNames": [
+        "武器订购系统"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_3e70ccade44a9627": {
+      "label": "体育老师",
+      "runtimeNames": [
+        "体育老师"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_bcc859f3b4ac2abe": {
+      "label": "程铮",
+      "runtimeNames": [
+        "程铮"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_f1f9c2050b666307": {
+      "label": "剑道社长",
+      "runtimeNames": [
+        "剑道社长"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_193fad29ae5abb8f": {
+      "label": "冯佑权",
+      "runtimeNames": [
+        "冯佑权"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_914f8cbf63749ddc": {
+      "label": "理科教授",
+      "runtimeNames": [
+        "理科教授"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_da85d5e26d26e292": {
+      "label": "文科老师",
+      "runtimeNames": [
+        "文科老师"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_f6c5d112ca758fd0": {
+      "label": "Vanshuther",
+      "runtimeNames": [
+        "Vanshuther"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_325a5ff938f8feac": {
+      "label": "教导主任",
+      "runtimeNames": [
+        "教导主任"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    },
+    "npc_1ccc6d5e902c877f": {
+      "label": "室友",
+      "runtimeNames": [
+        "室友"
+      ],
+      "aliases": [],
+      "placementPolicy": "multiple"
+    }
+  },
+  "placements": {
+    "place_dbe5b0458c2539d0": {
+      "npcId": "npc_69243f2eec872aed",
+      "locationId": "base_garage",
+      "label": "Pig",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_042569a5864d3d91": {
+      "npcId": "npc_96c58bfd568d486e",
+      "locationId": "base_garage",
+      "label": "Boy",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_58810d99bc81c80d": {
+      "npcId": "npc_13166b63aaa73022",
+      "locationId": "base_garage",
+      "label": "King",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_275ffbfa1f4de946": {
+      "npcId": "npc_6e6ee9232bd2f3bf",
+      "locationId": "base_garage",
+      "label": "冷兵器商人",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_e215f9de19a91e1c": {
+      "npcId": "npc_53b5e75fcf3da39e",
+      "locationId": "base_lobby",
+      "label": "杀马特",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_4522b2c356d5ee38": {
+      "npcId": "npc_b829748c427f1110",
+      "locationId": "merc_bar",
+      "label": "酒保",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_964a739ea3fc7a5b": {
+      "npcId": "npc_7fb38bbfb945fe58",
+      "locationId": "infirmary",
+      "label": "格格巫",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_621c0948de33cd86": {
+      "npcId": "npc_ccde69f6a9af8faa",
+      "locationId": "infirmary",
+      "label": "丽丽丝",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_d5deb78f23386ebd": {
+      "npcId": "npc_8201acde93b9416d",
+      "locationId": "merc_bar",
+      "label": "舞女",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_b73a817e83041d09": {
+      "npcId": "npc_57118824261952e0",
+      "locationId": "base_lobby",
+      "label": "宝石线人",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 36
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_1ada58a20da44c3f": {
+      "npcId": "npc_b520921bd3cfbcb4",
+      "locationId": "base_lobby",
+      "label": "前治安官",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 22
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_c7e60636436b3d3e": {
+      "npcId": "npc_6350237122b712a0",
+      "locationId": "base_lobby",
+      "label": "黑铁会外交部长",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 69
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_d2deebcae24e8198": {
+      "npcId": "npc_75b7be6f7ea6e165",
+      "locationId": "base_lobby",
+      "label": "学生妹",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 29
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_53ab64285f9bb4f8": {
+      "npcId": "npc_f206053566626056",
+      "locationId": "base_lobby",
+      "label": "幸存老兵",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 19
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_25f9ea41590b44ef": {
+      "npcId": "npc_8b503ee4dd6da702",
+      "locationId": "basement1",
+      "label": "The Girl",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_72809bc934c7be85": {
+      "npcId": "npc_9554a3c06dd168cc",
+      "locationId": "basement1",
+      "label": "Andy Law",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_1aa3bb70610d10bc": {
+      "npcId": "npc_782ff93f562f11e5",
+      "locationId": "armory",
+      "label": "Shop Girl",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_473b37508198574e": {
+      "npcId": "npc_ec7d56a01607001e",
+      "locationId": "basement1",
+      "label": "Blue",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_99febdc4b779ecce": {
+      "npcId": "npc_acffcf84e120e4a6",
+      "locationId": "armory",
+      "label": "小F",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_4832d2133313a32c": {
+      "npcId": "npc_f3b0cec1fb28bb53",
+      "locationId": "cafeteria",
+      "label": "厨师",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_d8c6c15318122aa2": {
+      "npcId": "npc_79ed59d9501cca73",
+      "locationId": "gym",
+      "label": "武器大师",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_b59c552dcd29ba18": {
+      "npcId": "npc_0feae16d55365acf",
+      "locationId": "warlord_base",
+      "label": "general",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_7bd4f4b324b01105": {
+      "npcId": "npc_d57e3d750d0b7757",
+      "locationId": "warlord_base",
+      "label": "gazer",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_afb341761435906e": {
+      "npcId": "npc_ef7d74898c22a4bf",
+      "locationId": "warlord_tent",
+      "label": "director",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_528de4cba7039a14": {
+      "npcId": "npc_4cc03e587a40eea9",
+      "locationId": "firing_range",
+      "label": "itinerant",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_702674b08b55ac14": {
+      "npcId": "npc_f6997950a4917e18",
+      "locationId": "firing_range",
+      "label": "surveyor",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_f6fb5f79eb0c6235": {
+      "npcId": "npc_92d74bb8bddbbb9c",
+      "locationId": "rock_park",
+      "label": "singer",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_fbd7b68d9a8f944e": {
+      "npcId": "npc_91f060a9ad4b39eb",
+      "locationId": "rock_park",
+      "label": "keyboard",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_b12d379745d98578": {
+      "npcId": "npc_d081f5e402980b26",
+      "locationId": "rock_park",
+      "label": "guitar",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_5e1d68fd9159ef80": {
+      "npcId": "npc_68127be21042e3f2",
+      "locationId": "blackiron_training",
+      "label": "火凤",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_a55b171b7719d416": {
+      "npcId": "npc_aa05ec1894b438e7",
+      "locationId": "blackiron_training",
+      "label": "翅虎",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_53189388d7a4e99c": {
+      "npcId": "npc_6e008c50942a4c65",
+      "locationId": "blackiron_training",
+      "label": "黑龙",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_a33b5a67711b7a05": {
+      "npcId": "npc_391426bd516dd01b",
+      "locationId": "blackiron_pavilion",
+      "label": "黑铁",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_da2d97fafcf786c3": {
+      "npcId": "npc_cd4a8b441809ec4a",
+      "locationId": "fallen_bar",
+      "label": "牛仔",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 95
+          },
+          {
+            "type": "any",
+            "children": [
+              {
+                "type": "infra",
+                "key": "摩托车",
+                "min": 1
+              },
+              {
+                "type": "infra",
+                "key": "越野车",
+                "min": 1
+              }
+            ]
+          }
+        ]
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_43f1143a01ee35ca": {
+      "npcId": "npc_8957c1efe7c390fe",
+      "locationId": "fallen_street",
+      "label": "假肢仙人",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_1e88cbde1b53104c": {
+      "npcId": "npc_a2d210638961ba7f",
+      "locationId": "fallen_street",
+      "label": "吸特乐",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_df81c0a39b4cde1c": {
+      "npcId": "npc_3588bb7219b1faa3",
+      "locationId": "fallen_street",
+      "label": "researcher",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_4d6adb5ead347b90": {
+      "npcId": "npc_b55b5d6248bdd806",
+      "locationId": "fallen_bar",
+      "label": "调酒师",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_17b2e11463ff863e": {
+      "npcId": "npc_70b1e8e06785cae4",
+      "locationId": "first_defense",
+      "label": "artist",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_a6329d0a201bcf03": {
+      "npcId": "npc_e0c08c2b1f538cd0",
+      "locationId": "first_defense",
+      "label": "soldier",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_fc2fe87bdccc84de": {
+      "npcId": "npc_b520921bd3cfbcb4",
+      "locationId": "first_defense",
+      "label": "前治安官",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 13
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_5cdfe16d02943d62": {
+      "npcId": "npc_79ed59d9501cca73",
+      "locationId": "first_defense",
+      "label": "武器大师",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_7345411d281d48f3": {
+      "npcId": "npc_5e7120bf23740d37",
+      "locationId": "alliance_dock",
+      "label": "排骨",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_65e8144644551786": {
+      "npcId": "npc_f0e4de1b0cc727a9",
+      "locationId": "alliance_dock",
+      "label": "机哥",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_57197be38e1ab231": {
+      "npcId": "npc_944dfed6dc32bb52",
+      "locationId": "alliance_dock",
+      "label": "阿波",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_5b287df8be57d99a": {
+      "npcId": "npc_d76a4656d3f0bbe0",
+      "locationId": "alliance_corridor",
+      "label": "PROPHET",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_bb669e6337a72a39": {
+      "npcId": "npc_802365413ca830c9",
+      "locationId": "union_university",
+      "label": "黑仔",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_1abc0f523f3b1638": {
+      "npcId": "npc_f2813a523c21f665",
+      "locationId": "union_university",
+      "label": "Bat",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_de645bae86a2650d": {
+      "npcId": "npc_0350789d5825940b",
+      "locationId": "union_university",
+      "label": "Tomboy",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_8c00fb6cd5c69c9c": {
+      "npcId": "npc_401bff4c57e3a382",
+      "locationId": "union_university",
+      "label": "武器订购系统",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_2f022fbb7af02fe8": {
+      "npcId": "npc_3e70ccade44a9627",
+      "locationId": "university_interior",
+      "label": "体育老师",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_686ce69646ea79fb": {
+      "npcId": "npc_bcc859f3b4ac2abe",
+      "locationId": "teaching_interior",
+      "label": "程铮",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_6a1f87bb4886452d": {
+      "npcId": "npc_f1f9c2050b666307",
+      "locationId": "kendo_club",
+      "label": "剑道社长",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_146ee5dad081024d": {
+      "npcId": "npc_193fad29ae5abb8f",
+      "locationId": "kendo_club",
+      "label": "冯佑权",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_179a3cebb4eb1455": {
+      "npcId": "npc_914f8cbf63749ddc",
+      "locationId": "science_class",
+      "label": "理科教授",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_26ea7fc220b9c22f": {
+      "npcId": "npc_da85d5e26d26e292",
+      "locationId": "arts_class",
+      "label": "文科老师",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_dba01b0ed3a399ed": {
+      "npcId": "npc_f6c5d112ca758fd0",
+      "locationId": "workshop",
+      "label": "Vanshuther",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_92468147db04afdf": {
+      "npcId": "npc_325a5ff938f8feac",
+      "locationId": "office",
+      "label": "教导主任",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_916b7d0068ddc91a": {
+      "npcId": "npc_1ccc6d5e902c877f",
+      "locationId": "school_dormitory",
+      "label": "室友",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    }
+  },
+  "assets": {
+    "assets/map/avatars/Bat头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2394,
+      "format": "Webp",
+      "sha256": "2EAE22D318AE5D698AEFA389C6562D95FA097FBF47FFD4514CE9ACCDCAFEF419",
+      "assetUrl": "assets/map/avatars/Bat头像.webp"
+    },
+    "assets/map/avatars/PROPHET头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2964,
+      "format": "Webp",
+      "sha256": "DDC6D010E079DCE44A4CCFAE35F67383182605DC6487DF1112EC622CDDE95CFD",
+      "assetUrl": "assets/map/avatars/PROPHET头像.webp"
+    },
+    "assets/map/avatars/Tomboy头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2840,
+      "format": "Webp",
+      "sha256": "E58B4C9334D77EA83284B9D28571FEACCE2392C4FD05AA10F4B091B66528822F",
+      "assetUrl": "assets/map/avatars/Tomboy头像.webp"
+    },
+    "assets/map/avatars/Vanshuther头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2604,
+      "format": "Webp",
+      "sha256": "CC60FAA9342C6AFD2ECD8BC7964F238EA3F920DBECC2BFE0273720135DDE0F60",
+      "assetUrl": "assets/map/avatars/Vanshuther头像.webp"
+    },
+    "assets/map/avatars/andy头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 1516,
+      "format": "Webp",
+      "sha256": "AF12746A29601A1DA847C11F045A9B99F021EBAC38DC01585E89E3B4519AAD06",
+      "assetUrl": "assets/map/avatars/andy头像.webp"
+    },
+    "assets/map/avatars/artist头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2164,
+      "format": "Webp",
+      "sha256": "4C959DC18F12748CF15B07AF0759BDD681B3AC3FC72E132AEE3768DA9B1540FB",
+      "assetUrl": "assets/map/avatars/artist头像.webp"
+    },
+    "assets/map/avatars/blue头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2730,
+      "format": "Webp",
+      "sha256": "9ECEF1ADFFD5A4F26EE62998E3D3BBC4371AF68C502CBEADD3C0C514F26C5624",
+      "assetUrl": "assets/map/avatars/blue头像.webp"
+    },
+    "assets/map/avatars/boy头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3510,
+      "format": "Webp",
+      "sha256": "6D9840750D0E1932ECAF7FBB216A4FEBF23F0A5905602D17C15A42255A25A225",
+      "assetUrl": "assets/map/avatars/boy头像.webp"
+    },
+    "assets/map/avatars/director头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2670,
+      "format": "Webp",
+      "sha256": "63146937503260C850D35469D969D6D3B08E20FF95C394C30086403CF50C6CA0",
+      "assetUrl": "assets/map/avatars/director头像.webp"
+    },
+    "assets/map/avatars/gazer头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2532,
+      "format": "Webp",
+      "sha256": "FFC40667E8ECFE9B87EF9C19E9A90B86554595D417EBE9A970683BB288E469EA",
+      "assetUrl": "assets/map/avatars/gazer头像.webp"
+    },
+    "assets/map/avatars/general头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2920,
+      "format": "Webp",
+      "sha256": "F82220373F9DFDD86317D297F9C504F0089CF6B36DF000E1568B90354E2A5D85",
+      "assetUrl": "assets/map/avatars/general头像.webp"
+    },
+    "assets/map/avatars/guitar头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 4408,
+      "format": "Webp",
+      "sha256": "E135D248CE4A2B6D205EAE2600F36C75BC9918513C9FCA54AADD787CD7535BB3",
+      "assetUrl": "assets/map/avatars/guitar头像.webp"
+    },
+    "assets/map/avatars/itinerant头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2026,
+      "format": "Webp",
+      "sha256": "76D62766B789EBF7A2410F8659ECB1EA1E1FD881B7496D6ED0B6A9B1F176433E",
+      "assetUrl": "assets/map/avatars/itinerant头像.webp"
+    },
+    "assets/map/avatars/keyboard头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3392,
+      "format": "Webp",
+      "sha256": "67A1246FE521D207DEC7BCF29BF88040B6056110B59D26202A2848B01538C8EB",
+      "assetUrl": "assets/map/avatars/keyboard头像.webp"
+    },
+    "assets/map/avatars/king头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3814,
+      "format": "Webp",
+      "sha256": "40F565D5F5D6543AEF941B016EFB31900AE14D6D2F139A8BB8ADF43D0F29E110",
+      "assetUrl": "assets/map/avatars/king头像.webp"
+    },
+    "assets/map/avatars/pig头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3212,
+      "format": "Webp",
+      "sha256": "93A7CF3FB2CA9C3667742394C99F81FFA14BEBF641420D768A68D77361DDD4A6",
+      "assetUrl": "assets/map/avatars/pig头像.webp"
+    },
+    "assets/map/avatars/researcher头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3486,
+      "format": "Webp",
+      "sha256": "82BEDFA740A2FAE80DDC991F2AD00D753E049A34C565BA4B7845B4285E4A7B4A",
+      "assetUrl": "assets/map/avatars/researcher头像.webp"
+    },
+    "assets/map/avatars/shopgirl头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3704,
+      "format": "Webp",
+      "sha256": "EC80EE400715176A9AF8B67D918A18E60BA88EA996E9D221EAF9F1076DB7D909",
+      "assetUrl": "assets/map/avatars/shopgirl头像.webp"
+    },
+    "assets/map/avatars/singer头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3458,
+      "format": "Webp",
+      "sha256": "1AF165053552500265FBE8E71D083BE1D21AE6B0DEA0A7EFD6816E8AD593535E",
+      "assetUrl": "assets/map/avatars/singer头像.webp"
+    },
+    "assets/map/avatars/soldier头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2620,
+      "format": "Webp",
+      "sha256": "1BEE3524C24BDF59409F8DE32B29AD5D3C89A0B16750FF8772855B896D06A16D",
+      "assetUrl": "assets/map/avatars/soldier头像.webp"
+    },
+    "assets/map/avatars/surveyor头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2842,
+      "format": "Webp",
+      "sha256": "327AE6042C43AA3A9F0BCB8B498F419862DA522EC795E5696320901197AB9F23",
+      "assetUrl": "assets/map/avatars/surveyor头像.webp"
+    },
+    "assets/map/avatars/the girl头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3642,
+      "format": "Webp",
+      "sha256": "234B6654A4C51692E64551AB28C80EB1F746AFB9755CC05B42625EEB3D79D702",
+      "assetUrl": "assets/map/avatars/the girl头像.webp"
+    },
+    "assets/map/avatars/∞天ㄙ★使的剪∞头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3934,
+      "format": "Webp",
+      "sha256": "64B21E9CA05E8BE372AAE2611BD871B9249ED4801EC8188B72A2B305B9E4E619",
+      "assetUrl": "assets/map/avatars/∞天ㄙ★使的剪∞头像.webp"
+    },
+    "assets/map/avatars/丽丽丝头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3748,
+      "format": "Webp",
+      "sha256": "683ABC32FE7150C10E9E95144AFF0C5E8657899FFFCF20C3DF8C0E76E9380A82",
+      "assetUrl": "assets/map/avatars/丽丽丝头像.webp"
+    },
+    "assets/map/avatars/体育老师头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2926,
+      "format": "Webp",
+      "sha256": "C27D5177EFD06AC1909273F7CEFD5FD38ABFD439BF797C4D04996A5E2FB80EAA",
+      "assetUrl": "assets/map/avatars/体育老师头像.webp"
+    },
+    "assets/map/avatars/假肢仙人头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 1912,
+      "format": "Webp",
+      "sha256": "F46BCCCF4B7B9E8209E915993D668D2D907DB2D3871D9E0A7F53E5C93EF68D4C",
+      "assetUrl": "assets/map/avatars/假肢仙人头像.webp"
+    },
+    "assets/map/avatars/冯佑权头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2702,
+      "format": "Webp",
+      "sha256": "112EE175177D3C1022B4C94EB1573906963063EDB654AFE55D22492B57A892F0",
+      "assetUrl": "assets/map/avatars/冯佑权头像.webp"
+    },
+    "assets/map/avatars/冷兵器商人头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3272,
+      "format": "Webp",
+      "sha256": "46F2EDBEB3D425F5D76999E3A40D01101AB6109541644B09F97C826502E1F344",
+      "assetUrl": "assets/map/avatars/冷兵器商人头像.webp"
+    },
+    "assets/map/avatars/前治安官头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2626,
+      "format": "Webp",
+      "sha256": "FBD8651E8C5350D48680AB00C4B208CD8A65ED4F6C9D67D05A3FB0E8521DE76A",
+      "assetUrl": "assets/map/avatars/前治安官头像.webp"
+    },
+    "assets/map/avatars/剑道社长头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3246,
+      "format": "Webp",
+      "sha256": "6F83A1769561864BDEC1B957008BF1C4A161278F30976263ABB3B35110F61007",
+      "assetUrl": "assets/map/avatars/剑道社长头像.webp"
+    },
+    "assets/map/avatars/厨师头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2146,
+      "format": "Webp",
+      "sha256": "B112ECBEAB44403C137E336293DF423DB77337622CA9574DEC10B38FE2FDE69C",
+      "assetUrl": "assets/map/avatars/厨师头像.webp"
+    },
+    "assets/map/avatars/吸特乐头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2042,
+      "format": "Webp",
+      "sha256": "A35ADDDDC92CDB28BE98DFE1EDF994CD852E63D0CB6FFE623EDFFA1B284B43BB",
+      "assetUrl": "assets/map/avatars/吸特乐头像.webp"
+    },
+    "assets/map/avatars/学生妹头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2994,
+      "format": "Webp",
+      "sha256": "3DC68C025EB7AB0AF54D6713724C1593F04057F84058EBD38F75AFB8BFD7BDBB",
+      "assetUrl": "assets/map/avatars/学生妹头像.webp"
+    },
+    "assets/map/avatars/宝石线人头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3806,
+      "format": "Webp",
+      "sha256": "D7800570BD4E8FED426155A49FEAF7D46C2A8D77936EC155AA7D6503E5A24BE0",
+      "assetUrl": "assets/map/avatars/宝石线人头像.webp"
+    },
+    "assets/map/avatars/小F头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3498,
+      "format": "Webp",
+      "sha256": "310050626093D93E5C599F9B58DF19E18938AC86CBD9FC0DDCE58F73EB5C7765",
+      "assetUrl": "assets/map/avatars/小F头像.webp"
+    },
+    "assets/map/avatars/幸存老兵头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3268,
+      "format": "Webp",
+      "sha256": "EE11697B3A5B0FA44087E855703D9B89D611BD6165970926B124C53F394D8C6C",
+      "assetUrl": "assets/map/avatars/幸存老兵头像.webp"
+    },
+    "assets/map/avatars/排骨头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3022,
+      "format": "Webp",
+      "sha256": "470F7FF1B66B349E37F254BDE32CB2A2176812389058B51EF20B602803D4F51B",
+      "assetUrl": "assets/map/avatars/排骨头像.webp"
+    },
+    "assets/map/avatars/教导主任头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3336,
+      "format": "Webp",
+      "sha256": "8A16E146D547988E620FAE987FC6D1FA4DB43C69F2CD229B4EDCCE8E758B55AC",
+      "assetUrl": "assets/map/avatars/教导主任头像.webp"
+    },
+    "assets/map/avatars/文科老师头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2640,
+      "format": "Webp",
+      "sha256": "4648D3073CC2919F7E5E6097511FB00F73CC8B18D3A569E0C4AB30DB3FE1F40D",
+      "assetUrl": "assets/map/avatars/文科老师头像.webp"
+    },
+    "assets/map/avatars/机哥头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2510,
+      "format": "Webp",
+      "sha256": "16CE70067B63C92434C4E83B4D1AF3630CC3BD0F994361248E090F41138D9D64",
+      "assetUrl": "assets/map/avatars/机哥头像.webp"
+    },
+    "assets/map/avatars/格格巫头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3242,
+      "format": "Webp",
+      "sha256": "928D3D7B87D0314CBFD47785493A88FDA49A4A2F774AAAF6AB6692F3C9BD9421",
+      "assetUrl": "assets/map/avatars/格格巫头像.webp"
+    },
+    "assets/map/avatars/武器大师头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2370,
+      "format": "Webp",
+      "sha256": "AC585AF6298C04663CD6E6CFEB428BFB1862E1ABAD0CF3FE62655F73B01ECFDA",
+      "assetUrl": "assets/map/avatars/武器大师头像.webp"
+    },
+    "assets/map/avatars/武器大师头像第一防线.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2370,
+      "format": "Webp",
+      "sha256": "AC585AF6298C04663CD6E6CFEB428BFB1862E1ABAD0CF3FE62655F73B01ECFDA",
+      "assetUrl": "assets/map/avatars/武器大师头像第一防线.webp"
+    },
+    "assets/map/avatars/武器订购系统头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2510,
+      "format": "Webp",
+      "sha256": "2F90D3086E784B5B8A37FEA77AC8302222EE5073351473A789D7257520D1950D",
+      "assetUrl": "assets/map/avatars/武器订购系统头像.webp"
+    },
+    "assets/map/avatars/火凤头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3432,
+      "format": "Webp",
+      "sha256": "047E0BCD113332FFEB752286C06858F11D297808B68538F20D633F0C687E1A82",
+      "assetUrl": "assets/map/avatars/火凤头像.webp"
+    },
+    "assets/map/avatars/牛仔头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3030,
+      "format": "Webp",
+      "sha256": "1E0B0737BEA57222B9EF2242A8EEA969ABF9DA7591CEF96335F08E0F8AFE13A9",
+      "assetUrl": "assets/map/avatars/牛仔头像.webp"
+    },
+    "assets/map/avatars/理科教授头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2884,
+      "format": "Webp",
+      "sha256": "1F77EF36D05B6667FD4E0092C3DFA223D9471027FE51BF90F31BA6D07291B4D4",
+      "assetUrl": "assets/map/avatars/理科教授头像.webp"
+    },
+    "assets/map/avatars/程铮头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2744,
+      "format": "Webp",
+      "sha256": "8CBA286B5D047C3902ED920EC57368CBFDF1368F159E1A5F3F4B898017A055B4",
+      "assetUrl": "assets/map/avatars/程铮头像.webp"
+    },
+    "assets/map/avatars/翅虎头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2632,
+      "format": "Webp",
+      "sha256": "5D17509A23CE84D960FB83526C38ED4E9969E5D80295EB4935476EB1ACFCADF4",
+      "assetUrl": "assets/map/avatars/翅虎头像.webp"
+    },
+    "assets/map/avatars/舞女头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3068,
+      "format": "Webp",
+      "sha256": "F949367EA863D491A5A5CF296CCE4FE11C1155F9DE079D5C1F88F7F82513D783",
+      "assetUrl": "assets/map/avatars/舞女头像.webp"
+    },
+    "assets/map/avatars/调酒师头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 3398,
+      "format": "Webp",
+      "sha256": "0EAC90D64085F32A9A35980B854BB88C9D395B4A831E25DE5CC1916981095CEC",
+      "assetUrl": "assets/map/avatars/调酒师头像.webp"
+    },
+    "assets/map/avatars/酒保头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2894,
+      "format": "Webp",
+      "sha256": "84641919792EA6A226322745049ACF5BCA7162C7583C7A5DFC2C8B8FF12794CF",
+      "assetUrl": "assets/map/avatars/酒保头像.webp"
+    },
+    "assets/map/avatars/阿波头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2928,
+      "format": "Webp",
+      "sha256": "A4AA593DA9AACB223DCD20284F8C29C15E797C603F92FB12063ADA96951CBA99",
+      "assetUrl": "assets/map/avatars/阿波头像.webp"
+    },
+    "assets/map/avatars/黑仔头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2536,
+      "format": "Webp",
+      "sha256": "A69751AE0706E1481FC4029BE97C4DCB96CD9A632ED85C1AA5CC5E0081E17BDC",
+      "assetUrl": "assets/map/avatars/黑仔头像.webp"
+    },
+    "assets/map/avatars/黑铁会外交部长头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2330,
+      "format": "Webp",
+      "sha256": "183A19838CD30609D85921880F2B1023ED9AC8CCBEBA647C9DA3AFF1ACD29867",
+      "assetUrl": "assets/map/avatars/黑铁会外交部长头像.webp"
+    },
+    "assets/map/avatars/黑铁头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2890,
+      "format": "Webp",
+      "sha256": "A975EA101FF88FD511DD767B5CB649B01C858ED42007633CC6A3AA30F52A0FDF",
+      "assetUrl": "assets/map/avatars/黑铁头像.webp"
+    },
+    "assets/map/avatars/黑龙头像.webp": {
+      "width": 44,
+      "height": 44,
+      "bytes": 2998,
+      "format": "Webp",
+      "sha256": "919BC57B9C5791F479794E287B40C178190FC9A410250E7071586EE12ECEBB57",
+      "assetUrl": "assets/map/avatars/黑龙头像.webp"
+    },
+    "assets/map/composite/base/armory.webp": {
+      "width": 1732,
+      "height": 1055,
+      "bytes": 236104,
+      "format": "Webp",
+      "sha256": "B50C7E8EB5CE7069590ED22B1E1E3EC1944A25A7374CBEB2C789F9C5A752B07F",
+      "assetUrl": "assets/map/composite/base/armory.webp"
+    },
+    "assets/map/composite/base/base-entrance.webp": {
+      "width": 2525,
+      "height": 1199,
+      "bytes": 911112,
+      "format": "Webp",
+      "sha256": "BFDC9779C80454595B0651C991C8FAFE2C4527768BFD7E9E2990C05EAA111D34",
+      "assetUrl": "assets/map/composite/base/base-entrance.webp"
+    },
+    "assets/map/composite/base/base-garage.webp": {
+      "width": 2529,
+      "height": 1368,
+      "bytes": 679590,
+      "format": "Webp",
+      "sha256": "9ACF52F21BDE38A42112A64909B9702E258DF6D146FD879713E10F734920E096",
+      "assetUrl": "assets/map/composite/base/base-garage.webp"
+    },
+    "assets/map/composite/base/base-lobby.webp": {
+      "width": 3854,
+      "height": 1245,
+      "bytes": 1333046,
+      "format": "Webp",
+      "sha256": "E46DBF129604A8FEAC8499F39EEDB0E8975C82390AB858572CF9AEABE3ECB67C",
+      "assetUrl": "assets/map/composite/base/base-lobby.webp"
+    },
+    "assets/map/composite/base/base-roof.webp": {
+      "width": 2344,
+      "height": 892,
+      "bytes": 223806,
+      "format": "Webp",
+      "sha256": "3177F695810F12C68468A496D6C4F054450311A811CDF13AD5A2A26D523A83C9",
+      "assetUrl": "assets/map/composite/base/base-roof.webp"
+    },
+    "assets/map/composite/base/basement1.webp": {
+      "width": 2906,
+      "height": 1064,
+      "bytes": 748538,
+      "format": "Webp",
+      "sha256": "DF087C07DE293574232F0D23B90B845577A7C2D22E1A43EC0A711674EFCFF70F",
+      "assetUrl": "assets/map/composite/base/basement1.webp"
+    },
+    "assets/map/composite/base/cafeteria.webp": {
+      "width": 3485,
+      "height": 1390,
+      "bytes": 1218858,
+      "format": "Webp",
+      "sha256": "94392CEB212513E419526AF6FC5174EAFC61AE6928CD458EA0725E624A4F7449",
+      "assetUrl": "assets/map/composite/base/cafeteria.webp"
+    },
+    "assets/map/composite/base/corridor.webp": {
+      "width": 1722,
+      "height": 1061,
+      "bytes": 252140,
+      "format": "Webp",
+      "sha256": "D673BA0049605940CF527210EA58FB0B92AECD672C695CA52992F78067525E5D",
+      "assetUrl": "assets/map/composite/base/corridor.webp"
+    },
+    "assets/map/composite/base/dormitory.webp": {
+      "width": 1168,
+      "height": 880,
+      "bytes": 142262,
+      "format": "Webp",
+      "sha256": "B14CDFD13E3C4CA5F17B0FD772242AC5E432F6643B4D802A854380666F3C1569",
+      "assetUrl": "assets/map/composite/base/dormitory.webp"
+    },
+    "assets/map/composite/base/gym.webp": {
+      "width": 1743,
+      "height": 1055,
+      "bytes": 232364,
+      "format": "Webp",
+      "sha256": "948E5B2F3B70CC96AEF3AD10736F633A14A05E8C26F2F8A5E8D6501377ACF2C6",
+      "assetUrl": "assets/map/composite/base/gym.webp"
+    },
+    "assets/map/composite/base/infirmary.webp": {
+      "width": 1365,
+      "height": 1077,
+      "bytes": 203604,
+      "format": "Webp",
+      "sha256": "CD72A365175DB33559147E5555B3042350E6311B9F05DA78B41D5FF8741E4ECE",
+      "assetUrl": "assets/map/composite/base/infirmary.webp"
+    },
+    "assets/map/composite/base/lab.webp": {
+      "width": 1616,
+      "height": 1124,
+      "bytes": 176672,
+      "format": "Webp",
+      "sha256": "7CEFD5BA42799F01D5BEE7CF8EA582DA3254A7A21307BC57DEBA1B45BB4DA8A4",
+      "assetUrl": "assets/map/composite/base/lab.webp"
+    },
+    "assets/map/composite/base/merc-bar.webp": {
+      "width": 1436,
+      "height": 833,
+      "bytes": 295320,
+      "format": "Webp",
+      "sha256": "FDDD2C35D1AEAA9D6CF5D562872D15F2E8F1F0B08FD43D02513A32ECCBA88E96",
+      "assetUrl": "assets/map/composite/base/merc-bar.webp"
+    },
+    "assets/map/composite/base/underground-water.webp": {
+      "width": 1484,
+      "height": 989,
+      "bytes": 68602,
+      "format": "Webp",
+      "sha256": "C47A5CC7FD05DEDA8B09BB15E17F0EA95C6D21547492F6B49670A586389A8914",
+      "assetUrl": "assets/map/composite/base/underground-water.webp"
+    },
+    "assets/map/composite/defense/alliance-corridor.webp": {
+      "width": 1108,
+      "height": 808,
+      "bytes": 133846,
+      "format": "Webp",
+      "sha256": "8592C3441ABA2EDFDF4DE4AFD08BD35D30FFC6C38C33F6F5A084D990BAE597C0",
+      "assetUrl": "assets/map/composite/defense/alliance-corridor.webp"
+    },
+    "assets/map/composite/defense/alliance-dock.webp": {
+      "width": 1080,
+      "height": 512,
+      "bytes": 101212,
+      "format": "Webp",
+      "sha256": "DAC513DCB17A97305CC0F77B8B509F39D6A02C87801BE7DC28671C92E61E6FB7",
+      "assetUrl": "assets/map/composite/defense/alliance-dock.webp"
+    },
+    "assets/map/composite/defense/first-defense.webp": {
+      "width": 570,
+      "height": 232,
+      "bytes": 37296,
+      "format": "Webp",
+      "sha256": "39ED33E085E08BE55C2EB08799D5816D29C8AB3CA9F3D96A498A564A02893B93",
+      "assetUrl": "assets/map/composite/defense/first-defense.webp"
+    },
+    "assets/map/composite/defense/subway.webp": {
+      "width": 270,
+      "height": 102,
+      "bytes": 18374,
+      "format": "Webp",
+      "sha256": "A42691B52152E2850C63B5DF7E52D8E5F8402CD109EBF7A0C330BCF659A52984",
+      "assetUrl": "assets/map/composite/defense/subway.webp"
+    },
+    "assets/map/composite/faction/blackiron-pavilion.webp": {
+      "width": 1352,
+      "height": 612,
+      "bytes": 200850,
+      "format": "Webp",
+      "sha256": "1957C34EA30346845969C28F6114913403C13D4B262FCC9031B9C1E67AD946C1",
+      "assetUrl": "assets/map/composite/faction/blackiron-pavilion.webp"
+    },
+    "assets/map/composite/faction/blackiron-training.webp": {
+      "width": 1169,
+      "height": 393,
+      "bytes": 140022,
+      "format": "Webp",
+      "sha256": "9DA1602F490F77B970D2D696DBB38273333FDD602CE29667F645EC19FF0B262A",
+      "assetUrl": "assets/map/composite/faction/blackiron-training.webp"
+    },
+    "assets/map/composite/faction/fallen-bar.webp": {
+      "width": 504,
+      "height": 276,
+      "bytes": 47472,
+      "format": "Webp",
+      "sha256": "7A13617FD69D8721CB08F3C8839F550E0E6B56BC1BADB69D80A477EE6C2C7976",
+      "assetUrl": "assets/map/composite/faction/fallen-bar.webp"
+    },
+    "assets/map/composite/faction/fallen-entrance.webp": {
+      "width": 392,
+      "height": 200,
+      "bytes": 50668,
+      "format": "Webp",
+      "sha256": "D0F28F74ADE0B27444ACFC0728A0B68183869CCA4D267EF59F69F6A483E6F4EA",
+      "assetUrl": "assets/map/composite/faction/fallen-entrance.webp"
+    },
+    "assets/map/composite/faction/fallen-street.webp": {
+      "width": 424,
+      "height": 278,
+      "bytes": 29342,
+      "format": "Webp",
+      "sha256": "6A87E41A36D68BBCF006339E9CBA2C03A9ADB2FC297513CCDA9E74A12D358993",
+      "assetUrl": "assets/map/composite/faction/fallen-street.webp"
+    },
+    "assets/map/composite/faction/firing-range.webp": {
+      "width": 1658,
+      "height": 990,
+      "bytes": 655574,
+      "format": "Webp",
+      "sha256": "E29B2BF8BEF63A5D550950C612A1DE6135A709ACF792269C6294E827DB96718B",
+      "assetUrl": "assets/map/composite/faction/firing-range.webp"
+    },
+    "assets/map/composite/faction/rock-park.webp": {
+      "width": 1136,
+      "height": 580,
+      "bytes": 34546,
+      "format": "Webp",
+      "sha256": "722D12F440D3CA5799DD613A2FBF2DABC94D3D55B700DB7FE4725CDDB95D2BDC",
+      "assetUrl": "assets/map/composite/faction/rock-park.webp"
+    },
+    "assets/map/composite/faction/rock-rehearsal.webp": {
+      "width": 1048,
+      "height": 508,
+      "bytes": 50440,
+      "format": "Webp",
+      "sha256": "5CB57493563A8AC5E02094166A4A2E8DC3FB14FD7F380763836237FF15B4B3EF",
+      "assetUrl": "assets/map/composite/faction/rock-rehearsal.webp"
+    },
+    "assets/map/composite/faction/warlord-base.webp": {
+      "width": 1602,
+      "height": 834,
+      "bytes": 564726,
+      "format": "Webp",
+      "sha256": "E345ECC0EBB0A7514452178FF7A4FEDF167FE44918C4D982C76A30A245C16903",
+      "assetUrl": "assets/map/composite/faction/warlord-base.webp"
+    },
+    "assets/map/composite/faction/warlord-tent.webp": {
+      "width": 1288,
+      "height": 770,
+      "bytes": 73276,
+      "format": "Webp",
+      "sha256": "48EA233956CF2EA35114E85E6EB949C25763F882CC56F51C892B5A8FA3EC1934",
+      "assetUrl": "assets/map/composite/faction/warlord-tent.webp"
+    },
+    "assets/map/composite/school/arts-class.webp": {
+      "width": 134,
+      "height": 90,
+      "bytes": 10278,
+      "format": "Webp",
+      "sha256": "E71230A02438EFE38996F25A575FF5727D4EE79AF4F41E02A50D8EA0AF7D5303",
+      "assetUrl": "assets/map/composite/school/arts-class.webp"
+    },
+    "assets/map/composite/school/dorm-downstairs.webp": {
+      "width": 371,
+      "height": 211,
+      "bytes": 35816,
+      "format": "Webp",
+      "sha256": "0C539BF6F6C2728DBA2DDC2989129938B92E2600DB48F817EE8D7903A4134C4F",
+      "assetUrl": "assets/map/composite/school/dorm-downstairs.webp"
+    },
+    "assets/map/composite/school/kendo-club.webp": {
+      "width": 268,
+      "height": 136,
+      "bytes": 37738,
+      "format": "Webp",
+      "sha256": "35927DF24D38B9D5F14909A2A2299E7E37C273BFC4FB359EB6EFB84CC2D8A5F8",
+      "assetUrl": "assets/map/composite/school/kendo-club.webp"
+    },
+    "assets/map/composite/school/office.webp": {
+      "width": 264,
+      "height": 133,
+      "bytes": 26954,
+      "format": "Webp",
+      "sha256": "B9F12F1EBCFB9D13108EDEF08FF03F1EF1D30E248183A2B22EE12FF2DFE0962D",
+      "assetUrl": "assets/map/composite/school/office.webp"
+    },
+    "assets/map/composite/school/school-dormitory.webp": {
+      "width": 297,
+      "height": 171,
+      "bytes": 19450,
+      "format": "Webp",
+      "sha256": "156FED6AB33AD5365998A2CFA52E3D80E22EED3A3CC7FD23A9AC12541991C0C1",
+      "assetUrl": "assets/map/composite/school/school-dormitory.webp"
+    },
+    "assets/map/composite/school/science-class.webp": {
+      "width": 134,
+      "height": 90,
+      "bytes": 10278,
+      "format": "Webp",
+      "sha256": "E71230A02438EFE38996F25A575FF5727D4EE79AF4F41E02A50D8EA0AF7D5303",
+      "assetUrl": "assets/map/composite/school/science-class.webp"
+    },
+    "assets/map/composite/school/teaching-interior.webp": {
+      "width": 380,
+      "height": 126,
+      "bytes": 29112,
+      "format": "Webp",
+      "sha256": "F8D01D8272DAC41442C7041C4BB039809F827ECD57C41159CC73C2A77D16A2F9",
+      "assetUrl": "assets/map/composite/school/teaching-interior.webp"
+    },
+    "assets/map/composite/school/teaching-right.webp": {
+      "width": 269,
+      "height": 134,
+      "bytes": 19346,
+      "format": "Webp",
+      "sha256": "DD85235E768789F44BC902FB956BCA6E8B3C893D702276C85C9B8C0829F2AAAC",
+      "assetUrl": "assets/map/composite/school/teaching-right.webp"
+    },
+    "assets/map/composite/school/union-university.webp": {
+      "width": 1091,
+      "height": 475,
+      "bytes": 228930,
+      "format": "Webp",
+      "sha256": "919C233FB1318EEDC3C921E95A362A87433A85D52B3D26BE5307AF3B0642DA3C",
+      "assetUrl": "assets/map/composite/school/union-university.webp"
+    },
+    "assets/map/composite/school/university-interior.webp": {
+      "width": 378,
+      "height": 234,
+      "bytes": 37748,
+      "format": "Webp",
+      "sha256": "8AE03E15B04AEF9CC7AFA2637CBC9F26C6C31D07C3D6630D61D0921019965539",
+      "assetUrl": "assets/map/composite/school/university-interior.webp"
+    },
+    "assets/map/composite/school/university-playground.webp": {
+      "width": 386,
+      "height": 130,
+      "bytes": 8548,
+      "format": "Webp",
+      "sha256": "6E91E1E5283C0CFFB6E90252C45618CFE9DD33DD75F850C84C7E482693416448",
+      "assetUrl": "assets/map/composite/school/university-playground.webp"
+    },
+    "assets/map/composite/school/workshop.webp": {
+      "width": 294,
+      "height": 147,
+      "bytes": 31498,
+      "format": "Webp",
+      "sha256": "610842C8995EBC681D8DA7A8BFAAC2BD046E25B2236A6E3F1B43E6B5B477DC9E",
+      "assetUrl": "assets/map/composite/school/workshop.webp"
+    },
+    "assets/map/roommate-female.webp": {
+      "width": 400,
+      "height": 400,
+      "bytes": 25250,
+      "format": "Webp",
+      "sha256": "A374B7CDFB834EE550DF50A9377C6A9DBB07E3E047EC8A3F3FEAFEC148F28438",
+      "assetUrl": "assets/map/roommate-female.webp"
+    },
+    "assets/map/roommate-male.webp": {
+      "width": 400,
+      "height": 400,
+      "bytes": 38628,
+      "format": "Webp",
+      "sha256": "E75D7408C9B5EFCA4AA91532BC51C3D537189CA97030AA47A4571D66B0A4CB07",
+      "assetUrl": "assets/map/roommate-male.webp"
     }
   }
 }

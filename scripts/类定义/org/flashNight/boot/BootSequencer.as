@@ -295,6 +295,11 @@ class org.flashNight.boot.BootSequencer {
             this.halt("enemy_properties_failed");
             return;
         }
+        if (this.b.mapDomainFailed == true) {
+            this.host.打印加载内容("地图领域加载失败，请检查启动器与地图内容版本");
+            this.halt("map_domain_failed");
+            return;
+        }
         if (this.b.legacyMaterialDictionaryFailed == true) {
             this.host.打印加载内容("材料大全数据加载失败");
             this.halt("material_dictionary_failed");
@@ -321,6 +326,7 @@ class org.flashNight.boot.BootSequencer {
             return;
         }
         if (this.b.craftReady == true && this.b.materialCatalogReady == true
+                && this.b.mapDomainReady == true
                 && this.b.arenaDropRulesReady == true
                 && this.b.itemDataReady == true
                 && this.b.enemyPropertiesReady == true

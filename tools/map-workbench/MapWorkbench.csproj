@@ -3,7 +3,30 @@
   <ItemGroup>
     <Compile Remove="webview-smoke/**/*.cs" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="SkiaSharp" />
     <Compile Include="../../launcher/src/Data/MapDefinition.cs" Link="MapDefinition.cs" />
     <Compile Include="../../launcher/src/Data/MapAuthoringStore.cs" Link="MapAuthoringStore.cs" />
+    <Compile Include="../../launcher/src/Data/MapRuleEvaluator.cs" Link="MapRuleEvaluator.cs" />
+    <Compile Include="../../launcher/src/Data/MapDomainDefinition.cs" Link="MapDomainDefinition.cs" />
+    <Compile Include="../../launcher/src/Data/MapEndpointResolver.cs" Link="MapEndpointResolver.cs" />
+    <Compile Include="../../launcher/src/Data/MapDomainService.cs" Link="MapDomainService.cs" />
+    <Compile Include="../../launcher/src/Data/MapNpcTaskProjection.cs" Link="MapNpcTaskProjection.cs" />
+    <Compile Include="../../launcher/src/Data/MapReferenceIndex.cs" Link="MapReferenceIndex.cs" />
+    <Compile Include="../../launcher/src/Data/MapSimulationFacts.cs" Link="MapSimulationFacts.cs" />
+    <Compile Include="../../launcher/src/Data/MapProjectFiles.cs" Link="MapProjectFiles.cs" />
+    <Compile Include="../../launcher/src/Data/MapTaskCatalog.cs" Link="MapTaskCatalog.cs" />
+    <Compile Include="../../launcher/src/Data/MapSwfLinkages.cs" Link="MapSwfLinkages.cs" />
+    <Compile Include="../../launcher/src/Data/MapSwfAssetExtractor.cs" Link="MapSwfAssetExtractor.cs" />
+    <Compile Include="../../launcher/src/Data/MapFlashSource.cs" Link="MapFlashSource.cs" />
+    <Compile Include="../../launcher/src/Data/MapWorldCatalog.cs" Link="MapWorldCatalog.cs" />
+    <Compile Include="../../launcher/src/Data/MapAssetCodec.cs" Link="MapAssetCodec.cs" />
+    <Compile Include="../../launcher/src/Data/MapAssetTools.cs" Link="MapAssetTools.cs" />
+    <Compile Include="../../launcher/src/Data/MapEditOperations.cs" Link="MapEditOperations.cs" />
+    <Compile Include="../../launcher/src/Data/MapTaskSourcePatch.cs" Link="MapTaskSourcePatch.cs" />
+    <Compile Include="../../launcher/src/Data/MapRuntimeWorld.cs" Link="MapRuntimeWorld.cs" />
+    <Compile Include="../../launcher/src/Data/MapChangeJournal.cs" Link="MapChangeJournal.cs" />
+    <Compile Include="../../launcher/src/Data/MapAssetCandidates.cs" Link="MapAssetCandidates.cs" />
+    <Compile Include="../../launcher/src/Data/MapAuthoringPlan.cs" Link="MapAuthoringPlan.cs" />
+    <Compile Include="../../launcher/src/Data/MapRuntimeContent.cs" Link="MapRuntimeContent.cs" />
   </ItemGroup>
 </Project>

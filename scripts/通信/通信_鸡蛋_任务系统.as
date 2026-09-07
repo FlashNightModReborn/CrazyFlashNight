@@ -199,6 +199,7 @@ _root.GetTask = function(id) {
     }
     var taskData = TaskUtil.getTaskData(id);
     _root.AddTask(id);
+    org.flashNight.arki.map.MapDomainBridge.invalidate();
     _root.SetDialogue(TaskUtil.getTaskText(taskData.get_conversation));
     // 任务通知 → Launcher 刘海屏
     var taskTitle = TaskUtil.getTaskText(taskData.title);
@@ -502,26 +503,7 @@ _root.FinishTask = function(index) {
     // 自动接链与完成检测都是提交后可选投影；任何旧回调异常都不得把已经完成
     // 的任务伪装成失败并阻断调用者 success finality。
     try {
-        var isTaskInChain = false;
-        var chainDict = TaskUtil.task_chains[taskData.chain[0]];
-        var chainArray = TaskUtil.task_in_chains_by_sequence[taskData.chain[0]];
-        var i = 0;
-        while (i < chainArray.length) {
-            if (chainDict[chainArray[i]] == taskData.id) {
-                isTaskInChain = true;
-                break;
-            }
-            i++;
-        }
-        if (isTaskInChain) {
-            var nextTaskID = chainDict[chainArray[i + 1]];
-            var nextTaskData:Object = TaskUtil.getTaskData(nextTaskID);
-            // 检查上个任务的交付NPC与下个任务的接取NPC是否为同一地点的同一NPC
-            if (TaskUtil.canAutoAcceptNextAtFinishNpc(taskData, nextTaskData)
-                    && _root.taskAvailable(nextTaskID)) {
-                _root.GetTask(nextTaskID);
-            }
-        }
+        TaskUtil.requestAutoAcceptAfterFinish(String(taskID));
     } catch (nextTaskProjectionError) {
         trace("[FinishTask] post-commit next-task projection failed: "
             + nextTaskProjectionError);
@@ -718,6 +700,12 @@ _root.难度是否达到 = function(等级描述:String):Boolean{
 }
 
 _root.点击npc后检测任务 = function(npc名字, 目标) {
+    if (!org.flashNight.arki.map.MapDomainBridge.isCurrent()) {
+        org.flashNight.arki.map.MapDomainBridge.invalidate();
+        _root.发布消息("人物状态正在更新，请稍后再点一次。");
+        return "状态更新中";
+    }
+    if (!org.flashNight.arki.map.MapWorldNpcController.canInteract(目标)) return "人物当前不在场";
     var npcTaskName:String = String(npc名字);
     if (目标 != undefined && 目标 != null && 目标.任务名 != undefined && 目标.任务名 != null && String(目标.任务名).length > 0) {
         npcTaskName = String(目标.任务名);
@@ -725,10 +713,10 @@ _root.点击npc后检测任务 = function(npc名字, 目标) {
     var ret = NPCTaskCheck(npcTaskName);
     switch (ret.result) {
         case "完成任务":
-            _root.FinishTask(ret.id);
+            if (_root.taskCompleteCheck(ret.id) === true) _root.FinishTask(ret.id);
             break;
         case "接受任务":
-            _root.GetTask(ret.id);
+            if (_root.taskAvailable(ret.id) === true) _root.GetTask(ret.id);
             break;
         case "路过":
             break;
@@ -753,6 +741,7 @@ _root.点击npc后检测任务 = function(npc名字, 目标) {
 }
 
 _root.是否达成任务检测 = function() {
+    org.flashNight.arki.map.MapDomainBridge.invalidate();
     var found:Boolean = false;
     for (var i in _root.tasks_to_do) {
         if (_root.taskCompleteCheck(i)) {

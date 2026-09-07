@@ -293,11 +293,9 @@ layers:
       - "temporary/**"
 
   - name: launcher-data
-    description: "Launcher 运行时数据（MapHud catalog、存档修复字典、存档 schema）"
+    description: "Launcher 运行时数据（存档修复字典、存档 schema；地图由同一 C# 定义投影）"
     source: "launcher/data/"
     include:
-      # MapHudWidget 启动期加载，缺失 → NativeHud 的 MapHud 静默不可见
-      - "map_hud_data.json"
       # SaveAutoRepairService 启动期加载，缺失 → 自动修复降级到只读模式
       - "save_repair_dict.json"
       # 存档编辑器 diff 视图基线，缺失 → "已修改" tab 退化为 schema 默认值

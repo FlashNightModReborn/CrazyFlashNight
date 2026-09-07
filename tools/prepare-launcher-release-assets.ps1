@@ -91,9 +91,6 @@ Invoke-Cf7PrepareCommand -Name 'compile Launcher V8 TypeScript bundle' -FilePath
     -Arguments @('tsc', '--project', 'tsconfig.json') -WorkingDirectory $tsDir
 
 $nodeSteps = @(
-    @{ Name = 'derive task NPC registry'; Script = 'tools\derive-task-npc-registry.js' },
-    @{ Name = 'derive map catalog'; Script = 'tools\derive-map-catalog.js' },
-    @{ Name = 'derive native HUD map data'; Script = 'tools\export-maphud-data.js' },
     @{ Name = 'derive task catalog'; Script = 'tools\derive-task-catalog.js' },
     @{ Name = 'derive achievement catalog'; Script = 'tools\derive-achievement-catalog.js' },
     @{ Name = 'derive arena meta teams'; Script = 'tools\derive-arena-meta-teams.js' },
@@ -149,9 +146,6 @@ if (-not [string]::IsNullOrWhiteSpace($SaveSchemaSource)) {
 
 $generatedOutputs = @(
     'launcher/scripts/dist/hit-number-bundle.js',
-    'data/map/task_npc_registry.json',
-    'data/map/map_catalog.json',
-    'launcher/data/map_hud_data.json',
     'launcher/web/modules/tasks/task-catalog.json',
     'launcher/web/modules/tasks/achievement-catalog.json',
     'data/arena/arena_calibrated_rosters.json',

@@ -584,7 +584,7 @@
         if (!satisfied) return { enabled: false, label: '尚未满足交付条件', act: '', titleText: '' };
         if (detail.finishRemote === true) return { enabled: true, label: '交付任务', act: 'deliver', titleText: '' };
         if (detail.finishNavigable === true) return { enabled: true, label: '前往交付', act: 'navigate', titleText: '前往「' + npc + '」所在地图交付' };
-        return { enabled: false, label: '前往「' + npc + '」交付', act: '', titleText: '需前往交付NPC处提交（该区域暂不可一键前往）' };
+        return { enabled: false, label: '前往「' + npc + '」交付', act: '', titleText: detail.finishNavigationReason || '该人物暂不可一键前往，请刷新查看地点与人物条件' };
     }
 
     // 就地修补交付按钮（不重渲详情，避免入场动效重放）
@@ -617,6 +617,7 @@
             if (!data || !data.success || !data.taskData) return;
             var fresh = data.taskData;
             cached.finishNavigable = (fresh.finishNavigable === true);
+            cached.finishNavigationReason = fresh.finishNavigationReason || '';
             if (fresh.conditions) cached.conditions = fresh.conditions;
             if (applyDetailSatisfied(summary, fresh)) {
                 // 完成态翻转：徽章/按钮/列表角标整体过时 → 全量重渲（罕见事件，入场动效重放可接受）
@@ -719,7 +720,7 @@
         var task = _tasks[_activeIndex];
         if (!task) return;
         var det = _detailCache[task.taskId];
-        if (!det || det.finishNavigable !== true) { toast('该区域暂不可一键前往'); return; }
+        if (!det || det.finishNavigable !== true) { toast(det && det.finishNavigationReason || '该人物暂不可一键前往，请刷新任务详情'); return; }
         beginOp(btn);
         var reqSession = _session;
         sendPanelMsg('navigateFinish', { taskId: task.taskId }, function(data) {
@@ -732,8 +733,13 @@
                 Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
             } else {
                 var msg = '无法前往交付NPC';
-                if (data && data.error === 'not_navigable') msg = '该区域尚未解锁，无法一键前往';
+                if (data && data.error === 'not_navigable') msg = '地点或人物条件尚未满足，请刷新任务详情';
                 else if (data && data.error === 'npc_not_on_map') msg = '该任务NPC不在可跳转地图上';
+                else if (data && ['map_facts_stale','stale_facts','invalid_session'].indexOf(data.error) >= 0) msg = '地图或任务状态已变化，请刷新后重试';
+                else if (data && data.error === 'navigation_busy') msg = '正在切换场景，请等待当前跳转完成';
+                else if (data && data.error === 'npc_absent') msg = '该人物当前不在目标驻点，请查看任务或剧情条件';
+                else if (data && data.error === 'ambiguous_placement') msg = '该人物当前有多个驻点，请在内容工作台指定固定目标';
+                else if (data && data.error === 'world_binding_required') msg = '该人物的真实场景接入尚未就绪，请检查内容绑定';
                 toast(msg, 'error');
             }
         });

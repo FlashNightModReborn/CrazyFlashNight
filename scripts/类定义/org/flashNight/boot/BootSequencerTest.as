@@ -355,6 +355,7 @@ class org.flashNight.boot.BootSequencerTest {
             _root.__boot.itemDataReady = true;
             _root.__boot.enemyPropertiesReady = true;
             _root.__boot.legacyMaterialDictionaryReady = true;
+            _root.__boot.mapDomainReady = true;
             _root.__boot.equipmentModReady = true;
             inst.step();
             this.assert(inst.state == BootSequencer.S_CRAFTING
@@ -413,6 +414,7 @@ class org.flashNight.boot.BootSequencerTest {
             {flag:"itemDataFailed", ready:"itemDataReady", reason:"item_data_failed"},
             {flag:"enemyPropertiesFailed", ready:"enemyPropertiesReady", reason:"enemy_properties_failed"},
             {flag:"legacyMaterialDictionaryFailed", ready:"legacyMaterialDictionaryReady", reason:"material_dictionary_failed"},
+            {flag:"mapDomainFailed", ready:"mapDomainReady", reason:"map_domain_failed"},
             {flag:"equipmentModFailed", ready:"equipmentModReady", reason:"equipment_mod_data_failed"},
             {flag:"shopCatalogFailed", ready:"shopCatalogReady", reason:"shop_catalog_failed"},
             {flag:"kshopCatalogFailed", ready:"kshopCatalogReady", reason:"kshop_catalog_failed"},
@@ -448,6 +450,7 @@ class org.flashNight.boot.BootSequencerTest {
             inst2.state = BootSequencer.S_CRAFTING;
             _root.__boot.craftFired = true;
             _root.__boot.craftReady = true;
+            _root.__boot.mapDomainReady = true;
             _root.__boot.materialCatalogReady = true;
             _root.__boot.arenaDropRulesReady = true;
             _root.__boot.itemDataReady = true;

@@ -2513,12 +2513,9 @@ public sealed class PlayerInfoB006RuntimeQualificationTests
             onToggleLog: () => { },
             onForceExit: () => { },
             postToWeb: _ => { });
-        MapHudDataCatalog catalog = MapHudDataCatalog.LoadFromFile(
-            Path.Combine(
-                projectRoot,
-                "launcher",
-                "data",
-                "map_hud_data.json"));
+        MapHudDataCatalog catalog = MapHudDataCatalog.FromPayload(
+            CF7Launcher.Data.MapDefinition.Hud(CF7Launcher.Data.MapDefinition.Load(projectRoot))
+                .ToObject<MapHudPayload>());
         var rightContext = new RightContextWidget(
             anchor,
             router,

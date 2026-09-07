@@ -116,7 +116,7 @@ describe("launcher-runtime pack config", () => {
     expect(manifestJsonEntries.length).toBeGreaterThan(0);
     expect(manifestJsonEntries.every((entry) => !shouldMinify(entry.path))).toBe(true);
     expect(shouldMinify("config/build/runtime-release-consensus.json")).toBe(false);
-    expect(shouldMinify("launcher/data/map_hud_data.json")).toBe(true);
+    expect(shouldMinify("data/map/map_definition.json")).toBe(true);
 
     const filterResult = filterFiles(manifestJsonEntries.map((entry) => entry.path), config);
     const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "cf7-runtime-byte-test-"));

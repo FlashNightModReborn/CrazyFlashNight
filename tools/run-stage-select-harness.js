@@ -84,7 +84,8 @@ async function main() {
 
     const browser = await chromium.launch({
         executablePath,
-        headless: !args.headed
+        headless: !args.headed,
+        args: ['--disable-gpu']
     });
     const page = await browser.newPage({ viewport });
     const failedRequests = [];

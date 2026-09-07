@@ -328,15 +328,18 @@ _root.地图元件.地图元件破碎动画 = function(scope:MovieClip, fragment
 // NPC
 //_root.初始化NPC(this);
 _root.初始化NPC = function(目标) {
+    if (org.flashNight.arki.map.MapWorldNpcController.intercept(目标)) return;
     if (目标.NPC初始化完毕 === true)
         return;
-    if (目标.任务需求 > 1 && _root.主线任务进度 < 目标.任务需求) {
+    if (!org.flashNight.arki.map.MapWorldNpcController.hasPresencePermit(目标)
+            && 目标.任务需求 > 1 && _root.主线任务进度 < 目标.任务需求) {
         目标.stop();
         目标._visible = false;
         return;
     }
-    // 支线任务需求（可选）：元件上设置 任务需求支线 = [任务ID, ...]，列表内所有任务都完成（>=1次）才会初始化显示
-    if (目标.任务需求支线 != undefined && 目标.任务需求支线 != null && 目标.任务需求支线.length > 0) {
+    // 未接管 NPC 保留上游支线门槛；已显式接管的驻点只认本次 C# presence 许可，与主线门槛同一边界。
+    if (!org.flashNight.arki.map.MapWorldNpcController.hasPresencePermit(目标)
+            && 目标.任务需求支线 != undefined && 目标.任务需求支线 != null && 目标.任务需求支线.length > 0) {
         var 支线需求:Array = 目标.任务需求支线;
         var 支线未完成:Boolean = false;
         for (var ri:Number = 0; ri < 支线需求.length; ri++) {

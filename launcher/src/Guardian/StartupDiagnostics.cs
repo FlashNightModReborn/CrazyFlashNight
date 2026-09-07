@@ -202,7 +202,7 @@ namespace CF7Launcher.Guardian
             ProbeDirectory("launcher.web", Path.Combine(projectRoot, "launcher", "web"), !requireGameFiles ? false : true);
             ProbeFile("bootstrap.html", Path.Combine(projectRoot, "launcher", "web", "bootstrap.html"), requireGameFiles);
             ProbeFile("overlay.html", Path.Combine(projectRoot, "launcher", "web", "overlay.html"), false);
-            ProbeFile("map_hud_data", Path.Combine(projectRoot, "launcher", "data", "map_hud_data.json"), false);
+            ProbeFile("map_definition", Path.Combine(projectRoot, "data", "map", "map_definition.json"), requireGameFiles);
             ProbeFile("save_schema", Path.Combine(projectRoot, "launcher", "data", "save_schema.json"), false);
 
             if (requireGameFiles)

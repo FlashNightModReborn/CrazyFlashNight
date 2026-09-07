@@ -11,7 +11,6 @@ class org.flashNight.arki.task.TaskUtil{
     public static var tasks:Object;
     public static var task_chains:Object;
     public static var task_in_chains_by_sequence:Object;
-    public static var tasks_of_npc:Object;
     public static var task_texts:Object;
 
     public static var specialRequirements:Object;
@@ -32,82 +31,39 @@ class org.flashNight.arki.task.TaskUtil{
         return tasks[index];
     }
 
-    public static function getNpcHotspotKey(npcName:String, hotspotId:String):String{
-        return String(npcName) + "\n" + String(hotspotId);
-    }
-
-    private static function appendTaskIdList(out:Array, src:Array):Void{
-        if(src == undefined || src.length == undefined) return;
-        for(var i:Number = 0; i < src.length; i++){
-            out.push(src[i]);
-        }
-    }
-
-    private static function taskPriorityOf(taskID):Number{
-        var taskData:Object = tasks[taskID];
-        if(taskData == undefined) return 0;
-        var priority:Number = Number(taskData.priority);
-        return isNaN(priority) ? 0 : priority;
-    }
-
-    private static function taskLoadOrderOf(taskID):Number{
-        var taskData:Object = tasks[taskID];
-        if(taskData == undefined) return 999999;
-        var order:Number = Number(taskData._loadOrder);
-        return isNaN(order) ? 999999 : order;
-    }
-
-    private static function compareNpcTaskOrder(a, b):Number{
-        var pa:Number = taskPriorityOf(a);
-        var pb:Number = taskPriorityOf(b);
-        if(pa > pb) return -1;
-        if(pa < pb) return 1;
-
-        var oa:Number = taskLoadOrderOf(a);
-        var ob:Number = taskLoadOrderOf(b);
-        if(oa < ob) return -1;
-        if(oa > ob) return 1;
-        return 0;
-    }
-
-    private static function sortNpcTaskIds(ids:Array):Void{
-        if(ids == undefined || ids.length < 2) return;
-        InsertionSort.sort(ids, compareNpcTaskOrder);
-    }
-
+    /** 参数保留给旧 XFL；匹配集合已经由 C# 按当前物理地点投影。 */
     public static function getTasksForNpc(npcName:String, hotspotId:String):Array{
-        var out:Array = [];
-        if(hotspotId != undefined && hotspotId != ""){
-            appendTaskIdList(out, tasks_of_npc[getNpcHotspotKey(npcName, hotspotId)]);
-        }
-        appendTaskIdList(out, tasks_of_npc[npcName]);
-        sortNpcTaskIds(out);
-        return out;
+        var ids:Array = org.flashNight.arki.map.MapDomainBridge.getProjection().npcTasks["$" + npcName]["get"];
+        return ids == undefined ? [] : ids;
     }
 
     public static function taskNpcMatches(taskData:Object, role:String, npcName:String, hotspotId:String):Boolean{
-        if(taskData == undefined) return false;
-        var expectedNpc:String;
-        var expectedHotspot:String;
-        if(role == "finish"){
-            expectedNpc = taskData.finish_npc != undefined ? String(taskData.finish_npc) : "";
-            expectedHotspot = taskData.finish_npc_hotspot != undefined ? String(taskData.finish_npc_hotspot) : "";
-        }else{
-            expectedNpc = taskData.get_npc != undefined ? String(taskData.get_npc) : "";
-            expectedHotspot = taskData.get_npc_hotspot != undefined ? String(taskData.get_npc_hotspot) : "";
-        }
-        if(expectedNpc != npcName) return false;
-        if(expectedHotspot == "") return true;
-        return (hotspotId != undefined && hotspotId != "" && expectedHotspot == hotspotId);
+        var ids:Array = org.flashNight.arki.map.MapDomainBridge.getProjection().npcTasks["$" + npcName][role];
+        for(var i:Number = 0; i < ids.length; i++) if(String(ids[i]) == String(taskData.id)) return true;
+        return false;
     }
 
     public static function canAutoAcceptNextAtFinishNpc(finishedTaskData:Object, nextTaskData:Object):Boolean{
-        if(finishedTaskData == undefined || nextTaskData == undefined) return false;
-        if(nextTaskData.get_npc != finishedTaskData.finish_npc) return false;
-        var nextHotspot:String = nextTaskData.get_npc_hotspot != undefined ? String(nextTaskData.get_npc_hotspot) : "";
-        if(nextHotspot == "") return true;
-        var finishHotspot:String = finishedTaskData.finish_npc_hotspot != undefined ? String(finishedTaskData.finish_npc_hotspot) : "";
-        return (finishHotspot != "" && finishHotspot == nextHotspot);
+        var pair:Object = org.flashNight.arki.map.MapDomainBridge.getProjection().autoAccept[String(finishedTaskData.id)];
+        return pair.allowed === true && String(pair.nextTaskId) == String(nextTaskData.id);
+    }
+
+    /** 奖励提交后再取事实；class 闭包不依附被卸载的 asLoader 帧。 */
+    public static function requestAutoAcceptAfterFinish(finishedTaskId:String):Void{
+        var epoch:Number = org.flashNight.arki.map.MapDomainBridge.getSceneEpoch();
+        org.flashNight.arki.map.MapDomainBridge.invalidate();
+        org.flashNight.arki.map.MapDomainBridge.snapshot(function(ok:Boolean, error:String):Void {
+            if (!ok || epoch != org.flashNight.arki.map.MapDomainBridge.getSceneEpoch()
+                    || !org.flashNight.arki.map.MapDomainBridge.isCurrent()) return;
+            var pair:Object = org.flashNight.arki.map.MapDomainBridge.getProjection().autoAccept[finishedTaskId];
+            if (pair.allowed !== true || pair.nextTaskId == undefined) return;
+            var nextId:String = String(pair.nextTaskId);
+            if (org.flashNight.arki.task.TaskUtil.canAutoAcceptNextAtFinishNpc(
+                    org.flashNight.arki.task.TaskUtil.getRawTaskData(finishedTaskId),
+                    org.flashNight.arki.task.TaskUtil.getRawTaskData(nextId)) && _root.taskAvailable(nextId) === true) {
+                _root.GetTask(nextId);
+            }
+        }, [finishedTaskId]);
     }
 
     public static function getTaskText(str:String):String{
@@ -122,7 +78,6 @@ class org.flashNight.arki.task.TaskUtil{
         tasks = new Object();
         task_chains = new Object();
         task_in_chains_by_sequence = new Object();
-        tasks_of_npc = new Object();
         for(var i = 0; i < rawTaskData.length; i++){
             var taskData = rawTaskData[i];
             taskData._loadOrder = i;
@@ -139,12 +94,6 @@ class org.flashNight.arki.task.TaskUtil{
                 task_chains[taskData.chain[0]][taskData.chain[1]] = taskData.id;
                 task_in_chains_by_sequence[taskData.chain[0]].push(taskData.chain[1]);
             }
-            // 建立NPC可接取的任务字典
-            var get_npc = taskData.get_npc;
-            var get_hotspot = taskData.get_npc_hotspot != undefined ? String(taskData.get_npc_hotspot) : "";
-            var get_key = get_hotspot != "" ? getNpcHotspotKey(get_npc, get_hotspot) : get_npc;
-            if (tasks_of_npc[get_key] == null) tasks_of_npc[get_key] = new Array();
-            tasks_of_npc[get_key].push(taskData.id);
             // 以id和任务名分别作为键，将任务数据存入tasks
             tasks[taskData.id] = taskData;
             var title = typeof task_texts[taskData.title] == "string" ? task_texts[taskData.title] : taskData.title;

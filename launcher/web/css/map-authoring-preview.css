@@ -1,4 +1,6 @@
 html,body,#map-authoring-root { width:100%; height:100%; margin:0; overflow:hidden; }
+/* 隔离文档不会继承外层壳的局部变量；提示层复用全局黑铁终端色板。 */
+#map-authoring-root { --wb-bg:var(--launcher-bg-0); --wb-surface:var(--launcher-bg-1); --wb-text:var(--launcher-copy); --wb-muted:var(--term-ink-lo); --wb-line-strong:var(--term-ink-faint); }
 .map-authoring-targets { position:absolute; inset:0; z-index:9; pointer-events:none; }
 .map-authoring-target { position:absolute; padding:0; border:0; background:transparent; pointer-events:auto; cursor:move; touch-action:none; }
 .map-authoring-target:hover { outline:1px dashed var(--wb-role-focus); }
@@ -7,3 +9,21 @@ html,body,#map-authoring-root { width:100%; height:100%; margin:0; overflow:hidd
 .map-panel.is-authoring-pan { cursor:grab; }
 .map-panel.is-authoring-pan .map-authoring-target { pointer-events:none; }
 .map-authoring-targets[hidden] { display:none; }
+.map-panel[data-authoring-view=author] .map-page-tab.is-authoring-hidden::after { content:'隐藏'; margin-left:5px; font-size:11px; color:inherit; }
+.map-panel[data-authoring-view=author] .map-filter-hotspot.is-authoring-hidden { display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto auto; gap:0; min-height:44px; height:auto; padding:3px 0; }
+.map-panel[data-authoring-view=author] .map-filter-hotspot.is-authoring-hidden .map-filter-hotspot-label { grid-column:1; grid-row:1; overflow:hidden; text-overflow:ellipsis; }
+.map-panel[data-authoring-view=author] .map-filter-hotspot.is-authoring-hidden .map-filter-hotspot-meta { grid-column:2; grid-row:1; }
+.map-panel[data-authoring-view=author] .map-filter-hotspot.is-authoring-hidden::after { content:'当前方案隐藏'; grid-column:1/-1; grid-row:2; padding-left:10px; font-size:11px; color:var(--wb-text); text-align:left; }
+.map-panel[data-authoring-view=author] .map-filter-hotspot.is-empty { opacity:1; }
+.map-panel[data-authoring-view=author] .map-filter-hotspot.is-active { border-color:var(--wb-role-selected); color:var(--wb-text); box-shadow:var(--wb-ring-focus); }
+.map-panel[data-authoring-view=author] .map-filter-hotspot.is-active .map-filter-hotspot-meta { color:var(--wb-text); }
+.map-authoring-target.is-scenario-hidden { outline:1px dashed var(--wb-muted); }
+.map-authoring-target.is-scenario-hidden.is-selected { outline:2px solid var(--wb-role-focus); }
+.map-authoring-hidden-badge { position:absolute; left:0; top:0; padding:1px 4px; font-size:12px; line-height:1.5; color:var(--wb-text); background:var(--wb-bg); border:1px solid var(--wb-line-strong); pointer-events:none; transform-origin:top left; }
+.map-authoring-page-hidden { position:absolute; inset:0; z-index:20; display:grid; place-items:center; box-sizing:border-box; padding:24px; background:var(--wb-bg); color:var(--wb-text); }
+.map-authoring-page-hidden>div { max-width:520px; font-size:14px; line-height:1.8; }
+.map-authoring-page-hidden.is-filter-hidden { padding:16px; overflow:auto; }
+.map-authoring-page-hidden h2 { margin:0 0 12px; font-size:20px; }
+.map-authoring-page-hidden p { margin:0 0 16px; }
+.map-authoring-page-hidden button { min-height:38px; padding:7px 12px; font:inherit; color:var(--wb-text); background:var(--wb-surface); border:1px solid var(--wb-line-strong); cursor:pointer; }
+.map-authoring-page-hidden[hidden] { display:none; }

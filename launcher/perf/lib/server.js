@@ -33,7 +33,7 @@ function startServer(rootDir, port = 0) {
                 const file = path.join(rootDir, pathname);
                 if (pathname.endsWith('/modules/map-definition.js')) {
                     const repo = fs.existsSync(path.join(rootDir, 'data/map/map_definition.json')) ? rootDir : path.resolve(rootDir, '../..');
-                    const definition = JSON.parse(fs.readFileSync(path.join(repo, 'data/map/map_definition.json'), 'utf8'));
+                    const definition = require(path.join(repo, 'tools/lib/map-domain.js')).loadRenderDefinition(repo);
                     res.writeHead(200, {'content-type':'application/javascript; charset=utf-8','cache-control':'no-store'});
                     res.end('var MapDefinitionData = ' + JSON.stringify(definition).replace(/</g, '\\u003c') + ';'); return;
                 }

@@ -66,104 +66,9 @@ var MapFitPresets = (function() {
             }
         }
     };
-    var _capabilities = {
-        "base": {
-            "roof": {
-                "sourceRatio": 4.976,
-                "worstAsset": "assets/map/composite/base/base-roof.webp"
-            },
-            "first_floor": {
-                "sourceRatio": 6.64,
-                "worstAsset": "assets/map/composite/base/merc-bar.webp"
-            },
-            "basement1": {
-                "sourceRatio": 8.72,
-                "worstAsset": "assets/map/composite/base/gym.webp"
-            },
-            "basement2": {
-                "sourceRatio": 7.346,
-                "worstAsset": "assets/map/composite/base/lab.webp"
-            },
-            "water": {
-                "sourceRatio": 8.721,
-                "worstAsset": "assets/map/composite/base/underground-water.webp"
-            },
-            "all": {
-                "sourceRatio": 4.976,
-                "worstAsset": "assets/map/composite/base/base-roof.webp"
-            },
-            "hierarchy": {
-                "sourceRatio": 4.976,
-                "worstAsset": "assets/map/composite/base/base-roof.webp"
-            },
-            "*": {
-                "sourceRatio": 4.976,
-                "worstAsset": "assets/map/composite/base/base-roof.webp"
-            }
-        },
-        "faction": {
-            "warlord": {
-                "sourceRatio": 6.668,
-                "worstAsset": "assets/map/composite/faction/warlord-base.webp"
-            },
-            "rock": {
-                "sourceRatio": 4,
-                "worstAsset": "assets/map/composite/faction/rock-park.webp"
-            },
-            "blackiron": {
-                "sourceRatio": 4.175,
-                "worstAsset": "assets/map/composite/faction/blackiron-training.webp"
-            },
-            "fallen": {
-                "sourceRatio": 1.425,
-                "worstAsset": "assets/map/composite/faction/fallen-entrance.webp"
-            },
-            "all": {
-                "sourceRatio": 1.425,
-                "worstAsset": "assets/map/composite/faction/fallen-entrance.webp"
-            },
-            "*": {
-                "sourceRatio": 1.425,
-                "worstAsset": "assets/map/composite/faction/fallen-entrance.webp"
-            }
-        },
-        "defense": {
-            "first_line": {
-                "sourceRatio": 1,
-                "worstAsset": "assets/map/composite/defense/subway.webp"
-            },
-            "restricted": {
-                "sourceRatio": 4,
-                "worstAsset": "assets/map/composite/defense/alliance-dock.webp"
-            },
-            "all": {
-                "sourceRatio": 1,
-                "worstAsset": "assets/map/composite/defense/subway.webp"
-            },
-            "*": {
-                "sourceRatio": 1,
-                "worstAsset": "assets/map/composite/defense/subway.webp"
-            }
-        },
-        "school": {
-            "inside": {
-                "sourceRatio": 1.649,
-                "worstAsset": "assets/map/composite/school/teaching-interior.webp"
-            },
-            "outside": {
-                "sourceRatio": 4.433,
-                "worstAsset": "assets/map/composite/school/union-university.webp"
-            },
-            "all": {
-                "sourceRatio": 1.649,
-                "worstAsset": "assets/map/composite/school/teaching-interior.webp"
-            },
-            "*": {
-                "sourceRatio": 1.649,
-                "worstAsset": "assets/map/composite/school/teaching-interior.webp"
-            }
-        }
-    };
+    function currentCapabilities() {
+        return typeof MapDefinitionData !== "undefined" && MapDefinitionData.version >= 2 ? (MapDefinitionData.assetCapabilities || {}) : {};
+    }
     var _experienceProfiles = {
         "focus": {
             "minX": 0.56,
@@ -260,14 +165,14 @@ var MapFitPresets = (function() {
         return {
             defaults: copy(_defaults),
             presets: copy(_presets),
-            capabilities: copy(_capabilities),
+            capabilities: copy(currentCapabilities()),
             experienceProfiles: copy(_experienceProfiles),
             filterExperienceProfiles: copy(_filterExperienceProfiles)
         };
     }
 
     function resolveCapability(pageId, filterId) {
-        var pageCapabilities = _capabilities[pageId] || null;
+        var pageCapabilities = currentCapabilities()[pageId] || null;
         var capability = pageCapabilities ? (pageCapabilities[filterId] || pageCapabilities["*"]) : null;
         return capability ? copy(capability) : { sourceRatio: 1, worstAsset: "" };
     }

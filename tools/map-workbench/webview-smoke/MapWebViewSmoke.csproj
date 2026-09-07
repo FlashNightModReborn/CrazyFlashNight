@@ -3,6 +3,6 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Microsoft.Web.WebView2" />
-    <Compile Include="../../../launcher/src/Data/MapDefinition.cs" Link="MapDefinition.cs" />
+    <ProjectReference Include="../MapWorkbench.csproj" />
   </ItemGroup>
 </Project>

@@ -149,7 +149,7 @@ async function main() {
     const harnessUrl = base + '?' + qs.join('&');
 
     console.log('[tasks-harness] url', harnessUrl);
-    const browser = await chromium.launch({ executablePath, headless: !opts.keepOpen });
+    const browser = await chromium.launch({ executablePath, headless: !opts.keepOpen, args: ['--disable-gpu'] });
     const context = await browser.newContext({ viewport });
     const page = await context.newPage();
     page.on('pageerror', err => console.error('[page-error]', err.message));

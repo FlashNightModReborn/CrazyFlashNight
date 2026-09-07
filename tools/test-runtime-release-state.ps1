@@ -162,8 +162,8 @@ exit $code
                     'config/build/runtime-inputs.v2.json',
                     'config/build/main-branch-admission.v2.json',
                     'config/build/native-change-gate.v1.json',
-                    'data/map/map_catalog.json',
-                    'tools/derive-map-catalog.js',
+                    'data/map/map_definition.json',
+                    'tools/lib/map-domain.js',
                     'tools/classify-runtime-release-state.ps1',
                     'tools/verify-runtime-bundle.ps1',
                     'tools/verify-runtime-bundle-v2.ps1',
@@ -200,8 +200,8 @@ exit $code
         payload = [ordered]@{ fixedRoots=@('CRAZYFLASHER7MercenaryEmpire.exe'); trees=@('runtime') }
     }
     Set-TestFile (Join-Path $root 'config\build\runtime-inputs.v2.json') (($runtimeInputs | ConvertTo-Json -Depth 10) + "`n")
-    Set-TestFile (Join-Path $root 'data\map\map_catalog.json') '{"schema":"fixture-content-policy"}'
-    Set-TestFile (Join-Path $root 'tools\derive-map-catalog.js') 'export const derive = true;'
+    Set-TestFile (Join-Path $root 'data\map\map_definition.json') '{"schema":"fixture-content-policy"}'
+    Set-TestFile (Join-Path $root 'tools\lib\map-domain.js') 'export const derive = true;'
     Set-TestFile (Join-Path $root 'launcher\scripts\catalog.ts') 'export const catalog = true;'
     Set-TestBytes (Join-Path $root 'config\build\native-change-gate.v1.json') $script:nativeGateBytes
     Set-TestBytes (Join-Path $root 'config\build\main-branch-admission.v2.json') $script:admissionConfigBytes
@@ -503,8 +503,8 @@ try {
     Run-Test 'Formal content-policy inputs remain receipt-bound without becoming native admission paths' {
         $f = New-TestFixture v2
         [void](Add-TestFilesCommit $f ([ordered]@{
-            'data/map/map_catalog.json' = '{"schema":"updated-content-policy"}'
-            'tools/derive-map-catalog.js' = 'export const derive = false;'
+            'data/map/map_definition.json' = '{"schema":"updated-content-policy"}'
+            'tools/lib/map-domain.js' = 'export const derive = false;'
             'launcher/scripts/catalog.ts' = 'export const catalog = false;'
         }) 'change broad content policy')
         $result = Invoke-Classifier $f Protected $f.Base

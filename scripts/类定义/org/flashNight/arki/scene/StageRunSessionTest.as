@@ -10,7 +10,6 @@ import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.InformationCollection;
 import org.flashNight.arki.map.MapHotspotResolver;
-import org.flashNight.arki.map.MapPanelCatalog;
 import org.flashNight.arki.map.MapPanelService;
 import org.flashNight.arki.merc.ArenaController;
 import org.flashNight.arki.merc.ArenaCalibrationService;
@@ -62,6 +61,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testPersistedSettlementTerminalCleanup();
         testReturnAvailabilityAndRetreat();
         testDeliverableReturnWaitsForSettlementVisualClose();
+        testDeliverableRejectsOldRunCallback();
         testHostIntentRevisionAndIdempotency();
         testFocusObservationIsBoundedAndNonAuthoritative();
         testLifecycleAdmissionAndReservation();
@@ -1305,77 +1305,51 @@ class org.flashNight.arki.scene.StageRunSessionTest {
     }
 
     private static function testMapNavigationAuthority():Void {
-        var oldBase:Array = MapPanelCatalog.BASE_HOTSPOT_IDS;
-        var oldGrouped:Object = MapPanelCatalog.GROUPED_HOTSPOT_IDS;
-        var oldTargets:Object = MapPanelCatalog.NAVIGATE_TARGETS;
-        var oldPages:Object = MapPanelCatalog.HOTSPOT_PAGES;
-        var oldProgress:Object = _root.task_chains_progress;
-        var oldInfrastructure:Object = _root.基建系统;
         var oldFade:Object = _root.淡出动画;
-        var oldOutcome:Object = _root.关卡结束界面;
-        var oldEntry:Object = _root.场景进入位置名;
-
-        MapPanelCatalog.BASE_HOTSPOT_IDS = ["test_base"];
-        MapPanelCatalog.GROUPED_HOTSPOT_IDS = {
-            warlord:["test_locked"], rock:[], blackiron:[], fallen:[],
-            defense:[], restricted:[], schoolOutside:[], schoolInside:[]
-        };
-        MapPanelCatalog.NAVIGATE_TARGETS = {
-            test_base:"测试基地帧", test_locked:"伪造锁区帧"
-        };
-        MapPanelCatalog.HOTSPOT_PAGES = {test_base:"base", test_locked:"faction"};
-        _root.task_chains_progress = {主线:0, 大学:0};
-        _root.基建系统 = {infrastructure:{}};
-        _root.关卡结束界面 = {_visible:1};
-        _root.淡出动画 = {
-            fadeCount:0,
-            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }
-        };
-        MapHotspotResolver.reset();
-
+        _root.淡出动画 = {fadeCount:0, 淡出跳转帧:function(frameName:String):Void { this.fadeCount++; }};
+        var result:Object = {};
+        var callback:Function = function(ok:Boolean, error:String):Void { result.ok = ok; result.error = error; };
         resetWorld(0);
-        assertTrue(StageRunSession.begin("地图门控关卡", "困难"),
-            "map authority coverage creates an active run");
-        assertFalse(MapPanelService.navigateToHotspot("test_base"),
-            "active run rejects even an unlocked forged navigate command");
-        assertEquals(0, _root.淡出动画.fadeCount,
-            "active navigate rejection occurs before fade side effects");
-        StageRunSession.finish("victory");
-        assertFalse(MapPanelService.navigateToHotspot("test_base"),
-            "victory still rejects map navigation before canonical return");
-        assertEquals(0, _root.淡出动画.fadeCount,
-            "victory navigate rejection performs no fade");
-        StageRunSession.onReturnBaseStarted();
-        StageRunSession.onSettlementState("ABANDONED", 0);
-        _root.当前为战斗地图 = false;
-        assertTrue(MapPanelService.navigateToHotspot("test_base"),
-            "terminal returned run permits an unlocked map target");
-        assertEquals(1, _root.淡出动画.fadeCount,
-            "allowed terminal navigation performs exactly one fade");
-        assertFalse(MapPanelService.navigateToHotspot("test_locked"),
-            "forged locked hotspot is rejected by the AS2 unlock hard gate");
-        assertEquals(1, _root.淡出动画.fadeCount,
-            "forged locked hotspot cannot trigger another fade");
-
-        resetWorld(0);
-        assertTrue(StageRunSession.begin("地图失败关卡", "困难"),
-            "map authority coverage creates a failure run");
-        StageRunSession.finish("failure");
-        assertFalse(MapPanelService.navigateToHotspot("test_base"),
-            "failure still rejects map navigation before canonical return");
-        assertEquals(1, _root.淡出动画.fadeCount,
-            "failure navigate rejection performs no fade");
-
-        MapHotspotResolver.reset();
-        MapPanelCatalog.BASE_HOTSPOT_IDS = oldBase;
-        MapPanelCatalog.GROUPED_HOTSPOT_IDS = oldGrouped;
-        MapPanelCatalog.NAVIGATE_TARGETS = oldTargets;
-        MapPanelCatalog.HOTSPOT_PAGES = oldPages;
-        _root.task_chains_progress = oldProgress;
-        _root.基建系统 = oldInfrastructure;
+        assertTrue(StageRunSession.begin("地图门控关卡", "困难"), "map authority creates an active run");
+        MapPanelService.navigateToHotspot("forged_target", callback);
+        assertFalse(result.ok, "active run denies async navigation before any fresh RPC");
+        assertEquals(0, _root.淡出动画.fadeCount, "active rejection has no fade side effect");
+        StageRunSession.finish("victory"); result = {};
+        MapPanelService.navigateToHotspot("forged_target", callback);
+        assertFalse(result.ok, "victory still rejects navigation before canonical return");
+        StageRunSession.onReturnBaseStarted(); StageRunSession.onSettlementState("ABANDONED", 0);
+        _root.当前为战斗地图 = false; result = {};
+        assertTrue(StageRunSession.canNavigateAwayFromStage(), "terminal return releases the lifecycle gate");
+        // 这里没有 C# 会话，终态放行本身不能伪造地图准入；实际 RPC 新鲜度另由 MapDomainBridgeTest 覆盖。
+        MapPanelService.navigateToHotspot("forged_target", callback);
+        assertFalse(result.ok, "missing domain admission remains fail closed after lifecycle release");
+        assertEquals(0, _root.淡出动画.fadeCount, "no C# admission means no scene execution");
+        resetWorld(0); StageRunSession.begin("地图失败关卡", "困难"); StageRunSession.finish("failure"); result = {};
+        MapPanelService.navigateToHotspot("forged_target", callback);
+        assertFalse(result.ok, "failure rejects map navigation before canonical return");
         _root.淡出动画 = oldFade;
-        _root.关卡结束界面 = oldOutcome;
-        _root.场景进入位置名 = oldEntry;
+    }
+
+    private static function testDeliverableRejectsOldRunCallback():Void {
+        resetWorld(0); installHero("no_effect");
+        var service:Object = MapPanelService;
+        var original:Function = service.navigateToDeliverable;
+        var callback:Function; var guard:Function; var calls:Number = 0;
+        service.navigateToDeliverable = function(done:Function, current:Function):Void { callback = done; guard = current; calls++; };
+        StageRunSession.begin("旧交付关卡", "困难"); StageRunSession.finish("victory");
+        _root.返回基地 = function():Boolean { return StageRunSession.onReturnBaseStarted(); };
+        var requested:Object = StageRunSession.requestReturnDeliverableLocal("focused_async");
+        assertTrue(requested.success === true, "return delivery records only an intent");
+        assertEquals(0, calls, "no destination request before terminal return");
+        _root.当前为战斗地图 = false; _root._webPanelPauseLease = undefined;
+        StageRunSession.onSettlementState("CONSUMED", 0); StageRunSession.onWebPanelClosed();
+        assertEquals(1, calls, "terminal and exact close submit one fresh delivery request");
+        assertTrue(guard(), "same run may consume its fresh admission");
+        StageRunSession.begin("新关卡", "困难");
+        assertFalse(guard(), "new run invalidates a late result from the previous run");
+        callback(true, "");
+        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement, "late callback does not install a delivery intent into the new run");
+        service.navigateToDeliverable = original;
     }
 
     private static function testStageSelectLifecycleAuthority():Void {
@@ -2893,8 +2867,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         StageRunSession.onWebPanelClosed();
         assertTrue(navigateCalls == 1
                 && navigatedHotspot == "base_test_delivery"
-                && resolverCalls >= 2,
-            "exact close re-resolves AS2 authority and navigates once");
+                && resolverCalls == 1,
+            "only exact close samples delivery after settlement, never at intent creation");
         assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement,
             "successful handoff consumes the pending delivery intent");
         StageRunSession.onWebPanelClosed();

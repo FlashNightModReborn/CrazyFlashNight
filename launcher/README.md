@@ -234,7 +234,8 @@ Web/Node、真实 Edge harness、AS2 runner、Flash CS6 publish-only smoke、can
 
 ## 运行时配置
 
-地图定义和维护内核见[地图工作台](../tools/map-workbench/README.md)；`config.toml` 是机器级启动配置，`launcher_user_prefs.json` 是用户偏好。解析权威为 [AppConfig.cs](src/Config/AppConfig.cs)，shipped value 见 [config.toml](../config.toml)。
+地图 v2 定义、原任务端点、素材和有限 AS2 事实由同一 C# 地图域投影给 Web／NativeHud／作者预览；旧 sidecar 已退役。启动先恢复未完成作者批次或拒绝不一致内容。第二阶段尚未发布，须独立候选验收，不混用旧正式 Core；详见[地图内容工作台](../tools/map-workbench/README.md)。
+`config.toml` 是机器级启动配置，`launcher_user_prefs.json` 是用户偏好。解析权威为 [AppConfig.cs](src/Config/AppConfig.cs)，shipped value 见 [config.toml](../config.toml)。
 
 下表完整登记 `AppConfig` 当前识别的 key。`代码默认 / shipped` 不一致时必须同时写清，避免把缺 key 行为误当随仓配置。
 

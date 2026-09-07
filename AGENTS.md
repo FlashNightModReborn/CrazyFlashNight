@@ -5,7 +5,7 @@
 闪客快打7佣兵帝国（CF7:ME）单机 MOD。游戏核心仍在 **AS2 / Flash CS6**，但当前工程已经是多栈本地系统：**C# Guardian Launcher + WebView2 / Web + TypeScript / V8 + Rust `sol_parser` + PowerShell / CLI 自动化** 都是现役组成部分。
 
 **本文件角色**：顶层任务路由器 + 硬约束入口。只负责“先看什么、别做错什么”，不重复承载子系统深度实现。  
-**最后核对代码基线**：release source commit `041e397dbe7a98062e3a090936220de05d0f09e5`（2026-09-07；tag `runtime-build-v2/20260907-focus-recording-auto-exit-v1`）。焦点持续录制与退出自动打包已完成双 signer / 双故障域共识、40/40 production policy 与原子 promotion，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口配置录制/正常退出/自动成包窄范围复验通过。正式身份、部署和远端审计统一见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。地图工作台第一阶段保持已发布，第二阶段内容创作仍为[待施工设计](docs/地图内容创作工作台-第二阶段产品与CSharp权威收束-ADR-2026-09-06.md)。
+**最后核对代码基线**：release source commit `041e397dbe7a98062e3a090936220de05d0f09e5`（2026-09-07；tag `runtime-build-v2/20260907-focus-recording-auto-exit-v1`）。焦点持续录制与退出自动打包已完成双 signer / 双故障域共识、40/40 production policy 与原子 promotion，状态为 `HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口配置录制/正常退出/自动成包窄范围复验通过。正式身份、部署和远端审计统一见 [runtime-build-reproducibility.md](docs/runtime-build-reproducibility.md)。地图工作台第一阶段保持已发布，第二阶段内容创作已按[设计](docs/地图内容创作工作台-第二阶段产品与CSharp权威收束-ADR-2026-09-06.md)实施，并获维护者发布授权，当前[进入双构建发布准备](docs/地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
 
 焦点诊断默认关闭；测试员设置根 `config.toml` 的 `diagFocusTrace = true` 后重启即可持续录制并在正常退出时自动打包，专用 CMD 保留为临时启动/途中采集入口。边界见 [焦点诊断 §9.12](docs/焦点管理-诊断与卡顿排查-2026-05-24.md#912-2026-09-07配置化持续录制与固定容量保留)。启停录制复验不证明原焦点故障已根治，真实关卡失灵仍为 `FIELD_REVALIDATION_PENDING`。前一 R1 列车仍待合并后的正式入口业务复验，边界见 [R1 收尾记录](docs/R1存盘API迁移收尾-2026-09-05.md)，不称 R1 专项 `standard_entry_verified`。
 

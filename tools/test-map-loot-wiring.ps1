@@ -434,13 +434,15 @@ Assert-Count $launcherSourceCorpus ".HandlePanelRequest(" 1 (
 Assert-Contains $launcherRouter "dedicated_panel_request_required" (
     "generic panel router rejects loot ingress")
 foreach ($retiredGenericLootIngress in @(
-    "_lootPanelCoordinator",
-    "SetLootPanelCoordinator",
     "HandlePanelRequest(request)"
 )) {
     Assert-NotContains $launcherRouter $retiredGenericLootIngress (
         "generic panel router cannot retain a loot coordinator path")
 }
+# 字段/注入本身也用于 RewardInbox → CharacterBuild 的 exact replacement，不能视为通用 loot 入口。
+# 上方全源码唯一 HandlePanelRequest 调用和 dedicated_panel_request_required 仍锁住真实 ingress。
+Assert-Contains $launcherRouter "IsRewardInboxReplacementPendingExact" (
+    "router retains only the explicit reward-inbox replacement coordination")
 Assert-NotContains $lootTask "HandleWebRequestForRouter" (
     "LootTask has no generic-router adapter")
 

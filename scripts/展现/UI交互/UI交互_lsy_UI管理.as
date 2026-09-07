@@ -127,39 +127,28 @@ if (_root.__mapHudStateBridgeInstalled != true) {
     };
 
     _root.__resolveMapHudMode = function():String {
-        var hotspotId:String;
-        var pageId:String;
-        var currentLabel:String = String(_root._currentlabel || "");
-        if (_root.当前为战斗地图 == true) return "3";
-
-        hotspotId = String(org.flashNight.arki.map.MapHotspotResolver.resolveCurrent() || "");
-        if (hotspotId != "") {
-            pageId = String(org.flashNight.arki.map.MapPanelCatalog.resolvePageId(hotspotId) || "");
-            if (pageId == "base") return "1";
-            if (pageId == "faction" || pageId == "defense" || pageId == "school") return "2";
-        }
-
-        if (currentLabel == "基地地图") return "1";
-        if (currentLabel == "外部地图") return "2";
-        return "0";
+        return String(org.flashNight.arki.map.MapDomainBridge.getProjection().hudMode || "0");
     };
 
     _root.__pushMapHudState = function(force:Boolean):Void {
         var bridge:Object = _root.__mapHudStateBridge;
         var mode:String = _root.__resolveMapHudMode();
+        var mapRevision:String = org.flashNight.arki.map.MapDomainBridge.getProjectionToken();
         var hotspotId:String = "";
         if (mode != "0") {
             hotspotId = String(org.flashNight.arki.map.MapHotspotResolver.resolveCurrent() || "");
         }
 
-        if (!force && bridge.lastMode == mode && bridge.lastHotspotId == hotspotId) {
+        if (!force && bridge.lastMode == mode && bridge.lastHotspotId == hotspotId && bridge.lastRevision == mapRevision) {
             return;
         }
 
         org.flashNight.arki.render.FrameBroadcaster.pushUiState("mm:" + mode);
         org.flashNight.arki.render.FrameBroadcaster.pushUiState("mh:" + hotspotId);
+        org.flashNight.arki.render.FrameBroadcaster.pushUiState("mr:" + mapRevision);
         bridge.lastMode = mode;
         bridge.lastHotspotId = hotspotId;
+        bridge.lastRevision = mapRevision;
     };
 
     _root.帧计时器.eventBus.subscribe("frameEnd", function():Void {

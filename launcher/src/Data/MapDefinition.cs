@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Data
 {
-    /// <summary>地图定义与纯投影。运行时、维护面板和 CLI 共用；不裁决玩法解锁。</summary>
+    /// <summary>地图定义与静态布局投影；剧情求值由同领域的 MapRuleEvaluator 统一负责。</summary>
     public static class MapDefinition
     {
         public const string RelativePath = "data/map/map_definition.json";
@@ -19,14 +19,14 @@ namespace CF7Launcher.Data
         public static JObject Parse(byte[] bytes)
         {
             if (bytes.Length > 2 * 1024 * 1024) throw new InvalidDataException("地图定义超过 2 MiB。");
-            using var reader = new JsonTextReader(new StringReader(Utf8.GetString(bytes).TrimStart('\uFEFF'))) { MaxDepth = 48 };
+            using var reader = new JsonTextReader(new StringReader(Utf8.GetString(bytes).TrimStart('\uFEFF'))) { MaxDepth = 48, DateParseHandling = DateParseHandling.None };
             var value = JObject.Load(reader, new JsonLoadSettings { DuplicatePropertyNameHandling = DuplicatePropertyNameHandling.Error });
             if (reader.Read()) throw new InvalidDataException("地图定义含多余内容。");
             Validate(value);
             return value;
         }
-        public static JObject Load(string root) => Parse(File.ReadAllBytes(Path.Combine(root, RelativePath)));
-        public static string Script(JObject value) => "var MapDefinitionData = " + JsonConvert.SerializeObject(value, Formatting.None,
+        public static JObject Load(string root) => Parse(MapProjectFiles.Read(root, RelativePath));
+        public static string Script(JObject value) => "var MapDefinitionData = " + JsonConvert.SerializeObject(MapDomainDefinition.WebProjection(value), Formatting.None,
             new JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.EscapeHtml }) + ";\n";
         public static string BootstrapScript(JObject value) => "if (window === window.top && location.origin === 'https://overlay.local') {\n" + Script(value) + "}\n";
         public static double Number(JToken value)
@@ -47,11 +47,14 @@ namespace CF7Launcher.Data
         private static void Need(bool valid, string message) { if (!valid) throw new InvalidDataException(message); }
         public static void Validate(JObject d)
         {
-            Need(d.Value<int?>("version") == 1 && d["pages"] is JObject && d["pageOrder"] is JArray, "地图版本或页面结构不正确。");
+            int version = d.Value<int?>("version") ?? 0;
+            Need((version == 1 || version == 2) && d["pages"] is JObject && d["pageOrder"] is JArray, "地图版本或页面结构不正确。");
             var order = (JArray)d["pageOrder"];
             Need(order.Count > 0 && order.Count <= 32 && order.Select(x => (string)x).Distinct().Count() == order.Count, "地图页面重复或数量不正确。");
-            Need(d["avatarSources"] is JObject && d["pageUnlockGroups"] is JObject && d["unlockGroups"] is JObject, "缺少头像或分组定义。");
+            Need(d["avatarSources"] is JObject && (version == 2 || (d["pageUnlockGroups"] is JObject && d["unlockGroups"] is JObject)), "缺少头像或分组定义。");
+            Need(((JObject)d["pages"]).Count == order.Count && d["handTunedLayoutIds"] is JObject, "页面集合与顺序不一致。");
             var allHotspots = new HashSet<string>(StringComparer.Ordinal);
+            int totalVisuals = 0, totalAvatars = 0;
             foreach (var page in Pages(d))
             {
                 Need(page != null && order.Any(x => (string)x == page.Value<string>("id")), "页面 ID 不匹配。");
@@ -82,7 +85,11 @@ namespace CF7Launcher.Data
                     foreach (string key in new[] { "relX", "relY", "w", "h" })
                         if (avatar[key] != null) { var n = Number(avatar[key]); Need(key == "relX" || key == "relY" || n > 0, "头像尺寸必须大于零。"); }
                 }
+                totalVisuals += ((JArray)page["sceneVisuals"]).Count; totalAvatars += ((JArray)page["staticAvatars"]).Count + ((page["dynamicAvatars"] as JArray)?.Count ?? 0);
             }
+            Need(allHotspots.Count <= 512 && totalVisuals <= 1024 && totalAvatars <= 1024, "地图总表现数量超出范围，请拆分内容批次。");
+            Need(Bytes(d).Length <= 2 * 1024 * 1024, "地图定义超过 2 MiB。");
+            if (version == 2) MapDomainDefinition.Validate(d);
         }
         private static void ValidateAsset(string path)
         {
@@ -90,6 +97,7 @@ namespace CF7Launcher.Data
         }
         public static JObject Edit(JObject definition, JArray changes)
         {
+            if (definition.Value<int>("version") == 2) return MapEditOperations.Edit(definition, changes);
             Need(changes != null && changes.Count <= 256, "编辑操作过多。");
             var d = (JObject)definition.DeepClone();
             foreach (JObject change in changes)
@@ -134,13 +142,27 @@ namespace CF7Launcher.Data
         }
         public static JObject MakeRect(double x, double y, double w, double h) => new JObject { ["x"] = Round(x), ["y"] = Round(y), ["w"] = Round(w), ["h"] = Round(h) };
         private static double Round(double value) => Math.Round(value, 2, MidpointRounding.AwayFromZero);
-        public static JObject Hud(JObject d)
+        public static JObject Hud(JObject d, JObject snapshot = null)
         {
+            d = MapDomainDefinition.WebProjection(d);
+            if (snapshot != null)
+                foreach (var page in Pages(d))
+                {
+                    string pageId = (string)page["id"];
+                    foreach (var hotspot in ((JArray)page["hotspots"]).Where(h => snapshot["hotspotStates"]?[(string)h["id"]]?.Value<bool>("visible") != true).ToArray()) hotspot.Remove();
+                    var visible = new HashSet<string>(((JArray)page["hotspots"]).Select(h => (string)h["id"]), StringComparer.Ordinal);
+                    foreach (var filter in (JArray)page["filters"]) filter["hotspotIds"] = new JArray(((JArray)filter["hotspotIds"]).Where(id => visible.Contains((string)id)).Select(id => id.DeepClone()));
+                    foreach (JObject visual in ((JArray)page["sceneVisuals"]).ToArray())
+                    {
+                        if (snapshot["visualVisibility"]?[pageId]?[(string)visual["id"]]?.Value<bool>() != true) visual.Remove();
+                        else visual["assetUrl"] = snapshot["visualAssetUrls"][pageId][(string)visual["id"]].DeepClone();
+                    }
+                }
             var entries = new JObject();
             foreach (var page in Pages(d)) foreach (JObject hotspot in (JArray)page["hotspots"])
             {
                 string id = (string)hotspot["id"], pageId = (string)page["id"];
-                var filters = ((JArray)page["filters"]).OfType<JObject>().Where(f => (string)f["id"] != "all" && (string)f["id"] != "hierarchy" &&
+                var filters = ((JArray)page["filters"]).OfType<JObject>().Where(f => (string)f["id"] != "all" && (string)f["id"] != "hierarchy" && (string)f["viewMode"] != "hierarchy" &&
                     ((JArray)f["hotspotIds"]).Count < ((JArray)page["hotspots"]).Count && ((JArray)f["hotspotIds"]).Any(x => (string)x == id)).OrderBy(f => ((JArray)f["hotspotIds"]).Count);
                 var filter = filters.FirstOrDefault();
                 var ids = filter == null ? null : new HashSet<string>(((JArray)filter["hotspotIds"]).Select(x => (string)x));

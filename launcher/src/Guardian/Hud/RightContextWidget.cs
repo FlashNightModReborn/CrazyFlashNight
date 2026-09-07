@@ -1529,7 +1529,7 @@ namespace CF7Launcher.Guardian.Hud
             if (changedKeys.Contains("mh") && snapshot.TryGetValue("mh", out piece))
             {
                 string nextHotspot = MapHudWidget.StripPrefix(piece, "mh") ?? "";
-                if (nextHotspot != _mapHotspotId)
+                if (nextHotspot != _mapHotspotId || changedKeys.Contains("mr"))
                 {
                     _mapHotspotId = nextHotspot;
                     _mapEntry = string.IsNullOrEmpty(_mapHotspotId) || _catalog == null ? null : _catalog.GetEntry(_mapHotspotId);
@@ -1539,6 +1539,11 @@ namespace CF7Launcher.Guardian.Hud
                     boundsDirty = true;
                     mapInputsDirty = true;
                 }
+            }
+            else if (changedKeys.Contains("mr"))
+            {
+                _mapEntry = string.IsNullOrEmpty(_mapHotspotId) || _catalog == null ? null : _catalog.GetEntry(_mapHotspotId);
+                MapHudWidget.PrewarmEntry(_mapEntry); boundsDirty = true; mapInputsDirty = true;
             }
             if (changedKeys.Contains("td") && snapshot.TryGetValue("td", out piece))
             {

@@ -28,6 +28,8 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**承载全�
 
 ### 1.1 生成器现行契约
 
+2026-09-06 地图域切流后的新鲜发布检测到 `f36_9` 为 60,843 B；已沿顶层方案边界拆成 `单位函数_aka_战宠进阶.as` 与 `单位函数_aka_战宠进阶_扩展.as`，由 `frame36` 的 `f36_9 → f36_11 → f36_10` 连续装配，仍是先完整战宠进阶、再护盾。两段规范化拼接与拆分前原文完全一致，未改方案、数值或调用顺序；唯一顶层局部变量没有跨片引用。需要完整方案的直接 include 测试必须按相同顺序包含两段。拆分不放宽 `codeSize < 60000` 门。
+
 - `BOOT_SOURCES` 是唯一 live 输入表：当前 29 项（13 staged + 16 loader-fire），数组顺序就是 phase 内的确定执行顺序；不得再建平行 frame 清单、stage 接线表或独立 manifest。
 - `node tools/assemble-collapsed-frame.js` 写生成物；`node tools/assemble-collapsed-frame.js --check` **不写文件**，按字节确认生成物可由当前表与规则精确重建。两种模式都会严格检查所有输入的 UTF-8 BOM、`frameNN.as` 根目录 exact-match、phase / shape、受控 envelope、具体 import 白名单、定义 / 调用唯一性，并要求 `BootSequencer.run(this)` 是唯一且最后的启动动作。
 - 生成器会报告 canonical 源闭包度量：剥除每个源文件 BOM、把 CRLF/CR 规范为 LF，并计入 staged/loader-fire 自身源体，避免 checkout 行尾改变调查值。`70,000 B` 只用于突出复核候选，不是 hard gate，也没有 exact no-growth 例外；源字节与 AVM1 `codeSize` 不存在可证明的单调边界，不能让注释或格式增长变成构建 ratchet。当前高于提示线的是 `f3=149298 B`、`f36_2=121117 B`、`f37_7=76380 B`，仍须结合新鲜 SWF `codeSize` 扫描与行为证据判断是否拆分。
