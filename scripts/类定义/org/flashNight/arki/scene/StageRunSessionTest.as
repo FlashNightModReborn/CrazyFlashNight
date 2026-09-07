@@ -16,6 +16,7 @@ import org.flashNight.arki.merc.ArenaController;
 import org.flashNight.arki.merc.ArenaCalibrationService;
 import org.flashNight.arki.merc.ArenaPanelService;
 import org.flashNight.arki.scene.StageManager;
+import org.flashNight.arki.scene.WaveSpawner;
 import org.flashNight.arki.stageSelect.StageSelectPanelService;
 import org.flashNight.arki.task.TaskPanelService;
 import org.flashNight.arki.task.TaskUtil;
@@ -68,6 +69,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testStageLoaderRootExactlyOnce();
         testStageManagerProjectionFailures();
         testProductionSceneTransitionAuthority();
+        testRetreatCompletionIsolation();
         testMapNavigationAuthority();
         testStageSelectLifecycleAuthority();
         testTaskDeferredEntryAuthority();
@@ -1144,6 +1146,162 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.当前关卡难度 = oldDifficulty;
         _root.返回基地 = oldReturnBase;
         _root.关卡结束 = oldStageFinished;
+    }
+
+    /** 使用生产返回、波次结算及 FinishStage，复现撤退后任务条件被清空。 */
+    private static function testRetreatCompletionIsolation():Void {
+        var before:Object = {
+            finishStage:_root.FinishStage, stageFinished:_root.关卡结束,
+            returnBase:_root.返回基地, tasks:_root.tasks_to_do,
+            updateProgress:_root.UpdateTaskProgress, checkTasks:_root.是否达成任务检测,
+            stageName:_root.当前关卡名, difficulty:_root.当前关卡难度,
+            stageFrame:_root.关卡地图帧值, fade:_root.淡出动画,
+            newSpawn:_root.新出生, entry:_root.场景进入位置名, stageType:_root.关卡类型
+        };
+        var effectClass:Object = EffectSystem;
+        var oldScreenEffect:Function = effectClass.ScreenEffect;
+        assertTrue(typeof _backup.finishStage == "function",
+            "retreat regression loads the production task requirement writer");
+        _root.FinishStage = _backup.finishStage;
+        _root.关卡结束 = _backup.stageFinished;
+        _root.UpdateTaskProgress = function():Void {};
+        _root.是否达成任务检测 = function():Void {};
+        _root.淡出动画 = {淡出跳转帧:function(frame):Void {}};
+        _root.关卡地图帧值 = "基地门口";
+
+        runRetreatCompletionCase("wave");
+        runRetreatCompletionCase("event");
+        runRetreatCompletionCase("root");
+        testVictoryCompletionOnceAfterRetreat();
+
+        StageManager.getInstance().dispose();
+        effectClass.ScreenEffect = oldScreenEffect;
+        _root.FinishStage = before.finishStage;
+        _root.关卡结束 = before.stageFinished;
+        _root.返回基地 = before.returnBase;
+        _root.tasks_to_do = before.tasks;
+        _root.UpdateTaskProgress = before.updateProgress;
+        _root.是否达成任务检测 = before.checkTasks;
+        _root.当前关卡名 = before.stageName;
+        _root.当前关卡难度 = before.difficulty;
+        _root.关卡地图帧值 = before.stageFrame;
+        _root.淡出动画 = before.fade;
+        _root.新出生 = before.newSpawn;
+        _root.场景进入位置名 = before.entry;
+        _root.关卡类型 = before.stageType;
+    }
+
+    private static function runRetreatCompletionCase(trigger:String):Void {
+        var manager:StageManager = StageManager.getInstance();
+        manager.dispose();
+        resetWorld(0);
+        var world:MovieClip = _root.createEmptyMovieClip(
+            "__retreatCompletionWorld", _root.getNextHighestDepth());
+        _root.gameworld = world;
+        world.地图 = {僵尸型敌人总个数:5};
+        world.dispatcher = {publish:function(name:String):Void {}};
+        var hero:MovieClip = installHero("success");
+        hero.hp = 50;
+        _root.当前关卡名 = "游寇基地";
+        _root.当前关卡难度 = "地狱";
+        _root.tasks_to_do = [{requirements:{stages:[{name:"游寇基地", difficulty:"简单"}]}}];
+        var counts:Object = {effects:0, wheelCleared:false, eventsCleared:false};
+        var effectClass:Object = EffectSystem;
+        effectClass.ScreenEffect = function():Void { counts.effects++; };
+        assertTrue(StageRunSession.begin("游寇基地", "地狱"),
+            "retreat " + trigger + " starts an active production run");
+        _root.当前为战斗地图 = true;
+        manager.isActive = true;
+        manager.isFinished = false;
+        manager.isFailed = false;
+        manager.currentStage = 0;
+        manager.gameworld = world;
+        manager["stageMode"] = "action";
+        manager["stageInfoList"] = [{}, {}];
+        manager["currentStageInfo"] = {basicInfo:{Animation:{}, EndFrame:""}};
+        manager["stageEventHandler"] = {clear:function():Void { counts.eventsCleared = true; }};
+        var spawner:WaveSpawner = WaveSpawner.getInstance();
+        manager.spawner = spawner;
+        spawner["stageManager"] = manager;
+        spawner.gameworld = world;
+        spawner["waveInfo"] = [[{MapNoCount:false}]];
+        spawner["waveSpawnWheel"] = {clear:function():Void { counts.wheelCleared = true; }};
+        spawner.spawnPoints = [];
+        spawner.currentWave = 0;
+        spawner.totalWave = 1;
+        spawner.waveTime = 0;
+        spawner.finishRequirement = 0;
+        spawner.isActive = true;
+        spawner.isFinished = false;
+        _root.返回基地 = _backup.returnBase;
+        assertTrue(_root.返回基地() === true,
+            "retreat " + trigger + " uses the production return entry");
+        assertTrue(!spawner.isActive && counts.wheelCleared,
+            "retreat " + trigger + " stops spawning before timeline unload");
+        assertTrue(counts.eventsCleared,
+            "retreat " + trigger + " retires the old stage event handler");
+
+        // 模拟转场移除敌人；不靠旧时间轴 unload 恰好早于全局下一次 tick。
+        world.地图.僵尸型敌人总个数 = 0;
+        if (trigger == "wave") {
+            spawner.clockTick();
+            spawner.finishWave();
+        } else if (trigger == "event") {
+            manager.clearStage();
+            manager.finishStage();
+        } else {
+            _root.关卡结束();
+        }
+        var state:Object = StageRunSession.testOnlySnapshot();
+        assertTrue(state.outcome == "retreat" && state.returnRequested
+                && state.remainingRewards == 0,
+            "retreat " + trigger + " keeps the frozen retreat and empty rewards");
+        assertEquals(1, _root.tasks_to_do[0].requirements.stages.length,
+            "retreat " + trigger + " cannot satisfy the real task requirement");
+        assertEquals(0, counts.effects,
+            "retreat " + trigger + " cannot emit STAGE CLEAR after leaving");
+        assertFalse(manager.isFinished,
+            "retreat " + trigger + " cannot finish an inactive stage manager");
+        manager.dispose();
+        world.removeMovieClip();
+    }
+
+    private static function testVictoryCompletionOnceAfterRetreat():Void {
+        resetWorld(0);
+        installHero("success");
+        _root.返回基地 = _backup.returnBase;
+        _root.当前关卡名 = "正常通关";
+        _root.当前关卡难度 = "地狱";
+        _root.tasks_to_do = [{requirements:{stages:[{name:"正常通关", difficulty:"简单"}]}}];
+        var effects:Number = 0;
+        var effectClass:Object = EffectSystem;
+        effectClass.ScreenEffect = function():Void { effects++; };
+        assertTrue(StageRunSession.begin("正常通关", "地狱"),
+            "normal victory can start after retreat cleanup");
+        // StageManager 会先提交 victory，再调用生产关卡结束入口。
+        StageRunSession.finish("victory");
+        _root.关卡结束();
+        assertEquals("victory", StageRunSession.testOnlySnapshot().outcome,
+            "normal precommitted victory remains accepted");
+        assertEquals(0, _root.tasks_to_do[0].requirements.stages.length,
+            "normal victory satisfies the real lower-difficulty task requirement");
+        assertEquals(1, effects, "normal victory emits one completion effect");
+        _root.关卡结束();
+        assertEquals(1, effects, "duplicate victory callback cannot repeat completion effects");
+        StageRunSession.onHeroDeath();
+        assertTrue(_root.返回基地() === true,
+            "post-victory death still permits the production return entry");
+        _root.关卡结束();
+        assertEquals(1, effects, "returned victory cannot replay completion");
+        StageRunSession.onSettlementState("CONSUMED", 0);
+        assertTrue(StageRunSession.begin("下一轮", "简单"),
+            "terminal settlement permits the next run without restarting");
+        _root.当前关卡名 = "下一轮";
+        _root.当前关卡难度 = "简单";
+        _root.tasks_to_do = [{requirements:{stages:[{name:"下一轮", difficulty:"简单"}]}}];
+        _root.关卡结束();
+        assertTrue(effects == 2 && _root.tasks_to_do[0].requirements.stages.length == 0,
+            "next run gets its own single victory completion");
     }
 
     private static function testMapNavigationAuthority():Void {
@@ -3367,6 +3525,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             server:_root.server,
             returnBase:_root.返回基地,
             stageFinished:_root.关卡结束,
+            finishStage:_root.FinishStage,
             levelCheck:_root.主角是否升级
         };
     }

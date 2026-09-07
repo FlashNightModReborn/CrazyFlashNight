@@ -980,7 +980,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function clearStage():Void{
-        if(isFinished || isFailed) return;
+        if(!isActive || isFinished || isFailed) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord clearStage rejected; typed result required");
             return;
@@ -1023,7 +1023,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function finishStage():Void{
-        if(isFinished || isFailed) return;
+        if(!isActive || isFinished || isFailed) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord finishStage rejected; CompleteSubStage required");
             return;
@@ -1041,7 +1041,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function failStage():Void{
-        if(isFinished || isFailed) return;
+        if(!isActive || isFinished || isFailed) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord failStage rejected; FailStage required");
             return;
@@ -1066,7 +1066,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function nextStage():Void{
-        if(isFinished || isFailed) return;
+        if(!isActive || isFinished || isFailed) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord nextStage rejected; typed result required");
             return;
@@ -1124,6 +1124,9 @@ class org.flashNight.arki.scene.StageManager {
         timePoolController = null;
         warlordRunner = null;
         isActive = false;
+        // 淡出获准后就停止刷怪/关卡事件，不依赖主时间轴 unload 与全局 tick 的顺序。
+        // 先置 inactive，清理期间同步或迟到的 Clear/StageFinished 也不能重新判胜。
+        closeStage();
         stageInfoList = null;
         currentStageInfo = null;
         currentStage = -1;

@@ -31,6 +31,7 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _preparedReport:Object = null;
     private static var _settlementStarted:Boolean = false;
     private static var _returnRequested:Boolean = false;
+    private static var _victoryCompletionCommitted:Boolean = false;
     private static var _deliverAfterSettlement:Boolean = false;
     // 场景淡出与 StageManager.initialize 之间存在异步窗口。入口必须先取得唯一 reservation，
     // initialize/begin 再按目标关卡消费；这样第二个入口不能在旧 run 尚未建立时重复获准。
@@ -127,6 +128,7 @@ class org.flashNight.arki.scene.StageRunSession {
         _preparedReport = null;
         _settlementStarted = false;
         _returnRequested = false;
+        _victoryCompletionCommitted = false;
         _deliverAfterSettlement = false;
         pushState();
         return true;
@@ -269,6 +271,16 @@ class org.flashNight.arki.scene.StageRunSession {
         _run.outcome = outcome;
         bumpRevision();
         pushState();
+    }
+
+    /** 旧关卡结束入口的唯一提交资格；撤退/失败/返回后不能写任务，也不能重复提交。 */
+    public static function claimVictoryCompletion():Boolean {
+        if (_run == null || _returnRequested || _victoryCompletionCommitted
+                || (_run.outcome != "active" && _run.outcome != "victory")) return false;
+        // manager 可能已经提交 victory。先占用本轮资格，阻止投影回调同步重入。
+        _victoryCompletionCommitted = true;
+        if (_run.outcome == "active") finish("victory");
+        return true;
     }
 
     /** 死亡检测可能每帧重入；只有 alive -> dead 会推进一次状态。 */
@@ -2000,6 +2012,7 @@ class org.flashNight.arki.scene.StageRunSession {
         _preparedReport = null;
         _settlementStarted = false;
         _returnRequested = false;
+        _victoryCompletionCommitted = false;
         _deliverAfterSettlement = false;
         _stageStartReservation = null;
         _testDeliverableResolver = null;

@@ -490,7 +490,8 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 
 //场景转换相关
 _root.关卡结束 = function(){
-	org.flashNight.arki.scene.StageRunSession.finish("victory");
+	// 先取得本轮胜利提交资格，迟到的旧事件不能越过撤退状态修改任务条件。
+	if (!org.flashNight.arki.scene.StageRunSession.claimVictoryCompletion()) return;
 	// 过关动画只是视觉投影；素材/渲染异常不得吞掉唯一的权威结算提交。
 	try {
 		EffectSystem.ScreenEffect("过关提示动画",Stage.width / 2,Stage.height / 2,100);

@@ -6,6 +6,24 @@
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
+## 0B. 2026-09-07 撤退后迟到判胜与任务误完成修复
+
+**最后核对代码基线**：commit `0f7ca03bc285581387d3a48a861435a88f3bc81b` 加 `codex/fix-retreat-stage-clear` 修复工作树。当前已完成 AS2 自动回归、CS6 产物与反汇编验证；隔离副本人类验收通过，待整合最新主线与重新发布合并产物。
+
+现场在游寇基地进入后约 9 秒从设置返回基地，`StageRunSession` 正确冻结为 `retreat` 且奖励为 0，基地却出现 STAGE CLEAR 和任务可交付提示。生产 AS2 回归已复现其业务写：`StageManager.clear()` 把 manager 置 inactive 并清空关卡列表，却没有同步关闭 `WaveSpawner`；全局帧更新仍能送达波次结算。`clearStage/finishStage` 缺少 inactive 拒绝，旧 `_root.关卡结束` 又在会话拒绝胜利后继续调用真实 `FinishStage`，导致撤退战报与任务条件分叉。
+
+- 正规返回获准后，`StageManager.clear()` 先置 inactive，再复用 `closeStage()` 停止刷怪时间轮并清理关卡事件；不依赖主时间轴 unload 的先后顺序。淡出拒绝时仍保留原有重试语义。
+- `clearStage/finishStage/failStage/nextStage` 拒绝 inactive manager；`WaveSpawner.finishWave` 拒绝已关闭或结束的刷怪器。
+- `_root.关卡结束` 必须先取得 `StageRunSession.claimVictoryCompletion()` 的本轮一次性资格，才允许动画与任务条件写入。无会话、撤退、失败、已返回和重复回调均拒绝；manager 预先提交 victory 的正常流程继续成立，下一轮 begin 重置资格。该资格仅在内存中，不新增存档字段或 Web/Host wire。
+
+`scripts/run-map-loot-tests.ps1` 的模板直接装入生产任务脚本，新增 34 项断言覆盖迟到波次、判胜事件、旧根入口、正常通关、低难度任务条件、重复回调、胜利后死亡返回及不重启的下一轮。相同用例在旧代码得到 StageRunSession **434 通过 / 17 失败**，修复后 **451/451**；连同 Loot **267/267**、Planner **12/12** 为 **730/730**，另有箱体交互 **53** 项断言通过。两次均取得唯一 fresh runId、Compiler **0/0** 与 32K retry **0**；原始日志保留为本机证据，不将测试员日志或存档入库。
+
+相邻回归为 Settings **47/47**、TimePool **46/46**、Warlord SubStage **78/78**、Warlord Action **97/97**，AS2 合计 **1051** 项断言通过；面板契约 **70/70**、214 个关卡文件的 TimePool 静态校验及文档治理通过。各 Flash suite 均有 fresh Compiler **0/0**、单一行为块与 32K retry **0**。CS6 已发布 `asLoader.swf`（1,265,660 字节，SHA-256 `86A5D962BCC03AA2064F8CC868DD6F68F8A25517A7DA7AC0CCC9A18BB653F806`）；FFDec 成功导出全部 633 个脚本，并核对生产根入口先调用胜利资格门、manager/spawner 的 inactive 拒绝确已进入字节码。
+
+维护者于 2026-09-07 确认隔离副本可工作。现场日志记录 10:02:13 设置返回后为 `retreat / remainingRewards=0`；10:03:30 从真实 SOL 重载仍为主线 23、`td:0 / tdr:0`；10:04:35 正常胜利，随后领取 3 项奖励并进入 `claimed / remainingRewards=0`，10:05:03 保存主线 24，存档中任务 23 已交付、任务 24 仍待完成。20 次 FocusRestore 均成功，无 ui_stale/hung_window；前门阶段的前台句柄空窗仍有正常 UI 心跳，技能清理一次超时后在 callId=2 重试成功。该样本支持本修复限定旅程通过，不宣称焦点专项根治。
+
+修复编译目标为 `scripts/asLoader.swf`，不刷新主 XFL 或独立美术 SWF。现役 Launcher EXE/runtime 未修改；AS2 候选的人工验收不能冒充 Launcher 双生产者证明，也不能提前声明正式入口已修复。
+
 ## 0A. 2026-08-30 奖励持久化、立即投影与自动入栏增量
 
 测试员实际遇到了关卡结束后“前往交付”迟出、返回基地后奖励无法安全收取、焦点异常时不敢触碰推荐链路，以及领取药剂落入背包。此次增量冻结以下现役合同：

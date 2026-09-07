@@ -283,6 +283,7 @@ class org.flashNight.arki.scene.WaveSpawner {
     }
 
     public function finishWave():Void{
+        if(!isActive || isFinished) return;
         // 发布波次结束事件
         gameworld.dispatcher.publish("WaveFinished", currentWave);
         currentWave++;

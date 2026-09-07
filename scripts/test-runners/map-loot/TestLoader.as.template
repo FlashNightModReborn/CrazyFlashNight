@@ -13,7 +13,15 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.UnitComponent.Initializer.test.*;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.neur.Event.EventBus;
+import flash.external.*;
+import org.flashNight.arki.item.*;
+import org.flashNight.arki.item.obtain.*;
+import org.flashNight.arki.map.*;
+import org.flashNight.arki.task.*;
+import org.flashNight.gesh.json.LoadJson.*;
+import org.flashNight.neur.Server.*;
 #include "通信/通信_fs_lsy_XML数据解析.as"
+#include "通信/通信_鸡蛋_任务系统.as"
 #include "逻辑/关卡系统/关卡系统_lsy_场景转换.as"
 BoxInteractionArbiterTest.runAllTests();
 org.flashNight.arki.item.LootContainerServiceTest.runAllTests();
