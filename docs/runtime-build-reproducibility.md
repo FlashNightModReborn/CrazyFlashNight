@@ -2,7 +2,24 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-07 当前正式发布：焦点持续录制与退出自动打包
+## 2026-09-07 当前正式发布：地图内容创作工作台第二阶段
+
+地图工作台第二阶段现已进入正式 runtime：页面／地点／NPC 驻点／原任务端点／素材候选与同一 C# 地图域，配套有限 AS2 事实桥和导航新鲜度检查。作者画布默认“创作视图”，可编辑当前剧情隐藏的内容；“玩家预览”仍严格消费同一权威投影。保存后关闭／重开查询、地图回包编号与切页反馈竞争均已修复。能力和使用入口见[地图工作台](../tools/map-workbench/README.md)，完整实施及验收边界见[两阶段记录](地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
+
+- 业务源码 `e131182909b9190659b13ce8b27af8a958b57a01`；最终 release source `dfa156c8cd7e860c1e5795c7987525b76829635f`；不可变 tag `runtime-build-v2/20260907-map-workbench-phase2-v2`；release tree `c04f1f3421ba6bb5d3cb9f86d1818c4862e7625c`；request `B60F0481BE4672C7CBC2AB8021537EF734B503C639D888FC7E0EE7C8D13A00F2`。
+- artifact source `5A76EF6AE1DE6EE77C34137F7E9EB199CEE01F7E09EBEE251CFC53A0788F87F7`、producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`、toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`，形成 build identity `FF623FA9C4191B54BC2DA05868B77E127BEB58B51EEA3147B4A62BC44BC0B387`；33-file payload closure `5366AA50BAEE0CDBAE6FED735EF0DA6A76C9627AA74891FD1E83D43B9FC13126`；正式 Core DLL SHA-256 `82CE7EA76F8420B4CB47DBBAF4A3A04868E0B51E2CC89F2B8ABB7EF7E116A498`。
+- 本地 X509 `builder-local-a / physical-host-a`，keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `36D69B39437761B732CBB3244AD782C3818AFD7D15A33B0B45828FBB5B0DD305`，[cloud run 34099722252](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34099722252)。云端证明完整绑定新 source/tag/tree，并在 promotion 中对真实本地 CAS candidate 重放；不是复制开发候选到正式目录。
+- 最终 production policy **40/40**；policy hash `618A14A71B74EF5ACE9C76128B514ECA8792A96077CD754E5F345CD1E1715545`；receipt SHA-256 `D0D02A023746369B1795B6340F627A6F3A6ACB19957F6B2AF52A2FB89BD0CBE4`；manifest SHA-256 `91CEEEE9E8866024D68A8D27A5835A00DBF7ABD4E97993E6FB913BC09F36F170`；磁盘 consensus SHA-256 `31092D70FC4AA4106E9AEB9419B7C503F9AA39A7C960227302C4FC5A8870F9D3`。
+- consensus 记录 promotion 时间 `2026-09-07T08:31:28.5388749Z`；事务于 `08:32:45.1996042Z` 完成。strict v2 确认 **2 signers / 2 faultDomains**，33-file bundle 与正式根 bootstrap 的有界 `--verify-only` 均通过。上一套完整文件保留于 `tmp/runtime-promotions/20260907T083042251Z-d3ecd236ee344ebd98181043d6465b6c/previous`。
+- 合并后 Launcher **4,792 passed / 3 existing skipped / 0 failed**，实际串行；Map/Tasks/Stage Select browser **52/52、63/63、57/57**；AS2 map-loot **739/739**、Box **13 cases / 53 assertions**、地图桥 **26/26**、Boot **91/91 + 12/12**，均 fresh Compiler **0/0**、32K retry **0**。配套 asLoader **1,265,591 bytes** / SHA-256 `8ED7099339ED6EF9771EEEFE6C76D19C12BBF3B8F8B5B3F6FF740C8804763ABF`，11,198 个函数最大 50,569 bytes。
+
+本轮从 `82d61d55abc17cb7e626ced888c7f6a6e96ef460` 合入上游至 `b4299ac93c876696056ddcbc60f5ee7023f36244` 的 10 条提交，保留撤退结算和焦点持续录制修复。发布开始时的作者地图备份与最终磁盘字节一致，SHA-256 为 `35ACC393F4FF7DDBBE6E29720A383ECA989D680EED4A0D00A9485DF115C45B33`；未清理真实浏览器草稿或玩家存档。源码与新部署闭包一并推主线，避免中间版本把 v2 内容与旧 Core 混用。
+
+第一版 tag `runtime-build-v2/20260907-map-workbench-phase2-v1` / request `9ADF3B2998DF76CD8B7522D0CBEB481316FE6C4E1B5B907430FF502D82EB0245` 虽已取得同闭包云端证明及 40/40 政策，但在全量测试发现旧调制日志用例的等待竞争后停止，未部署。只修测试等待点、保留 2,000 ms 上限和全部断言，连续十次专项及完整回归通过后创建第二版；前三域不变，复用经验证的本地签名 CAS，并重新签发新树的政策 receipt、重新取得云端证明。旧 tag 与失败日志保持不变。
+
+当前准确状态为 **promoted**。维护者已确认作者流程修复可行并授权发布；部署后没有自动启动游戏、重跑新地点入口／NPC 剧情迁移／复制撤回等完整业务旅程，不称这些专项或完整产品 `standard_entry_verified`。运行时检查与源码/浏览器回归不能反向代签人工游戏体验。
+
+## 2026-09-07 上一正式发布：焦点持续录制与退出自动打包
 
 根 `config.toml` 的 `diagFocusTrace` 默认关闭；测试员开启一次后，普通正式启动即持续记录，正常退出自动生成 `logs/focus-diagnostic/auto-*.zip`。本轮同时增加原始鼠标消息、命中与已提交表面的诊断字段；采集能力和退出成包不等于原焦点故障已修复。配置、3×8 MiB 实时保留、AS2 v2 观察和失败边界见[焦点诊断 §9.12](焦点管理-诊断与卡顿排查-2026-05-24.md#912-2026-09-07配置化持续录制与固定容量保留)。
 
