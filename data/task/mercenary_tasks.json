@@ -1254,7 +1254,7 @@
       "chain": "委托"
     },
     {
-      "id": 20071,
+      "id": 20072,
       "title": "挑战混沌王",
       "description": "讨伐闯入这片区域的强大个体——人修罗",
 
@@ -1272,6 +1272,29 @@
 
       "rewards": [
         "经验值#2500000"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20071,
+      "title": "挑战人修罗",
+      "description": "和人修罗进行切磋",
+
+      "get_requirements": [-1],
+      "get_conversation": "$GEM_PK_RXL_GET",
+      "get_npc": "混沌王",
+
+      "finish_requirements": ["挑战人修罗#地狱"],
+      "finish_conversation": "$GEM_PK_RXL_FINISH",
+      "finish_npc": "混沌王",
+      "recommended_level": "60",
+      "restricted_level": 10,
+      "deposit": 0,
+      "Kdeposit": 0,
+
+      "rewards": [
+        "经验值#3500000"
       ],
 
       "chain": "委托"

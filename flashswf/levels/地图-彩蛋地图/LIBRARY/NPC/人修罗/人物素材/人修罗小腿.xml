@@ -1,0 +1,81 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/人修罗/人物素材/人修罗小腿" itemID="66150d73-00000781" lastModified="1712736651" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="人修罗小腿">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#DAB094"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1157 924S1[1092 360 838 133!838 133|661 7!661 7|220 1"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!220 1S5[31 169 60 585!60 585|125 764!125 764|141 1714!141 1714|326 4387"/>
+                    <Edge fillStyle0="1" edges="!326 4387S1[673 4771 1027 4330"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1027 4330S5[841 3464 1068 2436!1068 2436[1288 1450 1157 924"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!262 928S7[460 1093 718 810"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#DAB094"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#5F3F29"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1157 924[1092 360 838 133!838 133|661 7!661 7|220 1"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!220 1[31 169 60 585!60 585|125 764!125 764|141 1714!141 1714|326 4387"/>
+                    <Edge fillStyle0="1" edges="!326 4387[673 4771 1027 4330"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1027 4330[841 3464 1068 2436!1068 2436[1288 1450 1157 924"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!262 928[460 1093 718 810"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/小腿花纹" centerPoint3DX="35.25" centerPoint3DY="116.25">
+                  <matrix>
+                    <Matrix a="0.999710083007813" b="-0.0234375" c="0.0234375" d="0.999710083007813" tx="2.4" ty="-7.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.9" y="124.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#009999"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

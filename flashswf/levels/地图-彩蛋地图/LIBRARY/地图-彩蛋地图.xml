@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1788721242" lastUniqueIdentifier="59">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1788795540" lastUniqueIdentifier="60">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -173,7 +173,7 @@ _root.配置场景环境信息();]]></script>
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/NPC-虎妙" selected="true" centerPoint3DX="595.2" centerPoint3DY="594.15">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/NPC-虎妙" centerPoint3DX="595.2" centerPoint3DY="594.15">
                   <matrix>
                     <Matrix tx="578" ty="523.45"/>
                   </matrix>
@@ -197,6 +197,26 @@ _root.配置场景环境信息();]]></script>
 	{
 		_root.初始化NPC(this);
 	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/npc混沌王" selected="true" centerPoint3DX="419.5" centerPoint3DY="680.45">
+                  <matrix>
+                    <Matrix tx="371.6" ty="603.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-4.2" y="-8.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	任务需求 = 77;
+	任务需求支线 = [1000082];
+	名字 = "混沌王";
+	身高 = 175;
+	性别 = "男";
+	方向 = "右";
+	NPC任务_任务_关卡路径 = "挑战人修罗";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

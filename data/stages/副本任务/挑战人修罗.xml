@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <Rewards>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/ciyuanta_魔神图专用.swf</Background>
+            <PlayerX>100</PlayerX>
+            <PlayerY>600</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Fate (斎祀)</Title>
+                <Loop>true</Loop>
+            </BGM>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种348</Type>
+                        <InstanceName>混沌王</InstanceName>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>100</Level>
+                        <x>600</x>
+                        <y>600</y>
+                        <Parameters>称号:人修罗,不掉钱:true,不掉装备:true</Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>

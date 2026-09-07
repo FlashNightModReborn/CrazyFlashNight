@@ -34,7 +34,10 @@
           <DOMFolderItem name="NPC/NPC-文天/素材/人物发型" itemID="64e8c230-0000041c"/>
           <DOMFolderItem name="NPC/NPC-文天/素材/人物发型/精修" itemID="64bb144a-000000f4"/>
           <DOMFolderItem name="NPC/NPC-文天/素材/尚未整理" itemID="660f9cb9-000005c3"/>
+          <DOMFolderItem name="NPC/人修罗" itemID="6a9d8c2d-00000d5b"/>
+          <DOMFolderItem name="NPC/人修罗/人物素材" itemID="6a9d8c2d-00000d5c"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
           <DOMFolderItem name="UI重构" itemID="668a7e49-000018c6"/>
           <DOMFolderItem name="UI重构/商店相关" itemID="668a7e49-000018c7"/>
           <DOMFolderItem name="所有素材" itemID="66011278-00000ccb"/>
@@ -81,6 +84,8 @@
           <DOMFolderItem name="所有素材/重复项目文件夹" itemID="65fbdeee-00000881"/>
           <DOMFolderItem name="所有素材/装备" itemID="65fbe6c1-00000eb2"/>
           <DOMFolderItem name="所有素材/装备/西风大剑" itemID="65fbe6c1-00000eb3"/>
+          <DOMFolderItem name="新地图素材" itemID="65c7a080-00000f7d"/>
+          <DOMFolderItem name="新地图素材/女仆白" itemID="6577dc70-000004fb"/>
      </folders>
      <media>
           <DOMBitmapItem name="所有素材/201808-120FP0560176" itemID="570f8d8f-0000000f" sourceExternalFilepath="./LIBRARY/所有素材/201808-120FP0560176.jpg" originalCompressionType="lossless" quality="50" href="所有素材/201808-120FP0560176.jpg" bitmapDataHRef="M 5 1711009057.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
@@ -109,7 +114,7 @@
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/Bitmap 9" itemID="688f4a68-00000f98" sourceExternalFilepath="Bitmap 9.png" sourceLastImported="1754221160" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/Bitmap 9.png" bitmapDataHRef="M 13 1757955538.dat" frameRight="8900" frameBottom="12100"/>
           <DOMBitmapItem name="所有素材/bitmap1.png" itemID="65fb1448-000039bf" sourceExternalFilepath="./LIBRARY/所有素材/bitmap1.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap1.png" bitmapDataHRef="M 3 1710953628.dat" frameRight="5540" frameBottom="4480"/>
           <DOMBitmapItem name="所有素材/bitmap37.png" itemID="65fb1448-000039c9" sourceExternalFilepath="./LIBRARY/所有素材/bitmap37.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap37.png" bitmapDataHRef="M 1 1710953628.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="所有素材/bitmap6.jpg" itemID="65fb1448-000039c4" sourceExternalFilepath="./LIBRARY/所有素材/bitmap6.jpg" sourceLastImported="1710953544" quality="50" href="所有素材/bitmap6.jpg" bitmapDataHRef="M 2 1710953628.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+          <DOMBitmapItem name="所有素材/bitmap6.jpg" itemID="65fb1448-000039c4" sourceExternalFilepath="./LIBRARY/所有素材/bitmap6.jpg" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap6.jpg" bitmapDataHRef="M 2 1710953628.dat" frameRight="4000" frameBottom="4000"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣大腿左" itemID="68987c8f-000001da" sourceExternalFilepath="Bitmap 17.png" sourceLastImported="1754823823" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣大腿左.png" bitmapDataHRef="M 24 1757955538.dat" frameRight="8280" frameBottom="13540"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣头" itemID="68987b8a-00000179" sourceExternalFilepath="Bitmap 1.png" sourceLastImported="1754823562" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣头.png" bitmapDataHRef="M 29 1757955538.dat" frameRight="23140" frameBottom="24780"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣下半身" itemID="68987b8e-0000017a" sourceExternalFilepath="Bitmap 7.png" sourceLastImported="1754823566" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣下半身.png" bitmapDataHRef="M 20 1757955538.dat" frameRight="10620" frameBottom="18760"/>
@@ -120,6 +125,7 @@
      </media>
      <symbols>
           <Include href="button/Symbol 51651.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b8f" lastModified="1704196122"/>
+          <Include href="button/Symbol 51820.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000c70" lastModified="1704196122"/>
           <Include href="button/Symbol 51923.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d4d" lastModified="1704196122"/>
           <Include href="deadbody.xml" loadImmediate="false" itemID="66d0920e-000012a2" lastModified="1749720737"/>
           <Include href="NPC/NPC-BLACK-L/BLACK/BLACK-L&amp;德洛希尔.xml" loadImmediate="false" itemID="6912b3df-0000135f" lastModified="1762834149"/>
@@ -358,10 +364,44 @@
           <Include href="NPC/NPC-文天/素材/文天小腿.xml" loadImmediate="false" itemID="56aef558-0000150c" lastModified="1703258907"/>
           <Include href="NPC/NPC-文天/素材/左手.xml" loadImmediate="false" itemID="6585934d-00001f69" lastModified="1703252813"/>
           <Include href="NPC/NPC-文天/文天.xml" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1728926470"/>
+          <Include href="NPC/npc混沌王.xml" loadImmediate="false" itemID="6a9d8a1c-000005e8" lastModified="1788710074"/>
+          <Include href="NPC/人修罗/人物素材/ 人修罗上半身.xml" loadImmediate="false" itemID="6614e712-0000063d" lastModified="1712906818"/>
+          <Include href="NPC/人修罗/人物素材/ 左下臂花纹.xml" loadImmediate="false" itemID="6614eb77-00000660" lastModified="1712647031"/>
+          <Include href="NPC/人修罗/人物素材/大腿.xml" loadImmediate="false" itemID="6614fe9c-00000750" lastModified="1712654277"/>
+          <Include href="NPC/人修罗/人物素材/大腿花纹.xml" loadImmediate="false" itemID="6614fe47-0000074c" lastModified="1712651910"/>
+          <Include href="NPC/人修罗/人物素材/耳朵.xml" loadImmediate="false" itemID="6615183c-00000222" lastModified="1712658492"/>
+          <Include href="NPC/人修罗/人物素材/发型.xml" loadImmediate="false" itemID="6614d2bf-000001ec" lastModified="1712923303"/>
+          <Include href="NPC/人修罗/人物素材/脸部花纹.xml" loadImmediate="false" itemID="6614d658-00000201" lastModified="1712641624"/>
+          <Include href="NPC/人修罗/人物素材/裸上身.xml" loadImmediate="false" itemID="6614e631-00000639" lastModified="1712645681"/>
+          <Include href="NPC/人修罗/人物素材/人修罗大腿.xml" loadImmediate="false" itemID="6614fea9-00000754" lastModified="1712651945"/>
+          <Include href="NPC/人修罗/人物素材/人修罗裤头.xml" loadImmediate="false" itemID="6614f8b0-0000073c" lastModified="1712661216"/>
+          <Include href="NPC/人修罗/人物素材/人修罗头.xml" loadImmediate="false" itemID="6614d6de-0000020f" lastModified="1712923333"/>
+          <Include href="NPC/人修罗/人物素材/人修罗小腿.xml" loadImmediate="false" itemID="66150d73-00000781" lastModified="1712736651"/>
+          <Include href="NPC/人修罗/人物素材/人修罗右上臂.xml" loadImmediate="false" itemID="6614f1d2-000006cd" lastModified="1712736876"/>
+          <Include href="NPC/人修罗/人物素材/人修罗右手.xml" loadImmediate="false" itemID="6614f4bf-000006f7" lastModified="1712649407"/>
+          <Include href="NPC/人修罗/人物素材/人修罗右下臂.xml" loadImmediate="false" itemID="6614f4e6-00000717" lastModified="1712736891"/>
+          <Include href="NPC/人修罗/人物素材/人修罗左上臂.xml" loadImmediate="false" itemID="6614e9d4-00000650" lastModified="1712736753"/>
+          <Include href="NPC/人修罗/人物素材/人修罗左下臂.xml" loadImmediate="false" itemID="6614ebae-00000692" lastModified="1712736715"/>
+          <Include href="NPC/人修罗/人物素材/上半身花纹.xml" loadImmediate="false" itemID="6614e52e-00000634" lastModified="1712906803"/>
+          <Include href="NPC/人修罗/人物素材/手势.xml" loadImmediate="false" itemID="66152992-00000242" lastModified="1712736690"/>
+          <Include href="NPC/人修罗/人物素材/手势花纹.xml" loadImmediate="false" itemID="66152975-0000023e" lastModified="1712662901"/>
+          <Include href="NPC/人修罗/人物素材/头.xml" loadImmediate="false" itemID="6614d6c0-0000020b" lastModified="1712660445"/>
+          <Include href="NPC/人修罗/人物素材/五官.xml" loadImmediate="false" itemID="6614d693-00000207" lastModified="1713330369"/>
+          <Include href="NPC/人修罗/人物素材/下臂.xml" loadImmediate="false" itemID="6614f1f8-000006d7" lastModified="1712648696"/>
+          <Include href="NPC/人修罗/人物素材/小腿花纹.xml" loadImmediate="false" itemID="66150bfa-0000076e" lastModified="1712655698"/>
+          <Include href="NPC/人修罗/人物素材/鞋子.xml" loadImmediate="false" itemID="6615149f-00001719" lastModified="1712937496"/>
+          <Include href="NPC/人修罗/人物素材/右上臂.xml" loadImmediate="false" itemID="6614f122-000006c5" lastModified="1712735608"/>
+          <Include href="NPC/人修罗/人物素材/右上臂花纹.xml" loadImmediate="false" itemID="6614f1c2-000006c9" lastModified="1712648642"/>
+          <Include href="NPC/人修罗/人物素材/右手.xml" loadImmediate="false" itemID="6614f4b8-000006f3" lastModified="1712649400"/>
+          <Include href="NPC/人修罗/人物素材/右手花纹.xml" loadImmediate="false" itemID="6614f4a8-000006ef" lastModified="1712651489"/>
+          <Include href="NPC/人修罗/人物素材/右下臂花纹.xml" loadImmediate="false" itemID="6614f2d7-000006eb" lastModified="1712649524"/>
+          <Include href="NPC/人修罗/人物素材/左上臂.xml" loadImmediate="false" itemID="6614e9cb-0000064c" lastModified="1712735613"/>
+          <Include href="NPC/人修罗/人物素材/左上臂花纹.xml" loadImmediate="false" itemID="6614e98d-00000648" lastModified="1712657962"/>
+          <Include href="NPC/人修罗元件.xml" loadImmediate="false" itemID="6a9d8c53-00000d81" lastModified="1788710087"/>
           <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
           <Include href="shape/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
           <Include href="shape/Symbol 2386.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b38" lastModified="1704196122"/>
-          <Include href="Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1757958923"/>
+          <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1757958923"/>
           <Include href="UI重构/可互动的任务接取PC.xml" loadImmediate="false" itemID="660ceb90-00001057" lastModified="1712123235"/>
           <Include href="UI重构/门提示.xml" loadImmediate="false" itemID="6603bcd7-00000dbc" lastModified="1711520998"/>
           <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1720795931"/>
@@ -371,7 +411,7 @@
           <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="6a9d97bd-000029aa" lastModified="1788712893"/>
           <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6a9d97d7-000029ac" lastModified="1788712919"/>
           <Include href="场景门.xml" loadImmediate="false" itemID="66f5a03f-00000e56" lastModified="1762819594"/>
-          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1788721242"/>
+          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1788795540"/>
           <Include href="所有素材/1.冷兵器/锐器/石中剑/石中剑.xml" loadImmediate="false" itemID="6565f5fa-00000027" lastModified="1702565773"/>
           <Include href="所有素材/1.冷兵器/重锐器/轮盘重工/未命名文件夹 1/Symbol 4834.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001eb6" lastModified="1702237154"/>
           <Include href="所有素材/1.冷兵器/重锐器/勇气灵剑/勇气灵剑.xml" itemIcon="1" loadImmediate="false" itemID="65f6e6b6-00001d6b" lastModified="1710679780"/>
@@ -551,6 +591,8 @@
           <Include href="所有素材/装备/西风大剑/西风大剑.xml" itemIcon="1" loadImmediate="false" itemID="65f6f751-00001efc" lastModified="1710683985"/>
           <Include href="所有素材/字母串1.xml" loadImmediate="false" itemID="65fbdc7f-00000273" lastModified="1711004799"/>
           <Include href="所有素材/字母串2.xml" loadImmediate="false" itemID="65fbdc7a-00000270" lastModified="1788711343"/>
+          <Include href="新地图素材/Symbol 3.xml" loadImmediate="false" itemID="6570b322-000003d6" lastModified="1701884437"/>
+          <Include href="新地图素材/女仆白/Symbol 2.xml" itemIcon="1" loadImmediate="false" itemID="6570b322-000003d4" lastModified="1701884437"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -830,6 +872,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4881744" publishTime="1788795346"/>
+          <PublishItem publishSize="4881744" publishTime="1788795305"/>
           <PublishItem publishSize="4845680" publishTime="1788718778"/>
           <PublishItem publishSize="4845675" publishTime="1788713355"/>
           <PublishItem publishSize="4845723" publishTime="1788713284"/>
@@ -848,7 +892,5 @@
           <PublishItem publishSize="1251262" publishTime="1728920157"/>
           <PublishItem publishSize="1240024" publishTime="1724945489"/>
           <PublishItem publishSize="1239802" publishTime="1724409466"/>
-          <PublishItem publishSize="1239806" publishTime="1724409057"/>
-          <PublishItem publishSize="1239452" publishTime="1720795690"/>
      </publishHistory>
 </DOMDocument>
