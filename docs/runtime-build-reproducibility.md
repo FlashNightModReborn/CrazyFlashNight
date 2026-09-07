@@ -2,7 +2,26 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-06 当前正式发布：地图维护工作台第一阶段
+## 2026-09-07 当前正式发布：焦点持续录制与退出自动打包
+
+根 `config.toml` 的 `diagFocusTrace` 默认关闭；测试员开启一次后，普通正式启动即持续记录，正常退出自动生成 `logs/focus-diagnostic/auto-*.zip`。本轮同时增加原始鼠标消息、命中与已提交表面的诊断字段；采集能力和退出成包不等于原焦点故障已修复。配置、3×8 MiB 实时保留、AS2 v2 观察和失败边界见[焦点诊断 §9.12](焦点管理-诊断与卡顿排查-2026-05-24.md#912-2026-09-07配置化持续录制与固定容量保留)。
+
+- 实现提交 `df6c5c1aaf1f1e7506eae3e3d5a904698677931e`；最终 release source `041e397dbe7a98062e3a090936220de05d0f09e5`；不可变 tag `runtime-build-v2/20260907-focus-recording-auto-exit-v1`；release tree `8df1ea7b15fd8f35698bd9c6ed72d212d4de068b`；request `84A7CA4FA81207BBABD24D253FAFFB5DC3630813BA2CBF4F40412ACFE7A5B58E`。
+- build identity `F900410BEFB80CB71C0A08F8EC71871CE1DDD69531A057169FF8C8BB4A69C3D3`；33-file payload closure `EB06D5319A222DB4289EF4600A83672B673578C091725B972B2E870AF2B81323`；正式 Core DLL SHA-256 `5527365F4A9D943A3D84348EA15FFCE3B1D073CB56B6DC836885E874A26D6989`。本地与云端使用同一正式 producer 达成逐文件一致；没有拿开发目录的 DLL 代替正式产物。
+- 本地 X509 `builder-local-c / physical-host-c`，keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `0878DAD70D1022BF9D404E1DDB90D57F09957BFC9608D5599EF0E0140DA3EB8F`，[cloud run 34088319380](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34088319380)。helper 以同一 run 续取一次 EOF 中断后的证明，未重新触发构建；promotion 将云端证明对真实本地 CAS candidate 完整重放。
+- production policy **40/40**；policy hash `70AE575F2E6D253A26B0D8335A321911CF2C2D0D8B31DE80283D28514547A620`；receipt SHA-256 `CDCFE270B0DCEE927189650050BACE78026833400D0634A798D58D98920F22B6`；manifest SHA-256 `09773B2589AF3520AC7396F8B38D1E6409FEF207C10984BE392275DA1A2A525C`；promotion 后磁盘 consensus SHA-256 `D8DB0ECB63812781A273A16FEB4BED1D4C36A64E2E63D3C191A9D75B9E6D0455`。
+- `2026-09-07T06:01:53.6924009Z` 完成原子 promotion，v2 strict consensus 确认 **2 signers / 2 faultDomains**，正式 33-file bundle 与根 bootstrap `--verify-only` 通过。上一 bundle 保留于 `tmp/runtime-promotions/20260907T060124697Z-74aea494ced449bba0422901559f00a5/previous`。
+- 机器验证：Launcher canonical runner **4,764 passed / 3 existing skipped / 0 failed**；AS2 aggregate **737 passed**、fresh runId `f0ded6d324d5430fa69a943df57ea010`、Compiler **0/0**，配套 asLoader SHA-256 `B8895E9B1B8D254A6DD308E9EEF1C4B7F03C38E9FB95AEEA94803B75BF1F0C00`；真实隐藏采集进程、立即重开隔离、失败保留与 ZIP 哈希验证通过。
+
+发布准备从当前真源补齐 6 份过期派生资产：任务目录 240→243、挑战混沌王的竞技场队伍/预设与新增物品修档字典。首次 request `3D3670EAEF5FD72DB16638F20C7BA5B617C5796CD8AD9DD212935F23AFBDCBD2` 在本地政策门为 39/40 后被 supersede，未创建该旧源的远端标签或云端证明。`Pig.json` 的磁盘混合换行已恢复成 Git 的 LF 原文；继续校验发现上游彩蛋地图 SWF/XFL 来源已变化。按既有烘焙器完整重建商店头像，两次重放逐字节一致，真实链为 `400→270→268 / frame 1`，34/34 来源、图像、体积与清单闭包通过；27 张字节保持、7 张细微栅格差异，全部尺寸/轮廓边界保持一致。该补齐改变完整 release tree，因此重新创建 request；四域身份未变，按协议复用原本地 CAS/签名，并重新签发最终 tree 的完整政策 receipt。所有保护门保持启用。
+
+部署后的普通 `automation/start.ps1` 无候选参数启停已实跑：临时仅在 config 开启记录，清空本进程诊断环境覆盖，实际 Core PID `17988` / session `6b1a5349fc6246d5afe357c3ddc784e1` 与正式路径、Core SHA、identity、closure 全部匹配。Computer Use 在启动页正常关闭，Core 和短期采集器均退出，自动生成 **14 文件 ZIP**；CRC 与 **13 项文件 SHA-256**、`trace.start/trace.stop`、`captureStatus=recorded` 通过，13 条 Host 焦点事件。ZIP SHA-256 `ECCF6E9D5BC1C60E7192AF0D78ECB904F85BB269C000A47C25BF6484E599D04D`。配置已按原字节恢复为默认关闭。
+
+当前为 **HUMAN_ACCEPTANCE_PASSED / promoted**；上述 **正式入口配置录制→正常退出→自动成包** 的窄范围复验通过。`businessJourneyExecuted=false`、`as2ObserveReadySeen=false`：本轮停在启动页，没有进入存档、执行关卡返回或结算按钮流程，不外推焦点业务链或完整产品 `standard_entry_verified`。原失灵问题仍待测试员提供新版失败现场。
+
+部署推送与首次远端审计结果在本节完成后追加。
+
+## 2026-09-06 上一正式发布：地图维护工作台第一阶段
 
 正式入口为 **其他 → 工具 → 地图工作台**。地图定义成为 C# 维护内核、Web 启动快照与 NativeHud 的共同输入；作者画布直接复用生产 MapPanel，支持布局编辑、缩放/平移、对比、保存与精确撤回。测试产生的地图数据已恢复初始字节，AS2 解锁、任务及场景执行权威未迁移，未改 AS2 / SWF。
 
