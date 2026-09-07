@@ -19,6 +19,8 @@
 
 当前准确状态为 **promoted**。维护者已确认作者流程修复可行并授权发布；部署后没有自动启动游戏、重跑新地点入口／NPC 剧情迁移／复制撤回等完整业务旅程，不称这些专项或完整产品 `standard_entry_verified`。运行时检查与源码/浏览器回归不能反向代签人工游戏体验。
 
+部署提交 `2fe7c95ae62a1347a6b7effd0d77be63e3987fec` 已与两条源码提交一起快进推送至 `main`，未对主线暴露旧 Core／新 v2 内容的中间态。首次远端 [Audit run 34102630481](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34102630481)（`run_attempt=1`）成功，于 `2026-09-07T08:54:09.8812714Z` 明确输出 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `b4299ac93c876696056ddcbc60f5ee7023f36244` → head `2fe7c95ae62a1347a6b7effd0d77be63e3987fec`；33-file staged closure、2 signers / 2 faultDomains 与绑定第二版 source/tag/tree 的 GitHub 证明全部重放通过。后续本段审计记录提交只更新文档，不改变已审计部署。
+
 ## 2026-09-07 上一正式发布：焦点持续录制与退出自动打包
 
 根 `config.toml` 的 `diagFocusTrace` 默认关闭；测试员开启一次后，普通正式启动即持续记录，正常退出自动生成 `logs/focus-diagnostic/auto-*.zip`。本轮同时增加原始鼠标消息、命中与已提交表面的诊断字段；采集能力和退出成包不等于原焦点故障已修复。配置、3×8 MiB 实时保留、AS2 v2 观察和失败边界见[焦点诊断 §9.12](焦点管理-诊断与卡顿排查-2026-05-24.md#912-2026-09-07配置化持续录制与固定容量保留)。
