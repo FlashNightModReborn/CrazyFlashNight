@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/人修罗/人物素材/人修罗大腿" itemID="6614fea9-00000754" lastModified="1712651945" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="人修罗大腿">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/大腿" centerPoint3DX="40.5" centerPoint3DY="111.05">
+                  <transformationPoint>
+                    <Point x="40.5" y="111.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/大腿花纹" centerPoint3DX="55.8" centerPoint3DY="207.7">
+                  <matrix>
+                    <Matrix tx="30.6" ty="201.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.95" y="6.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#009999"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

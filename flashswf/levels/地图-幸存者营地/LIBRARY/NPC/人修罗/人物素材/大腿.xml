@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/人修罗/人物素材/大腿" itemID="6614fe9c-00000750" lastModified="1712654277">
+  <timeline>
+    <DOMTimeline name="大腿">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#DAB094"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.03289794921875" d="0.00653076171875" tx="52.05" ty="199.25"/>
+                        </matrix>
+                        <GradientEntry color="#B2B2B2" ratio="0"/>
+                        <GradientEntry color="#4E4E4E" ratio="0.501960784313725"/>
+                        <GradientEntry color="#404242" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0474395751953125" b="-0.0058746337890625" c="0.014892578125" d="0.120376586914063" tx="45.55" ty="97.2"/>
+                        </matrix>
+                        <GradientEntry color="#333333" ratio="0"/>
+                        <GradientEntry color="#4E4E4E" ratio="0.501960784313725"/>
+                        <GradientEntry color="#404242" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="3" edges="!1228 110[#467.6F -159.0625 258 227!258 227[#8D.D9 #116.BA 12 342!12 342[#FFFFF8.95 #2CC.37 5 1099"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!5 1099[#31.57 #9A7.95 502 3957"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!502 3957[933 4019 1567 3878"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!1567 3878|1228 110"/>
+                    <Edge fillStyle0="1" edges="!580 4262[885 4486 1156 4432!1156 4432[1429 4411 1479 4357!1479 4357[1528 4302 1620 4222"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1620 4222|1580 4030"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1580 4030[1520 4037 1463 4044!1463 4044[1270 4065 1116 4077!1116 4077[753 4105 612 4082!612 4082[543 4070 528 4047"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!528 4047|580 4262"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!502 3957[513 3994 524 4030!524 4030[523 4039 528 4047"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1567 3878|1580 4030"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

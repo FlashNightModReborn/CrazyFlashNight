@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/人修罗/人物素材/右上臂花纹" itemID="6614f1c2-000006c9" lastModified="1712648642">
+  <timeline>
+    <DOMTimeline name="右上臂花纹">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#8AA896"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!940 665S1|890 195!890 195|940 25"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!940 25S5[326 -57 0 130"/>
+                    <Edge fillStyle0="1" edges="!0 130S1|65 215!65 215|30 750"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!30 750S5[497 622 940 665"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

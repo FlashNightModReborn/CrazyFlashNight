@@ -476,4 +476,265 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
+    <!-- 人修罗支线新增NPC日常对话：虎妙（九命猫妖）、混沌王（人修罗） -->
+    <Dialogues>
+        <Name>虎妙</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>这里人太多，我可不会选这里当据点。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>那你打算选哪里？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>问这个对你没好处。我的老朋友实在太多了，所以我不会让太多人知道我的位置。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>如果让太多人知道了会怎么样呢？</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>……</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>我会在这里停留一阵子的。听说有人在这看到三蝶了，如果你看见她，记得和我说一声。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>三蝶？长什么样？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>一只耳朵很独特的鼠妖。你看见她时就能认出来了。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>虫国毁灭时她就已经失踪了。我不知道她是怎么来到这里的，但这个应该是个好消息，希望她一切安好。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>喵~</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>怎么，是来搭讪的？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>……算是吧？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>想聊些什么？</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>比如……先介绍一下你自己？</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>那可没什么好聊的。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="4">
+            <SubDialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>活的久了总能见识到新鲜玩意。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>有多久？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>很久吧，也可能没那么久。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="5">
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>九条命是真的吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>是的。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>用完了会怎么样？</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>用完了会死掉吧。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>混沌王</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>……</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>（他一直盯着这边……还是别主动搭话为妙。）</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>看完了吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>抱歉，抱歉。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>这个世界太吵了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>吵？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>到处都是弱者的哀嚎。在旋涡界，安静得多。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>旋涡界是什么地方？</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>一个只剩力量法则的世界。你没必要知道。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="2">
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你为什么不离开这里？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>我在等一个足够有趣的人。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>什么样的才算有趣？</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>能让我全力以赴的那种。目前为止，还没有。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="3">
+            <SubDialogue id="0">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>别用看怪物的眼神看我。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>我什么都没说。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>你脸上写着。我已经不是人类了，很早以前就不是。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>混沌王</Name>
+                <Title>人修罗</Title>
+                <Char>混沌王</Char>
+                <Text>不过我看得很清楚——很多时候，人比恶魔更像恶魔。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
 </root>

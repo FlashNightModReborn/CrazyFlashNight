@@ -570,4 +570,49 @@
       <exceptionCode>story-apex-toxin</exceptionCode>
     </balance>
   </item>
+  <!-- 全属性抗性药剂：人修罗支线任务奖励，仿照九龙螭吻线（全抗）的路径写法。
+       固定点数部分走 resistanceBuff（对七抗各 +10）；百分比部分通过普通 buff 词条
+       对 魔法抗性.电/热/冷/波/蚀/毒/冲 叶子路径施加 percent 乘区（value=1.2，即 +120%），
+       与 ResistanceBuffEffect 使用同一 PodBuff 路径绑定机制。新增词条路径尚未实机回归。 -->
+  <item>
+    <name>全属性抗性药剂</name>
+    <displayname>全属性抗性药剂</displayname>
+    <icon>净化药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>7500</price>
+    <description>针对高强度能量个体专门调制的广谱防护药剂，10秒内使所有基础属性抗性提升120%，并额外各增加10点，同时&lt;font color=\"#00ff00\"&gt;恢复600点生命&lt;/font&gt;。格格巫最新研制的防护药剂。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" value="10" duration="300" buffId="全属性抗性药剂_全抗点数" />
+        <effect type="buff" property="魔法抗性.电" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_电抗" />
+        <effect type="buff" property="魔法抗性.热" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_热抗" />
+        <effect type="buff" property="魔法抗性.冷" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_冷抗" />
+        <effect type="buff" property="魔法抗性.波" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_波抗" />
+        <effect type="buff" property="魔法抗性.蚀" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_蚀抗" />
+        <effect type="buff" property="魔法抗性.毒" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_毒抗" />
+        <effect type="buff" property="魔法抗性.冲" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_冲抗" />
+        <effect type="buff" property="魔法抗性.基础" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_基础抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>8000</marketPrice>
+      <auditRef>potion:全属性抗性药剂</auditRef>
+      <exceptionCode>quest-reward-manual-balance</exceptionCode>
+    </balance>
+  </item>
 </root>

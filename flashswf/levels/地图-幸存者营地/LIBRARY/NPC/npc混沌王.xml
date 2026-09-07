@@ -1,18 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/npc女仆黑" itemID="65b649a8-00003bb2" lastModified="1740635197" lastUniqueIdentifier="30">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/npc混沌王" itemID="6a9d8a1c-000005e8" lastModified="1788710074" lastUniqueIdentifier="17">
   <timeline>
-    <DOMTimeline name="npc女仆黑">
+    <DOMTimeline name="npc混沌王" currentFrame="7">
       <layers>
         <DOMLayer name="Labels Layer" color="#A5949C" locked="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" name="描边" labelType="name" keyMode="9728">
+            <DOMFrame index="15" duration="5" name="描边" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C29BBA" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#C29BBA" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -53,11 +53,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#A8C7CD" locked="true">
+        <DOMLayer name="Layer 4" color="#A8C7CD" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 51820" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 51820" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="2.44140625" d="6.103515625" tx="15" ty="-15"/>
                   </matrix>
@@ -92,31 +92,31 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#71FCA4">
+        <DOMLayer name="Layer 5" color="#71FCA4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/狙击女仆黑" centerPoint3DX="38.7" centerPoint3DY="-10.9">
+                <DOMSymbolInstance libraryItemName="NPC/人修罗元件" centerPoint3DX="28.35" centerPoint3DY="-15.5">
                   <matrix>
-                    <Matrix tx="-19.25" ty="-93.9"/>
+                    <Matrix tx="-19.55" ty="-92.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="57.9" y="82.9"/>
+                    <Point x="47.9" y="75.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="15" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/狙击女仆黑" centerPoint3DX="38.7" centerPoint3DY="-10.9">
+                <DOMSymbolInstance libraryItemName="NPC/人修罗元件" centerPoint3DX="28.35" centerPoint3DY="-15.5">
                   <matrix>
-                    <Matrix tx="-19.25" ty="-93.9"/>
+                    <Matrix tx="-19.55" ty="-92.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="57.9" y="82.9"/>
+                    <Point x="47.9" y="75.7"/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter color="#000000" strength="10"/>
+                    <GlowFilter color="#00CCCC" strength="10"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

@@ -24,6 +24,7 @@ class org.flashNight.arki.scene.StageEvent {
     public var performance:Array; // 关卡演出 （未实装）
     public var sound:Array; // 播放声音
     public var performance_control:Object; // 性能调控
+    public var minAliveEnemies:Number; // 可选触发条件：场上存活敌人数量下限（缺失或<=0 = 不限制）
 
     // ————————————————————————
     // 构造函数
@@ -48,6 +49,47 @@ class org.flashNight.arki.scene.StageEvent {
         performance = ObjectUtil.toArray(data.Performance);
         sound = ObjectUtil.toArray(data.Sound);
         performance_control = data.PerformanceControl;
+
+        // 可选触发条件：<MinAliveEnemies>n</MinAliveEnemies>，缺失/非法值一律视为不限制
+        var rawMinAliveEnemies:Number = Number(data.MinAliveEnemies);
+        minAliveEnemies = isNaN(rawMinAliveEnemies) ? 0 : rawMinAliveEnemies;
+    }
+
+    /**
+     * 可选触发条件判定：场上存活敌人是否达到 minAliveEnemies。
+     * 未配置（<=0）时恒为 true，保证所有已有关卡行为不变。
+     * 无法取得存活敌人数（例如取不到控制目标）时也放行，避免吞掉事件。
+     */
+    public function 满足存活敌人条件():Boolean {
+        if (isNaN(minAliveEnemies) || minAliveEnemies <= 0) return true;
+        var 存活敌人数:Number = 统计场上存活敌人数();
+        if (存活敌人数 < 0) return true;
+        return 存活敌人数 >= minAliveEnemies;
+    }
+
+    /**
+     * 统计场上存活的敌对单位数量。
+     * 以控制目标（玩家）为观察方取敌人缓存，逐项剔除地图元件 / 已移除剪辑(_name==undefined) / hp<=0。
+     * @return 存活敌人数；-1 表示当前无法判定
+     */
+    public static function 统计场上存活敌人数():Number {
+        if (_root.gameworld == null) return -1;
+        var 玩家:Object = _root.gameworld[_root.控制目标];
+        if (玩家 == null || _root.帧计时器 == null || _root.帧计时器.获取敌人缓存 == null) return -1;
+
+        var 敌人列表:Array = _root.帧计时器.获取敌人缓存(玩家, 1);
+        if (敌人列表 == null) return -1;
+
+        var 计数:Number = 0;
+        for (var i:Number = 0; i < 敌人列表.length; i++) {
+            var 单位:Object = 敌人列表[i];
+            if (单位 == null) continue;
+            if (单位.element) continue;            // 地图元件不是单位（与 无限过图 的 element 判定同口径）
+            if (单位._name == undefined) continue; // 已被移除的剪辑（_name 变 undefined，代码库通用存活判定）
+            if (!isNaN(单位.hp) && 单位.hp <= 0) continue;
+            计数++;
+        }
+        return 计数;
     }
 
     public function execute(){
@@ -207,6 +249,7 @@ class org.flashNight.arki.scene.StageEvent {
         performance = null;
         sound = null;
         performance_control = null;
+        minAliveEnemies = 0;
 
         isDestroyed = true;
     }
