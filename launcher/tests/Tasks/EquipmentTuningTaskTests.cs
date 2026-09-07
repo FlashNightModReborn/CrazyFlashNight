@@ -1582,8 +1582,12 @@ namespace Launcher.Tests.Tasks
                     task.HandleWebRequest(
                         "commit", Request("commit", "tune.receipt.timeout"));
 
+                    // 回包先于结算日志；等待两者到齐，不把定时器线程的中间态当作日志丢失。
                     Assert.True(SpinWait.SpinUntil(
-                        () => web.Count == 1, 2000));
+                        () => web.Count == 1 && logs.FindAll(
+                            value => value.StartsWith(
+                                "event=equipment_tuning_commit_settled ",
+                                StringComparison.Ordinal)).Count > 0, 2000));
                     Assert.Equal("timeout", (string)web[0]["error"]);
                     Assert.True((bool)web[0]["requiresReconcile"]);
                     Assert.Equal("needs_reconcile", task.WriteState);
