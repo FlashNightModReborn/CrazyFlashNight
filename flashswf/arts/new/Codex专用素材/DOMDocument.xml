@@ -2,12 +2,46 @@
      <folders>
           <DOMFolderItem name="Codex" itemID="6a9bf5b1-000012c0" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171" itemID="6a9bf5b1-000012c1" isExpanded="true"/>
+          <DOMFolderItem name="Codex/QJZ171-Ti61" itemID="6a9d7100-00003200" isExpanded="true"/>
+          <DOMFolderItem name="Codex/QJZ171-Ti61/弹箱子件" itemID="6a9d7100-00003203" isExpanded="true"/>
+          <DOMFolderItem name="Codex/QJZ171-Ti61/分件" itemID="6a9d7100-00003202" isExpanded="true"/>
+          <DOMFolderItem name="Codex/QJZ171-Ti61/光效" itemID="6a9d7100-00003201" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171/弹箱子件" itemID="7bdfe639-00002001" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171/分件" itemID="6a9bf5b1-000012c2" isExpanded="true"/>
           <DOMFolderItem name="Codex/接口" itemID="6a9bf5b1-000012c3" isExpanded="true"/>
           <DOMFolderItem name="Codex/图标" itemID="6a9c04a3-00001524"/>
      </folders>
      <symbols>
+          <Include href="Codex/QJZ171-Ti61/00_总装.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003000"/>
+          <Include href="Codex/QJZ171-Ti61/弹箱子件/01_箱体.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003018"/>
+          <Include href="Codex/QJZ171-Ti61/弹箱子件/02_闭合上盖.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003019"/>
+          <Include href="Codex/QJZ171-Ti61/弹箱子件/03_提手.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-0000301a"/>
+          <Include href="Codex/QJZ171-Ti61/动画.xml" loadImmediate="false" itemID="6a9d7100-00003100"/>
+          <Include href="Codex/QJZ171-Ti61/分件/01_制退器.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003009"/>
+          <Include href="Codex/QJZ171-Ti61/分件/02_长枪管.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-0000300a"/>
+          <Include href="Codex/QJZ171-Ti61/分件/03_下管与套环.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-0000300b"/>
+          <Include href="Codex/QJZ171-Ti61/分件/04_准星与前夹座.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-0000300c"/>
+          <Include href="Codex/QJZ171-Ti61/分件/05_脚架侧面投影.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-0000300d"/>
+          <Include href="Codex/QJZ171-Ti61/分件/06_前连接座.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-0000300e"/>
+          <Include href="Codex/QJZ171-Ti61/分件/07_机匣主体.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-0000300f"/>
+          <Include href="Codex/QJZ171-Ti61/分件/08_上方筒罩.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003010"/>
+          <Include href="Codex/QJZ171-Ti61/分件/09_上盖与照门.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003011"/>
+          <Include href="Codex/QJZ171-Ti61/分件/10_后机匣.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003012"/>
+          <Include href="Codex/QJZ171-Ti61/分件/11_横提把.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003013"/>
+          <Include href="Codex/QJZ171-Ti61/分件/12_开孔侧杆.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003014"/>
+          <Include href="Codex/QJZ171-Ti61/分件/13_握把与护圈.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003015"/>
+          <Include href="Codex/QJZ171-Ti61/分件/14_镂空枪托.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003016"/>
+          <Include href="Codex/QJZ171-Ti61/分件/15_弹药箱_远侧.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003017"/>
+          <Include href="Codex/QJZ171-Ti61/光效/01_上盖原光晕.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003001"/>
+          <Include href="Codex/QJZ171-Ti61/光效/02_上盖增强光层.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003002"/>
+          <Include href="Codex/QJZ171-Ti61/光效/03_后盖原点光组.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003003"/>
+          <Include href="Codex/QJZ171-Ti61/光效/04_后盖增强光层.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003004"/>
+          <Include href="Codex/QJZ171-Ti61/光效/05_前侧原点光.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003005"/>
+          <Include href="Codex/QJZ171-Ti61/光效/06_前侧增强光层.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003006"/>
+          <Include href="Codex/QJZ171-Ti61/光效/07_弹箱原短灯晕.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003007"/>
+          <Include href="Codex/QJZ171-Ti61/光效/08_弹箱增强光层.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003008"/>
+          <Include href="Codex/QJZ171-Ti61/枪-长枪-Codex-钛合金QJZ171.xml" itemID="6a9d7100-00003101"/>
+          <Include href="Codex/QJZ171-Ti61/图标-Codex-钛合金QJZ171.xml" itemID="6a9d7100-00003102"/>
           <Include href="Codex/QJZ171/00_总装.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012c4" lastModified="1788661007"/>
           <Include href="Codex/QJZ171/弹箱子件/01_箱体.xml" itemIcon="1" loadImmediate="false" itemID="7a722291-4c0de0cc"/>
           <Include href="Codex/QJZ171/弹箱子件/02_闭合上盖.xml" itemIcon="1" loadImmediate="false" itemID="37b40e23-7fffffff"/>

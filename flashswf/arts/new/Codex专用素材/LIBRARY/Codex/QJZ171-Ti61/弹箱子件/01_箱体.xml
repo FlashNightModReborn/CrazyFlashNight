@@ -1,0 +1,1238 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171-Ti61/弹箱子件/01_箱体" itemID="6a9d7100-00003018" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="01_箱体">
+      <layers>
+        <DOMLayer name="08_弹箱增强光层" color="#4FB3A3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/QJZ171-Ti61/光效/08_弹箱增强光层" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-4" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="07_弹箱原短灯晕" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/QJZ171-Ti61/光效/07_弹箱原短灯晕" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-4" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="跨边锁扣与指示芯" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#3B3B3B"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor color="#202020"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!90 880|140 950!140 950|240 900!240 900|290 770!290 770|170 720!170 720|90 880"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#242424"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!90 900|140 950!140 950|240 900!240 900|250 830!250 830|130 870!130 870|90 900"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#303030"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.6">
+                            <fill>
+                              <SolidColor color="#1A1A1A"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-450 880|-360 980!-360 980|-230 930!-230 930|-200 770!-200 770|-320 690!-320 690|-440 740!-440 740|-450 880"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#202020" alpha="0.8"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!230 890|230 820!230 820|-150 740!-150 740|-310 770!-310 770|-330 900!-330 900|-260 970!-260 970|-140 910!-140 910|150 970!150 970|230 890"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0002899169921875" b="0.00640869140625" c="-0.00640869140625" d="0.0002899169921875" tx="-6.25" ty="41.75"/>
+                            </matrix>
+                            <GradientEntry color="#999999" ratio="0"/>
+                            <GradientEntry color="#7A7A7A" ratio="0.2"/>
+                            <GradientEntry color="#646464" ratio="0.56078431372549"/>
+                            <GradientEntry color="#434343" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor color="#2A2A2A"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!220 870|210 790!210 790|-170 710!-170 710|-310 720!-310 720|-330 860!-330 860|-250 930!-250 930|-150 870!-150 870|150 940!150 940|220 870"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#919191"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!190 800|-170 730!-170 730|-300 740!-300 740|-300 790!-300 790|-160 770!-160 770|160 830!160 830|190 800"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#737373"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.3">
+                            <fill>
+                              <SolidColor color="#272727"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!160 850|100 910!100 910|150 940!150 940|220 870!220 870|210 790!210 790|150 790!150 790|160 850"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.4">
+                            <fill>
+                              <SolidColor color="#242424"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!100 920|150 950!150 950|230 880"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#2E2E2E"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" weight="0.2" joints="miter">
+                            <fill>
+                              <SolidColor color="#676767"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-250 804[-274 806 -276 830!-276 830[-274 854 -250 856!-250 856[-226 854 -224 830!-224 830[-226 806 -250 804"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#1D1D1D"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.2">
+                            <fill>
+                              <SolidColor color="#7C7C7C"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-150 810|-20 840!-20 840|-10 800!-10 800|-140 770!-140 770|-150 810"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#CF2531"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-130 800|-40 820!-40 820|-30 800!-30 800|-120 780!-120 780|-130 800"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FF5356"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-112 796|-63 806!-63 806|-60 797!-60 797|-110 786!-110 786|-112 796"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="斜梁及上下固定座" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#330A11" alpha="0.8"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-460 460|-160 610!-160 610|-10 520!-10 520|-10 350!-10 350|-270 190!-270 190|-520 260!-520 260|-460 460"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#272727"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.75">
+                            <fill>
+                              <SolidColor color="#181818"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-430 440|-180 570!-180 570|-50 490!-50 490|-60 330!-60 330|-280 210!-280 210|-470 260!-470 260|-430 440"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#4F4F4F"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-400 390|-240 460!-240 460|-130 430!-130 430|-100 360!-100 360|-280 250!-280 250|-430 280!-430 280|-400 390"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#171717"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.3">
+                            <fill>
+                              <SolidColor color="#3A3A3A"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-340 400|-300 490!-300 490|-180 530!-180 530|-100 420!-100 420|-180 330!-180 330|-300 310!-300 310|-340 400"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#131313" alpha="0.819607843137255"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-460 800|-410 970!-410 970|-140 1410!-140 1410|-60 1350!-60 1350|-320 930!-320 930|-340 830!-340 830|-100 480!-100 480|-260 410!-260 410|-460 800"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#282828"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.75">
+                            <fill>
+                              <SolidColor color="#161616"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-510 790|-490 950!-490 950|-210 1380!-210 1380|-100 1400!-100 1400|-60 1300!-60 1300|-320 880!-320 880|-310 770!-310 770|-130 420!-130 420|-270 340!-270 340|-510 790"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00640869140625" b="0.00244140625" c="-0.00244140625" d="0.00640869140625" tx="-14.25" ty="39.5"/>
+                            </matrix>
+                            <GradientEntry color="#666666" ratio="0"/>
+                            <GradientEntry color="#575757" ratio="0.27843137254902"/>
+                            <GradientEntry color="#3C3C3C" ratio="0.780392156862745"/>
+                            <GradientEntry color="#2D2D2D" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-460 800|-440 930!-440 930|-150 1350!-150 1350|-120 1320!-120 1320|-380 910!-380 910|-400 800!-400 800|-190 440!-190 440|-260 400!-260 400|-460 800"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#2D2D2D"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-400 800|-380 910!-380 910|-120 1320!-120 1320|-150 1350!-150 1350|-100 1400!-100 1400|-60 1300!-60 1300|-320 880!-320 880|-310 770!-310 770|-130 420!-130 420|-190 440!-190 440|-400 800"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35">
+                            <fill>
+                              <SolidColor color="#7B7B7B" alpha="0.549019607843137"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-260 410|-430 720"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#424242"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35">
+                            <fill>
+                              <SolidColor color="#1F1F1F"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-420 340|-180 460!-180 460|-150 390!-150 390|-320 290!-320 290|-420 280!-420 280|-420 340"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#303030"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" weight="0.2" joints="miter">
+                            <fill>
+                              <SolidColor color="#737373"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-370 286[-392 288 -394 310!-394 310[-392 332 -370 334!-370 334[-348 332 -346 310!-346 310[-348 288 -370 286"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#131313"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!90 1420|-10 1350!-10 1350|-300 1370!-300 1370|-220 1460!-220 1460|90 1460!90 1460|90 1420"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#3A3A3A"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.55">
+                            <fill>
+                              <SolidColor color="#191919"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!40 1360|-120 1240!-120 1240|-240 1260!-240 1260|-270 1360!-270 1360|-200 1430!-200 1430|50 1430!50 1430|40 1360"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#5D5D5D"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 1370|-120 1280!-120 1280|-220 1290!-220 1290|-230 1350!-230 1350|-180 1400!-180 1400|0 1400!0 1400|0 1370"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#444444"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 1400|-180 1400!-180 1400|-240 1360!-240 1360|-190 1420!-190 1420|0 1420!0 1420|0 1400"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#303030"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" weight="0.2" joints="miter">
+                            <fill>
+                              <SolidColor color="#7A7A7A"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-101 1341[-109 1333 -120 1333!-120 1333[-131 1333 -139 1341!-139 1341[-147 1349 -147 1360!-147 1360[-147 1371 -139 1379!-139 1379[-131 1387 -120 1387!-120 1387[-109 1387 -101 1379!-101 1379[-93 1371 -93 1360!-93 1360[-93 1349 -101 1341"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="白色侧甲与折面" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#232323"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.85">
+                            <fill>
+                              <SolidColor color="#181818"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!960 -1190|210 -1190!210 -1190|-30 -880!-30 -880|240 -590!240 -590|240 370!240 370|-120 1150!-120 1150|150 1450!150 1450|830 1450!830 1450|1160 1150!1160 1150|1160 -970!1160 -970|960 -1190"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0256195068359375" b="0.009765625" c="-0.009765625" d="0.0256195068359375" tx="21" ty="63.5"/>
+                            </matrix>
+                            <GradientEntry color="#989898" ratio="0"/>
+                            <GradientEntry color="#909090" ratio="0.6"/>
+                            <GradientEntry color="#6E6E6E" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35">
+                            <fill>
+                              <SolidColor color="#4A4A4A"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!310 -620|310 380!310 380|110 830!110 830|-40 1130!-40 1130|190 1390!190 1390|800 1390!800 1390|1090 1120!1090 1120|1090 -930!1090 -930|910 -1130!910 -1130|270 -1130!270 -1130|60 -880!60 -880|310 -620"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0323333740234375" b="0.0051727294921875" c="-0.0051727294921875" d="0.0323333740234375" tx="30" ty="35.25"/>
+                            </matrix>
+                            <GradientEntry color="#D5D5D5" ratio="0"/>
+                            <GradientEntry color="#EDEDED" ratio="0.23921568627451"/>
+                            <GradientEntry color="#E6E6E6" ratio="0.650980392156863"/>
+                            <GradientEntry color="#C1C1C1" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!350 -640|350 390!350 390|160 830!160 830|0 1120!0 1120|210 1350!210 1350|780 1350!780 1350|1090 1090!1090 1090|1090 -930!1090 -930|910 -1130!910 -1130|270 -1130!270 -1130|100 -880!100 -880|350 -640"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#F2F2F2"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!140 -890|290 -1090!290 -1090|890 -1090!890 -1090|1060 -900!1060 -900|1090 -930!1090 -930|910 -1130!910 -1130|270 -1130!270 -1130|100 -880!100 -880|140 -890"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#B8B8B8"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!1040 80|1030 1070!1030 1070|730 1350!730 1350|780 1350!780 1350|1090 1090!1090 1090|1090 30!1090 30|1040 80"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#ABABAB"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!130 830|-30 1130!-30 1130|200 1370!200 1370|250 1370!250 1370|270 1350!270 1350|210 1350!210 1350|0 1120!0 1120|160 830!160 830|350 390!350 390|320 390!320 390|130 830"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35">
+                            <fill>
+                              <SolidColor color="#EEEEEE" alpha="0.6"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!220 1350|610 1350"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.5">
+                            <fill>
+                              <SolidColor color="#202020"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!190 1400|790 1400!790 1400|1080 1130"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.0033416748046875" b="0.0244140625" c="-0.0244140625" d="-0.0033416748046875" tx="24.25" ty="44"/>
+                            </matrix>
+                            <GradientEntry color="#D7D7D7" ratio="0"/>
+                            <GradientEntry color="#CACACA" ratio="0.450980392156863"/>
+                            <GradientEntry color="#C2C2C2" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!530 860|320 1190!320 1190|460 1350!460 1350|600 1350!600 1350|460 1180!460 1180|710 860!710 860|710 220!710 220|530 220!530 220|530 860"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" weight="0.45" joints="miter">
+                            <fill>
+                              <SolidColor color="#929292"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!530 220|530 860!530 860|320 1190!320 1190|460 1350"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" weight="0.3" joints="miter">
+                            <fill>
+                              <SolidColor color="#F0F0F0"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!543 230|543 864!543 864|335 1190!335 1190|472 1345"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="红色箱壳与下框" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#1D1D1D"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal">
+                            <fill>
+                              <SolidColor color="#141414"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-1130 -1020|-1130 1210!-1130 1210|-990 1390!-990 1390|-340 1390!-340 1390|-200 1240!-200 1240|-370 770!-370 770|-210 430!-210 430|110 50!110 50|110 -920!110 -920|-140 -1200!-140 -1200|-990 -1200!-990 -1200|-1130 -1020"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0289764404296875" b="0.0082244873046875" c="-0.0082244873046875" d="0.0289764404296875" tx="-28.75" ty="37.25"/>
+                            </matrix>
+                            <GradientEntry color="#B21A26" ratio="0"/>
+                            <GradientEntry color="#9B1420" ratio="0.16078431372549"/>
+                            <GradientEntry color="#93111D" ratio="0.670588235294118"/>
+                            <GradientEntry color="#650D16" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.65">
+                            <fill>
+                              <SolidColor color="#181818"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!-1060 -990|-1060 1180!-1060 1180|-950 1320!-950 1320|-370 1320!-370 1320|-280 1220!-280 1220|-450 770!-450 770|-280 400!-280 400|30 20!30 20|30 -900!30 -900|-180 -1130!-180 -1130|-960 -1130!-960 -1130|-1060 -990"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#720D18"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-1060 170|-1060 1180!-1060 1180|-950 1320!-950 1320|-370 1320!-370 1320|-330 1280!-330 1280|-820 1280!-820 1280|-960 1120!-960 1120|-960 130!-960 130|-1060 170"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#BB1E2A"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-960 160|-970 1130!-970 1130|-800 1270!-800 1270|-780 1240!-780 1240|-920 1100!-920 1100|-920 150!-920 150|-960 160"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#400A12" alpha="0.6"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-490 780|-470 940!-470 940|-250 1350!-250 1350|-90 1300!-90 1300|-330 850!-330 850|-180 580!-180 580|-70 320!-70 320|-250 200!-250 200|-490 780"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#78111C"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!290 390|180 360!180 360|-10 800!-10 800|-170 1140!-170 1140|130 1440!130 1440|200 1410!200 1410|-50 1130!-50 1130|100 860!100 860|290 390"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#310B10" alpha="0.850980392156863"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!20 830|-140 1140!-140 1140|130 1430!130 1430|190 1410!190 1410|-60 1130!-60 1130|90 860!90 860|280 390!280 390|200 390!200 390|20 830"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#212121"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.75">
+                            <fill>
+                              <SolidColor color="#141414"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!1080 1290|1000 1240!1000 1240|830 1400!830 1400|140 1400!140 1400|-290 1340!-290 1340|-300 1420!-300 1420|-200 1480!-200 1480|860 1480!860 1480|1080 1290"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#3C3C3C"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!130 1450|840 1450!840 1450|1010 1310!1010 1310|980 1290!980 1290|830 1420!830 1420|110 1420!110 1420|130 1450"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底部成型保护带" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.0067138671875" c="-0.0067138671875" d="0" tx="-7.85" ty="64.5"/>
+                            </matrix>
+                            <GradientEntry color="#18191B" ratio="0"/>
+                            <GradientEntry color="#292A2C" ratio="0.16078431372549"/>
+                            <GradientEntry color="#303133" ratio="0.231372549019608"/>
+                            <GradientEntry color="#242527" ratio="0.329411764705882"/>
+                            <GradientEntry color="#1A1B1D" ratio="0.619607843137255"/>
+                            <GradientEntry color="#101113" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!1058 1190|1058 1130!1058 1130[995 1200 911 1210!911 1210|-911 1210!-911 1210[-1006 1200 -1058 1130!-1058 1130|-1058 1190!-1058 1190[-1048 1320 -964 1380!-964 1380|964 1380!964 1380[1048 1320 1058 1190"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.0027313232421875" c="-0.0027313232421875" d="0" tx="-7.85" ty="67.75"/>
+                            </matrix>
+                            <GradientEntry color="#252628" ratio="0"/>
+                            <GradientEntry color="#303133" ratio="0.211764705882353"/>
+                            <GradientEntry color="#202123" ratio="0.4"/>
+                            <GradientEntry color="#111214" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!964 1320[922 1340 859 1340!859 1340|-859 1340!-859 1340[-922 1340 -964 1320!-964 1320|-943 1390!-943 1390|943 1390!943 1390|964 1320"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.4" joints="miter">
+                            <fill>
+                              <SolidColor color="#101113"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-901 1350|890 1350"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="朝枪侧箱壁与加强边" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0051116943359375" d="0.0051116943359375" tx="-48.7" ty="-8.5"/>
+                            </matrix>
+                            <GradientEntry color="#1D1E20" ratio="0"/>
+                            <GradientEntry color="#3A3B3D" ratio="0.349019607843137"/>
+                            <GradientEntry color="#303133" ratio="0.63921568627451"/>
+                            <GradientEntry color="#1F2022" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-1027 -1290|-1027 1040!-1027 1040[-1027 1160 -943 1220!-943 1220|-880 1190!-880 1190[-943 1150 -943 1050!-943 1050|-943 -1290!-943 -1290|-1027 -1290"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.00543212890625" d="0.00543212890625" tx="48.95" ty="-8.5"/>
+                            </matrix>
+                            <GradientEntry color="#212224" ratio="0"/>
+                            <GradientEntry color="#2E2F31" ratio="0.450980392156863"/>
+                            <GradientEntry color="#28292B" ratio="0.749019607843137"/>
+                            <GradientEntry color="#111214" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!932 -1290|932 1060!932 1060[932 1140 880 1190!880 1190|943 1220!943 1220[1027 1160 1027 1040!1027 1040|1027 -1290!1027 -1290|932 -1290"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.65" joints="miter">
+                            <fill>
+                              <SolidColor color="#18191B"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-890 -1190[-890 -1230 -849 -1230!-849 -1230|828 -1230!828 -1230[870 -1230 870 -1190"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35" joints="miter">
+                            <fill>
+                              <SolidColor color="#353638"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-880 -1210[-870 -1220 -838 -1220!-838 -1220|807 -1220"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.55" joints="miter">
+                            <fill>
+                              <SolidColor color="#17181A"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-901 940|-901 1080!-901 1080[-901 1150 -849 1170!-849 1170|828 1170!828 1170[880 1150 880 1080!880 1080|880 940"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.35" joints="miter">
+                            <fill>
+                              <SolidColor color="#353638"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-838 1180[0 1200 817 1180"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整箱壳底形" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.067138671875" d="0.067138671875" ty="-3.5"/>
+                            </matrix>
+                            <GradientEntry color="#101112" ratio="0"/>
+                            <GradientEntry color="#232426" ratio="0.0705882352941176"/>
+                            <GradientEntry color="#2C2D2F" ratio="0.329411764705882"/>
+                            <GradientEntry color="#292A2C" ratio="0.67843137254902"/>
+                            <GradientEntry color="#212224" ratio="0.941176470588235"/>
+                            <GradientEntry color="#0E0F10" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" caps="none" weight="1.1">
+                            <fill>
+                              <SolidColor color="#090A0B"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!1027 -1370|-1037 -1370!-1037 -1370[-1079 -1370 -1079 -1310!-1079 -1310|-1079 1160!-1079 1160[-1079 1310 -995 1380!-995 1380[-974 1400 -932 1400!-932 1400|932 1400!932 1400[985 1400 1016 1360!1016 1360[1079 1270 1079 1160!1079 1160|1079
+ -1310!1079 -1310[1079 -1370 1027 -1370"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0207672119140625" b="0.0799560546875" c="-0.0799560546875" d="0.0207672119140625" tx="-3.9" ty="-1"/>
+                            </matrix>
+                            <GradientEntry color="#27282A" ratio="0"/>
+                            <GradientEntry color="#303133" ratio="0.301960784313725"/>
+                            <GradientEntry color="#2B2C2E" ratio="0.568627450980392"/>
+                            <GradientEntry color="#242527" ratio="0.831372549019608"/>
+                            <GradientEntry color="#1C1D1F" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!911 -1290|-922 -1290!-922 -1290[-974 -1290 -974 -1220!-974 -1220|-974 1110!-974 1110[-974 1200 -901 1240!-901 1240|901 1240!901 1240[964 1200 964 1110!964 1110|964 -1230!964 -1230[964 -1290 911 -1290"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

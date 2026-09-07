@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "xfl": "flashswf/arts/new/Codex专用素材/Codex专用素材.xfl",
+  "swf": "flashswf/arts/new/Codex专用素材.swf",
+  "sourceSymbol": "Codex/QJZ171-Ti61/00_总装",
+  "animationSymbol": "Codex/QJZ171-Ti61/动画",
+  "fps": 30,
+  "frameCount": 10,
+  "fireStartFrame": 2,
+  "previewShotIntervalMs": 270,
+  "motionNote": "枪管及前部下管成组轴向后坐并复进；48 个原生局部像素是游戏可读性取值，非实枪行程测量。原稿朝左，正 dx 经镜像外壳成为画面后坐。按用户确认的 20 kg / 270 ms 配置，保留快速后坐，终点连续停留两帧，再缓和复进；1 帧待机加 9 个动作帧。",
+  "phaseLabels": [
+    "待机",
+    "击发",
+    "后坐",
+    "后坐终点",
+    "后坐停留",
+    "复进",
+    "复进",
+    "复进",
+    "缓和回位",
+    "回位"
+  ],
+  "tracks": [
+    {
+      "name": "枪管与下管组",
+      "symbols": [
+        "Codex/QJZ171-Ti61/分件/01_制退器",
+        "Codex/QJZ171-Ti61/分件/02_长枪管",
+        "Codex/QJZ171-Ti61/分件/03_下管与套环",
+        "Codex/QJZ171-Ti61/分件/04_准星与前夹座"
+      ],
+      "offsets": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          36,
+          0
+        ],
+        [
+          48,
+          0
+        ],
+        [
+          48,
+          0
+        ],
+        [
+          36,
+          0
+        ],
+        [
+          24,
+          0
+        ],
+        [
+          12,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    }
+  ],
+  "runtime": {
+    "item": "钛合金QJZ171",
+    "itemSource": "data/items/武器_长枪_机枪.xml",
+    "linkage": "枪-长枪-Codex-钛合金QJZ171",
+    "weaponType": "长枪",
+    "instanceContainer": "长枪_引用",
+    "animationTarget": "动画",
+    "initRoutine": "长枪射击动画初始化",
+    "cycleRoutine": "长枪射击动画周期",
+    "event": "processShot"
+  }
+}

@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171-Ti61/光效/08_弹箱增强光层" itemID="6a9d7100-00003008" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="08_弹箱增强光层">
+      <layers>
+        <DOMLayer name="细节形状_01" color="#4FB3A3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="1.7">
+                            <fill>
+                              <SolidColor color="#FFD0A2" alpha="0.901960784313726"/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge strokeStyle="1" edges="!-40 -10|50 10"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="光效细节_00" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.04638671875" b="0.009857177734375" c="-0.0035858154296875" d="0.0168609619140625" tx="-0.05"/>
+                            </matrix>
+                            <GradientEntry color="#FF2618" alpha="0.607843137254902" ratio="0"/>
+                            <GradientEntry color="#FF2618" alpha="0.415686274509804" ratio="0.250980392156863"/>
+                            <GradientEntry color="#FF2618" alpha="0.184313725490196" ratio="0.549019607843137"/>
+                            <GradientEntry color="#FF2618" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!58 -274[-254 -340 -492 -307!-492 -307[-731 -274 -755 -160!-755 -160[-779 -47 -574 80!-574 80[-371 207 -58 275!-58 275[254 340 493 307!493 307[732 274 756 161!756 161[780 47 576 -80!576 -80[371 -207 58 -274"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

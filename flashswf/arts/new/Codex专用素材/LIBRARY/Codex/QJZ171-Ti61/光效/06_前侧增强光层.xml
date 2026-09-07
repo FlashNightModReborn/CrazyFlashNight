@@ -1,0 +1,110 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171-Ti61/光效/06_前侧增强光层" itemID="6a9d7100-00003006" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="06_前侧增强光层">
+      <layers>
+        <DOMLayer name="细节形状_03" color="#4FB3A3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFCC9E" alpha="0.929411764705882"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!24 -30[14 -41 -2 -41!-2 -41[-19 -41 -29 -30!-29 -30[-40 -19 -40 -3!-40 -3[-40 13 -29 24!-29 24[-19 35 -2 35!-2 35[14 35 24 24!24 24[35 13 36 -3!36 -3[35 -19 24 -30"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="光效细节_02" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FF2018"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -80[-33 -80 -57 -57!-57 -57[-80 -33 -80 0!-80 0[-80 33 -57 57!-57 57[-33 80 0 80!0 80[33 80 57 57!57 57[80 33 80 0!80 0[80 -33 57 -57!57 -57[33 -80 0 -80"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="光效细节_01" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0195770263671875" d="0.0098419189453125"/>
+                            </matrix>
+                            <GradientEntry color="#FF0000" alpha="0.313725490196078" ratio="0"/>
+                            <GradientEntry color="#FF0000" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -160[-132 -160 -225 -113!-225 -113[-319 -66 -319 0!-319 0[-319 66 -225 113!-225 113[-132 160 0 160!0 160[132 160 226 113!226 113[319 66 319 0!319 0[319 -66 226 -113!226 -113[132 -160 0 -160"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="光效细节_00" color="#4FB3A3">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.06597900390625" d="0.0418853759765625" tx="-0.05"/>
+                            </matrix>
+                            <GradientEntry color="#FF2618" alpha="0.658823529411765" ratio="0"/>
+                            <GradientEntry color="#FF2618" alpha="0.450980392156863" ratio="0.250980392156863"/>
+                            <GradientEntry color="#FF2618" alpha="0.2" ratio="0.549019607843137"/>
+                            <GradientEntry color="#FF2618" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -680[-445 -680 -758 -481!-758 -481[-1074 -282 -1074 0!-1074 0[-1074 282 -758 481!-758 481[-445 680 0 682!0 682[445 680 760 481!760 481[1075 282 1075 0!1075 0[1075 -282 760 -481!760 -481[445 -680 0 -680"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
