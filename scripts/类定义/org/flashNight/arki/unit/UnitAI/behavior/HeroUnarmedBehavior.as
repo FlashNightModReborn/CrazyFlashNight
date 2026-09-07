@@ -20,6 +20,7 @@ import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
 import org.flashNight.arki.unit.UnitAI.combat.MovementResolver;
 import org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain;
 import org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule;
+import org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedMoveHelper;
 
 class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior extends BaseUnitBehavior {
 
@@ -177,6 +178,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior extends BaseU
 
         var wantX:Number = (absDx > stopX) ? ((dx < 0) ? -1 : 1) : 0;
         var wantZ:Number = (absDz > stopZ) ? ((dz < 0) ? -1 : 1) : 0;
+        // ★边界收口：主角站在边缘时朝其硬压会被脱困逻辑振荡弹回（防贴边上下抖）
+        wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantZ);
 
         MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, wantZ);
     }

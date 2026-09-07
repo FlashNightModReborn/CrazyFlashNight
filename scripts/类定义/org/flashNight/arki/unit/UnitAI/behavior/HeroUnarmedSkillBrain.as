@@ -248,6 +248,9 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
         if (!wantHeal) return;
         if (frame - _lastHealFrame < _healMinGapFrames) return; // 防连喝
 
+        // 血包数量上限（与佣兵轨同规则：初始化 血包数量=3，喝一扣一，扣完不喝）
+        if (!(self.血包数量 > 0)) return;
+
         // 技能播放中不喝（血包轨独立于 body 轨，但观感上避开技能动画）
         var st:String = self.状态;
         if (st == "技能" || st == "战技") return;
@@ -255,6 +258,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
         // 佣兵使用血包读 血包恢复比例（undefined 时兜底 30%，避免 NaN 恢复量）
         if (self.血包恢复比例 == undefined) self.血包恢复比例 = 30;
         _lastHealFrame = frame;
+        self.血包数量--; // 与 佣兵ai.as:90 同步：先扣再喝
         AIEnvironment.useHealPack(self._name);
     }
 
