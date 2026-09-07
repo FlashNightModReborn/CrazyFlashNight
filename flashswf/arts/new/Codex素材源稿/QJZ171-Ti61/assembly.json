@@ -1,0 +1,118 @@
+{
+  "sourcePackage": "QJZ171-Ti61-Game-Handoff.zip",
+  "sourcePackageSha256": "8bf8eeba192f75162b16fa07ab86ab4d39c49f971f67f9c3d8219f176eddc629",
+  "selectedVariant": "QJZ171_钛合金61/01_实战光效",
+  "authoritativeXfl": "flashswf/arts/new/Codex专用素材/Codex专用素材.xfl",
+  "namespace": "Codex/QJZ171-Ti61",
+  "runtimeSwf": "flashswf/arts/new/Codex专用素材.swf",
+  "exports": [
+    "枪-长枪-Codex-钛合金QJZ171",
+    "图标-Codex-钛合金QJZ171"
+  ],
+  "sourceSymbols": 27,
+  "totalSymbols": 30,
+  "nativeShapes": 663,
+  "nativeGroups": 663,
+  "partCount": 15,
+  "assemblyMatrix": {
+    "a": -0.5306854248046875,
+    "d": 0.5306854248046875,
+    "tx": 155.45,
+    "ty": -8.45
+  },
+  "muzzleMatrix": {
+    "tx": 398.8,
+    "ty": -37.65
+  },
+  "iconFrame1Matrix": {
+    "a": -0.101821899414063,
+    "b": 0.101821899414063,
+    "c": 0.101821899414063,
+    "d": 0.101821899414063,
+    "tx": 24.4,
+    "ty": -16.25
+  },
+  "iconFrame2Matrix": {
+    "a": -0.145889282226563,
+    "d": 0.145889282226563,
+    "tx": -0.85,
+    "ty": 0.35
+  },
+  "scaleBasis": "继承已验收 QJZ171 的 1.6 m 制作标尺与握持/枪口接口；皮肤末端轮廓增加 2 个原生像素，不按光效边框重新缩放。",
+  "rawVisibleWidthPx": 906.5,
+  "wrapperVisibleWidthPx": 481.0663375854492,
+  "animation": {
+    "profile": "tools/weapon-animation/profiles/qjz171-ti61.json",
+    "frameCount": 10,
+    "fps": 30,
+    "fireStart": 2,
+    "nativeMaxOffsetPx": 48,
+    "sourceSymbol": "Codex/QJZ171-Ti61/00_总装",
+    "animationSymbol": "Codex/QJZ171-Ti61/动画"
+  },
+  "borrow": {
+    "state": "restored",
+    "item": "QJZ171",
+    "beforeIcon": "Codex-QJZ171",
+    "beforeDressup": "枪-长枪-Codex-QJZ171",
+    "testIcon": "Codex-钛合金QJZ171",
+    "testDressup": "枪-长枪-Codex-钛合金QJZ171",
+    "record": "tmp/weapon-animation/qjz171-ti61/visual-test-20260906/borrow.json",
+    "restored": true
+  },
+  "validation": {
+    "cs6Version": "WIN 12,0,0,481",
+    "nativeMatricesChecked": 150,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "swfBytes": 27091,
+    "swfSha256": "5bbafc4081f7f05ce8794d05d847849b029fa6c242022661796e019bbfea7b91",
+    "sourceSavedByCS6": true,
+    "gameHumanAccepted": true,
+    "gameFeedback": "用户确认修色后整体可行；验收覆盖借用 QJZ171 期间的美术，独立身份的强化数值与获取旅程另行处理。",
+    "workbenchJobId": "37e5112bd2644cd7becae27e8215f7da",
+    "workbenchState": "applied",
+    "browserReview": "tmp/weapon-animation/qjz171-ti61/barrel-red-20260906/comparison.png",
+    "runtimeBehaviorReuse": {
+      "previousEvidence": "tmp/weapon-animation/qjz171-ti61/visual-test-20260906/native-live-verification.json",
+      "previousSwfSha256": "d5f69333e4c4c4f3d3721bd0a255604d3446282dd5461a78fa63c9b3707359ae",
+      "reason": "控制器与动画轨迹不变；原型和皮肤的 runtime 绑定已经分离，分别由 profile 与物品/图集映射检查验证。此前 52 项断言不外推为独立新物品的实机获取验收。"
+    },
+    "acceptedViaItem": "QJZ171"
+  },
+  "colorCorrection": {
+    "recipe": "flashswf/arts/new/Codex素材源稿/QJZ171-Ti61/barrel-color-correction.json",
+    "scope": "仅枪管主副纹路的颜色、光晕 alpha 及线芯宽度",
+    "mainCore": "#F2151B",
+    "baseRed": "#B20E13",
+    "highlight": "#FFC2C8",
+    "mainCoreWidthPx": 1.8,
+    "secondaryCoreWidthPx": 0.9,
+    "normalPreviewWeaponWidthPx": 246,
+    "beforeSwfSha256": "d5f69333e4c4c4f3d3721bd0a255604d3446282dd5461a78fa63c9b3707359ae"
+  },
+  "itemName": "钛合金QJZ171",
+  "affinitySetId": "titanium_type_61_armor",
+  "countsTowardSet": false,
+  "identity": {
+    "itemSource": "data/items/武器_长枪_机枪.xml",
+    "numericStatus": "base_numbers_authored_weight_mechanic_deferred",
+    "acquisitionConfigured": false,
+    "independentBalanceConfirmed": false,
+    "assessment": "docs/QJZ171-钛合金版身份与同套武器加权评估-2026-09-06.md",
+    "baseNumbers": {
+      "level": 55,
+      "power": 2345,
+      "weight": 20,
+      "interval": 270,
+      "capacity": 60,
+      "impact": 2,
+      "criticalhit": 17,
+      "criticalMultiplier": 1.5,
+      "weightLayers": 4
+    },
+    "balanceStatus": "unresolved_acquisition_evidence",
+    "numericRecord": "docs/QJZ171-钛合金版数值落盘-2026-09-07.md",
+    "weightMechanicDesign": "docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md"
+  }
+}

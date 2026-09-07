@@ -21011,6 +21011,21 @@
       "sourceFile": "data/units/units.json#235",
       "virtual": true,
       "sourceUnitId": 235
+    },
+    "钛合金QJZ171": {
+      "use": "长枪",
+      "icon": "Codex-钛合金QJZ171",
+      "dressup": "枪-长枪-Codex-钛合金QJZ171",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "长枪_装扮": "枪-长枪-Codex-钛合金QJZ171"
+        },
+        "女": {
+          "长枪_装扮": "枪-长枪-Codex-钛合金QJZ171"
+        }
+      },
+      "sourceFile": "武器_长枪_机枪.xml"
     }
   },
   "skinKeys": {
@@ -146305,6 +146320,50 @@
           "height": 156,
           "originX": 50.4,
           "originY": 67.2
+        }
+      ]
+    },
+    "枪-长枪-Codex-钛合金QJZ171": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/QJZ171-Ti61/枪-长枪-Codex-钛合金QJZ171",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "长枪"
+      ],
+      "items": [
+        "钛合金QJZ171"
+      ],
+      "sourceFiles": [
+        "武器_长枪_机枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/900fa408_1.png",
+        "width": 1013,
+        "height": 278,
+        "playback": "static",
+        "sourceFrameCount": 1,
+        "timelineScriptFrames": [
+          1
+        ],
+        "hasFrame1Stop": true
+      },
+      "frames": [
+        {
+          "uri": "skins/900fa408_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1013,
+          "height": 278,
+          "originX": 165.7,
+          "originY": 158.4
         }
       ]
     }

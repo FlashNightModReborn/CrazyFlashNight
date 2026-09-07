@@ -92,6 +92,9 @@ class org.flashNight.arki.scene.StageEventHandler {
                 }
             }
             if(checkParameter){
+                // 可选条件：场上存活敌人数量下限（MinAliveEnemies）
+                // 不满足时跳过本次触发，事件保留在列表里（WaveFinished 只会发布一次，等价于不触发）
+                if(!event.满足存活敌人条件()) continue;
                 // 检测通过，执行并销毁事件
                 event.execute();
                 eventList.splice(i,1);

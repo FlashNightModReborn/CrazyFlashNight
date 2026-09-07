@@ -267,6 +267,49 @@
             ],
             
             "chain":"彩蛋#12"
+        },
+        {
+            "id": 1000081,
+            "title": "$SIDE_TITLE_1000081",
+            "description": "$SIDE_DESCRIPTION_1000081",
+
+            "get_requirements": [1000011,77],
+            "get_conversation": "$SIDE_GET_1000081",
+            "get_npc": "文天",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_1000081",
+            "finish_npc": "阿卡",
+            "rewards": [
+                "金币#1000",
+                "经验值#1000",
+                "全属性抗性药剂#20",
+                "复活币#3"
+            ],
+
+            "chain":"彩蛋#81"
+        },
+        {
+            "id": 1000082,
+            "title": "$SIDE_TITLE_1000082",
+            "description": "$SIDE_DESCRIPTION_1000082",
+
+            "get_requirements": [1000081],
+            "get_conversation": "$SIDE_GET_1000082",
+            "get_npc": "阿卡",
+
+            "finish_requirements": [
+                "挑战混沌王#地狱"
+            ],
+            "finish_conversation": "$SIDE_FINISH_1000082",
+            "finish_npc": "阿卡",
+            "rewards": [
+                "金币#100000",
+                "经验值#100000",
+                "末日铁拳#1"
+            ],
+
+            "chain":"彩蛋#82"
         }
     ]
 }

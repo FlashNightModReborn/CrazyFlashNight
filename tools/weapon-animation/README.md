@@ -17,6 +17,8 @@
 
 ## 复用步骤
 
+`profiles/qjz171.json` 绑定原型 `QJZ171`，`profiles/qjz171-ti61.json` 绑定独立物品 `钛合金QJZ171`。后者从前者的轨迹和外壳复用，但保留独立美术引用。制作阶段尚未绑定物品时可省略 `runtime`；已绑定后必须与 XML 一致。此前皮肤借用已结束，默认 TestLoader 夹具恢复原型；具体记录见 [身份拆分与评估](../../docs/QJZ171-钛合金版身份与同套武器加权评估-2026-09-06.md)。
+
 1. **先确定运动部件。** 查实枪影像和可信原理资料，区分实测事实、推断和美术取值。记录外层镜像/倍率；QJZ171 原稿朝左，局部正 X 经外壳镜像成为画面后坐。不能直接复制另一武器的行程、携行展开或击发时序。
 2. **检查既有样例。** `inspect` 列出层、关键帧、实例矩阵和脚本；经典补间只报告原有关键帧，不声称解出了中间帧。
 3. **写 profile 和 lifecycle。** 指向已有静态总装与 MovieClip 动画目标，列明可动分件和逐帧偏移。第一帧、击发帧和末帧均为零偏移，保留原枪口发射接口。已绑定物品的 `fireStart/fireEnd`、装扮链接、动画目标必须与 profile 一致；检查器拒绝漂移。
@@ -60,3 +62,5 @@ node tools/validate-doc-governance.js
 `-SkipCompile` 仅检查聚焦测试入口和恢复链。当前原生测试由 `ShotTimelineTest` 的 37 项逻辑检查与 `Qjz171LiveAnimationTest` 的 15 项真实素材集成检查组成；后者加载实际物品 XML、构造原生 `MovieClip` 角色与 `BaseItem`，通过生产生命周期装载和卸载入口驱动已发布 QJZ171，调度器由夹具捕获回调。AS2 测试、CS6 逐帧矩阵、实际 SWF 图像和游戏内人工体验是各自独立的证据，不互相代替。新增生命周期脚本时仍须同步 frame37、重生成 collapsed frame、保持 BOM 并发布 asLoader；数据源变更按材料目录规则 derive/check。PowerShell 入口也保留 UTF-8 BOM，避免 Windows PowerShell 5 将中文路径按 ANSI 误读。
 
 真实素材测试的 `configure(spec)` 从专用 `scripts/test-runners/weapon-animation/TestLoader.as.template` 接收 `itemName`、`itemXml`、`swf`、`linkage`，随后由同一模板调用无参 `runAllTests()`，沿用聚焦 runner 的入口契约。测试类复用生产装卸与动画检查，样例身份由测试入口明确列出；该模板仅由聚焦 runner 临时安装到 TestLoader，不进入 asLoader 启动。复用时修改样例参数并保留路径与导出的一致性，不把测试物品构造当作正式游戏获取入口。
+
+若异步素材加载的完成标记晚于 `compile_test.ps1` 的 trace 副本，focused runner 会因缺少完整起止块失败。先按同一 runId 检查原始 Flash 日志及实际产物，再记录补充行为证据；不得把 runner 的非零退出改记为通过，也不因日志截取偏早重写生产动画控制器。

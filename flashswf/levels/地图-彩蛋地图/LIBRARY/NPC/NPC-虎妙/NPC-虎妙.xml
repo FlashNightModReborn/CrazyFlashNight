@@ -1,18 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/npc武装jk" itemID="65b64071-00002d13" lastModified="1746437984" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/NPC-虎妙/NPC-虎妙" itemID="6a9d8fc0-0000134c" lastModified="1788713101" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="npc武装jk">
+    <DOMTimeline name="NPC-虎妙">
       <layers>
-        <DOMLayer name="Labels Layer" color="#A5949C" locked="true">
+        <DOMLayer name="Labels Layer" color="#9933CC" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="15" duration="5" name="描边" labelType="name" keyMode="9728">
+            <DOMFrame index="7" name="描边" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C29BBA" locked="true">
+        <DOMLayer name="Script Layer" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -25,10 +25,10 @@ Z轴坐标 = this._y;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="12" keyMode="9728">
+            <DOMFrame index="2" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="14" keyMode="9728">
+            <DOMFrame index="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[gotoAndPlay(2);
                 ]]></script>
@@ -37,13 +37,13 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#656FE8">
+        <DOMLayer name="Layer 3" color="#16E0F5" locked="true">
           <frames>
-            <DOMFrame index="0" duration="20" keyMode="9728">
+            <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2363" name="文字信息" centerPoint3DX="62" centerPoint3DY="-71.4">
+                <DOMSymbolInstance libraryItemName="Symbol 2363" name="文字信息" centerPoint3DX="17.2" centerPoint3DY="-132.8">
                   <matrix>
-                    <Matrix tx="10" ty="-95"/>
+                    <Matrix a="0.807342529296875" d="0.812820434570313" tx="5.3" ty="-138.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -53,13 +53,13 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#A8C7CD" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#C327ED" locked="true">
           <frames>
-            <DOMFrame index="0" duration="20" keyMode="9728">
+            <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 51820" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 51651" symbolType="button">
                   <matrix>
-                    <Matrix a="2.44140625" d="6.103515625" tx="15" ty="-15"/>
+                    <Matrix a="1.53945922851563" d="5.4736328125" tx="2.8" ty="-60.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -92,31 +92,31 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#71FCA4">
+        <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" duration="15" keyMode="9728">
+            <DOMFrame index="0" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/武装jk" centerPoint3DX="30.35" centerPoint3DY="-9.6">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/虎妙" centerPoint3DX="16.25" centerPoint3DY="-54.7">
                   <matrix>
-                    <Matrix tx="-17.55" ty="-86.7"/>
+                    <Matrix a="-0.234954833984375" d="0.234954833984375" tx="64.35" ty="-121.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="47.9" y="75.7"/>
+                    <Point x="205.35" y="284.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="15" duration="5" keyMode="9728">
+            <DOMFrame index="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/武装jk" centerPoint3DX="30.35" centerPoint3DY="-9.6">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/虎妙" centerPoint3DX="16.25" centerPoint3DY="-54.7">
                   <matrix>
-                    <Matrix tx="-17.55" ty="-86.7"/>
+                    <Matrix a="-0.234954833984375" d="0.234954833984375" tx="64.35" ty="-121.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="47.9" y="75.7"/>
+                    <Point x="205.35" y="284.1"/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter color="#0099FF" strength="10"/>
+                    <GlowFilter color="#0066FF" strength="10"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

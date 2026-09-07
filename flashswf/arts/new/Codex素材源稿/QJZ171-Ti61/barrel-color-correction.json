@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "sourceSymbol": "Codex/QJZ171-Ti61/分件/02_长枪管",
+  "layer": "61枪管_头盔风格主副红色导能细槽",
+  "reason": "用户在正常游戏倍率下认为枪管纹路偏橙、破坏黑白红统一性",
+  "geometry": "所有路径、矩阵、分组、分件注册与动画轨迹保持；仅两条线芯描边从 1.55/0.75 px 调整为 1.8/0.9 px，均仍在既有外晕轮廓内。",
+  "roles": [
+    "主线外晕",
+    "主线内晕",
+    "主线暗槽",
+    "主线红底",
+    "主线线芯",
+    "副线外晕",
+    "副线内晕",
+    "副线暗槽",
+    "副线红底",
+    "副线线芯",
+    "断续高光"
+  ],
+  "changes": [
+    {
+      "groupIndex": 0,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "7"
+      },
+      "beforeColor": {
+        "color": "#FF2115",
+        "alpha": "0.0705882352941176"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "7"
+      },
+      "afterColor": {
+        "color": "#FF1620",
+        "alpha": "0.05098039215686274"
+      }
+    },
+    {
+      "groupIndex": 1,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "5"
+      },
+      "beforeColor": {
+        "color": "#F63722",
+        "alpha": "0.2"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "5"
+      },
+      "afterColor": {
+        "color": "#F01822",
+        "alpha": "0.1411764705882353"
+      }
+    },
+    {
+      "groupIndex": 2,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "2.75"
+      },
+      "beforeColor": {
+        "color": "#140B0C",
+        "alpha": "0.901960784313726"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "2.75"
+      },
+      "afterColor": {
+        "color": "#140B0C",
+        "alpha": "0.901960784313726"
+      }
+    },
+    {
+      "groupIndex": 3,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "2.5"
+      },
+      "beforeColor": {
+        "color": "#AF211A"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "2.5"
+      },
+      "afterColor": {
+        "color": "#B20E13"
+      }
+    },
+    {
+      "groupIndex": 4,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "1.55"
+      },
+      "beforeColor": {
+        "color": "#F14B31"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "1.8"
+      },
+      "afterColor": {
+        "color": "#F2151B"
+      }
+    },
+    {
+      "groupIndex": 5,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "5"
+      },
+      "beforeColor": {
+        "color": "#FF2115",
+        "alpha": "0.0470588235294118"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "5"
+      },
+      "afterColor": {
+        "color": "#FF1620",
+        "alpha": "0.03529411764705882"
+      }
+    },
+    {
+      "groupIndex": 6,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "3"
+      },
+      "beforeColor": {
+        "color": "#F63722",
+        "alpha": "0.105882352941176"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "3"
+      },
+      "afterColor": {
+        "color": "#F01822",
+        "alpha": "0.07843137254901961"
+      }
+    },
+    {
+      "groupIndex": 7,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "2.25"
+      },
+      "beforeColor": {
+        "color": "#140B0C",
+        "alpha": "0.901960784313726"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "2.25"
+      },
+      "afterColor": {
+        "color": "#140B0C",
+        "alpha": "0.901960784313726"
+      }
+    },
+    {
+      "groupIndex": 8,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "1.25"
+      },
+      "beforeColor": {
+        "color": "#AF211A",
+        "alpha": "0.658823529411765"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "1.25"
+      },
+      "afterColor": {
+        "color": "#B20E13",
+        "alpha": "0.7490196078431373"
+      }
+    },
+    {
+      "groupIndex": 9,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "0.75"
+      },
+      "beforeColor": {
+        "color": "#F14B31",
+        "alpha": "0.658823529411765"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "0.9"
+      },
+      "afterColor": {
+        "color": "#F2151B",
+        "alpha": "0.8"
+      }
+    },
+    {
+      "groupIndex": 10,
+      "before": {
+        "scaleMode": "normal",
+        "weight": "0.5"
+      },
+      "beforeColor": {
+        "color": "#FFA176",
+        "alpha": "0.6"
+      },
+      "after": {
+        "scaleMode": "normal",
+        "weight": "0.5"
+      },
+      "afterColor": {
+        "color": "#FFC2C8",
+        "alpha": "0.3490196078431372"
+      }
+    }
+  ],
+  "authority": "本表记录已应用到现役 CS6 XFL 的局部修色。source/ 中的交接 SVG 保持原样；如从交接 SVG 重建，须重新应用本修色后核对正常倍率。"
+}

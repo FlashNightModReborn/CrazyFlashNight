@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171-Ti61/光效/05_前侧原点光" itemID="6a9d7100-00003005" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="05_前侧原点光">
+      <layers>
+        <DOMLayer name="光效细节_00" color="#4FB3A3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FF0000"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -28[-12 -28 -20 -20!-20 -20[-28 -12 -28 0!-28 0[-28 12 -20 20!-20 20[-12 28 0 28!0 28[12 28 20 20!20 20[28 12 28 0!28 0[28 -12 20 -20!20 -20[12 -28 0 -28"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0206146240234375" d="0.0123138427734375"/>
+                            </matrix>
+                            <GradientEntry color="#FF0000" alpha="0.392156862745098" ratio="0"/>
+                            <GradientEntry color="#FF0000" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!0 -200[-139 -200 -237 -142!-237 -142[-336 -83 -336 0!-336 0[-336 83 -237 142!-237 142[-139 200 0 200!0 200[139 200 238 142!238 142[336 83 336 0!336 0[336 -83 238 -142!238 -142[139 -200 0 -200"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

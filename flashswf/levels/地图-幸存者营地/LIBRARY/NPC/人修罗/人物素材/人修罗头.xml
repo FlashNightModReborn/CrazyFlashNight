@@ -1,0 +1,180 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/人修罗/人物素材/人修罗头" itemID="6614d6de-0000020f" lastModified="1712923333" lastUniqueIdentifier="28">
+  <timeline>
+    <DOMTimeline name="人修罗头">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/耳朵" centerPoint3DX="78.5" centerPoint3DY="74.9">
+                  <matrix>
+                    <Matrix tx="71.35" ty="62.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.15" y="12.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="发型" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/发型" centerPoint3DX="50.5" centerPoint3DY="41.6">
+                  <matrix>
+                    <Matrix a="0.239410400390625" d="0.251312255859375" tx="-1.05" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="165.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.77"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="五官" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/五官" centerPoint3DX="109.35" centerPoint3DY="84.55">
+                  <matrix>
+                    <Matrix tx="10.85" ty="61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.65" y="22.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.045318603515625" d="0.0610198974609375" tx="43.8" ty="65.9"/>
+                        </matrix>
+                        <GradientEntry color="#E5BB9C" ratio="0"/>
+                        <GradientEntry color="#CBA389" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.01788330078125" b="-0.001983642578125" c="0.0066680908203125" d="0.0604400634765625" tx="38.45" ty="80.1"/>
+                        </matrix>
+                        <GradientEntry color="#E5BB9C" ratio="0"/>
+                        <GradientEntry color="#CBA389" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1431 1740S2[1261 2074 1014 2229!1014 2229[826 2343 745 2311!745 2311[434 2196 274 1784!274 1784[212 1602 190 1417!190 1417[148 1284 134 1149!134 1149[146 339 837 319!837 319[1528 298 1618 1122!1618 1122[1624 1206 1586 1256!1586 1256
+[1594 1255 1580 1264!1580 1264[1551 1295 1503 1311"/>
+                    <Edge fillStyle1="2" edges="
+!1503 1311|1479 1333"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="
+!1479 1333S2|1431 1740"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="2" edges="
+!1479 1333|1480 1328"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!1480 1328S2[1476 1332 1472 1339"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!1472 1339S2|1479 1333"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="
+!1503 1311S2[1491 1313 1480 1328"/>
+                    <Edge cubics="!190 1417(;162,1328 143,1239 134,1149q190 1417Q148 1284q134 1149);"/>
+                    <Edge cubics="!274 1784(;233,1663 205,1540 190,1417q274 1784Q212 1602q190 1417);"/>
+                    <Edge cubics="!837 319(;376,332 142,609 134,1149q837 319Q146 339q134 1149);"/>
+                    <Edge cubics="!1580 1264(;1561,1285 1535,1300 1503,1311q1580 1264Q1551 1295q1503 1311);"/>
+                    <Edge cubics="!1503 1311(;1503,1311 1479,1333 1479,1333q1503 1311 1479 1333);"/>
+                    <Edge cubics="!1472 1339(;1475,1334 1477,1331 1480,1328q1472 1339Q1476 1332q1480 1328);"/>
+                    <Edge cubics="!1480 1328(;1487,1318 1495,1312 1503,1311q1480 1328Q1491 1313q1503 1311);"/>
+                    <Edge cubics="!1479 1333(;1479,1333 1472,1339 1472,1339q1479 1333 1472 1339);"/>
+                    <Edge cubics="!1480 1328(;1480,1328 1479,1333 1479,1333q1480 1328 1479 1333);"/>
+                    <Edge cubics="!1618 1122(;1622,1178 1611,1223 1586,1256q1618 1122Q1624 1206q1586 1256);"/>
+                    <Edge cubics="!1586 1256(;1591,1255 1589,1258 1580,1264q1586 1256Q1594 1255q1580 1264);"/>
+                    <Edge cubics="!1479 1333(;1479,1333 1431,1740 1431,1740q1479 1333 1431 1740);"/>
+                    <Edge cubics="!837 319(;1298,305 1558,573 1618,1122q837 319Q1528 298q1618 1122);"/>
+                    <Edge cubics="!1014 2229(;889,2305 799,2332 745,2311q1014 2229Q826 2343q745 2311);"/>
+                    <Edge cubics="!745 2311(;538,2234 381,2059 274,1784q745 2311Q434 2196q274 1784);"/>
+                    <Edge cubics="!1431 1740(;1318,1963 1179,2126 1014,2229q1431 1740Q1261 2074q1014 2229);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/耳朵" centerPoint3DX="78.5" centerPoint3DY="74.95">
+                  <matrix>
+                    <Matrix tx="71.35" ty="62.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.15" y="12.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="脸部花纹" color="#FF4FFF" parentLayerIndex="3" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/脸部花纹" centerPoint3DX="40" centerPoint3DY="80.95">
+                  <matrix>
+                    <Matrix tx="10.6" ty="51.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.4" y="29.75"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#009999"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/头" centerPoint3DX="47.25" centerPoint3DY="65.7">
+                  <matrix>
+                    <Matrix tx="6.7" ty="15.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.55" y="49.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

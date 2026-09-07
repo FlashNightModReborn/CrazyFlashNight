@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/人修罗/人物素材/人修罗右手" itemID="6614f4bf-000006f7" lastModified="1712649407" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="人修罗右手">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/右手" centerPoint3DX="23.3" centerPoint3DY="29.6">
+                  <matrix>
+                    <Matrix ty="0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.3" y="29.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/人修罗/人物素材/右手花纹" selected="true" centerPoint3DX="23.25" centerPoint3DY="29.65">
+                  <transformationPoint>
+                    <Point x="23.5" y="29.4"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#009999"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
