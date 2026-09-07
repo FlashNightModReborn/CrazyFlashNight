@@ -8,7 +8,7 @@
 
 ## 0B. 2026-09-07 撤退后迟到判胜与任务误完成修复
 
-**最后核对代码基线**：主线 commit `8ee4ed07d019bf8b18bea3167d8b2cbcb8837be5` 与修复 commit `7f317f2102` 的合并工作树。当前已完成 AS2 自动回归、CS6 产物与反汇编验证；隔离副本人类验收通过，合并后的自动回归、CS6 重编与反汇编验证通过。
+**最后核对代码基线**：合并提交 `0f151b17630cc490c0f111b354ad44962bba36c3`，包含主线 `8ee4ed07d0` 与修复 `7f317f2102`。隔离副本人类验收通过，合并后的自动回归、CS6 重编与反汇编验证通过；该提交已进入本机主线，并完成正式目录启动与独立测试存档加载核对。
 
 现场在游寇基地进入后约 9 秒从设置返回基地，`StageRunSession` 正确冻结为 `retreat` 且奖励为 0，基地却出现 STAGE CLEAR 和任务可交付提示。生产 AS2 回归已复现其业务写：`StageManager.clear()` 把 manager 置 inactive 并清空关卡列表，却没有同步关闭 `WaveSpawner`；全局帧更新仍能送达波次结算。`clearStage/finishStage` 缺少 inactive 拒绝，旧 `_root.关卡结束` 又在会话拒绝胜利后继续调用真实 `FinishStage`，导致撤退战报与任务条件分叉。
 
@@ -24,7 +24,7 @@
 
 合并主线 `8ee4ed07d0` 后，四个修复生产源文件与人工验收候选逐字节一致，保留新增的 `MinAliveEnemies` 事件条件、角色标记与装备逻辑。合并后重跑结算 **730/730**、箱体交互 **53** 项、Warlord SubStage **78/78** 与 Warlord Action **97/97**，静态 TimePool 覆盖 **215** 个关卡文件；CS6 Compiler **0/0**，最终 `asLoader.swf` 为 **1,266,440** 字节、SHA-256 `40F274EA7B8DE5C178B00A66C6F2B9EE02876A20204CB747ED72CBCCBF8FFDF7`。FFDec **633/633** 导出确认同一产物包含胜利资格门与主线新增事件/装备代码。
 
-修复编译目标为 `scripts/asLoader.swf`，不刷新主 XFL 或独立美术 SWF。现役 Launcher EXE/runtime 未修改；AS2 候选的人工验收不能冒充 Launcher 双生产者证明，也不能提前声明正式入口已修复。
+修复编译目标为 `scripts/asLoader.swf`，不刷新主 XFL 或独立美术 SWF。现役 Launcher EXE/runtime 未修改，本轮不产生新的 Launcher 共识构建。主线合并后从正式目录启动实际 Core 进程，核对相同最终 SWF 哈希；10:37:22 日志确认独立测试槽 `cf7_retreat_formal_20260907` 加载，10:37:23 完成场景 reveal，现役 runtime 的 33 文件完整性校验通过。此次正式入口机器检查范围为启动与读档，完整撤退、重启和正常胜利旅程由上段已通过的人类验收覆盖，无额外人类验收前置。测试槽与隔离工作树在交付后清理，原始日志和测试存档仅保留在本机证据目录。
 
 ## 0A. 2026-08-30 奖励持久化、立即投影与自动入栏增量
 
