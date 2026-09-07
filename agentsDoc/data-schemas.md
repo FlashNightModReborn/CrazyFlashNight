@@ -115,6 +115,25 @@ data/arena/arena_calibrated_rosters.json → 已完成人机门的精确怪物�
 - AS2 `StageTimePoolController` 是时间与失败裁决权威；Launcher 的 `T` 快车道只显示 keyed HUD。静态门为 `powershell -File tools/validate-stage-time-pools.ps1`，行为门为 `powershell -File scripts/run-stage-time-pool-tests.ps1`。
 - 首批配置：`残垣断壁`前两图共享 600 秒、遇到键盘后停止；`核电站`四图共享 600 秒；`挑战战斗天才`单图 300 秒。
 
+### 关卡事件存活敌人数门槛
+
+`GameStage` 的 `Event` 可声明 `<MinAliveEnemies>1</MinAliveEnemies>`。`StageEvent` 在事件名和参数匹配后、执行事件前检查存活敌人数；缺失、无法转换为数字或值不大于 0 时不限制。
+
+- 计数以当前控制目标为观察方读取敌人缓存，剔除地图元件、已移除剪辑和 `hp <= 0` 的单位；无法取得控制目标或缓存时放行。
+- 人数不足只跳过本次触发，事件仍在列表中；不会自动重试。`WaveFinished` 只发布一次时，跳过就不再触发，不能把它当作持续等待条件。
+- 当前配置入口是 `data/stages/副本任务/挑战混沌王.xml`。维护时同时核对 `StageEvent.as` 与 `StageEventHandler.as`，避免把条件改成全局波次规则。
+
+### NPC 支线解锁与临时单位参数
+
+NPC 元件可设置 `任务需求支线 = [任务ID, ...]`；`_root.初始化NPC` 在主线条件之后，要求列表中每个可转换为数字的 ID 都满足 `_root.tasks_finished[String(ID)] >= 1`。任一未完成时停止并隐藏元件，本次不继续初始化；省略或空数组不增加限制，无法转为数字的条目跳过。
+
+走 `真九命猫妖初始化` 的单位还支持以下实例参数，来源优先级均为单位属性（含关卡 `Parameters` / 修改器）高于装备 `initParam`：
+
+- `声库攻击`、`声库中招`、`声库击倒`：用 `|` 分隔文件名；空字符串清空对应声库。默认三库为空，由玩家和敌人模板的空库守卫静音；不要在文件名列表中使用 `Parameters` 保留的逗号或冒号。
+- `退场时间`：正数毫秒，使用帧计时器折算，且每个单位只启动一次。到期后清零复活上限、设置 `respawn=false` 并进入“血腥死”状态；单位已移除时直接返回。它不是通用关卡计时池，也不覆盖其他兵种的生命周期。
+
+以上为关卡/NPC 配置契约；实例入口在地图元件脚本，临时单位消费在 `scripts/逻辑/装备函数/九命猫妖.as`。
+
 ### 关卡敌人屏外尸体保留参数
 
 `data/stages/**/*.xml` 的 `SubStage/Wave/SubWave/EnemyGroup/Enemy/Parameters` 支持实例级参数 `保留屏外尸体:true`。该参数由 `ObjectUtil.cloneParameters()` 解析为严格布尔值，并随当前敌人实例的初始化对象传入；不要在 `DeathEffectRenderer` 中硬编码兵种 ID、名称或素材名。
