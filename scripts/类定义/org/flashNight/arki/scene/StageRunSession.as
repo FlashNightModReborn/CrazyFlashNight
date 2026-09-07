@@ -39,10 +39,11 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _stageStartReservation:Object = null;
     private static var _testDeliverableResolver:Function = null;
     private static var _testDeliverableNavigator:Function = null;
-    // 仅诊断：不进入存档、processedIntents 或业务 envelope；30 分钟/512 条后自动停止。
+    // 仅诊断：不进入存档、processedIntents 或业务 envelope。v1 有限额；v2 由 Host 循环保留。
     private static var _focusSession:String = "";
     private static var _focusUntil:Number = 0;
     private static var _focusCount:Number = 0;
+    private static var _focusRolling:Boolean = false;
     private static var _focusHandlingIntent:String = "";
     private static var _focusReturnIntent:String = "";
     private static var _focusReturnRun:String = "";
@@ -1087,20 +1088,23 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     private static function handleObserve(params:Object):Void {
-        if (params == null || !hasOnlyKeys(params, ["task", "action", "v", "session"])
+        if (params == null) return;
+        var rolling:Boolean = params.v === 2 && params.mode === "rolling";
+        if (!hasOnlyKeys(params, rolling ? ["task", "action", "v", "session", "mode"] : ["task", "action", "v", "session"])
                 || params.task !== "cmd" || params.action !== "stageOutcomeObserve"
-                || params.v !== 1 || typeof params.session != "string"
+                || (params.v !== 1 && !rolling) || typeof params.session != "string"
                 || !isSafeToken(params.session, 96)) return;
         if (_focusSession == params.session) return; // ready/sync 重复回调不能延长或清零预算。
         _focusSession = params.session;
         _focusUntil = getTimer() + 1800000;
         _focusCount = 0;
+        _focusRolling = rolling;
         _focusHandlingIntent = _focusReturnIntent = _focusReturnRun = "";
-        observeFocus("observe_ready", "", "bounded_512_30min");
+        observeFocus("observe_ready", "", rolling ? "rolling_host_retention" : "bounded_512_30min");
     }
 
     private static function focusObservationActive():Boolean {
-        return _focusSession != "" && _focusCount < 512 && getTimer() < _focusUntil;
+        return _focusSession != "" && (_focusRolling || (_focusCount < 512 && getTimer() < _focusUntil));
     }
 
     private static function observeFocus(eventName:String, intentId:String, detail:String):Void {
@@ -1114,7 +1118,8 @@ class org.flashNight.arki.scene.StageRunSession {
             + " intentId=" + intentId + " detail=" + detail
             + " runId=" + (_run == null ? "" : _run.runId)
             + " revision=" + (_run == null ? 0 : _run.revision)
-            + " returnRequested=" + _returnRequested + " remaining=" + (512 - _focusCount));
+            + " returnRequested=" + _returnRequested + " remaining=" + (_focusRolling ? -1 : 512 - _focusCount)
+            + " mode=" + (_focusRolling ? "rolling" : "bounded"));
         } catch (observationError) {
             // 丢失观测不触发重发或业务重试。
         }

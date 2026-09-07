@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Diagnostic;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -27,6 +29,10 @@ namespace CF7Launcher.Tests.Guardian
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool IsWindowVisible(IntPtr hWnd);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint colorKey, byte alpha, uint flags);
+
         private sealed class RecordingWidget : INativeHudWidget
         {
             private Rectangle _bounds;
@@ -46,7 +52,13 @@ namespace CF7Launcher.Tests.Guardian
             public event EventHandler RepaintRequested;
             public event EventHandler AnimationStateChanged;
 
-            public void Paint(Graphics g, float dpr, Point hudOrigin) { }
+            public Color PaintColor = Color.Transparent;
+            public void Paint(Graphics g, float dpr, Point hudOrigin)
+            {
+                Rectangle local = _bounds;
+                local.Offset(-hudOrigin.X, -hudOrigin.Y);
+                using (var brush = new SolidBrush(PaintColor)) g.FillRectangle(brush, local);
+            }
             public bool TryHitTest(Point screenPt) { return _bounds.Contains(screenPt); }
             public void Tick(int deltaMs) { }
 
@@ -134,6 +146,129 @@ namespace CF7Launcher.Tests.Guardian
                 }
             }
             finally { CF7Launcher.Diagnostic.FocusTrace.Stop(); }
+        }
+
+        [Fact]
+        public void DiagnosticSeparatesLogicalHitTransparentSurfaceAndNativeMessageReceipt()
+        {
+            var trace = new List<string>();
+            FocusTrace.Start(trace.Add, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+                {
+                    Point center = Center(widget.ScreenBounds);
+                    FocusTrace.SetTarget(widget.ScreenBounds);
+                    FocusTrace.PhysicalEdge(WM_LBUTTONDOWN, center, 1, 10, 7);
+                    Assert.Equal(HTCLIENT, SendNcHitTest(hud, center));
+                    JObject surface = JObject.FromObject(FocusTrace.CaptureHudInput(center));
+                    Assert.Equal(nameof(RecordingWidget), (string)surface["logicalWidget"]);
+                    Assert.Equal(0, (int)surface["submittedSourceAlpha"]);
+                    Assert.True((bool)surface["lastCommit"]["Succeeded"]);
+                    SendMouse(hud, WM_LBUTTONDOWN, center);
+                    SendMouse(hud, WM_LBUTTONUP, center);
+                    Assert.Equal(new[] { MouseEventKind.Down, MouseEventKind.Up, MouseEventKind.Click }, widget.Events);
+
+                    widget.PaintColor = Color.FromArgb(120, 50, 100, 150);
+                    widget.MoveTo(widget.ScreenBounds);
+                    JObject painted = JObject.FromObject(FocusTrace.CaptureHudInput(center));
+                    Assert.Equal(120, (int)painted["submittedSourceAlpha"]);
+                    Assert.Equal((long)surface["placementGeneration"], (long)painted["placementGeneration"]);
+                    Assert.True((long)painted["paintGeneration"] > (long)surface["paintGeneration"]);
+
+                    FocusTrace.Flush();
+                    JObject[] rows = ReadFocusRows(trace);
+                    JObject enter = rows.First(x => (string)x["event"] == "hud.native_mouse" && (string)x["data"]["phase"] == "enter");
+                    JObject down = rows.Single(x => (string)x["event"] == "hud.down");
+                    JObject exit = rows.First(x => (string)x["event"] == "hud.native_mouse" && (string)x["data"]["phase"] == "exit");
+                    Assert.True((long)enter["seq"] < (long)down["seq"] && (long)down["seq"] < (long)exit["seq"]);
+                    Assert.Contains(rows, x => (string)x["event"] == "hud.native_hit_test" && (int)x["data"]["result"] == HTCLIENT);
+                }
+                Assert.Null(FocusTrace.HudInputSnapshot);
+            }
+            finally { FocusTrace.Stop(); }
+        }
+
+        [Fact]
+        public void FailedOriginalLayeredCommitCannotClaimNewPixelsWereSubmitted()
+        {
+            FocusTrace.Start(_ => { }, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+                {
+                    Point center = Center(widget.ScreenBounds);
+                    JObject before = JObject.FromObject(FocusTrace.CaptureHudInput(center));
+                    // Win32 明确规定 SLA 之后的 ULW 会失败，直至重置 layered style。
+                    Assert.True(SetLayeredWindowAttributes(hud.Handle, 0, 255, 2));
+                    widget.PaintColor = Color.Red;
+                    widget.MoveTo(widget.ScreenBounds);
+                    JObject after = JObject.FromObject(FocusTrace.CaptureHudInput(center));
+                    Assert.False((bool)after["lastCommit"]["Succeeded"]);
+                    Assert.Equal("update_layered_window_failed", (string)after["lastCommit"]["ErrorValue"]);
+                    Assert.Equal((long)before["submittedPaint"], (long)after["submittedPaint"]);
+                    Assert.Equal(255, (int)after["paintedAlpha"]);
+                    Assert.Equal(JTokenType.Null, after["submittedSourceAlpha"].Type);
+                    Assert.Equal(HTCLIENT, SendNcHitTest(hud, center));
+                }
+            }
+            finally { FocusTrace.Stop(); }
+        }
+
+        private static JObject[] ReadFocusRows(List<string> trace)
+        {
+            return trace.SelectMany(x => x.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                .Select(x => JObject.Parse(x.Substring("[FocusTrace] ".Length))).ToArray();
+        }
+
+        [Fact]
+        public void BrokenDiagnosticSinkDoesNotChangeMouseActivationOrDispatch()
+        {
+            FocusTrace.Start(_ => throw new InvalidOperationException("fixture"), false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+                {
+                    Point center = Center(widget.ScreenBounds);
+                    Assert.Equal(3, SendMessage(hud.Handle, 0x0021, owner.Handle,
+                        new IntPtr((WM_LBUTTONDOWN << 16) | HTCLIENT)).ToInt32());
+                    Assert.Equal(HTCLIENT, SendNcHitTest(hud, center));
+                    SendMouse(hud, WM_LBUTTONDOWN, center);
+                    SendMouse(hud, WM_LBUTTONUP, center);
+                    FocusTrace.Flush();
+                    Assert.Equal(new[] { MouseEventKind.Down, MouseEventKind.Up, MouseEventKind.Click }, widget.Events);
+                }
+            }
+            finally { FocusTrace.Stop(); }
+        }
+
+        [Fact]
+        public void ReentrantOlderCommitCannotClaimCurrentSourcePixels()
+        {
+            FocusTrace.Start(_ => { }, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+                {
+                    long oldPaint = hud.FocusPaintGeneration;
+                    long oldPlacement = hud.FocusPlacementGeneration;
+                    widget.PaintColor = Color.Red;
+                    widget.MoveTo(widget.ScreenBounds);
+                    hud.ObserveFocusBitmapCommit(new LayeredWindowCommitResult(
+                        true, hud.Left, hud.Top, hud.Width, hud.Height, 255, 0, 0,
+                        LayeredWindowCommitError.None, 0, null, null), oldPaint, oldPlacement);
+                    JObject evidence = JObject.FromObject(FocusTrace.CaptureHudInput(Center(widget.ScreenBounds)));
+                    Assert.Equal(oldPaint, (long)evidence["submittedPaint"]);
+                    Assert.True((long)evidence["paintGeneration"] > oldPaint);
+                    Assert.Equal(255, (int)evidence["paintedAlpha"]);
+                    Assert.Equal(JTokenType.Null, evidence["submittedSourceAlpha"].Type);
+                }
+            }
+            finally { FocusTrace.Stop(); }
         }
 
         [Fact]

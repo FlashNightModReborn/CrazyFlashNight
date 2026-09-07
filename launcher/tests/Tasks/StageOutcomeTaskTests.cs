@@ -234,6 +234,30 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void RollingObservationUsesV2ControlWithoutChangingBusinessEnvelope()
+        {
+            var sent = new List<JObject>();
+            var presenter = new FakePresenter();
+            CF7Launcher.Diagnostic.FocusTrace.Start(_ => { }, false, true);
+            try
+            {
+                using (var task = new StageOutcomeTask(payload => {
+                    sent.Add(JObject.Parse(payload.TrimEnd('\0'))); return true;
+                }, presenter))
+                {
+                    task.SetReady();
+                    presenter.Raise("return_base", "run.fixture", 7);
+                }
+                Assert.Equal(2, (int)sent[0]["v"]);
+                Assert.Equal("rolling", (string)sent[0]["mode"]);
+                Assert.Equal(5, sent[0].Count);
+                Assert.Equal(7, sent[2].Count);
+                Assert.Null(sent[2]["mode"]);
+            }
+            finally { CF7Launcher.Diagnostic.FocusTrace.Stop(); }
+        }
+
+        [Fact]
         public void ReadyAndAllowedIntents_EmitExactNullTerminatedCommands()
         {
             var sent = new List<string>();

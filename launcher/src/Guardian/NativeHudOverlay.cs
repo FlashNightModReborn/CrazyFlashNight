@@ -22,7 +22,7 @@ namespace CF7Launcher.Guardian
     /// - 实现 widget 容器、bounds union、request-frame timer、UiData 派发与 WM_NCHITTEST 路由
     /// - INotchSink/IToastSink 接口签名先 silent no-op（Phase 3 由 NotchWidget/ToastWidget 接管）
     /// </summary>
-    public class NativeHudOverlay : OverlayBase, INotchSink, IToastSink
+    public partial class NativeHudOverlay : OverlayBase, INotchSink, IToastSink
     {
         protected override bool IsClickThrough { get { return false; } }
 
@@ -102,6 +102,7 @@ namespace CF7Launcher.Guardian
             {
                 FocusWindowSnapshot.Hud = Handle;
                 FocusWindowSnapshot.Owner = owner.Handle;
+                InitializeFocusInputProbe();
             }
             _animTick = new Timer();
             _animTick.Interval = 16;
@@ -409,6 +410,7 @@ namespace CF7Launcher.Guardian
 
             if (windowPlacementChanged)
             {
+                if (FocusTrace.Enabled) _focusPlacementGeneration++;
                 if (FocusTrace.Enabled) FocusTrace.Record("hud.placement",
                     new { hudRect, shown = _shown, suspended = _suspendedForPanel, insertAfter = insertAfter.ToInt64() });
                 // z-order：插在 _zOrderInsertAfter（HitNumber.Handle）之后，让 NativeHud 沉到
@@ -500,6 +502,7 @@ namespace CF7Launcher.Guardian
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
 
             int painted = 0;
+            if (FocusTrace.Enabled) _focusPaintGeneration++;
             using (Graphics g = Graphics.FromImage(_composedBitmap))
             {
                 g.CompositingMode = CompositingMode.SourceCopy;
@@ -519,9 +522,7 @@ namespace CF7Launcher.Guardian
                 }
             }
 
-            // Keep the existing NativeHud on OverlayBase's unobserved fast path.
-            // B0-06's dedicated PlayerInfo surface opts into structured ULW
-            // observation explicitly, after it has a real tight-bound workload.
+            // 焦点观察只读取原有提交的结果，不切换 DC/提交实现。
             CommitBitmap(_composedBitmap, _hudOrigin.X, _hudOrigin.Y, 255);
             _lastCommitTick = Environment.TickCount;
             PerfTrace.Counter("nativeHud.commit");
@@ -795,6 +796,7 @@ namespace CF7Launcher.Guardian
                 // WS_EX_NOACTIVATE 只阻止"自动"激活（show/click），不阻止系统在某些路径下重排 z-order；
                 // 显式拦 WM_MOUSEACTIVATE 才能保证 GuardianForm 永远不 Deactivate，widget 可被反复点击。
                 m.Result = (IntPtr)MA_NOACTIVATE;
+                TraceFocusMouseActivate(m);
                 return;
             }
             if (m.Msg == WM_NCHITTEST)
@@ -806,12 +808,23 @@ namespace CF7Launcher.Guardian
 
                 INativeHudWidget[] snapshot;
                 lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
-                if (FindHitWidget(snapshot, screenPt) != null)
+                INativeHudWidget hit = FindHitWidget(snapshot, screenPt);
+                if (hit != null)
                 {
                     m.Result = (IntPtr)1; // HTCLIENT
+                    TraceFocusHitTest(screenPt, hit, m.Result);
                     return;
                 }
                 m.Result = (IntPtr)HTTRANSPARENT;
+                TraceFocusHitTest(screenPt, null, m.Result);
+                return;
+            }
+            if (FocusTrace.Enabled && IsFocusMouseMessage(m.Msg))
+            {
+                long started = System.Diagnostics.Stopwatch.GetTimestamp();
+                TraceFocusNativeMouse(m, "enter", started);
+                try { base.WndProc(ref m); }
+                finally { TraceFocusNativeMouse(m, "exit", started); }
                 return;
             }
             base.WndProc(ref m);
@@ -1164,6 +1177,7 @@ namespace CF7Launcher.Guardian
         {
             if (disposing)
             {
+                DisposeFocusInputProbe();
                 if (_animTick != null) { _animTick.Stop(); _animTick.Dispose(); _animTick = null; }
                 if (_renderCoalesceTimer != null) { _renderCoalesceTimer.Stop(); _renderCoalesceTimer.Dispose(); _renderCoalesceTimer = null; }
                 Bitmap composed = System.Threading.Interlocked.Exchange(

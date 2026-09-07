@@ -87,12 +87,14 @@ namespace CF7Launcher.Tasks
 
         private void OnClientReady()
         {
+            if (FocusTrace.Enabled) FocusTrace.Record("as2.transport_ready");
             if (!_disposed) SendSync();
         }
 
         internal void HandleTransportDisconnected()
         {
             if (_disposed) return;
+            if (FocusTrace.Enabled) FocusTrace.Record("as2.transport_disconnected");
             _presenter.ResetState();
         }
 
@@ -100,10 +102,13 @@ namespace CF7Launcher.Tasks
         {
             if (FocusTrace.Enabled)
             {
-                bool observationSent = TrySend(new JObject {
+                JObject observation = new JObject {
                     ["task"] = "cmd", ["action"] = "stageOutcomeObserve",
-                    ["v"] = 1, ["session"] = FocusTrace.Session });
-                FocusTrace.Record("as2.observe_send", new { sent = observationSent });
+                    ["v"] = FocusTrace.IsRolling ? 2 : 1, ["session"] = FocusTrace.Session };
+                if (FocusTrace.IsRolling) observation["mode"] = "rolling";
+                bool observationSent = TrySend(observation);
+                FocusTrace.Record("as2.observe_send", new { sent = observationSent,
+                    version = (int)observation["v"], mode = (string)observation["mode"] ?? "bounded" });
             }
             JObject command = new JObject
             {

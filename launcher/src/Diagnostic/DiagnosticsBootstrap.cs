@@ -25,11 +25,12 @@ namespace CF7Launcher.Diagnostic
         public static bool UlwMonitorEnabled { get { return _ulwMonitor; } }
         public static bool EtwDwmEnabled     { get { return _etwDwm; } }
 
-        public static void Init(bool layerAudit, bool ulwMonitor, bool etwDwm, int intervalSec)
+        public static void Init(bool layerAudit, bool ulwMonitor, bool etwDwm, int intervalSec,
+            bool focusTrace = false, string projectRoot = null)
         {
             if (_initDone) return;
             _initDone = true;
-            FocusTrace.StartFromEnvironment();
+            FocusTrace.StartConfigured(focusTrace, projectRoot);
 
             _layerAudit  = layerAudit;
             _ulwMonitor  = ulwMonitor;
@@ -70,7 +71,7 @@ namespace CF7Launcher.Diagnostic
 
         public static void Shutdown()
         {
-            FocusTrace.Stop();
+            FocusTrace.Shutdown();
             if (_etwDwm)
             {
                 try { DwmEtwMonitor.Stop(); } catch { }

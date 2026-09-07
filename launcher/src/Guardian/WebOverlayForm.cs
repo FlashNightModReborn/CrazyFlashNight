@@ -3016,6 +3016,9 @@ namespace CF7Launcher.Guardian
 
         private IntPtr CursorHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
+            string focusMouseId = null;
+            int focusMessage = 0;
+            long focusObservedAt = 0;
             if (nCode == HC_ACTION)
             {
                 int message = wParam.ToInt32();
@@ -3023,16 +3026,25 @@ namespace CF7Launcher.Guardian
                 {
                     MSLLHOOKSTRUCT info = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
                     if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
-                        CF7Launcher.Diagnostic.FocusTrace.PhysicalEdge(message,
+                    {
+                        if (message == WM_LBUTTONDOWN || message == WM_LBUTTONUP)
+                            focusObservedAt = Stopwatch.GetTimestamp();
+                        focusMouseId = CF7Launcher.Diagnostic.FocusTrace.PhysicalEdge(message,
                             new Point(info.pt.X, info.pt.Y), info.flags, info.time,
                             _panelSessionGeneration);
+                    }
+                    focusMessage = message;
                     QueueHookCursorSample(info.pt.X, info.pt.Y);
                     if (message == WM_LBUTTONUP)
                         QueuePhysicalCursorRelease();
                 }
             }
 
-            return CallNextHookEx(_cursorHook, nCode, wParam, lParam);
+            long focusStarted = focusMouseId == null ? 0 : Stopwatch.GetTimestamp();
+            IntPtr result = CallNextHookEx(_cursorHook, nCode, wParam, lParam);
+            if (focusMouseId != null)
+                CF7Launcher.Diagnostic.FocusTrace.HookChainResult(focusMouseId, focusMessage, result, focusStarted, focusObservedAt);
+            return result;
         }
 
         private static bool IsCursorHookMessage(int message)

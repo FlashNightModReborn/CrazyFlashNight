@@ -148,6 +148,11 @@ namespace CF7Launcher.Diagnostic
                 AddFileShared(zip, startupExit, "logs/startup-exit.jsonl");
             if (File.Exists(startupFailure))
                 AddFileShared(zip, startupFailure, "logs/startup-failure-latest.txt");
+            foreach (string name in RollingFocusLog.Names)
+            {
+                string focus = Path.Combine(projectRoot, "logs", "focus-trace", name);
+                if (File.Exists(focus)) AddFileShared(zip, focus, "logs/focus-trace/" + name);
+            }
             if (Directory.Exists(dumpDir))
             {
                 foreach (string dumpLog in Directory.GetFiles(dumpDir, "*.log").OrderByDescending(File.GetLastWriteTimeUtc).Take(5))
@@ -212,6 +217,7 @@ namespace CF7Launcher.Diagnostic
             sb.Append("logs/        launcher.log + launcher.log.1（最近两份运行日志）\r\n");
             sb.Append("             bootstrap.log / bootstrap.log.old（native 引导器 + Core 早期启动诊断）\r\n");
             sb.Append("             perf-latest.jsonl（启动性能时间线，若存在）\r\n");
+            sb.Append("             focus-trace/*（持续焦点诊断、滚动段与录制身份，若启用）\r\n");
             sb.Append("             startup-exit.jsonl（最近启动退出/失败原因码，若存在）\r\n");
             sb.Append("             startup-failure-latest.txt（玩家弹窗中的错误摘要，若存在）\r\n");
             sb.Append("             dumps/*.log（.NET dump 生成诊断日志；.dmp 本体请按需单独发送）\r\n");
@@ -236,7 +242,7 @@ namespace CF7Launcher.Diagnostic
         private static void AddFileShared(ZipArchive zip, string sourcePath, string entryName)
         {
             ZipArchiveEntry entry = zip.CreateEntry(entryName, CompressionLevel.Optimal);
-            using (FileStream fs = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (FileStream fs = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
             using (Stream zs = entry.Open())
             {
                 byte[] buf = new byte[64 * 1024];

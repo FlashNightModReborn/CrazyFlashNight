@@ -21,6 +21,29 @@ namespace CF7Launcher.Tests.Config
         private const string DeveloperModeEnvironment =
             "CF7_WEBVIEW2_DEV_MODE";
 
+        [Theory]
+        [InlineData(null, null, false)]
+        [InlineData("true", null, true)]
+        [InlineData("false", "1", true)]
+        [InlineData("true", "0", false)]
+        [InlineData("invalid", null, false)]
+        [InlineData("true", "invalid", true)]
+        public void FocusTracePersistsAcrossNormalStartsAndAllowsProcessOverride(string toml, string environment, bool expected)
+        {
+            string previous = Environment.GetEnvironmentVariable("CF7_FOCUS_TRACE");
+            try
+            {
+                Environment.SetEnvironmentVariable("CF7_FOCUS_TRACE", environment);
+                using (var root = new TemporaryProjectRoot())
+                {
+                    if (toml != null) File.WriteAllText(System.IO.Path.Combine(root.Path, "config.toml"), "diagFocusTrace = " + toml);
+                    Assert.Equal(expected, new AppConfig(root.Path).DiagFocusTrace);
+                    Assert.Equal(expected, new AppConfig(root.Path).DiagFocusTrace);
+                }
+            }
+            finally { Environment.SetEnvironmentVariable("CF7_FOCUS_TRACE", previous); }
+        }
+
         [Fact]
         public void MissingConfig_DefaultsDeveloperModeFalse()
         {

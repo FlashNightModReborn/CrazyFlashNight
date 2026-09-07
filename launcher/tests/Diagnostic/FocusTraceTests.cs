@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Diagnostics;
+using System.Reflection;
 using CF7Launcher.Diagnostic;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -87,6 +89,69 @@ namespace CF7Launcher.Tests.Diagnostic
             Assert.Equal(gesture, (string)rows.Single(x => (string)x["event"] == "intent.created")["gesture"]);
             Assert.Equal("unobserved", (string)rows.Single(x => (string)x["gesture"] == unobserved)["data"]["correlation"]);
             Assert.Null(FocusTrace.Gesture);
+        }
+
+        [Fact]
+        public void NativeHitQueriesAreBoundedAndDoNotConsumeHudCorrelation()
+        {
+            var point = new Point(150, 150);
+            FocusTrace.SetTarget(new Rectangle(100, 100, 100, 100));
+            string mouse = FocusTrace.PhysicalEdge(0x0201, point, 0, 10, 7);
+            using (FocusTrace.ObserveSnapshot())
+                Assert.False(FocusTrace.ShouldTraceNativeHitTest(point));
+            Assert.False(FocusTrace.ShouldTraceNativeHitTest(new Point(151, 150)));
+            for (int i = 0; i < 8; i++) Assert.True(FocusTrace.ShouldTraceNativeHitTest(point));
+            Assert.False(FocusTrace.ShouldTraceNativeHitTest(point));
+            FocusTrace.HudDown(point, new IntPtr(123), "fixture");
+            Assert.Equal(mouse, (string)Read().Single(x => (string)x["event"] == "hud.down")["data"]["mouseId"]);
+            FocusTrace.PhysicalEdge(0x0202, point, 0, 11, 7);
+            Assert.Equal(mouse, FocusTrace.NativeMouseCandidate(point));
+            FocusTrace.PhysicalEdge(0x0201, Point.Empty, 0, 12, 7);
+            Assert.Null(FocusTrace.NativeMouseCandidate(point));
+        }
+
+        [Fact]
+        public void HookReturnAndBrokenHudSnapshotAreEvidenceOnly()
+        {
+            var point = new Point(150, 150);
+            FocusTrace.SetTarget(new Rectangle(100, 100, 100, 100));
+            FocusTrace.HudInputSnapshot = _ => throw new InvalidOperationException("fixture");
+            try
+            {
+                string mouse = FocusTrace.PhysicalEdge(0x0201, point, 0, 10, 7);
+                FocusTrace.HookChainResult(mouse, 0x0201, new IntPtr(1), Stopwatch.GetTimestamp());
+                FocusTrace.HookChainResult(mouse, 0x0202, IntPtr.Zero, Stopwatch.GetTimestamp());
+                JObject[] rows = Read();
+                Assert.Equal("snapshot_failed", (string)rows.Single(x => (string)x["event"] == "mouse.down")["data"]["hudInput"]["unavailable"]);
+                JObject[] results = rows.Where(x => (string)x["event"] == "mouse.hook_chain_result").ToArray();
+                Assert.True((bool)results[0]["data"]["suppressed"]);
+                Assert.False((bool)results[1]["data"]["suppressed"]);
+                Assert.DoesNotContain(rows, x => (string)x["event"] == "hud.down");
+                FocusTrace.Stop();
+                Assert.Null(FocusTrace.CaptureHudInput(point));
+            }
+            finally { FocusTrace.HudInputSnapshot = null; }
+        }
+
+        [Fact]
+        public void RollingCaptureKeepsOneSessionBeyondLegacyBudgetAndDeadline()
+        {
+            FocusTrace.Start(_batches.Add, false, true);
+            _batches.Clear();
+            string session = FocusTrace.Session;
+            typeof(FocusTrace).GetField("_deadline", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, -1L);
+            for (int i = 0; i < FocusTrace.EventBudget + 2; i++)
+            {
+                FocusTrace.Record("rolling.fixture");
+                if (i % 100 == 0) FocusTrace.Flush();
+            }
+            FocusTrace.CaptureAs2LogBatch("[FocusTraceAS2] session=wrong seq=1 event=observe_ready");
+            FocusTrace.CaptureAs2LogBatch("[FocusTraceAS2] session=" + session + " seq=1 event=observe_ready detail=rolling_host_retention");
+            JObject[] rows = Read();
+            Assert.True(FocusTrace.Enabled);
+            Assert.Equal(session, FocusTrace.Session);
+            Assert.DoesNotContain(rows, x => (string)x["event"] == "trace.limit");
+            Assert.Single(rows, x => (string)x["event"] == "as2.observation");
         }
     }
 }

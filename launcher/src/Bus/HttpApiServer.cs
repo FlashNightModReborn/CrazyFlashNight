@@ -282,6 +282,7 @@ namespace CF7Launcher.Bus
             // Keep one physical record per request. Otherwise an ambient
             // localhost sender can forge launcher-looking continuation lines.
             string decoded = NormalizeLogBatchForLog(body);
+            CF7Launcher.Diagnostic.FocusTrace.CaptureAs2LogBatch(decoded);
             LogManager.Log("[LogBatch] " + decoded);
             WriteResponse(ctx, "OK");
         }

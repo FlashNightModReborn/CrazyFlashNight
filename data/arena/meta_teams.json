@@ -2,13 +2,13 @@
   "generatedBy": "tools/derive-arena-meta-teams.js",
   "granularity": "subwave",
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
-  "stageFilesScanned": 214,
-  "stagesWithTeams": 196,
-  "teamCount": 2078,
+  "stageFilesScanned": 215,
+  "stagesWithTeams": 197,
+  "teamCount": 2080,
   "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
-    "unknown": 98,
+    "unknown": 100,
     "亡灵/僵尸": 605,
     "天网": 227,
     "异形": 262,
@@ -33466,6 +33466,89 @@
       "levelMin": 100,
       "levelMax": 100,
       "powerRating": 100
+    },
+    {
+      "id": "副本任务/挑战混沌王.xml#0.0",
+      "sourceStage": "副本任务/挑战混沌王.xml",
+      "sourceName": "挑战混沌王",
+      "group": "0.0",
+      "faction": "unknown",
+      "factionConfidence": "unknown",
+      "members": [
+        {
+          "type": "兵种348",
+          "id": 348,
+          "name": "混沌王",
+          "spritename": "敌人-人修罗",
+          "level": 60,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "不掉装备": true,
+            "不掉钱": true,
+            "称号": "人修罗"
+          }
+        }
+      ],
+      "unitCount": 1,
+      "distinctTypes": 1,
+      "avgLevel": 60,
+      "levelMin": 60,
+      "levelMax": 60,
+      "powerRating": 60
+    },
+    {
+      "id": "副本任务/挑战混沌王.xml#0.3",
+      "sourceStage": "副本任务/挑战混沌王.xml",
+      "sourceName": "挑战混沌王",
+      "group": "0.3",
+      "faction": "unknown",
+      "factionConfidence": "unknown",
+      "members": [
+        {
+          "type": "兵种330",
+          "id": 330,
+          "name": "虎妙",
+          "spritename": "主角-男",
+          "level": 60,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "gender": "女",
+          "humanoid": true,
+          "parameters": {
+            "不掉装备": true,
+            "不掉钱": true,
+            "性别": "女",
+            "退场时间": 32000
+          }
+        },
+        {
+          "type": "兵种330",
+          "id": 330,
+          "name": "虎妙",
+          "spritename": "主角-男",
+          "level": 60,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "gender": "女",
+          "humanoid": true,
+          "parameters": {
+            "不掉装备": true,
+            "不掉钱": true,
+            "性别": "女"
+          }
+        }
+      ],
+      "unitCount": 2,
+      "distinctTypes": 2,
+      "avgLevel": 60,
+      "levelMin": 60,
+      "levelMax": 60,
+      "powerRating": 120
     },
     {
       "id": "副本任务/挑战罪袋练舞室.xml#0.0",

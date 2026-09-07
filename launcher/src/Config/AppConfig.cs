@@ -50,6 +50,8 @@ namespace CF7Launcher.Config
         public bool DiagEtwDwm { get; private set; }
         /// <summary>诊断报告周期 (秒), 影响 UlwMonitor + EtwMpo 两路。范围 [1, 60], 默认 5。</summary>
         public int DiagReportIntervalSec { get; private set; }
+        /// <summary>焦点诊断持久开关。普通启动即可生效，CF7_FOCUS_TRACE 可按进程覆盖。</summary>
+        public bool DiagFocusTrace { get; private set; }
         /// <summary>
         /// 开发专用：监视 launcher/web 文件变化并自动 Reload WebView2。玩家版必须 false ——
         /// 素材工作台会往 launcher/web/icons/ 写图片，外加杀软扫描 / Steam 校验
@@ -91,6 +93,7 @@ namespace CF7Launcher.Config
             DiagUlwMonitor = false;
             DiagEtwDwm = false;
             DiagReportIntervalSec = 5;
+            DiagFocusTrace = false;
             WebOverlayHotReload = false;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
@@ -145,6 +148,8 @@ namespace CF7Launcher.Config
                         DiagEtwDwm = ParseBool(val, false);
                     else if (string.Equals(key, "diagReportIntervalSec", StringComparison.OrdinalIgnoreCase))
                         DiagReportIntervalSec = ClampInterval(val, 5);
+                    else if (string.Equals(key, "diagFocusTrace", StringComparison.OrdinalIgnoreCase))
+                        DiagFocusTrace = ParseBool(val, false);
                     else if (string.Equals(key, "webOverlayHotReload", StringComparison.OrdinalIgnoreCase))
                         WebOverlayHotReload = ParseBool(val, false);
                 }
@@ -232,6 +237,10 @@ namespace CF7Launcher.Config
             string diagInterval = Environment.GetEnvironmentVariable("CF7_DIAG_INTERVAL_SEC");
             if (!string.IsNullOrEmpty(diagInterval))
                 DiagReportIntervalSec = ClampInterval(diagInterval, DiagReportIntervalSec);
+
+            string focusTrace = Environment.GetEnvironmentVariable("CF7_FOCUS_TRACE");
+            if (!string.IsNullOrEmpty(focusTrace))
+                DiagFocusTrace = ParseBoolLike(focusTrace, DiagFocusTrace);
 
             string webHotReload = Environment.GetEnvironmentVariable("CF7_WEB_HOTRELOAD");
             if (!string.IsNullOrEmpty(webHotReload))

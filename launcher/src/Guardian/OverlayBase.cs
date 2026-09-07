@@ -437,18 +437,39 @@ namespace CF7Launcher.Guardian
             bool restored = false;
             bool bitmapDeleted = false;
             bool memoryDcDeleted = false;
+            NativeHudOverlay focusHud = CF7Launcher.Diagnostic.FocusTrace.Enabled ? this as NativeHudOverlay : null;
+            long focusPaintGeneration = focusHud == null ? 0 : focusHud.FocusPaintGeneration;
+            long focusPlacementGeneration = focusHud == null ? 0 : focusHud.FocusPlacementGeneration;
+            long focusStarted = focusHud == null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp();
+            long focusUpdateTicks = 0;
+            bool focusUpdated = false;
+            int focusNativeError = 0;
+            int focusWidth = 0, focusHeight = 0;
+            LayeredWindowCommitError focusError = LayeredWindowCommitError.UnexpectedFailure;
             try
             {
+                if (focusHud != null) focusError = LayeredWindowCommitError.CompatibleDcCreateFailed;
                 memoryDc = CreateCompatibleDC(IntPtr.Zero);
-                if (memoryDc == IntPtr.Zero) return;
+                if (memoryDc == IntPtr.Zero)
+                {
+                    if (focusHud != null) focusNativeError = Marshal.GetLastWin32Error();
+                    return;
+                }
+                if (focusHud != null) focusError = LayeredWindowCommitError.BitmapHandleCreateFailed;
                 bitmapHandle = bmp.GetHbitmap(Color.FromArgb(0));
                 if (bitmapHandle == IntPtr.Zero) return;
+                if (focusHud != null) focusError = LayeredWindowCommitError.BitmapSelectFailed;
                 previousObject = SelectObject(memoryDc, bitmapHandle);
-                if (previousObject == IntPtr.Zero || previousObject == new IntPtr(-1)) return;
+                if (previousObject == IntPtr.Zero || previousObject == new IntPtr(-1))
+                {
+                    // 原 SelectObject 声明不捕获 last error，不能读取旧错误冒充本次错误。
+                    return;
+                }
                 selected = true;
 
                 POINT ptDst = new POINT { x = screenX, y = screenY };
                 SIZE sz = new SIZE { cx = bmp.Width, cy = bmp.Height };
+                if (focusHud != null) { focusWidth = sz.cx; focusHeight = sz.cy; }
                 POINT ptSrc = new POINT { x = 0, y = 0 };
                 BLENDFUNCTION blend = new BLENDFUNCTION
                 {
@@ -460,8 +481,17 @@ namespace CF7Launcher.Guardian
 
                 // Existing diagnostic probe is internally gated when disabled.
                 long ulwStart = UlwCommitMonitor.StartTick();
-                UpdateLayeredWindow(handle, IntPtr.Zero,
+                long focusUpdateStarted = focusHud == null ? 0 : System.Diagnostics.Stopwatch.GetTimestamp();
+                if (focusHud != null) focusError = LayeredWindowCommitError.UpdateLayeredWindowFailed;
+                bool updated = UpdateLayeredWindow(handle, IntPtr.Zero,
                     ref ptDst, ref sz, memoryDc, ref ptSrc, 0, ref blend, ULW_ALPHA);
+                if (focusHud != null)
+                {
+                    focusNativeError = updated ? 0 : Marshal.GetLastWin32Error();
+                    focusUpdated = updated;
+                    focusUpdateTicks = System.Diagnostics.Stopwatch.GetTimestamp() - focusUpdateStarted;
+                    if (updated) focusError = LayeredWindowCommitError.None;
+                }
                 UlwCommitMonitor.RecordCommit(ulwStart);
             }
             finally
@@ -487,6 +517,17 @@ namespace CF7Launcher.Guardian
                 {
                     DeleteObject(bitmapHandle);
                 }
+                if (focusHud != null)
+                {
+                    try
+                    {
+                        focusHud.ObserveFocusBitmapCommit(new LayeredWindowCommitResult(
+                            focusUpdated, screenX, screenY, focusWidth, focusHeight, globalAlpha,
+                            System.Diagnostics.Stopwatch.GetTimestamp() - focusStarted, focusUpdateTicks,
+                            focusError, focusNativeError, null, null), focusPaintGeneration, focusPlacementGeneration);
+                    }
+                    catch { /* 观察不能影响原提交或资源清理。 */ }
+                }
             }
         }
 
@@ -502,6 +543,9 @@ namespace CF7Launcher.Guardian
         {
             IntPtr handle;
             TryGetExistingHandle(out handle);
+            NativeHudOverlay focusHud = CF7Launcher.Diagnostic.FocusTrace.Enabled ? this as NativeHudOverlay : null;
+            long focusPaintGeneration = focusHud == null ? 0 : focusHud.FocusPaintGeneration;
+            long focusPlacementGeneration = focusHud == null ? 0 : focusHud.FocusPlacementGeneration;
             LayeredWindowCommitResult result = LayeredWindowCommitExecutor.Execute(
                 handle,
                 bmp,
@@ -510,6 +554,10 @@ namespace CF7Launcher.Guardian
                 globalAlpha,
                 Win32LayeredWindowCommitNativeApi.Instance);
             _commitObservation.Publish(result);
+            if (focusHud != null)
+            {
+                try { focusHud.ObserveFocusBitmapCommit(result, focusPaintGeneration, focusPlacementGeneration); } catch { }
+            }
 
             if (!result.Succeeded)
             {

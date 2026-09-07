@@ -1044,7 +1044,9 @@ class Program
             config.DiagLayerAudit,
             config.DiagUlwMonitor,
             config.DiagEtwDwm,
-            config.DiagReportIntervalSec);
+            config.DiagReportIntervalSec,
+            config.DiagFocusTrace,
+            projectRoot);
 
         // 开发用 Ctrl+G GPU 探针：仅 config.devGpuProbeHotkey=true 时启用。玩家版默认不注入。
         if (config.DevGpuProbeHotkey)

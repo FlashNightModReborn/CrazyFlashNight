@@ -40,6 +40,9 @@ namespace CF7Launcher.Tests.Diagnostic
             Directory.CreateDirectory(dumpDir);
             File.WriteAllText(Path.Combine(dumpDir, "createdump-123.log"), "createdump", new UTF8Encoding(false));
             File.WriteAllText(Path.Combine(_root, "runtime", "cf7-runtime-manifest.tsv"), "cf7-runtime-manifest-v1", new UTF8Encoding(false));
+            Directory.CreateDirectory(Path.Combine(_root, "logs", "focus-trace"));
+            foreach (string name in RollingFocusLog.Names)
+                File.WriteAllText(Path.Combine(_root, "logs", "focus-trace", name), "fixture");
 
             DiagnosticResult result = DiagnosticPackager.Pack(_root, null, null, null);
 
@@ -58,6 +61,8 @@ namespace CF7Launcher.Tests.Diagnostic
                 Assert.Contains("logs/startup-failure-latest.txt", names);
                 Assert.Contains("logs/dumps/createdump-123.log", names);
                 Assert.Contains("runtime/cf7-runtime-manifest.tsv", names);
+                foreach (string name in RollingFocusLog.Names)
+                    Assert.Contains("logs/focus-trace/" + name, names);
             }
         }
 

@@ -3327,6 +3327,36 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.gameCommands.stageOutcomeObserve(configure);
         _root.gameCommands.stageOutcomeAction({});
         assertEquals(510, lines.length, "duplicate diagnostic configuration cannot rearm the budget");
+
+        var observer:Object = StageRunSession;
+        var oldSession:String = observer._focusSession;
+        var oldUntil:Number = observer._focusUntil;
+        var oldCount:Number = observer._focusCount;
+        var baseCount:Number = lines.length;
+        _root.gameCommands.stageOutcomeObserve({task:"cmd", action:"stageOutcomeObserve",
+            v:2, session:"focus.rolling.invalid", mode:"unknown"});
+        assertEquals(baseCount, lines.length, "rolling observation rejects unknown mode");
+        var rolling:Object = {task:"cmd", action:"stageOutcomeObserve", v:2,
+            session:"focus.rolling.fixture", mode:"rolling"};
+        _root.gameCommands.stageOutcomeObserve(rolling);
+        assertTrue(String(lines[lines.length - 1]).indexOf("detail=rolling_host_retention") >= 0,
+            "rolling observation acknowledges host-owned retention");
+        observer._focusUntil = -1;
+        for (var rollingIndex:Number = 0; rollingIndex < 600; rollingIndex++) _root.gameCommands.stageOutcomeAction({});
+        assertEquals(baseCount + 601, lines.length, "rolling observation survives 512 events and expired legacy deadline");
+        assertEquals(3, calls, "rolling observation still cannot issue business operations");
+        _root.gameCommands.stageOutcomeObserve(rolling);
+        assertEquals(baseCount + 601, lines.length, "repeated rolling configuration preserves sequence");
+        _root.gameCommands.stageOutcomeAction({});
+        assertTrue(String(lines[lines.length - 1]).indexOf("seq=602 ") >= 0,
+            "rolling AS2 sequence continues without resetting business correlation");
+        _root.gameCommands.stageOutcomeObserve({task:"cmd", action:"stageOutcomeObserve",
+            v:2, session:"focus.rolling.extra", mode:"rolling", extra:true});
+        assertEquals(baseCount + 602, lines.length, "rolling observation rejects extra configuration fields");
+        observer._focusSession = oldSession;
+        observer._focusUntil = oldUntil;
+        observer._focusCount = oldCount;
+        observer._focusRolling = false;
     }
 
     private static function testSoftlockObservationOwnerIsReadOnly():Void {

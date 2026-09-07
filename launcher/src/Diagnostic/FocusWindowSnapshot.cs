@@ -14,12 +14,15 @@ namespace CF7Launcher.Diagnostic
         {
             try
             {
-                IntPtr foreground = GetForegroundWindow();
-                IntPtr candidate = WindowFromPoint(point);
-                return new { foreground = Describe(foreground), hitCandidate = Describe(candidate),
-                    hud = Describe(Hud), owner = Describe(Owner),
-                    flash = Describe(FlashWindow == null ? IntPtr.Zero : FlashWindow()),
-                    actualExternalReceiver = "unknown" };
+                using (FocusTrace.ObserveSnapshot())
+                {
+                    IntPtr foreground = GetForegroundWindow();
+                    IntPtr candidate = WindowFromPoint(point);
+                    return new { foreground = Describe(foreground), hitCandidate = Describe(candidate),
+                        hud = Describe(Hud), owner = Describe(Owner),
+                        flash = Describe(FlashWindow == null ? IntPtr.Zero : FlashWindow()),
+                        actualExternalReceiver = "unknown" };
+                }
             }
             catch { return new { snapshot = "unavailable" }; }
         }
@@ -37,6 +40,9 @@ namespace CF7Launcher.Diagnostic
                 previous = GetWindow(hwnd, 3).ToInt64(), next = GetWindow(hwnd, 2).ToInt64(),
                 style = GetWindowLongW(hwnd, -16), exStyle = GetWindowLongW(hwnd, -20),
                 rectAvailable, bounds, guiAvailable = available,
+                guiFlags = available ? (int?)gui.flags : null,
+                menuOwner = available ? (long?)gui.menuOwner.ToInt64() : null,
+                moveSize = available ? (long?)gui.moveSize.ToInt64() : null,
                 focus = available ? (long?)gui.focus.ToInt64() : null,
                 capture = available ? (long?)gui.capture.ToInt64() : null,
                 active = available ? (long?)gui.active.ToInt64() : null };
