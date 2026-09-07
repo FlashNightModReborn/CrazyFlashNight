@@ -268,7 +268,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="160.5" centerPoint3DY="120.7">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="160.5" centerPoint3DY="120.7">
                   <matrix>
                     <Matrix a="42.9076843261719" d="35.2948608398438" tx="327.25" ty="-99.6"/>
                   </matrix>
@@ -401,8 +401,7 @@ _root.播放音效("阎魔刀用力横斩.wav");]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!16929 4876S2|-11172 5242!-11172 5242[-11945 3304 -11943 1092!-11943 1092[-11935 -4125 -7608 -7823!-7608 -7823[-3277 -11513 2832 -11513!2832 -11513[8946 -11513 13262 -7823!13262 -7823[17578 -4125 17571 1092!17571 1092[17569 3097 16929
- 4876"/>
+                    <Edge fillStyle1="1" edges="!2832 -11513S2[8946 -11513 13262 -7823!13262 -7823[17578 -4125 17571 1092!17571 1092[17569 3097 16929 4876!16929 4876|-11172 5242!-11172 5242[-11945 3304 -11943 1092!-11943 1092[-11935 -4125 -7608 -7823!-7608 -7823[-3277 -11513 2832 -11513"/>
                   </edges>
                 </DOMShape>
               </elements>

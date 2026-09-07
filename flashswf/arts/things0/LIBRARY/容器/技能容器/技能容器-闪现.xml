@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-闪现" itemID="694ab994-00004272" linkageExportForAS="true" linkageIdentifier="技能容器-闪现" lastModified="1770026609">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-闪现" itemID="694ab994-00004272" linkageExportForAS="true" linkageIdentifier="技能容器-闪现" lastModified="1788808161">
   <timeline>
-    <DOMTimeline name="技能容器-闪现" currentFrame="1">
+    <DOMTimeline name="技能容器-闪现">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -600,11 +600,11 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -612,36 +612,65 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时后退移动(-40 * (1 + Number(_parent._parent.技能等级) / 5),-40 * (1 + Number(_parent._parent.技能等级) / 5));
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.攻击时后退移动(-40 * (1 + Number(_parent._parent.技能等级) / 5),-40 * (1 + Number(_parent._parent.技能等级) / 5));
 }
-onClipEvent(load){
-   if(Key.isDown(_parent._parent.上键))
-   {
-      _parent.上下跳移动方向 = "上";
-      _parent.gotoAndPlay("上下闪现");
-   }
-   else if(Key.isDown(_parent._parent.下键))
-   {
-      _parent.上下跳移动方向 = "下";
-      _parent.gotoAndPlay("上下闪现");
-   }
-   if(_parent._parent.方向 == "右")
-   {
-      if(Key.isDown(_parent._parent.右键) == true)
-      {
-         _parent.gotoAndPlay("前闪现");
-      }
-   }
-   else if(_parent._parent.方向 == "左")
-   {
-      if(Key.isDown(_parent._parent.左键) == true)
-      {
-         _parent.gotoAndPlay("前闪现");
-      }
-   }
-}
-]]></script>
+onClipEvent (load) {
+	if (_parent._parent._name == _root.控制目标)
+	{
+		if (Key.isDown(_parent._parent.上键))
+		{
+			_parent.上下跳移动方向 = "上";
+			_parent.gotoAndPlay("上下闪现");
+		}
+		else if (Key.isDown(_parent._parent.下键))
+		{
+			_parent.上下跳移动方向 = "下";
+			_parent.gotoAndPlay("上下闪现");
+		}
+		if (_parent._parent.方向 == "右")
+		{
+			if (Key.isDown(_parent._parent.右键) == true)
+			{
+				_parent.gotoAndPlay("前闪现");
+			}
+		}
+		else if (_parent._parent.方向 == "左")
+		{
+			if (Key.isDown(_parent._parent.左键) == true)
+			{
+				_parent.gotoAndPlay("前闪现");
+			}
+		}
+	}
+	else
+	{
+		if (_parent._parent.上行)
+		{
+			_parent.上下跳移动方向 = "上";
+			_parent.gotoAndPlay("上下闪现");
+		}
+		else if (_parent._parent.下行)
+		{
+			_parent.上下跳移动方向 = "下";
+			_parent.gotoAndPlay("上下闪现");
+		}
+		if (_parent._parent.方向 == "右")
+		{
+			if (_parent._parent.右行)
+			{
+				_parent.gotoAndPlay("前闪现");
+			}
+		}
+		else if (_parent._parent.方向 == "左")
+		{
+			if (_parent._parent.左行)
+			{
+				_parent.gotoAndPlay("前闪现");
+			}
+		}
+	}
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -694,7 +723,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动点2" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动点2" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

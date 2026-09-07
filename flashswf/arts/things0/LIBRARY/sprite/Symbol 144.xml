@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1785354643" lastUniqueIdentifier="41">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1788801863" lastUniqueIdentifier="41">
   <timeline>
-    <DOMTimeline name="Symbol 144" currentFrame="2">
+    <DOMTimeline name="Symbol 144" currentFrame="3">
       <layers>
-        <DOMLayer name="连段标识" color="#AE8F69" locked="true" autoNamed="false">
+        <DOMLayer name="连段标识" color="#AE8F69" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -60,10 +60,21 @@ _parent.死亡检测();
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
-	if (_parent._parent.hp > 0 && _parent._parent._name == _root.控制目标 && _parent._parent.被动技能.裂地拳.启用)
+/*	if (_parent._parent.hp > 0 && _parent._parent._name == _root.控制目标 && _parent._parent.被动技能.裂地拳.启用)
 	{
 		// 倒地时按下攻击键J：通过空手攻击路由触发回旋踢（搓招派生）
 		if (Key.isDown(_parent._parent.A键))
+		{
+			_parent.受身反制 = true;
+			_parent._parent.状态改变("空手战立");
+			_root.空手攻击路由.空手攻击标签跳转(_parent._parent, "回旋踢");
+		}
+	}*/
+	if (_parent._parent.hp > 0 && _parent._parent.被动技能.裂地拳.启用)
+	{
+		
+		// 倒地时按下攻击键J：通过空手攻击路由触发回旋踢（搓招派生）
+		if (_parent._parent.按键检测(_parent._parent.A键,100))
 		{
 			_parent.受身反制 = true;
 			_parent._parent.状态改变("空手战立");
