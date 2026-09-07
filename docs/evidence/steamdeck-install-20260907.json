@@ -1,0 +1,374 @@
+{
+  "purpose": "历史实测摘录，不是发布收据或新增验证门",
+  "testDate": "2026-09-07",
+  "package": {
+    "name": "CF7_20260817.7z",
+    "bytes": 1425957051,
+    "sha256": "18ce3ffeecfca8759ad84961824886ce2f05ba2829882ce4dda14c1b73c7f951"
+  },
+  "sourceEvidenceArchive": {
+    "name": "cf7-steamdeck-evidence.zip",
+    "bytes": 3616170,
+    "sha256": "28149ba361784175cd940c3cdf1d4f0e91278bcb1a060af63e9941a38c35f566",
+    "storage": "本机 tmp/steamdeck-install-20260907/ 与 Deck /home/deck/cf7-test/20260817/，不随 Git 分发"
+  },
+  "summary": {
+    "package": "CF7_20260817.7z",
+    "packageSha256": "18ce3ffeecfca8759ad84961824886ce2f05ba2829882ce4dda14c1b73c7f951",
+    "runtimeManifestFiles": 33,
+    "runtimeManifestAllPass": true,
+    "checkTime": 1788782046.1587453,
+    "status": "BOOTSTRAP_VISIBLE_FLASH_CONNECT_TIMEOUT",
+    "originalInstallModified": false,
+    "originalCompatdataModified": false,
+    "testRoot": "/home/deck/cf7-test/20260817"
+  },
+  "httpProbe": {
+    "time": 1788781991.7704012,
+    "url": "http://localhost:1192/testConnection",
+    "status": 200,
+    "body": "status=success"
+  },
+  "dependencyAndIntegrityRuns": {
+    "dotnet-install": {
+      "command": [
+        "/home/deck/.local/share/Steam/steamapps/common/SteamLinuxRuntime_sniper/_v2-entry-point",
+        "--verb=run",
+        "--",
+        "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/proton",
+        "run",
+        "/home/deck/cf7-test/20260817/input/windowsdesktop-runtime-10.0.8-win-x64.exe",
+        "/install",
+        "/quiet",
+        "/norestart",
+        "/log",
+        "Z:/home/deck/cf7-test/20260817/evidence/dotnet-installer.log"
+      ],
+      "prefix": "/home/deck/cf7-test/20260817/compatdata/proton10",
+      "cwd": "/home/deck/cf7-test/20260817",
+      "start": 1788780723.5882676,
+      "exit": 0,
+      "end": 1788780733.0227823
+    },
+    "dotnet11-install": {
+      "command": [
+        "/home/deck/.local/share/Steam/steamapps/common/SteamLinuxRuntime_sniper/_v2-entry-point",
+        "--verb=run",
+        "--",
+        "/home/deck/.local/share/Steam/steamapps/common/Proton 11.0/proton",
+        "run",
+        "/home/deck/cf7-test/20260817/input/windowsdesktop-runtime-10.0.8-win-x64.exe",
+        "/install",
+        "/quiet",
+        "/norestart",
+        "/log",
+        "Z:/home/deck/cf7-test/20260817/evidence/dotnet11-installer.log"
+      ],
+      "prefix": "/home/deck/cf7-test/20260817/compatdata/proton11",
+      "cwd": "/home/deck/cf7-test/20260817/payload/resources",
+      "start": 1788781062.8704731,
+      "exit": 0,
+      "end": 1788781074.2562947
+    },
+    "webview-standalone-install": {
+      "command": [
+        "/home/deck/.local/share/Steam/steamapps/common/SteamLinuxRuntime_sniper/_v2-entry-point",
+        "--verb=run",
+        "--",
+        "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/proton",
+        "run",
+        "/home/deck/cf7-test/20260817/input/WebView2StandaloneX64.exe",
+        "/silent",
+        "/install"
+      ],
+      "prefix": "/home/deck/cf7-test/20260817/compatdata/proton10",
+      "cwd": "/home/deck/cf7-test/20260817/payload/resources",
+      "start": 1788780987.7051072,
+      "exit": 0,
+      "end": 1788781079.3540573
+    },
+    "webview11-install": {
+      "command": [
+        "/home/deck/.local/share/Steam/steamapps/common/SteamLinuxRuntime_sniper/_v2-entry-point",
+        "--verb=run",
+        "--",
+        "/home/deck/.local/share/Steam/steamapps/common/Proton 11.0/proton",
+        "run",
+        "/home/deck/cf7-test/20260817/input/WebView2StandaloneX64.exe",
+        "/silent",
+        "/install"
+      ],
+      "prefix": "/home/deck/cf7-test/20260817/compatdata/proton11",
+      "cwd": "/home/deck/cf7-test/20260817/payload/resources",
+      "start": 1788781275.1808136,
+      "exit": 0,
+      "end": 1788781382.83099
+    },
+    "verify-runtime": {
+      "command": [
+        "/home/deck/.local/share/Steam/steamapps/common/SteamLinuxRuntime_sniper/_v2-entry-point",
+        "--verb=run",
+        "--",
+        "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/proton",
+        "run",
+        "/home/deck/cf7-test/20260817/payload/resources/CRAZYFLASHER7MercenaryEmpire.exe",
+        "--verify-only"
+      ],
+      "prefix": "/home/deck/cf7-test/20260817/compatdata/proton10",
+      "cwd": "/home/deck/cf7-test/20260817/payload/resources",
+      "start": 1788780806.564516,
+      "exit": 0,
+      "end": 1788780811.1895325
+    }
+  },
+  "runtimeFileVerification": [
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.exe",
+      "ok": true
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.deps.json",
+      "ok": true
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "ok": true
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json",
+      "ok": true
+    },
+    {
+      "path": "runtime/ClearScript.Core.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/ClearScript.V8.ICUData.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/ClearScript.V8.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/ClearScriptV8.win-x64.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/ExCSS.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/HarfBuzzSharp.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Microsoft.Web.WebView2.Core.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Microsoft.Web.WebView2.WinForms.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Microsoft.Web.WebView2.Wpf.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Newtonsoft.Json.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/SharpGen.Runtime.COM.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/SharpGen.Runtime.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/ShimSkiaSharp.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/SkiaSharp.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Svg.Animation.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Svg.Custom.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Svg.Model.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Svg.SceneGraph.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Svg.Skia.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/THIRD-PARTY-NOTICES.txt",
+      "ok": true
+    },
+    {
+      "path": "runtime/Vortice.DXGI.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Vortice.DirectX.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/Vortice.Mathematics.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/WebView2Loader.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/libHarfBuzzSharp.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/libSkiaSharp.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/miniaudio.dll",
+      "ok": true
+    },
+    {
+      "path": "runtime/sol_parser.dll",
+      "ok": true
+    }
+  ],
+  "logExcerpts": [
+    {
+      "source": "evidence/final-game-logs/bootstrap.log",
+      "lines": [
+        "[2026-09-07 19:48:32.460] [core-startup] [INFO] http.start_ok port=1192",
+        "[2026-09-07 19:48:32.687] [core-startup] [INFO] webview2.runtime_check_ok version=152.0.4191.66",
+        "[2026-09-07 19:48:36.155] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok",
+        "[2026-09-07 19:48:38.432] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown",
+        "[2026-09-07 19:49:22.927] [core-startup] [INFO] core.environment pid=412 exe=Z:\\home\\deck\\cf7-test\\20260817\\payload\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=Z:\\home\\deck\\cf7-test\\20260817\\payload\\resources\\runtime\\ cwd=Z:\\home\\deck\\cf7-test\\20260817\\payload\\resources clr=.NET 10.0.8 os=Microsoft Windows 10.0.19045 process64=True os64=True busOnly=False forceWebViewFail=False args=0",
+        "[2026-09-07 19:49:23.762] [core-startup] [INFO] steam.check_ok",
+        "[2026-09-07 19:49:23.908] [core-startup] [INFO] socket.start_ok port=1924",
+        "[2026-09-07 19:49:23.992] [core-startup] [INFO] http.start_ok port=1192",
+        "[2026-09-07 19:49:24.218] [core-startup] [INFO] webview2.runtime_check_ok version=152.0.4191.66",
+        "[2026-09-07 19:49:27.667] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok",
+        "[2026-09-07 19:49:30.020] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown",
+        "[2026-09-07 19:52:45.093] [core-startup] [INFO] core.environment pid=416 exe=C:\\cf7-test\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\\cf7-test\\resources\\runtime\\ cwd=C:\\cf7-test\\resources clr=.NET 10.0.8 os=Microsoft Windows 10.0.19045 process64=True os64=True busOnly=False forceWebViewFail=False args=0",
+        "[2026-09-07 19:52:45.885] [core-startup] [INFO] steam.check_ok",
+        "[2026-09-07 19:52:46.031] [core-startup] [INFO] socket.start_ok port=1924",
+        "[2026-09-07 19:52:46.119] [core-startup] [INFO] http.start_ok port=1192",
+        "[2026-09-07 19:52:46.342] [core-startup] [INFO] webview2.runtime_check_ok version=152.0.4191.66",
+        "[2026-09-07 19:52:49.842] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok",
+        "[2026-09-07 19:52:52.022] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown"
+      ]
+    },
+    {
+      "source": "evidence/proton10-final-logs/launcher.log",
+      "lines": [
+        "19:38:13.609 [SteamCheck] BIsSubscribedApp(2402310) = True",
+        "19:38:22.752 [WindowManager] Flash reparented to hidden host hwnd=0x101F4",
+        "19:38:30.945 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:38:30.949 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:38:30.951 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout",
+        "19:40:15.745 [SteamCheck] BIsSubscribedApp(2402310) = True",
+        "19:40:24.832 [WindowManager] Flash reparented to hidden host hwnd=0x101F8",
+        "19:40:32.819 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:40:32.822 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:40:32.824 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout"
+      ]
+    },
+    {
+      "source": "evidence/proton11-before-base-merge/launcher.log",
+      "lines": [
+        "19:38:13.609 [SteamCheck] BIsSubscribedApp(2402310) = True",
+        "19:38:22.752 [WindowManager] Flash reparented to hidden host hwnd=0x101F4",
+        "19:38:30.945 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:38:30.949 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:38:30.951 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout",
+        "19:40:15.745 [SteamCheck] BIsSubscribedApp(2402310) = True",
+        "19:40:24.832 [WindowManager] Flash reparented to hidden host hwnd=0x101F8",
+        "19:40:32.819 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:40:32.822 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:40:32.824 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout",
+        "19:43:51.681 [SteamCheck] BIsSubscribedApp(2402310) = True",
+        "19:43:59.455 [WindowManager] Flash reparented to hidden host hwnd=0x101BA",
+        "19:44:07.972 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:44:07.974 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:44:07.976 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout"
+      ]
+    },
+    {
+      "source": "evidence/final-game-logs/launcher.log",
+      "lines": [
+        "19:40:32.822 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:40:32.824 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout",
+        "19:43:59.455 [WindowManager] Flash reparented to hidden host hwnd=0x101BA",
+        "19:44:07.972 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:44:07.974 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:44:07.976 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout",
+        "19:48:39.433 [WindowManager] Flash reparented to hidden host hwnd=0x101BA",
+        "19:48:48.220 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:48:48.223 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:48:48.225 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout",
+        "19:49:31.066 [WindowManager] Flash reparented to hidden host hwnd=0x101BA",
+        "19:49:39.878 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:49:39.880 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:49:39.881 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout",
+        "19:52:53.032 [WindowManager] Flash reparented to hidden host hwnd=0x101B6",
+        "19:53:01.868 [LaunchFlow] wait timeout: socket_connect_timeout (gen=2)",
+        "19:53:01.870 [Prewarm] degrade reason=prewarm_socket_connect_timeout hadHeldCb=False",
+        "19:53:01.872 [LaunchFlow] Reset requested reason=prewarm_socket_connect_timeout"
+      ]
+    },
+    {
+      "source": "evidence/webview10-msedge-installer.log",
+      "lines": [
+        "[476:480:0907/193743.364:1984720:VERBOSE1:chrome\\installer\\setup\\setup_main.cc:3686] Installation complete, returning: 0"
+      ]
+    },
+    {
+      "source": "evidence/webview11-msedge-installer.log",
+      "lines": [
+        "[588:592:0907/194237.442:2278792:VERBOSE1:chrome\\installer\\setup\\setup_main.cc:3686] Installation complete, returning: 0"
+      ]
+    }
+  ],
+  "filenameObservation": {
+    "source": "evidence/flash-file-access-excerpt.log",
+    "requestedFilename": "加载背景.swf",
+    "hostFilesystemObservation": {
+      "exists": true,
+      "bytes": 4458807,
+      "nameUtf8Hex": "e5 8a a0 e8 bd bd e8 83 8c e6 99 af 2e 73 77 66"
+    },
+    "wineDirectoryEnumerationLine": "2464.441:0158:015c:trace:file:append_entry long L\"e\\n h==h\\0003\\000cf\\0019/.swf\" short L\"E\\n_H~4ZX.SWF\" mask L\"\\52a0\\8f7d\\80cc\\666f.swf\"",
+    "wineNotFoundLine": "2464.440:0158:015c:warn:file:NtCreateFile L\"\\\\??\\\\Z:\\\\home\\\\deck\\\\cf7-test\\\\20260817\\\\payload\\\\resources\\\\flashswf\\\\UI\\\\\\52a0\\8f7d\\80cc\\666f.swf\" not found (c0000034)",
+    "utf8BytesWithHighBitsRemoved": "e\n h==h\u0003\ff\u0019/.swf",
+    "interpretation": "乱码与 UTF-8 每字节去掉最高位的模式一致；编码转换为优先调查方向，尚未确定错误层或证明它导致完整启动超时",
+    "localeExperimentLimitation": "仅继承 LANG 不证明 LC_ALL/LC_CTYPE、容器 locale 与 Wine 最终 CODESET 正确，旧的语言环境重跑不能排除此方向"
+  },
+  "limitations": [
+    "只是指定 20260817 每日包，不代表归档时 HEAD",
+    "前门可见不等于 Flash 握手或关卡可运行",
+    "Wine/Proton 命令退出 0 不能替代安装日志和真实进程证据",
+    "探索使用 SSH/Steam Linux Runtime，不是正式 Steam Gaming Mode 业务验收",
+    "正常玩家更新器和稳定复现 CLI 尚未实现"
+  ]
+}
