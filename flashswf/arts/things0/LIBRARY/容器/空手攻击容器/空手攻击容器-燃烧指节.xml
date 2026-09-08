@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1788804137">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-燃烧指节" itemID="6964d6d2-0000293c" linkageExportForAS="true" linkageIdentifier="空手攻击容器-燃烧指节" lastModified="1788892218">
   <timeline>
     <DOMTimeline name="空手攻击容器-燃烧指节" currentFrame="2">
       <layers>
@@ -54,7 +54,9 @@ else
                 <script><![CDATA[if(_parent.性别 == "女")
 {
 	//_parent.攻击呐喊();
-	_root.播放音效("女声_Power Wave.wav");
+	if(_parent.女_攻击呐喊_库.length > 0){
+		_root.播放音效("女声_Power Wave.wav");
+	}
 }
 else
 {

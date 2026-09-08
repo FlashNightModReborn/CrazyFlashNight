@@ -92,6 +92,11 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         //   若残留接管，alignTick 会每帧 move2D 写 _y=Z轴坐标（拽回地面），与重力积分互相拉扯
         //   → 空中上下抖动 + Z轴坐标被拖走 → 落地后 Z/Y 偏离。
         if (self.状态 == "技能" || self.状态 == "战技") { self.虎妙Z对齐 = null; return; }
+        // 搓招最小持续保护（续34）：搓招期间状态是"空手攻击"（不走上面那道门），
+        // 但下面的 跑步切换 状态改变("空手跑") 与移动输出（行走状态机改写 空手行走）
+        // 都会掐断正在播的搓招元件 → 保护期内与技能同款静默（燃烧指节射程 50~300，
+        // 释放时多半在本状态，第一拍移动就把招打断——这就是"配25帧撑不过半秒"的主因）
+        if (brain.isChargeProtected(frame)) { self.虎妙Z对齐 = null; return; }
         if (!hasTarget) { self.虎妙Z对齐 = null; return; }
 
         // Z 轴意图（5px 死区）
@@ -174,6 +179,10 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         HeroUnarmedMoveHelper.syncLockedInput(self);
 
         if (self.状态 == "技能" || self.状态 == "战技") { self.虎妙Z对齐 = null; return; }
+
+        // 搓招最小持续保护（续34）：同 chase() —— 保护期内不做 Z 微调移动，
+        // 否则行走状态机会把"空手攻击"掐成"空手行走"，招式中途夭折
+        if (brain.isChargeProtected(AIEnvironment.getFrame())) { self.虎妙Z对齐 = null; return; }
 
         // ── 交战期 Z 微调 ──
         // 进入交战的阈值是 攻击判定Z（宽松，保证能开打），若交战期完全不动 Z，

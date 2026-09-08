@@ -89,6 +89,17 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior extends BaseU
             return Math.random() < 0.15;
         });
 
+        // Evade → Combat：贴身失效（敌人仍在攻击判定范围内 = 没跑掉，
+        // 继续无攻击逃跑只会站着挨打 → 视为脱离失效直接回战斗）。
+        // 前 15 帧宽限留给 enter 时的 闪现/小跳 位移爆发（50% 概率不跳，宽限照给）。
+        this.pushGateTransition("Evade", "Combat", function():Boolean {
+            if (AIEnvironment.getFrame() - behavior._evadeStartFrame <= 15) return false;
+            var t = data.target;
+            if (t == null || !(t.hp > 0) || t._x == undefined) return false;
+            return data.absdiff_x <= behavior.p.攻击判定X
+                && data.absdiff_z <= behavior.p.攻击判定Z;
+        });
+
         // Evade → Selector：限时到 / 距离已拉开 / 目标失效（禁无限逛街）
         this.pushGateTransition("Evade", "Selector", function():Boolean {
             var frame:Number = AIEnvironment.getFrame();
@@ -235,8 +246,16 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior extends BaseU
         // 脱离途中自然喝药
         brain.tickHeal(frame);
 
+        // ★脱离不停止攻击（迂回只是移动倾向）：技能脑照常 tick，
+        //   技能/搓招/对空该出就出——攻击与 Combat 状态完全同权
+        brain.tick(frame);
+        HeroUnarmedMoveHelper.syncLockedInput(self);
+
         // 技能播放中不移动
         if (self.状态 == "技能" || self.状态 == "战技") return;
+        // 搓招最小持续保护期间同样静默移动（同 CombatModule：行走状态机会把
+        // "空手攻击"掐成"空手行走"，招式中途夭折）
+        if (brain.isChargeProtected(frame)) return;
 
         // 方向：Z 轴远离为主（上下），X 轴远离设上限（迂回横向最大位移）
         var awayZ:Number = 0;
@@ -259,6 +278,14 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior extends BaseU
             var awayX:Number = (data.diff_x < 0) ? 1 : -1; // 目标在左→向右远离，反之向左
             var drift:Number = (awayX > 0) ? (self._x - _evadeStartX) : (_evadeStartX - self._x);
             if (drift < maxDrift) wantX = awayX;
+        }
+
+        // ★脱离用跑步（逃命不容慢走）：跑状态 X/Y 双轴提速（跑X速度/跑Y速度），
+        //   且行走处理器会自我维持跑状态、无输入自动回站立（玩家模板迁移.as:510/533）。
+        //   守卫同 chase 的跑步切换（防每 tick 重复 状态改变）；
+        //   不带 chase 的 absdiff_z<=20 限制——那是防追击斜向冲过目标，脱离无此顾虑。
+        if ((wantX != 0 || awayZ != 0) && self.状态 != self.攻击模式 + "跑") {
+            self.状态改变(self.攻击模式 + "跑");
         }
 
         MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, awayZ);

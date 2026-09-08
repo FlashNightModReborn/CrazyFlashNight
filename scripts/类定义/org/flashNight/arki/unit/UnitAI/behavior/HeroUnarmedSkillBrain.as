@@ -53,6 +53,13 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
     // 平A窗口起始帧（配合 自机.单位平A中，-1 = 无窗口）
     private var _normalAttackStartFrame:Number = -1;
 
+    // 搓招最小持续保护（续32）：燃烧指节/能量喷泉等标了 持续帧 的搓招条目，
+    // 释放后走"空手攻击"状态 —— A 分支（技能/战技 commit）管不到、B 分支每 tick
+    // 复位 commit → 下一拍就被 G 平A保底 / H 技能裁决切掉（"刚触发就换招"）。
+    // 保护窗口内（血量健康）本脑不再出招/平A，仅受威胁躲避可打断；详见 _chargeSustainTick。
+    private var _chargeProtectUntilFrame:Number = -1; // 保护截止帧（-1 = 无保护）
+    private var _chargeProtectName:String = null;     // 受保护招式名（调试/日志用）
+
     // 喝药节流
     private var _lastHealFrame:Number = -999;
     private var _healMinGapFrames:Number = 30; // 约1秒（30FPS）
@@ -100,6 +107,21 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
             _lastUnitState = st;
             _tryInterrupt(frame);
             return;
+        }
+
+        // ── A2. 搓招最小持续保护（必须排在 B 复位之前：B 在 状态!="技能/战技" 时每 tick
+        //        都会复位 commit，搓招的"空手攻击"状态正是从这里漏掉的）──
+        // 保护成立的唯一前提：状态还在"空手攻击"且未到截止帧。
+        // 招式动画先结束（状态回"空手站立"等）或被引擎打断（击倒/浮空/倒地换了状态）
+        // → 条件不成立，保护立即失效，交回正常流程，不会出现"保护期挂着发呆"。
+        if (_chargeProtectUntilFrame > 0) {
+            if (st == "空手攻击" && frame < _chargeProtectUntilFrame
+                && _chargeSustainTick(frame, st)) {
+                return;
+            }
+            // 到期 / 状态离开"空手攻击" / 维持判定否决 → 撤保护，落入 B 正常复位
+            _chargeProtectUntilFrame = -1;
+            _chargeProtectName = null;
         }
 
         // ── B. 技能已结束：复位 commit 状态 ──
@@ -230,11 +252,73 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
         return true;
     }
 
+    // ═══════ 搓招最小持续保护（燃烧指节/能量喷泉等 _type=="搓招" 且标了 持续帧 的条目）═══════
+
+    /**
+     * 搓招保护是否生效中（供 CombatModule/移动层查询）。
+     *
+     * 为什么移动层必须查：chase()/engage() 只对 状态=="技能"/"战技" 早退停止移动，
+     * 搓招的"空手攻击"状态不走那道门 → 模块继续输出移动意图，
+     * 跑步切换 状态改变("空手跑") 与 applyBoundaryAwareMovement（行走状态机改写 空手行走）
+     * 都会直接掐断"空手攻击"里正在播的搓招元件 —— 这是"配了25帧只撑不到半秒"的主因
+     * （燃烧指节射程 50~300，释放时多半在 Chasing 态，第一拍移动就中招）。
+     */
+    public function isChargeProtected(frame:Number):Boolean {
+        return (_chargeProtectUntilFrame > 0
+            && frame < _chargeProtectUntilFrame
+            && self.状态 == "空手攻击");
+    }
+
+    /**
+     * 搓招保护期维持。返回 true = 本 tick 仍受保护（调用方收口 return，跳过 B3/B2/G/H）。
+     *
+     * 背景：搓招经 空手攻击路由 触发，状态是"空手攻击"而非"技能/战技"——
+     *   A 分支的高血 commit（打完整套，仅 tier0 可打断）覆盖不到；B 分支每 tick 复位
+     *   _currentSkillName → 下一拍 G 平A保底 / H 技能裁决就把它切掉（观感"刚触发就换招"）。
+     *
+     * 语义对齐技能 commit（高血=打完一整套）：
+     *   - 低血 → 不保护（return false 交回正常流程，低血时尽快允许换招/保命）；
+     *   - 引擎侧异常（击倒/浮空/倒地）→ 保护立即失效，招式已被打断，续着没意义；
+     *   - 受威胁（弹道预警 _bt*）→ 允许 tier0 躲避技（小跳/闪现）打断换招。
+     *     注意不放开整个 tier0：震地/地震 也是 tier0（爆发解围输出），若放行它们
+     *     会在 CD 好时反复抢拍，保护形同虚设 —— 只放行 类型=="躲避" 的真保命位移。
+     *   - 其余情况（血量健康、无异常）→ 静默维持，什么都不写：
+     *     搓招由 空手攻击标签跳转 直接播招式元件，不像平A需要逐 tick 续写 动作A。
+     *
+     * @return true = 继续保护（或已换招、本 tick 收口）；false = 撤保护走正常流程
+     */
+    private function _chargeSustainTick(frame:Number, st:String):Boolean {
+        if (self.倒地 == true) return false;
+        if (self.浮空 == true || self.飞行浮空 == true) return false;
+        if (st != null && st.indexOf("击倒") > -1) return false;
+        if (_isLowHP()) return false;
+
+        // 喝药独立轨照常走（保护不截断保命喝水）
+        tickHeal(frame);
+
+        // 受威胁 → 允许 tier0 躲避技打断（保命优先于招式完整度）
+        if (_isUnderFire(frame)) {
+            var pick:Object = _decide(frame, 0);
+            if (pick != null && pick.类型 == "躲避") {
+                _chargeProtectUntilFrame = -1;
+                _chargeProtectName = null;
+                _release(pick, frame);
+                return true; // 已换招，本 tick 收口（_release 已预置 _lastUnitState="技能"）
+            }
+        }
+        _lastUnitState = st; // 纯维持：状态跟踪照常，不留在过期的"技能"预置上
+        return true;
+    }
+
     // ═══════ 追击期兜底平A（Chasing 调用：射程内近战立即输出）═══════
 
     public function chaseMeleeTick(frame:Number):Void {
         var st:String = self.状态;
         if (st == "技能" || st == "战技") return;
+        // 搓招最小持续保护（续32）：Chasing 侧同样不得在搓招动画期注入平A输入
+        // （写 动作A 会打断"空手攻击"状态里正在播的搓招元件）。保护期直接静默。
+        if (st == "空手攻击" && _chargeProtectUntilFrame > 0
+            && frame < _chargeProtectUntilFrame && !_isLowHP()) return;
         if (self.射击中 == true) return;
         if (self.浮空 == true || self.飞行浮空 == true) return;
         if (self.倒地 == true || st == "击倒") return;
@@ -255,7 +339,6 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
     }
 
     // ═══════ 喝药（独立轨，Combat/Evade 均 tick）═══════
-
     public function tickHeal(frame:Number):Void {
         var maxHP:Number = self.hp满血值;
         if (!(maxHP > 0)) return;
@@ -577,6 +660,16 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
         _currentSkillName = sk.技能名;
         _currentSkill = sk;
         _lastUnitState = "技能";
+
+        // 搓招最小持续保护（续32）：仅表内标了 持续帧 的搓招条目（燃烧指节/能量喷泉）。
+        // 搓招走"空手攻击"状态，_skillStartFrame/_currentSkill* 这套 commit 会被 B 分支
+        // 每 tick 复位（A 分支只认 技能/战技），所以另立 _chargeProtectUntilFrame 窗口，
+        // 由 tick A2 + _chargeSustainTick 维持；动画先结束（状态离开"空手攻击"）自动失效。
+        // 未标 持续帧 的搓招（连环踢/波动拳/诛杀步）行为不变，要跟进只需在表里补字段。
+        if (sk._type == "搓招" && sk.持续帧 > 0) {
+            _chargeProtectUntilFrame = frame + Number(sk.持续帧);
+            _chargeProtectName = sk.技能名;
+        }
 
         if (AIEnvironment.isAIDebug()) {
             AIEnvironment.log("[HU-BRAIN] " + self.名字 + " 释放 " + sk.技能名
