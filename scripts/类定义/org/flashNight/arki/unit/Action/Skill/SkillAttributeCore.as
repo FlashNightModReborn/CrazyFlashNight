@@ -91,9 +91,9 @@ class org.flashNight.arki.unit.Action.Skill.SkillAttributeCore {
             bullet.暴击 = unit.兵器暴击;
         }
 
-        // 传递斩杀属性
-        if (unit.兵器斩杀) {
-            bullet.斩杀 = unit.兵器斩杀;
+        // 传递斩杀属性（叠加非武器装备的基础斩杀）
+        if (unit.兵器斩杀 || unit.基础斩杀) {
+            bullet.斩杀 = Number(unit.兵器斩杀 ? unit.兵器斩杀 : 0) + Number(unit.基础斩杀 ? unit.基础斩杀 : 0);
         }
     }
 
@@ -169,9 +169,9 @@ class org.flashNight.arki.unit.Action.Skill.SkillAttributeCore {
             bullet.暴击 = unit.空手暴击;
         }
 
-        // 传递斩杀属性
-        if (unit.空手斩杀) {
-            bullet.斩杀 = unit.空手斩杀;
+        // 传递斩杀属性（叠加非武器装备的基础斩杀）
+        if (unit.空手斩杀 || unit.基础斩杀) {
+            bullet.斩杀 = Number(unit.空手斩杀 ? unit.空手斩杀 : 0) + Number(unit.基础斩杀 ? unit.基础斩杀 : 0);
         }
     }
 }
