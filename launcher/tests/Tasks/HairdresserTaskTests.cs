@@ -277,6 +277,183 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void SnapshotResponse_ValidPortraitPassesThrough()
+        {
+            string sent = null;
+            var posted = new List<JObject>();
+            using (var task = NewCapturingTask(
+                value => sent = value,
+                value => posted.Add(JObject.Parse(value))))
+            {
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "hair.snapshot.portrait.ok"));
+                int fid = (int)ParseSent(sent)["callId"];
+                JObject snapshot = SnapshotResponse(fid, ExpectedHair);
+                snapshot["portrait"] = new JObject
+                {
+                    ["equipment"] = new JObject
+                    {
+                        ["头部装备"] = "佣兵头盔",
+                        ["长枪"] = "测试长枪"
+                    },
+                    ["hair"] = ExpectedHair,
+                    ["face"] = ""
+                };
+                task.HandleFlashResponse(snapshot, null);
+
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "hair.snapshot.portrait.empty"));
+                int emptyFid = (int)ParseSent(sent)["callId"];
+                JObject emptySnapshot = SnapshotResponse(emptyFid, ExpectedHair);
+                emptySnapshot["portrait"] = new JObject
+                {
+                    ["equipment"] = new JObject(),
+                    ["hair"] = "",
+                    ["face"] = ""
+                };
+                task.HandleFlashResponse(emptySnapshot, null);
+
+                Assert.Equal(2, posted.Count);
+                Assert.All(posted, value => Assert.True((bool)value["success"]));
+                Assert.Equal(
+                    "佣兵头盔",
+                    (string)posted[0]["portrait"]["equipment"]["头部装备"]);
+                Assert.Equal("", (string)posted[0]["portrait"]["face"]);
+                Assert.Equal(
+                    0,
+                    ((JObject)posted[1]["portrait"]["equipment"]).Count);
+                Assert.Equal("", (string)posted[1]["portrait"]["hair"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void SnapshotResponse_WithoutPortraitStaysAuthoritative()
+        {
+            // 旧 asLoader 不回传 portrait：缺失时 snapshot 必须维持既有成功语义。
+            string sent = null;
+            string posted = null;
+            using (var task = NewCapturingTask(
+                value => sent = value,
+                value => posted = value))
+            {
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "hair.snapshot.portrait.absent"));
+                int fid = (int)ParseSent(sent)["callId"];
+                JObject snapshot = SnapshotResponse(fid, ExpectedHair);
+                Assert.Null(snapshot["portrait"]);
+
+                task.HandleFlashResponse(snapshot, null);
+
+                JObject response = JObject.Parse(posted);
+                Assert.True((bool)response["success"]);
+                Assert.Null(response["portrait"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void SnapshotResponse_RejectsMalformedPortraitShapes()
+        {
+            string sent = null;
+            var posted = new List<JObject>();
+            using (var task = NewCapturingTask(
+                value => sent = value,
+                value => posted.Add(JObject.Parse(value))))
+            {
+                var mutations = new Action<JObject>[]
+                {
+                    value => value["portrait"] = "not-an-object",
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        ((JObject)value["portrait"]).Remove("equipment");
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["equipment"] = new JArray();
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["equipment"]["披风"] = "黑披风";
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["equipment"]["刀"] = "";
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["equipment"]["刀"] = new string('刀', 161);
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["equipment"]["刀"] = "坏\n名字";
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["equipment"]["长枪"] = 7;
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        ((JObject)value["portrait"]).Remove("hair");
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["hair"] = 1;
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["hair"] = new string('发', 161);
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["face"] = 1;
+                    },
+                    value =>
+                    {
+                        value["portrait"] = ValidPortrait();
+                        value["portrait"]["face"] = new string('脸', 161);
+                    }
+                };
+
+                for (int i = 0; i < mutations.Length; i++)
+                {
+                    task.HandleWebRequest(
+                        "snapshot",
+                        Request("snapshot", "hair.snapshot.portrait.malformed." + i));
+                    int fid = (int)ParseSent(sent)["callId"];
+                    JObject response = SnapshotResponse(fid, ExpectedHair);
+                    mutations[i](response);
+                    task.HandleFlashResponse(response, null);
+                }
+
+                Assert.Equal(mutations.Length, posted.Count);
+                Assert.All(
+                    posted,
+                    value =>
+                    {
+                        Assert.False((bool)value["success"]);
+                        Assert.Equal("malformed_response", (string)value["error"]);
+                        Assert.Null(value["requiresReconcile"]);
+                    });
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
         public void ReadFailure_DoesNotManufactureUnknownWriteState()
         {
             string sent = null;
@@ -908,6 +1085,16 @@ namespace Launcher.Tests.Tasks
                 ["cmd"] = cmd,
                 ["callId"] = callId,
                 ["payload"] = payload
+            };
+        }
+
+        private static JObject ValidPortrait()
+        {
+            return new JObject
+            {
+                ["equipment"] = new JObject { ["头部装备"] = "佣兵头盔" },
+                ["hair"] = ExpectedHair,
+                ["face"] = "脸型-男-默认"
             };
         }
 

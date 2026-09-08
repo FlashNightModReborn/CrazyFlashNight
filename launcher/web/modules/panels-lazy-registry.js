@@ -153,11 +153,13 @@
 
     // ── 理发店（AS2 权威目录 + 本地纸娃娃预览 + 单一 commit）──
     // PanelScale 已由 overlay boot，不重复执行；AssetTimeline → renderer
-    // 沿用现有纸娃娃消费者的显式依赖顺序。
+    // 沿用现有纸娃娃消费者的显式依赖顺序。CharacterAppearancePreview
+    // 是全身预览（战斗 rig 合并取景）的共享包装，位于 renderer 之后。
     Panels.registerLazy('hairdresser',
         ['modules/panel-runtime.js',
          'modules/asset-timeline.js',
          'modules/dressup-doll-renderer.js',
+         'modules/character-appearance-preview.js',
          'modules/hairdresser-runtime.js',
          'modules/hairdresser.js'],
         noop);

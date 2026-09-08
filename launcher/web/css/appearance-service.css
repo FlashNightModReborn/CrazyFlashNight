@@ -236,6 +236,37 @@
     display: none;
 }
 
+/* 预览换装扫描光：与建角 character-create.css 的 ccPreviewSwap、角色构筑
+   workbench/character-build.css 的 cbDollSwap 同一签名（20% 高渐变光带、
+   translateY 0→620%、--wb-motion-structural + --wb-ease-standard），
+   本文件是服务面板 canonical 版本。JS 在预览真实重绘后给舞台加
+   .appearance-service-swap-flash 重触发，遮住 canvas 合成硬切。 */
+.appearance-service-preview-stage::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    top: -20%;
+    height: 20%;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        color-mix(in srgb, var(--appearance-accent) 24%, transparent) 58%,
+        color-mix(in srgb, var(--appearance-accent) 44%, transparent) 100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.appearance-service-preview-stage.appearance-service-swap-flash::before {
+    animation: appearanceServicePreviewSwap var(--wb-motion-structural) var(--wb-ease-standard);
+}
+
+@keyframes appearanceServicePreviewSwap {
+    0% { transform: translateY(0); opacity: 1; }
+    80% { opacity: .85; }
+    100% { transform: translateY(620%); opacity: 0; }
+}
+
 .appearance-service-preview-facts {
     min-width: 0;
     display: grid;
@@ -344,6 +375,20 @@
     display: none;
 }
 
+/* 微交互基线：按钮、关闭键与身份控件 hover/focus 只过渡既有颜色/边框/阴影变化，
+   视觉规格不变；档位与理发店目录卡一致（--wb-motion-micro）。 */
+.appearance-service-button,
+.appearance-service-close,
+.appearance-service-panel .identity-field input,
+.appearance-service-panel .identity-gender label {
+    transition:
+        border-color var(--wb-motion-micro),
+        background-color var(--wb-motion-micro),
+        color var(--wb-motion-micro),
+        box-shadow var(--wb-motion-micro),
+        filter var(--wb-motion-micro);
+}
+
 .appearance-service-panel[data-state="busy"] {
     border-color: var(--appearance-warning);
 }
@@ -363,3 +408,11 @@
 
 #panel-container[data-panel="hairdresser"] #panel-backdrop,
 #panel-container[data-panel="surgery"] #panel-backdrop { background: #080a0d; }
+
+@media (prefers-reduced-motion: reduce) {
+    .appearance-service-preview-stage.appearance-service-swap-flash::before { animation: none; }
+    .appearance-service-button,
+    .appearance-service-close,
+    .appearance-service-panel .identity-field input,
+    .appearance-service-panel .identity-gender label { transition: none; }
+}

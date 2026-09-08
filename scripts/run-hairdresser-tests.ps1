@@ -17,10 +17,10 @@ $focusedRun = @{
         'org.flashNight.arki.ui.HairdresserPanelServiceTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^HairdresserPanelServiceTest Tests Passed: 28\r?$'
+        '(?m)^HairdresserPanelServiceTest Tests Passed: 39\r?$'
         '(?m)^HairdresserPanelServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = '28/28 assertions'
+    SuccessSummary = '39/39 assertions'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

@@ -26,7 +26,7 @@
 
 ## 1. 不变量与职责边界
 
-当前整形工作树（未发布）将理发店和整形的基地服务样式收至 `launcher/web/css/appearance-service.css`：共同标题栏、分区边框、网格预览、信息栏、按钮与键盘焦点样式只保留一份，领域目录和身份表单分别留在 `hairdresser.css` / `plastic-surgery.css`；公共层须先于两份领域样式加载。理发店保留脸部/发型专用取景，整形使用完整人物预览。角色构筑、建角与整形通过 `CharacterAppearancePreview.buildStateFromEquipment()` 统一读取头部装备 `helmet` 标记，仅在预览中遮发，不改保存的发型；共享人物放大上限继承角色构筑的 `12`，避免整形和建角退回通用 renderer 的 `3`。样式闭包由 `node tools/check-workbench-css-bundle.js` 检查，头盔遮发/摘盔恢复及人物占高由 `node tools/test-dressup-stable-fit.js` 进行无浏览器几何验证；真实画面仍由维护者验收。
+当前整形工作树（未发布）将理发店和整形的基地服务样式收至 `launcher/web/css/appearance-service.css`：共同标题栏、分区边框、网格预览、信息栏、按钮与键盘焦点样式只保留一份，领域目录和身份表单分别留在 `hairdresser.css` / `plastic-surgery.css`；公共层须先于两份领域样式加载。理发店默认保留脸部/发型专用取景（对话 rig），快照携带 `portrait` 投影时额外提供「脸部特写 / 全身」切换，全身档复用 `CharacterAppearancePreview` 战斗 rig 合并取景；旧 asLoader 不回传 `portrait` 时切换控件完全隐藏、静默停留胸像。角色构筑、建角与整形通过 `CharacterAppearancePreview.buildStateFromEquipment()` 统一读取头部装备 `helmet` 标记，仅在预览中遮发，不改保存的发型；理发店全身档是唯一的场景化例外——发型试戴必须可见，该面板在自身调用点强制绘制试戴发型，共享组件与其余消费者的头盔语义不变。共享人物放大上限继承角色构筑的 `12`，避免整形和建角退回通用 renderer 的 `3`。样式闭包由 `node tools/check-workbench-css-bundle.js` 检查，头盔遮发/摘盔恢复及人物占高由 `node tools/test-dressup-stable-fit.js` 进行无浏览器几何验证；真实画面仍由维护者验收。
 
 地图维护工作台 `map-workbench` 使用 `canvas-editor / canvas-editor-focus` 壳与 PanelRequestMux，在隔离子文档中直接运行生产 MapPanel、CSS、分层筛选和自动取景；编辑边框叠加于生产坐标变换。草稿、当前配置与运行中的游戏目录分离；相机只用于观察，设计快照不执行导航。字段与验收见[地图工作台](../tools/map-workbench/README.md)。
 

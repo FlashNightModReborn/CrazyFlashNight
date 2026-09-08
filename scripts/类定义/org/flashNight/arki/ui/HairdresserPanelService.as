@@ -10,6 +10,9 @@
 class org.flashNight.arki.ui.HairdresserPanelService {
     private static var _installed:Boolean = false;
     private static var _json:LiteJSON;
+    // 与 PlasticSurgeryPanelService.SLOTS 保持一致的 11 个装备槽；
+    // 刻意平行实现、不交叉引用，槽集变化需两个服务同步评审。
+    private static var SLOTS:Array = ["头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "颈部装备", "长枪", "手枪", "手枪2", "刀", "手雷"];
 
     public static function install():Void {
         if (_installed) return;
@@ -64,7 +67,30 @@ class org.flashNight.arki.ui.HairdresserPanelService {
             gender:_root.性别 == undefined ? "" : String(_root.性别),
             face:_root.脸型 == undefined ? "" : String(_root.脸型),
             currentHair:_root.发型 == undefined ? "" : String(_root.发型),
-            catalog:resolved.catalog
+            catalog:resolved.catalog,
+            portrait:portrait()
+        };
+    }
+
+    // 当前装备只读投影；actor 不可用时 equipment 为空对象，不新增失败分支。
+    private static function portrait():Object {
+        var equipment:Object = {};
+        var actor:Object;
+        if (_root.gameworld != undefined && _root.控制目标 != undefined) {
+            actor = _root.gameworld[_root.控制目标];
+        }
+        if (actor != undefined) {
+            for (var i:Number = 0; i < SLOTS.length; i++) {
+                var item:Object = actor[SLOTS[i]];
+                if (item != null && typeof item.name == "string") {
+                    equipment[SLOTS[i]] = String(item.name);
+                }
+            }
+        }
+        return {
+            equipment:equipment,
+            hair:_root.发型 == undefined ? "" : String(_root.发型),
+            face:_root.脸型 == undefined ? "" : String(_root.脸型)
         };
     }
 

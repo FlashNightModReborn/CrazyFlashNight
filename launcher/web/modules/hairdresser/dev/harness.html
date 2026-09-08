@@ -38,6 +38,7 @@ window.__faults=[];
 window.__catalog=[];
 window.__catalogOverride=null;
 window.__model={gender:'男',face:'1',currentHair:'光头'};
+window.__portraitOverride=null;
 window.__reconcileProbe=null;
 
 function clone(value){return JSON.parse(JSON.stringify(value))}
@@ -57,6 +58,7 @@ window.__configureHairdresser=function(options){
     currentHair:typeof options.currentHair==='string'?options.currentHair:'光头'
   };
   __catalogOverride=Object.prototype.hasOwnProperty.call(options,'catalog')?clone(options.catalog):null;
+  __portraitOverride=Object.prototype.hasOwnProperty.call(options,'portrait')?clone(options.portrait):null;
   __reconcileProbe=null;
 };
 function snapshotPayload(){
@@ -67,6 +69,7 @@ function snapshotPayload(){
     currentHair:__model.currentHair,
     catalog:clone(__catalogOverride===null?__catalog:__catalogOverride)
   };
+  if(__portraitOverride!==null)response.portrait=clone(__portraitOverride);
   if(__reconcileProbe){
     response.reconciled=true;
     response.writeApplied=__reconcileProbe.reportedApplied===true;
@@ -160,6 +163,7 @@ window.Panels=(function(){
 <script src="/launcher/web/modules/panel-scale.js"></script>
 <script src="/launcher/web/modules/asset-timeline.js"></script>
 <script src="/launcher/web/modules/dressup-doll-renderer.js"></script>
+<script src="/launcher/web/modules/character-appearance-preview.js"></script>
 <script src="/launcher/web/modules/hairdresser-runtime.js"></script>
 <script src="/launcher/web/modules/hairdresser.js"></script>
 <script>
@@ -234,7 +238,7 @@ window.Panels=(function(){
 
     var localReadCount=reads().length,localWriteCount=writes().length;
     var firstOption=document.querySelector('.hairdresser-style-card[data-index="0"]');
-    firstOption.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));
+    firstOption.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
     await wait();
     state=HairdresserPanel.debugState();
     ok('listbox arrow navigation uses one roving tab stop and stays local',
@@ -243,6 +247,22 @@ window.Panels=(function(){
       &&document.activeElement.getAttribute('data-index')==='1'
       &&reads().length===localReadCount&&writes().length===localWriteCount,
       JSON.stringify(state));
+    var catalogGrid=document.querySelector('.hairdresser-catalog');
+    var columnCount=getComputedStyle(catalogGrid).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
+    document.querySelector('.hairdresser-style-card[data-index="1"]').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('catalog keyboard navigation is column aware',
+      columnCount>1&&state.selectedIndex===1+columnCount
+      &&document.activeElement.getAttribute('data-index')===String(1+columnCount)
+      &&reads().length===localReadCount&&writes().length===localWriteCount,
+      JSON.stringify({columns:columnCount,selectedIndex:state.selectedIndex}));
+    document.activeElement.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true}));
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('column-aware navigation reverses without leaving the visible row set',
+      state.selectedIndex===1&&document.activeElement.getAttribute('data-index')==='1',
+      JSON.stringify({columns:columnCount,selectedIndex:state.selectedIndex}));
     document.querySelector('.hairdresser-style-card[data-index="32"]').click();
     await wait();
     state=HairdresserPanel.debugState();
@@ -260,6 +280,91 @@ window.Panels=(function(){
       &&Array.prototype.filter.call(document.querySelectorAll('.hairdresser-style-copy small'),function(node){
         return node.textContent==='发型-男式-平头'
       }).length===2);
+
+    ok('compact icon grid renders 76 real artwork images plus the readable bald fallback',
+      document.querySelector('.hairdresser-catalog').getAttribute('data-density')==='compact'
+      &&document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon').length===77
+      &&document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon-image').length===76
+      &&document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon-fallback').length===1
+      &&document.querySelector('.hairdresser-style-card[data-index="20"]').title==='发型-男式-平头',
+      JSON.stringify({
+        icons:document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon-image').length,
+        fallbacks:document.querySelectorAll('.hairdresser-catalog .hairdresser-style-icon-fallback').length
+      }));
+    var currentCard=document.querySelector('.hairdresser-current-card');
+    ok('current hair card mirrors the saved style with icon, short name and badge',
+      currentCard&&currentCard.querySelector('.hairdresser-style-icon')
+      &&currentCard.querySelector('.hairdresser-current-card-copy b').textContent==='光头'
+      &&currentCard.querySelector('.hairdresser-current-card-badge').textContent==='当前',
+      currentCard?currentCard.textContent:'missing');
+    ok('change summary contrasts saved and trial styles',
+      document.querySelector('.hairdresser-summary').textContent==='当前：光头 → 试戴：平头'
+      &&document.querySelector('.hairdresser-summary').classList.contains('active'),
+      document.querySelector('.hairdresser-summary').textContent);
+
+    function tabButton(label){return document.querySelector('.hairdresser-gender-tabs [data-gender-tab="'+label+'"]')}
+    var tabLabels=Array.prototype.map.call(document.querySelectorAll('.hairdresser-gender-tabs [data-gender-tab]'),function(node){
+      return node.getAttribute('data-gender-tab')
+    });
+    ok('gender tabs expose deterministic name-prefix groups with counts',
+      tabLabels.join(',')==='全部,男式,女式'
+      &&tabButton('全部').querySelector('small').textContent==='77'
+      &&tabButton('男式').querySelector('small').textContent==='52'
+      &&tabButton('女式').querySelector('small').textContent==='26',
+      JSON.stringify(tabLabels));
+    tabButton('男式').click();
+    await wait();
+    ok('male tab keeps wire order with duplicates and the neutral bald row visible',
+      document.querySelectorAll('.hairdresser-style-card').length===52
+      &&!!document.querySelector('.hairdresser-style-card[data-index="0"]')
+      &&!!document.querySelector('.hairdresser-style-card[data-index="20"]')
+      &&!!document.querySelector('.hairdresser-style-card[data-index="32"]')
+      &&!document.querySelector('.hairdresser-style-card[data-index="21"]'),
+      String(document.querySelectorAll('.hairdresser-style-card').length));
+    tabButton('女式').click();
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('switching tabs never drops the local trial selection',
+      document.querySelectorAll('.hairdresser-style-card').length===26
+      &&!!document.querySelector('.hairdresser-style-card[data-index="0"]')
+      &&!document.querySelector('.hairdresser-style-card[data-index="32"]')
+      &&state.selectedIndex===32&&state.selectedIdentifier==='发型-男式-平头'
+      &&document.querySelector('.hairdresser-preview-name').textContent==='发型-男式-平头'
+      &&document.querySelectorAll('.hairdresser-style-card[tabindex="0"]').length===1
+      &&document.querySelector('.hairdresser-style-card[tabindex="0"]').getAttribute('data-index')==='0',
+      JSON.stringify(state));
+    tabButton('全部').click();
+    await wait();
+    ok('returning to the all tab restores the complete wire catalog with the trial intact',
+      document.querySelectorAll('.hairdresser-style-card').length===77
+      &&document.querySelector('.hairdresser-style-card[data-index="32"]').getAttribute('aria-selected')==='true'
+      &&HairdresserPanel.debugState().selectedIndex===32,
+      String(document.querySelectorAll('.hairdresser-style-card').length));
+
+    document.querySelector('.hairdresser-density [data-density-option="full"]').click();
+    await wait();
+    ok('full density cards expose icon, short name, meta and identifier copy',
+      document.querySelector('.hairdresser-catalog').getAttribute('data-density')==='full'
+      &&document.querySelectorAll('.hairdresser-style-card .hairdresser-style-copy b').length===77
+      &&document.querySelector('.hairdresser-style-card[data-index="32"] .hairdresser-style-copy b').textContent==='平头'
+      &&window.localStorage.getItem('cf7.hairdresser.catalog-density')==='full',
+      document.querySelector('.hairdresser-catalog').getAttribute('data-density'));
+    Panels.close();
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200);
+    ok('density preference survives panel reopen',
+      document.querySelector('.hairdresser-catalog').getAttribute('data-density')==='full'
+      &&window.localStorage.getItem('cf7.hairdresser.catalog-density')==='full',
+      document.querySelector('.hairdresser-catalog').getAttribute('data-density'));
+    document.querySelector('.hairdresser-style-card[data-index="32"]').click();
+    await wait();
+    document.querySelector('.hairdresser-density [data-density-option="compact"]').click();
+    await wait();
+    ok('compact density restores the icon grid with the trial marker intact',
+      document.querySelector('.hairdresser-catalog').getAttribute('data-density')==='compact'
+      &&HairdresserPanel.debugState().selectedIndex===32
+      &&document.querySelector('.hairdresser-style-card[data-index="32"] .hairdresser-style-marker').textContent==='试',
+      document.querySelector('.hairdresser-catalog').getAttribute('data-density'));
 
     var commitBefore=writes().length,commitCloseBefore=closeMessages().length;
     document.querySelector('.hairdresser-commit').click();
@@ -498,9 +603,83 @@ window.Panels=(function(){
       JSON.stringify(HairdresserPanel.debugState()));
 
     var list=document.querySelector('.hairdresser-catalog');
-    ok('catalog remains scrollable within the fixed viewport',
-      list.scrollHeight>list.clientHeight&&list.getBoundingClientRect().bottom<=document.querySelector('.hairdresser-panel').getBoundingClientRect().bottom,
+    ok('compact icon grid stays inside the fixed viewport without demanding scroll',
+      list.getBoundingClientRect().bottom<=document.querySelector('.hairdresser-panel').getBoundingClientRect().bottom,
       JSON.stringify({scrollHeight:list.scrollHeight,clientHeight:list.clientHeight}));
+    document.querySelector('.hairdresser-density [data-density-option="full"]').click();
+    await wait();
+    ok('full density catalog remains scrollable within the fixed viewport',
+      list.scrollHeight>list.clientHeight
+      &&list.getBoundingClientRect().bottom<=document.querySelector('.hairdresser-panel').getBoundingClientRect().bottom,
+      JSON.stringify({scrollHeight:list.scrollHeight,clientHeight:list.clientHeight}));
+    document.querySelector('.hairdresser-density [data-density-option="compact"]').click();
+    await wait();
+
+    ok('preview mode control stays hidden when the snapshot carries no portrait',
+      document.querySelector('.hairdresser-preview-mode').hidden===true
+      &&HairdresserPanel.debugState().previewMode==='bust'
+      &&HairdresserPanel.debugState().portraitReady===false,
+      JSON.stringify(HairdresserPanel.debugState().rendererMeta));
+
+    __configureHairdresser({portrait:'畸形数据'});
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200);
+    ok('malformed portrait degrades to bust-only without errors',
+      document.querySelector('.hairdresser-preview-mode').hidden===true
+      &&HairdresserPanel.debugState().previewMode==='bust'
+      &&HairdresserPanel.debugState().portraitReady===false,
+      JSON.stringify({previewMode:HairdresserPanel.debugState().previewMode}));
+
+    __configureHairdresser({currentHair:'光头',portrait:{
+      equipment:{'头部装备':'黑色摩托头盔','上装装备':'黑色功夫装','下装装备':'咖啡色多包裤','脚部装备':'棕色皮鞋'},
+      hair:'光头',face:'1'}});
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200);
+    ok('portrait snapshot reveals the bust/full-body segmented control',
+      document.querySelector('.hairdresser-preview-mode').hidden===false
+      &&HairdresserPanel.debugState().portraitReady===true,
+      JSON.stringify({portraitReady:HairdresserPanel.debugState().portraitReady}));
+    document.querySelector('.hairdresser-style-card[data-index="20"]').click();
+    await wait();
+    document.querySelector('.hairdresser-preview-mode [data-preview-mode="full"]').click();
+    await waitFor(function(){
+      var value=HairdresserPanel.debugState();
+      return value.previewMode==='full'&&value.rendererMeta&&value.rendererMeta.holders>2
+    },2200);
+    state=HairdresserPanel.debugState();
+    ok('full-body preview draws battle equipment plus the trial hair even under a helmet',
+      state.previewMode==='full'&&state.selectedIndex===20
+      &&state.rendererMeta.holders>2
+      &&state.rendererMeta.strictFields===true
+      &&state.rendererMeta.animated===false
+      &&state.rendererMeta.hairHidden===false
+      &&document.querySelector('.appearance-service-preview-stage').classList.contains('appearance-service-swap-flash'),
+      JSON.stringify(state.rendererMeta));
+    document.querySelector('.hairdresser-preview-mode [data-preview-mode="bust"]').click();
+    await waitFor(function(){
+      var value=HairdresserPanel.debugState();
+      return value.previewMode==='bust'&&value.rendererMeta&&value.rendererMeta.holders===2
+    },2200);
+    state=HairdresserPanel.debugState();
+    ok('switching back to bust keeps the trial and the strict face-plus-hair contract',
+      state.previewMode==='bust'&&state.selectedIndex===20
+      &&state.rendererMeta.holders===2&&state.rendererMeta.animated===false,
+      JSON.stringify(state.rendererMeta));
+
+    __configureHairdresser({currentHair:'光头',portrait:{
+      equipment:{'上装装备':'不存在的装备XYZ'},hair:'光头',face:'1'}});
+    Panels.open('hairdresser');
+    await waitFor(function(){return HairdresserPanel.debugState().catalogCount===77&&!HairdresserPanel.debugState().snapshotBusy},2200);
+    document.querySelector('.hairdresser-preview-mode [data-preview-mode="full"]').click();
+    await waitFor(function(){return HairdresserPanel.debugState().previewMode==='full'},1200);
+    await wait();
+    state=HairdresserPanel.debugState();
+    ok('missing equipment keeps a readable fallback instead of a blank stage',
+      state.previewMode==='full'
+      &&state.previewMissingItems.length===1
+      &&document.querySelector('.hairdresser-preview-fallback').hidden===false,
+      JSON.stringify({missing:state.previewMissingItems,issue:state.previewIssue}));
+
     Panels.close();
     await wait();
     ok('panel close releases every ResizeObserver',

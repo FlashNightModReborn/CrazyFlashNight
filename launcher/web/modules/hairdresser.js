@@ -5,6 +5,9 @@ var HairdresserPanel = (function() {
     var DESIGN_W = 1024;
     var DESIGN_H = 576;
     var BALD_IDENTIFIER = '光头';
+    var CATALOG_DENSITY_KEY = 'cf7.hairdresser.catalog-density';
+    var GENDER_TABS = ['全部', '男式', '女式'];
+    var NEUTRAL_SUMMARY = '试戴与当前已保存发型一致。';
     var _config = (typeof window !== 'undefined' && window.__HAIRDRESSER_CONFIG__) || {};
     var _manifestUrl = _config.manifestUrl || 'assets/dressup/manifest.json';
     var _manifest = null;
@@ -16,6 +19,11 @@ var HairdresserPanel = (function() {
     var _rootEl = null;
     var _catalogEl = null;
     var _emptyEl = null;
+    var _currentCardEl = null;
+    var _genderTabsEl = null;
+    var _densityEl = null;
+    var _summaryEl = null;
+    var _previewModeEl = null;
     var _canvasEl = null;
     var _fallbackEl = null;
     var _previewNameEl = null;
@@ -31,9 +39,16 @@ var HairdresserPanel = (function() {
     var _closeButton = null;
     var _scaleHandle = null;
     var _renderer = null;
+    var _tooltipScope = null;
+    var _tooltipCache = {};
 
     var _snapshot = null;
     var _selectedIndex = -1;
+    var _density = loadCatalogDensity();
+    var _genderTab = '全部';
+    var _previewMode = 'bust';
+    var _portrait = null;
+    var _previewMissingItems = [];
     var _busy = false;
     var _snapshotBusy = false;
     var _needsReconcile = false;
@@ -129,6 +144,19 @@ var HairdresserPanel = (function() {
         var title = makeNode('h2', '', '本地试戴');
         title.id = 'hairdresser-preview-title';
         titleRow.appendChild(title);
+        _previewModeEl = makeNode('div', 'hairdresser-preview-mode');
+        _previewModeEl.setAttribute('role', 'group');
+        _previewModeEl.setAttribute('aria-label', '预览模式');
+        [['bust', '脸部特写'], ['full', '全身']].forEach(function(pair) {
+            var button = makeButton('hairdresser-preview-mode-option', pair[1]);
+            button.setAttribute('data-preview-mode', pair[0]);
+            button.setAttribute('aria-pressed', pair[0] === _previewMode ? 'true' : 'false');
+            button.addEventListener('click', function() { setPreviewMode(pair[0], true); });
+            _previewModeEl.appendChild(button);
+        });
+        // portrait 到达前一律隐藏；旧 asLoader 不回传 portrait 时永远不出现。
+        _previewModeEl.hidden = true;
+        titleRow.appendChild(_previewModeEl);
         titleRow.appendChild(makeNode('span', 'hairdresser-local-badge appearance-service-badge', '不会写入存档'));
         pane.appendChild(titleRow);
 
@@ -168,10 +196,44 @@ var HairdresserPanel = (function() {
         titleRow.appendChild(_countEl);
         pane.appendChild(titleRow);
 
+        _currentCardEl = makeNode('div', 'hairdresser-current-card');
+        pane.appendChild(_currentCardEl);
+
+        var toolbar = makeNode('div', 'hairdresser-catalog-toolbar');
+        _genderTabsEl = makeNode('div', 'hairdresser-gender-tabs');
+        _genderTabsEl.setAttribute('role', 'tablist');
+        _genderTabsEl.setAttribute('aria-label', '按性别分组显示目录');
+        GENDER_TABS.forEach(function(tab) {
+            var button = makeButton('hairdresser-gender-tab', '');
+            button.setAttribute('role', 'tab');
+            button.setAttribute('data-gender-tab', tab);
+            button.setAttribute('aria-selected', tab === _genderTab ? 'true' : 'false');
+            button.tabIndex = tab === _genderTab ? 0 : -1;
+            button.appendChild(makeNode('span', '', tab));
+            button.appendChild(makeNode('small', '', ''));
+            button.addEventListener('click', function() { setGenderTab(tab, true); });
+            button.addEventListener('keydown', onGenderTabKeyDown);
+            _genderTabsEl.appendChild(button);
+        });
+        toolbar.appendChild(_genderTabsEl);
+        _densityEl = makeNode('div', 'hairdresser-density');
+        _densityEl.setAttribute('role', 'group');
+        _densityEl.setAttribute('aria-label', '目录显示密度');
+        [['compact', '紧凑'], ['full', '完整']].forEach(function(pair) {
+            var button = makeButton('hairdresser-density-option', pair[1]);
+            button.setAttribute('data-density-option', pair[0]);
+            button.setAttribute('aria-pressed', pair[0] === _density ? 'true' : 'false');
+            button.addEventListener('click', function() { setCatalogDensity(pair[0], true); });
+            _densityEl.appendChild(button);
+        });
+        toolbar.appendChild(_densityEl);
+        pane.appendChild(toolbar);
+
         _catalogEl = makeNode('div', 'hairdresser-catalog');
         _catalogEl.setAttribute('role', 'listbox');
         _catalogEl.setAttribute('aria-label', 'AS2 权威发型目录');
         _catalogEl.setAttribute('aria-busy', 'true');
+        _catalogEl.setAttribute('data-density', _density);
         _catalogEl.addEventListener('click', onCatalogClick);
         _catalogEl.addEventListener('keydown', onCatalogKeyDown);
         pane.appendChild(_catalogEl);
@@ -179,6 +241,11 @@ var HairdresserPanel = (function() {
         _emptyEl = makeNode('div', 'hairdresser-empty', '当前没有可用发型。');
         _emptyEl.hidden = true;
         pane.appendChild(_emptyEl);
+        // tooltip 锚条：紧凑格全名提示恒锚到目录列左缘，提示层落在预览列上，
+        // 不遮挡正在浏览的候选格（与建角候选注释同一锚定思路）。
+        var anchor = makeNode('div', 'hairdresser-tt-anchor', '');
+        anchor.setAttribute('aria-hidden', 'true');
+        pane.appendChild(anchor);
         return pane;
     }
 
@@ -189,6 +256,8 @@ var HairdresserPanel = (function() {
         _errorEl.setAttribute('role', 'alert');
         _errorEl.hidden = true;
         messages.appendChild(_errorEl);
+        _summaryEl = makeNode('p', 'hairdresser-summary', NEUTRAL_SUMMARY);
+        messages.appendChild(_summaryEl);
         var hint = makeNode('p', 'hairdresser-hint appearance-service-hint',
             '目录点击只在浏览器中试戴；确认后才会提交当前选择。');
         messages.appendChild(hint);
@@ -213,6 +282,10 @@ var HairdresserPanel = (function() {
         _generation++;
         _snapshot = null;
         _selectedIndex = -1;
+        _genderTab = '全部';
+        _previewMode = 'bust';
+        _portrait = null;
+        _previewMissingItems = [];
         _busy = false;
         _snapshotBusy = false;
         _needsReconcile = false;
@@ -229,6 +302,7 @@ var HairdresserPanel = (function() {
         _resolvedHairKey = '';
         _lastRendererMeta = null;
         buildDOM();
+        ensureCatalogTooltipScope();
         if (_scaleHandle) _scaleHandle.detach();
         _scaleHandle = typeof PanelScale !== 'undefined'
             ? PanelScale.attach(_shellEl, DESIGN_W, DESIGN_H) : null;
@@ -244,12 +318,13 @@ var HairdresserPanel = (function() {
             _scaleHandle.detach();
             _scaleHandle = null;
         }
-        if (_renderer) {
-            _renderer.destroy();
-            _renderer = null;
-        }
+        destroyPreviewRenderer();
+        disposeCatalogTooltip();
         _snapshot = null;
         _selectedIndex = -1;
+        _portrait = null;
+        _previewMode = 'bust';
+        _previewMissingItems = [];
         _busy = false;
         _snapshotBusy = false;
         _needsReconcile = false;
@@ -275,13 +350,20 @@ var HairdresserPanel = (function() {
             _manifest = manifest;
             _manifestLoading = false;
             _manifestPromise = null;
-            if (generation === _generation) renderPreview();
+            if (generation === _generation) {
+                // 目录可能已先用文字兜底块渲染，manifest 到达后重挂真实图标。
+                renderCatalog();
+                renderPreview();
+            }
             return manifest;
         }, function(error) {
             _manifestLoading = false;
             _manifestPromise = null;
             _manifestError = error && error.message ? error.message : '预览资源加载失败';
-            if (generation === _generation) renderPreview();
+            if (generation === _generation) {
+                renderCatalog();
+                renderPreview();
+            }
             throw error;
         });
         // The readable in-panel fallback is the consumer of this failure.
@@ -314,7 +396,28 @@ var HairdresserPanel = (function() {
             gender: response.gender,
             face: response.face,
             currentHair: response.currentHair,
-            catalog: catalog
+            catalog: catalog,
+            portrait: normalizePortrait(response.portrait)
+        };
+    }
+
+    // portrait 是可选附加投影（旧 asLoader 不回传）：缺省静默降级为仅胸像；
+    // 形状不合格同样按缺失处理，绝不抛错阻断目录。槽名→物品名映射逐键严验。
+    function normalizePortrait(value) {
+        if (!value || typeof value !== 'object') return null;
+        var equipment = value.equipment;
+        if (!equipment || typeof equipment !== 'object') return null;
+        var normalized = {};
+        var slots = Object.keys(equipment);
+        for (var i = 0; i < slots.length; i++) {
+            var itemName = equipment[slots[i]];
+            if (typeof itemName !== 'string' || !itemName) return null;
+            normalized[slots[i]] = itemName;
+        }
+        return {
+            equipment: normalized,
+            hair: typeof value.hair === 'string' ? value.hair : '',
+            face: typeof value.face === 'string' ? value.face : ''
         };
     }
 
@@ -344,6 +447,8 @@ var HairdresserPanel = (function() {
             }
 
             _snapshot = snapshot;
+            _portrait = snapshot.portrait;
+            if (!_portrait) _previewMode = 'bust';
             _needsRefresh = false;
             _errorText = '';
             if (reconciling && _reconcileExpected) {
@@ -398,50 +503,325 @@ var HairdresserPanel = (function() {
             ? rows[_selectedIndex] : null;
     }
 
+    // ── 目录展示：名称拆分 / 性别分组 / 图标 ──────────────────────────
+
+    // 「发型-男式-黑暴走头」→ 名称「黑暴走头」+ meta「男式发型」；与建角同款剥前缀逻辑。
+    function hairDisplayParts(row) {
+        var raw = String(row && (row.name || row.identifier) || '未命名发型').replace(/^\s+|\s+$/g, '');
+        var match = raw.match(/^发型[-－_\s]*(男式|女式)[-－_\s]*(.*)$/);
+        if (match) {
+            return {
+                raw: raw,
+                name: (match[2] || match[1] + '发型').replace(/^\s+|\s+$/g, ''),
+                meta: match[1] + '发型'
+            };
+        }
+        var name = raw.replace(/^发型[-－_\s]*/, '').replace(/^\s+|\s+$/g, '');
+        return {raw: raw, name: name || raw, meta: '发型'};
+    }
+
+    // 性别只从目录名称前缀确定性解析（发型-男式-* / 发型-女式-*，其余中性）。
+    // 这是纯展示分组：不排序、不去重、不改 wire 顺序与重复行。
+    function hairGenderGroup(name) {
+        var match = String(name || '').match(/^发型[-－_\s]*(男式|女式)/);
+        return match ? match[1] : '中性';
+    }
+
+    // 中性项（如光头）没有性别归属，随每个性别页签显示。
+    function rowVisibleInTab(tab, row) {
+        if (tab === '全部') return true;
+        var group = hairGenderGroup(row.name || row.identifier);
+        return group === '中性' || group === tab;
+    }
+
+    function visibleCatalogIndexes() {
+        var rows = _snapshot ? _snapshot.catalog : [];
+        var visible = [];
+        for (var i = 0; i < rows.length; i++) {
+            if (rowVisibleInTab(_genderTab, rows[i])) visible.push(i);
+        }
+        return visible;
+    }
+
+    function countVisibleInTab(tab) {
+        var rows = _snapshot ? _snapshot.catalog : [];
+        var count = 0;
+        for (var i = 0; i < rows.length; i++) {
+            if (rowVisibleInTab(tab, rows[i])) count++;
+        }
+        return count;
+    }
+
+    function resolveHairIconEntry(identifier) {
+        if (!_manifest || !_manifest.skinKeys) return null;
+        var entry = _manifest.skinKeys[identifier];
+        if ((!entry || !entry.export) && _manifest.appearance && _manifest.appearance.hairById) {
+            var map = _manifest.appearance.hairById;
+            var mapped = Object.prototype.hasOwnProperty.call(map, identifier) ? map[identifier] : '';
+            entry = mapped ? _manifest.skinKeys[mapped] : null;
+        }
+        return entry && entry.export ? entry : null;
+    }
+
+    function makeIconFallback(row) {
+        var fallback = makeNode('span', 'hairdresser-style-icon-fallback',
+            row && /光头/.test(row.name || row.identifier) ? '无' : '发');
+        fallback.setAttribute('aria-hidden', 'true');
+        return fallback;
+    }
+
+    // 目录图标：manifest skinKeys 取 PNG；光头无 PNG 属预期，加载失败一律降级文字块。
+    function hairIconVisual(row) {
+        var frame = makeNode('span', 'hairdresser-style-icon');
+        var entry = row && resolveHairIconEntry(row.identifier);
+        var imageFrame = entry && entry.frames && entry.frames.length ? entry.frames[0] : null;
+        var uri = imageFrame && imageFrame.uri || entry && entry.export && entry.export.uri;
+        if (uri) {
+            var image = document.createElement('img');
+            image.className = 'hairdresser-style-icon-image';
+            image.alt = '';
+            image.setAttribute('aria-hidden', 'true');
+            image.loading = 'lazy';
+            image.decoding = 'async';
+            try { image.src = new URL(uri, _manifest.__baseUrl || document.baseURI).href; }
+            catch (e) { image.src = uri; }
+            image.addEventListener('error', function() {
+                while (frame.firstChild) frame.removeChild(frame.firstChild);
+                frame.appendChild(makeIconFallback(row));
+            });
+            frame.appendChild(image);
+        } else {
+            frame.appendChild(makeIconFallback(row));
+        }
+        return frame;
+    }
+
+    // ── 紧凑格全名 tooltip：生产 overlay 已全局加载 PanelTooltip（tooltip.js）；
+    // harness 等无该模块的环境退化为原生 title，绝不强行引入。
+    function ensureCatalogTooltipScope() {
+        if (_tooltipScope || typeof PanelTooltip === 'undefined' || !PanelTooltip
+            || typeof PanelTooltip.createScope !== 'function') return;
+        _tooltipScope = PanelTooltip.createScope('hairdresser-catalog',
+            {profile: PanelTooltip.profiles ? PanelTooltip.profiles.dense : 'dense-inspect'});
+    }
+
+    function disposeCatalogTooltip() {
+        if (_tooltipScope && typeof _tooltipScope.dispose === 'function') _tooltipScope.dispose();
+        _tooltipScope = null;
+        _tooltipCache = {};
+        if (typeof PanelTooltip !== 'undefined' && PanelTooltip && typeof PanelTooltip.hide === 'function') {
+            PanelTooltip.hide();
+        }
+    }
+
+    function catalogTooltipAnchor() {
+        return _rootEl ? _rootEl.querySelector('.hairdresser-tt-anchor') : null;
+    }
+
+    function bindCatalogTooltip(button, key, text) {
+        if (_tooltipScope && typeof _tooltipScope.bindAsync === 'function') {
+            _tooltipCache[key] = {success: true};
+            _tooltipScope.bindAsync(button, {
+                key: key,
+                item: String(text || ''),
+                cache: _tooltipCache,
+                anchor: catalogTooltipAnchor,
+                renderBasic: function(value) {
+                    var node = document.createElement('div');
+                    node.textContent = value;
+                    return '<div class="hairdresser-simple-tooltip">' + node.innerHTML + '</div>';
+                },
+                renderRich: function(value) {
+                    var node = document.createElement('div');
+                    node.textContent = value;
+                    return '<div class="hairdresser-simple-tooltip">' + node.innerHTML + '</div>';
+                },
+                placement: 'left',
+                profile: PanelTooltip.profiles ? PanelTooltip.profiles.dense : 'dense-inspect'
+            });
+            return;
+        }
+        button.title = text;
+    }
+
+    // ── 目录网格渲染 ──────────────────────────────────────────────────
+
     function renderCatalog() {
         if (!_catalogEl) return;
+        if (_tooltipScope && typeof _tooltipScope.releaseTree === 'function') {
+            _tooltipScope.releaseTree(_catalogEl);
+        }
         while (_catalogEl.firstChild) _catalogEl.removeChild(_catalogEl.firstChild);
+        _catalogEl.setAttribute('data-density', _density);
         var rows = _snapshot ? _snapshot.catalog : [];
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
+        var visible = visibleCatalogIndexes();
+        for (var position = 0; position < visible.length; position++) {
+            var index = visible[position];
+            var row = rows[index];
+            var display = hairDisplayParts(row);
             var button = makeButton('hairdresser-style-card', '');
             button.setAttribute('role', 'option');
-            button.setAttribute('data-index', String(i));
-            button.setAttribute('aria-label', '第 ' + (i + 1) + ' 项，' + row.name);
-            var ordinal = makeNode('span', 'hairdresser-style-index', padOrdinal(i + 1));
+            button.setAttribute('data-index', String(index));
+            button.setAttribute('aria-label', '第 ' + (index + 1) + ' 项，' + display.raw);
+            button.setAttribute('aria-posinset', String(position + 1));
+            button.setAttribute('aria-setsize', String(visible.length));
+            button.appendChild(hairIconVisual(row));
             var copy = makeNode('span', 'hairdresser-style-copy');
-            copy.appendChild(makeNode('b', '', row.name || row.identifier));
-            copy.appendChild(makeNode('small', '', row.identifier));
+            copy.appendChild(makeNode('b', '', display.name));
+            copy.appendChild(makeNode('small', 'hairdresser-style-identifier', row.identifier));
+            copy.appendChild(makeNode('small', 'hairdresser-style-meta',
+                '#' + padOrdinal(index + 1) + ' · ' + display.meta));
+            button.appendChild(copy);
             var marker = makeNode('span', 'hairdresser-style-marker', '');
             marker.setAttribute('aria-hidden', 'true');
-            button.appendChild(ordinal);
-            button.appendChild(copy);
             button.appendChild(marker);
+            bindCatalogTooltip(button, 'hair:' + index + ':' + row.identifier, display.raw);
             _catalogEl.appendChild(button);
         }
         _catalogEl.setAttribute('aria-busy', _snapshotBusy ? 'true' : 'false');
         if (_countEl) _countEl.textContent = rows.length + ' 款';
         if (_emptyEl) _emptyEl.hidden = rows.length !== 0;
+        renderCurrentCard();
+        refreshGenderTabs();
+        refreshDensityControl();
         refreshCatalogSelection();
+    }
+
+    // 当前发型槽卡：图标 + 短名 + 「当前」徽标，始终对照已存档发型（非试戴）。
+    function renderCurrentCard() {
+        if (!_currentCardEl) return;
+        while (_currentCardEl.firstChild) _currentCardEl.removeChild(_currentCardEl.firstChild);
+        if (!_snapshot) {
+            _currentCardEl.setAttribute('aria-label', '当前发型，同步中');
+            _currentCardEl.appendChild(makeNode('span', 'hairdresser-current-card-empty', '当前发型：同步中'));
+            return;
+        }
+        var identifier = _snapshot.currentHair;
+        var rows = _snapshot.catalog;
+        var row = null;
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i].identifier === identifier) {
+                row = rows[i];
+                break;
+            }
+        }
+        var display = hairDisplayParts(row || {identifier: identifier, name: identifier || '未设置'});
+        _currentCardEl.setAttribute('aria-label', '当前发型，' + display.raw);
+        _currentCardEl.appendChild(hairIconVisual(row || {identifier: identifier, name: display.raw}));
+        var copy = makeNode('span', 'hairdresser-current-card-copy');
+        copy.appendChild(makeNode('small', '', '当前发型 · ' + display.meta));
+        copy.appendChild(makeNode('b', '', display.name));
+        _currentCardEl.appendChild(copy);
+        _currentCardEl.appendChild(makeNode('span', 'hairdresser-current-card-badge', '当前'));
+    }
+
+    // ── 性别页签与密度开关 ────────────────────────────────────────────
+
+    function setGenderTab(tab, user) {
+        if (GENDER_TABS.indexOf(tab) < 0) return false;
+        var changed = _genderTab !== tab;
+        _genderTab = tab;
+        // 试戴选中不随页签切换丢失：被过滤的选中项只是不渲染卡片，
+        // _selectedIndex 与预览保持不变，roving tabindex 落到可见首项。
+        if (changed) renderCatalog();
+        else refreshGenderTabs();
+        if (changed && user && window.BootstrapAudio) window.BootstrapAudio.cue('select');
+        return true;
+    }
+
+    function refreshGenderTabs() {
+        if (!_genderTabsEl) return;
+        var locked = _busy || _snapshotBusy || _needsReconcile;
+        var buttons = _genderTabsEl.querySelectorAll('[data-gender-tab]');
+        for (var i = 0; i < buttons.length; i++) {
+            var tab = buttons[i].getAttribute('data-gender-tab');
+            var active = tab === _genderTab;
+            buttons[i].setAttribute('aria-selected', active ? 'true' : 'false');
+            buttons[i].tabIndex = active ? 0 : -1;
+            buttons[i].disabled = locked;
+            var count = buttons[i].querySelector('small');
+            if (count) count.textContent = _snapshot ? String(countVisibleInTab(tab)) : '';
+        }
+    }
+
+    function onGenderTabKeyDown(event) {
+        var next = GENDER_TABS.indexOf(_genderTab);
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next++;
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next--;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = GENDER_TABS.length - 1;
+        else return;
+        event.preventDefault();
+        next = (next + GENDER_TABS.length) % GENDER_TABS.length;
+        setGenderTab(GENDER_TABS[next], true);
+        var button = _genderTabsEl.querySelector('[data-gender-tab="' + GENDER_TABS[next] + '"]');
+        if (button) button.focus();
+    }
+
+    function loadCatalogDensity() {
+        try {
+            var raw = window.localStorage.getItem(CATALOG_DENSITY_KEY);
+            if (raw === 'full' || raw === 'compact') return raw;
+        } catch (e) {}
+        // 77 项目录默认紧凑图标格，一屏尽量全显；完整档给图标+短名+meta。
+        return 'compact';
+    }
+
+    function setCatalogDensity(mode, user) {
+        if (mode !== 'compact' && mode !== 'full') return false;
+        var changed = _density !== mode;
+        _density = mode;
+        try { window.localStorage.setItem(CATALOG_DENSITY_KEY, mode); } catch (e) {}
+        if (changed) renderCatalog();
+        else refreshDensityControl();
+        if (changed && user && window.BootstrapAudio) window.BootstrapAudio.cue('select');
+        return true;
+    }
+
+    function refreshDensityControl() {
+        if (!_densityEl) return;
+        var locked = _busy || _snapshotBusy || _needsReconcile;
+        var buttons = _densityEl.querySelectorAll('[data-density-option]');
+        for (var i = 0; i < buttons.length; i++) {
+            var mode = buttons[i].getAttribute('data-density-option');
+            buttons[i].setAttribute('aria-pressed', mode === _density ? 'true' : 'false');
+            buttons[i].disabled = locked;
+        }
     }
 
     function refreshCatalogSelection() {
         if (!_catalogEl || !_snapshot) return;
         var buttons = _catalogEl.querySelectorAll('.hairdresser-style-card');
-        var currentHair = _snapshot ? _snapshot.currentHair : '';
+        var currentHair = _snapshot.currentHair;
         var locked = _busy || _snapshotBusy || _needsReconcile;
+        var tabStopAssigned = false;
         for (var i = 0; i < buttons.length; i++) {
-            var row = _snapshot.catalog[i];
-            var selected = i === _selectedIndex;
+            var index = Number(buttons[i].getAttribute('data-index'));
+            var row = _snapshot.catalog[index];
+            if (!row) continue;
+            var selected = index === _selectedIndex;
             var current = row.identifier === currentHair;
             buttons[i].classList.toggle('selected', selected);
             buttons[i].classList.toggle('current', current);
             buttons[i].setAttribute('aria-selected', selected ? 'true' : 'false');
-            buttons[i].tabIndex = selected ? 0 : -1;
             buttons[i].disabled = locked;
             var marker = buttons[i].querySelector('.hairdresser-style-marker');
-            if (marker) marker.textContent = current ? '当前' : selected ? '试戴' : '';
+            if (marker) {
+                // 紧凑格只容得下单字徽标；语义不变（当前=已存档发型，试戴=本地选中）。
+                marker.textContent = current
+                    ? (_density === 'compact' ? '当' : '当前')
+                    : selected ? (_density === 'compact' ? '试' : '试戴') : '';
+                marker.classList.toggle('trial', !current && selected);
+            }
+            if (selected && !tabStopAssigned) {
+                buttons[i].tabIndex = 0;
+                tabStopAssigned = true;
+            } else {
+                buttons[i].tabIndex = -1;
+            }
         }
+        // 选中项被当前页签过滤掉时，roving tabindex 落到可见首项。
+        if (!tabStopAssigned && buttons.length) buttons[0].tabIndex = 0;
     }
 
     function onCatalogClick(event) {
@@ -455,19 +835,61 @@ var HairdresserPanel = (function() {
         selectCatalogIndex(index, false);
     }
 
+    // 列数感知：与渲染出的网格实际列数对齐（getComputedStyle 优先，
+    // 取不到时按密度卡边值估算——紧凑 36px 格 + 2px 缝 + 两侧 9px padding）。
+    function computedCatalogColumns() {
+        if (!_catalogEl) return 1;
+        try {
+            var template = window.getComputedStyle(_catalogEl).gridTemplateColumns;
+            if (template && template !== 'none') {
+                var columns = template.split(/\s+/).filter(Boolean).length;
+                if (columns > 0) return columns;
+            }
+        } catch (e) {}
+        var width = _catalogEl.clientWidth || _catalogEl.getBoundingClientRect().width || 300;
+        return _density === 'compact'
+            ? Math.max(1, Math.floor((width - 18) / 38))
+            : Math.max(1, Math.floor(width / 280));
+    }
+
     function onCatalogKeyDown(event) {
         var node = event.target;
         if (!node || !node.hasAttribute('data-index') || node.disabled || !_snapshot) return;
-        var index = Number(node.getAttribute('data-index'));
-        var next = index;
-        if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next++;
-        else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next--;
+        // 键盘导航在当前页签的可见子集内进行；data-index 仍是目录绝对序号。
+        var buttons = Array.prototype.slice.call(
+            _catalogEl.querySelectorAll('.hairdresser-style-card'));
+        var position = buttons.indexOf(node);
+        if (position < 0 || !buttons.length) return;
+        var columns = computedCatalogColumns();
+        var next = position;
+        if (event.key === 'ArrowRight') next++;
+        else if (event.key === 'ArrowLeft') next--;
+        else if (event.key === 'ArrowDown') next += columns;
+        else if (event.key === 'ArrowUp') next -= columns;
         else if (event.key === 'Home') next = 0;
-        else if (event.key === 'End') next = _snapshot.catalog.length - 1;
+        else if (event.key === 'End') next = buttons.length - 1;
         else return;
-        next = Math.max(0, Math.min(_snapshot.catalog.length - 1, next));
+        next = Math.max(0, Math.min(buttons.length - 1, next));
         event.preventDefault();
-        selectCatalogIndex(next, true);
+        selectCatalogIndex(Number(buttons[next].getAttribute('data-index')), true);
+    }
+
+    // 键盘越界导航只滚动目录格，不带动整个面板跳动（preventScroll + 手动贴边）。
+    function revealCatalogOption(option) {
+        if (!_catalogEl || !option) return;
+        var hostRect = _catalogEl.getBoundingClientRect();
+        var optionRect = option.getBoundingClientRect();
+        if (optionRect.top < hostRect.top) _catalogEl.scrollTop -= hostRect.top - optionRect.top + 6;
+        else if (optionRect.bottom > hostRect.bottom) _catalogEl.scrollTop += optionRect.bottom - hostRect.bottom + 6;
+    }
+
+    // 换装反馈：试戴重绘后一道扫描光掠过预览舞台，遮住合成硬切；reduced-motion 由 CSS 关闭。
+    function flashPreviewSwap() {
+        var stage = _rootEl && _rootEl.querySelector('.appearance-service-preview-stage');
+        if (!stage) return;
+        stage.classList.remove('appearance-service-swap-flash');
+        void stage.offsetWidth;
+        stage.classList.add('appearance-service-swap-flash');
     }
 
     function selectCatalogIndex(index, focus) {
@@ -481,10 +903,14 @@ var HairdresserPanel = (function() {
             : '本地试戴中；确认前不会写入游戏。', 'ready');
         refreshCatalogSelection();
         renderPreview();
+        flashPreviewSwap();
         refreshControls();
         if (focus && _catalogEl) {
             var nextButton = _catalogEl.querySelector('.hairdresser-style-card[data-index="' + index + '"]');
-            if (nextButton) nextButton.focus();
+            if (nextButton) {
+                try { nextButton.focus({preventScroll: true}); } catch (e) { nextButton.focus(); }
+                revealCatalogOption(nextButton);
+            }
         }
     }
 
@@ -511,6 +937,7 @@ var HairdresserPanel = (function() {
         _resolvedHairKey = '';
         _previewFields = [];
         _previewIssue = '';
+        _previewMissingItems = [];
         _previewNameEl.textContent = row
             ? (row.name || row.identifier) : '请选择发型';
         if (_genderEl) _genderEl.textContent = _snapshot ? _snapshot.gender : '—';
@@ -545,6 +972,15 @@ var HairdresserPanel = (function() {
         _resolvedHairKey = bald ? '' : mappedHair;
         _previewFields = bald ? ['脸型'] : ['脸型', '发型'];
 
+        if (!_resolvedFaceKey) _previewIssue = 'face_missing';
+        else if (!bald && !_resolvedHairKey) _previewIssue = 'hair_missing';
+        if (_previewMode === 'full' && _portrait) renderFullBodyPreview(bald);
+        else renderBustPreview(bald);
+    }
+
+    // 胸像（默认路径）：对话 rig、脸型+发型、zoom 1.08、margin 22，fallback 语义不变。
+    function renderBustPreview(bald) {
+        if (_canvasEl) _canvasEl.setAttribute('aria-label', '当前选中发型的角色脸部预览');
         var appearance = {};
         if (_resolvedFaceKey) appearance['脸型'] = _resolvedFaceKey;
         if (!bald && _resolvedHairKey) appearance['发型'] = _resolvedHairKey;
@@ -568,8 +1004,6 @@ var HairdresserPanel = (function() {
             _renderer.setAnimationEnabled(false);
         }
 
-        if (!_resolvedFaceKey) _previewIssue = 'face_missing';
-        else if (!bald && !_resolvedHairKey) _previewIssue = 'hair_missing';
         var state = DressupDollRenderer.buildStateFromEquipment(_manifest, {
             gender: _snapshot.gender,
             appearance: appearance,
@@ -585,6 +1019,99 @@ var HairdresserPanel = (function() {
         updatePreviewFallback();
     }
 
+    // 全身：共享 CharacterAppearancePreview（战斗 rig、七站姿合并取景、maxScale 12），
+    // 数据源为 portrait.equipment + 当前脸型/性别 + 试戴中的发型。
+    function renderFullBodyPreview(bald) {
+        if (_canvasEl) _canvasEl.setAttribute('aria-label', '当前选中发型与现役装备的角色全身预览');
+        if (typeof CharacterAppearancePreview === 'undefined' || !CharacterAppearancePreview) {
+            clearCanvas();
+            _previewIssue = 'component_missing';
+            setPreviewFallback('全身预览组件未加载；脸部特写与目录选择仍然可用。', true);
+            return;
+        }
+        var appearance = {};
+        if (_resolvedFaceKey) appearance['脸型'] = _resolvedFaceKey;
+        if (!bald && _resolvedHairKey) appearance['发型'] = _resolvedHairKey;
+
+        if (!_renderer) {
+            _renderer = CharacterAppearancePreview.create(_canvasEl, {
+                manifest: _manifest,
+                animate: false,
+                onRender: function(meta) {
+                    _lastRendererMeta = copyRendererMeta(meta);
+                    updatePreviewFallback();
+                }
+            });
+        } else {
+            _renderer.setManifest(_manifest);
+            _renderer.setAnimationEnabled(false);
+        }
+
+        var equipment = _portrait.equipment;
+        var items = _manifest.items || {};
+        Object.keys(equipment).forEach(function(slot) {
+            if (equipment[slot] && !items[equipment[slot]]) _previewMissingItems.push(equipment[slot]);
+        });
+        var state = CharacterAppearancePreview.buildStateFromEquipment(_manifest, {
+            gender: _snapshot.gender,
+            equipment: equipment,
+            appearance: appearance,
+            rig: 'battle',
+            stateLabel: '空手站立',
+            margin: 12,
+            zoom: 1.0
+        });
+        // 场景化偏离：理发店是发型试戴场景，共享预览的“头盔遮发”会让试戴结果不可见，
+        // 这里强制绘制试戴发型；整形/角色构筑的头盔语义不受影响（共享组件本体未改）。
+        if (state.hairHidden) {
+            state.hairHidden = false;
+            if (!bald && _resolvedHairKey) state.keyMap['发型'] = _resolvedHairKey;
+            else delete state.keyMap['发型'];
+        }
+        var meta = _renderer.render(state);
+        _lastRendererMeta = copyRendererMeta(meta);
+        updatePreviewFallback();
+    }
+
+    // 两种模式使用不同的渲染器包装（对话胸像 rig / 战斗全身 rig）：切换即销毁重建，
+    // 避免旧实例迟到的图片 onload 回调在新模式上重绘。
+    function destroyPreviewRenderer() {
+        if (_renderer) {
+            _renderer.destroy();
+            _renderer = null;
+        }
+    }
+
+    function setPreviewMode(mode, user) {
+        if (mode !== 'bust' && mode !== 'full') return false;
+        // 旧 asLoader 无 portrait：永远停留胸像，切换控件也不会显示。
+        if (mode === 'full' && !_portrait) return false;
+        if (_previewMode === mode) {
+            refreshPreviewModeControl();
+            return true;
+        }
+        _previewMode = mode;
+        // 切换预览模式不重置本地试戴，选中序号保持原样。
+        destroyPreviewRenderer();
+        renderPreview();
+        flashPreviewSwap();
+        refreshPreviewModeControl();
+        if (user && window.BootstrapAudio) window.BootstrapAudio.cue('select');
+        return true;
+    }
+
+    function refreshPreviewModeControl() {
+        if (!_previewModeEl) return;
+        _previewModeEl.hidden = !_portrait;
+        var locked = _busy || _snapshotBusy || _needsReconcile;
+        var buttons = _previewModeEl.querySelectorAll('[data-preview-mode]');
+        for (var i = 0; i < buttons.length; i++) {
+            var active = buttons[i].getAttribute('data-preview-mode') === _previewMode;
+            buttons[i].setAttribute('aria-pressed', active ? 'true' : 'false');
+            buttons[i].disabled = locked;
+        }
+    }
+
     function copyRendererMeta(meta) {
         if (!meta) return null;
         return {
@@ -593,6 +1120,7 @@ var HairdresserPanel = (function() {
             strictFields: meta.strictFields,
             animated: meta.animated,
             missing: meta.missing,
+            hairHidden: meta.hairHidden === true,
             pendingImages: meta.pendingImages,
             failedImages: meta.failedImages
         };
@@ -605,6 +1133,18 @@ var HairdresserPanel = (function() {
         }
         if (_previewIssue === 'hair_missing') {
             setPreviewFallback('这款发型缺少可读预览资源；仍可按名称确认选择。', true);
+            return;
+        }
+        if (_previewIssue === 'component_missing') {
+            setPreviewFallback('全身预览组件未加载；脸部特写与目录选择仍然可用。', true);
+            return;
+        }
+        if (_previewMode === 'full' && _previewMissingItems.length) {
+            setPreviewFallback(
+                '全身预览有 ' + _previewMissingItems.length
+                    + ' 件装备素材暂未能显示；试戴发型与确认操作不受影响。',
+                true
+            );
             return;
         }
         if (_lastRendererMeta && _lastRendererMeta.failedImages > 0) {
@@ -792,7 +1332,35 @@ var HairdresserPanel = (function() {
         }
         if (_cancelButton) _cancelButton.disabled = _busy;
         if (_closeButton) _closeButton.disabled = _busy;
+        refreshSummary();
+        refreshGenderTabs();
+        refreshDensityControl();
+        refreshPreviewModeControl();
         refreshCatalogSelection();
+    }
+
+    // 变更摘要：试戴与当前不同时给出「当前：X → 试戴：Y」（短名）；
+    // 一致时回到中性文案。既有状态行/错误行职责不变。
+    function refreshSummary() {
+        if (!_summaryEl) return;
+        var row = selectedRow();
+        var changed = !!(row && _snapshot && row.identifier !== _snapshot.currentHair);
+        if (!changed) {
+            _summaryEl.textContent = NEUTRAL_SUMMARY;
+            _summaryEl.classList.remove('active');
+            return;
+        }
+        _summaryEl.textContent = '当前：' + displayShortName(_snapshot.currentHair)
+            + ' → 试戴：' + hairDisplayParts(row).name;
+        _summaryEl.classList.add('active');
+    }
+
+    function displayShortName(identifier) {
+        var rows = _snapshot ? _snapshot.catalog : [];
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i].identifier === identifier) return hairDisplayParts(rows[i]).name;
+        }
+        return identifier || '未设置';
     }
 
     function displayNameForIdentifier(identifier) {
@@ -852,6 +1420,11 @@ var HairdresserPanel = (function() {
                 currentHair: _snapshot ? _snapshot.currentHair : '',
                 selectedIndex: _selectedIndex,
                 selectedIdentifier: row ? row.identifier : '',
+                density: _density,
+                genderTab: _genderTab,
+                previewMode: _previewMode,
+                portraitReady: !!_portrait,
+                previewMissingItems: _previewMissingItems.slice(0),
                 busy: _busy,
                 snapshotBusy: _snapshotBusy,
                 needsReconcile: _needsReconcile,

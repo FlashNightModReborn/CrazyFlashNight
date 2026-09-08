@@ -322,6 +322,7 @@ function run() {
       "modules/panel-runtime.js",
       "modules/asset-timeline.js",
       "modules/dressup-doll-renderer.js",
+      "modules/character-appearance-preview.js",
       "modules/hairdresser-runtime.js",
       "modules/hairdresser.js"
     ]), "hairdresser lazy dependencies must remain minimal and ordered");

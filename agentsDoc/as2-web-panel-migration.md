@@ -280,10 +280,10 @@ Skill 使用独立 `skills` domain；每个业务 envelope 顶层严格为 `{typ
 
 | Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
 |---------|-----------|-------------|-------------------|---------------|------------|--------|
-| `snapshot` | `hairdresserSnapshot` | `HairdresserPanelService.handle("snapshot")` → `executeSnapshot` | `hairdresser_response` | `panel_resp domain=hairdresser cmd=snapshot` | `HairdresserRuntime.RequestMux` callback | 读；`gender/face/currentHair` + 77 行权威目录 |
+| `snapshot` | `hairdresserSnapshot` | `HairdresserPanelService.handle("snapshot")` → `executeSnapshot` | `hairdresser_response` | `panel_resp domain=hairdresser cmd=snapshot` | `HairdresserRuntime.RequestMux` callback | 读；`gender/face/currentHair` + 77 行权威目录 + 可选 `portrait` 装备投影 |
 | `commit` | `hairdresserCommit` | `HairdresserPanelService.handle("commit")` → `executeCommit` | `hairdresser_response` | `panel_resp domain=hairdresser cmd=commit` | 提交 / 对账 callback | 写；发型 root + live actor 刷新 + dirty mark |
 
-AS2 从现役 `_root.发型库 / 发型名称库 / 发型价格` 三数组逐行投影 `{identifier,name}`，必须保持 77 行源顺序和重复项，不按 identifier/name 去重；长度不一致、空标识、非数值价格或任一非零价格均整体 fail-closed。snapshot 的 `gender/face/currentHair` 是权威文本；Web 不反猜二值性别，renderer 无法识别时只显示可读降级，目录和提交仍可用。发型选择只在 Web 内以既有 `DressupDollRenderer` 预览脸型/发型，使用 strict fields、非动画且光头项只渲染脸型；预览、取消、X、ESC、backdrop 和 close 都不写业务状态。
+AS2 从现役 `_root.发型库 / 发型名称库 / 发型价格` 三数组逐行投影 `{identifier,name}`，必须保持 77 行源顺序和重复项，不按 identifier/name 去重；长度不一致、空标识、非数值价格或任一非零价格均整体 fail-closed。snapshot 的 `gender/face/currentHair` 是权威文本；Web 不反猜二值性别，renderer 无法识别时只显示可读降级，目录和提交仍可用。snapshot 另携带可选顶层 `portrait`：`{equipment:{槽名:物品名},hair,face}`，槽名 ⊆ 整形同款 11 槽白名单、物品名 1..160、hair/face 0..160 镜像 `_root.发型/_root.脸型`；actor 不可用时 equipment 为空对象且不新增失败分支。Host 在 portrait 缺失时保持兼容放行（旧 asLoader），存在时按整形同款形状严格校验，不合格即 malformed_response。发型选择只在 Web 内以既有 `DressupDollRenderer` 预览脸型/发型，使用 strict fields、非动画且光头项只渲染脸型；预览、取消、X、ESC、backdrop 和 close 都不写业务状态。
 
 commit 只接受 `{v:1,hairIdentifier}`，不接受价格、货币、backend preview、execution token 或任意 catalog 行对象。AS2 每次重新解析当前免费目录，并在写前一次性确认目标存在、root actor、live actor、存档对象与装扮刷新方法可用；全部前置条件通过后，顺序固定为 `_root.发型` → live actor `发型` → `gotoAndPlay("刷新装扮")` → `_root.存档系统.dirtyMark=true`。它保持现役免费语义，不扣 K 点/金币，也不新增自动存盘命令。Web 收到字段完整且 `currentHair` 精确等于本次选择的权威成功回包后，必须立即复用正常 `requestClose()`：当前 Web session 只关闭一次，Host 继续独占 pending 清理和游戏焦点恢复。确定失败保持面板可操作；未知结果仍在当前面板读取 fresh snapshot 并显示 applied/not-applied，不用延时器猜成功，也不因普通重开 snapshot 自动关闭。
 

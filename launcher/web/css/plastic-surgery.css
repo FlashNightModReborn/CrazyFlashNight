@@ -10,6 +10,7 @@
 #surgery-canvas {
     transform: scale(var(--identity-height-scale, 1));
     transform-origin: 50% 85%;
+    transition: transform var(--wb-motion-standard) var(--wb-ease-standard);
 }
 .surgery-preview-meta { display: flex; justify-content: space-between; gap: 12px; }
 .surgery-preview-meta strong { color: var(--appearance-text); font-weight: 500; white-space: nowrap; }
@@ -78,3 +79,7 @@
 .surgery-change p { margin: 6px 0 0; color: var(--appearance-text); line-height: 1.6; }
 .surgery-feedback strong { color: var(--appearance-warning); font-size: 13px; font-weight: 600; }
 .surgery-panel .surgery-confirm { min-width: 160px; }
+
+@media (prefers-reduced-motion: reduce) {
+    #surgery-canvas { transition: none; }
+}

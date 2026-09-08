@@ -12,6 +12,8 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         failed = 0;
         setup();
         testSnapshotPreservesAuthorityCatalog();
+        testSnapshotPortraitProjectsEquipment();
+        testSnapshotPortraitWithoutActor();
         testVersionAndCommandGate();
         testPricingGateHasNoWrite();
         testCatalogGateHasNoWrite();
@@ -96,6 +98,66 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         var unusualGender:Object = HairdresserPanelService.execute("snapshot", {v:1});
         check(unusualGender.gender == "未知",
             "snapshot preserves authority gender text instead of guessing a binary value");
+    }
+
+    private static function testSnapshotPortraitProjectsEquipment():Void {
+        resetState();
+        var hero:Object = actor();
+        hero.头部装备 = {name:"测试头盔"};
+        hero.长枪 = {name:"测试长枪"};
+        hero.刀 = {name:7};
+        hero.手枪 = "裸字符串槽值";
+        var result:Object = HairdresserPanelService.execute("snapshot", {v:1});
+        check(result.success && result.portrait != undefined,
+            "snapshot carries the optional portrait projection");
+        check(result.portrait.equipment["头部装备"] == "测试头盔"
+            && result.portrait.equipment["长枪"] == "测试长枪",
+            "portrait projects equipped item names by authority slot");
+        var keyCount:Number = 0;
+        for (var key:String in result.portrait.equipment) keyCount++;
+        check(keyCount == 2 && result.portrait.equipment["刀"] == undefined
+            && result.portrait.equipment["手枪"] == undefined
+            && result.portrait.equipment["上装装备"] == undefined,
+            "portrait skips empty slots, non-object slots and non-string item names");
+        check(result.portrait.hair == "测试发型-7"
+            && result.portrait.face == "女变装-基本脸型",
+            "portrait mirrors root hair and face");
+        check(result.currentHair == "测试发型-7" && result.catalog.length == 77
+            && !_root.存档系统.dirtyMark && hero.refreshCount == 0,
+            "portrait projection adds no write and changes no existing snapshot field");
+    }
+
+    private static function testSnapshotPortraitWithoutActor():Void {
+        resetState();
+        _root.gameworld[_root.控制目标] = undefined;
+        var missingActor:Object = HairdresserPanelService.execute("snapshot", {v:1});
+        check(missingActor.success && missingActor.portrait != undefined,
+            "snapshot stays successful when the live actor is unavailable");
+        var actorKeys:Number = 0;
+        for (var actorKey:String in missingActor.portrait.equipment) actorKeys++;
+        check(actorKeys == 0,
+            "portrait equipment is an empty object without a live actor");
+        check(missingActor.portrait.hair == "测试发型-7"
+            && missingActor.portrait.face == "女变装-基本脸型",
+            "portrait still mirrors root hair and face without a live actor");
+
+        resetState();
+        _root.gameworld = undefined;
+        var missingWorld:Object = HairdresserPanelService.execute("snapshot", {v:1});
+        var worldKeys:Number = 0;
+        for (var worldKey:String in missingWorld.portrait.equipment) worldKeys++;
+        check(missingWorld.success && missingWorld.portrait != undefined
+            && worldKeys == 0 && missingWorld.portrait.hair == "测试发型-7",
+            "portrait equipment stays empty and hair still mirrors root without gameworld");
+
+        resetState();
+        _root.控制目标 = undefined;
+        var missingTarget:Object = HairdresserPanelService.execute("snapshot", {v:1});
+        var targetKeys:Number = 0;
+        for (var targetKey:String in missingTarget.portrait.equipment) targetKeys++;
+        check(missingTarget.success && targetKeys == 0
+            && missingTarget.portrait.hair == "测试发型-7",
+            "portrait equipment stays empty when the control target name is unavailable");
     }
 
     private static function testVersionAndCommandGate():Void {
@@ -264,6 +326,9 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         check(snapshot.task == "hairdresser_response" && snapshot.callId == 41
             && snapshot.success && snapshot.v == 1 && snapshot.catalog.length == 77,
             "snapshot handler emits parseable task and callId envelope");
+        check(snapshot.portrait != undefined && snapshot.portrait.hair == "测试发型-7"
+            && snapshot.portrait.face == "女变装-基本脸型",
+            "snapshot wire carries the portrait projection");
 
         _root.gameCommands["hairdresserCommit"]({
             v:1, callId:42, hairIdentifier:"测试发型-11",
