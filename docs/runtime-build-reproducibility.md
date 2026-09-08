@@ -17,6 +17,8 @@
 
 当前为 **HUMAN_ACCEPTANCE_PASSED / promoted**，限定为维护者确认的整形画面、共享取景和新医务室入口，以及候选普通日志中三次各扣 5 K 点并严格保存成功、余额不足拒绝且不追加扣费。合并上游后的正式 native identity 与早期隔离候选不同；部署后没有启动游戏补跑正式入口业务，不称整形、理发、建角或完整产品 `standard_entry_verified`。既有焦点与返回流程的验收范围保持上一发布记录。
 
+源码与部署提交 `b89d7b8c7f7cb497c45e255459e7a809319c4a90` 已一起快进推送至 `main`。首次远端 [Audit run 34216977097](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34216977097) 成功，绑定 `event=push / run_attempt=1` 与该部署 head；于 `2026-09-08T10:48:36.4784868Z` 明确报告 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `d92611b41cdb1a11b9ec9dedb2ba4d53f1f6c7a3` → head `b89d7b8c7f7cb497c45e255459e7a809319c4a90`。远端独立重放的 33-file closure、2 signers / 2 faultDomains 和最终 source tag 绑定全部通过。本轮没有新建 Git worktree，worker 隔离 checkout 已自动清理；构建证明与上一 bundle 保留本机。后续审计记录提交只改本文，不改变已审计的部署闭包。
+
 ## 2026-09-08 上一正式发布：选关前台交接与返回重试
 
 选关／地图／奖励面板完整隐藏前，仍持有前台时先交回游戏根窗口；外部前台保护不放宽。返回准备、存盘或转场失败后保留冻结奖励与 durable 事实，通过原生“重试返回”继续；开发和候选验收统一使用 `本地开发启动.cmd`。实现与限定现场证据见[焦点诊断 §9.13](焦点管理-诊断与卡顿排查-2026-05-24.md#913-2026-09-08选关关闭前的前台交接)及[关卡结果 ADR §0D](关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0d-2026-09-08-返回失败后的原生重试入口)。
