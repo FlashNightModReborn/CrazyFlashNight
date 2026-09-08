@@ -2,7 +2,22 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-07 当前正式发布：地图内容创作工作台第二阶段
+## 2026-09-08 当前正式发布：地图主动撤退入口
+
+地图战斗期间保留普通导航锁，同时提供由 AS2 裁决的“撤退并返回”；胜利、死亡和结算中分别显示对应动作或说明，复用现役冻结、落盘、退场和奖励流程。实现与限定人类验收见[地图主动撤退](关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0c-2026-09-08-地图主动撤退入口)。
+
+- 最终 release source `34a944055880f5e150cdf25053fffc4fd238cce7`；不可变 tag `runtime-build-v2/20260908-map-retreat-v1`；release tree `067aab8d00597caf4aae46499b90372931000509`；request `1A01CB9C7D1E2C93D8F48F37DBF3021FCF75271DB2581C1380540F1DFAB9D014`。
+- artifact source `73DB16D4F3B9A62C563EF9D903219641BFDE599AD2430385E24BBDA5D603385F`、producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`、toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`，形成 identity `3061231FE8F8F20C691E4F64DD349A8232CE6640E93C66ACB20FEC6DA6A849C4`；33-file closure `1B091DC431F436F5084BDD93FB62025150E638BB334F66CFC91959403548BD81`；正式 Core DLL SHA-256 `A5FFA1FAF6A198C311720E7A79D38E5CC3F2E5BE7F8BA1099AF3280A8492CEE5`，与人类验收候选逐字节一致。
+- 本地 X509 `builder-local-a / physical-host-a`，keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `EFA8191166D37E446A5567885694660E3FDCACDD0FD9B8C2C06207FCC193DCD3`，[cloud run 34176220011](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34176220011)。云端源码标签、workflow SHA、run headSha 均绑定最终 source，证明回收与 promotion 验真通过。
+- 最终 production policy **40/40**；policy hash `FCBD7303628A51AF1EC805646B5A98627D4A3D05E77026EB5D775BDD5E07D6BD`；receipt SHA-256 `704FA0A644E74F4B72937AFAF16E5E85846870B09432872A97CC1DB3A77421D8`；manifest SHA-256 `84151F1A4B92423924A6F2EE53999CE04938064869E37E4FACC60BFDCD8FE791`；磁盘 consensus SHA-256 `DA6870AAE43B6F2B35ED9C0E26C549FD6EBE832E5510B04C85AF96B3571C0735`。
+- `2026-09-08T01:30:36.7338199Z` 完成原子 promotion，strict consensus 确认 **2 signers / 2 faultDomains**；正式 bundle 和根 bootstrap `--verify-only` 通过，独立重跑根 verifier exit 0。旧 bundle 保留于 `tmp/runtime-promotions/20260908T012950183Z-f1f8fd37c36b476bba6062208debf8f7/previous`。
+- 功能施工回归：地图 Web 54/54、AS2 地图桥 46/46、结算 739/739、Settings 47/47、Host 全量 4,800 通过/3 项既有跳过。发布准备另通过小窗口撤退实际渲染断言、WB audit 0/0、ratchet 67/67、材料目录与商店头像完整闭包；配套 asLoader 为 1,277,231 字节、SHA-256 `FA4F449935D560AD4AB3FDC4F63B17B16CA200D1591A8D2934FB15D7A6F60F8F`，fresh Compiler/Output 与 FFDec 639/639 证据见功能 ADR。
+
+发布准备同步五份任务/竞技场派生目录，并刷新材料 sidecar 来源摘要；字典正文不变。商店头像从当前真实 SWF/XFL 重建并二次逐字节重放，固定链由旧地图根更新为 `464→270→268 / frame 1`，保留身份、配饰、帧数和几何硬门；27 张 PNG 不变，7 张只有边缘像素微差。新按钮颜色改用全局主题变量并补实际渲染断言，没有提高样式债务上限。准备请求 `A550C3EF53B7725D136C40EA3EA36C10F86F565BC2BB67D9D4351872F95A3EBE` 与 `2EA32CA498466602EE680E58E7178557D888C20D180B6D726831B11651912970` 均已 supersede，未触发云构建；最终只创建并使用上述一个不可变 source tag。本地签名 payload 按同一 build identity 复用，最终 receipt 与云端 source 均绑定最终完整 Git tree。
+
+当前为 **HUMAN_ACCEPTANCE_PASSED / promoted**，人类结论限定为已实际覆盖的地图中途撤退、保存确认和再次入场。胜利/死亡的新地图入口、非零奖励领取、最后一次退出后的 pending 恢复未在本次现场覆盖；部署后未自动补跑正式入口业务旅程，不称业务或完整产品 `standard_entry_verified`。
+
+## 2026-09-07 上一正式发布：地图内容创作工作台第二阶段
 
 地图工作台第二阶段现已进入正式 runtime：页面／地点／NPC 驻点／原任务端点／素材候选与同一 C# 地图域，配套有限 AS2 事实桥和导航新鲜度检查。作者画布默认“创作视图”，可编辑当前剧情隐藏的内容；“玩家预览”仍严格消费同一权威投影。保存后关闭／重开查询、地图回包编号与切页反馈竞争均已修复。能力和使用入口见[地图工作台](../tools/map-workbench/README.md)，完整实施及验收边界见[两阶段记录](地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
 

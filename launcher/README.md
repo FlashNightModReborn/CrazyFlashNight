@@ -1,7 +1,7 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：上游 source `565d8e09ce364c23ad543e821d2957f011315cfd`、deployment `14c569d1ef856faa05388af090f796f7299bd45a`；军阀工作树已对齐 `4ae00a1762`。正式发布状态只读 manifest、consensus 与 runtime 文档；军阀候选另见[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)，不等同正式部署。
+**最后核对代码基线**：release source `34a944055880f5e150cdf25053fffc4fd238cce7`（2026-09-08，地图主动撤退）；正式发布状态只读 manifest、consensus 与 runtime 文档。军阀专项边界另见[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：

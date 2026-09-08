@@ -8,7 +8,7 @@
 
 ## 0C. 2026-09-08 地图主动撤退入口
 
-**最后核对代码基线**：`9a41356e067a96812dc8e2ef876fd799409a464c` + 本轮工作树；已测试的地图中途撤退为 `HUMAN_ACCEPTANCE_PASSED / candidate_executed`，维护者已于 2026-09-08 授权云端共识、正式构建、部署与推送。
+**最后核对代码基线**：release source `34a944055880f5e150cdf25053fffc4fd238cce7`（2026-09-08）；地图中途撤退为 `HUMAN_ACCEPTANCE_PASSED / promoted`，已完成本地 X509 与 GitHub OIDC 双故障域共识、40/40 policy、原子部署及根 verifier。完整身份与发布记录见[runtime 构建复现文档](runtime-build-reproducibility.md#2026-09-08-当前正式发布地图主动撤退入口)，不扩大现场验收范围。
 
 战斗地图继续允许阅读、禁止普通 `navigate/open_stage_select`。地图顶部直接显示 AS2 授权的“撤退并返回”；活跃关卡明确说明保留已获得物资、不获得通关奖励，胜利改为“返回并结算”，死亡沿原有医务室返回规则。入场、转场、待领奖励只显示原因和下一步，不重复开放逃生。设置页与右上状态槽的现有行为不变。
 
