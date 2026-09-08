@@ -10,14 +10,18 @@
 - artifact source `661EF511A657A2579137985C419B28EB15C342301D0108C2B12CA9473703C1BE`、producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`、toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`，形成 identity `1315F863008F88FDB25A6E12672F0B890672FB81450697F1B8D1E191120E1166`；正式 33-file closure `779ABEDADD7C54D8AE89BD335DB673325CB5B97E9D8F011F7338C199F256BF5D`；Core DLL SHA-256 `3336F2D1DF9E27E3F21D3BD371BD2EBD8E2058BB9B542C72B2DE639B7E93018A`。
 - 本地 X509 `builder-local-c / physical-host-c`，keyId `CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `E2488695456D39501ABD099103EE69CAA7C14298D43DBCFEF1C501E6828A55F3`，[cloud run 34206080833](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34206080833)。本地与云端正式 producer 的逐文件字节一致；attestation-only 证明在 promotion 中对本地 CAS 完整重放。
 - production policy **40/40**；policy hash `EB4833A1404DF7E74BB5407BA3AA9DB920F14C30ACAD62603A853AB2FBDB6B91`；receipt SHA-256 `B82F92A958CD810C3BC958222B647CE501EAAFAC2628C40CF231A4199FD1AD52`；manifest SHA-256 `F62033E807A224BEF330054B41B5C1DE2244A730911DFF3D68B86D43E128C913`；磁盘 consensus SHA-256 `85910EAD8B31367904FFBD16D2540C61321874A16FCAF8DC93F4CCF479296C29`。
-- 隔离发布工作树于 `2026-09-08T08:52:27.8049654Z` 完成原子 promotion，strict v2 确认 **2 signers / 2 faultDomains**、33-file bundle 与根 bootstrap `--verify-only` 通过。上一正式 bundle 已复制并核对至主目录本机 `tmp/panel-handoff-release/previous-deployment`，用于回退；实际安装目录的验证与远端部署 Audit 在部署提交回主目录后另记。
+- 隔离发布工作树于 `2026-09-08T08:52:27.8049654Z` 完成原子 promotion，strict v2 确认 **2 signers / 2 faultDomains**、33-file bundle 与根 bootstrap `--verify-only` 通过。上一正式 bundle 已复制并核对至主目录本机 `tmp/panel-handoff-release/previous-deployment`，用于回退；部署提交 `d7389c027a373ae876cc0ed77efeb0775427fe9a` 已与源码一起快进推送至 `main`；实际安装根再次通过 33-file bundle、2 signer / 2 faultDomain 完整共识重验，根 bootstrap `--verify-only` 返回 0。未启动游戏补跑业务旅程。
 - 实现回归：Launcher canonical **4,823 passed / 3 existing skipped / 0 failed**，最终焦点定向 **102/102**；通用开发入口 **68** 项、入口护栏、文档治理及 diff 检查通过。AS2 最终 aggregate **775** 项及 Box **13 cases / 53 assertions** 的 fresh run/超时后同 run 回收边界详见 §0D；配套 `asLoader.swf` SHA-256 `45CC7E676418BBA4FFA9FD95129B89F485F8C31537A1519FA331E82F7C296278`，本轮发布未再改 AS2 或重编主文件。
 
 发布准备补齐修档字典中的上游新物品 `P90印花集`，再次 prepare 后 16 项派生产物与冻结 tree 一致且字典不再变化。第一轮政策启动被生成后的 Git stat/EOL 状态挡住，刷新仅涉及已证明 Git blob 相同的 7 项派生文件，`write-tree` 仍精确等于上述 release tree；随后完整政策门通过，未改请求或放宽检查。首次云端触发前的接口超时没有创建 run；后续已创建任务的进度查询发生 EOF，使用同一 run ID 恢复并取得证明，没有 rerun 或替换 source tag。
 
 验收候选 `dev-handoff-v2` 与正式产物同 build identity，31 个 payload 文件逐字节相同，只有 Core DLL/EXE 不同：两者 Windows manifest 在 CRLF→LF 规范化后相同；DLL 的 `.text` 除 16 字节 GUID heap 外完全相同，EXE 的代码段完全相同。不得把开发候选原有 closure 当成本轮正式 closure；双构建一致性以本节正式产物为准。
 
+本轮为保护同时进行的设计文档修改，在隔离发布工作树冻结、构建与 promotion，再将已签名的部署提交快进至实际安装目录并独立重验。仅接入已提交的本轮变更；主目录其他未提交设计资料保留。发布工作树／分支与 worker 隔离 checkout 均已清理，回退文件与构建证据留在本机。
+
 当前为 **HUMAN_ACCEPTANCE_PASSED / promoted**。人类与普通日志限定覆盖两次选关保持前台、非零奖励领取后再次入场、零奖励结算与正常退出；没有在自然故障下执行手动重试或 `return_deliverable`，也没有重跑正式入口业务旅程，不称这些分支或完整产品 `standard_entry_verified`。历史焦点问题的因果与覆盖边界不因发布而扩大。
+
+首次远端部署审计 [run 34208103897](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34208103897) 成功，绑定 `event=push / run_attempt=1` 与部署 head `d7389c027a373ae876cc0ed77efeb0775427fe9a`。于 `2026-09-08T09:11:02.6907562Z` 明确报告 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `63d2f13deb6eeb2993d9ea9743bc5bb2f5cb190a` → head `d7389c027a373ae876cc0ed77efeb0775427fe9a`；远端独立重放的 33-file closure、2 signers / 2 faultDomains 及 source tag 绑定全部通过。
 
 ## 2026-09-08 上一正式发布：地图主动撤退入口
 
