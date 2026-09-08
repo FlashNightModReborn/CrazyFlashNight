@@ -8,7 +8,7 @@
 
 ## 0D. 2026-09-08 返回失败后的原生重试入口
 
-**最后核对代码基线**：`63d2f13deb` 加本轮工作树；状态为 `compiled / candidate_built / candidate_executed / HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`（限下述维护者反馈范围）。正式 C# runtime 未替换，AS2 已发布到 `scripts/asLoader.swf`；旧 Host 继续使用兼容 v1 投影。新报告的选关关闭掉前台已实施独立修复，机器/现场边界见[焦点诊断 §9.13](焦点管理-诊断与卡顿排查-2026-05-24.md#913-2026-09-08选关关闭前的前台交接)。
+**最后核对代码基线**：release source `1e24fca52165e909fd53743f30105487a89708a4`；当前为 `HUMAN_ACCEPTANCE_PASSED / promoted`（限下述维护者反馈与现场范围）。正式 C# runtime 已完成双构建共识和原子 promotion，配套 `scripts/asLoader.swf` 保留兼容旧 Host 的 v1 投影；完整身份见 [runtime 发布记录](runtime-build-reproducibility.md)。新报告的选关关闭掉前台已实施独立修复，机器/现场边界见[焦点诊断 §9.13](焦点管理-诊断与卡顿排查-2026-05-24.md#913-2026-09-08选关关闭前的前台交接)。
 
 修复两处已由故障注入复现的缺口：奖励进入 `prepared` 后存盘失败导致原生入口消失；durable 已通过但淡出失败后，`_returnRequested` 阻止原生入口重试。`prepared` 仍是冻结奖励事实，`_returnRequested` 仍保存已通过 durable 的事实；均不为了重试回滚或重新随机奖励。AS2 以仅存在于进程内的尝试/失败记录保存当前 run 与 gameworld 引用，只有该上下文中的明确失败允许重试；正在执行、已成功转场、旧 revision/intent、换场景或新关卡均不能借此再次退场。
 
@@ -22,7 +22,7 @@
 
 机器证据：Host 定向 88/88，Windows PowerShell 5.1 canonical Launcher 4,807 通过/3 项既有显式跳过；地图 46/46、Settings 47/47、Web 54/54、Panel contracts 70/70。最终 AS2 496 + Loot 267 + Planner 12 共 775 项，另有 BoxInteractionArbiter 13 场景/53 断言；runId `085d6d42865041398a0a146342a035d7`。该次 runner 先达到 300 秒上限并退出 1，原 Flash 进程随后完成；保留原超时记录，按相同 runId 的唯一 Start/Complete、全部成功计数、无失败标记、Compiler 0/0、Output `[compile] done` 和 0 次 32K retry 回收了完整证据。不能将这段历史改称 runner 首次退出 0。新增回归还覆盖更换 gameworld 后旧重试失效，以及已结算普通场景的设置返回不被新尝试门阻断。
 
-最终 `asLoader.swf` 为 1,280,426 字节，SHA-256 `45CC7E676418BBA4FFA9FD95129B89F485F8C31537A1519FA331E82F7C296278`；fresh CS6 publish Compiler 0/0，SWF 结构/解压长度与新方法常量核查通过，最大函数 50,569 字节。publish-only 没有新行为 trace，行为结论来自前述真实 TestLoader；本机 FFDec 缺 Java，未宣称反编译通过。候选 UI 的“结算准备失败 / 保存未完成 / 返回未完成 + 重试返回”已用该候选 DLL 实际渲染核对。所有原始/派生证据在本机 `tmp/return-retry-fix/`，未提交或发布。
+最终 `asLoader.swf` 为 1,280,426 字节，SHA-256 `45CC7E676418BBA4FFA9FD95129B89F485F8C31537A1519FA331E82F7C296278`；fresh CS6 publish Compiler 0/0，SWF 结构/解压长度与新方法常量核查通过，最大函数 50,569 字节。publish-only 没有新行为 trace，行为结论来自前述真实 TestLoader；本机 FFDec 缺 Java，未宣称反编译通过。候选 UI 的“结算准备失败 / 保存未完成 / 返回未完成 + 重试返回”已用该候选 DLL 实际渲染核对。所有原始/派生证据在本机 `tmp/return-retry-fix/`；该施工交付时点尚未提交或发布。
 
 维护者于 2026-09-08 反馈另外两项验收“看起来正常”，同时报告从选关进入瞬间游戏掉前台。自动包 `auto-20260908-153450-642-62644eeb4ab644fb831ce951a8102052.zip` 绑定相同候选 Core/asLoader、PID 11240，14 项哈希匹配、Host 279 与 AS2 7 条事件连续。15:33:42.917 进入 DEATH MATCH入门赛；15:33:42.958→15:33:43.211 的选关 SW_HIDE 前后，前台从本游戏 overlay 变成 ChatGPT，两次恢复分别 skipped_external/gate_skipped；主窗口与 Flash 仍 visible=true，HUD 随失活隐藏，15:33:44.645 重新激活。该序列证实掉前台，尚未区分外部主动激活与隐藏面板后的系统选窗，不指认 ChatGPT 为根因，也不改动返回重试的已验证结论。日志独立证明原生 return_base → durable → 基地 web_active → claimed 与正常退出；本轮奖励始终为 0，未出现 return_deliverable、领取或再次入场，因此不把人类反馈扩写成这些分支的日志证明。现场分析在本机 `tmp/focus-stage-entry-20260908/`。
 
