@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑/R04/90_绘制元件/基础红刃_始终可见" itemID="6a9f543d-0000501e" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="基础红刃_始终可见">
+      <layers>
+        <DOMLayer name="基础红刃_始终可见" color="#D45656" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0" b="0.047607421875" c="-0.047607421875" d="0" tx="170"/>
+                                </matrix>
+                                <GradientEntry color="#FF1008" ratio="0"/>
+                                <GradientEntry color="#FF0603" ratio="0.12156862745098"/>
+                                <GradientEntry color="#F20000" ratio="0.341176470588235"/>
+                                <GradientEntry color="#E60000" ratio="0.509803921568627"/>
+                                <GradientEntry color="#FA0000" ratio="0.701960784313725"/>
+                                <GradientEntry color="#FF0802" ratio="0.87843137254902"/>
+                                <GradientEntry color="#BC0008" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                          </fills>
+                          <edges>
+                            <Edge fillStyle0="1" edges="!2484 -787|1641 -207!1641 -207|1640 112!1640 112|2376 764!2376 764[2620 548 2942 359!2942 359|6414 375!6414 375[7532 308 8478 -76!8478 -76[7653 -311 6721 -412!6721 -412|6682 -416!6682 -416|3072 -432!3072 -432[2778 -567 2484 -787"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

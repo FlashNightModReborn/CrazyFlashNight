@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/P90-Ti61/图标-Codex-钛合金P90" itemID="6a9e6100-4935e3e1" linkageExportForAS="true" linkageIdentifier="图标-Codex-钛合金P90">
+  <timeline>
+    <DOMTimeline name="图标-Codex-钛合金P90">
+      <layers>
+        <DOMLayer name="停止" color="#FFFF00" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="24像素遮罩" color="#FFFF00" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/图标/24像素遮罩" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="机匣特写" color="#FFFF00" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/00_图标特写静态" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.3599853515625" d="0.3599853515625" tx="9" ty="4.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="底影与掉落整枪" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/图标/24像素底影" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/00_整枪_含共用激光" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.274993896484375" d="0.274993896484375" tx="-0.85" ty="0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

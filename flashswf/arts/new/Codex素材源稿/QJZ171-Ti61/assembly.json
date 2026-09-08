@@ -114,5 +114,39 @@
     "balanceStatus": "unresolved_acquisition_evidence",
     "numericRecord": "docs/QJZ171-钛合金版数值落盘-2026-09-07.md",
     "weightMechanicDesign": "docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md"
-  }
+  },
+  "laser": {
+    "hardwareSymbol": "Codex/Ti61-共用/01_激光发射器/本体_白甲红衬",
+    "runtimeEmitterName": "激光发射器",
+    "runtimeOutletPath": "激光发射器.出光位置",
+    "beamLinkage": "激光瞄准-Codex-钛合金61-红束",
+    "staticDisplaySymbol": "Codex/QJZ171-Ti61/00_总装_含激光发射器",
+    "emitterInAuthorCoordinates": {
+      "a": -0.5,
+      "d": 0.5,
+      "tx": 34,
+      "ty": -82
+    },
+    "emitterInWrapper": {
+      "a": 0.265335083007813,
+      "d": 0.265335083007813,
+      "tx": 137.4,
+      "ty": -51.95
+    },
+    "mountInAuthorCoordinates": {
+      "a": -0.5,
+      "d": 0.5,
+      "tx": 34,
+      "ty": -76
+    },
+    "independentOfBarrelRecoil": true,
+    "case": "docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md",
+    "emitterInWrapperCalculated": {
+      "a": 0.265342712402344,
+      "d": 0.265342712402344,
+      "tx": 137.40669555664059,
+      "ty": -51.96620483398442
+    }
+  },
+  "nativeMatrixNote": "实际矩阵读取自CS6保存后的XFL；平移按twip、缩放按SWF网格量化。"
 }

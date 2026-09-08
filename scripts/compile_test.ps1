@@ -49,6 +49,27 @@ $nonTerminalUncertainWritten = $false
 $compileUncertainToken = [System.Guid]::NewGuid().ToString('N')
 $inFlightUncertainBody = $null
 
+function Read-FlashLogBytes {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    # 游戏或测试播放器可仍持有日志写句柄；读取本次打开时的固定长度快照。
+    $stream = [System.IO.File]::Open(
+        $Path, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read,
+        [System.IO.FileShare]::ReadWrite)
+    try {
+        $bytes = [byte[]]::new($stream.Length)
+        $offset = 0
+        while ($offset -lt $bytes.Length) {
+            $read = $stream.Read($bytes, $offset, $bytes.Length - $offset)
+            if ($read -le 0) { throw "Flash log changed length while reading: $Path" }
+            $offset += $read
+        }
+        return ,$bytes
+    } finally {
+        $stream.Dispose()
+    }
+}
+
 function Write-CompileUncertain {
     param([Parameter(Mandatory = $true)][string]$Reason)
 
@@ -421,7 +442,7 @@ Remove-Item -Path $ErrorMarker -ErrorAction SilentlyContinue
 $flashLogBeforeItem = if (Test-Path $FlashLog) { Get-Item $FlashLog } else { $null }
 $flashLogBefore = if ($flashLogBeforeItem) { $flashLogBeforeItem.LastWriteTimeUtc } else { $null }
 $flashLogBeforeBytes = if ($flashLogBeforeItem) {
-    [System.IO.File]::ReadAllBytes($FlashLog)
+    Read-FlashLogBytes -Path $FlashLog
 } else {
     [byte[]]@()
 }
@@ -477,7 +498,7 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             if ($flashLogBefore -and $flashLogItem.LastWriteTimeUtc -le $flashLogBefore) {
                 Write-Host '[WARN] flashlog.txt 未刷新，本次 trace 可能还是旧日志'
             } else {
-                $flashLogBytes = [System.IO.File]::ReadAllBytes($FlashLog)
+                $flashLogBytes = Read-FlashLogBytes -Path $FlashLog
                 $flashTraceOffset = 0
                 if ($flashLogBefore -and $flashLogBeforeSize -gt 0 -and
                     $flashLogBytes.Length -ge $flashLogBeforeSize) {

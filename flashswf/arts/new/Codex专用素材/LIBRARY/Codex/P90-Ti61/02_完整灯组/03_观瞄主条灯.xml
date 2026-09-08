@@ -1,0 +1,178 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/P90-Ti61/02_完整灯组/03_观瞄主条灯" itemID="6a9e6100-5b8fff1c" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="03_观瞄主条灯">
+      <layers>
+        <DOMLayer name="观瞄条灯 · 亮芯" color="#AA3344" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FF4A2D"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!76 -5[75 -7 73 -7!73 -7|53 -16!53 -16[52 -17 50 -17!50 -17|-75 -17!-75 -17[-77 -17 -78 -16!-78 -16[-80 -16 -81 -15!-81 -15[-82 -14 -82 -12!-82 -12[-83 -11 -83 -9!-83 -9[-83 -7 -82 -6!-82 -6[-82 -4 -81 -3!-81 -3[-80 -2 -78 -2!-78 -2[-77
+ -1 -75 -1!-75 -1|48 -1!48 -1|67 7!67 7[68 8 70 8!70 8[71 8 73 7!73 7[74 7 75 6!75 6[77 5 77 3!77 3[78 2 78 0!78 0[78 -1 77 -3!77 -3[77 -4 76 -5"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFD1A0"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!42 -8[43 -9 43 -10!43 -10[43 -11 42 -12!42 -12[41 -13 40 -13!40 -13|-65 -13!-65 -13[-66 -13 -67 -12!-67 -12[-68 -11 -68 -10!-68 -10[-68 -9 -67 -8!-67 -8[-66 -7 -65 -7!-65 -7|40 -7!40 -7[41 -7 42 -8"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="观瞄条灯 · 红晕" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0146331787109375" d="0.0065155029296875"/>
+                            </matrix>
+                            <GradientEntry color="#FF2618" alpha="0.592156862745098" ratio="0"/>
+                            <GradientEntry color="#FF2618" alpha="0.403921568627451" ratio="0.250980392156863"/>
+                            <GradientEntry color="#FF2618" alpha="0.180392156862745" ratio="0.549019607843137"/>
+                            <GradientEntry color="#FF2618" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!0 -106[-59 -106 -108 -95!-108 -95[-134 -45 -153 2!-153 2|-167 40!-167 40|-167 75!-167 75[-98 106 0 106!0 106[99 106 169 75!169 75[239 44 239 0!239 0[239 -44 169 -75!169 -75[99 -106 0 -106"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="观瞄主灯窗" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#161616"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!115 -75|-105 -75!-105 -75|-153 1!-153 1|-153 2!-153 2|-155 7!-155 7|-155 75!-155 75|125 75!125 75|195 55!195 55|195 -30!195 -30|115 -75"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#121213"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!117 -79[116 -79 115 -79!115 -79|-105 -79!-105 -79[-107 -79 -109 -77!-109 -77|-142 -25!-142 -25[-148 -11 -153 2!-153 2|-160 20!-160 20|-160 75!-160 75[-160 76 -159 77!-159 77[-159 78 -158 78!-158 78[-158 79 -157 79!-157 79[-156 79 -155
+ 79!-155 79|126 79!126 79|196 59!196 59[198 59 199 58!199 58[200 57 200 55!200 55|200 -30!200 -30[200 -33 197 -34!197 -34|117 -79!190 -27|190 52!190 52|124 71!124 71|-150 71!-150 71|-150 6!-150 6|-103 -71!-103 -71|114 -71!114 -71|190
+ -27"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#1B1B1C"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!85 -40|-85 -40!-85 -40|-115 0!-115 0|-115 25!-115 25|90 25!90 25|125 -10!125 -10|85 -40"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#A12439"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!60 -20|-90 -20!-90 -20|-105 5!-105 5|95 5!95 5|60 -20"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#CE4653"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!74 -4[73 -4 72 -5!72 -5|52 -15!52 -15[51 -16 50 -16!50 -16|-75 -16!-75 -16[-76 -16 -77 -15!-77 -15[-78 -15 -79 -14!-79 -14[-80 -13 -80 -12!-80 -12[-81 -11 -80 -10!-80 -10[-81 -9 -80 -8!-80 -8[-80 -7 -79 -6!-79 -6[-78 -5 -77 -5!-77 -5
+[-76 -5 -75 -4!-75 -4|49 -4!49 -4|68 5!68 5[69 5 70 5!70 5[71 6 72 5!72 5[73 5 74 4!74 4[74 3 75 2!75 2[75 1 75 0!75 0[76 -1 75 -2!75 -2[75 -3 74 -4"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#99999A"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!170 -35|145 -35!145 -35[140 -35 140 -30!140 -30|140 35!140 35[140 40 145 40!145 40|170 40!170 40[175 40 175 35!175 35|175 -30!175 -30[175 -35 170 -35"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

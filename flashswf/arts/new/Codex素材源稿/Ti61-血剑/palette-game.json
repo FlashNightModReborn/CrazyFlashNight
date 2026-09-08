@@ -1,0 +1,429 @@
+{
+  "sourceAsset": "Ti61-Lightsaber-Game-Handoff-R04.zip",
+  "scope": "game palette refinement after player screenshots",
+  "referenceRuntimeSha256": "1e99f722e254deb0b1bc3d18f8eb9ef9121ad324c2e163efa8cdc781145af9a4",
+  "neutralMetalGamma": 1.3,
+  "bladeSpineReflectionAlphaFactor": 0.35,
+  "geometryChanged": false,
+  "gameplayChanged": false,
+  "changes": [
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/01_实体分件/01_尾帽.xml",
+      "colors": {
+        "#15181B": "#0A0C0E",
+        "#232A2F": "#13181C",
+        "#F6F5EC": "#F3F2E7",
+        "#DBDFD7": "#D1D6CC",
+        "#929698": "#7C8082",
+        "#909597": "#797F81",
+        "#747A7D": "#5C6265",
+        "#434A4F": "#2D3338",
+        "#555C61": "#3D4449",
+        "#31383D": "#1E2428",
+        "#FCF9EC": "#FBF7E7",
+        "#808789": "#687072",
+        "#151A1E": "#0A0D10",
+        "#747C80": "#5C6468"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/01_实体分件/02_分节握柄.xml",
+      "colors": {
+        "#15181B": "#0A0C0E",
+        "#9EA5A2": "#89918D",
+        "#E4E5DB": "#DCDED1",
+        "#D3D5CA": "#C7CABC",
+        "#959D9A": "#7F8884",
+        "#5B5E60": "#434648",
+        "#707375": "#585B5D",
+        "#AAB2AE": "#97A09B",
+        "#7A7D7E": "#626566",
+        "#404447": "#2A2E30",
+        "#22282B": "#131719",
+        "#EDF0E4": "#E8ECDC",
+        "#B1B6B6": "#9FA4A4",
+        "#909597": "#797F81",
+        "#747A7D": "#5C6265",
+        "#434A4F": "#2D3338",
+        "#555C61": "#3D4449",
+        "#31383D": "#1E2428",
+        "#C9D4CF": "#BBC9C2"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/01_实体分件/04_上护手与外爪.xml",
+      "colors": {
+        "#15181B": "#0A0C0E",
+        "#F8F7EF": "#F6F5EA",
+        "#EAEDE7": "#E4E8E0",
+        "#D8DFDC": "#CED6D2",
+        "#A9ADAE": "#959A9B",
+        "#6F7375": "#565B5D",
+        "#45494C": "#2F3235",
+        "#1D2125": "#0F1215",
+        "#909597": "#797F81",
+        "#747A7D": "#5C6265",
+        "#434A4F": "#2D3338",
+        "#555C61": "#3D4449",
+        "#31383D": "#1E2428",
+        "#111417": "#08090B",
+        "#FAFCF2": "#F9FBEE",
+        "#A4ABAC": "#909899",
+        "#8F9799": "#788183",
+        "#FFFEF5": "#FFFEF2",
+        "#535C60": "#3B4448",
+        "#BAC0C1": "#A9B0B2"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/01_实体分件/05_下护手与外爪.xml",
+      "colors": {
+        "#15181B": "#0A0C0E",
+        "#EAEDE7": "#E4E8E0",
+        "#CFD6D4": "#C2CBC9",
+        "#919597": "#7A7F81",
+        "#54595C": "#3C4144",
+        "#353A3D": "#212528",
+        "#1F2427": "#101416",
+        "#909597": "#797F81",
+        "#747A7D": "#5C6265",
+        "#434A4F": "#2D3338",
+        "#555C61": "#3D4449",
+        "#31383D": "#1E2428",
+        "#232A2F": "#13181C",
+        "#111417": "#08090B",
+        "#F2F4E9": "#EEF1E3",
+        "#9AA1A3": "#848C8F",
+        "#F8FCF0": "#F6FBEC",
+        "#747C7F": "#5C6467",
+        "#151A1E": "#0A0D10",
+        "#747C80": "#5C6468"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/01_实体分件/07_黑白长剑脊.xml",
+      "colors": {
+        "#15181B": "#080A0C",
+        "#F4F4EC": "#F1F1E7",
+        "#DCE3DF": "#D2DBD6",
+        "#CAD4D2": "#BCC9C6",
+        "#B2B6B7": "#A0A4A6",
+        "#6E7275": "#555A5D",
+        "#535759": "#272A2D",
+        "#3E4245": "#181B1E",
+        "#303336": "#0D1013",
+        "#212528": "#06090C",
+        "#14181B": "#030609",
+        "#909597": "#3A3E42",
+        "#747A7D": "#272B2F",
+        "#434A4F": "#12171C",
+        "#555C61": "#1B2228",
+        "#31383D": "#0B1116",
+        "#9EA5A9": "#899195",
+        "#8F969B": "#788085",
+        "#8C9398": "#757D82",
+        "#B8BEC1": "#A7AEB2",
+        "#161A1D": "#0B0D0F",
+        "#FBFCF2": "#FAFBEE",
+        "#8A9194": "#737A7E",
+        "#C2C7C7": "#B3B9B9",
+        "#8F9599": "#787F83",
+        "#687073": "#4F585B"
+      },
+      "wideReflectionAlphaFactor": 0.35
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/01_实体分件/08_剑脊端封.xml",
+      "colors": {
+        "#15181B": "#0A0C0E",
+        "#232A2F": "#13181C",
+        "#F4F4EC": "#F1F1E7",
+        "#DCE3DF": "#D2DBD6",
+        "#CAD4D2": "#BCC9C6",
+        "#B2B6B7": "#A0A4A6",
+        "#6E7275": "#555A5D",
+        "#535759": "#3B3F41",
+        "#3E4245": "#292C2F",
+        "#303336": "#1D1F22",
+        "#212528": "#121517",
+        "#14181B": "#090C0E",
+        "#B9C4C2": "#A8B5B3",
+        "#858A8C": "#6D7375",
+        "#5B6266": "#434A4D",
+        "#363C42": "#22272C",
+        "#F1F2E9": "#EDEEE3",
+        "#C5CFCE": "#B6C2C1",
+        "#8A8E90": "#737779",
+        "#20272B": "#111619",
+        "#D09D95": "#D01812",
+        "#151A1E": "#0A0D10",
+        "#747C80": "#5C6468"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/02_独立光效/03_红刃纹路_54帧.xml",
+      "colors": {
+        "#FF945E": "#FF1806",
+        "#FF773A": "#FF0C02"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_01.xml",
+      "colors": {
+        "#15181B": "#0A0C0E",
+        "#F1F2E9": "#EDEEE3",
+        "#C5CFCE": "#B6C2C1",
+        "#8A8E90": "#737779",
+        "#53575A": "#3B3F42",
+        "#3D4144": "#282B2E",
+        "#2F3336": "#1C1F22",
+        "#191D20": "#0C0F11",
+        "#909597": "#797F81",
+        "#747A7D": "#5C6265",
+        "#434A4F": "#2D3338",
+        "#555C61": "#3D4449",
+        "#31383D": "#1E2428",
+        "#232A2F": "#13181C",
+        "#FF9571": "#FF160E",
+        "#FF4937": "#FF0B07",
+        "#EF1728": "#EF0305",
+        "#A81830": "#A80406",
+        "#111417": "#08090B",
+        "#1A1F23": "#0D1013"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_02.xml",
+      "colors": {
+        "#FF9571": "#FF160E",
+        "#FF4937": "#FF0B07",
+        "#EF1728": "#EF0305",
+        "#A81830": "#A80406"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_03.xml",
+      "colors": {
+        "#FF9571": "#FF160E",
+        "#FF4937": "#FF0B07",
+        "#EF1728": "#EF0305",
+        "#A81830": "#A80406"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_04.xml",
+      "colors": {
+        "#FF9571": "#FF160E",
+        "#FF4937": "#FF0B07",
+        "#EF1728": "#EF0305",
+        "#A81830": "#A80406"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_05.xml",
+      "colors": {
+        "#FF9571": "#FF160E",
+        "#FF4937": "#FF0B07",
+        "#EF1728": "#EF0305",
+        "#A81830": "#A80406"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_06.xml",
+      "colors": {
+        "#FF9571": "#FF160E",
+        "#FF4937": "#FF0B07",
+        "#EF1728": "#EF0305",
+        "#A81830": "#A80406"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_07.xml",
+      "colors": {
+        "#FF9571": "#FF160E",
+        "#FF4937": "#FF0B07",
+        "#EF1728": "#EF0305",
+        "#A81830": "#A80406"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_08.xml",
+      "colors": {
+        "#848C90": "#6C7579",
+        "#626A6E": "#4A5155",
+        "#909597": "#797F81",
+        "#747A7D": "#5C6265",
+        "#434A4F": "#2D3338",
+        "#555C61": "#3D4449",
+        "#31383D": "#1E2428",
+        "#343B3F": "#202629",
+        "#232A2E": "#13181C",
+        "#14191C": "#090C0E",
+        "#F1F2E9": "#EDEEE3",
+        "#C5CFCE": "#B6C2C1",
+        "#8A8E90": "#737779",
+        "#F7F9EE": "#F5F7E9",
+        "#8E9699": "#778083",
+        "#747B7F": "#5C6367",
+        "#9CA3A5": "#878F91",
+        "#151A1E": "#0A0D10",
+        "#747C80": "#5C6468"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/06_刃根承接套_色面_01.xml",
+      "colors": {
+        "#15181B": "#0A0C0E",
+        "#F1F2E9": "#EDEEE3",
+        "#C5CFCE": "#B6C2C1",
+        "#8A8E90": "#737779",
+        "#909597": "#797F81",
+        "#747A7D": "#5C6265",
+        "#434A4F": "#2D3338",
+        "#555C61": "#3D4449",
+        "#31383D": "#1E2428",
+        "#232A2F": "#13181C",
+        "#FF9571": "#FF160E",
+        "#FF4937": "#FF0B07",
+        "#EF1728": "#EF0305",
+        "#A81830": "#A80406",
+        "#111417": "#08090B",
+        "#53575A": "#3B3F42",
+        "#3D4144": "#282B2E",
+        "#2F3336": "#1C1F22",
+        "#191D20": "#0C0F11",
+        "#F9FCED": "#F7FBE8",
+        "#454C50": "#2F3539"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/06_刃根承接套_色面_02.xml",
+      "colors": {
+        "#151A1E": "#0A0D10",
+        "#747C80": "#5C6468"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/基础红刃_始终可见.xml",
+      "colors": {
+        "#FF7862": "#FF1008",
+        "#FF342C": "#FF0603",
+        "#F20F24": "#F20000",
+        "#EB1230": "#E60000",
+        "#FB2D31": "#FA0000",
+        "#FF4B3E": "#FF0802",
+        "#BA1B35": "#BC0008"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/刃根邻面反照.xml",
+      "colors": {
+        "#EE3437": "#EE0807",
+        "#DC242F": "#DC0506",
+        "#DA1E2F": "#DA0406"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/斜槽邻面反照.xml",
+      "colors": {
+        "#FF4232": "#FF0A06",
+        "#EF2634": "#EF0606",
+        "#EA2436": "#EA0506"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/红刃呼吸补光.xml",
+      "colors": {
+        "#FFAD83": "#FF1A10"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/红刃热边.xml",
+      "colors": {
+        "#FF8B6F": "#FF1A08",
+        "#FF6053": "#FF1004",
+        "#FF977C": "#FF220C",
+        "#FF665B": "#FF1206"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/红刃近远光晕.xml",
+      "colors": {
+        "#FF283A": "#FF0000"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/连续光路_微弱底纹.xml",
+      "colors": {
+        "#FFBC94": "#FF1C12"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/连续细光路_完整补亮.xml",
+      "colors": {
+        "#FF945E": "#FF1806",
+        "#FF773A": "#FF0C02"
+      },
+      "wideReflectionAlphaFactor": null
+    },
+    {
+      "file": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/Ti61-血剑/R04/90_绘制元件/附加能量回振.xml",
+      "colors": {
+        "#FF3042": "#FF0708"
+      },
+      "wideReflectionAlphaFactor": null
+    }
+  ],
+  "renderPolicy": {
+    "target": "刀-Codex-血色光剑天秤/剑体",
+    "filter": "identity ColorMatrix",
+    "colorMatrix": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "reference": "things0 兵器走路刀层的恒等滤镜",
+    "scope": "blood sword visual subtree only; hit markers unchanged",
+    "fieldAcceptance": "maintainer confirmed no visible black edge; formal idle observation also passed"
+  }
+}

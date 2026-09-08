@@ -1,0 +1,104 @@
+{
+  "receiver_base": {
+    "label": "机匣底架与弹匣槽",
+    "children": [
+      "receiver_base_owned_foundation"
+    ]
+  },
+  "body": {
+    "label": "主体握持框",
+    "children": [
+      "r6_identity_frame",
+      "r6_lower_frame",
+      "r8_molded_frame",
+      "body_r6_controls",
+      "body_r8_red_guide_channels"
+    ]
+  },
+  "stock": {
+    "label": "后托总成",
+    "children": [
+      "stock_owned_foundation",
+      "r6_butt_frame",
+      "r6_rear_red_seat",
+      "r8_stock_plate_contact",
+      "r6_rear_white_plate",
+      "r6_stock_latch",
+      "stock_r8_red_guide_channels",
+      "stock_r7_structural_seams",
+      "stock_lamp"
+    ]
+  },
+  "optic": {
+    "label": "观瞄总成",
+    "children": [
+      "optic_owned_foundation",
+      "r6_optic_structure",
+      "optic_r7_structural_seams",
+      "optic_point",
+      "optic_bar"
+    ]
+  },
+  "magazine": {
+    "label": "弹匣原始50状态",
+    "children": [
+      "r6_magazine"
+    ]
+  },
+  "receiver": {
+    "label": "机匣与弹匣承托",
+    "children": [
+      "r8_receiver_undercut",
+      "r6_receiver",
+      "r10_magazine_lower_armor",
+      "receiver_r6_controls",
+      "receiver_r7_structural_seams"
+    ]
+  },
+  "support": {
+    "label": "连续观瞄支架",
+    "children": [
+      "r6_sight_support"
+    ]
+  },
+  "rear_grip": {
+    "label": "主握侧甲与接触阴影",
+    "children": [
+      "r8_rear_grip_contact",
+      "r7_rear_grip_armor"
+    ]
+  },
+  "front_grip": {
+    "label": "前握弧甲与接头",
+    "children": [
+      "r8_front_grip_contact",
+      "r7_front_grip_armor",
+      "r9_front_grip_joint"
+    ]
+  },
+  "nose": {
+    "label": "短前端套件",
+    "children": [
+      "nose_owned_foundation",
+      "r6_short_front"
+    ]
+  },
+  "mount": {
+    "label": "P90附件短座",
+    "children": [
+      "r6_p90_emitter_mount"
+    ]
+  },
+  "emitter": {
+    "label": "套装共用激光发射器",
+    "children": [
+      "p90_emitter_placement"
+    ]
+  },
+  "front_lamp": {
+    "label": "前侧完整状态灯",
+    "children": [
+      "p90_front_status_lamp"
+    ]
+  }
+}

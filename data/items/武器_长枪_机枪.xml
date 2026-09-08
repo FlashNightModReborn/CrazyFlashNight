@@ -437,6 +437,18 @@
           <cycleRoutines>长枪射击动画周期</cycleRoutines>
         </cycle>
       </attr_0>
+      <attr_1>
+        <init>
+          <initRoutines>枪械激光初始化</initRoutines>
+          <initParam>
+            <beamLinkage>激光瞄准-Codex-钛合金61-红束</beamLinkage>
+            <length>750</length>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>枪械激光周期</cycleRoutines>
+        </cycle>
+      </attr_1>
     </lifecycle>
   </item>
   <item weapontype="机枪">

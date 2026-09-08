@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑/刀-Codex-血色光剑天秤" itemID="6a9f543d-0000502f" linkageExportForAS="true" linkageIdentifier="刀-Codex-血色光剑天秤">
+  <timeline>
+    <DOMTimeline name="刀-Codex-血色光剑天秤">
+      <layers>
+        <DOMLayer name="Layer 1" color="#84BC96" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/接口/判定使用" name="刀口位置3" centerPoint3DX="1.15" centerPoint3DY="317.6">
+                  <matrix>
+                    <Matrix d="4.75799560546875" tx="-11.35" ty="305.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#D2FDE7" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/接口/判定使用" name="刀口位置2" centerPoint3DX="1.15" centerPoint3DY="224.45">
+                  <matrix>
+                    <Matrix d="3.72599792480469" tx="-11.35" ty="211.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E2CC00" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/接口/判定使用" name="刀口位置1" centerPoint3DX="1.15" centerPoint3DY="109.45">
+                  <matrix>
+                    <Matrix d="4.60000610351563" tx="-11.35" ty="96.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#CFB7F3" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/00_整剑_按需光效" name="剑体" centerPoint3DX="208.95" centerPoint3DY="462.85">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                <filters><AdjustColorFilter/></filters></DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

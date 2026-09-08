@@ -1,0 +1,229 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/P90-Ti61/00_整枪_含共用激光" itemID="6a9e698c-00005529">
+  <timeline>
+    <DOMTimeline name="00_整枪_含共用激光">
+      <layers>
+        <DOMLayer name="枪口位置_接口" color="#AA3344" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-共用/00_接口标记/不可见定位点" name="枪口位置">
+                  <matrix>
+                    <Matrix tx="107.45" ty="-21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前侧完整状态灯" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/11_前侧完整状态灯" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="63.2" ty="-9.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="套装共用激光发射器" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-共用/01_激光发射器/本体_白甲红衬" name="激光发射器">
+                  <matrix>
+                    <Matrix a="0.259994506835938" d="0.259994506835938" tx="70.2" ty="-32.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="P90附件短座" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/10_P90附件短座" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="66.95" ty="-28.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="短前端套件" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/09_短前端套件" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="72.7" ty="-21.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="前握弧甲与接头" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/08_前握弧甲与接头" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="46.7" ty="-6.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="主握侧甲与接触阴影" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/07_主握侧甲" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-41.05" ty="6.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="连续观瞄支架" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/06_连续观瞄支架" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="6.95" ty="-23.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="机匣与弹匣承托" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/05_机匣与弹匣承托" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="13.2" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="弹匣原始50状态" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/03_弹匣/01_弹匣_50状态" name="弹匣">
+                  <matrix>
+                    <Matrix a="-0.667404174804688" d="0.879959106445313" tx="57.7" ty="-38"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="观瞄总成" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/03_观瞄总成" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="62.95" ty="-50.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="后托总成" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/02_后托总成" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-60.8" ty="-17.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="主体握持框" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/01_主体握持框" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="机匣底架与弹匣槽" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/P90-Ti61/01_分件/04_机匣底架与弹匣槽" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="13.2" ty="-26.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

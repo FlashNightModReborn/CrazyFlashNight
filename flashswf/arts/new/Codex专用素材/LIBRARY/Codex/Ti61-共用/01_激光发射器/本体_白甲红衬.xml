@@ -1,0 +1,556 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-共用/01_激光发射器/本体_白甲红衬" itemID="6a9e6100-7c1cb557">
+  <timeline>
+    <DOMTimeline name="本体_白甲红衬">
+      <layers>
+        <DOMLayer name="出光位置_接口" color="#AA3344" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-共用/00_接口标记/不可见定位点" name="出光位置">
+                  <matrix>
+                    <Matrix tx="43.5" ty="0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="共用发射器 · P90 安装位置" color="#AA3344">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.0155487060546875" c="-0.0546112060546875" d="0" tx="-42.5" ty="-0.75"/>
+                            </matrix>
+                            <GradientEntry color="#171718" ratio="0"/>
+                            <GradientEntry color="#3B3B3C" ratio="0.341176470588235"/>
+                            <GradientEntry color="#2E2E2F" ratio="0.580392156862745"/>
+                            <GradientEntry color="#1B1B1C" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!575 -270|-760 -270!-760 -270|-850 -190!-850 -190|-850 175!-850 175|-765 240!-765 240|840 240!840 240|940 165!940 165|940 -180!940 -180|815 -240!815 -240|645 -240!645 -240|575 -270"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#262627"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!575 -278|-760 -278!-760 -278[-763 -278 -765 -276!-765 -276|-855 -196!-855 -196[-858 -193 -858 -190!-858 -190|-858 175!-858 175[-858 179 -855 181!-855 181|-770 246!-770 246[-768 247 -765 247!-765 247|840 247!840 247[842 247 845 246!845
+ 246|945 171!945 171[948 169 948 165!948 165|948 -180!948 -180[948 -182 946 -184!946 -184[945 -186 943 -187!943 -187|818 -247!818 -247[817 -248 815 -248!815 -248|647 -248!647 -248|578 -277!578 -277[577 -278 575 -278!645 -232|813 -232
+!813 -232|932 -175!932 -175|932 161!932 161|837 232!837 232|-762 232!-762 232|-842 171!-842 171|-842 -187!-842 -187|-757 -263!-757 -263|573 -263!573 -263|642 -233!642 -233[643 -232 645 -232"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#363637"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!-760 -260|-840 -175!-840 -175|-840 165!-840 165|-765 230!-765 230|-560 230!-560 230|-530 125!-530 125|-530 -170!-530 -170|-555 -260!-555 -260|-760 -260"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.013580322265625" c="-0.0385894775390625" d="0" tx="-27.75" ty="1.6"/>
+                            </matrix>
+                            <GradientEntry color="#B32937" ratio="0"/>
+                            <GradientEntry color="#9C1B2B" ratio="0.419607843137255"/>
+                            <GradientEntry color="#8C1725" ratio="0.819607843137255"/>
+                            <GradientEntry color="#62101C" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!-555 -190|-510 -40!-510 -40|-510 105!-510 105|-545 155!-545 155|-545 255!-545 255|605 255!605 255|710 220!710 220|710 120!710 120|645 35!645 35|-300 35!-300 35|-435 -25!-435 -25|-555 -190"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#2A2A2B"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!-557 -195[-558 -195 -558 -194!-558 -194[-559 -194 -560 -193!-560 -193[-560 -192 -560 -191!-560 -191[-561 -189 -560 -188!-560 -188|-516 -39!-516 -39|-516 103!-516 103|-550 152!-550 152[-550 153 -550 155!-550 155|-550 255!-550 255[-550
+ 256 -550 257!-550 257[-550 258 -549 259!-549 259[-548 260 -547 260!-547 260[-546 260 -545 261!-545 261|605 261!605 261[606 261 607 260!607 260|712 225!712 225[713 225 714 223!714 223[715 222 715 220!715 220|715 120!715 120[715 118 714
+ 117!714 117|649 32!649 32[648 30 645 30!645 30|-299 30!-299 30|-431 -29!-431 -29|-551 -193!-551 -193[-552 -195 -553 -195!-553 -195[-555 -196 -557 -195!-505 -42|-540 -161!-540 -161|-439 -22!-439 -22[-439 -21 -437 -20!-437 -20|-302 40
+!-302 40[-301 41 -300 41!-300 41|642 41!642 41|704 122!704 122|704 216!704 216|604 250!604 250|-540 250!-540 250|-540 157!-540 157|-505 108!-505 108[-505 107 -505 105!-505 105|-505 -40!-505 -40[-505 -41 -505 -42"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#621424"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!655 180|-530 180!-530 180|-525 235!-525 235|630 235!630 235|655 180"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0281982421875" b="0.0115966796875" c="-0.0352325439453125" d="0.00927734375" tx="-3.4" ty="-3.5"/>
+                            </matrix>
+                            <GradientEntry color="#EBEEEB" ratio="0"/>
+                            <GradientEntry color="#DFE3E2" ratio="0.541176470588235"/>
+                            <GradientEntry color="#C0C0C1" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!615 -260|-530 -260!-530 -260|-530 -55!-530 -55|-460 25!-460 25|-350 110!-350 110|-260 75!-260 75|470 75!470 75|520 120!520 120|625 120!625 120|625 -60!625 -60|590 -140!590 -140|615 -260"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#2E2E2F"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!621 -262[620 -263 619 -264!619 -264[618 -265 617 -266!617 -266[616 -266 615 -266!615 -266|-530 -266!-530 -266[-531 -266 -532 -266!-532 -266[-533 -265 -534 -264!-534 -264[-535 -263 -536 -262!-536 -262[-536 -261 -536 -260!-536 -260|-536
+ -55!-536 -55[-536 -53 -535 -51!-535 -51|-465 29!-465 29[-464 29 -464 30!-464 30|-354 115!-354 115[-351 117 -348 116!-348 116|-259 81!-259 81|468 81!468 81|516 124!516 124[518 126 520 126!520 126|625 126!625 126[626 126 627 126!627 126
+[628 125 629 124!629 124[630 123 631 122!631 122[631 121 631 120!631 120|631 -60!631 -60[631 -61 630 -62!630 -62|596 -141!596 -141|621 -259!621 -259|621 -260!621 -260[621 -261 621 -262!585 -138|619 -59!619 -59|619 114!619 114|522 114
+!522 114|474 71!474 71[472 69 470 69!470 69|-260 69!-260 69[-261 69 -262 69!-262 69|-349 103!-349 103|-456 21!-456 21|-524 -57!-524 -57|-524 -254!-524 -254|608 -254!608 -254|584 -141!584 -141[584 -139 585 -138"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#F0F2EC"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!495 -70|-303 -215!-303 -215|-425 -215!-425 -215|-415 -160!-415 -160|-325 -105!-325 -105|215 -105!215 -105|260 -70!260 -70|495 -70!600 -250|-495 -250!-495 -250|-303 -215!-303 -215|580 -215!580 -215|600 -250"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#A8A8A9"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!625 145|625 115!625 115|520 115!520 115|470 70!470 70|-260 70!-260 70|-345 105!-345 105|-450 25!-450 25|-465 65!-465 65|-350 145!-350 145|-260 110!-260 110|455 110!455 110|510 145!510 145|625 145"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#303031"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!-205 -15|-235 15!-235 15|-205 45!-205 45|15 45!15 45|45 10!45 10|10 -15!10 -15|-205 -15"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#262627"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!10 -19|-205 -19!-205 -19[-207 -19 -208 -18!-208 -18|-238 12!-238 12[-239 13 -239 15!-239 15[-239 17 -238 18!-238 18|-208 48!-208 48[-207 49 -205 49!-205 49|15 49!15 49[17 49 18 47!18 47|48 12!48 12[49 11 49 9!49 9[48 8 47 7!47 7|12 -18
+!12 -18[11 -19 10 -19!13 41|-203 41!-203 41|-230 15!-230 15|-203 -11!-203 -11|9 -11!9 -11|39 11!39 11|13 41"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#646465"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!-3 7[-2 6 -2 5!-2 5[-2 4 -3 3!-3 3[-4 2 -5 2!-5 2|-185 2!-185 2[-186 2 -187 3!-187 3[-189 4 -189 5!-189 5[-189 6 -187 7!-187 7[-186 9 -185 9!-185 9|-5 9!-5 9[-4 9 -3 7"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="0.0033416748046875" c="-0.0034942626953125" d="0" tx="11.75" ty="6.5"/>
+                            </matrix>
+                            <GradientEntry color="#606061" ratio="0"/>
+                            <GradientEntry color="#515152" ratio="0.36078431372549"/>
+                            <GradientEntry color="#333334" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!255 185|350 185!350 185|350 75!350 75|240 75!240 75|235 160!235 160|255 185"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#2B2B2C"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!350 71|240 71!240 71[238 71 237 72!237 72[236 73 236 75!236 75|231 160!231 160[230 161 231 163!231 163|251 188!251 188[253 189 255 189!255 189|350 189!350 189[351 189 352 189!352 189[353 189 353 188!353 188[354 188 354 187!354 187[354
+ 186 355 185!355 185|355 75!355 75[354 74 354 73!354 73[354 72 353 72!353 72[353 71 352 71!352 71[351 71 350 71!240 159|244 80!244 80|346 80!346 80|346 181!346 181|257 181!257 181|240 159"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#919192"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!337 92[338 91 338 90!338 90[338 89 337 88!337 88[336 87 335 87!335 87|255 87!255 87[254 87 253 88!253 88[252 89 252 90!252 90[252 91 253 92!253 92[254 93 255 93!255 93|335 93!335 93[336 93 337 92"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#505051"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!264 125[265 135 275 136!275 136[285 135 286 125!286 125[285 115 275 114!275 114[265 115 264 125"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#202021"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!261 125[262 138 275 139!275 139[288 138 289 125!289 125[288 112 275 111!275 111[262 112 261 125!267 125[268 118 275 117!275 117[282 118 283 125!283 125[282 132 275 133!275 133[268 132 267 125"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#282829"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!271 123[270 123 269 123!269 123[268 124 268 125!268 125[268 126 269 127!269 127[270 127 271 127!271 127|279 127!279 127[280 127 281 127!281 127[282 126 282 125!282 125[282 124 281 123!281 123[280 123 279 123!279 123|271 123"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#505051"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!314 155[315 165 325 166!325 166[335 165 336 155!336 155[335 145 325 144!325 144[315 145 314 155"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#202021"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!311 155[312 168 325 169!325 169[338 168 339 155!339 155[338 142 325 141!325 141[312 142 311 155!317 155[318 148 325 147!325 147[332 148 333 155!333 155[332 162 325 163!325 163[318 162 317 155"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#282829"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!321 153[320 153 319 153!319 153[318 154 318 155!318 155[318 156 319 157!319 157[320 157 321 157!321 157|329 157!329 157[330 157 331 157!331 157[332 156 332 155!332 155[332 154 331 153!331 153[330 153 329 153!329 153|321 153"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#39393A"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!720 -90|720 60!720 60|685 105!685 105|685 200!685 200|830 200!830 200|920 160!920 160|920 -145!920 -145|825 -190!825 -190|680 -190!680 -190|720 -90"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#29292A"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!677 -194[676 -193 675 -192!675 -192[675 -191 675 -190!675 -190[675 -189 675 -188!675 -188|715 -89!715 -89|715 58!715 58|681 102!681 102[680 103 680 105!680 105|680 200!680 200[680 201 680 202!680 202[681 203 681 204!681 204[682 204 683
+ 205!683 205[684 205 685 205!685 205|830 205!830 205[831 205 832 205!832 205|922 165!922 165[923 164 924 163!924 163[925 161 925 160!925 160|925 -145!925 -145[925 -146 924 -148!924 -148[923 -149 922 -150!922 -150|827 -195!827 -195[826
+ -195 825 -195!825 -195|680 -195!680 -195[679 -195 678 -195!678 -195|677 -194!687 -185|824 -185!824 -185|915 -142!915 -142|915 157!915 157|829 195!829 195|690 195!690 195|690 107!690 107|724 63!724 63[725 62 725 60!725 60|725 -90!725
+ -90[725 -91 725 -92!725 -92|687 -185"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#272728"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!770 -80|770 115!770 115[770 135 790 135!790 135|880 135!880 135[900 135 900 115!900 115|900 -80!900 -80[900 -100 880 -100!880 -100|790 -100!790 -100[770 -100 770 -80"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#731728"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!846 -33[839 -14 838 15!838 15[839 44 846 63!846 63[854 82 865 82!865 82[876 82 884 63!884 63[891 44 891 15!891 15[891 -14 884 -33!884 -33[876 -52 865 -52!865 -52[854 -52 846 -33"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#212122"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!842 -35[834 -15 834 15!834 15[834 45 842 65!842 65[850 87 865 87!865 87[880 87 888 65!888 65[896 45 896 15!896 15[896 -15 888 -35!888 -35[880 -57 865 -57!865 -57[850 -57 842 -35!879 -31[886 -13 886 15!886 15|887 15!887 15[886 43 879
+ 61!879 61[873 77 865 77!865 77[857 77 851 61!851 61[844 43 844 15!844 15[844 -13 851 -31!851 -31[857 -47 865 -47!865 -47[873 -47 879 -31"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#E23548"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!861 -13[857 -2 857 15!857 15[857 32 861 43!861 43[864 55 870 55!870 55[876 55 879 43!879 43[883 32 883 15!883 15[883 -2 879 -13!879 -13[876 -25 870 -25!870 -25[864 -25 861 -13"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFABB0"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!868 -1[867 5 867 12!867 12[867 20 868 26!868 26[870 31 872 31!872 31[874 31 876 26!876 26[877 20 877 12!877 12[877 5 876 -1!876 -1[874 -6 872 -6!872 -6[870 -6 868 -1"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#3B3B3C"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!190 235|-230 235!-230 235|-265 260!-265 260|-265 285!-265 285|-230 315!-230 315|225 315!225 315|225 265!225 265|190 235"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#29292A"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!190 230|-230 230!-230 230[-232 230 -233 231!-233 231|-268 256!-268 256[-270 257 -270 260!-270 260|-270 285!-270 285[-270 287 -268 289!-268 289|-233 319!-233 319[-232 320 -230 320!-230 320|225 320!225 320[226 320 227 320!227 320[228 319
+ 229 319!229 319[229 318 230 317!230 317[230 316 230 315!230 315|230 265!230 265[230 263 228 261!228 261|193 231!193 231[192 230 190 230!220 310|-228 310!-228 310|-260 283!-260 283|-260 263!-260 263|-228 240!-228 240|188 240!188 240|220
+ 267!220 267|220 310"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#29292A"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="
+!135 270[135 265 130 265!130 265|-170 265!-170 265[-175 265 -175 270!-175 270|-175 290!-175 290[-175 295 -170 295!-170 295|130 295!130 295[135 295 135 290!135 290|135 270"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

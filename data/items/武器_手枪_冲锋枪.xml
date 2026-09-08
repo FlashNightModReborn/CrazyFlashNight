@@ -1175,17 +1175,76 @@
       </lifecycle>
     </item>
   <item weapontype="冲锋枪">
-      <name>钛合金P90</name>
-      <displayname>钛合金P90</displayname>
+      <name>P90印花集</name>
+      <displayname>P90印花集</displayname>
       <icon>钛合金P90</icon>
       <type>武器</type>
       <use>手枪</use>
+      <price>171600</price>
+      <description>由P90重新调校的印花收藏型冲锋枪。黑白枪身搭配橙色几何涂装，透明顶置弹匣保留逐发消耗的显示。较缓的射击节奏配合完整穿刺弹道，适合有节制地连续压制敌群。</description>
+      <data>
+        <level>33</level>
+        <weight>5</weight>
+        <dressup>枪-手枪-钛合金P90</dressup>
+        <capacity>50</capacity>
+        <split>1</split>
+        <diffusion>4</diffusion>
+        <interval>120</interval>
+        <velocity>25</velocity>
+        <bullet>穿刺子弹</bullet>
+        <sound>re_SMG_P90_sil.wav</sound>
+        <muzzle>冲锋枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>冲锋枪钢芯穿甲弹</clipname>
+        <bulletsize>30</bulletsize>
+        <power>130</power>
+        <impact>50</impact>
+        <reloadPenalty>-17</reloadPenalty>
+      </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>2</pierce>
+            <damageType>1</damageType>
+            <shotgun>1</shotgun>
+            <magPrice>400</magPrice>
+            <weightLayers>1</weightLayers>
+            <category>2</category>
+            <formula>1</formula>
+            <status>confirmed</status>
+            <displayEligible>true</displayEligible>
+            <inputDigest>fnv1a32:432fe878</inputDigest>
+            <auditRef>weapon:P90印花集:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
+      <lifecycle>
+        <attr_0>
+          <init>
+            <initRoutines>P90初始化</initRoutines>
+          </init>
+          <cycle>
+            <cycleRoutines>P90周期</cycleRoutines>
+          </cycle>
+        </attr_0>
+      </lifecycle>
+    </item>
+  <item weapontype="冲锋枪">
+      <name>钛合金P90</name>
+      <displayname>钛合金P90</displayname>
+      <icon>Codex-钛合金P90</icon>
+      <type>武器</type>
+      <use>手枪</use>
       <price>100000</price>
-      <description>逆天短枪</description>
+      <description>钛合金61式机甲的近距支援武器。紧凑枪身、透明顶置弹匣与独立红色瞄准模组适应太空站舱道内的快速转向；机匣预留机甲能源和火控接口，可与机体姿态系统配合部署。</description>
       <data>
         <level>45</level>
         <weight>9</weight>
-        <dressup>枪-手枪-钛合金P90</dressup>
+        <dressup>枪-手枪-Codex-钛合金P90</dressup>
         <capacity>50</capacity>
         <split>1</split>
         <diffusion>4</diffusion>
@@ -1210,6 +1269,18 @@
             <cycleRoutines>P90周期</cycleRoutines>
           </cycle>
         </attr_0>
+        <attr_1>
+          <init>
+            <initRoutines>枪械激光初始化</initRoutines>
+            <initParam>
+              <beamLinkage>激光瞄准-Codex-钛合金61-红束</beamLinkage>
+              <length>750</length>
+            </initParam>
+          </init>
+          <cycle>
+            <cycleRoutines>枪械激光周期</cycleRoutines>
+          </cycle>
+        </attr_1>
       </lifecycle>
     </item>
   <item weapontype="冲锋枪">

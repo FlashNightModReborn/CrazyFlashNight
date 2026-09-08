@@ -1,0 +1,21 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑/00_整剑_静态竖向" itemID="6a9f543d-00005001">
+  <timeline>
+    <DOMTimeline name="00_整剑_静态竖向">
+      <layers>
+        <DOMLayer name="外观" color="#6699CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/00_整剑_静态横向" name="剑体">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

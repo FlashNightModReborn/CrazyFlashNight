@@ -770,7 +770,7 @@
   <item>
     <name>血色光剑天秤</name>
     <displayname>血色光剑天秤</displayname>
-    <icon>血色光剑天秤</icon>
+    <icon>Codex-血色光剑天秤</icon>
     <type>武器</type>
     <use>刀</use>
     <actiontype>直剑</actiontype>
@@ -782,7 +782,7 @@
     <data>
       <level>50</level>
       <weight>-99</weight>
-      <dressup>刀-血色光剑天秤</dressup>
+      <dressup>刀-Codex-血色光剑天秤</dressup>
       <power>999</power>
       <hp>-999</hp>
       <mp>0</mp>
@@ -804,6 +804,14 @@
           <cycleRoutines>通用刀光周期</cycleRoutines>
         </cycle>
       </attr_0>
+      <attr_1>
+        <init>
+          <initRoutines>血色光剑初始化</initRoutines>
+        </init>
+        <cycle>
+          <cycleRoutines>血色光剑周期</cycleRoutines>
+        </cycle>
+      </attr_1>
     </lifecycle>
   </item>
   <item>

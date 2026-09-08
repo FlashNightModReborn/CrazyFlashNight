@@ -198,7 +198,7 @@ async function main() {
     Object.keys(compositeNames).forEach(key => {
         compositeNames[key].sort((left, right) => left.localeCompare(right, 'zh-CN'));
     });
-    if (dataset.counts.uniqueItemCount === 280) {
+    if (dataset.counts.uniqueItemCount === 282) {
         if (!sameSet(compositeNames['dual-blade'], EXPECTED_CRAFTING_DUAL_BLADES)) {
             throw new Error('full review dual-blade exact-set changed: ' + JSON.stringify(compositeNames['dual-blade']));
         }

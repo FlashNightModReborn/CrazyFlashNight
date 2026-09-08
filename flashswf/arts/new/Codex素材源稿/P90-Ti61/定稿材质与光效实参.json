@@ -1,0 +1,718 @@
+{
+  "source": "design/P90-R10/source/P90-Ti61-master.svg",
+  "source_sha256": "edaf8c01dd702a6cfed0ef0707d689c1da0ae3831222a7ae149ff8b267f6ab99",
+  "coordinate_note": "本文件 source 路径相对交付包根；颜色和渐变从批准稿提取。渐变域属于这块几何，新素材需重设，不能只复制色标。",
+  "design_gradients": {
+    "r6_red": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r6_red",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#B32937"
+        },
+        {
+          "offset": "0.42",
+          "stop-color": "#9C1B2B"
+        },
+        {
+          "offset": "0.82",
+          "stop-color": "#8C1725"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#62101C"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_rear_red_seat__path_01",
+        "r6_rear_red_seat__path_05",
+        "r6_receiver__path_04",
+        "r6_optic_structure__path_04",
+        "r6_optic_structure__path_10",
+        "r6_optic_structure__path_11",
+        "r10_magazine_lower_armor__path_02",
+        "r10_sight_support_bridge__path_02",
+        "p90_rear_grip_seat_shape",
+        "p90_front_grip_seat_shape",
+        "r6_short_front__path_02"
+      ]
+    },
+    "r6_black": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r6_black",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#171718"
+        },
+        {
+          "offset": "0.34",
+          "stop-color": "#3B3B3C"
+        },
+        {
+          "offset": "0.58",
+          "stop-color": "#2E2E2F"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#1B1B1C"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_butt_frame__path_01",
+        "r6_receiver__path_01",
+        "r6_optic_structure__path_01"
+      ]
+    },
+    "r6_frame": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r6_frame",
+        "x1": "0",
+        "y1": "284",
+        "x2": "0",
+        "y2": "430",
+        "gradientUnits": "userSpaceOnUse"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#3B3B3C"
+        },
+        {
+          "offset": "0.45",
+          "stop-color": "#313132"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#1D1D1E"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_lower_frame__path_01",
+        "r6_lower_frame__path_02"
+      ]
+    },
+    "r6_metal": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r6_metal",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#262627"
+        },
+        {
+          "offset": "0.25",
+          "stop-color": "#6B6B6C"
+        },
+        {
+          "offset": "0.38",
+          "stop-color": "#5F5F60"
+        },
+        {
+          "offset": "0.76",
+          "stop-color": "#323233"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#202021"
+        }
+      ],
+      "referencing_element_ids": [
+        "p90_optic_point_housing__circle_01",
+        "r6_short_front__path_04"
+      ]
+    },
+    "r6_softmetal": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r6_softmetal",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#606061"
+        },
+        {
+          "offset": "0.36",
+          "stop-color": "#515152"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#333334"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_stock_latch__path_01",
+        "r10_magazine_lower_armor__path_13",
+        "r6_sight_support__path_01",
+        "r6_controls__path_01",
+        "r9_front_grip_joint__path_02",
+        "r9_single_lamp_housing__path_02"
+      ]
+    },
+    "r8_molded_face": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_molded_face",
+        "x1": "340",
+        "y1": "283",
+        "x2": "552",
+        "y2": "429",
+        "gradientUnits": "userSpaceOnUse"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#4B4D50",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.28",
+          "stop-color": "#3B3D40",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.65",
+          "stop-color": "#292B2E",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#181A1D",
+          "stop-opacity": "1"
+        }
+      ],
+      "referencing_element_ids": [
+        "r8_molded_frame__path_01"
+      ]
+    },
+    "r8_web_face": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_web_face",
+        "x1": "554",
+        "y1": "295",
+        "x2": "581",
+        "y2": "379",
+        "gradientUnits": "userSpaceOnUse"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#57595B",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.22",
+          "stop-color": "#444649",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.59",
+          "stop-color": "#333538",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#222427",
+          "stop-opacity": "1"
+        }
+      ],
+      "referencing_element_ids": [
+        "r8_molded_frame__path_11",
+        "r8_molded_frame__path_13"
+      ]
+    },
+    "r8_hole_wall": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_hole_wall",
+        "x1": "0.2",
+        "y1": "0",
+        "x2": "0.8",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#080A0C",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.33",
+          "stop-color": "#111315",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.64",
+          "stop-color": "#292B2E",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.85",
+          "stop-color": "#626568",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#383B3E",
+          "stop-opacity": "1"
+        }
+      ],
+      "referencing_element_ids": [
+        "r8_molded_frame__path_03",
+        "r8_molded_frame__path_06"
+      ]
+    },
+    "r8_hole_outer": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_hole_outer",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0.8",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#56595C",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.42",
+          "stop-color": "#3B3D40",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.78",
+          "stop-color": "#222427",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#121416",
+          "stop-opacity": "1"
+        }
+      ],
+      "referencing_element_ids": [
+        "r8_molded_frame__path_02",
+        "r8_molded_frame__path_05"
+      ]
+    },
+    "r8_red_well": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_red_well",
+        "x1": "0.1",
+        "y1": "0",
+        "x2": "0.8",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#B8323E",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.36",
+          "stop-color": "#A02633",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.79",
+          "stop-color": "#8D1D2B",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#641321",
+          "stop-opacity": "1"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_rear_red_seat__path_06"
+      ]
+    },
+    "r8_front_cheek": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_front_cheek",
+        "x1": "773",
+        "y1": "284",
+        "x2": "825",
+        "y2": "345",
+        "gradientUnits": "userSpaceOnUse"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#535558",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.32",
+          "stop-color": "#35373A",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#1A1C1F",
+          "stop-opacity": "1"
+        }
+      ],
+      "referencing_element_ids": [
+        "r8_molded_frame__path_16"
+      ]
+    },
+    "r8_contact_fade": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_contact_fade",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#06080B",
+          "stop-opacity": "0.8"
+        },
+        {
+          "offset": "0.55",
+          "stop-color": "#080A0D",
+          "stop-opacity": "0.28"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#0C0E11",
+          "stop-opacity": "0"
+        }
+      ],
+      "referencing_element_ids": [
+        "r8_receiver_undercut__path_01"
+      ]
+    },
+    "r8_white_lower_edge": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_white_lower_edge",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#9C9FA2",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "0.54",
+          "stop-color": "#707579",
+          "stop-opacity": "1"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#4A4E52",
+          "stop-opacity": "1"
+        }
+      ],
+      "referencing_element_ids": [
+        "r7_rear_grip_armor__path_05",
+        "r7_front_grip_armor__path_05"
+      ]
+    },
+    "r8_white_armor": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "r8_white_armor",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0.8",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#F0F0EB"
+        },
+        {
+          "offset": "0.28",
+          "stop-color": "#E4E6E2"
+        },
+        {
+          "offset": "0.62",
+          "stop-color": "#CFD2D1"
+        },
+        {
+          "offset": "0.83",
+          "stop-color": "#B9BFC0"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#9BA2A4"
+        }
+      ],
+      "referencing_element_ids": [
+        "p90_stock_armor_shape",
+        "r6_optic_structure__path_08",
+        "r10_magazine_lower_armor__path_03",
+        "r10_magazine_lower_armor__path_06",
+        "r10_sight_support_bridge__path_03",
+        "r7_rear_grip_armor__path_03",
+        "r7_front_grip_armor__path_03",
+        "r6_short_front__path_03"
+      ]
+    },
+    "r8_ti61_light_falloff": {
+      "type": "radialGradient",
+      "attributes": {
+        "id": "r8_ti61_light_falloff",
+        "gradientUnits": "userSpaceOnUse",
+        "cx": "0",
+        "cy": "0",
+        "r": "819.2",
+        "gradientTransform": "matrix(0.0412445068359375 0 0 0.0246429443359375 -0.05 0)"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#FF2618",
+          "stop-opacity": "0.66"
+        },
+        {
+          "offset": "0.25",
+          "stop-color": "#FF2618",
+          "stop-opacity": "0.45"
+        },
+        {
+          "offset": "0.55",
+          "stop-color": "#FF2618",
+          "stop-opacity": "0.2"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#FF2618",
+          "stop-opacity": "0"
+        }
+      ],
+      "referencing_element_ids": [
+        "r9_front_near_glow_field",
+        "r9_front_wide_glow_field",
+        "r8_optic_point_glow_field",
+        "r8_optic_bar_glow_field",
+        "r8_stock_bar_glow_field"
+      ]
+    },
+    "ti61_emitter_white": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "ti61_emitter_white",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0.8",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#EBEEEB"
+        },
+        {
+          "offset": "0.54",
+          "stop-color": "#DFE3E2"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#C0C0C1"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_shared_emitter_p90__path_05"
+      ]
+    },
+    "ti61_emitter_red": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "ti61_emitter_red",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#B32937"
+        },
+        {
+          "offset": "0.42",
+          "stop-color": "#9C1B2B"
+        },
+        {
+          "offset": "0.82",
+          "stop-color": "#8C1725"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#62101C"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_shared_emitter_p90__path_03"
+      ]
+    },
+    "ti61_emitter_black": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "ti61_emitter_black",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#171718"
+        },
+        {
+          "offset": "0.34",
+          "stop-color": "#3B3B3C"
+        },
+        {
+          "offset": "0.58",
+          "stop-color": "#2E2E2F"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#1B1B1C"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_shared_emitter_p90__path_01"
+      ]
+    },
+    "ti61_emitter_softmetal": {
+      "type": "linearGradient",
+      "attributes": {
+        "id": "ti61_emitter_softmetal",
+        "x1": "0",
+        "y1": "0",
+        "x2": "0",
+        "y2": "1",
+        "gradientUnits": "objectBoundingBox"
+      },
+      "stops": [
+        {
+          "offset": "0",
+          "stop-color": "#606061"
+        },
+        {
+          "offset": "0.36",
+          "stop-color": "#515152"
+        },
+        {
+          "offset": "1",
+          "stop-color": "#333334"
+        }
+      ],
+      "referencing_element_ids": [
+        "r6_shared_emitter_p90__path_10"
+      ]
+    }
+  },
+  "beam_native_reference": [
+    {
+      "layer": "暖白亮芯",
+      "solid_colors": [
+        {
+          "color": "#FFF0CE"
+        }
+      ],
+      "gradient_entries": []
+    },
+    {
+      "layer": "亮红束体",
+      "solid_colors": [
+        {
+          "color": "#FF3828"
+        }
+      ],
+      "gradient_entries": []
+    },
+    {
+      "layer": "红色外晕",
+      "solid_colors": [],
+      "gradient_entries": [
+        {
+          "color": "#FF2F22",
+          "alpha": "0",
+          "ratio": "0"
+        },
+        {
+          "color": "#FF2F22",
+          "alpha": "0.0784313725490196",
+          "ratio": "0.301960784313725"
+        },
+        {
+          "color": "#FF2F22",
+          "alpha": "0.43921568627451",
+          "ratio": "0.501960784313725"
+        },
+        {
+          "color": "#FF2F22",
+          "alpha": "0.0784313725490196",
+          "ratio": "0.701960784313725"
+        },
+        {
+          "color": "#FF2F22",
+          "alpha": "0",
+          "ratio": "1"
+        }
+      ]
+    }
+  ]
+}

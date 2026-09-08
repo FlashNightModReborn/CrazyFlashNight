@@ -4645,8 +4645,22 @@
     "f2": "9a3910dd_2.webp"
   },
   "钛合金P90": {
-    "f1": "819123f2_1.webp",
-    "f2": "819123f2_2.webp"
+    "f2": "819123f2_2.webp",
+    "bakeProvenance": {
+      "schema": 1,
+      "mode": "ffdec-static-f1",
+      "sourceSwf": "flashswf/arts/things.swf",
+      "linkageId": "图标-钛合金P90",
+      "characterId": 2632,
+      "sourceArtifactSha256": "854dc8892414657e894ab81147ee6bb439ebe78f923f41b92ea60423064bf225",
+      "sourceArtifactMtimeNs": 1788341253132710000,
+      "renderRecipeSha256": "ff18a07874a072628bf439506f6db5523d892de6347e66d1203a80fe5407c8cc",
+      "renderRgbaSha256": "255e20d836d3dba2f696162eb725c96b9e918b6f321dbe8a193cb526e485705c"
+    },
+    "playback": "static-first-frame",
+    "animated": false,
+    "frameCount": 1,
+    "f1": "819123f2_1.webp"
   },
   "转换者": {
     "f1": "c5b67eff_1.webp",
@@ -6495,9 +6509,9 @@
       "mode": "ffdec-static-f1",
       "sourceSwf": "flashswf/arts/new/Codex专用素材.swf",
       "linkageId": "图标-Codex-钛合金QJZ171",
-      "characterId": 24,
-      "sourceArtifactSha256": "5bbafc4081f7f05ce8794d05d847849b029fa6c242022661796e019bbfea7b91",
-      "sourceArtifactMtimeNs": 1788695362146188400,
+      "characterId": 49,
+      "sourceArtifactSha256": "25d225a55a6b01f061d025dabb0904026e50bcd2a44358da0a223bd92f8c74b8",
+      "sourceArtifactMtimeNs": 1788776803158787400,
       "renderRecipeSha256": "ff18a07874a072628bf439506f6db5523d892de6347e66d1203a80fe5407c8cc",
       "renderRgbaSha256": "75b0f09e89f2a0b28e4b95905e57fc65a14ab80bd110c2a14de4e959d73319ba"
     },
@@ -6506,5 +6520,41 @@
     "animated": false,
     "frameCount": 1,
     "f1": "e2d2d408_1.webp"
+  },
+  "Codex-钛合金P90": {
+    "bakeProvenance": {
+      "schema": 1,
+      "mode": "ffdec-static-f1",
+      "sourceSwf": "flashswf/arts/new/Codex专用素材.swf",
+      "linkageId": "图标-Codex-钛合金P90",
+      "characterId": 25,
+      "sourceArtifactSha256": "a8da8933ea879da41e61ab84c844ee1bc4fe449e49c5febfd41bbada35448344",
+      "sourceArtifactMtimeNs": 1788779001821802400,
+      "renderRecipeSha256": "ff18a07874a072628bf439506f6db5523d892de6347e66d1203a80fe5407c8cc",
+      "renderRgbaSha256": "71118a42ba7e9bddeaf1b8b356d8d1a3b33fff91b9c2b4f51b356bbc8f9ed5f9"
+    },
+    "f2": "c99e5f99_2.webp",
+    "playback": "static-first-frame",
+    "animated": false,
+    "frameCount": 1,
+    "f1": "c99e5f99_1.webp"
+  },
+  "Codex-血色光剑天秤": {
+    "bakeProvenance": {
+      "schema": 1,
+      "mode": "ffdec-static-f1",
+      "sourceSwf": "flashswf/arts/new/Codex专用素材.swf",
+      "linkageId": "图标-Codex-血色光剑天秤",
+      "characterId": 24,
+      "sourceArtifactSha256": "d89a5148b6e941f5a47f1267757f760c001cc5bed382643c4cdabe9c79a5d9c7",
+      "sourceArtifactMtimeNs": 1788838207170481100,
+      "renderRecipeSha256": "ff18a07874a072628bf439506f6db5523d892de6347e66d1203a80fe5407c8cc",
+      "renderRgbaSha256": "dc44741656782dd8f2ce188d9939ee35a6aafa072f4de9d660b4af2e83b9ac93"
+    },
+    "f2": "f1d83c63_2.webp",
+    "playback": "static-first-frame",
+    "animated": false,
+    "frameCount": 1,
+    "f1": "f1d83c63_1.webp"
   }
 }

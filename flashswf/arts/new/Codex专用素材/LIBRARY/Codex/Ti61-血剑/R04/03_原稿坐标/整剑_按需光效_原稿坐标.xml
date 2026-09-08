@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑/R04/03_原稿坐标/整剑_按需光效_原稿坐标" itemID="6a9f543d-00005012">
+  <timeline>
+    <DOMTimeline name="整剑_按需光效_原稿坐标">
+      <layers>
+        <DOMLayer name="原稿坐标" color="#BC5757" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/00_整剑_按需光效" name="saber">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

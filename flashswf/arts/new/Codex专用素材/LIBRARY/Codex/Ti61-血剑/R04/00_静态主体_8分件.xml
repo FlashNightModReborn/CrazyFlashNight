@@ -1,0 +1,146 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑/R04/00_静态主体_8分件" itemID="6a9f543d-00005005">
+  <timeline>
+    <DOMTimeline name="00_静态主体_8分件">
+      <layers>
+        <DOMLayer name="静态停帧" color="#89A9B1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="08_剑脊端封" color="#BC5757">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/01_实体分件/08_剑脊端封" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="302.25" ty="-1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="07_黑白长剑脊" color="#BC5757">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/01_实体分件/07_黑白长剑脊" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="198.5" ty="-2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="06_刃根承接套" color="#BC5757">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/01_实体分件/06_刃根承接套" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="94.5" ty="-1.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="05_下护手与外爪" color="#BC5757">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/01_实体分件/05_下护手与外爪" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="57.55" ty="19.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="04_上护手与外爪" color="#BC5757">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/01_实体分件/04_上护手与外爪" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="62.25" ty="-19.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="03_护手内框与斜槽" color="#BC5757">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/01_实体分件/03_护手内框与斜槽" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="56.15" ty="-6.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="02_分节握柄" color="#BC5757">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/01_实体分件/02_分节握柄" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="01_尾帽" color="#BC5757">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑/R04/01_实体分件/01_尾帽" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-38.95" ty="1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

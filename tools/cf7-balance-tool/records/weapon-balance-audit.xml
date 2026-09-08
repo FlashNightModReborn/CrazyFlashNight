@@ -3630,11 +3630,17 @@
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
       <inputDigest>fnv1a32:a5ad7202</inputDigest>
-      <sourceDigest>sha256:41fae535e2ca5d38d536092cd32ef36f1ab8da22b15e4dfeae02cf0957dde0cc</sourceDigest>
+      <sourceDigest>sha256:71e99e630f5ba500c630da3f764adb4879037eb92d6eceeb42f4bd6f60797a26</sourceDigest>
       <budgetBreakdown>
         <entry>
+          <code>acquisition.crafting</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-001</ruleRef>
+          <evidenceRef>data/crafting/铁枪会.json#recipeId=craft.iron-spear.019</evidenceRef>
+        </entry>
+        <entry>
           <code>acquisition.unverified</code>
-          <delta>4</delta>
+          <delta>3</delta>
           <ruleRef>WBR-WL-001</ruleRef>
           <evidenceRef>docs/QJZ171-钛合金版数值落盘-2026-09-07.md#获取与审计边界</evidenceRef>
         </entry>
@@ -3726,7 +3732,119 @@
           <evidenceRef>docs/QJZ171-钛合金版数值落盘-2026-09-07.md#获取与审计边界</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>55级四层与17%暴击已按策划落盘；具体价格与获取路径未闭合，负重量效果随套装另行实现。</note>
+      <note>55级四层与17%暴击保持策划决定；铁枪会craft.iron-spear.019已提供真实合成来源。K点合成与40级以上第四层的组合尚未进入现役证据检查器，剩余三层保留待核验；18.86%彩蛋溢价为未来套装联动预留，不计入基础层数，负重量效果仍随套装另行实现。</note>
+    </record>
+    <record>
+      <auditRef>weapon:P90印花集:data</auditRef>
+      <itemName>P90印花集</itemName>
+      <profileKey>data</profileKey>
+      <dualWield>2</dualWield>
+      <pierce>2</pierce>
+      <damageType>1</damageType>
+      <shotgun>1</shotgun>
+      <magPrice>400</magPrice>
+      <weightLayers>1</weightLayers>
+      <category>2</category>
+      <formula>1</formula>
+      <status>confirmed</status>
+      <displayEligible>true</displayEligible>
+      <inputDigest>fnv1a32:432fe878</inputDigest>
+      <sourceDigest>sha256:d1e6d457ad8e59c199f433b531b3491c946b83de88e6e9b9c7fec1fb941ff587</sourceDigest>
+      <budgetBreakdown>
+        <entry>
+          <code>acquisition.crafting</code>
+          <delta>1</delta>
+          <ruleRef>WBR-WL-001</ruleRef>
+          <evidenceRef>data/crafting/武器合成.json#recipeId=craft.weapon.057</evidenceRef>
+        </entry>
+      </budgetBreakdown>
+      <ruleRefs>
+        <ref>
+          <id>WBR-DUAL-001</id>
+          <target>input.dualWield</target>
+          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=P90印花集/use=手枪</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-PIERCE-003</id>
+          <target>input.pierce</target>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=穿刺子弹</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DMG-001</id>
+          <target>input.damageType</target>
+          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=P90印花集/data;physical-default</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-SHOT-001</id>
+          <target>input.shotgun</target>
+          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=P90印花集/data/split=1</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AMMO-001</id>
+          <target>input.magPrice</target>
+          <evidenceRef>data/items/消耗品_弹夹.xml#item=冲锋枪钢芯穿甲弹/price=400</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-001</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>data/crafting/武器合成.json#recipeId=craft.weapon.057</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAT-002</id>
+          <target>input.category</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#装备价格!D13;穿刺类=2</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-AUTH-001</id>
+          <target>input.formula</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-CAP-002</id>
+          <target>mechanic.capacity</target>
+          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=P90印花集/data/capacity=50</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-FIRE-001</id>
+          <target>mechanic.fireMode</target>
+          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=P90印花集/data;interval=120;capacity=50</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-WL-009</id>
+          <target>input.weightLayers</target>
+          <evidenceRef>docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md#数值</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-LAYER-001</id>
+          <target>mechanic.variant</target>
+          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=P90印花集;data_variants=absent</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-LAYER-003</id>
+          <target>mechanic.lifecycle</target>
+          <evidenceRef>scripts/逻辑/装备函数/P90.as#P90视觉更新</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-LAYER-005</id>
+          <target>mechanic.extraEffects</target>
+          <evidenceRef>docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md#数值</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DPS-001</id>
+          <target>metric.weightedDPS</target>
+          <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-DPS-002</id>
+          <target>metric.residualRatio</target>
+          <evidenceRef>docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md#数值</evidenceRef>
+        </ref>
+        <ref>
+          <id>WBR-TRIAGE-001</id>
+          <target>audit.status</target>
+          <evidenceRef>docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md#印花集合成一层</evidenceRef>
+        </ref>
+      </ruleRefs>
     </record>
   </records>
 </weaponBalanceAudit>

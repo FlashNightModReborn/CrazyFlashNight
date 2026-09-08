@@ -201,6 +201,8 @@ dualWield, pierce, damageType, shotgun, magPrice, weightLayers, category, formul
 
 本流程不顺手修改 `power/price/interval` 等战斗值。数值整改必须是另一个有明确授权、可独立复核的任务。
 
+合成一层的落盘实例见 [P90印花集](../../../docs/P90印花集与钛合金61式共用激光装配-2026-09-07.md)：33级、5kg、50发、120ms、130威力，`acquisition.crafting` 精确引用 `craft.weapon.057`。DPS合成层与价格层分开；穿刺品类、原料装备折算和加工费均引用工作簿对应页。旧钛合金P90美术交给新物品，既有钛合金P90名称身份保留给机甲稿，不以全局改名代替物品与资产映射。
+
 ## 7. 玩家显示边界
 
 ItemDataLoader 加载后，ItemUtil 把 compact balance 提取到独立只读缓存，并从一般物品数据树删除，避免 `getItemData()` 深拷贝审计结构。库存按 `item.value.tier → EquipmentConfigManager.getTierKey()` 选择 profile；商店固定选择 `data`。

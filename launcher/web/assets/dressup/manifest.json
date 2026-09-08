@@ -1625,17 +1625,17 @@
     },
     "血色光剑天秤": {
       "use": "刀",
-      "icon": "血色光剑天秤",
-      "dressup": "刀-血色光剑天秤",
+      "icon": "Codex-血色光剑天秤",
+      "dressup": "刀-Codex-血色光剑天秤",
       "helmet": false,
       "fieldsByGender": {
         "男": {
-          "刀_装扮": "刀-血色光剑天秤",
-          "刀1_装扮": "刀-血色光剑天秤"
+          "刀_装扮": "刀-Codex-血色光剑天秤",
+          "刀1_装扮": "刀-Codex-血色光剑天秤"
         },
         "女": {
-          "刀_装扮": "刀-血色光剑天秤",
-          "刀1_装扮": "刀-血色光剑天秤"
+          "刀_装扮": "刀-Codex-血色光剑天秤",
+          "刀1_装扮": "刀-Codex-血色光剑天秤"
         }
       },
       "sourceFile": "武器_刀_直剑.xml"
@@ -4534,17 +4534,17 @@
     },
     "钛合金P90": {
       "use": "手枪",
-      "icon": "钛合金P90",
-      "dressup": "枪-手枪-钛合金P90",
+      "icon": "Codex-钛合金P90",
+      "dressup": "枪-手枪-Codex-钛合金P90",
       "helmet": false,
       "fieldsByGender": {
         "男": {
-          "手枪_装扮": "枪-手枪-钛合金P90",
-          "手枪2_装扮": "枪-手枪-钛合金P90"
+          "手枪_装扮": "枪-手枪-Codex-钛合金P90",
+          "手枪2_装扮": "枪-手枪-Codex-钛合金P90"
         },
         "女": {
-          "手枪_装扮": "枪-手枪-钛合金P90",
-          "手枪2_装扮": "枪-手枪-钛合金P90"
+          "手枪_装扮": "枪-手枪-Codex-钛合金P90",
+          "手枪2_装扮": "枪-手枪-Codex-钛合金P90"
         }
       },
       "sourceFile": "武器_手枪_冲锋枪.xml"
@@ -21026,6 +21026,23 @@
         }
       },
       "sourceFile": "武器_长枪_机枪.xml"
+    },
+    "P90印花集": {
+      "use": "手枪",
+      "icon": "钛合金P90",
+      "dressup": "枪-手枪-钛合金P90",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-钛合金P90",
+          "手枪2_装扮": "枪-手枪-钛合金P90"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-钛合金P90",
+          "手枪2_装扮": "枪-手枪-钛合金P90"
+        }
+      },
+      "sourceFile": "武器_手枪_冲锋枪.xml"
     }
   },
   "skinKeys": {
@@ -82174,7 +82191,7 @@
         "手枪"
       ],
       "items": [
-        "钛合金P90"
+        "P90印花集"
       ],
       "sourceFiles": [
         "武器_手枪_冲锋枪.xml"
@@ -82182,7 +82199,7 @@
       "export": {
         "format": "png",
         "zoom": 2,
-        "fps": 24,
+        "fps": 24.0,
         "frameCount": 1,
         "uri": "skins/003b756e_1.png",
         "width": 1801,
@@ -82198,7 +82215,7 @@
           "width": 1801,
           "height": 212,
           "originX": 237.6,
-          "originY": 178
+          "originY": 178.0
         }
       ]
     },
@@ -146364,6 +146381,86 @@
           "height": 278,
           "originX": 165.7,
           "originY": 158.4
+        }
+      ]
+    },
+    "枪-手枪-Codex-钛合金P90": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/P90-Ti61/枪-手枪-Codex-钛合金P90",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "钛合金P90"
+      ],
+      "sourceFiles": [
+        "武器_手枪_冲锋枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/d6483b1c_1.png",
+        "width": 448,
+        "height": 169,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/d6483b1c_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 448,
+          "height": 169,
+          "originX": 233.3,
+          "originY": 129.4
+        }
+      ]
+    },
+    "刀-Codex-血色光剑天秤": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/Ti61-血剑/刀-Codex-血色光剑天秤",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "刀"
+      ],
+      "items": [
+        "血色光剑天秤"
+      ],
+      "sourceFiles": [
+        "武器_刀_直剑.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9857abdb_1.png",
+        "width": 198,
+        "height": 960,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9857abdb_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 198,
+          "height": 960,
+          "originX": 98.0,
+          "originY": 91.5
         }
       ]
     }

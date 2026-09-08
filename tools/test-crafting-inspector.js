@@ -186,11 +186,11 @@ function main() {
 
     assert(recipeData.files.length === 12,
         'expected 12 crafting category files, got ' + recipeData.files.length);
-    assert(recipeData.recipes.length === 282,
-        'expected 282 recipes, got ' + recipeData.recipes.length);
-    assert(items.length === 280,
-        'expected 280 unique crafting products, got ' + items.length);
-    assert(productCounts.weapon === 71 && productCounts.armor === 169 && productCounts.fallback === 40,
+    assert(recipeData.recipes.length === 284,
+        'expected 284 recipes, got ' + recipeData.recipes.length);
+    assert(items.length === 282,
+        'expected 282 unique crafting products, got ' + items.length);
+    assert(productCounts.weapon === 73 && productCounts.armor === 169 && productCounts.fallback === 40,
         'crafting product split changed: ' + JSON.stringify(productCounts));
 
     const genders = ['男', '女'];
@@ -246,10 +246,10 @@ function main() {
     assert(!mismatches.length, 'inspector route mismatches: ' + JSON.stringify(mismatches, null, 2));
     genders.forEach(gender => {
         const actual = routes[gender];
-        assert(actual.weapon === 71 && actual.armor === 153 && actual.icon === 56,
+        assert(actual.weapon === 73 && actual.armor === 153 && actual.icon === 56,
             gender + ' route split mismatch: ' + JSON.stringify(actual));
     });
-    assert(decisions.length === 560, 'expected 560 gender-specific route decisions, got ' + decisions.length);
+    assert(decisions.length === 564, 'expected 564 gender-specific route decisions, got ' + decisions.length);
 
     const actualNeckFallbacks = Array.from(neckFallbacks).sort((left, right) => left.localeCompare(right, 'zh-CN'));
     assert(sameSet(actualNeckFallbacks, EXPECTED_NECK_FALLBACKS),

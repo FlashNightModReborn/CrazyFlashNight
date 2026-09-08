@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/QJZ171-Ti61/00_总装_含激光发射器" itemID="6a9e698c-00005526" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="00_总装_含激光发射器">
+      <layers>
+        <DOMLayer name="激光发射器" color="#666666" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-共用/01_激光发射器/本体_白甲红衬" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.5" d="0.5" tx="34" ty="-82"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="固定机匣侧座" color="#666666">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/QJZ171-Ti61/接口/激光发射器侧座" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="-0.5" d="0.5" tx="34" ty="-76"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="既有静态枪体" color="#666666">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/QJZ171-Ti61/00_总装" symbolType="graphic" loop="single frame"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

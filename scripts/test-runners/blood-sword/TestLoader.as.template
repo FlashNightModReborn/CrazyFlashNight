@@ -1,0 +1,9 @@
+﻿import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
+if (!_root.主角函数) _root.主角函数 = {};
+#include "逻辑/单位函数/单位函数_fs_装备生命周期配置.as"
+#include "逻辑/装备函数/血色光剑天秤.as"
+_root.bloodSwordFocusedComplete = function():Void {
+    trace("FocusedTestRunId blood-sword Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId blood-sword Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLifecycleTest.runAllTests();

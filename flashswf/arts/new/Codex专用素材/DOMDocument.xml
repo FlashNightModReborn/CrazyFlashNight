@@ -1,18 +1,51 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#E5E3DF" width="700" height="350" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="83.8613016320889" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
      <folders>
           <DOMFolderItem name="Codex" itemID="6a9bf5b1-000012c0" isExpanded="true"/>
+          <DOMFolderItem name="Codex/P90-Ti61" itemID="6a9e698c-00005508"/>
+          <DOMFolderItem name="Codex/P90-Ti61/01_分件" itemID="6a9e698c-00005510"/>
+          <DOMFolderItem name="Codex/P90-Ti61/02_完整灯组" itemID="6a9e698c-0000551f"/>
+          <DOMFolderItem name="Codex/P90-Ti61/03_弹匣" itemID="6a9e698c-00005518"/>
           <DOMFolderItem name="Codex/QJZ171" itemID="6a9bf5b1-000012c1" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171-Ti61" itemID="6a9d7100-00003200" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171-Ti61/弹箱子件" itemID="6a9d7100-00003203" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171-Ti61/分件" itemID="6a9d7100-00003202" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171-Ti61/光效" itemID="6a9d7100-00003201" isExpanded="true"/>
+          <DOMFolderItem name="Codex/QJZ171-Ti61/接口" itemID="6a9e698c-000054e9"/>
           <DOMFolderItem name="Codex/QJZ171/弹箱子件" itemID="7bdfe639-00002001" isExpanded="true"/>
           <DOMFolderItem name="Codex/QJZ171/分件" itemID="6a9bf5b1-000012c2" isExpanded="true"/>
+          <DOMFolderItem name="Codex/Ti61-共用" itemID="6a9e698c-000054e6"/>
+          <DOMFolderItem name="Codex/Ti61-共用/00_接口标记" itemID="6a9e698c-0000550e"/>
+          <DOMFolderItem name="Codex/Ti61-共用/01_激光发射器" itemID="6a9e698c-000054e7"/>
+          <DOMFolderItem name="Codex/Ti61-共用/02_光束视觉参考" itemID="6a9e698c-0000550b"/>
           <DOMFolderItem name="Codex/接口" itemID="6a9bf5b1-000012c3" isExpanded="true"/>
           <DOMFolderItem name="Codex/图标" itemID="6a9c04a3-00001524"/>
      </folders>
      <symbols>
+          <Include href="Codex/P90-Ti61/00_图标特写静态.xml" itemIcon="1" loadImmediate="false" itemID="6a9ed100-524b87fd"/>
+          <Include href="Codex/P90-Ti61/00_整枪_含共用激光.xml" loadImmediate="false" itemID="6a9e698c-00005529"/>
+          <Include href="Codex/P90-Ti61/00_整枪_裸枪.xml" loadImmediate="false" itemID="6a9e6100-65cb5a50"/>
+          <Include href="Codex/P90-Ti61/01_分件/01_主体握持框.xml" itemIcon="1" loadImmediate="false" itemID="6a9e698c-0000552d"/>
+          <Include href="Codex/P90-Ti61/01_分件/02_后托总成.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-3f27d93f"/>
+          <Include href="Codex/P90-Ti61/01_分件/03_观瞄总成.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-7a14d12c"/>
+          <Include href="Codex/P90-Ti61/01_分件/04_机匣底架与弹匣槽.xml" itemIcon="1" loadImmediate="false" itemID="6a9e698c-0000552e"/>
+          <Include href="Codex/P90-Ti61/01_分件/05_机匣与弹匣承托.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-2c36a074"/>
+          <Include href="Codex/P90-Ti61/01_分件/06_连续观瞄支架.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-63c703e1"/>
+          <Include href="Codex/P90-Ti61/01_分件/07_主握侧甲.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-7630fe9e"/>
+          <Include href="Codex/P90-Ti61/01_分件/08_前握弧甲与接头.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-5dca7144"/>
+          <Include href="Codex/P90-Ti61/01_分件/09_短前端套件.xml" itemIcon="1" loadImmediate="false" itemID="6a9e698c-0000552b"/>
+          <Include href="Codex/P90-Ti61/01_分件/10_P90附件短座.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-0859bcac"/>
+          <Include href="Codex/P90-Ti61/01_分件/11_前侧完整状态灯.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-7ac9b1df"/>
+          <Include href="Codex/P90-Ti61/02_完整灯组/01_后托条灯.xml" itemIcon="1" loadImmediate="false" itemID="6a9e698c-0000552f"/>
+          <Include href="Codex/P90-Ti61/02_完整灯组/02_观瞄侧点灯.xml" itemIcon="1" loadImmediate="false" itemID="6a9e698c-00005530"/>
+          <Include href="Codex/P90-Ti61/02_完整灯组/03_观瞄主条灯.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-5b8fff1c"/>
+          <Include href="Codex/P90-Ti61/03_弹匣/01_弹匣_50状态.xml" loadImmediate="false" itemID="6a9e698c-0000552c"/>
+          <Include href="Codex/P90-Ti61/03_弹匣/02_弹列单元.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-45db65ab"/>
+          <Include href="Codex/P90-Ti61/03_弹匣/03_半透明外壳.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-310217e1"/>
+          <Include href="Codex/P90-Ti61/03_弹匣/04_图标满弹静态.xml" itemIcon="1" loadImmediate="false" itemID="6a9ed100-05c6213f"/>
+          <Include href="Codex/P90-Ti61/枪-手枪-Codex-钛合金P90.xml" itemID="6a9e698c-00005527"/>
+          <Include href="Codex/P90-Ti61/图标-Codex-钛合金P90.xml" itemID="6a9e6100-4935e3e1"/>
           <Include href="Codex/QJZ171-Ti61/00_总装.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003000"/>
+          <Include href="Codex/QJZ171-Ti61/00_总装_含激光发射器.xml" itemIcon="1" loadImmediate="false" itemID="6a9e698c-00005526"/>
           <Include href="Codex/QJZ171-Ti61/弹箱子件/01_箱体.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003018"/>
           <Include href="Codex/QJZ171-Ti61/弹箱子件/02_闭合上盖.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003019"/>
           <Include href="Codex/QJZ171-Ti61/弹箱子件/03_提手.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-0000301a"/>
@@ -40,6 +73,7 @@
           <Include href="Codex/QJZ171-Ti61/光效/06_前侧增强光层.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003006"/>
           <Include href="Codex/QJZ171-Ti61/光效/07_弹箱原短灯晕.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003007"/>
           <Include href="Codex/QJZ171-Ti61/光效/08_弹箱增强光层.xml" itemIcon="1" loadImmediate="false" itemID="6a9d7100-00003008"/>
+          <Include href="Codex/QJZ171-Ti61/接口/激光发射器侧座.xml" itemIcon="1" loadImmediate="false" itemID="6a9e6100-7fffffff"/>
           <Include href="Codex/QJZ171-Ti61/枪-长枪-Codex-钛合金QJZ171.xml" itemID="6a9d7100-00003101"/>
           <Include href="Codex/QJZ171-Ti61/图标-Codex-钛合金QJZ171.xml" itemID="6a9d7100-00003102"/>
           <Include href="Codex/QJZ171/00_总装.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012c4" lastModified="1788661007"/>
@@ -64,12 +98,66 @@
           <Include href="Codex/QJZ171/分件/15_弹药箱_远侧.xml" itemIcon="1" loadImmediate="false" itemID="336f657a-68e3da32" lastModified="1788661007"/>
           <Include href="Codex/QJZ171/枪-长枪-Codex-QJZ171.xml" itemID="6a9bf5b1-000012d5"/>
           <Include href="Codex/QJZ171/图标-Codex-QJZ171.xml" itemID="6a9bf5b1-000012d6"/>
+          <Include href="Codex/Ti61-共用/00_接口标记/不可见定位点.xml" loadImmediate="false" itemID="6a9e698c-0000552a"/>
+          <Include href="Codex/Ti61-共用/01_激光发射器/本体_白甲红衬.xml" loadImmediate="false" itemID="6a9e6100-7c1cb557"/>
+          <Include href="Codex/Ti61-共用/02_光束视觉参考/红束_暖白亮芯.xml" itemID="6a9e698c-00005528"/>
           <Include href="Codex/接口/枪口标记.xml" loadImmediate="false" itemID="6a9bf5b1-000012d4"/>
           <Include href="Codex/接口/枪口标记图形.xml" itemIcon="1" loadImmediate="false" itemID="6a9bf5b1-000012d3"/>
           <Include href="Codex/图标/24像素底影.xml" itemIcon="1" loadImmediate="false" itemID="6a9c04a3-00001526"/>
           <Include href="Codex/图标/24像素遮罩.xml" itemIcon="1" loadImmediate="false" itemID="6a9c04a3-00001525"/>
           <Include href="Codex专用素材.xml" itemID="6a9bf5b1-000012d7"/>
-     </symbols>
+         <Include href="Codex/Ti61-血剑/00_整剑_静态横向.xml"/>
+    <Include href="Codex/Ti61-血剑/00_整剑_静态竖向.xml"/>
+    <Include href="Codex/Ti61-血剑/01_图标柄灯静态.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/00_基础红刃_常在.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/00_整剑_按需光效.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/00_静态主体_8分件.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/01_实体分件/01_尾帽.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/01_实体分件/02_分节握柄.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/01_实体分件/03_护手内框与斜槽.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/01_实体分件/04_上护手与外爪.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/01_实体分件/05_下护手与外爪.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/01_实体分件/06_刃根承接套.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/01_实体分件/07_黑白长剑脊.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/01_实体分件/08_剑脊端封.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/02_独立光效/01_剑柄灯_54帧.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/02_独立光效/02_红刃呼吸_84帧.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/02_独立光效/03_红刃纹路_54帧.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/02_独立光效/04_爆发_单次12帧.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/03_原稿坐标/整剑_按需光效_原稿坐标.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/04_原稿参考/判定使用_原稿.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_01.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_02.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_03.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_04.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_05.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_06.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_07.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_08.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/06_刃根承接套_色面_01.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/06_刃根承接套_色面_02.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/基础红刃_始终可见.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/爆发暖色边沿.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/刃根邻面反照.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/斜槽1_亮芯.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/斜槽2_亮芯.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/斜槽3_亮芯.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/斜槽4_亮芯.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/斜槽5_亮芯.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/斜槽6_亮芯.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/独立柄灯/斜槽邻面反照.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/红刃呼吸补光.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/红刃热边.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/红刃爆发补光.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/红刃近远光晕.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/连续光路_微弱底纹.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/连续细光路_完整补亮.xml"/>
+    <Include href="Codex/Ti61-血剑/R04/90_绘制元件/附加能量回振.xml"/>
+    <Include href="Codex/Ti61-血剑/刀-Codex-血色光剑天秤.xml"/>
+    <Include href="Codex/Ti61-血剑/图标-Codex-血色光剑天秤.xml"/>
+    <Include href="Codex/Ti61-血剑/图标遮罩.xml"/>
+    <Include href="Codex/Ti61-血剑/接口/判定使用.xml"/>
+  </symbols>
      <timelines>
           <DOMTimeline name="Codex素材总览">
                <layers>

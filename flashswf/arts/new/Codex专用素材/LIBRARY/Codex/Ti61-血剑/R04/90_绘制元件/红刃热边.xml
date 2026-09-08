@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑/R04/90_绘制元件/红刃热边" itemID="6a9f543d-00005029" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="红刃热边">
+      <layers>
+        <DOMLayer name="红刃热边" color="#D45656" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0.158676147460938" b="0.0372161865234375" c="-0.0372161865234375" d="0.158676147460938" tx="220" ty="-4.5"/>
+                                </matrix>
+                                <GradientEntry color="#FF1A08" alpha="0.501960784313725" ratio="0"/>
+                                <GradientEntry color="#FF1004" alpha="0.27843137254902" ratio="0.4"/>
+                                <GradientEntry color="#FF220C" alpha="0.419607843137255" ratio="0.749019607843137"/>
+                                <GradientEntry color="#FF1206" alpha="0.301960784313725" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                          </fills>
+                          <edges>
+                            <Edge fillStyle0="1" edges="!2484 -787|1641 -207!1641 -207|1640 112!1640 112|2376 764!2376 764[2620 548 2942 359!2942 359|6414 375!6414 375[7532 308 8478 -76!8478 -76[7653 -311 6721 -412!6721 -412|6682 -416!6682 -416|3072 -432!3072 -432[2778 -567 2484 -787!3072
+ -422|6681 -406!6681 -406|6720 -402!6720 -402[7635 -303 8447 -74!8447 -74[7514 299 6414 365!6414 365|2942 349!2942 349[2939 349 2937 350!2937 350[2618 538 2376 751!2376 751|1650 108!1650 108|1651 -202!1651 -202|2484 -775!2484 -775[2776
+ -557 3068 -423!3068 -423[3070 -422 3072 -422"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

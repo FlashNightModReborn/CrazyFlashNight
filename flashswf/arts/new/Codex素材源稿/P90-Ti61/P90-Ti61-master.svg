@@ -1,0 +1,888 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="1100" height="520" viewBox="0 0 1100 520" data-authoring-master="P90-Ti61-R10">
+  <title>P90 Ti61 R10 · 唯一整枪编辑主稿</title>
+  <desc>整枪、裸枪与独立共用附件均由此主稿生成。组件联动、材质归属和派生阴影见 components.json；先编辑主稿，再运行 tools/build.py。</desc>
+  <defs>
+    <clipPath id="prototype_child_1_mask_2" clipPathUnits="userSpaceOnUse">
+      <path d="M 0 0 L 0 6.9 L 164.1 6.95 L 164.1 0 L 61.075 0.15 Q 61.033008 0.074609375 61 0 L 0 0 Z" fill="#584E47" />
+      <path d="M 164.1 9.95 L 164.1 6.95 L 0 6.9 L 0 10 L 164.1 9.95 Z" fill="#39332E" />
+    </clipPath>
+    <linearGradient id="r6_red" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#B32937" />
+      <stop offset="0.42" stop-color="#9C1B2B" />
+      <stop offset="0.82" stop-color="#8C1725" />
+      <stop offset="1" stop-color="#62101C" />
+    </linearGradient>
+    <linearGradient id="r6_black" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#171718" />
+      <stop offset="0.34" stop-color="#3B3B3C" />
+      <stop offset="0.58" stop-color="#2E2E2F" />
+      <stop offset="1" stop-color="#1B1B1C" />
+    </linearGradient>
+    <linearGradient id="r6_frame" x1="0" y1="284" x2="0" y2="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3B3B3C" />
+      <stop offset="0.45" stop-color="#313132" />
+      <stop offset="1" stop-color="#1D1D1E" />
+    </linearGradient>
+    <linearGradient id="r6_metal" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#262627" />
+      <stop offset="0.25" stop-color="#6B6B6C" />
+      <stop offset="0.38" stop-color="#5F5F60" />
+      <stop offset="0.76" stop-color="#323233" />
+      <stop offset="1" stop-color="#202021" />
+    </linearGradient>
+    <linearGradient id="r6_softmetal" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#606061" />
+      <stop offset="0.36" stop-color="#515152" />
+      <stop offset="1" stop-color="#333334" />
+    </linearGradient>
+    <clipPath id="r6_identity_clip" clipPathUnits="userSpaceOnUse">
+      <path d="M 61.75 -57.6 L 61.2 -57.6 Q 59.05 -58.4 57.25 -59.4 Q 55.9 -60.2 54.75 -61.1 L 54.75 -64.35 L 28.6 -64.35 L 23.9 -59.8 Q 21.6 -58.5 19.5 -57.65 Q 18.4 -57.25 17.35 -56.9 L 17.2 -56.85 L 16.75 -57.45 L 16.45 -58.15 L 12.15 -58.15 L 10.75 -58.15 L 10.2 -57.25 Q 7.5 -52.7 5.8 -48.5 L 5.1 -46.6 L 5.1 -44.85 L 4.3 -43.65 L 18.1 -41.5 L 19.3 -43 L 20 -43.95 L 28 -42.95 L 39.65 -41.55 L 44.95 -40.5 Q 48.8 -39.55 51.65 -38.3 L 17.05 -38.3 L 16.25 -36.6 Q 15.35 -34.6 14.85 -32.5 L 14.85 -32.45 L 14.55 -31.1 L 14.35 -29.35 L 0.65 -29.35 L 0.55 -30.7 Q 0.5 -31.55 0.55 -32.5 L 0.65 -35.1 L 1.1 -36.6 L 1.65 -38.3 L -50.15 -38.3 L -52.05 -38.3 L -54.55 -38.3 L -109.65 -38.3 L -110.95 -38.3 L -112.45 -38.1 L -113.2 -37.8 L -114.65 -36.8 Q -116.2 -35.1 -116.3 -31.45 L -116.2 -29 Q -115.8 -21.45 -115.25 -15.7 L -114.95 -11.5 Q -114.7 -5.1 -115.45 6.75 L -115.45 7.5 Q -115.3 10.55 -111.65 11.05 L -111.15 11.15 L -109.95 11.15 L -63.3 11.15 L -63.3 9.8 L -58.75 9.8 Q -57.4 10.5 -55.55 10.9 L -36.1 17.6 L -34.95 17.95 L -33.7 19.45 L -18.65 19.45 Q -14.5 19.5 -8.85 17.8 L -6.7 17.15 Q -1.05 15.1 3.6 11.55 L 5.1 10.35 L 8.7 6.85 Q 9.85 5.6 12 4.55 L 12 4.4 L 12.75 4.55 L 19.1 4.55 L 19.55 4.7 Q 20.35 4.95 20.85 5.5 Q 21.75 6.5 21.7 8.45 L 21.3 11 L 20.2 14.45 L 19.8 15.85 Q 19 19.45 22.35 19.7 L 35.4 19.55 Q 37.8 19 40.55 17.75 L 44.55 15.7 Q 48.7 13.35 50.8 7.85 Q 52.35 3.8 52.8 -2 Q 53 -3.3 53.65 -4.1 Q 54.45 -5.15 55.9 -5.5 L 58.35 -5.65 Q 59.8 -5.75 60.85 -5.65 L 62.3 -5.45 Q 63.2 -5.2 63.7 -4.8 L 64.2 -4.1 Q 64.45 -3.6 64.4 -2.9 L 64.4 -0.75 L 64.4 0.3 Q 65.15 3.1 66.3 3.05 L 70.6 3.05 Q 71.55 2.65 71.75 0.9 L 71.85 0.3 L 73.25 -9.9 L 73.25 -15.8 L 73.25 -17.55 L 69.65 -17.55 L 69.65 -18.65 L 75.15 -18.65 L 75.9 -18.65 L 75.9 -18.45 L 90.95 -18.45 L 89.95 -20.75 L 89.25 -22.4 L 88 -25.4 L 87.35 -26.9 L 75.9 -26.9 L 75.9 -26.2 L 75.15 -26.2 L 73.15 -26.2 L 73.15 -27.95 L 73.1 -37.65 Q 73.1 -40.65 72.75 -42.85 Q 71.8 -50.9 69.8 -56.35 L 69.35 -57.6 L 68.15 -58.75 L 62.9 -58.75 L 62.9 -57.6 L 61.75 -57.6 Z M 62.05 -50.55 L 61.95 -50.6 L 62.1 -50.65 L 62.05 -50.55 Z M 34.8 -11.4 L 35.6 -10.55 Q 39.95 -9.45 40.1 -5.5 L 40 -3.95 Q 39.6 -0.8 37.75 0.65 Q 36.55 1.6 34.85 1.9 L 34 1.95 Q 31.5 2.2 29.65 0.85 L 29 0.3 Q 28.05 -1.25 26.6 -1.85 L 24.5 -2.2 L 23.2 -2.2 Q 22.75 -3.75 23 -6.35 L 23.05 -6.85 Q 23.7 -11.9 26.95 -13.25 L 27.6 -13.5 L 30.05 -13.6 Q 31.5 -13.5 32.75 -12.85 Q 33.1 -12.7 33.4 -12.5 L 34.05 -12.05 L 34.15 -11.95 L 34.8 -11.4 Z M 84.4 -25.45 L 84.4 -25.4 L 84.35 -25.4 L 84.4 -25.45 Z M 24.7 0.85 L 24.55 1.1 L 24.55 0.85 L 24.7 0.85 Z M -32.3 0.8 Q -33.35 -0.6 -33.65 -2.6 Q -33.9 -4.05 -33.7 -5.9 L -33.7 -6.15 Q -33.05 -9.6 -31.65 -11.45 L -30.8 -12.35 Q -29.55 -13.45 -27.8 -13.45 L -9.75 -13.45 L -9.2 -13.4 Q -6.55 -12.9 -5.8 -8.45 L -5.75 -7.8 Q -5.75 -5.4 -6.9 -3.7 Q -8 -2.05 -10.25 -1.05 L -10.6 -0.9 Q -11 -0.75 -11.35 -0.55 L -11.5 -0.5 Q -13.85 0.5 -15.9 1.6 Q -17.65 2.5 -19.1 3.5 Q -25.2 6.8 -31.35 1.75 L -32.3 0.8 Z" transform="matrix(4 0 0 4 555.2 347.4)" fill-rule="evenodd" clip-rule="evenodd" id="p90_identity_clip_shape" data-derived-from="p90_identity_outline" />
+    </clipPath>
+    <linearGradient id="r8_molded_face" x1="340" y1="283" x2="552" y2="429" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4B4D50" stop-opacity="1" />
+      <stop offset="0.28" stop-color="#3B3D40" stop-opacity="1" />
+      <stop offset="0.65" stop-color="#292B2E" stop-opacity="1" />
+      <stop offset="1" stop-color="#181A1D" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="r8_web_face" x1="554" y1="295" x2="581" y2="379" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#57595B" stop-opacity="1" />
+      <stop offset="0.22" stop-color="#444649" stop-opacity="1" />
+      <stop offset="0.59" stop-color="#333538" stop-opacity="1" />
+      <stop offset="1" stop-color="#222427" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="r8_hole_wall" x1="0.2" y1="0" x2="0.8" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#080A0C" stop-opacity="1" />
+      <stop offset="0.33" stop-color="#111315" stop-opacity="1" />
+      <stop offset="0.64" stop-color="#292B2E" stop-opacity="1" />
+      <stop offset="0.85" stop-color="#626568" stop-opacity="1" />
+      <stop offset="1" stop-color="#383B3E" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="r8_hole_outer" x1="0" y1="0" x2="0.8" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#56595C" stop-opacity="1" />
+      <stop offset="0.42" stop-color="#3B3D40" stop-opacity="1" />
+      <stop offset="0.78" stop-color="#222427" stop-opacity="1" />
+      <stop offset="1" stop-color="#121416" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="r8_red_well" x1="0.1" y1="0" x2="0.8" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#B8323E" stop-opacity="1" />
+      <stop offset="0.36" stop-color="#A02633" stop-opacity="1" />
+      <stop offset="0.79" stop-color="#8D1D2B" stop-opacity="1" />
+      <stop offset="1" stop-color="#641321" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="r8_front_cheek" x1="773" y1="284" x2="825" y2="345" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#535558" stop-opacity="1" />
+      <stop offset="0.32" stop-color="#35373A" stop-opacity="1" />
+      <stop offset="1" stop-color="#1A1C1F" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="r8_contact_fade" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#06080B" stop-opacity="0.8" />
+      <stop offset="0.55" stop-color="#080A0D" stop-opacity="0.28" />
+      <stop offset="1" stop-color="#0C0E11" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="r8_white_lower_edge" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#9C9FA2" stop-opacity="1" />
+      <stop offset="0.54" stop-color="#707579" stop-opacity="1" />
+      <stop offset="1" stop-color="#4A4E52" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="r8_white_armor" x1="0" y1="0" x2="0.8" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#F0F0EB" />
+      <stop offset="0.28" stop-color="#E4E6E2" />
+      <stop offset="0.62" stop-color="#CFD2D1" />
+      <stop offset="0.83" stop-color="#B9BFC0" />
+      <stop offset="1" stop-color="#9BA2A4" />
+    </linearGradient>
+    <radialGradient id="r8_ti61_light_falloff" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="819.2" gradientTransform="matrix(0.0412445068359375 0 0 0.0246429443359375 -0.05 0)">
+      <stop offset="0" stop-color="#FF2618" stop-opacity="0.66" />
+      <stop offset="0.25" stop-color="#FF2618" stop-opacity="0.45" />
+      <stop offset="0.55" stop-color="#FF2618" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#FF2618" stop-opacity="0" />
+    </radialGradient>
+    <clipPath id="r10_support_clip" clipPathUnits="userSpaceOnUse">
+      <path d="M 61.75 -57.6 L 61.2 -57.6 Q 59.05 -58.4 57.25 -59.4 Q 55.9 -60.2 54.75 -61.1 L 54.75 -64.35 L 28.6 -64.35 L 23.9 -59.8 Q 21.6 -58.5 19.5 -57.65 Q 18.4 -57.25 17.35 -56.9 L 17.2 -56.85 L 16.75 -57.45 L 16.45 -58.15 L 12.15 -58.15 L 10.75 -58.15 L 10.2 -57.25 Q 7.5 -52.7 5.8 -48.5 L 5.1 -46.6 L 5.1 -44.85 L 4.3 -43.65 L 18.1 -41.5 L 19.3 -43 L 20 -43.95 L 28 -42.95 L 39.65 -41.55 L 44.95 -40.5 Q 48.8 -39.55 51.65 -38.3 L 17.05 -38.3 L 16.25 -36.6 Q 15.35 -34.6 14.85 -32.5 L 14.85 -32.45 L 14.55 -31.1 L 14.35 -29.35 L 0.65 -29.35 L 0.55 -30.7 Q 0.5 -31.55 0.55 -32.5 L 0.65 -35.1 L 1.1 -36.6 L 1.65 -38.3 L -50.15 -38.3 L -52.05 -38.3 L -54.55 -38.3 L -109.65 -38.3 L -110.95 -38.3 L -112.45 -38.1 L -113.2 -37.8 L -114.65 -36.8 Q -116.2 -35.1 -116.3 -31.45 L -116.2 -29 Q -115.8 -21.45 -115.25 -15.7 L -114.95 -11.5 Q -114.7 -5.1 -115.45 6.75 L -115.45 7.5 Q -115.3 10.55 -111.65 11.05 L -111.15 11.15 L -109.95 11.15 L -63.3 11.15 L -63.3 9.8 L -58.75 9.8 Q -57.4 10.5 -55.55 10.9 L -36.1 17.6 L -34.95 17.95 L -33.7 19.45 L -18.65 19.45 Q -14.5 19.5 -8.85 17.8 L -6.7 17.15 Q -1.05 15.1 3.6 11.55 L 5.1 10.35 L 8.7 6.85 Q 9.85 5.6 12 4.55 L 12 4.4 L 12.75 4.55 L 19.1 4.55 L 19.55 4.7 Q 20.35 4.95 20.85 5.5 Q 21.75 6.5 21.7 8.45 L 21.3 11 L 20.2 14.45 L 19.8 15.85 Q 19 19.45 22.35 19.7 L 35.4 19.55 Q 37.8 19 40.55 17.75 L 44.55 15.7 Q 48.7 13.35 50.8 7.85 Q 52.35 3.8 52.8 -2 Q 53 -3.3 53.65 -4.1 Q 54.45 -5.15 55.9 -5.5 L 58.35 -5.65 Q 59.8 -5.75 60.85 -5.65 L 62.3 -5.45 Q 63.2 -5.2 63.7 -4.8 L 64.2 -4.1 Q 64.45 -3.6 64.4 -2.9 L 64.4 -0.75 L 64.4 0.3 Q 65.15 3.1 66.3 3.05 L 70.6 3.05 Q 71.55 2.65 71.75 0.9 L 71.85 0.3 L 73.25 -9.9 L 73.25 -15.8 L 73.25 -17.55 L 69.65 -17.55 L 69.65 -18.65 L 75.15 -18.65 L 75.9 -18.65 L 75.9 -18.45 L 90.95 -18.45 L 89.95 -20.75 L 89.25 -22.4 L 88 -25.4 L 87.35 -26.9 L 75.9 -26.9 L 75.9 -26.2 L 75.15 -26.2 L 73.15 -26.2 L 73.15 -27.95 L 73.1 -37.65 Q 73.1 -40.65 72.75 -42.85 Q 71.8 -50.9 69.8 -56.35 L 69.35 -57.6 L 68.15 -58.75 L 62.9 -58.75 L 62.9 -57.6 L 61.75 -57.6 Z M 62.05 -50.55 L 61.95 -50.6 L 62.1 -50.65 L 62.05 -50.55 Z M 34.8 -11.4 L 35.6 -10.55 Q 39.95 -9.45 40.1 -5.5 L 40 -3.95 Q 39.6 -0.8 37.75 0.65 Q 36.55 1.6 34.85 1.9 L 34 1.95 Q 31.5 2.2 29.65 0.85 L 29 0.3 Q 28.05 -1.25 26.6 -1.85 L 24.5 -2.2 L 23.2 -2.2 Q 22.75 -3.75 23 -6.35 L 23.05 -6.85 Q 23.7 -11.9 26.95 -13.25 L 27.6 -13.5 L 30.05 -13.6 Q 31.5 -13.5 32.75 -12.85 Q 33.1 -12.7 33.4 -12.5 L 34.05 -12.05 L 34.15 -11.95 L 34.8 -11.4 Z M 84.4 -25.45 L 84.4 -25.4 L 84.35 -25.4 L 84.4 -25.45 Z M 24.7 0.85 L 24.55 1.1 L 24.55 0.85 L 24.7 0.85 Z M -32.3 0.8 Q -33.35 -0.6 -33.65 -2.6 Q -33.9 -4.05 -33.7 -5.9 L -33.7 -6.15 Q -33.05 -9.6 -31.65 -11.45 L -30.8 -12.35 Q -29.55 -13.45 -27.8 -13.45 L -9.75 -13.45 L -9.2 -13.4 Q -6.55 -12.9 -5.8 -8.45 L -5.75 -7.8 Q -5.75 -5.4 -6.9 -3.7 Q -8 -2.05 -10.25 -1.05 L -10.6 -0.9 Q -11 -0.75 -11.35 -0.55 L -11.5 -0.5 Q -13.85 0.5 -15.9 1.6 Q -17.65 2.5 -19.1 3.5 Q -25.2 6.8 -31.35 1.75 L -32.3 0.8 Z" transform="matrix(4 0 0 4 555.2 347.4)" fill-rule="evenodd" clip-rule="evenodd" id="p90_support_body_clip_shape" data-derived-from="p90_identity_outline" />
+      <path d="M 14.85 -32.5 Q 15.35 -34.6 16.25 -36.6 L 17.05 -38.3 Q 17.95 -39.85 19 -41.4 L 18.1 -41.5 L 4.3 -43.65 Q 2.75 -41.1 1.65 -38.3 L 1.1 -36.6 L 0.85 -35.8 L 0.65 -35.1 L 0.55 -32.5 Q 0.5 -31.55 0.55 -30.7 L 0.65 -29.35 L 14.35 -29.35 L 14.55 -31.1 L 14.85 -32.45 L 14.85 -32.5 Z" transform="matrix(4 0 0 4 555.2 347.4)" fill-rule="evenodd" clip-rule="evenodd" />
+    </clipPath>
+    <linearGradient id="ti61_emitter_white" x1="0" y1="0" x2="0.8" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#EBEEEB" />
+      <stop offset="0.54" stop-color="#DFE3E2" />
+      <stop offset="1" stop-color="#C0C0C1" />
+    </linearGradient>
+    <linearGradient id="ti61_emitter_red" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#B32937" />
+      <stop offset="0.42" stop-color="#9C1B2B" />
+      <stop offset="0.82" stop-color="#8C1725" />
+      <stop offset="1" stop-color="#62101C" />
+    </linearGradient>
+    <linearGradient id="ti61_emitter_black" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#171718" />
+      <stop offset="0.34" stop-color="#3B3B3C" />
+      <stop offset="0.58" stop-color="#2E2E2F" />
+      <stop offset="1" stop-color="#1B1B1C" />
+    </linearGradient>
+    <linearGradient id="ti61_emitter_softmetal" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#606061" />
+      <stop offset="0.36" stop-color="#515152" />
+      <stop offset="1" stop-color="#333334" />
+    </linearGradient>
+  </defs>
+  <g id="r6_identity_frame" data-label="原型轮廓与握持负形" data-role="frame" inkscape:label="原型轮廓与握持负形" inkscape:groupmode="layer">
+    <title>原型轮廓与握持负形</title>
+    <path d="M 61.75 -57.6 L 61.2 -57.6 Q 59.05 -58.4 57.25 -59.4 Q 55.9 -60.2 54.75 -61.1 L 54.75 -64.35 L 28.6 -64.35 L 23.9 -59.8 Q 21.6 -58.5 19.5 -57.65 Q 18.4 -57.25 17.35 -56.9 L 17.2 -56.85 L 16.75 -57.45 L 16.45 -58.15 L 12.15 -58.15 L 10.75 -58.15 L 10.2 -57.25 Q 7.5 -52.7 5.8 -48.5 L 5.1 -46.6 L 5.1 -44.85 L 4.3 -43.65 L 18.1 -41.5 L 19.3 -43 L 20 -43.95 L 28 -42.95 L 39.65 -41.55 L 44.95 -40.5 Q 48.8 -39.55 51.65 -38.3 L 17.05 -38.3 L 16.25 -36.6 Q 15.35 -34.6 14.85 -32.5 L 14.85 -32.45 L 14.55 -31.1 L 14.35 -29.35 L 0.65 -29.35 L 0.55 -30.7 Q 0.5 -31.55 0.55 -32.5 L 0.65 -35.1 L 1.1 -36.6 L 1.65 -38.3 L -50.15 -38.3 L -52.05 -38.3 L -54.55 -38.3 L -109.65 -38.3 L -110.95 -38.3 L -112.45 -38.1 L -113.2 -37.8 L -114.65 -36.8 Q -116.2 -35.1 -116.3 -31.45 L -116.2 -29 Q -115.8 -21.45 -115.25 -15.7 L -114.95 -11.5 Q -114.7 -5.1 -115.45 6.75 L -115.45 7.5 Q -115.3 10.55 -111.65 11.05 L -111.15 11.15 L -109.95 11.15 L -63.3 11.15 L -63.3 9.8 L -58.75 9.8 Q -57.4 10.5 -55.55 10.9 L -36.1 17.6 L -34.95 17.95 L -33.7 19.45 L -18.65 19.45 Q -14.5 19.5 -8.85 17.8 L -6.7 17.15 Q -1.05 15.1 3.6 11.55 L 5.1 10.35 L 8.7 6.85 Q 9.85 5.6 12 4.55 L 12 4.4 L 12.75 4.55 L 19.1 4.55 L 19.55 4.7 Q 20.35 4.95 20.85 5.5 Q 21.75 6.5 21.7 8.45 L 21.3 11 L 20.2 14.45 L 19.8 15.85 Q 19 19.45 22.35 19.7 L 35.4 19.55 Q 37.8 19 40.55 17.75 L 44.55 15.7 Q 48.7 13.35 50.8 7.85 Q 52.35 3.8 52.8 -2 Q 53 -3.3 53.65 -4.1 Q 54.45 -5.15 55.9 -5.5 L 58.35 -5.65 Q 59.8 -5.75 60.85 -5.65 L 62.3 -5.45 Q 63.2 -5.2 63.7 -4.8 L 64.2 -4.1 Q 64.45 -3.6 64.4 -2.9 L 64.4 -0.75 L 64.4 0.3 Q 65.15 3.1 66.3 3.05 L 70.6 3.05 Q 71.55 2.65 71.75 0.9 L 71.85 0.3 L 73.25 -9.9 L 73.25 -15.8 L 73.25 -17.55 L 69.65 -17.55 L 69.65 -18.65 L 75.15 -18.65 L 75.9 -18.65 L 75.9 -18.45 L 90.95 -18.45 L 89.95 -20.75 L 89.25 -22.4 L 88 -25.4 L 87.35 -26.9 L 75.9 -26.9 L 75.9 -26.2 L 75.15 -26.2 L 73.15 -26.2 L 73.15 -27.95 L 73.1 -37.65 Q 73.1 -40.65 72.75 -42.85 Q 71.8 -50.9 69.8 -56.35 L 69.35 -57.6 L 68.15 -58.75 L 62.9 -58.75 L 62.9 -57.6 L 61.75 -57.6 Z M 62.05 -50.55 L 61.95 -50.6 L 62.1 -50.65 L 62.05 -50.55 Z M 34.8 -11.4 L 35.6 -10.55 Q 39.95 -9.45 40.1 -5.5 L 40 -3.95 Q 39.6 -0.8 37.75 0.65 Q 36.55 1.6 34.85 1.9 L 34 1.95 Q 31.5 2.2 29.65 0.85 L 29 0.3 Q 28.05 -1.25 26.6 -1.85 L 24.5 -2.2 L 23.2 -2.2 Q 22.75 -3.75 23 -6.35 L 23.05 -6.85 Q 23.7 -11.9 26.95 -13.25 L 27.6 -13.5 L 30.05 -13.6 Q 31.5 -13.5 32.75 -12.85 Q 33.1 -12.7 33.4 -12.5 L 34.05 -12.05 L 34.15 -11.95 L 34.8 -11.4 Z M 84.4 -25.45 L 84.4 -25.4 L 84.35 -25.4 L 84.4 -25.45 Z M 24.7 0.85 L 24.55 1.1 L 24.55 0.85 L 24.7 0.85 Z M -32.3 0.8 Q -33.35 -0.6 -33.65 -2.6 Q -33.9 -4.05 -33.7 -5.9 L -33.7 -6.15 Q -33.05 -9.6 -31.65 -11.45 L -30.8 -12.35 Q -29.55 -13.45 -27.8 -13.45 L -9.75 -13.45 L -9.2 -13.4 Q -6.55 -12.9 -5.8 -8.45 L -5.75 -7.8 Q -5.75 -5.4 -6.9 -3.7 Q -8 -2.05 -10.25 -1.05 L -10.6 -0.9 Q -11 -0.75 -11.35 -0.55 L -11.5 -0.5 Q -13.85 0.5 -15.9 1.6 Q -17.65 2.5 -19.1 3.5 Q -25.2 6.8 -31.35 1.75 L -32.3 0.8 Z" fill="#2A2A2B" stroke="#181819" stroke-width="0.75" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" fill-rule="evenodd" id="p90_identity_outline" />
+  </g>
+  <g id="r6_lower_frame" data-label="低反差握持框填充" data-role="frame" clip-path="url(#r6_identity_clip)" inkscape:label="低反差握持框填充" inkscape:groupmode="layer">
+    <title>低反差握持框填充</title>
+    <path d="M307 286H850V391L749 433H399L307 389Z" fill="url(#r6_frame)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_lower_frame__path_01" />
+    <path d="M323 300H406L422 290H592L584 347L565 373L531 397L488 413H431L410 402L323 373Z" fill="url(#r6_frame)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_lower_frame__path_02" />
+    <path d="M323 303H405L420 296H574L580 300H422L408 307H329V369L409 397L431 408H482L525 395L556 374L568 355L575 351L568 375L531 403L486 419H426L405 407L319 378Z" fill="#3C3C3D" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_lower_frame__path_03" />
+    <path d="M720 290H845V320L823 314H777L764 333L752 339L746 329L752 310H724Z" fill="#3A3A3B" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_lower_frame__path_04" />
+    <path d="M310 376L409 409L426 418H474Q527 412 568 385L591 366L606 365L574 397Q528 428 472 427H420L404 417L310 386Z" fill="#202021" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_lower_frame__path_05" />
+    <path d="M640 390Q694 403 726 380L748 343L755 345Q750 387 729 407Q716 420 690 426H644Q630 425 633 414Z" fill="#222223" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_lower_frame__path_06" />
+  </g>
+  <g id="r8_molded_frame" data-label="黑色主体宽缓转面与内凹孔壁" data-role="molded-frame" clip-path="url(#r6_identity_clip)" inkscape:label="黑色主体宽缓转面与内凹孔壁" inkscape:groupmode="layer">
+    <title>黑色主体宽缓转面与内凹孔壁</title>
+    <path d="M318 291H841V312L793 317L767 336L751 375Q740 415 699 425H645L637 412L646 378L630 361H606L580 375Q533 418 475 427H426L405 415L315 386Z" fill="url(#r8_molded_face)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_01" />
+    <path d="M 34.8 -11.4 L 35.6 -10.55 Q 39.95 -9.45 40.1 -5.5 L 40 -3.95 Q 39.6 -0.8 37.75 0.65 Q 36.55 1.6 34.85 1.9 L 34 1.95 Q 31.5 2.2 29.65 0.85 L 29 0.3 Q 28.05 -1.25 26.6 -1.85 L 24.5 -2.2 L 23.2 -2.2 Q 22.75 -3.75 23 -6.35 L 23.05 -6.85 Q 23.7 -11.9 26.95 -13.25 L 27.6 -13.5 L 30.05 -13.6 Q 31.5 -13.5 32.75 -12.85 Q 33.1 -12.7 33.4 -12.5 L 34.05 -12.05 L 34.15 -11.95 L 34.8 -11.4 Z" fill="none" stroke="url(#r8_hole_outer)" stroke-width="7.8" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r8_molded_frame__path_02" />
+    <path d="M 34.8 -11.4 L 35.6 -10.55 Q 39.95 -9.45 40.1 -5.5 L 40 -3.95 Q 39.6 -0.8 37.75 0.65 Q 36.55 1.6 34.85 1.9 L 34 1.95 Q 31.5 2.2 29.65 0.85 L 29 0.3 Q 28.05 -1.25 26.6 -1.85 L 24.5 -2.2 L 23.2 -2.2 Q 22.75 -3.75 23 -6.35 L 23.05 -6.85 Q 23.7 -11.9 26.95 -13.25 L 27.6 -13.5 L 30.05 -13.6 Q 31.5 -13.5 32.75 -12.85 Q 33.1 -12.7 33.4 -12.5 L 34.05 -12.05 L 34.15 -11.95 L 34.8 -11.4 Z" fill="none" stroke="url(#r8_hole_wall)" stroke-width="4.7" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r8_molded_frame__path_03" />
+    <path d="M 34.8 -11.4 L 35.6 -10.55 Q 39.95 -9.45 40.1 -5.5 L 40 -3.95 Q 39.6 -0.8 37.75 0.65 Q 36.55 1.6 34.85 1.9 L 34 1.95 Q 31.5 2.2 29.65 0.85 L 29 0.3 Q 28.05 -1.25 26.6 -1.85 L 24.5 -2.2 L 23.2 -2.2 Q 22.75 -3.75 23 -6.35 L 23.05 -6.85 Q 23.7 -11.9 26.95 -13.25 L 27.6 -13.5 L 30.05 -13.6 Q 31.5 -13.5 32.75 -12.85 Q 33.1 -12.7 33.4 -12.5 L 34.05 -12.05 L 34.15 -11.95 L 34.8 -11.4 Z" fill="none" stroke="#111315" stroke-width="0.58" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r8_molded_frame__path_04" />
+    <path d="M -32.3 0.8 Q -33.35 -0.6 -33.65 -2.6 Q -33.9 -4.05 -33.7 -5.9 L -33.7 -6.15 Q -33.05 -9.6 -31.65 -11.45 L -30.8 -12.35 Q -29.55 -13.45 -27.8 -13.45 L -9.75 -13.45 L -9.2 -13.4 Q -6.55 -12.9 -5.8 -8.45 L -5.75 -7.8 Q -5.75 -5.4 -6.9 -3.7 Q -8 -2.05 -10.25 -1.05 L -10.6 -0.9 Q -11 -0.75 -11.35 -0.55 L -11.5 -0.5 Q -13.85 0.5 -15.9 1.6 Q -17.65 2.5 -19.1 3.5 Q -25.2 6.8 -31.35 1.75 L -32.3 0.8 Z" fill="none" stroke="url(#r8_hole_outer)" stroke-width="7.8" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r8_molded_frame__path_05" />
+    <path d="M -32.3 0.8 Q -33.35 -0.6 -33.65 -2.6 Q -33.9 -4.05 -33.7 -5.9 L -33.7 -6.15 Q -33.05 -9.6 -31.65 -11.45 L -30.8 -12.35 Q -29.55 -13.45 -27.8 -13.45 L -9.75 -13.45 L -9.2 -13.4 Q -6.55 -12.9 -5.8 -8.45 L -5.75 -7.8 Q -5.75 -5.4 -6.9 -3.7 Q -8 -2.05 -10.25 -1.05 L -10.6 -0.9 Q -11 -0.75 -11.35 -0.55 L -11.5 -0.5 Q -13.85 0.5 -15.9 1.6 Q -17.65 2.5 -19.1 3.5 Q -25.2 6.8 -31.35 1.75 L -32.3 0.8 Z" fill="none" stroke="url(#r8_hole_wall)" stroke-width="4.7" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r8_molded_frame__path_06" />
+    <path d="M -32.3 0.8 Q -33.35 -0.6 -33.65 -2.6 Q -33.9 -4.05 -33.7 -5.9 L -33.7 -6.15 Q -33.05 -9.6 -31.65 -11.45 L -30.8 -12.35 Q -29.55 -13.45 -27.8 -13.45 L -9.75 -13.45 L -9.2 -13.4 Q -6.55 -12.9 -5.8 -8.45 L -5.75 -7.8 Q -5.75 -5.4 -6.9 -3.7 Q -8 -2.05 -10.25 -1.05 L -10.6 -0.9 Q -11 -0.75 -11.35 -0.55 L -11.5 -0.5 Q -13.85 0.5 -15.9 1.6 Q -17.65 2.5 -19.1 3.5 Q -25.2 6.8 -31.35 1.75 L -32.3 0.8 Z" fill="none" stroke="#111315" stroke-width="0.58" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r8_molded_frame__path_07" />
+    <path d="M317 297H401L420 289H590L606 297H616L606 302H420L405 309H326V370L414 402L429 414H475Q531 408 572 376L590 364H607L577 393Q530 426 475 429H424L408 417L317 387Z" fill="#1A1C1F" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_08" />
+    <path d="M325 298H402L421 291H577L587 297H421L406 305H329V365L342 370L326 368Z" fill="#55575A" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_09" />
+    <path d="M318 376L414 408L429 419H475Q530 414 574 385L594 367H607L577 395Q529 426 475 429H424L409 419L316 386Z" fill="#111316" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_10" />
+    <path d="M423 407L434 414H475Q529 408 572 377L592 363H605L577 390Q532 420 477 422H429Z" fill="url(#r8_web_face)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_11" />
+    <path d="M552 292H590L615 306V328L599 350L571 375L535 395L511 399L521 385L550 361L570 334L578 313L559 307Z" fill="#111316" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_12" />
+    <path d="M558 297H588L608 309V327L592 348L565 371L532 390L521 390L554 361L576 334L583 313L560 302Z" fill="url(#r8_web_face)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_13" />
+    <path d="M558 296H588L609 308L605 313L586 303H563Z" fill="#636568" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_14" />
+    <path d="M608 311V328L592 350L565 373L533 392L521 395L529 389L562 368L588 345L601 325V315Z" fill="#202225" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_15" />
+    <path d="M772 286H842V307L820 315H793L781 325L768 327L771 314L784 305Z" fill="url(#r8_front_cheek)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_16" />
+    <path d="M784 289H837V297H811L794 309H781Z" fill="#525457" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_17" />
+    <path d="M798 319H815L821 325V345L817 351L812 342V333Q810 326 798 326Z" fill="#424447" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_molded_frame__path_18" />
+  </g>
+  <g id="r6_butt_frame" data-label="后托端框" data-role="frame" clip-path="url(#r6_identity_clip)" inkscape:label="后托端框" inkscape:groupmode="layer">
+    <title>后托端框</title>
+    <path d="M94 207L113 197H136L132 230L161 263V306L147 319V373L154 387H110Q96 385 94 371Z" fill="url(#r6_black)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_butt_frame__path_01" />
+    <path d="M101 211L111 204H121L116 229V363L122 380H111L102 369Z" fill="#404041" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_butt_frame__path_02" />
+  </g>
+  <g id="r6_rear_red_seat" data-label="后托红色承接面" data-role="red-seat" clip-path="url(#r6_identity_clip)" inkscape:label="后托红色承接面" inkscape:groupmode="layer">
+    <title>后托红色承接面</title>
+    <path d="M171 259L220 277H312L328 289V365L309 386H149L146 371V318L161 304V278Z" fill="url(#r6_red)" stroke="#212122" stroke-width="2.2" stroke-linejoin="round" id="r6_rear_red_seat__path_01" />
+    <path d="M153 373H296L307 381L312 377L312 386H149L146 371Z" fill="#60121E" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_rear_red_seat__path_02" />
+    <path d="M174 275L183 282V366H301L309 372H176L169 365V286Z" fill="#C13D49" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_rear_red_seat__path_03" />
+    <path d="M179 280H284L311 297V353L297 371H180L173 364V288Z" fill="#651623" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_rear_red_seat__path_04" />
+    <path d="M179 281H284L307 299V352L294 367H180L176 362V289Z" fill="url(#r6_red)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_rear_red_seat__path_05" />
+    <path d="M187 288H281L300 303V349L289 360H188Z" fill="url(#r8_red_well)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_rear_red_seat__path_06" />
+    <path d="M180 282H283L303 298L297 300L280 290H189V358L184 363H179V289Z" fill="#C13E49" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_rear_red_seat__path_07" />
+    <path d="M189 360H289L300 349L299 359L292 366H183Z" fill="#65131F" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_rear_red_seat__path_08" />
+  </g>
+  <g id="r8_stock_plate_contact" data-label="后托白甲 · 派生接触阴影" data-role="contact-shadow" clip-path="url(#r6_identity_clip)" inkscape:label="后托白甲 · 派生接触阴影" inkscape:groupmode="layer">
+    <title>后托白甲 · 派生接触阴影</title>
+    <desc>几何来自 p90_stock_armor_shape；运行 build.py 自动同步。阴影色和透明度可单独编辑。</desc>
+    <path d="M137 198H336L343 208V225H323V245L314 267H220L168 226Z" fill="#07090C" stroke="none" stroke-width="2.4" stroke-linejoin="round" opacity="0.73" id="p90_stock_shadow_shape" data-derived-from="p90_stock_armor_shape" transform="translate(4 6)" />
+  </g>
+  <g id="r6_rear_white_plate" data-label="后托白色外甲" data-role="white-armor" clip-path="url(#r6_identity_clip)" inkscape:label="后托白色外甲" inkscape:groupmode="layer">
+    <title>后托白色外甲</title>
+    <path d="M137 198H336L343 208V225H323V245L314 267H220L168 226Z" fill="url(#r8_white_armor)" stroke="#1F1F20" stroke-width="2.4" stroke-linejoin="round" id="p90_stock_armor_shape" />
+    <path d="M138 199H334L337 205H153L180 233L224 258H315L313 266H220L168 226Z" fill="#EFF1ED" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_rear_white_plate__path_02" />
+    <path d="M220 267H314L310 274H223L164 234L160 227Z" fill="#99999A" stroke="#2D2D2E" stroke-width="1.2" stroke-linejoin="round" id="r6_rear_white_plate__path_03" />
+    <rect x="311" y="211" width="31" height="28" rx="1" fill="#272728" stroke="none" stroke-width="0" id="r6_rear_white_plate__rect_01" />
+    <rect x="315" y="214" width="9" height="21" rx="1" fill="#777778" stroke="none" stroke-width="0" id="r6_rear_white_plate__rect_02" />
+    <rect x="326" y="214" width="15" height="21" rx="1" fill="#434344" stroke="none" stroke-width="0" id="r6_rear_white_plate__rect_03" />
+    <g id="p90_stock_bar_housing" data-component="p90_stock_bar_housing" data-label="后托条灯 · 灯槽" inkscape:label="后托条灯 · 灯槽">
+      <title>后托条灯 · 灯槽</title>
+      <path d="M217 234H263L270 240L266 246H219L212 241Z" fill="#29292A" stroke="#1F1F20" stroke-width="1.5" stroke-linejoin="round" id="p90_stock_bar_housing__path_01" />
+      <rect x="221" y="238" width="39" height="3.7" rx="1" fill="#A3293B" stroke="none" stroke-width="0" id="p90_stock_bar_housing__rect_01" />
+      <rect x="227" y="239" width="28" height="1.4" rx="0.6" fill="#C54B56" stroke="none" stroke-width="0" id="p90_stock_bar_housing__rect_02" />
+    </g>
+  </g>
+  <g id="r6_stock_latch" data-label="后托跨边锁片" data-role="hardware" clip-path="url(#r6_identity_clip)" inkscape:label="后托跨边锁片" inkscape:groupmode="layer">
+    <title>后托跨边锁片</title>
+    <path d="M143 306H172L178 312V328H148L142 322Z" fill="url(#r6_softmetal)" stroke="#242425" stroke-width="1.8" stroke-linejoin="round" id="r6_stock_latch__path_01" />
+    <path d="M147 309H170L174 313" fill="none" stroke="#7B7B7C" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" id="r6_stock_latch__path_02" />
+    <circle cx="150" cy="313" r="2.4" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_stock_latch__circle_01" />
+    <path d="M149.04 313H150.96" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_stock_latch__path_03" />
+    <circle cx="169" cy="322" r="2.4" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_stock_latch__circle_02" />
+    <path d="M168.04 322H169.96" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_stock_latch__path_04" />
+    <path d="M291 265H312L318 271L313 281H292L285 274Z" fill="#434344" stroke="#232324" stroke-width="1.7" stroke-linejoin="round" id="r6_stock_latch__path_05" />
+    <circle cx="306" cy="273" r="2.6" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_stock_latch__circle_03" />
+    <path d="M304.96 273H307.04" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_stock_latch__path_06" />
+  </g>
+  <g id="r8_receiver_undercut" data-label="机匣与主体之间的压暗缝" data-role="contact-shadow" clip-path="url(#r6_identity_clip)" inkscape:label="机匣与主体之间的压暗缝" inkscape:groupmode="layer">
+    <title>机匣与主体之间的压暗缝</title>
+    <path d="M339 276H418L430 282H548L552 279H606L618 269H782V288H620L607 301H423L410 295H339Z" fill="url(#r8_contact_fade)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r8_receiver_undercut__path_01" />
+  </g>
+  <g id="r6_receiver" data-label="水平机匣与分段承接" data-role="frame" clip-path="url(#r6_identity_clip)" inkscape:label="水平机匣与分段承接" inkscape:groupmode="layer">
+    <title>水平机匣与分段承接</title>
+    <path d="M346 244H791L810 248V280H617L604 292H346Z" fill="url(#r6_black)" stroke="#222223" stroke-width="2.1" stroke-linejoin="round" id="r6_receiver__path_01" />
+    <path d="M356 248H590L606 254H789V261H615L602 273H356Z" fill="#474748" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_receiver__path_02" />
+    <path d="M356 276H415L427 281L420 288H356Z" fill="#921C2D" stroke="#242425" stroke-width="1.4" stroke-linejoin="round" id="r6_receiver__path_03" />
+    <path d="M552 280H601L616 270H748L756 277H619L605 290H552Z" fill="url(#r6_red)" stroke="#262627" stroke-width="1.4" stroke-linejoin="round" id="r6_receiver__path_04" />
+    <path d="M557 284H600L615 275H739" fill="none" stroke="#B33041" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" id="r6_receiver__path_05" />
+    <path d="M360 250H587L604 256H741" fill="none" stroke="#767677" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" id="r6_receiver__path_06" />
+    <path d="M396 257H473L480 262L474 267H397L392 262Z" fill="#202021" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_receiver__path_07" />
+    <path d="M403 260H464" fill="none" stroke="#525253" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" id="r6_receiver__path_08" />
+  </g>
+  <g id="r6_optic_structure" data-label="观瞄顶冠与红色侧座" data-role="optic" clip-path="url(#r6_identity_clip)" inkscape:label="观瞄顶冠与红色侧座" inkscape:groupmode="layer">
+    <title>观瞄顶冠与红色侧座</title>
+    <path d="M 61.75 -57.6 L 61.2 -57.6 Q 59.05 -58.4 57.25 -59.4 Q 55.9 -60.2 54.75 -61.1 L 54.75 -64.35 L 28.6 -64.35 L 23.9 -59.8 Q 21.6 -58.5 19.5 -57.65 L 39 -54.65 L 57.5 -54.65 L 61.75 -57.6 Z" fill="url(#r6_black)" stroke="none" stroke-width="0" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r6_optic_structure__path_01" />
+    <path d="M 59.55 -46.2 L 60.45 -45.6 Q 58.75 -47.2 58.9 -50.25 Q 58.95 -51.95 59.9 -53.25 Q 61.15 -54.85 63.8 -55.7 L 63.8 -56.35 L 69.8 -56.35 L 69.35 -57.6 L 68.15 -58.75 L 62.9 -58.75 L 62.9 -57.6 Q 62.75 -56.5 60.4 -55.25 L 59.35 -54.65 Q 58.3 -53.95 57.85 -52.85 L 41.15 -52.85 L 18.8 -56.1 L 17.7 -56.5 L 17.2 -56.85 L 16.75 -57.45 L 16.45 -58.15 L 12.15 -58.15 L 10.75 -58.15 L 10.2 -57.25 Q 7.5 -52.7 5.8 -48.5 L 5.1 -46.6 L 5.1 -44.85 L 19.3 -43 L 20 -43.95 L 20.2 -44.2 Q 20.55 -44.8 19.85 -45.05 L 19.7 -45.05 L 11.05 -46.3 L 8.65 -46.65 L 6.85 -47.05 L 8.05 -49.9 L 9.55 -53.2 L 10.05 -54.25 L 11.4 -56.85 L 16.15 -56.8 L 17.15 -55.05 L 22 -54.25 L 25.2 -54.25 L 25.95 -53.65 L 40 -51.55 L 56.05 -51.55 Q 56.35 -47.35 59.3 -46.3 L 59.55 -46.2 Z" fill="#711322" stroke="none" stroke-width="0" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r6_optic_structure__path_02" />
+    <path d="M 39 -54.65 L 19.5 -57.65 Q 18.4 -57.25 17.35 -56.9 L 17.2 -56.85 L 17.7 -56.5 L 18.8 -56.1 L 41.15 -52.85 L 57.85 -52.85 Q 58.3 -53.95 59.35 -54.65 L 60.4 -55.25 Q 62.75 -56.5 62.9 -57.6 L 61.75 -57.6 L 57.5 -54.65 L 39 -54.65 Z" fill="#951C2C" stroke="none" stroke-width="0" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r6_optic_structure__path_03" />
+    <path d="M 60.45 -45.6 L 59.55 -46.2 L 59.3 -46.3 Q 56.35 -47.35 56.05 -51.55 L 40 -51.55 L 25.95 -53.65 L 25.2 -54.25 L 22 -54.25 L 17.15 -55.05 L 16.15 -56.8 L 11.4 -56.85 L 10.05 -54.25 L 9.55 -53.2 L 21.5 -53.2 L 22.3 -52.35 L 22.3 -49.9 L 8.05 -49.9 L 6.85 -47.05 L 8.65 -46.65 L 8.65 -49.05 L 21.7 -49.05 L 21.7 -47.4 L 23.05 -47.4 L 23.05 -46.8 L 26.5 -46.8 L 26.5 -47.55 L 28.05 -47.55 L 28 -42.95 L 39.65 -41.55 L 57 -41.55 Q 57.9 -41.45 58.35 -40.8 L 58.6 -40.35 L 58.6 -37.65 L 60.4 -37.65 L 72.1 -37.65 L 73.1 -37.65 Q 73.1 -40.65 72.75 -42.85 Q 71.8 -50.9 69.8 -56.35 L 63.8 -56.35 L 63.8 -55.7 Q 61.15 -54.85 59.9 -53.25 Q 58.95 -51.95 58.9 -50.25 Q 58.75 -47.2 60.45 -45.6 Z" fill="url(#r6_red)" stroke="none" stroke-width="0" stroke-linejoin="round" transform="matrix(4 0 0 4 555.2 347.4)" id="r6_optic_structure__path_04" />
+    <path d="M621 119L653 110L671 92H774V103L804 121L788 130H716Z" fill="#2E2E2F" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_optic_structure__path_05" />
+    <path d="M672 94H771" fill="none" stroke="#585859" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" id="r6_optic_structure__path_06" />
+    <path d="M720 113H752L771 124H786" fill="none" stroke="#AD2638" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round" id="r6_optic_structure__path_07" />
+    <path d="M642 139L705 145H785L798 127H816L827 140L836 179L820 188L750 176H665L645 167Z" fill="url(#r8_white_armor)" stroke="#242425" stroke-width="2.2" stroke-linejoin="round" id="r6_optic_structure__path_08" />
+    <path d="M650 143L704 150H783L797 133L794 141L788 154H705L658 148Z" fill="#F0F1EC" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_optic_structure__path_09" />
+    <path d="M645 168L666 176H748L817 190L830 184L835 194L818 198L748 185H665L641 177Z" fill="url(#r6_red)" stroke="#232324" stroke-width="1.4" stroke-linejoin="round" id="r6_optic_structure__path_10" />
+    <path d="M835 149L846 175V229H834V197L826 186L835 181Z" fill="url(#r6_red)" stroke="#232324" stroke-width="1.6" stroke-linejoin="round" id="r6_optic_structure__path_11" />
+    <path d="M793 127L806 121L820 128L828 147L822 161L809 168L796 162L789 149Z" fill="#464647" stroke="#222223" stroke-width="1.6" stroke-linejoin="round" id="r6_optic_structure__path_12" />
+    <g id="p90_optic_point_housing" data-component="p90_optic_point_housing" data-label="观瞄侧点灯 · 灯座" inkscape:label="观瞄侧点灯 · 灯座">
+      <title>观瞄侧点灯 · 灯座</title>
+      <circle cx="807" cy="145" r="10" fill="url(#r6_metal)" stroke="#242425" stroke-width="1.5" id="p90_optic_point_housing__circle_01" />
+      <circle cx="807" cy="145" r="6.5" fill="#272728" stroke="none" stroke-width="0" id="p90_optic_point_housing__circle_02" />
+      <circle cx="807" cy="145" r="2" fill="#943044" stroke="none" stroke-width="0" id="p90_optic_point_housing__circle_03" />
+    </g>
+  </g>
+  <g id="r6_optic_lamp" data-label="观瞄主灯窗" data-role="light" clip-path="url(#r6_identity_clip)" inkscape:label="观瞄主灯窗" inkscape:groupmode="layer">
+    <title>观瞄主灯窗</title>
+    <path d="M588 138H632L648 147V164L634 168H578V154Z" fill="#282829" stroke="#1F1F20" stroke-width="1.8" stroke-linejoin="round" id="r6_optic_lamp__path_01" />
+    <path d="M592 145H626L634 151L627 158H586V153Z" fill="#39393A" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_optic_lamp__path_02" />
+    <path d="M591 149H621L628 154H588Z" fill="#A12439" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_optic_lamp__path_03" />
+    <path d="M594 151H619L623 153" fill="none" stroke="#CE4653" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" id="r6_optic_lamp__path_04" />
+    <rect x="637" y="146" width="7" height="15" rx="1" fill="#99999A" stroke="none" stroke-width="0" id="r6_optic_lamp__rect_01" />
+  </g>
+  <g id="r6_magazine" data-label="原弹匣首帧与低反差显示" data-role="magazine" inkscape:label="原弹匣首帧与低反差显示" inkscape:groupmode="layer">
+    <title>原弹匣首帧与低反差显示</title>
+    <g transform="matrix(4 0 0 4 555.2 347.4)" id="r6_magazine__g_01">
+      <g id="prototype_layer_1" data-source-layer="图层 2">
+        <g id="prototype_instance_1" data-source-item="重复项目文件夹/Symbol 10" transform="matrix(-0.667404174804688 0 0 0.879974365234375 57.7 -38)">
+          <g id="prototype_child_1_layer_3" data-source-layer="Layer_2" clip-path="url(#prototype_child_1_mask_2)">
+            <g id="prototype_child_1_instance_2" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 157.2 4.6)">
+              <g id="prototype_child_1_child_2_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_2_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_2_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_2_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_3" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 138.4 4.6)">
+              <g id="prototype_child_1_child_3_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_3_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_3_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_3_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_4" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 132.3 4.6)">
+              <g id="prototype_child_1_child_4_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_4_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_4_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_4_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_5" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 126.05 4.6)">
+              <g id="prototype_child_1_child_5_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_5_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_5_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_5_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_6" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 119.75 4.6)">
+              <g id="prototype_child_1_child_6_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_6_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_6_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_6_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_7" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 113.5 4.6)">
+              <g id="prototype_child_1_child_7_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_7_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_7_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_7_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_8" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 107.2 4.6)">
+              <g id="prototype_child_1_child_8_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_8_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_8_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_8_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_9" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 101 4.6)">
+              <g id="prototype_child_1_child_9_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_9_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_9_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_9_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_10" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 94.7 4.6)">
+              <g id="prototype_child_1_child_10_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_10_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_10_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_10_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_11" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 88.45 4.6)">
+              <g id="prototype_child_1_child_11_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_11_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_11_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_11_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_12" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 82.3 4.6)">
+              <g id="prototype_child_1_child_12_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_12_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_12_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_12_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_13" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 76.05 4.6)">
+              <g id="prototype_child_1_child_13_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_13_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_13_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_13_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_14" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 69.75 4.6)">
+              <g id="prototype_child_1_child_14_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_14_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_14_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_14_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_15" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 63.55 4.6)">
+              <g id="prototype_child_1_child_15_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_15_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_15_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_15_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_16" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 154.2 1.3)">
+              <g id="prototype_child_1_child_16_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_16_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_16_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_16_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_17" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 147.95 1.3)">
+              <g id="prototype_child_1_child_17_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_17_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_17_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_17_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_18" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 141.7 1.3)">
+              <g id="prototype_child_1_child_18_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_18_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_18_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_18_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_19" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 135.55 1.3)">
+              <g id="prototype_child_1_child_19_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_19_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_19_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_19_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_20" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 129.3 1.3)">
+              <g id="prototype_child_1_child_20_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_20_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_20_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_20_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_21" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 123 1.3)">
+              <g id="prototype_child_1_child_21_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_21_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_21_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_21_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_22" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 116.75 1.3)">
+              <g id="prototype_child_1_child_22_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_22_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_22_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_22_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_23" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 110.5 1.3)">
+              <g id="prototype_child_1_child_23_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_23_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_23_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_23_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_24" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 104.25 1.3)">
+              <g id="prototype_child_1_child_24_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_24_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_24_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_24_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_25" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 97.95 1.3)">
+              <g id="prototype_child_1_child_25_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_25_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_25_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_25_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_26" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 91.7 1.3)">
+              <g id="prototype_child_1_child_26_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_26_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_26_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_26_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_27" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 85.55 1.3)">
+              <g id="prototype_child_1_child_27_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_27_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_27_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_27_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_28" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 79.35 1.3)">
+              <g id="prototype_child_1_child_28_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_28_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_28_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_28_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_29" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 73 1.3)">
+              <g id="prototype_child_1_child_29_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_29_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_29_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_29_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_30" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 66.8 1.3)">
+              <g id="prototype_child_1_child_30_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_30_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_30_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_30_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_31" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 58.4 4.6)">
+              <g id="prototype_child_1_child_31_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_31_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_31_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_31_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_32" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 52.15 4.6)">
+              <g id="prototype_child_1_child_32_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_32_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_32_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_32_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_33" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 45.9 4.6)">
+              <g id="prototype_child_1_child_33_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_33_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_33_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_33_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_34" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 39.7 4.6)">
+              <g id="prototype_child_1_child_34_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_34_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_34_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_34_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_35" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 33.4 4.6)">
+              <g id="prototype_child_1_child_35_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_35_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_35_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_35_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_36" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 27.15 4.6)">
+              <g id="prototype_child_1_child_36_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_36_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_36_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_36_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_37" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 20.95 4.6)">
+              <g id="prototype_child_1_child_37_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_37_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_37_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_37_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_38" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 14.75 4.6)">
+              <g id="prototype_child_1_child_38_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_38_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_38_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_38_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_39" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 8.4 4.6)">
+              <g id="prototype_child_1_child_39_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_39_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_39_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_39_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_40" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 2.2 4.6)">
+              <g id="prototype_child_1_child_40_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_40_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_40_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_40_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_41" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 61.65 1.3)">
+              <g id="prototype_child_1_child_41_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_41_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_41_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_41_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_42" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 55.4 1.3)">
+              <g id="prototype_child_1_child_42_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_42_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_42_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_42_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_43" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 49.15 1.3)">
+              <g id="prototype_child_1_child_43_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_43_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_43_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_43_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_44" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 42.95 1.3)">
+              <g id="prototype_child_1_child_44_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_44_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_44_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_44_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_45" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 36.65 1.3)">
+              <g id="prototype_child_1_child_45_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_45_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_45_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_45_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_46" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 30.4 1.3)">
+              <g id="prototype_child_1_child_46_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_46_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_46_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_46_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_47" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 24.25 1.3)">
+              <g id="prototype_child_1_child_47_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_47_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_47_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_47_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_48" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 18 1.3)">
+              <g id="prototype_child_1_child_48_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_48_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_48_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_48_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_49" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 11.7 1.3)">
+              <g id="prototype_child_1_child_49_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_49_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_49_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_49_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+            <g id="prototype_child_1_instance_50" data-source-item="重复项目文件夹/Symbol 11" transform="matrix(0.9488525390625 0 0 0.9488525390625 5.45 1.3)">
+              <g id="prototype_child_1_child_50_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_50_shape_0_0">
+                  <path d="M 2.9 1.15 Q 2.3 1.15 1.9 1.45 Q 1.55 1.75 1.55 2.2 Q 1.55 2.6 1.9 2.9 Q 2.3 3.2 2.9 3.2 Q 3.45 3.2 3.85 2.9 Q 4.3 2.6 4.3 2.2 Q 4.3 1.75 3.85 1.45 Q 3.45 1.15 2.9 1.15 Z" fill="#514F49" id="prototype_child_1_child_50_shape_0_0__path_01" />
+                  <path d="M 1.9 1.45 Q 2.3 1.15 2.9 1.15 Q 3.45 1.15 3.85 1.45 Q 4.3 1.75 4.3 2.2 Q 4.3 2.6 3.85 2.9 Q 3.45 3.2 2.9 3.2 Q 2.3 3.2 1.9 2.9 Q 1.55 2.6 1.55 2.2 Q 1.55 1.75 1.9 1.45 Z M 2.85 0 Q 1.65 0 0.8 0.65 Q 0 1.3 0 2.2 Q 0 3.1 0.8 3.7 Q 1.65 4.35 2.85 4.35 Q 4.05 4.35 4.9 3.7 Q 5.75 3.1 5.75 2.2 Q 5.75 1.3 4.9 0.65 Q 4.05 0 2.85 0 Z" fill="#68675E" id="prototype_child_1_child_50_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+          </g>
+          <g id="prototype_child_1_layer_1" data-source-layer="Layer_3">
+            <g id="prototype_child_1_instance_51" data-source-item="重复项目文件夹/Symbol 12" transform="matrix(1 0 0 1 0 0)" opacity="0.7890625">
+              <g id="prototype_child_1_child_51_layer_0" data-source-layer="Layer_1">
+                <g id="prototype_child_1_child_51_shape_0_0">
+                  <path d="M 164.1 9.95 L 164.1 6.95 L 87.625 6.95 Q 87.780078 6.9759766 87.95 7 L 0 6.9 L 0 10 L 63.275 9.9 Q 62.846875 9.9259766 62.4 9.95 L 164.1 9.95 Z" fill="#252527" id="prototype_child_1_child_51_shape_0_0__path_01" />
+                  <path d="M 0 0 L 0 6.9 L 87.95 7 Q 87.780078 6.9759766 87.625 6.95 L 164.1 6.95 L 164.1 0 L 61.025 0.05 Q 61.010937 0.024804687 61 0 L 0 0 Z" fill="#454446" id="prototype_child_1_child_51_shape_0_0__path_02" />
+                </g>
+              </g>
+            </g>
+          </g>
+          <g id="prototype_child_1_layer_0" data-source-layer="图层 2" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <g id="r10_magazine_lower_armor" data-label="弹匣下方的机匣白甲与红衬" data-role="receiver-armor" clip-path="url(#r6_identity_clip)" inkscape:label="弹匣下方的机匣白甲与红衬" inkscape:groupmode="layer">
+    <title>弹匣下方的机匣白甲与红衬</title>
+    <path d="M344 227H789L806 234V252H618L602 247H347L342 241Z" fill="#101316" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_magazine_lower_armor__path_01" />
+    <path d="M346 231H789L802 237V249H618L604 244H347Z" fill="url(#r6_red)" stroke="#171A1D" stroke-width="1.6" stroke-linejoin="round" id="r10_magazine_lower_armor__path_02" />
+    <path d="M352 229H542L552 234V240H354L349 236Z" fill="url(#r8_white_armor)" stroke="#171A1D" stroke-width="1.7" stroke-linejoin="round" id="r10_magazine_lower_armor__path_03" />
+    <path d="M354 230H540L546 233H356Z" fill="#EDF0EA" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_magazine_lower_armor__path_04" />
+    <path d="M354 240H551L548 244H353Z" fill="#81888C" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_magazine_lower_armor__path_05" />
+    <path d="M622 232H786L797 238V244H636L620 239Z" fill="url(#r8_white_armor)" stroke="#171A1D" stroke-width="1.7" stroke-linejoin="round" id="r10_magazine_lower_armor__path_06" />
+    <path d="M627 233H784L790 236H634Z" fill="#EBEEE9" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_magazine_lower_armor__path_07" />
+    <path d="M637 244H796L793 247H638L623 242V239Z" fill="#7C8488" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_magazine_lower_armor__path_08" />
+    <path d="M350 246H549L554 250H350Z" fill="#781827" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_magazine_lower_armor__path_09" />
+    <path d="M641 248H799V251H641Z" fill="#681420" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_magazine_lower_armor__path_10" />
+    <path d="M350 225.5H549" fill="none" stroke="#777A7C" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" id="r10_magazine_lower_armor__path_11" />
+    <path d="M620 228H784" fill="none" stroke="#747779" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" id="r10_magazine_lower_armor__path_12" />
+    <path d="M345 228H356V248H348L342 242Z" fill="url(#r6_softmetal)" stroke="#171B1F" stroke-width="1.5" stroke-linejoin="round" id="r10_magazine_lower_armor__path_13" />
+    <path d="M348 231V240L352 244" fill="none" stroke="#858B8F" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" id="r10_magazine_lower_armor__path_14" />
+    <path d="M785 231H792L804 237V250H793V240L785 237Z" fill="#34383B" stroke="#15191C" stroke-width="1.5" stroke-linejoin="round" id="r10_magazine_lower_armor__path_15" />
+  </g>
+  <g id="r6_sight_support" data-label="连续斜撑、白甲红衬与机匣脚座" data-role="frame" inkscape:label="连续斜撑、白甲红衬与机匣脚座" inkscape:groupmode="layer">
+    <title>连续斜撑、白甲红衬与机匣脚座</title>
+    <g id="r10_sight_support_bridge" data-label="从观瞄下方连续落到脚座的斜撑" data-role="support" clip-path="url(#r10_support_clip)" inkscape:label="从观瞄下方连续落到脚座的斜撑">
+      <title>从观瞄下方连续落到脚座的斜撑</title>
+      <path d="M573 172L633 181Q621 204 615 225L612 252H557L552 243V226Q555 202 566 183Z" fill="#171A1D" stroke="#101316" stroke-width="2" stroke-linejoin="round" id="r10_sight_support_bridge__path_01" />
+      <path d="M577 176L627 185Q616 206 610 227L607 250H561L558 241V228Q560 205 572 183Z" fill="url(#r6_red)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_sight_support_bridge__path_02" />
+      <path d="M576 180L617 186Q607 208 603 227L601 245H568L565 238V228Q567 207 576 185Z" fill="url(#r8_white_armor)" stroke="#191C20" stroke-width="1.6" stroke-linejoin="round" id="r10_sight_support_bridge__path_03" />
+      <path d="M578 182L609 187Q601 208 597 228V239H572V230Q573 210 581 188Z" fill="#EAEDE8" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_sight_support_bridge__path_04" />
+      <path d="M603 227Q607 208 617 186L622 188Q612 210 608 228L606 245H601Z" fill="#7F888D" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_sight_support_bridge__path_05" />
+      <path d="M573 173L631 182L627 190L570 182Z" fill="#292D30" stroke="#111518" stroke-width="1.7" stroke-linejoin="round" id="r10_sight_support_bridge__path_06" />
+      <path d="M578 176L625 183" fill="none" stroke="#71797E" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" id="r10_sight_support_bridge__path_07" />
+      <path d="M558 237H607L610 247H557L554 243Z" fill="#282D31" stroke="#111518" stroke-width="1.7" stroke-linejoin="round" id="r10_sight_support_bridge__path_08" />
+      <path d="M560 240H604" fill="none" stroke="#687277" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" id="r10_sight_support_bridge__path_09" />
+    </g>
+    <path d="M557 245H607L615 253V269H560L554 264Z" fill="url(#r6_softmetal)" stroke="#272728" stroke-width="1.8" stroke-linejoin="round" id="r6_sight_support__path_01" />
+    <path d="M560 250H606L611 254" fill="none" stroke="#838384" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" id="r6_sight_support__path_02" />
+    <circle cx="562" cy="258" r="2.6" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_sight_support__circle_01" />
+    <path d="M560.96 258H563.04" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_sight_support__path_03" />
+    <circle cx="607" cy="262" r="2.6" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_sight_support__circle_02" />
+    <path d="M605.96 262H608.04" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_sight_support__path_04" />
+  </g>
+  <g id="r6_controls" data-label="扳机与前侧控制件" data-role="hardware" clip-path="url(#r6_identity_clip)" inkscape:label="扳机与前侧控制件" inkscape:groupmode="layer">
+    <title>扳机与前侧控制件</title>
+    <rect x="620" y="337" width="44" height="14" rx="3" fill="#282829" stroke="#1F1F20" stroke-width="1.8" id="r6_controls__rect_01" />
+    <rect x="626" y="340" width="4" height="7" rx="0.6" fill="#525253" stroke="none" stroke-width="0" id="r6_controls__rect_02" />
+    <rect x="637" y="340" width="4" height="7" rx="0.6" fill="#525253" stroke="none" stroke-width="0" id="r6_controls__rect_03" />
+    <rect x="648" y="340" width="4" height="7" rx="0.6" fill="#525253" stroke="none" stroke-width="0" id="r6_controls__rect_04" />
+    <path d="M752 255H774L781 260V273L773 278H752Z" fill="url(#r6_softmetal)" stroke="#282829" stroke-width="1.8" stroke-linejoin="round" id="r6_controls__path_01" />
+    <circle cx="760" cy="266" r="4.3" fill="#262627" stroke="none" stroke-width="0" id="r6_controls__circle_01" />
+    <path d="M778 255Q791 256 791 266Q791 276 779 278" fill="none" stroke="#6A6A6B" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" id="r6_controls__path_02" />
+    <circle cx="565" cy="305" r="3" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_controls__circle_02" />
+    <path d="M563.8 305H566.2" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_controls__path_03" />
+    <circle cx="764" cy="308" r="3" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_controls__circle_03" />
+    <path d="M762.8 308H765.2" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_controls__path_04" />
+    <circle cx="685" cy="389" r="3" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_controls__circle_04" />
+    <path d="M683.8 389H686.2" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_controls__path_05" />
+  </g>
+  <g id="r8_rear_grip_contact" data-label="主握甲片 · 派生接触阴影" data-role="contact-shadow" clip-path="url(#r6_identity_clip)" inkscape:label="主握甲片 · 派生接触阴影" inkscape:groupmode="layer">
+    <title>主握甲片 · 派生接触阴影</title>
+    <desc>几何来自 p90_rear_grip_seat_shape；运行 build.py 自动同步。阴影色和透明度可单独编辑。</desc>
+    <path d="M335 306L349 296H386L407 315L403 353L417 374L457 389H493L510 398L504 409H444L409 394L373 384L335 369Z" fill="#07090C" stroke="none" stroke-width="2.1" stroke-linejoin="round" opacity="0.76" id="p90_rear_grip_shadow_shape" data-derived-from="p90_rear_grip_seat_shape" transform="translate(4 5)" />
+  </g>
+  <g id="r8_red_guide_channels" data-label="沿区块转折布置的红色细槽" data-role="guide-channel" clip-path="url(#r6_identity_clip)" inkscape:label="沿区块转折布置的红色细槽" inkscape:groupmode="layer">
+    <title>沿区块转折布置的红色细槽</title>
+    <path d="M431 379H474L513 361L542 336" fill="none" stroke="#100C10" stroke-width="5.0" stroke-linejoin="round" stroke-linecap="round" id="r8_red_guide_channels__path_01" />
+    <path d="M431 379H474L513 361L542 336" fill="none" stroke="#9E2632" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round" id="r8_red_guide_channels__path_02" />
+    <path d="M569 304H586L599 314V326L586 344" fill="none" stroke="#100C10" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round" id="r8_red_guide_channels__path_03" />
+    <path d="M569 304H586L599 314V326L586 344" fill="none" stroke="#9E2632" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" id="r8_red_guide_channels__path_04" />
+    <path d="M116 247L141 275V296" fill="none" stroke="#100C10" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" id="r8_red_guide_channels__path_05" />
+    <path d="M116 247L141 275V296" fill="none" stroke="#9E2632" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" id="r8_red_guide_channels__path_06" />
+    <path d="M435 378.8H474L495 369" fill="none" stroke="#D54A4F" stroke-width="0.8" stroke-linejoin="round" stroke-linecap="round" id="r8_red_guide_channels__path_07" />
+  </g>
+  <g id="r7_rear_grip_armor" data-label="主握区侧护甲与红色承接" data-role="grip-armor" clip-path="url(#r6_identity_clip)" inkscape:label="主握区侧护甲与红色承接" inkscape:groupmode="layer">
+    <title>主握区侧护甲与红色承接</title>
+    <path d="M335 306L349 296H386L407 315L403 353L417 374L457 389H493L510 398L504 409H444L409 394L373 384L335 369Z" fill="url(#r6_red)" stroke="#181B1E" stroke-width="2.1" stroke-linejoin="round" id="p90_rear_grip_seat_shape" />
+    <path d="M338 362L374 376L412 387L445 401H498L504 409H444L409 394L373 384L335 369Z" fill="#641222" stroke="none" stroke-width="0" stroke-linejoin="round" id="r7_rear_grip_armor__path_02" />
+    <path d="M349 304H381L394 320L391 354L404 375L443 389H476L484 398H442L412 386L375 375L349 364Z" fill="url(#r8_white_armor)" stroke="#191D20" stroke-width="2" stroke-linejoin="round" id="r7_rear_grip_armor__path_03" />
+    <path d="M350 305H378L386 318L384 351L397 376L442 391H472L476 394H442L401 380L387 356L388 321L376 311H351Z" fill="#EEF0EA" stroke="none" stroke-width="0" stroke-linejoin="round" id="r7_rear_grip_armor__path_04" />
+    <path d="M349 358L375 369L415 382L444 392H478L484 398H442L412 386L375 375L349 364Z" fill="url(#r8_white_lower_edge)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r7_rear_grip_armor__path_05" />
+    <path d="M357 316H374L383 329V351L396 372" fill="none" stroke="#9AA3A8" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" id="r7_rear_grip_armor__path_06" />
+    <path d="M382 366L396 364L405 374L400 386L387 382L379 373Z" fill="#44494D" stroke="#1B2023" stroke-width="1.7" stroke-linejoin="round" id="r7_rear_grip_armor__path_07" />
+    <path d="M386 368L395 368L401 375" fill="none" stroke="#858C90" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" id="r7_rear_grip_armor__path_08" />
+    <circle cx="391" cy="374" r="2.5" fill="#202528" stroke="none" stroke-width="0" id="r7_rear_grip_armor__circle_01" />
+  </g>
+  <g id="r8_front_grip_contact" data-label="前握甲片 · 派生接触阴影" data-role="contact-shadow" clip-path="url(#r6_identity_clip)" inkscape:label="前握甲片 · 派生接触阴影" inkscape:groupmode="layer">
+    <title>前握甲片 · 派生接触阴影</title>
+    <desc>几何来自 p90_front_grip_seat_shape；运行 build.py 自动同步。阴影色和透明度可单独编辑。</desc>
+    <path d="M738 318L756 321L762 329L754 343Q755 351 753 367Q748 399 728 415Q716 426 695 427H643L636 415L640 397H676Q708 397 718 376L726 351L727 340L722 333Z" fill="#07090C" stroke="none" stroke-width="2.3" stroke-linejoin="round" opacity="0.78" id="p90_front_grip_shadow_shape" data-derived-from="p90_front_grip_seat_shape" transform="translate(4 5)" />
+  </g>
+  <g id="r7_front_grip_armor" data-label="前握把黑框、红座与白色外甲" data-role="grip-armor" clip-path="url(#r6_identity_clip)" inkscape:label="前握把黑框、红座与白色外甲" inkscape:groupmode="layer">
+    <title>前握把黑框、红座与白色外甲</title>
+    <path d="M738 318L756 321L762 329L754 343Q755 351 753 367Q748 399 728 415Q716 426 695 427H643L636 415L640 397H676Q708 397 718 376L726 351L727 340L722 333Z" fill="url(#r6_red)" stroke="#181C20" stroke-width="2.3" stroke-linejoin="round" id="p90_front_grip_seat_shape" />
+    <path d="M643 417H693Q717 414 731 398L744 372L750 369Q744 404 726 418Q713 427 694 428H643L637 417Z" fill="#651523" stroke="none" stroke-width="0" stroke-linejoin="round" id="r7_front_grip_armor__path_02" />
+    <path d="M740 324L757 330L747 348L740 367Q737 389 726 400Q713 413 693 415H649L648 405H682Q715 402 725 377L733 348L726 335Z" fill="url(#r8_white_armor)" stroke="#1C2125" stroke-width="2" stroke-linejoin="round" id="r7_front_grip_armor__path_03" />
+    <path d="M741 328L750 332L741 351L734 375Q725 401 703 406H653V410H693Q712 408 722 398Q733 386 737 365L745 345Z" fill="#EDF0E9" stroke="none" stroke-width="0" stroke-linejoin="round" id="r7_front_grip_armor__path_04" />
+    <path d="M649 410H693Q714 407 726 396L721 406Q710 415 693 417H649Z" fill="url(#r8_white_lower_edge)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r7_front_grip_armor__path_05" />
+    <path d="M702 406L707 413" fill="none" stroke="#59646B" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" id="r7_front_grip_armor__path_06" />
+    <path d="M734 366L742 369" fill="none" stroke="#78868D" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" id="r7_front_grip_armor__path_07" />
+  </g>
+  <g id="r7_structural_seams" data-label="适量面界与检修盖线" data-role="structure-detail" clip-path="url(#r6_identity_clip)" inkscape:label="适量面界与检修盖线" inkscape:groupmode="layer">
+    <title>适量面界与检修盖线</title>
+    <path d="M185 211H291L302 221V232H280L270 226H202Z" fill="none" stroke="#9AA3A6" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round" id="r7_structural_seams__path_01" />
+    <path d="M113 228L141 258V295" fill="none" stroke="#464C50" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" id="r7_structural_seams__path_02" />
+    <path d="M488 252H535L544 258V270H490Z" fill="none" stroke="#4E565A" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" id="r7_structural_seams__path_03" />
+    <path d="M667 157H744L771 166H795" fill="none" stroke="#A1AAAD" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" id="r7_structural_seams__path_04" />
+    <path d="M669 102H746L758 109" fill="none" stroke="#4E5358" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" id="r7_structural_seams__path_05" />
+  </g>
+  <g id="r9_front_grip_joint" data-label="前握把上端包边接头" data-role="joint" clip-path="url(#r6_identity_clip)" inkscape:label="前握把上端包边接头" inkscape:groupmode="layer">
+    <title>前握把上端包边接头</title>
+    <g id="r10_front_joint_seat" data-label="前握接头落在主体上的短承接面" data-role="joint-seat" inkscape:label="前握接头落在主体上的短承接面">
+      <title>前握接头落在主体上的短承接面</title>
+      <path d="M733 316L746 310H756L767 316L762 323L747 319L735 322Z" fill="#292E32" stroke="#14191D" stroke-width="1.3" stroke-linejoin="round" id="r10_front_joint_seat__path_01" />
+      <path d="M737 315L747 311H755L764 316L760 319L747 316L738 319Z" fill="#4A5054" stroke="none" stroke-width="0" stroke-linejoin="round" id="r10_front_joint_seat__path_02" />
+    </g>
+    <path d="M730 318L743 315L759 321L756 330L743 327L733 331L725 325Z" fill="#131619" stroke="#0E1114" stroke-width="1.7" stroke-linejoin="round" id="r9_front_grip_joint__path_01" />
+    <path d="M731 318L743 316L758 322L754 326L743 323L733 328L727 324Z" fill="url(#r6_softmetal)" stroke="none" stroke-width="0" stroke-linejoin="round" id="r9_front_grip_joint__path_02" />
+    <path d="M733 318L743 317L754 321" fill="none" stroke="#777A7D" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" id="r9_front_grip_joint__path_03" />
+  </g>
+  <g id="r6_short_front" data-label="短前端套件" data-role="front" inkscape:label="短前端套件" inkscape:groupmode="layer">
+    <title>短前端套件</title>
+    <path d="M846 242H960L985 250V278H846Z" fill="#29292A" stroke="#232324" stroke-width="2.3" stroke-linejoin="round" id="r6_short_front__path_01" />
+    <path d="M858 240H874L881 245V277H859Z" fill="url(#r6_red)" stroke="#252526" stroke-width="1.7" stroke-linejoin="round" id="r6_short_front__path_02" />
+    <path d="M880 240H891L896 246V255H886V271H880Z" fill="url(#r8_white_armor)" stroke="#2C2C2D" stroke-width="1.5" stroke-linejoin="round" id="r6_short_front__path_03" />
+    <path d="M895 246H951L968 252V273H895Z" fill="url(#r6_metal)" stroke="#29292A" stroke-width="1.8" stroke-linejoin="round" id="r6_short_front__path_04" />
+    <rect x="910" y="254" width="35" height="9" rx="3" fill="#262627" stroke="none" stroke-width="0" id="r6_short_front__rect_01" />
+    <path d="M963 249L985 252V277H965Z" fill="#3A3A3B" stroke="#262627" stroke-width="1.6" stroke-linejoin="round" id="r6_short_front__path_05" />
+    <rect x="978" y="256" width="5" height="15" rx="0.7" fill="#252526" stroke="none" stroke-width="0" id="r6_short_front__rect_02" />
+  </g>
+  <g id="r6_p90_emitter_mount" data-label="P90 短侧座" data-role="mount" inkscape:label="P90 短侧座" inkscape:groupmode="layer">
+    <title>P90 短侧座</title>
+    <path d="M796 214H841L849 221V238H798Z" fill="#3B3B3C" stroke="#282829" stroke-width="2" stroke-linejoin="round" id="r6_p90_emitter_mount__path_01" />
+    <path d="M801 218H838L844 223" fill="none" stroke="#6B6B6C" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" id="r6_p90_emitter_mount__path_02" />
+    <path d="M798 231H842L848 224V236H803L798 233Z" fill="#565B5E" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_p90_emitter_mount__path_03" />
+    <path d="M803 235H848V238H803L798 235Z" fill="#1D2124" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_p90_emitter_mount__path_04" />
+    <path d="M803 231H839L845 226" fill="none" stroke="#7E878C" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" id="r6_p90_emitter_mount__path_05" />
+  </g>
+  <g transform="translate(784 195) scale(.26)" id="p90_emitter_placement" data-label="共用发射器 · P90 安装位置" inkscape:label="共用发射器 · P90 安装位置" inkscape:groupmode="layer">
+    <title>共用发射器 · P90 安装位置</title>
+    <desc>只调本层会改变 P90 上的位置；编辑下一层本体后，独立附件会随重建更新。</desc>
+    <g id="r6_shared_emitter_p90" data-label="共用激光发射器本体" data-role="accessory" data-component="ti61_shared_emitter" inkscape:label="共用激光发射器本体">
+      <title>共用激光发射器本体</title>
+      <path d="M30 42L48 26H315L329 32H363L388 44V113L368 128H47L30 115Z" fill="url(#ti61_emitter_black)" stroke="#262627" stroke-width="3" stroke-linejoin="round" id="r6_shared_emitter_p90__path_01" />
+      <path d="M48 28H89L94 46V105L88 126H47L32 113V45Z" fill="#363637" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_shared_emitter_p90__path_02" />
+      <path d="M89 42L113 75L140 87H329L342 104V124L321 131H91V111L98 101V72Z" fill="url(#ti61_emitter_red)" stroke="#2A2A2B" stroke-width="2.2" stroke-linejoin="round" id="r6_shared_emitter_p90__path_03" />
+      <path d="M94 116H331L326 127H95Z" fill="#621424" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_shared_emitter_p90__path_04" />
+      <path d="M94 28H323L318 52L325 68V104H304L294 95H148L130 102L108 85L94 69Z" fill="url(#ti61_emitter_white)" stroke="#2E2E2F" stroke-width="2.4" stroke-linejoin="round" id="r6_shared_emitter_p90__path_05" />
+      <path d="M101 30H320L316 37H115L117 48L135 59H243L252 66H299" fill="#F0F2EC" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_shared_emitter_p90__path_06" />
+      <path d="M110 85L131 101L148 94H294L304 103H325V109H302L291 102H148L130 109L107 93Z" fill="#A8A8A9" stroke="none" stroke-width="0" stroke-linejoin="round" id="r6_shared_emitter_p90__path_07" />
+      <path d="M159 77H202L209 82L203 89H159L153 83Z" fill="#303031" stroke="#262627" stroke-width="1.5" stroke-linejoin="round" id="r6_shared_emitter_p90__path_08" />
+      <path d="M163 81H199" fill="none" stroke="#646465" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" id="r6_shared_emitter_p90__path_09" />
+      <path d="M248 95H270V117H251L247 112Z" fill="url(#ti61_emitter_softmetal)" stroke="#2B2B2C" stroke-width="1.8" stroke-linejoin="round" id="r6_shared_emitter_p90__path_10" />
+      <path d="M251 98H267" fill="none" stroke="#919192" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" id="r6_shared_emitter_p90__path_11" />
+      <circle cx="255" cy="105" r="2.2" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_shared_emitter_p90__circle_01" />
+      <path d="M254.12 105H255.88" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_shared_emitter_p90__path_12" />
+      <circle cx="265" cy="111" r="2.2" fill="#505051" stroke="#202021" stroke-width="1.1" id="r6_shared_emitter_p90__circle_02" />
+      <path d="M264.12 111H265.88" fill="none" stroke="#282829" stroke-width="0.9" stroke-linejoin="round" stroke-linecap="round" id="r6_shared_emitter_p90__path_13" />
+      <path d="M336 42H365L384 51V112L366 120H337V101L344 92V62Z" fill="#39393A" stroke="#29292A" stroke-width="2" stroke-linejoin="round" id="r6_shared_emitter_p90__path_14" />
+      <rect x="354" y="60" width="26" height="47" rx="4" fill="#272728" stroke="none" stroke-width="0" id="r6_shared_emitter_p90__rect_01" />
+      <ellipse cx="373" cy="83" rx="5.3" ry="13.5" fill="#731728" stroke="#212122" stroke-width="2" id="r6_shared_emitter_p90__ellipse_01" />
+      <ellipse cx="374" cy="83" rx="2.6" ry="8" fill="#E23548" id="r6_shared_emitter_p90__ellipse_02" />
+      <ellipse cx="374.4" cy="82.5" rx="1" ry="3.7" fill="#FFABB0" id="r6_shared_emitter_p90__ellipse_03" />
+      <path d="M154 127H238L245 133V143H154L147 137V132Z" fill="#3B3B3C" stroke="#29292A" stroke-width="2" stroke-linejoin="round" id="r6_shared_emitter_p90__path_15" />
+      <rect x="165" y="133" width="62" height="6" rx="1" fill="#29292A" stroke="none" stroke-width="0" id="r6_shared_emitter_p90__rect_02" />
+    </g>
+  </g>
+  <g id="r8_light_surface_overlay" data-label="灯座上方的红晕、亮芯与表面反照" data-role="optics" clip-path="url(#r6_identity_clip)" inkscape:label="灯座上方的红晕、亮芯与表面反照" inkscape:groupmode="layer">
+    <title>灯座上方的红晕、亮芯与表面反照</title>
+    <g id="p90_front_status_lamp" data-component="front_status_lamp" data-label="前侧状态灯 · 壳体／亮芯／红晕" inkscape:label="前侧状态灯 · 壳体／亮芯／红晕">
+      <title>前侧状态灯 · 壳体／亮芯／红晕</title>
+      <desc>完整移动入口；各光晕子组仍可独立关闭。原有机身裁剪保留在外层。</desc>
+      <g id="r9_single_lamp_housing" data-label="前侧平面上的独立状态灯壳" data-role="light-housing" inkscape:label="前侧平面上的独立状态灯壳">
+        <title>前侧平面上的独立状态灯壳</title>
+        <path d="M790 296H825L836 305V317L821 325H792L784 318V305Z" fill="#0C0F12" stroke="none" stroke-width="0" stroke-linejoin="round" id="r9_single_lamp_housing__path_01" />
+        <path d="M790 292H823L833 301V314L820 322H792L783 314V303Z" fill="url(#r6_softmetal)" stroke="#111417" stroke-width="2" stroke-linejoin="round" id="r9_single_lamp_housing__path_02" />
+        <path d="M791 294H822L830 302L826 305L821 299H793L789 304L785 303Z" fill="#777B7E" stroke="none" stroke-width="0" stroke-linejoin="round" id="r9_single_lamp_housing__path_03" />
+        <path d="M785 310L794 317H819L830 310V315L819 322H792L784 315Z" fill="#1A1D20" stroke="none" stroke-width="0" stroke-linejoin="round" id="r9_single_lamp_housing__path_04" />
+        <path d="M798 299H818L825 305V313L818 317H798L791 311V305Z" fill="#181416" stroke="#0F1114" stroke-width="1.6" stroke-linejoin="round" id="r9_single_lamp_housing__path_05" />
+        <path d="M799 302H818L822 307L818 313H799L795 308Z" fill="#75151D" stroke="none" stroke-width="0" stroke-linejoin="round" id="r9_single_lamp_housing__path_06" />
+      </g>
+      <g id="r9_front_near_glow" transform="translate(808 308) rotate(0) scale(0.94 1.0)" data-optical-halo="true" data-label="前侧状态灯 · 近处红晕" inkscape:label="前侧状态灯 · 近处红晕">
+        <title>前侧状态灯 · 近处红晕</title>
+        <path id="r9_front_near_glow_field" d="M23.75 -14.15 Q33.6 -8.3 33.6 0 Q33.6 8.3 23.75 14.15 Q13.9 20 0 20.05 Q-13.9 20 -23.7 14.15 Q-33.55 8.3 -33.55 0 Q-33.55 -8.3 -23.7 -14.15 Q-13.9 -20 0 -20 Q13.9 -20 23.75 -14.15 Z" fill="url(#r8_ti61_light_falloff)" stroke="none" stroke-width="1" stroke-linejoin="miter" opacity="0.8" data-optical-halo="true" />
+      </g>
+      <g id="r9_front_wide_glow" transform="translate(807 308) rotate(-12) scale(2.03 2.15)" data-optical-halo="true" data-label="前侧状态灯 · 扩散红晕" inkscape:label="前侧状态灯 · 扩散红晕">
+        <title>前侧状态灯 · 扩散红晕</title>
+        <path id="r9_front_wide_glow_field" d="M23.75 -14.15 Q33.6 -8.3 33.6 0 Q33.6 8.3 23.75 14.15 Q13.9 20 0 20.05 Q-13.9 20 -23.7 14.15 Q-33.55 8.3 -33.55 0 Q-33.55 -8.3 -23.7 -14.15 Q-13.9 -20 0 -20 Q13.9 -20 23.75 -14.15 Z" fill="url(#r8_ti61_light_falloff)" stroke="none" stroke-width="1" stroke-linejoin="miter" opacity="1.0" data-optical-halo="true" />
+      </g>
+      <g id="r9_status_window_core" data-label="单一短灯窗亮芯" inkscape:label="单一短灯窗亮芯">
+        <title>单一短灯窗亮芯</title>
+        <path d="M799 303H818L822 307L818 313H799L796 308Z" fill="#FF2618" stroke="none" stroke-width="0" stroke-linejoin="round" id="r9_status_window_core__path_01" />
+        <path d="M802 307.5H816" fill="none" stroke="#FFD2A8" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" id="r9_status_window_core__path_02" />
+      </g>
+    </g>
+    <g id="r8_optic_point_glow" transform="translate(807 145) rotate(0) scale(0.9 1.1)" data-optical-halo="true" data-label="观瞄侧点灯 · 红晕" inkscape:label="观瞄侧点灯 · 红晕">
+      <title>观瞄侧点灯 · 红晕</title>
+      <path id="r8_optic_point_glow_field" d="M23.75 -14.15 Q33.6 -8.3 33.6 0 Q33.6 8.3 23.75 14.15 Q13.9 20 0 20.05 Q-13.9 20 -23.7 14.15 Q-33.55 8.3 -33.55 0 Q-33.55 -8.3 -23.7 -14.15 Q-13.9 -20 0 -20 Q13.9 -20 23.75 -14.15 Z" fill="url(#r8_ti61_light_falloff)" stroke="none" stroke-width="1" stroke-linejoin="miter" opacity="0.74" data-optical-halo="true" />
+    </g>
+    <g id="r8_optic_bar_glow" transform="translate(609 153) rotate(0) scale(1.42 1.06)" data-optical-halo="true" data-label="观瞄条灯 · 红晕" inkscape:label="观瞄条灯 · 红晕">
+      <title>观瞄条灯 · 红晕</title>
+      <path id="r8_optic_bar_glow_field" d="M23.75 -14.15 Q33.6 -8.3 33.6 0 Q33.6 8.3 23.75 14.15 Q13.9 20 0 20.05 Q-13.9 20 -23.7 14.15 Q-33.55 8.3 -33.55 0 Q-33.55 -8.3 -23.7 -14.15 Q-13.9 -20 0 -20 Q13.9 -20 23.75 -14.15 Z" fill="url(#r8_ti61_light_falloff)" stroke="none" stroke-width="1" stroke-linejoin="miter" opacity="0.9" data-optical-halo="true" />
+    </g>
+    <g id="r8_stock_bar_glow" transform="translate(241 241) rotate(0) scale(1.42 0.98)" data-optical-halo="true" data-label="后托条灯 · 红晕" inkscape:label="后托条灯 · 红晕">
+      <title>后托条灯 · 红晕</title>
+      <path id="r8_stock_bar_glow_field" d="M23.75 -14.15 Q33.6 -8.3 33.6 0 Q33.6 8.3 23.75 14.15 Q13.9 20 0 20.05 Q-13.9 20 -23.7 14.15 Q-33.55 8.3 -33.55 0 Q-33.55 -8.3 -23.7 -14.15 Q-13.9 -20 0 -20 Q13.9 -20 23.75 -14.15 Z" fill="url(#r8_ti61_light_falloff)" stroke="none" stroke-width="1" stroke-linejoin="miter" opacity="0.66" data-optical-halo="true" />
+    </g>
+    <g id="p90_optic_point_core" data-component="p90_optic_point_core" data-label="观瞄侧点灯 · 亮芯" inkscape:label="观瞄侧点灯 · 亮芯">
+      <title>观瞄侧点灯 · 亮芯</title>
+      <circle cx="807" cy="145" r="5.25" fill="#591015" id="p90_optic_point_core__circle_01" />
+      <circle cx="807" cy="145" r="4.1" fill="#FF2618" id="p90_optic_point_core__circle_02" />
+      <circle cx="806.7" cy="144.65" r="1.9" fill="#FFD2A8" id="p90_optic_point_core__circle_03" />
+    </g>
+    <g id="p90_optic_bar_core" data-component="p90_optic_bar_core" data-label="观瞄条灯 · 亮芯" inkscape:label="观瞄条灯 · 亮芯">
+      <title>观瞄条灯 · 亮芯</title>
+      <path d="M594 151.2H619L623 153" fill="none" stroke="#FF4A2D" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" id="p90_optic_bar_core__path_01" />
+      <path d="M596 151H617" fill="none" stroke="#FFD1A0" stroke-width="1.35" stroke-linejoin="round" stroke-linecap="round" id="p90_optic_bar_core__path_02" />
+    </g>
+    <g id="p90_stock_bar_core" data-component="p90_stock_bar_core" data-label="后托条灯 · 亮芯" inkscape:label="后托条灯 · 亮芯">
+      <title>后托条灯 · 亮芯</title>
+      <path d="M225 240H258" fill="none" stroke="#FF4329" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" id="p90_stock_bar_core__path_01" />
+      <path d="M231 239.7H254" fill="none" stroke="#FFBA91" stroke-width="1.0" stroke-linejoin="round" stroke-linecap="round" id="p90_stock_bar_core__path_02" />
+    </g>
+  </g>
+</svg>

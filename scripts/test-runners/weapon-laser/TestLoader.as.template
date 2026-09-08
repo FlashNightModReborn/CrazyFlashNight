@@ -1,0 +1,18 @@
+﻿import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
+if (!_root.主角函数) _root.主角函数 = {};
+#include "逻辑/单位函数/单位函数_fs_装备生命周期配置.as"
+#include "逻辑/装备函数/P90.as"
+#include "逻辑/装备函数/枪械射击动画.as"
+#include "逻辑/装备函数/枪械激光瞄准.as"
+_root.weaponLaserFocusedComplete = function():Void {
+    trace("FocusedTestRunId weapon-laser Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId weapon-laser Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSightTest.configure({
+    itemFiles:["../data/items/武器_手枪_冲锋枪.xml", "../data/items/武器_长枪_机枪.xml"],
+    assetSwf:"../flashswf/arts/new/Codex专用素材.swf",
+    printedItemName:"P90印花集",
+    handgun:{itemName:"钛合金P90", linkage:"枪-手枪-Codex-钛合金P90"},
+    longGun:{itemName:"钛合金QJZ171", linkage:"枪-长枪-Codex-钛合金QJZ171"}
+});
+org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSightTest.runAllTests();

@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑/R04/90_绘制元件/03_护手内框与斜槽_色面_05" itemID="6a9f543d-00005018" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="03_护手内框与斜槽_色面_05">
+      <layers>
+        <DOMLayer name="03_护手内框与斜槽_色面_05" color="#D45656" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0" b="0.003662109375" c="-0.003662109375" d="0" tx="-56.15" ty="10.85"/>
+                                </matrix>
+                                <GradientEntry color="#FF160E" ratio="0"/>
+                                <GradientEntry color="#FF0B07" ratio="0.231372549019608"/>
+                                <GradientEntry color="#EF0305" ratio="0.580392156862745"/>
+                                <GradientEntry color="#A80406" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                          </fills>
+                          <edges>
+                            <Edge fillStyle0="1" edges="!241 215|241 268!241 268|266 269!266 269|336 164!336 164|270 164!270 164|241 215"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

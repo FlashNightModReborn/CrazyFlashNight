@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-共用/02_光束视觉参考/红束_暖白亮芯" itemID="6a9e698c-00005528" linkageExportForAS="true" linkageIdentifier="激光瞄准-Codex-钛合金61-红束">
+  <timeline>
+    <DOMTimeline name="红束_暖白亮芯">
+      <layers>
+        <DOMLayer name="纯红渐隐束体" color="#FF0000" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.152587890625" d="0.00701904296875" tx="125"/>
+                        </matrix>
+                        <GradientEntry color="#FF0000" alpha="0.6" ratio="0"/>
+                        <GradientEntry color="#FF0000" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!5000 -115|5000 115!5000 115|0 115!0 115|0 -115!0 -115|5000 -115"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

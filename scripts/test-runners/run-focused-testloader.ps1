@@ -200,6 +200,34 @@ try {
         $completePattern = "(?m)^FocusedTestRunId $escapedDomain Complete: $escapedRunId\r?$"
         $blockPattern = "(?ms)^FocusedTestRunId $escapedDomain Start: $escapedRunId\r?`n" +
             "(?<body>.*?)^FocusedTestRunId $escapedDomain Complete: $escapedRunId\r?$"
+        # testMovie can return before async XML/SWF loads and later-frame checks.
+        # Recover only this run's raw trace suffix; preserve every matching marker
+        # so the existing duplicate/order/failure checks below remain authoritative.
+        if (-not [regex]::IsMatch($trace, $completePattern)) {
+            $rawTracePath = Join-Path $env:APPDATA 'Macromedia\Flash Player\Logs\flashlog.txt'
+            $markerPattern = "(?m)^FocusedTestRunId $escapedDomain (?:Start|Complete): $escapedRunId\r?$"
+            $traceDeadline = [DateTime]::UtcNow.AddSeconds([Math]::Min(30, $TimeoutSeconds))
+            Write-Host '[INFO] Waiting for this focused run to finish its asynchronous checks.'
+            do {
+                if (Test-Path -LiteralPath $rawTracePath) {
+                    $rawTraceStream = [IO.File]::Open($rawTracePath,
+                        [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
+                    $rawTraceReader = [IO.StreamReader]::new($rawTraceStream, [Text.Encoding]::UTF8)
+                    try { $rawTrace = $rawTraceReader.ReadToEnd() }
+                    finally { $rawTraceReader.Dispose() }
+                    $firstMarker = [regex]::Match($rawTrace, $markerPattern)
+                    if ($firstMarker.Success) {
+                        $candidateTrace = $rawTrace.Substring($firstMarker.Index)
+                        if ([regex]::IsMatch($candidateTrace, $completePattern)) {
+                            $trace = $candidateTrace
+                            [IO.File]::WriteAllText($tracePath, $trace, [Text.UTF8Encoding]::new($false))
+                            break
+                        }
+                    }
+                }
+                Start-Sleep -Milliseconds 100
+            } while ([DateTime]::UtcNow -lt $traceDeadline)
+        }
         $startCount = [regex]::Matches($trace, $startPattern).Count
         $completeCount = [regex]::Matches($trace, $completePattern).Count
         $blocks = [regex]::Matches($trace, $blockPattern)

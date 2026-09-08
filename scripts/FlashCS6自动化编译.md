@@ -74,6 +74,8 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flash
 
 `test`|`testloader` → `scripts/TestLoader`（`doc.testMovie()`）；`publish`|`asloader` → `scripts/asLoader`（隐式 **publish-only** + 自动 `-VerifySwf scripts/asLoader.swf`）；`main`|`mainfile`|`empire` → `CRAZYFLASHER7MercenaryEmpire/CRAZYFLASHER7MercenaryEmpire.xfl`（隐式 **publish-only** + 自动 `-VerifySwf CRAZYFLASHER7MercenaryEmpire.swf`）。因此 `publish/asloader/main` 别名都可省略 `-PublishOnly`；只有任意显式 FLA/XFL 路径需要禁止 testMovie 时才额外传该开关。`-Target` 决定编哪个，无需手动切到前台；publish-only 在诊断落盘后自动以“不保存”关闭本轮目标，避免批量发布大型 XFL 时撞 Flash CS6 32 位地址空间，TestLoader/testMovie 则保持打开供调试。
 
+`run-focused-testloader.ps1` 对异步XML/SWF加载和后续帧检查，在子编译成功后最多额外等待`min(30, TimeoutSeconds)`秒，从原始Flash日志补读本轮domain/runId的后续记录。取第一个本轮Start或Complete起的完整后缀，随后仍严格要求单Start、单Complete、顺序正确、期望断言唯一、无失败哨兵和零32K重试；不接受其他runId或从多个重复块中挑一段通过。无GUI回归入口为 `powershell -File tools/test-focused-testloader-trace.ps1`（10个正确/错误run、顺序、重复和失败哨兵夹具）。超时未闭合仍保留原有不确定状态恢复门。
+
 批量发布大 XFL 时可额外传 `-QuitFlashAfterPublish`。该开关只接受 publish-only：JSFL 必须先完成 `doc.publish()`、保存 Compiler Errors、关闭目标并写 terminal marker，之后才 `fl.quit(false)`；调用方看到成功返回后再用既有 `FlashCS6Task` 启动干净实例。测试模式、畸形/残留 cfg 或 terminal 前退出都 fail-closed，不能用进程退出替代 SWF 刷新与 Compiler `0/0`。
 
 显式目标若已经在 CS6 打开，`compile_action.jsfl` 会先以“不保存”关闭，写入一次性 `compile_reopen.marker`；`compile_test.ps1` 校验 exact 目标与模式后最多重触发一次，再从磁盘打开并编译，确保外部编辑的 XFL XML 是 source of truth。关闭与重开必须分属两次 JSFL 调用：Flash CS6 在同一调用栈内关闭并立即重开 XFL 时可能直接中止宿主脚本。publish-only 在完成发布、保存 Compiler Errors 后还会关闭刚发布的目标；该尾部关闭发生在 terminal marker 之前，关闭失败不能伪装成成功。比较 cfg URI 与 `doc.pathURI` 时只做纯字符串 URI 解码、斜杠和大小写归一化；不要对所有已打开文档调用 `FLfile` 平台路径转换，未保存或含非 ASCII 路径的其他 XFL 可能让 CS6 绕过 JavaScript `try/catch` 整体中止。中文路径在两处可能分别表现为直写 Unicode 与 percent-encoded URI；不归一会漏关带 `*` 的旧文档，使 `doc.publish()` 复用旧 symbol 缓存。部分独立 XFL 在重开时会弹缺失字体确认框，计划任务会一直等不到 terminal marker；编译时间异常拉长时先截图/检查 CS6 前台并人工确认，不要重复触发多个编译任务。`-VerifySwf` 只能证明文件被重写，关键 XML 帧脚本还应以 FFDec 导出 script 检查新增标志串是否进入 SWF。
@@ -222,6 +224,12 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 ### 打开文档时弹出缺失字体
 
 字体弹窗属于文档依赖，显式调用 CS6 不会自动消除它。先定位 XFL 的 `DOMTextAttrs.face` 和实际文本：真实素材应补齐原字体或核对替代效果；共享库的编辑器占位标签可使用本机已有字体。本轮 `things-new.fla` 中 `敌人-诺艾尔` 的两个中文导入标签从缺失的 Broadway 改用 MicrosoftYaHei，保留原 `linkageImportForRS` / `linkageURL`，不改实际敌人 SWF。新 Codex 武器库采用原生矢量形状，不引入字体。未知弹窗仍须观察后处理，不能用超时重试或统一回车掩盖。
+
+### 游戏仍运行时读取测试日志
+
+游戏与CS6测试播放器可能同时持有 `flashlog.txt` 的写句柄。编译入口以 `FileShare.ReadWrite` 读取打开时的固定长度字节快照，focused runner的异步收尾也允许共享读取；不要求测试员为取日志退出游戏。仍保留原始前缀比较、本轮nonce、唯一有序Start/Complete、Compiler 0/0与零32K重试门，不能把其他运行实例的输出当本轮证据。
+
+2026-09-08 血剑回归曾在 `target closed; request second-phase reopen` 后超时；触发任务已回到Ready，目标cfg仍未消费，旧TestLoader.swf未刷新，CS6已无打开文档。确认这些事实、TestLoader.as逐字节恢复及本轮token后，先归档再清除本轮marker/cfg；从关闭目标状态重新运行得到56/56与Compiler 0/0。超时样本保留，不计为通过；本次未改动二阶段重开协议，也未进一步认定未消费请求的内部原因。
 
 ## 9. 相关文档
 
