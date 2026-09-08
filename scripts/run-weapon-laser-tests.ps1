@@ -14,10 +14,10 @@ $focusedRun = @{
     )
     ExpectedTracePatterns = @(
         '(?m)^WeaponLaserSightTest Fixtures Completed: 3\r?$',
-        '(?m)^WeaponLaserSightTest Tests Passed: 89\r?$',
+        '(?m)^WeaponLaserSightTest Tests Passed: 97\r?$',
         '(?m)^WeaponLaserSightTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = '89/89，真实手枪、手枪2及长枪素材：激光、弹匣、后坐及卸载'
+    SuccessSummary = '97/97，真实手枪、手枪2及长枪素材：激光、弹匣、后坐及卸载'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

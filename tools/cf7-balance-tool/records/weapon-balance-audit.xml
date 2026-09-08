@@ -3630,7 +3630,7 @@
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
       <inputDigest>fnv1a32:a5ad7202</inputDigest>
-      <sourceDigest>sha256:71e99e630f5ba500c630da3f764adb4879037eb92d6eceeb42f4bd6f60797a26</sourceDigest>
+      <sourceDigest>sha256:d795daf59972d77647830a235f69da9ae6081bceb18ab8ad15054a30f94f6be1</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.crafting</code>
@@ -3731,8 +3731,13 @@
           <target>audit.status</target>
           <evidenceRef>docs/QJZ171-钛合金版数值落盘-2026-09-07.md#获取与审计边界</evidenceRef>
         </ref>
+        <ref>
+          <id>WBR-LAYER-003</id>
+          <target>mechanic.setFireControl</target>
+          <evidenceRef>docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#74-钛合金qjz171低负载火控恢复随套装共同施工</evidenceRef>
+        </ref>
       </ruleRefs>
-      <note>55级四层与17%暴击保持策划决定；铁枪会craft.iron-spear.019已提供真实合成来源。K点合成与40级以上第四层的组合尚未进入现役证据检查器，剩余三层保留待核验；18.86%彩蛋溢价为未来套装联动预留，不计入基础层数，负重量效果仍随套装另行实现。</note>
+      <note>55级四层与17%暴击保持策划决定；铁枪会craft.iron-spear.019已提供真实合成来源。K点合成与40级以上第四层的组合尚未进入现役证据检查器，剩余三层保留待核验；18.86%彩蛋溢价不计入基础层数。2026-09-08套装条件机制已接线：五甲齐全、专属盾在线、本枪发射时，最终负重量到-17kg封顶，最多0.15%击溃和10%斩杀，同类取高并逐发快照；机制在线率和完整毕业强度仍待S3实战标定。</note>
     </record>
     <record>
       <auditRef>weapon:P90印花集:data</auditRef>

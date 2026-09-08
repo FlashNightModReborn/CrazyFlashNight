@@ -77,7 +77,12 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
         
         var dispatcher:EventDispatcher = owner.dispatcher;
 
-        dispatcher.publish("processShot", owner, weaponType, muzzlePosition, bulletProps);
+        var firedWeapon:Object = owner[weaponType];
+        // 条件百分比只投影到这一发；持久枪械模板和人物全局属性不承接套装贡献。
+        if (owner.__titaniumType61) {
+            bulletProps = owner.__titaniumType61.projectShot(owner, weaponType, firedWeapon, bulletProps);
+        }
+        dispatcher.publish("processShot", owner, weaponType, muzzlePosition, bulletProps, firedWeapon);
 
         // 盖戳本次发射间隔（毫秒）：供纵向联弹生成整数分数补弹率（<1 即隔帧补弹），
         // 使霰弹值在调度器有效射击间隔的末 tick 补完；同 tick 内事件先后不作保证。

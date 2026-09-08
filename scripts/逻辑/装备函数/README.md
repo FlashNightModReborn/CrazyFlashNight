@@ -207,6 +207,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 
 ### C. 防具技能（挂载部件 / buff / 肩炮等）
 - `剑圣套装.as` — 剑圣五件套共享 context 生产者与 gated 事务资源登记 helper
+- `钛合金套装.as` — 五甲门控的机甲能源入口；共享class管理满血免费初始盾、付费治疗/战斗修盾、负重伺服、破盾增伤、夜视、手枪基础返还/原子补弹与171条件快照，胸甲为唯一周期；P90额外发电归自身装备生命周期
 - `Mark3.as` — Mark3手甲 · 按键切换能量电池消耗模式，影响空手攻击
 - `剑圣头部装甲.as` — 剑圣头部装甲 · 低光夜视与常驻近敌扫描/躲闪 debuff 相互独立
 - `剑圣手甲.as` — 剑圣手甲 · 挂腕刃，常驻空手加成，刀剑乱舞切爆发态 +70%，坐标跟随左下臂
@@ -284,3 +285,5 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 - 装备系统在游戏系统索引中的位置：`agentsDoc/game-systems.md §13`
 - 新增脚本编码约定（BOM / 命名 / ref 约定）：`agentsDoc/coding-standards.md`、`agentsDoc/as2-anti-hallucination.md`
 - 一致性巡检：`tools/validate-equip-fn-coverage.js`（已接入 `tools/validate-doc-governance.js`）
+
+钛合金五甲使用 `TitaniumSetRuntime`，P90固有发电使用 `EquipmentUtil/P90EnergyGenerator`。171激光从同一运行态读取火控进度并映射透明度，不发布切枪报数。真实 `processShot(owner, slot, muzzle, props, firedWeapon)` 的第五参绑定提交时武器实例；旧四参订阅者可忽略，双枪发电必须校验槽位和实例。`ReloadManager` 的开始/提交/结束代次用于中央补弹二次复核；任何MP/shot更新先于HUD事件。专项验证与编译产物边界见[套装ADR](../../../docs/钛合金61式装甲套装-玩法设计-ADR-2026-07-27.md#16-2026-09-08-s1s2本地接线与验证)。

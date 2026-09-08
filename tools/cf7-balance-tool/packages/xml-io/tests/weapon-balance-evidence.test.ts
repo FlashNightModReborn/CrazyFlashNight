@@ -139,6 +139,27 @@ describe("weapon balance project evidence", () => {
     });
   });
 
+  it("keeps exact AS2 item identities distinct and excludes dedicated focused fixtures", () => {
+    withFixtureRepository((root) => {
+      const { record, context } = highPriceFixture(root);
+      const writeAs = (file: string, source: string) => {
+        const absolute = path.join(root, file);
+        fs.mkdirSync(path.dirname(absolute), { recursive: true });
+        fs.writeFileSync(absolute, source, "utf8");
+      };
+      writeAs("scripts/类定义/Initializer/TitaniumSetRuntime.as", 'if (weapon.name == "钛合金QJZ171") {}');
+      writeAs("scripts/类定义/Initializer/test/TitaniumSetRuntimeTest.as", 'weapon.name = "QJZ171";');
+      expect(validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root), context).valid)
+        .toBe(true);
+      // 正式脚本即使自称test，仍要进入复核；单双引号都必须识别。
+      for (const source of ['grant("QJZ171", 1);', "grant('QJZ171', 1);"]) {
+        writeAs("scripts/逻辑/Test.as", source);
+        expect(validateWeaponBalanceEvidence("QJZ171", record, buildWeaponAcquisitionIndex(root), context)
+          .issues.map((issue) => issue.code)).toContain("high_price_unreviewed_acquisition");
+      }
+    });
+  });
+
   it("verifies an exact crafting output and repository evidence path", () => {
     withFixtureRepository((root) => {
       writeJson(root, "data/crafting/武器合成.json", [

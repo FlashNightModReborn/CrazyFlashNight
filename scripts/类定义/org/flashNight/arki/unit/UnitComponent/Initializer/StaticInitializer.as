@@ -26,6 +26,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 排除从非gameworld召唤出的单位
         if(target._parent !== _root.gameworld) return;
 
+        // 在任何属性重建前抓取旧资源；满血初始化奖励不能被“降低上限后变满血”套利。
+        var wasReinitializing:Boolean = target.dispatcher != undefined;
+        var hpBeforeRebuild:Number = Number(target.hp);
+        var maxHpBeforeRebuild:Number = Number(target.hp满血值);
+
         // 版本绑定的完成闩锁：任一后续初始化器或 UnitInitialized 订阅者抛错时标记
         // 都保持为空。真实 attachMovie 返回栈不会等待本闩锁；它只供完成态诊断及
         // 已同步执行 frame 初始化的兼容工厂做严格验收。
@@ -57,6 +62,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         EventInitializer.initialize(target);
 
         DressupInitializer.initialize(target); // 只有主角模板会执行
+        if (wasReinitializing && target.__titaniumType61) {
+            target.__titaniumType61.constrainInitialShieldToPreviousHealth(hpBeforeRebuild, maxHpBeforeRebuild);
+        }
         DisplayNameInitializer.initialize(target);
 
         TargetCacheManager.addUnit(target);

@@ -1240,7 +1240,10 @@
       <type>武器</type>
       <use>手枪</use>
       <price>100000</price>
-      <description>钛合金61式机甲的近距支援武器。紧凑枪身、透明顶置弹匣与独立红色瞄准模组适应太空站舱道内的快速转向；机匣预留机甲能源和火控接口，可与机体姿态系统配合部署。</description>
+      <description>钛合金61式的近距支援武器，为少数人员长时间穿过舰内普通守备而设计。
+    紧凑枪身、透明顶置弹匣和独立红色瞄准模组适应舱道中的连续转向；枪内独立供能组件随每次成功发射向使用者额外回馈3点MP，脱离套装也能工作。
+    接入完整装甲后，这些能源能够继续用于维生、修盾和满盾状态下的弹药回填，让突击人员在补给暂时中断时保持推进。
+    在舰群的采购标准里，能持续工作到任务结束，与第一轮火力同样重要。</description>
       <data>
         <level>45</level>
         <weight>9</weight>
@@ -1264,6 +1267,7 @@
         <attr_0>
           <init>
             <initRoutines>P90初始化</initRoutines>
+            <initParam><extraMpPerShot>3</extraMpPerShot></initParam>
           </init>
           <cycle>
             <cycleRoutines>P90周期</cycleRoutines>

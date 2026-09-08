@@ -1,0 +1,196 @@
+{
+  "status": "source_linked_runtime_prototype_not_field_acceptance",
+  "strengthAnchor": {
+    "source": "maintainer_report_2026_09_08",
+    "levelBandWidth": 7,
+    "swordSaintTier4ItemLevel": 42,
+    "swordSaintObservedBandsRecovered": 1.5,
+    "swordSaintObservedPerformanceBand": "50+; 52.5 is ordinal arithmetic only, not measured DPS equivalence",
+    "topReference": "黄金骑士牙狼套装",
+    "ti61Without171Target": "approximately the observed Sword Saint tier4 50+ performance band, strongly above ordinary level45 gear",
+    "ti61With171Target": "graduation-class glass cannon; must retain overlevel burst lethality"
+  },
+  "fps": 30,
+  "durationSeconds": 180,
+  "profiles": {
+    "previous_proposal": {
+      "shieldRatio": 0.6,
+      "strengthRatio": 0.08,
+      "repairHpRatioPerSecond": 0.1,
+      "shieldMpPerPoint": 0.05,
+      "healBaseHpRatioPerSecond": 0.02,
+      "healMissingRatioPerSecond": 0.1,
+      "healMpPerPoint": 0.1,
+      "startupMp": 60,
+      "overloadBasis": "missing_hp",
+      "overloadCoefficient": 0.4,
+      "overloadCap": 0.3,
+      "pulseFrames": 6,
+      "p90MpPerShot": 3,
+      "ammoMpPerRound": 3,
+      "ammoReserveRatio": 0.5,
+      "ammoMaxPerSlotPulse": 3
+    },
+    "glass_cannon_candidate": {
+      "shieldRatio": 0.3,
+      "strengthRatio": 0.035,
+      "repairHpRatioPerSecond": 0.06,
+      "shieldMpPerPoint": 0.08,
+      "healBaseHpRatioPerSecond": 0.003,
+      "healMissingRatioPerSecond": 0.02,
+      "healMpPerPoint": 0.15,
+      "startupMp": 60,
+      "overloadBasis": "armor_damage",
+      "overloadCoefficient": 3,
+      "overloadExponent": 1.5,
+      "pulseFrames": 6,
+      "p90MpPerShot": 3,
+      "ammoMpPerRound": 3,
+      "ammoReserveRatio": 0.5,
+      "ammoMaxPerSlotPulse": 3
+    },
+    "blood_cost_compensated_candidate": {
+      "shieldBasis": "armor_hp",
+      "healWhileOnline": true,
+      "baseAmmoCycleEnabled": true,
+      "overloadBasis": "armor_damage",
+      "fixedOnlineStrength": true,
+      "synthesisOnNewlyFull": true,
+      "fullHpInitialShield": true
+    }
+  },
+  "bloodCompensationAnchor": {
+    "intent": "五甲和血剑在专属盾在线时产生额外实际减重，吸收插件重量；满充护盾补回血剑负HP项造成的常规可吸收承伤损失并留余量。",
+    "comparison": "同构筑、同插件，仅移除血剑基础负HP项的反事实；不替换成另一把有额外生命/防御的武器。",
+    "weightCandidatesKg": [
+      4,
+      8,
+      12,
+      16,
+      20
+    ],
+    "scope": "同强化标准构筑的标定锚点；不保证任意失衡强化/负HP插件、真伤、击溃、主动自损和未充满状态全部补偿。",
+    "universalShield": "盾按五甲实际HP贡献生成，不按损血或持血剑与否生成；血剑只是预算校准锚点。",
+    "status": "accepted_local_runtime_prototype_pending_field_calibration"
+  },
+  "policy": {
+    "switchToP90BelowMpRatio": 0.25,
+    "returnToGunAboveMpRatio": 0.45,
+    "switchFrames": 9
+  },
+  "confirmedBehavior": {
+    "source": "maintainer_decisions_2026_09_08_after_workspace_closeout",
+    "baseCycle": "手枪两槽成功发射返还一发合成成本，满盾按同成本补弹；基础循环守恒。",
+    "p90": "显式武器固有效果每发额外3MP；套装外仍生效。",
+    "healing": "所有护盾状态均允许MP治疗；治疗优先于充盾和补弹，可花到0。",
+    "strength": "在线保持固定盾强；零容量时该层盾强归零。",
+    "reboot": "满血初始化免费满盾，重初始化要求前后均满血；保留超血和MP。带伤初始化与战斗破盾继续付费渐充。",
+    "laser": "171红束透明度18+82*火控进度；取消火控切枪日志，视觉与本发伤害读取同一进度。"
+  },
+  "titaniumWeaponMods": {
+    "source": "maintainer_loadout_2026_09_08",
+    "钛合金QJZ171": [
+      "战术鱼骨零件",
+      "水冷机构",
+      "加长弹匣"
+    ],
+    "钛合金P90": [
+      "矢量偏转枪盾"
+    ],
+    "note": "两把P90分别安装枪盾；171第三槽按维护者本人的扩容方案，不代表其他第三槽都同重。"
+  },
+  "swordSaintReference": {
+    "userDirection": "自带腕刃；同期顶级非彩蛋刀；刀剑项链；防具纳米+传感器+碳纤维；武器电力+大吸血",
+    "neck": "冷兵器大加成项链",
+    "phaseWeapons": {
+      "45": "青龙偃月刀",
+      "50": "诛神剑",
+      "55": "远古诛神短剑",
+      "60": "远古诛神剑"
+    },
+    "armorMods": [
+      "纳米执行单元",
+      "传感器",
+      "碳纤维布料"
+    ],
+    "bladeMods": [
+      "强化柄芯",
+      "纳米执行单元",
+      "绯红忆弦轮"
+    ],
+    "handVariants": {
+      "all_defensive": [
+        "纳米执行单元",
+        "传感器",
+        "碳纤维布料"
+      ],
+      "lifesteal_hand": [
+        "纳米执行单元",
+        "绯红忆弦轮",
+        "碳纤维布料"
+      ]
+    },
+    "interpretation": "电力取纳米执行单元，大吸血取绯红忆弦轮；普通高阶刀先用强化柄芯扩槽，增加2重量且占一槽。手甲吸血变体替换传感器并损失35挡拆；不把刀槽吸血算给空手。阶段刀是常规商店/合成代表，非全目录最优解。"
+  },
+  "boss": {
+    "hp": 3770762.5,
+    "defence": 1119,
+    "source": "docs/QJZ171-钛合金版对地狱战斗天才火力评估-2026-09-07.md",
+    "status": "published_enemy_snapshot_not_reexported_this_model"
+  },
+  "contactAssumptions": {
+    "qjzSettlementsAlternating": [
+      2,
+      3
+    ],
+    "m134OrdinarySegments": 10,
+    "m134CrumblePipelinesSensitivity": [
+      1,
+      5
+    ],
+    "status": "prior_user_qjz_2.5_and_m134_10; crumble_1_5_are_sensitivity_only"
+  },
+  "pressureScripts": [
+    {
+      "id": "quiet",
+      "damage": 0,
+      "intervalFrames": 30,
+      "bypass": false
+    },
+    {
+      "id": "chip",
+      "damage": 100,
+      "intervalFrames": 30,
+      "bypass": false
+    },
+    {
+      "id": "burst",
+      "damage": 1400,
+      "intervalFrames": 90,
+      "bypass": false
+    },
+    {
+      "id": "true_hit",
+      "damage": 1200,
+      "intervalFrames": 150,
+      "bypass": true
+    },
+    {
+      "id": "shield_break_then_recover",
+      "damage": 180,
+      "intervalFrames": 6,
+      "bypass": false,
+      "lastHitFrame": 258
+    }
+  ],
+  "pressureContract": "Synthetic already-landed, post-mitigation damage; first hit at 6s. No inferred enemy attack or survival probability. All profiles start at zero shield.",
+  "limitations": [
+    "No claim of parity with the strongest Sword Saint unarmed build or graduation acceptance.",
+    "Unmodified control panels exclude mods and neck. ConfiguredReference uses explicit selected mods/neck; neither panel includes grenades, consumables, other shields, allies, cancellation or positioning.",
+    "Boss TTK uses expected critical damage and prior contact counts; lazy dodge, counters and target shields are excluded.",
+    "Unarmed animation events are authored XFL candidates, not measured hits; no automatic winner from equal-contact assumptions.",
+    "Gun/dual-pistol reload and switching schedules are explicit approximations, not an executable AS2 replay.",
+    "Reserve magazines are assumed available; normal reload rounds are counted separately from synthesized rounds. No claim about finite inventory endurance or gold cost."
+  ],
+  "runtimeProfile": "blood_cost_compensated_candidate"
+}

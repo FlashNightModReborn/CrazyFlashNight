@@ -313,6 +313,7 @@ _root.__boot.f37_8 = function() {
     #include "../逻辑/装备函数/枪械射击动画.as"
     #include "../逻辑/装备函数/枪械激光瞄准.as"
     #include "../逻辑/装备函数/血色光剑天秤.as"
+    #include "../逻辑/装备函数/钛合金套装.as"
     #include "../逻辑/装备函数/剑圣腿甲.as"
     #include "../逻辑/装备函数/剑圣手甲.as"
     #include "../逻辑/装备函数/剑圣装甲鞋.as"

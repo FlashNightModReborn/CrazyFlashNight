@@ -274,6 +274,8 @@ function findUnreviewedItemReferences(
   repositoryRoot: string, itemName: string, goldFiles: readonly string[]
 ): string[] {
   const matches: string[] = [];
+  const escapedItemName = itemName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const quotedItemName = new RegExp(`(["'])${escapedItemName}\\1`);
   const xmlParser = new XMLParser({ ignoreAttributes: false, trimValues: true });
   const scan = (directory: string): void => {
     if (!fs.existsSync(directory)) return;
@@ -288,7 +290,11 @@ function findUnreviewedItemReferences(
           relative === "data/items/asset_source_map.xml") continue;
       const source = fs.readFileSync(absolute, "utf8").replace(/^\uFEFF/, "");
       if (ext === ".as") {
-        if (source.includes(itemName)) matches.push(relative);
+        // AS2 专项类只由 TestLoader 运行，不是正式获取入口；其他脚本仍逐名检查。
+        // 钛合金QJZ171 与 QJZ171 是独立物品，不能用子串把变体行为记到原枪名下。
+        const focusedTest = relative.startsWith("scripts/类定义/") &&
+          /(?:^|\/)test\/[^/]+Test\.as$/.test(relative);
+        if (!focusedTest && quotedItemName.test(source)) matches.push(relative);
         continue;
       }
       const parsed: unknown = ext === ".json" ? JSON.parse(source) : xmlParser.parse(source);

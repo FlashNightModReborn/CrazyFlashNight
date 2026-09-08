@@ -16,6 +16,7 @@ _root.装备生命周期函数.枪械激光初始化 = function(ref:Object, para
     ref.laserLinkage = param.beamLinkage != undefined ? String(param.beamLinkage) : "";
     ref.laserLength = param.length != undefined ? Number(param.length) : 750;
     ref.laserActive = false;
+    ref.laserFireControl = ref.装备类型 == "长枪" && String(param.fireControl) == "titanium61";
     if (!ref.laserEquipment || !ref.laserLinkage || !isFinite(ref.laserLength) || ref.laserLength <= 0) {
         return false;
     }
@@ -99,6 +100,15 @@ _root.装备生命周期函数.枪械激光视觉更新 = function(ref:Object):V
     // 共用参考束长 250；横向延长，保持束体、亮芯与外晕的原生厚度。
     beam._xscale = ref.laserLength / 250 * 100;
     beam._yscale = 100;
+    // 基础瞄准保留弱红束；火控强度直接读取与子弹相同的权威入口，视觉不写战斗数值。
+    var progress:Number = 0;
+    var runtime:Object = actor.__titaniumType61;
+    if (ref.laserFireControl && runtime && typeof runtime.getFireControlProgress == "function") {
+        progress = Number(runtime.getFireControlProgress());
+        if (!isFinite(progress)) progress = 0;
+        progress = Math.max(0, Math.min(1, progress));
+    }
+    beam._alpha = ref.laserFireControl ? 18 + 82 * progress : 100;
     beam._visible = true;
 };
 

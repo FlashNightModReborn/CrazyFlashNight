@@ -4,6 +4,7 @@
     ref.modeObject = { 双枪:true, 手枪:true, 手枪2:true };
     ref.gunString = ref.装备类型 + "_引用";
 
+    P90EnergyGenerator.initialize(ref, param);
     MagazineFrameSync.init(ref);
 
     PlacementVisual.hookVisualUpdate(target, ref.gunString, ref, _root.装备生命周期函数.P90视觉更新);

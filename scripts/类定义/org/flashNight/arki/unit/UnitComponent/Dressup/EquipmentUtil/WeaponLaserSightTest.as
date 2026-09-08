@@ -157,6 +157,19 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSi
         var bounds:Object = beam.getBounds(beam);
         check(Math.abs(bounds.xMin) < 0.1 && Math.abs(bounds.xMax - 250) < 0.1, slot + "共用参考束原点与250长度");
         if (slot == "长枪") {
+            check(ref.laserFireControl && beam._alpha < 20 && beam._alpha > 15,"无套装时171保留暗淡辅助束");
+            unit.__laserFixtureProgress=0.5;
+            unit.__titaniumType61={getFireControlProgress:function():Number { return WeaponLaserSightTest.unit.__laserFixtureProgress; }};
+            tick();
+            check(Math.abs(beam._alpha-59)<0.5,"半档火控使真实红束达到中间透明度");
+            unit.__laserFixtureProgress=1; tick();
+            check(beam._alpha==100,"满档火控恢复完整红束亮度");
+            unit.__laserFixtureProgress=0; tick();
+            check(beam._alpha<20,"破盾或失去负重收益后红束立即转暗");
+            unit.__laserFixtureProgress=Number("NaN"); tick();
+            check(beam._alpha<20,"无效火控读数不能显示强光");
+            delete unit.__titaniumType61; tick();
+            check(beam._alpha<20,"套装卸载后的红束保持辅助瞄准");
             var animationCycle:Object = findCycle("长枪射击动画周期");
             check(animationCycle.args[0].animationEnd == 10 && gun.动画._totalframes == 10, "171保留十帧动画");
             var emitterX:Number = gun.激光发射器._x;
@@ -167,6 +180,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponLaserSi
             check(gun.动画._currentframe == 3 && gun.激光发射器._x == emitterX
                 && gun.激光发射器._y == emitterY && aligned(gun), "171枪管后坐不拖动发射器或光束");
         } else {
+            check(!ref.laserFireControl && beam._alpha==100,slot + "P90激光不接入171火控调光");
             var shots:Array = [0, 25, 49];
             var frames:Array = [1, 26, 50];
             for (var j:Number = 0; j < shots.length; j++) {

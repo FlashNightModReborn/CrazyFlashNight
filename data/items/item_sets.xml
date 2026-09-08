@@ -280,6 +280,25 @@
         <id>titanium_type_61_armor</id>
         <name>钛合金61式装甲套装</name>
         <order>490</order>
+        <description>以MP为能源的自维持机甲。</description>
+        <effects>
+            <effect_0>
+                <id>energy_core</id>
+                <threshold>5</threshold>
+                <activationGroup>titanium_type_61_full_set</activationGroup>
+                <kind>routine</kind>
+                <mode>member_components</mode>
+                <prepareRoutine>钛合金61套装准备</prepareRoutine>
+                <components>
+                    <component_0><id>helmet_night_vision</id><slot>头部装备</slot></component_0>
+                    <component_1><id>chest_life_support</id><slot>上装装备</slot></component_1>
+                    <component_2><id>leg_ammo_supply</id><slot>下装装备</slot></component_2>
+                    <component_3><id>boot_servo</id><slot>脚部装备</slot></component_3>
+                    <component_4><id>glove_energy_bus</id><slot>手部装备</slot></component_4>
+                </components>
+                <description>启动高级夜视、MP治疗与护盾发生器。护盾在线时抵消超重惩罚，携带血色光剑天秤额外减重16kg；破盾后按缺血比例提升通用伤害。手枪每发返还3MP，满盾且MP高于一半时以同成本合成弹药。钛合金P90每发另回3MP；在线负重量可增强钛合金QJZ171的击溃与斩杀。满血初始化免费满盾；换装前后均须满血，带伤初始化与战斗破盾按MP付费维生和重建。</description>
+            </effect_0>
+        </effects>
     </set>
     <set>
         <id>ark_warrior</id>
