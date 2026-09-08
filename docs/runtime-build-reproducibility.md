@@ -2,7 +2,22 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-08 当前正式发布：选关前台交接与返回重试
+## 2026-09-08 当前正式发布：医务室整形与共享外观预览
+
+医务室整形迁入 Web，维持姓名、性别、身高与 5 K 点规则，由 AS2 独占应用、扣费和严格保存。建角、整形与角色构筑共用主体取景及头盔遮发，理发与整形共用服务样式和实时外观刷新；旧整形兼容壳及 24 个专属素材已删除，医务室直接调用新入口。功能、协议及限定人类证据见[整形说明](医务室整形-Web面板与外观共享-2026-09-08.md)。
+
+- release source `c59b9b4cdb9319c04503a703019a9dff30bc04a1`；不可变 tag `runtime-build-v2/20260908-plastic-surgery-v1`；release tree `4371722b00df388cfbad426e6e9b515a7f9aaf49`；request `4D0FB076CB4B6AFFA448302F76CEEADEE9653E36A49607F32109873FA553DEA9`。
+- artifact source `A1ACBFAC0CBB5F3EB96D559D5C8F49C5D0B63C619FDB7DB71D2D8AB15F8977F6`、producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`、toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`，形成 identity `E2A9CFCC21D492BF29A6921AAB70835BDBC2E5C05D09DE0C62FEB9EB14F0BB78`；正式 33-file closure `1A09A42A83AD804971E84404182EFF2B6660D1AF5030F80A8B6E9E1C9ABB7209`；Core DLL SHA-256 `7B5B9C4CA966F26AAC12D77F93E3E2F283038D7B68EDDBE8680008D473903CE8`。
+- 本地 X509 `builder-local-a / physical-host-a`，keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `45C84C9FA2E86B78D15A9B96CF09D52645E57F7BE3352DA63BC1FC0381184E2D`，[cloud run 34215871779](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34215871779)。两端正式 producer 的 33 个 payload 文件逐字节一致；云端 source tag、workflow SHA 与 run headSha 绑定上述 source，attestation-only 证明已在 promotion 中对本地 CAS 完整重放。
+- production policy **40/40**；policy hash `7631A105068377971C1C6C5E624A57046FE069917B9FDF1B6223D740980BAAEA`；receipt SHA-256 `29E53646A63364952BA32185D822718603725C3E94F453F599C551E06F92448E`；manifest SHA-256 `787C59C998438F958F3D518660F470B013182F8B3C37CF8FECF56F681163D3EB`；磁盘 consensus SHA-256 `96FA6A4BC94C1BA8DDE68862E639537A2F4F51AD74DD998D29C13AD64DEE122E`。
+- consensus 记录 promotion 时间 `2026-09-08T10:38:16.7990112Z`；原子 promotion、strict v2 **2 signers / 2 faultDomains**、33-file bundle 和本机正式根 bootstrap `--verify-only` 均通过。上一完整 bundle 保留于 `tmp/runtime-promotions/20260908T103754543Z-09c345f61ba54683890e60ef9aff467b/previous`。
+- 上游合并后 Launcher canonical **4,846 passed / 3 existing skipped / 0 failed**，整形 TestLoader **44/44**、fresh Compiler **0/0**；共享预览 70 组真实武器比较、头盔遮发、人物占高、保存点登记、协议、CSS 闭包与文档治理通过。合并后 asLoader 为 1,284,839 字节，SHA-256 `D7312E648E3B4A1E0C99F913B07EDB7A14EBB628EF22EEAF60FA7C6416F0CEBE`；UI 库和基地场景库的独立 CS6 发布证据见整形说明 §6。
+
+本轮先整合上游 5 个提交，保留选关前台交接、返回重试与武器表现更新；资源索引按合并后真源重建，冲突的 asLoader 重新由双方源码发布。prepare 生成的修档字典进入冻结树，保存登记行号随上游同步；共享样式减少颜色常量，并将相应数量上限从 2,092 收紧至 2,089，没有放宽检查。准备请求 `651A76027C014F33DDD409A2DC66998BB4CB3C674B35745BC5544059E80398B5` 已 supersede，隔离 checkout 失败发生在 producer 之前；最终请求通过独立 Windows PowerShell 进程正常构建，只有上述最终 source tag 进入云构建。
+
+当前为 **HUMAN_ACCEPTANCE_PASSED / promoted**，限定为维护者确认的整形画面、共享取景和新医务室入口，以及候选普通日志中三次各扣 5 K 点并严格保存成功、余额不足拒绝且不追加扣费。合并上游后的正式 native identity 与早期隔离候选不同；部署后没有启动游戏补跑正式入口业务，不称整形、理发、建角或完整产品 `standard_entry_verified`。既有焦点与返回流程的验收范围保持上一发布记录。
+
+## 2026-09-08 上一正式发布：选关前台交接与返回重试
 
 选关／地图／奖励面板完整隐藏前，仍持有前台时先交回游戏根窗口；外部前台保护不放宽。返回准备、存盘或转场失败后保留冻结奖励与 durable 事实，通过原生“重试返回”继续；开发和候选验收统一使用 `本地开发启动.cmd`。实现与限定现场证据见[焦点诊断 §9.13](焦点管理-诊断与卡顿排查-2026-05-24.md#913-2026-09-08选关关闭前的前台交接)及[关卡结果 ADR §0D](关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0d-2026-09-08-返回失败后的原生重试入口)。
 

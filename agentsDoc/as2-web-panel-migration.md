@@ -1,7 +1,7 @@
 # AS2 UI 到 Web Panel 迁移护栏
 
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
-**最后核对代码基线**：release source commit `5789d597fbb7af32753fe4a35887b1f2a3a34e10`（2026-08-30，测试反馈稳定性修复；deployment `3e23bda255dae09e20e309a12c5b21d86b28f347`；`promoted / FIELD_REVALIDATION_PENDING`）。动态 identity/closure、签名共识与审计只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime release consensus](../config/build/runtime-release-consensus.json)和 [runtime build reproducibility](../docs/runtime-build-reproducibility.md)；部署后未重跑本功能业务，不称本增量 `e2e_verified`、`HUMAN_ACCEPTANCE_PASSED` 或业务 `standard_entry_verified`。
+**最后核对代码基线**：release source commit `c59b9b4cdb9319c04503a703019a9dff30bc04a1`（2026-09-08，医务室整形与共享外观；tag `runtime-build-v2/20260908-plastic-surgery-v1`；限定 `HUMAN_ACCEPTANCE_PASSED / promoted`）。动态 identity/closure、签名共识与审计只读 [runtime manifest](../runtime/cf7-runtime-manifest.tsv)、[runtime release consensus](../config/build/runtime-release-consensus.json)和 [runtime build reproducibility](../docs/runtime-build-reproducibility.md)；整形的人类证据范围见下节，合并上游后的正式产物未重跑游戏业务，不称业务 `standard_entry_verified`。2026-08-30 稳定性修复列车的既有 `promoted / FIELD_REVALIDATION_PENDING` 边界不因此扩大。
 **上一正式发布**：commit `732898b8aa1308cf820976324f47bba97f654e41`（2026-08-27，关卡结果原生状态槽与基地结算工作台；deployment `339b15694d631d483736880c0dfd44429f6926a3`）完成双故障域共识、39/39 production policy 与正式入口身份/总线/正常退出窄验证；未选存档且没有 fresh reveal，不称业务或完整入口 `standard_entry_verified`。
 **更早正式发布**：commit `5f5cfce7c162ba616bfc51f3c03f3134e937d36a`（2026-08-27，库存显式批量转移；deployment `4d5fd254752a149ce07006f8f48391ab26485f61`）把 Web N 次 `autoTransfer` 收敛为一次最多 50 项的 `autoTransferBatch`，并完成双故障域共识、39/39 production policy 与正式入口身份/生命周期窄纵切；正式入口没有重跑库存业务写或写后重启读回，因此不称业务或持久化 `standard_entry_verified`。
 
@@ -9,13 +9,13 @@
 
 本文用于所有“旧 Flash / AS2 UI 迁移到 Launcher WebView2 panel”的任务。它不是普通前端开发指南，而是跨 AS2、C# 总线、Web panel、Flash CS6 编译链的稳定性护栏。凡迁移旧 UI、替换运行态入口、扩展 panel 协议、把 dev harness 推向生产，都必须先读本文。
 
-**XFL 维护归属复核（2026-09-05；commit `4ae00a176265b7d00ea38364d545d29cbe601efa` 加 R1 工作树）**：改到历史库源码不等于需要刷新其 SWF。先核对 Host 派发、AS2 opener、主时间轴实例及共享导入，再选择编译目标；`pairRole=live`、linkage 登记和孤立命令定义不能证明正式入口可达。商城/战宠/任务/设置与物品工作台已走 Web；TABLET 仍派发 Flash `toggleTablet`，医务室整形的本轮候选已保留 AS2 入口并迁至独立 Web 付费域（见下节，尚未部署），奖励物品共享库仍被 main 实例导入；玩家信息 NativeHud B0 不代表整座 Flash HUD 已退役。R1 的逐产物证据与收窄范围见 [收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。已由 Web 接管的旧按钮不应重新成为必须寻找的人工旅程；保留的源码 parity 与 shim 不因此删除。
+**XFL 维护归属复核（2026-09-05；commit `4ae00a176265b7d00ea38364d545d29cbe601efa` 加 R1 工作树，整形于 2026-09-08 更新）**：改到历史库源码不等于需要刷新其 SWF。先核对 Host 派发、AS2 opener、主时间轴实例及共享导入，再选择编译目标；`pairRole=live`、linkage 登记和孤立命令定义不能证明正式入口可达。商城/战宠/任务/设置与物品工作台已走 Web；TABLET 仍派发 Flash `toggleTablet`，医务室整形已保留 AS2 入口并部署独立 Web 付费域（见下节），奖励物品共享库仍被 main 实例导入；玩家信息 NativeHud B0 不代表整座 Flash HUD 已退役。R1 的逐产物证据与收窄范围见 [收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。已由 Web 接管的旧按钮不应重新成为必须寻找的人工旅程；其他保留的源码 parity 与 shim 不因此删除。
 
-### 2026-09-08 医务室整形与身份组件共享（候选施工）
+### 2026-09-08 医务室整形与身份组件共享（已部署）
 
-医务室按钮直接调用 `_root.打开整形手术()` 打开 `surgery`，姓名/性别/身高与建角共用纯控件及预览适配；理发和整形共用 `LiveAppearanceUpdater` 原地更新已登记装扮，不重建单位或 Buff。旧整形元件及 24 个专属依赖、舞台实例、linkage 与 Include、通用加载器旧名称特判和兼容命令均已删除，不保留入口 shim。UI 库、基地场景库与 asLoader 三份 Flash 产物已由本轮 CS6 重发，均为 compiler `0/0`；实际 SWF 已核对旧入口不存在、新医务室调用存在，游戏内新入口仍待维护者点击复验。
+医务室按钮直接调用 `_root.打开整形手术()` 打开 `surgery`，姓名/性别/身高与建角共用纯控件及预览适配；理发和整形共用 `LiveAppearanceUpdater` 原地更新已登记装扮，不重建单位或 Buff。旧整形元件及 24 个专属依赖、舞台实例、linkage 与 Include、通用加载器旧名称特判和兼容命令均已删除，不保留入口 shim。UI 库、基地场景库与 asLoader 三份 Flash 产物已由本轮 CS6 重发，均为 compiler `0/0`；实际 SWF 已核对旧入口不存在、新医务室调用存在，维护者已确认清理后的入口可行。
 
-5 K 点整形由 AS2 token 约束一次应用与扣费；Host 保留未知 token 并只允许 query，保存失败重试只落盘。严格 `saved=true` 后才成功关闭，关闭发送失败保留面板。协议、编译目标、共享回归和人类验收状态见[整形说明](../docs/医务室整形-Web面板与外观共享-2026-09-08.md)，不把候选施工称为正式部署。
+5 K 点整形由 AS2 token 约束一次应用与扣费；Host 保留未知 token 并只允许 query，保存失败重试只落盘。严格 `saved=true` 后才成功关闭，关闭发送失败保留面板。本轮已完成 40/40 production policy、本地 X509 与 GitHub hosted 双构建共识及原子 promotion；协议、编译目标、共享回归和限定人类验收见[整形说明](../docs/医务室整形-Web面板与外观共享-2026-09-08.md)。部署后未补跑正式入口业务，不称 `standard_entry_verified`。
 
 ### 2026-08-29 主时间轴 82–125 启动前门收尾
 
