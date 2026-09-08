@@ -123,6 +123,14 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
         // 而平A的 状态 是 攻击模式+"攻击"（玩家模板迁移.as:967），不是"技能" →
         // 无条件复位会让平A只持续 1 tick（观感"几乎不平A"）。改由 B2 统一判定。
 
+        // ── B3. 对空裁决：目标浮空（离地 >=100）时优先对空技能组 ──
+        // 排在平A窗口之前：目标浮空时地面平A/常规技能根本打不中，对空是唯一有效输出。
+        // 细则见 _antiAirTick 注释；全部对空手段不可用 → return false 走正常出招。
+        if (_antiAirTick(frame)) {
+            tickHeal(frame); // 对空占用本 tick 也不跳过喝药节流轨
+            return;
+        }
+
         // ── B2. 平A窗口维持（必须排在 C2/空中/喝药 之前，且必须在 B 之后）──
         // 触发平A后持续回写 动作A 并跳过技能裁决，直到 平A窗口帧（默认30，约1秒）结束。
         // 空手连段靠持续按键推进，只写一次 动作A 只能打出第一下 → 必须逐 tick 续写。
@@ -652,6 +660,14 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
      */
     private static var 外部不可打断技能:Array = ["扭转乾坤"];
 
+    // 对空裁决（_antiAirTick）的 Z 轴窗口：弹幕类（气动波/咒针/手部发射）走这个，
+    // 贴身对空（升龙拳）走 攻击判定Z。取值 = 子弹自带 Z轴攻击范围（三者均为 30）：
+    // 子弹 Z 在发射时固定为射手 Z（BulletInitializer: Obj.Z轴坐标 = Obj.shootZ），
+    // 且 ZY比例 未设 → 飞行不更新 Z → 向上偏角只改屏幕 _y，不产生 Z 覆盖。
+    // ★不进装备参数：这是引擎子弹的固有属性，不是可调的 AI 行为参数；
+    //   想改就改这里（改完对所有空手 AI 生效）。
+    private static var 对空Z容差:Number = 30;
+
     private function _isNoInterruptSkill():Boolean {
         if (_currentSkill != null && _currentSkill.不可打断 == true) return true;
         // 外部释放的技能：按 单位.技能名 判定（本脑未参与，无表条目可读）。
@@ -666,6 +682,197 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
             if (nm == 外部不可打断技能[i]) return true;
         }
         return false;
+    }
+
+    // ═══════ 对空裁决（tick B3 调用）═══════
+
+    /**
+     * 对空裁决：目标浮空（离地 >= 100）时优先使用对空技能组。
+     *
+     * 对空组三技能：
+     *   气动波 / 咒针（弹幕）—— 释放前预写 上行 方向锁，引擎发射函数
+     *     （气动波攻击 / 手部发射攻击，单位函数_lsy_主角技能.as）读 _parent.上行
+     *     置 子弹.角度偏移=-30°，FLA 侧零改动；咒针属性对象无 角度偏移 键，
+     *     不会覆盖引擎先设好的偏移。
+     *   升龙拳 —— 贴身跳击，本就向上。
+     *
+     * ★Z 轴前提：目标必须在 Z 轴范围内才走对空（Z 差过大打不中，空放纯浪费 CD/MP）。
+     *   Z 轴 = 地面纵轴（Z轴坐标），与索敌/交战用的是同一根轴；子弹的"向上偏角"只改
+     *   屏幕 _y（视觉高度），子弹 Z 固定为射手 Z（ZY比例 未设 → 飞行不更新 Z），
+     *   因此弹幕对空**不会**因为向上打就覆盖更大 Z 差 —— 与近战同一判定性质。
+     *   口径：弹幕/位移补位用 对空Z容差（static 常量 30 = 气动波/咒针/手部发射子弹的
+     *   Z轴攻击范围）；升龙拳（贴身技）用 攻击判定Z（默认20）。超出 对空Z容差 不走对空。
+     *
+     * 主逻辑（按序短路，前提：目标离地 >=100 且 Z 差在窗口内）：
+     *   1. 弹幕可用（CD/MP 过关）且 dist 在条目射程内 → 向上放弹幕（两者都可用随机选一）；
+     *   2. 升龙拳可用且 dist 在其射程内（贴身）→ 升龙拳；
+     *   3. 补位 a：贴身 + 升龙拳不可用 + 弹幕可用（暂不在射程）→ 后闪拉开，
+     *      下一拍裁决距离进入弹幕射程自然接上（涌现式连招，无需显式序列状态）；
+     *   4. 补位 b：弹幕全不可用 + 升龙拳可用 + dist 80~400 → 300~400 前闪 /
+     *      200~300 诛杀步，下一拍贴身接升龙拳。
+     * 全部对空手段不可用（含 Z 差超出窗口）→ return false，走正常出招。
+     *
+     * 防反复：闪现释放走 _release 写 位移使用间隔锁，本裁决位移前统一检查该锁；
+     * 诛杀步/弹幕/升龙拳各有自身 CD。
+     *
+     * @return true = 本 tick 已释放对空/补位技能（调用方收口 return）
+     */
+    private function _antiAirTick(frame:Number):Boolean {
+        var t:MovieClip = data.target;
+        if (t == null || isNaN(t._x) || !(t.hp > 0)) return false;
+        if (_targetAirHeight(t) < 100) return false;
+
+        // ★Z 轴门槛：对空手段（弹幕/升龙拳/位移补位）都要求目标在 Z 轴范围内才走对空，
+        //   Z 差过大时打不中，空放纯浪费 CD/MP —— 直接 return false 走常规出招（继续走位对齐）。
+        //   口径（2026-09-08 核对引擎侧，向上偏角不带 Z）：
+        //     · 子弹 Z：BulletInitializer 写 Obj.Z轴坐标 = Obj.shootZ（射手 Z），
+        //       且 ZY比例 默认 undefined → LinearBulletMovement 走 updateWithoutZCoordinate，
+        //       飞行中只更新 _x/_y → 子弹 Z 全程固定；角度偏移(-30°)只改屏幕 _y（视觉高度），
+        //       不产生任何 Z 位移 → 弹幕对空**不会**因为向上打就覆盖更大的 Z 差。
+        //     · 弹幕 Z 容差 = 子弹自带 Z轴攻击范围（气动波/咒针/手部发射均为 30）
+        //       → 直接用常量 对空Z容差（类级 static，不额外占装备参数位）。
+        //       绝不使用 位移技能Z放宽(60)：那是给"Z 未对齐时先突进/远程起手"用的，
+        //       对空弹幕按 Z 差判定，与近战同一性质。
+        //     · 升龙拳（贴身技）用 攻击判定Z（默认20）。
+        var zL:Number = Number(p.攻击判定Z);
+        if (!(zL > 0)) zL = 20;
+        var zShot:Number = 对空Z容差;
+        if (zShot < zL) zShot = zL;
+        var adz:Number = data.absdiff_z;
+        if (isNaN(adz) || adz > zShot) return false;
+
+        var dist:Number = data.absdiff_x;
+        var dragon:Object = _findSkillAny("升龙拳");
+        var wave:Object = _findSkillAny("气动波");
+        var needle:Object = _findSkillAny("咒针");
+        var dragonReady:Boolean = _skillReady(dragon);
+        var waveReady:Boolean = _skillReady(wave);
+        var needleReady:Boolean = _skillReady(needle);
+        // 弹幕：Z 用子弹自身的 Z 射程（向上偏角不带 Z 位移，容差与近战同性质）
+        var waveOK:Boolean = waveReady && _inXRange(wave, dist) && adz <= zShot;
+        var needleOK:Boolean = needleReady && _inXRange(needle, dist) && adz <= zShot;
+
+        // 1. 弹幕对空（优先）：距离合适就向上打
+        if (waveOK || needleOK) {
+            var sk:Object;
+            if (waveOK && needleOK) sk = (Math.random() < 0.5) ? wave : needle;
+            else sk = waveOK ? wave : needle;
+            _lockAimUp(frame);
+            _release(sk, frame);
+            return true;
+        }
+
+        // 2. 贴身：升龙拳可用 → 升龙拳（贴身技：Z 用严格窗口）
+        if (dragonReady && _inXRange(dragon, dist) && adz <= zL) {
+            _release(dragon, frame);
+            return true;
+        }
+
+        // 位移补位公共前提：不在位移使用间隔锁内（防"刚闪完又闪"循环）
+        var dodgeLocked:Boolean = (_dodgeLockUntil > getTimer());
+
+        // 3. 补位 a：贴身 + 升龙拳不可用 + 弹幕可用 → 后闪拉开接弹幕
+        var closeX:Number = Number(p.攻击判定X);
+        if (!(closeX > 0)) closeX = 80;
+        if (dist <= closeX && !dragonReady && (waveReady || needleReady) && !dodgeLocked) {
+            var blink:Object = _findSkillAny("闪现");
+            if (_skillReady(blink)) {
+                _release(blink, frame);
+                _lockAimBackward(frame); // 覆盖 _release 的闪现默认方向（贴身=上下跳）为后闪
+                return true;
+            }
+        }
+
+        // 4. 补位 b：弹幕全不可用 + 升龙拳可用 + 中距（升龙拳射程外~400）→ 突进接升龙拳
+        var dragonMax:Number = (dragon != null) ? Number(dragon.距离max) : 80;
+        if (isNaN(dragonMax)) dragonMax = 80;
+        if (!waveReady && !needleReady && dragonReady && dist > dragonMax && dist <= 400 && !dodgeLocked) {
+            if (dist >= 300) {
+                var blink2:Object = _findSkillAny("闪现");
+                if (_skillReady(blink2)) {
+                    _release(blink2, frame);
+                    _lockAimForward(frame); // 前闪（300~400，闪现位移最远）
+                    return true;
+                }
+            } else if (dist >= 200) {
+                var step:Object = _findSkillAny("诛杀步");
+                if (_skillReady(step) && _inXRange(step, dist)) {
+                    _release(step, frame);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /** 目标离地高度：高度 = Z轴坐标 - _y，浮空高度 存在则叠加（用户口径） */
+    private function _targetAirHeight(t:MovieClip):Number {
+        var base:Number = (t.Z轴坐标 == undefined || isNaN(t.Z轴坐标)) ? t._y : t.Z轴坐标;
+        var h:Number = base - t._y;
+        if (t.浮空高度 != undefined && !isNaN(t.浮空高度) && t.浮空高度 > 0) h += t.浮空高度;
+        return h;
+    }
+
+    /** 对空用可用性检查：CD + MP（不查距离） */
+    private function _skillReady(sk:Object):Boolean {
+        if (sk == null) return false;
+        if (!isNaN(sk.上次使用时间)
+            && (getTimer() - sk.上次使用时间 <= sk.冷却 * 1000)) return false;
+        if (sk.消耗 > 0 && self.mp < sk.消耗) return false;
+        return true;
+    }
+
+    /** 对空用射程检查：dist 是否在条目 距离min/max 内 */
+    private function _inXRange(sk:Object, dist:Number):Boolean {
+        if (sk == null) return false;
+        var mn:Number = Number(sk.距离min);
+        var mx:Number = Number(sk.距离max);
+        if (isNaN(mn)) mn = 0;
+        if (isNaN(mx)) return false;
+        return dist >= mn && dist <= mx;
+    }
+
+    /** 已学技能表 + 战技组 双表查找（咒针在战技组，不在已学技能表） */
+    private function _findSkillAny(名:String):Object {
+        var sk:Object = _findGroundSkill(名);
+        if (sk != null) return sk;
+        var list:Array = _battleSkillList();
+        if (list == null) return null;
+        for (var i:Number = 0; i < list.length; i++) {
+            if (list[i] != null && list[i].技能名 == 名) return list[i];
+        }
+        return null;
+    }
+
+    /** 方向锁：向上瞄准（弹幕 角度偏移=-30°）。窗口 30 帧覆盖弹幕动画的发射帧 */
+    private function _lockAimUp(frame:Number):Void {
+        self.单位方向锁 = {上行: true, 下行: false, 左行: false, 右行: false, 截止帧: frame + 30};
+        self.上行 = true;
+        self.下行 = false;
+        self.左行 = false;
+        self.右行 = false;
+        self.动作A = false;
+    }
+
+    /** 方向锁：后闪（远离目标） */
+    private function _lockAimBackward(frame:Number):Void {
+        var lf:Boolean = (data.diff_x < 0) ? false : true; // 目标在左 → 向右闪
+        self.单位方向锁 = {上行: false, 下行: false, 左行: lf, 右行: !lf, 截止帧: frame + 15};
+        self.上行 = false;
+        self.下行 = false;
+        self.左行 = lf;
+        self.右行 = !lf;
+    }
+
+    /** 方向锁：前闪（朝目标） */
+    private function _lockAimForward(frame:Number):Void {
+        var lf:Boolean = (data.diff_x < 0) ? true : false; // 目标在左 → 向左闪
+        self.单位方向锁 = {上行: false, 下行: false, 左行: lf, 右行: !lf, 截止帧: frame + 15};
+        self.上行 = false;
+        self.下行 = false;
+        self.左行 = lf;
+        self.右行 = !lf;
     }
 
     private function _findGroundSkill(名:String):Object {

@@ -174,14 +174,35 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior extends BaseU
         var stopZ:Number = Number(p.跟随停止Z);
         if (!(stopZ > 0)) stopZ = 20;
 
-        if (absDx <= stopX && absDz <= stopZ) return; // 已到位，保持静止
+        if (absDx <= stopX && absDz <= stopZ) {
+            self.虎妙Z对齐 = null; // 已到位：清接管，保持静止
+            return;
+        }
 
         var wantX:Number = (absDx > stopX) ? ((dx < 0) ? -1 : 1) : 0;
         var wantZ:Number = (absDz > stopZ) ? ((dz < 0) ? -1 : 1) : 0;
-        // ★边界收口：距边不足一个脱困探测距离时归零（防脱困振荡弹回，防贴边上下抖）
+        // ★边界收口：距边不足 80px（Phase3 MARGIN，防其自动反向造成上下抖）时归零
+        var rawZ:Number = wantZ;
         wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantX, wantZ);
 
+        // ★收口后的最后一程（宿主站边缘时也要贴边）：意图仍在但被收口 → 交给 Z 对齐接管，
+        //   alignTick 写 上行/下行 旗标由行走状态机走完（正常走路动画与速度），
+        //   不经过 applyBoundaryAwareMovement 的 Phase 3（那会在距边 80px 内自动
+        //   反向 → 上下抖）。
+        //   停止距离 = stopZ：走到跟随容差边即停，避免贴到宿主身上重叠站桩。
+        if (rawZ != 0 && wantZ == 0) {
+            self.虎妙Z对齐 = {
+                目标: hero,
+                每帧速度: HeroUnarmedMoveHelper._getZSpeed(self),
+                停止距离: stopZ
+            };
+        } else if (rawZ == 0) {
+            self.虎妙Z对齐 = null;
+        }
+
         MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, wantZ);
+        // 接管靠 上行/下行 旗标驱动走路 → 移动输出的 clearInput 会清掉它，这里补写回来
+        HeroUnarmedMoveHelper.syncZAlignInput(self);
     }
 
     // ═══════ 短时脱离（D4）═══════

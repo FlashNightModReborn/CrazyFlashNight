@@ -106,7 +106,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
             wantX = (data.diff_x < 0) ? -1 : 1;
         }
 
-        // ★边界收口：距边不足一个脱困探测距离时归零（不给脱困逻辑喂会被判挡的方向，防振荡）；
+        // ★边界收口：距边不足 80px（Phase3 MARGIN，防其自动反向造成上下振荡）时归零；
         //   被收口的最后一段由下方 Z 对齐接管小步走完（见 clampZIntent 注释）
         var rawZ:Number = wantZ;
         wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantX, wantZ);
@@ -122,7 +122,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         }
 
         // ★收口后的最后一程：意图仍在但被收口（贴边带内）→ 直接交给 Z 对齐接管，
-        //   alignTick 以步长级探测 + 边界步长钳制小步直走到边缘，绕开脱困逻辑。
+        //   alignTick 写 上行/下行 旗标由行走状态机走完（正常走路动画与速度），
+        //   不经过 applyBoundaryAwareMovement 的 Phase 3，故不会被自动反向。
         //   （障碍物场景 alignTick 自身复检走不动会清接管，不会硬压。）
         if (rawZ != 0 && wantZ == 0 && self.虎妙Z对齐 == null) {
             self.虎妙Z对齐 = {目标: t, 每帧速度: HeroUnarmedMoveHelper._getZSpeed(self)};
@@ -135,6 +136,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
 
         // 统一边界感知移动输出（Z 意图已被对齐接管时置 0）
         MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, wantZ);
+        // 接管靠 上行/下行 旗标驱动走路 → 移动输出的 clearInput 会清掉它，这里补写回来
+        HeroUnarmedMoveHelper.syncZAlignInput(self);
         // 移动输出会重写 左行/右行/上行/下行 → 方向锁窗口内再回写一次，保证跳跃方向生效
         HeroUnarmedMoveHelper.syncLockedInput(self);
     }
@@ -179,11 +182,11 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         // 修复：交战中继续贴到 交战Z死区（默认5）才停，走进范围后稳定待在范围内。
         if (data.absdiff_z > p.交战Z死区) {
             var wantZ:Number = (data.diff_z < 0) ? -1 : 1;
-            // ★边界收口：距边不足一个脱困探测距离时归零（防脱困振荡），见 clampZIntent
+            // ★边界收口：距边不足 80px（Phase3 MARGIN）时归零（防其自动反向振荡），见 clampZIntent
             var rawZ:Number = wantZ;
             wantZ = HeroUnarmedMoveHelper.clampZIntent(self, 0, wantZ);
             if (HeroUnarmedMoveHelper.shouldTakeOverZ(data, self, wantZ)) {
-                // 近距离精确对齐（末步截断，永不越过目标 Z）
+                // 近距离精确对齐（一步之内收手，永不越过目标 Z）
                 self.虎妙Z对齐 = {目标: t, 每帧速度: HeroUnarmedMoveHelper._getZSpeed(self)};
                 wantZ = 0;
             } else {
@@ -195,6 +198,7 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
             }
             if (wantZ != 0) {
                 MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, 0, wantZ);
+                HeroUnarmedMoveHelper.syncZAlignInput(self);
             }
         } else {
             self.虎妙Z对齐 = null;
