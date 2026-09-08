@@ -28,6 +28,27 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
     }
 
     public static function initialize(target:Object):Void {
+        // 表驱动处理逻辑
+        var currentTitle:String = target.称号;
+        if (_titleHandlers[currentTitle] != undefined) {
+            // 执行对应的处理函数
+            _titleHandlers[currentTitle](target);
+        }
+
+        if(!currentTitle) {
+            target.新版人物文字信息.称号文本框.removeMovieClip();
+        }
+
+        if(target.新版人物文字信息) {
+            target.人物文字信息.unloadMovie();
+        }
+
+
+        refreshName(target, false);
+    }
+
+    /** 仅刷新姓名投影，整形不重新随机称号或卸载文字层。 */
+    public static function refreshName(target:Object, plainName:Boolean):Void {
         var nameColor:String;
         var shouldBeBold:String;
 
@@ -54,26 +75,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer 
             shouldBeBold = "<B>";
         }
 
-        // 表驱动处理逻辑
-        var currentTitle:String = target.称号;
-        if (_titleHandlers[currentTitle] != undefined) {
-            // 执行对应的处理函数
-            _titleHandlers[currentTitle](target);
-        }
-
-        if(!currentTitle) {
-            target.新版人物文字信息.称号文本框.removeMovieClip();
-        }
-
-        if(target.新版人物文字信息) {
-            target.人物文字信息.unloadMovie();
-        }
-        
-
-        var color:String = "<FONT COLOR='" + nameColor + "'>";
-        var makeBold:String = shouldBeBold; 
-
-        // 设置显示名称（保持不变）
-        target.displayName = formatDisplayName(color, target.等级, makeBold, target.名字);
+        var name:String = String(target.名字);
+        if (plainName) name = name.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+        target.displayName = formatDisplayName("<FONT COLOR='" + nameColor + "'>", target.等级, shouldBeBold, name);
     }
 }

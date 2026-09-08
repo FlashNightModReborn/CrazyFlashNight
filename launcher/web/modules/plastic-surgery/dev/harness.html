@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><base href="/launcher/web/">
+<title>整形面板验证</title>
+<link rel="stylesheet" href="css/overlay.css"><link rel="stylesheet" href="css/panels.css"><link rel="stylesheet" href="css/terminal.css">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080b0e}</style>
+</head><body>
+<div id="panel-container" style="display:none"><div id="panel-backdrop"></div><div id="panel-content"></div></div><div id="panel-tooltip"></div>
+<script>
+window.__sent=[]; window.__handlers={}; window.__fault=null; window.__closeFails=false; window.__sequence=0; window.__charges=0; window.__queries=0;
+window.__emit=function(message){(__handlers[message.type]||[]).slice().forEach(function(callback){callback(message)})};
+function clone(value){return JSON.parse(JSON.stringify(value))}
+function initial(){return {characterName:'远行者',gender:'male',height:175}}
+window.__reset=function(){window.__profile=initial();window.__balance=20;window.__operation=null;window.__charges=0;window.__queries=0;window.__fault=null;window.__closeFails=false};
+__reset();
+function state(message){
+  var s=__operation;
+  return {type:'panel_resp',panel:'surgery',domain:'surgery',cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId,
+    success:s.phase!=='save_pending',v:1,operation:message.cmd,token:s.token,phase:s.phase,
+    current:clone(__profile),draft:clone(s.draft),cost:5,balance:__balance,changed:s.phase!=='editing',saved:s.phase==='applied',
+    error:s.phase==='save_pending'?'save_pending':undefined,
+    portrait:{equipment:{上装装备:'黑色功夫装',下装装备:'咖啡色多包裤',脚部装备:'棕色皮鞋'},hair:'发型-男式-黑暴走头',face:'男变装-基本脸型'}}
+}
+window.Bridge={
+  on:function(type,callback){(__handlers[type]||(__handlers[type]=[])).push(callback)},
+  off:function(type,callback){var a=__handlers[type]||[],i=a.indexOf(callback);if(i>=0)a.splice(i,1)},
+  send:function(message){
+    __sent.push(clone(message));
+    if(message.cmd==='close')return !__closeFails;
+    if(message.domain!=='surgery')return true;
+    var fault=__fault;__fault=null;
+    if(fault==='send_false')return false;
+    if(message.cmd==='snapshot'){
+      if(!__operation||__operation.phase!=='save_pending')__operation={token:'surgery.test.'+(++__sequence),phase:'editing',draft:clone(__profile)};
+    }else if(message.cmd==='commit'){
+      if(__operation.phase==='editing'){
+        if(__balance<5){setTimeout(function(){__emit({type:'panel_resp',domain:'surgery',cmd:message.cmd,callId:message.callId,success:false,error:'insufficient_funds'})},5);return true}
+        __operation.draft=clone(message.payload.draft);__profile=clone(message.payload.draft);__balance-=5;__charges++;
+      }
+      __operation.phase=fault==='save_failure'?'save_pending':'applied';
+    }else if(message.cmd==='query'){__queries++}
+    var response=state(message);
+    if(fault==='unknown_applied')response={type:'panel_resp',domain:'surgery',cmd:message.cmd,callId:message.callId,success:false,error:'timeout',requiresReconcile:true};
+    window.__lastResponse=clone(response);
+    setTimeout(function(){__emit(response)},fault==='late'?160:5);
+    return true;
+  }
+};
+window.Toast={add:function(message){window.__lastToast=message}};
+</script>
+<script src="modules/asset-timeline.js"></script><script src="modules/icons.js"></script>
+<script src="modules/panels.js"></script><script src="modules/panel-scale.js"></script><script src="modules/panel-runtime.js"></script>
+<script src="modules/dressup-doll-renderer.js"></script><script src="modules/character-identity-controls.js"></script>
+<script src="modules/character-appearance-preview.js"></script><script src="modules/plastic-surgery-runtime.js"></script><script src="modules/plastic-surgery.js"></script>
+<script>Panels.init();window.__open=function(){Panels.open('surgery',{panelInstanceId:'surgery.panel.'+(++__sequence),source:'world_plastic_surgery',mode:'runtime'})};__open();</script>
+</body></html>

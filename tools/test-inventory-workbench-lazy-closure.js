@@ -19,6 +19,21 @@ function section(source, start, end) {
 
 async function main() {
     const registry = read('panels-lazy-registry.js');
+    const registeredDeps = {};
+    vm.runInNewContext(registry, {
+        Panels:{registerLazy(id, deps) { registeredDeps[id] = Array.from(deps); }},
+        LazyLoader:{}, console
+    });
+    const sharedPreview = 'modules/character-appearance-preview.js';
+    const surgeryDeps = registeredDeps.surgery;
+    assert(surgeryDeps.includes(sharedPreview));
+    assert(surgeryDeps.indexOf('modules/dressup-doll-renderer.js') < surgeryDeps.indexOf(sharedPreview));
+    assert(surgeryDeps.indexOf(sharedPreview) < surgeryDeps.indexOf('modules/plastic-surgery.js'));
+    const bootstrap = fs.readFileSync(path.join(ROOT, 'launcher/web/bootstrap.html'), 'utf8');
+    const bootstrapScripts = Array.from(bootstrap.matchAll(/<script[^>]+src="([^"]+)"/g), value => value[1]);
+    assert(bootstrapScripts.includes(sharedPreview));
+    assert(bootstrapScripts.indexOf('modules/dressup-doll-renderer.js') < bootstrapScripts.indexOf(sharedPreview));
+    assert(bootstrapScripts.indexOf(sharedPreview) < bootstrapScripts.indexOf('modules/bootstrap-character-create.js'));
     const workbenchDeps = section(
         registry,
         "Panels.registerLazy('workbench'",
@@ -99,6 +114,11 @@ async function main() {
     assert(calls[1].includes('modules/character-build/character-build-candidate-channel.js'));
     assert(calls[1].includes('modules/equipment-tuning-view.js'));
     assert(calls[1].includes('modules/character-build.js'));
+    assert(calls[1].includes('modules/character-appearance-preview.js'));
+    assert(calls[1].indexOf('modules/dressup-doll-renderer.js')
+        < calls[1].indexOf('modules/character-appearance-preview.js'));
+    assert(calls[1].indexOf('modules/character-appearance-preview.js')
+        < calls[1].indexOf('modules/character-build.js'));
     assert.strictEqual(loader.isTuningReady(), true);
     assert.strictEqual(loader.isBuildReady(), true);
 
@@ -195,7 +215,7 @@ async function main() {
     const craftingSection = section(
         registry,
         "Panels.registerLazy('crafting'",
-        "Panels.registerLazy('hairdresser'");
+        'noop);');
     const craftingDeps = (craftingSection.match(/'modules\/[^']+'/g) || [])
         .map(token => token.slice(1, -1));
     assert.deepStrictEqual(craftingDeps, [
@@ -250,7 +270,7 @@ async function main() {
         'EquipmentInspector',
         'CharacterBuild'
     ].forEach(name => { delete global[name]; });
-    process.stdout.write('Inventory workbench + arena/crafting/NPCShop lazy closure: 28/28 passed\n');
+    process.stdout.write('Inventory workbench + arena/crafting/NPCShop + shared character preview loading: passed\n');
 }
 
 main().catch(error => {

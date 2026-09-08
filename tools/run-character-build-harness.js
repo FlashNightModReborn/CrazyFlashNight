@@ -50,6 +50,7 @@ function staticAudit() {
         'launcher/web/modules/character-build/character-build-pose.js');
     const controller = read('launcher/web/modules/character-build.js');
     const renderer = read('launcher/web/modules/dressup-doll-renderer.js');
+    const preview = read('launcher/web/modules/character-appearance-preview.js');
     const facade = read('launcher/web/modules/inventory-workbench.js');
     const config = read(
         'launcher/web/modules/inventory-workbench-config.js');
@@ -98,17 +99,15 @@ function staticAudit() {
         && dollPreview.includes('this._inspection.activate({reset:true})')
         && dollPreview.includes('this._inspection.deactivate()'),
         'view declares one Canvas and the enlarged preview reparents it behind a transient shared camera');
-    check(['空手站立','长枪站立','手枪站立','手枪2站立','双枪站立','兵器站立']
-        .every(label => pose.includes("'" + label + "'"))
-        && pose.includes('cameraEnvelopePoses:cameraEnvelopePoses')
-        && pose.includes('cameraFitFields:cameraFitFields')
-        && pose.includes('drawFields:drawFields')
-        && controller.includes('DressupDollRenderer.withFitEnvelope')
-        && controller.includes('Pose.cameraFitFields()')
+    check(['空手站立','长枪站立','手枪站立','手枪2站立','双枪站立','兵器站立','手雷站立']
+        .every(label => preview.includes("'" + label + "'"))
+        && preview.includes('DressupDollRenderer.withFitEnvelope')
+        && controller.includes('CharacterAppearancePreview.create')
+        && !controller.includes('DressupDollRenderer.create')
         && !controller.includes("this._panelInstanceId + '|' + state.gender")
         && renderer.includes('function measureEnvelope(')
         && renderer.includes('fitEnvelopeApplied'),
-        'character build recomputes one structural-body envelope across all six battle poses');
+        'character build shares the structural-body envelope across all seven battle poses with creation and surgery');
     check(!/READ ONLY SPIKE|<span>LOOK<\/span>|<span>LOADOUT<\/span>|<span>COMPARE<\/span>|单 Canvas|全宽 SecondaryPage/.test(presentation),
         'visible view copy contains no prototype or implementation labels');
     check(['头部装备','上装装备','下装装备','手部装备','脚部装备','颈部装备',

@@ -67,9 +67,6 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         throw new Error('CharacterBuildItemUseChannel is required');
     }
     var MANIFEST_URL = 'assets/dressup/manifest.json';
-    // Structural body fields define stable framing; pose extremities stay draw-only for inspection.
-    var CHARACTER_CAMERA_FIT_FIELDS = Pose.cameraFitFields();
-    var DRAW_FIELDS = Pose.drawFields();
     var manifestPromise = null;
     var copy = Transport.copy;
     var createRequestMux = Transport.createRequestMux;
@@ -335,11 +332,10 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         var self = this, generation = this._mountGeneration;
         this._loadManifest().then(function(manifest) {
             if (!self._view || self._renderer || generation !== self._mountGeneration) return;
-            self._renderer = global.DressupDollRenderer.create(self._view.getCanvas(), {
+            self._renderer = global.CharacterAppearancePreview.create(self._view.getCanvas(), {
                 manifest:manifest,
                 animate:!(global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches),
                 fps:24,
-                maxScale:12,
                 ignoreCssTransforms:true
             });
             self._manifest = manifest;
@@ -364,23 +360,16 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             equipment[this._selectedTarget.slotKey] = String(candidate.raw.item.name || '');
         }
         var pose = Pose.select(equipment, this._selectedTarget);
-        var state = global.DressupDollRenderer.buildStateFromEquipment(this._manifest, {
+        return global.CharacterAppearancePreview.buildStateFromEquipment(this._manifest, {
             gender:portrait.gender === '女' ? '女' : '男',
             equipment:equipment,
             appearance:portrait.appearance || {},
-            fitFields:CHARACTER_CAMERA_FIT_FIELDS,
-            drawFields:DRAW_FIELDS,
             rig:'battle',
             stateLabel:pose.stateLabel,
             attackMode:pose.attackMode,
             zoom:1.05,
             margin:18
         });
-        return global.DressupDollRenderer.withFitEnvelope(
-            this._renderer,
-            state,
-            Pose.cameraEnvelopePoses(),
-            0.06);
     };
     CharacterBuildController.prototype._renderPortrait = function(candidate) {
         if (!this._renderer) return false;

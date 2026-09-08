@@ -25,6 +25,7 @@
         'modules/inventory-tuning-scope.js'
     ];
     var BUILD_DEPS = TUNING_DEPS.concat([
+        'modules/character-appearance-preview.js',
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',

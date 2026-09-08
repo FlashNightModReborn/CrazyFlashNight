@@ -83,38 +83,38 @@ var HairdresserPanel = (function() {
     }
 
     function createDOM() {
-        _shellEl = makeNode('div', 'panel-scale-shell hairdresser-scale-shell');
+        _shellEl = makeNode('div', 'panel-scale-shell hairdresser-scale-shell appearance-service-shell');
         return _shellEl;
     }
 
     function buildDOM() {
         while (_shellEl.firstChild) _shellEl.removeChild(_shellEl.firstChild);
 
-        _rootEl = makeNode('section', 'hairdresser-panel');
+        _rootEl = makeNode('section', 'hairdresser-panel appearance-service-panel');
         _rootEl.setAttribute('aria-labelledby', 'hairdresser-title');
         _rootEl.setAttribute('data-state', 'loading');
 
-        var header = makeNode('header', 'hairdresser-header');
-        var heading = makeNode('div', 'hairdresser-heading');
-        heading.appendChild(makeNode('span', 'hairdresser-kicker', '基地服务 / 免费造型'));
+        var header = makeNode('header', 'hairdresser-header appearance-service-header');
+        var heading = makeNode('div', 'hairdresser-heading appearance-service-heading');
+        heading.appendChild(makeNode('span', 'hairdresser-kicker appearance-service-kicker', '基地服务 / 免费造型'));
         var title = makeNode('h1', '', '理发店');
         title.id = 'hairdresser-title';
         heading.appendChild(title);
-        _currentEl = makeNode('p', 'hairdresser-current', '当前发型：同步中');
+        _currentEl = makeNode('p', 'hairdresser-current appearance-service-current', '当前发型：同步中');
         heading.appendChild(_currentEl);
         header.appendChild(heading);
 
-        _statusEl = makeNode('p', 'hairdresser-header-status', _statusText);
+        _statusEl = makeNode('p', 'hairdresser-header-status appearance-service-status', _statusText);
         _statusEl.setAttribute('role', 'status');
         _statusEl.setAttribute('aria-live', 'polite');
         header.appendChild(_statusEl);
 
-        _closeButton = makeButton('hairdresser-close', '×', '关闭理发店');
+        _closeButton = makeButton('hairdresser-close appearance-service-close', '×', '关闭理发店');
         _closeButton.addEventListener('click', requestClose);
         header.appendChild(_closeButton);
         _rootEl.appendChild(header);
 
-        var body = makeNode('div', 'hairdresser-body');
+        var body = makeNode('div', 'hairdresser-body appearance-service-body');
         body.appendChild(buildPreviewPane());
         body.appendChild(buildCatalogPane());
         _rootEl.appendChild(body);
@@ -123,30 +123,30 @@ var HairdresserPanel = (function() {
     }
 
     function buildPreviewPane() {
-        var pane = makeNode('section', 'hairdresser-preview-pane');
+        var pane = makeNode('section', 'hairdresser-preview-pane appearance-service-preview-pane');
         pane.setAttribute('aria-labelledby', 'hairdresser-preview-title');
-        var titleRow = makeNode('div', 'hairdresser-section-title');
+        var titleRow = makeNode('div', 'hairdresser-section-title appearance-service-section-title');
         var title = makeNode('h2', '', '本地试戴');
         title.id = 'hairdresser-preview-title';
         titleRow.appendChild(title);
-        titleRow.appendChild(makeNode('span', 'hairdresser-local-badge', '不会写入存档'));
+        titleRow.appendChild(makeNode('span', 'hairdresser-local-badge appearance-service-badge', '不会写入存档'));
         pane.appendChild(titleRow);
 
-        var stage = makeNode('div', 'hairdresser-preview-stage');
-        _canvasEl = makeNode('canvas', 'hairdresser-preview-canvas');
+        var stage = makeNode('div', 'hairdresser-preview-stage appearance-service-preview-stage');
+        _canvasEl = makeNode('canvas', 'hairdresser-preview-canvas appearance-service-preview-canvas');
         _canvasEl.width = 360;
         _canvasEl.height = 330;
         _canvasEl.setAttribute('aria-label', '当前选中发型的角色脸部预览');
         stage.appendChild(_canvasEl);
-        _fallbackEl = makeNode('p', 'hairdresser-preview-fallback', '');
+        _fallbackEl = makeNode('p', 'hairdresser-preview-fallback appearance-service-preview-fallback', '');
         _fallbackEl.hidden = true;
         _fallbackEl.setAttribute('role', 'status');
         stage.appendChild(_fallbackEl);
-        _previewNameEl = makeNode('div', 'hairdresser-preview-name', '请选择发型');
+        _previewNameEl = makeNode('div', 'hairdresser-preview-name appearance-service-preview-name', '请选择发型');
         stage.appendChild(_previewNameEl);
         pane.appendChild(stage);
 
-        var facts = makeNode('dl', 'hairdresser-preview-facts');
+        var facts = makeNode('dl', 'hairdresser-preview-facts appearance-service-preview-facts');
         facts.appendChild(makeNode('dt', '', '角色'));
         _genderEl = makeNode('dd', '', '—');
         facts.appendChild(_genderEl);
@@ -158,13 +158,13 @@ var HairdresserPanel = (function() {
     }
 
     function buildCatalogPane() {
-        var pane = makeNode('section', 'hairdresser-catalog-pane');
+        var pane = makeNode('section', 'hairdresser-catalog-pane appearance-service-pane');
         pane.setAttribute('aria-labelledby', 'hairdresser-catalog-title');
-        var titleRow = makeNode('div', 'hairdresser-section-title');
+        var titleRow = makeNode('div', 'hairdresser-section-title appearance-service-section-title');
         var title = makeNode('h2', '', '发型目录');
         title.id = 'hairdresser-catalog-title';
         titleRow.appendChild(title);
-        _countEl = makeNode('span', 'hairdresser-catalog-count', '同步中');
+        _countEl = makeNode('span', 'hairdresser-catalog-count appearance-service-count', '同步中');
         titleRow.appendChild(_countEl);
         pane.appendChild(titleRow);
 
@@ -183,26 +183,26 @@ var HairdresserPanel = (function() {
     }
 
     function buildFooter() {
-        var footer = makeNode('footer', 'hairdresser-footer');
-        var messages = makeNode('div', 'hairdresser-messages');
-        _errorEl = makeNode('p', 'hairdresser-error', '');
+        var footer = makeNode('footer', 'hairdresser-footer appearance-service-footer');
+        var messages = makeNode('div', 'hairdresser-messages appearance-service-messages');
+        _errorEl = makeNode('p', 'hairdresser-error appearance-service-error', '');
         _errorEl.setAttribute('role', 'alert');
         _errorEl.hidden = true;
         messages.appendChild(_errorEl);
-        var hint = makeNode('p', 'hairdresser-hint',
+        var hint = makeNode('p', 'hairdresser-hint appearance-service-hint',
             '目录点击只在浏览器中试戴；确认后才会提交当前选择。');
         messages.appendChild(hint);
         footer.appendChild(messages);
 
-        var actions = makeNode('div', 'hairdresser-actions');
-        _retryButton = makeButton('hairdresser-button secondary hairdresser-retry', '重新同步');
+        var actions = makeNode('div', 'hairdresser-actions appearance-service-actions');
+        _retryButton = makeButton('hairdresser-button secondary hairdresser-retry appearance-service-button', '重新同步');
         _retryButton.hidden = true;
         _retryButton.addEventListener('click', retry);
         actions.appendChild(_retryButton);
-        _cancelButton = makeButton('hairdresser-button secondary hairdresser-cancel', '取消', '取消并关闭理发店');
+        _cancelButton = makeButton('hairdresser-button secondary hairdresser-cancel appearance-service-button', '取消', '取消并关闭理发店');
         _cancelButton.addEventListener('click', requestClose);
         actions.appendChild(_cancelButton);
-        _commitButton = makeButton('hairdresser-button primary hairdresser-commit', '确认更换');
+        _commitButton = makeButton('hairdresser-button primary hairdresser-commit appearance-service-button', '确认更换');
         _commitButton.addEventListener('click', commitSelection);
         actions.appendChild(_commitButton);
         footer.appendChild(actions);

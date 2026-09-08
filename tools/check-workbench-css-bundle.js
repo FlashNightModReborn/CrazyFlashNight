@@ -36,7 +36,9 @@ const IMPORTS = [
     './workbench/team.css',
     './workbench/states.css',
     './workbench/motion.css',
+    './appearance-service.css',
     './hairdresser.css',
+    './plastic-surgery.css',
     './workbench/utilities.css'
 ];
 

@@ -44,7 +44,7 @@ var Panels = (function() {
     function panelCloseMessage(id, initData, reason) {
         var closeMessage = {type:'panel', cmd:'close', panel:id};
         if (id === 'skills' || id === 'crafting' || id === 'kshop'
-                || id === 'settings'
+                || id === 'settings' || id === 'surgery'
                 || id === 'npcshop' || id === 'blackmarket' || id === 'team'
                 || id === 'warlord') {
             closeMessage.panelInstanceId = readPanelInstanceId(initData);
@@ -62,7 +62,7 @@ var Panels = (function() {
 
     function hostOwnsPanelMount(id, initData) {
         return id === 'loot' || id === 'workbench' || id === 'skills'
-            || id === 'settings'
+            || id === 'settings' || id === 'surgery'
             || id === 'crafting' || id === 'kshop' || id === 'npcshop'
             || id === 'blackmarket' || id === 'team' || id === 'warlord';
     }

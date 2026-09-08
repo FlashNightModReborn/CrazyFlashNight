@@ -337,7 +337,6 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 ## Panel 与 minigame 注册表
 
 **最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。`Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。
-
 <!-- launcher-panel-registry:start -->
 | id | 类别 | 最终注册模块 |
 |---|---|---|
@@ -347,6 +346,7 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 | `npcshop` | 工作台 | `modules/npcshop.js` |
 | `crafting` | 工作台 | `modules/crafting.js` |
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |
+| `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
 | `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |
 | `help` | 工具 Panel | `modules/help-panel.js` |

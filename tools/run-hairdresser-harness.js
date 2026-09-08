@@ -17,7 +17,8 @@ function read(relative) {
 function staticAudit() {
     const runtime = read('launcher/web/modules/hairdresser-runtime.js');
     const panel = read('launcher/web/modules/hairdresser.js');
-    const css = read('launcher/web/css/hairdresser.css');
+    const css = read('launcher/web/css/hairdresser.css') + '\n'
+        + read('launcher/web/css/appearance-service.css');
     const harness = read('launcher/web/modules/hairdresser/dev/harness.html');
     const manifest = JSON.parse(read('launcher/web/assets/dressup/manifest.json'));
     const hairstyle = read('data/items/hairstyle.xml');
@@ -58,8 +59,8 @@ function staticAudit() {
         throw new Error('catalog order/filter or generic framework regression found');
     }
     if (!css.includes('#panel-container[data-panel="hairdresser"] #panel-content')
-        || !css.includes('.hairdresser-preview-fallback')
-        || !css.includes('.hairdresser-panel button:focus-visible')
+        || !css.includes('.appearance-service-preview-fallback')
+        || !css.includes('.appearance-service-panel :is(button, input):focus-visible')
         || !css.includes('@media (prefers-reduced-motion: reduce)')) {
         throw new Error('hairdresser standalone/accessibility CSS contract missing');
     }
@@ -213,6 +214,10 @@ async function runViewport(browser, server, viewport) {
 
 (async function main() {
     staticAudit();
+    if (process.argv.includes('--static-only')) {
+        console.log('Hairdresser static audit passed; browser not run.');
+        return;
+    }
     runtimeAudit();
     if (!fs.existsSync(PLAYWRIGHT)) {
         throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');

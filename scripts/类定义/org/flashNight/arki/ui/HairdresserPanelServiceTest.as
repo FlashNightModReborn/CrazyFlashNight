@@ -50,17 +50,18 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
         _root.脸型 = "女变装-基本脸型";
         _root.发型 = "测试发型-7";
         _root.控制目标 = "testHero";
-        _root.gameworld = {};
-        var actor:Object = {
-            发型:"测试发型-7",
-            refreshCount:0,
-            lastRefresh:"",
-            gotoAndPlay:function(label):Void {
-                this.refreshCount++;
-                this.lastRefresh = String(label);
-            }
-        };
-        _root.gameworld[_root.控制目标] = actor;
+        if (_root.__hairTestWorld) _root.__hairTestWorld.removeMovieClip();
+        _root.gameworld = _root.createEmptyMovieClip("__hairTestWorld", 9002);
+        var actor:MovieClip = _root.gameworld.createEmptyMovieClip("testHero", 1);
+        actor.发型 = "测试发型-7"; actor.性别 = "女"; actor.身高 = 175; actor.名字 = "理发测试";
+        actor.hp = 37; actor.mp = 12; actor.version = 1;
+        actor.dressupRegistry = {};
+        actor.颈部装备数据 = {data:{title:"固定称号"}};
+        actor.refreshCount = 0; actor.lastRefresh = "";
+        _root.装备引用配置 = {刷新所有装扮:function(actor):Void {
+            actor.refreshCount++;
+            actor.lastRefresh = "shared_appearance";
+        }};
         _root.存档系统 = {
             dirtyMark:false,
             saveCalls:0,
@@ -188,7 +189,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
 
         resetState();
         var noRefreshActor:Object = actor();
-        noRefreshActor.gotoAndPlay = undefined;
+        noRefreshActor.dressupRegistry = undefined;
         var missingRefresh:Object = HairdresserPanelService.execute("commit", {
             v:1, hairIdentifier:"测试发型-9", expectedCurrentHair:"测试发型-7"
         });
@@ -222,7 +223,7 @@ class org.flashNight.arki.ui.HairdresserPanelServiceTest {
             && result.currentHair == "测试发型-9",
             "commit returns the written hair identifier");
         check(_root.发型 == "测试发型-9" && actor().发型 == "测试发型-9"
-            && actor().refreshCount == 1 && actor().lastRefresh == "刷新装扮"
+            && actor().refreshCount == 1 && actor().lastRefresh == "shared_appearance"
             && _root.存档系统.dirtyMark,
             "commit writes root and live actor, refreshes once and marks save dirty");
         check(_root.金钱 == 1234 && _root.虚拟币 == 567

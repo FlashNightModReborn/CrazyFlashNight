@@ -452,6 +452,7 @@ namespace CF7Launcher.Guardian
             NpcShop,
             Crafting,
             Hairdresser,
+            PlasticSurgery,
             Settings,
             EquipmentTuning,
             ItemUse,
@@ -470,6 +471,7 @@ namespace CF7Launcher.Guardian
             if (domain == "npcshop") return PanelDomainRoute.NpcShop;
             if (domain == "crafting") return PanelDomainRoute.Crafting;
             if (domain == "hairdresser") return PanelDomainRoute.Hairdresser;
+            if (domain == "surgery") return PanelDomainRoute.PlasticSurgery;
             if (domain == "settings") return PanelDomainRoute.Settings;
             if (domain == "equipment_tuning") return PanelDomainRoute.EquipmentTuning;
             if (domain == "item_use") return PanelDomainRoute.ItemUse;
@@ -1324,6 +1326,7 @@ namespace CF7Launcher.Guardian
         private MaterialShopNavigationCoordinator
             _materialShopNavigationCoordinator;
         private HairdresserTask _hairdresserTask;
+        private PlasticSurgeryTask _plasticSurgeryTask;
         private SettingsTask _settingsTask;
         private EquipmentTuningTask _equipmentTuningTask;
         private ItemUseTask _itemUseTask;
@@ -4096,6 +4099,13 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        public void SetPlasticSurgeryTask(PlasticSurgeryTask task)
+        {
+            _plasticSurgeryTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetHairdresserTask(HairdresserTask task)
         {
             _hairdresserTask = task;
@@ -6605,6 +6615,17 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "crafting_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.PlasticSurgery)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "surgery"))
+                {
+                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_plasticSurgeryTask != null) _plasticSurgeryTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "surgery_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.Hairdresser)
             {
                 LogManager.Log("[Panel] Routing domain=hairdresser cmd=" + logCmd
@@ -8474,6 +8495,7 @@ namespace CF7Launcher.Guardian
             if (_npcShopTask != null) _npcShopTask.ClearPending();
             if (_craftingTask != null) _craftingTask.ClearPending();
             if (_hairdresserTask != null) _hairdresserTask.ClearPending();
+            if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
             if (_settingsTask != null) _settingsTask.ClearPending();
             if (_equipmentTuningTask != null) _equipmentTuningTask.ClearPending();
             if (_skillTask != null) _skillTask.ClearPending();

@@ -1,4 +1,5 @@
-﻿
+﻿import org.flashNight.arki.unit.UnitComponent.Dressup.LiveAppearanceUpdater;
+
 
 /**
  * 基地理发店 Web Panel 的窄 AS2 权威服务。
@@ -104,12 +105,20 @@ class org.flashNight.arki.ui.HairdresserPanelService {
         if (_root.存档系统 == undefined || typeof _root.存档系统 != "object") {
             return fail("save_unavailable");
         }
-        if (typeof actor.gotoAndPlay != "function") return fail("refresh_unavailable");
+        if (!LiveAppearanceUpdater.isReady(actor)) return fail("refresh_unavailable");
 
         // 所有依赖先验证完毕，再一次性写持久字段、live actor 与 dirty mark。
         _root.发型 = hairIdentifier;
         actor.发型 = hairIdentifier;
-        actor.gotoAndPlay("刷新装扮");
+        var refreshed:Boolean = false;
+        try { refreshed = LiveAppearanceUpdater.refresh(actor); }
+        catch (refreshError) { refreshed = false; }
+        if (!refreshed) {
+            _root.发型 = currentHair;
+            actor.发型 = currentHair;
+            try { LiveAppearanceUpdater.refresh(actor); } catch (restoreError) { }
+            return fail("refresh_unavailable");
+        }
         _root.存档系统.dirtyMark = true;
         return {success:true, v:1, operation:"commit", currentHair:hairIdentifier};
     }

@@ -3296,6 +3296,13 @@ namespace CF7Launcher.Guardian
                     openRequestId);
                 return;
             }
+            if (string.Equals(panelName, "surgery", StringComparison.Ordinal))
+            {
+                if (safeSource == "world_plastic_surgery")
+                    OpenPanel("surgery", new JObject { ["source"] = safeSource, ["mode"] = "runtime" }.ToString(Formatting.None));
+                else LogManager.Log("[Router] surgery rejected invalid source");
+                return;
+            }
             if (string.Equals(panelName, "hairdresser", StringComparison.OrdinalIgnoreCase))
             {
                 OpenHairdresserPanel(safeSource);

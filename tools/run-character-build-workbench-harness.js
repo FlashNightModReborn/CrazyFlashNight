@@ -678,6 +678,7 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
         'modules/dressup/dev/character-build-combination-fixture.js',
         'modules/character-build/dev/stats-fixture.js',
         'modules/dressup-doll-renderer.js',
+        'modules/character-appearance-preview.js',
         'modules/panels.js',
         'modules/panel-scale.js',
         'modules/uidata.js',

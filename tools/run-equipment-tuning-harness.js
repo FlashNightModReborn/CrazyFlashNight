@@ -215,6 +215,7 @@ function audit(){
     "'modules/inventory-tuning-scope.js'"
   ];
   const buildFeatureClosure=[
+    "'modules/character-appearance-preview.js'",
     "'modules/character-build/character-build-mutation.js'",
     "'modules/character-build/character-build-drug-layout.js'",
     "'modules/character-build/character-build-session-contract.js'",
