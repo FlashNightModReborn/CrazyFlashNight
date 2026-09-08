@@ -665,8 +665,17 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             bulletProps.暴击 = ShootInitCore.createCritLogic(critValue);
         }
 
-        // 处理斩杀属性，确保数值有效后转换为 Number
-        var killValue:Object = (extraParams.斩杀 !== undefined) ? extraParams.斩杀 : parentRef[weaponType + "斩杀"];
+        // 处理斩杀属性，确保数值有效后转换为 Number；非武器装备(项链/防具等)的基础斩杀与武器斩杀叠加
+        var killValue:Object;
+        if (extraParams.斩杀 !== undefined) {
+            killValue = extraParams.斩杀;
+        } else {
+            var weaponSlay:Number = Number(parentRef[weaponType + "斩杀"]);
+            if (isNaN(weaponSlay)) weaponSlay = 0;
+            var baseSlay:Number = Number(parentRef.基础斩杀);
+            if (isNaN(baseSlay)) baseSlay = 0;
+            killValue = weaponSlay + baseSlay;
+        }
         if (killValue && !isNaN(Number(killValue))) {
             bulletProps.斩杀 = Number(killValue);
         }

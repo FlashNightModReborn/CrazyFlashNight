@@ -72,7 +72,11 @@ _root.装备生命周期函数.九命猫妖初始化 =  function(反射对象, �
                                 // 通用层 data.zrange 由 HeroUnarmedAI 单独覆写为 20）
         交战Z死区: 5,            // 交战中继续微调 Z 的停止阈值：进入交战用 攻击判定Z（宽松，保证能开打），
                                 // 进入后继续贴到本死区才停，否则会卡在阈值边缘反复进出交战（Z轴来回走）
-        平A保底概率: 0.15,       // 射程内平A保底：技能裁决之前先掷骰子，命中即走平A（性能考虑由 25% 下调）
+        平A保底概率: 0.3,        // 射程内平A保底：技能裁决之前先掷骰子，命中即开一个平A窗口
+                                // （2026-09-08 由 0.15 上调：要求"技能间隙尽可能多平A"）
+        平A窗口帧: 30,           // 平A触发后至少持续回写 动作A 的帧数（约1秒）。空手连段靠持续按键推进，
+                                // 只写一次 动作A 只能打出第一下 → 必须逐 tick 续写。
+                                // 击倒/浮空/倒地/脱离射程/低血受威胁 一律中断窗口，交回技能裁决
         迂回最长秒数: 2.5,       // Evade 状态上限，到点强制回战斗（禁无限逛街）
         迂回横向最大位移: 120,   // Evade 期间横向跑动封顶
         低血阈值: 0.5,
@@ -124,8 +128,8 @@ _root.装备生命周期函数.九命猫妖初始化 =  function(反射对象, �
     var 空中技能组配置:Array = null;
 
     自机.已学技能表 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildLearnedTable(技能组配置);
-    自机.虎妙战技组 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildBattleSkills(战技组配置);
-    自机.虎妙空中技能组 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildAirSkillGroup(空中技能组配置);
+    自机.单位战技组 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildBattleSkills(战技组配置);
+    自机.单位空中技能组 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildAirSkillGroup(空中技能组配置);
 
     // ── 4. AI 强制迁移：销毁默认 AI（主角模板 unitAIType="Mecenary"）→ 挂载空手专用 AI ──
     // 依据：UpdateEventComponent 每 4 帧调 unitAI.update()；StaticDeinitializer 调 unitAI.destroy()；

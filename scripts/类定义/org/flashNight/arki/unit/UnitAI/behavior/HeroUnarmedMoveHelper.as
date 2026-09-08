@@ -34,7 +34,11 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedMoveHelper {
         //   本任务若在此期间 move2D，会执行 _y = (Z轴坐标 += vy) —— 把空中单位拽回地面，
         //   下一帧重力积分又把 _y 拉起 → 每帧上下抖动，且 Z轴坐标 被拖走 → 落地后 Z/Y 偏离。
         //   技能/战技动画自带位移帧，同样不允许这里并行位移。清掉接管，交回 behavior 重新决策。
-        if (self.浮空 == true || self.飞行浮空 == true || self.倒地 == true
+        //   高度判据补 0.5 容差（与 空中控制器/isInAir 同口径）：浮空标记存在"置位前/清除后"
+        //   的一帧空窗，只看标记会在这几帧漏判，而一帧 move2D 就足以把 _y 拽回地面。
+        var gz:Number = (!isNaN(self.Z轴坐标)) ? self.Z轴坐标 : self._y;
+        var inAir:Boolean = (!isNaN(gz) && !isNaN(self._y)) && (self._y < gz - 0.5);
+        if (self.浮空 == true || self.飞行浮空 == true || self.倒地 == true || inAir
             || self.状态 == "技能" || self.状态 == "战技") {
             self.虎妙Z对齐 = null;
             return;
@@ -133,16 +137,16 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedMoveHelper {
     /**
      * 技能动画的位移帧读 上行/下行/左行/右行，但 MovementResolver.clearInput（每 AI tick）
      * 与本文件 alignTick（每帧）都会清掉它们 → 不持续回写就会退回默认后跳。
-     * 释放侧（HeroUnarmedSkillBrain._release）写 自机.虎妙方向锁 = {上行,下行,左行,右行,截止帧}，
+     * 释放侧（HeroUnarmedSkillBrain._release）写 自机.单位方向锁 = {上行,下行,左行,右行,截止帧}，
      * 本函数在窗口内每次被调用都回写一次；过期自动清除。
      * @return Boolean 窗口是否仍然有效（有效时调用方可跳过后续移动/对齐输出）
      */
     public static function syncLockedInput(self:MovieClip):Boolean {
-        var lock:Object = self.虎妙方向锁;
+        var lock:Object = self.单位方向锁;
         if (lock == null) return false;
         var frame:Number = AIEnvironment.getFrame();
         if (!(frame <= lock.截止帧)) {
-            self.虎妙方向锁 = null;
+            self.单位方向锁 = null;
             return false;
         }
         self.上行 = (lock.上行 == true);
