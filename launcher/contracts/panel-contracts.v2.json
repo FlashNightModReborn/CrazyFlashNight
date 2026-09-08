@@ -182,6 +182,43 @@
       ]
     },
     {
+      "id": "surgery",
+      "wireDomain": "surgery",
+      "hostTask": "launcher/src/Tasks/PlasticSurgeryTask.cs",
+      "flashResponseTask": "plastic_surgery_response",
+      "hostResponseHandler": "plasticSurgeryTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.ui.PlasticSurgeryPanelService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/ui/PlasticSurgeryPanelService.as"
+      ],
+      "commands": [
+        {
+          "cmd": "snapshot",
+          "action": "plasticSurgerySnapshot",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "commit",
+          "action": "plasticSurgeryCommit",
+          "capability": "transaction",
+          "access": "write",
+          "businessDecisionOwner": "as2"
+        },
+        {
+          "cmd": "query",
+          "action": "plasticSurgeryQuery",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
+    },
+    {
       "id": "hairdresser",
       "wireDomain": "hairdresser",
       "hostTask": "launcher/src/Tasks/HairdresserTask.cs",

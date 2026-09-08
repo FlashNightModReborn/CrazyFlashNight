@@ -241,7 +241,8 @@ function snapshotTemplate(hairCatalog) {
 
 function verifyGraphemeFallback(template) {
     const source = fs.readFileSync(path.join(webRoot, 'modules', 'bootstrap-character-create-runtime.js'), 'utf8');
-    const sandbox = { module: { exports: {} }, Intl: {}, console };
+    const sandbox = { module: { exports: {} }, Intl: {}, console,
+        require: name => require(path.join(webRoot, 'modules', name)) };
     sandbox.globalThis = sandbox;
     vm.runInNewContext(source, sandbox, { filename: 'bootstrap-character-create-runtime.js' });
     const runtime = sandbox.module.exports;

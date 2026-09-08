@@ -10,6 +10,11 @@
     }
 }
 
+_root.打开整形手术 = function(){
+    if(!org.flashNight.arki.ui.PlasticSurgeryPanelService.openPanel())
+        _root.最上层发布文字提示("整形界面暂时无法打开，请稍后重试。");
+};
+
 _root.从库中加载外部UI = function(identifier){
     var UI = _root.通用UI层[identifier];
     if(UI != null){
@@ -57,6 +62,7 @@ _root.加载引导界面 = function(filename){
 // ============================================================
 if (_root.gameCommands == undefined) _root.gameCommands = {};
 org.flashNight.arki.ui.HairdresserPanelService.install();
+org.flashNight.arki.ui.PlasticSurgeryPanelService.install();
 org.flashNight.arki.ui.GameSettingsPanelService.install();
 
 _root.gameCommands["togglePause"] = function() {

@@ -76,7 +76,7 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.从库中加载外部UI("整容整形界面");
+	_root.打开整形手术();
 }
 on (rollOver) {
 	_root.注释(100,_root.获得翻译("整形手术"));

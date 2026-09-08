@@ -1,272 +1,132 @@
-/* Hairdresser is a self-contained 1024×576 panel. It consumes shared semantic
-   tokens but does not extend the DLS/θ/skill/tuning palettes. */
+/* 理发店目录专用样式。基地服务壳与通用预览样式由 appearance-service.css 提供，
+   全部颜色/动效只从 --appearance-* 与 --wb-* 既有变量派生。 */
 #panel-container[data-panel="hairdresser"] #panel-content {
     inset: 0;
     align-items: center;
     justify-content: center;
 }
 
-#panel-container[data-panel="hairdresser"] #panel-backdrop {
-    background: #080a0d;
+/* 目录列：标题行 / 当前发型卡 / 页签+密度工具行 / 网格。 */
+.hairdresser-catalog-pane {
+    grid-template-rows: 39px auto auto minmax(0, 1fr);
 }
 
-.hairdresser-scale-shell,
-.hairdresser-scale-shell * {
-    box-sizing: border-box;
-}
-
-.hairdresser-scale-shell {
-    overflow: hidden;
-    color: #edf0f2;
-    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
-}
-
-.hairdresser-panel {
-    --hair-bg: #090b0e;
-    --hair-surface: #11151a;
-    --hair-surface-raised: #181e24;
-    --hair-line: #343d46;
-    --hair-line-soft: #252c33;
-    --hair-text: #edf0f2;
-    --hair-muted: #9ca7b0;
-    --hair-accent: var(--wb-semantic-info);
-    --hair-success: var(--wb-semantic-success);
-    --hair-warning: var(--wb-semantic-warning);
-    --hair-danger: var(--wb-semantic-danger);
-    width: 1024px;
-    height: 576px;
-    display: grid;
-    grid-template-rows: 72px minmax(0, 1fr) 76px;
-    overflow: hidden;
-    border: 1px solid #3a434c;
-    background:
-        radial-gradient(circle at 18% 28%, rgba(255, 255, 255, .045), transparent 31%),
-        linear-gradient(135deg, #0d1014, var(--hair-bg) 54%, #0b0e12);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .025);
-}
-
-.hairdresser-header {
+.hairdresser-current-card {
     min-width: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto 42px;
+    min-height: 45px;
+    display: flex;
     align-items: center;
-    gap: 18px;
-    padding: 10px 14px 9px 18px;
-    border-bottom: 1px solid var(--hair-line);
-    background: linear-gradient(90deg, rgba(255, 255, 255, .045), transparent 52%);
+    gap: 9px;
+    padding: 4px 9px;
+    border-bottom: 1px solid var(--appearance-line-soft);
+    background: var(--appearance-tint);
 }
 
-.hairdresser-heading {
+.hairdresser-current-card-copy {
     min-width: 0;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-rows: auto auto;
-    align-items: baseline;
-    column-gap: 14px;
+    gap: 2px;
 }
 
-.hairdresser-kicker {
-    grid-column: 1 / -1;
-    color: var(--hair-muted);
-    font: 700 10px/1.3 Consolas, "Microsoft YaHei", sans-serif;
-    letter-spacing: 1.6px;
-    text-transform: uppercase;
+.hairdresser-current-card-copy small {
+    color: var(--appearance-muted);
+    font-size: 10px;
+    line-height: 1.2;
 }
 
-.hairdresser-heading h1 {
-    margin: 2px 0 0;
-    color: var(--hair-text);
-    font-size: 27px;
-    line-height: 1;
-    letter-spacing: 2px;
-}
-
-.hairdresser-current {
+.hairdresser-current-card-copy b {
     min-width: 0;
-    margin: 0;
     overflow: hidden;
-    color: #c8ced3;
-    font-size: 12px;
-    line-height: 1.4;
+    color: var(--appearance-strong-text);
+    font-size: 13px;
+    line-height: 1.2;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.hairdresser-header-status {
-    max-width: 330px;
-    margin: 0;
-    color: var(--hair-muted);
-    font-size: 12px;
-    line-height: 1.45;
-    text-align: right;
+.hairdresser-current-card-badge {
+    margin-left: auto;
+    padding: 3px 7px;
+    border: 1px solid var(--appearance-line-soft);
+    color: var(--appearance-success);
+    font-size: 10px;
+    line-height: 1.2;
 }
 
-.hairdresser-header-status[data-state="busy"],
-.hairdresser-header-status[data-state="reconcile"],
-.hairdresser-panel[data-state="reconcile"] .hairdresser-header-status {
-    color: var(--hair-warning);
+.hairdresser-current-card-empty {
+    color: var(--appearance-muted);
+    font-size: 11px;
 }
 
-.hairdresser-header-status[data-state="error"] {
-    color: var(--hair-danger);
-}
-
-.hairdresser-close {
-    appearance: none;
-    width: 38px;
-    height: 38px;
-    padding: 0 0 3px;
-    border: 1px solid var(--hair-line);
-    background: #101419;
-    color: #c8ced3;
-    font: 400 26px/1 "Segoe UI", sans-serif;
-    cursor: pointer;
-}
-
-.hairdresser-close:hover:not(:disabled) {
-    border-color: var(--hair-accent);
-    color: #fff;
-}
-
-.hairdresser-body {
-    min-height: 0;
-    display: grid;
-    grid-template-columns: 388px minmax(0, 1fr);
-    gap: 12px;
-    padding: 12px;
-}
-
-.hairdresser-preview-pane,
-.hairdresser-catalog-pane {
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
-    border: 1px solid var(--hair-line);
-    background: rgba(14, 18, 22, .94);
-}
-
-.hairdresser-preview-pane {
-    display: grid;
-    grid-template-rows: 39px minmax(0, 1fr) 44px;
-}
-
-.hairdresser-catalog-pane {
-    position: relative;
-    display: grid;
-    grid-template-rows: 39px minmax(0, 1fr);
-}
-
-.hairdresser-section-title {
+.hairdresser-catalog-toolbar {
     min-width: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 0 12px;
-    border-bottom: 1px solid var(--hair-line-soft);
-    background: rgba(255, 255, 255, .025);
+    gap: 8px;
+    padding: 4px 9px;
+    border-bottom: 1px solid var(--appearance-line-soft);
 }
 
-.hairdresser-section-title h2 {
-    margin: 0;
-    color: #dce1e5;
-    font-size: 14px;
-    letter-spacing: 1px;
+/* 页签 / 密度 / 预览模式共用同一套小药丸组外观（appearance-service 深灰蓝体系）。 */
+.hairdresser-gender-tabs,
+.hairdresser-density,
+.hairdresser-preview-mode {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--appearance-line-soft);
+    background: var(--appearance-surface);
 }
 
-.hairdresser-local-badge,
-.hairdresser-catalog-count {
-    color: var(--hair-muted);
-    font: 600 10px/1.2 Consolas, "Microsoft YaHei", sans-serif;
-}
-
-.hairdresser-local-badge {
-    padding: 4px 7px;
-    border: 1px solid var(--hair-line-soft);
-}
-
-.hairdresser-preview-stage {
-    position: relative;
-    min-height: 0;
-    overflow: hidden;
-    background:
-        linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px),
-        radial-gradient(circle at 50% 35%, #222a31, #0c1014 69%);
-    background-size: 24px 24px, 24px 24px, auto;
-}
-
-.hairdresser-preview-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.hairdresser-preview-name {
-    position: absolute;
-    right: 12px;
-    bottom: 10px;
-    left: 12px;
-    z-index: 2;
-    min-width: 0;
-    padding: 8px 10px;
-    overflow: hidden;
-    border: 1px solid var(--hair-line);
-    background: rgba(7, 9, 12, .88);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1.25;
-    text-align: center;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.hairdresser-preview-fallback {
-    position: absolute;
-    top: 50%;
-    right: 26px;
-    left: 26px;
-    z-index: 3;
-    margin: 0;
-    padding: 12px;
-    transform: translateY(-62%);
-    border: 1px solid var(--hair-warning);
-    background: rgba(9, 11, 14, .94);
-    color: #f0e3c4;
-    font-size: 12px;
-    line-height: 1.55;
-    text-align: center;
-}
-
-.hairdresser-preview-fallback[hidden] {
+.hairdresser-preview-mode[hidden] {
     display: none;
 }
 
-.hairdresser-preview-facts {
-    min-width: 0;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: 6px 8px;
-    margin: 0;
-    padding: 7px 12px;
-    border-top: 1px solid var(--hair-line-soft);
-    color: var(--hair-muted);
-    font-size: 11px;
+.hairdresser-gender-tab,
+.hairdresser-density-option,
+.hairdresser-preview-mode-option {
+    appearance: none;
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    padding: 4px 9px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--appearance-muted);
+    font: 600 11px/1.2 "Microsoft YaHei", sans-serif;
+    cursor: pointer;
+    transition:
+        border-color var(--wb-motion-micro),
+        background-color var(--wb-motion-micro),
+        color var(--wb-motion-micro);
 }
 
-.hairdresser-preview-facts dt {
-    color: #77838d;
+.hairdresser-gender-tab small {
+    color: var(--appearance-muted);
+    font: 500 10px/1.2 Consolas, "Microsoft YaHei", sans-serif;
 }
 
-.hairdresser-preview-facts dd {
-    min-width: 0;
-    margin: 0;
-    overflow: hidden;
-    color: #d6dce0;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.hairdresser-gender-tab:hover:not(:disabled),
+.hairdresser-density-option:hover:not(:disabled),
+.hairdresser-preview-mode-option:hover:not(:disabled) {
+    color: var(--appearance-strong-text);
+}
+
+.hairdresser-gender-tab[aria-selected="true"],
+.hairdresser-density-option[aria-pressed="true"],
+.hairdresser-preview-mode-option[aria-pressed="true"] {
+    border-color: var(--appearance-accent);
+    background: var(--appearance-surface-raised);
+    color: var(--appearance-strong-text);
+}
+
+.hairdresser-gender-tab:disabled,
+.hairdresser-density-option:disabled,
+.hairdresser-preview-mode-option:disabled {
+    cursor: not-allowed;
+    opacity: .48;
 }
 
 .hairdresser-catalog {
@@ -294,20 +154,27 @@
     background: var(--wb-scrollbar-thumb);
 }
 
+/* 紧凑档：36×36 纯图标格，77 项一屏尽量全显（格边值与 JS 键盘列数估算一致）。 */
+.hairdresser-catalog[data-density="compact"] {
+    grid-template-columns: repeat(auto-fill, 36px);
+    grid-auto-rows: 36px;
+    gap: 2px;
+}
+
 .hairdresser-style-card {
     appearance: none;
     position: relative;
     min-width: 0;
-    min-height: 55px;
+    min-height: 58px;
     display: grid;
-    grid-template-columns: 34px minmax(0, 1fr);
+    grid-template-columns: 44px minmax(0, 1fr);
     align-items: center;
     gap: 8px;
-    padding: 7px 8px;
+    padding: 6px 8px;
     overflow: hidden;
-    border: 1px solid var(--hair-line-soft);
-    background: var(--hair-surface);
-    color: var(--hair-text);
+    border: 1px solid var(--appearance-line-soft);
+    background: var(--appearance-surface);
+    color: var(--appearance-text);
     text-align: left;
     cursor: pointer;
     transition:
@@ -316,21 +183,45 @@
         transform var(--wb-motion-micro);
 }
 
+.hairdresser-catalog[data-density="compact"] .hairdresser-style-card {
+    width: 36px;
+    min-width: 36px;
+    max-width: 36px;
+    height: 36px;
+    min-height: 36px;
+    grid-template-columns: 34px;
+    gap: 0;
+    padding: 1px;
+    place-items: center;
+}
+
+.hairdresser-catalog[data-density="compact"] .hairdresser-style-copy {
+    display: none;
+}
+
 .hairdresser-style-card:hover:not(:disabled) {
-    border-color: #687582;
-    background: var(--hair-surface-raised);
+    border-color: var(--appearance-hover-line);
+    background: var(--appearance-surface-raised);
     transform: translateY(-1px);
 }
 
+.hairdresser-catalog[data-density="compact"] .hairdresser-style-card:hover:not(:disabled) {
+    transform: none;
+}
+
 .hairdresser-style-card.selected {
-    border-color: var(--hair-accent);
-    box-shadow: inset 3px 0 0 var(--hair-accent);
+    border-color: var(--appearance-accent);
+    box-shadow: inset 3px 0 0 var(--appearance-accent);
+}
+
+.hairdresser-catalog[data-density="compact"] .hairdresser-style-card.selected {
+    box-shadow: inset 0 0 0 1px var(--appearance-accent);
 }
 
 .hairdresser-style-card.current {
     background:
         linear-gradient(90deg, rgba(255, 255, 255, .045), transparent 58%),
-        var(--hair-surface);
+        var(--appearance-surface);
 }
 
 .hairdresser-style-card:disabled {
@@ -338,10 +229,51 @@
     opacity: .62;
 }
 
-.hairdresser-style-index {
-    color: #68737d;
-    font: 700 12px/1 Consolas, monospace;
-    text-align: center;
+/* 深色发型剪影压在深底上看不清轮廓：图标底色提亮一档并给一点轮廓光。 */
+.hairdresser-style-icon {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--appearance-line-soft);
+    background: var(--appearance-surface-raised);
+    box-shadow: inset 0 0 9px color-mix(in srgb, var(--appearance-strong-text) 4%, transparent);
+}
+
+.hairdresser-catalog[data-density="compact"] .hairdresser-style-icon {
+    width: 34px;
+    height: 34px;
+    box-shadow: none;
+}
+
+.hairdresser-current-card .hairdresser-style-icon {
+    width: 36px;
+    height: 36px;
+}
+
+.hairdresser-style-icon-image {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    filter: brightness(1.14) drop-shadow(0 1px 2px color-mix(in srgb, var(--appearance-bg) 72%, transparent));
+    transition: transform var(--wb-motion-micro) var(--wb-ease-standard);
+}
+
+.hairdresser-catalog[data-density="compact"] .hairdresser-style-icon-image,
+.hairdresser-current-card .hairdresser-style-icon-image {
+    width: 32px;
+    height: 32px;
+}
+
+.hairdresser-style-card:hover:not(:disabled) .hairdresser-style-icon-image,
+.hairdresser-style-card:focus-visible .hairdresser-style-icon-image {
+    transform: scale(1.09);
+}
+
+.hairdresser-style-icon-fallback {
+    color: var(--appearance-accent);
+    font: 700 11px/1 Consolas, "Microsoft YaHei", monospace;
 }
 
 .hairdresser-style-copy {
@@ -373,28 +305,49 @@
     position: absolute;
     top: 4px;
     right: 5px;
-    color: var(--hair-muted);
+    color: var(--appearance-muted);
     font-size: 9px;
     line-height: 1;
 }
 
-.hairdresser-style-card.selected .hairdresser-style-marker {
-    color: var(--hair-accent);
+.hairdresser-catalog[data-density="compact"] .hairdresser-style-marker {
+    top: 1px;
+    right: 2px;
+    font-size: 9px;
+}
+
+.hairdresser-style-card.selected .hairdresser-style-marker,
+.hairdresser-style-marker.trial {
+    color: var(--appearance-accent);
 }
 
 .hairdresser-style-card.current .hairdresser-style-marker {
-    color: var(--hair-success);
+    color: var(--appearance-success);
 }
 
+/* 变更摘要：底栏独立行，试戴与当前不同时高亮，不占用状态行/错误行。 */
+.hairdresser-summary {
+    margin: 0;
+    color: var(--appearance-muted);
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.hairdresser-summary.active {
+    color: var(--appearance-accent);
+    font-weight: 700;
+}
+
+/* 空目录覆盖层与网格同占第 4 行：页签与当前卡仍可见，只遮住网格区。 */
 .hairdresser-empty {
-    position: absolute;
-    inset: 39px 0 0;
+    grid-row: 4;
+    grid-column: 1;
     z-index: 2;
     display: grid;
     place-items: center;
     padding: 24px;
     background: #0d1115;
-    color: var(--hair-muted);
+    color: var(--appearance-muted);
     font-size: 13px;
     text-align: center;
 }
@@ -403,107 +356,29 @@
     display: none;
 }
 
-.hairdresser-footer {
-    min-width: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 18px;
-    padding: 10px 14px 10px 18px;
-    border-top: 1px solid var(--hair-line);
-    background: #0d1014;
+/* tooltip 锚条：紧凑格全名提示恒锚到目录列左缘（提示层落在预览列上）。 */
+.hairdresser-tt-anchor {
+    position: absolute;
+    left: 2px;
+    top: 9%;
+    width: 2px;
+    height: 2px;
+    pointer-events: none;
 }
 
-.hairdresser-messages {
-    min-width: 0;
-    display: grid;
-    gap: 3px;
-}
-
-.hairdresser-error,
-.hairdresser-hint {
-    margin: 0;
-    font-size: 11px;
-    line-height: 1.35;
-}
-
-.hairdresser-error {
-    color: var(--hair-danger);
-    font-weight: 700;
-}
-
-.hairdresser-error[hidden] {
-    display: none;
-}
-
-.hairdresser-hint {
-    color: var(--hair-muted);
-}
-
-.hairdresser-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.hairdresser-button {
-    appearance: none;
-    min-width: 92px;
-    height: 38px;
-    padding: 0 14px;
-    border: 1px solid var(--hair-line);
-    background: #151a20;
-    color: #d8dde1;
-    font: 700 12px/1 "Microsoft YaHei", sans-serif;
-    cursor: pointer;
-}
-
-.hairdresser-button.primary {
-    min-width: 126px;
-    border-color: var(--hair-accent);
-    background: var(--hair-accent);
-    color: #071014;
-}
-
-.hairdresser-button:hover:not(:disabled) {
-    border-color: #7d8994;
-    color: #fff;
-}
-
-.hairdresser-button.primary:hover:not(:disabled) {
-    border-color: var(--wb-role-focus);
-    filter: brightness(1.08);
-}
-
-.hairdresser-button:disabled,
-.hairdresser-close:disabled {
-    cursor: not-allowed;
-    opacity: .48;
-}
-
-.hairdresser-button[hidden] {
-    display: none;
-}
-
-.hairdresser-panel[data-state="busy"] {
-    border-color: var(--hair-warning);
-}
-
-.hairdresser-panel[data-state="reconcile"] {
-    box-shadow: inset 0 0 0 2px var(--hair-warning);
-}
-
-.hairdresser-panel[data-state="error"] {
-    border-color: var(--hair-danger);
-}
-
-.hairdresser-panel button:focus-visible {
-    outline: 2px solid var(--wb-role-focus);
-    outline-offset: 2px;
+.hairdresser-simple-tooltip {
+    max-width: 320px;
+    color: var(--appearance-text);
+    line-height: 1.5;
+    white-space: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .hairdresser-style-card {
+    .hairdresser-style-card,
+    .hairdresser-style-icon-image,
+    .hairdresser-gender-tab,
+    .hairdresser-density-option,
+    .hairdresser-preview-mode-option {
         transition: none;
     }
 }

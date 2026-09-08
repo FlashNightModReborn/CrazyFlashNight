@@ -1,4 +1,5 @@
-﻿
+﻿import org.flashNight.arki.unit.UnitComponent.Dressup.LiveAppearanceUpdater;
+
 
 /**
  * 基地理发店 Web Panel 的窄 AS2 权威服务。
@@ -9,6 +10,9 @@
 class org.flashNight.arki.ui.HairdresserPanelService {
     private static var _installed:Boolean = false;
     private static var _json:LiteJSON;
+    // 与 PlasticSurgeryPanelService.SLOTS 保持一致的 11 个装备槽；
+    // 刻意平行实现、不交叉引用，槽集变化需两个服务同步评审。
+    private static var SLOTS:Array = ["头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "颈部装备", "长枪", "手枪", "手枪2", "刀", "手雷"];
 
     public static function install():Void {
         if (_installed) return;
@@ -63,7 +67,30 @@ class org.flashNight.arki.ui.HairdresserPanelService {
             gender:_root.性别 == undefined ? "" : String(_root.性别),
             face:_root.脸型 == undefined ? "" : String(_root.脸型),
             currentHair:_root.发型 == undefined ? "" : String(_root.发型),
-            catalog:resolved.catalog
+            catalog:resolved.catalog,
+            portrait:portrait()
+        };
+    }
+
+    // 当前装备只读投影；actor 不可用时 equipment 为空对象，不新增失败分支。
+    private static function portrait():Object {
+        var equipment:Object = {};
+        var actor:Object;
+        if (_root.gameworld != undefined && _root.控制目标 != undefined) {
+            actor = _root.gameworld[_root.控制目标];
+        }
+        if (actor != undefined) {
+            for (var i:Number = 0; i < SLOTS.length; i++) {
+                var item:Object = actor[SLOTS[i]];
+                if (item != null && typeof item.name == "string") {
+                    equipment[SLOTS[i]] = String(item.name);
+                }
+            }
+        }
+        return {
+            equipment:equipment,
+            hair:_root.发型 == undefined ? "" : String(_root.发型),
+            face:_root.脸型 == undefined ? "" : String(_root.脸型)
         };
     }
 
@@ -104,12 +131,20 @@ class org.flashNight.arki.ui.HairdresserPanelService {
         if (_root.存档系统 == undefined || typeof _root.存档系统 != "object") {
             return fail("save_unavailable");
         }
-        if (typeof actor.gotoAndPlay != "function") return fail("refresh_unavailable");
+        if (!LiveAppearanceUpdater.isReady(actor)) return fail("refresh_unavailable");
 
         // 所有依赖先验证完毕，再一次性写持久字段、live actor 与 dirty mark。
         _root.发型 = hairIdentifier;
         actor.发型 = hairIdentifier;
-        actor.gotoAndPlay("刷新装扮");
+        var refreshed:Boolean = false;
+        try { refreshed = LiveAppearanceUpdater.refresh(actor); }
+        catch (refreshError) { refreshed = false; }
+        if (!refreshed) {
+            _root.发型 = currentHair;
+            actor.发型 = currentHair;
+            try { LiveAppearanceUpdater.refresh(actor); } catch (restoreError) { }
+            return fail("refresh_unavailable");
+        }
         _root.存档系统.dirtyMark = true;
         return {success:true, v:1, operation:"commit", currentHair:hairIdentifier};
     }

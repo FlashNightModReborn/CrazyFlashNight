@@ -92,6 +92,11 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         //   若残留接管，alignTick 会每帧 move2D 写 _y=Z轴坐标（拽回地面），与重力积分互相拉扯
         //   → 空中上下抖动 + Z轴坐标被拖走 → 落地后 Z/Y 偏离。
         if (self.状态 == "技能" || self.状态 == "战技") { self.虎妙Z对齐 = null; return; }
+        // 搓招最小持续保护（续34）：搓招期间状态是"空手攻击"（不走上面那道门），
+        // 但下面的 跑步切换 状态改变("空手跑") 与移动输出（行走状态机改写 空手行走）
+        // 都会掐断正在播的搓招元件 → 保护期内与技能同款静默（燃烧指节射程 50~300，
+        // 释放时多半在本状态，第一拍移动就把招打断——这就是"配25帧撑不过半秒"的主因）
+        if (brain.isChargeProtected(frame)) { self.虎妙Z对齐 = null; return; }
         if (!hasTarget) { self.虎妙Z对齐 = null; return; }
 
         // Z 轴意图（5px 死区）
@@ -99,8 +104,17 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         if (data.absdiff_z > 5) {
             wantZ = (data.diff_z < 0) ? -1 : 1; // diff_z<0=目标偏上→上行(-1)
         }
-        // ★边界收口：意图方向被边界/障碍挡住 → 归零，不喂给脱困逻辑（防贴边上下抖）
-        wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantZ);
+
+        // X 轴意图：朝目标移动（先算：收口探测是斜向端点，需要 X 口径一致）
+        var wantX:Number = 0;
+        if (data.absdiff_x > p.攻击判定X * 0.6) {
+            wantX = (data.diff_x < 0) ? -1 : 1;
+        }
+
+        // ★边界收口：距边不足 80px（Phase3 MARGIN，防其自动反向造成上下振荡）时归零；
+        //   被收口的最后一段由下方 Z 对齐接管小步走完（见 clampZIntent 注释）
+        var rawZ:Number = wantZ;
+        wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantX, wantZ);
 
         // ── Z 轴精确对齐接管判定（D3 三条件）──
         if (HeroUnarmedMoveHelper.shouldTakeOverZ(data, self, wantZ)) {
@@ -112,10 +126,12 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
             self.虎妙Z对齐 = null;
         }
 
-        // X 轴意图：朝目标移动
-        var wantX:Number = 0;
-        if (data.absdiff_x > p.攻击判定X * 0.6) {
-            wantX = (data.diff_x < 0) ? -1 : 1;
+        // ★收口后的最后一程：意图仍在但被收口（贴边带内）→ 直接交给 Z 对齐接管，
+        //   alignTick 写 上行/下行 旗标由行走状态机走完（正常走路动画与速度），
+        //   不经过 applyBoundaryAwareMovement 的 Phase 3，故不会被自动反向。
+        //   （障碍物场景 alignTick 自身复检走不动会清接管，不会硬压。）
+        if (rawZ != 0 && wantZ == 0 && self.虎妙Z对齐 == null) {
+            self.虎妙Z对齐 = {目标: t, 每帧速度: HeroUnarmedMoveHelper._getZSpeed(self)};
         }
 
         // 跑步切换：Z 轴基本对齐后才切跑（沿 HeroCombatModule:163 思路）
@@ -125,6 +141,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
 
         // 统一边界感知移动输出（Z 意图已被对齐接管时置 0）
         MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, wantZ);
+        // 接管靠 上行/下行 旗标驱动走路 → 移动输出的 clearInput 会清掉它，这里补写回来
+        HeroUnarmedMoveHelper.syncZAlignInput(self);
         // 移动输出会重写 左行/右行/上行/下行 → 方向锁窗口内再回写一次，保证跳跃方向生效
         HeroUnarmedMoveHelper.syncLockedInput(self);
     }
@@ -162,6 +180,10 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
 
         if (self.状态 == "技能" || self.状态 == "战技") { self.虎妙Z对齐 = null; return; }
 
+        // 搓招最小持续保护（续34）：同 chase() —— 保护期内不做 Z 微调移动，
+        // 否则行走状态机会把"空手攻击"掐成"空手行走"，招式中途夭折
+        if (brain.isChargeProtected(AIEnvironment.getFrame())) { self.虎妙Z对齐 = null; return; }
+
         // ── 交战期 Z 微调 ──
         // 进入交战的阈值是 攻击判定Z（宽松，保证能开打），若交战期完全不动 Z，
         // 单位会卡在阈值边缘：目标稍一移动 Z 差超过 ×1.3 就被判出交战 → Chasing 又走回来
@@ -169,17 +191,23 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         // 修复：交战中继续贴到 交战Z死区（默认5）才停，走进范围后稳定待在范围内。
         if (data.absdiff_z > p.交战Z死区) {
             var wantZ:Number = (data.diff_z < 0) ? -1 : 1;
-            // ★边界收口：被挡方向归零（防脱困振荡），见 HeroUnarmedMoveHelper.clampZIntent
-            wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantZ);
+            // ★边界收口：距边不足 80px（Phase3 MARGIN）时归零（防其自动反向振荡），见 clampZIntent
+            var rawZ:Number = wantZ;
+            wantZ = HeroUnarmedMoveHelper.clampZIntent(self, 0, wantZ);
             if (HeroUnarmedMoveHelper.shouldTakeOverZ(data, self, wantZ)) {
-                // 近距离精确对齐（末步截断，永不越过目标 Z）
+                // 近距离精确对齐（一步之内收手，永不越过目标 Z）
                 self.虎妙Z对齐 = {目标: t, 每帧速度: HeroUnarmedMoveHelper._getZSpeed(self)};
                 wantZ = 0;
             } else {
                 self.虎妙Z对齐 = null;
             }
+            // ★收口后的最后一程：目标贴边时由 Z 对齐接管小步走完（同 chase）
+            if (rawZ != 0 && wantZ == 0 && self.虎妙Z对齐 == null) {
+                self.虎妙Z对齐 = {目标: t, 每帧速度: HeroUnarmedMoveHelper._getZSpeed(self)};
+            }
             if (wantZ != 0) {
                 MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, 0, wantZ);
+                HeroUnarmedMoveHelper.syncZAlignInput(self);
             }
         } else {
             self.虎妙Z对齐 = null;

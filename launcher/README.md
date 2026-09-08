@@ -1,7 +1,7 @@
 # CF7:ME Guardian Launcher
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
-**最后核对代码基线**：release source `34a944055880f5e150cdf25053fffc4fd238cce7`（2026-09-08，地图主动撤退）；正式发布状态只读 manifest、consensus 与 runtime 文档。军阀专项边界另见[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)。
+**最后核对代码基线**：release source `1d03e77cb2666a4686e41ab4a647e180d2e5d0bc`（2026-09-09，理发店目录网格与 portrait 投影）；正式发布状态只读 manifest、consensus 与 runtime 文档。军阀专项边界另见[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)。
 ## 当前真值与阅读顺序
 
 正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：
@@ -337,7 +337,6 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 ## Panel 与 minigame 注册表
 
 **最后核对代码基线**：commit `630d7def1e78e48021334b67d32486c61ad4c051`（2026-08-17）。`Panels.open(id)` 首次命中 lazy entry 时，`lazy-loader.js` 按声明顺序加载依赖；成功 URL 按 promise 去重，失败 URL 驱逐缓存并允许重试。精确依赖顺序和注册集合以 [panels-lazy-registry.js](web/modules/panels-lazy-registry.js)为代码权威。
-
 <!-- launcher-panel-registry:start -->
 | id | 类别 | 最终注册模块 |
 |---|---|---|
@@ -347,6 +346,7 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 | `npcshop` | 工作台 | `modules/npcshop.js` |
 | `crafting` | 工作台 | `modules/crafting.js` |
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |
+| `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
 | `settings` | 全屏工具 / Launcher bootstrap shell | `modules/settings-panel.js` |
 | `skills` | 工作台 | `modules/skills.js` |
 | `help` | 工具 Panel | `modules/help-panel.js` |

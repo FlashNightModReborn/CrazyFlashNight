@@ -7,6 +7,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function(global, Runtime) {
     'use strict';
 
+    var Controls = global.CharacterIdentityControls;
     var config = null;
     var rootEl = null;
     var snapshot = null;
@@ -109,8 +110,7 @@
             + '   <div class="cc-panel-label">角色预览</div>'
             + '   <div class="cc-canvas-wrap"><canvas id="cc-preview-canvas" role="img" aria-label="当前角色外观预览"></canvas>'
             + '    <p id="cc-preview-fallback" class="cc-preview-fallback" aria-live="polite">正在准备角色预览...</p></div>'
-            + '   <label id="cc-preview-height-control" class="cc-preview-height" hidden><span id="cc-height-label">身高</span>'
-            + '    <span class="cc-height-range"><input id="cc-height" type="range" min="150" max="200" step="1" aria-labelledby="cc-step-title-1 cc-height-label" aria-describedby="cc-height-value"><output id="cc-height-value" for="cc-height">—</output></span></label>'
+            + Controls.heightMarkup('cc', true, 'cc-step-title-1')
             + '   <dl class="cc-preview-meta"><div><dt>性别</dt><dd id="cc-preview-gender">—</dd></div>'
             + '    <div><dt>发型</dt><dd id="cc-preview-hair">—</dd></div></dl>'
             + '   <div class="cc-tt-anchor" aria-hidden="true"></div>'
@@ -119,13 +119,8 @@
             + '   <div id="cc-loading" class="cc-loading" role="status">正在准备角色创建...</div>'
             + '   <section class="cc-step-panel" data-cc-panel="0" aria-labelledby="cc-step-title-0">'
             + '    <h2 id="cc-step-title-0">身份登记</h2>'
-            + '    <label class="cc-field cc-primary-name"><span>角色名 <button type="button" class="cc-help" id="cc-help-character" aria-label="说明角色名">?</button></span>'
-            + '     <input id="cc-character-name" name="characterName" autocomplete="off" aria-describedby="cc-character-help cc-error-characterName">'
-            + '     <small id="cc-character-help">这是游戏内最主要的姓名，最多 15 个字符。</small><em id="cc-error-characterName" class="cc-error"></em></label>'
-            + '    <fieldset class="cc-field cc-gender"><legend>性别</legend>'
-            + '     <label><input type="radio" name="cc-gender" value="male" checked><span>男性</span></label>'
-            + '     <label><input type="radio" name="cc-gender" value="female"><span>女性</span></label>'
-            + '    </fieldset>'
+            + Controls.nameMarkup('cc', true)
+            + Controls.genderMarkup('cc')
             + '    <details id="cc-advanced" class="cc-advanced">'
             + '     <summary>高级选项 <small>存档名默认跟随角色名</small></summary>'
             + '     <label class="cc-field"><span>存档显示名 <button type="button" class="cc-help" id="cc-help-display" aria-label="说明存档显示名">?</button></span>'
@@ -226,15 +221,10 @@
             clearFieldError('displayName');
             refreshReview();
         });
-        rootEl.querySelectorAll('input[name="cc-gender"]').forEach(function(input) {
-            input.addEventListener('change', function() {
-                if (!snapshot || !input.checked || isDraftLocked()) return;
-                Runtime.applyGender(snapshot, model, input.value);
-                rebuildAppearance();
-                refreshUi();
-                renderPreview();
-                flashPreviewSwap();
-            });
+        Controls.bindGender(rootEl.querySelectorAll('input[name="cc-gender"]'), function(value) {
+            if (!snapshot || isDraftLocked()) return;
+            Runtime.applyGender(snapshot, model, value);
+            rebuildAppearance(); refreshUi(); renderPreview(); flashPreviewSwap();
         });
         rootEl.querySelectorAll('[data-appearance-view]').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -248,9 +238,9 @@
                 setAppearanceDensity(button.getAttribute('data-density'), true);
             });
         });
-        byId('cc-height').addEventListener('input', function(event) {
+        Controls.bindHeight(byId('cc-height'), function(value) {
             if (!model || isDraftLocked()) return;
-            model.draft.height = Number(event.target.value);
+            model.draft.height = value;
             refreshPreviewMeta();
             renderPreview();
             refreshReview();
@@ -259,18 +249,11 @@
 
     function bindNameInput(input, kind) {
         if (!input) return;
-            input.addEventListener('compositionstart', function() { composing = true; });
-            input.addEventListener('compositionend', function() { composing = false; syncNames(kind); });
-            input.addEventListener('input', function() { syncNames(kind); });
-            input.addEventListener('keydown', function(event) {
-                if (event.key !== 'Enter') return;
-                if (composing || event.isComposing || event.keyCode === 229) {
-                    event.preventDefault();
-                    return;
-                }
-                event.preventDefault();
-                if (!isLocked() && snapshot) nextStep();
-            });
+        Controls.bindNameInput(input, {
+            onComposition:function(value) { composing = value; },
+            onChange:function() { syncNames(kind); },
+            onEnter:function() { if (!isLocked() && snapshot) nextStep(); }
+        });
     }
 
     function syncNames(source) {
@@ -1182,7 +1165,7 @@
         var hairName = hair ? hair.name : '未知发型';
         setText('cc-preview-hair', hairName);
         var canvas = byId('cc-preview-canvas');
-        var scale = 0.9 + (model.draft.height - 150) / 250;
+        var scale = Controls.previewScale(model.draft.height);
         canvas.style.setProperty('--cc-height-scale', String(scale));
         canvas.setAttribute('aria-label', (model.draft.gender === 'female' ? '女性' : '男性')
             + '角色，身高' + model.draft.height + '厘米，发型' + hairName);
@@ -1231,7 +1214,7 @@
         var generation = previewGeneration;
         var token = activeOpenRequestId;
         try {
-            renderer = global.DressupDollRenderer.create(byId('cc-preview-canvas'), {
+            renderer = global.CharacterAppearancePreview.create(byId('cc-preview-canvas'), {
                 manifest:manifest,
                 animate:false,
                 margin:18,
@@ -1356,20 +1339,11 @@
         if (!renderer || !manifest || !model) { updatePreviewFallback(); return; }
         try {
             var draft = model.draft;
-            var state = global.DressupDollRenderer.buildStateFromEquipment(manifest, {
-                gender:draft.gender === 'female' ? '女' : '男',
-                equipment:{
-                    '上装装备':draft.upperIdentifier,
-                    '下装装备':draft.lowerIdentifier,
-                    '脚部装备':draft.footwearIdentifier
-                },
-                appearance:{'脸型':draft.faceIdentifier, '发型':draft.hairIdentifier},
-                rig:'battle',
-                stateLabel:'空手站立',
-                margin:18,
-                zoom:0.96
-            });
-            lastRendererMeta = renderer.render(state);
+            lastRendererMeta = renderer.renderProfile(draft, {
+                '上装装备':draft.upperIdentifier,
+                '下装装备':draft.lowerIdentifier,
+                '脚部装备':draft.footwearIdentifier
+            }, {'脸型':draft.faceIdentifier, '发型':draft.hairIdentifier});
             rendererIssue = '';
         } catch (e) {
             rendererIssue = 'render_failed';

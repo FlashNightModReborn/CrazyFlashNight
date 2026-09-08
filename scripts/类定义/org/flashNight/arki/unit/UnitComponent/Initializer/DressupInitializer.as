@@ -382,6 +382,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         target.基础毒 = 0;
         target.基础吸血 = 0;
         target.基础击溃 = 0;
+        target.基础斩杀 = 0;
         target.基础伤害类型 = "物理";
         target.基础魔法伤害属性 = undefined;
         target.基础命中加成 = 0;
@@ -579,6 +580,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             if(data.poison) target.基础毒 += data.poison;
             if(data.vampirism) target.基础吸血 += data.vampirism;
             if(data.rout) target.基础击溃 += data.rout;
+            if(data.slay) target.基础斩杀 += data.slay;
             if(data.accuracy) target.基础命中加成 += data.accuracy;
         }
 

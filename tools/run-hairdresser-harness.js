@@ -17,7 +17,8 @@ function read(relative) {
 function staticAudit() {
     const runtime = read('launcher/web/modules/hairdresser-runtime.js');
     const panel = read('launcher/web/modules/hairdresser.js');
-    const css = read('launcher/web/css/hairdresser.css');
+    const css = read('launcher/web/css/hairdresser.css') + '\n'
+        + read('launcher/web/css/appearance-service.css');
     const harness = read('launcher/web/modules/hairdresser/dev/harness.html');
     const manifest = JSON.parse(read('launcher/web/assets/dressup/manifest.json'));
     const hairstyle = read('data/items/hairstyle.xml');
@@ -52,16 +53,65 @@ function staticAudit() {
         || !panel.includes("bald ? ['脸型'] : ['脸型', '发型']")) {
         throw new Error('strict face/hair-only non-animated preview contract missing');
     }
+    // 全身路径正向契约：共享战斗 rig 包装、portrait 门控、理发店不遮发、
+    // 两个渲染器都保持 animate:false，且模式切换不得重置本地试戴选中。
+    const modeSwitch = panel.match(/function setPreviewMode\(mode, user\) \{[\s\S]*?\n    \}/);
+    if (!panel.includes('CharacterAppearancePreview.create')
+        || !panel.includes('CharacterAppearancePreview.buildStateFromEquipment')
+        || !panel.includes('function normalizePortrait')
+        || !panel.includes('_previewModeEl.hidden = !_portrait')
+        || !panel.includes('state.hairHidden = false')
+        || !panel.includes("data-preview-mode")
+        || !panel.includes("'脸部特写'")
+        || !panel.includes("'全身'")
+        || panel.indexOf('animate: false') === panel.lastIndexOf('animate: false')) {
+        throw new Error('portrait-gated non-animated full-body preview contract missing');
+    }
+    if (!modeSwitch || /_selectedIndex\s*=/.test(modeSwitch[0])) {
+        throw new Error('preview mode switch must never reset the local trial selection');
+    }
+    // 性别页签正向契约：名称前缀确定性解析 helper + 三页签 + 中性项随签显示；
+    // 禁的是不可靠推断与目录身份篡改（排序/去重/猜测/泛型框架），不是用户自选展示分组。
+    if (!panel.includes('function hairGenderGroup')
+        || !panel.includes("/^发型[-－_\\s]*(男式|女式)/")
+        || !panel.includes("GENDER_TABS = ['全部', '男式', '女式']")
+        || !panel.includes("'中性'")
+        || !panel.includes("data-gender-tab")) {
+        throw new Error('deterministic name-prefix gender tab contract missing');
+    }
     if (/\.(?:sort|reverse|splice)\s*\(\s*\)/.test(panel)
-        || /gender.*(?:filter|guess)|(?:filter|guess).*gender/i.test(panel)
+        || /guess|dedup/i.test(panel)
         || /new\s+(?:Catalog|Appearance|Pricing|Token|Lease)/.test(panel)) {
-        throw new Error('catalog order/filter or generic framework regression found');
+        throw new Error('catalog order/identity or generic framework regression found');
+    }
+    // 图标网格/双密度/键盘列数/当前卡/变更摘要正向契约。
+    if (!panel.includes('function hairIconVisual')
+        || !panel.includes('function resolveHairIconEntry')
+        || !panel.includes('hairdresser-style-icon-fallback')
+        || !panel.includes("CATALOG_DENSITY_KEY = 'cf7.hairdresser.catalog-density'")
+        || !panel.includes('function computedCatalogColumns')
+        || !panel.includes('aria-posinset')
+        || !panel.includes('aria-setsize')
+        || !panel.includes('function hairDisplayParts')
+        || !panel.includes('function renderCurrentCard')
+        || !panel.includes('hairdresser-current-card')
+        || !panel.includes('hairdresser-summary')
+        || !panel.includes(' → 试戴：')) {
+        throw new Error('icon grid/density/keyboard/current-card/summary contract missing');
     }
     if (!css.includes('#panel-container[data-panel="hairdresser"] #panel-content')
-        || !css.includes('.hairdresser-preview-fallback')
-        || !css.includes('.hairdresser-panel button:focus-visible')
+        || !css.includes('.appearance-service-preview-fallback')
+        || !css.includes('.appearance-service-panel :is(button, input):focus-visible')
         || !css.includes('@media (prefers-reduced-motion: reduce)')) {
         throw new Error('hairdresser standalone/accessibility CSS contract missing');
+    }
+    if (!css.includes('.hairdresser-gender-tabs')
+        || !css.includes('[data-density="compact"]')
+        || !css.includes('.hairdresser-current-card')
+        || !css.includes('.hairdresser-preview-mode')
+        || !css.includes('.hairdresser-summary')
+        || !css.includes('.hairdresser-style-icon')) {
+        throw new Error('hairdresser grid/tab/card/summary/mode CSS contract missing');
     }
     if (!harness.includes('/data/items/hairstyle.xml')
         || !harness.includes("mode:'unknown_applied'")
@@ -69,6 +119,19 @@ function staticAudit() {
         || !harness.includes("mode:'drop_applied'")
         || !harness.includes('fresh currentHair comparison overrides contradictory Host hint')) {
         throw new Error('hairdresser authority/reconcile harness matrix missing');
+    }
+    if (!harness.includes('character-appearance-preview.js')
+        || !harness.includes('__portraitOverride')
+        || !harness.includes('compact icon grid renders 76 real artwork images')
+        || !harness.includes('current hair card mirrors the saved style')
+        || !harness.includes('change summary contrasts saved and trial styles')
+        || !harness.includes('gender tabs expose deterministic name-prefix groups')
+        || !harness.includes('switching tabs never drops the local trial selection')
+        || !harness.includes('catalog keyboard navigation is column aware')
+        || !harness.includes('density preference survives panel reopen')
+        || !harness.includes('preview mode control stays hidden when the snapshot carries no portrait')
+        || !harness.includes('full-body preview draws battle equipment plus the trial hair even under a helmet')) {
+        throw new Error('hairdresser grid/tab/summary/full-body harness journeys missing');
     }
     if (rows.length !== 77 || rows.some((row, index) => row.id !== index)) {
         throw new Error('AS2 hairstyle source no longer contains ordered ids 0..76');
@@ -213,6 +276,10 @@ async function runViewport(browser, server, viewport) {
 
 (async function main() {
     staticAudit();
+    if (process.argv.includes('--static-only')) {
+        console.log('Hairdresser static audit passed; browser not run.');
+        return;
+    }
     runtimeAudit();
     if (!fs.existsSync(PLAYWRIGHT)) {
         throw new Error('Missing Playwright; run npm --prefix launcher/perf ci --ignore-scripts');

@@ -1,10 +1,11 @@
 /** Bootstrap character-create snapshot normalization and draft validation. */
 (function(root, factory) {
     'use strict';
-    var api = factory();
+    var api = factory(typeof module !== 'undefined' && module.exports
+        ? require('./character-identity-controls.js') : root.CharacterIdentityControls);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.BootstrapCharacterCreateRuntime = api;
-})(typeof window !== 'undefined' ? window : globalThis, function() {
+})(typeof window !== 'undefined' ? window : globalThis, function(IdentityControls) {
     'use strict';
 
     var GENDERS = ['male', 'female'];
@@ -342,13 +343,8 @@
         if (!draft) return {valid:false, errors:{form:'角色资料不可用。'}};
         var constraints = snapshot.constraints;
         var characterName = trimmed(draft.characterName);
-        var validCharacterName = text(
-            characterName,
-            constraints.characterNameMin,
-            constraints.characterNameMax,
-            false) !== null;
-        if (!validCharacterName)
-            errors.characterName = '角色名需为 1–15 个字符，且不能包含控制字符。';
+        var characterNameError = IdentityControls.characterNameError(characterName);
+        if (characterNameError) errors.characterName = characterNameError;
         var displayNameCustomized = !!(model && model.displayNameCustomized);
         var rawDisplayName = trimmed(model && model.displayName);
         var displayName = displayNameCustomized

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1788801012" lastUniqueIdentifier="320">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1788874256" lastUniqueIdentifier="320">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="3">
+    <DOMTimeline name="主角-男" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4" locked="true">
           <frames>
@@ -1027,7 +1027,7 @@ onClipEvent (load) {
 	// 此处只保留 NPC AI 逻辑
 	if (!落地)
 	{
-		if (_parent.hp > 0 && (_parent.名字 == "Andy" || _parent.名字 == "Blue" || _parent.名字 == "Boy") && _parent._name != _root.控制目标)
+		if (_parent.hp > 0 && (_parent.名字 == "Andy" || _parent.名字 == "Blue" || _parent.名字 == "Boy" ||  _parent.击倒时小跳) && _parent._name != _root.控制目标)
 		{
 			temp_随机小跳值 = random(15);
 			if (temp_随机小跳值 == 0)

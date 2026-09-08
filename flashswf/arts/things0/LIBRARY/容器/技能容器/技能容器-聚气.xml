@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-聚气" itemID="694a270a-0000167d" linkageExportForAS="true" linkageIdentifier="技能容器-聚气" lastModified="1788894519">
   <timeline>
     <DOMTimeline name="技能容器-聚气" currentFrame="20">
       <layers>
@@ -53,8 +53,9 @@ if (_parent.mp > 0)
 技能内力加成 = Math.min(技能内力加成, 175);
 _parent.buff.赋值("内力","加算",技能内力加成,"增益");
 //_parent.防御力 += _parent.技能防御力加成;
-_root.发布消息("将hp与mp转换为内力，获得" + 技能内力加成 + "点内力buff加成，内力总额为" + Math.floor(_parent.内力) + "点！");
-
+if(_parent._name == _root.控制目标){
+	_root.发布消息("将hp与mp转换为内力，获得" + 技能内力加成 + "点内力buff加成，内力总额为" + Math.floor(_parent.内力) + "点！");
+}
 if (_parent.被动技能.内力爆发 && _parent.被动技能.内力爆发.启用 && _parent.hp > 10 && _parent.mp > 10)
 {
 	_parent.hp -= 10;

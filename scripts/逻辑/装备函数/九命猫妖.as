@@ -15,6 +15,9 @@ _root.装备生命周期函数.九命猫妖初始化 =  function(反射对象, �
     自机.麻痹值 = -1000;
     自机.respawn = true;
     自机.死亡撤退 = true;
+    // 击倒脱困走原生机制（主角-男.xml:1030 被击飞击倒 帧脚本）：!落地 期间每帧 random(15)
+    // 掷骰——0=小跳、1/2=上下跳、3=前跳。自研 _knockdownEscapeTick 已删除，靠此属性启用原生脱困。
+    自机.击倒时小跳 = true;
 
     // ─────────────────────────────────────────────────────────────
     // 虎妙共用配置（2026-09-07 自独立的 虎妙头套初始化 合并于此，不再单设头套初始化）：
@@ -72,7 +75,11 @@ _root.装备生命周期函数.九命猫妖初始化 =  function(反射对象, �
                                 // 通用层 data.zrange 由 HeroUnarmedAI 单独覆写为 20）
         交战Z死区: 5,            // 交战中继续微调 Z 的停止阈值：进入交战用 攻击判定Z（宽松，保证能开打），
                                 // 进入后继续贴到本死区才停，否则会卡在阈值边缘反复进出交战（Z轴来回走）
-        平A保底概率: 0.15,       // 射程内平A保底：技能裁决之前先掷骰子，命中即走平A（性能考虑由 25% 下调）
+        平A保底概率: 0.3,        // 射程内平A保底：技能裁决之前先掷骰子，命中即开一个平A窗口
+                                // （2026-09-08 由 0.15 上调：要求"技能间隙尽可能多平A"）
+        平A窗口帧: 30,           // 平A触发后至少持续回写 动作A 的帧数（约1秒）。空手连段靠持续按键推进，
+                                // 只写一次 动作A 只能打出第一下 → 必须逐 tick 续写。
+                                // 击倒/浮空/倒地/脱离射程/低血受威胁 一律中断窗口，交回技能裁决
         迂回最长秒数: 2.5,       // Evade 状态上限，到点强制回战斗（禁无限逛街）
         迂回横向最大位移: 120,   // Evade 期间横向跑动封顶
         低血阈值: 0.5,
@@ -124,8 +131,8 @@ _root.装备生命周期函数.九命猫妖初始化 =  function(反射对象, �
     var 空中技能组配置:Array = null;
 
     自机.已学技能表 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildLearnedTable(技能组配置);
-    自机.虎妙战技组 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildBattleSkills(战技组配置);
-    自机.虎妙空中技能组 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildAirSkillGroup(空中技能组配置);
+    自机.单位战技组 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildBattleSkills(战技组配置);
+    自机.单位空中技能组 = org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable.buildAirSkillGroup(空中技能组配置);
 
     // ── 4. AI 强制迁移：销毁默认 AI（主角模板 unitAIType="Mecenary"）→ 挂载空手专用 AI ──
     // 依据：UpdateEventComponent 每 4 帧调 unitAI.update()；StaticDeinitializer 调 unitAI.destroy()；
@@ -175,7 +182,7 @@ _root.装备生命周期函数.真九命猫妖初始化 =  function(反射对象
     自机.被动技能.拳脚攻击 = {技能名:"拳脚攻击", 等级:10, 启用:true};
     自机.被动技能.内力爆发 = {技能名:"内力爆发", 等级:10, 启用:true};
     自机.被动技能.独行者 = {技能名:"独行者", 等级:10, 启用:true};
-    自机.被动技能.裂地拳 = {技能名:"升龙拳", 等级:10, 启用:true};
+    自机.被动技能.升龙拳 = {技能名:"升龙拳", 等级:10, 启用:true};
     自机.被动技能.裂地拳 = {技能名:"裂地拳", 等级:10, 启用:true};
 
     // 注意：声库（攻击/中招/击倒呐喊三库）已于 2026-09-07 迁往上方 九命猫妖初始化（真猫妖头套挂载）
@@ -234,7 +241,7 @@ _root.装备生命周期函数.九命猫妖周期 = function(反射对象, 参�
         自机.动作模组切换计数 ++;
         if (自机.动作模组切换计数 >= 300) {
             自机.动作模组切换计数 = 0;
-            var 动作模组表:Array = ["兽形拳", "兽王崩拳", "破极拳", "截拳", "迅驰腿", "强化", "拳击"];
+            var 动作模组表:Array = ["破极拳", "截拳", "迅驰腿", "强化", "迅驰腿", "拳击", "破极拳", "截拳", "迅驰腿"];
             自机.空手动作类型 = 动作模组表[Math.floor(Math.random() * 动作模组表.length)];
         }
     }

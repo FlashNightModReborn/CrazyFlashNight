@@ -8,8 +8,7 @@
     'use strict';
 
     var TUNING_DEPS = [
-        'modules/asset-timeline.js',
-        'modules/dressup-doll-renderer.js',
+        'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',
         'modules/workbench-inspection-viewport.js',
         'modules/equipment-inspector.js',
         'modules/equipment-tuning-runtime.js',
@@ -25,6 +24,7 @@
         'modules/inventory-tuning-scope.js'
     ];
     var BUILD_DEPS = TUNING_DEPS.concat([
+        'modules/character-appearance-preview.js',
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',

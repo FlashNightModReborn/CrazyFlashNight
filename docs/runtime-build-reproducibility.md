@@ -2,7 +2,40 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-08 当前正式发布：选关前台交接与返回重试
+## 2026-09-09 当前正式发布：理发店目录网格与共享外观服务动效
+
+理发店目录改为 manifest 发型图标网格（紧凑 / 完整双密度、性别页签、当前发型卡与变更摘要），新增全身 / 脸部特写预览切换（共享主体取景、试戴场景不遮发、旧 asLoader 缺 `portrait` 完全降级）；服务面板共享换装扫描光与微交互基线，整形补语义音效、共享红色错误行与身高过渡；hairdresser snapshot 新增可选 `portrait` 装备投影，Host 缺失放行、存在严格校验，新旧 Core 与 asLoader 双向偏斜安全；发型免费契约 `pricing_unsupported` 不动。功能、协议、契约更新与验证边界见[理发店网格说明](理发店目录图标网格与共享外观服务动效-2026-09-08.md)。
+
+- release source `1d03e77cb2666a4686e41ab4a647e180d2e5d0bc`；不可变 tag `runtime-build-v2/20260909-hairdresser-grid-v1`；release tree `9f4589240cb5e9b32e68897c84907fe4d0fe6932`；request `506501A386CF7DE1D9190C067E7A35E07201042ACC9D902B3C34049D82317A16`。
+- artifact source `43965DC335516E8B9B9A7A1E699B1CD52D68BE48D74F7199945B6C07E9AC3C1A`、producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`、toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`，形成 identity `E9A5CB8B197E9E11613A73AFEE0C5948FA2775CD7605478491034F28C01BBB07`；正式 33-file closure `45928E8531265638F61CD7E8260B6DA4F9F6205FC795E8164CA18359B850FA5F`；Core DLL SHA-256 `8F55BCB6C9541A21B2BA622251F821ADCC6482F36A0C7AE2B23AF8B80C9420FA`。
+- 本地 X509 `builder-local-a / physical-host-a`，keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `0DB3937109370E092BCC708092B7B76F192A94DEDCB5131E7C41ADA4CB0C541E`，[cloud run 34253257230](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34253257230)。两端正式 producer 的 33 个 payload 文件逐字节一致；云端 source tag、workflow SHA 与 run headSha 绑定上述 source，attestation-only 证明已在 promotion 中对本地 CAS 完整重放。
+- production policy **40/40**；policy hash `4524763835AE36CFC09E8F0273BDFE52CEB6368532321B0EB467520250818752`；receipt SHA-256 `62A6ED834DF16B545E0A02A9B87C4D1FEE6ECDC1B3D166308F1E387B4ADF92B5`；manifest SHA-256 `C8992F8C9B8130AB3595F1687A5C03B79480C9200E1ACE183AFEA7BDE9511199`；磁盘 consensus SHA-256 `A85524504721CF6A6C2D12551E91B85DB71E53B88E14AD0D1E0644D8D0F1383A`。
+- consensus 记录 promotion 时间 `2026-09-08T17:03:50.8323522Z`；原子 promotion、strict v2 **2 signers / 2 faultDomains**、33-file bundle 和本机正式根 bootstrap `--verify-only` 均通过。上一完整 bundle 保留于 `tmp/runtime-promotions/20260908T170316426Z-64d3746faf814d53b466933eaafe2cf2/previous`。
+
+本轮先整合上游基础斩杀与虎妙数值调整（2 个提交），`.as` 自动合并无文本冲突，asLoader 由合并后源码重发（1,285,649 字节，SHA-256 `71406672B550B968D5FECF9C2FACD210789DE5882355C7A75A0359E3A87E8DF9`，双侧符号探针前后对比确认）；合并后 TestLoader 理发店 39/39、类归属审计 main 0 / asLoader 634 / 重复 0。首个 request `1BAE5720B16A86C670A3E5C28A82989E4574DB04246E0326203FBA92E435A59D` 因 production policy 暴露 WB130 CSS 债务越限停止（本列车新增 4 处减债修复、rawColor 上限随 WB131 纪律收紧 2089→2088、材料字典补派生上游颈部装备改动；整形时代既有 33 处 WB122 触碰行不在政策考核且未新增）；第二个 request `5690F5CEB13C86D9E8651C49A44F45BDAF93AEF48A1948FF9473EE278791FEFE` 因 source commit 未上远端且 `sourceRef` 未指向本列车 tag 停止，补齐推送与 config 后由最终 request 原子 supersede；两者均未 dispatch、未 promotion。三轮 build identity 不变（CSS / 字典 / config 均属 policy 域），本地 X509 candidate 按身份幂等复用，payload closure 全程一致。合并后上游浮空修复（`cc56d2cd73`）在 release source 之后到达，未进入本次发布闭包与 asLoader，属下一列车。
+
+当前为 **promoted / FIELD_REVALIDATION_PENDING**：部署闭包完整性、双 signer 共识与原子替换已由机器门与远端 Audit 确认；理发店图标网格手感与 tooltip 落点、`portrait` 全身预览真机画面、整形音效与红行观感、基础斩杀 AI 行为均未在正式入口复验，不称业务或完整产品 `standard_entry_verified`。上一发布（医务室整形）的 `HUMAN_ACCEPTANCE_PASSED / promoted` 范围保持原记录。
+
+源码与部署提交 `c595bc2cd261342d37cd461cf5ff08ee62b9c76a`（含部署提交 `03471c52fc6c91511df046def69739cc5bf3d738` 与上游浮空修复的合并）已快进推送至 `main`。源码推送 [Audit run 34252003361](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34252003361) 成功报告 `source-ahead`；部署后首次远端 [Audit run 34255411571](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34255411571) 成功，绑定 `event=push / run_attempt=1` 与该部署 head，于 `2026-09-08T17:15:01Z` 报告 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `cc56d2cd730d40c3540743c8d366c88e00bb7874` → head `c595bc2cd261342d37cd461cf5ff08ee62b9c76a`；远端独立重放 33-file closure、2 signers / 2 faultDomains 和最终 source tag 绑定全部通过。本轮没有新建 Git worktree；构建证明与上一 bundle 保留本机。
+
+## 2026-09-08 上一正式发布：医务室整形与共享外观预览
+
+医务室整形迁入 Web，维持姓名、性别、身高与 5 K 点规则，由 AS2 独占应用、扣费和严格保存。建角、整形与角色构筑共用主体取景及头盔遮发，理发与整形共用服务样式和实时外观刷新；旧整形兼容壳及 24 个专属素材已删除，医务室直接调用新入口。功能、协议及限定人类证据见[整形说明](医务室整形-Web面板与外观共享-2026-09-08.md)。
+
+- release source `c59b9b4cdb9319c04503a703019a9dff30bc04a1`；不可变 tag `runtime-build-v2/20260908-plastic-surgery-v1`；release tree `4371722b00df388cfbad426e6e9b515a7f9aaf49`；request `4D0FB076CB4B6AFFA448302F76CEEADEE9653E36A49607F32109873FA553DEA9`。
+- artifact source `A1ACBFAC0CBB5F3EB96D559D5C8F49C5D0B63C619FDB7DB71D2D8AB15F8977F6`、producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`、toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`，形成 identity `E2A9CFCC21D492BF29A6921AAB70835BDBC2E5C05D09DE0C62FEB9EB14F0BB78`；正式 33-file closure `1A09A42A83AD804971E84404182EFF2B6660D1AF5030F80A8B6E9E1C9ABB7209`；Core DLL SHA-256 `7B5B9C4CA966F26AAC12D77F93E3E2F283038D7B68EDDBE8680008D473903CE8`。
+- 本地 X509 `builder-local-a / physical-host-a`，keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `45C84C9FA2E86B78D15A9B96CF09D52645E57F7BE3352DA63BC1FC0381184E2D`，[cloud run 34215871779](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34215871779)。两端正式 producer 的 33 个 payload 文件逐字节一致；云端 source tag、workflow SHA 与 run headSha 绑定上述 source，attestation-only 证明已在 promotion 中对本地 CAS 完整重放。
+- production policy **40/40**；policy hash `7631A105068377971C1C6C5E624A57046FE069917B9FDF1B6223D740980BAAEA`；receipt SHA-256 `29E53646A63364952BA32185D822718603725C3E94F453F599C551E06F92448E`；manifest SHA-256 `787C59C998438F958F3D518660F470B013182F8B3C37CF8FECF56F681163D3EB`；磁盘 consensus SHA-256 `96FA6A4BC94C1BA8DDE68862E639537A2F4F51AD74DD998D29C13AD64DEE122E`。
+- consensus 记录 promotion 时间 `2026-09-08T10:38:16.7990112Z`；原子 promotion、strict v2 **2 signers / 2 faultDomains**、33-file bundle 和本机正式根 bootstrap `--verify-only` 均通过。上一完整 bundle 保留于 `tmp/runtime-promotions/20260908T103754543Z-09c345f61ba54683890e60ef9aff467b/previous`。
+- 上游合并后 Launcher canonical **4,846 passed / 3 existing skipped / 0 failed**，整形 TestLoader **44/44**、fresh Compiler **0/0**；共享预览 70 组真实武器比较、头盔遮发、人物占高、保存点登记、协议、CSS 闭包与文档治理通过。合并后 asLoader 为 1,284,839 字节，SHA-256 `D7312E648E3B4A1E0C99F913B07EDB7A14EBB628EF22EEAF60FA7C6416F0CEBE`；UI 库和基地场景库的独立 CS6 发布证据见整形说明 §6。
+
+本轮先整合上游 5 个提交，保留选关前台交接、返回重试与武器表现更新；资源索引按合并后真源重建，冲突的 asLoader 重新由双方源码发布。prepare 生成的修档字典进入冻结树，保存登记行号随上游同步；共享样式减少颜色常量，并将相应数量上限从 2,092 收紧至 2,089，没有放宽检查。准备请求 `651A76027C014F33DDD409A2DC66998BB4CB3C674B35745BC5544059E80398B5` 已 supersede，隔离 checkout 失败发生在 producer 之前；最终请求通过独立 Windows PowerShell 进程正常构建，只有上述最终 source tag 进入云构建。
+
+当前为 **HUMAN_ACCEPTANCE_PASSED / promoted**，限定为维护者确认的整形画面、共享取景和新医务室入口，以及候选普通日志中三次各扣 5 K 点并严格保存成功、余额不足拒绝且不追加扣费。合并上游后的正式 native identity 与早期隔离候选不同；部署后没有启动游戏补跑正式入口业务，不称整形、理发、建角或完整产品 `standard_entry_verified`。既有焦点与返回流程的验收范围保持上一发布记录。
+
+源码与部署提交 `b89d7b8c7f7cb497c45e255459e7a809319c4a90` 已一起快进推送至 `main`。首次远端 [Audit run 34216977097](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34216977097) 成功，绑定 `event=push / run_attempt=1` 与该部署 head；于 `2026-09-08T10:48:36.4784868Z` 明确报告 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `d92611b41cdb1a11b9ec9dedb2ba4d53f1f6c7a3` → head `b89d7b8c7f7cb497c45e255459e7a809319c4a90`。远端独立重放的 33-file closure、2 signers / 2 faultDomains 和最终 source tag 绑定全部通过。本轮没有新建 Git worktree，worker 隔离 checkout 已自动清理；构建证明与上一 bundle 保留本机。后续审计记录提交只改本文，不改变已审计的部署闭包。
+
+## 2026-09-08 上一正式发布：选关前台交接与返回重试
 
 选关／地图／奖励面板完整隐藏前，仍持有前台时先交回游戏根窗口；外部前台保护不放宽。返回准备、存盘或转场失败后保留冻结奖励与 durable 事实，通过原生“重试返回”继续；开发和候选验收统一使用 `本地开发启动.cmd`。实现与限定现场证据见[焦点诊断 §9.13](焦点管理-诊断与卡顿排查-2026-05-24.md#913-2026-09-08选关关闭前的前台交接)及[关卡结果 ADR §0D](关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0d-2026-09-08-返回失败后的原生重试入口)。
 

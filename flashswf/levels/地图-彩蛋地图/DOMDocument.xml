@@ -114,7 +114,7 @@
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/Bitmap 9" itemID="688f4a68-00000f98" sourceExternalFilepath="Bitmap 9.png" sourceLastImported="1754221160" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/Bitmap 9.png" bitmapDataHRef="M 13 1757955538.dat" frameRight="8900" frameBottom="12100"/>
           <DOMBitmapItem name="所有素材/bitmap1.png" itemID="65fb1448-000039bf" sourceExternalFilepath="./LIBRARY/所有素材/bitmap1.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap1.png" bitmapDataHRef="M 3 1710953628.dat" frameRight="5540" frameBottom="4480"/>
           <DOMBitmapItem name="所有素材/bitmap37.png" itemID="65fb1448-000039c9" sourceExternalFilepath="./LIBRARY/所有素材/bitmap37.png" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap37.png" bitmapDataHRef="M 1 1710953628.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="所有素材/bitmap6.jpg" itemID="65fb1448-000039c4" sourceExternalFilepath="./LIBRARY/所有素材/bitmap6.jpg" sourceLastImported="1710953544" originalCompressionType="lossless" quality="50" href="所有素材/bitmap6.jpg" bitmapDataHRef="M 2 1710953628.dat" frameRight="4000" frameBottom="4000"/>
+          <DOMBitmapItem name="所有素材/bitmap6.jpg" itemID="65fb1448-000039c4" sourceExternalFilepath="./LIBRARY/所有素材/bitmap6.jpg" sourceLastImported="1710953544" quality="50" href="所有素材/bitmap6.jpg" bitmapDataHRef="M 2 1710953628.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣大腿左" itemID="68987c8f-000001da" sourceExternalFilepath="Bitmap 17.png" sourceLastImported="1754823823" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣大腿左.png" bitmapDataHRef="M 24 1757955538.dat" frameRight="8280" frameBottom="13540"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣头" itemID="68987b8a-00000179" sourceExternalFilepath="Bitmap 1.png" sourceLastImported="1754823562" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣头.png" bitmapDataHRef="M 29 1757955538.dat" frameRight="23140" frameBottom="24780"/>
           <DOMBitmapItem name="NPC/NPC-大圣/正常大圣/大圣下半身" itemID="68987b8e-0000017a" sourceExternalFilepath="Bitmap 7.png" sourceLastImported="1754823566" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="NPC/NPC-大圣/正常大圣/大圣下半身.png" bitmapDataHRef="M 20 1757955538.dat" frameRight="10620" frameBottom="18760"/>
@@ -402,6 +402,7 @@
           <Include href="shape/Symbol 476.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a5" lastModified="1704196122"/>
           <Include href="shape/Symbol 2386.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b38" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1757958923"/>
+          <Include href="Symbol 2363.xml" loadImmediate="false" itemID="6aa04a7f-00000d70" lastModified="1788889727"/>
           <Include href="UI重构/可互动的任务接取PC.xml" loadImmediate="false" itemID="660ceb90-00001057" lastModified="1712123235"/>
           <Include href="UI重构/门提示.xml" loadImmediate="false" itemID="6603bcd7-00000dbc" lastModified="1711520998"/>
           <Include href="UI重构/商店相关/npc商店名称UI.xml" loadImmediate="false" itemID="668a5bba-000008f1" lastModified="1720795931"/>
@@ -411,7 +412,7 @@
           <Include href="补间 6.xml" itemIcon="1" loadImmediate="false" itemID="6a9d97bd-000029aa" lastModified="1788712893"/>
           <Include href="补间 7.xml" itemIcon="1" loadImmediate="false" itemID="6a9d97d7-000029ac" lastModified="1788712919"/>
           <Include href="场景门.xml" loadImmediate="false" itemID="66f5a03f-00000e56" lastModified="1762819594"/>
-          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1788795540"/>
+          <Include href="地图-彩蛋地图.xml" itemID="660112d4-00000ccf" lastModified="1788889739"/>
           <Include href="所有素材/1.冷兵器/锐器/石中剑/石中剑.xml" loadImmediate="false" itemID="6565f5fa-00000027" lastModified="1702565773"/>
           <Include href="所有素材/1.冷兵器/重锐器/轮盘重工/未命名文件夹 1/Symbol 4834.xml" itemIcon="1" loadImmediate="false" itemID="6577bc3f-00001eb6" lastModified="1702237154"/>
           <Include href="所有素材/1.冷兵器/重锐器/勇气灵剑/勇气灵剑.xml" itemIcon="1" loadImmediate="false" itemID="65f6e6b6-00001d6b" lastModified="1710679780"/>

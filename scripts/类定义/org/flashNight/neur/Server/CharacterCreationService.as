@@ -1,6 +1,4 @@
-﻿
-
-import org.flashNight.neur.Event.EventBus;
+﻿import org.flashNight.neur.Event.EventBus;
 import org.flashNight.arki.ui.HairdresserPanelService;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.InventoryPanelService;
@@ -361,19 +359,8 @@ class org.flashNight.neur.Server.CharacterCreationService {
     }
 
     private static function validateDraft(draft:Object, hairCatalog:Array):Object {
-        if (typeof draft.characterName != "string"
-                || draft.characterName.length < 1 || draft.characterName.length > 15
-                || containsControlCharacter(draft.characterName)) {
-            return {success:false, error:"invalid_character_name"};
-        }
-        if (draft.gender !== "male" && draft.gender !== "female") {
-            return {success:false, error:"invalid_gender"};
-        }
-        if (typeof draft.height != "number" || isNaN(draft.height)
-                || Math.floor(draft.height) != draft.height
-                || !(draft.height > 149) || !(draft.height < 201)) {
-            return {success:false, error:"invalid_height"};
-        }
+        var identityError:String = org.flashNight.arki.unit.CharacterIdentityRules.validate(draft);
+        if (identityError != "") return {success:false, error:identityError};
 
         var gender:String = String(draft.gender);
         var face:String = gender == "male"

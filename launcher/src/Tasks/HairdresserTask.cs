@@ -45,6 +45,14 @@ namespace CF7Launcher.Tasks
                 "save_unavailable",
                 "refresh_unavailable"
             };
+        // 与 PlasticSurgeryTask.Slots 相同的 11 槽白名单；该集合是整形 Task 的
+        // 私有成员，按协议纪律在本 Task 平行定义、不跨 Task 引用，槽集变化需同步评审。
+        private static readonly HashSet<string> PortraitSlots =
+            new HashSet<string>(StringComparer.Ordinal)
+            {
+                "头部装备", "上装装备", "下装装备", "手部装备", "脚部装备", "颈部装备",
+                "长枪", "手枪", "手枪2", "刀", "手雷"
+            };
 
         private readonly PanelPendingCallTracker<PendingRequest> _pendingCalls;
         private readonly object _lock = new object();
@@ -486,7 +494,35 @@ namespace CF7Launcher.Tasks
                 if (string.Equals(identifier, currentHair, StringComparison.Ordinal))
                     currentHairFound = true;
             }
-            return currentHairFound;
+            // portrait 是可选附加投影：旧 asLoader 不回传时保持既有权威判定；
+            // 存在时按 PlasticSurgeryTask 同款形状严格校验，不合格即整包畸形。
+            return currentHairFound && IsValidOptionalPortrait(msg["portrait"]);
+        }
+
+        private static bool IsValidOptionalPortrait(JToken token)
+        {
+            if (token == null) return true;
+            JObject portrait = token as JObject;
+            JObject equipment =
+                portrait != null ? portrait["equipment"] as JObject : null;
+            if (equipment == null) return false;
+            string hair;
+            string face;
+            if (!TryReadSafeString(portrait["hair"], 160, true, out hair)
+                || !TryReadSafeString(portrait["face"], 160, true, out face))
+            {
+                return false;
+            }
+            foreach (JProperty property in equipment.Properties())
+            {
+                string itemName;
+                if (!PortraitSlots.Contains(property.Name)
+                    || !TryReadSafeString(property.Value, 160, false, out itemName))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private static bool IsAuthoritativeCommit(
