@@ -17,6 +17,8 @@
 
 当前为 **HUMAN_ACCEPTANCE_PASSED / promoted**，人类结论限定为已实际覆盖的地图中途撤退、保存确认和再次入场。胜利/死亡的新地图入口、非零奖励领取、最后一次退出后的 pending 恢复未在本次现场覆盖；部署后未自动补跑正式入口业务旅程，不称业务或完整产品 `standard_entry_verified`。
 
+部署提交 `4843aca1c71bb763b184160640c278c1e4cbfabb` 已快进推送到 `main`。首次远端部署审计 [run 34177319401](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34177319401) 成功，绑定 `event=push / run_attempt=1` 与该部署 head，于 `2026-09-08T01:42:59.1532041Z` 明确输出 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `9a41356e067a96812dc8e2ef876fd799409a464c` → head `4843aca1c71bb763b184160640c278c1e4cbfabb`。远端独立重放的 33-file closure、2 signers / 2 faultDomains 与绑定最终 source tag 的 GitHub proof 全部通过。
+
 ## 2026-09-07 上一正式发布：地图内容创作工作台第二阶段
 
 地图工作台第二阶段现已进入正式 runtime：页面／地点／NPC 驻点／原任务端点／素材候选与同一 C# 地图域，配套有限 AS2 事实桥和导航新鲜度检查。作者画布默认“创作视图”，可编辑当前剧情隐藏的内容；“玩家预览”仍严格消费同一权威投影。保存后关闭／重开查询、地图回包编号与切页反馈竞争均已修复。能力和使用入口见[地图工作台](../tools/map-workbench/README.md)，完整实施及验收边界见[两阶段记录](地图工作台与CSharp收束-两阶段施工-2026-09-06.md)。
