@@ -43,11 +43,14 @@ namespace CF7Launcher.Guardian
         public bool CanReturnBase { get; private set; }
         public string Settlement { get; private set; }
         public int RemainingRewards { get; private set; }
+        public string ReturnFailure { get; private set; }
+        public bool HasReturnFailure { get { return !string.IsNullOrEmpty(ReturnFailure); } }
 
         public bool ShouldDisplay
         {
             get
             {
+                if (HasReturnFailure) return true;
                 if (Settlement == "rewards_pending") return true;
                 if (Settlement != "none") return false;
                 if (Life == "dead" || Life == "reviving") return true;
@@ -67,14 +70,17 @@ namespace CF7Launcher.Guardian
                 return false;
 
             JObject payload = message["payload"] as JObject;
-            if (!HasExactKeys(payload,
+            int version;
+            if (payload == null || !TryReadInt(payload["v"], 1, 2, out version)) return false;
+            var keys = new List<string> {
                     "v", "runId", "revision", "stageName", "difficulty",
                     "outcome", "life", "activeFrames", "reviveCoins",
                     "reviveAllowed", "reviveBlockedReason", "canReturnBase",
-                    "settlement", "remainingRewards"))
+                    "settlement", "remainingRewards" };
+            if (version == 2) keys.Add("returnFailure");
+            if (!HasExactKeys(payload, keys.ToArray()))
                 return false;
 
-            int version;
             int revision;
             int remainingRewards;
             long activeFrames;
@@ -88,8 +94,7 @@ namespace CF7Launcher.Guardian
             string settlement;
             bool reviveAllowed;
             bool canReturnBase;
-            if (!TryReadInt(payload["v"], 1, 1, out version)
-                || !TryReadOpaque(payload["runId"], 96, out runId)
+            if (!TryReadOpaque(payload["runId"], 96, out runId)
                 || !TryReadInt(payload["revision"], 1, int.MaxValue, out revision)
                 || !TryReadText(payload["stageName"], 96, false, out stageName)
                 || !TryReadText(payload["difficulty"], 48, false, out difficulty)
@@ -106,6 +111,14 @@ namespace CF7Launcher.Guardian
                 || !TryReadInt(payload["remainingRewards"], 0, 64,
                     out remainingRewards))
                 return false;
+
+            string returnFailure = "";
+            if (version == 2 && (!TryReadText(payload["returnFailure"], 48, true, out returnFailure)
+                    || (returnFailure != "" && returnFailure != "settlement_prepare_failed"
+                        && returnFailure != "save_failed" && returnFailure != "transition_failed"
+                        && returnFailure != "return_base_failed"))) return false;
+            if (returnFailure != "" && (reviveAllowed
+                    || (settlement != "none" && settlement != "prepared"))) return false;
 
             if (reviveAllowed && (life != "dead" || reviveCoins < 1
                     || !string.IsNullOrEmpty(blocked)))
@@ -137,7 +150,8 @@ namespace CF7Launcher.Guardian
                 ReviveBlockedReason = blocked,
                 CanReturnBase = canReturnBase,
                 Settlement = settlement,
-                RemainingRewards = remainingRewards
+                RemainingRewards = remainingRewards,
+                ReturnFailure = returnFailure
             };
             error = null;
             return true;

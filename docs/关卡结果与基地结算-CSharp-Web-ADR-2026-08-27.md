@@ -6,6 +6,28 @@
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
+## 0D. 2026-09-08 返回失败后的原生重试入口
+
+**最后核对代码基线**：`63d2f13deb` 加本轮工作树；状态为 `compiled / candidate_built / candidate_executed / HUMAN_ACCEPTANCE_PASSED / NOT_DEPLOYED`（限下述维护者反馈范围）。正式 C# runtime 未替换，AS2 已发布到 `scripts/asLoader.swf`；旧 Host 继续使用兼容 v1 投影。新报告的选关关闭掉前台已实施独立修复，机器/现场边界见[焦点诊断 §9.13](焦点管理-诊断与卡顿排查-2026-05-24.md#913-2026-09-08选关关闭前的前台交接)。
+
+修复两处已由故障注入复现的缺口：奖励进入 `prepared` 后存盘失败导致原生入口消失；durable 已通过但淡出失败后，`_returnRequested` 阻止原生入口重试。`prepared` 仍是冻结奖励事实，`_returnRequested` 仍保存已通过 durable 的事实；均不为了重试回滚或重新随机奖励。AS2 以仅存在于进程内的尝试/失败记录保存当前 run 与 gameworld 引用，只有该上下文中的明确失败允许重试；正在执行、已成功转场、旧 revision/intent、换场景或新关卡均不能借此再次退场。
+
+根 `_root.返回基地` 在准备、flush、fade 边界登记结果，所有原生、地图、设置调用继续共享此函数。准备失败、保存失败和转场失败分别投影 `settlement_prepare_failed / save_failed / transition_failed`，未分类的入口异常为 `return_base_failed`。失败不改变持久化结算格式；成功与 SceneReady/结算终态清理进程内记录。奖励已冻结时，不再提供复活这一相邻资产操作。
+
+原生投影通过 exact `stageOutcomeSync {task,action,v:2}` 启用 `stage_outcome.payload.v=2` 与新增必填 `returnFailure`（空串或上述四个错误码）。AS2 默认仍发送严格 v1，收到旧 Host 的 v1 sync 时保留原形状；新 Host 兼容解析 v1/v2。动作协议继续是 v1，沿用 runId、expectedRevision、intentId，不增加存档字段。Host 只显示 AS2 授权：失败时保留原因与“重试返回”，是否启用仍由 `canReturnBase` 决定；普通 `prepared` 转场保持隐藏，失败卡不混入交付/复活按钮。
+
+验证入口保持 `scripts/run-map-loot-tests.ps1`，StageRunSession 新增三类失败的原因、v1/v2 握手、旧手势拒绝、原生重试、奖励/战报/结算 ID 复用、重复请求及下关准入回归；同时运行 `scripts/run-map-domain-tests.ps1`、Host StageOutcome/RightContext/Map 回归和地图 Web QA。人工阶段只需从候选完成正常通关后的地图开关、原生返回/领奖与再次入场；故障注入由机器承担，不要求测试员制造真实存盘故障。此补丁不声称根治“地图关闭后 Windows 未向 HUD 投递物理点击”的另一条现场问题。
+
+开发复验现统一使用根 [本地开发启动.cmd](../本地开发启动.cmd)，按当前源码身份复用或构建隔离候选；录制沿用根 `config.toml` 的 `diagFocusTrace` 设置。以下 `tmp/runtime-candidates/v2/return-retry-v1` 为已完成验收的历史候选记录，其当时仅在子进程开启焦点录制：identity `B9343311AA442A29F33728C1D365EB7FE9E5688D358B7DA8983211363F76B1FD`、33-file closure `51EED3F7F6E37C277F76792C48A4FCFF8E80657A9E3D838F6A7C51404B39E241`、Core SHA-256 `362722C7E5972E177DD934B13C56033450E4EBAF0F83F6A50474192270BCE400`。实际进程 16052 的路径/identity/bus 与前门画面已核对，未确认进入玩家存档；检查后清理了该自启进程，因前台激活不可用未取得正常退出专项证据，不据此声称游戏 E2E。人工只需确认：通关后开关地图再使用原生返回并领取非零奖励，能够再次入场；有可交付任务时再确认原“前往交付”仍在领奖关闭后正确导航。
+
+机器证据：Host 定向 88/88，Windows PowerShell 5.1 canonical Launcher 4,807 通过/3 项既有显式跳过；地图 46/46、Settings 47/47、Web 54/54、Panel contracts 70/70。最终 AS2 496 + Loot 267 + Planner 12 共 775 项，另有 BoxInteractionArbiter 13 场景/53 断言；runId `085d6d42865041398a0a146342a035d7`。该次 runner 先达到 300 秒上限并退出 1，原 Flash 进程随后完成；保留原超时记录，按相同 runId 的唯一 Start/Complete、全部成功计数、无失败标记、Compiler 0/0、Output `[compile] done` 和 0 次 32K retry 回收了完整证据。不能将这段历史改称 runner 首次退出 0。新增回归还覆盖更换 gameworld 后旧重试失效，以及已结算普通场景的设置返回不被新尝试门阻断。
+
+最终 `asLoader.swf` 为 1,280,426 字节，SHA-256 `45CC7E676418BBA4FFA9FD95129B89F485F8C31537A1519FA331E82F7C296278`；fresh CS6 publish Compiler 0/0，SWF 结构/解压长度与新方法常量核查通过，最大函数 50,569 字节。publish-only 没有新行为 trace，行为结论来自前述真实 TestLoader；本机 FFDec 缺 Java，未宣称反编译通过。候选 UI 的“结算准备失败 / 保存未完成 / 返回未完成 + 重试返回”已用该候选 DLL 实际渲染核对。所有原始/派生证据在本机 `tmp/return-retry-fix/`，未提交或发布。
+
+维护者于 2026-09-08 反馈另外两项验收“看起来正常”，同时报告从选关进入瞬间游戏掉前台。自动包 `auto-20260908-153450-642-62644eeb4ab644fb831ce951a8102052.zip` 绑定相同候选 Core/asLoader、PID 11240，14 项哈希匹配、Host 279 与 AS2 7 条事件连续。15:33:42.917 进入 DEATH MATCH入门赛；15:33:42.958→15:33:43.211 的选关 SW_HIDE 前后，前台从本游戏 overlay 变成 ChatGPT，两次恢复分别 skipped_external/gate_skipped；主窗口与 Flash 仍 visible=true，HUD 随失活隐藏，15:33:44.645 重新激活。该序列证实掉前台，尚未区分外部主动激活与隐藏面板后的系统选窗，不指认 ChatGPT 为根因，也不改动返回重试的已验证结论。日志独立证明原生 return_base → durable → 基地 web_active → claimed 与正常退出；本轮奖励始终为 0，未出现 return_deliverable、领取或再次入场，因此不把人类反馈扩写成这些分支的日志证明。现场分析在本机 `tmp/focus-stage-entry-20260908/`。
+
+后续 `dev-handoff-v2` 现场已补齐黑铁会通关后的 3 行非零奖励领取、`claimed` 与下一关成功入场，并确认两次选关不再掉前台；维护者确认体验正常并授权发布。此轮实际进程、前台交接、普通日志覆盖与已收束告警见[焦点诊断 §9.13](焦点管理-诊断与卡顿排查-2026-05-24.md#913-2026-09-08选关关闭前的前台交接)。没有真实失败后的手动重试或 `return_deliverable` 现场，因此这些分支仍使用既有故障注入/协议回归证据，不扩写为人工旅程。
+
 ## 0C. 2026-09-08 地图主动撤退入口
 
 **最后核对代码基线**：release source `34a944055880f5e150cdf25053fffc4fd238cce7`（2026-09-08）；地图中途撤退为 `HUMAN_ACCEPTANCE_PASSED / promoted`，已完成本地 X509 与 GitHub OIDC 双故障域共识、40/40 policy、原子部署及根 verifier。完整身份与发布记录见[runtime 构建复现文档](runtime-build-reproducibility.md#2026-09-08-当前正式发布地图主动撤退入口)，不扩大现场验收范围。
@@ -16,7 +38,7 @@
 
 返回回包在淡出前保存完整 class-level correlation。冻结、flush 或转场拒绝时地图保留并允许重试；同一成功 token 只返回既有结果，不再次执行退场。Web 等待期间禁止重复点击和主动关闭；超时后只查询当前资格及已接受 token，确认成功才关闭并释放既有 Panel 暂停，无法确认时提供“核对返回状态”及关闭地图，不自动重发撤退。提交前的迟到读取不能清除提交后的等待状态，旧面板响应不能关闭新实例。实际基地 SceneReady、奖励面板和迟到判胜清理继续复用 §0B、§5。
 
-验证入口：`scripts/run-map-domain-tests.ps1`（新增主动撤退资格、失效、失败重试和重复成功检查）、`scripts/run-map-loot-tests.ps1`、`scripts/run-settings-tests.ps1`、`node launcher/web/modules/map/dev/run-qa.js --browser=edge`、Host `MapTaskResponseTests` 与相邻 Panel/Settings 回归。随后发布 `scripts/asLoader.swf` 并构建独立 runtime candidate。地图人类验收入口为根 [地图撤退验收启动.cmd](../地图撤退验收启动.cmd)，固定使用 `map-return-ready-v1` 候选，不重建或替换正式 runtime。
+验证入口：`scripts/run-map-domain-tests.ps1`（新增主动撤退资格、失效、失败重试和重复成功检查）、`scripts/run-map-loot-tests.ps1`、`scripts/run-settings-tests.ps1`、`node launcher/web/modules/map/dev/run-qa.js --browser=edge`、Host `MapTaskResponseTests` 与相邻 Panel/Settings 回归。随后发布 `scripts/asLoader.swf` 并构建独立 runtime candidate。后续开发验收统一从根 [本地开发启动.cmd](../本地开发启动.cmd) 选择或构建当前身份的隔离候选；本节 `map-return-ready-v1` 仅保留为原验收历史，不替换正式 runtime。
 
 人类验收只需覆盖：未通关时从地图撤退后任务未误完成且能重新入场；正常通关后从地图返回并领取奖励；死亡后从地图返回医务室且输入正常。机器证据与候选身份在本节收尾记录，不能代签这三条实际体验。
 

@@ -1447,7 +1447,8 @@ class Program
                 config.WebView2DeveloperMode,
                 config.WebOverlayPanelTakeForeground,
                 config.WebOverlayHotReload,
-                flashFocusRestorer, mapRuntimeContent.Definition);
+                flashFocusRestorer, mapRuntimeContent.Definition,
+                windowManager.HandoffFlashFocusBeforePanelHide);
         }
         StartupDiagnostics.Mark("web_overlay.construct_ok");
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;

@@ -139,7 +139,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             state = MapPanelService.getReturnBaseState();
             _root.__mapReturnFailure = "reject";
             MapPanelService.handleReturnBase({v:1,callId:84,token:state.token}); response = _panelResponses.pop();
-            check(!response.success && response.closePanel !== true && response.error == "settlement_prepare_failed",
+            check(!response.success && response.closePanel !== true && response.error == "return_base_failed",
                 "failed settlement or flush does not close the map");
             check(response.returnBase.acceptedToken != state.token && response.returnBase.available,
                 "rejected return remains retryable and is never an accepted receipt");

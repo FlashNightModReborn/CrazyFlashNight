@@ -69,6 +69,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testStageLoaderRootExactlyOnce();
         testStageManagerProjectionFailures();
         testProductionSceneTransitionAuthority();
+        testFailedReturnKeepsExactRetry();
         testRetreatCompletionIsolation();
         testMapNavigationAuthority();
         testStageSelectLifecycleAuthority();
@@ -981,6 +982,117 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.最上层加载外部动画 = oldStageAnimation;
         _root.关卡结束 = oldStageFinished;
         _root.关卡地图帧值 = oldStageFrame;
+    }
+
+    private static function testFailedReturnKeepsExactRetry():Void {
+        var stageClass:Object = StageRunSession;
+        var oldProjectionVersion:Number = stageClass._projectionVersion;
+        var oldPersist:Function = stageClass.persistPreparedSettlement;
+        _root.__returnRetryPersist = oldPersist;
+        stageClass.persistPreparedSettlement = function():Object {
+            var persisted:Object = _root.__returnRetryPersist();
+            if (_root.__returnRetryFault == "prepare") return {success:false, error:"audit_prepare"};
+            return persisted;
+        };
+        var kinds:Array = ["prepare", "flush", "fade"];
+        var reasons:Array = ["settlement_prepare_failed", "save_failed", "transition_failed"];
+        try {
+            for (var i:Number = 0; i < kinds.length; i++) {
+                resetWorld(0);
+                StageManager.getInstance().dispose();
+                var hero:MovieClip = installHero("success");
+                hero.hp = 50;
+                _root.返回基地 = _backup.returnBase;
+                _root.场景转换中 = false;
+                _root.关卡地图帧值 = "基地门口";
+                _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
+                _root.__returnRetryFault = kinds[i];
+                _root.__returnRetryFades = 0;
+                _root.淡出动画 = {淡出跳转帧:function(frame):Void {
+                    _root.__returnRetryFades++;
+                    if (_root.__returnRetryFault == "fade") throw new Error("retry test fade failure");
+                }};
+                _root.存档系统.flushBeforeTransition = function(reason:String):Boolean {
+                    return _root.__returnRetryFault != "flush";
+                };
+                _root.server = {isSocketConnected:true,
+                    sendTaskToNode:function(task:String, payload:Object):Void {
+                        if (task == "stage_outcome") _root.__returnRetryProjection = payload;
+                    }};
+                assertTrue(StageRunSession.begin("返回重试" + kinds[i], "简单"),
+                    kinds[i] + " retry fixture starts a real run");
+                _root.当前为战斗地图 = true;
+                StageRunSession.finish("victory");
+                _root.gameCommands.stageOutcomeSync({task:"cmd", action:"stageOutcomeSync", v:1});
+                assertTrue(_root.__returnRetryProjection.v === 1
+                        && !_root.__returnRetryProjection.hasOwnProperty("returnFailure"),
+                    "legacy Host keeps the exact v1 projection shape");
+                _root.gameCommands.stageOutcomeSync({task:"cmd", action:"stageOutcomeSync", v:2});
+                assertTrue(_root.__returnRetryProjection.v === 2
+                        && _root.__returnRetryProjection.returnFailure === "",
+                    "v2 Host negotiates explicit return failure projection");
+                var before:Object = StageRunSession.testOnlySnapshot();
+                var failed:Object = StageRunSession.requestReturnBaseLocal("retry-test");
+                var prepared:Object = StageRunSession.testOnlySnapshot();
+                assertTrue(failed.success === false && failed.error === reasons[i]
+                        && prepared.returnFailure === reasons[i] && prepared.canRetryReturn,
+                    kinds[i] + " failure exposes its exact reason and retry capability");
+                assertTrue(_root.__returnRetryProjection.returnFailure === reasons[i]
+                        && _root.__returnRetryProjection.canReturnBase === true
+                        && _root.__returnRetryProjection.reviveAllowed === false
+                        && prepared.settlement === "prepared" && prepared.inventory.size() == 1,
+                    kinds[i] + " nonempty prepared reward keeps a return-only visible projection");
+                assertTrue(prepared.returnRequested === (kinds[i] == "fade")
+                        && _root.当前为战斗地图 === true,
+                    kinds[i] + " failure preserves the durable latch and current world");
+                var failedWorld:Object = _root.gameworld;
+                _root.gameworld = {};
+                assertFalse(StageRunSession.canRetryReturnBase()
+                        || StageRunSession.requestReturnBaseLocal("wrong-world").success === true,
+                    "a replaced world cannot reuse the previous failure retry");
+                _root.gameworld = failedWorld;
+                _root.__returnRetryFault = "";
+                var fadesBefore:Number = _root.__returnRetryFades;
+                _root.gameCommands.stageOutcomeAction({task:"cmd", action:"stageOutcomeAction", v:1,
+                    runId:before.runId, expectedRevision:before.revision,
+                    intent:"return_base", intentId:"retry.stale"});
+                assertTrue(_root.__returnRetryFades == fadesBefore && StageRunSession.canRetryReturnBase(),
+                    "old down/revision cannot consume the failed attempt retry");
+                var exact:Object = {task:"cmd", action:"stageOutcomeAction", v:1,
+                    runId:prepared.runId, expectedRevision:prepared.revision,
+                    intent:"return_base", intentId:"retry.exact"};
+                _root.gameCommands.stageOutcomeAction(exact);
+                var recovered:Object = StageRunSession.testOnlySnapshot();
+                assertTrue(recovered.returnRequested && !recovered.canRetryReturn
+                        && recovered.returnFailure === "" && _root.当前为战斗地图 === false
+                        && recovered.inventory === prepared.inventory && recovered.report === prepared.report
+                        && recovered.settlementId === prepared.settlementId,
+                    kinds[i] + " original HUD retries the same frozen settlement without reroll");
+                var fadesAfter:Number = _root.__returnRetryFades;
+                _root.gameCommands.stageOutcomeAction(exact);
+                exact.expectedRevision = recovered.revision; exact.intentId = "retry.fresh-duplicate";
+                _root.gameCommands.stageOutcomeAction(exact);
+                assertTrue(_root.__returnRetryFades == fadesAfter && !StageRunSession.canStartStage(),
+                    "repeat intent and fresh duplicate cannot fade twice or reopen stage admission");
+                StageRunSession.onSettlementState("CONSUMED", 0);
+                assertTrue(_root.返回基地() === true
+                        && StageRunSession.testOnlySnapshot().settlement === "claimed"
+                        && StageRunSession.testOnlySnapshot().inventory == null,
+                    "terminal run preserves ordinary settings return without creating new rewards");
+                assertTrue(StageRunSession.begin("下一关", "简单")
+                        && StageRunSession.testOnlySnapshot().returnFailure === "",
+                    "terminal settlement releases the next stage without a stale retry");
+            }
+        } finally {
+            stageClass.persistPreparedSettlement = oldPersist;
+            stageClass._projectionVersion = oldProjectionVersion;
+            delete _root.__returnRetryPersist;
+            delete _root.__returnRetryFault;
+            delete _root.__returnRetryFades;
+            delete _root.__returnRetryProjection;
+            resetWorld(0);
+            _root.返回基地 = _backup.returnBase;
+        }
     }
 
     /**
@@ -3263,7 +3375,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.返回基地 = function():Boolean { calls++; return false; };
         _root.gameCommands.stageOutcomeAction(command);
         assertEquals(1, calls, "observation leaves one business dispatch");
-        assertTrue(lines.join(";").indexOf("event=action_local_result intentId=host.observation.1 detail=settlement_prepare_failed") >= 0,
+        assertTrue(lines.join(";").indexOf("event=action_local_result intentId=host.observation.1 detail=return_base_failed") >= 0,
             "local rejection is correlated to existing intent id");
         _root.gameCommands.stageOutcomeAction(command);
         assertEquals(1, calls, "diagnostics do not replay duplicate business intent");

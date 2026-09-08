@@ -127,7 +127,8 @@ namespace CF7Launcher.Tests.Guardian
             string reviveBlockedReason = "",
             bool canReturnBase = true,
             int remainingRewards = 0,
-            int revision = 7)
+            int revision = 7,
+            string returnFailure = null)
         {
             JObject message = new JObject
             {
@@ -150,6 +151,11 @@ namespace CF7Launcher.Tests.Guardian
                     ["remainingRewards"] = remainingRewards
                 }
             };
+            if (returnFailure != null)
+            {
+                message["payload"]["v"] = 2;
+                message["payload"]["returnFailure"] = returnFailure;
+            }
             StageOutcomeState state;
             string error;
             Assert.True(StageOutcomeState.TryParseMessage(
@@ -163,6 +169,34 @@ namespace CF7Launcher.Tests.Guardian
             Capture c;
             RightContextWidget w = MakeWidget(out c);
             Assert.True(w.Visible);
+        }
+
+        [Theory]
+        [InlineData("save_failed", "保存未完成")]
+        [InlineData("transition_failed", "返回未完成")]
+        public void FailedPreparedReturnOffersOnlyExactRetryAndRejectsOldGesture(string reason, string text)
+        {
+            var widget = MakeWidget(out var capture);
+            widget.SetReady();
+            var intents = new List<string>();
+            widget.IntentRequested += (intent, run, revision) => intents.Add(intent + ":" + revision);
+            widget.ApplyState(StageState("victory", "dead", "prepared", remainingRewards: 3, returnFailure: reason));
+            Assert.True(widget.RequestsStageDecision);
+            Assert.Equal(new[] { "重试返回" }, widget.StageActionLabelsForTest);
+            Assert.Equal(text, widget.StageDecisionTextForTest);
+            widget.SetStageActionDownForTest(0);
+            widget.ApplyState(StageState("victory", "dead", "prepared", canReturnBase: false,
+                remainingRewards: 3, revision: 8, returnFailure: ""));
+            widget.ClickStageActionGestureForTest(0);
+            Assert.Empty(intents);
+            widget.ApplyState(StageState("victory", "dead", "prepared", remainingRewards: 3,
+                revision: 9, returnFailure: reason));
+            widget.SetStageActionDownForTest(0);
+            widget.ClickStageActionGestureForTest(0);
+            Assert.Equal(new[] { "return_base:9" }, intents);
+            widget.ApplyState(StageState("victory", "dead", "prepared", canReturnBase: false,
+                remainingRewards: 3, revision: 10, returnFailure: reason));
+            Assert.False(widget.StageActionEnabledForTest(0));
         }
 
         [Theory]

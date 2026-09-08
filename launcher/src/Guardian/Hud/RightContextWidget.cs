@@ -1303,6 +1303,11 @@ namespace CF7Launcher.Guardian.Hud
             {
                 StageOutcomeState state = _stageOutcomeState;
                 if (!ShouldPresentStageOutcome(state)) return;
+                if (state.HasReturnFailure)
+                {
+                    AddStageAction("retry_return", "重试返回", "return_base", state.CanReturnBase);
+                    return;
+                }
                 if (state.Settlement == "rewards_pending")
                 {
                     AddStageAction("resume",
@@ -1419,6 +1424,9 @@ namespace CF7Launcher.Guardian.Hud
 
         private static string StageDecisionText(StageOutcomeState state)
         {
+            if (state.HasReturnFailure)
+                return state.ReturnFailure == "save_failed" ? "保存未完成"
+                    : state.ReturnFailure == "settlement_prepare_failed" ? "结算准备失败" : "返回未完成";
             if (state.Settlement == "rewards_pending")
                 return state.RemainingRewards == 0
                     ? "行动报告待查看"
@@ -1451,6 +1459,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private static Color StageAccent(StageOutcomeState state)
         {
+            if (state.HasReturnFailure) return NativeHudTheme.Danger;
             if (state.Settlement == "rewards_pending") return NativeHudTheme.Gold;
             if (state.Life == "dead" || state.Life == "reviving"
                     || state.Outcome == "failure")

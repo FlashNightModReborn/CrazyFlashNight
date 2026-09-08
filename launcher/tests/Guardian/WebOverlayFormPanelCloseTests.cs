@@ -352,6 +352,38 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Contains("TryRestoreFlashInputFocusAfterPanelCloseCore(", restore);
         }
 
+        [Theory]
+        [InlineData(7, 7, true, (int)WebOverlayForm.SessionForegroundKind.Overlay, true)]
+        [InlineData(7, 7, true, (int)WebOverlayForm.SessionForegroundKind.OverlayTree, true)]
+        [InlineData(7, 7, true, (int)WebOverlayForm.SessionForegroundKind.Owner, false)]
+        [InlineData(7, 7, true, (int)WebOverlayForm.SessionForegroundKind.GuardianProcess, false)]
+        [InlineData(7, 7, true, (int)WebOverlayForm.SessionForegroundKind.External, false)]
+        [InlineData(7, 7, true, (int)WebOverlayForm.SessionForegroundKind.Null, false)]
+        [InlineData(8, 7, true, (int)WebOverlayForm.SessionForegroundKind.Overlay, false)]
+        [InlineData(7, 7, false, (int)WebOverlayForm.SessionForegroundKind.Overlay, false)]
+        [InlineData(0, 0, true, (int)WebOverlayForm.SessionForegroundKind.Overlay, false)]
+        public void BeforeHideHandoffRequiresCurrentEligiblePanelForeground(int panel, int close,
+            bool eligible, int kind, bool expected)
+        {
+            Assert.Equal(expected, WebOverlayForm.ShouldHandoffPanelForegroundBeforeHide(panel, close, eligible,
+                (WebOverlayForm.SessionForegroundKind)kind));
+        }
+
+        [Fact]
+        public void BeforeHideHandoffPrecedesBothBrowserAndWindowVisibilityChanges()
+        {
+            string source = File.ReadAllText(FindWebOverlaySource());
+            string idle = Slice(source, "private void DoFullIdleSuspend(", "private void SuspendWebTimers()");
+            int handoff = idle.IndexOf("HandoffPanelForegroundBeforeHide(panelTag, trace)", StringComparison.Ordinal);
+            Assert.True(handoff >= 0);
+            Assert.True(idle.IndexOf("SetWebViewControllerVisible(false", StringComparison.Ordinal) > handoff);
+            Assert.True(idle.IndexOf("ShowWindow(this.Handle, SW_HIDE)", StringComparison.Ordinal) > handoff);
+            string helper = Slice(source, "private void HandoffPanelForegroundBeforeHide(",
+                "private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(");
+            Assert.Contains("trace.Matches(_panelSessionGeneration, panelTag)", helper);
+            Assert.Contains("_disposed || _panelMode || !_panelTakeForeground", helper);
+        }
+
         [Fact]
         public void PanelCloseFocusRestore_SessionSnapshotAllowsIdleAndSettledRestore()
         {

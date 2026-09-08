@@ -60,15 +60,9 @@ cd "<项目根目录>\\automation"
 
 ## 3. 日常启动
 
-地图主动撤退的人类验收使用根 [地图撤退验收启动.cmd](../地图撤退验收启动.cmd)，固定选择 `tmp/runtime-candidates/v2/map-return-ready-v1`，不自动重建。该入口仍由 `start.ps1` 校验候选闭包，测试范围与状态见[地图主动撤退](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0c-2026-09-08-地图主动撤退入口)。
-
-地图工作台验收可双击根目录 [地图工作台测试启动.cmd](../地图工作台测试启动.cmd)，通过 `dev.ps1` 选择或构建当前身份的隔离候选。浏览器与 CLI 入口见[地图工作台](../tools/map-workbench/README.md)。
-
 测试员在根 `config.toml` 设置 `diagFocusTrace = true` 并重启后，普通正式入口即持续记录焦点日志，正常退出自动打包至 `logs/focus-diagnostic/auto-*.zip`。实时日志按 3×8 MiB 滚动保留；默认关闭，ZIP 归档另行保留。根 [焦点诊断启动.cmd](../焦点诊断启动.cmd) 仍可临时强制开启并负责退出打包，途中需要立即保存现场可双击 [收集焦点诊断日志.cmd](../收集焦点诊断日志.cmd)。保留一次失灵及原有恢复办法即可；新版发布状态、AS2 配套与失败边界见[焦点观察契约 §9.12](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#912-2026-09-07配置化持续录制与固定容量保留)。
 
-本地日常开发推荐显式走 `dev.ps1`，或双击项目根的 `本地开发启动.cmd`。该入口计算当前 Worktree build identity，只精确复用同身份 candidate；无命中时在本机生成隔离 candidate，但始终报告 `NOT_DEPLOYED`，不会写根 bootstrap 或正式 `runtime/`。
-
-物品素材工作台本轮人工体验使用根目录 [素材工作台测试启动.cmd](../素材工作台测试启动.cmd)，指向已构建的 `asset-workbench-ready` 隔离候选；操作和验证边界见 [工作台说明](../tools/asset-workbench/README.md)。CMD 在本次子进程限定 Windows PowerShell 模块目录，避免从 PowerShell 7 / Agent 终端继承不兼容模块，再调用原有 `start.ps1`；完整产物验证与启动护栏仍由原有入口执行。
+本地开发与各功能候选验收统一使用根 [本地开发启动.cmd](../本地开发启动.cmd)，或直接调用 `automation/dev.ps1`。该入口计算当前 Worktree build identity，只精确复用同身份 candidate；无命中时在本机生成隔离 candidate，但始终报告 `NOT_DEPLOYED`，不会写根 bootstrap 或正式 `runtime/`。CMD 使用 Windows PowerShell 5.1 绝对路径，并在子进程限定模块目录。地图撤退、返回重试、地图工作台和素材工作台均复用此入口，不再新增仅转发或固定临时候选的专项 CMD；确需重放历史候选时显式调用 `start.ps1 -CandidateRoot <绝对路径>`。功能操作分别见[关卡结果与基地结算](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)、[地图工作台](../tools/map-workbench/README.md)与[素材工作台](../tools/asset-workbench/README.md)。
 
 ```powershell
 cd "<项目根目录>"

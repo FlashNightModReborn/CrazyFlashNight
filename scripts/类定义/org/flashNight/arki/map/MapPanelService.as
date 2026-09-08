@@ -118,7 +118,8 @@ class org.flashNight.arki.map.MapPanelService {
         // 完整回包在淡出前存入 class；不能在切帧后依赖调用帧的局部变量。
         _returnReply = {task:"map_response", callId:callId, success:true, closePanel:true, token:params.token};
         try {
-            if (_root.返回基地() === false) failReturnBase("settlement_prepare_failed");
+            if (_root.返回基地() === false) failReturnBase(
+                org.flashNight.arki.scene.StageRunSession.getReturnFailureReason() || "return_base_failed");
         } catch (returnError) {
             failReturnBase("return_base_failed");
         }

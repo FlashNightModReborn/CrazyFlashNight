@@ -3161,6 +3161,8 @@ var MapPanel = (function() {
             case 'return_in_progress': return '正在处理返回，请稍候。';
             case 'return_base_unavailable': return '当前不能返回，请按地图提示完成当前流程。';
             case 'settlement_prepare_failed': return '结算或保存尚未成功，已保留本次奖励，请稍后重试返回。';
+            case 'save_failed': return '保存尚未成功，请稍后重试返回。';
+            case 'transition_failed': return '场景切换未完成，请重试返回；本次奖励已保留。';
             case 'return_base_failed': return '返回尚未完成，请稍后重试。';
             case 'outcome_unknown': return '正在核对返回结果，请勿重复撤退。';
             case 'timeout': return '启动器等待地图状态响应超时。';

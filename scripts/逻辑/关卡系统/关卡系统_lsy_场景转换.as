@@ -510,9 +510,17 @@ _root.获取关卡状态 = function():String{
 }
 
 _root.返回基地 = function(){
+	if (!org.flashNight.arki.scene.StageRunSession.beginReturnAttempt()) return false;
 	// 先冻结本轮战报和唯一奖励对象；冻结失败时不得继续销毁 gameworld，
 	// 否则玩家会回到基地却永远失去这一轮奖励。
-	if (!org.flashNight.arki.scene.StageRunSession.onReturnBaseStarted()) {
+	var 返回准备完成:Boolean = false;
+	try {
+		返回准备完成 = org.flashNight.arki.scene.StageRunSession.onReturnBaseStarted();
+	} catch (prepareError) {
+		org.flashNight.arki.scene.StageRunSession.failReturnAttempt("settlement_prepare_failed");
+		trace("[ReturnBase] settlement preparation failed: " + prepareError);
+	}
+	if (!返回准备完成) {
 		_root.发布消息(_root.获得翻译("关卡结算尚未准备完成，请稍后重试返回基地。"));
 		return false;
 	}
@@ -585,6 +593,9 @@ _root.返回基地 = function(){
 	_root.场景进入位置名 = "出生地";
 	_root.关卡类型 = "";
 	try {
+		if (typeof _root.淡出动画.淡出跳转帧 != "function") {
+			throw new Error("return fade unavailable");
+		}
 		_root.淡出动画.淡出跳转帧(返回目标帧);
 	} catch (fadeError) {
 		// onReturnBaseStarted 已是幂等冻结；不 clear，让玩家第二次点击可重试同一转场。
@@ -592,8 +603,9 @@ _root.返回基地 = function(){
 		_root.场景进入位置名 = 原场景进入位置名;
 		_root.关卡类型 = 原关卡类型;
 		trace("[ReturnBase] fade transition failed: " + fadeError);
-		return false;
+		return org.flashNight.arki.scene.StageRunSession.failReturnAttempt("transition_failed");
 	}
+	org.flashNight.arki.scene.StageRunSession.completeReturnAttempt();
 
 	// fade 已接受后立即提交权威 manager 清理；后续投影不得将其阻断。
 	try {

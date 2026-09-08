@@ -190,5 +190,44 @@ namespace CF7Launcher.Tests.Guardian
                 Message("victory", "alive", "claimed"), out state, out error));
             Assert.False(state.ShouldDisplay);
         }
+
+        [Theory]
+        [InlineData("settlement_prepare_failed")]
+        [InlineData("save_failed")]
+        [InlineData("transition_failed")]
+        [InlineData("return_base_failed")]
+        public void V2FailedReturnRemainsVisibleWhilePrepared(string reason)
+        {
+            JObject message = Message("victory", "alive", "prepared", remainingRewards: 3);
+            message["payload"]["v"] = 2;
+            message["payload"]["returnFailure"] = reason;
+            Assert.True(StageOutcomeState.TryParseMessage(message, out var state, out var error), error);
+            Assert.True(state.ShouldDisplay);
+            Assert.True(state.CanReturnBase);
+            Assert.Equal(reason, state.ReturnFailure);
+            message["payload"]["returnFailure"] = "";
+            Assert.True(StageOutcomeState.TryParseMessage(message, out state, out error), error);
+            Assert.False(state.ShouldDisplay);
+        }
+
+        [Fact]
+        public void FailureProjectionRejectsUnknownReasonsAndTerminalOrReviveContradictions()
+        {
+            JObject message = Message("victory", "alive", "prepared");
+            message["payload"]["v"] = 2;
+            Assert.False(StageOutcomeState.TryParseMessage(message, out _, out _));
+            message["payload"]["returnFailure"] = "invented";
+            Assert.False(StageOutcomeState.TryParseMessage(message, out _, out _));
+            message["payload"]["returnFailure"] = "save_failed";
+            message["payload"]["settlement"] = "claimed";
+            Assert.False(StageOutcomeState.TryParseMessage(message, out _, out _));
+            message["payload"]["settlement"] = "prepared";
+            message["payload"]["life"] = "dead";
+            message["payload"]["reviveAllowed"] = true;
+            Assert.False(StageOutcomeState.TryParseMessage(message, out _, out _));
+            message["payload"]["reviveAllowed"] = false;
+            message["payload"]["v"] = 1;
+            Assert.False(StageOutcomeState.TryParseMessage(message, out _, out _));
+        }
     }
 }

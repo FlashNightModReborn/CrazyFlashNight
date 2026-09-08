@@ -115,6 +115,64 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(restored);
         }
 
+        [Fact]
+        public void BeforeHideHandoffActivatesExactRootAndKeepsFocusInFlash()
+        {
+            var panel = new IntPtr(0x3000);
+            var api = new FakeFocusApi { Foreground = panel, Root = FlashRoot, Focused = Flash,
+                SetForegroundResult = true, ForegroundAfterSet = FlashRoot };
+            var manager = new WindowManager(api, Flash);
+            Assert.True(manager.HandoffFlashFocusBeforePanelHide("panel_close:before_hide:stage-select", panel));
+            Assert.Equal(FlashRoot, api.LastForegroundTarget);
+            Assert.Equal(Flash, api.LastFocusTarget);
+            Assert.Equal(1, api.SetForegroundCallCount);
+            Assert.Equal(0, api.AttachCallCount);
+            Assert.Equal(FlashRoot, api.Foreground);
+        }
+
+        [Fact]
+        public void BeforeHideHandoffDoesNotReportSuccessWhenKeyboardFocusRemainsElsewhere()
+        {
+            var panel = new IntPtr(0x3000);
+            var api = new FakeFocusApi { Foreground = panel, Root = FlashRoot, Focused = GuardianIndicator,
+                SetForegroundResult = true, ForegroundAfterSet = FlashRoot };
+            var manager = new WindowManager(api, Flash);
+            Assert.False(manager.HandoffFlashFocusBeforePanelHide("handoff_wrong_focus", panel));
+            Assert.Equal(FlashRoot, api.Foreground);
+            Assert.Equal(Flash, api.LastFocusTarget);
+            Assert.Equal(1, api.SetForegroundCallCount);
+            Assert.Equal(0, api.AttachCallCount);
+        }
+
+        [Fact]
+        public void BeforeHideHandoffDoesNothingIfForegroundChangedSinceCapture()
+        {
+            var api = new FakeFocusApi { Foreground = GuardianIndicator, Root = FlashRoot };
+            var manager = new WindowManager(api, Flash);
+            Assert.False(manager.HandoffFlashFocusBeforePanelHide("external_switch", new IntPtr(0x3000)));
+            Assert.Equal(0, api.SetForegroundCallCount);
+            Assert.Equal(IntPtr.Zero, api.LastFocusTarget);
+            Assert.Equal(0, api.AttachCallCount);
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation(bool activated, bool replaceFlash)
+        {
+            var panel = new IntPtr(0x3000);
+            var api = new FakeFocusApi { Foreground = panel, Root = FlashRoot,
+                SetForegroundResult = activated,
+                ForegroundAfterSet = replaceFlash ? FlashRoot : GuardianIndicator };
+            var manager = new WindowManager(api, Flash);
+            if (replaceFlash) api.AfterSetForeground = manager.ResetEmbedState;
+            Assert.False(manager.HandoffFlashFocusBeforePanelHide("handoff_race", panel));
+            Assert.Equal(1, api.SetForegroundCallCount);
+            Assert.Equal(IntPtr.Zero, api.LastFocusTarget);
+            Assert.Equal(0, api.AttachCallCount);
+        }
+
         private sealed class FakeFocusApi
             : IFlashFocusWindowApi
         {
@@ -125,6 +183,9 @@ namespace CF7Launcher.Tests.Guardian
             internal bool SetForegroundResult { get; set; }
             internal Action AfterSetForeground { get; set; }
             internal int SetForegroundCallCount { get; private set; }
+            internal IntPtr LastForegroundTarget { get; private set; }
+            internal IntPtr LastFocusTarget { get; private set; }
+            internal int AttachCallCount { get; private set; }
 
             public IntPtr GetForegroundWindow()
             {
@@ -143,6 +204,7 @@ namespace CF7Launcher.Tests.Guardian
                 IntPtr windowHandle)
             {
                 SetForegroundCallCount++;
+                LastForegroundTarget = windowHandle;
                 Foreground = ForegroundAfterSet;
                 AfterSetForeground?.Invoke();
                 return SetForegroundResult;
@@ -153,11 +215,13 @@ namespace CF7Launcher.Tests.Guardian
                 uint attachToThreadId,
                 bool attach)
             {
+                AttachCallCount++;
                 return true;
             }
 
             public IntPtr SetFocus(IntPtr windowHandle)
             {
+                LastFocusTarget = windowHandle;
                 return windowHandle;
             }
 

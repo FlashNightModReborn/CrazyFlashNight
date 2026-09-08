@@ -273,7 +273,7 @@ namespace CF7Launcher.Tests.Tasks
                 {
                     ["task"] = "cmd",
                     ["action"] = "stageOutcomeSync",
-                    ["v"] = 1
+                    ["v"] = 2
                 }, JObject.Parse(sent[0].TrimEnd('\0')));
                 overlay.Raise("revive", "run.task.1", 4);
                 overlay.Raise("return_base", "run.task.1", 4);

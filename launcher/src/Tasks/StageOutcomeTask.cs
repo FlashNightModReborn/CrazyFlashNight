@@ -114,7 +114,7 @@ namespace CF7Launcher.Tasks
             {
                 ["task"] = "cmd",
                 ["action"] = "stageOutcomeSync",
-                ["v"] = 1
+                ["v"] = 2
             };
             TrySend(command);
         }

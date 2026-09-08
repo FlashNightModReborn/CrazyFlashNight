@@ -367,6 +367,15 @@ namespace CF7Launcher.Guardian
             return restorer(reason);
         }
 
+        internal static bool ShouldHandoffPanelForegroundBeforeHide(
+            int panelGeneration, int closeGeneration, bool closeEligible,
+            SessionForegroundKind currentKind)
+        {
+            return panelGeneration > 0 && closeGeneration == panelGeneration && closeEligible
+                && (currentKind == SessionForegroundKind.Overlay
+                    || currentKind == SessionForegroundKind.OverlayTree);
+        }
+
         internal static bool TryConsumePanelSettledFocusRestore(
             int panelGeneration,
             int closeGeneration,
@@ -1271,6 +1280,7 @@ namespace CF7Launcher.Guardian
         // 带 AttachThreadInput 兜底 + verify + [FocusRestore] 日志。
         // null 时 panel→idle 路径跳过 Flash 前台回推（开发/测试场景；生产路径必传）。
         private readonly Func<string, bool> _flashFocusRestorer;
+        private readonly Func<string, IntPtr, bool> _panelForegroundHandoff;
         private readonly bool _panelTakeForeground;
         private readonly string _projectRoot;
 
@@ -1431,7 +1441,8 @@ namespace CF7Launcher.Guardian
             bool webView2DisableGpu, string webView2AdditionalArgs,
             bool webView2DeveloperMode,
             bool panelTakeForeground, bool hotReloadEnabled,
-            Func<string, bool> flashFocusRestorer, JObject mapDefinition = null)
+            Func<string, bool> flashFocusRestorer, JObject mapDefinition = null,
+            Func<string, IntPtr, bool> panelForegroundHandoff = null)
         {
             _mapFrozenDefinition = mapDefinition == null ? null : (JObject)mapDefinition.DeepClone();
             _hotReloadEnabled = hotReloadEnabled;
@@ -1448,6 +1459,7 @@ namespace CF7Launcher.Guardian
             _webView2AdditionalArgs = webView2AdditionalArgs ?? "";
             _webView2DeveloperMode = webView2DeveloperMode;
             _flashFocusRestorer = flashFocusRestorer; // 可空：null 时 panel→idle 跳过 Flash 前台回推
+            _panelForegroundHandoff = panelForegroundHandoff;
             _projectRoot = ResolveProjectRoot(webDir, projectRoot);
 
             _panelTakeForeground = panelTakeForeground;
@@ -5300,6 +5312,37 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void HandoffPanelForegroundBeforeHide(
+            string panelTag, PanelCloseFocusTraceContext trace)
+        {
+            if (_disposed || _panelMode || !_panelTakeForeground || _panelForegroundHandoff == null
+                    || !trace.Matches(_panelSessionGeneration, panelTag)) return;
+            SessionForegroundSnapshot before;
+            if (!TryCapturePanelCloseForeground(trace, "handoff_before_hide",
+                    "attempt=before_hide", out before)) return;
+            LogPanelCloseFocusTrace(trace, "handoff_before_hide", before, "attempt=before_hide");
+            bool eligible = ShouldHandoffPanelForegroundBeforeHide(
+                _panelSessionGeneration, _panelCloseFocusGeneration,
+                _panelCloseFocusEligibilityCaptured && _panelCloseFocusEligible, before.Kind);
+            string result = "skipped";
+            try
+            {
+                if (eligible)
+                    result = _panelForegroundHandoff("panel_close:before_hide:" + panelTag,
+                        before.ForegroundHwnd) ? "success" : "failed";
+            }
+            catch (Exception ex)
+            {
+                result = "throw";
+                LogManager.Log("[PanelFocus] before-hide handoff failed: " + ex.Message);
+            }
+            SessionForegroundSnapshot after;
+            if (TryCapturePanelCloseForeground(trace, "handoff_before_hide_result",
+                    "result=" + result, out after))
+                LogPanelCloseFocusTrace(trace, "handoff_before_hide_result", after,
+                    "result=" + result + " before=" + before.KindLabel);
+        }
+
         private PanelCloseFocusTraceContext CapturePanelCloseFocusEligibility(
             string panelTag)
         {
@@ -5460,6 +5503,10 @@ namespace CF7Launcher.Guardian
             PerfTrace.Mark("webOverlay.idle.full.freeze_ui_data.start", panelTag);
             _frozenForIdle = true;
             LogIdleStepDuration("full.freeze_ui_data", panelTag, stepStart, 25.0);
+
+            // 当前仍由面板持有前台时，先交还 Flash 所在的顶层窗口，再隐藏活动面板。
+            // 外部/空前台不交接；后续 idle/settled 的实时外部前台保护保持不变。
+            HandoffPanelForegroundBeforeHide(panelTag, trace);
 
             // 3) Retire browser presentation before hiding the native parent.
             // Otherwise Chromium keeps a visible controller behind a hidden HWND;

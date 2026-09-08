@@ -102,6 +102,15 @@ Assert-Cf7DevEntry -Condition ($devSource.IndexOf('ForceReplace', [StringCompari
 $cmdSource = Get-Content -LiteralPath $cmdPath -Raw -Encoding UTF8
 Assert-Cf7DevContains $cmdSource '%~dp0automation\dev.ps1' 'root CMD must resolve dev.ps1 relative to itself'
 Assert-Cf7DevContains $cmdSource '%*' 'root CMD must forward all caller arguments'
+Assert-Cf7DevContains $cmdSource '%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe' `
+    'root CMD must use the Windows PowerShell 5.1 host explicitly'
+Assert-Cf7DevContains $cmdSource 'set "PSModulePath=' `
+    'root CMD must isolate inherited PowerShell module paths'
+foreach ($retiredEntry in @('地图撤退验收启动.cmd', '返回结算重试验收启动.cmd',
+        '地图工作台测试启动.cmd', '素材工作台测试启动.cmd', 'tools/asset-workbench/start-test.ps1')) {
+    Assert-Cf7DevEntry -Condition (-not (Test-Path -LiteralPath (Join-Path $ProjectRoot $retiredEntry))) `
+        -Message "Feature-specific development forwarding entry must stay retired: $retiredEntry"
+}
 Assert-Cf7DevContains $cmdSource 'CF7_NO_PAUSE' 'root CMD must support non-interactive failure handling'
 Assert-Cf7DevContains $cmdSource 'pause' 'root CMD must preserve a double-click failure window by default'
 Assert-Cf7DevEntry -Condition ($cmdSource.IndexOf('CRAZYFLASHER7MercenaryEmpire.exe', [StringComparison]::OrdinalIgnoreCase) -lt 0) `

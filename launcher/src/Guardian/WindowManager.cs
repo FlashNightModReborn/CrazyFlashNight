@@ -845,19 +845,41 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 统一 Flash 焦点恢复 primitive。所有想把输入焦点拉回 Flash 子窗口的路径都走这里：
-        /// panel close（idle / soft idle）、forwardCtrlCombo 前置、未来 navigate heartbeat 等。
-        ///
-        /// 实现两遍尝试：
-        ///   Pass 1：直接 SetForegroundWindow + SetFocus + 校验 GetForegroundWindow 落点
-        ///   Pass 2：pass 1 失败 → AttachThreadInput 把前台线程的输入队列接到当前线程再 SetForegroundWindow，
-        ///           try/finally 严格配对 detach（输入队列泄露是进程级 bug）。
-        ///
-        /// 全程打 [FocusRestore] 日志：reason + fgBefore（hwnd/pid/class/title）+ 各 pass 结果 + final 状态。
-        /// 这条日志是排查"谁偷的焦点"和"primitive 是否生效"的唯一权威源；不要随意删。
-        ///
-        /// 本方法不抛异常；调用方拿 bool 返回值决定是否重试 / 启 heartbeat。
+        /// 隐藏活动面板之前，把仍由该面板持有的前台交给 Flash 的顶层窗口。
+        /// exact 前台复核后仅尝试一次；不使用 AttachThreadInput 或外部前台恢复。
         /// </summary>
+        internal bool HandoffFlashFocusBeforePanelHide(string reason, IntPtr expectedPanelForeground)
+        {
+            // 同步交接仅尝试一次；前台已变化时不调用 SetForegroundWindow，也不绑外部输入队列。
+            IntPtr flash = _flashHwnd;
+            try
+            {
+                if (expectedPanelForeground == IntPtr.Zero || !IsCurrentFlashWindow(flash)) return false;
+                IntPtr root = _focusApi.GetRootWindow(flash);
+                if (root == IntPtr.Zero || !_focusApi.IsWindow(root)
+                        || _focusApi.GetForegroundWindow() != expectedPanelForeground) return false;
+                // 激活顶层 Guardian/Flash 窗口，键盘焦点仍归 exact Flash 子窗口。
+                bool activated = _focusApi.SetForegroundWindow(root);
+                if (!activated || !IsCurrentFlashWindow(flash)
+                        || _focusApi.GetForegroundWindow() != root)
+                {
+                    LogManager.Log("[FocusRestore] " + reason + " handoff=failed");
+                    return false;
+                }
+                _focusApi.SetFocus(flash);
+                bool restored = IsExactFlashForeground(flash, _focusApi.GetForegroundWindow(), true);
+                LogManager.Log("[FocusRestore] " + reason + " handoff=" + (restored ? "ok" : "failed")
+                    + " root=0x" + root.ToString("X") + " flash=0x" + flash.ToString("X"));
+                return restored;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[FocusRestore] " + reason + " handoff=throw type=" + ex.GetType().Name);
+                return false;
+            }
+        }
+
+        /// <summary>现役输入焦点恢复：直接设置并校验，失败时以严格配对的 AttachThreadInput 再试一次。</summary>
         public bool RestoreFlashInputFocus(string reason)
         {
             return RestoreFlashInputFocusCore(
