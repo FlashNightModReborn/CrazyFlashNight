@@ -39,6 +39,10 @@
 
 本列车不把怪物输出所依据的四条药剂冷却通道扩成八条，而是把物理容器扩为两组各四槽：AS2 `DrugInputService` 独占活动组、切换上升沿、同列共享冷却、同帧抑制与持键锁存；Settings 只新增逻辑键 `药剂组切换键` 并把键表升为 36 行 / `keySchemaVersion=2`；Character Build 顶层协议仍为 v1，但严格投影 `drugLayout.v=2`、八个 `{slot,bank,lane,active}` 行和两排四列 UI。PlayerInfo 的第五列只是 `drug:switch` 控件，不是第九药剂槽，专用无 linkage MovieClip 以两帧 `○ / × + 1 / 2` 显示活动组。维护者已确认功能、切换手感及最终图标有效；完整迁移、旧档、冷却、键位和发布边界见[双药剂组与八槽共享冷却 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。正式 runtime 已 promotion，部署后 identity/lifecycle 窄纵切已通过；该纵切 `businessJourneyExecuted=false`，不能代签 Character Build 写、八槽使用、旧档迁移或重启读回。
 
+### 2026-09-08 地图主动撤退
+
+地图只读限制继续约束普通导航；地图新增主动撤退意图，必须复用 AS2 现役返回流程。资格由 `StageRunSession` 投影，Host 只接受当前 map 实例的闭合 `v/token` 参数，Web 不传目的地或胜负结果。失败保留面板与重试权，未知结果只查询已接受 token，确认退场后才关闭并释放暂停。候选、人类验收和完整时序见[地图主动撤退](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0c-2026-09-08-地图主动撤退入口)。
+
 ### 2026-08-27 关卡结果原生状态槽与基地结算工作台
 
 关卡结果迁移采用 C# / Web 分层，不把仍在推进的游戏态塞入会暂停 Flash 的普通 Panel：AS2 `StageRunSession` 独占关卡会话、胜负/生命双状态、30 FPS 未暂停帧时、击杀与物资获得/消耗事实、复活币事务、返回基地与奖励一次性随机化；C# `StageOutcomeTask` 只把严格状态投影进 `RightContextWidget` 已有的右上 32px 条件状态槽，不创建独立 HWND。该槽复用小地图/任务播报的 `RightHudLayout + NativeHudTheme`，由 `stageDecision > transactionDecision > actionableNotice > contextHint` 集中仲裁，只让精确动作按钮命中。胜负条不暂停且保持常驻，不再提供会隐藏返回入口的伪“继续”：玩家忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr=1` 时追加“前往交付”。后者仍走基地奖励流程，只有结算终态、Web exact close 与 pause lease 释放后，AS2 才重解析目标并导航。复活双按钮保持 128 逻辑像素总宽并按 `80/48` 分配，文案强制单行；万/亿/万亿缩略仍过长时才使用紧凑字号，绘制与命中共享同一矩形。关卡内不提供完整/紧凑，NativeHud 随普通 Panel 整体 suspend；socket 断开清投影，重连后向 AS2 请求权威快照。

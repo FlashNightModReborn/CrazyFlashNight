@@ -37,6 +37,11 @@ var MapPanel = (function() {
     // v3 additive：AS2 关卡生命周期锁。地图仍可只读浏览，但不得发任何场景/选关动作。
     var _navigationLocked = false;
     var _navigationLockReason = '';
+    var _returnBaseState = null;
+    var _returnBusy = false;
+    var _returnPendingToken = '';
+    var _panelInstanceId = '';
+    var _returnBaseButtonEl, _navigationLockTextEl;
     var _currentHotspotId = '';
     var _requestedInitialPageId = '';
     var _hoverHotspotId = '';
@@ -112,7 +117,10 @@ var MapPanel = (function() {
                 '<div class="map-page-tabs" id="map-page-tabs"></div>' +
                 '<div class="map-coordinate-readout" id="map-coordinate-readout" aria-label="地图坐标"></div>' +
                 '<div class="map-page-summary" id="map-page-summary"></div>' +
-                '<div class="map-navigation-lock-notice" id="map-navigation-lock-notice" role="status" aria-live="polite" hidden></div>' +
+                '<div class="map-navigation-lock-notice" id="map-navigation-lock-notice" hidden>' +
+                    '<span id="map-navigation-lock-text" role="status" aria-live="polite"></span>' +
+                    '<button id="map-return-base" class="map-return-base" type="button" data-audio-cue="confirm" hidden></button>' +
+                '</div>' +
                 '<button class="map-panel-close-btn" type="button" title="关闭" data-audio-cue="back">X</button>' +
             '</div>' +
             '<div class="map-panel-body">' +
@@ -179,6 +187,9 @@ var MapPanel = (function() {
         _pageTabsEl = _el.querySelector('#map-page-tabs');
         _pageSummaryEl = _el.querySelector('#map-page-summary');
         _navigationLockNoticeEl = _el.querySelector('#map-navigation-lock-notice');
+        _navigationLockTextEl = _el.querySelector('#map-navigation-lock-text');
+        _returnBaseButtonEl = _el.querySelector('#map-return-base');
+        _returnBaseButtonEl.addEventListener('click', requestReturnBase);
         _coordinateReadoutEl = _el.querySelector('#map-coordinate-readout');
         _canvasRenderer = (typeof MapCanvasStageRenderer !== 'undefined')
             ? new MapCanvasStageRenderer(_canvasEl, { fgCanvas: _fgCanvasEl, ringCanvas: _ringCanvasEl, resolveAssetUrl: resolveAssetUrl })
@@ -281,6 +292,10 @@ var MapPanel = (function() {
 
     function onOpen(el, initData) {
         _closing = false;
+        _panelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
+        _returnBaseState = null;
+        _returnBusy = false;
+        _returnPendingToken = '';
         _session += 1;
         _pendingReq = {};
         _enabledLookup = {};
@@ -333,6 +348,10 @@ var MapPanel = (function() {
     }
 
     function onForceClose() {
+        _returnBaseState = null;
+        _returnBusy = false;
+        _returnPendingToken = '';
+        _panelInstanceId = '';
         // teardownLayoutWatcher 已由 Panels.close() 经 onClose 钩子触发，此处只做状态复位。
         _closing = false;
         stopCanvasStage();
@@ -973,10 +992,16 @@ var MapPanel = (function() {
 
         var reqId = 'map-' + (++_reqSeq);
         var currentSession = _session;
+        var returnTokenAtRead = _returnPendingToken;
         _pendingReq[reqId] = function(resp) {
             delete _pendingReq[reqId];
             if (currentSession !== _session || !Panels.isOpen() || Panels.getActive() !== 'map') return;
-
+            // 撤退提交前发出的旧读取不能覆盖随后建立的待返回状态。
+            if (!_returnPendingToken || returnTokenAtRead === _returnPendingToken) {
+                _returnBusy = false;
+                if (applyReturnBaseState(resp.returnBase)) return;
+            }
+            syncNavigationLockNotice();
             if (!resp.success) {
                 showError(resp.error || 'unknown_error');
                 return;
@@ -991,12 +1016,12 @@ var MapPanel = (function() {
             }
         };
 
-        Bridge.send({
-            type: 'panel',
-            panel: 'map',
-            cmd: cmd,
-            callId: reqId
-        });
+        var request = {type:'panel', panel:'map', cmd:cmd, callId:reqId, panelInstanceId:_panelInstanceId};
+        try {
+            if (Bridge.send(request) === false && _pendingReq[reqId]) _pendingReq[reqId]({success:false, error:'disconnected'});
+        } catch (sendError) {
+            if (_pendingReq[reqId]) _pendingReq[reqId]({success:false, error:'disconnected'});
+        }
     }
 
     // 导航锁定一击 (第二节): 在热点中心生成一次性 reticle 覆层 (~350ms),
@@ -1141,7 +1166,60 @@ var MapPanel = (function() {
     }
 
     function requestClose() {
+        if (_returnBusy) return;
         finishClose(true);
+    }
+
+    function applyReturnBaseState(state) {
+        if (!state || typeof state.available !== 'boolean' || typeof state.token !== 'string'
+                || typeof state.acceptedToken !== 'string' || typeof state.mode !== 'string') return false;
+        if (_returnPendingToken && state.acceptedToken === _returnPendingToken) {
+            finishClose(true);
+            return true;
+        }
+        _returnBaseState = state;
+        _returnPendingToken = '';
+        return false;
+    }
+
+    function requestReturnBase() {
+        if (_returnBusy || _closing || _authoringEnabled || !_panelInstanceId) return;
+        if (_returnPendingToken) {
+            _returnBusy = true;
+            syncNavigationLockNotice();
+            requestSnapshot('refresh');
+            return;
+        }
+        if (!_returnBaseState || _returnBaseState.available !== true) return;
+        var currentSession = _session;
+        var reqId = 'map-return-' + (++_reqSeq);
+        _returnPendingToken = _returnBaseState.token;
+        _returnBusy = true;
+        syncNavigationLockNotice();
+        _pendingReq[reqId] = function(resp) {
+            delete _pendingReq[reqId];
+            if (currentSession !== _session || !Panels.isOpen() || Panels.getActive() !== 'map'
+                    || (resp.panelInstanceId && resp.panelInstanceId !== _panelInstanceId)) return;
+            _returnBusy = false;
+            if (resp.success === true && resp.closePanel === true) { finishClose(true); return; }
+            if (applyReturnBaseState(resp.returnBase)) return;
+            if (typeof Toast !== 'undefined' && Toast) Toast.add(normalizeError(resp.error || 'outcome_unknown'));
+            syncNavigationLockNotice();
+            // 超时只补一次只读查询；没有权威结果时保留查询入口，不自动重发撤退。
+            if (_returnPendingToken) requestSnapshot('refresh');
+        };
+        try {
+            if (Bridge.send({type:'panel', panel:'map', cmd:'return_base', callId:reqId,
+                    panelInstanceId:_panelInstanceId, v:1, token:_returnPendingToken}) === false) {
+                delete _pendingReq[reqId];
+                _returnBusy = false;
+                _returnPendingToken = '';
+                syncNavigationLockNotice();
+                if (typeof Toast !== 'undefined' && Toast) Toast.add(normalizeError('disconnected'));
+            }
+        } catch (sendError) {
+            if (_pendingReq[reqId]) _pendingReq[reqId]({success:false, error:'outcome_unknown'});
+        }
     }
 
     function pushNavigationLockedReason() {
@@ -1150,6 +1228,19 @@ var MapPanel = (function() {
     }
 
     function getNavigationLockMessage() {
+        if (_returnBusy) return '正在处理返回，请稍候。';
+        if (_returnPendingToken) return '返回结果尚待核对，请查询状态；也可以关闭地图。';
+        if (_returnBaseState) {
+            switch (_returnBaseState.mode) {
+                case 'retreat': return '本次关卡尚未通关。撤退保留已获得的物资，不获得本关通关奖励。';
+                case 'victory': return '本关已通关。返回后领取通关奖励，再前往其他地点。';
+                case 'return': return '可以结束本次关卡并返回；重伤角色按原有流程返回医务室。';
+                case 'retry_return': return '本次结算已保存，可以继续完成返回。';
+                case 'entering': return '正在进入关卡，请等待入场完成。';
+                case 'returning': return '正在返回，请等待场景切换完成。';
+                case 'settlement_pending': return '本次奖励结算尚未结束，请关闭地图，继续处理待领奖励。';
+            }
+        }
         if (_navigationLockReason === 'stage_start_pending') {
             return '正在进入关卡，请勿重复操作。';
         }
@@ -1161,12 +1252,25 @@ var MapPanel = (function() {
 
     function syncNavigationLockNotice() {
         if (!_navigationLockNoticeEl) return;
-        _navigationLockNoticeEl.hidden = !_navigationLocked;
-        _navigationLockNoticeEl.textContent = _navigationLocked ? getNavigationLockMessage() : '';
+        var show = _navigationLocked || _returnBusy || !!_returnPendingToken
+            || (_returnBaseState && _returnBaseState.mode !== 'none');
+        _navigationLockNoticeEl.hidden = !show;
+        _navigationLockTextEl.textContent = show ? getNavigationLockMessage() : '';
+        var available = !!(_returnBaseState && _returnBaseState.available && _panelInstanceId && !_authoringEnabled);
+        _returnBaseButtonEl.hidden = !(available || _returnPendingToken);
+        _returnBaseButtonEl.disabled = _returnBusy;
+        _returnBaseButtonEl.textContent = _returnBusy ? '正在返回…' : _returnPendingToken ? '核对返回状态'
+            : _returnBaseState && _returnBaseState.mode === 'retreat' ? '撤退并返回'
+            : _returnBaseState && _returnBaseState.mode === 'victory' ? '返回并结算' : '返回基地';
+        _el.querySelector('.map-panel-close-btn').disabled = _returnBusy;
     }
 
     function finishClose(notifyHost) {
         if (_closing) return;
+        var closingInstanceId = _panelInstanceId;
+        _returnBaseState = null;
+        _returnBusy = false;
+        _returnPendingToken = '';
         _closing = true;
         _pendingReq = {};
         _enabledLookup = {};
@@ -1196,7 +1300,7 @@ var MapPanel = (function() {
         resetContentFit();
         Panels.close();
         if (notifyHost) {
-            Bridge.send({ type: 'panel', panel: 'map', cmd: 'close' });
+            Bridge.send({ type: 'panel', panel: 'map', cmd: 'close', panelInstanceId:closingInstanceId });
         }
         _closing = false;
     }
@@ -3053,6 +3157,12 @@ var MapPanel = (function() {
 
     function normalizeError(errorText) {
         switch (String(errorText || '')) {
+            case 'map_return_stale': return '关卡状态已变化，请按当前提示重试返回。';
+            case 'return_in_progress': return '正在处理返回，请稍候。';
+            case 'return_base_unavailable': return '当前不能返回，请按地图提示完成当前流程。';
+            case 'settlement_prepare_failed': return '结算或保存尚未成功，已保留本次奖励，请稍后重试返回。';
+            case 'return_base_failed': return '返回尚未完成，请稍后重试。';
+            case 'outcome_unknown': return '正在核对返回结果，请勿重复撤退。';
             case 'timeout': return '启动器等待地图状态响应超时。';
             case 'disconnected': return '当前未连接到游戏运行时。';
             case 'invalid_target': return '目标区域无效或暂不可达。';

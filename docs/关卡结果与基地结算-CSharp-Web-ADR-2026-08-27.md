@@ -6,6 +6,28 @@
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
+## 0C. 2026-09-08 地图主动撤退入口
+
+**最后核对代码基线**：`9a41356e067a96812dc8e2ef876fd799409a464c` + 本轮工作树；已测试的地图中途撤退为 `HUMAN_ACCEPTANCE_PASSED / candidate_executed`，维护者已于 2026-09-08 授权云端共识、正式构建、部署与推送。
+
+战斗地图继续允许阅读、禁止普通 `navigate/open_stage_select`。地图顶部直接显示 AS2 授权的“撤退并返回”；活跃关卡明确说明保留已获得物资、不获得通关奖励，胜利改为“返回并结算”，死亡沿原有医务室返回规则。入场、转场、待领奖励只显示原因和下一步，不重复开放逃生。设置页与右上状态槽的现有行为不变。
+
+`StageRunSession.getMapReturnBaseState()` 独占资格；`MapPanelService` 在地图读取回包的 `returnBase` 附带 `mode/available/runId/revision/token/acceptedToken`，不改 C# 地图规则、作者预览或持久化存档结构。短期 token 绑定本轮会话版本与实际 gameworld，场景或状态变化即失效；无 run 的 legacy battle 仍受 gameworld 绑定。地图 `return_base` 只接收 `v=1` 与 token，经 Host 的 active map 实例检查和封闭参数校验后调用现役 `_root.返回基地`，不接收目的地或胜负结果，也不放宽普通 NativeHud 返回的活跃存活限制。
+
+返回回包在淡出前保存完整 class-level correlation。冻结、flush 或转场拒绝时地图保留并允许重试；同一成功 token 只返回既有结果，不再次执行退场。Web 等待期间禁止重复点击和主动关闭；超时后只查询当前资格及已接受 token，确认成功才关闭并释放既有 Panel 暂停，无法确认时提供“核对返回状态”及关闭地图，不自动重发撤退。提交前的迟到读取不能清除提交后的等待状态，旧面板响应不能关闭新实例。实际基地 SceneReady、奖励面板和迟到判胜清理继续复用 §0B、§5。
+
+验证入口：`scripts/run-map-domain-tests.ps1`（新增主动撤退资格、失效、失败重试和重复成功检查）、`scripts/run-map-loot-tests.ps1`、`scripts/run-settings-tests.ps1`、`node launcher/web/modules/map/dev/run-qa.js --browser=edge`、Host `MapTaskResponseTests` 与相邻 Panel/Settings 回归。随后发布 `scripts/asLoader.swf` 并构建独立 runtime candidate。地图人类验收入口为根 [地图撤退验收启动.cmd](../地图撤退验收启动.cmd)，固定使用 `map-return-ready-v1` 候选，不重建或替换正式 runtime。
+
+人类验收只需覆盖：未通关时从地图撤退后任务未误完成且能重新入场；正常通关后从地图返回并领取奖励；死亡后从地图返回医务室且输入正常。机器证据与候选身份在本节收尾记录，不能代签这三条实际体验。
+
+维护者反馈实际测试未见明显问题。08:24:01 与 08:25:35 两次 `mapPanelReturnBase` 均得到成功回包、`retreat` 冻结、flush/shadow 确认和地图 exact close；首次结算于 08:24:05 终结，08:24:12 再次入场成功。全段 27 次 FocusRestore 成功，没有撤退链保存失败或重复退场；最后一次在结算面板主动退出，待结算记录已落盘。08:24:19 的胜利返回和 08:25:02 的死亡返回完成零奖励结算，但没有地图返回命令，因此不算新地图按钮这两个分支的现场证据；全段没有实际物品领取，非零奖励领取与退出后恢复也未在本次现场覆盖。该限定验收与用户发布授权分别成立，不扩大为完整产品或正式入口 `standard_entry_verified`。
+
+机器回归：地图 Web 54/54，1024×576 撤退交互另通过；地图 AS2 46/46（runId `6ad2dded8cf44ce1b5d74fe0acd25786`），结算 739/739（Loot 267、Planner 12、StageRunSession 460，runId `22a9e71fd9e347e4bb66574fd851547e`），Settings 47/47，均 fresh Compiler 0/0、32K retry 0。Host focused 106/106、Launcher 全量 4,800 通过/3 项既有显式跳过，Panel contracts 70/70、文档治理与 diff 检查通过。CS6 发布 `asLoader.swf` 为 1,277,231 字节、SHA-256 `FA4F449935D560AD4AB3FDC4F63B17B16CA200D1591A8D2934FB15D7A6F60F8F`；fresh Output/Compiler 0/0、FFDec 639/639 导出确认新命令、资格投影、class 回包和原落盘门进入产物，最大函数 50,569B。publish-only 未产生新行为 trace，行为证据取前述 focused suites。
+
+本地候选 `tmp/runtime-candidates/v2/map-return-ready-v1` 绑定 identity `3061231FE8F8F20C691E4F64DD349A8232CE6640E93C66ACB20FEC6DA6A849C4`、33-file closure `1B091DC431F436F5084BDD93FB62025150E638BB334F66CFC91959403548BD81`、Core DLL SHA-256 `A5FFA1FAF6A198C311720E7A79D38E5CC3F2E5BE7F8BA1099AF3280A8492CEE5`。`automation/start.ps1 -CandidateRoot <该绝对路径>` 已通过 integrity-only 校验并启动该候选下的 Core EXE（本轮 PID 27344），总线 ready、实际 runtime 身份匹配；这只证明候选启动，不声称三条游戏旅程通过。上述候选阶段未修改正式 EXE/runtime/consensus；后续发布状态另由本节与 runtime 发布文档记录。原始机器日志与界面截图留在本机 `tmp/map-return/`，不入库。
+
+发布准备按现役生成器同步五份落后于当前真源的派生目录：任务目录 243→244（补任务 20072），竞技场扫描关卡 215→216、元战队 2080→2081，并同步兵种参数与自定义预设。未新增任务或改写关卡真源；生成产物须在冻结源码后重放 prepare 并通过完整 production policy，再请求云端共识。
+
 ## 0B. 2026-09-07 撤退后迟到判胜与任务误完成修复
 
 **最后核对代码基线**：合并提交 `0f151b17630cc490c0f111b354ad44962bba36c3`，包含主线 `8ee4ed07d0` 与修复 `7f317f2102`。隔离副本人类验收通过，合并后的自动回归、CS6 重编与反汇编验证通过；该提交已进入本机主线，并完成正式目录启动与独立测试存档加载核对。

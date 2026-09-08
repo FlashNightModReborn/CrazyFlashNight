@@ -7521,6 +7521,12 @@ namespace CF7Launcher.Guardian
                         }
                     }
                     break;
+                case "return_base":
+                    if (!HasExactActivePanelOwnerBinding(parsed, "map"))
+                        RespondPanelDomainError(parsed, "panel_instance_expired");
+                    else if (_mapTask == null) RespondPanelDomainError(parsed, "map_unavailable");
+                    else _mapTask.HandleWebRequest(cmd, parsed);
+                    break;
                 case "snapshot":
                 case "detail":
                 case "finishTask":

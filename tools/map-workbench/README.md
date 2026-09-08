@@ -108,7 +108,7 @@ node tools/map-workbench/test-view-modes.js
 - `node tools/map-workbench/test-core.js`：冻结 v1 单文件回执与 HUD 投影的 18 项兼容／改名层级回归检查，不作为 v2 产品验收。
 - `node tools/map-workbench/test-upstream-compat.js`：真实 NPC 初始化源码前缀的 9 项兼容路径，守未接管 NPC 的主线／支线旧行为与已接管驻点的单一 presence 边界；仍需独立 CS6 门。
 - C# `MapDomainCoreTests / MapDomainSessionTests / MapAuthoringContentTests / MapWorkbenchTaskTests / MapCatalogTests / MapHudPayloadParseTests`：新鲜度、原任务补丁、恢复、共享素材、边界与旧入口退役；`MapTaskResponseTests` 另验真实回包消费者的编号匹配、乱序／重复、导航关闭结果及最大正整数编号。
-- `scripts/run-map-domain-tests.ps1`：实际 CS6 focused 26/26，包含地图 snapshot／导航的延迟、乱序、成功／失败与数字请求编号保留，真实 wire 需带 Host 原始正整数 `callId`；`run-map-loot-tests.ps1`、`run-boot-sequencer-tests.ps1` 覆盖周边生命周期与启动，随后单独 `compile_test.ps1 -Target publish`。
+- `scripts/run-map-domain-tests.ps1`：实际 CS6 focused 46/46，包含主动撤退资格、状态失效、拒绝重试与成功去重，以及地图 snapshot／导航的延迟、乱序、成功／失败与数字请求编号保留，真实 wire 需带 Host 原始正整数 `callId`；`run-map-loot-tests.ps1`、`run-boot-sequencer-tests.ps1` 覆盖周边生命周期与启动，随后单独 `compile_test.ps1 -Target publish`。
 - `webview-smoke/MapWebViewSmoke.csproj`：隐藏窗口、禁用 GPU 的实际 WebView2 启动注入、snapshot v4 作者子文档和来源／对象隔离；不进入玩家存档或自动游玩。
 - 地图、Tasks／Stage Select、Workbench strict、panel contracts、Launcher 全量、文档治理与候选闭包另按[测试指南](../../agentsDoc/testing-guide.md)执行。
 

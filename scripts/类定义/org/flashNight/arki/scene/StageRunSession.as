@@ -482,6 +482,27 @@ class org.flashNight.arki.scene.StageRunSession {
             ? "respawn_dispatch_failed" : "respawn_dispatch_rollback_failed"};
     }
 
+    /** 地图主动撤退只投影本轮资格；真正返回仍走 _root.返回基地 的冻结与落盘硬门。 */
+    public static function getMapReturnBaseState():Object {
+        var state:Object = {mode:"none", available:false,
+            runId:_run == null ? "" : String(_run.runId),
+            revision:_run == null ? 0 : Number(_run.revision)};
+        if (_stageStartReservation != null) state.mode = "entering";
+        else if (_root.场景转换中 === true) state.mode = "returning";
+        else if (_run != null && _returnRequested && _root.当前为战斗地图 !== true) {
+            if (!isRunTerminal()) state.mode = "settlement_pending";
+        } else if (_run != null || _root.当前为战斗地图 === true) {
+            state.mode = _run == null || _run.life == "dead" ? "return"
+                : _returnRequested ? "retry_return"
+                : _run.outcome == "victory" ? "victory"
+                : _run.outcome == "active" || _run.outcome == "retreat" ? "retreat" : "return";
+            state.available = typeof _root.返回基地 == "function";
+        } else if (getSceneExitBlockReason() == "pending_stage_settlement") {
+            state.mode = "settlement_pending";
+        }
+        return state;
+    }
+
     public static function requestReturnBaseLocal(source:String):Object {
         if (_run == null || _returnRequested
                 || (_run.life != "dead" && _run.outcome == "active")) {

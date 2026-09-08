@@ -14,10 +14,10 @@ $mapFocusedRun = @{
         'scripts/类定义/org/flashNight/arki/map/MapPanelService.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^MapDomainBridgeTest Tests Passed: 26\r?$'
+        '(?m)^MapDomainBridgeTest Tests Passed: 46\r?$'
         '(?m)^MapDomainBridgeTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MapDomainBridgeTest 26/26'
+    SuccessSummary = 'MapDomainBridgeTest 46/46'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

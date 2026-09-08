@@ -7,6 +7,10 @@ import org.flashNight.arki.ui.PanelRequestEnvelope;
 class org.flashNight.arki.map.MapPanelService {
     private static var _json:LiteJSON;
     private static var _inited:Boolean = false;
+    private static var _returnSequence:Number = 0;
+    private static var _returnContext:Object;
+    private static var _returnReply:Object;
+    private static var _acceptedReturnToken:String = "";
 
     public static function install():Void {
         if (_inited) return;
@@ -14,6 +18,7 @@ class org.flashNight.arki.map.MapPanelService {
         if (_root.gameCommands == undefined) _root.gameCommands = {};
         _root.gameCommands["mapPanelSnapshot"] = function(params) { org.flashNight.arki.map.MapPanelService.handleSnapshot(params); };
         _root.gameCommands["mapPanelNavigate"] = function(params) { org.flashNight.arki.map.MapPanelService.handleNavigate(params); };
+        _root.gameCommands["mapPanelReturnBase"] = function(params) { org.flashNight.arki.map.MapPanelService.handleReturnBase(params); };
         _root.gameCommands["mapPanelClose"] = function(params) { org.flashNight.arki.map.MapPanelService.handleClose(params); };
         _root.gameCommands["openWebMap"] = function(params) { org.flashNight.arki.map.MapPanelService.handleOpenWebMap(params); };
         _root.gameCommands["navigateToHotspot"] = function(params) { org.flashNight.arki.map.MapPanelService.navigateToHotspot(String(params.targetId)); };
@@ -62,7 +67,12 @@ class org.flashNight.arki.map.MapPanelService {
         return function(ok:Boolean, error:String):Void {
             var response:Object = {task:"map_response", callId:responseCallId, success:ok, error:error};
             if (navigation) response.closePanel = ok;
-            else response.snapshot = ok ? org.flashNight.arki.map.MapDomainBridge.getProjection().snapshot : null;
+            else {
+                response.snapshot = ok ? org.flashNight.arki.map.MapDomainBridge.getProjection().snapshot : null;
+                // 退场资格归 AS2，不写进 C# 地图规则/作者预览的缓存事实。
+                // 地图域读取失败也回传本轮资格，允许救援与超时后的只读核对。
+                response.returnBase = org.flashNight.arki.map.MapPanelService.getReturnBaseState();
+            }
             org.flashNight.arki.map.MapPanelService.sendResponse(response);
         };
     }
@@ -72,7 +82,62 @@ class org.flashNight.arki.map.MapPanelService {
     public static function handleNavigate(params:Object):Void {
         MapDomainBridge.navigate({kind:"navigate", targetId:String(params.targetId)}, makeResponse(Number(params.callId), true));
     }
-    public static function handleClose(params:Object):Void { log("mapPanelClose"); }
+    public static function getReturnBaseState():Object {
+        var state:Object = org.flashNight.arki.scene.StageRunSession.getMapReturnBaseState();
+        if (_returnContext == null || _returnContext.world !== _root.gameworld
+                || _returnContext.runId !== state.runId || _returnContext.revision !== state.revision
+                || _returnContext.mode !== state.mode || _returnContext.available !== state.available) {
+            _returnContext = {world:_root.gameworld, runId:state.runId, revision:state.revision,
+                mode:state.mode, available:state.available, token:"map-return-" + (++_returnSequence)};
+        }
+        state.token = _returnContext.token;
+        state.acceptedToken = _acceptedReturnToken;
+        return state;
+    }
+    /** 只接收本面板读到的短期资格，禁止 Web 携带目的地或改写关卡结果。 */
+    public static function handleReturnBase(params:Object):Void {
+        var callId:Number = Number(params.callId);
+        if (isNaN(callId) || callId <= 0 || Math.floor(callId) != callId) return;
+        var error:String = "";
+        for (var key:String in params) {
+            if (key != "task" && key != "action" && key != "callId" && key != "v" && key != "token") error = "invalid_payload";
+        }
+        if (params.v !== 1 || typeof params.token != "string" || params.token == "") error = "invalid_payload";
+        if (_returnReply != null) error = "return_in_progress";
+        if (error == "" && params.token === _acceptedReturnToken) {
+            sendResponse({task:"map_response", callId:callId, success:true, closePanel:true});
+            return;
+        }
+        var state:Object = getReturnBaseState();
+        if (error == "" && params.token !== state.token) error = "map_return_stale";
+        if (error == "" && state.available !== true) error = "return_base_unavailable";
+        if (error != "") {
+            sendResponse({task:"map_response", callId:callId, success:false, error:error, returnBase:state});
+            return;
+        }
+        // 完整回包在淡出前存入 class；不能在切帧后依赖调用帧的局部变量。
+        _returnReply = {task:"map_response", callId:callId, success:true, closePanel:true, token:params.token};
+        try {
+            if (_root.返回基地() === false) failReturnBase("settlement_prepare_failed");
+        } catch (returnError) {
+            failReturnBase("return_base_failed");
+        }
+        if (_returnReply.success === true) _acceptedReturnToken = String(_returnReply.token);
+        delete _returnReply.token;
+        _returnReply.returnBase = getReturnBaseState();
+        sendPendingReturnBaseResponse();
+    }
+    private static function sendPendingReturnBaseResponse():Void {
+        var response:Object = _returnReply;
+        _returnReply = null;
+        sendResponse(response);
+    }
+    private static function failReturnBase(error:String):Void {
+        _returnReply.success = false;
+        _returnReply.error = error;
+        delete _returnReply.closePanel;
+    }
+    public static function handleClose(params:Object):Void { _returnContext = null; log("mapPanelClose"); }
     public static function handleOpenWebMap(params:Object):Void {
         var source:String = params.source == undefined ? "as2_legacy_button" : String(params.source);
         var pageId:String = String(params.pageId || "");

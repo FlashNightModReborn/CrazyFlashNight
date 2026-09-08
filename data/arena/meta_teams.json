@@ -2,13 +2,13 @@
   "generatedBy": "tools/derive-arena-meta-teams.js",
   "granularity": "subwave",
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
-  "stageFilesScanned": 215,
-  "stagesWithTeams": 197,
-  "teamCount": 2080,
+  "stageFilesScanned": 216,
+  "stagesWithTeams": 198,
+  "teamCount": 2081,
   "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
-    "unknown": 100,
+    "unknown": 101,
     "亡灵/僵尸": 605,
     "天网": 227,
     "异形": 262,
@@ -2561,34 +2561,20 @@
           "name": "终结者",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
-          "minLevel": 26,
-          "maxLevel": 30,
-          "weight": 11,
-          "Parameters": {
-            "长枪": "G36"
-          }
-        },
-        {
-          "type": "兵种25",
-          "name": "终结者",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 26,
-          "maxLevel": 28,
-          "weight": 10,
-          "Parameters": {
-            "长枪": "M134"
-          }
-        },
-        {
-          "type": "兵种25",
-          "name": "终结者",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
           "minLevel": 40,
           "maxLevel": 40,
           "weight": 10,
           "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 12000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 3
+              }
+            },
             "长枪": "SPAS12"
           }
         },
@@ -2636,6 +2622,28 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 8
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 28,
+          "maxLevel": 28,
+          "weight": 8,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "M134"
+          }
         },
         {
           "type": "兵种347",
@@ -2768,11 +2776,21 @@
           "name": "终结者",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
-          "minLevel": 26,
+          "minLevel": 28,
           "maxLevel": 28,
           "weight": 5,
           "Parameters": {
-            "长枪": "XM8"
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "G36"
           }
         },
         {
@@ -2784,6 +2802,16 @@
           "maxLevel": 50,
           "weight": 5,
           "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 12000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 3
+              }
+            },
             "长枪": "Fire Gun"
           }
         },
@@ -2833,30 +2861,6 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 5
-        },
-        {
-          "type": "兵种25",
-          "name": "终结者",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 26,
-          "maxLevel": 26,
-          "weight": 4,
-          "Parameters": {
-            "长枪": "UMP"
-          }
-        },
-        {
-          "type": "兵种25",
-          "name": "终结者",
-          "spritename": "敌人-终结者T800",
-          "isHostile": true,
-          "minLevel": 24,
-          "maxLevel": 28,
-          "weight": 4,
-          "Parameters": {
-            "长枪": "M4A1改"
-          }
         },
         {
           "type": "兵种193",
@@ -2954,7 +2958,63 @@
           "maxLevel": 30,
           "weight": 3,
           "Parameters": {
+            "长枪": "G36"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 3,
+          "Parameters": {
             "长枪": "m14"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 26,
+          "maxLevel": 26,
+          "weight": 3,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 8000,
+                "hp满血值": 8000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "XM8"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 26,
+          "maxLevel": 26,
+          "weight": 3,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 8000,
+                "hp满血值": 8000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "UMP"
           }
         },
         {
@@ -3059,10 +3119,86 @@
           "name": "终结者",
           "spritename": "敌人-终结者T800",
           "isHostile": true,
+          "minLevel": 26,
+          "maxLevel": 26,
+          "weight": 2,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "G36"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 26,
+          "maxLevel": 26,
+          "weight": 2,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "M134"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 26,
+          "maxLevel": 26,
+          "weight": 2,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "M4A1改"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
           "minLevel": 50,
           "maxLevel": 50,
           "weight": 2,
           "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 12000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 3
+              }
+            },
             "长枪": "战术版FIM92"
           }
         },
@@ -3197,6 +3333,16 @@
           "maxLevel": 26,
           "weight": 1,
           "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "Sniper"
           }
         },
@@ -3209,6 +3355,82 @@
           "maxLevel": 26,
           "weight": 1,
           "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "XM8"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 26,
+          "maxLevel": 26,
+          "weight": 1,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "UMP"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 26,
+          "maxLevel": 26,
+          "weight": 1,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 8000,
+                "hp满血值": 8000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "G36"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 26,
+          "maxLevel": 26,
+          "weight": 1,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 8000,
+                "hp满血值": 8000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "AWP"
           }
         },
@@ -3221,7 +3443,73 @@
           "maxLevel": 28,
           "weight": 1,
           "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "XM8"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 28,
+          "maxLevel": 28,
+          "weight": 1,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "M3 Rocket Launcher"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 28,
+          "maxLevel": 28,
+          "weight": 1,
+          "Parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
+            "长枪": "M4A1改"
+          }
+        },
+        {
+          "type": "兵种25",
+          "name": "终结者",
+          "spritename": "敌人-终结者T800",
+          "isHostile": true,
+          "minLevel": 24,
+          "maxLevel": 24,
+          "weight": 1,
+          "Parameters": {
+            "长枪": "M4A1改"
           }
         },
         {
@@ -3524,7 +3812,7 @@
           }
         }
       ],
-      "unitCount": 124
+      "unitCount": 133
     },
     "异形": {
       "teamCount": 262,
@@ -33432,6 +33720,38 @@
       "powerRating": 60
     },
     {
+      "id": "副本任务/挑战人修罗.xml#0.0",
+      "sourceStage": "副本任务/挑战人修罗.xml",
+      "sourceName": "挑战人修罗",
+      "group": "0.0",
+      "faction": "unknown",
+      "factionConfidence": "unknown",
+      "members": [
+        {
+          "type": "兵种348",
+          "id": 348,
+          "name": "混沌王",
+          "spritename": "敌人-人修罗",
+          "level": 100,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "不掉装备": true,
+            "不掉钱": true,
+            "称号": "人修罗"
+          }
+        }
+      ],
+      "unitCount": 1,
+      "distinctTypes": 1,
+      "avgLevel": 100,
+      "levelMin": 100,
+      "levelMax": 100,
+      "powerRating": 100
+    },
+    {
       "id": "副本任务/挑战战斗天才.xml#0.0",
       "sourceStage": "副本任务/挑战战斗天才.xml",
       "sourceName": "挑战战斗天才",
@@ -33480,7 +33800,7 @@
           "id": 348,
           "name": "混沌王",
           "spritename": "敌人-人修罗",
-          "level": 60,
+          "level": 100,
           "count": 1,
           "random": false,
           "isHostile": true,
@@ -33494,10 +33814,10 @@
       ],
       "unitCount": 1,
       "distinctTypes": 1,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 60
+      "avgLevel": 100,
+      "levelMin": 100,
+      "levelMax": 100,
+      "powerRating": 100
     },
     {
       "id": "副本任务/挑战混沌王.xml#0.3",
@@ -33512,7 +33832,7 @@
           "id": 330,
           "name": "虎妙",
           "spritename": "主角-男",
-          "level": 60,
+          "level": 100,
           "count": 1,
           "random": false,
           "isHostile": false,
@@ -33530,7 +33850,7 @@
           "id": 330,
           "name": "虎妙",
           "spritename": "主角-男",
-          "level": 60,
+          "level": 100,
           "count": 1,
           "random": false,
           "isHostile": false,
@@ -33545,10 +33865,10 @@
       ],
       "unitCount": 2,
       "distinctTypes": 2,
-      "avgLevel": 60,
-      "levelMin": 60,
-      "levelMax": 60,
-      "powerRating": 120
+      "avgLevel": 100,
+      "levelMin": 100,
+      "levelMax": 100,
+      "powerRating": 200
     },
     {
       "id": "副本任务/挑战罪袋练舞室.xml#0.0",
@@ -45239,6 +45559,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "Sniper"
           }
         },
@@ -45253,6 +45583,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "XM8"
           }
         },
@@ -45267,6 +45607,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "G36"
           }
         },
@@ -45281,6 +45631,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "M134"
           }
         }
@@ -45311,6 +45671,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "UMP"
           }
         },
@@ -45325,6 +45695,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "M134"
           }
         },
@@ -45339,6 +45719,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "G36"
           }
         },
@@ -45353,6 +45743,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 5000,
+                "hp满血值": 5000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "M4A1改"
           }
         }
@@ -45383,6 +45783,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 8000,
+                "hp满血值": 8000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "G36"
           }
         },
@@ -45397,6 +45807,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 8000,
+                "hp满血值": 8000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "XM8"
           }
         },
@@ -45411,6 +45831,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 8000,
+                "hp满血值": 8000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "UMP"
           }
         },
@@ -45425,6 +45855,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 8000,
+                "hp满血值": 8000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "AWP"
           }
         },
@@ -45466,6 +45906,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "M134"
           }
         },
@@ -45480,6 +45930,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "XM8"
           }
         },
@@ -45494,6 +45954,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "M3 Rocket Launcher"
           }
         },
@@ -45508,6 +45978,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "M4A1改"
           }
         },
@@ -45522,6 +46002,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 10000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 2
+              }
+            },
             "长枪": "G36"
           }
         }
@@ -45563,6 +46053,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 12000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 3
+              }
+            },
             "长枪": "SPAS12"
           }
         },
@@ -45577,6 +46077,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 12000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 3
+              }
+            },
             "长枪": "Fire Gun"
           }
         },
@@ -45591,6 +46101,16 @@
           "isHostile": true,
           "humanoid": false,
           "parameters": {
+            "extra": {
+              "add": {
+                "hp": 12000,
+                "hp满血值": 10000
+              },
+              "muti": {
+                "空手攻击力": 2,
+                "防御力": 3
+              }
+            },
             "长枪": "战术版FIM92"
           }
         }

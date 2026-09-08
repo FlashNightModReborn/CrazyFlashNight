@@ -204,7 +204,9 @@ window.BootstrapAudio = (function() {
             taskNpcHotspots: parseIds(query.taskNpcs),
             failNavigate: query.failNavigate === '1',
             navigationLocked: query.navigationLocked === '1',
-            navigationLockReason: query.navigationLockReason || ''
+            navigationLockReason: query.navigationLockReason || '',
+            returnBase: null,
+            returnBehavior: 'success'
         },
         sentMessages: [],
         closeCount: 0,
@@ -405,6 +407,7 @@ window.BootstrapAudio = (function() {
             Panels.open('map', {
                 source: 'map_harness',
                 dev: true,
+                panelInstanceId: 'map.harness.' + Date.now(),
                 page: this.state.defaultPageId
             });
         },
@@ -421,12 +424,27 @@ window.BootstrapAudio = (function() {
                         cmd: message.cmd,
                         callId: message.callId,
                         success: true,
-                        snapshot: self.buildSnapshot()
+                        snapshot: self.buildSnapshot(),
+                        returnBase: self.state.returnBase
                     });
                 }, 20);
                 return;
             }
 
+            if (message.cmd === 'return_base') {
+                var behavior = this.state.returnBehavior;
+                if (behavior === 'hold') return;
+                if (behavior === 'success' || behavior === 'lost_success') {
+                    this.state.returnBase = {available:false, mode:'settlement_pending', token:'map-return-2', acceptedToken:message.token};
+                }
+                setTimeout(function() {
+                    self.dispatch({type:'panel_resp', panel:'map', cmd:'return_base', callId:message.callId,
+                        panelInstanceId:message.panelInstanceId, success:behavior === 'success', closePanel:behavior === 'success',
+                        error:behavior === 'lost_success' ? 'timeout' : 'settlement_prepare_failed',
+                        returnBase:behavior === 'lost_success' ? null : self.state.returnBase});
+                }, 30);
+                return;
+            }
             if (message.cmd === 'navigate') {
                 this.lastNavigateTarget = message.targetId || null;
                 var success = !this.state.failNavigate && this.buildSnapshot().enabledHotspotIds.indexOf(message.targetId) >= 0;

@@ -273,6 +273,11 @@
 }
 
 .map-navigation-lock-notice {
+    order:1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
     flex:1 1 100%;
     min-width:0;
     padding:6px 10px;
@@ -287,6 +292,25 @@
 .map-navigation-lock-notice[hidden] {
     display:none;
 }
+
+#map-navigation-lock-text { min-width:0; }
+.map-return-base {
+    flex:0 0 auto;
+    min-height:32px;
+    padding:6px 14px;
+    border:1px solid currentColor;
+    color:var(--wb-role-pending);
+    background:color-mix(in srgb,var(--wb-role-pending) 14%,#101710);
+    font:inherit;
+    font-size:12px;
+    font-weight:700;
+    white-space:nowrap;
+    cursor:pointer;
+}
+.map-return-base:hover { background:color-mix(in srgb,var(--wb-role-pending) 28%,#101710); }
+.map-return-base:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+.map-return-base:disabled { opacity:0.65; cursor:wait; }
+.map-return-base[hidden] { display:none; }
 
 .map-panel.is-compact .map-page-summary {
     font-size:10px;

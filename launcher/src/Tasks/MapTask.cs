@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
@@ -17,6 +18,7 @@ namespace CF7Launcher.Tasks
         {
             public string WebCallId;
             public string WebCmd;
+            public string PanelInstanceId;
         }
 
         private readonly XmlSocketServer _socket;
@@ -59,7 +61,12 @@ namespace CF7Launcher.Tasks
                 return;
             }
 
-            if (!_socket.IsClientReady)
+            if (cmd == "return_base" && !IsValidReturnBaseRequest(parsed))
+            {
+                RespondError(webCallId, cmd, "invalid_payload");
+                return;
+            }
+            if (!_socket.TryGetReadyGeneration(out int generation))
             {
                 RespondError(webCallId, cmd, "disconnected");
                 return;
@@ -75,6 +82,9 @@ namespace CF7Launcher.Tasks
                 case "navigate":
                     action = "mapPanelNavigate";
                     break;
+                case "return_base":
+                    action = "mapPanelReturnBase";
+                    break;
                 default:
                     RespondError(webCallId, cmd, "unsupported_cmd");
                     return;
@@ -87,7 +97,8 @@ namespace CF7Launcher.Tasks
                 _pending[fid] = new PendingRequest
                 {
                     WebCallId = webCallId,
-                    WebCmd = cmd
+                    WebCmd = cmd,
+                    PanelInstanceId = parsed.Value<string>("panelInstanceId")
                 };
             }
 
@@ -109,16 +120,44 @@ namespace CF7Launcher.Tasks
             lock (_lock) { _timers[fid] = timer; }
 
             // 信封构造 + 安全参数透传统一走 PanelBridge（含 action/task 保留键守卫，杜绝各桥漏抄）。
-            var flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);
+            var flashMsg = cmd == "return_base"
+                ? new JObject { ["task"] = "cmd", ["action"] = action, ["callId"] = fid,
+                    ["v"] = 1, ["token"] = parsed["token"] }
+                : PanelBridge.BuildFlashCommand(action, fid, parsed);
 
             string flashJson = flashMsg.ToString(Newtonsoft.Json.Formatting.None);
             LogManager.Log("[MapTask] → Flash: " + flashJson);
-            _socket.Send(flashJson + "\0");
+            if (!_socket.TrySendIfGen(flashJson + "\0", generation))
+            {
+                lock (_lock)
+                {
+                    _pending.Remove(fid);
+                    if (_timers.Remove(fid, out var failedTimer)) failedTimer.Dispose();
+                }
+                RespondError(webCallId, cmd, "disconnected");
+            }
+        }
+
+        internal static bool IsValidReturnBaseRequest(JObject request)
+        {
+            string[] keys = { "type", "panel", "cmd", "callId", "panelInstanceId", "v", "token" };
+            return request != null && request.Properties().All(p => keys.Contains(p.Name))
+                && request["type"]?.Type == JTokenType.String && (string)request["type"] == "panel"
+                && request["panel"]?.Type == JTokenType.String && (string)request["panel"] == "map"
+                && request["cmd"]?.Type == JTokenType.String && (string)request["cmd"] == "return_base"
+                && request["v"]?.Type == JTokenType.Integer && (long)request["v"] == 1
+                && request["panelInstanceId"]?.Type == JTokenType.String
+                && !string.IsNullOrEmpty((string)request["panelInstanceId"])
+                && request["token"]?.Type == JTokenType.String
+                && System.Text.RegularExpressions.Regex.IsMatch((string)request["token"], @"\Amap-return-[1-9][0-9]{0,14}\z");
         }
 
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
             LogManager.Log("[MapTask] ← Flash response received");
+            if (msg?["callId"]?.Type != JTokenType.Integer
+                    || (long)msg["callId"] <= 0 || (long)msg["callId"] > int.MaxValue)
+            { respond(null); return; }
             int fid = msg.Value<int>("callId");
             PendingRequest entry;
             lock (_lock)
@@ -137,11 +176,16 @@ namespace CF7Launcher.Tasks
                 }
             }
 
+            if (entry.WebCmd == "return_base" && (msg["success"]?.Type != JTokenType.Boolean
+                    || (msg.Value<bool>("success") && (msg["closePanel"]?.Type != JTokenType.Boolean
+                        || !msg.Value<bool>("closePanel")))))
+                msg = new JObject { ["success"] = false, ["error"] = "outcome_unknown" };
             msg.Remove("task");
             msg["type"] = "panel_resp";
             msg["panel"] = "map";
             msg["cmd"] = entry.WebCmd;
             msg["callId"] = entry.WebCallId;
+            if (!string.IsNullOrEmpty(entry.PanelInstanceId)) msg["panelInstanceId"] = entry.PanelInstanceId;
 
             string json = msg.ToString(Newtonsoft.Json.Formatting.None);
             if (_invokeOnUI != null)

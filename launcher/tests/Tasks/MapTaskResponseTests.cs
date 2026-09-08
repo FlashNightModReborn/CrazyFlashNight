@@ -73,6 +73,47 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(success, (bool)posted[0]["closePanel"]);
         }
 
+        [Theory]
+        [InlineData("destination")]
+        [InlineData("action")]
+        [InlineData("targetId")]
+        [InlineData("outcome")]
+        public void ReturnBaseRejectsCallerSuppliedSceneOrAuthority(string extra)
+        {
+            var request = JObject.Parse("{\"type\":\"panel\",\"panel\":\"map\",\"cmd\":\"return_base\",\"callId\":\"return-1\",\"panelInstanceId\":\"map.instance.1\",\"v\":1,\"token\":\"map-return-1\"}");
+            Assert.True(MapTask.IsValidReturnBaseRequest(request));
+            request[extra] = "基地门口";
+            Assert.False(MapTask.IsValidReturnBaseRequest(request));
+        }
+
+        [Theory]
+        [InlineData("{\"success\":true}")]
+        [InlineData("{\"success\":true,\"closePanel\":\"yes\"}")]
+        [InlineData("{\"success\":\"true\",\"closePanel\":true}")]
+        public void IncompleteReturnProofRequiresReadOnlyReconciliation(string json)
+        {
+            var posted = new List<JObject>();
+            using var task = Waiting(posted, "return_base", 81);
+            var response = JObject.Parse(json); response["callId"] = 81;
+            task.HandleFlashResponse(response, _ => { });
+            Assert.Single(posted);
+            Assert.False((bool)posted[0]["success"]);
+            Assert.Equal("outcome_unknown", (string)posted[0]["error"]);
+            Assert.Null(posted[0]["closePanel"]);
+        }
+
+        [Fact]
+        public void ConfirmedReturnKeepsItsOriginalPanelInstance()
+        {
+            var posted = new List<JObject>();
+            using var task = Waiting(posted, "return_base", 81);
+            var pending = (IDictionary)typeof(MapTask).GetField("_pending", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(task);
+            var entry = pending[81]; entry.GetType().GetField("PanelInstanceId").SetValue(entry, "map.instance.1");
+            task.HandleFlashResponse(new JObject { ["callId"] = 81, ["success"] = true, ["closePanel"] = true }, _ => { });
+            Assert.Equal("map.instance.1", (string)Assert.Single(posted)["panelInstanceId"]);
+            Assert.True((bool)posted[0]["closePanel"]);
+        }
+
         [Fact]
         public void MaximumPositiveHostIdIsCorrelatedWithoutTruncation()
         {

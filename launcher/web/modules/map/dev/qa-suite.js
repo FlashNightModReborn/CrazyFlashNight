@@ -75,7 +75,9 @@ var MapPanelHarnessQA = (function() {
             taskNpcHotspots: [],
             failNavigate: false,
             navigationLocked: false,
-            navigationLockReason: ''
+            navigationLockReason: '',
+            returnBase: null,
+            returnBehavior: 'success'
         };
         var key;
         options = options || {};
@@ -1429,6 +1431,77 @@ var MapPanelHarnessQA = (function() {
                         restore();
                         throw error;
                     });
+                }
+            },
+            {
+                id: 'map-return',
+                title: 'combat rescue confirms closure, preserves retry, and reconciles lost replies without repeating retreat',
+                run: function() {
+                    function boot(mode, behavior) {
+                        return bootMap(api, host, {navigationLocked:true, navigationLockReason:'stage_run_active',
+                            returnBehavior:behavior || 'success', returnBase:{available:true,mode:mode,token:'map-return-1',acceptedToken:''}});
+                    }
+                    var before, closeBefore;
+                    return boot('retreat', 'hold').then(function() {
+                        var button = document.querySelector('#map-return-base');
+                        api.assertEqual(button.textContent, '撤退并返回', 'alive combat names the retreat');
+                        api.assert((document.querySelector('#map-navigation-lock-text').textContent || '').indexOf('不获得') >= 0, 'consequence is visible before clicking');
+                        before = host.getMessages().filter(function(m) { return m.cmd === 'return_base'; }).length;
+                        closeBefore = host.closeCount;
+                        button.focus();
+                        api.assert(document.activeElement === button, 'rescue supports keyboard focus');
+                        clickByHitTest(api, button, 'retreat button'); button.click();
+                        host.dispatch({type:'panel_esc', reason:'escape'});
+                        api.assert(Panels.isOpen(), 'map stays open until the return result arrives');
+                        api.assertEqual(host.closeCount, closeBefore, 'pending return does not close Host');
+                        api.assertEqual(host.getMessages().filter(function(m) { return m.cmd === 'return_base'; }).length - before, 1, 'double click sends one return');
+                        return boot('victory', 'reject');
+                    }).then(function() {
+                        api.assertEqual(document.querySelector('#map-return-base').textContent, '返回并结算', 'victory keeps earned rewards');
+                        document.querySelector('#map-return-base').click();
+                        return api.waitFor(function() { return !document.querySelector('#map-return-base').disabled; }, 1500, 'rejected return');
+                    }).then(function() {
+                        api.assert(Panels.isOpen(), 'failed save or settlement leaves map open');
+                        api.assert(!document.querySelector('#map-return-base').hidden, 'failure keeps retry available');
+                        return boot('retreat', 'lost_success');
+                    }).then(function() {
+                        before = host.getMessages().filter(function(m) { return m.cmd === 'return_base'; }).length;
+                        document.querySelector('#map-return-base').click();
+                        return api.waitFor(function() { return !Panels.isOpen(); }, 2000, 'lost reply reconciliation');
+                    }).then(function() {
+                        api.assertEqual(host.getMessages().filter(function(m) { return m.cmd === 'return_base'; }).length - before, 1, 'lost success is queried, never replayed');
+                        return bootMap(api, host, {navigationLocked:true, navigationLockReason:'pending_stage_settlement',
+                            returnBase:{available:false,mode:'settlement_pending',token:'map-return-3',acceptedToken:''}});
+                    }).then(function() {
+                        api.assert(document.querySelector('#map-return-base').hidden, 'pending rewards do not expose another escape');
+                        api.assert(document.querySelector('#map-navigation-lock-text').textContent.indexOf('待领奖励') >= 0, 'pending state explains next step');
+                        return 'retreat/victory/pending, exact close, double click, failure retry, lost success read-only recovery';
+                    });
+                }
+            },
+            {
+                id: 'map-return-stale-read',
+                title: 'an older snapshot cannot unlock a pending return',
+                run: function() {
+                    var originalDispatch = host.dispatch, held;
+                    return bootMap(api, host, {navigationLocked:true, navigationLockReason:'stage_run_active', returnBehavior:'hold',
+                        returnBase:{available:true,mode:'retreat',token:'map-return-1',acceptedToken:''}}).then(function() {
+                        host.dispatch = function(data) {
+                            if (data.cmd === 'refresh') held = data;
+                            else originalDispatch.call(host, data);
+                        };
+                        MapPanel._debugRequestSnapshot('refresh');
+                        return api.waitFor(function() { return held; }, 1500, 'held prior read');
+                    }).then(function() {
+                        var before = host.getMessages().filter(function(m) { return m.cmd === 'return_base'; }).length;
+                        document.querySelector('#map-return-base').click();
+                        originalDispatch.call(host, held);
+                        api.assert(document.querySelector('#map-return-base').disabled, 'prior read cannot re-enable retreat');
+                        document.querySelector('#map-return-base').click();
+                        api.assertEqual(host.getMessages().filter(function(m) { return m.cmd === 'return_base'; }).length - before, 1, 'prior read cannot admit a second write');
+                        host.dispatch = originalDispatch;
+                        return 'older snapshot stays read-only while return is pending';
+                    }, function(error) { host.dispatch = originalDispatch; throw error; });
                 }
             },
             {

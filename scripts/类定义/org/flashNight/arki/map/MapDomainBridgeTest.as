@@ -85,6 +85,92 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             panel._json = oldJson; _root.server = oldRootServer;
         }
     }
+    private static function checkMapReturn():Void {
+        var stage:Object = StageRunSession, panel:Object = MapPanelService;
+        var stageFields:Array = ["_run", "_returnRequested", "_stageStartReservation"];
+        var panelFields:Array = ["_returnContext", "_returnReply", "_acceptedReturnToken", "_returnSequence", "_json"];
+        var rootFields:Array = ["gameworld", "当前为战斗地图", "场景转换中", "返回基地", "server", "__mapReturnCalls", "__mapReturnFailure"];
+        var savedStage:Object = snapshotFields(stage, stageFields);
+        var savedPanel:Object = snapshotFields(panel, panelFields);
+        var savedRoot:Object = snapshotFields(_root, rootFields);
+        try {
+            _blocked = "";
+            _panelResponses = [];
+            panel._json = new LiteJSON(); panel._returnContext = null; panel._returnReply = null; panel._acceptedReturnToken = "";
+            panel._returnSequence = 0;
+            _root.server = {sendSocketMessage:function(json:String):Void {
+                org.flashNight.arki.map.MapDomainBridgeTest._panelResponses.push(new LiteJSON().parse(json));
+            }};
+            _root.gameworld = {identity:"first"}; _root.当前为战斗地图 = true; _root.场景转换中 = false;
+            _root.__mapReturnCalls = 0; _root.__mapReturnFailure = "";
+            _root.返回基地 = function():Boolean {
+                _root.__mapReturnCalls++;
+                if (_root.__mapReturnFailure == "throw") throw new Error("test fade failure");
+                if (_root.__mapReturnFailure == "reject") return false;
+                return true;
+            };
+            stage._run = {runId:"map-run-1", revision:1, life:"alive", outcome:"active", settlement:"none"};
+            stage._returnRequested = false; stage._stageStartReservation = null;
+            var state:Object = MapPanelService.getReturnBaseState();
+            check(state.available === true && state.mode == "retreat", "alive combat exposes explicit retreat capability");
+            check(StageRunSession.requestReturnBaseLocal("hud").success === false && _root.__mapReturnCalls == 0,
+                "normal HUD return keeps its alive-combat restriction");
+            check(MapPanelService.getReturnBaseState().token === state.token, "unchanged return capability keeps its short-lived token");
+            stage._stageStartReservation = {token:"start"};
+            check(!StageRunSession.getMapReturnBaseState().available && StageRunSession.getMapReturnBaseState().mode == "entering",
+                "entry reservation never exposes retreat");
+            stage._stageStartReservation = null;
+            stage._run.outcome = "victory";
+            check(StageRunSession.getMapReturnBaseState().mode == "victory", "victory projects return and settlement instead of retreat");
+            stage._run.life = "dead";
+            check(StageRunSession.getMapReturnBaseState().mode == "return", "dead actor retains canonical medical return routing");
+            stage._run.life = "alive"; stage._run.outcome = "active";
+            state = MapPanelService.getReturnBaseState();
+            MapPanelService.handleReturnBase({v:1,callId:81,token:state.token,targetId:"other"});
+            var response:Object = _panelResponses.pop();
+            check(response.error == "invalid_payload" && _root.__mapReturnCalls == 0, "return rejects a supplied destination before authority effects");
+            stage._run.revision++;
+            MapPanelService.handleReturnBase({v:1,callId:82,token:state.token}); response = _panelResponses.pop();
+            check(response.error == "map_return_stale" && _root.__mapReturnCalls == 0, "changed run revision rejects the previous return token");
+            state = MapPanelService.getReturnBaseState();
+            _root.gameworld = {identity:"replacement"};
+            MapPanelService.handleReturnBase({v:1,callId:83,token:state.token}); response = _panelResponses.pop();
+            check(response.error == "map_return_stale" && _root.__mapReturnCalls == 0, "world replacement invalidates the return token");
+            state = MapPanelService.getReturnBaseState();
+            _root.__mapReturnFailure = "reject";
+            MapPanelService.handleReturnBase({v:1,callId:84,token:state.token}); response = _panelResponses.pop();
+            check(!response.success && response.closePanel !== true && response.error == "settlement_prepare_failed",
+                "failed settlement or flush does not close the map");
+            check(response.returnBase.acceptedToken != state.token && response.returnBase.available,
+                "rejected return remains retryable and is never an accepted receipt");
+            _root.__mapReturnFailure = "throw";
+            MapPanelService.handleReturnBase({v:1,callId:85,token:state.token}); response = _panelResponses.pop();
+            check(response.error == "return_base_failed" && response.closePanel !== true, "throwing transition preserves the map and retry right");
+            _root.__mapReturnFailure = "";
+            MapPanelService.handleReturnBase({v:1,callId:2147483647,token:state.token}); response = _panelResponses.pop();
+            check(response.success && response.closePanel && response.callId === 2147483647,
+                "accepted return retains exact numeric correlation and confirmed close");
+            check(MapPanelService.getReturnBaseState().acceptedToken === state.token,
+                "fresh read can prove acceptance after a lost return response");
+            var calls:Number = _root.__mapReturnCalls;
+            MapPanelService.handleReturnBase({v:1,callId:86,token:state.token}); response = _panelResponses.pop();
+            check(response.success && _root.__mapReturnCalls == calls, "duplicate accepted return cannot repeat a scene transition");
+            stage._returnRequested = true; stage._run.settlement = "prepared"; _root.当前为战斗地图 = false;
+            check(!StageRunSession.getMapReturnBaseState().available && StageRunSession.getMapReturnBaseState().mode == "settlement_pending",
+                "pending settlement cannot expose another escape");
+            _root.当前为战斗地图 = true;
+            check(StageRunSession.getMapReturnBaseState().available && StageRunSession.getMapReturnBaseState().mode == "retry_return",
+                "frozen return with a failed fade remains retryable");
+            _root.场景转换中 = true;
+            check(!StageRunSession.getMapReturnBaseState().available, "in-progress transition hides escape");
+            _root.场景转换中 = false; stage._run = null; stage._returnRequested = false;
+            check(StageRunSession.getMapReturnBaseState().available, "legacy battle without a run can use canonical rescue");
+            _root.当前为战斗地图 = false;
+            check(!StageRunSession.getMapReturnBaseState().available, "base scene offers no redundant rescue");
+        } finally {
+            restoreFields(stage, stageFields, savedStage); restoreFields(panel, panelFields, savedPanel); restoreFields(_root, rootFields, savedRoot);
+        }
+    }
     public static function runAllTests():Void {
         _passed = 0; _failed = 0; _wire = []; _facts = {chains:{主线:0},tasks:{},scene:{stageFlag:"甲场景"}}; _blocked = "";
         _fadeCount = 0; _frame = "";
@@ -178,6 +264,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             bridge._projection.currentLocationId = "beta"; MapWorldNpcController.intercept(elsewhere); MapWorldNpcController.refresh();
             check(initialized == 2 && !managedPermit, "same name at an unbound location keeps legacy initialization");
             checkPanelResponses();
+            checkMapReturn();
         } catch(error) { _failed++; trace("[FAIL] unexpected bridge test exception: " + error); }
         finally {
             restoreFields(bridge,fields,saved); restoreFields(world,worldFields,worldSaved); restoreFields(_root,rootFields,rootSaved);
