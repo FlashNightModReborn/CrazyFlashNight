@@ -2,7 +2,23 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-08 当前正式发布：医务室整形与共享外观预览
+## 2026-09-09 当前正式发布：理发店目录网格与共享外观服务动效
+
+理发店目录改为 manifest 发型图标网格（紧凑 / 完整双密度、性别页签、当前发型卡与变更摘要），新增全身 / 脸部特写预览切换（共享主体取景、试戴场景不遮发、旧 asLoader 缺 `portrait` 完全降级）；服务面板共享换装扫描光与微交互基线，整形补语义音效、共享红色错误行与身高过渡；hairdresser snapshot 新增可选 `portrait` 装备投影，Host 缺失放行、存在严格校验，新旧 Core 与 asLoader 双向偏斜安全；发型免费契约 `pricing_unsupported` 不动。功能、协议、契约更新与验证边界见[理发店网格说明](理发店目录图标网格与共享外观服务动效-2026-09-08.md)。
+
+- release source `1d03e77cb2666a4686e41ab4a647e180d2e5d0bc`；不可变 tag `runtime-build-v2/20260909-hairdresser-grid-v1`；release tree `9f4589240cb5e9b32e68897c84907fe4d0fe6932`；request `506501A386CF7DE1D9190C067E7A35E07201042ACC9D902B3C34049D82317A16`。
+- artifact source `43965DC335516E8B9B9A7A1E699B1CD52D68BE48D74F7199945B6C07E9AC3C1A`、producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`、toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`，形成 identity `E9A5CB8B197E9E11613A73AFEE0C5948FA2775CD7605478491034F28C01BBB07`；正式 33-file closure `45928E8531265638F61CD7E8260B6DA4F9F6205FC795E8164CA18359B850FA5F`；Core DLL SHA-256 `8F55BCB6C9541A21B2BA622251F821ADCC6482F36A0C7AE2B23AF8B80C9420FA`。
+- 本地 X509 `builder-local-a / physical-host-a`，keyId `28DBEAF3761CCF3177FE396596A2557D8A6C9393371CD41DC893FF75A02723B3`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `0DB3937109370E092BCC708092B7B76F192A94DEDCB5131E7C41ADA4CB0C541E`，[cloud run 34253257230](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34253257230)。两端正式 producer 的 33 个 payload 文件逐字节一致；云端 source tag、workflow SHA 与 run headSha 绑定上述 source，attestation-only 证明已在 promotion 中对本地 CAS 完整重放。
+- production policy **40/40**；policy hash `4524763835AE36CFC09E8F0273BDFE52CEB6368532321B0EB467520250818752`；receipt SHA-256 `62A6ED834DF16B545E0A02A9B87C4D1FEE6ECDC1B3D166308F1E387B4ADF92B5`；manifest SHA-256 `C8992F8C9B8130AB3595F1687A5C03B79480C9200E1ACE183AFEA7BDE9511199`；磁盘 consensus SHA-256 `A85524504721CF6A6C2D12551E91B85DB71E53B88E14AD0D1E0644D8D0F1383A`。
+- consensus 记录 promotion 时间 `2026-09-08T17:03:50.8323522Z`；原子 promotion、strict v2 **2 signers / 2 faultDomains**、33-file bundle 和本机正式根 bootstrap `--verify-only` 均通过。上一完整 bundle 保留于 `tmp/runtime-promotions/20260908T170316426Z-64d3746faf814d53b466933eaafe2cf2/previous`。
+
+本轮先整合上游基础斩杀与虎妙数值调整（2 个提交），`.as` 自动合并无文本冲突，asLoader 由合并后源码重发（1,285,649 字节，SHA-256 `71406672B550B968D5FECF9C2FACD210789DE5882355C7A75A0359E3A87E8DF9`，双侧符号探针前后对比确认）；合并后 TestLoader 理发店 39/39、类归属审计 main 0 / asLoader 634 / 重复 0。首个 request `1BAE5720B16A86C670A3E5C28A82989E4574DB04246E0326203FBA92E435A59D` 因 production policy 暴露 WB130 CSS 债务越限停止（本列车新增 4 处减债修复、rawColor 上限随 WB131 纪律收紧 2089→2088、材料字典补派生上游颈部装备改动；整形时代既有 33 处 WB122 触碰行不在政策考核且未新增）；第二个 request `5690F5CEB13C86D9E8651C49A44F45BDAF93AEF48A1948FF9473EE278791FEFE` 因 source commit 未上远端且 `sourceRef` 未指向本列车 tag 停止，补齐推送与 config 后由最终 request 原子 supersede；两者均未 dispatch、未 promotion。三轮 build identity 不变（CSS / 字典 / config 均属 policy 域），本地 X509 candidate 按身份幂等复用，payload closure 全程一致。合并后上游浮空修复（`cc56d2cd73`）在 release source 之后到达，未进入本次发布闭包与 asLoader，属下一列车。
+
+当前为 **promoted / FIELD_REVALIDATION_PENDING**：部署闭包完整性、双 signer 共识与原子替换已由机器门与远端 Audit 确认；理发店图标网格手感与 tooltip 落点、`portrait` 全身预览真机画面、整形音效与红行观感、基础斩杀 AI 行为均未在正式入口复验，不称业务或完整产品 `standard_entry_verified`。上一发布（医务室整形）的 `HUMAN_ACCEPTANCE_PASSED / promoted` 范围保持原记录。
+
+源码与部署提交 `c595bc2cd261342d37cd461cf5ff08ee62b9c76a`（含部署提交 `03471c52fc6c91511df046def69739cc5bf3d738` 与上游浮空修复的合并）已快进推送至 `main`。源码推送 [Audit run 34252003361](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34252003361) 成功报告 `source-ahead`；部署后首次远端 [Audit run 34255411571](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34255411571) 成功，绑定 `event=push / run_attempt=1` 与该部署 head，于 `2026-09-08T17:15:01Z` 报告 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `cc56d2cd730d40c3540743c8d366c88e00bb7874` → head `c595bc2cd261342d37cd461cf5ff08ee62b9c76a`；远端独立重放 33-file closure、2 signers / 2 faultDomains 和最终 source tag 绑定全部通过。本轮没有新建 Git worktree；构建证明与上一 bundle 保留本机。
+
+## 2026-09-08 上一正式发布：医务室整形与共享外观预览
 
 医务室整形迁入 Web，维持姓名、性别、身高与 5 K 点规则，由 AS2 独占应用、扣费和严格保存。建角、整形与角色构筑共用主体取景及头盔遮发，理发与整形共用服务样式和实时外观刷新；旧整形兼容壳及 24 个专属素材已删除，医务室直接调用新入口。功能、协议及限定人类证据见[整形说明](医务室整形-Web面板与外观共享-2026-09-08.md)。
 
