@@ -18,13 +18,13 @@
       "sha256": "7321b85572215bb57514e4937b7354f282e0d4b30a3833784f61f5f6e898b16c",
       "bytes": 35848
     },
-    "python": "3.12.10",
-    "pillow": "12.2.0",
+    "python": "3.13.7",
+    "pillow": "12.1.0",
     "ffdecVersion": "21.1.1",
     "ffdecCli": {
-      "path": "tools/ffdec/ffdec.bat",
-      "sha256": "ed9f3d97ef0f1447e5cd048725c9df4ac009cc2c7ec93a2ade43b36854878690",
-      "bytes": 866
+      "path": "tools/ffdec/ffdec-cli.exe",
+      "sha256": "c03ad5d22008246b9f2523a70830502ed0d01610f4054912b43ae70f58dddd86",
+      "bytes": 35854
     },
     "ffdecJar": {
       "path": "tools/ffdec/ffdec.jar",
@@ -361,9 +361,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "68bc870c58ba853e952ad976194a9802cbcc206d0845518b7ef23d12e2c2036c",
+      "extractedPngSha256": "c0b5db668bc043de5be0645deb665f271aafdee9bffadbd0efdb8b66af44e427",
       "output": {
-        "uri": "subjects/7f0d36b5310d8d8d2440b1bc3687c1ffd30455cb026095334b715ce030b50ad8.png",
+        "uri": "subjects/6544cfd94eee4f398c800a29a35dbd0a866ecc97deecbc6b9798e1a84afa6c01.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -372,7 +372,7 @@
           "width": 162,
           "height": 224
         },
-        "sha256": "7f0d36b5310d8d8d2440b1bc3687c1ffd30455cb026095334b715ce030b50ad8"
+        "sha256": "6544cfd94eee4f398c800a29a35dbd0a866ecc97deecbc6b9798e1a84afa6c01"
       }
     },
     "Shop Girl": {
@@ -756,14 +756,14 @@
       "kind": "exact-xfl-swf-pilot",
       "sourceSwf": {
         "path": "flashswf/levels/地图-彩蛋地图.swf",
-        "sha256": "fa5bd56c1224d727e89211d24026df7d8e9be5196043925d5457378d4a5b2744",
-        "bytes": 4845674
+        "sha256": "9147311cac9231c1002f704f1b4d46e1a21a35ad00e74469bbd08c8e91f03ecb",
+        "bytes": 4881744
       },
       "sourceXfl": [
         {
           "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/地图-彩蛋地图.xml",
-          "sha256": "040c9a755f8b9fe390e76be356003c052609a5885ba7e080e9f5cf1bb5539d5e",
-          "bytes": 11424
+          "sha256": "3b81c6cb593f05248b82d8c8f4b625b16bc05e9bec028f10f5925f270169595a",
+          "bytes": 12158
         },
         {
           "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/NPC-heeho君.xml",
@@ -797,7 +797,7 @@
         }
       ],
       "mapLinkage": "地图-彩蛋地图",
-      "mapCharacterId": 400,
+      "mapCharacterId": 464,
       "outerLibraryItem": "NPC/NPC-heeho君/NPC-heeho君",
       "outerCharacterId": 270,
       "outerDeclaredFrameCount": 10,
@@ -811,9 +811,9 @@
         "NPC/NPC-heeho君/零件/墨镜"
       ],
       "ordinaryJackAlias": false,
-      "extractedPngSha256": "31671527a1df7494041289847911216aac15c328c6f52c13ebe992bd807b8e91",
+      "extractedPngSha256": "87ecf5743b272d5762dc9e20dc0394ece0e4663cbff85e0d5e08e0d11bf5c906",
       "output": {
-        "uri": "subjects/b6c88eab1582dd62e076d8530420d9f1a3a447905903f2d402a3ccf90e58a336.png",
+        "uri": "subjects/dcba5cb8fa7fb3c8f2e183a477a2093901cf9fc385c0bb8be19abb8262459e48.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -822,7 +822,7 @@
           "width": 141,
           "height": 224
         },
-        "sha256": "b6c88eab1582dd62e076d8530420d9f1a3a447905903f2d402a3ccf90e58a336"
+        "sha256": "dcba5cb8fa7fb3c8f2e183a477a2093901cf9fc385c0bb8be19abb8262459e48"
       }
     },
     "格格巫": {
@@ -880,9 +880,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "665faf5df6024f32585ae51ad6eef4b492bcdcfa2fb5a18aa2c2384e70b5d7c6",
+      "extractedPngSha256": "c13fc46b99efdd13017f1d889850e2bae71f2f7dd559957d1c6223c41c3d73c1",
       "output": {
-        "uri": "subjects/7689be2e7509aa58a38e7655c9c5a4e5bd06af1344a331e20e9302e45a3a51ed.png",
+        "uri": "subjects/758a1c3f25d13df09c3a267e15ea5d39b47490dc739862d64cbd8e8bba11a821.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -891,7 +891,7 @@
           "width": 224,
           "height": 153
         },
-        "sha256": "7689be2e7509aa58a38e7655c9c5a4e5bd06af1344a331e20e9302e45a3a51ed"
+        "sha256": "758a1c3f25d13df09c3a267e15ea5d39b47490dc739862d64cbd8e8bba11a821"
       }
     },
     "soldier": {
@@ -903,9 +903,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "c826f112a069e608b0bbda01c66349f53d0f0450e4f80d187d1a7683f6033dd3",
+      "extractedPngSha256": "a755802909b8116c0b67e74ae5ae7ef6b6fb2b38bab5869140e2ecb7cd40aa3f",
       "output": {
-        "uri": "subjects/3859e439d6c2152ca8e110990078efd771ec3b7822acfae2f595918c1438e8f5.png",
+        "uri": "subjects/669c73ec0cb933319f27de4e985ee7652402c32022ed3c3544a97facbf444138.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -914,7 +914,7 @@
           "width": 224,
           "height": 210
         },
-        "sha256": "3859e439d6c2152ca8e110990078efd771ec3b7822acfae2f595918c1438e8f5"
+        "sha256": "669c73ec0cb933319f27de4e985ee7652402c32022ed3c3544a97facbf444138"
       }
     },
     "武器订购系统": {
@@ -926,9 +926,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "90f3f5f725050698263db0a5cc6ed3b6c2b9b719af08941f375d7cab8472852b",
+      "extractedPngSha256": "f7feea40b8a9fd415b2ba323327cb64ad2b7786a9b200a23a7803d6d0db0bf5b",
       "output": {
-        "uri": "subjects/e9110341b9154d35842f5fa800528728d8c2c7b6c7d6c18f45e3f3023b8fc885.png",
+        "uri": "subjects/4f50f5effa4d03310c6d4d0ba4a919143f6ddb585c23c3451ef52ee1cab73f5e.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -937,7 +937,7 @@
           "width": 198,
           "height": 224
         },
-        "sha256": "e9110341b9154d35842f5fa800528728d8c2c7b6c7d6c18f45e3f3023b8fc885"
+        "sha256": "4f50f5effa4d03310c6d4d0ba4a919143f6ddb585c23c3451ef52ee1cab73f5e"
       }
     },
     "Vanshuther": {
@@ -949,9 +949,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "074b09d73a9cd6ed98a87b6bc4a9a78da0d5a0a6e90baa0fbac8c0a1392f8529",
+      "extractedPngSha256": "517db57ccbec9db6e83fec4d8681455ff17978ed4d021b70861b4b89802dd6e7",
       "output": {
-        "uri": "subjects/86d7cb07945c92d6ca600c3002b40b99d5d2929668aab00c0337c4bc51d420e4.png",
+        "uri": "subjects/1380b38cb4ff2b2e196e35ed5f6f0f8f4c982d734a614cc1ce2ca97df9e54ef6.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -960,7 +960,7 @@
           "width": 114,
           "height": 224
         },
-        "sha256": "86d7cb07945c92d6ca600c3002b40b99d5d2929668aab00c0337c4bc51d420e4"
+        "sha256": "1380b38cb4ff2b2e196e35ed5f6f0f8f4c982d734a614cc1ce2ca97df9e54ef6"
       }
     },
     "翅虎": {
@@ -1018,9 +1018,9 @@
       },
       "expression": "普通",
       "frame1Based": 1,
-      "extractedPngSha256": "7f929b7fdc48e637b822a2c7193d8ed1c41c5ee584a27901c1449d1ccb3042c4",
+      "extractedPngSha256": "a6da1cd522fd24a2d8b7d65ed3a043d323cebc1fdd9a89e54a5ca8d81991849e",
       "output": {
-        "uri": "subjects/1da467a4d2d0038058ad041911bfd9d8235b1c51c71dd6801a0eb4ae800e5ffd.png",
+        "uri": "subjects/c468ea60264a219aa2f44978a6b9a5ae0a06858b431240dda5933cbd636375a2.png",
         "width": 256,
         "height": 256,
         "bounds": {
@@ -1029,7 +1029,7 @@
           "width": 127,
           "height": 224
         },
-        "sha256": "1da467a4d2d0038058ad041911bfd9d8235b1c51c71dd6801a0eb4ae800e5ffd"
+        "sha256": "c468ea60264a219aa2f44978a6b9a5ae0a06858b431240dda5933cbd636375a2"
       }
     },
     "吸特乐": {

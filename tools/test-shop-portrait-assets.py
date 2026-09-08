@@ -307,7 +307,9 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
             "kind": "exact-xfl-swf-pilot",
             "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
             "mapLinkage": "地图-彩蛋地图",
-            "mapCharacterId": 400,
+            # 当前发布地图经 linkage + XFL 放置矩阵重解析为 464→270→268；
+            # 继续钉死具体链，不能因 SWF 更新而退回普通霜精或任意首帧。
+            "mapCharacterId": 464,
             "outerLibraryItem": "NPC/NPC-heeho君/NPC-heeho君",
             "outerCharacterId": 270,
             "outerDeclaredFrameCount": 10,

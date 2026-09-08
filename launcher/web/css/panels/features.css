@@ -300,14 +300,14 @@
     padding:6px 14px;
     border:1px solid currentColor;
     color:var(--wb-role-pending);
-    background:color-mix(in srgb,var(--wb-role-pending) 14%,#101710);
+    background:color-mix(in srgb,var(--wb-role-pending) 14%,var(--wb-bg));
     font:inherit;
     font-size:12px;
     font-weight:700;
     white-space:nowrap;
     cursor:pointer;
 }
-.map-return-base:hover { background:color-mix(in srgb,var(--wb-role-pending) 28%,#101710); }
+.map-return-base:hover { background:color-mix(in srgb,var(--wb-role-pending) 28%,var(--wb-bg)); }
 .map-return-base:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
 .map-return-base:disabled { opacity:0.65; cursor:wait; }
 .map-return-base[hidden] { display:none; }
