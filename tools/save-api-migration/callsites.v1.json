@@ -283,7 +283,7 @@
       "physicalId": "A6",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
-      "line": 577,
+      "line": 631,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "_root.存档系统.flushBeforeTransition(\"stage.return_base\")",
@@ -1093,7 +1093,7 @@
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/StageRunSession.as",
-      "line": 1469,
+      "line": 1529,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "同 SkillLoadoutService.as:839；typeof 守卫在 :1344。"

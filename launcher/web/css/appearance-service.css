@@ -12,6 +12,10 @@
 
 .appearance-service-panel {
     --appearance-bg: #090b0e;
+    --appearance-hover-line: #687582;
+    --appearance-secondary-text: #c8ced3;
+    --appearance-strong-text: #fff;
+    --appearance-tint: rgba(255, 255, 255, .025);
     --appearance-surface: #11151a;
     --appearance-surface-raised: #181e24;
     --appearance-line: #343d46;
@@ -31,7 +35,7 @@
     background:
         radial-gradient(circle at 18% 28%, rgba(255, 255, 255, .045), transparent 31%),
         linear-gradient(135deg, #0d1014, var(--appearance-bg) 54%, #0b0e12);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .025);
+    box-shadow: inset 0 0 0 1px var(--appearance-tint);
 }
 
 .appearance-service-header {
@@ -74,7 +78,7 @@
     min-width: 0;
     margin: 0;
     overflow: hidden;
-    color: #c8ced3;
+    color: var(--appearance-secondary-text);
     font-size: 12px;
     line-height: 1.4;
     text-overflow: ellipsis;
@@ -107,14 +111,14 @@
     padding: 0 0 3px;
     border: 1px solid var(--appearance-line);
     background: #101419;
-    color: #c8ced3;
+    color: var(--appearance-secondary-text);
     font: 400 26px/1 "Segoe UI", sans-serif;
     cursor: pointer;
 }
 
 .appearance-service-close:hover:not(:disabled) {
     border-color: var(--appearance-accent);
-    color: #fff;
+    color: var(--appearance-strong-text);
 }
 
 .appearance-service-body {
@@ -153,7 +157,7 @@
     gap: 12px;
     padding: 0 12px;
     border-bottom: 1px solid var(--appearance-line-soft);
-    background: rgba(255, 255, 255, .025);
+    background: var(--appearance-tint);
 }
 
 .appearance-service-section-title h2 {
@@ -179,8 +183,8 @@
     min-height: 0;
     overflow: hidden;
     background:
-        linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px),
+        linear-gradient(var(--appearance-tint) 1px, transparent 1px),
+        linear-gradient(90deg, var(--appearance-tint) 1px, transparent 1px),
         radial-gradient(circle at 50% 35%, #222a31, #0c1014 69%);
     background-size: 24px 24px, 24px 24px, auto;
 }
@@ -202,7 +206,7 @@
     overflow: hidden;
     border: 1px solid var(--appearance-line);
     background: rgba(7, 9, 12, .88);
-    color: #fff;
+    color: var(--appearance-strong-text);
     font-size: 14px;
     font-weight: 700;
     line-height: 1.25;
@@ -322,7 +326,7 @@
 
 .appearance-service-button:hover:not(:disabled) {
     border-color: #7d8994;
-    color: #fff;
+    color: var(--appearance-strong-text);
 }
 
 .appearance-service-button.primary:hover:not(:disabled) {
@@ -356,3 +360,6 @@
     outline: 2px solid var(--wb-role-focus);
     outline-offset: 2px;
 }
+
+#panel-container[data-panel="hairdresser"] #panel-backdrop,
+#panel-container[data-panel="surgery"] #panel-backdrop { background: #080a0d; }

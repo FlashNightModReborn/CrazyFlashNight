@@ -8,8 +8,7 @@
     'use strict';
 
     var TUNING_DEPS = [
-        'modules/asset-timeline.js',
-        'modules/dressup-doll-renderer.js',
+        'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',
         'modules/workbench-inspection-viewport.js',
         'modules/equipment-inspector.js',
         'modules/equipment-tuning-runtime.js',

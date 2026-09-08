@@ -5,9 +5,6 @@
     justify-content: center;
 }
 
-#panel-container[data-panel="hairdresser"] #panel-backdrop {
-    background: #080a0d;
-}
 
 .hairdresser-catalog {
     min-height: 0;
@@ -57,7 +54,7 @@
 }
 
 .hairdresser-style-card:hover:not(:disabled) {
-    border-color: #687582;
+    border-color: var(--appearance-hover-line);
     background: var(--appearance-surface-raised);
     transform: translateY(-1px);
 }

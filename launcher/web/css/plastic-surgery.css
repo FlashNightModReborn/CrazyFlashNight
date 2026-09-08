@@ -4,7 +4,6 @@
     align-items: center;
     justify-content: center;
 }
-#panel-container[data-panel="surgery"] #panel-backdrop { background: #080a0d; }
 .surgery-panel { --appearance-preview-width: 430px; }
 .surgery-balance { font-size: 12px; }
 .surgery-balance strong { color: var(--appearance-warning); font-size: 18px; margin: 0 5px; }
@@ -35,7 +34,7 @@
     color: var(--appearance-text);
     font: inherit;
 }
-.surgery-panel .identity-field input:hover:not(:disabled) { border-color: #687582; }
+.surgery-panel .identity-field input:hover:not(:disabled) { border-color: var(--appearance-hover-line); }
 .surgery-panel .identity-field input:focus { border-color: var(--appearance-accent); }
 .surgery-panel .identity-field input[aria-invalid="true"] { border-color: var(--appearance-danger); }
 .surgery-panel .identity-field small { color: var(--appearance-muted); font-size: 10px; line-height: 1.4; }
@@ -54,7 +53,7 @@
     background: var(--appearance-surface);
     cursor: pointer;
 }
-.surgery-panel .identity-gender label:hover { border-color: #687582; }
+.surgery-panel .identity-gender label:hover { border-color: var(--appearance-hover-line); }
 .surgery-panel .identity-gender label:has(input:checked) {
     border-color: var(--appearance-accent);
     background: var(--appearance-surface-raised);
@@ -71,7 +70,7 @@
     overflow-y: auto;
     padding: 10px 12px;
     border: 1px solid var(--appearance-line-soft);
-    background: rgba(255, 255, 255, .025);
+    background: var(--appearance-tint);
     color: var(--appearance-muted);
     font-size: 11px;
 }
