@@ -1445,6 +1445,7 @@ var MapPanelHarnessQA = (function() {
                     return boot('retreat', 'hold').then(function() {
                         var button = document.querySelector('#map-return-base');
                         api.assertEqual(button.textContent, '撤退并返回', 'alive combat names the retreat');
+                        api.assert(getComputedStyle(button).backgroundColor !== 'rgba(0, 0, 0, 0)', 'map rescue resolves a global theme background outside workbench-shell');
                         api.assert((document.querySelector('#map-navigation-lock-text').textContent || '').indexOf('不获得') >= 0, 'consequence is visible before clicking');
                         before = host.getMessages().filter(function(m) { return m.cmd === 'return_base'; }).length;
                         closeBefore = host.closeCount;
