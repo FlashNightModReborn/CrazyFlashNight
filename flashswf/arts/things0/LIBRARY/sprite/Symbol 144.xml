@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1788801863" lastUniqueIdentifier="41">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 144" itemID="6577b699-000009b8" lastModified="1788874536" lastUniqueIdentifier="41">
   <timeline>
-    <DOMTimeline name="Symbol 144" currentFrame="3">
+    <DOMTimeline name="Symbol 144" currentFrame="1">
       <layers>
         <DOMLayer name="连段标识" color="#AE8F69" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
@@ -77,6 +77,7 @@ _parent.死亡检测();
 		if (_parent._parent.按键检测(_parent._parent.A键,100))
 		{
 			_parent.受身反制 = true;
+			_parent._parent.倒地 = false;
 			_parent._parent.状态改变("空手战立");
 			_root.空手攻击路由.空手攻击标签跳转(_parent._parent, "回旋踢");
 		}

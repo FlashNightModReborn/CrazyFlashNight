@@ -178,8 +178,8 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior extends BaseU
 
         var wantX:Number = (absDx > stopX) ? ((dx < 0) ? -1 : 1) : 0;
         var wantZ:Number = (absDz > stopZ) ? ((dz < 0) ? -1 : 1) : 0;
-        // ★边界收口：主角站在边缘时朝其硬压会被脱困逻辑振荡弹回（防贴边上下抖）
-        wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantZ);
+        // ★边界收口：距边不足一个脱困探测距离时归零（防脱困振荡弹回，防贴边上下抖）
+        wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantX, wantZ);
 
         MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, wantX, wantZ);
     }
