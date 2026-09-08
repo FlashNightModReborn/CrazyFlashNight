@@ -15,12 +15,12 @@ Git Bash 等价：`bash scripts/compile_test.sh -Target publish -TimeoutSeconds 
 
 ### 目标选择（改了哪层就编哪个）
 
-| 改动位置 | 命令 |
-|---|---|
+| 改动位置                                                                        | 命令                |
+| ------------------------------------------------------------------------------- | ------------------- |
 | `scripts/类定义/`、\*`_WebView.as`、\*`PanelService.as`（注入 `_root`） | `-Target publish` |
-| `scripts/TestLoader.as`、测试 class / fixture（要跑 trace 断言） | `-Target test` |
-| `CRAZYFLASHER7MercenaryEmpire/`、`LIBRARY/*`、主时间轴、主文件 linkage | `-Target main` |
-| `flashswf/UI|levels|arts/*` 独立 XFL | `-Target <xfl路径> -PublishOnly -VerifySwf <对应.swf>` |
+| `scripts/TestLoader.as`、测试 class / fixture（要跑 trace 断言）              | `-Target test`    |
+| `CRAZYFLASHER7MercenaryEmpire/`、`LIBRARY/*`、主时间轴、主文件 linkage      | `-Target main`    |
+| `flashswf/UI                                                                    | levels              |
 
 - `publish` / `main` 别名已隐含 publish-only 与自动 `-VerifySwf`，无需再写 `-PublishOnly`
 - `-Target main` **不会**更新 `scripts/asLoader.swf`；改注入层逻辑必须用 `publish`
@@ -45,3 +45,4 @@ Git Bash 等价：`bash scripts/compile_test.sh -Target publish -TimeoutSeconds 
 
 - 被 `#include` 的 `.as` 丢 UTF-8 BOM 时 CS6 静默跳过内容：Compiler 报 0/0、marker 正常，但帧脚本 0 字节，smoke 抓不到。新增/重建 `.as` 必须保留 BOM
 - `[TIMEOUT]` 会留 `scripts/compile_state_uncertain.marker` 卡住后续编译；需人工确认 Flash / 计划任务已静止、`TestLoader.as` 已恢复后再删
+- 现在编译环境没好，除非用户要求，否则不必编译

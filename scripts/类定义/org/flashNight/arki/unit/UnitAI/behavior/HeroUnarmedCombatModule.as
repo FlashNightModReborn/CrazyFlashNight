@@ -99,8 +99,17 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         if (data.absdiff_z > 5) {
             wantZ = (data.diff_z < 0) ? -1 : 1; // diff_z<0=目标偏上→上行(-1)
         }
-        // ★边界收口：意图方向被边界/障碍挡住 → 归零，不喂给脱困逻辑（防贴边上下抖）
-        wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantZ);
+
+        // X 轴意图：朝目标移动（先算：收口探测是斜向端点，需要 X 口径一致）
+        var wantX:Number = 0;
+        if (data.absdiff_x > p.攻击判定X * 0.6) {
+            wantX = (data.diff_x < 0) ? -1 : 1;
+        }
+
+        // ★边界收口：距边不足一个脱困探测距离时归零（不给脱困逻辑喂会被判挡的方向，防振荡）；
+        //   被收口的最后一段由下方 Z 对齐接管小步走完（见 clampZIntent 注释）
+        var rawZ:Number = wantZ;
+        wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantX, wantZ);
 
         // ── Z 轴精确对齐接管判定（D3 三条件）──
         if (HeroUnarmedMoveHelper.shouldTakeOverZ(data, self, wantZ)) {
@@ -112,10 +121,11 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
             self.虎妙Z对齐 = null;
         }
 
-        // X 轴意图：朝目标移动
-        var wantX:Number = 0;
-        if (data.absdiff_x > p.攻击判定X * 0.6) {
-            wantX = (data.diff_x < 0) ? -1 : 1;
+        // ★收口后的最后一程：意图仍在但被收口（贴边带内）→ 直接交给 Z 对齐接管，
+        //   alignTick 以步长级探测 + 边界步长钳制小步直走到边缘，绕开脱困逻辑。
+        //   （障碍物场景 alignTick 自身复检走不动会清接管，不会硬压。）
+        if (rawZ != 0 && wantZ == 0 && self.虎妙Z对齐 == null) {
+            self.虎妙Z对齐 = {目标: t, 每帧速度: HeroUnarmedMoveHelper._getZSpeed(self)};
         }
 
         // 跑步切换：Z 轴基本对齐后才切跑（沿 HeroCombatModule:163 思路）
@@ -169,14 +179,19 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule extends F
         // 修复：交战中继续贴到 交战Z死区（默认5）才停，走进范围后稳定待在范围内。
         if (data.absdiff_z > p.交战Z死区) {
             var wantZ:Number = (data.diff_z < 0) ? -1 : 1;
-            // ★边界收口：被挡方向归零（防脱困振荡），见 HeroUnarmedMoveHelper.clampZIntent
-            wantZ = HeroUnarmedMoveHelper.clampZIntent(self, wantZ);
+            // ★边界收口：距边不足一个脱困探测距离时归零（防脱困振荡），见 clampZIntent
+            var rawZ:Number = wantZ;
+            wantZ = HeroUnarmedMoveHelper.clampZIntent(self, 0, wantZ);
             if (HeroUnarmedMoveHelper.shouldTakeOverZ(data, self, wantZ)) {
                 // 近距离精确对齐（末步截断，永不越过目标 Z）
                 self.虎妙Z对齐 = {目标: t, 每帧速度: HeroUnarmedMoveHelper._getZSpeed(self)};
                 wantZ = 0;
             } else {
                 self.虎妙Z对齐 = null;
+            }
+            // ★收口后的最后一程：目标贴边时由 Z 对齐接管小步走完（同 chase）
+            if (rawZ != 0 && wantZ == 0 && self.虎妙Z对齐 == null) {
+                self.虎妙Z对齐 = {目标: t, 每帧速度: HeroUnarmedMoveHelper._getZSpeed(self)};
             }
             if (wantZ != 0) {
                 MovementResolver.applyBoundaryAwareMovement(UnitAIData(data), self, 0, wantZ);

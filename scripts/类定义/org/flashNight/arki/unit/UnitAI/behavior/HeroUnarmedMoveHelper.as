@@ -68,6 +68,16 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedMoveHelper {
         if (!(step > 0)) step = 5;
         if (ad < step) step = ad; // ★末步截断：精确对齐，永不越过目标 Z
 
+        // ★末段边界钳制：目标 Z 在边界外时把步长钳到剩余边界距离——
+        //   端点恰好压在 Ymin/Ymax 上（isDirectionWalkable 判可行走）→ 能正好走到边缘。
+        //   本任务用步长级小步直走（Mover.move2D），完全绕开脱困逻辑的探测/逃离，
+        //   这是"贴边最后一程"能走通的关键（chase 的收口在距边 20~60px 就把意图归零了）。
+        var bMinY:Number = AIEnvironment.getYmin();
+        var bMaxY:Number = AIEnvironment.getYmax();
+        var room:Number = (d > 0) ? (bMaxY - self.Z轴坐标) : (self.Z轴坐标 - bMinY);
+        if (step > room) step = room;
+        if (!(step > 0)) { self.虎妙Z对齐 = null; return; } // 已贴边且目标在界外：走完即止
+
         // ★边界收口复检：目标 Z 在边界外/被挡时不再硬压——走不动就结束接管，
         //   交回 chase（其 clampZIntent 会把被挡的 Z 意图归零），否则每 33ms 撞边
         //   会被 resolveCollision 挤来挤去，观感即贴边上下抖。
@@ -84,25 +94,31 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedMoveHelper {
 
     // ── Z 意图边界收口（chase/engage/无目标跟随共用）──
     /**
-     * 意图方向朝边界但下一步探测不可行走 → 归零。
+     * 意图方向朝边界且**距边不足一个脱困探测距离** → 归零（最后一段由 Z 对齐接管走完）。
      * 根因：applyBoundaryAwareMovement 的脱困逻辑遇到"地图边界"这种绕不开的阻挡时，
-     * 会选反向逃离（24帧窗口）→ 窗口结束又朝边界压 → 无Progress → 再逃 → 无限振荡，
-     * 观感即"离边缘一段距离就上下抖、永远到不了边"。治法是不给脱困逻辑喂被挡的方向：
-     * probe 取 min(每帧Z速度, 剩余边界距离)，端点永远落在地图矩形内，贴边仍可走到最后一步。
+     * 会选反向逃离（24帧窗口）→ 窗口结束又朝边界压 → 无Progress → 再逃 → 无限振荡。
+     * ★探测距离必须与脱困逻辑同口径（MovementResolver：行走X速度*5，钳 20..60，斜向端点）。
+     *   此前用每帧Z速度(~5px)小步探测，离边 5~60px 的距离带里收口放行、脱困判挡
+     *   → 照样触发逃离振荡（维护者实测"接近边缘来回抖、到不了边"即此残留）。
+     * @param wantX X 意图（脱困探测是斜向端点，需一并传入对齐口径；无则传 0）
      * @param wantZ 本tick Z 意图（-1上/0无/1下）
-     * @return 收口后的 wantZ
+     * @return 收口后的 wantZ（0=本次不输出 Z 位移，调用方应改走 Z 对齐接管）
      */
-    public static function clampZIntent(self:MovieClip, wantZ:Number):Number {
+    public static function clampZIntent(self:MovieClip, wantX:Number, wantZ:Number):Number {
         if (wantZ == 0) return 0;
-        var v:Number = _getZSpeed(self);
-        if (isNaN(v) || v <= 0) v = 5;
         var bMinY:Number = AIEnvironment.getYmin();
         var bMaxY:Number = AIEnvironment.getYmax();
         var z:Number = (!isNaN(self.Z轴坐标)) ? self.Z轴坐标 : self._y;
         var room:Number = (wantZ < 0) ? (z - bMinY) : (bMaxY - z);
-        var probe:Number = (v < room) ? v : room;
-        if (!(probe > 0)) return 0; // 已贴到边界
-        return Mover.isDirectionWalkable(self, 0, wantZ, probe) ? wantZ : 0;
+        if (!(room > 0)) return 0; // 已贴到边界
+        // 与 MovementResolver 脱困探测同距离（行走X速度*5，钳 20..60）
+        var spd:Number = self.行走X速度;
+        if (isNaN(spd) || spd <= 0) spd = 6;
+        var probe:Number = spd * 5;
+        if (probe < 20) probe = 20;
+        else if (probe > 60) probe = 60;
+        if (room < probe) return 0; // 距边不足一个脱困探测距离：收口（脱困逻辑必判挡）
+        return Mover.isDirectionWalkable(self, wantX, wantZ, probe) ? wantZ : 0;
     }
 
     // ── 激活条件判定（Chasing 每 tick 调用）──

@@ -44,13 +44,10 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
     private var _currentSkillName:String = null;
     private var _currentSkill:Object = null;   // 当前技能条目引用（读 不可打断 / 单图一次 等标记）
 
-    // 击倒脱困边缘检测：上一 tick 是否处于击倒（用于"新一次击倒"判定，配合 自机.单位击倒已脱困）
-    private var _wasKnockdown:Boolean = false;
-
     // 位移技能主动使用间隔锁（getTimer 时间戳）：小跳/闪现释放后 位移使用间隔 秒内，
     // 常态裁决(H)与打断换招(_tryInterrupt)不再选它们 —— 它们表内 CD 仅 1/2 秒且成本极低，
     // 受威胁/低血状态下会被同层随机反复抽中 → 观感"连续小跳闪现"。
-    // 击倒脱困（C2 分支直接 _usableSkill，不走 _decide）不受此锁限制，保命优先。
+    // 注：击倒脱困已完全交给原生机制（见 C2 分支注释），本锁只约束常态裁决与打断换招。
     private var _dodgeLockUntil:Number = 0;
 
     // 平A窗口起始帧（配合 自机.单位平A中，-1 = 无窗口）
@@ -138,25 +135,13 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
             _normalAttackStartFrame = -1;
         }
 
-        // ── C2. 击倒脱困（必须排在"空中"判定之前！）──
-        // 破韧/被击飞时「击倒 + 浮空」是常态：ImpactStateHandler.as:206-214 的
-        // AIRBORNE_DOWN 分支——浮空或倒地的目标被再击中会 状态改变("击倒")。
-        // 若击倒排在 C(空中) 之后，击倒+浮空 会被空中分支吃掉 → 表现为"击倒时不小跳，
-        // 等落地倒地了才开始小跳"。
-        // 倒地(self.倒地) 刻意不在此处理：倒地有另一套起身方式，不需要 AI 干预。
-        // 击倒状态名可能带后缀（升空函数.as:176 用 indexOf 匹配），故用 indexOf 而非全等。
-        var isKnockdown:Boolean = (st != null && st.indexOf("击倒") > -1);
-        if (isKnockdown) {
-            if (!_wasKnockdown) self.单位击倒已脱困 = false; // 新一次击倒，重置成功标记
-            _wasKnockdown = true;
-            // 每次击倒只成功脱困一次：小跳/闪现在 CD 时下 tick 继续重试（保证"立刻"），
-            // 一旦放出去就打标记，避免击倒持续期间反复小跳（此前的"无限高频小跳"）。
-            if (self.单位击倒已脱困 != true) {
-                if (_knockdownEscapeTick(frame)) self.单位击倒已脱困 = true;
-            }
-            return;
-        }
-        _wasKnockdown = false;
+        // ── C2. 击倒：本脑不出招，脱困完全交给原生机制 ──
+        // 原生实现（主角-男.xml:1030 被击飞击倒 帧脚本）：_parent.击倒时小跳 为真时，
+        // !落地 期间每帧 random(15)：0=小跳、1/2=上下跳、3=前跳（九命猫妖初始化已置 true）。
+        // 自研的 _knockdownEscapeTick 小跳/闪现脱困已于 2026-09-08 整体删除（与原生重复且有干扰）。
+        // 击倒+浮空 也在此拦下（不再进 C 空中分支）：击倒期出招与原生小跳互相干扰。
+        // 状态名可能带后缀（升空函数.as:176 用 indexOf 匹配），故用 indexOf 而非全等。
+        if (st != null && st.indexOf("击倒") > -1) return;
 
         // ── C. 空中（含 空手跳 状态）：只出空中技能组 ──
         // 空手跳（升龙拳等跳起后）空中无韧性保护，必须立刻出招，不等浮空标记/技能动画收尾
@@ -259,43 +244,6 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
             && Math.random() < p.平A保底概率) {
             _startNormalAttack(frame);
         }
-    }
-
-    // ═══════ 击倒/倒地脱困（tick C2 调用）═══════
-
-    /**
-     * 击倒时触发小跳脱困——默认后跳即可（不挑方向、不跳帧），小跳不可用则闪现。
-     * 依据 RespawnEventComponent：倒地 只拦普通技能，小跳无条件可释放。
-     *
-     * @return true = 本次成功放出脱困技（调用方据此打 单位击倒已脱困 标记，
-     *                避免击倒持续期间反复小跳）；false = 都在 CD / MP 不足，下 tick 再试。
-     */
-    private function _knockdownEscapeTick(frame:Number):Boolean {
-        var sk:Object = _usableSkill("小跳");
-        if (sk == null) sk = _usableSkill("闪现");
-        if (sk == null) return false; // 都在 CD / MP 不足 → 下 tick 再试
-
-        // 脱困不挑方向：清全部方向输入，走技能默认（后跳）
-        self.上行 = false;
-        self.下行 = false;
-        self.左行 = false;
-        self.右行 = false;
-        self.动作A = false;
-
-        sk.上次使用时间 = getTimer();
-        _applySkillLevel(sk);
-        AIEnvironment.routeSkill(self, sk.技能名);
-        return true;
-    }
-
-    /** 按 CD/MP 过滤取可用技能条目（脱困用）；不可用返回 null */
-    private function _usableSkill(名:String):Object {
-        var sk:Object = _findGroundSkill(名);
-        if (sk == null) return null;
-        if (!isNaN(sk.上次使用时间)
-            && (getTimer() - sk.上次使用时间 <= sk.冷却 * 1000)) return null;
-        if (sk.消耗 > 0 && self.mp < sk.消耗) return null;
-        return sk;
     }
 
     // ═══════ 喝药（独立轨，Combat/Evade 均 tick）═══════
@@ -528,9 +476,18 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
         // 释放前先面向目标（背对时出招会打空）
         _faceTarget();
 
+        // 空中出招时补齐 技能浮空 旗标（修复"屏幕边缘卡死+反复震地"）：
+        //   震地/地震/觉醒震地 容器第一帧以 `技能浮空 == true` 决定是否 启用快速下落(重力20)；
+        //   而上一技能结束时容器 onUnload 会清掉该旗标（人仍在天上）→ 不启用 fastFall。
+        //   人确实在浮空物理下，置 true 与物理语义一致；fastFall 落地时会自动清回 false。
+        //   注意：不动 垂直速度 —— 上升/下降速度一律交还给空中控制器物理积分。
+        if (self.浮空 == true && self.技能浮空 != true) {
+            self.技能浮空 = true;
+        }
+
         // 小跳/闪现方向控制（技能动画不设输入时默认后跳，必须显式给方向输入）：
         //   贴身 → 上下跳（随机上/下）；未贴身（接近中）→ 前跳拉近。
-        //   击倒/倒地脱困不走本函数（见 _knockdownEscapeTick，默认后跳即可）。
+        //   （击倒脱困不走本函数：击倒期 C2 守卫直接 return，脱困由原生 击倒时小跳 处理。）
         if (sk.技能名 == "小跳" || sk.技能名 == "闪现") {
             var up:Boolean = false;
             var down:Boolean = false;
@@ -662,6 +619,15 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
             }
         }
         // 空中释放：允许踩人（跳过 地面 的 空中限定 过滤）
+        // 浮空出招必须补 技能浮空 旗标（强制震地不走 _release，此前漏了这步）：
+        //   缺旗标 → 震地容器第一帧判定不成立 → 不启用 fastFall；而 状态=="技能" 又会让
+        //   空中控制器删掉 naturalFall 源（空中控制器._tick 状态切换让出）→ **所有物理源清空、
+        //   单位悬停冻结**，且强制兜底每 tick 重放震地、状态恒为"技能" → naturalFall 永远
+        //   回不来 → "卡在屏幕边缘无限震地"，直到 MP 耗尽退化平A（状态离开技能）才恢复下落。
+        //   补旗标 → 容器启用 fastFall(重力20) 快速下落，落地自动清旗标并 play() 砸地。
+        if (self.浮空 == true && self.技能浮空 != true) {
+            self.技能浮空 = true;
+        }
         pick.上次使用时间 = getTimer();
         _applySkillLevel(pick);
         AIEnvironment.routeSkill(self, pick.技能名);
