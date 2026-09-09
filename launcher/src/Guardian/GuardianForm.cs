@@ -545,7 +545,51 @@ namespace CF7Launcher.Guardian
             _hotkeysRegistered = false;
         }
 
+        private CF7Launcher.Diagnostic.NativeInputDispatchProbe _inputDispatchProbe;
+        private long _inputHandleGeneration;
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            _inputHandleGeneration++;
+            CF7Launcher.Diagnostic.FocusTrace.Record("input.window_lifecycle", new {
+                phase = "created", hwnd = Handle.ToInt64(), generation = _inputHandleGeneration,
+                window = GetType().Name });
+            if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
+                try { _inputDispatchProbe = new CF7Launcher.Diagnostic.NativeInputDispatchProbe(Handle); }
+                catch (Exception ex) { CF7Launcher.Diagnostic.FocusTrace.Record("input.coverage_failed", new { error = ex.GetType().Name }); }
+        }
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            _inputDispatchProbe?.Dispose();
+            _inputDispatchProbe = null;
+            CF7Launcher.Diagnostic.FocusTrace.Record("input.window_lifecycle", new {
+                phase = "destroyed", hwnd = Handle.ToInt64(), generation = _inputHandleGeneration,
+                window = GetType().Name });
+            base.OnHandleDestroyed(e);
+        }
         protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == CF7Launcher.Diagnostic.NativeInputDispatchProbe.HeartbeatMessage)
+            { _inputDispatchProbe?.Acknowledge(m.WParam.ToInt64()); m.Result = IntPtr.Zero; return; }
+            if (!CF7Launcher.Diagnostic.FocusTrace.Enabled || !CF7Launcher.Diagnostic.FocusTrace.ObserveMessage(m.Msg))
+            { DispatchObservedMessage(ref m); return; }
+            Message original = m;
+            long started = System.Diagnostics.Stopwatch.GetTimestamp();
+            long id = CF7Launcher.Diagnostic.FocusTrace.NativeEnter(m.HWnd, m.Msg, m.WParam, m.LParam,
+                _inputHandleGeneration, 0, 0, 0);
+            try
+            {
+                try { CF7Launcher.Diagnostic.FocusTrace.Input("input.message_context", new CF7Launcher.Diagnostic.InputData {
+                    invocationId = id, messageTime = unchecked((uint)CF7Launcher.Diagnostic.NativeInputDispatchProbe.GetMessageTime()),
+                    messagePos = CF7Launcher.Diagnostic.NativeInputDispatchProbe.GetMessagePos(),
+                    sendFlags = CF7Launcher.Diagnostic.NativeInputDispatchProbe.InSendMessageEx(IntPtr.Zero) }); }
+                catch { }
+                DispatchObservedMessage(ref m);
+            }
+            finally { CF7Launcher.Diagnostic.FocusTrace.NativeExit(id, original.HWnd, original.Msg,
+                original.WParam, original.LParam, m.Result, _inputHandleGeneration, started); }
+        }
+        private void DispatchObservedMessage(ref Message m)
         {
             if (m.Msg == WM_DPICHANGED)
             {

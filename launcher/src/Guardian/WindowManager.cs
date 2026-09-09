@@ -18,7 +18,7 @@ namespace CF7Launcher.Guardian
         bool AttachThreadInput(
             uint attachThreadId,
             uint attachToThreadId,
-            bool attach);
+            bool attach, out int error);
         IntPtr SetFocus(IntPtr windowHandle);
         uint GetCurrentThreadId();
         bool IsWindow(IntPtr windowHandle);
@@ -44,7 +44,7 @@ namespace CF7Launcher.Guardian
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
 
@@ -214,24 +214,41 @@ namespace CF7Launcher.Guardian
             public bool SetForegroundWindow(
                 IntPtr windowHandle)
             {
-                return WindowManager.SetForegroundWindow(
-                    windowHandle);
+                long id = CF7Launcher.Diagnostic.FocusTrace.NextInvocation();
+                long started = Stopwatch.GetTimestamp();
+                CF7Launcher.Diagnostic.FocusTrace.Input("input.set_foreground", new CF7Launcher.Diagnostic.InputData {
+                    invocationId = id, receiver = windowHandle.ToInt64(), phase = "enter" });
+                bool result = WindowManager.SetForegroundWindow(windowHandle);
+                CF7Launcher.Diagnostic.FocusTrace.Input("input.set_foreground", new CF7Launcher.Diagnostic.InputData {
+                    invocationId = id, receiver = windowHandle.ToInt64(), phase = "exit", result = result ? 1 : 0,
+                    elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency });
+                return result;
             }
 
             public bool AttachThreadInput(
                 uint attachThreadId,
                 uint attachToThreadId,
-                bool attach)
+                bool attach, out int error)
             {
-                return WindowManager.AttachThreadInput(
+                bool result = WindowManager.AttachThreadInput(
                     attachThreadId,
                     attachToThreadId,
                     attach);
+                error = result ? 0 : Marshal.GetLastWin32Error();
+                return result;
             }
 
             public IntPtr SetFocus(IntPtr windowHandle)
             {
-                return WindowManager.SetFocus(windowHandle);
+                long id = CF7Launcher.Diagnostic.FocusTrace.NextInvocation();
+                long started = Stopwatch.GetTimestamp();
+                CF7Launcher.Diagnostic.FocusTrace.Input("input.set_focus", new CF7Launcher.Diagnostic.InputData {
+                    invocationId = id, receiver = windowHandle.ToInt64(), phase = "enter" });
+                IntPtr previous = WindowManager.SetFocus(windowHandle);
+                CF7Launcher.Diagnostic.FocusTrace.Input("input.set_focus", new CF7Launcher.Diagnostic.InputData {
+                    invocationId = id, receiver = windowHandle.ToInt64(), phase = "exit", result = previous.ToInt64(),
+                    correlation = "previous_hwnd_not_success", elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency });
+                return previous;
             }
 
             public uint GetCurrentThreadId()
@@ -903,6 +920,22 @@ namespace CF7Launcher.Guardian
                 requireSetForegroundSuccess: true);
         }
 
+        private bool ObserveAttach(uint from, uint to, bool attach)
+        {
+            long id = CF7Launcher.Diagnostic.FocusTrace.NextInvocation();
+            long started = Stopwatch.GetTimestamp();
+            CF7Launcher.Diagnostic.FocusTrace.Input("input.attach", new CF7Launcher.Diagnostic.InputData {
+                invocationId = id, phase = "enter", wParam = from, lParam = to, flags = attach ? 1U : 0U });
+            bool result = false;
+            int error = 0;
+            bool completed = false;
+            try { result = _focusApi.AttachThreadInput(from, to, attach, out error); completed = true; return result; }
+            finally { CF7Launcher.Diagnostic.FocusTrace.Input("input.attach", new CF7Launcher.Diagnostic.InputData {
+                invocationId = id, phase = completed ? "exit" : "throw", wParam = from, lParam = to,
+                flags = attach ? 1U : 0U, result = result ? 1 : 0, error = result ? 0 : error,
+                elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency }); }
+        }
+
         private bool RestoreFlashInputFocusCore(
             string reason,
             IntPtr expectedFlashHwnd,
@@ -977,10 +1010,7 @@ namespace CF7Launcher.Guardian
             {
                 try
                 {
-                    attached = _focusApi.AttachThreadInput(
-                        myTid,
-                        fgTid,
-                        true);
+                    attached = ObserveAttach(myTid, fgTid, true);
                 }
                 catch (Exception ex)
                 {
@@ -1010,10 +1040,8 @@ namespace CF7Launcher.Guardian
                 {
                     try
                     {
-                        _focusApi.AttachThreadInput(
-                            myTid,
-                            fgTid,
-                            false);
+                        bool detached = ObserveAttach(myTid, fgTid, false);
+                        if (!detached) LogManager.Log("[FocusRestore] " + reason + " detach returned false (myTid=" + myTid + " fgTid=" + fgTid + ")");
                     }
                     catch (Exception ex)
                     {

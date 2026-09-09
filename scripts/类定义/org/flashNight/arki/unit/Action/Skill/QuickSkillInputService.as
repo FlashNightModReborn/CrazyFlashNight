@@ -1,4 +1,5 @@
-﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/QuickSkillInputService.as
+﻿import org.flashNight.arki.unit.Action.Skill.SkillInputObservation;
+// 文件路径：org/flashNight/arki/unit/Action/Skill/QuickSkillInputService.as
 
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard;
@@ -32,6 +33,7 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         var rootRef:Object = root;
         var bridge:Object = {};
         bridge.update = function(unit:Object):Number {
+            SkillInputObservation.bridge();
             var inputEnabled:Boolean = !rootRef.暂停 && rootRef.当前玩家总数 == 1;
             var interfaceRoot:Object = rootRef.玩家信息界面;
             var view:Object = interfaceRoot ? interfaceRoot.快捷技能界面 : null;
@@ -41,6 +43,7 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
                 var keyName:String = QuickSkillInputService.getKeyName(slotIndex);
                 var keyCode:Number = Number(rootRef[keyName]);
                 var keyDown:Boolean = !isNaN(keyCode) && Key.isDown(keyCode);
+                SkillInputObservation.sample(slotIndex, keyCode, keyDown);
 
                 QuickSkillInputService.syncKeyLabel(view, slotIndex, keyCode, rootRef);
                 var result:Object = QuickSkillInputService.updateSlot(
@@ -90,18 +93,28 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         var consumedSlots:Array = getConsumedSlots(unit);
         if (!keyDown) {
             consumedSlots[slotIndex] = false;
+            SkillInputObservation.decision(slotIndex, 0, false);
             return null;
         }
 
-        if (!inputEnabled || consumedSlots[slotIndex] === true) return null;
+        if (!inputEnabled || consumedSlots[slotIndex] === true) {
+            SkillInputObservation.decision(slotIndex, !inputEnabled ? 1 : 2, consumedSlots[slotIndex] === true);
+            return null;
+        }
 
         var skillSlot:Object = getSkillSlot(view, slotIndex);
-        if (!isEquippedSkill(skillSlot) || !ManualCooldownService.isReady(cooldownKey)) {
+        if (!isEquippedSkill(skillSlot)) {
+            SkillInputObservation.decision(slotIndex, 3, false);
+            return null;
+        }
+        if (!ManualCooldownService.isReady(cooldownKey)) {
+            SkillInputObservation.decision(slotIndex, 5, false);
             return null;
         }
 
         // 与旧控制器一致：只要进入一次释放尝试，无论成功与否都必须松键后再触发。
         consumedSlots[slotIndex] = true;
+        SkillInputObservation.decision(slotIndex, 4, true);
         return releaseSlot(unit, slotIndex, skillSlot, keyCode);
     }
 
@@ -121,14 +134,17 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         );
         var cooldownTime:Number = Number(skillSlot.__domainDescriptor === true ? skillSlot.cooldownMs : skillSlot.冷却时间);
         var mpCost:Number = Number(skillSlot.__domainDescriptor === true ? skillSlot.mp : skillSlot.消耗mp);
-        var released:Boolean = unit.释放技能(skillName, mpCost, keyCode) ? true : false;
+        SkillInputObservation.begin(unit, slotIndex, skillName);
+        var released:Boolean = false;
         var cooldownStarted:Boolean = false;
-
-        if (released) {
-            cooldownStarted = ManualCooldownService.start(
-                ManualCooldownService.quickSkillKey(slotIndex),
-                cooldownTime
-            );
+        try {
+            released = unit.释放技能(skillName, mpCost, keyCode) ? true : false;
+            if (released) {
+                cooldownStarted = ManualCooldownService.start(
+                    ManualCooldownService.quickSkillKey(slotIndex), cooldownTime);
+            }
+        } finally {
+            SkillInputObservation.end(slotIndex, released, cooldownStarted);
         }
 
         return {

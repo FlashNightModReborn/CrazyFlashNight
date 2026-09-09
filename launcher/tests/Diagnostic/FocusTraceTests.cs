@@ -85,9 +85,10 @@ namespace CF7Launcher.Tests.Diagnostic
             Assert.Single(rows.Where(x => (string)x["event"] == "mouse.down"));
             JObject down = rows.First(x => (string)x["event"] == "mouse.down");
             Assert.True((bool)down["data"]["injected"]);
-            Assert.Equal("unknown", (string)down["data"]["windows"]["actualExternalReceiver"]);
+            Assert.Null(down["data"]["windows"]);
+            Assert.Equal("ll_screen_cached_target", (string)down["data"]["coordinateSource"]);
             Assert.Equal(gesture, (string)rows.Single(x => (string)x["event"] == "intent.created")["gesture"]);
-            Assert.Equal("unobserved", (string)rows.Single(x => (string)x["gesture"] == unobserved)["data"]["correlation"]);
+            Assert.Equal("position_time_candidate", (string)rows.Single(x => (string)x["gesture"] == unobserved)["data"]["correlation"]);
             Assert.Null(FocusTrace.Gesture);
         }
 
@@ -99,15 +100,15 @@ namespace CF7Launcher.Tests.Diagnostic
             string mouse = FocusTrace.PhysicalEdge(0x0201, point, 0, 10, 7);
             using (FocusTrace.ObserveSnapshot())
                 Assert.False(FocusTrace.ShouldTraceNativeHitTest(point));
-            Assert.False(FocusTrace.ShouldTraceNativeHitTest(new Point(151, 150)));
-            for (int i = 0; i < 8; i++) Assert.True(FocusTrace.ShouldTraceNativeHitTest(point));
+            Assert.True(FocusTrace.ShouldTraceNativeHitTest(new Point(151, 150)));
+            for (int i = 0; i < 31; i++) Assert.True(FocusTrace.ShouldTraceNativeHitTest(point));
             Assert.False(FocusTrace.ShouldTraceNativeHitTest(point));
             FocusTrace.HudDown(point, new IntPtr(123), "fixture");
             Assert.Equal(mouse, (string)Read().Single(x => (string)x["event"] == "hud.down")["data"]["mouseId"]);
             FocusTrace.PhysicalEdge(0x0202, point, 0, 11, 7);
             Assert.Equal(mouse, FocusTrace.NativeMouseCandidate(point));
             FocusTrace.PhysicalEdge(0x0201, Point.Empty, 0, 12, 7);
-            Assert.Null(FocusTrace.NativeMouseCandidate(point));
+            Assert.Equal(mouse, FocusTrace.NativeMouseCandidate(point));
         }
 
         [Fact]
@@ -115,14 +116,16 @@ namespace CF7Launcher.Tests.Diagnostic
         {
             var point = new Point(150, 150);
             FocusTrace.SetTarget(new Rectangle(100, 100, 100, 100));
-            FocusTrace.HudInputSnapshot = _ => throw new InvalidOperationException("fixture");
+            int snapshotCalls = 0;
+            FocusTrace.HudInputSnapshot = _ => { snapshotCalls++; throw new InvalidOperationException("fixture"); };
             try
             {
                 string mouse = FocusTrace.PhysicalEdge(0x0201, point, 0, 10, 7);
                 FocusTrace.HookChainResult(mouse, 0x0201, new IntPtr(1), Stopwatch.GetTimestamp());
                 FocusTrace.HookChainResult(mouse, 0x0202, IntPtr.Zero, Stopwatch.GetTimestamp());
                 JObject[] rows = Read();
-                Assert.Equal("snapshot_failed", (string)rows.Single(x => (string)x["event"] == "mouse.down")["data"]["hudInput"]["unavailable"]);
+                Assert.Equal(0, snapshotCalls);
+                Assert.Null(rows.Single(x => (string)x["event"] == "mouse.down")["data"]["hudInput"]);
                 JObject[] results = rows.Where(x => (string)x["event"] == "mouse.hook_chain_result").ToArray();
                 Assert.True((bool)results[0]["data"]["suppressed"]);
                 Assert.False((bool)results[1]["data"]["suppressed"]);
@@ -152,6 +155,29 @@ namespace CF7Launcher.Tests.Diagnostic
             Assert.Equal(session, FocusTrace.Session);
             Assert.DoesNotContain(rows, x => (string)x["event"] == "trace.limit");
             Assert.Single(rows, x => (string)x["event"] == "as2.observation");
+        }
+
+        [Fact]
+        public void SkillConfigurationMustBelongToCurrentSessionAndCannotLeakAcrossRestart()
+        {
+            FocusTrace.Start(_batches.Add, false, true);
+            string keys = " v=1 seq=1 timer=1 event=keys slot=0 a=0 b=0 attempt=0 detail=65,66,67,68,69,70,71,72,73,74,75,76";
+            FocusTrace.CaptureAs2LogBatch("[SkillInputAS2] session=other" + keys);
+            Assert.False(FocusTrace.IsSkillKey(65));
+            FocusTrace.CaptureAs2LogBatch("[SkillInputAS2] session=" + FocusTrace.Session + keys);
+            Assert.True(FocusTrace.IsSkillKey(65));
+            Assert.False(FocusTrace.IsSkillKey(13));
+            FocusTrace.Start(_batches.Add, false, true);
+            Assert.False(FocusTrace.IsSkillKey(65));
+        }
+
+        [Fact]
+        public void FastOnlyProducerHonorsBoundedRecordingLimit()
+        {
+            for (int i = 0; i < FocusTrace.EventBudget + 5; i++)
+                FocusTrace.Input("fixture.fast", new InputData { message = i });
+            Assert.False(FocusTrace.Enabled);
+            Assert.Single(Read(), row => (string)row["event"] == "trace.limit");
         }
     }
 }

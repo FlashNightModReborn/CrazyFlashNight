@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 namespace CF7Launcher.Diagnostic
 {
     // 仅观察边界事件。钩子/UI 线程只入有界队列，既不写盘也不发送业务命令。
-    internal static class FocusTrace
+    internal static partial class FocusTrace
     {
         internal const int Capacity = 256;
         internal const int EventBudget = 8000;
@@ -27,14 +27,13 @@ namespace CF7Launcher.Diagnostic
         private static RollingFocusLog _rollingLog;
         private static string _recordingRoot;
         internal static bool IsRolling { get; private set; }
-        private static Rectangle _target;
-        private static string _physicalDown;
-        private static Point _physicalPoint;
-        private static long _physicalAt;
-        private static bool _physicalAvailable;
-        private static string _nativeMouseId;
-        private static Point _nativePoint;
-        private static long _nativeAt;
+        private sealed class TargetCache
+        {
+            internal Rectangle bounds;
+            internal long at;
+            internal bool eligible;
+        }
+        private static TargetCache _target = new TargetCache();
         private static int _nativeHitTests;
         [ThreadStatic] private static int _snapshotDepth;
         internal static Func<Point, object> HudInputSnapshot;
@@ -69,7 +68,7 @@ namespace CF7Launcher.Diagnostic
                     _rollingLog = recording;
                     _recordingRoot = projectRoot;
                 }
-                LogManager.Log("[FocusRecording] enabled mode=rolling files=3 bytesPerFile=8388608 session=" + Session);
+                LogManager.Log("[FocusRecording] enabled mode=rolling files=3 bytesPerFile=6291456 incidentSlots=4 incidentBytes=1048576 session=" + Session);
             }
             catch (Exception ex)
             {
@@ -91,12 +90,14 @@ namespace CF7Launcher.Diagnostic
             lock (Gate)
             {
                 Pending.Clear();
+                _input = new FocusInputBuffer();
+                _history = new FocusMouseHistory();
+                _inputErrors = _armedUntil = 0;
                 _sequence = _lost = _mouseSequence = _hudSequence = 0;
-                _physicalDown = null;
-                _physicalAvailable = false;
-                _nativeMouseId = null;
-                _nativeHitTests = 0;
-                _target = Rectangle.Empty;
+                _nativeHitTests = _rawHitTests = 0;
+                _target = new TargetCache();
+                _skillKeys = Array.Empty<int>();
+                _skillKeysAt = 0;
                 _gesture = null;
                 Session = session ?? Guid.NewGuid().ToString("N");
                 IsRolling = rolling;
@@ -106,7 +107,7 @@ namespace CF7Launcher.Diagnostic
             }
             Record("trace.start", new { capacity = Capacity, budget = rolling ? (int?)null : EventBudget,
                 durationMinutes = rolling ? (int?)null : 30, recordingMode = rolling ? "rolling" : "bounded",
-                nativeInputObservation = 1, corePath = typeof(FocusTrace).Assembly.Location,
+                nativeInputObservation = 2, inputCapacity = FocusInputBuffer.Capacity, historyPairs = FocusMouseHistory.Capacity, historyMs = FocusMouseHistory.RetentionMs, corePath = typeof(FocusTrace).Assembly.Location,
                 pid = Environment.ProcessId, externalReceiver = "unknown" });
             if (useTimer) _timer = new Timer(_ => Flush(), null, 500, 500);
         }
@@ -126,7 +127,7 @@ namespace CF7Launcher.Diagnostic
                         Enabled = false;
                     }
                     string line = "[FocusTrace] " + JsonConvert.SerializeObject(new {
-                        v = 1, session = Session, seq = ++_sequence,
+                        v = 1, session = Session, seq = Interlocked.Increment(ref _sequence),
                         utc = DateTime.UtcNow.ToString("O"), ticks = Stopwatch.GetTimestamp(),
                         frequency = Stopwatch.Frequency, tid = Environment.CurrentManagedThreadId,
                         @event = name, gesture = gesture ?? _gesture, data
@@ -144,16 +145,18 @@ namespace CF7Launcher.Diagnostic
             else if (!Monitor.TryEnter(FlushGate)) return;
             try
             {
+                var inputLines = _input.Drain(Session);
                 string batch;
                 lock (Gate)
                 {
-                    if (Pending.Count == 0 && _lost == 0) return;
+                    if (Pending.Count == 0 && _lost == 0 && inputLines.Count == 0) return;
                     var lines = new List<string>(Pending.Count + 1);
                     if (_lost > 0)
                         lines.Add("[FocusTrace] " + JsonConvert.SerializeObject(new {
                             v = 1, session = Session, @event = "trace.dropped", count = _lost }));
                     _lost = 0;
                     while (Pending.Count > 0) lines.Add(Pending.Dequeue());
+                    lines.AddRange(inputLines);
                     batch = string.Join(Environment.NewLine, lines);
                 }
                 try { _sink?.Invoke(batch); }
@@ -174,7 +177,7 @@ namespace CF7Launcher.Diagnostic
         {
             _timer?.Dispose();
             _timer = null;
-            Record("trace.stop");
+            Record("trace.stop", new { inputErrors = Interlocked.Read(ref _inputErrors), historyOverwritten = _history.Overwritten });
             lock (Gate) { Enabled = false; }
             Flush(true);
             RollingFocusLog recording = _rollingLog;
@@ -194,6 +197,7 @@ namespace CF7Launcher.Diagnostic
         internal static void CaptureAs2LogBatch(string decoded)
         {
             if (!Enabled || !IsRolling || string.IsNullOrEmpty(decoded)) return;
+            CaptureSkillLogBatch(decoded);
             string marker = "[FocusTraceAS2] session=" + Session + " ";
             foreach (Match match in Regex.Matches(decoded, Regex.Escape(marker) + @"[^|&\r\n]*"))
                 Record("as2.observation", new { source = "http_log_batch", raw = match.Value });
@@ -211,59 +215,54 @@ namespace CF7Launcher.Diagnostic
             public void Dispose() { _gesture = _previous; }
         }
 
-        internal static void SetTarget(Rectangle target) { _target = target; }
+        internal static void SetTarget(Rectangle target, bool eligible = true)
+        {
+            Volatile.Write(ref _target, new TargetCache { bounds = target, eligible = eligible, at = Environment.TickCount64 });
+        }
 
         internal static string PhysicalEdge(int message, Point point, uint flags, uint time, int panelGeneration)
         {
             if (!Enabled || (message != 0x0201 && message != 0x0202)) return null;
-            // 只观察右侧条件槽区域；释放可在区域外。没有全桌面点击历史。
-            if (message == 0x0201)
+            bool down = message == 0x0201;
+            long now = Environment.TickCount64;
+            TargetCache target = Volatile.Read(ref _target);
+            bool eligible = target.bounds.Contains(point);
+            long overwritten = _history.Overwritten;
+            string id = _history.Edge(down, eligible, point,
+                down && eligible ? "mouse." + Interlocked.Increment(ref _mouseSequence) : null, now);
+            if (_history.Overwritten != overwritten)
+                Input("input.history_overwritten", new InputData { generation = _history.Overwritten });
+            if (down && eligible) { Interlocked.Exchange(ref _armedUntil, now + FocusMouseHistory.RetentionMs); _nativeHitTests = 0; _rawHitTests = 0; }
+            if (id == null)
             {
-                _physicalAvailable = false;
-                _physicalDown = null;
-                if (!_target.Contains(point)) { _nativeMouseId = null; return null; }
-                _physicalDown = "mouse." + Interlocked.Increment(ref _mouseSequence);
-                _physicalPoint = point;
-                _physicalAt = Environment.TickCount64;
-                _physicalAvailable = true;
-                _nativeMouseId = _physicalDown;
-                _nativeHitTests = 0;
+                if (down && InputArmed) Input("mouse.outside_target", new InputData { message = message,
+                    flags = flags, hookTime = time, injected = (flags & 1) != 0 });
+                return null;
             }
-            if (_physicalDown == null) return null;
-            string mouseId = _physicalDown;
-            _nativePoint = point;
-            _nativeAt = Environment.TickCount64;
-            Record(message == 0x0201 ? "mouse.down" : "mouse.up", new {
-                mouseId, point, hookTime = time, flags,
-                injected = (flags & 1) != 0, panelGeneration,
-                windows = FocusWindowSnapshot.At(point),
-                hudInput = message == 0x0201 ? CaptureHudInput(point) : null
-            });
-            if (message == 0x0202) { _physicalAvailable = false; _physicalDown = null; }
-            return mouseId;
+            Input(down ? "mouse.down" : "mouse.up", new InputData { mouseId = id, message = message,
+                point = point, flags = flags, hookTime = time, injected = (flags & 1) != 0,
+                panelGeneration = panelGeneration, coordinateSource = "ll_screen_cached_target",
+                targetEligible = target.eligible, cacheAgeMs = now - target.at });
+            return id;
         }
 
-        // 只解释后续 hook 链的返回值，不识别拦截者，也不改变/重放输入。
         internal static void HookChainResult(string mouseId, int message, IntPtr result, long started, long observedAt = 0)
         {
             if (mouseId == null || !Enabled) return;
-            Record("mouse.hook_chain_result", new { mouseId, message,
+            Input("mouse.hook_chain_result", new InputData { mouseId = mouseId, message = message,
                 nextHookResult = result.ToInt64(), suppressed = result != IntPtr.Zero,
-                beforeNextMs = observedAt == 0 ? (double?)null : (started - observedAt) * 1000.0 / Stopwatch.Frequency,
+                beforeNextMs = observedAt == 0 ? 0 : (started - observedAt) * 1000.0 / Stopwatch.Frequency,
                 elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency });
         }
 
         internal static string NativeMouseCandidate(Point point)
         {
-            return Enabled && _nativeMouseId != null && _nativePoint == point
-                && Environment.TickCount64 - _nativeAt <= 2000 ? _nativeMouseId : null;
+            return Enabled ? _history.Candidate(point, Environment.TickCount64, out _) : null;
         }
 
         internal static bool ShouldTraceNativeHitTest(Point point)
         {
-            // 不记录 MouseMove 历史；每次目标点击最多 8 次命中查询。
-            if (_snapshotDepth != 0 || NativeMouseCandidate(point) == null || _nativeHitTests >= 8)
-                return false;
+            if (_snapshotDepth != 0 || !InputArmed || _nativeHitTests >= 32) return false;
             _nativeHitTests++;
             return true;
         }
@@ -289,13 +288,11 @@ namespace CF7Launcher.Diagnostic
         internal static string HudDown(Point point, IntPtr receiver, string widget)
         {
             string id = "hud." + Interlocked.Increment(ref _hudSequence);
-            bool match = _physicalAvailable && _physicalPoint == point
-                && Environment.TickCount64 - _physicalAt <= 2000;
-            Record("hud.down", new { receiver = receiver.ToInt64(), widget, point,
-                mouseId = match ? _physicalDown : null,
-                correlation = match ? "position_time_candidate" : "unobserved",
-                windows = FocusWindowSnapshot.At(point) }, id);
-            _physicalAvailable = false;
+            string candidate = _history.Candidate(point, Environment.TickCount64, out int count);
+            Input("hud.down", new InputData { receiver = receiver.ToInt64(), widget = widget, point = point,
+                mouseId = candidate, candidateCount = count,
+                correlation = count == 0 ? "unobserved" : count == 1 ? "position_time_candidate" : "ambiguous",
+                coordinateSource = "screen" }, id);
             return id;
         }
     }

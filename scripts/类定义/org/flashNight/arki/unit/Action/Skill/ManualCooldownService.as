@@ -1,4 +1,5 @@
-﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/ManualCooldownService.as
+﻿import org.flashNight.arki.unit.Action.Skill.SkillInputObservation;
+// 文件路径：org/flashNight/arki/unit/Action/Skill/ManualCooldownService.as
 
 /**
  * @class ManualCooldownService
@@ -50,6 +51,7 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         state.currentStep = 0;
         state.generation = nextGeneration++;
         syncRenderer(key, state);
+        SkillInputObservation.cooldown(key, state.generation, state.currentStep, "start");
         scheduleNext(key, state.generation);
         return true;
     }
@@ -148,6 +150,7 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         }
 
         // 启动顺序异常时宁可保持不可用，也不能把无计时的冷却误判为已结束。
+        SkillInputObservation.cooldown(key, generation, -1, "scheduler_missing");
         trace("[ManualCooldownService] 缺少帧计时器，冷却保持锁定: " + key);
     }
 
@@ -156,6 +159,7 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         if (!state || state.ready === true || state.generation !== generation) return;
 
         state.currentStep++;
+        SkillInputObservation.cooldown(key, generation, state.currentStep, "advance");
         if (state.currentStep >= state.totalSteps) {
             state.ready = true;
             state.currentStep = 0;

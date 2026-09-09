@@ -179,9 +179,9 @@ namespace CF7Launcher.Tests.Guardian
 
                     FocusTrace.Flush();
                     JObject[] rows = ReadFocusRows(trace);
-                    JObject enter = rows.First(x => (string)x["event"] == "hud.native_mouse" && (string)x["data"]["phase"] == "enter");
+                    JObject enter = rows.First(x => (string)x["event"] == "input.wndproc" && (int)x["data"]["message"] == WM_LBUTTONDOWN && (string)x["data"]["phase"] == "enter");
                     JObject down = rows.Single(x => (string)x["event"] == "hud.down");
-                    JObject exit = rows.First(x => (string)x["event"] == "hud.native_mouse" && (string)x["data"]["phase"] == "exit");
+                    JObject exit = rows.First(x => (string)x["event"] == "input.wndproc" && (int)x["data"]["message"] == WM_LBUTTONDOWN && (string)x["data"]["phase"] == "exit");
                     Assert.True((long)enter["seq"] < (long)down["seq"] && (long)down["seq"] < (long)exit["seq"]);
                     Assert.Contains(rows, x => (string)x["event"] == "hud.native_hit_test" && (int)x["data"]["result"] == HTCLIENT);
                 }

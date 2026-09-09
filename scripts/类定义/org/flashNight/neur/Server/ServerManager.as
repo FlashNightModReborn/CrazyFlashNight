@@ -335,6 +335,7 @@ class org.flashNight.neur.Server.ServerManager {
 
     public function onEnterFrameHandler():Void {
         currentFrame++;
+        org.flashNight.arki.unit.Action.Skill.SkillInputObservation.frame();
         eventBus.publish("frameUpdate", currentFrame);
         hasSentThisFrame = false;
     }

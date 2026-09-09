@@ -383,7 +383,8 @@ namespace CF7Launcher.Guardian
         {
             ReconcileRightContextSlotOwner();
             if (FocusTrace.Enabled && _rightContextWidget != null)
-                FocusTrace.SetTarget(_rightContextWidget.ScreenBounds);
+                FocusTrace.SetTarget(_rightContextWidget.ScreenBounds,
+                    _ready && !_suspendedForPanel && _shown && _ownerVisible && Enabled && CanShowOverlayNow);
             if (!_ready || _suspendedForPanel) return;
 
             INativeHudWidget[] snapshot;
@@ -788,7 +789,43 @@ namespace CF7Launcher.Guardian
         private const int WM_MOUSEACTIVATE = 0x0021;
         private const int MA_NOACTIVATE = 3;
 
+        private long _inputHandleGeneration;
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            _inputHandleGeneration++;
+            CF7Launcher.Diagnostic.FocusTrace.Record("input.window_lifecycle", new {
+                phase = "created", hwnd = Handle.ToInt64(), generation = _inputHandleGeneration,
+                window = GetType().Name });
+        }
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            CF7Launcher.Diagnostic.FocusTrace.Record("input.window_lifecycle", new {
+                phase = "destroyed", hwnd = Handle.ToInt64(), generation = _inputHandleGeneration,
+                window = GetType().Name });
+            base.OnHandleDestroyed(e);
+        }
         protected override void WndProc(ref Message m)
+        {
+            if (!CF7Launcher.Diagnostic.FocusTrace.Enabled || !CF7Launcher.Diagnostic.FocusTrace.ObserveMessage(m.Msg))
+            { DispatchObservedMessage(ref m); return; }
+            Message original = m;
+            long started = System.Diagnostics.Stopwatch.GetTimestamp();
+            long id = CF7Launcher.Diagnostic.FocusTrace.NativeEnter(m.HWnd, m.Msg, m.WParam, m.LParam,
+                _inputHandleGeneration, 0, 0, 0);
+            try
+            {
+                try { CF7Launcher.Diagnostic.FocusTrace.Input("input.message_context", new CF7Launcher.Diagnostic.InputData {
+                    invocationId = id, messageTime = unchecked((uint)CF7Launcher.Diagnostic.NativeInputDispatchProbe.GetMessageTime()),
+                    messagePos = CF7Launcher.Diagnostic.NativeInputDispatchProbe.GetMessagePos(),
+                    sendFlags = CF7Launcher.Diagnostic.NativeInputDispatchProbe.InSendMessageEx(IntPtr.Zero) }); }
+                catch { }
+                DispatchObservedMessage(ref m);
+            }
+            finally { CF7Launcher.Diagnostic.FocusTrace.NativeExit(id, original.HWnd, original.Msg,
+                original.WParam, original.LParam, m.Result, _inputHandleGeneration, started); }
+        }
+        private void DispatchObservedMessage(ref Message m)
         {
             if (m.Msg == WM_MOUSEACTIVATE)
             {
@@ -817,14 +854,6 @@ namespace CF7Launcher.Guardian
                 }
                 m.Result = (IntPtr)HTTRANSPARENT;
                 TraceFocusHitTest(screenPt, null, m.Result);
-                return;
-            }
-            if (FocusTrace.Enabled && IsFocusMouseMessage(m.Msg))
-            {
-                long started = System.Diagnostics.Stopwatch.GetTimestamp();
-                TraceFocusNativeMouse(m, "enter", started);
-                try { base.WndProc(ref m); }
-                finally { TraceFocusNativeMouse(m, "exit", started); }
                 return;
             }
             base.WndProc(ref m);
@@ -950,7 +979,7 @@ namespace CF7Launcher.Guardian
                 INativeHudWidget downWidget = _leftDownWidget;
                 if (FocusTrace.Enabled) FocusTrace.Record("hud.up", new {
                     receiver = Handle.ToInt64(), screenPt, widget = hit?.GetType().Name,
-                    downWidget = downWidget?.GetType().Name, windows = FocusWindowSnapshot.At(screenPt) }, _focusGesture);
+                    downWidget = downWidget?.GetType().Name }, _focusGesture);
 
                 if (e.Button == MouseButtons.Left
                     && (hit == null || (downWidget != null && hit != downWidget)))

@@ -79,6 +79,7 @@ _root.技能路由.载入后跳转技能容器 = function(container:MovieClip, u
     var 技能名:String = unit.技能名;
     var initObj:Object = RoutingLifecycle.buildPublicContainerInit(container);
     var attachResult:Object = ContainerAttachAction.attach(unit, ContainerSpec.KIND_SKILL, 技能名, initObj);
+    org.flashNight.arki.unit.Action.Skill.SkillInputObservation.attached(unit, attachResult.man, String(attachResult.status));
     if (attachResult.status !== ContainerAttachAction.STATUS_OK) {
         // 数据/资源错配的最后防线：不执行依赖 man 的生命周期，并立即退出空容器状态。
         // recoverMissingSkillContainer 内部以 unit.动画完毕() 复用死亡/浮空/攻击模式的既有恢复语义。

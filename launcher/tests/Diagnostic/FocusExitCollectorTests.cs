@@ -78,6 +78,7 @@ namespace CF7Launcher.Tests.Diagnostic
             FocusTrace.StartConfigured(true, _root);
             string session = FocusTrace.Session;
             FocusTrace.Record("fixture.automatic_zip");
+            FocusTrace.Input("input.heartbeat_wait", new InputData { elapsedMs = 900, invocationId = 17 });
             Process collector = null;
             FocusTrace.Shutdown(info => collector = Process.Start(info));
             Assert.NotNull(collector);
@@ -104,6 +105,10 @@ namespace CF7Launcher.Tests.Diagnostic
                 Assert.Contains("fixture.automatic_zip", events);
                 Assert.Contains("trace.stop", events);
                 Assert.DoesNotContain("fixture.next_game_only", events);
+                Assert.Contains("posted_heartbeat_wait", Read("focus-incident.0.log"));
+                Assert.Contains(session, Read("focus-incident.0.log"));
+                Assert.DoesNotContain("[FocusIncident]", events);
+                Assert.Single(events.Split('\n').Where(line => line.Contains("\"event\":\"input.heartbeat_wait\"")));
                 foreach (JObject hash in JArray.Parse(Read("file-hashes.json")))
                 {
                     using (Stream stream = zip.Entries.Single(e => e.Name == (string)hash["file"]).Open())

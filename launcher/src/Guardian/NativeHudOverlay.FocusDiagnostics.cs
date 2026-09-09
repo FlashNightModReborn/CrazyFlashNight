@@ -12,6 +12,7 @@ namespace CF7Launcher.Guardian
     public partial class NativeHudOverlay
     {
         private Func<Point, object> _focusInputProbe;
+        private Action _focusCacheRefresh;
         private int _focusInputThread;
         private long _focusPlacementGeneration, _focusPaintGeneration;
         private long _focusSubmittedPaint, _focusSubmittedPlacement, _focusLoggedPlacement = -1;
@@ -25,12 +26,17 @@ namespace CF7Launcher.Guardian
             _focusInputThread = Thread.CurrentThread.ManagedThreadId;
             _focusInputProbe = CaptureFocusInput;
             FocusTrace.HudInputSnapshot = _focusInputProbe;
+            _focusCacheRefresh = () => FocusTrace.SetTarget(_rightContextWidget?.ScreenBounds ?? Rectangle.Empty,
+                !IsDisposed && !Disposing && _ready && !_suspendedForPanel && _shown && _ownerVisible && Enabled);
+            FocusTrace.RefreshTargetCache = _focusCacheRefresh;
         }
 
         private void DisposeFocusInputProbe()
         {
             if (ReferenceEquals(FocusTrace.HudInputSnapshot, _focusInputProbe))
                 FocusTrace.HudInputSnapshot = null;
+            if (ReferenceEquals(FocusTrace.RefreshTargetCache, _focusCacheRefresh))
+                FocusTrace.RefreshTargetCache = null;
         }
 
         // 接收原提交的返回值；失败不重试、不改窗口或输入策略。
@@ -92,10 +98,9 @@ namespace CF7Launcher.Guardian
             if (!FocusTrace.Enabled || !FocusTrace.ShouldTraceNativeHitTest(point)) return;
             try
             {
-                FocusTrace.Record("hud.native_hit_test", new {
-                    receiver = Handle.ToInt64(), point, mouseId = FocusTrace.NativeMouseCandidate(point),
-                    widget = hit?.GetType().Name, result = result.ToInt64(),
-                    hudInput = FocusTrace.CaptureHudInput(point) });
+                FocusTrace.Input("hud.native_hit_test", new InputData {
+                    receiver = Handle.ToInt64(), point = point, mouseId = FocusTrace.NativeMouseCandidate(point),
+                    widget = hit?.GetType().Name, result = result.ToInt64(), coordinateSource = "screen" });
             }
             catch { /* 不改变原始命中结果。 */ }
         }
@@ -108,11 +113,10 @@ namespace CF7Launcher.Guardian
                 int triggerMessage = (int)((message.LParam.ToInt64() >> 16) & 0xffff);
                 if (!IsFocusMouseMessage(triggerMessage)) return;
                 Point point = MessageScreenPoint();
-                FocusTrace.Record("hud.native_mouse_activate", new {
-                    receiver = message.HWnd.ToInt64(), triggerMessage,
-                    hitTest = (short)(message.LParam.ToInt64() & 0xffff), point, pointSource = "GetMessagePos",
-                    mouseId = FocusTrace.NativeMouseCandidate(point), result = message.Result.ToInt64(),
-                    hudInput = FocusTrace.CaptureHudInput(point) });
+                FocusTrace.Input("hud.native_mouse_activate", new InputData {
+                    receiver = message.HWnd.ToInt64(), message = triggerMessage, point = point,
+                    coordinateSource = "GetMessagePos", mouseId = FocusTrace.NativeMouseCandidate(point),
+                    result = message.Result.ToInt64() });
             }
             catch { /* 观察不能改变 MA_NOACTIVATE。 */ }
         }
@@ -120,23 +124,6 @@ namespace CF7Launcher.Guardian
         private static bool IsFocusMouseMessage(int message)
         {
             return message == 0x0201 || message == 0x0202 || message == 0x0203;
-        }
-
-        private void TraceFocusNativeMouse(Message message, string phase, long started)
-        {
-            try
-            {
-                long packed = message.LParam.ToInt64();
-                Point client = new Point((short)(packed & 0xffff), (short)((packed >> 16) & 0xffff));
-                Point point = PointToScreen(client);
-                FocusTrace.Record("hud.native_mouse", new {
-                    receiver = message.HWnd.ToInt64(), message = message.Msg, phase, client, point,
-                    mouseId = FocusTrace.NativeMouseCandidate(point), result = message.Result.ToInt64(),
-                    elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency,
-                    hudInput = phase == "enter" ? FocusTrace.CaptureHudInput(point) : null
-                });
-            }
-            catch { /* 观察不能吞掉或补发鼠标消息。 */ }
         }
 
         [DllImport("user32.dll")] private static extern uint GetMessagePos();

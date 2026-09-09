@@ -1171,6 +1171,7 @@ class org.flashNight.arki.scene.StageRunSession {
                 || !isSafeToken(params.session, 96)) return;
         if (_focusSession == params.session) return; // ready/sync 重复回调不能延长或清零预算。
         _focusSession = params.session;
+        _root.__focusSkillObservationSession = params.session; // 已校验观察配置，不引入技能类装载依赖。
         _focusUntil = getTimer() + 1800000;
         _focusCount = 0;
         _focusRolling = rolling;

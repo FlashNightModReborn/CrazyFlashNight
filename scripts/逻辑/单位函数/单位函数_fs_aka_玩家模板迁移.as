@@ -1730,18 +1730,23 @@ _root.主角函数.刀口位置生成子弹 = BladeShootCore.shoot;
 _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值) {
     // 统一校验原始空值、已学习技能、技能数据与 MP 消耗，禁止无效名称进入默认技能路由。
     var 技能释放信息:Object = SkillReleaseGuard.resolve(_root, 技能名, 消耗mp);
-    if (!技能释放信息)
+    if (!技能释放信息) {
+        org.flashNight.arki.unit.Action.Skill.SkillInputObservation.guard(this, 0);
         return false;
+    }
 
     技能名 = 技能释放信息.skillName;
     消耗mp = 技能释放信息.mpCost;
-    if (this.hp <= 0 || this.mp < 消耗mp)
+    if (this.hp <= 0 || this.mp < 消耗mp) {
+        org.flashNight.arki.unit.Action.Skill.SkillInputObservation.guard(this, 1);
         return false;
+    }
 
     var 技能等级:Number = 技能释放信息.skillLevel;
     //用函数托管技能的释放条件
     var 释放条件函数 = _root.技能函数.释放条件[技能名] ? _root.技能函数.释放条件[技能名] : _root.技能函数.释放条件.默认;
     var 释放许可 = 释放条件函数.apply(this);
+    org.flashNight.arki.unit.Action.Skill.SkillInputObservation.guard(this, 释放许可 ? 3 : 2);
     if (释放许可) {
         this.temp_y = (this.浮空 || this.倒地) ? this._y : 0; //记录临时y轴
         this.mp -= 消耗mp;

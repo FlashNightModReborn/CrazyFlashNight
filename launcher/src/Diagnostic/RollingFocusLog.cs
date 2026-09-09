@@ -9,7 +9,7 @@ namespace CF7Launcher.Diagnostic
     // 只拥有固定文件名的焦点日志。重启不清空历史；旧段按容量覆盖，每段自带会话身份。
     internal sealed class RollingFocusLog : IDisposable
     {
-        internal const int DefaultFileBytes = 8 * 1024 * 1024;
+        internal const int DefaultFileBytes = 6 * 1024 * 1024;
         internal const int FileCount = 3;
         private readonly object _gate = new object();
         private readonly string _directory;
@@ -20,6 +20,7 @@ namespace CF7Launcher.Diagnostic
         private long _bytes;
         private int _segment;
         private bool _disposed;
+        private FocusIncidentRecorder _incidents;
 
         internal RollingFocusLog(string directory, JObject context, int maxBytes = DefaultFileBytes)
         {
@@ -33,9 +34,21 @@ namespace CF7Launcher.Diagnostic
             _context["as2ObserveReadySeen"] = false;
             WriteContext();
             OpenSegment();
+            if (maxBytes == DefaultFileBytes)
+            {
+                // 旧 8 MiB 分段迁移：显式舍弃超出新单段预算的旧段，避免临时越过总预算。
+                for (int i = 1; i < FileCount; i++)
+                    if (File.Exists(SegmentPath(i)) && new FileInfo(SegmentPath(i)).Length > _maxBytes)
+                    { File.Delete(SegmentPath(i)); _context["legacyOversizeSegmentDropped"] = true; }
+                _context["incidentSlots"] = 4;
+                _context["incidentBytesPerSlot"] = FocusIncidentRecorder.SlotBytes;
+                _context["totalLogBudgetBytes"] = 22 * 1024 * 1024;
+                _incidents = new FocusIncidentRecorder(_directory, (string)_context["session"]);
+                WriteContext();
+            }
         }
 
-        internal static string[] Names => new[] { "focus-trace.log.2", "focus-trace.log.1", "focus-trace.log", "recording-context.json" };
+        internal static string[] Names => new[] { "focus-trace.log.2", "focus-trace.log.1", "focus-trace.log", "recording-context.json", "focus-incident.0.log", "focus-incident.1.log", "focus-incident.2.log", "focus-incident.3.log" };
         private string SegmentPath(int index) => Path.Combine(_directory, "focus-trace.log" + (index == 0 ? "" : "." + index));
 
         private void OpenSegment()
@@ -85,6 +98,14 @@ namespace CF7Launcher.Diagnostic
                     }
                 }
                 _writer.Flush();
+                try { _incidents?.Append(batch); }
+                catch (Exception ex)
+                {
+                    _context["incidentError"] = ex.GetType().Name;
+                    try { _incidents?.Dispose(); } catch { }
+                    _incidents = null;
+                    try { WriteContext(); } catch { }
+                }
             }
         }
 
@@ -112,6 +133,8 @@ namespace CF7Launcher.Diagnostic
             {
                 if (_disposed) return;
                 _disposed = true;
+                _incidents?.Dispose();
+                _incidents = null;
                 _writer?.Dispose();
                 _writer = null;
                 if ((string)_context["status"] == "recording") _context["status"] = "stopped";

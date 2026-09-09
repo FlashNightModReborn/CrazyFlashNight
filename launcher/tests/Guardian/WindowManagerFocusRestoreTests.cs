@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using CF7Launcher.Diagnostic;
+using Newtonsoft.Json.Linq;
 using CF7Launcher.Guardian;
 using Xunit;
 
@@ -173,9 +177,38 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(0, api.AttachCallCount);
         }
 
+        [Theory]
+        [InlineData(false, 5)]
+        [InlineData(true, 1234)]
+        public void DetachResultIsObservedWithoutRetryOrStaleSuccessError(bool detached, int error)
+        {
+            var lines = new List<string>();
+            FocusTrace.Start(lines.Add, false);
+            try
+            {
+                var api = new FakeFocusApi { Foreground = GuardianIndicator, ForegroundAfterSet = GuardianIndicator,
+                    DetachResult = detached, DetachError = error };
+                var manager = new WindowManager(api, Flash);
+                Assert.False(manager.RestoreFlashInputFocus("detach_fixture", Flash));
+                Assert.Equal(2, api.AttachCallCount);
+                Assert.Equal(2, api.SetForegroundCallCount);
+                FocusTrace.Flush();
+                var row = lines.SelectMany(x => x.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                    .Select(x => JObject.Parse(x.Substring(13))).Single(x => (string)x["event"] == "input.attach"
+                        && (string)x["data"]["phase"] == "exit" && (int)x["data"]["flags"] == 0);
+                Assert.Equal(detached ? 1 : 0, (int)row["data"]["result"]);
+                Assert.Equal(detached ? 0 : error, (int)row["data"]["error"]);
+                Assert.Equal(42, (int)row["data"]["wParam"]);
+                Assert.Equal(43, (int)row["data"]["lParam"]);
+            }
+            finally { FocusTrace.Stop(); }
+        }
+
         private sealed class FakeFocusApi
             : IFlashFocusWindowApi
         {
+            internal bool DetachResult = true;
+            internal int DetachError;
             internal IntPtr Foreground { get; set; }
             internal IntPtr ForegroundAfterSet { get; set; }
             internal IntPtr Root { get; set; }
@@ -213,10 +246,11 @@ namespace CF7Launcher.Tests.Guardian
             public bool AttachThreadInput(
                 uint attachThreadId,
                 uint attachToThreadId,
-                bool attach)
+                bool attach, out int error)
             {
+                error = attach ? 0 : DetachError;
                 AttachCallCount++;
-                return true;
+                return attach || DetachResult;
             }
 
             public IntPtr SetFocus(IntPtr windowHandle)

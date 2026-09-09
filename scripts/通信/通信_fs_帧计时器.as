@@ -461,6 +461,7 @@ _root.帧计时器.定期更新天气 = function()
 _root.帧计时器.键盘输入控制目标 = function()
 {
     var 控制对象 = TargetCacheManager.findHero()
+    org.flashNight.arki.unit.Action.Skill.SkillInputObservation.control(控制对象);
     if(!控制对象) return;
 
     if(_root.暂停){

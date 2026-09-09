@@ -106,7 +106,7 @@ try {
     }
     $focusRollingLogs = @()
     $focusRecordingDir = if ($focusPrepared) { $focusRunDir } else { Join-Path $focusRoot 'logs/focus-trace' }
-    foreach ($focusName in @('focus-trace.log.2', 'focus-trace.log.1', 'focus-trace.log', 'recording-context.json')) {
+    foreach ($focusName in @('focus-trace.log.2', 'focus-trace.log.1', 'focus-trace.log', 'recording-context.json', 'focus-incident.0.log', 'focus-incident.1.log', 'focus-incident.2.log', 'focus-incident.3.log')) {
         $focusSource = Join-Path $focusRecordingDir $focusName
         if (Test-Path -LiteralPath $focusSource -PathType Leaf) {
             try {
@@ -114,7 +114,7 @@ try {
                 if (-not $focusPrepared) { Copy-Item -LiteralPath $focusSource -Destination $focusCopy }
                 if ($focusName -eq 'recording-context.json') {
                     $focusContext.recording = Get-Content -LiteralPath $focusCopy -Raw -Encoding UTF8 | ConvertFrom-Json
-                } else { $focusRollingLogs += $focusCopy }
+                } elseif ($focusName -like 'focus-trace.log*') { $focusRollingLogs += $focusCopy }
             } catch { $focusContext.collectionWarnings += ('滚动文件采集失败 ' + $focusName + ': ' + $_.Exception.Message) }
         }
     }

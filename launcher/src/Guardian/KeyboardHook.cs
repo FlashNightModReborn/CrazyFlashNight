@@ -234,9 +234,11 @@ namespace CF7Launcher.Guardian
                         {
                             ThreadPool.QueueUserWorkItem(delegate { action(); });
                         }
+                        ObserveSkillKey(msg, vk, lParam, true);
                         return new IntPtr(1); // 拦截
                     }
                 }
+                ObserveSkillKey(msg, vk, lParam, false);
             }
 
             return CallNextHookEx(_hookId, nCode, wParam, lParam);
@@ -261,6 +263,21 @@ namespace CF7Launcher.Guardian
         /// 实时前台。去抖宽限内无法区分 toast 瞬时抢焦与用户真实切走，对杀进程级动作
         /// 宁可漏触发（用户再按一次）也不能误触发（在别的程序里把启动器干掉）。
         /// </summary>
+        private void ObserveSkillKey(int message, uint vk, IntPtr data, bool blocked)
+        {
+            if (!CF7Launcher.Diagnostic.FocusTrace.IsSkillKey(vk)) return;
+            try
+            {
+                // 只取缓存的本应用激活资格，不调用第二次拦截判定或记录桌面文字。
+                if (_isAppActive == null || !_isAppActive()) return;
+                CF7Launcher.Diagnostic.FocusTrace.Input("skill.physical_key", new CF7Launcher.Diagnostic.InputData {
+                    message = message, wParam = vk, flags = unchecked((uint)Marshal.ReadInt32(data, 8)),
+                    hookTime = unchecked((uint)Marshal.ReadInt32(data, 12)), result = blocked ? 1 : 0,
+                    coordinateSource = "configured_skill_key_active_app" });
+            }
+            catch { }
+        }
+
         private bool ShouldInterceptForOurApp(bool strict)
         {
             // 非严格键：去抖后的进程级激活态优先——能容忍后台程序瞬时抢焦造成的抖动。

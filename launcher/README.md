@@ -424,7 +424,7 @@ Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../s
 - Bootstrap `cmd`、Panel id、lazy 最终模块或 minigame 入口变化；
 - 测试分区、runner、SDK/包版本真源或验证入口变化；
 - Host/Web/AS2 协议、权威、生命周期或旧 UI 退役边界变化；
-- runtime 构建、候选、promotion 或正式入口术语变化；发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。
+- 焦点/技能输入观察 v2 的消息取出边界、22 MiB 实时保留预算、技能分层字段和现场证据限制统一见[焦点管理 §9.14](../docs/焦点管理-诊断与卡顿排查-2026-05-24.md#914-2026-09-09消息取出边界与技能输入分层取证)。 runtime 构建、候选、promotion 或正式入口术语变化；发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。
 ```powershell
 chcp.com 65001 | Out-Null; node tools/validate-doc-governance.js; git diff --check
 ```
