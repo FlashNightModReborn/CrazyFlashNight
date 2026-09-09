@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/犀牛R09/Parts/turret-storage-r06-mounts" itemID="6aa0b93a-00019724" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="turret-storage-r06-mounts">
+      <layers>
+        <DOMLayer name="沿实际曲壳贴合的接触脚、短支撑腹板和紧固点" color="#74906A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/犀牛R09/Parts/turret-storage-r06-foot-02" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="沿实际曲壳贴合的接触脚、短支撑腹板和紧固点" color="#74906A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/犀牛R09/Parts/turret-storage-r06-foot-01" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,113 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/犀牛R09/Parts/gray-side-armor-body-03" itemID="6aa0b93a-000196fd" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="gray-side-armor-body-03">
+      <layers>
+        <DOMLayer name="材料微面与接触边成簇擦痕" color="#74906A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/犀牛R09/Parts/side-armor-3-material" symbolType="graphic" loop="single frame">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="色面 1" color="#74906A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#776A59"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!-5408 -2683|-5450 -2766!-5450 -2766[-5452 -2769 -5455 -2769!-5455 -2769[-5461 -2769 -5461 -2763!-5461 -2763|-5461 -826!-5461 -826[-5461 -825 -5461 -824!-5461 -824|-5419 -741!-5419 -741[-5417 -738 -5413 -738!-5413 -738[-5407 -738 -5407  -744!-5407 -744|-5407 -2680!-5407 -2680[-5407 -2682 -5408 -2683"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#94846F"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges=" !-5413 -744|-3027 -796!-3027 -796|-3027 -2732!-3027 -2732|-5413 -2680!-5413 -2680|-5413 -744"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#686F54"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges=" !-5080 -751|-5413 -1121!-5413 -1121|-5413 -744!-5413 -744|-5080 -751!-4660 -1060|-3440 -1040!-3440 -1040|-3027 -1519!-3027 -1519|-3027 -2732!-3027 -2732|-4210 -2707!-4210 -2707|-4000 -1760!-4000 -1760|-4660 -1060"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#9E8D76"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges=" !-5413 -2680|-3027 -2732!-3027 -2732|-3068 -2815!-3068 -2815|-5455 -2763!-5455 -2763|-5413 -2680"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#6F775A"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges=" !-4210 -2707|-3027 -2732!-3027 -2732|-3068 -2815!-3068 -2815|-4229 -2790!-4229 -2790|-4210 -2707"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#1B1D1B"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges=" !-5467 -2775[-5472 -2770 -5472 -2763!-5472 -2763|-5472 -826!-5472 -826[-5472 -822 -5470 -819!-5470 -819|-5428 -736!-5428 -736[-5424 -726 -5413 -727!-5413 -727|-3026 -779!-3026 -779[-3019 -779 -3014 -784!-3014 -784[-3010 -789 -3010 -796 !-3010 -796|-3010 -2732!-3010 -2732[-3010 -2736 -3011 -2740!-3011 -2740|-3053 -2823!-3053 -2823[-3058 -2832 -3069 -2832!-3069 -2832|-5456 -2780!-5456 -2780[-5463 -2780 -5467 -2775!-5438 -830|-5438 -2746!-5438 -2746|-3079 -2798!-3079 -2798 |-3044 -2728!-3044 -2728|-3044 -812!-3044 -812|-5403 -761!-5403 -761|-5438 -830"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

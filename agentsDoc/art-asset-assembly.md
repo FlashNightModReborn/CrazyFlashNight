@@ -85,6 +85,10 @@ FLA 与完整 XFL 是同一工程的两种保存形式；小型 `.xfl` 文件只
 - **FFDec / Java**：先验证实际选用的 FFDec 入口能输出版本。EXE 启动器可能无法发现已有 JRE；可让当前进程 PATH 指向已验证的 Java，再用 `--ffdec tools/ffdec/ffdec.bat`。烘焙脚本退出 0 仍可能记录 `symbolErrors`、`missingSymbol` 或 `exportErrors`，必须读 report 并确认目标 skin 的 `export` / `frames` 和实际图片；不要据退出码宣称导出成功。
 - **发布与派生**：调用 `scripts/compile_test.ps1 -Target <实际源文件> -PublishOnly -VerifySwf <对应.swf>`。图标烘焙见 [bake-icons-offline.py](../tools/bake-icons-offline.py)，装扮见 [bake-dressup-offline.py](../tools/bake-dressup-offline.py)。只改物品到已发布 skin 的映射时，后者不带 `--export-assets` 即可重建清单并保留已有导出；素材变更则必须实际烘焙。恢复已从清单移除的 donor skin 时，检查其 `export` 和 `frames` 是否也恢复；仅 `covered=true` 只说明索引有链接，缺少元数据须用 `--export-assets --name <skinKey>` 定向补烘焙。
 
+### 静态载具进入地图
+
+犀牛 R09 的地图摆件以 `地图-军阀基地` XFL 内 `Codex/犀牛R09/` 为静态矢量真源，通过 [rhino-map-assets](../tools/rhino-map-assets/README.md) 向两张战斗背景派生最小闭包。两个基地各三辆后景车辆，防御地带首图一辆抬炮车辆，七个固定车号互异。同平面45%缩放按人物根空间约83 px/m标定；基地后景显示24%–27%，由帐篷真实遮挡，不套武器/肢体内部制作档位。载具仅含单帧Graphic，随已有背景烘焙，不新增独立运行时素材库或全局linkage。防御地带高地与gk22_3_BG迁为完整XFL后，以新入口独立发布现役同名SWF；旧FLA退出编辑链。恢复动态演出时，必须重新处理背景烘焙/卸载与动态层生命周期。
+
 ### 武器分件射击动画
 
 已有静态武器要增加后坐、复进等运动时，使用 [weapon-animation](../tools/weapon-animation/README.md)：先核实原型和既有样例的运动部件，再以 profile 声明分件轨迹，由 XFL 生成器构造受控 MovieClip，CS6 原生核对并发布。静态总装继续供图标使用；射击动画采用成功 `processShot` → 状态/周期 → placement 视觉同步的接线，不能用一个自行循环的时间轴代替发射事件。

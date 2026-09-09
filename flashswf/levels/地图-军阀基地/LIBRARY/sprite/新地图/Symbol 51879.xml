@@ -5140,6 +5140,47 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="犀牛R09-静态摆件" color="#74906A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/犀牛R09/平射25摆件" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.27" b="0" c="-0" d="0.27" tx="640" ty="270"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.86" greenMultiplier="0.86" blueMultiplier="0.86"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/犀牛R09/平射26摆件" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.25" b="0" c="-0" d="0.25" tx="1195" ty="255"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.86" greenMultiplier="0.86" blueMultiplier="0.86"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/犀牛R09/平射摆件" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.26" b="0" c="-0" d="0.26" tx="1805" ty="265"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.86" greenMultiplier="0.86" blueMultiplier="0.86"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Layer 311" color="#5FBAB7" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">

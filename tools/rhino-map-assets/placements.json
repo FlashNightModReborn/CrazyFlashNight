@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "scaleBasis": {
+    "heightCm": 175,
+    "rootPixelsPerMeter": 82.96729456711887,
+    "sourceChassisWidthPx": 1293.8,
+    "sourceWholeWidthPx": 1548.25,
+    "authoringScale": 0.45,
+    "approxChassisMeters": 7.02,
+    "approxWholeMeters": 8.4,
+    "scope": "静态零履带相位；外框含投影顶面，画面高度不等于实物车高"
+  },
+  "placements": [
+    {
+      "name": "外交军阀基地：帐篷后装甲停放区",
+      "xfl": "flashswf/levels/地图-军阀基地",
+      "containerXml": "LIBRARY/sprite/新地图/Symbol 51879.xml",
+      "layersPath": "./x:timeline/x:DOMTimeline/x:layers",
+      "parentWorldOffset": [
+        -25,
+        -80
+      ],
+      "colorMultiplier": 0.86,
+      "insertBeforeLayer": "Layer 311",
+      "vehicles": [
+        {
+          "vehicleNumber": 25,
+          "pose": "平射25",
+          "x": 640,
+          "y": 270,
+          "scale": 0.27,
+          "worldGround": [
+            615,
+            190
+          ]
+        },
+        {
+          "vehicleNumber": 26,
+          "pose": "平射26",
+          "x": 1195,
+          "y": 255,
+          "scale": 0.25,
+          "worldGround": [
+            1170,
+            175
+          ]
+        },
+        {
+          "vehicleNumber": 27,
+          "pose": "平射",
+          "x": 1805,
+          "y": 265,
+          "scale": 0.26,
+          "worldGround": [
+            1780,
+            185
+          ]
+        }
+      ]
+    },
+    {
+      "name": "军阀前线基地第三图：帐篷后装甲停放区",
+      "xfl": "flashswf/backgrounds/gk22_3_BG",
+      "containerXml": "DOMDocument.xml",
+      "layersPath": "./x:timelines/x:DOMTimeline/x:layers",
+      "parentWorldOffset": [
+        937.7,
+        245.1
+      ],
+      "colorMultiplier": 0.86,
+      "insertBeforeLayer": "Layer 421",
+      "vehicles": [
+        {
+          "vehicleNumber": 22,
+          "pose": "平射22",
+          "x": -287.7,
+          "y": -70.1,
+          "scale": 0.25,
+          "worldGround": [
+            650,
+            175
+          ]
+        },
+        {
+          "vehicleNumber": 23,
+          "pose": "平射23",
+          "x": 122.3,
+          "y": -80.1,
+          "scale": 0.24,
+          "worldGround": [
+            1060,
+            165
+          ]
+        },
+        {
+          "vehicleNumber": 28,
+          "pose": "平射28",
+          "x": 802.3,
+          "y": -70.1,
+          "scale": 0.25,
+          "worldGround": [
+            1740,
+            175
+          ]
+        }
+      ]
+    },
+    {
+      "name": "防御地带第一图：替换牵引炮",
+      "xfl": "flashswf/backgrounds/防御地带高地",
+      "containerXml": "DOMDocument.xml",
+      "layersPath": "./x:timelines/x:DOMTimeline/x:layers",
+      "layerIndex": 1,
+      "pose": "右向抬炮15度29",
+      "vehicleNumber": 29,
+      "replaceSymbol": "战争配件库/单管炮筒",
+      "x": 850,
+      "y": 320,
+      "scale": 0.45,
+      "mirror": true,
+      "rotationDegrees": -4,
+      "worldGround": [
+        850,
+        320
+      ],
+      "parentWorldOffset": [
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="男变装-军阀侦察兵衣服上臂" itemID="6aa0b6a5-000192ce" linkageExportForAS="true" linkageIdentifier="男变装-军阀侦察兵衣服上臂" lastModified="1775461032">
+  <timeline>
+    <DOMTimeline name="男变装-军阀侦察兵衣服上臂">
+      <layers>
+        <DOMLayer name="Layer 1" color="#7E28F9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 59" centerPoint3DX="-13.8" centerPoint3DY="-21.5">
+                  <matrix>
+                    <Matrix a="1.5047607421875" b="-0.201583862304688" c="0.238937377929688" d="1.26945495605469" tx="-24.65" ty="-32.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#B6B0BE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 57" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

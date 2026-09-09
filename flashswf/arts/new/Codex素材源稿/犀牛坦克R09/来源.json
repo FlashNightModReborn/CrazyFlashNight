@@ -1,0 +1,1462 @@
+{
+  "source": "R09-犀牛坦克-Animate交付包 / Rhino-R09-XFL",
+  "originalFlaSha256": "a38f444503cca625ed7ebb5cea1719c2518758cc87d55e9413912ec73810524a",
+  "sourceDocumentSha256": "0ef1326b0ee4461ae85af68b184cb84997abe482334a8447b8fedea1b6b33ccc",
+  "authority": "flashswf/levels/地图-军阀基地",
+  "namespace": "Codex/犀牛R09/",
+  "scope": "只导入零履带相位下平射及15度抬炮，全部单帧Graphic，无AS3代码",
+  "symbols": [
+    {
+      "sourceSymbol": "Rhino/Parts/turret-side-light-field",
+      "sourceFrame": 1,
+      "sourceSha256": "884b68bee1b3df2837068a3f0a615f9a46c694c0bd3a16cb4d775d1eee50d46c",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-side-light-field"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/mg-r04-feed-box",
+      "sourceFrame": 1,
+      "sourceSha256": "d8611898f94ec327e7c8e8e4e490f5c2f2b56aade437aa4415e16ed57bf03a6f",
+      "staticSymbol": "Codex/犀牛R09/Parts/mg-r04-feed-box"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/mg-r04-cradle-near",
+      "sourceFrame": 1,
+      "sourceSha256": "27b05f132deed411a6f55bfeaa4bc6647072d40382057566a50fb0eb84ec7ea5",
+      "staticSymbol": "Codex/犀牛R09/Parts/mg-r04-cradle-near"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/mg-r04-barrel",
+      "sourceFrame": 1,
+      "sourceSha256": "bed1df3ba5cf57758da68052870452f3f528ed1bae903e6364e3880433310666",
+      "staticSymbol": "Codex/犀牛R09/Parts/mg-r04-barrel"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/mg-r04-receiver",
+      "sourceFrame": 1,
+      "sourceSha256": "feea0375cf7080573f7623847707f6b75680b20dbe45b8330e3fd67ad41b3c5a",
+      "staticSymbol": "Codex/犀牛R09/Parts/mg-r04-receiver"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/mg-r04-cradle-far",
+      "sourceFrame": 1,
+      "sourceSha256": "49d1b2acb800f5cd3cd2022d378ca4034958fba637d1cbf937d29f465a390ffc",
+      "staticSymbol": "Codex/犀牛R09/Parts/mg-r04-cradle-far"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/mg-r04-cradle-crossmember",
+      "sourceFrame": 1,
+      "sourceSha256": "afe05cd3734877d3adbee2f476ce8fe261bf96def5adc1a1e64b8286cae2a7f5",
+      "staticSymbol": "Codex/犀牛R09/Parts/mg-r04-cradle-crossmember"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/mg-r04-elevation-carriage",
+      "sourceFrame": 1,
+      "sourceSha256": "3fd8f9acd118715216377442ad5ef114163840422310c071ea558cc63af01291",
+      "staticSymbol": "Codex/犀牛R09/Parts/mg-r04-elevation-carriage"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/mg-r04-fixed-base",
+      "sourceFrame": 1,
+      "sourceSha256": "e8216e781d366174312b0464c74db04304a3f6876740b13039c2b531302dd035",
+      "staticSymbol": "Codex/犀牛R09/Parts/mg-r04-fixed-base"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/roof-machine-gun",
+      "sourceFrame": 1,
+      "sourceSha256": "c603b8dfaa143d9550865f0720f99d2263c54fa87fbe7c6646b2715b64b380a3",
+      "staticSymbol": "Codex/犀牛R09/Parts/roof-machine-gun"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-observation-r06-guard",
+      "sourceFrame": 1,
+      "sourceSha256": "a1171813ccb1b77e0971fc6abe81a710e700199f91d71731882c8e9552aa0231",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-observation-r06-guard"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-observation-r06-base",
+      "sourceFrame": 1,
+      "sourceSha256": "7309969804235c299b31390b7bdd585f63cba4b79e6f58fe28b568cf02fc70d9",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-observation-r06-base"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-observation-r06",
+      "sourceFrame": 1,
+      "sourceSha256": "fc84b72b9c2c47cc13e57866e7758f8351aa999a8543660819da8fb6e16bf46a",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-observation-r06"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-02-stop-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "99510dddce3f56846c56e7b7248806de3e42cc30e781a7505eda3de2ad30ae7c",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-02-stop-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-02-hinge",
+      "sourceFrame": 1,
+      "sourceSha256": "e1bef16d40c79ff5ec43564d34515680e22bb773b42865b69499ef98ba401f43",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-02-hinge"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-02-lid",
+      "sourceFrame": 1,
+      "sourceSha256": "d39e4edc50629264a2884078c80ec5ef0d80a4e0bc1068669227556eca73230b",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-02-lid"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-02-seat",
+      "sourceFrame": 1,
+      "sourceSha256": "eb1ffe23dbc8d5644730d54c55a2856ea139959c48c60dda32321267806ab3f8",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-02-seat"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-02",
+      "sourceFrame": 1,
+      "sourceSha256": "60372e764025c93f0e78f7bfe203afc52bb72cc194ad067935e08d070f3e33ef",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-01-stop-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "60bc607f4f4bc4bf8ba581be68ea6a9c586d7ad66e584ceeb99d6a3dd210d722",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-01-stop-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-01-hinge",
+      "sourceFrame": 1,
+      "sourceSha256": "401f4a4bd9fd3e4b0349d65b3d71bc3ead0e7f6f201154695a9250208c8479e9",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-01-hinge"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-01-lid",
+      "sourceFrame": 1,
+      "sourceSha256": "9b8e0e784308a42bc8cb4048e5a0cf6d3e32206d4619e0337f3ba2ffb387e37c",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-01-lid"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-01-seat",
+      "sourceFrame": 1,
+      "sourceSha256": "aa4c69134b7a0b33d5aa45ce033ae86b691c40fbaba4ae0e61eb3cba3551266f",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-01-seat"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-hatch-01",
+      "sourceFrame": 1,
+      "sourceSha256": "eeb410ee55ae0311554f2c8d5cd97e095120f1bb5e87f653607f2dc0dce1ca55",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-hatch-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-roof-hardware-r06",
+      "sourceFrame": 1,
+      "sourceSha256": "854248888cedd6a2bf4b2332e3af88140cd9513be8991ef3ae09c899ad2c1934",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-roof-hardware-r06"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-roof-antislip",
+      "sourceFrame": 1,
+      "sourceSha256": "efdadc62aaf0ea74d4252ebf962044d8cf4d4e8aa6bbb2feeacc794c83384acc",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-roof-antislip"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/FrontCuff",
+      "sourceFrame": 1,
+      "sourceSha256": "1e910496690b80d9c67760a67528549d4d5efeacc9e10466d8f58a9b8bbcbd05",
+      "staticSymbol": "Codex/犀牛R09/Gun/FrontCuff"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/RearClamp",
+      "sourceFrame": 1,
+      "sourceSha256": "f5be173a897fec1ddfb943d86e45d0f76991732b00c7ce050eb23127a0d78a93",
+      "staticSymbol": "Codex/犀牛R09/Gun/RearClamp"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/Cloth/Pose_00",
+      "sourceFrame": 1,
+      "sourceSha256": "89cb6d9f893e2c8158327a83b1d351588beb9988815b0437f222ae603e3fccbc",
+      "staticSymbol": "Codex/犀牛R09/Gun/Cloth/Pose_00"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/Barrel",
+      "sourceFrame": 1,
+      "sourceSha256": "f044077414e1d3730e7dc8b0ab2000736ae238654c1b0f6b8e1623c1bdbe320d",
+      "staticSymbol": "Codex/犀牛R09/Gun/Barrel"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/InnerSleeve",
+      "sourceFrame": 1,
+      "sourceSha256": "18f44e8c4b289d0e4237b0339681886ac9edfc49ba59eba5331405a91315cb08",
+      "staticSymbol": "Codex/犀牛R09/Gun/InnerSleeve"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/MovingBody",
+      "sourceFrame": 1,
+      "sourceSha256": "dc5e7792912f134eb032be270f350d2675572372c6f2aadc3e6f9d6c7cf10cd0",
+      "staticSymbol": "Codex/犀牛R09/Gun/MovingBody"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/Elevation",
+      "sourceFrame": 1,
+      "sourceSha256": "5849b48f664f9e10c1b1dc511620fa6fb0d52a84dcebd34d48fafdcc47082fc8",
+      "staticSymbol": "Codex/犀牛R09/Gun/平射"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-storage-r06-hinges-latches",
+      "sourceFrame": 1,
+      "sourceSha256": "590adbdd2798599e720d18cee2d01f4bcebe9c3cac9fc68ab39fad40b335d709",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-storage-r06-hinges-latches"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-storage-r06-lid",
+      "sourceFrame": 1,
+      "sourceSha256": "da9e86d8d8b2f6e81825cb4b20babbc911d928ce425c9ddfeb55e084f4763177",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-storage-r06-lid"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-storage-r06-box",
+      "sourceFrame": 1,
+      "sourceSha256": "8c2eea23f9e583bdc6df03ef8ebd8a1a8fdc0e0a6b0fdd84cd4165ec17088aab",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-storage-r06-box"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-storage-r06-tray",
+      "sourceFrame": 1,
+      "sourceSha256": "41fc88fd3b5814dd0d389d80d9c4ab13dceb41d404e5faa25d54fc9e6e99dce4",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-storage-r06-tray"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-storage-r06-foot-02",
+      "sourceFrame": 1,
+      "sourceSha256": "c043062d78ee781ca5ea246c1b897668148f040db034441e2cc9c141996035f8",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-storage-r06-foot-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-storage-r06-foot-01",
+      "sourceFrame": 1,
+      "sourceSha256": "73d945264fe604e1e12e469b4c845521577a44e2586e3c628ed48879416bbcbc",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-storage-r06-foot-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-storage-r06-mounts",
+      "sourceFrame": 1,
+      "sourceSha256": "c9644d176b223ed8cc15b14fecb5753819d3f51be41bd2a90efbf5c4bc76c5aa",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-storage-r06-mounts"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-side-storage-r06",
+      "sourceFrame": 1,
+      "sourceSha256": "ee14f4a06c99c902e0d423c305c2e2bbcd840b9e136290921ac91ae660c4cee5",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-side-storage-r06"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cheek-interface-near-gray-field",
+      "sourceFrame": 1,
+      "sourceSha256": "98cc82f97464428973654cff8aaecf17ddeaf3c3143e412f90c1f93253e084a9",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cheek-interface-near-gray-field"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cheek-interface-near-bezel",
+      "sourceFrame": 1,
+      "sourceSha256": "8ee2e375645fe690303c8e74e706e5f6b25a5bfe7575a1ec216d60a6ce00fb78",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cheek-interface-near-bezel"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cheek-interface-near-seat",
+      "sourceFrame": 1,
+      "sourceSha256": "65979d655ead258275f5d58572367d8bfadff57e905eff79879fd595f94ce5fa",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cheek-interface-near-seat"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cheek-interface-near",
+      "sourceFrame": 1,
+      "sourceSha256": "11c81c529194fc84c737230ad500c04c8913384a26e3d9179bb4da0217ddbd84",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cheek-interface-near"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-side-grab-02",
+      "sourceFrame": 1,
+      "sourceSha256": "1fc3f4cf6884ba522e6fb2e162a9e708429afab6686e8def795a49aa474c8912",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-side-grab-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-finish",
+      "sourceFrame": 1,
+      "sourceSha256": "8b6ea3863277283145c00ee389a7d01d7562aed9abfe7cf8dffa61f070f26ccd",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-finish"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/warlord-cast-emblem",
+      "sourceFrame": 1,
+      "sourceSha256": "82ef9022c0fe5529be3826a8e768c48ce7d0c2dc6e4f1b0b349de06c71215f4d",
+      "staticSymbol": "Codex/犀牛R09/Parts/warlord-cast-emblem"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-tactical-mark",
+      "sourceFrame": 1,
+      "sourceSha256": "2d6cbb2a8ab6051b770b1acce30c49f6820094b87f07d377ae472e50489392e5",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-tactical-mark"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cast-microtexture",
+      "sourceFrame": 1,
+      "sourceSha256": "3315b2b62453bb045bf88ff3a5478e5325fb81c67aced5ed755b98101b906e78",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cast-microtexture"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cast-shell",
+      "sourceFrame": 1,
+      "sourceSha256": "b6334552e205a31d51f27cd7734773858908adcf71665ccf7e42da17540c24a2",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cast-shell"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cheek-interface-far-gray-field",
+      "sourceFrame": 1,
+      "sourceSha256": "2749110d4d115d7330748bb93ae22a02b17449d1e130fa9d08843c42c17061a2",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cheek-interface-far-gray-field"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cheek-interface-far-bezel",
+      "sourceFrame": 1,
+      "sourceSha256": "08fdea6a21e19514e39fb148b2533f250461d373e056022e5a5e013b6f66a019",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cheek-interface-far-bezel"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cheek-interface-far-seat",
+      "sourceFrame": 1,
+      "sourceSha256": "39f046f3e9f5dc0380d571dc013a817a0df131c9beec57bab1c5f078840bef75",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cheek-interface-far-seat"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-cheek-interface-far",
+      "sourceFrame": 1,
+      "sourceSha256": "66c0a42f7cab5d230579ac2191def93bbf8132a0a9bb177c9476300dafeffb25",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-cheek-interface-far"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-seat-contact-line-r08",
+      "sourceFrame": 1,
+      "sourceSha256": "9668edab6b3f4e081f30c486b08b65e296e26925dcd5c4edd69dfd325b940b79",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-seat-contact-line-r08"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-seat-rotating-r08",
+      "sourceFrame": 1,
+      "sourceSha256": "e73c69fe2c5376c3de098fc7bc97e9b2bcefc8fc75ddf6ecd7f85b9c6fbc324a",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-seat-rotating-r08"
+    },
+    {
+      "sourceSymbol": "Rhino/Turret",
+      "sourceFrame": 1,
+      "sourceSha256": "6c809e1cc01b982608f83d19350ea3e0bbbd8f11aeb3ec72d01bb227009a9d24",
+      "staticSymbol": "Codex/犀牛R09/Turret/平射"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/turret-seat-fixed-r08",
+      "sourceFrame": 1,
+      "sourceSha256": "2e77efa9912c6adcec3cab428dd8fc959054238fc37ce5ce3ef091ed502be391",
+      "staticSymbol": "Codex/犀牛R09/Parts/turret-seat-fixed-r08"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-rear-red-cylinder-r07-undercoat",
+      "sourceFrame": 1,
+      "sourceSha256": "4078e7488f0434c8bde5f67803eb38b0da2ec95753a5781bfc9725648095fbe2",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-rear-red-cylinder-r07-undercoat"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-rear-red-cylinder",
+      "sourceFrame": 1,
+      "sourceSha256": "9c7789612cc7bf6244989a745a9e5e7e1fa3c19bc1c2f24d32abe9d3fef66236",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-rear-red-cylinder"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-inner-dark-cylinder",
+      "sourceFrame": 1,
+      "sourceSha256": "7dcf0f8bbfc8a42ad24bac6dd24109d9f0ad8be64ae0151bb49937d1e19cfa24",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-inner-dark-cylinder"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-inner-cylinder-support-2",
+      "sourceFrame": 1,
+      "sourceSha256": "f1756e1cbb0c7e64cfddbfca6d4fa307714177b956394726fa1b83a880f681a8",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-inner-cylinder-support-2"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-inner-cylinder-support-1",
+      "sourceFrame": 1,
+      "sourceSha256": "b189eeeb534269ac9386158cfdf6009dfbc2321c606352bfe07f7039952a5b3b",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-inner-cylinder-support-1"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-inner-dark-module-complete",
+      "sourceFrame": 1,
+      "sourceSha256": "769c4974aeadecc16a70293f3a5a85c1493900a1b712f74621b0249e62a0dab5",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-inner-dark-module-complete"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-inner-dark-cylinder",
+      "sourceFrame": 1,
+      "sourceSha256": "505c2ef45e61652b3618fcd7f09fb9350d6b9f67d32cc5ff340de74373671eb7",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-inner-dark-cylinder"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-inner-cylinder-support-2",
+      "sourceFrame": 1,
+      "sourceSha256": "6cd09a21e01a286e3f447d01bd9f250f2c61131e0c12400d3dc714f0f5b01a36",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-inner-cylinder-support-2"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-inner-cylinder-support-1",
+      "sourceFrame": 1,
+      "sourceSha256": "60df8b56e579bdffc4f8335dda9fa9fc7b191c24ea9a75ba1a2eb2cf7d519c17",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-inner-cylinder-support-1"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-inner-dark-module-complete",
+      "sourceFrame": 1,
+      "sourceSha256": "9ea25d4495a3cebdeedbef8221497092b2e35958c48fe64f635081a4f5b42745",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-inner-dark-module-complete"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-inner-dark-modules",
+      "sourceFrame": 1,
+      "sourceSha256": "65155f70b126c1348716077a0f8b4d30d8af727d36641745b3344b9f2af0792f",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-inner-dark-modules"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-clamp-03-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "9102b97d22ddf45f448b22ccf99c12ce54a94af0db9c7e2f3287ebe7eadcd8da",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-clamp-03-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-clamp-02-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "4c714ee373a63f5cbc03b4ddab2b9ecb66c7dfda0ef499feb9b74e31f1508349",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-clamp-02-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-clamp-01-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "434e6c3fe28717f59528b72d194917113e1fb2c36c91d4514613171111cee639",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-clamp-01-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-cable-eye-lower",
+      "sourceFrame": 1,
+      "sourceSha256": "f1ee894c4d83abd1dfad9e8d7aed0d5311086005aa10f42fa7ef08b207509a17",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-cable-eye-lower"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-cable-eye-upper",
+      "sourceFrame": 1,
+      "sourceSha256": "58804b716a298416f3e55e4f780f843409a5f3f2a855c1a9bf20c0c0a7ce0558",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-cable-eye-upper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-cable-flexible-line",
+      "sourceFrame": 1,
+      "sourceSha256": "181bba9efa384f69e55887c2f8ef4700dbdf70ba4653e0cc7363bb3e1744a63d",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-cable-flexible-line"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-clamp-03-seats",
+      "sourceFrame": 1,
+      "sourceSha256": "42c9adb9b12d7eab7911d7d448eed68f10f1175351c462477b99a3bcfd9c49b6",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-clamp-03-seats"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-clamp-02-seats",
+      "sourceFrame": 1,
+      "sourceSha256": "354121adc2db786b6d27a109fc5adbcdcc8f462c078bf2120ac8135f7a5ee1d5",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-clamp-02-seats"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/recovery-clamp-01-seats",
+      "sourceFrame": 1,
+      "sourceSha256": "55e489019efb4c58bcdb46b198b7dca9306f7becfba859208631d4b36320e2c8",
+      "staticSymbol": "Codex/犀牛R09/Parts/recovery-clamp-01-seats"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/hull-recovery-cable",
+      "sourceFrame": 1,
+      "sourceSha256": "e264c6b5beefa7a695bd62d2f34c6162a6e0660526ff05bab500b86ec117bd33",
+      "staticSymbol": "Codex/犀牛R09/Parts/hull-recovery-cable"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-front-towing-eye",
+      "sourceFrame": 1,
+      "sourceSha256": "ddee897f67098152e62273b68f8783ce41eab95b216744aec0126045ed098c8e",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-front-towing-eye"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-front-towing-eye",
+      "sourceFrame": 1,
+      "sourceSha256": "f3a645de575e83c58490d9f356e017c79e38bbdbc2255efcd9d94f193d232d3f",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-front-towing-eye"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/hull-edge-seams",
+      "sourceFrame": 1,
+      "sourceSha256": "97e0b2bb61b44503bad75e5660e4914727e72ec92209065bd10fd94068518735",
+      "staticSymbol": "Codex/犀牛R09/Parts/hull-edge-seams"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-tool-clip-04-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "8bc67b51921cf3912897899f4f0605abf5c035edae919531049dda731c568bfe",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-tool-clip-04-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-tool-clip-03-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "d2f0cfb75f255d2eeb6308c44ae2579a937d66e5c29c30a63b4c2b304925c311",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-tool-clip-03-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-tool-clip-02-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "ef617415b2a60cb52ab82039f8ab7a88e9890a0df882f43468808755c2deaa72",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-tool-clip-02-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-tool-clip-01-keeper",
+      "sourceFrame": 1,
+      "sourceSha256": "025ce861f87d40ddbf4596f530e4dbd1697b9240954a6de66b2759bd2a6199c2",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-tool-clip-01-keeper"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-stowed-spade",
+      "sourceFrame": 1,
+      "sourceSha256": "4ff0c03a025ad8de3d4200a097451bf4722edbb096261f130256a56df3a8a509",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-stowed-spade"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-stowed-prybar",
+      "sourceFrame": 1,
+      "sourceSha256": "8e3078e0fcae5fb5e3452fb986f0a20f5729942752880bca8953787b6360ace2",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-stowed-prybar"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-tool-clip-04-foot",
+      "sourceFrame": 1,
+      "sourceSha256": "e5dd244587bf5125df70b0020464089520a51c21a0c646570c7a34392ad83f1c",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-tool-clip-04-foot"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-tool-clip-03-foot",
+      "sourceFrame": 1,
+      "sourceSha256": "8e506f7c04cecc507b7d492cd8f7e3313c8622a6a4b9ba42b23d128e0eb2e1ac",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-tool-clip-03-foot"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-tool-clip-02-foot",
+      "sourceFrame": 1,
+      "sourceSha256": "a325fe1448385b2e5a19c8140b89aa3bede8faa5584983c738aa1f08e78d579d",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-tool-clip-02-foot"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/cover-tool-clip-01-foot",
+      "sourceFrame": 1,
+      "sourceSha256": "adf1822ccd699ab26d66335fe4d4a6e1b292ebd852100567e883c4b0c56e75c8",
+      "staticSymbol": "Codex/犀牛R09/Parts/cover-tool-clip-01-foot"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/upper-cover-hand-tools",
+      "sourceFrame": 1,
+      "sourceSha256": "15ee221f03edd58c5acc4d7fdaf6e53938d487b6a513c621915066712f132df3",
+      "staticSymbol": "Codex/犀牛R09/Parts/upper-cover-hand-tools"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-upper-service-dark-bar-r07-2",
+      "sourceFrame": 1,
+      "sourceSha256": "7be0e14ecb7bae7736b4f503f9a006f423299eecb79731ff6b2a7f9932cd51a6",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-upper-service-dark-bar-r07-2"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-upper-service-dark-bar-r07-1",
+      "sourceFrame": 1,
+      "sourceSha256": "a7cf43c92f4ae64a4ab5b2257a8964808021a56a9ed9dc98edcff3e27645739e",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-upper-service-dark-bar-r07-1"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/upper-service-tool-carrier-r07",
+      "sourceFrame": 1,
+      "sourceSha256": "2af7bf45ae20bc2ce95021dbb7e6bb2fd27eba66f07ec04847b34cdfa088be35",
+      "staticSymbol": "Codex/犀牛R09/Parts/upper-service-tool-carrier-r07"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/upper-dark-cover-clamps",
+      "sourceFrame": 1,
+      "sourceSha256": "8ceb5ad1bcc39fe894a2c6412949fd1738bcb7fbcfd80fe82e0698660f479ba5",
+      "staticSymbol": "Codex/犀牛R09/Parts/upper-dark-cover-clamps"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-retaining-rail-04",
+      "sourceFrame": 1,
+      "sourceSha256": "d26a5fbedf90eddae840eb28b270b30f61a8f8b832fa6ded4a6dd237506653ab",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-retaining-rail-04"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/side-armor-4-material",
+      "sourceFrame": 1,
+      "sourceSha256": "44fee95379be7de4ba5b222553ad26669744455d1f33868bc48be7eaa07533d2",
+      "staticSymbol": "Codex/犀牛R09/Parts/side-armor-4-material"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-armor-body-04",
+      "sourceFrame": 1,
+      "sourceSha256": "482c6c54bbd0eb0f0fe17137fbc76d5c3e5978b15d69a51c31c0f3bfb17313b9",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-armor-body-04"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-field-finish-04",
+      "sourceFrame": 1,
+      "sourceSha256": "9082e8291c7f0681040ea01c9d58d16f81c74685402c84b233760354e87041b1",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-field-finish-04"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-retaining-rail-03",
+      "sourceFrame": 1,
+      "sourceSha256": "a3db078a55ed77e9f9a65167f53028c147009ef53ca9d4800b46b03b07ec2414",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-retaining-rail-03"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/side-armor-3-material",
+      "sourceFrame": 1,
+      "sourceSha256": "f213472a8eb465ce7cc3de2c8b0f477a7313e14418889e696ca894e7bcd6dc64",
+      "staticSymbol": "Codex/犀牛R09/Parts/side-armor-3-material"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-armor-body-03",
+      "sourceFrame": 1,
+      "sourceSha256": "6bea7d0ef26008f61890931a8d1481e876036a001765c7d127101744886617f8",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-armor-body-03"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-field-finish-03",
+      "sourceFrame": 1,
+      "sourceSha256": "a631c57d9a7c1f83e042891d199b60fb1332aba03568084f74b039d547fa346e",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-field-finish-03"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-retaining-rail-02",
+      "sourceFrame": 1,
+      "sourceSha256": "ed247fffa74af412af8d421a29e92860ff1cf3606606be99fe28f265a585e338",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-retaining-rail-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/side-armor-2-material",
+      "sourceFrame": 1,
+      "sourceSha256": "aa8c636f28e66a18e1b176177d5dd6382ca38fa296911f6163937c60e89da93c",
+      "staticSymbol": "Codex/犀牛R09/Parts/side-armor-2-material"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-armor-body-02",
+      "sourceFrame": 1,
+      "sourceSha256": "1db8b25feae1805c8f8e58f76cb76311d77a553cd209dba6cba5af4923fd567c",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-armor-body-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-field-finish-02",
+      "sourceFrame": 1,
+      "sourceSha256": "b68cab3095a0ee72449583cbc0432c54f85156813ced2689555691aa4497a73d",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-field-finish-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-retaining-rail-01",
+      "sourceFrame": 1,
+      "sourceSha256": "eef710a82bde70ccf83245697c372fba7174631e1400034ccc2ca054c4afa65f",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-retaining-rail-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/side-armor-1-material",
+      "sourceFrame": 1,
+      "sourceSha256": "cd28c84ef7b69a7ee48bbfe6ad6c0064878b8c0fa708ba86f087a09f118fa203",
+      "staticSymbol": "Codex/犀牛R09/Parts/side-armor-1-material"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-armor-body-01",
+      "sourceFrame": 1,
+      "sourceSha256": "c5386934784d105c87646519741c10cf75d3c3446f3d7759e7a026789fe0bc48",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-armor-body-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/gray-side-field-finish-01",
+      "sourceFrame": 1,
+      "sourceSha256": "def81296717c58561ec5205ec7c7031e8bf612893323078ae9b9c83850a1a4b1",
+      "staticSymbol": "Codex/犀牛R09/Parts/gray-side-field-finish-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-cover-front-stiffening",
+      "sourceFrame": 1,
+      "sourceSha256": "8f0c6450398f8a838936a841bb3b608b6e80a25f6403f94af6d96955803ae8fa",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-cover-front-stiffening"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-cover-3-material",
+      "sourceFrame": 1,
+      "sourceSha256": "3aead6b36a8301c97fa68cbfc5b226e877f371d4f036671319bbd5cea78cb542",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-cover-3-material"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-side-bin-03",
+      "sourceFrame": 1,
+      "sourceSha256": "b376bee75f6b9ade82f63c02e7a5be50db4434a062561856909114b2619e87c2",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-side-bin-03"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-cover-central-pressing",
+      "sourceFrame": 1,
+      "sourceSha256": "0e619d307fde28566bc382935f4496175152acd50ca6aee5fa32e501a472d7c1",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-cover-central-pressing"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-cover-2-material",
+      "sourceFrame": 1,
+      "sourceSha256": "51fb5a8891368148aae6d2c9b2be167d2b4a52a706b474c1585ef22b8a415584",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-cover-2-material"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-side-bin-02",
+      "sourceFrame": 1,
+      "sourceSha256": "c68cf9be617a5c73e2a1db7bd6bcc4d44c55ae39b56c35b2f341bb4da95ddc4f",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-side-bin-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-service-cover-vent",
+      "sourceFrame": 1,
+      "sourceSha256": "f5d10f3c8c78c5001b41b3bf17c554ff9598a7921ada3b19253df40cf6c8ffa3",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-service-cover-vent"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-cover-1-material",
+      "sourceFrame": 1,
+      "sourceSha256": "6a8770cac19b57d6c216dfb2f7ed1c7110cbe67c396bf7837ac2805195736c5c",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-cover-1-material"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-side-bin-01",
+      "sourceFrame": 1,
+      "sourceSha256": "0d048f6614d5629ee63d7c5caf37c453d4284431915f6cf947da57a17f9113c2",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-side-bin-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/chassis-finish",
+      "sourceFrame": 1,
+      "sourceSha256": "aadb1c792e9ca01960454c55d62413cbce1ef46806a00b0fbff832fc459d773c",
+      "staticSymbol": "Codex/犀牛R09/Parts/chassis-finish"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/hull-surface-details",
+      "sourceFrame": 1,
+      "sourceSha256": "0d4989eac24c3e93420b46534ac87623f036b41996a78915718939c8c5db9679",
+      "staticSymbol": "Codex/犀牛R09/Parts/hull-surface-details"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-front-pad-r07-2",
+      "sourceFrame": 1,
+      "sourceSha256": "5c895759c53ab68b016f57576a3b6afb745dc26086ff746605265a08081c911b",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-front-pad-r07-2"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-front-pad-r07-1",
+      "sourceFrame": 1,
+      "sourceSha256": "5b8123bec3a0066a0b7de11c8c47646bca1faac74b0f6f761d5916a4e73ea44d",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-front-pad-r07-1"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-front-shoulder-pair-r07",
+      "sourceFrame": 1,
+      "sourceSha256": "4d21e0ab3359024fdfe2b4bdf5acd095f5177fa30a5c4d364cc2d81c41860ef7",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-front-shoulder-pair-r07"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-hull-wall",
+      "sourceFrame": 1,
+      "sourceSha256": "48158530c59f0d8ccfa4ed7af234bffb1d0264875858b95f5839aa0f56641094",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-hull-wall"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-deck-service-cover",
+      "sourceFrame": 1,
+      "sourceSha256": "1c29ad2b5884c1ede34ab03ce73e2241eb6af2843887b448a00a1a459356e1a1",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-deck-service-cover"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-deck-louver-leaves",
+      "sourceFrame": 1,
+      "sourceSha256": "c556513af8ede7f6c0db709fb6cc732cfd3bf2f010ae7c2baf87f667bba51eb1",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-deck-louver-leaves"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-deck-vent-panel",
+      "sourceFrame": 1,
+      "sourceSha256": "67890d693373d8ef5954a39f90ecd3afbc8bbaa75b5e08ccd5dc9882f16ccf6e",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-deck-vent-panel"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/rear-deck-service-assembly",
+      "sourceFrame": 1,
+      "sourceSha256": "a3637ad4e0e45fcd9872f80ef73dbf130ff883388db8b118b9f2f0ec2f9db130",
+      "staticSymbol": "Codex/犀牛R09/Parts/rear-deck-service-assembly"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/driver-forward-periscope",
+      "sourceFrame": 1,
+      "sourceSha256": "bb66e2f6f07bb203c5814028f6bfc3283c1a717920823afb5db9cbf5e291b55a",
+      "staticSymbol": "Codex/犀牛R09/Parts/driver-forward-periscope"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/driver-flush-hatch",
+      "sourceFrame": 1,
+      "sourceSha256": "974617ea75a368f9dd613d14c3f2cb65ead450ff37dac4cce95b62defb7f63be",
+      "staticSymbol": "Codex/犀牛R09/Parts/driver-flush-hatch"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/driver-observation-station",
+      "sourceFrame": 1,
+      "sourceSha256": "1803101d28a69e5265c89396cf57f207f2ffe123e40e15537543a78b8aa9c0c0",
+      "staticSymbol": "Codex/犀牛R09/Parts/driver-observation-station"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-glacis-applique",
+      "sourceFrame": 1,
+      "sourceSha256": "0f1ad60a4a8928e05388b7479cf8ce74d1e4ce55d4c0f6c49551667a68c2d148",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-glacis-applique"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-glacis-applique",
+      "sourceFrame": 1,
+      "sourceSha256": "116aa71b2f7d1c74a5b799ab371731c4a05f35ad8dff156690637ca5b8a3f527",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-glacis-applique"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/hull-central-volume",
+      "sourceFrame": 1,
+      "sourceSha256": "3c22462d56608a3a3ad384388c9e0472d7f44c1592aca033df342ff726f9cc5c",
+      "staticSymbol": "Codex/犀牛R09/Parts/hull-central-volume"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Masters/near-track-link",
+      "sourceFrame": 1,
+      "sourceSha256": "d86b4e7b9308c923b585636d08c93f561b13d14a885d8953dbb9f5d82f6178b7",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Masters/near-track-link"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Chain",
+      "sourceFrame": 1,
+      "sourceSha256": "17460bc82434b8633950f883c16c5e9c331e14ba28ad4d9ae902ccf8b0a198a5",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Chain"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-drive-01-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "b22ef81496ff12daae672f2bd95785a388c19fd02f67cfa19213b10c957732f3",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-drive-01-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-drive-01-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "7a3685d00781eda7a4f578df0b1fddb7ca0b7676cdffdf0d40f3bac61e2f40b4",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-drive-01-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Masters/near-drive-wheel",
+      "sourceFrame": 1,
+      "sourceSha256": "694acbde0154c4ac467e5a217cfe790825e2c8c10e8247712316364093eccb39",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Masters/near-drive-wheel"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Wheels/near-drive-01",
+      "sourceFrame": 1,
+      "sourceSha256": "8365a1babd652c386cc865c4dd8ae13b9fda6ab798e100b7eb69b1b13c8f2f7a",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Wheels/near-drive-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-06-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "e79001b63a221cb944c60b8bc94e185044e7ef4b1e92e3ad97b0023b5515cb34",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-06-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-06-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "95b215bd12bc726e463571118b1a652c24f310eaea6776714b87de9280bf5b19",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-06-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Masters/near-road-wheel",
+      "sourceFrame": 1,
+      "sourceSha256": "91653a9e648a9d6fa226508af302b8b9e212c9e39a32b44ef5512756030465c7",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Masters/near-road-wheel"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Wheels/near-road-06",
+      "sourceFrame": 1,
+      "sourceSha256": "c2d79927eff8e1ee80e6bdbd3b39800dc152fb9dd230780fad3444124f9926b6",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Wheels/near-road-06"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-05-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "1fbb3540aedb4d089a27896963b8c89da6a9be2511632946fd3ddcb8450d18b8",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-05-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-05-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "dfb8afd740c89b1555f7d85cc6085943ade17ff4a685a29cf126a0f94389d03b",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-05-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Wheels/near-road-05",
+      "sourceFrame": 1,
+      "sourceSha256": "f8b9d8bb7e2b2c4e5a73981bc3ef49300d5635e83e7d314d5da0516e261318ec",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Wheels/near-road-05"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-04-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "33adb1413cccfbe36af72c6c279b37f4d0449662e49d71a6e02afe802aa6b37e",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-04-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-04-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "212a2459c21e42d11f3d5dfd8c519f18997961e7494bc5372febebfa8b3387c5",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-04-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Wheels/near-road-04",
+      "sourceFrame": 1,
+      "sourceSha256": "ae944541e13596070478e2f4d39c6f44a8801f621274875128ddc8e6fdd43e40",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Wheels/near-road-04"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-03-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "c1c1e99d8457e54a3d18f40639d85f740aa0e9ec19eb5f8be605e2920c9ead2f",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-03-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-03-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "9be6e6215fdf5a028931e12602bc51da014cfd4bccf464fbc37cc3d7f200e493",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-03-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Wheels/near-road-03",
+      "sourceFrame": 1,
+      "sourceSha256": "6f89d52fc67eb3b6fd803762489c69208c20d9daf8283446b67ced6e178211e9",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Wheels/near-road-03"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-02-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "35a739fcb56350943c7ef5729ea19f79598e7aa44672ad6ea7b9da50e9cd841d",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-02-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-02-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "448cc78a1ae43401601ac4124b84d4cac44ce5d99ff12e7e349df22729e996b1",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-02-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Wheels/near-road-02",
+      "sourceFrame": 1,
+      "sourceSha256": "865ca5a4784965c585390d2ee18754a27d988e23a6d218193288457ce707b42a",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Wheels/near-road-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-01-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "b13c7968be17bbb097067c980260667e14344fa28cfa66202544ff63975ca55a",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-01-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-road-01-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "a0027eb054125edec2ca02ff233770db5e916b3f9b02d339055d308b797a0cc6",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-road-01-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Wheels/near-road-01",
+      "sourceFrame": 1,
+      "sourceSha256": "4a08842c0b15f7592ee4d3140a98913e128163e543c21c3daaf878ddb8135e49",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Wheels/near-road-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-idler-01-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "7456fca7341df073cbbf4cf720c469a9c6cc0049e5b12839fd7c73eae76c4800",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-idler-01-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Light/near-idler-01-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "de1c9296f8cc749ee7fc8c75f4feaf8c6d4b0319af4f4c563ceaa5a5f8a5ede8",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Light/near-idler-01-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Masters/near-idler-wheel",
+      "sourceFrame": 1,
+      "sourceSha256": "a1abe04575c81c7f09c3dfdade2de7a48668972f8b933fea4b4c69d3993f9a73",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Masters/near-idler-wheel"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Wheels/near-idler-01",
+      "sourceFrame": 1,
+      "sourceSha256": "ab6622c72d39dafb32ecbbf87e4746815d019f0e1d471b82d0c416d5cc1244e4",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Wheels/near-idler-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/WheelSet",
+      "sourceFrame": 1,
+      "sourceSha256": "dd678e8dd72bf5ebb05ebeb21f76fd2b046ded363af0c3822aa4f470353de796",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/WheelSet"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-final-drive-housing",
+      "sourceFrame": 1,
+      "sourceSha256": "a871acebdfba73cd3de0870d9e609838ed994c282c967ef7c50522f884c1ff81",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-final-drive-housing"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-idler-bearing-and-adjuster",
+      "sourceFrame": 1,
+      "sourceSha256": "18409f5e1c7330223748837aec2e9dc6e4ea8925d5596643f02cee1f08e6d9e4",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-idler-bearing-and-adjuster"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-bump-stop-06",
+      "sourceFrame": 1,
+      "sourceSha256": "60dc5c371c32ed16a9b5bdf4dfe6351e645724ddaf0fde350cbd40ba0d623672",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-bump-stop-06"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-suspension-station-06",
+      "sourceFrame": 1,
+      "sourceSha256": "f2fc02544e840cec54339432ffe6478374b412d56b223fb16da22098cbb326ae",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-suspension-station-06"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-suspension-station-05",
+      "sourceFrame": 1,
+      "sourceSha256": "a1d005a4018ba88e48ec4e4eb56c9fbe98e94aeb850ef7b14042deb1548c4d3b",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-suspension-station-05"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-suspension-station-04",
+      "sourceFrame": 1,
+      "sourceSha256": "f84e2c0bb5733e4110bf691628cd010534e16ec576c0b9e103014218d92c571d",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-suspension-station-04"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-suspension-station-03",
+      "sourceFrame": 1,
+      "sourceSha256": "e2ff7327d20fd6c5138bc596e612b0b4de1aa1595f6a1292c634ff98678bfdef",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-suspension-station-03"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-suspension-station-02",
+      "sourceFrame": 1,
+      "sourceSha256": "0816ba409a0454b7f17737223d3eaf17ff1785ae6a870cca2a60503b2345f3a3",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-suspension-station-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/near-bump-stop-01",
+      "sourceFrame": 1,
+      "sourceSha256": "66d7f5216e23b0b64889853c5a812814f3776432a2dc730d2d0988759f3fe56a",
+      "staticSymbol": "Codex/犀牛R09/Parts/near-bump-stop-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-suspension-station-01",
+      "sourceFrame": 1,
+      "sourceSha256": "4bee88bbac505dfd14ace8983775cdb0d1214a1204f1521b11e8f3292053bc35",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-suspension-station-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-hull-mounting-rib",
+      "sourceFrame": 1,
+      "sourceSha256": "d8933027e4bf1fc6d66ecdac9f01c7a7d7a33508cb57e29ebce0bc2ad93eddc5",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-hull-mounting-rib"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Suspension",
+      "sourceFrame": 1,
+      "sourceSha256": "6360f57c11deaeebfabde85360eac9e5d57d80b2c48b6e857158b8bbca9b8471",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Suspension"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-inner-track-rail",
+      "sourceFrame": 1,
+      "sourceSha256": "a213defe1cd962b60c649a479e67105c99919d6bfc1daa4a7fb096a4ba4fd28d",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-inner-track-rail"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/near-fixed-well",
+      "sourceFrame": 1,
+      "sourceSha256": "74be2c083c810f93c69dd348edf91d70f41425da44d0ca9cc16bdfbaf86c882b",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/near-fixed-well"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/near/Assembly",
+      "sourceFrame": 1,
+      "sourceSha256": "e866a03fc87171ca8bad747a69d1f930340788e6240ca34791c22588c37fc78b",
+      "staticSymbol": "Codex/犀牛R09/Tracks/near/Assembly"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-rear-red-cylinder-r07-undercoat",
+      "sourceFrame": 1,
+      "sourceSha256": "320859fe430f3a442d3e3207e9c0d41c47465cd5f64663d646407ba61dd12986",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-rear-red-cylinder-r07-undercoat"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-rear-red-cylinder",
+      "sourceFrame": 1,
+      "sourceSha256": "a7067c8425a50a714eee387a3c6445c882ec2b98b5e79983a1dad7f5480a9084",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-rear-red-cylinder"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-upper-service-dark-bar-r07-2",
+      "sourceFrame": 1,
+      "sourceSha256": "d13264e2d8c161a8688214ecf1f41fa9e10c53f9819825737f5fd202048fca22",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-upper-service-dark-bar-r07-2"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-upper-service-dark-bar-r07-1",
+      "sourceFrame": 1,
+      "sourceSha256": "2dce85cabe543ed49a060e8a70f76701d1bd464ccec978dd6141c7e9a6f7d6bd",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-upper-service-dark-bar-r07-1"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-front-pad-r07-2",
+      "sourceFrame": 1,
+      "sourceSha256": "1c341398fc14884f30e087c43fec23901f1cef3be1da59cce37f2b31b1c6f64b",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-front-pad-r07-2"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-front-pad-r07-1",
+      "sourceFrame": 1,
+      "sourceSha256": "8a4accfde59a8e125117c4fdf30acf3e77128687f937befa31a6bb2eef56b8ad",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-front-pad-r07-1"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-front-shoulder-pair-r07",
+      "sourceFrame": 1,
+      "sourceSha256": "0384c75f3e01cc473542775e762f0f1658c884e1e7d997205df0772ec1f81878",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-front-shoulder-pair-r07"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-hull-wall",
+      "sourceFrame": 1,
+      "sourceSha256": "f09d68c6af9393441125feb845ebdbb04329d8d07e3ebd62817308fa074b5595",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-hull-wall"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Masters/far-track-link",
+      "sourceFrame": 1,
+      "sourceSha256": "cc943516d150d128a50ff3f52ed12cb5e5c835fd54cb13ee12cecac6c9e3d597",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Masters/far-track-link"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Chain",
+      "sourceFrame": 1,
+      "sourceSha256": "334a4bd18dccc1f3e2252ac88fa617a1a309d8ac8d588421d5bc7215d73a3cc8",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Chain"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-drive-01-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "0e10d96e8bf5f8f9df39e51763a28413c5f61916fc70686a3dbe0c9288b08e5e",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-drive-01-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-drive-01-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "ca240a387af73945383fe81b8f5f8bca7987e53b7791658a0b780a3aecc9fc9f",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-drive-01-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Masters/far-drive-wheel",
+      "sourceFrame": 1,
+      "sourceSha256": "96474df389f88b5b9dd5e9c0a80064f88ef6c9a6736757e7c2527c8573f82234",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Masters/far-drive-wheel"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Wheels/far-drive-01",
+      "sourceFrame": 1,
+      "sourceSha256": "5a119accc9619a59d21f906c6b621c64e72875af2ee408a036a59becf9fed453",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Wheels/far-drive-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-06-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "3752eeae90bba62823be3dd27c8ded74c6d55fe0d1d0a33eddf4bc1f387c0e09",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-06-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-06-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "c9ad76bd5eb815df1428a5859160d0413c6df3ae1a4383a9c87ebd7db80ea14b",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-06-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Masters/far-road-wheel",
+      "sourceFrame": 1,
+      "sourceSha256": "cec689d6712ea84cedfa143e0121246fa0a61c125fbdd190dc343036ac7ee6c2",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Masters/far-road-wheel"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Wheels/far-road-06",
+      "sourceFrame": 1,
+      "sourceSha256": "b502208502fd101545046c22094c4db37352489de8b297ddbfabe43901cecd26",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Wheels/far-road-06"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-05-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "1799a4cc79232a2fa1b34cb0f5a600456287e91eb721d5a25b26591de1de92b2",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-05-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-05-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "f84c35c8bad300ff8b4259e84760770acf7e5337f196b9199fe5597e067c7ca1",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-05-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Wheels/far-road-05",
+      "sourceFrame": 1,
+      "sourceSha256": "cf4184aecd047669140e34374f176353dc430445ca40f31d4fd8b361a02ae3a2",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Wheels/far-road-05"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-04-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "0dd162cfb7312015ef3b225761c996ab1211dfd6c264c30e9bc875cafc87aa26",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-04-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-04-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "b840a942908bec4c2aa462fa9dfc5ac46f55d23fef5a37b9d531ee98ba2607ba",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-04-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Wheels/far-road-04",
+      "sourceFrame": 1,
+      "sourceSha256": "5e8157d7022229eeb2aeaa4f1baed0c58d33ea9f70d727996ae171247363e602",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Wheels/far-road-04"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-03-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "52a45c73a7b8788b0c0be7f8aa83ccc2fa5190ac59ac8115e3a30f969c6461bb",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-03-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-03-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "941ee1b7b9b9233bc0175157e8a1d33e5a49f23e36a4b0962a8c9f7b8422b379",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-03-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Wheels/far-road-03",
+      "sourceFrame": 1,
+      "sourceSha256": "4f6c5bd2a5dee87fe8b02e971360d704123125ed23faa659573d7a7b9575380e",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Wheels/far-road-03"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-02-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "f6669eedae2aacbcfa7c3823f9b6efa240b230ef08d534d4d814cb01a4dc26b9",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-02-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-02-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "28c730354680f773a62ae3e4219d9a65deeb9e39a59b76e59df1921fe6d090e1",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-02-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Wheels/far-road-02",
+      "sourceFrame": 1,
+      "sourceSha256": "1af634d8eceb6c19ccc0ae399a48131ceadee8306f0c42a9f6d1a56b462c7707",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Wheels/far-road-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-01-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "dfc4fc98bb71d3ab7fe64d2adc1d1606c52f910534ec026a5475bc27d04ab2c3",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-01-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-road-01-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "8a01429fbb58fcf7413aa106243d3d9f97fab26899c11124290d0e63eebd80e9",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-road-01-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Wheels/far-road-01",
+      "sourceFrame": 1,
+      "sourceSha256": "dd4269eb4c47fa80ed2d44682ca962d8b6c9ef9f1d838cb6294234f4b217e0ef",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Wheels/far-road-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-idler-01-fixed-dish-light",
+      "sourceFrame": 1,
+      "sourceSha256": "16526a6677c31348c0513e522a6226f072a6e08738810c4a961e5bab22edb747",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-idler-01-fixed-dish-light"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Light/far-idler-01-fixed-shadow",
+      "sourceFrame": 1,
+      "sourceSha256": "465d42af60e018f81e8d7be525e2254d3f3d87587ea70ef9a435dc91a8c632fb",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Light/far-idler-01-fixed-shadow"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Masters/far-idler-wheel",
+      "sourceFrame": 1,
+      "sourceSha256": "ecce60633f9b97b28a15115ea5f3c070d1a4fcc90556b793394e445bd157ca70",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Masters/far-idler-wheel"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Wheels/far-idler-01",
+      "sourceFrame": 1,
+      "sourceSha256": "f071b8c57f1b6f9b35aada4bbad19522cc088087ae1bb1469a7a389c6d9f502b",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Wheels/far-idler-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/WheelSet",
+      "sourceFrame": 1,
+      "sourceSha256": "3a0b0a1a1342edc9ecc9fa8e265e9a8037c835e35a8e5c23de99c91f71812adf",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/WheelSet"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-final-drive-housing",
+      "sourceFrame": 1,
+      "sourceSha256": "cfae5391fbe323288ab13639dd92dfebfce7031e0172a211d848649877e62847",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-final-drive-housing"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-idler-bearing-and-adjuster",
+      "sourceFrame": 1,
+      "sourceSha256": "9ee8399885cba3b88c16a20cf0d4a1ddcdf1e0a6a7ba71222290b48712ce203e",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-idler-bearing-and-adjuster"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-bump-stop-06",
+      "sourceFrame": 1,
+      "sourceSha256": "29a75b328bb12b9d4ffee04edb30954335fa750664f0ffa387f0be9afa336030",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-bump-stop-06"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-suspension-station-06",
+      "sourceFrame": 1,
+      "sourceSha256": "c743e835d7bb77d0fe9db8291fec92f092ebeab7f4de9f2130c0d3b9187ba866",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-suspension-station-06"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-suspension-station-05",
+      "sourceFrame": 1,
+      "sourceSha256": "fa26bbde1f95af41aac90e1e6fa87f0d93bfdf810ff61cd2c8f331a8327cb0a4",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-suspension-station-05"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-suspension-station-04",
+      "sourceFrame": 1,
+      "sourceSha256": "ff9708bfb1e49bae0330f6014d274b1fac6f9a6f5fcb2d9a7eadd4f95abbaa7c",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-suspension-station-04"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-suspension-station-03",
+      "sourceFrame": 1,
+      "sourceSha256": "4ba78e18f4ba9fa4fadbcd9f6c81736123a69cd1ba0d69296e5157762dd3d4d8",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-suspension-station-03"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-suspension-station-02",
+      "sourceFrame": 1,
+      "sourceSha256": "681d00cb4223ffbe5822fab9e40b7a115b1a6758f11317737840f70baa06b45c",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-suspension-station-02"
+    },
+    {
+      "sourceSymbol": "Rhino/Parts/far-bump-stop-01",
+      "sourceFrame": 1,
+      "sourceSha256": "69b8ffff443429f4107736fd19592744606dfc6cb50bc3a1796aed14f6ab368a",
+      "staticSymbol": "Codex/犀牛R09/Parts/far-bump-stop-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-suspension-station-01",
+      "sourceFrame": 1,
+      "sourceSha256": "5ddf6438ecd1ef4f8274a11d19dae57666369eebe5033f30be0a7cac8073b73a",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-suspension-station-01"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-hull-mounting-rib",
+      "sourceFrame": 1,
+      "sourceSha256": "d694781fe7e3060549e4c81a53a8f48404b789c76f6bddb27413b1263884affc",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-hull-mounting-rib"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Suspension",
+      "sourceFrame": 1,
+      "sourceSha256": "d9ec3cc7ca39f886aa16c27a341c448a60a51891df00130484791f322041f633",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Suspension"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-inner-track-rail",
+      "sourceFrame": 1,
+      "sourceSha256": "2244d39bf7ab89639673072e316216e2265f927685f1aa711d491eda31894d41",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-inner-track-rail"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/far-fixed-well",
+      "sourceFrame": 1,
+      "sourceSha256": "d9056c6e12b937a17dde574979db619204c8c233db56badf3f193728f81cbddc",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/far-fixed-well"
+    },
+    {
+      "sourceSymbol": "Rhino/Tracks/far/Assembly",
+      "sourceFrame": 1,
+      "sourceSha256": "880c2b4946ab743c623ca5f37821317942fa6fb378c1fa5cecba3e7f25d120e8",
+      "staticSymbol": "Codex/犀牛R09/Tracks/far/Assembly"
+    },
+    {
+      "sourceSymbol": "Rhino/Chassis",
+      "sourceFrame": 1,
+      "sourceSha256": "6254f10f4cbe3b4d010f6fd5c35c30aa32141442e48712eab85c78b5901f363b",
+      "staticSymbol": "Codex/犀牛R09/Chassis"
+    },
+    {
+      "sourceSymbol": "Rhino/Vehicle",
+      "sourceFrame": 1,
+      "sourceSha256": "18a2242ee3d8d55ea765dc3450d389db74bb6dd215077fd1dc9093c361323a4b",
+      "staticSymbol": "Codex/犀牛R09/平射总成"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/Cloth/Pose_30",
+      "sourceFrame": 1,
+      "sourceSha256": "fbde9865971f6b051c4365e824511714ae36065644b3dc081f9eaca6d61cca34",
+      "staticSymbol": "Codex/犀牛R09/Gun/Cloth/Pose_30"
+    },
+    {
+      "sourceSymbol": "Rhino/Gun/Elevation",
+      "sourceFrame": 31,
+      "sourceSha256": "5849b48f664f9e10c1b1dc511620fa6fb0d52a84dcebd34d48fafdcc47082fc8",
+      "staticSymbol": "Codex/犀牛R09/Gun/抬炮15度"
+    },
+    {
+      "sourceSymbol": "Rhino/Turret",
+      "sourceFrame": 1,
+      "sourceSha256": "6c809e1cc01b982608f83d19350ea3e0bbbd8f11aeb3ec72d01bb227009a9d24",
+      "staticSymbol": "Codex/犀牛R09/Turret/抬炮15度"
+    },
+    {
+      "sourceSymbol": "Rhino/Vehicle",
+      "sourceFrame": 1,
+      "sourceSha256": "18a2242ee3d8d55ea765dc3450d389db74bb6dd215077fd1dc9093c361323a4b",
+      "staticSymbol": "Codex/犀牛R09/抬炮15度总成"
+    }
+  ]
+}
