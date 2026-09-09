@@ -2,7 +2,25 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-10 当前正式发布：废城三维选关与全地图双栏详情
+## 2026-09-10 当前正式发布：裸 Alt 菜单防护与嵌入菜单清理
+
+Guardian 限定拦截无字符的 `SC_KEYMENU`；Flash 的 hidden / full 两条嵌入路径共用菜单清理与样式归一化，先摘除普通菜单，再设置 `WS_CHILD` 并清除 `WS_SYSMENU`。摘除失败不销毁仍被窗口持有的菜单，重复嵌入不把 child ID 当菜单句柄。功能与组合键回归边界见[焦点诊断 §9.14](焦点管理-诊断与卡顿排查-2026-05-24.md#914-2026-09-10裸-alt-菜单防护与嵌入菜单清理)。
+
+- 实现提交 `978f97bb0787d187dcf5bff79431b2664ef6cb2e`；release source `95a41aca97fd77fd173113a4c23e25db2f376b07`；不可变 tag `runtime-build-v2/20260910-alt-menu-guard-v1`；release tree `4f4cf3698622626857cba9e642eb2dd40723e5f5`；request `2E5E27979DFF555D68C2A0CEC73244E409DF3E21189A55A9FF9021B34B5F6F40`。
+- artifact source `350755DA1CD6F34E3E57A6561ABDB236D45C08F982D7F1FEB19EB33C68A5BC22`；producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`；toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `92BE0F54D1BCAE174607CE156AC5EE5AE12327D4DE1639FB5A285FAD627F47BE`。
+- 33-file payload closure `6218065375C7869B824C6ACEFAE9F338882D2F161E7B4C0476F3809F524D1DD3`；正式 Core DLL SHA-256 `FE02644EC9A7B1B9F32844D8BB238631C87F0C00EFBD0CCA68461F41092015A6`。
+- 本地 X509 `builder-local-b / physical-host-b`，keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `0680961503FA95860B50627A2F0AC5A2AD328FA01D0A026DEAF83EE7BC7ACAF6`，[cloud run 34385814953](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34385814953)。云端独立构建与本地 CAS 的 identity / payload 完全一致；source tag、workflow SHA、run headSha 均绑定 source，promotion 已完整重放 attestation-only 证明。
+- production policy **40/40**；policy hash `72D8234407C8BA0ED39FAF0561EFD61D03B533C34F71AF6B326C6C5C0B1778AB`；receipt SHA-256 `7ABDB35123FA932EBA150E6D1801B620AC27669AA02ADDE31F32CED23C3D41D3`；manifest SHA-256 `C10A5C39DF4BC443D3FEC83B5C59892D0BCD9CC2D58800BEEE4305964DDAF345`；磁盘 consensus SHA-256 `6D04B08C17CA9A4524A8D19C8CE74821362B9DBE7E7519D983FA3BE536AD7C3B`。
+- `2026-09-09T18:13:35.2836945Z` 完成原子 promotion；strict v2 **2 signers / 2 faultDomains**、33-file bundle 与正式根 bootstrap `--verify-only` 均通过。上一完整 bundle 保留于 `tmp/runtime-promotions/20260909T181305599Z-31c789243d754f1bb4995b8849748497/previous`。
+- Launcher canonical runner **4,868 passed / 3 existing skipped / 0 failed**，其中新增菜单防护 **19** 项，含真实隐藏 Win32 窗口的初次嵌入、重复嵌入与菜单释放检查。prepare 的 16 项受管产物字节未变，文档治理与差异检查通过。
+
+首次 request `8939430F9A5EE2477BE8EBF69E7D8F074808B147C2ED99EA8A40DEBC52708471` 在上游 Flash 素材提交到达后被正式 supersede，旧 policy 预检主动取消；最终冻结 source 已合入 `a1ea92db3cafa3b43ddbb1963046c26f52267f13`，四个运行时输入域保持不变，本地已签名 CAS 按契约复用，production policy 对最终 release tree 完整重跑并通过。后续上游 `9ff0a07e85394c1bf06736866757868237d13af6` 仅增加 `SceneManager.as` 的排序修改，也在四个输入域之外；其 AS2 源码应随部署正常合并，不据此重写冻结请求或宣称本轮已重新编译、验证其 SWF。
+
+当前为 **promoted / FIELD_REVALIDATION_PENDING**。这是对明确存在的菜单入口和句柄清理问题的预防性修复，尚未唯一确认原事故的停顿线程与菜单归属。正式入口的裸 Alt / F10、Alt+Tab / Alt+Space / Alt+F4、全屏往返与重新嵌入仍待真机复验；自动化窗口测试和部署完整性不替代 Flash 实际输入，不称本专项 `standard_entry_verified`。
+
+本轮没有新建 Git worktree，本地 worker 的隔离 checkout 已自动清理，现有其他任务 worktree 保持不动。工作区另有其他任务的 `tools/cf7-balance-tool/models/ti61/jk_script_sampler.js` 与 `jk_source.py` 未跟踪文件，均不属于本次变更和提交。
+
+## 2026-09-10 上一正式发布：废城三维选关与全地图双栏详情
 
 废城使用真实建筑高亮与相机特写，保留悬停卡片直接出战，点击地点进入全地图共用的双栏详情；新增游览、双手镜头操作、可收起的开发取景工具，以及真实通关后公开的奖励图标和敌人头像情报。其余 15 页保留二维地图与完整详情。功能、存档边界和首轮玩家反馈清单见[选关迁移说明](选关界面-webview迁移路线图.md)。
 
