@@ -2,7 +2,22 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-09 当前正式发布：理发店目录网格与共享外观服务动效
+## 2026-09-09 独立分支发布：焦点与技能输入取证（未合流原安装目录）
+
+维护者授权隔离增强、云端共识和发布推送，随后明确“另一任务仍在施工，先保留独立发布”。因此本轮只在 `codex/focus-input-observation` / `C:/cf7-focus-0909/resources` 完成 promotion，原安装目录与 `main` 尚未合流；工作树按该授权保留。新增消息取出/WndProc/原生调用边界、固定容量异常片段、技能物理键到实际判定/动画的分层观察，功能与证据边界见[焦点诊断 §9.14](焦点管理-诊断与卡顿排查-2026-05-24.md#914-2026-09-09消息取出边界与技能输入分层取证)。不改变原输入放行、焦点恢复或技能冷却规则，没有修改玩家存档或联系测试员。
+
+- release source `ac33374c4cc6255a81ebd65280d1eb0801a177b5`，tag `runtime-build-v2/20260909-focus-input-observation-v1`，tree `e9441ca25d6c4ef1afdad98af8589455c5cbfa10`；request `B83278DAE31886833681827B12CA0F83F7F3FFA7C5D76A5D67B5CA3AE664BFA5`。纳入远端至 `6e7bd10244ac9587ca189307cb5f7416217578cb` 的已提交修改，另一任务的未提交大型施工不在冻结树内。
+- artifact source `342F14F433725A9021FC4BDF42C1EE5A51D3AE19FCB1D212AA92518B3EF1912F`，producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`，toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `EAC737D0C2465FA2AE429ADD2B8D36141D02ED11BE6BF4F275D96AF0F3FBCDD5`，33-file payload closure `D6D5584471597AF9FA338FEC37A0EE8F33A73FED9428838CCF6E493C98DD47B3`，Core SHA-256 `C1CE79C6EA8D42AB12A8DE532B85E1612B3DABD06CEAAA72EF74078988A0EFA5`。
+- 本地 X509 `builder-local-b / physical-host-b`，keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `706131B1865BE2E094C010E8DD2EFEF4BC73E25B73F2231FF339099582E14505`，[cloud run 34366745268](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34366745268)。两端正式 producer 的全部 payload 字节一致，promotion 重放源码 tag / workflow SHA / run headSha 与签名绑定。
+- production policy **40/40**，policy hash `F4A6E2897BB1581B96E02A6781C5EC21F3E5DE2FE60B04FFBAD674B1946DFB23`，receipt SHA-256 `26E74651B5DFB79D89325139EBB701C3F34C452569150999A3F6B956A33E373F`；manifest SHA-256 `735BB28B38CF0068B6BF8BD385FDE04CEAF67B62670067D08AF23F93DB403EB6`，consensus SHA-256 `B1EB33CB48004177821B0FB573647961CEED51B5DF2752A2F93116B56FA70A7F`。promotion `2026-09-09T15:20:55.2587039Z`，strict v2 **2 signers / 2 faultDomains**、33-file 完整性和独立根 bootstrap `--verify-only` exit 0。匹配字节的开发候选只作为显式选择的物料来源；正式授权来自注册本地 producer 与真实云端 producer 的两份签名，不能把开发候选自身的 builder 名称当签名者。
+
+Host 全量 4,863 passed / 3 existing skipped / 0 failed，定向 53/53；实际 CS6 focused 615/615、唯一 block=1、Compiler 0/0。asLoader 发布超过 300 秒后迟到完成，原超时退出和新鲜完成证据均保留；独占读、0/0 Compiler、目标关闭/done 输出、观察类/协议字符串与函数大小门另行核验。最终 SWF 1,296,997 B / SHA-256 `4267727DFBDACEBFA4ABBF424F88D31241BB89A942BDE97338D5241F39000E8B`。测试、迟到发布核验、bootstrap 校验和构建共识分别只证明各自范围；本轮没有启动独立包执行游戏业务旅程，返回/复活/技能现场故障仍为 **FIELD_REVALIDATION_PENDING**。
+
+发布准备还修复两项既有来源漂移：task-catalog 从既有任务真源重派生“人修罗”显示名；heeho 商店头像按当前地图重新完整提取，manifest 与全部 34 张 PNG 字节不变，仅 provenance/回执与固定 SWF 符号链更新为 464→269→267。初次预检 39/40 的失败回执及旧 request `195999BA77E27A4DB346BD0168E19FFB5F8F65F4B05DD673B4D1CBA7038E12E4` 保留为历史，旧 request 已 supersede，均不用于部署。
+
+原始与机器证据保留在本工作树 `tmp/focus-implementation/`、`tmp/runtime-cloud-results/` 以及本机 `C:/qfocus9`；上一 bundle 位于 `tmp/runtime-promotions/20260909T151948580Z-bf7f922255cd4d2bb83bbb925a5daa19/previous`。后续合流先核对当时仓库基线与 AGENTS，再合并重叠的 `StageRunSession.as` 等源代码并重编组合后的 asLoader，不能直接用本分支 SWF 覆盖另一任务的编译结果；新的发布源码树需要对应的冻结、政策回执与证明绑定。独立分支远端 Audit 状态另行记录，不预填通过。
+
+## 2026-09-09 原安装目录发布记录：理发店目录网格与共享外观服务动效
 
 理发店目录改为 manifest 发型图标网格（紧凑 / 完整双密度、性别页签、当前发型卡与变更摘要），新增全身 / 脸部特写预览切换（共享主体取景、试戴场景不遮发、旧 asLoader 缺 `portrait` 完全降级）；服务面板共享换装扫描光与微交互基线，整形补语义音效、共享红色错误行与身高过渡；hairdresser snapshot 新增可选 `portrait` 装备投影，Host 缺失放行、存在严格校验，新旧 Core 与 asLoader 双向偏斜安全；发型免费契约 `pricing_unsupported` 不动。功能、协议、契约更新与验证边界见[理发店网格说明](理发店目录图标网格与共享外观服务动效-2026-09-08.md)。
 
