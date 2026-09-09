@@ -15,7 +15,7 @@ Host 全量 4,863 passed / 3 existing skipped / 0 failed，定向 53/53；实际
 
 发布准备还修复两项既有来源漂移：task-catalog 从既有任务真源重派生“人修罗”显示名；heeho 商店头像按当前地图重新完整提取，manifest 与全部 34 张 PNG 字节不变，仅 provenance/回执与固定 SWF 符号链更新为 464→269→267。初次预检 39/40 的失败回执及旧 request `195999BA77E27A4DB346BD0168E19FFB5F8F65F4B05DD673B4D1CBA7038E12E4` 保留为历史，旧 request 已 supersede，均不用于部署。
 
-原始与机器证据保留在本工作树 `tmp/focus-implementation/`、`tmp/runtime-cloud-results/` 以及本机 `C:/qfocus9`；上一 bundle 位于 `tmp/runtime-promotions/20260909T151948580Z-bf7f922255cd4d2bb83bbb925a5daa19/previous`。后续合流先核对当时仓库基线与 AGENTS，再合并重叠的 `StageRunSession.as` 等源代码并重编组合后的 asLoader，不能直接用本分支 SWF 覆盖另一任务的编译结果；新的发布源码树需要对应的冻结、政策回执与证明绑定。独立分支远端 Audit 状态另行记录，不预填通过。
+原始与机器证据保留在本工作树 `tmp/focus-implementation/`、`tmp/runtime-cloud-results/` 以及本机 `C:/qfocus9`；上一 bundle 位于 `tmp/runtime-promotions/20260909T151948580Z-bf7f922255cd4d2bb83bbb925a5daa19/previous`。后续合流先核对当时仓库基线与 AGENTS，再合并重叠的 `StageRunSession.as` 等源代码并重编组合后的 asLoader，不能直接用本分支 SWF 覆盖另一任务的编译结果；新的发布源码树需要对应的冻结、政策回执与证明绑定。独立分支部署提交 `9103dfc4ded993fc92ce81ba04ad599318a9a431` 已推送；[远端 Audit 34370287794](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34370287794) 成功，绑定该 head、`workflow_dispatch / run_attempt=1`，于 `2026-09-09T15:31:56Z` 输出 `state=promoted / mode=Audit / deploymentChanged=true / forcedDeploymentVerification=true`，独立重放 33-file closure 与 2 signers / 2 faultDomains。该审计覆盖上述部署提交；后续审计回执文档提交不改变部署字节，也不代表原安装目录已切换。
 
 ## 2026-09-09 原安装目录发布记录：理发店目录网格与共享外观服务动效
 
