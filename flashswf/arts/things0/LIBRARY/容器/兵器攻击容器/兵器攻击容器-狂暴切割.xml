@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-狂暴切割" itemID="6a6e7c3d-00001992" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-狂暴切割" lastModified="1785769190" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-狂暴切割" itemID="6a6e7c3d-00001992" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-狂暴切割" lastModified="1788972041" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-狂暴切割">
+    <DOMTimeline name="兵器攻击容器-狂暴切割" currentFrame="36">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -571,7 +571,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -597,7 +597,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
             <DOMFrame index="4" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -619,7 +619,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
             <DOMFrame index="8" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -641,7 +641,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
             <DOMFrame index="12" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -663,7 +663,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
             <DOMFrame index="16" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -685,7 +685,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
             <DOMFrame index="20" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -707,7 +707,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
             <DOMFrame index="24" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -851,7 +851,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -869,21 +869,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -939,21 +939,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1012,21 +1012,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1085,21 +1085,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1158,21 +1158,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1231,21 +1231,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1304,21 +1304,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1377,21 +1377,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1433,7 +1433,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
             </DOMFrame>
             <DOMFrame index="35" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="160.2" centerPoint3DY="353.45">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="160.2" centerPoint3DY="353.45">
                   <matrix>
                     <Matrix a="43.4637145996094" d="18.0646362304688" tx="332.9" ty="14.2"/>
                   </matrix>
@@ -1444,21 +1444,21 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.2;
+	var 耗蓝量 = 自机.mp * 0.02;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 2;
+	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power * 自机.被动技能.刀剑攻击.等级/10;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级 / 10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -3652,7 +3652,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <Matrix a="-1.26632690429688" b="0.90167236328125" c="-0.954925537109375" d="-0.0414276123046875" tx="203.2" ty="-238.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.85" y="110.15"/>
+                    <Point x="1.85" y="110.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="123.65" centerPoint3DY="-197.05">
@@ -5396,7 +5396,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <Matrix a="-1.26632690429688" b="0.90167236328125" c="-0.954925537109375" d="-0.0414276123046875" tx="203.2" ty="-238.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.85" y="110.15"/>
+                    <Point x="1.85" y="110.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="123.65" centerPoint3DY="-197.05">
@@ -7140,7 +7140,7 @@ if(_parent.攻击目标 && _parent.攻击目标 != "无" && 是否追踪){
                     <Matrix a="-1.26632690429688" b="0.90167236328125" c="-0.954925537109375" d="-0.0414276123046875" tx="203.2" ty="-238.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1.85" y="110.15"/>
+                    <Point x="1.85" y="110.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="123.65" centerPoint3DY="-197.05">

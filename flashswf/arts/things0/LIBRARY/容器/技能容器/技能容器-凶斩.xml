@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-凶斩" itemID="694abde8-0000469b" linkageExportForAS="true" linkageIdentifier="技能容器-凶斩" lastModified="1769694923">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-凶斩" itemID="694abde8-0000469b" linkageExportForAS="true" linkageIdentifier="技能容器-凶斩" lastModified="1788970640">
   <timeline>
-    <DOMTimeline name="技能容器-凶斩" currentFrame="43">
+    <DOMTimeline name="技能容器-凶斩" currentFrame="22">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -72,7 +72,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <Actionscript>
@@ -208,7 +208,7 @@ function 消弹()
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -231,7 +231,7 @@ function 消弹()
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" selected="true" centerPoint3DX="-59.2" centerPoint3DY="301">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-59.2" centerPoint3DY="301">
                   <matrix>
                     <Matrix tx="-59.2" ty="301"/>
                   </matrix>
@@ -2703,11 +2703,11 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 36" color="#FF4FFF" current="true" isSelected="true">
+        <DOMLayer name="图层 36" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

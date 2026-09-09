@@ -1,16 +1,16 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" itemID="6965fa98-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-幻影剑舞" lastModified="1785769263" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-幻影剑舞" itemID="6965fa98-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-幻影剑舞" lastModified="1788971488" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-幻影剑舞" currentFrame="5">
+    <DOMTimeline name="兵器攻击容器-幻影剑舞" currentFrame="6">
       <layers>
-        <DOMLayer name="左手-2" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" name="幻影剑舞" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码相关" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -85,14 +85,14 @@ _root.播放音效("战斗-挥舞(16).mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="消弹" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="消弹" color="#4F80FF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
@@ -213,14 +213,14 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击点" color="#FF4F4F" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="攻击点" color="#FF4F4F" parentLayerIndex="1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" selected="true" centerPoint3DX="169.6" centerPoint3DY="-189.1">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" name="攻击点" centerPoint3DX="169.6" centerPoint3DY="-189.1">
                   <matrix>
                     <Matrix a="43.6049957275391" d="10.7317810058594" tx="343.65" ty="-104.35"/>
                   </matrix>
@@ -418,7 +418,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="兵器使用检测" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements>
@@ -434,7 +434,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="兵器攻击检测" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements>
@@ -450,7 +450,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="攻击时移动" color="#4F80FF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -501,7 +501,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -527,7 +527,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刚体标签" color="#4FFFFF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刚体标签" color="#4FFFFF" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements>
@@ -543,7 +543,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="无敌标签" color="#808080" parentLayerIndex="1" autoNamed="false">
+        <DOMLayer name="无敌标签" color="#808080" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -583,17 +583,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
+	}
+	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
+	{
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -656,21 +660,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -726,21 +730,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -796,21 +800,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -866,21 +870,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -936,21 +940,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1006,21 +1010,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1076,21 +1080,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1135,14 +1139,14 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="169.2" centerPoint3DY="143.2">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="169.2" centerPoint3DY="143.2">
                   <matrix>
                     <Matrix a="43.6207427978516" d="9.86709594726563" tx="343.85" ty="-94.1"/>
                   </matrix>
@@ -1153,21 +1157,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1223,21 +1227,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1293,21 +1297,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1363,21 +1367,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1433,21 +1437,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1503,21 +1507,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1573,21 +1577,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1643,7 +1647,7 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
@@ -1653,11 +1657,11 @@ function 消弹()
 	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1713,21 +1717,21 @@ function 消弹()
                     <script><![CDATA[onClipEvent(load){
 	子弹属性 = _root.子弹属性初始化(this);
 	var 自机 = _parent._parent;
-	var 耗蓝量 = 自机.mp * 0.1;
+	var 耗蓝量 = 自机.mp * 0.01;
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战子弹";
 	
-	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power + 自机.内力 + 耗蓝量;
+	子弹属性.子弹威力 = 自机.空手攻击力 / 5 + 自机.刀属性.power * 2 + 自机.内力 + 耗蓝量;
 	if(自机.被动技能.刀剑攻击 && 自机.被动技能.刀剑攻击.等级)
 	{
-		子弹属性.子弹威力 *= 自机.被动技能.刀剑攻击.等级;
+		子弹属性.子弹威力 += 自机.刀属性.power  * 自机.被动技能.刀剑攻击.等级/20;
 	}
 	if(自机.被动技能.下劈 && 自机.被动技能.下劈.等级)
 	{
-		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级;
+		子弹属性.子弹威力 += (自机.空手攻击力 / 5 + 自机.刀属性.power) * 自机.被动技能.下劈.等级/10;
 	}
 	
 	子弹属性.子弹速度 = 0;
@@ -1772,7 +1776,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13 复制" color="#9933CC" autoNamed="false">
+        <DOMLayer name="图层 13 复制" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -2055,7 +2059,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13 复制" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="图层 13 复制" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -2141,7 +2145,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 13" color="#4FFFFF">
+        <DOMLayer name="图层 13" color="#4FFFFF" locked="true">
           <frames>
             <DOMFrame index="0" duration="31" keyMode="9728">
               <elements/>
@@ -2397,7 +2401,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="8" color="#FF800A" autoNamed="false">
+        <DOMLayer name="8" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -4117,7 +4121,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="1" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="1" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -4210,7 +4214,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="1" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="1" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -5513,7 +5517,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="2" color="#808080" autoNamed="false">
+        <DOMLayer name="2" color="#808080" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -5587,7 +5591,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="2" color="#00FFFF" autoNamed="false">
+        <DOMLayer name="2" color="#00FFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -7535,7 +7539,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="3" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="3" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -7568,7 +7572,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="3" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="3" color="#FF4F4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -9260,7 +9264,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="3" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="3" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="13" keyMode="9728">
               <elements/>
@@ -9360,7 +9364,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="4" color="#FF800A" autoNamed="false">
+        <DOMLayer name="4" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -9434,7 +9438,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="4" color="#9933CC" autoNamed="false">
+        <DOMLayer name="4" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements/>
@@ -10902,7 +10906,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="5" color="#4F80FF" autoNamed="false">
+        <DOMLayer name="5" color="#4F80FF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -10976,7 +10980,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="5" color="#FF4F4F" autoNamed="false">
+        <DOMLayer name="5" color="#FF4F4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="18" keyMode="9728">
               <elements/>
@@ -12519,7 +12523,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="6" color="#009999" autoNamed="false">
+        <DOMLayer name="6" color="#009999" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -12591,8 +12595,8 @@ function 消弹()
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1546 -10939[2137 -11735 6861 -9581!6861 -9581[11581 -7430 14581 -3586!14581 -3586[17583 257 17102 3536!17102 3536[16647 6669 13264 7538!13264 7538[13108 7579 12945 7613!12945 7613[10795 8079 8289 7538!8289 7538[6506 7153 4543 6257!4543
- 6257[-179 4102 -3181 260!-3181 260[-6181 -3581 -5702 -6860!-5702 -6860[-5222 -10138 -1546 -10939"/>
+!13264 7538[13108 7579 12945 7613!12945 7613[10795 8079 8289 7538!8289 7538[6506 7153 4543 6257!4543 6257[-179 4102 -3181 260!-3181 260[-6181 -3581 -5702 -6860!-5702 -6860[-5222 -10138 -1546 -10939!-1546 -10939[2137 -11735 6861 -9581
+!6861 -9581[11581 -7430 14581 -3586!14581 -3586[17583 257 17102 3536!17102 3536[16647 6669 13264 7538"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -12602,7 +12606,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="6" color="#9933CC" autoNamed="false">
+        <DOMLayer name="6" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
@@ -14070,7 +14074,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="7" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="7" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -14196,7 +14200,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="7" color="#9933CC" autoNamed="false">
+        <DOMLayer name="7" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <elements/>
@@ -15720,7 +15724,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#FF800A" autoNamed="false">
+        <DOMLayer name="刀" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -15766,7 +15770,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="左上臂_2" color="#9933CC" autoNamed="false">
+        <DOMLayer name="左上臂_2" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
@@ -15806,7 +15810,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀" color="#669900" autoNamed="false">
+        <DOMLayer name="刀" color="#669900" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -16776,11 +16780,11 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="阴影" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="阴影" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="42" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" selected="true" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>
                     <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
                   </matrix>

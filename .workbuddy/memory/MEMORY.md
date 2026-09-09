@@ -79,3 +79,9 @@ Web 输入框 → C# `SettingsTask` → AS2 `GameSettingsPanelService`，三段�
 ### 编辑 XFL 的坑
 
 Flash CS6 若正开着同项目，外部改 XFL 会触发它自动保存，顺带重写 `META-INF/metadata.xml`、`bin/SymDepend.cache` 和部分元件 xml（Edge 路径重排，几何等价但 diff 巨大）。看到非预期 diff 先查 `xmp:CreatorTool` / `MetadataDate` 判断是不是 CS6 写的，别误判成自己的改动
+
+### 深度管理器与 swapDepths 接管的坑（2026-09-09）
+
+- Twip Trick 后单位都在 0~1048575 高深度带；authored 元件 native `swapDepths(this._y)` 只落几百的低带 → 永远被玩家压住。凡遇"地图元件/NPC 不再和玩家交换层级"，先查它有没有被 DepthManager 接管
+- authored 子级的 onClipEvent(load)（含 初始化NPC）在 attachMovie 时同步执行，**早于** initGameWorld 创建本场景 DepthManager（此时 instance=null，AVM1 静默空操作）→ 初始化NPC 里的注册/劫持在场景加载时序下不可靠。兜底：SceneManager.initGameWorld → hijackAuthoredChildren（续38）
+- 素材库出生点的 `swapDepths(-this._y)` = "永远在最底"；劫持后被钳到 yMin 桶，语义保持

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-截拳1连招" itemID="6964ce51-00002614" linkageExportForAS="true" linkageIdentifier="空手攻击容器-截拳1连招" lastModified="1772042981">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-截拳1连招" itemID="6964ce51-00002614" linkageExportForAS="true" linkageIdentifier="空手攻击容器-截拳1连招" lastModified="1788973802">
   <timeline>
-    <DOMTimeline name="空手攻击容器-截拳1连招" currentFrame="60">
+    <DOMTimeline name="空手攻击容器-截拳1连招">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -172,7 +172,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -619,7 +619,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="55" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="154.35" centerPoint3DY="22.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" selected="true" centerPoint3DX="154.35" centerPoint3DY="22.7">
                   <matrix>
                     <Matrix a="2.85794067382813" d="1.2803955078125" tx="155.7" ty="22.25"/>
                   </matrix>
@@ -920,7 +920,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements/>
@@ -1065,7 +1065,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="60" duration="5" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-357.25" centerPoint3DY="-370.6">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-357.25" centerPoint3DY="-370.6">
                   <matrix>
                     <Matrix a="2.71781921386719" d="2.71781921386719" tx="-392.2" ty="-405.4"/>
                   </matrix>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑攻" itemID="6919e2a5-00001141" lastModified="1782243349" lastUniqueIdentifier="171">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/空手跑攻" itemID="6919e2a5-00001141" lastModified="1788969193" lastUniqueIdentifier="171">
   <timeline>
-    <DOMTimeline name="空手跑攻" currentFrame="123">
+    <DOMTimeline name="空手跑攻" currentFrame="35">
       <layers>
         <DOMLayer name="连段标识" color="#AAB49D" locked="true" autoNamed="false">
           <frames>
@@ -537,7 +537,7 @@ _root.播放音效("sao_1.mp3");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#ADA948" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 2" color="#ADA948" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1332,7 +1332,7 @@ if (!抓取 && 蓄力 && 蓄力>=20 && Math.abs(_parent.Z轴坐标 - _root.gamew
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹&amp;变招" color="#C69F88" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="子弹&amp;变招" color="#C69F88" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements>
@@ -1463,9 +1463,9 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="34" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="抓取碰撞箱" centerPoint3DX="81.65" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="抓取碰撞箱" selected="true" centerPoint3DX="37.25" centerPoint3DY="44.7">
                   <matrix>
-                    <Matrix a="8.02647399902344" d="1.91461181640625" tx="84.15" ty="43.85"/>
+                    <Matrix a="5.38710021972656" d="1.91461181640625" tx="39" ty="43.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="0.4"/>
@@ -1543,7 +1543,7 @@ _parent.play();
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" name="抓取碰撞箱" centerPoint3DX="13.6" centerPoint3DY="44.7">
                   <matrix>
-                    <Matrix a="7.06028747558594" d="1.91461181640625" tx="15.75" ty="43.85"/>
+                    <Matrix a="4.71208190917969" d="1.91461181640625" tx="15.1" ty="43.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="0.4"/>
@@ -1619,9 +1619,9 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="40" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="0.3" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="47.2" centerPoint3DY="44.7">
                   <matrix>
-                    <Matrix a="4.97184753417969" d="1.91461181640625" tx="1.95" ty="43.85"/>
+                    <Matrix a="3.09835815429688" d="1.91461181640625" tx="48.25" ty="43.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.3" y="0.4"/>
@@ -1632,7 +1632,7 @@ _parent.play();
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 5;
+	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
@@ -1652,6 +1652,7 @@ _parent.play();
 		if(_parent.蓄力 >= 25){
 			子弹属性.暴击倍率 = 6 + Math.floor(_parent.蓄力 / 10);
 			子弹属性.击倒率 = 0.05;
+			子弹属性.霰弹值 += 2;
 		}else{
 			子弹属性.暴击倍率 = 2.5 + Math.floor(_parent.蓄力 / 10);
 		}
@@ -1696,12 +1697,12 @@ _parent.play();
             </DOMFrame>
             <DOMFrame index="43" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="-26.4" centerPoint3DY="44.7">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="54" centerPoint3DY="44.7">
                   <matrix>
-                    <Matrix a="5.50389099121094" d="1.91461181640625" tx="-24.5" ty="43.85"/>
+                    <Matrix a="2.947998046875" d="1.91461181640625" tx="55.25" ty="43.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-0.3" y="0.4"/>
+                    <Point x="-0.35" y="0.4"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
@@ -1709,7 +1710,7 @@ _parent.play();
 	
 	//以下部分只需要更改需要更改的属性,其余部分可注释掉
 	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 6;
+	子弹属性.霰弹值 = 3;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "近战联弹";
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
@@ -1732,6 +1733,7 @@ _parent.play();
 		}else if(_parent.蓄力 >= 25){
 			子弹属性.暴击倍率 = 8 + Math.floor(_parent.蓄力 / 10);
 			子弹属性.击倒率 = 0.05;
+			子弹属性.霰弹值 += 3;
 		}else{
 			子弹属性.暴击倍率 = 3.5 + Math.floor(_parent.蓄力 / 10);
 		}
@@ -3972,7 +3974,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
