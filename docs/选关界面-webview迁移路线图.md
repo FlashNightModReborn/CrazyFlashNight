@@ -9,7 +9,7 @@
 > （详见脚本顶部退役说明 / 第 2 节）。约束：`stageButton.id` 必须全局唯一，改后跑
 > `node tools/audit-stage-select-layout.js`（已含重复 id 检测 + 渲染计数基线）。
 
-## 2026-09-09 废城固定镜头首版（当前施工范围）
+## 2026-09-09 废城固定镜头首版（当前发布范围）
 
 本轮已扩展为「快捷选关 + 双栏聚焦」：所有地图共用信息和出战操作，`基地门口` 使用 V10 C 三维场景；其余 15 页继续二维地图。废城模型失败或 WebGL context lost 显示重试并保留关闭，**废城不做 2D fallback**。本段覆盖下文 Stage 3 早期成本/门控设想，不承诺全量建模，不改 AS2 既有通信失败路径。
 
@@ -54,7 +54,7 @@
 
 本轮本地结果：选关回归在 1366/1920 两种视口各 57/57，三维专项 11 项、聚焦专项 5 组、Host 选关相关 29 项通过；asLoader 已获得新鲜 SWF 和 compiler 0/0。地图集成门的 runId `416e7ef0400e4841992471ba0cb56037` 为唯一闭合块，798 passed / 0 failed、32K retry=0、compiler 0/0，临时 TestLoader 已恢复。上述均不替代下述真实游戏旅程。
 
-本轮已获授权合并上游并按双故障域共识流程发布，发布身份和实际部署状态以 [runtime 构建记录](runtime-build-reproducibility.md) 为准。浏览器 mock Host 与 Flash TestLoader 的证据不等于正式 WebView2→Host→AS2 进关、真实通关后保存/重启回读；正式玩家反馈和游戏复验仍待收集，不称本功能 `standard_entry_verified`。
+本轮已合并上游并完成双故障域共识、40/40 发布检查和原子部署，发布身份和实际部署状态以 [runtime 构建记录](runtime-build-reproducibility.md) 为准。浏览器 mock Host 与 Flash TestLoader 的证据不等于正式 WebView2→Host→AS2 进关、真实通关后保存/重启回读；正式玩家反馈和游戏复验仍待收集，不称本功能 `standard_entry_verified`。
 
 ### 首轮玩家反馈重点
 

@@ -2,7 +2,27 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-09 当前正式发布：理发店目录网格与共享外观服务动效
+## 2026-09-10 当前正式发布：废城三维选关与全地图双栏详情
+
+废城使用真实建筑高亮与相机特写，保留悬停卡片直接出战，点击地点进入全地图共用的双栏详情；新增游览、双手镜头操作、可收起的开发取景工具，以及真实通关后公开的奖励图标和敌人头像情报。其余 15 页保留二维地图与完整详情。功能、存档边界和首轮玩家反馈清单见[选关迁移说明](选关界面-webview迁移路线图.md)。
+
+- release source `b05a84ee7633779edd42baa93089006557624149`；不可变 tag `runtime-build-v2/20260910-stage-select-diorama-v2`；release tree `177ef20253a234d53d30d7e37f151e75e7eacaf8`；request `9AEEDAD23E7A4325214DD52188A9D5FA0D79F08CC3BA92D22330AD0DBFBFC31F`。
+- artifact source `43965DC335516E8B9B9A7A1E699B1CD52D68BE48D74F7199945B6C07E9AC3C1A`、producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`、toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `E9A5CB8B197E9E11613A73AFEE0C5948FA2775CD7605478491034F28C01BBB07`；33-file payload closure `45928E8531265638F61CD7E8260B6DA4F9F6205FC795E8164CA18359B850FA5F`；Core DLL SHA-256 `8F55BCB6C9541A21B2BA622251F821ADCC6482F36A0C7AE2B23AF8B80C9420FA`。本轮 Web / AS2 改动没有改变 native payload；两端正式产物与上一正式版本逐字节相同，新 release tree / policy / source tag 独立绑定本轮源码。
+- 本地 X509 `builder-local-b / physical-host-b`，keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `24043A4F8AAAAEE1B7A3F601C303405ED75A96D58FC876D387B8F34640347D58`，[cloud run 34378803135](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34378803135)。source tag、workflow SHA、run headSha 均绑定本轮 source；attestation-only 证明已在 promotion 中对本地 CAS 完整重放。
+- production policy **40/40**；policy hash `4C99275CD6AD75F3B4A73CC76B53B5E3202FB1FEF52F6DD89D3D7953D02A4540`；receipt SHA-256 `286641F0CE04E6B6622D905ED68BB5E797EE0755EA5067AFF9BCB0B526314D0B`；manifest SHA-256 `C8992F8C9B8130AB3595F1687A5C03B79480C9200E1ACE183AFEA7BDE9511199`；磁盘 consensus SHA-256 `E58F9FC981BDE9E1495C22930547DD056DDF6CBD50664BD5FD422E8EBD040945`。
+- consensus 记录 promotion 时间 `2026-09-09T17:00:03.2035605Z`；原子 promotion、strict v2 **2 signers / 2 faultDomains**、33-file bundle 与正式根 bootstrap `--verify-only` 均通过。上一完整 bundle 保留于 `tmp/runtime-promotions/20260909T165905219Z-d36145c1107d4174abdde53a0f992727/previous`。
+
+上游合并 3 个提交，保留大学宿舍储物柜修复、问题登记和 NPC 作弊码。唯一冲突为 `scripts/asLoader.swf`，已由合并后的源码重新发布：1,295,111 字节，SHA-256 `20E35C97DEB653706533E032CEB74F74333A6D3DAA8B61FCD1107E5D7C1F679D`，fresh Compiler **0/0**，新产物同时检出 `StageClearHistory` / `clearHistory` 与强制显示 NPC 符号；publish 模式不把旧 trace 当新测试。prepare 的 16 项产物已对齐，并补齐任务目录中人修罗名称及接任务提示。
+
+首个 request `BBC274B58DE08B15410F704B28467E61C9D9BE4022D23E911D70DF60A1367CC0` / tag `runtime-build-v2/20260909-stage-select-diorama-v1` / [cloud run 34376555533](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34376555533) 已完成构建，但 policy **39/40** 因上游彩蛋地图变化使商店头像 provenance 失配而停止，未 promotion。正式生成器重新解析 linkage 与 XFL 放置矩阵，heeho 链更新为 **464→269→267**；34 张头像 PNG 和 manifest 字节不变，仅刷新来源/receipt 并同步精确链断言，未放宽身份检查。最终请求已 supersede 首个请求；原生 identity 不变，本地已签名 CAS 按规范复用。另将外观服务重复文本颜色合并为既有变量，rawColor 上限 2088→2087；历史基线审计的存量触碰行不冒充通过，正式冻结树严格审计和 67/67 ratchet 回归均通过。
+
+功能实现阶段已通过两种视口各 **57/57** 选关回归、三维专项 **11** 项、聚焦 **5** 组、游览和紧凑情报各 **3** 组、Host 选关 **29** 项；AS2 地图集成 **798 passed / 0 failed**，runId `416e7ef0400e4841992471ba0cb56037`，compiler **0/0**、32K retry=0。上游合并后另做上述 fresh publish 与双侧符号检查。这些证据不替代正式 WebView2→Host→AS2 出战、真实通关后保存/重启回读和玩家手感。
+
+当前为 **promoted / FIELD_REVALIDATION_PENDING**。维护者已授权先发布收集体验反馈；重点为快捷出战、聚焦信息密度、游览操作、二维页详情和通关情报持久化，不称本功能 `standard_entry_verified`。部署提交与远端审计待补录。
+
+本轮没有新建 Git worktree，首次本地 worker 的隔离 checkout 已自动清理。worker 另提示共享缓存根中既有请求前缀 `84ae52d278f3`、`8b2dfdf49175`、`b650df8f2817` 的三个遗留目录，本轮未创建或删除；现有其他任务 worktree 保持不动。
+
+## 2026-09-09 上一正式发布：理发店目录网格与共享外观服务动效
 
 理发店目录改为 manifest 发型图标网格（紧凑 / 完整双密度、性别页签、当前发型卡与变更摘要），新增全身 / 脸部特写预览切换（共享主体取景、试戴场景不遮发、旧 asLoader 缺 `portrait` 完全降级）；服务面板共享换装扫描光与微交互基线，整形补语义音效、共享红色错误行与身高过渡；hairdresser snapshot 新增可选 `portrait` 装备投影，Host 缺失放行、存在严格校验，新旧 Core 与 asLoader 双向偏斜安全；发型免费契约 `pricing_unsupported` 不动。功能、协议、契约更新与验证边界见[理发店网格说明](理发店目录图标网格与共享外观服务动效-2026-09-08.md)。
 
