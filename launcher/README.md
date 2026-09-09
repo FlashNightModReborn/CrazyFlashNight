@@ -2,15 +2,15 @@
 
 **文档角色**：Guardian Launcher 子系统 source of truth。这里维护稳定架构、运行边界、入口、配置、协议注册表和验证路由；项目总览见 [README](../README.md)，任务路由见 [AGENTS](../AGENTS.md)。<br>
 **最后核对代码基线**：release source `1d03e77cb2666a4686e41ab4a647e180d2e5d0bc`（2026-09-09，理发店目录网格与 portrait 投影）；正式发布状态只读 manifest、consensus 与 runtime 文档。军阀专项边界另见[基础闭环施工交接](../docs/军阀-基础闭环施工交接-2026-09-05.md)。
+
 ## 当前真值与阅读顺序
 
-正式 runtime 的可变身份、文件闭包和 promotion 时间只以以下机器或发布真源为准，本 README 不复制发布收据：
+选关双栏聚焦：废城使用独立 Three r180 建筑特写，其余页提供二维定位；共用简报/通关情报与出战区，开发取景仅存本机预设。单模型按需绘制，废城故障只重试/关闭。协议、资源及验证见[选关施工范围](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前施工范围)。正式发布身份只读下列真源：
 
 - [runtime release consensus](../config/build/runtime-release-consensus.json)：request、release tree、build identity、payload closure、签名共识与 promotion 时间。
 - [runtime manifest](../runtime/cf7-runtime-manifest.tsv)：正式入口与 `runtime/` 的逐文件大小、SHA-256 和构建身份。
 - [runtime build reproducibility](../docs/runtime-build-reproducibility.md)：当前发布列车、状态边界、双 signer/双 faultDomain 流程和历史列车。
 - [testing guide](../agentsDoc/testing-guide.md)：当前验证矩阵及专项 E2E 边界；C#/Web 字体改动另读 [字体 Gate E ADR](../docs/字体资产目录与语义角色解析-ADR-2026-08-20.md)、[字体目录](../fonts/README.md) 与 [fontctl](../tools/fontctl/README.md)。Web/Native 消费者、打包层和生产闭包已切换，维护者人工观感已接受；正式部署状态仍只读 runtime consensus 与标准入口证据。
-
 新接手建议依次阅读：本文的“系统边界” → “运行架构” → “源码职责地图” → “构建、候选与发布” → “测试入口与证据边界”。改 AS2/Web Panel 再读 [AS2 → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)；改双栏工作台交互或样式再读 [Workbench UI System](../agentsDoc/workbench-ui-system.md)。
 
 ## 系统边界

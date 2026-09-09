@@ -565,6 +565,110 @@
     background: rgb(var(--ss-stage-bg-rgb));
 }
 
+.stage-select-diorama {
+    position: absolute;
+    inset: 0;
+    background: rgb(var(--ss-stage-bg-rgb));
+}
+.stage-select-diorama[hidden] { display: none; }
+.stage-select-diorama-canvas { display: block; width: 1024px; height: 576px; }
+.stage-select-diorama-status {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--ss-text-rgb));
+    background: rgba(var(--ss-black-rgb), 0.65);
+}
+.stage-select-diorama-status[hidden] { display: none; }
+.stage-select-diorama-status button {
+    min-width: 72px;
+    min-height: 40px;
+    border: 1px solid rgb(var(--ss-line-rgb));
+    background: rgb(var(--ss-surface-rgb));
+    color: inherit;
+    cursor: pointer;
+}
+.stage-select-panel.is-diorama .stage-select-bg { visibility: hidden; }
+.stage-select-panel.is-diorama .stage-select-button-layer {
+    z-index: 2;
+    pointer-events: none;
+}
+/* 地点的 hover/focus 提升只发生在地点层内，不能盖住独立的关卡卡片。 */
+.stage-select-panel.is-diorama .stage-select-card-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    pointer-events: none;
+}
+.stage-select-panel.is-diorama .stage-select-stage-button {
+    transform: translate(-20px, -20px);
+    pointer-events: auto;
+}
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-marker {
+    display: block;
+    left: 7px;
+    top: 7px;
+    width: 26px;
+    height: 26px;
+}
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-hit-zone {
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+}
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name {
+    position: absolute;
+    left: calc(20px + var(--diorama-label-x));
+    top: calc(20px + var(--diorama-label-y));
+    transform: translate(-50%, -50%);
+    width: max-content;
+    max-width: 140px;
+    min-height: 28px;
+    padding: 5px 8px;
+    line-height: 18px;
+    visibility: visible;
+    background: rgba(var(--ss-header-rgb), 0.9);
+    border: 1px solid rgba(var(--ss-line-rgb), 0.45);
+    box-shadow: 0 2px 4px rgba(var(--ss-black-rgb), 0.45);
+}
+.stage-select-panel.is-diorama .stage-select-stage-button.is-selected > .stage-select-stage-name {
+    border-color: rgb(var(--ss-selected-rgb));
+}
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task > .stage-select-stage-name {
+    border-left: 3px solid rgb(var(--ss-task-rgb));
+}
+/* 名称也是点击区；三维布局不能沿用旧 hover 时隐藏名称/标记的规则。 */
+.stage-select-panel.is-diorama .stage-select-stage-button:not(.is-locked):not(.is-selected):is(:hover, :focus) > .stage-select-stage-name {
+    visibility: visible;
+}
+.stage-select-panel.is-diorama .stage-select-stage-button:not(.is-locked):not(.is-selected):is(:hover, :focus) > .stage-select-marker {
+    display: block;
+}
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-lock {
+    left: 11px;
+    top: 6px;
+}
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-task-pulse {
+    left: -2px;
+    top: -2px;
+}
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-selected-ring {
+    left: -4px;
+    top: -4px;
+}
+.stage-select-panel.is-diorama .stage-select-card-anchor { transform: none; }
+.stage-select-panel.is-diorama .stage-select-card-anchor > .stage-select-card {
+    left: 0;
+    top: 0;
+}
+.stage-select-panel.is-diorama .stage-select-button-layer[inert],
+.stage-select-panel.is-diorama .stage-select-card-layer[inert] { visibility: hidden; }
+
 .stage-select-bg {
     position: absolute;
     left: 0;

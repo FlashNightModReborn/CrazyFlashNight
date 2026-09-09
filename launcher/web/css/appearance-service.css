@@ -5,8 +5,9 @@
 }
 
 .appearance-service-shell {
+    --appearance-text: #edf0f2;
     overflow: hidden;
-    color: #edf0f2;
+    color: var(--appearance-text);
     font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
 }
 
@@ -20,7 +21,6 @@
     --appearance-surface-raised: #181e24;
     --appearance-line: #343d46;
     --appearance-line-soft: #252c33;
-    --appearance-text: #edf0f2;
     --appearance-muted: #9ca7b0;
     --appearance-accent: var(--wb-semantic-info);
     --appearance-success: var(--wb-semantic-success);

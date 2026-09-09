@@ -1,13 +1,60 @@
 # 选关界面 WebView 迁移路线图
 
 **文档角色**：`flashswf/UI/选关界面` 到 Launcher WebView panel 的 canonical migration doc。  
-**当前阶段**：Stage 2 Step 2 工程实现已落地；正式选关入口走 Web `stage-select`，普通关卡结算按既有目的地返回并停留在 Flash，旧 Flash `关卡地图` 保留为通信失败 fallback。Stage 3 已完成路线评估，获准进入单战区门控原型，不代表承诺 16 页全量 3D 化。
+**当前阶段**：Stage 2 Step 2 工程实现已落地；正式选关入口走 Web `stage-select`，普通关卡结算按既有目的地返回并停留在 Flash，旧 Flash `关卡地图` 保留为通信失败 fallback。Stage 3 已实现废城三维试点和全地图双栏聚焦，本地验证与正式游戏复验分开记录，不代表承诺 16 页全量 3D 化。
 
 > **`.fla` 退役（2026-06）**：地图/选关界面已完全迁移至 web。`flashswf/UI/选关界面` 不再作为可再生 SOT，
 > 仅保留为冻结历史参照。`launcher/web/modules/stage-select-data.js` 现为**唯一权威 SOT，允许直接手改**
 > （新增外交地图据点等条目直接编辑本文件，不回写 .fla）。导出器 `--write-module` 默认拒绝覆盖手写 SOT
 > （详见脚本顶部退役说明 / 第 2 节）。约束：`stageButton.id` 必须全局唯一，改后跑
 > `node tools/audit-stage-select-layout.js`（已含重复 id 检测 + 渲染计数基线）。
+
+## 2026-09-09 废城固定镜头首版（当前施工范围）
+
+本轮已扩展为「快捷选关 + 双栏聚焦」：所有地图共用信息和出战操作，`基地门口` 使用 V10 C 三维场景；其余 15 页继续二维地图。废城模型失败或 WebGL context lost 显示重试并保留关闭，**废城不做 2D fallback**。本段覆盖下文 Stage 3 早期成本/门控设想，不承诺全量建模，不改 AS2 既有通信失败路径。
+
+### 交互与信息
+
+- 总览：悬停普通节点弹出附近卡片，点击难度直接进关，不移动相机。卡片独立于地点层，覆盖名称/标记并避开自身入口。原任务聚焦与选中 CSS 动画、减少动态效果设置继续保留。外交/任务直达入口仍一步执行。
+- 点击/键盘激活普通节点：进入共享 `DualPaneShell` 的 `stage-focus` profile，最低逻辑画布 1024×576，左侧约 60% 地点、右侧约 40% 简报/情报。难度按钮只改变本地选择，唯一「以某难度出发」按钮提交既有 enter intent。锁定地点保留原因且不提供出战。返回总览或 Esc 取消详情并恢复节点焦点；关闭选关结束面板。
+- 废城：每个原有稳定 `stageButton.id` 绑定交付模型中的建筑组（16 个入口共用 13 组），悬停/选中高亮对应实体。默认特写按建筑包围盒居中和适配大小，约 400ms 过渡，减少动态效果时直接就位。二维页左栏用原地图突出当前位置，右栏功能一致，不向玩家标注制作进度。
+- 简报默认先展示关内图片，再展示已有简介；限制和任务推荐保留。标题、关卡类型、通关状态与简报/情报页签共用紧凑单行，多难度记录显示数量并通过提示查看完整列表。正文使用工作台深色滚动条，不再用浏览器原生折叠组件。新增情报在真实通关后公开：配置中的可能奖励池、固定波次常规敌人种类；不展示随机概率、事件/条件分支单位、波次时间，也不把奖励池称为必得。旧存档缺少记录时显示暂无通关记录并说明需要再完成一次。
+- 奖励采用 42px 静态图标格，敌人采用 48px 头像格；复用结算使用的 `Icons`、`EnemyPortraits` 与 `PanelTooltip`，不接入结算领取/背包写操作。名称通过游戏内悬停/键盘提示与 aria-label 保留；图片缺失时保留轮廓占位。头像按派生的 `portraitRef = units.spritename` 解析，显示名不作资源键。切页、关闭、历史撤销均释放提示绑定，迟到图标加载不能改写下一关内容。
+- 标题下的历史区域承载已完成难度，保留后续个人记录/评分的排版位置；未实现的评分不生成数值、按钮或空页签。
+
+### 权威、派生和持久化
+
+- `stage-select-data.js` 与运行时 snapshot 继续决定身份、解锁、任务与进关。`stage-select-diorama-data.js` 只承载相机、稳定 ID、建筑和标签锚点；相机改变后的 DOM 标签、卡片和方向键导航消费同一投影。
+- `StageRunSession.claimVictoryCompletion()` 在一次真实胜利提交资格内调用 `StageClearHistory.record(stageName, actualDifficulty)`。不会从「进入/发现过」、任务推荐难度或递归完成低难度任务要求推断通关；失败、撤退、重复回调不增加记录。
+- 存储为现有 `_root._saveExt.stageHistory = {version:1, stages:{"stage:关卡名":{difficulties:["简单", ...]}}}`；复用原 ext 整档保存/加载和 dirtyMark，不另建数据库或网络同步。已完成难度去重、按标准顺序投影。未知版本保留原数据；Web 只读 `stageDetails[stageName].clearHistory = {cleared:Boolean,difficulties:Array}`，旧快照缺字段按未知处理。C# 透传现有 snapshot，无新写命令或 native 修改。
+- `python tools/derive-stage-select-intel.py` 从注册关卡 XML、units.json 与 enemy_properties 生成 `stage-select-intel-data.js`；`--check` 核对确定性字节。固定波次只取明确敌对兵种，排除实例 Attribute/CaseSwitch，自定义/条件/事件分支不作为完整敌人清单。生成文件有 sourceHash，须随关卡或单位数据更新；不用运行时猜测数据。
+- `python tools/import-stage-select-diorama.py <交接.zip>` 从固定 SHA-256 交接包重建 GLB、本地 Three r180、GLTFLoader/依赖及 OrbitControls；`--check` 核对 manifest 逐文件大小/哈希与 12 MB 总量。C 环境来自 `study.json` 的 `print.presentation`，不能用旧 B `presentation.json` 替代。未做模型减面；不引入 Blender 运行依赖。现有 packer 已覆盖 assets/modules。
+
+### 玩家游览与开发取景
+
+废城总览右上角「游览地图」和详情标题栏「游览地点」提供玩家入口；未三维化的页面不显示游览按钮。游览隐藏地点标签/卡片，左键拖动旋转，WASD / 方向键持续沿地面移动（可与鼠标旋转同时进行），右键也可平移，滚轮缩放，Shift 加速。结束游览或 Esc 恢复进入游览前的视角，不写预设；进度刷新保留正在游览的视角。
+
+在废城总览或详情按 **Ctrl+Shift+C** 打开开发取景工具；玩家游览中也可切入。工具栏「收起/展开」只折叠控件，仍可操作镜头；导入导出的文本区另有「收起预设」，文字保留，输入文字及方向键移动光标不会带动相机。保存分别写入总览或当前关卡的预设；结束取景保留当前预览并恢复选关交互。「默认取景」恢复算法默认画面，保存后才替换本机预设。导出包含当前视角的 JSON 供复制，不自动保存到本机；导入校验有限坐标/跨度和已知关卡 ID 后保存并应用。
+
+本机视觉偏好位于 WebView origin 的 `localStorage["cf7.stage-camera.base-gate.v1"]`：`{overview?:{position:[x,y,z],target:[x,y,z],span:number}, stage_0_9?:{...}}`，与玩家存档隔离。人类采样后可把导出的预设作为后续美术推荐取景输入；初版默认按建筑构图，不伪称已有逐关人工调镜。一个 Canvas/相机/模型缓存在总览与详情之间迁移；静止不跑持续 RAF，编辑只按输入渲染。关闭取消动画/控制器，重试释放资源，迟到加载不能重新打开面板。
+
+### 验证入口与边界
+
+紧凑情报增量：`node tools/test-stage-select-intel.js` 验证 1024×576 单行标题、长简报前的默认图片、深色滚动条、真实奖励图标/敌人头像及可见边界、鼠标与真实 Tab 提示、隐藏/撤销时提示和资源生命周期。报告及对照图位于 `tmp/stage-select-intel/`；fixture 通关记录只验证显示条件，不证明正式玩家存档。
+
+游览增量：`node tools/test-stage-select-navigation.js` 验证按钮入口、鼠标与双键同时操作、松键/失焦停止、刷新保留取景、文本编辑不移动、两级折叠、context loss 与开关回收、详情游览与二维页隐藏；截图和报告位于 `tmp/stage-select-navigation/`。移动仅在按键按住期间调度帧，松键、离开面板、切换区域、失焦/页面隐藏和图形中断都清理按键；仍需测试员在正式 WebView2 核对实际双手手感。
+
+- `node tools/run-stage-select-harness.js --browser edge`：57 项现有行为回归，聚焦难度合同更新为选择后明确出发，快捷卡片合同不变。
+- `node tools/test-stage-select-diorama.js`：真实模型、16 入口/名称命中、14 张卡片重叠层级、普通/外交进关 mock、投影键盘、静止出帧、30 次开关、加载失败/迟到/context loss 重试。
+- `node tools/test-stage-select-focus.js`：真实 Edge/GLB/鼠标取景，3D 建筑特写、1024×576 双栏、情报显示/撤销、难度无写选择、预设保存/导入导出、动态标签、focus 中 context loss、2D 同等详情与 Esc。报告/截图在 `tmp/stage-select-focus/`。
+- `powershell -ExecutionPolicy Bypass -File scripts/run-map-loot-tests.ps1 -TimeoutSeconds 1500`：既有 Loot/StageRun 集成测试新增 23 个真实胜利记录断言；不把 mock 根对象/存档槽切换当成玩家正式存档重启 E2E。AS2 发布使用 `compile_test.ps1 -Target publish`，以新鲜 compiler diagnostics 和新 SWF 核对，不只看 marker。
+- `python tools/import-stage-select-diorama.py --check`、`python tools/derive-stage-select-intel.py --check`、`node tools/check-workbench-css-bundle.js`、`node tools/test-workbench-profile.js`、`node tools/validate-doc-governance.js` 核对资源、共享 profile 和文档闭包。
+
+发布准备同时将 `appearance-service.css` 的重复文本颜色统一为外壳继承的既有变量，保持原色值，并将 rawColor 总量上限同步从 2088 收紧到 2087。历史基线模式仍报告该服务文件既有触碰行的 WB122；发布按规范使用 `--release-tree --strict-warnings` 审计当前冻结树，不把历史模式的结果称为全绿。
+
+本轮本地结果：选关回归在 1366/1920 两种视口各 57/57，三维专项 11 项、聚焦专项 5 组、Host 选关相关 29 项通过；asLoader 已获得新鲜 SWF 和 compiler 0/0。地图集成门的 runId `416e7ef0400e4841992471ba0cb56037` 为唯一闭合块，798 passed / 0 failed、32K retry=0、compiler 0/0，临时 TestLoader 已恢复。上述均不替代下述真实游戏旅程。
+
+本轮已获授权合并上游并按双故障域共识流程发布，发布身份和实际部署状态以 [runtime 构建记录](runtime-build-reproducibility.md) 为准。浏览器 mock Host 与 Flash TestLoader 的证据不等于正式 WebView2→Host→AS2 进关、真实通关后保存/重启回读；正式玩家反馈和游戏复验仍待收集，不称本功能 `standard_entry_verified`。
 
 ## 1. 阶段边界
 

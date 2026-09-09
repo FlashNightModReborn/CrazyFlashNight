@@ -146,6 +146,7 @@
             // 经 panel_esc → onRequestClose('escape') 走 requestClose 内的同序分层，两条路径互斥不重叠）。
             // defaultPrevented = 区域菜单 toggle/tabs 已消费本次 Esc，不再落穿到检查器层。
             if (e.key !== 'Escape' || e.defaultPrevented) return;
+            if (StageSelectCameraEditor.isOpen()) { e.preventDefault(); StageSelectCameraEditor.hide(); return; }
             if (S._frameMenuOpen && VM.isRuntimeMode()) {
                 e.preventDefault();
                 setFrameMenuOpen(false);
@@ -191,6 +192,7 @@
             clearKbFocusClasses();
         }, true);
 
+        S._el.querySelector('.stage-select-tools').prepend(StageSelectCameraEditor.createToggle('游览地图'));
         renderTabs();
         return S._el;
     }
@@ -281,6 +283,7 @@
     // P2 Esc 分层消费：关区域菜单 > 关检查器（焦点归还触发节点）> 关面板。
     function requestClose(reason) {
         if (reason === 'escape') {
+            if (StageSelectCameraEditor.isOpen()) { StageSelectCameraEditor.hide(); return; }
             if (S._frameMenuOpen) {
                 setFrameMenuOpen(false);
                 if (S._frameToggleEl) S._frameToggleEl.focus();
@@ -306,6 +309,7 @@
 
     // 幂等：任何关闭路径（requestClose→Panels.close / C# close / 切面板）都经此统一销毁
     function onClose() {
+        StageSelectDiorama.hide();
         setFrameMenuOpen(false);
         // scoped 测试目录只在 stage-select 活跃期间生效。只有 Panels 已接受关闭并进入
         // onClose 后才恢复 production；transport false/throw 时 requestClose 会提前返回，
@@ -440,6 +444,7 @@
     // frame 路由编排：ViewModel.tryRouteFrame 纯状态迁移成功后才重渲染。
     function setFrame(label, source) {
         if (!VM.tryRouteFrame(label)) return;
+        StageSelectCameraEditor.hide();
         StageSelectCore.logDev((source || 'route') + ': ' + label);
         renderCurrentFrame();
     }
@@ -461,6 +466,7 @@
         var focusSnapshot = captureFocusSnapshot();
         S._currentFrameLabel = frame.frameLabel;
         renderHeader(frame);
+        StageSelectDiorama.bind(frame);
         renderBackground(frame);
         renderStageButtons(frame);
         renderNavButtons(frame);
@@ -700,9 +706,11 @@
         // 见 updateCardVisibility）；节点蓝环改 .is-kb-focus 键盘模态类驱动（见 focusin）。
         node.addEventListener('pointerenter', function() {
             S._hoverStageId = button.id;
+            StageSelectDiorama.hover(button.id);
             updateCardVisibility();
         });
         node.addEventListener('pointerleave', function() {
+            StageSelectDiorama.hover('');
             if (S._hoverStageId === button.id) S._hoverStageId = '';
             scheduleCardVisibilityUpdate();
         });
@@ -719,7 +727,9 @@
             node.classList.remove('is-kb-focus');
             updateCardVisibility();
         });
-        return { node: node, anchor: direct ? null : createCardAnchor(button, state, detail, sizing, displayName) };
+        var cardAnchor = direct ? null : createCardAnchor(button, state, detail, sizing, displayName);
+        StageSelectDiorama.place(button, node, cardAnchor, sizing.cardHeight);
+        return { node: node, anchor: cardAnchor };
     }
 
     // hover 卡锚点：与关卡节点同位同 transform 的非交互层，承接迁出的卡片（含原生难度 button），
@@ -1076,7 +1086,8 @@
 
     // leave 事件的延迟合并入口：等同一指针移动的 leave/enter 边界事件序列全部落地后再裁决。
     function scheduleCardVisibilityUpdate() {
-        StageSelectCore.scheduleTimer(updateCardVisibility, 0);
+        // 三维卡片会避开地点入口，给指针跨过两者间的小间隙留出时间。
+        StageSelectCore.scheduleTimer(updateCardVisibility, S._visualStagePoints ? 150 : 0);
     }
 
     // 方向键焦点移交（DOM 半）：最近邻打分（computeNavTarget）在 ViewModel，
@@ -1104,7 +1115,7 @@
             if (active.classList && active.classList.contains('stage-select-difficulty')) {
                 return { inspectorDifficulty: active.getAttribute('data-difficulty') || '' };
             }
-            return { inspectorControl: true };
+            return { inspectorControl: active.id || true };
         }
         return null;
     }
@@ -1112,6 +1123,7 @@
     function restoreFocusSnapshot(snapshot) {
         if (!snapshot) return;
         if (snapshot.stageId) {
+            if (StageSelectInspector.isInspectorOpen()) { StageSelectInspector.focusInspectorPrimary(); return; }
             var node = findNodeById(snapshot.stageId);
             if (node) {
                 S._tabbableStageId = snapshot.stageId;
@@ -1125,7 +1137,9 @@
             if (difficulty) { difficulty.focus(); return; }
         }
         if (snapshot.inspectorControl && StageSelectInspector.isInspectorOpen()) {
-            S._inspectorCloseEl.focus();
+            var control = typeof snapshot.inspectorControl === 'string' && document.getElementById(snapshot.inspectorControl);
+            if (control && control.getClientRects().length) control.focus();
+            else StageSelectInspector.focusInspectorPrimary();
         }
     }
 

@@ -47,6 +47,7 @@ var StageSelectPanel = (function() {
             frameLabel: S._currentFrameLabel,
             fixture: S._fixtureName,
             mode: S._mode,
+            diorama: StageSelectDiorama.stats(),
             returnFrameLabel: S._returnFrameLabel,
             frameMenuOpen: S._frameMenuOpen,
             challenge: StageSelectViewModel.isChallengeMode(),

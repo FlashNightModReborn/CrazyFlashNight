@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "sourceZipSha256": "70b96dded85d09a4b992fd2906c5f85e04a4395ec55386d657df9d8878cdb44c",
+  "threeRevision": "180",
+  "transforms": "Only loader relative import paths and fixed camera projection; GLB unchanged.",
+  "files": [
+    {
+      "path": "launcher/web/assets/stage-diorama/base-gate/.gitattributes",
+      "bytes": 8,
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/.gitattributes",
+      "bytes": 80,
+      "sha256": "3eb3f9c8a16054d8af6511f22f2be4e088ab593d072369ff48643233e22cbd98"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/base-gate/city.glb",
+      "bytes": 8624836,
+      "sha256": "37b3385158600ff30dad0c76e9248cd57f6cbdb5b000068220f20adcd211c0b0"
+    },
+    {
+      "path": "launcher/web/modules/stage-select/stage-select-diorama-data.js",
+      "bytes": 5223,
+      "sha256": "501876e12debd19bf2c4cb49598ce60126f1699e9c915980fb0454eb076be78c"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/base-gate/vendor/three.core.js",
+      "bytes": 1403455,
+      "sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/base-gate/vendor/three.module.js",
+      "bytes": 603113,
+      "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/base-gate/vendor/GLTFLoader.js",
+      "bytes": 114744,
+      "sha256": "2904f2823e23d5bc1d64512bf4c0d777ac44d728d47c34a9e3d48ce8ef6b761d"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/base-gate/vendor/BufferGeometryUtils.js",
+      "bytes": 35551,
+      "sha256": "248b3e8420bd3de805ca01845c1b0cc62aa2766f3c56bdcead265e306f8e715c"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/base-gate/vendor/OrbitControls.js",
+      "bytes": 38715,
+      "sha256": "06864a0fcb647730bfbc690b6c25a121199d716a3e299a40158509cbd247c3bf"
+    },
+    {
+      "path": "launcher/web/assets/stage-diorama/base-gate/vendor/LICENSE",
+      "bytes": 1081,
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    }
+  ]
+}

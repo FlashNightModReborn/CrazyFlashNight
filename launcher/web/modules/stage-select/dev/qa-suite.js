@@ -4,15 +4,15 @@ var StageSelectHarnessQA = (function() {
     function waitReady(api) {
         return api.waitFor(function() {
             var state = StageSelectPanel && StageSelectPanel._debugGetState ? StageSelectPanel._debugGetState() : null;
-            return state && state.isOpen ? state : null;
-        }, 2000, 'stage-select ready');
+            return state && state.isOpen && (!state.diorama.active || state.diorama.state === 'ready') ? state : null;
+        }, 15000, 'stage-select ready');
     }
 
     function waitRuntime(api) {
         return api.waitFor(function() {
             var state = StageSelectPanel && StageSelectPanel._debugGetState ? StageSelectPanel._debugGetState() : null;
-            return state && state.isOpen && state.runtimeSnapshot ? state : null;
-        }, 2000, 'stage-select runtime snapshot');
+            return state && state.isOpen && state.runtimeSnapshot && (!state.diorama.active || state.diorama.state === 'ready') ? state : null;
+        }, 15000, 'stage-select runtime snapshot');
     }
 
     // 连续换帧用例必须等当前背景完成，再切下一帧。否则 Edge 会把被替换的正常在途图片
@@ -130,6 +130,8 @@ var StageSelectHarnessQA = (function() {
                     api.assertEqual(difficulty.getAttribute('data-stage-name'), demo2,
                         'Demo 2 difficulty keeps exact stageName');
                     difficulty.click();
+                    api.assertEqual(host.enterMessages.length, 0, 'focus difficulty only selects');
+                    document.getElementById('stage-focus-enter').click();
                     api.assertEqual(host.enterMessages.length, 1, 'one enter message sent');
                     api.assertEqual(host.enterMessages[0].stageName, demo2, 'enter keeps Demo 2 exact stageName');
                     api.assertEqual(host.enterMessages[0].entryKind, 'difficulty', 'enter remains normal difficulty route');
@@ -931,7 +933,7 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
-            ['runtime-diplomacy-layout', 'runtime diplomacy map points follow XFL internal marker/text matrices', function() {
+            ['runtime-diplomacy-layout', 'diplomacy points follow fixed city projection or other frames XFL matrices', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
                     var manifest = StageSelectData.getManifest();
@@ -966,6 +968,13 @@ var StageSelectHarnessQA = (function() {
                             var expectedMarkerY = button.y + Number(markerLayout.y || 0);
                             var expectedLabelX = button.x + Number(textLayout.x || 0);
                             var expectedLabelY = button.y + Number(textLayout.y || 0);
+                            var projected = StageSelectCore.state._visualStagePoints && StageSelectCore.state._visualStagePoints[button.id];
+                            if (projected) {
+                                expectedMarkerX = projected.x;
+                                expectedMarkerY = projected.y;
+                                expectedLabelX = projected.x + projected.labelX - labelRect.width / scale / 2;
+                                expectedLabelY = projected.y + projected.labelY - labelRect.height / scale / 2;
+                            }
                             api.assert(Math.abs(markerX - expectedMarkerX) < 0.8, 'marker x matches XFL: ' + button.stageName);
                             api.assert(Math.abs(markerY - expectedMarkerY) < 0.8, 'marker y matches XFL: ' + button.stageName);
                             api.assert(Math.abs(labelX - expectedLabelX) < 1.2, 'label x matches XFL: ' + button.stageName);
@@ -1010,7 +1019,7 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
-            ['button-anchors', 'button anchors follow manifest positions', function() {
+            ['button-anchors', 'button anchors follow fixed city projection or other frames manifest positions', function() {
                 host.open();
                 return waitRuntime(api).then(function() {
                     var manifest = StageSelectData.getManifest();
@@ -1020,8 +1029,9 @@ var StageSelectHarnessQA = (function() {
                             if (button.entryKind === 'map' || button.entryKind === 'task') return;
                             var node = document.querySelector('.stage-select-stage-button[data-stage-id="' + button.id + '"]');
                             api.assert(!!node, 'missing button node ' + button.id);
-                            assertNear(api, parseFloat(node.style.left), button.x, 0.01, 'button x ' + button.id);
-                            assertNear(api, parseFloat(node.style.top), button.y, 0.01, 'button y ' + button.id);
+                            var expected = StageSelectCore.state._visualStagePoints && StageSelectCore.state._visualStagePoints[button.id] || button;
+                            assertNear(api, parseFloat(node.style.left), expected.x, 0.01, 'button x ' + button.id);
+                            assertNear(api, parseFloat(node.style.top), expected.y, 0.01, 'button y ' + button.id);
                             checked += 1;
                         });
                     }).then(function() {
@@ -1091,7 +1101,9 @@ var StageSelectHarnessQA = (function() {
                     var expectedDifficulty = focused.getAttribute('data-difficulty');
                     api.assert(focused.tabIndex !== -1, 'inspector difficulty is tabbable');
                     api.assert(parseFloat(getComputedStyle(focused).height) >= 40, 'inspector difficulty hit height >= 40 (got ' + getComputedStyle(focused).height + ')');
-                    focused.click(); // 与 hover 卡鼠标点击共用 handleDifficultyClick 委派
+                    focused.click(); // 聚焦页先选择难度，再明确出发。
+                    api.assertEqual(host.enterMessages.length, 0, 'selection does not enter');
+                    document.getElementById('stage-focus-enter').click();
                     return api.waitFor(function() {
                         return Panels.getActive && Panels.getActive() === null && host.enterMessages.length ? true : null;
                     }, 2000, 'inspector enter close').then(function() {
@@ -1166,6 +1178,8 @@ var StageSelectHarnessQA = (function() {
                     key('ArrowRight');
                     api.assertEqual(activeDiff(), '冒险', 'reopened and moved to adventure');
                     key('Enter');
+                    api.assertEqual(host.enterMessages.length, 0, 'keyboard selects without entering');
+                    document.getElementById('stage-focus-enter').click();
                     return api.waitFor(function() {
                         return Panels.getActive && Panels.getActive() === null && host.enterMessages.length ? true : null;
                     }, 2000, 'arrow-nav enter close').then(function() {
@@ -1195,6 +1209,8 @@ var StageSelectHarnessQA = (function() {
                     document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true }));
                     api.assert(document.activeElement === difficulties[0], 'ArrowLeft stays on single hell');
                     document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                    api.assertEqual(host.enterMessages.length, 0, 'challenge selection does not enter');
+                    document.getElementById('stage-focus-enter').click();
                     return api.waitFor(function() {
                         return host.enterMessages.length ? host.enterMessages[0] : null;
                     }, 2000, 'challenge arrow enter').then(function(msg) {
@@ -1219,7 +1235,7 @@ var StageSelectHarnessQA = (function() {
                     lockedNode.focus();
                     lockedNode.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
                     api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'locked inspector open');
-                    var closeEl = document.getElementById('stage-select-inspector-close');
+                    var closeEl = document.querySelector('.stage-focus-surface .stage-focus-action');
                     api.assert(document.activeElement === closeEl, 'focus on close button for locked');
                     ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].forEach(function(k) {
                         document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
@@ -1324,7 +1340,7 @@ var StageSelectHarnessQA = (function() {
                     api.assert(lockEl.textContent.indexOf('主线任务进度达到 75 解锁（当前 42）') >= 0, 'inspector shows snapshot-provided lockReason');
                     var difficulties = document.querySelectorAll('#stage-select-inspector-difficulties .stage-select-difficulty');
                     api.assertEqual(difficulties.length, 0, 'locked inspector renders no difficulty buttons');
-                    api.assert(document.activeElement === document.getElementById('stage-select-inspector-close'), 'focus lands on inspector close for locked');
+                    api.assert(document.activeElement === document.querySelector('.stage-focus-surface .stage-focus-action'), 'focus lands on inspector close for locked');
                     api.assertEqual(host.sentMessages.filter(function(msg) { return msg && msg.cmd === 'enter'; }).length, 0, 'no enter sent for locked');
                     document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
                     api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'Esc closes locked inspector');
@@ -1401,7 +1417,7 @@ var StageSelectHarnessQA = (function() {
                     rebuilt2.focus();
                     StageSelectPanel._debugApplySnapshot(snapshot);
                     var rebuilt3 = document.querySelector('.stage-select-stage-button[data-stage-id="' + stageId + '"]');
-                    api.assert(document.activeElement === rebuilt3, 'focus restored to rebuilt node');
+                    api.assert(document.activeElement.closest('.stage-focus-panel'), 'focus remains in detail after rebuild');
                     rebuilt3.click();
                     api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, '', 're-click same node deselects');
                     api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'inspector closed after deselect');

@@ -226,6 +226,9 @@ function main() {
 		fl.trace("[compile] publish (no testMovie): " + doc.name);
 		doc.publish();
 	} else {
+		// 旧测试播放器可能继续写 trace；新测试前只关闭播放器，保留编辑文档。
+		compileRuntimeState.phase = "close_previous_test_players";
+		fl.closeAllPlayerDocuments();
 		compileRuntimeState.phase = "test_movie";
 		fl.trace("[compile] testMovie: " + doc.name);
 		doc.testMovie();

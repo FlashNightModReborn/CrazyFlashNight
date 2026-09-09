@@ -15,7 +15,8 @@
         'library-decision': true,
         'character-build': true,
         'canvas-editor': true,
-        'canvas-editor-focus': true
+        'canvas-editor-focus': true,
+        'stage-focus': true
     };
     var VALID_PROFILE_NAMES = Object.freeze(Object.keys(VALID_PROFILES));
 

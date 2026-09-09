@@ -55,6 +55,7 @@ function runHarness(options = {}) {
   const outputSaves = [];
   const published = [];
   const tested = [];
+  const playerEvents = [];
   const quitCalls = [];
 
   const document = {
@@ -64,6 +65,7 @@ function runHarness(options = {}) {
       published.push(this.name);
     },
     testMovie() {
+      playerEvents.push("test");
       tested.push(this.name);
     },
   };
@@ -94,6 +96,10 @@ function runHarness(options = {}) {
     },
     trace(message) {
       traces.push(String(message));
+    },
+    closeAllPlayerDocuments() {
+      playerEvents.push("close-players");
+      return true;
     },
     closeDocument(doc) {
       closed.push(doc.pathURI);
@@ -149,6 +155,7 @@ function runHarness(options = {}) {
     outputSaves,
     published,
     tested,
+    playerEvents,
     quitCalls,
     canonicalTargetURI,
     doneMarker,
@@ -177,6 +184,7 @@ function testTwoPhaseCanonicalOpenAndPublish() {
   assert.deepEqual(publishPhase.closed, [publishPhase.canonicalTargetURI]);
   assert.deepEqual(publishPhase.published, ["asLoader.xfl"]);
   assert.deepEqual(publishPhase.tested, []);
+  assert.deepEqual(publishPhase.playerEvents, []);
   assert.deepEqual(publishPhase.quitCalls, []);
   assert.equal(publishPhase.files.get(publishPhase.doneMarker), "ok");
   assert.equal(publishPhase.files.has(publishPhase.errorMarker), false);
@@ -204,6 +212,7 @@ function testMovieKeepsDebugTargetOpen() {
   assert.deepEqual(testPhase.opened, [testPhase.canonicalTargetURI]);
   assert.deepEqual(testPhase.published, []);
   assert.deepEqual(testPhase.tested, ["asLoader.xfl"]);
+  assert.deepEqual(testPhase.playerEvents, ["close-players", "test"]);
   assert.deepEqual(testPhase.closed, []);
   assert.equal(testPhase.files.get(testPhase.doneMarker), "ok");
 }

@@ -1,0 +1,86 @@
+/* 关卡详情使用共享 stage-focus 双栏 profile，宏观布局由 workbench/profiles.css 持有。 */
+.stage-focus-surface { position:absolute; inset:0; z-index:50; }
+.stage-focus-surface[hidden] { display:none; }
+.stage-select-panel.is-stage-focused > .stage-select-header { visibility:hidden; }
+.stage-select-panel.is-stage-focused .stage-select-card-layer { visibility:hidden; }
+.stage-focus-surface .workbench-status,
+.stage-focus-surface .workbench-eyebrow,
+.stage-focus-surface .workbench-subtitle { display:none; }
+.stage-focus-viewport { position:relative; width:100%; height:100%; overflow:hidden; background:rgb(var(--ss-header-rgb)); }
+.stage-focus-viewport .stage-select-diorama-canvas { width:100%; height:100%; }
+.stage-focus-panel.stage-select-inspector {
+    position:static; transform:none; width:100%; height:100%; padding:14px;
+    display:flex; flex-direction:column; gap:8px; border:0; box-shadow:none;
+    background:var(--wb-panel); color:var(--wb-text); font-size:var(--ss-font-close);
+}
+.stage-focus-panel.stage-select-inspector[hidden] { display:none; }
+.stage-focus-topbar { display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:8px; flex-shrink:0; min-height:34px; }
+.stage-focus-panel .stage-select-inspector-head { min-width:0; flex-wrap:nowrap; gap:4px; }
+.stage-focus-panel .stage-select-inspector-name { font-size:var(--ss-font-close); }
+.stage-focus-panel .stage-select-inspector-type { font-size:var(--ss-font-xs); }
+.stage-focus-history,.stage-focus-muted { color:var(--wb-muted); font-size:var(--ss-font-base); line-height:1.6; }
+.stage-focus-history { white-space:nowrap; font-size:var(--ss-font-xs); }
+.stage-focus-tabs { display:flex; gap:2px; flex-shrink:0; }
+.stage-focus-action,.stage-focus-tabs button {
+    min-height:36px; padding:6px 12px; color:var(--wb-text); background:var(--wb-surface-2);
+    border:1px solid var(--wb-line); cursor:pointer; font:inherit;
+}
+.stage-focus-tabs button[aria-selected="true"] { border-color:var(--wb-accent); color:var(--wb-accent); }
+.stage-focus-tabs button { min-height:30px; padding:4px 6px; font-size:var(--ss-font-base); }
+.stage-focus-content { flex:1; min-height:0; overflow:auto; scrollbar-gutter:stable; }
+.stage-focus-content h3 { margin:16px 0 8px; font-size:var(--ss-font-close); }
+.stage-focus-content h3:first-child { margin-top:0; }
+.stage-focus-content .stage-select-inspector-detail { max-height:none; overflow:visible; line-height:1.8; font-weight:400; font-size:var(--ss-font-close); }
+.stage-focus-preview { margin:0 0 12px; background:var(--wb-surface-2); }
+.stage-focus-preview .stage-select-inspector-preview { display:block; width:100%; height:auto; margin:0; }
+.stage-focus-preview img { display:block; max-width:100%; width:100%; height:auto; max-height:148px; object-fit:contain; }
+.stage-focus-footer { border-top:1px solid var(--wb-line); padding-top:12px; flex-shrink:0; }
+.stage-focus-footer[hidden] { display:none; }
+.stage-focus-section-title { display:none; }
+.stage-focus-footer .stage-select-inspector-difficulties { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.stage-focus-footer .stage-select-difficulty { width:auto; height:42px; min-height:42px; }
+.stage-focus-footer .stage-select-difficulty.is-chosen { outline:2px solid var(--wb-accent); outline-offset:2px; }
+.stage-focus-panel .stage-focus-enter { width:100%; min-height:44px; margin-top:12px; background:var(--wb-accent); color:rgb(var(--ss-header-rgb)); border:0; font:inherit; font-weight:700; cursor:pointer; }
+.stage-focus-enter:disabled { opacity:.5; cursor:default; }
+.stage-focus-surface button:focus-visible,.stage-focus-content:focus-visible { outline:2px solid var(--wb-focus); outline-offset:2px; }
+.stage-focus-rewards,.stage-focus-enemies { display:grid; grid-template-columns:repeat(auto-fill,42px); gap:6px; }
+.stage-focus-enemies { grid-template-columns:repeat(auto-fill,48px); }
+.stage-focus-token { position:relative; display:block; padding:3px; width:42px; height:42px; overflow:hidden; border:1px solid var(--wb-line); background:var(--wb-surface-2); color:var(--wb-muted); cursor:help; }
+.stage-focus-token.stage-focus-enemy { width:48px; height:48px; }
+.stage-focus-token img { position:absolute; inset:3px; width:calc(100% - 6px); height:calc(100% - 6px); object-fit:contain; z-index:2; }
+.stage-focus-token>svg { position:absolute; inset:3px; width:calc(100% - 6px); height:calc(100% - 6px); fill:none; stroke:currentColor; stroke-width:1.5px; }
+.stage-focus-panel .stage-focus-token.stage-focus-enemy>img { position:absolute; inset:3px; width:calc(100% - 6px); height:calc(100% - 6px); max-width:none; max-height:none; }
+.stage-focus-token.has-art>svg { visibility:hidden; }
+.stage-focus-token:hover,.stage-focus-token:focus-visible { border-color:var(--wb-accent); outline:1px solid var(--wb-accent); outline-offset:1px; }
+.stage-focus-content { overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track); }
+.stage-focus-content::-webkit-scrollbar { width:7px; height:7px; }
+.stage-focus-content::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
+.stage-focus-content::-webkit-scrollbar-thumb { background:var(--wb-scrollbar-thumb); border:1px solid var(--wb-scrollbar-thumb-border); border-radius:4px; }
+.stage-focus-content::-webkit-scrollbar-thumb:hover { background:var(--wb-scrollbar-thumb-hover); }
+.stage-focus-content::-webkit-scrollbar-button { display:none; width:0; height:0; }
+.stage-focus-content::-webkit-scrollbar-corner { background:var(--wb-scrollbar-track); }
+.stage-focus-location { position:absolute; inset:0; display:flex; align-items:center; }
+.stage-focus-location[hidden] { display:none; }
+.stage-focus-location svg { width:100%; height:100%; }
+.stage-focus-map-ring { fill:none; stroke:rgb(var(--ss-selected-rgb)); stroke-width:5px; }
+.stage-focus-map-dot { fill:rgb(var(--ss-selected-rgb)); }
+.stage-focus-map-caption { position:absolute; bottom:24px; left:20px; right:20px; text-align:center; font-size:var(--ss-font-md); color:var(--wb-text); }
+.stage-camera-editor { position:absolute; z-index:100; left:12px; bottom:12px; max-width:570px; display:flex; flex-direction:column; gap:8px; padding:12px; color:rgb(var(--ss-text-rgb)); background:rgb(var(--ss-header-rgb)); border:1px solid rgb(var(--ss-line-rgb)); font-size:var(--ss-font-base); }
+.stage-camera-editor[hidden] { display:none; }
+.stage-camera-actions { display:flex; flex-wrap:wrap; gap:6px; }
+.stage-camera-editor button { min-height:32px; padding:4px 8px; background:rgb(var(--ss-surface-rgb)); color:inherit; border:1px solid rgb(var(--ss-line-rgb)); cursor:pointer; }
+.stage-camera-editor textarea { width:100%; height:100px; box-sizing:border-box; resize:vertical; max-height:180px; background:rgb(var(--ss-header-rgb)); color:rgb(var(--ss-text-rgb)); border:1px solid rgb(var(--ss-line-rgb)); font:inherit; scrollbar-width:thin; scrollbar-color:rgb(var(--ss-line-rgb)) rgb(var(--ss-header-rgb)); }
+.stage-camera-editor { box-sizing:border-box; max-width:min(570px,calc(100% - 24px)); }
+.is-stage-focused .stage-camera-editor { max-width:calc(60% - 36px); }
+.stage-camera-heading,.stage-camera-preset-heading { display:flex; align-items:center; gap:8px; }
+.stage-camera-heading strong,.stage-camera-preset-heading span { flex:1; }
+.stage-camera-body { display:flex; flex-direction:column; gap:8px; }
+.stage-camera-body[hidden],.stage-camera-presets[hidden],.stage-camera-editor button[hidden],.stage-camera-toggle[hidden] { display:none; }
+.stage-camera-preset-heading { margin-bottom:6px; }
+.stage-camera-editor.is-collapsed { padding:6px 8px; }
+.stage-camera-toggle { white-space:nowrap; color:rgb(var(--ss-text-rgb)); background:rgb(var(--ss-header-rgb)); border:1px solid rgb(var(--ss-line-rgb)); }
+.stage-camera-toggle[aria-pressed="true"] { color:rgb(var(--ss-selected-rgb)); border-color:rgb(var(--ss-selected-rgb)); }
+.stage-camera-toggle:focus-visible,.stage-camera-editor button:focus-visible { outline:2px solid rgb(var(--ss-focus-rgb)); outline-offset:2px; }
+.stage-select-panel.is-camera-editing .stage-select-button-layer,
+.stage-select-panel.is-camera-editing .stage-select-card-layer,
+.stage-select-panel.is-camera-editing .stage-select-nav-layer { pointer-events:none; visibility:hidden; opacity:0; }

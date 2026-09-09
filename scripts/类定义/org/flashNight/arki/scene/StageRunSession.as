@@ -288,6 +288,7 @@ class org.flashNight.arki.scene.StageRunSession {
                 || (_run.outcome != "active" && _run.outcome != "victory")) return false;
         // manager 可能已经提交 victory。先占用本轮资格，阻止投影回调同步重入。
         _victoryCompletionCommitted = true;
+        org.flashNight.arki.stageSelect.StageClearHistory.record(String(_run.stageName), String(_run.difficulty));
         if (_run.outcome == "active") finish("victory");
         return true;
     }

@@ -60,6 +60,7 @@
     state._lastAppliedStateRevision = 0;
     state._droppedRespCount = 0;
     state._mode = 'dev';
+    state._visualStagePoints = null;
     state._busyStageName = '';
     state._lastError = '';
     // Web 主动关闭必须先得到 close transport 的同步接收确认，再卸载本地 visual。

@@ -80,19 +80,24 @@ async function main() {
     const harnessPath = path.join(projectRoot, 'launcher', 'web', 'modules', 'stage-select', 'dev', 'harness.html');
     const query = new URLSearchParams({ qa: '1', viewport: args.viewport });
     if (args.caseId) query.set('case', args.caseId);
-    const url = 'file:///' + harnessPath.replace(/\\/g, '/') + '?' + query.toString();
+    const { server, origin } = await require('./lib/stage-select-dev-server').startServer(path.join(projectRoot, 'launcher/web'));
+    const url = origin + '/modules/stage-select/dev/harness.html?' + query.toString();
 
     const browser = await chromium.launch({
         executablePath,
         headless: !args.headed,
-        args: ['--disable-gpu']
+        args: []
     });
     const page = await browser.newPage({ viewport });
     const failedRequests = [];
+    const cancelledRequests = [];
     const pageErrors = [];
     page.on('requestfailed', request => {
         const failure = request.failure();
-        failedRequests.push(request.url() + ' :: ' + (failure && failure.errorText || 'failed'));
+        const text = request.url() + ' :: ' + (failure && failure.errorText || 'failed');
+        // 快速切换地图或关闭浏览器会取消已被替换的图片请求；单独保留，区别于加载失败。
+        if (request.resourceType() === 'image' && failure && failure.errorText === 'net::ERR_ABORTED') cancelledRequests.push(text);
+        else failedRequests.push(text);
     });
     page.on('pageerror', error => pageErrors.push(error && error.message ? error.message : String(error)));
     await page.route('https://cfn-fonts.local/**', route => route.fulfill({
@@ -108,6 +113,7 @@ async function main() {
         .filter(img => img.currentSrc && (!img.complete || img.naturalWidth === 0))
         .map(img => img.currentSrc));
     await browser.close();
+    server.close();
 
     const payload = {
         browser: args.browser,
@@ -115,6 +121,7 @@ async function main() {
         viewport: args.viewport,
         qa: result,
         failedRequests,
+        cancelledRequests,
         brokenImages,
         pageErrors
     };

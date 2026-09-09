@@ -79,6 +79,7 @@ var StageSelectViewModel = (function() {
             // 逐关锁定原因（AS2 buildLockReason 生成，仅锁定时非空）；缺省/非字符串按空串，
             // inspector 对空串回退通用文案。
             state.lockReason = typeof live.lockReason === 'string' ? live.lockReason : state.lockReason;
+            state.clearHistory = live.clearHistory || null;
         }
         if (S._runtimeSnapshot && S._runtimeSnapshot.unlockedStages && Object.prototype.hasOwnProperty.call(S._runtimeSnapshot.unlockedStages, stageName)) {
             state.unlocked = !!S._runtimeSnapshot.unlockedStages[stageName];
@@ -183,6 +184,8 @@ var StageSelectViewModel = (function() {
     // directSizer：直达入口（task）像素尺寸的注入回调（空间 renderer 提供）——
     // ViewModel 自身不烘焙坐标以外的 2D 布局假设。
     function getStageNavPoint(button, directSizer) {
+        var projected = S._visualStagePoints && S._visualStagePoints[button.id];
+        if (projected) return { x: projected.x, y: projected.y };
         var x = Number(button.x) || 0;
         var y = Number(button.y) || 0;
         if (button.entryKind === 'map') {

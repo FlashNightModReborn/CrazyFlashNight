@@ -1,0 +1,81 @@
+'use strict';
+const fs=require('fs'),path=require('path'),assert=require('assert/strict');
+const {startServer}=require('./lib/stage-select-dev-server');
+const root=path.resolve(__dirname,'..'),out=path.join(root,'tmp/stage-select-navigation');
+const {chromium}=require(path.join(root,'launcher/perf/node_modules/playwright'));
+async function main(){
+    fs.mkdirSync(out,{recursive:true});
+    const {server,origin}=await startServer(path.join(root,'launcher/web'));
+    const browser=await chromium.launch({executablePath:path.join(process.env['ProgramFiles(x86)'],'Microsoft/Edge/Application/msedge.exe'),headless:true});
+    const page=await browser.newPage({viewport:{width:1024,height:576}}),errors=[];
+    const report={scope:'Real Edge keyboard/mouse and GLB with mock Host; blur/context loss are injected lifecycle events, not physical WebView2 proof.',checks:[]};
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('https://cfn-fonts.local/**',r=>r.fulfill({status:204,body:''}));
+    const pose=()=>page.evaluate(()=>StageSelectDiorama.snapshotCamera());
+    const frames=()=>page.evaluate(()=>StageSelectDiorama.stats().frames);
+    const near=(a,b)=>{for(const key of ['position','target'])a[key].forEach((n,i)=>assert.ok(Math.abs(n-b[key][i])<1e-7));assert.ok(Math.abs(a.span-b.span)<1e-7);};
+    const idle=()=>page.waitForFunction(()=>StageSelectDiorama.stats().state==='ready'&&!StageSelectDiorama.stats().moving);
+    const movingMode=()=>page.waitForFunction(()=>StageSelectDiorama.stats().editing);
+    try{
+        await page.goto(origin+'/modules/stage-select/dev/harness.html?viewport=1024x576&fixture=allUnlocked');
+        await page.evaluate(()=>{document.body.classList.add('stage-select-qa');document.querySelector('#debug-log')?.remove();document.querySelector('#qa-panel')?.remove();StageSelectHarnessHost.open({mode:'runtime',frameLabel:'基地门口'});});await idle();
+        const original=await pose(),stored=await page.evaluate(()=>localStorage.getItem('cf7.stage-camera.base-gate.v1'));
+        await page.getByRole('button',{name:'游览地图',exact:true}).click();await movingMode();
+        assert.equal(await page.locator('[data-camera="save"]').isVisible(),false);
+        assert.equal(await page.locator('.stage-select-button-layer').evaluate(el=>getComputedStyle(el).opacity),'0');
+        await page.mouse.move(720,180);await page.mouse.down();await page.keyboard.down('w');await page.keyboard.down('d');
+        await page.mouse.move(790,220,{steps:15});await page.waitForTimeout(180);
+        await page.keyboard.up('w');await page.keyboard.up('d');await page.mouse.up();
+        const traveled=await pose();assert.notDeepEqual(traveled.target,original.target);
+        const direction=p=>p.position.map((n,i)=>n-p.target[i]);assert.notDeepEqual(direction(traveled),direction(original));
+        await page.waitForTimeout(100);const stopped=await frames();await page.waitForTimeout(180);assert.equal(await frames(),stopped);
+        await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({stageDetails:{'地铁站':{task:true,highestDifficulty:'修罗'}}}));
+        assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().editing),true);near(await pose(),traveled);
+        await page.getByRole('button',{name:'结束游览',exact:true}).first().click();near(await pose(),original);
+        assert.equal(await page.evaluate(()=>localStorage.getItem('cf7.stage-camera.base-gate.v1')),stored);
+        assert.equal(await page.evaluate(()=>StageSelectCore.state._cardLayerEl.inert || StageSelectCore.state._navLayerEl.inert),false);
+        report.checks.push('visible player tour button; simultaneous WASD and mouse orbit; snapshot preserves tour; release stops frames; exit restores view without writing presets');
+
+        await page.keyboard.press('Control+Shift+C');await movingMode();
+        const arrowStart=await pose();await page.keyboard.down('ArrowUp');await page.waitForTimeout(160);await page.keyboard.up('ArrowUp');
+        assert.notDeepEqual((await pose()).target,arrowStart.target);
+        await page.keyboard.down('w');await page.waitForTimeout(80);await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
+        const blurred=await pose();await page.waitForTimeout(130);near(await pose(),blurred);await page.keyboard.up('w');
+        await page.locator('[data-camera="export"]').click();const text=await page.locator('textarea').inputValue(),typingStart=await pose();
+        assert.equal(await page.evaluate(()=>localStorage.getItem('cf7.stage-camera.base-gate.v1')),stored);
+        await page.keyboard.type('wasd');await page.keyboard.press('ArrowLeft');await page.waitForTimeout(120);near(await pose(),typingStart);
+        await page.locator('textarea').fill(text);await page.locator('[data-camera="fold-presets"]').click();assert.equal(await page.locator('textarea').isVisible(),false);
+        await page.locator('[data-camera="export"]').click();await page.locator('[data-camera="collapse"]').click();
+        assert.equal(await page.locator('textarea').isVisible(),false);assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().editing),true);
+        const bounds=await page.locator('.stage-camera-editor').boundingBox();assert.ok(bounds.height<=60,JSON.stringify(bounds));
+        await page.screenshot({path:path.join(out,'collapsed-tools.png')});
+        const compactStart=await pose();await page.keyboard.down('ArrowRight');await page.waitForTimeout(150);await page.keyboard.up('ArrowRight');assert.notDeepEqual((await pose()).target,compactStart.target);
+        await page.locator('[data-camera="collapse"]').click();assert.equal(await page.locator('textarea').isVisible(),true);
+        JSON.parse(await page.locator('textarea').inputValue());
+        await page.screenshot({path:path.join(out,'expanded-tools.png')});
+        await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().editing),false);
+        report.checks.push('arrows move; window blur stops held keys; typing and caret arrows do not move camera; preset area and whole toolbar collapse independently without leaving navigation');
+
+        await page.getByRole('button',{name:'游览地图',exact:true}).click();await movingMode();
+        await page.keyboard.down('w');await page.waitForTimeout(80);
+        await page.evaluate(()=>document.querySelector('.stage-select-diorama-canvas').getContext('webgl2').getExtension('WEBGL_lose_context').loseContext());
+        await page.waitForFunction(()=>StageSelectDiorama.stats().state==='error');await page.keyboard.up('w');
+        assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().editing),false);
+        assert.equal(await page.locator('.stage-camera-editor').isVisible(),false);
+        await page.locator('.stage-select-diorama-status button').click();await idle();
+        await page.getByRole('button',{name:'游览地图',exact:true}).click();await movingMode();
+        await page.keyboard.down('ArrowDown');await page.waitForTimeout(60);
+        await page.evaluate(()=>{StageSelectHarnessHost.close();StageSelectHarnessHost.open({mode:'runtime',frameLabel:'基地门口'});});await page.keyboard.up('ArrowDown');await idle();
+        assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().editing),false);
+        await page.locator('.stage-select-stage-button[data-stage-id="stage_0_9"] > .stage-select-stage-name').click();await idle();
+        await page.getByRole('button',{name:'游览地点',exact:true}).click();await movingMode();await page.keyboard.press('Escape');
+        assert.equal(await page.locator('.stage-focus-surface').isVisible(),true);
+        await page.getByRole('button',{name:'返回总览',exact:true}).click();await idle();
+        await page.evaluate(()=>StageSelectRenderer.setFrame('基地车库','qa'));
+        assert.equal(await page.locator('.stage-camera-toggle:visible').count(),0);
+        assert.equal(await page.evaluate(()=>StageSelectHarnessHost.enterMessages.length),0);
+        assert.deepEqual(errors,[]);report.checks.push('graphics loss/close retire movement; reopen remains idle; focused tour returns to detail; 2D hides unsupported tour; all navigation sends no stage-enter intent');report.pass=true;
+    }catch(error){report.pass=false;report.error=error.stack;report.pageErrors=errors;process.exitCode=1;await page.screenshot({path:path.join(out,'failure.png')});}
+    finally{await browser.close();server.close();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));}
+}
+main().catch(e=>{console.error(e);process.exitCode=1;});

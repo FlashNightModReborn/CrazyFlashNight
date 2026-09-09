@@ -90,6 +90,8 @@ powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target 'flash
 
 ### Bash
 
+测试模式在新 `testMovie()` 前调用 [`fl.closeAllPlayerDocuments()`](https://help.adobe.com/archive/en_US/flash/cs4/flash_cs4_extending.pdf)，关闭旧测试播放器，避免其继续向共享 trace 写入重复记录；编辑文档保持原有重开规则，publish-only 不执行此清理。无 GUI 顺序验证为 `node tools/test-flash-compile-jsfl.js`，真实行为仍须唯一闭合 runId，不以去重日志代替通过。
+
 ```bash
 bash scripts/compile_test.sh
 ```

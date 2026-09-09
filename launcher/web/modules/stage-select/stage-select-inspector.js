@@ -48,7 +48,7 @@
         StageSelectRenderer.applyRovingTabIndex();
         renderInspector();
         StageSelectRenderer.updateCardVisibility(); // 选中节点的 hover 卡让位给检查器
-        if (opts.focusInspector) focusInspectorPrimary();
+        focusInspectorPrimary();
     }
 
     function toggleStageSelection(stageId) {
@@ -82,6 +82,7 @@
         if (!button || VM.isDirectEntry(button)) {
             // 选中关卡不在当前 frame（切页）时检查器隐藏但选中记忆保留，回到原 frame 自动恢复。
             S._inspectorEl.hidden = true;
+            StageSelectFocus.hide();
             return;
         }
         var state = VM.getStageState(button.stageName);
@@ -120,6 +121,7 @@
         // 浮层不遮选中节点本身：节点在下半屏时检查器改靠顶停靠（runtime 让开 42px 顶部 HUD）。
         S._inspectorEl.classList.toggle('is-dock-top', VM.getStageNavPoint(button, StageSelectRenderer.computeDirectSizing).y > S.DESIGN_H * 0.5);
         S._inspectorEl.hidden = false;
+        StageSelectFocus.render(button, state);
     }
 
     // 键盘打开检查器后的落点：任务推荐难度 > 首个难度 > （锁定时）关闭钮。
@@ -127,7 +129,7 @@
         if (!isInspectorOpen()) return;
         var target = S._inspectorDiffEl.querySelector('.stage-select-difficulty.is-recommended')
             || S._inspectorDiffEl.querySelector('.stage-select-difficulty');
-        if (!target) target = S._inspectorCloseEl;
+        if (!target) target = document.querySelector('.stage-focus-surface .stage-focus-action');
         if (target) target.focus();
     }
 
@@ -153,6 +155,7 @@
         }
         var difficulties = S._inspectorDiffEl ? S._inspectorDiffEl.querySelectorAll('.stage-select-difficulty') : [];
         var active = document.activeElement;
+        if (!S._inspectorDiffEl.contains(active)) return;
         var idx = -1;
         for (var i = 0; i < difficulties.length; i += 1) {
             if (difficulties[i] === active) { idx = i; break; }
@@ -177,10 +180,11 @@
     }
 
     function handleStageBlankClick(e) {
+        if (S._el.classList.contains('is-camera-editing')) return;
         if (!S._selectedStageId) return;
         var target = e.target;
         if (target && target.closest
-                && target.closest('.stage-select-stage-button, .stage-select-nav-button, .stage-select-card-anchor, .stage-select-inspector')) {
+                && target.closest('.stage-select-stage-button, .stage-select-nav-button, .stage-select-card-anchor, .stage-select-inspector, .stage-focus-surface')) {
             return;
         }
         clearSelection();
@@ -192,6 +196,10 @@
         if (!target || !target.classList || !target.classList.contains('stage-select-difficulty')) return;
         e.preventDefault();
         e.stopPropagation();
+        if (target.dataset.focusDifficulty === 'true') {
+            StageSelectFocus.pickDifficulty(target.dataset.difficulty);
+            return;
+        }
         var stageName = target.getAttribute('data-stage-name') || '';
         var difficulty = target.getAttribute('data-difficulty') || '';
         var entryKind = target.getAttribute('data-entry-kind') || 'difficulty';

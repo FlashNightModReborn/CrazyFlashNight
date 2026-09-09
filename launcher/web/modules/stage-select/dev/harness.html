@@ -50,6 +50,7 @@
 </style>
 </head>
 <body>
+<div id="panel-tooltip"></div>
 <div id="harness-toolbar">
     <div class="harness-group">
         <label for="stage-frame-select">frame</label>
@@ -108,16 +109,35 @@
 })();
 </script>
 <script src="../../bridge.js"></script>
+<script>
+window.CF7_ICON_ROOT='../../../icons/';
+window.CF7_PORTRAIT_ROOT='../../../assets/enemy-portraits/';
+window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
+</script>
+<script src="../../asset-timeline.js"></script>
+<script src="../../icons.js"></script>
+<script src="../../tooltip.js"></script>
+<script src="../../portrait-resolver.js"></script>
 <script src="../../panels.js"></script>
 <script src="../../minigames/shared/dev/harness-base.js"></script>
 <script src="../../panel-scale.js"></script>
+<script src="../../workbench-lifecycle.js"></script>
+<script src="../../workbench-focus.js"></script>
+<script src="../../workbench-primitives.js"></script>
+<script src="../../workbench-profile.js"></script>
+<script src="../../workbench.js"></script>
 <script src="../../stage-select-data.js"></script>
 <script src="../../stage-select-fixtures.js"></script>
 <script src="./stage-select-golden.js"></script>
 <script src="../stage-select-core.js"></script>
+<script src="../stage-select-diorama-data.js"></script>
+<script src="../stage-select-diorama.js"></script>
 <script src="../stage-select-view-model.js"></script>
 <script src="../stage-select-renderer.js"></script>
 <script src="../stage-select-inspector.js"></script>
+<script src="../stage-select-intel-data.js"></script>
+<script src="../stage-select-focus.js"></script>
+<script src="../stage-select-camera-editor.js"></script>
 <script src="../stage-select-bridge.js"></script>
 <script src="../../stage-select-panel.js"></script>
 <script src="./qa-suite.js"></script>

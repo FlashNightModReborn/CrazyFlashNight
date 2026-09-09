@@ -5,7 +5,7 @@
   "cssScope": "launcher/web/css/",
   "excludedCss": [],
   "debtCeilings": {
-    "rawColor": 2088,
+    "rawColor": 2087,
     "fontBelow9": 0,
     "font9PlayerText": 32,
     "rawDuration": 105,
@@ -62,6 +62,10 @@
       },
       {
         "file": "launcher/web/modules/skills.js",
+        "count": 1
+      },
+      {
+        "file": "launcher/web/modules/stage-select/stage-select-focus.js",
         "count": 1
       }
     ]

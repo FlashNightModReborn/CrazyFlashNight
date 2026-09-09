@@ -17,6 +17,7 @@ import org.flashNight.arki.merc.ArenaPanelService;
 import org.flashNight.arki.scene.StageManager;
 import org.flashNight.arki.scene.WaveSpawner;
 import org.flashNight.arki.stageSelect.StageSelectPanelService;
+import org.flashNight.arki.stageSelect.StageClearHistory;
 import org.flashNight.arki.task.TaskPanelService;
 import org.flashNight.arki.task.TaskUtil;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEventComponent;
@@ -41,6 +42,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         backupWorld();
         installMetadata();
 
+        testStageClearHistory();
         testOutcomeLifeAndFrameClock();
         testKillReportAndRewardFreeze();
         testAssetFlowReportAndBoundedTypes();
@@ -81,6 +83,47 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         trace("StageRunSessionTest Tests Passed: " + _passed);
         trace("StageRunSessionTest Tests Failed: " + _failed);
         trace("=== StageRunSessionTest end ===");
+    }
+
+    private static function testStageClearHistory():Void {
+        resetWorld(0);
+        _root._saveExt = {};
+        assertFalse(StageClearHistory.snapshot("地铁站").cleared, "missing history does not infer a clear");
+        assertFalse(StageClearHistory.record("地铁站", "困难"), "unknown difficulty never creates history");
+        assertTrue(_root._saveExt.stageHistory == undefined, "invalid record preserves an old save");
+        assertTrue(StageRunSession.begin("地铁站", "修罗"), "begin clear history run");
+        assertFalse(StageClearHistory.snapshot("地铁站").cleared, "entering is not clearing");
+        assertTrue(StageRunSession.claimVictoryCompletion(), "real completion grants record");
+        var state:Object = StageClearHistory.snapshot("地铁站");
+        assertTrue(state.cleared, "actual victory unlocks intel");
+        assertEquals("修罗", state.difficulties.join(","), "only actual difficulty is recorded");
+        assertTrue(_root.存档系统.dirtyMark, "history participates in existing dirty-save flow");
+        assertFalse(StageRunSession.claimVictoryCompletion(), "duplicate completion cannot write again");
+        state.difficulties.push("地狱");
+        assertEquals(1, StageClearHistory.snapshot("地铁站").difficulties.length, "UI snapshot cannot mutate authority");
+        assertFalse(StageClearHistory.record("地铁站", "修罗"), "duplicate difficulty is stable");
+        assertTrue(StageClearHistory.record("地铁站", "简单"), "another real mode can be added");
+        assertEquals("简单,修罗", StageClearHistory.snapshot("地铁站").difficulties.join(","), "history projects standard mode order");
+        assertFalse(StageClearHistory.snapshot("第一防线").cleared, "stage identities remain isolated");
+        var slot:Object = _root._saveExt;
+        _root._saveExt = {};
+        assertFalse(StageClearHistory.snapshot("地铁站").cleared, "another save slot does not inherit discovery");
+        _root._saveExt = slot;
+        assertTrue(StageClearHistory.snapshot("地铁站").cleared, "restored ext projects saved clear record");
+        StageRunSession.testOnlyReset();
+        StageRunSession.begin("失败测试", "地狱");
+        StageRunSession.finish("failure");
+        assertFalse(StageRunSession.claimVictoryCompletion(), "failure rejects completion");
+        assertFalse(StageClearHistory.snapshot("失败测试").cleared, "failure grants no intel");
+        StageRunSession.testOnlyReset();
+        StageRunSession.begin("撤退测试", "冒险");
+        StageRunSession.onReturnBaseStarted();
+        assertFalse(StageRunSession.claimVictoryCompletion(), "retreat rejects completion");
+        assertFalse(StageClearHistory.snapshot("撤退测试").cleared, "retreat grants no intel");
+        var future:Object = {version:2, stages:{}};
+        _root._saveExt.stageHistory = future;
+        assertFalse(StageClearHistory.record("地铁站", "地狱"), "unknown history version is preserved");
+        assertTrue(_root._saveExt.stageHistory === future, "optional history never replaces future data");
     }
 
     private static function testOutcomeLifeAndFrameClock():Void {

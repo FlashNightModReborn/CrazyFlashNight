@@ -759,6 +759,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             limitLevel: String(stageInfo.LimitLevel || ""),
             task: taskInfo.task,
             highestDifficulty: taskInfo.highestDifficulty,
+            clearHistory: org.flashNight.arki.stageSelect.StageClearHistory.snapshot(stageName),
             lockReason: buildLockReason(stageName, stageInfo)
         };
     }

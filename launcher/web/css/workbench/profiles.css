@@ -1,4 +1,12 @@
 /* Closed DualPaneShell macro layouts. Feature CSS owns only pane-internal composition. */
+.workbench-shell[data-profile="stage-focus"] {
+    grid-template-rows:var(--wb-header-height) minmax(0,1fr);
+}
+.workbench-shell[data-profile="stage-focus"] > .workbench-body {
+    grid-template-columns:minmax(0,3fr) minmax(360px,2fr);
+    gap:12px;
+}
+.workbench-shell[data-profile="stage-focus"] > .workbench-body > .workbench-flow-rail { display:none; }
 .workbench-shell[data-profile="canvas-editor"],
 .workbench-shell[data-profile="canvas-editor-focus"] {
     grid-template-rows:var(--wb-header-height) minmax(0,1fr);
