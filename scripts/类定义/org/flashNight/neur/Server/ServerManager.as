@@ -804,6 +804,13 @@ class org.flashNight.neur.Server.ServerManager {
         }
     }
 
+    // 诊断不能在 HTTP 卡住时把有界观察队列搬进无界业务日志缓冲。
+    public function sendSkillObservation(message:String):Boolean {
+        if (currentPort == null || isSending || messageBuffer.length + message.length > 8192) return false;
+        sendServerMessage(message);
+        return true;
+    }
+
     public function sendServerMessage(message:String):Void {
         if (messageBuffer.length > 0) {
             messageBuffer += "|" + message;

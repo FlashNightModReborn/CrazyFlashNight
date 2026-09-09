@@ -69,7 +69,7 @@ namespace CF7Launcher.Diagnostic
                 }
                 if (Age(_started, now) > 60 * 60 * 1000) continue;
                 string name = (string)entry.row["event"];
-                JToken data = entry.row["data"];
+                JObject data = entry.row["data"] as JObject;
                 string id = (string)data?["mouseId"];
                 if (name == "mouse.down" && (bool?)data?["injected"] == false && id != null
                     && (bool?)data?["targetEligible"] == true && (double?)data?["cacheAgeMs"] <= 1000)

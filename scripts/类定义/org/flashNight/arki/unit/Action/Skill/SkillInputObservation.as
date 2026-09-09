@@ -17,6 +17,9 @@ class org.flashNight.arki.unit.Action.Skill.SkillInputObservation {
     private static var activeAttempt:Number = 0;
     private static var attempt:Number = 0;
     private static var watch:Object = null;
+    private static var target:Object = null;
+    private static var targetGeneration:Number = 0;
+    private static var bridgeGeneration:Number = 0;
 
     public static function configure(value:String):Void {
         try {
@@ -25,9 +28,9 @@ class org.flashNight.arki.unit.Action.Skill.SkillInputObservation {
             rows = []; states = []; keys = [];
             sequence = dropped = frameCount = controlCount = bridgeCount = sampleCount = advanceCount = 0;
             lastFlush = getTimer();
-            activeUnit = null; activeAttempt = attempt = 0; watch = null;
+            activeUnit = null; activeAttempt = attempt = 0; watch = null; target = null; targetGeneration = 0;
             enabled = true;
-            record("ready", 0, 0, 0, "bounded_128_v1");
+            record("ready", 0, bridgeGeneration, 0, "bounded_128_v1");
         } catch (e) { enabled = false; }
     }
     public static function record(kind:String, slot:Number, a:Number, b:Number, detail:String):Void {
@@ -35,7 +38,7 @@ class org.flashNight.arki.unit.Action.Skill.SkillInputObservation {
         try {
             if (rows.length >= 128) { dropped++; return; }
             rows.push(" seq=" + (++sequence) + " timer=" + getTimer() + " event=" + kind
-                + " slot=" + slot + " a=" + a + " b=" + b + " attempt=" + activeAttempt
+                + " target=" + targetGeneration + " bridge=" + bridgeGeneration + " slot=" + slot + " a=" + a + " b=" + b + " attempt=" + activeAttempt
                 + " detail=" + escape(String(detail).substr(0, 160)));
         } catch (e) { dropped++; }
     }
@@ -61,20 +64,27 @@ class org.flashNight.arki.unit.Action.Skill.SkillInputObservation {
             lastFlush = getTimer();
             record("progress", 0, frameCount, controlCount, "bridge_" + bridgeCount + "_sample_" + sampleCount + "_cd_" + advanceCount + "_dropped_" + dropped);
             record("keys", 0, 0, 0, keys.join(","));
-            if (_root.server.isSocketConnected !== true || typeof _root.server.sendServerMessage != "function") return;
+            if (_root.server.isSocketConnected !== true || typeof _root.server.sendSkillObservation != "function") return;
             var batch:Number = Math.min(rows.length, 32);
             for (var i:Number = 0; i < batch; i++) {
-                var row:String = String(rows.shift());
-                try { _root.server.sendServerMessage("[SkillInputAS2] session=" + session + " v=1" + row); }
-                catch (sendError) { dropped++; }
+                var row:String = String(rows[0]);
+                try {
+                    if (_root.server.sendSkillObservation("[SkillInputAS2] session=" + session + " v=1" + row) !== true) break;
+                    rows.shift();
+                } catch (sendError) { rows.shift(); dropped++; }
             }
         } catch (e) { dropped++; }
     }
     public static function control(unit:Object):Void {
         if (!enabled) return;
         controlCount++;
+        if (target !== unit) {
+            target = unit; targetGeneration++; states = [];
+            record("target_changed", 0, targetGeneration, 0, unit == null ? "missing" : String(unit._name));
+        }
         if (unit == null && controlCount % 30 == 1) record("target_missing", 0, controlCount, 0, "no_sample");
     }
+    public static function installed():Void { bridgeGeneration++; record("bridge_installed", 0, bridgeGeneration, 0, "root_bridge"); }
     public static function bridge():Void { if (enabled) bridgeCount++; }
     public static function sample(slot:Number, key:Number, down:Boolean):Void {
         if (!enabled) return;

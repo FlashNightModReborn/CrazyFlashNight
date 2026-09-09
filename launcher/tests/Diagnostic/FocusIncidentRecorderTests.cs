@@ -34,6 +34,18 @@ namespace CF7Launcher.Tests.Diagnostic
         }
 
         [Fact]
+        public void LegacyNullPayloadAndCoverageRowsDoNotDisableLaterIncidentCapture()
+        {
+            using (var recorder = new FocusIncidentRecorder(_root, "fixture", () => _now))
+            {
+                recorder.Append(Row("hud.suspend", null));
+                recorder.Append("[FocusTrace] {\"session\":\"fixture\",\"event\":\"input.dropped\",\"count\":1}");
+                recorder.Append(Row("input.heartbeat_wait", new JObject { ["elapsedMs"] = 900 }));
+            }
+            Assert.Contains("posted_heartbeat_wait", File.ReadAllText(Path.Combine(_root, FocusIncidentRecorder.Names[0])));
+        }
+
+        [Fact]
         public void PreservesEarlyGapAcrossLongRollingSessionWithBoundedSlotsAndExplicitPartialWindow()
         {
             using (var recorder = new FocusIncidentRecorder(_root, "fixture", () => _now))

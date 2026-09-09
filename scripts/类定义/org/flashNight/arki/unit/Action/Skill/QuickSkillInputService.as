@@ -29,6 +29,7 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
      */
     public static function installRootBridge(root:Object):Void {
         if (!root) return;
+        SkillInputObservation.installed();
 
         var rootRef:Object = root;
         var bridge:Object = {};

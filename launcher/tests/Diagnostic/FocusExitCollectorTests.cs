@@ -79,6 +79,9 @@ namespace CF7Launcher.Tests.Diagnostic
             string session = FocusTrace.Session;
             FocusTrace.Record("fixture.automatic_zip");
             FocusTrace.Input("input.heartbeat_wait", new InputData { elapsedMs = 900, invocationId = 17 });
+            FocusTrace.Flush();
+            Assert.True(File.Exists(Path.Combine(_root, "logs", "focus-trace", "focus-incident.0.log")),
+                File.ReadAllText(Path.Combine(_root, "logs", "focus-trace", "recording-context.json")));
             Process collector = null;
             FocusTrace.Shutdown(info => collector = Process.Start(info));
             Assert.NotNull(collector);

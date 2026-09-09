@@ -83,6 +83,7 @@ namespace CF7Launcher.Tests.Guardian
             }
 
             public bool SessionForegroundForTest;
+            public void DestroyNativeHandleForTest() { DestroyHandle(); }
 
             protected override bool IsOwnerSessionForeground()
             {
@@ -95,6 +96,29 @@ namespace CF7Launcher.Tests.Guardian
                 OnOwnerVisibilityChanged(false);
                 HideOverlay();
             }
+        }
+
+        [Fact]
+        public void DiagnosticDestroyObservationDoesNotRecreateNativeHandle()
+        {
+            var batches = new List<string>();
+            FocusTrace.Start(batches.Add, false);
+            try
+            {
+                using (Form owner = CreateOwner())
+                using (TestNativeHudOverlay hud = CreateHud(owner, out RecordingWidget widget))
+                {
+                    IntPtr handle = hud.Handle;
+                    hud.DestroyNativeHandleForTest();
+                    Assert.False(hud.IsHandleCreated);
+                    FocusTrace.Flush();
+                    var rows = batches.SelectMany(batch => batch.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                        .Select(line => JObject.Parse(line.Substring(13)));
+                    Assert.Contains(rows, row => (string)row["event"] == "input.window_lifecycle"
+                        && (string)row["data"]?["phase"] == "destroyed" && (long?)row["data"]?["hwnd"] == handle.ToInt64());
+                }
+            }
+            finally { FocusTrace.Stop(); }
         }
 
         [Fact]

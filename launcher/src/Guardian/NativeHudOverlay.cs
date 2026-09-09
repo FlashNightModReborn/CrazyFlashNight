@@ -790,10 +790,12 @@ namespace CF7Launcher.Guardian
         private const int MA_NOACTIVATE = 3;
 
         private long _inputHandleGeneration;
+        private IntPtr _inputObservedHandle;
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             _inputHandleGeneration++;
+            _inputObservedHandle = Handle;
             CF7Launcher.Diagnostic.FocusTrace.Record("input.window_lifecycle", new {
                 phase = "created", hwnd = Handle.ToInt64(), generation = _inputHandleGeneration,
                 window = GetType().Name });
@@ -801,7 +803,7 @@ namespace CF7Launcher.Guardian
         protected override void OnHandleDestroyed(EventArgs e)
         {
             CF7Launcher.Diagnostic.FocusTrace.Record("input.window_lifecycle", new {
-                phase = "destroyed", hwnd = Handle.ToInt64(), generation = _inputHandleGeneration,
+                phase = "destroyed", hwnd = _inputObservedHandle.ToInt64(), generation = _inputHandleGeneration,
                 window = GetType().Name });
             base.OnHandleDestroyed(e);
         }
