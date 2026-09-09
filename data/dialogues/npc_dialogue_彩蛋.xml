@@ -534,7 +534,7 @@
                 <Name>虎妙</Name>
                 <Title>九命猫妖</Title>
                 <Char>虎妙</Char>
-                <Text>虫国毁灭时她就已经失踪了。我不知道她是怎么来到这里的，但这个应该是个好消息，希望她一切安好。</Text>
+                <Text>虫国覆灭时她就已经失踪了。我不知道她是怎么来到这里的，但这个应该是个好消息，希望她一切安好。</Text>
             </SubDialogue>
         </Dialogue>
         <Dialogue id="2">
@@ -663,6 +663,68 @@
                 <Text>虽然他的法术都是我教的。</Text>
             </SubDialogue>
         </Dialogue>
+        <Dialogue id="8">
+            <SubDialogue id="0">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>城下城的人来找过你吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>那是什么？</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>有人在新海塔顶的密室留了信息，我顺着查到了这里。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>听起来像是……诱饵？</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>或许吧。但也不算没有收获。</Text>
+            </SubDialogue>
+            <SubDialogue id="5">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>只是有人实在有些异想天开，这一点倒是让人索然无味。</Text>
+            </SubDialogue>
+            <SubDialogue id="6">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>就像那一次又一次的精卫计划一样。</Text>
+            </SubDialogue>
+            <SubDialogue id="7">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>曾经也有很多人做过衔石填海的梦，但总有一天要接受现实。</Text>
+            </SubDialogue>
+            <SubDialogue id="8">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>像你这么强的人都有解决不了的问题吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="9">
+                <Name>虎妙</Name>
+                <Title>九命猫妖</Title>
+                <Char>虎妙</Char>
+                <Text>那你可太高看我了。</Text>
+            </SubDialogue>
+        </Dialogue>
     </Dialogues>
     <Dialogues>
         <Name>人修罗</Name>
@@ -775,6 +837,18 @@
                 <Char>人修罗</Char>
                 <Text>不过我看得很清楚——很多时候，人比恶魔更像恶魔。</Text>
             </SubDialogue>
+        </Dialogue>
+    </Dialogues>
+    <Dialogues>
+        <Name>三蝶</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>三蝶</Name>
+                <Title>大妖尊·鼠首</Title>
+                <Char>三蝶</Char>
+                <Text>……</Text>
+            </SubDialogue>
+        </Dialogue>
         </Dialogue>
     </Dialogues>
 </root>

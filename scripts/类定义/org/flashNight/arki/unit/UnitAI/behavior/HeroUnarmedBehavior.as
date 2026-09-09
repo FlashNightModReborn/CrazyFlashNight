@@ -315,11 +315,24 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior extends BaseU
                 && (getTimer() - sk.上次使用时间 <= sk.冷却 * 1000)) continue;
             if (sk.消耗 > 0 && self.mp < sk.消耗) continue;
 
-            // 设置远离方向的 Z 输入（技能动画读取）
+            // 设置远离方向的 Z 输入（技能动画读取）。
+            // ★贴边覆盖（仅贴边时，80=Phase3 MARGIN 同口径）：距上缘<80→向下，距下缘<80→向上
             var awayZ:Number = (data.diff_z < 0) ? 1 : -1;
-            self.上行 = (awayZ < 0);
-            self.下行 = (awayZ > 0);
+            if (!isNaN(data.bndUpDist) && data.bndUpDist < 80) awayZ = 1;
+            else if (!isNaN(data.bndDownDist) && data.bndDownDist < 80) awayZ = -1;
+            var upD:Boolean = (awayZ < 0);
+            var downD:Boolean = (awayZ > 0);
+            self.上行 = upD;
+            self.下行 = downD;
             self.动作A = false;
+
+            // ★必须写方向锁：这里只设一次旗标，下一拍 evade_action 的 clearInput 就会清掉
+            //   （syncLockedInput 只回写 单位方向锁，锁为 null 时无从恢复）→ 动画读到无方向
+            //   → 默认后跳/后闪现。这就是"偶尔默认后跳"的主因。锁窗口与 _release 同参。
+            var lockFrames:Number = Number(p.跳跃方向锁帧);
+            if (!(lockFrames > 0)) lockFrames = 15;
+            self.单位方向锁 = {上行: upD, 下行: downD, 左行: false, 右行: false,
+                截止帧: frame + lockFrames};
 
             sk.上次使用时间 = getTimer();
             self.技能等级 = Math.min(Math.ceil(self.等级 / 10), 10);

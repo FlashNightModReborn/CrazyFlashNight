@@ -576,20 +576,34 @@ class org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain {
             self.技能浮空 = true;
         }
 
-        // 小跳/闪现方向控制（技能动画不设输入时默认后跳，必须显式给方向输入）：
-        //   贴身 → 上下跳（随机上/下）；未贴身（接近中）→ 前跳拉近。
+        // 小跳/闪现方向控制（技能动画不设输入时默认后跳，必须显式给方向输入）。
+        //   优先级：① 贴边覆盖（距上缘<80px→向下，距下缘<80px→向上，仅贴边时生效）
+        //           ② 受威胁（弹道预警=高危）→ 一律上下跳/闪（前跳=朝射手撞子弹）
+        //           ③ 贴身 → 上下跳（随机上/下）
+        //           ④ 未贴身（接近中）→ 前跳拉近。
         //   （击倒脱困不走本函数：击倒期 C2 守卫直接 return，脱困由原生 击倒时小跳 处理。）
         if (sk.技能名 == "小跳" || sk.技能名 == "闪现") {
             var up:Boolean = false;
             var down:Boolean = false;
             var lf:Boolean = false;
             var rt:Boolean = false;
-            if (data.absdiff_x <= p.攻击判定X) {
-                // 贴身：只能上下跳
+            // ① 贴边覆盖：80 与 MovementResolver Phase3 MARGIN 同口径，bnd* 由 data.updateSelf 维护
+            var nearTop:Boolean = (!isNaN(data.bndUpDist) && data.bndUpDist < 80);
+            var nearBot:Boolean = (!isNaN(data.bndDownDist) && data.bndDownDist < 80);
+            if (nearTop) {
+                down = true;
+            } else if (nearBot) {
+                up = true;
+            } else if (_isUnderFire(frame)) {
+                // ② 受威胁：上下随机
+                if (Math.random() < 0.5) up = true;
+                else down = true;
+            } else if (data.absdiff_x <= p.攻击判定X) {
+                // ③ 贴身：只能上下跳
                 if (Math.random() < 0.5) up = true;
                 else down = true;
             } else {
-                // 接近中：前跳拉近（diff_x<0 = 目标在左 → 左行）
+                // ④ 接近中：前跳拉近（diff_x<0 = 目标在左 → 左行）
                 if (data.diff_x < 0) lf = true;
                 else rt = true;
             }
