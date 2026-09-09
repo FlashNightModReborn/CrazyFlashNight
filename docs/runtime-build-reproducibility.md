@@ -14,11 +14,15 @@ Guardian 限定拦截无字符的 `SC_KEYMENU`；Flash 的 hidden / full 两条�
 - `2026-09-09T18:13:35.2836945Z` 完成原子 promotion；strict v2 **2 signers / 2 faultDomains**、33-file bundle 与正式根 bootstrap `--verify-only` 均通过。上一完整 bundle 保留于 `tmp/runtime-promotions/20260909T181305599Z-31c789243d754f1bb4995b8849748497/previous`。
 - Launcher canonical runner **4,868 passed / 3 existing skipped / 0 failed**，其中新增菜单防护 **19** 项，含真实隐藏 Win32 窗口的初次嵌入、重复嵌入与菜单释放检查。prepare 的 16 项受管产物字节未变，文档治理与差异检查通过。
 
-首次 request `8939430F9A5EE2477BE8EBF69E7D8F074808B147C2ED99EA8A40DEBC52708471` 在上游 Flash 素材提交到达后被正式 supersede，旧 policy 预检主动取消；最终冻结 source 已合入 `a1ea92db3cafa3b43ddbb1963046c26f52267f13`，四个运行时输入域保持不变，本地已签名 CAS 按契约复用，production policy 对最终 release tree 完整重跑并通过。后续上游 `9ff0a07e85394c1bf06736866757868237d13af6` 仅增加 `SceneManager.as` 的排序修改，也在四个输入域之外；其 AS2 源码应随部署正常合并，不据此重写冻结请求或宣称本轮已重新编译、验证其 SWF。
+首次 request `8939430F9A5EE2477BE8EBF69E7D8F074808B147C2ED99EA8A40DEBC52708471` 在上游 Flash 素材提交到达后被正式 supersede，旧 policy 预检主动取消；最终冻结 source 已合入 `a1ea92db3cafa3b43ddbb1963046c26f52267f13`，四个运行时输入域保持不变，本地已签名 CAS 按契约复用，production policy 对最终 release tree 完整重跑并通过。后续上游 `9ff0a07e85394c1bf06736866757868237d13af6` 仅增加 `SceneManager.as` 的排序修改，也在四个输入域之外；其 AS2 源码已随部署正常合并，不据此重写冻结请求或宣称本轮已重新编译、验证其 SWF。
+
+部署提交 `13254490477001643c0fb0bb7de1616f542b6caa` 经普通合并 `5e5ae1eec3ef8ad2381e61a38b895fd5918eaa18` 保留上述上游源码，已快进推送至 `main`。提交前暂存态 33-file bundle、独立 GitHub proof replay 与 strict v2 **2 signers / 2 faultDomains** 全部通过；合并后正式 Core DLL 仍与共识记录的 SHA-256 一致。
+
+首次远端 [Audit run 34388753832](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34388753832) 成功，绑定 `event=push` 与该部署合并 head；于 `2026-09-09T18:28:57.9679388Z` 明确报告 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `9ff0a07e85394c1bf06736866757868237d13af6` → head `5e5ae1eec3ef8ad2381e61a38b895fd5918eaa18`。远端独立重放 source tag、33-file closure、2 signers / 2 faultDomains 全部通过。后续审计记录提交只改本文，不改变已审计部署闭包。
 
 当前为 **promoted / FIELD_REVALIDATION_PENDING**。这是对明确存在的菜单入口和句柄清理问题的预防性修复，尚未唯一确认原事故的停顿线程与菜单归属。正式入口的裸 Alt / F10、Alt+Tab / Alt+Space / Alt+F4、全屏往返与重新嵌入仍待真机复验；自动化窗口测试和部署完整性不替代 Flash 实际输入，不称本专项 `standard_entry_verified`。
 
-本轮没有新建 Git worktree，本地 worker 的隔离 checkout 已自动清理，现有其他任务 worktree 保持不动。工作区另有其他任务的 `tools/cf7-balance-tool/models/ti61/jk_script_sampler.js` 与 `jk_source.py` 未跟踪文件，均不属于本次变更和提交。
+本轮没有新建 Git worktree，本地 worker 的隔离 checkout 已自动清理，现有其他任务 worktree 保持不动。工作区另有其他任务的 `tools/cf7-balance-tool/models/ti61/jk_*` 未跟踪文件，均不属于本次变更和提交。
 
 ## 2026-09-10 上一正式发布：废城三维选关与全地图双栏详情
 
