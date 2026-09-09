@@ -547,6 +547,14 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
+            // Flash 子窗口的裸 Alt / F10 可把 SC_KEYMENU 转发到顶层宿主。
+            // 在进入系统菜单循环前结束该消息，不干预其他 Alt 组合键的输入路径。
+            if (FlashWindowMenuPolicy.SuppressBareMenuActivation(m.Msg, m.WParam, m.LParam))
+            {
+                m.Result = IntPtr.Zero;
+                return;
+            }
+
             if (m.Msg == WM_DPICHANGED)
             {
                 ApplySuggestedDpiBounds(m.LParam);

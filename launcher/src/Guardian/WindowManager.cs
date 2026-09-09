@@ -126,7 +126,7 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetMenu(IntPtr hWnd, IntPtr hMenu);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         private static extern bool DestroyMenu(IntPtr hMenu);
 
         [DllImport("user32.dll")]
@@ -338,6 +338,26 @@ namespace CF7Launcher.Guardian
                 LogWin32Failure(action, hwnd, err);
         }
 
+        private sealed class Win32FlashMenuApi : IFlashMenuWindowApi
+        {
+            public IntPtr GetMenu(IntPtr window) => WindowManager.GetMenu(window);
+            public bool DetachMenu(IntPtr window) => SetMenu(window, IntPtr.Zero);
+            public bool DestroyMenu(IntPtr menu) => WindowManager.DestroyMenu(menu);
+        }
+
+        private static readonly IFlashMenuWindowApi FlashMenuApi = new Win32FlashMenuApi();
+
+        internal static void ApplyFlashChildStyle(IntPtr hwnd, string phase)
+        {
+            int style = GetWindowLong(hwnd, GWL_STYLE);
+            // 普通菜单必须在 WS_CHILD 之前摘除；已有 child 的重嵌入只规范化样式。
+            if (!FlashWindowMenuPolicy.RemoveMenuBeforeChildStyle(hwnd, style, FlashMenuApi))
+                LogWin32Failure("RemoveMenu(" + phase + ")", hwnd);
+
+            SetWindowLongLogged(hwnd, GWL_STYLE, FlashWindowMenuPolicy.EmbeddedStyle(style),
+                "SetWindowLong(" + phase + " WS_CHILD)");
+        }
+
         private static void LogHResultFailure(string action, IntPtr hwnd, int hr)
         {
             LogManager.Log("[WindowManager] " + action + " failed hwnd=0x" + hwnd.ToString("X")
@@ -424,21 +444,8 @@ namespace CF7Launcher.Guardian
             // 1) 立即 SW_HIDE 减少首帧 top-level 可见窗口时间
             ShowWindow(hwnd, SW_HIDE);
 
-            // 2) 去边框 + WS_CHILD
-            int style = GetWindowLong(hwnd, GWL_STYLE);
-            style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
-            style = style | WS_CHILD;
-            SetWindowLongLogged(hwnd, GWL_STYLE, style, "SetWindowLong(hidden WS_CHILD)");
-
-            // 3) 移除 Flash SA 菜单（釜底抽薪阻断加速器）
-            IntPtr hMenu = GetMenu(hwnd);
-            if (hMenu != IntPtr.Zero)
-            {
-                if (!SetMenu(hwnd, IntPtr.Zero))
-                    LogWin32Failure("SetMenu(hidden remove)", hwnd);
-                DestroyMenu(hMenu);
-                LogManager.Log("[WindowManager] Flash menu removed (accelerators disabled)");
-            }
+            // 2-3) 先摘除普通菜单，再去边框 / 系统菜单并设为 WS_CHILD。
+            ApplyFlashChildStyle(hwnd, "hidden");
 
             // 4) SWP_FRAMECHANGED 强制非客户区重算
             if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
@@ -660,20 +667,8 @@ namespace CF7Launcher.Guardian
 
             if (needFullEmbed)
             {
-                // 完整路径：style + menu + SetParent + Show + MoveWindow
-                int style = GetWindowLong(hwnd, GWL_STYLE);
-                style = style & ~WS_CAPTION & ~WS_THICKFRAME & ~WS_BORDER;
-                style = style | WS_CHILD;
-                SetWindowLongLogged(hwnd, GWL_STYLE, style, "SetWindowLong(embed WS_CHILD)");
-
-                IntPtr hMenu = GetMenu(hwnd);
-                if (hMenu != IntPtr.Zero)
-                {
-                    if (!SetMenu(hwnd, IntPtr.Zero))
-                        LogWin32Failure("SetMenu(embed remove)", hwnd);
-                    DestroyMenu(hMenu);
-                    LogManager.Log("[WindowManager] Flash menu removed (accelerators disabled)");
-                }
+                // 完整路径与启动 hidden 路径共用菜单 / 子窗口样式处理。
+                ApplyFlashChildStyle(hwnd, "embed");
 
                 if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED))
