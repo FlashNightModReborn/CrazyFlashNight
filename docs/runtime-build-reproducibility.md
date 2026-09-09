@@ -18,7 +18,9 @@
 
 功能实现阶段已通过两种视口各 **57/57** 选关回归、三维专项 **11** 项、聚焦 **5** 组、游览和紧凑情报各 **3** 组、Host 选关 **29** 项；AS2 地图集成 **798 passed / 0 failed**，runId `416e7ef0400e4841992471ba0cb56037`，compiler **0/0**、32K retry=0。上游合并后另做上述 fresh publish 与双侧符号检查。这些证据不替代正式 WebView2→Host→AS2 出战、真实通关后保存/重启回读和玩家手感。
 
-当前为 **promoted / FIELD_REVALIDATION_PENDING**。维护者已授权先发布收集体验反馈；重点为快捷出战、聚焦信息密度、游览操作、二维页详情和通关情报持久化，不称本功能 `standard_entry_verified`。部署提交与远端审计待补录。
+当前为 **promoted / FIELD_REVALIDATION_PENDING**。维护者已授权先发布收集体验反馈；重点为快捷出战、聚焦信息密度、游览操作、二维页详情和通关情报持久化，不称本功能 `standard_entry_verified`。
+
+源码与部署提交 `5dc4ee8759b49ced5be7484d75ea0e9905fe4625` 已一起快进推送至 `main`。首次远端 [Audit run 34380654238](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34380654238) 成功，绑定 `event=push / run_attempt=1` 与该部署 head；于 `2026-09-09T17:09:09.5756707Z` 明确报告 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`，base `6e7bd10244ac9587ca189307cb5f7416217578cb` → head `5dc4ee8759b49ced5be7484d75ea0e9905fe4625`。远端独立重放 source tag、33-file closure、2 signers / 2 faultDomains 全部通过。后续审计记录提交只改本文，不改变已审计部署闭包。
 
 本轮没有新建 Git worktree，首次本地 worker 的隔离 checkout 已自动清理。worker 另提示共享缓存根中既有请求前缀 `84ae52d278f3`、`8b2dfdf49175`、`b650df8f2817` 的三个遗留目录，本轮未创建或删除；现有其他任务 worktree 保持不动。
 
