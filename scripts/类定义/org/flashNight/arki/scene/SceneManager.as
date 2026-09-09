@@ -79,6 +79,17 @@ class org.flashNight.arki.scene.SceneManager {
         // 将上述属性设置为不可枚举
         _global.ASSetPropFlags(gameworld, ["效果", "子弹区域", "地图", "dispatcher", "getNextHighestDepth"], 1, false);
 
+        // ── 兜底劫持 authored 直接子级的 swapDepths ──
+        // 场景符号内的 NPC / 地图元件帧脚本（this.swapDepths(this._y) 循环）与
+        // 初始化NPC 在 attachMovie 时同步执行，早于本方法创建 DepthManager
+        // （上一场景 teardown 已把 instance 置 null），其内部的注册与劫持是
+        // 静默空操作；未被任何路径接管的元件从此停在原生低深度带，永远被
+        // Twip 深度带的单位压在下面（基地车库车辆、幸存者营地 NPC 遮挡失效
+        // 的根因）。这里为其余直接子级补装劫持：这些元件下一次循环
+        // swapDepths(this._y) 时会经 DepthManager.updateDepth 自动注册并恢复
+        // Y 排序；从不调用 swapDepths 的纯装饰子级劫持处于休眠态，行为不变。
+        hijackAuthoredChildren(gameworld);
+
         //  ── 初始化 SceneInteractionManager ──
         SceneInteractionManager.getInstance().init();
 
@@ -148,6 +159,24 @@ class org.flashNight.arki.scene.SceneManager {
         }
     }
 
+
+    /**
+     * 为 gameworld 的 authored 直接子级补装 swapDepths 劫持（幂等）。
+     * 只装劫持、不主动注册：Y 排序由元件自己的帧脚本 swapDepths(this._y)
+     * 首次调用时经 DepthManager.updateDepth 注册完成；没有该调用的装饰
+     * 子级劫持处于休眠态，深度行为不变。
+     * 背景 / deadbody 已被 pinAuthoredLayers 钉底，保持原生深度；
+     * 地图/子弹区域/效果/dispatcher 已被 ASSetPropFlags 隐藏，不进枚举。
+     */
+    private function hijackAuthoredChildren(gw:MovieClip):Void {
+        var child:Object;
+        for (var each in gw) {
+            child = gw[each];
+            if (!(child instanceof MovieClip)) continue;
+            if (child == gw.deadbody || child == gw.背景) continue;
+            DepthManager.instance.installHijack(MovieClip(child));
+        }
+    }
 
     /*
      * 每帧执行的更新函数
