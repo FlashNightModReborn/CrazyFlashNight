@@ -19,6 +19,9 @@
  *   - 只读命令从 _root.tasks_to_do 和 TaskUtil.tasks 读取，不写入
  *   - 写命令复用游戏权威函数 _root.FinishTask / _root.DeleteTask（不在此重写 splice/标脏逻辑）
  *   - 响应格式：{ task: "task_response", callId: callId, success: true/false, ... }
+ *   - callId 必须保持数字型跨异步回包：Host TaskTask 只接受整数 callId，字符串化/丢失
+ *     都会被整包丢弃（invalid_backend_call_id）；异步回调一律经工厂闭包固化编号
+ *     （CS6 会把普通局部变量放进寄存器，异步回调按变量名读取时会丢失）
  *   - 使用 LiteJSON 序列化（与 PetPanelService 相同）
  *
  * 写操作 index 偏移契约（重要）：
@@ -228,20 +231,25 @@ class org.flashNight.arki.task.TaskPanelService {
     // handleDetail — 返回单个任务详细信息
     // ═══════════════════════════════════════════════════════════
     public static function handleDetail(params:Object):Void {
-        var callId:String = String(params.callId);
+        var callId:Number = Number(params.callId);
         var index:Number = Number(params.index);
         if (isNaN(index) || index < 0 || index >= _root.tasks_to_do.length || _root.tasks_to_do[index] == undefined) {
             sendResponse({task:"task_response", callId:callId, success:false, error:"invalid_index"}); return;
         }
         var taskId:String = String(_root.tasks_to_do[index].id);
-        org.flashNight.arki.map.MapDomainBridge.snapshot(function(ok:Boolean, error:String):Void {
-            if (!ok) {
-                org.flashNight.arki.task.TaskPanelService.sendResponse({task:"task_response", callId:callId, success:false, error:error}); return;
-            }
-            org.flashNight.arki.task.TaskPanelService.handleDetailFresh(callId, taskId);
-        }, [taskId]);
+        org.flashNight.arki.map.MapDomainBridge.snapshot(makeDetailCallback(callId, taskId), [taskId]);
     }
-    private static function handleDetailFresh(callId:String, taskId:String):Void {
+    // 请求编号与任务主键由工厂形参固化：局部变量进寄存器后异步回调按名读取会丢失，
+    // 且回包 callId 必须保持 Host 可接受的整数型。
+    private static function makeDetailCallback(responseCallId:Number, taskId:String):Function {
+        return function(ok:Boolean, error:String):Void {
+            if (!ok) {
+                org.flashNight.arki.task.TaskPanelService.sendResponse({task:"task_response", callId:responseCallId, success:false, error:error}); return;
+            }
+            org.flashNight.arki.task.TaskPanelService.handleDetailFresh(responseCallId, taskId);
+        };
+    }
+    private static function handleDetailFresh(callId:Number, taskId:String):Void {
         // 等待地图事实时 tasks_to_do 可以变化，必须按 taskId 重新定位，不复用旧 index。
         var index:Number = resolveIndexByTaskId(taskId);
         if (index < 0) {
@@ -431,16 +439,24 @@ class org.flashNight.arki.task.TaskPanelService {
     //   实际交付仍由玩家到达后点击 NPC 完成（本功能只负责"前往"，不自动交付）。
     // ═══════════════════════════════════════════════════════════
     public static function handleNavigateFinish(params:Object):Void {
-        var callId:String = String(params.callId);
+        var callId:Number = Number(params.callId);
         var taskId:String = String(params.taskId);
         if (resolveIndexByTaskId(taskId) < 0) {
             sendResponse({task:"task_response", callId:callId, success:false, error:"task_not_found", tasks:buildTaskList()}); return;
         }
-        org.flashNight.arki.map.MapPanelService.navigateToTask(taskId, function(ok:Boolean, error:String):Void {
-            org.flashNight.arki.task.TaskPanelService.sendResponse({task:"task_response", callId:callId, success:ok, closePanel:ok, error:error});
-        }, function():Boolean {
+        org.flashNight.arki.map.MapPanelService.navigateToTask(taskId, makeNavigateFinishCallback(callId), makeNavigateFinishGuard(taskId));
+    }
+    // 与 makeDetailCallback 同理：编号由工厂形参固化，回包保持整数型。
+    private static function makeNavigateFinishCallback(responseCallId:Number):Function {
+        return function(ok:Boolean, error:String):Void {
+            org.flashNight.arki.task.TaskPanelService.sendResponse({task:"task_response", callId:responseCallId, success:ok, closePanel:ok, error:error});
+        };
+    }
+    // 守卫同样按形参固化 taskId，异步准入复核时重查当前任务列表。
+    private static function makeNavigateFinishGuard(taskId:String):Function {
+        return function():Boolean {
             return org.flashNight.arki.task.TaskPanelService.resolveIndexByTaskId(taskId) > -1;
-        });
+        };
     }
 
     // ═══════════════════════════════════════════════════════════

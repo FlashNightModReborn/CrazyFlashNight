@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
 
 namespace CF7Launcher.Tests.Tasks
@@ -180,6 +182,45 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("navigateFinish", (string)resp["cmd"]);
             Assert.True((bool)resp["success"]);
             Assert.True((bool)resp["closePanel"]);
+        }
+
+        [Fact]
+        public void HandleFlashResponse_StringBackendCallId_DroppedAndLogged()
+        {
+            // 回归锚点：AS2 侧曾把数字 callId 字符串化（wire 上 "callId":"1"），
+            // Host 只接受整数型 backend callId；字符串回包必须整包丢弃并记录
+            // invalid_backend_call_id，绝不投递 Web，pending 不被消费。
+            string posted = null;
+            var logs = new List<string>();
+            var task = new TaskTask(delegate { return true; }, delegate(string payload) { });
+            task.SetPostToWeb(delegate(string json) { posted = json; });
+
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                task.HandleWebRequest("detail", JObject.Parse("{\"callId\":\"web-str\",\"index\":0}"));
+
+                task.HandleFlashResponse(
+                    JObject.Parse("{\"task\":\"task_response\",\"callId\":\"1\",\"success\":true,\"taskData\":{}}"),
+                    delegate(string json) { });
+
+                Assert.Null(posted);
+                Assert.Contains(logs, line => line.Contains(
+                    "event=task_response_dropped reason=invalid_backend_call_id pending_count=1"));
+
+                // 同 pending 随后收到整数 callId 仍须正常投递（丢弃不污染后续匹配）。
+                task.HandleFlashResponse(
+                    JObject.Parse("{\"task\":\"task_response\",\"callId\":1,\"success\":true,\"taskData\":{}}"),
+                    delegate(string json) { });
+                var resp = JObject.Parse(posted);
+                Assert.Equal("web-str", (string)resp["callId"]);
+                Assert.True((bool)resp["success"]);
+            }
+            finally
+            {
+                LogManager.ResetSink();
+                task.Dispose();
+            }
         }
 
         [Fact]

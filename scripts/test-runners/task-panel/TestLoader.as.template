@@ -1,0 +1,6 @@
+﻿/**
+ * 任务面板 TaskPanelService wire 契约（callId 数字型跨异步回包）focused 入口。
+ */
+trace("FocusedTestRunId task-panel Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.task.TaskPanelServiceTest.runAllTests();
+trace("FocusedTestRunId task-panel Complete: __FOCUSED_RUN_ID__");
