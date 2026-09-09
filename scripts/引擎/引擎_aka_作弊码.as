@@ -1,6 +1,18 @@
 ﻿
 _root.cheatFunction = new Object();
 
+// ============================================================
+// 作弊开关容器
+// ------------------------------------------------------------
+// 所有作弊"状态"只挂在这个二级容器下，不再往 _root 一级塞新属性
+// （_root 上已经挂了太多东西）。_root 一级因此只多 cheatFlags 一个引用。
+// 容器内的开关都是本次游戏有效、不进存档。
+// ============================================================
+if (_root.cheatFlags == undefined) _root.cheatFlags = new Object();
+
+// 强制显示任务限定 NPC：true 时 _root.初始化NPC 不再用任务需求 / 任务需求支线 挡人。
+_root.cheatFlags.强制显示NPC = false;
+
 _root.cheatFunction.hardmode = function(){
 	_root.difficultyMode = 0;
 	_root.最上层发布文字提示("更改为困难模式！");
@@ -374,6 +386,11 @@ _root.cheatFunction.taskprogress = function() {
 };
 _root.cheatFunction.taskstatus = _root.cheatFunction.taskprogress;
 
+_root.cheatFunction.shownpc = function() {
+	_root.cheatFlags.强制显示NPC = !(_root.cheatFlags.强制显示NPC === true);
+	_root.最上层发布文字提示("强制显示任务NPC：" + (_root.cheatFlags.强制显示NPC ? "开" : "关") + "-切换场景生效");
+};
+
 _root.cheatCode = function(作弊码){
 	if(typeof _root.cheatFunction[作弊码] === "function"){
 		_root.cheatFunction[作弊码]();
@@ -604,6 +621,7 @@ unlockallenemies    unlockkills 的别名
 arenakills          unlockkills 的别名
 taskprogress        查看所有任务链进度
 taskstatus          taskprogress 的别名
+shownpc             强制显示任务限定NPC（toggle，本次游戏有效）
 
 === 前缀命令 ===
 #level:15           设置等级为15

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1788889739" lastUniqueIdentifier="60">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1788958745" lastUniqueIdentifier="60">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -173,7 +173,7 @@ _root.配置场景环境信息();]]></script>
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/NPC-虎妙" centerPoint3DX="595.2" centerPoint3DY="594.15">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/NPC-虎妙" selected="true" centerPoint3DX="595.2" centerPoint3DY="594.15">
                   <matrix>
                     <Matrix tx="578" ty="523.45"/>
                   </matrix>
@@ -188,7 +188,7 @@ _root.配置场景环境信息();]]></script>
 	身高 = 175;
 	性别 = "女";
 	方向 = "右";
-	if (_root.tasks_finished[String(1000082)])
+	if (_root.tasks_finished[String(1000082)] && !_root.cheatFlags.强制显示NPC)
 	{
 		this.stop();
 		this._visible = false;
@@ -200,7 +200,7 @@ _root.配置场景环境信息();]]></script>
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/npc混沌王" selected="true" centerPoint3DX="419.5" centerPoint3DY="680.45">
+                <DOMSymbolInstance libraryItemName="NPC/npc混沌王" centerPoint3DX="419.5" centerPoint3DY="680.45">
                   <matrix>
                     <Matrix tx="371.6" ty="603.35"/>
                   </matrix>

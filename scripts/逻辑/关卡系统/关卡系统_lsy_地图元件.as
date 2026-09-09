@@ -331,14 +331,18 @@ _root.初始化NPC = function(目标) {
     if (org.flashNight.arki.map.MapWorldNpcController.intercept(目标)) return;
     if (目标.NPC初始化完毕 === true)
         return;
-    if (!org.flashNight.arki.map.MapWorldNpcController.hasPresencePermit(目标)
+    // 作弊开关 shownpc：开启后放行一切任务出现门槛（本次游戏有效，不进存档）。
+    // 与 C# presence 许可同一边界：只要任一为真，就不再用任务进度挡人。
+    var 允许驻场:Boolean = (_root.cheatFlags && _root.cheatFlags.强制显示NPC)
+            || org.flashNight.arki.map.MapWorldNpcController.hasPresencePermit(目标);
+    if (!允许驻场
             && 目标.任务需求 > 1 && _root.主线任务进度 < 目标.任务需求) {
         目标.stop();
         目标._visible = false;
         return;
     }
     // 未接管 NPC 保留上游支线门槛；已显式接管的驻点只认本次 C# presence 许可，与主线门槛同一边界。
-    if (!org.flashNight.arki.map.MapWorldNpcController.hasPresencePermit(目标)
+    if (!允许驻场
             && 目标.任务需求支线 != undefined && 目标.任务需求支线 != null && 目标.任务需求支线.length > 0) {
         var 支线需求:Array = 目标.任务需求支线;
         var 支线未完成:Boolean = false;
