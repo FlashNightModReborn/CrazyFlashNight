@@ -759,6 +759,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             {command:"#task:链名,进度", description:"修改任务链进度", effectScope:"save"},
             {command:"#supplytime:10", description:"设置圣诞树在线补给测试分钟（本次运行）", effectScope:"session"},
             {command:"#spawn:兵种,等级 / #tp:x,y", description:"召唤或传送（当前场景）", effectScope:"session"},
+            {command:"shownpc", description:"强制显示任务限定NPC（切换场景生效）", effectScope:"session"},
             {command:"#get / #eval / #set / #_root / #func / #code", description:"高级表达式与原始控制，保守按存档写入处理", effectScope:"save"}
         ]);
     }
