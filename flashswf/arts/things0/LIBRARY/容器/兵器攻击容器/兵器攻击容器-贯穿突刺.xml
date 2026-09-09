@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-贯穿突刺" itemID="695a42b9-0000153e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-贯穿突刺" lastModified="1785769449" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/兵器攻击容器-贯穿突刺" itemID="695a42b9-0000153e" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-贯穿突刺" lastModified="1788971611" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-贯穿突刺">
+    <DOMTimeline name="兵器攻击容器-贯穿突刺" currentFrame="6">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -37,11 +37,11 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF4FFF" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" selected="true" centerPoint3DX="-150" centerPoint3DY="250.8">
+                <DOMSymbolInstance libraryItemName="属性标签标志元件/刚体标签" name="刚体标签" centerPoint3DX="-150" centerPoint3DY="250.8">
                   <matrix>
                     <Matrix tx="-150" ty="240"/>
                   </matrix>
@@ -112,7 +112,7 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -138,7 +138,7 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空刀" color="#4FFF4F" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -271,7 +271,7 @@ _parent.状态改变("兵器跑");]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>

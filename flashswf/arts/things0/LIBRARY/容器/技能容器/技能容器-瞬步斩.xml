@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-瞬步斩" itemID="694ab8fd-0000419f" linkageExportForAS="true" linkageIdentifier="技能容器-瞬步斩" lastModified="1769694923" lastUniqueIdentifier="38">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-瞬步斩" itemID="694ab8fd-0000419f" linkageExportForAS="true" linkageIdentifier="技能容器-瞬步斩" lastModified="1788970503" lastUniqueIdentifier="38">
   <timeline>
-    <DOMTimeline name="技能容器-瞬步斩" currentFrame="43">
+    <DOMTimeline name="技能容器-瞬步斩" currentFrame="35">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" autoNamed="false">
           <frames>
@@ -93,7 +93,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹控制as" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹控制as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <Actionscript>
@@ -1261,7 +1261,7 @@ function 消弹()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 17" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="图层 17" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -1442,7 +1442,7 @@ function 消弹()
             </DOMFrame>
             <DOMFrame index="33" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" selected="true" centerPoint3DX="191.05" centerPoint3DY="-6.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀-主手" name="刀" centerPoint3DX="191.05" centerPoint3DY="-6.45">
                   <matrix>
                     <Matrix a="0.67041015625" b="0.714797973632813" c="0.714797973632813" d="-0.67041015625" tx="154.5" ty="-208.2"/>
                   </matrix>

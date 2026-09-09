@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-能量喷泉" itemID="6964d683-000028c1" linkageExportForAS="true" linkageIdentifier="空手攻击容器-能量喷泉" lastModified="1788804335">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/空手攻击容器-能量喷泉" itemID="6964d683-000028c1" linkageExportForAS="true" linkageIdentifier="空手攻击容器-能量喷泉" lastModified="1788967208">
   <timeline>
-    <DOMTimeline name="空手攻击容器-能量喷泉" currentFrame="26">
+    <DOMTimeline name="空手攻击容器-能量喷泉" currentFrame="28">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -331,12 +331,14 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
+	// 能量喷泉2段派生
+	if (自机.按键检测(自机.B键, 100))
+	{
+		_parent.gotoAndPlay("能量喷泉2段");
+	}
+
 	if (自机._name == _root.控制目标)
 	{
-		// 能量喷泉2段派生
-		if(自机.按键检测(自机.B键,100))
-		{_parent.gotoAndPlay("能量喷泉2段");}
-
 		// 统一走搓招函数（支持DFA预输入）
 		_root.技能函数.能量喷泉可派生搓招();
 	}
@@ -360,12 +362,14 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
+	// 能量喷泉3段派生
+	if (自机.按键检测(自机.B键, 100))
+	{
+		_parent.gotoAndPlay("能量喷泉3段");
+	}
+
 	if (自机._name == _root.控制目标)
 	{
-		// 能量喷泉3段派生
-		if(自机.按键检测(自机.B键,100))
-		{_parent.gotoAndPlay("能量喷泉3段");}
-
 		// 统一走搓招函数（支持DFA预输入）
 		_root.技能函数.能量喷泉可派生搓招();
 	}

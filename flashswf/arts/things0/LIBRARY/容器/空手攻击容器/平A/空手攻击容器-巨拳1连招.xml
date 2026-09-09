@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招" itemID="6964c727-0000249e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-巨拳1连招" lastModified="1771724391">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/空手攻击容器/平A/空手攻击容器-巨拳1连招" itemID="6964c727-0000249e" linkageExportForAS="true" linkageIdentifier="空手攻击容器-巨拳1连招" lastModified="1788974553">
   <timeline>
-    <DOMTimeline name="空手攻击容器-巨拳1连招">
+    <DOMTimeline name="空手攻击容器-巨拳1连招" currentFrame="75">
       <layers>
         <DOMLayer name="连段标识" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -143,7 +143,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="子弹层" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="子弹层" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -512,7 +512,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
 	}
 	if(_parent.巨拳跳){
-		子弹属性.霰弹值 *= 2;
+		子弹属性.霰弹值 += 2;
 	}
 	子弹属性.子弹威力 += _parent._parent.空手攻击力 * 0.3 * Math.min((_parent._parent.重量 + _parent._parent.体重)/100 , 2);
 	子弹属性.子弹速度 = 0;
@@ -523,7 +523,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
 	子弹属性.垂直击退速度 = -5;
 	子弹属性.暴击 = function(当前子弹)
 				{
-					return 3;
+					return 2.5;
 				};
 	//非常用
 	/*
@@ -558,7 +558,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
             <DOMFrame index="72" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="166.95" centerPoint3DY="-149.3">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="166.95" centerPoint3DY="-149.3">
                   <matrix>
                     <Matrix a="4.94747924804688" d="3.70318603515625" tx="169.5" ty="42.85"/>
                   </matrix>
@@ -592,7 +592,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
 	if(_parent.巨拳跳){
 		子弹属性.暴击 = function(当前子弹)
 				{
-					return 7;
+					return 5;
 				};
 	}else{
 		子弹属性.暴击 = function(当前子弹)
@@ -633,7 +633,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
             <DOMFrame index="75" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="227.25" centerPoint3DY="25.2">
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" selected="true" centerPoint3DX="227.25" centerPoint3DY="25.2">
                   <matrix>
                     <Matrix a="6.5196533203125" d="2.28054809570313" tx="230.55" ty="115.95"/>
                   </matrix>
@@ -652,7 +652,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
 	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1;
 	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
 	{
-		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+		子弹属性.子弹威力 +=  _parent._parent.空手攻击力 * _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
 	}
 	if(_parent._parent.mp攻击加成){
 		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
@@ -707,7 +707,7 @@ if (_parent._name == _root.控制目标 && Key.isDown(_parent.B键))
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#4FFFFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
