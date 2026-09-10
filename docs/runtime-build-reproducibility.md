@@ -18,7 +18,7 @@
 
 维护者在补齐 asLoader 与隔离 Host 后确认“可行”，任务进度播报为 **HUMAN_ACCEPTANCE_PASSED / promoted**；部署后尚未从正式入口重跑交付、存档重启或大学/车库返回旅程，不称本专项或完整产品 `standard_entry_verified`。问题 5 保留自动回归通过、正式旅程待复验的边界。
 
-本轮未新建 Git worktree，worker 的本轮隔离 checkout 已自动清理。worker 报告共享缓存中三处既有孤儿目录（`84ae52d278f3-945a44de34-64d4aa61`、`8b2dfdf49175-945a44de34-ba569ae0`、`b650df8f2817-945a44de34-07deb0be`），本轮未创建或删除；原有其他任务 worktree 保持不动。部署推送与远端 Audit 结果在完成后补记。
+本轮未新建 Git worktree，worker 的本轮隔离 checkout 已自动清理。worker 报告共享缓存中三处既有孤儿目录（`84ae52d278f3-945a44de34-64d4aa61`、`8b2dfdf49175-945a44de34-ba569ae0`、`b650df8f2817-945a44de34-07deb0be`），本轮未创建或删除；原有其他任务 worktree 保持不动。部署提交 `63e2d1c85fc96b46b4eeb9e3d95bd2a11c9ef6a6` 已快进推送至 `main`；[远端 Audit 34457412680](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34457412680) 成功，绑定 `event=push` 与该部署 head，于 `2026-09-10T08:56:42.3185745Z` 报告 `state=promoted / deploymentChanged=true / forcedDeploymentVerification=false`。远端独立重放 33-file closure 与 **2 signers / 2 faultDomains** 全部通过；后续仅补本文审计记录，不改变已审计部署闭包。
 
 ## 2026-09-10 上一正式发布：裸 Alt 菜单防护与嵌入菜单清理
 
