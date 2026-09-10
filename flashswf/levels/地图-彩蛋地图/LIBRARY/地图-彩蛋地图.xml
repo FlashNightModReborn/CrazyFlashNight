@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1788958745" lastUniqueIdentifier="60">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1789065047" lastUniqueIdentifier="60">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -39,7 +39,7 @@ _root.配置场景环境信息();]]></script>
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-大圣/NPC-大圣" centerPoint3DX="1582.5" centerPoint3DY="738.9">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-大圣/NPC-大圣" selected="true" centerPoint3DX="1582.5" centerPoint3DY="738.9">
                   <matrix>
                     <Matrix a="-0.236236572265625" d="0.236236572265625" tx="1474.55" ty="421.1"/>
                   </matrix>
@@ -173,7 +173,7 @@ _root.配置场景环境信息();]]></script>
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/NPC-虎妙" selected="true" centerPoint3DX="595.2" centerPoint3DY="594.15">
+                <DOMSymbolInstance libraryItemName="NPC/NPC-虎妙/NPC-虎妙" centerPoint3DX="595.2" centerPoint3DY="594.15">
                   <matrix>
                     <Matrix tx="578" ty="523.45"/>
                   </matrix>
