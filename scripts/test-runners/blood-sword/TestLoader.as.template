@@ -4,6 +4,8 @@ if (!_root.主角函数) _root.主角函数 = {};
 #include "逻辑/装备函数/血色光剑天秤.as"
 _root.bloodSwordFocusedComplete = function():Void {
     trace("FocusedTestRunId blood-sword Complete: __FOCUSED_RUN_ID__");
+    // 完成后关闭隔离测试播放器。
+    fscommand("quit");
 };
 trace("FocusedTestRunId blood-sword Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLifecycleTest.runAllTests();

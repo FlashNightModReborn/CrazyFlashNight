@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑战技/雾人血浪素材/落剑喷溅" itemID="61b10000-025d5d8a" lastModified="1781238854" lastUniqueIdentifier="3" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="落剑喷溅" currentFrame="6">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#BB6D6E" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F55D7C">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑战技/雾人血浪素材/66127a432018" centerPoint3DX="382.7" centerPoint3DY="9.15" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="-0.319992065429688" d="0.319992065429688" tx="213.2" ty="-139.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑战技/雾人血浪素材/16a274bf510b" centerPoint3DX="357.15" centerPoint3DY="198.8" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="-0.319992065429688" d="0.319992065429688" tx="204.2" ty="-197.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑战技/雾人血浪素材/88f194cd10eb" centerPoint3DX="481.4" centerPoint3DY="78.85" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="243.65" ty="-78.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑战技/雾人血浪素材/8edbe0a2f89b" centerPoint3DX="562.15" centerPoint3DY="68.35" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="272.65" ty="-62.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑战技/雾人血浪素材/811be815e2b9" centerPoint3DX="606.15" centerPoint3DY="-10.45" symbolType="graphic" loop="play once">
+                  <matrix>
+                    <Matrix a="-0.399993896484375" d="0.399993896484375" tx="271.65" ty="-85.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="音效" color="#908283" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

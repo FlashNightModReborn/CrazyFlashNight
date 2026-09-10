@@ -171,6 +171,7 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         bullet.破坏力 = damageVariance + bullet.固伤 + percentageDamage;
         if (bullet.hitBehavior.type == "titaniumFireControl" || bullet.hitBehavior.type == "titaniumBloodPact") {
             bullet.破坏力 = bullet.子弹威力;
+            if (bullet.hitBehavior.type == "titaniumBloodPact") bullet.破坏力 += (shooter.伤害加成 | 0);
         }
 
         // ==================== 承伤系数应用 ====================

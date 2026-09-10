@@ -185,6 +185,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         config = {};
         var keys:Array = ["shieldArmorHpRatio", "fullRechargeSeconds", "shieldMpPerPoint", "bloodServoBonusKg",
                           "bloodShieldRatio", "shieldLazyDodge", "bloodSkillHpRatio", "bloodSkillBuffSeconds",
+                          "bloodCrumblePercent", "bloodExecutePercent", "bloodPulsePowerRatio",
                           "healBaseHpRatioPerSecond", "healMissingRatioPerSecond", "healMpPerPoint", "startupMp",
                           "overloadCoefficient", "overloadExponent", "pulseFrames", "ammoMpPerRound", "ammoMaxPerSlotPulse"];
         for (var i:Number = 0; i < keys.length; i++) {
@@ -355,9 +356,35 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
             && container.getShieldById(shieldId) === layer ? config.shieldLazyDodge : 0;
     }
 
-    /** 猩红天秤动作每段仅取固有负担的10%，不重复附带角色输出机制。 */
+    /** 战技直接伤害以强化后的固有负担为锚点；联弹段数由动作声明。 */
     public function getBloodPulsePower():Number {
-        return isBloodPactAnimation(bloodMan) ? bloodLoss * 0.1 : 0;
+        return isBloodPactAnimation(bloodMan) ? bloodLoss * config.bloodPulsePowerRatio : 0;
+    }
+
+    /** 只投射到新建的血剑攻击参数；常态要求破盾，战技由动作所有权提供资格。 */
+    public function projectBloodAttack(owner:Object, sword:Object, props:Object):Void {
+        if (owner !== target || sword !== bloodEquipment || !(bloodLoss > 0) ||
+            sword.name !== "血色光剑天秤" || !bindingValid() || deathSuspended || !(target.hp > 0) ||
+            effect.group.status != "committed" || container.getShieldById(shieldId) !== layer ||
+            target.攻击模式 != "兵器" || initialShieldPending || !(layer.getCapacity() === 0)) return;
+        applyBloodFinishers(props);
+    }
+
+    private function applyBloodFinishers(props:Object):Void {
+        props.血量上限击溃 = Math.max(finite(props.血量上限击溃) ? props.血量上限击溃 : 0, config.bloodCrumblePercent);
+        props.斩杀 = Math.max(finite(props.斩杀) ? props.斩杀 : 0, config.bloodExecutePercent);
+    }
+
+    /** 每一攻击关键帧携带本次man身份，取消/卸装后的旧回调不能再发射。 */
+    public function prepareBloodPactAttack(man:MovieClip, props:Object):Boolean {
+        if (!isBloodPactAnimation(man)) return false;
+        // 砸地帧内先配给再发射，不依赖不同图层帧脚本的执行先后。
+        if (man._currentframe >= 26) grantBloodPactBonus(man);
+        props.子弹威力 = getBloodPulsePower();
+        applyBloodFinishers(props);
+        props.hitBehavior = {type:"titaniumBloodPact", directPower:props.子弹威力,
+            crumble:config.bloodCrumblePercent, execute:config.bloodExecutePercent};
+        return true;
     }
 
     public function canBloodPact():Boolean {

@@ -2,6 +2,7 @@
 import org.flashNight.gesh.xml.XMLParser;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+import org.flashNight.arki.component.Effect.EffectSystem;
 
 // 使用真实物品XML、真实CS6素材和生产生命周期装载器；捕获原有子弹API，不写存档。
 class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLifecycleTest {
@@ -26,6 +27,21 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
     private static var oldCleanup:Function;
     private static var oldShoot:Function;
     private static var oldWorld:MovieClip;
+    private static var oldBulletInit:Function;
+    private static var oldSkillRoute:Object;
+    private static var waveUnit:MovieClip;
+    private static var waveAssets:MovieClip;
+    private static var bindProtection:Boolean;
+    private static var bladeFrames:Array;
+    private static var bindCount:Number;
+    private static var finishCount:Number;
+    private static var cancelledShots:Number;
+    private static var oldEffect:Function;
+    private static var effectFrames:Array;
+    private static var lastTail:MovieClip;
+    private static var effectBaseline:Number;
+    private static var tailFrame:Number;
+    private static var tailPosition:Object;
 
     private static function check(value:Boolean, label:String):Void {
         if (value) passed++;
@@ -45,20 +61,20 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
     private static function position(marker:MovieClip):Object {
         var point:Object = {x:0,y:0}; marker.localToGlobal(point); _root.gameworld.globalToLocal(point); return point;
     }
-    private static function captureShot():Void {
-        var row:Array = [];
-        for (var i:Number = 0; i < arguments.length; i++) row.push(arguments[i]);
-        shots.push(row);
+    private static function captureShot(props:Object):Void {
+        shots.push(props);
     }
     public static function runAllTests():Void {
         passed = 0; failed = 0; finished = false; cycles = []; shots = []; rolls = []; rollCount = 0;
         oldClock = _root.帧计时器; oldCleanup = _root.装备生命周期函数.移除异常周期函数;
-        oldShoot = _root.子弹区域shoot; oldWorld = _root.gameworld;
+        oldShoot = _root.子弹区域shoot传递; oldWorld = _root.gameworld;
+        oldBulletInit = _root.子弹属性初始化; oldSkillRoute = _root.战技路由;
+        oldEffect = _root.效果;
         _root.帧计时器 = {当前帧数:0, taskManager:{addLifecycleTask:function(owner:Object,label:String,callback:Function,interval:Number,args:Array):Number {
             BloodSwordLifecycleTest.cycles.push({owner:owner,callback:callback,args:args}); return BloodSwordLifecycleTest.cycles.length;
         }}, 移除生命周期任务:function(owner:Object,label:String):Void {}};
         _root.装备生命周期函数.移除异常周期函数 = function(value:Object):Void {};
-        _root.子弹区域shoot = captureShot;
+        _root.子弹区域shoot传递 = captureShot;
         container = _root.createEmptyMovieClip("__bloodSwordAssets", _root.getNextHighestDepth());
         watch = _root.createEmptyMovieClip("__bloodSwordWatch", _root.getNextHighestDepth());
         watch.waitTicks = 0;
@@ -129,9 +145,9 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
         unit.状态 = "兵器攻击"; rolls = [true,true]; rollCount = 0; shots = []; tick();
         check(rollCount == 2 && shots.length == 2, "同一攻击帧两路独立结算");
         check(unit.hp == 996, "两路成功累计扣4HP");
-        check(shots[0][4] == "血爆炸" && shots[0][5] == 999 && shots[1][4] == "血滴落" && shots[1][5] == 100, "保留两种子弹与固定威力");
-        check(shots[0][1] == 1 && shots[0][6] == 0 && shots[0][7] == 100 && shots[0][14] == 1 && shots[0].length == 16, "保留弹数速度范围和击倒参数");
-        check(shots[0][11] == unit._y && shots[0][12] == unit._y && shots[0][13] === true && shots[0][9] == unit._name, "保留发射者平面和敌我归属");
+        check(shots[0].子弹种类 == "血爆炸" && shots[0].子弹威力 == 999 && shots[1].子弹种类 == "血滴落" && shots[1].子弹威力 == 100, "保留两种子弹与固定威力");
+        check(shots[0].霰弹值 == 1 && shots[0].子弹速度 == 0 && shots[0].Z轴攻击范围 == 100 && shots[0].击倒率 == 1, "保留弹数速度范围和击倒参数");
+        check(shots[0].shootY == unit._y && shots[0].shootZ == unit._y && shots[0].发射者 == unit._name, "保留发射者及所在平面，敌我归属由发射器解析");
         check(ref.bloodBurstFrame == 1 && primary.剑体.fxBurst._visible && !secondary.剑体.fxBurst._visible, "两路共用一次本剑爆发反馈");
         cycles[0].callback.apply(cycles[0].owner,cycles[0].args);
         check(rollCount == 2 && shots.length == 2 && unit.hp == 996, "同一时钟帧重复回调不重扣");
@@ -141,14 +157,25 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
         primary._rotation = 21; primary._xscale = -120; primary._yscale = 80; unit.man._rotation = -9;
         var p3:Object = position(primary.刀口位置3); var p2:Object = position(primary.刀口位置2);
         shots = []; rolls = [true,true]; tick();
-        check(Math.abs(shots[0][10] - p3.x) < .1 && Math.abs(shots[1][10] - p2.x) < .1, "完整镜像旋转链后的真实刀口X");
-        check(shots[0][11] == unit._y && shots[1][12] == unit._y, "变换后仍使用旧地面Y/Z约定");
+        check(Math.abs(shots[0].shootX - p3.x) < .1 && Math.abs(shots[1].shootX - p2.x) < .1, "完整镜像旋转链后的真实刀口X");
+        check(shots[0].shootY == unit._y && shots[1].shootZ == unit._y, "变换后仍使用旧地面Y/Z约定");
         shots = []; rolls = [false,true]; unit.是否为敌人 = true; var hp:Number = unit.hp; tick();
-        check(shots.length == 1 && shots[0][4] == "血滴落" && unit.hp == hp - 1 && shots[0][13] === false, "敌人小分支的1HP与敌我参数");
+        check(shots.length == 1 && shots[0].子弹种类 == "血滴落" && unit.hp == hp - 1 && shots[0].发射者 == unit._name, "敌人小分支的1HP与发射者身份");
         shots = []; rolls = [true,false]; hp = unit.hp; tick();
-        check(shots.length == 1 && shots[0][4] == "血爆炸" && unit.hp == hp - 3, "大分支单独成功扣3HP");
+        check(shots.length == 1 && shots[0].子弹种类 == "血爆炸" && unit.hp == hp - 3, "大分支单独成功扣3HP");
         shots = []; rolls = [false,false]; hp = unit.hp; tick();
         check(shots.length == 0 && unit.hp == hp, "两路失败不扣血不发射");
+        check(unit.血量上限击溃 == undefined && unit.斩杀 == undefined, "普通装备未污染人物击溃斩杀属性");
+        unit.__titaniumType61 = {calls:0, ownerMatches:true, projectBloodAttack:function(owner:Object,sword:Object,props:Object):Void {
+            this.calls++; this.ownerMatches = this.ownerMatches && owner === BloodSwordLifecycleTest.unit && sword === owner.刀;
+            props.血量上限击溃 = 0.09; props.斩杀 = 9;
+        }};
+        rolls = [true,true]; tick();
+        check(unit.__titaniumType61.calls == 2 && unit.__titaniumType61.ownerMatches, "两路均传递当前人物与装备身份");
+        check(shots[0] !== shots[1] && shots[0].血量上限击溃 == 0.09 && shots[1].斩杀 == 9 && unit.hp == hp - 4, "两路独立属性快照，投射不额外扣血");
+        delete unit.__titaniumType61;
+        shots = []; rolls = [true,false]; tick();
+        check(shots[0].血量上限击溃 == undefined && shots[0].斩杀 == undefined, "离开套装后的新血爆不继承旧弹属性");
         rolls = []; unit.状态 = "站立";
         for (i = 0; i < 12; i++) tick();
         check(ref.bloodBurstFrame == 0 && !primary.剑体.fxBurst._visible && primary.剑体.fxBurst._currentframe == 1, "爆发结束隐藏复位");
@@ -205,16 +232,216 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
         check(!primary.剑体.fxGrip._visible && unit.dispatcher["_subCount"] == 0, "迟到回调不复活已卸载外观");
         check(primary._parent === unit.man && primary.剑体.body._alpha == bodyAlpha && primary.剑体.baseBlade._visible,
             "卸载不删除实体与常在红刃；alpha=" + primary.剑体.body._alpha + "/" + bodyAlpha);
-        finish();
+        unit.dispatcher.destroy(); unit.removeMovieClip(); unit = null;
+        loadWave();
+    }
+    // 实际加载已发布战技，捕获边界调用；碰撞伤害由钛合金专项另行验证。
+    private static function loadWave():Void {
+        loader.removeListener(listener);
+        listener = {};
+        listener.onLoadInit = function(loaded:MovieClip):Void {
+            // 素材预载结束后下一帧再装配，保持与生产中先预载、后触发战技一致。
+            BloodSwordLifecycleTest.watch.loadedWave = loaded;
+            BloodSwordLifecycleTest.watch.onEnterFrame = function():Void {
+                delete this.onEnterFrame;
+                BloodSwordLifecycleTest.startWave(this.loadedWave);
+            };
+        };
+        listener.onLoadError = function(loaded:MovieClip,error:String):Void { BloodSwordLifecycleTest.die("血浪素材加载失败 " + error); };
+        loader.addListener(listener);
+        watch.waitTicks = 0;
+        watch.onEnterFrame = function():Void { if (++this.waitTicks >= 300) BloodSwordLifecycleTest.die("血浪素材加载超时"); };
+        waveAssets = _root.createEmptyMovieClip("__bloodWaveAssets", _root.getNextHighestDepth());
+        if (!loader.loadClip("../flashswf/arts/things0.swf", waveAssets)) die("血浪素材无法提交加载");
+    }
+    private static function startWave(loaded:MovieClip):Void {
+        _root.gameworld = loaded;
+        loaded.createEmptyMovieClip("效果", 1048000); loaded.effectPools = {};
+        effectFrames = []; effectBaseline = EffectSystem.getCurrentEffectCount();
+        _root.效果 = captureTail;
+        shots = []; bladeFrames = []; bindCount = 0; finishCount = 0; bindProtection = false;
+        waveUnit = loaded.createEmptyMovieClip("waveActor", loaded.getNextHighestDepth());
+        waveUnit._x = 240; waveUnit._y = 260;
+        waveUnit.hp = 1000; waveUnit.mp = 100;
+        waveUnit.刀口位置生成子弹 = function(owner:Object,props:Object):Void { BloodSwordLifecycleTest.bladeFrames.push(this.man._currentframe); };
+        waveUnit.__titaniumType61 = {
+            bindBloodPactAnimation:function(man:MovieClip):Boolean {
+                BloodSwordLifecycleTest.bindCount++;
+                BloodSwordLifecycleTest.bindProtection = man.无敌标签._parent === man;
+                return true;
+            },
+            prepareBloodPactAttack:function(man:MovieClip,props:Object):Boolean { return true; },
+            finishBloodPact:function(man:MovieClip,id:Number):Void { BloodSwordLifecycleTest.finishCount++; }
+        };
+        _root.子弹属性初始化 = function(marker:MovieClip,kind:String,owner:MovieClip):Object {
+            return {sourceFrame:marker._parent._currentframe, sourceOwner:owner,
+                bounds:marker.getBounds(_root.gameworld), 子弹种类:kind};
+        };
+        _root.战技路由 = {动画完毕:function(man:MovieClip,owner:MovieClip):Void {
+            man.stop(); BloodSwordLifecycleTest.checkFullWave();
+        }};
+        waveUnit.attachMovie("战技容器-猩红天秤", "man", 1, {_xscale:27.69, _yscale:27.69});
+        check(waveUnit.man._totalframes == 46, "已发布血浪容器为46帧；实际=" + waveUnit.man._totalframes
+            + ", current=" + waveUnit.man._currentframe + ", loaded=" + waveUnit.man._framesloaded
+            + ", path=" + waveUnit.man + ", url=" + loaded._url);
+        watch.waitTicks = 0;
+        watch.onEnterFrame = function():Void {
+            if (++this.waitTicks >= 100) BloodSwordLifecycleTest.die("血浪时间轴未到达结束帧；frame="
+                + BloodSwordLifecycleTest.waveUnit.man._currentframe + ", bind=" + BloodSwordLifecycleTest.bindCount);
+        };
+    }
+    private static function checkFullWave():Void {
+        check(bindProtection, "实际首帧绑定时已有无敌标签");
+        check(bladeFrames.join(",") == "9,26", "实际SWF两次刀口发射帧");
+        var frames:Array = []; var boundsValid:Boolean = true; var advancing:Boolean = true;
+        for (var i:Number = 0; i < shots.length; i++) {
+            var shot:Object = shots[i]; frames.push(shot.sourceFrame);
+            var width:Number = shot.bounds.xMax - shot.bounds.xMin;
+            boundsValid = boundsValid && shot.sourceOwner === waveUnit && width > 170 && width < 190
+                && shot.子弹种类 == "近战联弹" && shot.霰弹值 == 5 && shot.最小霰弹值 == 3;
+            if (i > 0) advancing = advancing && shot.bounds.xMin > shots[i - 1].bounds.xMin;
+        }
+        check(frames.join(",") == "26,29,32,35,38,41,44", "实际SWF仅七波判定，视觉不额外发射");
+        check(boundsValid, "发射关键帧已有有效区域、联弹参数和发射者");
+        check(advancing, "实际判定区域随血浪向前推进");
+        check(waveUnit.hp == 1000 && waveUnit.mp == 100, "时间轴血爆血滴不自行扣除HP或MP");
+        check(bindCount == 1 && finishCount == 1, "实际首尾只绑定及结束一次");
+        check(effectFrames.join(",") == "44", "余波仅在最后44帧释放一次");
+        check(lastTail._totalframes == 9 && lastTail._currentframe > 1 && lastTail._currentframe < 9 && lastTail._visible,
+            "身体46帧结束后真实9帧余波仍在播放");
+        check(lastTail._parent === waveAssets.效果, "余波挂在世界效果层而非身体动作");
+        waveUnit.man.removeMovieClip(); shots = []; bladeFrames = [];
+        waveUnit.attachMovie("战技容器-猩红天秤", "man", 1, {_xscale:27.69, _yscale:27.69});
+        watch.waitTicks = 0; cancelledShots = -1;
+        watch.onEnterFrame = function():Void {
+            if (BloodSwordLifecycleTest.cancelledShots < 0 && BloodSwordLifecycleTest.waveUnit.man._currentframe >= 28) {
+                BloodSwordLifecycleTest.cancelledShots = BloodSwordLifecycleTest.shots.length;
+                BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.cancelledShots == 1, "取消前仅第一浪已发射");
+                BloodSwordLifecycleTest.waveUnit.man.removeMovieClip(); this.waitTicks = 0;
+            }
+            if (++this.waitTicks >= 60) BloodSwordLifecycleTest.die("取消样本未到达指定帧");
+            if (BloodSwordLifecycleTest.cancelledShots >= 0 && this.waitTicks >= 12) {
+                BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.shots.length == BloodSwordLifecycleTest.cancelledShots
+                    && BloodSwordLifecycleTest.finishCount == 1, "移除动作后无后续血浪、额外判定或迟到结束");
+                BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.effectFrames.join(",") == "44",
+                    "44帧前取消不新增余波释放");
+                BloodSwordLifecycleTest.checkTailPool();
+            }
+        };
+    }
+    private static function captureTail(kind:String,x:Number,y:Number,scaleX:Number,force:Boolean):MovieClip {
+        effectFrames.push(waveUnit.man._currentframe);
+        lastTail = EffectSystem.Effect(kind,x,y,scaleX,force);
+        return lastTail;
+    }
+    private static function tailPoint(clip:MovieClip,x:Number,y:Number):Object {
+        var point:Object = {x:x,y:y}; clip.localToGlobal(point); waveAssets.效果.globalToLocal(point); return point;
+    }
+    private static function near(a:Object,b:Object):Boolean {
+        return Math.abs(a.x-b.x) < .15 && Math.abs(a.y-b.y) < .15;
+    }
+    private static function checkTailPool():Void {
+        // 原70项取消用例已等候28+12帧，首个9帧余波应自然完成。
+        var pool:Array = waveAssets.effectPools["特效-猩红天秤余波"];
+        check(pool.length == 1 && pool[0] === lastTail && !lastTail._visible
+            && EffectSystem.getCurrentEffectCount() == effectBaseline,
+            "余波自然终帧回收且活动数恢复；pool=" + pool.length + ", count=" + EffectSystem.getCurrentEffectCount());
+        var reused:MovieClip = EffectSystem.Effect("特效-猩红天秤余波",240,260,100,true);
+        check(reused === lastTail && reused._visible && reused._currentframe == 1,
+            "真实EffectSystem复用同一余波并恢复可见首帧");
+        reused.removeMovieClip();
+        startMirrorTail();
+    }
+    private static function startMirrorTail():Void {
+        waveUnit._x = 240; waveUnit._y = 260;
+        waveUnit._xscale = -82; waveUnit._yscale = 130; waveUnit._rotation = 11;
+        shots = []; bladeFrames = []; effectFrames = [];
+        _root.战技路由 = {动画完毕:function(man:MovieClip,owner:MovieClip):Void { man.stop(); }};
+        waveUnit.attachMovie("战技容器-猩红天秤", "man", 1, {_xscale:27.69,_yscale:27.69});
+        watch.waitTicks = 0;
+        watch.onEnterFrame = function():Void {
+            if (++this.waitTicks > 75) { BloodSwordLifecycleTest.die("44帧镜像余波样本超时"); return; }
+            if (BloodSwordLifecycleTest.waveUnit.man._currentframe < 45) return;
+            var man:MovieClip = BloodSwordLifecycleTest.waveUnit.man;
+            var tail:MovieClip = BloodSwordLifecycleTest.lastTail;
+            BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.near(BloodSwordLifecycleTest.tailPoint(man,0,0),BloodSwordLifecycleTest.tailPoint(tail,0,0)),
+                "镜像旋转父变换下余波世界注册点一致");
+            BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.near(BloodSwordLifecycleTest.tailPoint(man,100,0),BloodSwordLifecycleTest.tailPoint(tail,100,0))
+                && BloodSwordLifecycleTest.near(BloodSwordLifecycleTest.tailPoint(man,0,100),BloodSwordLifecycleTest.tailPoint(tail,0,100)),
+                "余波矩阵保留左向、非等比Y和父旋转");
+            BloodSwordLifecycleTest.tailFrame = tail._currentframe;
+            BloodSwordLifecycleTest.tailPosition = BloodSwordLifecycleTest.tailPoint(tail,0,0);
+            man.removeMovieClip();
+            BloodSwordLifecycleTest.waveUnit._x += 61; BloodSwordLifecycleTest.waveUnit._y += 31;
+            this.waitTicks = 0;
+            this.onEnterFrame = function():Void {
+                if (++this.waitTicks != 2) return;
+                BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.lastTail._visible
+                    && BloodSwordLifecycleTest.lastTail._currentframe > BloodSwordLifecycleTest.tailFrame
+                    && BloodSwordLifecycleTest.near(BloodSwordLifecycleTest.tailPosition,BloodSwordLifecycleTest.tailPoint(BloodSwordLifecycleTest.lastTail,0,0)),
+                    "44帧后删除动作并移动人物，余波固定世界位置继续收散");
+                BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.effectFrames.join(",") == "44" && BloodSwordLifecycleTest.shots.length == 7
+                    && BloodSwordLifecycleTest.bladeFrames.join(",") == "9,26", "最后一波后取消不补发攻击或尾迹");
+                this.waitTicks = 0;
+                this.onEnterFrame = function():Void {
+                    if (++this.waitTicks < 12) return;
+                    var pool:Array = BloodSwordLifecycleTest.waveAssets.effectPools["特效-猩红天秤余波"];
+                    BloodSwordLifecycleTest.check(pool.length == 1 && pool[0] === BloodSwordLifecycleTest.lastTail
+                        && !BloodSwordLifecycleTest.lastTail._visible, "取消后的余波仍完成自身9帧并回收");
+                    BloodSwordLifecycleTest.startNullTail();
+                };
+            };
+        };
+    }
+    private static function startNullTail():Void {
+        waveUnit._x = 240; waveUnit._y = 260; waveUnit._xscale = 100; waveUnit._yscale = 100; waveUnit._rotation = 0;
+        shots = []; bladeFrames = []; effectFrames = [];
+        _root.效果 = function(kind:String,x:Number,y:Number,scaleX:Number,force:Boolean):MovieClip {
+            BloodSwordLifecycleTest.effectFrames.push(BloodSwordLifecycleTest.waveUnit.man._currentframe); return null;
+        };
+        waveUnit.attachMovie("战技容器-猩红天秤", "man", 1, {_xscale:27.69,_yscale:27.69});
+        watch.waitTicks = 0;
+        watch.onEnterFrame = function():Void {
+            if (++this.waitTicks > 90) { BloodSwordLifecycleTest.die("空余波返回样本超时"); return; }
+            if (BloodSwordLifecycleTest.waveUnit.man._currentframe < 46) return;
+            BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.effectFrames.join(",") == "44", "余波剔除null分支仅44帧请求一次");
+            var frames:Array = [];
+            for (var i:Number=0;i<BloodSwordLifecycleTest.shots.length;i++) frames.push(BloodSwordLifecycleTest.shots[i].sourceFrame);
+            BloodSwordLifecycleTest.check(BloodSwordLifecycleTest.bladeFrames.join(",") == "9,26" && frames.join(",") == "26,29,32,35,38,41,44",
+                "余波返回null不吞末波或其它既有攻击");
+            var active:MovieClip = EffectSystem.Effect("特效-猩红天秤余波",240,260,100,true);
+            this.unloadWasActive = active._parent === BloodSwordLifecycleTest.waveAssets.效果;
+            this.unloadActive = active; this.unloadPath = active._target;
+            this.unloadWorld = BloodSwordLifecycleTest.waveAssets;
+            this.unloadDepth = BloodSwordLifecycleTest.waveAssets.getDepth(); this.unloadName = BloodSwordLifecycleTest.waveAssets._name;
+            BloodSwordLifecycleTest.waveAssets.removeMovieClip(); this.waitTicks = 0;
+            this.onEnterFrame = function():Void {
+                if (++this.waitTicks == 1) { this.unloadFrame = this.unloadActive._currentframe; return; }
+                var reachable:Object = BloodSwordLifecycleTest.resolveDisplayPath(this.unloadPath);
+                var depthOwner:MovieClip = _root.getInstanceAtDepth(this.unloadDepth);
+                BloodSwordLifecycleTest.check(this.unloadWasActive && reachable == undefined && depthOwner !== this.unloadWorld
+                    && _root[this.unloadName] !== this.unloadWorld && this.unloadActive._currentframe == this.unloadFrame,
+                    "世界卸载后余波路径不可达且停止推进；path=" + this.unloadPath + ", resolved=" + reachable
+                    + ", depthOwner=" + depthOwner + ", frames=" + this.unloadFrame + "/" + this.unloadActive._currentframe);
+                BloodSwordLifecycleTest.finish();
+            };
+        };
+    }
+    private static function resolveDisplayPath(path:String):Object {
+        var segments:Array = path.split("/"); var found:Object = _root;
+        for (var i:Number=0;i<segments.length;i++) if (segments[i] != "") found = found[segments[i]];
+        return found;
     }
     private static function finish():Void {
         if (finished) return; finished = true;
         delete watch.onEnterFrame;
         if (unit) { DressupInitializer.teardownLifeCycles(unit); unit.dispatcher.destroy(); }
         if (loader) loader.removeListener(listener);
-        container.removeMovieClip(); watch.removeMovieClip();
+        container.removeMovieClip(); waveAssets.removeMovieClip(); watch.removeMovieClip();
         _root.帧计时器 = oldClock; _root.装备生命周期函数.移除异常周期函数 = oldCleanup;
-        _root.子弹区域shoot = oldShoot; _root.gameworld = oldWorld;
+        _root.子弹区域shoot传递 = oldShoot; _root.gameworld = oldWorld;
+        _root.子弹属性初始化 = oldBulletInit; _root.战技路由 = oldSkillRoute;
+        _root.效果 = oldEffect;
         trace("BloodSwordLifecycleTest Tests Passed: " + passed);
         trace("BloodSwordLifecycleTest Tests Failed: " + failed);
         _root.bloodSwordFocusedComplete();

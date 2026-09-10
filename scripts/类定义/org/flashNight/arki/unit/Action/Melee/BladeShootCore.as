@@ -79,6 +79,8 @@ class org.flashNight.arki.unit.Action.Melee.BladeShootCore {
             bulletAttr[key] = params[key];
         }
 
+        if (unit.__titaniumType61) unit.__titaniumType61.projectBloodAttack(unit, unit.刀, bulletAttr);
+
         // 获取预缓存的刀口数
         var bladeCount:Number = unit.刀_刀口数;
 

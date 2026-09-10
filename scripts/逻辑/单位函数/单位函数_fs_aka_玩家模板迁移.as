@@ -1792,7 +1792,7 @@ _root.主角函数.释放主动战技 = function() {
     if (!战技函数.释放许可判定 || !战技函数.释放)
         return false;
 
-    if (this.hp <= 当前战技.消耗hp || this.mp < 当前战技.消耗mp)
+    if (战技函数.原子释放 !== true && (this.hp <= 当前战技.消耗hp || this.mp < 当前战技.消耗mp))
         return false;
     if (战技函数.释放许可判定(this)) {
         if (this.浮空) {
@@ -1800,8 +1800,10 @@ _root.主角函数.释放主动战技 = function() {
         } else {
             this.temp_y = 0;
         }
-        this.hp -= 当前战技.消耗hp;
-        this.mp -= 当前战技.消耗mp;
+        if (战技函数.原子释放 !== true) {
+            this.hp -= 当前战技.消耗hp;
+            this.mp -= 当前战技.消耗mp;
+        }
         // 动态资源战技自行完成预检与一次提交；拒绝不能消耗共享冷却。
         var 释放结果 = 战技函数.释放(this);
         if (战技函数.原子释放 === true && 释放结果 === false) return false;

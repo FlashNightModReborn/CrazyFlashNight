@@ -979,12 +979,13 @@ _root.主动战技函数.兵器.撼地烈狱 = {初始化: null,
 _root.主动战技函数.兵器.猩红天秤 = {
     初始化:null,
     原子释放:true,
+    播放方式:"container",
     释放许可判定:function(unit:MovieClip):Boolean {
         return unit.__titaniumType61 && unit.__titaniumType61.canBloodPact();
     },
     释放:function(unit:MovieClip):Boolean {
         if (!unit.__titaniumType61 || !unit.__titaniumType61.commitBloodPact()) return false;
-        _root.战技路由.战技标签跳转_旧(unit, "猩红天秤");
+        _root.战技路由.战技标签跳转_旧(unit, "猩红天秤", this.播放方式);
         return true;
     }
 };
