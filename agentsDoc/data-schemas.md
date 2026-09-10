@@ -305,7 +305,8 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 `data/items/消耗品_药剂*.xml` 的 `<effects>` 按物理顺序执行。现有基础类型为 `heal / regen / state / purify / buff / playEffect / message / grantItem / global`；九龙批次新增四个封闭类型：
 
 - `buffDomain domain="meal|enhancer"`：必须位于持续效果之前；移除同域旧药剂登记的 Buff，再登记本次 `buff`、`regen` 和专用 Buff 的真实返回 ID。`meal` 与 `enhancer` 各保留一个槽且可以并存，即时医疗效果不占槽。
-- `resistanceBuff value duration buffId`：对 `魔法抗性.电/热/冷/波/蚀/毒/冲` 七个叶子路径施加同值增益；不得把 `魔法抗性` 对象交给普通数值 Buff。
+- `resistanceBuff value mult_positive property duration buffId`：对 `魔法抗性.电/热/冷/波/蚀/毒/冲/基础` 八个叶子路径施加同值增益（默认已含 `基础`）；不得把 `魔法抗性` 对象交给普通数值 Buff。`value` 为固定点数，`mult_positive` 为乘区倍率（参数名与 `BuffEffect` 的 `calc` 取值一致，2.2 即 ×2.2），二者至少给一个、可同时给出并共用同一 MetaBuff；`property` 指定单一抗性时只作用于该路径。Tooltip 中 `基础` 一律显示为 `能量`。
+- `resistanceBuff` 正负双向：游戏存在负抗性设定，抗性为负即易伤（伤害 × `(100 - 抗性) / 100`）。`value > 0` → `ADD_POSITIVE`、`value < 0` → `ADD_NEGATIVE`；`mult_positive > 1` → `MULT_POSITIVE`、`mult_positive < 1` → `MULT_NEGATIVE`（`0` 表示抗性归零，负值表示抗性反转）。正向与负向分属两个乘区，可同时生效。`value=0` 与 `mult_positive=1` 视为未提供，不再当作无效值拦截。
 - `toughnessBuff value duration buffId`：`value` 使用装备 XML 的 `toughness` 点数口径；运行时添加 `基础韧性系数 × value / 100`，不得对已含装备值的最终韧性系数再次乘算。
 - `restoreToughness`：同时清零 `remainingImpactForce` 与 `impactDecayBaseForce` 并刷新派生显示；不改 `lastHitTime`，不撤销已进入的控制状态。
 

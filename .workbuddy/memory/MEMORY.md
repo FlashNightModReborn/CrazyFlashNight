@@ -85,3 +85,44 @@ Flash CS6 若正开着同项目，外部改 XFL 会触发它自动保存，顺�
 - Twip Trick 后单位都在 0~1048575 高深度带；authored 元件 native `swapDepths(this._y)` 只落几百的低带 → 永远被玩家压住。凡遇"地图元件/NPC 不再和玩家交换层级"，先查它有没有被 DepthManager 接管
 - authored 子级的 onClipEvent(load)（含 初始化NPC）在 attachMovie 时同步执行，**早于** initGameWorld 创建本场景 DepthManager（此时 instance=null，AVM1 静默空操作）→ 初始化NPC 里的注册/劫持在场景加载时序下不可靠。兜底：SceneManager.initGameWorld → hijackAuthoredChildren（续38）
 - 素材库出生点的 `swapDepths(-this._y)` = "永远在最底"；劫持后被钳到 yMin 桶，语义保持
+
+## 图标管线（SWF 是唯一真源）
+
+**双通道**：Flash 内 HUD/tooltip 直接 `attachMovie("图标-" + itemData.icon)` 读
+`flashswf/arts/素材库-物品技能图标.swf`；Web/Launcher 面板读 `launcher/web/icons/manifest.json`
++ `*.webp`，由 `tools/bake-icons-offline.py` 用 `tools/ffdec/ffdec-cli.exe` **离线**从 SWF 扒出。
+`Icons.resolve()` 只查 manifest，**无 AS2 动态采样回退**，缺条目就是空图。
+
+**加图标的完整链路**：
+1. SVG → CS6 导入 XFL，元件勾"为 ActionScript 导出"，linkage 填 `图标-XXX`
+2. publish 出 `素材库-物品技能图标.swf`
+3. 重跑 `python tools/linkage_scanner/scan_linkage.py`（纯解析 XFL/FLA；冷启 ~3.5 分钟，
+   文件缓存热时 24 秒）。**这步不做，bake 会报 `unresolved=missing_asset`**——map 里没有新元件
+4. `python tools/bake-icons-offline.py --name XXX,YYY`（逗号分隔）
+
+**自查捷径**：`grep -l 'linkageExportForAS="true"' <元件>.xml` 查 XFL；
+`ffdec-cli.exe -export symbolClass <out> <swf>` 拿到 `symbols.csv`（char id;linkageId，1.5 秒）
+即可确认 SWF 符号表，不必跑整条 bake。
+
+**跑 bake 的环境**：managed 3.13 **没 Pillow**，沙箱内 pip 装不上；**系统 Python 3.10 自带
+Pillow**，用它：`C:/Users/Akatosh/AppData/Local/Programs/Python/Python310/python.exe`。
+
+**耗时**：基本被 FFDec `-swf2xml` 吃掉（图标库 4.8MB → 254MB XML、191 秒，**必然超过默认
+120s timeout**）。超时只是 `spriteGraphErrors=swf_xml_timeout`，sprite_graph 退化成空、
+nested audit 归零 → 静态首帧，对静态图标无害。9 个图标的完整 `--name` 烘焙 ≈ **2 分钟**
+（`--ffdec-timeout-seconds 300` 则 ~3.5 分钟）。
+
+**跳过行为（默认安全）**：不带 `--force-overwrite-existing` 时，渲染结果与磁盘一致 → `unchanged`；
+有差异 → `layout_protected`（**保留旧图**，只记 report）；只有缺文件才 `created`。
+另有 source-aware refresh：既有图标 provenance 可信且源 SWF 与渲染像素都变了才允许自动覆盖。
+
+**`data/items/asset_source_map.xml` 是 auto-generated，禁止手改**；它是手工重跑的，容易过期
+（曾发现 HEAD 版里某背景 SWF 出现 0 次，重跑后冒出 33 条 conflict）。
+
+### 给 CS6 画 SVG 只能用保守子集
+
+CS6 老导入器不支持 `<linearGradient>` + `fill="url(#id)"`、`<clipPath>`、`opacity`；
+Animate 支持，所以只有 CS6 会"丢色"。规则：只用字面 `#RRGGBB` 填充/描边，渐变拆成 2~3 段
+实色色带，半透明预先混色成实色，最外层描边放到最后画来盖色带毛边。
+描边重量对齐素材库既有图标约 **2.3% 画布**（64 画布 → 主体 1.5）；中央标签别太大，
+否则 32px 下糊成黑块。参考 `tmp/gen_potion_icons.py` 脚本头。

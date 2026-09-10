@@ -570,30 +570,23 @@
       <exceptionCode>story-apex-toxin</exceptionCode>
     </balance>
   </item>
-  <!-- 全属性抗性药剂：人修罗支线任务奖励，仿照九龙螭吻线（全抗）的路径写法。
-       固定点数部分走 resistanceBuff（对七抗各 +10）；百分比部分通过普通 buff 词条
-       对 魔法抗性.电/热/冷/波/蚀/毒/冲 叶子路径施加 percent 乘区（value=1.2，即 +120%），
-       与 ResistanceBuffEffect 使用同一 PodBuff 路径绑定机制。新增词条路径尚未实机回归。 -->
+  <!-- 全属性抗性药剂：人修罗支线任务奖励，同时上架格格巫商店。
+       点数与倍率合并为一条 resistanceBuff：value=5 对七抗与基础抗各 +5（ADD_POSITIVE），
+       mult_positive=2 对同样路径施加倍率乘区（×2，同类只取最强）。不写 property 即代表全属性，
+       作用范围默认已包含 魔法抗性.基础（对外显示名为"能量"）。
+       两者共用同一个 MetaBuff 与 TimeLimitComponent。新增词条路径尚未实机回归。 -->
   <item>
     <name>全属性抗性药剂</name>
     <displayname>全属性抗性药剂</displayname>
-    <icon>净化药剂</icon>
+    <icon>全属性抗性药剂</icon>
     <type>消耗品</type>
     <use>药剂</use>
-    <price>7500</price>
-    <description>针对高强度能量个体专门调制的广谱防护药剂，10秒内使所有基础属性抗性提升120%，并额外各增加10点，同时&lt;font color=\"#00ff00\"&gt;恢复600点生命&lt;/font&gt;。格格巫最新研制的防护药剂。</description>
+    <price>10000</price>
+    <description>针对高强度能量伤害专门调制的广谱防护药剂，10秒内使全部属性抗性提升至2倍，并额外各增加5点，同时&lt;font color=\"#00ff00\"&gt;恢复600点生命&lt;/font&gt;。格格巫最新研制的防护药剂。</description>
     <data>
       <effects>
         <effect type="buffDomain" domain="enhancer" />
-        <effect type="resistanceBuff" value="10" duration="300" buffId="全属性抗性药剂_全抗点数" />
-        <effect type="buff" property="魔法抗性.电" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_电抗" />
-        <effect type="buff" property="魔法抗性.热" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_热抗" />
-        <effect type="buff" property="魔法抗性.冷" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_冷抗" />
-        <effect type="buff" property="魔法抗性.波" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_波抗" />
-        <effect type="buff" property="魔法抗性.蚀" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_蚀抗" />
-        <effect type="buff" property="魔法抗性.毒" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_毒抗" />
-        <effect type="buff" property="魔法抗性.冲" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_冲抗" />
-        <effect type="buff" property="魔法抗性.基础" calc="percent" value="1.2" duration="300" buffId="全属性抗性药剂_基础抗" />
+        <effect type="resistanceBuff" value="5" mult_positive="2" duration="300" buffId="全属性抗性药剂_全抗" />
         <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
@@ -613,6 +606,274 @@
       <marketPrice>8000</marketPrice>
       <auditRef>potion:全属性抗性药剂</auditRef>
       <exceptionCode>quest-reward-manual-balance</exceptionCode>
+    </balance>
+  </item>
+  <!-- 单属性抗性药剂系列：格格巫商店常驻，七属性各一瓶 + 能量抗性一瓶。
+       每瓶只作用于 property 指定的单一抗性叶子路径，mult_positive=2.2（×2.2，同类只取最强）与
+       value=10 共用一条 resistanceBuff。能量抗性药对应内部键"基础"，
+       Tooltip 侧统一对外显示为"能量抗性"。新增词条路径尚未实机回归。 -->
+  <item>
+    <name>电抗性药剂</name>
+    <displayname>电抗性药剂</displayname>
+    <icon>电抗性药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>5000</price>
+    <description>格格巫调制的单属性防护药剂，10秒内使电抗性提升至2.2倍，并额外增加10点，同时&lt;font color="#00ff00"&gt;恢复600点生命&lt;/font&gt;。对雷电与电磁类伤害有奇效。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" property="电" value="10" mult_positive="2.2" duration="300" buffId="电抗性药剂_电抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <auditRef>potion:电抗性药剂</auditRef>
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </balance>
+  </item>
+  <item>
+    <name>热抗性药剂</name>
+    <displayname>热抗性药剂</displayname>
+    <icon>热抗性药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>5000</price>
+    <description>格格巫调制的单属性防护药剂，10秒内使热抗性提升至2.2倍，并额外增加10点，同时&lt;font color="#00ff00"&gt;恢复600点生命&lt;/font&gt;。对火焰与高温伤害有奇效。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" property="热" value="10" mult_positive="2.2" duration="300" buffId="热抗性药剂_热抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <auditRef>potion:热抗性药剂</auditRef>
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </balance>
+  </item>
+  <item>
+    <name>冷抗性药剂</name>
+    <displayname>冷抗性药剂</displayname>
+    <icon>冷抗性药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>5000</price>
+    <description>格格巫调制的单属性防护药剂，10秒内使冷抗性提升至2.2倍，并额外增加10点，同时&lt;font color="#00ff00"&gt;恢复600点生命&lt;/font&gt;。对冰霜与低温伤害有奇效。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" property="冷" value="10" mult_positive="2.2" duration="300" buffId="冷抗性药剂_冷抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <auditRef>potion:冷抗性药剂</auditRef>
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </balance>
+  </item>
+  <item>
+    <name>波抗性药剂</name>
+    <displayname>波抗性药剂</displayname>
+    <icon>波抗性药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>5000</price>
+    <description>格格巫调制的单属性防护药剂，10秒内使波抗性提升至2.2倍，并额外增加10点，同时&lt;font color="#00ff00"&gt;恢复600点生命&lt;/font&gt;。对电磁波伤害有奇效。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" property="波" value="10" mult_positive="2.2" duration="300" buffId="波抗性药剂_波抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <auditRef>potion:波抗性药剂</auditRef>
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </balance>
+  </item>
+  <item>
+    <name>蚀抗性药剂</name>
+    <displayname>蚀抗性药剂</displayname>
+    <icon>蚀抗性药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>5000</price>
+    <description>格格巫调制的单属性防护药剂，10秒内使蚀抗性提升至2.2倍，并额外增加10点，同时&lt;font color="#00ff00"&gt;恢复600点生命&lt;/font&gt;。对腐蚀与酸蚀伤害有奇效。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" property="蚀" value="10" mult_positive="2.2" duration="300" buffId="蚀抗性药剂_蚀抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <auditRef>potion:蚀抗性药剂</auditRef>
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </balance>
+  </item>
+  <item>
+    <name>毒抗性药剂</name>
+    <displayname>毒抗性药剂</displayname>
+    <icon>毒抗性药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>5000</price>
+    <description>格格巫调制的单属性防护药剂，10秒内使毒抗性提升至2.2倍，并额外增加10点，同时&lt;font color="#00ff00"&gt;恢复600点生命&lt;/font&gt;。对毒素与生化污染有奇效。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" property="毒" value="10" mult_positive="2.2" duration="300" buffId="毒抗性药剂_毒抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <auditRef>potion:毒抗性药剂</auditRef>
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </balance>
+  </item>
+  <item>
+    <name>冲抗性药剂</name>
+    <displayname>冲抗性药剂</displayname>
+    <icon>冲抗性药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>5000</price>
+    <description>格格巫调制的单属性防护药剂，10秒内使冲抗性提升至2.2倍，并额外增加10点，同时&lt;font color="#00ff00"&gt;恢复600点生命&lt;/font&gt;。对共振与冲击力伤害有奇效。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" property="冲" value="10" mult_positive="2.2" duration="300" buffId="冲抗性药剂_冲抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>5000</marketPrice>
+      <auditRef>potion:冲抗性药剂</auditRef>
+      <exceptionCode>shop-manual-balance</exceptionCode>
+    </balance>
+  </item>
+  <item>
+    <name>能量抗性药剂</name>
+    <displayname>能量抗性药剂</displayname>
+    <icon>能量抗性药剂</icon>
+    <type>消耗品</type>
+    <use>药剂</use>
+    <price>6000</price>
+    <description>格格巫调制的单属性防护药剂，10秒内使能量抗性提升至2.2倍，并额外增加10点，同时&lt;font color="#00ff00"&gt;恢复600点生命&lt;/font&gt;。对纯粹能量伤害有奇效。</description>
+    <data>
+      <effects>
+        <effect type="buffDomain" domain="enhancer" />
+        <effect type="resistanceBuff" property="基础" value="10" mult_positive="2.2" duration="300" buffId="能量抗性药剂_能量抗" />
+        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="playEffect" name="净化动画" />
+      </effects>
+    </data>
+    <balance>
+      <formulaFamily>potion</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>2</formulaVersion>
+      <authorityStatus>workbook-registration-pending</authorityStatus>
+      <sourceLevel>60</sourceLevel>
+      <domain>enhancer</domain>
+      <balanceMode>exception</balanceMode>
+      <status>runtime-test-pending</status>
+      <currentValue>0</currentValue>
+      <valueCap>6100</valueCap>
+      <formulaPrice>0</formulaPrice>
+      <marketPrice>6000</marketPrice>
+      <auditRef>potion:能量抗性药剂</auditRef>
+      <exceptionCode>shop-manual-balance</exceptionCode>
     </balance>
   </item>
 </root>
