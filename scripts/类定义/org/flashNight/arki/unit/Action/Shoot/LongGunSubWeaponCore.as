@@ -122,6 +122,8 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         props.伤害类型 = config.damageType;
         props.魔法伤害属性 = config.magicType;
         props.ammoCost = 1;
+        if (config.hitBehavior) props.hitBehavior = config.hitBehavior;
+        else delete props.hitBehavior;
 
         man.副武器子弹属性 = props;
         return props;
@@ -533,6 +535,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     }
 
     public static function calculatePower(unit:Object, config:Object):Number {
+        if (config.hitBehavior.type == "titaniumFireControl") return 100;
         var power:Number = config.basePower * config.powerMultiplier * config.hostPowerMultiplier;
         var passiveSkills:Object = unit.被动技能;
         if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用 && config.hostWeaponType == "霰弹枪") {
@@ -654,6 +657,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         }
         config.damageType = sub.damageType ? sub.damageType : "物理";
         config.magicType = sub.magicType;
+        config.hitBehavior = sub.hitBehavior;
         config.hostWeaponType = itemData ? itemData.weapontype : null;
         config.hostPowerMultiplier = readHostPowerMultiplier(itemData);
         return config;

@@ -184,6 +184,10 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
             // 预计算懒闪避概率（用于 B 计算和后续采样）
             // 注意：此处计算的 instantProb 后续在分段建模时直接复用，避免重复调用 calcLazyMissProbability
             var lazyMissValue:Number = target.懒闪避;
+            if (target.__titaniumType61) {
+                var titaniumLazy:Number = target.__titaniumType61.getLazyDodge();
+                if (titaniumLazy > 0 && (!(lazyMissValue > 0) || titaniumLazy > lazyMissValue)) lazyMissValue = titaniumLazy;
+            }
             var instantProb:Number = 0;
             if (lazyMissValue > 0) {
                 instantProb = RNG.calcLazyMissProbability(target.hp, target.hp满血值, lazyMissValue, perPelletHitDamage);

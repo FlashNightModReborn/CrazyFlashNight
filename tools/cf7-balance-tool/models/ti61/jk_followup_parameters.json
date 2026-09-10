@@ -1,0 +1,29 @@
+{
+  "status": "design_candidates_only_not_runtime_values",
+  "playerLevel": 60,
+  "enhancement": 13,
+  "mainMods": ["战术鱼骨零件", "水冷机构"],
+  "mainCapacity": 60,
+  "bloodEnhancements": [1, 5, 9, 13],
+  "shieldCoefficients": [1.3, 8, 16, 24, 32, 40, 48, 60, 64],
+  "shieldMpCosts": [0.008, 0.012, 0.016, 0.02, 0.08],
+  "reserveRatio": 0.15,
+  "contactProfiles": {
+    "partial": {"vertical": 2, "horizontal": 1, "piercing": 1, "melee": 0.5},
+    "working": {"vertical": 4, "horizontal": 2, "piercing": 1, "melee": 1},
+    "all_emissions_once": {"vertical": 10, "horizontal": 8, "piercing": 1, "melee": 1}
+  },
+  "rangedPool": ["长枪蹲射", "左轮射击", "腰射", "左轮拔枪", "拔刀", "次元斩", "枪斗术"],
+  "roll": {"cooldownFrames": 360, "animationFrames": 13, "refillFrame": 8, "mpCost": 70, "gunPowerBuff": 0, "legacyDeclaredGunPowerBuff": 150, "buffFrames": 150},
+  "ray": {"durationFrames": 27, "intervalFrames": 45, "holdFrames": 0, "capacities": [6, 8, 10, 12], "peaks": [0, 0.75, 1, 1.25, 1.5, 1.75, 2], "directDamagePerContact": 100, "mainArrivalFrames": [0, 4, 8]},
+  "bloodSkill": {"hpMaxCostRatios": [0.2, 0.3, 0.35, 0.4], "cooldownSeconds": [18, 24, 30]},
+  "seeds": 32,
+  "limitations": [
+    "Source frame arithmetic and emission counts are not Flash execution, collision measurements, or empirical probabilities.",
+    "Contact profiles are deliberate scenarios. The working profile has not been measured in player feedback.",
+    "The ranged AI pool is only the 220-500 distance branch. Equal sampling is conditional, not the whole AI's action frequency.",
+    "Ray peaks, ammo capacity, direct damage, blood skill, and shield conversion are proposals, never loaded into production.",
+    "Solo fire assumes full online fire control unless an explicit online fraction is selected; no allies/pets are included.",
+    "Infinite reserve clips are an inventory assumption, not free ammunition. Potion scenarios are explicit external inputs."
+  ]
+}

@@ -83,7 +83,8 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
         // fresh rawDamage 重新采样，恢复联弹场景下懒闪避的设计意图）。
         // 短路顺序：表查 hit 即跳过懒闪避属性读，普通 NOT_DODGE 命中（无懒闪避）零增量开销。
         if (((bullet.flags & FLAG_CHAIN) != 0) && !target.受击反制
-            && (DodgeStatus.CHAIN_DODGE_MODEL[dodgeState] || target.懒闪避 > 0)) {
+            && (DodgeStatus.CHAIN_DODGE_MODEL[dodgeState] || target.懒闪避 > 0
+                || (target.__titaniumType61 && target.__titaniumType61.getLazyDodge() > 0))) {
             // 标记：本次命中将由联弹处理器执行分段躲闪建模
             result.deferChainDodgeState = true;
             return;

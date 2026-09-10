@@ -27,6 +27,7 @@
         // - 大于 1 表示增伤（如 1.5 = 易伤50%）
         // - 可通过 BuffManager 动态调整
         if (isNaN(target.damageTakenMultiplier)) target.damageTakenMultiplier = 1;
+        if (isNaN(target.ti61CrumbleTakenMultiplier)) target.ti61CrumbleTakenMultiplier = 1;
 
         // 初始化体重：基于身高计算（身高 - 105）
         if (isNaN(target.身高)) target.身高 = 175;

@@ -7,6 +7,8 @@ import org.flashNight.arki.weather.WeatherSystem;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentFireIntent;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.equipment.EquipmentConfigManager;
 
 /** 五甲共享运行态。只有胸甲有周期，其余组件完成静态注册后参与同一事务。 */
 class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
@@ -61,9 +63,31 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
     private var initialShieldPending:Boolean;
     private var initialShieldAllowed:Boolean;
     private var initialShieldGranted:Number;
+    private var bloodLoss:Number;
+    private var bloodEquipment:Object;
+    private var deathSuspended:Boolean;
+    private var bloodBonusId:String;
+    private var bloodPendingBonus:Number;
+    private var bloodBonusUntil:Number;
+    private var bloodCasting:Boolean;
+    private var bloodMan:MovieClip;
+    private var bloodBonusGranted:Boolean;
+    private var bloodCastId:Number;
 
     public static function finite(value):Boolean {
         return typeof value == "number" && !isNaN(value) && (value - value) == 0;
+    }
+
+    /** 固有生命负担只读原始物品与强化；插件抵消、当前缺血和超血不改变锚点。 */
+    public static function getBloodLoss(unit:Object):Number {
+        var sword:Object = unit.刀;
+        if (!sword || sword.name !== "血色光剑天秤") return 0;
+        var source:Object = ItemUtil.getRawItemData(sword.name);
+        var level:Number = Number(sword.value.level);
+        if (!finite(level) || level < 1 || level > EquipmentConfigManager.getMaxLevel() || level != Math.floor(level)) return 0;
+        var base:Number = Number(source.data.hp);
+        if (!finite(base) || !(base < 0)) return 0;
+        return Math.round(-base * EquipmentConfigManager.getLevelMultiplier(level));
     }
 
     public static function prepare(record:Object, unit:MovieClip):Object {
@@ -111,6 +135,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         runtime.initialShieldPending = true;
         runtime.initialShieldAllowed = true;
         runtime.initialShieldGranted = 0;
+        runtime.bloodLoss = getBloodLoss(unit);
+        runtime.bloodEquipment = unit.刀;
+        runtime.deathSuspended = false;
+        runtime.bloodCasting = false;
+        runtime.bloodMan = null;
+        runtime.bloodBonusGranted = false;
+        runtime.bloodCastId = 0;
+        runtime.bloodPendingBonus = 0;
+        runtime.bloodBonusUntil = 0;
         return runtime;
     }
 
@@ -151,6 +184,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
     private function readConfig(params:Object):Boolean {
         config = {};
         var keys:Array = ["shieldArmorHpRatio", "fullRechargeSeconds", "shieldMpPerPoint", "bloodServoBonusKg",
+                          "bloodShieldRatio", "shieldLazyDodge", "bloodSkillHpRatio", "bloodSkillBuffSeconds",
                           "healBaseHpRatioPerSecond", "healMissingRatioPerSecond", "healMpPerPoint", "startupMp",
                           "overloadCoefficient", "overloadExponent", "pulseFrames", "ammoMpPerRound", "ammoMaxPerSlotPulse"];
         for (var i:Number = 0; i < keys.length; i++) {
@@ -191,13 +225,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         unweightedJump = jump / ratio;
         writtenWalk = walk;
         writtenJump = jump;
-        fullStrength = armorHp * config.shieldArmorHpRatio;
+        fullStrength = armorHp * config.shieldArmorHpRatio + bloodLoss * config.bloodShieldRatio;
         if (!finite(fullStrength) || !(fullStrength > 0)) return false;
 
         // BaseShield 构造默认满盾；注册前清零，零盾强防止未付费就获得抗击溃等能力。
         layer = Shield.createRechargeable(fullStrength, 0, 0, 0, SHIELD_NAME);
         layer.setCapacity(0);
-        layer.setResistBypass(false);
+        layer.setResistBypass(bloodLoss > 0);
         shieldId = layer.getId();
         var self:TitaniumSetRuntime = this;
         layer.setCallbacks({onHit:function(s:Object, amount:Number):Void { self.onShieldChanged(); },
@@ -207,7 +241,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         weightId = manager.addBuff(new PodBuff("重量", BuffCalculationType.ADD, 0), "titanium61:weight");
         speedId = manager.addBuff(new PodBuff("行走X速度", BuffCalculationType.MULT_POSITIVE, 1), "titanium61:servo");
         overloadId = manager.addBuff(new PodBuff("伤害加成", BuffCalculationType.ADD, 0), "titanium61:overload");
-        if (!weightId || !speedId || !overloadId) return false;
+        bloodBonusId = manager.addBuff(new PodBuff("伤害加成", BuffCalculationType.ADD, 0), "titanium61:bloodPact");
+        if (!weightId || !speedId || !overloadId || !bloodBonusId) return false;
         manager.update(0);
         dispatcher = target.dispatcher;
         if (!dispatcher || typeof dispatcher.subscribe != "function") return false;
@@ -223,7 +258,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
 
     private function bindingValid():Boolean {
         if (disposed || !initialized || !target._parent || target.version !== version ||
-            target.__titaniumType61 !== this || target.shield !== container || target.buffManager !== manager || target.dispatcher !== dispatcher) return false;
+            target.__titaniumType61 !== this || target.shield !== container || target.buffManager !== manager || target.dispatcher !== dispatcher || target.刀 !== bloodEquipment) return false;
         for (var i:Number = 0; i < SLOTS.length; i++) {
             if (target[SLOTS[i]] !== equipment[i] || target[SLOTS[i] + "数据"].setId !== SET_ID) return false;
         }
@@ -243,10 +278,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         if (disposed) return;
         if (!bindingValid()) { structuralFailure("binding_changed"); return; }
         if (effect.group.status != "committed") return;
-        if (!(target.hp > 0)) { SetEffectController.teardownGroup(target, effect.group.id); return; }
+        if (!(target.hp > 0)) { suspendForDeath(); return; }
+        if (deathSuspended) return;
         var frame:Number = Number(_root.帧计时器.当前帧数);
         if (!finite(frame) || frame == lastFrame) return;
         lastFrame = frame;
+        if (bloodBonusUntil > 0 && frame >= bloodBonusUntil) {
+            manager.setPodBuffValue(bloodBonusId, 0);
+            bloodBonusUntil = 0;
+        }
+        if (bloodCasting && (target.状态 != "战技" || (bloodMan && target.man !== bloodMan))) cancelBloodCast();
         if (container.getShieldById(shieldId) !== layer) { structuralFailure("shield_missing"); return; }
         if (!finite(layer.getCapacity()) || !finite(layer.getMaxCapacity()) ||
             layer.getCapacity() < 0 || layer.getMaxCapacity() != fullStrength || layer.getCapacity() > fullStrength) {
@@ -277,6 +318,123 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
     public function constrainInitialShieldToPreviousHealth(hp:Number, maximum:Number):Void {
         if (!initialShieldPending) return;
         initialShieldAllowed = initialShieldAllowed && finite(hp) && finite(maximum) && maximum > 0 && hp >= maximum;
+    }
+
+    /** 同一MovieClip死亡只暂停；保留组件和周期所有权，卸装/离场仍由事务清理。 */
+    private function suspendForDeath():Void {
+        if (deathSuspended) return;
+        deathSuspended = true;
+        cancelBloodCast();
+        manager.setPodBuffValue(bloodBonusId, 0);
+        bloodBonusUntil = 0;
+        layer.setCapacity(0);
+        synchronizeState();
+        manager.setPodBuffValue(overloadId, 0);
+        appliedOverload = 0;
+        container.invalidateCache();
+        writeStatus();
+    }
+
+    public function resumeAfterRespawn():Void {
+        if (!bindingValid() || effect.group.status != "committed" || !(target.hp > 0)) return;
+        cancelBloodCast();
+        manager.setPodBuffValue(bloodBonusId, 0);
+        bloodBonusUntil = 0;
+        deathSuspended = false;
+        initialShieldPending = true;
+        initialShieldAllowed = target.hp >= target.hp满血值;
+        startupPaid = false;
+        lastFrame = pulseFrame = -1;
+        grantInitialShield();
+        synchronizeState();
+        writeStatus();
+    }
+
+    public function getLazyDodge():Number {
+        return bindingValid() && effect.group.status == "committed" && target.hp > 0 && isOnline()
+            && container.getShieldById(shieldId) === layer ? config.shieldLazyDodge : 0;
+    }
+
+    /** 猩红天秤动作每段仅取固有负担的10%，不重复附带角色输出机制。 */
+    public function getBloodPulsePower():Number {
+        return isBloodPactAnimation(bloodMan) ? bloodLoss * 0.1 : 0;
+    }
+
+    public function canBloodPact():Boolean {
+        return bindingValid() && effect.group.status == "committed" && !deathSuspended && !bloodCasting
+            && bloodLoss > 0 && target.攻击模式 == "兵器" && !target.倒地 && !target.浮空
+            && (target.状态 == "兵器站立" || target.状态 == "兵器行走" || target.状态 == "兵器跑")
+            && finite(target.hp) && target.hp > 1 && finite(target.hp满血值) && target.hp满血值 > 0
+            && finite(target.mp) && target.mp >= 0 && container.getShieldById(shieldId) === layer;
+    }
+
+    /** 无事件的资源临界段。满盾和零MP均允许；费用取实际缺口，增益资格在此快照。 */
+    public function commitBloodPact():Boolean {
+        if (!canBloodPact()) return false;
+        var paidHp:Number = Math.min(target.hp - 1, target.hp * config.bloodSkillHpRatio);
+        var missing:Number = fullStrength - layer.getCapacity();
+        var paidMp:Number = Math.min(target.mp, Math.max(0, missing) * config.shieldMpPerPoint);
+        target.hp -= paidHp;
+        spend(paidMp);
+        layer.setCapacity(fullStrength);
+        charged += missing;
+        initialShieldPending = false;
+        startupPaid = false;
+        bloodPendingBonus = target.mp > 0 ? bloodLoss * paidHp / target.hp满血值 : 0;
+        bloodCasting = true;
+        bloodMan = null;
+        bloodBonusGranted = false;
+        bloodCastId++;
+        container.invalidateCache();
+        synchronizeState();
+        writeStatus();
+        return true;
+    }
+
+    /** 首帧绑定本次动作；技能强制取消时立即清理，保留既有路由的卸载回调。 */
+    public function bindBloodPactAnimation(man:MovieClip):Boolean {
+        if (!man || bloodMan || !bloodCasting || !bindingValid() || !(target.hp > 0)
+            || target.man !== man || target.状态 != "战技") return false;
+        bloodMan = man;
+        man.__ti61BloodRuntime = this;
+        man.__ti61BloodCastId = bloodCastId;
+        var runtime:TitaniumSetRuntime = this;
+        var castMan:MovieClip = man;
+        var castId:Number = bloodCastId;
+        var previousUnload:Function = man.onUnload;
+        man.onUnload = function():Void {
+            runtime.finishBloodPact(castMan, castId);
+            if (previousUnload) previousUnload.apply(this);
+        };
+        return true;
+    }
+
+    private function isBloodPactAnimation(man:MovieClip):Boolean {
+        return man && bloodCasting && bloodMan === man && man.__ti61BloodRuntime === this && man.__ti61BloodCastId === bloodCastId
+            && target.man === man && target.状态 == "战技"
+            && bindingValid() && effect.group.status == "committed" && target.hp > 0;
+    }
+
+    /** 砸地只兑现一次支付快照；计时从此帧起，后续低伤多段仍属于本次动作。 */
+    public function grantBloodPactBonus(man:MovieClip):Void {
+        if (!isBloodPactAnimation(man) || bloodBonusGranted) return;
+        bloodBonusGranted = true;
+        manager.setPodBuffValue(bloodBonusId, bloodPendingBonus);
+        bloodPendingBonus = 0;
+        bloodBonusUntil = Number(_root.帧计时器.当前帧数) + config.bloodSkillBuffSeconds * Number(_root.帧计时器.帧率);
+    }
+
+    public function finishBloodPact(man:MovieClip, castId:Number):Void {
+        if (man && bloodMan === man && castId === bloodCastId) cancelBloodCast();
+    }
+
+    private function cancelBloodCast():Void {
+        // MovieClip路径可能被下一招复用，只清理仍属于本实例、本次施放的标签。
+        if (bloodMan && bloodMan.__ti61BloodRuntime === this && bloodMan.__ti61BloodCastId === bloodCastId) bloodMan.无敌标签 = false;
+        bloodMan = null;
+        bloodCasting = false;
+        bloodBonusGranted = false;
+        bloodPendingBonus = 0;
     }
 
     private function grantInitialShield():Void {
@@ -495,11 +653,13 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
 
     public function getState():String { return disposed ? "OFFLINE" : phase; }
     public function getShieldId():Number { return shieldId; }
-    public function isOnline():Boolean { return !disposed && initialized && layer.getCapacity() > 0; }
+    public function isOnline():Boolean { return !disposed && initialized && !deathSuspended && target.hp > 0 && layer.getCapacity() > 0; }
     public function getDiagnostics():Object {
         var progress:Number = getFireControlProgress();
         return {state:getState(), shieldId:shieldId, capacity:disposed || !layer ? 0 : layer.getCapacity(),
-                maximum:fullStrength, startupPaid:startupPaid, mpSpent:mpSpent, initialShieldGranted:initialShieldGranted,
+                maximum:fullStrength, bloodLoss:bloodLoss, lazyDodge:getLazyDodge(), deathSuspended:deathSuspended,
+                bloodCasting:bloodCasting, bloodBonusGranted:bloodBonusGranted, bloodBonusUntil:bloodBonusUntil,
+                startupPaid:startupPaid, mpSpent:mpSpent, initialShieldGranted:initialShieldGranted,
                 healed:healed, charged:charged, startups:startups, failure:failureReason,
                 baseMpEarned:baseMpEarned, ammoSynthesized:ammoSynthesized, ammoMpSpent:ammoMpSpent,
                 fireControlProgress:progress, fireControlRout:0.15*progress, fireControlSlay:10*progress};
@@ -508,6 +668,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
 
     public function dispose():Void {
         if (disposed) return;
+        cancelBloodCast();
         disposed = true;
         initialShieldPending = false;
         startupPaid = false;
@@ -524,6 +685,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
             if (weightId) manager.removeBuff(weightId);
             if (speedId) manager.removeBuff(speedId);
             if (overloadId) manager.removeBuff(overloadId);
+            if (bloodBonusId) manager.removeBuff(bloodBonusId);
             manager.update(0);
             if (initialized && target.buffManager === manager) {
                 var ratio:Number = UnitUtil.getWeightSpeedRatio(target.重量, target.等级);

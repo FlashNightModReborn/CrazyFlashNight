@@ -52,7 +52,7 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
     }
 
     // 主角-男优先走容器化
-    if (unit.兵种 === "主角-男") {
+    if (unit.兵种 === "主角-男" || skillName == "猩红天秤") {
         _root.战技路由.载入后跳转战技容器(unit.container, unit);
         return;
     }

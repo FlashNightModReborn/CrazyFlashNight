@@ -10,6 +10,10 @@ import org.flashNight.arki.unit.Action.Shoot.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.FireEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.P90EnergyGenerator;
 import org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
+import org.flashNight.arki.component.Buff.Effect.FireControlVulnerability;
+import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnEventComponent;
+import org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry;
 
 /** 真实XML、通用loader、真实护盾与Buff；只隔离世界时钟和喷气背包美术。 */
 class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntimeTest {
@@ -27,6 +31,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
     private static var units:Array;
     private static var oldClock:Object;
     private static var oldConfig:Object;
+    private static var oldItems:Object;
     private static var oldControl;
     private static var oldMessage:Function;
     private static var oldCleanup:Function;
@@ -51,6 +56,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
         _root.子弹区域shoot传递 = function(props:Object):Void { TitaniumSetRuntimeTest.emitted = props; };
         weapons = {}; messages = [];
         oldClock = _root.帧计时器; oldConfig = ItemUtil.itemSetConfigDict; oldControl = _root.控制目标;
+        oldItems = ItemUtil.itemDataDict; ItemUtil.itemDataDict = {};
         oldMessage = _root.发布消息; oldCleanup = _root.装备生命周期函数.移除异常周期函数;
         oldGetSkill = _root.主角函数.获取装备主动战技种类;
         oldJetInit = _root.装备生命周期函数.喷气背包初始化;
@@ -101,16 +107,16 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
                 for (var k:Number = 0; k < parsed.item.length; k++) {
                     TitaniumSetRuntimeTest.weapons[parsed.item[k].name] = parsed.item[k];
                 }
-                if (this.testIndex == 2) TitaniumSetRuntimeTest.loadDocument(3);
+                if (this.testIndex < 4) TitaniumSetRuntimeTest.loadDocument(this.testIndex + 1);
                 else TitaniumSetRuntimeTest.execute();
             }
         };
         var paths:Array = ["../data/items/item_sets.xml", "../data/items/防具_40+级.xml",
-                           "../data/items/武器_手枪_冲锋枪.xml", "../data/items/武器_长枪_机枪.xml"];
+                           "../data/items/武器_手枪_冲锋枪.xml", "../data/items/武器_长枪_机枪.xml", "../data/items/武器_刀_直剑.xml"];
         document.load(paths[index]);
     }
 
-    private static function makeUnit(count:Number, weight:Number, invalid:Boolean, duplicate:Boolean, external:Boolean):MovieClip {
+    private static function makeUnit(count:Number, weight:Number, invalid:Boolean, duplicate:Boolean, external:Boolean, bloodLevel:Number):MovieClip {
         var unit:MovieClip = _root.createEmptyMovieClip("__ti61Unit" + (++serial), _root.getNextHighestDepth());
         units.push(unit); _root.控制目标 = unit._name;
         unit.dispatcher = new EventDispatcher();
@@ -122,7 +128,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
         unit.行走X速度 = 4 * ratio; unit.起跳速度 = -10 * ratio;
         unit.hp满血值 = 5000; unit.hp = 5000; unit.mp满血值 = 3000; unit.mp = 3000;
         unit.伤害加成 = 440; unit.魔法抗性 = {基础:15}; unit.jetpackInitializations = 0;
-        unit.刀 = {name:"血色光剑天秤",value:{level:1}};
+        unit.刀 = {name:"血色光剑天秤",value:{level:bloodLevel || 1}};
         unit.生命周期函数列表 = []; unit.主动战技 = {};
         unit.装载生命周期函数 = _root.主角函数.装载生命周期函数;
         unit.完成生命周期函数装载 = _root.主角函数.完成生命周期函数装载;
@@ -198,18 +204,18 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             check(night.validate(8,unit)==null,"白天停用");
             check(night.validate(2,unit)=="高级夜视仪","昼夜往返可以再次启用");
             advance(1);
-            check(near(shield.getCapacity(),31.25),"首脉冲付费渐充");
-            check(near(unit.mp,2937.5),"启动60加实际充能2.5MP");
-            check(near(unit.shield.getCapacity(),131.25),"手动充能刷新多盾缓存");
+            check(near(shield.getCapacity(),62.5),"首脉冲恢复最大盾量5%");
+            check(near(unit.mp,2908.75),"启动60加实际充能31.25MP");
+            check(near(unit.shield.getCapacity(),162.5),"手动充能刷新多盾缓存");
             check(shield.getStrength()==1250,"正容量后固定满盾强");
             check(unit.重量==184,"在线血剑减重只应用一次");
             check(near(unit.行走X速度,4),"动力伺服恢复正常速度");
             var before:Number = unit.mp;
             runtime.tick(null);
             check(unit.mp==before,"同帧不重复维护");
-            advance(240);
-            check(shield.getCapacity()==1250,"八秒充满五甲HP的一半");
-            check(near(runtime.getDiagnostics().mpSpent,160),"整盾只收实际100加启动60");
+            advance(120);
+            check(shield.getCapacity()==1250,"四秒充满五甲HP的一半");
+            check(near(runtime.getDiagnostics().mpSpent,685),"每2盾1MP加启动60");
             check(runtime.getState()=="ONLINE_FULL","满盾状态");
             check(unit.externalShield.getCapacity()==100,"不消费或修复外部盾");
             unit.hp=4980; before=unit.mp; advance(6);
@@ -264,13 +270,30 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
             closeUnit(duplicate);
             var dying:MovieClip=makeUnit(5,200,false,false,false); advance(6);
             dying.hp=0; advance(1);
-            check(dying.__titaniumType61==undefined && setTaskCount(dying)==0,"死亡不治疗并释放资源");
-            check(dying.shield.getShieldCount()==0,"死亡清理专属层");
+            check(dying.__titaniumType61!=undefined && setTaskCount(dying)==1,"死亡暂停而不卸掉复活需要的周期");
+            check(dying.shield.getCapacity()==0 && dying.shield.getStrength()==0,"死亡清空盾量和盾强");
+            var savedRuntime:Object = dying.__titaniumType61;
+            var savedManager:Object = dying.buffManager;
+            var externalBuff:String = dying.buffManager.addBuff(new PodBuff("伤害加成",BuffCalculationType.ADD,123),"revive-external");
+            dying.动画完毕=function():Void { this.状态="兵器站立"; };
+            RespawnEventComponent.onRespawn(dying); advance(1);
+            check(dying.__titaniumType61===savedRuntime && savedRuntime.isOnline(),"原运行态复活恢复满盾");
+            check(dying.buffManager===savedManager && near(dying.伤害加成,563),"复活保留其他Buff和属性基底");
+            dying.hp=0; advance(1); RespawnEventComponent.onRespawn(dying); advance(1);
+            check(setTaskCount(dying)==1 && dying.shield.getShieldCount()==1,"连续复活不堆周期或护盾");
+            dying.shield.getShieldById(savedRuntime.getShieldId()).setCapacity(10);
+            RespawnEventComponent.onRespawn(dying);
+            check(dying.shield.getCapacity()==10,"存活时重复复活通知不免费刷新盾");
+            dying.hp=0; dying._killed=true; RespawnEventComponent.onRespawn(dying);
+            check(savedRuntime.isOnline() && dying.shield.getCapacity()==1250,"死亡当帧立即复活也由真实事件恢复");
             closeUnit(dying);
             testInitialShield();
             testEnergyAndAmmo();
             testFireControl();
             testReloadInterleaving();
+            testBloodPact();
+            testFireControlVulnerability();
+            testSecondaryData();
         } catch (error) {
             check(false,"unexpected exception: "+error);
         }
@@ -311,7 +334,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
         shield.consumeCapacity(100); advance(6);
         check(shield.getCapacity()==1150,"免费初始机会只兑现一次，受损后不重复赠盾");
         shield.consumeCapacity(shield.getCapacity()); unit.mp=68; advance(6);
-        check(shield.getCapacity()==31.25 && runtime.getDiagnostics().startups==1,"战斗破盾后仍支付启动费并渐进充能");
+        check(shield.getCapacity()==16 && unit.mp==0 && runtime.getDiagnostics().startups==1,"战斗破盾后先收60MP，剩余8MP仅转16盾");
         closeUnit(unit);
 
         unit=makeUnit(5,0,false,false,false); runtime=unit.__titaniumType61;
@@ -554,12 +577,190 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
         closeUnit(unit);
     }
 
+    private static function bindBloodAnimation(unit:MovieClip):MovieClip {
+        var man:MovieClip = unit.createEmptyMovieClip("bloodAnimation" + (++serial), unit.getNextHighestDepth());
+        unit.man = man;
+        unit.状态 = "战技";
+        man.无敌标签 = true;
+        man.unloadCalls = 0;
+        man.onUnload = function():Void { this.unloadCalls++; };
+        unit.bloodBindSucceeded = unit.__titaniumType61.bindBloodPactAnimation(man);
+        return man;
+    }
+
+    private static function testBloodPact():Void {
+        ItemUtil.itemDataDict = weapons;
+        var low:MovieClip = makeUnit(5,-5,false,false,false,1);
+        check(TitaniumSetRuntime.getBloodLoss(low)==999,"真实血剑一级固有负担");
+        check(near(low.__titaniumType61.getDiagnostics().maximum,2748.5),"低强化血剑提供1.5倍额外盾");
+        closeUnit(low);
+        var unit:MovieClip = makeUnit(5,-5,false,false,true,13);
+        var runtime:TitaniumSetRuntime = unit.__titaniumType61;
+        var shield:Shield = Shield(unit.shield.getShieldById(runtime.getShieldId()));
+        check(TitaniumSetRuntime.getBloodLoss(unit)==3037,"真实血剑十三强化固有负担");
+        check(near(shield.getMaxCapacity(),5805.5) && shield.getResistBypass(),"完整专属池抗真伤并绑定强化");
+        advance(1);
+        check(near(runtime.getLazyDodge(),0.3),"专属盾在线提供30%高危闪避上限");
+        unit.损伤值=1000;
+        var chainResult:DamageResult=DamageResult.getIMPACT_CHAIN();
+        DodgeStateDamageHandle.instance.handleBulletDamage({flags:2,伤害类型:"物理"},{},unit,{dodgeState:""},chainResult);
+        check(chainResult.deferChainDodgeState,"护盾懒闪避进入真实联弹分段入口");
+        var maximum:Number=shield.getCapacity();
+        shield.absorbDamage(100,true,1);
+        check(near(shield.getCapacity(),maximum-100),"真伤实际扣专属池");
+        shield.consumeCapacity(shield.getCapacity());
+        check(runtime.getLazyDodge()==0 && unit.externalShield.getCapacity()==100,"破盾瞬间移除懒闪避，外部盾不代替资格");
+        chainResult=DamageResult.getIMPACT_CHAIN();unit.损伤值=1000;
+        DodgeStateDamageHandle.instance.handleBulletDamage({flags:2,伤害类型:"物理"},{},unit,{dodgeState:""},chainResult);
+        check(!chainResult.deferChainDodgeState,"破盾后的联弹立即失去套装懒闪避");
+        unit.攻击模式="长枪"; unit.状态="长枪站立";
+        check(!runtime.commitBloodPact() && unit.hp==5000,"持枪不能献血");
+        unit.攻击模式="兵器"; unit.状态="兵器站立"; unit.mp=1000;
+        check(runtime.commitBloodPact(),"破盾低蓝仍可主动救场");
+        var man:MovieClip=bindBloodAnimation(unit);
+        check(unit.bloodBindSucceeded,"首帧绑定本次战技动作");
+        check(near(runtime.getBloodPulsePower(),303.7),"动作段伤害取强化血剑负担的10%");
+        check(unit.hp==3250 && unit.mp==0 && shield.getCapacity()==maximum,"扣35%当前HP与实际可用MP后补满盾");
+        var incoming:Object={伤害类型:"物理",flags:0};
+        check(DamageCalculator.calculateDamage(incoming,{},unit,1,"")===DamageResult.NULL,"起跳无敌阻挡真实物伤入口");
+        incoming.伤害类型="真伤";
+        check(DamageCalculator.calculateDamage(incoming,{},unit,1,"")===DamageResult.NULL && unit.hp==3250 && shield.getCapacity()==maximum,"起跳无敌同样阻挡真伤且不抵消主动献血");
+        unit.mp=3000;man.无敌标签=false;runtime.grantBloodPactBonus(man);
+        check(near(unit.伤害加成,440),"起手抽干MP后中途喝蓝也不能取得增伤");
+        runtime.finishBloodPact(man,man.__ti61BloodCastId);
+        check(runtime.getBloodPulsePower()==0,"动作结束后不再提供段伤害");
+        check(near(unit.伤害加成,440),"抽干MP不给增伤");
+        unit.hp=5000;unit.mp=3000;unit.状态="兵器站立";
+        check(runtime.commitBloodPact() && unit.mp==3000,"满盾允许施放且补盾费用为零");
+        man=bindBloodAnimation(unit);
+        check(!runtime.commitBloodPact() && unit.hp==3250,"一次施放未结束不能重复付费");
+        check(near(unit.伤害加成,440),"砸地之前尚未开始增伤");
+        unit.mp=0;unit.hp=6500;advance(25);
+        man.无敌标签=false;runtime.grantBloodPactBonus(man);
+        check(near(unit.伤害加成,1502.95),"满血十三强化增伤1062.95，资格采用支付快照");
+        check(near(runtime.getBloodPulsePower(),303.7),"砸地配给后仍保留后续低伤多段");
+        var expiry:Number=runtime.getDiagnostics().bloodBonusUntil;
+        advance(20);runtime.grantBloodPactBonus(man);
+        check(runtime.getDiagnostics().bloodBonusUntil==expiry && near(unit.伤害加成,1502.95),"重复砸地不叠加也不刷新八秒计时");
+        runtime.finishBloodPact(man,man.__ti61BloodCastId);
+        check(runtime.getDiagnostics().bloodBonusUntil==expiry && runtime.getBloodPulsePower()==0,"动画结束只清动作，不重发或续期增伤");
+        advance(219);
+        check(near(unit.伤害加成,1502.95),"砸地后239帧仍保留增益");
+        advance(1);
+        check(near(unit.伤害加成,440),"从砸地计算八秒到期清除");
+        unit.hp=2500;unit.mp=3000;unit.状态="兵器站立";
+        runtime.commitBloodPact();man=bindBloodAnimation(unit);runtime.grantBloodPactBonus(man);runtime.finishBloodPact(man,man.__ti61BloodCastId);
+        check(near(unit.hp,1625) && near(unit.伤害加成,971.475),"半血献血量和增伤均减半");
+        unit.hp=6500;unit.mp=3000;unit.状态="兵器站立";
+        runtime.commitBloodPact();man=bindBloodAnimation(unit);runtime.grantBloodPactBonus(man);runtime.finishBloodPact(man,man.__ti61BloodCastId);
+        check(near(unit.hp,4225) && near(unit.伤害加成,1821.835),"溢出治疗按实际献血量增加收益");
+        unit.状态="兵器站立";unit.hp=5000;unit.mp=3000;shield.setCapacity(maximum-1000);
+        runtime.commitBloodPact();man=bindBloodAnimation(unit);runtime.grantBloodPactBonus(man);
+        check(unit.mp==2500 && near(unit.伤害加成,1502.95),"提前施放按1000缺口收500MP并获得增伤");
+        expiry=runtime.getDiagnostics().bloodBonusUntil;
+        unit.状态="技能";man.onUnload();
+        check(!man.无敌标签 && !runtime.getDiagnostics().bloodCasting && man.unloadCalls==1,"取消立即卸载本技保护并保留原路由回调");
+        check(near(unit.伤害加成,1502.95) && runtime.getDiagnostics().bloodBonusUntil==expiry,"砸地后取消收招保留已取得增伤");
+        advance(240);
+        unit.状态="兵器站立";unit.hp=5000;unit.mp=3000;shield.setCapacity(maximum-1000);
+        runtime.commitBloodPact();man=bindBloodAnimation(unit);
+        unit.状态="技能";man.onUnload();
+        check(unit.hp==3250 && unit.mp==2500 && shield.getCapacity()==maximum,"砸地前取消仍保留费用与即时补盾");
+        runtime.grantBloodPactBonus(man);
+        check(near(unit.伤害加成,440) && runtime.getBloodPulsePower()==0,"提前取消后迟到砸地不能发增益或段伤害");
+        var oldMan:MovieClip=man;
+        var oldCastId:Number=oldMan.__ti61BloodCastId;
+        unit.状态="兵器站立";unit.hp=5000;unit.mp=3000;
+        runtime.commitBloodPact();man=bindBloodAnimation(unit);
+        oldMan.onUnload();runtime.finishBloodPact(man,oldCastId);runtime.grantBloodPactBonus(oldMan);
+        check(runtime.getDiagnostics().bloodCasting && man.无敌标签 && near(unit.伤害加成,440),"旧动作卸载与旧代次不能取消或兑现新动作");
+        runtime.grantBloodPactBonus(man);
+        check(near(unit.伤害加成,1502.95),"新动作仍能正常砸地兑现一次增益");
+        unit.hp=0;advance(1);
+        check(near(unit.伤害加成,440) && runtime.getLazyDodge()==0,"死亡清理献血增伤与懒闪避");
+        check(!man.无敌标签 && !runtime.getDiagnostics().bloodCasting,"死亡同时清掉未结束动作的保护");
+        closeUnit(unit);
+        unit=makeUnit(5,-5,false,false,false,13);runtime=unit.__titaniumType61;
+        unit.状态="兵器站立";unit.攻击模式="兵器";
+        runtime.commitBloodPact();man=bindBloodAnimation(unit);runtime.dispose();
+        check(!man.无敌标签 && runtime.getBloodPulsePower()==0,"卸装清理专属动作保护和段伤害");
+        runtime.grantBloodPactBonus(man);
+        check(near(unit.伤害加成,440),"卸装后的迟到砸地不留下增益");
+        closeUnit(unit);
+        unit=makeUnit(5,-5,false,false,false,13);runtime=unit.__titaniumType61;
+        unit.状态="兵器站立";unit.攻击模式="兵器";
+        runtime.commitBloodPact();man=bindBloodAnimation(unit);
+        man.__ti61BloodRuntime={};unit.状态="技能";man.onUnload();
+        check(man.无敌标签 && !runtime.getDiagnostics().bloodCasting,"旧动作取消不清理已改属其他技能的无敌标签");
+        closeUnit(unit);
+        unit=makeUnit(5,-5,false,false,false,13);runtime=unit.__titaniumType61;
+        unit.状态="兵器站立";unit.攻击模式="兵器";
+        runtime.commitBloodPact();man=bindBloodAnimation(unit);
+        man.__ti61BloodCastId++;unit.状态="技能";man.onUnload();
+        check(man.无敌标签 && !runtime.getDiagnostics().bloodCasting,"同名影片剪辑转入新代次时旧动作清理不误关保护");
+        closeUnit(unit);
+        ItemUtil.itemDataDict = {};
+    }
+
+    private static function testFireControlVulnerability():Void {
+        var unit:MovieClip=makeUnit(0,0,false,false,false);
+        unit.damageTakenMultiplier=1; unit.ti61CrumbleTakenMultiplier=1;
+        var behavior:Object={peak:0.75,durationFrames:30};
+        check(FireControlVulnerability.applyToTarget(unit,behavior),"真实Buff管理器接收引导易伤");
+        check(near(unit.damageTakenMultiplier,1.75) && near(unit.ti61CrumbleTakenMultiplier,1.75),"普通伤害和击溃同时达峰");
+        unit.buffManager.update(15);
+        check(near(unit.damageTakenMultiplier,1.375),"半秒线性衰退至半幅");
+        FireControlVulnerability.applyToTarget(unit,behavior);
+        FireControlVulnerability.applyToTarget(unit,behavior);
+        check(near(unit.damageTakenMultiplier,1.75),"重复及多人引导只刷新不叠乘");
+        unit.hp=unit.hp满血值=100000;unit.损伤值=0;
+        var bullet:Object={击溃:1,子弹威力:999,additionalEffectDamage:0};
+        var result:DamageResult=DamageResult.getIMPACT();
+        CrumbleDamageHandle.instance.handleBulletDamage(bullet,{},unit,{},result);
+        check(unit.hp满血值==98250 && unit.损伤值==1750 && result._crumbleDamage==1750,"击溃上限与配对损伤只放大一次");
+        unit.buffManager.update(30);
+        check(near(unit.damageTakenMultiplier,1) && near(unit.ti61CrumbleTakenMultiplier,1),"一秒结束清理两种易伤");
+        FireControlVulnerability.applyToTarget(unit,behavior);unit.hp=0;unit.buffManager.update(1);
+        check(near(unit.damageTakenMultiplier,1) && near(unit.ti61CrumbleTakenMultiplier,1),"死亡清理引导，不跨复活保留");
+        check(!BulletHitEffectRegistry.apply({hitBehavior:{type:"titaniumFireControl",peak:0.75,durationFrames:30}}, {}, unit, {dodgeStatus:"MISS"}),"MISS不施加火控易伤");
+        if (!DamageManagerFactory.Basic) DamageManagerFactory.init();
+        bullet={hitBehavior:{type:"titaniumFireControl"},击溃:20,斩杀:99,吸血:100,nanoToxic:999,固伤:999,百分比伤害:99,暴击:{},霰弹值:9,实际命中强制击杀:true};
+        BulletHitEffectRegistry.prepare(bullet,{},unit);
+        check(bullet.子弹威力==100 && bullet.霰弹值==1 && bullet.伤害类型=="物理","射线真实命中入口锁定单段100基础物伤");
+        check(bullet.击溃==0 && bullet.斩杀==0 && bullet.nanoToxic==0 && bullet.固伤==0 && bullet.百分比伤害==0 && !bullet.实际命中强制击杀,"副射不会继承人物附带伤害和终结");
+        unit.hp=unit.hp满血值=10000;unit.防御力=1119;bullet.flags=0;
+        DamageCalculator.calculateDamage(bullet,{伤害加成:1000000},unit,1,"");
+        check(unit.hp==9979,"引导伤害经过真实防御管线且不吃百万通用固伤");
+        bullet.hitBehavior={type:"titaniumBloodPact",directPower:303.7};
+        BulletHitEffectRegistry.prepare(bullet,{},unit);
+        check(near(bullet.子弹威力,303.7) && bullet.击溃==0,"血剑多段复用独立伤害路径");
+        closeUnit(unit);
+    }
+
+    private static function testSecondaryData():Void {
+        var unit:MovieClip=makeUnit(0,0,false,false,false);
+        equipWeapon(unit,"长枪","钛合金QJZ171",false);
+        unit.攻击模式="长枪";unit.状态="长枪站立";
+        unit.被动技能={冲击连携:{启用:true,等级:10}};unit.装备枪械威力加成=1000000;
+        check(LongGunSubWeaponCore.configureUnit(unit,unit.长枪数据),"171真实XML可配置副武器");
+        check(LongGunSubWeaponCore.getLoadedCount(unit)==0 && unit.长枪副武器弹匣容量==17,"初次副仓为空，容量17，不凭空赠电池");
+        var props:Object=LongGunSubWeaponCore.prepareManBulletProps(unit,unit.man);
+        check(props.hitBehavior.type=="titaniumFireControl" && props.hitBehavior.peak==0.75 && props.子弹种类=="钛合金火控射线","声明式副射沿真实配置传入子弹");
+        check(props.子弹威力==100 && unit.长枪副武器配置.reserveName=="能量电池","引导不吃冲击连携固伤，使用电池弹药");
+        LongGunSubWeaponCore.setFiredCount(unit,8);
+        LongGunSubWeaponCore.configureUnit(unit,unit.长枪数据);
+        check(LongGunSubWeaponCore.getLoadedCount(unit)==9,"重新配置保留副仓剩余量");
+        LongGunSubWeaponCore.clearUnit(unit);
+        closeUnit(unit);
+    }
+
     private static function finish():Void {
         if (completed) return; completed=true;
         for (var i:Number=0;i<units.length;i++) if (units[i]._parent) closeUnit(units[i]);
         if (watchdog) watchdog.removeMovieClip();
         _root.gameworld=oldWorld; _root.子弹区域shoot传递=oldBulletFactory; _root.玩家信息界面=oldUi;
         ItemUtil.itemSetConfigDict=oldConfig; _root.帧计时器=oldClock; _root.控制目标=oldControl;
+        ItemUtil.itemDataDict=oldItems;
         _root.发布消息=oldMessage; _root.装备生命周期函数.移除异常周期函数=oldCleanup;
         _root.主角函数.获取装备主动战技种类=oldGetSkill;
         _root.装备生命周期函数.喷气背包初始化=oldJetInit;

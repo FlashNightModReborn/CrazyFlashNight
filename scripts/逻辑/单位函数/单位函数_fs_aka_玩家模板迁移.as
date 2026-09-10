@@ -1802,7 +1802,9 @@ _root.主角函数.释放主动战技 = function() {
         }
         this.hp -= 当前战技.消耗hp;
         this.mp -= 当前战技.消耗mp;
-        战技函数.释放(this);
+        // 动态资源战技自行完成预检与一次提交；拒绝不能消耗共享冷却。
+        var 释放结果 = 战技函数.释放(this);
+        if (战技函数.原子释放 === true && 释放结果 === false) return false;
         this.dispatcher.publish("WeaponSkill", 攻击模式);
         return true;
     }

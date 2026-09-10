@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {sample, blocks} from './jk_script_sampler.js';
+
+const source = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+const base = {distance: 300, bossHpRatio: 1, defence: 8762, seed: 1, resetEmitterOnLoop: false};
+const crouch = sample(source, {...base, attack: '长枪蹲射'});
+assert.equal(crouch.completed, true);
+assert.equal(crouch.emissions.length, 7);
+assert.deepEqual(crouch.emissions.map(x => x.tick), [12, 17, 22, 27, 32, 37, 42]);
+assert.ok(crouch.emissions.every(x => x.power === 21782.5 && x.split === 5));
+const reset = sample(source, {...base, attack: '长枪蹲射', resetEmitterOnLoop: true});
+assert.equal(reset.emissions.length, 9);
+const hip = sample(source, {...base, attack: '腰射'});
+assert.equal(hip.emissions.length, 9);
+assert.ok(hip.emissions.every(x => Math.abs(x.power - 17486) < 1e-8));
+const slash = sample(source, {...base, attack: '空间斩'});
+assert.equal(slash.emissions.length, 7);
+const trueHits = slash.emissions.filter(x => x.type === '真伤');
+assert.equal(trueHits.length, 1);
+assert.equal(trueHits[0].power, 10741.25);
+assert.equal(trueHits[0].slay, 30);
+assert.deepEqual(sample(source, {...base, attack: '单喷'}), sample(source, {...base, attack: '单喷'}));
+assert.deepEqual(Object.keys(blocks('onClipEvent(load){if(true){x=1;}} onClipEvent(enterFrame){x++;}')), ['load', 'enterFrame']);
+console.log('JK projection: emission timing, display-list alternative, true damage, deterministic branch and event parsing checks passed. No Flash execution.');

@@ -169,6 +169,9 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
         
         // 最终子弹破坏力为伤害波动、固伤和百分比伤害之和
         bullet.破坏力 = damageVariance + bullet.固伤 + percentageDamage;
+        if (bullet.hitBehavior.type == "titaniumFireControl" || bullet.hitBehavior.type == "titaniumBloodPact") {
+            bullet.破坏力 = bullet.子弹威力;
+        }
 
         // ==================== 承伤系数应用 ====================
         // damageTakenMultiplier: 目标的承伤系数，影响所有后续伤害计算

@@ -976,6 +976,19 @@ _root.主动战技函数.兵器.撼地烈狱 = {初始化: null,
             _root.战技路由.战技标签跳转_旧(自机, "撼地烈狱");
         }}
 
+_root.主动战技函数.兵器.猩红天秤 = {
+    初始化:null,
+    原子释放:true,
+    释放许可判定:function(unit:MovieClip):Boolean {
+        return unit.__titaniumType61 && unit.__titaniumType61.canBloodPact();
+    },
+    释放:function(unit:MovieClip):Boolean {
+        if (!unit.__titaniumType61 || !unit.__titaniumType61.commitBloodPact()) return false;
+        _root.战技路由.战技标签跳转_旧(unit, "猩红天秤");
+        return true;
+    }
+};
+
 _root.主动战技函数.兵器.苍紫爆炸 = {初始化: null,
         释放许可判定: function(自机) {
             return !自机.浮空 && !自机.倒地;

@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.component.Damage.DamageResult;
 import org.flashNight.arki.component.Buff.Effect.ToughnessVulnerabilityController;
 import org.flashNight.arki.component.Damage.DamageManagerFactory;
+import org.flashNight.arki.component.Buff.Effect.FireControlVulnerability;
 
 /** 灰蛊声明式命中入口。普通子弹不调用本类，避免给热路径增加固定开销。 */
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
@@ -15,6 +16,20 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
 
     /** 在伤害管线选择处理器前，按当前目标层数临时注入击溃/斩杀。 */
     public static function prepare(bullet:Object, shooter:Object, target:Object):Void {
+        if (bullet.hitBehavior.type == "titaniumFireControl" || bullet.hitBehavior.type == "titaniumBloodPact") {
+            // 引导与献血动作采用独立小额物伤，防止多段继承击溃、毒与固伤。
+            bullet.击溃 = bullet.斩杀 = bullet.吸血 = bullet.毒 = 0;
+            bullet.nanoToxic = bullet.additionalEffectDamage = 0;
+            bullet.实际命中强制击杀 = false;
+            bullet.暴击 = null;
+            bullet.百分比伤害 = bullet.固伤 = 0;
+            bullet.伤害类型 = "物理";
+            bullet.霰弹值 = 1;
+            var power:Number = bullet.hitBehavior.type == "titaniumFireControl" ? 100 : Number(bullet.hitBehavior.directPower);
+            bullet.子弹威力 = isFinite(power) && power > 0 ? power : 0;
+            bullet.damageManager = DamageManagerFactory.resolveForBullet(bullet);
+            return;
+        }
         if (!bullet || !shooter || !target || !isSupported(bullet.hitBehavior)) return;
 
         if (bullet._grayGooBaseCaptured !== true) {
@@ -46,6 +61,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
         if (!DamageResult.hasActualHit(damageResult)) return false;
 
         var behavior:Object = bullet.hitBehavior;
+        if (behavior.type == "titaniumFireControl") return FireControlVulnerability.applyToTarget(target, behavior);
         if (!isSupported(behavior)) return false;
         return ToughnessVulnerabilityController.applyToTarget(
             target, shooter, behavior, bullet

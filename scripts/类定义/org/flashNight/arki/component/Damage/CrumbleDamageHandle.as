@@ -82,7 +82,9 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
         if (currentMaxHp > MIN_MAX_HP && isFinite(currentMaxHp)) {
             // 计算击溃伤害值（基于目标的满血值和子弹的击溃比例）
             // hp满血值可能超过 signed-int32，不能用 >> 0 取整。
-            var crumbleAmount:Number = Math.floor(currentMaxHp * bullet.击溃 / 100);
+            var fireControlMultiplier:Number = Number(target.ti61CrumbleTakenMultiplier);
+            if (!(fireControlMultiplier > 0) || !isFinite(fireControlMultiplier)) fireControlMultiplier = 1;
+            var crumbleAmount:Number = Math.floor(currentMaxHp * bullet.击溃 / 100 * fireControlMultiplier);
 
             // 如果计算出的伤害小于1，则没有效果，直接返回
             if (crumbleAmount < 1) {

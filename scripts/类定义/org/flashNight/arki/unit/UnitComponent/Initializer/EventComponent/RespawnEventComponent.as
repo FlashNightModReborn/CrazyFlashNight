@@ -32,6 +32,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
      * @param target 目标单位 (MovieClip)
      */
     public static function onRespawn(target:MovieClip):Void {
+        var wasDead:Boolean = !(target.hp > 0) || target._killed === true;
         target.hp = target.hp满血值;
         target.mp = target.mp满血值;
 
@@ -52,6 +53,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnE
         // 那个时间轴替主角恢复显示。复活事件本身必须完整恢复单位表现，不能把
         // 一个已经恢复 HP、重新进入 TargetCache 的可攻击单位留在不可见状态。
         target._visible = true;
+        if (wasDead && target.__titaniumType61) target.__titaniumType61.resumeAfterRespawn();
 
     }
 

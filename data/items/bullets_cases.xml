@@ -590,6 +590,23 @@
         </attribute>
     </bullet>
 
+    <bullet>
+        <name>钛合金火控射线</name>
+        <attribute>
+            <pierceLimit>1</pierceLimit>
+            <rayConfig>
+                <rayLength>900</rayLength>
+                <rayMode>single</rayMode>
+                <vfxStyle>prism</vfxStyle>
+                <vfxPreset>ra2_prism</vfxPreset>
+                <primaryColor>0xD51D42</primaryColor>
+                <secondaryColor>0xFFE6D9</secondaryColor>
+                <thickness>2</thickness>
+                <visualDuration>5</visualDuration>
+                <fadeOutDuration>4</fadeOutDuration>
+            </rayConfig>
+        </attribute>
+    </bullet>
     <!-- ========== 光棱科技 (Prism / Red Alert 2) ========== -->
     <!-- 基础版: single模式, 未经校准的棱镜——光束散焦、色泽偏浊 -->
     <bullet>
