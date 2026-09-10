@@ -45,6 +45,8 @@
 
 `map_domain` 仅 XMLSocket，HTTP／Web 不能伪造实时事实。`hello` 安装 v2 内容与会话；`project` 携带内容摘要、会话、事实 revision、scene epoch、ready 和有界 facts。snapshot v4 供完整地图、HUD、任务端点、NPC 索引及自动续接使用。AS2 同步 getter 只读已确认投影；导航必须 fresh RPC，并在淡出前重查事实签名、场景、会话、路由及调用方生命周期。
 
+地图 `interestTaskIds` 按尚未完成的 snapshot／工作台采样需求合批，每包仍最多 128 个，不累计进程生命周期内的历史任务。每份需求复制调用方编号，整体装入一包或留待下一包；采样 `captureId` 只能随完整需求发送。回包按该包冻结的编号范围重采样核对，后到的需求不改变在途签名；已确认投影也按原范围判断是否仍新鲜。单份 snapshot 超过 128 个编号或含未知任务时明确返回 `invalid_task_ids`，不登记无法满足的等待。snapshot 保持三秒期限，工作台采样保持 Host 四秒期限与最多八份待发采样；过期、场景／会话失效不能触发自动接链。
+
 结算“前往交付”只登记意图：奖励终态、Web exact close 和 pause lease 释放后重新采样、选择当前优先目标；旧 run 回调不得进入新 run。任务真正完成仍再次检查现役 AS2 条件。HUD `mr` 表示已接受投影变化，使同一地点的可见图块／外观也会刷新；不是游戏逻辑或存档字段。
 
 工作台维护协议为 `panel=map-workbench, domain=map_workbench`，保留 exact panel instance／origin／callId。作者子文档只接受 exact 父子 Window、同源和本轮 session 的 `map-authoring-input / map-authoring-preview`；不安装游戏写桥。模拟事实、草稿、磁盘内容和当前游戏已加载内容分开显示。应用／撤回后须退出启动器并重新使用同一正式或开发入口，不能只返回游戏标题页；不承诺热更新。
@@ -108,10 +110,14 @@ node tools/map-workbench/test-view-modes.js
 - `node tools/map-workbench/test-core.js`：冻结 v1 单文件回执与 HUD 投影的 18 项兼容／改名层级回归检查，不作为 v2 产品验收。
 - `node tools/map-workbench/test-upstream-compat.js`：真实 NPC 初始化源码前缀的 9 项兼容路径，守未接管 NPC 的主线／支线旧行为与已接管驻点的单一 presence 边界；仍需独立 CS6 门。
 - C# `MapDomainCoreTests / MapDomainSessionTests / MapAuthoringContentTests / MapWorkbenchTaskTests / MapCatalogTests / MapHudPayloadParseTests`：新鲜度、原任务补丁、恢复、共享素材、边界与旧入口退役；`MapTaskResponseTests` 另验真实回包消费者的编号匹配、乱序／重复、导航关闭结果及最大正整数编号。
-- `scripts/run-map-domain-tests.ps1`：实际 CS6 focused 46/46，包含主动撤退资格、状态失效、拒绝重试与成功去重，以及地图 snapshot／导航的延迟、乱序、成功／失败与数字请求编号保留，真实 wire 需带 Host 原始正整数 `callId`；`run-map-loot-tests.ps1`、`run-boot-sequencer-tests.ps1` 覆盖周边生命周期与启动，随后单独 `compile_test.ps1 -Target publish`。
+- `scripts/run-map-domain-tests.ps1`：实际 CS6 focused 59/59，新增历史 128 个关注饱和后的真实 TaskUtil 自动接链回调、连续 130 次完成、并发分批、调用方数组修改、采样 receipt 与完整需求绑定、场景变化与超时拒绝；原有覆盖包含主动撤退资格、状态失效、拒绝重试与成功去重，以及地图 snapshot／导航的延迟、乱序、成功／失败与数字请求编号保留，真实 wire 需带 Host 原始正整数 `callId`；`run-map-loot-tests.ps1`、`run-boot-sequencer-tests.ps1` 覆盖周边生命周期与启动，随后单独 `compile_test.ps1 -Target publish`。
 - `webview-smoke/MapWebViewSmoke.csproj`：隐藏窗口、禁用 GPU 的实际 WebView2 启动注入、snapshot v4 作者子文档和来源／对象隔离；不进入玩家存档或自动游玩。
 - 地图、Tasks／Stage Select、Workbench strict、panel contracts、Launcher 全量、文档治理与候选闭包另按[测试指南](../../agentsDoc/testing-guide.md)执行。
 
 一次性 `migrate-v2.js` 从冻结 Git 树导入原阈值和坐标；默认只写 tmp，`--apply` 必须精确匹配旧定义字节并通过 C# 制作／发布闭包补全。它不是日常作者写入口，不会覆盖后来编辑的地图。
+
+2026-09-10 关注集合回收修复：旧实现的新鲜 focused run `9cf057498566412998abb54c9dd54271` 为 50 通过／9 失败；修复后 run `b9c8cd509d5642b69288ec4d522aa246` 为 59/59、Compiler 0/0、单一闭合日志块、32K retry=0。首次两轮编译超时样本保留在本地临时证据中，不算通过。任务面板相邻回归 run `d575cb482e0e40a38d28ac5983aa98f8` 为 15/15、Compiler 0/0、32K retry=0，保留原修复的异步数字请求编号关联。测试在 CS6 执行真实桥与 TaskUtil 回调，Host 回包和玩家接任务入口使用替身；不等于自然游玩或玩家存档往返。
+
+本次 `asLoader` 全量发布的等待脚本两次超时，第二轮于 17:57 延迟完成；超时运行不记作脚本通过。补核新鲜 Compiler 0/0、发布关闭终态、完整 SWF 长度及新方法／退役方法后，产物为 1,298,534 bytes，SHA-256 `fb078e88843640bc66281f670e75ff8a2ed29c7f5bb1da3ab4a452a5a8ae812b`；函数尺寸门通过（11,417 functions，max 50,681B < 60,000B），定向测试断言未混入运行产物。Flash 已退出，TestLoader 原件逐字节恢复，本轮不确定标记经归档核对后清除。该状态只证明本地 AS2 修复和运行文件生成，正式入口长会话交任务／自动续接与工作台采样仍待复验。
 
 机器证据不代签新地点的玩家入口、NPC 真实互动或人类视觉判断；三条自然旅程按实际执行情况独立记录。本轮作者流程确认和明确发布授权不被扩张为所有旅程已通过。

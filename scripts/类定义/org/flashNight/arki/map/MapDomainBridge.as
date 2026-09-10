@@ -14,8 +14,8 @@ class org.flashNight.arki.map.MapDomainBridge {
     private static var _flight:Object;
     private static var _navigationFlight:Object;
     private static var _waiters:Array;
+    // 仅保留已接受投影的采样范围，供 isCurrent 按同一范围复核；不是历史关注缓存。
     private static var _interests:Array;
-    private static var _captureIds:Array;
     private static var _knownTasks:Object;
     private static var _revision:Number = 0;
     private static var _acceptedRevision:Number = -1;
@@ -31,7 +31,7 @@ class org.flashNight.arki.map.MapDomainBridge {
 
     public static function initialize():Void {
         if (_installed) return;
-        _installed = true; _json = new LiteJSON(); _waiters = []; _interests = []; _captureIds = []; _knownTasks = {};
+        _installed = true; _json = new LiteJSON(); _waiters = []; _interests = []; _knownTasks = {};
         _root.__boot.mapDomainReady = false;
         _root.__boot.mapDomainFailed = false;
         _root.gameCommands["mapDomainCollect"] = function(params:Object):Void {
@@ -91,17 +91,18 @@ class org.flashNight.arki.map.MapDomainBridge {
             _projection = undefined; _confirmedSignature = ""; _force = true;
         }
     }
-    private static function context():Object {
+    private static function context(interests:Array):Object {
         observeScene();
-        var sampled:Object = org.flashNight.arki.map.MapFactsSampler.capture(_bootstrap, _interests);
+        if (interests == undefined) interests = _interests;
+        var sampled:Object = org.flashNight.arki.map.MapFactsSampler.capture(_bootstrap, interests);
         var signature:String = _json.stringifySafe({sceneEpoch:_sceneEpoch, ready:sampled.ready, facts:sampled.facts});
         if (signature != _signature) { _signature = signature; _revision++; }
         return {signature:signature, revision:_revision, sceneEpoch:_sceneEpoch, ready:sampled.ready, facts:sampled.facts,
-            sessionToken:_sessionToken, contentDigest:_loadedDigest, deadline:getTimer() + 3000};
+            sessionToken:_sessionToken, contentDigest:_loadedDigest, deadline:getTimer() + 3000, interests:interests.slice()};
     }
     private static function payload(ctx:Object):Object {
         var interests:Array = [];
-        for (var i:Number = 0; i < _interests.length; i++) interests.push(_interests[i]);
+        for (var i:Number = 0; i < ctx.interests.length; i++) interests.push(ctx.interests[i]);
         return {version:2, op:"project", sessionToken:ctx.sessionToken, contentDigest:ctx.contentDigest,
             revision:ctx.revision, sceneEpoch:ctx.sceneEpoch, ready:ctx.ready, facts:ctx.facts,
             interestTaskIds:interests, captureIds:[], intent:null};
@@ -120,10 +121,10 @@ class org.flashNight.arki.map.MapDomainBridge {
             return;
         }
         expireWaiters();
-        if (_flight == undefined && (getTimer() - _lastAttempt > 200 || _force || _waiters.length > 0 || _captureIds.length > 0)) {
-            var ctx:Object = context();
-            if (ctx.ready || _captureIds.length > 0) {
-                if (_force || _waiters.length > 0 || _captureIds.length > 0 || ctx.signature != _confirmedSignature) sendProjection(ctx);
+        if (_flight == undefined && (getTimer() - _lastAttempt > 200 || _force || _waiters.length > 0)) {
+            var ctx:Object = projectionContext();
+            if (ctx.ready || ctx.captureRequests.length > 0) {
+                if (_force || _waiters.length > 0 || ctx.signature != _confirmedSignature) sendProjection(ctx);
                 else _lastAttempt = getTimer();
             }
         }
@@ -132,7 +133,14 @@ class org.flashNight.arki.map.MapDomainBridge {
     private static function sendProjection(ctx:Object):Void {
         _flight = ctx; _force = false; _lastAttempt = getTimer();
         var request:Object = payload(ctx);
-        request.captureIds = _captureIds; _captureIds = [];
+        // 采样 receipt 只随包含其完整需求的一包发出；发送前移出，防同步回调重入。
+        for (var i:Number = 0; i < ctx.captureRequests.length; i++) {
+            var capture:Object = ctx.captureRequests[i];
+            request.captureIds.push(capture.captureId);
+            for (var j:Number = _waiters.length - 1; j > -1; j--) {
+                if (_waiters[j] === capture) { _waiters.splice(j, 1); break; }
+            }
+        }
         ServerManager.getInstance().sendTaskWithCallback("map_domain", request, null, function(response:Object):Void {
             org.flashNight.arki.map.MapDomainBridge.onProjection(ctx, response);
         }, 90);
@@ -148,9 +156,9 @@ class org.flashNight.arki.map.MapDomainBridge {
                 || result.sessionToken != ctx.sessionToken || result.contentDigest != ctx.contentDigest
                 || result.sceneEpoch !== ctx.sceneEpoch || result.revision !== ctx.revision
                 || result.projection.snapshot.version !== 4) return false;
-        var current:Object = context();
+        var current:Object = context(ctx.interests);
         if (current.signature != ctx.signature || ctx.revision < _acceptedRevision) return false;
-        _projection = result.projection; _confirmedSignature = ctx.signature; _acceptedRevision = ctx.revision;
+        _projection = result.projection; _interests = ctx.interests; _confirmedSignature = ctx.signature; _acceptedRevision = ctx.revision;
         return true;
     }
     private static function onProjection(ctx:Object, response:Object):Void {
@@ -160,7 +168,11 @@ class org.flashNight.arki.map.MapDomainBridge {
         var pending:Array = _waiters; _waiters = [];
         for (var i:Number = 0; i < pending.length; i++) {
             var waiter:Object = pending[i];
-            var ready:Boolean = waiter.sceneEpoch == _sceneEpoch;
+            if (waiter.captureId != undefined) { _waiters.push(waiter); continue; }
+            if (getTimer() > waiter.deadline || waiter.sceneEpoch != _sceneEpoch) {
+                waiter.callback(false, "map_facts_stale"); continue;
+            }
+            var ready:Boolean = true;
             for (var j:Number = 0; j < waiter.ids.length; j++) if (_projection.taskEndpoints[String(waiter.ids[j])] == undefined) ready = false;
             if (ready) waiter.callback(true, "");
             else _waiters.push(waiter);
@@ -172,33 +184,71 @@ class org.flashNight.arki.map.MapDomainBridge {
         var pending:Array = _waiters; _waiters = [];
         for (var i:Number = 0; i < pending.length; i++) {
             var waiter:Object = pending[i];
-            if (getTimer() > waiter.deadline || waiter.sceneEpoch != _sceneEpoch) waiter.callback(false, "map_facts_stale");
+            if (waiter.captureId != undefined) {
+                // Host 拥有采样的四秒超时；旧会话 receipt 不能送入新会话。
+                if (!(getTimer() > waiter.deadline) && waiter.sessionToken == _sessionToken) _waiters.push(waiter);
+            } else if (getTimer() > waiter.deadline || waiter.sceneEpoch != _sceneEpoch) waiter.callback(false, "map_facts_stale");
             else _waiters.push(waiter);
         }
     }
-    private static function addInterests(ids:Array):Void {
-        if (ids == undefined) return;
+    // 单请求复制并校验；非法需求必须明确拒绝，不登记永远不可能满足的 waiter。
+    private static function copyInterests(ids:Array):Array {
+        var result:Array = [];
+        if (ids == undefined) return result;
+        if (!(ids instanceof Array) || ids.length > 128) return undefined;
+        var seen:Object = {};
         for (var i:Number = 0; i < ids.length; i++) {
             var id:String = String(ids[i]);
-            if (_knownTasks["$" + id] !== true) continue;
-            var found:Boolean = false;
-            for (var j:Number = 0; j < _interests.length; j++) if (_interests[j] == id) found = true;
-            if (!found && _interests.length < 128) _interests.push(id);
+            if (_knownTasks["$" + id] !== true) return undefined;
+            if (seen["$" + id] !== true) { seen["$" + id] = true; result.push(id); }
         }
+        return result;
+    }
+    // 每个需求整体加入或整体留待下包；不截断某一 capture/回调所依赖的任务集合。
+    private static function appendInterests(batch:Array, ids:Array):Boolean {
+        var seen:Object = {}, added:Array = [];
+        var i:Number;
+        for (i = 0; i < batch.length; i++) seen["$" + batch[i]] = true;
+        for (i = 0; i < ids.length; i++) {
+            if (seen["$" + ids[i]] !== true) { seen["$" + ids[i]] = true; added.push(ids[i]); }
+        }
+        if (batch.length + added.length > 128) return false;
+        for (i = 0; i < added.length; i++) batch.push(added[i]);
+        return true;
+    }
+    private static function projectionContext():Object {
+        var interests:Array = [], captures:Array = [];
+        for (var i:Number = 0; i < _waiters.length; i++) {
+            var waiter:Object = _waiters[i];
+            if (appendInterests(interests, waiter.ids) && waiter.captureId != undefined) captures.push(waiter);
+        }
+        var ctx:Object = context(interests);
+        ctx.captureRequests = captures;
+        return ctx;
     }
     public static function snapshot(callback:Function, ids:Array):Void {
         observeScene();
         if (_bootstrap == undefined || _sessionToken == "") { callback(false, "map_domain_not_ready"); return; }
-        addInterests(ids);
-        _waiters.push({callback:callback, ids:ids == undefined ? [] : ids, sceneEpoch:_sceneEpoch, deadline:getTimer() + 3000});
+        var interests:Array = copyInterests(ids);
+        if (interests == undefined) { callback(false, "invalid_task_ids"); return; }
+        _waiters.push({callback:callback, ids:interests, sceneEpoch:_sceneEpoch, deadline:getTimer() + 3000});
         _force = true;
         tick();
     }
     private static function collect(params:Object):Void {
         if (_bootstrap == undefined || params.sessionToken != _sessionToken || params.contentDigest != _loadedDigest
                 || typeof params.captureId != "string" || params.captureId.length != 32 || !(params.interestTaskIds instanceof Array)) return;
-        if (_captureIds.length >= 8) return;
-        addInterests(params.interestTaskIds); _captureIds.push(params.captureId); _force = true; tick();
+        var interests:Array = copyInterests(params.interestTaskIds);
+        if (interests == undefined) return;
+        var pendingCaptures:Number = 0;
+        for (var i:Number = 0; i < _waiters.length; i++) {
+            if (_waiters[i].captureId == params.captureId) return;
+            if (_waiters[i].captureId != undefined) pendingCaptures++;
+        }
+        if (pendingCaptures >= 8) return;
+        _waiters.push({captureId:params.captureId,ids:interests,sessionToken:_sessionToken,deadline:getTimer() + 4000});
+        _force = true;
+        tick();
     }
 
     public static function navigate(intent:Object, callback:Function, guard:Function):Void {
@@ -207,8 +257,9 @@ class org.flashNight.arki.map.MapDomainBridge {
         if (lifecycleReason != "") { callback(false, lifecycleReason); return; }
         if (_bootstrap == undefined || _sessionToken == "") { callback(false, "map_domain_not_ready"); return; }
         if (_navigationFlight != undefined || getTimer() < _navigationBusyUntil) { callback(false, "navigation_busy"); return; }
-        if (intent.kind == "task_finish") addInterests([String(intent.taskId)]);
-        var ctx:Object = context();
+        var interests:Array = copyInterests(intent.kind == "task_finish" ? [String(intent.taskId)] : []);
+        if (interests == undefined) { callback(false, "invalid_task_ids"); return; }
+        var ctx:Object = context(interests);
         if (!ctx.ready) { callback(false, "game_not_ready"); return; }
         ctx.callback = callback; ctx.guard = guard; _navigationFlight = ctx;
         var request:Object = payload(ctx); request.intent = intent;

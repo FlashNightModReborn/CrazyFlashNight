@@ -7,6 +7,7 @@ import org.flashNight.arki.map.MapHotspotResolver;
 import org.flashNight.arki.map.MapPanelService;
 import org.flashNight.arki.map.MapWorldNpcController;
 import org.flashNight.arki.scene.StageRunSession;
+import org.flashNight.arki.task.TaskUtil;
 import org.flashNight.neur.Server.ServerManager;
 
 class org.flashNight.arki.map.MapDomainBridgeTest {
@@ -20,6 +21,8 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
     private static var _frame:String;
     private static var _panelResponses:Array;
     private static var _panelCallbacks:Array;
+    private static var _acceptedTasks:Array;
+    private static var _interestResults:Array;
 
     private static function check(ok:Boolean, label:String):Void {
         if (ok) { _passed++; trace("[PASS] " + label); }
@@ -171,6 +174,137 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             restoreFields(stage, stageFields, savedStage); restoreFields(panel, panelFields, savedPanel); restoreFields(_root, rootFields, savedRoot);
         }
     }
+    private static function interestIds(count:Number, start:Number):Array {
+        var result:Array = [];
+        for (var i:Number = 0; i < count; i++) result.push(String(start + i));
+        return result;
+    }
+    private static function captureInterestResult(ok:Boolean, error:String):Void {
+        _interestResults.push({ok:ok,error:error});
+    }
+    private static function replyInterests(index:Number):Void {
+        var endpoints:Object = {}, autoAccept:Object = {};
+        var ids:Array = _wire[index].request.interestTaskIds;
+        for (var i:Number = 0; i < ids.length; i++) {
+            endpoints[ids[i]] = {};
+            autoAccept[ids[i]] = {allowed:true,nextTaskId:String(Number(ids[i]) + 1)};
+        }
+        reply(index, {projection:{snapshot:{version:4},taskEndpoints:endpoints,
+            autoAccept:autoAccept,placements:{}}});
+    }
+    private static function checkInterestLifetimes():Void {
+        var bridge:Object = MapDomainBridge, sampler:Object = MapFactsSampler;
+        var world:Object = MapWorldNpcController, server:Object = ServerManager.getInstance();
+        var oldObserve:Function = bridge.observeScene, oldRefresh:Function = world.refresh;
+        var oldCapture:Function = sampler.capture, oldTasks:Object = TaskUtil.tasks;
+        var oldConnected:Boolean = server.isSocketConnected;
+        var rootFields:Array = ["taskAvailable", "GetTask"];
+        var savedRoot:Object = snapshotFields(_root, rootFields);
+        try {
+            bridge.observeScene = function():Void {};
+            world.refresh = function():Void {};
+            bridge._installed = true; server.isSocketConnected = true;
+            bridge._bootstrap = {frames:{alpha:"甲场景"},worldBindings:[]};
+            bridge._sessionToken = "interest-session"; bridge._loadedDigest = "interest-content";
+            bridge._flight = undefined; bridge._navigationFlight = undefined;
+            bridge._waiters = []; bridge._knownTasks = {}; bridge._interests = [];
+            _acceptedTasks = []; _interestResults = []; TaskUtil.tasks = {};
+            for (var i:Number = 0; i < 301; i++) {
+                bridge._knownTasks["$" + i] = true;
+                TaskUtil.tasks[String(i)] = {id:String(i)};
+            }
+            sampler.capture = function(bootstrap:Object, ids:Array):Object {
+                var available:Object = {};
+                for (var i:Number = 0; i < ids.length; i++) available[String(ids[i])] = true;
+                return {ready:true,facts:{base:org.flashNight.arki.map.MapDomainBridgeTest._facts,available:available}};
+            };
+            _root.taskAvailable = function(id:String):Boolean { return true; };
+            _root.GetTask = function(id:String):Void { org.flashNight.arki.map.MapDomainBridgeTest._acceptedTasks.push(id); };
+
+            // 原事故反例：历史关注满额，已完成任务不在 activeOrder 补齐集合中。
+            bridge._interests = interestIds(128, 0);
+            TaskUtil.requestAutoAcceptAfterFinish("200");
+            var first:Number = _wire.length - 1;
+            check(_wire[first].request.interestTaskIds.length <= 128
+                && _wire[first].request.interestTaskIds.join(",").indexOf("200") >= 0,
+                "completed task interest survives a full historical list");
+            replyInterests(first);
+            check(_acceptedTasks.length == 1 && _acceptedTasks[0] == "201",
+                "real auto-accept callback advances the chain after interest saturation");
+            replyInterests(first);
+            check(_acceptedTasks.length == 1, "duplicate completed projection cannot accept the next task twice");
+
+            // 长会话超过单包容量；每次只保留当前需要的任务事实。
+            _acceptedTasks = [];
+            for (i = 0; i < 130; i++) {
+                TaskUtil.requestAutoAcceptAfterFinish(String(i));
+                replyInterests(_wire.length - 1);
+            }
+            check(_acceptedTasks.length == 130 && _acceptedTasks[129] == "130",
+                "130 sequential task completions keep auto-accept working");
+
+            // 并发超过容量须分批；新增需求不得改变在途请求的采样签名。
+            _interestResults = [];
+            var ids:Array = interestIds(128, 0);
+            MapDomainBridge.snapshot(captureInterestResult, ids);
+            first = _wire.length - 1; ids[0] = "299";
+            MapDomainBridge.snapshot(captureInterestResult, ["200"]);
+            check(_wire.length - 1 == first && _wire[first].request.interestTaskIds[0] == "0",
+                "snapshot clones caller ids and preserves its in-flight request");
+            replyInterests(first);
+            check(_interestResults.length == 1 && _interestResults[0].ok === true,
+                "later interest demand does not invalidate the first projection signature");
+            MapDomainBridge.tick();
+            check(_wire.length - 1 > first && _wire[_wire.length - 1].request.interestTaskIds.length <= 128,
+                "overflow snapshot demand is dispatched in a bounded second batch");
+            replyInterests(_wire.length - 1);
+            check(_interestResults.length == 2 && _interestResults[1].ok === true,
+                "overflow waiter completes instead of silently timing out");
+
+            // 工作台两个采样各需 128 个不同编号，不得把其中一份 receipt 配到半份事实。
+            MapDomainBridge.snapshot(captureInterestResult);
+            first = _wire.length - 1;
+            var captureA:String = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", captureB:String = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+            ids = interestIds(128, 0);
+            bridge.collect({sessionToken:bridge._sessionToken,contentDigest:bridge._loadedDigest,captureId:captureA,interestTaskIds:ids});
+            ids[0] = "299";
+            bridge.collect({sessionToken:bridge._sessionToken,contentDigest:bridge._loadedDigest,captureId:captureB,interestTaskIds:interestIds(128,128)});
+            replyInterests(first); MapDomainBridge.tick();
+            var batch:Object = _wire[_wire.length - 1].request;
+            check(batch.captureIds.length == 1 && batch.captureIds[0] == captureA
+                && batch.interestTaskIds.length == 128 && batch.interestTaskIds[0] == "0",
+                "first capture keeps its complete immutable interest set and only its own receipt");
+            replyInterests(_wire.length - 1); MapDomainBridge.tick();
+            batch = _wire[_wire.length - 1].request;
+            check(batch.captureIds.length == 1 && batch.captureIds[0] == captureB
+                && batch.interestTaskIds.length == 128 && batch.interestTaskIds[0] == "128",
+                "second capture is deferred with all its interests instead of truncated");
+            replyInterests(_wire.length - 1);
+
+            var before:Number = _acceptedTasks.length;
+            TaskUtil.requestAutoAcceptAfterFinish("200");
+            first = _wire.length - 1; bridge._sceneEpoch++;
+            replyInterests(first);
+            check(_acceptedTasks.length == before, "scene change prevents late automatic task acceptance");
+            TaskUtil.requestAutoAcceptAfterFinish("200");
+            first = _wire.length - 1; bridge._waiters[0].deadline = -1;
+            replyInterests(first);
+            check(_acceptedTasks.length == before && bridge._waiters.length == 0,
+                "expired automatic task acceptance releases demand and ignores a late success");
+
+            _interestResults = []; before = _wire.length;
+            MapDomainBridge.snapshot(captureInterestResult, ["unknown"]);
+            MapDomainBridge.snapshot(captureInterestResult, interestIds(129,0));
+            check(_wire.length == before && _interestResults.length == 2
+                && _interestResults[0].ok === false && _interestResults[1].ok === false,
+                "unknown or individually oversized interests reject explicitly without a pending waiter");
+        } finally {
+            bridge._installed = false; bridge._waiters = []; bridge._flight = undefined;
+            bridge.observeScene = oldObserve; world.refresh = oldRefresh; sampler.capture = oldCapture;
+            server.isSocketConnected = oldConnected; TaskUtil.tasks = oldTasks;
+            restoreFields(_root,rootFields,savedRoot);
+        }
+    }
     public static function runAllTests():Void {
         _passed = 0; _failed = 0; _wire = []; _facts = {chains:{主线:0},tasks:{},scene:{stageFlag:"甲场景"}}; _blocked = "";
         _fadeCount = 0; _frame = "";
@@ -179,7 +313,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
         var panel:Object = MapPanelService, resolver:Object = MapHotspotResolver, world:Object = MapWorldNpcController;
         var server:Object = ServerManager.getInstance();
         var fields:Array = ["_installed","_bootstrap","_projection","_json","_loadedDigest","_sessionToken","_helloFlight","_flight",
-            "_navigationFlight","_waiters","_interests","_captureIds","_knownTasks","_revision","_acceptedRevision","_sceneEpoch",
+            "_navigationFlight","_waiters","_interests","_knownTasks","_revision","_acceptedRevision","_sceneEpoch",
             "_lastWorld","_sceneStamp","_signature","_confirmedSignature","_lastAttempt","_helloAttempt","_navigationBusyUntil","_force"];
         var saved:Object = snapshotFields(bridge,fields);
         var rootFields:Array = ["淡出动画","关卡结束界面","场景进入位置名","__pushMapHudState","gameworld","初始化NPC"];
@@ -194,7 +328,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             bridge._loadedDigest = "content-a"; bridge._sessionToken = "session-a"; bridge._sceneEpoch = 1;
             bridge._revision = 0; bridge._acceptedRevision = -1; bridge._signature = ""; bridge._confirmedSignature = "";
             bridge._navigationFlight = undefined; bridge._flight = undefined; bridge._waiters = []; bridge._interests = [];
-            bridge._captureIds = []; bridge._knownTasks = {};
+            bridge._knownTasks = {};
             sampler.capture = function():Object { return {ready:true,facts:org.flashNight.arki.map.MapDomainBridgeTest._facts}; };
             stage.getSceneExitBlockReason = function():String { return org.flashNight.arki.map.MapDomainBridgeTest._blocked; };
             server.sendTaskWithCallback = function(kind:String, request:Object, third:Object, callback:Function):Void {
@@ -265,6 +399,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             check(initialized == 2 && !managedPermit, "same name at an unbound location keeps legacy initialization");
             checkPanelResponses();
             checkMapReturn();
+            checkInterestLifetimes();
         } catch(error) { _failed++; trace("[FAIL] unexpected bridge test exception: " + error); }
         finally {
             restoreFields(bridge,fields,saved); restoreFields(world,worldFields,worldSaved); restoreFields(_root,rootFields,rootSaved);

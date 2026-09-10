@@ -12,12 +12,13 @@ $mapFocusedRun = @{
         'scripts/类定义/org/flashNight/arki/map/MapFactsSampler.as'
         'scripts/类定义/org/flashNight/arki/map/MapWorldNpcController.as'
         'scripts/类定义/org/flashNight/arki/map/MapPanelService.as'
+        'scripts/类定义/org/flashNight/arki/task/TaskUtil.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^MapDomainBridgeTest Tests Passed: 46\r?$'
+        '(?m)^MapDomainBridgeTest Tests Passed: 59\r?$'
         '(?m)^MapDomainBridgeTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MapDomainBridgeTest 46/46'
+    SuccessSummary = 'MapDomainBridgeTest 59/59'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
