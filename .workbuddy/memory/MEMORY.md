@@ -52,6 +52,7 @@ Git Bash 等价：`bash scripts/compile_test.sh -Target publish -TimeoutSeconds 
 - **不要擅自改 `flashswf/` 下的 XFL/XML**。需要改 NPC 帧脚本这类资产时，先在 `scripts/`（AS2 注入层）找能绕开的办法，改资产前先问过用户
 - **不要往 `_root` 一级塞新属性**（_root 已经太臃肿）。新状态统一放二级容器，如作弊开关全部收在 `_root.cheatFlags.*` 下
 - **作弊码不进存档**，只在本次游戏内有效
+- **别乱改 `tools/` 下已有脚本、也别乱加参数**。一次性/补跑类需求写成 `tmp/` 下的一次性脚本，用完删掉；已有脚本只保留用户明确要的那项改动（如"外部超采样"）
 
 ### 现有作弊开关（_root.cheatFlags）
 
@@ -85,6 +86,17 @@ Flash CS6 若正开着同项目，外部改 XFL 会触发它自动保存，顺�
 - Twip Trick 后单位都在 0~1048575 高深度带；authored 元件 native `swapDepths(this._y)` 只落几百的低带 → 永远被玩家压住。凡遇"地图元件/NPC 不再和玩家交换层级"，先查它有没有被 DepthManager 接管
 - authored 子级的 onClipEvent(load)（含 初始化NPC）在 attachMovie 时同步执行，**早于** initGameWorld 创建本场景 DepthManager（此时 instance=null，AVM1 静默空操作）→ 初始化NPC 里的注册/劫持在场景加载时序下不可靠。兜底：SceneManager.initGameWorld → hijackAuthoredChildren（续38）
 - 素材库出生点的 `swapDepths(-this._y)` = "永远在最底"；劫持后被钳到 yMin 桶，语义保持
+
+## 对话立绘管线
+
+`tools/bake-dialogue-portraits.py` → `launcher/web/assets/dialogue-portraits/`（`external/` 外部 SWF 立绘、
+`internal/` 对话框界面.swf 内置矢量肖像，同目录带 manifest.json / report.json）。
+
+- 外部立绘走 3x 超采样：`--supersample 3`（FFDec 按 zoom×ss 渲染，再用 LANCZOS 降回，产物几何尺寸不变）
+- **内置 sprite 不能超采样**：FFDec 在 zoom>1 渲染它必抛 `InternalError: Odd number of new curves!`，只有 1x 能跑
+- **`--semantic-baseline-dir` 默认等于输出目录，必须指向含旧产物的目录**：23 个内置空肖像靠它做
+  alpha 等价复用（保住 775 宽）；输出到全新空目录会让它们被重导成 851 宽，属回归
+- 补跑/增量应用写成 `tmp/` 下一次性脚本（读已有导出目录 → 只重建 external 条目 → 写回 manifest），不要动原脚本
 
 ## 图标管线（SWF 是唯一真源）
 

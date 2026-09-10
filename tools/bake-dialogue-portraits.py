@@ -55,6 +55,18 @@ def parse_args() -> argparse.Namespace:
         help="Ignored cache for rejected-source PNGs used by the human authority review page.",
     )
     parser.add_argument("--zoom", type=int, default=1)
+    parser.add_argument(
+        "--supersample",
+        type=int,
+        default=3,
+        help=(
+            "Render-time supersampling (SSAA) factor. FFDec renders at zoom*supersample and every frame is "
+            "then downscaled back by 1/supersample with LANCZOS, so the output geometry is byte-identical in "
+            "size to running with --zoom alone. FFDec has no -smooth switch: supersampling is the only way to "
+            "recover the detail it throws away when crushing a large embedded bitmap down onto a small stage "
+            "placement (e.g. The Girl ships a 1672x1980 bitmap displayed at 320x369). 1 disables it."
+        ),
+    )
     parser.add_argument("--limit", type=int, default=0, help="Only export the first N external portraits; internal still exports.")
     parser.add_argument("--external-only", action="store_true")
     parser.add_argument("--internal-only", action="store_true")
@@ -286,6 +298,30 @@ def exported_asset_id_from_swf_xml(xml_path: Path, export_name: str) -> int | No
             if name == export_name and raw_id.isdigit():
                 return int(raw_id)
     return None
+
+
+def ffdec_render_zoom(args: argparse.Namespace) -> int:
+    """FFDec 的实际渲染倍率 = 输出缩放 × 超采样。"""
+    return max(1, args.zoom) * max(1, args.supersample)
+
+
+def downscale_supersampled_frames(frame_dir: Path, factor: int) -> None:
+    """把超采样渲染出的帧按 1/factor 用 LANCZOS 降回原始尺寸。
+
+    超采样只是渲染期画质手段，产物尺寸必须与不超采样时完全一致，否则 manifest 里的
+    width/height 与 portraitWindow 会整体失配。顺序固定：先降采样，再交给 copy_asset
+    原样落盘（PNG 保存统一走 compress_level=9，和下游既有产物保持一致）。
+    """
+    if factor <= 1:
+        return
+    for path in sorted(frame_dir.glob("*.png")):
+        with Image.open(path) as opened:
+            image = opened.convert("RGBA")
+        width = max(1, round(image.width / factor))
+        height = max(1, round(image.height / factor))
+        image.resize((width, height), Image.Resampling.LANCZOS).save(
+            path, format="PNG", compress_level=9, optimize=False
+        )
 
 
 def export_external_frames(
@@ -692,18 +728,22 @@ def bake_external(
         frames_dir = tmp_base / stem_id / "frames"
         export_swf_xml(ffdec, project_root, swf, xml_path, args.ffdec_timeout_seconds)
         labels = timeline_labels_from_swf_xml(xml_path)
-        export_external_frames(ffdec, project_root, swf, labels, frames_dir, args.zoom, args.ffdec_timeout_seconds)
+        render_zoom = ffdec_render_zoom(args)
+        export_external_frames(ffdec, project_root, swf, labels, frames_dir, render_zoom, args.ffdec_timeout_seconds)
         if missing_label_frames(frames_dir, labels):
+            # 回退重导（不带 -select）写到独立子目录，避免整目录删除再重建。
+            frames_dir = tmp_base / stem_id / "frames-all"
             export_external_frames(
                 ffdec,
                 project_root,
                 swf,
                 labels,
                 frames_dir,
-                args.zoom,
+                render_zoom,
                 args.ffdec_timeout_seconds,
                 selected_only=False,
             )
+        downscale_supersampled_frames(frames_dir, args.supersample)
         entry = {
             "key": key,
             "aliases": [a for a in alias_candidates(name) if a != key],
@@ -750,6 +790,9 @@ def bake_internal(
     if sprite_id is None:
         raise RuntimeError(f"Cannot resolve exported symbol {INTERNAL_PORTRAIT_EXPORT_NAME} in {swf}")
     report["internalPortraitSpriteId"] = sprite_id
+    # 内置对话框肖像（矢量 UI 美术，851x1000）不能超采样：FFDec 在 zoom>1 渲染其形状时
+    # 会抛 java.lang.InternalError: Odd number of new curves!（矢量曲线缩放的已知缺陷），
+    # 1x/2x/3x/4x 实测只有 1x 能成功。它本来就是按原生尺寸渲染的矢量图，不需要 SSAA。
     frame_dir = export_internal_sprite(
         ffdec,
         project_root,
@@ -883,6 +926,9 @@ def main() -> None:
         "internalEntries": 0,
         "internalExpressions": 0,
         "internalPortraitSpriteId": None,
+        # 超采样只影响画质、不影响几何，故只进 report，不改 manifest schema。
+        "supersample": args.supersample,
+        "renderZoom": ffdec_render_zoom(args),
         "missingExternalSwf": [],
         "missingFrames": [],
         "sourceAuthority": {

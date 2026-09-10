@@ -66,6 +66,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--check", action="store_true", help="Fresh-rebuild and compare without promotion.")
     parser.add_argument("--keep-work", action="store_true")
     parser.add_argument("--ffdec-timeout-seconds", type=int, default=240)
+    parser.add_argument(
+        "--supersample",
+        type=int,
+        default=3,
+        help=(
+            "Render-time supersampling (SSAA) factor. FFDec renders at this multiple and "
+            "normalize_portrait then LANCZOS-fits the result back into the fixed 256x256 canvas, so "
+            "output geometry never changes. 1 disables it."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -367,7 +377,14 @@ def export_sprite(
     character_id: int,
     output: Path,
     timeout_seconds: int,
+    supersample: int = 1,
 ) -> Path:
+    """导出单个 sprite 的首帧。
+
+    supersample 是渲染期超采样：FFDec 没有 -smooth，只能放大渲染再靠 normalize_portrait
+    的 LANCZOS 缩放降回 256×256。SWF 里 1672×1980 的位图被压到 320×369 显示时，
+    1× 直出会丢掉绝大部分细节。产物几何不受影响（normalize_portrait 总是 fit 到 224 框内）。
+    """
     if output.exists():
         raise BakeError(f"Fresh sprite output already exists: {output}")
     output.mkdir(parents=True)
@@ -378,7 +395,7 @@ def export_sprite(
             "abort",
             "-ignorebackground",
             "-zoom",
-            "1",
+            str(max(1, supersample)),
             "-format",
             "sprite:png",
             "-selectid",
@@ -446,6 +463,7 @@ def build_internal_sources(
     timeout_seconds: int,
     shop_ids: list[str],
     dialogue_baker: Any,
+    supersample: int = 1,
 ) -> tuple[dict[str, Path], dict[str, dict[str, Any]]]:
     swf = require_file(root / "flashswf" / "UI" / "对话框界面.swf", "dialogue UI SWF")
     xfl = require_file(
@@ -468,7 +486,9 @@ def build_internal_sources(
     weapon_range = ranges.get(WEAPON_MASTER)
     if weapon_range != {"key": WEAPON_MASTER, "index": 256, "duration": 6}:
         raise BakeError(f"Current dialogue XFL Weapon Master range drift: {weapon_range}")
-    frame_dir = export_sprite(ffdec, root, swf, character_id, work / "dialogue-sprite", timeout_seconds)
+    frame_dir = export_sprite(
+        ffdec, root, swf, character_id, work / "dialogue-sprite", timeout_seconds, supersample
+    )
     images: dict[str, Path] = {}
     evidence: dict[str, dict[str, Any]] = {}
     for shop_id in shop_ids:
@@ -502,6 +522,7 @@ def build_external_source(
     shop_id: str,
     source_path: Path,
     dialogue_baker: Any,
+    supersample: int = 1,
 ) -> tuple[Path, dict[str, Any]]:
     source_path = require_file(source_path, f"external dialogue SWF for {shop_id}")
     group = work / "external" / hashlib.sha1(shop_id.encode("utf-8")).hexdigest()[:12]
@@ -518,7 +539,7 @@ def build_external_source(
         source_path,
         {DEFAULT_EXPRESSION: frame},
         frames_dir,
-        1,
+        max(1, supersample),
         timeout_seconds,
     )
     source_png = require_file(frames_dir / f"{frame}.png", f"external default frame {shop_id}")
@@ -535,6 +556,7 @@ def build_heeho_source(
     ffdec: Path,
     work: Path,
     timeout_seconds: int,
+    supersample: int = 1,
 ) -> tuple[Path, dict[str, Any]]:
     base = root / "flashswf" / "levels" / "地图-彩蛋地图"
     swf = require_file(root / "flashswf" / "levels" / "地图-彩蛋地图.swf", "heeho map SWF")
@@ -586,7 +608,9 @@ def build_heeho_source(
     body_sprite = defs.get(body_character_id)
     if body_sprite is None or int(body_sprite.get("frameCount") or "0") != 37:
         raise BakeError(f"heeho body DefineSprite drift: {body_character_id}")
-    frame_dir = export_sprite(ffdec, root, swf, body_character_id, work / "heeho-sprite", timeout_seconds)
+    frame_dir = export_sprite(
+        ffdec, root, swf, body_character_id, work / "heeho-sprite", timeout_seconds, supersample
+    )
     frame = 1
     source_png = require_file(frame_dir / f"{frame}.png", "heeho neutral frame")
     evidence_xfls = [map_xfl, outer_xfl, body_xfl, *tween_xfls]
@@ -614,7 +638,14 @@ def subject_closure(entries: dict[str, dict[str, Any]]) -> str:
     return sha256_bytes(("\n".join(lines) + "\n").encode("utf-8"))
 
 
-def build_stage(root: Path, ffdec: Path, stage: Path, work: Path, timeout_seconds: int) -> dict[str, Any]:
+def build_stage(
+    root: Path,
+    ffdec: Path,
+    stage: Path,
+    work: Path,
+    timeout_seconds: int,
+    supersample: int = 1,
+) -> dict[str, Any]:
     dialogue_baker, dialogue_baker_path = load_dialogue_baker(root)
     active_shops, active_source = read_active_shops(root)
     dialogue_manifest_path = require_file(
@@ -669,7 +700,7 @@ def build_stage(root: Path, ffdec: Path, stage: Path, work: Path, timeout_second
         raise BakeError(f"Shop source partition drift: internal={len(internal_ids)} external={len(external_ids)}")
 
     internal_images, internal_evidence = build_internal_sources(
-        root, ffdec, work, timeout_seconds, internal_ids, dialogue_baker
+        root, ffdec, work, timeout_seconds, internal_ids, dialogue_baker, supersample
     )
     source_images: dict[str, Path] = dict(internal_images)
     source_evidence: dict[str, dict[str, Any]] = dict(internal_evidence)
@@ -679,11 +710,11 @@ def build_stage(root: Path, ffdec: Path, stage: Path, work: Path, timeout_second
         source_path = (root / choice["path"]).resolve()
         repo_path(source_path, root, f"external source for {shop_id}")
         image, evidence = build_external_source(
-            root, ffdec, work, timeout_seconds, shop_id, source_path, dialogue_baker
+            root, ffdec, work, timeout_seconds, shop_id, source_path, dialogue_baker, supersample
         )
         source_images[shop_id] = image
         source_evidence[shop_id] = evidence
-    heeho_image, heeho_evidence = build_heeho_source(root, ffdec, work, timeout_seconds)
+    heeho_image, heeho_evidence = build_heeho_source(root, ffdec, work, timeout_seconds, supersample)
     source_images[HEEHO] = heeho_image
     source_evidence[HEEHO] = heeho_evidence
     if set(source_images) != set(active_shops) or set(source_evidence) != set(active_shops):
@@ -730,6 +761,8 @@ def build_stage(root: Path, ffdec: Path, stage: Path, work: Path, timeout_second
         "schema": PROVENANCE_SCHEMA,
         "generatorVersion": GENERATOR_VERSION,
         "geometry": {**GEOMETRY, "padding": PADDING, "fit": "alpha-bounds-contain-center"},
+        # 渲染期超采样：只影响画质，产物恒为 256×256，故不进 manifest（其 schema 是 exactKeys）。
+        "supersample": supersample,
         "toolchain": {
             "generator": artifact(script_path, root),
             "dialogueBaker": artifact(dialogue_baker_path, root),
@@ -832,7 +865,9 @@ def main() -> None:
     stage = work / "stage"
     stage.mkdir()
     try:
-        summary = build_stage(root, ffdec, stage, work / "work", args.ffdec_timeout_seconds)
+        summary = build_stage(
+            root, ffdec, stage, work / "work", args.ffdec_timeout_seconds, args.supersample
+        )
         if args.check:
             compare_tree(stage, output)
             mode = "check"
