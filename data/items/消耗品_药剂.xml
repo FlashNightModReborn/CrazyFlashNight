@@ -587,7 +587,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" value="5" mult_positive="2" duration="300" buffId="全属性抗性药剂_全抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="全属性抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -624,7 +624,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" property="电" value="10" mult_positive="2.2" duration="300" buffId="电抗性药剂_电抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="电抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -657,7 +657,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" property="热" value="10" mult_positive="2.2" duration="300" buffId="热抗性药剂_热抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="热抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -690,7 +690,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" property="冷" value="10" mult_positive="2.2" duration="300" buffId="冷抗性药剂_冷抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="冷抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -723,7 +723,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" property="波" value="10" mult_positive="2.2" duration="300" buffId="波抗性药剂_波抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="波抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -756,7 +756,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" property="蚀" value="10" mult_positive="2.2" duration="300" buffId="蚀抗性药剂_蚀抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="蚀抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -789,7 +789,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" property="毒" value="10" mult_positive="2.2" duration="300" buffId="毒抗性药剂_毒抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="毒抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -822,7 +822,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" property="冲" value="10" mult_positive="2.2" duration="300" buffId="冲抗性药剂_冲抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="冲抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -855,7 +855,7 @@
       <effects>
         <effect type="buffDomain" domain="enhancer" />
         <effect type="resistanceBuff" property="基础" value="10" mult_positive="2.2" duration="300" buffId="能量抗性药剂_能量抗" />
-        <effect type="heal" hp="600" mp="0" target="self" scaleWithAlchemy="true" />
+        <effect type="regen" hp="600" duration="300" interval="30" mode="total" id="能量抗性药剂_缓释" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
