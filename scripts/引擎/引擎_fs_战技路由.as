@@ -12,7 +12,7 @@
  *   - 二者共享武器加成逻辑（根据技能名判断空手/技能）
  *
  * API说明：
- *   - 战技标签跳转_旧(unit, skillName): 从外部触发战技跳帧（旧实现，非主角-男使用）
+ *   - 战技标签跳转_旧(unit, skillName, playbackMode): 战技声明可选播放方式，缺省沿用角色模板
  *   - 战技man载入后跳转_旧(man, unit): man加载完成后跳转到战技帧（旧实现，非主角-男使用）
  *   - 载入后跳转战技容器(container, unit): 容器化战技入口（主角-男使用）
  *
@@ -30,8 +30,9 @@ _root.战技路由 = {};
  *
  * @param unit:MovieClip 执行战技的单位（需要有man子剪辑）
  * @param skillName:String 战技名称（对应man时间轴上的帧标签）
+ * @param playbackMode:String 可选，由战技定义声明container；缺省沿用角色模板
  */
-_root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:String):Void {
+_root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:String, playbackMode:String):Void {
     unit.技能名 = skillName;
     RoutingLifecycle.ensureTempY(unit);
 
@@ -51,8 +52,8 @@ _root.战技路由.战技标签跳转_旧 = function(unit:MovieClip, skillName:S
         unit.dispatcher.publish("skillStart", unit, skillName);
     }
 
-    // 主角-男优先走容器化
-    if (unit.兵种 === "主角-男" || skillName == "猩红天秤") {
+    // 战技可声明容器播放；没有声明时沿用角色模板默认值。
+    if (playbackMode == "container" || unit.兵种 === "主角-男") {
         _root.战技路由.载入后跳转战技容器(unit.container, unit);
         return;
     }

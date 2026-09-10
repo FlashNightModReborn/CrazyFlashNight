@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑战技/雾人血浪素材/5ce4a7a3eb0e" itemID="61b10000-464ae6f5" symbolType="graphic" lastModified="1455454146">
+  <timeline>
+    <DOMTimeline name="5ce4a7a3eb0e">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.109176635742188" b="0.0711212158203125" c="-0.0755157470703125" d="0.11590576171875"/>
+                        </matrix>
+                        <GradientEntry color="#FF3828" ratio="0"/>
+                        <GradientEntry color="#FA3021" ratio="0.215686274509804"/>
+                        <GradientEntry color="#EB1B10" ratio="0.341176470588235"/>
+                        <GradientEntry color="#F5291B" alpha="0.188235294117647" ratio="0.780392156862745"/>
+                        <GradientEntry color="#EB1B10" alpha="0.729411764705882" ratio="0.874509803921569"/>
+                        <GradientEntry color="#FF3828" alpha="0.6" ratio="0.909803921568627"/>
+                        <GradientEntry color="#FF3828" ratio="0.972549019607843"/>
+                        <GradientEntry color="#EF1F13" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1272 -1857[503 -2383 -414 -2212!-414 -2212[-1330 -2040 -1857 -1271!-1857 -1271[-2383 -502 -2212 414!-2212 414[-2040 1330 -1271 1856!-1271 1856[-502 2383 414 2211!414 2211[1330 2040 1856 1271!1856 1271[2383 502 2212 -414!2212 -414[2041  -1330 1272 -1857"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -351,6 +351,10 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 声明式子弹命中行为 `<hitBehavior>`
 
+钛合金专用行为：`titaniumFireControl`使用`peak/durationFrames`刷新目标易伤，直接伤害固定为单段100基础物伤；`titaniumBloodPact`由所属战技动作生成`directPower/crumble/execute`快照，保留联弹段数，允许人物固定增伤，隔离毒、吸血、暴击及其他百分比附伤。击溃和斩杀仍各按一次有效目标结算，不按霰弹数循环；二者继续执行真实命中与敌方盾强门槛。参数与玩法约定见[钛合金施工记录](../docs/钛合金61反馈调整-施工与验收-2026-09-10.md)。
+
+钛合金胸甲`lifecycle/attr_0/init/initParam`的`bloodCrumblePercent`、`bloodExecutePercent`采用百分数值（0.09表示0.09%）；`bloodPulsePowerRatio`是强化后固有生命负担的倍率（1表示100%），三项由`TitaniumSetRuntime`读取。常态血剑攻击仅在有效五甲专属盾破裂时投射，战技由自身动作身份提供资格。
+
 武器运行时数据可包含 `<hitBehavior>` 对象；插件通过 `<stats><merge><hitBehavior>...</hitBehavior></merge></stats>` 写入。`ShootInitCore.generateBulletProps` 将该对象透传到子弹，`BulletQueueProcessor.settleHit` 仅在实际伤害结算成功且至少一个分段真实命中时按封闭 `type` 分发；联弹分段模型中 `scatterMissCount >= actualScatterUsed` 的全 MISS/直感结果不得挂载行为。该字段表达游戏行为，不得与既有视觉命中特效字段混用，也不得存任意 AS2 函数名或可执行字符串。
 
 当前正式类型为 `grayGooPrimer`（读取端仍接受旧名 `toughnessVulnerabilityPrimer`）。字段为：`stackGroup`、`profileId`、`decayDelay`（停火后开始衰减的帧数）、`decayInterval`（逐格衰减间隔）、`maxStacks`、`hitStacks`、`breakStacks`、`milestoneInterval`、`damagePerStack`（小数倍率）、`crumblePerMilestone`（击溃的原始百分比数值）、`executeAtMax`（斩杀的原始百分比数值）与 `sameSourceOnly`。同一 `stackGroup` 内按 `(sourceUID, profileId)` 保存候选，最终易伤只取完整候选的 MAX，不跨 profile 拼接字段。命中在伤害管线前预测是否跨过节点，临时配给击溃/斩杀并重选 `DamageManager`；`DamageResult.hasActualHit()` 在击溃、斩杀和后置叠层三处统一排除普通 MISS 与联弹全段 MISS/直感，只有至少一段真实命中才兑现节点并实际增加层数。

@@ -116,8 +116,12 @@ _root.装备生命周期函数.血色光剑发射 = function(ref:Object, marker:
     _root.gameworld.globalToLocal(point);
     // 沿用旧脚本：X取刀口，Y和Z取单位所在平面；自损不设额外保底。
     actor.hp -= hpCost;
-    _root.子弹区域shoot("", 1, 0, "", bullet, power, 0, 100, "", actor._name,
-        point.x, actor._y, actor._y, actor.是否为敌人 == true ? false : true, 1, "");
+    var props:Object = {声音:"", 霰弹值:1, 子弹散射度:0, 发射效果:"", 子弹种类:bullet,
+        子弹威力:power, 子弹速度:0, Z轴攻击范围:100, 击中地图效果:"", 发射者:actor._name,
+        shootX:point.x, shootY:actor._y, shootZ:actor._y,
+        击倒率:1, 击中后子弹的效果:""};
+    if (actor.__titaniumType61) actor.__titaniumType61.projectBloodAttack(actor, actor.刀, props);
+    _root.子弹区域shoot传递(props);
 };
 
 _root.装备生命周期函数.血色光剑结算 = function(ref:Object):Void {

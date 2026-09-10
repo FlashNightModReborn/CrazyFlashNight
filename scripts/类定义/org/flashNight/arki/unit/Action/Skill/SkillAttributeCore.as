@@ -95,6 +95,7 @@ class org.flashNight.arki.unit.Action.Skill.SkillAttributeCore {
         if (unit.兵器斩杀 || unit.基础斩杀) {
             bullet.斩杀 = Number(unit.兵器斩杀 ? unit.兵器斩杀 : 0) + Number(unit.基础斩杀 ? unit.基础斩杀 : 0);
         }
+        if (unit.__titaniumType61) unit.__titaniumType61.projectBloodAttack(unit, unit.刀, bullet);
     }
 
     /**

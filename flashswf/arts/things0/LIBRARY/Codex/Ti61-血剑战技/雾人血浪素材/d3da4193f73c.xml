@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑战技/雾人血浪素材/d3da4193f73c" itemID="61b10000-47ed48f4" symbolType="graphic" lastModified="1455454146">
+  <timeline>
+    <DOMTimeline name="d3da4193f73c">
+      <layers>
+        <DOMLayer name="Layer_1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.147613525390625" d="0.04736328125" tx="40.15" ty="-3.4"/>
+                        </matrix>
+                        <GradientEntry color="#FF3828" ratio="0"/>
+                        <GradientEntry color="#F62A1C" ratio="0.407843137254902"/>
+                        <GradientEntry color="#EF1F13" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1618 -536|2229 -776!2229 -776|-545 -776!-545 -776|507 -601!507 -601|-2418 -486!-2418 -486|656 -225!656 -225|-1577 -125!-1577 -125|-335 95!-335 95|-1216 235!-1216 235|321 385!321 385|-1657 488!-1657 488|14 666!14 666|-876 776!-876 776 |2078 776!2078 776|2319 686!2319 686|1618 296!1618 296|2419 -115!2419 -115|1618 -536"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

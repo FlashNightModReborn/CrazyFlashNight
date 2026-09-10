@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import unittest
+import xml.etree.ElementTree as ET
 from unittest.mock import patch
 
 import jk_followup as j
@@ -27,6 +28,30 @@ def cast(b, hp, mp, shield):
             'hp': hp - paid_hp, 'mp': mp - paid_mp, 'shield': maximum,
             'bonus': b['bloodLoss'] * paid_hp / b['hpMax'] if mp > paid_mp else 0,
             'bonusSecondsAfterSlam': P['bloodSkillBuffSeconds']}
+
+
+def blood_wave_profile():
+    """读取真实动作的独立发射次数；不把联弹段数或视觉个数当击溃次数。"""
+    path = 'flashswf/arts/things0/LIBRARY/Codex/Ti61-血剑战技/战技容器-猩红天秤.xml'
+    j.m.SOURCES.add(path)
+    ns = {'x': 'http://ns.adobe.com/xfl/2008/'}
+    tree = ET.parse(j.ROOT / path)
+    waves, blade_actions = [], 0
+    for frame in tree.findall('.//x:DOMFrame', ns):
+        code = frame.findtext('x:Actionscript/x:script', '', ns)
+        if '子弹区域shoot传递(waveProps)' in code:
+            waves.append(int(frame.attrib['index']) + 1)
+        if '刀口位置生成子弹(_parent, bladeProps)' in code:
+            blade_actions += 1
+    blade_count = int(j.m.ITEMS[j.BLOOD].findtext('data/bladeCount'))
+    contacts = blade_actions * blade_count + len(waves)
+    return {'crumblePercent': P['bloodCrumblePercent'], 'executePercent': P['bloodExecutePercent'],
+            'powerPerSegmentBloodLossRatio': P['bloodPulsePowerRatio'],
+            'waveFrames': waves, 'bladeActions': blade_actions, 'bladeCount': blade_count,
+            'maximumFinisherChecksIfEveryEmissionContactsOnce': contacts,
+            'maxHpReductionPercentWithoutRoundingOrVulnerability':
+                (1 - (1 - P['bloodCrumblePercent'] / 100) ** contacts) * 100,
+            'evidence': 'source timeline count only; contact, target coverage and frame time require Flash testing'}
 
 
 def produce():
@@ -64,6 +89,7 @@ def produce():
         trials = [j.outgoing(advanced, j.M134, policy='normal', counters=True, seed=i) for i in range(1, 33)]
         fire.append({'weapon': j.M134, 'set': j.ADVANCED,
                      'ttkSeconds': j.summary([x['ttk'] for x in trials])})
+    blood_wave = blood_wave_profile()
     sources = sorted(j.m.SOURCES | {str(Path(__file__).relative_to(j.ROOT)).replace('\\', '/')})
     return {'status': 'local_implementation_values_field_validation_pending',
             'sourceSha256': {p: hashlib.sha256((j.ROOT / p).read_bytes()).hexdigest() for p in sources},
@@ -71,7 +97,7 @@ def produce():
                            'rechargeSeconds': P['fullRechargeSeconds'], 'lazyDodgeMaximum': P['shieldLazyDodge'],
                            'rayPeak': peak, 'rayCapacity': capacity, 'rayIntervalFrames': ray['intervalFrames'],
                            'bloodCooldownMs': int(j.m.ITEMS[j.BLOOD].findtext('skill/cd'))},
-            'loadouts': shields, 'bloodSkill': casts, 'fire': fire,
+            'loadouts': shields, 'bloodSkill': casts, 'bloodWave': blood_wave, 'fire': fire,
             'recoveryComparison': {'advancedDefence': advanced['defence'], 'titaniumDefence': b['defence'],
                                    'advancedHp': advanced['hpMax'], 'titaniumHp': b['hpMax'],
                                    'oneFullMpRecoveryShield': b['mpMax'] / P['shieldMpPerPoint']},
@@ -85,6 +111,13 @@ def produce():
 
 
 class Contract(unittest.TestCase):
+    def test_blood_wave_budget(self):
+        profile = blood_wave_profile()
+        self.assertEqual((profile['crumblePercent'], profile['executePercent']), (.09, 9))
+        self.assertEqual(profile['waveFrames'], [26, 29, 32, 35, 38, 41, 44])
+        self.assertEqual(profile['maximumFinisherChecksIfEveryEmissionContactsOnce'], 13)
+        self.assertLess(profile['maxHpReductionPercentWithoutRoundingOrVulnerability'], 1.2)
+
     def test_source_parameters(self):
         self.assertEqual((P['bloodShieldRatio'], P['shieldMpPerPoint'], P['fullRechargeSeconds']), (1.5, .5, 4))
         self.assertEqual((SUB.findtext('capacity'), SUB.findtext('reserveName')), ('17', '能量电池'))
