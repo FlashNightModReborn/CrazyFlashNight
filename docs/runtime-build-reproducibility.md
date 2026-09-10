@@ -2,7 +2,25 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-10 当前正式发布：裸 Alt 菜单防护与嵌入菜单清理
+## 2026-09-10 当前正式发布：任务进度奖励播报与大学选关返回
+
+任务直接奖励的经验与技能点随已提交回执进入左下 NativeHud，独立显示 `+N` 并复用既有图标，取消顶部重复提示；大学与车库共用选关页但保留真实返回场景，额外“回 A 兵团车库”按钮只在大学入口出现。范围与回归见[问题 4/5 记录](已知问题登记-2026-09-09.md)、[物资事务 ADR](玩家物资事务与双向播报-ADR-2026-08-22.md#2026-09-10-任务进度奖励增量)和[选关迁移说明](选关界面-webview迁移路线图.md#2026-09-10-大学与车库入口返回修复)。
+
+- 实现提交 `2fc3112cd1acd0989c5df1b8393b1a304ad81fbb`；release source `e7ebac32c27060210fd9331336c89800e1ff0030`；不可变 tag `runtime-build-v2/20260910-quest-progress-stage-return-v2`；release tree `5b861ea43e791c73b3c069244951e202ba31048e`；request `0EDB79B6962353F96BD1DBE621EA15C97AAFDA7EA954A6C8252BA3F3E5E45A25`。
+- artifact source `7B2A6893E5C969B4889C74DAC679CA3E7A89CE2990F3553C61F4088F1F45D7F1`；producer recipe `7A54AC54E13D61B5E3D9BB215BF751BFAA54130C70E9CD220FCEB1A6D24442CC`；toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `0F1771AD6ADE2A3371D613C39F1BCA6E26CACECF63D7AFB0F959D54FF9B657C9`。
+- 33-file payload closure `8893B0E68DD19C3E034219CD2511F16450367F737F7CD81E55427F9F89E8B9D6`；正式 Core DLL SHA-256 `DD1382D89369D58A7F5E878B09DD43BF6267B3E6CBBBE04642690DCFA5DA1A0B`，与已验收隔离候选相同。
+- 本地 X509 `builder-local-b / physical-host-b`，keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `0F924A8F24E29C7E10B98B3218E6086DA9AC68711E2BF5A06A284A775BBC0E3A`，[cloud run 34456324664](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34456324664)。源码标签、workflow SHA、run headSha 绑定最终 source，云端 33 个文件与本地完全一致，attestation-only 证明在 promotion 中对本地 CAS 完整重放。
+- production policy **40/40**；policy hash `9C648524B331C1D49C798318C8BE7B516542235C301B4CD6CE45FFB1B684E22D`；receipt SHA-256 `D71EF804F400AB8F0A0C2EE318929EF427CF6FDA8D3867EB47C947F814E47565`；manifest SHA-256 `902E4AC60688075CFD8E0E329D059822FEEBA4810D08543E2B6840AA455B2C5B`；磁盘 consensus SHA-256 `7563CB0AA558753655A30E7629FE69E9E9C877735821D120EA89A50F2ADFA5F9`。
+- `2026-09-10T08:47:41.6907885Z` 完成原子 promotion；strict v2 **2 signers / 2 faultDomains**、33-file bundle 与正式根 bootstrap `--verify-only` 均通过。上一完整 bundle 保留于 `tmp/runtime-promotions/20260910T084712250Z-4744acd5a6b44033ad390594963c011f/previous`。
+- Launcher canonical runner **4,881 passed / 3 existing skipped / 0 failed**；进度回执 fresh CS6 **124/124**，地图/选关 AS2 **806/806**，选关 Web **58/58**。asLoader 已重新发布，Compiler **0/0**，**1,298,128 bytes** / SHA-256 `A7BB9C1237C71FC5A32ECBE22C89282F5A1ECA356BA6E325FEA1801761FA8C85`，旧顶部文案不存在，经验/技能点类型均存在，函数体门通过。
+
+首个 request `F236E354FEE68FB9B2CD88938E0D0709C64F520B945481253212A144447D752C` 的 policy 在材料字典来源记录与商店头像 `Pig.json` 来源记录处失败，未 promotion。已由现役生成器显式刷新材料 sidecar 与商店来源/receipt；材料字典正文、34 张头像及 runtime manifest 均未变化。首轮云端 run `34455545619` 虽与本地产物一致，仍只保留为旧源证明。最终 request 已原子 supersede 首轮，production policy 对最终 tree 完整重跑，云端也从第二版不可变标签重新生成证明；三个产物输入域和 payload 不变，本地签名 CAS 按身份复用，未放宽任何门。
+
+维护者在补齐 asLoader 与隔离 Host 后确认“可行”，任务进度播报为 **HUMAN_ACCEPTANCE_PASSED / promoted**；部署后尚未从正式入口重跑交付、存档重启或大学/车库返回旅程，不称本专项或完整产品 `standard_entry_verified`。问题 5 保留自动回归通过、正式旅程待复验的边界。
+
+本轮未新建 Git worktree，worker 的本轮隔离 checkout 已自动清理。worker 报告共享缓存中三处既有孤儿目录（`84ae52d278f3-945a44de34-64d4aa61`、`8b2dfdf49175-945a44de34-ba569ae0`、`b650df8f2817-945a44de34-07deb0be`），本轮未创建或删除；原有其他任务 worktree 保持不动。部署推送与远端 Audit 结果在完成后补记。
+
+## 2026-09-10 上一正式发布：裸 Alt 菜单防护与嵌入菜单清理
 
 Guardian 限定拦截无字符的 `SC_KEYMENU`；Flash 的 hidden / full 两条嵌入路径共用菜单清理与样式归一化，先摘除普通菜单，再设置 `WS_CHILD` 并清除 `WS_SYSMENU`。摘除失败不销毁仍被窗口持有的菜单，重复嵌入不把 child ID 当菜单句柄。功能与组合键回归边界见[焦点诊断 §9.14](焦点管理-诊断与卡顿排查-2026-05-24.md#914-2026-09-10裸-alt-菜单防护与嵌入菜单清理)。
 
