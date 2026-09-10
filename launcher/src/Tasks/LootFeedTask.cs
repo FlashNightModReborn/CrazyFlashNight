@@ -36,7 +36,8 @@ namespace CF7Launcher.Tasks
 
         private static readonly HashSet<string> AllowedKinds = new HashSet<string>(StringComparer.Ordinal)
         {
-            "money", "kpoint", "intel", "material", "item", "equip", "kill"
+            "money", "kpoint", "intel", "material", "item", "equip", "kill",
+            "experience", "skillpoint"
         };
 
         private static readonly HashSet<string> AllowedSources = new HashSet<string>(StringComparer.Ordinal)

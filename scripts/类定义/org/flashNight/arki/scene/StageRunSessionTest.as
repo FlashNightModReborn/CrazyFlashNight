@@ -1834,6 +1834,62 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 && StageRunSession.canStartStage(),
             "stage-select fade failure restores restrictions and exact-cancels admission");
 
+        // 同一车库选关页的大学/车库入口必须保留各自返回身份。
+        resetWorld(0);
+        _root.server = responseSink;
+        var oldWebFrame = _root.Web选关当前帧值;
+        var oldWebReturn = _root.Web选关返回帧值;
+        var resolver:Object = MapHotspotResolver;
+        var oldCurrentFrame:Function = resolver.isCurrentFrameName;
+        resolver.isCurrentFrameName = function(frameName:String):Boolean {
+            return frameName == "地图-联合大学";
+        };
+        _root.StageInfoDict = {
+            大学:{Type:"外交地图", RootFadeTransitionFrame:"地图-联合大学",
+                url:"data/stages/基地车库/外交-联合大学.xml"},
+            公园:{Type:"外交地图", RootFadeTransitionFrame:"地图-摇滚公园",
+                url:"data/stages/基地车库/外交-摇滚.xml"}
+        };
+        _root.淡出动画 = {fadeCount:0, target:"",
+            淡出跳转帧:function(frameName:String):Void { this.fadeCount++; this.target = frameName; }};
+        try {
+            assertTrue(StageSelectPanelService.handleOpenWebStageSelect({
+                    frameLabel:"地图-联合大学", returnFrameLabel:"地图-联合大学"}),
+                "大学入口可打开共享选关页");
+            assertTrue(_root.Web选关当前帧值 == "基地车库"
+                    && _root.Web选关返回帧值 == "地图-联合大学"
+                    && _root.关卡地图帧值 == "地图-联合大学",
+                "大学选关页归一为车库而根返回地址保留大学");
+            StageSelectPanelService.handleSnapshot({callId:9001, stageNames:[],
+                frameLabel:"基地车库", returnFrameLabel:"地图-联合大学"});
+            assertTrue(String(responseSink.messages[responseSink.messages.length - 1])
+                    .indexOf('"returnFrameLabel":"地图-联合大学"') >= 0,
+                "大学返回身份经真实 snapshot wire 保留");
+            StageSelectPanelService.handleJumpFrame({callId:9002, frameLabel:"黑铁会总部"});
+            assertEquals("地图-联合大学", _root.Web选关返回帧值,
+                "切换选关子页不改大学返回身份");
+            StageSelectPanelService.handleReturnFrame({callId:9003});
+            assertTrue(_root.淡出动画.fadeCount == 0 && _root.关卡地图帧值 == "地图-联合大学"
+                    && String(responseSink.messages[responseSink.messages.length - 1])
+                        .indexOf('"skippedTransition":true') >= 0,
+                "大学普通返回只关闭面板不跳车库或重复淡出");
+            StageSelectPanelService.handleReturnFrame({callId:9004, returnFrameLabel:"基地车库"});
+            assertTrue(_root.淡出动画.fadeCount == 1 && _root.淡出动画.target == "基地车库",
+                "大学额外回车库按钮仍执行显式车库跳转");
+            StageSelectPanelService.handleOpenWebStageSelect({
+                frameLabel:"地图-摇滚公园", returnFrameLabel:"地图-摇滚公园"});
+            StageSelectPanelService.handleReturnFrame({callId:9005});
+            assertEquals("地图-摇滚公园", _root.淡出动画.target,
+                "其他外交地图返回也保留真实场景而非关卡目录");
+            StageSelectPanelService.handleOpenWebStageSelect({frameLabel:"基地车库", returnFrameLabel:"基地车库"});
+            assertEquals("基地车库", _root.Web选关返回帧值,
+                "随后车库入口重新绑定返回身份不沿用大学");
+        } finally {
+            resolver.isCurrentFrameName = oldCurrentFrame;
+            _root.Web选关当前帧值 = oldWebFrame;
+            _root.Web选关返回帧值 = oldWebReturn;
+        }
+
         _root.server = oldServer;
         _root.StageInfoDict = oldStageInfo;
         _root.isStageUnlocked = oldUnlock;

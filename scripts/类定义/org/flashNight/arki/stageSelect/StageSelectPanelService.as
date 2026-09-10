@@ -307,14 +307,10 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         } else {
             frameLabel = String(_root.关卡地图帧值 || "基地门口");
         }
-        // skipTransition 判定要在 frameLabel 转 url folder 之前做:
-        // resolveRootReturnFrameLabel 会把外交地图 "地图-XXX" 替换成 stage url folder (英文),
-        // 而 MapHotspotResolver.isCurrentFrameName 是按 NAVIGATE_TARGETS 中文 frame name 匹配的——
-        // 用 url folder 永远查不到, 会让"已在外交地图入口时按返回"误走重复淡出.
-        var rawReturnFrameLabel:String = frameLabel;
+        // 返回目标是根场景身份，不能按关卡目录归一成选关页。
         frameLabel = resolveRootReturnFrameLabel(frameLabel);
         if (frameLabel == "") frameLabel = "基地门口";
-        var skipTransition:Boolean = isAlreadyAtReturnFrame(rawReturnFrameLabel != "" ? rawReturnFrameLabel : frameLabel);
+        var skipTransition:Boolean = isAlreadyAtReturnFrame(frameLabel);
 
         if (!skipTransition && (_root.淡出动画 == undefined || _root.淡出动画.淡出跳转帧 == undefined)) {
             sendResponse({
@@ -851,8 +847,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
     }
 
     private static function resolveRootReturnFrameLabel(frameLabel:String):String {
-        if (frameLabel == "") return "";
-        if (frameLabel.indexOf("地图-") == 0) return resolveStageSelectFrameLabel(frameLabel);
+        // 大学等外交场景可共用车库选关页，但关闭后仍须回到各自真实场景。
         return frameLabel;
     }
 

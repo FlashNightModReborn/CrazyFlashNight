@@ -694,6 +694,59 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
+            ['runtime-college-return', 'university and garage entries keep distinct return destinations', function() {
+                var college = '地图-联合大学';
+                function garageButton() { return document.querySelector('.stage-select-nav-button.is-return-garage'); }
+                function openCollege() {
+                    host.open({mode:'runtime', frameLabel:'基地车库', returnFrameLabel:college, debug:false});
+                    return waitRuntime(api);
+                }
+                host.returnMessages.length = 0;
+                return openCollege().then(function() {
+                    api.assertEqual(StageSelectPanel._debugGetState().returnFrameLabel, college, 'open preserves root scene');
+                    var request = host.sentMessages.filter(function(msg) { return msg.cmd === 'snapshot'; }).pop();
+                    api.assertEqual(request.returnFrameLabel, college, 'snapshot request does not overwrite college');
+                    api.assert(!!garageButton(), 'college entry shows extra garage action');
+                    StageSelectPanel._debugApplySnapshot({currentFrameLabel:'基地车库', returnFrameLabel:'基地车库'});
+                    api.assert(!garageButton(), 'snapshot can replace previous origin');
+                    StageSelectPanel._debugApplySnapshot({currentFrameLabel:'基地车库', returnFrameLabel:college});
+                    api.assertEqual(StageSelectPanel._debugGetState().returnFrameLabel, college, 'snapshot accepts non-page root scene');
+                    StageSelectPanel._debugSetFrame('黑铁会总部', 'qa-college');
+                    return waitCurrentBackgroundReady(api);
+                }).then(function() {
+                    api.assertEqual(StageSelectPanel._debugGetState().returnFrameLabel, college, 'subpage preserves origin');
+                    StageSelectPanel._debugSetFrame('基地车库', 'qa-college');
+                    return waitCurrentBackgroundReady(api);
+                }).then(function() {
+                    document.querySelector('.stage-select-nav-button[data-action-kind="flashJumpCurrent"]').click();
+                    return api.waitFor(function() { return Panels.getActive() === null; }, 2000, 'college return close');
+                }).then(function() {
+                    api.assertEqual(host.returnMessages[0].returnFrameLabel, college, 'ordinary return goes to college');
+                    return openCollege();
+                }).then(function() {
+                    garageButton().click();
+                    return api.waitFor(function() { return Panels.getActive() === null; }, 2000, 'explicit garage return close');
+                }).then(function() {
+                    api.assertEqual(host.returnMessages[1].returnFrameLabel, '基地车库', 'extra action goes to garage');
+                    host.open({mode:'runtime', frameLabel:'基地车库', returnFrameLabel:'基地车库', debug:false});
+                    return waitRuntime(api);
+                }).then(function() {
+                    api.assert(!garageButton(), 'garage entry hides extra action');
+                    Panels.open('stage-select', {mode:'runtime', frameLabel:'基地车库', returnFrameLabel:college,
+                        panelInstanceId:'qa-college-rebind', debug:false});
+                    return api.waitFor(function() { return StageSelectPanel._debugGetState().pendingCount === 0; }, 2000, 'college rebind');
+                }).then(function() {
+                    api.assertEqual(StageSelectPanel._debugGetState().returnFrameLabel, college, 'same-name rebind preserves college');
+                    api.assert(!!garageButton(), 'rebind refreshes extra action');
+                    Panels.open('stage-select', {mode:'runtime', frameLabel:'基地车库',
+                        returnFrameLabel:'地图-摇滚公园', panelInstanceId:'qa-park-rebind', debug:false});
+                    return api.waitFor(function() { return StageSelectPanel._debugGetState().pendingCount === 0; }, 2000, 'park rebind');
+                }).then(function() {
+                    api.assert(!garageButton(), 'other diplomacy entry hides college-only action');
+                    api.assertEqual(StageSelectPanel._debugGetState().returnFrameLabel, '地图-摇滚公园', 'other root scene preserved');
+                    return 'college/garage return, snapshot, subpage, reopen and rebind verified';
+                });
+            }],
             ['locked-no-enter', 'locked stage does not send enter', function() {
                 document.getElementById('stage-fixture-select').value = 'mixed';
                 host.open();

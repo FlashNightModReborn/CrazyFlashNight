@@ -284,8 +284,7 @@ var StageSelectViewModel = (function() {
                 && (!StageSelectData.hasFrame || StageSelectData.hasFrame(S._runtimeSnapshot.currentFrameLabel))) {
             S._currentFrameLabel = S._runtimeSnapshot.currentFrameLabel;
         }
-        if (S._runtimeSnapshot.returnFrameLabel
-                && (!StageSelectData.hasFrame || StageSelectData.hasFrame(S._runtimeSnapshot.returnFrameLabel))) {
+        if (typeof S._runtimeSnapshot.returnFrameLabel === 'string' && S._runtimeSnapshot.returnFrameLabel) {
             S._returnFrameLabel = S._runtimeSnapshot.returnFrameLabel;
         }
     }

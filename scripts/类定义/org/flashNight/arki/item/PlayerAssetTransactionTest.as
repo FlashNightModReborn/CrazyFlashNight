@@ -952,7 +952,6 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
     private function testQuestExactFinalityAndRecovery():Void {
         PlayerAssetTransaction.resetForTests();
         var receipts:Array = [];
-        PlayerAssetTransaction.setTestSink(captureInto(receipts));
 
         var oldInventory:Object = _root.物品栏;
         var oldCollections:Object = _root.收集品栏;
@@ -990,6 +989,22 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
         var materialHolder:MovieClip = _root.createEmptyMovieClip(
             "__questSubmitReentry", _root.getNextHighestDepth());
         var lastQuestMessage:String = "";
+        var progressMessages:Array = [];
+        var topProgressMessages:Number = 0;
+        var captureQuestReceipt:Function = function(receipt:Object):Void {
+            receipts.push(receipt);
+            for (var effectIndex:Number = 0; effectIndex < receipt.effects.length; effectIndex++) {
+                var effect:Object = receipt.effects[effectIndex];
+                if (effect.kind == "experience" || effect.kind == "skillpoint") {
+                    progressMessages.push({kind:effect.kind, name:effect.name,
+                        count:effect.count, source:effect.source,
+                        operationId:receipt.operationId,
+                        committed:PlayerAssetTransaction.current() == null
+                            && _root.tasks_to_do.length == 0});
+                }
+            }
+        };
+        PlayerAssetTransaction.setTestSink(captureQuestReceipt);
 
         var installTask:Function = function(id:Number, rewards:Array,
                                             turnIn:Array):Void {
@@ -1140,6 +1155,9 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
             _root.isChallengeMode = function():Boolean { return false; };
             _root.发布消息 = function(message:String):Void {
                 lastQuestMessage = String(message);
+                if (lastQuestMessage.indexOf("任务奖励：") == 0) {
+                    topProgressMessages++;
+                }
             };
             _root.播放音效 = function(name:String):Void {};
             _root.UpdateTaskProgress = function():Void {};
@@ -1191,6 +1209,8 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
 
             bag.setDispatcher(null);
             var levelProjectionCalls:Number = 0;
+            assert(progressMessages.length == 0,
+                "Quest 非法配置与奖励回滚均不发布进度奖励成功提示");
             _root.主角是否升级 = function(level:Number, experience:Number):Void {
                 levelProjectionCalls++;
                 throw "quest_level_projection_fault";
@@ -1215,9 +1235,30 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
                     + ",preflight=" + retryPreflight7002 + ","
                     + describeQuestState(7002));
 
+            assert(progressMessages.length == 2 && topProgressMessages == 0
+                    && progressMessages[0].committed && progressMessages[1].committed
+                    && progressMessages[0].kind == "experience" && progressMessages[0].count == 5
+                    && progressMessages[1].kind == "skillpoint" && progressMessages[1].count == 2
+                    && progressMessages[0].source == "quest_reward"
+                    && progressMessages[1].source == "quest_reward"
+                    && progressMessages[0].operationId == receipts[0].operationId
+                    && progressMessages[1].operationId == receipts[0].operationId,
+                "Quest 经验和技能点随同一提交回执播报，升级抛错不吞且无顶部重复提示");
+            var noticeTestServer:Object = _root.server;
+            _root.server = {messages:[], sendSocketMessage:function(message:String):Boolean {
+                this.messages.push(message); return true;
+            }};
+            org.flashNight.arki.task.TaskPanelService.install();
+            org.flashNight.arki.task.TaskPanelService.handleFinish({callId:7002, taskId:7002});
+            var repeatWire:String = String(_root.server.messages[0]);
+            _root.server = noticeTestServer;
+            assert(repeatWire.indexOf("task_not_found") >= 0 && progressMessages.length == 2
+                    && _root.经验值 == 105 && _root.技能点数 == 5,
+                "Quest 已交付任务再次请求不会重复发奖或重复提示");
+
             PlayerAssetTransaction.resetForTests();
             receipts = [];
-            PlayerAssetTransaction.setTestSink(captureInto(receipts));
+            PlayerAssetTransaction.setTestSink(captureQuestReceipt);
             bag.setItems({});
             materials.setItems({交付甲:1, 交付乙:1});
             _root.金钱 = 0;
@@ -1273,7 +1314,7 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
 
             PlayerAssetTransaction.resetForTests();
             receipts = [];
-            PlayerAssetTransaction.setTestSink(captureInto(receipts));
+            PlayerAssetTransaction.setTestSink(captureQuestReceipt);
             bag.setItems({});
             materials.setItems({});
             _root.金钱 = 0;
@@ -1336,7 +1377,7 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
 
             PlayerAssetTransaction.resetForTests();
             receipts = [];
-            PlayerAssetTransaction.setTestSink(captureInto(receipts));
+            PlayerAssetTransaction.setTestSink(captureQuestReceipt);
             bag.setItems({});
             _root.存档系统.dirtyMark = false;
             installTask(7005, ["任务首段奖励#1"], []);
@@ -1385,6 +1426,30 @@ class org.flashNight.arki.item.PlayerAssetTransactionTest {
                     + ",message=" + lastQuestMessage
                     + ",preflight=" + retryPreflight7005 + ","
                     + describeQuestState(7005));
+            assert(progressMessages.length == 2,
+                "Quest 纯物资奖励不生成空进度提示");
+
+            installTask(7006, ["经验值#7"], []);
+            assert(_root.FinishTask(0) === true
+                    && progressMessages.length == 3
+                    && progressMessages[2].kind == "experience" && progressMessages[2].count == 7
+                    && progressMessages[2].name == "经验值" && progressMessages[2].committed,
+                "Quest 纯经验奖励也生成已提交进度回执");
+            installTask(7007, [], []);
+            TaskUtil.tasks[7007].challenge.rewards = ["技能点#4"];
+            _root.tasks_to_do[0].requirements.challenge.finished = true;
+            assert(_root.FinishTask(0) === true
+                    && progressMessages.length == 4
+                    && progressMessages[3].kind == "skillpoint" && progressMessages[3].count == 4
+                    && progressMessages[3].name == "技能点" && progressMessages[3].committed,
+                "Quest 挑战奖励的实际技能点同样进入左下播报回执");
+            installTask(7008, ["经验值#3"], []);
+            var beforeNoticeFailure:Number = _root.经验值;
+            PlayerAssetTransaction.setTestSink(function(receipt:Object):Void { throw "quest_notice_fault"; });
+            assert(_root.FinishTask(0) === true
+                    && _root.经验值 == beforeNoticeFailure + 3
+                    && _root.tasks_to_do.length == 0 && _root.tasks_finished["7008"] == 1,
+                "Quest 提示投影失败仍保持成功入账和任务终态");
         } finally {
             bag.setDispatcher(null);
             materials.setDispatcher(null);

@@ -76,6 +76,8 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("item")]
         [InlineData("equip")]
         [InlineData("kill")]
+        [InlineData("experience")]
+        [InlineData("skillpoint")]
         public void TryParse_AllWhitelistedKinds_Accepted(string goodKind)
         {
             string kind, name, source, icon;
@@ -84,6 +86,26 @@ namespace CF7Launcher.Tests.Tasks
                 Payload(goodKind, "金钱", 1),
                 out kind, out name, out count, out source, out icon));
             Assert.Equal(goodKind, kind);
+        }
+
+        [Theory]
+        [InlineData("experience", "经验值", 3000000L)]
+        [InlineData("skillpoint", "技能点", 1L)]
+        public void TryParse_QuestProgressReceipt_PreservesKindAndAmount(
+            string expectedKind, string expectedName, long expectedCount)
+        {
+            var payload = VersionOnePayload(expectedKind, expectedName, expectedCount, "quest_reward");
+            string kind, name, source, icon;
+            long count;
+            Assert.True(LootFeedTask.TryParsePayload(payload,
+                out kind, out name, out count, out source, out icon));
+            Assert.Equal(expectedKind, kind);
+            Assert.Equal(expectedName, name);
+            Assert.Equal(expectedCount, count);
+            Assert.Equal("quest_reward", source);
+            payload["count"] = 0;
+            Assert.False(LootFeedTask.TryParsePayload(payload,
+                out kind, out name, out count, out source, out icon));
         }
 
         [Fact]

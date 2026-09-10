@@ -680,10 +680,10 @@ $focusedRun = @{
         'scripts\通信\通信_鸡蛋_任务系统.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^PlayerAssetTransactionTest Tests Passed: 117\r?$'
+        '(?m)^PlayerAssetTransactionTest Tests Passed: 124\r?$'
         '(?m)^PlayerAssetTransactionTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'PlayerAssetTransactionTest 117/117'
+    SuccessSummary = 'PlayerAssetTransactionTest 124/124'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

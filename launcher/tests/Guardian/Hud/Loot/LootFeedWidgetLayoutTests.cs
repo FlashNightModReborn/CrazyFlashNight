@@ -52,11 +52,26 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         [InlineData("loss", "item", 25L, "−25")]
         [InlineData("neutral", "kill", 1L, "")]
         [InlineData("neutral", "kill", 3L, "×3")]
+        [InlineData("gain", "experience", 3000000L, "+3000000")]
+        [InlineData("gain", "experience", 1L, "+1")]
+        [InlineData("gain", "skillpoint", 1L, "+1")]
+        [InlineData("gain", "skillpoint", 4L, "+4")]
         public void CountText_ShowsExplicitSignedLoss(
             string direction, string kind, long count, string expected)
         {
             Assert.Equal(expected,
                 LootFeedWidget.CountTextForTest(direction, kind, count));
+        }
+
+        [Theory]
+        [InlineData("experience", 3000000L, "+9999999")]
+        [InlineData("experience", 1L, "+9")]
+        [InlineData("skillpoint", 1L, "+9")]
+        [InlineData("skillpoint", 10L, "+99")]
+        public void ProgressCountColumn_ReservesPlusSignEvenForOne(
+            string kind, long count, string expected)
+        {
+            Assert.Equal(expected, LootFeedWidget.CountColumnSample("gain", kind, count));
         }
     }
 }

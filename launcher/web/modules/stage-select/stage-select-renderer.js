@@ -219,7 +219,8 @@
         S._currentFrameLabel = requestedFrameLabel && StageSelectData.hasFrame(requestedFrameLabel)
             ? requestedFrameLabel : manifest.frameOrder[0];
         var requestedReturnFrameLabel = initData && initData.returnFrameLabel || '';
-        S._returnFrameLabel = requestedReturnFrameLabel && StageSelectData.hasFrame(requestedReturnFrameLabel)
+        // Host 提供根场景身份；外交场景不必同时是一张选关页。
+        S._returnFrameLabel = typeof requestedReturnFrameLabel === 'string' && requestedReturnFrameLabel
             ? requestedReturnFrameLabel : S._currentFrameLabel;
         applyFixture(S._fixtureName);
         if (S._fixtureSelectEl) S._fixtureSelectEl.value = S._fixtureName;
@@ -256,9 +257,9 @@
         } else if (catalogChanged || !StageSelectData.hasFrame(S._currentFrameLabel)) {
             S._currentFrameLabel = manifest.frameOrder[0];
         }
-        if (initData && initData.returnFrameLabel && StageSelectData.hasFrame(initData.returnFrameLabel)) {
+        if (initData && typeof initData.returnFrameLabel === 'string' && initData.returnFrameLabel) {
             S._returnFrameLabel = initData.returnFrameLabel;
-        } else if (catalogChanged || !StageSelectData.hasFrame(S._returnFrameLabel)) {
+        } else if (catalogChanged || !S._returnFrameLabel) {
             S._returnFrameLabel = S._currentFrameLabel;
         }
         if (catalogChanged) {
@@ -857,6 +858,7 @@
         S._navLayerEl.innerHTML = '';
         (frame.navButtons || []).forEach(function(nav) {
             var visualKind = getNavVisualKind(nav);
+            if (visualKind === 'return-garage' && S._returnFrameLabel !== '地图-联合大学') return;
             var node = document.createElement('button');
             node.type = 'button';
             node.className = 'stage-select-nav-button is-' + visualKind;

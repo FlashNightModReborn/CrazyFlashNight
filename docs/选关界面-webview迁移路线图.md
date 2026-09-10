@@ -3,6 +3,12 @@
 **文档角色**：`flashswf/UI/选关界面` 到 Launcher WebView panel 的 canonical migration doc。  
 **当前阶段**：Stage 2 Step 2 工程实现已落地；正式选关入口走 Web `stage-select`，普通关卡结算按既有目的地返回并停留在 Flash，旧 Flash `关卡地图` 保留为通信失败 fallback。Stage 3 已实现废城三维试点和全地图双栏聚焦，本地验证与正式游戏复验分开记录，不代表承诺 16 页全量 3D 化。
 
+### 2026-09-10 大学与车库入口返回修复
+
+施工基线：`d872090711` 加本轮工作区。`frameLabel` 表示选关页，`returnFrameLabel` 表示关闭后返回的根场景；两者不得共用目录归一规则。大学使用“基地车库”选关页，但打开、snapshot、子页切换、同名面板 rebind 与普通返回始终保留 `地图-联合大学`；已在该场景时只关闭面板，不重复淡出。其他外交场景同样保留真实返回地址。额外的“回A兵团车库”按钮仅大学入口可见，显式选择它才返回车库；车库入口不显示该按钮。
+
+沿用现有消息字段，无 C# 或历史 XFL 修改。AS2 归属 asLoader；回归使用 `scripts/run-map-loot-tests.ps1` 的 StageRunSessionTest 与 `node tools/run-stage-select-harness.js --viewport 1024x576 --case runtime-college-return`，覆盖返回地址、同场景关闭、额外车库跳转、snapshot、切页、重开与 rebind。自动化与真人正式入口复验分开，最终验证状态见[问题登记 5](已知问题登记-2026-09-09.md#问题-5只有从大学进入堕落城选关需要有回a兵团车库的按钮现在车库出来也有)。
+
 > **`.fla` 退役（2026-06）**：地图/选关界面已完全迁移至 web。`flashswf/UI/选关界面` 不再作为可再生 SOT，
 > 仅保留为冻结历史参照。`launcher/web/modules/stage-select-data.js` 现为**唯一权威 SOT，允许直接手改**
 > （新增外交地图据点等条目直接编辑本文件，不回写 .fla）。导出器 `--write-module` 默认拒绝覆盖手写 SOT

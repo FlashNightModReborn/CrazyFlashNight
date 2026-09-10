@@ -681,15 +681,22 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private static string CountText(string direction, string kind, long count)
         {
             if (direction == "loss") return "−" + count;
+            if (kind == "experience" || kind == "skillpoint") return "+" + count;
             return count > 1 ? "×" + count : string.Empty;
         }
 
         private static string CountColumnSample(LootFeedModel.LootCard card)
         {
-            if (card.Direction != "loss") return CountColumnSample(card.DisplayCount);
+            return CountColumnSample(card.Direction, card.Kind, card.DisplayCount);
+        }
+
+        internal static string CountColumnSample(string direction, string kind, long count)
+        {
+            bool progress = kind == "experience" || kind == "skillpoint";
+            if (direction != "loss" && !progress) return CountColumnSample(count);
             int digits = Math.Max(1,
-                LootFeedModel.CountLayoutBucket(card.DisplayCount, card.Direction));
-            return "−" + new string('9', digits);
+                LootFeedModel.CountLayoutBucket(count, direction));
+            return (direction == "loss" ? "−" : "+") + new string('9', digits);
         }
 
         internal static string CountColumnSample(long count)
@@ -731,6 +738,8 @@ namespace CF7Launcher.Guardian.Hud.Loot
             {
                 case "money": return Color.FromArgb(0xFF, 0xD3, 0x4D);
                 case "kpoint": return Color.FromArgb(0x62, 0xD6, 0xFF);
+                case "experience": return Color.FromArgb(0x7A, 0xDF, 0xA4);
+                case "skillpoint": return Color.FromArgb(0x8E, 0xBB, 0xFF);
                 case "intel": return Color.FromArgb(0xD5, 0xA6, 0xFF);
                 case "kill": return Color.FromArgb(0xFF, 0x5C, 0x63);
                 default: return Color.FromArgb(0xF2, 0xF4, 0xF7);

@@ -446,11 +446,15 @@ _root.FinishTask = function(index) {
             _root.经验值 += experienceReward;
             org.flashNight.arki.item.PlayerAssetTransaction.markAuthorityWrite(
                 assetTransaction);
+            org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(
+                "gain", "experience", "经验值", experienceReward, null);
         }
         if (skillPointReward > 0) {
             _root.技能点数 += skillPointReward;
             org.flashNight.arki.item.PlayerAssetTransaction.markAuthorityWrite(
                 assetTransaction);
+            org.flashNight.arki.item.PlayerAssetTransaction.recordEffect(
+                "gain", "skillpoint", "技能点", skillPointReward, null);
         }
 
         _root.提交任务完成状态(taskID, taskData.chain);
@@ -464,6 +468,7 @@ _root.FinishTask = function(index) {
         throw finishTaskAssetError;
     }
     org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
+    // 任务直接奖励的 XP/SP 随同一已提交回执进入左下播报；不再重复发布顶部 toast。
     if (experienceReward > 0) {
         try {
             _root.主角是否升级(_root.等级, _root.经验值);
