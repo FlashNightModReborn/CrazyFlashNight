@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -212,12 +213,39 @@ namespace CF7Launcher.Tests.Guardian
             int closeRetryDelayMs = LootPanelCoordinator.DefaultCloseRetryDelayMs,
             int closeRetryMaximumMs = LootPanelCoordinator.DefaultCloseRetryMaximumMs,
             int pauseReleaseRetryMs = LootPanelCoordinator.DefaultPauseReleaseRetryMs,
-            bool rewardRootAdmissionEnabled = true)
+            bool rewardRootAdmissionEnabled = true,
+            int deferredOpenRetryDelayMs = LootPanelCoordinator.DefaultDeferredOpenRetryDelayMs,
+            int deferredOpenMaxAttempts = LootPanelCoordinator.DefaultDeferredOpenMaxAttempts,
+            int deferredOpenMaxWindowMs = LootPanelCoordinator.DefaultDeferredOpenMaxWindowMs)
         {
             return new LootPanelCoordinator(panel, release,
                 delegate { return "panel.loot.host.1"; }, recovery, bindWatchdogMs,
                 closeRetryDelayMs, closeRetryMaximumMs, pauseReleaseRetryMs,
-                rewardRootAdmissionEnabled);
+                rewardRootAdmissionEnabled, deferredOpenRetryDelayMs,
+                deferredOpenMaxAttempts, deferredOpenMaxWindowMs);
+        }
+
+        /// <summary>Test-controlled host presentation probe.</summary>
+        private sealed class FakePresentation
+        {
+            public volatile string BlockReason = null;
+            public volatile bool WebReady = true;
+            public volatile int DocumentGeneration = 3;
+            public long HostHandle = 0x1111;
+            public volatile int HostGeneration = 9;
+
+            public LootHostPresentationSnapshot Capture()
+            {
+                return new LootHostPresentationSnapshot
+                {
+                    BlockReason = BlockReason,
+                    WebReady = WebReady,
+                    DocumentGeneration = DocumentGeneration,
+                    HostHandle = HostHandle,
+                    HostGeneration = HostGeneration,
+                    HostVisible = BlockReason == null
+                };
+            }
         }
 
         private static void WaitUntil(Func<bool> predicate, int timeoutMs = 1500)
@@ -1449,6 +1477,295 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal("recovery.nonce.old", staleRecovery.Value<string>("recoveryNonce"));
             Assert.Equal("recovery.nonce.current",
                 currentRecovery.Value<string>("recoveryNonce"));
+        }
+
+        // ── Deferred open（宿主揭示竞态）──────────────────────────────────
+
+        [Fact]
+        public void DeferredOpen_ParksWhileHostHidden_ThenReissuesExactOpenOnReveal()
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation
+            {
+                BlockReason = LootPanelCoordinator.HostBlockHidden
+            };
+            using var coordinator = Create(panel,
+                deferredOpenRetryDelayMs: 20);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+
+            JObject ack = JObject.Parse(coordinator.HandlePanelRequest(Request()));
+            Assert.True(ack.Value<bool>("accepted"));
+            Assert.Equal(LootPanelCoordinator.BindingState.OpenQueued,
+                coordinator.State);
+            Assert.True(coordinator.DeferredOpenPending);
+            Assert.Equal(0, panel.OpenCalls);
+
+            // 宿主揭示：唤醒立即以同一 panelInstanceId + 同一 init 载荷重发。
+            presentation.BlockReason = null;
+            coordinator.OnHostPresentationChanged();
+            Assert.False(coordinator.DeferredOpenPending);
+            Assert.Equal(1, panel.OpenCalls);
+            Assert.Equal("panel.loot.host.1", panel.ReservedInstance);
+            JObject init = JObject.Parse(panel.InitDataJson);
+            Assert.Equal("chest.session.1", init.Value<string>("chestSessionId"));
+            Assert.Equal(7, init.Value<int>("containerEpoch"));
+
+            panel.CompleteOpenPosted();
+            Assert.Equal(LootPanelCoordinator.BindingState.OpenPosted,
+                coordinator.State);
+            LootPanelCoordinator.Binding binding;
+            Assert.True(coordinator.TryBindExact("panel.loot.host.1",
+                "chest.session.1", "loot.container.1", 7, out binding));
+            Assert.Equal(1, binding.OpenAttemptSeq);
+        }
+
+        [Fact]
+        public void DeferredOpen_TimerRetrySameIdentity_BoundsAttempts()
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation
+            {
+                BlockReason = LootPanelCoordinator.HostBlockHidden
+            };
+            int recoveries = 0;
+            using var coordinator = Create(panel,
+                recovery: delegate { recoveries++; return true; },
+                deferredOpenRetryDelayMs: 15,
+                deferredOpenMaxAttempts: 3,
+                deferredOpenMaxWindowMs: 300);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+
+            Assert.True(JObject.Parse(
+                coordinator.HandlePanelRequest(Request())).Value<bool>("accepted"));
+
+            // 持续 hidden：不消耗尝试次数，窗口耗尽即放弃并只发一次恢复信号。
+            WaitUntil(delegate
+            {
+                return coordinator.State == LootPanelCoordinator.BindingState.Idle;
+            }, 3000);
+            Assert.False(coordinator.DeferredOpenPending);
+            Assert.Equal(0, panel.OpenCalls);
+            Assert.Equal(1, recoveries);
+        }
+
+        [Fact]
+        public void DeferredOpen_ForceDetachCancelsPark_NoLaterRetry()
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation
+            {
+                BlockReason = LootPanelCoordinator.HostBlockHidden
+            };
+            int recoveries = 0;
+            using var coordinator = Create(panel,
+                recovery: delegate { recoveries++; return true; },
+                deferredOpenRetryDelayMs: 15);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+            coordinator.HandlePanelRequest(Request());
+            Assert.True(coordinator.DeferredOpenPending);
+
+            Assert.True(coordinator.ForceDetach("web_navigation"));
+            Assert.Equal(LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.False(coordinator.DeferredOpenPending);
+            Assert.Equal(1, recoveries);
+
+            // 呈现唤醒 + 越过多个重试周期后仍无 open 投递。
+            presentation.BlockReason = null;
+            coordinator.OnHostPresentationChanged();
+            Thread.Sleep(80);
+            Assert.Equal(0, panel.OpenCalls);
+        }
+
+        [Fact]
+        public void DeferredOpen_StaleDocumentGeneration_FailsThroughOnce()
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation
+            {
+                BlockReason = LootPanelCoordinator.HostBlockHidden
+            };
+            int recoveries = 0;
+            int detaches = 0;
+            using var coordinator = Create(panel,
+                recovery: delegate { recoveries++; return true; },
+                deferredOpenRetryDelayMs: 15);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+            coordinator.BindingDetached += delegate { detaches++; };
+            coordinator.HandlePanelRequest(Request());
+
+            // 停泊期间文档代际前进（生产路径会先 ForceDetach；这里直接驱动陈旧分支）。
+            presentation.DocumentGeneration = 4;
+            presentation.BlockReason = null;
+            coordinator.OnHostPresentationChanged();
+
+            Assert.Equal(LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.Equal(1, recoveries);
+            Assert.Equal(1, detaches);
+            Assert.Equal(0, panel.OpenCalls);
+        }
+
+        [Fact]
+        public void DeferredOpen_StaleHostHandle_FailsThroughOnce()
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation
+            {
+                BlockReason = LootPanelCoordinator.HostBlockHidden
+            };
+            int recoveries = 0;
+            using var coordinator = Create(panel,
+                recovery: delegate { recoveries++; return true; },
+                deferredOpenRetryDelayMs: 15);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+            coordinator.HandlePanelRequest(Request());
+
+            presentation.HostHandle = 0x2222;
+            presentation.BlockReason = null;
+            coordinator.OnHostPresentationChanged();
+
+            Assert.Equal(LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.Equal(1, recoveries);
+            Assert.Equal(0, panel.OpenCalls);
+        }
+
+        [Theory]
+        [InlineData(PanelHostController.TrackedOpenOutcome.PanelBusy)]
+        [InlineData(PanelHostController.TrackedOpenOutcome.PostAcceptedThenFailed)]
+        [InlineData(PanelHostController.TrackedOpenOutcome.Failed)]
+        public void DeferredOpen_NonDeferrableOutcomes_NeverPark(
+            PanelHostController.TrackedOpenOutcome outcome)
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation(); // TryOpen 时宿主可见
+            int recoveries = 0;
+            using var coordinator = Create(panel,
+                recovery: delegate { recoveries++; return true; },
+                deferredOpenRetryDelayMs: 15);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+            coordinator.HandlePanelRequest(Request());
+            Assert.Equal(1, panel.OpenCalls);
+            // 执行完成时宿主才转 hidden：只有 PostNotDelivered/PreExecutionRejected
+            // 允许停泊，其余结局立即走原失败路径。
+            presentation.BlockReason = LootPanelCoordinator.HostBlockHidden;
+            panel.OpenCompleted(outcome);
+
+            Assert.False(coordinator.DeferredOpenPending);
+            Assert.Equal(LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.Equal(1, recoveries);
+            Thread.Sleep(60);
+            Assert.Equal(1, panel.OpenCalls);
+        }
+
+        [Fact]
+        public void DeferredOpen_PostNotDeliveredWhileHidden_ParksThenRetries()
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation(); // 初始可见
+            int recoveries = 0;
+            using var coordinator = Create(panel,
+                recovery: delegate { recoveries++; return true; },
+                deferredOpenRetryDelayMs: 15);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+            coordinator.HandlePanelRequest(Request());
+            Assert.Equal(1, panel.OpenCalls);
+
+            // 执行期 host 转 hidden → PostNotDelivered（open 从未送达 Web）→ 停泊。
+            presentation.BlockReason = LootPanelCoordinator.HostBlockHidden;
+            panel.OpenCompleted(
+                PanelHostController.TrackedOpenOutcome.PostNotDelivered);
+            Assert.True(coordinator.DeferredOpenPending);
+            Assert.Equal(LootPanelCoordinator.BindingState.OpenQueued,
+                coordinator.State);
+            Assert.Equal(0, recoveries);
+
+            presentation.BlockReason = null;
+            coordinator.OnHostPresentationChanged();
+            Assert.Equal(2, panel.OpenCalls);
+            Assert.Equal("panel.loot.host.1", panel.ReservedInstance);
+            panel.CompleteOpenPosted();
+            Assert.Equal(LootPanelCoordinator.BindingState.OpenPosted,
+                coordinator.State);
+        }
+
+        [Fact]
+        public void DeferredOpen_NonHiddenBlock_FailsImmediately()
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation
+            {
+                BlockReason = "minimized"
+            };
+            int recoveries = 0;
+            using var coordinator = Create(panel,
+                recovery: delegate { recoveries++; return true; },
+                deferredOpenRetryDelayMs: 15);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+            coordinator.HandlePanelRequest(Request());
+
+            // minimized 不是可延迟瞬态：首队列照常，失败即走原恢复路径。
+            Assert.Equal(1, panel.OpenCalls);
+            Assert.False(coordinator.DeferredOpenPending);
+            panel.OpenCompleted(
+                PanelHostController.TrackedOpenOutcome.PostNotDelivered);
+            Assert.False(coordinator.DeferredOpenPending);
+            Assert.Equal(LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.Equal(1, recoveries);
+        }
+
+        [Fact]
+        public void DeferredOpen_WithoutProbe_PreservesBaselineFailure()
+        {
+            var panel = new FakePanel();
+            int recoveries = 0;
+            using var coordinator = Create(panel,
+                recovery: delegate { recoveries++; return true; },
+                deferredOpenRetryDelayMs: 15);
+            // 未注入探针：任何失败都走旧路径，绝不延迟。
+            coordinator.HandlePanelRequest(Request());
+            Assert.Equal(1, panel.OpenCalls);
+            panel.OpenCompleted(
+                PanelHostController.TrackedOpenOutcome.PostNotDelivered);
+            Assert.False(coordinator.DeferredOpenPending);
+            Assert.Equal(LootPanelCoordinator.BindingState.Idle,
+                coordinator.State);
+            Assert.Equal(1, recoveries);
+        }
+
+        [Fact]
+        public void DeferredOpen_NoDuplicateOpenDelivery_AfterSuccess()
+        {
+            var panel = new FakePanel();
+            var presentation = new FakePresentation
+            {
+                BlockReason = LootPanelCoordinator.HostBlockHidden
+            };
+            var delivered = new List<string>();
+            using var coordinator = Create(panel,
+                deferredOpenRetryDelayMs: 15);
+            coordinator.SetHostPresentationProbe(presentation.Capture);
+            coordinator.HandlePanelRequest(Request());
+            Assert.True(coordinator.DeferredOpenPending);
+            Assert.Equal(0, panel.OpenCalls);
+
+            // 两次 hidden 后再揭示：仍只应累计同一实例的有限次尝试。
+            coordinator.OnHostPresentationChanged();
+            coordinator.OnHostPresentationChanged();
+            presentation.BlockReason = null;
+            coordinator.OnHostPresentationChanged();
+            Assert.Equal(1, panel.OpenCalls);
+            delivered.Add(panel.InitDataJson);
+            panel.CompleteOpenPosted();
+
+            Thread.Sleep(60);
+            Assert.Equal(1, panel.OpenCalls);
+            Assert.Single(delivered);
+            Assert.Equal(LootPanelCoordinator.BindingState.OpenPosted,
+                coordinator.State);
         }
     }
 }

@@ -234,6 +234,10 @@ class org.flashNight.neur.Server.SaveManager {
     private var _rewardCandidate:Object = null;
     private var _rewardPhysicalResult:Object = undefined;
     private var _rewardPhysicalStarted:Boolean = false;
+    // 奖励事务有界生产日志：单行分类字段、连续重复折叠、进程内封顶。
+    private var _rewardLogSeq:Number = 0;
+    private var _rewardLogLast:String = "";
+    private var _rewardLogRepeat:Number = 0;
     private var _saveInFlight:Boolean = false; // 重入护栏
     private var _beforeLocalCommitHookForTests:Function = null;
     private var _flushResultOverrideForTests:Object = undefined;
@@ -809,13 +813,27 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function commitRewardCandidate(operationId:String, reason:String):String {
-        if (_rewardCandidate == null || _rewardCandidate.operationId != operationId) return "stale";
-        if (_rewardCandidate.phase != "prepared") return resolveRewardCommit(operationId);
+        if (_rewardCandidate == null || _rewardCandidate.operationId != operationId) {
+            logRewardCommit("event=commit outcome=stale op=" + boundedLogText(operationId, 64));
+            return "stale";
+        }
+        if (_rewardCandidate.phase != "prepared") {
+            var redirected:String = resolveRewardCommit(operationId);
+            logRewardCommit("event=commit outcome=resolve_redirect result=" + redirected
+                + " op=" + boundedLogText(operationId, 64));
+            return redirected;
+        }
         if (!isRegisteredSaveReason(reason)) {
             finishRewardCandidate(false);
+            logRewardCommit("event=commit outcome=" + (_rewardCandidate == null
+                ? "not_committed" : "pending") + " detail=unregistered_reason"
+                + " op=" + boundedLogText(operationId, 64)
+                + " reason=" + boundedLogText(reason, 48));
             return _rewardCandidate == null ? "not_committed" : "pending";
         }
         _rewardCandidate.reason = reason;
+        var opDetail:String = " op=" + boundedLogText(operationId, 64)
+            + " reason=" + boundedLogText(reason, 48);
         var ok:Boolean = false;
         try {
             ok = _doSaveAll(reason == "stage.return_base" ? "transition" : "durable");
@@ -825,28 +843,45 @@ class org.flashNight.neur.Server.SaveManager {
         // flush 返回 true 之后的任何日志/投影异常不得倒退资产 finality。
         if (ok || _rewardPhysicalResult === true) {
             finishRewardCandidate(true);
+            logRewardCommit("event=commit outcome=committed" + opDetail);
             return "committed";
         }
         if (!_rewardPhysicalStarted || _rewardPhysicalResult === false) {
             finishRewardCandidate(false);
+            logRewardCommit("event=commit outcome=" + (_rewardCandidate == null
+                ? "not_committed" : "pending") + " detail=physical_failed" + opDetail);
             return _rewardCandidate == null ? "not_committed" : "pending";
         }
         _rewardCandidate.phase = "pending";
         org.flashNight.arki.pause.PauseManager.setRewardCommitPending(true);
         FrameBroadcaster.pushUiState("sv:3");
+        logRewardCommit("event=commit outcome=unknown detail=physical_"
+            + boundedLogText(_rewardPhysicalResult, 24) + opDetail);
         return "pending";
     }
 
     /** 只重交冻结映像；不重新组包、不重复 RNG/扣物品/迁移。 */
     public function resolveRewardCommit(operationId:String):String {
         var c:Object = _rewardCandidate;
-        if (c == null || c.operationId != operationId) return "stale";
+        var opDetail:String = " op=" + boundedLogText(operationId, 64);
+        if (c == null || c.operationId != operationId) {
+            logRewardCommit("event=resolve outcome=stale" + opDetail);
+            return "stale";
+        }
         if (c.phase == "restore_pending") {
             finishRewardCandidate(false);
+            logRewardCommit("event=resolve outcome=" + (_rewardCandidate == null
+                ? "not_committed" : "pending") + " detail=restore_retry" + opDetail);
             return _rewardCandidate == null ? "not_committed" : "pending";
         }
-        if (c.phase == "prepared") return "pending";
-        if (String(_root.savePath) != c.savePath || String(_root.角色名) != c.role) return "pending";
+        if (c.phase == "prepared") {
+            logRewardCommit("event=resolve outcome=pending detail=phase_prepared" + opDetail);
+            return "pending";
+        }
+        if (String(_root.savePath) != c.savePath || String(_root.角色名) != c.role) {
+            logRewardCommit("event=resolve outcome=pending detail=role_mismatch" + opDetail);
+            return "pending";
+        }
         var ok:Boolean = c.phase == "confirmed";
         if (!ok) {
             try {
@@ -854,7 +889,11 @@ class org.flashNight.neur.Server.SaveManager {
                 ok = flushSO(c.so, "full");
             } catch (retryError) { ok = _rewardPhysicalResult === true; }
         }
-        if (!ok) return "pending";
+        if (!ok) {
+            logRewardCommit("event=resolve outcome=unknown detail=physical_"
+                + boundedLogText(_rewardPhysicalResult, 24) + opDetail);
+            return "pending";
+        }
         _root.mydata = org.flashNight.gesh.object.PersistedSnapshot.clone(c.after[SAVE_KEY]);
         finishRewardCandidate(true);
         // 重试成功才产生 shadow；首次成功由 _doSaveAll 既有路径推送。
@@ -862,6 +901,7 @@ class org.flashNight.neur.Server.SaveManager {
             var sm:ServerManager = ServerManager.getInstance();
             if (sm.isSocketConnected) pushShadowWithConfirm(sm, _root.mydata);
         } catch (shadowError) { trace("[RewardCommit] shadow notification failed: " + shadowError); }
+        logRewardCommit("event=resolve outcome=committed" + opDetail);
         return "committed";
     }
 
@@ -871,8 +911,12 @@ class org.flashNight.neur.Server.SaveManager {
             _rewardCandidate.phase = "confirmed";
             // 成功通知对应同一 so / handler；领域回调在同一角色候选上完成。
             resolveRewardCommit(String(_rewardCandidate.operationId));
+        } else if (info.code == "SharedObject.Flush.Failed") {
+            // Failed 也不允许回滚一个曾经不确定的候选；下一次明确重交仍使用 after。
+            // 但必须留下生产记录：曾经不确定的 flush 已被用户/系统明确拒绝过。
+            logRewardCommit("event=sostatus outcome=flush_failed"
+                + " op=" + boundedLogText(_rewardCandidate.operationId, 64));
         }
-        // Failed 也不允许回滚一个曾经不确定的候选；下一次明确重交仍使用 after。
     }
 
     private static function replaceRewardSoData(target:Object, source:Object):Void {
@@ -893,6 +937,8 @@ class org.flashNight.neur.Server.SaveManager {
                 _root.存档系统.dirtyMark = c.rootDirtyBefore;
             } catch (restoreError) {
                 org.flashNight.arki.pause.PauseManager.setRewardCommitPending(true);
+                logRewardCommit("event=finish outcome=restore_pending detail=restore_exception"
+                    + " op=" + boundedLogText(c.operationId, 64));
                 trace("[RewardCommit] restore image: " + restoreError);
                 return;
             }
@@ -918,6 +964,8 @@ class org.flashNight.neur.Server.SaveManager {
         if (!committed && !domainSettled) {
             c.phase = "restore_pending";
             org.flashNight.arki.pause.PauseManager.setRewardCommitPending(true);
+            logRewardCommit("event=finish outcome=restore_pending detail=domain_not_settled"
+                + " op=" + boundedLogText(c.operationId, 64));
             return;
         }
         c.so.onStatus = c.previousStatus;
@@ -927,6 +975,54 @@ class org.flashNight.neur.Server.SaveManager {
         _rewardPhysicalResult = undefined;
         org.flashNight.arki.pause.PauseManager.setRewardCommitPending(false);
         FrameBroadcaster.pushUiState(committed ? "sv:2" : "sv:3");
+    }
+
+    /** 奖励事务有界生产日志：单行分类字段、连续重复折叠、进程内封顶；不带存档内容。 */
+    private function logRewardCommit(detail:String):Void {
+        if (detail == _rewardLogLast) {
+            _rewardLogRepeat++;
+            return;
+        }
+        var suffix:String = " seq=" + (_rewardLogSeq + 1);
+        if (_rewardLogRepeat > 0) suffix += " suppressed=" + _rewardLogRepeat;
+        _rewardLogRepeat = 0;
+        if (_rewardLogSeq >= 128) return;
+        _rewardLogSeq++;
+        _rewardLogLast = detail;
+        var line:String = "[RewardCommit] " + detail + suffix;
+        var posted:Boolean = false;
+        try {
+            ServerManager.getInstance().sendServerMessage(line);
+            posted = true;
+        } catch (logSinkError) {
+        }
+        if (!posted) trace(line);
+    }
+
+    /** 日志字段安全截断：把任意值折成有界单行文本，绝不携带结构化存档内容。 */
+    private function boundedLogText(value:Object, maxLength:Number):String {
+        var text:String = String(value);
+        if (text.length > maxLength) text = text.substring(0, maxLength);
+        return text;
+    }
+
+    /** 只读提取恢复结果里的有界身份字段；绝不 dump 原始存档内容。 */
+    private function settlementRestoreDetail(restore:Object):String {
+        if (restore == null) return "";
+        var detail:String = "";
+        if (restore.settlementId != undefined)
+            detail += " settlementId=" + boundedLogText(restore.settlementId, 96);
+        if (restore.runId != undefined)
+            detail += " runId=" + boundedLogText(restore.runId, 96);
+        if (restore.reason != undefined)
+            detail += " reason=" + boundedLogText(restore.reason, 64);
+        if (restore.remaining != undefined)
+            detail += " remaining=" + String(restore.remaining);
+        if (restore.remainingCount != undefined)
+            detail += " remaining=" + String(restore.remainingCount);
+        if (restore.receiptCount != undefined)
+            detail += " receipts=" + String(restore.receiptCount);
+        return detail;
     }
 
     public function flushNow():Boolean {
@@ -2626,13 +2722,25 @@ class org.flashNight.neur.Server.SaveManager {
         // 畸形/未来记录保留原文并由 StageRunSession 阻止新关卡覆盖，不拖垮普通读档。
         org.flashNight.arki.scene.StageRunSession.resetForRestart();
         var settlementRestore:Object = null;
+        var settlementRestoreErrorText:String = "";
         try {
             settlementRestore = org.flashNight.arki.scene.StageRunSession.restorePendingSettlement();
         } catch (settlementRestoreError) {
-            settlementRestore = null;
+            settlementRestoreErrorText = String(settlementRestoreError);
         }
         if (settlementRestore == null || settlementRestore.success !== true) {
-            trace("[SaveManager.unpackGameState] pending stage settlement preserved but not restored");
+            var restoreFailLine:String = "[SaveManager.unpackGameState] stage settlement restore failed"
+                + " error=" + (settlementRestore == null
+                    ? "exception" : boundedLogText(settlementRestore.error, 64))
+                + settlementRestoreDetail(settlementRestore)
+                + (settlementRestore == null && settlementRestoreErrorText != ""
+                    ? " exception=" + boundedLogText(settlementRestoreErrorText, 96) : "");
+            trace(restoreFailLine);
+            ServerManager.getInstance().sendServerMessage(restoreFailLine);
+        } else if (settlementRestore.restored === true) {
+            ServerManager.getInstance().sendServerMessage(
+                "[SaveManager.unpackGameState] stage settlement restored"
+                + settlementRestoreDetail(settlementRestore));
         }
 
         // 主线任务进度（从 mydata[3]，后续 loadAll 会从 task_chains_progress 覆盖）

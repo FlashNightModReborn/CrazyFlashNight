@@ -1475,8 +1475,26 @@ var MapPanelHarnessQA = (function() {
                             returnBase:{available:false,mode:'settlement_pending',token:'map-return-3',acceptedToken:''}});
                     }).then(function() {
                         api.assert(document.querySelector('#map-return-base').hidden, 'pending rewards do not expose another escape');
-                        api.assert(document.querySelector('#map-navigation-lock-text').textContent.indexOf('待领奖励') >= 0, 'pending state explains next step');
-                        return 'retreat/victory/pending, exact close, double click, failure retry, lost success read-only recovery';
+                        var lockText = document.querySelector('#map-navigation-lock-text').textContent || '';
+                        api.assert(lockText.indexOf('尚未完成') >= 0 && lockText.indexOf('已保留') < 0,
+                            'legacy pending payload does not claim an unconfirmed stash commit');
+                        api.assert(lockText.indexOf('待领奖励') < 0,
+                            'pending state never implies claimable rewards remain');
+                        return [
+                            ['save_unknown', '尚未确认'], ['save_failed', '保存失败'],
+                            ['restore_failed', '未能恢复'], ['claimable', '继续结算']
+                        ].reduce(function(chain, row) {
+                            return chain.then(function() {
+                                return bootMap(api, host, {navigationLocked:true,
+                                    navigationLockReason:'pending_stage_settlement',
+                                    returnBase:{available:false, mode:'settlement_pending',
+                                        token:'map-detail-' + row[0], acceptedToken:'', settlementDetail:row[0]}});
+                            }).then(function() {
+                                var detailText = document.querySelector('#map-navigation-lock-text').textContent || '';
+                                api.assert(detailText.indexOf(row[1]) >= 0 && detailText.indexOf('已保留') < 0,
+                                    'pending detail is truthful: ' + row[0]);
+                            });
+                        }, Promise.resolve());
                     });
                 }
             },

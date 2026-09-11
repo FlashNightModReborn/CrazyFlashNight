@@ -62,6 +62,7 @@ namespace CF7Launcher.Diagnostic
                 {
                     PackSave(zip, projectRoot, slot, swfPath, solLocator, r.Warnings);
                     PackLogs(zip, projectRoot, r.Warnings);
+                    PackWebViewFailures(zip, projectRoot, r.Warnings);
                     PackConfig(zip, projectRoot, r.Warnings);
                     PackMeta(zip, projectRoot, slot);
                     PackReadme(zip, slot);
@@ -162,6 +163,22 @@ namespace CF7Launcher.Diagnostic
             }
         }
 
+        // WebView 故障元数据 + Crashpad 崩溃报告：有界收集，任何单点失败只记 warning，
+        // 绝不阻断主包。细节见 WebViewFailureReportCollector。
+        private static void PackWebViewFailures(ZipArchive zip, string projectRoot, List<string> warnings)
+        {
+            try
+            {
+                WebViewFailureReportCollector.Result result = WebViewFailureReportCollector.Collect(
+                    projectRoot, new WebViewFailureReportCollector.ZipSink(zip));
+                foreach (string w in result.Warnings) warnings.Add(w);
+            }
+            catch (Exception ex)
+            {
+                warnings.Add("webview failure collection failed: " + ex.Message);
+            }
+        }
+
         private static void PackConfig(ZipArchive zip, string projectRoot, List<string> warnings)
         {
             string cfgToml = Path.Combine(projectRoot, "config.toml");
@@ -221,6 +238,10 @@ namespace CF7Launcher.Diagnostic
             sb.Append("             startup-exit.jsonl（最近启动退出/失败原因码，若存在）\r\n");
             sb.Append("             startup-failure-latest.txt（玩家弹窗中的错误摘要，若存在）\r\n");
             sb.Append("             dumps/*.log（.NET dump 生成诊断日志；.dmp 本体请按需单独发送）\r\n");
+            sb.Append("             webview-failures.jsonl[.1]（WebView 进程故障记录有界尾部，若存在）\r\n");
+            sb.Append("webview-failures/  Crashpad 崩溃报告收集：reports/ 实际文件 + manifest.json\r\n");
+            sb.Append("             （只收 launcher WebView2 数据目录 Crashpad 根内、白名单扩展名、\r\n");
+            sb.Append("             限量限时限大小；manifest 带 SHA256、来源路径与全部省略原因）\r\n");
             sb.Append("config/      config.toml + launcher_user_prefs.json（用户偏好）\r\n");
             sb.Append("runtime/     cf7-runtime-manifest.tsv（构建文件清单与 SHA256，若存在）\r\n");
             sb.Append("meta.json    系统信息：OS / git HEAD / 时间戳 / 机器名等\r\n");

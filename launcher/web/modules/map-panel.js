@@ -1233,12 +1233,19 @@ var MapPanel = (function() {
         if (_returnBaseState) {
             switch (_returnBaseState.mode) {
                 case 'retreat': return '本次关卡尚未通关。撤退保留已获得的物资，不获得本关通关奖励。';
-                case 'victory': return '本关已通关。返回后领取通关奖励，再前往其他地点。';
+                case 'victory': return '本关已通关。返回后完成结算即可前往其他地点；结算奖励会安全保留。';
                 case 'return': return '可以结束本次关卡并返回；重伤角色按原有流程返回医务室。';
                 case 'retry_return': return '本次结算已保存，可以继续完成返回。';
                 case 'entering': return '正在进入关卡，请等待入场完成。';
                 case 'returning': return '正在返回，请等待场景切换完成。';
-                case 'settlement_pending': return '本次奖励结算尚未结束，请关闭地图，继续处理待领奖励。';
+                case 'settlement_pending':
+                    switch (_returnBaseState.settlementDetail) {
+                        case 'save_unknown': return '上一关结算的保存结果尚未确认，请关闭地图并等待核对。';
+                        case 'save_failed': return '上一关结算保存失败，请关闭地图，重试结算保存。';
+                        case 'restore_failed': return '上一关结算记录未能恢复，请保留存档并导出诊断包反馈。';
+                        case 'claimable': return '上一关结算仍待处理，请关闭地图，继续结算。';
+                        default: return '上一关结算尚未完成，请关闭地图查看结算状态；若仍无响应，请导出诊断包反馈。';
+                    }
             }
         }
         if (_navigationLockReason === 'stage_start_pending') {
@@ -1247,7 +1254,7 @@ var MapPanel = (function() {
         if (_navigationLockReason === 'battle_map' || _navigationLockReason === 'stage_run_active') {
             return '当前仍在战斗关卡，请先使用“返回基地”。';
         }
-        return '上一关结算尚未完成，请先完成返回基地与奖励处理。';
+        return '上一关结算尚未完成，请先完成返回基地并查看结算状态。';
     }
 
     function syncNavigationLockNotice() {
@@ -3180,7 +3187,7 @@ var MapPanel = (function() {
             case 'not_navigable': return '当前暂不能前往，请刷新地图查看地点和人物条件。';
             case 'stage_run_active':
             case 'combat_active': return '当前仍在战斗流程中，请先按正常流程返回。';
-            case 'pending_stage_settlement': return '请先完成或关闭本次奖励结算，再前往目标。';
+            case 'pending_stage_settlement': return '上一关结算尚未完成，请关闭地图查看结算状态；若仍无响应，请导出诊断包反馈。';
             case 'canvas_unavailable': return '当前 WebView2 不支持地图 Canvas 渲染。';
             default: return '暂时无法取得地图状态，请刷新；若持续失败，请退出启动器后重新打开。';
         }

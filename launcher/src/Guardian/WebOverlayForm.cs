@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using CF7Launcher.Bus;
+using CF7Launcher.Diagnostic;
 using CF7Launcher.Fonts;
 using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Tasks;
@@ -1291,6 +1292,26 @@ namespace CF7Launcher.Guardian
         private INotchSink _notchFallback;
         private bool _webFailed; // 初始化永久失败，后续 UiData 仅维护快照
 
+        // WebView 进程故障观测/有界恢复（STATUS_BREAKPOINT 类渲染进程退出曾让壳存活
+        // 而 WebView 永久死亡）。恢复永远发生在 RetireDocumentOwnersForProcessLoss
+        // 完成权威和解之后，且总次数/时间窗双封顶，耗尽即落 GDI+ fallback。
+        private CoreWebView2Environment _webViewEnvironment;
+        private string _webDir;
+        private string _webBrowserVersion;
+        private long _webBrowserProcessId;
+        private int _webProcessRecoveryAttempts;
+        private long _webProcessRecoveryWindowStartTick;
+        private long _lastBrowserExitHandledTick;
+        private uint _lastBrowserExitProcessId;
+        private const int MaxWebProcessRecoveryAttempts = 3;
+        private const long WebProcessRecoveryWindowMs = 120000;
+        private const long BrowserExitDedupeWindowMs = 5000;
+
+        // 宿主呈现事实：owner/anchor reveal、句柄重建、最小化往返都会推进
+        // _hostPresentationGeneration；deferred loot/report open 以此做身份重校验。
+        private int _hostPresentationGeneration;
+        private long _cachedOwnerHandle;
+
         // UI 数据早期缓冲：WebView2 就绪前收到的状态数据，就绪后 flush
         private readonly List<string> _uiDataEarlyBuffer = new List<string>();
         // UI 数据最新值快照：按 type 去重，热重载后恢复完整状态
@@ -1506,6 +1527,17 @@ namespace CF7Launcher.Guardian
             };
             anchor.Resize += delegate { ScheduleSyncPosition("anchor_resize"); };
 
+            // 宿主呈现变迁探针：reveal/句柄重建/最小化往返推进 _hostPresentationGeneration
+            // 并唤醒可能停泊中的 deferred open。全部是无句柄副作用的事件读取，绝不抢前台。
+            _cachedOwnerHandle = SafeHandle64(owner);
+            owner.VisibleChanged += delegate { OnHostPresentationTransition("owner_visible"); };
+            owner.HandleCreated += delegate { OnHostPresentationTransition("owner_handle_created"); };
+            owner.HandleDestroyed += delegate { OnHostPresentationTransition("owner_handle_destroyed"); };
+            owner.Resize += delegate { OnHostPresentationTransition("owner_resize_state"); };
+            anchor.VisibleChanged += delegate { OnHostPresentationTransition("anchor_visible"); };
+            anchor.HandleCreated += delegate { OnHostPresentationTransition("anchor_handle_created"); };
+            anchor.HandleDestroyed += delegate { OnHostPresentationTransition("anchor_handle_destroyed"); };
+
             // 异步初始化 WebView2
             InitWebView2Async(webDir);
         }
@@ -1651,6 +1683,8 @@ namespace CF7Launcher.Guardian
         {
             try
             {
+                _webDir = webDir;
+                WebViewFailureRecorder.Configure(_projectRoot);
                 // UserData 目录放在 webDir 旁边，避免污染项目目录
                 string userDataDir = Path.Combine(
                     Path.GetDirectoryName(webDir), "webview2_overlay_userdata");
@@ -1658,7 +1692,17 @@ namespace CF7Launcher.Guardian
                 CoreWebView2EnvironmentOptions options = CreateWebView2EnvironmentOptions();
                 CoreWebView2Environment env =
                     await CoreWebView2Environment.CreateAsync(null, userDataDir, options);
+                _webViewEnvironment = env;
+                try { env.BrowserProcessExited += OnWebViewBrowserProcessExited; }
+                catch (Exception hookEx)
+                {
+                    LogManager.Log("[WebOverlay] browser-exit observability hook failed: "
+                        + hookEx.Message);
+                }
+                try { _webBrowserVersion = env.BrowserVersionString; } catch { }
                 await _webView.EnsureCoreWebView2Async(env);
+                try { _webBrowserProcessId = (long)_webView.CoreWebView2.BrowserProcessId; }
+                catch { }
                 SyncWebViewViewportBounds(this.ClientSize.Width, this.ClientSize.Height,
                     1.0, "core_ready_pre_nav", true);
 
@@ -1691,10 +1735,14 @@ namespace CF7Launcher.Guardian
                 RuntimeFontCatalog.RegisterWebResources(_webView.CoreWebView2, "WebOverlayForm");
 
                 // 游戏素材虚拟主机：https://cfn-assets.local/ → {projectRoot}/flashswf/
-                TryRegisterGameAssetsVirtualHost("init_webview2");
+                TryRegisterGameAssetsVirtualHost(
+                    "init_webview2");
 
                 // JS→C# 消息
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+                // WebView2 进程故障：主渲染进程退出/GPU/工具进程分类记录；致命类先做
+                // 文档属主退役+权威和解，再做有界恢复。SDK 1.0.3856.49 确认 API 存在。
+                _webView.CoreWebView2.ProcessFailed += OnWebViewProcessFailed;
                 _webView.CoreWebView2.NavigationStarting += delegate(object sender,
                     CoreWebView2NavigationStartingEventArgs args)
                 {
@@ -1772,14 +1820,23 @@ namespace CF7Launcher.Guardian
                 if (_inputShield != null)
                     _inputShield.SetTargetWebView(_webView.CoreWebView2);
 
-                // 热重载：监听 webDir 文件变化，去抖 500ms 后自动 Reload
-                StartWebWatcher(webDir);
+                // 热重载：监听 webDir 文件变化，去抖 500ms 后自动 Reload。
+                if (_webWatcher == null)
+                    StartWebWatcher(webDir);
 
-                LogManager.Log("[WebOverlay] WebView2 engine ready, waiting for JS ready...");
+                LogManager.Log("[WebOverlay] WebView2 engine ready, waiting for JS ready..."
+                    + " trigger=init");
             }
             catch (Exception ex)
             {
                 LogManager.Log("[WebOverlay] WebView2 init failed, falling back to GDI+: " + ex.Message);
+                WebViewFailureRecorder.Record(new WebViewFailureRecorder.Entry
+                {
+                    Kind = "init_failed",
+                    Reason = ex.GetType().Name,
+                    BrowserVersion = _webBrowserVersion,
+                    Detail = ex.Message
+                });
                 _webFailed = true;
                 // 激活 GDI+ fallback 并 flush 早期缓冲
                 ActivateFallback();
@@ -1795,6 +1852,444 @@ namespace CF7Launcher.Guardian
                 && currentNavigationId
                     != startingNavigationId;
         }
+
+        #region WebView 进程故障观测与有界恢复
+
+        /// <summary>主文档致命 / 渲染进程无响应（仅观测）/ 其他辅助进程三类路由。</summary>
+        internal enum WebProcessFailureClass
+        {
+            MainDocumentExited,
+            RendererHung,
+            Ancillary
+        }
+
+        internal static WebProcessFailureClass ClassifyWebProcessFailure(
+            CoreWebView2ProcessFailedKind kind)
+        {
+            switch (kind)
+            {
+                case CoreWebView2ProcessFailedKind.BrowserProcessExited:
+                case CoreWebView2ProcessFailedKind.RenderProcessExited:
+                    return WebProcessFailureClass.MainDocumentExited;
+                case CoreWebView2ProcessFailedKind.FrameRenderProcessExited:
+                    // 子框架退出不代表顶层文档失效，保留现有面板属主。
+                    return WebProcessFailureClass.Ancillary;
+                case CoreWebView2ProcessFailedKind.RenderProcessUnresponsive:
+                    // 无响应≠已退出：文档可能自愈，属主退役会把合法打开的 panel 误拆。
+                    // 只观测+落盘；持续卡死的恢复留给后续带"恢复信号"的设计。
+                    return WebProcessFailureClass.RendererHung;
+                default:
+                    // GpuProcessExited / UtilityProcessExited / SandboxHelperProcessExited /
+                    // PpapiPluginProcessExited / PpapiBrokerProcessExited /
+                    // UnknownProcessExited：不重放 open/写，仅观测。
+                    return WebProcessFailureClass.Ancillary;
+            }
+        }
+
+        internal static T ReadOptionalFailureMetadata<T>(Func<T> read, T unavailable)
+        {
+            try { return read(); }
+            catch { return unavailable; }
+        }
+
+        private void OnWebViewProcessFailed(object sender,
+            CoreWebView2ProcessFailedEventArgs args)
+        {
+            // 先在事件线程同步捕获快照字段：args 对象在事件返回后的可跨线程读取
+            // 不受 SDK 契约保障，全部落到基元后再 marshal。
+            CoreWebView2ProcessFailedKind kind;
+            try
+            {
+                kind = args.ProcessFailedKind;
+            }
+            catch { return; }
+            // 测试员的旧 runtime 可能不支持新版 SDK 的可选属性；单个属性失败
+            // 只损失该字段，不能吞掉已确认的进程退出与属主退役。
+            string reason = ReadOptionalFailureMetadata(() => args.Reason.ToString(), "unavailable");
+            int? exitCode = ReadOptionalFailureMetadata<int?>(() => args.ExitCode, null);
+            string processDescription = ReadOptionalFailureMetadata(() => args.ProcessDescription, (string)null);
+            string failureModule = ReadOptionalFailureMetadata(() => args.FailureSourceModulePath, (string)null);
+            int frameCount = ReadOptionalFailureMetadata(() =>
+            {
+                var frames = args.FrameInfosForFailedProcess;
+                return frames == null ? -1 : frames.Count;
+            }, -1);
+            if (_disposed) return;
+            if (InvokeRequired)
+            {
+                try
+                {
+                    BeginInvoke(new Action(delegate
+                    {
+                        HandleWebViewProcessFailed(kind, reason, exitCode,
+                            processDescription, failureModule, frameCount);
+                    }));
+                }
+                catch { }
+                return;
+            }
+            HandleWebViewProcessFailed(kind, reason, exitCode,
+                processDescription, failureModule, frameCount);
+        }
+
+        private void HandleWebViewProcessFailed(
+            CoreWebView2ProcessFailedKind kind,
+            string reason,
+            int? exitCode, string processDescription, string failureModule,
+            int frameCount)
+        {
+            if (_disposed) return;
+            WebProcessFailureClass failureClass = ClassifyWebProcessFailure(kind);
+            string kindName = kind.ToString();
+            string reasonName = reason;
+            string classification =
+                failureClass == WebProcessFailureClass.MainDocumentExited
+                    ? "main_document"
+                    : failureClass == WebProcessFailureClass.RendererHung
+                        ? "renderer_hung" : "ancillary";
+            LogManager.Log("[WebOverlay] webview_process_failed kind=" + kindName
+                + " reason=" + reasonName + " exitCode=" + exitCode
+                + " class=" + classification + " frames=" + frameCount);
+            WebViewFailureRecorder.Record(new WebViewFailureRecorder.Entry
+            {
+                Kind = kindName,
+                Reason = reasonName,
+                ExitCode = exitCode,
+                BrowserVersion = _webBrowserVersion,
+                BrowserProcessId = _webBrowserProcessId,
+                DocumentGeneration = _webDocumentObservationGeneration,
+                HostLifecycleGeneration = _hostPresentationGeneration,
+                HostHandle = _cachedOwnerHandle,
+                Classification = classification,
+                FailureReportFolderPath = SafeFailureReportFolder(),
+                ProcessDescription = processDescription,
+                FailureSourceModulePath = failureModule,
+                FrameCount = frameCount >= 0 ? (int?)frameCount : null
+            });
+            CF7Launcher.Diagnostic.FocusTrace.Record("web.process_failed", new
+            {
+                kind = kindName,
+                reason = reasonName,
+                exitCode,
+                cls = classification,
+                frames = frameCount
+            });
+
+            if (failureClass != WebProcessFailureClass.MainDocumentExited)
+                return;
+            if (kind == CoreWebView2ProcessFailedKind.BrowserProcessExited)
+            {
+                // env.BrowserProcessExited 可能已对同一 pid 完成退役+恢复调度：
+                // 去重避免同一崩溃消耗两份恢复预算。
+                long now = Environment.TickCount64;
+                uint browserPid = (uint)Math.Max(0, _webBrowserProcessId);
+                if (browserPid != 0
+                    && _lastBrowserExitProcessId == browserPid
+                    && now - _lastBrowserExitHandledTick
+                        < BrowserExitDedupeWindowMs)
+                    return;
+                _lastBrowserExitProcessId = browserPid;
+                _lastBrowserExitHandledTick = now;
+            }
+            // 权威和解先于一切恢复：退役旧文档属主、保留 pending-write 语义，
+            // 然后才允许有界 reload/重建。
+            RetireDocumentOwnersForProcessLoss("web_process_failed");
+            ScheduleWebProcessRecovery(
+                kind == CoreWebView2ProcessFailedKind.BrowserProcessExited
+                    ? "browser" : "renderer");
+        }
+
+        private void OnWebViewBrowserProcessExited(object sender,
+            CoreWebView2BrowserProcessExitedEventArgs args)
+        {
+            CoreWebView2BrowserProcessExitKind exitKind;
+            uint pid;
+            try
+            {
+                exitKind = args.BrowserProcessExitKind;
+                pid = args.BrowserProcessId;
+            }
+            catch { return; }
+            if (_disposed) return;
+            if (InvokeRequired)
+            {
+                try
+                {
+                    BeginInvoke(new Action(delegate
+                    {
+                        HandleWebViewBrowserProcessExited(exitKind, pid);
+                    }));
+                }
+                catch { }
+                return;
+            }
+            HandleWebViewBrowserProcessExited(exitKind, pid);
+        }
+
+        private void HandleWebViewBrowserProcessExited(
+            CoreWebView2BrowserProcessExitKind exitKind, uint pid)
+        {
+            if (_disposed) return;
+            long now = Environment.TickCount64;
+            bool duplicate = pid != 0
+                && _lastBrowserExitProcessId == pid
+                && now - _lastBrowserExitHandledTick < BrowserExitDedupeWindowMs;
+            _lastBrowserExitProcessId = pid;
+            _lastBrowserExitHandledTick = now;
+            LogManager.Log("[WebOverlay] browser_process_exited kind="
+                + exitKind.ToString() + " pid=" + pid
+                + (duplicate ? " dup=1" : ""));
+            WebViewFailureRecorder.Record(new WebViewFailureRecorder.Entry
+            {
+                Kind = "BrowserProcessExited",
+                Reason = exitKind.ToString(),
+                BrowserVersion = _webBrowserVersion,
+                BrowserProcessId = pid,
+                DocumentGeneration = _webDocumentObservationGeneration,
+                HostLifecycleGeneration = _hostPresentationGeneration,
+                HostHandle = _cachedOwnerHandle,
+                Classification = "browser_exit",
+                FailureReportFolderPath = SafeFailureReportFolder(),
+                Detail = duplicate ? "duplicate_suppressed" : null
+            });
+            CF7Launcher.Diagnostic.FocusTrace.Record("web.browser_process_exited", new
+            {
+                exitKind = exitKind.ToString(),
+                pid,
+                duplicate
+            });
+            // ProcessFailed(BrowserProcessExited) 与本事件对同一崩溃各发一次：去重后
+            // 由 ProcessFailed 路径承担退役+恢复；Normal 退出只留观测。
+            if (duplicate) return;
+            if (exitKind == CoreWebView2BrowserProcessExitKind.Failed)
+            {
+                RetireDocumentOwnersForProcessLoss("web_process_failed");
+                ScheduleWebProcessRecovery("browser");
+            }
+        }
+
+        /// <summary>
+        /// 进程/文档死亡后的旧属主退役：与 NavigationStarting 的退役集合完全同构且幂等，
+        /// 保留 pending-write 的 needs_reconcile 语义，绝不重放写意图、绝不把未知写标记成功。
+        /// </summary>
+        private void RetireDocumentOwnersForProcessLoss(string reason)
+        {
+            RetireAllInventoryOwnerRequests();
+            PublishDocumentAdvanced();
+            _webReady = false;
+            LootPanelCoordinator lootCoordinator = _lootPanelCoordinator;
+            if (lootCoordinator != null
+                && lootCoordinator.State != LootPanelCoordinator.BindingState.Idle)
+            {
+                lootCoordinator.ForceDetach(reason);
+            }
+            if (_commandRouter != null)
+            {
+                _commandRouter.CancelAllPanelNavigationIntents(reason);
+            }
+            if (_materialShopNavigationCoordinator != null)
+            {
+                _materialShopNavigationCoordinator.CancelAll(reason);
+            }
+            BeginInventoryOwnerWebNavigationRecovery();
+            BeginSkillWebNavigationRecovery();
+            BeginCharacterBuildWebNavigationRecovery();
+        }
+
+        private void ScheduleWebProcessRecovery(string failureScope)
+        {
+            if (_disposed || _webView == null) return;
+            long now = Environment.TickCount64;
+            if (now - _webProcessRecoveryWindowStartTick
+                > WebProcessRecoveryWindowMs)
+            {
+                _webProcessRecoveryWindowStartTick = now;
+                _webProcessRecoveryAttempts = 0;
+            }
+            if (_webProcessRecoveryAttempts >= MaxWebProcessRecoveryAttempts)
+            {
+                LogManager.Log("[WebOverlay] webview recovery budget exhausted scope="
+                    + failureScope + " attempts=" + _webProcessRecoveryAttempts);
+                WebViewFailureRecorder.Record(new WebViewFailureRecorder.Entry
+                {
+                    Kind = "recovery_exhausted",
+                    Reason = failureScope,
+                    BrowserVersion = _webBrowserVersion,
+                    DocumentGeneration = _webDocumentObservationGeneration
+                });
+                _webFailed = true;
+                ActivateFallback();
+                return;
+            }
+            _webProcessRecoveryAttempts++;
+            int attempt = _webProcessRecoveryAttempts;
+            try
+            {
+                BeginInvoke(new Action(delegate
+                {
+                    AttemptWebProcessRecovery(failureScope, attempt);
+                }));
+            }
+            catch
+            {
+                _webFailed = true;
+                ActivateFallback();
+            }
+        }
+
+        private void AttemptWebProcessRecovery(string failureScope, int attempt)
+        {
+            if (_disposed || _webView == null) return;
+            LogManager.Log("[WebOverlay] webview recovery attempt=" + attempt
+                + " scope=" + failureScope);
+            WebViewFailureRecorder.Record(new WebViewFailureRecorder.Entry
+            {
+                Kind = "recovery_attempt",
+                Reason = failureScope,
+                BrowserVersion = _webBrowserVersion,
+                DocumentGeneration = _webDocumentObservationGeneration,
+                Detail = "attempt=" + attempt
+            });
+            try
+            {
+                if (failureScope == "browser")
+                {
+                    MarkBrowserRecoveryUnavailable(attempt);
+                }
+                else
+                {
+                    // 渲染进程退出：Reload 让 SDK 拉新渲染进程并重载文档；
+                    // NavigationStarting 会再走一次幂等退役。
+                    _webView.CoreWebView2.Reload();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[WebOverlay] webview recovery failed attempt="
+                    + attempt + " scope=" + failureScope + ": " + ex.Message);
+                WebViewFailureRecorder.Record(new WebViewFailureRecorder.Entry
+                {
+                    Kind = "recovery_failed",
+                    Reason = failureScope,
+                    BrowserVersion = _webBrowserVersion,
+                    DocumentGeneration = _webDocumentObservationGeneration,
+                    Detail = ex.GetType().Name + ":" + ex.Message
+                });
+                if (failureScope != "browser")
+                {
+                    // Reload 已无法使用时保留失败证据，避免向失效控件重复注册业务事件。
+                    MarkBrowserRecoveryUnavailable(attempt);
+                }
+                else
+                {
+                    _webFailed = true;
+                    ActivateFallback();
+                }
+            }
+        }
+
+        // EnsureCoreWebView2Async 在已初始化控件上返回原 Task，不会重建崩溃的浏览器。
+        // 此层只对 renderer 执行 Reload；浏览器级退出保留权威和解并明确要求重启。
+        private void MarkBrowserRecoveryUnavailable(int attempt)
+        {
+            if (_disposed) return;
+            LogManager.Log("[WebOverlay] browser recovery unavailable; restart required attempt=" + attempt);
+            WebViewFailureRecorder.Record(new WebViewFailureRecorder.Entry
+            {
+                Kind = "recovery_unavailable",
+                Reason = "browser_restart_required",
+                BrowserVersion = _webBrowserVersion,
+                BrowserProcessId = _webBrowserProcessId,
+                DocumentGeneration = _webDocumentObservationGeneration
+            });
+            _webFailed = true;
+            ActivateFallback();
+        }
+
+        private string SafeFailureReportFolder()
+        {
+            try
+            {
+                return _webViewEnvironment == null
+                    ? null : _webViewEnvironment.FailureReportFolderPath;
+            }
+            catch { return null; }
+        }
+
+        private void OnHostPresentationTransition(string reason)
+        {
+            int generation = System.Threading.Interlocked.Increment(
+                ref _hostPresentationGeneration);
+            _cachedOwnerHandle = SafeHandle64(_owner);
+            if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
+            {
+                CF7Launcher.Diagnostic.FocusTrace.Record("host.presentation", new
+                {
+                    reason,
+                    generation,
+                    ownerVisible = SafeVisible(_owner),
+                    anchorVisible = SafeVisible(_anchor),
+                    ownerHandle = _cachedOwnerHandle
+                });
+            }
+            LootPanelCoordinator coordinator = _lootPanelCoordinator;
+            if (coordinator != null)
+            {
+                try { coordinator.OnHostPresentationChanged(); }
+                catch { }
+            }
+        }
+
+        /// <summary>
+        /// LootPanelCoordinator 的宿主呈现探针。只读 owner/anchor 的非句柄副作用标志
+        /// （IsDisposed/IsHandleCreated/WindowState/Visible 均为位字段读取），可在
+        /// 协调器 timer 线程上安全调用。"hidden" 是唯一可延迟的瞬态。
+        /// </summary>
+        internal LootHostPresentationSnapshot CaptureHostPresentationSnapshot()
+        {
+            var snap = new LootHostPresentationSnapshot();
+            snap.DocumentGeneration = _webDocumentObservationGeneration;
+            snap.HostGeneration = _hostPresentationGeneration;
+            snap.WebReady = _webReady;
+            try
+            {
+                Form owner = _owner;
+                Control anchor = _anchor;
+                snap.HostHandle = SafeHandle64(owner);
+                if (_disposed) snap.BlockReason = "disposed";
+                else if (owner == null || anchor == null
+                    || owner.IsDisposed || anchor.IsDisposed)
+                    snap.BlockReason = "unavailable";
+                else if (!owner.IsHandleCreated || !anchor.IsHandleCreated)
+                    snap.BlockReason = "unavailable";
+                else if (owner.WindowState == FormWindowState.Minimized)
+                    snap.BlockReason = "minimized";
+                else if (!owner.Visible || !anchor.Visible)
+                    snap.BlockReason = LootPanelCoordinator.HostBlockHidden;
+                snap.HostVisible = snap.BlockReason == null;
+            }
+            catch { snap.BlockReason = "probe_failed"; }
+            return snap;
+        }
+
+        private static long SafeHandle64(Control control)
+        {
+            try
+            {
+                if (control == null || control.IsDisposed
+                    || !control.IsHandleCreated) return 0;
+                return control.Handle.ToInt64();
+            }
+            catch { return 0; }
+        }
+
+        private static bool SafeVisible(Control control)
+        {
+            try { return control != null && !control.IsDisposed && control.Visible; }
+            catch { return false; }
+        }
+
+        #endregion
 
         private void PublishDocumentAdvanced()
         {
@@ -4065,6 +4560,9 @@ namespace CF7Launcher.Guardian
         public void SetLootPanelCoordinator(LootPanelCoordinator coordinator)
         {
             _lootPanelCoordinator = coordinator;
+            if (coordinator != null)
+                coordinator.SetHostPresentationProbe(
+                    CaptureHostPresentationSnapshot);
         }
 
         public void SetNpcShopTask(NpcShopTask task)
@@ -4693,6 +5191,16 @@ namespace CF7Launcher.Guardian
                     Environment.TickCount64, out generation))
                 return;
 
+            if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
+            {
+                CF7Launcher.Diagnostic.FocusTrace.Record("panel.focus_queued", new
+                {
+                    reason,
+                    generation,
+                    takeForeground = _panelTakeForeground,
+                    panelMode = _panelMode
+                });
+            }
             try
             {
                 BeginInvoke(new Action(delegate
@@ -4810,6 +5318,20 @@ namespace CF7Launcher.Guardian
                     + " set_fg=" + setForegroundResult
                     + " ctrl=" + controllerState
                     + " hwnd=" + overlayHwnd);
+                if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
+                {
+                    CF7Launcher.Diagnostic.FocusTrace.Record("panel.focus_execute", new
+                    {
+                        reason,
+                        generation,
+                        foreground = foregroundState,
+                        foregroundHwnd = foregroundHwnd.ToInt64(),
+                        overlayHwnd = overlayHwnd.ToInt64(),
+                        setFgAttempted = setForegroundAttempted,
+                        setFg = setForegroundResult,
+                        ctrl = controllerState
+                    });
+                }
             }
         }
 

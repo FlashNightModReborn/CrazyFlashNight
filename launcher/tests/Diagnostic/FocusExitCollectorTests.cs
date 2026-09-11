@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using CF7Launcher.Diagnostic;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -132,6 +133,46 @@ namespace CF7Launcher.Tests.Diagnostic
                 FocusTrace.Shutdown(_ => launched = true);
                 Assert.True(launched);
             }
+        }
+
+        [Fact]
+        public void ExitSnapshotIncludesBoundedWebViewFailureBundle()
+        {
+            string crashpad = Path.Combine(_root, "launcher", "webview2_overlay_userdata",
+                "EBWebView", "Crashpad", "reports", "exit-1");
+            Directory.CreateDirectory(crashpad);
+            File.WriteAllBytes(Path.Combine(crashpad, "crash.dmp"),
+                new UTF8Encoding(false).GetBytes("minidump"));
+            File.WriteAllBytes(Path.Combine(crashpad, "stray.exe"), new byte[] { 1 });
+            Directory.CreateDirectory(Path.Combine(_root, "logs"));
+            File.WriteAllText(Path.Combine(_root, "logs", "webview-failures.jsonl"),
+                new JObject { ["kind"] = "browser_process_exited", ["session"] = "s-exit",
+                    ["failureReportFolderPath"] = crashpad }.ToString(Newtonsoft.Json.Formatting.None),
+                new UTF8Encoding(false));
+
+            ProcessStartInfo invocation = null;
+            FocusTrace.StartConfigured(true, _root);
+            FocusTrace.Shutdown(info => invocation = info);
+            Assert.NotNull(invocation);
+            string snapshot = invocation.ArgumentList.Last();
+
+            // 快照目录只收顶层扁平文件：采集脚本的 file-hashes.json 自动覆盖这些条目。
+            Assert.True(File.Exists(Path.Combine(snapshot, "webview-failures.jsonl")));
+            Assert.True(File.Exists(Path.Combine(snapshot, "webview-failures-manifest.json")));
+            Assert.True(File.Exists(Path.Combine(snapshot, "wvf-r00-crash.dmp")));
+            Assert.False(File.Exists(Path.Combine(snapshot, "wvf-r00-stray.exe")));
+
+            JObject auto = JObject.Parse(File.ReadAllText(Path.Combine(snapshot, "auto-collection.json")));
+            Assert.True((bool)auto["webviewFailures"]["logIncluded"]);
+            Assert.Equal(1, (int)auto["webviewFailures"]["filesIncluded"]);
+
+            JObject manifest = JObject.Parse(
+                File.ReadAllText(Path.Combine(snapshot, "webview-failures-manifest.json")));
+            Assert.True(manifest["omitted"].OfType<JObject>()
+                .Any(o => (string)o["reason"] == "unsupported_extension"));
+            byte[] placed = File.ReadAllBytes(Path.Combine(snapshot, "wvf-r00-crash.dmp"));
+            Assert.Equal(Convert.ToHexString(SHA256.HashData(placed)),
+                (string)manifest["included"][0]["sha256"]);
         }
 
         [Fact]

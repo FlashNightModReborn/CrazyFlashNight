@@ -92,8 +92,9 @@ namespace CF7Launcher.Guardian
             if (!FocusTrace.Enabled || !FocusTrace.ShouldTraceNativeHitTest(point)) return;
             try
             {
+                NativeMouseCorrelation corr = FocusTrace.PeekNativeMouseCorrelation(point, 0x0201);
                 FocusTrace.Record("hud.native_hit_test", new {
-                    receiver = Handle.ToInt64(), point, mouseId = FocusTrace.NativeMouseCandidate(point),
+                    receiver = Handle.ToInt64(), point, mouseId = corr.MouseId, correlation = corr,
                     widget = hit?.GetType().Name, result = result.ToInt64(),
                     hudInput = FocusTrace.CaptureHudInput(point) });
             }
@@ -108,10 +109,18 @@ namespace CF7Launcher.Guardian
                 int triggerMessage = (int)((message.LParam.ToInt64() >> 16) & 0xffff);
                 if (!IsFocusMouseMessage(triggerMessage)) return;
                 Point point = MessageScreenPoint();
+                bool inSend = InSendMessage();
+                uint messageTime = unchecked((uint)GetMessageTime());
+                // activate 由正在派发的输入消息触发；GetMessageTime 指向上一条泵取消息，
+                // inSendMessage=true 时它仍是触发点击的入队时间，作为上下文记录但不参与认领。
+                NativeMouseCorrelation corr = FocusTrace.PeekNativeMouseCorrelation(
+                    point, triggerMessage, messageTime, !inSend);
                 FocusTrace.Record("hud.native_mouse_activate", new {
                     receiver = message.HWnd.ToInt64(), triggerMessage,
                     hitTest = (short)(message.LParam.ToInt64() & 0xffff), point, pointSource = "GetMessagePos",
-                    mouseId = FocusTrace.NativeMouseCandidate(point), result = message.Result.ToInt64(),
+                    messageTime, inSendMessage = inSend,
+                    mouseId = corr.MouseId, correlation = corr, result = message.Result.ToInt64(),
+                    windows = FocusWindowSnapshot.At(point),
                     hudInput = FocusTrace.CaptureHudInput(point) });
             }
             catch { /* 观察不能改变 MA_NOACTIVATE。 */ }
@@ -129,10 +138,23 @@ namespace CF7Launcher.Guardian
                 long packed = message.LParam.ToInt64();
                 Point client = new Point((short)(packed & 0xffff), (short)((packed >> 16) & 0xffff));
                 Point point = PointToScreen(client);
+                bool inSend = InSendMessage();
+                uint messageTime = unchecked((uint)GetMessageTime());
+                // posted 输入消息：GetMessageTime 是本消息真实入队时间，认领时用它测"hook→入队"延迟；
+                // SendMessage 合成投递：GetMessageTime 属于上一条泵取消息，退回 observed 域。
+                NativeMouseCorrelation corr = phase == "enter"
+                    ? FocusTrace.CorrelateNativeMouse(point, message.Msg, messageTime, !inSend)
+                    : FocusTrace.PeekNativeMouseCorrelation(point, message.Msg, messageTime, !inSend);
+                // messageAgeMs 与 hookDispatchMs 同一条 wrap-safe 规则：负区间=歧义，显式标注。
+                int messageAge = FocusTrace.WrappingTickDeltaMs(
+                    unchecked((uint)Environment.TickCount), messageTime, out bool messageAgeAmb);
                 FocusTrace.Record("hud.native_mouse", new {
                     receiver = message.HWnd.ToInt64(), message = message.Msg, phase, client, point,
-                    mouseId = FocusTrace.NativeMouseCandidate(point), result = message.Result.ToInt64(),
+                    messageTime, messageAgeMs = messageAge, messageAgeAmbiguous = messageAgeAmb,
+                    inSendMessage = inSend,
+                    mouseId = corr.MouseId, correlation = corr, result = message.Result.ToInt64(),
                     elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency,
+                    windows = phase == "enter" ? FocusWindowSnapshot.At(point) : null,
                     hudInput = phase == "enter" ? FocusTrace.CaptureHudInput(point) : null
                 });
             }
@@ -140,6 +162,8 @@ namespace CF7Launcher.Guardian
         }
 
         [DllImport("user32.dll")] private static extern uint GetMessagePos();
+        [DllImport("user32.dll")] private static extern int GetMessageTime();
+        [DllImport("user32.dll")] private static extern bool InSendMessage();
         private static Point MessageScreenPoint()
         {
             uint packed = GetMessagePos();

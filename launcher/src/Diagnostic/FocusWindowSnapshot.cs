@@ -10,6 +10,12 @@ namespace CF7Launcher.Diagnostic
         internal static IntPtr Hud, Owner;
         internal static Func<IntPtr> FlashWindow;
 
+        // 廉价路径：目标外点击只做一次前台窗口句柄采样，不做全量 Describe。
+        internal static IntPtr ForegroundHandle()
+        {
+            try { return GetForegroundWindow(); } catch { return IntPtr.Zero; }
+        }
+
         internal static object At(Point point)
         {
             try

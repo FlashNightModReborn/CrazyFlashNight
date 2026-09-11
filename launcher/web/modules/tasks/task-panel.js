@@ -1754,7 +1754,7 @@
                 insufficient_level: '等级不足，无法领取该委托',
                 insufficient_kpoint: 'K点不足',
                 stage_not_found: '副本关卡数据缺失',
-                pending_stage_settlement: '请先领取或放弃上一关尚未处理的奖励',
+                pending_stage_settlement: '上一关结算尚未完成，请关闭面板查看结算状态；若仍无响应，请导出诊断包反馈',
                 no_challenge: '该副本无挑战模式',
                 not_dungeon_task: '非副本任务',
                 disconnected: '连接已断开'

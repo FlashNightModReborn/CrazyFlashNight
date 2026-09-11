@@ -45,6 +45,7 @@ $focusContext = [ordered]@{
     focusEventCount = 0
     as2ObserveReadySeen = $false
     collectionWarnings = @()
+    webviewFailures = $null
 }
 if ($focusPrepared) {
     $focusContext.requestedAtUtc = $focusPrepared.requestedAtUtc
@@ -102,6 +103,94 @@ try {
         $focusSource = Join-Path $focusRoot $focusRelative
         if (-not $focusPrepared -and (Test-Path -LiteralPath $focusSource -PathType Leaf)) {
             Copy-Item -LiteralPath $focusSource -Destination (Join-Path $focusRunDir (Split-Path -Leaf $focusSource))
+        }
+    }
+    # WebView 故障记录器有界尾部（standalone 路径）：与 Core WebViewFailureReportCollector
+    # 同口径 logTailBytes 上限与共享读容忍；本路径只收 JSONL 元数据，不采集原始 dump —
+    # 那需要 launcher 侧采集（手动诊断包 / 游戏退出自动快照），此处 manifest 明示该限制。
+    $focusWvfTailCap = 256 * 1024
+    $focusWvfLogStates = [ordered]@{}
+    foreach ($focusWvfName in @('webview-failures.jsonl', 'webview-failures.jsonl.1')) {
+        $focusWvfState = [ordered]@{ included = $false; bytes = [long]0; truncated = $false; omittedReason = $null }
+        $focusWvfSource = Join-Path $focusRoot ('logs/' + $focusWvfName)
+        if (-not $focusPrepared) {
+            if (-not (Test-Path -LiteralPath $focusWvfSource -PathType Leaf)) {
+                $focusWvfState.omittedReason = 'log_missing'
+            } else {
+                $focusWvfStream = $null
+                try {
+                    $focusWvfStream = New-Object IO.FileStream($focusWvfSource,
+                        [IO.FileMode]::Open, [IO.FileAccess]::Read,
+                        ([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete))
+                    $focusWvfStart = [Math]::Max(0L, $focusWvfStream.Length - $focusWvfTailCap)
+                    [void]$focusWvfStream.Seek($focusWvfStart, [IO.SeekOrigin]::Begin)
+                    if ($focusWvfStart -gt 0) {
+                        $focusWvfState.truncated = $true
+                        while (($focusWvfB = $focusWvfStream.ReadByte()) -ge 0 -and $focusWvfB -ne 10) { }
+                    }
+                    $focusWvfMs = New-Object IO.MemoryStream
+                    $focusWvfBuf = New-Object byte[] 65536
+                    while ($focusWvfMs.Length -lt $focusWvfTailCap -and
+                        ($focusWvfN = $focusWvfStream.Read($focusWvfBuf, 0,
+                            [int][Math]::Min($focusWvfBuf.Length, $focusWvfTailCap - $focusWvfMs.Length))) -gt 0) {
+                        $focusWvfMs.Write($focusWvfBuf, 0, $focusWvfN)
+                    }
+                    # 共享读期间文件仍可能被追加：累计截停且尚有未读字节才算截断。
+                    if ($focusWvfMs.Length -ge $focusWvfTailCap -and
+                        $focusWvfStream.Position -lt $focusWvfStream.Length) { $focusWvfState.truncated = $true }
+                    $focusWvfBytes = $focusWvfMs.ToArray()
+                    [IO.File]::WriteAllBytes((Join-Path $focusRunDir $focusWvfName), $focusWvfBytes)
+                    $focusWvfState.included = $true
+                    $focusWvfState.bytes = [long]$focusWvfBytes.LongLength
+                } catch {
+                    $focusWvfState.omittedReason = 'log_unreadable'
+                    $focusContext.collectionWarnings += ('webview-failures: ' + $focusWvfName + ' unreadable; tail omitted')
+                } finally {
+                    if ($null -ne $focusWvfStream) { $focusWvfStream.Dispose() }
+                }
+            }
+        }
+        $focusWvfLogStates[$focusWvfName] = $focusWvfState
+    }
+    if (-not $focusPrepared) {
+        $focusWvfLog = $focusWvfLogStates['webview-failures.jsonl']
+        $focusWvfRotated = $focusWvfLogStates['webview-failures.jsonl.1']
+        $focusWvfManifest = [ordered]@{
+            version = 1
+            generatedAtUtc = [DateTime]::UtcNow.ToString('O')
+            collector = 'powershell-standalone'
+            coverage = 'recorder_log_only'
+            note = 'standalone collection ships only the bounded recorder log; raw Crashpad report files are bundled by launcher-side collection (manual diagnostic package / automatic game-exit snapshot).'
+            sourceLog = 'logs/webview-failures.jsonl'
+            bounds = [ordered]@{ logTailBytes = [long]$focusWvfTailCap }
+            failuresLog = [ordered]@{
+                included = [bool]$focusWvfLog.included
+                bytes = [long]$focusWvfLog.bytes
+                truncated = [bool]$focusWvfLog.truncated
+                omittedReason = $focusWvfLog.omittedReason
+                rotated = [ordered]@{
+                    file = 'webview-failures.jsonl.1'
+                    included = [bool]$focusWvfRotated.included
+                    bytes = [long]$focusWvfRotated.bytes
+                    omittedReason = $focusWvfRotated.omittedReason
+                }
+            }
+            included = @()
+            omitted = @([ordered]@{
+                reason = 'standalone_reports_not_collected'
+                detail = 'raw crash report files require launcher-side collection; see webview-failures in the manual diagnostic package or automatic exit snapshot'
+            })
+        }
+        try {
+            [IO.File]::WriteAllText((Join-Path $focusRunDir 'webview-failures-manifest.json'),
+                ($focusWvfManifest | ConvertTo-Json -Depth 6), (New-Object Text.UTF8Encoding($false)))
+        } catch { $focusContext.collectionWarnings += ('webview-failures: manifest write failed: ' + $_.Exception.Message) }
+        $focusContext.webviewFailures = [ordered]@{
+            logIncluded = [bool]$focusWvfLog.included
+            logBytes = [long]$focusWvfLog.bytes
+            logTruncated = [bool]$focusWvfLog.truncated
+            rotatedIncluded = [bool]$focusWvfRotated.included
+            coverage = 'recorder_log_only'
         }
     }
     $focusRollingLogs = @()

@@ -29,7 +29,7 @@
   window.__failNextLootSnapshot=false;window.__dropNextInventoryWrite=false;
   window.__failInventoryRefresh=false;window.__delayInventoryWrite=false;
 window.Toast={add:function(value){__toasts.push(String(value))}};
-window.Icons={html:function(name,cls){return '<span class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'"></span>'}};
+window.Icons={html:function(name,cls){return '<img class="'+(cls||'')+'" data-icon="'+String(name).replace(/"/g,'')+'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="">'}};
 window.__portraitStats={staticMounts:0,dollRenders:0};
 function portraitHarnessData(color,label){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" fill="'+color+'"/><circle cx="32" cy="23" r="12" fill="#d8e4e2"/><path d="M12 61c2-17 10-25 20-25s18 8 20 25" fill="#8ba4a4"/><path d="M23 22h18" stroke="#263638" stroke-width="4"/></svg>')}
@@ -1216,6 +1216,43 @@ function activeResponse(message){var response=common(message);response.snapshots
       portraitFallbacks.length===2
       &&Array.prototype.every.call(portraitFallbacks,function(node){
         return node.textContent===''&&getComputedStyle(node).display==='none';
+      }));
+    var settlementAssetsRecorded=await waitFor(function(){
+      return __sent.some(function(x){return x.type==='debug'&&x.scope==='loot'
+        &&x.event==='report_assets'&&x.panelInstanceId==='panel.visual'})});
+    var lootEvents=__sent.filter(function(x){return x.type==='debug'&&x.scope==='loot'
+      &&x.panelInstanceId==='panel.visual'});
+    var lootEvent=function(name){return lootEvents.filter(function(x){return x.event===name})[0]||null};
+    var lootInit=lootEvent('init_received'),lootReq=lootEvent('request_issued'),
+      lootAccept=lootEvent('response_accepted'),lootAdopt=lootEvent('report_adopted'),
+      lootRender=lootEvent('report_render'),lootAssets=lootEvent('report_assets');
+    ok('settlement reports the exact bounded lifecycle on the existing debug channel',
+      settlementAssetsRecorded
+      &&lootInit&&lootInit.outcome==='received'&&lootInit.source==='stage_settlement'
+        &&lootInit.chestSessionId==='chest.visual'&&lootInit.lootContainerId==='loot.test.visual'
+        &&lootInit.containerEpoch===7&&lootInit.report==='run.harness.1'
+        &&lootInit.kills===2&&lootInit.flows===2
+      &&lootReq&&lootReq.cmd==='snapshot'&&lootReq.outcome==='issued'
+      &&lootAccept&&lootAccept.cmd==='snapshot'&&lootAccept.outcome==='accepted'
+        &&lootAccept.callId===lootReq.callId
+      &&lootAdopt&&lootAdopt.outcome==='adopted'&&lootAdopt.detail==='phase:active'
+      &&lootRender&&lootRender.outcome==='complete'&&lootRender.kills===2
+        &&lootRender.flows===2&&lootRender.requested===4
+      &&lootAssets&&lootAssets.outcome==='complete'&&lootAssets.requested===4
+        &&lootAssets.loaded===4&&lootAssets.errors===0&&lootAssets.timeouts===0
+        &&lootAssets.fallbacks===0
+        &&lootAssets.detail.indexOf('doll=1/1')>=0
+        &&lootAssets.detail.indexOf('portrait=1/1')>=0
+        &&lootAssets.detail.indexOf('icon=2/2')>=0
+      &&lootEvents.every(function(x){return x.generation===lootInit.generation}),
+      JSON.stringify({events:lootEvents.map(function(x){return x.event+':'+x.outcome}),
+        assets:lootAssets,recorded:settlementAssetsRecorded}));
+    ok('settlement debug records carry no player-facing strings',
+      lootEvents.every(function(x){
+        return Object.keys(x).sort().join('|')===['type','scope','event','outcome','cmd',
+          'callId','panelInstanceId','chestSessionId','lootContainerId','containerEpoch',
+          'generation','source','report','error','kills','flows','requested','loaded',
+          'errors','timeouts','fallbacks','detail'].sort().join('|');
       }));
     var flowCards=document.querySelectorAll('.loot-settlement-flow-card');
     ok('one scrollable action report keeps kill and asset facts together',

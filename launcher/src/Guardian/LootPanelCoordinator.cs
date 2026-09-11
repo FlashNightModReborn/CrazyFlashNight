@@ -1,11 +1,29 @@
 ﻿using System;
 using System.Threading;
 using CF7Launcher.AgentRuntime.Security;
+using CF7Launcher.Diagnostic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
 {
+    /// <summary>
+    /// Point-in-time host presentation truth captured outside coordinator locks by the
+    /// owner-form probe. A deferred open may retry only while the capture still names the
+    /// same document generation, host window handle and host presentation generation that
+    /// were recorded when the intent was parked.
+    /// </summary>
+    public struct LootHostPresentationSnapshot
+    {
+        /// <summary>null = 可呈现；"hidden" 是唯一可延迟的原因（宿主窗口已建句柄、未最小化、但尚未揭示）。</summary>
+        public string BlockReason;
+        public bool HostVisible;
+        public bool WebReady;
+        public int DocumentGeneration;
+        public long HostHandle;
+        public int HostGeneration;
+    }
+
     public interface ILootPanelPort
     {
         bool IsAvailable { get; }
@@ -84,6 +102,13 @@ namespace CF7Launcher.Guardian
         public const int DefaultCloseRetryDelayMs = 250;
         public const int DefaultCloseRetryMaximumMs = 1000;
         public const int DefaultPauseReleaseRetryMs = 250;
+        // Deferred open：只覆盖 "宿主已建句柄但未揭示" 的瞬态窗口（复现于结算报告首次
+        // 打开早于宿主 reveal ~1s 的场景）。窗口上界 4s + 尝试次数上界 20 双封顶；
+        // minimized/不可用/disposed 等真实无效条件立即失败，绝不无限重试。
+        public const int DefaultDeferredOpenRetryDelayMs = 200;
+        public const int DefaultDeferredOpenMaxAttempts = 20;
+        public const int DefaultDeferredOpenMaxWindowMs = 4000;
+        public const string HostBlockHidden = "hidden";
 
         public enum BindingState
         {
@@ -191,6 +216,25 @@ namespace CF7Launcher.Guardian
         private string _authorityVisualCloseProvenReason;
         private string _rewardInboxReplacementPendingPanelInstanceId;
         private string _rewardInboxReplacementPendingReason;
+        // Deferred open（宿主揭示竞态修复）：pending 期间绑定仍是 OpenQueued，执行门
+        // MarkOpenExecuting 语义不变；重试只允许 PostNotDelivered/PreExecutionRejected
+        // （从未送达或执行前被拒）—— PostAcceptedThenFailed 意味着 Web 已收到 open，
+        // 重放会产生重复投递，绝不延迟重试。
+        private readonly int _deferredOpenRetryDelayMs;
+        private readonly int _deferredOpenMaxAttempts;
+        private readonly int _deferredOpenMaxWindowMs;
+        private Func<LootHostPresentationSnapshot> _hostPresentationProbe;
+        private bool _deferredOpenPending;
+        private int _deferredOpenAttempts;
+        private long _deferredOpenDeadlineTick;
+        private string _deferredOpenInitJson;
+        private string _deferredOpenSaveKey;
+        private int _deferredOpenDocumentGeneration;
+        private long _deferredOpenHostHandle;
+        private int _deferredOpenHostGeneration;
+        private bool _deferredOpenPauseMayBeHeld;
+        private string _deferredOpenLastBlockReason;
+        private Timer _deferredOpenTimer;
         private bool _disposed;
 
         public LootPanelCoordinator(ILootPanelPort panel, Func<bool> releasePause,
@@ -200,7 +244,10 @@ namespace CF7Launcher.Guardian
             int closeRetryDelayMs = DefaultCloseRetryDelayMs,
             int closeRetryMaximumMs = DefaultCloseRetryMaximumMs,
             int pauseReleaseRetryMs = DefaultPauseReleaseRetryMs,
-            bool rewardRootAdmissionEnabled = true)
+            bool rewardRootAdmissionEnabled = true,
+            int deferredOpenRetryDelayMs = DefaultDeferredOpenRetryDelayMs,
+            int deferredOpenMaxAttempts = DefaultDeferredOpenMaxAttempts,
+            int deferredOpenMaxWindowMs = DefaultDeferredOpenMaxWindowMs)
         {
             if (bindWatchdogMs <= 0) throw new ArgumentOutOfRangeException("bindWatchdogMs");
             if (closeRetryDelayMs <= 0) throw new ArgumentOutOfRangeException("closeRetryDelayMs");
@@ -208,6 +255,12 @@ namespace CF7Launcher.Guardian
                 throw new ArgumentOutOfRangeException("closeRetryMaximumMs");
             if (pauseReleaseRetryMs <= 0)
                 throw new ArgumentOutOfRangeException("pauseReleaseRetryMs");
+            if (deferredOpenRetryDelayMs <= 0)
+                throw new ArgumentOutOfRangeException("deferredOpenRetryDelayMs");
+            if (deferredOpenMaxAttempts <= 0)
+                throw new ArgumentOutOfRangeException("deferredOpenMaxAttempts");
+            if (deferredOpenMaxWindowMs <= 0)
+                throw new ArgumentOutOfRangeException("deferredOpenMaxWindowMs");
             _panel = panel;
             _releasePause = releasePause;
             _requestRecovery = requestRecovery;
@@ -222,6 +275,9 @@ namespace CF7Launcher.Guardian
             _closeRetryMaximumMs = closeRetryMaximumMs;
             _pauseReleaseRetryMs = pauseReleaseRetryMs;
             _rewardRootAdmissionEnabled = rewardRootAdmissionEnabled;
+            _deferredOpenRetryDelayMs = deferredOpenRetryDelayMs;
+            _deferredOpenMaxAttempts = deferredOpenMaxAttempts;
+            _deferredOpenMaxWindowMs = deferredOpenMaxWindowMs;
             _state = BindingState.Idle;
         }
 
@@ -266,6 +322,40 @@ namespace CF7Launcher.Guardian
         {
             lock (_sync)
                 _rewardInboxReturnHandler = rewardInboxReturnHandler;
+        }
+
+        /// <summary>
+        /// Installs the owner-form presentation probe. Called on every tracked-open failure and
+        /// once before the initial queue attempt; only "hidden" snapshots defer the open. A null
+        /// probe preserves the pre-deferral behavior exactly (no deferral ever occurs).
+        /// </summary>
+        public void SetHostPresentationProbe(
+            Func<LootHostPresentationSnapshot> hostPresentationProbe)
+        {
+            lock (_sync) _hostPresentationProbe = hostPresentationProbe;
+        }
+
+        /// <summary>
+        /// Host presentation transition wake (owner/anchor reveal, handle recreate, minimize
+        /// restore). Evaluates the parked intent immediately instead of waiting for the next
+        /// timer tick; all identity and budget gates still apply.
+        /// </summary>
+        public void OnHostPresentationChanged()
+        {
+            Binding binding;
+            lock (_sync)
+            {
+                if (_disposed || !_deferredOpenPending || _active == null
+                    || _state != BindingState.OpenQueued) return;
+                binding = _active;
+            }
+            ResumeDeferredOpen(binding, "host_presentation");
+        }
+
+        /// <summary>Test/diagnostic view: a deferred open intent is parked waiting to retry.</summary>
+        internal bool DeferredOpenPending
+        {
+            get { lock (_sync) return _deferredOpenPending; }
         }
 
         public BindingState State { get { lock (_sync) return _state; } }
@@ -379,6 +469,7 @@ namespace CF7Launcher.Guardian
                     ClearRewardInboxReplacementLocked();
                     _closeAttemptGeneration = 0;
                     _closeAttemptCount = 0;
+                    ClearDeferredOpenLocked();
                 }
             }
             finally { if (admissionLease != null) admissionLease.Dispose(); }
@@ -411,10 +502,30 @@ namespace CF7Launcher.Guardian
                     ? binding.SettlementReport.DeepClone() : null;
             }
 
+            string initJson = init.ToString(Formatting.None);
+            Func<LootHostPresentationSnapshot> hostProbe;
+            lock (_sync)
+            {
+                if (!_disposed && ReferenceEquals(_active, binding)
+                    && _state == BindingState.OpenQueued)
+                {
+                    _deferredOpenInitJson = initJson;
+                }
+                hostProbe = _hostPresentationProbe;
+            }
+            LootHostPresentationSnapshot presentation =
+                CaptureHostPresentation(hostProbe);
+            if (presentation.BlockReason == HostBlockHidden
+                && ParkDeferredOpen(binding, initJson, presentation,
+                    "initial_open"))
+            {
+                return true;
+            }
+
             bool queued = false;
             try
             {
-                queued = _panel.TryOpenTracked(init.ToString(Formatting.None), panelInstanceId,
+                queued = _panel.TryOpenTracked(initJson, panelInstanceId,
                     delegate
                     {
                         return AllowsExternalAdmission(
@@ -450,6 +561,7 @@ namespace CF7Launcher.Guardian
                     _openPosted = false;
                     _recoverySignalAttempted = false;
                     _closeRequestPending = false;
+                    ClearDeferredOpenLocked();
                 }
             }
             rejection = "open_not_queued";
@@ -682,6 +794,7 @@ namespace CF7Launcher.Guardian
                 CancelBindWatchdogLocked();
                 CancelCloseRetryLocked();
                 CancelPauseReleaseRetryLocked();
+                ClearDeferredOpenLocked();
                 _active = null;
                 _state = BindingState.Idle;
                 _openExecutionStarted = false;
@@ -817,6 +930,7 @@ namespace CF7Launcher.Guardian
             bool closeNative;
             bool alreadyQueued;
             bool authorityVisualCloseProven;
+            bool pauseMayBeHeld;
             BindingState authorityCloseState;
             lock (_sync)
             {
@@ -842,6 +956,7 @@ namespace CF7Launcher.Guardian
                     CancelBindWatchdogLocked();
                 }
                 closeNative = _openExecutionStarted || _openPosted;
+                pauseMayBeHeld = _deferredOpenPauseMayBeHeld;
             }
 
             LogManager.Log("event=loot_panel_force_detach reason=" + SafeReason(reason));
@@ -853,7 +968,9 @@ namespace CF7Launcher.Guardian
                 // The captured execution gate is now stale and will reject if the queued command
                 // eventually reaches the UI thread. No pause/native/DOM side effect is required
                 // for same-object AS2 authority convergence, so it is safe to finish immediately.
-                FinalizeDetached(binding, false);
+                // pauseMayBeHeld covers a deferred-open attempt that delivered the global pause
+                // before being reparked; the unpause write is idempotent.
+                FinalizeDetached(binding, pauseMayBeHeld);
                 return true;
             }
             if (!alreadyQueued || !IsCloseAttemptOwned(binding)) QueueExactClose(binding);
@@ -894,6 +1011,7 @@ namespace CF7Launcher.Guardian
             bool forceClosePosted = false;
             bool recoverOpenFailure = false;
             bool releasePauseAfterFailure = false;
+            Func<LootHostPresentationSnapshot> hostProbe = null;
             lock (_sync)
             {
                 if (_disposed || !ReferenceEquals(_active, binding)) return;
@@ -918,6 +1036,18 @@ namespace CF7Launcher.Guardian
                     CancelBindWatchdogLocked();
                     recoverOpenFailure = _state != BindingState.ForceDetachQueued;
                     releasePauseAfterFailure = _openExecutionStarted;
+                    // Only outcomes that provably never delivered the open post may defer:
+                    // PostAcceptedThenFailed means the Web document already received "open" and
+                    // retrying would duplicate the delivery.
+                    if (recoverOpenFailure
+                        && (outcome
+                                == PanelHostController.TrackedOpenOutcome.PostNotDelivered
+                            || outcome
+                                == PanelHostController.TrackedOpenOutcome
+                                    .PreExecutionRejected))
+                    {
+                        hostProbe = _hostPresentationProbe;
+                    }
                 }
             }
             if (forceClosePosted)
@@ -925,9 +1055,336 @@ namespace CF7Launcher.Guardian
                 QueueExactClose(binding);
                 return;
             }
+            if (hostProbe != null)
+            {
+                LootHostPresentationSnapshot presentation =
+                    CaptureHostPresentation(hostProbe);
+                if (presentation.BlockReason == HostBlockHidden
+                    && ParkDeferredOpen(binding, null, presentation,
+                        "open_failed:" + outcome.ToString()))
+                {
+                    LogManager.Log("event=loot_panel_open_failed outcome="
+                        + outcome.ToString() + " deferred=1");
+                    return;
+                }
+            }
             if (recoverOpenFailure) TrySignalRecoveryOnce(binding, "web_open_failed");
             FinalizeDetached(binding, releasePauseAfterFailure);
             LogManager.Log("event=loot_panel_open_failed outcome=" + outcome.ToString());
+        }
+
+        /// <summary>
+        /// Parks the exact open intent while the host is transiently hidden. Capture-once
+        /// identity (request/save key, document generation, host handle + generation) is frozen
+        /// on first park; every later re-park only re-arms the bounded timer.
+        /// </summary>
+        private bool ParkDeferredOpen(Binding binding, string initJson,
+            LootHostPresentationSnapshot presentation, string source)
+        {
+            string blockReason;
+            string saveKey;
+            int attempts;
+            lock (_sync)
+            {
+                if (_disposed || !ReferenceEquals(_active, binding)
+                    || _state != BindingState.OpenQueued || _deferredOpenPending)
+                    return false;
+                long now = Environment.TickCount64;
+                if (_deferredOpenDeadlineTick == 0)
+                {
+                    if (string.IsNullOrEmpty(_deferredOpenInitJson)
+                        && string.IsNullOrEmpty(initJson)) return false;
+                    if (!string.IsNullOrEmpty(initJson))
+                        _deferredOpenInitJson = initJson;
+                    _deferredOpenSaveKey = DeferredSaveKey(binding);
+                    _deferredOpenDocumentGeneration = presentation.DocumentGeneration;
+                    _deferredOpenHostHandle = presentation.HostHandle;
+                    _deferredOpenHostGeneration = presentation.HostGeneration;
+                    _deferredOpenDeadlineTick = now + _deferredOpenMaxWindowMs;
+                    _deferredOpenAttempts = 0;
+                }
+                else if (now > _deferredOpenDeadlineTick
+                    || _deferredOpenAttempts >= _deferredOpenMaxAttempts)
+                {
+                    return false;
+                }
+                _deferredOpenPauseMayBeHeld |= _openExecutionStarted;
+                _openExecutionStarted = false;
+                _openPosted = false;
+                _deferredOpenPending = true;
+                _deferredOpenLastBlockReason =
+                    presentation.BlockReason ?? "unknown";
+                blockReason = _deferredOpenLastBlockReason;
+                saveKey = _deferredOpenSaveKey;
+                attempts = _deferredOpenAttempts;
+                ArmDeferredOpenTimerLocked(binding);
+            }
+            LogManager.Log("event=loot_panel_open_deferred source=" + SafeReason(source)
+                + " block=" + SafeReason(blockReason) + " attempts=" + attempts
+                + " save=" + SafeReason(saveKey));
+            FocusTrace.Record("loot.open_deferred", new
+            {
+                source,
+                block = blockReason,
+                attempts,
+                save = saveKey,
+                doc = presentation.DocumentGeneration,
+                host = presentation.HostHandle,
+                hostGen = presentation.HostGeneration
+            });
+            return true;
+        }
+
+        /// <summary>
+        /// Evaluates a parked intent on timer/wake. Reissues the exact same tracked open only
+        /// when the probe reports the host presentable AND request/save/document/host identity
+        /// still matches the capture AND budget remains; every other outcome is terminal.
+        /// </summary>
+        private void ResumeDeferredOpen(Binding binding, string trigger)
+        {
+            Func<LootHostPresentationSnapshot> probe;
+            Func<bool> externalAdmissionGate;
+            string initJson;
+            lock (_sync)
+            {
+                if (_disposed || !_deferredOpenPending
+                    || !ReferenceEquals(_active, binding)
+                    || _state != BindingState.OpenQueued) return;
+                CancelDeferredOpenTimerLocked();
+                probe = _hostPresentationProbe;
+                externalAdmissionGate = _externalAdmissionGate;
+                initJson = _deferredOpenInitJson;
+            }
+            if (initJson == null) return;
+            if (probe == null)
+            {
+                FailDeferredOpen(binding, "probe_removed",
+                    default(LootHostPresentationSnapshot));
+                return;
+            }
+
+            LootHostPresentationSnapshot snap = CaptureHostPresentation(probe);
+            long now = Environment.TickCount64;
+            bool issue = false;
+            bool repark = false;
+            string failReason = null;
+            string saveKey = null;
+            int attempts = 0;
+            lock (_sync)
+            {
+                if (_disposed || !_deferredOpenPending
+                    || !ReferenceEquals(_active, binding)
+                    || _state != BindingState.OpenQueued) return;
+                // 宿主身份 = HWND（reveal/resize 不改变句柄，句柄重建才换身份）；
+                // HostGeneration 是变迁计数，reveal 本身就会推进它，不能计入身份。
+                bool identityExact =
+                    snap.DocumentGeneration == _deferredOpenDocumentGeneration
+                    && snap.HostHandle == _deferredOpenHostHandle;
+                bool budgetLeft = now <= _deferredOpenDeadlineTick
+                    && _deferredOpenAttempts < _deferredOpenMaxAttempts;
+                if (!identityExact) failReason = "identity_stale";
+                else if (!budgetLeft) failReason = "budget_exhausted";
+                else if (snap.BlockReason == HostBlockHidden) repark = true;
+                else if (snap.BlockReason != null)
+                    failReason = "host_blocked:" + snap.BlockReason;
+                else if (!snap.WebReady) repark = true;
+                else
+                {
+                    issue = true;
+                    _deferredOpenPending = false;
+                    _deferredOpenAttempts++;
+                }
+                _deferredOpenLastBlockReason = snap.BlockReason;
+                saveKey = _deferredOpenSaveKey;
+                attempts = _deferredOpenAttempts;
+            }
+            if (repark)
+            {
+                lock (_sync)
+                {
+                    if (_disposed || !_deferredOpenPending
+                        || !ReferenceEquals(_active, binding)
+                        || _state != BindingState.OpenQueued) return;
+                    ArmDeferredOpenTimerLocked(binding);
+                }
+                return;
+            }
+            if (failReason != null)
+            {
+                FailDeferredOpen(binding, failReason, snap);
+                return;
+            }
+            if (!issue) return;
+
+            if (!AllowsExternalAdmission(externalAdmissionGate))
+            {
+                FailDeferredOpen(binding, "external_admission", snap);
+                return;
+            }
+            bool panelIdle = false;
+            try
+            {
+                panelIdle = _panel != null && _panel.IsAvailable
+                    && _panel.IsIdleForTrackedOpen;
+            }
+            catch { }
+            if (!panelIdle)
+            {
+                FailDeferredOpen(binding, "panel_not_idle", snap);
+                return;
+            }
+
+            bool queued = false;
+            try
+            {
+                queued = _panel.TryOpenTracked(initJson, binding.PanelInstanceId,
+                    delegate
+                    {
+                        return AllowsExternalAdmission(externalAdmissionGate)
+                            && MarkOpenExecuting(binding);
+                    },
+                    delegate(PanelHostController.TrackedOpenOutcome outcome)
+                    {
+                        CompleteOpen(binding, outcome);
+                    });
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("event=loot_panel_deferred_open_queue_failed type="
+                    + ex.GetType().Name);
+            }
+            if (queued)
+            {
+                ArmBindWatchdog(binding);
+                LogManager.Log("event=loot_panel_deferred_open_issued trigger="
+                    + SafeReason(trigger) + " attempts=" + attempts
+                    + " save=" + SafeReason(saveKey));
+                FocusTrace.Record("loot.open_deferred_resume", new
+                {
+                    trigger,
+                    attempts,
+                    save = saveKey
+                });
+                return;
+            }
+            // Queue rejected before any side effect: bounded re-park while budget remains.
+            if (!ParkDeferredOpen(binding, initJson, snap, "queue_rejected"))
+                FailDeferredOpen(binding, "queue_rejected", snap);
+        }
+
+        /// <summary>
+        /// Terminally abandons the parked intent through the same recovery/finalize path a
+        /// synchronous open failure would take: signal once, then release the pause only when a
+        /// previous execution attempt may have delivered it.
+        /// </summary>
+        private void FailDeferredOpen(Binding binding, string reason,
+            LootHostPresentationSnapshot snap)
+        {
+            bool releasePause;
+            string saveKey;
+            int attempts;
+            lock (_sync)
+            {
+                if (_disposed || !ReferenceEquals(_active, binding)
+                    || _state != BindingState.OpenQueued) return;
+                releasePause = _deferredOpenPauseMayBeHeld || _openExecutionStarted;
+                saveKey = _deferredOpenSaveKey;
+                attempts = _deferredOpenAttempts;
+                CancelDeferredOpenTimerLocked();
+                _deferredOpenPending = false;
+            }
+            LogManager.Log("event=loot_panel_deferred_open_abandoned reason="
+                + SafeReason(reason) + " attempts=" + attempts
+                + " save=" + SafeReason(saveKey)
+                + " block=" + SafeReason(snap.BlockReason));
+            FocusTrace.Record("loot.open_deferred_abandoned", new
+            {
+                reason,
+                attempts,
+                save = saveKey,
+                block = snap.BlockReason
+            });
+            TrySignalRecoveryOnce(binding, "web_open_failed");
+            FinalizeDetached(binding, releasePause);
+        }
+
+        private void OnDeferredOpenRetry(Binding binding, Timer timer)
+        {
+            bool owned;
+            lock (_sync)
+            {
+                owned = !_disposed && ReferenceEquals(_deferredOpenTimer, timer)
+                    && _deferredOpenPending && ReferenceEquals(_active, binding)
+                    && _state == BindingState.OpenQueued;
+                if (owned) _deferredOpenTimer = null;
+            }
+            try { timer.Dispose(); } catch { }
+            if (!owned) return;
+            ResumeDeferredOpen(binding, "timer");
+        }
+
+        private void ArmDeferredOpenTimerLocked(Binding binding)
+        {
+            CancelDeferredOpenTimerLocked();
+            Timer timer = null;
+            timer = new Timer(delegate { OnDeferredOpenRetry(binding, timer); },
+                null, Timeout.Infinite, Timeout.Infinite);
+            _deferredOpenTimer = timer;
+            timer.Change(_deferredOpenRetryDelayMs, Timeout.Infinite);
+        }
+
+        private void CancelDeferredOpenTimerLocked()
+        {
+            DisposeTimerLocked(ref _deferredOpenTimer);
+        }
+
+        private void ClearDeferredOpenLocked()
+        {
+            CancelDeferredOpenTimerLocked();
+            _deferredOpenPending = false;
+            _deferredOpenAttempts = 0;
+            _deferredOpenDeadlineTick = 0;
+            _deferredOpenInitJson = null;
+            _deferredOpenSaveKey = null;
+            _deferredOpenDocumentGeneration = 0;
+            _deferredOpenHostHandle = 0;
+            _deferredOpenHostGeneration = 0;
+            _deferredOpenPauseMayBeHeld = false;
+            _deferredOpenLastBlockReason = null;
+        }
+
+        private static LootHostPresentationSnapshot CaptureHostPresentation(
+            Func<LootHostPresentationSnapshot> probe)
+        {
+            if (probe == null) return default(LootHostPresentationSnapshot);
+            try { return probe(); }
+            catch
+            {
+                return new LootHostPresentationSnapshot
+                {
+                    BlockReason = "probe_failed"
+                };
+            }
+        }
+
+        /// <summary>
+        /// Stable save-side identity for deferred-open audit lines: settlement runId, reward
+        /// operation id, or the exact chest triple + attempt. Never re-read after park.
+        /// </summary>
+        private static string DeferredSaveKey(Binding binding)
+        {
+            if (binding == null) return "?";
+            if (binding.SourceKind == StageSettlementSource)
+            {
+                string runId = binding.SettlementReport != null
+                    ? binding.SettlementReport.Value<string>("runId") : null;
+                return "settlement:" + (runId ?? "?");
+            }
+            if (binding.SourceKind == RewardInboxSource)
+                return "reward:" + (binding.RecoverableRootOperationId ?? "");
+            return "chest:" + (binding.ChestSessionId ?? "?") + "/"
+                + (binding.LootContainerId ?? "?") + "/e" + binding.ContainerEpoch
+                + "/a" + binding.OpenAttemptSeq;
         }
 
         private void NotifyDetached()
@@ -1174,6 +1631,7 @@ namespace CF7Launcher.Guardian
                 CancelBindWatchdogLocked();
                 CancelCloseRetryLocked();
                 CancelPauseReleaseRetryLocked();
+                ClearDeferredOpenLocked();
                 _openExecutionStarted = false;
                 _openPosted = false;
                 _closeRequestPending = false;
@@ -1373,7 +1831,8 @@ namespace CF7Launcher.Guardian
         private static string RecoveryReasonForDetach(string reason)
         {
             if (reason == "web_mount_failed") return "web_mount_failed";
-            if (reason == "web_navigation" || reason == "panel_host_closed")
+            if (reason == "web_navigation" || reason == "panel_host_closed"
+                || reason == "web_process_failed")
                 return "web_open_failed";
             return null;
         }
@@ -1425,6 +1884,7 @@ namespace CF7Launcher.Guardian
                 CancelBindWatchdogLocked();
                 CancelCloseRetryLocked();
                 CancelPauseReleaseRetryLocked();
+                ClearDeferredOpenLocked();
                 _active = null;
                 _state = BindingState.Idle;
                 _openExecutionStarted = false;

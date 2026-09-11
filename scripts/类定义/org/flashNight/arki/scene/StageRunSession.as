@@ -55,6 +55,12 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _focusReturnIntent:String = "";
     private static var _focusReturnRun:String = "";
     private static var _focusSceneSeen:Boolean = false;
+    // 结算恢复生产诊断：单行有界字段、连续重复折叠、进程内总量封顶。
+    private static var _settlementDiagSeq:Number = 0;
+    private static var _settlementDiagLast:String = "";
+    private static var _settlementDiagRepeat:Number = 0;
+    private static var SETTLEMENT_DIAG_LIMIT:Number = 64;
+    private static var _settlementDiagCapture:Array = null;
 
     public static function install():Void {
         if (_installed) return;
@@ -67,6 +73,9 @@ class org.flashNight.arki.scene.StageRunSession {
         };
         _root.gameCommands["stageOutcomeObserve"] = function(params:Object):Void {
             org.flashNight.arki.scene.StageRunSession.handleObserve(params);
+        };
+        _root.gameCommands["stageSettlementDiag"] = function(params:Object):Void {
+            org.flashNight.arki.scene.StageRunSession.emitDiagnosticsSnapshot();
         };
         _installed = true;
     }
@@ -509,7 +518,10 @@ class org.flashNight.arki.scene.StageRunSession {
         if (_stageStartReservation != null) state.mode = "entering";
         else if (_returnAttempt != null || _root.场景转换中 === true) state.mode = "returning";
         else if (_run != null && _returnRequested && _root.当前为战斗地图 !== true) {
-            if (!isRunTerminal()) state.mode = "settlement_pending";
+            if (!isRunTerminal()) {
+                state.mode = "settlement_pending";
+                state.settlementDetail = settlementPendingDetail();
+            }
         } else if (_run != null || _root.当前为战斗地图 === true) {
             state.mode = _run == null || _run.life == "dead" ? "return"
                 : _returnRequested ? "retry_return"
@@ -518,8 +530,24 @@ class org.flashNight.arki.scene.StageRunSession {
             state.available = typeof _root.返回基地 == "function";
         } else if (getSceneExitBlockReason() == "pending_stage_settlement") {
             state.mode = "settlement_pending";
+            state.settlementDetail = settlementPendingDetail();
         }
         return state;
+    }
+
+    /**
+     * web 可读的真实 pending 子状态：区分存档写入未确认 / 保存失败可重试 /
+     * 持久记录无法恢复 / 可继续领取。纯只读，不触发任何写。
+     */
+    private static function settlementPendingDetail():String {
+        if (org.flashNight.arki.item.RewardStashService.pendingOperationId() != "") {
+            return "save_unknown";
+        }
+        if (_run == null) {
+            return hasPersistedSettlementPending() ? "restore_failed" : "claimable";
+        }
+        if (getReturnFailureReason() == "save_failed") return "save_failed";
+        return "claimable";
     }
 
     public static function requestReturnBaseLocal(source:String):Object {
@@ -629,12 +657,17 @@ class org.flashNight.arki.scene.StageRunSession {
         }
         if (!prepareSettlement()) {
             observeFocus("return_gate", _focusHandlingIntent, "prepare_failed");
+            settlementDiag("return_gate", "result=prepare_failed"
+                + " blocker=" + getSceneExitBlockReason());
             return failReturnAttempt("settlement_prepare_failed");
         }
         // 源 manifest 已冻结；暂存所有权与源 stashed 终态折入原返回保存屏障。
         var durable:Boolean = stashPreparedRewards();
         if (!durable) {
             observeFocus("return_gate", _focusHandlingIntent, "flush_failed");
+            settlementDiag("return_gate", "result=stash_failed"
+                + " settlementId=" + getCurrentSettlementId()
+                + " blocker=" + getSceneExitBlockReason());
             return failReturnAttempt("save_failed");
         }
         if (focusObservationActive()) {
@@ -657,32 +690,59 @@ class org.flashNight.arki.scene.StageRunSession {
         if (isCurrentRewardStashed()) return true;
         if (_run == null || _preparedInventory == null) return false;
         var operationId:String = String(_run.settlementId) + ".stash";
+        var detail:String = "settlementId=" + String(_run.settlementId);
         var pendingId:String = org.flashNight.arki.item.RewardStashService.pendingOperationId();
         if (pendingId != "") {
-            if (pendingId != operationId) return false;
-            return org.flashNight.neur.Server.SaveManager.getInstance().resolveRewardCommit(operationId) == "committed";
+            if (pendingId != operationId) {
+                settlementDiag("stash", detail + " result=blocked"
+                    + " pendingOp=" + safeText(pendingId, 96, ""));
+                return false;
+            }
+            var resolved:String = org.flashNight.neur.Server.SaveManager.getInstance()
+                .resolveRewardCommit(operationId);
+            settlementDiag("stash", detail + " result=resolve outcome="
+                + (resolved == "pending" ? "unknown" : resolved));
+            return resolved == "committed";
         }
         var items:Array = [];
         var inventory:Object = _preparedInventory.toObject();
         for (var i:Number = 0; i < _preparedInventory.capacity; i++) {
             if (inventory[String(i)] != null) items.push(inventory[String(i)]);
         }
+        detail += " items=" + items.length;
         var context:Object = {source:"stage_settlement", reason:"stage_reward_stashed", operationId:operationId};
-        if (!org.flashNight.arki.item.RewardStashService.begin(operationId, context, stashResolved, {run:_run})) return false;
+        if (!org.flashNight.arki.item.RewardStashService.begin(operationId, context, stashResolved, {run:_run})) {
+            settlementDiag("stash", detail + " result=begin_failed"
+                + " error=" + safeText(org.flashNight.arki.item.RewardStashService.lastError, 96, "unknown"));
+            return false;
+        }
         try {
             if (!org.flashNight.arki.item.RewardStashService.admit(items, false, true, context)) {
-                org.flashNight.arki.item.RewardStashService.cancel("invalid_stage_reward"); return false;
+                org.flashNight.arki.item.RewardStashService.cancel("invalid_stage_reward");
+                settlementDiag("stash", detail + " result=admit_failed");
+                return false;
             }
             var cleared:Object = clearPersistedSettlement(String(_run.settlementId), "stashed", null);
             if (cleared.success !== true) {
-                org.flashNight.arki.item.RewardStashService.cancel("stage_source_conflict"); return false;
+                org.flashNight.arki.item.RewardStashService.cancel("stage_source_conflict");
+                settlementDiag("stash", detail + " result=clear_failed"
+                    + " error=" + String(cleared.error));
+                return false;
             }
             var result:Object = org.flashNight.arki.item.RewardStashService.end(
                 "stage.stash.v2|" + String(_run.settlementId),
                 {success:true, kind:"stage_stash", settlementId:String(_run.settlementId)}, "stage.return_base");
+            var outcome:String = result.success === true ? "committed"
+                : (org.flashNight.arki.item.RewardStashService.pendingOperationId() != ""
+                    ? "unknown" : "not_committed");
+            settlementDiag("stash", detail + " result=" + outcome
+                + (result.success === true ? "" : " error=" + String(result.error)));
             return result.success === true;
         } catch (stashError) {
-            org.flashNight.arki.item.RewardStashService.cancel("stage_stash_failed"); return false;
+            org.flashNight.arki.item.RewardStashService.cancel("stage_stash_failed");
+            settlementDiag("stash", detail + " result=exception"
+                + " error=" + safeText(String(stashError), 96, "throw"));
+            return false;
         }
     }
 
@@ -699,11 +759,22 @@ class org.flashNight.arki.scene.StageRunSession {
     public static function prepareSettlement():Boolean {
         if (isCurrentRewardStashed()) return true;
         if (_preparedInventory != null && _preparedReport != null) {
-            return persistPreparedSettlement().success === true;
+            var repersist:Object = persistPreparedSettlement();
+            if (repersist == null || repersist.success !== true) {
+                settlementDiag("prepare", "result=repersist_failed"
+                    + " error=" + (repersist == null ? "null" : String(repersist.error))
+                    + " settlementId=" + getCurrentSettlementId());
+                return false;
+            }
+            return true;
         }
         if (_run == null) return false;
         // 任意无法解释的持久化结算都必须先恢复/修复，绝不能重新 roll 后覆盖。
-        if (hasPersistedSettlementPending()) return false;
+        if (hasPersistedSettlementPending()) {
+            settlementDiag("prepare", "result=pending_blocks_reroll"
+                + " pendingId=" + pendingStoreIdentity().id);
+            return false;
+        }
         if (_run.outcome == "active") {
             _run.outcome = "retreat";
             bumpRevision();
@@ -711,7 +782,11 @@ class org.flashNight.arki.scene.StageRunSession {
 
         var rolled:Object = materializeRewards(_run.outcome == "victory"
             ? _root.关卡可获得奖励品 : []);
-        if (rolled == null || rolled.inventory == null) return false;
+        if (rolled == null || rolled.inventory == null) {
+            settlementDiag("prepare", "result=materialize_failed"
+                + " runId=" + String(_run.runId));
+            return false;
+        }
         _run.rewardRollOmissions = Number(rolled.omissions);
         _run.remainingRewards = Number(rolled.inventory.size());
         _run.settlement = "prepared";
@@ -719,7 +794,12 @@ class org.flashNight.arki.scene.StageRunSession {
         _preparedReport = buildReport();
         bumpRevision();
         var persisted:Object = persistPreparedSettlement();
-        if (persisted == null || persisted.success !== true) return false;
+        if (persisted == null || persisted.success !== true) {
+            settlementDiag("prepare", "result=persist_failed"
+                + " error=" + (persisted == null ? "null" : String(persisted.error))
+                + " settlementId=" + getCurrentSettlementId());
+            return false;
+        }
         pushState();
         return true;
     }
@@ -745,7 +825,14 @@ class org.flashNight.arki.scene.StageRunSession {
         if (_settlementStarted) return;
         observeFocus("scene_ready_eligible", _focusReturnIntent, "begin_settlement");
         // 旧档 partial settlement 从 remaining inventory 转入；已经领取的条目不再入账。
-        if (!isCurrentRewardStashed() && !stashPreparedRewards()) return;
+        if (!isCurrentRewardStashed() && !stashPreparedRewards()) {
+            settlementDiag("arrival", "result=stash_blocked"
+                + " settlementId=" + getCurrentSettlementId()
+                + " remaining=" + (_run == null ? -1 : Number(_run.remainingRewards))
+                + " blocker=" + getSceneExitBlockReason()
+                + " owner=" + getObservationOwner());
+            return;
+        }
         var stashedReport:Object = clonePlainValue(_preparedReport, 0);
         stashedReport.rewardStashed = true;
         var begun:Object = LootContainerService.beginStageSettlement(
@@ -753,11 +840,20 @@ class org.flashNight.arki.scene.StageRunSession {
         if (begun == null || begun.success !== true) {
             observeFocus("scene_ready_result", _focusReturnIntent, "rewards_pending");
             // 报告打开失败不撤销已经保存的物资，也不占下一次关卡准入。
+            settlementDiag("report", "result=begin_failed"
+                + " error=" + (begun == null ? "null"
+                    : safeText(String(begun.error), 64, "unknown"))
+                + " settlementId=" + getCurrentSettlementId()
+                + " blocker=" + getSceneExitBlockReason()
+                + " owner=" + getObservationOwner());
             bumpRevision();
             pushState();
             return;
         }
         observeFocus("scene_ready_result", _focusReturnIntent, "web_active");
+        settlementDiag("report", "result=opened"
+            + " settlementId=" + getCurrentSettlementId()
+            + " blocker=" + getSceneExitBlockReason());
         _settlementStarted = true;
         _run.settlement = "stashed";
         _run.remainingRewards = 0;
@@ -783,9 +879,17 @@ class org.flashNight.arki.scene.StageRunSession {
             var cleared:Object = clearPersistedSettlement(
                 String(_run.settlementId), settlement, null);
             if (cleared == null || cleared.success !== true) {
+                settlementDiag("terminal", "state=" + settlement
+                    + " settlementId=" + getCurrentSettlementId()
+                    + " result=cleanup_failed"
+                    + " error=" + (cleared == null ? "null" : String(cleared.error)));
                 trace("[StageRunSession] persisted settlement terminal cleanup failed");
                 return;
             }
+            settlementDiag("terminal", "state=" + settlement
+                + " settlementId=" + getCurrentSettlementId()
+                + " result=cleared"
+                + " remaining=" + safeWhole(remaining, 0, MAX_REWARD_SLOTS, 0));
         }
         _run.settlement = settlement;
         completeReturnAttempt();
@@ -1061,21 +1165,52 @@ class org.flashNight.arki.scene.StageRunSession {
      */
     public static function restorePendingSettlement():Object {
         var inspected:Object = inspectSettlementStore();
-        if (inspected.success !== true) return inspected;
+        if (inspected.success !== true) {
+            settlementDiag("restore", "result=inspect_failed"
+                + " error=" + String(inspected.error)
+                + " blocker=" + getSceneExitBlockReason());
+            return inspected;
+        }
         var store:Object = inspected.store;
         if (store == null || store.pending === undefined || store.pending === null) {
+            settlementDiag("restore", "result=absent"
+                + " blocker=" + getSceneExitBlockReason());
             return {success:true, error:"", restored:false};
         }
-        var decoded:Object = decodePendingSettlement(store.pending);
-        if (decoded == null) return settlementFailure("malformed_persisted_settlement");
+        var pendingId:String = safeText(String(store.pending.settlementId), 96, "");
+        var decodeDiag:Object = {};
+        var decoded:Object = decodePendingSettlement(store.pending, decodeDiag);
+        if (decoded == null) {
+            var failed:Object = settlementFailure("malformed_persisted_settlement");
+            failed.settlementId = pendingId;
+            failed.runId = safeText(String(store.pending.runId), 96, "");
+            failed.reason = decodeDiag.reason == undefined
+                ? "record_unknown" : String(decodeDiag.reason);
+            failed.remaining = diagCount(store.pending.remainingCount);
+            settlementDiag("restore", "result=decode_failed"
+                + " reason=" + failed.reason
+                + " index=" + (decodeDiag.index == undefined ? -1 : Number(decodeDiag.index))
+                + " settlementId=" + failed.settlementId
+                + " runId=" + failed.runId
+                + " remaining=" + failed.remaining
+                + " blocker=" + getSceneExitBlockReason());
+            return failed;
+        }
         if (_run != null || _preparedInventory != null || _preparedReport != null) {
             if (_run != null
                     && String(_run.settlementId) === String(store.pending.settlementId)
                     && _preparedInventory != null && _preparedReport != null) {
+                settlementDiag("restore", "result=duplicate"
+                    + " settlementId=" + pendingId);
                 return {success:true, error:"", restored:false, duplicate:true,
                     settlementId:String(store.pending.settlementId)};
             }
-            return settlementFailure("settlement_authority_busy");
+            var busy:Object = settlementFailure("settlement_authority_busy");
+            busy.settlementId = pendingId;
+            settlementDiag("restore", "result=busy"
+                + " settlementId=" + pendingId
+                + " blocker=" + getSceneExitBlockReason());
+            return busy;
         }
 
         var report:Object = decoded.report;
@@ -1115,6 +1250,13 @@ class org.flashNight.arki.scene.StageRunSession {
         org.flashNight.arki.scene.StageReturnFlow.restorePending();
         _stageStartReservation = null;
         pushState();
+        settlementDiag("restore", "result=restored"
+            + " settlementId=" + String(store.pending.settlementId)
+            + " runId=" + String(store.pending.runId)
+            + " state=" + String(store.pending.state)
+            + " remaining=" + Number(store.pending.remainingCount)
+            + " receipts=" + Number(store.pending.receipts.length)
+            + " blocker=" + getSceneExitBlockReason());
         return {
             success:true, error:"", restored:true,
             settlementId:String(store.pending.settlementId),
@@ -1226,6 +1368,118 @@ class org.flashNight.arki.scene.StageRunSession {
         } catch (observationError) {
             // 丢失观测不触发重发或业务重试。
         }
+    }
+
+    /**
+     * 结算恢复生产诊断通道：单行 key=value 字段、连续相同行折叠、进程内总量封顶。
+     * 只携带分类错误码 / 安全 token id / 计数，绝不落原始存档内容；
+     * sink 异常留在本边界，不触发重发或业务重试。
+     */
+    private static function settlementDiag(event:String, detail:String):Void {
+        var line:String = "[StageSettlementDiag] " + event + " " + detail;
+        if (line == _settlementDiagLast) {
+            _settlementDiagRepeat++;
+            return;
+        }
+        var suffix:String = " seq=" + (_settlementDiagSeq + 1);
+        if (_settlementDiagRepeat > 0) suffix += " suppressed=" + _settlementDiagRepeat;
+        _settlementDiagRepeat = 0;
+        if (_settlementDiagSeq >= SETTLEMENT_DIAG_LIMIT) return;
+        _settlementDiagSeq++;
+        _settlementDiagLast = line;
+        var record:String = line + suffix;
+        if (_settlementDiagCapture != null && _settlementDiagCapture.length < 256) {
+            _settlementDiagCapture.push(record);
+        }
+        try {
+            if (_root.服务器 != undefined
+                    && typeof _root.服务器.发布服务器消息 == "function") {
+                _root.服务器.发布服务器消息(record);
+                return;
+            }
+        } catch (diagSinkError) {
+        }
+        trace(record);
+    }
+
+    /** 诊断计数安全值：非有限/非负整数一律折成 -1，绝不把原始值带进日志。 */
+    private static function diagCount(value:Object):Number {
+        var number:Number = Number(value);
+        return isWhole(number) && number >= 0 && number <= MAX_SAFE_INTEGER
+            ? number : -1;
+    }
+
+    /** 只读：持久化 pending 的有界身份字段，供诊断行与快照共用。不改任何状态。 */
+    private static function pendingStoreIdentity():Object {
+        var result:Object = {id:"", runId:"", state:"", remaining:-1, storeError:""};
+        var inspected:Object = inspectSettlementStore();
+        if (inspected.success !== true) {
+            result.storeError = String(inspected.error);
+            return result;
+        }
+        var pending:Object = inspected.store == null ? null : inspected.store.pending;
+        if (pending == null) return result;
+        result.id = safeText(String(pending.settlementId), 96, "");
+        result.runId = safeText(String(pending.runId), 96, "");
+        result.state = safeText(String(pending.state), 32, "");
+        result.remaining = diagCount(pending.remainingCount);
+        return result;
+    }
+
+    /**
+     * 只读权威快照：场景退出 blocker 的真实 owner、持久化 pending 身份与奖励提交态。
+     * 供地图/web 只读核对与真实存档用例使用；不触发 flush、写盘、迁移或状态变更。
+     */
+    public static function getSettlementDiagnostics():Object {
+        var pending:Object = pendingStoreIdentity();
+        return {
+            runSettlement:_run == null ? "none" : String(_run.settlement),
+            settlementId:getCurrentSettlementId(),
+            remainingRewards:_run == null ? 0 : Number(_run.remainingRewards),
+            pendingSettlementId:pending.id,
+            pendingRunId:pending.runId,
+            pendingState:pending.state,
+            pendingRemaining:pending.remaining,
+            storeError:pending.storeError,
+            rewardCommit:org.flashNight.arki.item.RewardStashService.pendingOperationId(),
+            exitBlockReason:getSceneExitBlockReason(),
+            observationOwner:getObservationOwner(),
+            returnFailure:getReturnFailureReason(),
+            canRetryReturn:canRetryReturnBase()
+        };
+    }
+
+    /** host/测试可触发的单行快照；走同一去抖封顶通道，绝不写盘。 */
+    public static function emitDiagnosticsSnapshot():Void {
+        var diag:Object = getSettlementDiagnostics();
+        settlementDiag("snapshot", "run=" + diag.runSettlement
+            + " settlementId=" + diag.settlementId
+            + " remaining=" + diag.remainingRewards
+            + " pendingId=" + diag.pendingSettlementId
+            + " pendingState=" + diag.pendingState
+            + " pendingRemaining=" + diag.pendingRemaining
+            + " storeError=" + diag.storeError
+            + " rewardCommit=" + safeText(String(diag.rewardCommit), 96, "")
+            + " blocker=" + diag.exitBlockReason
+            + " owner=" + diag.observationOwner
+            + " returnFailure=" + diag.returnFailure
+            + " canRetry=" + diag.canRetryReturn);
+    }
+
+    /** focused TestLoader：开启即清空捕获；生产保持 null 零开销。 */
+    public static function _captureSettlementDiagForTest():Void {
+        _settlementDiagCapture = [];
+    }
+
+    public static function _getSettlementDiagForTest():Array {
+        return _settlementDiagCapture == null ? [] : _settlementDiagCapture.slice();
+    }
+
+    public static function _resetSettlementDiagForTest():Void {
+        _settlementDiagSeq = 0;
+        _settlementDiagLast = "";
+        _settlementDiagRepeat = 0;
+        _settlementDiagCapture = null;
     }
 
     private static function handleSync(params:Object):Void {
@@ -1617,7 +1871,7 @@ class org.flashNight.arki.scene.StageRunSession {
         return {success:true, capacity:Number(inventory.capacity), manifest:manifest};
     }
 
-    private static function decodePendingSettlement(raw:Object):Object {
+    private static function decodePendingSettlement(raw:Object, diag:Object):Object {
         if (raw == null || typeof raw != "object" || raw instanceof Array
                 || !hasOnlyKeys(raw, ["v", "settlementId", "runId", "runRevision",
                     "state", "outcome", "life", "capacity", "report", "manifest",
@@ -1636,27 +1890,43 @@ class org.flashNight.arki.scene.StageRunSession {
                 || !isWhole(Number(raw.capacity)) || Number(raw.capacity) < 8
                 || Number(raw.capacity) > MAX_REWARD_SLOTS
                 || Number(raw.capacity) % REWARD_COLUMNS != 0
-                || typeof raw.deliverAfterSettlement != "boolean") return null;
+                || typeof raw.deliverAfterSettlement != "boolean") {
+            return decodeDiagFail(diag, pendingHeaderReason(raw), -1);
+        }
         var report:Object = normalizePersistedReport(raw.report);
-        if (report == null || String(report.runId) !== String(raw.runId)
-                || String(report.outcome) !== String(raw.outcome)) return null;
+        if (report == null) return decodeDiagFail(diag, "report_invalid", -1);
+        if (String(report.runId) !== String(raw.runId)
+                || String(report.outcome) !== String(raw.outcome)) {
+            return decodeDiagFail(diag, "report_mismatch", -1);
+        }
         var original:Object = decodeManifest(raw.manifest, Number(raw.capacity));
+        if (original == null) return decodeDiagFail(diag, "manifest_invalid", -1);
         var remaining:Object = decodeManifest(raw.remainingManifest, Number(raw.capacity));
-        if (original == null || remaining == null
-                || !isManifestSubset(remaining.manifest, original.manifest)
-                || !isWhole(Number(raw.remainingCount))
-                || Number(raw.remainingCount) != remaining.manifest.length) return null;
-        if (!(raw.receipts instanceof Array)
-                || raw.receipts.length > MAX_SETTLEMENT_RECEIPTS) return null;
+        if (remaining == null) return decodeDiagFail(diag, "remaining_invalid", -1);
+        if (!isManifestSubset(remaining.manifest, original.manifest)) {
+            return decodeDiagFail(diag, "remaining_subset", -1);
+        }
+        if (!isWhole(Number(raw.remainingCount))
+                || Number(raw.remainingCount) != remaining.manifest.length) {
+            return decodeDiagFail(diag, "remaining_count", -1);
+        }
+        if (!(raw.receipts instanceof Array)) {
+            return decodeDiagFail(diag, "receipts_shape", -1);
+        }
+        if (raw.receipts.length > MAX_SETTLEMENT_RECEIPTS) {
+            return decodeDiagFail(diag, "receipts_capacity", -1);
+        }
         var seen:Object = {};
         var receipts:Array = [];
         var previousRevision:Number = 1;
         var previousRemaining:Number = Number(original.manifest.length);
         for (var i:Number = 0; i < raw.receipts.length; i++) {
             var receipt:Object = normalizeStoredProgressReceipt(raw.receipts[i]);
-            if (receipt == null) return null;
+            if (receipt == null) return decodeDiagFail(diag, "receipt_row", i);
             var operationKey:String = "$" + String(receipt.operationId);
-            if (seen[operationKey] === true) return null;
+            if (seen[operationKey] === true) {
+                return decodeDiagFail(diag, "receipt_duplicate", i);
+            }
             var appliedCount:Number = receipt.kind == "claim"
                 ? 1 : Number(receipt.appliedCount);
             if (!isWhole(appliedCount) || appliedCount < 1
@@ -1664,13 +1934,17 @@ class org.flashNight.arki.scene.StageRunSession {
                     || Number(receipt.authorityRevision)
                         < previousRevision + appliedCount
                     || Number(receipt.remainingCount)
-                        != previousRemaining - appliedCount) return null;
+                        != previousRemaining - appliedCount) {
+                return decodeDiagFail(diag, "receipt_chain", i);
+            }
             seen[operationKey] = true;
             receipts.push(receipt);
             previousRevision = Number(receipt.authorityRevision);
             previousRemaining = Number(receipt.remainingCount);
         }
-        if (previousRemaining != Number(remaining.manifest.length)) return null;
+        if (previousRemaining != Number(remaining.manifest.length)) {
+            return decodeDiagFail(diag, "receipt_tail", -1);
+        }
         return {
             report:report,
             manifest:original.manifest,
@@ -1678,6 +1952,40 @@ class org.flashNight.arki.scene.StageRunSession {
             remainingInventory:remaining.inventory,
             receipts:receipts
         };
+    }
+
+    /** 失败路径的惰性分类：把 header 大条件折成首个违例字段名，不给主路径加逐字段 if。 */
+    private static function pendingHeaderReason(raw:Object):String {
+        if (raw == null || typeof raw != "object" || raw instanceof Array) return "record_shape";
+        if (!hasOnlyKeys(raw, ["v", "settlementId", "runId", "runRevision",
+                "state", "outcome", "life", "capacity", "report", "manifest",
+                "remainingManifest", "remainingCount", "receipts",
+                "deliverAfterSettlement"])) return "record_keys";
+        if (Number(raw.v) != SETTLEMENT_RECORD_VERSION) return "record_version";
+        if (!isSafeToken(String(raw.settlementId), 96)) return "record_settlement_id";
+        if (!isSafeToken(String(raw.runId), 96)) return "record_run_id";
+        if (!isWhole(Number(raw.runRevision)) || Number(raw.runRevision) < 1
+                || Number(raw.runRevision) > MAX_SAFE_INTEGER) return "record_revision";
+        if (raw.state != "prepared" && raw.state != "web_active"
+                && raw.state != "rewards_pending") return "record_state";
+        if (raw.outcome != "victory" && raw.outcome != "failure"
+                && raw.outcome != "retreat") return "record_outcome";
+        if (raw.life != "alive" && raw.life != "dead" && raw.life != "reviving") {
+            return "record_life";
+        }
+        if (!isWhole(Number(raw.capacity)) || Number(raw.capacity) < 8
+                || Number(raw.capacity) > MAX_REWARD_SLOTS
+                || Number(raw.capacity) % REWARD_COLUMNS != 0) return "record_capacity";
+        if (typeof raw.deliverAfterSettlement != "boolean") return "record_deliver";
+        return "record_unknown";
+    }
+
+    private static function decodeDiagFail(diag:Object, reason:String, index:Number):Object {
+        if (diag != null) {
+            diag.reason = reason;
+            if (index != undefined && index >= 0) diag.index = index;
+        }
+        return null;
     }
 
     private static function decodeManifest(raw:Object, capacity:Number):Object {
