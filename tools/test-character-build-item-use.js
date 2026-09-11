@@ -191,6 +191,38 @@ check('definitive query not-found returns idle without replay', function() {
     assert.strictEqual(run.controller.debugState().state, 'idle');
 });
 
+check('stash uncertainty keeps one write and stock identity until a definitive query', function() {
+    const run = harness();
+    const results = [];
+    const fields = {storeId:'stash.saved', expectedRevision:12,
+        entries:[{entryId:'stash.saved.e1', revision:3, quantity:2}]};
+    run.controller.invokeStash('stashTake', fields, (value, committed) => results.push({value, committed}));
+    const write = run.sent[0];
+    respond(run, write, {success:false,error:'client_timeout',requiresReconcile:true});
+    const query = run.sent[1];
+    assert.strictEqual(query.cmd, 'stashQuery');
+    assert.strictEqual(query.payload.v, 2);
+    assert.strictEqual(query.payload.operationId, write.payload.operationId);
+    assert.strictEqual(query.payload.storeId, fields.storeId);
+    assert.strictEqual(query.payload.expectedRevision, fields.expectedRevision);
+    respond(run, query, {success:true,data:{state:'pending'}});
+    assert.strictEqual(run.controller.debugState().state, 'needs_reconcile');
+    assert.strictEqual(run.controller.invokeStash('stashTake', fields), null);
+    let page;
+    run.controller.requestStashPage(32, value => { page = value; });
+    respond(run, run.sent[2], {success:true,data:{offset:32,entries:[]}});
+    assert.strictEqual(page.offset, 32);
+    assert.strictEqual(run.controller.debugState().state, 'needs_reconcile');
+    run.controller.reconcile();
+    const retry = run.sent[3];
+    assert.strictEqual(retry.payload.operationId, write.payload.operationId);
+    respond(run, retry, {success:true,data:{state:'committed',result:{taken:2}}});
+    assert.deepStrictEqual(results, [{value:{taken:2},committed:true}]);
+    assert.strictEqual(run.sent.filter(message => message.cmd === 'stashTake').length, 1);
+    assert.strictEqual(run.settled.length, 0);
+    assert.strictEqual(run.controller.debugState().state, 'idle');
+});
+
 check('inboxSnapshot caches a summary without taking reward authority', function() {
     const run = harness();
     run.controller.refreshInbox();

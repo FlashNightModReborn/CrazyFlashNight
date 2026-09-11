@@ -54,6 +54,7 @@
         'modules/character-build/character-build-projection.js',
         'modules/character-build/character-build-transport.js',
         'modules/character-build/character-build-cooldown-channel.js',
+        'modules/character-build/character-build-stash-transport.js',
         'modules/character-build/character-build-item-use.js',
         'modules/character-build/character-build-item-use-channel.js',
         'modules/character-build/character-build-candidate-channel.js',
@@ -103,11 +104,8 @@
                 : null;
     }
 
-    function loadView(view) {
-        var feature = descriptor(view);
-        return feature
-            ? loadClosure(feature.deps, feature.ready, feature.label)
-            : Promise.reject(new Error('unsupported inventory workbench feature'));
+    function loadFeature(feature) {
+        return loadClosure(feature.deps, feature.ready, feature.label);
     }
 
     function FeatureGate(options) {
@@ -124,7 +122,7 @@
         var generation = ++this._generation;
         this._pending = {view:view, generation:generation};
         if (this._options.onLoading) this._options.onLoading(feature, context);
-        loadView(view).then(function() {
+        loadFeature(feature).then(function() {
             if (generation !== self._generation
                     || self._options.isLive && !self._options.isLive()) return;
             self._pending = null;
@@ -170,8 +168,8 @@
     }
 
     return {
-        loadTuning:function() { return loadView('tuning'); },
-        loadBuild:function() { return loadView('build'); },
+        loadTuning:function() { return loadFeature(descriptor('tuning')); },
+        loadBuild:function() { return loadFeature(descriptor('build')); },
         isTuningReady:tuningReady,
         isBuildReady:buildReady,
         createGate:function(options) { return new FeatureGate(options); },

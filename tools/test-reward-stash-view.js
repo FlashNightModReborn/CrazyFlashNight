@@ -11,7 +11,7 @@ const root = path.resolve(__dirname, '..');
     const browser = await chromium.launch({executablePath,headless:true});
     try {
         const page = await browser.newPage({viewport:{width:1024,height:576}});
-        await page.setContent('<html lang="zh-CN"><body style="margin:0"><main style="position:relative;width:1024px;height:576px"><div data-build-underlay><button id="origin">物品页</button></div></main></body></html>');
+        await page.setContent('<html lang="zh-CN"><body style="margin:0"><main class="workbench-shell kshop-workbench inventory-workbench" data-workbench-skin="character" style="position:relative;width:1024px;height:576px"><div data-build-underlay><button id="origin">物品页</button></div></main></body></html>');
         function styles(file) {
             return fs.readFileSync(file, 'utf8').replace(/@import url\("([^"]+)"\);/g,
                 (_, source) => styles(path.resolve(path.dirname(file), source)));

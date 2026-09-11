@@ -135,6 +135,7 @@ var REQUIRED_FILES = [
     'launcher/web/modules/character-build/character-build-pose.js',
     'launcher/web/modules/character-build/character-build-projection.js',
     'launcher/web/modules/character-build/character-build-transport.js',
+    'launcher/web/modules/character-build/character-build-stash-transport.js',
     'launcher/web/modules/character-build/character-build-item-use.js',
     'launcher/web/modules/character-build/character-build-item-use-channel.js',
     'launcher/web/modules/character-build/character-build-candidate-channel.js',
@@ -904,6 +905,7 @@ var moduleThresholds = {
     'launcher/web/modules/character-build/character-build-projection.js':200,
     'launcher/web/modules/character-build/character-build-transport.js':180,
     'launcher/web/modules/character-build/character-build-item-use.js':360,
+    'launcher/web/modules/character-build/character-build-stash-transport.js':180,
     // 2026-08-31 奖励/物品使用迁移的有限增长：保留单一通道事务与选择恢复语义，避免制造碎片化加载依赖。
     'launcher/web/modules/character-build/character-build-item-use-channel.js':260,
     'launcher/web/modules/character-build/character-build-candidate-channel.js':360,
@@ -1172,6 +1174,7 @@ if (exists(registryRel)) {
         'modules/character-build/character-build-candidate-eligibility.js',
         'modules/character-build/character-build-projection.js',
         'modules/character-build/character-build-transport.js',
+        'modules/character-build/character-build-stash-transport.js',
         'modules/character-build/character-build-item-use.js',
         'modules/character-build/character-build-item-use-channel.js',
         'modules/character-build/character-build-candidate-channel.js',

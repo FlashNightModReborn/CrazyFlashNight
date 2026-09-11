@@ -6,14 +6,17 @@
     var cooldown = typeof module !== 'undefined' && module.exports
         ? require('./character-build-cooldown-channel.js')
         : root && root.CharacterBuildCooldownChannel;
-    var api = factory(runtime, cooldown);
+    var stash = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-stash-transport.js')
+        : root && root.CharacterBuildStashTransport;
+    var api = factory(runtime, cooldown, stash);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
         root.CF7.CharacterBuildItemUse = api;
         root.CharacterBuildItemUse = api;
     }
-})(typeof window !== 'undefined' ? window : globalThis, function(PanelRuntime, Cooldown) {
+})(typeof window !== 'undefined' ? window : globalThis, function(PanelRuntime, Cooldown, StashTransport) {
     'use strict';
 
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) {
@@ -21,6 +24,10 @@
     }
     if (!Cooldown || typeof Cooldown.normalize !== 'function') {
         throw new Error('CharacterBuildItemUse requires CharacterBuildCooldownChannel');
+    }
+
+    if (!StashTransport || typeof StashTransport.install !== 'function') {
+        throw new Error('CharacterBuildItemUse requires CharacterBuildStashTransport');
     }
 
     var WRITE_ERRORS = {
@@ -180,36 +187,6 @@
             sessionGeneration:this._sessionGeneration
         };
     };
-    Controller.prototype._acceptInbox = function(response) {
-        var hasAuthority = response && Object.prototype.hasOwnProperty.call(
-            response, 'rewardAuthority');
-        var authority = hasAuthority ? response.rewardAuthority : undefined;
-        var accepted = response && response.success === true
-            && response.inboxSummary
-            && typeof response.rewardReady === 'boolean'
-            && hasAuthority
-            && (authority === null || authority && typeof authority === 'object'
-                && !Array.isArray(authority));
-        if (!accepted || response.rewardReady === false && authority !== null) {
-            return false;
-        }
-        this._inbox = {
-            summary:response.inboxSummary,
-            authority:authority || null
-        };
-        this._onInbox(this._inbox, response);
-        return true;
-    };
-    Controller.prototype.refreshInbox = function(callback) {
-        if (this._destroyed || this._state === 'closed') return null;
-        var self = this;
-        return this._mux.request('inboxSnapshot', this._base(), {
-            kind:'inbox_snapshot', latestWins:true
-        }, function(response) {
-            var accepted = self._acceptInbox(response);
-            if (callback) callback(response, !!accepted);
-        });
-    };
     Controller.prototype.refreshCooldowns = function(callback) {
         if (this._destroyed || this._state === 'closed') return null;
         var self = this;
@@ -237,22 +214,10 @@
             return null;
         }
         if (action.command === 'open' || action.command === 'openMany') {
-            var summary = this._inbox && this._inbox.summary;
-            if (!summary) {
-                var retrySelf = this;
-                return this.refreshInbox(function(_, ok) { if (ok) retrySelf.invoke(candidate); });
-            }
-            return this.invokeStash(action.command === 'open' ? 'stashOpen' : 'stashOpenMany', {
-                source:source, count:action.count,
-                storeId:summary.v === 2 ? summary.storeId : '',
-                expectedRevision:summary.v === 2 ? summary.authorityRevision : 0
-            }, null, candidate);
+            return this._invokeStashPack(candidate, action, source);
         }
         var operationId = 'itemuse.' + this._operationNonce + '.'
             + (++this._operationSequence).toString(36);
-        // An open write may replace the exact Loot authority. Do not let an
-        // unknown result reuse an authority cached before this operation.
-        if (action.command === 'open' || action.command === 'openMany') this._inbox = null;
         var payload = this._base();
         payload.operationId = operationId;
         payload.source = source;
@@ -269,54 +234,6 @@
             kind:'write', singleFlight:true, write:true
         }, function(response) { self._settleWrite(response); });
         return callId;
-    };
-    Controller.prototype.requestStashPage = function(offset, callback) {
-        if (this._destroyed || this._state === 'closed') return null;
-        var payload = this._base(); payload.v = 2; payload.offset = offset;
-        return this._mux.request('stashPage', payload, {kind:'stash_page', latestWins:true}, function(response) {
-            callback(response && response.success === true ? response.data : null, response);
-        });
-    };
-    Controller.prototype.requestStashTooltip = function(storeId, entry, callback) {
-        if (this._destroyed || this._state === 'closed') return null;
-        var payload = this._base(); payload.v = 2;
-        payload.storeId = storeId; payload.entryId = entry.entryId; payload.revision = entry.revision;
-        return this._mux.request('stashTooltip', payload, {kind:'stash_tooltip', latestWins:true}, function(response) {
-            callback(response && response.success === true ? response.data : null);
-        });
-    };
-    Controller.prototype.resumeStash = function(operationId, callback) {
-        if (this._destroyed || this._state !== 'idle') return null;
-        var payload = this._base(); payload.v = 2; payload.operationId = operationId;
-        return this._mux.request('stashResume', payload, {kind:'stash_resume', singleFlight:true}, callback);
-    };
-    Controller.prototype.openLegacyInbox = function(callback) {
-        var self = this;
-        return this._mux.request('legacyInboxOpen', this._base(), {kind:'legacy_inbox_open', singleFlight:true}, function(response) {
-            var accepted = self._acceptInbox(response);
-            if (callback) callback(response, !!accepted);
-        });
-    };
-    Controller.prototype.invokeStash = function(command, fields, callback, candidate) {
-        if (this._destroyed || this._state !== 'idle') return null;
-        var payload = this._base(); payload.v = 2;
-        Object.keys(fields || {}).forEach(function(key) { if (fields[key] !== undefined) payload[key] = fields[key]; });
-        payload.operationId = 'stash.' + this._operationNonce + '.' + (++this._operationSequence).toString(36);
-        this._pending = {operationId:payload.operationId, command:command === 'stashOpen' ? 'open'
-            : command === 'stashOpenMany' ? 'openMany' : command, wireCommand:command,
-            storeId:payload.storeId || '', expectedRevision:payload.expectedRevision || 0,
-            candidate:candidate, stashCallback:callback, v:2};
-        this._state = 'write_pending'; this._emit('write_issued');
-        var self = this;
-        return this._mux.request(command, payload, {kind:'write', singleFlight:true, write:true}, function(response) { self._settleWrite(response); });
-    };
-    Controller.prototype._finishStash = function(response, data, committed, pending) {
-        this._pending = null; this._state = 'idle';
-        this._emit(committed ? 'write_committed' : 'write_rejected');
-        this.refreshInbox();
-        var settled = committed ? data : response || {success:false, error:'malformed_response'};
-        if (pending.stashCallback) pending.stashCallback(settled, committed);
-        else this._onSettled(settled, committed, pending);
     };
     Controller.prototype._settleWrite = function(response) {
         var pending = this._pending;
@@ -343,28 +260,17 @@
     };
     Controller.prototype.reconcile = function() {
         if (this._destroyed || this._state !== 'needs_reconcile' || !this._pending) return null;
+        if (this._pending.v === 2) return this._reconcileStash();
         var pending = this._pending;
         var payload = this._base();
         payload.operationId = pending.operationId;
-        if (pending.v === 2) {
-            payload.v = 2; payload.storeId = pending.storeId; payload.expectedRevision = pending.expectedRevision;
-        }
         this._state = 'query_pending';
         this._emit('query_issued');
         var self = this;
-        return this._mux.request(pending.v === 2 ? 'stashQuery' : 'query', payload, {
+        return this._mux.request('query', payload, {
             kind:'query', singleFlight:true
         }, function(response) {
             if (!self._pending || self._pending.operationId !== pending.operationId) return;
-            if (pending.v === 2) {
-                var result = response && response.success === true && response.data;
-                if (!result || ['committed','not_committed','stale'].indexOf(result.state) < 0) {
-                    self._state = 'needs_reconcile'; self._emit('query_failed'); return;
-                }
-                self._finishStash({success:false, error:result.state === 'stale' ? 'stale_stash' : 'not_committed'},
-                    result.result, result.state === 'committed', pending);
-                return;
-            }
             if (!response || response.success !== true || typeof response.found !== 'boolean') {
                 self._state = 'needs_reconcile';
                 self._emit('query_failed');
@@ -423,6 +329,8 @@
             mux:this._mux.debugState ? this._mux.debugState() : null
         };
     };
+
+    StashTransport.install(Controller);
 
     return {
         Controller:Controller,
