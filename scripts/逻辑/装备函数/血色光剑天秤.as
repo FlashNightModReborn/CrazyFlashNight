@@ -109,19 +109,24 @@ _root.装备生命周期函数.血色光剑初始化 = function(ref:Object, para
     return true;
 };
 
-_root.装备生命周期函数.血色光剑发射 = function(ref:Object, marker:MovieClip, hpCost:Number, bullet:String, power:Number):Void {
+_root.装备生命周期函数.血色光剑发射 = function(ref:Object, marker:MovieClip, hpRatio:Number, bullet:String, power:Number):Boolean {
     var actor:MovieClip = ref.自机;
+    // 以正常生命上限计费，保留小数；溢出治疗不抬高费用。付清后须至少剩1HP。
+    var hpCost:Number = actor.hp满血值 * hpRatio;
+    var remainingHp:Number = actor.hp - hpCost;
+    if (!(hpCost > 0) || !isFinite(hpCost) || !isFinite(remainingHp) || remainingHp < 1) return false;
     var point:Object = {x:0, y:0};
     marker.localToGlobal(point);
     _root.gameworld.globalToLocal(point);
-    // 沿用旧脚本：X取刀口，Y和Z取单位所在平面；自损不设额外保底。
-    actor.hp -= hpCost;
+    // 沿用旧脚本：X取刀口，Y和Z取单位所在平面；只在实际发射时支付。
+    actor.hp = remainingHp;
     var props:Object = {声音:"", 霰弹值:1, 子弹散射度:0, 发射效果:"", 子弹种类:bullet,
         子弹威力:power, 子弹速度:0, Z轴攻击范围:100, 击中地图效果:"", 发射者:actor._name,
         shootX:point.x, shootY:actor._y, shootZ:actor._y,
         击倒率:1, 击中后子弹的效果:""};
     if (actor.__titaniumType61) actor.__titaniumType61.projectBloodAttack(actor, actor.刀, props);
     _root.子弹区域shoot传递(props);
+    return true;
 };
 
 _root.装备生命周期函数.血色光剑结算 = function(ref:Object):Void {
@@ -132,12 +137,10 @@ _root.装备生命周期函数.血色光剑结算 = function(ref:Object):Void {
     var triggered:Boolean = false;
     // 两路仍分别在每个攻击帧作一次五择一；两路成功均结算，不改为每刀一次。
     if (ref.bloodRoll()) {
-        _root.装备生命周期函数.血色光剑发射(ref, view.刀口位置3, 3, "血爆炸", 999);
-        triggered = true;
+        triggered = _root.装备生命周期函数.血色光剑发射(ref, view.刀口位置3, 0.0015, "血爆炸", 999);
     }
     if (ref.bloodRoll()) {
-        _root.装备生命周期函数.血色光剑发射(ref, view.刀口位置2, 1, "血滴落", 100);
-        triggered = true;
+        if (_root.装备生命周期函数.血色光剑发射(ref, view.刀口位置2, 0.0005, "血滴落", 100)) triggered = true;
     }
     // 合并的只有视觉：播放中的爆发保留进度，不因高频触发反复退回首帧。
     if (triggered && ref.bloodBurstFrame == 0) ref.bloodBurstFrame = 1;

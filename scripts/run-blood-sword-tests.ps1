@@ -7,8 +7,8 @@ $focusedRun = @{
     SuiteRelativePaths = @('scripts\类定义\org\flashNight\arki\unit\UnitComponent\Dressup\EquipmentUtil\BloodSwordLifecycleTest.as')
     SuiteFqns = @('org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLifecycleTest')
     AdditionalAsRelativePaths = @('scripts\逻辑\装备函数\血色光剑天秤.as', 'scripts\逻辑\单位函数\单位函数_fs_装备生命周期配置.as', 'scripts\类定义\org\flashNight\arki\component\Effect\EffectSystem.as')
-    ExpectedTracePatterns = @('(?m)^BloodSwordLifecycleTest Tests Passed: 84\r?$', '(?m)^BloodSwordLifecycleTest Tests Failed: 0\r?$')
-    SuccessSummary = '84/84，真实血剑与血浪素材：原70项、44帧余波、短尾收散、完整变换、特效池、取消及世界卸载'
+    ExpectedTracePatterns = @('(?m)^BloodSwordLifecycleTest Tests Passed: 95\r?$', '(?m)^BloodSwordLifecycleTest Tests Failed: 0\r?$')
+    SuccessSummary = '95/95，真实血剑与血浪素材：原84项、百分比自损、小数及溢出生命计费、残血支付与异常属性边界'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

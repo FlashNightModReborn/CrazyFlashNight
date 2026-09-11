@@ -111,7 +111,7 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
         check(item.lifecycle.attr_0.init.initRoutines == "通用刀光初始化" && item.lifecycle.attr_0.init.initParam.basicStyle == "烈焰残焰", "原刀光节点保留");
         check(item.lifecycle.attr_1.init.initRoutines == "血色光剑初始化" && item.lifecycle.attr_1.cycle.cycleRoutines == "血色光剑周期", "真实XML绑定新周期");
         unit = loaded.createEmptyMovieClip("bloodActor",loaded.getNextHighestDepth());
-        unit._x = 140; unit._y = 180; unit.version = 1; unit.hp = 1000; unit.状态 = "站立"; unit.syncRefs = {}; unit.主动战技 = {};
+        unit._x = 140; unit._y = 180; unit.version = 1; unit.hp = 1000; unit.hp满血值 = 1000; unit.状态 = "站立"; unit.syncRefs = {}; unit.主动战技 = {};
         unit.createEmptyMovieClip("man",1); unit.man.兵器使用标签 = false;
         unit.刀 = new BaseItem(item.name,{level:1,mods:[]},0); unit.刀数据 = item; unit.刀属性 = item.data;
         unit.dispatcher = new EventDispatcher(); unit.装载生命周期函数 = _root.主角函数.装载生命周期函数;
@@ -144,25 +144,25 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
         tick(); check(ref.bloodFlowFrame == phase + 1, "重复持刀不重置循环相位");
         unit.状态 = "兵器攻击"; rolls = [true,true]; rollCount = 0; shots = []; tick();
         check(rollCount == 2 && shots.length == 2, "同一攻击帧两路独立结算");
-        check(unit.hp == 996, "两路成功累计扣4HP");
+        check(unit.hp == 998, "两路成功累计扣生命上限的0.2%");
         check(shots[0].子弹种类 == "血爆炸" && shots[0].子弹威力 == 999 && shots[1].子弹种类 == "血滴落" && shots[1].子弹威力 == 100, "保留两种子弹与固定威力");
         check(shots[0].霰弹值 == 1 && shots[0].子弹速度 == 0 && shots[0].Z轴攻击范围 == 100 && shots[0].击倒率 == 1, "保留弹数速度范围和击倒参数");
         check(shots[0].shootY == unit._y && shots[0].shootZ == unit._y && shots[0].发射者 == unit._name, "保留发射者及所在平面，敌我归属由发射器解析");
         check(ref.bloodBurstFrame == 1 && primary.剑体.fxBurst._visible && !secondary.剑体.fxBurst._visible, "两路共用一次本剑爆发反馈");
         cycles[0].callback.apply(cycles[0].owner,cycles[0].args);
-        check(rollCount == 2 && shots.length == 2 && unit.hp == 996, "同一时钟帧重复回调不重扣");
+        check(rollCount == 2 && shots.length == 2 && unit.hp == 998, "同一时钟帧重复回调不重扣");
         phase = ref.bloodFlowFrame; rolls = [true,true]; tick();
         check(ref.bloodBurstFrame == 2 && ref.bloodFlowFrame == phase + 1, "连续触发保留爆发进度和循环相位");
-        check(unit.hp == 992 && shots.length == 4, "视觉合并不吞第二帧结算");
+        check(unit.hp == 996 && shots.length == 4, "视觉合并不吞第二帧结算");
         primary._rotation = 21; primary._xscale = -120; primary._yscale = 80; unit.man._rotation = -9;
         var p3:Object = position(primary.刀口位置3); var p2:Object = position(primary.刀口位置2);
         shots = []; rolls = [true,true]; tick();
         check(Math.abs(shots[0].shootX - p3.x) < .1 && Math.abs(shots[1].shootX - p2.x) < .1, "完整镜像旋转链后的真实刀口X");
         check(shots[0].shootY == unit._y && shots[1].shootZ == unit._y, "变换后仍使用旧地面Y/Z约定");
         shots = []; rolls = [false,true]; unit.是否为敌人 = true; var hp:Number = unit.hp; tick();
-        check(shots.length == 1 && shots[0].子弹种类 == "血滴落" && unit.hp == hp - 1 && shots[0].发射者 == unit._name, "敌人小分支的1HP与发射者身份");
+        check(shots.length == 1 && shots[0].子弹种类 == "血滴落" && unit.hp == hp - .5 && shots[0].发射者 == unit._name, "敌人小分支按0.05%支付并保留发射者身份");
         shots = []; rolls = [true,false]; hp = unit.hp; tick();
-        check(shots.length == 1 && shots[0].子弹种类 == "血爆炸" && unit.hp == hp - 3, "大分支单独成功扣3HP");
+        check(shots.length == 1 && shots[0].子弹种类 == "血爆炸" && unit.hp == hp - 1.5, "大分支单独成功扣生命上限的0.15%");
         shots = []; rolls = [false,false]; hp = unit.hp; tick();
         check(shots.length == 0 && unit.hp == hp, "两路失败不扣血不发射");
         check(unit.血量上限击溃 == undefined && unit.斩杀 == undefined, "普通装备未污染人物击溃斩杀属性");
@@ -172,10 +172,11 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
         }};
         rolls = [true,true]; tick();
         check(unit.__titaniumType61.calls == 2 && unit.__titaniumType61.ownerMatches, "两路均传递当前人物与装备身份");
-        check(shots[0] !== shots[1] && shots[0].血量上限击溃 == 0.09 && shots[1].斩杀 == 9 && unit.hp == hp - 4, "两路独立属性快照，投射不额外扣血");
+        check(shots[0] !== shots[1] && shots[0].血量上限击溃 == 0.09 && shots[1].斩杀 == 9 && unit.hp == hp - 2, "两路独立属性快照，投射不额外扣血");
         delete unit.__titaniumType61;
         shots = []; rolls = [true,false]; tick();
         check(shots[0].血量上限击溃 == undefined && shots[0].斩杀 == undefined, "离开套装后的新血爆不继承旧弹属性");
+        paymentChecks();
         rolls = []; unit.状态 = "站立";
         for (i = 0; i < 12; i++) tick();
         check(ref.bloodBurstFrame == 0 && !primary.剑体.fxBurst._visible && primary.剑体.fxBurst._currentframe == 1, "爆发结束隐藏复位");
@@ -212,6 +213,44 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BloodSwordLif
                 catch (error) { BloodSwordLifecycleTest.die("异步检查异常 " + error); }
             }
         };
+    }
+    private static function paymentChecks():Void {
+        var savedHp:Number = unit.hp;
+        var savedMaxHp:Number = unit.hp满血值;
+        unit.hp满血值 = 5487; unit.hp = 5487; shots = []; rolls = [true,true]; tick();
+        check(shots.length == 2 && Math.abs(unit.hp - 5476.026) < .00001, "实测生命上限5487按小数支付两路费用");
+        unit.hp = 8230.5; shots = []; rolls = [true,true]; tick();
+        check(shots.length == 2 && Math.abs(unit.hp - 8219.526) < .00001, "150%溢出生命不放大血效费用");
+        unit.hp = 2743.5; shots = []; rolls = [true,true]; tick();
+        check(shots.length == 2 && Math.abs(unit.hp - 2732.526) < .00001, "半血不降低血效费用");
+        unit.hp满血值 = 6000; unit.hp = 6000; shots = []; rolls = [true,true]; tick();
+        check(shots.length == 2 && unit.hp == 5988, "生命上限变化后下一帧采用新费用");
+        unit.hp满血值 = 1000; unit.hp = 3; ref.bloodBurstFrame = 0; shots = []; rolls = [true,true]; tick();
+        check(shots.length == 2 && unit.hp == 1 && ref.bloodBurstFrame == 1, "刚好付清两路并保留1HP时允许发射");
+        unit.hp = 1.5; shots = []; rolls = [true,true]; rollCount = 0; tick();
+        check(rollCount == 2 && shots.length == 1 && shots[0].子弹种类 == "血滴落" && unit.hp == 1, "血爆付不起不扣款，血滴仍独立判定并付清");
+        unit.hp = 1; ref.bloodBurstFrame = 0; shots = []; rolls = [true,true]; tick();
+        check(shots.length == 0 && unit.hp == 1 && ref.bloodBurstFrame == 0 && !primary.剑体.fxBurst._visible, "1HP不免费发射，也不伪造刃上爆发反馈");
+        unit.hp = .5; shots = []; rolls = [true,true]; tick();
+        check(shots.length == 0 && unit.hp == .5, "不足1HP不发射且不借保底回血");
+        var invalidMax:Array = [undefined,NaN,0,-1,Infinity];
+        var invalidMaxSafe:Boolean = true;
+        for (var i:Number = 0; i < invalidMax.length; i++) {
+            unit.hp满血值 = invalidMax[i]; unit.hp = 1000; shots = []; rolls = [true,true]; tick();
+            invalidMaxSafe = invalidMaxSafe && shots.length == 0 && unit.hp == 1000;
+        }
+        check(invalidMaxSafe, "缺失、非数、非正及无穷生命上限不污染HP或发射");
+        unit.hp满血值 = 1000;
+        var invalidHp:Array = [NaN,Infinity,-Infinity];
+        var invalidHpSafe:Boolean = true;
+        for (i = 0; i < invalidHp.length; i++) {
+            unit.hp = invalidHp[i]; shots = []; rolls = [true,true]; tick();
+            invalidHpSafe = invalidHpSafe && shots.length == 0 && (unit.hp == invalidHp[i] || (isNaN(unit.hp) && isNaN(invalidHp[i])));
+        }
+        check(invalidHpSafe, "异常当前生命不触发免费血效或改写状态");
+        unit.hp = 1000; unit.状态 = "技能"; shots = []; rolls = [true,true]; rollCount = 0; tick();
+        check(rollCount == 0 && shots.length == 0 && unit.hp == 1000, "兵器技能状态不纳入普通血效扣费");
+        unit.hp = savedHp; unit.hp满血值 = savedMaxHp; unit.状态 = "兵器攻击"; rolls = [];
     }
     private static function finishChecks():Void {
         check(primary.剑体.fxGrip._currentframe == pausedFrames.grip && primary.剑体.fxFlow._currentframe == pausedFrames.flow && primary.剑体.fxBreath._currentframe == pausedFrames.breath, "三个真实播放帧内无装备tick则光效不自行推进");
