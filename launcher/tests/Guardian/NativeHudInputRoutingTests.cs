@@ -15,6 +15,7 @@ namespace CF7Launcher.Tests.Guardian
     public class NativeHudInputRoutingTests
     {
         private const int WM_NCHITTEST = 0x0084;
+        private const int WM_MOUSEMOVE = 0x0200;
         private const int WM_LBUTTONDOWN = 0x0201;
         private const int WM_LBUTTONUP = 0x0202;
         private const int MK_LBUTTON = 0x0001;
@@ -292,6 +293,55 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RealHwnd_ReturnDropdownSurvivesHoveredClickAndCaptureRelease()
+        {
+            using var owner = CreateOwner();
+            owner.Show();
+            Control anchor = owner.Controls["anchor"];
+            var router = new LauncherCommandRouter(null, k => { }, () => { }, () => { }, () => { }, s => { });
+            using var right = new RightContextWidget(anchor, router, catalog: null, mapDisplayPreference: MapDisplayPreference.Off);
+            var intents = new List<string>();
+            right.ReturnRequested += (run, revision, token, choice) => intents.Add(choice);
+            right.ForceGameReady(true);
+            right.SetReady();
+            right.ApplyState(VictoryState(7, returnOptions: new JObject {
+                ["status"] = "ready", ["token"] = "native.return.1", ["choices"] = new JArray {
+                    new JObject { ["id"] = "task.1", ["taskName"] = "边界冲突", ["locationName"] = "联合大学", ["npcName"] = "Bat" },
+                    new JObject { ["id"] = "task.2", ["taskName"] = "公社外交使节", ["locationName"] = "基地大厅", ["npcName"] = "幸存老兵" }
+                }
+            }));
+            using var hud = new TestNativeHudOverlay(owner, anchor);
+            hud.SessionForegroundForTest = true;
+            hud.AddWidget(right);
+            hud.SetReady();
+            Point field = Center(right.ReturnFieldForTest);
+
+            // 真实点击前必有鼠标移入。WinForms 在派发 MouseUp 后才释放 capture。
+            SendMouse(hud, WM_MOUSEMOVE, field);
+            SendMouse(hud, WM_LBUTTONDOWN, field);
+            SendMouse(hud, WM_LBUTTONUP, field);
+            Assert.False(hud.Capture);
+            Assert.True(right.ReturnMenuOpenForTest, "Native mouse-up/capture release must not dismiss the newly opened dropdown.");
+            Assert.Empty(intents);
+
+            Rectangle menu = right.ReturnMenuForTest;
+            Point secondRow = new Point(menu.Left + 12, menu.Top + 38 + 12);
+            Assert.Equal(HTCLIENT, SendNcHitTest(hud, secondRow));
+            SendMouse(hud, WM_MOUSEMOVE, secondRow);
+            SendMouse(hud, WM_LBUTTONDOWN, secondRow);
+            SendMouse(hud, WM_LBUTTONUP, secondRow);
+            Assert.Equal("task.2", right.SelectedReturnIdForTest);
+            Assert.False(right.ReturnMenuOpenForTest);
+            Assert.Empty(intents);
+
+            Point confirm = Center(right.StageActionBoundsForTest(0));
+            SendMouse(hud, WM_MOUSEMOVE, confirm);
+            SendMouse(hud, WM_LBUTTONDOWN, confirm);
+            SendMouse(hud, WM_LBUTTONUP, confirm);
+            Assert.Equal(new[] { "task.2" }, intents);
+        }
+
+        [Fact]
         public void RealHwnd_RightContextRevisionAndReorderCannotRetargetClick()
         {
             using (Form owner = CreateOwner())
@@ -337,8 +387,7 @@ namespace CF7Launcher.Tests.Guardian
 
                     deliver = Center(right.StageActionBoundsForTest(0));
                     SendMouse(hud, WM_LBUTTONDOWN, deliver);
-                    right.ForceDeliverState(
-                        false, "", false, "0", returnNavigable: true);
+                    right.ApplyState(VictoryState(8, canSelectReturn: false));
                     Point current = Center(right.StageActionBoundsForTest(0));
                     SendMouse(hud, WM_LBUTTONUP, current);
                     Assert.Empty(intents);
@@ -537,14 +586,14 @@ namespace CF7Launcher.Tests.Guardian
                 bounds.Top + bounds.Height / 2);
         }
 
-        private static StageOutcomeState VictoryState(int revision)
+        private static StageOutcomeState VictoryState(int revision, bool canSelectReturn = true, JObject returnOptions = null)
         {
             JObject message = new JObject
             {
                 ["task"] = "stage_outcome",
                 ["payload"] = new JObject
                 {
-                    ["v"] = 1,
+                    ["v"] = returnOptions == null ? 3 : 4,
                     ["runId"] = "run.native-hud.input",
                     ["revision"] = revision,
                     ["stageName"] = "测试关卡",
@@ -556,10 +605,13 @@ namespace CF7Launcher.Tests.Guardian
                     ["reviveAllowed"] = false,
                     ["reviveBlockedReason"] = "",
                     ["canReturnBase"] = true,
+                    ["canSelectReturn"] = canSelectReturn,
+                    ["returnFailure"] = "",
                     ["settlement"] = "none",
                     ["remainingRewards"] = 0
                 }
             };
+            if (returnOptions != null) message["payload"]["returnOptions"] = returnOptions;
             StageOutcomeState state;
             string error;
             Assert.True(StageOutcomeState.TryParseMessage(

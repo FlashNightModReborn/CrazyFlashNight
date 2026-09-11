@@ -7,16 +7,17 @@
     "padding": 16,
     "fit": "alpha-bounds-contain-center"
   },
+  "supersample": 1,
   "toolchain": {
     "generator": {
       "path": "tools/bake-shop-portraits.py",
-      "sha256": "9dcc2c97d0579f24484d59f46fd8d51dcb88bc2cfe34644e854506f70ed2579f",
-      "bytes": 35044
+      "sha256": "0b365a9cb2456b5a8c8037b455b42e8494ed691628018983f43345a2b1639248",
+      "bytes": 36280
     },
     "dialogueBaker": {
       "path": "tools/bake-dialogue-portraits.py",
-      "sha256": "7321b85572215bb57514e4937b7354f282e0d4b30a3833784f61f5f6e898b16c",
-      "bytes": 35848
+      "sha256": "f063410ec8e14c3a2b55d1c7f8ddf25c6f7597d799af6564b2f79542360ab2d1",
+      "bytes": 38403
     },
     "python": "3.13.7",
     "pillow": "12.1.0",
@@ -171,8 +172,8 @@
       },
       {
         "path": "data/shops/npcs/格格巫.json",
-        "sha256": "ca108e15cbbda00680fd045344e456940f5f097b01fde2909694f82a10b6b86f",
-        "bytes": 463
+        "sha256": "b54dccd155111560ba49a48b53b43152dfcd0b00a16022c69bb16ba5b563a69e",
+        "bytes": 742
       },
       {
         "path": "data/shops/npcs/丽丽丝.json",
@@ -228,8 +229,8 @@
   },
   "dialogueManifest": {
     "path": "launcher/web/assets/dialogue-portraits/manifest.json",
-    "sha256": "44b9a3d41165c7e67c6d78c111df8b8ce6e0484dba363e6612da9f1c626a2008",
-    "bytes": 67306
+    "sha256": "31f5520e5bf61982044a43bd2e1ce7a6ea7dbf386fa1fba7150306b96c366b46",
+    "bytes": 68919
   },
   "sourcePartition": {
     "externalDialogue": 31,
@@ -756,19 +757,19 @@
       "kind": "exact-xfl-swf-pilot",
       "sourceSwf": {
         "path": "flashswf/levels/地图-彩蛋地图.swf",
-        "sha256": "4202e2492b2cc74c5933fef36d55db20c64db0c2b6db6d96a3bba2c3fd08b0da",
-        "bytes": 4881592
+        "sha256": "5ee95d87068c853e72644ca01c47aabfb96499d1da19026fc47a5d1571c3bf2f",
+        "bytes": 4881675
       },
       "sourceXfl": [
         {
           "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/地图-彩蛋地图.xml",
-          "sha256": "f817460e99b0f11dd086604d2eeac1d9ee6a2f2d4b7479bfb942a0ab4e23a20b",
+          "sha256": "773054cc042ecd796f07a97e7c9bb95dab3d665f7907436d477ece12a8a2f508",
           "bytes": 12195
         },
         {
           "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/NPC-heeho君.xml",
-          "sha256": "6e2ea12b9c14febc036414b63bb49bf8c96985bf64ca526485d91c9441794efe",
-          "bytes": 5543
+          "sha256": "51ccf73804abdd19a76e29eb4cfc9939562928a3d2d1dcc9591edaa5f4277f37",
+          "bytes": 5547
         },
         {
           "path": "flashswf/levels/地图-彩蛋地图/LIBRARY/NPC/NPC-heeho君/霜精.xml",
@@ -797,12 +798,12 @@
         }
       ],
       "mapLinkage": "地图-彩蛋地图",
-      "mapCharacterId": 464,
+      "mapCharacterId": 465,
       "outerLibraryItem": "NPC/NPC-heeho君/NPC-heeho君",
-      "outerCharacterId": 269,
+      "outerCharacterId": 270,
       "outerDeclaredFrameCount": 10,
       "bodyLibraryItem": "NPC/NPC-heeho君/霜精",
-      "characterId": 267,
+      "characterId": 268,
       "declaredFrameCount": 37,
       "xflNeutralFrameIndex": 0,
       "frame1Based": 1,
@@ -1087,14 +1088,5 @@
         "sha256": "f53b2855c1b6cea3c15dfbc8f0b3d7cf5e724c6787563ec4efaaf2c0c6c334ab"
       }
     }
-  },
-  "shopSourceRefresh": {
-    "mode": "shop-id-metadata-only",
-    "tool": {
-      "path": "tools/refresh-shop-portrait-sources.py",
-      "sha256": "14e98c28a076bbd19ca969de06d3aceaa3e71295b4934402bc4af10d344dec88",
-      "bytes": 3697
-    },
-    "previousActiveSourceSha256": "c4927de9624652eaa67b1737d7a484c87e75d1975563f500e2f9dcc637bcddad"
   }
 }

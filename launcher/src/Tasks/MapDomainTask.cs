@@ -131,6 +131,29 @@ namespace CF7Launcher.Tasks
                     hotspot = ((JObject)projected["snapshot"]["hotspotStates"]).Properties().FirstOrDefault(p => (string)p.Value["locationId"] == location && p.Value.Value<bool>("visible"))?.Name ?? "";
                 }
             }
+            else if (kind == "stage_return" || kind == "task_delivery")
+            {
+                MapRuleEvaluator.Keys(intent, "kind", "taskId", "npcId", "placementId", "locationId");
+                string id = MapRuleEvaluator.Text(intent, "taskId", 100);
+                var endpoint = projected["taskEndpoints"]?[id]?["finish"] as JObject;
+                bool returning = kind == "stage_return";
+                // 两种入口共用精确任务端点复核；执行生命周期仍各自归 AS2。
+                if (facts["tasks"]?[id]?.Value<bool?>("active") != true
+                    || facts["tasks"]?[id]?.Value<bool?>("deliverable") != true)
+                    return new JObject { ["admitted"] = false, ["error"] = "task_not_deliverable" };
+                if ((returning ? facts["scene"]?.Value<bool?>("inCombat") != true
+                        || facts["navigation"]?.Value<string>("reason") != "stage_run_active"
+                    : facts["scene"]?.Value<bool?>("inCombat") != false
+                        || facts["navigation"]?.Value<string>("reason") != "")
+                    || endpoint?.Value<bool>(returning ? "returnNavigable" : "navigable") != true
+                    || new[] { "npcId", "placementId", "locationId" }.Any(key => intent[key]?.Type != JTokenType.String || (string)intent[key] != (string)endpoint[key]))
+                    return new JObject { ["admitted"] = false, ["error"] = returning ? "return_selection_stale" : "delivery_selection_stale" };
+                string target = (string)endpoint["locationId"];
+                // 明确选择的任务用已重验的驻点落地，不依赖公开地图是否展示该地点。
+                return new JObject { ["admitted"] = true, ["taskId"] = id, ["npcId"] = endpoint["npcId"],
+                    ["placementId"] = endpoint["placementId"], ["hotspotId"] = endpoint["hotspotId"],
+                    ["locationId"] = target, ["frame"] = content.Definition["locations"][target]["sceneName"] };
+            }
             else if (kind == "task_finish")
             {
                 MapRuleEvaluator.Keys(intent, "kind", "taskId"); string id = MapRuleEvaluator.Text(intent, "taskId", 100);
@@ -138,6 +161,14 @@ namespace CF7Launcher.Tasks
                 var endpoint = projected["taskEndpoints"]?[id]?["finish"] as JObject;
                 if (endpoint?.Value<bool>("navigable") != true) return new JObject { ["admitted"] = false, ["error"] = endpoint?.Value<string>("reason") ?? "task_target_unavailable" };
                 hotspot = (string)endpoint["hotspotId"];
+                // 任务页的明确前往保留同一交付能力；无公开入口时额外核对完成条件。
+                if (hotspot == "" && facts["tasks"]?[id]?.Value<bool>("deliverable") == true)
+                {
+                    string target = (string)endpoint["locationId"];
+                    return new JObject { ["admitted"] = true, ["taskId"] = id, ["npcId"] = endpoint["npcId"],
+                        ["placementId"] = endpoint["placementId"], ["hotspotId"] = "",
+                        ["locationId"] = target, ["frame"] = content.Definition["locations"][target]["sceneName"] };
+                }
             }
             else
             {

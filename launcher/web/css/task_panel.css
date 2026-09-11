@@ -2248,3 +2248,24 @@
     .dispatch-detail { padding-left: 16px; padding-right: 14px; }
     .dispatch-enter { min-width: 176px; }
 }
+
+/* 关卡返回选择复用任务面板 1024×576 画布，与任务写操作页面隔离。 */
+.task-return-view { display: none; }
+.task-panel-container[data-context="stage-return"] > :not(.task-return-view) { display: none !important; }
+.task-panel-container[data-context="stage-return"] > .task-return-view { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.task-return-header { display: flex; gap: 24px; justify-content: space-between; padding: 25px 30px 20px; border-bottom: 1px solid #454238; }
+.task-return-header h2 { margin: 0 0 10px; font-size: 25px; color: #efce80; }
+.task-return-header p { margin: 0; color: #b5b3a9; font-size: 13px; line-height: 1.7; }
+.task-return-header button, .task-return-footer button { color: #e9dfc3; border: 1px solid #736242; background: #292a25; border-radius: 3px; padding: 9px 16px; cursor: pointer; }
+.task-return-header button { align-self: flex-start; }
+.task-return-list { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 30px; }
+.task-return-message { color: #cfbe95; line-height: 1.7; }
+.task-return-choice { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 22px; margin: 0 0 12px; padding: 18px 22px; border: 1px solid #5e5845; background: #252820; color: #ecebdc; text-align: left; cursor: pointer; }
+.task-return-choice strong { display: block; font-size: 17px; margin-bottom: 8px; }
+.task-return-choice small { color: #babdae; font-size: 13px; }
+.task-return-choice:hover:not(:disabled), .task-return-choice:focus-visible { border-color: #e4c06f; background: #33382b; outline: 2px solid #b5a36b; }
+.task-return-choice:disabled { opacity: .55; cursor: default; }
+.task-return-destination { color: #e4c06f; font-size: 15px; max-width: 40%; line-height: 1.7; }
+.task-return-footer { display: flex; gap: 14px; align-items: center; padding: 18px 30px; border-top: 1px solid #454238; }
+.task-return-footer span { flex: 1; color: #a9ab9e; font-size: 12px; }
+.task-return-footer button:disabled { opacity: .5; cursor: default; }

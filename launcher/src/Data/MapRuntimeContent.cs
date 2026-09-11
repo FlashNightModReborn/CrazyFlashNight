@@ -42,6 +42,7 @@ namespace CF7Launcher.Data
         private JObject BuildBootstrap()
         {
             var locationByHotspot = new JObject(); var pageByHotspot = new JObject(); var locationByFrame = new JObject(); var frames = new JObject();
+            var locationLabels = new JObject();
             foreach (var page in MapDefinition.Pages(Definition)) foreach (var h in (JArray)page["hotspots"])
             {
                 locationByHotspot[(string)h["id"]] = h["locationId"]; pageByHotspot[(string)h["id"]] = page["id"];
@@ -50,6 +51,7 @@ namespace CF7Launcher.Data
             foreach (var p in ((JObject)Definition["locations"]).Properties())
             {
                 locationByHotspot[p.Name] = p.Name; locationByFrame[(string)p.Value["sceneName"]] = p.Name; frames[p.Name] = p.Value["sceneName"];
+                locationLabels[p.Name] = p.Value["label"];
             }
             var available = Definition.DescendantsAndSelf().OfType<JObject>().Where(n => (string)n["type"] == "task" && (string)n["state"] == "available")
                 .Select(n => (string)n["key"]).Distinct(StringComparer.Ordinal).OrderBy(x => x, StringComparer.Ordinal);
@@ -59,6 +61,7 @@ namespace CF7Launcher.Data
                 ["taskNpcLabels"] = Catalog.NpcLabels(Definition),
                 ["availableTaskIds"] = new JArray(available), ["structuredTaskIds"] = new JArray(structuredIds.OrderBy(x => x, StringComparer.Ordinal)),
                 ["locationByHotspot"] = locationByHotspot, ["pageByHotspot"] = pageByHotspot, ["locationByFrame"] = locationByFrame, ["frames"] = frames,
+                ["locationLabels"] = locationLabels,
                 ["worldBindings"] = new JArray(WorldOccurrences.Properties().Select(p => p.Value.DeepClone())) };
         }
         public JArray ValidateTaskIds(JToken token, int maximum = 128)

@@ -28,11 +28,11 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 淡出跳转帧(帧名)
+                <script><![CDATA[function 淡出跳转帧(帧名, 返回令牌:String)
 {
-	if (this.跳转中标签)
+	if (this.跳转中标签 || this.__returnFadeActive === true)
 	{
-		return;
+		return false;
 	}
 	if (帧名 == "")
 	{
@@ -41,8 +41,11 @@
 	else
 	{
 		this.跳转中 = true;
+		this.__returnFadeActive = true;
+		this.__stageReturnToken = 返回令牌;
 		跳转帧 = 帧名;
 		this.gotoAndPlay(2);
+		return true;
 	}
 }
 
@@ -91,8 +94,7 @@ play();
             </DOMFrame>
             <DOMFrame index="12" duration="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.关卡标志 = 跳转帧;
-_root.跳转地图(跳转帧);]]></script>
+                <script><![CDATA[_root.跳转地图(跳转帧, this.__stageReturnToken);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -105,7 +107,8 @@ _root.跳转地图(跳转帧);]]></script>
             </DOMFrame>
             <DOMFrame index="16" duration="19" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// Plan A: dirtyMark 守卫。SceneChanged hook 在 deactivateAll 前已 unconditional
+                <script><![CDATA[this.__returnFadeActive = false;
+// Plan A: dirtyMark 守卫。SceneChanged hook 在 deactivateAll 前已 unconditional
 // flushDurableNow，到达本帧时 dirty 已清零；只有 SceneChanged 之后又有新 mutator 标脏
 // 才触发本守卫。audit 漏标的 mutator 也由 SceneChanged hook 兜底，数据不丢。
 if (_root.存档系统.dirtyMark) _root.存档系统.requestSave("ui.fade_out");
@@ -121,7 +124,8 @@ if (_root.存档系统.dirtyMark) _root.存档系统.requestSave("ui.fade_out");
             </DOMFrame>
             <DOMFrame index="36" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[stop();
+                <script><![CDATA[this.__returnFadeActive = false;
+stop();
 ]]></script>
               </Actionscript>
               <elements/>
@@ -186,7 +190,7 @@ if (_root.存档系统.dirtyMark) _root.存档系统.requestSave("ui.fade_out");
                   <Actionscript>
                     <script><![CDATA[on(release){
    _root.场景进入位置名 = "出生地";
-   _root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
+   _root.从加载失败返回();
 }
 ]]></script>
                   </Actionscript>
@@ -297,7 +301,7 @@ if (_root.存档系统.dirtyMark) _root.存档系统.requestSave("ui.fade_out");
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(release){
-   _root.淡出动画.淡出跳转帧(_root.关卡标志);
+   _root.淡出动画.淡出跳转帧(_root.关卡标志, _root.淡出动画.__stageReturnToken);
 }
 ]]></script>
                   </Actionscript>

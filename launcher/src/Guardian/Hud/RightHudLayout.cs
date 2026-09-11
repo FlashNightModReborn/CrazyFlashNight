@@ -30,6 +30,7 @@ namespace CF7Launcher.Guardian.Hud
         public const int CompactMapHeightBase = 64;
         public const int ExpandedMapHeightBase = 112;
         public const int StatusSlotHeightBase = 32;
+        public const int TaskDestinationHeightBase = 40;
 
         public const int SafeExitContentWidthBase = RightActionRowWidthBase - SafeExitPaddingXBase * 2;
         public const int SafeExitPaddingXBase = 10;
@@ -108,30 +109,30 @@ namespace CF7Launcher.Guardian.Hud
             return TopToolsRectFromViewport(viewport, ScaleForViewport(viewport));
         }
 
-        public static Rectangle GetContextPanelRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showStatusSlot)
+        public static Rectangle GetContextPanelRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
             Rectangle viewport = GetViewportRect(anchor, mapper);
-            return ContextPanelRectFromViewport(viewport, ScaleForViewport(viewport), mapMode, showStatusSlot);
+            return ContextPanelRectFromViewport(viewport, ScaleForViewport(viewport), mapMode, showStatusSlot, statusHeightBase);
         }
 
-        public static Rectangle GetMapRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showStatusSlot)
+        public static Rectangle GetMapRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
-            Rectangle context = GetContextPanelRect(anchor, mapper, mapMode, showStatusSlot);
+            Rectangle context = GetContextPanelRect(anchor, mapper, mapMode, showStatusSlot, statusHeightBase);
             Rectangle viewport = GetViewportRect(anchor, mapper);
-            return MapRectFromContext(context, ScaleForViewport(viewport), mapMode, showStatusSlot);
+            return MapRectFromContext(context, ScaleForViewport(viewport), mapMode, showStatusSlot, statusHeightBase);
         }
 
-        public static Rectangle GetStatusSlotRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showStatusSlot)
+        public static Rectangle GetStatusSlotRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
-            Rectangle context = GetContextPanelRect(anchor, mapper, mapMode, showStatusSlot);
+            Rectangle context = GetContextPanelRect(anchor, mapper, mapMode, showStatusSlot, statusHeightBase);
             Rectangle viewport = GetViewportRect(anchor, mapper);
-            return StatusSlotRectFromContext(context, ScaleForViewport(viewport), showStatusSlot);
+            return StatusSlotRectFromContext(context, ScaleForViewport(viewport), showStatusSlot, statusHeightBase);
         }
 
-        public static Rectangle GetClusterRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showStatusSlot)
+        public static Rectangle GetClusterRect(Control anchor, FlashCoordinateMapper mapper, EffectiveMapDisplayMode mapMode, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
             Rectangle viewport = GetViewportRect(anchor, mapper);
-            return ClusterRectFromViewport(viewport, ScaleForViewport(viewport), mapMode, showStatusSlot);
+            return ClusterRectFromViewport(viewport, ScaleForViewport(viewport), mapMode, showStatusSlot, statusHeightBase);
         }
 
         public static Rectangle GetSafeExitRect(Control anchor, FlashCoordinateMapper mapper, int totalHeight)
@@ -180,12 +181,12 @@ namespace CF7Launcher.Guardian.Hud
             return -1;
         }
 
-        internal static Rectangle ContextPanelRectFromViewport(Rectangle viewport, float scale, EffectiveMapDisplayMode mapMode, bool showStatusSlot)
+        internal static Rectangle ContextPanelRectFromViewport(Rectangle viewport, float scale, EffectiveMapDisplayMode mapMode, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
             Rectangle tools = TopToolsRectFromViewport(viewport, scale);
             if (tools.Width <= 0 || tools.Height <= 0) return Rectangle.Empty;
             int h = 0;
-            if (showStatusSlot) h += WidgetScaler.Px(StatusSlotHeightBase, scale);
+            if (showStatusSlot) h += WidgetScaler.Px(statusHeightBase, scale);
             if (mapMode == EffectiveMapDisplayMode.Compact)
                 h += WidgetScaler.Px(CompactMapHeightBase, scale);
             else if (mapMode == EffectiveMapDisplayMode.Expanded)
@@ -194,27 +195,27 @@ namespace CF7Launcher.Guardian.Hud
             return new Rectangle(tools.X, tools.Bottom, tools.Width, h);
         }
 
-        internal static Rectangle MapRectFromContext(Rectangle context, float scale, EffectiveMapDisplayMode mapMode, bool showStatusSlot)
+        internal static Rectangle MapRectFromContext(Rectangle context, float scale, EffectiveMapDisplayMode mapMode, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
             if (mapMode == EffectiveMapDisplayMode.Hidden || context.Width <= 0 || context.Height <= 0) return Rectangle.Empty;
-            int y = context.Y + (showStatusSlot ? WidgetScaler.Px(StatusSlotHeightBase, scale) : 0);
+            int y = context.Y + (showStatusSlot ? WidgetScaler.Px(statusHeightBase, scale) : 0);
             int h = WidgetScaler.Px(
                 mapMode == EffectiveMapDisplayMode.Expanded ? ExpandedMapHeightBase : CompactMapHeightBase,
                 scale);
             return new Rectangle(context.X, y, context.Width, h);
         }
 
-        internal static Rectangle StatusSlotRectFromContext(Rectangle context, float scale, bool showStatusSlot)
+        internal static Rectangle StatusSlotRectFromContext(Rectangle context, float scale, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
             if (!showStatusSlot || context.Width <= 0 || context.Height <= 0) return Rectangle.Empty;
-            return new Rectangle(context.X, context.Y, context.Width, WidgetScaler.Px(StatusSlotHeightBase, scale));
+            return new Rectangle(context.X, context.Y, context.Width, WidgetScaler.Px(statusHeightBase, scale));
         }
 
-        internal static Rectangle ClusterRectFromViewport(Rectangle viewport, float scale, EffectiveMapDisplayMode mapMode, bool showStatusSlot)
+        internal static Rectangle ClusterRectFromViewport(Rectangle viewport, float scale, EffectiveMapDisplayMode mapMode, bool showStatusSlot, int statusHeightBase = StatusSlotHeightBase)
         {
             Rectangle tools = TopToolsRectFromViewport(viewport, scale);
             if (tools.Width <= 0 || tools.Height <= 0) return Rectangle.Empty;
-            Rectangle context = ContextPanelRectFromViewport(viewport, scale, mapMode, showStatusSlot);
+            Rectangle context = ContextPanelRectFromViewport(viewport, scale, mapMode, showStatusSlot, statusHeightBase);
             return context.Width > 0 && context.Height > 0 ? Rectangle.Union(tools, context) : tools;
         }
 

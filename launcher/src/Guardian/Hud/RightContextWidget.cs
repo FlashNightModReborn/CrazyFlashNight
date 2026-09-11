@@ -16,7 +16,7 @@ namespace CF7Launcher.Guardian.Hud
     /// 收敛后的右侧组合 HUD：六入口常驻动作行 + 条件状态槽 + 可选地图预览。
     /// 业务命令仍全部通过 LauncherCommandRouter.Dispatch，不在 widget 内复制业务分支。
     /// </summary>
-    public class RightContextWidget : INativeHudWidget, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IStageOutcomePresenter, IDisposable
+    public partial class RightContextWidget : INativeHudWidget, INativeHudCompositeBoundsProvider, IUiDataConsumer, IUiDataLegacyConsumer, IStageOutcomePresenter, IDisposable
     {
         private const int NOTICE_MS = 5000;
         private const int ICON_W_BASE = 28;
@@ -74,7 +74,8 @@ namespace CF7Launcher.Guardian.Hud
             MapCard,
             MapDisplayToggle,
             Notice,
-            StageAction
+            StageAction,
+            ReturnToggle, ReturnOption, ReturnPage, ReturnRefresh, DeliveryAction
         }
 
         private struct HitInfo
@@ -224,6 +225,7 @@ namespace CF7Launcher.Guardian.Hud
         private Font _fontMapLabel115Bold;    // PaintMapLabel "Microsoft YaHei" 11.5 Bold
         private Font _fontQuest12;            // 地图预览尺寸切换按钮
         private Font _fontNoticeJuke11;       // 条件状态槽 / hover tooltip
+        private Font _fontDestinationDetail10;// 交付地点与状态的次级文字
         private Font _fontStageActionCompact9;// 极长复活币计数的单行降级
         private Font _fontStageActionMicro8;  // 合法 long 上界的最终单行降级
 
@@ -270,7 +272,7 @@ namespace CF7Launcher.Guardian.Hud
                     string[] samples = {
                         "地图 任务 装备",
                         "⚙ Ⅱ ▶ × ＋ － ➤",
-                        "展开预览 缩略预览 任务已达成 可交付 持有 复活币 回基地"
+                        "展开预览 缩略预览 任务已达成 可交付 持有 复活币 返回原处 选择交付 医务室"
                     };
                     // 只接静态 base font，不触碰任何实例 _font*；与 UI 线程 Paint 路径完全无共享状态
                     g.DrawString(samples[0], _baseTools15Bold,     BR_TOOLS_FG,         0f,  0f);
@@ -292,6 +294,7 @@ namespace CF7Launcher.Guardian.Hud
             _fontMapLabel115Bold = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11.5f, scale), FontStyle.Bold, GraphicsUnit.Pixel);
             _fontQuest12         = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(12f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _fontNoticeJuke11    = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(11f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontDestinationDetail10 = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(10f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _fontStageActionCompact9 = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(9f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _fontStageActionMicro8 = NativeHudFonts.CreateUiFont(WidgetScaler.Pxf(8f, scale), FontStyle.Regular, GraphicsUnit.Pixel);
             _cachedFontScale = scale;
@@ -304,6 +307,7 @@ namespace CF7Launcher.Guardian.Hud
             if (_fontMapLabel115Bold != null) { _fontMapLabel115Bold.Dispose(); _fontMapLabel115Bold = null; }
             if (_fontQuest12 != null)         { _fontQuest12.Dispose();         _fontQuest12 = null; }
             if (_fontNoticeJuke11 != null)    { _fontNoticeJuke11.Dispose();    _fontNoticeJuke11 = null; }
+            if (_fontDestinationDetail10 != null) { _fontDestinationDetail10.Dispose(); _fontDestinationDetail10 = null; }
             if (_fontStageActionCompact9 != null) { _fontStageActionCompact9.Dispose(); _fontStageActionCompact9 = null; }
             if (_fontStageActionMicro8 != null) { _fontStageActionMicro8.Dispose(); _fontStageActionMicro8 = null; }
             _cachedFontScale = -1f;
@@ -315,6 +319,7 @@ namespace CF7Launcher.Guardian.Hud
         /// </summary>
         public void Dispose()
         {
+            DisposeReturnPortraits();
             DisposeFonts();
         }
 
@@ -329,7 +334,8 @@ namespace CF7Launcher.Guardian.Hud
             MapHudDataCatalog catalog,
             MapDisplayPreference mapDisplayPreference = MapDisplayPreference.Auto,
             Action<MapDisplayPreference> onMapDisplayPreferenceChanged = null,
-            LootIconCatalog itemIcons = null)
+            LootIconCatalog itemIcons = null,
+            string npcPortraitDirectory = null)
         {
             if (anchor == null) throw new ArgumentNullException("anchor");
             if (router == null) throw new ArgumentNullException("router");
@@ -337,6 +343,7 @@ namespace CF7Launcher.Guardian.Hud
             _router = router;
             _catalog = catalog;
             _itemIcons = itemIcons;
+            _npcPortraitDirectory = npcPortraitDirectory;
             _mapDisplayPreference = mapDisplayPreference;
             _onMapDisplayPreferenceChanged = onMapDisplayPreferenceChanged;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
@@ -479,7 +486,7 @@ namespace CF7Launcher.Guardian.Hud
             {
                 if (!Visible) return Rectangle.Empty;
                 if (_anchor == null || !_anchor.IsHandleCreated) return Rectangle.Empty;
-                return RightHudLayout.GetClusterRect(_anchor, _mapper, LayoutMapMode, ShowStatusSlot);
+                return IncludeReturnMenu(RightHudLayout.GetClusterRect(_anchor, _mapper, LayoutMapMode, ShowStatusSlot, CurrentStatusHeightBase));
             }
         }
 
@@ -572,9 +579,9 @@ namespace CF7Launcher.Guardian.Hud
             bool showStatusSlot = ShowStatusSlot;
 
             Rectangle tools = RightHudLayout.TopToolsRectFromViewport(viewport, scale);
-            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, mapMode, showStatusSlot);
-            Rectangle map = RightHudLayout.MapRectFromContext(context, scale, mapMode, showStatusSlot);
-            Rectangle notice = RightHudLayout.StatusSlotRectFromContext(context, scale, showStatusSlot);
+            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, mapMode, showStatusSlot, CurrentStatusHeightBase);
+            Rectangle map = RightHudLayout.MapRectFromContext(context, scale, mapMode, showStatusSlot, CurrentStatusHeightBase);
+            Rectangle notice = RightHudLayout.StatusSlotRectFromContext(context, scale, showStatusSlot, CurrentStatusHeightBase);
 
             tools.Offset(-hudOrigin.X, -hudOrigin.Y);
             context.Offset(-hudOrigin.X, -hudOrigin.Y);
@@ -592,8 +599,10 @@ namespace CF7Launcher.Guardian.Hud
                 PaintTools(g, tools, scale);
                 if (showHint) PaintActionTooltip(g, notice, scale);
                 if (showStageDecision) PaintStageDecision(g, notice, scale);
-                if (showNotice) PaintNotice(g, notice, scale);
+                if (ShowsDailyChoices) PaintDailyDelivery(g, notice, scale);
+                else if (showNotice) PaintNotice(g, notice, scale);
                 if (showMap) PaintMapCard(g, map, scale);
+                if (showStageDecision || ShowsDailyChoices) PaintReturnMenu(g, notice, scale);
             }
             finally
             {
@@ -791,6 +800,13 @@ namespace CF7Launcher.Guardian.Hud
             NativeHudTheme.DrawPanel(g, r, scale,
                 NativeHudTheme.PanelFillDense, accent, true);
 
+            if (HasInlineReturnChoices)
+            {
+                PaintReturnField(g, r, scale);
+                PaintStageButtons(g, r, scale);
+                return;
+            }
+
             int iconW = WidgetScaler.Px(ICON_W_BASE, scale);
             int pad = WidgetScaler.Px(NOTICE_TEXT_PAD_BASE, scale);
             int actionsWidth = StageActionsTotalWidth(scale);
@@ -820,6 +836,11 @@ namespace CF7Launcher.Guardian.Hud
                         textBrush, textRect, FMT_NEAR_NOWRAP_ELLIPSIS);
             }
 
+            PaintStageButtons(g, r, scale);
+        }
+
+        private void PaintStageButtons(Graphics g, Rectangle r, float scale)
+        {
             for (int i = 0; i < _stageActions.Count; i++)
             {
                 StageActionSpec action = _stageActions[i];
@@ -830,10 +851,13 @@ namespace CF7Launcher.Guardian.Hud
                     && _down.Index == i;
                 bool primary = action.Id == "revive"
                     || action.Id == "deliver" || action.Id == "resume";
-                NativeHudTheme.DrawButton(g, button, scale,
-                    hover, pressed, primary, false);
+                if (HasInlineReturnChoices)
+                    PaintDestinationControl(g, button, scale, hover, pressed, primary && action.Enabled);
+                else
+                    NativeHudTheme.DrawButton(g, button, scale, hover, pressed, primary, false);
                 Color labelColor = action.Enabled
-                    ? NativeHudTheme.TextPrimary : NativeHudTheme.TextDisabled;
+                    ? (HasInlineReturnChoices && !primary ? NativeHudTheme.TextSecondary : NativeHudTheme.TextPrimary)
+                    : NativeHudTheme.TextDisabled;
                 using (SolidBrush labelBrush = new SolidBrush(labelColor))
                 {
                     Rectangle labelRect = StageActionLabelRect(button, scale);
@@ -1105,6 +1129,8 @@ namespace CF7Launcher.Guardian.Hud
                     break;
                 case MouseEventKind.Leave:
                     SetHover(NoHit());
+                    // WinForms 在一次正常 Click 后释放 capture，也会经 HUD 发来 Leave。
+                    // Leave 只清悬停；点击展开的列表由选择、切换、取消或选项失效关闭。
                     break;
                 case MouseEventKind.Down:
                     SetPointerDown((e.Button == MouseButtons.Left) ? hit : NoHit());
@@ -1123,6 +1149,7 @@ namespace CF7Launcher.Guardian.Hud
                     break;
                 case MouseEventKind.Cancel:
                     _hover = NoHit();
+                    CloseReturnMenu();
                     ClearPointerDown();
                     FireRepaint();
                     break;
@@ -1134,6 +1161,8 @@ namespace CF7Launcher.Guardian.Hud
             if (!Visible) return NoHit();
             Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
             float scale = RightHudLayout.ScaleForViewport(viewport);
+            HitInfo returnHit = HitReturnMenu(pt, viewport, scale);
+            if (returnHit.Kind != HitKind.None) return returnHit;
             EffectiveMapDisplayMode mapMode = LayoutMapMode;
             bool showNotice = PaintsActionableNotice;
             bool showStatusSlot = ShowStatusSlot;
@@ -1145,14 +1174,16 @@ namespace CF7Launcher.Guardian.Hud
                 return Hit(HitKind.Tool, idx);
             }
 
-            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, mapMode, showStatusSlot);
-            Rectangle map = RightHudLayout.MapRectFromContext(context, scale, mapMode, showStatusSlot);
+            Rectangle context = RightHudLayout.ContextPanelRectFromViewport(viewport, scale, mapMode, showStatusSlot, CurrentStatusHeightBase);
+            Rectangle map = RightHudLayout.MapRectFromContext(context, scale, mapMode, showStatusSlot, CurrentStatusHeightBase);
             if (map.Contains(pt))
             {
                 if (GetMapDisplayToggleRect(map, scale).Contains(pt)) return Hit(HitKind.MapDisplayToggle, 0);
                 return Hit(HitKind.MapCard, 0);
             }
-            Rectangle notice = RightHudLayout.StatusSlotRectFromContext(context, scale, showStatusSlot);
+            Rectangle notice = RightHudLayout.StatusSlotRectFromContext(context, scale, showStatusSlot, CurrentStatusHeightBase);
+            // 日常交付的有效控件已由 HitReturnMenu 处理；忙碌按钮和间隙不能退回旧整栏点击。
+            if (ShowsDailyChoices && notice.Contains(pt)) return NoHit();
             if (PaintsStageDecision && notice.Contains(pt))
             {
                 for (int i = 0; i < _stageActions.Count; i++)
@@ -1173,6 +1204,8 @@ namespace CF7Launcher.Guardian.Hud
         {
             try
             {
+                if (DispatchReturnHit(hit)) return;
+                CloseReturnMenu();
                 switch (hit.Kind)
                 {
                     case HitKind.Tool:
@@ -1200,6 +1233,7 @@ namespace CF7Launcher.Guardian.Hud
 
         private void DispatchNoticeClick()
         {
+            if (_deliveryProtocolSeen) { _router.Dispatch("TASK_UI"); return; }
             if (CanDeliver())
             {
                 string raw = "{\"hotspotId\":\"" + EscapeJson(_deliverHotspotId) + "\"}";
@@ -1221,6 +1255,12 @@ namespace CF7Launcher.Guardian.Hud
 
             if (ShouldPresentStageOutcome(state))
             {
+                if (action.Intent == "confirm_return")
+                {
+                    if (InlineReturnReady && SelectedReturnChoice != null)
+                        ReturnRequested?.Invoke(state.RunId, state.Revision, state.ReturnOptions.Token, SelectedReturnChoice.Id);
+                    return;
+                }
                 Action<string, string, int> handler = IntentRequested;
                 if (handler != null && !string.IsNullOrEmpty(action.Intent))
                     handler(action.Intent, state.RunId, state.Revision);
@@ -1258,6 +1298,7 @@ namespace CF7Launcher.Guardian.Hud
                 previous = _stageOutcomeState, next = state,
                 pointerDown = _down.Kind.ToString(), token = _downStageActionToken }, _downFocusGesture);
             _stageOutcomeState = state;
+            AdoptReturnChoices();
             _hover = NoHit();
             ClearPointerDown();
             BuildStageActions();
@@ -1269,6 +1310,7 @@ namespace CF7Launcher.Guardian.Hud
         {
             if (MarshalToUi(ResetState)) return;
             _stageOutcomeState = null;
+            AdoptReturnChoices();
             _stageActions.Clear();
             ClearStageBroadcast();
             _hover = NoHit();
@@ -1332,15 +1374,25 @@ namespace CF7Launcher.Guardian.Hud
                             "revive", "禁复活", "revive", false);
                     }
                     if (state.CanReturnBase)
-                        AddStageAction("return", "回基地", "return_base", true);
+                        AddStageAction("return", "医务室", "return_base", true);
                     return;
                 }
                 if (state.Life == "reviving") return;
+                if (state.ReturnOptions != null)
+                {
+                    if (HasInlineReturnChoices)
+                        AddStageAction("deliver", state.ReturnOptions.Status == "confirming" ? "正在确认" : "完成结算", "confirm_return", InlineReturnReady);
+                    else if (state.ReturnOptions.Status == "error")
+                        AddStageAction("refresh", "刷新交付", "refresh_return", true);
+                    if (state.CanReturnBase)
+                        AddStageAction("return", "返回原处", "return_base", state.ReturnOptions.Status != "confirming");
+                    return;
+                }
                 if (CanOfferStageDelivery(state))
-                    AddStageAction("deliver", "前往交付",
-                        "return_deliverable", true);
+                    AddStageAction("deliver", "选择交付",
+                        "select_return", true);
                 if (state.CanReturnBase)
-                    AddStageAction("return", "回基地", "return_base", true);
+                    AddStageAction("return", "返回原处", "return_base", true);
             }
             finally
             {
@@ -1354,9 +1406,7 @@ namespace CF7Launcher.Guardian.Hud
         {
             return state != null && state.Outcome == "victory"
                 && state.Life == "alive" && state.Settlement == "none"
-                && state.CanReturnBase && _taskDone
-                && _returnNavigable
-                && !string.IsNullOrEmpty(_deliverHotspotId);
+                && state.CanReturnBase && state.CanSelectReturn;
         }
 
         private void AddStageAction(
@@ -1412,6 +1462,8 @@ namespace CF7Launcher.Guardian.Hud
                         ? STAGE_ACTION_REVIVE_W_BASE
                         : STAGE_ACTION_PRIMARY_W_BASE)
                     : STAGE_ACTION_SECONDARY_W_BASE;
+            if (HasInlineReturnChoices && _stageActions[index].Id == "return") baseWidth = DestinationReturnWidthBase;
+            if (HasInlineReturnChoices && _stageActions[index].Id == "deliver") baseWidth = DestinationConfirmWidthBase;
             return WidgetScaler.Px(baseWidth, scale);
         }
 
@@ -1437,6 +1489,8 @@ namespace CF7Launcher.Guardian.Hud
                     ? "持有复活币 " + StageOutcomeState.FormatCompactCount(
                         state.ReviveCoins)
                     : "你受了重伤";
+            if (state.ReturnOptions?.Status == "loading") return "查找交付任务…";
+            if (state.ReturnOptions?.Status == "error") return "交付读取失败";
             if (state.Outcome == "victory") return "关卡已突破";
             return "行动未能完成";
         }
@@ -1687,6 +1741,7 @@ namespace CF7Launcher.Guardian.Hud
         {
             if (_activeFlash != null) return false;
             if (!_taskDone) return false;
+            if (_deliveryProtocolSeen) return HasDailyChoices && _deliveryOptions.Status == "ready";
             if (!_navigable) return false;
             if (string.IsNullOrEmpty(_deliverHotspotId)) return false;
             if (_runtimeMapMode == RuntimeMapMode.Combat) return false;
@@ -1796,6 +1851,7 @@ namespace CF7Launcher.Guardian.Hud
         {
             if (FocusTrace.Enabled) _downFocusGesture = FocusTrace.Gesture;
             _down = hit;
+            _downReturnSignature = ReturnGestureSignature(hit);
             _downStageActionToken = default(StageActionGestureToken);
             _downNoticeToken = default(NoticeGestureToken);
             if (hit.Kind == HitKind.Notice)
@@ -1828,6 +1884,7 @@ namespace CF7Launcher.Guardian.Hud
                     token = _downStageActionToken }, _downFocusGesture);
             _downFocusGesture = null;
             _down = NoHit();
+            _downReturnSignature = null;
             _downStageActionToken = default(StageActionGestureToken);
             _downNoticeToken = default(NoticeGestureToken);
         }
@@ -1835,6 +1892,7 @@ namespace CF7Launcher.Guardian.Hud
         private bool PointerDownMatches(HitInfo hit)
         {
             if (!SameHit(_down, hit)) return false;
+            if (_downReturnSignature != ReturnGestureSignature(hit)) return false;
             if (hit.Kind == HitKind.Notice)
             {
                 NoticeGestureToken current = CurrentNoticeGestureToken();
@@ -1877,7 +1935,7 @@ namespace CF7Launcher.Guardian.Hud
             NoticeGestureToken token = default(NoticeGestureToken);
             if (!PaintsActionableNotice) return token;
             token.Valid = true;
-            if (CanDeliver())
+            if (CanDeliver() && !_deliveryProtocolSeen)
             {
                 token.Command = "TASK_DELIVER";
                 token.PayloadSignature = _deliverHotspotId ?? "";
@@ -1977,9 +2035,9 @@ namespace CF7Launcher.Guardian.Hud
             Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
             float scale = RightHudLayout.ScaleForViewport(viewport);
             Rectangle context = RightHudLayout.ContextPanelRectFromViewport(
-                viewport, scale, LayoutMapMode, ShowStatusSlot);
+                viewport, scale, LayoutMapMode, ShowStatusSlot, CurrentStatusHeightBase);
             Rectangle slot = RightHudLayout.StatusSlotRectFromContext(
-                context, scale, ShowStatusSlot);
+                context, scale, ShowStatusSlot, CurrentStatusHeightBase);
             return StageActionRect(slot, scale, index);
         }
         internal bool StageActionLabelFitsForTest(int index)
@@ -2059,9 +2117,9 @@ namespace CF7Launcher.Guardian.Hud
             Rectangle viewport = RightHudLayout.GetViewportRect(_anchor, _mapper);
             float scale = RightHudLayout.ScaleForViewport(viewport);
             Rectangle context = RightHudLayout.ContextPanelRectFromViewport(
-                viewport, scale, LayoutMapMode, ShowStatusSlot);
+                viewport, scale, LayoutMapMode, ShowStatusSlot, CurrentStatusHeightBase);
             Rectangle slot = RightHudLayout.StatusSlotRectFromContext(
-                context, scale, ShowStatusSlot);
+                context, scale, ShowStatusSlot, CurrentStatusHeightBase);
             int iconW = WidgetScaler.Px(ICON_W_BASE, scale);
             int pad = WidgetScaler.Px(NOTICE_TEXT_PAD_BASE, scale);
             Rectangle textRect = new Rectangle(

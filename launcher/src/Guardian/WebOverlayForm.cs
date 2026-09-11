@@ -6296,6 +6296,15 @@ namespace CF7Launcher.Guardian
                     + logCmd);
                 return;
             }
+            if (cmd == "stageReturnSnapshot" || cmd == "stageReturnConfirm")
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "tasks"))
+                    RespondPanelDomainError(parsed, "panel_instance_expired");
+                else if (_taskTask == null)
+                    RespondPanelDomainError(parsed, "task_unavailable");
+                else _taskTask.HandleWebRequest(cmd, parsed);
+                return;
+            }
             string messagePanel = parsed.Value<string>("panel");
             string messagePanelInstanceId =
                 parsed.Value<string>("panelInstanceId");

@@ -705,6 +705,9 @@ _root.难度是否达到 = function(等级描述:String):Boolean{
 }
 
 _root.点击npc后检测任务 = function(npc名字, 目标) {
+    if (org.flashNight.arki.scene.StageRunSession.isNpcPresentationBlocked()) {
+        return "请先处理本轮战利品";
+    }
     if (!org.flashNight.arki.map.MapDomainBridge.isCurrent()) {
         org.flashNight.arki.map.MapDomainBridge.invalidate();
         _root.发布消息("人物状态正在更新，请稍后再点一次。");

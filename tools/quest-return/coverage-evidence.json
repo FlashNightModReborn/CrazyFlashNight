@@ -1,0 +1,416 @@
+{
+  "schema": 1,
+  "sourceCommit": "1b62dadfd0c88d32fdbe1c7324a3875bf40c15ef",
+  "placements": [
+    {
+      "batch": "M1",
+      "npcId": "npc_d518fd6bba4125f3",
+      "placementId": "place_2de960bc6f070ba5",
+      "npcName": "迷之盔甲君",
+      "locationId": "base_lobby",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 32
+      },
+      "occurrenceId": "occ_b18477d037fdd8f876037da7",
+      "sceneKey": "基地1层",
+      "sourceSwf": "flashswf/levels/基地场景合集.swf",
+      "swfSha256": "AE7F591CEB46E781F0F4B5EC9378C17852C6F8834FD1B29FB7D5AD785C72C43E",
+      "sourceFile": "flashswf/levels/基地场景合集/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图/基地1层.xml",
+      "scriptDigest": "10ABDD1B48B50C7774E14E0D8E64F7D1027DA131633D5B4CA698EBB72078D4B5",
+      "sourceDigest": "892EA87D964F896ADC1E180AD14CFBE0D9826DDE097C69384132301E17F14271",
+      "legacyScript": "onClipEvent (load) {\n\t任务需求 = 32;\n\t名字 = \"迷之盔甲君\";\n\t商店 = \"材料出售\";\n\t身高 = 185;\n\t性别 = \"男\";\n\t方向 = \"右\";\n\tNPC任务_任务_关卡路径 = \"生存战\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M1",
+      "npcId": "npc_59c6b4ac10799046",
+      "placementId": "place_2617dbdd295b378d",
+      "npcName": "爱国青年",
+      "locationId": "base_lobby",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 3
+      },
+      "occurrenceId": "occ_ef944110817bb9be14988bac",
+      "sceneKey": "基地1层",
+      "sourceSwf": "flashswf/levels/基地场景合集.swf",
+      "swfSha256": "AE7F591CEB46E781F0F4B5EC9378C17852C6F8834FD1B29FB7D5AD785C72C43E",
+      "sourceFile": "flashswf/levels/基地场景合集/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图/基地1层.xml",
+      "scriptDigest": "A71C30E458E627DE6825D25496520854CDCE85B86F8AA91CF50B8174BDDECB3C",
+      "sourceDigest": "DD86D856BF039831D399CFF3BF4BB4107490722CCBB9C00F5E8145C2728F5A78",
+      "legacyScript": "onClipEvent (load) {\n\t任务需求 = 3;\n\t名字 = \"爱国青年\";\n\t商店 = \"空手装备出售\";\n\t身高 = 180;\n\t性别 = \"男\";\n\t方向 = \"右\";\n\tNPC任务_任务_关卡路径 = \"二战亡灵\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M1",
+      "npcId": "npc_1f21be07c3242f38",
+      "placementId": "place_89f7cf38be4119f8",
+      "npcName": "A兵团士兵",
+      "locationId": "basement1",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 175
+      },
+      "occurrenceId": "occ_a965dd04d13a36be2c427eb5",
+      "sceneKey": "地下室1层",
+      "sourceSwf": "flashswf/levels/基地场景合集.swf",
+      "swfSha256": "AE7F591CEB46E781F0F4B5EC9378C17852C6F8834FD1B29FB7D5AD785C72C43E",
+      "sourceFile": "flashswf/levels/基地场景合集/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图/基地地下1层.xml",
+      "scriptDigest": "7F84C7114E9B65FE761655EC0D865D04D62967EEDAA687D61A1E859C0DAD5A12",
+      "sourceDigest": "1E6F0C0D66C87520F9684727657A70389E786477CF5BCEC27E0B8088D515BA0B",
+      "legacyScript": "onClipEvent (load) {\n\tif (_root.主线任务进度 < 175)\n\t{\n\t\tthis._visible = 0;\n\t}\n\t是否为敌人 = false;\n\tthis._name = 名字 = \"A兵团士兵\";\n\t身高 = 175;\n\t性别 = \"男\";\n\t方向 = \"右\";\n\tif (_root.NPCTaskCheck(名字).result == \"接受任务\")\n\t{\n\t\t_root.发布消息(名字 + \"也许需要你的帮助\");\n        this.文字信息.任务接取提示._visible = 1;\n\t}else {\n        this.文字信息.任务接取提示._visible = 0;\n    }\n\t默认对话 = [[], [], []];\n\t默认对话[0][0] = [\"A兵团士兵\", \"线人\", \"A兵团士兵\", \"补给的事情就拜托给你了！\", \"微笑\"];\n\t默认对话[1][0] = [\"A兵团士兵\", \"线人\", \"A兵团士兵\", \"搜集的时候要小心，很多地方残留的大量僵尸！\", \"普通\"];\n\t默认对话[2][0] = [\"A兵团士兵\", \"线人\", \"A兵团士兵\", \"A兵团最强的士兵真是靠的住！\", \"思考\"];\n\tNPC任务_任务_关卡路径 = \"搜寻诺亚前线战场补给\";\n\t商品编号 = \"O2011100900000000802\";\n}"
+    },
+    {
+      "batch": "M1",
+      "npcId": "npc_fbef39c347a54191",
+      "placementId": "place_bcf7e5b4ea901aef",
+      "npcName": "Bard",
+      "locationId": "base_roof",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 446
+      },
+      "occurrenceId": "occ_8a08af131460dd4bb48e1b07",
+      "sceneKey": "基地房顶",
+      "sourceSwf": "flashswf/levels/基地场景合集.swf",
+      "swfSha256": "AE7F591CEB46E781F0F4B5EC9378C17852C6F8834FD1B29FB7D5AD785C72C43E",
+      "sourceFile": "flashswf/levels/基地场景合集/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图/停机坪.xml",
+      "scriptDigest": "7F84D69A4371CF408B0DE2E9EC9B5A8C6DE8122D5621DA1CF5177F9A07C34D35",
+      "sourceDigest": "1DE9461DAF03D56A3928CB138F7808D5E2B8BCFDA8330A581F41B1CFB3AB591E",
+      "legacyScript": "onClipEvent (load) {\n\tif (_root.主线任务进度 < 446)\n\t{\n\t\tthis._visible = 0;\n\t}\n\t是否为敌人 = false;\n\tthis._name = 名字 = \"Bard\";\n\t身高 = 175;\n\t性别 = \"男\";\n\t方向 = \"右\";\n   NPC任务_任务_关卡路径 = \"铁血乱舞\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M1",
+      "npcId": "npc_9b0d49442ca22235",
+      "placementId": "place_ee352ba71a72b0dd",
+      "npcName": "被改造的方舟无人机",
+      "locationId": "base_roof",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 285
+      },
+      "occurrenceId": "occ_84c373ad28bc25e089e142a5",
+      "sceneKey": "基地房顶",
+      "sourceSwf": "flashswf/levels/基地场景合集.swf",
+      "swfSha256": "AE7F591CEB46E781F0F4B5EC9378C17852C6F8834FD1B29FB7D5AD785C72C43E",
+      "sourceFile": "flashswf/levels/基地场景合集/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图/停机坪.xml",
+      "scriptDigest": "2027D5FB4D5D30AFD653DEE2DC51C93107D98D01AC64DF642311F92DB53D3B9A",
+      "sourceDigest": "8BDED6CB18E56CDED315002C63BC3C7D155AECCBF39BD9F627EED6E2183C4BE8",
+      "legacyScript": "onClipEvent(load){\n   if(_root.主线任务进度 < 285)\n   {\n      this._visible = 0;\n   }\n   是否为敌人 = false;\n   this._name = 名字 = \"被改造的方舟无人机\";\n   身高 = 175;\n   性别 = \"男\";\n   方向 = \"左\";\n   if(_root.NPCTaskCheck(名字).result == \"接受任务\")\n   {\n      _root.发布消息(名字 + \"似乎需要你的帮助\");\n        this.文字信息.任务接取提示._visible = 1;\n   }else {\n        this.文字信息.任务接取提示._visible = 0;\n    }\n   默认对话 = [[],[],[]];\n   默认对话[0][0] = [\"被改造的方舟无人机\",\"线人\",\"被改造的方舟无人机\",\"我这里有大量诺亚可公布信息可以随时查询！\",\"普通\"];\n   默认对话[1][0] = [\"被改造的方舟无人机\",\"线人\",\"被改造的方舟无人机\",\"机器吱吱吱吱吱吱吱.....\",\"普通\"];\n   NPC任务_任务_关卡路径 = \"调查雪女获强化石\";\n}\n"
+    },
+    {
+      "batch": "M1",
+      "npcId": "npc_73fa4b54bb70dbeb",
+      "placementId": "place_d232150c9b712eb5",
+      "npcName": "神秘男人",
+      "locationId": "base_roof",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "彩蛋",
+        "min": 0,
+        "max": 0
+      },
+      "occurrenceId": "occ_968b22bfca4b2adde73f1ae4",
+      "sceneKey": "基地房顶",
+      "sourceSwf": "flashswf/levels/基地场景合集.swf",
+      "swfSha256": "AE7F591CEB46E781F0F4B5EC9378C17852C6F8834FD1B29FB7D5AD785C72C43E",
+      "sourceFile": "flashswf/levels/基地场景合集/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图/停机坪.xml",
+      "scriptDigest": "A6A963AA057129A6B033FDE5586B8C5452448BCFE1C98BE88C89DE3C27701F61",
+      "sourceDigest": "01AA1251C42715E7E7E9471ABD3724659AB81433913349F86CD7BA545479646E",
+      "legacyScript": "onClipEvent (load) {\n\tif (_root.task_chains_progress.彩蛋 and _root.task_chains_progress.彩蛋 >= 1)\n\t{\n\t\tthis.stop();\n\t\tthis._visible = 0;\n\t}\n\t名字 = \"神秘男人\";\n\t身高 = 175;\n\t性别 = \"男\";\n\t方向 = \"左\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_2cf5cf6898c14219",
+      "placementId": "place_4a273573130b8196",
+      "npcName": "女仆（黑）",
+      "locationId": "survivor_camp",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 77
+      },
+      "occurrenceId": "occ_0deb84d82b9918d6b0c74110",
+      "sceneKey": "地图-幸存者营地",
+      "sourceSwf": "flashswf/levels/地图-幸存者营地.swf",
+      "swfSha256": "CC0ED21314514062BB454472A9CCFF460F7C0E10CB9F4E3F6415F046A384D6C3",
+      "sourceFile": "flashswf/levels/地图-幸存者营地/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-幸存者营地.xml",
+      "scriptDigest": "DBCC876610AC49C5114D07DB545CA25BBF7A7FCFA1ECFDD7C905978AC30BA168",
+      "sourceDigest": "9753FD9C1457FBBADE82C2435D0C8E15E9EBBB183908448C101E303B178F2827",
+      "legacyScript": "onClipEvent (load) {\n\t任务需求 = 77;\n\t名字 = \"女仆（黑）\";\n\t身高 = 170;\n\t性别 = \"女\";\n\t方向 = \"左\";\n\tNPC任务_任务_关卡路径 = \"挑战黑白女仆（黑）\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_9d2bc1c38fff7603",
+      "placementId": "place_365db6591498f7ad",
+      "npcName": "女仆（白）",
+      "locationId": "survivor_camp",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 77
+      },
+      "occurrenceId": "occ_414aa21b125b08d1c588115f",
+      "sceneKey": "地图-幸存者营地",
+      "sourceSwf": "flashswf/levels/地图-幸存者营地.swf",
+      "swfSha256": "CC0ED21314514062BB454472A9CCFF460F7C0E10CB9F4E3F6415F046A384D6C3",
+      "sourceFile": "flashswf/levels/地图-幸存者营地/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-幸存者营地.xml",
+      "scriptDigest": "2B28202B095F15944C11F22B96E2315C629ED803F988B4AB0F93EAEEBB9C0915",
+      "sourceDigest": "A9B26FE0218F25D12EB00043FDAAFD04032350EE1DE7B5C544782D95A9F616D1",
+      "legacyScript": "onClipEvent (load) {\n\t任务需求 = 77;\n\t名字 = \"女仆（白）\";\n\t身高 = 170;\n\t性别 = \"女\";\n\t方向 = \"右\";\n\tNPC任务_任务_关卡路径 = \"挑战黑白女仆（白）\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_44b22ce51e6ed4c8",
+      "placementId": "place_9ce81c043704182e",
+      "npcName": "杰克霜精",
+      "locationId": "survivor_camp",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 44
+      },
+      "occurrenceId": "occ_0f35bc62e8571c3995b39882",
+      "sceneKey": "地图-幸存者营地",
+      "sourceSwf": "flashswf/levels/地图-幸存者营地.swf",
+      "swfSha256": "CC0ED21314514062BB454472A9CCFF460F7C0E10CB9F4E3F6415F046A384D6C3",
+      "sourceFile": "flashswf/levels/地图-幸存者营地/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-幸存者营地.xml",
+      "scriptDigest": "9D668022F54CE8C47AA90B9D4B8C2FF6C017AC038F1C8BF194269CF8FA20DA89",
+      "sourceDigest": "29ECD171423F023FF0792E07992B8735F4B7CEE66F8D975441FD75EBBE94E3DC",
+      "legacyScript": "onClipEvent (load) {\n\t任务需求 = 44;\n\t名字 = \"杰克霜精\";\n\t身高 = 150;\n\t性别 = \"男\";\n\tNPC任务_任务_关卡路径 = \"圣诞副本\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_b8f4ee27b72ca55d",
+      "placementId": "place_7476ebed17bfc0cd",
+      "npcName": "武装JK",
+      "locationId": "survivor_camp",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 22
+      },
+      "occurrenceId": "occ_52f92956835847322fd72fc5",
+      "sceneKey": "地图-幸存者营地",
+      "sourceSwf": "flashswf/levels/地图-幸存者营地.swf",
+      "swfSha256": "CC0ED21314514062BB454472A9CCFF460F7C0E10CB9F4E3F6415F046A384D6C3",
+      "sourceFile": "flashswf/levels/地图-幸存者营地/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-幸存者营地.xml",
+      "scriptDigest": "0825E2705F5566E27503107576377C6E6CDB4ADC77902030B2DA026B2A25F853",
+      "sourceDigest": "B094BAB08354E6CABEB7D5F60BF9D63E5497E24BB848A262038251FBC0B2CEDC",
+      "legacyScript": "onClipEvent (load) {\n\t任务需求 = 22;\n\t名字 = \"武装JK\";\n\t身高 = 165;\n\t性别 = \"女\";\n\t方向 = \"右\";\n\tNPC任务_任务_关卡路径 = \"挑战战斗天才\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_3b3d15d05da52979",
+      "placementId": "place_e235bf6bed2644de",
+      "npcName": "长生军战士",
+      "locationId": "survivor_camp",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 67
+      },
+      "occurrenceId": "occ_61a22bc093385be5a188c3d1",
+      "sceneKey": "地图-幸存者营地",
+      "sourceSwf": "flashswf/levels/地图-幸存者营地.swf",
+      "swfSha256": "CC0ED21314514062BB454472A9CCFF460F7C0E10CB9F4E3F6415F046A384D6C3",
+      "sourceFile": "flashswf/levels/地图-幸存者营地/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-幸存者营地.xml",
+      "scriptDigest": "0317EA2A994C7F73EEBFD459B33EF39953787BCA84E571C52012D00485C18B97",
+      "sourceDigest": "14705D759489A81B5DFA98B1226DD04D43C50CF347B49B5ABE5C1156ACC6110D",
+      "legacyScript": "onClipEvent (load) {\n\tif (_root.主线任务进度 < 67)\n\t{\n\t\tthis._visible = 0;\n\t}\n\t是否为敌人 = false;\n\tthis._name = 名字 = \"长生军战士\";\n\t身高 = 175;\n\t性别 = \"男\";\n\t方向 = \"左\";\n\tif (_root.NPCTaskCheck(名字).result == \"接受任务\")\n\t{\n\t\t_root.发布消息(名字 + \"似乎需要你的帮助\");\n\t}\n\t默认对话 = [[], [], []];\n\t默认对话[0][0] = [\"长生军战士\", \"？？？\", \"长生军战士\", \"这里很奇怪，什么都很奇怪！\", \"普通\"];\n\t默认对话[1][0] = [\"长生军战士\", \"？？？\", \"长生军战士\", \"我他妈到底在哪.....\", \"普通\"];\n\t默认对话[2][0] = [\"长生军战士\", \"？？？\", \"长生军战士\", \"究竟如何···\", \"思考\"];\n\n\tNPC任务_任务_关卡路径 = \"古战场\";\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_42e3ca784a74f46d",
+      "placementId": "place_d53badc54b0a3066",
+      "npcName": "文天",
+      "locationId": "easter_egg",
+      "presenceWhen": {
+        "type": "always"
+      },
+      "occurrenceId": "occ_0d3afb09457a64338fd8d08f",
+      "sceneKey": "地图-彩蛋地图",
+      "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
+      "swfSha256": "5EE95D87068C853E72644CA01C47AABFB96499D1DA19026FC47A5D1571C3BF2F",
+      "sourceFile": "flashswf/levels/地图-彩蛋地图/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-彩蛋地图.xml",
+      "scriptDigest": "28DF20D5D0FEC2F2885458F7461188D088BA1110A3A0BC09041DCE53A53B6E0B",
+      "sourceDigest": "A0F3F262337844629B3CD2E02627940F0553F1F31DF681387EEAD81CEA0E394E",
+      "legacyScript": "onClipEvent (load) {\n\t名字 = \"文天\";\n\t性别 = \"男\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_e0d9e75f80059fec",
+      "placementId": "place_825f4a2756d989c9",
+      "npcName": "尾上世莉架",
+      "locationId": "easter_egg",
+      "presenceWhen": {
+        "type": "always"
+      },
+      "occurrenceId": "occ_2c62ad1ee193fb3f2a87a940",
+      "sceneKey": "地图-彩蛋地图",
+      "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
+      "swfSha256": "5EE95D87068C853E72644CA01C47AABFB96499D1DA19026FC47A5D1571C3BF2F",
+      "sourceFile": "flashswf/levels/地图-彩蛋地图/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-彩蛋地图.xml",
+      "scriptDigest": "CCA49725733E26D14F68BB5FF77D80C96B2007BAE21E3C78FA2CF3B6EA5C6FA4",
+      "sourceDigest": "D4123875A626E32CD1476E58998BD40DCD871B8240AF7C920D7E75545CA5748F",
+      "legacyScript": "onClipEvent (load) {\n\t名字 = \"尾上世莉架\";\n\t身高 = 160;\n\t性别 = \"女\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_2f438974590a6da3",
+      "placementId": "place_b82bd994e1880f14",
+      "npcName": "诺艾尔",
+      "locationId": "easter_egg",
+      "presenceWhen": {
+        "type": "always"
+      },
+      "occurrenceId": "occ_e05123859c45416d060dc832",
+      "sceneKey": "地图-彩蛋地图",
+      "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
+      "swfSha256": "5EE95D87068C853E72644CA01C47AABFB96499D1DA19026FC47A5D1571C3BF2F",
+      "sourceFile": "flashswf/levels/地图-彩蛋地图/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-彩蛋地图.xml",
+      "scriptDigest": "7DE3FD6880601AD3A3D1EFD286AF414BF21A38C859E03B243CC98FBD210A24B7",
+      "sourceDigest": "F5CD316BB5567CD86B712D918EC191D09E48117529C48542FE64E95A86A9227E",
+      "legacyScript": "onClipEvent (load) {\n\t名字 = \"诺艾尔\";\n\t商店 = \"特殊武器出售\";\n\t身高 = 175;\n\t性别 = \"女\";\n\t方向 = \"右\";\n\tNPC任务_任务_关卡路径 = \"挑战诺艾尔\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_36a366570faf8fc8",
+      "placementId": "place_1e7bfe06af6ba92c",
+      "npcName": "齐天大圣",
+      "locationId": "easter_egg",
+      "presenceWhen": {
+        "type": "always"
+      },
+      "occurrenceId": "occ_36e71f6df5fa055272f705a3",
+      "sceneKey": "地图-彩蛋地图",
+      "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
+      "swfSha256": "5EE95D87068C853E72644CA01C47AABFB96499D1DA19026FC47A5D1571C3BF2F",
+      "sourceFile": "flashswf/levels/地图-彩蛋地图/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-彩蛋地图.xml",
+      "scriptDigest": "C8CB788626469D994504CCF6DCC9CE88EFBE5266C582DFAC02011BC1FB0A6441",
+      "sourceDigest": "8DB8B01FF14DE4F99C2C6ED751F2441D2E2CF92CF2073CCF339753797F7164A4",
+      "legacyScript": "onClipEvent (load) {\n\t名字 = \"齐天大圣\";\n\t身高 = 175;\n\t性别 = \"男\";\n\t方向 = \"左\";\n\tNPC任务_任务_关卡路径 = \"挑战齐天大圣\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M2",
+      "npcId": "npc_8bce68b4702c4330",
+      "placementId": "place_e028902844fdc6e3",
+      "npcName": "heeho君",
+      "locationId": "easter_egg",
+      "presenceWhen": {
+        "type": "chain",
+        "key": "彩蛋",
+        "min": 4
+      },
+      "occurrenceId": "occ_91e5be5ba4ff4a56e4389583",
+      "sceneKey": "地图-彩蛋地图",
+      "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
+      "swfSha256": "5EE95D87068C853E72644CA01C47AABFB96499D1DA19026FC47A5D1571C3BF2F",
+      "sourceFile": "flashswf/levels/地图-彩蛋地图/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-彩蛋地图.xml",
+      "scriptDigest": "236EAF2C47108464F76219A7F3F1948C7D0D479F90A08B328BA2890DAF94F7F8",
+      "sourceDigest": "E9230309CD8CE0456FBD646221D78C047E1B096898A313C8EDB694E3A4BE4ECB",
+      "legacyScript": "onClipEvent (load) {\n\tif (_root.task_chains_progress.彩蛋 and _root.task_chains_progress.彩蛋 >= 4)\n\t{\n\t\tthis._visible = 1;\n\t}\n\telse\n\t{\n\t\tthis._visible = 0;\n\t}\n\t名字 = \"heeho君\";\n\t商店 = \"特殊武器出售\";\n\t性别 = \"男\";\n\tNPC任务_任务_关卡路径 = \"挑战罪袋练舞室\";\n\t_root.初始化NPC(this);\n}"
+    },
+    {
+      "batch": "M3",
+      "npcId": "npc_d340bf5610331303",
+      "placementId": "place_d76aa0f565ca5ebe",
+      "npcName": "人修罗",
+      "locationId": "survivor_camp",
+      "presenceWhen": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 77
+          },
+          {
+            "type": "task",
+            "key": "1000081",
+            "state": "finished"
+          },
+          {
+            "type": "task",
+            "key": "1000082",
+            "state": "notFinished"
+          }
+        ]
+      },
+      "occurrenceId": "occ_bd41cb0fc5bb76d16e32c919",
+      "sceneKey": "地图-幸存者营地",
+      "sourceSwf": "flashswf/levels/地图-幸存者营地.swf",
+      "swfSha256": "CC0ED21314514062BB454472A9CCFF460F7C0E10CB9F4E3F6415F046A384D6C3",
+      "sourceFile": "flashswf/levels/地图-幸存者营地/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-幸存者营地.xml",
+      "scriptDigest": "0585B8850AB68A11F7DFA538E4D0CDC0E3FE5A71FF83575DEC62E922426B65BA",
+      "sourceDigest": "CF22BFE4E1198EB85F0455E42BD9E184E78C847EB16316036B2655086A748D45",
+      "legacyScript": "onClipEvent (load) {\n\t任务需求 = 77;\n\t任务需求支线 = [1000081];\n\t名字 = \"人修罗\";\n\t身高 = 175;\n\t性别 = \"男\";\n\t方向 = \"左\";\n\tNPC任务_任务_关卡路径 = \"挑战混沌王\";\n\tif (_root.tasks_finished[String(1000082)] && !_root.cheatFlags.强制显示NPC)\n\t{\n\t\tthis.stop();\n\t\tthis._visible = false;\n\t}\n\telse\n\t{\n\t\t_root.初始化NPC(this);\n\t}\n}"
+    },
+    {
+      "batch": "M3",
+      "npcId": "npc_d340bf5610331303",
+      "placementId": "place_30b2aa393db39bd8",
+      "npcName": "人修罗",
+      "locationId": "easter_egg",
+      "presenceWhen": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 77
+          },
+          {
+            "type": "task",
+            "key": "1000082",
+            "state": "finished"
+          }
+        ]
+      },
+      "occurrenceId": "occ_24bb57d87b12d732c5e0696f",
+      "sceneKey": "地图-彩蛋地图",
+      "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
+      "swfSha256": "5EE95D87068C853E72644CA01C47AABFB96499D1DA19026FC47A5D1571C3BF2F",
+      "sourceFile": "flashswf/levels/地图-彩蛋地图/DOMDocument.xml",
+      "sourceEntry": "LIBRARY/地图-彩蛋地图.xml",
+      "scriptDigest": "834977A5447C50DA4E2267394F806F57CA8B58A4D1DC6446016979A929FA8C15",
+      "sourceDigest": "672BFD6275D3DEDA832E02AEC8C1E131D4EFDDE23C9E1304D2D87117AC2AB835",
+      "legacyScript": "onClipEvent (load) {\n\t任务需求 = 77;\n\t任务需求支线 = [1000082];\n\t名字 = \"人修罗\";\n\t身高 = 175;\n\t性别 = \"男\";\n\t方向 = \"右\";\n\tNPC任务_任务_关卡路径 = \"挑战人修罗\";\n\t_root.初始化NPC(this);\n}"
+    }
+  ],
+  "unresolvedNpcNames": [
+    "阿卡"
+  ],
+  "deferredSceneNames": [
+    "地图-小马地图",
+    "地图-测试空间",
+    "地图-同盟下水道",
+    "地图-界外街道"
+  ],
+  "legacyThresholdsPreserved": {
+    "A兵团士兵": 175,
+    "被改造的方舟无人机": 285,
+    "Bard": 446
+  }
+}

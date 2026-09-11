@@ -19,7 +19,7 @@ namespace CF7Launcher.Tasks
     /// 注意：close 不走本桥。Web 关闭面板时 WebOverlayForm.HandlePanelMessage 直接
     /// 切 _activePanel = null + ClosePanel()。
     /// </summary>
-    public sealed class TaskTask : IDisposable
+    public sealed partial class TaskTask : IDisposable
     {
         private sealed class PendingRequest
         {
@@ -42,6 +42,8 @@ namespace CF7Launcher.Tasks
                 delegate { return socket != null && socket.IsClientReady; },
                 delegate(string payload) { if (socket != null) socket.Send(payload); })
         {
+            _deliverySocket = socket;
+            if (socket != null) { socket.OnClientReady += SyncDelivery; socket.OnClientDisconnected += ResetDelivery; }
         }
 
         public TaskTask(Func<bool> isClientReady, Action<string> send)
@@ -58,6 +60,7 @@ namespace CF7Launcher.Tasks
         public void Dispose()
         {
             _disposed = true;
+            DisposeDelivery();
             ClearPending();
         }
 
@@ -83,6 +86,12 @@ namespace CF7Launcher.Tasks
             string action;
             switch (cmd)
             {
+                case "stageReturnSnapshot":
+                    action = "stageReturnSnapshot";
+                    break;
+                case "stageReturnConfirm":
+                    action = "stageReturnConfirm";
+                    break;
                 case "snapshot":
                     action = "taskSnapshot";
                     break;
@@ -195,6 +204,9 @@ namespace CF7Launcher.Tasks
 
             // 信封构造 + 安全参数透传统一走 PanelBridge（含 action/task 保留键守卫，杜绝各桥漏抄）。
             var flashMsg = PanelBridge.BuildFlashCommand(action, fid, parsed);
+            // Host 已验证面板实例；AS2 另用本轮选择 token，实例信封不进入其严格业务 shape。
+            if (cmd == "stageReturnSnapshot" || cmd == "stageReturnConfirm")
+                flashMsg.Remove("panelInstanceId");
 
             string flashJson = flashMsg.ToString(Formatting.None);
             LogManager.Log("[TaskTask] -> Flash: " + flashJson);

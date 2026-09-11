@@ -57,7 +57,19 @@ namespace CF7Launcher.Data
                 if (npcId == "") return Missing("unmapped_legacy_npc", "", mode, "旧任务人物未登记到地图");
                 string hotspot = task.Value<string>(field + "_npc_hotspot") ?? "";
                 string location = hotspot == "" ? "" : FindLocation(definition, hotspot);
-                var found = placements.Properties().FirstOrDefault(p => (string)p.Value["npcId"] == npcId && (hotspot == "" || (string)p.Value["locationId"] == location));
+                var owned = placements.Properties().Where(p => (string)p.Value["npcId"] == npcId && (hotspot == "" || (string)p.Value["locationId"] == location)).ToArray();
+                // 仅显式登记为 unique 的旧人物跟随当前唯一驻点；multiple 的历史首项语义不变。
+                // 现场空 hotspot 的兼容匹配仍由 MapNpcTaskProjection 保留。
+                if (hotspot == "" && (string)definition["npcs"][npcId]["placementPolicy"] == "unique")
+                {
+                    if (owned.Any(p => placementStates[p.Name]?["conflict"] != null))
+                        return Missing("ambiguous_placement", npcId, mode, "该人物当前驻点冲突，请稍后重试");
+                    if (owned.Any(p => (string)placementStates[p.Name]?["reason"]?["state"] == "unknown"))
+                        return Missing("unknown_placement", npcId, mode, "人物的剧情驻点尚未确认");
+                    owned = owned.Where(p => placementStates[p.Name]?.Value<bool>("present") == true).ToArray();
+                    if (owned.Length != 1) return Missing(owned.Length == 0 ? "npc_absent" : "ambiguous_placement", npcId, mode, "该人物当前没有唯一有效驻点");
+                }
+                var found = owned.FirstOrDefault();
                 if (found == null) return Missing("placement_missing", npcId, mode, "任务指定的旧驻点不存在");
                 placementId = found.Name;
             }

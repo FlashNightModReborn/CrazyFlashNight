@@ -36,12 +36,14 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _returnFailure:Object = null;
     private static var _projectionVersion:Number = 1;
     private static var _victoryCompletionCommitted:Boolean = false;
+    // v1 存档字段仅为兼容保留；任何读档、领奖、关闭都不再自动导航。
     private static var _deliverAfterSettlement:Boolean = false;
     private static var _deliverNavigationFlight:Object = null;
     // 场景淡出与 StageManager.initialize 之间存在异步窗口。入口必须先取得唯一 reservation，
     // initialize/begin 再按目标关卡消费；这样第二个入口不能在旧 run 尚未建立时重复获准。
     private static var _stageStartSeq:Number = 0;
     private static var _stageStartReservation:Object = null;
+    private static var _stageStartOrigin:Object = null;
     private static var _testDeliverableResolver:Function = null;
     private static var _testDeliverableNavigator:Function = null;
     // 仅诊断：不进入存档、processedIntents 或业务 envelope。v1 有限额；v2 由 Host 循环保留。
@@ -103,6 +105,11 @@ class org.flashNight.arki.scene.StageRunSession {
             }
             _stageStartReservation = null;
         }
+        var origin:Object = _stageStartOrigin;
+        _stageStartOrigin = null;
+        org.flashNight.arki.scene.StageReturnFlow.begin(origin);
+        org.flashNight.arki.scene.StageReturnSelection.reset();
+        org.flashNight.arki.scene.StageReturnOptions.reset();
         _runSeq++;
         _run = {
             v:1,
@@ -168,6 +175,7 @@ class org.flashNight.arki.scene.StageRunSession {
         if (getStageStartBlockReason() != "") return "";
         var normalizedStageName:String = safeText(stageName, 96, "");
         if (normalizedStageName == "") return "";
+        _stageStartOrigin = org.flashNight.arki.scene.StageReturnFlow.captureOrigin();
         _stageStartSeq++;
         var token:String = "stage.start." + getTimer() + "." + _stageStartSeq;
         _stageStartReservation = {
@@ -184,6 +192,7 @@ class org.flashNight.arki.scene.StageRunSession {
         if (_stageStartReservation == null || token == undefined
                 || token == "" || token !== _stageStartReservation.token) return false;
         _stageStartReservation = null;
+        _stageStartOrigin = null;
         return true;
     }
 
@@ -537,7 +546,9 @@ class org.flashNight.arki.scene.StageRunSession {
 
     /** 正规返回函数的同步尝试门；重复请求不能把正在转场的 run 当作失败重试。 */
     public static function beginReturnAttempt():Boolean {
-        if (_returnAttempt != null || _stageStartReservation != null
+        if (org.flashNight.arki.scene.StageReturnSelection.isOpen()
+                || org.flashNight.arki.scene.StageReturnOptions.isBusy()
+                || _returnAttempt != null || _stageStartReservation != null
                 || _root.场景转换中 === true
                 || (_returnRequested && !isRunTerminal() && !canRetryReturnBase())
                 || (_returnFailure != null && !canRetryReturnBase())) return false;
@@ -579,26 +590,24 @@ class org.flashNight.arki.scene.StageRunSession {
             && (_run.settlement == "none" || _run.settlement == "prepared");
     }
 
-    /**
-     * 胜利后的便利入口：仍走完整返回基地与奖励结算，只登记“结算关闭后前往交付”。
-     * 这里只登记意图；结算终态、exact close 和 pause 释放后，C# 根据新事实选址。
-     */
+    /** 旧入口只保留拒绝语义，不能把旧 Host 点击解释为新的自动选址。 */
     public static function requestReturnDeliverableLocal(source:String):Object {
-        if (_run == null || _returnRequested || _run.outcome != "victory"
-                || _run.life != "alive" || _run.settlement != "none") {
-            return {success:false, error:"return_deliverable_unavailable"};
-        }
-        _deliverAfterSettlement = true;
-        var returned:Object = requestReturnBaseLocal(source);
-        if (returned == null || returned.success !== true) {
-            _deliverAfterSettlement = false;
-            if (_preparedInventory != null && _preparedReport != null) {
-                // 返回/淡出失败已撤销交付意图；若奖励此前已冻结，同步修正同一 pending，
-                // 避免重启后把一次失败点击重新解释为自动导航。
-                persistPreparedSettlement();
-            }
-        }
-        return returned;
+        return {success:false, error:"explicit_return_selection_required"};
+    }
+
+    public static function getRunAuthority():Object { return _run; }
+
+    /** 到达后先呈现本轮战利品；暂存并关闭后可正常与当地 NPC 交互。 */
+    public static function isNpcPresentationBlocked():Boolean {
+        return _run != null && _returnRequested
+            && (_run.settlement == "prepared" || _run.settlement == "web_active");
+    }
+
+    public static function canSelectReturn():Boolean {
+        return _run != null && !_returnRequested && _returnAttempt == null
+            && _returnFailure == null && _run.outcome == "victory"
+            && _run.life == "alive" && _run.settlement == "none"
+            && _stageStartReservation == null;
     }
 
     /** 所有返回基地入口先调用；幂等冻结战报和唯一奖励物件，再开始场景跳转。 */
@@ -677,7 +686,15 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     /** 基地人物真正加载完成后才打开 Web；转场和 gameworld cleanup 阶段没有 Web lease。 */
-    public static function onSceneReady():Void {
+    public static function onSceneReady(world:Object, arrivalToken:String, readyIdentity:Object):Void {
+        var arrived:Boolean = org.flashNight.arki.scene.StageReturnFlow.confirmArrival(world, arrivalToken, readyIdentity);
+        if (world != undefined && _returnRequested && _preparedInventory != null
+                && typeof _root.服务器.发布服务器消息 == "function") {
+            _root.服务器.发布服务器消息("[StageReturn] arrival=" + (arrived ? "confirmed" : "rejected")
+                + " scene=" + world.场景名 + " token=" + arrivalToken
+                + " identity=" + (readyIdentity != undefined));
+        }
+        if (!arrived) return;
         if (focusObservationActive() && !_focusSceneSeen && _focusReturnRun != ""
                 && _run != null && _focusReturnRun == _run.runId) {
             _focusSceneSeen = true;
@@ -736,7 +753,7 @@ class org.flashNight.arki.scene.StageRunSession {
         if (settlement == "claimed" || settlement == "abandoned" || settlement == "error") {
             _preparedInventory = null;
             _preparedReport = null;
-            tryCompletePendingDeliverNavigation();
+            // 奖励终态仅终结奖励；目的地在返回前已由玩家选择。
         }
     }
 
@@ -773,9 +790,9 @@ class org.flashNight.arki.scene.StageRunSession {
                 return settlementFailure("pending_settlement_conflict");
             }
             _run.settlementId = String(existing.settlementId);
-            if (existing.deliverAfterSettlement !== (_deliverAfterSettlement === true)) {
+            if (existing.deliverAfterSettlement !== false) {
                 var updated:Object = clonePlainValue(existing, 0);
-                updated.deliverAfterSettlement = _deliverAfterSettlement === true;
+                updated.deliverAfterSettlement = false;
                 var replacementStore:Object = cloneStoreWithPending(store, updated);
                 var updatedWrite:Object = writeSettlementStore(replacementStore);
                 if (updatedWrite.success !== true) return updatedWrite;
@@ -805,7 +822,7 @@ class org.flashNight.arki.scene.StageRunSession {
             remainingManifest:clonePlainValue(serialized.manifest, 0),
             remainingCount:Number(serialized.manifest.length),
             receipts:[],
-            deliverAfterSettlement:_deliverAfterSettlement === true
+            deliverAfterSettlement:false
         };
         var replacement:Object = {
             v:SETTLEMENT_STORE_VERSION,
@@ -1052,7 +1069,8 @@ class org.flashNight.arki.scene.StageRunSession {
         _preparedReport = report;
         _settlementStarted = false;
         _returnRequested = true;
-        _deliverAfterSettlement = store.pending.deliverAfterSettlement === true;
+        _deliverAfterSettlement = false;
+        org.flashNight.arki.scene.StageReturnFlow.restorePending();
         _stageStartReservation = null;
         pushState();
         return {
@@ -1082,46 +1100,9 @@ class org.flashNight.arki.scene.StageRunSession {
         return isSafeToken(settlementId, 96) ? settlementId : "";
     }
 
-    /**
-     * Host 收齐 exact DOM/native close 证明并释放 Web pause 后调用。普通 terminal 通知
-     * 发生得更早，只会留下意图；这里才允许场景导航，避免奖励面板与转场重叠。
-     */
+    /** 仅继续本轮明确确认的返回；奖励关闭没有导航语义。 */
     public static function onWebPanelClosed():Void {
-        tryCompletePendingDeliverNavigation();
-    }
-
-    private static function tryCompletePendingDeliverNavigation():Boolean {
-        if (!_deliverAfterSettlement || _run == null || _deliverNavigationFlight != null) return false;
-        if (_root._webPanelPauseLease != undefined || _root.当前为战斗地图 === true) return false;
-        if (_run.settlement != "claimed" && _run.settlement != "abandoned" && _run.settlement != "error") return false;
-        var flight:Object = {run:_run};
-        _deliverNavigationFlight = flight;
-        // 测试适配器只模拟域回调；生产永不在这里保留地图选址或解锁规则。
-        if (_testDeliverableResolver != null && _testDeliverableNavigator != null) {
-            var simulated:Object = _testDeliverableResolver();
-            var completed:Boolean = simulated.navigable === true && _testDeliverableNavigator(String(simulated.hotspotId)) === true;
-            completeDeliverNavigation(flight, completed, "");
-            return completed;
-        }
-        org.flashNight.arki.map.MapDomainBridge.invalidate();
-        org.flashNight.arki.map.MapPanelService.navigateToDeliverable(function(ok:Boolean, error:String):Void {
-            org.flashNight.arki.scene.StageRunSession.completeDeliverNavigation(flight, ok, error);
-        }, function():Boolean {
-            return org.flashNight.arki.scene.StageRunSession.isDeliverNavigationCurrent(flight);
-        });
-        return true;
-    }
-    private static function isDeliverNavigationCurrent(flight:Object):Boolean {
-        return _deliverNavigationFlight === flight && flight.run === _run && _deliverAfterSettlement
-            && _root._webPanelPauseLease == undefined && _root.当前为战斗地图 !== true
-            && (_run.settlement == "claimed" || _run.settlement == "abandoned" || _run.settlement == "error");
-    }
-    private static function completeDeliverNavigation(flight:Object, ok:Boolean, error:String):Void {
-        if (_deliverNavigationFlight !== flight) return;
-        _deliverNavigationFlight = null;
-        if (flight.run !== _run) return;
-        _deliverAfterSettlement = false;
-        if (!ok && error != "") org.flashNight.arki.map.MapPanelService.navigationWarning(error);
+        org.flashNight.arki.scene.StageReturnSelection.onPanelClosed();
     }
 
     private static function handleAction(params:Object):Void {
@@ -1150,8 +1131,12 @@ class org.flashNight.arki.scene.StageRunSession {
             localResult = requestReviveLocal("stage_outcome");
         } else if (params.intent === "return_base") {
             localResult = requestReturnBaseLocal("stage_outcome");
-        } else if (params.intent === "return_deliverable") {
-            localResult = requestReturnDeliverableLocal("stage_outcome");
+        } else if (params.intent === "confirm_return") {
+            localResult = org.flashNight.arki.scene.StageReturnOptions.confirm(params.choicesToken, params.choiceId);
+        } else if (params.intent === "refresh_return") {
+            localResult = org.flashNight.arki.scene.StageReturnOptions.retry();
+        } else if (params.intent === "select_return") {
+            localResult = org.flashNight.arki.scene.StageReturnSelection.open();
         } else if (params.intent === "resume_rewards") {
             if (_run.settlement == "rewards_pending") {
                 if (_settlementStarted) LootContainerService.resumeStageSettlement();
@@ -1204,20 +1189,26 @@ class org.flashNight.arki.scene.StageRunSession {
     private static function handleSync(params:Object):Void {
         if (params == null || !hasOnlyKeys(params, ["task", "action", "v"])
                 || params.task !== "cmd" || params.action !== "stageOutcomeSync"
-                || (params.v !== 1 && params.v !== 2)) return;
+                || (params.v !== 1 && params.v !== 2 && params.v !== 3 && params.v !== 4)) return;
         _projectionVersion = Number(params.v);
         pushState();
     }
 
     private static function validateLegacyAction(params:Object):Boolean {
-        if (!hasOnlyKeys(params, ["task", "action", "v", "runId",
-                "expectedRevision", "intent", "intentId"])) return false;
+        var keys:Array = ["task", "action", "v", "runId", "expectedRevision", "intent", "intentId"];
+        if (params.v === 3 && params.intent === "confirm_return") {
+            keys.push("choicesToken"); keys.push("choiceId");
+            if (typeof params.choicesToken != "string" || typeof params.choiceId != "string"
+                || !isSafeToken(params.choicesToken, 96) || !isSafeToken(params.choiceId, 96)) return false;
+        }
+        if (!hasOnlyKeys(params, keys)) return false;
         return params.task === "cmd" && params.action === "stageOutcomeAction"
-            && params.v === 1 && typeof params.runId == "string"
+            && (params.v === 1 || params.v === 2 || params.v === 3) && typeof params.runId == "string"
             && isSafeToken(String(params.runId), 96)
             && isWhole(params.expectedRevision) && Number(params.expectedRevision) > 0
             && (params.intent === "revive" || params.intent === "return_base"
-                || params.intent === "return_deliverable"
+                || (params.v === 2 && params.intent === "select_return")
+                || (params.v === 3 && (params.intent === "confirm_return" || params.intent === "refresh_return"))
                 || params.intent === "resume_rewards")
             && typeof params.intentId == "string"
             && isSafeToken(String(params.intentId), 96);
@@ -1332,6 +1323,8 @@ class org.flashNight.arki.scene.StageRunSession {
         };
     }
 
+    public static function notifyReturnOptionsChanged():Void { bumpRevision(); pushState(); }
+
     private static function pushState():Void {
         if (_run == null) return;
         var server:Object = _root.server;
@@ -1367,8 +1360,12 @@ class org.flashNight.arki.scene.StageRunSession {
                 settlement:String(_run.settlement),
                 remainingRewards:Number(_run.remainingRewards)
             };
-            if (_projectionVersion == 2) projection.returnFailure = getReturnFailureReason();
+            if (_projectionVersion >= 2) projection.returnFailure = getReturnFailureReason();
+            if (_projectionVersion >= 3) projection.canSelectReturn = canSelectReturn()
+                && !org.flashNight.arki.scene.StageReturnFlow.hasStoryReturn();
+            if (_projectionVersion >= 4) projection.returnOptions = org.flashNight.arki.scene.StageReturnOptions.projection();
             server.sendTaskToNode("stage_outcome", projection, null);
+            if (_projectionVersion >= 4) org.flashNight.arki.scene.StageReturnOptions.refresh();
         } catch (projectionError) {
             // C# 是可恢复投影；socket 竞态绝不能中断扣币、复活或结算终态。
             trace("[StageRunSession] stage outcome projection failed");
@@ -2093,6 +2090,10 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     private static function resetAuthorityForRestart():Void {
+        org.flashNight.arki.scene.StageReturnSelection.reset();
+        org.flashNight.arki.scene.StageReturnOptions.reset();
+        org.flashNight.arki.scene.StageReturnFlow.reset();
+        _stageStartOrigin = null;
         _run = null;
         _processedIntents = {};
         _preparedInventory = null;

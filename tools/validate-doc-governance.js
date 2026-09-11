@@ -413,6 +413,14 @@ var testSourceDirs = ["<root>"];
 var testEntries = fs.readdirSync(abs("launcher/tests"));
 for (var td = 0; td < testEntries.length; td++) {
     if (testEntries[td] === "bin" || testEntries[td] === "obj") continue;
+    // dotnet test --logger 的默认报告目录不是测试源码分类；保留报告也应能检查文档。
+    // 只接受报告产物，误放源码仍报错，不能把它用作未登记测试目录。
+    if (testEntries[td] === "TestResults") {
+        expect(listFiles("launcher/tests/TestResults", function (rel) {
+            return /\.(cs|js|ts|ps1)$/i.test(rel);
+        }).length === 0, "launcher/tests/TestResults must contain generated reports, not test source");
+        continue;
+    }
     if (fs.statSync(abs("launcher/tests/" + testEntries[td])).isDirectory()) testSourceDirs.push(testEntries[td]);
 }
 expectExactSet("launcher test taxonomy", testDocDirs, testSourceDirs);

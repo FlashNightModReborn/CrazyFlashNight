@@ -177,6 +177,8 @@ class org.flashNight.arki.map.MapDomainBridge {
             if (ready) waiter.callback(true, "");
             else _waiters.push(waiter);
         }
+        org.flashNight.arki.scene.StageReturnOptions.onMapProjection();
+        org.flashNight.arki.task.TaskDeliverySelection.onMapProjection();
         if (_root.__pushMapHudState != undefined) _root.__pushMapHudState(true);
         org.flashNight.arki.map.MapPanelService.publishDeliveryHint();
     }
@@ -257,7 +259,7 @@ class org.flashNight.arki.map.MapDomainBridge {
         if (lifecycleReason != "") { callback(false, lifecycleReason); return; }
         if (_bootstrap == undefined || _sessionToken == "") { callback(false, "map_domain_not_ready"); return; }
         if (_navigationFlight != undefined || getTimer() < _navigationBusyUntil) { callback(false, "navigation_busy"); return; }
-        var interests:Array = copyInterests(intent.kind == "task_finish" ? [String(intent.taskId)] : []);
+        var interests:Array = copyInterests((intent.kind == "task_finish" || intent.kind == "task_delivery") ? [String(intent.taskId)] : []);
         if (interests == undefined) { callback(false, "invalid_task_ids"); return; }
         var ctx:Object = context(interests);
         if (!ctx.ready) { callback(false, "game_not_ready"); return; }
@@ -267,6 +269,32 @@ class org.flashNight.arki.map.MapDomainBridge {
             org.flashNight.arki.map.MapDomainBridge.onNavigate(ctx, response);
         }, 90);
     }
+    /** 胜利返回只解析正式目的地，绝不绕过关卡返回事务执行地图导航。 */
+    public static function resolveReturnPlan(intent:Object, callback:Function, guard:Function):Void {
+        observeScene();
+        if (_bootstrap == undefined || _sessionToken == "") { callback(false, "map_domain_not_ready"); return; }
+        var interests:Array = copyInterests([String(intent.taskId)]);
+        if (interests == undefined) { callback(false, "invalid_task_ids"); return; }
+        var ctx:Object = context(interests);
+        if (!ctx.ready || guard() !== true) { callback(false, "return_selection_stale"); return; }
+        ctx.callback = callback; ctx.guard = guard;
+        var request:Object = payload(ctx); request.intent = intent;
+        ServerManager.getInstance().sendTaskWithCallback("map_domain", request, null, returnPlanCallback(ctx), 90);
+    }
+    private static function returnPlanCallback(ctx:Object):Function {
+        return function(response:Object):Void {
+            org.flashNight.arki.map.MapDomainBridge.onReturnPlan(ctx, response);
+        };
+    }
+    private static function onReturnPlan(ctx:Object, response:Object):Void {
+        if (!installResult(ctx, response) || ctx.guard() !== true) { ctx.callback(false, "return_selection_stale"); return; }
+        var plan:Object = response.result.admission;
+        if (plan.admitted !== true || _bootstrap.frames[String(plan.locationId)] !== plan.frame) {
+            ctx.callback(false, String(plan.error || "not_navigable")); return;
+        }
+        ctx.callback(true, "", plan);
+    }
+
     private static function onNavigate(ctx:Object, response:Object):Void {
         if (_navigationFlight !== ctx) return;
         _navigationFlight = undefined;
@@ -278,6 +306,10 @@ class org.flashNight.arki.map.MapDomainBridge {
                 || _bootstrap.frames[String(admission.locationId)] !== admission.frame
                 || typeof _root.淡出动画.淡出跳转帧 != "function") {
             ctx.callback(false, "not_navigable"); return;
+        }
+        // 已在目标地点时只完成动作，不重建场景或重置人物。
+        if (String(_projection.currentLocationId) == String(admission.locationId)) {
+            ctx.callback(true, ""); return;
         }
         _navigationBusyUntil = getTimer() + 1500;
         org.flashNight.arki.map.MapHotspotResolver.beginPending(String(admission.hotspotId));

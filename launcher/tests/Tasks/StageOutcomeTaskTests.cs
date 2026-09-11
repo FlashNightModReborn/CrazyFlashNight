@@ -273,11 +273,11 @@ namespace CF7Launcher.Tests.Tasks
                 {
                     ["task"] = "cmd",
                     ["action"] = "stageOutcomeSync",
-                    ["v"] = 2
+                    ["v"] = 3
                 }, JObject.Parse(sent[0].TrimEnd('\0')));
                 overlay.Raise("revive", "run.task.1", 4);
                 overlay.Raise("return_base", "run.task.1", 4);
-                overlay.Raise("return_deliverable", "run.task.1", 4);
+                overlay.Raise("select_return", "run.task.1", 4);
                 overlay.Raise("resume_rewards", "run.task.1", 4);
                 Assert.Equal(5, sent.Count);
                 var ids = new HashSet<string>(StringComparer.Ordinal);
@@ -288,14 +288,14 @@ namespace CF7Launcher.Tests.Tasks
                     Assert.Equal(7, command.Count);
                     Assert.Equal("cmd", command.Value<string>("task"));
                     Assert.Equal("stageOutcomeAction", command.Value<string>("action"));
-                    Assert.Equal(1, command.Value<int>("v"));
+                    Assert.Equal(2, command.Value<int>("v"));
                     Assert.Equal("run.task.1", command.Value<string>("runId"));
                     Assert.Equal(4, command.Value<int>("expectedRevision"));
                     Assert.True(ids.Add(command.Value<string>("intentId")));
                 }
                 Assert.Equal("revive", JObject.Parse(sent[1].TrimEnd('\0')).Value<string>("intent"));
                 Assert.Equal("return_base", JObject.Parse(sent[2].TrimEnd('\0')).Value<string>("intent"));
-                Assert.Equal("return_deliverable", JObject.Parse(sent[3].TrimEnd('\0')).Value<string>("intent"));
+                Assert.Equal("select_return", JObject.Parse(sent[3].TrimEnd('\0')).Value<string>("intent"));
                 Assert.Equal("resume_rewards", JObject.Parse(sent[4].TrimEnd('\0')).Value<string>("intent"));
             }
         }

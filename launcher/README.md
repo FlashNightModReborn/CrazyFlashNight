@@ -196,7 +196,7 @@ Runner 先验证 exact SDK resolver 与 `xunit.runner.json`，再从仓库根执
 
 ### 测试覆盖
 
-以下只描述静态测试分区，不保存会随代码增长而失效的 passed/total 数字。
+以下只描述静态测试分区，不保存会随代码增长而失效的 passed/total 数字。`bin/`、`obj/` 和 `dotnet test --logger` 默认的 `TestResults/` 是生成目录，不计入测试源码分类；治理检查仍拒绝在 `TestResults/` 放入测试源码。专项证据优先通过 `--results-directory` 输出到仓库外或 `tmp/`。
 
 <!-- launcher-test-taxonomy:start -->
 | 分区 | 主要范围 |
@@ -375,7 +375,7 @@ Bootstrap 建角在准备期由 `openRequestId` 关联完整遮罩：live snapsh
 - `equipment_tuning` 的已穿戴调制按 after effective data 复核玩家等级；`level_locked` 是 Host 可确定收束的业务拒绝，Web 显示“调制后的装备需要更高角色等级”。背包装备不受该玩家等级门限制。`replace_mod` 的候选可用性和 after `modSlotCapacity` 都来自拆件后的 probe；存档加载不做迁移、卸装或清洗。进阶页仅显示 `available=true` 并在 Web 空态解释缺料/顺序；四入口同排。候选错误留在 Web，flush/finalize 先取消旁路读，保存失败仍阻断。
 - 合法配件变换可使 before/after effective `modSlotCapacity` 不同；Host 仍复核 `0..64` 整数、installed≤capacity、操作差分及 preview/commit/fresh snapshot 深绑定。空背包未建 Flash authority 时，仅 exact panel 在 idle 且无 pending/detaching/write 可本地 no-op detach；其余仍严格走 Flash，断线不可绕过。
 - Panel close/recovery 共用 lifecycle fence，迟到或旧实例不得关闭 replacement。W/B0 将 anchor 分为 valid / explicit-invalid / unavailable：invalid 在 pause/focus/presentation 前拒绝且不 fallback；valid 仅提交代际绑定 snapshot；同代同矩形恢复只按 committed snapshot 无焦点重放一次。当前状态与验收见[止血治理 ADR](../docs/AS2-WebPanel止血治理-窗口生命周期与Reward根事务-ADR-2026-09-01.md)。
-- Workbench 的布局和交互以 [Workbench UI System](../agentsDoc/workbench-ui-system.md)为准。关卡内 `StageOutcomeTask` 把复活/胜负决策投影进 `RightContextWidget` 既有 32px 条件槽，不创建浮窗、不暂停 Flash。胜负条常驻，忽略即继续探索；无可交付任务只显示“回基地”，AS2 `tdr` 证明返回后可路由时追加“前往交付”，并在奖励终态和 Web exact close 后导航。
+- Workbench 见 [UI System](../agentsDoc/workbench-ui-system.md)。关卡返回与日常交付共用 NativeHud 任务/地点/头像下拉栏；各自确认与执行，领奖不导航。`stage_outcome` v4/action v3；socket-only `task_delivery` v1 与 sync/action v1。候选协议与人验见[关卡结果 ADR §0E](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0e-2026-09-11-明确任务选择单次返回与到达确认隔离候选)。
   respawn 恢复 HP/MP/可见性后清 `倒地/_killed`、死亡 latch 并 reset WatchDog。Reward Inbox 每批最多 50 项；单领/批领以 `operationId` 建 durable root，首个 child 写前落盘，完成后保留 terminal tombstone。未知写只按 `lootQuery(rootOperationId)` exact 终态收束，不从 projection 猜测或重放；`remaining=0` 也可建 recovery-only authority。
   容量终态的 `blockedEntries` ID 集必须精确等于 remaining ID 集且每项只含容量错误；已提交 child 触发 Reward authority 重投影时 retained slot lease 可以权威轮换，Web 仍须按 exact root + applied/remaining delta + 物理槽占用接纳结果，保留 `target_full` 并显示“整理背包”。普通 Loot v2 仍固定 `targetContainerId:"自动"` 与三容器快照。
   A1 兼容禁用只接受精确环境值 `CF7_REWARD_ROOT_ADMISSION=0`，Host/Web 此时拒绝新 Reward root admission，但继续允许 discovery/query/tombstone/quarantine；完整回滚还必须配套经验证的 `CLAIM_ROOT_ADMISSION_ENABLED=false` asLoader，不能只切单层开关。默认或其他字符串均保持 admission 开启。

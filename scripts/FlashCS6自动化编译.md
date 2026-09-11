@@ -227,6 +227,8 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 
 字体弹窗属于文档依赖，显式调用 CS6 不会自动消除它。先定位 XFL 的 `DOMTextAttrs.face` 和实际文本：真实素材应补齐原字体或核对替代效果；共享库的编辑器占位标签可使用本机已有字体。本轮 `things-new.fla` 中 `敌人-诺艾尔` 的两个中文导入标签从缺失的 Broadway 改用 MicrosoftYaHei，保留原 `linkageImportForRS` / `linkageURL`，不改实际敌人 SWF。新 Codex 武器库采用原生矢量形状，不引入字体。未知弹窗仍须观察后处理，不能用超时重试或统一回车掩盖。
 
+2026-09-11 主文件整合中，两个导入占位标签（同盟通路/卸货站）的 6 处 `FranklinGothic-Demi` 改为本机已有 `MicrosoftYaHei`；金币/K 点两个导入占位的未声明 `Bebas Neue*` 改为已安装同字体的 PostScript 名 `BebasNeue-Regular`。四个元件保留原 Import linkage、URL、文本、矩阵及版式属性，不改其实际来源 SWF。主文件经标准发布入口 13 秒完成，Compiler 0/0；这证明本轮打开和发布正常，不将上次超时唯一归因为字体。设备字体 `_sans` 与其他已安装字体不属于缺失字体，不能仅凭扫描不到字体文件便替换。
+
 ### 游戏仍运行时读取测试日志
 
 游戏与CS6测试播放器可能同时持有 `flashlog.txt` 的写句柄。编译入口以 `FileShare.ReadWrite` 读取打开时的固定长度字节快照，focused runner的异步收尾也允许共享读取；不要求测试员为取日志退出游戏。仍保留原始前缀比较、本轮nonce、唯一有序Start/Complete、Compiler 0/0与零32K重试门，不能把其他运行实例的输出当本轮证据。

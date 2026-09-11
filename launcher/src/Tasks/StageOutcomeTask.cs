@@ -17,6 +17,11 @@ namespace CF7Launcher.Tasks
         void ResetState();
     }
 
+    public interface IStageReturnPresenter
+    {
+        event Action<string, int, string, string> ReturnRequested;
+    }
+
     /// <summary>
     /// StageRunSession → 常驻 HUD 条件状态槽的严格只读桥，以及原生按钮 → AS2 cmd 的意图桥。
     /// 不在 Host 内判定复活、扣币、转场或奖励终态。
@@ -56,6 +61,7 @@ namespace CF7Launcher.Tasks
             _trySend = trySend ?? delegate { return false; };
             _presenter = presenter ?? throw new ArgumentNullException("presenter");
             _presenter.IntentRequested += OnIntentRequested;
+            if (_presenter is IStageReturnPresenter returns) returns.ReturnRequested += OnReturnRequested;
             if (_socket != null)
             {
                 _socket.OnClientReady += OnClientReady;
@@ -114,7 +120,7 @@ namespace CF7Launcher.Tasks
             {
                 ["task"] = "cmd",
                 ["action"] = "stageOutcomeSync",
-                ["v"] = 2
+                ["v"] = 4
             };
             TrySend(command);
         }
@@ -131,7 +137,7 @@ namespace CF7Launcher.Tasks
             {
                 ["task"] = "cmd",
                 ["action"] = "stageOutcomeAction",
-                ["v"] = 1,
+                ["v"] = intent == "refresh_return" ? 3 : 2,
                 ["runId"] = runId,
                 ["expectedRevision"] = expectedRevision,
                 ["intent"] = intent,
@@ -162,10 +168,23 @@ namespace CF7Launcher.Tasks
             return sent;
         }
 
+        private void OnReturnRequested(string runId, int expectedRevision, string token, string choiceId)
+        {
+            if (_disposed || string.IsNullOrEmpty(runId) || expectedRevision < 1
+                || string.IsNullOrEmpty(token) || string.IsNullOrEmpty(choiceId)) return;
+            string intentId = "host." + Interlocked.Increment(ref _intentSequence) + "." + Guid.NewGuid().ToString("N");
+            TrySend(new JObject {
+                ["task"] = "cmd", ["action"] = "stageOutcomeAction", ["v"] = 3,
+                ["runId"] = runId, ["expectedRevision"] = expectedRevision,
+                ["intent"] = "confirm_return", ["intentId"] = intentId,
+                ["choicesToken"] = token, ["choiceId"] = choiceId
+            });
+        }
+
         private static bool IsIntent(string intent)
         {
             return intent == "revive" || intent == "return_base"
-                || intent == "return_deliverable"
+                || intent == "select_return" || intent == "refresh_return"
                 || intent == "resume_rewards";
         }
 
@@ -179,6 +198,7 @@ namespace CF7Launcher.Tasks
                 _socket.OnClientDisconnected -= HandleTransportDisconnected;
             }
             _presenter.IntentRequested -= OnIntentRequested;
+            if (_presenter is IStageReturnPresenter returns) returns.ReturnRequested -= OnReturnRequested;
         }
     }
 }

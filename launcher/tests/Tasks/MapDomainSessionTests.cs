@@ -113,6 +113,132 @@ namespace CF7Launcher.Tests.Tasks
             request = Request(Hello(domain)); request["facts"]["deliverableIds"] = new JArray("3");
             Assert.False(domain.Process(request, 1, () => true).Value<bool>("success"));
         }
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SelectedDestinationKeepsTheChosenTaskWhenAnEarlierTaskIsDeliverable(bool returning)
+        {
+            var d = Definition(); d["placements"]["early"]["presenceWhen"] = MapDomainDefinition.Always(); d["placements"]["late"]["presenceWhen"] = MapDomainDefinition.Always();
+            var runtime = new MapRuntimeContent(d, content.Catalog, World()); using var domain = new MapDomainTask(runtime);
+            var request = Request(Hello(domain)); request["contentDigest"] = runtime.ContentDigest;
+            request["facts"]["deliverableIds"] = new JArray("1", "2");
+            request["facts"]["scene"]["inCombat"] = returning; request["facts"]["navigation"]["reason"] = returning ? "stage_run_active" : "";
+            request["intent"] = JObject.Parse("{kind:'stage_return',taskId:'2',npcId:'person',placementId:'late',locationId:'yard'}");
+            if (!returning) request["intent"]["kind"] = "task_delivery";
+            var response = domain.Process(request, 1, () => true);
+            Assert.True(response.Value<bool>("success"));
+            Assert.Equal("home", (string)response["result"]["projection"]["delivery"]["hotspotId"]);
+            Assert.True(response["result"]["admission"].Value<bool>("admitted"));
+            Assert.Equal("yard", (string)response["result"]["admission"]["locationId"]);
+            if (returning) Assert.Equal("2", (string)response["result"]["admission"]["taskId"]);
+        }
+        [Theory]
+        [InlineData("incomplete", true)]
+        [InlineData("inactive", true)]
+        [InlineData("npc", true)]
+        [InlineData("placement", true)]
+        [InlineData("location", true)]
+        [InlineData("pending", true)]
+        [InlineData("combat", true)]
+        [InlineData("absent", true)]
+        [InlineData("incomplete", false)]
+        [InlineData("inactive", false)]
+        [InlineData("npc", false)]
+        [InlineData("placement", false)]
+        [InlineData("location", false)]
+        [InlineData("pending", false)]
+        [InlineData("combat", false)]
+        [InlineData("absent", false)]
+        public void SelectedDestinationRejectsChangedAuthorityWithoutChoosingAnotherTask(string change, bool returning)
+        {
+            using var domain = new MapDomainTask(content); var request = Request(Hello(domain));
+            request["facts"]["deliverableIds"] = new JArray("1", "2");
+            request["facts"]["scene"]["inCombat"] = returning; request["facts"]["navigation"]["reason"] = returning ? "stage_run_active" : "";
+            request["intent"] = JObject.Parse("{kind:'stage_return',taskId:'1',npcId:'person',placementId:'early',locationId:'home'}");
+            if (!returning) request["intent"]["kind"] = "task_delivery";
+            switch (change) {
+                case "incomplete": request["facts"]["deliverableIds"] = new JArray("2"); break;
+                case "inactive": request["facts"]["activeOrder"] = new JArray("2"); request["facts"]["deliverableIds"] = new JArray("2"); break;
+                case "npc": request["intent"]["npcId"] = "wrong"; break;
+                case "placement": request["intent"]["placementId"] = "late"; break;
+                case "location": request["intent"]["locationId"] = "yard"; break;
+                case "pending": request["facts"]["navigation"]["reason"] = "pending_stage_settlement"; break;
+                case "combat": request["facts"]["scene"]["inCombat"] = !returning; break;
+                case "absent": request["facts"]["chains"]["主线"] = 10; break;
+            }
+            var response = domain.Process(request, 1, () => true);
+            Assert.True(response.Value<bool>("success"));
+            Assert.False(response["result"]["admission"].Value<bool>("admitted"));
+            Assert.Null(response["result"]["admission"]["frame"]);
+        }
+        private static JObject PrivateYardDefinition()
+        {
+            var d = Definition();
+            ((JArray)d["pages"]["base"]["hotspots"]).Last.Remove();
+            ((JArray)d["pages"]["base"]["filters"][0]["hotspotIds"]).Last.Remove();
+            d["placements"]["late"]["presenceWhen"] = MapDomainDefinition.Always();
+            return d;
+        }
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void PrivateCompletedTaskCanReturnOrDeliverWithoutPublicMapNavigation(bool returning)
+        {
+            var runtime = new MapRuntimeContent(PrivateYardDefinition(), content.Catalog, World());
+            using var domain = new MapDomainTask(runtime);
+            var request = Request(Hello(domain)); request["contentDigest"] = runtime.ContentDigest;
+            request["facts"]["scene"]["inCombat"] = returning;
+            request["facts"]["navigation"]["reason"] = returning ? "stage_run_active" : "";
+            request["intent"] = JObject.Parse("{kind:'stage_return',taskId:'2',npcId:'person',placementId:'late',locationId:'yard'}");
+            if (!returning) request["intent"]["kind"] = "task_delivery";
+            var response = domain.Process(request, 1, () => true);
+            Assert.True(response.Value<bool>("success"));
+            Assert.True(response["result"]["admission"].Value<bool>("admitted"));
+            Assert.Equal("院子", (string)response["result"]["admission"]["frame"]);
+            Assert.Equal("", (string)response["result"]["admission"]["hotspotId"]);
+            Assert.Null(response["result"]["projection"]["snapshot"]["hotspotStates"]["yard"]);
+            // 即使地点和任务可交付，普通地图导航也不能借 locationId 绕开隐藏入口。
+            request["revision"] = 2; request["facts"]["scene"]["inCombat"] = false;
+            request["facts"]["navigation"]["reason"] = "";
+            request["intent"] = JObject.Parse("{kind:'navigate',targetId:'yard'}");
+            response = domain.Process(request, 1, () => true);
+            Assert.True(response.Value<bool>("success"));
+            Assert.False(response["result"]["admission"].Value<bool>("admitted"));
+            request["intent"] = JObject.Parse("{kind:'task_finish',taskId:'2'}");
+            response = domain.Process(request, 1, () => true);
+            Assert.True(response["result"]["admission"].Value<bool>("admitted"));
+        }
+        [Theory]
+        [InlineData("incomplete")]
+        [InlineData("inactive")]
+        [InlineData("locked")]
+        [InlineData("absent")]
+        [InlineData("pending")]
+        [InlineData("npc")]
+        public void PrivateTaskRoutesStillRequireCompletionSceneAccessAndExactSelection(string change)
+        {
+            foreach (bool returning in new[] { true, false })
+            {
+                var d = PrivateYardDefinition();
+                if (change == "locked") d["locations"]["yard"]["enterWhen"] = JObject.Parse("{type:'chain',key:'主线',min:10}");
+                if (change == "absent") d["placements"]["late"]["enabled"] = false;
+                var runtime = new MapRuntimeContent(d, content.Catalog, World());
+                using var domain = new MapDomainTask(runtime);
+                var request = Request(Hello(domain)); request["contentDigest"] = runtime.ContentDigest;
+                request["facts"]["scene"]["inCombat"] = returning;
+                request["facts"]["navigation"]["reason"] = returning ? "stage_run_active" : "";
+                request["intent"] = JObject.Parse("{kind:'stage_return',taskId:'2',npcId:'person',placementId:'late',locationId:'yard'}");
+                if (!returning) request["intent"]["kind"] = "task_delivery";
+                if (change == "incomplete") request["facts"]["deliverableIds"] = new JArray();
+                if (change == "inactive") { request["facts"]["activeOrder"] = new JArray("1"); request["facts"]["deliverableIds"] = new JArray(); }
+                if (change == "pending") request["facts"]["navigation"]["reason"] = "pending_stage_settlement";
+                if (change == "npc") request["intent"]["npcId"] = "wrong";
+                var response = domain.Process(request, 1, () => true);
+                Assert.True(response.Value<bool>("success"));
+                Assert.False(response["result"]["admission"].Value<bool>("admitted"));
+                Assert.Null(response["result"]["admission"]["frame"]);
+            }
+        }
         public void Dispose() { Directory.Delete(root, true); }
     }
 }

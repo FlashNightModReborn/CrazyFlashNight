@@ -1,4 +1,4 @@
-﻿// CF7:ME Guardian Process — 入口
+// CF7:ME Guardian Process — 入口
 // C# 5 语法
 
 using System;
@@ -1671,7 +1671,8 @@ class Program
                         nativeHud.AddMessage("地图显示："
                             + CF7Launcher.Guardian.Hud.MapDisplayPolicy.ToDisplayLabel(preference));
                     },
-                    lootIconCatalog);
+                    lootIconCatalog,
+                    Path.Combine(projectRoot, "flashswf", "portraits", "profiles"));
             nativeHud.AddWidget(rightContext);
             safeExitPanel =
                 new CF7Launcher.Guardian.Hud.SafeExitPanelWidget(form.FlashHostPanel, commandRouter);
@@ -2123,6 +2124,7 @@ class Program
         PetTask petTask = new PetTask(socketServer, projectRoot);
         MercTask mercTask = new MercTask(socketServer);
         TaskTask taskTask = new TaskTask(socketServer);
+        taskTask.SetDeliveryPresenter(rightContext);
         IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot, socketServer);
         // 黑市鉴定（匿名影子测试）：AS2 权威注释通道，仅 tooltip 一跳
         BlackMarketTask blackMarketTask = new BlackMarketTask(socketServer);
@@ -2562,6 +2564,7 @@ class Program
                     long t = System.Diagnostics.Stopwatch.GetTimestamp();
                     using (CF7Launcher.Guardian.PerfTrace.Scope("reveal.setready.stage_outcome"))
                         stageOutcomeTask.SetReady();
+                    taskTask.SyncDelivery();
                     LogManager.Log("[RevealProbe] setready.stage_outcome " + ((System.Diagnostics.Stopwatch.GetTimestamp() - t) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
                 }
                 if (nativeHud != null)

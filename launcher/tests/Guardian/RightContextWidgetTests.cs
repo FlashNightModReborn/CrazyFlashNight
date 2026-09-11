@@ -11,7 +11,7 @@ using Xunit;
 
 namespace CF7Launcher.Tests.Guardian
 {
-    public class RightContextWidgetTests
+    public partial class RightContextWidgetTests
     {
         private class Capture
         {
@@ -128,14 +128,16 @@ namespace CF7Launcher.Tests.Guardian
             bool canReturnBase = true,
             int remainingRewards = 0,
             int revision = 7,
-            string returnFailure = null)
+            string returnFailure = null,
+            bool canSelectReturn = false,
+            JObject returnOptions = null)
         {
             JObject message = new JObject
             {
                 ["task"] = "stage_outcome",
                 ["payload"] = new JObject
                 {
-                    ["v"] = 1,
+                    ["v"] = 3,
                     ["runId"] = "run.right-context.1",
                     ["revision"] = revision,
                     ["stageName"] = "摇滚公园",
@@ -147,16 +149,23 @@ namespace CF7Launcher.Tests.Guardian
                     ["reviveAllowed"] = reviveAllowed,
                     ["reviveBlockedReason"] = reviveBlockedReason,
                     ["canReturnBase"] = canReturnBase,
+                    ["canSelectReturn"] = canSelectReturn,
+                    ["returnFailure"] = returnFailure ?? "",
                     ["settlement"] = settlement,
                     ["remainingRewards"] = remainingRewards
                 }
             };
             if (returnFailure != null)
             {
-                message["payload"]["v"] = 2;
+                message["payload"]["v"] = 3;
                 message["payload"]["returnFailure"] = returnFailure;
             }
             StageOutcomeState state;
+            if (returnOptions != null)
+            {
+                message["payload"]["v"] = 4;
+                message["payload"]["returnOptions"] = returnOptions;
+            }
             string error;
             Assert.True(StageOutcomeState.TryParseMessage(
                 message, out state, out error), error);
@@ -390,7 +399,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(right.PaintsStageDecisionForTest);
             Assert.False(right.PaintsActionableNoticeForTest);
             Assert.False(safeExit.PaintsTransactionDecisionForTest);
-            Assert.Equal(new[] { "复活", "回基地" },
+            Assert.Equal(new[] { "复活", "医务室" },
                 right.StageActionLabelsForTest);
             Assert.Equal("持有复活币 2", right.StageDecisionTextForTest);
             Assert.Equal("复活币", right.StageDecisionItemIconForTest);
@@ -404,7 +413,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void Victory_HasPersistentReturnAndOnlyAddsAuthoritativeTaskRoute()
+        public void Victory_SelectionCapabilityDoesNotDependOnTheGlobalFirstTask()
         {
             Capture c;
             RightContextWidget right = MakeWidget(out c);
@@ -418,7 +427,7 @@ namespace CF7Launcher.Tests.Guardian
 
             right.ApplyState(StageState("victory", "alive", "none"));
             Assert.True(right.RequestsStageDecision);
-            Assert.Equal(new[] { "回基地" },
+            Assert.Equal(new[] { "返回原处" },
                 right.StageActionLabelsForTest);
 
             right.ClickStageActionForTest(0);
@@ -428,25 +437,28 @@ namespace CF7Launcher.Tests.Guardian
 
             right.ForceDeliverState(
                 true, "base_dorm", false, "2", returnNavigable: false);
-            Assert.Equal(new[] { "回基地" },
+            Assert.Equal(new[] { "返回原处" },
                 right.StageActionLabelsForTest);
 
             right.ForceDeliverState(
                 true, "base_dorm", false, "2", returnNavigable: true);
-            Assert.Equal(new[] { "前往交付", "回基地" },
+            Assert.Equal(new[] { "返回原处" }, right.StageActionLabelsForTest);
+            right.ApplyState(StageState("victory", "alive", "none", canSelectReturn:true));
+            right.ForceDeliverState(false, "", false, "0", returnNavigable:false);
+            Assert.Equal(new[] { "选择交付", "返回原处" },
                 right.StageActionLabelsForTest);
             right.ClickStageActionForTest(0);
             Assert.Equal(
                 new[]
                 {
                     "return_base:run.right-context.1:7",
-                    "return_deliverable:run.right-context.1:7"
+                    "select_return:run.right-context.1:7"
                 },
                 intents);
 
             right.ApplyState(StageState(
                 "failure", "alive", "none", revision:8));
-            Assert.Equal(new[] { "回基地" },
+            Assert.Equal(new[] { "返回原处" },
                 right.StageActionLabelsForTest);
         }
 
@@ -484,7 +496,7 @@ namespace CF7Launcher.Tests.Guardian
                 };
                 right.ForceGameReady(true);
                 right.SetReady();
-                right.ApplyState(StageState("victory", "alive", "none"));
+                right.ApplyState(StageState("victory", "alive", "none", canSelectReturn:true));
                 right.ForceDeliverState(
                     true, "base_dorm", false, "0", returnNavigable: true);
                 NativeHudOverlay.ResolveAndProjectRightContextSlotOwner(
@@ -502,9 +514,8 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Empty(intents);
 
                 right.OnMouseEvent(deliverArgs, MouseEventKind.Down);
-                // Same list index is rebuilt from deliver to return without ApplyState.
-                right.ForceDeliverState(
-                    false, "", false, "0", returnNavigable: true);
+                // AS2 capability changes the action at the same position; an old press cannot confirm it.
+                right.ApplyState(StageState("victory", "alive", "none", canSelectReturn:false));
                 Rectangle current = right.StageActionBoundsForTest(0);
                 Point currentCenter = new Point(
                     current.Left + current.Width / 2,
@@ -640,7 +651,7 @@ namespace CF7Launcher.Tests.Guardian
             right.ApplyState(StageState(
                 "victory", "dead", "none", true, 20574));
 
-            Assert.Equal(new[] { "复活", "回基地" },
+            Assert.Equal(new[] { "复活", "医务室" },
                 right.StageActionLabelsForTest);
             Assert.Equal("持有复活币 2.1万", right.StageDecisionTextForTest);
             Assert.Equal("复活币", right.StageDecisionItemIconForTest);
@@ -703,7 +714,7 @@ namespace CF7Launcher.Tests.Guardian
                         "victory", "dead", "none", true,
                         9007199254740991L));
                     Assert.Equal(
-                        new[] { "复活", "回基地" },
+                        new[] { "复活", "医务室" },
                         right.StageActionLabelsForTest);
                     Assert.True(right.StageDecisionBalanceUsesCompactFontForTest);
                     Assert.True(right.StageActionLabelFitsForTest(0));
@@ -748,7 +759,7 @@ namespace CF7Launcher.Tests.Guardian
             right.ApplyState(StageState(
                 "victory", "dead", "none", false, 3,
                 "resurrection_restricted"));
-            Assert.Equal(new[] { "禁复活", "回基地" },
+            Assert.Equal(new[] { "禁复活", "医务室" },
                 right.StageActionLabelsForTest);
             Assert.Equal("你受了重伤", right.StageDecisionTextForTest);
             Assert.Null(right.StageDecisionItemIconForTest);
@@ -759,7 +770,7 @@ namespace CF7Launcher.Tests.Guardian
             right.ApplyState(StageState(
                 "victory", "dead", "none", false, 0,
                 "no_revive_coin"));
-            Assert.Equal(new[] { "复活", "回基地" },
+            Assert.Equal(new[] { "复活", "医务室" },
                 right.StageActionLabelsForTest);
             Assert.Equal("持有复活币 0", right.StageDecisionTextForTest);
             Assert.Equal("复活币", right.StageDecisionItemIconForTest);

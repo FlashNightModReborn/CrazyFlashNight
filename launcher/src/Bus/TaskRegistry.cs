@@ -616,7 +616,10 @@ namespace CF7Launcher.Bus
 
             // 任务面板回包路由
             if (taskTask != null)
+            {
                 router.RegisterAsync("task_response", taskTask.HandleFlashResponse);
+                router.RegisterSync("task_delivery", taskTask.HandleDeliveryState);
+            }
 
             // 情报面板 runtime 回包路由
             if (intelligenceTask != null)
@@ -860,6 +863,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "pet_response",         "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "merc_response",        "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "task_response",        "json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "task_delivery",        "json_sync","AS2->C#",false, first);
             first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);

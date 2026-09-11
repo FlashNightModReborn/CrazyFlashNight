@@ -4910,6 +4910,68 @@
         "sourceSwf": "flashswf/levels/地图-教学楼内部.swf",
         "linkage": "地图-教学楼内部右侧"
       }
+    },
+    "survivor_camp": {
+      "label": "幸存者营地",
+      "sceneName": "地图-幸存者营地",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 1
+      },
+      "visibleWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 1
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-幸存者营地.swf",
+        "linkage": "地图-幸存者营地"
+      }
+    },
+    "easter_egg": {
+      "label": "彩蛋地图",
+      "sceneName": "地图-彩蛋地图",
+      "sceneKind": "outdoor",
+      "enabled": true,
+      "enterWhen": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 1
+          },
+          {
+            "type": "chain",
+            "key": "彩蛋",
+            "min": 1
+          }
+        ]
+      },
+      "visibleWhen": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 1
+          },
+          {
+            "type": "chain",
+            "key": "彩蛋",
+            "min": 1
+          }
+        ]
+      },
+      "tone": "base",
+      "sceneBinding": {
+        "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
+        "linkage": "地图-彩蛋地图"
+      }
     }
   },
   "npcs": {
@@ -5370,6 +5432,142 @@
       ],
       "aliases": [],
       "placementPolicy": "multiple"
+    },
+    "npc_d518fd6bba4125f3": {
+      "label": "迷之盔甲君",
+      "runtimeNames": [
+        "迷之盔甲君"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_59c6b4ac10799046": {
+      "label": "爱国青年",
+      "runtimeNames": [
+        "爱国青年"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_1f21be07c3242f38": {
+      "label": "A兵团士兵",
+      "runtimeNames": [
+        "A兵团士兵"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_fbef39c347a54191": {
+      "label": "Bard",
+      "runtimeNames": [
+        "Bard"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_9b0d49442ca22235": {
+      "label": "被改造的方舟无人机",
+      "runtimeNames": [
+        "被改造的方舟无人机"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_73fa4b54bb70dbeb": {
+      "label": "神秘男人",
+      "runtimeNames": [
+        "神秘男人"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_2cf5cf6898c14219": {
+      "label": "女仆（黑）",
+      "runtimeNames": [
+        "女仆（黑）"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_9d2bc1c38fff7603": {
+      "label": "女仆（白）",
+      "runtimeNames": [
+        "女仆（白）"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_44b22ce51e6ed4c8": {
+      "label": "杰克霜精",
+      "runtimeNames": [
+        "杰克霜精"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_b8f4ee27b72ca55d": {
+      "label": "武装JK",
+      "runtimeNames": [
+        "武装JK"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_3b3d15d05da52979": {
+      "label": "长生军战士",
+      "runtimeNames": [
+        "长生军战士"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_42e3ca784a74f46d": {
+      "label": "文天",
+      "runtimeNames": [
+        "文天"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_e0d9e75f80059fec": {
+      "label": "尾上世莉架",
+      "runtimeNames": [
+        "尾上世莉架"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_2f438974590a6da3": {
+      "label": "诺艾尔",
+      "runtimeNames": [
+        "诺艾尔"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_36a366570faf8fc8": {
+      "label": "齐天大圣",
+      "runtimeNames": [
+        "齐天大圣"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_8bce68b4702c4330": {
+      "label": "heeho君",
+      "runtimeNames": [
+        "heeho君"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
+    },
+    "npc_d340bf5610331303": {
+      "label": "人修罗",
+      "runtimeNames": [
+        "人修罗"
+      ],
+      "aliases": [],
+      "placementPolicy": "unique"
     }
   },
   "placements": {
@@ -6052,6 +6250,258 @@
       "enabled": true,
       "presenceWhen": {
         "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_2de960bc6f070ba5": {
+      "npcId": "npc_d518fd6bba4125f3",
+      "locationId": "base_lobby",
+      "label": "迷之盔甲君 · 基地大厅",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 32
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_2617dbdd295b378d": {
+      "npcId": "npc_59c6b4ac10799046",
+      "locationId": "base_lobby",
+      "label": "爱国青年 · 基地大厅",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 3
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_89f7cf38be4119f8": {
+      "npcId": "npc_1f21be07c3242f38",
+      "locationId": "basement1",
+      "label": "A兵团士兵 · 地下一层",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 175
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_bcf7e5b4ea901aef": {
+      "npcId": "npc_fbef39c347a54191",
+      "locationId": "base_roof",
+      "label": "Bard · 基地屋顶",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 446
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_ee352ba71a72b0dd": {
+      "npcId": "npc_9b0d49442ca22235",
+      "locationId": "base_roof",
+      "label": "被改造的方舟无人机 · 基地屋顶",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 285
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_d232150c9b712eb5": {
+      "npcId": "npc_73fa4b54bb70dbeb",
+      "locationId": "base_roof",
+      "label": "神秘男人 · 基地屋顶",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "彩蛋",
+        "min": 0,
+        "max": 0
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_4a273573130b8196": {
+      "npcId": "npc_2cf5cf6898c14219",
+      "locationId": "survivor_camp",
+      "label": "女仆（黑） · 幸存者营地",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 77
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_365db6591498f7ad": {
+      "npcId": "npc_9d2bc1c38fff7603",
+      "locationId": "survivor_camp",
+      "label": "女仆（白） · 幸存者营地",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 77
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_9ce81c043704182e": {
+      "npcId": "npc_44b22ce51e6ed4c8",
+      "locationId": "survivor_camp",
+      "label": "杰克霜精 · 幸存者营地",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 44
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_7476ebed17bfc0cd": {
+      "npcId": "npc_b8f4ee27b72ca55d",
+      "locationId": "survivor_camp",
+      "label": "武装JK · 幸存者营地",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 22
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_e235bf6bed2644de": {
+      "npcId": "npc_3b3d15d05da52979",
+      "locationId": "survivor_camp",
+      "label": "长生军战士 · 幸存者营地",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "主线",
+        "min": 67
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_d53badc54b0a3066": {
+      "npcId": "npc_42e3ca784a74f46d",
+      "locationId": "easter_egg",
+      "label": "文天 · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_825f4a2756d989c9": {
+      "npcId": "npc_e0d9e75f80059fec",
+      "locationId": "easter_egg",
+      "label": "尾上世莉架 · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_b82bd994e1880f14": {
+      "npcId": "npc_2f438974590a6da3",
+      "locationId": "easter_egg",
+      "label": "诺艾尔 · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_1e7bfe06af6ba92c": {
+      "npcId": "npc_36a366570faf8fc8",
+      "locationId": "easter_egg",
+      "label": "齐天大圣 · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "always"
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_e028902844fdc6e3": {
+      "npcId": "npc_8bce68b4702c4330",
+      "locationId": "easter_egg",
+      "label": "heeho君 · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "chain",
+        "key": "彩蛋",
+        "min": 4
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_d76aa0f565ca5ebe": {
+      "npcId": "npc_d340bf5610331303",
+      "locationId": "survivor_camp",
+      "label": "人修罗 · 幸存者营地",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 77
+          },
+          {
+            "type": "task",
+            "key": "1000081",
+            "state": "finished"
+          },
+          {
+            "type": "task",
+            "key": "1000082",
+            "state": "notFinished"
+          }
+        ]
+      },
+      "worldBinding": null,
+      "legacyWorldAdapter": true
+    },
+    "place_30b2aa393db39bd8": {
+      "npcId": "npc_d340bf5610331303",
+      "locationId": "easter_egg",
+      "label": "人修罗 · 彩蛋地图",
+      "enabled": true,
+      "presenceWhen": {
+        "type": "all",
+        "children": [
+          {
+            "type": "chain",
+            "key": "主线",
+            "min": 77
+          },
+          {
+            "type": "task",
+            "key": "1000082",
+            "state": "finished"
+          }
+        ]
       },
       "worldBinding": null,
       "legacyWorldAdapter": true

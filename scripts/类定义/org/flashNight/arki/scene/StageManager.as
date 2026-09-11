@@ -546,7 +546,7 @@ class org.flashNight.arki.scene.StageManager {
             isCleared = true;
             isFinished = true;
             clearTimePoolBestEffort(timePoolController);
-            StageRunSession.finish("victory");
+        StageRunSession.finish("victory");
             try {
                 _root.关卡结束();
             } catch (warlordFinishCallbackError) {
@@ -1030,6 +1030,7 @@ class org.flashNight.arki.scene.StageManager {
         }
         isFinished = true;
         clearTimePoolBestEffort(timePoolController);
+        org.flashNight.arki.scene.StageReturnFlow.setStoryReturn(currentStageInfo.basicInfo.EndFrame);
         StageRunSession.finish("victory");
         try {
             _root.关卡结束();
@@ -1037,7 +1038,9 @@ class org.flashNight.arki.scene.StageManager {
             trace("[StageManager] finish callback failed: " + finishCallbackError);
         }
         //设置返回地图帧值
-        if(currentStageInfo.basicInfo.EndFrame) _root.关卡地图帧值 = currentStageInfo.basicInfo.EndFrame;
+        if(currentStageInfo.basicInfo.EndFrame) {
+            _root.关卡地图帧值 = currentStageInfo.basicInfo.EndFrame;
+        }
     }
 
     public function failStage():Void{

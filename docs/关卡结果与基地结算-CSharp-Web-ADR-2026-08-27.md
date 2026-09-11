@@ -1,10 +1,68 @@
-# 关卡结果与基地结算 C# / Web 分层 ADR
+﻿# 关卡结果与基地结算 C# / Web 分层 ADR
 
 **文档角色**：关卡结束、玩家死亡复活、返回基地与关卡奖励领取的跨 AS2 / C# / Web canonical 深文档。
 **状态**：2026-08-29 增量修复 `IMPLEMENTED / AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / promoted`
 **2026-08-30 测试反馈修复状态**：`IMPLEMENTED / promoted / FIELD_REVALIDATION_PENDING`
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
+
+## 0E. 2026-09-11 明确任务选择、单次返回与到达确认（隔离候选）
+
+**人类验收收尾（2026-09-11 17:28 后）**：维护者确认其余有效验收项均完成，并授权在日志无新阻断时获取云端共识、构建部署和推送。本节下文的“待复验／待授权”保留为施工历史，当前功能状态为 `HUMAN_ACCEPTANCE_PASSED`；原 E3“彩蛋出发 AVP”和 E4“聚落公开页跳转”仍属撤销用例，不计通过。人验绑定此前隔离 Host 候选（build identity `131494231355E58835F4B60370D229227C22AFC6A87239997CC7F2B9E103D22A`、Core DLL `AAE282C8900163AE2926D105B4828332005569A0D6EDE7D92211289BCBC66F65`）与最终 asLoader SHA-256 `B99EE848E6E396439C7F6AA38FFB229914577D20CA8FDCA78D0D2B3568967D67`。正式发布身份、双构建证明与部署结果统一记入 [runtime 发布记录](runtime-build-reproducibility.md)，候选人验不自动成为部署后的业务 `standard_entry_verified`。
+
+本机冻结日志覆盖 17:07—17:28 的最后验收窗口：返回基地房顶、基地一层及医务室均有 fresh 到达确认；奖励领取、装备候选读取／换装及多次存盘有成功回包，最终 17:27:18 存档的 `stage.settlement.13` 为 claimed、无 pending，rewardInbox 无剩余批次或活跃领取根；17:28:29 Flash 正常退出 code 0，未重现走门后世界丢失或 `map_facts_stale`。未发现新的资产或转场阻断。仍保留三类非阻断观察：两次奖励窗关闭超过 250ms 的重试阈值后均正常关闭并归还焦点；两次读档恢复窗因 Web 尚未显示被拒绝，恢复信号均发送成功，之后显式续领成功；一次 `stage_outcome_rejected reason=invalid_message` 的完整消息被日志脱敏，不能据此唯一归因，后续状态和返回继续正常。发布不据此声称启动时自动弹窗或所有瞬态告警已根治。原始日志与验收存档仅保存在本机证据目录，不进入 Git。
+
+发布准备补齐现有源码对应的派生记录：任务目录修正全属性抗性药剂的图标，修复字典纳入上游已有的八种抗性药剂，材料字典仅更新输入摘要。商店头像按原倍率 `--supersample 1` 重建，34 张 PNG 与 runtime manifest 逐字节不变；上游彩蛋场景名字修复使 heeho 的具体链变成 `465→270→268`，原始中性帧与成品 SHA 均不变，严格门按此次实际提取链更新，provenance/receipt 由原生成器产出。新增 profiles 的生成器、配方与 manifest 固定 LF。Launcher canonical 全量回归为 4,931 passed、3 既有 opt-in skipped；最终返回 suite 119 项由正常 runner 通过。较早奖励回归的 807 项是在 runner 超时后同一 run 的 fresh terminal 中完成，保留迟到完成边界，不写成正常 runner 通过。
+
+**结算后走门黑屏回归（2026-09-11）**：奖励恢复档在“僵尸逆袭”结算回基地、领取完成后，走进佣兵酒吧时出现世界全黑、地图/任务 `map_facts_stale`、装备无法打开及暂停/保存按钮不更新。现场最后一次保存仍成功，结算 9 为 claimed、无 pending；不能把无按钮反馈等同于存盘失败。根因是共享淡出元件遗留已消费的返回 token，而基地双开门等旧动画只写目标帧并直接播放淡出，绕过新接口；原时间线先清世界，再由跳图守卫拒绝过期 token。基地七种门元件及营地门动画共用这条路径，不限酒吧。
+
+`StageReturnFlow` 现在只在确认到达时释放属于本轮的淡出 token；过期 token 的跳图拒绝规则保留。`SceneTransitionGuard` 在普通开门前登记无返回 token 的新转场并占用淡出；普通场景门和 Web 选关不可用时的旧门分支均接入。清场前使用同一只读准入检查，实际跳图时才标记 loading；拒绝时停到“空”帧并保留世界。战利品收束阻塞产生的延迟清场同时绑定普通对象世界身份、目标帧、token、淡出帧及请求对象，旧回调不得清理同路径重建的新世界或续播另一轮淡出。
+
+此项修复只刷新 asLoader，不改门资产、主 SWF、Host 或存档格式。返回 focused suite 扩为 119 项，覆盖结算回基地后进出酒吧、普通门繁忙保护、无效 token 清场前拒绝以及真实 MovieClip 同路径替换下的旧清场失效；工程验证不代替实际门动画、装备/暂停/保存反馈的人验。恢复档固定使用“基地车库 → 堕落城区域 → 革命军哨所”：数据配置的四件护甲均为概率分母 1、数量上限 1，按现有奖励算法各得一件；以正常背包操作留一个空格，继续 R1–R5，不再要求玩家随机寻找不合堆的战利品。未提交、未推送、未正式部署。
+
+**日常交付共享升级与人验回执（2026-09-11）**：维护者确认原生菜单交互有效，U5 返回原处正常，U6 通过在幸存老兵处新接副本任务模拟并确认正确返回，U7 同地点导航正常。维护者随后明确确认 U3 测试通过（单次返回后自动打开战利品），可继续第二个彩蛋验收档；U4 没有单独报告，不据此外推整轮验收。普通“任务已达成 · 可交付”状态栏现复用同一头像、任务/地点下拉栏和“前往交付”按钮；异构视觉评审后的调整将原感叹号及黄色“可交付”放在所选任务第二行的地点之后，保留状态所需宽度并对长地点省略，右侧保留“前往交付”；两种入口统一左边缘、40px 行高与字级，按实际动作数量分配选择栏宽度（日常 176px、结算 124px，均为 1024×576 逻辑坐标），不再预留独立 64px 状态格。内部控件只保留细框，主动作略强调、返回动作次级；只在有可交付且可导航的任务时显示，默认实际当前区域优先，其余按队列顺序。改选不跳转、不交任务；确认后正常到 NPC 对话交付。同场景事实刷新保留仍有效的手动选择，换场景或换档恢复新区域默认；到当前地点继续沿用零淡出的导航处理。
+
+**彩蛋人验与用例勘误（2026-09-11）**：维护者确认 E1 多任务选址、主动选文天返回彩蛋及 E2 到达后交付可行。AVP 的真实入口在基地大厅幸存老兵处（任务文本 `$SIDE_DESCRIPTION_1000003` 明示），彩蛋是文天交付点；默认本地区域必须按实际基地出发计算。原 E3“从彩蛋进入 AVP 再普通返回彩蛋”前提不成立，作为无效用例撤销，不判产品失败或成功，也不要求重跑；普通返回基地只能作顺带观察，非基地出发返回已有 U5 人验。接续 E4 与奖励恢复档；不据 E1/E2 代签其他项目或正式部署。截图中的文天首字占位对应 `profiles/文天.png` 缺失，登记到批量小头像补齐项；已有对话立绘可作为文天派生源，不能把原始立绘存在当作小头像已完成。
+
+**彩蛋隔离纠正与小头像补齐（2026-09-11）**：维护者明确彩蛋系列场景不可通过普通地图跳转。对比本地 `main`/上游基线 `1b62dadfd0c88d32fdbe1c7324a3875bf40c15ef`，`outskirts/聚落` 是本轮未提交修复新增的公开页，并非上游彩蛋场景名字修复（`289ad11af2`）引入。现撤掉该页及营地/彩蛋公开热点，保留场景和 NPC 驻点登记供交付及到达确认使用。原 E4“通过聚落页进入”与产品设定冲突，撤销原用例，接续奖励恢复档；E1/E2 既有人验记录保留，本次权限调整后的真机回归另记。
+
+公开 `navigate` 继续只接受可见且可用的地图热点。没有公开热点的登记场景，仅在 finish 端点已解析、地点进入条件通过、任务 active 且 deliverable 时提供交付路线；get/未完成任务不能借此开放入口。明确 `stage_return` / `task_delivery` 用已重验的 taskId/npcId/placementId/locationId 直接生成场景计划，前者只准当前胜利返回阶段，后者仍受日常生命周期阻断。任务页的明确 `task_finish` 在无公开热点时同样核对 active+deliverable；不将空热点变成公开地点入口，AS2 使用既有 bootstrap frame 验证与场景导航，无协议字段新增。
+
+小头像已用 [共享补齐工具](../tools/npc-profiles/README.md) 派生 15 张、保留原 66 张字节；正式任务目录的 53 个交付 NPC 名称、地图登记的 74 个 NPC 名称静态缺图/空图均为 0。文天/神秘男人映射有原对话 Char 依据；heeho 君复用既有商店肖像；室友采用现有男女头像组合表示动态角色；排骨/机哥/阿波保留已有 44×44 地图源的分辨率限制。裁图、来源 SHA、逐文件 manifest、重建字节比较与体积检查由工具记录。实际 24/28px 预览已检查，人物审美和私有地点返回的真机体验仍待维护者复核；没有提交推送或正式部署。
+
+候选由只读 `TaskDestinationOptions` 统一生成，分别检查日常 `navigable` 和胜利返回 `returnNavigable`。`TaskDeliverySelection` 绑定任务数组、独立场景身份、sceneEpoch、地图会话、当前位置和选项 token；接受确认后冻结精确 taskId/npcId/placementId/locationId，`MapDomainTask` 在非战斗且无导航阻断的 fresh 事实下重新核对 active+deliverable 和该驻点，AS2 在执行前再次拒绝旧场景/换档/失去完成条件/暂停的请求。日常路径不进入关卡结算事务，不触及待领奖励或存档格式。Native 的选项解析和绘制两端共享；胜利/待领状态仍占有原结算槽，日常投影不能抢走已展开的结算菜单。忙碌状态与控件间隙不回退为旧整栏 Web 点击。
+
+日常协议为 socket-only `task_delivery:{payload:{v:1,scope,options:{status,token,choices}}}`，行结构沿用上述 v4 返回选项，status 只接受 none/ready/confirming。Host 的 `taskDeliverySync v:1` 用于首次显示与重连，`taskDeliveryAction v:1` 严格携 `intent:navigate|refresh`、`choicesToken`、`choiceId`；refresh 的 choiceId 为空。MapDomain v2 增加精确 `task_delivery` 意图，不改变旧 `task_finish` 的未完成任务前往语义。收到新协议后日常栏不再按旧 tdh 首项跳转；历史 Host 仍可用旧路径。此扩展需配套 Host 候选与 asLoader，实际游戏中的新日常入口短复验仍待完成，未提交推送或正式部署。
+
+**下拉栏首轮复验后的增量**：维护者确认“继续领取”可以领到旧待领奖励，该回执只记为手动恢复通过，自动弹出与新一轮单次返回后结算仍待复验。下拉栏点击后瞬间收回已在真实 HWND 消息链复现：鼠标移入 → Down → Up/Click 打开列表 → WinForms 释放 capture → HUD 派发 Leave，旧实现把最后一步误作关闭。修复使 Leave 只清理悬停；选择、再次点击下拉栏、显式取消、转场/选项失效继续关闭。同一 run 与选项 token 的状态刷新保留展开及页码，但仍作废刷新前按下的旧手势。新增回归经实际窗口的移入、点击、capture 释放、列表改选和确认整条链验证；只直调 widget 的 Down/Up/Click 不能覆盖此边界。该闪退修复当时只更新 Host 候选；菜单现已获人类确认有效，正式部署仍待授权。当前共享扩展须另配套 asLoader。
+
+**最后核对代码基线**：本地 `main` 的 commit `1b62dadfd0c88d32fdbe1c7324a3875bf40c15ef` 加本轮未提交修改；不是正式发布身份。维护者已授权将隔离候选整合到主工作区，仍要求人类验收复查通过后再提交、推送和部署。本节定义候选行为；此前“领奖后自动导航”的描述只保留为历史记录。
+
+本次整合保留上游彩蛋地图名字元件与配套 SWF，解决相邻 Include 的合并冲突后刷新 18 个驻点的来源摘要及 SWF 哈希；原 NPC 脚本与锁条件一致。主 XFL 四个导入占位元件的缺失/未声明字体改为已有字体名，保持实际素材的 Import 链；标准主文件发布在 13 秒内完成，Compiler 0/0。字体处理边界见 [CS6 编译说明](../scripts/FlashCS6自动化编译.md#打开文档时弹出缺失字体)。
+
+旧问题由两条链叠加造成：关卡先按返回帧回到某个场景；结算终态又根据任务队列首个可交付项导航。任务队列顺序、地图未登记 NPC 和关卡 StartFrame 都可能把玩家带去基地。修复不以“所有可达地图都必有任务”为前提：物理场景、可选关卡、任务端点、剧情可达性分别核对。
+
+2026-09-11 首轮人验后，维护者确认将交付选择收回原生结算栏：有可交付任务时显示“目的地下拉栏 / 完成结算 / 返回原处”；无可交付任务时只保留原返回按钮，不显示空下拉栏。默认按出战前真实地点优先、其余任务队列顺序排列，同地点也保持任务队列顺序。这里的地点是 `StageReturnFlow` 捕获的实际场景，经 `locationByFrame` 映射到地点 ID；选关页的“基地车库”等共享分组不代表当前位置。下拉栏收起时以 24px 方形头像配两行真实任务名与地点，任务名 11px、地点/状态 10px；展开行以 28px 头像配任务名、完整地点和交付人，使用细分隔线与当前选中勾记，超过五项可翻页。只有实际显示交付选择器时，状态槽从 32px 加高到 40px；RightHudLayout 的绘制、合成边界、命中与下方地图位置共同使用该高度，其他提示/无任务返回/交易状态仍沿用 32px。头像直接复用任务面板的 `flashswf/portraits/profiles/<NPC 名>.png`，不从立绘重新裁切、不按商店名猜 NPC 身份；缺图保留首字占位与文本，头像不承载导航权限。Native 按精确文件名读取并缓存最多 128 张 128px 缩略图，拒绝路径字符，随 widget 销毁释放。合成跳转的 28px 方形按钮仅作为尺寸参考，它的 ShopPortraits 是另一套按 shopId 解析的商店素材，不能冒充全 NPC 覆盖。首次默认值可直接确认；手动改选仅作用于本轮，不发命令、不导航，也不写存档。
+
+`StageReturnOptions` 绑定本轮 run 对象、gameworld 的普通对象身份和选项 token。完成任务且 `returnNavigable` 的端点才进入下拉栏；显示和选择均不会调用 FinishTask 或发放任务/成就奖励。通关后继续拾取任务物品时，随已确认地图投影更新列表；数据未变化不重置选项，本轮仍存在的手动选择保留。点击“完成结算”携带 runId/revision/选项 token/choiceId，AS2 将 choiceId 还原为冻结的 taskId、npcId、placementId、locationId 元组，再通过 `MapDomainTask` fresh 求解任务 active+deliverable、战斗事实、NPC 驻点与地点准入；返回目的地计划后同步走正式返回。没有 Web 打开/关闭交接，也没有奖励终态二次导航。求解期间阻止重复确认及另一路返回；任务失效、暂停 lease、换档/换关、旧回包不能开始返回，失败提供“刷新交付”和原返回按钮。旧 `StageReturnSelection` 的只读 Web 入口仅保留 v3 Host 兼容，仍执行确认及 exact close 后两次 fresh 复核。
+
+正式返回仍由 `_root.返回基地` 一处完成：冻结原奖励快照 → durable 保存 → 接受一次淡出 → 清理关卡并装载目标场景。目的地优先级为死亡医务室、有效剧情 EndFrame、明确选择、进入选关前实际所在场景、旧返回帧兜底。只认 StageManager 实际加载的 EndFrame；不把关卡索引中的标注冒充已生效剧情。`StageReturnFlow` 的目的地、加载 token 均不进入存档。
+
+主 XFL 淡出接口新增返回 token 和明确的 Boolean 接受结果；繁忙淡出返回 false，保留原重试路径。根跳转先校验 token 再改变关卡标志，目标 gameworld 在 attachMovie 时取得该 token。SceneReady 在加载主角及队友之前捕获 world、token 和普通对象 readyIdentity，装载完成后一次发布这三个参数；同一 run、新场景身份、目标场景与 token 全部匹配才确认到达并打开战利品。旧场景事件、迟到淡出、ABA runId 和重复关闭不能启动第二次导航。普通地图导航到当前地点直接成功，不再次淡出。
+
+2026-09-11 首轮人验：U1/U2 通过；U3 在大学城周边·地狱主动选择 Bat 后只返回一次，但奖励面板没有打开，下一场被 `pending_stage_settlement` 阻断。现场 `stage.settlement.1` 的螺丝套件 ×4、remainingManifest 和空 receipts 完整保存。真实 CS6 MovieClip 回归证实：旧剪辑移除后，同路径创建新剪辑，旧引用与新引用 `=== true`；此前普通 Object fixture 的 41 项未覆盖该 AVM1 语义，不能据此宣称真实到达通过。
+
+修复将 `__stageReturnWorldIdentity` 作为每次 sceneInit 创建的普通对象，返回前和恢复前保存该对象快照，SceneReady 显式传入预先捕获的身份。迟到事件禁止在消费端重新从 MovieClip 取身份，确认过的旧场景也不能向同路径新场景转移“继续领取”资格；后续正常场景的 fresh SceneReady 可重新确认。任务选择的异步 guard 同步采用此身份，只清理仍属于旧选择的等待，不撤销新的选择。生产日志增加 `[StageReturn] arrival=confirmed/rejected`，只在有待领的实际场景就绪事件记录。本次只需发布 asLoader；Host/DLL、主 SWF、存档格式和奖励 manifest 均不变。51 项返回回归含真实 MovieClip 替换、恢复、迟到事件、显式续领及选择回调；既有奖励回归增加真实剪辑到达后进入 Loot 的覆盖。真实业务复验仍待用户继续 U3。
+
+旧 v1 结算记录继续可读，旧 `deliverAfterSettlement=true` 被忽略并在后续正常持久化时写为 false；领取剩余项、报表、settlementId、收据和已发资产不重置。重启/换档不恢复选路，待领只在当前正常读档入口的新场景就绪后恢复。关卡 Loot 准备/展示期阻止 NPC 任务交付展示；任务仍需到达后由玩家与 NPC 正常对话完成。奖励根事务本身沿用既有逻辑。
+
+协议增量：Host sync 发 `stageOutcomeSync v:4`，投影在 v3 的 `canSelectReturn` 基础上新增严格 `returnOptions:{status,token,choices:[{id,taskName,locationName,npcName}]}`。status 为 none/loading/ready/error/confirming，none 仅用于不能选择交付的状态；ready 可为空，confirming 必须有选项；Host 兼容旧 v1/v2/v3。动作 v3 的 `confirm_return` 新增 `choicesToken`、`choiceId`，`refresh_return` 无额外字段，继续沿用 runId/expectedRevision/intentId 防旧手势。普通返回、复活和续领保留 v2；v2 `select_return` 和任务面板 `stageReturnSnapshot`/`stageReturnConfirm` 仅作旧 Host 兼容。MapDomain v2 bootstrap 添加只读 `locationLabels`，来自地图定义 label。此轮下拉栏须同步更新 Host candidate 与 asLoader；U3 场景身份修复本身仍只涉及 asLoader。正式安装的累计闭包还包括主 SWF、Web 和地图数据，当前均未正式部署。
+
+地图分批：M1 六名基础 NPC、M2 十名营地/彩蛋 NPC、M3 人修罗的两个条件驻点已按现有脚本登记，新增幸存者营地和彩蛋两个地点。共 17 名 NPC、18 个驻点，保留 `legacyWorldAdapter` 和原生场景中的 NPC；不冒充现代 worldBinding 已接入。`unique` 只对明确登记的人物解析当前唯一驻点，原有 `multiple` 及现场空 hotspot 的旧匹配不改。人修罗按 1000081/1000082 切换；阿卡身份仍未确认，20072/1000081/1000082 三个任务保持未映射。小马、测试空间、同盟下水道、界外街道四个旧场景暂不开放。
+
+静态覆盖为已加载 244 个任务中 241 个交付 NPC 名称有登记，共 42 个地点；不是 241 个端点当前均可到达，也不是物理可达地图全量覆盖。逐驻点脚本、发布 SWF 哈希和条件证据在 [coverage-evidence.json](../tools/quest-return/coverage-evidence.json)，[verify-coverage.js](../tools/quest-return/verify-coverage.js) 使用生产 C# 投影校验 31 个条件边界。修正两个场景共 4 处失效 Include href 后，营地 XFL audit clean；主 XFL 和彩蛋旧 libraryItemName 问题与基线一致，无新增 linkage 冲突，不在本轮批量修复旧美术。
+
+自动验证入口及证据分层见 [测试指南](../tools/quest-return/README.md)。验收档生成器从只读种子保留角色装备和基础剧情状态，仅设置两条目标旅程的任务进度；恢复档留一个背包空位，必须通过真实通关产生奖励，不伪造 pending。人类需在隔离候选完成大学、彩蛋和部分领取后重启三条旅程。构建/自动测试通过不代替这些体验与保存回读验收。
 
 ## 0D. 2026-09-08 返回失败后的原生重试入口
 
@@ -239,7 +297,7 @@ dead + exact current hero
 
 奖励表非法行、未知物品、AVM1 `random()` 超过有符号 32 位跨度、超过 64 个奖励槽或 `BaseItem` 创建失败都 fail closed，并以 `rewardRollOmissions` 在报告中披露；不把遗漏项伪装成玩家已经获得。
 
-“前往交付”使用 `return_deliverable` 意图，但不允许 C# 把 `hotspotId` 带回 AS2。AS2 在点击时先确认当前确有 `returnNavigable` 目标，再进入与“回基地”完全相同的冻结、转场和 Web 奖励流程；只有奖励到达 `claimed / abandoned / error`、Panel exact visual close 已完成且 `_webPanelPauseLease` 已释放后，`StageRunSession` 才重新解析此刻仍已完成的任务并调用 `MapPanelService.navigateToHotspot`。普通关闭形成 `LOOT_SUSPENDED` 时保留意图但不跳转，之后恢复领取并终结才继续；重复 close 证明不得重放导航。这样交付捷径不会绕过奖励权威，也不会在战斗场景或可见 Web 之下抢先切图。
+历史发布的“前往交付”使用 `return_deliverable` 意图（本轮候选已撤销，见 §0E），但不允许 C# 把 `hotspotId` 带回 AS2。AS2 在点击时先确认当前确有 `returnNavigable` 目标，再进入与“回基地”完全相同的冻结、转场和 Web 奖励流程；只有奖励到达 `claimed / abandoned / error`、Panel exact visual close 已完成且 `_webPanelPauseLease` 已释放后，`StageRunSession` 才重新解析此刻仍已完成的任务并调用 `MapPanelService.navigateToHotspot`。普通关闭形成 `LOOT_SUSPENDED` 时保留意图但不跳转，之后恢复领取并终结才继续；重复 close 证明不得重放导航。这样交付捷径不会绕过奖励权威，也不会在战斗场景或可见 Web 之下抢先切图。
 
 ## 6. Web 双栏工作台
 

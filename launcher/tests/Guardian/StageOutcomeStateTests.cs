@@ -6,6 +6,39 @@ namespace CF7Launcher.Tests.Guardian
 {
     public sealed class StageOutcomeStateTests
     {
+        [Fact]
+        public void VersionFourRequiresConsistentBoundedNativeReturnChoices()
+        {
+            JObject message = Message("victory");
+            message["payload"]["v"] = 4;
+            message["payload"]["returnFailure"] = "";
+            message["payload"]["canSelectReturn"] = true;
+            message["payload"]["returnOptions"] = new JObject {
+                ["status"] = "ready", ["token"] = "return.options.1",
+                ["choices"] = new JArray(new JObject { ["id"] = "task.40002", ["locationName"] = "联合大学", ["npcName"] = "Bat", ["taskName"] = "边界冲突" })
+            };
+            Assert.True(StageOutcomeState.TryParseMessage(message, out var state, out var error), error);
+            Assert.Single(state.ReturnOptions.Choices);
+            var bad = (JObject)message.DeepClone();
+            bad["payload"]["returnOptions"]["choices"][0]["frame"] = "基地1层";
+            Assert.False(StageOutcomeState.TryParseMessage(bad, out _, out _));
+            bad = (JObject)message.DeepClone();
+            ((JArray)bad["payload"]["returnOptions"]["choices"]).Add(bad["payload"]["returnOptions"]["choices"][0].DeepClone());
+            Assert.False(StageOutcomeState.TryParseMessage(bad, out _, out _));
+            foreach (string field in new[] { "token", "status" })
+            {
+                bad = (JObject)message.DeepClone();
+                bad["payload"]["returnOptions"][field] = new JObject();
+                Assert.False(StageOutcomeState.TryParseMessage(bad, out _, out _));
+            }
+            bad = (JObject)message.DeepClone();
+            bad["payload"]["canSelectReturn"] = false;
+            Assert.False(StageOutcomeState.TryParseMessage(bad, out _, out _));
+            bad = (JObject)message.DeepClone();
+            bad["payload"]["returnOptions"]["status"] = "loading";
+            Assert.False(StageOutcomeState.TryParseMessage(bad, out _, out _));
+        }
+
         private static JObject Message(
             string outcome = "active",
             string life = "alive",

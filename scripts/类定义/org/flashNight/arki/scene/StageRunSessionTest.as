@@ -62,8 +62,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testTaskAndPetEmptyArrayShapeRepair();
         testPersistedSettlementTerminalCleanup();
         testReturnAvailabilityAndRetreat();
-        testDeliverableReturnWaitsForSettlementVisualClose();
-        testDeliverableRejectsOldRunCallback();
+        testLegacySaveNavigationIsIgnoredAfterRewardClose();
+        testRetiredDeliverableNeverStartsNavigation();
         testHostIntentRevisionAndIdempotency();
         testFocusObservationIsBoundedAndNonAuthoritative();
         testLifecycleAdmissionAndReservation();
@@ -1051,9 +1051,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
                 _root.__returnRetryFault = kinds[i];
                 _root.__returnRetryFades = 0;
-                _root.淡出动画 = {淡出跳转帧:function(frame):Void {
+                _root.淡出动画 = {淡出跳转帧:function(frame):Boolean {
                     _root.__returnRetryFades++;
                     if (_root.__returnRetryFault == "fade") throw new Error("retry test fade failure");
+                    return true;
                 }};
                 _root.存档系统.flushBeforeTransition = function(reason:String):Boolean {
                     return _root.__returnRetryFault != "flush";
@@ -1198,9 +1199,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         }};
         _root.关卡结束界面 = {_visible:true, 关卡是否结束:true};
         _root.关卡地图帧值 = 37;
-        _root.淡出动画 = {淡出跳转帧:function(frame):Void {
+        _root.淡出动画 = {淡出跳转帧:function(frame):Boolean {
             projectionCounts.fade++;
             projectionCounts.frame = frame;
+            return true;
         }};
         _root.返回基地 = productionReturnBase;
         var projectionAccepted:Boolean = _root.返回基地();
@@ -1230,9 +1232,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         var productionFade:Object = {
             calls:0,
             throwNext:true,
-            淡出跳转帧:function(frame):Void {
+            淡出跳转帧:function(frame):Boolean {
                 this.calls++;
                 if (this.throwNext) throw new Error("synthetic production fade failure");
+                return true;
             }
         };
         _root.淡出动画 = productionFade;
@@ -1321,7 +1324,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.关卡结束 = _backup.stageFinished;
         _root.UpdateTaskProgress = function():Void {};
         _root.是否达成任务检测 = function():Void {};
-        _root.淡出动画 = {淡出跳转帧:function(frame):Void {}};
+        _root.淡出动画 = {淡出跳转帧:function(frame):Boolean { return true; }};
         _root.关卡地图帧值 = "基地门口";
 
         runRetreatCompletionCase("wave");
@@ -1485,26 +1488,17 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.淡出动画 = oldFade;
     }
 
-    private static function testDeliverableRejectsOldRunCallback():Void {
+    private static function testRetiredDeliverableNeverStartsNavigation():Void {
         resetWorld(0); installHero("no_effect");
-        var service:Object = MapPanelService;
-        var original:Function = service.navigateToDeliverable;
-        var callback:Function; var guard:Function; var calls:Number = 0;
-        service.navigateToDeliverable = function(done:Function, current:Function):Void { callback = done; guard = current; calls++; };
         StageRunSession.begin("旧交付关卡", "困难"); StageRunSession.finish("victory");
-        _root.返回基地 = function():Boolean { return StageRunSession.onReturnBaseStarted(); };
-        var requested:Object = StageRunSession.requestReturnDeliverableLocal("focused_async");
-        assertTrue(requested.success === true, "return delivery records only an intent");
-        assertEquals(0, calls, "no destination request before terminal return");
-        _root.当前为战斗地图 = false; _root._webPanelPauseLease = undefined;
-        StageRunSession.onSettlementState("CONSUMED", 0); StageRunSession.onWebPanelClosed();
-        assertEquals(1, calls, "terminal and exact close submit one fresh delivery request");
-        assertTrue(guard(), "same run may consume its fresh admission");
-        StageRunSession.begin("新关卡", "困难");
-        assertFalse(guard(), "new run invalidates a late result from the previous run");
-        callback(true, "");
-        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement, "late callback does not install a delivery intent into the new run");
-        service.navigateToDeliverable = original;
+        var requested:Object = StageRunSession.requestReturnDeliverableLocal("old_host");
+        assertFalse(requested.success, "retired unselected return is rejected");
+        assertEquals("explicit_return_selection_required", requested.error, "old Host must explicitly upgrade selection");
+        assertFalse(StageRunSession.testOnlySnapshot().returnRequested, "old intent does not begin a return");
+        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement, "old intent does not persist navigation");
+        StageRunSession.onWebPanelClosed();
+        assertTrue(StageRunSession.canSelectReturn(), "closing an unrelated panel preserves the explicit choice opportunity");
+        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement, "duplicate close cannot install navigation");
     }
 
     private static function testStageSelectLifecycleAuthority():Void {
@@ -2917,8 +2911,20 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             StageRunSession.requestReviveLocal("focused_test").error,
             "late settings recovery cannot spend a coin during return");
 
+        // 走真实 MovieClip 的旧场景卸载 / 同路径重建，再触发生产到达与 Loot 交接。
+        var fixture:MovieClip = _root.createEmptyMovieClip("__settlementReturnFixture", _root.getNextHighestDepth());
+        _root.gameworld = fixture.createEmptyMovieClip("world", 1);
+        var flow:Object = org.flashNight.arki.scene.StageReturnFlow;
+        var token:String = flow.prepareTransition("地图-联合大学");
+        flow.acceptTransition(token);
+        flow.beginSceneLoad(token, "地图-联合大学");
+        _root.gameworld.removeMovieClip();
+        var returnedWorld:MovieClip = fixture.createEmptyMovieClip("world", 1);
+        _root.gameworld = returnedWorld;
+        var init:Object = flow.sceneInit("地图-联合大学");
+        for (var key:String in init) returnedWorld[key] = init[key];
         _root.当前为战斗地图 = false;
-        StageRunSession.onSceneReady();
+        StageRunSession.onSceneReady(returnedWorld, token, flow.worldIdentity(returnedWorld));
         state = StageRunSession.testOnlySnapshot();
         assertEquals("rewards_pending", state.settlement,
             "offline Web open becomes a resumable reward state");
@@ -2934,6 +2940,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         state = StageRunSession.testOnlySnapshot();
         assertTrue(state.settlement == "claimed" && state.inventory == null,
             "terminal return cannot materialize the same stage rewards a second time");
+        fixture.removeMovieClip();
     }
 
     private static function testReturnAvailabilityAndRetreat():Void {
@@ -3023,68 +3030,30 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "scene expiry leaves zero-reward Loot authority recoverable");
     }
 
-    private static function testDeliverableReturnWaitsForSettlementVisualClose():Void {
-        resetWorld(0);
-        installHero("no_effect");
-        var resolverCalls:Number = 0;
-        var navigateCalls:Number = 0;
-        var navigatedHotspot:String = "";
-        StageRunSession.testOnlySetDeliverableHooks(
-            function():Object {
-                resolverCalls++;
-                return {
-                    hotspotId:"base_test_delivery",
-                    returnNavigable:true,
-                    navigable:_root.当前为战斗地图 !== true
-                };
-            },
-            function(hotspotId:String):Boolean {
-                navigateCalls++;
-                navigatedHotspot = hotspotId;
-                return true;
-            }
-        );
-        StageRunSession.begin("交付透传", "困难");
-        StageRunSession.finish("victory");
-        _root.返回基地 = function():Boolean {
-            return StageRunSession.onReturnBaseStarted();
-        };
-
-        var before:Object = StageRunSession.testOnlySnapshot();
-        _root.gameCommands.stageOutcomeAction({
-            task:"cmd", action:"stageOutcomeAction", v:1,
-            runId:String(before.runId), expectedRevision:Number(before.revision),
-            intent:"return_deliverable", intentId:"host.deliver.focused.1"
-        });
-        var returning:Object = StageRunSession.testOnlySnapshot();
-        assertTrue(returning.returnRequested === true
-                && returning.deliverAfterSettlement === true,
-            "deliver intent first enters the normal frozen return flow");
-        assertEquals(0, navigateCalls,
-            "battle map never navigates before base settlement");
-
+    private static function testLegacySaveNavigationIsIgnoredAfterRewardClose():Void {
+        resetWorld(0); installHero("no_effect");
+        StageRunSession.begin("旧存档交付", "困难"); StageRunSession.finish("victory");
+        assertTrue(StageRunSession.prepareSettlement(), "prepare preserves reward manifest for the old-save fixture");
+        var original:Object = _root._saveExt.stageSettlement.pending;
+        original.deliverAfterSettlement = true;
+        var settlementId:String = original.settlementId;
+        StageRunSession.resetForRestart();
+        var restored:Object = StageRunSession.restorePendingSettlement();
+        assertTrue(restored.success && restored.restored, "old true navigation field remains schema-compatible");
+        assertEquals(settlementId, StageRunSession.getCurrentSettlementId(), "old reward identity survives restart");
+        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement, "old navigation is never reactivated");
+        assertTrue(StageRunSession.persistPreparedSettlement().success, "same reward can be persisted without reroll");
+        assertFalse(_root._saveExt.stageSettlement.pending.deliverAfterSettlement, "next normal write neutralizes the legacy bit");
         _root.当前为战斗地图 = false;
-        _root._webPanelPauseLease = "focused-stage-settlement-lease";
+        _root._webPanelPauseLease = "old-reward-panel";
         StageRunSession.onSettlementState("CONSUMED", 0);
-        assertEquals(0, navigateCalls,
-            "authority terminal alone cannot overlap the visible Web panel");
-        assertTrue(StageRunSession.testOnlySnapshot().deliverAfterSettlement === true,
-            "pending delivery survives until exact visual close");
-
         StageRunSession.onWebPanelClosed();
-        assertEquals(0, navigateCalls,
-            "a still-held Web pause lease blocks premature navigation");
+        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement, "terminal notification has no navigation authority");
         _root._webPanelPauseLease = undefined;
         StageRunSession.onWebPanelClosed();
-        assertTrue(navigateCalls == 1
-                && navigatedHotspot == "base_test_delivery"
-                && resolverCalls == 1,
-            "only exact close samples delivery after settlement, never at intent creation");
-        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement,
-            "successful handoff consumes the pending delivery intent");
+        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement, "exact close has no navigation authority");
         StageRunSession.onWebPanelClosed();
-        assertEquals(1, navigateCalls,
-            "duplicate close proof cannot replay task navigation");
+        assertFalse(StageRunSession.testOnlySnapshot().deliverAfterSettlement, "duplicate close has no navigation authority");
     }
 
     private static function testPreparedSettlementPersistsWithoutReroll():Void {

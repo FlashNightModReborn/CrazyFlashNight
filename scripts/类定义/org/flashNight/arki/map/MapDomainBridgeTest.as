@@ -46,7 +46,7 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
         var request:Object = _wire[index].request;
         var result:Object = {sessionToken:request.sessionToken, contentDigest:request.contentDigest,
             sceneEpoch:request.sceneEpoch, revision:request.revision,
-            projection:{snapshot:{version:4,currentHotspotId:"alpha"}, currentLocationId:"alpha",taskEndpoints:{},placements:{}},
+            projection:{snapshot:{version:4,currentHotspotId:"beta"}, currentLocationId:"beta",taskEndpoints:{},placements:{}},
             admission:{admitted:true, hotspotId:"alpha", locationId:"alpha",frame:"甲场景"}};
         for (var key:String in override) result[key] = override[key];
         _wire[index].callback({success:true,result:result});
@@ -367,6 +367,10 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             bridge._navigationBusyUntil = 0;
             MapDomainBridge.navigate({kind:"navigate",targetId:"alpha"},captureResult,function():Boolean { return false; });
             reply(_wire.length-1,{}); check(_result.ok === false, "caller exact-operation guard runs before execution");
+
+            var sameLocation:Number = start();
+            reply(sameLocation, {projection:{snapshot:{version:4,currentHotspotId:"alpha"}, currentLocationId:"alpha", taskEndpoints:{}, placements:{}}});
+            check(_result.ok === true && _fadeCount == 1, "same-location ordinary navigation succeeds without another fade");
 
             var firstWaiter:Number = 0, secondWaiter:Number = 0;
             bridge._waiters = [{sceneEpoch:bridge._sceneEpoch,ids:[],callback:function():Void {

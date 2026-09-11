@@ -4,7 +4,7 @@ _root.操控目标表 = [_root.控制目标];
 
 
 // 场景就绪时，若主角位置处于碰撞中，则尝试挤出到最近合法点（一次性挂钩，避免重复注册）
-EventBus.getInstance().subscribe("SceneReady", function():Void {
+EventBus.getInstance().subscribe("SceneReady", function(readyWorld:Object, arrivalToken:String, readyIdentity:Object):Void {
 	var hero:MovieClip = TargetCacheManager.findHero();
 	if (hero && !Mover.isMovieClipPositionValid(hero)) {
 		var pushed:Boolean = Mover.pushOutFromCollision(hero, 180, 8, 30);
@@ -12,7 +12,7 @@ EventBus.getInstance().subscribe("SceneReady", function():Void {
 			Mover.enforceScreenBounds(hero);
 		}
 	}
-	org.flashNight.arki.scene.StageRunSession.onSceneReady();
+	org.flashNight.arki.scene.StageRunSession.onSceneReady(readyWorld, arrivalToken, readyIdentity);
 }, null);
 
 _root.转场景记录数据 = function(){
@@ -108,6 +108,9 @@ _root.转场景记录数据第一次记录 = false;
 // }
 
 _root.加载我方人物 = function(地点X, 地点Y){
+	var 就绪世界:MovieClip = _root.gameworld;
+	var 就绪身份:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(就绪世界);
+	var 到达令牌:String = 就绪世界.__stageReturnToken;
 	var 当前操作单位 = (_root.特殊操作单位 != null && _root.特殊操作单位 != "") ? _root.特殊操作单位 : "主角-男"; //主角模型已经统一
 	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{
 		_x:地点X, 
@@ -126,7 +129,7 @@ _root.加载我方人物 = function(地点X, 地点Y){
 	_root.加载佣兵(地点X,地点Y);
 	_root.加载宠物(地点X,地点Y);
 
-	EventBus.instance.publish("SceneReady");
+	EventBus.instance.publish("SceneReady", 就绪世界, 到达令牌, 就绪身份);
 }
 
 _root.加载主角和战宠 = function(地点X, 地点Y){
@@ -499,6 +502,8 @@ _root.关卡结束 = function(){
 		trace("[StageFinish] victory effect failed: " + stageFinishEffectError);
 	}
 	_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
+	org.flashNight.arki.scene.StageReturnOptions.reset();
+	org.flashNight.arki.scene.StageRunSession.notifyReturnOptionsChanged();
 }
 
 _root.获取关卡状态 = function():String{
@@ -577,7 +582,7 @@ _root.返回基地 = function(){
 	// 死亡伤害可以把 hp 压到负数；主角已被回收时也应允许从医务室恢复，
 	// 不能让转场入口因一次空引用把玩家永久留在结算态。
 	// 健康角色必须原样传递既有 frame label/number，不在这里改型或猜测默认帧。
-	var 返回目标帧 = _root.关卡地图帧值;
+	var 返回目标帧 = org.flashNight.arki.scene.StageReturnFlow.destination(_root.关卡地图帧值);
 	var 返回前生命值:Number = 返回前主角 == undefined
 		? NaN : Number(返回前主角.hp);
 	if (返回前主角 == undefined || isNaN(返回前生命值) || 返回前生命值 <= 0) {
@@ -589,6 +594,7 @@ _root.返回基地 = function(){
 	var 原新出生标志 = _root.新出生;
 	var 原场景进入位置名 = _root.场景进入位置名;
 	var 原关卡类型 = _root.关卡类型;
+	var 返回令牌:String = org.flashNight.arki.scene.StageReturnFlow.prepareTransition(返回目标帧);
 	_root.新出生 = true;
 	_root.场景进入位置名 = "出生地";
 	_root.关卡类型 = "";
@@ -596,12 +602,16 @@ _root.返回基地 = function(){
 		if (typeof _root.淡出动画.淡出跳转帧 != "function") {
 			throw new Error("return fade unavailable");
 		}
-		_root.淡出动画.淡出跳转帧(返回目标帧);
+		if (_root.淡出动画.淡出跳转帧(返回目标帧, 返回令牌) !== true) {
+			throw new Error("return fade rejected");
+		}
+		org.flashNight.arki.scene.StageReturnFlow.acceptTransition(返回令牌);
 	} catch (fadeError) {
 		// onReturnBaseStarted 已是幂等冻结；不 clear，让玩家第二次点击可重试同一转场。
 		_root.新出生 = 原新出生标志;
 		_root.场景进入位置名 = 原场景进入位置名;
 		_root.关卡类型 = 原关卡类型;
+		org.flashNight.arki.scene.StageReturnFlow.cancelTransition(返回令牌);
 		trace("[ReturnBase] fade transition failed: " + fadeError);
 		return org.flashNight.arki.scene.StageRunSession.failReturnAttempt("transition_failed");
 	}
@@ -686,7 +696,7 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 				_root.淡出动画.淡出跳转帧(目标场景帧);
 				this.gotoAndStop(3);
 			}else{
-				_root.淡出动画.跳转帧 = 目标场景帧;
+				if (!org.flashNight.arki.scene.SceneTransitionGuard.prepareDoor(目标场景帧)) return;
 				游戏世界[开门效果].play();
 				this.gotoAndStop(3);
 			}
@@ -733,7 +743,7 @@ _root.场景转换函数.打开Web选关 = function(对应门名, 目标场景�
 				_root.淡出动画.淡出跳转帧(目标场景帧);
 				this.gotoAndStop(3);
 			}else{
-				_root.淡出动画.跳转帧 = 目标场景帧;
+				if (!org.flashNight.arki.scene.SceneTransitionGuard.prepareDoor(目标场景帧)) return;
 				游戏世界[开门效果].play();
 				this.gotoAndStop(3);
 			}
@@ -764,7 +774,13 @@ _root.防止播放跳关 = function(){
 	}
 }
 
-_root.跳转地图 = function(跳转帧){
+_root.从加载失败返回 = function():Boolean {
+    return org.flashNight.arki.scene.StageReturnFlow.returnFromLoadFailure(_root.关卡地图帧值);
+}
+
+_root.跳转地图 = function(跳转帧, 返回令牌:String){
+	if (!org.flashNight.arki.scene.StageReturnFlow.beginSceneLoad(返回令牌, 跳转帧)) return;
+	_root.关卡标志 = 跳转帧;
 	_root.当前为战斗地图 = false;
 	_root.soundEffectManager.notifyLeaveBattle();
 	// 检索环境xml中是否存在对应的基地地图或外部地图
@@ -777,7 +793,8 @@ _root.跳转地图 = function(跳转帧){
 
 
 _root.加载共享场景 = function(加载场景名){
-	var gw:MovieClip = _root.attachMovie(加载场景名, "gameworld", _root.getNextHighestDepth());
+	var 场景初始值:Object = org.flashNight.arki.scene.StageReturnFlow.sceneInit(加载场景名);
+	var gw:MovieClip = _root.attachMovie(加载场景名, "gameworld", _root.getNextHighestDepth(), 场景初始值);
 	gw.swapDepths(_root.gameworld层级定位器);
 	gw.场景名 = 加载场景名;
 	SceneManager.instance.initGameWorld(gw);
@@ -804,25 +821,30 @@ _root.场景转换函数.场景切换时补充玩家弹药 = function(){
 
 
 // 转换场景画面完全淡出时移除组件
-_root.__安排游戏世界清理重试 = function():Void {
-	if (_root.__游戏世界清理重试已排队 === true) return;
+_root.__安排游戏世界清理重试 = function(清理请求:Object):Void {
+	if (_root.__游戏世界清理重试请求 === 清理请求) return;
 	if (_root.帧计时器 == undefined
 			|| typeof _root.帧计时器.添加单次任务 != "function") {
 		_root.发布消息("[SceneManager] 战利品权威尚未收敛，缺少帧计时器；场景切换保持阻塞");
 		return;
 	}
-	_root.__游戏世界清理重试已排队 = true;
+	_root.__游戏世界清理重试请求 = 清理请求;
 	_root.帧计时器.添加单次任务(function():Void {
-		_root.__游戏世界清理重试已排队 = false;
-		if (_root.清除游戏世界组件()) {
-			if (_root.淡出动画 != undefined && typeof _root.淡出动画.play == "function") {
+		if (_root.__游戏世界清理重试请求 !== 清理请求) return;
+		_root.__游戏世界清理重试请求 = undefined;
+		if (!org.flashNight.arki.scene.SceneTransitionGuard.isCurrent(清理请求)) return;
+		if (_root.清除游戏世界组件(清理请求)) {
+			if (org.flashNight.arki.scene.SceneTransitionGuard.ownsFade(清理请求)
+					&& typeof _root.淡出动画.play == "function") {
 				_root.淡出动画.play();
 			}
 		}
 	}, 1);
 }
 
-_root.清除游戏世界组件 = function():Boolean{
+_root.清除游戏世界组件 = function(清理请求:Object):Boolean{
+	if (清理请求 == undefined) 清理请求 = org.flashNight.arki.scene.SceneTransitionGuard.captureCleanup();
+	if (!org.flashNight.arki.scene.SceneTransitionGuard.allowCleanup(清理请求)) return false;
 	// 彻底移除gameworld
 	if (!SceneManager.instance.removeGameWorld()) {
 		// 淡出动画 frame 5 之后会在 frame 12 无条件跳图；先钉停当前时间线，
@@ -830,7 +852,7 @@ _root.清除游戏世界组件 = function():Boolean{
 		if (_root.淡出动画 != undefined && typeof _root.淡出动画.stop == "function") {
 			_root.淡出动画.stop();
 		}
-		_root.__安排游戏世界清理重试();
+		_root.__安排游戏世界清理重试(清理请求);
 		return false;
 	}
 	

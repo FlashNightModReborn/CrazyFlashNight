@@ -43,3 +43,8 @@ launcher/THIRD-PARTY-NOTICES.txt text eol=lf whitespace=-blank-at-eol
 /launcher/web/assets/shop-portraits/promotion-receipt.json text eol=lf
 /launcher/web/assets/shop-portraits/manifest.json text eol=lf
 /data/shops/npcs/Pig.json text eol=lf
+
+# NPC profile provenance hashes exact generator, recipe and manifest bytes.
+/tools/bake-npc-profiles.py text eol=lf
+/tools/npc-profiles/sources.json text eol=lf
+/flashswf/portraits/profiles/generated-manifest.json text eol=lf

@@ -117,6 +117,9 @@
     var _dungeonTabBtn;          // 副本任务 tab 按钮（无 NPC 上下文时隐藏）
     var _dispatchViewEl;         // 前线调度板聚合模式容器
     var _isDispatchContext = false;
+    var _returnContext = null;
+    var _returnRows = [];
+    var _returnViewEl;
 
     // ── 副本任务（委托任务）tab：旧 FLA Symbol 1873(_root.委托任务界面) 的 web 等价 ──
     //   严格 NPC 领取：入口由 AS2 NPC 交互发 openWebDungeon(panel_request initData{view,taskId})；
@@ -213,6 +216,7 @@
                     '<div class="task-panel-achview" id="task-panel-achview"></div>' +
                     '<div class="task-panel-dungeonview" id="task-panel-dungeonview"></div>' +
                     '<div class="task-panel-dispatchview" id="task-panel-dispatchview"></div>' +
+                    '<div class="task-return-view" id="task-return-view"></div>' +
                     '<div class="task-confirm-overlay" id="task-confirm-overlay" hidden>' +
                         '<div class="task-confirm-dialog">' +
                             '<div class="task-confirm-title">放弃任务</div>' +
@@ -226,6 +230,8 @@
                 '</div>' +
             '</div>';
 
+        _returnViewEl = _el.querySelector('#task-return-view');
+        _returnViewEl.addEventListener('click', onReturnClick);
         _containerEl = _el.querySelector('.task-panel-container');
         _leftEl = _el.querySelector('#task-panel-left');
         _rightEl = _el.querySelector('#task-panel-right');
@@ -355,6 +361,8 @@
         _sortMode = 'default';
         _tab = 'mine';
         _isDispatchContext = !!(initData && initData.view === 'dispatch-board');
+        _returnContext = initData && initData.view === 'stage-return' ? { token: initData.token, panelInstanceId: initData.panelInstanceId } : null;
+        _returnRows = [];
         _dungeonTaskId = null;      // 副本上下文每次开面板清空（仅 NPC initData 注入）
         _dungeonMode = 'normal';
         _dungeonDetail = null;
@@ -381,7 +389,7 @@
         closeAbandonConfirm();
         if (_containerEl) _containerEl.classList.remove('task-busy');
         if (_containerEl) _containerEl.setAttribute('data-tab', 'mine');
-        if (_containerEl) _containerEl.setAttribute('data-context', _isDispatchContext ? 'dispatch-board' : 'tasks');
+        if (_containerEl) _containerEl.setAttribute('data-context', _returnContext ? 'stage-return' : _isDispatchContext ? 'dispatch-board' : 'tasks');
         setActiveTabButton('mine');
         resetToolbarControls();
         _rightEl.innerHTML = '<div class="task-empty-hint">请从左侧选择一个任务</div>';
@@ -403,6 +411,8 @@
         bindScaleWatcher();
         document.addEventListener('click', closeSortMenu); // 仅面板打开期间生效；addEventListener 对同一引用幂等
 
+        if (_returnContext) { requestReturnChoices(); return; }
+
         if (_isDispatchContext) {
             if (_dungeonTabBtn) _dungeonTabBtn.hidden = true;
             if (typeof DispatchBoardView !== 'undefined') DispatchBoardView.open(initData || {});
@@ -419,6 +429,63 @@
         // 无 NPC 上下文时隐藏「副本任务」tab，避免玩家从任务按钮进入后看到空提示
         if (_dungeonTabBtn) _dungeonTabBtn.hidden = (_dungeonTaskId == null);
         if (_dungeonTaskId != null) switchTab('dungeon');
+    }
+
+    // 返回选择始终是独立的只读视图，每一行明确写出任务、交付人和目的地。
+    function renderReturnChoices(message) {
+        var html = '<header class="task-return-header"><div><h2>选择交付地点</h2>' +
+            '<p>直接返回选中的地点，在那里领取本轮战利品；任务仍需与交付人对话完成。</p></div>' +
+            '<button type="button" data-return-action="cancel" aria-label="关闭">✕</button></header>';
+        html += '<div class="task-return-list" aria-busy="' + (_busy ? 'true' : 'false') + '">';
+        if (message) html += '<p class="task-return-message" role="status">' + escHtml(message) + '</p>';
+        for (var i = 0; i < _returnRows.length; i++) {
+            var row = _returnRows[i];
+            html += '<button type="button" class="task-return-choice" data-return-row="' + i + '"' +
+                (_busy || !row.enabled ? ' disabled' : '') + '><span><strong>' + escHtml(row.title) + '</strong>' +
+                '<small>交付人：' + escHtml(row.npcName) + '</small></span><span class="task-return-destination">' +
+                escHtml(row.enabled ? '返回 ' + row.location : row.reason || '地点暂不可用') + '</span></button>';
+        }
+        html += '</div><footer class="task-return-footer"><span>关闭后可继续留在关卡，或选择返回原处。</span>' +
+            '<button type="button" data-return-action="refresh"' + (_busy ? ' disabled' : '') + '>刷新地点</button>' +
+            '<button type="button" data-return-action="cancel"' + (_busy ? ' disabled' : '') + '>暂不返回</button></footer>';
+        _returnViewEl.innerHTML = html;
+    }
+    function requestReturnChoices() {
+        if (!_returnContext || _busy) return;
+        var session = _session;
+        _busy = true;
+        renderReturnChoices('正在确认可交付任务和地点…');
+        sendPanelMsg('stageReturnSnapshot', { token: _returnContext.token }, function(data) {
+            if (session !== _session || !_returnContext) return;
+            _busy = false;
+            _returnRows = data.success && Array.isArray(data.choices) ? data.choices : [];
+            renderReturnChoices(!data.success ? '地点信息暂不可用，请刷新或关闭后重新选择。' :
+                _returnRows.length ? '' : '当前没有满足全部交付条件的任务。');
+        });
+    }
+    function onReturnClick(event) {
+        if (!_returnContext || _busy) return;
+        var action = event.target.closest('[data-return-action]');
+        if (action) {
+            if (action.dataset.returnAction === 'refresh') requestReturnChoices();
+            else requestClose();
+            return;
+        }
+        var button = event.target.closest('[data-return-row]');
+        if (!button || button.disabled) return;
+        var row = _returnRows[Number(button.dataset.returnRow)];
+        if (!row || !row.enabled) return;
+        var session = _session;
+        _busy = true;
+        renderReturnChoices('正在确认：' + row.title + ' → ' + row.location);
+        sendPanelMsg('stageReturnConfirm', { token: _returnContext.token, taskId: row.taskId,
+            npcId: row.npcId, placementId: row.placementId, locationId: row.locationId }, function(data) {
+            if (session !== _session || !_returnContext) return;
+            _busy = false;
+            if (data.success && data.closePanel) { closeForStageEnter(); return; }
+            _returnRows = [];
+            renderReturnChoices('任务或交付地点已发生变化，请刷新后重新选择。');
+        });
     }
 
     function requestClose() {
@@ -441,6 +508,8 @@
         _pendingReq = {};
         _busy = false;
         _isDispatchContext = false;
+        _returnContext = null;
+        _returnRows = [];
         _session++;
         hideTip();
         stopTaskTooltipBindings();
@@ -524,6 +593,7 @@
         var callId = 'task_' + (++_reqSeq) + '_' + Date.now();
         if (cb) _pendingReq[callId] = cb;
         var msg = { type: 'panel', panel: 'tasks', cmd: cmd, callId: callId };
+        if (_returnContext) msg.panelInstanceId = _returnContext.panelInstanceId;
         if (extra) { for (var k in extra) if (extra.hasOwnProperty(k)) msg[k] = extra[k]; }
         Bridge.send(msg);
         return callId;

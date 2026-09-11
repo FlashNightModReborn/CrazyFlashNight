@@ -41,6 +41,8 @@ namespace CF7Launcher.Guardian
         public bool ReviveAllowed { get; private set; }
         public string ReviveBlockedReason { get; private set; }
         public bool CanReturnBase { get; private set; }
+        public bool CanSelectReturn { get; private set; }
+        public TaskDestinationChoices ReturnOptions { get; private set; }
         public string Settlement { get; private set; }
         public int RemainingRewards { get; private set; }
         public string ReturnFailure { get; private set; }
@@ -71,13 +73,15 @@ namespace CF7Launcher.Guardian
 
             JObject payload = message["payload"] as JObject;
             int version;
-            if (payload == null || !TryReadInt(payload["v"], 1, 2, out version)) return false;
+            if (payload == null || !TryReadInt(payload["v"], 1, 4, out version)) return false;
             var keys = new List<string> {
                     "v", "runId", "revision", "stageName", "difficulty",
                     "outcome", "life", "activeFrames", "reviveCoins",
                     "reviveAllowed", "reviveBlockedReason", "canReturnBase",
                     "settlement", "remainingRewards" };
-            if (version == 2) keys.Add("returnFailure");
+            if (version >= 2) keys.Add("returnFailure");
+            if (version >= 3) keys.Add("canSelectReturn");
+            if (version >= 4) keys.Add("returnOptions");
             if (!HasExactKeys(payload, keys.ToArray()))
                 return false;
 
@@ -113,7 +117,7 @@ namespace CF7Launcher.Guardian
                 return false;
 
             string returnFailure = "";
-            if (version == 2 && (!TryReadText(payload["returnFailure"], 48, true, out returnFailure)
+            if (version >= 2 && (!TryReadText(payload["returnFailure"], 48, true, out returnFailure)
                     || (returnFailure != "" && returnFailure != "settlement_prepare_failed"
                         && returnFailure != "save_failed" && returnFailure != "transition_failed"
                         && returnFailure != "return_base_failed"))) return false;
@@ -136,6 +140,12 @@ namespace CF7Launcher.Guardian
                     && remainingRewards != 0)
                 return false;
 
+            bool canSelectReturn = false;
+            if (version >= 3 && (!TryReadBool(payload["canSelectReturn"], out canSelectReturn)
+                || (canSelectReturn && (outcome != "victory" || life != "alive" || settlement != "none" || !canReturnBase)))) return false;
+            TaskDestinationChoices returnOptions = null;
+            if (version >= 4 && (!TaskDestinationChoices.TryParse(payload["returnOptions"] as JObject, out returnOptions)
+                || (canSelectReturn == (returnOptions.Status == "none")))) return false;
             state = new StageOutcomeState
             {
                 RunId = runId,
@@ -149,6 +159,8 @@ namespace CF7Launcher.Guardian
                 ReviveAllowed = reviveAllowed,
                 ReviveBlockedReason = blocked,
                 CanReturnBase = canReturnBase,
+                CanSelectReturn = canSelectReturn,
+                ReturnOptions = returnOptions,
                 Settlement = settlement,
                 RemainingRewards = remainingRewards,
                 ReturnFailure = returnFailure

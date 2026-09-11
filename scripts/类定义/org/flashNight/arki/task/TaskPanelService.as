@@ -78,6 +78,7 @@ class org.flashNight.arki.task.TaskPanelService {
         _root.gameCommands["taskDelete"] = function(params) {
             org.flashNight.arki.task.TaskPanelService.handleDelete(params);
         };
+        org.flashNight.arki.task.TaskDeliverySelection.install();
         _root.gameCommands["taskNavigateFinish"] = function(params) {
             org.flashNight.arki.task.TaskPanelService.handleNavigateFinish(params);
         };
@@ -129,6 +130,12 @@ class org.flashNight.arki.task.TaskPanelService {
             org.flashNight.arki.task.TaskPanelService.handleOpenWebDispatchBoard(params);
         };
 
+        _root.gameCommands["stageReturnSnapshot"] = function(params:Object):Void {
+            org.flashNight.arki.scene.StageReturnSelection.snapshot(params);
+        };
+        _root.gameCommands["stageReturnConfirm"] = function(params:Object):Void {
+            org.flashNight.arki.scene.StageReturnSelection.confirm(params);
+        };
         _inited = true;
     }
 
@@ -356,6 +363,10 @@ class org.flashNight.arki.task.TaskPanelService {
     //   回包附带刷新后的 tasks（splice + 任务链自动接取后已变化）。
     // ═══════════════════════════════════════════════════════════
     public static function handleFinish(params:Object):Void {
+        if (org.flashNight.arki.scene.StageReturnSelection.isOpen()) {
+            sendResponse({task:"task_response", callId:params.callId, success:false, error:"return_selection_read_only"});
+            return;
+        }
         var callId = params.callId;
         var index:Number = resolveIndexByTaskId(params.taskId);
 
@@ -407,6 +418,10 @@ class org.flashNight.arki.task.TaskPanelService {
     //   按 taskId 解析 index → 主线任务拒绝 → _root.DeleteTask。回包附带刷新后的 tasks。
     // ═══════════════════════════════════════════════════════════
     public static function handleDelete(params:Object):Void {
+        if (org.flashNight.arki.scene.StageReturnSelection.isOpen()) {
+            sendResponse({task:"task_response", callId:params.callId, success:false, error:"return_selection_read_only"});
+            return;
+        }
         var callId = params.callId;
         var index:Number = resolveIndexByTaskId(params.taskId);
 
@@ -439,6 +454,10 @@ class org.flashNight.arki.task.TaskPanelService {
     //   实际交付仍由玩家到达后点击 NPC 完成（本功能只负责"前往"，不自动交付）。
     // ═══════════════════════════════════════════════════════════
     public static function handleNavigateFinish(params:Object):Void {
+        if (org.flashNight.arki.scene.StageReturnSelection.isOpen()) {
+            sendResponse({task:"task_response", callId:params.callId, success:false, error:"return_selection_read_only"});
+            return;
+        }
         var callId:Number = Number(params.callId);
         var taskId:String = String(params.taskId);
         if (resolveIndexByTaskId(taskId) < 0) {
@@ -824,6 +843,10 @@ class org.flashNight.arki.task.TaskPanelService {
     }
 
     public static function handleDispatchBoardEnter(params:Object):Void {
+        if (org.flashNight.arki.scene.StageReturnSelection.isOpen()) {
+            sendResponse({task:"task_response", callId:params.callId, success:false, error:"return_selection_read_only"});
+            return;
+        }
         var callId = params.callId;
         var boardId:String = String(params.boardId || "");
         var taskData:Object = TaskUtil.tasks[params.taskId];
@@ -1389,6 +1412,10 @@ class org.flashNight.arki.task.TaskPanelService {
 
     // ── dungeonEnter（写）：服务端硬门控 + 扣费 + 进图（复刻 Symbol 1873 按钮+虚拟币支付）──
     public static function handleDungeonEnter(params:Object):Void {
+        if (org.flashNight.arki.scene.StageReturnSelection.isOpen()) {
+            sendResponse({task:"task_response", callId:params.callId, success:false, error:"return_selection_read_only"});
+            return;
+        }
         var callId = params.callId;
         var taskData:Object = TaskUtil.tasks[params.taskId];
         if (!isDungeonTask(taskData)) {

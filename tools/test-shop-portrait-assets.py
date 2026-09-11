@@ -307,14 +307,15 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
             "kind": "exact-xfl-swf-pilot",
             "sourceSwf": "flashswf/levels/地图-彩蛋地图.swf",
             "mapLinkage": "地图-彩蛋地图",
-            # 2026-09-10 合并上游地图后，经 linkage + XFL 放置矩阵重解析为 464→269→267；
+            # 2026-09-11 合并上游场景名字修复后，重新烘焙确认链为 465→270→268；
+            # 中性帧的原始 PNG 与正式头像均保持原 SHA，仅更新真实元件编号。
             # 继续钉死具体链，不能因 SWF 更新而退回普通霜精或任意首帧。
-            "mapCharacterId": 464,
+            "mapCharacterId": 465,
             "outerLibraryItem": "NPC/NPC-heeho君/NPC-heeho君",
-            "outerCharacterId": 269,
+            "outerCharacterId": 270,
             "outerDeclaredFrameCount": 10,
             "bodyLibraryItem": "NPC/NPC-heeho君/霜精",
-            "characterId": 267,
+            "characterId": 268,
             "declaredFrameCount": 37,
             "xflNeutralFrameIndex": 0,
             "frame1Based": 1,
@@ -362,7 +363,7 @@ def main() -> None:
                     "subjectBytes": subject_bytes,
                     "assetTreeBytes": tree_bytes,
                     "weaponMaster": {"characterId": 981, "frame1Based": 257},
-                    "heeho": {"characterId": 267, "frame1Based": 1},
+                    "heeho": {"characterId": 268, "frame1Based": 1},
                     "subjectsFirst": True,
                     "manifestLast": True,
                 },

@@ -1,0 +1,302 @@
+{
+  "schema": "cf7-generated-npc-profiles-v1",
+  "size": 400,
+  "pillow": "12.1.0",
+  "generatorSha256": "4B6070BF18F280EFC979E74878E525903365DBEC4A991E841183D4A7754FA827",
+  "recipeSha256": "717387338EAE1AAA659E5CF45F26637A3060912BB417BEA8C29D494B8267EBD7",
+  "totalBytes": 1776963,
+  "entries": [
+    {
+      "name": "A兵团士兵",
+      "uri": "A兵团士兵.png",
+      "sha256": "8373C39B86F57D5ECFF71F2D217F794674CB9A2837D423DCDB16CD83B0388CCD",
+      "bytes": 143849,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/internal/p_9e821c1ce1f5/e_7cda072d452b.png",
+          "sha256": "4302AA1047DC3FC60AE087B136611E6EAB53CEF696DB67EACF78426B75C85321",
+          "crop": [
+            412,
+            310,
+            524,
+            422
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "PROPHET",
+      "uri": "PROPHET.png",
+      "sha256": "CADBC99659D624C3B1E9EE94B497D18C9F9C1C575BAEBE2562C68ABAB908190C",
+      "bytes": 140259,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/internal/p_f1f0b8fd6686/e_7cda072d452b.png",
+          "sha256": "361DEE3FAD3C0B027CB7563AA4080F946EC6D3B586FE66DD5CF048870D20A53F",
+          "crop": [
+            416,
+            222,
+            585,
+            391
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "heeho君",
+      "uri": "heeho君.png",
+      "sha256": "8BB8CE6A242427B091C577F43BE05227B0C78BD06B0B2E3EC5F6D81621AA7B5E",
+      "bytes": 124435,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/shop-portraits/subjects/dcba5cb8fa7fb3c8f2e183a477a2093901cf9fc385c0bb8be19abb8262459e48.png",
+          "sha256": "DCBA5CB8FA7FB3C8F2E183A477A2093901CF9FC385C0BB8BE19ABB8262459E48",
+          "crop": [
+            57,
+            16,
+            198,
+            166
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "室友",
+      "uri": "室友.png",
+      "sha256": "8C4A0376788867254EA2594F1CBAF2796E4E385CF8039CD0FBE6E79CB28A05BA",
+      "bytes": 102592,
+      "mode": "paired-role",
+      "sources": [
+        {
+          "path": "flashswf/portraits/profiles/男室友.png",
+          "sha256": "DA7BB969E4460B7E48A032034A51FFBFFB6C8E1975C2E5B30F1FD9A3C53FC127"
+        },
+        {
+          "path": "flashswf/portraits/profiles/女室友.png",
+          "sha256": "CD595082F75ED94C8D08DB18A1C283C93127904CC3555ECFCA7036865EDF4541"
+        }
+      ],
+      "note": "室友随剧情/玩家性别变化；通用角色头像组合既有男女图，不固定冒充某一性别。具体男女源继续保留。"
+    },
+    {
+      "name": "排骨",
+      "uri": "排骨.png",
+      "sha256": "41FB750F6729463E21A536D9BD394A6A8B7C094FA63B3F0834A6360D116F9A7E",
+      "bytes": 126656,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/map/avatars/排骨头像.webp",
+          "sha256": "470F7FF1B66B349E37F254BDE32CB2A2176812389058B51EF20B602803D4F51B",
+          "crop": [
+            2,
+            1,
+            43,
+            43
+          ]
+        }
+      ],
+      "note": "复用现有地图小头像；源分辨率 44×44，不声称高清重绘。"
+    },
+    {
+      "name": "文天",
+      "uri": "文天.png",
+      "sha256": "A10EA0D6D2415709D22D592D1309578B9E7043DBD2E3C00F2E09F54D6CAAAAE9",
+      "bytes": 110128,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/external/p_5c350bb23741/e_7cda072d452b.png",
+          "sha256": "EB03B1A4F01E0BF7BC581DE2F04F5BD5B44F7E1B169D674C46EFEE0314F4A5D8",
+          "crop": [
+            183,
+            131,
+            323,
+            268
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "机哥",
+      "uri": "机哥.png",
+      "sha256": "07E61AD032FA4C5F1BED8DF64B2B49BF179671858BC3BAC60D90666CEDF8F97A",
+      "bytes": 116219,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/map/avatars/机哥头像.webp",
+          "sha256": "16CE70067B63C92434C4E83B4D1AF3630CC3BD0F994361248E090F41138D9D64",
+          "crop": [
+            2,
+            1,
+            43,
+            43
+          ]
+        }
+      ],
+      "note": "复用现有地图小头像；源分辨率 44×44，不声称高清重绘。"
+    },
+    {
+      "name": "杀马特",
+      "uri": "杀马特.png",
+      "sha256": "3652C7707F1C94B935EC598850D4A51EABA845E12EBFC2D647639DDDFC954CB6",
+      "bytes": 140267,
+      "mode": "copy",
+      "sources": [
+        {
+          "path": "flashswf/portraits/profiles/∞天ㄙ★使的剪∞.png",
+          "sha256": "3652C7707F1C94B935EC598850D4A51EABA845E12EBFC2D647639DDDFC954CB6"
+        }
+      ],
+      "note": "地图登记的杀马特驻点使用该人物头像"
+    },
+    {
+      "name": "武器大师",
+      "uri": "武器大师.png",
+      "sha256": "6644E76F90A71E3028245BDF5319241D16DB788DE231796F0C6446606D274C8F",
+      "bytes": 126851,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/internal/p_2bc606d5f82a/e_7cda072d452b.png",
+          "sha256": "64FD985BED4038FADE81B031FBDC4593059CF12B6DEC9967370645C6C3C84F2C",
+          "crop": [
+            437,
+            145,
+            623,
+            331
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "爱国青年",
+      "uri": "爱国青年.png",
+      "sha256": "2F55383D0C0AA56F8D7DF3BDE96F7FB25BD94A6D204BADF221389037E43978C3",
+      "bytes": 97220,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/internal/p_f893dd0ed13b/e_7cda072d452b.png",
+          "sha256": "1B6557AB8A467668BD46D7D8E7663E3BC42EA85AB06067F5F3F46EB570748D8E",
+          "crop": [
+            413,
+            312,
+            512,
+            411
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "神秘男人",
+      "uri": "神秘男人.png",
+      "sha256": "A10EA0D6D2415709D22D592D1309578B9E7043DBD2E3C00F2E09F54D6CAAAAE9",
+      "bytes": 110128,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/external/p_5c350bb23741/e_7cda072d452b.png",
+          "sha256": "EB03B1A4F01E0BF7BC581DE2F04F5BD5B44F7E1B169D674C46EFEE0314F4A5D8",
+          "crop": [
+            183,
+            131,
+            323,
+            268
+          ]
+        }
+      ],
+      "note": "npc_dialogue_彩蛋.xml 神秘男人的 Char 明确为文天"
+    },
+    {
+      "name": "被改造的方舟无人机",
+      "uri": "被改造的方舟无人机.png",
+      "sha256": "4499F82827535A5BA6E03528AE2BF0B3A34D9E58FCCCCDF34A1140DC7B726060",
+      "bytes": 89272,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/internal/p_fc0475a21b64/e_7cda072d452b.png",
+          "sha256": "503328AE8C50E2DEAF89F8013257ABD577656E37012E2152DA73FB0AF731B01F",
+          "crop": [
+            374,
+            353,
+            541,
+            472
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "调酒师",
+      "uri": "调酒师.png",
+      "sha256": "3CB15A97356B1D4054510F82F036E944B2A32A1E2AA39FED6744826A1C77F226",
+      "bytes": 159555,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/external/p_4e936cc411b5/e_7cda072d452b.png",
+          "sha256": "1CBE80F75EE9369E4B310D7AA31463DFF52A8A19A34A124AC86DE34D292C6DBE",
+          "crop": [
+            157,
+            112,
+            363,
+            318
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "长生军战士",
+      "uri": "长生军战士.png",
+      "sha256": "4B4C9B46264B66C7DC2C28DA019FF95A0431CFC94CFB6B1A5B2234635FF4B7F8",
+      "bytes": 69078,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/dialogue-portraits/internal/p_b3272e4811d6/e_7cda072d452b.png",
+          "sha256": "DA9490A20FDB6FA7232541824338066B8B0BD3A4BCA7FC763131E0EE65FD0C27",
+          "crop": [
+            421,
+            313,
+            530,
+            422
+          ]
+        }
+      ],
+      "note": "从既有肖像按头部/主体构图派生。"
+    },
+    {
+      "name": "阿波",
+      "uri": "阿波.png",
+      "sha256": "A8F1CDE68F5E3EA21A0ED6364E386FC22B040D3512B7D9A748A038322951EB38",
+      "bytes": 120454,
+      "mode": "crop",
+      "sources": [
+        {
+          "path": "launcher/web/assets/map/avatars/阿波头像.webp",
+          "sha256": "A4AA593DA9AACB223DCD20284F8C29C15E797C603F92FB12063ADA96951CBA99",
+          "crop": [
+            1,
+            2,
+            43,
+            43
+          ]
+        }
+      ],
+      "note": "复用现有地图小头像；源分辨率 44×44，不声称高清重绘。"
+    }
+  ]
+}

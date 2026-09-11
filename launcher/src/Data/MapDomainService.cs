@@ -119,7 +119,13 @@ namespace CF7Launcher.Data
                     var endpoint = MapEndpointResolver.Resolve(definition, (JObject)task.Value, role, placementStates);
                     string locId = endpoint.Value<string>("locationId") ?? "";
                     string hotspot = firstHotspot.TryGetValue(locId, out string target) ? target : "";
-                    bool route = endpoint.Value<bool>("resolved") && hotspot != "" && hotspots[hotspot].Value<bool>("enabled");
+                    // 无地图入口的独立场景只为已完成任务提供交付路线，不生成公开传送热点。
+                    bool privateDelivery = role == "finish" && hotspot == ""
+                        && locationStates[locId]?.Value<bool>("enterable") == true
+                        && facts["tasks"]?[task.Name]?.Value<bool>("active") == true
+                        && facts["tasks"]?[task.Name]?.Value<bool>("deliverable") == true;
+                    bool route = endpoint.Value<bool>("resolved") && (privateDelivery
+                        || (hotspot != "" && hotspots[hotspot].Value<bool>("enabled")));
                     endpoint["hotspotId"] = hotspot; endpoint["returnNavigable"] = route; endpoint["navigable"] = route && !locked;
                     endpoint["pageId"] = hotspot != "" ? hotspotPages[hotspot] : "";
                     if (endpoint.Value<bool>("resolved") && !route) endpoint["reason"] = hotspot == "" ? "该驻点没有可见地图表现" : (string)hotspots[hotspot]["lockedReason"];

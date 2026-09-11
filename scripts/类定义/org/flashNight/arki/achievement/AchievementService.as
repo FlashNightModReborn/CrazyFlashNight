@@ -307,6 +307,11 @@ class org.flashNight.arki.achievement.AchievementService {
     // ═══════════════════════════════════════════════════════════
     public static function handleClaim(params:Object):Void {
         var callId = params.callId;
+        if (org.flashNight.arki.scene.StageReturnSelection.isOpen()) {
+            sendResponse({task:"task_response", callId:callId, cmd:"achievementClaim",
+                success:false, error:"return_selection_read_only"});
+            return;
+        }
         // ① 就绪门控
         if (!_dataReady || !ensureInit()) {
             sendResponse(claimResp(callId, false, "not_ready", null));
