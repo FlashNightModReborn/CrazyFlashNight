@@ -436,6 +436,40 @@ class org.flashNight.arki.skill.SealDomain {
     // 收押 / 放逐
     // ════════════════════════════════════════════════════════════════════
 
+    /**
+     * 这个单位是不是「可以被封印的目标」。
+     *
+     * 阵营口径与 `UnitUtil.isEnemy` / `FactionManager.getFactionFromUnit` 一致：
+     * `是否为敌人` 只有明确的 `false` / `"false"`（友方）才排除；
+     * `true` / `"true"` 是敌人，**`null` / `undefined` / `"null"` 是中立，一并收押**。
+     * （游戏里中立单位死掉同样计经验，一直就是按敌对处理的。）
+     *
+     * ⚠ 但 `_root.gameworld` 下还挂着法阵、特效、子弹这些**不是单位**的元件，
+     *   它们的 `是否为敌人` 同样是 undefined —— 照纯阵营口径会被全当成"中立"收进来，
+     *   连宿主自己都会被自己封住。所以额外要求具备单位特征：
+     *   有 `死亡检测` 函数或 `hp满血值` 字段（两者都没有就不是单位）。
+     *   宿主与施术者本身也直接排除。
+     */
+    private static function 是可封印目标(单位:MovieClip, 状态:Object):Boolean {
+        if (单位 == undefined || 单位 == null || 单位._parent == undefined) {
+            return false;
+        }
+        if (状态 != undefined && 状态 != null) {
+            if (单位 === 状态.宿主 || 单位 === 状态.施术者) {
+                return false;
+            }
+        }
+        var 像单位:Boolean = (typeof 单位.死亡检测 == "function") || (单位.hp满血值 != undefined);
+        if (!像单位) {
+            return false;
+        }
+        var 是敌 = 单位.是否为敌人;
+        if (是敌 === false || 是敌 === "false") {
+            return false;                 // 明确的友方：不收
+        }
+        return true;                      // true / "true" / null / undefined（中立）都收
+    }
+
     /** 扫描 gameworld，把椭圆范围内尚未被封印的敌人收押进来。 */
     private static function 补收(状态:Object):Void {
         var 世界:MovieClip = _root.gameworld;
@@ -449,10 +483,8 @@ class org.flashNight.arki.skill.SealDomain {
             if (单位 == undefined || 单位._parent == undefined) {
                 continue;
             }
-            // 只封敌方；已经在本领域里的跳过（避免重复收押）
-            // 是否为敌人既有布尔写法也有字符串写法，两种都认
-            var 是敌 = 单位.是否为敌人;
-            if (是敌 !== true && 是敌 !== "true") {
+            // 只封"敌对 / 中立"的单位（含中立的判定见 是可封印目标）
+            if (!SealDomain.是可封印目标(单位, 状态)) {
                 continue;
             }
             if (单位.__封印领域 != undefined && 单位.__封印领域 != null) {
