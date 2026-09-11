@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑战技/雾人血浪素材/破浪冲击" itemID="61b10000-d39f6387" lastModified="1776350865" lastUniqueIdentifier="12" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Ti61-血剑战技/雾人血浪素材/破浪冲击" itemID="6aa415d4-00000c63" symbolType="graphic" lastModified="1776350865" lastUniqueIdentifier="12">
   <timeline>
     <DOMTimeline name="破浪冲击" currentFrame="13">
       <layers>
@@ -16,33 +15,28 @@
         <DOMLayer name="area" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
-              <elements>
-                </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
-              <elements>
-                </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="7" duration="2" keyMode="9728">
-              <elements>
-                </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="9" keyMode="9728">
-              <elements>
-                </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="4" keyMode="9728">
               <elements/>
@@ -121,7 +115,7 @@
                   <transformationPoint>
                     <Point x="77.4" y="-34.05"/>
                   </transformationPoint>
-                  </DOMSymbolInstance>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="12" keyMode="9728">
@@ -133,19 +127,19 @@
                   <transformationPoint>
                     <Point x="77.35" y="-34.15"/>
                   </transformationPoint>
-                  </DOMSymbolInstance>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑战技/雾人血浪素材/0c6970ce31d6" centerPoint3DX="126.95" centerPoint3DY="8.9" symbolType="graphic" loop="play once">
+                <DOMSymbolInstance libraryItemName="Codex/Ti61-血剑战技/雾人血浪素材/0c6970ce31d6" symbolType="graphic" centerPoint3DX="126.95" centerPoint3DY="8.9" loop="play once">
                   <matrix>
                     <Matrix a="-4.17440795898438" b="-0.492477416992188" c="-0.154998779296875" d="2.61953735351563" tx="420.05" ty="140.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="138.65" y="-26.3"/>
                   </transformationPoint>
-                  </DOMSymbolInstance>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>

@@ -100,7 +100,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         InformationComponentUpdater.update(target);
         // 战旗动作战在淡出/纸娃娃初始化完成前按单位冻结 AI，避免黑幕下
         // 自主索敌和提前结算；武装完成后由 encounter service 一次性放行。
-        if (target._warlordActionAiHeld !== true) {
+        // _封印冻结 由「天启大封印」的封印领域（SealDomain）在控制期间置位，
+        // 让新版状态机整段停摆；控制结束时由 SealDomain 还原原值。
+        if (target._warlordActionAiHeld !== true && target._封印冻结 !== true) {
             target.unitAI.update();
         }
         target.buffManager.update(4);

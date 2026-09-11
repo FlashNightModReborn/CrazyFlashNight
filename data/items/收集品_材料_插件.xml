@@ -1144,4 +1144,15 @@
     <description>用于改装的高等材料。
     占位测试用。</description>
   </item>
+  <!-- 三蝶手稿：虎妙商店 100 万出售，插件本体定义见 data/items/equipment_mods/特殊材料_通用.xml。
+       图标暂用「枪械情报手稿」，等专属美术到位后替换 icon 字段即可。 -->
+  <item>
+    <name>三蝶手稿</name>
+    <displayname>三蝶手稿</displayname>
+    <icon>枪械情报手稿</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>1000000</price>
+    <description>一份残缺的手稿</description>
+  </item>
 </root>

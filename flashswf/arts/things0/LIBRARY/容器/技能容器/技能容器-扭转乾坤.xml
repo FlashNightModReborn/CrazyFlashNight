@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1770214038">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/技能容器/技能容器-扭转乾坤" itemID="697a65ff-00004088" linkageExportForAS="true" linkageIdentifier="技能容器-扭转乾坤" lastModified="1789144440">
   <timeline>
-    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="31">
+    <DOMTimeline name="技能容器-扭转乾坤" currentFrame="3">
       <layers>
         <DOMLayer name="as" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -367,7 +367,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 631" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 631" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.6292724609375" b="-0.042205810546875" c="0.042205810546875" d="-1.6292724609375" tx="114.95" ty="-146.1"/>
                   </matrix>
@@ -506,7 +506,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 602" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 602" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.81494140625" b="-1.41142272949219" c="1.41142272949219" d="0.81494140625" tx="204.1" ty="58.35"/>
                   </matrix>
