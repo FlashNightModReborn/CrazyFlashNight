@@ -11,7 +11,7 @@ const LootOrganizer = require('../loot-organizer.js');
 const PanelRuntime = require('../../panel-runtime.js');
 
 function loadLootView() {
-    const context = {};
+    const context = {setTimeout:setTimeout, clearTimeout:clearTimeout};
     const source = fs.readFileSync(path.join(__dirname, '..', 'loot-view.js'), 'utf8');
     vm.runInNewContext(source + '\nthis.__lootView = LootView;', context,
         {filename:'loot-view.js'});
@@ -1646,6 +1646,182 @@ test('regressing root progress stops continuation without publishing a projectio
     assert.strictEqual(f.timers.size,0);
     assert.deepStrictEqual(f.model.projection(),before);
     assert.deepStrictEqual(f.settled,[false]);
+});
+
+test('loot diagnostic envelope is a fixed bounded scalar shape', () => {
+    const message=LootRuntime.createDiagnosticMessage({
+        domain:'loot',event:'report_assets',outcome:'timeout',
+        panelInstanceId:identity.panelInstanceId,
+        chestSessionId:identity.chestSessionId,
+        lootContainerId:identity.lootContainerId,
+        containerEpoch:identity.containerEpoch,generation:3,
+        source:'stage_settlement',report:'run.135462.1',error:'',
+        requested:4,loaded:2,errors:1,timeouts:1,fallbacks:0,
+        detail:'doll=1/2:1t,icon=2/2'});
+    assert.deepStrictEqual(message,{
+        type:'debug',scope:'loot',event:'report_assets',outcome:'timeout',
+        cmd:'',callId:'',
+        panelInstanceId:'panel.loot.test.1',chestSessionId:'chest.test.1',
+        lootContainerId:'loot.test.1',containerEpoch:7,generation:3,
+        source:'stage_settlement',report:'run.135462.1',error:'',
+        kills:-1,flows:-1,requested:4,loaded:2,errors:1,timeouts:1,
+        fallbacks:0,detail:'doll=1/2:1t,icon=2/2'});
+});
+
+test('loot diagnostic envelope rejects malformed identities and coerces unsafe fields', () => {
+    const base={domain:'loot',event:'init_received',outcome:'received',generation:1,
+        containerEpoch:7,panelInstanceId:'panel.loot.1'};
+    assert.strictEqual(LootRuntime.createDiagnosticMessage(base).event,'init_received');
+    [null,{},Object.assign({},base,{event:'not_an_event'}),
+        Object.assign({},base,{cmd:'steal_items'}),
+        Object.assign({},base,{callId:'loot call "injection"'}),
+        Object.assign({},base,{generation:-1}),
+        Object.assign({},base,{generation:1.5}),
+        Object.assign({},base,{containerEpoch:-1}),
+        Object.assign({},base,{containerEpoch:'7'})]
+        .forEach(bad=>assert.strictEqual(LootRuntime.createDiagnosticMessage(bad),null));
+    const coerced=LootRuntime.createDiagnosticMessage(Object.assign({},base,{
+        panelInstanceId:'panel loot with spaces',error:'brand_new_error',
+        source:'foreign_source',detail:'doll=2/2<script>注入</script>',
+        requested:'many',report:'run with spaces'}));
+    assert.strictEqual(coerced.panelInstanceId,'');
+    assert.strictEqual(coerced.error,'other');
+    assert.strictEqual(coerced.source,'');
+    assert.strictEqual(coerced.requested,-1);
+    assert.strictEqual(coerced.report,'');
+    assert.strictEqual(coerced.detail,'doll=2/2script/script');
+    const longDetail=LootRuntime.createDiagnosticMessage(Object.assign({},base,
+        {detail:'x'.repeat(200)}));
+    assert.strictEqual(longDetail.detail.length,96);
+});
+
+test('loot diagnostic outcomes derive from event and error when not explicit', () => {
+    const base={domain:'loot',generation:0,containerEpoch:1,
+        panelInstanceId:'panel.loot.1'};
+    const outcomeOf=(event,error,outcome)=>LootRuntime.createDiagnosticMessage(
+        Object.assign({},base,{event:event,cmd:'snapshot',
+            callId:'loot.n.1.1',error:error||'',outcome:outcome||''})).outcome;
+    assert.strictEqual(outcomeOf('request_issued'),'issued');
+    assert.strictEqual(outcomeOf('response_accepted'),'accepted');
+    assert.strictEqual(outcomeOf('response_accepted','target_full'),'host_error');
+    assert.strictEqual(outcomeOf('client_timeout'),'client_timeout');
+    assert.strictEqual(outcomeOf('response_shape_mismatch'),'shape_mismatch');
+    assert.strictEqual(outcomeOf('report_adopted','','adopted'),'adopted');
+    assert.strictEqual(outcomeOf('report_assets','','interrupted'),'interrupted');
+});
+
+test('loot diagnostic emitter bounds the wire and keeps local visibility', () => {
+    const local=[],sent=[];
+    const emit=LootRuntime.createDiagnosticEmitter({
+        local:r=>local.push(r),send:m=>{sent.push(m);return true;},budget:4});
+    const record=(event,cmd)=>({domain:'loot',event:event,cmd:cmd||'',
+        callId:'loot.n.1.1',generation:1,containerEpoch:7,
+        panelInstanceId:'panel.loot.1'});
+    emit(record('request_issued','snapshot'));
+    emit(record('request_issued','claim'));           // write noise stays local
+    emit(record('response_accepted','snapshot'));
+    emit(record('client_timeout','claim'));           // failures always forward
+    emit(record('init_received'));
+    emit(record('report_assets'));                    // budget exhausted -> drop
+    emit({domain:'other',event:'init_received',generation:1,containerEpoch:1,
+        panelInstanceId:'panel.loot.1'});
+    assert.strictEqual(local.length,7);
+    assert.strictEqual(sent.length,4);
+    assert.deepStrictEqual(sent.map(m=>m.event),
+        ['request_issued','response_accepted','client_timeout','init_received']);
+    emit.reset();
+    assert.strictEqual(emit.remaining(),4);
+    emit(record('report_render'));
+    assert.strictEqual(sent.length,5);
+    const throwing=LootRuntime.createDiagnosticEmitter({
+        send:()=>{throw new Error('offline');}});
+    assert.strictEqual(throwing(record('init_received')),false);
+});
+
+test('loot request mux surfaces request lifecycle records for the snapshot', () => {
+    const diagnostics=[],sent=[],router=new PanelRuntime.PanelResponseRouter();
+    const runtime=new LootRuntime.RequestMux({identity,router,
+        sessionNonce:'diag-test',send:m=>{sent.push(m);return true;},
+        onDiagnostic:r=>diagnostics.push(r)});
+    runtime.openSession();
+    runtime.request('snapshot',{loot:{offset:0,limit:2}},function(){});
+    runtime.request('claim',{operationId:'op.1'},{write:true},function(){});
+    assert.deepStrictEqual(diagnostics.map(d=>d.event+':'+d.cmd),
+        ['request_issued:snapshot','request_issued:claim']);
+    router.handleResponse(Object.assign({
+        type:'panel_resp',task:'loot_response',domain:'loot',panel:'loot',
+        cmd:'snapshot',callId:sent[0].callId,
+        panelInstanceId:identity.panelInstanceId,
+        chestSessionId:identity.chestSessionId,
+        lootContainerId:identity.lootContainerId,
+        containerEpoch:identity.containerEpoch},active(1,[slot(0)])));
+    const accepted=diagnostics.filter(d=>d.event==='response_accepted');
+    assert.strictEqual(accepted.length,1);
+    assert.strictEqual(accepted[0].cmd,'snapshot');
+    assert.strictEqual(accepted[0].callId,sent[0].callId);
+    runtime.destroy();
+});
+
+test('settlement report asset tracking summarizes outcomes and stays fail-soft', () => {
+    const records=[];
+    const view=new LootView.View({init:null,
+        diagnostic:r=>records.push(r)});
+    view._resetReportAssetTracking();
+    const a=view._trackReportAsset('doll',null,'enemy.a');
+    const b=view._trackReportAsset('portrait',null,'enemy.b');
+    const c=view._trackReportAsset('icon',null,null);
+    a('ok'); // pre-arm settle must not end the pass while siblings pend
+    assert.strictEqual(records.length,0);
+    view._armReportAssetDeadline();
+    b('fallback'); c('timeout');
+    assert.strictEqual(records.length,1);
+    assert.strictEqual(records[0].event,'report_assets');
+    assert.strictEqual(records[0].outcome,'timeout');
+    assert.strictEqual(records[0].requested,3);
+    assert.strictEqual(records[0].loaded,1);
+    assert.strictEqual(records[0].fallbacks,1);
+    assert.strictEqual(records[0].timeouts,1);
+    assert.strictEqual(records[0].detail,'doll=1/1,portrait=0/1:1f,icon=0/1:1t');
+    a('ok'); // idempotent: a second settle cannot recount
+    assert.strictEqual(records.length,1);
+    view.destroy();
+});
+
+test('report asset deadline counts pending ops as timeouts and superseded render emits interrupted', () => {
+    const records=[];
+    const view=new LootView.View({init:null,
+        runtimeConfig:{reportAssetTimeoutMs:25},
+        diagnostic:r=>records.push(r)});
+    view._resetReportAssetTracking();
+    view._trackReportAsset('doll',null,'enemy.a')('ok');
+    view._trackReportAsset('portrait',null,'enemy.b');
+    view._armReportAssetDeadline();
+    assert.strictEqual(records.length,0);
+    view._timeoutPendingReportAssets();
+    assert.strictEqual(records.length,1);
+    assert.strictEqual(records[0].outcome,'timeout');
+    assert.strictEqual(records[0].loaded,1);
+    assert.strictEqual(records[0].timeouts,1);
+
+    // A second render pass superseding pending ops closes the old pass as interrupted.
+    view._resetReportAssetTracking();
+    view._trackReportAsset('doll',null,'enemy.a');
+    view._resetReportAssetTracking();
+    assert.strictEqual(records.length,2);
+    assert.strictEqual(records[1].outcome,'interrupted');
+    view.destroy();
+});
+
+test('report asset summary emits interrupted when the view dies mid-load', () => {
+    const records=[];
+    const view=new LootView.View({init:null,diagnostic:r=>records.push(r)});
+    view._resetReportAssetTracking();
+    view._trackReportAsset('icon',null,null);
+    view.destroy();
+    assert.strictEqual(records.length,1);
+    assert.strictEqual(records[0].event,'report_assets');
+    assert.strictEqual(records[0].outcome,'interrupted');
+    assert.strictEqual(records[0].requested,1);
 });
 
 console.log('loot state ' + checks.length + '/' + checks.length + ' passed');

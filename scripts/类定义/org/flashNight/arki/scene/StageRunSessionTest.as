@@ -63,6 +63,11 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testStageSettlementEmptyArrayShapeRepair();
         testTaskAndPetEmptyArrayShapeRepair();
         testPersistedSettlementTerminalCleanup();
+        testStashSaveFailurePreservesAuthority();
+        testStashSaveUnknownPreservesAuthority();
+        testStashedReportFailureKeepsExitEligible();
+        testRestoredSettlementDiagFields();
+        testSettlementDiagnosticsBounded();
         testReturnAvailabilityAndRetreat();
         testLegacySaveNavigationIsIgnoredAfterRewardClose();
         testRetiredDeliverableNeverStartsNavigation();
@@ -3398,6 +3403,313 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertEquals("stage.settlement.2",
             StageRunSession.testOnlySnapshot().settlementId,
             "terminal cleanup retains the monotonic sequence for the next settlement");
+    }
+
+    /** 确定失败的暂存保存必须回滚候选且原样保留 pending 权威，并留有界诊断。 */
+    private static function testStashSaveFailurePreservesAuthority():Void {
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
+        StageRunSession._captureSettlementDiagForTest();
+        _root.强制存盘 = function() { return false; };
+        _root.存档系统.flushBeforeTransition = _root.强制存盘;
+        assertTrue(StageRunSession.begin("存盘失败保权", "困难"),
+            "failed-save fixture begins an ordinary stage run");
+        StageRunSession.finish("victory");
+        assertFalse(StageRunSession.onReturnBaseStarted(),
+            "definitely failed stash save still denies the return transition");
+        var state:Object = StageRunSession.testOnlySnapshot();
+        var settlementId:String = String(state.settlementId);
+        assertEquals("prepared", state.settlement,
+            "failed save keeps the run in prepared settlement authority");
+        assertEquals("save_failed", state.returnFailure,
+            "failed save records a retryable return failure instead of a silent drop");
+        assertTrue(state.canRetryReturn === true,
+            "failed save keeps the return path retryable");
+        var store:Object = _root._saveExt.stageSettlement;
+        assertTrue(store != null && store.pending != null
+                && String(store.pending.settlementId) == settlementId,
+            "not_committed rollback restores the exact persisted pending record");
+        assertTrue(StageRunSession.hasPersistedSettlementPending(),
+            "not_committed keeps persisted settlement authority");
+        assertTrue(RewardStashService.committedFeature() == null
+                || RewardStashStore.ownedQuantity(
+                    RewardStashService.committedFeature(), REWARD) == 0,
+            "not_committed exposes no stashed stock");
+        assertEquals("", RewardStashService.pendingOperationId(),
+            "not_committed releases the reward commit lock");
+        assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
+                "result=not_committed") != "",
+            "stash not_committed produces a bounded diagnostic record");
+
+        _root.强制存盘 = function() { return true; };
+        _root.存档系统.flushBeforeTransition = _root.强制存盘;
+        assertTrue(StageRunSession.onReturnBaseStarted(),
+            "return retry succeeds once the durable save reports true");
+        assertEquals(settlementId, String(StageRunSession.testOnlySnapshot().settlementId),
+            "successful retry reuses the same settlement identity without reroll");
+        StageRunSession._resetSettlementDiagForTest();
+    }
+
+    /** 物理结果未知的暂存保存必须保持候选 pending，且只能由显式 resolve 收敛。 */
+    private static function testStashSaveUnknownPreservesAuthority():Void {
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
+        StageRunSession._captureSettlementDiagForTest();
+        _root.强制存盘 = function() { return "pending"; };
+        _root.存档系统.flushBeforeTransition = _root.强制存盘;
+        StageRunSession.begin("存盘未知保权", "困难");
+        StageRunSession.finish("victory");
+        assertFalse(StageRunSession.onReturnBaseStarted(),
+            "unknown stash save still denies the return transition");
+        var settlementId:String = String(StageRunSession.testOnlySnapshot().settlementId);
+        var operationId:String = settlementId + ".stash";
+        assertEquals(operationId, RewardStashService.pendingOperationId(),
+            "unknown save keeps the same reward commit candidate pending");
+        assertEquals("prepared", StageRunSession.testOnlySnapshot().settlement,
+            "unknown save keeps the in-memory run under settlement authority");
+        assertFalse(StageRunSession.hasPersistedSettlementPending(),
+            "unknown save parks the pending record inside the held candidate image");
+        assertTrue(RewardStashService.committedFeature() == null
+                || RewardStashStore.ownedQuantity(
+                    RewardStashService.committedFeature(), REWARD) == 0,
+            "unknown save exposes only previously committed stock");
+        var snap:Object = StageRunSession.getSettlementDiagnostics();
+        assertEquals(operationId, snap.rewardCommit,
+            "read-only diagnostics expose the held reward commit owner");
+        assertEquals("stage_run_active", snap.exitBlockReason,
+            "unknown save leaves the active run as the truthful exit blocker");
+        assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
+                "result=unknown") != "",
+            "unknown stash outcome produces a bounded diagnostic record");
+
+        SaveManager.getInstance()._configureSaveFlowForTest({flushResult:true});
+        var resumed:Object = RewardStashService.resume(operationId);
+        assertTrue(resumed != null && resumed.success === true
+                && resumed.state == "settled",
+            "explicit resolve commits the held candidate without a new domain write");
+        assertTrue(StageRunSession.isCurrentRewardStashed(),
+            "committed candidate releases the run to stashed terminal state");
+        assertEquals("", RewardStashService.pendingOperationId(),
+            "resolved candidate releases the reward commit lock");
+        assertTrue(RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD) == 1,
+            "resolved candidate lands the exact stashed reward");
+        assertTrue(StageRunSession.onReturnBaseStarted(),
+            "resolved stash lets the same return request proceed");
+
+        // pending 恢复 + 候选仍持有：地图 pending 细节必须如实报 save_unknown。
+        StageRunSession.testOnlyReset();
+        _root._saveExt.stageSettlement = {v:1, nextSeq:9, pending:{
+            v:1, settlementId:"stage.settlement.8", runId:"run.held.commit",
+            runRevision:1, state:"prepared", outcome:"retreat", life:"alive",
+            capacity:8,
+            report:{v:1, runId:"run.held.commit", stageName:"持有候选关",
+                difficulty:"简单", outcome:"retreat", activeFrames:0, totalKills:0,
+                omittedKillTypes:0, totalItemGains:0, totalItemLosses:0,
+                omittedItemFlowTypes:0, rewardRollOmissions:0,
+                kills:[], itemFlows:[]},
+            manifest:[], remainingManifest:[], remainingCount:0,
+            receipts:[], deliverAfterSettlement:false}};
+        var sm:SaveManager = SaveManager.getInstance();
+        assertTrue(sm.beginRewardCommit("diag.held.1", null, null),
+            "fixture holds a reward commit candidate over a live pending record");
+        assertTrue(StageRunSession.restorePendingSettlement().restored === true,
+            "pending record restores while the commit is held");
+        var pendingState:Object = StageRunSession.getMapReturnBaseState();
+        assertEquals("settlement_pending", pendingState.mode,
+            "restored pending keeps the map in settlement_pending mode");
+        assertEquals("save_unknown", pendingState.settlementDetail,
+            "pending detail reports the unconfirmed save truthfully");
+        assertTrue(sm.cancelRewardCommit("diag.held.1"),
+            "fixture releases the held candidate");
+        StageRunSession._resetSettlementDiagForTest();
+    }
+
+    /** 暂存已落盘后报告打开失败不得撤销物资、不得重堵场景出口。 */
+    private static function testStashedReportFailureKeepsExitEligible():Void {
+        resetWorld(0);
+        _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
+        StageRunSession._captureSettlementDiagForTest();
+        StageRunSession.begin("报告失败不堵门", "困难");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.onReturnBaseStarted(),
+            "return commits the stash save before arrival");
+        assertTrue(StageRunSession.isCurrentRewardStashed(),
+            "stash is durable before the report attempt");
+        var occupied:Object = LootContainerService.beginStageSettlement(
+            new ArrayInventory(null, 8), StageRunSession.testOnlySnapshot().report);
+        assertTrue(occupied != null && occupied.success === true,
+            "fixture occupies loot authority so the stashed report cannot open");
+        _root.当前为战斗地图 = false;
+        StageRunSession.onSceneReady();
+        var state:Object = StageRunSession.testOnlySnapshot();
+        assertEquals("stashed", state.settlement,
+            "report failure keeps the stashed terminal settlement");
+        assertFalse(state.settlementStarted === true,
+            "report failure does not mark the settlement as started");
+        assertEquals("", StageRunSession.getSceneExitBlockReason(),
+            "saved stash keeps scene exit eligible when the report fails");
+        assertTrue(StageRunSession.canNavigateAwayFromStage(),
+            "saved stash does not re-block scene navigation after report failure");
+        assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
+                "report result=begin_failed") != "",
+            "post-stash report failure produces a bounded production diagnostic");
+        StageRunSession._resetSettlementDiagForTest();
+    }
+
+    /** 旧 AMF0 partial/零奖励记录迁移后恢复，诊断行携带有界身份与精确计数。 */
+    private static function testRestoredSettlementDiagFields():Void {
+        resetWorld(0);
+        StageRunSession._captureSettlementDiagForTest();
+        var mydata:Object = makeShapeRepairMydata();
+        var item0:Object = {name:REWARD, value:1, lastUpdate:1};
+        var item1:Object = {name:REWARD, value:1, lastUpdate:2};
+        mydata.ext.stageSettlement = {v:1, nextSeq:2, pending:{
+            v:1, settlementId:"stage.settlement.1", runId:"run.amf0.partial",
+            runRevision:2, state:"rewards_pending", outcome:"retreat", life:"alive",
+            capacity:8,
+            report:{v:1, runId:"run.amf0.partial", stageName:"旧档部分领取",
+                difficulty:"困难", outcome:"retreat", activeFrames:0, totalKills:0,
+                omittedKillTypes:0, totalItemGains:0, totalItemLosses:0,
+                omittedItemFlowTypes:0, rewardRollOmissions:0,
+                kills:{}, itemFlows:{}},
+            manifest:[{slot:0, item:item0}, {slot:1, item:item1}],
+            remainingManifest:[{slot:1, item:item1}], remainingCount:1,
+            receipts:[{operationId:"claim.amf0.1", kind:"claim",
+                fingerprint:"loot|bag|0", authorityRevision:2, remainingCount:1}],
+            deliverAfterSettlement:false}};
+        SaveManager.getInstance().migrate(mydata, {});
+        _root._saveExt.stageSettlement = mydata.ext.stageSettlement;
+        var storeRef:Object = _root._saveExt.stageSettlement;
+        var restored:Object = StageRunSession.restorePendingSettlement();
+        assertTrue(restored.success === true && restored.restored === true
+                && restored.remainingCount == 1 && restored.receiptCount == 1,
+            "migrated partial settlement restores one exact remaining reward");
+        var line:String = findDiagLine(StageRunSession._getSettlementDiagForTest(),
+            "restore result=restored");
+        assertTrue(line != "" && line.indexOf("settlementId=stage.settlement.1") >= 0
+                && line.indexOf("runId=run.amf0.partial") >= 0
+                && line.indexOf("state=rewards_pending") >= 0
+                && line.indexOf("remaining=1") >= 0 && line.indexOf("receipts=1") >= 0,
+            "restored diagnostic carries bounded identity and exact counts");
+        var snap:Object = StageRunSession.getSettlementDiagnostics();
+        assertEquals("pending_stage_settlement", snap.exitBlockReason,
+            "restored pending settlement owns the scene-exit block");
+        assertEquals("stage_settlement", snap.observationOwner,
+            "restored pending settlement names the blocker owner");
+        assertEquals("stage.settlement.1", snap.pendingSettlementId,
+            "diagnostics expose the persisted pending identity");
+        assertEquals(1, snap.pendingRemaining,
+            "diagnostics expose the exact nonzero remaining count");
+        assertTrue(_root._saveExt.stageSettlement === storeRef,
+            "read-only diagnostics never mutate the persisted store");
+
+        _root.当前为战斗地图 = false;
+        _root.gameworld = org.flashNight.arki.scene.StageReturnFlow.sceneInit("基地场景-医务室");
+        StageRunSession.onSceneReady(_root.gameworld, undefined,
+            org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld));
+        var state:Object = StageRunSession.testOnlySnapshot();
+        assertEquals("stashed", state.settlement,
+            "restored partial settlement stashes durably on arrival");
+        assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
+                "result=committed") != "",
+            "committed stash emits a bounded diagnostic record");
+        assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
+                "report result=opened") != "",
+            "post-stash report open emits a bounded diagnostic record");
+        assertEquals("", StageRunSession.getSceneExitBlockReason(),
+            "committed stash plus opened report frees the exit gate");
+
+        // 事故同形零奖励记录：state=prepared、remaining=0、空数组全空。
+        StageRunSession.testOnlyReset();
+        _root._saveExt.stageSettlement = {v:1, nextSeq:2, pending:{
+            v:1, settlementId:"stage.settlement.9", runId:"run.zero.rewards",
+            runRevision:1, state:"prepared", outcome:"retreat", life:"alive",
+            capacity:8,
+            report:{v:1, runId:"run.zero.rewards", stageName:"零奖励撤退",
+                difficulty:"简单", outcome:"retreat", activeFrames:0, totalKills:0,
+                omittedKillTypes:0, totalItemGains:0, totalItemLosses:0,
+                omittedItemFlowTypes:0, rewardRollOmissions:0,
+                kills:[], itemFlows:[]},
+            manifest:[], remainingManifest:[], remainingCount:0,
+            receipts:[], deliverAfterSettlement:false}};
+        restored = StageRunSession.restorePendingSettlement();
+        assertTrue(restored.success === true && restored.restored === true
+                && restored.remainingCount == 0 && restored.receiptCount == 0,
+            "zero-reward pending restores the exact empty settlement");
+        line = findDiagLine(StageRunSession._getSettlementDiagForTest(),
+            "settlementId=stage.settlement.9");
+        assertTrue(line != "" && line.indexOf("result=restored") >= 0
+                && line.indexOf("state=prepared") >= 0
+                && line.indexOf("remaining=0") >= 0,
+            "zero-reward restore diagnostic carries the exact zero count");
+        _root.gameworld = org.flashNight.arki.scene.StageReturnFlow.sceneInit("基地场景-医务室");
+        StageRunSession.onSceneReady(_root.gameworld, undefined,
+            org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld));
+        assertTrue(StageRunSession.isCurrentRewardStashed()
+                && StageRunSession.getSceneExitBlockReason() == "",
+            "zero-reward stash commits and releases the exit gate");
+
+        // 畸形记录 fail-closed：诊断报首个违例字段，原文保留。
+        StageRunSession.testOnlyReset();
+        _root._saveExt.stageSettlement = {v:1, nextSeq:1, pending:{v:1}};
+        var failed:Object = StageRunSession.restorePendingSettlement();
+        assertEquals("malformed_persisted_settlement", failed.error,
+            "malformed pending still fails closed");
+        assertEquals("record_revision", failed.reason,
+            "decode diagnostic names the first violated field");
+        assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
+                "result=decode_failed").indexOf("reason=record_revision") >= 0,
+            "decode failure emits a bounded reason record");
+        assertTrue(StageRunSession.hasPersistedSettlementPending(),
+            "malformed record remains preserved for diagnosis");
+
+        // 未来 schema：inspect 层 fail-closed，诊断区分于 decode 失败。
+        StageRunSession.testOnlyReset();
+        _root._saveExt.stageSettlement = {v:9, nextSeq:1, pending:{future:true}};
+        failed = StageRunSession.restorePendingSettlement();
+        assertEquals("future_settlement_store_version", failed.error,
+            "future store version still fails closed at inspect");
+        assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
+                "result=inspect_failed").indexOf("future_settlement_store_version") >= 0,
+            "future schema emits a distinct bounded diagnostic");
+        StageRunSession._resetSettlementDiagForTest();
+    }
+
+    /** 诊断通道本身：连续重复折叠、总量封顶、只读查询零突变。 */
+    private static function testSettlementDiagnosticsBounded():Void {
+        resetWorld(0);
+        StageRunSession._resetSettlementDiagForTest();
+        StageRunSession._captureSettlementDiagForTest();
+        StageRunSession.emitDiagnosticsSnapshot();
+        StageRunSession.emitDiagnosticsSnapshot();
+        StageRunSession.emitDiagnosticsSnapshot();
+        var diag:Array = StageRunSession._getSettlementDiagForTest();
+        assertEquals(1, diag.length,
+            "identical diagnostic lines collapse into one record");
+        StageRunSession.restorePendingSettlement();
+        diag = StageRunSession._getSettlementDiagForTest();
+        assertTrue(diag.length == 2
+                && findDiagLine(diag, "suppressed=2") != "",
+            "collapsed repeats surface as an explicit suppressed count");
+        for (var i:Number = 0; i < 80; i++) {
+            _root._saveExt.stageSettlement = {v:1, nextSeq:1,
+                pending:{v:1, settlementId:"bad." + i}};
+            StageRunSession.restorePendingSettlement();
+        }
+        diag = StageRunSession._getSettlementDiagForTest();
+        assertTrue(diag.length <= 64,
+            "diagnostic channel hard-caps process output regardless of spam");
+        assertTrue(_root._saveExt.stageSettlement.pending.settlementId == "bad.79",
+            "capped diagnostics leave the malformed record preserved");
+        StageRunSession._resetSettlementDiagForTest();
+    }
+
+    private static function findDiagLine(diag:Array, marker:String):String {
+        if (diag == null) return "";
+        for (var i:Number = 0; i < diag.length; i++) {
+            if (String(diag[i]).indexOf(marker) >= 0) return String(diag[i]);
+        }
+        return "";
     }
 
     private static function testHostIntentRevisionAndIdempotency():Void {

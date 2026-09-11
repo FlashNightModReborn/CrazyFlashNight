@@ -12,6 +12,31 @@ var LootPanel = (function() {
     var _claimAllQueue = [], _claimAllBlockedSlots = {}, _claimAllBlockedReason = '';
     var _materials = {items:null,busy:false,error:'',requestedRevision:null,dirty:false};
     var _runtimeConfig = typeof window !== 'undefined' && window.__LOOT_PANEL_CONFIG__ || {};
+    // Bounded lifecycle observability for the settlement/report path. Every record
+    // is normalized by LootRuntime.createDiagnosticMessage before Bridge.send, so
+    // diagnostics can never leak player-facing strings or break panel behavior.
+    var _emitDiagnostic = LootRuntime.createDiagnosticEmitter({
+        local:typeof _runtimeConfig.diagnostic === 'function'
+            ? _runtimeConfig.diagnostic : null,
+        send:function(message) { return Bridge.send(message); }
+    });
+
+    // Stamps the exact panel/document identity onto a record for the open that
+    // produced it; records arriving after a rebind keep their original generation.
+    function emitDiagnostic(record, identity, generation, report) {
+        if (!record || typeof record !== 'object') return;
+        record.domain = 'loot';
+        record.generation = generation;
+        record.source = identity && identity.source || '';
+        record.panelInstanceId = identity && identity.panelInstanceId
+            || _transportInstanceId;
+        record.chestSessionId = identity && identity.chestSessionId || '';
+        record.lootContainerId = identity && identity.lootContainerId || '';
+        record.containerEpoch = identity && identity.containerEpoch || 0;
+        if (record.report === undefined)
+            record.report = report && report.runId || '';
+        _emitDiagnostic(record);
+    }
 
     Panels.register('loot', {
         create:createDOM,
@@ -34,12 +59,15 @@ var LootPanel = (function() {
     function onOpen(el, initData) {
         cleanup();
         var generation = ++_generation;
+        _emitDiagnostic.reset();
         _el = el;
         _transportInstanceId = initData && typeof initData.panelInstanceId === 'string'
             && /^[A-Za-z0-9._~-]+$/.test(initData.panelInstanceId)
             && initData.panelInstanceId.length <= 128 ? initData.panelInstanceId : '';
         _init = LootView.normalizeInitData(initData);
         if (!_init) {
+            emitDiagnostic({event:'init_received', outcome:'rejected',
+                error:'invalid_init'}, null, generation, null);
             toast('战利品箱启动身份无效，未读取任何奖励。');
             _terminalCloseTimer = setTimeout(function() {
                 if (generation === _generation) finishVisualClose('invalid_init');
@@ -54,6 +82,10 @@ var LootPanel = (function() {
             containerEpoch:_init.containerEpoch,
             source:_init.sourceKind
         };
+        emitDiagnostic({event:'init_received', outcome:'received',
+            kills:_init.report ? _init.report.kills.length : -1,
+            flows:_init.report ? _init.report.itemFlows.length : -1},
+            _identity, generation, _init.report);
         _mux = new LootRuntime.RequestMux({
             identity:_identity,
             send:function(message) { return Bridge.send(message); },
@@ -62,6 +94,9 @@ var LootPanel = (function() {
             router:PanelRuntime.sharedResponseRouter,
             onProtocolError:function(message) {
                 if (typeof console !== 'undefined' && console.warn) console.warn(message);
+            },
+            onDiagnostic:function(record) {
+                emitDiagnostic(record, _identity, generation, _init && _init.report);
             }
         });
         _mux.openSession();
@@ -102,7 +137,10 @@ var LootPanel = (function() {
             onRequestAbandon:requestAbandon,
             onReconcile:reconcile,
             onOpenOrganizer:function() { openOrganizer(true); },
-            requestTooltip:requestTooltip
+            requestTooltip:requestTooltip,
+            diagnostic:function(record) {
+                emitDiagnostic(record, _identity, generation, _init && _init.report);
+            }
         });
 
         _lifecycle = new WorkbenchLifecycle.PanelLifecycle({
@@ -119,6 +157,8 @@ var LootPanel = (function() {
             _lifecycle.activate({generation:generation});
         } catch (error) {
             var failedInstanceId = _transportInstanceId;
+            emitDiagnostic({event:'mount_failed', outcome:'failed',
+                error:'mount_failed'}, _identity, generation, _init && _init.report);
             cleanup();
             _transportInstanceId = failedInstanceId;
             toast('战利品工作台无法装载；箱内物品已保留，请重新互动后打开战利品面板。');
@@ -138,6 +178,12 @@ var LootPanel = (function() {
         _closingVisual = false;
         _model.open(function(ok,response) {
             if (generation !== _generation) return;
+            var adoptedPhase=_model?_model.debugState().phase:'';
+            emitDiagnostic({event:'report_adopted',
+                outcome:ok&&adoptedPhase!=='reconcile_required'?'adopted':'rejected',
+                error:ok?'':String(response&&response.error||'rejected'),
+                detail:'phase:'+adoptedPhase},
+                _identity, generation, _init && _init.report);
             if (!ok) toast(LootView.errorMessage(response && response.error));
             else if (_init.sourceKind==='reward_inbox'
                     &&_model.debugState().phase==='reconcile_required') reconcile();
@@ -863,6 +909,7 @@ var LootPanel = (function() {
             state.hasLifecycle=!!_lifecycle;
             state.hasMux=!!_mux;
             state.hasDrag=!!viewState.hasDrag;
+            state.reportAssets=viewState.reportAssets||null;
             state.organizerActive=_organizerActive;
             state.organizerReturning=_organizerReturning;
             state.inventory=_inventoryCoordinator?_inventoryCoordinator.debugState()

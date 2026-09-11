@@ -286,6 +286,15 @@ var LootView = (function() {
         this.dollPortraitQueue = [];
         this.dollPortraitActive = 0;
         this.portraitSequence = 0;
+        this.reportAssetOps = {};
+        this.reportAssetSeq = 0;
+        this.reportAssetPending = 0;
+        this.reportAssetCounts = null;
+        this.reportAssetByKind = null;
+        this.reportAssetEmitted = true;
+        this.reportAssetArmed = false;
+        this.reportAssetTimer = null;
+        this.reportAssetObserver = null;
         this.destroyed = false;
     }
 
@@ -428,7 +437,14 @@ var LootView = (function() {
                 unmount:function() {
                     if (reportPane.parentNode) reportPane.parentNode.removeChild(reportPane);
                 },
-                render:function() { self._renderReport(); }
+                render:function() {
+                    try { self._renderReport(); }
+                    catch (error) {
+                        self._diagnostic({event:'report_render', outcome:'failed',
+                            error:'render_failed'});
+                        throw error;
+                    }
+                }
             };
             var sidePane=this.settlementSidePane;
             var rewardSection=this.rewardSection;
@@ -614,6 +630,7 @@ var LootView = (function() {
     View.prototype._renderReport = function() {
         var report=this.init&&this.init.report;
         if (!report||!this.reportSection) return;
+        this._resetReportAssetTracking();
         this.reportStage.textContent=report.stageName;
         this.reportDifficulty.textContent='难度 · '+report.difficulty;
         this.reportOutcome.textContent=outcomeLabel(report.outcome);
@@ -678,6 +695,7 @@ var LootView = (function() {
             flowIcon.className='loot-settlement-flow-icon';
             flowIcon.innerHTML=iconHtml(flow.iconName||flow.itemKey,
                 'loot-settlement-flow-image');
+            this._trackIconImages(flowIcon, null);
             var flowCopy=document.createElement('div');
             flowCopy.className='loot-settlement-flow-copy';
             var flowName=document.createElement('b');flowName.textContent=flow.displayName;
@@ -693,6 +711,10 @@ var LootView = (function() {
         this.flowStatus.textContent=report.omittedItemFlowTypes
             ? '另有 '+report.omittedItemFlowTypes+' 类物资事实未展开'
             : '展示 '+report.itemFlows.length+' 类';
+        this._diagnostic({event:'report_render', outcome:'complete',
+            kills:report.kills.length, flows:report.itemFlows.length,
+            requested:this.reportAssetCounts ? this.reportAssetCounts.requested : 0});
+        this._armReportAssetDeadline();
     };
 
     function flowSourceLabel(source) {
@@ -722,18 +744,38 @@ var LootView = (function() {
             var token='settlement_doll_'+(++this.portraitSequence);
             container.setAttribute('data-settlement-portrait-request',token);
             container.setAttribute('data-portrait-source','doll-pending');
-            this._requestDollPortrait(kill.doll).then(function(dataUrl) {
-                if (self.destroyed||!dataUrl
-                        ||container.getAttribute('data-settlement-portrait-request')!==token)
+            var settleDoll=this._trackReportAsset('doll',container,kill.iconName);
+            this._requestDollPortrait(kill.doll,function() {
+                return !self.destroyed
+                    && container.getAttribute('data-settlement-portrait-request')===token;
+            }).then(function(dataUrl) {
+                if (self.destroyed
+                        ||container.getAttribute('data-settlement-portrait-request')!==token) {
+                    settleDoll('superseded');
                     return;
+                }
+                if (!dataUrl) {
+                    settleDoll('error');
+                    self._degradeKillAsset(container,image,kill);
+                    return;
+                }
                 image.onload=function() {
-                    if (!self.destroyed
-                            &&container.getAttribute('data-settlement-portrait-request')===token)
-                        container.setAttribute('data-portrait-source','doll');
+                    if (self.destroyed
+                            ||container.getAttribute('data-settlement-portrait-request')!==token) {
+                        settleDoll('superseded');
+                        return;
+                    }
+                    settleDoll('ok');
+                    container.setAttribute('data-portrait-source','doll');
                 };
                 image.onerror=function() {
+                    if (container.getAttribute('data-settlement-portrait-request')!==token) {
+                        settleDoll('superseded');
+                        return;
+                    }
+                    settleDoll('error');
                     image.removeAttribute('src');
-                    container.setAttribute('data-portrait-source','fallback');
+                    self._degradeKillAsset(container,image,kill);
                 };
                 image.src=dataUrl;
             });
@@ -742,41 +784,92 @@ var LootView = (function() {
 
         if (kill&&kill.iconName&&typeof EnemyPortraits!=='undefined'
                 &&EnemyPortraits&&typeof EnemyPortraits.mount==='function') {
+            var settlePortrait=this._trackReportAsset('portrait',container,kill.iconName);
+            var portraitObserver=this._ensureReportAssetObserver();
+            if (portraitObserver) portraitObserver.observe(container,
+                {attributes:true,attributeFilter:['data-portrait-source']});
             try {
-                EnemyPortraits.mount(container,image,{
+                var mountResult=EnemyPortraits.mount(container,image,{
                     portraitRef:kill.iconName,
                     consumer:'loot-settlement'
                 });
+                // A synchronous mount marks the source before the observer's
+                // microtask batch runs; settle it directly so the op cannot be
+                // left pending in runtimes without MutationObserver.
+                var portraitSource=container.getAttribute('data-portrait-source');
+                if (portraitSource==='svg'||portraitSource==='png')
+                    settlePortrait('ok');
+                else if (portraitSource==='legacy'||portraitSource==='locked')
+                    settlePortrait('fallback');
+                Promise.resolve(mountResult).catch(function() {
+                    // Manifest fetch/chain rejection: no terminal source will ever be
+                    // marked; degrade to the icon path so the card stays useful.
+                    if (container.getAttribute('data-portrait-source')
+                            &&container.getAttribute('data-portrait-source')!=='loading') {
+                        settlePortrait('superseded');
+                        return;
+                    }
+                    settlePortrait('error');
+                    self._degradeKillAsset(container,image,kill);
+                });
                 return;
-            } catch (ignorePortrait) {}
+            } catch (ignorePortrait) {
+                settlePortrait('error');
+            }
         }
         image.remove();
         if (kill&&kill.iconName) {
-            var icon=document.createElement('span');
-            icon.className='loot-settlement-kill-icon-fallback';
-            icon.innerHTML=iconHtml(kill.iconName,'loot-settlement-kill-icon');
-            container.appendChild(icon);
-            container.setAttribute('data-portrait-source','icon');
+            this._applyKillIconFallback(container,image,kill);
             return;
         }
         container.setAttribute('data-portrait-source','fallback');
     };
 
-    View.prototype._requestDollPortrait = function(tuple) {
+    // Icon fallback for kill cards that have no doll/manifest portrait. The icon
+    // itself is tracked: a missing icon flips the card to the diamond fallback so
+    // a failed asset can never leave a blank avatar behind.
+    View.prototype._applyKillIconFallback = function(container,image,kill) {
+        if (image && image.parentNode===container) container.removeChild(image);
+        var icon=document.createElement('span');
+        icon.className='loot-settlement-kill-icon-fallback';
+        icon.innerHTML=iconHtml(kill.iconName,'loot-settlement-kill-icon');
+        container.appendChild(icon);
+        container.setAttribute('data-portrait-source','icon');
+        this._trackIconImages(icon,container);
+    };
+
+    // Preferred visual for a failed or expired kill asset: icon art when the card
+    // carries an iconName, diamond fallback otherwise.
+    View.prototype._degradeKillAsset = function(container,image,kill) {
+        if (kill&&kill.iconName) this._applyKillIconFallback(container,image,kill);
+        else container.setAttribute('data-portrait-source','fallback');
+    };
+
+    View.prototype._requestDollPortrait = function(tuple,isLive) {
         var normalized={};
         for (var i=0;i<DOLL_FIELDS.length;i++) {
             var field=DOLL_FIELDS[i],value=tuple&&tuple[field];
             normalized[field]=value==null?'':String(value);
         }
         var key=JSON.stringify(normalized);
-        if (Object.prototype.hasOwnProperty.call(this.dollPortraitCache,key))
-            return this.dollPortraitCache[key];
+        var cached=Object.prototype.hasOwnProperty.call(this.dollPortraitCache,key)
+            ? this.dollPortraitCache[key] : null;
+        if (cached) {
+            // Identical tuples share one bake; keep every live consumer's liveness
+            // gate so expiring one card cannot cancel another card's portrait.
+            if (isLive) cached.entry.gates.push(isLive);
+            return cached.promise;
+        }
         var self=this;
+        var entry={tuple:normalized,key:key,gates:isLive?[isLive]:[],
+            resolve:null,promise:null};
         var promise=new Promise(function(resolve) {
-            self.dollPortraitQueue.push({tuple:normalized,resolve:resolve});
+            entry.resolve=resolve;
+            self.dollPortraitQueue.push(entry);
             self._drainDollPortraitQueue();
         });
-        this.dollPortraitCache[key]=promise;
+        entry.promise=promise;
+        this.dollPortraitCache[key]={promise:promise,entry:entry};
         return promise;
     };
 
@@ -786,6 +879,17 @@ var LootView = (function() {
             (function(entry) {
                 self.dollPortraitActive++;
                 Promise.resolve().then(function() {
+                    // A timed-out or re-rendered consumer keeps its queue slot but must
+                    // not burn a bake; drop the cached promise too so a later render can retry.
+                    var live=!entry.gates.length;
+                    for (var i=0;i<entry.gates.length&&!live;i++)
+                        live=entry.gates[i]();
+                    if (!live) {
+                        var cached=self.dollPortraitCache[entry.key];
+                        if (cached&&cached.entry===entry)
+                            delete self.dollPortraitCache[entry.key];
+                        return null;
+                    }
                     if (typeof DollBake==='undefined'||!DollBake
                             ||typeof DollBake.renderTupleDataUrl!=='function') return null;
                     return DollBake.renderTupleDataUrl(entry.tuple);
@@ -800,6 +904,233 @@ var LootView = (function() {
             while (this.dollPortraitQueue.length)
                 this.dollPortraitQueue.shift().resolve(null);
         }
+    };
+
+    View.prototype._diagnostic = function(record) {
+        try {
+            if (typeof this.options.diagnostic === 'function')
+                this.options.diagnostic(record);
+        } catch (_) {}
+    };
+
+    // ── settlement report asset accounting ─────────────────────────────────
+    // Every mounted doll/portrait/icon is one tracked op with a terminal
+    // outcome (ok|error|timeout|fallback|superseded). A single deadline bounds
+    // the whole render; outcomes are summarized into one report_assets record.
+
+    View.prototype._resetReportAssetTracking = function() {
+        for (var token in this.reportAssetOps) {
+            var op=this.reportAssetOps[token];
+            if (!op.outcome) {
+                op.outcome='superseded';
+                this.reportAssetPending--;
+                this._countAsset(op);
+            }
+        }
+        // A rebuilt report supersedes whatever the previous pass was still
+        // waiting on; that pass is closed out as interrupted before resetting.
+        this._flushReportAssets('interrupted');
+        this.reportAssetOps={};
+        this.reportAssetPending=0;
+        this.reportAssetArmed=false;
+        this.reportAssetEmitted=false;
+        this.reportAssetCounts={requested:0,loaded:0,errors:0,timeouts:0,
+            fallbacks:0,superseded:0};
+        this.reportAssetByKind={};
+        if (this.reportAssetTimer!=null) {
+            clearTimeout(this.reportAssetTimer);
+            this.reportAssetTimer=null;
+        }
+        if (this.reportAssetObserver) {
+            this.reportAssetObserver.disconnect();
+            this.reportAssetObserver=null;
+        }
+    };
+
+    View.prototype._countAsset = function(op) {
+        var counts=this.reportAssetCounts;
+        if (!counts) return;
+        var key=op.outcome==='ok'?'loaded'
+            : op.outcome==='error'?'errors'
+            : op.outcome==='timeout'?'timeouts'
+            : op.outcome==='fallback'?'fallbacks'
+            : op.outcome==='superseded'?'superseded':null;
+        if (key) counts[key]++;
+        var kind=this.reportAssetByKind[op.kind]
+            ||(this.reportAssetByKind[op.kind]={requested:0,loaded:0,errors:0,
+                timeouts:0,fallbacks:0,superseded:0});
+        if (key) kind[key]++;
+    };
+
+    // Registers one asset op; returns the idempotent settle(outcome) callback.
+    View.prototype._trackReportAsset = function(kind,container,iconName) {
+        var self=this;
+        if (this.destroyed||!this.reportAssetCounts) return function() {};
+        var token='a'+(++this.reportAssetSeq);
+        var op={token:token,kind:kind,container:container||null,
+            iconName:iconName||'',outcome:''};
+        if (container) container.setAttribute('data-loot-asset',token);
+        this.reportAssetOps[token]=op;
+        this.reportAssetPending++;
+        this.reportAssetCounts.requested++;
+        var kindCounts=this.reportAssetByKind[kind]
+            ||(this.reportAssetByKind[kind]={requested:0,loaded:0,errors:0,
+                timeouts:0,fallbacks:0,superseded:0});
+        kindCounts.requested++;
+        return function(outcome) { self._settleReportAsset(token,outcome); };
+    };
+
+    View.prototype._settleReportAsset = function(token,outcome) {
+        var op=this.reportAssetOps[token];
+        if (!op||op.outcome) return;
+        op.outcome=outcome;
+        this.reportAssetPending--;
+        this._countAsset(op);
+        // Only the armed (post-render) pass may auto-complete; an asset that
+        // resolves while its siblings are still being requested must not end
+        // the pass early.
+        if (this.reportAssetPending<=0&&this.reportAssetArmed)
+            this._flushReportAssets(
+                this.reportAssetCounts&&this.reportAssetCounts.timeouts>0
+                    ? 'timeout':'complete');
+    };
+
+    // Icon images settle through capture-phase load/error on the wrapper: a
+    // layered icon counts as ok only once every layer has loaded, and any layer
+    // error fails the op. An empty Icons.html result fails immediately.
+    View.prototype._trackIconImages = function(element,fallbackContainer) {
+        var images=element
+            ? (element.tagName==='IMG' ? [element]
+                : element.querySelectorAll('img')) : [];
+        var settle=this._trackReportAsset('icon',fallbackContainer||element,null);
+        if (!images||!images.length) { settle('error'); return; }
+        var self=this,loaded=0,done=false;
+        function resolveImages(outcome,img) {
+            if (done) return;
+            if (outcome==='error') {
+                done=true;
+                if (img) img.style.visibility='hidden';
+                if (fallbackContainer)
+                    fallbackContainer.setAttribute('data-portrait-source','fallback');
+                settle('error');
+                return;
+            }
+            if (++loaded>=images.length) { done=true; settle('ok'); }
+        }
+        for (var i=0;i<images.length;i++) {
+            (function(img) {
+                if (img.complete) {
+                    resolveImages(img.naturalWidth>0?'ok':'error',img);
+                    return;
+                }
+                img.addEventListener('load',function() {
+                    resolveImages('ok',img);
+                },true);
+                img.addEventListener('error',function() {
+                    resolveImages('error',img);
+                },true);
+            })(images[i]);
+        }
+        if (self.destroyed) settle('superseded');
+    };
+
+    // The kill card is still detached when mount() runs, so the observer must
+    // watch each tracked container directly rather than the report subtree.
+    View.prototype._ensureReportAssetObserver = function() {
+        if (this.reportAssetObserver||typeof MutationObserver!=='function')
+            return this.reportAssetObserver;
+        var self=this;
+        this.reportAssetObserver=new MutationObserver(function(records) {
+            for (var i=0;i<records.length;i++) {
+                var container=records[i].target;
+                var op=self.reportAssetOps[container.getAttribute('data-loot-asset')];
+                if (!op||op.outcome||op.kind!=='portrait') continue;
+                var source=container.getAttribute('data-portrait-source');
+                if (source==='svg'||source==='png') self._settleReportAsset(op.token,'ok');
+                else if (source==='legacy'||source==='locked')
+                    self._settleReportAsset(op.token,'fallback');
+            }
+        });
+        return this.reportAssetObserver;
+    };
+
+    View.prototype._armReportAssetDeadline = function() {
+        if (this.destroyed||this.reportAssetEmitted) return;
+        this.reportAssetArmed=true;
+        if (this.reportAssetPending<=0) {
+            this._flushReportAssets('complete');
+            return;
+        }
+        var self=this;
+        var timeoutMs=Math.max(1000,
+            Number(this.runtimeConfig.reportAssetTimeoutMs)||15000);
+        this.reportAssetTimer=setTimeout(function() {
+            self.reportAssetTimer=null;
+            self._timeoutPendingReportAssets();
+        },timeoutMs);
+    };
+
+    View.prototype._timeoutPendingReportAssets = function() {
+        var ops=this.reportAssetOps,tokens=[];
+        for (var token in ops) if (!ops[token].outcome) tokens.push(token);
+        for (var i=0;i<tokens.length;i++) {
+            var op=ops[tokens[i]];
+            // Tombstone the request tokens so a late portrait/doll resolution
+            // cannot overwrite the degraded card, then show the icon fallback.
+            if (op.container) {
+                if (op.kind==='doll')
+                    op.container.setAttribute('data-settlement-portrait-request',
+                        op.token+'.expired');
+                else if (op.kind==='portrait')
+                    op.container.setAttribute('data-portrait-request',
+                        op.token+'.expired');
+                if ((op.kind==='doll'||op.kind==='portrait')&&op.iconName)
+                    this._degradeKillAsset(op.container,
+                        op.container.querySelector('img'),
+                        {iconName:op.iconName});
+                else if (op.kind==='icon'&&op.container)
+                    op.container.setAttribute('data-portrait-source','fallback');
+            }
+            this._settleReportAsset(op.token,'timeout');
+        }
+        this._flushReportAssets('timeout');
+    };
+
+    View.prototype._flushReportAssets = function(outcome) {
+        if (this.reportAssetEmitted||!this.reportAssetCounts) return;
+        if (outcome==='complete'&&this.reportAssetPending>0) return;
+        this.reportAssetEmitted=true;
+        this.reportAssetArmed=false;
+        if (this.reportAssetTimer!=null) {
+            clearTimeout(this.reportAssetTimer);
+            this.reportAssetTimer=null;
+        }
+        if (this.reportAssetObserver) {
+            this.reportAssetObserver.disconnect();
+            this.reportAssetObserver=null;
+        }
+        var counts=this.reportAssetCounts;
+        this._diagnostic({event:'report_assets', outcome:outcome,
+            requested:counts.requested, loaded:counts.loaded,
+            errors:counts.errors, timeouts:counts.timeouts,
+            fallbacks:counts.fallbacks,
+            detail:this._reportAssetDetail()});
+    };
+
+    View.prototype._reportAssetDetail = function() {
+        var kinds=this.reportAssetByKind||{},parts=[];
+        for (var kind in kinds) {
+            var c=kinds[kind];
+            var part=kind+'='+c.loaded+'/'+c.requested;
+            var suffix='';
+            if (c.errors) suffix+=c.errors+'e';
+            if (c.timeouts) suffix+=(suffix?'+':'')+c.timeouts+'t';
+            if (c.fallbacks) suffix+=(suffix?'+':'')+c.fallbacks+'f';
+            if (c.superseded) suffix+=(suffix?'+':'')+c.superseded+'s';
+            if (suffix) part+=':'+suffix;
+            parts.push(part);
+        }
+        return parts.join(',');
     };
 
     View.prototype._selectRightTab = function(tab) {
@@ -983,6 +1314,19 @@ var LootView = (function() {
 
     View.prototype.destroy = function() {
         if (this.destroyed) return;
+        // A panel close mid-load still reports what the interrupted pass managed
+        // to resolve; the pending ops stay uncounted but visible via detail.
+        this._flushReportAssets('interrupted');
+        if (this.reportAssetTimer!=null) {
+            clearTimeout(this.reportAssetTimer);
+            this.reportAssetTimer=null;
+        }
+        if (this.reportAssetObserver) {
+            this.reportAssetObserver.disconnect();
+            this.reportAssetObserver=null;
+        }
+        this.reportAssetOps={};
+        this.reportAssetPending=0;
         this.destroyed = true;
         this.deactivate();
         if (this.tooltipScope) { this.tooltipScope.dispose(); this.tooltipScope = null; }
@@ -1244,7 +1588,17 @@ var LootView = (function() {
             hasFocusScope:!!this.focusScope,interaction:this.interaction,
             settlement:this.isSettlement,rightTab:this.rightTab,
             materialCount:this.materials?this.materials.length:null,
-            materialsBusy:this.materialsBusy,materialsError:this.materialsError};
+            materialsBusy:this.materialsBusy,materialsError:this.materialsError,
+            reportAssets:this.reportAssetCounts
+                ? {requested:this.reportAssetCounts.requested,
+                    loaded:this.reportAssetCounts.loaded,
+                    errors:this.reportAssetCounts.errors,
+                    timeouts:this.reportAssetCounts.timeouts,
+                    fallbacks:this.reportAssetCounts.fallbacks,
+                    superseded:this.reportAssetCounts.superseded,
+                    pending:this.reportAssetPending,
+                    emitted:this.reportAssetEmitted}
+                : null};
     };
 
     View.prototype._projection = function() {

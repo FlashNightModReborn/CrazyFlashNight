@@ -17,6 +17,13 @@ namespace CF7Launcher.Diagnostic
     {
         internal const int Capacity = 256;
         internal const int EventBudget = 8000;
+        // 物理输入历史环：只保留左键沿（含目标外点击）。32 次点击足够覆盖秒级延迟诊断，
+        // 溢出用 ringDropped / mouse.ring_evict 明示而不是静默丢证据。
+        internal const int PhysicalRingCapacity = 32;
+        // 超过 2s 的候选标记 stale 但保留（旧实现直接丢弃，导致 3-4s 原生延迟完全无证据）。
+        private const int StaleCandidateMs = 2000;
+        // 超过 60s 的偏移视为无关残留：不再作为同点候选，但理由要可区分。
+        private const int MaxCandidateDelayMs = 60000;
         private static readonly object Gate = new object();
         private static readonly object FlushGate = new object();
         private static readonly Queue<string> Pending = new Queue<string>();
@@ -28,20 +35,39 @@ namespace CF7Launcher.Diagnostic
         private static string _recordingRoot;
         internal static bool IsRolling { get; private set; }
         private static Rectangle _target;
-        private static string _physicalDown;
-        private static Point _physicalPoint;
-        private static long _physicalAt;
-        private static bool _physicalAvailable;
-        private static string _nativeMouseId;
-        private static Point _nativePoint;
-        private static long _nativeAt;
+        private static PhysicalInputEvent[] _ring = new PhysicalInputEvent[PhysicalRingCapacity];
+        private static int _ringHead, _ringCount;
+        private static long _ringDropped;
+        private static PhysicalInputEvent _openGesture;
+        private static string _hitTestCandidateId;
         private static int _nativeHitTests;
         [ThreadStatic] private static int _snapshotDepth;
         internal static Func<Point, object> HudInputSnapshot;
+        // 测试时钟注入点：默认 null 时走真实 Environment.TickCount64；测试替换后必须还原。
+        internal static Func<long> TickCount64Provider;
         [ThreadStatic] private static string _gesture;
         internal static bool Enabled { get; private set; }
         internal static string Session { get; private set; }
         internal static string Gesture { get { return _gesture; } }
+
+        private static long ObservedNow()
+        {
+            Func<long> provider = TickCount64Provider;
+            return provider != null ? provider() : Environment.TickCount64;
+        }
+
+        // GetTickCount 域（MSLLHOOKSTRUCT.time / GetMessageTime / TickCount 低 32 位）的
+        // wrap-safe 差值（ms）。两个 32 位时间戳先各自截到低 32 位再做 unchecked 减法，
+        // 使 49.7 天 wrap 穿越仍得到正确的短间隔。
+        // delta < 0 = 不可能区间：事件时刻"晚于"观察时刻，真实差只能解释为跨整圈 wrap 的
+        // 歧义（真实差可能是 delta + 2^32）——调用方标注 ambiguous，不得输出负延迟当证据，
+        // 也不得臆造超大延迟。
+        internal static int WrappingTickDeltaMs(uint laterTick, uint earlierTick, out bool ambiguous)
+        {
+            int delta = unchecked((int)(laterTick - earlierTick));
+            ambiguous = delta < 0;
+            return delta;
+        }
 
         internal static void StartConfigured(bool enabled, string projectRoot)
         {
@@ -92,9 +118,11 @@ namespace CF7Launcher.Diagnostic
             {
                 Pending.Clear();
                 _sequence = _lost = _mouseSequence = _hudSequence = 0;
-                _physicalDown = null;
-                _physicalAvailable = false;
-                _nativeMouseId = null;
+                _ring = new PhysicalInputEvent[PhysicalRingCapacity];
+                _ringHead = _ringCount = 0;
+                _ringDropped = 0;
+                _openGesture = null;
+                _hitTestCandidateId = null;
                 _nativeHitTests = 0;
                 _target = Rectangle.Empty;
                 _gesture = null;
@@ -106,7 +134,9 @@ namespace CF7Launcher.Diagnostic
             }
             Record("trace.start", new { capacity = Capacity, budget = rolling ? (int?)null : EventBudget,
                 durationMinutes = rolling ? (int?)null : 30, recordingMode = rolling ? "rolling" : "bounded",
-                nativeInputObservation = 1, corePath = typeof(FocusTrace).Assembly.Location,
+                nativeInputObservation = 2, physicalRingCapacity = PhysicalRingCapacity,
+                staleCandidateMs = StaleCandidateMs, maxCandidateDelayMs = MaxCandidateDelayMs,
+                corePath = typeof(FocusTrace).Assembly.Location,
                 pid = Environment.ProcessId, externalReceiver = "unknown" });
             if (useTimer) _timer = new Timer(_ => Flush(), null, 500, 500);
         }
@@ -213,34 +243,119 @@ namespace CF7Launcher.Diagnostic
 
         internal static void SetTarget(Rectangle target) { _target = target; }
 
+        // 单个物理手势：down 必有；up 依附最近未闭合的 down（释放点可出目标区，也可能整个缺失）。
+        private sealed class PhysicalInputEvent
+        {
+            internal string Id;
+            internal long Seq;
+            internal Point Point;
+            internal uint HookTime;
+            internal uint Flags;
+            internal int PanelGeneration;
+            internal long ObservedTick64;
+            internal bool InTarget;
+            internal bool UpObserved;
+            internal Point UpPoint;
+            internal uint UpHookTime;
+            internal long UpObservedTick64;
+            // 两条互不相干的认领轴：原生 WndProc 送达 vs 托管 OnMouseDown 送达。
+            // 消息可能已到 WndProc 但在进入 OnMouseDown 前又被卡住，轴分开才能看见。
+            internal bool NativeDownClaimed, NativeUpClaimed, HudClaimed;
+        }
+
+        private const int PhaseDown = 0, PhaseUp = 1, AxisNative = 1, AxisHud = 2;
+
+        private static void PushRing(PhysicalInputEvent entry)
+        {
+            if (_ringCount == PhysicalRingCapacity)
+            {
+                PhysicalInputEvent evicted = _ring[_ringHead];
+                _ringDropped++;
+                if (evicted != null)
+                    Record("mouse.ring_evict", new { evictedId = evicted.Id, seq = evicted.Seq,
+                        inTarget = evicted.InTarget, upObserved = evicted.UpObserved,
+                        nativeDownClaimed = evicted.NativeDownClaimed, hudClaimed = evicted.HudClaimed,
+                        ringDropped = _ringDropped });
+            }
+            else _ringCount++;
+            _ring[_ringHead] = entry;
+            _ringHead = (_ringHead + 1) % PhysicalRingCapacity;
+        }
+
         internal static string PhysicalEdge(int message, Point point, uint flags, uint time, int panelGeneration)
         {
             if (!Enabled || (message != 0x0201 && message != 0x0202)) return null;
-            // 只观察右侧条件槽区域；释放可在区域外。没有全桌面点击历史。
+            // 快照放 Gate 外采集：CaptureHudInput 会取 _widgetsLock，持 Gate 再取它会与
+            // widget 在 _widgetsLock 内 Record（取 Gate）构成 ABBA。
+            bool inTargetDown = message == 0x0201 && _target.Contains(point);
+            object windows = null, hudInput = null;
+            long foreground = 0;
             if (message == 0x0201)
             {
-                _physicalAvailable = false;
-                _physicalDown = null;
-                if (!_target.Contains(point)) { _nativeMouseId = null; return null; }
-                _physicalDown = "mouse." + Interlocked.Increment(ref _mouseSequence);
-                _physicalPoint = point;
-                _physicalAt = Environment.TickCount64;
-                _physicalAvailable = true;
-                _nativeMouseId = _physicalDown;
-                _nativeHitTests = 0;
+                if (inTargetDown) { windows = FocusWindowSnapshot.At(point); hudInput = CaptureHudInput(point); }
+                else foreground = FocusWindowSnapshot.ForegroundHandle().ToInt64();
             }
-            if (_physicalDown == null) return null;
-            string mouseId = _physicalDown;
-            _nativePoint = point;
-            _nativeAt = Environment.TickCount64;
-            Record(message == 0x0201 ? "mouse.down" : "mouse.up", new {
-                mouseId, point, hookTime = time, flags,
-                injected = (flags & 1) != 0, panelGeneration,
-                windows = FocusWindowSnapshot.At(point),
-                hudInput = message == 0x0201 ? CaptureHudInput(point) : null
-            });
-            if (message == 0x0202) { _physicalAvailable = false; _physicalDown = null; }
-            return mouseId;
+            else
+            {
+                PhysicalInputEvent maybeOpen = _openGesture;
+                if (maybeOpen != null && maybeOpen.InTarget) windows = FocusWindowSnapshot.At(point);
+                else foreground = FocusWindowSnapshot.ForegroundHandle().ToInt64();
+            }
+            lock (Gate)
+            {
+                if (!Enabled) return null;
+                long observed = ObservedNow();
+                // LL 钩子在安装线程的消息循环里跑：UI 线程卡住时回调本身就迟到，
+                // hookDispatchMs 把"我们自己的派发停滞"从外部排队延迟里分离出来。
+                // hookTime 是 wrap 32 位域，先截低 32 位再减，避免 uptime>2^32 后假大值。
+                bool hookDispatchAmbiguous;
+                long hookDispatchMs = WrappingTickDeltaMs((uint)observed, time, out hookDispatchAmbiguous);
+                if (message == 0x0201)
+                {
+                    var entry = new PhysicalInputEvent {
+                        Id = "mouse." + Interlocked.Increment(ref _mouseSequence), Seq = _mouseSequence,
+                        Point = point, HookTime = time, Flags = flags, PanelGeneration = panelGeneration,
+                        ObservedTick64 = observed, InTarget = inTargetDown };
+                    PushRing(entry);
+                    _openGesture = entry;
+                    if (!inTargetDown)
+                    {
+                        Record("mouse.edge", new { mouseId = entry.Id, edge = "down", point,
+                            hookTime = time, hookDispatchMs, hookDispatchAmbiguous,
+                            flags, injected = (flags & 1) != 0,
+                            panelGeneration, inTarget = false, foreground });
+                        return null;
+                    }
+                    _hitTestCandidateId = entry.Id;
+                    _nativeHitTests = 0;
+                    Record("mouse.down", new { mouseId = entry.Id, point, hookTime = time,
+                        hookDispatchMs, hookDispatchAmbiguous, flags, injected = (flags & 1) != 0,
+                        panelGeneration, windows, hudInput });
+                    return entry.Id;
+                }
+                PhysicalInputEvent open = _openGesture;
+                _openGesture = null;
+                if (open != null)
+                {
+                    open.UpObserved = true;
+                    open.UpPoint = point;
+                    open.UpHookTime = time;
+                    open.UpObservedTick64 = observed;
+                }
+                if (open != null && open.InTarget)
+                {
+                    Record("mouse.up", new { mouseId = open.Id, point, hookTime = time,
+                        hookDispatchMs, hookDispatchAmbiguous, flags, injected = (flags & 1) != 0,
+                        panelGeneration, windows });
+                    return open.Id;
+                }
+                Record("mouse.edge", new { mouseId = open == null ? null : open.Id, edge = "up",
+                    point, hookTime = time, hookDispatchMs, hookDispatchAmbiguous,
+                    flags, injected = (flags & 1) != 0,
+                    panelGeneration, inTarget = open != null && open.InTarget,
+                    unmatched = open == null ? "no_open_down" : null, foreground });
+                return null;
+            }
         }
 
         // 只解释后续 hook 链的返回值，不识别拦截者，也不改变/重放输入。
@@ -253,17 +368,135 @@ namespace CF7Launcher.Diagnostic
                 elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency });
         }
 
+        // 兼容包装：返回最旧未认领同点候选的 id（非证明），无候选返回 null。
         internal static string NativeMouseCandidate(Point point)
         {
-            return Enabled && _nativeMouseId != null && _nativePoint == point
-                && Environment.TickCount64 - _nativeAt <= 2000 ? _nativeMouseId : null;
+            return MatchGesture(point, PhaseDown, 0, false, AxisNative, false).MouseId;
+        }
+
+        // 原生 WndProc 消息认领路径：posted 输入消息时传入 GetMessageTime，
+        // 得到"物理事件 → 消息入队"的真实延迟；SendMessage 合成消息应传 messageTimeAvailable=false。
+        internal static NativeMouseCorrelation CorrelateNativeMouse(Point point, int nativeMessage, uint messageTime, bool messageTimeAvailable)
+        {
+            return MatchGesture(point, nativeMessage == 0x0202 ? PhaseUp : PhaseDown,
+                messageTime, messageTimeAvailable, AxisNative, true);
+        }
+
+        // 非认领查看：hittest/mouse_activate/exit 阶段引用同一候选但不消耗认领位。
+        internal static NativeMouseCorrelation PeekNativeMouseCorrelation(Point point, int nativeMessage)
+        {
+            return MatchGesture(point, nativeMessage == 0x0202 ? PhaseUp : PhaseDown,
+                0, false, AxisNative, false);
+        }
+
+        internal static NativeMouseCorrelation PeekNativeMouseCorrelation(Point point, int nativeMessage, uint messageTime, bool messageTimeAvailable)
+        {
+            return MatchGesture(point, nativeMessage == 0x0202 ? PhaseUp : PhaseDown,
+                messageTime, messageTimeAvailable, AxisNative, false);
+        }
+
+        private static NativeMouseCorrelation MatchGesture(Point point, int phase, uint messageTime,
+            bool messageTimeAvailable, int axis, bool claim)
+        {
+            var result = new NativeMouseCorrelation { Kind = "unobserved" };
+            lock (Gate)
+            {
+                result.RingDepth = _ringCount;
+                result.RingDropped = _ringDropped;
+                result.DelaySource = messageTimeAvailable ? "message_time" : "observed";
+                if (!Enabled) { result.Reason = "disabled"; return result; }
+                long now = ObservedNow();
+                PhysicalInputEvent pick = null, newestClaimed = null;
+                int timingAfter = 0, staleResidue = 0, upMissing = 0, consumedAtPoint = 0, outOfTarget = 0;
+                for (int i = 0; i < _ringCount; i++)
+                {
+                    PhysicalInputEvent e = _ring[(_ringHead - _ringCount + i + PhysicalRingCapacity) % PhysicalRingCapacity];
+                    if (e == null) continue;
+                    bool pointMatch;
+                    if (phase == PhaseUp)
+                    {
+                        if (e.UpObserved) pointMatch = e.UpPoint == point;
+                        else pointMatch = false;
+                        // down 同点但 up 在别处或从未出现：从本点视角都是"up 未在此被观察"。
+                        if (!pointMatch && e.Point == point) upMissing++;
+                    }
+                    else pointMatch = e.Point == point;
+                    if (!pointMatch)
+                    {
+                        if (phase != PhaseUp || e.Point != point) result.OtherPointEntries++;
+                        continue;
+                    }
+                    bool claimed = axis == AxisHud ? e.HudClaimed
+                        : phase == PhaseUp ? e.NativeUpClaimed : e.NativeDownClaimed;
+                    if (claimed)
+                    {
+                        if (axis == AxisHud) consumedAtPoint++;
+                        else { result.ClaimedAtPoint++; newestClaimed = e; }
+                        continue;
+                    }
+                    if (axis == AxisHud && !e.InTarget) { outOfTarget++; continue; }
+                    if (messageTimeAvailable)
+                    {
+                        int hTime = (int)(phase == PhaseUp ? e.UpHookTime : e.HookTime);
+                        int delay = unchecked((int)messageTime - hTime);
+                        if (delay < 0) { timingAfter++; continue; }
+                        if (delay > MaxCandidateDelayMs) { staleResidue++; continue; }
+                    }
+                    result.CandidateCount++;
+                    if (pick == null) pick = e; // FIFO：同点多个未认领候选时取最旧者
+                }
+                bool repeatRef = false;
+                if (pick == null && axis == AxisNative && newestClaimed != null)
+                {
+                    pick = newestClaimed;
+                    repeatRef = true;
+                }
+                if (pick == null)
+                {
+                    result.Reason = _ringCount == 0 ? "no_candidate_in_ring"
+                        : timingAfter > 0 ? "timing_after_message"
+                        : staleResidue > 0 ? "stale_residue_only"
+                        : consumedAtPoint > 0 ? "already_consumed"
+                        : upMissing > 0 ? "up_not_observed"
+                        : outOfTarget > 0 ? "out_of_target"
+                        : "position_mismatch";
+                    return result;
+                }
+                result.MouseId = pick.Id;
+                result.Seq = pick.Seq;
+                result.InTarget = pick.InTarget;
+                result.Kind = repeatRef ? "repeat_reference" : "position_time_candidate";
+                result.Ambiguous = !repeatRef && result.CandidateCount > 1;
+                uint hookTime = phase == PhaseUp ? pick.UpHookTime : pick.HookTime;
+                long observed = phase == PhaseUp ? pick.UpObservedTick64 : pick.ObservedTick64;
+                // 与 PhysicalEdge 同一 wrap-safe 差值：entry 的 hookTime 是 32 位域。
+                result.HookDispatchMs = WrappingTickDeltaMs((uint)observed, hookTime, out bool hookAmb);
+                result.HookDispatchAmbiguous = hookAmb;
+                result.HookToObservedMs = now - observed;
+                if (messageTimeAvailable)
+                {
+                    result.HookToMessageMs = unchecked((int)messageTime - (int)hookTime);
+                    result.Stale = result.HookToMessageMs.Value > StaleCandidateMs;
+                }
+                else result.Stale = result.HookToObservedMs > StaleCandidateMs;
+                if (claim && !repeatRef)
+                {
+                    if (axis == AxisHud) pick.HudClaimed = true;
+                    else if (phase == PhaseUp) pick.NativeUpClaimed = true;
+                    else pick.NativeDownClaimed = true;
+                }
+                return result;
+            }
         }
 
         internal static bool ShouldTraceNativeHitTest(Point point)
         {
-            // 不记录 MouseMove 历史；每次目标点击最多 8 次命中查询。
-            if (_snapshotDepth != 0 || NativeMouseCandidate(point) == null || _nativeHitTests >= 8)
-                return false;
+            // 不记录 MouseMove 历史；每个候选手势最多 8 次命中查询，stale 候选不再提前掐断证据。
+            if (_snapshotDepth != 0 || !Enabled) return false;
+            var corr = MatchGesture(point, PhaseDown, 0, false, AxisNative, false);
+            if (corr.MouseId == null) return false;
+            if (corr.MouseId != _hitTestCandidateId) { _hitTestCandidateId = corr.MouseId; _nativeHitTests = 0; }
+            if (_nativeHitTests >= 8) return false;
             _nativeHitTests++;
             return true;
         }
@@ -289,14 +522,34 @@ namespace CF7Launcher.Diagnostic
         internal static string HudDown(Point point, IntPtr receiver, string widget)
         {
             string id = "hud." + Interlocked.Increment(ref _hudSequence);
-            bool match = _physicalAvailable && _physicalPoint == point
-                && Environment.TickCount64 - _physicalAt <= 2000;
+            var corr = MatchGesture(point, PhaseDown, 0, false, AxisHud, true);
             Record("hud.down", new { receiver = receiver.ToInt64(), widget, point,
-                mouseId = match ? _physicalDown : null,
-                correlation = match ? "position_time_candidate" : "unobserved",
+                mouseId = corr.MouseId, correlation = corr.Kind, detail = corr,
                 windows = FocusWindowSnapshot.At(point) }, id);
-            _physicalAvailable = false;
             return id;
         }
+    }
+
+    // 原生鼠标消息 ↔ 物理手势的候选关联结果。MouseId 非 null 仍是"候选"而非证明：
+    // position+time 匹配不排除外部注入；null 时 Reason 说明为何没有候选，绝不编造 id。
+    internal sealed class NativeMouseCorrelation
+    {
+        [JsonProperty("mouseId")] public string MouseId { get; internal set; }
+        [JsonProperty("kind")] public string Kind { get; internal set; }
+        [JsonProperty("reason")] public string Reason { get; internal set; }
+        [JsonProperty("ambiguous")] public bool Ambiguous { get; internal set; }
+        [JsonProperty("stale")] public bool Stale { get; internal set; }
+        [JsonProperty("candidateCount")] public int CandidateCount { get; internal set; }
+        [JsonProperty("claimedAtPoint")] public int ClaimedAtPoint { get; internal set; }
+        [JsonProperty("otherPointEntries")] public int OtherPointEntries { get; internal set; }
+        [JsonProperty("ringDepth")] public int RingDepth { get; internal set; }
+        [JsonProperty("ringDropped")] public long RingDropped { get; internal set; }
+        [JsonProperty("hookDispatchMs")] public double HookDispatchMs { get; internal set; }
+        [JsonProperty("hookDispatchAmbiguous")] public bool HookDispatchAmbiguous { get; internal set; }
+        [JsonProperty("hookToMessageMs")] public double? HookToMessageMs { get; internal set; }
+        [JsonProperty("hookToObservedMs")] public double HookToObservedMs { get; internal set; }
+        [JsonProperty("delaySource")] public string DelaySource { get; internal set; }
+        [JsonProperty("inTarget")] public bool? InTarget { get; internal set; }
+        [JsonProperty("seq")] public long? Seq { get; internal set; }
     }
 }

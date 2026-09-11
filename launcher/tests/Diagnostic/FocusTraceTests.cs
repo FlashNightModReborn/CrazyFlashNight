@@ -106,8 +106,12 @@ namespace CF7Launcher.Tests.Diagnostic
             Assert.Equal(mouse, (string)Read().Single(x => (string)x["event"] == "hud.down")["data"]["mouseId"]);
             FocusTrace.PhysicalEdge(0x0202, point, 0, 11, 7);
             Assert.Equal(mouse, FocusTrace.NativeMouseCandidate(point));
+            // 有界历史保留旧手势：目标外按下不再抹除同点候选（迟到的原生消息仍能对上号）。
             FocusTrace.PhysicalEdge(0x0201, Point.Empty, 0, 12, 7);
-            Assert.Null(FocusTrace.NativeMouseCandidate(point));
+            Assert.Equal(mouse, FocusTrace.NativeMouseCandidate(point));
+            // 目标外按下只记上下文边沿事件，不产生 mouse.down 噪声。
+            Assert.DoesNotContain(Read(), x => (string)x["event"] == "mouse.down"
+                && (string)x["data"]["mouseId"] != mouse);
         }
 
         [Fact]

@@ -128,7 +128,7 @@
         if (S._logEl) {
             S._logEl.classList.add('is-error');
             S._logEl.textContent = S._lastError === 'pending_stage_settlement'
-                ? '请先领取或放弃上一关尚未处理的奖励。'
+                ? '上一关结算尚未完成，请关闭面板查看结算状态；若仍无响应，请导出诊断包反馈。'
                 : S._lastError;
         }
     }

@@ -58,9 +58,20 @@ namespace CF7Launcher.Diagnostic
                 foreach (string name in RollingFocusLog.Names) Copy(Path.Combine("logs", "focus-trace", name));
                 foreach (string relative in new[] { "logs/launcher.log.1", "logs/launcher.log", "logs/bootstrap.log",
                     "runtime/cf7-runtime-manifest.tsv", "config/build/runtime-release-consensus.json", "config.toml" }) Copy(relative);
+                // WebView 故障元数据 + 有界 Crashpad 报告；单点失败只进 warnings，不拦截退出打包。
+                JObject webviewSummary = null;
+                try
+                {
+                    WebViewFailureReportCollector.Result wvf = WebViewFailureReportCollector.Collect(
+                        root, new WebViewFailureReportCollector.DirectorySink(runDirectory));
+                    webviewSummary = wvf.Summary();
+                    foreach (string w in wvf.Warnings) warnings.Add("webview-failures: " + w);
+                }
+                catch (Exception ex) { warnings.Add("webview-failures: collection failed: " + ex.Message); }
                 File.WriteAllText(Path.Combine(runDirectory, "auto-collection.json"), new JObject {
                     ["session"] = session, ["collectionTrigger"] = "game_exit",
-                    ["requestedAtUtc"] = DateTime.UtcNow.ToString("O"), ["collectionWarnings"] = warnings
+                    ["requestedAtUtc"] = DateTime.UtcNow.ToString("O"), ["collectionWarnings"] = warnings,
+                    ["webviewFailures"] = webviewSummary
                 }.ToString(), new UTF8Encoding(false));
 
                 string powershellDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),

@@ -29,6 +29,133 @@
         appliedCount:true, stopReason:true
     });
 
+    // Bounded loot diagnostic envelope. Every record that reaches the Host debug
+    // channel is normalized through createDiagnosticMessage so the wire shape is a
+    // fixed set of scalar fields; player-facing strings never leave the web side.
+    var DIAGNOSTIC_EVENTS = {
+        init_received:true, request_issued:true, send_failed:true,
+        client_timeout:true, response_shape_mismatch:true,
+        response_transform_failed:true, response_accepted:true,
+        report_adopted:true, report_render:true, report_assets:true,
+        mount_failed:true
+    };
+    var DIAGNOSTIC_OUTCOMES = {
+        issued:true, accepted:true, received:true, rejected:true, adopted:true,
+        complete:true, failed:true, timeout:true, interrupted:true,
+        send_failed:true, client_timeout:true, shape_mismatch:true,
+        transform_failed:true, host_error:true, other:true
+    };
+    var DIAGNOSTIC_COMMANDS = {
+        '':true, snapshot:true, tooltip:true, claim:true, claimBatch:true,
+        close:true, query:true, materials:true
+    };
+    var DIAGNOSTIC_ERRORS = {
+        '':true, invalid_init:true, mount_failed:true, render_failed:true,
+        client_timeout:true, disconnected:true, not_sent:true, rejected:true,
+        reconcile_required:true, malformed_response:true, transport_lost:true,
+        target_full:true, inventory_full:true, capacity_reached:true,
+        cap_reached:true, session_changed:true, unsupported_command:true,
+        other:true
+    };
+    var DIAGNOSTIC_SOURCES = {
+        '':true, map_chest:true, stage_settlement:true, reward_inbox:true
+    };
+    var DIAGNOSTIC_ID_PATTERN = /^[A-Za-z0-9._~-]{0,128}$/;
+    var DIAGNOSTIC_CALL_PATTERN = /^[A-Za-z0-9._~-]{0,160}$/;
+    var DIAGNOSTIC_DETAIL_PATTERN = /[^A-Za-z0-9.,:;+=/_~-]/g;
+
+    function diagnosticId(value) {
+        value = typeof value === 'string' ? value : '';
+        return DIAGNOSTIC_ID_PATTERN.test(value) ? value : '';
+    }
+    function diagnosticCount(value) {
+        return Number.isInteger(value) && value >= -1 && value <= 100000 ? value : -1;
+    }
+    function diagnosticDetail(value) {
+        if (typeof value !== 'string') return '';
+        return value.replace(DIAGNOSTIC_DETAIL_PATTERN, '').slice(0, 96);
+    }
+    function diagnosticOutcome(event, outcome, error) {
+        outcome = String(outcome || '');
+        if (Object.prototype.hasOwnProperty.call(DIAGNOSTIC_OUTCOMES, outcome))
+            return outcome;
+        if (event === 'request_issued') return 'issued';
+        if (event === 'client_timeout') return 'client_timeout';
+        if (event === 'send_failed') return 'send_failed';
+        if (event === 'response_shape_mismatch') return 'shape_mismatch';
+        if (event === 'response_transform_failed') return 'transform_failed';
+        if (event === 'response_accepted') return error ? 'host_error' : 'accepted';
+        return error ? 'other' : 'other';
+    }
+
+    function createDiagnosticMessage(record) {
+        record = record || {};
+        var event = String(record.event || '');
+        var error = String(record.error || '');
+        var generation = record.generation;
+        var containerEpoch = record.containerEpoch;
+        if (!Object.prototype.hasOwnProperty.call(DIAGNOSTIC_EVENTS, event)
+                || !Object.prototype.hasOwnProperty.call(DIAGNOSTIC_COMMANDS,
+                    String(record.cmd || ''))
+                || !DIAGNOSTIC_CALL_PATTERN.test(String(record.callId || ''))
+                || !Number.isInteger(generation) || generation < 0
+                || generation > 2147483647
+                || !Number.isInteger(containerEpoch) || containerEpoch < 0
+                || containerEpoch > 2147483647) return null;
+        if (!Object.prototype.hasOwnProperty.call(DIAGNOSTIC_ERRORS, error))
+            error = 'other';
+        var source = String(record.source || '');
+        if (!Object.prototype.hasOwnProperty.call(DIAGNOSTIC_SOURCES, source))
+            source = '';
+        return {
+            type:'debug', scope:'loot', event:event,
+            outcome:diagnosticOutcome(event, record.outcome, error),
+            cmd:String(record.cmd || ''),
+            callId:String(record.callId || ''),
+            panelInstanceId:diagnosticId(record.panelInstanceId),
+            chestSessionId:diagnosticId(record.chestSessionId),
+            lootContainerId:diagnosticId(record.lootContainerId),
+            containerEpoch:containerEpoch,
+            generation:generation,
+            source:source,
+            report:diagnosticId(record.report),
+            error:error,
+            kills:diagnosticCount(record.kills),
+            flows:diagnosticCount(record.flows),
+            requested:diagnosticCount(record.requested),
+            loaded:diagnosticCount(record.loaded),
+            errors:diagnosticCount(record.errors),
+            timeouts:diagnosticCount(record.timeouts),
+            fallbacks:diagnosticCount(record.fallbacks),
+            detail:diagnosticDetail(record.detail)
+        };
+    }
+
+    // Local observer sees every record (including filtered ones); the Host wire
+    // only receives whitelisted events, and only snapshot request/accept traffic —
+    // write-command noise stays local. `budget` bounds Host sends per reset().
+    function createDiagnosticEmitter(options) {
+        options = options || {};
+        var local = typeof options.local === 'function' ? options.local : null;
+        var send = typeof options.send === 'function' ? options.send : null;
+        var budget = Number.isInteger(options.budget) && options.budget > 0
+            ? options.budget : 48;
+        var remaining = budget;
+        function emit(record) {
+            if (local) { try { local(record); } catch (_) {} }
+            if (!record || record.domain !== 'loot') return false;
+            if ((record.event === 'request_issued' || record.event === 'response_accepted')
+                    && record.cmd !== 'snapshot') return false;
+            var message = createDiagnosticMessage(record);
+            if (!message || !send || remaining <= 0) return false;
+            remaining--;
+            try { return send(message) !== false; } catch (_) { return false; }
+        }
+        emit.reset = function() { remaining = budget; };
+        emit.remaining = function() { return remaining; };
+        return emit;
+    }
+
     function hasExactKeys(value, expected) {
         if (!value || typeof value !== 'object') return false;
         var keys = Object.keys(value), expectedKeys = Object.keys(expected);
@@ -165,7 +292,8 @@
                 }
                 return response;
             },
-            onProtocolError:options.onProtocolError
+            onProtocolError:options.onProtocolError,
+            onDiagnostic:options.onDiagnostic
         });
     }
 
@@ -197,6 +325,8 @@
         normalizeIdentity:normalizeIdentity,
         sameIdentity:sameIdentity,
         sameResponseIdentity:sameResponseIdentity,
-        hasExactKeys:hasExactKeys
+        hasExactKeys:hasExactKeys,
+        createDiagnosticMessage:createDiagnosticMessage,
+        createDiagnosticEmitter:createDiagnosticEmitter
     };
 });
