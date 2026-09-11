@@ -28,8 +28,8 @@ MANIFEST_SCHEMA = "cf7-shop-portraits-v1"
 PROVENANCE_SCHEMA = "cf7-shop-portrait-provenance-v1"
 RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
 GEOMETRY = {"width": 256, "height": 256}
-EXPECTED_LIST_COUNT = 35
-EXPECTED_ACTIVE_COUNT = 34
+EXPECTED_LIST_COUNT = 36
+EXPECTED_ACTIVE_COUNT = 35
 EXCLUDED_SHOP = "幸存老兵-暂时停用"
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 URI_RE = re.compile(r"^subjects/([0-9a-f]{64})\.png$")
@@ -230,7 +230,7 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
     require(provenance.get("schema") == PROVENANCE_SCHEMA, "Provenance schema drift")
     require(provenance.get("generatorVersion") == "1.0.0", "Generator version drift")
     require(provenance.get("geometry") == {**GEOMETRY, "padding": 16, "fit": "alpha-bounds-contain-center"}, "Provenance geometry drift")
-    require(provenance.get("sourcePartition") == {"externalDialogue": 31, "internalDialogue": 2, "exactXflSwfPilot": 1}, "Source partition drift")
+    require(provenance.get("sourcePartition") == {"externalDialogue": 32, "internalDialogue": 2, "exactXflSwfPilot": 1}, "Source partition drift")
     require(provenance.get("dialogueManifest", {}).get("path") == "launcher/web/assets/dialogue-portraits/manifest.json", "Dialogue manifest provenance drift")
 
     toolchain = provenance.get("toolchain")
@@ -243,7 +243,7 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
 
     active_source = provenance.get("activeShopSource")
     require(isinstance(active_source, dict), "Active-shop source provenance is missing")
-    require(active_source.get("listedCount") == 35 and active_source.get("activeCount") == 34, "Active-shop counts drift")
+    require(active_source.get("listedCount") == 36 and active_source.get("activeCount") == 35, "Active-shop counts drift")
     require(active_source.get("excludedShopIds") == [EXCLUDED_SHOP], "Active-shop exclusion drift")
 
     sources = provenance.get("sources")
@@ -256,7 +256,7 @@ def validate_provenance(active: list[str], entries: dict[str, dict[str, Any]]) -
         kinds[kind] += 1
         require(SHA256_RE.fullmatch(source.get("extractedPngSha256") or "") is not None, f"Invalid extracted PNG SHA: {shop_id}")
         require(source.get("output") == entries[shop_id], f"Provenance/output mismatch: {shop_id}")
-    require(kinds == {"external-dialogue-swf": 31, "dialogue-ui-linkage": 2, "exact-xfl-swf-pilot": 1}, f"Source-kind count drift: {kinds}")
+    require(kinds == {"external-dialogue-swf": 32, "dialogue-ui-linkage": 2, "exact-xfl-swf-pilot": 1}, f"Source-kind count drift: {kinds}")
 
     weapon = sources.get("武器大师", {})
     require(
@@ -338,7 +338,7 @@ def validate_receipt(entries: dict[str, dict[str, Any]]) -> None:
     require(receipt.get("schema") == RECEIPT_SCHEMA, "Promotion receipt schema drift")
     require(receipt.get("promotionOrder") == ["subjects", "provenance.json", "promotion-receipt.json", "manifest.json"], "Promotion order drift")
     require(receipt.get("subjectsFirst") is True and receipt.get("manifestLast") is True, "Promotion ordering guarantees are missing")
-    require(receipt.get("shopCount") == 34 and receipt.get("subjectFileCount") == 34, "Promotion closure count drift")
+    require(receipt.get("shopCount") == 35 and receipt.get("subjectFileCount") == 35, "Promotion closure count drift")
     require(receipt.get("subjectClosureSha256") == subject_closure(entries), "Subject closure SHA drift")
     require(receipt.get("provenanceSha256") == sha256_file(PROVENANCE_PATH), "Provenance receipt SHA drift")
     require(receipt.get("manifestSha256") == sha256_file(MANIFEST_PATH), "Manifest receipt SHA drift")
@@ -357,7 +357,7 @@ def main() -> None:
                 {
                     "status": "passed",
                     "schema": MANIFEST_SCHEMA,
-                    "listedShops": 35,
+                    "listedShops": 36,
                     "activeShops": len(entries),
                     "subjects": len(entries),
                     "subjectBytes": subject_bytes,

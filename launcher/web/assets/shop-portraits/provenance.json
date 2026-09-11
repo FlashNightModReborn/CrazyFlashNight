@@ -11,7 +11,7 @@
   "toolchain": {
     "generator": {
       "path": "tools/bake-shop-portraits.py",
-      "sha256": "0b365a9cb2456b5a8c8037b455b42e8494ed691628018983f43345a2b1639248",
+      "sha256": "f4ec675e419778cc570a6adb9e48a380a1cc0824083ba4dd3b81094ed8586afd",
       "bytes": 36280
     },
     "dialogueBaker": {
@@ -41,11 +41,11 @@
   "activeShopSource": {
     "list": {
       "path": "data/shops/list.xml",
-      "sha256": "8bebc01fde51bdf6052a884dc0b314ca26f57d3ee5812a515697ed9b98420de3",
-      "bytes": 1360
+      "sha256": "c1a48d926c4955fd977f82806c684cd38527854587060710c56f41bb02891976",
+      "bytes": 1394
     },
-    "listedCount": 35,
-    "activeCount": 34,
+    "listedCount": 36,
+    "activeCount": 35,
     "excludedShopIds": [
       "幸存老兵-暂时停用"
     ],
@@ -224,6 +224,11 @@
         "path": "data/shops/npcs/武器大师.json",
         "sha256": "7fb8b9590021734c93f9b5f5893fbf54d28078807dccab06f3f2c60f6677c405",
         "bytes": 131
+      },
+      {
+        "path": "data/shops/npcs/虎妙.json",
+        "sha256": "aab423c69bf63e2ad49c904a85402bd0ef72f45acb0d6ad129a771ca54efef35",
+        "bytes": 125
       }
     ]
   },
@@ -233,7 +238,7 @@
     "bytes": 68919
   },
   "sourcePartition": {
-    "externalDialogue": 31,
+    "externalDialogue": 32,
     "internalDialogue": 2,
     "exactXflSwfPilot": 1
   },
@@ -1086,6 +1091,29 @@
           "height": 204
         },
         "sha256": "f53b2855c1b6cea3c15dfbc8f0b3d7cf5e724c6787563ec4efaaf2c0c6c334ab"
+      }
+    },
+    "虎妙": {
+      "kind": "external-dialogue-swf",
+      "sourceSwf": {
+        "path": "flashswf/portraits/虎妙.swf",
+        "sha256": "0ebfdbe728ecece1fb946298931c4ec3f2b710d5aae86b12cca04170b3aa367d",
+        "bytes": 39692
+      },
+      "expression": "普通",
+      "frame1Based": 1,
+      "extractedPngSha256": "27d16aaf4b0305c882845db5474beec77cb90901b1dd0597b05bc1a067111a2b",
+      "output": {
+        "uri": "subjects/49d9fd649466225d6c1ada3c08ed1179a2d03870996899faa0869e587fa9ad48.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 66,
+          "y": 16,
+          "width": 124,
+          "height": 224
+        },
+        "sha256": "49d9fd649466225d6c1ada3c08ed1179a2d03870996899faa0869e587fa9ad48"
       }
     }
   }

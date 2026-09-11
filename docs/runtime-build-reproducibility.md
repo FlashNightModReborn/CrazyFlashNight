@@ -2,7 +2,22 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-12 当前正式发布：统一奖励暂存、非阻塞领取与纯读角标
+## 2026-09-12 当前正式发布：报告打开恢复、结算状态与焦点诊断
+
+报告首次打开遇到宿主尚未揭示时，在同一绑定内有限重试；WebView 渲染进程退出先退役旧文档属主再有限重载，浏览器进程退出如实提示需要重启。结算错误提示区分保存未知、保存失败与恢复失败；焦点输入、报告接收/采用/绘制、WebView 崩溃与诊断包补齐有界证据。未重放奖励写入，未声称原黑屏或卡手根因已消除。实现与取证边界见[焦点诊断 §9.15](焦点管理-诊断与卡顿排查-2026-05-24.md#915-2026-09-12结算报告打开竞态的有界重试与-webview-进程失败证据链)。
+
+- 最终 release source `c59f751adce6adba61b2b37550cdcf80f229e71f`，不可变 tag `runtime-build-v2/20260912-focus-report-recovery-v2`，release tree `2914dc182d349d93a0c027c8e5acd47a6bc75ccd`；request `7A836D348FC33940228A125675AE42DB409378CBB7CB774398F5586532833E82`，request commit `5f9bc9b590bb9f98be95c78a120fe757ca5b7b27`。
+- artifact source `B299A8C4841344C2E4BF800B32185058F5BD89E3703C6AC1B81299110E22C859`；producer recipe `0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F`；toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `F33C20AF7FD8E0447D10A6D2C0B5A7AA0107903C8F29EA8CD7A1E374F0FC8938`。
+- 33-file payload closure `22690E72A7A298922EA8492E55959ACF94C7F10F803472B4BF152D71EF09DED1`；Core DLL SHA-256 `584C34492719C716A64BDAE4848D833F1AB9A09E6AD9A0A3712F9AAD56FE2C0E`。
+- 本地 X509 `builder-local-b / physical-host-b` 与 GitHub OIDC/Sigstore `github-hosted-windows` 达成相同 identity/closure；[最终 cloud run 34646352741](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34646352741) 已验证 source tag API、workflow SHA、run headSha 及不可变标签规则，并由 promotion 对真实本地 CAS 重放。最终 request 按相同 build identity 复用真实本地签名；旧 v1 tag/request `E4D3576D811C9BFC97FDE79D297B74CE99C300955219FB25AD9519888F15FC11` 保留为 superseded / NOT_DEPLOYED，旧云端 run 34641981631 不充当最终源证明。
+- production policy **40/40**；policy hash `9347F9E441454819EB2C84FF421550812DCB80EAA5CD5EBCE3FC855DB880B9AC`；receipt SHA-256 `CD1F3DD18F252CB9E2028923AE6386C4ACB31399771D00BCCA48A1823DF885F5`；manifest SHA-256 `4FF541C137BA69BADEED8E513BFAEFA7E7EC4A622FB1F1A2AD073A19D85141E3`；磁盘 consensus SHA-256 `5547C3156BAA182CEF6A6AD47990EB3D275EAB8D4AB295E84B1C4D2C888C1028`；`2026-09-11T21:02:22.0643601Z` 原子 promotion。strict v2 双 signer / 双 faultDomain、完整部署闭包与根 bootstrap 完整性检查通过；部署提交 `43bd5f4674d9c00aa8b9619c59c76196e7d08901` 已快进推送至 `main`；[事后 Audit 34647563703](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34647563703) 成功，独立重放云端证明并核验 Index 中 33 文件、双签名与双故障域，明确输出 `state=promoted / deploymentChanged=true`。上一版保留于 `tmp/runtime-promotions/20260911T210153501Z-07ef140ab8a746fe9aca2ad6c3bfb33a/previous`。
+- C# canonical **5,007 passed / 3 existing skipped / 0 failed**；fresh AS2 地图/结算 **791/791**、暂存 **82/82**；loot Web **106/106** + lazy-cancel **6/6**、map Edge **54/54**、独立诊断采集 **4/4**。合入上游 `1d89eb1b79` 后地图/结算重跑 791/791；随后 `6bd109d13e` 只改动其他战技/素材，本轮 C# 和结算实现未变。最终 asLoader **1,333,902B** / SHA-256 `4C705B523CDF4C095F2FD117377A0553997CC8C6E18B5F41B18BA7408965A286`；CS6 首次等待 120 秒超时后迟到完成，独立核对新鲜 Compiler 0/0、完整 SWF、done 输出和任务静止，保留超时证据，不把失败退出码称为通过。
+
+首轮 production policy 为 37/40，实际阻断了上游新增三蝶手稿/虎妙的图标身份、材料目录与商店头像配套遗漏。最终源补齐 106 插件身份、225 材料目录与 35/35 商店头像闭包；原 34 张头像字节不变，新增虎妙由真实对话 SWF 重建；全部来源、几何、哈希和体积检查保持启用，未提高样式债务或绕过发布门。
+
+准确状态为 **promoted / FIELD_REVALIDATION_PENDING**。测试员原始 SOL 只读保留，曾将副本装入专用测试槽并实际启动同 identity 候选，但精确 Flash 进程握手超时，尚未取得结算、传送、走门或保存重启回读。两个原测试槽文件已按备份恢复并验哈希，新装 SOL 移回临时证据目录；未以 legacy HTTP 放宽 peer authority 来代替正式入口证据。本轮不称 `HUMAN_ACCEPTANCE_PASSED`、业务 `e2e_verified` 或 `standard_entry_verified`；待测试员更新后复验报告、旧档结算与焦点手感。
+
+## 2026-09-12 上一正式发布：统一奖励暂存、非阻塞领取与纯读角标
 
 任务满包奖励、关卡结算、已授权地图箱与礼包进入统一暂存保管；未整理库存不再阻断其他玩法。暂存界面复用战备箱的物品格、详情与分页，来源、库存、任务进度和回执通过同一次完整保存提交。范围、人验、旧档恢复与规模限制见[暂存 ADR](统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
 
