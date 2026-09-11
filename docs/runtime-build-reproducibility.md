@@ -2,7 +2,23 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-11 当前正式发布：任务交付选择、单次返回与走门保护
+## 2026-09-12 当前正式发布：统一奖励暂存、非阻塞领取与纯读角标
+
+任务满包奖励、关卡结算、已授权地图箱与礼包进入统一暂存保管；未整理库存不再阻断其他玩法。暂存界面复用战备箱的物品格、详情与分页，来源、库存、任务进度和回执通过同一次完整保存提交。范围、人验、旧档恢复与规模限制见[暂存 ADR](统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
+
+- 实现提交 `09f33ba7dd175ab9093cb3fe412e55c9abe44d80`；最终 release source `0a95722dd5a213272f86b4caea2b0a89fca1de9b`；不可变 tag `runtime-build-v2/20260911-reward-stash-v2`；release tree `0ced8b063ff1a53e492a12515626a7c58fe8e51c`；request `90DCEEB6E5A45ED975D71F4FECB3EE82B8CF609ED0EF0CF0BE3CD4E8DD2C6AA7`；request commit `ff1b36bd79a19b2ca7edfc2d05ee9c60216bf489`。
+- artifact source `3BBC61034A1910788DB33783814B5AA4C00315DB93BE4CDB34533813B06E897D`；producer recipe `0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F`；toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `B0D27C02E62F435DA267980AABCB02C1E630828BB01EE3499EC6817F0820BD36`。
+- 33-file payload closure `309DCCFC5EFE2F0DDDAD16898F175FB2B4EC613805E0FDE08D32FD6D03D660F9`；Core DLL SHA-256 `83D96B3D98C47355D798FF871D85EBBDD4AD79BF4F0680D1B9728417A7023855`，与已试玩隔离候选完全相同。
+- 本地 X509 `builder-local-b / physical-host-b`，keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `257FC4BA7EB02AE2DB821D442B251E4528EE7CFBC30FD318F3F7EC3E80290DDA`，[cloud run 34622333016](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34622333016)。标签 API、workflow SHA 与 run headSha 同绑最终 source；使用 attestation-only 交接，并在 promotion 中对真实本地 CAS 全链重放。
+- production policy **40/40**；policy hash `573B58C9B96C77FA0E1E950265AC9A122021DF63B4F139AB7091F6FB84C3155A`；receipt SHA-256 `888C26D38C9C271AB8297213D9AB4738E520AD6557FF8575998F7D48C787613D`；manifest SHA-256 `1CA14947F0CD222A08FB23BA9C1F3715EEFA9F7CAF2BBB654D92422047510655`；磁盘 consensus SHA-256 `46A0849AE6DCFCB297AF01EB70A0FFA5C3D6021692D52DCC678607BD5D8DC93F`。
+- `2026-09-11T16:37:54.2770607Z` 原子 promotion；strict v2 **2 signers / 2 faultDomains**、33-file bundle 与正式根 bootstrap `--verify-only` 均通过。上一版保留于 `tmp/runtime-promotions/20260911T163725899Z-d965650a1b374ec4b81758fbccb13e33/previous`。部署提交后的事后 Audit 待收口。
+- Launcher canonical runner **4944 passed / 3 existing skipped / 0 failed**；fresh AS2 暂存 **82/82**、地图/旧奖励根/关卡返回 **729/729**，Compiler 均 **0/0**；物品使用 Web **17/17**、共享暂存视图与懒加载回归通过。配套 asLoader 为 **1,324,978 bytes** / SHA-256 `4B23133144319416C6F9A1D30AF2CB6600F76EE47A9DF39CFF1F7DA882476985`。
+
+首轮 policy 如实阻断裸色值、重复隐藏优先级和模块拆分阈值；最终 source 复用主题/hidden 规则、拆出暂存协议并同步懒加载闭包，没有放宽原门。旧 request `574F7C8CA6050690E6EDF48857A322FA0D1C4703127723832E2A22F4FB12ABE6` 已由最终 request supersede；前三域未变，按现役合同复用同一真实本地 X509 proof/CAS，云端仅对最终 source 构建一次。
+
+维护者于 2026-09-11 确认本轮试玩通过，准确状态为 **HUMAN_ACCEPTANCE_PASSED / promoted**。无参数正式入口已绑定 `formal_runtime`、PID `26292`、正式 Core 路径与上述 identity/closure，并完成总线启动。该次未选档，预热等待超时后回到入口，随后 `UserClosing` 正常退出；未取得可见页面验收或部署后奖励/保存重启旅程，因此不称本专项 `standard_entry_verified`。4096 件真实 SOL 样本的完整保存 P95/P99 为 3635/4329ms，仍作为高库存性能限制保留。
+
+## 2026-09-11 上一正式发布：任务交付选择、单次返回与走门保护
 
 任务结算和日常交付共用原生目的地下拉栏，默认当前区域优先、其余按任务队列顺序；明确选择后只执行一次正式返回，到达确认后恢复领奖。奖励终态不再二次导航。补齐十五张 NPC 小头像，并修复结算后普通门动画遗留返回标记造成的黑屏。彩蛋与营地保持私有场景，不新增公开聚落跳转页。范围、人验及日志观察见[关卡结果 ADR §0E](关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0e-2026-09-11-明确任务选择单次返回与到达确认隔离候选)。
 

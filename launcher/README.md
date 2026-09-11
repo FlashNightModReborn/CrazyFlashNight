@@ -427,4 +427,4 @@ Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../s
 - runtime 构建、候选、promotion 或正式入口术语变化；发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。
 PowerShell 先切换 UTF-8，再运行 `node tools/validate-doc-governance.js` 与 `git diff --check`。
 
-**统一奖励暂存（2026-09-11，HUMAN_ACCEPTANCE_PASSED / RELEASE_PENDING）**：`character-build-stash-transport.js` 复用物品使用通道、待决写与恢复。UI 复用战备箱，每页/批 32 项、K 迁移 40 行、连开最多 64 包；角标只读。保留旧根恢复/receipt，停用 v1 新开包。协议、限制与发布状态见[暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
+**统一奖励暂存（2026-09-12，HUMAN_ACCEPTANCE_PASSED / promoted）**：`character-build-stash-transport.js` 复用物品使用通道、待决写与恢复。UI 复用战备箱，每页/批 32 项、K 迁移 40 行、连开最多 64 包；角标只读。保留旧根恢复/receipt，停用 v1 新开包。协议、限制与发布状态见[暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
