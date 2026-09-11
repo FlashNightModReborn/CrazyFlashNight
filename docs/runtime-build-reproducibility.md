@@ -2,7 +2,23 @@
 
 **文档角色**：Launcher Windows runtime 的身份、构建、证明、排队、promotion 与 CI 策略 canonical deep doc。
 
-## 2026-09-10 当前正式发布：任务进度奖励播报与大学选关返回
+## 2026-09-11 当前正式发布：任务交付选择、单次返回与走门保护
+
+任务结算和日常交付共用原生目的地下拉栏，默认当前区域优先、其余按任务队列顺序；明确选择后只执行一次正式返回，到达确认后恢复领奖。奖励终态不再二次导航。补齐十五张 NPC 小头像，并修复结算后普通门动画遗留返回标记造成的黑屏。彩蛋与营地保持私有场景，不新增公开聚落跳转页。范围、人验及日志观察见[关卡结果 ADR §0E](关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0e-2026-09-11-明确任务选择单次返回与到达确认隔离候选)。
+
+- release source `85b168e35222f1e2a750ce89481f3aa416a73467`；不可变 tag `runtime-build-v2/20260911-task-delivery-single-return-v1`；release tree `2d78c4f6c9f8017fb192c00b440d8a8d627f71f7`；request `5C2FF41996BACECECA02A461540A34DC4D0B4FFF148BAFFA8865115013FB93D2`；request commit `ced3c3147fb6d592b54b99f3c41ff1849aa0f99b`。
+- artifact source `EB444D4332C613D66E710E1B3A364C00E3709C3E2C0EF0D2DCF1B4364BBA9EAC`；producer recipe `0AED3CE28E95E2FD1D6D1F516424D977FC5411F7446380C1A70D3836D243D49F`；toolchain lock `7B83229BE93F8244810CDD23DAFD97875B23857E547DE520035FE23B453CB3CD`；build identity `D4748E8179694C7B7D57BADDCAC85D72FC6958AC96578337A04E71F8BE0F67CC`。
+- 33-file payload closure `68BA576088C2DFDD0A5BE57DFE54407D00B3857A635A94ED521EC7DF37E64918`；正式 Core DLL SHA-256 `AAE282C8900163AE2926D105B4828332005569A0D6EDE7D92211289BCBC66F65`。新头像闭包固定 LF 使 recipe/identity 更新；原生源码与全部运行文件字节仍与已验收隔离候选一致。
+- 本地 X509 `builder-local-b / physical-host-b`，keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `946E90B981EDC6992AA7BE3DFC4BD15747A78120FA2B38067C1CC6EF303404B2`，[cloud run 34587854920](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34587854920)。标签 API、workflow SHA 与 run headSha 全部绑定 source；标签更新／删除无 bypass，创建由现有授权发布账号执行。attestation-only 证明与本地 CAS 在 promotion 中完成全链重放。
+- production policy **40/40**；policy hash `BFE5C4545B36AB96ECD291163F0DA0C77430272A318212F4370027C6DD90A538`；receipt SHA-256 `106A432B13F8DEA198B4A5F7747ED6535095B1603A4BAFDA24D5B1AC2BACF488`；manifest SHA-256 `4E1BB2E90AF51F1E28E288C3EB129516E2A702E24BD53768784298F402444966`；磁盘 consensus SHA-256 `C570EE40FE2FF74D7FBAE857E8294359424E11F859A8C6067B068FC759B1D3A2`。
+- `2026-09-11T10:17:27.6433538Z` 原子 promotion；strict v2 **2 signers / 2 faultDomains**、33-file bundle 与正式根 bootstrap `--verify-only` 均通过。部署提交 `70220aecee920299347226e9509809ca2d2681e4`；上一版保留于 `tmp/runtime-promotions/20260911T101658273Z-0431a2e710954526abc6f5269566bff7/previous`。主线推送后的事后 Audit 独立核对部署闭包。
+- Launcher canonical runner **4,931 passed / 3 existing skipped / 0 failed**；返回专项正常 runner **119/119**、Compiler **0/0**；地图静态生产投影 **33/33**；新增头像 **15 张、1,776,963 bytes**，原 66 张保持，已登记交付 NPC 缺图/空图为 0。最终 asLoader 为 **1,307,563 bytes** / SHA-256 `B99EE848E6E396439C7F6AA38FFB229914577D20CA8FDCA78D0D2B3568967D67`；配套主 SWF 为 **214,288 bytes** / SHA-256 `372F12A2DD80EE30B77D27034A07DC5D27F68ADDBF2221D60E81FEF479A7E5B0`。
+
+发布准备由现役生成器刷新任务图标目录、八种既有抗性药剂的修复字典、材料输入摘要和商店头像 provenance。34 张商店头像及 runtime manifest 完全未变；上游彩蛋 SWF 的 heeho 链已按实际重新提取的 `465→270→268` 钉死，严格门未放宽。先前奖励回归的 **807 项**是在原 runner 超时后的同 run fresh terminal 中完成，保留迟到完成边界；最终返回专项 119 项为正常 runner 成功。
+
+维护者确认其余有效项目完成验收，当前准确状态为 **HUMAN_ACCEPTANCE_PASSED / promoted**；E3“彩蛋出发 AVP”和 E4“聚落公开页”仍为撤销用例。日志最终结算 13 为 claimed、无 pending，收件箱无活跃领取根，装备和存盘成功，Flash 正常退出。两次关窗 watchdog、两次读档恢复窗初次显示失败均可恢复；另有一条被脱敏的 invalid_message 状态拒绝，后续旅程正常，未据此唯一归因。部署后只执行 supply-chain/完整性验证，未另跑正式入口业务旅程，不称该专项 `standard_entry_verified`。
+
+## 2026-09-10 上一正式发布：任务进度奖励播报与大学选关返回
 
 任务直接奖励的经验与技能点随已提交回执进入左下 NativeHud，独立显示 `+N` 并复用既有图标，取消顶部重复提示；大学与车库共用选关页但保留真实返回场景，额外“回 A 兵团车库”按钮只在大学入口出现。范围与回归见[问题 4/5 记录](已知问题登记-2026-09-09.md)、[物资事务 ADR](玩家物资事务与双向播报-ADR-2026-08-22.md#2026-09-10-任务进度奖励增量)和[选关迁移说明](选关界面-webview迁移路线图.md#2026-09-10-大学与车库入口返回修复)。
 

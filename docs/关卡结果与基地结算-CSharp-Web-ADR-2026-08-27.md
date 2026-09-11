@@ -1,4 +1,4 @@
-﻿# 关卡结果与基地结算 C# / Web 分层 ADR
+# 关卡结果与基地结算 C# / Web 分层 ADR
 
 **文档角色**：关卡结束、玩家死亡复活、返回基地与关卡奖励领取的跨 AS2 / C# / Web canonical 深文档。
 **状态**：2026-08-29 增量修复 `IMPLEMENTED / AUTOMATED_GATES_PASSED / HUMAN_ACCEPTANCE_PASSED / promoted`
@@ -7,6 +7,8 @@
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
 ## 0E. 2026-09-11 明确任务选择、单次返回与到达确认（隔离候选）
+
+**正式发布收尾**：本节隔离候选现已完成双故障域共识、40/40 发布检查与原子部署，部署提交为 `70220aecee920299347226e9509809ca2d2681e4`。当前状态 `HUMAN_ACCEPTANCE_PASSED / promoted`；后文候选／未部署描述属于历史时点。正式程序与验收候选字节一致，部署后的业务旅程未重复执行。完整发布身份与证明见 [runtime 发布记录](runtime-build-reproducibility.md#2026-09-11-当前正式发布任务交付选择单次返回与走门保护)。
 
 **人类验收收尾（2026-09-11 17:28 后）**：维护者确认其余有效验收项均完成，并授权在日志无新阻断时获取云端共识、构建部署和推送。本节下文的“待复验／待授权”保留为施工历史，当前功能状态为 `HUMAN_ACCEPTANCE_PASSED`；原 E3“彩蛋出发 AVP”和 E4“聚落公开页跳转”仍属撤销用例，不计通过。人验绑定此前隔离 Host 候选（build identity `131494231355E58835F4B60370D229227C22AFC6A87239997CC7F2B9E103D22A`、Core DLL `AAE282C8900163AE2926D105B4828332005569A0D6EDE7D92211289BCBC66F65`）与最终 asLoader SHA-256 `B99EE848E6E396439C7F6AA38FFB229914577D20CA8FDCA78D0D2B3568967D67`。正式发布身份、双构建证明与部署结果统一记入 [runtime 发布记录](runtime-build-reproducibility.md)，候选人验不自动成为部署后的业务 `standard_entry_verified`。
 
