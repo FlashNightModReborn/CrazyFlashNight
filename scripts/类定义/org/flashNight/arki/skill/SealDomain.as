@@ -4,13 +4,16 @@ import org.flashNight.aven.Coordinator.*;
  * SealDomain — 「天启大封印」的封印领域运行时
  *
  * 职责（全部在 AS2 侧，无需改动 flashswf 资产）：
- *   1. 在「落成那一刻的宿主坐标」上钉一个椭圆范围（X 半径 300 / Z 半径 150），
+ *   1. 在「落成那一刻的宿主坐标」上钉一个范围：X 左右各 300，Z 上下不对称 ——
+ *      比中心更小的一侧纵深 200、更大的一侧只留 40 的容差（详见 范围半径Z /
+ *      下方容差Z 的注释）。
  *      落成瞬间把范围内的敌方单位全部收押，之后每秒再补收一次新走进来的；
  *   2. 宿主**落成后不再移动**（吸附/跟随是「法阵」的活，法阵在落成前就撤掉了）；
  *   3. 封印期间把单位完全定住：短路其移动/状态/攻击等自有函数、冻结新版 AI、停时间轴、
  *      每帧把位置与朝向复位，并置 无敌 = true（不受任何伤害）；
  *   4. 按持续时间累积封印强度（每秒 5000），强度越过某单位的「额度」时把它放逐——
- *      不走血腥死动画，而是走完整的正常死亡判定（计入清怪数、结算经验与掉落）后消失；
+ *      先放「驱逐白瀑」特效 + 播「黑闪.wav」音效，再走完整的正常死亡判定
+ *      （计入清怪数、结算经验与掉落）后消失；不走血腥死动画、不贴尸体；
  *   5. 到达最大时长（50 秒）仍未达标的单位，毫发无伤地解除控制；
  *   6. 结束时把短路函数、AI 冻结位、无敌、位置、速度逐项还原，不留下"依然打不到/依然不能动"的残状态。
  *
@@ -48,9 +51,28 @@ class org.flashNight.arki.skill.SealDomain {
     public static var 防御系数:Number = 50;
     public static var 攻击系数:Number = 100;
 
-    /** 椭圆判定半径（像素）：X 轴 300、Z(=世界 Y) 轴 150。 */
+    /** X 轴判定半径（像素）：中心左右各 300。 */
     public static var 范围半径X:Number = 300;
-    public static var 范围半径Z:Number = 150;
+
+    /**
+     * Z 轴判定纵深（像素）：**单位比中心更小（视觉上更靠上）**时，小出去的幅度上限。
+     *
+     * 为什么上下不对称：宿主元件的原点被摆在参考点下方 `主动战技函数.长枪.天启大封印.法阵Y偏移`
+     * （默认 +50）处，而封印的视觉中心仍在参考点脚下 —— 中心 Z 读的是宿主 `_y`，比被封印单位的
+     * `Z轴坐标` 天然大那么多。所以「上方」给足纵深、「下方」只给一条贴边的容差（下方容差Z）。
+     *
+     * ⚠ 改这个值只影响纵深，不影响左右；法阵素材的高度若与判定不一致，
+     *   需要在元件里调图形，不要反过来把判定改成对称。
+     */
+    public static var 范围半径Z:Number = 200;
+
+    /**
+     * Z 轴**下方**容差（像素）：单位比中心更大（视觉上更靠下）时，大出去多少还算命中。
+     *
+     * 元件整体又往下挪了一段（约 40），比中心略低的单位在画面上仍被法阵压住，
+     * 所以这里留一条窄边；再往下就不是这个法阵罩的范围了。
+     */
+    public static var 下方容差Z:Number = 40;
 
     /**
      * 每隔多少帧补收一次新走进范围的敌人（1 = 每帧，越大越省）。
@@ -62,10 +84,18 @@ class org.flashNight.arki.skill.SealDomain {
     public static var 补收间隔帧:Number = 30;
 
     /**
-     * 被放逐瞬间播放的消失特效名（EffectSystem 里的元件名）。
-     * 留空 = 只做消失不做特效；等美术素材到位后填上即可，无需改其他代码。
+     * 被放逐瞬间播放的消失特效名（库链接名，挂在 gameworld 上，元件播完自己注销）。
+     *
+     * 现在填的就是「天启大封印驱逐白瀑」：从单位脚下窜起的白色瀑布状光幕。
+     * 留空 = 只做消失不做特效。
      */
-    public static var 消失特效名:String = "";
+    public static var 消失特效名:String = "天启大封印驱逐白瀑";
+
+    /**
+     * 被放逐瞬间播放的音效（sounds/export 下的**文件名**，音效系统按文件名索引，
+     * 不用带子目录）。留空 = 不播。
+     */
+    public static var 消失音效名:String = "黑闪.wav";
 
     /** 递归停时间轴的最大深度，防止遍历失控。 */
     private static var 停时间轴最大深度:Number = 3;
@@ -413,7 +443,6 @@ class org.flashNight.arki.skill.SealDomain {
             return;
         }
         var 半径Xsq:Number = SealDomain.范围半径X * SealDomain.范围半径X;
-        var 半径Zsq:Number = SealDomain.范围半径Z * SealDomain.范围半径Z;
 
         for (var 名:String in 世界) {
             var 单位:MovieClip = 世界[名];
@@ -436,8 +465,15 @@ class org.flashNight.arki.skill.SealDomain {
                 continue;
             }
             var dx:Number = 单位._x - 状态.中心X;
-            var dz:Number = 单位.Z轴坐标 - 状态.中心Z;
-            if (dx * dx / 半径Xsq + dz * dz / 半径Zsq > 1) {
+            // 不对称纵深：中心 Z 读宿主 _y，比参考点低 法阵Y偏移、而元件又整体下挪了一段，
+            // 所以「单位在中心上方」给整套 范围半径Z，「单位在中心下方」只给 下方容差Z。
+            var dz:Number = 状态.中心Z - 单位.Z轴坐标;   // >0 = 单位比中心更靠上
+            if (dz > SealDomain.范围半径Z || -dz > SealDomain.下方容差Z) {
+                continue;
+            }
+            // X 走椭圆口径：上下各按自己那半的 Z 半径收窄
+            var 本侧半径Z:Number = (dz >= 0) ? SealDomain.范围半径Z : SealDomain.下方容差Z;
+            if (dx * dx / 半径Xsq + dz * dz / (本侧半径Z * 本侧半径Z) > 1) {
                 continue;
             }
             SealDomain.收押(状态, 单位);
@@ -500,15 +536,35 @@ class org.flashNight.arki.skill.SealDomain {
     }
 
     /**
-     * 放逐一个单位：走完整的正常死亡判定（计入清怪数、结算经验与掉落），
-     * 但不播血腥死动画、不贴尸体，另行补一个消失特效。
+     * 放逐一个单位：**先**放驱逐特效 + 音效，再走完整的正常死亡判定
+     * （计入清怪数、结算经验与掉落），但不播血腥死动画、不贴尸体。
+     *
+     * 效果元件的生命周期由它自己管（播完 removeMovieClip 注销），
+     * 这里不挂帧计时器、不做延时任务 —— 单位照常在当帧被结算掉，
+     * 白瀑特效继续留在原地播完，视觉上就是"被白光吞掉再消失"。
      */
     private static function 放逐(状态:Object, 记录:Object):Void {
         var 单位:MovieClip = 记录.单位;
         var 消失X:Number = 单位._x;
         var 消失Y:Number = 单位._y;
 
-        // 先彻底还原，保证死亡判定与 onUnload 清理看到的是干净状态
+        // ① 特效：白色瀑布状白光从脚下窜起（forceTrigger = 无视数量上限/概率剔除）
+        var 特效名:String = SealDomain.消失特效名;
+        if (特效名 != undefined && 特效名 != "" && 特效名 != null) {
+            if (typeof EffectSystem != "undefined" && EffectSystem.Effect != undefined) {
+                EffectSystem.Effect(特效名, 消失X, 消失Y, 100, true);
+            }
+        }
+
+        // ② 音效：黑闪.wav
+        var 音效名:String = SealDomain.消失音效名;
+        if (音效名 != undefined && 音效名 != "" && 音效名 != null) {
+            if (typeof _root.播放音效 == "function") {
+                _root.播放音效(音效名);
+            }
+        }
+
+        // ③ 还原 + 死亡结算
         SealDomain.解除单位(记录);
 
         单位.hp = 0;
@@ -517,14 +573,6 @@ class org.flashNight.arki.skill.SealDomain {
             单位.死亡检测({noCorpse: true, remainMovie: false});
         } else {
             单位.removeMovieClip();
-        }
-
-        // 消失特效（美术素材到位后把 SealDomain.消失特效名 填上即可）
-        var 特效名:String = SealDomain.消失特效名;
-        if (特效名 != undefined && 特效名 != "" && 特效名 != null) {
-            if (typeof EffectSystem != "undefined" && EffectSystem.Effect != undefined) {
-                EffectSystem.Effect(特效名, 消失X, 消失Y, 100, true);
-            }
         }
     }
 

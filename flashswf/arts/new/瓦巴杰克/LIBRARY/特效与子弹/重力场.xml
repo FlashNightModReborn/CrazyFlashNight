@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/重力场" itemID="65802656-00000813" linkageExportForAS="true" linkageIdentifier="重力场" lastModified="1768153475" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/重力场" itemID="65802656-00000813" linkageExportForAS="true" linkageIdentifier="重力场" lastModified="1789157907" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="重力场" currentFrame="1">
+    <DOMTimeline name="重力场">
       <layers>
-        <DOMLayer name="代码" color="#9933CC" autoNamed="false">
+        <DOMLayer name="代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <Actionscript>
@@ -99,7 +99,7 @@ _root.重力加速度 = 0.2;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="判定" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="判定" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

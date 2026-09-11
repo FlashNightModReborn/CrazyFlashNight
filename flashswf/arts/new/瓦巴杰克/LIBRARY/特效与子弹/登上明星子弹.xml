@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1766488030" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/登上明星子弹" itemID="694968bd-0000193a" linkageExportForAS="true" linkageIdentifier="登上明星子弹" lastModified="1789157928" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="登上明星子弹">
+    <DOMTimeline name="登上明星子弹" currentFrame="15">
       <layers>
         <DOMLayer name="Labels Layer" color="#F34485" locked="true">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#96ACB7" locked="true">
+        <DOMLayer name="Script Layer" color="#96ACB7" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -86,11 +86,11 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area2" selected="true" centerPoint3DX="22.85" centerPoint3DY="45.55">
+                <DOMSymbolInstance libraryItemName="特效与子弹/特效素材/Symbol 13" name="area2" centerPoint3DX="22.85" centerPoint3DY="45.55">
                   <matrix>
                     <Matrix a="0.70220947265625" d="0.675125122070313" tx="11.1"/>
                   </matrix>
