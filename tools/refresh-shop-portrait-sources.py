@@ -69,7 +69,7 @@ def refresh() -> None:
         validator.validate_receipt(entries)
         baker.promote_stage(stage, ASSETS)
         baker.compare_tree(stage, ASSETS)
-    print("Shop portrait source metadata refreshed; all 34 portraits and runtime manifest preserved.")
+    print("Shop portrait source metadata refreshed; all 35 portraits and runtime manifest preserved.")
 
 
 if __name__ == "__main__":

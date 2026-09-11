@@ -1,16 +1,16 @@
 {
   "catalog": {
     "archiveOrderFirst": 0,
-    "archiveOrderLast": 223,
+    "archiveOrderLast": 224,
     "authoredDirectPurposeReferenceCount": 27,
     "directPurposeCount": 2,
-    "entryCount": 224,
-    "equipmentTuningDistinctCount": 111,
-    "machineDerivedEquipmentTuningCount": 105,
+    "entryCount": 225,
+    "equipmentTuningDistinctCount": 112,
+    "machineDerivedEquipmentTuningCount": 106,
     "path": "data/dictionaries/material_catalog.xml",
     "schemaVersion": 1,
     "typeCounts": {
-      "equipment_mod": 105,
+      "equipment_mod": 106,
       "food": 45,
       "general": 74
     }
@@ -47,7 +47,7 @@
   "inputs": [
     {
       "path": "data/dictionaries/material_catalog.xml",
-      "sha256": "A3F3C7B0A509024DB23392D9432451D08443E0F3B9349A7ECE98FAA4BF380E69"
+      "sha256": "9D89986B04ACD692A39303F0F74A1AB8C214AD5778ED7248A792FDC2E2EC32C9"
     },
     {
       "path": "data/items/list.xml",
@@ -79,7 +79,7 @@
     },
     {
       "path": "data/items/收集品_材料_插件.xml",
-      "sha256": "243DA9FC6116A798D337FA4D6844DF1A309E4C72950987EB192598CBA321F8C7"
+      "sha256": "1D14BA46A54656408A93BD89AA6E6F84671F2C1DA18D52B17C2D2EACE220E953"
     },
     {
       "path": "data/items/消耗品_手雷.xml",
@@ -119,7 +119,7 @@
     },
     {
       "path": "data/items/武器_刀_直剑.xml",
-      "sha256": "59796833F836FC24E4F9253A2DC939D73579FE95EEBE17360465F038359B2FEB"
+      "sha256": "FC704495869F61BFD7EE513C85081BB96B73739B833E7802DCFB489C84BBBB42"
     },
     {
       "path": "data/items/武器_刀_长刀.xml",
@@ -275,7 +275,7 @@
     },
     {
       "path": "data/items/equipment_mods/ui_presentation.xml",
-      "sha256": "3204FF1ADE0921A50723BE23F615DE1E6F005242EAF79175109EE3E1C60AFC34"
+      "sha256": "36A29B67EB2C72CA76C965EC21950C1D86CC8F41BC7AB4A5A7AC3891D31CEA25"
     },
     {
       "path": "data/items/equipment_mods/低级材料_防具专用.xml",
@@ -355,7 +355,7 @@
     },
     {
       "path": "data/items/equipment_mods/特殊材料_通用.xml",
-      "sha256": "CAA7B85F1D50C7C94975DCAE8F0291A454A5D5135230871613563D5254108F09"
+      "sha256": "B674C93F78EFCBC8042AF8AA21EA81837F51DF33C11995B9830BA9570F393614"
     },
     {
       "path": "data/items/equipment_mods/特殊材料_下挂武器.xml",
@@ -392,5 +392,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "D86788345FB9AF1A733EED0D4C59AE3AB5FC07454CF3482606CD537EE82EE7F7"
+  "sourceDigest": "5D470D55FE210A681369EA0C6919B9FBA7B56C9F35AA329341C5CB0A1C116E6F"
 }

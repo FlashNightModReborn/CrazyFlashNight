@@ -34,8 +34,8 @@ RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
 GENERATOR_VERSION = "1.0.0"
 GEOMETRY = {"width": 256, "height": 256}
 PADDING = 16
-EXPECTED_LIST_COUNT = 35
-EXPECTED_ACTIVE_COUNT = 34
+EXPECTED_LIST_COUNT = 36
+EXPECTED_ACTIVE_COUNT = 35
 EXCLUDED_SHOPS = {"幸存老兵-暂时停用"}
 DEFAULT_EXPRESSION = "普通"
 DIALOGUE_LINKAGE = "对话框肖像"
@@ -696,7 +696,7 @@ def build_stage(
             external_ids.append(shop_id)
         else:
             raise BakeError(f"Unsupported dialogue source for shop {shop_id}: {kind!r}")
-    if len(internal_ids) != 2 or len(external_ids) != 31:
+    if len(internal_ids) != 2 or len(external_ids) != 32:
         raise BakeError(f"Shop source partition drift: internal={len(internal_ids)} external={len(external_ids)}")
 
     internal_images, internal_evidence = build_internal_sources(
@@ -775,7 +775,7 @@ def build_stage(
         },
         "activeShopSource": active_source,
         "dialogueManifest": artifact(dialogue_manifest_path, root),
-        "sourcePartition": {"externalDialogue": 31, "internalDialogue": 2, "exactXflSwfPilot": 1},
+        "sourcePartition": {"externalDialogue": 32, "internalDialogue": 2, "exactXflSwfPilot": 1},
         "sources": provenance_sources,
     }
     provenance_bytes = canonical_json(provenance)
