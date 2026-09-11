@@ -11,12 +11,14 @@
 - 33-file payload closure `309DCCFC5EFE2F0DDDAD16898F175FB2B4EC613805E0FDE08D32FD6D03D660F9`；Core DLL SHA-256 `83D96B3D98C47355D798FF871D85EBBDD4AD79BF4F0680D1B9728417A7023855`，与已试玩隔离候选完全相同。
 - 本地 X509 `builder-local-b / physical-host-b`，keyId `EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5`；GitHub OIDC/Sigstore `github-hosted-windows`，builder `257FC4BA7EB02AE2DB821D442B251E4528EE7CFBC30FD318F3F7EC3E80290DDA`，[cloud run 34622333016](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34622333016)。标签 API、workflow SHA 与 run headSha 同绑最终 source；使用 attestation-only 交接，并在 promotion 中对真实本地 CAS 全链重放。
 - production policy **40/40**；policy hash `573B58C9B96C77FA0E1E950265AC9A122021DF63B4F139AB7091F6FB84C3155A`；receipt SHA-256 `888C26D38C9C271AB8297213D9AB4738E520AD6557FF8575998F7D48C787613D`；manifest SHA-256 `1CA14947F0CD222A08FB23BA9C1F3715EEFA9F7CAF2BBB654D92422047510655`；磁盘 consensus SHA-256 `46A0849AE6DCFCB297AF01EB70A0FFA5C3D6021692D52DCC678607BD5D8DC93F`。
-- `2026-09-11T16:37:54.2770607Z` 原子 promotion；strict v2 **2 signers / 2 faultDomains**、33-file bundle 与正式根 bootstrap `--verify-only` 均通过。上一版保留于 `tmp/runtime-promotions/20260911T163725899Z-d965650a1b374ec4b81758fbccb13e33/previous`。部署提交后的事后 Audit 待收口。
+- `2026-09-11T16:37:54.2770607Z` 原子 promotion；strict v2 **2 signers / 2 faultDomains**、33-file bundle 与正式根 bootstrap `--verify-only` 均通过。上一版保留于 `tmp/runtime-promotions/20260911T163725899Z-d965650a1b374ec4b81758fbccb13e33/previous`。部署提交 `6f58ad3f8ef80b87152d6d3198fefa7d3dde9fe6` 已快进推送至 `main`；[事后 Audit 34623975405](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/34623975405) 成功，独立复验云端证明、双签名与完整部署闭包，确认 `state=promoted / deploymentChanged=true`。
 - Launcher canonical runner **4944 passed / 3 existing skipped / 0 failed**；fresh AS2 暂存 **82/82**、地图/旧奖励根/关卡返回 **729/729**，Compiler 均 **0/0**；物品使用 Web **17/17**、共享暂存视图与懒加载回归通过。配套 asLoader 为 **1,324,978 bytes** / SHA-256 `4B23133144319416C6F9A1D30AF2CB6600F76EE47A9DF39CFF1F7DA882476985`。
 
 首轮 policy 如实阻断裸色值、重复隐藏优先级和模块拆分阈值；最终 source 复用主题/hidden 规则、拆出暂存协议并同步懒加载闭包，没有放宽原门。旧 request `574F7C8CA6050690E6EDF48857A322FA0D1C4703127723832E2A22F4FB12ABE6` 已由最终 request supersede；前三域未变，按现役合同复用同一真实本地 X509 proof/CAS，云端仅对最终 source 构建一次。
 
 维护者于 2026-09-11 确认本轮试玩通过，准确状态为 **HUMAN_ACCEPTANCE_PASSED / promoted**。无参数正式入口已绑定 `formal_runtime`、PID `26292`、正式 Core 路径与上述 identity/closure，并完成总线启动。该次未选档，预热等待超时后回到入口，随后 `UserClosing` 正常退出；未取得可见页面验收或部署后奖励/保存重启旅程，因此不称本专项 `standard_entry_verified`。4096 件真实 SOL 样本的完整保存 P95/P99 为 3635/4329ms，仍作为高库存性能限制保留。
+
+本轮未新增 Git worktree，local worker 的临时 checkout 已清理。发布检查时有三个既有任务工作树：`C:\cf7-audio-r7-sniff-fix\resources` 有三处未提交修改，`C:\cf7-audio-v2-repro-s11-b\resources` 有未跟踪的 `docs/evidence/audio-v2/a6-prepared/`，`C:\cf7-focus-0909\resources` 干净；均属其他任务，保留原状。回退文件与构建证据继续保存在本机。
 
 ## 2026-09-11 上一正式发布：任务交付选择、单次返回与走门保护
 
