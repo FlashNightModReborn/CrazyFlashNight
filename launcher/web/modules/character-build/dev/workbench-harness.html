@@ -1323,6 +1323,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/loadout-picker/loadout-picker-candidate-pane.js"></script>
 <script src="modules/loadout-picker/loadout-picker.js"></script>
 <script src="modules/character-build/character-build-item-use-openmany-view.js"></script>
+<script src="modules/character-build/character-build-stash-view.js"></script>
 <script src="modules/character-build-view.js"></script>
 <script src="modules/character-build/character-build-tuning.js"></script>
 <script src="modules/character-build/character-build-slot-transition.js"></script>
@@ -2122,9 +2123,9 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             !!densityToggle
             && !document.querySelector(
                 '.inventory-workbench-mode-actions .item-grid-mode-switch')
-            && actionRow.nested && actionRow.count === 2
-            && actionRow.labels.join('|') === '先选栏位|卸下'
-            && actionRow.aria[0] === '先选择目标栏位'
+            && actionRow.nested && actionRow.count === 3
+            && actionRow.labels.join('|') === '暂存物资|先选栏位|卸下'
+            && actionRow.aria[1] === '先选择目标栏位'
             && actionRow.sameRow
             && actionRow.inside && !actionRow.overflow && !actionRow.clipped
             && !actionRow.wrapped && actionRow.minWidth >= 44

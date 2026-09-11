@@ -302,6 +302,8 @@ class org.flashNight.arki.item.ItemUtil{
             current = Number(collection.getValue(name));
             if(isNaN(current) || current < 0) current = 0;
         }
+        var stash:Object = _root._saveExt == undefined ? null : _root._saveExt.rewardInbox;
+        current += org.flashNight.arki.item.RewardStashStore.ownedQuantity(stash, name);
         return Math.max(0, Math.floor(maximum - current));
     }
 
@@ -701,7 +703,8 @@ class org.flashNight.arki.item.ItemUtil{
                 var informationTotal:Number = Number(list.情报[name] || 0) + value;
                 if(isNaN(informationTotal) || informationTotal <= 0
                         || informationTotal != Math.floor(informationTotal)
-                        || informationTotal > getInformationRemaining(name)) return null;
+                        || informationTotal > getInformationRemaining(name)
+                            + (itemArray[i].ownershipDelta === 0 ? value : 0)) return null;
                 list.情报[name] = informationTotal;
             } else if(!isEquipment(name)){
                 // 可合并物品

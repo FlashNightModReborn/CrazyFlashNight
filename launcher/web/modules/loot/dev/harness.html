@@ -893,7 +893,7 @@ function activeResponse(message){var response=common(message);response.snapshots
     ok('ordinary focused X still submits one non-abandon close after the write settles',
       tasks('close').length===pendingClosesBefore+1&&tasks('close').slice(-1)[0].abandon===false);
 
-    resetAuthority(false);__mode='normal';Panels.open('loot',init('abandon'));await waitFor(function(){return document.querySelector('.loot-source-slot.occupied')});
+    resetAuthority(false);__mode='normal';Panels.open('loot',Object.assign(settlementInit('abandon'),{capacity:2,columns:2}));await waitFor(function(){return document.querySelector('.loot-source-slot.occupied')});
     var dangerClosesBefore=tasks('close').length;
     document.querySelector('.loot-abandon-btn').click();await delay();
     ok('separate danger action opens a focused irreversible confirmation',
@@ -1153,6 +1153,7 @@ function activeResponse(message){var response=common(message);response.snapshots
     resetAuthority(false);__mode='normal';
     authority.loot=[occupied(0,'精英补给','lease.settlement.0'),occupied(1,'复活币','lease.settlement.1'),occupied(2,'强化石','lease.settlement.2')];
     var settlementMaterialsBefore=tasks('materials').length;
+    __portraitStats={staticMounts:0,dollRenders:0};
     Panels.open('loot',settlementInit('visual'));
     var settlementReady=await waitFor(function(){var state=LootPanel.debugState();return state.phase==='active'&&state.materials.count===3});
     if(!settlementReady)throw new Error('settlement did not become ready: '+JSON.stringify({normalized:LootPanel.exactInitData(settlementInit('diagnostic')),state:LootPanel.debugState(),active:Panels.getActive(),toasts:__toasts.slice(-4),lastTasks:tasks().slice(-4)}));

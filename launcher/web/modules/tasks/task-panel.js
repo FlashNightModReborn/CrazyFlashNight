@@ -763,7 +763,7 @@
         var taskId = task.taskId;
         beginOp(btn);
         var reqSession = _session;
-        sendPanelMsg('finishTask', { taskId: taskId }, function(data) {
+        sendPanelMsg('finishTask', { taskId: taskId, instanceToken:(_tasks.filter(function(t) { return String(t.taskId) === String(taskId); })[0] || {}).instanceToken || '' }, function(data) {
             endOp(btn);
             if (reqSession !== _session) return;
             if (data && data.success) {
@@ -860,7 +860,12 @@
         switch (data.error) {
             case 'not_satisfied':     return '尚未满足交付条件';
             case 'requires_npc':      return '该任务需前往交付NPC处提交';
-            case 'inventory_full':    return '背包已满，无法交付，请清理背包后重试';
+            case 'stale_task_instance': return '这次任务交付已变化，请从刷新后的列表重新选择。';
+            case 'insufficient_items': return '交付所需的物品不足。';
+            case 'commit_pending': return '奖励正在确认保存，请稍后查看任务和暂存区。';
+            case 'save_not_committed': return '本次保存未完成，任务和物品已保留，可以重试。';
+            case 'save_unavailable': return '当前暂时无法保存，任务和奖励已保留。';
+            case 'inventory_full': return '本次物品操作未完成，请刷新后重试。';
             case 'cannot_delete_main':return '主线任务无法放弃';
             case 'task_not_found':    return '任务已不存在，已刷新列表';
             case 'disconnected':      return '游戏连接已断开';

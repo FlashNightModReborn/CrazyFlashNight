@@ -425,6 +425,6 @@ Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../s
 - 测试分区、runner、SDK/包版本真源或验证入口变化；
 - Host/Web/AS2 协议、权威、生命周期或旧 UI 退役边界变化；
 - runtime 构建、候选、promotion 或正式入口术语变化；发布收据、动态测试计数、一次性 runId、截图和事故时间线进入 canonical ADR/`docs/evidence/` 或 Git 历史，不回填高频 README。
-```powershell
-chcp.com 65001 | Out-Null; node tools/validate-doc-governance.js; git diff --check
-```
+PowerShell 先切换 UTF-8，再运行 `node tools/validate-doc-governance.js` 与 `git diff --check`。
+
+**统一奖励暂存（2026-09-11，HUMAN_ACCEPTANCE_PASSED / RELEASE_PENDING）**：v2 `item_use` 新增 `stashPage/Tooltip/Take/Query/Resume/Migrate/Open/OpenMany`；读取与写命令分离，32 项取出、40 行 K 迁移、最多 64 包一次提交，UI 复用战备箱。旧 v1 fresh open 退出生产准入，旧根恢复/receipt 保留。完整协议、规模限制与发布状态见[暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。

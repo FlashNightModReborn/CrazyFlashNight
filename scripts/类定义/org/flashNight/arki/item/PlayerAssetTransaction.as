@@ -45,6 +45,25 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
         return transaction;
     }
 
+    /** 未决奖励候选不能占用普通回执栈；资产写互斥由保存候选持有。 */
+    public static function parkForDurable(transaction:Object):Boolean {
+        if (!isTopOpen(transaction)) return false;
+        _stack.pop();
+        transaction.state = "durable_pending";
+        return true;
+    }
+
+    public static function finishDurable(transaction:Object, committed:Boolean):Void {
+        if (transaction == null) return;
+        if (transaction.state == "durable_pending") {
+            transaction.state = "open";
+            _stack.push(transaction);
+        }
+        // 升级的强存盘要求已经包含在同一个完整候选中，不得再写第二次。
+        transaction.strongSaveRequested = false;
+        settleAfterException(transaction, committed);
+    }
+
     public static function current():Object {
         if (_stack.length == 0) return null;
         return _stack[_stack.length - 1];

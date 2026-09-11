@@ -1,0 +1,8 @@
+﻿trace("[CF7_REWARD_STASH_TEST_RUN] start runId=__REWARD_STASH_RUN_ID__");
+import org.flashNight.arki.item.*;
+var stashChecksPassed:Boolean = RewardStashServiceTest.runAllTests();
+function stashTestsComplete():Void {
+    trace("[CF7_REWARD_STASH_TEST_RUN] complete runId=__REWARD_STASH_RUN_ID__");
+}
+if (__RUN_STASH_SCALE__ && stashChecksPassed) RewardStashScaleTest.start(stashTestsComplete);
+else stashTestsComplete();

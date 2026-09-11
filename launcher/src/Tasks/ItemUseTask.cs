@@ -13,7 +13,7 @@ namespace CF7Launcher.Tasks
     /// consume, receipt query, reward-inbox snapshot, or shared cooldown snapshot. AS2 remains the
     /// inventory/save and frame-clock authority.
     /// </summary>
-    public sealed class ItemUseTask : IDisposable
+    public sealed partial class ItemUseTask : IDisposable
     {
         public sealed class RewardHandoff
         {
@@ -40,6 +40,8 @@ namespace CF7Launcher.Tasks
             public string PanelInstanceId;
             public long SessionGeneration;
             public bool IsWrite;
+            public JObject Request;
+            public JObject ReconcileRequest;
             public string ReconcileWriteCommand;
         }
 
@@ -82,6 +84,7 @@ namespace CF7Launcher.Tasks
         private string _writeState = "idle";
         private string _unknownOperationId;
         private string _unknownWriteCommand;
+        private JObject _unknownRequest;
         private RewardHandoff _rewardHandoff;
         private bool _handoffNavigationArmed;
         private bool _handoffPanelClosed;
@@ -202,7 +205,7 @@ namespace CF7Launcher.Tasks
                 }
 
                 string reconcileWriteCommand = null;
-                if (command == "query")
+                if (IsQueryCommand(command))
                 {
                     if (_writeState != "needs_reconcile")
                     {
@@ -229,13 +232,14 @@ namespace CF7Launcher.Tasks
                 if (!transportReady)
                 {
                     if (!_pendingCalls.TryRememberRejected(callId)) return;
-                    bool requiresReconcile = command == "query"
+                    bool requiresReconcile = IsQueryCommand(command)
                         && _writeState == "needs_reconcile";
                     if (isWrite)
                     {
                         _writeState = "needs_reconcile";
                         _unknownOperationId = operationId;
                         _unknownWriteCommand = command;
+                        _unknownRequest = (JObject)normalized.DeepClone();
                         requiresReconcile = true;
                     }
                     RespondError(
@@ -256,6 +260,8 @@ namespace CF7Launcher.Tasks
                             PanelInstanceId = panelInstanceId,
                             SessionGeneration = sessionGeneration,
                             IsWrite = isWrite,
+                            Request = (JObject)normalized.DeepClone(),
+                            ReconcileRequest = _unknownRequest,
                             ReconcileWriteCommand = reconcileWriteCommand
                         },
                         out backendCallId))
@@ -320,14 +326,15 @@ namespace CF7Launcher.Tasks
                         _writeState = "needs_reconcile";
                         _unknownOperationId = entry.OperationId;
                         _unknownWriteCommand = entry.WebCommand;
+                        _unknownRequest = entry.Request;
                     }
                 }
-                else if (entry.WebCommand == "query" && valid && reconciled)
+                else if (IsQueryCommand(entry.WebCommand) && valid && reconciled)
                 {
                     ClearUnknownLocked();
                 }
                 requiresReconcile = _writeState == "needs_reconcile"
-                    && (entry.IsWrite || entry.WebCommand == "query");
+                    && (entry.IsWrite || IsQueryCommand(entry.WebCommand));
             }
 
             bool current = IsCurrentBinding(
@@ -338,7 +345,8 @@ namespace CF7Launcher.Tasks
             if (authority != null
                     && (entry.WebCommand == "open"
                         || entry.WebCommand == "openMany"
-                        || entry.WebCommand == "inboxSnapshot"))
+                        || entry.WebCommand == "inboxSnapshot"
+                        || entry.WebCommand == "legacyInboxOpen"))
                 {
                     StageRewardHandoff(
                         entry.PanelInstanceId,
@@ -359,7 +367,7 @@ namespace CF7Launcher.Tasks
                     entry.WebCommand,
                     pending.WebCallId,
                     "malformed_response",
-                    entry.IsWrite || entry.WebCommand == "query");
+                    entry.IsWrite || IsQueryCommand(entry.WebCommand));
                 if (!string.IsNullOrEmpty(entry.OperationId))
                     error["operationId"] = entry.OperationId;
                 PostToWeb(error.ToString(Formatting.None));
@@ -522,9 +530,10 @@ namespace CF7Launcher.Tasks
                     _writeState = "needs_reconcile";
                     _unknownOperationId = entry.OperationId;
                     _unknownWriteCommand = entry.WebCommand;
+                        _unknownRequest = entry.Request;
                     requiresReconcile = true;
                 }
-                else if (entry.WebCommand == "query"
+                else if (IsQueryCommand(entry.WebCommand)
                     && _writeState == "needs_reconcile")
                 {
                     requiresReconcile = true;
@@ -556,6 +565,7 @@ namespace CF7Launcher.Tasks
             _writeState = "idle";
             _unknownOperationId = null;
             _unknownWriteCommand = null;
+            _unknownRequest = null;
         }
 
         private bool IsCurrentBinding(
@@ -653,7 +663,7 @@ namespace CF7Launcher.Tasks
                 ["cmd"] = entry.WebCommand,
                 ["callId"] = webCallId,
                 ["panelInstanceId"] = entry.PanelInstanceId,
-                ["v"] = 1,
+                ["v"] = IsStashCommand(entry.WebCommand) ? 2 : 1,
                 ["success"] = sanitized.Value<bool>("success"),
                 ["sessionGeneration"] = entry.SessionGeneration
             };
@@ -665,7 +675,7 @@ namespace CF7Launcher.Tasks
                 "error", "consumed", "remaining", "selectedLane",
                 "replayed", "requestedCount", "packages",
                 "rewardReady", "rewardBatchId", "inboxSummary",
-                "rewardAuthority", "found", "receipt", "cooldownLanes"
+                "rewardAuthority", "found", "receipt", "cooldownLanes", "data"
             };
             foreach (string name in projection)
             {
@@ -682,6 +692,12 @@ namespace CF7Launcher.Tasks
             out bool isWrite)
         {
             isWrite = false;
+            if (IsStashCommand(command))
+            {
+                action = "itemUse" + char.ToUpperInvariant(command[0]) + command.Substring(1);
+                isWrite = command != "stashTooltip" && command != "stashPage" && command != "stashQuery" && command != "stashResume";
+                return true;
+            }
             switch (command)
             {
                 case "open":
@@ -698,6 +714,9 @@ namespace CF7Launcher.Tasks
                     return true;
                 case "query":
                     action = "itemUseQuery";
+                    return true;
+                case "legacyInboxOpen":
+                    action = "itemUseLegacyInboxOpen";
                     return true;
                 case "inboxSnapshot":
                     action = "itemUseInboxSnapshot";
@@ -720,6 +739,9 @@ namespace CF7Launcher.Tasks
             out string panelInstanceId,
             out long sessionGeneration)
         {
+            if (IsStashCommand(command)) return TryNormalizeStashPayload(command,
+                envelopePanelInstanceId, payload, out normalized, out operationId,
+                out panelInstanceId, out sessionGeneration);
             normalized = null;
             operationId = null;
             panelInstanceId = null;
@@ -785,7 +807,7 @@ namespace CF7Launcher.Tasks
                 result["source"] = source;
                 result["count"] = count;
             }
-            else if (command == "query")
+            else if (IsQueryCommand(command))
             {
                 if (!IsExactObject(
                         payload,
@@ -798,7 +820,7 @@ namespace CF7Launcher.Tasks
                 }
                 result["operationId"] = operationId;
             }
-            else if (command == "inboxSnapshot"
+            else if (command == "inboxSnapshot" || command == "legacyInboxOpen"
                 || command == "cooldownSnapshot")
             {
                 if (!IsExactObject(
@@ -854,6 +876,9 @@ namespace CF7Launcher.Tasks
             out bool definitiveWrite,
             out bool reconciled)
         {
+            if (entry != null && IsStashCommand(entry.WebCommand))
+                return TrySanitizeStashResponse(message, entry, out sanitized,
+                    out definitiveWrite, out reconciled);
             sanitized = null;
             definitiveWrite = false;
             reconciled = false;
@@ -875,7 +900,7 @@ namespace CF7Launcher.Tasks
             {
                 return false;
             }
-            bool hasOperation = entry.WebCommand != "inboxSnapshot"
+            bool hasOperation = entry.WebCommand != "legacyInboxOpen" && entry.WebCommand != "inboxSnapshot"
                 && entry.WebCommand != "cooldownSnapshot";
             if (hasOperation
                 && ReadString(message["operationId"]) != entry.OperationId)
@@ -930,6 +955,7 @@ namespace CF7Launcher.Tasks
                         result);
                     reconciled = valid;
                     break;
+                case "legacyInboxOpen":
                 case "inboxSnapshot":
                     valid = TrySanitizeInboxSnapshotSuccess(message, result);
                     break;
@@ -1324,6 +1350,8 @@ namespace CF7Launcher.Tasks
             JObject value,
             out JObject sanitized)
         {
+            if (value != null && TryReadInteger(value["v"], 2, 2, out int stashVersion))
+                return TrySanitizeStashSummary(value, out sanitized);
             sanitized = null;
             if (!IsExactObject(
                      value,

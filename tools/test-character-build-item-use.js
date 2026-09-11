@@ -120,6 +120,8 @@ check('exact source comes only from the dedicated item-use capability', function
 
 check('open sends the exact workbench item_use envelope and settles once', function() {
     const run = harness();
+    run.controller._acceptInbox({success:true,rewardReady:false,rewardAuthority:null,
+        inboxSummary:{v:2,storeId:'stash.test',authorityRevision:4,remainingCount:0}});
     assert(run.controller.invoke(candidate('open')));
     assert.strictEqual(run.sent.length, 1);
     const request = run.sent[0];
@@ -127,18 +129,18 @@ check('open sends the exact workbench item_use envelope and settles once', funct
         type:request.type,panel:request.panel,domain:request.domain,cmd:request.cmd,
         panelInstanceId:request.panelInstanceId
     }, {
-        type:'panel',panel:'workbench',domain:'item_use',cmd:'open',
+        type:'panel',panel:'workbench',domain:'item_use',cmd:'stashOpen',
         panelInstanceId:'panel.workbench.1'
     });
     assert.deepStrictEqual(request.payload.source, {
         physicalSlot:4,slotLease:'use.lease.4',itemName:'福袋',backpackVersion:9
     });
     assert.strictEqual(request.payload.sessionGeneration, 7);
+    assert.strictEqual(request.payload.v, 2);
+    assert.strictEqual(request.payload.expectedRevision, 4);
     respond(run, request, {
-        success:true, command:'open', operationId:request.payload.operationId,
-        rewardReady:true, consumed:1, remaining:0,
-        inboxSummary:{v:1,batchCount:1,remainingCount:2,capacity:64,authorityRevision:1},
-        rewardAuthority:{sourceKind:'reward_inbox',openAttemptSeq:1}
+        success:true, command:'stashOpen', operationId:request.payload.operationId,
+        data:{success:true,kind:'open',rewardReady:true,consumed:1,remaining:0}
     });
     assert.strictEqual(run.settled.length, 1);
     assert.strictEqual(run.settled[0].committed, true);
@@ -170,6 +172,8 @@ check('unknown write issues only a same-operation query and never replays consum
 
 check('definitive query not-found returns idle without replay', function() {
     const run = harness();
+    run.controller._acceptInbox({success:true,rewardReady:false,rewardAuthority:null,
+        inboxSummary:{v:2,storeId:'stash.test',authorityRevision:4,remainingCount:0}});
     run.controller.invoke(candidate('open'));
     const write = run.sent[0];
     respond(run, write, {
@@ -178,16 +182,16 @@ check('definitive query not-found returns idle without replay', function() {
     });
     const query = run.sent[1];
     respond(run, query, {
-        success:true,found:false,command:'query',operationId:write.payload.operationId,
-        inboxSummary:{v:1,batchCount:0,remainingCount:0,capacity:64,authorityRevision:0}
+        success:true,command:'stashQuery',operationId:write.payload.operationId,
+        data:{success:true,state:'not_committed'}
     });
     assert.strictEqual(run.settled[0].committed, false);
     assert.strictEqual(run.settled[0].response.error, 'not_committed');
-    assert.strictEqual(run.sent.filter(message => message.cmd === 'open').length, 1);
+    assert.strictEqual(run.sent.filter(message => message.cmd === 'stashOpen').length, 1);
     assert.strictEqual(run.controller.debugState().state, 'idle');
 });
 
-check('inboxSnapshot caches a complete summary and available reward authority', function() {
+check('inboxSnapshot caches a summary without taking reward authority', function() {
     const run = harness();
     run.controller.refreshInbox();
     const request = run.sent[0];
@@ -196,9 +200,10 @@ check('inboxSnapshot caches a complete summary and available reward authority', 
         success:true,command:'inboxSnapshot',
         rewardReady:true,
         inboxSummary:{v:1,batchCount:2,remainingCount:5,capacity:64,authorityRevision:4},
-        rewardAuthority:{sourceKind:'reward_inbox',openAttemptSeq:2}
+        rewardAuthority:null
     });
     assert.strictEqual(run.inbox.length, 1);
+    assert.strictEqual(run.inbox[0].authority, null);
     assert.strictEqual(run.controller.debugState().inboxRemaining, 5);
 });
 
@@ -448,7 +453,7 @@ check('committed consume publishes an inline result after refreshed snapshot', f
     assert.strictEqual(controller._candidateCache, null);
 });
 
-check('committed open reports the reward transfer before inbox navigation', function() {
+check('committed open reports the saved rewards and stays on the current page', function() {
     const order = [];
     const controller = {
         _ports:{},
@@ -478,8 +483,7 @@ check('committed open reports the reward transfer before inbox navigation', func
     });
     assert.deepStrictEqual(order, [
         'snapshot',
-        'notice:已打开「福袋」；奖励已转入待领取（当前 3 件）。',
-        'inbox'
+        'notice:已打开「福袋」；奖励已存入暂存区（当前 3 件）。'
     ]);
 });
 

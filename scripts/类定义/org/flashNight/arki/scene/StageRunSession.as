@@ -236,7 +236,7 @@ class org.flashNight.arki.scene.StageRunSession {
         if (_run != null && !isRunTerminal()) {
             return _returnRequested ? "stage_settlement" : "stage_run";
         }
-        if (_preparedInventory != null || _preparedReport != null
+        if (_preparedInventory != null || (_preparedReport != null && !isCurrentRewardStashed())
                 || hasPersistedSettlementPending()) return "stage_settlement";
         if (_root.场景转换中 === true) return "scene_transition";
         if (_root.斗兽标定模式 === true) return "arena_calibration";
@@ -254,6 +254,8 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     private static function getStageStartBlockReasonIgnoringReservation():String {
+        if (_returnAttempt != null || _root.场景转换中 === true
+                || _root.淡出动画.__returnFadeActive === true) return "scene_transition";
         if (_run != null && !isRunTerminal()) {
             return _returnRequested ? "pending_stage_settlement" : "stage_run_active";
         }
@@ -272,7 +274,7 @@ class org.flashNight.arki.scene.StageRunSession {
         if (_run == null) return true;
         if (!_returnRequested) return false;
         var settlement:String = String(_run.settlement || "");
-        return settlement == "claimed" || settlement == "abandoned" || settlement == "error";
+        return settlement == "claimed" || settlement == "abandoned" || settlement == "stashed" || settlement == "error";
     }
 
     /** StageManager 每个未暂停的游戏帧调用；这是战报时间的唯一时钟。 */
@@ -565,7 +567,7 @@ class org.flashNight.arki.scene.StageRunSession {
             reason = "return_base_failed";
         if (_run != null && (_returnAttempt == null
                 || (_returnAttempt.run === _run && _returnAttempt.world === _root.gameworld))
-                && (_run.settlement == "none" || _run.settlement == "prepared")) {
+                && (_run.settlement == "none" || _run.settlement == "prepared" || _run.settlement == "stashed")) {
             _returnFailure = {run:_run, world:_root.gameworld, reason:reason};
         }
         _returnAttempt = null;
@@ -587,7 +589,7 @@ class org.flashNight.arki.scene.StageRunSession {
     public static function canRetryReturnBase():Boolean {
         return _run != null && _returnAttempt == null && getReturnFailureReason() != ""
             && !_settlementStarted && _stageStartReservation == null && _root.场景转换中 !== true
-            && (_run.settlement == "none" || _run.settlement == "prepared");
+            && (_run.settlement == "none" || _run.settlement == "prepared" || _run.settlement == "stashed");
     }
 
     /** 旧入口只保留拒绝语义，不能把旧 Host 点击解释为新的自动选址。 */
@@ -629,19 +631,8 @@ class org.flashNight.arki.scene.StageRunSession {
             observeFocus("return_gate", _focusHandlingIntent, "prepare_failed");
             return failReturnAttempt("settlement_prepare_failed");
         }
-        // 奖励 manifest 已冻结并写入 _saveExt 后，仍必须确认整档真实落盘，
-        // 才能让场景跳转/cleanup 开始。缺失函数、异常约定值和 false 均 fail-closed；
-        // 失败时保留同一 prepared/pending，下一次请求只重试持久化与 flush，绝不重 roll。
-        if (_root.存档系统 == null || typeof _root.存档系统.flushBeforeTransition != "function") {
-            observeFocus("return_gate", _focusHandlingIntent, "flush_missing");
-            return failReturnAttempt("save_failed");
-        }
-        var durable:Boolean = false;
-        try {
-            durable = (_root.存档系统.flushBeforeTransition("stage.return_base") === true);
-        } catch (flushError) {
-            durable = false;
-        }
+        // 源 manifest 已冻结；暂存所有权与源 stashed 终态折入原返回保存屏障。
+        var durable:Boolean = stashPreparedRewards();
         if (!durable) {
             observeFocus("return_gate", _focusHandlingIntent, "flush_failed");
             return failReturnAttempt("save_failed");
@@ -658,7 +649,55 @@ class org.flashNight.arki.scene.StageRunSession {
         return true;
     }
 
+    public static function isCurrentRewardStashed():Boolean {
+        return _run != null && _run.settlement == "stashed";
+    }
+
+    private static function stashPreparedRewards():Boolean {
+        if (isCurrentRewardStashed()) return true;
+        if (_run == null || _preparedInventory == null) return false;
+        var operationId:String = String(_run.settlementId) + ".stash";
+        var pendingId:String = org.flashNight.arki.item.RewardStashService.pendingOperationId();
+        if (pendingId != "") {
+            if (pendingId != operationId) return false;
+            return org.flashNight.neur.Server.SaveManager.getInstance().resolveRewardCommit(operationId) == "committed";
+        }
+        var items:Array = [];
+        var inventory:Object = _preparedInventory.toObject();
+        for (var i:Number = 0; i < _preparedInventory.capacity; i++) {
+            if (inventory[String(i)] != null) items.push(inventory[String(i)]);
+        }
+        var context:Object = {source:"stage_settlement", reason:"stage_reward_stashed", operationId:operationId};
+        if (!org.flashNight.arki.item.RewardStashService.begin(operationId, context, stashResolved, {run:_run})) return false;
+        try {
+            if (!org.flashNight.arki.item.RewardStashService.admit(items, false, true, context)) {
+                org.flashNight.arki.item.RewardStashService.cancel("invalid_stage_reward"); return false;
+            }
+            var cleared:Object = clearPersistedSettlement(String(_run.settlementId), "stashed", null);
+            if (cleared.success !== true) {
+                org.flashNight.arki.item.RewardStashService.cancel("stage_source_conflict"); return false;
+            }
+            var result:Object = org.flashNight.arki.item.RewardStashService.end(
+                "stage.stash.v2|" + String(_run.settlementId),
+                {success:true, kind:"stage_stash", settlementId:String(_run.settlementId)}, "stage.return_base");
+            return result.success === true;
+        } catch (stashError) {
+            org.flashNight.arki.item.RewardStashService.cancel("stage_stash_failed"); return false;
+        }
+    }
+
+    private static function stashResolved(committed:Boolean, domain:Object):Boolean {
+        if (!committed) return true;
+        if (_run !== domain.run) return true;
+        _run.settlement = "stashed";
+        _run.remainingRewards = 0;
+        _preparedInventory = null;
+        bumpRevision();
+        return true;
+    }
+
     public static function prepareSettlement():Boolean {
+        if (isCurrentRewardStashed()) return true;
         if (_preparedInventory != null && _preparedReport != null) {
             return persistPreparedSettlement().success === true;
         }
@@ -701,24 +740,27 @@ class org.flashNight.arki.scene.StageRunSession {
             observeFocus("scene_ready_enter", _focusReturnIntent,
                 "battle_" + String(_root.当前为战斗地图 === true));
         }
-        if (_run == null || !_returnRequested || _preparedInventory == null
-                || _preparedReport == null || _root.当前为战斗地图 === true) return;
+        if (_run == null || !_returnRequested || _preparedReport == null || _root.当前为战斗地图 === true) return;
         completeReturnAttempt();
         if (_settlementStarted) return;
         observeFocus("scene_ready_eligible", _focusReturnIntent, "begin_settlement");
+        // 旧档 partial settlement 从 remaining inventory 转入；已经领取的条目不再入账。
+        if (!isCurrentRewardStashed() && !stashPreparedRewards()) return;
+        var stashedReport:Object = clonePlainValue(_preparedReport, 0);
+        stashedReport.rewardStashed = true;
         var begun:Object = LootContainerService.beginStageSettlement(
-            _preparedInventory, _preparedReport);
+            new ArrayInventory({}, 8), stashedReport);
         if (begun == null || begun.success !== true) {
             observeFocus("scene_ready_result", _focusReturnIntent, "rewards_pending");
-            _run.settlement = "rewards_pending";
+            // 报告打开失败不撤销已经保存的物资，也不占下一次关卡准入。
             bumpRevision();
             pushState();
             return;
         }
         observeFocus("scene_ready_result", _focusReturnIntent, "web_active");
         _settlementStarted = true;
-        _run.settlement = "web_active";
-        _run.remainingRewards = Number(_preparedInventory.size());
+        _run.settlement = "stashed";
+        _run.remainingRewards = 0;
         bumpRevision();
         pushState();
         LootContainerService.requestOpenPanel();
@@ -726,7 +768,7 @@ class org.flashNight.arki.scene.StageRunSession {
 
     /** LootContainerService 的唯一回告；普通关闭保留奖励并显式暴露“继续领取”。 */
     public static function onSettlementState(state:String, remaining:Number):Void {
-        if (_run == null) return;
+        if (_run == null || isCurrentRewardStashed()) return;
         var settlement:String;
         if (state == "LOOT_ACTIVE") settlement = "web_active";
         else if (state == "LOOT_SUSPENDED") settlement = "rewards_pending";
@@ -734,7 +776,7 @@ class org.flashNight.arki.scene.StageRunSession {
         else if (state == "ABANDONED") settlement = "abandoned";
         else if (state == "EXPIRED") settlement = "error";
         else return;
-        if ((settlement == "claimed" || settlement == "abandoned" || settlement == "error")
+        if ((settlement == "claimed" || settlement == "abandoned" || settlement == "stashed" || settlement == "error")
                 && _run.settlementId != undefined && String(_run.settlementId) != "") {
             // Loot 正常路径会先携 exact receipt 清理并 flush；本调用于是幂等命中 marker。
             // 旧/本地调用若尚未清理，也至少在释放内存 authority 前写 terminal marker。
@@ -750,7 +792,7 @@ class org.flashNight.arki.scene.StageRunSession {
         _run.remainingRewards = safeWhole(remaining, 0, MAX_REWARD_SLOTS, 0);
         bumpRevision();
         pushState();
-        if (settlement == "claimed" || settlement == "abandoned" || settlement == "error") {
+        if (settlement == "claimed" || settlement == "abandoned" || settlement == "stashed" || settlement == "error") {
             _preparedInventory = null;
             _preparedReport = null;
             // 奖励终态仅终结奖励；目的地在返回前已由玩家选择。
@@ -972,7 +1014,7 @@ class org.flashNight.arki.scene.StageRunSession {
             terminalState:String, receipt:Object):Object {
         if (!isSafeToken(String(settlementId), 96)
                 || (terminalState != "claimed" && terminalState != "abandoned"
-                    && terminalState != "error")) {
+                    && terminalState != "stashed" && terminalState != "error")) {
             return settlementFailure("invalid_terminal_settlement");
         }
         var inspected:Object = inspectSettlementStore();
@@ -1937,7 +1979,7 @@ class org.flashNight.arki.scene.StageRunSession {
                 ["v", "settlementId", "terminalState", "receipt"])
                 || Number(raw.v) != 1 || !isSafeToken(String(raw.settlementId), 96)
                 || (raw.terminalState != "claimed" && raw.terminalState != "abandoned"
-                    && raw.terminalState != "error")) return null;
+                    && raw.terminalState != "stashed" && raw.terminalState != "error")) return null;
         var receipt:Object = normalizeTerminalReceipt(raw.receipt, String(raw.terminalState));
         if (receipt == null || !samePlainValue(raw.receipt, receipt, 0)) return null;
         return {v:1, settlementId:String(raw.settlementId),

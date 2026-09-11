@@ -462,9 +462,9 @@ function(WorkbenchFocus, WorkbenchComponents,
         } else this._useButton.removeAttribute('title');
 
         var remaining = Number(this._inboxSummary && this._inboxSummary.remainingCount) || 0;
-        this._inboxButton.hidden = remaining < 1;
-        this._inboxButton.textContent = remaining > 0 ? '待领取 ' + remaining : '待领取';
-        this._inboxButton.disabled = remaining < 1 || this._itemUseState !== 'idle'
+        this._inboxButton.hidden = false;
+        this._inboxButton.textContent = remaining > 0 ? '暂存 ' + remaining : '暂存物资';
+        this._inboxButton.disabled = this._itemUseState !== 'idle'
             || this._interactionState !== 'idle';
         return true;
     };
@@ -699,6 +699,7 @@ function(WorkbenchFocus, WorkbenchComponents,
 
     CharacterBuildView.prototype.destroy = function() {
         if (this._destroyed) return false;
+        if (this._stashClose) this._stashClose();
         this._destroyed = true;
         if (this._candidateDrag) this._candidateDrag.destroy();
         this._candidateDrag = null;

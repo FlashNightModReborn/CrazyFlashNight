@@ -4,6 +4,7 @@
 
 _root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
     target._visible = true;
+    if (org.flashNight.arki.item.MapChestStashService.isStashed(target)) return;
 
     // 任一既有 authority / suspend / recovery fence 都必须拦截当前回调。
     // guard 命中后只停住并等待 Web-only 服务收敛，绝不渲染 Flash 资源箱 UI。
@@ -52,6 +53,7 @@ _root.地图元件.资源箱开启脚本 = function(target:MovieClip) {
 
 _root.地图元件.资源箱破碎脚本 = function(target:MovieClip) {
     target._visible = true;
+    if (org.flashNight.arki.item.MapChestStashService.isStashed(target)) return;
 
     var lootGuard:Object = org.flashNight.arki.item.LootContainerService.guardBreakGrid(target);
     if (lootGuard.handled) {

@@ -47,7 +47,7 @@ test('脚本同一行重复存盘拒绝，不靠 family 单次命中蒙混过关
 });
 test('所有当前 XFL 物理点都满足冻结合同', () => {
   const records = manifest.callsites.filter(c => c.layer !== 'scripts');
-  assert.equal(records.length, 24);
+  assert.equal(records.length, 22);
   for (const record of records) {
     assert.deepEqual(validateXflCallsite(record, fs.readFileSync(path.join(root, record.sourcePath), 'utf8')), [], record.physicalId);
   }
@@ -61,7 +61,7 @@ test('manifest reason 均由 SaveManager 注册，transition 只允许冻结三�
       if (record.targetApi !== 'markDirty') assert(reasons.has(reason), record.physicalId + ': ' + reason);
     }
   }
-  assert.deepEqual(manifest.callsites.filter(c => c.targetApi === 'flushBeforeTransition')
+  assert.deepEqual(manifest.callsites.filter(c => c.targetApi === 'flushBeforeTransition' || c.reasonId.includes('stage.return_base'))
     .map(c => c.callsiteId).sort(), ['A1', 'A6', 'B2']);
 });
 test('C6 购物车 partial 保存顺序与两个入口保持', () => {

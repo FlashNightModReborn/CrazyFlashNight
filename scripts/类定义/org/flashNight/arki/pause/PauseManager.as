@@ -50,6 +50,22 @@ class org.flashNight.arki.pause.PauseManager {
     //----------------------------------
 
     private static var _initialized:Boolean = false;
+    private static var _rewardCommitPending:Boolean = false;
+    private static var _rewardResumeValue:Boolean = false;
+
+    /** 保存授权尚未裁决时，普通 UI 关闭不能恢复游戏并改写候选。 */
+    public static function setRewardCommitPending(value:Boolean):Void {
+        PauseManager.install();
+        if (value === PauseManager._rewardCommitPending) return;
+        if (value) {
+            PauseManager._rewardResumeValue = PauseManager.isPaused();
+            PauseManager._rewardCommitPending = true;
+            PauseManager.set(true, "reward_save");
+        } else {
+            PauseManager._rewardCommitPending = false;
+            PauseManager.set(PauseManager._rewardResumeValue, "reward_save");
+        }
+    }
 
     // 订阅链：[{id:String, fn:Function, scope:Object}, ...]
     private static var _subscribers:Array;
@@ -94,9 +110,12 @@ class org.flashNight.arki.pause.PauseManager {
         // 内层直接 return newVal 让赋值生效（_root.暂停 = ... 不被拦截），但 subscribers
         // **不会收到该次嵌套写入的通知**。这是设计意图：避免无限递归 + 避免分发顺序乱套。
         // 业务约束：subscriber 内不要做"会改 _root.暂停 又依赖被其他 subscriber 同步观察到"的操作。
-        if (PauseManager._dispatching) return newVal;
-
         var tag:String = PauseManager._writerTag;
+        if (PauseManager._rewardCommitPending && tag != "reward_save") {
+            PauseManager._rewardResumeValue = newVal === true;
+            newVal = true;
+        }
+        if (PauseManager._dispatching) return newVal;
         PauseManager._dispatching = true;
 
         // 写时快照 subscribers 数组：subscriber 内可安全调 unsubscribe（自己或他人），

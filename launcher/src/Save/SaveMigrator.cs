@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Save
@@ -136,6 +137,27 @@ namespace CF7Launcher.Save
             }
 
             NormalizeStageSettlementEmptyArrays(mydata);
+            NormalizeRewardStashEmptyArrays(mydata);
+        }
+
+        private static void NormalizeRewardStashEmptyArrays(JObject mydata)
+        {
+            var ext = mydata["ext"] as JObject;
+            var stash = ext?["rewardInbox"] as JObject;
+            if (!HasExactVersion(stash, 2)) return;
+            NormalizeKnownEmptyArrayField(stash, "entries");
+            if (stash["entries"] is JArray entries)
+                foreach (JObject entry in entries.OfType<JObject>())
+                    if (entry["item"]?["value"] is JObject equipment)
+                        NormalizeKnownEmptyArrayField(equipment, "mods");
+            if (stash["lastCommit"]?["result"] is JObject result)
+                foreach (string field in new[] { "accepted", "blocked", "packages" })
+                    NormalizeKnownEmptyArrayField(result, field);
+            if (stash["legacy"] is JObject legacy && HasExactVersion(legacy, 1))
+                foreach (string field in new[] { "batches", "receipts", "migrations", "supplyKeys" })
+                    NormalizeKnownEmptyArrayField(legacy, field);
+            if (ext?["mapStashSources"] is JObject sources && HasExactVersion(sources, 1))
+                NormalizeKnownEmptyArrayField(sources, "consumed");
         }
 
         /// <summary>

@@ -271,6 +271,8 @@
         this.containerId = String(options.containerId || '');
         this.containerLabel = String(options.containerLabel || this.containerId || '库存');
         this.columns = Math.max(1, integerOr(options.columns, 6));
+        // Expanding stores bound the menu as well as the visible item window.
+        this.maxPageOptions = Math.max(0, integerOr(options.maxPageOptions, 0));
         this.defaults = {
             offset: Math.max(0, integerOr(options.defaultOffset, 0)),
             limit: Math.max(1, integerOr(options.defaultLimit, 50)),
@@ -383,7 +385,17 @@
         var restoreMenuFocus = !!(activeElement && this.pageGrid.contains(activeElement));
         this.pageGrid.innerHTML = '';
         var fragment = document.createDocumentFragment();
-        for (var page = 1; page <= state.pageCount; page++) {
+        var budget = this.maxPageOptions ? Math.max(5, this.maxPageOptions) : state.pageCount;
+        var first = Math.max(2, Math.min(state.pageCount - budget + 2,
+            state.page - Math.floor((budget - 2) / 2)));
+        var last = Math.min(state.pageCount - 1, first + budget - 3);
+        var pages = state.pageCount <= budget ? null : [1];
+        if (pages) {
+            for (var middle = first; middle <= last; middle++) pages.push(middle);
+            pages.push(state.pageCount);
+        }
+        for (var index = 0; index < (pages ? pages.length : state.pageCount); index++) {
+            var page = pages ? pages[index] : index + 1;
             var start = (page - 1) * state.limit + 1;
             var end = Math.min(state.capacity, page * state.limit);
             var button = document.createElement('button');

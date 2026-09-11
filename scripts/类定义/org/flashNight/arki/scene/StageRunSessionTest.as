@@ -1,4 +1,7 @@
-﻿import org.flashNight.aven.test.*;
+﻿import org.flashNight.arki.item.RewardStashStore;
+import org.flashNight.neur.Server.SaveManager;
+import org.flashNight.arki.item.RewardStashService;
+import org.flashNight.aven.test.*;
 
 import org.flashNight.arki.scene.StageRunSession;
 import org.flashNight.arki.component.Effect.EffectSystem;
@@ -24,7 +27,6 @@ import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEve
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.neur.Event.EventDispatcher;
-import org.flashNight.neur.Server.SaveManager;
 
 /** StageRunSession 的 outcome/life 正交状态、复活与结算冻结 focused 回归。 */
 class org.flashNight.arki.scene.StageRunSessionTest {
@@ -362,8 +364,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "victory cannot bypass the canonical return lifecycle");
         assertTrue(StageRunSession.onReturnBaseStarted(),
             "canonical return freezes the victory settlement");
-        assertFalse(StageRunSession.canStartStage(),
-            "prepared settlement still blocks a new run");
+        assertTrue(StageRunSession.canStartStage(),
+            "durably stashed stock alone does not block a new run");
         StageRunSession.onSettlementState("ABANDONED", 0);
         _root.当前为战斗地图 = false;
         assertTrue(StageRunSession.canStartStage(),
@@ -1054,6 +1056,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 _root.淡出动画 = {淡出跳转帧:function(frame):Boolean {
                     _root.__returnRetryFades++;
                     if (_root.__returnRetryFault == "fade") throw new Error("retry test fade failure");
+                    this.__returnFadeActive = true;
                     return true;
                 }};
                 _root.存档系统.flushBeforeTransition = function(reason:String):Boolean {
@@ -1084,7 +1087,9 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 assertTrue(_root.__returnRetryProjection.returnFailure === reasons[i]
                         && _root.__returnRetryProjection.canReturnBase === true
                         && _root.__returnRetryProjection.reviveAllowed === false
-                        && prepared.settlement === "prepared" && prepared.inventory.size() == 1,
+                        && (kinds[i] == "fade" ? prepared.settlement === "stashed"
+                            && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 1
+                            : prepared.settlement === "prepared" && prepared.inventory.size() == 1),
                     kinds[i] + " nonempty prepared reward keeps a return-only visible projection");
                 assertTrue(prepared.returnRequested === (kinds[i] == "fade")
                         && _root.当前为战斗地图 === true,
@@ -1109,7 +1114,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 var recovered:Object = StageRunSession.testOnlySnapshot();
                 assertTrue(recovered.returnRequested && !recovered.canRetryReturn
                         && recovered.returnFailure === "" && _root.当前为战斗地图 === false
-                        && recovered.inventory === prepared.inventory && recovered.report === prepared.report
+                        && recovered.inventory == null && recovered.report === prepared.report
+                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 1
                         && recovered.settlementId === prepared.settlementId,
                     kinds[i] + " original HUD retries the same frozen settlement without reroll");
                 var fadesAfter:Number = _root.__returnRetryFades;
@@ -1119,10 +1125,14 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 assertTrue(_root.__returnRetryFades == fadesAfter && !StageRunSession.canStartStage(),
                     "repeat intent and fresh duplicate cannot fade twice or reopen stage admission");
                 StageRunSession.onSettlementState("CONSUMED", 0);
+                _root.淡出动画.__returnFadeActive = false;
+                _root.场景转换中 = false;
                 assertTrue(_root.返回基地() === true
-                        && StageRunSession.testOnlySnapshot().settlement === "claimed"
+                        && StageRunSession.testOnlySnapshot().settlement === "stashed"
                         && StageRunSession.testOnlySnapshot().inventory == null,
                     "terminal run preserves ordinary settings return without creating new rewards");
+                _root.淡出动画.__returnFadeActive = false;
+                _root.场景转换中 = false;
                 assertTrue(StageRunSession.begin("下一关", "简单")
                         && StageRunSession.testOnlySnapshot().returnFailure === "",
                     "terminal settlement releases the next stage without a stale retry");
@@ -2903,8 +2913,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(returned.success === true, "dead post-victory actor can return to base");
         var state:Object = StageRunSession.testOnlySnapshot();
         assertTrue(state.returnRequested === true, "return freezes the run before transition");
-        assertEquals("prepared", state.settlement, "return prepares one settlement object");
-        assertEquals(1, state.inventory.size(), "prepared settlement keeps its reward");
+        assertEquals("stashed", state.settlement, "return atomically stashes the frozen reward source");
+        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD), "frozen reward has one durable stash owner");
         assertFalse(StageRunSession.canRequestRevive(),
             "return transition removes the revive capability before base load");
         assertEquals("return_in_progress",
@@ -2926,11 +2936,11 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.当前为战斗地图 = false;
         StageRunSession.onSceneReady(returnedWorld, token, flow.worldIdentity(returnedWorld));
         state = StageRunSession.testOnlySnapshot();
-        assertEquals("rewards_pending", state.settlement,
-            "offline Web open becomes a resumable reward state");
-        assertEquals(1, state.remainingRewards, "offline open cannot lose the reward");
-        assertTrue(LootContainerService.hasStageSettlementPending(),
-            "anchorless settlement authority remains pending");
+        assertEquals("stashed", state.settlement,
+            "offline report does not reacquire asset authority");
+        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD), "offline report cannot lose the stored reward");
+        assertFalse(LootContainerService.hasStageSettlementPending(),
+            "stored rewards do not keep a pending asset authority");
         var expiry:Object = LootContainerService.expireScene("scene_cleanup");
         assertEquals("LOOT_SUSPENDED", expiry.state,
             "base settlement survives unrelated scene cleanup");
@@ -2938,7 +2948,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(StageRunSession.onReturnBaseStarted(),
             "repeated return after a terminal settlement remains idempotent");
         state = StageRunSession.testOnlySnapshot();
-        assertTrue(state.settlement == "claimed" && state.inventory == null,
+        assertTrue(state.settlement == "stashed" && state.inventory == null,
             "terminal return cannot materialize the same stage rewards a second time");
         fixture.removeMovieClip();
     }
@@ -2957,7 +2967,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(returned.success === true, "dead active run may retreat to base");
         var state:Object = StageRunSession.testOnlySnapshot();
         assertEquals("retreat", state.outcome, "dead active return freezes a retreat outcome");
-        assertEquals("prepared", state.settlement, "retreat still produces an empty settlement");
+        assertEquals("stashed", state.settlement, "retreat durably closes its empty reward source");
     }
 
     private static function testSettlementRewardInformationCapFilter():Void {
@@ -2974,10 +2984,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(StageRunSession.onReturnBaseStarted(),
             "victory return prepares the settlement");
         var state:Object = StageRunSession.testOnlySnapshot();
-        assertEquals(1, state.inventory.size(),
-            "capped story intel is not materialized into the settlement box");
-        assertEquals(1, state.remainingRewards,
-            "remaining rewards only count actually generated items");
+        assertEquals(1, RewardStashService.peek().entries.length,
+            "capped story intel does not enter the stash");
+        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD),
+            "only actually generated rewards acquire stash ownership");
         assertEquals(1, state.report.rewardRollOmissions,
             "the capped intel roll is counted as an omission");
 
@@ -2989,10 +2999,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(StageRunSession.onReturnBaseStarted(),
             "victory return prepares the second settlement");
         state = StageRunSession.testOnlySnapshot();
-        assertEquals(2, state.inventory.size(),
-            "uncapped intel is materialized alongside the other reward");
-        assertEquals(2, state.remainingRewards,
-            "both rewards remain claimable");
+        assertEquals(2, RewardStashService.peek().entries.length,
+            "uncapped intel is stashed alongside the other reward");
+        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),intel),
+            "stashed intel remains available exactly once");
     }
 
     private static function testZeroRewardOfflineSettlementSurvivesSceneExpiry():Void {
@@ -3008,15 +3018,15 @@ class org.flashNight.arki.scene.StageRunSessionTest {
 
         var state:Object = StageRunSession.testOnlySnapshot();
         var report:Object = state.report;
-        assertEquals("rewards_pending", state.settlement,
-            "offline zero-reward open remains explicitly resumable");
+        assertEquals("stashed", state.settlement,
+            "offline zero-reward report has a durably ended source");
         assertEquals(0, state.remainingRewards,
             "offline zero-reward settlement reports exact zero remaining");
         assertTrue(report != null && report.outcome == "failure"
                 && report.stageName == "零奖励失败结算",
             "offline zero-reward settlement retains the exact failure report");
-        assertTrue(LootContainerService.hasStageSettlementPending(),
-            "zero-reward stage settlement still owns pending Loot authority");
+        assertFalse(LootContainerService.hasStageSettlementPending(),
+            "zero-reward report owns no pending asset write");
 
         var expiry:Object = LootContainerService.expireScene("scene_cleanup");
         assertEquals("LOOT_SUSPENDED", expiry.state,
@@ -3024,10 +3034,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         state = StageRunSession.testOnlySnapshot();
         assertTrue(state.report === report,
             "scene expiry preserves the same zero-reward report object");
-        assertEquals("rewards_pending", state.settlement,
-            "scene expiry does not terminalize the zero-reward report");
-        assertTrue(LootContainerService.hasStageSettlementPending(),
-            "scene expiry leaves zero-reward Loot authority recoverable");
+        assertEquals("stashed", state.settlement,
+            "scene expiry preserves the stored source finality");
+        assertFalse(LootContainerService.hasStageSettlementPending(),
+            "scene expiry cannot create reward write authority for a report");
     }
 
     private static function testLegacySaveNavigationIsIgnoredAfterRewardClose():Void {
@@ -3119,9 +3129,9 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         var second:Object = StageRunSession.testOnlySnapshot();
         assertTrue(_root.__stageRunSessionTestFlushCalls == 2
                 && second.returnRequested === true
-                && second.inventory === inventory
+                && second.inventory == null && inventory.size() == 1
                 && String(second.settlementId) == settlementId
-                && second.inventory.size() == 1,
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 1,
             "durable retry reuses one settlement id and reward object without rerolling");
         delete _root.__stageRunSessionTestFlushCalls;
     }
@@ -3359,19 +3369,19 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         StageRunSession.onReturnBaseStarted();
         var settlementId:String = String(StageRunSession.testOnlySnapshot().settlementId);
         var cleared:Object = StageRunSession.clearPersistedSettlement(
-            settlementId, "claimed", {
+            settlementId, "stashed", {
                 operationId:"close.terminal.1", kind:"close",
                 fingerprint:"close|consume", authorityRevision:5
             });
         var store:Object = _root._saveExt.stageSettlement;
-        assertTrue(cleared.success === true && cleared.duplicate === false,
-            "terminal persistence clears pending with an explicit success result");
+        assertTrue(cleared.success === true && cleared.duplicate === true,
+            "late terminal cleanup recognizes an already stashed source");
         assertTrue(store.pending == null && store.lastTerminal.settlementId == settlementId
-                && store.lastTerminal.terminalState == "claimed"
-                && store.lastTerminal.receipt.operationId == "close.terminal.1",
-            "terminal marker preserves the last exact receipt without retaining rewards");
+                && store.lastTerminal.terminalState == "stashed"
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 1,
+            "terminal marker preserves stash finality and its single asset owner");
         var duplicate:Object = StageRunSession.clearPersistedSettlement(
-            settlementId, "claimed", null);
+            settlementId, "stashed", null);
         assertTrue(duplicate.success === true && duplicate.duplicate === true,
             "repeated terminal cleanup is idempotent after pending removal");
         var conflict:Object = StageRunSession.clearPersistedSettlement(
@@ -3628,6 +3638,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         LootContainerService.testOnlyReset();
         StageRunSession.testOnlyReset();
         _root.gameworld = {};
+        _root.场景转换中 = false;
         _root.控制目标 = "hero";
         _root.物品栏 = {
             背包:new ArrayInventory(null, 50),
@@ -3644,6 +3655,17 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.强制存盘 = function():Boolean { return true; };
         // R1 步骤 8：A6 已迁 flushBeforeTransition，默认 double 同步镜像
         _root.存档系统.flushBeforeTransition = _root.强制存盘;
+        // The return fence now exercises the complete candidate and keeps the existing fault injector.
+        _root.savePath = "CF7_StageStash_Regression_Test";
+        _root.允许存档 = true; _root.角色名 = "StageStashRegression"; _root.基础身价值 = 1000; _root.身价 = 1000;
+        _root.mydata = null; _root.tasks_to_do = []; _root.tasks_finished = []; _root.task_chains_progress = {};
+        _root.商城已购买物品 = []; _root.商城购物车 = []; _root.主角被动技能 = {};
+        _root.物品栏.装备栏 = new ArrayInventory(null, 50); _root.物品栏.药剂栏 = new ArrayInventory(null, 8);
+        _root.UpdateTaskProgress = function():Void {};
+        SaveManager.getInstance()._configureSaveFlowForTest({flushResult:true, beforeLocalCommit:function():Void {
+            var result:Object = _root.存档系统.flushBeforeTransition("stage.return_base");
+            SaveManager.getInstance()._configureSaveFlowForTest({flushResult:result});
+        }});
         _root.金钱 = 0;
         _root.虚拟币 = 0;
         _root.经验值 = 0;
@@ -3682,7 +3704,15 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         };
     }
 
+    private static var _stashBackup:Object;
+    private static function stashKeys():Array {
+        return ["场景转换中", "savePath", "允许存档", "角色名", "基础身价值", "身价", "mydata", "tasks_to_do", "tasks_finished",
+            "task_chains_progress", "商城已购买物品", "商城购物车", "主角被动技能", "UpdateTaskProgress"];
+    }
     private static function backupWorld():Void {
+        _stashBackup = {};
+        var keys:Array = stashKeys();
+        for(var k:Number=0;k<keys.length;k++) _stashBackup[keys[k]] = _root[keys[k]];
         _backup = {
             itemDataDict:ItemUtil.itemDataDict,
             equipmentDict:ItemUtil.equipmentDict,
@@ -3715,6 +3745,12 @@ class org.flashNight.arki.scene.StageRunSessionTest {
     }
 
     private static function restoreWorld():Void {
+        SaveManager.getInstance()._configureSaveFlowForTest({beforeLocalCommit:null, flushResult:true});
+        if (RewardStashService.pendingOperationId() != "") RewardStashService.resume(RewardStashService.pendingOperationId());
+        SaveManager.getInstance()._configureSaveFlowForTest({flushResult:undefined});
+        SharedObject.getLocal("CF7_StageStash_Regression_Test").clear();
+        var keys:Array = stashKeys();
+        for(var k:Number=0;k<keys.length;k++) _root[keys[k]] = _stashBackup[keys[k]];
         if (_testHero != undefined) {
             _testHero.removeMovieClip();
             _testHero = undefined;

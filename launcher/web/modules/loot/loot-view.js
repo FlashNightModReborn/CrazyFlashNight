@@ -79,6 +79,10 @@ var LootView = (function() {
             activeFrames:true,totalKills:true,omittedKillTypes:true,
             totalItemGains:true,totalItemLosses:true,omittedItemFlowTypes:true,
             rewardRollOmissions:true,kills:true,itemFlows:true};
+        if (value && Object.prototype.hasOwnProperty.call(value, 'rewardStashed')) {
+            if (typeof value.rewardStashed !== 'boolean') return null;
+            expected.rewardStashed = true;
+        }
         if (!exactKeys(value,expected)||value.v!==1
                 ||!safeToken(value.runId,96)||!safeText(value.stageName,96,false)
                 ||!safeText(value.difficulty,48,false)
@@ -117,7 +121,7 @@ var LootView = (function() {
             omittedKillTypes:value.omittedKillTypes,
             totalItemGains:value.totalItemGains,totalItemLosses:value.totalItemLosses,
             omittedItemFlowTypes:value.omittedItemFlowTypes,
-            rewardRollOmissions:value.rewardRollOmissions,kills:kills,itemFlows:itemFlows};
+            rewardRollOmissions:value.rewardRollOmissions,kills:kills,itemFlows:itemFlows,rewardStashed:value.rewardStashed === true};
     }
 
     function normalizeItemFlow(value) {
@@ -324,7 +328,7 @@ var LootView = (function() {
                 ? '左栏合并展示击杀与物资记录；右栏可切换待领取奖励和当前材料存量。\n库存整理仍使用原有背包与战备箱界面。普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。'
                 : this.isRewardInbox
                     ? '普通关闭会保留未领取内容；待领取恢复批次不提供永久放弃。'
-                : '可进入库存整理，在背包与战备箱之间转移或丢弃物品。\n普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。',
+                : '可进入库存整理。关闭页面时，箱中剩余物资会存入暂存区，稍后可从角色物品页取出。',
             actions:[{id:'close',label:'知道了',primary:true}]
         }});
         mountSession.defer(function() { if (self.helpAction) self.helpAction.destroy(); });
@@ -356,10 +360,10 @@ var LootView = (function() {
         this.abandonButton = document.createElement('button');
         this.abandonButton.type = 'button';
         this.abandonButton.className = 'workbench-mode-btn loot-abandon-btn';
-        this.abandonButton.textContent = '放弃剩余';
+        this.abandonButton.textContent = this.isSettlement ? '放弃剩余' : '存入暂存区';
         this.abandonButton.setAttribute('aria-label',this.isSettlement
-            ? '永久放弃剩余关卡奖励' : '永久放弃箱内剩余战利品');
-        this.abandonButton.setAttribute('data-audio-cue','destructive');
+            ? '永久放弃剩余关卡奖励' : '保管剩余战利品并关闭');
+        this.abandonButton.setAttribute('data-audio-cue',this.isSettlement?'destructive':'confirm');
         this.abandonButton.hidden = true;
         this.abandonButton.disabled = !!this.isRewardInbox;
         this.reconcileButton = document.createElement('button');
@@ -651,6 +655,7 @@ var LootView = (function() {
         var notices=[];
         if (report.omittedKillTypes) notices.push('另有 '+report.omittedKillTypes+' 类敌人未展开');
         if (report.rewardRollOmissions) notices.push(report.rewardRollOmissions+' 项奖励配置未进入本轮结算');
+        if (report.rewardStashed) notices.push('本轮物资已存入暂存区，可稍后从角色物品页整理。');
         this.killStatus.textContent=notices.join(' · ')||('展示 '+report.kills.length+' 类');
 
         this.flowGainTotal.textContent='+'+String(report.totalItemGains);
@@ -899,7 +904,8 @@ var LootView = (function() {
             if (typeof self.options.onRequestClose === 'function') self.options.onRequestClose('header');
         });
         session.listen(this.abandonButton,'click',function() {
-            if (typeof self.options.onRequestAbandon === 'function') self.options.onRequestAbandon();
+            if (!self.isSettlement && typeof self.options.onRequestClose === 'function') self.options.onRequestClose('stash');
+            else if (typeof self.options.onRequestAbandon === 'function') self.options.onRequestAbandon();
         });
         session.listen(this.reconcileButton,'click',function() {
             if (typeof self.options.onReconcile === 'function') self.options.onReconcile();

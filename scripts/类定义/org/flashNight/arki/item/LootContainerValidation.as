@@ -123,12 +123,12 @@ class org.flashNight.arki.item.LootContainerValidation {
         var keys:Array = ["v", "runId", "stageName", "difficulty", "outcome",
             "activeFrames", "totalKills", "omittedKillTypes", "totalItemGains",
             "totalItemLosses", "omittedItemFlowTypes", "rewardRollOmissions",
-            "kills", "itemFlows"];
+            "kills", "itemFlows", "rewardStashed"];
         if (!hasOnlyKeys(report, keys)) return false;
         for (var i:Number = 0; i < keys.length; i++) {
-            if (!hasOwnField(report, String(keys[i]))) return false;
+            if (keys[i] != "rewardStashed" && !hasOwnField(report, String(keys[i]))) return false;
         }
-        if (report.v !== 1
+        if ((report.rewardStashed !== undefined && typeof report.rewardStashed != "boolean") || report.v !== 1
                 || typeof report.runId != "string"
                 || !isSafeToken(String(report.runId), 96)
                 || typeof report.stageName != "string"

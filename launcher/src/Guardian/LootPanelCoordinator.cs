@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using CF7Launcher.AgentRuntime.Security;
 using Newtonsoft.Json;
@@ -1549,7 +1549,9 @@ namespace CF7Launcher.Guardian
             JObject report, out JObject normalized)
         {
             normalized = null;
-            if (!HasExactKeys(report, "v", "runId", "stageName", "difficulty",
+            var baseReport = report == null ? null : (JObject)report.DeepClone();
+            baseReport?.Remove("rewardStashed");
+            if (!HasExactKeys(baseReport, "v", "runId", "stageName", "difficulty",
                     "outcome", "activeFrames", "totalKills", "omittedKillTypes",
                     "totalItemGains", "totalItemLosses", "omittedItemFlowTypes",
                     "rewardRollOmissions", "kills", "itemFlows"))
@@ -1565,6 +1567,7 @@ namespace CF7Launcher.Guardian
             long totalItemGains;
             long totalItemLosses;
             long omittedItemFlowTypes;
+            if (report["rewardStashed"] != null && report["rewardStashed"].Type != JTokenType.Boolean) return false;
             long rewardRollOmissions;
             if (!TryReadInteger(report["v"], 1, 1, out version)
                 || !TryReadOpaque(report["runId"], out runId)
@@ -1645,6 +1648,7 @@ namespace CF7Launcher.Guardian
                 ["totalItemLosses"] = totalItemLosses,
                 ["omittedItemFlowTypes"] = omittedItemFlowTypes,
                 ["rewardRollOmissions"] = rewardRollOmissions,
+                ["rewardStashed"] = report.Value<bool?>("rewardStashed") == true,
                 ["kills"] = normalizedKills,
                 ["itemFlows"] = normalizedItemFlows
             };

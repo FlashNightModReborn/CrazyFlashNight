@@ -25,7 +25,7 @@ const crypto = require('crypto');
 const ROOT = path.resolve(__dirname, '..', '..');
 const MANIFEST_PATH = path.join(__dirname, 'callsites.v1.json');
 
-const STRICT_APIS = ['flushDurableNow', 'flushBeforeTransition'];
+const STRICT_APIS = ['flushDurableNow', 'flushBeforeTransition', 'commitRewardCandidate'];
 const REQUEST_APIS = ['requestSave', 'markDirty+requestSave'];
 
 // pattern 家族：扫描、计数与 manifest 比对的统一口径
@@ -43,6 +43,7 @@ const FAMILIES = {
   apiRequestSave:   { re: /requestSave\s*\(/,       layers: ['scripts', 'xfl'] },
   apiFlushDurableNow:{ re: /flushDurableNow\s*\(/,  layers: ['scripts', 'xfl'] },
   apiFlushBeforeTransition: { re: /flushBeforeTransition\s*\(/, layers: ['scripts', 'xfl'] },
+  apiCommitRewardCandidate: { re: /commitRewardCandidate\s*\(/, layers: ['scripts'] },
   saveShopCart:     { re: /_root\.保存购物车\s*\(/,  layers: ['xfl'] }
 };
 
@@ -53,7 +54,7 @@ const SAVE_API_DEF_HOSTS = new Set([
 ]);
 // 需要排除定义宿主的 family（其余 family 的模式本就只命中调用形态）
 const DEF_HOST_EXCLUDED_FAMILIES = new Set([
-  'directFlushNow', 'apiMarkDirty', 'apiRequestSave', 'apiFlushDurableNow', 'apiFlushBeforeTransition'
+  'directFlushNow', 'apiMarkDirty', 'apiRequestSave', 'apiFlushDurableNow', 'apiFlushBeforeTransition', 'apiCommitRewardCandidate'
 ]);
 
 const errors = [];
@@ -262,6 +263,7 @@ function main() {
   assertEq('scripts/ 生产 requestSave() 物理点', scriptsHits.apiRequestSave.length, counts.scriptsApiRequestSavePhysical);
   assertEq('scripts/ 生产 flushDurableNow() 物理点', scriptsHits.apiFlushDurableNow.length, counts.scriptsApiFlushDurableNowPhysical);
   assertEq('scripts/ 生产 flushBeforeTransition() 物理点', scriptsHits.apiFlushBeforeTransition.length, counts.scriptsApiFlushBeforeTransitionPhysical);
+  assertEq('scripts/ 奖励候选提交物理点', scriptsHits.apiCommitRewardCandidate.length, counts.scriptsApiCommitRewardCandidatePhysical);
   assertEq('XFL _root.强制存盘() 物理点', xflHits.forceSave.length, counts.xflForceSavePhysical);
   assertEq('XFL _root.自动存盘() 物理点', xflHits.autoSave.length, counts.xflAutoSavePhysical);
   assertEq('XFL _root.本地存盘() 物理点', xflHits.localSave.length, counts.xflLocalSavePhysical);
@@ -333,6 +335,7 @@ function main() {
   assertSetEqual('xfl apiFlushDurableNow', xflHits.apiFlushDurableNow, manKeys(isXfl, 'apiFlushDurableNow'));
   assertSetEqual('scripts apiFlushBeforeTransition', scriptsHits.apiFlushBeforeTransition,
     manKeys(isScripts, 'apiFlushBeforeTransition'));
+  assertSetEqual('scripts apiCommitRewardCandidate', scriptsHits.apiCommitRewardCandidate, manKeys(isScripts, 'apiCommitRewardCandidate'));
   assertSetEqual('xfl apiFlushBeforeTransition', xflHits.apiFlushBeforeTransition,
     manKeys(isXfl, 'apiFlushBeforeTransition'));
   const shopCartKeys = (manifest.outOfScope && manifest.outOfScope.xflSaveShopCart || [])

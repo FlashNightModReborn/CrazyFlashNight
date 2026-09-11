@@ -694,6 +694,16 @@ class org.flashNight.neur.Server.ServerManager {
             trace("[GameCmd] Rejected malformed jukeboxPlay command");
             return;
         }
+        // 真正未决的奖励候选禁止竞争写入。暂停只挡游戏帧，还需挡 Host 命令入口。
+        // 恢复命令始终重交原候选；摘要/页/冷却读取不会参与资产事务。
+        if (org.flashNight.neur.Server.SaveManager.getInstance().hasRewardCommitPending()
+                && action != "lootQuery" && action.indexOf("itemUseStash") != 0
+                && action != "openInventoryWorkbench" && action != "inventorySnapshot" && action != "inventoryTooltip"
+                && action != "characterBuildSnapshot" && action != "webPanelUnpause"
+                && action != "itemUseInboxSnapshot" && action != "itemUseCooldownSnapshot") {
+            trace("[GameCmd] reward candidate pending: " + action);
+            return;
+        }
         var handler:Function = _root.gameCommands[action];
         if (typeof handler == "function") {
             handler(params);

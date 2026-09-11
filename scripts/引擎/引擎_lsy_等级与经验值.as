@@ -61,6 +61,23 @@ _root.健身房主角是否升级 = function()
 	}
 }
 
+// 任务成长的等级/SP/身价已经与奖励同盘提交；这里只同步当前单位和动效。
+_root.投影已提交任务成长 = function(提交前等级) {
+    _root.升级需要经验值 = _root.根据等级得升级所需经验(_root.等级);
+    _root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
+    _root.玩家信息界面.刷新经验值显示();
+    if (_root.等级 <= 提交前等级) return;
+    var 控制对象 = TargetCacheManager.findHero();
+    if (控制对象 == undefined) return;
+    控制对象.等级 = _root.等级;
+    控制对象.根据等级初始数值(_root.等级);
+    控制对象.hp = 控制对象.hp满血值;
+    控制对象.mp = 控制对象.mp满血值;
+    _root.玩家信息界面.刷新hp显示();
+    _root.玩家信息界面.刷新mp显示();
+    EffectSystem.Effect("升级动画", 控制对象._x, 控制对象._y, 100);
+}
+
 _root.主角是否升级 = function(当前等级, 当前经验值)
 {
 	if (isNaN(当前经验值) || isNaN(当前等级) || 当前等级 >= _root.等级限制) return;

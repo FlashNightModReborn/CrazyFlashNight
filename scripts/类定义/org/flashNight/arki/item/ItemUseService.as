@@ -2,6 +2,9 @@
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.RewardInboxService;
+import org.flashNight.arki.item.RewardStashService;
+import org.flashNight.arki.item.RewardStashStore;
+import org.flashNight.arki.item.BaseItem;
 import org.flashNight.gesh.object.ObjectUtil;
 
 /** 背包物品的封闭 open/consume/query 权威服务。 */
@@ -23,6 +26,7 @@ class org.flashNight.arki.item.ItemUseService {
     public static function install():Void {
         if (_inited) return;
         RewardInboxService.installRootFacade();
+        RewardInboxService.setStashDelivery(RewardStashService.deliverSupply);
         _json = new LiteJSON();
         if (_root.gameCommands == undefined) _root.gameCommands = {};
         _root.gameCommands["itemUseOpen"] = function(params) {
@@ -43,6 +47,15 @@ class org.flashNight.arki.item.ItemUseService {
         _root.gameCommands["itemUseCooldownSnapshot"] = function(params) {
             org.flashNight.arki.item.ItemUseService.handle("cooldownSnapshot", params);
         };
+        _root.gameCommands["itemUseStashTooltip"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashTooltip", params); };
+        _root.gameCommands["itemUseStashPage"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashPage", params); };
+        _root.gameCommands["itemUseStashTake"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashTake", params); };
+        _root.gameCommands["itemUseStashMigrate"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashMigrate", params); };
+        _root.gameCommands["itemUseStashQuery"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashQuery", params); };
+        _root.gameCommands["itemUseStashOpen"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashOpen", params); };
+        _root.gameCommands["itemUseStashOpenMany"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashOpenMany", params); };
+        _root.gameCommands["itemUseLegacyInboxOpen"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("legacyInboxOpen", params); };
+        _root.gameCommands["itemUseStashResume"] = function(params) { org.flashNight.arki.item.ItemUseService.handle("stashResume", params); };
         _inited = true;
     }
 
@@ -53,11 +66,19 @@ class org.flashNight.arki.item.ItemUseService {
     }
 
     public static function execute(commandName:String, params:Object):Object {
+        if (commandName.indexOf("stash") == 0) return executeStash(commandName, params);
         if (_busy) return commonFailure(commandName, params, "service_not_ready");
+        if ((commandName == "open" || commandName == "openMany" || commandName == "consume")
+                && RewardStashService.pendingOperationId() != "") return commonFailure(commandName, params, "commit_pending");
+        // v1 开包协议只供旧 receipt 查询；新写必须携带 v2 库存修订。
+        if ((commandName == "open" || commandName == "openMany")
+                && RewardInboxService.lookupReceipt(String(params.operationId)) == null) {
+            return commonFailure(commandName, params, "unsupported_version");
+        }
         if (commandName != "open" && commandName != "openMany"
                 && commandName != "consume" && commandName != "query"
                 && commandName != "inboxSnapshot"
-                && commandName != "cooldownSnapshot") {
+                && commandName != "cooldownSnapshot" && commandName != "legacyInboxOpen") {
             return commonFailure(commandName, params, "unsupported_cmd");
         }
         if (!validateEnvelope(commandName, params)) {
@@ -84,12 +105,150 @@ class org.flashNight.arki.item.ItemUseService {
         }
         if (!context.success) return commonFailure(commandName, params, String(context.error));
         if (commandName == "query") return executeQuery(params);
-        if (commandName == "inboxSnapshot") return executeInboxSnapshot(params);
+        if (commandName == "inboxSnapshot" || commandName == "legacyInboxOpen") {
+            var inbox:Object = executeInboxSnapshot(params);
+            inbox.command = commandName;
+            if (commandName == "legacyInboxOpen" && inbox.success) {
+                inbox.inboxSummary = RewardInboxService.legacyInboxSummary();
+                inbox.rewardReady = rewardSummaryReady(inbox.inboxSummary);
+                inbox.rewardAuthority = RewardInboxService.materializeAuthority();
+            }
+            return inbox;
+        }
         if (commandName == "cooldownSnapshot") return executeCooldownSnapshot(params);
         if (commandName == "open") return executeOpen(params);
         if (commandName == "openMany") return executeOpenMany(params);
         if (commandName == "consume") return executeConsume(params);
         return commonFailure(commandName, params, "unsupported_cmd");
+    }
+
+    private static function executeStash(commandName:String, params:Object):Object {
+        var response:Object = common(commandName, params, false, "invalid_payload");
+        response.v = 2;
+        if (!validateStashEnvelope(commandName, params)) return response;
+        if (RewardStashService.pendingOperationId() != "" && commandName != "stashPage" && commandName != "stashTooltip"
+                && commandName != "stashQuery" && commandName != "stashResume") {
+            response.error = "commit_pending"; return response;
+        }
+        var context:Object = _contextValidator == null ? null
+            : _contextValidator(String(params.panelInstanceId), Number(params.sessionGeneration));
+        if (context == null || context.success !== true) {
+            response.error = context == null ? "service_not_ready" : String(context.error); return response;
+        }
+        var result:Object;
+        if (commandName == "stashPage") result = RewardStashService.page(Number(params.offset));
+        else if (commandName == "stashTooltip") result = RewardStashService.tooltip(params);
+        else if (commandName == "stashTake") result = RewardStashService.take(params);
+        else if (commandName == "stashQuery") result = RewardStashService.query(params);
+        else if (commandName == "stashMigrate") result = RewardStashService.migrate(String(params.operationId), String(params.storeId), Number(params.expectedRevision));
+        else if (commandName == "stashResume") result = RewardStashService.resume(String(params.operationId));
+        else result = executeStashOpen(commandName, params);
+        response.success = result != null && result.success === true;
+        if (response.success) { delete response.error; response.data = result; }
+        else response.error = result == null ? "service_not_ready" : String(result.error);
+        return response;
+    }
+
+    private static function validateStashEnvelope(commandName:String, params:Object):Boolean {
+        if (params == null || params.v !== 2 || params.task !== "cmd"
+                || (!RewardStashStore.whole(params.callId) || params.callId < 1) || typeof params.panelInstanceId != "string"
+                || params.panelInstanceId.length < 1 || (!RewardStashStore.whole(params.sessionGeneration) || params.sessionGeneration < 1)) return false;
+        var action:String = "itemUse" + commandName.charAt(0).toUpperCase() + commandName.substr(1);
+        if (params.action !== action) return false;
+        var keys:Array = ["task", "action", "callId", "v", "panelInstanceId", "sessionGeneration"];
+        if (commandName == "stashPage") {
+            keys.push("offset");
+            return onlyKeys(params, keys) && RewardStashStore.whole(params.offset);
+        }
+        if (commandName == "stashTooltip") {
+            keys.push("storeId"); keys.push("entryId"); keys.push("revision");
+            return onlyKeys(params, keys) && typeof params.storeId == "string" && params.storeId.length <= 128
+                && typeof params.entryId == "string" && params.entryId.length <= 160 && (RewardStashStore.whole(params.revision) && params.revision > 0);
+        }
+        if (!validOperationId(params.operationId)) return false;
+        keys.push("operationId");
+        if (commandName == "stashResume") return onlyKeys(params, keys);
+        if (typeof params.storeId != "string" || params.storeId.length > 128
+                || !RewardStashStore.whole(params.expectedRevision)) return false;
+        keys.push("storeId"); keys.push("expectedRevision");
+        if (commandName == "stashQuery" || commandName == "stashMigrate") return onlyKeys(params, keys);
+        if (commandName == "stashTake") {
+            keys.push("entries");
+            if (!onlyKeys(params, keys) || !(params.entries instanceof Array)
+                    || params.entries.length < 1 || params.entries.length > 32) return false;
+            for (var i:Number = 0; i < params.entries.length; i++) {
+                var row:Object = params.entries[i];
+                if (!onlyKeys(row, ["entryId", "revision", "quantity"])
+                        || typeof row.entryId != "string" || row.entryId.length > 160
+                        || !RewardStashStore.whole(row.revision) || (!RewardStashStore.whole(row.quantity) || row.quantity < 1)) return false;
+            }
+            return true;
+        }
+        if (commandName != "stashOpen" && commandName != "stashOpenMany") return false;
+        keys.push("source");
+        if (commandName == "stashOpenMany") {
+            keys.push("count");
+            if (!RewardStashStore.whole(params.count) || params.count < 2 || params.count > 64) return false;
+        }
+        var source:Object = params.source;
+        return onlyKeys(params, keys) && onlyKeys(source, ["physicalSlot", "slotLease", "itemName", "backpackVersion"])
+            && RewardStashStore.whole(source.physicalSlot) && source.physicalSlot < 50
+            && typeof source.slotLease == "string" && source.slotLease.length > 0
+            && typeof source.itemName == "string" && source.itemName.length > 0
+            && RewardStashStore.whole(source.backpackVersion);
+    }
+
+    private static function executeStashOpen(commandName:String, params:Object):Object {
+        if (_busy || RewardStashService.pendingOperationId() != "") return {success:false, error:"commit_pending"};
+        var count:Number = commandName == "stashOpenMany" ? Number(params.count) : 1;
+        var fingerprint:String = new LiteJSON().stringify([commandName, 2,
+            params.storeId, params.expectedRevision, sourceFingerprint(params.source), count]);
+        var store:Object = RewardStashService.peek();
+        if (store != null) {
+            var inspected:Object = RewardStashStore.inspectCommand(store, String(params.storeId),
+                Number(params.expectedRevision), String(params.operationId), fingerprint);
+            if (inspected.state == "committed") return inspected.result;
+            if (inspected.state != "fresh") return {success:false, error:"stale_stash"};
+        } else if (params.storeId != "" || params.expectedRevision !== 0) return {success:false, error:"stale_stash"};
+        var source:Object = validateBackpackSource(params.source);
+        if (!source.success) return {success:false, error:source.error};
+        var data:Object = effectiveData(source.item);
+        if (data == null || data.use !== "礼包") return {success:false, error:"unsupported_item"};
+        var recipe:Object = normalizeRecipe(data.data == null ? null : data.data.rewardPack);
+        if (!recipe.success) return {success:false, error:"invalid_reward_pack"};
+        if (Number(source.item.value) < count) return {success:false, error:"insufficient_quantity"};
+        var context:Object = {source:"item_use", reason:"reward_pack_open", operationId:params.operationId, mergeScope:"operation"};
+        if (!RewardStashService.begin(String(params.operationId), context, null, null)) return {success:false, error:RewardStashService.lastError};
+        _busy = true;
+        var packages:Array = [];
+        try {
+            for (var p:Number = 0; p < count; p++) {
+                var rolled:Object = rollRecipe(recipe);
+                if (!rolled.success) throw new Error("invalid_reward_pack");
+                var items:Array = [];
+                for (var e:Number = 0; e < rolled.entries.length; e++) {
+                    var row:Object = rolled.entries[e];
+                    var item:BaseItem = BaseItem.create(String(row.itemName), Number(row.quantity));
+                    if (item == null) throw new Error("invalid_reward_pack");
+                    items.push(item.toObject());
+                }
+                if (_testFaultCut == "append" && p == _testFaultOrdinal) throw new Error("injected_stash_append_fault");
+                if (!RewardStashService.admit(items, false, true, context)) throw new Error("invalid_reward_pack");
+                packages.push({ordinal:p, batchId:String(params.operationId) + ".p" + p, entryCount:items.length});
+            }
+            var remaining:Number = Number(source.item.value) - count;
+            source.inventory.addValue(String(source.slot), -count);
+            var after:Object = source.inventory.getItem(source.slot);
+            if ((after == null ? 0 : Number(after.value)) != remaining) throw new Error("source_changed");
+            PlayerAssetTransaction.recordItems("loss", [{name:params.source.itemName, value:count}], context);
+            var result:Object = {success:true, kind:count == 1 ? "open" : "openMany",
+                consumed:count, requestedCount:count, remaining:remaining, packages:packages,
+                rewardReady:RewardStashService.peek().entries.length > 0};
+            if (_testFaultCut == "receipt") throw new Error("injected_stash_receipt_fault");
+            return RewardStashService.end(fingerprint, result, "item_use.open_commit");
+        } catch (openError) {
+            return RewardStashService.cancel("invalid_reward_pack");
+        } finally { _busy = false; }
     }
 
     private static function executeOpen(params:Object):Object {
@@ -353,8 +512,7 @@ class org.flashNight.arki.item.ItemUseService {
         var response:Object = common("inboxSnapshot", params, true, "");
         response.inboxSummary = summary;
         response.rewardReady = rewardSummaryReady(summary);
-        response.rewardAuthority = response.rewardReady
-            ? RewardInboxService.materializeAuthority() : null;
+        response.rewardAuthority = null;
         return response;
     }
 
@@ -415,8 +573,7 @@ class org.flashNight.arki.item.ItemUseService {
         response.rewardReady = receipt.rewardReady === true;
         response.rewardBatchId = String(receipt.rewardBatchId);
         response.inboxSummary = RewardInboxService.inboxSummary();
-        response.rewardAuthority = response.rewardReady
-            ? RewardInboxService.materializeAuthority() : null;
+        response.rewardAuthority = null;
         return response;
     }
 
@@ -438,8 +595,7 @@ class org.flashNight.arki.item.ItemUseService {
         response.packages = projection.packages;
         response.rewardReady = rewardSummaryReady(summary);
         response.inboxSummary = summary;
-        response.rewardAuthority = response.rewardReady
-            ? RewardInboxService.materializeAuthority() : null;
+        response.rewardAuthority = null;
         return response;
     }
 
@@ -703,9 +859,10 @@ class org.flashNight.arki.item.ItemUseService {
             : commandName == "consume" ? "itemUseConsume"
             : commandName == "query" ? "itemUseQuery"
             : commandName == "inboxSnapshot" ? "itemUseInboxSnapshot"
-            : commandName == "cooldownSnapshot" ? "itemUseCooldownSnapshot" : "";
+            : commandName == "cooldownSnapshot" ? "itemUseCooldownSnapshot"
+            : commandName == "legacyInboxOpen" ? "itemUseLegacyInboxOpen" : "";
         if (expectedAction == "" || params.action !== expectedAction) return false;
-        if (commandName == "inboxSnapshot" || commandName == "cooldownSnapshot") {
+        if (commandName == "inboxSnapshot" || commandName == "cooldownSnapshot" || commandName == "legacyInboxOpen") {
             return onlyKeys(params,
             ["task","action","callId","v","panelInstanceId","sessionGeneration"]);
         }
@@ -771,7 +928,7 @@ class org.flashNight.arki.item.ItemUseService {
             callId:params == null ? undefined : params.callId,
             panelInstanceId:params == null ? undefined : params.panelInstanceId,
             sessionGeneration:params == null ? 0 : Number(params.sessionGeneration)};
-        if (commandName != "inboxSnapshot" && commandName != "cooldownSnapshot") {
+        if (commandName != "inboxSnapshot" && commandName != "cooldownSnapshot" && commandName != "legacyInboxOpen" && commandName != "stashPage" && commandName != "stashTooltip") {
             response.operationId = params == null ? undefined : params.operationId;
         }
         if (!success) response.error = errorCode;

@@ -96,6 +96,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
     private static function setupPickupHandler(target:MovieClip):Boolean {
         if (!target.dispatcher || typeof target.dispatcher.subscribe != "function") return false;
         var pickFunc:Function = function(target:MovieClip):Void {
+            var stashed:Object = org.flashNight.arki.item.MapChestStashService.open(target,
+                function(box:MovieClip):Boolean { return InteractionHandler.executePickup(box); });
+            if (stashed.handled) {
+                if (!stashed.success) InteractionHandler.notifyOpenRejected(String(stashed.error));
+                return;
+            }
             // 生产 Web 战利品箱在 kill 前先拿到唯一 reservation，并完整物化奖励。
             // 所有正网格箱都在这里进入 Web-only 权威；任何失败均保持 fail-closed，
             // 不得重新暴露已经退役的 Flash 资源箱 UI。
@@ -154,7 +160,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
         };
         var deathFunc:Function = function(target:MovieClip):Void {
             // commitReservedOpen 要求 death 在同一 kill 调用栈内完成 own-target 证明。
-            var lootDeath:Object = LootContainerService.observeDeath(target);
+            var lootDeath:Object = org.flashNight.arki.item.MapChestStashService.isStashed(target)
+                ? {handled:true, ownKill:true} : LootContainerService.observeDeath(target);
             if (lootDeath != null && lootDeath.handled === true
                     && lootDeath.ownKill !== true) {
                 // 测试阶段必须显式暴露外部破坏、重入或时序漂移；这里仍只记录诊断，

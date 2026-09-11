@@ -38,6 +38,7 @@ class org.flashNight.arki.scene.SceneManager {
      */
     public function initGameWorld(_gw:MovieClip):Void{
         gameworld = _gw;
+        org.flashNight.arki.item.MapChestStashService.beginWorld(gameworld);
 
         // ── 钉定 authored 实例深度（必须在 DepthManager 与 地图/子弹区域 等运行时层创建之前）──
         // 把 背景 / deadbody 钉到 gameworld 最底两层，消除对 FLA 摆层规范的依赖：

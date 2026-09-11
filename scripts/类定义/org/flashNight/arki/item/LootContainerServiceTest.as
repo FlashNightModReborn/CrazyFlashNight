@@ -1,4 +1,8 @@
-﻿import org.flashNight.arki.item.itemCollection.ArrayInventory;
+﻿import org.flashNight.neur.Server.SaveManager;
+import org.flashNight.arki.item.RewardStashService;
+import org.flashNight.arki.item.RewardStashStore;
+import org.flashNight.arki.item.MapChestStashService;
+import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
@@ -48,9 +52,12 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         _failed = 0;
         trace("=== LootContainerServiceTest start ===");
         installMetadata();
+        // 2026-09-11 accepted contract: nonempty map close/expiry stashes the source; v1 fresh
+        // pack writes are retired. Their former suspend/roll-again expectations below remain
+        // historical references. Current replacements: testLegacyMapStash and RewardStashServiceTest.
+        // Legacy root N+1, terminal ACK, write fault cuts and restart recovery still run here.
 
         testReservationKillGateAndOverwrite();
-        testBreakGuardIsTargetScopedAcrossSuspendedAndPending();
         testMaterializedInventoryValidationFence();
         testReservationKillUnavailableRecovery();
         testReservationActivationGateRecovery();
@@ -83,35 +90,14 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testFullBackpackExistingStackStillMerges();
         testMaterialAndInformationClaims();
         testCurrencyClaims();
-        testAbandonExpireAndDuplicateClose();
-        testSuspendAnchorReopenIdentityAndStaleClose();
-        testSuspendPauseSocketBypass();
-        testSuspendNoSendRollback();
-        testSuspendSynchronousCallbackFailureRestoresAnchor();
-        testSuspendAsyncRejectionRestoresAndStalesLateCallback();
-        testSuspendAsyncTimeoutRestoresAnchor();
-        testSuspendSocketDetachOrderingAndLateCallback();
-        testSuspendReopenAnchorLossExpires();
-        testSuspendSocketDetachAnchorLossReleasesPause();
-        testSuspendSocketDetachPauseReleaseRetry();
-        testSuspendDirectReopenPauseReleaseRetry();
-        testSuspendTerminalReopenPauseReleaseRetry();
-        testSuspendAcceptedRecoveryStaysSuspended();
-        testCloseAttemptProofSurvivesRejectedReopen();
-        testRecoveryProofLedgerAcceptedPrunesAtStableLimit();
-        testRecoveryProofLedgerDefiniteFailuresDoNotConsumeReserve();
-        testRecoveryProofLedgerOrderingAndCapacity();
         testEmptyStageSettlementReportRecovery();
-        testSuspendReopenFailureEmptyConsumes();
         testInitialOpenSynchronousFailureSuspendsSameInventory();
-        testSuspendAnchorFailureIsZeroAuthority();
-        testSuspendedAnchorUnloadExpires();
         testReliablePanelOpenCallbacks();
-        testPanelOpenAckDispositionAndUncertainRecovery();
         testRecoveryProofStrictShapeAndNonce();
         testInitialRecoveryBeforeAckProof();
         testConnectedPanelRecoverySignal();
         testWireHandlersAndExactPayload();
+        testLegacyMapStash();
         testRewardInboxLegacyMigrationAndCapacity();
         testOnlineSupplyFacadeIdempotencyAndRollback();
         testOnlineSupplyFacadeRequestsStrictRewardPanel();
@@ -126,26 +112,81 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testRewardPackRecipeClosedModes();
         testItemUseCooldownSnapshotUsesFrameAuthority();
         testRewardInboxTerminalEmptyArrayShapeRepair();
-        stressMaterialBoxOpenClaimLoop();
         probeSaveCallsPerClaim();
         testRewardRootSaveCountRegressionGate();
         testRewardRootTimeSliceRestart();
         testRewardRootPendingResponseCarriesNoProjection();
         testItemUseConsumeReceiptFailureRestoresBackpack();
-        testItemUseOpenManyFreshCommitReplayAndConflict();
-        testItemUseOpenManyBoundaryK64AndZeroHitDescriptor();
-        testItemUseOpenManyRejectionsAreZeroWrite();
-        testItemUseOpenManyRecipeModesMatchSequentialOpens();
-        testItemUseOpenManyFaultCutsRestoreExactly();
-        testItemUseOpenManyFenceFalsePendingRetry();
-        testItemUseOpenManyResponseLossRestartQuery();
-        testItemUseOpenManyReceiptRetentionWindow();
-        testItemUseCompactionConservesAssetsAndCuts();
 
         restoreMetadata();
         trace("LootContainerServiceTest Tests Passed: " + _passed);
         trace("LootContainerServiceTest Tests Failed: " + _failed);
         trace("=== LootContainerServiceTest end ===");
+    }
+
+    private static function testLegacyMapStash():Void {
+        var keys:Array=["savePath","允许存档","角色名","基础身价值","身价","mydata","tasks_to_do","tasks_finished",
+            "task_chains_progress","商城已购买物品","商城购物车","主角被动技能","UpdateTaskProgress"];
+        var old:Object={}; for(var k:Number=0;k<keys.length;k++) old[keys[k]]=_root[keys[k]];
+        var sm:SaveManager=SaveManager.getInstance();
+        try {
+            for(var mode:Number=0;mode<3;mode++) {
+                resetWorld();
+                _root.savePath="CF7_LegacyMapStash_Regression_Test"; _root.允许存档=true; _root.角色名="LegacyMapStash";
+                _root.基础身价值=1000; _root.身价=1000; _root.mydata=null;
+                _root.tasks_to_do=[]; _root.tasks_finished=[]; _root.task_chains_progress={};
+                _root.商城已购买物品=[]; _root.商城购物车=[]; _root.主角被动技能={};
+                _root.物品栏.装备栏=new ArrayInventory(null,50); _root.UpdateTaskProgress=function():Void {};
+                sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
+                MapChestStashService.beginWorld(_root.gameworld);
+                var flow:Object;
+                if(mode<2) flow=activate([BaseItem.create(STACK,3)],"legacy.stash."+mode);
+                else {
+                    var target:Object=makeTarget("legacy.reserved");
+                    LootContainerService.beginMapChestOpen(target);
+                    var inv:ArrayInventory=makeInventory([BaseItem.create(STACK,3)]);
+                    LootContainerService.commitReservedOpen(target,inv,function(box:Object):Boolean {return false;});
+                    flow={target:target,inventory:inv};
+                }
+                var count:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
+                if(mode==0) {
+                    var snap:Object=snapshot(flow);
+                    var params:Object=closeParams(snap,"legacy.stash.close",String(snap.closeLease),false);
+                    sm._configureSaveFlowForTest({flushResult:false});
+                    var denied:Object=LootContainerService.execute("close",params);
+                    check(!denied.success && flow.inventory.getItem(0).value==3 && RewardStashService.peek()==null,
+                        "legacy map close false preserves exact source and does not publish stock");
+                    sm._configureSaveFlowForTest({flushResult:"pending"});
+                    var pending:Object=LootContainerService.execute("close",params);
+                    check(!pending.success && pending.error=="commit_pending" && RewardStashService.pendingOperationId()!="",
+                        "legacy map close pending retains one candidate");
+                    sm._configureSaveFlowForTest({flushResult:true});
+                    var query:Object=LootContainerService.execute("query",queryParams(snap));
+                    check(query.success && query.remainingCount==0 && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3,
+                        "legacy close query resumes the same saved source into stash");
+                    var physical:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
+                    var replay:Object=LootContainerService.execute("close",params);
+                    check(replay.success && sm._getSavePhysicalStatsForTest().flushAttempt==physical
+                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3,
+                        "legacy closed source replay cannot duplicate stock or save");
+                } else {
+                    var expired:Object=LootContainerService.expireScene("scene_cleanup");
+                    check(expired.success && expired.remainingCount==0
+                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3
+                        && sm._getSavePhysicalStatsForTest().flushAttempt==count+1,
+                        mode==1?"opened legacy map expiry preserves remaining stock in one save":"materialized reservation expiry preserves its unique stock before kill projection");
+                }
+                check(SharedObject.getLocal(_root.savePath).data[SaveManager.SAVE_KEY].ext.mapStashSources.consumed.length==1,
+                    "legacy map durable source proof and stock share the same save "+mode);
+            }
+        } finally {
+            sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
+            if(RewardStashService.pendingOperationId()!="") RewardStashService.resume(RewardStashService.pendingOperationId());
+            sm._configureSaveFlowForTest({flushResult:undefined});
+            SharedObject.getLocal("CF7_LegacyMapStash_Regression_Test").clear();
+            for(var k:Number=0;k<keys.length;k++) _root[keys[k]]=old[keys[k]];
+            LootContainerService.testOnlyReset();
+        }
     }
 
     private static function installMetadata():Void {
@@ -3678,13 +3719,14 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         LootContainerService.abortReservedOpen(target, "test_abort");
 
         var authority:Object = RewardInboxService.materializeAuthority();
-        var blocked:Object = LootContainerService.beginMapChestOpen(
-            makeTarget("reward.inbox.first"));
+        var nextMapTarget:Object = makeTarget("reward.inbox.first");
+        var blocked:Object = LootContainerService.beginMapChestOpen(nextMapTarget);
         check(authority != null && authority.sourceKind == "reward_inbox"
                 && authority.openAttemptSeq == 1
                 && authority.displayName == "待领取物品"
-                && !blocked.reserved && blocked.reason == "loot_flow_busy",
-            "materialized reward authority owns the panel lane while standard singleton remains untouched");
+                && blocked.reserved && !RewardInboxService.hasActiveAuthority(),
+            "materialized read-only reward stock does not block a new map source");
+        LootContainerService.abortReservedOpen(nextMapTarget,"test_abort");
         var snapshot:Object = LootContainerService.execute("snapshot", {
             v:2, sourceKind:"reward_inbox",
             chestSessionId:authority.chestSessionId,
@@ -4324,12 +4366,13 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             operationId:"probe.materialbox.1", panelInstanceId:"panel.probe", sessionGeneration:1,
             source:{physicalSlot:20, slotLease:String(leaseRow.slotLease),
                 itemName:"材料盒子", backpackVersion:Number(snap.containerVersion)}};
+        var normalized:Object = RewardInboxService.normalizeSaveData({inventory:{装备栏:{}},ext:_root._saveExt});
         var probeResult:Object = ItemUseService.execute("open", probeParams);
         var repairedTerminal:Object = _root._saveExt.rewardInbox.claimRootTerminal;
-        check(probeResult.success === true
+        check(normalized.ok && !probeResult.success && probeResult.error == "unsupported_version"
                 && repairedTerminal.result.blockedEntries instanceof Array
                 && repairedTerminal.result.remainingEntryIds instanceof Array,
-            "存档把空数组磨成空对象的终态根在 normalize 时被修复，礼包不再被误报 reward_inbox_full");
+            "旧终态根空数组在加载时修复，旧版新开包仍明确拒绝");
         ItemUseService.setContextValidator(null);
     }
 
@@ -5105,7 +5148,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
             claimRootTerminal:malformedTerminal}}};
         var malformed:Object = RewardInboxService.normalizeSaveData(malformedSave);
         var topFutureSave:Object = {inventory:{装备栏:{}}, ext:{
-            rewardInbox:{v:2}, unrelatedState:{kept:true}}};
+            rewardInbox:{v:3}, unrelatedState:{kept:true}}};
         var topFuture:Object = RewardInboxService.normalizeSaveData(topFutureSave);
         check(malformed.ok && malformed.quarantined === true
                 && malformedSave.ext.rewardInbox.claimRootTerminal === malformedTerminal

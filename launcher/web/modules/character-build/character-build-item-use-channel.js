@@ -28,7 +28,7 @@
             var opened = finiteWhole(response.consumed != null
                 ? response.consumed : receipt.consumed);
             return '已打开'                + (pending.command === 'openMany' && opened !== null
-                    ? opened + ' 个' : '') + subject + '；奖励已转入待领取'
+                    ? opened + ' 个' : '') + subject + '；奖励已存入暂存区'
                 + (inboxRemaining !== null ? '（当前 ' + inboxRemaining + ' 件）' : '') + '。';
         }
         var lane = finiteWhole(response.selectedLane != null
@@ -158,33 +158,25 @@
         };
         controller._openRewardInbox = function() {
             var self = this;
-            function transition() {
-                var inbox = self._itemUse.inbox();
-                var remaining = Number(inbox && inbox.summary
-                    && inbox.summary.remainingCount) || 0;
-                if (remaining < 1) {
-                    if (self._ports.toast) self._ports.toast('当前没有待领取物品。');
-                    return false;
-                }
-                if (!inbox.authority) {
-                    if (self._ports.toast) {
-                        self._ports.toast('待领取界面暂时不可用，请稍后重试。');
-                    }
-                    return false;
-                }
-                self._rewardAuthority = inbox.authority;
-                return self._ports.requestClose
-                    ? self._ports.requestClose('navigate_reward_inbox') : false;
-            }
             var inbox = this._itemUse.inbox();
-            if (inbox && Number(inbox.summary && inbox.summary.remainingCount) > 0
-                    && inbox.authority) {
-                return transition();
+            if (inbox && inbox.summary && inbox.summary.recoveryRequired === true) {
+                return !!this._itemUse.openLegacyInbox(function(_, accepted) {
+                    var current = self._itemUse.inbox();
+                    if (accepted && current.authority && self._ports.requestClose) {
+                        self._rewardAuthority = current.authority;
+                        self._ports.requestClose('navigate_reward_inbox');
+                    } else if (self._ports.toast) self._ports.toast('上次领取尚待恢复，请重试。');
+                });
             }
-            return !!this._itemUse.refreshInbox(function(_, accepted) {
-                if (accepted) transition();
-                else if (self._ports.toast) {
-                    self._ports.toast('待领取物品同步失败，请重试。');
+            var stashView = typeof module !== 'undefined' && module.exports
+                ? require('./character-build-stash-view.js') : globalThis.CharacterBuildStashView;
+            return stashView.open(this._view, this._itemUse, {
+                toast:this._ports.toast,
+                changed:function() {
+                    self._candidateCache = null;
+                    self._session.refreshSnapshot(function(snapshot, accepted) {
+                        if (accepted && self._view) self._applySnapshot(snapshot.payload, false);
+                    });
                 }
             });
         };
@@ -220,9 +212,6 @@
                 this._rewardAuthority = response.rewardAuthority;
             }
             this._candidateCache = null;
-            var transitionToInbox = pending
-                && (pending.command === 'open' || pending.command === 'openMany')
-                && (response.rewardReady === true || receipt.rewardReady === true);
             var refreshCallId = this._session.refreshSnapshot(function(snapshot, accepted) {
                 if (accepted && self._view) self._applySnapshot(snapshot.payload, false);
                 else self._itemUseResumeSelection = null;
@@ -230,8 +219,7 @@
                 if (self._view && self._view.showItemUseResult) {
                     self._view.showItemUseResult(message);
                 }
-                if (transitionToInbox) self._openRewardInbox();
-                else if (self._ports.toast) {
+                if (self._ports.toast) {
                     self._ports.toast(message);
                 }
             });
@@ -241,8 +229,7 @@
                 if (this._view && this._view.showItemUseResult) {
                     this._view.showItemUseResult(fallbackMessage);
                 }
-                if (transitionToInbox) this._openRewardInbox();
-                else if (this._ports.toast) {
+                if (this._ports.toast) {
                     this._ports.toast(fallbackMessage
                         + ' 背包将在下次同步时刷新。');
                 }

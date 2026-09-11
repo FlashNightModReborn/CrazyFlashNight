@@ -107,3 +107,8 @@ node tools/save-api-migration/check-callsites.js --verify-swf-hashes  # 额外�
 - 2026-09-05 批次实际试编 11 项后收窄为 5 项交付：asLoader、main、平板、基地特殊 UI、奖励物品。其余 6 项保留旧 SWF 与新源码，旧 shim 因此仍必要；不得把源码扫描旧入口为 0 外推为全部历史 SWF 无旧入口。
 - `run-map-loot-tests.ps1` 保留原 675 项并增加真实 N=50 边界，现为 **676/676**；`run-character-build-tests.ps1` 中 SaveManager 增加 **18** 项，现为 **352/352**（七套合计 **824/824**），证明领域 wrapper 真委托后的 N+1 pack/doSaveAll/SOL flush 与 SceneChanged clean/pending 物理行为。PAT 的 open/openMany 分别检查首次写前的 canonical dirty，direct-authority 清单 **23**，原行为套件 **117/117**。
 - 机器验证、SWF 发布与人工旅程分开记录；当前交付证据和人工剩余项见 [R1 收尾记录](../../docs/R1存盘API迁移收尾-2026-09-05.md)。
+
+
+## 统一奖励暂存候选入口（2026-09-11）
+
+A6 的 `stage.return_base` 收束到 `RewardStashService.end → SaveManager.commitRewardCandidate`；同一入口承接任务、地图箱、礼包、迁移和取出。扫描器同时检查 `apiCommitRewardCandidate`，不能遗漏候选 full save。当前普通 `flushBeforeTransition` 是 scripts 2 处，候选提交 1 处；严格逻辑门总数不因共用提交入口而减少。原 `stage.return_base` 继续按 transition origin 计数。当前精确数量与行号以 `callsites.v1.json` 为准，上文 R1 阶段计数为历史记录。

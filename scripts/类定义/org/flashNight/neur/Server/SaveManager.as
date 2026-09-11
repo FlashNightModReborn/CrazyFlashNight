@@ -230,6 +230,10 @@ class org.flashNight.neur.Server.SaveManager {
     // _dispatchToken: undefined=无挂起；Number=EnhancedCooldownWheel 的 taskId
     private var _dispatchToken;
     private static var DEBOUNCE_MS:Number = 300;
+    // v2 奖励命令在一次完整 SOL 提交内持有候选；旧 Boolean API 保持原合同。
+    private var _rewardCandidate:Object = null;
+    private var _rewardPhysicalResult:Object = undefined;
+    private var _rewardPhysicalStarted:Boolean = false;
     private var _saveInFlight:Boolean = false; // 重入护栏
     private var _beforeLocalCommitHookForTests:Function = null;
     private var _flushResultOverrideForTests:Object = undefined;
@@ -254,6 +258,7 @@ class org.flashNight.neur.Server.SaveManager {
         "reward.quarantine", "reward.pending_persist",
         "asset_tx.commit",
         "item_use.open_commit",
+        "reward.stash_take", "reward.stash_migration", "reward.quest_finish", "reward.map_stash",
         "loot.claim_batch", "loot.standalone_claim", "loot.settlement_terminal",
         "stage.return_base",
         "scene.changed_safety_net",
@@ -760,6 +765,170 @@ class org.flashNight.neur.Server.SaveManager {
      * R1：本入口保留为 legacy strict，与 flushDurableNow/flushBeforeTransition
      * 分别进入同一私有内核 _strictFlushCore，public 之间严禁级联（防 ingress 双计数）。
      */
+    /** 只有真正未决写持有此锁。库存非空、读取、翻页都不参与。 */
+    public function hasRewardCommitPending():Boolean {
+        return _rewardCandidate != null;
+    }
+
+    public function rewardCommitOperationId():String {
+        return _rewardCandidate == null ? "" : String(_rewardCandidate.operationId);
+    }
+
+    /** 必须在领域写之前调用；捕获 SO 候选和顶层旧镜像，不只备份背包。 */
+    private var _rewardTiming:Object = {};
+    public function _getRewardCommitTimingForTest():Object { return _rewardTiming; }
+
+    public function beginRewardCommit(operationId:String, resolved:Function,
+                                      scope:Object):Boolean {
+        if (_rewardCandidate != null || _saveInFlight || _root.允许存档 !== true
+                || operationId == null || operationId.length == 0
+                || !canWriteCurrentRootState(ServerManager.getInstance())) return false;
+        var so:SharedObject = getSO();
+        var beforeStart:Number = getTimer();
+        var before:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(so.data);
+        _rewardCandidate = {operationId:operationId, so:so,
+            savePath:String(_root.savePath), role:String(_root.角色名),
+            before:before, mydataBefore:_root.mydata === so.data[SAVE_KEY]
+                ? before[SAVE_KEY] : org.flashNight.gesh.object.PersistedSnapshot.clone(_root.mydata),
+            dirtyBefore:_dirtyMark, rootDirtyBefore:_root.存档系统.dirtyMark,
+            resolved:resolved, scope:scope, phase:"prepared", after:null,
+            previousStatus:so.onStatus};
+        _rewardTiming = {beforeMs:getTimer()-beforeStart,packMs:0,freezeMs:0,flushMs:0};
+        _rewardPhysicalStarted = false;
+        _rewardPhysicalResult = undefined;
+        _saveInFlight = true;
+        return true;
+    }
+
+    /** prepared 可撤销；一旦物理结果未知，只能提交同一完整候选。 */
+    public function cancelRewardCommit(operationId:String):Boolean {
+        if (_rewardCandidate == null || _rewardCandidate.operationId != operationId
+                || _rewardCandidate.phase != "prepared" || _rewardPhysicalStarted) return false;
+        finishRewardCandidate(false);
+        return _rewardCandidate == null;
+    }
+
+    public function commitRewardCandidate(operationId:String, reason:String):String {
+        if (_rewardCandidate == null || _rewardCandidate.operationId != operationId) return "stale";
+        if (_rewardCandidate.phase != "prepared") return resolveRewardCommit(operationId);
+        if (!isRegisteredSaveReason(reason)) {
+            finishRewardCandidate(false);
+            return _rewardCandidate == null ? "not_committed" : "pending";
+        }
+        _rewardCandidate.reason = reason;
+        var ok:Boolean = false;
+        try {
+            ok = _doSaveAll(reason == "stage.return_base" ? "transition" : "durable");
+        } catch (rewardSaveError) {
+            trace("[RewardCommit] save boundary: " + rewardSaveError);
+        }
+        // flush 返回 true 之后的任何日志/投影异常不得倒退资产 finality。
+        if (ok || _rewardPhysicalResult === true) {
+            finishRewardCandidate(true);
+            return "committed";
+        }
+        if (!_rewardPhysicalStarted || _rewardPhysicalResult === false) {
+            finishRewardCandidate(false);
+            return _rewardCandidate == null ? "not_committed" : "pending";
+        }
+        _rewardCandidate.phase = "pending";
+        org.flashNight.arki.pause.PauseManager.setRewardCommitPending(true);
+        FrameBroadcaster.pushUiState("sv:3");
+        return "pending";
+    }
+
+    /** 只重交冻结映像；不重新组包、不重复 RNG/扣物品/迁移。 */
+    public function resolveRewardCommit(operationId:String):String {
+        var c:Object = _rewardCandidate;
+        if (c == null || c.operationId != operationId) return "stale";
+        if (c.phase == "restore_pending") {
+            finishRewardCandidate(false);
+            return _rewardCandidate == null ? "not_committed" : "pending";
+        }
+        if (c.phase == "prepared") return "pending";
+        if (String(_root.savePath) != c.savePath || String(_root.角色名) != c.role) return "pending";
+        var ok:Boolean = c.phase == "confirmed";
+        if (!ok) {
+            try {
+                replaceRewardSoData(c.so.data, c.after);
+                ok = flushSO(c.so, "full");
+            } catch (retryError) { ok = _rewardPhysicalResult === true; }
+        }
+        if (!ok) return "pending";
+        _root.mydata = org.flashNight.gesh.object.PersistedSnapshot.clone(c.after[SAVE_KEY]);
+        finishRewardCandidate(true);
+        // 重试成功才产生 shadow；首次成功由 _doSaveAll 既有路径推送。
+        try {
+            var sm:ServerManager = ServerManager.getInstance();
+            if (sm.isSocketConnected) pushShadowWithConfirm(sm, _root.mydata);
+        } catch (shadowError) { trace("[RewardCommit] shadow notification failed: " + shadowError); }
+        return "committed";
+    }
+
+    private function onRewardSoStatus(candidate:Object, info:Object):Void {
+        if (_rewardCandidate == null || _rewardCandidate !== candidate || info == null) return;
+        if (info.code == "SharedObject.Flush.Success") {
+            _rewardCandidate.phase = "confirmed";
+            // 成功通知对应同一 so / handler；领域回调在同一角色候选上完成。
+            resolveRewardCommit(String(_rewardCandidate.operationId));
+        }
+        // Failed 也不允许回滚一个曾经不确定的候选；下一次明确重交仍使用 after。
+    }
+
+    private static function replaceRewardSoData(target:Object, source:Object):Void {
+        var copy:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(source);
+        for (var oldKey:String in target) delete target[oldKey];
+        for (var key:String in copy) target[key] = copy[key];
+    }
+
+    private function finishRewardCandidate(committed:Boolean):Void {
+        var c:Object = _rewardCandidate;
+        if (c == null) return;
+        if (!committed) {
+            c.phase = "restore_pending";
+            try {
+                replaceRewardSoData(c.so.data, c.before);
+                _root.mydata = c.mydataBefore;
+                _dirtyMark = c.dirtyBefore;
+                _root.存档系统.dirtyMark = c.rootDirtyBefore;
+            } catch (restoreError) {
+                org.flashNight.arki.pause.PauseManager.setRewardCommitPending(true);
+                trace("[RewardCommit] restore image: " + restoreError);
+                return;
+            }
+        } else {
+            c.phase = "confirmed";
+            _dirtyMark = false;
+            _root.存档系统.dirtyMark = false;
+            _root.存盘标志 = 1;
+            _settingsMigrationPending = false;
+            _drugLoadoutMigrationPending = false;
+            _rewardInboxMigrationPending = false;
+            KeyManager.clearPendingKeySettingsMigration();
+            _absorbPendingRequest();
+        }
+        // 先确认领域状态/回执，再释放游戏推进。回调异常不能推翻物理提交。
+        var domainSettled:Boolean = true;
+        try {
+            if (typeof c.resolved == "function") domainSettled = c.resolved.call(c.scope, committed) !== false;
+        } catch (projectionError) {
+            domainSettled = false;
+            trace("[RewardCommit] domain finalizer: " + projectionError);
+        }
+        if (!committed && !domainSettled) {
+            c.phase = "restore_pending";
+            org.flashNight.arki.pause.PauseManager.setRewardCommitPending(true);
+            return;
+        }
+        c.so.onStatus = c.previousStatus;
+        _rewardCandidate = null;
+        _saveInFlight = false;
+        _rewardPhysicalStarted = false;
+        _rewardPhysicalResult = undefined;
+        org.flashNight.arki.pause.PauseManager.setRewardCommitPending(false);
+        FrameBroadcaster.pushUiState(committed ? "sv:2" : "sv:3");
+    }
+
     public function flushNow():Boolean {
         saveApiStats().ingress.legacyFlushNow++;
         return _strictFlushCore("legacyStrict", null);
@@ -940,7 +1109,9 @@ class org.flashNight.neur.Server.SaveManager {
         }
 
         // 组包
+        var rewardPhaseStart:Number = getTimer();
         var mydata:Object = packGameState();
+        if (_rewardCandidate != null) _rewardTiming.packMs = getTimer()-rewardPhaseStart;
         var so:SharedObject = getSO();
         var soData:Object = so.data;
 
@@ -958,11 +1129,26 @@ class org.flashNight.neur.Server.SaveManager {
         soData.商城已购买物品 = _root.商城已购买物品;
         soData.商城购物车 = _root.商城购物车;
 
+        if (_rewardCandidate != null) {
+            // 顶层镜像也必须脱离 _root；不能让其他对象别名改写 pending afterimage。
+            rewardPhaseStart = getTimer();
+            var frozen:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(soData);
+            replaceRewardSoData(soData, frozen);
+            _rewardCandidate.after = frozen;
+            // Use the detached SO copy for the public projection. The retry image stays private.
+            mydata = soData[SAVE_KEY];
+            _rewardTiming.freezeMs = getTimer()-rewardPhaseStart;
+            var rewardManager:SaveManager = this;
+            var rewardIdentity:Object = _rewardCandidate;
+            so.onStatus = function(info:Object):Void { rewardManager.onRewardSoStatus(rewardIdentity, info); };
+        }
         // 单次 flush。这里是本地 SharedObject 的唯一提交点；此前异常不得清 dirty。
         if (_beforeLocalCommitHookForTests != null) {
             _beforeLocalCommitHookForTests();
         }
+        rewardPhaseStart = getTimer();
         var ok:Boolean = flushSO(so, "full");
+        if (_rewardCandidate != null) _rewardTiming.flushMs = getTimer()-rewardPhaseStart;
         if (ok) {
             _dirtyMark = false;
             _root.存档系统.dirtyMark = false;
@@ -1071,6 +1257,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 对齐 SOL 墓碑（_deleted=true）。不变式 3：launcher tombstone 清除的唯一路径仍是 shadow。
      */
     public function handlePreloadTombstoned(slot:String):Void {
+        if (_rewardCandidate != null) return;
         // 不变式 3：launcher tombstone → 对齐 SOL 墓碑，清预取
         // （saveAll → shadow 是 tombstone 唯一安全清除路径；这里不碰 launcher tombstone）
         var safeSlot:String = (slot == undefined || slot.length == 0) ? _root.savePath : slot;
@@ -1086,6 +1273,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function preload():Void {
+        if (_rewardCandidate != null) return;
         var sm:ServerManager = ServerManager.getInstance();
         _runtimeSaveLoaded = false;
         _root._saveRuntimeLoaded = false;
@@ -1243,6 +1431,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function loadAll():Boolean {
+        if (_rewardCandidate != null) return false;
         var sm:ServerManager = ServerManager.getInstance();
         sm.sendServerMessage("[SaveManager.loadAll] savePath=" + _root.savePath);
 
@@ -1457,6 +1646,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function deleteSlot():Void {
+        if (_rewardCandidate != null) return;
         // P3a: 清理预取缓存（防止删档后被内存缓存复活）
         clearPrefetch();
 
@@ -1629,6 +1819,7 @@ class org.flashNight.neur.Server.SaveManager {
      *   - success=false → 不动 mydata, 留 _repairPending=true (用户可在卡片上重试).
      */
     public function applyRepairResolved(resp:Object):Void {
+        if (_rewardCandidate != null) return;
         var sm:ServerManager = ServerManager.getInstance();
         if (resp == undefined) {
             sm.sendServerMessage("[SaveManager.applyRepairResolved] resp undefined");
@@ -1780,6 +1971,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 只采信场景加载完真实主角后发布的 SceneReady。
      */
     public function newCharacter():Boolean {
+        if (_rewardCandidate != null) return false;
         if (_root.帧计时器 == undefined
                 || typeof _root.帧计时器.添加单次任务 != "function") {
             return false;
@@ -1795,6 +1987,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 表示沿用旧时间轴已经写入 _root 的外观字段。
      */
     public function prepareNewCharacter(initialState:Object, reservationOwner:String):Object {
+        if (_rewardCandidate != null) return {success:false, error:"reward_commit_pending"};
         var reservation:Object = reserveNewCharacterTutorial(reservationOwner);
         if (!reservation.success) return reservation;
         var tutorialStageName:String = String(reservation.stageName);
@@ -2230,6 +2423,7 @@ class org.flashNight.neur.Server.SaveManager {
      * loadAll 的 JSON 分支不调用此方法，而是用 _applyCore + SO 覆盖 + 副作用。
      */
     public function loadFromMydata(mydata:Object, source:String):Boolean {
+        if (_rewardCandidate != null) return false;
         var sm:ServerManager = ServerManager.getInstance();
 
         if (!_applyCore(mydata)) {
@@ -2279,6 +2473,7 @@ class org.flashNight.neur.Server.SaveManager {
      * tasks/pets/shop 由 loadAll() 走“优先非空顶层，空壳回退 mydata”的合并逻辑
      */
     public function unpackGameState(mydata:Object):Boolean {
+        if (_rewardCandidate != null) return false;
         if (mydata == undefined) return false;
 
         var 主角储存数据:Array = mydata[0];
@@ -2486,6 +2681,7 @@ class org.flashNight.neur.Server.SaveManager {
     // ==================== 商城即时写入 ====================
 
     public function saveShopCart():Void {
+        if (_rewardCandidate != null) return;
         var so:SharedObject = getSO();
         var soData:Object = so.data;
         ensureShopNode(soData);
@@ -2503,6 +2699,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function saveShopPurchased():Void {
+        if (_rewardCandidate != null) return;
         var so:SharedObject = getSO();
         var soData:Object = so.data;
         ensureShopNode(soData);
@@ -2840,6 +3037,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function migrateAndSync(mydata:Object, soData:Object):Void {
+        if (_rewardCandidate != null) return;
         migrate(mydata, soData);
         if (_drugLoadoutSchemaRejected) {
             ServerManager.getInstance().sendServerMessage(
@@ -2850,6 +3048,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function syncTopLevelFromMydata(mydata:Object, soData:Object):Void {
+        if (_rewardCandidate != null) return;
         if (mydata == undefined) return;
         if (mydata.tasks != undefined) {
             ensureLegacyMainlineInTasks(mydata.tasks, mydata[3]);
@@ -3187,9 +3386,14 @@ class org.flashNight.neur.Server.SaveManager {
             laneStats = saveApiStats().flushLane.full;
         }
         laneStats.attempt++;
+        if (_rewardCandidate != null) {
+            _rewardPhysicalStarted = true;
+            _rewardPhysicalResult = undefined;
+        }
         var result:Object = _flushResultOverrideForTests !== undefined
             ? _flushResultOverrideForTests
             : so.flush();
+        if (_rewardCandidate != null) _rewardPhysicalResult = result;
         if (result === true) {
             stats.flushSuccess++;
             laneStats.success++;

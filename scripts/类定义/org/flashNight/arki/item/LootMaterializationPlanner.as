@@ -26,7 +26,26 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
     private static var _testFailureStage:String = "";
     private static var _testFailureRuleIndex:Number = -1;
 
-    public static function materialize(target:Object):Object {
+    public static function materialize(target:Object):Object { return materializeInternal(target, false); }
+
+    public static function planForStash(target:Object):Object { return materializeInternal(target, true); }
+
+    public static function commitStashSource(target:Object):Boolean {
+        var journal:Object = target[JOURNAL_FIELD];
+        return journal != null && journal.success === true && commitTotalsAndDetachSource(target, journal);
+    }
+
+    public static function restoreStashSource(target:Object):Boolean {
+        var journal:Object = target[JOURNAL_FIELD];
+        if (journal == null) return false;
+        if (journal.totalsApplied) {
+            restoreTotals(journal, journal.rules.length);
+            target.掉落物 = journal.rawDrops; journal.totalsApplied = false;
+        }
+        return validateFrozenInput(target, journal);
+    }
+
+    private static function materializeInternal(target:Object, deferSource:Boolean):Object {
         if (target == null) return {success:false, error:"missing_target"};
 
         var journal:Object = target[JOURNAL_FIELD];
@@ -50,7 +69,8 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
             entries:[],
             slots:null,
             inventory:null,
-            totalsApplied:false
+            totalsApplied:false,
+            deferSource:deferSource
         };
         target[JOURNAL_FIELD] = journal;
         try {
@@ -191,7 +211,7 @@ class org.flashNight.arki.item.LootMaterializationPlanner {
         if (journal.slots == null && !sampleSlots(journal)) return journal;
         if (!buildPlan(journal)) return journal;
         if (!writeInventory(journal)) return journal;
-        if (!commitTotalsAndDetachSource(target, journal)) return journal;
+        if (!journal.deferSource && !commitTotalsAndDetachSource(target, journal)) return journal;
 
         journal.success = true;
         journal.error = "";

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
@@ -100,7 +100,8 @@ namespace CF7Launcher.Guardian
                 "skillEquip", "skillUnequip", "skillMoveSlot", "skillSetPassive",
                 "skillReorder",
                 "itemUseOpen", "itemUseOpenMany", "itemUseConsume", "itemUseQuery",
-                "itemUseInboxSnapshot"
+                "itemUseInboxSnapshot", "itemUseStashPage", "itemUseStashTooltip", "itemUseStashTake",
+                "itemUseStashQuery", "itemUseStashResume", "itemUseStashMigrate", "itemUseStashOpen", "itemUseStashOpenMany"
             };
 
         private static readonly Dictionary<string, string> KnownSensitiveKeys =

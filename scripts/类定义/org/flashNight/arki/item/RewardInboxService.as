@@ -29,6 +29,9 @@ class org.flashNight.arki.item.RewardInboxService {
     private static var _rootPersistVisibleBefore:Object = null;
     private static var _durableCutProbe:Function = null;
     private static var _durableCutAttemptProbe:Function = null;
+    private static var _stashDelivery:Function = null;
+
+    public static function setStashDelivery(deliver:Function):Void { _stashDelivery = deliver; }
 
     /**
      * 由 LootContainerService 安装的只读探针。保持依赖单向，避免 AS2 编译器在
@@ -89,6 +92,10 @@ class org.flashNight.arki.item.RewardInboxService {
      * 打开失败不回滚奖励；玩家仍可从角色构筑的“待领取”入口继续领取。
      */
     public static function requestOpenPanel():Boolean {
+        if (_root._saveExt.rewardInbox.v === 2) {
+            try { _root.发布消息("补给已存入暂存区，可从物品页整理。"); } catch (noticeError) { }
+            return true;
+        }
         var authority:Object = materializeAuthority();
         var transport:Object = _root == null ? null : _root.server;
         if (authority == null || transport == null
@@ -132,6 +139,7 @@ class org.flashNight.arki.item.RewardInboxService {
                 || !ItemUtil.isItem(packName)) {
             return {success:false, error:"invalid_supply_delivery"};
         }
+        if (_stashDelivery != null) return _stashDelivery(packName, sourceKey, supplySessionPrefix());
         var feature:Object = ensureFeature();
         if (feature == null) return {success:false, error:"service_not_ready"};
         if (inspectRootLane(feature).quarantined === true) {
@@ -176,6 +184,7 @@ class org.flashNight.arki.item.RewardInboxService {
             return false;
         }
         var feature:Object = _root._saveExt.rewardInbox;
+        if (feature != null && feature.v === 2) feature = feature.legacy;
         if (feature == null || typeof feature != "object" || feature.v != VERSION
                 || !(feature.supplyKeys instanceof Array)) return false;
         return containsString(feature.supplyKeys, supplySessionPrefix() + sourceKey);
@@ -209,10 +218,18 @@ class org.flashNight.arki.item.RewardInboxService {
         if (!isLegacyCarrier(itemName)) return normalizedResult(normalized, changed);
         var quantity:Number = Number(grenade.value);
         if (!positiveWhole(quantity)) {
+            return {ok:false, changed:changed, error:"malformed_legacy_grenade_quantity"};
+        }
+
+        if (normalized.feature.v === 2) {
+            var recovered:Object = {name:itemName, value:quantity,
+                lastUpdate:isNaN(Number(grenade.lastUpdate)) ? 0 : Number(grenade.lastUpdate)};
+            if (!org.flashNight.arki.item.RewardStashStore.append(normalized.feature, [recovered])) {
+                return {ok:false, changed:changed, error:"invalid_legacy_grenade"};
+            }
             delete mydata.inventory.装备栏.手雷;
             return normalizedResult(normalized, true);
         }
-
         var migrationKey:String = "legacy_grenade_slot_recovery";
         if (!containsString(normalized.feature.migrations, migrationKey)) {
             if (remainingCount(normalized.feature) >= MAX_OCCURRENCES) {
@@ -247,11 +264,32 @@ class org.flashNight.arki.item.RewardInboxService {
             diagnostic:normalized == null ? "" : String(normalized.diagnostic || "")};
     }
 
+    /** 迁移预检只读旧数据副本。冻结 root 必须先按 v1 协议收敛。 */
+    public static function exportForStash():Object {
+        var raw:Object = _root._saveExt == null ? null : _root._saveExt.rewardInbox;
+        if (raw != null && (typeof raw != "object" || raw instanceof Array))
+            return {success:false, error:"malformed_reward_inbox"};
+        var normalized:Object = normalizeFeature(ObjectUtil.clone(raw));
+        if (!normalized.ok) return {success:false, error:normalized.error};
+        var feature:Object = normalized.feature;
+        if (feature.v !== 1) return {success:false, error:"stale_stash"};
+        var lane:Object = inspectRootLane(feature);
+        if (lane.quarantined) return {success:false, error:"reward_lane_quarantined"};
+        if (feature.activeClaimRoot != null || _rootPersistPending
+                || (_authority != null && _authority.state == PENDING)) {
+            return {success:false, error:"legacy_recovery_required"};
+        }
+        return {success:true, feature:feature};
+    }
+
     public static function ensureFeature():Object {
         if (_root._saveExt == null || typeof _root._saveExt != "object") {
             _root._saveExt = {};
         }
-        var normalized:Object = normalizeFeature(_root._saveExt.rewardInbox);
+        var raw:Object = _root._saveExt.rewardInbox;
+        // v2 的旧 root/terminal/receipt 只作为有界兼容证明；不能重新 admit 旧奖励。
+        if (raw != null && raw.v === 2) return raw.legacy;
+        var normalized:Object = normalizeFeature(raw);
         if (!normalized.ok) return null;
         _root._saveExt.rewardInbox = normalized.feature;
         return normalized.feature;
@@ -268,6 +306,7 @@ class org.flashNight.arki.item.RewardInboxService {
     public static function appendRewardBatch(sourceItemName:String,
                                              operationId:String,
                                              rolledEntries:Array):Object {
+        if (_root._saveExt.rewardInbox.v === 2) return {success:false, error:"unsupported_version"};
         var feature:Object = ensureFeature();
         if (feature == null) return {success:false, error:"service_not_ready"};
         if (inspectRootLane(feature).quarantined === true) {
@@ -312,13 +351,25 @@ class org.flashNight.arki.item.RewardInboxService {
     }
 
     public static function lookupReceipt(operationId:String):Object {
-        var feature:Object = ensureFeature();
-        return feature == null ? null : findReceipt(feature, operationId);
+        var raw:Object = _root._saveExt == null ? null : _root._saveExt.rewardInbox;
+        var feature:Object = raw != null && raw.v === 2 ? raw.legacy : raw;
+        return feature == null || !(feature.receipts instanceof Array) ? null : findReceipt(feature, operationId);
     }
 
     public static function inboxSummary():Object {
-        var feature:Object = ensureFeature();
-        if (feature == null) return null;
+        var raw:Object = org.flashNight.arki.item.RewardStashService.committedFeature();
+        if (raw != null && raw.v === 2) {
+            var legacyDiscovery:Object = rootDiscovery(raw.legacy);
+            return {v:2, storeId:String(raw.storeId), batchCount:raw.entries.length > 0 ? 1 : 0,
+                remainingCount:raw.entries.length, capacity:0,
+                authorityRevision:Number(raw.commitRevision),
+                recoverableRootOperationId:String(legacyDiscovery.rootOperationId),
+                recoverableRootStatus:String(legacyDiscovery.rootStatus),
+                recoveryRequired:legacyDiscovery.recoveryRequired === true};
+        }
+        var normalized:Object = normalizeFeature(ObjectUtil.clone(raw));
+        if (!normalized.ok) return null;
+        var feature:Object = normalized.feature;
         var discovery:Object = rootDiscovery(feature);
         return {v:VERSION,
             batchCount:pendingBatchCount(feature),
@@ -329,9 +380,24 @@ class org.flashNight.arki.item.RewardInboxService {
             recoveryRequired:discovery.recoveryRequired === true};
     }
 
+    public static function legacyInboxSummary():Object {
+        var raw:Object = _root._saveExt == null ? null : _root._saveExt.rewardInbox;
+        var feature:Object = raw != null && raw.v === 2 ? raw.legacy : raw;
+        var normalized:Object = normalizeFeature(ObjectUtil.clone(feature));
+        if (!normalized.ok) return null;
+        feature = normalized.feature;
+        var discovery:Object = rootDiscovery(feature);
+        return {v:1, batchCount:pendingBatchCount(feature), remainingCount:remainingCount(feature),
+            capacity:64, authorityRevision:Number(feature.authorityRevision),
+            recoverableRootOperationId:String(discovery.rootOperationId), recoverableRootStatus:String(discovery.rootStatus),
+            recoveryRequired:discovery.recoveryRequired === true};
+    }
+
     public static function hasActiveAuthority():Boolean {
-        return _authority != null
-            && (_authority.state == ACTIVE || _authority.state == PENDING);
+        var feature:Object = _root._saveExt == null ? null : _root._saveExt.rewardInbox;
+        if (feature != null && feature.v === 2) feature = feature.legacy;
+        return _rootPersistPending || (feature != null && feature.activeClaimRoot != null)
+            || (_authority != null && _authority.state == PENDING);
     }
 
     /** 只在现役 Loot lane 空闲时物化，永不覆盖 map/stage authority。 */
@@ -423,6 +489,7 @@ class org.flashNight.arki.item.RewardInboxService {
         }
         if (commandName == "snapshot") return executeSnapshot(record, params);
         if (commandName == "tooltip") return executeTooltip(record, params);
+        if (_root._saveExt.rewardInbox.v === 2 && (commandName == "claim" || commandName == "claimBatch")) return failureFor(record, "stale_state");
         if (commandName == "claim") return executeDurableClaim(record, params, false);
         if (commandName == "claimBatch") return executeDurableClaim(record, params, true);
         if (commandName == "close") return executeClose(record, params);
@@ -1680,7 +1747,23 @@ class org.flashNight.arki.item.RewardInboxService {
         }
     }
 
+    public static function validateStashCandidate(raw:Object):Object {
+        if (raw == null || raw.v !== 2) return {ok:false, error:"malformed_stash_compatibility"};
+        return normalizeFeature(raw);
+    }
+
     private static function normalizeFeature(raw:Object):Object {
+        if (raw != null && raw.v === 2) {
+            var normalizedStore:Object = org.flashNight.arki.item.RewardStashStore.normalize(raw);
+            if (!normalizedStore.ok) return normalizedStore;
+            if (raw.legacy == null || raw.legacy.v !== 1) return {ok:false, changed:false, error:"malformed_stash_compatibility"};
+            var normalizedLegacy:Object = normalizeFeature(raw.legacy);
+            if (!normalizedLegacy.ok || normalizedLegacy.feature.batches.length != 0
+                    || normalizedLegacy.feature.activeClaimRoot != null) return {ok:false, changed:false, error:"malformed_stash_compatibility"};
+            raw.legacy = normalizedLegacy.feature;
+            normalizedStore.changed = normalizedStore.changed || normalizedLegacy.changed;
+            return normalizedStore;
+        }
         if (raw == null || typeof raw != "object") {
             return {ok:true, changed:true, feature:{v:VERSION, sequence:0,
                 authorityRevision:1, batches:[], receipts:[], migrations:[],
@@ -1688,10 +1771,16 @@ class org.flashNight.arki.item.RewardInboxService {
         }
         if (raw.v != VERSION) return {ok:false, changed:false, error:"future_reward_inbox"};
         var changed:Boolean = false;
-        if (!(raw.batches instanceof Array)) { raw.batches = []; changed = true; }
-        if (!(raw.receipts instanceof Array)) { raw.receipts = []; changed = true; }
-        if (!(raw.migrations instanceof Array)) { raw.migrations = []; changed = true; }
-        if (!(raw.supplyKeys instanceof Array)) { raw.supplyKeys = []; changed = true; }
+        var arrayKeys:Array = ["batches", "receipts", "migrations", "supplyKeys"];
+        for (var ai:Number = 0; ai < arrayKeys.length; ai++) {
+            var field:String = String(arrayKeys[ai]);
+            if (!(raw[field] instanceof Array)) {
+                if (raw[field] != null && (typeof raw[field] != "object" || !emptyOwnObject(raw[field]))) {
+                    return {ok:false, changed:changed, error:"malformed_reward_inbox_" + field};
+                }
+                raw[field] = []; changed = true;
+            }
+        }
         if (!hasOwnField(raw, "activeClaimRoot")) {
             raw.activeClaimRoot = null; changed = true;
         }

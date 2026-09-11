@@ -621,6 +621,122 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
+        [Theory]
+        [InlineData("stashPage")]
+        [InlineData("stashMigrate")]
+        [InlineData("stashTake")]
+        [InlineData("stashResume")]
+        public void StashCommands_UseVersionTwoAndBoundedInputs(string command)
+        {
+            using var h = new Harness();
+            h.Task.HandleWebRequest(command, StashRequest(command));
+            var sent = Assert.Single(h.Flash);
+            Assert.Equal(2, sent.Value<int>("v"));
+            Assert.Equal("itemUse" + char.ToUpperInvariant(command[0]) + command.Substring(1), sent.Value<string>("action"));
+        }
+
+        [Fact]
+        public void StashTake_RejectsDuplicateAndOversizeSelectionsBeforeSend()
+        {
+            using var h = new Harness();
+            var request = StashRequest("stashTake");
+            var rows = (JArray)request["payload"]["entries"];
+            rows.Add(rows[0].DeepClone());
+            h.Task.HandleWebRequest("stashTake", request);
+            Assert.Empty(h.Flash);
+            Assert.Equal("invalid_payload", Assert.Single(h.Web).Value<string>("error"));
+        }
+
+        [Fact]
+        public void StashTake_UnknownResponseQueriesExactResultAndNeverResendsTake()
+        {
+            using var h = new Harness();
+            h.SendSucceeds = false;
+            h.Task.HandleWebRequest("stashTake", StashRequest("stashTake"));
+            Assert.Equal("needs_reconcile", h.Task.WriteState);
+            h.SendSucceeds = true;
+            var query = StashRequest("stashQuery");
+            h.Task.HandleWebRequest("stashQuery", query);
+            var response = CommonResponse(h.Flash[1].Value<int>("callId"), "stashQuery", "stash.test.1", true);
+            response["v"] = 2;
+            response["data"] = new JObject { ["success"] = true, ["state"] = "committed", ["result"] = StashTakeResult() };
+            h.Task.HandleFlashResponse(response, null);
+            Assert.Equal("idle", h.Task.WriteState);
+            Assert.True(h.Web[h.Web.Count - 1].Value<bool>("success"));
+            Assert.Equal("itemUseStashQuery", h.Flash[1].Value<string>("action"));
+            Assert.Equal(2, h.Flash.Count);
+        }
+
+        [Fact]
+        public void StashTake_ForgedAcceptedCountKeepsRecoveryGate()
+        {
+            using var h = new Harness();
+            h.Task.HandleWebRequest("stashTake", StashRequest("stashTake"));
+            var response = CommonResponse(h.Flash[0].Value<int>("callId"), "stashTake", "stash.test.1", true);
+            response["v"] = 2;
+            var result = StashTakeResult(); result["accepted"][0]["quantity"] = 4;
+            response["data"] = result;
+            h.Task.HandleFlashResponse(response, null);
+            Assert.Equal("needs_reconcile", h.Task.WriteState);
+            Assert.Equal("malformed_response", Assert.Single(h.Web).Value<string>("error"));
+        }
+
+        [Fact]
+        public void StashPage_EmptyReadDoesNotArmNavigationOrWriteGate()
+        {
+            using var h = new Harness();
+            h.Task.HandleWebRequest("stashPage", StashRequest("stashPage"));
+            var response = CommonResponse(h.Flash[0].Value<int>("callId"), "stashPage", null, true);
+            response["v"] = 2;
+            response["data"] = new JObject { ["success"] = true, ["storeId"] = "stash.store.1", ["revision"] = 5,
+                ["offset"] = 0, ["total"] = 0, ["entries"] = new JArray(), ["migrationRequired"] = false, ["pendingOperationId"] = "" };
+            h.Task.HandleFlashResponse(response, null);
+            Assert.True(Assert.Single(h.Web).Value<bool>("success"));
+            Assert.Equal("idle", h.Task.WriteState);
+            Assert.False(h.Task.TryArmRewardNavigation(Panel, Generation));
+        }
+
+        [Fact]
+        public void StashTooltip_RemainsReadOnlyAndChecksBoundedProjection()
+        {
+            using var h = new Harness();
+            var request = Request("stashTooltip", "web.stashTooltip");
+            var payload = (JObject)request["payload"];
+            payload["v"] = 2; payload["storeId"] = "stash.store.1";
+            payload["entryId"] = "stash.store.1.e1"; payload["revision"] = 2;
+            h.Task.HandleWebRequest("stashTooltip", request);
+            var sent = Assert.Single(h.Flash);
+            Assert.Equal("idle", h.Task.WriteState);
+            var response = CommonResponse(sent.Value<int>("callId"), "stashTooltip", null, true);
+            response["v"] = 2;
+            response["data"] = new JObject { ["success"] = true, ["tooltip"] = new JObject {
+                ["itemName"] = "测试装备", ["displayname"] = "测试装备", ["iconName"] = "a",
+                ["itemType"] = "武器", ["descHTML"] = "<b>完整实例</b>", ["introHTML"] = "测试" } };
+            h.Task.HandleFlashResponse(response, null);
+            Assert.True(Assert.Single(h.Web).Value<bool>("success"));
+            Assert.Equal("idle", h.Task.WriteState);
+            Assert.False(h.Task.TryArmRewardNavigation(Panel, Generation));
+        }
+
+        private static JObject StashTakeResult() => new JObject { ["success"] = true,
+            ["accepted"] = new JArray(new JObject { ["entryId"] = "stash.store.1.e1", ["quantity"] = 3 }), ["blocked"] = new JArray() };
+
+        private static JObject StashRequest(string command)
+        {
+            var envelope = Request(command, "web." + command);
+            var payload = (JObject)envelope["payload"];
+            payload["v"] = 2;
+            if (command == "stashPage") payload["offset"] = 0;
+            else
+            {
+                payload["operationId"] = "stash.test.1";
+                if (command != "stashResume") { payload["storeId"] = "stash.store.1"; payload["expectedRevision"] = 5; }
+                if (command == "stashTake") payload["entries"] = new JArray(new JObject {
+                    ["entryId"] = "stash.store.1.e1", ["revision"] = 2, ["quantity"] = 3 });
+            }
+            return envelope;
+        }
+
         private static JObject Request(string command, string callId)
         {
             var payload = new JObject

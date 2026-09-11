@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
@@ -27,7 +27,7 @@ namespace CF7Launcher.Guardian
             new HashSet<string>(StringComparer.Ordinal)
             {
                 "none", "prepared", "web_active", "rewards_pending",
-                "claimed", "abandoned", "error"
+                "claimed", "abandoned", "stashed", "error"
             };
 
         public string RunId { get; private set; }
@@ -136,7 +136,7 @@ namespace CF7Launcher.Guardian
             if (settlement == "rewards_pending"
                     && (outcome == "active" || canReturnBase))
                 return false;
-            if ((settlement == "claimed" || settlement == "abandoned")
+            if ((settlement == "claimed" || settlement == "abandoned" || settlement == "stashed")
                     && remainingRewards != 0)
                 return false;
 

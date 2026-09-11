@@ -244,8 +244,9 @@ class org.flashNight.arki.item.LootContainerService {
         } catch (identityError) {
             settlementId = "";
         }
-        var persistenceRequired:Boolean = settlementId.length > 0;
-        if (!persistenceRequired && !_testAllowUnpersistedStageSettlement) {
+        var stashed:Boolean = org.flashNight.arki.scene.StageRunSession.isCurrentRewardStashed();
+        var persistenceRequired:Boolean = settlementId.length > 0 && !stashed;
+        if (!persistenceRequired && !stashed && !_testAllowUnpersistedStageSettlement) {
             return localFailure("settlement_not_persisted");
         }
         if (!(inventory instanceof ArrayInventory)
@@ -303,7 +304,8 @@ class org.flashNight.arki.item.LootContainerService {
             report:report,
             allowAnchorlessSuspend:true,
             settlementId:settlementId,
-            persistenceRequired:persistenceRequired
+            persistenceRequired:persistenceRequired,
+            stashedReport:stashed
         };
         if (persistenceRequired && !restorePersistedStageOperations(candidate)) {
             return localFailure("settlement_receipts_invalid");
@@ -388,6 +390,7 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     public static function hasStageSettlementPending():Boolean {
+        if (_active != null && _active.stashedReport === true) return false;
         return _active != null && _active.panelSource === STAGE_SETTLEMENT_SOURCE
             && !isTerminalState(_active.state);
     }
@@ -1534,8 +1537,11 @@ class org.flashNight.arki.item.LootContainerService {
             return {success:true, state:STATE_SUSPENDED, reason:"stage_settlement_preserved"};
         }
         if (_reservation != null && _reservation.materialized === true) {
+            // The unique materialized inventory can be durably preserved even if its own-kill
+            // projection never completed. The source consumption proof is saved with the stock.
             _reservation.state = STATE_PENDING;
-            return failureFor(_reservation, "commit_pending");
+            var preserved:Object = finishTerminal(_reservation, STATE_EXPIRED, safeReason, "");
+            return preserved.success === true ? preserved : failureFor(_reservation, "commit_pending");
         }
         if (record != null && record.transportDetachNeeded === true) {
             // scene cleanup 不是 panel/pause handoff 的 causal continuation；transport detach
@@ -2166,6 +2172,9 @@ class org.flashNight.arki.item.LootContainerService {
             return failureFor(record, "recovery_history_full");
         }
 
+        if (remaining > 0 && record.panelSource === PANEL_SOURCE) {
+            return stashLegacyMap(record, STATE_CONSUMED, "user_stashed", operationId, fingerprint);
+        }
         if (remaining > 0 && params.abandon !== true) {
             // anchor 是 suspend 的可恢复性前置条件；注册失败时 authority/op journal 零变化。
             if (record.allowAnchorlessSuspend !== true && !registerSuspendedAnchor(record)) {
@@ -2217,6 +2226,10 @@ class org.flashNight.arki.item.LootContainerService {
     }
 
     private static function executeQuery(params:Object):Object {
+        if (org.flashNight.arki.item.RewardStashService.pendingOperationId() != "") {
+            org.flashNight.neur.Server.SaveManager.getInstance().resolveRewardCommit(
+                org.flashNight.arki.item.RewardStashService.pendingOperationId());
+        }
         var checked:Object = validateAnyIdentity(params);
         if (!checked.success) return checked.response;
         var record:Object = checked.record;
@@ -2764,6 +2777,47 @@ class org.flashNight.arki.item.LootContainerService {
         return "$" + operationId;
     }
 
+    private static function stashLegacyMap(record:Object, terminalState:String,
+                                            reason:String, operationId:String, fingerprint:String):Object {
+        if (record.stashPending === true) return failureFor(record, "commit_pending");
+        var sourceId:String = "legacy.map." + record.chestSessionId;
+        var context:Object = {source:"map_chest", reason:"legacy_remaining_stash", operationId:sourceId};
+        var domain:Object = {record:record, inventory:record.inventory, state:record.state,
+            terminalState:terminalState, reason:reason, operationId:operationId, fingerprint:fingerprint, result:null};
+        if (!org.flashNight.arki.item.RewardStashService.begin(sourceId, context, resolveLegacyMapStash, domain))
+            return failureFor(record, org.flashNight.arki.item.RewardStashService.lastError);
+        try {
+            var items:Array = [];
+            var raw:Object = record.inventory.toObject();
+            for (var i:Number = 0; i < record.inventory.capacity; i++) if (raw[String(i)] != null) items.push(raw[String(i)]);
+            if (!org.flashNight.arki.item.MapChestStashService.markLegacySource(record.target)
+                    || !org.flashNight.arki.item.RewardStashService.admit(items, false, true, context))
+                throw new Error("legacy_source_changed");
+            record.inventory = new ArrayInventory({}, domain.inventory.capacity);
+            record.stashPending = true; record.state = STATE_PENDING;
+            var result:Object = org.flashNight.arki.item.RewardStashService.end("legacy.map.v2|" + sourceId,
+                {success:true, kind:"legacy_map"}, "reward.map_stash");
+            return result.success === true ? domain.result : failureFor(record, result.error);
+        } catch (error) {
+            var cancelled:Object = org.flashNight.arki.item.RewardStashService.cancel("legacy_stash_failed");
+            return failureFor(record, cancelled.error);
+        }
+    }
+
+    private static function resolveLegacyMapStash(committed:Boolean, domain:Object):Boolean {
+        var record:Object = domain.record;
+        record.state = domain.state; record.stashPending = false;
+        if (!committed) { record.inventory = domain.inventory; return true; }
+        if (record.target != null) record.target.__rewardStashCommitted = true;
+        if (domain.operationId != "") {
+            record.operations[operationKey(domain.operationId)] = {kind:"close", fingerprint:domain.fingerprint,
+                resultState:domain.terminalState};
+            record.lastAppliedOperationId = domain.operationId;
+        }
+        domain.result = finishTerminal(record, domain.terminalState, domain.reason, domain.operationId);
+        return true;
+    }
+
     private static function finishTerminal(record:Object, terminalState:String,
                                            reason:String, operationId:String):Object {
         if (record != null && (record.pendingBatch != null
@@ -2772,6 +2826,8 @@ class org.flashNight.arki.item.LootContainerService {
                 || record.transportDetachNeeded === true)) {
             return failureFor(record, "commit_pending");
         }
+        if (record != null && record.panelSource === PANEL_SOURCE && record.materialized === true
+                && remainingCount(record) > 0) return stashLegacyMap(record, terminalState, reason, operationId, "");
         if (record != null && record.panelSource === STAGE_SETTLEMENT_SOURCE
                 && record.persistenceRequired === true) {
             var terminalPersisted:Object = persistStageTerminal(

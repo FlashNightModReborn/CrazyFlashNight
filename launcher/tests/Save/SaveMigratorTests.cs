@@ -16,6 +16,54 @@ namespace CF7Launcher.Tests.Save
         // ─────────────── helpers ───────────────
 
         /// <summary>构造一个通过 ValidateResolvedSnapshot 的最小 3.0 快照。</summary>
+        [Fact]
+        public void RewardStash_KnownEmptyShapesRecoverWithoutLosingEquipmentOrProof()
+        {
+            var md = BuildValidMydata();
+            md["ext"] = JObject.Parse(@"{ 'rewardInbox': { 'v':2, 'storeId':'s', 'commitRevision':7, 'sequence':1,
+                'entries':[{'entryId':'s.e1','revision':1,'item':{'name':'装备','lastUpdate':5,
+                    'value':{'level':5,'mods':{},'tier':'二阶','shots':37}}}],
+                'lastCommit':{'operationId':'op.1','result':{'accepted':{},'blocked':{}}},
+                'legacy':{'v':1,'batches':{},'receipts':{},'migrations':['reward_stash_v2'],'supplyKeys':{},
+                    'claimRootTerminal':{'rootOperationId':'old.root'}} },
+                'mapStashSources':{'v':1,'generation':9,'consumed':{}} }");
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+            var stash = md["ext"]["rewardInbox"];
+            Assert.IsType<JArray>(stash["entries"][0]["item"]["value"]["mods"]);
+            Assert.Equal(37, stash["entries"][0]["item"]["value"].Value<int>("shots"));
+            Assert.Equal("old.root", stash["legacy"]["claimRootTerminal"].Value<string>("rootOperationId"));
+            Assert.IsType<JArray>(stash["lastCommit"]["result"]["accepted"]);
+            Assert.IsType<JArray>(md["ext"]["mapStashSources"]["consumed"]);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void RewardStash_NonemptyMalformedAndFuturePayloadsRemainIntact(int version)
+        {
+            var md = BuildValidMydata();
+            md["ext"] = JObject.Parse(@"{ 'rewardInbox':{'v':2,'entries':{'unknown':['valuable']},
+                'legacy':{'v':9,'batches':{'unknown':'proof'}},'newField':{'payload':19}} }");
+            md["ext"]["rewardInbox"]["v"] = version;
+            var before = md["ext"].DeepClone();
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+            Assert.True(JToken.DeepEquals(before, md["ext"]));
+        }
+
+        [Fact]
+        public void RewardStash_EmptyLegacyMirrorsStayEmptyThroughResolverMerge()
+        {
+            var md = BuildValidMydata();
+            md["shop"]["商城已购买物品"] = new JObject();
+            md["ext"] = JObject.Parse(@"{'rewardInbox':{'v':2,'entries':[{'item':{'name':'装备','value':{'level':5,'mods':[]}}}],
+                'legacy':{'v':1,'batches':[]}}}");
+            var top = new JObject { ["商城已购买物品"] = new JObject() };
+            SaveMigrator.MergeTopLevelKeys(md, top);
+            SaveMigrator.NormalizeResolvedSnapshot(md);
+            Assert.Empty((JArray)md["shop"]["商城已购买物品"]);
+            Assert.Single((JArray)md["ext"]["rewardInbox"]["entries"]);
+        }
+
         private static JObject BuildValidMydata()
         {
             // 对齐 SaveManagerTest.as buildValidMydata()（L450-L472）

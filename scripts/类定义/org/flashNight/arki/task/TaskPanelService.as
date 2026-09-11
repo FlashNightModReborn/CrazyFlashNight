@@ -168,6 +168,7 @@ class org.flashNight.arki.task.TaskPanelService {
 
             tasks.push({
                 taskId: taskId,
+                instanceToken:org.flashNight.arki.task.TaskRewardCommit.instanceToken(entry),
                 title: title,
                 type: type,
                 npcName: org.flashNight.arki.map.MapDomainBridge.taskNpcLabel(String(taskData.id), "get"),
@@ -391,10 +392,15 @@ class org.flashNight.arki.task.TaskPanelService {
             return;
         }
 
-        // FinishTask 返回 false 仅在「背包无法装下奖励」时（此时未 splice，任务仍在）。
-        var ok:Boolean = (_root.FinishTask(index) == true);
+        // 同 ID 的重接任务不是同一交付实例；旧页面必须刷新，不能再次完成新任务。
+        if (typeof params.instanceToken != "string"
+                || params.instanceToken !== org.flashNight.arki.task.TaskRewardCommit.instanceToken(_root.tasks_to_do[index])) {
+            sendResponse({task:"task_response", callId:callId, success:false, error:"stale_task_instance", tasks:buildTaskList()});
+            return;
+        }
+        var ok:Boolean = (_root.FinishTask(index, params.instanceToken) == true);
         if (!ok) {
-            sendResponse({ task: "task_response", callId: callId, success: false, error: "inventory_full", tasks: buildTaskList() });
+            sendResponse({ task: "task_response", callId: callId, success: false, error: String(_root._lastTaskFinishError || "task_reward_failed"), tasks: buildTaskList() });
             return;
         }
 
