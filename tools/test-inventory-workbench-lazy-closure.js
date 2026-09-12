@@ -54,6 +54,8 @@ async function main() {
         'inventory-runtime.js',
         'inventory-ui.js',
         'inventory-workbench-feature-loader.js',
+        'inventory-workbench-stash-navigation.js',
+        'inventory-workbench-stash-source.js',
         'inventory-storage-workbench.js',
         'inventory-workbench.js'
     ].forEach(name => assert(workbenchDeps.includes(name),
@@ -90,6 +92,12 @@ async function main() {
                 if (deps.includes('modules/character-build.js')) {
                     global.CharacterBuild = {CharacterBuildController:function() {}};
                 }
+                if (deps.includes('modules/character-build/character-build-stash-authority.js')) {
+                    global.CharacterBuildSession = {CharacterBuildSession:function() {}};
+                    global.CharacterBuildTransport = {createRequestMux:function() {}};
+                    global.CharacterBuildItemUse = {Controller:function() {}};
+                    global.CharacterBuildStashAuthority = {create:function() {}};
+                }
             });
         }
     };
@@ -121,6 +129,45 @@ async function main() {
         < calls[1].indexOf('modules/character-build.js'));
     assert.strictEqual(loader.isTuningReady(), true);
     assert.strictEqual(loader.isBuildReady(), true);
+
+    // ── stash headless 闭包：会话 + item-use + authority，绝不加载人物资源 ──
+    // build 闭包同样含 authority，mock 已在 loadBuild 后设置 stash 全局；
+    // 先清掉以模拟 storage 冷入口（build 从未加载）下 STASH_DEPS 必须自包含。
+    ['CharacterBuildSession', 'CharacterBuildTransport',
+        'CharacterBuildItemUse', 'CharacterBuildStashAuthority']
+        .forEach(name => { delete global[name]; });
+    global.InventoryWorkbenchFeatureLoader = loader;
+    const stashLoader = require('../launcher/web/modules/inventory-workbench-stash-navigation.js');
+    await stashLoader.loadFeature();
+    assert.strictEqual(calls.length, 3);
+    assert.deepStrictEqual(calls[2], [
+        'modules/character-build/character-build-mutation.js',
+        'modules/character-build/character-build-drug-layout.js',
+        'modules/character-build/character-build-session-contract.js',
+        'modules/character-build-session.js',
+        'modules/character-build/character-build-transport.js',
+        'modules/character-build/character-build-cooldown-channel.js',
+        'modules/character-build/character-build-stash-transport.js',
+        'modules/character-build/character-build-item-use.js',
+        'modules/character-build/character-build-stash-authority.js'
+    ], 'stash cold-open closure must stay session/transport-only and keep load order');
+    [
+        'modules/character-build.js',
+        'modules/character-build-view.js',
+        'modules/character-appearance-preview.js',
+        'modules/dressup-doll-renderer.js',
+        'modules/asset-timeline.js',
+        'modules/character-build/character-build-stash-view.js'
+    ].forEach(name => assert(!calls[2].includes(name),
+        'stash headless closure must not pull ' + name));
+    assert.strictEqual(stashLoader.isFeatureReady(), true);
+    // stash 不是可导航 view：storage 的 boot 闭包与 build/tuning descriptor 都不得带它
+    assert(!workbenchDeps.includes('character-build-stash-authority.js'),
+        'workbench boot closure must not preload the stash authority');
+    assert(calls[1].includes('modules/character-build/character-build-stash-authority.js'),
+        'build feature must already carry the stash authority for the borrowed path');
+    assert(!calls[1].includes('modules/character-build/character-build-stash-view.js'),
+        'build feature no longer loads the retired stash view');
 
     // ── arena 生产闭包（P4 工程拆分收尾）：cold-open + 缺项/乱序 fail-fast ──
     // 本 vm 叶门不模拟浏览器 transport retry；真实 LazyLoader 中途 503 后的可重试恢复由
@@ -268,7 +315,11 @@ async function main() {
         'EquipmentTuningView',
         'InventoryTuningScope',
         'EquipmentInspector',
-        'CharacterBuild'
+        'CharacterBuild',
+        'CharacterBuildSession',
+        'CharacterBuildTransport',
+        'CharacterBuildItemUse',
+        'CharacterBuildStashAuthority'
     ].forEach(name => { delete global[name]; });
     process.stdout.write('Inventory workbench + arena/crafting/NPCShop + shared character preview loading: passed\n');
 }

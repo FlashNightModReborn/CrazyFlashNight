@@ -24,6 +24,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         testSummaryPurity();
         testSaveFence();
         testSourceTransactions();
+        testTargetedTakeAndPageFilter();
         trace("RewardStashServiceTest Tests Passed: " + passed);
         trace("RewardStashServiceTest Tests Failed: " + failed);
         return failed == 0;
@@ -340,6 +341,15 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         check(first.remainingCount == 0 && _root._saveExt === undefined, "empty badge never creates save extension");
         var page:Object = RewardStashService.page(0);
         check(page.success && !page.migrationRequired && _root._saveExt === undefined, "empty page never migrates or opens authority");
+        var filtered:Object = RewardStashService.page(0, {major:"weapon"});
+        check(filtered.success && filtered.total == 0 && filtered.unfilteredTotal == 0
+            && filtered.entries.length == 0 && filtered.filterSpec.major == "weapon"
+            && filtered.filterFacets.length == 0 && filtered.filterItemCount == 0
+            && filtered.setFacets.length == 0 && _root._saveExt === undefined,
+            "empty filtered page stays a pure read without extension or authority");
+        var rejected:Object = RewardStashService.page(0, {major:"bogus"});
+        check(!rejected.success && rejected.error == "invalid_payload" && _root._saveExt === undefined,
+            "unknown filter major rejects before any materialization");
         _root._saveExt = prior;
     }
     private static function testSaveFence():Void {
@@ -386,5 +396,254 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         sm._configureSaveFlowForTest({flushResult:undefined, saveInFlight:false});
         so.clear();
         for (var j:Number = 0; j < keys.length; j++) _root[keys[j]] = before[keys[j]];
+    }
+
+    private static function testTargetedTakeAndPageFilter():Void {
+        var keys:Array = ["savePath", "允许存档", "角色名", "等级", "基础身价值", "身价", "存档系统", "mydata", "_saveExt", "暂停", "UpdateTaskProgress", "物品栏", "收集品栏", "金钱", "虚拟币", "经验值", "技能点数", "gameworld", "主角被动技能", "商城已购买物品", "UI系统"];
+        var previous:Object = {};
+        for (var i:Number = 0; i < keys.length; i++) previous[keys[i]] = _root[keys[i]];
+        var metadata:Object = ItemUtil.itemDataDict;
+        var equipmentMetadata:Object = ItemUtil.equipmentDict;
+        var material:Object = ItemUtil.materialDict;
+        var information:Object = ItemUtil.informationMaxValueDict;
+        var sm:SaveManager = SaveManager.getInstance();
+        var slot:String = "CF7_RewardStash_Target_Test";
+        var so:SharedObject = SharedObject.getLocal(slot); so.clear();
+        _root.savePath = slot; _root.允许存档 = true; _root.角色名 = "StashTargetTest";
+        _root.等级 = 1; _root.基础身价值 = 1000; _root.金钱 = 0; _root.虚拟币 = 0;
+        _root.经验值 = 0; _root.技能点数 = 0; _root.商城已购买物品 = [];
+        _root.存档系统 = {dirtyMark:false}; _root._saveExt = {}; _root.主角被动技能 = {};
+        _root.UpdateTaskProgress = function():Void {};
+        _root.物品栏 = {};
+        var containers:Array = ["背包", "药剂栏", "装备栏", "仓库", "战备箱"];
+        for (var c:Number = 0; c < containers.length; c++) _root.物品栏[containers[c]] = new org.flashNight.arki.item.itemCollection.ArrayInventory(null, 50);
+        _root.收集品栏 = {材料:new org.flashNight.arki.item.itemCollection.DictCollection(null), 情报:new org.flashNight.arki.item.itemCollection.InformationCollection(null)};
+        ItemUtil.itemDataDict = {暂存测试材料:{name:"暂存测试材料", type:"收集品", use:"材料", displayname:"测试材料", icon:"a", data:{level:1}},
+            暂存测试装备:{name:"暂存测试装备", type:"武器", use:"长枪", displayname:"测试装备", icon:"b", data:{level:1}},
+            暂存测试补给:{name:"暂存测试补给", type:"消耗品", use:"补给", displayname:"测试补给", icon:"c", data:{level:1}}};
+        ItemUtil.equipmentDict = {暂存测试装备:true};
+        ItemUtil.materialDict = {暂存测试材料:true}; ItemUtil.informationMaxValueDict = {};
+        RewardInboxService.resetForTests();
+        ItemUseService.setContextValidator(function(panel:String,generation:Number):Object { return {success:true}; });
+        var findEntry:Function = function(name:String):Object {
+            var stash:Object = RewardStashService.peek();
+            for (var i:Number = 0; i < stash.entries.length; i++) {
+                if (String(stash.entries[i].item.name) == name) return stash.entries[i];
+            }
+            return null;
+        };
+        var targetFor:Function = function(slotIndex:Number):Object {
+            var snap:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
+            return {containerId:"背包", slot:slotIndex,
+                expectedLease:String(snap.slots[slotIndex].slotLease)};
+        };
+        var takeRequest:Function = function(op:String, entry:Object, qty:Number, target:Object):Object {
+            var stash:Object = RewardStashService.peek();
+            var request:Object = {task:"cmd", action:"itemUseStashTake", callId:1, v:2,
+                panelInstanceId:"test.stash", sessionGeneration:1,
+                operationId:op, storeId:String(stash.storeId), expectedRevision:Number(stash.commitRevision),
+                entries:[{entryId:String(entry.entryId), revision:Number(entry.revision), quantity:qty}]};
+            if (target !== undefined) request.target = target;
+            return request;
+        };
+        try {
+            sm._configureSaveFlowForTest({saveInFlight:false, flushResult:true});
+            var context:Object = {source:"test", operationId:"target.seed"};
+            check(RewardStashService.begin("target.seed", context, null, null), "target seed candidate starts");
+            var seeded:Boolean = RewardStashService.admit([
+                {name:"暂存测试补给", value:9, lastUpdate:1},
+                {name:"暂存测试装备", value:{level:3, tier:"一阶", mods:["瞄准"], shots:12}, lastUpdate:7},
+                {name:"暂存测试材料", value:6, lastUpdate:2}], false, true, context);
+            check(seeded && RewardStashService.end("target.seed", {success:true}, "reward.map_stash").success
+                && RewardStashService.peek().entries.length == 3, "seed stash rows for targeted take");
+
+            var page:Object = RewardStashService.page(0, {major:"consumable"});
+            check(page.success && page.total == 1 && page.unfilteredTotal == 3
+                && page.entries.length == 1 && String(page.entries[0].item.name) == "暂存测试补给"
+                && String(page.filterSpec.major) == "consumable" && page.filterItemCount == 3
+                && page.filterFacets.length > 0 && page.setFacets.length == 0,
+                "filtered stash page scans all entries then pages the matches");
+            check(RewardStashService.page(0, {major:"weapon"}).total == 1
+                && RewardStashService.page(0, {major:"collection"}).total == 1
+                && RewardStashService.page(0, {branch:"set", setId:"不存在套装"}).total == 0
+                && RewardStashService.page(0, {major:"material"}).total == 0,
+                "shared taxonomy classifies stash rows by major and set branch");
+            check(RewardStashService.page(32, {major:"consumable"}).success
+                && RewardStashService.page(32, {major:"consumable"}).entries.length == 0,
+                "filtered page beyond hit count returns an empty bounded window");
+            var badSpec:Object = RewardStashService.page(0, {major:"all", use:"补给"});
+            var looseSpec:Object = RewardStashService.page(0, "consumable");
+            var foreignKey:Object = RewardStashService.page(0, {major:"consumable", note:"n"});
+            var crossBranch:Object = RewardStashService.page(0, {branch:"set", major:"weapon"});
+            var straySetId:Object = RewardStashService.page(0, {major:"consumable", setId:"x"});
+            var typedValue:Object = RewardStashService.page(0, {major:1});
+            check(!badSpec.success && badSpec.error == "invalid_payload",
+                "filterSpec failing normalization is rejected before any read side effect");
+            check(!looseSpec.success && looseSpec.error == "invalid_payload"
+                && !foreignKey.success && foreignKey.error == "invalid_payload"
+                && !crossBranch.success && crossBranch.error == "invalid_payload"
+                && !straySetId.success && straySetId.error == "invalid_payload"
+                && !typedValue.success && typedValue.error == "invalid_payload",
+                "stash filterSpec enforces strict object shape, known keys and string values");
+            var pageReq:Object = {task:"cmd", action:"itemUseStashPage", callId:1, v:2,
+                panelInstanceId:"test.stash", sessionGeneration:1, offset:0,
+                filterSpec:{major:"consumable"}};
+            var pageRes:Object = ItemUseService.execute("stashPage", pageReq);
+            check(pageRes.success && pageRes.data.total == 1
+                && String(pageRes.data.filterSpec.major) == "consumable",
+                "stashPage envelope carries filterSpec and echoes the normalized spec");
+            var badPage:Object = {task:"cmd", action:"itemUseStashPage", callId:1, v:2,
+                panelInstanceId:"test.stash", sessionGeneration:1, offset:0,
+                filterSpec:["consumable"]};
+            check(ItemUseService.execute("stashPage", badPage).error == "invalid_payload",
+                "stashPage envelope rejects non-object filterSpec");
+            var nullSpecPage:Object = {task:"cmd", action:"itemUseStashPage", callId:1, v:2,
+                panelInstanceId:"test.stash", sessionGeneration:1, offset:0,
+                filterSpec:null};
+            check(ItemUseService.execute("stashPage", nullSpecPage).error == "invalid_payload"
+                && RewardStashService.page(0, null).error == "invalid_payload",
+                "explicit null filterSpec is rejected at envelope and service, never treated as absent");
+
+            var bag:Object = _root.物品栏.背包;
+            bag.add(0, BaseItem.create("暂存测试补给", 10));
+            var mergeReq:Object = takeRequest("take.merge", findEntry("暂存测试补给"), 4, targetFor(0));
+            var res:Object = ItemUseService.execute("stashTake", mergeReq);
+            check(res.success && res.data.accepted.length == 1 && res.data.blocked.length == 0
+                && res.data.accepted[0].slot == 0 && String(res.data.accepted[0].destination) == "背包"
+                && bag.getItem(0).value == 14 && findEntry("暂存测试补给").item.value == 5,
+                "targeted take merges same-name stack at the leased slot");
+            var replay:Object = ItemUseService.execute("stashTake", mergeReq);
+            check(replay.success && replay.data.accepted.length == 1 && replay.data.accepted[0].slot == 0
+                && bag.getItem(0).value == 14 && findEntry("暂存测试补给").item.value == 5,
+                "targeted take replays its committed receipt without a second write");
+            var legacyFp:String = RewardStashService.takeFingerprint(
+                {storeId:"s", expectedRevision:3, entries:[{entryId:"e", revision:1, quantity:2}]});
+            var targetFp:String = RewardStashService.takeFingerprint(
+                {storeId:"s", expectedRevision:3,
+                    target:{containerId:"背包", slot:7, expectedLease:"L"},
+                    entries:[{entryId:"e", revision:1, quantity:2}]});
+            check(legacyFp == new LiteJSON().stringify(["take.v2","s",3,["e",1,2]])
+                && targetFp.indexOf("\"target\"") >= 0 && targetFp != legacyFp,
+                "legacy take fingerprint stays byte-identical while target joins the digest");
+            var noTarget:Object = takeRequest("take.merge", findEntry("暂存测试补给"), 4, undefined);
+            var conflict:Object = ItemUseService.execute("stashTake", noTarget);
+            check(!conflict.success && conflict.error == "stale_stash"
+                && findEntry("暂存测试补给").item.value == 5,
+                "same operationId without target cannot replay a targeted receipt");
+            check(RewardStashService.query({storeId:mergeReq.storeId,
+                expectedRevision:mergeReq.expectedRevision,
+                operationId:"take.merge"}).state == "committed",
+                "stashQuery resolves the targeted take from its original operation");
+
+            var equipEntry:Object = findEntry("暂存测试装备");
+            res = ItemUseService.execute("stashTake",
+                takeRequest("take.equip", equipEntry, 1, targetFor(2)));
+            var placed:Object = bag.getItem(2);
+            check(res.success && res.data.accepted[0].slot == 2 && placed != null
+                && placed.value.level == 3 && placed.value.tier == "一阶"
+                && placed.value.mods[0] == "瞄准" && placed.value.shots == 12
+                && findEntry("暂存测试装备") == null,
+                "targeted take preserves the complete equipment instance at the leased empty slot");
+
+            res = ItemUseService.execute("stashTake",
+                takeRequest("take.split", findEntry("暂存测试补给"), 2, targetFor(4)));
+            check(res.success && res.data.accepted[0].slot == 4 && bag.getItem(4).value == 2
+                && findEntry("暂存测试补给").item.value == 3,
+                "targeted take splits the requested quantity onto the empty slot");
+
+            var staleTarget:Object = targetFor(5);
+            bag.add(5, BaseItem.create("暂存测试补给", 1));
+            res = ItemUseService.execute("stashTake",
+                takeRequest("take.stale", findEntry("暂存测试材料"), 1, staleTarget));
+            check(res.success && res.data.accepted.length == 0
+                && String(res.data.blocked[0].reason) == "target_stale"
+                && findEntry("暂存测试材料").item.value == 6 && bag.getItem(5).value == 1,
+                "bag mutation after the snapshot blocks the take as target_stale");
+            res = ItemUseService.execute("stashTake",
+                takeRequest("take.occupied", findEntry("暂存测试材料"), 1, targetFor(0)));
+            check(res.success && String(res.data.blocked[0].reason) == "target_occupied"
+                && bag.getItem(0).value == 14 && findEntry("暂存测试材料").item.value == 6,
+                "different-name occupant blocks as target_occupied without writes");
+            res = ItemUseService.execute("stashTake",
+                takeRequest("take.incompatible", findEntry("暂存测试材料"), 1, targetFor(6)));
+            check(res.success && String(res.data.blocked[0].reason) == "target_incompatible"
+                && bag.getItem(6) == null && findEntry("暂存测试材料").item.value == 6,
+                "material-routed item cannot be pinned into a backpack slot");
+            bag.add(9, BaseItem.create("暂存测试材料", 7));
+            res = ItemUseService.execute("stashTake",
+                takeRequest("take.bypass", findEntry("暂存测试材料"), 1, targetFor(9)));
+            check(res.success && String(res.data.blocked[0].reason) == "target_incompatible"
+                && bag.getItem(9).value == 7 && findEntry("暂存测试材料").item.value == 6,
+                "an anomalous same-name backpack stack never bypasses the domain routing gate");
+            var equipOnStack:Object = takeRequest("take.equipstack", equipEntry, 1, targetFor(0));
+            var staleRow:Object = ItemUseService.execute("stashTake", equipOnStack);
+            check(!staleRow.success && staleRow.error == "stale_entry",
+                "taken row identity cannot be taken again with a fresh target");
+
+            var multi:Object = takeRequest("take.multi", findEntry("暂存测试材料"), 1, targetFor(7));
+            multi.entries.push({entryId:String(findEntry("暂存测试补给").entryId),
+                revision:Number(findEntry("暂存测试补给").revision), quantity:1});
+            check(ItemUseService.execute("stashTake", multi).error == "invalid_payload"
+                && bag.getItem(7) == null && findEntry("暂存测试补给").item.value == 3,
+                "targeted take rejects more than one entry row");
+            var wrongBox:Object = takeRequest("take.wrongbox", findEntry("暂存测试材料"), 1,
+                {containerId:"仓库", slot:0, expectedLease:"x"});
+            var extraKey:Object = takeRequest("take.extra", findEntry("暂存测试材料"), 1,
+                {containerId:"背包", slot:0, expectedLease:"x", note:"n"});
+            var badSlot:Object = takeRequest("take.badslot", findEntry("暂存测试材料"), 1,
+                {containerId:"背包", slot:50, expectedLease:"x"});
+            var noLease:Object = takeRequest("take.nolease", findEntry("暂存测试材料"), 1,
+                {containerId:"背包", slot:0, expectedLease:""});
+            check(ItemUseService.execute("stashTake", wrongBox).error == "invalid_payload"
+                && ItemUseService.execute("stashTake", extraKey).error == "invalid_payload"
+                && ItemUseService.execute("stashTake", badSlot).error == "invalid_payload"
+                && ItemUseService.execute("stashTake", noLease).error == "invalid_payload",
+                "envelope rejects non-backpack container, extra keys, out-of-range slot and empty lease");
+            var direct:Object = {storeId:String(RewardStashService.peek().storeId),
+                expectedRevision:Number(RewardStashService.peek().commitRevision),
+                operationId:"take.directmulti",
+                target:{containerId:"背包", slot:0, expectedLease:"x"},
+                entries:[{entryId:"a", revision:1, quantity:1}, {entryId:"b", revision:1, quantity:1}]};
+            check(RewardStashService.take(direct).error == "invalid_payload",
+                "service-level take also enforces single-entry targeted placement");
+            var nullTarget:Object = {storeId:String(RewardStashService.peek().storeId),
+                expectedRevision:Number(RewardStashService.peek().commitRevision),
+                operationId:"take.nulltarget", target:null,
+                entries:[{entryId:String(findEntry("暂存测试材料").entryId),
+                    revision:Number(findEntry("暂存测试材料").revision), quantity:1}]};
+            check(RewardStashService.take(nullTarget).error == "invalid_payload"
+                && findEntry("暂存测试材料").item.value == 6,
+                "explicit null target is rejected instead of silently auto-routed");
+            var envNull:Object = takeRequest("take.envnull", findEntry("暂存测试材料"), 1, null);
+            check(ItemUseService.execute("stashTake", envNull).error == "invalid_payload"
+                && findEntry("暂存测试材料").item.value == 6,
+                "envelope rejects explicit null target without consuming the operationId");
+
+            sm._configureSaveFlowForTest({flushResult:"pending"});
+            var pendReq:Object = takeRequest("take.pending", findEntry("暂存测试补给"), 3, targetFor(8));
+            var pending:Object = ItemUseService.execute("stashTake", pendReq);
+            check(!pending.success && pending.error == "commit_pending"
+                && bag.getItem(8).value == 3 && RewardStashService.pendingOperationId() != "",
+                "undecided save keeps the targeted take applied inside the frozen candidate");
+            check(RewardStashService.page(0).total == 2
+                && RewardStashService.page(0, {major:"material"}).total == 0,
+                "pending page reads the committed before-image, filtered or not");
+            sm._configureSaveFlowForTest({flushResult:true});
+            check(RewardStashService.resume(RewardStashService.pendingOperationId()).success
+                && bag.getItem(8).value == 3 && findEntry("暂存测试补给") == null
+                && RewardStashService.page(0).total == 1,
+                "resolved candidate settles the targeted take exactly once");
+        } finally {
+            if (RewardStashService.pendingOperationId() != "") {
+                sm._configureSaveFlowForTest({flushResult:true});
+                RewardStashService.resume(RewardStashService.pendingOperationId());
+            }
+            sm._configureSaveFlowForTest({flushResult:undefined, saveInFlight:false});
+            so.clear(); ItemUseService.setContextValidator(null);
+            ItemUtil.itemDataDict = metadata; ItemUtil.equipmentDict = equipmentMetadata;
+            ItemUtil.materialDict = material; ItemUtil.informationMaxValueDict = information;
+            for (var j:Number = 0; j < keys.length; j++) _root[keys[j]] = previous[keys[j]];
+            RewardInboxService.resetForTests();
+        }
     }
 }

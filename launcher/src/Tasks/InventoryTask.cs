@@ -605,8 +605,10 @@ namespace CF7Launcher.Tasks
                 return TryNormalizeAutoTransferBatchPayload(payload, out normalized);
 
             if (payload["count"] != null) return false;
+            bool sourceMayQuantify = cmd == "move" || cmd == "merge" || cmd == "autoTransfer";
             JObject source;
-            if (!TryNormalizeSlotRef(payload["source"] as JObject, out source)) return false;
+            if (!TryNormalizeSlotRef(
+                    payload["source"] as JObject, sourceMayQuantify, out source)) return false;
             normalized["source"] = source;
             if (cmd == "discard" || cmd == "tooltip") return true;
 
@@ -657,10 +659,11 @@ namespace CF7Launcher.Tasks
             {
                 JObject input = token as JObject;
                 JObject source;
-                if (!HasExactKeys(input, "containerId", "slot", "expectedLease")
+                if (!HasOnlyKeys(input, "containerId", "slot", "expectedLease", "quantity")
+                    || !HasRequiredKeys(input, "containerId", "slot", "expectedLease")
                     || input["containerId"].Type != JTokenType.String
                     || input["expectedLease"].Type != JTokenType.String
-                    || !TryNormalizeSlotRef(input, out source)) return false;
+                    || !TryNormalizeSlotRef(input, true, out source)) return false;
 
                 string currentContainerId = source.Value<string>("containerId");
                 int currentSlot = source.Value<int>("slot");
@@ -817,21 +820,83 @@ namespace CF7Launcher.Tasks
 
         private static bool TryNormalizeSlotRef(JObject input, out JObject normalized)
         {
+            return TryNormalizeSlotRef(input, false, out normalized);
+        }
+
+        /// <summary>
+        /// 普通库存槽位引用规范化。<paramref name="allowQuantity"/> 只对
+        /// move/merge/autoTransfer/autoTransferBatch 的来源引用为 true：quantity 出现时
+        /// 必须是正安全整数并透传；目标引用、swap、discard、tooltip 一律拒收该键，
+        /// 不静默丢弃以免“部分数量”被误执行为整项。
+        /// </summary>
+        private static bool TryNormalizeSlotRef(
+            JObject input,
+            bool allowQuantity,
+            out JObject normalized)
+        {
             normalized = null;
             if (input == null || input["count"] != null) return false;
             string containerId = input.Value<string>("containerId");
             string expectedLease = input.Value<string>("expectedLease");
             int slot;
+            long quantity = 0;
             if (!IsKnownContainerId(containerId)
                 || !TryReadNonNegativeInteger(input["slot"], out slot)
                 || string.IsNullOrEmpty(expectedLease)
                 || !ValidLease.IsMatch(expectedLease)) return false;
+            if (input.Property("quantity") != null
+                && (!allowQuantity
+                    || !TryReadLongInteger(
+                        input["quantity"], 1, 9007199254740991L, out quantity)))
+            {
+                return false;
+            }
             normalized = new JObject
             {
                 ["containerId"] = containerId,
                 ["slot"] = slot,
                 ["expectedLease"] = expectedLease
             };
+            if (input.Property("quantity") != null) normalized["quantity"] = quantity;
+            return true;
+        }
+
+        /// <summary>
+        /// 无独立 filterKey 的调用方（stashPage）复用同一 filterSpec 规范化：先按 strict
+        /// 形状收敛键白名单，再以规范自身的等价 filterKey 作回退（category 取 major
+        /// 等价键、set 取 all）。语义与普通库存一致，不引入第二个键字段。
+        /// </summary>
+        internal static bool TryNormalizeStandaloneFilterSpec(
+            JToken token,
+            out JObject normalized)
+        {
+            normalized = null;
+            if (token == null || token.Type == JTokenType.Null) return true;
+            if (!HasStrictFilterSpecKeys(token)) return false;
+            JObject input = (JObject)token;
+            string branch = input.Value<string>("branch") ?? "category";
+            string major = input.Value<string>("major") ?? "all";
+            string fallbackKey = branch == "set"
+                ? "all"
+                : (major == "collection" ? "other" : major);
+            return TryNormalizeFilterSpec(token, fallbackKey, out normalized);
+        }
+
+        /// <summary>
+        /// stashTake 定点目标：沿用普通库存 {containerId, slot, expectedLease} 引用命名，
+        /// 但只收背包 0..49 物理格；quantity/count 与一切非白名单键一律拒绝。
+        /// </summary>
+        internal static bool TryNormalizeBackpackTargetRef(
+            JObject input,
+            out JObject normalized)
+        {
+            normalized = null;
+            JObject slotRef;
+            if (!HasExactKeys(input, "containerId", "slot", "expectedLease")
+                || !TryNormalizeSlotRef(input, out slotRef)
+                || slotRef.Value<string>("containerId") != "背包"
+                || slotRef.Value<int>("slot") > 49) return false;
+            normalized = slotRef;
             return true;
         }
 
@@ -879,7 +944,7 @@ namespace CF7Launcher.Tasks
             return value == "all" || value == "equipment";
         }
 
-        private static bool TryNormalizeFilterSpec(JToken token, string fallbackKey, out JObject normalized)
+        internal static bool TryNormalizeFilterSpec(JToken token, string fallbackKey, out JObject normalized)
         {
             normalized = null;
             if (token == null || token.Type == JTokenType.Null) return true;
@@ -1918,7 +1983,7 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool TrySanitizeFacets(
+        internal static bool TrySanitizeFacets(
             JArray input,
             int depth,
             bool sets,
@@ -1985,7 +2050,7 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool TrySanitizeResponseFilterSpec(
+        internal static bool TrySanitizeResponseFilterSpec(
             JToken token,
             out JObject output)
         {

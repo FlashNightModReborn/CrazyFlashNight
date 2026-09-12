@@ -1,6 +1,5 @@
 /**
  * Standalone owned-inventory workbench（背包—仓库 / 背包—战备箱）。
- *
  * This panel never enters the shop lifecycle. InventoryPanelService remains the
  * authority; the Web layer only renders leased windows and emits operation intents.
  */
@@ -14,7 +13,7 @@ var InventoryStorageWorkbench = (function() {
     var _layoutMode = 'full', _densityController = null, _openGeneration = 0, _profile = 'battlebox';
     var _viewMode = 'storage', _ownerPanel = '', _panelInstanceId = '', _tuningOrigin = false, _rightContainerId = '战备箱';
     var _rightLimit = 40, _renderedWindows = {};
-    var _ports = {};
+    var _ports = {}, _sources = null, _storageControls = null, _inventoryState = _state;
     var _runtimeConfig = (typeof window !== 'undefined' && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _mux = new PanelRuntime.PanelRequestMux({
         send: function(message) { return Bridge.send(message); },
@@ -51,7 +50,7 @@ var InventoryStorageWorkbench = (function() {
             {containerId:'背包', offset:0, limit:50},
             {containerId:'战备箱', offset:0, limit:40}
         ],
-        onStateChange:function(state) { _state = state; renderInventories(); refreshControls(); }
+        onStateChange:function(state) { _inventoryState = state; syncSourceState(); }
     });
     var _quickTransfer = new InventoryWorkbenchQuickTransfer.QuickTransferController({
         rightContainerId:_rightContainerId,
@@ -61,8 +60,10 @@ var InventoryStorageWorkbench = (function() {
         isGenerationCurrent:function(generation) { return generation === _openGeneration; },
         getSlot:findCurrentSlot,
         slotRef:slotRef,
-        autoTransfer:function(source, target, done) { return _coordinator.autoTransfer(source, target, done); },
-        autoTransferBatch:function(sources, target, done) { return _coordinator.autoTransferBatch(sources, target, done); },
+        keyOf:function(id,row) { return id + ':' + (row.entryId || row.physicalSlot); },
+        slotId:function(row) { return row.entryId || row.physicalSlot; },
+        autoTransfer:function(source, target, done) { return source.kind === 'stash' ? _sources.take([source], null, function(result) { reportStashResult(result); done(result); }) : _coordinator.autoTransfer(source, target, done); },
+        autoTransferBatch:function(sources, target, done) { return _sources && _sources.getSource() === 'stash' ? _sources.take(sources, null, function(result) { reportStashResult(result); done(result); }) : _coordinator.autoTransferBatch(sources, target, done); },
         onChange:function() {
             clearSelection(); hideTooltip(); renderInventories(); refreshControls();
         },
@@ -70,17 +71,19 @@ var InventoryStorageWorkbench = (function() {
             var messages = {
                 not_ready:'库存尚未就绪。', in_flight:'请等待当前快速转移完成。',
                 deposit_source:'批量存入模式：请点击背包中的物品。',
-                withdraw_source:'批量取出模式：请点击' + _rightContainerId + '中的物品。',
+                withdraw_source:'批量取出模式：请点击右侧来源中的物品。',
                 busy:'库存正在处理另一项操作。', already_in_flight:'该物品正在转移，无法取消。',
-                queue_full:'批量转移最多选择 50 格。',
+                queue_full:'本批最多选择 ' + (_rightContainerId === 'stash' ? 32 : 50) + ' 项。',
                 no_mode:'请先选择批量存入或批量取出。',
-                nothing_selected:'请先选择至少一件物品。'
+                nothing_selected:'请先选择至少一件物品。', selection_cleared:'来源已切换，未执行的选择已清空。',
+                withdraw_only:'暂存物资只支持取出。', invalid_quantity:'请填写所选物品范围内的整数数量。'
             };
             blockedCue();
             toast(messages[reason] || '库存正在处理另一项操作。');
         },
         onError:function(result) {
             var error = result && result.error;
+            if (error === 'stash_blocked') return;
             if (error === 'target_full') toast('目标容器已满，快速转移已停止。');
             else if (error === 'slot_locked') toast('目标容器尚未解锁，快速转移已停止。');
             else if (result && result.reconciled) toast('库存状态已变化；已重新同步并停止队列。');
@@ -138,7 +141,7 @@ var InventoryStorageWorkbench = (function() {
             throw new Error('Inventory workbench initData rejected');
         }
         if (_pager) _pager.detach();
-        for (var oldDrag = 0; oldDrag < _dragControllers.length; oldDrag++) _dragControllers[oldDrag].cancel();
+        for (var oldDrag = 0; oldDrag < _dragControllers.length; oldDrag++) _dragControllers[oldDrag].destroy();
         if (_broker) _broker.clearSelection();
         disposeInventoryControls();
         disposeOwnedPanes();
@@ -157,7 +160,15 @@ var InventoryStorageWorkbench = (function() {
         _profile = config.profile; _viewMode = initialView;
         _ownerPanel = String(context.ownerPanel || ''); _panelInstanceId = String(context.panelInstanceId || '');
         _rightContainerId = config.rightContainerId; _rightLimit = config.rightLimit;
-        _quickTransfer.configure({rightContainerId:_rightContainerId});
+        if (_sources) _sources.destroy();
+        _sources = InventoryWorkbenchStorageSource.create({coordinator:_coordinator,onChange:syncSourceState});
+        _storageControls = InventoryWorkbenchStorageControls.create({
+            document:document,components:WorkbenchComponents,shell:function() { return _shell; },
+            state:function() { return _state; },view:function() { return _viewMode; },
+            coordinator:_coordinator,slotRef:slotRef,render:renderInventories,toast:toast,error:errorMessage,
+            beforeAction:function() { exitQuickMode(); clearSelection(); hideTooltip(); }
+        });
+        _quickTransfer.configure({rightContainerId:_rightContainerId,sourceKind:'container',limit:50});
         _densityController = context.densityController || null;
         if (!_densityController) throw new Error('Inventory workbench density controller is required');
         _layoutMode = _densityController.mode;
@@ -185,21 +196,8 @@ var InventoryStorageWorkbench = (function() {
             var tile = event.target && event.target.closest ? event.target.closest('[data-workbench-key]') : null;
             if (tile) _lastBackpackFocus = {key:String(tile.getAttribute('data-workbench-key')), role:event.target.closest('.inventory-discard-btn') ? 'discard' : 'tile'};
         });
-        _rightView = createInventoryView(_rightContainerId, config.title, _layoutMode);
-        _pager = new InventoryUI.InventoryWindowPager({
-            containerId:_rightContainerId, containerLabel:config.title, columns:config.pageColumns,
-            defaultOffset:0, defaultLimit:_rightLimit, defaultCapacity:config.rightCapacity,
-            getSnapshot:function() { return _coordinator.getWindow(_rightContainerId); },
-            getRequest:function() { return _coordinator.getRequest(_rightContainerId); },
-            shortcutEnabled:shortcutsEnabled,
-            onBeforeChange:function() { exitQuickMode(); clearSelection(); hideTooltip(); },
-            onRequest:function(offset, limit, callback) {
-                return _coordinator.setWindow(_rightContainerId, offset, limit, callback); },
-            onResult:function(result) { renderInventories();
-                if (!result || !result.success) toast(config.title + '翻页失败，请重试。'); }
-        });
+        mountRightSource(config, true);
         _backpackView.chrome.setToolbar(createInventoryToolbar('背包', null));
-        _rightView.chrome.setToolbar(createInventoryToolbar(_rightContainerId, _pager));
         if (_viewMode === 'tuning') _tuningView.openSession(_panelInstanceId);
         if (!_shell.mountInitial(_backpackView, _viewMode === 'tuning' ? _tuningView : _rightView)) {
             throw new Error('Inventory workbench initial view configuration rejected');
@@ -208,6 +206,47 @@ var InventoryStorageWorkbench = (function() {
         installInteractions();
         if (_tuningScope) _tuningScope.attach();
     }
+    function mountRightSource(config, initial) {
+        var built = InventoryWorkbenchOwnedView.createPagedView({config:config, inventoryUI:InventoryUI,
+            createView:createInventoryView, layoutMode:_layoutMode, source:_sources,
+            shortcutEnabled:shortcutsEnabled,
+            beforeChange:function() { exitQuickMode(); clearSelection(); hideTooltip(); },
+            onResult:function(result) { renderInventories(); if (!result || !result.success) toast(errorMessage(result && result.error)); }
+        });
+        _rightView = built.view; _pager = built.pager;
+        _rightView.chrome.setToolbar(createInventoryToolbar(_rightContainerId, _pager));
+        if (!initial && !_shell.moveView('R', _rightView)) throw new Error('Storage source mount rejected');
+    }
+    function switchSource(next, options, callback) {
+        if (!_sources || _viewMode !== 'storage' || _state.busyOwner || _state.refreshRequired
+                || _quickTransfer.isBusy() || next === 'stash' && !_state.ready) return false;
+        if (_sources.getSource() === next) { if (callback) callback(true); return true; }
+        exitQuickMode(); clearSelection(); hideTooltip();
+        var generation = _openGeneration;
+        return _sources.switchSource(next, options || {}, function(success) {
+            if (generation !== _openGeneration) return;
+            if (!success) { if (callback) callback(false); return; }
+            var oldId = _rightContainerId, oldView = _rightView, oldPane = _ownedPanes[oldId];
+            if (_pager) _pager.detach();
+            for (var i = 0; i < _dragControllers.length; i++) _dragControllers[i].destroy();
+            if (_rightSortControls) _rightSortControls.destroy();
+            var base = _ports.profileConfig;
+            _rightContainerId = next === 'stash' ? 'stash' : base.rightContainerId;
+            _rightLimit = next === 'stash' ? 32 : base.rightLimit;
+            mountRightSource({title:next === 'stash' ? '暂存物资' : base.title,
+                rightContainerId:_rightContainerId, rightLimit:_rightLimit,
+                pageColumns:base.pageColumns, rightCapacity:next === 'stash' ? 0 : base.rightCapacity}, false);
+            _shell.unregisterView(oldView); if (_tooltipScope) _tooltipScope.releaseTree(oldView.root);
+            if (oldPane) oldPane.destroy(); delete _ownedPanes[oldId];
+            _renderedWindows = {}; _tooltipCache = {};
+            _quickTransfer.configure({rightContainerId:_rightContainerId, sourceKind:next, limit:next === 'stash' ? 32 : 50});
+            installInteractions(); _pager.attach();
+            _el.setAttribute('data-storage-source', next);
+            syncSourceState();
+            if (callback) callback(true);
+        });
+    }
+    function reportStashResult(result) { toast(InventoryWorkbenchOwnedView.stashResultMessage(result)); }
     function switchView(nextView, preferredSlot, callback) {
         var onComplete = typeof callback === 'function' ? callback : function() {};
         var completed = false;
@@ -406,6 +445,7 @@ var InventoryStorageWorkbench = (function() {
         var body = _el && _el.querySelector('.workbench-body');
         if (!body) throw new Error('Inventory quick-transfer bar requires the workbench body');
         body.appendChild(_quickBarView.root);
+        if (_storageControls) _storageControls.attach(_quickBarView, {controller:_quickTransfer, getWindow:sourceWindow, rightId:function() { return _rightContainerId; }});
         updateQuickTransferUI();
     }
     function createInventoryToolbar(containerId, pager) {
@@ -413,14 +453,24 @@ var InventoryStorageWorkbench = (function() {
         var toolbar = InventoryWorkbenchOwnedView.createToolbar({
             document:document, inventoryUI:InventoryUI, containerId:containerId, pager:pager, view:view,
             beforeFilter:function() { exitQuickMode(); clearSelection(); hideTooltip(); },
-            setFilter:function(id, key, callback) { return _coordinator.setFilter(id, key, callback); },
-            setFilterSpec:function(id, spec, callback) { return _coordinator.setFilterSpec(id, spec, callback); },
-            getRequest:function(id) { return _coordinator.getRequest(id); },
-            getSnapshot:function(id) { return _coordinator.getWindow(id); },
+            allowAuthority:containerId !== 'stash',
+            setFilter:function(id, key, callback) { return id === 'stash' ? _sources.setFilterSpec(id, {major:key}, callback) : _coordinator.setFilter(id, key, callback); },
+            setFilterSpec:function(id, spec, callback) { return _sources.setFilterSpec(id, spec, callback); },
+            getRequest:function(id) { return _sources.getRequest(id); },
+            getSnapshot:sourceWindow,
             render:renderInventories, confirmSort:confirmSort, toast:toast
         });
         if (containerId === '背包') _backpackSortControls = toolbar.controls;
-        else _rightSortControls = toolbar.controls;
+        else {
+            _rightSortControls = toolbar.controls;
+            var button = document.createElement('button');
+            button.type = 'button'; button.className = 'workbench-mode-btn inventory-source-action';
+            button.textContent = containerId === 'stash' ? '返回' + _ports.profileConfig.title : '暂存物资';
+            button.addEventListener('click', function() {
+                if (_ports.requestStorageSource) _ports.requestStorageSource(containerId === 'stash' ? 'container' : 'stash', button);
+            });
+            view.chrome.titleRow.appendChild(button);
+        }
         return toolbar.root;
     }
     function createInventoryView(containerId, title, layoutMode) {
@@ -428,9 +478,11 @@ var InventoryStorageWorkbench = (function() {
             inventoryUI:InventoryUI, components:WorkbenchComponents,
             containerId:containerId, title:title, layoutMode:layoutMode,
             densityController:_densityController,
-            getSnapshot:function(id) { return _coordinator.getWindow(id); },
+            getSnapshot:sourceWindow,
             getAuthorityState:function() { return _state; },
             slotRef:slotRef, bindSlot:bindSlot, iconHtml:iconHtml,
+            keyOf:function(row) { return row.entryId || row.physicalSlot; },
+            sourceQuantity:function(id,row) { return _storageControls.quantityFor(id,row); },
             samePhysicalSlot:InventoryRuntime.samePhysicalSlot,
             onInteractionChange:function(id) { reprojectOwnedView(id); }
         });
@@ -501,6 +553,10 @@ var InventoryStorageWorkbench = (function() {
     function installInteractions() {
         _broker = new Workbench.InteractionBroker({
             onIntent:function(intent) {
+                if (intent.sourceRef && intent.sourceRef.kind === 'stash') {
+                    if (!_sources.take([intent.sourceRef], intent.targetRef, reportStashResult)) toast('暂存操作尚未完成。');
+                    return;
+                }
                 if (!_coordinator.transfer(intent, function(result) {
                     renderInventories();
                     if (result.success) toast(result.operation === 'merge' ? '物品已合并。'
@@ -510,8 +566,12 @@ var InventoryStorageWorkbench = (function() {
             },
             onReject:function(result) {
                 if (result && result.reason === 'same_slot') clearSelection();
+                else if (result && result.reason === 'withdraw_only') toast('暂存物资只支持取出。');
+                else if (result && result.reason === 'target_incompatible') toast('该物品需要自动归位，请点击下方“领取”，或 Ctrl 单击。');
+                else if (result && result.reason === 'target_occupied') toast('目标格已有其他物品，请选择空格或同物堆叠。');
             },
             onSelectionChange:function(selection) {
+                if (_storageControls) _storageControls.setSelection(selection);
                 _tooltipSuppressed = !!selection;
                 if (_tooltipSuppressed) hideTooltip();
             }
@@ -522,7 +582,7 @@ var InventoryStorageWorkbench = (function() {
     }
     function installDragForView(view) {
         _dragControllers.push(new Workbench.PointerDragController({
-            sourceElement:view.renderer.root,
+            sourceElement:view.renderer.root, selectOnPointerDown:false,
             broker:_broker,
             timeoutMs:_runtimeConfig.dragTimeoutMs || 1400,
             getSource:function(target) {
@@ -559,6 +619,11 @@ var InventoryStorageWorkbench = (function() {
         return false;
     }
     function handleQuickTransferClick(event, containerId, slot) {
+        var quantity = _storageControls.quantityFor(containerId, slot);
+        if (event && event.ctrlKey && quantity !== undefined && !_quickTransfer.getMode()) {
+            event.preventDefault(); event.stopPropagation();
+            _quickTransfer.enqueue(containerId, slot, false, quantity); return true;
+        }
         return _quickTransfer.acceptClick(event, {
             profile:_profile, viewMode:_viewMode, containerId:containerId, slot:slot
         });
@@ -568,13 +633,11 @@ var InventoryStorageWorkbench = (function() {
     }
     function commitQuickTransfer() { return _quickTransfer.commit(); }
     function exitQuickMode() { return _quickTransfer.exit(); }
-    function findCurrentSlot(containerId, physicalSlot) {
-        var snapshot = _coordinator.getWindow(containerId);
-        var slots = snapshot ? snapshot.slots : [];
-        for (var i = 0; i < slots.length; i++) {
-            if (Number(slots[i].physicalSlot) === Number(physicalSlot)) return slots[i];
-        }
-        return null;
+    function findCurrentSlot(containerId, key) { return _sources ? _sources.getRow(containerId,key) : null; }
+    function sourceWindow(id) { return _sources ? _sources.getWindow(id) : _coordinator.getWindow(id); }
+    function syncSourceState() {
+        _state = _sources ? _sources.state(_inventoryState) : _inventoryState;
+        renderInventories(); refreshControls();
     }
     function updateQuickTransferUI() {
         var quick = _quickTransfer.debugState();
@@ -585,21 +648,8 @@ var InventoryStorageWorkbench = (function() {
         if (_quickBarView) _quickBarView.update(quick, {visible:_viewMode === 'storage'});
     }
     function applyQuickTransferSlotState() {
-        if (!_el) return;
-        var nodes = _el.querySelectorAll('.inventory-slot-card');
-        for (var i = 0; i < nodes.length; i++) {
-            nodes[i].classList.remove('quick-transfer-pending', 'quick-transfer-inflight');
-        }
-        var quick = _quickTransfer.debugState();
-        for (var key in quick.entries) {
-            var entry = quick.entries[key];
-            var view = entry.containerId === '背包' ? _backpackView : _rightView;
-            if (!view) continue;
-            var node = view.root.querySelector('[data-physical-slot="' + entry.slot + '"]');
-            if (!node) continue;
-            node.classList.add('quick-transfer-pending');
-            if (entry.inflight) node.classList.add('quick-transfer-inflight');
-        }
+        var views = {'背包':_backpackView}; views[_rightContainerId] = _rightView;
+        InventoryWorkbenchOwnedView.projectQuickSelection(_el, views, _quickTransfer.debugState());
     }
     function renderInventories() {
         if (!_backpackView || !_rightView) return;
@@ -617,9 +667,9 @@ var InventoryStorageWorkbench = (function() {
         );
     }
     function renderView(view) {
-        var snapshot = _coordinator.getWindow(view.containerId);
+        var snapshot = sourceWindow(view.containerId);
         if (_renderedWindows[view.containerId] === snapshot) return false;
-        _renderedWindows[view.containerId] = snapshot; if (_tooltipScope && _tooltipScope.releaseTree) _tooltipScope.releaseTree(view.root);
+        _renderedWindows[view.containerId] = snapshot; // GridRenderer 只清理被替换的格子，保留复用格子的注释绑定。
         if (view.ownedInventoryPane) view.ownedInventoryPane.update(
             snapshot, InventoryWorkbenchOwnedView.presentationFor(view.containerId, snapshot));
         return true;
@@ -638,16 +688,25 @@ var InventoryStorageWorkbench = (function() {
         }
         if (_rightSortControls) {
             _rightSortControls.setDisabled(blocked);
-            var rightSnapshot = _coordinator.getWindow(_rightContainerId);
+            var rightSnapshot = sourceWindow(_rightContainerId);
             _rightSortControls.setAuthorityDisabled(blocked
                 || !rightSnapshot || Number(rightSnapshot.accessibleCapacity) <= 0);
         }
-        if (_retryButton) _retryButton.style.display = _state.refreshRequired ? '' : 'none';
+        if (_retryButton) {
+            _retryButton.style.display = _state.refreshRequired || _state.needsReconcile || _state.repairLabel ? '' : 'none';
+            _retryButton.textContent = _state.repairLabel || (_state.needsReconcile ? '核对领取结果' : '重试同步');
+        }
+        if (_storageControls) _storageControls.update();
+        var sourceButtons = _el.querySelectorAll('.inventory-source-action');
+        for (var b = 0; b < sourceButtons.length; b++) sourceButtons[b].disabled = blocked || _quickTransfer.isBusy();
         var quickBlocked = _viewMode === 'tuning' || !_state.ready || !!_state.refreshRequired
             || (!!_state.busyOwner && _state.busyOwner !== 'inventory.autoTransfer'
                 && _state.busyOwner !== 'inventory.autoTransferBatch');
         var quickState = _quickTransfer.debugState();
-        if (_quickDepositButton) _quickDepositButton.disabled = quickBlocked || quickState.committing;
+        if (_quickDepositButton) {
+            _quickDepositButton.hidden = _rightContainerId === 'stash';
+            _quickDepositButton.disabled = quickBlocked || quickState.committing;
+        }
         if (_quickWithdrawButton) _quickWithdrawButton.disabled = quickBlocked || quickState.committing;
         if (_quickCommitButton) {
             _quickCommitButton.disabled = quickBlocked || !quickState.mode
@@ -661,74 +720,18 @@ var InventoryStorageWorkbench = (function() {
         else if (_state.ready) _shell.setStatus('已同步', 'ready');
         else _shell.setStatus('同步中', 'busy');
     }
-    function confirmDiscard(containerId, slot) {
-        var interaction = InventoryWorkbenchOwnedView.authorityInteraction(_state, false);
-        if (_viewMode === 'tuning' || containerId !== '背包' || !slot.occupied
-                || !interaction.actionable) { if (interaction.reason) toast(interaction.reason); return; }
-        var projection = slot.confirmProjection || slot.item || {};
-        _shell.openModal({
-            kind:'discard',
-            title:'丢弃 ' + String(projection.displayName || '该物品') + '？',
-            message:'将丢弃整组，共 ' + Number(projection.quantity || 1) + ' 件。',
-            detail:'丢弃后无法找回。',
-            actions:[
-                {id:'cancel', label:'取消', audioCue:'back'},
-                {id:'discard', label:'确认丢弃', danger:true, audioCue:'destructive', onSelect:function() {
-                    var current = InventoryWorkbenchOwnedView.authorityInteraction(_state, false);
-                    if (!current.actionable) { toast(current.reason); return; }
-                    if (!_coordinator.discard(slotRef(containerId, slot), function(result) {
-                        renderInventories();
-                        toast(result.success ? '物品已丢弃。' : errorMessage(result.error));
-                    })) toast('库存正在处理另一项操作。');
-                }}
-            ]
-        });
-    }
-    function confirmSort(containerId, methodName, label) {
-        if (_viewMode === 'tuning' || !_state.ready || _state.busyOwner || _state.refreshRequired) return;
-        exitQuickMode();
-        methodName = methodName || 'byType';
-        label = label || methodName;
-        var scope = containerId === '战备箱' ? '当前已解锁区域' : '全部物品';
-        _shell.openModal({
-            kind:'inventory-sort',
-            title:'按' + label + '整理' + containerId + '？',
-            message:'将重新排列' + scope + '，并合并可堆叠物品。',
-            detail:containerId === '战备箱'
-                ? '未解锁的存档保留区不会被读取或移动。' : '原有摆放顺序会改变。',
-            actions:[
-                {id:'cancel', label:'取消', audioCue:'back'},
-                {id:'sort', label:'整理并合并', primary:true, audioCue:'activate', onSelect:function() {
-                    clearSelection();
-                    if (!_coordinator.sortAndMerge(containerId, methodName, function(result) {
-                        renderInventories();
-                        toast(result.success ? containerId + '整理完成。' : containerId + '整理失败，请重试。',
-                            result.success ? 'success' : 'error');
-                    })) toast('库存正在处理另一项操作。');
-                }}
-            ]
-        });
-    }
+    function confirmDiscard(id,slot) { return _storageControls.discard(id,slot); }
+    function confirmSort(id,method,label) { return _storageControls.sort(id,method,label); }
     function bindTuningSourceTooltip(node, item, source, isSuppressed) { var slot = InventoryWorkbenchOwnedView.resolveExactSourceSlot(item, source, findCurrentSlot); return node && slot ? bindSlotTooltip(node, '背包', slot, isSuppressed) : null; }
     function bindSlotTooltip(node, containerId, slot, extraSuppression) {
-        var key = containerId + ':' + slot.physicalSlot + ':' + String(slot.slotLease || '');
-        var item = slot.item || {};
-        return (_tooltipScope || PanelTooltip).bindAsyncHover(node, {
-            profile:'dense-inspect',
-            cache: _tooltipCache,
-            key: key,
-            item: item,
-            isSuppressed: function() { return _tooltipSuppressed || typeof extraSuppression === 'function' && extraSuppression(); },
-            renderBasic:function(value) {
-                return InventoryWorkbenchOwnedView.basicTooltip(value, escapeHtml);
-            },
-            renderRich:function(value, data) {
-                return InventoryWorkbenchOwnedView.richTooltip(value, data, PanelTooltip);
-            },
-            fetch: function(_, callback) {
-                requestInventory('tooltip', {v:1, source:slotRef(containerId, slot)}, function(response) {
-                    if (!isOpen()) return;
-                    callback(response);
+        return InventoryWorkbenchOwnedView.bindTooltip({node:node, containerId:containerId, slot:slot,
+            tooltip:_tooltipScope || PanelTooltip, richTooltip:PanelTooltip, cache:_tooltipCache,
+            escapeHtml:escapeHtml,
+            isSuppressed:function() { return _tooltipSuppressed || typeof extraSuppression === 'function' && extraSuppression(); },
+            fetch:function(callback) {
+                if (containerId === 'stash') return _sources.tooltip(slot, callback);
+                return requestInventory('tooltip', {v:1, source:slotRef(containerId, slot)}, function(response) {
+                    if (isOpen()) callback(response);
                 });
             }
         });
@@ -783,12 +786,14 @@ var InventoryStorageWorkbench = (function() {
     function cleanup() {
         _openGeneration += 1;
         if (_pager) _pager.detach();
-        for (var i = 0; i < _dragControllers.length; i++) _dragControllers[i].cancel();
+        for (var i = 0; i < _dragControllers.length; i++) _dragControllers[i].destroy();
         clearSelection();
         hideTooltip();
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         closeEquipmentInspector();
         _quickTransfer.reset();
+        if (_sources) _sources.destroy(); _sources = null;
+        if (_storageControls) _storageControls.destroy(); _storageControls = null;
         _coordinator.close();
         _mux.closeSession();
         if (_tuningView) { _tuningView.destroy(); _tuningView = null; }
@@ -853,6 +858,7 @@ var InventoryStorageWorkbench = (function() {
         return prepareExit('switch', callback);
     }
     function retryRefresh() {
+        if (_sources && _sources.getSource() === 'stash') { _sources.retry(reportStashResult); return; }
         if (_tuningView && _tuningView.retryInventoryRefresh()) return;
         if (!_coordinator.retryRefresh(function(result) {
             renderInventories();
@@ -879,15 +885,7 @@ var InventoryStorageWorkbench = (function() {
     function requestInventory(cmd, payload, callback) {
         return _mux.request(cmd, payload || {}, {sendError:'not_sent'}, callback);
     }
-    function slotRef(containerId, slot) {
-        return {
-            containerId:containerId,
-            slot:Number(slot.physicalSlot),
-            expectedLease:String(slot.slotLease),
-            occupied:!!slot.occupied,
-            item:slot.item || null
-        };
-    }
+    function slotRef(containerId, slot, quantity) { return _sources.slotRef(containerId,slot,quantity); }
     function shortcutsEnabled(event) {
         if (!isOpen() || (_shell && _shell.hasModal())) return false;
         var target = event.target;
@@ -897,7 +895,6 @@ var InventoryStorageWorkbench = (function() {
     function hideTooltip() { if (typeof PanelTooltip !== 'undefined') PanelTooltip.hide(); }
     function isOpen() { return _ports.isPanelActive ? _ports.isPanelActive() : false; }
     function toast(message, severity) { if (typeof Toast !== 'undefined') Toast.add(message, severity); }
-    // 本地拦截(阻断)的即时反馈: 命令式 cue('illegal'); 无音频层时静默。
     function blockedCue() {
         if (typeof BootstrapAudio !== 'undefined' && BootstrapAudio
                 && typeof BootstrapAudio.cue === 'function') BootstrapAudio.cue('illegal');
@@ -911,10 +908,13 @@ var InventoryStorageWorkbench = (function() {
         activate:activate,
         deactivate:cleanup,
         switchView:switchView,
+        switchSource:switchSource,
+        getSource:function() { return _sources ? _sources.getSource() : 'container'; },
         consumeEscape:function() {
             if (_viewMode === 'tuning' && _tuningView
                     && typeof _tuningView.consumeEscape === 'function'
                     && _tuningView.consumeEscape()) return true;
+            if (_broker && _broker.debugState().selectedInstanceKey) { clearSelection(); return true; }
             return exitQuickMode();
         },
         prepareLeave:prepareLeave,
@@ -927,7 +927,7 @@ var InventoryStorageWorkbench = (function() {
             var tuning = _tuningView ? _tuningView.getInteractionProjection() : null;
             return {
                 view:_viewMode,
-                disabled:!!_state.busyOwner || !!_state.refreshRequired
+                disabled:!_state.ready || !!_state.busyOwner || !!_state.refreshRequired
                     || _viewMode === 'tuning' && tuning && tuning.blocked,
                 reason:_viewMode === 'tuning' && tuning && tuning.reason
                     ? tuning.reason
@@ -937,10 +937,10 @@ var InventoryStorageWorkbench = (function() {
         },
         getView:function() { return _viewMode; },
         debugState:function() {
-            var right = _coordinator.getWindow(_rightContainerId);
+            var right = sourceWindow(_rightContainerId);
             return {
                 profile:_profile, view:_viewMode, hostOwner:_ownerPanel, panelInstanceId:_panelInstanceId,
-                rightContainerId:_rightContainerId,
+                rightContainerId:_rightContainerId, storageSource:_sources ? _sources.getSource() : 'container',
                 coordinator:_coordinator.debugState(),
                 rightAccessibleCapacity:right ? Number(right.accessibleCapacity) : null,
                 battleboxAccessibleCapacity:_profile === 'battlebox' && right ? Number(right.accessibleCapacity) : null,

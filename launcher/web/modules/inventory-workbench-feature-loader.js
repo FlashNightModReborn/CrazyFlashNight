@@ -45,7 +45,6 @@
         'modules/loadout-picker/loadout-picker-candidate-pane.js',
         'modules/loadout-picker/loadout-picker.js',
         'modules/character-build/character-build-item-use-openmany-view.js',
-        'modules/character-build/character-build-stash-view.js',
         'modules/character-build-view.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',
@@ -57,10 +56,10 @@
         'modules/character-build/character-build-stash-transport.js',
         'modules/character-build/character-build-item-use.js',
         'modules/character-build/character-build-item-use-channel.js',
+        'modules/character-build/character-build-stash-authority.js',
         'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js'
     ]);
-
     function tuningReady() {
         return !!(root.EquipmentTuningRuntime
             && root.EquipmentTuningView
@@ -170,6 +169,7 @@
     return {
         loadTuning:function() { return loadFeature(descriptor('tuning')); },
         loadBuild:function() { return loadFeature(descriptor('build')); },
+        loadFeature:loadFeature,
         isTuningReady:tuningReady,
         isBuildReady:buildReady,
         createGate:function(options) { return new FeatureGate(options); },

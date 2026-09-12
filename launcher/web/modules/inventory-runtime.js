@@ -751,6 +751,31 @@
         };
     }
 
+    /**
+     * An optional partial-stack quantity may ride on move/merge/autoTransfer/autoTransferBatch
+     * source refs only; targets, swaps and discards keep the closed wireRef field set.
+     * Returns the wire quantity, null when the ref carries none, false when invalid.
+     */
+    function resolveSourceQuantity(ref, command) {
+        if (ref.quantity == null) return null;
+        var item = ref.item || {};
+        if (item.itemKind !== 'stack'
+                || !isIntegerIn(ref.quantity, 1, MAX_SAFE_PROJECTION_NUMBER)
+                || !isIntegerIn(item.quantity, 1, MAX_SAFE_PROJECTION_NUMBER)
+                || ref.quantity > item.quantity) return false;
+        if (command === 'move' || command === 'merge'
+                || command === 'autoTransfer' || command === 'autoTransferBatch') {
+            return Number(ref.quantity);
+        }
+        return Number(ref.quantity) === Number(item.quantity) ? null : false;
+    }
+
+    function wireSourceRef(ref, quantity) {
+        var wired = wireRef(ref);
+        if (quantity != null) wired.quantity = quantity;
+        return wired;
+    }
+
     function InventoryCoordinator(options) {
         options = options || {};
         this._request = options.request || function(cmd, payload, callback) {
@@ -988,7 +1013,8 @@
         var operation = this.beginExternalWrite('inventory.transfer');
         if (!operation) return false;
         var command = operationForIntent(intent);
-        if (!command) {
+        var sourceQuantity = command ? resolveSourceQuantity(intent.sourceRef, command) : false;
+        if (!command || sourceQuantity === false) {
             this._clearOwner(operation);
             this._emitState();
             if (typeof callback === 'function') callback({success: false, error: 'invalid_intent'});
@@ -1000,7 +1026,7 @@
         ]);
         this._request(command, {
             v: 1,
-            source: wireRef(intent.sourceRef),
+            source: wireSourceRef(intent.sourceRef, sourceQuantity),
             target: wireRef(intent.targetRef)
         }, function(response) {
             if (!self._isActiveOperation(operation)) return;
@@ -1040,13 +1066,15 @@
      */
     InventoryCoordinator.prototype.autoTransfer = function(sourceRef, targetContainerId, callback) {
         if (!sourceRef || !sourceRef.occupied || !sourceRef.item) return false;
+        var sourceQuantity = resolveSourceQuantity(sourceRef, 'autoTransfer');
+        if (sourceQuantity === false) return false;
         var operation = this.beginExternalWrite('inventory.autoTransfer');
         if (!operation) return false;
         var self = this;
         var expectedRequests = this._requestsForContainers([sourceRef.containerId, targetContainerId]);
         this._request('autoTransfer', {
             v: 1,
-            source: wireRef(sourceRef),
+            source: wireSourceRef(sourceRef, sourceQuantity),
             targetContainerId: String(targetContainerId),
             policy: 'mergeThenEmpty',
             windows: cloneRequests(this._requests)
@@ -1098,7 +1126,9 @@
             var sourceRef = sourceRefs[sourceIndex];
             if (!sourceRef || !sourceRef.occupied || !sourceRef.item
                     || String(sourceRef.containerId) !== sourceContainerId) return false;
-            sources.push(wireRef(sourceRef));
+            var sourceQuantity = resolveSourceQuantity(sourceRef, 'autoTransferBatch');
+            if (sourceQuantity === false) return false;
+            sources.push(wireSourceRef(sourceRef, sourceQuantity));
         }
         var operation = this.beginExternalWrite('inventory.autoTransferBatch');
         if (!operation) return false;
@@ -1143,7 +1173,7 @@
     };
 
     InventoryCoordinator.prototype.discard = function(slotRef, callback) {
-        if (!slotRef) return false;
+        if (!slotRef || slotRef.quantity != null) return false;
         var operation = this.beginExternalWrite('inventory.discard');
         if (!operation) return false;
         var self = this;

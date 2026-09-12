@@ -1,4 +1,4 @@
-# Read-only product-policy validation for a prepared Launcher release tree.
+﻿# Read-only product-policy validation for a prepared Launcher release tree.
 # Binary producers must not run these checks as part of the payload identity: policy
 # evolves independently and is bound to the validation receipt by policyHash.
 
@@ -279,7 +279,11 @@ function Get-Cf7ProductionChecks {
         'modules\character-build\character-build-transport.js',
         'modules\character-build\character-build-item-use.js',
         'modules\character-build\character-build-stash-transport.js',
-        'modules\character-build\character-build-stash-view.js',
+        'modules\character-build\character-build-stash-authority.js',
+        'modules\inventory-workbench-stash-source.js',
+        'modules\inventory-workbench-storage-source.js',
+        'modules\inventory-workbench-storage-controls.js',
+        'modules\inventory-workbench-stash-navigation.js',
         'modules\character-build\character-build-item-use-channel.js',
         'modules\character-build\character-build-candidate-channel.js',
         'modules\character-build.js',

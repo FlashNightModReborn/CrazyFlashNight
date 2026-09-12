@@ -1150,6 +1150,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     // Deliberate facade stub: this harness proves the production build
     // controller inside workbench routing, not the storage controller or Host.
     window.InventoryStorageWorkbench = {
+    getSource:function() { return 'container'; },
         activate:function(ports, view) {
             var state = window.__routeHarness.storage;
             state.activations++;
@@ -1303,6 +1304,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/inventory-workbench-header.js"></script>
 <script src="modules/inventory-tuning-scope.js"></script>
 <script src="modules/inventory-workbench-feature-loader.js"></script>
+<script src="modules/inventory-workbench-stash-navigation.js"></script>
 <script src="modules/character-build/character-build-mutation.js"></script>
 <script src="modules/character-build/character-build-drug-layout.js"></script>
 <script src="modules/character-build/character-build-session-contract.js"></script>
@@ -1323,7 +1325,6 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/loadout-picker/loadout-picker-candidate-pane.js"></script>
 <script src="modules/loadout-picker/loadout-picker.js"></script>
 <script src="modules/character-build/character-build-item-use-openmany-view.js"></script>
-<script src="modules/character-build/character-build-stash-view.js"></script>
 <script src="modules/character-build-view.js"></script>
 <script src="modules/character-build/character-build-tuning.js"></script>
 <script src="modules/character-build/character-build-slot-transition.js"></script>
@@ -1334,6 +1335,7 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
 <script src="modules/character-build/character-build-cooldown-channel.js"></script>
 <script src="modules/character-build/character-build-stash-transport.js"></script>
 <script src="modules/character-build/character-build-item-use.js"></script>
+<script src="modules/character-build/character-build-stash-authority.js"></script>
 <script src="modules/character-build/character-build-item-use-channel.js"></script>
 <script src="modules/character-build/character-build-candidate-channel.js"></script>
 <script src="modules/character-build.js"></script>

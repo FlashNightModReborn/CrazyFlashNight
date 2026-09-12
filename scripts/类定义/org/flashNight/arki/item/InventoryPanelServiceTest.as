@@ -38,6 +38,7 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         testAutoTransferBatchRollback();
         testAutoTransferBatchComparison();
         testMoveMergeSwapAndReverse();
+        testPartialQuantityTransfers();
         testSameContainerTransfersAndRollback();
         testEventReentrancy();
         testCommitFailureRollback();
@@ -1986,6 +1987,261 @@ class org.flashNight.arki.item.InventoryPanelServiceTest {
         });
         assertTrue(result.success && result.operation == "move" && _root.物品栏.背包.getItem("0") === reverseItem,
             "仓库→背包反向仍调用同一 move operation");
+    }
+
+    private static function testPartialQuantityTransfers():Void {
+        resetInventories();
+        var stack:Object = item("部分转移堆", 5);
+        _root.物品栏.背包.add(0, stack);
+        _root.物品栏.仓库.add(0, item("部分转移堆", 4));
+        var response:Object = snapshot(50, 10);
+        var source:Object = refFrom(response, 0, 0);
+        source.quantity = 2;
+        var result:Object = InventoryPanelService.execute("move", {
+            v:1, source:source, target:refFrom(response, 1, 1)
+        });
+        var placed:Object = _root.物品栏.仓库.getItem("1");
+        assertTrue(result.success && _root.物品栏.背包.getItem("0") === stack
+                && stack.value == 3 && placed != null && placed !== stack
+                && placed.name == "部分转移堆" && placed.value == 2,
+            "move quantity 拆分新堆到空槽且来源对象原位减量");
+
+        response = snapshot(50, 10);
+        source = refFrom(response, 0, 0);
+        source.quantity = 2;
+        result = InventoryPanelService.execute("merge", {
+            v:1, source:source, target:refFrom(response, 1, 0)
+        });
+        assertTrue(result.success && _root.物品栏.背包.getItem("0") === stack
+                && stack.value == 1 && _root.物品栏.仓库.getItem("0").value == 6,
+            "merge quantity 只移动请求数量且保留两端对象");
+
+        response = snapshot(50, 10);
+        source = refFrom(response, 0, 0);
+        source.quantity = 1;
+        result = InventoryPanelService.execute("merge", {
+            v:1, source:source, target:refFrom(response, 1, 0)
+        });
+        assertTrue(result.success && _root.物品栏.背包.getItem("0") == null
+                && _root.物品栏.仓库.getItem("0").value == 7,
+            "quantity 等于堆叠总量退化为整项语义");
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("非法数量源", 5));
+        _root.物品栏.背包.add(2, item("装备数量源", {level:2}));
+        response = snapshot(50, 10);
+        var invalid:Array = [0, -1, 1.5, "2", 6, NaN, null];
+        for (var i:Number = 0; i < invalid.length; i++) {
+            var badSource:Object = refFrom(response, 0, 0);
+            badSource.quantity = invalid[i];
+            var rejected:Object = InventoryPanelService.execute("move", {
+                v:1, source:badSource, target:refFrom(response, 1, 3)
+            });
+            assertTrue(!rejected.success && rejected.error == "invalid_payload"
+                    && _root.物品栏.背包.getItem("0").value == 5
+                    && _root.物品栏.仓库.getItem("3") == null
+                    && !_root.存档系统.dirtyMark,
+                "quantity 非法值在写入前整单拒绝 " + i);
+        }
+        var equipmentSource:Object = refFrom(response, 0, 2);
+        equipmentSource.quantity = 1;
+        var equipmentRejected:Object = InventoryPanelService.execute("move", {
+            v:1, source:equipmentSource, target:refFrom(response, 1, 3)
+        });
+        assertTrue(!equipmentRejected.success && equipmentRejected.error == "invalid_payload"
+                && _root.物品栏.背包.getItem("2").value.level == 2,
+            "装备来源携带 quantity 整单拒绝");
+
+        var swapSource:Object = refFrom(response, 0, 0);
+        swapSource.quantity = 1;
+        var swapRejected:Object = InventoryPanelService.execute("swap", {
+            v:1, source:swapSource, target:refFrom(response, 0, 2)
+        });
+        assertTrue(!swapRejected.success && swapRejected.error == "invalid_payload",
+            "swap 不接受 source quantity");
+        var moveTarget:Object = refFrom(response, 1, 3);
+        moveTarget.quantity = 1;
+        var targetRejected:Object = InventoryPanelService.execute("move", {
+            v:1, source:refFrom(response, 0, 0), target:moveTarget
+        });
+        assertTrue(!targetRejected.success && targetRejected.error == "invalid_payload",
+            "目标 ref 不接受 quantity");
+        var nullQuantityTarget:Object = refFrom(response, 1, 3);
+        nullQuantityTarget.quantity = null;
+        var nullTargetRejected:Object = InventoryPanelService.execute("move", {
+            v:1, source:refFrom(response, 0, 0), target:nullQuantityTarget
+        });
+        assertTrue(!nullTargetRejected.success && nullTargetRejected.error == "invalid_payload",
+            "目标 ref 显式 quantity:null 同样整单拒绝");
+        var discardSource:Object = refFrom(response, 0, 0);
+        discardSource.quantity = 1;
+        var discardRejected:Object = InventoryPanelService.execute("discard", {
+            v:1, source:discardSource
+        });
+        assertTrue(!discardRejected.success && discardRejected.error == "invalid_payload"
+                && _root.物品栏.背包.getItem("0").value == 5,
+            "discard 不接受 quantity 且不发生丢弃");
+        var tooltipRejected:Object = InventoryPanelService.execute("tooltip", {
+            v:1, source:discardSource
+        });
+        assertTrue(!tooltipRejected.success && tooltipRejected.error == "invalid_payload",
+            "tooltip 不接受 quantity");
+
+        resetInventories();
+        var autoStack:Object = item("自动部分堆", 5);
+        _root.物品栏.背包.add(0, autoStack);
+        _root.物品栏.仓库.add(0, item("自动部分堆", 4));
+        response = snapshot(50, 10);
+        var autoSource:Object = refFrom(response, 0, 0);
+        autoSource.quantity = 2;
+        result = InventoryPanelService.execute("autoTransfer", {
+            v:1, source:autoSource, targetContainerId:"仓库",
+            policy:"mergeThenEmpty",
+            windows:[
+                {containerId:"背包", offset:0, limit:50, filterKey:"all"},
+                {containerId:"仓库", offset:0, limit:10, filterKey:"all"}
+            ]
+        });
+        assertTrue(result.success && result.operation == "merge"
+                && result.destination.slot == 0
+                && _root.物品栏.背包.getItem("0") === autoStack && autoStack.value == 3
+                && _root.物品栏.仓库.getItem("0").value == 6,
+            "autoTransfer quantity 只合并请求数量");
+
+        resetInventories();
+        autoStack = item("自动部分堆", 3);
+        _root.物品栏.背包.add(0, autoStack);
+        _root.物品栏.仓库.add(0, item("占位异名堆", 4));
+        response = snapshot(50, 10);
+        autoSource = refFrom(response, 0, 0);
+        autoSource.quantity = 2;
+        result = InventoryPanelService.execute("autoTransfer", {
+            v:1, source:autoSource, targetContainerId:"仓库",
+            policy:"mergeThenEmpty",
+            windows:[
+                {containerId:"背包", offset:0, limit:50, filterKey:"all"},
+                {containerId:"仓库", offset:0, limit:10, filterKey:"all"}
+            ]
+        });
+        var autoPlaced:Object = _root.物品栏.仓库.getItem("1");
+        assertTrue(result.success && result.operation == "move"
+                && result.destination.slot == 1
+                && autoStack.value == 1 && autoPlaced != null
+                && autoPlaced !== autoStack && autoPlaced.value == 2
+                && _root.物品栏.仓库.getItem("0").value == 4,
+            "autoTransfer quantity 无同名堆时拆分新堆");
+
+        resetInventories();
+        var batchStackA:Object = item("批量部分甲", 8);
+        var batchStackB:Object = item("批量部分乙", 6);
+        _root.物品栏.背包.add(0, batchStackA);
+        _root.物品栏.背包.add(1, batchStackB);
+        _root.物品栏.仓库.add(0, item("批量部分甲", 2));
+        var before:Object = storagePairSnapshot("仓库");
+        var refs:Array = refsFrom(before, 0, 2);
+        refs[0].quantity = 3;
+        refs[1].quantity = 4;
+        result = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:refs, targetContainerId:"仓库",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("仓库")
+        });
+        assertTrue(result.success && result.requestedCount == 2 && result.completedCount == 2
+                && result.results[0].operation == "merge" && result.results[1].operation == "move"
+                && batchStackA.value == 5 && batchStackB.value == 2
+                && _root.物品栏.仓库.getItem("0").value == 5
+                && _root.物品栏.仓库.getItem("1").value == 4,
+            "批量来源 quantity 按请求数量 merge/拆分且来源原位保留余额");
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("批量拒绝甲", 5));
+        _root.物品栏.背包.add(1, item("批量拒绝乙", 5));
+        before = storagePairSnapshot("仓库");
+        refs = refsFrom(before, 0, 2);
+        refs[1].quantity = 9;
+        var beforeRevision:Number = _root.物品栏.背包.getMutationRevision();
+        var batchRejected:Object = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:refs, targetContainerId:"仓库",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("仓库")
+        });
+        assertTrue(!batchRejected.success && batchRejected.error == "invalid_payload"
+                && _root.物品栏.背包.getItem("0").value == 5
+                && _root.物品栏.背包.getItem("1").value == 5
+                && _root.物品栏.仓库.getItem("0") == null
+                && _root.物品栏.背包.getMutationRevision() == beforeRevision
+                && !_root.存档系统.dirtyMark,
+            "批量任一来源 quantity 越界时整批在任何提交前拒绝");
+
+        resetInventories();
+        _root.物品栏.背包.add(0, item("溢出合并堆", 10));
+        _root.物品栏.仓库.add(0, item("溢出合并堆", 9007199254740990));
+        response = snapshot(50, 10);
+        var overMergeSource:Object = refFrom(response, 0, 0);
+        overMergeSource.quantity = 5;
+        var overMerge:Object = InventoryPanelService.execute("merge", {
+            v:1, source:overMergeSource, target:refFrom(response, 1, 0)
+        });
+        assertTrue(!overMerge.success && overMerge.error == "merge_rejected"
+                && _root.物品栏.背包.getItem("0").value == 10
+                && _root.物品栏.仓库.getItem("0").value == 9007199254740990
+                && !_root.存档系统.dirtyMark,
+            "merge quantity 使目标合计越安全整数界时在任何写入前拒绝");
+
+        resetInventories();
+        var overAutoStack:Object = item("溢出回退堆", 5);
+        _root.物品栏.背包.add(0, overAutoStack);
+        _root.物品栏.仓库.add(0, item("溢出回退堆", 9007199254740990));
+        response = snapshot(50, 10);
+        var overAutoSource:Object = refFrom(response, 0, 0);
+        overAutoSource.quantity = 2;
+        result = InventoryPanelService.execute("autoTransfer", {
+            v:1, source:overAutoSource, targetContainerId:"仓库",
+            policy:"mergeThenEmpty",
+            windows:[
+                {containerId:"背包", offset:0, limit:50, filterKey:"all"},
+                {containerId:"仓库", offset:0, limit:10, filterKey:"all"}
+            ]
+        });
+        assertTrue(result.success && result.operation == "move"
+                && result.destination.slot == 1
+                && overAutoStack.value == 3
+                && _root.物品栏.仓库.getItem("0").value == 9007199254740990
+                && _root.物品栏.仓库.getItem("1").value == 2,
+            "autoTransfer quantity 合并越界时按 mergeThenEmpty 落到空格");
+
+        resetInventories();
+        var batchOverStack:Object = item("批量溢出堆", 6);
+        _root.物品栏.背包.add(0, batchOverStack);
+        _root.物品栏.仓库.add(0, item("批量溢出堆", 9007199254740989));
+        before = storagePairSnapshot("仓库");
+        refs = refsFrom(before, 0, 1);
+        refs[0].quantity = 4;
+        result = InventoryPanelService.execute("autoTransferBatch", {
+            v:1, sources:refs, targetContainerId:"仓库",
+            policy:"mergeThenEmpty", windows:autoTransferBatchWindows("仓库")
+        });
+        assertTrue(result.success && result.completedCount == 1
+                && result.results[0].operation == "move"
+                && batchOverStack.value == 2
+                && _root.物品栏.仓库.getItem("0").value == 9007199254740989
+                && _root.物品栏.仓库.getItem("1").value == 4,
+            "批量 quantity 合并越界时在计划阶段改落空格而非先减源");
+
+        resetInventories();
+        var rollbackStack:Object = item("部分回滚堆", 5);
+        _root.物品栏.背包.add(0, rollbackStack);
+        response = snapshot(50, 10);
+        InventoryPanelService.testOnlyFailNextCommit("仓库", 0);
+        source = refFrom(response, 0, 0);
+        source.quantity = 2;
+        result = InventoryPanelService.execute("move", {
+            v:1, source:source, target:refFrom(response, 1, 0)
+        });
+        assertTrue(!result.success && result.error == "commit_failed"
+                && _root.物品栏.背包.getItem("0") === rollbackStack
+                && rollbackStack.value == 5
+                && _root.物品栏.仓库.getItem("0") == null
+                && !_root.存档系统.dirtyMark,
+            "部分数量目标提交失败时按事务 receipt 精确回滚来源前像");
     }
 
     private static function testSameContainerTransfersAndRollback():Void {

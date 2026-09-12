@@ -295,6 +295,7 @@
 
     function PointerDragController(options) {
         options = options || {};
+        this._selectOnPointerDown = options.selectOnPointerDown !== false;
         this._sourceElement = options.sourceElement;
         this._getSource = options.getSource;
         this._resolveTarget = options.resolveTarget;
@@ -339,7 +340,7 @@
             captureNode: source.node,
             timer: setTimeout(function() { self.cancel('timeout'); }, this._timeoutMs)
         };
-        this._broker.select(source.view, source.item, source.node);
+        if (this._selectOnPointerDown) this._broker.select(source.view, source.item, source.node);
         try { if (source.node.setPointerCapture) source.node.setPointerCapture(event.pointerId); } catch (_) {}
         if (source.node.addEventListener) {
             source.node.addEventListener('lostpointercapture', this._boundLostCapture);
@@ -378,6 +379,7 @@
         if (!gesture.dragging && Math.sqrt(dx * dx + dy * dy) < this._threshold) return;
         if (!gesture.dragging) {
             gesture.dragging = true;
+            if (!this._selectOnPointerDown) this._broker.select(gesture.source.view, gesture.source.item, gesture.source.node);
             this._onDragStart(gesture.source);
             gesture.ghost = this._renderGhost ? this._renderGhost(gesture.source) : makeElement('div', 'workbench-drag-ghost');
             if (gesture.ghost) document.body.appendChild(gesture.ghost);

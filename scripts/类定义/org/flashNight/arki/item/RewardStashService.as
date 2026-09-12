@@ -281,7 +281,7 @@ class org.flashNight.arki.item.RewardStashService {
                 if (info.accepted <= 0) continue;
                 item.value = info.accepted;
             }
-            if (preferInventory && moveIntoInventory(item, acquired, context)) continue;
+            if (preferInventory && moveIntoInventory(item, acquired, context) != null) continue;
             // Ordinary rows are planned once per bounded admission, avoiding one whole-store scan per item.
             if (ItemUtil.isInformation(String(item.name))) {
                 if (!RewardStashStore.append(peek(), [item])) return false;
@@ -293,31 +293,92 @@ class org.flashNight.arki.item.RewardStashService {
         return RewardStashStore.append(peek(), appendItems);
     }
 
-    /** 完整装备写入；数字物品复用现役材料/情报/手雷/药剂 affinity 路由。 */
-    private static function moveIntoInventory(item:Object, acquired:Boolean, context:Object):Boolean {
+    /** 完整装备写入；数字物品复用现役材料/情报/手雷/药剂 affinity 路由。返回权威落位区域名或 null。 */
+    private static function moveIntoInventory(item:Object, acquired:Boolean, context:Object):String {
         var equipment:Boolean = typeof item.value == "object";
         var request:Object = {name:String(item.name), value:equipment ? Number(item.value.level) : Number(item.value),
             ownershipDelta:acquired ? RewardStashStore.quantity(item) : 0};
         var plan:Object = ItemUtil.require([request]);
-        if (plan == null) return false;
+        if (plan == null) return null;
+        var destination:String = plannedDestination(plan, request.name);
+        if (destination == null) return null;
         if (!equipment) {
             if (!ItemUtil.acquire([request], context)) throw new Error("stash_inventory_write_inexact");
-            return true;
+            return destination;
         }
         var slot:String = null;
         for (var key:String in plan.背包) { slot = key; break; }
-        if (slot == null) return false;
+        if (slot == null) return null;
         var value:BaseItem = BaseItem.createFromObject(PersistedSnapshot.clone(item));
         var bag:Object = _root.物品栏.背包;
         if (value == null || !bag.add(Number(slot), value)
                 || bag.getItem(Number(slot)) !== value) throw new Error("stash_equipment_write_inexact");
         if (acquired) PlayerAssetTransaction.recordItems("gain", [{name:item.name,
             value:1, isQuantity:true, tier:String(item.value.tier || "")}], context);
-        return true;
+        return destination;
+    }
+
+    /** 单项请求在权威计划中的真实接收区域；未落在任何持有区返回 null。 */
+    private static function plannedDestination(plan:Object, itemName:String):String {
+        for (var key:String in plan.背包) {
+            if (String(plan.背包[key].name) == itemName) return "背包";
+        }
+        for (key in plan.药剂栏) {
+            if (String(plan.药剂栏[key].name) == itemName) return "药剂栏";
+        }
+        if (plan.材料[itemName] != undefined) return "材料";
+        if (plan.情报[itemName] != undefined) return "情报";
+        if (plan.装备栏.手雷 != undefined && String(plan.装备栏.手雷.name) == itemName) return "装备栏";
+        return null;
+    }
+
+    /**
+     * 定点领取：目标槽位经库存 lease 精确校验，只允许确可进背包的物品；
+     * 空位放入或合法同名堆叠，绝不交换或改投别格。返回 {destination,slot} 或 {reason}。
+     */
+    private static function placeAtBagTarget(item:Object, quantity:Number, target:Object):Object {
+        var checked:Object = InventoryPanelService.validateExternalTargetRef(
+            {containerId:"背包", slot:target.slot, expectedLease:target.expectedLease});
+        if (checked == null || checked.success !== true) return {reason:"target_stale"};
+        var bag:Object = checked.inventory;
+        var existing:Object = checked.item;
+        var equipment:Boolean = typeof item.value == "object";
+        if (existing != null
+                && (equipment || typeof existing.value != "number"
+                    || String(existing.name) != String(item.name))) return {reason:"target_occupied"};
+        // 权威路由先于任何写入：即使目标格躺着异常同名堆，材料/情报/药剂/已装备手雷补堆也绝不定点合并。
+        var probe:Object = {name:String(item.name),
+            value:equipment ? Number(item.value.level) : quantity, ownershipDelta:0};
+        var plan:Object = ItemUtil.require([probe]);
+        if (plan == null) return {reason:"inventory_full"};
+        if (plannedDestination(plan, probe.name) != "背包") return {reason:"target_incompatible"};
+        if (existing != null) {
+            var merged:Number = Number(existing.value) + quantity;
+            if (!RewardStashStore.whole(merged) || merged < 1) return {reason:"inventory_full"};
+            bag.addValue(String(target.slot), quantity);
+            var after:Object = bag.getItem(target.slot);
+            if (after !== existing || Number(after.value) != merged) {
+                throw new Error("stash_target_write_inexact");
+            }
+            return {destination:"背包", slot:Number(target.slot)};
+        }
+        var value:BaseItem = equipment
+            ? BaseItem.createFromObject(PersistedSnapshot.clone(item))
+            : BaseItem.create(String(item.name), quantity, Number(item.lastUpdate));
+        if (value == null) return {reason:"target_incompatible"};
+        if (!bag.add(target.slot, value) || bag.getItem(target.slot) !== value) {
+            throw new Error("stash_target_write_inexact");
+        }
+        return {destination:"背包", slot:Number(target.slot)};
     }
 
     public static function takeFingerprint(params:Object):String {
         var rows:Array = ["take.v2", String(params.storeId), Number(params.expectedRevision)];
+        // 无 target 的旧请求指纹必须逐字节不变；仅在携带定点目标时附加规范化字段。
+        if (params.target !== undefined) {
+            rows.push(["target", String(params.target.containerId),
+                Number(params.target.slot), String(params.target.expectedLease)]);
+        }
         for (var i:Number = 0; i < params.entries.length; i++) {
             var entry:Object = params.entries[i];
             rows.push([String(entry.entryId), Number(entry.revision), Number(entry.quantity)]);
@@ -329,6 +390,22 @@ class org.flashNight.arki.item.RewardStashService {
         var store:Object = peek();
         if (!(params.entries instanceof Array) || params.entries.length < 1
                 || params.entries.length > RewardStashStore.TAKE_LIMIT) return {success:false, error:"invalid_payload"};
+        var target:Object = null;
+        if (params.target !== undefined) {
+            var rawTarget:Object = params.target;
+            var targetKeys:Number = 0;
+            for (var targetKey:String in rawTarget) targetKeys++;
+            if (params.entries.length != 1 || rawTarget == null || typeof rawTarget != "object"
+                    || rawTarget instanceof Array || targetKeys != 3
+                    || String(rawTarget.containerId) != "背包"
+                    || !RewardStashStore.whole(rawTarget.slot) || rawTarget.slot < 0 || rawTarget.slot >= 50
+                    || typeof rawTarget.expectedLease != "string"
+                    || rawTarget.expectedLease.length < 1 || rawTarget.expectedLease.length > 160) {
+                return {success:false, error:"invalid_payload"};
+            }
+            target = {containerId:"背包", slot:Number(rawTarget.slot),
+                expectedLease:String(rawTarget.expectedLease)};
+        }
         var fingerprint:String = takeFingerprint(params);
         var inspected:Object = RewardStashStore.inspectCommand(store, String(params.storeId),
             Number(params.expectedRevision), String(params.operationId), fingerprint);
@@ -354,11 +431,25 @@ class org.flashNight.arki.item.RewardStashService {
                 var current:Object = RewardStashStore.find(peek(), String(request.entryId));
                 var item:Object = PersistedSnapshot.clone(current.item);
                 if (typeof item.value == "number") item.value = Number(request.quantity);
-                if (!moveIntoInventory(item, false, context)) {
+                if (target != null) {
+                    var placed:Object = placeAtBagTarget(item, Number(request.quantity), target);
+                    if (placed == null || placed.destination == null) {
+                        blocked.push({entryId:request.entryId,
+                            reason:placed == null ? "target_incompatible" : String(placed.reason)});
+                        continue;
+                    }
+                    if (!RewardStashStore.removeQuantity(peek(), request.entryId, Number(request.quantity))) throw new Error("stash_source_changed");
+                    accepted.push({entryId:request.entryId, quantity:Number(request.quantity),
+                        destination:String(placed.destination), slot:Number(placed.slot)});
+                    continue;
+                }
+                var destination:String = moveIntoInventory(item, false, context);
+                if (destination == null) {
                     blocked.push({entryId:request.entryId, reason:"inventory_full"}); continue;
                 }
                 if (!RewardStashStore.removeQuantity(peek(), request.entryId, Number(request.quantity))) throw new Error("stash_source_changed");
-                accepted.push({entryId:request.entryId, quantity:Number(request.quantity)});
+                accepted.push({entryId:request.entryId, quantity:Number(request.quantity),
+                    destination:destination});
             }
         } catch (transferError) { return cancel("stash_write_failed"); }
         var result:Object = {success:true, accepted:accepted, blocked:blocked};
@@ -397,9 +488,18 @@ class org.flashNight.arki.item.RewardStashService {
         return {success:true, tooltip:info};
     }
 
-    /** 只读页面，固定窗口；不 ensure/ACK/advance root，也不生成 authority。 */
-    public static function page(offset:Number):Object {
+    /**
+     * 只读页面，固定 32 条窗口；不 ensure/ACK/advance root，也不生成 authority。
+     * filterSpec 沿用库存快照同一规范（normalizeItemFilterSpec）：携带时对全量 entries 先
+     * 分类再分页，total 为筛选后总数，unfilteredTotal 为原始总数，并附同形状 facets。
+     */
+    public static function page(offset:Number, filterSpec:Object):Object {
         if (!RewardStashStore.whole(offset)) return {success:false, error:"invalid_payload"};
+        var filter:Object = null;
+        if (filterSpec !== undefined) {
+            filter = InventoryPanelService.normalizeItemFilterSpec(filterSpec);
+            if (filter == null) return {success:false, error:"invalid_payload"};
+        }
         var raw:Object = committedFeature();
         if (raw != null && (typeof raw != "object" || (raw.v !== 1 && raw.v !== 2)))
             return {success:false, error:"reward_stash_quarantined"};
@@ -410,16 +510,54 @@ class org.flashNight.arki.item.RewardStashService {
             revision:store == null ? 0 : Number(store.commitRevision), offset:offset,
             total:store == null ? 0 : store.entries.length, entries:[],
             migrationRequired:legacyStock || (_root.商城已购买物品 instanceof Array && _root.商城已购买物品.length > 0), pendingOperationId:pendingOperationId()};
-        if (store == null) return result;
-        for (var i:Number = offset; i < Math.min(store.entries.length, offset + RewardStashStore.PAGE_SIZE); i++) {
-            var entry:Object = store.entries[i];
-            if (!RewardStashStore.validItem(entry.item)) return {success:false, error:"reward_stash_quarantined"};
-            var item:BaseItem = BaseItem.createFromObject(PersistedSnapshot.clone(entry.item));
-            if (item == null) return {success:false, error:"unknown_stash_item"};
-            var projection:Object = InventoryPanelService.buildItemProjection(item);
-            result.entries.push({entryId:String(entry.entryId), revision:Number(entry.revision),
-                quantity:RewardStashStore.quantity(entry.item), item:projection});
+        if (filter != null) {
+            result.filterSpec = filter;
+            result.unfilteredTotal = result.total;
+        }
+        if (store == null) {
+            if (filter != null) {
+                result.filterFacets = []; result.filterItemCount = 0;
+                result.setFacets = []; result.setFilterItemCount = 0;
+            }
+            return result;
+        }
+        if (filter == null) {
+            for (var i:Number = offset; i < Math.min(store.entries.length, offset + RewardStashStore.PAGE_SIZE); i++) {
+                var projected:Object = projectPageEntry(store.entries[i]);
+                if (projected.error != null) return {success:false, error:projected.error};
+                result.entries.push(projected.row);
+            }
+            return result;
+        }
+        // 全局筛选：先对全量条目分类收集匹配下标与 facets，再按 offset 取窗口。
+        var matches:Array = [];
+        var items:Array = [];
+        for (var e:Number = 0; e < store.entries.length; e++) {
+            var row:Object = store.entries[e];
+            if (!RewardStashStore.validItem(row.item)) return {success:false, error:"reward_stash_quarantined"};
+            items.push(row.item);
+            if (InventoryPanelService.itemMatchesItemFilter(row.item, filter)) matches.push(e);
+        }
+        var facetData:Object = InventoryPanelService.buildExternalFilterFacets(items);
+        result.filterFacets = facetData.facets;
+        result.filterItemCount = facetData.itemCount;
+        result.setFacets = facetData.setFacets;
+        result.setFilterItemCount = facetData.setItemCount;
+        result.total = matches.length;
+        for (var m:Number = offset; m < Math.min(matches.length, offset + RewardStashStore.PAGE_SIZE); m++) {
+            var filtered:Object = projectPageEntry(store.entries[Number(matches[m])]);
+            if (filtered.error != null) return {success:false, error:filtered.error};
+            result.entries.push(filtered.row);
         }
         return result;
+    }
+
+    private static function projectPageEntry(entry:Object):Object {
+        if (!RewardStashStore.validItem(entry.item)) return {error:"reward_stash_quarantined"};
+        var item:BaseItem = BaseItem.createFromObject(PersistedSnapshot.clone(entry.item));
+        if (item == null) return {error:"unknown_stash_item"};
+        return {row:{entryId:String(entry.entryId), revision:Number(entry.revision),
+            quantity:RewardStashStore.quantity(entry.item),
+            item:InventoryPanelService.buildItemProjection(item)}};
     }
 }

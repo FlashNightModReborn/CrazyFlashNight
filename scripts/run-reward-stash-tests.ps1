@@ -57,7 +57,7 @@ try {
         [regex]::Matches($trace,[regex]::Escape($end)).Count -ne 1 -or
         $trace.IndexOf($end) -le $trace.IndexOf($start) -or
         $trace -notmatch 'RewardStashServiceTest Tests Failed: 0' -or
-        $trace -notmatch 'RewardStashServiceTest Tests Passed: 82' -or
+        $trace -notmatch 'RewardStashServiceTest Tests Passed: 114' -or
         $trace -match '\[FAIL\]') {
         [IO.File]::WriteAllText($uncertainPath, "Reward stash behavior closure missing: $runId")
         throw 'Fresh reward-stash behavior closure is missing.'

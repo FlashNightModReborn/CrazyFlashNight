@@ -1122,7 +1122,11 @@ if (exists(registryRel)) {
         'modules/inventory-workbench-header.js',
         'modules/inventory-workbench-quick-transfer.js',
         'modules/inventory-workbench-owned-view.js',
+        'modules/inventory-workbench-stash-source.js',
+         'modules/inventory-workbench-storage-source.js',
+         'modules/inventory-workbench-storage-controls.js',
         'modules/inventory-workbench-feature-loader.js',
+        'modules/inventory-workbench-stash-navigation.js',
         'modules/inventory-storage-workbench.js',
         'modules/inventory-workbench.js'
     ];
@@ -1177,6 +1181,7 @@ if (exists(registryRel)) {
         'modules/character-build/character-build-stash-transport.js',
         'modules/character-build/character-build-item-use.js',
         'modules/character-build/character-build-item-use-channel.js',
+        'modules/character-build/character-build-stash-authority.js',
         'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js'
     ];

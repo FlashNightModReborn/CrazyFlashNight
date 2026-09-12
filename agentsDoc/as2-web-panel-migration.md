@@ -646,3 +646,11 @@ Launcher 状态：compiled / candidate_built / candidate_executed / e2e_verified
 Reward root 的 `pending/in_progress`、空 `error/stopReason` 表示健康 durable 前缀，AS2 每次 advance 以 750ms 为让出预算，Web 保持 busy 并仅以同一 `rootOperationId` query 继续。pending 仍无资产投影，N+1 cut 不增加。真实 `commit_pending`、断连、隔离、倒退或连续 3 次无进展停止自动续办；最多 64 次续查，detach 清定时器并拒绝迟到回包。字段/schema 不变，Host 默认 10 秒与 Web 12 秒超时不放宽。现场依据、包回执口径变更与验证见 [R1 收尾记录](../docs/R1存盘API迁移收尾-2026-09-05.md)。
 
 Host 收到经 sanitizer 验证、属于同一 binding/未知 root、且 revision 不低于 freshness watermark 的 `pending` query 时，须转发原始进度和真实 error；不能用通用 `reconcile_required` 覆盖健康进度，否则 Web 第二轮后会停止。允许转发不等于已消除未知状态：写栅栏、资产投影限制与关闭证明继续保留到 terminal；错误 root、过期回包、pending 混合资产投影及 detached 路径不能借此通过。`LootTaskTests.RewardInbox_Pending*` 覆盖多轮前缀、terminal、错误与拒绝分支；Host 的 request/reply 日志以 callId 关联，并记录 rootStatus/applied/error/forwarded，避免仅凭旧界面推断资产没写入。
+
+## 暂存物资的共享收纳适配（2026-09-12 工作树）
+
+最后核对代码基线：commit `c1e51dd1e8dba6bf72452cfef3af8b6f09b36acf` 加本轮增量；尚未发布。
+
+`stashPage` v2 可选对象 `filterSpec` 使用全局 facets 与 32 项窗口；省略保持旧响应，显式空值拒绝。`stashTake` v2 仅单项可带顶层背包 `target`，失败不自动换格，无目标旧请求指纹不变。库存 v1 的 `move/merge/autoTransfer/autoTransferBatch` 来源可选 `quantity`，不扩张目标、交换或丢弃权限。协议字段及验证边界以[本轮施工接口](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#101-本轮授权与接口范围)为准。
+
+暂存 `storeId/entryId/revision` 不能投射为物理槽租约。共享来源层先持有现役 InventoryCoordinator 写占用，复用 ItemUse 的同操作查询/恢复，待暂存页和物理背包均采用新快照后解除。未决领取不能靠切来源、隐藏视图或关闭绕过；来源退出与父会话最终结清分别负责，直接收纳的无视图会话在进入构筑前完成结清。

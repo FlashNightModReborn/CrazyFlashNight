@@ -29,9 +29,13 @@
     var itemUseChannel = typeof module !== 'undefined' && module.exports
         ? require('./character-build/character-build-item-use-channel.js')
         : root && root.CharacterBuildItemUseChannel;
+    var stashAuthority = typeof module !== 'undefined' && module.exports
+        ? require('./character-build/character-build-stash-authority.js')
+        : root && root.CharacterBuildStashAuthority;
     var api = factory(
         session, view, tuning, mutation, pose, projection, candidateTooltip,
-        transport, candidateChannel, itemUse, itemUseChannel, root);
+        transport, candidateChannel, itemUse, itemUseChannel, stashAuthority,
+        root);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -41,7 +45,7 @@
 })(typeof window !== 'undefined' ? window : globalThis,
 function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         CandidateTooltipModule, Transport, CandidateChannel, ItemUseModule,
-        ItemUseChannel, global) {
+        ItemUseChannel, StashAuthority, global) {
     'use strict';
     if (!SessionModule || !SessionModule.CharacterBuildSession) throw new Error('CharacterBuildSession is required');
     if (!ViewModule || !ViewModule.CharacterBuildView) throw new Error('CharacterBuildView is required');
@@ -140,6 +144,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         this._itemUseBindKey = '';
         this._itemUseResumeSelection = null;
         this._rewardAuthority = null;
+        this._itemUseHolds = 0;
+        this._itemUseReadyWaiters = [];
         this._tuningTransport = {
             send:options.send,
             timeoutMs:options.timeoutMs,
@@ -200,6 +206,14 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 ? '写入结果尚待确认，完成对账后才能进入收纳。'
                 : state === 'write_pending' ? '构筑正在写入，完成后才能进入收纳。'
                     : locked ? '构筑正在结算，完成后才能进入收纳。' : '');
+        }
+        if (this._itemUseReadyWaiters.length) {
+            var ready = state === 'idle' || state === 'flush_failed'
+                ? this.itemUseAuthority() : null;
+            if (ready || reason === 'open_failed'
+                    || state === 'closed' || state === 'finalized') {
+                this._flushItemUseReadyWaiters(ready);
+            }
         }
         if (this._ports.onSessionState) this._ports.onSessionState(state, reason, debug);
     };
@@ -403,6 +417,12 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
                 this._panelInstanceId,
                 this._session.getSessionGeneration());
         }
+        if (!this._view) {
+            // A borrowed stash authority keeps the item-use channel alive across
+            // suspend(); a late settle/snapshot must only refresh the cache, never
+            // remount the hidden build surface or wake the doll renderer.
+            return;
+        }
         var projected = Projection.viewSnapshot(payload);
         this._createView().setSnapshot(projected);
         this._itemUseCooldownFromSnapshot(projected);
@@ -487,7 +507,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         if (this._candidateTooltip) this._candidateTooltip.suspend();
         this._candidateCache = null;
         this._stopItemUseCooldownPolling();
-        if (this._itemUse) this._itemUse.close();
+        if (this._itemUse && this._itemUseHolds === 0) this._itemUse.close();
         this._itemUseBindKey = '';
         this._itemUseResumeSelection = null;
         this._rewardAuthority = null;
@@ -579,6 +599,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
     CharacterBuildController.prototype.destroy = function() {
         this._candidateRecoverySequence++;
         this.suspend();
+        this._flushItemUseReadyWaiters(null);
         if (this._candidateTooltip) this._candidateTooltip.destroy();
         this._itemUse.destroy();
         this._session.destroy();
@@ -609,6 +630,8 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
 
     ItemUseChannel.install(CharacterBuildController.prototype);
     CandidateChannel.install(CharacterBuildController.prototype);
+    if (!StashAuthority) throw new Error('CharacterBuildController requires stash authority ports');
+    StashAuthority.installBuildPorts(CharacterBuildController.prototype);
     return {
         CharacterBuildController:CharacterBuildController,
         createRequestMux:createRequestMux,

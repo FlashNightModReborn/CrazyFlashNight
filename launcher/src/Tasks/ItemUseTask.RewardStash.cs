@@ -21,10 +21,20 @@ namespace CF7Launcher.Tasks
                 || panelInstanceId != binding
                 || !TryReadLongInteger(payload["sessionGeneration"], 1, int.MaxValue, out generation)) return false;
             var keys = new List<string> { "v", "panelInstanceId", "sessionGeneration" };
+            JObject normalizedFilterSpec = null;
+            JObject normalizedTarget = null;
             if (command == "stashPage")
             {
                 keys.Add("offset");
                 if (!TryReadInteger(payload["offset"], 0, int.MaxValue, out int offset)) return false;
+                if (payload.Property("filterSpec") != null)
+                {
+                    keys.Add("filterSpec");
+                    if (!(payload["filterSpec"] is JObject)
+                        || !InventoryTask.TryNormalizeStandaloneFilterSpec(
+                            payload["filterSpec"], out normalizedFilterSpec)
+                        || normalizedFilterSpec == null) return false;
+                }
             }
             else if (command == "stashTooltip")
             {
@@ -57,6 +67,13 @@ namespace CF7Launcher.Tasks
                             || !TryReadLongInteger(row["revision"], 1, MaxSafeInteger, out long rowRevision)
                             || !TryReadLongInteger(row["quantity"], 1, MaxSafeInteger, out long quantity)) return false;
                     }
+                    if (payload.Property("target") != null)
+                    {
+                        keys.Add("target");
+                        if (rows.Count != 1
+                            || !InventoryTask.TryNormalizeBackpackTargetRef(
+                                payload["target"] as JObject, out normalizedTarget)) return false;
+                    }
                 }
                 if (command == "stashOpen" || command == "stashOpenMany")
                 {
@@ -71,6 +88,8 @@ namespace CF7Launcher.Tasks
             }
             if (!IsExactObject(payload, keys.ToArray())) return false;
             normalized = (JObject)payload.DeepClone();
+            if (normalizedFilterSpec != null) normalized["filterSpec"] = normalizedFilterSpec;
+            if (normalizedTarget != null) normalized["target"] = normalizedTarget;
             return true;
         }
 
@@ -78,6 +97,71 @@ namespace CF7Launcher.Tasks
         {
             return TryReadSafeText(value, 160, false, out id)
                 && System.Text.RegularExpressions.Regex.IsMatch(id, "^[A-Za-z0-9._~-]+$");
+        }
+
+        /// <summary>
+        /// stashTake 逐项结果的权威接收区域闭集：contract 固定五项，
+        /// Host 不臆测全部进背包；带 target 时只许 背包。
+        /// </summary>
+        private static readonly HashSet<string> StashTakeDestinations =
+            new HashSet<string>(StringComparer.Ordinal)
+            {
+                "背包", "装备栏", "药剂栏", "材料", "情报"
+            };
+
+        /// <summary>stashTake blocked.reason 可枚举闭集；contract 固定四项，新增值须与 AS2 同步。</summary>
+        private static readonly HashSet<string> StashTakeBlockedReasons =
+            new HashSet<string>(StringComparer.Ordinal)
+            {
+                "inventory_full", "target_stale", "target_occupied", "target_incompatible"
+            };
+
+        /// <summary>
+        /// accepted/blocked 行的可选目标字段校验：destination 必须在闭集内且带 slot 或
+        /// 请求 target 时只能为背包；slot 必须 0..49 并在请求带 target 时精确等于请求。
+        /// </summary>
+        private static bool TryReadStashTakePlacement(JObject row, JObject requestTarget)
+        {
+            bool hasDestination = row["destination"] != null;
+            bool hasSlot = row["slot"] != null;
+            if (!hasDestination && !hasSlot) return true;
+            string destination = hasDestination ? ReadString(row["destination"]) : null;
+            if (hasDestination
+                && (destination == null
+                    || !StashTakeDestinations.Contains(destination)
+                    || (destination != "背包" && (requestTarget != null || hasSlot))))
+            {
+                return false;
+            }
+            if (hasSlot)
+            {
+                int slot;
+                if (!TryReadInteger(row["slot"], 0, 49, out slot)
+                    || (requestTarget != null && slot != requestTarget.Value<int>("slot")))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool HasOnlyKeys(JObject value, params string[] allowed)
+        {
+            if (value == null) return false;
+            foreach (JProperty property in value.Properties())
+            {
+                bool found = false;
+                for (int i = 0; i < allowed.Length; i++)
+                {
+                    if (string.Equals(property.Name, allowed[i], StringComparison.Ordinal))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) return false;
+            }
+            return true;
         }
 
         private static bool TrySanitizeStashResponse(JObject message, PendingRequest entry,
@@ -104,7 +188,9 @@ namespace CF7Launcher.Tasks
                     || error == "save_unavailable" || error == "stash_write_failed"
                     || error == "invalid_reward_stash" || error == "invalid_reward_snapshot"
                     || error == "reward_stash_quarantined" || error == "invalid_legacy_purchased"
-                    || error == "malformed_legacy_equipment");
+                    || error == "malformed_legacy_equipment"
+                    || error == "invalid_target" || error == "target_stale"
+                    || error == "target_occupied" || error == "target_incompatible");
                 sanitized = new JObject { ["success"] = false, ["error"] = error };
                 return true;
             }
@@ -113,7 +199,7 @@ namespace CF7Launcher.Tasks
             JObject clean;
             if (entry.WebCommand == "stashPage")
             {
-                if (!TrySanitizeStashPage(data, out clean)) return false;
+                if (!TrySanitizeStashPage(data, entry.Request, out clean)) return false;
                 if (clean.Value<int>("offset") != entry.Request.Value<int>("offset")) return false;
             }
             else if (entry.WebCommand == "stashTooltip")
@@ -174,20 +260,28 @@ namespace CF7Launcher.Tasks
                 if (!IsExactObject(data, "success", "accepted", "blocked")
                     || !(data["accepted"] is JArray accepted) || !(data["blocked"] is JArray blocked)
                     || !(request["entries"] is JArray requested) || accepted.Count + blocked.Count != requested.Count) return false;
+                JObject requestTarget = request["target"] as JObject;
                 var ids = new HashSet<string>(StringComparer.Ordinal);
                 foreach (JToken token in accepted)
                 {
                     var row = token as JObject;
-                    if (!IsExactObject(row, "entryId", "quantity") || !StashEntryId(row["entryId"], out string id)
+                    if (!HasOnlyKeys(row, "entryId", "quantity", "destination", "slot")
+                        || row["entryId"] == null || row["quantity"] == null
+                        || !StashEntryId(row["entryId"], out string id)
                         || !ids.Add(id) || !TryReadLongInteger(row["quantity"], 1, MaxSafeInteger, out long quantity)
-                        || !requested.OfType<JObject>().Any(r => r.Value<string>("entryId") == id && r.Value<long>("quantity") == quantity)) return false;
+                        || !requested.OfType<JObject>().Any(r => r.Value<string>("entryId") == id && r.Value<long>("quantity") == quantity)
+                        || !TryReadStashTakePlacement(row, requestTarget)) return false;
                 }
                 foreach (JToken token in blocked)
                 {
                     var row = token as JObject;
-                    if (!IsExactObject(row, "entryId", "reason") || !StashEntryId(row["entryId"], out string id)
-                        || !ids.Add(id) || ReadString(row["reason"]) != "inventory_full"
-                        || !requested.OfType<JObject>().Any(r => r.Value<string>("entryId") == id)) return false;
+                    string reason = row != null ? ReadString(row["reason"]) : null;
+                    if (!HasOnlyKeys(row, "entryId", "reason", "destination", "slot")
+                        || row["entryId"] == null || reason == null
+                        || !StashEntryId(row["entryId"], out string id)
+                        || !ids.Add(id) || !StashTakeBlockedReasons.Contains(reason)
+                        || !requested.OfType<JObject>().Any(r => r.Value<string>("entryId") == id)
+                        || !TryReadStashTakePlacement(row, requestTarget)) return false;
                 }
             }
             else if (command == "stashOpen" || command == "stashOpenMany")
@@ -214,10 +308,18 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        private static bool TrySanitizeStashPage(JObject data, out JObject clean)
+        private static bool TrySanitizeStashPage(JObject data, JObject request, out JObject clean)
         {
             clean = null;
-            if (!IsExactObject(data, "success", "storeId", "revision", "offset", "total", "entries", "migrationRequired", "pendingOperationId")
+            bool filtered = request != null && request.Property("filterSpec") != null;
+            JToken requestSpec = filtered ? request["filterSpec"] : null;
+            if (!IsExactObject(data, filtered
+                    ? new[] { "success", "storeId", "revision", "offset", "total", "entries",
+                        "migrationRequired", "pendingOperationId", "filterSpec",
+                        "filterFacets", "filterItemCount", "unfilteredTotal",
+                        "setFacets", "setFilterItemCount" }
+                    : new[] { "success", "storeId", "revision", "offset", "total", "entries",
+                        "migrationRequired", "pendingOperationId" })
                 || !TryReadSafeText(data["storeId"], 128, true, out string storeId)
                 || storeId.Length > 0 && !ValidToken.IsMatch(storeId)
                 || !TryReadLongInteger(data["revision"], 0, MaxSafeInteger, out long revision)
@@ -225,8 +327,41 @@ namespace CF7Launcher.Tasks
                 || !TryReadInteger(data["total"], 0, int.MaxValue, out int total)
                 || !(data["entries"] is JArray rows) || rows.Count != Math.Min(32, Math.Max(0, total - offset))
                 || data["migrationRequired"]?.Type != JTokenType.Boolean
-                || storeId.Length == 0 && !data.Value<bool>("migrationRequired")
                 || !TryReadSafeText(data["pendingOperationId"], 128, true, out string pendingId)) return false;
+            // 未物化空暂存是纯读合法形状：storeId 为空且非迁移分支时，
+            // 必须是 revision/total/entries/pendingId 全零的精确无库存页，
+            // 空身份却携带非零库存或修订一律拒绝；不为纯读强制创建存档。
+            if (storeId.Length == 0
+                && !data.Value<bool>("migrationRequired")
+                && (revision != 0 || total != 0 || rows.Count != 0 || pendingId.Length != 0))
+            {
+                return false;
+            }
+            JObject responseSpec = null;
+            JArray facets = null;
+            JArray setFacets = null;
+            if (filtered)
+            {
+                int facetTotal;
+                int setFacetTotal;
+                if (!InventoryTask.TrySanitizeResponseFilterSpec(data["filterSpec"], out responseSpec)
+                    || responseSpec == null || !JToken.DeepEquals(requestSpec, responseSpec)) return false;
+                int unfilteredTotal;
+                int filterItemCount;
+                if (!TryReadInteger(data["unfilteredTotal"], 0, int.MaxValue, out unfilteredTotal)
+                    || total > unfilteredTotal
+                    || !TryReadInteger(data["filterItemCount"], 0, unfilteredTotal, out filterItemCount)
+                    || filterItemCount != unfilteredTotal
+                    || !InventoryTask.TrySanitizeFacets(
+                        data["filterFacets"] as JArray, 0, false, unfilteredTotal,
+                        out facets, out facetTotal)
+                    || facetTotal != filterItemCount
+                    || !TryReadInteger(data["setFilterItemCount"], 0, filterItemCount, out int setFilterItemCount)
+                    || !InventoryTask.TrySanitizeFacets(
+                        data["setFacets"] as JArray, 0, true, filterItemCount,
+                        out setFacets, out setFacetTotal)
+                    || setFacetTotal != setFilterItemCount) return false;
+            }
             var projected = new JArray();
             var ids = new HashSet<string>(StringComparer.Ordinal);
             foreach (JToken token in rows)
@@ -241,6 +376,12 @@ namespace CF7Launcher.Tasks
                 projected.Add(new JObject { ["entryId"] = id, ["revision"] = entryRevision, ["quantity"] = quantity, ["item"] = item });
             }
             clean = (JObject)data.DeepClone(); clean["entries"] = projected;
+            if (filtered)
+            {
+                clean["filterSpec"] = responseSpec;
+                clean["filterFacets"] = facets;
+                clean["setFacets"] = setFacets;
+            }
             return true;
         }
 
